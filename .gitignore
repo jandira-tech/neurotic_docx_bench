@@ -1,0 +1,91 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# local env files
+.env*.local
+.env
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# repo-relative ignores (old fixture trees now live under .old/)
+.old/
+.qodo/
+.crush/
+.dirac-symbol-index/
+
+!/harness/folio-viewer/
+/docs/docx-editor/
+/dist/*
+
+
+# python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+
+# bench generated work folders (kept locally, cleaned in CI; see PLAN §4)
+/runs/
+
+# volatile local IDE state (GitHub Issues extension sync)
+.vscode/github-issues/
+runs/
+.bench*
+out/
+.old/
+.dirac*
+.ruff_cache/
+.venv/
+.crush/
+.pytest_cache/
+
+**/**/__pycache__/
+node_modules/superdoc-visual-benchmarks
+.zcode/plans/
+dist/
+src/neurotic_docx_bench/utils/superdoc/node/node_modules/
+src/neurotic_docx_bench/utils/superdoc/node_modules/
+src/neurotic_docx_bench/utils/folio/node_modules/
+src/neurotic_docx_bench/utils/docxodus/node_modules/docxodus/
+src/neurotic_docx_bench/utils/docx-redline-js/node_modules/
+harness/folio-viewer/
+corpus/word_based/superdoc_visual_benchmark/
+corpus/word_based/superdoc_word_benchmark_canary/reports/
+corpus/word_based/FIXTURES_TO_REMOVE.md
+src/neurotic_docx_bench/utils/superdoc/bun.lock
+src/neurotic_docx_bench/utils/folio/harness/folio-viewer/bun.lock
+src/neurotic_docx_bench/utils/folio/bun.lock
+src/neurotic_docx_bench/utils/docx-redline-js/bun.lock
+docs/superpowers/plans/
+src/neurotic_docx_bench/utils/docxodus/node_modules/
+src/neurotic_docx_bench/utils/superdoc/harness-viewer-generation/node_modules/

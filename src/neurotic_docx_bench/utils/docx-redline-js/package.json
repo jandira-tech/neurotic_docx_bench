@@ -1,0 +1,11 @@
+{
+	"name": "neurotic-docx-bench-docx-redline-js",
+	"private": true,
+	"type": "module",
+	"description": "docx-redline-js dependencies for neurotic-docx-bench",
+	"dependencies": {
+		"@ansonlai/docx-redline-js": "0.2.0",
+		"@xmldom/xmldom": "^0.9.10",
+		"jszip": "^3.10.1"
+	}
+}

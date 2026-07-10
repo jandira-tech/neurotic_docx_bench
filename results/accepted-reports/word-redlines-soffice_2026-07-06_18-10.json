@@ -1,0 +1,31 @@
+{
+	"accept_failures": [],
+	"aggregate_accepted": {
+		"max": 100.0,
+		"mean": 100.0,
+		"median": 100.0,
+		"min": 100.0,
+		"n": 2
+	},
+	"aggregate_redline": {
+		"max": 100.0,
+		"mean": 100.0,
+		"median": 100.0,
+		"min": 100.0,
+		"n": 1
+	},
+	"n_docs": 2,
+	"per_doc": {
+		"1_5_line_spacing_id_paraid_overflow_24_id_paraid_overflow": {
+			"accepted_score": 100.00000000000003,
+			"delta": 0.0,
+			"redline_score": 100.00000000000003
+		},
+		"24_id_paraid_overflow_alternate_content_word": {
+			"accepted_score": 100.0,
+			"delta": null,
+			"redline_score": null
+		}
+	},
+	"tool": "word-redlines-soffice"
+}

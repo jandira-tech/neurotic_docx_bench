@@ -1,0 +1,51 @@
+[project]
+name = "neurotic-docx-bench"
+version = "0.1.0"
+description = "A benchmark for manipulating docx files and assessing their fidelity to Microsoft Word(R), the oracle."
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "pymupdf>=1.24",
+    "numpy>=2.0",
+    "pillow>=10.0",
+    "scipy>=1.13",
+    # Upper-capped: the verbatim-lifted score.py uses morphology.binary_dilation (removed
+    # in skimage 0.28) and remove_small_objects(min_size=…) (removed in 2.0). Pinning the
+    # wheel's floor<ceiling keeps `pip install` consumers on a working API (uv.lock already
+    # pins the exact resolved version for `uv sync`).
+    "scikit-image>=0.24,<0.28",
+    "typer>=0.12",
+    "pyyaml>=6.0",
+    "rich>=13.0",
+    "docx-revisions>=0.1.5",
+    "playwright>=1.61.0",
+    "superdoc-sdk==1.19.2",
+]
+
+[project.scripts]
+bench = "neurotic_docx_bench.cli:app"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/neurotic_docx_bench"]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+    "ty>=0.0.56",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+
+[tool.ty.environment]
+python-version = "3.14"
+
+[tool.ty.rules]
+# The scoring core (score.py, diff.py, raster.py, report.py, html_report.py) is a
+# verbatim lift guarded by tests/test_parity.py; don't let type noise pressure edits there.
+possibly-missing-attribute = "warn"

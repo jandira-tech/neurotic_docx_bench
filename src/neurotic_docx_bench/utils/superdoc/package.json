@@ -1,0 +1,9 @@
+{
+	"name": "neurotic-docx-bench-superdoc",
+	"private": true,
+	"description": "superdoc dependencies for neurotic-docx-bench",
+	"type": "module",
+	"dependencies": {
+		"@superdoc-dev/sdk": "1.19.2"
+	}
+}
