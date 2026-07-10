@@ -2,7 +2,7 @@
 	"name": "neurotic-docx-bench-drivers",
 	"private": true,
 	"type": "module",
-	"description": "Six benchmarks to neurotically measure docx conversion and redlining against Microsoft Word.",
+	"description": "Six benchmarks to neurotically measure DOCX conversion and redlining against Microsoft Word.",
 	"scripts": {
 		"typecheck": "tsc --noEmit",
 		"build": "tsc --noEmit",
