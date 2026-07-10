@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RDV Harness</title>
+    <style>
+      /*
+       * Capture-oriented harness chrome.
+       *
+       * The default DocumentViewer is a dark scrollable PDF.js-style shell
+       * (gray #525659 canvas, page cards with shadow/radius/gap). Pixel
+       * scoring compares against LibreOffice/Word full-bleed white pages, so
+       * that chrome alone crushed visual_* scores into the ~30 band. This
+       * stylesheet collapses the viewer into a white, unclipped stack of
+       * page boxes so page.pdf() prints edge-to-edge pages.
+       */
+      html, body {
+        margin: 0;
+        padding: 0;
+        background: #fff;
+      }
+      #root {
+        width: 100%;
+        min-height: 100vh;
+      }
+
+      /* Override viewer tokens for print/capture (pageGap is read from --rdv-page-gap). */
+      .rdv-viewer {
+        --rdv-background: #ffffff;
+        --rdv-page-background: #ffffff;
+        --rdv-page-gap: 0px;
+        --rdv-border-radius: 0;
+        --rdv-shadow: none;
+        --rdv-height: auto;
+        --rdv-min-height: 0;
+        --rdv-max-height: none;
+        height: auto !important;
+        min-height: 0 !important;
+        max-height: none !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        background: #fff !important;
+        overflow: visible !important;
+      }
+
+      .rdv-toolbar { display: none !important; }
+
+      /*
+       * DocumentViewer uses contain:strict on .rdv-content. Size containment
+       * with height:auto collapses the box to 0, so Playwright's "visible"
+       * wait times out even though [data-page-number] nodes are attached
+       * (they have no non-empty layout box). Defeat containment + clipping.
+       */
+      .rdv-content,
+      .rdv-pages,
+      .rdv-paginated-document,
+      .rdv-pages__stable-wrapper,
+      #pagination-container,
+      .page-container {
+        contain: none !important;
+        overflow: visible !important;
+        height: auto !important;
+        max-height: none !important;
+        min-height: 0 !important;
+        width: auto !important;
+        max-width: none !important;
+        background: #fff !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+
+      /* Page cards → flat white pages matching LO/Word oracle PDFs. */
+      .page-box,
+      [data-page-number] {
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        margin: 0 !important;
+        background: #fff !important;
+      }
+
+      /* Hide viewer-only chrome that is not part of the document page. */
+      .page-number,
+      .rdv-page-number,
+      [class*="page-number"] {
+        display: none !important;
+      }
+
+      @media print {
+        @page {
+          margin: 0;
+        }
+        html, body, #root {
+          background: #fff !important;
+          height: auto !important;
+          overflow: visible !important;
+        }
+        .rdv-viewer,
+        .rdv-content,
+        .rdv-pages,
+        .rdv-paginated-document {
+          background: #fff !important;
+          overflow: visible !important;
+          height: auto !important;
+        }
+        .page-box,
+        [data-page-number] {
+          box-shadow: none !important;
+          border-radius: 0 !important;
+          margin: 0 !important;
+          page-break-after: always;
+          break-after: page;
+          break-inside: avoid;
+        }
+        .page-box:last-child,
+        [data-page-number]:last-child {
+          page-break-after: auto;
+          break-after: auto;
+        }
+      }
+    </style>
+    <script src="coi-serviceworker.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <input type="file" id="fileInput" accept=".docx" style="display:none" />
+    <script type="module" src="./harness-main.tsx"></script>
+  </body>
+</html>
