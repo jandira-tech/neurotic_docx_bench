@@ -20,6 +20,10 @@ dependencies = [
     "docx-revisions>=0.1.5",
     "playwright>=1.61.0",
     "superdoc-sdk==1.19.2",
+    # houfu/redlines — text redliner (JSON/Markdown/HTML). Extras: nupunkt (sentence
+    # tokenization), levenshtein (distance stats). The `pdf` extra does not exist on
+    # 0.6.1 (README documents it, PyPI does not ship it).
+    "redlines[levenshtein,nupunkt]==0.6.1",
 ]
 
 [project.scripts]

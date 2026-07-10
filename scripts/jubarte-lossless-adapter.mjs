@@ -250,6 +250,13 @@ class NodeMainDocumentPart extends NodeOpenXmlPart {
 		this._footnotesPart = byType("footnotes")[0] ?? null;
 		this._endnotesPart = byType("endnotes")[0] ?? null;
 		this._commentsPart = byType("comments")[0] ?? null;
+		// Cache typed parts so GetXDocument annotations survive across
+		// styleDefinitionsPart / numberingDefinitionsPart calls. Returning a
+		// fresh NodeOpenXmlPart each time makes PutXDocument write the
+		// un-mutated stream (XDocument is annotated on the previous instance).
+		this._stylesPart = byType("styles")[0] ?? null;
+		this._numberingPart = byType("numbering")[0] ?? null;
+		this._settingsPart = byType("settings")[0] ?? null;
 	}
 	get HeaderParts() {
 		return this._headerParts;
@@ -274,6 +281,24 @@ class NodeMainDocumentPart extends NodeOpenXmlPart {
 	}
 	set WordprocessingCommentsPart(part) {
 		this._commentsPart = part;
+	}
+	get StyleDefinitionsPart() {
+		return this._stylesPart;
+	}
+	set StyleDefinitionsPart(part) {
+		this._stylesPart = part;
+	}
+	get NumberingDefinitionsPart() {
+		return this._numberingPart;
+	}
+	set NumberingDefinitionsPart(part) {
+		this._numberingPart = part;
+	}
+	get DocumentSettingsPart() {
+		return this._settingsPart;
+	}
+	set DocumentSettingsPart(part) {
+		this._settingsPart = part;
 	}
 }
 
@@ -402,6 +427,10 @@ function findInternalPrimitives(losslessCjsPath, req) {
 		if (!PartFS) continue;
 
 		// Now find parseXDocument + unzipSync in this same chunk.
+		// unzipSync MUST return a Map (PartFS does `entries.get(...)`). Several
+		// other pure functions accept a Uint8Array and return a plain object /
+		// array-like — those must NOT win the probe or openWordprocessingDocument
+		// throws `this.entries.get is not a function`.
 		let parseXDocument = null;
 		let unzipSync = null;
 		for (const k of Object.keys(mod)) {
@@ -423,7 +452,14 @@ function findInternalPrimitives(losslessCjsPath, req) {
 			if (!unzipSync) {
 				try {
 					const result = v(EMPTY_ZIP);
-					if (result && typeof result === "object") {
+					if (
+						result instanceof Map ||
+						(result &&
+							typeof result === "object" &&
+							typeof result.get === "function" &&
+							typeof result.set === "function" &&
+							typeof result.keys === "function")
+					) {
 						unzipSync = v;
 					}
 				} catch {
@@ -502,6 +538,12 @@ export function wireJubarteLosslessAdapter(lossless, losslessCjsPath) {
 				...md.FooterParts,
 				...(md.FootnotesPart ? [md.FootnotesPart] : []),
 				...(md.EndnotesPart ? [md.EndnotesPart] : []),
+				// Comments are content parts for comment-range transport; omitting
+				// them left PutXDocument-driven comment merges un-flushed when
+				// callers only walked contentParts.
+				...(md.WordprocessingCommentsPart
+					? [md.WordprocessingCommentsPart]
+					: []),
 			];
 		},
 		allXmlParts(wDoc) {
@@ -523,19 +565,17 @@ export function wireJubarteLosslessAdapter(lossless, losslessCjsPath) {
 			return [];
 		},
 		styleDefinitionsPart(mainPart) {
-			const rels = readPartRels(mainPart.fs, "word/document.xml").filter(
-				(r) => r.type === `${REL_BASE}/styles`,
-			);
-			const existing = rels.length
-				? partForRel(mainPart.fs, "word/document.xml", rels[0])
-				: null;
-			if (existing != null) return existing;
-			// `StyleDefinitionsPart` is non-nullable in the boundary interface: when
-			// neither source carries a styles part, materialize an empty one so
-			// downstream code (AddFootnotesEndnotesStyles) can still seed a root.
+			// Always return the SAME part instance so XDocument annotations from
+			// GetXDocument survive until PutXDocument (CopyMissingStyles writes
+			// via PutXDocument(styleDefinitionsPart(...)) which re-fetches).
+			if (mainPart.StyleDefinitionsPart != null)
+				return mainPart.StyleDefinitionsPart;
 			const uri = "word/styles.xml";
 			const ct =
 				"application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml";
+			// 0-byte entry: GetXDocument builds an empty XDocument (no root) so
+			// callers can Add a root. A pre-seeded empty <w:styles/> shell would
+			// leave a root and break clone-Add merge paths.
 			mainPart.fs.write(uri, new Uint8Array(0));
 			addContentTypeOverride(mainPart.fs, uri, ct);
 			addRelationship(
@@ -546,34 +586,45 @@ export function wireJubarteLosslessAdapter(lossless, losslessCjsPath) {
 			);
 			const part = new NodeOpenXmlPart(mainPart.fs, uri, ct);
 			part.OpenXmlPackage = mainPart.OpenXmlPackage;
+			mainPart.StyleDefinitionsPart = part;
 			return part;
 		},
 		documentSettingsPart(mainPart) {
+			if (mainPart.DocumentSettingsPart != null)
+				return mainPart.DocumentSettingsPart;
 			const rels = readPartRels(mainPart.fs, "word/document.xml").filter(
 				(r) => r.type === `${REL_BASE}/settings`,
 			);
-			return rels.length
-				? partForRel(mainPart.fs, "word/document.xml", rels[0])
-				: null;
+			if (!rels.length) return null;
+			const part = partForRel(mainPart.fs, "word/document.xml", rels[0]);
+			if (part != null) {
+				part.OpenXmlPackage = mainPart.OpenXmlPackage;
+				mainPart.DocumentSettingsPart = part;
+			}
+			return part;
 		},
 		numberingDefinitionsPart(mainPart) {
+			if (mainPart.NumberingDefinitionsPart != null)
+				return mainPart.NumberingDefinitionsPart;
 			const rels = readPartRels(mainPart.fs, "word/document.xml").filter(
 				(r) => r.type === `${REL_BASE}/numbering`,
 			);
-			return rels.length
-				? partForRel(mainPart.fs, "word/document.xml", rels[0])
-				: null;
+			if (!rels.length) return null;
+			const part = partForRel(mainPart.fs, "word/document.xml", rels[0]);
+			if (part != null) {
+				part.OpenXmlPackage = mainPart.OpenXmlPackage;
+				mainPart.NumberingDefinitionsPart = part;
+			}
+			return part;
 		},
 		addNewNumberingDefinitionsPart(mainPart) {
+			if (mainPart.NumberingDefinitionsPart != null)
+				return mainPart.NumberingDefinitionsPart;
 			const uri = "word/numbering.xml";
 			const ct =
 				"application/vnd.openxmlformats-officedocument.wordprocessingml.numbering+xml";
-			mainPart.fs.write(
-				uri,
-				new TextEncoder().encode(
-					'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:numbering xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"/>',
-				),
-			);
+			// 0-byte so GetXDocument yields empty XDocument (no root) for seeders.
+			mainPart.fs.write(uri, new Uint8Array(0));
 			addContentTypeOverride(mainPart.fs, uri, ct);
 			addRelationship(
 				mainPart.fs,
@@ -581,18 +632,17 @@ export function wireJubarteLosslessAdapter(lossless, losslessCjsPath) {
 				`${REL_BASE}/numbering`,
 				"numbering.xml",
 			);
-			return new NodeOpenXmlPart(mainPart.fs, uri, ct);
+			const part = new NodeOpenXmlPart(mainPart.fs, uri, ct);
+			part.OpenXmlPackage = mainPart.OpenXmlPackage;
+			mainPart.NumberingDefinitionsPart = part;
+			return part;
 		},
 		addNewFootnotesPart(mainPart) {
+			if (mainPart.FootnotesPart != null) return;
 			const uri = "word/footnotes.xml";
 			const ct =
 				"application/vnd.openxmlformats-officedocument.wordprocessingml.footnotes+xml";
-			mainPart.fs.write(
-				uri,
-				new TextEncoder().encode(
-					'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:footnotes xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"/>',
-				),
-			);
+			mainPart.fs.write(uri, new Uint8Array(0));
 			addContentTypeOverride(mainPart.fs, uri, ct);
 			addRelationship(
 				mainPart.fs,
@@ -605,15 +655,15 @@ export function wireJubarteLosslessAdapter(lossless, losslessCjsPath) {
 			mainPart.FootnotesPart = part;
 		},
 		addWordprocessingCommentsPart(mainPart) {
+			if (mainPart.WordprocessingCommentsPart != null)
+				return mainPart.WordprocessingCommentsPart;
 			const uri = "word/comments.xml";
 			const ct =
 				"application/vnd.openxmlformats-officedocument.wordprocessingml.comments+xml";
-			mainPart.fs.write(
-				uri,
-				new TextEncoder().encode(
-					'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:comments xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"/>',
-				),
-			);
+			// 0-byte entry (NOT a pre-seeded empty <w:comments/> shell). CopyComments
+			// does GetXDocument → Add(src2Root.clone()); a pre-existing root blocks
+			// the clone and leaves an empty comments part.
+			mainPart.fs.write(uri, new Uint8Array(0));
 			addContentTypeOverride(mainPart.fs, uri, ct);
 			addRelationship(
 				mainPart.fs,
@@ -627,15 +677,11 @@ export function wireJubarteLosslessAdapter(lossless, losslessCjsPath) {
 			return part;
 		},
 		addNewEndnotesPart(mainPart) {
+			if (mainPart.EndnotesPart != null) return;
 			const uri = "word/endnotes.xml";
 			const ct =
 				"application/vnd.openxmlformats-officedocument.wordprocessingml.endnotes+xml";
-			mainPart.fs.write(
-				uri,
-				new TextEncoder().encode(
-					'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:endnotes xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"/>',
-				),
-			);
+			mainPart.fs.write(uri, new Uint8Array(0));
 			addContentTypeOverride(mainPart.fs, uri, ct);
 			addRelationship(
 				mainPart.fs,
