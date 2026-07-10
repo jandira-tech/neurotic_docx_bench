@@ -1,0 +1,13 @@
+# Run the bench in the pinned image. `corpus/` is read-only (the committed ground truth);
+# `results/` is writable so bench.jsonl + score-snapshots persist to the host.
+services:
+  bench:
+    build: .
+    image: neurotic-docx-bench:latest
+    volumes:
+      - ./corpus:/bench/corpus:ro
+      - ./results:/bench/results
+    environment:
+      BENCH_CLEAN_RUNS: "1"   # CI hygiene: delete per-run work folders after emit
+    # Regenerate the oracle in-image (renderer-agnostic), then run every tool.
+    command: ["run", "--clean-runs"]

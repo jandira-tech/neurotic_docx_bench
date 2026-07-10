@@ -1,0 +1,256 @@
+# neurotic-docx-bench — sequential multi-tool config.
+# Oracle = the committed Microsoft Word redline PDFs, rendered by LibreOffice 26.2.4.2
+# (see plan Context §7). Candidates are rendered the same way, so scores isolate
+# redline-markup fidelity vs Word rather than renderer drift.
+source_of_truth: corpus/word_based/pdf_redlines_word
+scoring:
+  dpi: 144
+
+# Accepted ground truth: the Word oracle redlines with ALL tracked changes accepted
+# (produced by `bench accept corpus/word_based/docx_redlines_word --out …`, or via
+# `bench run --generate`). Used by `bench run --accept-compare`, which accepts each
+# tool's freshly generated redlines and diffs them against this corpus.
+accepted_ground_truth: corpus/word_based/docx_accepted_word
+
+# Visual-benchmark oracle PDF folders. Consumed when a run declares visual_*
+# benchmarks. visual_redlines defaults to source_of_truth if omitted; the other
+# two are required when any run declares them.
+visual_oracles:
+  visual_rendering: corpus/word_based/pdf_source
+  visual_redlines: corpus/word_based/pdf_redlines_word
+  visual_accepted_changes: corpus/word_based/pdf_accepted_word
+
+# Standalone generation scripts, executed in order by `bench run --generate`.
+generate_scripts:
+  - name: accepted-word
+    command: "uv run bench accept corpus/word_based/docx_redlines_word --out corpus/word_based/docx_accepted_word"
+  - name: roundtrips-node
+    command: "node scripts/generate-roundtrips.mjs --all"
+  - name: roundtrips-superdoc
+    command: "uv run python scripts/generate-roundtrips-superdoc.py"
+  - name: source-pdfs
+    command: "uv run bench render corpus/word_based/docx_source /tmp/pdf_source_render --backend soffice --jobs 6 --force && mv /tmp/pdf_source_render/pdf/*.pdf corpus/word_based/pdf_source/"
+
+# Tool versions are PINNED to the ones we reviewed:
+#   docxodus 7.0.0 · docx-redline-js 0.2.0
+#   @stll/folio-core 0.3.1 (generator) · @stll/folio-react 0.5.0 (viewer)
+#   superdoc-sdk (Python) 1.19.2 · superdoc editor (npm) 1.44.1  ← different packages
+#   jubarte builds are content-hashed under dist/
+# Do NOT bump to @latest without re-review — the pin keeps CI reproducible.
+
+runs:
+  - name: jubarte-final-native
+    dist: dist/jubarte-final
+    generate: "node --import tsx scripts/generate-native-redlines.ts --method=jubarte-native --dist=dist/jubarte-final --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=jubarte-final-native"
+    render: soffice
+    jobs: 8
+    vendor: jubarte
+    benchmarks: [accepted_changes, script_redlines, roundtrip]
+
+  - name: jubarte-final-lossless
+    dist: dist/jubarte-final
+    generate: "node --import tsx scripts/generate-native-redlines.ts --method=jubarte-lossless --dist=dist/jubarte-final --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=jubarte-final-lossless"
+    render: soffice
+    jobs: 8
+    vendor: jubarte
+    benchmarks: [accepted_changes, script_redlines, roundtrip]
+
+  # (2) docxodus — WASM/.NET compareDocuments (JSv4/docxodus, MIT). npm-published, so its
+  # version is npm-resolved and stamped into tool_version.
+  - name: docxodus
+    package: "docxodus@7.0.0"
+    generate: "node --import tsx scripts/generate-native-redlines.ts --method=docxodus --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=docxodus"
+    render: soffice
+    jobs: 8
+    vendor: docxodus
+    benchmarks: [accepted_changes, script_redlines, roundtrip, visual_rendering, visual_redlines, visual_accepted_changes]
+
+  # (2b) docxodus-playwright-* — render DOCX through react-docxodus-viewer via
+  # Playwright. One run per visual_* oracle corpus (same pattern as folio-playwright-*).
+  # Prefer the vendored tree under utils/ (demo/harness.html).
+  #
+  # Viewer stack is the *matched* local Docxodus npm+WASM build (not a registry
+  # JS build alone): `Docxodus/npm` JS bindings + rebuilt net10 WASM. JS/WASM
+  # mismatch left the engine stuck on "Loading document engine…". Version is
+  # the local package.json (7.0.0; includes null-safe DocumentSettingsPart).
+  # Rebuild: see react-docxodus-viewer/README.bench.md
+  # Playwright fail-fasts on window.__rdvError instead of timing out.
+  - name: docxodus-playwright-rendering
+    dist: src/neurotic_docx_bench/utils/docxodus/Docxodus/npm
+    docx: corpus/word_based/docx_source
+    render: playwright
+    jobs: 8
+    vendor: docxodus
+    benchmarks: [visual_rendering]
+    harness: &docxodus-harness
+      server: "cd src/neurotic_docx_bench/utils/docxodus/react-docxodus-viewer && npx vite --port 5174 --host 127.0.0.1"
+      url: "http://127.0.0.1:5174/harness.html"
+      file_input: "#fileInput"
+      page_selector: "[data-page-number]"
+      # Do NOT OR with mere presence of [data-page-number] — blank page chrome
+      # would pass readiness while __rdvDocumentReady is still false.
+      readiness_js: "window.__rdvDocumentReady === true"
+      error_js: "window.__rdvError"
+      content_js: "window.__rdvHasContent === true"
+      reject_blank: true
+      timeout_ms: 60000
+
+  - name: docxodus-playwright-redlines
+    dist: src/neurotic_docx_bench/utils/docxodus/Docxodus/npm
+    docx: corpus/word_based/docx_redlines_word
+    render: playwright
+    jobs: 8
+    vendor: docxodus
+    benchmarks: [visual_redlines]
+    harness: *docxodus-harness
+
+  - name: docxodus-playwright-accepted
+    dist: src/neurotic_docx_bench/utils/docxodus/Docxodus/npm
+    docx: corpus/word_based/docx_accepted_word
+    render: playwright
+    jobs: 8
+    vendor: docxodus
+    benchmarks: [visual_accepted_changes]
+    harness: *docxodus-harness
+
+  # (2c) folio-playwright-* — three runs that render DIFFERENT DOCX corpora
+  # through the @stll/folio-react web viewer (stella/folio, Apache-2.0) via
+  # Playwright, each scoring against its own oracle. One run renders one docx
+  # folder, so each visual_* benchmark needs its own run with the matching source.
+  # Requires: cd harness/folio-viewer && bun install
+  # The harness server is auto-started/stopped by `bench run`.
+  # NOTE: the renderer reads DOCX via set_input_files (read-only upload) and
+  # writes PDFs to the run dir — the source corpus is never mutated.
+  - name: folio-playwright-rendering
+    package: "@stll/folio-react@0.5.0"
+    docx: corpus/word_based/docx_source
+    render: playwright
+    jobs: 4
+    vendor: folio
+    benchmarks: [visual_rendering]
+    harness: &folio-harness
+      server: "cd harness/folio-viewer && npx vite --port 5175 --host 127.0.0.1"
+      url: "http://127.0.0.1:5175/harness.html"
+      file_input: "#fileInput"
+      page_selector: ".layout-page"
+      readiness_js: "window.__folioReady === true || document.querySelectorAll('.layout-page').length > 0"
+      timeout_ms: 90000
+
+  - name: folio-playwright-redlines
+    package: "@stll/folio-react@0.5.0"
+    docx: corpus/word_based/docx_redlines_word
+    render: playwright
+    jobs: 4
+    vendor: folio
+    benchmarks: [visual_redlines]
+    harness: *folio-harness
+
+  - name: folio-playwright-accepted
+    package: "@stll/folio-react@0.5.0"
+    docx: corpus/word_based/docx_accepted_word
+    render: playwright
+    jobs: 4
+    vendor: folio
+    benchmarks: [visual_accepted_changes]
+    harness: *folio-harness
+
+  # (3) docx-redline-js — OOXML text-reconciliation redliner (@ansonlai/docx-redline-js, MIT).
+  - name: docx-redline-js
+    package: "@ansonlai/docx-redline-js@0.2.0"
+    generate: "node --import tsx scripts/generate-native-redlines.ts --method=docx-redline-js --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=docx-redline-js"
+    render: soffice
+    jobs: 8
+    vendor: docx-redline-js
+    benchmarks: [script_redlines]
+
+  # (3b) folio — @stll/folio-core compareDocxVersions + FolioDocxReviewer
+  # applyOperations(tracked-changes). No single base+next→redline call, so the
+  # loadEngine 'folio' adapter composes two headless APIs (see
+  # scripts/generate-native-redlines.ts). Pinned to @stll/folio-core 0.3.1.
+  - name: folio
+    package: "@stll/folio-core@0.3.1"
+    generate: "node --import tsx scripts/generate-native-redlines.ts --method=folio --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=folio"
+    render: soffice
+    jobs: 8
+    vendor: folio
+    benchmarks: [script_redlines, accepted_changes, roundtrip]
+
+  # (4) superdoc — Python SuperDoc SDK (superdoc-sdk), Document Engine diff
+  # capture→compare→apply(tracked)→save. This is the *generator* pin (1.19.2).
+  # The *editor* used for visual_* is a separate package — see superdoc-playwright-*.
+  - name: superdoc
+    python_package: "superdoc-sdk==1.19.2" # installed version → tool_version
+    generate: "uv run python -m neurotic_docx_bench.superdoc_gen --out=$RUN_DIR/docx --tool=superdoc"
+    render: soffice
+    jobs: 8
+    vendor: superdoc
+    benchmarks: [accepted_changes, script_redlines, roundtrip]
+
+  # (4b) superdoc via the TypeScript SDK (@superdoc-dev/sdk) — same Document Engine
+  # family as the Python SDK, JS runtime. Version-aligned with superdoc-sdk 1.19.2.
+  - name: superdoc-ts
+    package: "@superdoc-dev/sdk@1.19.2" # npm-resolved → tool_version
+    generate: "node --import tsx scripts/generate-native-redlines.ts --method=superdoc-ts --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=superdoc-ts"
+    render: soffice
+    jobs: 8
+    vendor: superdoc
+    benchmarks: [script_redlines]
+
+  # (4c) superdoc-native — SuperDoc's OWN in-process engine
+  # (Editor.commands.compareDocuments + replayDifferences), run through SuperDoc's own
+  # Vite/vitest toolchain (packages/super-editor needs its Vite path aliases + happy-dom),
+  # not the npm SDK. Requires a fresh `git clone https://github.com/Harbour-Enterprises/
+  # SuperDoc.git superdoc/` + `pnpm install` at repo root (gitignored, too large to commit;
+  # see AGENTS.md "Adding a tool"). `dist` points at packages/super-editor (has its own
+  # package.json version) rather than the whole monorepo, so version resolution doesn't
+  # hash node_modules.
+  - name: superdoc-native
+    dist: superdoc/packages/super-editor
+    generate: "node --import tsx scripts/generate-native-redlines.ts --method=superdoc-native --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=superdoc-native"
+    render: soffice
+    jobs: 8
+    vendor: superdoc
+    benchmarks: [script_redlines]
+
+  # (4d) superdoc-playwright-* — render DOCX through the SuperDoc *editor* (npm package
+  # `superdoc@1.44.1`, NOT the Python/TS SDK 1.19.2). Same pattern as folio-playwright-*:
+  # one run per visual_* oracle corpus. Harness lives under utils/superdoc.
+  - name: superdoc-playwright-rendering
+    package: "superdoc@1.44.1"
+    docx: corpus/word_based/docx_source
+    render: playwright
+    jobs: 4
+    vendor: superdoc
+    benchmarks: [visual_rendering]
+    harness: &superdoc-harness
+      server: "cd src/neurotic_docx_bench/utils/superdoc && npx vite --port 9106 --host 127.0.0.1 --strictPort"
+      url: "http://127.0.0.1:9106/"
+      file_input: "#fileInput"
+      page_selector: ".superdoc-page"
+      readiness_js: "window.__superdocReady === true && window.__superdocLayoutStable === true && window.__superdocFontsReady === true"
+      timeout_ms: 90000
+
+  - name: superdoc-playwright-redlines
+    package: "superdoc@1.44.1"
+    docx: corpus/word_based/docx_redlines_word
+    render: playwright
+    jobs: 4
+    vendor: superdoc
+    benchmarks: [visual_redlines]
+    harness: *superdoc-harness
+
+  - name: superdoc-playwright-accepted
+    package: "superdoc@1.44.1"
+    docx: corpus/word_based/docx_accepted_word
+    render: playwright
+    jobs: 4
+    vendor: superdoc
+    benchmarks: [visual_accepted_changes]
+    harness: *superdoc-harness
+
+  # Sanity/self-fidelity baseline: render the Word redline DOCX via LibreOffice and score
+  # against the same redline as Word rendered it (identity ⇒ 100; validates the pipeline).
+  # - name: word-redlines-soffice
+  #  render: soffice
+  # docx: corpus/word_based/docx_redlines_word
+  #  jobs: 8

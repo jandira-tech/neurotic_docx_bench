@@ -1,0 +1,78 @@
+name: bench
+
+on:
+  schedule:
+    - cron: "17 6 * * 1"   # weekly, Monday ~06:17 UTC (off the :00 mark)
+  workflow_dispatch: {}
+
+permissions:
+  contents: write   # to commit results/bench.jsonl + snapshots on a real delta
+
+concurrency:
+  group: bench-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  bench:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install LibreOffice + fonts
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            libreoffice-writer libreoffice-core fonts-liberation fonts-dejavu fonts-noto
+
+      - name: Install uv + bun
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          curl -fsSL https://bun.sh/install | bash
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+          echo "$HOME/.bun/bin" >> "$GITHUB_PATH"
+
+      - name: Install deps
+        run: |
+          uv sync --frozen
+          bun install --frozen-lockfile
+
+      # Renderer-agnostic oracle: re-render the committed Word redline DOCX with THIS
+      # runner's LibreOffice, so oracle and candidates share one renderer (plan Context §7).
+      # The checkout is ephemeral, so overwriting the committed PDFs here is safe.
+      - name: Regenerate oracle PDFs (match runner's LibreOffice)
+        run: |
+          uv run bench render corpus/word_based/docx_redlines_word /tmp/oracle --jobs 4
+          cp /tmp/oracle/pdf/*.pdf corpus/word_based/pdf_redlines_word/
+
+      - name: Run bench (gate sets exit status)
+        env:
+          BENCH_CLEAN_RUNS: "1"
+        run: uv run bench run --clean-runs
+
+      - name: Speed benchmark (redline generation time)
+        if: always()   # record speed even if the fidelity gate failed
+        run: |
+          TS="$(date -u '+%Y-%m-%dT%H:%M:%SZ')"
+          # Smaller sample than local (20×2) to keep CI quick; appends to the trend log.
+          node --import tsx scripts/speed-bench.ts \
+            --pairs 20 --reps 2 --warmup 3 --out results/speed.jsonl --run-ts "$TS"
+          uv run python -m neurotic_docx_bench.superdoc_speed \
+            --pairs 20 --reps 2 --warmup 3 --out results/speed.jsonl --run-ts "$TS"
+
+      - name: Commit results on change
+        if: always()
+        run: |
+          git config user.name  "bench-bot"
+          git config user.email "bench@users.noreply.github.com"
+          # Only the durable outputs — never the regenerated oracle or runs/ intermediates.
+          git checkout -- corpus/word_based/pdf_redlines_word/ || true
+          # Stage FIRST, then diff the index — plain `git diff` ignores brand-new
+          # (untracked) files like results/score-snapshots/*.json, so a run that only
+          # adds new snapshots would be silently dropped.
+          git add results/
+          if ! git diff --cached --quiet -- results/; then
+            git commit -m "bench: update results [skip ci]"
+            git push
+          else
+            echo "no results delta — nothing to commit"
+          fi

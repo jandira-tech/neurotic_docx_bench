@@ -1,0 +1,15 @@
+{
+  "lockfileVersion": 1,
+  "configVersion": 1,
+  "workspaces": {
+    "": {
+      "name": "neurotic-docx-bench-docxodus",
+      "dependencies": {
+        "docxodus": "7.0.0",
+      },
+    },
+  },
+  "packages": {
+    "docxodus": ["docxodus@7.0.0", "", { "peerDependencies": { "react": ">=16.8.0" }, "optionalPeers": ["react"] }, "sha512-y40/VfrqDCDNKaXFWf5bS62hXHQ9xHcyt+smpNX9PF/zlu7g9/tEaadUhLVK2fzK8cx4q3UZc831+dXL8QGFVw=="],
+  }
+}

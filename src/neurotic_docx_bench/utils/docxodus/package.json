@@ -1,0 +1,9 @@
+{
+  "name": "neurotic-docx-bench-docxodus",
+  "private": true,
+  "type": "module",
+  "description": "docxodus dependencies for neurotic-docx-bench",
+  "dependencies": {
+    "docxodus": "7.0.0"
+  }
+}

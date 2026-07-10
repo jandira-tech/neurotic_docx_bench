@@ -1,0 +1,48 @@
+{
+	"name": "neurotic-docx-bench-drivers",
+	"private": true,
+	"type": "module",
+	"description": "Six benchmarks to neurotically measure docx conversion and redlining against Microsoft Word.",
+	"scripts": {
+		"typecheck": "tsc --noEmit",
+		"build": "tsc --noEmit",
+		"lint": "oxlint .",
+		"update-readme-ranking": "node --import tsx scripts/update-readme-ranking.ts"
+	},
+	"dependencies": {
+		"@cantoo/pdf-lib": "2.7.1",
+		"@pdf-lib/fontkit": "^1.1.1",
+		"@pdfme/common": "^6.1.11",
+		"@pdfme/converter": "^6.1.11",
+		"@pdfme/generator": "^6.1.11",
+		"@pdfme/schemas": "^6.1.11",
+		"@types/node": "^26.1.0",
+		"base64-js": "^1.5.1",
+		"color-name": "^2.1.0",
+		"commander": "^15.0.0",
+		"crypto-js": "^4.2.0",
+		"csv-parse": "^7.0.1",
+		"dingbat-to-unicode": "^1.0.1",
+		"docxodus": "^7.0.0",
+		"es-toolkit": "^1.49.0",
+		"fast-xml-parser": "^4.5.0",
+		"fflate": "^0.8.3",
+		"html-entities": "^2.5.2",
+		"libxmljs2": "^0.37.0",
+		"lop": "^0.4.2",
+		"nanoid": "^5.1.16",
+		"pdfjs-dist": "^4.7.76",
+		"prosemirror-model": "^1.25.9",
+		"prosemirror-state": "^1.4.4",
+		"tmp": "^0.2.7",
+		"underscore": "^1.13.8",
+		"unpdf": "^1.6.2",
+		"xpath": "^0.0.34"
+	},
+	"devDependencies": {
+		"oxlint": "^1.73.0",
+		"tsx": "^4.19.2",
+		"typescript": "^5.7.2",
+		"vitest": "^2.1.0"
+	}
+}
