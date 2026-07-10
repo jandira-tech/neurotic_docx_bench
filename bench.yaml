@@ -186,6 +186,18 @@ runs:
     vendor: superdoc
     benchmarks: [accepted_changes, script_redlines, roundtrip]
 
+  # (4e) redlines — houfu/redlines pure-text differ (MIT). Extracts paragraph text
+  # from base/next DOCX, runs Redlines (+ nupunkt when installed), writes a new
+  # DOCX with w:ins/w:del. Text-level baseline only — no OOXML structure fidelity.
+  - name: redlines
+    python_package: "redlines==0.6.1"
+    generate: "uv run python -m neurotic_docx_bench.redlines_gen --out=$RUN_DIR/docx --tool=redlines"
+    render: soffice
+    jobs: 8
+    vendor: redlines
+    benchmarks: [script_redlines]
+
+
   # (4b) superdoc via the TypeScript SDK (@superdoc-dev/sdk) — same Document Engine
   # family as the Python SDK, JS runtime. Version-aligned with superdoc-sdk 1.19.2.
   - name: superdoc-ts
