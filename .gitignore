@@ -89,3 +89,4 @@ src/neurotic_docx_bench/utils/docx-redline-js/bun.lock
 docs/superpowers/plans/
 src/neurotic_docx_bench/utils/docxodus/node_modules/
 src/neurotic_docx_bench/utils/superdoc/harness-viewer-generation/node_modules/
+src/neurotic_docx_bench/utils/folio/folio
