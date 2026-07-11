@@ -10,9 +10,18 @@
  *     [--manifest corpus/word_based/centralized_mapping.csv] \
  *     [--source-dir corpus/word_based/docx_source] [--status ok] [--limit N] [--tool NAME]
  */
-import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
+import {
+	readFileSync,
+	writeFileSync,
+	mkdirSync,
+	existsSync,
+	mkdtempSync,
+	rmSync,
+} from "node:fs";
 import { createRequire } from "node:module";
 import { join, resolve } from "node:path";
+import { tmpdir } from "node:os";
+import { spawnSync } from "node:child_process";
 import { parse } from "csv-parse/sync";
 import { docxIn, toBytes } from "./docx-utils.mjs";
 import { wireJubarteLosslessAdapter } from "./jubarte-lossless-adapter.mjs";
@@ -361,6 +370,53 @@ export async function loadEngine(
 				if (t) await t.close({}).catch(() => {});
 				if (b) await b.close({}).catch(() => {});
 				for (const f of [bp, np, op]) fs.rmSync(f, { force: true });
+			}
+		};
+	}
+	// ooxmlsdk-redline CLI (Rust). Dist dir holds the release `redline` binary
+	// (also copied as `jubarte` for older examples). Invoked as:
+	//   redline <base> <next> -o <out> --force --quiet
+	if (method === "jubarte-rust" || method === "ooxmlsdk-redline") {
+		const binCandidates = ["redline", "jubarte"].map((n) =>
+			resolve(distPath, n),
+		);
+		const bin = binCandidates.find((p) => existsSync(p));
+		if (!bin) {
+			throw new Error(
+				`jubarte-rust: no redline binary under ${distPath} ` +
+					`(checked ${binCandidates.join(", ")}). ` +
+					`Copy ooxmlsdk-redline target/release/redline there.`,
+			);
+		}
+		let ctr = 0;
+		return async (base, next) => {
+			const dir = mkdtempSync(join(tmpdir(), "jr-"));
+			const i = ctr++;
+			const bp = join(dir, `b${i}.docx`);
+			const np = join(dir, `n${i}.docx`);
+			const op = join(dir, `o${i}.docx`);
+			try {
+				writeFileSync(bp, base);
+				writeFileSync(np, next);
+				const r = spawnSync(
+					bin,
+					[bp, np, "-o", op, "--force", "--quiet"],
+					{ encoding: "utf8" },
+				);
+				if (r.status !== 0) {
+					throw new Error(
+						`jubarte-rust redline failed (exit ${r.status}): ` +
+							`${(r.stderr || r.stdout || "").trim() || "no output"}`,
+					);
+				}
+				if (!existsSync(op)) {
+					throw new Error(
+						`jubarte-rust redline produced no output at ${op}`,
+					);
+				}
+				return new Uint8Array(readFileSync(op));
+			} finally {
+				rmSync(dir, { recursive: true, force: true });
 			}
 		};
 	}
