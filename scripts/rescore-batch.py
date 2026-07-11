@@ -117,11 +117,24 @@ def main(argv: list[str] | None = None) -> int:
         default=None,
         help="skip DOCX render; score this folder of candidate PDFs directly",
     )
+    p.add_argument(
+        "--only",
+        action="append",
+        default=[],
+        metavar="STEM",
+        help=(
+            "rescore only this pair_stem (repeatable). Faster one-pair loop: "
+            "drop candidates/<stem>_redline.docx then "
+            "./rescore.sh --only <stem>"
+        ),
+    )
     args = p.parse_args(argv)
 
     batch = args.batch.resolve()
     if not batch.is_dir():
         raise SystemExit(f"batch dir not found: {batch}")
+
+    only: set[str] = {s.strip().lower() for s in args.only if s and s.strip()}
 
     rescore = batch / "rescore"
     if rescore.exists():
@@ -132,6 +145,21 @@ def main(argv: list[str] | None = None) -> int:
     work = rescore / "work"
 
     n_oracle = _stage_oracles(batch, oracle_dir)
+    # When --only is set, keep just those oracle PDFs so score_folders doesn't
+    # try to pair every staged oracle against a missing candidate.
+    if only:
+        kept = 0
+        for pdf in list(oracle_dir.glob("*.pdf")):
+            # <stem>_redline.pdf
+            stem = pdf.stem
+            if stem.endswith("_redline"):
+                stem = stem[: -len("_redline")]
+            if stem.lower() not in only:
+                pdf.unlink(missing_ok=True)
+            else:
+                kept += 1
+        n_oracle = kept
+        print(f"[rescore] --only filter: {sorted(only)} → {n_oracle} oracle(s)")
     print(f"[rescore] staged {n_oracle} oracle PDFs → {oracle_dir}")
 
     if args.pdf_dir is not None:
@@ -139,14 +167,44 @@ def main(argv: list[str] | None = None) -> int:
     else:
         cand_docx = batch / "candidates"
         docs = list(cand_docx.glob("*.docx")) if cand_docx.is_dir() else []
+        if only:
+            # Only render the requested stems (case-insensitive stem match).
+            filtered: list[Path] = []
+            for d in docs:
+                s = d.stem
+                if s.endswith("_redline"):
+                    s = s[: -len("_redline")]
+                if s.lower() in only:
+                    filtered.append(d)
+            docs = filtered
         if not docs:
             raise SystemExit(
-                f"no DOCX in {cand_docx} — drop <pair_stem>_redline.docx there, "
+                f"no DOCX in {cand_docx} matching filter "
+                f"(only={sorted(only) or 'ALL'}) — drop <pair_stem>_redline.docx there, "
                 "or pass --pdf-dir with already-rendered PDFs"
             )
-        raw_pdf = _render_candidates(cand_docx, work, args.jobs)
+        # Stage filtered DOCX into a temp dir so bench render only sees them.
+        if only:
+            slim = work / "docx_only"
+            if slim.exists():
+                shutil.rmtree(slim)
+            slim.mkdir(parents=True)
+            for d in docs:
+                shutil.copy2(d, slim / d.name)
+            raw_pdf = _render_candidates(slim, work, args.jobs)
+        else:
+            raw_pdf = _render_candidates(cand_docx, work, args.jobs)
 
     n_cand = _normalize_candidate_names(raw_pdf, cand_norm)
+    if only:
+        # Drop any normalized PDFs that slipped through (name variants).
+        for pdf in list(cand_norm.glob("*.pdf")):
+            stem = pdf.stem
+            if stem.endswith("_redline"):
+                stem = stem[: -len("_redline")]
+            if stem.lower() not in only:
+                pdf.unlink(missing_ok=True)
+        n_cand = len(list(cand_norm.glob("*.pdf")))
     print(f"[rescore] normalized {n_cand} candidate PDFs → {cand_norm}")
 
     # Import after path setup so `uv run` from bench root resolves the package.

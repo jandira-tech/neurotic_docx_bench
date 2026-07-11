@@ -1,6 +1,6 @@
 # Benchmark results
 
-Source: `results/bench.jsonl` — **30** row(s) (one per vendor×benchmark×**version**; 10 distinct vendor×version pin(s). docxodus rows with n_docs ≤ 100 are dropped as smoke/partial).
+Source: `results/bench.jsonl` — **40** row(s) (one per vendor×benchmark×**version**; 20 distinct vendor×version pin(s). docxodus rows with n_docs ≤ 100 are dropped as smoke/partial).
 
 Scores are 0–100 (higher = closer to the Microsoft Word oracle). Cross-renderer comparisons (LibreOffice vs Playwright) are **not** directly comparable — only compare within the same benchmark. Different **versions** of the same vendor are kept so you can compare pins (e.g. docxodus 6.4.0 vs 7.0.0).
 
@@ -13,12 +13,22 @@ script_redlines (LibreOffice render vs Word oracle)
 | # | vendor | version | mean | median | n_docs | exact_100 | ≥90 | <50 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | prebaked | — | 100 | 100 | 1 | 1 | 1 | 0 |
-| 2 | jubarte | jubarte-final@717311c03d4f | 73.4761 | 73.1343 | 207 | 25 | 47 | 26 |
-| 3 | jubarte-rust | jubarte-rust@b834d6e49fdb | 61.7832 | 59.2784 | 172 | 2 | 6 | 39 |
-| 4 | docxodus | 7.0.0 | 58.7507 | 55.0306 | 205 | 3 | 7 | 66 |
-| 5 | docxodus | 6.4.0 | 58.7425 | 55.0306 | 205 | 3 | 7 | 66 |
-| 6 | superdoc | 1.19.2 | 57.1871 | 55.5996 | 182 | 2 | 4 | 52 |
-| 7 | folio | 0.3.1 | 55.3092 | 53.7539 | 205 | 0 | 1 | 75 |
+| 2 | jubarte | jubarte-final@6481c2fdbfc0 | 79.2475 | 78.8195 | 207 | 45 | 68 | 9 |
+| 3 | jubarte | jubarte-final@4f56a39e78ef | 79.2153 | 78.8195 | 207 | 45 | 68 | 10 |
+| 4 | jubarte | jubarte-final@755ee30d148c | 79.2153 | 78.8195 | 207 | 45 | 68 | 10 |
+| 5 | jubarte | jubarte-final@a764898a424c | 79.1583 | 78.7802 | 207 | 46 | 69 | 9 |
+| 6 | jubarte | jubarte-final@a56814ce307c | 79.1225 | 78.7802 | 207 | 46 | 68 | 9 |
+| 7 | jubarte | jubarte-final@04dabff1cfaf | 77.824 | 78.6169 | 207 | 34 | 54 | 10 |
+| 8 | jubarte | jubarte-final@ac1fcea44646 | 77.824 | 78.6169 | 207 | 34 | 54 | 10 |
+| 9 | jubarte | jubarte-final@717311c03d4f | 73.4761 | 73.1343 | 207 | 25 | 47 | 26 |
+| 10 | jubarte-rust | jubarte-rust@6233a48e4ac8 | 66.3055 | 64.1705 | 196 | 0 | 21 | 32 |
+| 11 | jubarte | jubarte-final@b4f90acaa85e | 64.6926 | 63.481 | 196 | 0 | 5 | 31 |
+| 12 | jubarte-rust | jubarte-rust@b834d6e49fdb | 61.7832 | 59.2784 | 172 | 2 | 6 | 39 |
+| 13 | docxodus | 7.0.0 | 58.7507 | 55.0306 | 205 | 3 | 7 | 66 |
+| 14 | docxodus | 6.4.0 | 58.7425 | 55.0306 | 205 | 3 | 7 | 66 |
+| 15 | superdoc | 1.19.2 | 57.1871 | 55.5996 | 182 | 2 | 4 | 52 |
+| 16 | folio | 0.3.1 | 55.3092 | 53.7539 | 205 | 0 | 1 | 75 |
+| 17 | redlines | 0.6.1 | 51.284 | 51.7682 | 200 | 0 | 0 | 84 |
 
 ### `accepted_changes`
 
@@ -99,13 +109,23 @@ visual_accepted_changes (Playwright)
 | folio | 0.5.0 | 2026-07-08T20:35:26.466209+00:00 | visual_accepted_changes | 59.671 | 54.9489 | 164 |
 | folio | 0.5.0 | 2026-07-08T20:20:25.117836+00:00 | visual_redlines | 51.5494 | 51.6497 | 164 |
 | folio | 0.5.0 | 2026-07-08T20:14:38.167302+00:00 | visual_rendering | 59.6494 | 55.0967 | 198 |
+| jubarte | jubarte-final@04dabff1cfaf | 2026-07-11T00:05:44.072714+00:00 | script_redlines | 77.824 | 78.6169 | 207 |
+| jubarte | jubarte-final@4f56a39e78ef | 2026-07-11T00:30:15.977616+00:00 | script_redlines | 79.2153 | 78.8195 | 207 |
+| jubarte | jubarte-final@6481c2fdbfc0 | 2026-07-11T00:38:01.460324+00:00 | script_redlines | 79.2475 | 78.8195 | 207 |
 | jubarte | jubarte-final@717311c03d4f | 2026-07-09T00:19:24.490489+00:00 | accepted_changes | 78.1534 | 80.639 | 166 |
 | jubarte | jubarte-final@717311c03d4f | 2026-07-10T00:06:11.537044+00:00 | roundtrip | 94.4868 | 100 | 199 |
 | jubarte | jubarte-final@717311c03d4f | 2026-07-09T00:28:15.005270+00:00 | script_redlines | 73.4761 | 73.1343 | 207 |
+| jubarte | jubarte-final@755ee30d148c | 2026-07-11T00:22:44.799718+00:00 | script_redlines | 79.2153 | 78.8195 | 207 |
+| jubarte | jubarte-final@a56814ce307c | 2026-07-11T01:10:08.212708+00:00 | script_redlines | 79.1225 | 78.7802 | 207 |
+| jubarte | jubarte-final@a764898a424c | 2026-07-11T01:22:46.221863+00:00 | script_redlines | 79.1583 | 78.7802 | 207 |
+| jubarte | jubarte-final@ac1fcea44646 | 2026-07-10T23:54:03.912780+00:00 | script_redlines | 77.824 | 78.6169 | 207 |
+| jubarte | jubarte-final@b4f90acaa85e | 2026-07-11T02:12:18.691781+00:00 | script_redlines | 64.6926 | 63.481 | 196 |
+| jubarte-rust | jubarte-rust@6233a48e4ac8 | 2026-07-11T02:17:46.130799+00:00 | script_redlines | 66.3055 | 64.1705 | 196 |
 | jubarte-rust | jubarte-rust@b834d6e49fdb | 2026-07-09T17:43:37.147567+00:00 | accepted_changes | 63.499 | 54.4541 | 147 |
 | jubarte-rust | jubarte-rust@b834d6e49fdb | 2026-07-10T00:21:53.149640+00:00 | roundtrip | 93.1152 | 100 | 171 |
 | jubarte-rust | jubarte-rust@b834d6e49fdb | 2026-07-09T17:36:04.577266+00:00 | script_redlines | 61.7832 | 59.2784 | 172 |
 | prebaked | — | 2026-07-08T05:53:47.020343+00:00 | script_redlines | 100 | 100 | 1 |
+| redlines | 0.6.1 | 2026-07-10T22:57:16.185376+00:00 | script_redlines | 51.284 | 51.7682 | 200 |
 | superdoc | 1.19.2 | 2026-07-09T15:38:31.872437+00:00 | accepted_changes | 63.818 | 61.1184 | 150 |
 | superdoc | 1.19.2 | 2026-07-09T18:25:24.395459+00:00 | roundtrip | 93.0017 | 100 | 194 |
 | superdoc | 1.19.2 | 2026-07-09T15:34:17.469383+00:00 | script_redlines | 57.1871 | 55.5996 | 182 |

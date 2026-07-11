@@ -125,7 +125,7 @@ runs:
     package: "@stll/folio-react@0.5.0"
     docx: corpus/word_based/docx_source
     render: playwright
-    jobs: 4
+    jobs: 8
     vendor: folio
     benchmarks: [visual_rendering]
     harness: &folio-harness
@@ -140,7 +140,7 @@ runs:
     package: "@stll/folio-react@0.5.0"
     docx: corpus/word_based/docx_redlines_word
     render: playwright
-    jobs: 4
+    jobs: 8
     vendor: folio
     benchmarks: [visual_redlines]
     harness: *folio-harness
@@ -149,7 +149,7 @@ runs:
     package: "@stll/folio-react@0.5.0"
     docx: corpus/word_based/docx_accepted_word
     render: playwright
-    jobs: 4
+    jobs: 8
     vendor: folio
     benchmarks: [visual_accepted_changes]
     harness: *folio-harness
@@ -197,6 +197,16 @@ runs:
     vendor: redlines
     benchmarks: [script_redlines]
 
+  # (4f) jubarte-rust — ooxmlsdk-redline CLI (Rust Word-mode comparer). Install the
+  # release binary as utils/jubarte/jubarte-rust/redline (see ooxmlsdk batch_to_fix).
+  - name: jubarte-rust
+    dist: src/neurotic_docx_bench/utils/jubarte/jubarte-rust
+    generate: "node --import tsx scripts/generate-native-redlines.ts --method=jubarte-rust --dist=src/neurotic_docx_bench/utils/jubarte/jubarte-rust --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=jubarte-rust"
+    render: soffice
+    jobs: 8
+    vendor: jubarte-rust
+    benchmarks: [script_redlines, accepted_changes, roundtrip]
+
 
   # (4b) superdoc via the TypeScript SDK (@superdoc-dev/sdk) — same Document Engine
   # family as the Python SDK, JS runtime. Version-aligned with superdoc-sdk 1.19.2.
@@ -231,7 +241,7 @@ runs:
     package: "superdoc@1.44.1"
     docx: corpus/word_based/docx_source
     render: playwright
-    jobs: 4
+    jobs: 8
     vendor: superdoc
     benchmarks: [visual_rendering]
     harness: &superdoc-harness
@@ -246,7 +256,7 @@ runs:
     package: "superdoc@1.44.1"
     docx: corpus/word_based/docx_redlines_word
     render: playwright
-    jobs: 4
+    jobs: 8
     vendor: superdoc
     benchmarks: [visual_redlines]
     harness: *superdoc-harness
@@ -255,7 +265,7 @@ runs:
     package: "superdoc@1.44.1"
     docx: corpus/word_based/docx_accepted_word
     render: playwright
-    jobs: 4
+    jobs: 8
     vendor: superdoc
     benchmarks: [visual_accepted_changes]
     harness: *superdoc-harness
