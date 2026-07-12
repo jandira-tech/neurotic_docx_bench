@@ -71,6 +71,9 @@ Key modules (`src/neurotic_docx_bench/`):
 | `docx-redline-js` | `@ansonlai/docx-redline-js` OOXML reconciliation | npm `@0.2.0` |
 | `folio` | `@stll/folio-core` `compareDocxVersions`+`FolioDocxReviewer.applyOperations` | npm `@stll/folio-core@0.3.1` |
 | `superdoc` | SuperDoc SDK (Python) Document-Engine diff | pip `superdoc-sdk` |
+| `redlines` | houfu/redlines text diff → `w:ins`/`w:del` DOCX rewrite (`redlines_gen.py`) | pip `redlines` |
+| `superdoc-redlines` | yuch85/superdoc-redlines SuperDoc-headless CLI, extract→align→apply (`superdoc_redlines_gen.py`) | clone `package.json` version |
+| `jubarte-rust` | ooxmlsdk-redline CLI (Rust Word-mode comparer) | binary content-hash |
 | `word-redlines-soffice` | identity sanity (renders the Word redline DOCX) | — |
 
 **Tool versions are pinned** to the reviewed ones (see `bench.yaml`). Do **not** bump to
@@ -164,4 +167,5 @@ the latest line to the baseline.
 
 Scoring core: superdoc-visual-benchmarks. Tools: jubarte (in-repo), JSv4/docxodus,
 JSv4/react-docxodus-viewer, AnsonLai/docx-redline-js, stella/folio, SuperDoc +
-yuch85/superdoc-redlines, balalofernandez/docx-revisions. See README for links + licenses.
+yuch85/superdoc-redlines, houfu/redlines, balalofernandez/docx-revisions. See README for
+links + licenses.
