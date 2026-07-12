@@ -197,6 +197,21 @@ runs:
     vendor: redlines
     benchmarks: [script_redlines]
 
+  # (4e2) superdoc-redlines — yuch85/superdoc-redlines (Apache-2.0), SuperDoc headless
+  # CLI: https://github.com/yuch85/superdoc-redlines. The CLI applies block-ID edits
+  # with track changes (word-level diff per block); it has no base+next compare, so
+  # superdoc_redlines_gen.py supplies a deterministic block alignment and drives the
+  # CLI's own extract→apply pipeline. Requires a fresh clone + `npm install` at repo
+  # root `superdoc-redlines/` (gitignored; see AGENTS.md "Adding a tool").
+  # Version = the clone's package.json version.
+  - name: superdoc-redlines
+    dist: superdoc-redlines
+    generate: "uv run python -m neurotic_docx_bench.superdoc_redlines_gen --out=$RUN_DIR/docx --tool=superdoc-redlines --repo=superdoc-redlines"
+    render: soffice
+    jobs: 8
+    vendor: superdoc-redlines
+    benchmarks: [script_redlines]
+
   # (4f) jubarte-rust — ooxmlsdk-redline CLI (Rust Word-mode comparer). Install the
   # release binary as utils/jubarte/jubarte-rust/redline (see ooxmlsdk batch_to_fix).
   - name: jubarte-rust

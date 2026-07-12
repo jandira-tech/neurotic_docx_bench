@@ -90,3 +90,6 @@ docs/superpowers/plans/
 src/neurotic_docx_bench/utils/docxodus/node_modules/
 src/neurotic_docx_bench/utils/superdoc/harness-viewer-generation/node_modules/
 src/neurotic_docx_bench/utils/folio/folio
+
+# yuch85/superdoc-redlines — fresh clone + npm install at repo root (see AGENTS.md "Adding a tool")
+/superdoc-redlines/

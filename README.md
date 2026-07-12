@@ -163,6 +163,8 @@ Notes that matter when reading scores:
 | **superdoc** | Python `superdoc-sdk` Document Engine | **1.19.2** | Generator |
 | **superdoc** (editor) | npm `superdoc` Playwright harness | **1.44.1** | Editor |
 | **docx-redline-js** | `@ansonlai/docx-redline-js` OOXML reconciliation | **0.2.0** | Generator |
+| **redlines** | [houfu/redlines](https://github.com/houfu/redlines) text differ (`redlines_gen.py` wraps it with DOCX extract/rebuild) | **0.6.1** | Generator (text-level baseline) |
+| **superdoc-redlines** | [yuch85/superdoc-redlines](https://github.com/yuch85/superdoc-redlines) SuperDoc-headless CLI (`superdoc_redlines_gen.py` aligns blocks, the CLI applies word-diffed track changes) | **0.2.0** | Generator |
 
 Pins live in [`bench.yaml`](bench.yaml). Do not bump to `@latest` without re-review — the
 pin is what keeps CI and published rankings reproducible.
@@ -278,6 +280,11 @@ Agent-oriented invariants: [`AGENTS.md`](AGENTS.md). Contributor notes: [`CONTRI
 - **[JSv4/docxodus](https://github.com/JSv4/docxodus)** &
   **[react-docxodus-viewer](https://github.com/JSv4/react-docxodus-viewer)** (MIT).
 - **[AnsonLai/docx-redline-js](https://github.com/AnsonLai/docx-redline-js)** (MIT).
+- **[houfu/redlines](https://github.com/houfu/redlines)** (MIT) — Ang Hou Fu's text-level
+  redliner; the `redlines` runs wrap it as a pure-text baseline generator.
+- **[yuch85/superdoc-redlines](https://github.com/yuch85/superdoc-redlines)** (Apache-2.0) —
+  SuperDoc-headless CLI for block-ID tracked-change edits; the `superdoc-redlines` run
+  drives its extract→apply pipeline with a deterministic block alignment.
 - **[stella/folio](https://github.com/stella/folio)** (Apache-2.0).
 - **[SuperDoc](https://github.com/Harbour-Enterprises/SuperDoc)** (AGPL-3.0) and related
   SuperDoc tooling.
