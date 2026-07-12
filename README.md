@@ -35,12 +35,25 @@ Sorted by median score (0–100, higher is closer to the oracle). Multiple **ver
 
 | Rank | Vendor | Version | Docs | Mean | Median | Perfect (100) | Failures |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | jubarte | jubarte-final@717311c03d4f | 207 | 73.48 | 73.13 | 25 | 0 |
-| 2 | jubarte-rust | jubarte-rust@b834d6e49fdb | 172 | 61.78 | 59.28 | 2 | 35 |
-| 3 | superdoc | 1.19.2 | 182 | 57.19 | 55.60 | 2 | 25 |
-| 4 | docxodus | 7.0.0 | 205 | 58.75 | 55.03 | 3 | 2 |
-| 5 | docxodus | 6.4.0 | 205 | 58.74 | 55.03 | 3 | 2 |
-| 6 | folio | 0.3.1 | 205 | 55.31 | 53.75 | 0 | 2 |
+| 1 | jubarte-rust | jubarte-rust@cdfef70a7156 | 207 | 81.04 | 84.72 | 42 | 0 |
+| 2 | jubarte | jubarte-final@dd16ad8fbcf3 | 207 | 79.44 | 79.95 | 54 | 0 |
+| 3 | jubarte | jubarte-final@6481c2fdbfc0 | 207 | 79.25 | 78.82 | 45 | 0 |
+| 4 | jubarte | jubarte-final@4f56a39e78ef | 207 | 79.22 | 78.82 | 45 | 0 |
+| 5 | jubarte | jubarte-final@755ee30d148c | 207 | 79.22 | 78.82 | 45 | 0 |
+| 6 | jubarte | jubarte-final@a764898a424c | 207 | 79.16 | 78.78 | 46 | 0 |
+| 7 | jubarte | jubarte-final@a56814ce307c | 207 | 79.12 | 78.78 | 46 | 0 |
+| 8 | jubarte | jubarte-final@04dabff1cfaf | 207 | 77.82 | 78.62 | 34 | 0 |
+| 9 | jubarte | jubarte-final@ac1fcea44646 | 207 | 77.82 | 78.62 | 34 | 0 |
+| 10 | jubarte | jubarte-final@717311c03d4f | 207 | 73.48 | 73.13 | 25 | 0 |
+| 11 | jubarte-rust | jubarte-rust@6233a48e4ac8 | 196 | 66.31 | 64.17 | 0 | 0 |
+| 12 | jubarte | jubarte-final@b4f90acaa85e | 196 | 64.69 | 63.48 | 0 | 0 |
+| 13 | jubarte-rust | jubarte-rust@b834d6e49fdb | 172 | 61.78 | 59.28 | 2 | 35 |
+| 14 | superdoc-redlines | 0.2.0 | 192 | 57.63 | 55.90 | 0 | 15 |
+| 15 | superdoc | 1.19.2 | 182 | 57.19 | 55.60 | 2 | 25 |
+| 16 | docxodus | 7.0.0 | 205 | 58.75 | 55.03 | 3 | 2 |
+| 17 | docxodus | 6.4.0 | 205 | 58.74 | 55.03 | 3 | 2 |
+| 18 | folio | 0.3.1 | 205 | 55.31 | 53.75 | 0 | 2 |
+| 19 | redlines | 0.6.1 | 200 | 51.28 | 51.77 | 0 | 7 |
 
 ### accepted_changes — accept all changes, match final doc
 
@@ -48,12 +61,14 @@ Sorted by median score (0–100, higher is closer to the oracle). Multiple **ver
 
 | Rank | Vendor | Version | Docs | Mean | Median | Perfect (100) | Failures |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | jubarte | jubarte-final@717311c03d4f | 166 | 78.15 | 80.64 | 26 | 0 |
-| 2 | docxodus | 6.4.0 | 164 | 69.00 | 77.19 | 14 | 0 |
-| 3 | docxodus | 7.0.0 | 164 | 70.20 | 74.92 | 17 | 0 |
-| 4 | superdoc | 1.19.2 | 150 | 63.82 | 61.12 | 2 | 16 |
-| 5 | folio | 0.3.1 | 164 | 57.91 | 55.61 | 3 | 10 |
-| 6 | jubarte-rust | jubarte-rust@b834d6e49fdb | 147 | 63.50 | 54.45 | 13 | 27 |
+| 1 | jubarte | jubarte-final@dd16ad8fbcf3 | 164 | 86.53 | 94.42 | 63 | 0 |
+| 2 | jubarte-rust | jubarte-rust@cdfef70a7156 | 164 | 84.27 | 88.74 | 54 | 0 |
+| 3 | jubarte | jubarte-final@717311c03d4f | 166 | 78.15 | 80.64 | 26 | 0 |
+| 4 | docxodus | 6.4.0 | 164 | 69.00 | 77.19 | 14 | 0 |
+| 5 | docxodus | 7.0.0 | 164 | 70.20 | 74.92 | 17 | 0 |
+| 6 | superdoc | 1.19.2 | 150 | 63.82 | 61.12 | 2 | 16 |
+| 7 | folio | 0.3.1 | 164 | 57.91 | 55.61 | 3 | 10 |
+| 8 | jubarte-rust | jubarte-rust@b834d6e49fdb | 147 | 63.50 | 54.45 | 13 | 27 |
 
 ### roundtrip — self-diff must not invent noise
 
@@ -61,12 +76,14 @@ Sorted by median score (0–100, higher is closer to the oracle). Multiple **ver
 
 | Rank | Vendor | Version | Docs | Mean | Median | Perfect (100) | Failures |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | folio | 0.3.1 | 198 | 98.07 | 100.00 | 185 | 0 |
-| 2 | docxodus | 7.0.0 | 166 | 97.43 | 100.00 | 148 | 0 |
-| 3 | jubarte | jubarte-final@717311c03d4f | 199 | 94.49 | 100.00 | 149 | 0 |
-| 4 | jubarte-rust | jubarte-rust@b834d6e49fdb | 171 | 93.12 | 100.00 | 120 | 23 |
-| 5 | superdoc | 1.19.2 | 194 | 93.00 | 100.00 | 144 | 3 |
-| 6 | docxodus | 6.4.0 | 198 | 92.24 | 100.00 | 144 | 0 |
+| 1 | jubarte-rust | jubarte-rust@cdfef70a7156 | 166 | 99.17 | 100.00 | 157 | 0 |
+| 2 | folio | 0.3.1 | 198 | 98.07 | 100.00 | 185 | 0 |
+| 3 | jubarte | jubarte-final@dd16ad8fbcf3 | 166 | 97.63 | 100.00 | 152 | 0 |
+| 4 | docxodus | 7.0.0 | 166 | 97.43 | 100.00 | 148 | 0 |
+| 5 | jubarte | jubarte-final@717311c03d4f | 199 | 94.49 | 100.00 | 149 | 0 |
+| 6 | jubarte-rust | jubarte-rust@b834d6e49fdb | 171 | 93.12 | 100.00 | 120 | 23 |
+| 7 | superdoc | 1.19.2 | 194 | 93.00 | 100.00 | 144 | 3 |
+| 8 | docxodus | 6.4.0 | 198 | 92.24 | 100.00 | 144 | 0 |
 
 ### visual_rendering — editor render of plain DOCX
 
