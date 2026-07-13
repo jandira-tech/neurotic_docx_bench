@@ -1,0 +1,13 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "docx-viewer",
+  "compatibility_date": "2025-07-01",
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS"
+  },
+  "main": "src/index.js",
+  "observability": {
+    "enabled": true
+  }
+}

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>DOCX Viewer</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: #f5f5f7;
+    color: #1d1d1f;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+  header {
+    padding: 16px 24px;
+    background: #fff;
+    border-bottom: 1px solid #d2d2d7;
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  header h1 { font-size: 18px; margin: 0; white-space: nowrap; }
+  header .controls { display: flex; gap: 12px; align-items: center; flex: 1; }
+  #filter {
+    flex: 1;
+    min-width: 200px;
+    padding: 8px 12px;
+    font-size: 14px;
+    border: 1px solid #d2d2d7;
+    border-radius: 8px;
+  }
+  #picker {
+    padding: 8px 12px;
+    font-size: 14px;
+    border: 1px solid #d2d2d7;
+    border-radius: 8px;
+    max-width: 360px;
+  }
+  #count { font-size: 13px; color: #6e6e73; white-space: nowrap; }
+  main { flex: 1; display: flex; overflow: hidden; }
+  #viewer { flex: 1; display: flex; }
+  #viewer.placeholder { align-items: center; justify-content: center; }
+  iframe {
+    flex: 1;
+    border: none;
+    width: 100%;
+    height: 100%;
+  }
+  .placeholder {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #86868b;
+    font-size: 15px;
+  }
+  .error {
+    padding: 24px;
+    color: #d20f2b;
+  }
+</style>
+</head>
+<body>
+  <header>
+    <h1>DOCX Viewer</h1>
+    <div class="controls">
+      <input id="filter" type="search" placeholder="Filter documents..." />
+      <select id="picker"></select>
+      <span id="count"></span>
+    </div>
+  </header>
+  <main>
+    <div class="placeholder" id="viewer">Pick a document to view it via Office Online.</div>
+  </main>
+
+  <script>
+    let files = [];
+    const picker = document.getElementById("picker");
+    const filter = document.getElementById("filter");
+    const count = document.getElementById("count");
+    const viewer = document.getElementById("viewer");
+
+    function render(files, selected) {
+      picker.innerHTML = "";
+      for (const f of files) {
+        const opt = document.createElement("option");
+        opt.value = f;
+        opt.textContent = f;
+        picker.appendChild(opt);
+      }
+      count.textContent = files.length + " / " + files.length + " docs";
+      if (files.length === 0) {
+        viewer.className = "placeholder";
+        viewer.textContent = "No matching documents.";
+      } else if (selected) {
+        show(selected);
+      } else {
+        show(files[0]);
+      }
+    }
+
+    function show(path) {
+      const src =
+        "https://view.officeapps.live.com/op/view.aspx?src=" +
+        encodeURIComponent(window.location.origin + "/" + path);
+      viewer.className = "";
+      viewer.innerHTML =
+        '<iframe src="' + src + '" style="border:none;width:100%;height:100%;flex:1"></iframe>';
+    }
+
+    picker.addEventListener("change", () => show(picker.value));
+    filter.addEventListener("input", () => {
+      const q = filter.value.toLowerCase();
+      const filtered = files.filter((f) => f.toLowerCase().includes(q));
+      render(filtered, filtered.length ? filtered[0] : null);
+    });
+
+    // deep-link via ?doc=<path>
+    const params = new URLSearchParams(window.location.search);
+    const initial = params.get("doc");
+
+    fetch("/manifest.json")
+      .then((r) => r.json())
+      .then((data) => {
+        files = data;
+        const start = initial && files.includes(initial) ? initial : files[0];
+        render(files, start);
+      })
+      .catch(() => {
+        viewer.className = "error";
+        viewer.textContent = "Failed to load manifest.json";
+      });
+  </script>
+</body>
+</html>

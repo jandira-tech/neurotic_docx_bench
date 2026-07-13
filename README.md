@@ -13,6 +13,7 @@ looks more like Word’s.
 | **Oracle** | Word’s tracked-change markup, rendered by LibreOffice 26.2.4.2 |
 | **Trend log** | `results/bench.jsonl` (append-only) |
 | **Full tables** | [`RESULTS.md`](RESULTS.md) · [`docs/RESULTS.md`](docs/RESULTS.md) |
+| **Visual report** | `runs/<run>/report.html` — per-run candidate-vs-oracle gallery, worst first |
 | **Speed** | [`docs/SPEED.md`](docs/SPEED.md) |
 
 Refresh the ranking block below after a run:
@@ -36,24 +37,25 @@ Sorted by median score (0–100, higher is closer to the oracle). Multiple **ver
 | Rank | Vendor | Version | Docs | Mean | Median | Perfect (100) | Failures |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | jubarte-rust | jubarte-rust@cdfef70a7156 | 207 | 81.04 | 84.72 | 42 | 0 |
-| 2 | jubarte | jubarte-final@dd16ad8fbcf3 | 207 | 79.44 | 79.95 | 54 | 0 |
-| 3 | jubarte | jubarte-final@6481c2fdbfc0 | 207 | 79.25 | 78.82 | 45 | 0 |
-| 4 | jubarte | jubarte-final@4f56a39e78ef | 207 | 79.22 | 78.82 | 45 | 0 |
-| 5 | jubarte | jubarte-final@755ee30d148c | 207 | 79.22 | 78.82 | 45 | 0 |
-| 6 | jubarte | jubarte-final@a764898a424c | 207 | 79.16 | 78.78 | 46 | 0 |
-| 7 | jubarte | jubarte-final@a56814ce307c | 207 | 79.12 | 78.78 | 46 | 0 |
-| 8 | jubarte | jubarte-final@04dabff1cfaf | 207 | 77.82 | 78.62 | 34 | 0 |
-| 9 | jubarte | jubarte-final@ac1fcea44646 | 207 | 77.82 | 78.62 | 34 | 0 |
-| 10 | jubarte | jubarte-final@717311c03d4f | 207 | 73.48 | 73.13 | 25 | 0 |
-| 11 | jubarte-rust | jubarte-rust@6233a48e4ac8 | 196 | 66.31 | 64.17 | 0 | 0 |
-| 12 | jubarte | jubarte-final@b4f90acaa85e | 196 | 64.69 | 63.48 | 0 | 0 |
-| 13 | jubarte-rust | jubarte-rust@b834d6e49fdb | 172 | 61.78 | 59.28 | 2 | 35 |
-| 14 | superdoc-redlines | 0.2.0 | 192 | 57.63 | 55.90 | 0 | 15 |
-| 15 | superdoc | 1.19.2 | 182 | 57.19 | 55.60 | 2 | 25 |
-| 16 | docxodus | 7.0.0 | 205 | 58.75 | 55.03 | 3 | 2 |
-| 17 | docxodus | 6.4.0 | 205 | 58.74 | 55.03 | 3 | 2 |
-| 18 | folio | 0.3.1 | 205 | 55.31 | 53.75 | 0 | 2 |
-| 19 | redlines | 0.6.1 | 200 | 51.28 | 51.77 | 0 | 7 |
+| 2 | jubarte-rust | jubarte-rust@51a93adf52ca | 207 | 80.24 | 83.20 | 41 | 0 |
+| 3 | jubarte | jubarte-final@dd16ad8fbcf3 | 207 | 79.44 | 79.95 | 54 | 0 |
+| 4 | jubarte | jubarte-final@6481c2fdbfc0 | 207 | 79.25 | 78.82 | 45 | 0 |
+| 5 | jubarte | jubarte-final@4f56a39e78ef | 207 | 79.22 | 78.82 | 45 | 0 |
+| 6 | jubarte | jubarte-final@755ee30d148c | 207 | 79.22 | 78.82 | 45 | 0 |
+| 7 | jubarte | jubarte-final@a764898a424c | 207 | 79.16 | 78.78 | 46 | 0 |
+| 8 | jubarte | jubarte-final@a56814ce307c | 207 | 79.12 | 78.78 | 46 | 0 |
+| 9 | jubarte | jubarte-final@04dabff1cfaf | 207 | 77.82 | 78.62 | 34 | 0 |
+| 10 | jubarte | jubarte-final@ac1fcea44646 | 207 | 77.82 | 78.62 | 34 | 0 |
+| 11 | jubarte | jubarte-final@717311c03d4f | 207 | 73.48 | 73.13 | 25 | 0 |
+| 12 | jubarte-rust | jubarte-rust@6233a48e4ac8 | 196 | 66.31 | 64.17 | 0 | 0 |
+| 13 | jubarte | jubarte-final@b4f90acaa85e | 196 | 64.69 | 63.48 | 0 | 0 |
+| 14 | jubarte-rust | jubarte-rust@b834d6e49fdb | 172 | 61.78 | 59.28 | 2 | 35 |
+| 15 | superdoc-redlines | 0.2.0 | 192 | 57.63 | 55.90 | 0 | 15 |
+| 16 | superdoc | 1.19.2 | 182 | 57.19 | 55.60 | 2 | 25 |
+| 17 | docxodus | 7.0.0 | 205 | 58.75 | 55.03 | 3 | 2 |
+| 18 | docxodus | 6.4.0 | 205 | 58.74 | 55.03 | 3 | 2 |
+| 19 | folio | 0.3.1 | 205 | 55.31 | 53.75 | 0 | 2 |
+| 20 | redlines | 0.6.1 | 200 | 51.28 | 51.77 | 0 | 7 |
 
 ### accepted_changes — accept all changes, match final doc
 

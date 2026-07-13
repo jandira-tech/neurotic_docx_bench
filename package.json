@@ -43,7 +43,8 @@
 	},
 	"devDependencies": {
 		"oxlint": "^1.73.0",
-		"tsx": "^4.19.2",
+		"playwright": "^1.61.1",
+		"tsx": "^4.23.1",
 		"typescript": "^5.7.2",
 		"vitest": "^2.1.0"
 	}
