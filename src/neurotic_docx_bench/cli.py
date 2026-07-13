@@ -45,6 +45,7 @@ from rich.theme import Theme
 from neurotic_docx_bench import pipeline, provenance, stages, tool_updater
 from neurotic_docx_bench.benchmarks import BenchmarkName, BenchmarkOutcome
 from neurotic_docx_bench.config import BenchConfig, RunConfig, environment_config_for_run, load_config
+from neurotic_docx_bench.emit import gallery as gallery_emit
 from neurotic_docx_bench.emit import jsonl as jsonl_emit
 from neurotic_docx_bench.emit import snapshot as snapshot_emit
 from neurotic_docx_bench.gate import gate as run_gate
@@ -758,6 +759,12 @@ def _execute_run(
         per_doc = pipeline.score_folders_full(
             cfg.source_of_truth, report.pdf_dir, run_dir / "score", dpi=use_dpi, jobs=rc.jobs, candidate_tool=rc.name,
         )
+        gallery_path = gallery_emit.write_gallery(
+            run_dir,
+            {k: _get_overall_score(v) for k, v in per_doc.items()},
+            title=f"{rc.name} — script_redlines vs Word oracle",
+        )
+        console.print(f"visual report → {gallery_path}")
         if accept_compare and accepted_oracle_pdf is not None:
             if pattern == "*.docx":
                 _stage("accept-compare")

@@ -1,0 +1,10 @@
+const { createRequire } = require("module");
+const path = require("path");
+const req = createRequire(__filename);
+const mod = req(path.join(__dirname, "..", "dist", "jubarte-final", "lossless.node.cjs"));
+console.log("setSimplifyMarkupStreamDocumentFactory:", typeof mod.setSimplifyMarkupStreamDocumentFactory);
+console.log("MarkupSimplifier:", typeof mod.MarkupSimplifier);
+console.log("MarkupSimplifier.SimplifyMarkup:", mod.MarkupSimplifier ? typeof mod.MarkupSimplifier.SimplifyMarkup : "N/A");
+console.log("WmlDocument:", typeof mod.WmlDocument);
+console.log("wireLosslessNodeAdapter:", typeof mod.wireLosslessNodeAdapter);
+console.log("SimplifyMarkupSettings:", typeof mod.SimplifyMarkupSettings);

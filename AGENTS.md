@@ -41,7 +41,9 @@ Key modules (`src/neurotic_docx_bench/`):
 - `pipeline.py` — match candidate↔oracle redlines by `<base>_<next>` key, rasterise, score.
 - `render/` — `soffice` (LibreOffice, default), `passthrough` (score existing PDFs),
   `playwright` (selector-driven web-editor render), `word` (local-only AppleScript).
-- `emit/` — `jsonl` (append-only trend log), `snapshot`, `markdown`, `html`.
+- `emit/` — `jsonl` (append-only trend log), `snapshot`, `markdown`, `html`, `gallery`
+  (per-run `report.html`: worst-first candidate-vs-oracle page gallery from the
+  persisted `score/` rasters; emitted automatically by `bench run`).
 - `aggregate.py` `gate.py` `tool_updater.py` `provenance.py` `config.py` `cli.py`.
 - `superdoc_gen.py` — the SuperDoc (Python SDK) redline generator.
 - `scripts/generate-native-redlines.ts` — jubarte / docxodus / docx-redline-js generators.
@@ -143,6 +145,79 @@ timed as an in-memory `compare(base,next)→bytes`; SuperDoc's SDK is file-path 
 samples include the full open/save disk cycle. Render-speed uses a fresh browser context
 per call (mirroring `PlaywrightRenderer.to_pdfs`) so a stale readiness flag can't leak
 between docs. CI runs a smaller 20×2 sample and appends.
+
+## Regenerating the Word oracle PDFs (macOS + Word, local-only)
+
+The committed oracle PDFs (`corpus/word_based/pdf_redlines_word/*.pdf`) are Word redline
+markup rendered to PDF. To regenerate them (or render a new set into a sanity directory),
+use the `WordRenderer` (`src/neurotic_docx_bench/render/word.py`) or the batch script.
+
+**Permission-prompt trap — read this first:** macOS shows one AppleScript permission dialog
+per `osascript` process. The `WordRenderer.to_pdfs()` calls `osascript` **once per file**,
+so 232 DOCX files = 232 permission prompts. Never run it for a full batch. Instead, generate
+a **single monolithic AppleScript** that processes all files inside one
+`tell application "Microsoft Word"` block and pipe it to **one** `osascript` call — one prompt
+for the entire batch.
+
+**"Best for printing" export quality:** Word's AppleScript `save as` does not expose the
+"Optimize for: Best for printing / Best for online viewing" radio button. The setting is
+**sticky** — Word reuses whatever you last chose in the GUI Export dialog. So before a batch:
+open any DOCX in Word → File → Export... → PDF → select **"Best for printing"** → Export.
+All subsequent `save as ... file format format PDF` calls inherit that choice.
+
+**Step-by-step batch conversion (one permission prompt):**
+
+```bash
+# 1. Clean Word temp/lock files (~$ prefix) from the source dir — they cause failures:
+rm -f corpus/word_based/docx_redlines_word/~\$*.docx
+
+# 2. Manually export one PDF in Word GUI choosing "Best for printing" (sets sticky pref).
+
+# 3. Generate a single monolithic AppleScript for all DOCX files:
+python3 -c "
+from pathlib import Path
+src = Path('corpus/word_based/docx_redlines_word').resolve()
+out = Path('sanity_word/sanity_pdf_redlines_word').resolve()
+out.mkdir(parents=True, exist_ok=True)
+docs = sorted(src.glob('*.docx'))
+lines = ['tell application \"Microsoft Word\"', '  set displayAlerts to false']
+for docx in docs:
+    pdf = out / (docx.stem + '.pdf')
+    lines += ['  try',
+              f'    open POSIX file \"{docx}\"',
+              '    set theDoc to active document',
+              f'    save as theDoc file name \"{pdf}\" file format format PDF',
+              '    close theDoc saving no',
+              '  on error',
+              '    try',
+              '      close every document saving no',
+              '    end try',
+              '  end try']
+lines += ['  set displayAlerts to true', 'end tell']
+print(chr(10).join(lines))
+" | osascript   # MUST run in foreground so the single permission dialog is visible
+
+# 4. Check for any missing PDFs and retry just those:
+python3 -c "
+from pathlib import Path
+src = Path('corpus/word_based/docx_redlines_word').resolve()
+out = Path('sanity_word/sanity_pdf_redlines_word').resolve()
+missing = [d for d in sorted(src.glob('*.docx')) if not (out / (d.stem + '.pdf')).exists()]
+print(f'Missing: {len(missing)}')
+for m in missing: print(f'  {m.name}')
+"
+```
+
+**Rules to avoid the permission-prompt nightmare:**
+1. **One `osascript` call, all files inside.** Never loop `osascript` per-file.
+2. **Run in foreground** (`osascript ...` directly, not backgrounded). Background mode
+   buries the permission dialog where you can't see/click it.
+3. **Use inline/heredoc AppleScript**, not `.scpt` files. Compiled `.scpt` triggers
+   `-1708` errors on `save as` (see `corpus/word_based/docx_redlines_word/README.md`).
+4. **Delete `~$` temp files first** — Word lock files cause spurious failures.
+5. Some files intermittently fail `save as` with `-1708` ("active document doesn't
+   understand the 'save as' message"). Retry just those individually with a `delay 2`
+   after `open`.
 
 ## Gate (CI)
 
