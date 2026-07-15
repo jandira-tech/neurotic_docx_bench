@@ -1,0 +1,13 @@
+{
+  "name": "jubarte-wasm",
+  "description": "wasm-bindgen bindings for jubarte-rs compare_documents (Word-mode redline)",
+  "version": "0.1.0",
+  "license": "AGPL-3.0-only",
+  "files": [
+    "jubarte_wasm_bg.wasm",
+    "jubarte_wasm.js",
+    "jubarte_wasm.d.ts"
+  ],
+  "main": "jubarte_wasm.js",
+  "types": "jubarte_wasm.d.ts"
+}

@@ -147,6 +147,40 @@ export async function loadEngine(
 			return out instanceof Uint8Array ? out : new Uint8Array(out);
 		};
 	}
+	// jubarte-rs → wasm-bindgen package (wasm-pack + wasm-opt -O3).
+	// Dist dir is the crate root (contains pkg/jubarte_wasm.js) or pkg/ itself.
+	if (
+		method === "jubarte-wasm" ||
+		method === "jubarte-rs-wasm" ||
+		method === "jubarte-rust-wasm"
+	) {
+		const req = createRequire(import.meta.url);
+		const candidates = [
+			resolve(distPath, "pkg/jubarte_wasm.js"),
+			resolve(distPath, "jubarte_wasm.js"),
+			resolve(
+				distPath,
+				"../jubarte-wasm/pkg/jubarte_wasm.js",
+			),
+		];
+		const modPath = candidates.find((p) => existsSync(p));
+		if (!modPath) {
+			throw new Error(
+				`jubarte-wasm: no pkg at ${candidates[0]}. ` +
+					`Run: cd utils/jubarte/jubarte-wasm && wasm-pack build --target nodejs --release`,
+			);
+		}
+		const mod: any = req(modPath);
+		if (typeof mod.initPanicHook === "function") mod.initPanicHook();
+		return async (base, next) => {
+			const out = mod.compareDocuments(base, next, "jubarte-wasm");
+			const bytes = out instanceof Uint8Array ? out : new Uint8Array(out);
+			if (bytes.length === 0) {
+				throw new Error("jubarte-wasm compareDocuments returned empty output");
+			}
+			return bytes;
+		};
+	}
 	if (method === "docx-redline-js") {
 		// @ansonlai/docx-redline-js (MIT) reconciles TEXT edits into w:ins/w:del on OOXML.
 		// Best practices: use extractReplacementNodesFromOoxml for result.oxml,

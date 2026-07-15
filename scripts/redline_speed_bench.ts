@@ -111,6 +111,10 @@ const rustInprocDist = resolve(
 	ROOT,
 	arg("--rust-inproc-dist", defaultRustInprocDist()),
 );
+const wasmDist = resolve(
+	ROOT,
+	arg("--wasm-dist", defaultJubarteWasmDist()),
+);
 const fixturesDirArg = arg("--fixtures", "");
 const fixturesDirs = fixturesDirArg
 	? [resolve(ROOT, fixturesDirArg)]
@@ -369,6 +373,14 @@ export function engineMethodId(method: string): string {
 	) {
 		return "jubarte-rust-inproc";
 	}
+	// Before generic "rust" match — jubarte-rust-wasm would otherwise collapse.
+	if (
+		method === "jubarte-wasm" ||
+		method === "jubarte-rs-wasm" ||
+		method === "jubarte-rust-wasm"
+	) {
+		return "jubarte-wasm";
+	}
 	if (method.includes("native") && method.includes("jubarte")) {
 		return "jubarte-native";
 	}
@@ -382,6 +394,22 @@ export function engineMethodId(method: string): string {
 	return method;
 }
 
+export function defaultJubarteWasmDist(root: string = ROOT): string {
+	const candidates = [
+		join(root, "src/neurotic_docx_bench/utils/jubarte/jubarte-wasm"),
+		join(root, "src/neurotic_docx_bench/utils/jubarte/jubarte-wasm/pkg"),
+	];
+	for (const c of candidates) {
+		if (
+			existsSync(join(c, "pkg/jubarte_wasm.js")) ||
+			existsSync(join(c, "jubarte_wasm.js"))
+		) {
+			return c;
+		}
+	}
+	return candidates[0]!;
+}
+
 export function distFor(
 	method: string,
 	opts: {
@@ -390,6 +418,7 @@ export function distFor(
 		csharpDist: string;
 		csharpInprocDist: string;
 		rustInprocDist: string;
+		wasmDist?: string;
 	},
 ): string {
 	const id = engineMethodId(method);
@@ -397,6 +426,7 @@ export function distFor(
 	if (id === "jubarte-rust-inproc") return opts.rustInprocDist;
 	if (id === "docxodus-csharp") return opts.csharpDist;
 	if (id === "docxodus-csharp-inproc") return opts.csharpInprocDist;
+	if (id === "jubarte-wasm") return opts.wasmDist ?? defaultJubarteWasmDist();
 	return opts.jubarteDist;
 }
 
@@ -771,6 +801,7 @@ async function main() {
 	console.log(`  csharp-dist=${csharpDist}`);
 	console.log(`  csharp-inproc-dist=${csharpInprocDist}`);
 	console.log(`  rust-inproc-dist=${rustInprocDist}`);
+	console.log(`  wasm-dist=${wasmDist}`);
 	console.log(`  out=${outDir}\n`);
 
 	const pairsMeta = {
@@ -804,6 +835,7 @@ async function main() {
 		csharpDist,
 		csharpInprocDist,
 		rustInprocDist,
+		wasmDist,
 	};
 
 	for (const method of methods) {
@@ -946,7 +978,9 @@ async function main() {
 						? "rust"
 						: engId === "docxodus"
 							? "dotnet-wasm"
-							: "node",
+							: engId === "jubarte-wasm"
+								? "rust-wasm"
+								: "node",
 			run_ts: runTs,
 			seed,
 			fixture_count: fixtures.length,
@@ -1078,6 +1112,9 @@ async function main() {
 	);
 	md.push(
 		"- **docxodus:** npm WASM package (`compareDocuments`) — Mono/.NET WASM in-process after one-time `initialize()`.",
+	);
+	md.push(
+		"- **jubarte-wasm:** jubarte-rs via **wasm-pack** + **wasm-opt -O3** (`wasm32-unknown-unknown` + wasm-bindgen). Same `compare_documents` as native Rust, hosted in V8 WASM — fair peer of docxodus WASM.",
 	);
 	md.push(
 		"- **jubarte-native / jubarte-lossless:** in-memory Node Uint8Array compare when included.",

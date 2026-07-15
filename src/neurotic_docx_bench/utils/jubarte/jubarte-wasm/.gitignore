@@ -1,0 +1,2 @@
+/target
+# Keep pkg/ for local speed benches (regenerate with wasm-pack if missing).

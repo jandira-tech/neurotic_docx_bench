@@ -1,6 +1,97 @@
 {
-  "runTs": "2026-07-15T20:28:07.290Z",
+  "runTs": "2026-07-15T20:34:02.566Z",
   "rows": [
+    {
+      "schema": 1,
+      "kind": "redline_speed_bench",
+      "tool": "docxodus-csharp-inproc",
+      "engine": "docxodus-csharp-inproc",
+      "dist": "/Users/arthrod/temp/T/neurotic_docx_bench/src/neurotic_docx_bench/utils/docxodus/docxodus-csharp-inproc/bin/Release/net8.0",
+      "runtime": "dotnet",
+      "run_ts": "2026-07-15T20:34:02.566Z",
+      "seed": 42,
+      "fixture_count": 1000,
+      "fixture_target": 1000,
+      "pair_count": 5000,
+      "reps": 1,
+      "warmup": 50,
+      "init_ms": 26.605,
+      "wall_ms": 198832.687,
+      "failures": 120,
+      "unit": "ms_per_redline",
+      "n": 4880,
+      "mean": 36.764,
+      "median": 11.454,
+      "p90": 97.335,
+      "p95": 138.636,
+      "p99": 294.71,
+      "min": 1.892,
+      "max": 6972.806,
+      "std": 121.943,
+      "total_ms": 179409.96,
+      "throughput_per_s": 27.2,
+      "mean_out_bytes": 43915,
+      "profile": "docxodus-csharp-inproc.profile.json.gz",
+      "profile_tool": "samply",
+      "top_cpu": null,
+      "failure_samples": [
+        {
+          "key": "complex_style_attr__docx_lots_of_comments_addition_redline__400a8796__r0",
+          "error": "docxodus-csharp-inproc: 'rId12' ID conflicts with the ID of an existing relationship for the specified source."
+        },
+        {
+          "key": "contract_review_suggesting_mixed_edits_customer_satisfaction_survey_q4_suggesting_insertions_word_redline__9bdf32ba__file_196__r0",
+          "error": "docxodus-csharp-inproc: Document has no w:body element."
+        },
+        {
+          "key": "document_100_ultimate_demo_id_paraid_overflow_docx_lots_of_comments_addition_redline_addition_v_removal_redline__docx_lots_of_comments_addition_docx_lots_of_comments_redline__r0",
+          "error": "docxodus-csharp-inproc: 'rId12' ID conflicts with the ID of an existing relationship for the specified source."
+        },
+        {
+          "key": "docx_lots_of_comments_addition_redline_addition_v_removal__sample_document_word_repair_of_our_output_iter2_word_repaired__r0",
+          "error": "docxodus-csharp-inproc: 'rId7' ID conflicts with the ID of an existing relationship for the specified source."
+        },
+        {
+          "key": "docx_lots_of_comments_addition_removal__7b52de2b__I_am_sharing_Microsoft_Word_vs_Google_Docs_Comprehensive_Proof_with_you__r0",
+          "error": "docxodus-csharp-inproc: 'rId11' ID conflicts with the ID of an existing relationship for the specified source."
+        }
+      ]
+    },
+    {
+      "schema": 1,
+      "kind": "redline_speed_bench",
+      "tool": "jubarte-rust",
+      "engine": "jubarte-rust",
+      "dist": "/Users/arthrod/temp/T/neurotic_docx_bench/src/neurotic_docx_bench/utils/jubarte/jubarte-rust",
+      "runtime": "rust",
+      "run_ts": "2026-07-15T20:34:02.566Z",
+      "seed": 42,
+      "fixture_count": 1000,
+      "fixture_target": 1000,
+      "pair_count": 5000,
+      "reps": 1,
+      "warmup": 50,
+      "init_ms": 0.109,
+      "wall_ms": 193856.424,
+      "failures": 0,
+      "unit": "ms_per_redline",
+      "n": 5000,
+      "mean": 38.769,
+      "median": 14.368,
+      "p90": 113.795,
+      "p95": 135.64,
+      "p99": 337.122,
+      "min": 6.523,
+      "max": 863.399,
+      "std": 63.069,
+      "total_ms": 193846.527,
+      "throughput_per_s": 25.8,
+      "mean_out_bytes": 52124,
+      "profile": "jubarte-rust.profile.json.gz",
+      "profile_tool": "samply",
+      "top_cpu": null,
+      "failure_samples": []
+    },
     {
       "schema": 1,
       "kind": "redline_speed_bench",
@@ -8,39 +99,175 @@
       "engine": "jubarte-rust-inproc",
       "dist": "/Users/arthrod/temp/T/neurotic_docx_bench/src/neurotic_docx_bench/utils/jubarte/jubarte-rust",
       "runtime": "rust",
-      "run_ts": "2026-07-15T20:28:07.290Z",
+      "run_ts": "2026-07-15T20:34:02.566Z",
       "seed": 42,
       "fixture_count": 1000,
       "fixture_target": 1000,
       "pair_count": 5000,
       "reps": 1,
       "warmup": 50,
-      "init_ms": 7.827,
-      "wall_ms": 203827.876,
+      "init_ms": 7.694,
+      "wall_ms": 200046.784,
       "failures": 0,
       "unit": "ms_per_redline",
       "n": 5000,
-      "mean": 40.764,
-      "median": 9.688,
-      "p90": 125.72,
-      "p95": 157.506,
-      "p99": 494.063,
-      "min": 1.863,
-      "max": 2985.734,
-      "std": 93.009,
-      "total_ms": 203820.718,
-      "throughput_per_s": 24.5,
+      "mean": 40.008,
+      "median": 9.34,
+      "p90": 122.712,
+      "p95": 152.681,
+      "p99": 401.608,
+      "min": 1.777,
+      "max": 1962.115,
+      "std": 90.23,
+      "total_ms": 200040.086,
+      "throughput_per_s": 25,
       "mean_out_bytes": 52160,
       "profile": "jubarte-rust-inproc.profile.json.gz",
       "profile_tool": "samply",
       "top_cpu": null,
       "failure_samples": []
+    },
+    {
+      "schema": 1,
+      "kind": "redline_speed_bench",
+      "tool": "jubarte-lossless",
+      "engine": "jubarte-lossless",
+      "dist": "/Users/arthrod/temp/T/neurotic_docx_bench/dist/jubarte-final",
+      "runtime": "node",
+      "run_ts": "2026-07-15T20:34:02.566Z",
+      "seed": 42,
+      "fixture_count": 1000,
+      "fixture_target": 1000,
+      "pair_count": 5000,
+      "reps": 1,
+      "warmup": 50,
+      "init_ms": 49.846,
+      "wall_ms": 1318852.359,
+      "failures": 3,
+      "unit": "ms_per_redline",
+      "n": 4997,
+      "mean": 263.83,
+      "median": 73.478,
+      "p90": 629.118,
+      "p95": 899.38,
+      "p99": 3212.764,
+      "min": 16.172,
+      "max": 8668.115,
+      "std": 580.094,
+      "total_ms": 1318360.73,
+      "throughput_per_s": 3.8,
+      "mean_out_bytes": 68688,
+      "profile": "jubarte-lossless.cpuprofile",
+      "profile_tool": "v8-inspector",
+      "top_cpu": [
+        {
+          "name": "d",
+          "url": "/Users/arthrod/temp/T/neurotic_docx_bench/dist/jubarte-final/JsonToWmlConverter-0yN_Vmc4.cjs",
+          "line": 8,
+          "hits": 114706,
+          "pct": 12.46
+        },
+        {
+          "name": "dflt",
+          "url": "/Users/arthrod/temp/T/neurotic_docx_bench/node_modules/fflate/lib/node.cjs",
+          "line": 667,
+          "hits": 85312,
+          "pct": 9.27
+        },
+        {
+          "name": "(garbage collector)",
+          "url": "",
+          "line": 0,
+          "hits": 65708,
+          "pct": 7.14
+        },
+        {
+          "name": "se",
+          "url": "/Users/arthrod/temp/T/neurotic_docx_bench/dist/jubarte-final/JsonToWmlConverter-0yN_Vmc4.cjs",
+          "line": 8,
+          "hits": 50184,
+          "pct": 5.45
+        },
+        {
+          "name": "e",
+          "url": "/Users/arthrod/temp/T/neurotic_docx_bench/dist/jubarte-final/escape-Bu279cQ0.cjs",
+          "line": 8,
+          "hits": 36647,
+          "pct": 3.98
+        },
+        {
+          "name": "Ie",
+          "url": "/Users/arthrod/temp/T/neurotic_docx_bench/dist/jubarte-final/lossless.node.cjs",
+          "line": 8,
+          "hits": 33782,
+          "pct": 3.67
+        },
+        {
+          "name": "inflt",
+          "url": "/Users/arthrod/temp/T/neurotic_docx_bench/node_modules/fflate/lib/node.cjs",
+          "line": 258,
+          "hits": 32823,
+          "pct": 3.57
+        },
+        {
+          "name": "(anonymous)",
+          "url": "/Users/arthrod/temp/T/neurotic_docx_bench/dist/jubarte-final/lossless.node.cjs",
+          "line": 258,
+          "hits": 32133,
+          "pct": 3.49
+        },
+        {
+          "name": "get",
+          "url": "/Users/arthrod/temp/T/neurotic_docx_bench/dist/jubarte-final/JsonToWmlConverter-0yN_Vmc4.cjs",
+          "line": 8,
+          "hits": 24868,
+          "pct": 2.7
+        },
+        {
+          "name": "u",
+          "url": "/Users/arthrod/temp/T/neurotic_docx_bench/dist/jubarte-final/JsonToWmlConverter-0yN_Vmc4.cjs",
+          "line": 8,
+          "hits": 24436,
+          "pct": 2.65
+        },
+        {
+          "name": "#encode",
+          "url": "node:internal/encoding",
+          "line": 344,
+          "hits": 21300,
+          "pct": 2.31
+        },
+        {
+          "name": "r",
+          "url": "/Users/arthrod/temp/T/neurotic_docx_bench/dist/jubarte-final/JsonToWmlConverter-0yN_Vmc4.cjs",
+          "line": 8,
+          "hits": 20703,
+          "pct": 2.25
+        }
+      ],
+      "failure_samples": [
+        {
+          "key": "file_192__file_159__r0",
+          "error": "jubarte lossless DocumentComparer.CompareDocuments returned empty output (comparison failed internally — see jubarte's own error, not surfaced here)"
+        },
+        {
+          "key": "file_78__word_tolerated_misplaced_uipriority_word_tolerated_orphan_comment_redline__r2",
+          "error": "jubarte lossless DocumentComparer.CompareDocuments returned empty output (comparison failed internally — see jubarte's own error, not surfaced here)"
+        },
+        {
+          "key": "comments_complex_style_attr_word_redline__38631f23__file_159__r3",
+          "error": "jubarte lossless DocumentComparer.CompareDocuments returned empty output (comparison failed internally — see jubarte's own error, not surfaced here)"
+        }
+      ]
     }
   ],
   "fixtures": 1000,
   "pairs": 5000,
   "seed": 42,
   "methods": [
-    "jubarte-rust-inproc"
+    "docxodus-csharp-inproc",
+    "jubarte-rust",
+    "jubarte-rust-inproc",
+    "jubarte-lossless"
   ]
 }
