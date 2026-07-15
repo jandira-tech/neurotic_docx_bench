@@ -93,3 +93,10 @@ src/neurotic_docx_bench/utils/folio/folio
 
 # yuch85/superdoc-redlines — fresh clone + npm install at repo root (see AGENTS.md "Adding a tool")
 /superdoc-redlines/
+jubarte-rs-probe/
+jubarte-lossless/
+
+# Local jubarte-rust probe binaries (install from jubarte-rs release; do not commit)
+src/neurotic_docx_bench/utils/jubarte/jubarte-rust/jubarte
+src/neurotic_docx_bench/utils/jubarte/jubarte-rust/redline
+src/neurotic_docx_bench/utils/jubarte/jubarte-rust/ENGINE_*.txt
