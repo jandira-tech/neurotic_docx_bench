@@ -14,7 +14,18 @@ looks more like Word’s.
 | **Trend log** | `results/bench.jsonl` (append-only) |
 | **Full tables** | [`RESULTS.md`](RESULTS.md) · [`docs/RESULTS.md`](docs/RESULTS.md) |
 | **Visual report** | `runs/<run>/report.html` — per-run candidate-vs-oracle gallery, worst first |
-| **Speed** | [`docs/SPEED.md`](docs/SPEED.md) |
+| **Speed** | [`docs/SPEED.md`](docs/SPEED.md) · **warm win report** [`results/redline_speed_bench/profile_5k/report.md`](results/redline_speed_bench/profile_5k/report.md) |
+
+### Speed headline — **WE WON** (warm algorithm race)
+
+On **1000 unique fixtures → 5000 pairs** (seed 42), long-lived process (no CLI cold-start):
+
+| rank | engine | median ms / redline | n | failures |
+| ---: | --- | ---: | ---: | ---: |
+| **1** | **jubarte-rust** (warm `compare_documents`) | **9.69** | 5000 | **0** |
+| 2 | Docxodus C# (warm `DocxDiffOps.Compare`) | 11.83 | 4880 | 120 |
+
+Same pair plan, same machine class of measurement, samply profiles under `results/redline_speed_bench/profile_5k/cpu/`. Methodology and caveats: [Speed methodology](#speed-methodology) below and the [profile report](results/redline_speed_bench/profile_5k/report.md).
 
 Refresh the ranking block below after a run:
 
@@ -273,12 +284,43 @@ Promote a good run: `uv run bench accept-scores <tool>`.
 
 ## Speed
 
-Generation and render speed are measured separately into `results/speed.jsonl`. See
-[`docs/SPEED.md`](docs/SPEED.md).
+Generation and render speed are measured separately into `results/speed.jsonl`. Full
+notes: [`docs/SPEED.md`](docs/SPEED.md). **Thesis-grade warm results:**
+[`results/redline_speed_bench/profile_5k/report.md`](results/redline_speed_bench/profile_5k/report.md)
+(**WE WON** — jubarte-rust warm median 9.69 ms vs Docxodus C# warm 11.83 ms on 5k pairs).
+
+### Speed methodology
+
+Two different questions — do not mix them when citing numbers:
+
+| mode | what you measure | tools | fair for |
+|---|---|---|---|
+| **Warm in-process** | algorithm + package I/O inside one long-lived process | `jubarte-rust-inproc`, `docxodus-csharp-inproc` | **algorithm race / thesis claims** |
+| **CLI per redline** | process spawn + runtime init + compare | `jubarte-rust`, `docxodus-csharp` | shipping a CLI |
+| **WASM** | Mono/.NET WASM after one-time `initialize()` | npm `docxodus` | browser/WASM cost |
+| **Microbench** | small N×reps, often in-memory Node | `scripts/speed-bench.ts` | quick relative Node engines |
+
+**Large-N warm protocol** (`scripts/redline_speed_bench.ts`):
+
+1. **Fixtures:** up to 1000 unique `.docx` by content hash from corpus source / accepted / redline dirs → `fixtures_bytes/`.
+2. **Pairs:** 5000 deterministic base→next pairs (every fixture is base ≥ once per round; Mulberry32 **seed=42**). Plan saved as `pairs.json`.
+3. **Warmup:** N untimed compares (default 50), excluded from stats.
+4. **Timed samples:** each pair once (or `--reps`); `performance.now()` around one compare; **failures excluded** from percentiles.
+5. **Workers:** stdin protocol `COMPARE base next out` so Rust (`jubarte-worker` / `compare_documents`) and C# (`docxodus-inproc` / `DocxDiffOps.Compare`) share the same shape.
+6. **Profiler:** [samply](https://github.com/mstange/samply) 1000 Hz over the timed loop for native workers; optional V8 `.cpuprofile` for Node lossless.
+7. **Outputs:** `results/speed.jsonl` (`kind: speed_redlines`), per-run `report.md` / `cpu/*.profile.json.gz`. Fold into RESULTS with `python3 scripts/export-results-md.py`.
+
+**Caveat:** Docxodus C# **CLI** can look ~20× slower than warm C#; that gap is process cold-start, not the comparer. Always lead with **warm** rows when claiming “faster engine.”
 
 ```bash
+# Microbench (Node / SuperDoc)
 node --import tsx scripts/speed-bench.ts --pairs 30 --reps 3 --out results/speed.jsonl
 uv run python -m neurotic_docx_bench.superdoc_speed --pairs 30 --reps 3 --out results/speed.jsonl
+
+# Large-N warm race (1000 fixtures → 5000 pairs)
+bun run redline-speed-bench:warm
+# or full thesis pack:
+bun run redline-speed-bench:thesis
 ```
 
 ---
