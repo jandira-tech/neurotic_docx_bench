@@ -1,0 +1,99 @@
+{
+  "runTs": "2026-07-15T21:08:04.857Z",
+  "rows": [
+    {
+      "schema": 1,
+      "kind": "redline_speed_bench",
+      "tool": "jubarte-wasm",
+      "engine": "jubarte-wasm",
+      "dist": "/Users/arthrod/temp/T/neurotic_docx_bench/src/neurotic_docx_bench/utils/jubarte/jubarte-wasm",
+      "runtime": "rust-wasm",
+      "run_ts": "2026-07-15T21:08:04.857Z",
+      "seed": 42,
+      "fixture_count": 200,
+      "fixture_target": 200,
+      "pair_count": 500,
+      "reps": 1,
+      "warmup": 30,
+      "init_ms": 17.777,
+      "wall_ms": 56375.341,
+      "failures": 0,
+      "unit": "ms_per_redline",
+      "n": 500,
+      "mean": 112.746,
+      "median": 14.439,
+      "p90": 388.091,
+      "p95": 556.769,
+      "p99": 1105.931,
+      "min": 3.081,
+      "max": 3028.036,
+      "std": 283.802,
+      "total_ms": 56372.783,
+      "throughput_per_s": 8.9,
+      "mean_out_bytes": 44437,
+      "profile": null,
+      "profile_tool": null,
+      "top_cpu": null,
+      "failure_samples": []
+    },
+    {
+      "schema": 1,
+      "kind": "redline_speed_bench",
+      "tool": "docxodus",
+      "engine": "docxodus",
+      "dist": "/Users/arthrod/temp/T/neurotic_docx_bench/dist/jubarte-final",
+      "runtime": "dotnet-wasm",
+      "run_ts": "2026-07-15T21:08:04.857Z",
+      "seed": 42,
+      "fixture_count": 200,
+      "fixture_target": 200,
+      "pair_count": 500,
+      "reps": 1,
+      "warmup": 30,
+      "init_ms": 413.088,
+      "wall_ms": 303734.13,
+      "failures": 4,
+      "unit": "ms_per_redline",
+      "n": 496,
+      "mean": 607.385,
+      "median": 148.753,
+      "p90": 1697.548,
+      "p95": 3212.297,
+      "p99": 7017.889,
+      "min": 50.706,
+      "max": 9085.83,
+      "std": 1264.854,
+      "total_ms": 301263.13,
+      "throughput_per_s": 1.6,
+      "mean_out_bytes": 78610,
+      "profile": null,
+      "profile_tool": null,
+      "top_cpu": null,
+      "failure_samples": [
+        {
+          "key": "tiff_image__docx_lots_of_comments_addition_removal_redline__r0",
+          "error": "Comparison failed - empty result"
+        },
+        {
+          "key": "red_heading_demo_id_paraid_overflow__tiff_image__r1",
+          "error": "Comparison failed - empty result"
+        },
+        {
+          "key": "tiff_image__justify_alignment_demo_id_paraid_overflow__r1",
+          "error": "Comparison failed - empty result"
+        },
+        {
+          "key": "footnotes_sample__potpourritest__r2",
+          "error": "Comparison failed - empty result"
+        }
+      ]
+    }
+  ],
+  "fixtures": 200,
+  "pairs": 500,
+  "seed": 42,
+  "methods": [
+    "jubarte-wasm",
+    "docxodus"
+  ]
+}
