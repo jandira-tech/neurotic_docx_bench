@@ -14,24 +14,16 @@ looks more like Word’s.
 | **Trend log** | `results/bench.jsonl` (append-only) |
 | **Full tables** | [`RESULTS.md`](RESULTS.md) · [`docs/RESULTS.md`](docs/RESULTS.md) |
 | **Visual report** | `runs/<run>/report.html` — per-run candidate-vs-oracle gallery, worst first |
-| **Speed** | [`docs/SPEED.md`](docs/SPEED.md) · **warm win report** [`results/redline_speed_bench/profile_5k/report.md`](results/redline_speed_bench/profile_5k/report.md) |
+| **Speed** | [`docs/SPEED.md`](docs/SPEED.md) · large-N runs under `results/redline_speed_bench/` |
 
-### Speed headline — **WE WON** (warm algorithm race)
-
-On **1000 unique fixtures → 5000 pairs** (seed 42), long-lived process (no CLI cold-start):
-
-| rank | engine | median ms / redline | n | failures |
-| ---: | --- | ---: | ---: | ---: |
-| **1** | **jubarte-rust** (warm `compare_documents`) | **9.69** | 5000 | **0** |
-| 2 | Docxodus C# (warm `DocxDiffOps.Compare`) | 11.83 | 4880 | 120 |
-
-Same pair plan, same machine class of measurement, samply profiles under `results/redline_speed_bench/profile_5k/cpu/`. Methodology and caveats: [Speed methodology](#speed-methodology) below and the [profile report](results/redline_speed_bench/profile_5k/report.md).
-
-Refresh the ranking block below after a run:
+Rankings below cover **fidelity** (0–100 vs Word oracle) and **speed** (ms per redline) as
+separate benchmarks. Jubarte families (**final**, **final-lossless**, **rust**) list only the
+**best and worst** version pin per fidelity table so mid-range pins do not clutter the board;
+other vendors keep each published pin. Pool results until a full re-run is complete, then
+regenerate:
 
 ```bash
 python3 scripts/export-results-md.py          # RESULTS.md + docs/RESULTS.md
-python3 scripts/export-results-md.py --output docs/RESULTS.md
 bun run update-readme-ranking                 # tables between RANKING markers
 ```
 
@@ -43,73 +35,60 @@ bun run update-readme-ranking                 # tables between RANKING markers
 <!-- RANKING-START -->
 ### script_redlines — redline markup vs Word
 
-Sorted by median score (0–100, higher is closer to the oracle). Multiple **versions** of the same vendor are listed separately.
+Sorted by median score (0–100, higher is closer to the oracle). Jubarte families (**final**, **final-lossless**, **rust**) show only the **best** and **worst** version pin for this benchmark; other vendors list each pin.
 
 | Rank | Vendor | Version | Docs | Mean | Median | Perfect (100) | Failures |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | jubarte | jubarte-final@8b2e9bf2522a | 164 | 83.42 | 88.65 | 53 | 0 |
-| 2 | jubarte | jubarte-final@2f41358dbc2c | 164 | 83.40 | 88.65 | 53 | 0 |
-| 3 | jubarte | jubarte-final@d7599c91e4d5 | 164 | 83.40 | 88.65 | 53 | 0 |
-| 4 | jubarte | jubarte-final@dbc8db9ef551 | 164 | 83.40 | 88.65 | 53 | 0 |
-| 5 | jubarte-rust | jubarte-rust@8e77f696f091 | 164 | 83.77 | 88.52 | 44 | 0 |
-| 6 | jubarte-rust | jubarte-rust@cdfef70a7156 | 207 | 81.04 | 84.72 | 42 | 0 |
-| 7 | jubarte-rust | jubarte-rust@51a93adf52ca | 207 | 80.24 | 83.20 | 41 | 0 |
-| 8 | jubarte | jubarte-final@dd16ad8fbcf3 | 207 | 79.44 | 79.95 | 54 | 0 |
-| 9 | jubarte | jubarte-final@8b23cdc7eca8 | 207 | 79.27 | 79.95 | 54 | 0 |
-| 10 | jubarte | jubarte-final@6481c2fdbfc0 | 207 | 79.25 | 78.82 | 45 | 0 |
-| 11 | jubarte | jubarte-final@4f56a39e78ef | 207 | 79.22 | 78.82 | 45 | 0 |
-| 12 | jubarte | jubarte-final@755ee30d148c | 207 | 79.22 | 78.82 | 45 | 0 |
-| 13 | jubarte | jubarte-final@a764898a424c | 207 | 79.16 | 78.78 | 46 | 0 |
-| 14 | jubarte | jubarte-final@a56814ce307c | 207 | 79.12 | 78.78 | 46 | 0 |
-| 15 | jubarte | jubarte-final@04dabff1cfaf | 207 | 77.82 | 78.62 | 34 | 0 |
-| 16 | jubarte | jubarte-final@ac1fcea44646 | 207 | 77.82 | 78.62 | 34 | 0 |
-| 17 | jubarte | jubarte-final@717311c03d4f | 207 | 73.48 | 73.13 | 25 | 0 |
-| 18 | sanity-word | — | 230 | 68.17 | 70.48 | 0 | 0 |
-| 19 | jubarte-rust | jubarte-rust@6233a48e4ac8 | 196 | 66.31 | 64.17 | 0 | 0 |
-| 20 | jubarte | jubarte-final@b4f90acaa85e | 196 | 64.69 | 63.48 | 0 | 0 |
-| 21 | jubarte-rust | jubarte-rust@b834d6e49fdb | 172 | 61.78 | 59.28 | 2 | 35 |
-| 22 | superdoc-redlines | 0.2.0 | 192 | 57.63 | 55.90 | 0 | 15 |
-| 23 | superdoc | 1.19.2 | 182 | 57.19 | 55.60 | 2 | 25 |
-| 24 | ooxmlsdk | — | 232 | 55.19 | 55.24 | 0 | 0 |
-| 25 | docxodus | 7.0.0 | 205 | 58.75 | 55.03 | 3 | 2 |
-| 26 | docxodus | 6.4.0 | 205 | 58.74 | 55.03 | 3 | 2 |
-| 27 | folio | 0.3.1 | 205 | 55.31 | 53.75 | 0 | 2 |
-| 28 | redlines | 0.6.1 | 200 | 51.28 | 51.77 | 0 | 7 |
+| 1 | jubarte-rust | jubarte-rust@3838e1a2c0ae (best) | 164 | 85.26 | 89.47 | 48 | 0 |
+| 2 | jubarte (lossless) | jubarte-final@8b2e9bf2522a (best) | 164 | 83.42 | 88.65 | 53 | 0 |
+| 3 | sanity-word | — | 230 | 68.17 | 70.48 | 0 | 0 |
+| 4 | jubarte (lossless) | jubarte-final@b4f90acaa85e (worst) | 196 | 64.69 | 63.48 | 0 | 0 |
+| 5 | jubarte-rust | jubarte-rust@b834d6e49fdb (worst) | 172 | 61.78 | 59.28 | 2 | 35 |
+| 6 | superdoc-redlines | 0.2.0 | 192 | 57.63 | 55.90 | 0 | 15 |
+| 7 | superdoc | 1.19.2 | 182 | 57.19 | 55.60 | 2 | 25 |
+| 8 | ooxmlsdk | — | 232 | 55.19 | 55.24 | 0 | 0 |
+| 9 | docxodus | 7.0.0 | 205 | 58.75 | 55.03 | 3 | 2 |
+| 10 | docxodus | 6.4.0 | 205 | 58.74 | 55.03 | 3 | 2 |
+| 11 | folio | 0.3.1 | 205 | 55.31 | 53.75 | 0 | 2 |
+| 12 | redlines | 0.6.1 | 200 | 51.28 | 51.77 | 0 | 7 |
+| 13 | jubarte (final) | jubarte-final@8b23cdc7eca8 (worst) | 207 | 48.31 | 49.46 | 0 | 0 |
+| 14 | jubarte (final) | jubarte-final@dd16ad8fbcf3 (best) | 207 | 48.31 | 49.46 | 0 | 0 |
 
 ### accepted_changes — accept all changes, match final doc
 
-Sorted by median score (0–100, higher is closer to the oracle). Multiple **versions** of the same vendor are listed separately.
+Sorted by median score (0–100, higher is closer to the oracle). Jubarte families (**final**, **final-lossless**, **rust**) show only the **best** and **worst** version pin for this benchmark; other vendors list each pin.
 
 | Rank | Vendor | Version | Docs | Mean | Median | Perfect (100) | Failures |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | jubarte | jubarte-final@dd16ad8fbcf3 | 164 | 86.53 | 94.42 | 63 | 0 |
-| 2 | jubarte-rust | jubarte-rust@cdfef70a7156 | 164 | 84.27 | 88.74 | 54 | 0 |
-| 3 | jubarte-rust | jubarte-rust@8e77f696f091 | 164 | 83.76 | 87.97 | 52 | 0 |
-| 4 | jubarte | jubarte-final@717311c03d4f | 166 | 78.15 | 80.64 | 26 | 0 |
-| 5 | docxodus | 6.4.0 | 164 | 69.00 | 77.19 | 14 | 0 |
-| 6 | docxodus | 7.0.0 | 164 | 70.20 | 74.92 | 17 | 0 |
-| 7 | superdoc | 1.19.2 | 150 | 63.82 | 61.12 | 2 | 16 |
-| 8 | folio | 0.3.1 | 164 | 57.91 | 55.61 | 3 | 10 |
-| 9 | jubarte-rust | jubarte-rust@b834d6e49fdb | 147 | 63.50 | 54.45 | 13 | 27 |
+| 1 | jubarte (lossless) | jubarte-final@dd16ad8fbcf3 (best) | 164 | 86.53 | 94.42 | 63 | 0 |
+| 2 | jubarte-rust | jubarte-rust@cdfef70a7156 (best) | 164 | 84.27 | 88.74 | 54 | 0 |
+| 3 | jubarte (lossless) | jubarte-final@717311c03d4f (worst) | 166 | 78.15 | 80.64 | 26 | 0 |
+| 4 | docxodus | 6.4.0 | 164 | 69.00 | 77.19 | 14 | 0 |
+| 5 | docxodus | 7.0.0 | 164 | 70.20 | 74.92 | 17 | 0 |
+| 6 | superdoc | 1.19.2 | 150 | 63.82 | 61.12 | 2 | 16 |
+| 7 | folio | 0.3.1 | 164 | 57.91 | 55.61 | 3 | 10 |
+| 8 | jubarte-rust | jubarte-rust@b834d6e49fdb (worst) | 147 | 63.50 | 54.45 | 13 | 27 |
+| 9 | jubarte (final) | jubarte-final@dd16ad8fbcf3 | 164 | 48.52 | 50.51 | 0 | 0 |
 
 ### roundtrip — self-diff must not invent noise
 
-Sorted by median score (0–100, higher is closer to the oracle). Multiple **versions** of the same vendor are listed separately.
+Sorted by median score (0–100, higher is closer to the oracle). Jubarte families (**final**, **final-lossless**, **rust**) show only the **best** and **worst** version pin for this benchmark; other vendors list each pin.
 
 | Rank | Vendor | Version | Docs | Mean | Median | Perfect (100) | Failures |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | jubarte-rust | jubarte-rust@cdfef70a7156 | 166 | 99.17 | 100.00 | 157 | 0 |
+| 1 | jubarte-rust | jubarte-rust@cdfef70a7156 (best) | 166 | 99.17 | 100.00 | 157 | 0 |
 | 2 | folio | 0.3.1 | 198 | 98.07 | 100.00 | 185 | 0 |
-| 3 | jubarte | jubarte-final@dd16ad8fbcf3 | 166 | 97.63 | 100.00 | 152 | 0 |
+| 3 | jubarte (lossless) | jubarte-final@dd16ad8fbcf3 (best) | 166 | 97.63 | 100.00 | 152 | 0 |
 | 4 | docxodus | 7.0.0 | 166 | 97.43 | 100.00 | 148 | 0 |
-| 5 | jubarte | jubarte-final@717311c03d4f | 199 | 94.49 | 100.00 | 149 | 0 |
-| 6 | jubarte-rust | jubarte-rust@b834d6e49fdb | 171 | 93.12 | 100.00 | 120 | 23 |
+| 5 | jubarte (lossless) | jubarte-final@717311c03d4f (worst) | 199 | 94.49 | 100.00 | 149 | 0 |
+| 6 | jubarte-rust | jubarte-rust@b834d6e49fdb (worst) | 171 | 93.12 | 100.00 | 120 | 23 |
 | 7 | superdoc | 1.19.2 | 194 | 93.00 | 100.00 | 144 | 3 |
 | 8 | docxodus | 6.4.0 | 198 | 92.24 | 100.00 | 144 | 0 |
+| 9 | jubarte (final) | jubarte-final@dd16ad8fbcf3 | 166 | 52.63 | 53.23 | 0 | 0 |
 
 ### visual_rendering — editor render of plain DOCX
 
-Sorted by median score (0–100, higher is closer to the oracle). Multiple **versions** of the same vendor are listed separately.
+Sorted by median score (0–100, higher is closer to the oracle). Jubarte families (**final**, **final-lossless**, **rust**) show only the **best** and **worst** version pin for this benchmark; other vendors list each pin.
 
 | Rank | Vendor | Version | Docs | Mean | Median | Perfect (100) | Failures |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -120,7 +99,7 @@ Sorted by median score (0–100, higher is closer to the oracle). Multiple **ver
 
 ### visual_redlines — editor render of redline DOCX
 
-Sorted by median score (0–100, higher is closer to the oracle). Multiple **versions** of the same vendor are listed separately.
+Sorted by median score (0–100, higher is closer to the oracle). Jubarte families (**final**, **final-lossless**, **rust**) show only the **best** and **worst** version pin for this benchmark; other vendors list each pin.
 
 | Rank | Vendor | Version | Docs | Mean | Median | Perfect (100) | Failures |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -131,13 +110,44 @@ Sorted by median score (0–100, higher is closer to the oracle). Multiple **ver
 
 ### visual_accepted_changes — editor render of accepted DOCX
 
-Sorted by median score (0–100, higher is closer to the oracle). Multiple **versions** of the same vendor are listed separately.
+Sorted by median score (0–100, higher is closer to the oracle). Jubarte families (**final**, **final-lossless**, **rust**) show only the **best** and **worst** version pin for this benchmark; other vendors list each pin.
 
 | Rank | Vendor | Version | Docs | Mean | Median | Perfect (100) | Failures |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | docxodus | 6.4.0 | 152 | 62.32 | 62.76 | 0 | 0 |
 | 2 | superdoc | 1.44.1 | 165 | 59.34 | 60.97 | 0 | 0 |
 | 3 | folio | 0.5.0 | 164 | 59.67 | 54.95 | 0 | 0 |
+
+### speed_redlines — generation time (ms per redline)
+
+Sorted by median **ms per redline** (lower is faster). Large-N warm rows (`*-inproc`) measure algorithm cost in a long-lived process; CLI rows include process spawn. Prefer warm rows for engine comparisons. Methodology: [Speed methodology](#speed-methodology). Raw log: `results/speed.jsonl`.
+
+**Large-N** (`kind: speed_redlines` — often 1000 fixtures → 5000 pairs):
+
+| Rank | Tool | Runtime | Fixtures | Pairs | Median ms | Mean ms | p95 | /s | n | Failures |
+| --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| 1 | jubarte-native | node | 199 | 1000 | 6.33 | 21.54 | 59.88 | 46.4 | 1000 | 0 |
+| 2 | jubarte-wasm | rust-wasm | 200 | 500 | 6.80 | 58.18 | 293.15 | 17.2 | 500 | 0 |
+| 3 | jubarte-rust-inproc | rust | 1000 | 5000 | 9.34 | 40.01 | 152.68 | 25.0 | 5000 | 0 |
+| 4 | docxodus-csharp-inproc | dotnet | 1000 | 5000 | 9.43 | 29.90 | 110.73 | 33.4 | 4880 | 120 |
+| 5 | jubarte-rust | rust | 1000 | 5000 | 14.37 | 38.77 | 135.64 | 25.8 | 5000 | 0 |
+| 6 | jubarte-lossless | node | 1000 | 5000 | 73.48 | 263.83 | 899.38 | 3.8 | 4997 | 3 |
+| 7 | docxodus | dotnet-wasm | 200 | 500 | 148.75 | 607.38 | 3212.30 | 1.6 | 496 | 4 |
+| 8 | docxodus-csharp | dotnet | 50 | 50 | 208.39 | 441.65 | 911.87 | 2.3 | 50 | 0 |
+
+**Microbench** (`kind: speed` — typically ~30–40 pairs × 3 reps):
+
+| Rank | Tool | Runtime | Median ms | Mean ms | p95 | /s | n | Failures |
+| --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| 1 | docx-redline-js | node | 1.45 | 2.79 | 6.91 | 358.4 | 90 | 0 |
+| 2 | jubarte-third-docxodus | node | 2.36 | 6.03 | 33.76 | 165.8 | 90 | 0 |
+| 3 | jubarte-second-docxodus | node | 2.39 | 5.89 | 31.35 | 169.8 | 90 | 0 |
+| 4 | jubarte-lossless | node | 2.46 | 6.60 | 37.58 | 151.6 | 90 | 0 |
+| 5 | jubarte-second-native | node | 4.46 | 7.49 | 31.96 | 133.6 | 90 | 0 |
+| 6 | jubarte-third-native | node | 4.47 | 7.55 | 33.21 | 132.4 | 90 | 0 |
+| 7 | jubarte-native | node | 4.50 | 7.67 | 33.27 | 130.4 | 90 | 0 |
+| 8 | superdoc | python | 40.89 | 94.19 | 619.93 | 10.6 | 90 | 0 |
+| 9 | docxodus | node | 75.27 | 236.57 | 1499.68 | 4.2 | 90 | 0 |
 <!-- RANKING-END -->
 
 ---
@@ -282,45 +292,36 @@ Promote a good run: `uv run bench accept-scores <tool>`.
 
 ---
 
-## Speed
+## Speed methodology
 
-Generation and render speed are measured separately into `results/speed.jsonl`. Full
-notes: [`docs/SPEED.md`](docs/SPEED.md). **Thesis-grade warm results:**
-[`results/redline_speed_bench/profile_5k/report.md`](results/redline_speed_bench/profile_5k/report.md)
-(**WE WON** — jubarte-rust warm median 9.69 ms vs Docxodus C# warm 11.83 ms on 5k pairs).
+Generation and render speed are a **benchmark** (see the **speed_redlines** table in the
+ranking block above), not a separate marketing section. Data: `results/speed.jsonl` and
+`results/redline_speed_bench/`. Detail: [`docs/SPEED.md`](docs/SPEED.md).
 
-### Speed methodology
+Do not mix measurement modes when comparing tools:
 
-Two different questions — do not mix them when citing numbers:
-
-| mode | what you measure | tools | fair for |
+| mode | what you measure | example tools | use when |
 |---|---|---|---|
-| **Warm in-process** | algorithm + package I/O inside one long-lived process | `jubarte-rust-inproc`, `docxodus-csharp-inproc` | **algorithm race / thesis claims** |
-| **CLI per redline** | process spawn + runtime init + compare | `jubarte-rust`, `docxodus-csharp` | shipping a CLI |
-| **WASM** | Mono/.NET WASM after one-time `initialize()` | npm `docxodus` | browser/WASM cost |
-| **Microbench** | small N×reps, often in-memory Node | `scripts/speed-bench.ts` | quick relative Node engines |
+| **Warm in-process** | compare work inside one long-lived process | `jubarte-rust-inproc`, `docxodus-csharp-inproc` | algorithm comparison |
+| **CLI per redline** | process spawn + runtime init + compare | `jubarte-rust`, `docxodus-csharp` | end-to-end CLI cost |
+| **WASM** | in-process after one-time load | `jubarte-wasm` (Rust/wasm-bindgen), npm `docxodus` (.NET/Mono) | browser/WASM cost |
+| **Microbench** | small N × reps (often in-memory Node) | `scripts/speed-bench.ts` | quick relative Node engines |
 
-**Large-N warm protocol** (`scripts/redline_speed_bench.ts`):
+**Large-N protocol** (`scripts/redline_speed_bench.ts`):
 
-1. **Fixtures:** up to 1000 unique `.docx` by content hash from corpus source / accepted / redline dirs → `fixtures_bytes/`.
-2. **Pairs:** 5000 deterministic base→next pairs (every fixture is base ≥ once per round; Mulberry32 **seed=42**). Plan saved as `pairs.json`.
-3. **Warmup:** N untimed compares (default 50), excluded from stats.
-4. **Timed samples:** each pair once (or `--reps`); `performance.now()` around one compare; **failures excluded** from percentiles.
-5. **Workers:** stdin protocol `COMPARE base next out` so Rust (`jubarte-worker` / `compare_documents`) and C# (`docxodus-inproc` / `DocxDiffOps.Compare`) share the same shape.
-6. **Profiler:** [samply](https://github.com/mstange/samply) 1000 Hz over the timed loop for native workers; optional V8 `.cpuprofile` for Node lossless.
-7. **Outputs:** `results/speed.jsonl` (`kind: speed_redlines`), per-run `report.md` / `cpu/*.profile.json.gz`. Fold into RESULTS with `python3 scripts/export-results-md.py`.
-
-**Caveat:** Docxodus C# **CLI** can look ~20× slower than warm C#; that gap is process cold-start, not the comparer. Always lead with **warm** rows when claiming “faster engine.”
+1. **Fixtures:** up to 1000 unique `.docx` by content hash from corpus dirs → `fixtures_bytes/`.
+2. **Pairs:** 5000 deterministic base→next pairs (Mulberry32 seed 42 by default); plan in `pairs.json`.
+3. **Warmup** untimed; then each pair timed with `performance.now()`; failures excluded from stats.
+4. **Warm workers** share a stdin `COMPARE` protocol so native engines are measured the same way.
+5. Optional **samply** (1000 Hz) profiles over the timed loop for native workers.
+6. Append to `results/speed.jsonl` (`kind: speed_redlines`); fold into README/RESULTS via
+   `bun run update-readme-ranking` / `python3 scripts/export-results-md.py`.
 
 ```bash
-# Microbench (Node / SuperDoc)
 node --import tsx scripts/speed-bench.ts --pairs 30 --reps 3 --out results/speed.jsonl
 uv run python -m neurotic_docx_bench.superdoc_speed --pairs 30 --reps 3 --out results/speed.jsonl
-
-# Large-N warm race (1000 fixtures → 5000 pairs)
-bun run redline-speed-bench:warm
-# or full thesis pack:
-bun run redline-speed-bench:thesis
+bun run redline-speed-bench:warm    # large-N warm engines
+bun run redline-speed-bench:thesis  # warm + CLI + WASM pack
 ```
 
 ---

@@ -1,0 +1,45 @@
+# Standalone workspace so patching rdocx-opc does not touch jubarte-rs itself.
+[workspace]
+
+[package]
+name = "jubarte-wasm"
+version = "0.1.0"
+edition = "2024"
+publish = false
+description = "wasm-bindgen bindings for jubarte-rs compare_documents (Word-mode redline)"
+license = "AGPL-3.0-only"
+
+[lib]
+name = "jubarte_wasm"
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+jubarte = { path = "../../../../../../ooxmlsdk/jubarte-rs", default-features = false }
+wasm-bindgen = "0.2"
+js-sys = "0.3"
+console_error_panic_hook = { version = "0.1", optional = true }
+
+[features]
+default = ["console-panic"]
+console-panic = ["dep:console_error_panic_hook"]
+
+# Force pure-Rust deflate-only zip for the whole graph (rdocx-opc defaults pull zstd-sys,
+# which needs a wasm-capable C toolchain Apple clang does not provide).
+[patch.crates-io]
+rdocx-opc = { path = "patches/rdocx-opc" }
+
+# Runtime-speed profile for wasm-pack: -O3 (not -Oz size). Requires binaryen on PATH.
+[package.metadata.wasm-pack.profile.release]
+wasm-opt = [
+  "-O3",
+  "--enable-bulk-memory",
+  "--enable-nontrapping-float-to-int",
+  "--enable-sign-ext",
+]
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+strip = "symbols"
+panic = "abort"

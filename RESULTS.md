@@ -183,7 +183,7 @@ visual_accepted_changes (Playwright)
 
 ## Redline generation speed
 
-Source: `results/speed.jsonl` (+ `results/redline_speed_bench/**/summary.json` when present). **16** generation row(s) after dedupe (one per tool×kind; prefer larger `n`, then lower median). Unit: **ms per redline** (lower = faster). See [`docs/SPEED.md`](docs/SPEED.md) for methodology.
+Source: `results/speed.jsonl` (+ `results/redline_speed_bench/**/summary.json` when present). **17** generation row(s) after dedupe (one per tool×kind; prefer larger `n`, then lower median). Unit: **ms per redline** (lower = faster). See [`docs/SPEED.md`](docs/SPEED.md) for methodology.
 
 **Fairness (read before citing):**
 
@@ -214,12 +214,13 @@ Large fixture pools (often **1000 unique** docs → **5000 pairs**), including n
 | # | tool | runtime | fixtures | pairs | median ms | mean ms | p95 | p99 | /s | n | fail | profile |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | jubarte-native | node | 199 | 1000 | 6.333 | 21.535 | 59.876 | 220.005 | 46.4 | 1000 | 0 | — |
-| 2 | docxodus-csharp-inproc | dotnet | 1000 | 5000 | 9.431 | 29.903 | 110.731 | 234.991 | 33.4 | 4880 | 120 | v8-inspector |
-| 3 | jubarte-rust-inproc | rust | 1000 | 5000 | 9.688 | 40.764 | 157.506 | 494.063 | 24.5 | 5000 | 0 | samply |
-| 4 | jubarte-rust | node | 199 | 1000 | 11.111 | 74.143 | 319.572 | 534.866 | 13.5 | 1000 | 0 | — |
-| 5 | jubarte-lossless | node | 199 | 1000 | 26.172 | 167.638 | 685.796 | 1287.268 | 6 | 1000 | 0 | — |
-| 6 | docxodus | dotnet-wasm | 50 | 50 | 120.503 | 1010.66 | 2744.111 | 4212.309 | 1 | 50 | 0 | — |
-| 7 | docxodus-csharp | dotnet | 50 | 50 | 208.388 | 441.646 | 911.873 | 1154.008 | 2.3 | 50 | 0 | — |
+| 2 | jubarte-wasm | rust-wasm | 200 | 500 | 6.8 | 58.183 | 293.152 | 638.406 | 17.2 | 500 | 0 | — |
+| 3 | jubarte-rust-inproc | rust | 1000 | 5000 | 9.34 | 40.008 | 152.681 | 401.608 | 25 | 5000 | 0 | samply |
+| 4 | docxodus-csharp-inproc | dotnet | 1000 | 5000 | 9.431 | 29.903 | 110.731 | 234.991 | 33.4 | 4880 | 120 | v8-inspector |
+| 5 | jubarte-rust | rust | 1000 | 5000 | 14.368 | 38.769 | 135.64 | 337.122 | 25.8 | 5000 | 0 | samply |
+| 6 | jubarte-lossless | node | 1000 | 5000 | 73.478 | 263.83 | 899.38 | 3212.764 | 3.8 | 4997 | 3 | v8-inspector |
+| 7 | docxodus | dotnet-wasm | 200 | 500 | 148.753 | 607.385 | 3212.297 | 7017.889 | 1.6 | 496 | 4 | — |
+| 8 | docxodus-csharp | dotnet | 50 | 50 | 208.388 | 441.646 | 911.873 | 1154.008 | 2.3 | 50 | 0 | — |
 
 ### Speed methodology notes
 
