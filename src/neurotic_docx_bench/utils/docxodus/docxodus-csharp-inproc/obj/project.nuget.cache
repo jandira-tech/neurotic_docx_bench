@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "4G7iYoG35w8=",
+  "success": true,
+  "projectFilePath": "/Users/arthrod/temp/T/neurotic_docx_bench/src/neurotic_docx_bench/utils/docxodus/docxodus-csharp-inproc/DocxodusInproc.csproj",
+  "expectedPackageFiles": [
+    "/Users/arthrod/.nuget/packages/microsoft.netcore.app.ref/8.0.23/microsoft.netcore.app.ref.8.0.23.nupkg.sha512",
+    "/Users/arthrod/.nuget/packages/microsoft.aspnetcore.app.ref/8.0.23/microsoft.aspnetcore.app.ref.8.0.23.nupkg.sha512",
+    "/Users/arthrod/.nuget/packages/microsoft.netcore.app.host.osx-arm64/8.0.23/microsoft.netcore.app.host.osx-arm64.8.0.23.nupkg.sha512"
+  ],
+  "logs": []
+}

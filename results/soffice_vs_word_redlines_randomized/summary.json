@@ -1,0 +1,65 @@
+{
+  "oracle_dir": "corpus/no_comments_pdf_was_generated_by_word/pdf_redlines_randomized",
+  "candidate_dir": "corpus/no_comments_pdf_was_generated_by_word/except_this_pdf_soffice_redlines_randomized",
+  "renderer_candidate": "LibreOffice 26.2.4.2 (soffice)",
+  "renderer_oracle": "Microsoft Word (macOS, PDF export)",
+  "dpi": 144,
+  "n_matched": 196,
+  "n_scored": 196,
+  "n_oracle_only": 0,
+  "n_candidate_only": 0,
+  "oracle_only": [],
+  "candidate_only": [],
+  "n_page_count_mismatch": 6,
+  "mean": 66.1939,
+  "median": 67.5274,
+  "stdev": 11.8983,
+  "min": 41.089,
+  "max": 82.0369,
+  "count_ge_99_99": 0,
+  "count_ge_90": 0,
+  "count_ge_75": 64,
+  "count_lt_50": 33,
+  "worst_10": [
+    {
+      "pair": "file_154_file_155",
+      "overall_score": 41.089
+    },
+    {
+      "pair": "file_195_file_196",
+      "overall_score": 41.624
+    },
+    {
+      "pair": "file_8_file_9",
+      "overall_score": 41.8116
+    },
+    {
+      "pair": "file_114_file_115",
+      "overall_score": 41.9512
+    },
+    {
+      "pair": "file_99_file_100",
+      "overall_score": 41.9533
+    },
+    {
+      "pair": "file_184_file_185",
+      "overall_score": 41.9671
+    },
+    {
+      "pair": "file_73_file_74",
+      "overall_score": 42.1035
+    },
+    {
+      "pair": "file_26_file_27",
+      "overall_score": 42.1349
+    },
+    {
+      "pair": "file_5_file_6",
+      "overall_score": 42.1478
+    },
+    {
+      "pair": "file_52_file_53",
+      "overall_score": 42.5809
+    }
+  ]
+}
