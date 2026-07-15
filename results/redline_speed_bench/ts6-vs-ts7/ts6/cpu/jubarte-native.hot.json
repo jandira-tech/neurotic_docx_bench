@@ -1,0 +1,216 @@
+{
+  "totalHits": 18645,
+  "durationMs": 23045.75,
+  "top": [
+    {
+      "name": "(anonymous)",
+      "url": "/Users/arthrod/temp/T/neurotic_docx_bench/dist/jubarte-final-ts6/reader.node-dzAQfyCl.cjs",
+      "line": 19,
+      "hits": 4008,
+      "pct": 21.5
+    },
+    {
+      "name": "(garbage collector)",
+      "url": "",
+      "line": 0,
+      "hits": 2385,
+      "pct": 12.79
+    },
+    {
+      "name": "reg",
+      "url": "/Users/arthrod/temp/T/neurotic_docx_bench/node_modules/@xmldom/xmldom/lib/grammar.js",
+      "line": 69,
+      "hits": 1053,
+      "pct": 5.65
+    },
+    {
+      "name": "ke",
+      "url": "/Users/arthrod/temp/T/neurotic_docx_bench/dist/jubarte-final-ts6/reader.node-dzAQfyCl.cjs",
+      "line": 19,
+      "hits": 955,
+      "pct": 5.12
+    },
+    {
+      "name": "(idle)",
+      "url": "",
+      "line": 0,
+      "hits": 817,
+      "pct": 4.38
+    },
+    {
+      "name": "s",
+      "url": "/Users/arthrod/temp/T/neurotic_docx_bench/dist/jubarte-final-ts6/office-xml-reader-KSIj9d5O.cjs",
+      "line": 9,
+      "hits": 510,
+      "pct": 2.74
+    },
+    {
+      "name": "validateAndExtract",
+      "url": "/Users/arthrod/temp/T/neurotic_docx_bench/node_modules/@xmldom/xmldom/lib/dom.js",
+      "line": 153,
+      "hits": 437,
+      "pct": 2.34
+    },
+    {
+      "name": "parse",
+      "url": "/Users/arthrod/temp/T/neurotic_docx_bench/node_modules/@xmldom/xmldom/lib/sax.js",
+      "line": 49,
+      "hits": 384,
+      "pct": 2.06
+    },
+    {
+      "name": "inflate_fast",
+      "url": "/Users/arthrod/temp/T/neurotic_docx_bench/node_modules/pako/lib/zlib/inffast.js",
+      "line": 61,
+      "hits": 364,
+      "pct": 1.95
+    },
+    {
+      "name": "parseElementStartPart",
+      "url": "/Users/arthrod/temp/T/neurotic_docx_bench/node_modules/@xmldom/xmldom/lib/sax.js",
+      "line": 263,
+      "hits": 262,
+      "pct": 1.41
+    },
+    {
+      "name": "i",
+      "url": "/Users/arthrod/temp/T/neurotic_docx_bench/dist/jubarte-final-ts6/xml-builder-shim-DGngb1Ow.cjs",
+      "line": 8,
+      "hits": 262,
+      "pct": 1.41
+    },
+    {
+      "name": "p",
+      "url": "/Users/arthrod/temp/T/neurotic_docx_bench/dist/jubarte-final-ts6/xml-builder-shim-DGngb1Ow.cjs",
+      "line": 9,
+      "hits": 218,
+      "pct": 1.17
+    },
+    {
+      "name": "addAttribute",
+      "url": "/Users/arthrod/temp/T/neurotic_docx_bench/node_modules/@xmldom/xmldom/lib/sax.js",
+      "line": 269,
+      "hits": 216,
+      "pct": 1.16
+    },
+    {
+      "name": "longest_match",
+      "url": "/Users/arthrod/temp/T/neurotic_docx_bench/node_modules/pako/lib/zlib/deflate.js",
+      "line": 231,
+      "hits": 183,
+      "pct": 0.98
+    },
+    {
+      "name": "a",
+      "url": "/Users/arthrod/temp/T/neurotic_docx_bench/dist/jubarte-final-ts6/theme-D7v__68C.cjs",
+      "line": 8,
+      "hits": 177,
+      "pct": 0.95
+    },
+    {
+      "name": "(anonymous)",
+      "url": "/Users/arthrod/temp/T/neurotic_docx_bench/dist/jubarte-final-ts6/node-BuN2PeBW.cjs",
+      "line": 413,
+      "hits": 176,
+      "pct": 0.94
+    },
+    {
+      "name": "(anonymous)",
+      "url": "/Users/arthrod/temp/T/neurotic_docx_bench/dist/jubarte-final-ts6/docx-reader-CslJOW2s.cjs",
+      "line": 9,
+      "hits": 167,
+      "pct": 0.9
+    },
+    {
+      "name": "(anonymous)",
+      "url": "/Users/arthrod/temp/T/neurotic_docx_bench/dist/jubarte-final-ts6/office-xml-reader-KSIj9d5O.cjs",
+      "line": 9,
+      "hits": 164,
+      "pct": 0.88
+    },
+    {
+      "name": "deflate_slow",
+      "url": "/Users/arthrod/temp/T/neurotic_docx_bench/node_modules/pako/lib/zlib/deflate.js",
+      "line": 726,
+      "hits": 152,
+      "pct": 0.82
+    },
+    {
+      "name": "startElement",
+      "url": "/Users/arthrod/temp/T/neurotic_docx_bench/node_modules/@xmldom/xmldom/lib/dom-parser.js",
+      "line": 370,
+      "hits": 144,
+      "pct": 0.77
+    },
+    {
+      "name": "addValue",
+      "url": "/Users/arthrod/temp/T/neurotic_docx_bench/node_modules/@xmldom/xmldom/lib/sax.js",
+      "line": 892,
+      "hits": 140,
+      "pct": 0.75
+    },
+    {
+      "name": "(program)",
+      "url": "",
+      "line": 0,
+      "hits": 139,
+      "pct": 0.75
+    },
+    {
+      "name": "appendElement",
+      "url": "/Users/arthrod/temp/T/neurotic_docx_bench/node_modules/@xmldom/xmldom/lib/sax.js",
+      "line": 467,
+      "hits": 136,
+      "pct": 0.73
+    },
+    {
+      "name": "walkDOM",
+      "url": "/Users/arthrod/temp/T/neurotic_docx_bench/node_modules/@xmldom/xmldom/lib/dom.js",
+      "line": 1622,
+      "hits": 129,
+      "pct": 0.69
+    },
+    {
+      "name": "eo",
+      "url": "/Users/arthrod/temp/T/neurotic_docx_bench/dist/jubarte-final-ts6/docx-reader-CslJOW2s.cjs",
+      "line": 27,
+      "hits": 126,
+      "pct": 0.68
+    },
+    {
+      "name": "build_tree",
+      "url": "/Users/arthrod/temp/T/neurotic_docx_bench/node_modules/pako/lib/zlib/trees.js",
+      "line": 677,
+      "hits": 116,
+      "pct": 0.62
+    },
+    {
+      "name": "i",
+      "url": "/Users/arthrod/temp/T/neurotic_docx_bench/dist/jubarte-final-ts6/office-xml-reader-KSIj9d5O.cjs",
+      "line": 9,
+      "hits": 112,
+      "pct": 0.6
+    },
+    {
+      "name": "addChild",
+      "url": "/Users/arthrod/temp/T/neurotic_docx_bench/node_modules/fast-xml-parser/src/xmlparser/xmlNode.js",
+      "line": 14,
+      "hits": 107,
+      "pct": 0.57
+    },
+    {
+      "name": "Crc32Probe.processChunk",
+      "url": "/Users/arthrod/temp/T/neurotic_docx_bench/node_modules/jszip/lib/stream/Crc32Probe.js",
+      "line": 20,
+      "hits": 105,
+      "pct": 0.56
+    },
+    {
+      "name": "parseXml",
+      "url": "/Users/arthrod/temp/T/neurotic_docx_bench/node_modules/fast-xml-parser/src/xmlparser/OrderedObjParser.js",
+      "line": 203,
+      "hits": 98,
+      "pct": 0.53
+    }
+  ]
+}

@@ -7,7 +7,12 @@
 		"typecheck": "tsc --noEmit",
 		"build": "tsc --noEmit",
 		"lint": "oxlint .",
-		"update-readme-ranking": "node --import tsx scripts/update-readme-ranking.ts"
+		"update-readme-ranking": "node --import tsx scripts/update-readme-ranking.ts",
+		"redline-speed-bench": "node --import tsx scripts/redline_speed_bench.ts",
+		"redline-speed-bench:native": "node --import tsx scripts/redline_speed_bench.ts --methods jubarte-rust-inproc,docxodus-csharp-inproc,jubarte-rust,docxodus-csharp,docxodus --fixture-count 1000 --min-pairs 5000 --warmup 50 --reps 1 --out results/redline_speed_bench",
+		"redline-speed-bench:warm": "node --import tsx scripts/redline_speed_bench.ts --methods jubarte-rust-inproc,docxodus-csharp-inproc --fixture-count 1000 --min-pairs 5000 --warmup 50 --reps 1 --no-profile --out results/redline_speed_bench/warm_vs_warm",
+		"redline-speed-bench:thesis": "node --import tsx scripts/redline_speed_bench.ts --methods jubarte-rust-inproc,docxodus-csharp-inproc,jubarte-rust,docxodus-csharp,docxodus --fixture-count 1000 --min-pairs 5000 --warmup 50 --reps 1 --out results/redline_speed_bench/thesis_evidence",
+		"redline-speed-bench:ts6-vs-ts7": "node scripts/redline_speed_bench_ts6_vs_ts7.mjs"
 	},
 	"dependencies": {
 		"@cantoo/pdf-lib": "2.7.1",

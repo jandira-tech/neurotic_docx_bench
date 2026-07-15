@@ -1,0 +1,244 @@
+{
+  "runTs": "2026-07-15T13:15:35.808Z",
+  "rows": [
+    {
+      "schema": 1,
+      "kind": "redline_speed_bench",
+      "tool": "jubarte-native",
+      "engine": "jubarte-native",
+      "dist": "/Users/arthrod/temp/T/neurotic_docx_bench/dist/jubarte-final-ts7",
+      "runtime": "node",
+      "run_ts": "2026-07-15T13:15:35.808Z",
+      "seed": 42,
+      "fixture_count": 199,
+      "pair_count": 1000,
+      "reps": 1,
+      "warmup": 10,
+      "init_ms": 469.667,
+      "wall_ms": 21536.292,
+      "failures": 0,
+      "unit": "ms_per_redline",
+      "n": 1000,
+      "mean": 21.535,
+      "median": 6.333,
+      "p90": 41.933,
+      "p95": 59.876,
+      "p99": 220.005,
+      "min": 3.659,
+      "max": 882.653,
+      "std": 63.727,
+      "total_ms": 21535.165,
+      "throughput_per_s": 46.4,
+      "mean_out_bytes": 7497,
+      "profile": "jubarte-native.cpuprofile",
+      "top_cpu": [
+        {
+          "name": "(anonymous)",
+          "url": "/Users/arthrod/temp/T/neurotic_docx_bench/dist/jubarte-final-ts7/reader.node-dzAQfyCl.cjs",
+          "line": 19,
+          "hits": 4014,
+          "pct": 22.94
+        },
+        {
+          "name": "(garbage collector)",
+          "url": "",
+          "line": 0,
+          "hits": 1822,
+          "pct": 10.41
+        },
+        {
+          "name": "reg",
+          "url": "/Users/arthrod/temp/T/neurotic_docx_bench/node_modules/@xmldom/xmldom/lib/grammar.js",
+          "line": 69,
+          "hits": 1039,
+          "pct": 5.94
+        },
+        {
+          "name": "ke",
+          "url": "/Users/arthrod/temp/T/neurotic_docx_bench/dist/jubarte-final-ts7/reader.node-dzAQfyCl.cjs",
+          "line": 19,
+          "hits": 926,
+          "pct": 5.29
+        },
+        {
+          "name": "(idle)",
+          "url": "",
+          "line": 0,
+          "hits": 724,
+          "pct": 4.14
+        },
+        {
+          "name": "s",
+          "url": "/Users/arthrod/temp/T/neurotic_docx_bench/dist/jubarte-final-ts7/office-xml-reader-KSIj9d5O.cjs",
+          "line": 9,
+          "hits": 520,
+          "pct": 2.97
+        },
+        {
+          "name": "validateAndExtract",
+          "url": "/Users/arthrod/temp/T/neurotic_docx_bench/node_modules/@xmldom/xmldom/lib/dom.js",
+          "line": 153,
+          "hits": 431,
+          "pct": 2.46
+        },
+        {
+          "name": "parse",
+          "url": "/Users/arthrod/temp/T/neurotic_docx_bench/node_modules/@xmldom/xmldom/lib/sax.js",
+          "line": 49,
+          "hits": 419,
+          "pct": 2.39
+        },
+        {
+          "name": "inflate_fast",
+          "url": "/Users/arthrod/temp/T/neurotic_docx_bench/node_modules/pako/lib/zlib/inffast.js",
+          "line": 61,
+          "hits": 360,
+          "pct": 2.06
+        },
+        {
+          "name": "i",
+          "url": "/Users/arthrod/temp/T/neurotic_docx_bench/dist/jubarte-final-ts7/xml-builder-shim-DGngb1Ow.cjs",
+          "line": 8,
+          "hits": 251,
+          "pct": 1.43
+        },
+        {
+          "name": "parseElementStartPart",
+          "url": "/Users/arthrod/temp/T/neurotic_docx_bench/node_modules/@xmldom/xmldom/lib/sax.js",
+          "line": 263,
+          "hits": 239,
+          "pct": 1.37
+        },
+        {
+          "name": "p",
+          "url": "/Users/arthrod/temp/T/neurotic_docx_bench/dist/jubarte-final-ts7/xml-builder-shim-DGngb1Ow.cjs",
+          "line": 9,
+          "hits": 191,
+          "pct": 1.09
+        }
+      ],
+      "failure_samples": []
+    },
+    {
+      "schema": 1,
+      "kind": "redline_speed_bench",
+      "tool": "jubarte-lossless",
+      "engine": "jubarte-lossless",
+      "dist": "/Users/arthrod/temp/T/neurotic_docx_bench/dist/jubarte-final-ts7",
+      "runtime": "node",
+      "run_ts": "2026-07-15T13:15:35.808Z",
+      "seed": 42,
+      "fixture_count": 199,
+      "pair_count": 1000,
+      "reps": 1,
+      "warmup": 10,
+      "init_ms": 43.675,
+      "wall_ms": 181732.651,
+      "failures": 0,
+      "unit": "ms_per_redline",
+      "n": 1000,
+      "mean": 181.731,
+      "median": 28.49,
+      "p90": 613.42,
+      "p95": 729.909,
+      "p99": 1330.618,
+      "min": 12.691,
+      "max": 4754.201,
+      "std": 425.897,
+      "total_ms": 181731.077,
+      "throughput_per_s": 5.5,
+      "mean_out_bytes": 76725,
+      "profile": "jubarte-lossless.cpuprofile",
+      "top_cpu": [
+        {
+          "name": "(garbage collector)",
+          "url": "",
+          "line": 0,
+          "hits": 18283,
+          "pct": 12.85
+        },
+        {
+          "name": "d",
+          "url": "/Users/arthrod/temp/T/neurotic_docx_bench/dist/jubarte-final-ts7/JsonToWmlConverter-0yN_Vmc4.cjs",
+          "line": 8,
+          "hits": 15282,
+          "pct": 10.74
+        },
+        {
+          "name": "dflt",
+          "url": "/Users/arthrod/temp/T/neurotic_docx_bench/node_modules/fflate/lib/node.cjs",
+          "line": 667,
+          "hits": 14307,
+          "pct": 10.06
+        },
+        {
+          "name": "ce",
+          "url": "/Users/arthrod/temp/T/neurotic_docx_bench/dist/jubarte-final-ts7/JsonToWmlConverter-0yN_Vmc4.cjs",
+          "line": 8,
+          "hits": 7754,
+          "pct": 5.45
+        },
+        {
+          "name": "get",
+          "url": "/Users/arthrod/temp/T/neurotic_docx_bench/dist/jubarte-final-ts7/JsonToWmlConverter-0yN_Vmc4.cjs",
+          "line": 8,
+          "hits": 7443,
+          "pct": 5.23
+        },
+        {
+          "name": "Ie",
+          "url": "/Users/arthrod/temp/T/neurotic_docx_bench/dist/jubarte-final-ts7/lossless.node.cjs",
+          "line": 8,
+          "hits": 6182,
+          "pct": 4.35
+        },
+        {
+          "name": "e",
+          "url": "/Users/arthrod/temp/T/neurotic_docx_bench/dist/jubarte-final-ts7/escape-Bu279cQ0.cjs",
+          "line": 8,
+          "hits": 6089,
+          "pct": 4.28
+        },
+        {
+          "name": "(anonymous)",
+          "url": "/Users/arthrod/temp/T/neurotic_docx_bench/dist/jubarte-final-ts7/lossless.node.cjs",
+          "line": 8,
+          "hits": 5565,
+          "pct": 3.91
+        },
+        {
+          "name": "a",
+          "url": "/Users/arthrod/temp/T/neurotic_docx_bench/dist/jubarte-final-ts7/JsonToWmlConverter-0yN_Vmc4.cjs",
+          "line": 8,
+          "hits": 5113,
+          "pct": 3.59
+        },
+        {
+          "name": "inflt",
+          "url": "/Users/arthrod/temp/T/neurotic_docx_bench/node_modules/fflate/lib/node.cjs",
+          "line": 258,
+          "hits": 5026,
+          "pct": 3.53
+        },
+        {
+          "name": "u",
+          "url": "/Users/arthrod/temp/T/neurotic_docx_bench/dist/jubarte-final-ts7/JsonToWmlConverter-0yN_Vmc4.cjs",
+          "line": 8,
+          "hits": 3114,
+          "pct": 2.19
+        },
+        {
+          "name": "r",
+          "url": "/Users/arthrod/temp/T/neurotic_docx_bench/dist/jubarte-final-ts7/JsonToWmlConverter-0yN_Vmc4.cjs",
+          "line": 8,
+          "hits": 2812,
+          "pct": 1.98
+        }
+      ],
+      "failure_samples": []
+    }
+  ],
+  "fixtures": 199,
+  "pairs": 1000,
+  "seed": 42
+}

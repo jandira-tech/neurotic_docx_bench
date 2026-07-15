@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AssemblyName>docxodus-inproc</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Docxodus">
+      <HintPath>/Users/arthrod/temp/T/ooxmlsdk/Docxodus/tools/redline/bin/Release/net8.0/Docxodus.dll</HintPath>
+    </Reference>
+    <Reference Include="DocumentFormat.OpenXml">
+      <HintPath>/Users/arthrod/temp/T/ooxmlsdk/Docxodus/tools/redline/bin/Release/net8.0/DocumentFormat.OpenXml.dll</HintPath>
+    </Reference>
+    <Reference Include="DocumentFormat.OpenXml.Framework">
+      <HintPath>/Users/arthrod/temp/T/ooxmlsdk/Docxodus/tools/redline/bin/Release/net8.0/DocumentFormat.OpenXml.Framework.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+</Project>
