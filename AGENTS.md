@@ -122,6 +122,8 @@ per run) measures **redline-generation time** (`unit: ms_per_redline`). Run it:
 ```bash
 node --import tsx scripts/speed-bench.ts --pairs 30 --reps 3 --warmup 3 --out results/speed.jsonl
 uv run python -m neurotic_docx_bench.superdoc_speed --pairs 30 --reps 3 --warmup 3 --out results/speed.jsonl
+# Large-N native CLI (C# Docxodus + jubarte-rust): 1000 fixtures → 5000 pairs, samply profiles
+bun run redline-speed-bench:native
 ```
 
 **Render speed** (`unit: ms_per_render`) — how long a Playwright viewer takes to render a

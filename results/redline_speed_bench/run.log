@@ -1,0 +1,22 @@
+redline_speed_bench: collecting up to 1000 fixtures
+  dirs:
+    /Users/arthrod/temp/T/neurotic_docx_bench/corpus/word_based/docx_source
+    /Users/arthrod/temp/T/neurotic_docx_bench/corpus/word_based/docx_source_randomized
+    /Users/arthrod/temp/T/neurotic_docx_bench/corpus/word_based/docx_accepted_word
+    /Users/arthrod/temp/T/neurotic_docx_bench/corpus/no_comments_pdf_was_generated_by_word/docx_source
+    /Users/arthrod/temp/T/neurotic_docx_bench/corpus/no_comments_pdf_was_generated_by_word/docx_accepted_word
+    /Users/arthrod/temp/T/neurotic_docx_bench/corpus/word_based/docx_redlines_word
+    /Users/arthrod/temp/T/neurotic_docx_bench/corpus/no_comments_pdf_was_generated_by_word/docx_redlines_word
+  unique fixtures: 1000 (target 1000)
+  loaded 32.4 MiB in 152.035ms
+  pairs=5000 (min=5000, seed=42, rounds≈5)
+  methods=docxodus-csharp, jubarte-rust warmup=20 reps=1 profile=true
+  jubarte-dist=/Users/arthrod/temp/T/neurotic_docx_bench/dist/jubarte-final
+  rust-dist=/Users/arthrod/temp/T/neurotic_docx_bench/src/neurotic_docx_bench/utils/jubarte/jubarte-rust
+  csharp-dist=/Users/arthrod/temp/T/ooxmlsdk/Docxodus/tools/redline/bin/Release/net8.0
+  out=/Users/arthrod/temp/T/neurotic_docx_bench/results/redline_speed_bench
+
+▶ docxodus-csharp (engine=docxodus-csharp, dist=/Users/arthrod/temp/T/ooxmlsdk/Docxodus/tools/redline/bin/Release/net8.0, native=true)
+  init 0.226ms
+  profiling with samply (5000 pairs, rate=1000Hz)…
+  samply path failed (samply exit null: see stdout) — falling back to unprofiled loop

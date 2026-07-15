@@ -6,6 +6,125 @@ in `results/speed.jsonl`. Render speed (Playwright viewer → PDF) is measured s
 `python -m neurotic_docx_bench.playwright_speed` (see [Render speed](#render-speed)) and is
 also captured per-run in `results/bench.jsonl` under each `visual_*` line's speed stats.
 
+## Large-N native CLI bench (`speed_redlines`)
+
+Heavy compare of redline engines including **native C# Docxodus**, **WASM Docxodus**,
+and **jubarte-rust**:
+
+| tool | binary / path | notes |
+|---|---|---|
+| `jubarte-rust-inproc` | `jubarte-inproc` long-lived worker | same `compare_documents` as CLI, **warm** |
+| `docxodus-csharp-inproc` | `docxodus-inproc` long-lived worker | same `DocxDiffOps.Compare`, **warm** |
+| `jubarte-rust` | `utils/jubarte/jubarte-rust/redline` | Rust CLI (spawn per redline) |
+| `docxodus-csharp` | Docxodus C# `tools/redline` | C# CLI (spawn + .NET cold-start) |
+| `docxodus` | npm WASM `compareDocuments` | Mono/.NET WASM after `initialize()` |
+
+### Thesis-defense command (warm-vs-warm is the load-bearing row)
+
+For “jubarte is faster *and* more precise” you need:
+
+1. **Speed (algorithm, fair):** warm-process both engines, same 1000 fixtures → 5000 pairs  
+2. **Speed (shipping CLI):** optional CLI rows (spawn included)  
+3. **Precision:** `script_redlines` / `accepted_changes` means from `results/bench.jsonl` (Word oracle)
+
+```bash
+# 0) one-time: build warm workers
+dotnet build -c Release src/neurotic_docx_bench/utils/docxodus/docxodus-csharp-inproc
+( cd src/neurotic_docx_bench/utils/jubarte/jubarte-rust-inproc && cargo build --release )
+cp -f src/neurotic_docx_bench/utils/jubarte/jubarte-rust-inproc/target/release/jubarte-inproc \
+      src/neurotic_docx_bench/utils/jubarte/jubarte-rust/jubarte-inproc
+
+# 1) WARM ONLY — the fair algorithm race (recommended for thesis speed claims)
+bun run redline-speed-bench:warm
+# equivalent:
+node --import tsx scripts/redline_speed_bench.ts \
+  --methods jubarte-rust-inproc,docxodus-csharp-inproc \
+  --fixture-count 1000 --min-pairs 5000 --warmup 50 --reps 1 \
+  --no-profile \
+  --out results/redline_speed_bench/warm_vs_warm
+
+# 2) FULL thesis pack — warm + CLI + WASM (slower; CLI csharp alone is ~1h+)
+bun run redline-speed-bench:thesis
+# equivalent:
+node --import tsx scripts/redline_speed_bench.ts \
+  --methods jubarte-rust-inproc,docxodus-csharp-inproc,jubarte-rust,docxodus-csharp,docxodus \
+  --fixture-count 1000 --min-pairs 5000 --warmup 50 --reps 1 \
+  --out results/redline_speed_bench/thesis_evidence
+
+# 3) Precision (already measured against Word oracle):
+uv run bench run --only jubarte-rust
+uv run bench run --only docxodus
+# then rank from docs/RESULTS.md / results/bench.jsonl
+```
+
+**How to cite the table:** lead with the **inproc** medians (warm-vs-warm). Mention CLI only as “end-to-end CLI cost” — never as algorithm cost. Fidelity numbers come from the visual/script redline benches, not this speed harness.
+
+Methodology:
+
+- **1000 unique fixtures** (content SHA-1) pooled from corpus source/accepted/redline dirs
+- **5000 deterministic pairs** (every fixture is base ≥ once per round; Mulberry32 seed=42)
+- Warmup untimed; each of the 5000 timed with `performance.now()` → full distribution
+- **Profiler: [samply](https://github.com/mstange/samply)** (1000 Hz) for CLI engines so
+  child `redline` processes appear in the Firefox Profiler capture; V8 inspector for
+  in-process engines when profiling is on
+- Appends `kind: "speed_redlines"` rows to `results/speed.jsonl` and writes
+  `results/redline_speed_bench/{report.md,summary.json,cpu/*}`
+
+```bash
+# Requires: samply on PATH, C# redline at ../ooxmlsdk/Docxodus/tools/redline/bin/Release/net8.0,
+#           docxodus-inproc built under utils/docxodus/docxodus-csharp-inproc,
+#           jubarte-rust binary under utils/jubarte/jubarte-rust/
+bun run redline-speed-bench:native
+
+samply load results/redline_speed_bench/cpu/docxodus-csharp.profile.json.gz
+samply load results/redline_speed_bench/cpu/jubarte-rust.profile.json.gz
+```
+
+### Why C# CLI looks “that slow” (it isn’t the algorithm)
+
+Same 50 fixtures / 50 pairs / seed=42 / warmup=5 (`results/redline_speed_bench/why_slow/`):
+
+| rank | tool | median ms | mean ms | p95 | /s | wall s |
+| ---: | --- | ---: | ---: | ---: | ---: | ---: |
+| 1 | **jubarte-rust** | **6.6** | 44.7 | 131 | 22.4 | 2.2 |
+| 2 | **docxodus-csharp-inproc** | **9.0** | 69.2 | 237 | 14.5 | 3.5 |
+| 3 | docxodus (WASM) | 120.5 | **1011** | 2744 | 1.0 | 50.5 |
+| 4 | docxodus-csharp (CLI) | **208** | 442 | 912 | 2.3 | 22.1 |
+
+**Takeaway:**
+
+1. **Docxodus C# algorithm ≈ jubarte-rust** once you keep the process warm
+   (`inproc` median 9 ms vs rust 6.6 ms — same order of magnitude).
+2. **`docxodus-csharp` CLI is ~23× slower than inproc** because every sample is
+   `spawn → load .NET runtime → JIT/touch Docxodus → compare → exit`. A one-shot
+   microbench of `DocxDiffOps.Compare` in-process was **~4 ms median** on a tiny
+   pair; the same pair via the CLI was **~200–800 ms**.
+3. **WASM is not a free win** — median ~120 ms but a **fat tail** (mean ~1 s, p99 ~4 s)
+   from Mono WASM. Still better *median* than cold-start CLI, worse *mean* than both
+   native engines.
+4. Fairness: rust CLI *also* pays spawn+temp-file I/O; it just starts in a few ms.
+   Compare CLI-to-CLI (`csharp` vs `rust`) for “how you ship the binary”; compare
+   `csharp-inproc` vs in-memory Node engines for “how fast is the comparer”.
+
+Micro-diagnosis (tiny pair, `/usr/bin/time`):
+
+| mode | wall |
+|---|---:|
+| C# CLI `--version` only (startup tax) | ~20–90 ms |
+| C# CLI full small compare | ~200–880 ms |
+| C# `DocxDiffOps.Compare` in-process (after warmup) | **~4 ms** |
+| Rust CLI small compare | ~0–10 ms |
+| WASM small compare (after init) | ~130–900 ms |
+
+Smoke (tiny, no full profile):
+
+```bash
+node --import tsx scripts/redline_speed_bench.ts \
+  --methods docxodus-csharp,docxodus-csharp-inproc,docxodus,jubarte-rust \
+  --fixture-count 20 --min-pairs 40 --warmup 2 --no-profile \
+  --out /tmp/redline_speed_smoke
+```
+
 ## Methodology (meticulous by design)
 
 - **30 pairs × 3 reps = 90 timed samples** per engine; the same pair set + order for all.

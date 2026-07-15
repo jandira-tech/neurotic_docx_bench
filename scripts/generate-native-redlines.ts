@@ -420,7 +420,284 @@ export async function loadEngine(
 			}
 		};
 	}
+	// Docxodus C# CLI (native .NET, NOT the WASM npm package). Dist dir holds the
+	// published `redline` apphost + Docxodus.dll from Docxodus/tools/redline.
+	// Invoked as: redline <original.docx> <modified.docx> <output.docx>
+	// NOTE: every call is a cold process start (.NET runtime + JIT) — typically
+	// 200–800ms even when the in-process compare is ~4ms. Prefer
+	// `docxodus-csharp-inproc` for algorithm-only timing.
+	if (method === "docxodus-csharp" || method === "docxodus-cs") {
+		const bin = resolve(distPath, "redline");
+		if (!existsSync(bin)) {
+			throw new Error(
+				`docxodus-csharp: no redline binary at ${bin}. ` +
+					`Build Docxodus/tools/redline (Release) and point --dist at ` +
+					`bin/Release/net8.0 (or copy that dir under utils/docxodus/docxodus-csharp).`,
+			);
+		}
+		let ctr = 0;
+		return async (base, next) => {
+			const dir = mkdtempSync(join(tmpdir(), "dxcs-"));
+			const i = ctr++;
+			const bp = join(dir, `b${i}.docx`);
+			const np = join(dir, `n${i}.docx`);
+			const op = join(dir, `o${i}.docx`);
+			try {
+				writeFileSync(bp, base);
+				writeFileSync(np, next);
+				const r = spawnSync(bin, [bp, np, op], { encoding: "utf8" });
+				if (r.status !== 0) {
+					throw new Error(
+						`docxodus-csharp redline failed (exit ${r.status}): ` +
+							`${(r.stderr || r.stdout || "").trim() || "no output"}`,
+					);
+				}
+				if (!existsSync(op)) {
+					throw new Error(
+						`docxodus-csharp redline produced no output at ${op}`,
+					);
+				}
+				return new Uint8Array(readFileSync(op));
+			} finally {
+				rmSync(dir, { recursive: true, force: true });
+			}
+		};
+	}
+	// Docxodus C# *in-process* worker — one long-lived `docxodus-inproc` process,
+	// DocxDiffOps.Compare over stdin protocol. Isolates algorithm cost from the
+	// per-call .NET cold-start tax that `docxodus-csharp` pays.
+	if (
+		method === "docxodus-csharp-inproc" ||
+		method === "docxodus-cs-inproc"
+	) {
+		return loadLongLivedCompareWorker({
+			label: "docxodus-csharp-inproc",
+			binCandidates: [
+				resolve(distPath, "docxodus-inproc"),
+				resolve(distPath, "bin/Release/net8.0/docxodus-inproc"),
+				resolve(
+					distPath,
+					"../docxodus-csharp-inproc/bin/Release/net8.0/docxodus-inproc",
+				),
+			],
+			tmpPrefix: "dxcsip-",
+			buildHint: "Build utils/docxodus/docxodus-csharp-inproc.",
+		});
+	}
+	// jubarte-rust *in-process* worker — same `compare_documents` as the CLI,
+	// one long-lived process. Fair warm-process counterpart to csharp-inproc
+	// (spawn tax on the CLI is tiny for Rust, but thesis comparisons must be
+	// warm-vs-warm to be airtight).
+	if (
+		method === "jubarte-rust-inproc" ||
+		method === "jubarte-rs-inproc"
+	) {
+		// Prefer `jubarte-worker`: on some macOS setups a binary literally named
+		// `jubarte-inproc` sitting next to the `jubarte` CLI is SIGKILL'd at
+		// launch (exit 137, no stdout). Same bytes under another name work.
+		return loadLongLivedCompareWorker({
+			label: "jubarte-rust-inproc",
+			binCandidates: [
+				resolve(distPath, "jubarte-worker"),
+				resolve(distPath, "jubarte-inproc"),
+				resolve(distPath, "target/release/jubarte-inproc"),
+				resolve(
+					distPath,
+					"../jubarte-rust-inproc/target/release/jubarte-inproc",
+				),
+				resolve(
+					distPath,
+					"../jubarte-rust-inproc/target/release/jubarte-worker",
+				),
+			],
+			tmpPrefix: "jrip-",
+			buildHint:
+				"cargo build --release -p jubarte-rust-inproc " +
+				"(utils/jubarte/jubarte-rust-inproc), then copy to " +
+				"utils/jubarte/jubarte-rust/jubarte-worker.",
+		});
+	}
 	throw new Error(`unknown method: ${method}`);
+}
+
+/** Active long-lived workers — must be shut down or the Node process never
+ *  exits (stdin pipes keep the event loop alive). That hung samply forever
+ *  after the timed loop on docxodus-csharp-inproc / jubarte-rust-inproc. */
+const _longLivedShutdowns: Array<() => void> = [];
+
+/** Kill every long-lived compare worker started by this process. Safe to call
+ *  repeatedly. Call at end of speed-bench methods and after `--inner-run`. */
+export function shutdownAllLongLivedWorkers(): void {
+	while (_longLivedShutdowns.length) {
+		const fn = _longLivedShutdowns.pop();
+		try {
+			fn?.();
+		} catch {
+			/* ignore */
+		}
+	}
+}
+
+/**
+ * Shared long-lived compare worker: stdin protocol
+ *   READY / COMPARE base next out → OK n ms | ERR … / QUIT → BYE
+ * Used by both docxodus-csharp-inproc and jubarte-rust-inproc so warm-vs-warm
+ * timing is methodologically identical.
+ */
+async function loadLongLivedCompareWorker(opts: {
+	label: string;
+	binCandidates: string[];
+	tmpPrefix: string;
+	buildHint: string;
+}): Promise<(base: Uint8Array, next: Uint8Array) => Promise<Uint8Array>> {
+	const { spawn } = await import("node:child_process");
+	const bin = opts.binCandidates.find((p) => existsSync(p));
+	if (!bin) {
+		throw new Error(
+			`${opts.label}: no worker binary ` +
+				`(checked ${opts.binCandidates.join(", ")}). ${opts.buildHint}`,
+		);
+	}
+	const child = spawn(bin, [], { stdio: ["pipe", "pipe", "pipe"] });
+	let buf = "";
+	const waiters: Array<(line: string) => void> = [];
+	let spawnExit: { code: number | null; signal: NodeJS.Signals | null } | null =
+		null;
+	let stderrAcc = "";
+	const pushLine = (line: string) => {
+		const w = waiters.shift();
+		if (w) w(line);
+		else buf = buf ? `${buf}\n${line}` : line;
+	};
+	child.stdout!.setEncoding("utf8");
+	child.stderr!.setEncoding("utf8");
+	child.stderr!.on("data", (chunk: string) => {
+		stderrAcc += chunk;
+	});
+	let acc = "";
+	child.stdout!.on("data", (chunk: string) => {
+		acc += chunk;
+		let idx: number;
+		while ((idx = acc.indexOf("\n")) >= 0) {
+			const line = acc.slice(0, idx).replace(/\r$/, "");
+			acc = acc.slice(idx + 1);
+			pushLine(line);
+		}
+	});
+	child.on("exit", (code, signal) => {
+		spawnExit = { code, signal };
+		// Unblock any waiter so we fail fast instead of 120s hang.
+		const msg = `${opts.label}: worker exited before reply (code=${code} signal=${signal}) bin=${bin}`;
+		while (waiters.length) {
+			const w = waiters.shift();
+			// reject via throwing into the waiter channel as a special line
+			w?.(`__EXIT__ ${msg}`);
+		}
+	});
+	const readLine = (): Promise<string> =>
+		new Promise((resolveLine, reject) => {
+			if (buf) {
+				const lines = buf.split("\n");
+				const first = lines.shift()!;
+				buf = lines.join("\n");
+				resolveLine(first);
+				return;
+			}
+			if (spawnExit) {
+				reject(
+					new Error(
+						`${opts.label}: worker already exited (code=${spawnExit.code} signal=${spawnExit.signal}) bin=${bin}` +
+							(stderrAcc ? ` stderr=${stderrAcc.trim()}` : ""),
+					),
+				);
+				return;
+			}
+			const timer = setTimeout(
+				() =>
+					reject(
+						new Error(
+							`${opts.label}: timeout waiting for worker reply bin=${bin}` +
+								(spawnExit
+									? ` exit=${spawnExit.code}/${spawnExit.signal}`
+									: "") +
+								(stderrAcc ? ` stderr=${stderrAcc.trim()}` : ""),
+						),
+					),
+				15_000,
+			);
+			waiters.push((line) => {
+				clearTimeout(timer);
+				if (line.startsWith("__EXIT__ ")) {
+					reject(new Error(line.slice("__EXIT__ ".length)));
+				} else {
+					resolveLine(line);
+				}
+			});
+		});
+	const ready = await readLine();
+	if (ready !== "READY") {
+		child.kill();
+		throw new Error(
+			`${opts.label}: expected READY, got ${ready} bin=${bin}` +
+				(stderrAcc ? ` stderr=${stderrAcc.trim()}` : ""),
+		);
+	}
+	const workDir = mkdtempSync(join(tmpdir(), opts.tmpPrefix));
+	let ctr = 0;
+	let dead = false;
+	const shutdown = () => {
+		if (dead) return;
+		dead = true;
+		try {
+			child.stdin!.write("QUIT\n");
+			child.stdin!.end();
+		} catch {
+			/* ignore */
+		}
+		try {
+			child.kill("SIGTERM");
+		} catch {
+			/* ignore */
+		}
+		// Hard kill if QUIT ignored (should not happen).
+		setTimeout(() => {
+			try {
+				child.kill("SIGKILL");
+			} catch {
+				/* ignore */
+			}
+		}, 500).unref?.();
+		try {
+			rmSync(workDir, { recursive: true, force: true });
+		} catch {
+			/* ignore */
+		}
+	};
+	_longLivedShutdowns.push(shutdown);
+	process.on("exit", shutdown);
+	return async (base, next) => {
+		if (dead) {
+			throw new Error(`${opts.label}: worker already shut down`);
+		}
+		const i = ctr++;
+		const bp = join(workDir, `b${i}.docx`);
+		const np = join(workDir, `n${i}.docx`);
+		const op = join(workDir, `o${i}.docx`);
+		writeFileSync(bp, base);
+		writeFileSync(np, next);
+		child.stdin!.write(`COMPARE ${bp} ${np} ${op}\n`);
+		const reply = await readLine();
+		if (reply.startsWith("ERR ")) {
+			throw new Error(`${opts.label}: ${reply.slice(4)}`);
+		}
+		if (!reply.startsWith("OK ")) {
+			throw new Error(`${opts.label}: bad reply ${reply}`);
+		}
+		if (!existsSync(op)) {
+			throw new Error(`${opts.label}: no output at ${op}`);
+		}
+		return new Uint8Array(readFileSync(op));
+	};
 }
 
 /** The output filename for a pair — must normalize (via redline_key) back to `<base>_<next>`. */
