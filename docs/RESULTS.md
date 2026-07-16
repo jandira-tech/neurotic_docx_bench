@@ -1,6 +1,6 @@
 # Benchmark results
 
-Source: `results/bench.jsonl` — **64** fidelity row(s) (one per vendor×benchmark×**version**; 38 distinct vendor×version pin(s). docxodus rows with n_docs ≤ 100 are dropped as smoke/partial).
+Source: `results/bench.jsonl` — **69** fidelity row(s) (one per vendor×benchmark×**version**; 42 distinct vendor×version pin(s). docxodus rows with n_docs ≤ 100 are dropped as smoke/partial).
 
 Scores are 0–100 (higher = closer to the Microsoft Word oracle). Cross-renderer comparisons (LibreOffice vs Playwright) are **not** directly comparable — only compare within the same benchmark. Different **versions** of the same vendor are kept so you can compare pins (e.g. docxodus 6.4.0 vs 7.0.0).
 
@@ -24,29 +24,33 @@ script_redlines (LibreOffice render vs Word oracle)
 | 10 | jubarte | jubarte-final@2f41358dbc2c | 83.4039 | 88.6547 | 164 | 53 | 77 | 8 |
 | 11 | jubarte | jubarte-final@d7599c91e4d5 | 83.4039 | 88.6547 | 164 | 53 | 77 | 8 |
 | 12 | jubarte | jubarte-final@dbc8db9ef551 | 83.4037 | 88.6547 | 164 | 53 | 77 | 8 |
-| 13 | jubarte-rust | jubarte-rust@cdfef70a7156 | 81.0444 | 84.7199 | 207 | 42 | 84 | 17 |
-| 14 | jubarte-rust | jubarte-rust@51a93adf52ca | 80.2389 | 83.1955 | 207 | 41 | 79 | 17 |
-| 15 | jubarte | jubarte-final@dd16ad8fbcf3 | 79.4364 | 79.9471 | 207 | 54 | 77 | 13 |
-| 16 | jubarte | jubarte-final@8b23cdc7eca8 | 79.2696 | 79.9471 | 207 | 54 | 77 | 13 |
-| 17 | jubarte | jubarte-final@6481c2fdbfc0 | 79.2475 | 78.8195 | 207 | 45 | 68 | 9 |
-| 18 | jubarte | jubarte-final@4f56a39e78ef | 79.2153 | 78.8195 | 207 | 45 | 68 | 10 |
-| 19 | jubarte | jubarte-final@755ee30d148c | 79.2153 | 78.8195 | 207 | 45 | 68 | 10 |
-| 20 | jubarte | jubarte-final@a764898a424c | 79.1583 | 78.7802 | 207 | 46 | 69 | 9 |
-| 21 | jubarte | jubarte-final@a56814ce307c | 79.1225 | 78.7802 | 207 | 46 | 68 | 9 |
-| 22 | jubarte | jubarte-final@04dabff1cfaf | 77.824 | 78.6169 | 207 | 34 | 54 | 10 |
-| 23 | jubarte | jubarte-final@ac1fcea44646 | 77.824 | 78.6169 | 207 | 34 | 54 | 10 |
-| 24 | jubarte | jubarte-final@717311c03d4f | 73.4761 | 73.1343 | 207 | 25 | 47 | 26 |
-| 25 | sanity-word | — | 68.1679 | 70.4845 | 230 | 0 | 0 | 38 |
-| 26 | jubarte-rust | jubarte-rust@6233a48e4ac8 | 66.3055 | 64.1705 | 196 | 0 | 21 | 32 |
-| 27 | jubarte | jubarte-final@b4f90acaa85e | 64.6926 | 63.481 | 196 | 0 | 5 | 31 |
-| 28 | jubarte-rust | jubarte-rust@b834d6e49fdb | 61.7832 | 59.2784 | 172 | 2 | 6 | 39 |
-| 29 | docxodus | 7.0.0 | 58.7507 | 55.0306 | 205 | 3 | 7 | 66 |
-| 30 | docxodus | 6.4.0 | 58.7425 | 55.0306 | 205 | 3 | 7 | 66 |
-| 31 | superdoc-redlines | 0.2.0 | 57.6297 | 55.8997 | 192 | 0 | 1 | 63 |
-| 32 | superdoc | 1.19.2 | 57.1871 | 55.5996 | 182 | 2 | 4 | 52 |
-| 33 | folio | 0.3.1 | 55.3092 | 53.7539 | 205 | 0 | 1 | 75 |
-| 34 | ooxmlsdk | — | 55.1866 | 55.2398 | 232 | 0 | 0 | 52 |
-| 35 | redlines | 0.6.1 | 51.284 | 51.7682 | 200 | 0 | 0 | 84 |
+| 13 | jubarte-rust | jubarte-rust@9fcc4289e375 | 83.1887 | 93.0906 | 196 | 69 | 107 | 16 |
+| 14 | jubarte-rust | jubarte-rust@cdfef70a7156 | 81.0444 | 84.7199 | 207 | 42 | 84 | 17 |
+| 15 | jubarte-rust | jubarte-rust@51a93adf52ca | 80.2389 | 83.1955 | 207 | 41 | 79 | 17 |
+| 16 | jubarte | jubarte-final@dd16ad8fbcf3 | 79.4364 | 79.9471 | 207 | 54 | 77 | 13 |
+| 17 | jubarte | jubarte-final@8b23cdc7eca8 | 79.2696 | 79.9471 | 207 | 54 | 77 | 13 |
+| 18 | jubarte | jubarte-final@6481c2fdbfc0 | 79.2475 | 78.8195 | 207 | 45 | 68 | 9 |
+| 19 | jubarte | jubarte-final@4f56a39e78ef | 79.2153 | 78.8195 | 207 | 45 | 68 | 10 |
+| 20 | jubarte | jubarte-final@755ee30d148c | 79.2153 | 78.8195 | 207 | 45 | 68 | 10 |
+| 21 | jubarte | jubarte-final@a764898a424c | 79.1583 | 78.7802 | 207 | 46 | 69 | 9 |
+| 22 | jubarte | jubarte-final@a56814ce307c | 79.1225 | 78.7802 | 207 | 46 | 68 | 9 |
+| 23 | jubarte | jubarte-final@04dabff1cfaf | 77.824 | 78.6169 | 207 | 34 | 54 | 10 |
+| 24 | jubarte | jubarte-final@ac1fcea44646 | 77.824 | 78.6169 | 207 | 34 | 54 | 10 |
+| 25 | jubarte | jubarte-final@717311c03d4f | 73.4761 | 73.1343 | 207 | 25 | 47 | 26 |
+| 26 | sanity-word | — | 68.1679 | 70.4845 | 230 | 0 | 0 | 38 |
+| 27 | jubarte-rust | jubarte-rust@6233a48e4ac8 | 66.3055 | 64.1705 | 196 | 0 | 21 | 32 |
+| 28 | jubarte | jubarte-final@b4f90acaa85e | 64.6926 | 63.481 | 196 | 0 | 5 | 31 |
+| 29 | jubarte-rust | jubarte-rust@b834d6e49fdb | 61.7832 | 59.2784 | 172 | 2 | 6 | 39 |
+| 30 | docxodus | 7.0.0 | 58.7507 | 55.0306 | 205 | 3 | 7 | 66 |
+| 31 | docxodus | 6.4.0 | 58.7425 | 55.0306 | 205 | 3 | 7 | 66 |
+| 32 | superdoc-redlines | 0.2.0 | 57.6297 | 55.8997 | 192 | 0 | 1 | 63 |
+| 33 | superdoc | 1.19.2 | 57.1871 | 55.5996 | 182 | 2 | 4 | 52 |
+| 34 | folio | 0.3.1 | 55.3092 | 53.7539 | 205 | 0 | 1 | 75 |
+| 35 | ooxmlsdk | — | 55.1866 | 55.2398 | 232 | 0 | 0 | 52 |
+| 36 | docx-redline-js | — | 55.1236 | 55.1236 | 2 | 0 | 0 | 1 |
+| 37 | redlines | 0.6.1 | 51.284 | 51.7682 | 200 | 0 | 0 | 84 |
+| 38 | docx-redline-js | 0.3.0-ts-migration | 50.5319 | 50.2615 | 161 | 0 | 0 | 73 |
+| 39 | jubarte | jubarte-final@9991b783a190 | 48.9496 | 49.8858 | 164 | 0 | 0 | 84 |
 
 ### `accepted_changes`
 
@@ -54,15 +58,16 @@ script_redlines (LibreOffice render vs Word oracle)
 
 | # | vendor | version | mean | median | n_docs | exact_100 | ≥90 | <50 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | jubarte | jubarte-final@dd16ad8fbcf3 | 86.534 | 94.4179 | 164 | 63 | 87 | 7 |
-| 2 | jubarte-rust | jubarte-rust@cdfef70a7156 | 84.2733 | 88.7405 | 164 | 54 | 80 | 7 |
-| 3 | jubarte-rust | jubarte-rust@8e77f696f091 | 83.7563 | 87.9669 | 164 | 52 | 77 | 7 |
-| 4 | jubarte | jubarte-final@717311c03d4f | 78.1534 | 80.639 | 166 | 26 | 43 | 14 |
-| 5 | docxodus | 7.0.0 | 70.1963 | 74.9182 | 164 | 17 | 44 | 49 |
-| 6 | docxodus | 6.4.0 | 68.9994 | 77.1882 | 164 | 14 | 22 | 43 |
-| 7 | superdoc | 1.19.2 | 63.818 | 61.1184 | 150 | 2 | 3 | 33 |
-| 8 | jubarte-rust | jubarte-rust@b834d6e49fdb | 63.499 | 54.4541 | 147 | 13 | 15 | 72 |
-| 9 | folio | 0.3.1 | 57.9094 | 55.608 | 164 | 3 | 4 | 61 |
+| 1 | jubarte-rust | jubarte-rust@9fcc4289e375 | 87.0018 | 95.3936 | 164 | 69 | 95 | 9 |
+| 2 | jubarte | jubarte-final@dd16ad8fbcf3 | 86.534 | 94.4179 | 164 | 63 | 87 | 7 |
+| 3 | jubarte-rust | jubarte-rust@cdfef70a7156 | 84.2733 | 88.7405 | 164 | 54 | 80 | 7 |
+| 4 | jubarte-rust | jubarte-rust@8e77f696f091 | 83.7563 | 87.9669 | 164 | 52 | 77 | 7 |
+| 5 | jubarte | jubarte-final@717311c03d4f | 78.1534 | 80.639 | 166 | 26 | 43 | 14 |
+| 6 | docxodus | 7.0.0 | 70.1963 | 74.9182 | 164 | 17 | 44 | 49 |
+| 7 | docxodus | 6.4.0 | 68.9994 | 77.1882 | 164 | 14 | 22 | 43 |
+| 8 | superdoc | 1.19.2 | 63.818 | 61.1184 | 150 | 2 | 3 | 33 |
+| 9 | jubarte-rust | jubarte-rust@b834d6e49fdb | 63.499 | 54.4541 | 147 | 13 | 15 | 72 |
+| 10 | folio | 0.3.1 | 57.9094 | 55.608 | 164 | 3 | 4 | 61 |
 
 ### `roundtrip`
 
@@ -116,6 +121,8 @@ visual_accepted_changes (Playwright)
 
 | vendor | version | datetime | benchmark | mean | median | n_docs |
 | --- | --- | --- | --- | --- | --- | --- |
+| docx-redline-js | 0.3.0-ts-migration | 2026-07-15T23:24:01.804490+00:00 | script_redlines | 50.5319 | 50.2615 | 161 |
+| docx-redline-js | — | 2026-07-15T23:21:34.805527+00:00 | script_redlines | 55.1236 | 55.1236 | 2 |
 | docxodus | 6.4.0 | 2026-07-09T15:58:38.145555+00:00 | accepted_changes | 68.9994 | 77.1882 | 164 |
 | docxodus | 6.4.0 | 2026-07-10T00:12:10.214778+00:00 | roundtrip | 92.2445 | 100 | 198 |
 | docxodus | 6.4.0 | 2026-07-09T15:48:47.581159+00:00 | script_redlines | 58.7425 | 55.0306 | 205 |
@@ -143,6 +150,7 @@ visual_accepted_changes (Playwright)
 | jubarte | jubarte-final@755ee30d148c | 2026-07-11T00:22:44.799718+00:00 | script_redlines | 79.2153 | 78.8195 | 207 |
 | jubarte | jubarte-final@8b23cdc7eca8 | 2026-07-13T16:52:37.466270+00:00 | script_redlines | 79.2696 | 79.9471 | 207 |
 | jubarte | jubarte-final@8b2e9bf2522a | 2026-07-13T23:45:59.667934+00:00 | script_redlines | 83.4234 | 88.6547 | 164 |
+| jubarte | jubarte-final@9991b783a190 | 2026-07-16T00:25:00.606780+00:00 | script_redlines | 48.9496 | 49.8858 | 164 |
 | jubarte | jubarte-final@a56814ce307c | 2026-07-11T01:10:08.212708+00:00 | script_redlines | 79.1225 | 78.7802 | 207 |
 | jubarte | jubarte-final@a764898a424c | 2026-07-11T01:22:46.221863+00:00 | script_redlines | 79.1583 | 78.7802 | 207 |
 | jubarte | jubarte-final@ac1fcea44646 | 2026-07-10T23:54:03.912780+00:00 | script_redlines | 77.824 | 78.6169 | 207 |
@@ -161,6 +169,8 @@ visual_accepted_changes (Playwright)
 | jubarte-rust | jubarte-rust@8e77f696f091 | 2026-07-15T15:36:32.217189+00:00 | accepted_changes | 83.7563 | 87.9669 | 164 |
 | jubarte-rust | jubarte-rust@8e77f696f091 | 2026-07-15T15:36:32.217189+00:00 | script_redlines | 83.7652 | 88.5162 | 164 |
 | jubarte-rust | jubarte-rust@980adfca2fc6 | 2026-07-15T17:48:46.133050+00:00 | script_redlines | 84.8331 | 89.3449 | 164 |
+| jubarte-rust | jubarte-rust@9fcc4289e375 | 2026-07-16T05:49:13.232283+00:00 | accepted_changes | 87.0018 | 95.3936 | 164 |
+| jubarte-rust | jubarte-rust@9fcc4289e375 | 2026-07-16T05:55:25.022684+00:00 | script_redlines | 83.1887 | 93.0906 | 196 |
 | jubarte-rust | jubarte-rust@aad3e04cebbd | 2026-07-15T18:02:55.334087+00:00 | script_redlines | 84.9762 | 89.3449 | 164 |
 | jubarte-rust | jubarte-rust@b834d6e49fdb | 2026-07-09T17:43:37.147567+00:00 | accepted_changes | 63.499 | 54.4541 | 147 |
 | jubarte-rust | jubarte-rust@b834d6e49fdb | 2026-07-10T00:21:53.149640+00:00 | roundtrip | 93.1152 | 100 | 171 |
@@ -218,7 +228,7 @@ Large fixture pools (often **1000 unique** docs → **5000 pairs**), including n
 | 3 | jubarte-rust-inproc | rust | 1000 | 5000 | 9.34 | 40.008 | 152.681 | 401.608 | 25 | 5000 | 0 | samply |
 | 4 | docxodus-csharp-inproc | dotnet | 1000 | 5000 | 9.431 | 29.903 | 110.731 | 234.991 | 33.4 | 4880 | 120 | v8-inspector |
 | 5 | jubarte-rust | rust | 1000 | 5000 | 14.368 | 38.769 | 135.64 | 337.122 | 25.8 | 5000 | 0 | samply |
-| 6 | jubarte-lossless | node | 1000 | 5000 | 73.478 | 263.83 | 899.38 | 3212.764 | 3.8 | 4997 | 3 | v8-inspector |
+| 6 | jubarte-lossless | node | 1000 | 5000 | 54.642 | 168.184 | 592.49 | 1191.719 | 5.9 | 4997 | 3 | — |
 | 7 | docxodus | dotnet-wasm | 200 | 500 | 148.753 | 607.385 | 3212.297 | 7017.889 | 1.6 | 496 | 4 | — |
 | 8 | docxodus-csharp | dotnet | 50 | 50 | 208.388 | 441.646 | 911.873 | 1154.008 | 2.3 | 50 | 0 | — |
 
