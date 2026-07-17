@@ -10,6 +10,8 @@
  * Engines:
  *   - docxodus-csharp  (.NET Docxodus tools/redline CLI — native C#, not WASM)
  *   - jubarte-rust     (canonical jubarte-redlines native CLI)
+ *   - jubarte-rust-inproc  (warm in-process jubarte worker — fair algorithm baseline)
+ *   - jubarte-wasm     (canonical jubarte-redlines via wasm-pack + wasm-opt -O3 in V8)
  *   - jubarte-native / jubarte-lossless  (optional Node paths; V8 profile)
  *
  * Usage (from neurotic_docx_bench root):
@@ -77,7 +79,11 @@ const methods = arg(
 	"--methods",
 	// Thesis-defense default: warm-vs-warm first (algorithm), then CLI spawn,
 	// then WASM. Order does not affect timing (engines run sequentially).
-	"jubarte-rust-inproc,docxodus-csharp-inproc,jubarte-rust,docxodus-csharp,docxodus",
+	// The three jubarte lanes always run together so engine compute tax
+	// (inproc), deployment reality (CLI spawn+I/O) and the portability lane
+	// (WASM) are measured under the same conditions in every run
+	// (WASM_PERF_PLAN W7).
+	"jubarte-rust-inproc,docxodus-csharp-inproc,jubarte-rust,docxodus-csharp,docxodus,jubarte-wasm",
 )
 	.split(",")
 	.map((s) => s.trim())
@@ -392,6 +398,40 @@ export function engineMethodId(method: string): string {
 		return "docxodus";
 	}
 	return method;
+}
+
+/**
+ * The three jubarte lanes that must always run together (WASM_PERF_PLAN W7):
+ * `jubarte-rust-inproc` (warm native — the fair algorithm baseline),
+ * `jubarte-rust` (CLI — deployment reality), and `jubarte-wasm` (V8 portability
+ * lane). Comparing only a subset conflates engine compute tax with CLI
+ * spawn+I/O overhead.
+ */
+const JUBARTE_LANES = new Set([
+	"jubarte-rust-inproc",
+	"jubarte-rust",
+	"jubarte-wasm",
+]);
+{
+	const requested = new Set(
+		methods
+			.map((m) => engineMethodId(m))
+			.filter((id) => JUBARTE_LANES.has(id)),
+	);
+	if (requested.size > 0 && requested.size < JUBARTE_LANES.size) {
+		const missing = [...JUBARTE_LANES].filter(
+			(id) => !requested.has(id),
+		);
+		console.error(
+			`error: --methods includes jubarte lanes ${[...requested].join(", ")} ` +
+				`but is missing ${missing.join(", ")}. The three jubarte lanes ` +
+				`(jubarte-rust-inproc, jubarte-rust, jubarte-wasm) must always run ` +
+				`together so engine compute tax, CLI spawn overhead, and the WASM ` +
+				`portability lane are measured under the same conditions ` +
+				`(WASM_PERF_PLAN W7). To override, pass all three explicitly.`,
+		);
+		process.exit(2);
+	}
 }
 
 export function defaultJubarteWasmDist(root: string = ROOT): string {
