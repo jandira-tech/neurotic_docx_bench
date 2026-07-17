@@ -1,6 +1,35 @@
 /* @ts-self-types="./jubarte_wasm.d.ts" */
 
 /**
+ * Accept every tracked revision (package-wide) → clean DOCX bytes.
+ *
+ * Mirrors `jubarte::document_comparer::accept_revisions`.
+ * @param {Uint8Array} docx
+ * @returns {Uint8Array}
+ */
+function acceptRevisions(docx) {
+    try {
+        const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
+        const ptr0 = passArray8ToWasm0(docx, wasm.__wbindgen_export2);
+        const len0 = WASM_VECTOR_LEN;
+        wasm.acceptRevisions(retptr, ptr0, len0);
+        var r0 = getDataViewMemory0().getInt32(retptr + 4 * 0, true);
+        var r1 = getDataViewMemory0().getInt32(retptr + 4 * 1, true);
+        var r2 = getDataViewMemory0().getInt32(retptr + 4 * 2, true);
+        var r3 = getDataViewMemory0().getInt32(retptr + 4 * 3, true);
+        if (r3) {
+            throw takeObject(r2);
+        }
+        var v2 = getArrayU8FromWasm0(r0, r1).slice();
+        wasm.__wbindgen_export(r0, r1 * 1, 1);
+        return v2;
+    } finally {
+        wasm.__wbindgen_add_to_stack_pointer(16);
+    }
+}
+exports.acceptRevisions = acceptRevisions;
+
+/**
  * Compare two DOCX packages (bytes) → redline DOCX bytes (`w:ins`/`w:del`).
  *
  * Mirrors `jubarte::document_comparer::compare_documents`.
@@ -36,12 +65,79 @@ function compareDocuments(original, modified, author) {
 exports.compareDocuments = compareDocuments;
 
 /**
+ * List the tracked revisions in a DOCX as a JSON array string — the same
+ * object shape as the CLI `jubarte revisions --json` lines
+ * (`type`/`author`/`date`/`part`/`moveGroupId`/`isMoveSource`/`formatChange`/`text`).
+ *
+ * Mirrors `jubarte::document_comparer::get_revisions` with default settings,
+ * serialized by the shared `revisions_to_json`.
+ * @param {Uint8Array} docx
+ * @returns {string}
+ */
+function getRevisions(docx) {
+    let deferred3_0;
+    let deferred3_1;
+    try {
+        const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
+        const ptr0 = passArray8ToWasm0(docx, wasm.__wbindgen_export2);
+        const len0 = WASM_VECTOR_LEN;
+        wasm.getRevisions(retptr, ptr0, len0);
+        var r0 = getDataViewMemory0().getInt32(retptr + 4 * 0, true);
+        var r1 = getDataViewMemory0().getInt32(retptr + 4 * 1, true);
+        var r2 = getDataViewMemory0().getInt32(retptr + 4 * 2, true);
+        var r3 = getDataViewMemory0().getInt32(retptr + 4 * 3, true);
+        var ptr2 = r0;
+        var len2 = r1;
+        if (r3) {
+            ptr2 = 0; len2 = 0;
+            throw takeObject(r2);
+        }
+        deferred3_0 = ptr2;
+        deferred3_1 = len2;
+        return getStringFromWasm0(ptr2, len2);
+    } finally {
+        wasm.__wbindgen_add_to_stack_pointer(16);
+        wasm.__wbindgen_export(deferred3_0, deferred3_1, 1);
+    }
+}
+exports.getRevisions = getRevisions;
+
+/**
  * One-shot init: panic hook → `console.error`. Safe to call multiple times.
  */
 function initPanicHook() {
     wasm.initPanicHook();
 }
 exports.initPanicHook = initPanicHook;
+
+/**
+ * Reject every tracked revision (package-wide) → base DOCX bytes.
+ *
+ * Mirrors `jubarte::document_comparer::reject_revisions`.
+ * @param {Uint8Array} docx
+ * @returns {Uint8Array}
+ */
+function rejectRevisions(docx) {
+    try {
+        const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
+        const ptr0 = passArray8ToWasm0(docx, wasm.__wbindgen_export2);
+        const len0 = WASM_VECTOR_LEN;
+        wasm.rejectRevisions(retptr, ptr0, len0);
+        var r0 = getDataViewMemory0().getInt32(retptr + 4 * 0, true);
+        var r1 = getDataViewMemory0().getInt32(retptr + 4 * 1, true);
+        var r2 = getDataViewMemory0().getInt32(retptr + 4 * 2, true);
+        var r3 = getDataViewMemory0().getInt32(retptr + 4 * 3, true);
+        if (r3) {
+            throw takeObject(r2);
+        }
+        var v2 = getArrayU8FromWasm0(r0, r1).slice();
+        wasm.__wbindgen_export(r0, r1 * 1, 1);
+        return v2;
+    } finally {
+        wasm.__wbindgen_add_to_stack_pointer(16);
+    }
+}
+exports.rejectRevisions = rejectRevisions;
 function __wbg_get_imports() {
     const import0 = {
         __proto__: null,
