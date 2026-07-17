@@ -67,6 +67,67 @@ def convert_one(
     )
 
 
+# Open the document in Word and immediately close it (no export). A file that is
+# not "Word valid" (per the standing definition: opens with zero warning/error/
+# repair prompts) makes the AppleScript `open` block on a modal dialog, so the
+# subprocess times out; a corrupt package makes osascript exit nonzero.
+_VALIDATE_APPLESCRIPT = """
+on run argv
+  set inPath to item 1 of argv
+  tell application "Microsoft Word"
+    open inPath
+    set docName to name of active document
+    close active document saving no
+    return docName
+  end tell
+end run
+""".strip()
+
+
+def _interpret_validation(
+    *, returncode: int | None, stdout: str, stderr: str, timed_out: bool,
+) -> RenderResult:
+    """Decide Word-validity from an osascript outcome (pure; unit-tested).
+
+    A repair/warning dialog blocks AppleScript's `open`, so a timeout means the
+    document is NOT Word valid. A clean open echoes the document name and exits 0.
+    """
+    if timed_out:
+        return RenderResult(source=Path("."), pdf=None, ok=False, error="dialog (timeout)")
+    if returncode == 0 and stdout.strip():
+        return RenderResult(source=Path("."), pdf=None, ok=True)
+    return RenderResult(
+        source=Path("."),
+        pdf=None,
+        ok=False,
+        error=(stderr or f"exit {returncode}").strip(),
+    )
+
+
+def validate_one(docx: Path, *, timeout: float = 60.0) -> RenderResult:
+    """Word-validity gate: open in Microsoft Word, expect no repair dialog.
+
+    LOCAL/INTERACTIVE only (never CI) — Word may pop a permission or repair
+    dialog. Grant permission prompts (they do not fail validity per the standing
+    definition); a repair/warning dialog is a validity failure (surfaces as a
+    timeout).
+    """
+    try:
+        proc = subprocess.run(
+            ["osascript", "-e", _VALIDATE_APPLESCRIPT, str(docx.resolve())],
+            capture_output=True,
+            text=True,
+            timeout=timeout,
+        )
+    except subprocess.TimeoutExpired:
+        interp = _interpret_validation(returncode=None, stdout="", stderr="", timed_out=True)
+        return RenderResult(source=docx, pdf=None, ok=interp.ok, error=interp.error)
+    interp = _interpret_validation(
+        returncode=proc.returncode, stdout=proc.stdout, stderr=proc.stderr, timed_out=False,
+    )
+    return RenderResult(source=docx, pdf=None, ok=interp.ok, error=interp.error)
+
+
 class WordRenderer:
     name: str = "word"
 
