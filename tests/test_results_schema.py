@@ -6,9 +6,9 @@ import uuid
 from datetime import UTC, datetime
 from pathlib import Path
 
+from neurotic_docx_bench.benchmarks import BENCHMARKS
 from neurotic_docx_bench.config import BenchConfig
 from neurotic_docx_bench.results_schema import (
-    BENCHMARKS,
     Results,
     aggregate_speed,
     build_results,
