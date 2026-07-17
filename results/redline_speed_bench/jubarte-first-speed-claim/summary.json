@@ -1,0 +1,59 @@
+{
+  "runTs": "2026-07-16T04:16:32.394Z",
+  "rows": [
+    {
+      "schema": 1,
+      "kind": "redline_speed_bench",
+      "tool": "jubarte-lossless",
+      "engine": "jubarte-lossless",
+      "dist": "/Users/arthrod/temp/T/jubarte-first/dist",
+      "runtime": "node",
+      "run_ts": "2026-07-16T04:16:32.394Z",
+      "seed": 42,
+      "fixture_count": 1000,
+      "fixture_target": 1000,
+      "pair_count": 5000,
+      "reps": 1,
+      "warmup": 50,
+      "init_ms": 54.191,
+      "wall_ms": 840816.603,
+      "failures": 3,
+      "unit": "ms_per_redline",
+      "n": 4997,
+      "mean": 168.184,
+      "median": 54.642,
+      "p90": 517.997,
+      "p95": 592.49,
+      "p99": 1191.719,
+      "min": 17.182,
+      "max": 3641.394,
+      "std": 322.827,
+      "total_ms": 840413.413,
+      "throughput_per_s": 5.9,
+      "mean_out_bytes": 68688,
+      "profile": null,
+      "profile_tool": null,
+      "top_cpu": null,
+      "failure_samples": [
+        {
+          "key": "file_192__file_159__r0",
+          "error": "jubarte lossless DocumentComparer.CompareDocuments returned empty output (comparison failed internally — see jubarte's own error, not surfaced here)"
+        },
+        {
+          "key": "file_78__word_tolerated_misplaced_uipriority_word_tolerated_orphan_comment_redline__r2",
+          "error": "jubarte lossless DocumentComparer.CompareDocuments returned empty output (comparison failed internally — see jubarte's own error, not surfaced here)"
+        },
+        {
+          "key": "comments_complex_style_attr_word_redline__38631f23__file_159__r3",
+          "error": "jubarte lossless DocumentComparer.CompareDocuments returned empty output (comparison failed internally — see jubarte's own error, not surfaced here)"
+        }
+      ]
+    }
+  ],
+  "fixtures": 1000,
+  "pairs": 5000,
+  "seed": 42,
+  "methods": [
+    "jubarte-lossless"
+  ]
+}

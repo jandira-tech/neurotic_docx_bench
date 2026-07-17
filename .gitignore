@@ -100,3 +100,5 @@ jubarte-lossless/
 src/neurotic_docx_bench/utils/jubarte/jubarte-rust/jubarte
 src/neurotic_docx_bench/utils/jubarte/jubarte-rust/redline
 src/neurotic_docx_bench/utils/jubarte/jubarte-rust/ENGINE_*.txt
+results/redline_speed_bench/**/fixtures_bytes/
+**/**/fixtures_bytes/**

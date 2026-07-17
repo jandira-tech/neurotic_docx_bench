@@ -1,11 +1,11 @@
 {
-	"name": "neurotic-docx-bench-docx-redline-js",
-	"private": true,
-	"type": "module",
-	"description": "docx-redline-js dependencies for neurotic-docx-bench",
-	"dependencies": {
-		"@ansonlai/docx-redline-js": "0.2.0",
-		"@xmldom/xmldom": "^0.9.10",
-		"jszip": "^3.10.1"
-	}
+  "name": "neurotic-docx-bench-docx-redline-js",
+  "private": true,
+  "type": "module",
+  "description": "docx-redline-js dependencies for neurotic-docx-bench (local TS migration, not npm 0.2.0)",
+  "dependencies": {
+    "@ansonlai/docx-redline-js": "file:../../../../../docx-redline-migration-kit/dist/docx-redline-js",
+    "@xmldom/xmldom": "0.9.10",
+    "jszip": "3.10.1"
+  }
 }
