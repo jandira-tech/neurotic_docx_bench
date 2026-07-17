@@ -38,6 +38,26 @@ def test_local_version_missing_dir(tmp_path):
         tool_updater.resolve_local_version(tmp_path / "nope")
 
 
+def test_local_version_records_engine_source_commit(tmp_path):
+    """GET_JUBARTE_RUST.md mandate: record the engine's git commit alongside a
+    content-hash pin. ENGINE_*.txt is provenance metadata — it rides in the
+    version string as ``+git.<sha>`` and is EXCLUDED from the content hash, so
+    stamping provenance never changes the pin itself."""
+    build = tmp_path / "jubarte-rust"
+    build.mkdir()
+    (build / "redline").write_bytes(b"\x7fELF-fake-binary")
+    bare = tool_updater.resolve_local_version(build)
+
+    (build / "ENGINE_COMMIT.txt").write_text("dea8d27\n")
+    stamped = tool_updater.resolve_local_version(build)
+    assert stamped == f"{bare}+git.dea8d27"
+
+    # Provenance metadata must not perturb the content hash.
+    (build / "ENGINE_COMMIT.txt").write_text("othersha\n")
+    restamped = tool_updater.resolve_local_version(build)
+    assert restamped == f"{bare}+git.othersha"
+
+
 @pytest.mark.skipif(
     not (DIST / "jubarte-final").is_dir(),
     reason="dist/ jubarte-final build absent (git-ignored)",

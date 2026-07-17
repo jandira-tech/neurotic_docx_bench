@@ -23,6 +23,13 @@ def resolve_local_version(dist_path: Path) -> str:
 
     ``<build>/package.json``'s ``version`` if present, else ``<dirname>@<sha256[:12]>`` over
     the (path, bytes) of every file in the build — stable and distinct per build.
+
+    Content-hash pins are untraceable to source on their own, so when the build
+    carries an ``ENGINE_COMMIT.txt`` (written at install time; the engine's git
+    commit), the pin gains a ``+git.<sha>`` suffix (GET_JUBARTE_RUST.md: "record
+    the Jubarte Git commit alongside that hash"). ``ENGINE_*.txt`` files are
+    provenance metadata, excluded from the hash — stamping them never changes
+    the pin itself.
     """
     dist_path = Path(dist_path)
     if not dist_path.is_dir():
@@ -37,9 +44,17 @@ def resolve_local_version(dist_path: Path) -> str:
             pass
     digest = hashlib.sha256()
     for f in sorted(p for p in dist_path.rglob("*") if p.is_file()):
+        if f.name.startswith("ENGINE_") and f.suffix == ".txt":
+            continue
         digest.update(f.relative_to(dist_path).as_posix().encode())
         digest.update(f.read_bytes())
-    return f"{dist_path.name}@{digest.hexdigest()[:12]}"
+    pin = f"{dist_path.name}@{digest.hexdigest()[:12]}"
+    commit_file = dist_path / "ENGINE_COMMIT.txt"
+    if commit_file.is_file():
+        commit = commit_file.read_text().strip()
+        if commit:
+            return f"{pin}+git.{commit}"
+    return pin
 
 
 def _package_name(spec: str) -> str:

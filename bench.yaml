@@ -32,7 +32,7 @@ generate_scripts:
     command: "uv run bench render corpus/word_based/docx_source /tmp/pdf_source_render --backend soffice --jobs 6 --force && mv /tmp/pdf_source_render/pdf/*.pdf corpus/word_based/pdf_source/"
 
 # Tool versions are PINNED to the ones we reviewed:
-#   docxodus 7.0.0 · docx-redline-js 0.2.0
+#   docxodus 7.0.0 · docx-redline-js = local TS migration (dist: sibling package)
 #   @stll/folio-core 0.3.1 (generator) · @stll/folio-react 0.5.0 (viewer)
 #   superdoc-sdk (Python) 1.19.2 · superdoc editor (npm) 1.44.1  ← different packages
 #   jubarte builds are content-hashed under dist/
@@ -154,9 +154,12 @@ runs:
     benchmarks: [visual_accepted_changes]
     harness: *folio-harness
 
-  # (3) docx-redline-js — OOXML text-reconciliation redliner (@ansonlai/docx-redline-js, MIT).
+  # (3) docx-redline-js — OOXML text-reconciliation redliner (strict-TS migration).
+  # Local build from sibling repo docx-redline-migration-kit (NOT npm 0.2.0).
+  # Rebuild: cd ../docx-redline-migration-kit && bun run build:package
+  # then: cd src/neurotic_docx_bench/utils/docx-redline-js && bun install
   - name: docx-redline-js
-    package: "@ansonlai/docx-redline-js@0.2.0"
+    dist: ../docx-redline-migration-kit/dist/docx-redline-js
     generate: "node --import tsx scripts/generate-native-redlines.ts --method=docx-redline-js --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=docx-redline-js"
     render: soffice
     jobs: 8
