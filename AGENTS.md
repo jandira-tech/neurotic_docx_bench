@@ -3,6 +3,13 @@
 Guidance for AI agents and contributors working on this repo. Read this before changing
 anything; the invariants below are load-bearing.
 
+Before changing, rebuilding, or benchmarking the Rust redline engine, also read
+`../reconciliation_plan/GET_JUBARTE_RUST.md`. The only canonical local Rust source
+checkout is `../jubarte-redlines` (`~/T/jubarte-redlines`). Everything under this
+repository's `src/neurotic_docx_bench/utils/jubarte/jubarte-rust` and
+`src/neurotic_docx_bench/utils/jubarte/jubarte-wasm/pkg` is a consumer artifact;
+never implement an engine fix in those copies.
+
 ## What this is
 
 A benchmark that measures how faithfully DOCX tools reproduce **Microsoft Word's**
@@ -75,7 +82,8 @@ Key modules (`src/neurotic_docx_bench/`):
 | `superdoc` | SuperDoc SDK (Python) Document-Engine diff | pip `superdoc-sdk` |
 | `redlines` | houfu/redlines text diff → `w:ins`/`w:del` DOCX rewrite (`redlines_gen.py`) | pip `redlines` |
 | `superdoc-redlines` | yuch85/superdoc-redlines SuperDoc-headless CLI, extract→align→apply (`superdoc_redlines_gen.py`) | clone `package.json` version |
-| `jubarte-rust` | ooxmlsdk-redline CLI (Rust Word-mode comparer) | binary content-hash |
+| `jubarte-rust` | `jubarte-redlines` native CLI (Rust Word-mode comparer) | binary content-hash |
+| `jubarte-wasm` | wasm-bindgen adapter over the canonical `jubarte-redlines` library | generated WASM hash + source commit |
 | `word-redlines-soffice` | identity sanity (renders the Word redline DOCX) | — |
 
 **Tool versions are pinned** to the reviewed ones (see `bench.yaml`). Do **not** bump to

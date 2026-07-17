@@ -1,4 +1,4 @@
-//! WebAssembly bindings for **jubarte-rs** Word-mode redline compare.
+//! WebAssembly bindings for the canonical **jubarte-redlines** Word-mode compare.
 //!
 //! Built with **wasm-pack** + **wasm-opt -O3** (Binaryen) — the standard
 //! Rust→browser/Node pipeline that currently produces the fastest practical
