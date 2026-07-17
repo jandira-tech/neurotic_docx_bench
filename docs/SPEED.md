@@ -6,6 +6,13 @@ in `results/speed.jsonl`. Render speed (Playwright viewer → PDF) is measured s
 `python -m neurotic_docx_bench.playwright_speed` (see [Render speed](#render-speed)) and is
 also captured per-run in `results/bench.jsonl` under each `visual_*` line's speed stats.
 
+## Canonical Jubarte source
+
+Read `../../reconciliation_plan/GET_JUBARTE_RUST.md` before rebuilding either
+Jubarte runtime. The source of truth is `../../jubarte-redlines`
+(`~/T/jubarte-redlines`), not an older `ooxmlsdk` checkout. The native binary and
+WASM package in this repository are generated consumers of that source.
+
 ## Large-N native CLI bench (`speed_redlines`)
 
 Heavy compare of redline engines including **native C# Docxodus**, **WASM Docxodus**,
@@ -16,6 +23,7 @@ and **jubarte-rust**:
 | `jubarte-rust-inproc` | `jubarte-inproc` long-lived worker | same `compare_documents` as CLI, **warm** |
 | `docxodus-csharp-inproc` | `docxodus-inproc` long-lived worker | same `DocxDiffOps.Compare`, **warm** |
 | `jubarte-rust` | `utils/jubarte/jubarte-rust/redline` | Rust CLI (spawn per redline) |
+| `jubarte-wasm` | `utils/jubarte/jubarte-wasm/pkg` | Rust/wasm-bindgen in V8 after one-time init |
 | `docxodus-csharp` | Docxodus C# `tools/redline` | C# CLI (spawn + .NET cold-start) |
 | `docxodus` | npm WASM `compareDocuments` | Mono/.NET WASM after `initialize()` |
 
@@ -79,6 +87,50 @@ bun run redline-speed-bench:native
 samply load results/redline_speed_bench/cpu/docxodus-csharp.profile.json.gz
 samply load results/redline_speed_bench/cpu/jubarte-rust.profile.json.gz
 ```
+
+### Verified native/WASM 5k snapshot (2026-07-16)
+
+Both engines were built from Jubarte commit `c7c7fbf`, exercised over the same
+1,000 fixtures and 5,000 deterministic pairs (seed 42, warmup 50), and completed
+with zero failures. The full immutable report is
+[`results/redline_speed_bench/jubarte-wasm-native-c7c7fbf/report.md`](../results/redline_speed_bench/jubarte-wasm-native-c7c7fbf/report.md).
+The paired fidelity evidence is recorded separately in
+[`fidelity-summary.json`](../results/redline_speed_bench/jubarte-wasm-native-c7c7fbf/fidelity-summary.json).
+
+| tool | mode | median ms | mean ms | p95 | p99 | throughput/s | failures |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| `jubarte-rust` | CLI spawn + I/O | 10.428 | 32.914 | 129.333 | 202.766 | 30.4 | 0 |
+| `jubarte-wasm` | warm V8 WASM | 10.967 | 44.596 | 191.773 | 292.953 | 22.4 | 0 |
+
+Reproduce the paired run after rebuilding both consumers:
+
+```bash
+node --import tsx scripts/redline_speed_bench.ts \
+  --methods jubarte-wasm,jubarte-rust \
+  --fixture-count 1000 --min-pairs 5000 --warmup 50 --reps 1 \
+  --no-profile \
+  --out results/redline_speed_bench/<source-commit>
+```
+
+This snapshot compares shipping modes, not pure algorithm cost: the native row
+pays one process spawn and file I/O per pair, while WASM runs in-process after
+initialization. Use `jubarte-rust-inproc` for native algorithm comparisons.
+
+The preceding `script_redlines` fidelity gate produced identical per-document
+scores for native run `019f6e12-e2a5-72fa-b94e-e0da5e78e3e2` and WASM run
+`019f6e1d-3c41-7604-86d8-20dea470572f`: 207 documents generated, 164 scored,
+mean 91.9831, median 99.9040, 79 exact scores, 121 scores at least 90, three
+below 50, and zero generation failures. The built WASM payload SHA-256 was
+`73d76228310e39ba4c065df819be59c27418db32b7c316e5f83966008a7ec446`.
+
+After relocating the source checkout, the adapter was rebuilt from the same
+commit through the canonical path. The checked-in payload is 1,987,754 bytes
+with SHA-256
+`f01b4c6e532dacf59a3b9ec212dc225eb9dbcf1ee70a81f38149e0dc497b0545`.
+Partial run `019f6e39-e5e4-7535-abc0-9866be9f8f1b` exercised the official
+`bench.yaml` entry: 207 outputs generated, three limited documents scored, and
+zero failures. The full-corpus scores above remain the quality gate for the same
+Rust source commit.
 
 ### Why C# CLI looks “that slow” (it isn’t the algorithm)
 

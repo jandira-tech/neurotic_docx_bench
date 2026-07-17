@@ -147,7 +147,7 @@ export async function loadEngine(
 			return out instanceof Uint8Array ? out : new Uint8Array(out);
 		};
 	}
-	// jubarte-rs → wasm-bindgen package (wasm-pack + wasm-opt -O3).
+	// Canonical jubarte-redlines source → wasm-bindgen package (wasm-pack + wasm-opt -O3).
 	// Dist dir is the crate root (contains pkg/jubarte_wasm.js) or pkg/ itself.
 	if (
 		method === "jubarte-wasm" ||
@@ -407,10 +407,10 @@ export async function loadEngine(
 			}
 		};
 	}
-	// ooxmlsdk-redline CLI (Rust). Dist dir holds the release `redline` binary
+	// jubarte-redlines CLI (Rust). Dist dir holds the release `redline` binary
 	// (also copied as `jubarte` for older examples). Invoked as:
 	//   redline <base> <next> -o <out> --force --quiet
-	if (method === "jubarte-rust" || method === "ooxmlsdk-redline") {
+	if (method === "jubarte-rust" || method === "jubarte-redlines") {
 		const binCandidates = ["redline", "jubarte"].map((n) =>
 			resolve(distPath, n),
 		);
@@ -419,7 +419,7 @@ export async function loadEngine(
 			throw new Error(
 				`jubarte-rust: no redline binary under ${distPath} ` +
 					`(checked ${binCandidates.join(", ")}). ` +
-					`Copy ooxmlsdk-redline target/release/redline there.`,
+					`Build ~/T/jubarte-redlines and copy target/release/jubarte there as redline.`,
 			);
 		}
 		let ctr = 0;

@@ -9,7 +9,7 @@
  *
  * Engines:
  *   - docxodus-csharp  (.NET Docxodus tools/redline CLI — native C#, not WASM)
- *   - jubarte-rust     (ooxmlsdk-redline / jubarte-rust CLI)
+ *   - jubarte-rust     (canonical jubarte-redlines native CLI)
  *   - jubarte-native / jubarte-lossless  (optional Node paths; V8 profile)
  *
  * Usage (from neurotic_docx_bench root):
@@ -1114,7 +1114,7 @@ async function main() {
 		"- **docxodus:** npm WASM package (`compareDocuments`) — Mono/.NET WASM in-process after one-time `initialize()`.",
 	);
 	md.push(
-		"- **jubarte-wasm:** jubarte-rs via **wasm-pack** + **wasm-opt -O3** (`wasm32-unknown-unknown` + wasm-bindgen). Same `compare_documents` as native Rust, hosted in V8 WASM — fair peer of docxodus WASM.",
+		"- **jubarte-wasm:** canonical jubarte-redlines source via **wasm-pack** + **wasm-opt -O3** (`wasm32-unknown-unknown` + wasm-bindgen). Same `compare_documents` as native Rust, hosted in V8 WASM — fair peer of docxodus WASM.",
 	);
 	md.push(
 		"- **jubarte-native / jubarte-lossless:** in-memory Node Uint8Array compare when included.",

@@ -212,8 +212,9 @@ runs:
     vendor: superdoc-redlines
     benchmarks: [script_redlines]
 
-  # (4f) jubarte-rust — ooxmlsdk-redline CLI (Rust Word-mode comparer). Install the
-  # release binary as utils/jubarte/jubarte-rust/redline (see ooxmlsdk batch_to_fix).
+  # (4f) jubarte-rust — canonical ~/T/jubarte-redlines CLI (Rust Word-mode comparer).
+  # Install target/release/jubarte as utils/jubarte/jubarte-rust/redline; see
+  # ../reconciliation_plan/GET_JUBARTE_RUST.md for the source-to-bench map.
   - name: jubarte-rust
     dist: src/neurotic_docx_bench/utils/jubarte/jubarte-rust
     generate: "node --import tsx scripts/generate-native-redlines.ts --method=jubarte-rust --dist=src/neurotic_docx_bench/utils/jubarte/jubarte-rust --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=jubarte-rust"
@@ -221,6 +222,17 @@ runs:
     jobs: 8
     vendor: jubarte-rust
     benchmarks: [script_redlines, accepted_changes, roundtrip]
+
+  # (4g) jubarte-wasm — wasm-bindgen adapter over the same canonical Rust source.
+  # Rebuild from utils/jubarte/jubarte-wasm; script_redlines must match native
+  # per-document scores before publishing a WASM speed claim.
+  - name: jubarte-wasm
+    dist: src/neurotic_docx_bench/utils/jubarte/jubarte-wasm/pkg
+    generate: "node --import tsx scripts/generate-native-redlines.ts --method=jubarte-wasm --dist=src/neurotic_docx_bench/utils/jubarte/jubarte-wasm/pkg --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=jubarte-wasm"
+    render: soffice
+    jobs: 8
+    vendor: jubarte-wasm
+    benchmarks: [script_redlines]
 
 
   # (4b) superdoc via the TypeScript SDK (@superdoc-dev/sdk) — same Document Engine

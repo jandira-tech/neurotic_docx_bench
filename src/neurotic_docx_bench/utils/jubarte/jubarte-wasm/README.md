@@ -1,6 +1,11 @@
 # jubarte-wasm
 
-`wasm-bindgen` package for **jubarte-rs** `compare_documents` (Word-mode redline).
+`wasm-bindgen` package for the canonical **jubarte-redlines**
+`compare_documents` implementation (Word-mode redline).
+
+Read `~/T/reconciliation_plan/GET_JUBARTE_RUST.md` before rebuilding. The source
+of truth is `~/T/jubarte-redlines`; this adapter and its generated `pkg/` output
+belong to the benchmark and must not become an independent engine fork.
 
 ## Toolchain (why this one)
 
@@ -23,6 +28,11 @@ it is not drop-in for the Docxodus-style “import in Node” path this bench us
 wasm-pack build --target nodejs --release
 # → pkg/  (jubarte_wasm.js + jubarte_wasm_bg.wasm)
 ```
+
+The checked-in Cargo path dependency resolves to `~/T/jubarte-redlines`. After
+building, run both `script_redlines` and the 5,000-pair speed lane described in
+`../../../../../docs/SPEED.md`; native and WASM fidelity scores must match for
+the same source commit before publishing a speed comparison.
 
 ## Smoke
 

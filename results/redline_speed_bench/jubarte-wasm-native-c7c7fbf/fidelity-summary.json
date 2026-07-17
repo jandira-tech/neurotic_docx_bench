@@ -1,0 +1,30 @@
+{
+  "source_commit": "c7c7fbfd6a858b528ab7c2cc28e2e7934c10e572",
+  "full_fidelity_gate": {
+    "native_run_id": "019f6e12-e2a5-72fa-b94e-e0da5e78e3e2",
+    "wasm_run_id": "019f6e1d-3c41-7604-86d8-20dea470572f",
+    "wasm_artifact_sha256": "73d76228310e39ba4c065df819be59c27418db32b7c316e5f83966008a7ec446",
+    "generated_documents": 207,
+    "scored_documents": 164,
+    "overall_mean": 91.9831,
+    "overall_median": 99.904,
+    "page_mean": 86.2198,
+    "page_median": 98.5652,
+    "exact_100": 79,
+    "at_least_90": 121,
+    "below_50": 3,
+    "min": 45.6969,
+    "max": 100.0,
+    "per_document_score_differences": 0,
+    "native_failures": [],
+    "wasm_failures": []
+  },
+  "canonical_path_rebuild_smoke": {
+    "run_id": "019f6e39-e5e4-7535-abc0-9866be9f8f1b",
+    "wasm_artifact_sha256": "f01b4c6e532dacf59a3b9ec212dc225eb9dbcf1ee70a81f38149e0dc497b0545",
+    "wasm_artifact_bytes": 1987754,
+    "generated_documents": 207,
+    "scored_documents": 3,
+    "failures": []
+  }
+}
