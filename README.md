@@ -127,10 +127,10 @@ Sorted by median **ms per redline** (lower is faster). Large-N warm rows (`*-inp
 | Rank | Tool | Runtime | Fixtures | Pairs | Median ms | Mean ms | p95 | /s | n | Failures |
 | --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | 1 | jubarte-native | node | 199 | 1000 | 6.33 | 21.54 | 59.88 | 46.4 | 1000 | 0 |
-| 2 | jubarte-wasm | rust-wasm | 200 | 500 | 6.80 | 58.18 | 293.15 | 17.2 | 500 | 0 |
-| 3 | jubarte-rust-inproc | rust | 1000 | 5000 | 9.34 | 40.01 | 152.68 | 25.0 | 5000 | 0 |
-| 4 | docxodus-csharp-inproc | dotnet | 1000 | 5000 | 9.43 | 29.90 | 110.73 | 33.4 | 4880 | 120 |
-| 5 | jubarte-rust | rust | 1000 | 5000 | 14.37 | 38.77 | 135.64 | 25.8 | 5000 | 0 |
+| 2 | jubarte-rust-inproc | rust | 1000 | 5000 | 9.34 | 40.01 | 152.68 | 25.0 | 5000 | 0 |
+| 3 | docxodus-csharp-inproc | dotnet | 1000 | 5000 | 9.43 | 29.90 | 110.73 | 33.4 | 4880 | 120 |
+| 4 | jubarte-rust | rust | 1000 | 5000 | 10.43 | 32.91 | 129.33 | 30.4 | 5000 | 0 |
+| 5 | jubarte-wasm | rust-wasm | 1000 | 5000 | 10.97 | 44.60 | 191.77 | 22.4 | 5000 | 0 |
 | 6 | jubarte-lossless | node | 1000 | 5000 | 73.48 | 263.83 | 899.38 | 3.8 | 4997 | 3 |
 | 7 | docxodus | dotnet-wasm | 200 | 500 | 148.75 | 607.38 | 3212.30 | 1.6 | 496 | 4 |
 | 8 | docxodus-csharp | dotnet | 50 | 50 | 208.39 | 441.65 | 911.87 | 2.3 | 50 | 0 |
@@ -205,7 +205,8 @@ Notes that matter when reading scores:
 | Vendor | What runs | Version pin | Role |
 | --- | --- | --- | --- |
 | **jubarte** | In-repo `dist/jubarte-final` (`compareDocx` / CriticMarkup paths) | content-hash under `dist/` | Generator |
-| **jubarte-rust** | Rust port under `utils/jubarte` | content-hash | Generator |
+| **jubarte-rust** | Native CLI built from canonical `../jubarte-redlines` | content-hash | Generator |
+| **jubarte-wasm** | wasm-bindgen adapter over canonical `../jubarte-redlines` | generated artifact + source commit | Generator |
 | **docxodus** | npm `docxodus` WASM `compareDocuments` | **6.4.0** | Generator + viewer |
 | **folio** | `@stll/folio-core` compare + applyOperations | **0.3.1** | Generator |
 | **folio** (viewer) | `@stll/folio-react` Playwright harness | **0.5.0** | Editor |
@@ -217,6 +218,10 @@ Notes that matter when reading scores:
 
 Pins live in [`bench.yaml`](bench.yaml). Do not bump to `@latest` without re-review — the
 pin is what keeps CI and published rankings reproducible.
+
+For the canonical source folder, native/WASM build flow, fidelity gate, and 5k
+speed command, read the local `../reconciliation_plan/GET_JUBARTE_RUST.md` handoff
+and [`docs/SPEED.md`](docs/SPEED.md).
 
 ---
 
