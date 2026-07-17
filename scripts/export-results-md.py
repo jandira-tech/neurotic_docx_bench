@@ -178,8 +178,7 @@ def _table(headers: list[str], rows: list[list[str]]) -> list[str]:
         "| " + " | ".join(headers) + " |",
         "| " + " | ".join("---" for _ in headers) + " |",
     ]
-    for row in rows:
-        lines.append("| " + " | ".join(row) + " |")
+    lines.extend("| " + " | ".join(row) + " |" for row in rows)
     return lines
 
 
@@ -264,10 +263,7 @@ def to_fidelity_markdown(rows: list[dict[str, object]], source: Path) -> str:
         lines.append("")
 
     lines.extend(["## All fidelity runs (flat)", ""])
-    flat_rows: list[list[str]] = []
-    for r in rows:
-        flat_rows.append(
-            [
+    flat_rows: list[list[str]] = [[
                 _escape_cell(r["vendor"]),
                 _escape_cell(r.get("tool_version") or "—"),
                 _escape_cell(r["datetime"]),
@@ -275,8 +271,7 @@ def to_fidelity_markdown(rows: list[dict[str, object]], source: Path) -> str:
                 _escape_cell(_format_num(r["mean"])),
                 _escape_cell(_format_num(r["median"])),
                 _escape_cell(_format_num(r["n_docs"])),
-            ]
-        )
+            ] for r in rows]
     lines.extend(
         _table(
             ["vendor", "version", "datetime", "benchmark", "mean", "median", "n_docs"],
@@ -295,9 +290,10 @@ def _speed_rank(row: dict[str, object]) -> tuple:
     n = row.get("n")
     med = row.get("median")
     ts = str(row.get("run_ts") or "")
+    throughput_per_s = row.get("throughput_per_s")
     n_v = int(n) if isinstance(n, (int, float)) else -1
     m_v = -float(med) if isinstance(med, (int, float)) else float("-inf")
-    return (n_v, m_v, ts)
+    return (n_v, throughput_per_s, ts)
 
 
 def _normalize_speed_row(data: dict, *, source: str = "") -> dict[str, object] | None:
@@ -309,7 +305,7 @@ def _normalize_speed_row(data: dict, *, source: str = "") -> dict[str, object] |
     tool = str(data.get("tool") or data.get("engine") or "")
     if not tool:
         return None
-    if data.get("error") and data.get("median") is None:
+    if data.get("error") and (data.get("median") or data.get("throughput_per_s"))is None:
         return None
     if data.get("median") is None and data.get("mean") is None:
         return None
@@ -416,7 +412,7 @@ def merge_speed_rows(*groups: list[dict[str, object]]) -> list[dict[str, object]
         best.values(),
         key=lambda r: (
             str(r["kind"]),
-            float(r["median"]) if isinstance(r["median"], (int, float)) else 1e18,
+            float(r["throughput_per_s"]) if isinstance(r["throughput_per_s"], (int, float)) else 1e18,
             str(r["tool"]),
         ),
     )
