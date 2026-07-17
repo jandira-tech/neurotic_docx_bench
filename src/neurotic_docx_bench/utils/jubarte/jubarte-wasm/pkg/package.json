@@ -1,6 +1,6 @@
 {
   "name": "jubarte-wasm",
-  "description": "wasm-bindgen bindings for jubarte-rs compare_documents (Word-mode redline)",
+  "description": "wasm-bindgen bindings for jubarte-redlines compare_documents (Word-mode redline)",
   "version": "0.1.0",
   "license": "AGPL-3.0-only",
   "files": [
