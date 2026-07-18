@@ -100,5 +100,11 @@ jubarte-lossless/
 src/neurotic_docx_bench/utils/jubarte/jubarte-rust/jubarte
 src/neurotic_docx_bench/utils/jubarte/jubarte-rust/redline
 src/neurotic_docx_bench/utils/jubarte/jubarte-rust/ENGINE_*.txt
+# jubarte-wasm is a symlink into the canonical crate at jubarte-redlines/jubarte-wasm.
+# Regenerate the crate + pkg there ("here"), never vendor a copy into this repo.
+src/neurotic_docx_bench/utils/jubarte/jubarte-wasm
 results/redline_speed_bench/**/fixtures_bytes/
 **/**/fixtures_bytes/**
+
+# W1–W5 wasm perf/memory profiler dumps (217MB, regenerable; findings live in TODO.md/RESULTS.md)
+results/wasm_perf/
