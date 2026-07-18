@@ -20,6 +20,10 @@ complete in 10 minutes). Timeout ≠ dialog at this size, and a timed-out
   scale).
 - [ ] On timeout, attempt a targeted close of the opened document so retries
   do not stack windows.
+- Observed again 2026-07-18 in the first D-2 scoreboard sweep: 5 small
+  lossless outputs reported 0/5 valid in-run, re-validated 5/5 minutes later
+  (Word busy, every open timed out). `runWordSample` retries a wholly-invalid
+  sample once as a stopgap; the dialog-vs-slow detection above is the fix.
 
 ## 2. ENGINE_COMMIT pin must record the full build recipe (MEDIUM)
 
