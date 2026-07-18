@@ -390,7 +390,15 @@ const loadFolioJudge = async (folioDir: string): Promise<FolioJudge> => {
 		for (const { handle } of reviewer.listStories()) {
 			if (handle.type !== "main") continue;
 			const story = reviewer.readReviewedStory({ story: handle, view });
-			return story ? story.snapshot.blocks.map(({ text }) => text).join("\n") : "";
+			if (!story) return "";
+			// Match compareLossless's comparison policy (main story exact modulo
+			// blank-line placement): empty blocks are dropped there too, so a
+			// blank-paragraph placement difference must not read as a lens
+			// disagreement.
+			return story.snapshot.blocks
+				.map(({ text }) => text)
+				.filter((text) => text.length > 0)
+				.join("\n");
 		}
 		return "";
 	};
