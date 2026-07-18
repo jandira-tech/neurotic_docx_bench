@@ -280,8 +280,12 @@ invalidity. `runWordSample` now retries a wholly-invalid sample once.
 Folio-lens failures in this run are dominated by `FolioDocxReviewer` THROWING
 `TransformError: Structure replace would overwrite content` while
 materializing views of Word-canonical redlines (45 native + 24 lossless
-pairs) — a folio resolution-fidelity bug, filed upstream; not an engine
-defect.
+pairs). Root-caused the same night: a PRE-MERGE folio regression (the
+pPrMark `canJoin` gate approving a paragraph|pageBreak atom boundary that
+`join` cannot perform), introduced on folio PR #5's branch and never on
+published main; caught by this scoreboard's judge tree and fixed upstream
+(folio `cff29c0`, corpus sweep 151/196 → 196/196). Not an engine defect —
+the next scheduled run should show the folio lens recovering.
 
 <!-- D2_SCOREBOARD:END -->
 
