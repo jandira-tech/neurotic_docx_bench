@@ -249,7 +249,7 @@ Run `d2-2026-07-18T03-30-26` (2026-07-18). Each pair: engine redline → accept-
 | engine | engine pin | corpus vintage | bench commit | folio commit | pairs | engine lens | folio lens | disagreements | word sample |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | jubarte-native | `f488f2c` | `daa7d92` | `477aa1a` | `d2d2907` | 196 | 189/196 | 144/196 | 45 | 5/5 valid |
-| jubarte-first-lossless | `edea4af` | `daa7d92` | `477aa1a` | `d2d2907` | 196 | 155/196 | 133/196 | 24 | 0/5 valid |
+| jubarte-first-lossless | `edea4af` | `daa7d92` | `477aa1a` | `d2d2907` | 196 | 155/196 | 133/196 | 24 | 5/5 valid¹ |
 
 ⚠️ 69 pair(s) with lens disagreement:
 - `file_5_file_6` (jubarte-native): engine lens pass, folio lens FAIL
@@ -272,6 +272,16 @@ Run `d2-2026-07-18T03-30-26` (2026-07-18). Each pair: engine redline → accept-
 - `file_68_file_69` (jubarte-native): engine lens pass, folio lens FAIL
 - `file_69_file_70` (jubarte-native): engine lens pass, folio lens FAIL
 - `file_73_file_74` (jubarte-native): engine lens pass, folio lens FAIL
+
+¹ The in-run word sample reported 0/5; the identical files re-validated 5/5
+minutes later — the WV-1 timeout-vs-dialog blind spot (TODO §1), not real
+invalidity. `runWordSample` now retries a wholly-invalid sample once.
+
+Folio-lens failures in this run are dominated by `FolioDocxReviewer` THROWING
+`TransformError: Structure replace would overwrite content` while
+materializing views of Word-canonical redlines (45 native + 24 lossless
+pairs) — a folio resolution-fidelity bug, filed upstream; not an engine
+defect.
 
 <!-- D2_SCOREBOARD:END -->
 
