@@ -15,6 +15,7 @@ import hashlib
 import json
 import os
 import subprocess
+import tomllib
 from pathlib import Path
 
 
@@ -55,6 +56,52 @@ def resolve_local_version(dist_path: Path) -> str:
         if commit:
             return f"{pin}+git.{commit}"
     return pin
+
+
+def resolve_build_recipe(dist_path: Path) -> dict[str, list[str]] | None:
+    """The FULL build recipe (rustflags + wasm-opt) that shapes a wasm artifact (TODO §2).
+
+    ``resolve_local_version`` records *which* build produced a result; it does NOT
+    record the build FLAGS that shape the artifact. For the wasm dist those flags live
+    in two TOML files, one level up from the loaded ``pkg/`` artifact:
+
+    - ``.cargo/config.toml`` → ``[target.wasm32-unknown-unknown] rustflags``
+    - ``Cargo.toml`` → ``[package.metadata.wasm-pack.profile.release] wasm-opt``
+
+    Returns ``{"rustflags": [...], "wasm_opt": [...]}`` (either list empty when its
+    sub-key is absent), or ``None`` when NEITHER TOML is present — a plain binary dist
+    has no cargo build recipe and yields ``None``, not an error.
+
+    ``dist_path`` may be the dir that holds the TOML files directly, or the ``pkg/``
+    artifact dir whose parent holds them.
+    """
+    dist_path = Path(dist_path)
+    for base in (dist_path, dist_path.parent):
+        cargo_config = base / ".cargo" / "config.toml"
+        cargo_toml = base / "Cargo.toml"
+        if not cargo_config.is_file() and not cargo_toml.is_file():
+            continue
+        rustflags: list[str] = []
+        wasm_opt: list[str] = []
+        if cargo_config.is_file():
+            config = tomllib.loads(cargo_config.read_text())
+            rustflags = list(
+                config.get("target", {})
+                .get("wasm32-unknown-unknown", {})
+                .get("rustflags", []),
+            )
+        if cargo_toml.is_file():
+            manifest = tomllib.loads(cargo_toml.read_text())
+            wasm_opt = list(
+                manifest.get("package", {})
+                .get("metadata", {})
+                .get("wasm-pack", {})
+                .get("profile", {})
+                .get("release", {})
+                .get("wasm-opt", []),
+            )
+        return {"rustflags": rustflags, "wasm_opt": wasm_opt}
+    return None
 
 
 def _package_name(spec: str) -> str:
