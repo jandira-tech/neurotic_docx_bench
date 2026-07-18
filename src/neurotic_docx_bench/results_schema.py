@@ -98,6 +98,7 @@ class Results:
     failures: list[dict[str, str]] = field(default_factory=list)
     timings: dict[str, dict[str, float]] = field(default_factory=dict)
     tool_version: str | None = None
+    build_recipe: dict[str, list[str]] | None = None
     config_hash: str | None = None
     timestamp: datetime = field(default_factory=lambda: datetime.now(UTC))
 
@@ -162,6 +163,7 @@ def build_results(
     timestamp: datetime,
     score_config: ScoreConfig | None = None,
     tool_version: str | None = None,
+    build_recipe: dict[str, list[str]] | None = None,
     config_hash: str | None = None,
     failures: list[dict[str, str]] | None = None,
     timings: dict[str, dict[str, float]] | None = None,
@@ -194,6 +196,7 @@ def build_results(
         failures=failures or [],
         timings=timings or {},
         tool_version=tool_version,
+        build_recipe=build_recipe,
         config_hash=config_hash,
         timestamp=timestamp,
     )
