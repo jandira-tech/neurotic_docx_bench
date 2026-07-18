@@ -241,6 +241,40 @@ visual_accepted_changes (Playwright)
 | superdoc | 1.44.1 | 2026-07-09T18:16:46.431642+00:00 | visual_rendering | 58.7798 | 61.2486 | 199 |
 | superdoc-redlines | 0.2.0 | 2026-07-12T08:32:43.871610+00:00 | script_redlines | 57.6297 | 55.8997 | 192 |
 
+<!-- D2_SCOREBOARD:BEGIN -->
+## Accept/reject scoreboard (D-2)
+
+Run `d2-2026-07-18T03-30-26` (2026-07-18). Each pair: engine redline → accept-all/reject-all, judged by the engine's own outputs (folio XML-direct text), folio's reviewer views, and a WV-1 Word sample. **Lens disagreement is the alarm.**
+
+| engine | engine pin | corpus vintage | bench commit | folio commit | pairs | engine lens | folio lens | disagreements | word sample |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| jubarte-native | `f488f2c` | `daa7d92` | `477aa1a` | `d2d2907` | 196 | 189/196 | 144/196 | 45 | 5/5 valid |
+| jubarte-first-lossless | `edea4af` | `daa7d92` | `477aa1a` | `d2d2907` | 196 | 155/196 | 133/196 | 24 | 0/5 valid |
+
+⚠️ 69 pair(s) with lens disagreement:
+- `file_5_file_6` (jubarte-native): engine lens pass, folio lens FAIL
+- `file_6_file_7` (jubarte-native): engine lens pass, folio lens FAIL
+- `file_7_file_8` (jubarte-native): engine lens pass, folio lens FAIL
+- `file_9_file_10` (jubarte-native): engine lens pass, folio lens FAIL
+- `file_14_file_15` (jubarte-native): engine lens pass, folio lens FAIL
+- `file_15_file_16` (jubarte-native): engine lens pass, folio lens FAIL
+- `file_16_file_17` (jubarte-native): engine lens pass, folio lens FAIL
+- `file_18_file_19` (jubarte-native): engine lens pass, folio lens FAIL
+- `file_19_file_20` (jubarte-native): engine lens pass, folio lens FAIL
+- `file_21_file_22` (jubarte-native): engine lens pass, folio lens FAIL
+- `file_22_file_23` (jubarte-native): engine lens pass, folio lens FAIL
+- `file_26_file_27` (jubarte-native): engine lens pass, folio lens FAIL
+- `file_27_file_28` (jubarte-native): engine lens pass, folio lens FAIL
+- `file_52_file_53` (jubarte-native): engine lens pass, folio lens FAIL
+- `file_53_file_54` (jubarte-native): engine lens pass, folio lens FAIL
+- `file_64_file_65` (jubarte-native): engine lens pass, folio lens FAIL
+- `file_65_file_66` (jubarte-native): engine lens pass, folio lens FAIL
+- `file_68_file_69` (jubarte-native): engine lens pass, folio lens FAIL
+- `file_69_file_70` (jubarte-native): engine lens pass, folio lens FAIL
+- `file_73_file_74` (jubarte-native): engine lens pass, folio lens FAIL
+
+<!-- D2_SCOREBOARD:END -->
+
 ## Redline generation speed
 
 Source: `results/speed.jsonl` (+ `results/redline_speed_bench/**/summary.json` when present). **17** generation row(s) after dedupe (one per tool×kind; prefer larger `n`, then lower median). Unit: **ms per redline** (lower = faster). See [`docs/SPEED.md`](docs/SPEED.md) for methodology.
