@@ -44,6 +44,19 @@ run none of them. Add a scheduled bench job recording peak footprint per
 engine per corpus size class with an explicit wasm32-viability line, so
 memory regressions surface as diffs the way speed regressions do.
 
+## 3.5 D-2 sweep needs a runner with engine checkouts (MEDIUM)
+
+`bench.yml` now runs the scoreboard CONTRACT tests weekly, but the full
+three-lens sweep is presence-gated and always skips on ubuntu-latest (no
+sibling `../jubarte-redlines` / `../jubarte-first` / folio checkout, no
+Word). Options: a macOS self-hosted runner with the checkouts, or checkout
+steps for the engine repos (Word lens stays local-only either way). Until
+then the sweep runs on the local machine; RESULTS.md records each run's
+provenance. Related: the vendored `utils/jubarte/jubarte-rust/redline`
+binary is STALE (predates the `reject` subcommand) — the scoreboard uses
+the canonical `../jubarte-redlines` CLI instead; refresh the vendored build
+or retire it.
+
 ## 4. Cross-engine judge triangulation for D-2 (MEDIUM)
 
 The demo sessions proved the judging risk both ways: folio's resolver bug
