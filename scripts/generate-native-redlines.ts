@@ -27,6 +27,15 @@ import { docxIn, toBytes } from "./docx-utils.mjs";
 import { wireJubarteLosslessAdapter } from "./jubarte-lossless-adapter.mjs";
 import { runSuperDocVitest } from "./prosemirror-headless-editor-server.ts";
 
+// Per-reply timeout for the long-lived inproc worker (READY handshake + each
+// COMPARE reply). The 15s default is ample for the normal corpus (median
+// ~17ms) but too short for pathological run-fragmented inputs like the 276k-run
+// dissertation, whose single compare takes ~35s natively (WASM_PERF_PLAN /
+// jubarte TODO §1). Override with WORKER_REPLY_TIMEOUT_MS for large-doc runs so
+// the inproc "fair algorithm" lane reports instead of spuriously timing out.
+const WORKER_REPLY_TIMEOUT_MS =
+	Number(process.env.WORKER_REPLY_TIMEOUT_MS) || 15_000;
+
 export interface Pair {
 	base: string;
 	next: string;
@@ -657,7 +666,7 @@ async function loadLongLivedCompareWorker(opts: {
 								(stderrAcc ? ` stderr=${stderrAcc.trim()}` : ""),
 						),
 					),
-				15_000,
+				WORKER_REPLY_TIMEOUT_MS,
 			);
 			waiters.push((line) => {
 				clearTimeout(timer);

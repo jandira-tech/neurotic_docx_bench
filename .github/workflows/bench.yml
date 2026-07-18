@@ -59,6 +59,25 @@ jobs:
           uv run python -m neurotic_docx_bench.superdoc_speed \
             --pairs 20 --reps 2 --warmup 3 --out results/speed.jsonl --run-ts "$TS"
 
+      # D-2 accept/reject scoreboard. The contract tests run everywhere; the
+      # full three-lens sweep needs sibling engine checkouts (jubarte-redlines
+      # CLI, jubarte-first source, a folio checkout) and skips LOUDLY when they
+      # are absent — on this ubuntu runner it currently always skips, so the
+      # sweep runs on the local scheduled machine (see TODO.md). No silent cap:
+      # the skip line names exactly what was missing.
+      - name: D-2 scoreboard (contract tests + gated sweep)
+        if: always()
+        run: |
+          npx vitest run scripts/redline_scoreboard.test.ts
+          if [ -x ../jubarte-redlines/target/release/jubarte ] \
+             && [ -d ../jubarte-first/src/lossless ] \
+             && [ -f ../reconciliation_plan/folio/packages/core/src/redline-lossless-verify.ts ]; then
+            node --import tsx scripts/redline_scoreboard.ts --update-results
+          else
+            echo "D-2 sweep SKIPPED: engine/folio checkouts absent on this runner" \
+                 "(needs ../jubarte-redlines CLI, ../jubarte-first, a folio checkout with redline-lossless-verify)."
+          fi
+
       - name: Commit results on change
         if: always()
         run: |

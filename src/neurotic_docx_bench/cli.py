@@ -314,6 +314,42 @@ def render(
     raise typer.Exit(1 if report.fail_count else 0)
 
 
+@app.command(name="word-validate")
+def word_validate(
+    target: Path = typer.Argument(..., help="a .docx file or a folder of .docx"),
+    timeout: float = typer.Option(60.0, "--timeout", help="seconds per file before a dialog is assumed"),
+) -> None:
+    """Word-validity gate: open each .docx in Microsoft Word, fail on any repair dialog.
+
+    LOCAL/INTERACTIVE only (macOS + Word). Word windows will open and close; grant
+    any automation-permission prompt. A repair/warning dialog counts as a failure.
+    """
+    from neurotic_docx_bench.render.word import validate_one, word_available
+
+    if not word_available():
+        console.print("[red]word-validate needs macOS with Microsoft Word installed[/red]")
+        raise typer.Exit(2)
+    if not target.exists():
+        console.print(f"[red]no such file or directory: {target}[/red]")
+        raise typer.Exit(2)
+    docs = sorted(target.glob("*.docx")) if target.is_dir() else [target]
+    if not docs:
+        console.print(f"[yellow]no .docx found at {target}[/yellow]")
+        raise typer.Exit(2)
+    failures = 0
+    for docx in docs:
+        result = validate_one(docx, timeout=timeout)
+        if result.ok:
+            console.print(f"  [green]VALID[/green] {docx.name}")
+        else:
+            failures += 1
+            console.print(f"  [red]INVALID[/red] {docx.name}: {result.error}")
+    console.print(
+        f"word-validate: [green]{len(docs) - failures} valid[/green], [red]{failures} invalid[/red]",
+    )
+    raise typer.Exit(1 if failures else 0)
+
+
 @app.command()
 def compare(
     candidate: Path = typer.Argument(..., help="folder of candidate PDFs"),

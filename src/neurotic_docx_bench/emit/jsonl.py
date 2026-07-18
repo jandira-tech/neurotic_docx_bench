@@ -113,6 +113,7 @@ def build_results_line(
     environment_config: BenchConfig,
     timestamp: datetime,
     tool_version: str | None = None,
+    build_recipe: dict[str, list[str]] | None = None,
     config_hash: str | None = None,
     failures: list[dict[str, str]] | None = None,
     timings: dict[str, dict[str, float]] | None = None,
@@ -123,7 +124,9 @@ def build_results_line(
     :class:`~neurotic_docx_bench.results_schema.Results` keyed by
     ``id_run``/``vendor``/``benchmark``. ``tool_version`` and ``config_hash`` are
     carried so skip-already-ran and change-detection can key on the full identity
-    without a separate legacy ``tool``/``stage`` line. ``scores``/``per_doc``/
+    without a separate legacy ``tool``/``stage`` line. ``build_recipe`` (TODO §2)
+    records the wasm build flags that shape the artifact beyond the engine pin.
+    ``scores``/``per_doc``/
     ``failures``/``timings`` are embedded so the gate, snapshots, and consumers
     can read per-doc data from the one line.
     """
@@ -137,6 +140,7 @@ def build_results_line(
         environment_config=environment_config,
         timestamp=timestamp,
         tool_version=tool_version,
+        build_recipe=build_recipe,
         config_hash=config_hash,
         failures=failures,
         timings=timings,
