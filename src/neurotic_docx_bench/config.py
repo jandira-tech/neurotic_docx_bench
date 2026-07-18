@@ -15,6 +15,7 @@ from typing import Any
 import yaml
 
 from neurotic_docx_bench.benchmarks import BENCHMARKS, BenchmarkName
+from neurotic_docx_bench.memory_budget import SizeClass, size_classes_from_config
 
 
 @dataclass(frozen=True)
@@ -61,6 +62,11 @@ class BenchConfig:
     # `visual_rendering` and `visual_accepted_changes` have no default — they must
     # be declared when any run declares them.
     visual_oracles: dict[str, Path] = field(default_factory=dict)
+    # Optional peak-memory budget table per corpus size class (TODO §1/§3). Absent
+    # from the yaml → empty tuple; consumers fall back to
+    # ``memory_budget.DEFAULT_SIZE_CLASSES``. Backward-compatible: no bench.yaml
+    # change is required and the config file's hash is unaffected when omitted.
+    memory_budgets: tuple[SizeClass, ...] = field(default_factory=tuple)
 
 
 _KNOWN_RENDERERS = frozenset({"soffice", "passthrough", "playwright", "word"})
@@ -230,6 +236,7 @@ def load_config(path: Path | str) -> BenchConfig:
         accepted_ground_truth=_resolve(data.get("accepted_ground_truth")),
         generate_scripts=scripts,
         visual_oracles=visual_oracles,
+        memory_budgets=size_classes_from_config(data.get("memory_budgets") or []),
     )
 
 
@@ -255,4 +262,5 @@ def environment_config_for_run(cfg: BenchConfig, run_name: str) -> BenchConfig:
         accepted_ground_truth=cfg.accepted_ground_truth,
         generate_scripts=cfg.generate_scripts,
         visual_oracles=cfg.visual_oracles,
+        memory_budgets=cfg.memory_budgets,
     )
