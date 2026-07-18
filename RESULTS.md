@@ -244,48 +244,34 @@ visual_accepted_changes (Playwright)
 <!-- D2_SCOREBOARD:BEGIN -->
 ## Accept/reject scoreboard (D-2)
 
-Run `d2-2026-07-18T03-30-26` (2026-07-18). Each pair: engine redline → accept-all/reject-all, judged by the engine's own outputs (folio XML-direct text), folio's reviewer views, and a WV-1 Word sample. **Lens disagreement is the alarm.**
+Run `d2-2026-07-18T04-00-43` (2026-07-18). Each pair: engine redline → accept-all/reject-all, judged by the engine's own outputs (folio XML-direct text), folio's reviewer views, and a WV-1 Word sample. **Lens disagreement is the alarm.**
 
 | engine | engine pin | corpus vintage | bench commit | folio commit | pairs | engine lens | folio lens | disagreements | word sample |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| jubarte-native | `f488f2c` | `daa7d92` | `477aa1a` | `d2d2907` | 196 | 189/196 | 144/196 | 45 | 5/5 valid |
-| jubarte-first-lossless | `edea4af` | `daa7d92` | `477aa1a` | `d2d2907` | 196 | 155/196 | 133/196 | 24 | 5/5 valid¹ |
+| jubarte-native | `0bf86b8` | `daa7d92` | `a154b28` | `5dce954` | 196 | 189/196 | 176/196 | 17 | 5/5 valid |
+| jubarte-first-lossless | `edea4af` | `daa7d92` | `a154b28` | `5dce954` | 196 | 155/196 | 154/196 | 15 | 5/5 valid |
 
-⚠️ 69 pair(s) with lens disagreement:
-- `file_5_file_6` (jubarte-native): engine lens pass, folio lens FAIL
-- `file_6_file_7` (jubarte-native): engine lens pass, folio lens FAIL
-- `file_7_file_8` (jubarte-native): engine lens pass, folio lens FAIL
-- `file_9_file_10` (jubarte-native): engine lens pass, folio lens FAIL
-- `file_14_file_15` (jubarte-native): engine lens pass, folio lens FAIL
-- `file_15_file_16` (jubarte-native): engine lens pass, folio lens FAIL
-- `file_16_file_17` (jubarte-native): engine lens pass, folio lens FAIL
+⚠️ 32 pair(s) with lens disagreement:
 - `file_18_file_19` (jubarte-native): engine lens pass, folio lens FAIL
 - `file_19_file_20` (jubarte-native): engine lens pass, folio lens FAIL
 - `file_21_file_22` (jubarte-native): engine lens pass, folio lens FAIL
 - `file_22_file_23` (jubarte-native): engine lens pass, folio lens FAIL
-- `file_26_file_27` (jubarte-native): engine lens pass, folio lens FAIL
-- `file_27_file_28` (jubarte-native): engine lens pass, folio lens FAIL
-- `file_52_file_53` (jubarte-native): engine lens pass, folio lens FAIL
-- `file_53_file_54` (jubarte-native): engine lens pass, folio lens FAIL
-- `file_64_file_65` (jubarte-native): engine lens pass, folio lens FAIL
-- `file_65_file_66` (jubarte-native): engine lens pass, folio lens FAIL
-- `file_68_file_69` (jubarte-native): engine lens pass, folio lens FAIL
 - `file_69_file_70` (jubarte-native): engine lens pass, folio lens FAIL
-- `file_73_file_74` (jubarte-native): engine lens pass, folio lens FAIL
-
-¹ The in-run word sample reported 0/5; the identical files re-validated 5/5
-minutes later — the WV-1 timeout-vs-dialog blind spot (TODO §1), not real
-invalidity. `runWordSample` now retries a wholly-invalid sample once.
-
-Folio-lens failures in this run are dominated by `FolioDocxReviewer` THROWING
-`TransformError: Structure replace would overwrite content` while
-materializing views of Word-canonical redlines (45 native + 24 lossless
-pairs). Root-caused the same night: a PRE-MERGE folio regression (the
-pPrMark `canJoin` gate approving a paragraph|pageBreak atom boundary that
-`join` cannot perform), introduced on folio PR #5's branch and never on
-published main; caught by this scoreboard's judge tree and fixed upstream
-(folio `cff29c0`, corpus sweep 151/196 → 196/196). Not an engine defect —
-the next scheduled run should show the folio lens recovering.
+- `file_99_file_100` (jubarte-native): engine lens pass, folio lens FAIL
+- `file_100_file_101` (jubarte-native): engine lens pass, folio lens FAIL
+- `file_103_file_104` (jubarte-native): engine lens pass, folio lens FAIL
+- `file_114_file_115` (jubarte-native): engine lens pass, folio lens FAIL
+- `file_115_file_116` (jubarte-native): engine lens pass, folio lens FAIL
+- `file_171_file_172` (jubarte-native): engine lens FAIL, folio lens pass
+- `file_172_file_173` (jubarte-native): engine lens FAIL, folio lens pass
+- `file_175_file_176` (jubarte-native): engine lens pass, folio lens FAIL
+- `file_184_file_185` (jubarte-native): engine lens pass, folio lens FAIL
+- `file_185_file_186` (jubarte-native): engine lens pass, folio lens FAIL
+- `file_195_file_196` (jubarte-native): engine lens pass, folio lens FAIL
+- `file_196_file_197` (jubarte-native): engine lens pass, folio lens FAIL
+- `file_18_file_19` (jubarte-first-lossless): engine lens pass, folio lens FAIL
+- `file_19_file_20` (jubarte-first-lossless): engine lens pass, folio lens FAIL
+- `file_21_file_22` (jubarte-first-lossless): engine lens FAIL, folio lens pass
 
 <!-- D2_SCOREBOARD:END -->
 
