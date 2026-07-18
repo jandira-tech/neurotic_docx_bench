@@ -74,8 +74,9 @@ def convert_one(
 _VALIDATE_APPLESCRIPT = """
 on run argv
   set inPath to item 1 of argv
+  set inFile to POSIX file inPath
   tell application "Microsoft Word"
-    open inPath
+    open inFile
     set docName to name of active document
     close active document saving no
     return docName
