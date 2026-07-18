@@ -421,19 +421,32 @@ const loadFolioJudge = async (folioDir: string): Promise<FolioJudge> => {
 	};
 };
 
-/** WV-1 sample: run `bench word-validate` over a dir of accepted outputs. */
+/**
+ * WV-1 sample: run `bench word-validate` over a dir of accepted outputs.
+ *
+ * A wholly-invalid sample retries ONCE: WV-1 infers "repair dialog" from
+ * AppleScript silence, so a busy/relaunching Word marks every file invalid
+ * (timeout ≠ dialog — TODO.md §1; observed live in the first D-2 sweep, where
+ * 0/5 lossless "invalid" re-validated 5/5 minutes later). A retry that flips
+ * the verdict is recorded as the flake it was.
+ */
 export const runWordSample = (sampleDir: string, sampled: number): WordLensVerdict => {
-	const proc = spawnSync("uv", ["run", "bench", "word-validate", sampleDir], {
-		cwd: ROOT,
-		encoding: "utf8",
-		timeout: 15 * 60 * 1000,
-	});
-	if (proc.error || proc.status === 2) {
-		return { sampled, valid: 0, invalid: 0, unavailable: true };
-	}
-	const valid = (proc.stdout.match(/VALID/g) ?? []).length - (proc.stdout.match(/INVALID/g) ?? []).length;
-	const invalid = (proc.stdout.match(/INVALID/g) ?? []).length;
-	return { sampled, valid, invalid, unavailable: false };
+	const attempt = (): WordLensVerdict => {
+		const proc = spawnSync("uv", ["run", "bench", "word-validate", sampleDir], {
+			cwd: ROOT,
+			encoding: "utf8",
+			timeout: 15 * 60 * 1000,
+		});
+		if (proc.error || proc.status === 2) {
+			return { sampled, valid: 0, invalid: 0, unavailable: true };
+		}
+		const validSubstrings = (proc.stdout.match(/VALID/g) ?? []).length;
+		const invalid = (proc.stdout.match(/INVALID/g) ?? []).length;
+		return { sampled, valid: validSubstrings - invalid, invalid, unavailable: false };
+	};
+	const first = attempt();
+	if (first.unavailable || first.valid > 0) return first;
+	return attempt();
 };
 
 // ─── the job ────────────────────────────────────────────────────────────────
