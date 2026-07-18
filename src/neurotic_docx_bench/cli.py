@@ -329,6 +329,9 @@ def word_validate(
     if not word_available():
         console.print("[red]word-validate needs macOS with Microsoft Word installed[/red]")
         raise typer.Exit(2)
+    if not target.exists():
+        console.print(f"[red]no such file or directory: {target}[/red]")
+        raise typer.Exit(2)
     docs = sorted(target.glob("*.docx")) if target.is_dir() else [target]
     if not docs:
         console.print(f"[yellow]no .docx found at {target}[/yellow]")
