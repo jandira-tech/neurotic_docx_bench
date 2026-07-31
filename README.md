@@ -39,20 +39,23 @@ Sorted by median score (0–100, higher is closer to the oracle). Jubarte famili
 
 | Rank | Vendor | Version | Docs | Mean | Median | Perfect (100) | Failures |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | jubarte-rust | jubarte-rust@3838e1a2c0ae (best) | 164 | 85.26 | 89.47 | 48 | 0 |
-| 2 | jubarte (lossless) | jubarte-final@8b2e9bf2522a (best) | 164 | 83.42 | 88.65 | 53 | 0 |
-| 3 | sanity-word | — | 230 | 68.17 | 70.48 | 0 | 0 |
-| 4 | jubarte (lossless) | jubarte-final@b4f90acaa85e (worst) | 196 | 64.69 | 63.48 | 0 | 0 |
-| 5 | jubarte-rust | jubarte-rust@b834d6e49fdb (worst) | 172 | 61.78 | 59.28 | 2 | 35 |
-| 6 | superdoc-redlines | 0.2.0 | 192 | 57.63 | 55.90 | 0 | 15 |
-| 7 | superdoc | 1.19.2 | 182 | 57.19 | 55.60 | 2 | 25 |
-| 8 | ooxmlsdk | — | 232 | 55.19 | 55.24 | 0 | 0 |
-| 9 | docxodus | 7.0.0 | 205 | 58.75 | 55.03 | 3 | 2 |
-| 10 | docxodus | 6.4.0 | 205 | 58.74 | 55.03 | 3 | 2 |
-| 11 | folio | 0.3.1 | 205 | 55.31 | 53.75 | 0 | 2 |
-| 12 | redlines | 0.6.1 | 200 | 51.28 | 51.77 | 0 | 7 |
-| 13 | jubarte (final) | jubarte-final@8b23cdc7eca8 (worst) | 207 | 48.31 | 49.46 | 0 | 0 |
-| 14 | jubarte (final) | jubarte-final@dd16ad8fbcf3 (best) | 207 | 48.31 | 49.46 | 0 | 0 |
+| 1 | jubarte-rust | jubarte-rust@63e57d122c83 (best) | 164 | 92.21 | 99.92 | 80 | 0 |
+| 2 | jubarte-wasm | 0.1.0 | 164 | 92.21 | 99.92 | 80 | 0 |
+| 3 | jubarte (final) | jubarte-final@3995702f73ed (best) | 163 | 90.04 | 91.99 | 44 | 4 |
+| 4 | jubarte (lossless) | jubarte-final@d5bd12d173d6+git.aaa85454f569b7174dd99d5244877d29819a99b9 (best) | 164 | 83.63 | 88.96 | 53 | 0 |
+| 5 | sanity-word | — | 230 | 68.17 | 70.48 | 0 | 0 |
+| 6 | jubarte (lossless) | jubarte-final@b4f90acaa85e (worst) | 196 | 64.69 | 63.48 | 0 | 0 |
+| 7 | jubarte-rust | jubarte-rust@b834d6e49fdb (worst) | 172 | 61.78 | 59.28 | 2 | 35 |
+| 8 | superdoc-redlines | 0.2.0 | 192 | 57.63 | 55.90 | 0 | 15 |
+| 9 | superdoc | 1.19.2 | 182 | 57.19 | 55.60 | 2 | 25 |
+| 10 | ooxmlsdk | — | 232 | 55.19 | 55.24 | 0 | 0 |
+| 11 | docx-redline-js | — | 2 | 55.12 | 55.12 | 0 | 7 |
+| 12 | docxodus | 7.0.0 | 205 | 58.75 | 55.03 | 3 | 2 |
+| 13 | docxodus | 6.4.0 | 205 | 58.74 | 55.03 | 3 | 2 |
+| 14 | folio | 0.3.1 | 205 | 55.31 | 53.75 | 0 | 2 |
+| 15 | redlines | 0.6.1 | 200 | 51.28 | 51.77 | 0 | 7 |
+| 16 | docx-redline-js | 0.3.0-ts-migration | 161 | 50.53 | 50.26 | 0 | 7 |
+| 17 | jubarte (final) | jubarte-final@8b23cdc7eca8 (worst) | 207 | 48.31 | 49.46 | 0 | 0 |
 
 ### accepted_changes — accept all changes, match final doc
 
@@ -60,8 +63,8 @@ Sorted by median score (0–100, higher is closer to the oracle). Jubarte famili
 
 | Rank | Vendor | Version | Docs | Mean | Median | Perfect (100) | Failures |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | jubarte (lossless) | jubarte-final@dd16ad8fbcf3 (best) | 164 | 86.53 | 94.42 | 63 | 0 |
-| 2 | jubarte-rust | jubarte-rust@cdfef70a7156 (best) | 164 | 84.27 | 88.74 | 54 | 0 |
+| 1 | jubarte-rust | jubarte-rust@653876af82d6 (best) | 164 | 89.58 | 99.89 | 78 | 0 |
+| 2 | jubarte (lossless) | jubarte-final@dd16ad8fbcf3 (best) | 164 | 86.53 | 94.42 | 63 | 0 |
 | 3 | jubarte (lossless) | jubarte-final@717311c03d4f (worst) | 166 | 78.15 | 80.64 | 26 | 0 |
 | 4 | docxodus | 6.4.0 | 164 | 69.00 | 77.19 | 14 | 0 |
 | 5 | docxodus | 7.0.0 | 164 | 70.20 | 74.92 | 17 | 0 |
@@ -76,7 +79,7 @@ Sorted by median score (0–100, higher is closer to the oracle). Jubarte famili
 
 | Rank | Vendor | Version | Docs | Mean | Median | Perfect (100) | Failures |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | jubarte-rust | jubarte-rust@cdfef70a7156 (best) | 166 | 99.17 | 100.00 | 157 | 0 |
+| 1 | jubarte-rust | jubarte-rust@cbbcefb724a7 (best) | 166 | 99.17 | 100.00 | 157 | 0 |
 | 2 | folio | 0.3.1 | 198 | 98.07 | 100.00 | 185 | 0 |
 | 3 | jubarte (lossless) | jubarte-final@dd16ad8fbcf3 (best) | 166 | 97.63 | 100.00 | 152 | 0 |
 | 4 | docxodus | 7.0.0 | 166 | 97.43 | 100.00 | 148 | 0 |
@@ -126,12 +129,12 @@ Sorted by median **ms per redline** (lower is faster). Large-N warm rows (`*-inp
 
 | Rank | Tool | Runtime | Fixtures | Pairs | Median ms | Mean ms | p95 | /s | n | Failures |
 | --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| 1 | jubarte-native | node | 199 | 1000 | 6.33 | 21.54 | 59.88 | 46.4 | 1000 | 0 |
-| 2 | jubarte-rust-inproc | rust | 1000 | 5000 | 9.34 | 40.01 | 152.68 | 25.0 | 5000 | 0 |
-| 3 | docxodus-csharp-inproc | dotnet | 1000 | 5000 | 9.43 | 29.90 | 110.73 | 33.4 | 4880 | 120 |
-| 4 | jubarte-rust | rust | 1000 | 5000 | 10.43 | 32.91 | 129.33 | 30.4 | 5000 | 0 |
-| 5 | jubarte-wasm | rust-wasm | 1000 | 5000 | 10.97 | 44.60 | 191.77 | 22.4 | 5000 | 0 |
-| 6 | jubarte-lossless | node | 1000 | 5000 | 73.48 | 263.83 | 899.38 | 3.8 | 4997 | 3 |
+| 1 | jubarte-rust-inproc | rust | 1000 | 5000 | 8.10 | 33.74 | 142.24 | 29.6 | 5000 | 0 |
+| 2 | docxodus-csharp-inproc | dotnet | 1000 | 5000 | 9.43 | 29.90 | 110.73 | 33.4 | 4880 | 120 |
+| 3 | jubarte-rust | rust | 1000 | 5000 | 9.66 | 31.02 | 123.39 | 32.2 | 5000 | 0 |
+| 4 | jubarte-wasm | rust-wasm | 1000 | 5000 | 9.72 | 41.44 | 180.49 | 24.1 | 5000 | 0 |
+| 5 | jubarte-native | node | 1000 | 5000 | 14.43 | 57.15 | 175.71 | 17.5 | 5000 | 0 |
+| 6 | jubarte-lossless | node | 1000 | 5000 | 54.64 | 168.18 | 592.49 | 5.9 | 4997 | 3 |
 | 7 | docxodus | dotnet-wasm | 200 | 500 | 148.75 | 607.38 | 3212.30 | 1.6 | 496 | 4 |
 | 8 | docxodus-csharp | dotnet | 50 | 50 | 208.39 | 441.65 | 911.87 | 2.3 | 50 | 0 |
 
@@ -146,8 +149,10 @@ Sorted by median **ms per redline** (lower is faster). Large-N warm rows (`*-inp
 | 5 | jubarte-second-native | node | 4.46 | 7.49 | 31.96 | 133.6 | 90 | 0 |
 | 6 | jubarte-third-native | node | 4.47 | 7.55 | 33.21 | 132.4 | 90 | 0 |
 | 7 | jubarte-native | node | 4.50 | 7.67 | 33.27 | 130.4 | 90 | 0 |
-| 8 | superdoc | python | 40.89 | 94.19 | 619.93 | 10.6 | 90 | 0 |
-| 9 | docxodus | node | 75.27 | 236.57 | 1499.68 | 4.2 | 90 | 0 |
+| 8 | jubarte-final-native | node | 6.76 | 18.89 | 115.97 | 52.9 | 90 | 0 |
+| 9 | jubarte-final-lossless | node | 18.13 | 52.76 | 311.11 | 19.0 | 90 | 0 |
+| 10 | superdoc | python | 40.89 | 94.19 | 619.93 | 10.6 | 90 | 0 |
+| 11 | docxodus | node | 75.27 | 236.57 | 1499.68 | 4.2 | 90 | 0 |
 <!-- RANKING-END -->
 
 ---

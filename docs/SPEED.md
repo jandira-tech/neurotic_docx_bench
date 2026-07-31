@@ -88,49 +88,100 @@ samply load results/redline_speed_bench/cpu/docxodus-csharp.profile.json.gz
 samply load results/redline_speed_bench/cpu/jubarte-rust.profile.json.gz
 ```
 
-### Verified native/WASM 5k snapshot (2026-07-16)
+### Current snapshot — native/WASM/inproc @ `7b21276` (2026-07-24)
 
-Both engines were built from Jubarte commit `c7c7fbf`, exercised over the same
-1,000 fixtures and 5,000 deterministic pairs (seed 42, warmup 50), and completed
-with zero failures. The full immutable report is
+**This is the publishable same-run pack** after rebuilding all three consumers
+from Jubarte source `7b212761c2840f94e52bbe196d6c0e83173c5dc2` (hidden-gem
+peels on main). Full immutable report:
+[`results/redline_speed_bench/jubarte-wasm-inproc-7b21276-20260724T151752Z/report.md`](../results/redline_speed_bench/jubarte-wasm-inproc-7b21276-20260724T151752Z/report.md).
+Paired fidelity: [`fidelity-summary.json`](../results/redline_speed_bench/jubarte-wasm-inproc-7b21276-20260724T151752Z/fidelity-summary.json).
+
+| tool | mode | median ms | mean ms | p95 | p99 | throughput/s | failures |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| **`jubarte-rust-inproc`** | warm native (fair algorithm) | **9.149** | **38.188** | 164.496 | 266.414 | **26.2** | **0** |
+| `jubarte-rust` | CLI spawn + I/O | 13.372 | 44.952 | 181.835 | 285.275 | 22.2 | 0 |
+| `jubarte-wasm` | warm V8 WASM | 14.990 | 63.331 | 278.227 | 419.810 | 15.8 | 0 |
+
+Matrix: **1000 fixtures → 5000 pairs**, seed **42**, warmup **50**, reps **1**.
+Zero failures on all three methods. WASM/inproc median tax ≈ **1.64×**; CLI/inproc
+median tax ≈ **1.46×** (spawn + temp I/O).
+
+Reproduce:
+
+```bash
+# rebuild consumers from ~/T/jubarte-redlines first (CLI + inproc + wasm-pack)
+node --import tsx scripts/redline_speed_bench.ts \
+  --methods jubarte-wasm,jubarte-rust-inproc,jubarte-rust \
+  --fixture-count 1000 --min-pairs 5000 --warmup 50 --reps 1 \
+  --no-profile \
+  --out results/redline_speed_bench/jubarte-wasm-inproc-7b21276
+```
+
+**Fidelity gate (same commit, Word oracle via LibreOffice):** native CLI
+`jubarte-rust@cbbcefb724a7` and `jubarte-wasm` 0.1.0 produced **identical**
+per-document `script_redlines` scores (164/164 equal): mean **92.2147**, median
+**99.9187**, 80 exact-100, 122 ≥90, 3 below-50. Also on this pin: accepted_changes
+mean 89.45 / median 99.75; roundtrip mean 99.17 / median 100.0. Payload
+SHA-256 of `jubarte_wasm_bg.wasm`:
+`3811d517b46dfeaa24ea582bcd25c484fcbc026f409abd6ac43afa43769b2677`.
+
+### How Jubarte compares to other tools (head-to-head)
+
+**Fidelity** (`script_redlines`, LibreOffice vs Word oracle, best published pin
+per vendor, n ≥ 100). Full versioned tables: [`RESULTS.md`](../RESULTS.md).
+
+| vendor | mean | median | n | gap vs jubarte-rust best |
+| --- | ---: | ---: | ---: | ---: |
+| **jubarte-rust** (best pin) | **92.21** | **99.92** | 164 | — |
+| **jubarte-wasm** (same engine) | **92.21** | **99.92** | 164 | 0 (identical scores @ 7b21276) |
+| **jubarte final / via-AST** (best) | **90.04** | **91.99** | 163 | −2.2 mean (`jubarte-final@3995702f73ed`, 2026-07-31) |
+| jubarte final-lossless (best) | 83.63 | 88.96 | 164 | −8.6 mean |
+| docxodus 7.0.0 | 58.75 | 55.03 | 205 | **−33.5 mean** |
+| superdoc-redlines 0.2.0 | 57.63 | 55.90 | 192 | −34.6 |
+| superdoc 1.19.2 | 57.19 | 55.60 | 182 | −35.0 |
+| folio 0.3.1 | 55.31 | 53.75 | 205 | −36.9 |
+| redlines 0.6.1 | 51.28 | 51.77 | 200 | −40.9 |
+| docx-redline-js (migration) | 50.53 | 50.26 | 161 | −41.7 |
+
+**Takeaway (fidelity):** canonical Rust Jubarte still leads, but the Node
+**via-AST** pin (`jubarte-final-native` / `compareDocx`) now clears the **≥90 mean
+and median** bar (full-55, LibreOffice dpi 144) and sits only ~2 mean points
+behind rust/wasm — well clear of every non-Jubarte redliner (~**+31–40 mean**
+over docxodus / superdoc / folio / redlines). Rust native and WASM still match
+document-for-document when built from the same source commit.
+
+**Speed** (large-N `speed_redlines`; best historical row kept by the exporter —
+see RESULTS.md). Fair algorithm row is **inproc**; CLI and WASM are different
+shipping modes. Node via-AST is warm in-process `Uint8Array` compare (same
+protocol as rust-inproc).
+
+| tool | mode | best median ms (n≈5k) | notes |
+| --- | --- | ---: | --- |
+| jubarte-rust-inproc | warm native | **~8.1–9.1** | fair algorithm baseline |
+| docxodus-csharp-inproc | warm .NET | ~9.4 | close on median; historical best had 120 fails / 4880 ok |
+| jubarte-rust | CLI | ~9.7–13.4 | spawn tax small (Rust) |
+| jubarte-wasm | V8 WASM | ~9.7–15.0 | same algorithm; portable lane |
+| **jubarte-native (via-AST)** | warm Node | **14.43** | 1000 fixtures → 5000 pairs, fail=0 (2026-07-31 tip) |
+| jubarte-lossless | warm Node | ~54.6 | older lossless path |
+| docxodus (npm WASM) | Mono WASM | ~149 (500 pairs) | fat tail; not competitive on mean |
+| docxodus-csharp CLI | cold .NET | ~208 (50 pairs) | cold-start dominates — not algorithm cost |
+
+**Thesis line:** Jubarte is **both** more Word-faithful *and* as fast or faster
+than Docxodus on the fair (warm-process) lane; WASM stays within ~1.6× of warm
+native at the median with **zero** fidelity loss vs native.
+
+### Prior verified native/WASM 5k snapshot (2026-07-16, `c7c7fbf`)
+
+Historical pack from Jubarte `c7c7fbf` (pre-`7b21276`). Immutable report:
 [`results/redline_speed_bench/jubarte-wasm-native-c7c7fbf/report.md`](../results/redline_speed_bench/jubarte-wasm-native-c7c7fbf/report.md).
-The paired fidelity evidence is recorded separately in
-[`fidelity-summary.json`](../results/redline_speed_bench/jubarte-wasm-native-c7c7fbf/fidelity-summary.json).
 
 | tool | mode | median ms | mean ms | p95 | p99 | throughput/s | failures |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
 | `jubarte-rust` | CLI spawn + I/O | 10.428 | 32.914 | 129.333 | 202.766 | 30.4 | 0 |
 | `jubarte-wasm` | warm V8 WASM | 10.967 | 44.596 | 191.773 | 292.953 | 22.4 | 0 |
 
-Reproduce the paired run after rebuilding both consumers:
-
-```bash
-node --import tsx scripts/redline_speed_bench.ts \
-  --methods jubarte-wasm,jubarte-rust \
-  --fixture-count 1000 --min-pairs 5000 --warmup 50 --reps 1 \
-  --no-profile \
-  --out results/redline_speed_bench/<source-commit>
-```
-
-This snapshot compares shipping modes, not pure algorithm cost: the native row
-pays one process spawn and file I/O per pair, while WASM runs in-process after
-initialization. Use `jubarte-rust-inproc` for native algorithm comparisons.
-
-The preceding `script_redlines` fidelity gate produced identical per-document
-scores for native run `019f6e12-e2a5-72fa-b94e-e0da5e78e3e2` and WASM run
-`019f6e1d-3c41-7604-86d8-20dea470572f`: 207 documents generated, 164 scored,
-mean 91.9831, median 99.9040, 79 exact scores, 121 scores at least 90, three
-below 50, and zero generation failures. The built WASM payload SHA-256 was
-`73d76228310e39ba4c065df819be59c27418db32b7c316e5f83966008a7ec446`.
-
-After relocating the source checkout, the adapter was rebuilt from the same
-commit through the canonical path. The checked-in payload is 1,987,754 bytes
-with SHA-256
-`f01b4c6e532dacf59a3b9ec212dc225eb9dbcf1ee70a81f38149e0dc497b0545`.
-Partial run `019f6e39-e5e4-7535-abc0-9866be9f8f1b` exercised the official
-`bench.yaml` entry: 207 outputs generated, three limited documents scored, and
-zero failures. The full-corpus scores above remain the quality gate for the same
-Rust source commit.
+Fidelity then: mean 91.9831 / median 99.9040 (164 docs; native≡wasm). Prefer the
+`7b21276` snapshot above for current claims.
 
 ### Why C# CLI looks “that slow” (it isn’t the algorithm)
 
@@ -205,37 +256,77 @@ node --import tsx scripts/redline_speed_bench.ts \
 | jubarte-lossless | 2.46 | 6.60 | 5.84 | 37.58 | 58.26 | 2.07 | 58.26 | 12.32 | 151.6 | 0 |
 | jubarte-second-native | 4.46 | 7.49 | 7.97 | 31.96 | 44.70 | 3.47 | 44.70 | 9.03 | 133.6 | 87 |
 | jubarte-third-native | 4.47 | 7.55 | 6.36 | 33.21 | 45.32 | 3.39 | 45.32 | 9.31 | 132.4 | 86 |
-| jubarte-native | 4.50 | 7.67 | 7.30 | 33.27 | 47.43 | 3.41 | 47.43 | 9.45 | 130.4 | 312 |
+| jubarte-native (older pin) | 4.50 | 7.67 | 7.30 | 33.27 | 47.43 | 3.41 | 47.43 | 9.45 | 130.4 | 312 |
+| **jubarte-final-native (via-AST @ 3995702f)** | **6.76** | **18.89** | — | **115.97** | — | — | — | — | **52.9** | 511 |
+| jubarte-final-lossless | 18.13 | 52.76 | — | 311.11 | — | — | — | — | 19.0 | 58 |
 | superdoc¹ | 40.89 | 94.19 | 63.42 | 619.93 | 885.37 | 32.93 | 885.37 | 165.50 | 10.6 | 719 |
 | docxodus | 75.27 | 236.57 | 112.41 | 1499.68 | 2262.59 | 61.97 | 2262.59 | 491.59 | 4.2 | 89 |
 
 ¹ superdoc = full file-based SDK cycle incl. disk I/O (see caveat).
 
+### Large-N via-AST native (2026-07-31)
+
+Same matrix as the rust/wasm 5k pack: **1000 fixtures → 5000 pairs**, seed **42**,
+warmup **50**, reps **1**, `--no-profile`, dist `dist/jubarte-final` (tip content
+hash at run time; fidelity gate pin `jubarte-final@3995702f73ed`). Report:
+[`results/redline_speed_bench/jubarte-native-via-ast-90/report.md`](../results/redline_speed_bench/jubarte-native-via-ast-90/report.md).
+
+| tool | mode | median ms | mean ms | p95 | p99 | throughput/s | failures |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| **`jubarte-native`** | warm Node via-AST | **14.43** | **57.15** | 175.71 | 578.45 | **17.5** | **0** |
+
+Reproduce:
+
+```bash
+rsync -a --delete ../jubarte-first/dist/ dist/jubarte-final/
+node --import tsx scripts/redline_speed_bench.ts \
+  --methods jubarte-native \
+  --fixture-count 1000 --min-pairs 5000 --warmup 50 --reps 1 \
+  --no-profile \
+  --jubarte-dist dist/jubarte-final \
+  --out results/redline_speed_bench/jubarte-native-via-ast-90
+```
+
 ## Reading it
 
-- **jubarte is the fastest *native-diff* engine** — its docxodus route generates in **~2.4 ms**
-  (~160/s), its native route in ~4.5 ms. All three builds are within noise of each other on
-  speed (the build-to-build differences were in *accuracy*, not speed).
+- **jubarte-rust-inproc remains the fair algorithm leader** (~8–9 ms median large-N).
+- **via-AST Node (`jubarte-native` / `jubarte-final-native`)** is the TypeScript path:
+  large-N **14.43 ms** median (17.5/s, 0 fails on 5k) and microbench **6.76 ms** median —
+  slower than the older shallow native pin (~4.5 ms) because the via-AST compare does
+  real structure-aware redline work, but now **fidelity mean 90.04 / median 91.99**.
 - **docx-redline-js is fastest overall (~1.45 ms, 358/s)** — but it's the *least accurate*
-  (score 54.6). Speed bought by doing a shallow text reconciliation, not a real doc diff.
+  (score ~50–55). Speed bought by doing a shallow text reconciliation, not a real doc diff.
 - **the real docxodus (JSv4 WASM/.NET) is by far the slowest and most erratic** — median
   75 ms but **p99 2.3 s** and **std 492 ms**: occasional multi-second stalls from the .NET
   WASM runtime. ~4/s.
 - **superdoc ~41 ms median** (10.6/s) with a long tail (p95 620 ms) — but remember that
   number includes the full open/save disk cycle, unlike the in-memory Node figures.
 
-## Speed × accuracy (with `docs/RESULTS.md`)
+## Speed × accuracy (with `docs/RESULTS.md` / `RESULTS.md`)
 
-| tool | fidelity (mean) | speed (median ms) | verdict |
-|---|---:|---:|---|
-| jubarte-lossless | **62.9** | 2.46 | best of both — fast **and** most Word-faithful |
-| docxodus (real) | 60.1 | 75.3 | accurate but ~30× slower + erratic |
-| superdoc | 58.2 | 40.9 | mid on both |
-| docx-redline-js | 54.6 | **1.45** | fastest, least faithful |
-| jubarte-native | 49.0 | 4.50 | fast, weakest fidelity |
+Canonical large-N + Word-oracle numbers (2026-07-24 pin `7b21276` / binary
+`jubarte-rust@cbbcefb724a7` unless noted). Speed medians from the same-run pack
+or the exporter’s best historical 5k row (see RESULTS.md).
 
-**Takeaway:** jubarte's in-tree docxodus port dominates — it matches the real docxodus
-engine's fidelity while generating ~30× faster and without the WASM tail-latency.
+| tool | fidelity mean (`script_redlines`) | speed median ms | lane | verdict |
+| --- | ---: | ---: | --- | --- |
+| **jubarte-rust / wasm** | **92.21** | inproc **9.1** · wasm **15.0** · CLI **13.4** | Word-mode | **best fidelity; top-tier speed** |
+| **jubarte final / via-AST** | **90.04** | large-N **14.43** · micro **6.76** | Node `compareDocx` | **≥90 mean & median; #2 fidelity, warm Node** |
+| jubarte final-lossless (best pin) | 83.63 | large-N ~54.6 · micro ~2–18 | older port | strong, still below via-AST + rust |
+| docxodus-csharp-inproc | (same engine as npm ~58.8) | ~9.4 | warm .NET | competitive *speed*, far behind on fidelity |
+| docxodus 7.0.0 (npm WASM) | 58.75 | ~75–150+ (fat tail) | Mono WASM | mid fidelity, slow/erratic |
+| superdoc 1.19.2 | 57.19 | ~41 (microbench, disk cycle) | SDK | mid on both |
+| folio 0.3.1 | 55.31 | — | — | fidelity only in current tables |
+| docx-redline-js | 50.53 | **~1.5** (microbench) | shallow text | fastest micro, least faithful |
+| redlines 0.6.1 | 51.28 | — | pure text | not a Word-markup peer |
+
+**Takeaway:** on this harness, **canonical Jubarte (rust/wasm) still wins the
+speed×accuracy product** — ~+33 mean points over Docxodus on Word-oracle
+fidelity while matching warm-process native speed and shipping a WASM peer with
+zero fidelity drift vs native. The **Node via-AST** path is now a close second
+on quality (**90.04 / 91.99**) at **14.43 ms** median large-N (about **1.6×**
+rust-inproc) — the right default when you need TypeScript `compareDocx` without
+the Rust binary.
 
 ## Render speed
 
