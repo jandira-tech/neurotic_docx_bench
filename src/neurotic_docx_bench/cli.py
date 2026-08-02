@@ -1078,6 +1078,36 @@ def _stop_harness_server(proc: subprocess.Popen[bytes] | None) -> None:
     console.print("[dim]harness server stopped[/dim]")
 
 
+def _oracle_manifest_gate(cfg: BenchConfig, *, enabled: bool) -> None:
+    """Refuse to run against a drifted oracle (PR4). A missing manifest warns but
+    proceeds — synthetic test corpora and configs that have not adopted a manifest
+    must not hard-fail. ``--no-oracle-check`` disables entirely."""
+    if not enabled:
+        return
+    from neurotic_docx_bench import oracle_manifest
+
+    manifest_path = oracle_manifest.default_manifest_path(cfg.source_of_truth)
+    if not manifest_path.is_file():
+        console.print(
+            f"[yellow]no oracle manifest at {manifest_path} — oracle integrity unchecked "
+            f"(create one: bench oracle-manifest --write)[/yellow]",
+        )
+        return
+    corpus_root = cfg.source_of_truth.parent
+    dirs = oracle_manifest.oracle_dirs_from_config(cfg)
+    drift = oracle_manifest.verify_manifest(manifest_path, corpus_root, dirs)
+    if drift.clean:
+        console.print(f"oracle manifest OK ({manifest_path})")
+        return
+    console.print(f"[red]ORACLE DRIFT — refusing to score:[/red] {drift.summary()}")
+    console.print(
+        "If the change is intentional (oracle regenerated on purpose), re-baseline with "
+        "`bench oracle-manifest --write` and commit the manifest; otherwise restore the "
+        "oracle files. Use --no-oracle-check to bypass (scores would be incomparable).",
+    )
+    raise typer.Exit(2)
+
+
 def _drive_runs(
     *,
     config: Path,
@@ -1097,12 +1127,14 @@ def _drive_runs(
     roundtrip: bool,
     roundtrip_oracle_cache: Path,
     rerun: bool = False,
+    oracle_check: bool = True,
 ) -> None:
     """Shared driver for ``run`` / ``run-all``: execute the selected bench.yaml runs
     sequentially. ``names=None`` runs everything; otherwise the runs execute in the
     given order (deduplicated).
     """
     cfg = load_config(config)
+    _oracle_manifest_gate(cfg, enabled=oracle_check)
     use_dpi = dpi if dpi is not None else cfg.scoring.dpi
     if os.environ.get("BENCH_CLEAN_RUNS") == "1":
         clean_runs = True
@@ -1380,6 +1412,11 @@ def run(
         help="force re-running even if (tool, tool_version, config_hash) already exists in "
         "results/bench.jsonl (env BENCH_RERUN=1 also enables this)",
     ),
+    oracle_check: bool = typer.Option(
+        True,
+        "--oracle-check/--no-oracle-check",
+        help="verify the committed oracle manifest before running (drift → exit 2)",
+    ),
 ) -> None:
     """Drive bench.yaml runs **sequentially** (one per tool). Each run gets its own
     ``runs/{name}_{datetime}`` work folder (kept locally; ``--clean-runs`` deletes it only
@@ -1410,7 +1447,46 @@ def run(
         roundtrip=roundtrip,
         roundtrip_oracle_cache=roundtrip_oracle_cache,
         rerun=rerun,
+        oracle_check=oracle_check,
     )
+
+
+@app.command(name="oracle-manifest")
+def oracle_manifest_cmd(
+    config: Path = typer.Option(Path("bench.yaml"), "--config", "-c"),
+    write: bool = typer.Option(
+        False, "--write", help="(re)generate the manifest from the current oracle state",
+    ),
+) -> None:
+    """Verify (default) or ``--write`` the oracle checksum manifest.
+
+    The manifest lives at ``<corpus root>/oracle_manifest.json`` (corpus root =
+    parent of ``source_of_truth``) and pins SHA-256 of every oracle PDF + mapping
+    CSV. Verify mode exits 2 on drift.
+    """
+    from neurotic_docx_bench import oracle_manifest
+
+    cfg = load_config(config)
+    manifest_path = oracle_manifest.default_manifest_path(cfg.source_of_truth)
+    corpus_root = cfg.source_of_truth.parent
+    dirs = oracle_manifest.oracle_dirs_from_config(cfg)
+    if write:
+        manifest = oracle_manifest.build_manifest(corpus_root, dirs)
+        oracle_manifest.write_manifest(manifest_path, manifest)
+        console.print(f"wrote {manifest_path} ({len(manifest)} files pinned)")
+        return
+    if not manifest_path.is_file():
+        console.print(f"[yellow]no manifest at {manifest_path} — run with --write first[/yellow]")
+        raise typer.Exit(2)
+    drift = oracle_manifest.verify_manifest(manifest_path, corpus_root, dirs)
+    if drift.clean:
+        console.print("oracle manifest OK")
+        return
+    console.print(f"[red]ORACLE DRIFT:[/red] {drift.summary()}")
+    for label, items in (("changed", drift.changed), ("missing", drift.missing), ("extra", drift.extra)):
+        for item in items[:20]:
+            console.print(f"  {label}: {item}")
+    raise typer.Exit(2)
 
 
 @app.command(name="run-all")
@@ -1475,6 +1551,11 @@ def run_all(
         help="force re-running even if (tool, tool_version, config_hash) already exists in "
         "results/bench.jsonl (env BENCH_RERUN=1 also enables this)",
     ),
+    oracle_check: bool = typer.Option(
+        True,
+        "--oracle-check/--no-oracle-check",
+        help="verify the committed oracle manifest before running (drift → exit 2)",
+    ),
 ) -> None:
     """Run the NAMED bench.yaml runs sequentially, in the given order, e.g.
     ``bench run-all jubarte-final-lossless docxodus superdoc``. With ``--really-all``
@@ -1515,6 +1596,7 @@ def run_all(
         roundtrip=roundtrip,
         roundtrip_oracle_cache=roundtrip_oracle_cache,
         rerun=rerun,
+        oracle_check=oracle_check,
     )
 
 
