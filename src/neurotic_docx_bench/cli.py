@@ -73,8 +73,8 @@ class ReportData(TypedDict):
 
 # Helper to extract overall_score safely
 def _get_overall_score(result: ScoreResult) -> float:
-    """Extract overall_score from a ScoreResult."""
-    return float(result["overall_score"])
+    """Doc-level score: pagefair when present (penalizes page-count mismatch), else raw."""
+    return pipeline.overall_from_result(result)
 
 
 app = typer.Typer(

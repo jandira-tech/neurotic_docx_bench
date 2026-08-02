@@ -12,12 +12,17 @@ Collisions (two files mapping to one key) are raised, never silently last-wins.
 from __future__ import annotations
 
 import time
+from collections.abc import Mapping
 from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
 from typing import TypedDict
 
+from skimage import color
+
+# score.py is parity-locked (tests/test_parity.py); we import its helpers instead of
+# duplicating the ink model, and never modify it.
 from neurotic_docx_bench import raster
-from neurotic_docx_bench.score import score_document
+from neurotic_docx_bench.score import ScoreConfig, _ink_mask, _load_image, score_document
 
 _REDLINE = "_redline"
 
@@ -38,6 +43,9 @@ class ScoreResult(TypedDict):
     page_count_oracle: int
     page_count_candidate: int
     page_count_mismatch: bool
+    average_score_pagefair: float
+    min_score_pagefair: float
+    overall_score_pagefair: float
     raster_ns: int
     score_ns: int
 
@@ -154,9 +162,51 @@ def score_pdf_pair(
     result["page_count_oracle"] = len(oracle_pages)  # type: ignore[assignment]
     result["page_count_candidate"] = len(cand_pages)  # type: ignore[assignment]
     result["page_count_mismatch"] = len(oracle_pages) != len(cand_pages)  # type: ignore[assignment]
+    _add_pagefair(result, oracle_pages, cand_pages)
     result["raster_ns"] = t_raster - t0  # type: ignore[assignment]
     result["score_ns"] = t_score - t_raster  # type: ignore[assignment]
     return result  # type: ignore[return-value]
+
+
+def _unmatched_page_weight(png: Path) -> int:
+    gray = color.rgb2gray(_load_image(png))
+    ink = _ink_mask(gray, ScoreConfig().ink_min_size)
+    return max(int(ink.sum()), 1)
+
+
+def _add_pagefair(result: dict, oracle_pages: list[Path], cand_pages: list[Path]) -> None:
+    """Fold unmatched pages (either side) into the doc aggregate at score 0.
+
+    ``score_document`` silently truncates to ``min(oracle, candidate)`` pages, so a tool
+    that drops or invents pages is invisible in ``overall_score``. The ``*_pagefair``
+    fields re-derive the doc aggregate with every unmatched page contributing score 0 at
+    a weight taken from its own ink (same ink model as the matched pages), using the same
+    ``0.7*avg + 0.3*min`` combination as the parity-locked scorer. Equal page counts
+    reproduce the v1 values exactly.
+    """
+    n_matched = int(result["page_count"])
+    unmatched = oracle_pages[n_matched:] + cand_pages[n_matched:]
+    if not unmatched:
+        avg = float(result["average_score"])
+        min_pf = float(result["min_score"])
+        overall = float(result["overall_score"])
+    else:
+        matched_w = [max(int(p["ink_area"]), 1) for p in result["pages"]]
+        unmatched_w = [_unmatched_page_weight(p) for p in unmatched]
+        total_w = sum(matched_w) + sum(unmatched_w)
+        avg = sum(p["score"] * w for p, w in zip(result["pages"], matched_w, strict=True)) / total_w
+        min_pf = 0.0
+        overall = 0.7 * avg + 0.3 * min_pf
+    result["average_score_pagefair"] = float(avg)
+    result["min_score_pagefair"] = float(min_pf)
+    result["overall_score_pagefair"] = float(overall)
+
+
+def overall_from_result(result: Mapping[str, object]) -> float:
+    """Doc-level score for ranking/gating: the pagefair value when present (new runs),
+    else the raw ``overall_score`` (legacy dicts)."""
+    value = result.get("overall_score_pagefair", result["overall_score"])
+    return float(value)  # type: ignore[arg-type]
 
 
 def _score_one(args: tuple[str, Path, Path, Path, int]) -> tuple[str, ScoreResult]:
@@ -208,7 +258,7 @@ def score_folders(
         jobs=jobs,
         candidate_tool=candidate_tool,
     )
-    return {k: v["overall_score"] for k, v in full_results.items()}
+    return {k: overall_from_result(v) for k, v in full_results.items()}
 
 
 def match_by_plain_stem(oracle_dir: Path, candidate_dir: Path) -> list[tuple[str, Path, Path]]:
