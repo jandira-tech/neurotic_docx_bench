@@ -1,0 +1,9 @@
+{
+	"docx": "corpus/word_based/docx_source/24_id_paraid_overflow.docx",
+	"expected": {
+		"26.2.4.2": {
+			"dpi": 144,
+			"page1_sha256": "4abda93808df40932a628cccf7a517e0661149ee7be5e737753cc4abc4ab5ea5"
+		}
+	}
+}
