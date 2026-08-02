@@ -17,6 +17,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
+from neurotic_docx_bench import lens_health
 from neurotic_docx_bench.aggregate import compute_aggregate, compute_aggregate_itt
 from neurotic_docx_bench.benchmarks import BenchmarkName
 from neurotic_docx_bench.config import BenchConfig
@@ -118,6 +119,11 @@ class Results:
     n_functional_checked: int | None = None
     n_accept_ok: int | None = None
     n_reject_ok: int | None = None
+    # Lens-disagreement bench-health alarm (PR8): docs where the pixel lens and a
+    # judging lens (functional invariant / WV-1) conflict. None when no doc had
+    # two lenses. A bench-health signal, never a ranking input.
+    n_lens_disagree: int | None = None
+    lens_disagree_rate: float | None = None
     timings: dict[str, dict[str, float]] = field(default_factory=dict)
     tool_version: str | None = None
     build_recipe: dict[str, list[str]] | None = None
@@ -197,6 +203,7 @@ def build_results(
     skill_mean, skill_median = _optional_metric_stats(per_doc, "skill_score")
     v2_mean, v2_median = _optional_metric_stats(per_doc, "score_v2")
     n_functional_checked, n_accept_ok, n_reject_ok = _functional_counts(per_doc)
+    n_lens_disagree, lens_disagree_rate = lens_health.summarize(per_doc)
     failure_list = failures or []
     itt = compute_aggregate_itt(
         rounded_scores, [str(f.get("doc", "")) for f in failure_list],
@@ -238,6 +245,8 @@ def build_results(
         n_functional_checked=n_functional_checked,
         n_accept_ok=n_accept_ok,
         n_reject_ok=n_reject_ok,
+        n_lens_disagree=n_lens_disagree,
+        lens_disagree_rate=lens_disagree_rate,
         timings=timings or {},
         tool_version=tool_version,
         build_recipe=build_recipe,

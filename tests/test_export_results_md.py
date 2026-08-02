@@ -327,3 +327,62 @@ def test_paired_stats_skips_small_overlap() -> None:
     a = _subset_row("alpha", {"d1": 90.0})
     b = _subset_row("beta", {"d1": 60.0})
     assert exp._paired_stats_section([a, b]) == []
+
+
+def test_lens_health_section_lists_disagreeing_vendors() -> None:
+    rows = [
+        {
+            "vendor": "alpha", "tool_version": "1.0", "benchmark": "script_redlines",
+            "n_lens_disagree": 3, "lens_disagree_rate": 0.015,
+        },
+        {
+            "vendor": "beta", "tool_version": "2.0", "benchmark": "script_redlines",
+            "n_lens_disagree": 0, "lens_disagree_rate": 0.0,
+        },
+        {
+            "vendor": "gamma", "tool_version": "1.0", "benchmark": "visual_redlines",
+            "n_lens_disagree": 9, "lens_disagree_rate": 0.5,
+        },
+    ]
+    section = exp._lens_health_section(rows)
+    text = "\n".join(section)
+    assert "Lens health" in text
+    assert "alpha" in text
+    assert "3 doc(s)" in text
+    assert "1.5%" in text
+    assert "beta" not in text  # zero disagreements → no alarm line
+    assert "gamma" not in text  # other benchmarks excluded
+
+
+def test_lens_health_section_absent_when_clean() -> None:
+    rows = [
+        {"vendor": "alpha", "tool_version": "1.0", "benchmark": "script_redlines",
+         "n_lens_disagree": 0, "lens_disagree_rate": 0.0},
+        {"vendor": "old", "tool_version": "0.9", "benchmark": "script_redlines"},
+    ]
+    assert exp._lens_health_section(rows) == []
+
+
+def test_dedup_keeps_lens_alarm_from_shadowed_rerun(tmp_path: Path) -> None:
+    # _rank prefers the higher-mean line among same (vendor, benchmark, version)
+    # reruns — exactly the line least likely to carry the lens alarm. The alarm
+    # must be max-over-reruns, not best-mean-line.
+    import json as _json
+
+    line_common = {
+        "vendor": "alpha", "benchmark": "script_redlines", "tool_version": "1.0",
+        "n_docs": 10, "exact_100": 0, "at_least_90": 5, "below_50": 0,
+        "min": 50.0, "max": 99.0, "std": 1.0,
+    }
+    shadowing = {**line_common, "overall_mean": 90.0, "overall_median": 91.0,
+                 "timestamp": "2026-08-01T00:00:00+00:00"}
+    with_alarm = {**line_common, "overall_mean": 80.0, "overall_median": 81.0,
+                  "timestamp": "2026-08-02T00:00:00+00:00",
+                  "n_lens_disagree": 4, "lens_disagree_rate": 0.4}
+    path = tmp_path / "bench.jsonl"
+    path.write_text(_json.dumps(shadowing) + "\n" + _json.dumps(with_alarm) + "\n")
+    rows = exp.rows_from_jsonl(path)
+    assert len(rows) == 1
+    assert rows[0]["mean"] == 90.0  # ranking still uses the best line
+    assert rows[0]["n_lens_disagree"] == 4  # but the alarm survives
+    assert rows[0]["lens_disagree_rate"] == 0.4

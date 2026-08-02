@@ -42,7 +42,7 @@ from rich.table import Table
 from rich.text import Text
 from rich.theme import Theme
 
-from neurotic_docx_bench import functional_lens, noise_floor, pipeline, provenance, stages, tool_updater
+from neurotic_docx_bench import functional_lens, lens_health, noise_floor, pipeline, provenance, stages, tool_updater
 from neurotic_docx_bench.benchmarks import BenchmarkName, BenchmarkOutcome
 from neurotic_docx_bench.config import BenchConfig, RunConfig, environment_config_for_run, load_config
 from neurotic_docx_bench.emit import gallery as gallery_emit
@@ -1097,6 +1097,44 @@ def _execute_run(
             n_oracle_unmatched = len(oracle_only - failed_docs)
         except (OSError, ValueError):
             n_oracle_unmatched = None
+
+    # Optional WV-1 lens: merge per-doc outcomes from a local `bench word-validate
+    # --json` record so the lens-disagreement metric sees all three lenses.
+    # Keyed by RUN NAME first (record stems embed the tool token, so a shared
+    # vendor file can only ever match the one run whose name equals that token);
+    # the vendor file stays as a fallback. Record stems are candidate filenames —
+    # normalized through redline_key into the score key space.
+    wv1_path = jsonl_path.parent / "wv1" / f"{rc.name}.json"
+    if not wv1_path.is_file() and rc.vendor and rc.vendor != rc.name:
+        wv1_path = jsonl_path.parent / "wv1" / f"{rc.vendor}.json"
+    wv1_outcomes = lens_health.load_wv1_outcomes(wv1_path)
+    if wv1_outcomes:
+        n_merged = 0
+        for stem, outcome in wv1_outcomes.items():
+            key = pipeline.redline_key(stem, rc.name)
+            if key in per_doc:
+                per_doc[key]["wv1_outcome"] = outcome
+                n_merged += 1
+        if n_merged:
+            recorded_at = ""
+            try:
+                raw = json.loads(wv1_path.read_text())
+                if isinstance(raw.get("generated_at"), str):
+                    recorded_at = f" (recorded {raw['generated_at'][:19]})"
+            except (json.JSONDecodeError, OSError):
+                pass
+            console.print(
+                f"WV-1 lens: merged {n_merged} outcome(s) from {wv1_path.name}{recorded_at}"
+                " — a local record; re-run word-validate --json after regenerating"
+                " candidates"
+            )
+        else:
+            # A configured lens silently discarded is a trap — say so.
+            console.print(
+                f"[yellow]WV-1 lens: {wv1_path.name} loaded "
+                f"{len(wv1_outcomes)} outcome(s) but 0 matched this run's doc keys "
+                f"(recorded for a different tool name?)[/yellow]"
+            )
 
     timings = _collect_timings(rc, run_dir, report, per_doc)
 
