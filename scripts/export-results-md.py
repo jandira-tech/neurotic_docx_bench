@@ -412,7 +412,7 @@ def merge_speed_rows(*groups: list[dict[str, object]]) -> list[dict[str, object]
         best.values(),
         key=lambda r: (
             str(r["kind"]),
-            float(r["throughput_per_s"]) if isinstance(r["throughput_per_s"], (int, float)) else 1e18,
+            float(r["throughput_per_s"]) if isinstance(r.get("throughput_per_s"), (int, float)) else 1e18,
             str(r["tool"]),
         ),
     )
