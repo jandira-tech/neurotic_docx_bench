@@ -1,0 +1,70 @@
+{
+  "runTs": "2026-07-18T03:28:27.812Z",
+  "rows": [
+    {
+      "schema": 1,
+      "kind": "redline_speed_bench",
+      "tool": "jubarte-rust-inproc",
+      "engine": "jubarte-rust-inproc",
+      "init_ms": 130.076,
+      "failures": 2,
+      "error": "all calls failed",
+      "sample_error": "jubarte-rust-inproc: timeout waiting for worker reply bin=/Users/arthrod/temp/T/neurotic_docx_bench/src/neurotic_docx_bench/utils/jubarte/jubarte-rust/jubarte-worker",
+      "run_ts": "2026-07-18T03:28:27.812Z"
+    },
+    {
+      "schema": 1,
+      "kind": "redline_speed_bench",
+      "tool": "jubarte-rust",
+      "engine": "jubarte-rust",
+      "dist": "/Users/arthrod/temp/T/neurotic_docx_bench/src/neurotic_docx_bench/utils/jubarte/jubarte-rust",
+      "runtime": "rust",
+      "run_ts": "2026-07-18T03:28:27.812Z",
+      "seed": 42,
+      "fixture_count": 2,
+      "fixture_target": 2,
+      "pair_count": 2,
+      "reps": 1,
+      "warmup": 0,
+      "init_ms": 0.142,
+      "wall_ms": 83919.696,
+      "failures": 0,
+      "unit": "ms_per_redline",
+      "n": 2,
+      "mean": 41959.82,
+      "median": 32434.306,
+      "p90": 51485.334,
+      "p95": 51485.334,
+      "p99": 51485.334,
+      "min": 32434.306,
+      "max": 51485.334,
+      "std": 9525.514,
+      "total_ms": 83919.64,
+      "throughput_per_s": 0,
+      "mean_out_bytes": 12175236,
+      "profile": null,
+      "profile_tool": null,
+      "top_cpu": null,
+      "failure_samples": []
+    },
+    {
+      "schema": 1,
+      "kind": "redline_speed_bench",
+      "tool": "jubarte-wasm",
+      "engine": "jubarte-wasm",
+      "init_ms": 11.529,
+      "failures": 2,
+      "error": "all calls failed",
+      "sample_error": "unreachable",
+      "run_ts": "2026-07-18T03:28:27.812Z"
+    }
+  ],
+  "fixtures": 2,
+  "pairs": 2,
+  "seed": 42,
+  "methods": [
+    "jubarte-rust-inproc",
+    "jubarte-rust",
+    "jubarte-wasm"
+  ]
+}
