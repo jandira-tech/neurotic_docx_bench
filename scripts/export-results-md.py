@@ -180,6 +180,7 @@ def rows_from_jsonl(path: Path) -> list[dict[str, object]]:
                 "itt_median": itt_median,
                 "itt_n": itt_n,
                 "n_failures": n_failures,
+                "skill_median": data.get("skill_median"),
                 "scores": data.get("scores") if isinstance(data.get("scores"), dict) else None,
             }
             key = (vendor, benchmark, version)
@@ -347,6 +348,7 @@ def to_fidelity_markdown(rows: list[dict[str, object]], source: Path) -> str:
                     _escape_cell(_format_num(r["median"])),
                     _escape_cell(_format_num(r.get("itt_mean"))),
                     _escape_cell(_format_num(r.get("itt_median"))),
+                    _escape_cell(_format_num(r.get("skill_median"))),
                     _escape_cell(_format_num(r.get("n_failures"))),
                     _escape_cell(_format_num(r["n_docs"])),
                     _escape_cell(_format_num(r.get("itt_n"))),
@@ -365,6 +367,7 @@ def to_fidelity_markdown(rows: list[dict[str, object]], source: Path) -> str:
                     "median",
                     "itt_mean",
                     "itt_median",
+                    "skill_median",
                     "failures",
                     "n_docs",
                     "itt_n",

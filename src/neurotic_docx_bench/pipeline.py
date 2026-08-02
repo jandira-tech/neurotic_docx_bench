@@ -55,6 +55,9 @@ class ScoreResult(TypedDict):
     average_score_pagefair: float
     min_score_pagefair: float
     overall_score_pagefair: float
+    null_score: float | None
+    skill_score: float | None
+    score_v2: float | None
     raster_ns: int
     score_ns: int
 
@@ -148,6 +151,8 @@ def score_pdf_pair(
     *,
     dpi: int = 144,
     key: str | None = None,
+    base_pdf: Path | None = None,
+    cached_null: float | None = None,
 ) -> ScoreResult:
     """Rasterize both PDFs to PNGs under ``work_dir`` and return ``score_document``'s dict,
     augmented with page-count provenance.
@@ -175,6 +180,16 @@ def score_pdf_pair(
     result["page_count_candidate"] = len(cand_pages)  # type: ignore[assignment]
     result["page_count_mismatch"] = len(oracle_pages) != len(cand_pages)  # type: ignore[assignment]
     _add_pagefair(result, oracle_pages, cand_pages)
+    _add_v2(
+        result,
+        oracle_pdf=oracle_pdf,
+        oracle_pages=oracle_pages,
+        cand_pages=cand_pages,
+        base_pdf=base_pdf,
+        cached_null=cached_null,
+        pages_root=work_dir / subdir,
+        dpi=dpi,
+    )
     t_score = time.perf_counter_ns()
     result["raster_ns"] = t_raster - t0  # type: ignore[assignment]
     result["score_ns"] = t_score - t_raster  # type: ignore[assignment]
@@ -218,6 +233,42 @@ def _add_pagefair(result: dict, oracle_pages: list[Path], cand_pages: list[Path]
     result["overall_score_pagefair"] = float(overall)
 
 
+def _add_v2(
+    result: dict,
+    *,
+    oracle_pdf: Path,
+    oracle_pages: list[Path],
+    cand_pages: list[Path],
+    base_pdf: Path | None,
+    cached_null: float | None,
+    pages_root: Path,
+    dpi: int,
+) -> None:
+    """Attach null_score / skill_score / score_v2 (all ``None`` without a base PDF).
+
+    The null baseline (base render scored against the oracle) reuses the parity-locked
+    scorer; ``cached_null`` skips that when the parent already had it cached.
+    """
+    if base_pdf is None:
+        result["null_score"] = None
+        result["skill_score"] = None
+        result["score_v2"] = None
+        return
+    from neurotic_docx_bench import score_v2 as sv2
+
+    base_pages_dir = pages_root / "base"
+    shutil.rmtree(base_pages_dir, ignore_errors=True)
+    raster.rasterize_pdf(base_pdf, base_pages_dir, dpi=dpi)
+    base_pages = sorted(base_pages_dir.glob("page_*.png"))
+    if cached_null is not None:
+        null = float(cached_null)
+    else:
+        null = float(score_document(oracle_pages, base_pages)["overall_score"])
+    result["null_score"] = null
+    result["skill_score"] = sv2.skill_score(float(result["overall_score"]), null)
+    result["score_v2"] = sv2.change_region_score(oracle_pages, base_pages, cand_pages)
+
+
 def overall_from_result(result: Mapping[str, object]) -> float:
     """Doc-level score for ranking/gating: the pagefair value when present (new runs),
     else the raw ``overall_score`` (legacy dicts)."""
@@ -237,9 +288,15 @@ def scorer_for_benchmark(benchmark: str) -> str:
     return SCORER_PAGEFAIR if benchmark in PAGEFAIR_BENCHMARKS else SCORER_RAW
 
 
-def _score_one(args: tuple[str, Path, Path, Path, int]) -> tuple[str, ScoreResult]:
-    key, oracle_pdf, cand_pdf, work_dir, dpi = args
-    return key, score_pdf_pair(oracle_pdf, cand_pdf, work_dir, dpi=dpi, key=key)
+def _score_one(args: tuple) -> tuple[str, ScoreResult]:
+    """Worker entry. Accepts the legacy 5-tuple ``(key, oracle, cand, work, dpi)`` or
+    the extended 7-tuple with ``(..., base_pdf, cached_null)``."""
+    key, oracle_pdf, cand_pdf, work_dir, dpi, *extra = args
+    base_pdf, cached_null = (extra + [None, None])[:2] if extra else (None, None)
+    return key, score_pdf_pair(
+        oracle_pdf, cand_pdf, work_dir, dpi=dpi, key=key,
+        base_pdf=base_pdf, cached_null=cached_null,
+    )
 
 
 def score_folders_full(
@@ -250,22 +307,51 @@ def score_folders_full(
     dpi: int = 144,
     jobs: int = 4,
     candidate_tool: str | None = None,
+    base_map: dict[str, Path] | None = None,
+    null_cache_path: Path | None = None,
 ) -> dict[str, ScoreResult]:
     """Score every matched pair; return ``{key: score_document_result}``.
 
     CPU-bound rasterize+score is fanned out with a **process** pool (PyMuPDF and the
     skimage scoring are not safe/parallel under threads); ``jobs<=1`` runs serially.
+
+    ``base_map`` (``{key: base_pdf}``) enables the v2/skill metrics for the covered
+    keys. The null cache is read and written ONLY in this parent process — workers
+    receive the cached value (or compute the null themselves) and the parent merges
+    fresh entries back once, so pool workers never race on the file.
     """
     pairs = match_by_stem(oracle_dir, candidate_dir, candidate_tool=candidate_tool)
     if not pairs:
         return {}
-    tasks = [(key, o, c, work_dir, dpi) for key, o, c in pairs]
+    from neurotic_docx_bench import score_v2 as sv2
+
+    bases = base_map or {}
+    null_cache = sv2.load_null_cache(null_cache_path) if null_cache_path else {}
+    tasks = []
+    cache_keys: dict[str, str] = {}
+    for key, o, c in pairs:
+        base_pdf = bases.get(key)
+        cached = None
+        if base_pdf is not None and null_cache_path is not None:
+            cache_keys[key] = sv2.null_cache_key(o, base_pdf, dpi)
+            cached = null_cache.get(cache_keys[key])
+        tasks.append((key, o, c, work_dir, dpi, base_pdf, cached))
     if jobs and jobs > 1 and len(tasks) > 1:
         with ProcessPoolExecutor(max_workers=jobs) as pool:
             scored = list(pool.map(_score_one, tasks))
     else:
         scored = [_score_one(t) for t in tasks]
-    return dict(scored)
+    results = dict(scored)
+    if null_cache_path is not None:
+        fresh = {
+            cache_keys[key]: float(res["null_score"])  # type: ignore[arg-type]
+            for key, res in results.items()
+            if key in cache_keys
+            and res.get("null_score") is not None
+            and null_cache.get(cache_keys[key]) is None
+        }
+        sv2.merge_null_cache(null_cache_path, fresh)
+    return results
 
 
 def score_folders(

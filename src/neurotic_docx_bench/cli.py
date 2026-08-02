@@ -77,6 +77,21 @@ def _get_overall_score(result: ScoreResult) -> float:
     return pipeline.overall_from_result(result)
 
 
+def _base_pdf_map(cfg: BenchConfig) -> dict[str, Path] | None:
+    """Base-PDF resolver for the v2/skill metrics, by corpus convention: the mapping
+    CSVs and ``pdf_source`` dir live next to the oracle dir (``<corpus>/pdf_source``,
+    ``<corpus>/centralized_mapping*.csv``). Returns None when the convention does not
+    hold (synthetic test corpora) — v2 fields then stay None."""
+    corpus_root = cfg.source_of_truth.parent
+    base_dir = corpus_root / "pdf_source"
+    csvs = sorted(corpus_root.glob("centralized_mapping*.csv"))
+    if not base_dir.is_dir() or not csvs:
+        return None
+    from neurotic_docx_bench import score_v2 as sv2
+
+    return sv2.resolve_base_pdfs(csvs, base_dir) or None
+
+
 app = typer.Typer(
     name="bench",
     help="neurotic-docx-bench — DOCX tool fidelity benchmark vs a Microsoft Word oracle.",
@@ -804,6 +819,7 @@ def _execute_run(
             console.print(f"[yellow]{report.fail_count} render failures[/yellow]")
         per_doc = pipeline.score_folders_full(
             cfg.source_of_truth, report.pdf_dir, run_dir / "score", dpi=use_dpi, jobs=rc.jobs, candidate_tool=rc.name,
+            base_map=_base_pdf_map(cfg), null_cache_path=jsonl_path.parent / "null_baseline.json",
         )
         gallery_path = gallery_emit.write_gallery(
             run_dir,
