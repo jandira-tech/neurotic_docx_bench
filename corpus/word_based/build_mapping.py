@@ -54,15 +54,19 @@ def extract_stems(files, suffixes):
     return stems
 
 
+# docx_accepted_word files carry the REDLINE names (`…_redline.docx` /
+# `…_word_redline.docx`): they are the redlines with all changes applied. The
+# old `_word_redline_accepted.docx` suffix matched zero files, so every row
+# recorded accepted_docx=MISSING.
 red_stems = extract_stems(redline_docx, ["_word_redline.docx", "_redline.docx"])
-acc_stems = extract_stems(accepted_docx, ["_word_redline_accepted.docx"])
-pdf_r_stems = extract_stems(pdf_red_all, ["_word_redline_accepted.pdf", "_redline.pdf"])
+acc_stems = extract_stems(accepted_docx, ["_word_redline.docx", "_redline.docx"])
+pdf_r_stems = extract_stems(pdf_red_all, ["_word_redline.pdf", "_redline.pdf"])
 pdf_a_stems = extract_stems(pdf_acc_all, ["_word_redline_accepted.pdf"])
 
 all_stems = sorted(red_stems | acc_stems)
 
 
-def split_core(core):
+def split_core(core, source_ci=source_ci, src_stems_lower=src_stems_lower):
     cl = core.lower()
     best = None
     for ss in src_stems_lower:
@@ -91,14 +95,23 @@ for stem in all_stems:
 
     rl_name = f"{stem}_redline.docx"
     rlw_name = f"{stem}_word_redline.docx"
-    acc_name = f"{stem}_word_redline_accepted.docx"
-    pr_name = f"{stem}_redline.pdf"
     pa_name = f"{stem}_word_redline_accepted.pdf"
 
     rl_ok = rl_name in redline_docx
     rlw_ok = rlw_name in redline_docx
-    acc_ok = acc_name in accepted_docx
-    pr_ok = pr_name in pdf_red_all
+    # Accepted docx carry the redline names; the `_word_redline` variant is the
+    # provenance-matching Word capture and wins when both exist.
+    acc_name = next(
+        (n for n in (rlw_name, rl_name) if n in accepted_docx), "",
+    )
+    acc_ok = bool(acc_name)
+    # 43 pairs only exist as the `_word_redline.pdf` capture — the old code
+    # recorded a stale `_redline.pdf` name for them.
+    pr_name = next(
+        (n for n in (f"{stem}_word_redline.pdf", f"{stem}_redline.pdf") if n in pdf_red_all),
+        "",
+    )
+    pr_ok = bool(pr_name)
     pa_ok = pa_name in pdf_acc_all
 
     missing = []
@@ -186,3 +199,68 @@ else:
     print("\nNo missing source files — all sources accounted for.")
 
 print(f"\nCSV: {csv_path}")
+
+# ---- Randomized chain corpus (file_N → file_M) ----
+# Same schema, separate CSV: sources in docx_source_randomized, redlines in
+# docx_redlines_randomized, oracle PDFs in pdf_redlines_randomized/pdf. No
+# accepted artifacts exist for this corpus (accepted_docx/pdf_accepted MISSING).
+RAND_DIRS = {
+    "source": os.path.join(BASE, "docx_source_randomized"),
+    "redline": os.path.join(BASE, "docx_redlines_randomized"),
+    "pdf_red": os.path.join(BASE, "pdf_redlines_randomized", "pdf"),
+}
+rand_source = {f for f in list_dir(RAND_DIRS["source"]) if f.endswith(".docx")}
+rand_redline = {f for f in list_dir(RAND_DIRS["redline"]) if f.endswith(".docx")}
+rand_pdf = {f for f in list_dir(RAND_DIRS["pdf_red"]) if f.endswith(".pdf")}
+
+rand_ci = {}
+for f in rand_source:
+    rand_ci[f[:-5].lower()] = f
+rand_stems_lower = sorted(rand_ci.keys(), key=len, reverse=True)
+
+rand_results = []
+for stem in sorted(extract_stems(rand_redline, ["_redline.docx"])):
+    base, nxt = split_core(stem, source_ci=rand_ci, src_stems_lower=rand_stems_lower)
+    base_src = f"{base}.docx" if f"{base}.docx" in rand_source else rand_ci.get(base.lower())
+    next_src = f"{nxt}.docx" if f"{nxt}.docx" in rand_source else rand_ci.get(nxt.lower())
+    pr_name = f"{stem}_redline.pdf"
+    pr_ok = pr_name in rand_pdf
+
+    missing = ["accepted_docx", "pdf_accepted"]
+    if base and not base_src:
+        missing.insert(0, "source_base")
+    if nxt and not next_src:
+        missing.insert(0, "source_next")
+    if not pr_ok:
+        missing.insert(0, "pdf_redline")
+
+    rand_results.append({
+        "pair_stem": stem,
+        "base": base,
+        "next": nxt,
+        "origin": "randomized_chain",
+        "docx_source_base": base_src or (f"MISSING:{base}.docx" if base else ""),
+        "docx_source_next": next_src or (f"MISSING:{nxt}.docx" if nxt else ""),
+        "redline_docx": f"{stem}_redline.docx",
+        "redline_docx_word": "",
+        "accepted_docx": "MISSING",
+        "pdf_redline": pr_name if pr_ok else "MISSING",
+        "pdf_accepted": "MISSING",
+        "missing": "; ".join(missing),
+    })
+
+rand_csv_path = os.path.join(BASE, "centralized_mapping_randomized.csv")
+with pathlib.Path(rand_csv_path).open("w", newline="") as f:
+    w = csv.DictWriter(f, fieldnames=fields)
+    w.writeheader()
+    w.writerows(rand_results)
+
+print(f"\n{'=' * 70}")
+print("RANDOMIZED CHAIN CORPUS")
+print("=" * 70)
+print(f"  source .docx          {len(rand_source)}")
+print(f"  redline .docx         {len(rand_redline)}")
+print(f"  oracle .pdf           {len(rand_pdf)}")
+print(f"  Pairs:                {len(rand_results)}")
+print(f"  Missing oracle pdf:   {sum(1 for r in rand_results if r['pdf_redline'] == 'MISSING')}")
+print(f"\nCSV: {rand_csv_path}")

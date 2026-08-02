@@ -119,6 +119,7 @@ def build_results_line(
     timings: dict[str, dict[str, float]] | None = None,
     n_oracle_unmatched: int | None = None,
     scorer: str = "v1",
+    corpus_revision: str | None = None,
 ) -> dict[str, object]:
     """Build a schema-v4 ``Results`` JSONL dict from a vendor×benchmark outcome.
 
@@ -148,6 +149,7 @@ def build_results_line(
         timings=timings,
         n_oracle_unmatched=n_oracle_unmatched,
         scorer=scorer,
+        corpus_revision=corpus_revision,
     ).to_json_dict()
 
 

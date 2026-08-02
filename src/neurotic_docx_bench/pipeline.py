@@ -13,7 +13,7 @@ from __future__ import annotations
 
 import shutil
 import time
-from collections.abc import Mapping
+from collections.abc import Mapping, Sequence
 from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
 from typing import NotRequired, TypedDict
@@ -97,29 +97,78 @@ def normalize_stem(stem: str) -> str:
     return redline_key(stem)
 
 
+_WORD_VARIANT = "_word"
+
+
+def oracle_pair_key(stem: str) -> str:
+    """Pair key for an ORACLE redline filename: :func:`redline_key` with the
+    ``_word`` capture-variant marker normalized away (``a_b_word_redline`` and
+    ``a_b_redline`` are the same pair)."""
+    key = redline_key(stem)
+    return key[: -len(_WORD_VARIANT)] if key.endswith(_WORD_VARIANT) else key
+
+
 def _index_redlines(directory: Path, tool: str | None) -> dict[str, Path]:
     """Map ``<base>_<next>`` → redline PDF for every redline file in ``directory``.
 
     Non-redline PDFs are skipped. Two files mapping to the same key is a hard error
     (never silently drop one), so a mis-named corpus can't cause a wrong-oracle score.
+
+    ORACLE side only (``tool is None``): ``<pair>_word_redline`` is the
+    Word-captured VARIANT of ``<pair>`` — normalized to the pair key, else 43
+    variant-only pairs are unreachable (no candidate ever keys ``<pair>_word``;
+    no corpus stem ends in ``_word``). When both variants exist the Word capture
+    is the provenance-matching one and wins deterministically, mirroring
+    :func:`_index_accepted`; a SAME-variant collision still raises.
     """
     index: dict[str, Path] = {}
+    ranks: dict[str, int] = {}
     collisions: dict[str, list[str]] = {}
     for pdf in sorted(directory.glob("*.pdf")):
         if not is_redline(pdf.stem):
             continue
         key = redline_key(pdf.stem, tool)
+        rank = 0
+        if tool is None and key.endswith(_WORD_VARIANT):
+            key = key[: -len(_WORD_VARIANT)]
+            rank = 1
         if key in index:
-            collisions.setdefault(key, [index[key].name]).append(pdf.name)
-        index[key] = pdf
+            if rank == ranks[key]:
+                collisions.setdefault(key, [index[key].name]).append(pdf.name)
+            elif rank > ranks[key]:
+                index[key], ranks[key] = pdf, rank
+            continue
+        index[key], ranks[key] = pdf, rank
     if collisions:
         detail = "; ".join(f"{k!r} <- {names}" for k, names in collisions.items())
         raise ValueError(f"redline key collision in {directory}: {detail}")
     return index
 
 
+def _index_redlines_union(
+    oracle_dirs: Path | Sequence[Path], tool: str | None,
+) -> dict[str, Path]:
+    """Union index over one or more oracle dirs (named + randomized corpora).
+
+    Each dir is indexed with the variant preference above; the SAME key
+    appearing in two dirs is a hard cross-dir collision — the corpora are
+    disjoint namespaces and an overlap means a mis-placed file.
+    """
+    dirs = [oracle_dirs] if isinstance(oracle_dirs, Path) else list(oracle_dirs)
+    union: dict[str, Path] = {}
+    for directory in dirs:
+        for key, pdf in _index_redlines(directory, tool).items():
+            if key in union:
+                raise ValueError(
+                    f"redline key collision across oracle dirs: {key!r} in "
+                    f"{union[key]} and {pdf}"
+                )
+            union[key] = pdf
+    return union
+
+
 def match_by_stem(
-    oracle_dir: Path,
+    oracle_dir: Path | Sequence[Path],
     candidate_dir: Path,
     *,
     oracle_tool: str | None = None,
@@ -129,16 +178,17 @@ def match_by_stem(
 
     ``candidate_tool`` is the tool token in the candidate filenames (e.g. ``jubarte``);
     with it, ``<base>_<next>_jubarte_redline`` pairs to oracle ``<base>_<next>_redline``.
+    ``oracle_dir`` may be several dirs (named + randomized corpora) — union-indexed.
     Returns ``[(key, oracle_pdf, candidate_pdf), ...]`` sorted by key, for keys in BOTH.
     """
-    oracle = _index_redlines(oracle_dir, oracle_tool)
+    oracle = _index_redlines_union(oracle_dir, oracle_tool)
     candidate = _index_redlines(candidate_dir, candidate_tool)
     shared = sorted(oracle.keys() & candidate.keys())
     return [(key, oracle[key], candidate[key]) for key in shared]
 
 
 def coverage(
-    oracle_dir: Path,
+    oracle_dir: Path | Sequence[Path],
     candidate_dir: Path,
     *,
     oracle_tool: str | None = None,
@@ -147,7 +197,7 @@ def coverage(
     """(oracle-only keys, candidate-only keys) — documents present in one side but not
     the other, so a run can report what it failed to cover instead of silently dropping.
     """
-    oracle = set(_index_redlines(oracle_dir, oracle_tool))
+    oracle = set(_index_redlines_union(oracle_dir, oracle_tool))
     candidate = set(_index_redlines(candidate_dir, candidate_tool))
     return oracle - candidate, candidate - oracle
 
@@ -308,7 +358,7 @@ def _score_one(args: tuple) -> tuple[str, ScoreResult]:
 
 
 def score_folders_full(
-    oracle_dir: Path,
+    oracle_dir: Path | Sequence[Path],
     candidate_dir: Path,
     work_dir: Path,
     *,

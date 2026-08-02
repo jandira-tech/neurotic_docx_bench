@@ -128,6 +128,11 @@ class Results:
     tool_version: str | None = None
     build_recipe: dict[str, list[str]] | None = None
     config_hash: str | None = None
+    # Short content hash of the committed oracle manifest at score time — the
+    # exact corpus vintage this line was scored against. Re-baselining events
+    # (e.g. the `_word_redline` dual-variant preference switch) become visible
+    # in the data instead of silently mixing vintages.
+    corpus_revision: str | None = None
     timestamp: datetime = field(default_factory=lambda: datetime.now(UTC))
 
     def __post_init__(self) -> None:
@@ -197,6 +202,7 @@ def build_results(
     timings: dict[str, dict[str, float]] | None = None,
     n_oracle_unmatched: int | None = None,
     scorer: str = "v1",
+    corpus_revision: str | None = None,
 ) -> Results:
     rounded_scores = {k: round(float(v), 4) for k, v in scores.items()}
     aggregate = compute_aggregate(rounded_scores, per_doc=per_doc)
@@ -251,6 +257,7 @@ def build_results(
         tool_version=tool_version,
         build_recipe=build_recipe,
         config_hash=config_hash,
+        corpus_revision=corpus_revision,
         timestamp=timestamp,
     )
 

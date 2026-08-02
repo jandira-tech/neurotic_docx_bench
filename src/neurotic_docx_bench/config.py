@@ -67,6 +67,11 @@ class BenchConfig:
     # ``memory_budget.DEFAULT_SIZE_CLASSES``. Backward-compatible: no bench.yaml
     # change is required and the config file's hash is unaffected when omitted.
     memory_budgets: tuple[SizeClass, ...] = field(default_factory=tuple)
+    # Additional oracle redline PDF dirs (the randomized file_N_file_M corpus)
+    # union-indexed with source_of_truth for script_redlines matching. Kept
+    # separate from source_of_truth so the visual_redlines default, provenance,
+    # and every single-dir consumer stay untouched. Absent → empty tuple.
+    extra_oracle_dirs: tuple[Path, ...] = field(default_factory=tuple)
 
 
 _KNOWN_RENDERERS = frozenset({"soffice", "passthrough", "playwright", "word"})
@@ -229,6 +234,18 @@ def load_config(path: Path | str) -> BenchConfig:
     if "visual_redlines" not in visual_oracles:
         visual_oracles["visual_redlines"] = source_of_truth
 
+    extra_raw = data.get("extra_oracle_dirs") or []
+    if not isinstance(extra_raw, list):
+        raise ValueError(f"{path}: 'extra_oracle_dirs' must be a list of paths")
+    extra_oracle_dirs: list[Path] = []
+    for entry in extra_raw:
+        resolved_extra = _resolve(entry)
+        if resolved_extra is None or not resolved_extra.is_dir():
+            raise ValueError(
+                f"{path}: extra_oracle_dirs entry not found or not a directory: {entry}",
+            )
+        extra_oracle_dirs.append(resolved_extra)
+
     return BenchConfig(
         source_of_truth=source_of_truth,
         scoring=scoring,
@@ -237,6 +254,7 @@ def load_config(path: Path | str) -> BenchConfig:
         generate_scripts=scripts,
         visual_oracles=visual_oracles,
         memory_budgets=size_classes_from_config(data.get("memory_budgets") or []),
+        extra_oracle_dirs=tuple(extra_oracle_dirs),
     )
 
 
@@ -263,4 +281,5 @@ def environment_config_for_run(cfg: BenchConfig, run_name: str) -> BenchConfig:
         generate_scripts=cfg.generate_scripts,
         visual_oracles=cfg.visual_oracles,
         memory_budgets=cfg.memory_budgets,
+        extra_oracle_dirs=cfg.extra_oracle_dirs,
     )

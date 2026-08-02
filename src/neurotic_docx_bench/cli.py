@@ -97,11 +97,15 @@ def _source_docx_map(cfg: BenchConfig) -> dict[str, tuple[Path, Path]] | None:
     convention as :func:`_base_pdf_map` (``<corpus>/docx_source`` + mapping CSVs
     next to the oracle dir). None when the convention does not hold."""
     corpus_root = cfg.source_of_truth.parent
-    src_dir = corpus_root / "docx_source"
+    src_dirs = [
+        d
+        for d in (corpus_root / "docx_source", corpus_root / "docx_source_randomized")
+        if d.is_dir()
+    ]
     csvs = sorted(corpus_root.glob("centralized_mapping*.csv"))
-    if not src_dir.is_dir() or not csvs:
+    if not src_dirs or not csvs:
         return None
-    return functional_lens.resolve_source_docx(csvs, [src_dir]) or None
+    return functional_lens.resolve_source_docx(csvs, src_dirs) or None
 
 
 def _functional_stage(
@@ -805,6 +809,21 @@ def _collect_timings(
     return timings
 
 
+def _corpus_revision(cfg: BenchConfig) -> str | None:
+    """Short content hash of the committed oracle manifest — stamps every Results
+    line with the exact corpus vintage it was scored against, so re-baselining
+    events (dual-variant preference, added randomized pairs) are visible in the
+    data instead of silently mixing vintages."""
+    import hashlib
+
+    from neurotic_docx_bench import oracle_manifest
+
+    path = oracle_manifest.default_manifest_path(cfg.source_of_truth)
+    if not path.is_file():
+        return None
+    return hashlib.sha256(path.read_bytes()).hexdigest()[:12]
+
+
 def _emit_and_gate_benchmark(
     *,
     benchmark: BenchmarkName,
@@ -859,6 +878,7 @@ def _emit_and_gate_benchmark(
         timings=timings,
         n_oracle_unmatched=n_oracle_unmatched,
         scorer=pipeline.scorer_for_benchmark(benchmark),
+        corpus_revision=_corpus_revision(cfg),
     )
     appended = (
         jsonl_emit.append_if_changed(jsonl_path, line)
@@ -965,7 +985,8 @@ def _execute_run(
         if report.fail_count:
             console.print(f"[yellow]{report.fail_count} render failures[/yellow]")
         per_doc = pipeline.score_folders_full(
-            cfg.source_of_truth, report.pdf_dir, run_dir / "score", dpi=use_dpi, jobs=rc.jobs, candidate_tool=rc.name,
+            [cfg.source_of_truth, *cfg.extra_oracle_dirs],
+            report.pdf_dir, run_dir / "score", dpi=use_dpi, jobs=rc.jobs, candidate_tool=rc.name,
             base_map=_base_pdf_map(cfg), null_cache_path=jsonl_path.parent / "null_baseline.json",
         )
         gallery_path = gallery_emit.write_gallery(
@@ -1091,7 +1112,8 @@ def _execute_run(
     if limit is None:
         try:
             oracle_only, _ = pipeline.coverage(
-                cfg.source_of_truth, report.pdf_dir, candidate_tool=rc.name,
+                [cfg.source_of_truth, *cfg.extra_oracle_dirs],
+                report.pdf_dir, candidate_tool=rc.name,
             )
             failed_docs = {str(f.get("doc", "")) for f in failures}
             n_oracle_unmatched = len(oracle_only - failed_docs)

@@ -247,3 +247,56 @@ def test_environment_config_for_run_unknown_raises(tmp_path):
 
     with pytest.raises(ValueError, match="No run named"):
         environment_config_for_run(cfg, "nonexistent")
+
+
+def test_extra_oracle_dirs_parsed(tmp_path):
+    (tmp_path / "oracle").mkdir()
+    (tmp_path / "rand_oracle").mkdir()
+    cfg_path = tmp_path / "bench.yaml"
+    cfg_path.write_text(
+        "source_of_truth: oracle\n"
+        "extra_oracle_dirs:\n"
+        "  - rand_oracle\n"
+        "runs:\n"
+        "  - name: t\n"
+        "    render: passthrough\n"
+        "    modified: /x\n"
+        "    unversioned: true\n",
+    )
+    cfg = load_config(cfg_path)
+    assert cfg.extra_oracle_dirs == (tmp_path / "rand_oracle",)
+    # and it survives the per-run environment_config narrowing
+    from neurotic_docx_bench.config import environment_config_for_run
+
+    assert environment_config_for_run(cfg, "t").extra_oracle_dirs == cfg.extra_oracle_dirs
+
+
+def test_extra_oracle_dirs_default_empty(tmp_path):
+    (tmp_path / "oracle").mkdir()
+    cfg_path = tmp_path / "bench.yaml"
+    cfg_path.write_text(
+        "source_of_truth: oracle\n"
+        "runs:\n"
+        "  - name: t\n"
+        "    render: passthrough\n"
+        "    modified: /x\n"
+        "    unversioned: true\n",
+    )
+    assert load_config(cfg_path).extra_oracle_dirs == ()
+
+
+def test_extra_oracle_dirs_missing_dir_raises(tmp_path):
+    (tmp_path / "oracle").mkdir()
+    cfg_path = tmp_path / "bench.yaml"
+    cfg_path.write_text(
+        "source_of_truth: oracle\n"
+        "extra_oracle_dirs:\n"
+        "  - not_there\n"
+        "runs:\n"
+        "  - name: t\n"
+        "    render: passthrough\n"
+        "    modified: /x\n"
+        "    unversioned: true\n",
+    )
+    with pytest.raises(ValueError, match="extra_oracle_dirs"):
+        load_config(cfg_path)
