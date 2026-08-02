@@ -108,3 +108,4 @@ results/redline_speed_bench/**/fixtures_bytes/
 
 # W1–W5 wasm perf/memory profiler dumps (217MB, regenerable; findings live in TODO.md/RESULTS.md)
 results/wasm_perf/
+harness/folio-viewer-current/node_modules/
