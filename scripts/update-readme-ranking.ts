@@ -4,8 +4,14 @@
  * README.md between RANKING-START and RANKING-END.
  *
  * Fidelity: one competitive row per (vendor, benchmark, tool_version), then
- * **collapse** the three Jubarte families to **best + worst only** (by median)
- * so the README stays readable while still showing the range of each pin line.
+ * **collapse** the three Jubarte families to **best + worst only** (by ITT
+ * median) so the README stays readable while still showing the range of each
+ * pin line.
+ *
+ * Ranking is intent-to-treat (ITT): every failed doc counts as a 0 score, so a
+ * tool cannot climb the table by crashing on hard docs. Server-emitted itt_*
+ * fields win when present; otherwise ITT is computed here from per-doc scores
+ * plus failures, and approximated (marked `~`) for old lines without scores.
  *
  * Families:
  *   - jubarte-final          (vendor jubarte, native / non-lossless runs)
@@ -64,7 +70,7 @@ type JubarteFamily =
 	| "jubarte-final-lossless"
 	| "jubarte-rs";
 
-interface FidelityRow {
+export interface FidelityRow {
 	vendor: string;
 	benchmark: FidelityBenchmark;
 	tool_version: string | null;
@@ -74,6 +80,12 @@ interface FidelityRow {
 	overall_median: number;
 	exact_100: number;
 	n_failures: number;
+	/** Intent-to-treat: failed docs count as 0 instead of leaving the pool. */
+	itt_median: number;
+	itt_mean: number;
+	itt_n: number;
+	/** True when ITT was approximated from summary stats (no per-doc scores). */
+	itt_approx: boolean;
 	render: string;
 	/** Run name from environment_config when available (e.g. jubarte-final-lossless). */
 	run_name: string;
@@ -157,7 +169,91 @@ function cmpRank(
 	return 0;
 }
 
-function readFidelityRows(path: string): FidelityRow[] {
+export function median(values: readonly number[]): number {
+	if (values.length === 0) return 0;
+	const sorted = [...values].sort((a, b) => a - b);
+	const mid = Math.floor(sorted.length / 2);
+	return sorted.length % 2 === 1
+		? sorted[mid]!
+		: (sorted[mid - 1]! + sorted[mid]!) / 2;
+}
+
+export function mean(values: readonly number[]): number {
+	if (values.length === 0) return 0;
+	return values.reduce((acc, v) => acc + v, 0) / values.length;
+}
+
+export interface IttStats {
+	itt_median: number;
+	itt_mean: number;
+	itt_n: number;
+	itt_approx: boolean;
+}
+
+/**
+ * Intent-to-treat stats for one bench line. Server-emitted itt_* fields are
+ * authoritative when present (keyed on itt_median). Otherwise merge per-doc
+ * scores with one 0 per unique failed doc — a doc that is both scored and
+ * listed as a failure keeps its score. Lines without per-doc scores are
+ * approximated as overall_median × n_docs plus a 0 per failure and flagged
+ * itt_approx so the table can mark them `~`.
+ */
+export function computeIttStats(
+	data: Record<string, unknown>,
+	completed: { n_docs: number; overall_median: number; n_failures: number },
+): IttStats {
+	if (data.itt_median != null) {
+		return {
+			itt_median: num(data.itt_median),
+			itt_mean: num(data.itt_mean),
+			itt_n: num(data.itt_n_docs),
+			itt_approx: false,
+		};
+	}
+
+	const scores =
+		data.scores &&
+		typeof data.scores === "object" &&
+		!Array.isArray(data.scores)
+			? (data.scores as Record<string, unknown>)
+			: null;
+	const scoredDocs = scores ? Object.keys(scores) : [];
+
+	if (scores && scoredDocs.length > 0) {
+		const values = scoredDocs.map((doc) => num(scores[doc]));
+		const scoredSet = new Set(scoredDocs);
+		const failedDocs = new Set<string>();
+		const failures = Array.isArray(data.failures) ? data.failures : [];
+		for (const f of failures) {
+			if (f && typeof f === "object" && "doc" in f) {
+				failedDocs.add(String((f as Record<string, unknown>).doc));
+			}
+		}
+		for (const doc of failedDocs) {
+			if (!scoredSet.has(doc)) values.push(0);
+		}
+		return {
+			itt_median: median(values),
+			itt_mean: mean(values),
+			itt_n: values.length,
+			itt_approx: false,
+		};
+	}
+
+	const values: number[] = [];
+	for (let i = 0; i < completed.n_docs; i++) {
+		values.push(completed.overall_median);
+	}
+	for (let i = 0; i < completed.n_failures; i++) values.push(0);
+	return {
+		itt_median: median(values),
+		itt_mean: mean(values),
+		itt_n: values.length,
+		itt_approx: true,
+	};
+}
+
+export function readFidelityRows(path: string): FidelityRow[] {
 	const text = readFileSync(path, "utf8");
 	const out: FidelityRow[] = [];
 	for (const line of text.split(/\r?\n/)) {
@@ -199,6 +295,7 @@ function readFidelityRows(path: string): FidelityRow[] {
 			tool_version ?? "",
 			meta.generate,
 		);
+		const itt = computeIttStats(data, { n_docs, overall_median, n_failures });
 
 		out.push({
 			vendor,
@@ -210,6 +307,10 @@ function readFidelityRows(path: string): FidelityRow[] {
 			overall_median,
 			exact_100,
 			n_failures,
+			itt_median: itt.itt_median,
+			itt_mean: itt.itt_mean,
+			itt_n: itt.itt_n,
+			itt_approx: itt.itt_approx,
 			render: meta.render,
 			run_name: meta.run_name,
 			family,
@@ -235,7 +336,10 @@ function rankFidelity(row: FidelityRow): [number, number, number, string] {
 		: row.render === "playwright"
 			? 0
 			: 1;
-	return [renderFit, row.n_docs, row.overall_mean, row.timestamp];
+	// Winner selection keys on itt_median so the "best pin" shown IS the ITT-best pin
+	// (the table sorts by ITT median — selecting by raw mean here would let a
+	// crashy-but-high-completed-mean line represent the vendor).
+	return [renderFit, row.n_docs, row.itt_median, row.timestamp];
 }
 
 /**
@@ -243,7 +347,7 @@ function rankFidelity(row: FidelityRow): [number, number, number, string] {
  * Family is included so jubarte-final-native and jubarte-final-lossless with the
  * same content-hash pin do not overwrite each other.
  */
-function bestPerVendorBenchmarkVersion(
+export function bestPerVendorBenchmarkVersion(
 	rows: FidelityRow[],
 ): Map<string, FidelityRow> {
 	const best = new Map<string, FidelityRow>();
@@ -261,9 +365,10 @@ function bestPerVendorBenchmarkVersion(
 
 /**
  * For jubarte-final / jubarte-final-lossless / jubarte-rs: keep only the best
- * and worst pin by median (tie-break mean, n_docs). Other vendors: keep all.
+ * and worst pin by ITT median (tie-break ITT mean, n_docs). Other vendors:
+ * keep all.
  */
-function collapseJubarteFamilies(
+export function collapseJubarteFamilies(
 	best: Map<string, FidelityRow>,
 	benchmark: FidelityBenchmark,
 ): FidelityRow[] {
@@ -289,11 +394,11 @@ function collapseJubarteFamilies(
 			continue;
 		}
 		const byMedian = [...members].sort((a, b) => {
-			if (b.overall_median !== a.overall_median) {
-				return b.overall_median - a.overall_median;
+			if (b.itt_median !== a.itt_median) {
+				return b.itt_median - a.itt_median;
 			}
-			if (b.overall_mean !== a.overall_mean) {
-				return b.overall_mean - a.overall_mean;
+			if (b.itt_mean !== a.itt_mean) {
+				return b.itt_mean - a.itt_mean;
 			}
 			return b.n_docs - a.n_docs;
 		});
@@ -315,11 +420,11 @@ function collapseJubarteFamilies(
 	}
 
 	return [...kept, ...nonJubarte].sort((a, b) => {
-		if (b.overall_median !== a.overall_median) {
-			return b.overall_median - a.overall_median;
+		if (b.itt_median !== a.itt_median) {
+			return b.itt_median - a.itt_median;
 		}
-		if (b.overall_mean !== a.overall_mean) {
-			return b.overall_mean - a.overall_mean;
+		if (b.itt_mean !== a.itt_mean) {
+			return b.itt_mean - a.itt_mean;
 		}
 		const v = a.vendor.localeCompare(b.vendor);
 		if (v !== 0) return v;
@@ -331,7 +436,7 @@ function fmt(n: number, digits = 2): string {
 	return n.toFixed(digits);
 }
 
-function buildFidelityTable(
+export function buildFidelityTable(
 	best: Map<string, FidelityRow>,
 	benchmark: FidelityBenchmark,
 ): string {
@@ -342,8 +447,8 @@ function buildFidelityTable(
 	}
 
 	const header =
-		"| Rank | Vendor | Version | Docs | Mean | Median | Perfect (100) | Failures |\n" +
-		"| --- | --- | --- | --- | --- | --- | --- | --- |";
+		"| Rank | Vendor | Version | Docs | ITT Docs | ITT Mean | ITT Median | Mean | Median | Perfect (100) | Failures |\n" +
+		"| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |";
 	const body = rows
 		.map((r, i) => {
 			const displayVendor =
@@ -354,9 +459,12 @@ function buildFidelityTable(
 						: r.family === "jubarte-rs"
 							? "jubarte-rust"
 							: r.vendor;
+			const approx = r.itt_approx ? "~" : "";
 			return (
 				`| ${i + 1} | ${displayVendor} | ${r.tool_version ?? "—"} | ` +
-				`${r.n_docs} | ${fmt(r.overall_mean)} | ${fmt(r.overall_median)} | ` +
+				`${r.n_docs} | ${r.itt_n} | ` +
+				`${fmt(r.itt_mean)}${approx} | ${fmt(r.itt_median)}${approx} | ` +
+				`${fmt(r.overall_mean)} | ${fmt(r.overall_median)} | ` +
 				`${r.exact_100} | ${r.n_failures} |`
 			);
 		})
@@ -364,9 +472,13 @@ function buildFidelityTable(
 
 	return (
 		`### ${title}\n\n` +
-		`Sorted by median score (0–100, higher is closer to the oracle). ` +
-		`Jubarte families (**final**, **final-lossless**, **rust**) show only the ` +
-		`**best** and **worst** version pin for this benchmark; other vendors list each pin.\n\n` +
+		`Sorted by **ITT median** (intent-to-treat: every failed doc scores 0, so ` +
+		`crashing on hard docs is penalized, not rewarded; 0–100, higher is closer ` +
+		`to the oracle). Mean/Median cover completed docs only. \`~\` marks ITT ` +
+		`stats approximated from summary numbers (older runs without per-doc ` +
+		`scores). Jubarte families (**final**, **final-lossless**, **rust**) show ` +
+		`only the **best** and **worst** version pin for this benchmark; other ` +
+		`vendors list each pin.\n\n` +
 		`${header}\n${body}`
 	);
 }
@@ -583,4 +695,14 @@ function main() {
 	);
 }
 
-main();
+// Same guard as redline_scoreboard.ts: run only when executed directly, so the
+// test suite can import the helpers without rewriting README.md.
+function isMain(): boolean {
+	if (!process.argv[1]) return false;
+	const self = new URL(import.meta.url).pathname;
+	return resolve(process.argv[1]) === self || self.endsWith(process.argv[1]);
+}
+
+if (isMain()) {
+	main();
+}

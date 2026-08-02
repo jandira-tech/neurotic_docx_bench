@@ -467,7 +467,12 @@ def _accept_compare_stage(
     console.print("[bold]accept-compare:[/bold] accepting tracked changes on the generated redlines")
     accepted_dir = run_dir / "accepted_docx"
     results = accept_changes.process_folder(docx_source, accepted_dir, reject=False, jobs=rc.jobs)
-    accept_failures = [{"doc": r.source.name, "stage": "accept", "error": r.error} for r in results if not r.ok]
+    accept_failures = [
+        # Normalize into the score key space (strip .docx + `_<tool>_redline` infix).
+        {"doc": pipeline.redline_key(r.source.stem, rc.name), "stage": "accept", "error": r.error}
+        for r in results
+        if not r.ok
+    ]
     if accept_failures:
         console.print(f"[yellow]{len(accept_failures)} accept failure(s)[/yellow]")
 
@@ -662,6 +667,7 @@ def _emit_and_gate_benchmark(
     emit: bool,
     only_on_change: bool,
     do_gate: bool,
+    n_oracle_unmatched: int | None = None,
 ) -> int:
     """Emit one schema-v4 ``Results`` JSONL line for ``(vendor, benchmark)`` and gate it
     vs the benchmark's snapshot.
@@ -670,7 +676,9 @@ def _emit_and_gate_benchmark(
     (``script_redlines``, ``accepted_changes``, ``roundtrip``, …) is its own
     self-contained ``Results`` line keyed by ``vendor``/``benchmark``.
     """
-    if not scores:
+    # A run with zero scores but recorded failures is a total wipeout — it must land
+    # a line (ITT stats at 0), not vanish. Zero scores AND zero failures = nothing ran.
+    if not scores and not failures:
         return 0
     # A --no-emit run opts out of recording; do not gate against the snapshot
     # on data the user chose not to write (gating is a property of the emitted
@@ -692,6 +700,7 @@ def _emit_and_gate_benchmark(
         config_hash=cfg_hash,
         failures=failures,
         timings=timings,
+        n_oracle_unmatched=n_oracle_unmatched,
         scorer=pipeline.scorer_for_benchmark(benchmark),
     )
     appended = (
@@ -882,11 +891,19 @@ def _execute_run(
 
     # Record which docs did NOT work: generate failures (a generator writes
     # $RUN_DIR/generate_failures.json) + render failures (from the RenderReport).
+    # Failure doc keys are normalized through redline_key so they live in the SAME
+    # key space as the (lowercased) score keys — otherwise ITT dedup and the
+    # silent-drop diagnostic silently miscount (generators emit raw-case
+    # `<base>_<next>`; some stems are mixed-case).
     failures: list[FailureRecord] = []
     gen_fail = run_dir / "generate_failures.json"
     if gen_fail.is_file():
         try:
-            failures.extend(json.loads(gen_fail.read_text()))
+            failures.extend(
+                {**f, "doc": pipeline.redline_key(str(f.get("doc", "")), rc.name)}
+                for f in json.loads(gen_fail.read_text())
+                if isinstance(f, dict)
+            )
         except (json.JSONDecodeError, OSError):
             pass
     failures.extend(
@@ -897,13 +914,29 @@ def _execute_run(
     if failures:
         console.print(f"[yellow]{len(failures)} doc(s) recorded as failed in the JSONL[/yellow]")
 
+    # Silent-drop diagnostic: oracle docs with neither a score nor a failure record.
+    # Only meaningful on a full run — a --limit run leaves most of the oracle unmatched
+    # by design, so the count would be noise there.
+    n_oracle_unmatched: int | None = None
+    if limit is None:
+        try:
+            oracle_only, _ = pipeline.coverage(
+                cfg.source_of_truth, report.pdf_dir, candidate_tool=rc.name,
+            )
+            failed_docs = {str(f.get("doc", "")) for f in failures}
+            n_oracle_unmatched = len(oracle_only - failed_docs)
+        except (OSError, ValueError):
+            n_oracle_unmatched = None
+
     timings = _collect_timings(rc, run_dir, report, per_doc)
 
     # Schema v4: emit one self-contained Results line per benchmark. The primary
     # redline score is "script_redlines"; accept-compare and roundtrip are their
-    # own benchmark lines when those flags are enabled.
+    # own benchmark lines when those flags are enabled. A total wipeout (no scores
+    # but recorded failures) still emits, so intent-to-treat stats show the tool at
+    # 0 instead of the run vanishing from the record.
     worst = 0
-    if emit and scores:
+    if emit and (scores or failures):
         _stage("emit + gate")
         worst = max(worst, _emit_and_gate_benchmark(
             benchmark="script_redlines", rc=rc, cfg=cfg, tool_version=tool_version, scores=scores,
@@ -911,6 +944,7 @@ def _execute_run(
             jsonl_path=jsonl_path, snapshots_dir=snapshots_dir,
             cfg_hash=cfg_hash, id_run=id_run, timestamp=timestamp,
             emit=emit, only_on_change=only_on_change, do_gate=do_gate,
+            n_oracle_unmatched=n_oracle_unmatched,
         ))
 
     if accept_outcome is not None:

@@ -35,91 +35,91 @@ bun run update-readme-ranking                 # tables between RANKING markers
 <!-- RANKING-START -->
 ### script_redlines — redline markup vs Word
 
-Sorted by median score (0–100, higher is closer to the oracle). Jubarte families (**final**, **final-lossless**, **rust**) show only the **best** and **worst** version pin for this benchmark; other vendors list each pin.
+Sorted by **ITT median** (intent-to-treat: every failed doc scores 0, so crashing on hard docs is penalized, not rewarded; 0–100, higher is closer to the oracle). Mean/Median cover completed docs only. `~` marks ITT stats approximated from summary numbers (older runs without per-doc scores). Jubarte families (**final**, **final-lossless**, **rust**) show only the **best** and **worst** version pin for this benchmark; other vendors list each pin.
 
-| Rank | Vendor | Version | Docs | Mean | Median | Perfect (100) | Failures |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | jubarte-rust | jubarte-rust@63e57d122c83 (best) | 164 | 92.21 | 99.92 | 80 | 0 |
-| 2 | jubarte-wasm | 0.1.0 | 164 | 92.21 | 99.92 | 80 | 0 |
-| 3 | jubarte (final) | jubarte-final@3995702f73ed (best) | 163 | 90.04 | 91.99 | 44 | 4 |
-| 4 | jubarte (lossless) | jubarte-final@d5bd12d173d6+git.aaa85454f569b7174dd99d5244877d29819a99b9 (best) | 164 | 83.63 | 88.96 | 53 | 0 |
-| 5 | sanity-word | — | 230 | 68.17 | 70.48 | 0 | 0 |
-| 6 | jubarte (lossless) | jubarte-final@b4f90acaa85e (worst) | 196 | 64.69 | 63.48 | 0 | 0 |
-| 7 | jubarte-rust | jubarte-rust@b834d6e49fdb (worst) | 172 | 61.78 | 59.28 | 2 | 35 |
-| 8 | superdoc-redlines | 0.2.0 | 192 | 57.63 | 55.90 | 0 | 15 |
-| 9 | superdoc | 1.19.2 | 182 | 57.19 | 55.60 | 2 | 25 |
-| 10 | ooxmlsdk | — | 232 | 55.19 | 55.24 | 0 | 0 |
-| 11 | docx-redline-js | — | 2 | 55.12 | 55.12 | 0 | 7 |
-| 12 | docxodus | 7.0.0 | 205 | 58.75 | 55.03 | 3 | 2 |
-| 13 | docxodus | 6.4.0 | 205 | 58.74 | 55.03 | 3 | 2 |
-| 14 | folio | 0.3.1 | 205 | 55.31 | 53.75 | 0 | 2 |
-| 15 | redlines | 0.6.1 | 200 | 51.28 | 51.77 | 0 | 7 |
-| 16 | docx-redline-js | 0.3.0-ts-migration | 161 | 50.53 | 50.26 | 0 | 7 |
-| 17 | jubarte (final) | jubarte-final@8b23cdc7eca8 (worst) | 207 | 48.31 | 49.46 | 0 | 0 |
+| Rank | Vendor | Version | Docs | ITT Docs | ITT Mean | ITT Median | Mean | Median | Perfect (100) | Failures |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | jubarte-rust | jubarte-rust@63e57d122c83 (best) | 164 | 164 | 92.21 | 99.92 | 92.21 | 99.92 | 80 | 0 |
+| 2 | jubarte-wasm | 0.1.0 | 164 | 164 | 92.21 | 99.92 | 92.21 | 99.92 | 80 | 0 |
+| 3 | jubarte (final) | jubarte-final@3995702f73ed (best) | 163 | 167 | 87.89 | 91.84 | 90.04 | 91.99 | 44 | 4 |
+| 4 | jubarte (lossless) | jubarte-final@d5bd12d173d6+git.aaa85454f569b7174dd99d5244877d29819a99b9 (best) | 164 | 164 | 83.63 | 88.96 | 83.63 | 88.96 | 53 | 0 |
+| 5 | sanity-word | — | 230 | 230 | 68.17 | 70.48 | 68.17 | 70.48 | 0 | 0 |
+| 6 | jubarte (lossless) | jubarte-final@b4f90acaa85e (worst) | 196 | 196 | 64.69 | 63.48 | 64.69 | 63.48 | 0 | 0 |
+| 7 | jubarte-rust | jubarte-rust@b834d6e49fdb (worst) | 172 | 207 | 51.34 | 55.92 | 61.78 | 59.28 | 2 | 35 |
+| 8 | ooxmlsdk | — | 232 | 232 | 55.19 | 55.24 | 55.19 | 55.24 | 0 | 0 |
+| 9 | docxodus | 7.0.0 | 205 | 207 | 58.18 | 55.00 | 58.75 | 55.03 | 3 | 2 |
+| 10 | docxodus | 6.4.0 | 205 | 207 | 58.17 | 55.00 | 58.74 | 55.03 | 3 | 2 |
+| 11 | folio | 0.3.1 | 205 | 207 | 54.77 | 53.52 | 55.31 | 53.75 | 0 | 2 |
+| 12 | superdoc | 1.19.2 | 182 | 207 | 50.28 | 53.25 | 57.19 | 55.60 | 2 | 25 |
+| 13 | superdoc-redlines | 0.2.0 | 192 | 207 | 53.45 | 53.11 | 57.63 | 55.90 | 0 | 15 |
+| 14 | redlines | 0.6.1 | 200 | 207 | 49.55 | 51.32 | 51.28 | 51.77 | 0 | 7 |
+| 15 | docx-redline-js | 0.3.0-ts-migration | 161 | 168 | 48.43 | 50.09 | 50.53 | 50.26 | 0 | 7 |
+| 16 | jubarte (final) | jubarte-final@8b23cdc7eca8 (worst) | 207 | 207 | 48.31 | 49.46 | 48.31 | 49.46 | 0 | 0 |
+| 17 | docx-redline-js | — | 2 | 9 | 12.25 | 0.00 | 55.12 | 55.12 | 0 | 7 |
 
 ### accepted_changes — accept all changes, match final doc
 
-Sorted by median score (0–100, higher is closer to the oracle). Jubarte families (**final**, **final-lossless**, **rust**) show only the **best** and **worst** version pin for this benchmark; other vendors list each pin.
+Sorted by **ITT median** (intent-to-treat: every failed doc scores 0, so crashing on hard docs is penalized, not rewarded; 0–100, higher is closer to the oracle). Mean/Median cover completed docs only. `~` marks ITT stats approximated from summary numbers (older runs without per-doc scores). Jubarte families (**final**, **final-lossless**, **rust**) show only the **best** and **worst** version pin for this benchmark; other vendors list each pin.
 
-| Rank | Vendor | Version | Docs | Mean | Median | Perfect (100) | Failures |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | jubarte-rust | jubarte-rust@653876af82d6 (best) | 164 | 89.58 | 99.89 | 78 | 0 |
-| 2 | jubarte (lossless) | jubarte-final@dd16ad8fbcf3 (best) | 164 | 86.53 | 94.42 | 63 | 0 |
-| 3 | jubarte (lossless) | jubarte-final@717311c03d4f (worst) | 166 | 78.15 | 80.64 | 26 | 0 |
-| 4 | docxodus | 6.4.0 | 164 | 69.00 | 77.19 | 14 | 0 |
-| 5 | docxodus | 7.0.0 | 164 | 70.20 | 74.92 | 17 | 0 |
-| 6 | superdoc | 1.19.2 | 150 | 63.82 | 61.12 | 2 | 16 |
-| 7 | folio | 0.3.1 | 164 | 57.91 | 55.61 | 3 | 10 |
-| 8 | jubarte-rust | jubarte-rust@b834d6e49fdb (worst) | 147 | 63.50 | 54.45 | 13 | 27 |
-| 9 | jubarte (final) | jubarte-final@dd16ad8fbcf3 | 164 | 48.52 | 50.51 | 0 | 0 |
+| Rank | Vendor | Version | Docs | ITT Docs | ITT Mean | ITT Median | Mean | Median | Perfect (100) | Failures |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | jubarte-rust | jubarte-rust@653876af82d6 (best) | 164 | 164 | 89.58 | 99.89 | 89.58 | 99.89 | 78 | 0 |
+| 2 | jubarte (lossless) | jubarte-final@dd16ad8fbcf3 (best) | 164 | 164 | 86.53 | 94.42 | 86.53 | 94.42 | 63 | 0 |
+| 3 | jubarte (lossless) | jubarte-final@717311c03d4f (worst) | 166 | 166 | 78.15 | 80.64 | 78.15 | 80.64 | 26 | 0 |
+| 4 | docxodus | 6.4.0 | 164 | 164 | 69.00 | 77.19 | 69.00 | 77.19 | 14 | 0 |
+| 5 | docxodus | 7.0.0 | 164 | 164 | 70.20 | 74.92 | 70.20 | 74.92 | 17 | 0 |
+| 6 | superdoc | 1.19.2 | 150 | 166 | 57.67 | 55.82 | 63.82 | 61.12 | 2 | 16 |
+| 7 | folio | 0.3.1 | 164 | 174 | 54.58 | 53.96 | 57.91 | 55.61 | 3 | 10 |
+| 8 | jubarte (final) | jubarte-final@dd16ad8fbcf3 | 164 | 164 | 48.52 | 50.51 | 48.52 | 50.51 | 0 | 0 |
+| 9 | jubarte-rust | jubarte-rust@b834d6e49fdb (worst) | 147 | 174 | 53.65 | 49.17 | 63.50 | 54.45 | 13 | 27 |
 
 ### roundtrip — self-diff must not invent noise
 
-Sorted by median score (0–100, higher is closer to the oracle). Jubarte families (**final**, **final-lossless**, **rust**) show only the **best** and **worst** version pin for this benchmark; other vendors list each pin.
+Sorted by **ITT median** (intent-to-treat: every failed doc scores 0, so crashing on hard docs is penalized, not rewarded; 0–100, higher is closer to the oracle). Mean/Median cover completed docs only. `~` marks ITT stats approximated from summary numbers (older runs without per-doc scores). Jubarte families (**final**, **final-lossless**, **rust**) show only the **best** and **worst** version pin for this benchmark; other vendors list each pin.
 
-| Rank | Vendor | Version | Docs | Mean | Median | Perfect (100) | Failures |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | jubarte-rust | jubarte-rust@cbbcefb724a7 (best) | 166 | 99.17 | 100.00 | 157 | 0 |
-| 2 | folio | 0.3.1 | 198 | 98.07 | 100.00 | 185 | 0 |
-| 3 | jubarte (lossless) | jubarte-final@dd16ad8fbcf3 (best) | 166 | 97.63 | 100.00 | 152 | 0 |
-| 4 | docxodus | 7.0.0 | 166 | 97.43 | 100.00 | 148 | 0 |
-| 5 | jubarte (lossless) | jubarte-final@717311c03d4f (worst) | 199 | 94.49 | 100.00 | 149 | 0 |
-| 6 | jubarte-rust | jubarte-rust@b834d6e49fdb (worst) | 171 | 93.12 | 100.00 | 120 | 23 |
-| 7 | superdoc | 1.19.2 | 194 | 93.00 | 100.00 | 144 | 3 |
-| 8 | docxodus | 6.4.0 | 198 | 92.24 | 100.00 | 144 | 0 |
-| 9 | jubarte (final) | jubarte-final@dd16ad8fbcf3 | 166 | 52.63 | 53.23 | 0 | 0 |
+| Rank | Vendor | Version | Docs | ITT Docs | ITT Mean | ITT Median | Mean | Median | Perfect (100) | Failures |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | jubarte-rust | jubarte-rust@cbbcefb724a7 (best) | 166 | 166 | 99.17 | 100.00 | 99.17 | 100.00 | 157 | 0 |
+| 2 | folio | 0.3.1 | 198 | 198 | 98.07 | 100.00 | 98.07 | 100.00 | 185 | 0 |
+| 3 | jubarte (lossless) | jubarte-final@dd16ad8fbcf3 (best) | 166 | 166 | 97.63 | 100.00 | 97.63 | 100.00 | 152 | 0 |
+| 4 | docxodus | 7.0.0 | 166 | 166 | 97.43 | 100.00 | 97.43 | 100.00 | 148 | 0 |
+| 5 | jubarte (lossless) | jubarte-final@717311c03d4f (worst) | 199 | 199 | 94.49 | 100.00 | 94.49 | 100.00 | 149 | 0 |
+| 6 | docxodus | 6.4.0 | 198 | 198 | 92.24 | 100.00 | 92.24 | 100.00 | 144 | 0 |
+| 7 | superdoc | 1.19.2 | 194 | 197 | 91.59 | 100.00 | 93.00 | 100.00 | 144 | 3 |
+| 8 | jubarte-rust | jubarte-rust@b834d6e49fdb (worst) | 171 | 192 | 82.93 | 100.00 | 93.12 | 100.00 | 120 | 23 |
+| 9 | jubarte (final) | jubarte-final@dd16ad8fbcf3 | 166 | 166 | 52.63 | 53.23 | 52.63 | 53.23 | 0 | 0 |
 
 ### visual_rendering — editor render of plain DOCX
 
-Sorted by median score (0–100, higher is closer to the oracle). Jubarte families (**final**, **final-lossless**, **rust**) show only the **best** and **worst** version pin for this benchmark; other vendors list each pin.
+Sorted by **ITT median** (intent-to-treat: every failed doc scores 0, so crashing on hard docs is penalized, not rewarded; 0–100, higher is closer to the oracle). Mean/Median cover completed docs only. `~` marks ITT stats approximated from summary numbers (older runs without per-doc scores). Jubarte families (**final**, **final-lossless**, **rust**) show only the **best** and **worst** version pin for this benchmark; other vendors list each pin.
 
-| Rank | Vendor | Version | Docs | Mean | Median | Perfect (100) | Failures |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | superdoc | 1.44.1 | 199 | 58.78 | 61.25 | 0 | 0 |
-| 2 | folio | 0.5.0 | 198 | 59.65 | 55.10 | 0 | 0 |
-| 3 | docxodus | 6.4.0-local.1 | 190 | 56.50 | 49.72 | 0 | 9 |
-| 4 | docxodus | 7.0.0 | 190 | 56.50 | 49.72 | 0 | 9 |
+| Rank | Vendor | Version | Docs | ITT Docs | ITT Mean | ITT Median | Mean | Median | Perfect (100) | Failures |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | superdoc | 1.44.1 | 199 | 199 | 58.78 | 61.25 | 58.78 | 61.25 | 0 | 0 |
+| 2 | folio | 0.5.0 | 198 | 198 | 59.65 | 55.10 | 59.65 | 55.10 | 0 | 0 |
+| 3 | docxodus | 6.4.0-local.1 | 190 | 199 | 53.95 | 49.24 | 56.50 | 49.72 | 0 | 9 |
+| 4 | docxodus | 7.0.0 | 190 | 199 | 53.95 | 49.24 | 56.50 | 49.72 | 0 | 9 |
 
 ### visual_redlines — editor render of redline DOCX
 
-Sorted by median score (0–100, higher is closer to the oracle). Jubarte families (**final**, **final-lossless**, **rust**) show only the **best** and **worst** version pin for this benchmark; other vendors list each pin.
+Sorted by **ITT median** (intent-to-treat: every failed doc scores 0, so crashing on hard docs is penalized, not rewarded; 0–100, higher is closer to the oracle). Mean/Median cover completed docs only. `~` marks ITT stats approximated from summary numbers (older runs without per-doc scores). Jubarte families (**final**, **final-lossless**, **rust**) show only the **best** and **worst** version pin for this benchmark; other vendors list each pin.
 
-| Rank | Vendor | Version | Docs | Mean | Median | Perfect (100) | Failures |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | docxodus | 6.4.0 | 145 | 60.92 | 61.22 | 0 | 37 |
-| 2 | superdoc | 1.44.1 | 164 | 55.33 | 56.42 | 0 | 1 |
-| 3 | folio | 0.5.0 | 164 | 51.55 | 51.65 | 0 | 2 |
-| 4 | docxodus | 7.0.0 | 164 | 48.23 | 48.08 | 0 | 2 |
+| Rank | Vendor | Version | Docs | ITT Docs | ITT Mean | ITT Median | Mean | Median | Perfect (100) | Failures |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | docxodus | 6.4.0 | 145 | 182 | 48.54 | 58.92 | 60.92 | 61.22 | 0 | 37 |
+| 2 | superdoc | 1.44.1 | 164 | 165 | 55.00 | 56.34 | 55.33 | 56.42 | 0 | 1 |
+| 3 | folio | 0.5.0 | 164 | 166 | 50.93 | 51.48 | 51.55 | 51.65 | 0 | 2 |
+| 4 | docxodus | 7.0.0 | 164 | 166 | 47.65 | 48.03 | 48.23 | 48.08 | 0 | 2 |
 
 ### visual_accepted_changes — editor render of accepted DOCX
 
-Sorted by median score (0–100, higher is closer to the oracle). Jubarte families (**final**, **final-lossless**, **rust**) show only the **best** and **worst** version pin for this benchmark; other vendors list each pin.
+Sorted by **ITT median** (intent-to-treat: every failed doc scores 0, so crashing on hard docs is penalized, not rewarded; 0–100, higher is closer to the oracle). Mean/Median cover completed docs only. `~` marks ITT stats approximated from summary numbers (older runs without per-doc scores). Jubarte families (**final**, **final-lossless**, **rust**) show only the **best** and **worst** version pin for this benchmark; other vendors list each pin.
 
-| Rank | Vendor | Version | Docs | Mean | Median | Perfect (100) | Failures |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | docxodus | 6.4.0 | 152 | 62.32 | 62.76 | 0 | 0 |
-| 2 | superdoc | 1.44.1 | 165 | 59.34 | 60.97 | 0 | 0 |
-| 3 | folio | 0.5.0 | 164 | 59.67 | 54.95 | 0 | 0 |
+| Rank | Vendor | Version | Docs | ITT Docs | ITT Mean | ITT Median | Mean | Median | Perfect (100) | Failures |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | docxodus | 6.4.0 | 152 | 152 | 62.32 | 62.76 | 62.32 | 62.76 | 0 | 0 |
+| 2 | superdoc | 1.44.1 | 165 | 165 | 59.34 | 60.97 | 59.34 | 60.97 | 0 | 0 |
+| 3 | folio | 0.5.0 | 164 | 164 | 59.67 | 54.95 | 59.67 | 54.95 | 0 | 0 |
 
 ### speed_redlines — generation time (ms per redline)
 

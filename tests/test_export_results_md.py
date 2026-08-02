@@ -218,3 +218,93 @@ def test_main_writes_speed_when_present(
     text = out.read_text(encoding="utf-8")
     assert "jubarte-rust-inproc" in text
     assert "speed_redlines" in text
+
+
+# ── Intent-to-treat (PR2) ────────────────────────────────────────────────────
+
+
+def test_itt_stats_prefers_emitted_fields() -> None:
+    mean, median, n, n_fail = exp._itt_stats(
+        {
+            "itt_mean": 40.0,
+            "itt_median": 35.0,
+            "itt_n_docs": 5,
+            "scores": {"a": 100.0},
+            "failures": [{"doc": "b"}],
+        }
+    )
+    assert (mean, median, n, n_fail) == (40.0, 35.0, 5, 1)
+
+
+def test_itt_stats_derives_from_scores_and_failures() -> None:
+    mean, median, n, n_fail = exp._itt_stats(
+        {
+            "scores": {"a": 100.0, "b": 50.0},
+            "failures": [
+                {"doc": "c"},
+                {"doc": "c"},  # deduped
+                {"doc": "a"},  # already scored — keeps its score
+            ],
+        }
+    )
+    assert n == 3
+    assert median == 50.0
+    assert mean == 50.0
+    assert n_fail == 3
+
+
+def test_itt_stats_legacy_line_without_scores() -> None:
+    mean, median, n, n_fail = exp._itt_stats({"n_failures": 7})
+    assert (mean, median, n) == (None, None, None)
+    assert n_fail == 7
+
+
+def test_fidelity_sort_ranks_itt_below_completed_only() -> None:
+    clean = {
+        "vendor": "clean", "tool_version": "1", "benchmark": "script_redlines",
+        "mean": 80.0, "median": 80.0, "n_docs": 10,
+        "itt_mean": 80.0, "itt_median": 80.0, "itt_n": 10, "n_failures": 0,
+    }
+    crashy = {
+        "vendor": "crashy", "tool_version": "1", "benchmark": "script_redlines",
+        "mean": 90.0, "median": 90.0, "n_docs": 5,
+        "itt_mean": 45.0, "itt_median": 40.0, "itt_n": 10, "n_failures": 5,
+    }
+    ranked = sorted([crashy, clean], key=exp._fidelity_sort_key)
+    assert [r["vendor"] for r in ranked] == ["clean", "crashy"]
+
+
+def _subset_row(vendor: str, scores: dict[str, float]) -> dict[str, object]:
+    return {
+        "vendor": vendor, "tool_version": "1", "benchmark": "script_redlines",
+        "datetime": "t", "mean": 50.0, "median": 50.0, "n_docs": len(scores),
+        "itt_mean": 50.0, "itt_median": 50.0, "itt_n": len(scores),
+        "n_failures": 0, "scores": scores, "render": "soffice",
+        "exact_100": 0, "at_least_90": 0, "below_50": 0,
+    }
+
+
+def test_common_subset_section_ranks_on_shared_docs() -> None:
+    docs = [f"d{i}" for i in range(25)]
+    a = _subset_row("alpha", {d: 90.0 for d in docs} | {"only_a": 10.0})
+    b = _subset_row("beta", {d: 60.0 for d in docs} | {"only_b": 100.0})
+    section = exp._common_subset_section([a, b])
+    text = "\n".join(section)
+    assert "Common-subset ranking" in text
+    assert "**25** documents" in text
+    alpha_line = next(line for line in section if "alpha" in line)
+    assert alpha_line.startswith("| 1 ")
+    assert "90.00" in alpha_line
+
+
+def test_common_subset_section_skips_small_intersections() -> None:
+    a = _subset_row("alpha", {"d1": 90.0})
+    b = _subset_row("beta", {"d1": 60.0})
+    assert exp._common_subset_section([a, b]) == []
+
+
+def test_to_markdown_renders_itt_columns() -> None:
+    row = _subset_row("alpha", {"d1": 80.0, "d2": 90.0})
+    md = exp.to_fidelity_markdown([row], Path("results/bench.jsonl"))
+    assert "itt_median" in md
+    assert "failures" in md
