@@ -1078,6 +1078,37 @@ def _stop_harness_server(proc: subprocess.Popen[bytes] | None) -> None:
     console.print("[dim]harness server stopped[/dim]")
 
 
+def _canary_gate(
+    cfg: BenchConfig, names: list[str] | None, *, enabled: bool, dpi: int,
+) -> None:
+    """Renderer fingerprint check (PR5): abort before scoring when the LO/font
+    environment drifted. Runs only when a selected run uses the soffice renderer;
+    a missing baseline for this LO version warns and proceeds (CI runs another LO)."""
+    if not enabled:
+        return
+    selected = [r for r in cfg.runs if names is None or r.name in names]
+    if not any(r.render == "soffice" for r in selected):
+        return
+    from neurotic_docx_bench import canary as canary_mod
+
+    spec_path = canary_mod.DEFAULT_SPEC_PATH
+    with tempfile.TemporaryDirectory(prefix="bench-canary.") as work:
+        outcome = canary_mod.check(spec_path, Path(work), dpi=dpi)
+    if outcome.status == "ok":
+        console.print(f"renderer canary OK — {outcome.detail}")
+        return
+    if outcome.status == "no-baseline":
+        console.print(f"[yellow]renderer canary skipped: {outcome.detail}[/yellow]")
+        return
+    console.print(f"[red]RENDERER DRIFT — refusing to score:[/red] {outcome.detail}")
+    console.print(
+        "Every score produced in this environment would be incomparable with the "
+        "committed results. If the change is intentional (LO upgrade, font change), "
+        "re-baseline with `bench canary --write`; use --no-canary to bypass.",
+    )
+    raise typer.Exit(2)
+
+
 def _oracle_manifest_gate(cfg: BenchConfig, *, enabled: bool) -> None:
     """Refuse to run against a drifted oracle (PR4). A missing manifest warns but
     proceeds — synthetic test corpora and configs that have not adopted a manifest
@@ -1128,6 +1159,7 @@ def _drive_runs(
     roundtrip_oracle_cache: Path,
     rerun: bool = False,
     oracle_check: bool = True,
+    canary_check: bool = True,
 ) -> None:
     """Shared driver for ``run`` / ``run-all``: execute the selected bench.yaml runs
     sequentially. ``names=None`` runs everything; otherwise the runs execute in the
@@ -1136,6 +1168,7 @@ def _drive_runs(
     cfg = load_config(config)
     _oracle_manifest_gate(cfg, enabled=oracle_check)
     use_dpi = dpi if dpi is not None else cfg.scoring.dpi
+    _canary_gate(cfg, names, enabled=canary_check, dpi=use_dpi)
     if os.environ.get("BENCH_CLEAN_RUNS") == "1":
         clean_runs = True
     if os.environ.get("BENCH_NO_UPDATE") == "1":
@@ -1417,6 +1450,11 @@ def run(
         "--oracle-check/--no-oracle-check",
         help="verify the committed oracle manifest before running (drift → exit 2)",
     ),
+    canary_check: bool = typer.Option(
+        True,
+        "--canary/--no-canary",
+        help="verify the renderer fingerprint canary before soffice runs (drift → exit 2)",
+    ),
 ) -> None:
     """Drive bench.yaml runs **sequentially** (one per tool). Each run gets its own
     ``runs/{name}_{datetime}`` work folder (kept locally; ``--clean-runs`` deletes it only
@@ -1448,7 +1486,48 @@ def run(
         roundtrip_oracle_cache=roundtrip_oracle_cache,
         rerun=rerun,
         oracle_check=oracle_check,
+        canary_check=canary_check,
     )
+
+
+@app.command(name="canary")
+def canary_cmd(
+    write: bool = typer.Option(
+        False, "--write", help="baseline the CURRENT environment's renderer fingerprint",
+    ),
+    dpi: int = typer.Option(144, "--dpi"),
+) -> None:
+    """Verify (default) or ``--write`` the renderer fingerprint canary.
+
+    Renders one small committed corpus DOCX via soffice and compares the page-1 PNG
+    hash against ``corpus/canary_expected.json`` for the current LibreOffice version.
+    Verify mode exits 2 on mismatch.
+    """
+    from neurotic_docx_bench import canary as canary_mod
+
+    with tempfile.TemporaryDirectory(prefix="bench-canary.") as work:
+        if write:
+            version = canary_mod.current_soffice_version()
+            if version is None:
+                console.print("[red]soffice not found on PATH[/red]")
+                raise typer.Exit(2)
+            digest = canary_mod.render_canary_hash(
+                canary_mod.DEFAULT_CANARY_DOCX, Path(work), dpi=dpi,
+            )
+            canary_mod.write_canary_spec(
+                canary_mod.DEFAULT_SPEC_PATH,
+                canary_mod.DEFAULT_CANARY_DOCX,
+                {version: {"dpi": dpi, "page1_sha256": digest}},
+            )
+            console.print(
+                f"baselined LibreOffice {version} @ {dpi}dpi → {canary_mod.DEFAULT_SPEC_PATH}",
+            )
+            return
+        outcome = canary_mod.check(canary_mod.DEFAULT_SPEC_PATH, Path(work), dpi=dpi)
+    colour = {"ok": "green", "no-baseline": "yellow", "mismatch": "red"}[outcome.status]
+    console.print(f"[{colour}]{outcome.status}[/{colour}] — {outcome.detail}")
+    if outcome.status == "mismatch":
+        raise typer.Exit(2)
 
 
 @app.command(name="oracle-manifest")
