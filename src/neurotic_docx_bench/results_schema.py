@@ -17,7 +17,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
-from neurotic_docx_bench.aggregate import compute_aggregate
+from neurotic_docx_bench.aggregate import compute_aggregate, compute_aggregate_itt
 from neurotic_docx_bench.benchmarks import BenchmarkName
 from neurotic_docx_bench.config import BenchConfig
 from neurotic_docx_bench.score import ScoreConfig, ScoreWeights
@@ -96,6 +96,11 @@ class Results:
     scores: dict[str, float] = field(default_factory=dict)
     per_doc: dict[str, dict[str, object]] | None = None
     failures: list[dict[str, str]] = field(default_factory=list)
+    n_failures: int = 0
+    itt_n_docs: int = 0
+    itt_mean: float = 0.0
+    itt_median: float = 0.0
+    n_oracle_unmatched: int | None = None
     # Which doc-score semantics `scores` carries: "pagefair-v2" (page-count mismatch
     # penalized) for script_redlines/accepted_changes/roundtrip, "v1" (raw) otherwise.
     # Lines emitted before this field default to "v1" on read.
@@ -171,10 +176,15 @@ def build_results(
     config_hash: str | None = None,
     failures: list[dict[str, str]] | None = None,
     timings: dict[str, dict[str, float]] | None = None,
+    n_oracle_unmatched: int | None = None,
     scorer: str = "v1",
 ) -> Results:
     rounded_scores = {k: round(float(v), 4) for k, v in scores.items()}
     aggregate = compute_aggregate(rounded_scores, per_doc=per_doc)
+    failure_list = failures or []
+    itt = compute_aggregate_itt(
+        rounded_scores, [str(f.get("doc", "")) for f in failure_list],
+    )
     speed = aggregate_speed(speed_samples_ms)
     return Results(
         id_run=id_run,
@@ -198,7 +208,12 @@ def build_results(
         environment_config=environment_config,
         scores=rounded_scores,
         per_doc=per_doc,
-        failures=failures or [],
+        failures=failure_list,
+        n_failures=len(failure_list),
+        itt_n_docs=itt.n_docs,
+        itt_mean=itt.overall_mean,
+        itt_median=itt.overall_median,
+        n_oracle_unmatched=n_oracle_unmatched,
         scorer=scorer,
         timings=timings or {},
         tool_version=tool_version,
