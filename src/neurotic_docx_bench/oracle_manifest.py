@@ -108,6 +108,7 @@ def default_manifest_path(source_of_truth: Path) -> Path:
 def oracle_dirs_from_config(cfg: object) -> list[Path]:
     """Unique existing oracle directories declared by a BenchConfig."""
     dirs: list[Path] = [cfg.source_of_truth]  # type: ignore[attr-defined]
+    dirs.extend(Path(p) for p in (getattr(cfg, "extra_oracle_dirs", None) or ()))
     accepted = getattr(cfg, "accepted_ground_truth", None)
     if accepted:
         dirs.append(Path(accepted))
