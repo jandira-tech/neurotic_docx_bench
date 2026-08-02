@@ -16,7 +16,7 @@ import time
 from collections.abc import Mapping
 from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
-from typing import TypedDict
+from typing import NotRequired, TypedDict
 
 from skimage import color
 
@@ -60,6 +60,13 @@ class ScoreResult(TypedDict):
     score_v2: float | None
     raster_ns: int
     score_ns: int
+    # Functional accept/reject invariant (merged in AFTER scoring by the CLI, only
+    # for script_redlines docs whose base/next sources resolve — hence NotRequired).
+    functional_accept_ok: NotRequired[bool | None]
+    functional_reject_ok: NotRequired[bool | None]
+    functional_accept_strict: NotRequired[bool | None]
+    functional_reject_strict: NotRequired[bool | None]
+    functional_blind: NotRequired[bool]
 
 
 def is_redline(stem: str) -> bool:

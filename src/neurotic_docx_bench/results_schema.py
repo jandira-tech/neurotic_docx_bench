@@ -111,6 +111,13 @@ class Results:
     skill_median: float | None = None
     v2_mean: float | None = None
     v2_median: float | None = None
+    # Functional accept/reject invariant (PR7): docs where the neutral
+    # accept/reject machinery ran, and how many satisfied each invariant
+    # (accept(candidate) ≡ next, reject(candidate) ≡ base, text-level).
+    # None when the lens did not run (no resolvable sources / non-script runs).
+    n_functional_checked: int | None = None
+    n_accept_ok: int | None = None
+    n_reject_ok: int | None = None
     timings: dict[str, dict[str, float]] = field(default_factory=dict)
     tool_version: str | None = None
     build_recipe: dict[str, list[str]] | None = None
@@ -189,6 +196,7 @@ def build_results(
     aggregate = compute_aggregate(rounded_scores, per_doc=per_doc)
     skill_mean, skill_median = _optional_metric_stats(per_doc, "skill_score")
     v2_mean, v2_median = _optional_metric_stats(per_doc, "score_v2")
+    n_functional_checked, n_accept_ok, n_reject_ok = _functional_counts(per_doc)
     failure_list = failures or []
     itt = compute_aggregate_itt(
         rounded_scores, [str(f.get("doc", "")) for f in failure_list],
@@ -227,12 +235,38 @@ def build_results(
         skill_median=skill_median,
         v2_mean=v2_mean,
         v2_median=v2_median,
+        n_functional_checked=n_functional_checked,
+        n_accept_ok=n_accept_ok,
+        n_reject_ok=n_reject_ok,
         timings=timings or {},
         tool_version=tool_version,
         build_recipe=build_recipe,
         config_hash=config_hash,
         timestamp=timestamp,
     )
+
+
+def _functional_counts(
+    per_doc: dict[str, dict[str, object]] | None,
+) -> tuple[int | None, int | None, int | None]:
+    """``(n_checked, n_accept_ok, n_reject_ok)`` over docs carrying functional-lens
+    verdicts; all ``None`` when the lens ran on no doc. A doc whose check crashed
+    (both flags None) or is blind (base ≡ next at text level, so the lens has no
+    discriminating power there) does not count as checked."""
+    checked = accept_ok = reject_ok = 0
+    for doc in (per_doc or {}).values():
+        if not isinstance(doc, dict):
+            continue
+        a = doc.get("functional_accept_ok")
+        r = doc.get("functional_reject_ok")
+        if (a is None and r is None) or doc.get("functional_blind") is True:
+            continue
+        checked += 1
+        accept_ok += 1 if a else 0
+        reject_ok += 1 if r else 0
+    if not checked:
+        return None, None, None
+    return checked, accept_ok, reject_ok
 
 
 def _optional_metric_stats(

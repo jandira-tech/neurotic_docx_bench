@@ -42,7 +42,7 @@ from rich.table import Table
 from rich.text import Text
 from rich.theme import Theme
 
-from neurotic_docx_bench import noise_floor, pipeline, provenance, stages, tool_updater
+from neurotic_docx_bench import functional_lens, noise_floor, pipeline, provenance, stages, tool_updater
 from neurotic_docx_bench.benchmarks import BenchmarkName, BenchmarkOutcome
 from neurotic_docx_bench.config import BenchConfig, RunConfig, environment_config_for_run, load_config
 from neurotic_docx_bench.emit import gallery as gallery_emit
@@ -90,6 +90,90 @@ def _base_pdf_map(cfg: BenchConfig) -> dict[str, Path] | None:
     from neurotic_docx_bench import score_v2 as sv2
 
     return sv2.resolve_base_pdfs(csvs, base_dir) or None
+
+
+def _source_docx_map(cfg: BenchConfig) -> dict[str, tuple[Path, Path]] | None:
+    """Base/next source-DOCX resolver for the functional lens, by the same corpus
+    convention as :func:`_base_pdf_map` (``<corpus>/docx_source`` + mapping CSVs
+    next to the oracle dir). None when the convention does not hold."""
+    corpus_root = cfg.source_of_truth.parent
+    src_dir = corpus_root / "docx_source"
+    csvs = sorted(corpus_root.glob("centralized_mapping*.csv"))
+    if not src_dir.is_dir() or not csvs:
+        return None
+    return functional_lens.resolve_source_docx(csvs, [src_dir]) or None
+
+
+def _functional_stage(
+    rc: RunConfig, run_dir: Path, src_dir: Path, per_doc: PerDocScores, cfg: BenchConfig,
+) -> list[FailureRecord]:
+    """Functional accept/reject invariant over the scored candidates (PR7).
+
+    Accepts and rejects each candidate DOCX with the bench's own neutral machinery
+    (docx-revisions — never the tool's own accept) and compares extracted text
+    against the next/base sources. Verdicts merge into ``per_doc``
+    (``functional_accept_ok``/``functional_reject_ok`` + ``*_strict``); a machinery
+    crash on a doc becomes a stage-"functional" failure record.
+    """
+    sources = _source_docx_map(cfg)
+    if not sources:
+        return []
+    candidates: dict[str, Path] = {}
+    colliding: set[str] = set()
+    for p in sorted(Path(src_dir).glob("*.docx")):
+        if p.name.startswith("~$"):
+            continue
+        key = pipeline.redline_key(p.stem, rc.name)
+        if key in candidates:
+            colliding.add(key)
+            continue
+        candidates[key] = p
+    if colliding:
+        # Two candidate files mapping to one key (e.g. `_redline` + `_word_redline`
+        # variants): never silently pick one — the verdict could be computed on a
+        # file that is not the scored candidate. Skip those keys.
+        for key in colliding:
+            candidates.pop(key, None)
+        console.print(
+            f"[yellow]functional lens: {len(colliding)} candidate key "
+            f"collision(s) skipped[/yellow]"
+        )
+    tasks: list[functional_lens.CheckTask] = []
+    for key in per_doc:
+        cand, pair = candidates.get(key), sources.get(key)
+        if cand is None or pair is None:
+            continue
+        tasks.append((key, cand, pair[0], pair[1], run_dir / "functional" / key))
+    if not tasks:
+        return []
+    verdicts = functional_lens.check_folder(tasks, jobs=rc.jobs)
+    failures: list[FailureRecord] = []
+    n_accept = n_reject = n_err = n_blind = 0
+    for key, v in verdicts.items():
+        d = per_doc[key]
+        d["functional_accept_ok"] = v.accept_ok
+        d["functional_reject_ok"] = v.reject_ok
+        d["functional_accept_strict"] = v.accept_strict
+        d["functional_reject_strict"] = v.reject_strict
+        d["functional_blind"] = v.blind
+        if v.error:
+            n_err += 1
+            failures.append({"doc": key, "stage": "functional", "error": v.error})
+        elif v.blind:
+            n_blind += 1
+        else:
+            n_accept += 1 if v.accept_ok else 0
+            n_reject += 1 if v.reject_ok else 0
+    # "checked" matches results_schema._functional_counts: crashed and blind
+    # (base ≡ next at text level — no signal) docs are excluded.
+    n_checked = len(verdicts) - n_err - n_blind
+    console.print(
+        f"functional lens: {n_checked} checked — "
+        f"accept-ok {n_accept}, reject-ok {n_reject}"
+        + (f", {n_blind} blind" if n_blind else "")
+        + (f", [yellow]{n_err} crashed[/yellow]" if n_err else "")
+    )
+    return failures
 
 
 app = typer.Typer(
@@ -801,6 +885,8 @@ def _execute_run(
     _n_stages = 2  # setup + render/score (always run)
     if rc.generate:
         _n_stages += 1
+    if pattern == "*.docx":
+        _n_stages += 1  # functional lens (needs candidate DOCX)
     if accept_compare and accepted_oracle_pdf is not None and pattern == "*.docx":
         _n_stages += 1
     if roundtrip and roundtrip_oracle_pdf is not None:
@@ -830,6 +916,10 @@ def _execute_run(
             title=f"{rc.name} — script_redlines vs Word oracle",
         )
         console.print(f"visual report → {gallery_path}")
+        functional_failures: list[FailureRecord] = []
+        if pattern == "*.docx":
+            _stage("functional lens")
+            functional_failures = _functional_stage(rc, run_dir, src_dir, per_doc, cfg)
         if accept_compare and accepted_oracle_pdf is not None:
             if pattern == "*.docx":
                 _stage("accept-compare")
@@ -930,6 +1020,9 @@ def _execute_run(
         for r in report.results
         if not r.ok
     )
+    # Functional-lens machinery crashes are recorded for visibility; the docs keep
+    # their pixel scores (ITT only zeroes docs with NO score).
+    failures.extend(functional_failures)
     if failures:
         console.print(f"[yellow]{len(failures)} doc(s) recorded as failed in the JSONL[/yellow]")
 
