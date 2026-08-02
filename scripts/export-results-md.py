@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import statistics
 import sys
 from collections import defaultdict
 from pathlib import Path
@@ -92,6 +93,46 @@ def _rank(row: dict[str, object]) -> tuple:
     return (render_fit, n_v, m_v, str(ts))
 
 
+def _itt_stats(
+    data: dict[str, object],
+) -> tuple[float | None, float | None, int | None, int | None]:
+    """(itt_mean, itt_median, itt_n, n_failures) for a JSONL line.
+
+    Prefers the server-emitted ``itt_*`` fields (new lines); otherwise derives them
+    from the line's own ``scores`` map + ``failures`` array (one 0.0 per unique failed
+    doc that did not also score). Lines without per-doc scores return ``None`` stats —
+    the caller falls back to completed-only values for sorting.
+    """
+    failures = data.get("failures")
+    if isinstance(failures, list):
+        n_failures: int | None = len(failures)
+    else:
+        raw = data.get("n_failures")
+        n_failures = int(raw) if isinstance(raw, (int, float)) else None
+    if isinstance(data.get("itt_median"), (int, float)):
+        itt_n = data.get("itt_n_docs")
+        return (
+            float(data["itt_mean"]) if isinstance(data.get("itt_mean"), (int, float)) else None,
+            float(data["itt_median"]),  # type: ignore[arg-type]
+            int(itt_n) if isinstance(itt_n, (int, float)) else None,
+            n_failures,
+        )
+    scores = data.get("scores")
+    if isinstance(scores, dict) and scores:
+        fail_docs: set[str] = set()
+        if isinstance(failures, list):
+            fail_docs = {str(f.get("doc", "")) for f in failures if isinstance(f, dict)}
+        values = [float(v) for v in scores.values()]
+        values += [0.0] * len(fail_docs - set(scores))
+        return (
+            round(statistics.mean(values), 4),
+            round(statistics.median(values), 4),
+            len(values),
+            n_failures,
+        )
+    return None, None, None, n_failures
+
+
 def rows_from_jsonl(path: Path) -> list[dict[str, object]]:
     # Key includes tool_version so 6.4.0 and 7.0.0 of the same vendor×benchmark
     # both survive (otherwise only one "docxodus / script_redlines" row would remain).
@@ -119,6 +160,7 @@ def rows_from_jsonl(path: Path) -> list[dict[str, object]]:
             if vendor == "docxodus" and isinstance(n_docs, (int, float)) and int(n_docs) <= 100:
                 continue
 
+            itt_mean, itt_median, itt_n, n_failures = _itt_stats(data)
             row: dict[str, object] = {
                 "vendor": vendor,
                 "datetime": data.get("timestamp") or data.get("run_ts") or "",
@@ -134,6 +176,11 @@ def rows_from_jsonl(path: Path) -> list[dict[str, object]]:
                 "std": data.get("std"),
                 "tool_version": version,
                 "render": render,
+                "itt_mean": itt_mean,
+                "itt_median": itt_median,
+                "itt_n": itt_n,
+                "n_failures": n_failures,
+                "scores": data.get("scores") if isinstance(data.get("scores"), dict) else None,
             }
             key = (vendor, benchmark, version)
             cur = best.get(key)
@@ -171,6 +218,78 @@ BENCHMARK_LABELS = {
 SPEED_KINDS_GENERATION = frozenset({"speed", "speed_redlines", "redline_speed_bench"})
 SPEED_UNIT_GENERATION = "ms_per_redline"
 SPEED_UNIT_RENDER = "ms_per_render"
+
+
+def _num_or(r: dict[str, object], key: str, fallback_key: str) -> float:
+    """Sort helper: the row's ITT stat, falling back to the completed-only stat for
+    legacy rows without per-doc data (equivalent to assuming zero failures)."""
+    v = r.get(key)
+    if isinstance(v, (int, float)):
+        return float(v)
+    fv = r.get(fallback_key)
+    return float(fv) if isinstance(fv, (int, float)) else float("-inf")
+
+
+def _fidelity_sort_key(r: dict[str, object]) -> tuple:
+    """Intent-to-treat ranking: itt_median, then itt_mean (legacy rows fall back to
+    their completed-only values), then corpus size, then stable name/version order."""
+    return (
+        -_num_or(r, "itt_median", "median"),
+        -_num_or(r, "itt_mean", "mean"),
+        -(int(r["n_docs"]) if isinstance(r["n_docs"], (int, float)) else -1),
+        str(r["vendor"]),
+        str(r["tool_version"]),
+    )
+
+
+def _common_subset_section(rows: list[dict[str, object]]) -> list[str]:
+    """Paired ranking on the docs EVERY script_redlines vendor completed.
+
+    Aggregate means over different doc subsets are not comparable (each vendor fails
+    on different docs); this table re-ranks vendors on the intersection of their
+    per-doc score maps. One row per vendor: its best pin by the ITT sort. Skipped
+    when fewer than two vendors carry per-doc scores or the intersection is < 20 docs.
+    """
+    candidates = [
+        r for r in rows
+        if str(r["benchmark"]) == "script_redlines" and isinstance(r.get("scores"), dict) and r["scores"]
+    ]
+    best_per_vendor: dict[str, dict[str, object]] = {}
+    for r in candidates:
+        vendor = str(r["vendor"])
+        cur = best_per_vendor.get(vendor)
+        if cur is None or _fidelity_sort_key(r) < _fidelity_sort_key(cur):
+            best_per_vendor[vendor] = r
+    if len(best_per_vendor) < 2:
+        return []
+    doc_sets = [set(r["scores"]) for r in best_per_vendor.values()]  # type: ignore[arg-type]
+    common = set.intersection(*doc_sets)
+    if len(common) < 20:
+        return []
+    table_rows = []
+    ranked = sorted(
+        best_per_vendor.values(),
+        key=lambda r: -statistics.median(float(r["scores"][d]) for d in common),  # type: ignore[index]
+    )
+    for rank, r in enumerate(ranked, start=1):
+        subset = [float(r["scores"][d]) for d in common]  # type: ignore[index]
+        table_rows.append([
+            str(rank),
+            _escape_cell(r["vendor"]),
+            _escape_cell(r.get("tool_version") or "—"),
+            _escape_cell(f"{statistics.median(subset):.2f}"),
+            _escape_cell(f"{statistics.mean(subset):.2f}"),
+        ])
+    return [
+        "### Common-subset ranking (script_redlines)",
+        "",
+        f"Paired comparison on the **{len(common)}** documents every vendor below "
+        "completed (best pin per vendor). Unlike the aggregate tables, these medians "
+        "are computed on the SAME documents for every vendor.",
+        "",
+        *_table(["#", "vendor", "version", "median", "mean"], table_rows),
+        "",
+    ]
 
 
 def _table(headers: list[str], rows: list[list[str]]) -> list[str]:
@@ -211,19 +330,7 @@ def to_fidelity_markdown(rows: list[dict[str, object]], source: Path) -> str:
     ]
 
     for bench in bench_keys:
-        items = sorted(
-            by_bench[bench],
-            key=lambda r: (
-                -(
-                    float(r["mean"])
-                    if isinstance(r["mean"], (int, float))
-                    else float("-inf")
-                ),
-                -(int(r["n_docs"]) if isinstance(r["n_docs"], (int, float)) else -1),
-                str(r["vendor"]),
-                str(r["tool_version"]),
-            ),
-        )
+        items = sorted(by_bench[bench], key=_fidelity_sort_key)
         label = BENCHMARK_LABELS.get(bench, bench)
         lines.append(f"### `{bench}`")
         lines.append("")
@@ -238,7 +345,11 @@ def to_fidelity_markdown(rows: list[dict[str, object]], source: Path) -> str:
                     _escape_cell(r.get("tool_version") or "—"),
                     _escape_cell(_format_num(r["mean"])),
                     _escape_cell(_format_num(r["median"])),
+                    _escape_cell(_format_num(r.get("itt_mean"))),
+                    _escape_cell(_format_num(r.get("itt_median"))),
+                    _escape_cell(_format_num(r.get("n_failures"))),
                     _escape_cell(_format_num(r["n_docs"])),
+                    _escape_cell(_format_num(r.get("itt_n"))),
                     _escape_cell(_format_num(r.get("exact_100"))),
                     _escape_cell(_format_num(r.get("at_least_90"))),
                     _escape_cell(_format_num(r.get("below_50"))),
@@ -252,7 +363,11 @@ def to_fidelity_markdown(rows: list[dict[str, object]], source: Path) -> str:
                     "version",
                     "mean",
                     "median",
+                    "itt_mean",
+                    "itt_median",
+                    "failures",
                     "n_docs",
+                    "itt_n",
                     "exact_100",
                     "≥90",
                     "<50",
@@ -261,6 +376,8 @@ def to_fidelity_markdown(rows: list[dict[str, object]], source: Path) -> str:
             )
         )
         lines.append("")
+        if bench == "script_redlines":
+            lines.extend(_common_subset_section(rows))
 
     lines.extend(["## All fidelity runs (flat)", ""])
     flat_rows: list[list[str]] = [[
