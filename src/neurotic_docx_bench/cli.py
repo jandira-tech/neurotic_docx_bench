@@ -416,16 +416,28 @@ def render(
 @app.command(name="word-validate")
 def word_validate(
     target: Path = typer.Argument(..., help="a .docx file or a folder of .docx"),
-    timeout: float = typer.Option(60.0, "--timeout", help="seconds per file before a dialog is assumed"),
+    timeout: float = typer.Option(60.0, "--timeout", help="minimum per-file budget in seconds"),
+    k: float = typer.Option(4.0, "--k", help="budget multiplier over the measured reference open"),
+    reference: Path | None = typer.Option(
+        None, "--reference",
+        help="known-Word-valid .docx (or a dir; the largest .docx is used), opened "
+        "ONCE to calibrate the per-doc budget to this machine's Word speed",
+    ),
+    json_out: Path | None = typer.Option(
+        None, "--json", help="write per-doc outcomes (valid/invalid/unjudgeable) to this JSON file",
+    ),
 ) -> None:
-    """Word-validity gate: open each .docx in Microsoft Word, fail on any repair dialog.
+    """Word-validity gate: open each .docx in Microsoft Word; an observed modal
+    (repair/warning dialog, via System Events) is INVALID, a clean open is VALID,
+    and budget exhaustion with no modal is UNJUDGEABLE (recorded, not a failure —
+    Word was merely slow; TODO §1).
 
     LOCAL/INTERACTIVE only (macOS + Word). Word windows will open and close; grant
-    any automation-permission prompt. A repair/warning dialog counts as a failure.
+    any automation-permission prompt (permission prompts never fail validity).
     """
-    from neurotic_docx_bench.render.word import validate_one, word_available
+    from neurotic_docx_bench.render import word as word_mod
 
-    if not word_available():
+    if not word_mod.word_available():
         console.print("[red]word-validate needs macOS with Microsoft Word installed[/red]")
         raise typer.Exit(2)
     if not target.exists():
@@ -435,18 +447,64 @@ def word_validate(
     if not docs:
         console.print(f"[yellow]no .docx found at {target}[/yellow]")
         raise typer.Exit(2)
-    failures = 0
-    for docx in docs:
-        result = validate_one(docx, timeout=timeout)
-        if result.ok:
-            console.print(f"  [green]VALID[/green] {docx.name}")
+
+    ref_duration: float | None = None
+    if reference is not None:
+        ref_docx: Path | None = reference
+        if reference.is_dir():
+            candidates = sorted(reference.glob("*.docx"), key=lambda p: p.stat().st_size)
+            ref_docx = candidates[-1] if candidates else None
+        if ref_docx is None or not ref_docx.is_file():
+            console.print(f"[yellow]no reference .docx at {reference} — using plain timeout[/yellow]")
         else:
-            failures += 1
+            ref_duration = word_mod.measure_reference_open(ref_docx, timeout=max(timeout, 600.0))
+            if ref_duration is None:
+                console.print(
+                    f"[yellow]reference open failed ({ref_docx.name}) — using plain timeout[/yellow]",
+                )
+            else:
+                console.print(
+                    f"reference open {ref_docx.name}: {ref_duration:.1f}s → "
+                    f"budget {max(timeout, k * ref_duration):.0f}s per doc"
+                )
+
+    n_valid = n_invalid = n_unjudgeable = 0
+    records: dict[str, dict[str, object]] = {}
+    for docx in docs:
+        result = word_mod.validate_one(
+            docx, timeout=timeout, k=k, reference_duration_s=ref_duration,
+        )
+        records[docx.stem] = {
+            "outcome": result.outcome,
+            "error": result.error,
+            "duration_s": round(result.duration_s, 3),
+        }
+        if result.outcome == "valid":
+            n_valid += 1
+            console.print(f"  [green]VALID[/green] {docx.name}")
+        elif result.outcome == "invalid":
+            n_invalid += 1
             console.print(f"  [red]INVALID[/red] {docx.name}: {result.error}")
+        else:
+            n_unjudgeable += 1
+            console.print(f"  [yellow]UNJUDGEABLE[/yellow] {docx.name}: {result.error}")
     console.print(
-        f"word-validate: [green]{len(docs) - failures} valid[/green], [red]{failures} invalid[/red]",
+        f"word-validate: [green]{n_valid} valid[/green], [red]{n_invalid} invalid[/red], "
+        f"[yellow]{n_unjudgeable} unjudgeable[/yellow]",
     )
-    raise typer.Exit(1 if failures else 0)
+    if json_out is not None:
+        json_out.parent.mkdir(parents=True, exist_ok=True)
+        json_out.write_text(json.dumps({
+            "target": str(target),
+            "timeout": timeout,
+            "k": k,
+            "reference": str(reference) if reference else None,
+            "reference_duration_s": ref_duration,
+            "generated_at": datetime.now(UTC).isoformat(),
+            "results": records,
+        }, indent="\t", sort_keys=True) + "\n")
+        console.print(f"per-doc outcomes → {json_out}")
+    raise typer.Exit(1 if n_invalid else 0)
 
 
 @app.command()

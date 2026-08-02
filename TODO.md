@@ -12,14 +12,18 @@ but Word takes longer than the AppleEvent reply window just to OPEN a
 complete in 10 minutes). Timeout ≠ dialog at this size, and a timed-out
 `open` can leave Word holding the document with no cleanup.
 
-- [ ] Distinguish dialog-vs-slow: detect an actual modal (sheet/dialog window
-  via System Events) instead of inferring from silence.
-- [ ] Add a size class above which the gate reports "unjudgeable by Word on
+- [x] Distinguish dialog-vs-slow: detect an actual modal (sheet/dialog window
+  via System Events) instead of inferring from silence. *(2026-08-02:
+  `probe_modal` + polling `validate_one`; modal → INVALID.)*
+- [x] Add a size class above which the gate reports "unjudgeable by Word on
   this machine" as its own recorded outcome (that fact is itself a finding —
   the corpus is named `word_based` and Word cannot reopen its own output at
-  scale).
-- [ ] On timeout, attempt a targeted close of the opened document so retries
-  do not stack windows.
+  scale). *(2026-08-02: budget = max(--timeout, --k × measured reference
+  open) — relative, not a fixed size class; exhaustion with no modal →
+  UNJUDGEABLE, recorded via `--json`, never a failure.)*
+- [x] On timeout, attempt a targeted close of the opened document so retries
+  do not stack windows. *(2026-08-02: `_close_active_document` — close
+  saving no, Escape, retry — on both modal and budget paths.)*
 - Observed again 2026-07-18 in the first D-2 scoreboard sweep: 5 small
   lossless outputs reported 0/5 valid in-run, re-validated 5/5 minutes later
   (Word busy, every open timed out). `runWordSample` retries a wholly-invalid
