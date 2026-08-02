@@ -54,11 +54,12 @@ def test_pagefair_fields_present_and_identity_when_counts_match(pdfs, tmp_path):
 
 def test_pagefair_penalizes_candidate_missing_a_page(pdfs, tmp_path):
     """Oracle has 2 pages, candidate reproduces only page 1 → identical on the matched
-    page (v1 sees 100) but pagefair must fall and min must be 0."""
+    page (v1 sees 100) but pagefair must fall, with the min term scaled to the matched
+    ink share (~half here)."""
     result = pipeline.score_pdf_pair(pdfs["two_page"], pdfs["one_page"], tmp_path / "w2")
     assert result["page_count_mismatch"] is True
     assert result["overall_score_pagefair"] < result["overall_score"]
-    assert result["min_score_pagefair"] == 0.0
+    assert 30.0 < result["min_score_pagefair"] < 70.0
     assert result["average_score_pagefair"] < result["average_score"]
     # The matched page is pixel-identical, so v1 is perfect and pagefair must not be.
     assert result["overall_score"] == pytest.approx(100.0, abs=1e-6)
@@ -70,7 +71,7 @@ def test_pagefair_penalizes_candidate_with_extra_page(pdfs, tmp_path):
     result = pipeline.score_pdf_pair(pdfs["one_page"], pdfs["two_page"], tmp_path / "w3")
     assert result["page_count_mismatch"] is True
     assert result["overall_score_pagefair"] < result["overall_score"]
-    assert result["min_score_pagefair"] == 0.0
+    assert result["min_score_pagefair"] < result["min_score"]
 
 
 def test_pagefair_weight_uses_unmatched_page_ink(pdfs, tmp_path):
@@ -79,6 +80,41 @@ def test_pagefair_weight_uses_unmatched_page_ink(pdfs, tmp_path):
     equal-ink pages, losing one should land the average near 50, not near 100."""
     result = pipeline.score_pdf_pair(pdfs["two_page"], pdfs["one_page"], tmp_path / "w4")
     assert 25.0 < result["average_score_pagefair"] < 75.0
+
+
+def test_pagefair_is_ink_weighted_not_count_weighted(tmp_path):
+    """The discriminating case: a naive per-page count weighting would score both of
+    these ~50; ink weighting must separate them decisively."""
+    dense = PAGE_TEXT_A + " " + PAGE_TEXT_B + " " + PAGE_TEXT_A
+    sparse = "fin."
+    oracle_ds = _make_pdf(tmp_path / "o_ds.pdf", [dense, sparse])
+    oracle_sd = _make_pdf(tmp_path / "o_sd.pdf", [sparse, dense])
+    cand_dense = _make_pdf(tmp_path / "c_d.pdf", [dense])
+    cand_sparse = _make_pdf(tmp_path / "c_s.pdf", [sparse])
+
+    # Missing the near-blank trailing page: cheap.
+    kept_dense = pipeline.score_pdf_pair(oracle_ds, cand_dense, tmp_path / "wa")
+    # Missing the dense page: catastrophic.
+    kept_sparse = pipeline.score_pdf_pair(oracle_sd, cand_sparse, tmp_path / "wb")
+
+    assert kept_dense["average_score_pagefair"] > 85.0
+    assert kept_sparse["average_score_pagefair"] < 30.0
+    # Min term is ink-proportional: near-blank loss keeps a high min, dense loss guts it.
+    assert kept_dense["min_score_pagefair"] > 85.0
+    assert kept_sparse["min_score_pagefair"] < 30.0
+    assert kept_dense["overall_score_pagefair"] > 80.0
+    assert kept_sparse["overall_score_pagefair"] < 30.0
+
+
+def test_scorer_selection_is_benchmark_aware():
+    assert pipeline.scorer_for_benchmark("script_redlines") == pipeline.SCORER_PAGEFAIR
+    assert pipeline.scorer_for_benchmark("accepted_changes") == pipeline.SCORER_PAGEFAIR
+    assert pipeline.scorer_for_benchmark("roundtrip") == pipeline.SCORER_PAGEFAIR
+    assert pipeline.scorer_for_benchmark("visual_rendering") == pipeline.SCORER_RAW
+    assert pipeline.scorer_for_benchmark("visual_redlines") == pipeline.SCORER_RAW
+    assert pipeline.raw_overall_from_result(
+        {"overall_score": 90.0, "overall_score_pagefair": 40.0}
+    ) == 90.0
 
 
 def test_overall_from_result_prefers_pagefair():

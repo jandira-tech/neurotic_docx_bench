@@ -96,6 +96,10 @@ class Results:
     scores: dict[str, float] = field(default_factory=dict)
     per_doc: dict[str, dict[str, object]] | None = None
     failures: list[dict[str, str]] = field(default_factory=list)
+    # Which doc-score semantics `scores` carries: "pagefair-v2" (page-count mismatch
+    # penalized) for script_redlines/accepted_changes/roundtrip, "v1" (raw) otherwise.
+    # Lines emitted before this field default to "v1" on read.
+    scorer: str = "v1"
     timings: dict[str, dict[str, float]] = field(default_factory=dict)
     tool_version: str | None = None
     build_recipe: dict[str, list[str]] | None = None
@@ -167,6 +171,7 @@ def build_results(
     config_hash: str | None = None,
     failures: list[dict[str, str]] | None = None,
     timings: dict[str, dict[str, float]] | None = None,
+    scorer: str = "v1",
 ) -> Results:
     rounded_scores = {k: round(float(v), 4) for k, v in scores.items()}
     aggregate = compute_aggregate(rounded_scores, per_doc=per_doc)
@@ -194,6 +199,7 @@ def build_results(
         scores=rounded_scores,
         per_doc=per_doc,
         failures=failures or [],
+        scorer=scorer,
         timings=timings or {},
         tool_version=tool_version,
         build_recipe=build_recipe,
