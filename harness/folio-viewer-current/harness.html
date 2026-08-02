@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>folio viewer harness</title>
+    <link rel="stylesheet" href="./src/harness.css" />
+  </head>
+  <body>
+    <!-- Hidden file input — the Playwright renderer uploads each DOCX here. -->
+    <input type="file" id="fileInput" accept=".docx" hidden />
+    <!-- folio's renderAsync mounts the paginated editor here (.layout-page nodes). -->
+    <div id="host"></div>
+    <script type="module" src="./src/harness-main.ts"></script>
+  </body>
+</html>

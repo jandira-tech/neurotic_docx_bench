@@ -1,0 +1,17 @@
+/* Force folio's paginated pages to lay out at full viewport with no scroll
+   clipping, so page.pdf() captures every page in one multi-page PDF (mirrors
+   the docxodus harness). */
+html,
+body {
+	margin: 0;
+	padding: 0;
+	background: #fff;
+}
+#host {
+	width: 100%;
+	min-height: 100vh;
+}
+/* folio's editor may wrap pages in a scrollable shell — defeat that for capture. */
+#host [class*="layout"] {
+	overflow: visible !important;
+}
