@@ -70,6 +70,8 @@ def main() -> int:
             jobs=args.jobs,
             candidate_tool=args.tool,
         )
+    # Cross-engine visual render: repagination is endemic, so this stays on the RAW
+    # overall_score (NOT pagefair) — same policy as the visual_* benchmarks.
     scores = {key: float(v["overall_score"]) for key, v in per_doc.items()}
     vals = list(scores.values())
     row = {

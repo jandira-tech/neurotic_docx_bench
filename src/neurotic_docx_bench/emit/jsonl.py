@@ -117,6 +117,7 @@ def build_results_line(
     config_hash: str | None = None,
     failures: list[dict[str, str]] | None = None,
     timings: dict[str, dict[str, float]] | None = None,
+    scorer: str = "v1",
 ) -> dict[str, object]:
     """Build a schema-v4 ``Results`` JSONL dict from a vendor×benchmark outcome.
 
@@ -144,6 +145,7 @@ def build_results_line(
         config_hash=config_hash,
         failures=failures,
         timings=timings,
+        scorer=scorer,
     ).to_json_dict()
 
 

@@ -692,6 +692,7 @@ def _emit_and_gate_benchmark(
         config_hash=cfg_hash,
         failures=failures,
         timings=timings,
+        scorer=pipeline.scorer_for_benchmark(benchmark),
     )
     appended = (
         jsonl_emit.append_if_changed(jsonl_path, line)
@@ -850,7 +851,10 @@ def _execute_run(
                     Path(vis_oracle), report.pdf_dir, run_dir / f"score_{vis_name}",
                     dpi=use_dpi, jobs=rc.jobs, candidate_tool=rc.name,
                 )
-            vis_scores = {k: _get_overall_score(v) for k, v in vis_per_doc.items()}
+            # visual_* stay on the RAW score: candidate and oracle come from DIFFERENT
+            # engines, so repagination (page-count mismatch) is endemic and pagefair
+            # would measure pagination agreement instead of render quality.
+            vis_scores = {k: pipeline.raw_overall_from_result(v) for k, v in vis_per_doc.items()}
             if vis_scores:
                 _print_benchmark_block(
                     vis_scores, vendor=rc.vendor or rc.name, benchmark=vis_name,
