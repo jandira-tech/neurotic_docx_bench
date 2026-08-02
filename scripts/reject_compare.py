@@ -151,7 +151,7 @@ def main() -> int:
                 per_doc = dict(pool.map(_score_one, tasks))
         else:
             per_doc = dict(_score_one(t) for t in tasks)
-        scores = {k: float(v["overall_score"]) for k, v in per_doc.items()}
+        scores = {k: pipeline.overall_from_result(v) for k, v in per_doc.items()}
 
     vals = list(scores.values())
     row = {
