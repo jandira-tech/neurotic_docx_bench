@@ -105,6 +105,12 @@ class Results:
     # penalized) for script_redlines/accepted_changes/roundtrip, "v1" (raw) otherwise.
     # Lines emitted before this field default to "v1" on read.
     scorer: str = "v1"
+    # Informational parallel metrics (PR3), aggregated over docs where computable
+    # (base PDF resolvable); None when no doc had them. Rankings do NOT use these.
+    skill_mean: float | None = None
+    skill_median: float | None = None
+    v2_mean: float | None = None
+    v2_median: float | None = None
     timings: dict[str, dict[str, float]] = field(default_factory=dict)
     tool_version: str | None = None
     build_recipe: dict[str, list[str]] | None = None
@@ -181,6 +187,8 @@ def build_results(
 ) -> Results:
     rounded_scores = {k: round(float(v), 4) for k, v in scores.items()}
     aggregate = compute_aggregate(rounded_scores, per_doc=per_doc)
+    skill_mean, skill_median = _optional_metric_stats(per_doc, "skill_score")
+    v2_mean, v2_median = _optional_metric_stats(per_doc, "score_v2")
     failure_list = failures or []
     itt = compute_aggregate_itt(
         rounded_scores, [str(f.get("doc", "")) for f in failure_list],
@@ -215,12 +223,30 @@ def build_results(
         itt_median=itt.overall_median,
         n_oracle_unmatched=n_oracle_unmatched,
         scorer=scorer,
+        skill_mean=skill_mean,
+        skill_median=skill_median,
+        v2_mean=v2_mean,
+        v2_median=v2_median,
         timings=timings or {},
         tool_version=tool_version,
         build_recipe=build_recipe,
         config_hash=config_hash,
         timestamp=timestamp,
     )
+
+
+def _optional_metric_stats(
+    per_doc: dict[str, dict[str, object]] | None, field_name: str,
+) -> tuple[float | None, float | None]:
+    """(mean, median) over docs where the optional metric is present, else (None, None)."""
+    values = [
+        float(doc[field_name])  # type: ignore[arg-type]
+        for doc in (per_doc or {}).values()
+        if isinstance(doc, dict) and doc.get(field_name) is not None
+    ]
+    if not values:
+        return None, None
+    return round(statistics.mean(values), 4), round(statistics.median(values), 4)
 
 
 def _jsonable(value: Any) -> Any:
