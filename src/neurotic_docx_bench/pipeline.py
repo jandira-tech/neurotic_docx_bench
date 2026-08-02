@@ -323,17 +323,30 @@ def accepted_key(stem: str) -> str:
 
 
 def _index_accepted(directory: Path) -> dict[str, Path]:
-    """Map ``<base>_<next>`` → accepted-oracle PDF for every file in ``directory``.
+    """Map ``<base>_<next>`` → accepted PDF for every file in ``directory``.
 
-    Collision on the normalized key is a hard error, mirroring
-    :func:`_index_redlines`'s guarantee.
+    The accepted corpus can carry BOTH naming variants of the same pair
+    (``<key>_redline`` and ``<key>_word_redline``). The oracle set is built
+    exclusively from the ``_word_redline`` capture, so when both variants are
+    present the ``_word_redline`` file is the provenance-matching one and wins
+    deterministically. A collision between files of the SAME variant is still a
+    hard error, mirroring :func:`_index_redlines`'s guarantee.
     """
+
+    def rank(stem: str) -> int:
+        return 1 if stem.lower().removesuffix(_ACCEPTED_SUFFIX).endswith(_WORD_REDLINE) else 0
+
     index: dict[str, Path] = {}
     collisions: dict[str, list[str]] = {}
     for pdf in sorted(directory.glob("*.pdf")):
         key = accepted_key(pdf.stem)
         if key in index:
-            collisions.setdefault(key, [index[key].name]).append(pdf.name)
+            existing_rank, new_rank = rank(index[key].stem), rank(pdf.stem)
+            if existing_rank == new_rank:
+                collisions.setdefault(key, [index[key].name]).append(pdf.name)
+            elif new_rank > existing_rank:
+                index[key] = pdf
+            continue
         index[key] = pdf
     if collisions:
         detail = "; ".join(f"{k!r} <- {names}" for k, names in collisions.items())

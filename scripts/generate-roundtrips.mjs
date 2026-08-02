@@ -316,8 +316,16 @@ async function loadEngine(route, dist) {
 	// folio's APIs take ArrayBuffer; copy the Uint8Array into a fresh slab (Node
 	// Buffers share a larger underlying ArrayBuffer that would corrupt the slice).
 	if (route === "folio") {
+		// FOLIO_MODULE_ROOT (absolute node_modules dir) swaps in a different folio
+		// build for comparison runs; unset = the pinned vendored tree.
+		const folioModuleRoot =
+			process.env.FOLIO_MODULE_ROOT ??
+			resolve(
+				import.meta.dirname,
+				"../src/neurotic_docx_bench/utils/folio/node_modules",
+			);
 		const { FolioDocxReviewer } = await import(
-			"../src/neurotic_docx_bench/utils/folio/node_modules/@stll/folio-core/server"
+			join(folioModuleRoot, "@stll/folio-core/dist/server.js")
 		);
 		const toAB = (u) =>
 			u.buffer.slice(u.byteOffset, u.byteOffset + u.byteLength);

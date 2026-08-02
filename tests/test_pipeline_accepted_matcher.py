@@ -55,12 +55,34 @@ def test_match_accepted_to_candidate_drops_unpaired(tmp_path: Path) -> None:
     assert keys == ["alpha_beta"]  # gamma_delta has no candidate, epsilon_zeta no oracle
 
 
-def test_match_accepted_raises_on_collision(tmp_path: Path) -> None:
+def test_match_accepted_prefers_word_redline_variant(tmp_path: Path) -> None:
+    # The accepted corpus can carry BOTH naming variants of one pair; the oracle
+    # set is built from the ``_word_redline`` capture, so that variant must win
+    # deterministically on either side of the match (no hard error).
     oracle = tmp_path / "oracle"
     oracle.mkdir()
-    # Two oracle PDFs that normalize to the same key — should be a hard error.
     (oracle / "alpha_beta_word_redline_accepted.pdf").write_bytes(b"%PDF-1.4")
     (oracle / "alpha_beta_redline_accepted.pdf").write_bytes(b"%PDF-1.4")
+    cand = tmp_path / "cand"
+    cand.mkdir()
+    (cand / "alpha_beta_redline.pdf").write_bytes(b"%PDF-1.4")
+    (cand / "alpha_beta_word_redline.pdf").write_bytes(b"%PDF-1.4")
+    pairs = match_accepted_to_candidate(oracle, cand)
+    assert [(k, o.name, c.name) for k, o, c in pairs] == [
+        (
+            "alpha_beta",
+            "alpha_beta_word_redline_accepted.pdf",
+            "alpha_beta_word_redline.pdf",
+        ),
+    ]
+
+
+def test_match_accepted_raises_on_same_variant_collision(tmp_path: Path) -> None:
+    oracle = tmp_path / "oracle"
+    oracle.mkdir()
+    # Two SAME-variant oracle PDFs that normalize to one key — still a hard error.
+    (oracle / "alpha_beta_word_redline_accepted.pdf").write_bytes(b"%PDF-1.4")
+    (oracle / "alpha_beta_word_redline.pdf").write_bytes(b"%PDF-1.4")
     cand = tmp_path / "cand"
     cand.mkdir()
     (cand / "alpha_beta_redline.pdf").write_bytes(b"%PDF-1.4")

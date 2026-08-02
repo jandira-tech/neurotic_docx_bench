@@ -292,14 +292,18 @@ export async function loadEngine(
 		// reviewer's own snapshot. modified/deleted blocks carry base ids that
 		// survive directly. We resolve insert anchors by walking the diff in
 		// revised-side order and tracking the last base-side block id seen.
+		// FOLIO_MODULE_ROOT (absolute path to a node_modules dir) lets a comparison
+		// run swap in a different folio build; unset = the pinned vendored tree.
+		const folioModuleRoot =
+			process.env.FOLIO_MODULE_ROOT ??
+			resolve(
+				import.meta.dirname,
+				"../src/neurotic_docx_bench/utils/folio/node_modules",
+			);
 		const [{ FolioDocxReviewer }, { compareDocxVersions }]: [any, any] =
 			await Promise.all([
-				import(
-					"../src/neurotic_docx_bench/utils/folio/node_modules/@stll/folio-core/server"
-				),
-				import(
-					"../src/neurotic_docx_bench/utils/folio/node_modules/@stll/folio-agents"
-				),
+				import(join(folioModuleRoot, "@stll/folio-core/dist/server.js")),
+				import(join(folioModuleRoot, "@stll/folio-agents/dist/index.js")),
 			]);
 		// Copy a Uint8Array's bytes into a fresh ArrayBuffer (folio's APIs take
 		// ArrayBuffer; the engine contract hands us Uint8Array, often a Node Buffer
@@ -370,6 +374,77 @@ export async function loadEngine(
 			reviewer.applyOperations(ops, { mode: "tracked-changes" });
 			const out = await reviewer.toBuffer();
 			return out instanceof Uint8Array ? out : new Uint8Array(out);
+		};
+	}
+	if (method === "folio-wasm") {
+		// folio's orchestrator with jubarte-wasm FORCED as the sole engine — the
+		// exact wiring of the playground redline tool (packages/playground/src/
+		// redline/engine.ts): generateRedlineDocx with engines:[jubarte-wasm] and
+		// selfCheck:"engine-lossless". No fallback rung: an engine/self-check
+		// failure throws RedlineEngineExhaustedError and the pair is recorded as
+		// a generate failure, never silently downgraded to another engine.
+		//
+		// FOLIO_MODULE_ROOT must point at a folio build whose core exports
+		// createJubarteWasmRedlineEngine (the current staged build; 0.3.1 predates
+		// it). JUBARTE_WASM_DIR points at the wasm-pack output folio ships in the
+		// playground (web target; init accepts raw bytes under Node).
+		const folioModuleRoot =
+			process.env.FOLIO_MODULE_ROOT ??
+			resolve(
+				import.meta.dirname,
+				"../src/neurotic_docx_bench/utils/folio-current/node_modules",
+			);
+		const wasmDir =
+			process.env.JUBARTE_WASM_DIR ??
+			resolve(
+				import.meta.dirname,
+				"../src/neurotic_docx_bench/utils/jubarte/jubarte-wasm/pkg",
+			);
+		const [{ generateRedlineDocx, createJubarteWasmRedlineEngine }, glueRaw] =
+			await Promise.all([
+				import(join(folioModuleRoot, "@stll/folio-core/dist/server.js")),
+				import(join(wasmDir, "jubarte_wasm.js")),
+			]);
+		// wasm-pack targets differ in glue shape: `web` exports a default init
+		// function (call it with the binary bytes — no fetch under Node); `nodejs`
+		// is CJS whose exports are ready immediately (default = exports object).
+		let glue: any = glueRaw;
+		if (typeof glueRaw.default === "function") {
+			await glueRaw.default({
+				module_or_path: readFileSync(join(wasmDir, "jubarte_wasm_bg.wasm")),
+			});
+		} else if (glueRaw.default && typeof glueRaw.default === "object") {
+			glue = { ...glueRaw.default, ...glueRaw };
+		}
+		glue.initPanicHook?.();
+		const wasmEngine = createJubarteWasmRedlineEngine({
+			compareDocuments: glue.compareDocuments,
+			acceptRevisions: glue.acceptRevisions,
+			rejectRevisions: glue.rejectRevisions,
+			getRevisions: glue.getRevisions,
+		});
+		const toAB = (u: Uint8Array): ArrayBuffer =>
+			u.buffer.slice(u.byteOffset, u.byteOffset + u.byteLength) as ArrayBuffer;
+		return async (base, next) => {
+			try {
+				const result: any = await generateRedlineDocx(toAB(base), toAB(next), {
+					engines: [wasmEngine],
+					author: "folio",
+					selfCheck: "engine-lossless",
+				});
+				return new Uint8Array(result.buffer);
+			} catch (err: any) {
+				// Surface the per-rung attempt log (engine/phase/message) so JSONL
+				// failures name the real cause, not just "every engine failed".
+				const attempts: any[] = err?.attempts;
+				if (Array.isArray(attempts) && attempts.length > 0) {
+					const detail = attempts
+						.map((a) => `${a.engine}/${a.phase}: ${a.message}`)
+						.join(" | ");
+					throw new Error(`${err.message} — ${detail}`.slice(0, 600));
+				}
+				throw err;
+			}
 		};
 	}
 	if (method === "superdoc-ts") {
