@@ -181,12 +181,28 @@ def rows_from_jsonl(path: Path) -> list[dict[str, object]]:
                 "itt_n": itt_n,
                 "n_failures": n_failures,
                 "skill_median": data.get("skill_median"),
+                "n_lens_disagree": data.get("n_lens_disagree"),
+                "lens_disagree_rate": data.get("lens_disagree_rate"),
                 "scores": data.get("scores") if isinstance(data.get("scores"), dict) else None,
             }
             key = (vendor, benchmark, version)
             cur = best.get(key)
-            if cur is None or _rank(row) > _rank(cur):
+            if cur is None:
                 best[key] = row
+            else:
+                winner = row if _rank(row) > _rank(cur) else cur
+                loser = cur if winner is row else row
+                # The lens-health alarm is max-over-reruns: _rank prefers the
+                # higher-mean line, which is exactly the rerun least likely to
+                # carry the alarm — a pre-lens (or clean) line must not shadow a
+                # rerun that surfaced disagreements.
+                wn, ln = winner.get("n_lens_disagree"), loser.get("n_lens_disagree")
+                if isinstance(ln, (int, float)) and (
+                    not isinstance(wn, (int, float)) or ln > wn
+                ):
+                    winner["n_lens_disagree"] = ln
+                    winner["lens_disagree_rate"] = loser.get("lens_disagree_rate")
+                best[key] = winner
 
     return sorted(
         best.values(),
@@ -289,6 +305,40 @@ def _common_subset_section(rows: list[dict[str, object]]) -> list[str]:
         "are computed on the SAME documents for every vendor.",
         "",
         *_table(["#", "vendor", "version", "median", "mean"], table_rows),
+        "",
+    ]
+
+
+def _lens_health_section(rows: list[dict[str, object]]) -> list[str]:
+    """One alarm line per vendor/version whose script_redlines row reports lens
+    disagreements (> 0). No section at all when the lenses agree everywhere."""
+    entries: list[str] = []
+    for r in rows:
+        if r.get("benchmark") != "script_redlines":
+            continue
+        n = r.get("n_lens_disagree")
+        if not isinstance(n, (int, float)) or n <= 0:
+            continue
+        rate = r.get("lens_disagree_rate")
+        pct = (
+            f" ({float(rate) * 100:.1f}% of two-lens docs)"
+            if isinstance(rate, (int, float))
+            else ""
+        )
+        entries.append(
+            f"- **{r['vendor']}** {r.get('tool_version') or ''}: "
+            f"{int(n)} doc(s) where the lenses disagree{pct}"
+        )
+    if not entries:
+        return []
+    return [
+        "### Lens health (script_redlines)",
+        "",
+        "Docs where the pixel lens and a judging lens (functional accept/reject "
+        "invariant, WV-1 word-validate) conflict — the bench is measuring the "
+        "wrong thing on those docs. A bench-health alarm, not a ranking signal.",
+        "",
+        *entries,
         "",
     ]
 
@@ -445,6 +495,7 @@ def to_fidelity_markdown(rows: list[dict[str, object]], source: Path) -> str:
         if bench == "script_redlines":
             lines.extend(_common_subset_section(rows))
             lines.extend(_paired_stats_section(rows))
+            lines.extend(_lens_health_section(rows))
 
     lines.extend(["## All fidelity runs (flat)", ""])
     flat_rows: list[list[str]] = [[

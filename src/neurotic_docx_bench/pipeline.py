@@ -67,6 +67,7 @@ class ScoreResult(TypedDict):
     functional_accept_strict: NotRequired[bool | None]
     functional_reject_strict: NotRequired[bool | None]
     functional_blind: NotRequired[bool]
+    wv1_outcome: NotRequired[str]
 
 
 def is_redline(stem: str) -> bool:
