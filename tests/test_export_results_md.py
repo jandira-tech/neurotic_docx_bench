@@ -308,3 +308,22 @@ def test_to_markdown_renders_itt_columns() -> None:
     md = exp.to_fidelity_markdown([row], Path("results/bench.jsonl"))
     assert "itt_median" in md
     assert "failures" in md
+
+
+def test_paired_stats_section_win_loss_and_p() -> None:
+    docs = {f"d{i}": 80.0 + i * 0.1 for i in range(30)}
+    a = _subset_row("alpha", {k: v + 5.0 for k, v in docs.items()})
+    b = _subset_row("beta", dict(docs))
+    section = exp._paired_stats_section([a, b])
+    text = "\n".join(section)
+    assert "Paired comparisons" in text
+    row_line = next(line for line in section if "| alpha | beta |" in line)
+    assert "| 30 |" in row_line
+    assert "30/0/0" in row_line
+    assert "+5.00" in row_line
+
+
+def test_paired_stats_skips_small_overlap() -> None:
+    a = _subset_row("alpha", {"d1": 90.0})
+    b = _subset_row("beta", {"d1": 60.0})
+    assert exp._paired_stats_section([a, b]) == []

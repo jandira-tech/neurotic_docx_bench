@@ -30,20 +30,28 @@ class GateResult:
         return 1 if self.status == "fail" else 0
 
 
-def gate(scores: dict[str, float], baseline_scores: dict[str, float] | None) -> GateResult:
+def gate(
+    scores: dict[str, float],
+    baseline_scores: dict[str, float] | None,
+    *,
+    eps: float | None = None,
+) -> GateResult:
     """Compare a run's per-doc scores to the accepted baseline.
 
     No baseline (first run) → pass. Otherwise aggregate regression → fail; else per-doc
-    regression (of non-100 docs) → warn; else pass.
+    regression (of non-100 docs) → warn; else pass. ``eps`` is the regression
+    threshold — callers derive it from the recorded render noise floor
+    (``noise_floor.eps_from_file``); default is the historical 1e-4.
     """
     if not baseline_scores:
         return GateResult("pass", reason="no baseline (first accepted run)")
+    threshold = _EPS if eps is None else eps
 
     cur = compute_aggregate(scores)
     base = compute_aggregate(baseline_scores)
 
-    mean_down = cur.overall_mean < base.overall_mean - _EPS
-    median_down = cur.overall_median < base.overall_median - _EPS
+    mean_down = cur.overall_mean < base.overall_mean - threshold
+    median_down = cur.overall_median < base.overall_median - threshold
     if mean_down or median_down:
         parts = []
         if mean_down:
@@ -57,7 +65,7 @@ def gate(scores: dict[str, float], baseline_scores: dict[str, float] | None) -> 
         doc
         for doc, score in scores.items()
         if doc in baseline_scores
-        and score < baseline_scores[doc] - _EPS
+        and score < baseline_scores[doc] - threshold
         and score < 100.0 - _EPS
     )
     if regressed:

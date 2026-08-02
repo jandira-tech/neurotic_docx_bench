@@ -42,7 +42,7 @@ from rich.table import Table
 from rich.text import Text
 from rich.theme import Theme
 
-from neurotic_docx_bench import pipeline, provenance, stages, tool_updater
+from neurotic_docx_bench import noise_floor, pipeline, provenance, stages, tool_updater
 from neurotic_docx_bench.benchmarks import BenchmarkName, BenchmarkOutcome
 from neurotic_docx_bench.config import BenchConfig, RunConfig, environment_config_for_run, load_config
 from neurotic_docx_bench.emit import gallery as gallery_emit
@@ -728,7 +728,10 @@ def _emit_and_gate_benchmark(
     )
     if do_gate:
         baseline = snapshot_emit.load_snapshot_for_benchmark(snapshots_dir, vendor, benchmark)
-        result = run_gate(scores, baseline)
+        result = run_gate(
+            scores, baseline,
+            eps=noise_floor.eps_from_file(jsonl_path.parent / "noise_floor.json"),
+        )
         colour = {"pass": "green", "warn": "yellow", "fail": "red"}[result.status]
         console.print(
             f"gate[{benchmark}]: [{colour}]{result.status.upper()}[/{colour}] — {result.reason}",
@@ -1528,6 +1531,58 @@ def canary_cmd(
     console.print(f"[{colour}]{outcome.status}[/{colour}] — {outcome.detail}")
     if outcome.status == "mismatch":
         raise typer.Exit(2)
+
+
+@app.command(name="noise-floor")
+def noise_floor_cmd(
+    docs: int = typer.Option(10, "--docs", help="number of oracle DOCX to double-render"),
+    dpi: int = typer.Option(144, "--dpi"),
+    source: Path = typer.Option(
+        Path("corpus/word_based/docx_redlines_word"), "--source",
+        help="DOCX folder to sample from",
+    ),
+    out: Path = typer.Option(Path("results/noise_floor.json"), "--out"),
+) -> None:
+    """Measure the render noise floor: render each sampled DOCX twice and score the
+    two renders' rasters against each other; record per-doc score deltas from 100.
+
+    Deterministic rendering ⇒ all-zero deltas (the expected result — recorded as
+    evidence). A nonzero sigma means rendering stopped being deterministic in THIS
+    environment, and the gate epsilon grows to 3σ automatically.
+    """
+    from neurotic_docx_bench import canary as canary_mod
+    from neurotic_docx_bench.render.soffice import SofficeRenderer
+
+    docx_files = sorted(source.glob("*.docx"))[:docs]
+    if not docx_files:
+        console.print(f"[red]no .docx under {source}[/red]")
+        raise typer.Exit(2)
+    renderer = SofficeRenderer()
+    deltas: list[float] = []
+    with tempfile.TemporaryDirectory(prefix="bench-noise.") as work_s:
+        work = Path(work_s)
+        for i, docx in enumerate(docx_files):
+            sub = work / f"d{i}"
+            src_dir = sub / "src"
+            src_dir.mkdir(parents=True)
+            shutil.copy(docx, src_dir / docx.name)
+            r1 = renderer.to_pdfs(src_dir, sub / "r1", jobs=1)
+            r2 = renderer.to_pdfs(src_dir, sub / "r2", jobs=1, force=True)
+            p1 = next(iter([r.pdf for r in r1.results if r.ok and r.pdf]), None)
+            p2 = next(iter([r.pdf for r in r2.results if r.ok and r.pdf]), None)
+            if p1 is None or p2 is None:
+                console.print(f"[yellow]render failed for {docx.name}; skipped[/yellow]")
+                continue
+            result = pipeline.score_pdf_pair(p1, p2, sub / "score", dpi=dpi)
+            deltas.append(abs(100.0 - float(result["overall_score"])))
+            console.print(f"{docx.name}: delta {deltas[-1]:.6f}")
+    record = noise_floor.write_noise_floor(
+        out, deltas, lo_version=canary_mod.current_soffice_version(), dpi=dpi,
+    )
+    console.print(
+        f"noise floor: n={record['n']} sigma={record['sigma']:.6f} "
+        f"max={record['max_delta']:.6f} → gate eps {noise_floor.eps_from_file(out):.6f} → {out}",
+    )
 
 
 @app.command(name="oracle-manifest")

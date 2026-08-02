@@ -302,6 +302,69 @@ def _table(headers: list[str], rows: list[list[str]]) -> list[str]:
     return lines
 
 
+def _paired_stats_section(rows: list[dict[str, object]]) -> list[str]:
+    """Pairwise vendor comparisons on shared docs (script_redlines winners).
+
+    Aggregate deltas between vendors scored on different doc subsets are not
+    meaningful; here every comparison is paired per doc: win/loss/tie counts, the
+    median paired delta, and a Wilcoxon signed-rank p-value (zsplit). Pairs with
+    fewer than 20 shared docs are skipped.
+    """
+    candidates = [
+        r for r in rows
+        if str(r["benchmark"]) == "script_redlines" and isinstance(r.get("scores"), dict) and r["scores"]
+    ]
+    best_per_vendor: dict[str, dict[str, object]] = {}
+    for r in candidates:
+        vendor = str(r["vendor"])
+        cur = best_per_vendor.get(vendor)
+        if cur is None or _fidelity_sort_key(r) < _fidelity_sort_key(cur):
+            best_per_vendor[vendor] = r
+    vendors = sorted(best_per_vendor)
+    if len(vendors) < 2:
+        return []
+    table_rows: list[list[str]] = []
+    for i, va in enumerate(vendors):
+        for vb in vendors[i + 1:]:
+            sa = best_per_vendor[va]["scores"]
+            sb = best_per_vendor[vb]["scores"]
+            common = sorted(set(sa) & set(sb))  # type: ignore[arg-type]
+            if len(common) < 20:
+                continue
+            deltas = [float(sa[d]) - float(sb[d]) for d in common]  # type: ignore[index]
+            wins = sum(1 for d in deltas if d > 1e-9)
+            losses = sum(1 for d in deltas if d < -1e-9)
+            ties = len(deltas) - wins - losses
+            median_delta = statistics.median(deltas)
+            try:
+                from scipy import stats as scipy_stats
+
+                p_value = float(scipy_stats.wilcoxon(deltas, zero_method="zsplit").pvalue)
+                p_cell = f"{p_value:.2e}"
+            except (ImportError, ValueError):
+                p_cell = "—"
+            table_rows.append([
+                _escape_cell(va),
+                _escape_cell(vb),
+                str(len(common)),
+                f"{wins}/{losses}/{ties}",
+                f"{median_delta:+.2f}",
+                p_cell,
+            ])
+    if not table_rows:
+        return []
+    return [
+        "### Paired comparisons (script_redlines)",
+        "",
+        "Per-doc paired deltas on shared documents (best pin per vendor); "
+        "`win/loss/tie` counts docs where the FIRST vendor scores higher/lower/equal. "
+        "Wilcoxon signed-rank p, zsplit zero method.",
+        "",
+        *_table(["vendor A", "vendor B", "docs", "win/loss/tie", "median Δ", "p"], table_rows),
+        "",
+    ]
+
+
 def to_fidelity_markdown(rows: list[dict[str, object]], source: Path) -> str:
     by_bench: dict[str, list[dict[str, object]]] = defaultdict(list)
     for row in rows:
@@ -381,6 +444,7 @@ def to_fidelity_markdown(rows: list[dict[str, object]], source: Path) -> str:
         lines.append("")
         if bench == "script_redlines":
             lines.extend(_common_subset_section(rows))
+            lines.extend(_paired_stats_section(rows))
 
     lines.extend(["## All fidelity runs (flat)", ""])
     flat_rows: list[list[str]] = [[
