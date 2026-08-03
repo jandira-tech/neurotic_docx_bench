@@ -69,6 +69,34 @@ def test_build_results_serializes_paths_and_uuid7() -> None:
     assert line["environment_config"]["source_of_truth"] == "corpus/oracle"
 
 
+def test_build_results_serializes_tuple_of_paths() -> None:
+    """Regression: extra_oracle_dirs is a tuple of Paths — asdict() keeps
+    tuples as tuples, so _jsonable must recurse into them or json.dumps
+    dies with "Object of type PosixPath is not JSON serializable" on the
+    first emitted line (which is exactly how the 2026-08-03 run failed)."""
+    import json
+
+    cfg = BenchConfig(
+        source_of_truth=Path("corpus/oracle"),
+        extra_oracle_dirs=(Path("corpus/word_based/pdf_redlines_randomized/pdf"),),
+    )
+    result = build_results(
+        id_run=uuid.uuid7(),
+        vendor="docxodus",
+        benchmark="script_redlines",
+        scores={"a": 100.0},
+        per_doc=None,
+        speed_samples_ms=[5.0],
+        environment_config=cfg,
+        timestamp=datetime(2026, 7, 7, tzinfo=UTC),
+    )
+    line = result.to_json_dict()
+    json.dumps(line)  # must not raise
+    assert line["environment_config"]["extra_oracle_dirs"] == [
+        "corpus/word_based/pdf_redlines_randomized/pdf"
+    ]
+
+
 def test_build_results_empty_scores_zero_aggregate() -> None:
     cfg = BenchConfig(source_of_truth=Path("oracle"))
     result = build_results(
