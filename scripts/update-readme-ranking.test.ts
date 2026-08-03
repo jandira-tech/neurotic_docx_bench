@@ -27,6 +27,7 @@ function row(partial: Partial<FidelityRow>): FidelityRow {
 		render: "soffice",
 		run_name: "acme",
 		family: null,
+		corpus_revision: null,
 		timestamp: "2026-08-02T00:00:00Z",
 		...partial,
 	} as FidelityRow;
@@ -118,6 +119,45 @@ describe("fidelity table ITT ranking", () => {
 		expect(cleanRank).toBeGreaterThan(0);
 		expect(cleanRank).toBeLessThan(crashyRank);
 		expect(table).toContain("ITT Median");
+	});
+
+	it("splits current-corpus and legacy-corpus rows into separate tables", () => {
+		const current = row({
+			vendor: "fresh",
+			corpus_revision: "abc123def456",
+			overall_mean: 70,
+			itt_mean: 70,
+			itt_median: 70,
+			overall_median: 70,
+		});
+		const legacy = row({
+			vendor: "stale",
+			overall_mean: 95,
+			itt_mean: 95,
+			itt_median: 95,
+			overall_median: 95,
+		});
+		const best = new Map<string, FidelityRow>([
+			["fresh__script_redlines__1", current],
+			["stale__script_redlines__1", legacy],
+		]);
+		const table = buildFidelityTable(best, "script_redlines");
+		expect(table).toContain("**Current corpus**");
+		expect(table).toContain("**Legacy corpus**");
+		// The stale 95-mean line must NOT outrank the fresh line — it lives in
+		// the legacy table below, and both tables restart ranks at 1.
+		const currentIdx = table.indexOf("| fresh |");
+		const legacyIdx = table.indexOf("| stale |");
+		expect(currentIdx).toBeGreaterThan(0);
+		expect(currentIdx).toBeLessThan(legacyIdx);
+	});
+
+	it("renders a single table when only one regime exists", () => {
+		const only = row({ vendor: "solo" });
+		const best = new Map<string, FidelityRow>([["solo__script_redlines__1", only]]);
+		const table = buildFidelityTable(best, "script_redlines");
+		expect(table).not.toContain("**Legacy corpus**");
+		expect(table).toContain("| solo |");
 	});
 
 	it("marks approximate ITT stats with ~", () => {
