@@ -372,6 +372,15 @@ def test_gate_disjoint_key_sets_warn_not_fail():
     assert "no shared docs" in r.reason
 
 
+def test_gate_total_wipeout_fails_not_warns():
+    # Empty current scores vs a non-empty baseline is a regression (the tool
+    # crashed on everything), NOT corpus drift — the disjoint-warn branch must
+    # not let it through at exit 0.
+    r = run_gate({}, {"a": 90.0, "b": 85.0})
+    assert r.status == "fail"
+    assert "wipeout" in r.reason
+
+
 def _degraded_holdout_setup(tmp_path, sample_oracle_pdfs):
     """Synthetic corpus where the HOLDOUT key scores < 100 (oracle A vs
     candidate B) and the visible key mirrors (scores 100)."""
@@ -630,6 +639,24 @@ def test_export_holdout_gap_main_same_version_excluded_full_only(tmp_path):
     text = "\n".join(exp.holdout_gap_section(p))
     assert "-5.00" in text  # 85 − 90, not 85 − 99 / 85 − 80 / 85 − 70
     assert "no comparable main run" not in text
+
+
+def test_export_holdout_gap_smoke_holdout_line_does_not_displace_full(tmp_path):
+    # A later --holdout --limit smoke run (n=3) must not displace the fuller
+    # holdout line (n=20) as the vendor's holdout number; recency applies only
+    # among equally-full holdout lines.
+    p = tmp_path / "bench.jsonl"
+    _write_jsonl(p, [
+        {"vendor": "v", "benchmark": "script_redlines", "tool_version": "2",
+         "overall_mean": 90.0, "n_docs": 383, "holdout_mode": "excluded"},
+        {"vendor": "v", "benchmark": "script_redlines", "tool_version": "2",
+         "overall_mean": 85.0, "n_docs": 20, "holdout_mode": "only"},
+        {"vendor": "v", "benchmark": "script_redlines", "tool_version": "2",
+         "overall_mean": 40.0, "n_docs": 3, "holdout_mode": "only"},
+    ])
+    text = "\n".join(exp.holdout_gap_section(p))
+    assert "-5.00" in text  # 85 − 90 from the n=20 line, not 40 − 90
+    assert "-50.00" not in text
 
 
 def test_export_holdout_gap_no_comparable_main(tmp_path):

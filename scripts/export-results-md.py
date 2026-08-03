@@ -12,7 +12,8 @@ Speed: from ``results/speed.jsonl`` (and optional
 - ``kind: speed_redlines`` / ``redline_speed_bench`` — large-N / CLI / warm
   workers (docxodus-csharp[-inproc], jubarte-rust[-inproc], WASM, …)
 
-When the same key appears more than once, keeps the best re-run (see rankers).
+When the same key appears more than once, keeps the newest full-corpus re-run
+(recency wins within the full-corpus bucket; see rankers).
 """
 
 from __future__ import annotations
@@ -378,6 +379,10 @@ def holdout_gap_section(path: Path) -> list[str]:
     gap is rendered as ``gap ± 2·SE`` of the holdout mean. Renders a
     placeholder note while no holdout run has been recorded yet.
     """
+    def _n_docs(line: dict) -> int:
+        n = line.get("n_docs")
+        return int(n) if isinstance(n, (int, float)) else 0
+
     main_lines: list[dict] = []
     hold_by_vendor: dict[str, dict] = {}
     if path.is_file():
@@ -396,7 +401,12 @@ def holdout_gap_section(path: Path) -> list[str]:
                 if not vendor:
                     continue
                 if data.get("holdout_mode") == "only":
-                    hold_by_vendor[vendor] = data
+                    # Latest wins, but a partial run (--holdout --limit N) must
+                    # not displace a fuller holdout line: prefer higher n, and
+                    # recency only among equally-full lines.
+                    prev = hold_by_vendor.get(vendor)
+                    if prev is None or _n_docs(data) >= _n_docs(prev):
+                        hold_by_vendor[vendor] = data
                 else:
                     main_lines.append(data)
     header = [

@@ -69,6 +69,17 @@ def gate(
         else ""
     )
     if not shared:
+        if not scores:
+            # A total wipeout (every doc failed to score) is a regression, not
+            # corpus drift — the disjoint-warn below is for key-set changes,
+            # and must not let a crash-on-everything release through at exit 0.
+            return GateResult(
+                "fail",
+                reason="current run scored no docs (wipeout) vs a non-empty baseline"
+                + key_note,
+                n_only_baseline=n_only_baseline,
+                n_only_current=n_only_current,
+            )
         return GateResult(
             "warn",
             reason="no shared docs with baseline — aggregate not comparable" + key_note,
