@@ -120,6 +120,7 @@ def build_results_line(
     n_oracle_unmatched: int | None = None,
     scorer: str = "v1",
     corpus_revision: str | None = None,
+    holdout_mode: str | None = None,
 ) -> dict[str, object]:
     """Build a schema-v4 ``Results`` JSONL dict from a vendor×benchmark outcome.
 
@@ -150,6 +151,7 @@ def build_results_line(
         n_oracle_unmatched=n_oracle_unmatched,
         scorer=scorer,
         corpus_revision=corpus_revision,
+        holdout_mode=holdout_mode,
     ).to_json_dict()
 
 
@@ -296,6 +298,7 @@ def has_already_ran_benchmark(
     benchmark: str,
     tool_version: str | None,
     config_hash: str,
+    holdout_only: bool | None = None,
 ) -> dict[str, object] | None:
     """Return the matching prior ``Results`` line if ``(vendor, benchmark,
     tool_version, config_hash)`` already exists, else None.
@@ -303,6 +306,12 @@ def has_already_ran_benchmark(
     Used by ``bench run`` to skip unchanged reruns. A line matches when its
     ``vendor``/``benchmark``/``tool_version``/``config_hash`` all agree; legacy
     schema-v3 lines (which lack ``benchmark``) never match.
+
+    ``holdout_only`` (when given) additionally requires the line's
+    ``holdout_mode`` to be — or not be — ``"only"``: a holdout-only rerun must
+    never be satisfied by a full-corpus line, nor the reverse. Lines without the
+    field (pre-holdout vintage) count as full-corpus, so normal-run identity is
+    unchanged.
     """
     if tool_version is None:
         return None
@@ -312,6 +321,10 @@ def has_already_ran_benchmark(
             and line.get("benchmark") == benchmark
             and line.get("tool_version") == tool_version
             and line.get("config_hash") == config_hash
+            and (
+                holdout_only is None
+                or (line.get("holdout_mode") == "only") == holdout_only
+            )
         ):
             return line
     return None

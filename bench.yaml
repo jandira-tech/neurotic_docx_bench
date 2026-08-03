@@ -10,6 +10,10 @@ source_of_truth: corpus/word_based/pdf_redlines_word
 # chained second invocation below) get them matched automatically.
 extra_oracle_dirs:
   - corpus/word_based/pdf_redlines_randomized/pdf
+# Sealed 20-pair holdout (overfitting detector): these keys are EXCLUDED from
+# every normal scoring run and scored separately on demand with
+# `bench run --holdout`; export surfaces the main-vs-holdout gap.
+holdout_list: corpus/word_based/holdout.txt
 scoring:
   dpi: 144
 
