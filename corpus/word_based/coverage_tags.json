@@ -1,0 +1,4288 @@
+{
+  "errors": {},
+  "pairs": {
+    "1_5_line_spacing_id_paraid_overflow_24_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange"
+      ]
+    },
+    "24_id_paraid_overflow_alternate_content": {
+      "features": [
+        "alternate_content",
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_sectPrChange"
+      ]
+    },
+    "24_id_paraid_overflow_blue_bold_centered_demo_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins"
+      ]
+    },
+    "I_am_sharing_Microsoft_Word_vs_Google_Docs_Comprehensive_Proof_with_you_increase_indent_demo_id_paraid_overflow": {
+      "features": [
+        "field",
+        "footer",
+        "header",
+        "hyperlink",
+        "image",
+        "multi_section",
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "alternate_content_anchor_images": {
+      "features": [
+        "alternate_content",
+        "image",
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_sectPrChange"
+      ]
+    },
+    "blue_bold_centered_demo_id_paraid_overflow_blue_centered_title_demo_style_default_missing": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange"
+      ]
+    },
+    "blue_centered_title_demo_style_default_missing_blue_italic_text_demo_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange"
+      ]
+    },
+    "blue_italic_text_demo_id_paraid_overflow_blue_underline_combo_demo_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "blue_underline_combo_demo_id_paraid_overflow_bold_and_italic_combo_style_default_missing": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "bold_and_italic_combo_style_default_missing_bold_and_underline_combo_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "bold_and_underline_combo_id_paraid_overflow_bold_italic_combined_demo_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "bold_italic_combined_demo_id_paraid_overflow_bold_italic_underline_demo_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "bold_italic_underline_demo_id_paraid_overflow_bold_red_text_combo_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "bold_red_text_combo_id_paraid_overflow_bold_superscript_demo_style_default_missing": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "bold_superscript_demo_style_default_missing_bold_text_formatting_demo_id_paraid_overflow_2": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "bold_text_formatting_demo_id_paraid_overflow_2_bold_text_formatting_demo_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_rPrChange"
+      ]
+    },
+    "bold_text_formatting_demo_id_paraid_overflow_bold_underline_combined_demo_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "bold_underline_combined_demo_id_paraid_overflow_bold_underline_highlight_demo_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "bold_underline_highlight_demo_id_paraid_overflow_book_catalog_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins"
+      ]
+    },
+    "book_catalog_id_paraid_overflow_book_catalog_table": {
+      "features": [
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins"
+      ]
+    },
+    "book_catalog_table_budget_report_q1_2026_suggesting_insertions": {
+      "features": [
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange"
+      ]
+    },
+    "budget_report_q1_2026_suggesting_insertions_bullet_list_bold_demo_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange"
+      ]
+    },
+    "bullet_list_bold_demo_id_paraid_overflow_bullet_list_demo_id_paraid_overflow": {
+      "features": [
+        "numbering"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange"
+      ]
+    },
+    "bullet_list_demo_id_paraid_overflow_calibri_bold_italic_demo_id_paraid_overflow": {
+      "features": [
+        "numbering"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange"
+      ]
+    },
+    "calibri_bold_italic_demo_id_paraid_overflow_calibri_font_demo_id_paraid_overflow_2": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "calibri_font_demo_id_paraid_overflow_2_calibri_font_demo_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins"
+      ]
+    },
+    "calibri_font_demo_id_paraid_overflow_calibri_heading_2_right_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange"
+      ]
+    },
+    "calibri_heading_2_right_id_paraid_overflow_center_aligned_bold_text_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange"
+      ]
+    },
+    "center_aligned_bold_text_id_paraid_overflow_center_alignment_demo_id_paraid_overflow_2": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange"
+      ]
+    },
+    "center_alignment_demo_id_paraid_overflow_2_center_alignment_demo_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange"
+      ]
+    },
+    "center_alignment_demo_id_paraid_overflow_center_bold_demo_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange"
+      ]
+    },
+    "center_bold_demo_id_paraid_overflow_clear_formatting_demo_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "clear_formatting_demo_id_paraid_overflow_comments": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_sectPrChange"
+      ]
+    },
+    "clear_formatting_demo_id_paraid_overflow_contract_review_suggesting_insertions": {
+      "features": [
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins"
+      ]
+    },
+    "comments_complex_style_attr": {
+      "features": [
+        "field",
+        "footer",
+        "image",
+        "numbering"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "complex_style_attr_contract_review_suggesting_insertions": {
+      "features": [
+        "field",
+        "footer",
+        "image",
+        "numbering",
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "contract_review_suggesting_insertions_contract_review_suggesting_mixed_edits": {
+      "features": [
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins"
+      ]
+    },
+    "contract_review_suggesting_mixed_edits_customer_satisfaction_survey_q4_suggesting_insertions": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins"
+      ]
+    },
+    "customer_satisfaction_survey_q4_suggesting_insertions_document_100_ultimate_demo_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange"
+      ]
+    },
+    "document_100_ultimate_demo_id_paraid_overflow_docx_lots_of_comments_addition_redline_addition_v_removal": {
+      "features": [
+        "field",
+        "footer",
+        "header",
+        "hyperlink",
+        "image",
+        "multi_section",
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "document_100_ultimate_demo_id_paraid_overflow_double_spacing_bold_demo_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange"
+      ]
+    },
+    "docx_lots_of_comments_addition_docx_lots_of_comments": {
+      "features": [
+        "field",
+        "footer",
+        "header",
+        "hyperlink",
+        "image",
+        "multi_section",
+        "table"
+      ],
+      "revisions": [
+        "rev_del"
+      ]
+    },
+    "docx_lots_of_comments_addition_redline_addition_v_removal_docx_lots_of_comments_addition_redline": {
+      "features": [
+        "field",
+        "footer",
+        "header",
+        "hyperlink",
+        "image",
+        "multi_section",
+        "table"
+      ],
+      "revisions": [
+        "rev_ins"
+      ]
+    },
+    "docx_lots_of_comments_addition_redline_docx_lots_of_comments_addition_removal_redline_removal_v_addition": {
+      "features": [
+        "field",
+        "footer",
+        "header",
+        "hyperlink",
+        "image",
+        "multi_section",
+        "table"
+      ],
+      "revisions": []
+    },
+    "docx_lots_of_comments_addition_removal_docx_lots_of_comments_addition": {
+      "features": [
+        "field",
+        "footer",
+        "header",
+        "hyperlink",
+        "image",
+        "multi_section",
+        "table"
+      ],
+      "revisions": [
+        "rev_ins"
+      ]
+    },
+    "docx_lots_of_comments_addition_removal_redline_docx_lots_of_comments_addition_removal": {
+      "features": [
+        "field",
+        "footer",
+        "header",
+        "hyperlink",
+        "image",
+        "multi_section",
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_moveFrom",
+        "rev_moveTo",
+        "rev_tblChange",
+        "rev_tblGridChange",
+        "rev_tcPrChange",
+        "rev_trPrChange"
+      ]
+    },
+    "docx_lots_of_comments_addition_removal_redline_removal_v_addition_docx_lots_of_comments_addition_removal_redline": {
+      "features": [
+        "field",
+        "footer",
+        "header",
+        "hyperlink",
+        "image",
+        "multi_section",
+        "table"
+      ],
+      "revisions": []
+    },
+    "docx_lots_of_comments_double_spacing_bold_demo_id_paraid_overflow": {
+      "features": [
+        "field",
+        "footer",
+        "header",
+        "hyperlink",
+        "image",
+        "multi_section",
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "double_spacing_bold_demo_id_paraid_overflow_eigenpal_docx_editor_suggesting_mixed_edits": {
+      "features": [
+        "field",
+        "footer",
+        "header",
+        "hyperlink",
+        "numbering",
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "eigenpal_docx_editor_suggesting_mixed_edits_employee_directory_table_2": {
+      "features": [
+        "field",
+        "footer",
+        "header",
+        "hyperlink",
+        "numbering",
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_sectPrChange",
+        "rev_tblChange",
+        "rev_tblGridChange",
+        "rev_tblPrChange",
+        "rev_tcPrChange",
+        "rev_trPrChange"
+      ]
+    },
+    "employee_directory_table_2_employee_directory_table": {
+      "features": [
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_tblChange",
+        "rev_tblGridChange",
+        "rev_tblPrChange",
+        "rev_tcPrChange",
+        "rev_trPrChange"
+      ]
+    },
+    "employee_directory_table_employee_review_john_smith_suggesting_insertions": {
+      "features": [
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange"
+      ]
+    },
+    "employee_review_john_smith_suggesting_insertions_font_color_blue_demo_style_default_missing": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange"
+      ]
+    },
+    "file_100_file_101": {
+      "features": [
+        "alternate_content",
+        "header"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_101_file_102": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange"
+      ]
+    },
+    "file_102_file_103": {
+      "features": [
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "file_103_file_104": {
+      "features": [
+        "image",
+        "table",
+        "textbox"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_104_file_105": {
+      "features": [
+        "image",
+        "textbox"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_105_file_106": {
+      "features": [
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange"
+      ]
+    },
+    "file_106_file_107": {
+      "features": [
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "file_107_file_108": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "file_108_file_109": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "file_109_file_110": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "file_10_file_11": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "file_110_file_111": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange"
+      ]
+    },
+    "file_111_file_112": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange"
+      ]
+    },
+    "file_112_file_113": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange"
+      ]
+    },
+    "file_113_file_114": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "file_114_file_115": {
+      "features": [
+        "alternate_content",
+        "header"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_115_file_116": {
+      "features": [
+        "alternate_content",
+        "header"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_116_file_117": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange"
+      ]
+    },
+    "file_117_file_118": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange"
+      ]
+    },
+    "file_118_file_119": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange"
+      ]
+    },
+    "file_119_file_120": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange"
+      ]
+    },
+    "file_11_file_12": {
+      "features": [
+        "image"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_120_file_121": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange"
+      ]
+    },
+    "file_121_file_122": {
+      "features": [
+        "hyperlink"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "file_122_file_123": {
+      "features": [
+        "hyperlink"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "file_123_file_124": {
+      "features": [
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "file_124_file_125": {
+      "features": [
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "file_125_file_126": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "file_126_file_127": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins"
+      ]
+    },
+    "file_127_file_128": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange"
+      ]
+    },
+    "file_128_file_129": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange"
+      ]
+    },
+    "file_129_file_130": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "file_12_file_13": {
+      "features": [
+        "image"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_130_file_131": {
+      "features": [
+        "field",
+        "footer",
+        "header",
+        "hyperlink",
+        "image",
+        "multi_section",
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_131_file_132": {
+      "features": [
+        "field",
+        "footer",
+        "header",
+        "hyperlink",
+        "image",
+        "multi_section",
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_132_file_133": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange"
+      ]
+    },
+    "file_133_file_134": {
+      "features": [
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_134_file_135": {
+      "features": [
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_135_file_136": {
+      "features": [
+        "numbering"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange"
+      ]
+    },
+    "file_136_file_137": {
+      "features": [
+        "numbering"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange"
+      ]
+    },
+    "file_137_file_138": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_138_file_139": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_139_file_140": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange"
+      ]
+    },
+    "file_13_file_14": {
+      "features": [
+        "field",
+        "footer",
+        "header",
+        "hyperlink",
+        "numbering",
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_140_file_141": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "file_141_file_142": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "file_142_file_143": {
+      "features": [
+        "field",
+        "footer",
+        "header",
+        "hyperlink",
+        "numbering",
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_143_file_144": {
+      "features": [
+        "field",
+        "footer",
+        "header",
+        "hyperlink",
+        "numbering",
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_144_file_145": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange"
+      ]
+    },
+    "file_145_file_146": {
+      "features": [
+        "field",
+        "footer",
+        "header",
+        "hyperlink",
+        "numbering",
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_146_file_147": {
+      "features": [
+        "field",
+        "footer",
+        "header",
+        "hyperlink",
+        "numbering",
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_147_file_148": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange"
+      ]
+    },
+    "file_148_file_149": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange"
+      ]
+    },
+    "file_149_file_150": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange"
+      ]
+    },
+    "file_14_file_15": {
+      "features": [
+        "field",
+        "footer",
+        "header",
+        "hyperlink",
+        "numbering",
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_150_file_151": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins"
+      ]
+    },
+    "file_151_file_152": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "file_152_file_153": {
+      "features": [
+        "header",
+        "multi_section"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_153_file_154": {
+      "features": [
+        "header",
+        "multi_section"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_154_file_155": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins"
+      ]
+    },
+    "file_155_file_156": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "file_156_file_157": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "file_157_file_158": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins"
+      ]
+    },
+    "file_158_file_159": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins"
+      ]
+    },
+    "file_159_file_160": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "file_15_file_16": {
+      "features": [
+        "field",
+        "footer",
+        "header",
+        "hyperlink",
+        "image",
+        "multi_section",
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_160_file_161": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "file_161_file_162": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins"
+      ]
+    },
+    "file_162_file_163": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "file_163_file_164": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "file_164_file_165": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "file_165_file_166": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange"
+      ]
+    },
+    "file_166_file_167": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange"
+      ]
+    },
+    "file_167_file_168": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange"
+      ]
+    },
+    "file_168_file_169": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange"
+      ]
+    },
+    "file_169_file_170": {
+      "features": [
+        "field",
+        "footnote",
+        "hyperlink",
+        "numbering",
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_16_file_17": {
+      "features": [
+        "field",
+        "footer",
+        "header",
+        "hyperlink",
+        "image",
+        "multi_section",
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_170_file_171": {
+      "features": [
+        "field",
+        "footnote",
+        "hyperlink",
+        "numbering",
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_171_file_172": {
+      "features": [
+        "field"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_172_file_173": {
+      "features": [
+        "field"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_173_file_174": {
+      "features": [
+        "image"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_174_file_175": {
+      "features": [
+        "field",
+        "footer",
+        "header",
+        "hyperlink",
+        "image",
+        "numbering",
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_175_file_176": {
+      "features": [
+        "field",
+        "footer",
+        "header",
+        "hyperlink",
+        "numbering",
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_moveFrom",
+        "rev_moveTo",
+        "rev_pPrChange",
+        "rev_rPrChange",
+        "rev_tblChange",
+        "rev_tblGridChange",
+        "rev_tblPrChange",
+        "rev_tcPrChange",
+        "rev_trPrChange"
+      ]
+    },
+    "file_176_file_177": {
+      "features": [
+        "field",
+        "footer",
+        "header",
+        "hyperlink",
+        "numbering",
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_177_file_178": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "file_178_file_179": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "file_179_file_180": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "file_17_file_18": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "file_180_file_181": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "file_181_file_182": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange"
+      ]
+    },
+    "file_182_file_183": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange"
+      ]
+    },
+    "file_183_file_184": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange"
+      ]
+    },
+    "file_184_file_185": {
+      "features": [
+        "alternate_content",
+        "header"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_185_file_186": {
+      "features": [
+        "alternate_content",
+        "header"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_186_file_187": {
+      "features": [
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins"
+      ]
+    },
+    "file_187_file_188": {
+      "features": [
+        "field",
+        "footer",
+        "header",
+        "hyperlink",
+        "numbering",
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange",
+        "rev_sectPrChange",
+        "rev_tblChange",
+        "rev_tblGridChange",
+        "rev_tblPrChange",
+        "rev_tcPrChange",
+        "rev_trPrChange"
+      ]
+    },
+    "file_188_file_189": {
+      "features": [
+        "field",
+        "footer",
+        "header",
+        "hyperlink",
+        "numbering",
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_189_file_190": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "file_18_file_19": {
+      "features": [
+        "field",
+        "hyperlink",
+        "rtl",
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_190_file_191": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "file_191_file_192": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_192_file_193": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_193_file_194": {
+      "features": [
+        "footnote"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_194_file_195": {
+      "features": [
+        "footnote"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_195_file_196": {
+      "features": [
+        "alternate_content",
+        "header"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_196_file_197": {
+      "features": [
+        "alternate_content",
+        "header",
+        "image"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_197_file_198": {
+      "features": [
+        "image"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_198_file_199": {
+      "features": [
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_19_file_20": {
+      "features": [
+        "field",
+        "hyperlink",
+        "rtl",
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_1_file_2": {
+      "features": [
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_20_file_21": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "file_21_file_22": {
+      "features": [
+        "field",
+        "footer",
+        "hyperlink",
+        "multi_section",
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_22_file_23": {
+      "features": [
+        "field",
+        "footer",
+        "hyperlink",
+        "multi_section",
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_23_file_24": {
+      "features": [
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange"
+      ]
+    },
+    "file_24_file_25": {
+      "features": [
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "file_25_file_26": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "file_26_file_27": {
+      "features": [
+        "field",
+        "footer",
+        "header",
+        "hyperlink",
+        "image",
+        "multi_section",
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_27_file_28": {
+      "features": [
+        "field",
+        "footer",
+        "header",
+        "hyperlink",
+        "image",
+        "multi_section",
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange",
+        "rev_sectPrChange",
+        "rev_tblChange",
+        "rev_tblGridChange",
+        "rev_tblPrChange",
+        "rev_tcPrChange",
+        "rev_trPrChange"
+      ]
+    },
+    "file_28_file_29": {
+      "features": [
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_29_file_30": {
+      "features": [
+        "field",
+        "footer",
+        "image",
+        "numbering"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_2_file_3": {
+      "features": [
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_30_file_31": {
+      "features": [
+        "field",
+        "footer",
+        "image",
+        "numbering"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_31_file_32": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "file_32_file_33": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange"
+      ]
+    },
+    "file_33_file_34": {
+      "features": [
+        "numbering",
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_34_file_35": {
+      "features": [
+        "numbering",
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_35_file_36": {
+      "features": [
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "file_36_file_37": {
+      "features": [
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins"
+      ]
+    },
+    "file_37_file_38": {
+      "features": [
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins"
+      ]
+    },
+    "file_38_file_39": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins"
+      ]
+    },
+    "file_39_file_40": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange"
+      ]
+    },
+    "file_3_file_4": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange"
+      ]
+    },
+    "file_40_file_41": {
+      "features": [
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_41_file_42": {
+      "features": [
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_42_file_43": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "file_43_file_44": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "file_44_file_45": {
+      "features": [
+        "numbering"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange"
+      ]
+    },
+    "file_45_file_46": {
+      "features": [
+        "numbering"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange"
+      ]
+    },
+    "file_46_file_47": {
+      "features": [
+        "nested_table",
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_49_file_50": {
+      "features": [
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "file_4_file_5": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "file_50_file_51": {
+      "features": [
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins"
+      ]
+    },
+    "file_51_file_52": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange"
+      ]
+    },
+    "file_52_file_53": {
+      "features": [
+        "field",
+        "footer",
+        "header",
+        "hyperlink",
+        "image",
+        "multi_section",
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_53_file_54": {
+      "features": [
+        "field",
+        "footer",
+        "header",
+        "hyperlink",
+        "image",
+        "multi_section",
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_54_file_55": {
+      "features": [
+        "numbering"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_55_file_56": {
+      "features": [
+        "numbering"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_56_file_57": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "file_57_file_58": {
+      "features": [
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "file_58_file_59": {
+      "features": [
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_59_file_60": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_5_file_6": {
+      "features": [
+        "field",
+        "footer",
+        "header",
+        "hyperlink",
+        "image",
+        "multi_section",
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_60_file_61": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange"
+      ]
+    },
+    "file_61_file_62": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange"
+      ]
+    },
+    "file_62_file_63": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins"
+      ]
+    },
+    "file_63_file_64": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange"
+      ]
+    },
+    "file_64_file_65": {
+      "features": [
+        "field",
+        "footer",
+        "multi_section"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_65_file_66": {
+      "features": [
+        "field",
+        "footer",
+        "multi_section"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_66_file_67": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "file_67_file_68": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "file_68_file_69": {
+      "features": [
+        "field",
+        "footer",
+        "header",
+        "hyperlink",
+        "numbering",
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_69_file_70": {
+      "features": [
+        "alternate_content",
+        "field",
+        "footer",
+        "header",
+        "hyperlink",
+        "image",
+        "numbering",
+        "table",
+        "textbox"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_6_file_7": {
+      "features": [
+        "field",
+        "footer",
+        "header",
+        "hyperlink",
+        "image",
+        "multi_section",
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_70_file_71": {
+      "features": [
+        "alternate_content",
+        "image",
+        "textbox"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_71_file_72": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "file_72_file_73": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "file_73_file_74": {
+      "features": [
+        "field",
+        "footer",
+        "header",
+        "hyperlink",
+        "image",
+        "multi_section",
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_74_file_75": {
+      "features": [
+        "field",
+        "footer",
+        "header",
+        "hyperlink",
+        "image",
+        "multi_section",
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_75_file_76": {
+      "features": [
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "file_76_file_77": {
+      "features": [
+        "endnote",
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_77_file_78": {
+      "features": [
+        "endnote",
+        "field",
+        "footer",
+        "header",
+        "hyperlink",
+        "numbering",
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_78_file_79": {
+      "features": [
+        "field",
+        "footer",
+        "header",
+        "hyperlink",
+        "numbering",
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange",
+        "rev_sectPrChange",
+        "rev_tblChange",
+        "rev_tblGridChange",
+        "rev_tblPrChange",
+        "rev_tcPrChange",
+        "rev_trPrChange"
+      ]
+    },
+    "file_79_file_80": {
+      "features": [
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins"
+      ]
+    },
+    "file_7_file_8": {
+      "features": [
+        "field",
+        "footer",
+        "header",
+        "hyperlink",
+        "image",
+        "multi_section",
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_80_file_81": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange"
+      ]
+    },
+    "file_81_file_82": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins"
+      ]
+    },
+    "file_82_file_83": {
+      "features": [
+        "image",
+        "numbering"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_83_file_84": {
+      "features": [
+        "image",
+        "numbering"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_84_file_85": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "file_85_file_86": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "file_86_file_87": {
+      "features": [
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "file_87_file_88": {
+      "features": [
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "file_88_file_89": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_89_file_90": {
+      "features": [
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_8_file_9": {
+      "features": [
+        "field",
+        "footer",
+        "header",
+        "hyperlink",
+        "image",
+        "multi_section",
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_moveFrom",
+        "rev_moveTo",
+        "rev_tblChange",
+        "rev_tblGridChange",
+        "rev_tblPrChange",
+        "rev_tcPrChange",
+        "rev_trPrChange"
+      ]
+    },
+    "file_90_file_91": {
+      "features": [
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "file_91_file_92": {
+      "features": [
+        "field",
+        "footer",
+        "multi_section"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_92_file_93": {
+      "features": [
+        "field",
+        "footer",
+        "multi_section"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_93_file_94": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange"
+      ]
+    },
+    "file_94_file_95": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange"
+      ]
+    },
+    "file_95_file_96": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "file_96_file_97": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "file_97_file_98": {
+      "features": [
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "file_98_file_99": {
+      "features": [
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "file_99_file_100": {
+      "features": [
+        "alternate_content",
+        "header"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "file_9_file_10": {
+      "features": [
+        "field",
+        "footer",
+        "header",
+        "hyperlink",
+        "image",
+        "multi_section",
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "font_color_blue_demo_style_default_missing_font_color_demo_style_default_missing": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "font_color_demo_style_default_missing_font_family_demo_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "font_family_demo_id_paraid_overflow_font_size_12_demo_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "font_size_12_demo_id_paraid_overflow_font_size_18_demo_style_default_missing": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "font_size_18_demo_style_default_missing_font_size_24_demo_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins"
+      ]
+    },
+    "font_size_24_demo_id_paraid_overflow_font_size_demo_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins"
+      ]
+    },
+    "font_size_demo_id_paraid_overflow_footnotes_sample": {
+      "features": [
+        "footnote"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_sectPrChange"
+      ]
+    },
+    "font_size_demo_id_paraid_overflow_green_bold_text_demo_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "footnotes_sample_gdocs_comments_export": {
+      "features": [
+        "footnote",
+        "rtl"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "gdocs_comments_export_green_bold_text_demo_id_paraid_overflow": {
+      "features": [
+        "rtl"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "green_bold_text_demo_id_paraid_overflow_green_highlight_demo_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "green_highlight_demo_id_paraid_overflow_green_underline_bullet_list_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "green_underline_bullet_list_id_paraid_overflow_header_no_rels": {
+      "features": [
+        "header",
+        "multi_section"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "green_underline_bullet_list_id_paraid_overflow_heading_1_bold_demo_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange"
+      ]
+    },
+    "header_no_rels_heading_1_bold_demo_id_paraid_overflow": {
+      "features": [
+        "header",
+        "multi_section"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "heading_1_bold_demo_id_paraid_overflow_heading_1_style_demo_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins"
+      ]
+    },
+    "heading_1_style_demo_id_paraid_overflow_heading_2_center_demo_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange"
+      ]
+    },
+    "heading_2_center_demo_id_paraid_overflow_heading_2_style_demo_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins"
+      ]
+    },
+    "heading_2_style_demo_id_paraid_overflow_heading_3_center_italic_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange"
+      ]
+    },
+    "heading_3_center_italic_id_paraid_overflow_heading_3_style_demo_id_paraid_overflow_2": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "heading_3_style_demo_id_paraid_overflow_2_heading_3_style_demo_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins"
+      ]
+    },
+    "heading_3_style_demo_id_paraid_overflow_heading_4_right_italic_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange"
+      ]
+    },
+    "heading_4_right_italic_id_paraid_overflow_heading_4_style_demo_id_paraid_overflow_2": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "heading_4_style_demo_id_paraid_overflow_2_heading_4_style_demo_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins"
+      ]
+    },
+    "heading_4_style_demo_id_paraid_overflow_helvetica_font_demo_style_default_missing": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange"
+      ]
+    },
+    "helvetica_font_demo_style_default_missing_hr_onboarding_checklist_table": {
+      "features": [
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins"
+      ]
+    },
+    "hr_onboarding_checklist_table_I_am_sharing_Microsoft_Word_vs_Google_Docs_Comprehensive_Proof_with_you": {
+      "features": [
+        "field",
+        "footer",
+        "header",
+        "hyperlink",
+        "image",
+        "multi_section",
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_sectPrChange",
+        "rev_tblChange",
+        "rev_tblGridChange",
+        "rev_tblPrChange",
+        "rev_tcPrChange",
+        "rev_trPrChange"
+      ]
+    },
+    "increase_indent_demo_id_paraid_overflow_insert_link_demo_id_paraid_overflow": {
+      "features": [
+        "hyperlink"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange"
+      ]
+    },
+    "insert_link_demo_id_paraid_overflow_inventory_list_suggesting_deletions": {
+      "features": [
+        "hyperlink",
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins"
+      ]
+    },
+    "inventory_list_suggesting_deletions_inventory_list_suggesting_mixed_edits": {
+      "features": [
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins"
+      ]
+    },
+    "inventory_list_suggesting_mixed_edits_it_security_policy_v2_suggesting_insertions": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins"
+      ]
+    },
+    "it_security_policy_v2_suggesting_insertions_italic_and_underline_combo_style_default_missing": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "italic_and_underline_combo_style_default_missing_italic_subscript_demo_style_default_missing": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "italic_subscript_demo_style_default_missing_italic_text_formatting_demo_id_paraid_overflow_2": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "italic_text_formatting_demo_id_paraid_overflow_2_italic_text_formatting_demo_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_rPrChange"
+      ]
+    },
+    "italic_text_formatting_demo_id_paraid_overflow_italic_underline_combined_demo_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "italic_underline_combined_demo_id_paraid_overflow_justified_underline_demo_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "justified_underline_demo_id_paraid_overflow_justify_alignment_demo_id_paraid_overflow_2": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins"
+      ]
+    },
+    "justify_alignment_demo_id_paraid_overflow_2_justify_alignment_demo_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange"
+      ]
+    },
+    "justify_alignment_demo_id_paraid_overflow_large_font_size_demo_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange"
+      ]
+    },
+    "large_font_size_demo_id_paraid_overflow_left_alignment_demo_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "left_alignment_demo_id_paraid_overflow_line_spacing_demo_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange"
+      ]
+    },
+    "line_spacing_demo_id_paraid_overflow_marketing_strategy_2026_suggesting_insertions": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange"
+      ]
+    },
+    "marketing_strategy_2026_suggesting_insertions_meeting_agenda_table_2": {
+      "features": [
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins"
+      ]
+    },
+    "mcdoc_meeting_agenda_table_2": {
+      "features": [
+        "alternate_content",
+        "image",
+        "table",
+        "textbox"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "meeting_agenda_table_2_meeting_agenda_table": {
+      "features": [
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_tblChange",
+        "rev_tblGridChange",
+        "rev_tblPrChange",
+        "rev_tcPrChange",
+        "rev_trPrChange"
+      ]
+    },
+    "meeting_agenda_table_meeting_minutes_id_paraid_overflow": {
+      "features": [
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins"
+      ]
+    },
+    "meeting_minutes_id_paraid_overflow_meeting_minutes_suggesting_insertions": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins"
+      ]
+    },
+    "meeting_minutes_suggesting_insertions_multi_section": {
+      "features": [
+        "field",
+        "footer",
+        "multi_section"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_sectPrChange"
+      ]
+    },
+    "meeting_minutes_suggesting_insertions_numbered_list_demo_id_paraid_overflow": {
+      "features": [
+        "numbering"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange"
+      ]
+    },
+    "multi_section_nested_table_rowspan": {
+      "features": [
+        "field",
+        "footer",
+        "multi_section",
+        "nested_table",
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "nested_table_rowspan_numbered_list_demo_id_paraid_overflow": {
+      "features": [
+        "nested_table",
+        "numbering",
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "numbered_list_demo_id_paraid_overflow_numbered_list_italic_demo_id_paraid_overflow": {
+      "features": [
+        "numbering"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange"
+      ]
+    },
+    "numbered_list_italic_demo_id_paraid_overflow_numwords_fldsimple": {
+      "features": [
+        "field"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_sectPrChange"
+      ]
+    },
+    "numbered_list_italic_demo_id_paraid_overflow_open_sans_bold_underline_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "numwords_fldsimple_ole_object": {
+      "features": [
+        "alternate_content",
+        "field",
+        "header"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins"
+      ]
+    },
+    "ole_object_ooxml_style_link": {
+      "features": [
+        "alternate_content",
+        "header",
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange",
+        "rev_tblChange",
+        "rev_tblGridChange",
+        "rev_tblPrChange",
+        "rev_tcPrChange",
+        "rev_trPrChange"
+      ]
+    },
+    "ooxml_style_link_open_sans_bold_underline_id_paraid_overflow": {
+      "features": [
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_sectPrChange"
+      ]
+    },
+    "open_sans_bold_underline_id_paraid_overflow_open_sans_font_demo_id_paraid_overflow_2": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "open_sans_font_demo_id_paraid_overflow_2_open_sans_font_demo_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins"
+      ]
+    },
+    "open_sans_font_demo_id_paraid_overflow_page_numbering_examples": {
+      "features": [
+        "field",
+        "footer",
+        "multi_section"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_sectPrChange"
+      ]
+    },
+    "open_sans_font_demo_id_paraid_overflow_product_roadmap_2026_suggesting_insertions": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins"
+      ]
+    },
+    "page_numbering_examples_potpourritest": {
+      "features": [
+        "field",
+        "footer",
+        "footnote",
+        "hyperlink",
+        "multi_section",
+        "numbering",
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "potpourritest_product_roadmap_2026_suggesting_insertions": {
+      "features": [
+        "field",
+        "footnote",
+        "hyperlink",
+        "numbering",
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "product_roadmap_2026_suggesting_insertions_project_plan_suggesting_insertions": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange"
+      ]
+    },
+    "project_plan_suggesting_insertions_project_proposal_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange"
+      ]
+    },
+    "project_proposal_id_paraid_overflow_project_proposal_suggesting_insertions": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins"
+      ]
+    },
+    "project_proposal_suggesting_insertions_project_tasks_suggesting_insertions_2": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins"
+      ]
+    },
+    "project_tasks_suggesting_insertions_2_project_tasks_suggesting_insertions": {
+      "features": [
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins"
+      ]
+    },
+    "project_tasks_suggesting_insertions_q1_sales_summary_table_2": {
+      "features": [
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins"
+      ]
+    },
+    "q1_sales_summary_table_2_q1_sales_summary_table": {
+      "features": [
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins"
+      ]
+    },
+    "q1_sales_summary_table_quarterly_performance_report_table_2": {
+      "features": [
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_moveFrom",
+        "rev_moveTo",
+        "rev_rPrChange",
+        "rev_tblChange",
+        "rev_tblGridChange",
+        "rev_tblPrChange",
+        "rev_tcPrChange",
+        "rev_trPrChange"
+      ]
+    },
+    "quarterly_performance_report_table_2_quarterly_performance_report_table": {
+      "features": [
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins"
+      ]
+    },
+    "quarterly_performance_report_table_red_bold_heading_demo_style_default_missing": {
+      "features": [
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange"
+      ]
+    },
+    "red_bold_heading_demo_style_default_missing_red_bold_text_demo_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange"
+      ]
+    },
+    "red_bold_text_demo_id_paraid_overflow_red_heading_demo_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange"
+      ]
+    },
+    "red_heading_demo_id_paraid_overflow_red_strikethrough_demo_style_default_missing": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange"
+      ]
+    },
+    "red_strikethrough_demo_style_default_missing_redline_cicerodo_v_plate_30": {
+      "features": [
+        "hyperlink",
+        "rtl",
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "red_strikethrough_demo_style_default_missing_right_align_bold_demo_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "redline_cicerodo_v_plate_30_right_align_bold_demo_id_paraid_overflow": {
+      "features": [
+        "hyperlink",
+        "rtl",
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_sectPrChange"
+      ]
+    },
+    "right_align_bold_demo_id_paraid_overflow_right_aligned_italic_demo_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange"
+      ]
+    },
+    "right_aligned_italic_demo_id_paraid_overflow_right_alignment_demo_id_paraid_overflow_2": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange"
+      ]
+    },
+    "right_alignment_demo_id_paraid_overflow_2_right_alignment_demo_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange"
+      ]
+    },
+    "right_alignment_demo_id_paraid_overflow_risk_assessment_product_launch_suggesting_insertions": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange"
+      ]
+    },
+    "risk_assessment_product_launch_suggesting_insertions_roboto_font_demo_id_paraid_overflow_2": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins"
+      ]
+    },
+    "roboto_font_demo_id_paraid_overflow_2_roboto_font_demo_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins"
+      ]
+    },
+    "roboto_font_demo_id_paraid_overflow_roboto_underline_demo_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "roboto_underline_demo_id_paraid_overflow_sales_report_january_2026_suggesting_insertions": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins"
+      ]
+    },
+    "sales_report_january_2026_suggesting_insertions_sample_document_afterword_repaired_word_repaired": {
+      "features": [
+        "field",
+        "footer",
+        "header",
+        "hyperlink",
+        "numbering",
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "sample_document_afterword_repaired_word_repaired_sample_document_really_repaired_word_repaired": {
+      "features": [
+        "field",
+        "footer",
+        "header",
+        "hyperlink",
+        "numbering",
+        "table"
+      ],
+      "revisions": [
+        "rev_pPrChange",
+        "rev_tblChange",
+        "rev_tblGridChange",
+        "rev_tblPrChange",
+        "rev_tcPrChange",
+        "rev_trPrChange"
+      ]
+    },
+    "sample_document_really_repaired_word_repaired_sample_document_word_repair_of_our_output_iter2_word_repaired": {
+      "features": [
+        "field",
+        "footer",
+        "header",
+        "hyperlink",
+        "numbering",
+        "table"
+      ],
+      "revisions": [
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_tblChange",
+        "rev_tblGridChange",
+        "rev_tblPrChange",
+        "rev_tcPrChange",
+        "rev_trPrChange"
+      ]
+    },
+    "sample_document_word_repair_of_our_output_iter2_word_repaired_sample_document_word_repair_of_our_output_word_repaired": {
+      "features": [
+        "field",
+        "footer",
+        "header",
+        "hyperlink",
+        "numbering",
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_tblChange",
+        "rev_tblGridChange",
+        "rev_tblPrChange",
+        "rev_tcPrChange",
+        "rev_trPrChange"
+      ]
+    },
+    "sample_document_word_repair_of_our_output_word_repaired_sd_2517_localized_heading_styles": {
+      "features": [
+        "field",
+        "footer",
+        "header",
+        "hyperlink",
+        "multi_section",
+        "numbering",
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_sectPrChange",
+        "rev_tblChange",
+        "rev_tblGridChange",
+        "rev_tblPrChange",
+        "rev_tcPrChange",
+        "rev_trPrChange"
+      ]
+    },
+    "sample_document_word_repair_of_our_output_word_repaired_small_font_size_demo_id_paraid_overflow": {
+      "features": [
+        "field",
+        "footer",
+        "header",
+        "hyperlink",
+        "numbering",
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "sd_2517_localized_heading_styles_sectpr_headerref": {
+      "features": [
+        "field",
+        "footer",
+        "hyperlink",
+        "image",
+        "multi_section",
+        "numbering",
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "sectpr_headerref_single_paragraph": {
+      "features": [
+        "image",
+        "numbering"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "single_paragraph_small_font_size_demo_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_sectPrChange"
+      ]
+    },
+    "small_font_size_demo_id_paraid_overflow_strict01_sdt_controls": {
+      "features": [
+        "alternate_content",
+        "header"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_sectPrChange"
+      ]
+    },
+    "small_font_size_demo_id_paraid_overflow_strikethrough_and_italic_combo_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "strict01_sdt_controls_strict01": {
+      "features": [
+        "alternate_content",
+        "header"
+      ],
+      "revisions": [
+        "rev_del"
+      ]
+    },
+    "strict01_strikethrough_and_italic_combo_id_paraid_overflow": {
+      "features": [
+        "alternate_content",
+        "header"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "strikethrough_and_italic_combo_id_paraid_overflow_strikethrough_bold_demo_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "strikethrough_bold_demo_id_paraid_overflow_strikethrough_text_demo_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "strikethrough_text_demo_id_paraid_overflow_strikethrough_text_formatting_demo_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "strikethrough_text_formatting_demo_id_paraid_overflow_subscript_demo_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "subscript_demo_id_paraid_overflow_subscript_demo_style_default_missing": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins"
+      ]
+    },
+    "subscript_demo_style_default_missing_subtitle_style_demo_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange"
+      ]
+    },
+    "subtitle_style_demo_id_paraid_overflow_subtitle_style_demo_style_default_missing": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins"
+      ]
+    },
+    "subtitle_style_demo_style_default_missing_superscript_demo_id_paraid_overflow_2": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange"
+      ]
+    },
+    "superscript_demo_id_paraid_overflow_2_superscript_demo_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins"
+      ]
+    },
+    "superscript_demo_id_paraid_overflow_superscript_demo_style_default_missing": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "superscript_demo_style_default_missing_support_tickets_summary_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins"
+      ]
+    },
+    "superscript_demo_style_default_missing_support_tickets_table": {
+      "features": [
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins"
+      ]
+    },
+    "support_tickets_summary_id_paraid_overflow_support_tickets_table": {
+      "features": [
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins"
+      ]
+    },
+    "support_tickets_summary_id_paraid_overflow_text_highlight_demo_style_default_missing": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins"
+      ]
+    },
+    "support_tickets_table_support_tickets_summary_id_paraid_overflow": {
+      "features": [
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins"
+      ]
+    },
+    "support_tickets_table_table_bookmark_end": {
+      "features": [
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_sectPrChange",
+        "rev_tblChange",
+        "rev_tblGridChange",
+        "rev_tblPrChange",
+        "rev_tcPrChange",
+        "rev_trPrChange"
+      ]
+    },
+    "table_bookmark_end_table_vmerge_colspan": {
+      "features": [
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_sectPrChange",
+        "rev_tblChange",
+        "rev_tblGridChange",
+        "rev_tblPrChange",
+        "rev_tcPrChange",
+        "rev_trPrChange"
+      ]
+    },
+    "table_vmerge_colspan_text_box": {
+      "features": [
+        "alternate_content",
+        "image",
+        "table",
+        "textbox"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_sectPrChange"
+      ]
+    },
+    "text_box_text_highlight_demo_style_default_missing": {
+      "features": [
+        "alternate_content",
+        "image",
+        "textbox"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_sectPrChange"
+      ]
+    },
+    "text_highlight_demo_style_default_missing_tiff_image": {
+      "features": [
+        "image"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_sectPrChange"
+      ]
+    },
+    "text_highlight_demo_style_default_missing_times_new_roman_bold_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "tiff_image_times_new_roman_bold_id_paraid_overflow": {
+      "features": [
+        "image"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "times_new_roman_bold_id_paraid_overflow_times_new_roman_font_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "times_new_roman_font_id_paraid_overflow_title_style_centered_demo_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange"
+      ]
+    },
+    "title_style_centered_demo_id_paraid_overflow_title_style_demo_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins"
+      ]
+    },
+    "title_style_demo_id_paraid_overflow_title_style_demo_style_default_missing": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins"
+      ]
+    },
+    "title_style_demo_style_default_missing_track_changes_editing_bullet_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange"
+      ]
+    },
+    "track_changes_editing_bullet_id_paraid_overflow_track_changes_editing_strikethrough_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "track_changes_editing_strikethrough_id_paraid_overflow_track_changes_suggesting_bold_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "track_changes_suggesting_bold_id_paraid_overflow_track_changes_suggesting_calibri_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "track_changes_suggesting_calibri_id_paraid_overflow_track_changes_suggesting_center_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "track_changes_suggesting_center_id_paraid_overflow_track_changes_suggesting_heading_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange"
+      ]
+    },
+    "track_changes_suggesting_heading_id_paraid_overflow_track_changes_suggesting_italic_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange"
+      ]
+    },
+    "track_changes_suggesting_italic_id_paraid_overflow_track_changes_suggesting_title_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange"
+      ]
+    },
+    "track_changes_suggesting_title_id_paraid_overflow_training_materials_onboarding_program_suggesting_insertions": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange"
+      ]
+    },
+    "training_materials_onboarding_program_suggesting_insertions_underline_text_demo_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins"
+      ]
+    },
+    "underline_text_demo_id_paraid_overflow_underline_text_formatting_demo_style_default_missing": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "underline_text_formatting_demo_style_default_missing_verdana_bold_large_font_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "verdana_bold_large_font_id_paraid_overflow_verdana_font_demo_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "verdana_bold_large_font_id_paraid_overflow_verdana_font_demo_id_paraid_overflow_2": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "verdana_font_demo_id_paraid_overflow_2_verdana_font_demo_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins"
+      ]
+    },
+    "verdana_font_demo_id_paraid_overflow_verdana_italic_centered_demo_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    },
+    "verdana_italic_centered_demo_id_paraid_overflow_vfdsdfcacawesd_suggesting_mixed_edits": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins"
+      ]
+    },
+    "verdana_italic_centered_demo_id_paraid_overflow_word_clean_strict01": {
+      "features": [
+        "alternate_content",
+        "header"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_rPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "vfdsdfcacawesd_suggesting_mixed_edits_yellow_highlight_demo_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins"
+      ]
+    },
+    "word_clean_strict01_word_tolerated_broken_media_rel": {
+      "features": [
+        "alternate_content",
+        "header",
+        "image"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "word_tolerated_broken_media_rel_word_tolerated_duplicate_ppr": {
+      "features": [
+        "image",
+        "numbering"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "word_tolerated_duplicate_ppr_word_tolerated_misplaced_link": {
+      "features": [
+        "numbering",
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange"
+      ]
+    },
+    "word_tolerated_misplaced_link_word_tolerated_misplaced_pgsz": {
+      "features": [
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "word_tolerated_misplaced_pgsz_word_tolerated_misplaced_uipriority": {
+      "features": [
+        "numbering",
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "word_tolerated_misplaced_uipriority_word_tolerated_orphan_comment": {
+      "features": [
+        "numbering",
+        "table"
+      ],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_pPrChange",
+        "rev_sectPrChange"
+      ]
+    },
+    "word_tolerated_orphan_comment_yellow_highlight_demo_id_paraid_overflow": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins"
+      ]
+    },
+    "yellow_highlight_demo_id_paraid_overflow_yellow_highlight_italic_demo_style_default_missing": {
+      "features": [],
+      "revisions": [
+        "rev_del",
+        "rev_ins",
+        "rev_rPrChange"
+      ]
+    }
+  },
+  "tag_counts": {
+    "alternate_content": 22,
+    "cjk": 0,
+    "content_control": 0,
+    "endnote": 2,
+    "field": 72,
+    "footer": 63,
+    "footnote": 8,
+    "header": 67,
+    "hyperlink": 63,
+    "image": 51,
+    "math": 0,
+    "multi_section": 41,
+    "nested_table": 3,
+    "numbering": 52,
+    "rev_del": 396,
+    "rev_ins": 395,
+    "rev_moveFrom": 4,
+    "rev_moveTo": 4,
+    "rev_numberingChange": 0,
+    "rev_pPrChange": 180,
+    "rev_rPrChange": 252,
+    "rev_sectPrChange": 132,
+    "rev_tblChange": 18,
+    "rev_tblGridChange": 18,
+    "rev_tblPrChange": 17,
+    "rev_tcPrChange": 18,
+    "rev_trPrChange": 18,
+    "rtl": 6,
+    "table": 131,
+    "textbox": 7
+  },
+  "zero_coverage": [
+    "cjk",
+    "content_control",
+    "math",
+    "rev_numberingChange"
+  ]
+}
