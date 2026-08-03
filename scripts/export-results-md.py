@@ -148,6 +148,11 @@ def rows_from_jsonl(path: Path) -> list[dict[str, object]]:
                 print(f"warning: skip line {line_no}: {exc}", file=sys.stderr)
                 continue
 
+            # Sealed-holdout lines never enter the headline tables — they are
+            # scored on a 20-doc subset and reported by the "Holdout gap" section.
+            if data.get("holdout_mode") == "only":
+                continue
+
             # Schema v4: vendor/benchmark; legacy v2/v3: tool/stage.
             vendor = str(data.get("vendor") or data.get("tool") or "")
             benchmark = str(data.get("benchmark") or data.get("stage") or "")
@@ -339,6 +344,66 @@ def _lens_health_section(rows: list[dict[str, object]]) -> list[str]:
         "wrong thing on those docs. A bench-health alarm, not a ranking signal.",
         "",
         *entries,
+        "",
+    ]
+
+
+def holdout_gap_section(path: Path) -> list[str]:
+    """"## Holdout gap" — per vendor, the latest full-corpus ``script_redlines``
+    mean next to the latest sealed-holdout run (``holdout_mode == "only"``), with
+    ``gap = holdout − main``. A strongly negative gap flags overfitting to the
+    visible corpus. The log is append-only, so "latest" is last-in-file. Renders
+    a placeholder note while no holdout run has been recorded yet.
+    """
+    main_by_vendor: dict[str, dict] = {}
+    hold_by_vendor: dict[str, dict] = {}
+    if path.is_file():
+        with path.open(encoding="utf-8") as fh:
+            for line in fh:
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    data = json.loads(line)
+                except json.JSONDecodeError:
+                    continue
+                if str(data.get("benchmark") or "") != "script_redlines":
+                    continue
+                vendor = str(data.get("vendor") or "")
+                if not vendor:
+                    continue
+                if data.get("holdout_mode") == "only":
+                    hold_by_vendor[vendor] = data
+                else:
+                    main_by_vendor[vendor] = data
+    header = [
+        "## Holdout gap",
+        "",
+        "Sealed 20-pair holdout (`corpus/word_based/holdout.txt`) vs the visible "
+        "corpus, per vendor: the latest full-corpus `script_redlines` mean next to "
+        "the latest holdout-only run (`bench run --holdout`). `gap = holdout − main`; "
+        "a strongly negative gap flags overfitting to the visible corpus.",
+        "",
+    ]
+    if not hold_by_vendor:
+        return [*header, "_no holdout runs recorded yet (`bench run --holdout`)_", ""]
+    table_rows: list[list[str]] = []
+    for vendor in sorted(hold_by_vendor):
+        hold_mean = hold_by_vendor[vendor].get("overall_mean")
+        main_mean = (main_by_vendor.get(vendor) or {}).get("overall_mean")
+        if isinstance(hold_mean, (int, float)) and isinstance(main_mean, (int, float)):
+            gap = f"{float(hold_mean) - float(main_mean):+.2f}"
+        else:
+            gap = "—"
+        table_rows.append([
+            _escape_cell(vendor),
+            _escape_cell(_format_num(main_mean)),
+            _escape_cell(_format_num(hold_mean)),
+            gap,
+        ])
+    return [
+        *header,
+        *_table(["vendor", "main mean", "holdout mean", "gap"], table_rows),
         "",
     ]
 
@@ -864,8 +929,11 @@ def to_markdown(
     *,
     speed_rows: list[dict[str, object]] | None = None,
     speed_source: Path | None = None,
+    holdout_lines: list[str] | None = None,
 ) -> str:
     lines = [to_fidelity_markdown(rows, source).rstrip(), ""]
+    if holdout_lines:
+        lines.extend(holdout_lines)
     if speed_rows:
         lines.extend(speed_to_markdown(speed_rows, speed_source=speed_source))
     lines.extend(fidelity_methodology_and_legal())
@@ -927,6 +995,7 @@ def main(argv: list[str] | None = None) -> int:
         source_disp,
         speed_rows=speed_rows or None,
         speed_source=speed_source,
+        holdout_lines=holdout_gap_section(args.input),
     )
 
     outputs: list[Path]
