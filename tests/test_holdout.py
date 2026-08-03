@@ -244,7 +244,7 @@ def test_cli_run_holdout_modes(tmp_path, sample_oracle_pdfs):
 
     # Normal run: holdout keys are excluded from scoring, mode stamped "excluded".
     result = runner.invoke(
-        app, ["run", "--config", str(cfg), "--results-dir", str(results_dir)],
+        app, ["run", "--config", str(cfg), "--results-dir", str(results_dir), "--runs-dir", str(tmp_path / "runs")],
     )
     assert result.exit_code == 0, result.output
     line = _script_lines()[-1]
@@ -254,7 +254,7 @@ def test_cli_run_holdout_modes(tmp_path, sample_oracle_pdfs):
     # --holdout run: ONLY the holdout keys are scored, mode stamped "only".
     result = runner.invoke(
         app,
-        ["run", "--config", str(cfg), "--results-dir", str(results_dir), "--holdout"],
+        ["run", "--config", str(cfg), "--results-dir", str(results_dir), "--runs-dir", str(tmp_path / "runs"), "--holdout"],
     )
     assert result.exit_code == 0, result.output
     line = _script_lines()[-1]
@@ -274,7 +274,8 @@ def test_cli_holdout_flag_without_config_key_fails(tmp_path):
         app,
         [
             "run", "--config", str(cfg),
-            "--results-dir", str(tmp_path / "results"), "--holdout",
+            "--results-dir", str(tmp_path / "results"),
+            "--runs-dir", str(tmp_path / "runs"), "--holdout",
         ],
     )
     assert result.exit_code != 0

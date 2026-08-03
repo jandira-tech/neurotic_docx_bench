@@ -93,7 +93,8 @@ def test_run_refuses_drifted_oracle(tmp_path):
     (root / "pdf_oracle" / "a_b_redline.pdf").write_bytes(b"%PDF-1.4 TAMPERED\n")
     result = runner.invoke(
         app,
-        ["run", "--config", str(cfg), "--results-dir", str(tmp_path / "results")],
+        ["run", "--config", str(cfg), "--results-dir", str(tmp_path / "results"),
+         "--runs-dir", str(tmp_path / "runs")],
     )
     assert result.exit_code == 2
     assert "oracle" in result.output.lower()
@@ -116,7 +117,8 @@ def test_run_warns_but_proceeds_without_manifest(tmp_path):
     )
     result = runner.invoke(
         app,
-        ["run", "--config", str(cfg), "--results-dir", str(tmp_path / "results"), "--no-emit"],
+        ["run", "--config", str(cfg), "--results-dir", str(tmp_path / "results"),
+         "--runs-dir", str(tmp_path / "runs"), "--no-emit"],
     )
     assert "no oracle manifest" in result.output.lower()
     assert result.exit_code != 2
@@ -144,7 +146,7 @@ def test_no_oracle_check_flag_skips_gate(tmp_path):
         app,
         [
             "run", "--config", str(cfg), "--results-dir", str(tmp_path / "results"),
-            "--no-oracle-check", "--no-emit",
+            "--runs-dir", str(tmp_path / "runs"), "--no-oracle-check", "--no-emit",
         ],
     )
     assert result.exit_code != 2
