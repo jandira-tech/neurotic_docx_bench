@@ -55,7 +55,11 @@ runs:
     generate: "node --import tsx scripts/generate-native-redlines.ts --method=jubarte-native --dist=dist/jubarte-final --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=jubarte-final-native && node --import tsx scripts/generate-native-redlines.ts --method=jubarte-native --manifest=corpus/word_based/centralized_mapping_randomized.csv --source-dir=corpus/word_based/docx_source_randomized --dist=dist/jubarte-final --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=jubarte-final-native"
     render: soffice
     jobs: 12
-    vendor: jubarte
+    # Distinct vendor: this run and jubarte-final-lossless share the same dist
+    # build (identical tool_version), so with vendor "jubarte" the two engines'
+    # result lines are indistinguishable and the newer one shadows the other
+    # in every per-vendor ranking. "jubarte" stays the lossless engine.
+    vendor: jubarte-ast
     benchmarks: [accepted_changes, script_redlines, roundtrip]
 
   - name: jubarte-final-lossless
