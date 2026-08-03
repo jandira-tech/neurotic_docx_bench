@@ -275,6 +275,10 @@ def append_if_changed(jsonl_path: Path, line: dict[str, object]) -> bool:
             jsonl_path,
             cast("str", line["vendor"]),
             cast("str", line["benchmark"]),
+            # Change-detection must compare within the line's own holdout
+            # regime: a 20-doc holdout line always differs from a full line,
+            # and matching across regimes would defeat the delta-log dedup.
+            holdout_only=line.get("holdout_mode") == "only",
         )
     else:
         prev = last_line_for_tool(
@@ -323,6 +327,13 @@ def has_already_ran_benchmark(
             and line.get("config_hash") == config_hash
             and (
                 holdout_only is None
+                # Pre-holdout lines (no holdout_mode key) satisfy full-corpus
+                # (holdout_only=False) identity. Safe today ONLY because
+                # config_hash is a byte-hash of bench.yaml, which changed when
+                # holdout_list was added — no pre-holdout line can share a
+                # config_hash with a holdout-era run, so none can ever satisfy
+                # this identity check. If config_hash ever becomes semantic
+                # (normalized / field-selective), revisit this fallback.
                 or (line.get("holdout_mode") == "only") == holdout_only
             )
         ):
@@ -331,11 +342,26 @@ def has_already_ran_benchmark(
 
 
 def last_line_for_benchmark(
-    jsonl_path: Path, vendor: str, benchmark: str,
+    jsonl_path: Path,
+    vendor: str,
+    benchmark: str,
+    *,
+    holdout_only: bool | None = False,
 ) -> dict[str, object] | None:
-    """Most recent ``Results`` line for ``(vendor, benchmark)``."""
+    """Most recent ``Results`` line for ``(vendor, benchmark)``.
+
+    ``holdout_only`` mirrors :func:`has_already_ran_benchmark`: ``False`` (the
+    default) skips sealed-holdout diagnostic lines (``holdout_mode == "only"``)
+    — the safe default for every baseline-selection path, so ``accept-scores``
+    can never promote a 20-doc holdout line as the accepted baseline; ``True``
+    selects only holdout lines; ``None`` disables the filter.
+    """
     match = None
     for line in read_lines(jsonl_path):
         if line.get("vendor") == vendor and line.get("benchmark") == benchmark:
+            if holdout_only is not None and (
+                (line.get("holdout_mode") == "only") != holdout_only
+            ):
+                continue
             match = line
     return match

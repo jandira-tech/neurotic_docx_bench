@@ -71,9 +71,12 @@ def _rank(row: dict[str, object]) -> tuple:
     """Pick the best re-run of the *same* (vendor, benchmark, version).
 
     Prefer the render path that matches the benchmark family (playwright for
-    visual_*, soffice for script/accepted/roundtrip), then higher n_docs, mean,
-    and newer timestamp. Avoids a soffice main-run line "winning" over a real
-    Playwright visual_* line just because it has more docs.
+    visual_*, soffice for script/accepted/roundtrip), then the full-corpus
+    bucket (n_docs > 100, consistent with the smoke-run filter), then the NEWER
+    timestamp. Raw n_docs must not dominate recency: a stale 403-doc
+    pre-holdout line would otherwise permanently beat every newer 383-doc
+    post-holdout line for an unchanged tool_version. Mean only breaks
+    timestamp ties.
     """
     benchmark = str(row.get("benchmark") or "")
     render = str(row.get("render") or "")
@@ -89,8 +92,9 @@ def _rank(row: dict[str, object]) -> tuple:
     mean = row.get("mean")
     ts = row.get("datetime") or ""
     n_v = int(n) if isinstance(n, (int, float)) else -1
+    full_bucket = 1 if n_v > 100 else 0
     m_v = float(mean) if isinstance(mean, (int, float)) else float("-inf")
-    return (render_fit, n_v, m_v, str(ts))
+    return (render_fit, full_bucket, str(ts), m_v)
 
 
 def _itt_stats(
@@ -348,14 +352,33 @@ def _lens_health_section(rows: list[dict[str, object]]) -> list[str]:
     ]
 
 
+def _holdout_se(hold_line: dict) -> float | None:
+    """Standard error of the holdout line's mean, from its per-doc ``scores``
+    (sample stdev / √n); None when fewer than two per-doc scores are present."""
+    scores = hold_line.get("scores")
+    if not isinstance(scores, dict) or len(scores) < 2:
+        return None
+    values = [float(v) for v in scores.values() if isinstance(v, (int, float))]
+    if len(values) < 2:
+        return None
+    return statistics.stdev(values) / (len(values) ** 0.5)
+
+
 def holdout_gap_section(path: Path) -> list[str]:
-    """"## Holdout gap" — per vendor, the latest full-corpus ``script_redlines``
-    mean next to the latest sealed-holdout run (``holdout_mode == "only"``), with
-    ``gap = holdout − main``. A strongly negative gap flags overfitting to the
-    visible corpus. The log is append-only, so "latest" is last-in-file. Renders
-    a placeholder note while no holdout run has been recorded yet.
+    """"## Holdout gap" — per vendor, the sealed-holdout run vs a COMPARABLE
+    main run, with ``gap = holdout − main``.
+
+    Comparable means: same ``tool_version`` as the holdout line,
+    ``holdout_mode == "excluded"`` (genuinely disjoint from the sealed set —
+    pre-holdout lines CONTAIN the sealed docs and never qualify), and
+    full-corpus size (n_docs > 100, so ``--limit`` smoke lines never pose as
+    main). Without such a line the vendor row says "no comparable main run"
+    instead of printing a misleading number. The log is append-only, so
+    "latest" is last-in-file. When the holdout line carries per-doc scores the
+    gap is rendered as ``gap ± 2·SE`` of the holdout mean. Renders a
+    placeholder note while no holdout run has been recorded yet.
     """
-    main_by_vendor: dict[str, dict] = {}
+    main_lines: list[dict] = []
     hold_by_vendor: dict[str, dict] = {}
     if path.is_file():
         with path.open(encoding="utf-8") as fh:
@@ -375,35 +398,72 @@ def holdout_gap_section(path: Path) -> list[str]:
                 if data.get("holdout_mode") == "only":
                     hold_by_vendor[vendor] = data
                 else:
-                    main_by_vendor[vendor] = data
+                    main_lines.append(data)
     header = [
         "## Holdout gap",
         "",
         "Sealed 20-pair holdout (`corpus/word_based/holdout.txt`) vs the visible "
-        "corpus, per vendor: the latest full-corpus `script_redlines` mean next to "
-        "the latest holdout-only run (`bench run --holdout`). `gap = holdout − main`; "
-        "a strongly negative gap flags overfitting to the visible corpus.",
+        "corpus, per vendor: the latest holdout-only run (`bench run --holdout`) "
+        "next to the latest COMPARABLE main run — same tool_version, "
+        "`holdout_mode=excluded` (disjoint from the sealed set), full corpus "
+        "(n > 100). `gap = holdout − main`; a strongly negative gap flags "
+        "overfitting to the visible corpus.",
         "",
     ]
     if not hold_by_vendor:
         return [*header, "_no holdout runs recorded yet (`bench run --holdout`)_", ""]
     table_rows: list[list[str]] = []
     for vendor in sorted(hold_by_vendor):
-        hold_mean = hold_by_vendor[vendor].get("overall_mean")
-        main_mean = (main_by_vendor.get(vendor) or {}).get("overall_mean")
+        hold_line = hold_by_vendor[vendor]
+        hold_mean = hold_line.get("overall_mean")
+        hold_version = _norm_version(hold_line.get("tool_version"))
+        main_line: dict | None = None
+        for data in main_lines:  # append-only log: last qualifying line wins
+            n = data.get("n_docs")
+            if (
+                str(data.get("vendor") or "") == vendor
+                and _norm_version(data.get("tool_version")) == hold_version
+                and data.get("holdout_mode") == "excluded"
+                and isinstance(n, (int, float))
+                and int(n) > 100
+            ):
+                main_line = data
+        if main_line is None:
+            table_rows.append([
+                _escape_cell(vendor),
+                "no comparable main run",
+                "—",
+                _escape_cell(_format_num(hold_mean)),
+                _escape_cell(_format_num(hold_line.get("n_docs"))),
+                "—",
+            ])
+            continue
+        main_mean = main_line.get("overall_mean")
         if isinstance(hold_mean, (int, float)) and isinstance(main_mean, (int, float)):
-            gap = f"{float(hold_mean) - float(main_mean):+.2f}"
+            gap_value = float(hold_mean) - float(main_mean)
+            se = _holdout_se(hold_line)
+            gap = (
+                f"{gap_value:+.2f} ± {2 * se:.2f}" if se is not None else f"{gap_value:+.2f}"
+            )
         else:
             gap = "—"
         table_rows.append([
             _escape_cell(vendor),
             _escape_cell(_format_num(main_mean)),
+            _escape_cell(_format_num(main_line.get("n_docs"))),
             _escape_cell(_format_num(hold_mean)),
+            _escape_cell(_format_num(hold_line.get("n_docs"))),
             gap,
         ])
     return [
         *header,
-        *_table(["vendor", "main mean", "holdout mean", "gap"], table_rows),
+        *_table(
+            ["vendor", "main mean", "n_main", "holdout mean", "n_holdout", "gap"],
+            table_rows,
+        ),
+        "",
+        "`± 2·SE` uses the holdout line's per-doc scores; a |gap| below roughly "
+        "2·SE is within sampling noise, not evidence of overfitting.",
         "",
     ]
 
@@ -879,8 +939,10 @@ def fidelity_methodology_and_legal() -> list[str]:
         "",
         "- Deduplication: one line per `(vendor, benchmark, tool_version)`. "
         "Re-runs of the **same** triple keep the best by "
-        "`(render_fit, n_docs, overall_mean, timestamp)` — prefer playwright for "
-        "`visual_*` and soffice for script/accepted/roundtrip, then higher n / mean.",
+        "`(render_fit, full_corpus_bucket, timestamp, overall_mean)` — prefer "
+        "playwright for `visual_*` and soffice for script/accepted/roundtrip, "
+        "then full-corpus lines (n > 100) over smokes, then the newest line "
+        "(so a 383-doc post-holdout line supersedes a stale 403-doc one).",
         "- **Versions are not collapsed.** docxodus `6.4.0` and `7.0.0` both appear "
         "so pins can be compared directly.",
         "- **docxodus** filter: rows with **`n_docs ≤ 100`** are dropped (smoke / "

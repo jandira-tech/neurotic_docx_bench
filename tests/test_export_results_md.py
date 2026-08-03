@@ -364,9 +364,10 @@ def test_lens_health_section_absent_when_clean() -> None:
 
 
 def test_dedup_keeps_lens_alarm_from_shadowed_rerun(tmp_path: Path) -> None:
-    # _rank prefers the higher-mean line among same (vendor, benchmark, version)
-    # reruns — exactly the line least likely to carry the lens alarm. The alarm
-    # must be max-over-reruns, not best-mean-line.
+    # _rank prefers the newest line (within the full-corpus bucket) among same
+    # (vendor, benchmark, version) reruns — which may be a clean/pre-lens line.
+    # The alarm must be max-over-reruns: a losing rerun that surfaced
+    # disagreements must not be silenced by the winner.
     import json as _json
 
     line_common = {
@@ -374,15 +375,15 @@ def test_dedup_keeps_lens_alarm_from_shadowed_rerun(tmp_path: Path) -> None:
         "n_docs": 10, "exact_100": 0, "at_least_90": 5, "below_50": 0,
         "min": 50.0, "max": 99.0, "std": 1.0,
     }
-    shadowing = {**line_common, "overall_mean": 90.0, "overall_median": 91.0,
-                 "timestamp": "2026-08-01T00:00:00+00:00"}
     with_alarm = {**line_common, "overall_mean": 80.0, "overall_median": 81.0,
-                  "timestamp": "2026-08-02T00:00:00+00:00",
+                  "timestamp": "2026-08-01T00:00:00+00:00",
                   "n_lens_disagree": 4, "lens_disagree_rate": 0.4}
+    shadowing = {**line_common, "overall_mean": 90.0, "overall_median": 91.0,
+                 "timestamp": "2026-08-02T00:00:00+00:00"}
     path = tmp_path / "bench.jsonl"
-    path.write_text(_json.dumps(shadowing) + "\n" + _json.dumps(with_alarm) + "\n")
+    path.write_text(_json.dumps(with_alarm) + "\n" + _json.dumps(shadowing) + "\n")
     rows = exp.rows_from_jsonl(path)
     assert len(rows) == 1
-    assert rows[0]["mean"] == 90.0  # ranking still uses the best line
+    assert rows[0]["mean"] == 90.0  # ranking uses the newest line
     assert rows[0]["n_lens_disagree"] == 4  # but the alarm survives
     assert rows[0]["lens_disagree_rate"] == 0.4
