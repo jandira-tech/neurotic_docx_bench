@@ -1834,6 +1834,64 @@ def oracle_manifest_cmd(
     raise typer.Exit(2)
 
 
+@app.command(name="coverage-matrix")
+def coverage_matrix_cmd(
+    mapping: list[Path] = typer.Option(
+        [
+            Path("corpus/word_based/centralized_mapping.csv"),
+            Path("corpus/word_based/centralized_mapping_randomized.csv"),
+        ],
+        "--mapping",
+        help="pair mapping CSV(s)",
+    ),
+    source_dir: list[Path] = typer.Option(
+        [
+            Path("corpus/word_based/docx_source"),
+            Path("corpus/word_based/docx_source_randomized"),
+        ],
+        "--source-dir",
+        help="folder(s) searched for source DOCX",
+    ),
+    redline_dir: list[Path] = typer.Option(
+        [
+            Path("corpus/word_based/docx_redlines_word"),
+            Path("corpus/word_based/docx_redlines_randomized"),
+        ],
+        "--redline-dir",
+        help="folder(s) searched for oracle redline DOCX",
+    ),
+    jsonl: Path | None = typer.Option(
+        None, "--jsonl",
+        help="bench JSONL; adds a per-tag per-vendor median score table "
+        "(each vendor's latest script_redlines line)",
+    ),
+    out_json: Path = typer.Option(Path("corpus/word_based/coverage_tags.json"), "--out-json"),
+    out_md: Path = typer.Option(Path("docs/COVERAGE.md"), "--out-md"),
+) -> None:
+    """Tag every corpus pair with OOXML feature + revision coverage → JSON + markdown.
+
+    Feature tags come from the pair's two source DOCX (union), revision tags from
+    its oracle redline (``redline_docx_word`` preferred). The markdown calls out
+    every known tag with ZERO pairs — the corpus's blind spots.
+    """
+    from neurotic_docx_bench import coverage_matrix
+
+    coverage = coverage_matrix.build_coverage(mapping, source_dir, redline_dir)
+    scores_by_vendor = coverage_matrix.latest_scores_by_vendor(jsonl) if jsonl else None
+    out_json.parent.mkdir(parents=True, exist_ok=True)
+    out_json.write_text(json.dumps(coverage, indent=2, sort_keys=True) + "\n")
+    out_md.parent.mkdir(parents=True, exist_ok=True)
+    out_md.write_text(coverage_matrix.render_markdown(coverage, scores_by_vendor))
+    console.print(
+        f"tagged [green]{len(coverage['pairs'])}[/green] pairs "
+        f"({len(coverage['errors'])} errors) → {out_json} + {out_md}",
+    )
+    for stem, reason in list(coverage["errors"].items())[:10]:
+        console.print(f"  [yellow]error[/yellow] {stem}: {reason}")
+    if coverage["zero_coverage"]:
+        console.print(f"[yellow]zero coverage:[/yellow] {', '.join(coverage['zero_coverage'])}")
+
+
 @app.command(name="run-all")
 def run_all(
     tools: list[str] | None = typer.Argument(
