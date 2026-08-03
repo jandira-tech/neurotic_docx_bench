@@ -33,7 +33,7 @@ class RunConfig:
     package: str | None = None     # npm pkg to update before running → tool_version
     python_package: str | None = None  # installed pip/uv package (e.g. superdoc-sdk) → tool_version
     dist: Path | None = None       # local tool build dir (e.g. dist/jubarte) → tool_version
-    jobs: int = 8
+    jobs: int = 12
     timeout: float = 1200.0  # soffice render timeout per document (seconds)
     harness: dict[str, Any] | None = None  # playwright profile (PR9)
     vendor: str | None = None  # benchmark vendor identity (schema v4)
@@ -150,7 +150,7 @@ def load_config(path: Path | str) -> BenchConfig:
     - ``source_of_truth``: path to the committed oracle PDF dir (required).
     - ``scoring.dpi``: int, default 144.
     - ``runs``: list; each item requires ``name`` and ``render``; optional ``docx``,
-      ``modified``, ``generate``, ``package``, ``jobs`` (default 8), ``harness``.
+      ``modified``, ``generate``, ``package``, ``jobs`` (default 12), ``harness``.
     - Relative paths resolve against the bench.yaml's parent directory.
     - Raise ``ValueError`` on: missing ``source_of_truth``, a run without ``name`` or
       ``render``, or an unknown ``render`` backend name.
@@ -209,7 +209,7 @@ def load_config(path: Path | str) -> BenchConfig:
                 vendor=raw.get("vendor") or _vendor_or_warn(name, raw, path),
                 benchmarks=list(raw_benchmarks),
                 viewer=raw.get("viewer"),
-                jobs=int(raw.get("jobs", 8)),
+                jobs=int(raw.get("jobs", 12)),
                 timeout=float(raw.get("timeout", 1200.0)),
                 harness=raw.get("harness"),
                 unversioned=bool(raw.get("unversioned", False)),

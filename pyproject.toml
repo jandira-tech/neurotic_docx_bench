@@ -40,12 +40,13 @@ packages = ["src/neurotic_docx_bench"]
 [dependency-groups]
 dev = [
     "pytest>=8.0",
+    "pytest-xdist>=3.5",
     "ty>=0.0.56",
 ]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = "-ra"
+addopts = "-ra -n 12"
 
 [tool.ty.environment]
 python-version = "3.14"
