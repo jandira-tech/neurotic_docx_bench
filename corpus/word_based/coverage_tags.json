@@ -557,7 +557,17 @@
     "file_100_file_101": {
       "features": [
         "alternate_content",
-        "header"
+        "content_control",
+        "endnote",
+        "field",
+        "footnote",
+        "header",
+        "hyperlink",
+        "image",
+        "math",
+        "multi_section",
+        "numbering",
+        "table"
       ],
       "revisions": [
         "rev_del",
@@ -701,7 +711,17 @@
     "file_114_file_115": {
       "features": [
         "alternate_content",
-        "header"
+        "content_control",
+        "endnote",
+        "field",
+        "footnote",
+        "header",
+        "hyperlink",
+        "image",
+        "math",
+        "multi_section",
+        "numbering",
+        "table"
       ],
       "revisions": [
         "rev_del",
@@ -713,7 +733,17 @@
     "file_115_file_116": {
       "features": [
         "alternate_content",
-        "header"
+        "content_control",
+        "endnote",
+        "field",
+        "footnote",
+        "header",
+        "hyperlink",
+        "image",
+        "math",
+        "multi_section",
+        "numbering",
+        "table"
       ],
       "revisions": [
         "rev_del",
@@ -1526,7 +1556,17 @@
     "file_184_file_185": {
       "features": [
         "alternate_content",
-        "header"
+        "content_control",
+        "endnote",
+        "field",
+        "footnote",
+        "header",
+        "hyperlink",
+        "image",
+        "math",
+        "multi_section",
+        "numbering",
+        "table"
       ],
       "revisions": [
         "rev_del",
@@ -1539,7 +1579,17 @@
     "file_185_file_186": {
       "features": [
         "alternate_content",
-        "header"
+        "content_control",
+        "endnote",
+        "field",
+        "footnote",
+        "header",
+        "hyperlink",
+        "image",
+        "math",
+        "multi_section",
+        "numbering",
+        "table"
       ],
       "revisions": [
         "rev_del",
@@ -1669,7 +1719,17 @@
     "file_195_file_196": {
       "features": [
         "alternate_content",
-        "header"
+        "content_control",
+        "endnote",
+        "field",
+        "footnote",
+        "header",
+        "hyperlink",
+        "image",
+        "math",
+        "multi_section",
+        "numbering",
+        "table"
       ],
       "revisions": [
         "rev_del",
@@ -1682,8 +1742,17 @@
     "file_196_file_197": {
       "features": [
         "alternate_content",
+        "content_control",
+        "endnote",
+        "field",
+        "footnote",
         "header",
-        "image"
+        "hyperlink",
+        "image",
+        "math",
+        "multi_section",
+        "numbering",
+        "table"
       ],
       "revisions": [
         "rev_del",
@@ -2722,7 +2791,17 @@
     "file_99_file_100": {
       "features": [
         "alternate_content",
-        "header"
+        "content_control",
+        "endnote",
+        "field",
+        "footnote",
+        "header",
+        "hyperlink",
+        "image",
+        "math",
+        "multi_section",
+        "numbering",
+        "table"
       ],
       "revisions": [
         "rev_del",
@@ -2815,8 +2894,7 @@
     },
     "footnotes_sample_gdocs_comments_export": {
       "features": [
-        "footnote",
-        "rtl"
+        "footnote"
       ],
       "revisions": [
         "rev_del",
@@ -2826,9 +2904,7 @@
       ]
     },
     "gdocs_comments_export_green_bold_text_demo_id_paraid_overflow": {
-      "features": [
-        "rtl"
-      ],
+      "features": [],
       "revisions": [
         "rev_del",
         "rev_ins",
@@ -3261,8 +3337,17 @@
     "numwords_fldsimple_ole_object": {
       "features": [
         "alternate_content",
+        "content_control",
+        "endnote",
         "field",
-        "header"
+        "footnote",
+        "header",
+        "hyperlink",
+        "image",
+        "math",
+        "multi_section",
+        "numbering",
+        "table"
       ],
       "revisions": [
         "rev_del",
@@ -3272,7 +3357,16 @@
     "ole_object_ooxml_style_link": {
       "features": [
         "alternate_content",
+        "content_control",
+        "endnote",
+        "field",
+        "footnote",
         "header",
+        "hyperlink",
+        "image",
+        "math",
+        "multi_section",
+        "numbering",
         "table"
       ],
       "revisions": [
@@ -3729,7 +3823,17 @@
     "small_font_size_demo_id_paraid_overflow_strict01_sdt_controls": {
       "features": [
         "alternate_content",
-        "header"
+        "content_control",
+        "endnote",
+        "field",
+        "footnote",
+        "header",
+        "hyperlink",
+        "image",
+        "math",
+        "multi_section",
+        "numbering",
+        "table"
       ],
       "revisions": [
         "rev_del",
@@ -3748,7 +3852,17 @@
     "strict01_sdt_controls_strict01": {
       "features": [
         "alternate_content",
-        "header"
+        "content_control",
+        "endnote",
+        "field",
+        "footnote",
+        "header",
+        "hyperlink",
+        "image",
+        "math",
+        "multi_section",
+        "numbering",
+        "table"
       ],
       "revisions": [
         "rev_del"
@@ -3757,7 +3871,17 @@
     "strict01_strikethrough_and_italic_combo_id_paraid_overflow": {
       "features": [
         "alternate_content",
-        "header"
+        "content_control",
+        "endnote",
+        "field",
+        "footnote",
+        "header",
+        "hyperlink",
+        "image",
+        "math",
+        "multi_section",
+        "numbering",
+        "table"
       ],
       "revisions": [
         "rev_del",
@@ -4143,7 +4267,17 @@
     "verdana_italic_centered_demo_id_paraid_overflow_word_clean_strict01": {
       "features": [
         "alternate_content",
-        "header"
+        "content_control",
+        "endnote",
+        "field",
+        "footnote",
+        "header",
+        "hyperlink",
+        "image",
+        "math",
+        "multi_section",
+        "numbering",
+        "table"
       ],
       "revisions": [
         "rev_del",
@@ -4163,8 +4297,17 @@
     "word_clean_strict01_word_tolerated_broken_media_rel": {
       "features": [
         "alternate_content",
+        "content_control",
+        "endnote",
+        "field",
+        "footnote",
         "header",
-        "image"
+        "hyperlink",
+        "image",
+        "math",
+        "multi_section",
+        "numbering",
+        "table"
       ],
       "revisions": [
         "rev_del",
@@ -4247,21 +4390,22 @@
       ]
     }
   },
+  "skipped": {},
   "tag_counts": {
     "alternate_content": 22,
     "cjk": 0,
-    "content_control": 0,
-    "endnote": 2,
-    "field": 72,
+    "content_control": 15,
+    "endnote": 17,
+    "field": 86,
     "footer": 63,
-    "footnote": 8,
+    "footnote": 23,
     "header": 67,
-    "hyperlink": 63,
-    "image": 51,
-    "math": 0,
-    "multi_section": 41,
+    "hyperlink": 78,
+    "image": 64,
+    "math": 15,
+    "multi_section": 56,
     "nested_table": 3,
-    "numbering": 52,
+    "numbering": 67,
     "rev_del": 396,
     "rev_ins": 395,
     "rev_moveFrom": 4,
@@ -4275,14 +4419,12 @@
     "rev_tblPrChange": 17,
     "rev_tcPrChange": 18,
     "rev_trPrChange": 18,
-    "rtl": 6,
-    "table": 131,
+    "rtl": 4,
+    "table": 145,
     "textbox": 7
   },
   "zero_coverage": [
     "cjk",
-    "content_control",
-    "math",
     "rev_numberingChange"
   ]
 }
