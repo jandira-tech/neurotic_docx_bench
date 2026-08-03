@@ -4,6 +4,12 @@ Each probe applies exactly one structural mutation to a seed DOCX so a redline t
 can be scored per capability (did it catch an inserted sentence? a deleted table
 row? a formatting-only change?) instead of one opaque corpus-level score.
 
+The sentence probes (insert_sentence/delete_sentence) mutate text INSIDE a
+paragraph — the paragraph count never changes — while the paragraph probes
+(insert_paragraph/delete_paragraph) add/remove a whole paragraph. Structure
+mutations (split/merge) preserve pPr and run-level rPr so the only delta a
+redline tool should see is the intended one.
+
 Only ``word/document.xml`` is rewritten; every other zip part is carried over
 byte-identical with entry order preserved, so any diff a tool reports is
 attributable to the single intended mutation.
@@ -13,6 +19,7 @@ from __future__ import annotations
 
 import io
 import zipfile
+from copy import deepcopy
 from itertools import pairwise
 from collections.abc import Callable
 from dataclasses import dataclass
@@ -51,7 +58,8 @@ SEED_LIST_ITEMS: tuple[str, ...] = (
 
 SEED_TABLE_ROWS: tuple[tuple[str, str], ...] = (('Milestone', 'Date'), ('Kickoff', 'March 1'))
 
-INSERTED_SENTENCE = 'Inserted clause: the parties acknowledge the mutation probe.'
+INSERTED_SENTENCE = 'The parties further acknowledge the inserted probe sentence.'
+INSERTED_PARAGRAPH = 'Inserted clause: the parties acknowledge the mutation probe.'
 ADDED_LIST_ITEM = 'Fourth deliverable: added list item probe.'
 
 
@@ -107,13 +115,37 @@ def _list_paragraphs(body: etree._Element) -> list[etree._Element]:
     return [p for p in _top_level_paragraphs(body) if p.find(f'{_w("pPr")}/{_w("numPr")}') is not None]
 
 
-def _make_paragraph(text: str) -> etree._Element:
-    p = etree.Element(_w('p'))
-    r = etree.SubElement(p, _w('r'))
+def _make_run(text: str) -> etree._Element:
+    r = etree.Element(_w('r'))
     t = etree.SubElement(r, _w('t'))
     t.set('{http://www.w3.org/XML/1998/namespace}space', 'preserve')
     t.text = text
+    return r
+
+
+def _make_paragraph(text: str) -> etree._Element:
+    p = etree.Element(_w('p'))
+    p.append(_make_run(text))
     return p
+
+
+def _trim_runs(p: etree._Element, start: int, end: int | None) -> None:
+    """Keep only the character range [start, end) of p's text, in place.
+
+    Runs whose text is emptied are dropped; pPr and every surviving run's rPr are
+    untouched, so a paragraph trimmed to a sub-range keeps its formatting.
+    """
+    pos = 0
+    for t in p.iter(_w('t')):
+        text = t.text or ''
+        lo = min(max(start - pos, 0), len(text))
+        hi = len(text) if end is None else min(max(end - pos, 0), len(text))
+        pos += len(text)
+        t.text = text[lo:hi] if lo < hi else ''
+    for r in list(p.findall(_w('r'))):
+        ts = r.findall(_w('t'))
+        if ts and not any(t.text for t in ts):
+            p.remove(r)
 
 
 def _make_list_paragraph(text: str, num_id: str, ilvl: str) -> etree._Element:
@@ -141,18 +173,30 @@ def split_parts(text: str) -> tuple[str, str]:
 
 
 def _mut_insert_sentence(root: etree._Element) -> None:
+    """Append a sentence INSIDE a mid-document clause — paragraph count unchanged."""
     plain = _plain_paragraphs(_body(root))
     if not plain:
-        raise ProbeNotApplicable('insert_sentence', 'no text-bearing paragraph to anchor on')
-    plain[0].addnext(_make_paragraph(INSERTED_SENTENCE))
+        raise ProbeNotApplicable('insert_sentence', 'no text-bearing paragraph to extend')
+    target = plain[len(plain) // 2]
+    last = [t for t in target.iter(_w('t')) if (t.text or '').strip()][-1]
+    last.text = f'{last.text} {INSERTED_SENTENCE}'
+    last.set('{http://www.w3.org/XML/1998/namespace}space', 'preserve')
 
 
 def _mut_delete_sentence(root: etree._Element) -> None:
-    plain = _plain_paragraphs(_body(root))
-    if len(plain) < 2:
-        raise ProbeNotApplicable('delete_sentence', 'fewer than 2 text-bearing paragraphs')
-    target = plain[1]
-    target.getparent().remove(target)
+    """Drop the trailing sentence of a multi-sentence clause — paragraph count unchanged.
+
+    A section-labeled clause needs two '. ' boundaries (label + two sentences) for
+    the trailing sentence to be removable without degenerating to a bare label.
+    """
+    for p in _plain_paragraphs(_body(root)):
+        text = _para_text(p)
+        if text.count('. ') < 2:
+            continue
+        head, _, _ = text.rpartition('. ')
+        _trim_runs(p, 0, len(head) + 1)
+        return
+    raise ProbeNotApplicable('delete_sentence', 'no clause with a removable trailing sentence')
 
 
 def _mut_split_paragraph(root: etree._Element) -> None:
@@ -162,8 +206,13 @@ def _mut_split_paragraph(root: etree._Element) -> None:
             first, second = split_parts(text)
         except ValueError:
             continue
-        p.addnext(_make_paragraph(second))
-        p.addprevious(_make_paragraph(first))
+        # Both halves are deep copies of the source, so pPr and each run's rPr
+        # survive; the separator space between the halves is dropped.
+        head, tail = deepcopy(p), deepcopy(p)
+        _trim_runs(head, 0, len(first))
+        _trim_runs(tail, len(first) + 1, None)
+        p.addprevious(head)
+        p.addnext(tail)
         p.getparent().remove(p)
         return
     raise ProbeNotApplicable('split_paragraph', 'no paragraph with a sentence boundary')
@@ -176,9 +225,13 @@ def _mut_merge_paragraphs(root: etree._Element) -> None:
     for a, b in pairwise(plain):
         if top.index(b) != top.index(a) + 1:
             continue  # not adjacent in the body
-        merged = _make_paragraph(f'{_para_text(a)} {_para_text(b)}')
-        a.addprevious(merged)
-        a.getparent().remove(a)
+        # Keep a's pPr and move b's actual content children into a, so run
+        # structure and formatting survive on both sides of the seam.
+        if not _para_text(a).endswith(' ') and not _para_text(b).startswith(' '):
+            a.append(_make_run(' '))
+        for child in list(b):
+            if child.tag != _w('pPr'):
+                a.append(child)
         b.getparent().remove(b)
         return
     raise ProbeNotApplicable('merge_paragraphs', 'no two adjacent plain paragraphs')
@@ -241,9 +294,26 @@ def _mut_format_only_bold(root: etree._Element) -> None:
     raise ProbeNotApplicable('format_only_bold', 'no text-bearing run to embolden')
 
 
+def _mut_insert_paragraph(root: etree._Element) -> None:
+    plain = _plain_paragraphs(_body(root))
+    if not plain:
+        raise ProbeNotApplicable('insert_paragraph', 'no text-bearing paragraph to anchor on')
+    plain[0].addnext(_make_paragraph(INSERTED_PARAGRAPH))
+
+
+def _mut_delete_paragraph(root: etree._Element) -> None:
+    plain = _plain_paragraphs(_body(root))
+    if len(plain) < 2:
+        raise ProbeNotApplicable('delete_paragraph', 'fewer than 2 text-bearing paragraphs')
+    target = plain[1]
+    target.getparent().remove(target)
+
+
 MUTATIONS: dict[str, Callable[[etree._Element], None]] = {
     'insert_sentence': _mut_insert_sentence,
     'delete_sentence': _mut_delete_sentence,
+    'insert_paragraph': _mut_insert_paragraph,
+    'delete_paragraph': _mut_delete_paragraph,
     'split_paragraph': _mut_split_paragraph,
     'merge_paragraphs': _mut_merge_paragraphs,
     'delete_table_row': _mut_delete_table_row,

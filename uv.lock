@@ -251,6 +251,7 @@ version = "0.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "docx-revisions" },
+    { name = "lxml" },
     { name = "numpy" },
     { name = "pillow" },
     { name = "playwright" },
@@ -273,6 +274,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "docx-revisions", specifier = ">=0.1.5" },
+    { name = "lxml", specifier = ">=6.0" },
     { name = "numpy", specifier = ">=2.0" },
     { name = "pillow", specifier = ">=10.0" },
     { name = "playwright", specifier = ">=1.61.0" },

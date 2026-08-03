@@ -4,6 +4,7 @@ every other zip part byte-identical. Self-contained — never touches the corpus
 
 from __future__ import annotations
 
+import importlib.util
 import io
 import subprocess
 import sys
@@ -16,6 +17,7 @@ from lxml import etree
 from neurotic_docx_bench.mutation_probes import (
     ADDED_LIST_ITEM,
     DOCUMENT_PART,
+    INSERTED_PARAGRAPH,
     INSERTED_SENTENCE,
     MUTATIONS,
     SEED_CLAUSES,
@@ -23,6 +25,7 @@ from neurotic_docx_bench.mutation_probes import (
     SEED_TABLE_ROWS,
     W_NS,
     ProbeNotApplicable,
+    ProbeRecord,
     apply_mutation,
     extract_body_text,
     generate_probes,
@@ -32,6 +35,7 @@ from neurotic_docx_bench.mutation_probes import (
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
+CORPUS_DIR = REPO_ROOT / 'corpus' / 'mutation_probes'
 W = f'{{{W_NS}}}'
 
 SEED_TABLE_CELLS = [cell for row in SEED_TABLE_ROWS for cell in row]
@@ -41,6 +45,23 @@ SEED_TEXTS = list(SEED_CLAUSES) + list(SEED_LIST_ITEMS) + SEED_TABLE_CELLS
 @pytest.fixture(scope='module')
 def seed() -> bytes:
     return make_default_seed()
+
+
+@pytest.fixture(scope='module')
+def formatted_seed(seed) -> bytes:
+    """Seed with real formatting: clause 0 centered (pPr) and its run bold (rPr),
+    clause 1's run bold — so structure-preserving mutations can be asserted."""
+    root = _document_root(seed)
+    paras = root.findall(f'{W}body/{W}p')
+    for idx in (0, 1):
+        run = paras[idx].find(f'{W}r')
+        rpr = etree.Element(f'{W}rPr')
+        etree.SubElement(rpr, f'{W}b')
+        run.insert(0, rpr)
+    ppr = etree.Element(f'{W}pPr')
+    etree.SubElement(ppr, f'{W}jc').set(f'{W}val', 'center')
+    paras[0].insert(0, ppr)
+    return replace_document_xml(seed, etree.tostring(root, xml_declaration=True, encoding='UTF-8'))
 
 
 def _document_root(docx_bytes: bytes) -> etree._Element:
@@ -106,15 +127,30 @@ def test_unknown_mutation_rejected(seed):
 # ---------------------------------------------------------------------------
 
 
-def test_insert_sentence_adds_one_paragraph(seed):
+def test_insert_sentence_extends_one_clause_in_place(seed):
     texts = extract_body_text(apply_mutation(seed, 'insert_sentence'))
+    mid = len(SEED_CLAUSES) // 2
     expected = SEED_TEXTS.copy()
-    expected.insert(1, INSERTED_SENTENCE)
+    expected[mid] = f'{SEED_CLAUSES[mid]} {INSERTED_SENTENCE}'
+    assert texts == expected  # same paragraph count — exactly one text diff
+
+
+def test_delete_sentence_trims_two_sentence_clause_in_place(seed):
+    texts = extract_body_text(apply_mutation(seed, 'delete_sentence'))
+    expected = SEED_TEXTS.copy()
+    expected[2] = 'Section 3. Payment is due within thirty days of receipt.'
+    assert texts == expected  # same paragraph count — exactly one text diff
+
+
+def test_insert_paragraph_adds_one_paragraph(seed):
+    texts = extract_body_text(apply_mutation(seed, 'insert_paragraph'))
+    expected = SEED_TEXTS.copy()
+    expected.insert(1, INSERTED_PARAGRAPH)
     assert texts == expected
 
 
-def test_delete_sentence_removes_one_paragraph(seed):
-    texts = extract_body_text(apply_mutation(seed, 'delete_sentence'))
+def test_delete_paragraph_removes_one_paragraph(seed):
+    texts = extract_body_text(apply_mutation(seed, 'delete_paragraph'))
     expected = SEED_TEXTS.copy()
     expected.remove(SEED_CLAUSES[1])
     assert texts == expected
@@ -128,16 +164,50 @@ def test_split_paragraph_turns_one_into_two(seed):
     assert f'{first} {second}' == SEED_CLAUSES[0]
 
 
+def test_split_paragraph_preserves_formatting(formatted_seed):
+    mutated = apply_mutation(formatted_seed, 'split_paragraph')
+    first, second = split_parts(SEED_CLAUSES[0])
+    root = _document_root(mutated)
+    paras = root.findall(f'{W}body/{W}p')
+    for half, expected_text in ((paras[0], first), (paras[1], second)):
+        assert ''.join(half.itertext()) == expected_text
+        jc = half.find(f'{W}pPr/{W}jc')
+        assert jc is not None and jc.get(f'{W}val') == 'center'  # pPr on both halves
+        run = half.find(f'{W}r')
+        assert run.find(f'{W}rPr/{W}b') is not None  # split run's rPr on both sides
+
+
 def test_merge_paragraphs_turns_two_into_one(seed):
     texts = extract_body_text(apply_mutation(seed, 'merge_paragraphs'))
     expected = [f'{SEED_CLAUSES[0]} {SEED_CLAUSES[1]}', *SEED_TEXTS[2:]]
     assert texts == expected
 
 
+def test_merge_paragraphs_preserves_formatting(formatted_seed):
+    mutated = apply_mutation(formatted_seed, 'merge_paragraphs')
+    texts = extract_body_text(mutated)
+    assert texts == [f'{SEED_CLAUSES[0]} {SEED_CLAUSES[1]}', *SEED_TEXTS[2:]]
+    root = _document_root(mutated)
+    merged = root.find(f'{W}body/{W}p')
+    jc = merged.find(f'{W}pPr/{W}jc')
+    assert jc is not None and jc.get(f'{W}val') == 'center'  # paragraph a's pPr kept
+    runs = merged.findall(f'{W}r')
+    run_texts = [''.join(r.itertext()) for r in runs]
+    assert run_texts == [SEED_CLAUSES[0], ' ', SEED_CLAUSES[1]]  # real runs + joining space
+    assert [r.find(f'{W}rPr/{W}b') is not None for r in runs] == [True, False, True]
+
+
 def test_delete_table_row_removes_first_row_cells(seed):
-    texts = extract_body_text(apply_mutation(seed, 'delete_table_row'))
+    mutated = apply_mutation(seed, 'delete_table_row')
+    texts = extract_body_text(mutated)
     expected = list(SEED_CLAUSES) + list(SEED_LIST_ITEMS) + list(SEED_TABLE_ROWS[1])
     assert texts == expected
+    # structural: 2 rows → 1, grid untouched
+    seed_tbl = _document_root(seed).find(f'{W}body/{W}tbl')
+    tbl = _document_root(mutated).find(f'{W}body/{W}tbl')
+    assert len(seed_tbl.findall(f'{W}tr')) == 2
+    assert len(tbl.findall(f'{W}tr')) == 1
+    assert etree.tostring(tbl.find(f'{W}tblGrid')) == etree.tostring(seed_tbl.find(f'{W}tblGrid'))
 
 
 def test_add_list_item_appends_after_last_item(seed):
@@ -163,6 +233,12 @@ def test_change_list_level_changes_only_ilvl(seed):
 
     assert ilvls(seed) == ['0', '0', '0']
     assert ilvls(mutated) == ['0', '1', '0']  # second list item promoted
+
+    def num_ids(docx: bytes) -> list[str]:
+        root = _document_root(docx)
+        return [el.get(f'{W}val') for el in root.iter(f'{W}numId')]
+
+    assert num_ids(mutated) == num_ids(seed) == ['1', '1', '1']  # numId untouched
 
 
 def test_move_clause_reorders_but_preserves_multiset(seed):
@@ -244,6 +320,36 @@ def test_generate_probes_default_seed(tmp_path):
     records = generate_probes(None, tmp_path)
     assert (tmp_path / 'seed.docx').read_bytes() == make_default_seed()
     assert all(r.applicable for r in records)
+
+
+def _load_gen_script():
+    spec = importlib.util.spec_from_file_location('mutation_probes_gen', REPO_ROOT / 'scripts' / 'mutation_probes_gen.py')
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+@pytest.mark.skipif(not CORPUS_DIR.is_dir(), reason='committed probe corpus not present')
+def test_committed_corpus_matches_code(seed):
+    """The committed corpus must be exactly what the current code generates.
+
+    DOCX files are compared at part-content level (decompressed bytes + zip entry
+    order), not container bytes — ZipInfo.create_system makes those platform-
+    dependent. The manifest is compared as raw bytes so a CRLF regression shows.
+    """
+    expected_docx = {'seed.docx': seed} | {f'{name}.docx': apply_mutation(seed, name) for name in MUTATIONS}
+    gen = _load_gen_script()
+    records = [ProbeRecord(name=name, path=None, applicable=True) for name in MUTATIONS]
+
+    on_disk = sorted(p.name for p in CORPUS_DIR.iterdir() if p.suffix in {'.docx', '.csv'})
+    assert on_disk == sorted([*expected_docx, 'probes_manifest.csv'])
+    assert (CORPUS_DIR / 'probes_manifest.csv').read_bytes() == gen.manifest_text(records).encode()
+    for fname, expected_bytes in expected_docx.items():
+        committed = (CORPUS_DIR / fname).read_bytes()
+        with zipfile.ZipFile(io.BytesIO(committed)) as zc, zipfile.ZipFile(io.BytesIO(expected_bytes)) as ze:
+            assert zc.namelist() == ze.namelist(), fname
+            for part in ze.namelist():
+                assert zc.read(part) == ze.read(part), f'{fname}:{part}'
 
 
 def test_cli_end_to_end(tmp_path):

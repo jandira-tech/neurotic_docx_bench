@@ -15,6 +15,7 @@ dependencies = [
     # pins the exact resolved version for `uv sync`).
     "scikit-image>=0.24,<0.28",
     "typer>=0.12",
+    "lxml>=6.0",
     "pyyaml>=6.0",
     "rich>=13.0",
     "docx-revisions>=0.1.5",
