@@ -844,6 +844,7 @@ def _emit_and_gate_benchmark(
     only_on_change: bool,
     do_gate: bool,
     n_oracle_unmatched: int | None = None,
+    holdout_mode: str | None = None,
 ) -> int:
     """Emit one schema-v4 ``Results`` JSONL line for ``(vendor, benchmark)`` and gate it
     vs the benchmark's snapshot.
@@ -879,6 +880,7 @@ def _emit_and_gate_benchmark(
         n_oracle_unmatched=n_oracle_unmatched,
         scorer=pipeline.scorer_for_benchmark(benchmark),
         corpus_revision=_corpus_revision(cfg),
+        holdout_mode=holdout_mode,
     )
     appended = (
         jsonl_emit.append_if_changed(jsonl_path, line)
@@ -925,9 +927,15 @@ def _execute_run(
     roundtrip: bool = False,
     roundtrip_oracle_pdf: Path | None = None,
     stage_cb: Callable[[str, int | None], None] | None = None,
+    holdout_keys: set[str] | None = None,
+    holdout_mode: str | None = None,
 ) -> int:
     """Run one tool: (update/resolve version) → generate/locate source → render → score →
     emit → gate. Returns this run's exit contribution (1 on gate FAIL).
+
+    ``holdout_keys``/``holdout_mode`` (from the config's ``holdout_list``): mode
+    "excluded" drops the sealed keys from the primary score, "only" scores just
+    them; the mode is stamped on every emitted Results line.
     """
     run_dir.mkdir(parents=True, exist_ok=True)
 
@@ -988,6 +996,8 @@ def _execute_run(
             [cfg.source_of_truth, *cfg.extra_oracle_dirs],
             report.pdf_dir, run_dir / "score", dpi=use_dpi, jobs=rc.jobs, candidate_tool=rc.name,
             base_map=_base_pdf_map(cfg), null_cache_path=jsonl_path.parent / "null_baseline.json",
+            exclude_keys=holdout_keys if holdout_mode == "excluded" else None,
+            only_keys=holdout_keys if holdout_mode == "only" else None,
         )
         gallery_path = gallery_emit.write_gallery(
             run_dir,
@@ -1174,7 +1184,7 @@ def _execute_run(
             jsonl_path=jsonl_path, snapshots_dir=snapshots_dir,
             cfg_hash=cfg_hash, id_run=id_run, timestamp=timestamp,
             emit=emit, only_on_change=only_on_change, do_gate=do_gate,
-            n_oracle_unmatched=n_oracle_unmatched,
+            n_oracle_unmatched=n_oracle_unmatched, holdout_mode=holdout_mode,
         ))
 
     if accept_outcome is not None:
@@ -1187,6 +1197,7 @@ def _execute_run(
             jsonl_path=jsonl_path, snapshots_dir=snapshots_dir,
             cfg_hash=cfg_hash, id_run=id_run, timestamp=timestamp,
             emit=emit, only_on_change=only_on_change, do_gate=do_gate,
+            holdout_mode=holdout_mode,
         ))
 
     if roundtrip_outcome is not None:
@@ -1199,6 +1210,7 @@ def _execute_run(
             jsonl_path=jsonl_path, snapshots_dir=snapshots_dir,
             cfg_hash=cfg_hash, id_run=id_run, timestamp=timestamp,
             emit=emit, only_on_change=only_on_change, do_gate=do_gate,
+            holdout_mode=holdout_mode,
         ))
 
     for vis_outcome in visual_outcomes:
@@ -1214,6 +1226,7 @@ def _execute_run(
                 jsonl_path=jsonl_path, snapshots_dir=snapshots_dir,
                 cfg_hash=cfg_hash, id_run=id_run, timestamp=timestamp,
                 emit=emit, only_on_change=only_on_change, do_gate=do_gate,
+                holdout_mode=holdout_mode,
             ))
 
     # A run succeeds if ANY of its benchmarks produced scores — not just the
@@ -1374,12 +1387,30 @@ def _drive_runs(
     rerun: bool = False,
     oracle_check: bool = True,
     canary_check: bool = True,
+    holdout: bool = False,
 ) -> None:
     """Shared driver for ``run`` / ``run-all``: execute the selected bench.yaml runs
     sequentially. ``names=None`` runs everything; otherwise the runs execute in the
     given order (deduplicated).
+
+    With ``holdout_list`` configured, normal runs EXCLUDE the sealed keys from
+    scoring; ``holdout=True`` (``bench run --holdout``) flips to scoring ONLY them.
     """
     cfg = load_config(config)
+    holdout_keys: set[str] | None = None
+    holdout_mode: str | None = None
+    if cfg.holdout_list is not None:
+        holdout_keys = pipeline.load_holdout(cfg.holdout_list)
+        holdout_mode = "only" if holdout else "excluded"
+        console.print(
+            f"holdout: {len(holdout_keys)} sealed key(s) "
+            f'{"scored exclusively" if holdout else "excluded from scoring"} '
+            f"({cfg.holdout_list})",
+        )
+    elif holdout:
+        raise typer.BadParameter(
+            "--holdout needs 'holdout_list' in bench.yaml pointing at the sealed key list",
+        )
     _oracle_manifest_gate(cfg, enabled=oracle_check)
     use_dpi = dpi if dpi is not None else cfg.scoring.dpi
     _canary_gate(cfg, names, enabled=canary_check, dpi=use_dpi)
@@ -1510,6 +1541,9 @@ def _drive_runs(
                 benchmark="script_redlines",
                 tool_version=tv,
                 config_hash=cfg_hash,
+                # A holdout-only rerun is never satisfied by a full-corpus line
+                # (nor the reverse); pre-holdout lines count as full-corpus.
+                holdout_only=(holdout_mode == "only"),
             )
             if prior is not None:
                 console.print(
@@ -1567,6 +1601,8 @@ def _drive_runs(
                     roundtrip=roundtrip,
                     roundtrip_oracle_pdf=roundtrip_oracle_pdf,
                     stage_cb=_stage,
+                    holdout_keys=holdout_keys,
+                    holdout_mode=holdout_mode,
                 ),
             )
         except Exception as exc:  # one run's failure must not stop the rest
@@ -1669,6 +1705,12 @@ def run(
         "--canary/--no-canary",
         help="verify the renderer fingerprint canary before soffice runs (drift → exit 2)",
     ),
+    holdout: bool = typer.Option(
+        False,
+        "--holdout",
+        help="score ONLY the sealed holdout keys (yaml: holdout_list) instead of "
+        "excluding them — the on-demand overfitting check",
+    ),
 ) -> None:
     """Drive bench.yaml runs **sequentially** (one per tool). Each run gets its own
     ``runs/{name}_{datetime}`` work folder (kept locally; ``--clean-runs`` deletes it only
@@ -1701,6 +1743,7 @@ def run(
         rerun=rerun,
         oracle_check=oracle_check,
         canary_check=canary_check,
+        holdout=holdout,
     )
 
 
