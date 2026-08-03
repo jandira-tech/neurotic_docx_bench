@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import statistics
 import sys
 from collections import defaultdict
@@ -1012,6 +1013,34 @@ def to_markdown(
     return "\n".join(lines) + "\n"
 
 
+_MARKER_BLOCK = re.compile(
+    r"<!-- (?P<name>[A-Z0-9_]+):BEGIN -->.*?<!-- (?P=name):END -->",
+    re.DOTALL,
+)
+
+
+def _carry_foreign_marker_blocks(out: Path, md: str) -> str:
+    """Preserve marker-delimited sections other generators own.
+
+    Sibling generators (e.g. ``scripts/redline_dual_path_report.mjs``) write
+    idempotent ``<!-- NAME:BEGIN -->…<!-- NAME:END -->`` blocks into the same
+    files this exporter rewrites wholesale. Any such block present in the
+    existing file but absent from the freshly generated markdown is appended,
+    so a full export never destroys another tool's section.
+    """
+    if not out.is_file():
+        return md
+    existing = out.read_text(encoding="utf-8")
+    carried = [
+        m.group(0)
+        for m in _MARKER_BLOCK.finditer(existing)
+        if f"<!-- {m.group('name')}:BEGIN -->" not in md
+    ]
+    if not carried:
+        return md
+    return md.rstrip("\n") + "\n\n" + "\n\n".join(carried) + "\n"
+
+
 def main(argv: list[str] | None = None) -> int:
     root = _repo_root()
     parser = argparse.ArgumentParser(description=__doc__)
@@ -1078,7 +1107,7 @@ def main(argv: list[str] | None = None) -> int:
 
     for out in outputs:
         out.parent.mkdir(parents=True, exist_ok=True)
-        out.write_text(md, encoding="utf-8")
+        out.write_text(_carry_foreign_marker_blocks(out, md), encoding="utf-8")
         print(
             f"Wrote {len(rows)} fidelity + {len(speed_rows)} speed row(s) → {out}"
         )
