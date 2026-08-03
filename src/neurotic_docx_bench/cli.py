@@ -1876,15 +1876,20 @@ def coverage_matrix_cmd(
     """
     from neurotic_docx_bench import coverage_matrix
 
+    if jsonl is not None and not jsonl.is_file():
+        console.print(f"[red]no such JSONL:[/red] {jsonl}")
+        raise typer.Exit(2)
     coverage = coverage_matrix.build_coverage(mapping, source_dir, redline_dir)
     scores_by_vendor = coverage_matrix.latest_scores_by_vendor(jsonl) if jsonl else None
+    if scores_by_vendor:
+        coverage["unjoined_scores"] = coverage_matrix.unjoined_score_keys(coverage, scores_by_vendor)
     out_json.parent.mkdir(parents=True, exist_ok=True)
     out_json.write_text(json.dumps(coverage, indent=2, sort_keys=True) + "\n")
     out_md.parent.mkdir(parents=True, exist_ok=True)
     out_md.write_text(coverage_matrix.render_markdown(coverage, scores_by_vendor))
     console.print(
         f"tagged [green]{len(coverage['pairs'])}[/green] pairs "
-        f"({len(coverage['errors'])} errors) → {out_json} + {out_md}",
+        f"({len(coverage['errors'])} errors, {len(coverage['skipped'])} skipped) → {out_json} + {out_md}",
     )
     for stem, reason in list(coverage["errors"].items())[:10]:
         console.print(f"  [yellow]error[/yellow] {stem}: {reason}")
