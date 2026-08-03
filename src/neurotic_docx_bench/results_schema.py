@@ -318,6 +318,9 @@ def _jsonable(value: Any) -> Any:
         return _jsonable(asdict(value))
     if isinstance(value, dict):
         return {str(k): _jsonable(v) for k, v in value.items()}
-    if isinstance(value, list):
+    if isinstance(value, (list, tuple)):
+        # asdict() preserves tuples (e.g. BenchConfig.extra_oracle_dirs, a
+        # tuple of Paths) — they must be recursed like lists or their
+        # elements reach json.dumps unconverted.
         return [_jsonable(v) for v in value]
     return value
