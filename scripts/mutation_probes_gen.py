@@ -10,9 +10,10 @@ from __future__ import annotations
 
 import argparse
 import csv
+import io
 from pathlib import Path
 
-from neurotic_docx_bench.mutation_probes import generate_probes
+from neurotic_docx_bench.mutation_probes import ProbeRecord, generate_probes
 
 MANIFEST_COLUMNS = (
     'pair_stem',
@@ -28,6 +29,34 @@ MANIFEST_COLUMNS = (
     'pdf_accepted',
     'missing',
 )
+
+
+def manifest_text(records: list[ProbeRecord]) -> str:
+    """Manifest CSV text, LF line endings so regeneration never dirties the tree."""
+    buf = io.StringIO()
+    writer = csv.DictWriter(buf, fieldnames=MANIFEST_COLUMNS, lineterminator='\n')
+    writer.writeheader()
+    for rec in records:
+        if not rec.applicable:
+            continue
+        # Stems in base/next, filenames in docx_source_* — the redline
+        # generator joins sourceDir + `${pair.base}.docx`, so it consumes
+        # the stems.
+        writer.writerow({
+            'pair_stem': rec.name,
+            'base': 'seed',
+            'next': rec.name,
+            'origin': 'mutation_probe',
+            'docx_source_base': 'seed.docx',
+            'docx_source_next': f'{rec.name}.docx',
+            'redline_docx': '',
+            'redline_docx_word': '',
+            'accepted_docx': '',
+            'pdf_redline': '',
+            'pdf_accepted': '',
+            'missing': '',
+        })
+    return buf.getvalue()
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -46,29 +75,7 @@ def main(argv: list[str] | None = None) -> int:
     records = generate_probes(args.seed, args.out)
 
     manifest = args.out / 'probes_manifest.csv'
-    with manifest.open('w', newline='') as fh:
-        writer = csv.DictWriter(fh, fieldnames=MANIFEST_COLUMNS)
-        writer.writeheader()
-        for rec in records:
-            if not rec.applicable:
-                continue
-            # Stems in base/next, filenames in docx_source_* — the redline
-            # generator joins sourceDir + `${pair.base}.docx`, so it consumes
-            # the stems.
-            writer.writerow({
-                'pair_stem': rec.name,
-                'base': 'seed',
-                'next': rec.name,
-                'origin': 'mutation_probe',
-                'docx_source_base': 'seed.docx',
-                'docx_source_next': f'{rec.name}.docx',
-                'redline_docx': '',
-                'redline_docx_word': '',
-                'accepted_docx': '',
-                'pdf_redline': '',
-                'pdf_accepted': '',
-                'missing': '',
-            })
+    manifest.write_text(manifest_text(records), newline='')
 
     applicable = [r for r in records if r.applicable]
     skipped = [r for r in records if not r.applicable]
