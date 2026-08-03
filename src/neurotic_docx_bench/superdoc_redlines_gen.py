@@ -253,7 +253,7 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--author", default="superdoc-redlines")
     p.add_argument("--repo", default="superdoc-redlines",
                    help="path to the yuch85/superdoc-redlines clone (npm-installed)")
-    p.add_argument("--jobs", type=int, default=6)
+    p.add_argument("--jobs", type=int, default=12)
     p.add_argument("--force", action="store_true")
     args = p.parse_args(argv)
 

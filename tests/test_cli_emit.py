@@ -35,19 +35,19 @@ def test_run_appends_every_time_by_default(tmp_path, sample_oracle_pdfs):
     results = tmp_path / "results"
 
     # Default: every run appends a line (append-only trend log, never rewritten).
-    r1 = runner.invoke(app, ["run", "-c", str(cfg), "--results-dir", str(results)])
+    r1 = runner.invoke(app, ["run", "-c", str(cfg), "--results-dir", str(results), "--runs-dir", str(tmp_path / "runs")])
     assert r1.exit_code == 0, r1.output
     assert "appended" in r1.output
     assert len(jsonl_emit.read_lines(results / "bench.jsonl")) == 1
 
-    r2 = runner.invoke(app, ["run", "-c", str(cfg), "--results-dir", str(results)])
+    r2 = runner.invoke(app, ["run", "-c", str(cfg), "--results-dir", str(results), "--runs-dir", str(tmp_path / "runs")])
     assert r2.exit_code == 0
     assert "appended" in r2.output
     assert len(jsonl_emit.read_lines(results / "bench.jsonl")) == 2  # accumulated, not rewritten
 
     # --only-on-change opts into the delta log: an identical run is skipped.
     r3 = runner.invoke(
-        app, ["run", "-c", str(cfg), "--results-dir", str(results), "--only-on-change"],
+        app, ["run", "-c", str(cfg), "--results-dir", str(results), "--runs-dir", str(tmp_path / "runs"), "--only-on-change"],
     )
     assert r3.exit_code == 0
     assert "no change, skipped" in r3.output
@@ -71,7 +71,7 @@ def test_accept_then_regression_fails(tmp_path, sample_oracle_pdfs):
     cfg_good = tmp_path / "good.yaml"
     cfg_good.write_text(_yaml(oracle, good))
     assert runner.invoke(
-        app, ["run", "-c", str(cfg_good), "--results-dir", str(results)],
+        app, ["run", "-c", str(cfg_good), "--results-dir", str(results), "--runs-dir", str(tmp_path / "runs")],
     ).exit_code == 0
     acc = runner.invoke(app, ["accept-scores", "prebaked", "--results-dir", str(results)])
     assert acc.exit_code == 0, acc.output
@@ -80,6 +80,8 @@ def test_accept_then_regression_fails(tmp_path, sample_oracle_pdfs):
     # 2) run with the worse candidate → aggregate regression → red exit
     cfg_bad = tmp_path / "bad.yaml"
     cfg_bad.write_text(_yaml(oracle, bad))
-    reg = runner.invoke(app, ["run", "-c", str(cfg_bad), "--results-dir", str(results)])
+    reg = runner.invoke(
+        app, ["run", "-c", str(cfg_bad), "--results-dir", str(results), "--runs-dir", str(tmp_path / "runs")],
+    )
     assert reg.exit_code == 1, reg.output
     assert "FAIL" in reg.output

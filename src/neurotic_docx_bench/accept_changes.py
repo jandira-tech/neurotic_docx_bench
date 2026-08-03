@@ -90,7 +90,7 @@ def process_folder(
     out_dir: Path | str,
     *,
     reject: bool = False,
-    jobs: int = 8,
+    jobs: int = 12,
 ) -> list[ChangeResult]:
     """Accept (or reject) tracked changes for every ``*.docx`` in ``in_dir`` → ``out_dir``.
 

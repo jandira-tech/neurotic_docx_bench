@@ -403,7 +403,7 @@ def render(
     source: Path = typer.Argument(..., help="folder of DOCX (soffice) or PDF (passthrough)"),
     work_dir: Path = typer.Argument(..., help="scratch dir; PDFs land in <work_dir>/pdf"),
     backend: str = typer.Option("soffice", "--backend", "-b"),
-    jobs: int = typer.Option(4, "--jobs", "-j"),
+    jobs: int = typer.Option(12, "--jobs", "-j"),
     force: bool = typer.Option(False, "--force", "-f"),
 ) -> None:
     """Render a folder of documents to PDF."""
@@ -517,7 +517,7 @@ def compare(
     oracle: Path = typer.Argument(..., help="folder of Word oracle PDFs"),
     tool: str | None = typer.Option(None, "--tool", help="tool token in candidate names (…_<tool>_redline)"),
     dpi: int = typer.Option(144, "--dpi"),
-    jobs: int = typer.Option(8, "--jobs", "-j"),
+    jobs: int = typer.Option(12, "--jobs", "-j"),
     limit: int | None = typer.Option(None, "--limit"),
     json_out: Path | None = typer.Option(None, "--json", help="write scores as JSON"),
 ) -> None:
@@ -1469,7 +1469,7 @@ def _drive_runs(
                 "existing folder (produce it with `bench accept … --out …` or `--generate`)",
             )
         console.rule("[bold]accepted ground truth → PDF (cached)[/bold]")
-        rep = SofficeRenderer().to_pdfs(agt, accepted_oracle_cache, jobs=8)
+        rep = SofficeRenderer().to_pdfs(agt, accepted_oracle_cache, jobs=12)
         if rep.fail_count:
             console.print(f"[yellow]{rep.fail_count} accepted-oracle render failure(s)[/yellow]")
         accepted_oracle_pdf = rep.pdf_dir
@@ -1479,7 +1479,7 @@ def _drive_runs(
         rt_corpus = Path("corpus/word_based/word_working_roundtrip")
         if rt_corpus.is_dir():
             console.rule("[bold]roundtrip oracle → PDF (cached)[/bold]")
-            rep = SofficeRenderer().to_pdfs(rt_corpus, roundtrip_oracle_cache, jobs=8)
+            rep = SofficeRenderer().to_pdfs(rt_corpus, roundtrip_oracle_cache, jobs=12)
             if rep.fail_count:
                 console.print(f"[yellow]{rep.fail_count} roundtrip-oracle render failure(s)[/yellow]")
             roundtrip_oracle_pdf = rep.pdf_dir

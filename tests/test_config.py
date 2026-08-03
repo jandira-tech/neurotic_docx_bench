@@ -52,7 +52,7 @@ def test_defaults(tmp_path):
     )
     cfg = load_config(cfg_path)
     assert cfg.scoring.dpi == 144
-    assert cfg.runs[0].jobs == 8
+    assert cfg.runs[0].jobs == 12
 
 
 @pytest.mark.parametrize(

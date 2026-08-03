@@ -380,7 +380,7 @@ def score_folders_full(
     work_dir: Path,
     *,
     dpi: int = 144,
-    jobs: int = 4,
+    jobs: int = 12,
     candidate_tool: str | None = None,
     base_map: dict[str, Path] | None = None,
     null_cache_path: Path | None = None,
@@ -448,7 +448,7 @@ def score_folders(
     work_dir: Path,
     *,
     dpi: int = 144,
-    jobs: int = 4,
+    jobs: int = 12,
     candidate_tool: str | None = None,
 ) -> dict[str, float]:
     """Score every matched pair; return ``{key: overall_score}`` (0–100)."""
@@ -479,7 +479,7 @@ def score_folders_plain(
     work_dir: Path,
     *,
     dpi: int = 144,
-    jobs: int = 4,
+    jobs: int = 12,
 ) -> dict[str, ScoreResult]:
     """Score every matched pair by plain filename stem (roundtrip identity test).
 
@@ -531,7 +531,7 @@ def match_base_to_candidate(oracle_dir: Path, candidate_dir: Path) -> list[tuple
 
 
 def score_folders_base(
-    oracle_dir: Path, candidate_dir: Path, work_dir: Path, *, dpi: int = 144, jobs: int = 4,
+    oracle_dir: Path, candidate_dir: Path, work_dir: Path, *, dpi: int = 144, jobs: int = 12,
 ) -> dict[str, ScoreResult]:
     """Score every matched base pair (visual_rendering).
 
@@ -622,7 +622,7 @@ def match_accepted_to_candidate(
 
 
 def score_folders_accepted(
-    oracle_dir: Path, candidate_dir: Path, work_dir: Path, *, dpi: int = 144, jobs: int = 4,
+    oracle_dir: Path, candidate_dir: Path, work_dir: Path, *, dpi: int = 144, jobs: int = 12,
 ) -> dict[str, ScoreResult]:
     """Score every matched accepted-changes pair (visual_accepted_changes).
 

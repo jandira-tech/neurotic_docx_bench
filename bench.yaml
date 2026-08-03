@@ -40,7 +40,7 @@ generate_scripts:
   - name: roundtrips-superdoc
     command: "uv run python scripts/generate-roundtrips-superdoc.py"
   - name: source-pdfs
-    command: "uv run bench render corpus/word_based/docx_source /tmp/pdf_source_render --backend soffice --jobs 6 --force && mv /tmp/pdf_source_render/pdf/*.pdf corpus/word_based/pdf_source/"
+    command: "uv run bench render corpus/word_based/docx_source /tmp/pdf_source_render --backend soffice --jobs 12 --force && mv /tmp/pdf_source_render/pdf/*.pdf corpus/word_based/pdf_source/"
 
 # Tool versions are PINNED to the ones we reviewed:
 #   docxodus 7.0.0 · docx-redline-js = local TS migration (dist: sibling package)
@@ -54,7 +54,7 @@ runs:
     dist: dist/jubarte-final
     generate: "node --import tsx scripts/generate-native-redlines.ts --method=jubarte-native --dist=dist/jubarte-final --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=jubarte-final-native && node --import tsx scripts/generate-native-redlines.ts --method=jubarte-native --manifest=corpus/word_based/centralized_mapping_randomized.csv --source-dir=corpus/word_based/docx_source_randomized --dist=dist/jubarte-final --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=jubarte-final-native"
     render: soffice
-    jobs: 8
+    jobs: 12
     vendor: jubarte
     benchmarks: [accepted_changes, script_redlines, roundtrip]
 
@@ -62,7 +62,7 @@ runs:
     dist: dist/jubarte-final
     generate: "node --import tsx scripts/generate-native-redlines.ts --method=jubarte-lossless --dist=dist/jubarte-final --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=jubarte-final-lossless && node --import tsx scripts/generate-native-redlines.ts --method=jubarte-lossless --manifest=corpus/word_based/centralized_mapping_randomized.csv --source-dir=corpus/word_based/docx_source_randomized --dist=dist/jubarte-final --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=jubarte-final-lossless"
     render: soffice
-    jobs: 8
+    jobs: 12
     vendor: jubarte
     benchmarks: [accepted_changes, script_redlines, roundtrip]
 
@@ -72,7 +72,7 @@ runs:
     package: "docxodus@7.0.0"
     generate: "node --import tsx scripts/generate-native-redlines.ts --method=docxodus --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=docxodus && node --import tsx scripts/generate-native-redlines.ts --method=docxodus --manifest=corpus/word_based/centralized_mapping_randomized.csv --source-dir=corpus/word_based/docx_source_randomized --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=docxodus"
     render: soffice
-    jobs: 8
+    jobs: 12
     vendor: docxodus
     benchmarks: [accepted_changes, script_redlines, roundtrip, visual_rendering, visual_redlines, visual_accepted_changes]
 
@@ -90,7 +90,7 @@ runs:
     dist: src/neurotic_docx_bench/utils/docxodus/Docxodus/npm
     docx: corpus/word_based/docx_source
     render: playwright
-    jobs: 8
+    jobs: 12
     vendor: docxodus
     benchmarks: [visual_rendering]
     harness: &docxodus-harness
@@ -110,7 +110,7 @@ runs:
     dist: src/neurotic_docx_bench/utils/docxodus/Docxodus/npm
     docx: corpus/word_based/docx_redlines_word
     render: playwright
-    jobs: 8
+    jobs: 12
     vendor: docxodus
     benchmarks: [visual_redlines]
     harness: *docxodus-harness
@@ -119,7 +119,7 @@ runs:
     dist: src/neurotic_docx_bench/utils/docxodus/Docxodus/npm
     docx: corpus/word_based/docx_accepted_word
     render: playwright
-    jobs: 8
+    jobs: 12
     vendor: docxodus
     benchmarks: [visual_accepted_changes]
     harness: *docxodus-harness
@@ -136,7 +136,7 @@ runs:
     package: "@stll/folio-react@0.5.0"
     docx: corpus/word_based/docx_source
     render: playwright
-    jobs: 8
+    jobs: 12
     vendor: folio
     benchmarks: [visual_rendering]
     harness: &folio-harness
@@ -151,7 +151,7 @@ runs:
     package: "@stll/folio-react@0.5.0"
     docx: corpus/word_based/docx_redlines_word
     render: playwright
-    jobs: 8
+    jobs: 12
     vendor: folio
     benchmarks: [visual_redlines]
     harness: *folio-harness
@@ -160,7 +160,7 @@ runs:
     package: "@stll/folio-react@0.5.0"
     docx: corpus/word_based/docx_accepted_word
     render: playwright
-    jobs: 8
+    jobs: 12
     vendor: folio
     benchmarks: [visual_accepted_changes]
     harness: *folio-harness
@@ -173,7 +173,7 @@ runs:
     dist: ../docx-redline-migration-kit/dist/docx-redline-js
     generate: "node --import tsx scripts/generate-native-redlines.ts --method=docx-redline-js --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=docx-redline-js"
     render: soffice
-    jobs: 8
+    jobs: 12
     vendor: docx-redline-js
     benchmarks: [script_redlines]
 
@@ -185,7 +185,7 @@ runs:
     package: "@stll/folio-core@0.3.1"
     generate: "node --import tsx scripts/generate-native-redlines.ts --method=folio --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=folio"
     render: soffice
-    jobs: 8
+    jobs: 12
     vendor: folio
     benchmarks: [script_redlines, accepted_changes, roundtrip]
 
@@ -196,7 +196,7 @@ runs:
     python_package: "superdoc-sdk==1.19.2" # installed version → tool_version
     generate: "uv run python -m neurotic_docx_bench.superdoc_gen --out=$RUN_DIR/docx --tool=superdoc"
     render: soffice
-    jobs: 8
+    jobs: 12
     vendor: superdoc
     benchmarks: [accepted_changes, script_redlines, roundtrip]
 
@@ -207,7 +207,7 @@ runs:
     python_package: "redlines==0.6.1"
     generate: "uv run python -m neurotic_docx_bench.redlines_gen --out=$RUN_DIR/docx --tool=redlines"
     render: soffice
-    jobs: 8
+    jobs: 12
     vendor: redlines
     benchmarks: [script_redlines]
 
@@ -222,7 +222,7 @@ runs:
     dist: superdoc-redlines
     generate: "uv run python -m neurotic_docx_bench.superdoc_redlines_gen --out=$RUN_DIR/docx --tool=superdoc-redlines --repo=superdoc-redlines"
     render: soffice
-    jobs: 8
+    jobs: 12
     vendor: superdoc-redlines
     benchmarks: [script_redlines]
 
@@ -233,7 +233,7 @@ runs:
     dist: src/neurotic_docx_bench/utils/jubarte/jubarte-rust
     generate: "node --import tsx scripts/generate-native-redlines.ts --method=jubarte-rust --dist=src/neurotic_docx_bench/utils/jubarte/jubarte-rust --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=jubarte-rust && node --import tsx scripts/generate-native-redlines.ts --method=jubarte-rust --manifest=corpus/word_based/centralized_mapping_randomized.csv --source-dir=corpus/word_based/docx_source_randomized --dist=src/neurotic_docx_bench/utils/jubarte/jubarte-rust --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=jubarte-rust"
     render: soffice
-    jobs: 8
+    jobs: 12
     vendor: jubarte-rust
     benchmarks: [script_redlines, accepted_changes, roundtrip]
 
@@ -244,7 +244,7 @@ runs:
     dist: src/neurotic_docx_bench/utils/jubarte/jubarte-wasm/pkg
     generate: "node --import tsx scripts/generate-native-redlines.ts --method=jubarte-wasm --dist=src/neurotic_docx_bench/utils/jubarte/jubarte-wasm/pkg --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=jubarte-wasm"
     render: soffice
-    jobs: 8
+    jobs: 12
     vendor: jubarte-wasm
     benchmarks: [script_redlines]
 
@@ -255,7 +255,7 @@ runs:
     package: "@superdoc-dev/sdk@1.19.2" # npm-resolved → tool_version
     generate: "node --import tsx scripts/generate-native-redlines.ts --method=superdoc-ts --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=superdoc-ts"
     render: soffice
-    jobs: 8
+    jobs: 12
     vendor: superdoc
     benchmarks: [script_redlines]
 
@@ -271,7 +271,7 @@ runs:
     dist: superdoc/packages/super-editor
     generate: "node --import tsx scripts/generate-native-redlines.ts --method=superdoc-native --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=superdoc-native"
     render: soffice
-    jobs: 8
+    jobs: 12
     vendor: superdoc
     benchmarks: [script_redlines]
 
@@ -282,7 +282,7 @@ runs:
     package: "superdoc@1.44.1"
     docx: corpus/word_based/docx_source
     render: playwright
-    jobs: 8
+    jobs: 12
     vendor: superdoc
     benchmarks: [visual_rendering]
     harness: &superdoc-harness
@@ -297,7 +297,7 @@ runs:
     package: "superdoc@1.44.1"
     docx: corpus/word_based/docx_redlines_word
     render: playwright
-    jobs: 8
+    jobs: 12
     vendor: superdoc
     benchmarks: [visual_redlines]
     harness: *superdoc-harness
@@ -306,7 +306,7 @@ runs:
     package: "superdoc@1.44.1"
     docx: corpus/word_based/docx_accepted_word
     render: playwright
-    jobs: 8
+    jobs: 12
     vendor: superdoc
     benchmarks: [visual_accepted_changes]
     harness: *superdoc-harness
@@ -316,4 +316,4 @@ runs:
   # - name: word-redlines-soffice
   #  render: soffice
   # docx: corpus/word_based/docx_redlines_word
-  #  jobs: 8
+  #  jobs: 12
