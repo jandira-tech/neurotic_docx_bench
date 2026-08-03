@@ -387,3 +387,24 @@ def test_dedup_keeps_lens_alarm_from_shadowed_rerun(tmp_path: Path) -> None:
     assert rows[0]["mean"] == 90.0  # ranking uses the newest line
     assert rows[0]["n_lens_disagree"] == 4  # but the alarm survives
     assert rows[0]["lens_disagree_rate"] == 0.4
+
+
+def test_carry_foreign_marker_blocks(tmp_path: Path) -> None:
+    """A wholesale rewrite must not destroy marker-delimited sections owned by
+    sibling generators (e.g. the dual-path report's DUAL_PATH_QUALITY block)."""
+    out = tmp_path / "RESULTS.md"
+    block = (
+        "<!-- DUAL_PATH_QUALITY:BEGIN -->\n"
+        "## dual-path table\n"
+        "| a | b |\n"
+        "<!-- DUAL_PATH_QUALITY:END -->"
+    )
+    out.write_text(f"# old content\n\n{block}\n", encoding="utf-8")
+    merged = exp._carry_foreign_marker_blocks(out, "# new export\n")
+    assert block in merged
+    assert merged.startswith("# new export")
+    # A block the new markdown already contains is not duplicated.
+    merged2 = exp._carry_foreign_marker_blocks(out, f"# new export\n\n{block}\n")
+    assert merged2.count("DUAL_PATH_QUALITY:BEGIN") == 1
+    # No existing file → passthrough.
+    assert exp._carry_foreign_marker_blocks(tmp_path / "missing.md", "x") == "x"
