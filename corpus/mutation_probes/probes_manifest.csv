@@ -1,0 +1,10 @@
+pair_stem,base,next,origin,docx_source_base,docx_source_next,redline_docx,redline_docx_word,accepted_docx,pdf_redline,pdf_accepted,missing
+insert_sentence,seed,insert_sentence,mutation_probe,seed.docx,insert_sentence.docx,,,,,,
+delete_sentence,seed,delete_sentence,mutation_probe,seed.docx,delete_sentence.docx,,,,,,
+split_paragraph,seed,split_paragraph,mutation_probe,seed.docx,split_paragraph.docx,,,,,,
+merge_paragraphs,seed,merge_paragraphs,mutation_probe,seed.docx,merge_paragraphs.docx,,,,,,
+delete_table_row,seed,delete_table_row,mutation_probe,seed.docx,delete_table_row.docx,,,,,,
+add_list_item,seed,add_list_item,mutation_probe,seed.docx,add_list_item.docx,,,,,,
+change_list_level,seed,change_list_level,mutation_probe,seed.docx,change_list_level.docx,,,,,,
+move_clause,seed,move_clause,mutation_probe,seed.docx,move_clause.docx,,,,,,
+format_only_bold,seed,format_only_bold,mutation_probe,seed.docx,format_only_bold.docx,,,,,,
