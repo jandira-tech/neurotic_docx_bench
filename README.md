@@ -37,6 +37,16 @@ bun run update-readme-ranking                 # tables between RANKING markers
 
 Sorted by **ITT median** (intent-to-treat: every failed doc scores 0, so crashing on hard docs is penalized, not rewarded; 0–100, higher is closer to the oracle). Mean/Median cover completed docs only. `~` marks ITT stats approximated from summary numbers (older runs without per-doc scores). Jubarte families (**final**, **final-lossless**, **rust**) show only the **best** and **worst** version pin for this benchmark; other vendors list each pin.
 
+**Current corpus** (lines stamped with `corpus_revision` — the 403-pair corpus):
+
+| Rank | Vendor | Version | Docs | ITT Docs | ITT Mean | ITT Median | Mean | Median | Perfect (100) | Failures |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | jubarte-rust | jubarte-rust@fcea02da49f4 | 383 | 383 | 85.02 | 93.37 | 85.02 | 93.37 | 126 | 0 |
+| 2 | jubarte (lossless) | jubarte-final@d43557e042c1 | 383 | 383 | 82.27 | 86.05 | 82.27 | 86.05 | 109 | 0 |
+| 3 | jubarte-ast | jubarte-final@d43557e042c1 | 375 | 383 | 73.43 | 75.45 | 75.00 | 77.14 | 40 | 9 |
+
+**Legacy corpus** (older, smaller corpora — not comparable with the rows above; kept for history until each tool re-runs):
+
 | Rank | Vendor | Version | Docs | ITT Docs | ITT Mean | ITT Median | Mean | Median | Perfect (100) | Failures |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | jubarte-rust | jubarte-rust@63e57d122c83 (best) | 164 | 164 | 92.21 | 99.92 | 92.21 | 99.92 | 80 | 0 |
