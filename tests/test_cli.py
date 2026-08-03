@@ -55,7 +55,7 @@ def test_run_passthrough(tmp_path, sample_oracle_pdfs):
     # to the real results/bench.jsonl on every test run (found 2026-08-02; RESULTS.md
     # had been carrying one since July).
     result = runner.invoke(
-        app, ["run", "--config", str(cfg), "--results-dir", str(tmp_path / "results")],
+        app, ["run", "--config", str(cfg), "--results-dir", str(tmp_path / "results"), "--runs-dir", str(tmp_path / "runs")],
     )
     assert result.exit_code == 0, result.output
     assert "prebaked" in result.output

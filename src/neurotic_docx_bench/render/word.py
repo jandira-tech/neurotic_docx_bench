@@ -268,7 +268,7 @@ class WordRenderer:
         work_dir: Path,
         *,
         force: bool = False,
-        jobs: int = 4,
+        jobs: int = 12,
     ) -> RenderReport:
         if not word_available():
             raise RuntimeError(
