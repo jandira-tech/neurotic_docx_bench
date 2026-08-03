@@ -24,6 +24,11 @@ class GateResult:
     status: Status
     regressed_docs: list[str] = field(default_factory=list)
     reason: str = ""
+    # Doc keys present on only one side of the comparison (corpus-regime drift:
+    # e.g. a 403-doc snapshot vs a 383-doc post-holdout run). The aggregates are
+    # compared over the intersection only; these counts make the drift visible.
+    n_only_baseline: int = 0
+    n_only_current: int = 0
 
     @property
     def exit_code(self) -> int:
@@ -42,13 +47,37 @@ def gate(
     regression (of non-100 docs) → warn; else pass. ``eps`` is the regression
     threshold — callers derive it from the recorded render noise floor
     (``noise_floor.eps_from_file``); default is the historical 1e-4.
+
+    Both the aggregate and per-doc comparisons run over the INTERSECTION of doc
+    keys: a snapshot accepted under a different corpus regime (403-doc
+    pre-holdout vs 383-doc post-holdout) must not manufacture a regression out
+    of the key-set change itself. Keys present on only one side are counted and
+    reported in the reason; disjoint key sets are a warn (nothing comparable),
+    never a silent pass or a spurious fail.
     """
     if not baseline_scores:
         return GateResult("pass", reason="no baseline (first accepted run)")
     threshold = _EPS if eps is None else eps
 
-    cur = compute_aggregate(scores)
-    base = compute_aggregate(baseline_scores)
+    shared = scores.keys() & baseline_scores.keys()
+    n_only_baseline = len(baseline_scores.keys() - shared)
+    n_only_current = len(scores.keys() - shared)
+    key_note = (
+        f" [{len(shared)} shared doc(s); {n_only_baseline} baseline-only, "
+        f"{n_only_current} current-only]"
+        if (n_only_baseline or n_only_current)
+        else ""
+    )
+    if not shared:
+        return GateResult(
+            "warn",
+            reason="no shared docs with baseline — aggregate not comparable" + key_note,
+            n_only_baseline=n_only_baseline,
+            n_only_current=n_only_current,
+        )
+
+    cur = compute_aggregate({k: scores[k] for k in shared})
+    base = compute_aggregate({k: baseline_scores[k] for k in shared})
 
     mean_down = cur.overall_mean < base.overall_mean - threshold
     median_down = cur.overall_median < base.overall_median - threshold
@@ -58,20 +87,31 @@ def gate(
             parts.append(f"mean {base.overall_mean:.2f}→{cur.overall_mean:.2f}")
         if median_down:
             parts.append(f"median {base.overall_median:.2f}→{cur.overall_median:.2f}")
-        return GateResult("fail", reason="aggregate regression: " + ", ".join(parts))
+        return GateResult(
+            "fail",
+            reason="aggregate regression: " + ", ".join(parts) + key_note,
+            n_only_baseline=n_only_baseline,
+            n_only_current=n_only_current,
+        )
 
     # 100 is always a pass — never flag a doc that is at 100 now.
     regressed = sorted(
         doc
-        for doc, score in scores.items()
-        if doc in baseline_scores
-        and score < baseline_scores[doc] - threshold
-        and score < 100.0 - _EPS
+        for doc in shared
+        if scores[doc] < baseline_scores[doc] - threshold
+        and scores[doc] < 100.0 - _EPS
     )
     if regressed:
         return GateResult(
             "warn",
             regressed_docs=regressed,
-            reason=f"{len(regressed)} document(s) regressed (aggregate held)",
+            reason=f"{len(regressed)} document(s) regressed (aggregate held)" + key_note,
+            n_only_baseline=n_only_baseline,
+            n_only_current=n_only_current,
         )
-    return GateResult("pass", reason="no regression vs baseline")
+    return GateResult(
+        "pass",
+        reason="no regression vs baseline" + key_note,
+        n_only_baseline=n_only_baseline,
+        n_only_current=n_only_current,
+    )

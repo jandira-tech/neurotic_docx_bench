@@ -616,12 +616,27 @@ def _accepted_report(
 
 
 def _accept_compare_stage(
-    rc: RunConfig, run_dir: Path, docx_source: Path, per_doc: PerDocScores, accepted_oracle_pdf: Path, use_dpi: int,
+    rc: RunConfig,
+    run_dir: Path,
+    docx_source: Path,
+    per_doc: PerDocScores,
+    accepted_oracle_pdf: Path,
+    use_dpi: int,
+    *,
+    exclude_keys: set[str] | None = None,
+    only_keys: set[str] | None = None,
 ) -> BenchmarkOutcome:
     """Copy the freshly generated redlines, accept ALL tracked changes, render, and score
     the accepted copies against the accepted ground truth; write the diff report.
     Returns a :class:`BenchmarkOutcome` with scores, per_doc, failures, and timings
     for the ``accepted_changes`` benchmark.
+
+    ``exclude_keys``/``only_keys`` apply the run's sealed-holdout filter to this
+    stage's scored keys AND failure records, so the emitted ``accepted_changes``
+    line's scoring universe matches its ``holdout_mode`` stamp (the accepted
+    side of a sealed pair must not be published by a normal run). Lenient key
+    matching (``strict_filter_keys=False``): the accepted oracle covers only a
+    subset of the holdout sampling universe.
     """
     from neurotic_docx_bench import accept_changes
 
@@ -648,6 +663,9 @@ def _accept_compare_stage(
         dpi=use_dpi,
         jobs=rc.jobs,
         candidate_tool=rc.name,
+        exclude_keys=exclude_keys,
+        only_keys=only_keys,
+        strict_filter_keys=False,
     )
     accepted_scores = {k: _get_overall_score(v) for k, v in accepted_per_doc.items()}
     redline_scores = {k: _get_overall_score(v) for k, v in per_doc.items()}
@@ -658,12 +676,16 @@ def _accept_compare_stage(
     console.print(f'accepted report → {run_dir / "accepted_report.md"}')
 
     # Collect accept-stage failures (accept + render) and timings for the
-    # self-contained Results line.
+    # self-contained Results line. Failures share the scores' holdout universe
+    # (else the line's ITT stats leak across the seal).
     stage_failures: list[FailureRecord] = list(accept_failures)
     stage_failures.extend(
         {"doc": pipeline.redline_key(r.source.stem, rc.name), "stage": "render", "error": r.error or "render failed"}
         for r in report.results
         if not r.ok
+    )
+    stage_failures = pipeline.filter_failure_records(
+        stage_failures, exclude_keys=exclude_keys, only_keys=only_keys,
     )
     stage_timings: dict[str, dict[str, float]] = {}
     for r in report.results:
@@ -891,6 +913,15 @@ def _emit_and_gate_benchmark(
         f'jsonl[{benchmark}]: {"appended" if appended else "no change, skipped"} → {jsonl_path}',
     )
     if do_gate:
+        if holdout_mode == "only":
+            # Holdout-only lines are diagnostics on the sealed subset — never
+            # regressions. Snapshots are keyed (vendor, benchmark) and hold the
+            # full-corpus baseline, so gating a 20-doc holdout line against one
+            # compares disjoint universes and manufactures spurious FAILs.
+            console.print(
+                f"gate[{benchmark}]: holdout-only line is a diagnostic — never gated",
+            )
+            return 0
         baseline = snapshot_emit.load_snapshot_for_benchmark(snapshots_dir, vendor, benchmark)
         result = run_gate(
             scores, baseline,
@@ -935,9 +966,17 @@ def _execute_run(
 
     ``holdout_keys``/``holdout_mode`` (from the config's ``holdout_list``): mode
     "excluded" drops the sealed keys from the primary score, "only" scores just
-    them; the mode is stamped on every emitted Results line.
+    them. The same filter is threaded through every pair-keyed benchmark
+    (script_redlines, accepted_changes, visual_redlines,
+    visual_accepted_changes) and their failure records, so each emitted line's
+    scoring universe matches its ``holdout_mode`` stamp. Benchmarks keyed by
+    plain doc stems (roundtrip, visual_rendering) cannot be filtered by pair
+    key and are stamped ``holdout_mode=None``.
     """
     run_dir.mkdir(parents=True, exist_ok=True)
+    # The two mutually-exclusive filter arguments, derived once from the mode.
+    holdout_exclude = holdout_keys if holdout_mode == "excluded" else None
+    holdout_only = holdout_keys if holdout_mode == "only" else None
 
     def _stage(name: str, total: int | None = None) -> None:
         """Notify the outer progress display that stage ``name`` started.
@@ -996,8 +1035,8 @@ def _execute_run(
             [cfg.source_of_truth, *cfg.extra_oracle_dirs],
             report.pdf_dir, run_dir / "score", dpi=use_dpi, jobs=rc.jobs, candidate_tool=rc.name,
             base_map=_base_pdf_map(cfg), null_cache_path=jsonl_path.parent / "null_baseline.json",
-            exclude_keys=holdout_keys if holdout_mode == "excluded" else None,
-            only_keys=holdout_keys if holdout_mode == "only" else None,
+            exclude_keys=holdout_exclude,
+            only_keys=holdout_only,
         )
         gallery_path = gallery_emit.write_gallery(
             run_dir,
@@ -1012,7 +1051,10 @@ def _execute_run(
         if accept_compare and accepted_oracle_pdf is not None:
             if pattern == "*.docx":
                 _stage("accept-compare")
-                accept_outcome = _accept_compare_stage(rc, run_dir, src_dir, per_doc, accepted_oracle_pdf, use_dpi)
+                accept_outcome = _accept_compare_stage(
+                    rc, run_dir, src_dir, per_doc, accepted_oracle_pdf, use_dpi,
+                    exclude_keys=holdout_exclude, only_keys=holdout_only,
+                )
             else:
                 console.print("[yellow]accept-compare skipped (no DOCX source for this run)[/yellow]")
         if roundtrip and roundtrip_oracle_pdf is not None:
@@ -1043,6 +1085,12 @@ def _execute_run(
                 console.print(f"[yellow]{vis_name}: oracle {vis_oracle} missing, skipping[/yellow]")
                 continue
             _stage(f"visual: {vis_name}")
+            # visual_redlines / visual_accepted_changes are keyed by pair key,
+            # so the sealed-holdout filter applies to them exactly as it does
+            # to script_redlines (lenient key matching: their oracle corpora
+            # cover only a subset of the holdout sampling universe).
+            # visual_rendering is keyed by plain doc stems — unfilterable by
+            # pair key; its line is stamped holdout_mode=None at emission.
             if vis_name == "visual_rendering":
                 vis_per_doc = pipeline.score_folders_base(
                     Path(vis_oracle), report.pdf_dir, run_dir / f"score_{vis_name}",
@@ -1052,11 +1100,14 @@ def _execute_run(
                 vis_per_doc = pipeline.score_folders_accepted(
                     Path(vis_oracle), report.pdf_dir, run_dir / f"score_{vis_name}",
                     dpi=use_dpi, jobs=rc.jobs,
+                    exclude_keys=holdout_exclude, only_keys=holdout_only,
                 )
             else:
                 vis_per_doc = pipeline.score_folders_full(
                     Path(vis_oracle), report.pdf_dir, run_dir / f"score_{vis_name}",
                     dpi=use_dpi, jobs=rc.jobs, candidate_tool=rc.name,
+                    exclude_keys=holdout_exclude, only_keys=holdout_only,
+                    strict_filter_keys=False,
                 )
             # visual_* stay on the RAW score: candidate and oracle come from DIFFERENT
             # engines, so repagination (page-count mismatch) is endemic and pagefair
@@ -1066,15 +1117,26 @@ def _execute_run(
                 _print_benchmark_block(
                     vis_scores, vendor=rc.vendor or rc.name, benchmark=vis_name,
                 )
-            if vis_render_failures:
+            # Pair-keyed visual lines share the scores' holdout universe for
+            # their failures too; visual_rendering (plain-stem keys, stamped
+            # holdout_mode=None) keeps the full failure list.
+            vis_failures = (
+                list(vis_render_failures)
+                if vis_name == "visual_rendering"
+                else pipeline.filter_failure_records(
+                    vis_render_failures,
+                    exclude_keys=holdout_exclude, only_keys=holdout_only,
+                )
+            )
+            if vis_failures:
                 console.print(
-                    f"[yellow]{len(vis_render_failures)} render failure(s) "
+                    f"[yellow]{len(vis_failures)} render failure(s) "
                     f"recorded on {vis_name}[/yellow]"
                 )
             visual_outcomes.append(BenchmarkOutcome(
                 benchmark=vis_name, scores=vis_scores,
                 per_doc=cast("dict[str, dict[str, object]] | None", vis_per_doc),
-                failures=list(vis_render_failures), speed_samples_ms=[],
+                failures=vis_failures, speed_samples_ms=[],
                 timings=vis_render_timings,
             ))
     finally:
@@ -1112,6 +1174,14 @@ def _execute_run(
     # Functional-lens machinery crashes are recorded for visibility; the docs keep
     # their pixel scores (ITT only zeroes docs with NO score).
     failures.extend(functional_failures)
+    # The failures on a line must share the scores' holdout universe: scoring is
+    # key-filtered above but generate/render failures come from the FULL corpus,
+    # and compute_aggregate_itt zero-fills every failed doc — unfiltered, sealed
+    # docs' failures would enter the headline ITT (and a holdout-only line's ITT
+    # would absorb non-holdout failures).
+    failures = pipeline.filter_failure_records(
+        failures, exclude_keys=holdout_exclude, only_keys=holdout_only,
+    )
     if failures:
         console.print(f"[yellow]{len(failures)} doc(s) recorded as failed in the JSONL[/yellow]")
 
@@ -1125,6 +1195,13 @@ def _execute_run(
                 [cfg.source_of_truth, *cfg.extra_oracle_dirs],
                 report.pdf_dir, candidate_tool=rc.name,
             )
+            # Same universe as the scores/failures: an excluded run must not
+            # count sealed docs as silently dropped, and a holdout-only run
+            # only cares about the sealed keys.
+            if holdout_exclude is not None:
+                oracle_only -= holdout_exclude
+            elif holdout_only is not None:
+                oracle_only &= holdout_only
             failed_docs = {str(f.get("doc", "")) for f in failures}
             n_oracle_unmatched = len(oracle_only - failed_docs)
         except (OSError, ValueError):
@@ -1210,7 +1287,11 @@ def _execute_run(
             jsonl_path=jsonl_path, snapshots_dir=snapshots_dir,
             cfg_hash=cfg_hash, id_run=id_run, timestamp=timestamp,
             emit=emit, only_on_change=only_on_change, do_gate=do_gate,
-            holdout_mode=holdout_mode,
+            # roundtrip is keyed by plain roundtrip doc stems, not pair keys —
+            # the pair-key seal cannot filter it, so stamping the run's mode
+            # would be false provenance (and "only" would wrongly drop the line
+            # from every headline table). None = truthfully unfiltered.
+            holdout_mode=None,
         ))
 
     for vis_outcome in visual_outcomes:
@@ -1226,7 +1307,12 @@ def _execute_run(
                 jsonl_path=jsonl_path, snapshots_dir=snapshots_dir,
                 cfg_hash=cfg_hash, id_run=id_run, timestamp=timestamp,
                 emit=emit, only_on_change=only_on_change, do_gate=do_gate,
-                holdout_mode=holdout_mode,
+                # visual_rendering is keyed by plain doc stems — unfilterable
+                # by pair key, so its stamp is None (see roundtrip above). The
+                # pair-keyed visual_* lines were filtered and stamp truthfully.
+                holdout_mode=(
+                    None if vis_outcome.benchmark == "visual_rendering" else holdout_mode
+                ),
             ))
 
     # A run succeeds if ANY of its benchmarks produced scores — not just the
