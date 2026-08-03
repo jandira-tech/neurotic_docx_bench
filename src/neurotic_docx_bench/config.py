@@ -72,6 +72,11 @@ class BenchConfig:
     # separate from source_of_truth so the visual_redlines default, provenance,
     # and every single-dir consumer stay untouched. Absent → empty tuple.
     extra_oracle_dirs: tuple[Path, ...] = field(default_factory=tuple)
+    # Sealed-holdout key list (one oracle pair key per line; see
+    # ``pipeline.load_holdout``). When set, normal runs EXCLUDE these keys from
+    # scoring and ``bench run --holdout`` scores ONLY them — an overfitting
+    # detector for the visible corpus. Absent → None (no holdout).
+    holdout_list: Path | None = None
 
 
 _KNOWN_RENDERERS = frozenset({"soffice", "passthrough", "playwright", "word"})
@@ -246,6 +251,11 @@ def load_config(path: Path | str) -> BenchConfig:
             )
         extra_oracle_dirs.append(resolved_extra)
 
+    holdout_raw = data.get("holdout_list")
+    holdout_list = _resolve(holdout_raw)
+    if holdout_list is not None and not holdout_list.is_file():
+        raise ValueError(f"{path}: holdout_list not found: {holdout_raw}")
+
     return BenchConfig(
         source_of_truth=source_of_truth,
         scoring=scoring,
@@ -255,6 +265,7 @@ def load_config(path: Path | str) -> BenchConfig:
         visual_oracles=visual_oracles,
         memory_budgets=size_classes_from_config(data.get("memory_budgets") or []),
         extra_oracle_dirs=tuple(extra_oracle_dirs),
+        holdout_list=holdout_list,
     )
 
 
@@ -282,4 +293,5 @@ def environment_config_for_run(cfg: BenchConfig, run_name: str) -> BenchConfig:
         visual_oracles=cfg.visual_oracles,
         memory_budgets=cfg.memory_budgets,
         extra_oracle_dirs=cfg.extra_oracle_dirs,
+        holdout_list=cfg.holdout_list,
     )

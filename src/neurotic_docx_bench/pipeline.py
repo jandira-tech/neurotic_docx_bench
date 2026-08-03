@@ -187,6 +187,23 @@ def match_by_stem(
     return [(key, oracle[key], candidate[key]) for key in shared]
 
 
+def load_holdout(path: Path) -> set[str]:
+    """Parse a sealed-holdout key list: one oracle ``<base>_<next>`` pair key per
+    line (the same key space :func:`_index_redlines_union` returns). Blank lines
+    and ``#`` comments are skipped; a duplicated key is a hard error — a bad merge
+    must never silently change the sealed set's size.
+    """
+    keys: set[str] = set()
+    for line_no, raw in enumerate(Path(path).read_text().splitlines(), start=1):
+        key = raw.strip()
+        if not key or key.startswith("#"):
+            continue
+        if key in keys:
+            raise ValueError(f"{path}:{line_no}: duplicate holdout key {key!r}")
+        keys.add(key)
+    return keys
+
+
 def coverage(
     oracle_dir: Path | Sequence[Path],
     candidate_dir: Path,
@@ -367,6 +384,8 @@ def score_folders_full(
     candidate_tool: str | None = None,
     base_map: dict[str, Path] | None = None,
     null_cache_path: Path | None = None,
+    exclude_keys: set[str] | None = None,
+    only_keys: set[str] | None = None,
 ) -> dict[str, ScoreResult]:
     """Score every matched pair; return ``{key: score_document_result}``.
 
@@ -377,8 +396,19 @@ def score_folders_full(
     keys. The null cache is read and written ONLY in this parent process — workers
     receive the cached value (or compute the null themselves) and the parent merges
     fresh entries back once, so pool workers never race on the file.
+
+    ``exclude_keys`` / ``only_keys`` (mutually exclusive) filter the matched pairs
+    BY ORACLE PAIR KEY before any scoring work happens — the sealed-holdout hook:
+    everything downstream (scores, per-doc entries, counts) only ever sees the
+    filtered set.
     """
+    if exclude_keys is not None and only_keys is not None:
+        raise ValueError("exclude_keys and only_keys are mutually exclusive")
     pairs = match_by_stem(oracle_dir, candidate_dir, candidate_tool=candidate_tool)
+    if exclude_keys is not None:
+        pairs = [p for p in pairs if p[0] not in exclude_keys]
+    elif only_keys is not None:
+        pairs = [p for p in pairs if p[0] in only_keys]
     if not pairs:
         return {}
     from neurotic_docx_bench import score_v2 as sv2
