@@ -113,8 +113,13 @@ export async function loadEngine(
 			const cm = await mod.redlineDocx(docxIn(base), docxIn(next), {
 				author: "jubarte-native",
 			});
-			if (cm == null) return base; // no differences → identity
-			return toBytes(await mod.redlineToDocx(cm));
+			// Newer jubarte builds wrap the result as { criticmarkup, handle };
+			// older ones return the handle bare. redlineToDocx wants the handle
+			// either way, and a null result/handle means "no differences".
+			const handle =
+				cm != null && typeof cm === "object" && "handle" in cm ? cm.handle : cm;
+			if (handle == null) return base; // no differences → identity
+			return toBytes(await mod.redlineToDocx(handle));
 		};
 	}
 	if (method === "jubarte-lossless") {
