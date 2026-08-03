@@ -1,6 +1,6 @@
 # Corpus coverage matrix
 
-403 pairs tagged, 0 errors.
+403 pairs tagged, 0 errors, 0 skipped (MISSING source in mapping).
 
 ## Tag coverage
 
@@ -8,20 +8,20 @@
 | --- | --- | ---: |
 | `alternate_content` | feature | 22 |
 | `cjk` | feature | **0** |
-| `content_control` | feature | **0** |
-| `endnote` | feature | 2 |
-| `field` | feature | 72 |
+| `content_control` | feature | 15 |
+| `endnote` | feature | 17 |
+| `field` | feature | 86 |
 | `footer` | feature | 63 |
-| `footnote` | feature | 8 |
+| `footnote` | feature | 23 |
 | `header` | feature | 67 |
-| `hyperlink` | feature | 63 |
-| `image` | feature | 51 |
-| `math` | feature | **0** |
-| `multi_section` | feature | 41 |
+| `hyperlink` | feature | 78 |
+| `image` | feature | 64 |
+| `math` | feature | 15 |
+| `multi_section` | feature | 56 |
 | `nested_table` | feature | 3 |
-| `numbering` | feature | 52 |
-| `rtl` | feature | 6 |
-| `table` | feature | 131 |
+| `numbering` | feature | 67 |
+| `rtl` | feature | 4 |
+| `table` | feature | 145 |
 | `textbox` | feature | 7 |
 | `rev_del` | revision | 396 |
 | `rev_ins` | revision | 395 |
@@ -40,6 +40,4 @@
 ## Zero coverage
 
 - `cjk`
-- `content_control`
-- `math`
 - `rev_numberingChange`
