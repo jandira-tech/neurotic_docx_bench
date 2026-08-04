@@ -95,8 +95,14 @@ Key modules (`src/neurotic_docx_bench/`):
 2. Add an engine to `scripts/generate-native-redlines.ts` (Node) **or** a Python generator
    module (like `superdoc_gen.py`) that writes `<base>_<next>_<tool>_redline.docx`.
 3. Generators write `$RUN_DIR/generate_failures.json` (`[{doc, stage, error}]`) and must
-   **not** abort on partial failure — exit non-zero only on a total wipeout.
+   **not** abort on partial failure — exit non-zero only on a total wipeout. They must
+   also accept `--manifest` / `--source-dir` (the driver supplies both — see 4).
 4. Add a run to `bench.yaml`; set the version source (`dist:` / `package:` / `python_package:`).
+   Write **one** `generate:` invocation with **no** `--manifest` / `--source-dir`: the
+   driver runs it once per entry in the yaml's top-level `corpora:` list, so every vendor
+   is scored on the same 803 pairs. Hardcoding either flag is rejected at config load.
+   A run that genuinely applies to one pool names it: `corpora: [word_based]`.
+   Adding a fourth pool = one entry in `corpora:`, and every vendor picks it up.
 5. Add a test (pytest or vitest) that asserts it emits `w:ins`/`w:del`.
 
 ## JSONL line (results/bench.jsonl) — append-only
