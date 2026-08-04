@@ -408,3 +408,102 @@ def test_carry_foreign_marker_blocks(tmp_path: Path) -> None:
     assert merged2.count("DUAL_PATH_QUALITY:BEGIN") == 1
     # No existing file → passthrough.
     assert exp._carry_foreign_marker_blocks(tmp_path / "missing.md", "x") == "x"
+
+
+def _fidelity_line(vendor: str, *, corpus_revision: str | None, mean: float) -> dict:
+    line = {
+        "vendor": vendor,
+        "benchmark": "script_redlines",
+        "tool_version": "1.0.0",
+        "overall_mean": mean,
+        "overall_median": mean,
+        "itt_mean": mean,
+        "itt_median": mean,
+        "itt_n_docs": 763 if corpus_revision else 164,
+        "n_docs": 763 if corpus_revision else 164,
+        "timestamp": "2026-08-04T00:00:00Z",
+    }
+    if corpus_revision is not None:
+        line["corpus_revision"] = corpus_revision
+    return line
+
+
+def test_rows_carry_corpus_revision(tmp_path: Path) -> None:
+    """Without this field on the row the regime split below cannot be made at all."""
+    p = tmp_path / "bench.jsonl"
+    p.write_text(
+        json.dumps(_fidelity_line("current-tool", corpus_revision="b7f467074a51", mean=76.0))
+        + "\n"
+        + json.dumps(_fidelity_line("legacy-tool", corpus_revision=None, mean=92.0))
+        + "\n",
+    )
+    rows = exp.rows_from_jsonl(p)
+    by_vendor = {str(r["vendor"]): r for r in rows}
+    assert by_vendor["current-tool"]["corpus_revision"] == "b7f467074a51"
+    assert by_vendor["legacy-tool"]["corpus_revision"] is None
+
+
+def test_fidelity_tables_split_current_and_legacy_corpus_regimes(tmp_path: Path) -> None:
+    """README splits on `corpus_revision` presence; RESULTS.md's per-benchmark tables
+    still mixed regimes, so a legacy tool scored on 164 easy docs outranked a current
+    tool scored on 763 — a ranking that reads as a real result and is an artifact of
+    which corpus each line ran on.
+    """
+    p = tmp_path / "bench.jsonl"
+    p.write_text(
+        json.dumps(_fidelity_line("current-tool", corpus_revision="b7f467074a51", mean=76.0))
+        + "\n"
+        + json.dumps(_fidelity_line("legacy-tool", corpus_revision=None, mean=92.0))
+        + "\n",
+    )
+    md = exp.to_fidelity_markdown(exp.rows_from_jsonl(p), p)
+
+    assert "**Current corpus**" in md
+    assert "**Legacy corpus**" in md
+    # The legacy tool must not be ranked #1 over the current one: they live in
+    # different tables, so each table restarts its own numbering.
+    current_at = md.index("**Current corpus**")
+    legacy_at = md.index("**Legacy corpus**")
+    assert current_at < legacy_at
+    assert md.index("current-tool") < legacy_at, "current tool must sit in the current table"
+    assert md.index("legacy-tool") > legacy_at, "legacy tool must sit in the legacy table"
+
+
+def test_single_regime_renders_one_unsplit_table(tmp_path: Path) -> None:
+    """Splitting when there is nothing to split against would add noise to every
+    benchmark that only ever ran on one corpus."""
+    p = tmp_path / "bench.jsonl"
+    p.write_text(
+        json.dumps(_fidelity_line("a", corpus_revision="b7f467074a51", mean=76.0))
+        + "\n"
+        + json.dumps(_fidelity_line("b", corpus_revision="b7f467074a51", mean=80.0))
+        + "\n",
+    )
+    md = exp.to_fidelity_markdown(exp.rows_from_jsonl(p), p)
+    assert "**Current corpus**" not in md
+    assert "**Legacy corpus**" not in md
+    assert "a" in md and "b" in md
+
+
+def test_split_tables_rank_independently(tmp_path: Path) -> None:
+    """Each regime restarts at #1 — continuing the numbering across the split would
+    re-imply the cross-regime ordering the split exists to prevent."""
+    p = tmp_path / "bench.jsonl"
+    p.write_text(
+        "\n".join(
+            json.dumps(line)
+            for line in (
+                _fidelity_line("cur-hi", corpus_revision="rev", mean=80.0),
+                _fidelity_line("cur-lo", corpus_revision="rev", mean=70.0),
+                _fidelity_line("leg-hi", corpus_revision=None, mean=95.0),
+                _fidelity_line("leg-lo", corpus_revision=None, mean=90.0),
+            )
+        )
+        + "\n",
+    )
+    md = exp.to_fidelity_markdown(exp.rows_from_jsonl(p), p)
+    legacy_at = md.index("**Legacy corpus**")
+    current_block, legacy_block = md[:legacy_at], md[legacy_at:]
+    # "| 1 |" must appear in BOTH blocks — one rank-1 per regime.
+    assert "| 1 |" in current_block
+    assert "| 1 |" in legacy_block
