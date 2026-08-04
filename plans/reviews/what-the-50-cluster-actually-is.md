@@ -188,6 +188,72 @@ Three consequences:
 
 ---
 
+## Finding −1 — **page count is the dominant variable, and the targets are reachable on single-page documents alone**
+
+The last measurement of the day and the most actionable. It came from triaging the hard
+core (Finding 0) for winnability, and the answer turned out to reframe the whole
+programme.
+
+### Best achievable score, by oracle page count
+
+Best-of-four (rust / lossless / ast / docxodus 9.0.0) per document:
+
+| oracle pages | n | best-of-4 median | fraction > 92 |
+|---|---:|---:|---:|
+| **1** | **497** | **100.00** | **0.77** |
+| 2–3 | 140 | 81.65 | 0.36 |
+| 4–9 | 66 | 78.84 | 0.27 |
+| 10–29 | 44 | 74.48 | 0.34 |
+| 30+ | 8 | 59.56 | 0.25 |
+
+**Single-page documents are essentially a solved problem** — best-of-four median is a
+perfect 100.00 and three quarters already clear 92. Everything else is not. This is
+exactly what Finding 2 predicts: drift cannot accumulate across pages that do not exist,
+so a one-page document either lands or it does not, while a multi-page document
+compounds.
+
+### The arithmetic that matters
+
+The corpus is **497 single-page and 266 multi-page**. The median target needs **382
+documents above 92**.
+
+> **497 > 382. Single-page documents alone are sufficient to clear the median target.**
+
+Current per-engine performance, split by page count:
+
+| engine | 1-page > 92 | rate | multi-page > 92 | rate | total > 92 |
+|---|---:|---:|---:|---:|---:|
+| rust | 251 / 497 | **0.51** | 31 / 266 | 0.12 | 282 |
+| lossless | 202 / 497 | **0.41** | 49 / 266 | 0.18 | 251 |
+| ast | 135 / 497 | **0.27** | 23 / 266 | 0.09 | 158 |
+
+Every engine is **at or below 51% on the population where the ceiling is 100.00 and 77%
+is already demonstrably achievable.** rust's single-page headroom alone is **246
+documents** against a shortfall of 100.
+
+### Why this reframes the programme
+
+Every plan, and every diagnosis in this document above, has been organised around the
+≈50 cluster — which is dominated by multi-page documents, where drift compounds, where
+the hard core lives (mean 6.1 oracle pages), and where best-of-four tops out in the 70s.
+**That is the hardest population in the corpus, and the targets do not require it.**
+
+Consequences, and they are large:
+
+1. **Re-scope every stage to single-page documents first.** The population is bigger
+   (497 vs 266), the ceiling is higher (100.00 vs 74–82), the evidence that it is winnable
+   is direct (77% already above 92 in some engine), and it is sufficient for the median
+   target on its own.
+2. **The mean target still needs the multi-page population**, since 266 documents scoring
+   ~50 drag the mean regardless. But the median and much of the perfect count do not.
+3. **This is where the transfer opportunity of Finding 3 is concentrated** — single-page
+   documents are where one engine hits 1.000 on every term and another sits at 0.5, with
+   no cumulative-drift confound to disentangle.
+4. **It explains the whole day's failure pattern.** Nine mechanisms were hunted in the
+   multi-page cluster, where causes compound and no single one dominates. On single-page
+   documents a defect either shows or does not — which is the population where mechanism
+   hunting can actually work.
+
 ## Finding 0 — the cluster is **not one population**, and that is why mechanism hunting keeps returning single-digit answers
 
 Measured last, and it should be read first. It came from a question the
@@ -241,11 +307,26 @@ core/rim split shows the origins genuinely differ.
    they are different projects.
 2. **The rim is where the targets live.** 84 already clear 92 elsewhere, which is the
    transfer opportunity of Finding 1 with a much sharper boundary.
-3. **The hard core should be triaged, not fixed.** 89 documents no engine can score above
-   59.78, enriched in `math` and long multi-page documents, with a null baseline of 42.44.
-   Whether they are winnable at all is an open question and should be answered before any
-   effort is spent — this is exactly the "architectural limit versus fix not yet found"
-   distinction C7 says to watch for.
+3. **The hard core should be triaged, not fixed. TRIAGED — see below.**
+
+> **Hard-core triage, executed.** Three tests:
+>
+> - **docxodus can do 7 of them.** On the 88 hard-core documents docxodus scored, its
+>   median is 52.04 — but its max is **100.00**, with **7 above 92 and 3 at exactly 100**.
+>   So the hard core is **not** structurally unwinnable; 82 of 89 have simply never been
+>   scored above 92 by any of four engines. Best-of-all-four median is 55.38.
+> - **It is a comparison failure, not a rendering failure.** rust's `skill_score` median
+>   on the hard core is **13.57**, against 52.30 on the rim and 90.65 on the rest. The
+>   engine is not merely rendering a correct redline badly — it is not producing the
+>   right redline at all.
+> - **It is a page-count effect.** Hard-core documents average 6.1 oracle pages against
+>   2.3 for the rest, and best-of-four falls monotonically with page count (Finding −1).
+>
+> **Verdict: hard, not impossible, and the wrong place to spend.** 82 documents needing a
+> capability no engine has demonstrated, on the corpus's longest and most complex inputs,
+> where even the best commercial engine medians at 52. C7's "architectural limit versus
+> fix not yet found" resolves toward *limit* — and Finding −1 shows the targets do not
+> require winning them.
 4. **The scorer's tolerance is a live hypothesis, not a settled one.** If the profile is
    produced by *any* sub-5 px displacement, the lever on the core may be the 5 px / 2 px
    tolerance rather than the engines. That is a benchmark-design decision, not an
