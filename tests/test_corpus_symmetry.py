@@ -327,3 +327,49 @@ def test_run_generate_single_command_still_works(tmp_path):
     run_dir.mkdir()
     cli._run_generate([_writer_cmd({"a_b": 1}, [])], run_dir)
     assert json.loads((run_dir / "generate_timings.json").read_text()) == {"a_b": 1}
+
+
+# ---------------------------------------------------------------------------
+# Plan Chapter 6, D4 — the generate timeout must scale with the corpus, and a
+# timeout must be reported as a timeout rather than as the tool's failure.
+# ---------------------------------------------------------------------------
+
+
+def test_generate_timeout_scales_with_pair_count():
+    """A 4x bigger pool gets a proportionally bigger budget.
+
+    The hard-coded 1800s budget was chosen for a 207-pair corpus. When the corpus
+    grew to 803 pairs the budget did not move, and docxodus was killed at exactly
+    1800s having generated 622 of ~763 documents — our clock recorded as their
+    failure.
+    """
+    small = cli._generate_timeout_s(pairs=200)
+    big = cli._generate_timeout_s(pairs=800)
+    assert big > small, "budget must grow with the pool it has to cover"
+    assert big >= 4 * small * 0.9, f"800 pairs got {big}s vs {small}s for 200 — not proportional"
+
+
+def test_generate_timeout_has_a_floor_for_tiny_pools():
+    """A 3-pair smoke pool must not get a 3-second budget — startup dominates."""
+    assert cli._generate_timeout_s(pairs=3) >= 300
+
+
+def test_timeout_is_reported_as_a_timeout_naming_the_budget_and_progress(tmp_path):
+    """A killed generate must say it was killed, not merely that it failed.
+
+    This is the D3/D4 disease: our budget attributed to their code. The error has
+    to name the budget and how far the tool actually got, so a slow tool can be
+    reported as slow instead of broken.
+    """
+    run_dir = tmp_path / "run"
+    (run_dir / "docx").mkdir(parents=True)
+    for i in range(7):
+        (run_dir / "docx" / f"doc{i}.docx").write_bytes(b"x")
+
+    with pytest.raises(cli.GenerateTimeout) as exc:
+        cli._run_generate(["sleep 30"], run_dir, timeout_s=0.4)
+
+    msg = str(exc.value)
+    assert "0.4" in msg, f"budget not named: {msg}"
+    assert "7" in msg, f"progress not reported: {msg}"
+    assert "timed out" in msg.lower()
