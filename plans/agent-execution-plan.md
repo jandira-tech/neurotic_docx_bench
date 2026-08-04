@@ -813,6 +813,19 @@ results:
 Per Arthur's constraint, per-fixture nitty-gritty stays recorded and unbuilt
 until the validity work lands:
 
+- **`accepted_changes` has ground truth for only one pool.**
+  `accepted_ground_truth: corpus/word_based/docx_accepted_word` holds 232 docs
+  and covers the word_based pool only; the 400-pair SuperDoc pool has no
+  accepted oracle at all. So `accepted_changes` can never reach the 803-pair
+  coverage `script_redlines` now has. This is currently harmless — on the
+  current corpus no vendor emits an `accepted_changes` row, so nobody is
+  advantaged — but it becomes a live D1-class hazard the moment that benchmark
+  is re-enabled, because the ITT denominator must then be the pool that HAS an
+  oracle (232), never the full 763. Zero-filling 531 documents that have
+  nothing to compare against would manufacture failures for every vendor.
+  Fix before re-enabling: either build the accepted oracle for the SuperDoc
+  pool, or scope the benchmark's corpus explicitly with `corpora:
+  [word_based]`.
 - Per-fixture point-chasing of the kind worth ~5 score points on a single
   document (e.g. individual `field`/`footer` edge cases from the miner's tail).
 - `nupunkt` tokenizer for `redlines` (would raise a text-only baseline;
