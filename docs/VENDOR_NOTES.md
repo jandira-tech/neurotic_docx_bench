@@ -94,7 +94,28 @@ Two disclosures:
    - the patched fork, when available in the checkout, is a **separate,
      clearly-labelled row** — never merged into the headline.
 
-   **CORRECTION (2026-08-04):** an earlier version of this entry stated the
+   **Version A/B, engine held constant (2026-08-04).** Both runs used the same
+corpus and the same explicitly-named comparison engine, so this isolates the
+version:
+
+| | docxodus 7.0.0 | docxodus 9.0.0 |
+|---|---|---|
+| documents generated (of 803) | 765 | **800** |
+| generate failures | **38** | **3** |
+| failures in `Ir.Diff.IrMarkupRenderer` (media / hyperlink import) | 20 | **0** |
+| remaining failure mode | exceptions from the vendor stack | 3 clean `"Comparison failed - empty result"` returns, no exceptions |
+
+**Our two-major-stale pin was costing docxodus 35 documents**, and it was
+turning clean refusals into thrown exceptions in our failure logs. This is the
+single clearest vindication of "benchmark the version a user actually
+installs": the engine we had been publishing numbers about was not the engine
+docxodus ships.
+
+It also settles the earlier confusion honestly — 7.0.0 *does* have the `Ir.*`
+stack, so the crash-site shift first attributed to 9.0.0 really was the named
+engine. The genuine version improvement is the one in this table.
+
+**CORRECTION (2026-08-04):** an earlier version of this entry stated the
    patched source was "not present in this checkout". That was wrong — I
    checked only `../ooxmlsdk`, the path named in `docs/SPEED.md`, found it
    missing, and generalised from one absent path to "the fork does not exist".
