@@ -24,7 +24,9 @@ from __future__ import annotations
 
 import argparse
 import difflib
+import functools
 import json
+import os
 import shutil
 import subprocess
 import tempfile
@@ -38,9 +40,37 @@ from .redlines_gen import Pair, output_name, parse_manifest
 _BLOCK_TYPES = {"paragraph", "heading", "listItem"}
 
 
+@functools.cache
+def _node_needs_webstorage_off() -> bool:
+    """True only on interpreters whose global ``localStorage`` is a method-less stub.
+
+    Node 25.x alone defines a global ``localStorage`` whose methods are absent
+    unless ``--localstorage-file`` is passed. lib0 — bundled inside
+    ``@harbour-enterprises/superdoc``, hence in any yjs-family vendor — does
+    ``typeof localStorage !== "undefined" && localStorage``, adopts the stub, and
+    dies at *import* time with ``TypeError: varStorage.getItem is not a
+    function``. The whole tool fails, not one call, so the vendor scores zero for
+    a defect in our interpreter (plan Chapter 6 D6).
+
+    Probed rather than version-matched on purpose: Node 20 *rejects*
+    ``--no-experimental-webstorage`` in NODE_OPTIONS, so hardcoding the flag
+    would break the very interpreters that already work.
+    """
+    probe = subprocess.run(
+        ["node", "-p",
+         "typeof localStorage !== 'undefined' && typeof localStorage.getItem !== 'function'"],
+        capture_output=True, text=True, check=False,
+    )
+    return probe.stdout.strip() == "true"
+
+
 def _run_cli(repo: Path, args: list[str]) -> subprocess.CompletedProcess[str]:
     cmd = ["node", str(Path(repo) / "superdoc-redline.mjs"), *args]
-    return subprocess.run(cmd, capture_output=True, text=True, check=False)
+    env = None
+    if _node_needs_webstorage_off():
+        env = {**os.environ}
+        env["NODE_OPTIONS"] = (env.get("NODE_OPTIONS", "") + " --no-experimental-webstorage").strip()
+    return subprocess.run(cmd, capture_output=True, text=True, check=False, env=env)
 
 
 def extract_blocks(docx_path: Path, ir_path: Path, *, repo: Path) -> list[dict]:
