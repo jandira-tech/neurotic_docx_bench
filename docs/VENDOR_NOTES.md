@@ -264,6 +264,14 @@ as docxodus applies and is not yet implemented here:
 Until that split exists, no `docx-redline-js` number should be published as a
 statement about AnsonLai's tool.
 
+One further trap for anyone auditing this by hand: the fork is installed at
+`src/neurotic_docx_bench/utils/docx-redline-js/node_modules/`**`@ansonlai/`**`docx-redline-js`
+— a directory named for upstream that contains `@arthrod/docx-redline-js@0.3.0`.
+Reading the path is not enough; read the `package.json` inside it. (Verified
+2026-08-04: that directory and the sibling build both hold `@arthrod` 0.3.0, so
+the *measurement* is at least self-consistent — it is the labelling, at every
+level, that points at the wrong project.)
+
 ### redlines
 
 | field | value |
