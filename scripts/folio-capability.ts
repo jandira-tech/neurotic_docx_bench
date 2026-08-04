@@ -9,7 +9,9 @@
  * for each "supported" entry points at the adapter that exercises the API.
  *
  * script_redlines: proven by scripts/generate-native-redlines.ts:loadEngine
- *   'folio' (compareDocxVersions + FolioDocxReviewer.applyOperations → w:ins/w:del).
+ *   'folio' (generateRedlineDocx → w:ins/w:del). Since folio-core 0.13.0 this is a
+ *   single native call, so nothing in the scored bytes is harness composition;
+ *   see docs/FOLIO.md "Harness-assisted disclosure".
  * accepted_changes: proven by FolioDocxReviewer.acceptAll + toBuffer.
  * roundtrip / visual_*: the API exists but NO adapter in this repo drives them
  *   end-to-end yet, so they are marked "needs-adapter" until a spike proves them.
@@ -48,16 +50,15 @@ export async function assessFolioCapabilities(): Promise<FolioCapabilityReport> 
 		},
 		script_redlines: {
 			status: "supported",
-			api: [
-				"@stll/folio-agents.compareDocxVersions",
-				"@stll/folio-core/server.FolioDocxReviewer.applyOperations",
-				"@stll/folio-core/server.FolioDocxReviewer.toBuffer",
-			],
+			api: ["@stll/folio-core/server.generateRedlineDocx"],
 			evidence:
-				"compareDocxVersions(base,next) → block diff; translate diff → FolioAIEditOperation[] " +
-				"and applyOperations(ops, {mode:'tracked-changes'}) on FolioDocxReviewer.fromBuffer(base); " +
-				"toBuffer() emits w:ins/w:del. Verified emitting both on corpus pairs " +
-				"(scripts/generate-native-redlines.ts:loadEngine 'folio').",
+				"generateRedlineDocx(base, next, {author}) returns the base package with tracked " +
+				"changes across every matched story — a single native call, no harness-side diff " +
+				"translation. Verified emitting w:ins/w:del on 59 of the first 60 corpus pairs with " +
+				"0 generate failures (the 60th is folio reporting zero changes for itself); " +
+				"scripts/generate-native-redlines.ts:loadEngine 'folio'. The pre-0.15 composition " +
+				"(compareDocxVersions + FolioDocxReviewer.applyOperations) dropped every modified " +
+				"block — see docs/FOLIO.md.",
 		},
 		roundtrip: {
 			status: "needs-adapter",
