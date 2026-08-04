@@ -497,3 +497,166 @@ old path as default until its byte-identical-scores test passes; (b) a
 drop-in may change wall-clock only — any score delta is an automatic revert;
 (c) measure and record before/after wall-clock in the PR body, on the real
 corpus, not a toy.
+
+---
+
+## Chapter 6 — Pure juice of reality (validity + fairness before any publication)
+
+Added 2026-08-04 after the Chapter 1.4 competitor sweep. The sweep did not
+merely find broken vendors — it found that **the comparison itself was not
+valid**, and that the invalidity ran in our favour. Nothing in RESULTS.md that
+compares jubarte to another vendor may be published until 6.1–6.4 land.
+
+### 6.1 The three defects (measured, not suspected)
+
+**D1 — Corpus asymmetry. Only jubarte-rust is scored on the full corpus.**
+`jubarte-rust`'s `generate:` chains three invocations (`word_based`,
+`word_based` randomized, `word_redlines_superdoc`) = 803 pairs. Every other
+run omits `--manifest`, so it inherits the argparse default
+`corpus/word_based/centralized_mapping.csv` — 207 pairs. Observed n from the
+1.4 sweep: `jubarte-wasm` **n=195**, `superdoc` **n=171**, against
+`jubarte-rust` **n=763**. The headline table therefore compares tools across
+*different document sets*. It is not that one number is slightly noisy; the
+numbers are not the same measurement.
+
+Note the direction: the SuperDoc pool is much harder (rust 67.32 there vs
+85.02 on word_based), so the asymmetry currently *understates* jubarte. That
+does not make it publishable. A comparison whose validity depends on which
+way the bias happens to point is not a measurement.
+
+**D2 — Version staleness. Competitors are frozen; jubarte is at HEAD.**
+Checked against the registries on 2026-08-04:
+
+| pin | bench.yaml | latest | gap |
+|---|---|---|---|
+| `docxodus` | 7.0.0 | **9.0.0** | 2 majors |
+| `@stll/folio-core` | 0.3.1 | **0.15.13** | 12 minors |
+| `superdoc` (editor) | 1.44.1 | **2.3.0** | 1 major |
+| `superdoc-sdk` (Python) | 1.19.2 | **2.0.0** | 1 major |
+| `@superdoc-dev/sdk` | 1.19.2 | 1.21.3 | 2 minors |
+| `@stll/folio-react` | 0.5.0 | 0.13.2 | 8 minors |
+| `redlines` | 0.6.1 | 0.6.1 | current |
+
+Worse than passive staleness: the pin is *enforced downward*. The repo's
+`package.json` carried `docxodus ^7.1.0`; the 1.4 sweep's tool_updater
+**downgraded it to ^7.0.0** to honour the pin. We were actively installing an
+older competitor than the one already present.
+
+The pin comment ("Do NOT bump to @latest without re-review — the pin keeps CI
+reproducible") is a good rule that produced a bad outcome: reproducibility was
+preserved and fairness was silently spent. Both are obtainable — see 6.3.
+
+**D3 — Our missing infrastructure recorded as vendor failure.**
+`superdoc-native` and `superdoc-redlines` both failed with `tool build dir not
+found` — the gitignored clones (`superdoc/`, `superdoc-redlines/`) are simply
+absent. `superdoc-ts` failed `ERR_MODULE_NOT_FOUND` resolving
+`@superdoc-dev/sdk` from `utils/superdoc/node_modules/` while the updater
+installs it at the repo root. The `docxodus-playwright-*` runs point at
+`utils/docxodus/Docxodus/npm`, which does not exist either.
+
+None of these are the vendor's code. **ITT zero-fills a tool that ran and
+produced bad output; it must never zero-fill a tool we failed to install.**
+The distinction is load-bearing and is now a rule (6.5).
+
+### 6.2 Definition — what "pure juice" requires
+
+A cross-vendor number is publishable only when all six hold:
+
+1. **Same document set.** Identical manifests, identical holdout exclusion,
+   identical `corpus_revision`. Report per-subcorpus splits alongside the
+   aggregate, because the pools differ in difficulty by ~18 mean points.
+2. **Same oracle and renderer.** Already true (LibreOffice 26.2.4.2, Word
+   redline PDFs); the fingerprint canary guards it.
+3. **Latest released version of every competitor**, resolved on the run date
+   and recorded in the line, not a pin chosen months earlier.
+4. **Honest ITT** — a tool that runs and fails scores its failure. A tool we
+   could not install is `UNINSTALLED`, reported as a gap in *our* harness.
+5. **Adapter parity.** If jubarte gets a bespoke integration, a competitor
+   that needs one gets the same effort. Where we cannot reach parity, the
+   deficit is disclosed in the row, not absorbed into the score.
+6. **Disclosed thumbs.** Every place we touched a vendor's code, forked it, or
+   know of an unfixed bug is written down next to the number.
+
+### 6.3 Tasks
+
+**6.3.1 — Corpus symmetry.** Give every `script_redlines` run the same
+three-manifest chain jubarte-rust has. All generators already accept
+`--manifest`/`--source-dir` (verified: `superdoc_gen.py:171`,
+`redlines_gen.py:240`, `superdoc_redlines_gen.py:248`, and
+`generate-native-redlines.ts:991`), so this is configuration, not code. Better
+than replicating a 3× line into every run: hoist the corpus list into the
+config and let the driver expand it, so a future fourth pool cannot be added
+to one vendor and forgotten on the rest. *Acceptance:* every vendor's
+`itt_n_docs` equals jubarte's, or the shortfall is an explicit per-doc failure.
+
+**6.3.2 — Version currency.** Replace fixed pins with **resolve-at-run-date +
+record**: bench resolves the latest release, writes the exact resolved version
+into the line, and CI reproducibility comes from the recorded version and the
+lockfile rather than from a stale ceiling. Requires re-review of each adapter
+against the new major (see 6.3.3). *Acceptance:* no vendor more than one
+release behind on the run date; `package.json` is never downgraded by a run.
+
+**6.3.3 — Adapter re-review per major bump.** docxodus 7→9, folio-core
+0.3→0.15, superdoc-sdk 1→2, superdoc editor 1.44→2.3 are all breaking-change
+candidates. One agent per vendor family, in its own worktree, red-green: a
+failing smoke fixture first, then the adapter fix. A vendor whose API we
+cannot drive after honest effort is recorded `ADAPTER_GAP` with the specific
+call that broke — never silently zero.
+
+**6.3.4 — Install the missing tools.** Clone `superdoc/` and
+`superdoc-redlines/`, restore the docxodus local build, fix the `superdoc-ts`
+module resolution path. *Acceptance:* zero runs failing with `tool build dir
+not found` or `ERR_MODULE_NOT_FOUND`.
+
+**6.3.5 — Re-run the full sweep and publish** with per-subcorpus splits and a
+disclosure column.
+
+### 6.4 Disclosure ledger (constraint: do not bury secrets)
+
+Maintained in `docs/VENDOR_NOTES.md`, one row per vendor, published beside the
+results:
+
+- **docxodus** — a bug we found was fixed locally and the upstream PR was
+  **not accepted**. Consequence: the *published* package still has it. The
+  headline benchmarks the published upstream release, because that is what a
+  user installs; the patched fork is a separate, clearly-labelled row. Both
+  numbers are shown. Benchmarking only the fork would flatter them; benchmarking
+  only upstream while sitting on a fix and saying nothing would bury the fact
+  that the defect is known and fixable.
+- **jubarte (all three engines)** — ours, benchmarked at repo HEAD, with a
+  bespoke three-manifest generate chain and the deepest adapter work in the
+  repo. Stated plainly: the home team has the home-field advantage in
+  integration effort, and 6.2(5) is the remedy.
+- Any vendor where we wrote the alignment the tool does not provide
+  (`superdoc-redlines` — our `superdoc_redlines_gen.py` supplies the block
+  alignment its CLI lacks; `folio` — our adapter composes two headless APIs
+  because there is no single compare call) is marked **harness-assisted**,
+  because part of the score is our code, not theirs.
+
+### 6.5 Honesty clauses (extend 4.6)
+
+- A failure is attributed to the vendor **only** when their code ran and
+  produced the failure. Harness/install/build failures are `UNINSTALLED` or
+  `ADAPTER_GAP`, are excluded from the vendor's score, and are reported as our
+  gaps. Zero-filling our own breakage as their score is the worst available
+  outcome: it is both wrong and self-serving.
+- No cross-vendor number ships without its `n` and its `corpus_revision` next
+  to it. Two different `n` values in one table is a defect, not a footnote.
+- If a fix to our harness moves a competitor's score up, it ships with the
+  same urgency as one that moves jubarte's up.
+
+### 6.6 Deferred — noted, deliberately not done now
+
+Per Arthur's constraint, per-fixture nitty-gritty stays recorded and unbuilt
+until the validity work lands:
+
+- Per-fixture point-chasing of the kind worth ~5 score points on a single
+  document (e.g. individual `field`/`footer` edge cases from the miner's tail).
+- `nupunkt` tokenizer for `redlines` (would raise a text-only baseline;
+  currently absent, which is honest but not its best showing).
+- Warmed/persistent LibreOffice (Chapter 5 drop-in) — wall-clock only.
+- Per-vendor adapter optimisation beyond making the current API work.
+
+Rationale: each is a small, real gain, and every one of them changes a number.
+Changing numbers while the measurement is still invalid produces motion, not
+progress. Validity first, then the tail.
