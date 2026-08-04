@@ -195,6 +195,13 @@ def rows_from_jsonl(path: Path) -> list[dict[str, object]]:
                 "n_lens_disagree": data.get("n_lens_disagree"),
                 "lens_disagree_rate": data.get("lens_disagree_rate"),
                 "scores": data.get("scores") if isinstance(data.get("scores"), dict) else None,
+                # Regime marker: lines stamped with corpus_revision ran on the current
+                # corpus, older lines on smaller ones. Their means are not comparable,
+                # so to_fidelity_markdown ranks them in separate tables (same predicate
+                # as buildFidelityTable in scripts/update-readme-ranking.ts).
+                "corpus_revision": (
+                    None if data.get("corpus_revision") is None else str(data["corpus_revision"])
+                ),
             }
             key = (vendor, benchmark, version)
             cur = best.get(key)
@@ -586,48 +593,70 @@ def to_fidelity_markdown(rows: list[dict[str, object]], source: Path) -> str:
         lines.append("")
         lines.append(label if label != bench else f"`{bench}`")
         lines.append("")
-        table_rows: list[list[str]] = []
-        for rank, r in enumerate(items, start=1):
-            table_rows.append(
-                [
-                    str(rank),
-                    _escape_cell(r["vendor"]),
-                    _escape_cell(r.get("tool_version") or "—"),
-                    _escape_cell(_format_num(r["mean"])),
-                    _escape_cell(_format_num(r["median"])),
-                    _escape_cell(_format_num(r.get("itt_mean"))),
-                    _escape_cell(_format_num(r.get("itt_median"))),
-                    _escape_cell(_format_num(r.get("skill_median"))),
-                    _escape_cell(_format_num(r.get("n_failures"))),
-                    _escape_cell(_format_num(r["n_docs"])),
-                    _escape_cell(_format_num(r.get("itt_n"))),
-                    _escape_cell(_format_num(r.get("exact_100"))),
-                    _escape_cell(_format_num(r.get("at_least_90"))),
-                    _escape_cell(_format_num(r.get("below_50"))),
-                ]
+
+        # Corpus regimes are NOT comparable — a legacy tool scored on 164 easy docs
+        # would otherwise outrank a current tool scored on 763, and the table would
+        # read as a real result. Each regime gets its own table and its own rank 1.
+        current = [r for r in items if r.get("corpus_revision") is not None]
+        legacy = [r for r in items if r.get("corpus_revision") is None]
+        if current and legacy:
+            groups = [
+                ("**Current corpus** (lines stamped with `corpus_revision`):", current),
+                (
+                    "**Legacy corpus** (older, smaller corpora — not comparable with "
+                    "the rows above; kept for history until each tool re-runs):",
+                    legacy,
+                ),
+            ]
+        else:
+            groups = [("", current or legacy)]
+
+        for heading, group in groups:
+            if heading:
+                lines.append(heading)
+                lines.append("")
+            lines.extend(
+                _table(
+                    [
+                        "#",
+                        "vendor",
+                        "version",
+                        "mean",
+                        "median",
+                        "itt_mean",
+                        "itt_median",
+                        "skill_median",
+                        "failures",
+                        "n_docs",
+                        "itt_n",
+                        "exact_100",
+                        "≥90",
+                        "<50",
+                    ],
+                    [
+                        [
+                            str(rank),
+                            _escape_cell(r["vendor"]),
+                            _escape_cell(r.get("tool_version") or "—"),
+                            _escape_cell(_format_num(r["mean"])),
+                            _escape_cell(_format_num(r["median"])),
+                            _escape_cell(_format_num(r.get("itt_mean"))),
+                            _escape_cell(_format_num(r.get("itt_median"))),
+                            _escape_cell(_format_num(r.get("skill_median"))),
+                            _escape_cell(_format_num(r.get("n_failures"))),
+                            _escape_cell(_format_num(r["n_docs"])),
+                            _escape_cell(_format_num(r.get("itt_n"))),
+                            _escape_cell(_format_num(r.get("exact_100"))),
+                            _escape_cell(_format_num(r.get("at_least_90"))),
+                            _escape_cell(_format_num(r.get("below_50"))),
+                        ]
+                        # Rank restarts per regime: continuing the numbering across the
+                        # split would re-imply the cross-regime ordering it prevents.
+                        for rank, r in enumerate(group, start=1)
+                    ],
+                )
             )
-        lines.extend(
-            _table(
-                [
-                    "#",
-                    "vendor",
-                    "version",
-                    "mean",
-                    "median",
-                    "itt_mean",
-                    "itt_median",
-                    "skill_median",
-                    "failures",
-                    "n_docs",
-                    "itt_n",
-                    "exact_100",
-                    "≥90",
-                    "<50",
-                ],
-                table_rows,
-            )
-        )
-        lines.append("")
+            lines.append("")
         if bench == "script_redlines":
             lines.extend(_common_subset_section(rows))
             lines.extend(_paired_stats_section(rows))
