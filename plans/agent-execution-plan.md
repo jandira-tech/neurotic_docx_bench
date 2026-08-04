@@ -681,6 +681,32 @@ A cross-vendor number is publishable only when all six hold:
 6. **Disclosed thumbs.** Every place we touched a vendor's code, forked it, or
    know of an unfixed bug is written down next to the number.
 
+**D7 — A competitor carried benchmark rows that our own runs structurally could
+not receive.** Found 2026-08-04 in the docxodus 9.0.0 full-corpus result.
+
+Every `visual_*` benchmark in this config belongs to a dedicated
+`*-playwright-*` run whose entire purpose is rendering — that is how `folio`
+and `superdoc` are arranged, each with three separate playwright runs. But the
+**`docxodus` generating run** (`render: soffice`) *also* declared
+`visual_rendering`, `visual_redlines` and `visual_accepted_changes`. No other
+generating run does, including all three of ours, which declare only
+`accepted_changes`, `script_redlines`, `roundtrip`.
+
+Measured consequence: docxodus picked up three extra published rows, two of
+them **total wipeouts** (`visual_rendering` n_docs=0 of 20,
+`visual_accepted_changes` n_docs=0 of 19), while jubarte carried none and could
+not have. A competitor-only zero manufactured by our own configuration is not a
+measurement.
+
+Fixed by removing `visual_*` from the generating run; the `docxodus-playwright-*`
+runs already cover those oracles properly.
+
+The general rule this yields, added to 6.2: **two vendors are only comparable
+when they are asked the same questions.** Differing benchmark *sets* between
+runs of the same kind is the same defect class as differing corpora (D1) — it
+just hides one level up, in which rows exist at all rather than in how many
+documents each row covers.
+
 ### 6.2b Checked and cleared (negative results worth recording)
 
 Suspicions that were tested and did **not** hold. Recorded so nobody re-opens
@@ -787,6 +813,19 @@ results:
 Per Arthur's constraint, per-fixture nitty-gritty stays recorded and unbuilt
 until the validity work lands:
 
+- **`accepted_changes` has ground truth for only one pool.**
+  `accepted_ground_truth: corpus/word_based/docx_accepted_word` holds 232 docs
+  and covers the word_based pool only; the 400-pair SuperDoc pool has no
+  accepted oracle at all. So `accepted_changes` can never reach the 803-pair
+  coverage `script_redlines` now has. This is currently harmless — on the
+  current corpus no vendor emits an `accepted_changes` row, so nobody is
+  advantaged — but it becomes a live D1-class hazard the moment that benchmark
+  is re-enabled, because the ITT denominator must then be the pool that HAS an
+  oracle (232), never the full 763. Zero-filling 531 documents that have
+  nothing to compare against would manufacture failures for every vendor.
+  Fix before re-enabling: either build the accepted oracle for the SuperDoc
+  pool, or scope the benchmark's corpus explicitly with `corpora:
+  [word_based]`.
 - Per-fixture point-chasing of the kind worth ~5 score points on a single
   document (e.g. individual `field`/`footer` edge cases from the miner's tail).
 - `nupunkt` tokenizer for `redlines` (would raise a text-only baseline;
