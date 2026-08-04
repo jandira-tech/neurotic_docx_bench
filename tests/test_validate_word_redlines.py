@@ -59,6 +59,33 @@ def test_redline_without_tracked_changes_is_empty_not_ok(tmp_path: Path):
     assert result.status == "empty_redline"
 
 
+def test_format_only_revision_is_ok_not_empty(tmp_path: Path):
+    """The corpus is compared with `detect format changes` ON. A pair that
+    differs only in formatting produces *PrChange revisions and NO w:ins/w:del —
+    exactly the ground truth the flag was enabled for. Counting only ins/del
+    would throw those pairs away as empty."""
+    body = (
+        "<w:p><w:pPr><w:rPr>"
+        '<w:rPrChange w:id="7" w:author="a"><w:rPr><w:b/></w:rPr></w:rPrChange>'
+        "</w:rPr></w:pPr><w:r><w:t>same words, new font</w:t></w:r></w:p>"
+    )
+    result = vwr.validate_one(_docx(tmp_path / "a.docx", body))
+    assert result.status == "ok"
+    assert result.insertions == 0
+    assert result.deletions == 0
+    assert result.format_changes == 1
+
+
+def test_every_format_change_element_kind_counts(tmp_path: Path):
+    """Word emits a different *PrChange per object kind; missing one silently
+    under-counts revisions for whole categories of document (tables especially)."""
+    kinds = ("rPrChange", "pPrChange", "tblPrChange", "trPrChange", "tcPrChange", "sectPrChange", "tblGridChange")
+    body = "".join(f'<w:{k} w:id="{i}"/>' for i, k in enumerate(kinds))
+    result = vwr.validate_one(_docx(tmp_path / "a.docx", body))
+    assert result.format_changes == len(kinds)
+    assert result.status == "ok"
+
+
 def test_missing_file_is_reported_not_raised(tmp_path: Path):
     result = vwr.validate_one(tmp_path / "nope.docx")
     assert result.status == "missing"
