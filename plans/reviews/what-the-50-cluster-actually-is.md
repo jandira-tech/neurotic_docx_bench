@@ -188,6 +188,63 @@ Three consequences:
 
 ---
 
+## Finding 3 — the outcome is **binary**, which makes transfer mechanically tractable
+
+Measured after the two findings above, and it is the most useful of the three.
+
+On the 79 documents where lossless clears 92 and rust does not, lossless is not merely
+*better*. It is **essentially exact**:
+
+| page term | rust | lossless |
+|---|---:|---:|
+| ssim_full | 0.8765 | **0.9993** |
+| ink_f1 | 0.7613 | **0.9991** |
+| edge_iou | 0.5327 | **0.9989** |
+| color_sim | 0.0000 | **0.9833** |
+| page_count_mismatch | 6/79 | **0/79** |
+
+And it is perfectly symmetric. On the 110 documents where rust clears 92 and lossless
+does not:
+
+| page term | rust | lossless |
+|---|---:|---:|
+| ssim_full | **0.9999** | 0.9796 |
+| ink_f1 | **1.0000** | 0.7743 |
+| edge_iou | **0.9986** | 0.5922 |
+| color_sim | **1.0000** | 0.0810 |
+
+`null_score` is identical (49.22) on both sides, confirming these are the same documents
+scored the same way.
+
+**There is no middle.** On any given document an engine either reproduces Word's layout
+essentially exactly, or it drifts and lands at 50–70. This is the same 5 px cliff from
+Finding 2, seen from the other side: drift under tolerance scores ~100, drift over
+tolerance scores ~50, and almost nothing sits between.
+
+### Why this matters more than either finding above
+
+It changes what a transfer stage actually has to do. The natural reading of "port what
+lossless does" is *compare rust's output to Word's oracle and find the difference* — and
+Finding 2 shows how badly that goes: the differences are numerous, individually inert,
+and mostly irrelevant. I killed four hypotheses that way.
+
+The binary result licenses a far better experiment:
+
+> For each of the 79 documents, diff **lossless's candidate** against **rust's candidate**
+> — two outputs from the same source pair, one of which is *verified correct* by its own
+> score of ~100.
+
+That diff is small, and every difference in it is by construction score-relevant, because
+one side scores 100 and the other 50. Comparing against Word's oracle cannot distinguish
+a difference that matters from one that does not; comparing a winner against a loser can.
+The same applies in reverse for the 110, and to ast against both.
+
+**This is the concrete Stage R1/L1/A1 method, and it replaces the "harvest from your
+sibling" text in all three plans**, which never said how. It is also cheap: both artefacts
+already exist in any run directory.
+
+---
+
 ## Pre-registered prediction for the run now in flight
 
 `bench run --only jubarte-rust` is executing against `ENGINE_COMMIT.txt = 1be1fcd`
