@@ -194,3 +194,33 @@ def test_unresolvable_version_fails_only_its_own_run(tmp_path, monkeypatch):
     # The second run must still have been attempted — that is the whole point.
     assert "good" in result.output
     assert result.exit_code != 0
+
+
+def test_npm_install_pins_exactly_so_the_recorded_version_cannot_drift(monkeypatch, tmp_path):
+    """A bench.yaml pin is exact; the install must not widen it to a caret range.
+
+    Plan Chapter 6 D5. `npm install pkg@9.0.0` writes `"pkg": "^9.0.0"` into
+    package.json by default, so a later plain `npm install`/`bun install` can
+    resolve 9.1.0 while bench.yaml still says 9.0.0 — the recorded version and
+    the measured code drift apart, which is exactly the split-brain D5 names.
+    Observed live: a run rewrote `"docxodus": "9.0.0"` to `"^9.0.0"`.
+    """
+    seen: list[list[str]] = []
+
+    def fake_run(cmd, **kwargs):
+        seen.append(list(cmd))
+        class R:
+            returncode = 0
+            stdout = stderr = ""
+        return R()
+
+    monkeypatch.setattr(tool_updater.subprocess, "run", fake_run)
+    monkeypatch.setattr(tool_updater, "installed_npm_version", lambda *a, **k: "9.0.0")
+
+    tool_updater.update_npm_package("docxodus@9.0.0", tmp_path, no_update=False)
+
+    assert seen, "no install command was issued"
+    cmd = seen[0]
+    assert any(f in cmd for f in ("--save-exact", "--exact")), (
+        f"install must pin exactly or the pin silently widens to a caret: {cmd}"
+    )
