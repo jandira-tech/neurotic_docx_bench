@@ -223,13 +223,33 @@ Counterfactuals, applied to the recorded per-document scores:
 
 *(mean / median / perfect)*
 
+> **Correction, 2026-08-04.** The lever-A rows above lift the cluster to exactly 90,
+> which is why every median in that column reads 90.00 — that is an artifact of the
+> landing point I chose, not a ceiling. Lifting the same cluster to 93 instead gives
+> median **93.00 / 93.00 / 93.00** for lossless / rust / ast, clearing the target.
+> Where the mass lands matters as much as that it moves.
+
 Read that table carefully, because it splits the goal in two:
 
-- **Mean > 81 is bought entirely by lever A.** The ≈50 cluster alone carries every
-  engine past 81.
-- **Median > 92 and perfect > 200 are not.** Lifting documents to 90 moves the perfect
-  count by exactly zero. Those two targets require converting *near-misses into exact
+- **Mean > 81 and median > 92 are both bought by lever A** — the ≈50 cluster, provided
+  those documents land *above 92* rather than at 90.
+- **Perfect > 200 is not.** Lifting documents anywhere below 100 moves the perfect count
+  by exactly zero. That target alone requires converting *near-misses into exact
   matches* — precision work, not coverage work.
+
+**Why near-miss closure cannot buy the median.** The median of 763 documents is the
+382nd value, so median > 92 requires 382 documents scoring above 92:
+
+| engine | scoring > 92 today | shortfall to 382 | of the [90,100) pool, how many sit ≤ 92 |
+|---|---:|---:|---:|
+| jubarte-lossless | 251 | 131 | 26 |
+| jubarte-rust | 282 | 100 | 25 |
+| jubarte-ast | 158 | 224 | 20 |
+
+Near-miss closure can contribute at most 26 / 25 / 20 documents to shortfalls of
+131 / 100 / 224. The rest must come from the ≈50 cluster. The first version of the three
+plans assigned the median target to near-miss closure; that was wrong and is corrected
+in each of them.
 
 Near-miss inventory (documents in [90,100), the pool that must convert):
 

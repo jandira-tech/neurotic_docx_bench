@@ -56,14 +56,29 @@ to remove.
 
 Expected cost: one lens pass over 166 documents, no engine work.
 
-## Stage L2 — the ≈50 cluster (mean lever)
+## Stage L2 — the ≈50 cluster (mean **and median** lever)
 
-Whatever L1 finds, this is the stage that buys the mean target.
+Whatever L1 finds, this is the stage that buys **both** the mean and the median target.
 
-- **Target:** 166 documents at ≈51 → 90+.
-- **Arithmetic:** lever A alone takes the engine to **mean 85.43, median 90.00**.
-  Mean target cleared with 4.4 points of headroom.
-- **Does not move the perfect count at all** (142 → 142). That is Stage L4's job.
+- **Target:** 166 documents at ≈51 → **above 92**. The threshold is load-bearing, see below.
+- **Arithmetic**, lifting the cluster to each landing point:
+
+  | cluster lifted to | mean | median | perfect |
+  |---:|---:|---:|---:|
+  | 90 | 85.43 | 90.00 | 142 |
+  | **93** | **86.09** | **93.00** | 142 |
+  | 95 | 86.52 | 94.69 | 142 |
+
+- **Land the cluster above 92 or the median target is missed.** Lifting to exactly 90
+  produces a median of exactly 90.00 — 166 documents piled on one value drag the median
+  onto it. Three points higher clears the target. This is a property of where the mass
+  lands, not of how hard the fix is.
+- **Does not move the perfect count at all** (142 → 142 at every landing point below
+  100). That is Stage L4's job, and only Stage L4's.
+
+> **Correction, 2026-08-04.** The first version of this plan assigned the median target
+> to Stage L4 (near-miss closure) and described this stage as the "mean lever" only.
+> That was wrong — see the box in Stage L4.
 
 Sub-work, ordered by the L1 partition — do only the buckets L1 actually populates.
 
@@ -89,14 +104,30 @@ Sized on our data: lever B is worth +1.88 mean and **+3.47 median** on lossless 
 largest median contribution of any single feature-family fix we can size. Shared with
 Plans 2 and 3; implement once, in whatever layer all three engines can consume.
 
-## Stage L4 — near-miss closure (median and perfect levers)
+## Stage L4 — near-miss closure (**perfect-count lever only**)
 
-The one stage that actually reaches the perfect-count target, and the hardest.
+The one stage that reaches the perfect-count target, and the hardest.
 
 - **Pool:** 135 documents in [90,100).
 - **Required conversion:** 58 of 135 = **43%** to reach 201 perfect.
-- Median > 92 falls out of the same work: it needs the mass currently sitting in the
-  80s and low 90s to move up, which is the same defect population.
+
+> **Correction, 2026-08-04 — this stage does NOT buy the median.**
+>
+> The first version of this plan claimed "median > 92 falls out of the same work." It
+> does not, and the arithmetic is not close. The median of 763 documents is the 382nd
+> value, so median > 92 requires **382 documents scoring above 92**. lossless has
+> **251** today — a shortfall of **131 documents**.
+>
+> This stage cannot supply them. Of the 135 documents in [90,100), only **26** sit at
+> or below 92; the other 109 already score above 92 and converting them to 100 changes
+> the count by zero. So near-miss closure can contribute at most 26 of the 131 needed.
+>
+> The median target is bought by **Stage L2**, by landing the ≈50 cluster above 92
+> rather than at 90. That was verified directly against the recorded per-document
+> scores, not inferred.
+>
+> Credit where it is due: a crush reviewer flagged "the median-target arithmetic looks
+> broken" before it was stopped. It was right and I had not checked.
 
 Method: for each near-miss, diff the candidate render against the oracle render and
 classify the single largest residual ink region. Group by cause, fix by group. Expect

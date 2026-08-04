@@ -73,11 +73,26 @@ metric and the same corpus.
 
 ## Stage A2 — the ≈50 cluster (mean lever)
 
-- **Target:** 255 documents at ≈50.7 → 90+. The largest cluster of the three engines.
-- **Arithmetic:** lever A alone takes ast to **mean 83.00, median 90.00**. Mean target
-  cleared with 2.0 points of headroom — the thinnest margin of the three, so ast has
-  the least room for lever A to under-deliver.
-- Perfect count unmoved (84 → 84).
+- **Target:** 255 documents at ≈50.7 → **above 92**. The largest cluster of the three
+  engines, and the threshold is load-bearing.
+- **Arithmetic**, lifting the cluster to each landing point:
+
+  | cluster lifted to | mean | median | perfect |
+  |---:|---:|---:|---:|
+  | 90 | 83.00 | 90.00 | 84 |
+  | **93** | **84.01** | **93.00** | 84 |
+  | 95 | 84.68 | 95.00 | 84 |
+
+- **Land the cluster above 92 or the median target is missed.** Lifting to exactly 90
+  produces a median of exactly 90.00 — 255 documents piled on one value drag the median
+  onto it. ast has the largest cluster, so this effect is strongest here.
+- Mean target cleared with 3.0 points of headroom at the 93 landing point — still the
+  thinnest margin of the three, so ast has the least room for this stage to
+  under-deliver.
+- Perfect count unmoved (84 → 84) at every landing point below 100.
+
+> **Correction, 2026-08-04.** This stage was originally labelled the "mean lever" only,
+> with the median assigned to Stage A4. That was wrong — see the box in A4.
 
 Run the Plan 1 Stage L1 lens partition on ast's own 255 documents first. Given ast's
 page_median of 52.06, expect its ≈50 cluster to be dominated by "rendered wrong" rather
@@ -94,13 +109,33 @@ engine on any token in the benchmark. Also `combos` 54.2, `rstyle` 54.2, `linked
 Sized on ast's scores, lever B is worth +2.03 mean and +3.41 median — proportionally the
 weakest of the three, because ast's problems are broader than the style family.
 
-## Stage A4 — near-miss closure, and the [80,90) band
+## Stage A4 — near-miss closure, and the [80,90) band (**perfect-count lever only**)
 
 Only attempt after A0–A3 have landed and re-run.
 
 - **Pool:** 94 documents in [90,100) — converting all of them reaches 178, still short.
 - **Second pool:** 101 documents in [80,90), which must supply the remaining 22+.
 - Combined required conversion to clear 200: roughly **60% of everything above 80**.
+
+> **Correction, 2026-08-04 — this stage does NOT buy the median.**
+>
+> The median of 763 documents is the 382nd value, so median > 92 requires **382
+> documents scoring above 92**. ast has **158** today — a shortfall of **224**, by far
+> the worst in the family.
+>
+> Of the 94 documents in [90,100), only **20** sit at or below 92. This stage can
+> contribute at most 20 of the 224 needed.
+>
+> The median is bought by **Stage A2**, by landing the ≈50 cluster above 92 — and note
+> that ast's cluster is 255 documents, which is why A2 matters more here than anywhere
+> else. Verified against the recorded per-document scores. Flagged first by a crush
+> reviewer.
+>
+> **This strengthens the dissent at the top of this plan.** The recommendation was to
+> drop ast's perfect > 200 target and keep mean > 81 / median > 90. The corrected
+> arithmetic says median > 92 is actually *reachable* for ast via A2 — so the revised
+> recommendation is **mean > 81 and median > 92, dropping only perfect > 200**, which
+> remains a ~60% conversion across two bands with no evidence it is attainable.
 
 This is the stage my recommendation above is about. It is a large, open-ended project
 with no evidence yet that a 60% conversion rate across two bands is reachable.
