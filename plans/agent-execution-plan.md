@@ -736,6 +736,32 @@ Two conclusions, both load-bearing:
    native per-document scores before any WASM speed claim is published; that
    precondition is now satisfied on the full corpus rather than on a subset.
 
+### 6.1c D5 is systemic, not per-vendor — every adapter needs one resolver
+
+By 2026-08-04 the split-brain had appeared in **three** vendors, each found
+separately and each after a number had already been produced:
+
+| vendor | pin installs to | adapter imported | outcome |
+|---|---|---|---|
+| `docxodus` | root `node_modules` (9.0.0) | `utils/docxodus/node_modules` (**7.0.0**) | published a "9.0.0" result that ran 7.0.0 |
+| `folio` | root `node_modules` (0.15.13) | `utils/folio/node_modules` (**0.3.1**) | run died on every pair; recorded as folio's failure |
+| `superdoc-ts` | root `node_modules` (1.21.3) | root first, then vendored | **correct** — the one adapter that searches |
+
+The pattern is unmistakable: each adapter invents its own module resolution,
+and any adapter that hardcodes a vendored path silently diverges from the pin
+the moment the two are installed separately. `superdoc-ts` is right only
+because `resolveSuperDocSdkDir` searches `cwd/node_modules` first.
+
+**Fix (not yet done): one shared resolver for every vendor adapter**, ordered
+pin-tree-first with an env override, so a new vendor cannot get this wrong by
+default. Until then, every adapter is a fresh opportunity to record one version
+and run another, and the failure is silent unless a test compares the two
+trees — which is exactly what caught docxodus, and only after publication.
+
+Symptom-level guard already in place: `generate-native-redlines.test.ts`
+asserts the installed trees agree with the bench.yaml pin. Extend it to every
+vendor, and treat the assertion as a release gate rather than a unit test.
+
 ### 6.2 Definition — what "pure juice" requires
 
 A cross-vendor number is publishable only when all six hold:
