@@ -67,10 +67,24 @@ precisely so this is checkable rather than assumed.
 
 Same lever as Plan 1 Stage L2, and rust's cluster is the middle-sized one.
 
-- **Target:** 197 documents at ≈50.6 → 90+.
-- **Arithmetic:** lever A alone takes rust to **mean 86.36, median 90.00**. Mean target
-  cleared with 5.4 points of headroom — the largest of the three engines.
-- Perfect count unmoved (158 → 158).
+- **Target:** 197 documents at ≈50.6 → **above 92**. The threshold is load-bearing.
+- **Arithmetic**, lifting the cluster to each landing point:
+
+  | cluster lifted to | mean | median | perfect |
+  |---:|---:|---:|---:|
+  | 90 | 86.36 | 90.00 | 158 |
+  | **93** | **87.14** | **93.00** | 158 |
+  | 95 | 87.65 | 95.00 | 158 |
+
+- **Land the cluster above 92 or the median target is missed.** Lifting to exactly 90
+  produces a median of exactly 90.00 — 197 documents piled on one value drag the median
+  onto it.
+- Mean target cleared with 6.1 points of headroom at the 93 landing point — the largest
+  of the three engines.
+- Perfect count unmoved (158 → 158) at every landing point below 100.
+
+> **Correction, 2026-08-04.** This stage was originally labelled the "mean lever" and
+> the median target was assigned to Stage R4. That was wrong — see the box in R4.
 
 Run the same Stage L1 lens partition first, on rust's own 197 documents. Do not assume
 the cluster has the same composition as lossless's: rust's skill/page profile is
@@ -89,12 +103,24 @@ rust's weakest tokens: `rtl` 50.2, `simple` 51.6, `styles` 55.9, `math` 58.4,
 Sized on rust's scores: lever B is worth +1.86 mean and **+5.51 median** — the largest
 median contribution of the feature-family fixes on any of the three engines.
 
-## Stage R4 — near-miss closure (median and perfect levers)
+## Stage R4 — near-miss closure (**perfect-count lever only**)
 
 - **Pool:** 149 documents in [90,100) — the largest of the three.
 - **Required conversion:** 42 of 149 = **28%**, the most achievable rate in the family
   (lossless needs 43%, ast needs more than its entire pool).
-- Median > 92 comes from the same population moving up.
+
+> **Correction, 2026-08-04 — this stage does NOT buy the median.**
+>
+> The first version claimed "median > 92 comes from the same population moving up." It
+> does not. The median of 763 documents is the 382nd value, so median > 92 requires
+> **382 documents scoring above 92**. rust has **282** today — a shortfall of **100**.
+>
+> Of the 149 documents in [90,100), only **25** sit at or below 92; the rest already
+> score above 92, so converting them to 100 changes the count by zero. This stage can
+> contribute at most 25 of the 100 needed.
+>
+> The median is bought by **Stage R2**, by landing the ≈50 cluster above 92. Verified
+> against the recorded per-document scores. Flagged first by a crush reviewer.
 
 Because rust has both the biggest pool and the smallest required rate, **this is the
 engine to attempt the perfect-count target on first.** If 28% proves out of reach here,
