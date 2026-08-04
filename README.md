@@ -32,11 +32,16 @@ bun run update-readme-ranking                 # tables between RANKING markers
 > *redline-markup fidelity vs Word*, not renderer drift. Feeding the oracle’s own source
 > DOCX back through that pipeline scores **100** (sanity check).
 
-> [!WARNING]
-> **Do not read the cross-vendor rows below as a fair comparison yet.** We are jubarte's
-> authors. An audit begun 2026-08-04 found **seven** defects in the comparison, most of
-> them favouring us, and several rows are **retracted outright**. Fixes are landing in
-> the open; per-vendor disclosures are in [`docs/VENDOR_NOTES.md`](docs/VENDOR_NOTES.md)
+> [!IMPORTANT]
+> **The audit changed who wins.** We are jubarte's authors. An audit begun 2026-08-04
+> found nine defects in this comparison, most of them favouring us. After fixing them,
+> **`docxodus 9.0.0` leads the redline table — 80.24 ITT mean / 91.11 median against
+> jubarte's best 77.02 / 78.53, with 186 perfect scores to our 158.**
+>
+> It was hidden by our own configuration: bench.yaml pinned `docxodus@7.0.0`, two majors
+> stale, and that build failed 38 documents where 9.0.0 fails 3. The engine we had been
+> publishing numbers about is not the engine docxodus ships. Rows are still being
+> re-measured; per-vendor disclosures are in [`docs/VENDOR_NOTES.md`](docs/VENDOR_NOTES.md)
 > and the full write-up is Chapter 6 of the execution plan.
 >
 > **Retractions — these rows measured our bugs, not the vendor:**
@@ -87,14 +92,15 @@ Sorted by **ITT median** (intent-to-treat: every failed doc scores 0, so crashin
 
 | Rank | Vendor | Version | Docs | ITT Docs | ITT Mean | ITT Median | Mean | Median | Perfect (100) | Failures |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | jubarte (lossless) | jubarte-final@d43557e042c1 | 763 | 763 | 77.02 | 78.53 | 77.02 | 78.53 | 142 | 0 |
-| 2 | jubarte-rust | jubarte-rust@fcea02da49f4 | 763 | 763 | 76.21 | 77.95 | 76.21 | 77.95 | 158 | 0 |
-| 3 | jubarte-wasm | 0.1.0 | 763 | 763 | 76.21 | 77.95 | 76.21 | 77.95 | 158 | 0 |
-| 4 | jubarte-ast | jubarte-final@d43557e042c1 | 755 | 763 | 69.83 | 68.30 | 70.57 | 68.67 | 84 | 9 |
-| 5 | docxodus | 9.0.0 | 707 | 763 | 51.70 | 51.54 | 55.79 | 52.45 | 11 | 56 |
+| 1 | docxodus | 9.0.0 | 760 | 763 | 80.24 | 91.11 | 80.55 | 91.19 | 186 | 4 |
+| 2 | jubarte (lossless) | jubarte-final@d43557e042c1 | 763 | 763 | 77.02 | 78.53 | 77.02 | 78.53 | 142 | 0 |
+| 3 | jubarte-rust | jubarte-rust@fcea02da49f4 | 763 | 763 | 76.21 | 77.95 | 76.21 | 77.95 | 158 | 0 |
+| 4 | jubarte-wasm | 0.1.0 | 763 | 763 | 76.21 | 77.95 | 76.21 | 77.95 | 158 | 0 |
+| 5 | jubarte-ast | jubarte-final@d43557e042c1 | 755 | 763 | 69.83 | 68.30 | 70.57 | 68.67 | 84 | 9 |
 | 6 | superdoc | 1.21.3 | 665 | 763 | 46.30 | 50.16 | 53.13 | 51.56 | 3 | 115 |
-| 7 | redlines | 0.6.1 | 745 | 763 | 44.86 | 47.05 | 45.94 | 47.14 | 0 | 18 |
-| 8 | superdoc | 2.0.0 | 331 | 763 | 19.61 | 0.00 | 45.19 | 46.72 | 1 | 432 |
+| 7 | docx-redline-js | 0.3.0 | 746 | 763 | 45.16 | 47.22 | 46.19 | 47.42 | 0 | 17 |
+| 8 | redlines | 0.6.1 | 745 | 763 | 44.86 | 47.05 | 45.94 | 47.14 | 0 | 18 |
+| 9 | superdoc | 2.0.0 | 331 | 763 | 19.61 | 0.00 | 45.19 | 46.72 | 1 | 432 |
 
 **Legacy corpus** (older, smaller corpora — not comparable with the rows above; kept for history until each tool re-runs):
 
