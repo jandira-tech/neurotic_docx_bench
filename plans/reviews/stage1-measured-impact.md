@@ -404,7 +404,9 @@ before both runs:
 | +0.0016 | `behavior__math_groupchr_tests_4a4970fc_behavior__math_limit_tests_6dc07867` |
 | −0.0008 | `behavior__math_groupchr_tests_4a4970fc_behavior__sd_2447_toc_tab_alignment_8319c14c` |
 
-This is render/raster nondeterminism confined to a handful of SuperDoc-pool fixtures
+Neither rust run is inside the `soffice`-kill window flagged in the D3 note above (they
+ran 10:41 and 17:47–18:22:54; the kill belongs to the 18:31 WASM run), so this is not that
+either. It is render/raster nondeterminism confined to a handful of SuperDoc-pool fixtures
 (anchored images, tables, math) — the same fixtures behind the 0.004 disagreements in the
 existing native-vs-WASM control. **Its worst excursion, +12.75, exceeds R-tail's own
 10-point threshold.** Until that is characterised, a single-document R-tail trip on one of
@@ -440,6 +442,62 @@ resulting binary is **md5-identical** (`32484369cd2d407345283227382129d7`) to th
 baseline run used. The baseline is therefore exactly "the engine one commit earlier", not
 "whatever happened to be vendored" — which is what makes every diff in this appendix
 attributable to the single commit under test.
+
+### H. `jubarte-wasm` — parity holds, and the pin is broken
+
+The WASM adapter was rebuilt at `1be1fcd` (`wasm-pack build --target nodejs --release`)
+and re-run: `019fcee7-9a00-70dc-91cf-0627d793297f`, mean 76.6806, median 78.8046,
+n_docs 762.
+
+**Parity with the native CLI holds at the new commit.** Native and WASM outputs are
+identical for 752 of 803 pairs once `w:author` and `w:date` are normalised (the native
+CLI stamps `w:author="Redline"`, the WASM adapter stamps `"jubarte-wasm"` — a harness
+asymmetry, not an engine one); the 51 that differ do so only in GUID-named media parts
+and their rels. On score, **3 of 762 documents differ, by at most 0.004**.
+
+Two defects make the recorded line unattributable, and they matter more than the number:
+
+1. **`resolve_local_version` never reaches the content hash for this dist.**
+   `pkg/package.json` carries `"version": "0.1.0"`, and the function returns a
+   `package.json` version when one exists — before it looks at the content hash or at
+   `ENGINE_COMMIT.txt`. The 13:32 run at the **previous** engine commit and the 22:31 run
+   at `1be1fcd` are both pinned `0.1.0`. **Two different engines, one identical pin** —
+   the same D5 split-brain that produced the retracted docxodus "9.0.0" number, sitting in
+   the log right now. Until `tool_updater.resolve_local_version` prefers `ENGINE_COMMIT.txt`
+   (or ignores a `package.json` version for dists that carry one), no WASM number should
+   be published with a version label. `src/**/*.py` was deliberately not touched during
+   this measurement, so the fix is left to whoever owns that module.
+2. **The dist is not vendored at all.**
+   `src/neurotic_docx_bench/utils/jubarte/jubarte-wasm` is a **symlink** to
+   `~/temp/T/jubarte-redlines/jubarte-wasm`. Its `pkg/` is whatever the engine checkout's
+   branch last built, so switching branches in the engine repo silently changes what the
+   bench runs, with no pin movement to show for it.
+
+**And a harness flake that trips three of the four ratchets.** Against its own previous
+run the WASM candidate trips R-perfect, R-fail *and* R-tail on one document:
+
+- `bold_underline_highlight_demo_id_paraid_overflow_book_catalog_id_paraid_overflow`
+  — 100.0000 → 0.0000, recorded as a `render`-stage failure:
+  `SfxBaseModel::impl_store … failed: 0x11b (Error Area:Io Class:Abort Code:27)`.
+
+**Re-rendering that exact candidate DOCX by hand succeeds.** It is a LibreOffice I/O
+abort, not an engine regression — the native run scored the same document 100.0, and
+native and WASM produce equivalent output for it. This is almost certainly the
+broad-pattern `soffice` kill flagged in the D3 note above: the kill window is exactly this
+run, and the symptom is a store abort with no PDF written (that one file is missing from
+`pdf/`, which otherwise holds 803 of 803, zero zero-byte, alongside 803 intact `docx/`).
+**So the D3 warning was right that this run was at risk, and wrong that its result is
+untrustworthy: the damage is one missing PDF, identified by name, on a document that
+renders fine on retry.** Excluding it, the WASM run is sound and matches native.
+
+Its second R-tail offender is the same
+`super_editor__two_column_two_page_0b8a37c5_behavior__sd_2672_nested_table_dfac08bb`
+document as the native run, at the same −47.03.
+
+Taken with §D, that is two independent ways for the harness alone to trip a C1 ratchet: a
+render flake that manufactures a 100 → 0, and ±12.75 of scoring noise on a handful of
+SuperDoc fixtures. C1's per-document guarantees cannot currently distinguish either from a
+real regression without exactly the kind of by-hand check performed here.
 
 ---
 
