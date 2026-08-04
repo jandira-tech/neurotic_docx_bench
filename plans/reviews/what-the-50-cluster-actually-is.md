@@ -254,6 +254,47 @@ Consequences, and they are large:
    documents a defect either shows or does not — which is the population where mechanism
    hunting can actually work.
 
+### The concrete target set: 130 documents
+
+Drilling into rust's **246 single-page failures** (of 497):
+
+- **130 of them (53%) are already scored above 92 by a sibling** — docxodus solves **102**,
+  lossless 48, ast 40. **77 have a sibling at exactly 100.**
+- rust needs **+100 above 92**. **130 candidates exist inside the single-page population
+  alone**, with no cumulative-drift confound to disentangle.
+
+**The term profile makes these tractable in a way the multi-page cluster is not:**
+
+| term | rust single-page FAIL | rust single-page PASS |
+|---|---:|---:|
+| ssim_full | 0.9742 | **1.0000** |
+| ssim_small | 0.9579 | **1.0000** |
+| ink_f1 | 0.5852 | **1.0000** |
+| edge_iou | 0.3803 | **1.0000** |
+| color_sim | 0.0000 | **1.0000** |
+| `skill_score` (median) | 62.53 | **100.00** |
+
+**When rust succeeds on a single-page document it is pixel-exact — 1.0000 on every term,
+not 0.99.** So the binary outcome of Finding 3 is not a multi-page artefact; it holds on
+the population where the targets live.
+
+On failures `ssim_full` stays at 0.974 (the page is structurally right) while `ink_f1`
+collapses to 0.585 and `color_sim` to 0.000 — the displacement signature again, but on
+**one page**, so it cannot be accumulation. It is a *localised* misplacement. And
+`skill_score` at 62.53 says the markup itself is partly wrong too, not merely its
+rendering.
+
+The failures are **not** bimodal within single-page: 87 in [40,60), 91 in [60,80), 68 in
+[80,92) — a continuous gradient of displacement, consistent with varying amounts of one
+kind of defect rather than several distinct ones. Token enrichment is weak and broad
+(`hyperlink` 1.6×, `list` 1.5×, nothing above 1.9×), which — per the fixture-token lesson
+— means the defect is not confined to a feature family.
+
+**This is the recommended next unit of work**, and it is the first one in this programme
+with all four of: a named population (130), a proven ceiling (a sibling already at >92,
+77 of them at 100), no confound (single page, no accumulation), and sufficiency (130 > the
+100 rust needs).
+
 ## Finding 0 — the cluster is **not one population**, and that is why mechanism hunting keeps returning single-digit answers
 
 Measured last, and it should be read first. It came from a question the
