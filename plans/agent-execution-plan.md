@@ -507,7 +507,7 @@ merely find broken vendors — it found that **the comparison itself was not
 valid**, and that the invalidity ran in our favour. Nothing in RESULTS.md that
 compares jubarte to another vendor may be published until 6.1–6.4 land.
 
-### 6.1 The three defects (measured, not suspected)
+### 6.1 The measured defects (each found by measurement, not argument)
 
 **D1 — Corpus asymmetry. Two thirds of the runs are scored on a quarter of the
 corpus, and they share a table with the ones that are not.**
@@ -662,25 +662,6 @@ Rules adopted:
 3. Same rule for LibreOffice and the OS: any component shared by candidates but
    *not* by the oracle is part of the method and gets recorded.
 
-### 6.2 Definition — what "pure juice" requires
-
-A cross-vendor number is publishable only when all six hold:
-
-1. **Same document set.** Identical manifests, identical holdout exclusion,
-   identical `corpus_revision`. Report per-subcorpus splits alongside the
-   aggregate, because the pools differ in difficulty by ~18 mean points.
-2. **Same oracle and renderer.** Already true (LibreOffice 26.2.4.2, Word
-   redline PDFs); the fingerprint canary guards it.
-3. **Latest released version of every competitor**, resolved on the run date
-   and recorded in the line, not a pin chosen months earlier.
-4. **Honest ITT** — a tool that runs and fails scores its failure. A tool we
-   could not install is `UNINSTALLED`, reported as a gap in *our* harness.
-5. **Adapter parity.** If jubarte gets a bespoke integration, a competitor
-   that needs one gets the same effort. Where we cannot reach parity, the
-   deficit is disclosed in the row, not absorbed into the score.
-6. **Disclosed thumbs.** Every place we touched a vendor's code, forked it, or
-   know of an unfixed bug is written down next to the number.
-
 **D7 — A competitor carried benchmark rows that our own runs structurally could
 not receive.** Found 2026-08-04 in the docxodus 9.0.0 full-corpus result.
 
@@ -706,6 +687,25 @@ when they are asked the same questions.** Differing benchmark *sets* between
 runs of the same kind is the same defect class as differing corpora (D1) — it
 just hides one level up, in which rows exist at all rather than in how many
 documents each row covers.
+
+### 6.2 Definition — what "pure juice" requires
+
+A cross-vendor number is publishable only when all six hold:
+
+1. **Same document set.** Identical manifests, identical holdout exclusion,
+   identical `corpus_revision`. Report per-subcorpus splits alongside the
+   aggregate, because the pools differ in difficulty by ~18 mean points.
+2. **Same oracle and renderer.** Already true (LibreOffice 26.2.4.2, Word
+   redline PDFs); the fingerprint canary guards it.
+3. **Latest released version of every competitor**, resolved on the run date
+   and recorded in the line, not a pin chosen months earlier.
+4. **Honest ITT** — a tool that runs and fails scores its failure. A tool we
+   could not install is `UNINSTALLED`, reported as a gap in *our* harness.
+5. **Adapter parity.** If jubarte gets a bespoke integration, a competitor
+   that needs one gets the same effort. Where we cannot reach parity, the
+   deficit is disclosed in the row, not absorbed into the score.
+6. **Disclosed thumbs.** Every place we touched a vendor's code, forked it, or
+   know of an unfixed bug is written down next to the number.
 
 ### 6.2b Checked and cleared (negative results worth recording)
 
