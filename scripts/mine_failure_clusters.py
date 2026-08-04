@@ -16,6 +16,18 @@ what makes the number directly comparable to the headline mean. A tag on 4
 documents cannot recover more than a few points no matter how badly they score,
 and the ranking says so.
 
+``recoverable`` alone is not enough to aim at. It is a mass measure, so a tag
+carried by almost every pair floats to the top by ubiquity: ``rev_ins`` sits on
+740 of 763 documents, and "documents containing insertions fail" is a restatement
+of "documents fail", not a lead. ``lift`` is the discriminating column —
+
+    lift(tag) = (failing_tagged / tagged) / (failing_total / n_total)
+
+lift 1.0 means the tag is exactly as likely to fail as the corpus average and
+carries no information; a universal tag is pinned at 1.0 by construction. Read
+the two together: ``recoverable`` says how much a fix is worth, ``lift`` says
+whether the tag actually points at anything.
+
 Tags are not disjoint: one document usually carries several, so the columns sum
 to more than the total gap. Treat the ranking as "where to look first", not as
 an additive budget.
@@ -50,6 +62,8 @@ class Cluster(NamedTuple):
     n_failing: int
     median_failing: float
     recoverable: float
+    fail_rate: float
+    lift: float
 
 
 def load_tags(paths: list[Path]) -> dict[str, set[str]]:
@@ -109,6 +123,9 @@ def mine(
     if not n_total:
         return [], []
 
+    # Base rate of failure across the whole corpus — the yardstick `lift` divides by.
+    base_rate = sum(1 for s in scores.values() if s < threshold) / n_total
+
     per_tag: dict[str, list[float]] = {}
     per_tag_failing: dict[str, list[float]] = {}
     untagged_failing: list[str] = []
@@ -132,6 +149,10 @@ def mine(
             # Only the shortfall below `target` is recoverable; a doc already above it
             # contributes nothing even if it is below `threshold` (target < threshold).
             recoverable=sum(max(0.0, target - s) for s in failing_scores) / n_total,
+            fail_rate=len(failing_scores) / len(per_tag[tag]),
+            # base_rate is 0 only when nothing failed, in which case per_tag_failing is
+            # empty and this expression is never reached — the guard is for safety.
+            lift=(len(failing_scores) / len(per_tag[tag]) / base_rate) if base_rate else 0.0,
         )
         for tag, failing_scores in per_tag_failing.items()
     ]
@@ -144,9 +165,10 @@ def format_table(clusters: list[Cluster], top: int) -> str:
     if not rows:
         return "  (no failing documents carry any tag)"
     width = max(len(c.tag) for c in rows)
-    out = [f"  {'tag'.ljust(width)}  tagged  failing  median  recoverable"]
+    out = [f"  {'tag'.ljust(width)}  tagged  failing  median  recoverable  fail%   lift"]
     out += [
-        f"  {c.tag.ljust(width)}  {c.n_tagged:6}  {c.n_failing:7}  {c.median_failing:6.1f}  {c.recoverable:+10.2f}"
+        f"  {c.tag.ljust(width)}  {c.n_tagged:6}  {c.n_failing:7}  {c.median_failing:6.1f}  "
+        f"{c.recoverable:+10.2f}  {c.fail_rate * 100:5.1f}  {c.lift:5.2f}"
         for c in rows
     ]
     return "\n".join(out)
