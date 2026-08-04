@@ -188,6 +188,69 @@ Three consequences:
 
 ---
 
+## Finding 0 — the cluster is **not one population**, and that is why mechanism hunting keeps returning single-digit answers
+
+Measured last, and it should be read first. It came from a question the
+`stage2-R2-inplace-rust` session asked after every proposed mechanism had been sized at
+6–20 documents against a 197-document cluster: **is the cluster one cause at all?**
+
+Overlap of the three engines' `[40,60)` clusters over the 755 documents all three scored:
+
+| | overlap | Jaccard | expected if independent | enrichment |
+|---|---:|---:|---:|---:|
+| rust ∩ lossless | 109 | 0.438 | 42.1 | 2.59× |
+| rust ∩ ast | 139 | 0.446 | 66.2 | 2.10× |
+| lossless ∩ ast | 109 | 0.354 | 54.7 | 1.99× |
+| **all three** | **89** | — | 14.2 | **6.27×** |
+
+345 documents (46% of the corpus) are in *some* engine's cluster. They split into two
+populations that behave completely differently:
+
+| | n | best-of-3 score | above 92 | oracle pages (median/mean/max) | page-count mismatch | null_score |
+|---|---:|---|---:|---|---:|---:|
+| **HARD CORE** — in all three clusters | **89** | median **51.78**, **max 59.78** | **0** | 2.0 / 6.1 / 116 | 19.1% | 42.44 |
+| **RIM** — in exactly one cluster | **166** | median **92.33** | **84** | 1.0 / 3.0 / 107 | 6.6% | 44.62 |
+| rest of corpus | 410 | — | — | 1.0 / 2.3 / 21 | 2.7% | 55.93 |
+
+**No engine can do the hard core.** Best-of-three tops out at **59.78** and not one of the
+89 exceeds 92 in *any* engine. That is not an engine defect — it is a property of the
+documents. They are long (mean 6.1 oracle pages against 2.3 for the rest, max 116),
+mismatch on page count 7× more often than the rest, and have the lowest null baseline
+(42.44), meaning even doing nothing scores badly. Token enrichment: `math` 5.2×, `tests`
+5.0×, `combos`/`rstyle` 2.8×, `ooxml` 2.7×.
+
+**The rim is transferable and already half-solved.** 84 of 166 are *already above 92 in
+some other engine*, and its structural profile is close to the healthy corpus.
+
+### Why this settles the tension
+
+Every mechanism proposed today was hunted across the union and sized against 197. The
+union is two populations with different causes, so a mechanism that fully explained the
+rim would still look like a small effect against the whole. **That is the arithmetic
+reason mechanism hunting kept returning 6-document answers** — and it means those answers
+were not necessarily wrong, just measured against the wrong denominator.
+
+It also answers the structural question directly: the identical term profiles across
+three engines are **not** evidence of one shared cause. They are consistent with "any
+sub-5 px displacement produces this profile regardless of origin", and the 6.27×
+core/rim split shows the origins genuinely differ.
+
+### What follows
+
+1. **Stop sizing cluster work against 197.** Size against the rim (166) or the core (89);
+   they are different projects.
+2. **The rim is where the targets live.** 84 already clear 92 elsewhere, which is the
+   transfer opportunity of Finding 1 with a much sharper boundary.
+3. **The hard core should be triaged, not fixed.** 89 documents no engine can score above
+   59.78, enriched in `math` and long multi-page documents, with a null baseline of 42.44.
+   Whether they are winnable at all is an open question and should be answered before any
+   effort is spent — this is exactly the "architectural limit versus fix not yet found"
+   distinction C7 says to watch for.
+4. **The scorer's tolerance is a live hypothesis, not a settled one.** If the profile is
+   produced by *any* sub-5 px displacement, the lever on the core may be the 5 px / 2 px
+   tolerance rather than the engines. That is a benchmark-design decision, not an
+   engineering one, and it belongs with the Word-oracle question.
+
 ## Finding 3 — the outcome is **binary**, which makes transfer mechanically tractable
 
 Measured after the two findings above, and it is the most useful of the three.
