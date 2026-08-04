@@ -150,3 +150,56 @@ def test_no_oracle_check_flag_skips_gate(tmp_path):
         ],
     )
     assert result.exit_code != 2
+
+
+def test_no_generate_script_force_rewrites_a_declared_oracle():
+    """A `generate:` step must not regenerate a directory that is itself an oracle.
+
+    corpus/word_based/pdf_source is the `visual_rendering` oracle AND is pinned in
+    oracle_manifest.json. The source-pdfs generate step used to re-render it with
+    `--force`; the PDFs came back pixel-identical but with a fresh /CreationDate, so
+    all 199 hashes changed and the NEXT run exited 2 on ORACLE DRIFT. Any `bench run
+    --generate` poisoned the following run, and the failure surfaced far from its
+    cause.
+    """
+    import yaml
+
+    from neurotic_docx_bench import config as config_mod
+
+    repo_root = Path(__file__).resolve().parents[1]
+    raw = yaml.safe_load((repo_root / "bench.yaml").read_text())
+    cfg = config_mod.load_config(repo_root / "bench.yaml")
+
+    declared = [cfg.source_of_truth]
+    declared += list(getattr(cfg, "extra_oracle_dirs", None) or ())
+    declared += list((getattr(cfg, "visual_oracles", None) or {}).values())
+    accepted = getattr(cfg, "accepted_ground_truth", None)
+    if accepted:
+        declared.append(accepted)
+
+    # load_config resolves paths against the yaml's location, so they come back
+    # ABSOLUTE while generate_scripts spell them relative to the repo root. Comparing
+    # the two directly matches nothing and the assertion passes vacuously — which is
+    # exactly how the first version of this test "passed" against the buggy yaml.
+    oracle_paths = set()
+    for p in declared:
+        path = Path(p)
+        oracle_paths.add(str(path))
+        try:
+            oracle_paths.add(str(path.resolve().relative_to(repo_root.resolve())))
+        except ValueError:
+            pass
+    assert "corpus/word_based/pdf_source" in oracle_paths, (
+        "repo-relative oracle paths are not being derived — the check below would be vacuous"
+    )
+
+    offenders = [
+        (step.get("name"), path)
+        for step in (raw.get("generate_scripts") or [])
+        for path in oracle_paths
+        if path in (step.get("command") or "") and "--force" in (step.get("command") or "")
+    ]
+    assert not offenders, (
+        "generate_scripts regenerate a declared oracle with --force, which changes its "
+        f"checksums and trips the oracle gate on the next run: {offenders}"
+    )
