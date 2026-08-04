@@ -183,6 +183,30 @@ def test_build_pairs_pair_keys_are_unique_case_insensitively():
     assert len(set(keys)) == len(keys)
 
 
+def test_drop_unreadable_removes_sources_word_cannot_open():
+    """A document Word loads as empty doesn't just fail its own pair — it leaves
+    Word returning empty documents for every LATER open in the session, silently.
+    They have to leave the pool, not merely be retried."""
+    pool = _pool(10)
+    bad = {bsp.flat_stem(pool[3].relative_path) + ".docx"}
+    kept = bsp.drop_unreadable(pool, bad)
+    assert len(kept) == 9
+    assert all(f"{bsp.flat_stem(p.relative_path)}.docx" not in bad for p in kept)
+
+
+def test_drop_unreadable_is_a_no_op_for_an_empty_list():
+    pool = _pool(10)
+    assert bsp.drop_unreadable(pool, set()) == pool
+
+
+def test_excluded_sources_never_appear_in_any_pair():
+    pool = _pool(30)
+    bad = {bsp.flat_stem(p.relative_path) + ".docx" for p in pool[:5]}
+    pairs = bsp.build_pairs(bsp.drop_unreadable(pool, bad), target=200)
+    used = {p.base.relative_path for p in pairs} | {p.next.relative_path for p in pairs}
+    assert not any(f"{bsp.flat_stem(r)}.docx" in bad for r in used)
+
+
 def test_build_pairs_raises_when_pool_cannot_supply_the_target():
     with pytest.raises(ValueError, match="cannot reach"):
         bsp.build_pairs(_pool(3), target=400)
