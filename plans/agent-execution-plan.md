@@ -904,6 +904,33 @@ standard we prove we meet, competitors get measured against too.
 **6.3.5 — Re-run the full sweep and publish** with per-subcorpus splits and a
 disclosure column.
 
+*Status 2026-08-04.* Full-corpus (803-pair, `corpus_revision`-stamped) runs
+completed:
+
+| run | result | note |
+|---|---|---|
+| `jubarte-rust` / `jubarte` / `jubarte-ast` | 76.21 / 77.02 / 69.83 ITT | baseline |
+| `jubarte-wasm` | 76.21 ITT, n=763 | was 85.92 on the 195-doc subset |
+| `superdoc-ts` @1.21.3 | 53.13 mean, n=665 | first result ever — previously died at load |
+| `superdoc` @2.0.0 | 45.19 mean, n=331 | ITT ≈19.6; engine declined 432 pairs |
+| `docxodus` | 51.70 ITT, n=707 | **mislabelled** — ran 7.0.0, must re-run |
+| `folio` | — | failed on our import bug, must re-run |
+| `redlines` / `docx-redline-js` | in progress | — |
+| `superdoc-native` | `UNINSTALLED` | harness file does not exist anywhere |
+| `superdoc-redlines` | pending | crashes under Node 25 (D6) |
+
+**Still owed before anything is published as a comparison:**
+
+1. `docxodus` re-run on the genuine 9.0.0 (vendored tree is now correct).
+2. `folio` re-run with the fixed module resolution — its old scores are
+   retracted, so it currently has *no* valid number at all.
+3. `superdoc` second labelled row at 1.19.2 beside the 2.0.0 headline, so
+   "worse score, better behaviour" is legible (6.4).
+4. `docx-redline-js` split into upstream-headline vs our-fork rows (6.4).
+5. Sealed holdout for every competitor (6.3.4b), so the overfitting check is
+   symmetric.
+6. Reconstruct the `superdoc-native` harness, or keep it `UNINSTALLED`.
+
 ### 6.4 Disclosure ledger (constraint: do not bury secrets)
 
 Maintained in `docs/VENDOR_NOTES.md`, one row per vendor, published beside the
