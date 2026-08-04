@@ -167,3 +167,31 @@ describe("fidelity table ITT ranking", () => {
 		expect(table).toMatch(/80\.00~/);
 	});
 });
+
+describe("coverage mismatch is stated, not left for the reader to spot", () => {
+	// Plan Chapter 6, D1 + ledger rule 2: two rows with different ITT Docs are
+	// not the same measurement. Real case: jubarte-wasm ranked #1 at n=195 above
+	// jubarte-rust at n=763 — on an easier subset, which the table showed only as
+	// a number in a column nobody reads.
+	const mixed = new Map<string, FidelityRow>([
+		["a", row({ vendor: "wide", itt_n: 763, n_docs: 763, corpus_revision: "abc123" })],
+		["b", row({ vendor: "narrow", itt_n: 195, n_docs: 195, corpus_revision: "abc123" })],
+	]);
+
+	it("warns when rows in one table cover different document counts", () => {
+		const table = buildFidelityTable(mixed, "script_redlines");
+		expect(table.toLowerCase()).toContain("not the same measurement");
+		expect(table).toContain("763");
+		expect(table).toContain("195");
+	});
+
+	it("stays quiet when every row covers the same documents", () => {
+		const even = new Map<string, FidelityRow>([
+			["a", row({ vendor: "one", itt_n: 763, n_docs: 763, corpus_revision: "abc123" })],
+			["b", row({ vendor: "two", itt_n: 763, n_docs: 763, corpus_revision: "abc123" })],
+		]);
+		expect(buildFidelityTable(even, "script_redlines").toLowerCase()).not.toContain(
+			"not the same measurement",
+		);
+	});
+});
