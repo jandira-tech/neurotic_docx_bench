@@ -44,8 +44,30 @@ Lossless has **the best page-geometry fidelity of any engine in the benchmark,
 docxodus included**, and earns roughly half the available change-region credit on the
 median document. It renders the document faithfully and then under-marks the edit.
 
-That is a good position to be in: the hard half (not damaging the document) is done.
-The deficit is in the redline itself.
+> **REFUTED by Stage L1, 2026-08-04. Read this before acting on the diagnosis above.**
+>
+> "Under-marks the edit" is wrong. Measured against Word's own oracle redline over the
+> 124 BOTH_HOLD cluster documents: inserted-character volume median **1.000**, deleted
+> median **1.000**, 101 of 124 within 0.8–1.25x, and **zero** candidates emitting no
+> markup. lossless marks exactly as much as Word does.
+>
+> **The real defect: lossless emits paragraph-granular replacement where Word marks the
+> change in place.** Paragraphs carrying both a `w:ins` and a `w:del` — candidate median
+> **0**, oracle median **1**; 69 of 124 candidates have *none* where the oracle has
+> some. Both arrangements accept and reject to identical text, which is exactly why the
+> functional lens cannot see it and why the L1 buckets do not separate on score
+> (51.23 / 51.20 / 53.48 / 53.64 — essentially zero explanatory power).
+>
+> Why it costs ~50: recomputing the six weighted scorer terms reproduces the recorded
+> page score exactly (max deviation 0.0000 over 263 pages). `ssim_full` holds at 0.904 —
+> the page fidelity credited above is real — while the three **position-sensitive** terms
+> collapse: `ink_f1` 0.326, `edge_iou` 0.188, `color_sim` 0.000. Displaced content, not
+> missing content.
+>
+> Full evidence: [reviews/l1-partition-lossless.md](reviews/l1-partition-lossless.md).
+
+The half that is genuinely done is page fidelity. The deficit is in the *shape* of the
+redline, not its volume.
 
 Supporting shape: 166 documents sit in [40,60) with a cluster median of 51.5 — the
 signature of "document preserved, change not marked" — and 135 sit in [90,100), i.e.
@@ -104,6 +126,15 @@ Whatever L1 finds, this is the stage that buys **both** the mean and the median 
 The first version of this stage said only "sub-work, ordered by the L1 partition" and
 never wrote it. That was the review's most damaging finding: the stage owning both the
 mean and the median target was a forward reference. Written out now.
+
+> **SUPERSEDED by the measured L1 result.** This table was built for an under-marking
+> defect that does not exist. The measured defect is paragraph granularity, so the real
+> L2 work is: **emit an in-place intra-paragraph edit (a `w:ins` and a `w:del` inside one
+> paragraph) where the change is confined to part of a paragraph, instead of deleting the
+> whole paragraph and inserting a replacement.** That is one mechanism, not four, and it
+> is the only one the evidence supports. The table below is retained because the
+> ACCEPT_ONLY bucket (29 documents, 17.9%) is real and its deletion-path row still
+> applies to those.
 
 | L1 bucket | what the engine is doing | mechanism to build | touches |
 |---|---|---|---|
