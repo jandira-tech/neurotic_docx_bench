@@ -12,13 +12,15 @@ Speed: from ``results/speed.jsonl`` (and optional
 - ``kind: speed_redlines`` / ``redline_speed_bench`` — large-N / CLI / warm
   workers (docxodus-csharp[-inproc], jubarte-rust[-inproc], WASM, …)
 
-When the same key appears more than once, keeps the best re-run (see rankers).
+When the same key appears more than once, keeps the newest full-corpus re-run
+(recency wins within the full-corpus bucket; see rankers).
 """
 
 from __future__ import annotations
 
 import argparse
 import json
+import re
 import statistics
 import sys
 from collections import defaultdict
@@ -71,9 +73,12 @@ def _rank(row: dict[str, object]) -> tuple:
     """Pick the best re-run of the *same* (vendor, benchmark, version).
 
     Prefer the render path that matches the benchmark family (playwright for
-    visual_*, soffice for script/accepted/roundtrip), then higher n_docs, mean,
-    and newer timestamp. Avoids a soffice main-run line "winning" over a real
-    Playwright visual_* line just because it has more docs.
+    visual_*, soffice for script/accepted/roundtrip), then the full-corpus
+    bucket (n_docs > 100, consistent with the smoke-run filter), then the NEWER
+    timestamp. Raw n_docs must not dominate recency: a stale 403-doc
+    pre-holdout line would otherwise permanently beat every newer 383-doc
+    post-holdout line for an unchanged tool_version. Mean only breaks
+    timestamp ties.
     """
     benchmark = str(row.get("benchmark") or "")
     render = str(row.get("render") or "")
@@ -89,8 +94,9 @@ def _rank(row: dict[str, object]) -> tuple:
     mean = row.get("mean")
     ts = row.get("datetime") or ""
     n_v = int(n) if isinstance(n, (int, float)) else -1
+    full_bucket = 1 if n_v > 100 else 0
     m_v = float(mean) if isinstance(mean, (int, float)) else float("-inf")
-    return (render_fit, n_v, m_v, str(ts))
+    return (render_fit, full_bucket, str(ts), m_v)
 
 
 def _itt_stats(
@@ -148,6 +154,11 @@ def rows_from_jsonl(path: Path) -> list[dict[str, object]]:
                 print(f"warning: skip line {line_no}: {exc}", file=sys.stderr)
                 continue
 
+            # Sealed-holdout lines never enter the headline tables — they are
+            # scored on a 20-doc subset and reported by the "Holdout gap" section.
+            if data.get("holdout_mode") == "only":
+                continue
+
             # Schema v4: vendor/benchmark; legacy v2/v3: tool/stage.
             vendor = str(data.get("vendor") or data.get("tool") or "")
             benchmark = str(data.get("benchmark") or data.get("stage") or "")
@@ -184,6 +195,13 @@ def rows_from_jsonl(path: Path) -> list[dict[str, object]]:
                 "n_lens_disagree": data.get("n_lens_disagree"),
                 "lens_disagree_rate": data.get("lens_disagree_rate"),
                 "scores": data.get("scores") if isinstance(data.get("scores"), dict) else None,
+                # Regime marker: lines stamped with corpus_revision ran on the current
+                # corpus, older lines on smaller ones. Their means are not comparable,
+                # so to_fidelity_markdown ranks them in separate tables (same predicate
+                # as buildFidelityTable in scripts/update-readme-ranking.ts).
+                "corpus_revision": (
+                    None if data.get("corpus_revision") is None else str(data["corpus_revision"])
+                ),
             }
             key = (vendor, benchmark, version)
             cur = best.get(key)
@@ -343,6 +361,138 @@ def _lens_health_section(rows: list[dict[str, object]]) -> list[str]:
     ]
 
 
+def _holdout_se(hold_line: dict) -> float | None:
+    """Standard error of the holdout line's mean, from its per-doc ``scores``
+    (sample stdev / √n); None when fewer than two per-doc scores are present."""
+    scores = hold_line.get("scores")
+    if not isinstance(scores, dict) or len(scores) < 2:
+        return None
+    values = [float(v) for v in scores.values() if isinstance(v, (int, float))]
+    if len(values) < 2:
+        return None
+    return statistics.stdev(values) / (len(values) ** 0.5)
+
+
+def holdout_gap_section(path: Path) -> list[str]:
+    """"## Holdout gap" — per vendor, the sealed-holdout run vs a COMPARABLE
+    main run, with ``gap = holdout − main``.
+
+    Comparable means: same ``tool_version`` as the holdout line,
+    ``holdout_mode == "excluded"`` (genuinely disjoint from the sealed set —
+    pre-holdout lines CONTAIN the sealed docs and never qualify), and
+    full-corpus size (n_docs > 100, so ``--limit`` smoke lines never pose as
+    main). Without such a line the vendor row says "no comparable main run"
+    instead of printing a misleading number. The log is append-only, so
+    "latest" is last-in-file. When the holdout line carries per-doc scores the
+    gap is rendered as ``gap ± 2·SE`` of the holdout mean. Renders a
+    placeholder note while no holdout run has been recorded yet.
+    """
+    def _n_docs(line: dict) -> int:
+        n = line.get("n_docs")
+        return int(n) if isinstance(n, (int, float)) else 0
+
+    main_lines: list[dict] = []
+    hold_by_vendor: dict[str, dict] = {}
+    if path.is_file():
+        with path.open(encoding="utf-8") as fh:
+            for line in fh:
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    data = json.loads(line)
+                except json.JSONDecodeError:
+                    continue
+                if str(data.get("benchmark") or "") != "script_redlines":
+                    continue
+                vendor = str(data.get("vendor") or "")
+                if not vendor:
+                    continue
+                if data.get("holdout_mode") == "only":
+                    # Latest wins, but a partial run (--holdout --limit N) must
+                    # not displace a fuller holdout line: prefer higher n, and
+                    # recency only among equally-full lines.
+                    prev = hold_by_vendor.get(vendor)
+                    if prev is None or _n_docs(data) >= _n_docs(prev):
+                        hold_by_vendor[vendor] = data
+                else:
+                    main_lines.append(data)
+    # Describe the holdout by what the RUNS actually scored, not by a hard-coded size:
+    # the sealed set grew from 20 (word_based only) to 40 when the SuperDoc subcorpus
+    # landed, and the stale "20-pair" blurb contradicted the n_holdout column beside it.
+    hold_sizes = {_n_docs(line) for line in hold_by_vendor.values() if _n_docs(line)}
+    # Mid-migration vendors can disagree (20-key lines beside 40-key ones); printing
+    # either number would be wrong for half the table, so the claim is dropped.
+    sealed = f"Sealed {next(iter(hold_sizes))}-pair holdout" if len(hold_sizes) == 1 else "Sealed holdout"
+    header = [
+        "## Holdout gap",
+        "",
+        f"{sealed} (`corpus/holdout_combined.txt`) vs the visible "
+        "corpus, per vendor: the latest holdout-only run (`bench run --holdout`) "
+        "next to the latest COMPARABLE main run — same tool_version, "
+        "`holdout_mode=excluded` (disjoint from the sealed set), full corpus "
+        "(n > 100). `gap = holdout − main`; a strongly negative gap flags "
+        "overfitting to the visible corpus.",
+        "",
+    ]
+    if not hold_by_vendor:
+        return [*header, "_no holdout runs recorded yet (`bench run --holdout`)_", ""]
+    table_rows: list[list[str]] = []
+    for vendor in sorted(hold_by_vendor):
+        hold_line = hold_by_vendor[vendor]
+        hold_mean = hold_line.get("overall_mean")
+        hold_version = _norm_version(hold_line.get("tool_version"))
+        main_line: dict | None = None
+        for data in main_lines:  # append-only log: last qualifying line wins
+            n = data.get("n_docs")
+            if (
+                str(data.get("vendor") or "") == vendor
+                and _norm_version(data.get("tool_version")) == hold_version
+                and data.get("holdout_mode") == "excluded"
+                and isinstance(n, (int, float))
+                and int(n) > 100
+            ):
+                main_line = data
+        if main_line is None:
+            table_rows.append([
+                _escape_cell(vendor),
+                "no comparable main run",
+                "—",
+                _escape_cell(_format_num(hold_mean)),
+                _escape_cell(_format_num(hold_line.get("n_docs"))),
+                "—",
+            ])
+            continue
+        main_mean = main_line.get("overall_mean")
+        if isinstance(hold_mean, (int, float)) and isinstance(main_mean, (int, float)):
+            gap_value = float(hold_mean) - float(main_mean)
+            se = _holdout_se(hold_line)
+            gap = (
+                f"{gap_value:+.2f} ± {2 * se:.2f}" if se is not None else f"{gap_value:+.2f}"
+            )
+        else:
+            gap = "—"
+        table_rows.append([
+            _escape_cell(vendor),
+            _escape_cell(_format_num(main_mean)),
+            _escape_cell(_format_num(main_line.get("n_docs"))),
+            _escape_cell(_format_num(hold_mean)),
+            _escape_cell(_format_num(hold_line.get("n_docs"))),
+            gap,
+        ])
+    return [
+        *header,
+        *_table(
+            ["vendor", "main mean", "n_main", "holdout mean", "n_holdout", "gap"],
+            table_rows,
+        ),
+        "",
+        "`± 2·SE` uses the holdout line's per-doc scores; a |gap| below roughly "
+        "2·SE is within sampling noise, not evidence of overfitting.",
+        "",
+    ]
+
+
 def _table(headers: list[str], rows: list[list[str]]) -> list[str]:
     lines = [
         "| " + " | ".join(headers) + " |",
@@ -450,48 +600,70 @@ def to_fidelity_markdown(rows: list[dict[str, object]], source: Path) -> str:
         lines.append("")
         lines.append(label if label != bench else f"`{bench}`")
         lines.append("")
-        table_rows: list[list[str]] = []
-        for rank, r in enumerate(items, start=1):
-            table_rows.append(
-                [
-                    str(rank),
-                    _escape_cell(r["vendor"]),
-                    _escape_cell(r.get("tool_version") or "—"),
-                    _escape_cell(_format_num(r["mean"])),
-                    _escape_cell(_format_num(r["median"])),
-                    _escape_cell(_format_num(r.get("itt_mean"))),
-                    _escape_cell(_format_num(r.get("itt_median"))),
-                    _escape_cell(_format_num(r.get("skill_median"))),
-                    _escape_cell(_format_num(r.get("n_failures"))),
-                    _escape_cell(_format_num(r["n_docs"])),
-                    _escape_cell(_format_num(r.get("itt_n"))),
-                    _escape_cell(_format_num(r.get("exact_100"))),
-                    _escape_cell(_format_num(r.get("at_least_90"))),
-                    _escape_cell(_format_num(r.get("below_50"))),
-                ]
+
+        # Corpus regimes are NOT comparable — a legacy tool scored on 164 easy docs
+        # would otherwise outrank a current tool scored on 763, and the table would
+        # read as a real result. Each regime gets its own table and its own rank 1.
+        current = [r for r in items if r.get("corpus_revision") is not None]
+        legacy = [r for r in items if r.get("corpus_revision") is None]
+        if current and legacy:
+            groups = [
+                ("**Current corpus** (lines stamped with `corpus_revision`):", current),
+                (
+                    "**Legacy corpus** (older, smaller corpora — not comparable with "
+                    "the rows above; kept for history until each tool re-runs):",
+                    legacy,
+                ),
+            ]
+        else:
+            groups = [("", current or legacy)]
+
+        for heading, group in groups:
+            if heading:
+                lines.append(heading)
+                lines.append("")
+            lines.extend(
+                _table(
+                    [
+                        "#",
+                        "vendor",
+                        "version",
+                        "mean",
+                        "median",
+                        "itt_mean",
+                        "itt_median",
+                        "skill_median",
+                        "failures",
+                        "n_docs",
+                        "itt_n",
+                        "exact_100",
+                        "≥90",
+                        "<50",
+                    ],
+                    [
+                        [
+                            str(rank),
+                            _escape_cell(r["vendor"]),
+                            _escape_cell(r.get("tool_version") or "—"),
+                            _escape_cell(_format_num(r["mean"])),
+                            _escape_cell(_format_num(r["median"])),
+                            _escape_cell(_format_num(r.get("itt_mean"))),
+                            _escape_cell(_format_num(r.get("itt_median"))),
+                            _escape_cell(_format_num(r.get("skill_median"))),
+                            _escape_cell(_format_num(r.get("n_failures"))),
+                            _escape_cell(_format_num(r["n_docs"])),
+                            _escape_cell(_format_num(r.get("itt_n"))),
+                            _escape_cell(_format_num(r.get("exact_100"))),
+                            _escape_cell(_format_num(r.get("at_least_90"))),
+                            _escape_cell(_format_num(r.get("below_50"))),
+                        ]
+                        # Rank restarts per regime: continuing the numbering across the
+                        # split would re-imply the cross-regime ordering it prevents.
+                        for rank, r in enumerate(group, start=1)
+                    ],
+                )
             )
-        lines.extend(
-            _table(
-                [
-                    "#",
-                    "vendor",
-                    "version",
-                    "mean",
-                    "median",
-                    "itt_mean",
-                    "itt_median",
-                    "skill_median",
-                    "failures",
-                    "n_docs",
-                    "itt_n",
-                    "exact_100",
-                    "≥90",
-                    "<50",
-                ],
-                table_rows,
-            )
-        )
-        lines.append("")
+            lines.append("")
         if bench == "script_redlines":
             lines.extend(_common_subset_section(rows))
             lines.extend(_paired_stats_section(rows))
@@ -814,8 +986,10 @@ def fidelity_methodology_and_legal() -> list[str]:
         "",
         "- Deduplication: one line per `(vendor, benchmark, tool_version)`. "
         "Re-runs of the **same** triple keep the best by "
-        "`(render_fit, n_docs, overall_mean, timestamp)` — prefer playwright for "
-        "`visual_*` and soffice for script/accepted/roundtrip, then higher n / mean.",
+        "`(render_fit, full_corpus_bucket, timestamp, overall_mean)` — prefer "
+        "playwright for `visual_*` and soffice for script/accepted/roundtrip, "
+        "then full-corpus lines (n > 100) over smokes, then the newest line "
+        "(so a 383-doc post-holdout line supersedes a stale 403-doc one).",
         "- **Versions are not collapsed.** docxodus `6.4.0` and `7.0.0` both appear "
         "so pins can be compared directly.",
         "- **docxodus** filter: rows with **`n_docs ≤ 100`** are dropped (smoke / "
@@ -864,12 +1038,43 @@ def to_markdown(
     *,
     speed_rows: list[dict[str, object]] | None = None,
     speed_source: Path | None = None,
+    holdout_lines: list[str] | None = None,
 ) -> str:
     lines = [to_fidelity_markdown(rows, source).rstrip(), ""]
+    if holdout_lines:
+        lines.extend(holdout_lines)
     if speed_rows:
         lines.extend(speed_to_markdown(speed_rows, speed_source=speed_source))
     lines.extend(fidelity_methodology_and_legal())
     return "\n".join(lines) + "\n"
+
+
+_MARKER_BLOCK = re.compile(
+    r"<!-- (?P<name>[A-Z0-9_]+):BEGIN -->.*?<!-- (?P=name):END -->",
+    re.DOTALL,
+)
+
+
+def _carry_foreign_marker_blocks(out: Path, md: str) -> str:
+    """Preserve marker-delimited sections other generators own.
+
+    Sibling generators (e.g. ``scripts/redline_dual_path_report.mjs``) write
+    idempotent ``<!-- NAME:BEGIN -->…<!-- NAME:END -->`` blocks into the same
+    files this exporter rewrites wholesale. Any such block present in the
+    existing file but absent from the freshly generated markdown is appended,
+    so a full export never destroys another tool's section.
+    """
+    if not out.is_file():
+        return md
+    existing = out.read_text(encoding="utf-8")
+    carried = [
+        m.group(0)
+        for m in _MARKER_BLOCK.finditer(existing)
+        if f"<!-- {m.group('name')}:BEGIN -->" not in md
+    ]
+    if not carried:
+        return md
+    return md.rstrip("\n") + "\n\n" + "\n\n".join(carried) + "\n"
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -927,6 +1132,7 @@ def main(argv: list[str] | None = None) -> int:
         source_disp,
         speed_rows=speed_rows or None,
         speed_source=speed_source,
+        holdout_lines=holdout_gap_section(args.input),
     )
 
     outputs: list[Path]
@@ -937,7 +1143,7 @@ def main(argv: list[str] | None = None) -> int:
 
     for out in outputs:
         out.parent.mkdir(parents=True, exist_ok=True)
-        out.write_text(md, encoding="utf-8")
+        out.write_text(_carry_foreign_marker_blocks(out, md), encoding="utf-8")
         print(
             f"Wrote {len(rows)} fidelity + {len(speed_rows)} speed row(s) → {out}"
         )

@@ -15,6 +15,7 @@ dependencies = [
     # pins the exact resolved version for `uv sync`).
     "scikit-image>=0.24,<0.28",
     "typer>=0.12",
+    "lxml>=6.0",
     "pyyaml>=6.0",
     "rich>=13.0",
     "docx-revisions>=0.1.5",
@@ -39,12 +40,13 @@ packages = ["src/neurotic_docx_bench"]
 [dependency-groups]
 dev = [
     "pytest>=8.0",
+    "pytest-xdist>=3.5",
     "ty>=0.0.56",
 ]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = "-ra"
+addopts = "-ra -n 12"
 
 [tool.ty.environment]
 python-version = "3.14"

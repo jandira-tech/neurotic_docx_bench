@@ -115,3 +115,82 @@ def test_resolve_python_package_pin_reads_installed(monkeypatch):
     assert (
         tool_updater.resolve_tool_version(python_package="superdoc-sdk==1.19.2") == "1.19.2"
     )
+
+
+def test_missing_node_modules_raises_naming_bun_install(tmp_path):
+    """A configured npm package that resolves to None poisons the skip identity.
+
+    Runs are skipped on (vendor, tool_version, config_hash). With tool_version None a
+    run both records `tool_version: null` in the JSONL and collides with every OTHER
+    unresolved run in that identity — so a stale line can suppress a real run. Failing
+    loudly at resolution is the only place the cause is still visible.
+    """
+    with pytest.raises(RuntimeError) as exc:
+        tool_updater.resolve_tool_version(package="jubarte@latest", cwd=tmp_path, no_update=True)
+    msg = str(exc.value)
+    assert "bun install" in msg
+    assert "jubarte" in msg
+
+
+def test_missing_python_package_raises_naming_the_distribution(tmp_path):
+    with pytest.raises(RuntimeError) as exc:
+        tool_updater.resolve_tool_version(python_package="no-such-dist-xyz==1.0.0")
+    msg = str(exc.value)
+    assert "no-such-dist-xyz" in msg
+    assert "uv" in msg
+
+
+def test_no_configured_source_still_returns_none():
+    """Runs with no version pin (generate:-only) legitimately have no version — that
+    is not an error, and turning it into one would break every such run."""
+    assert tool_updater.resolve_tool_version() is None
+
+
+def test_resolvable_npm_package_does_not_raise(tmp_path):
+    pkg_dir = tmp_path / "node_modules" / "superdoc"
+    pkg_dir.mkdir(parents=True)
+    (pkg_dir / "package.json").write_text(json.dumps({"version": "0.9.1"}))
+    assert tool_updater.resolve_tool_version(
+        package="superdoc@latest", cwd=tmp_path, no_update=True,
+    ) == "0.9.1"
+
+
+def test_unresolvable_version_fails_only_its_own_run(tmp_path, monkeypatch):
+    """resolve_tool_version now raises — but the driver's skip-check calls it OUTSIDE
+    the per-run try/except, so an uncaught raise there would abort the whole bench
+    instead of failing one run ("one run's failure must not stop the rest").
+    """
+    import shutil
+
+    from typer.testing import CliRunner
+
+    from neurotic_docx_bench.cli import app
+
+    root = tmp_path / "corpus"
+    (root / "pdf_oracle").mkdir(parents=True)
+    (root / "pdf_oracle" / "a_b_redline.pdf").write_bytes(b"%PDF-1.4 oracle-a\n")
+    cand = tmp_path / "cand"
+    cand.mkdir()
+    shutil.copy(root / "pdf_oracle" / "a_b_redline.pdf", cand / "a_b_good_redline.pdf")
+
+    cfg = tmp_path / "bench.yaml"
+    cfg.write_text(
+        f"source_of_truth: {root / 'pdf_oracle'}\n"
+        "runs:\n"
+        f"  - {{name: broken, render: passthrough, modified: {cand}, "
+        f"package: 'no-such-pkg@1.0.0', jobs: 1}}\n"
+        f"  - {{name: good, render: passthrough, modified: {cand}, "
+        f"unversioned: true, jobs: 1}}\n",
+    )
+    monkeypatch.setenv("BENCH_NO_UPDATE", "1")
+    result = CliRunner().invoke(
+        app,
+        ["run", "--config", str(cfg), "--results-dir", str(tmp_path / "results"),
+         "--runs-dir", str(tmp_path / "runs"), "--no-gate"],
+    )
+
+    assert "no-such-pkg" in result.output, "the broken run must name its cause"
+    assert "bun install" in result.output
+    # The second run must still have been attempted — that is the whole point.
+    assert "good" in result.output
+    assert result.exit_code != 0

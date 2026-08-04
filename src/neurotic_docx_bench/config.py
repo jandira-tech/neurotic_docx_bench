@@ -33,7 +33,7 @@ class RunConfig:
     package: str | None = None     # npm pkg to update before running → tool_version
     python_package: str | None = None  # installed pip/uv package (e.g. superdoc-sdk) → tool_version
     dist: Path | None = None       # local tool build dir (e.g. dist/jubarte) → tool_version
-    jobs: int = 8
+    jobs: int = 12
     timeout: float = 1200.0  # soffice render timeout per document (seconds)
     harness: dict[str, Any] | None = None  # playwright profile (PR9)
     vendor: str | None = None  # benchmark vendor identity (schema v4)
@@ -72,6 +72,11 @@ class BenchConfig:
     # separate from source_of_truth so the visual_redlines default, provenance,
     # and every single-dir consumer stay untouched. Absent → empty tuple.
     extra_oracle_dirs: tuple[Path, ...] = field(default_factory=tuple)
+    # Sealed-holdout key list (one oracle pair key per line; see
+    # ``pipeline.load_holdout``). When set, normal runs EXCLUDE these keys from
+    # scoring and ``bench run --holdout`` scores ONLY them — an overfitting
+    # detector for the visible corpus. Absent → None (no holdout).
+    holdout_list: Path | None = None
 
 
 _KNOWN_RENDERERS = frozenset({"soffice", "passthrough", "playwright", "word"})
@@ -145,7 +150,7 @@ def load_config(path: Path | str) -> BenchConfig:
     - ``source_of_truth``: path to the committed oracle PDF dir (required).
     - ``scoring.dpi``: int, default 144.
     - ``runs``: list; each item requires ``name`` and ``render``; optional ``docx``,
-      ``modified``, ``generate``, ``package``, ``jobs`` (default 8), ``harness``.
+      ``modified``, ``generate``, ``package``, ``jobs`` (default 12), ``harness``.
     - Relative paths resolve against the bench.yaml's parent directory.
     - Raise ``ValueError`` on: missing ``source_of_truth``, a run without ``name`` or
       ``render``, or an unknown ``render`` backend name.
@@ -204,7 +209,7 @@ def load_config(path: Path | str) -> BenchConfig:
                 vendor=raw.get("vendor") or _vendor_or_warn(name, raw, path),
                 benchmarks=list(raw_benchmarks),
                 viewer=raw.get("viewer"),
-                jobs=int(raw.get("jobs", 8)),
+                jobs=int(raw.get("jobs", 12)),
                 timeout=float(raw.get("timeout", 1200.0)),
                 harness=raw.get("harness"),
                 unversioned=bool(raw.get("unversioned", False)),
@@ -246,6 +251,11 @@ def load_config(path: Path | str) -> BenchConfig:
             )
         extra_oracle_dirs.append(resolved_extra)
 
+    holdout_raw = data.get("holdout_list")
+    holdout_list = _resolve(holdout_raw)
+    if holdout_list is not None and not holdout_list.is_file():
+        raise ValueError(f"{path}: holdout_list not found: {holdout_raw}")
+
     return BenchConfig(
         source_of_truth=source_of_truth,
         scoring=scoring,
@@ -255,6 +265,7 @@ def load_config(path: Path | str) -> BenchConfig:
         visual_oracles=visual_oracles,
         memory_budgets=size_classes_from_config(data.get("memory_budgets") or []),
         extra_oracle_dirs=tuple(extra_oracle_dirs),
+        holdout_list=holdout_list,
     )
 
 
@@ -282,4 +293,5 @@ def environment_config_for_run(cfg: BenchConfig, run_name: str) -> BenchConfig:
         visual_oracles=cfg.visual_oracles,
         memory_budgets=cfg.memory_budgets,
         extra_oracle_dirs=cfg.extra_oracle_dirs,
+        holdout_list=cfg.holdout_list,
     )
