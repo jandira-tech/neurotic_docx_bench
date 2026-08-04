@@ -94,13 +94,33 @@ Two disclosures:
    - the patched fork, when available in the checkout, is a **separate,
      clearly-labelled row** — never merged into the headline.
 
-   Status in this checkout (verified 2026-08-04): the patched C# source is
-   **not present**. `docs/SPEED.md` points the C# lanes at a sibling repo
-   `../ooxmlsdk/Docxodus/tools/redline` and bench.yaml's
-   `docxodus-playwright-*` runs point at
-   `src/neurotic_docx_bench/utils/docxodus/Docxodus/npm`; **neither path
-   exists**, so no fork row can be produced here yet and those runs cannot
-   resolve a version at all.
+   **CORRECTION (2026-08-04):** an earlier version of this entry stated the
+   patched source was "not present in this checkout". That was wrong — I
+   checked only `../ooxmlsdk`, the path named in `docs/SPEED.md`, found it
+   missing, and generalised from one absent path to "the fork does not exist".
+   It does exist:
+
+   - **`~/T/react-docxodus-viewer/Docxodus`** (git remote `arthrod/Docxodus`),
+     carrying the documented null-safe fix
+     (`GetSettingsXDocumentOrDefault`, `Docxodus/WmlToHtmlConverter.cs:6486`)
+     and a **built `npm/dist`**. No .NET/Emscripten rebuild is needed — the
+     WASM half (`react-docxodus-viewer/public/wasm/_framework`, 52 files) is
+     already tracked in this repo.
+
+   So a fork row *is* producible, and the claim that it was not is withdrawn.
+
+   One caveat that must not be papered over: **the fork's own
+   `npm/package.json` says version `0.0.0`**, while the copy that used to be
+   vendored here said `7.0.0` — a number bumped by hand in the vendored copy
+   only, for a tree nobody built as 7.0.0. Publishing a fork row labelled
+   `7.0.0` would be a fabricated version claim. The fork row must be
+   identified by its **git commit**, not by a package version that is either
+   meaningless (`0.0.0`) or invented (`7.0.0`).
+
+   Still broken and recorded as ours: the three `docxodus-playwright-*` runs
+   point at `src/neurotic_docx_bench/utils/docxodus/Docxodus/npm`, which does
+   not exist, so they cannot resolve a version at all. Bumping the `docxodus`
+   pin to 9.0.0 did **not** fix them — they are a separate `dist:` path.
 
 3. **Observed crash on the current corpus (docxodus 7.0.0, 2026-08-04 sweep,
    default engine).**
