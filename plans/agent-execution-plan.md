@@ -574,6 +574,30 @@ None of these are the vendor's code. **ITT zero-fills a tool that ran and
 produced bad output; it must never zero-fill a tool we failed to install.**
 The distinction is load-bearing and is now a rule (6.5).
 
+**D4 — A fixed generate timeout that did not scale with the corpus.**
+`src/neurotic_docx_bench/cli.py:788` runs each run's `generate:` command with a
+hard-coded `subprocess.run(..., timeout=1800)`. That 1800 s budget was chosen
+when a run meant 207 pairs. The corpus is now 803 pairs — roughly 4× the work
+against an unchanged budget.
+
+Measured 2026-08-04: `docxodus` (which does have full corpus coverage) was
+killed at exactly 1800 s having generated **622 of ~763** documents, and the
+run was recorded as `1 run(s) failed: docxodus`. Nothing in that line says the
+tool was cut off by our clock rather than by its own defect.
+
+This is the D3 disease in a subtler form: **our budget, attributed to their
+code**. A tool that is merely *slow* must be reported as slow — with its
+throughput — not as failed. Two things follow:
+
+1. The timeout must scale with the number of pairs the generate step covers
+   (or be per-run configurable), and a timeout kill must be recorded as
+   `TIMEOUT` with the completed/total count, never silently as a failure.
+2. **Benchmark runs used for publication must not share the machine with other
+   heavy work.** The docxodus timeout above is confounded: five coding agents
+   and a LibreOffice fleet were running concurrently. That measurement is
+   therefore not clean vendor data and is not publishable as a docxodus
+   result — it is only evidence that the harness has defect D4.
+
 ### 6.2 Definition — what "pure juice" requires
 
 A cross-vendor number is publishable only when all six hold:
