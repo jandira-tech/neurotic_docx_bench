@@ -3,11 +3,10 @@
  * Folio benchmark generators (Task 9).
  *
  * NOTE: the active ``script_redlines`` redline generator for folio now lives in
- * ``scripts/generate-native-redlines.ts:loadEngine("folio")`` (composes
- * ``@stll/folio-agents.compareDocxVersions`` with
- * ``FolioDocxReviewer.applyOperations({mode:"tracked-changes"})``) and is wired
- * via the ``folio`` run in ``bench.yaml``. The bench invokes it through the
- * shared dispatcher, NOT through this standalone script.
+ * ``scripts/generate-native-redlines.ts:loadEngine("folio")`` (a single call to
+ * ``@stll/folio-core/server.generateRedlineDocx(base, next, {author})``) and is
+ * wired via the ``folio`` run in ``bench.yaml``. The bench invokes it through
+ * the shared dispatcher, NOT through this standalone script.
  *
  * This file retains the standalone accept-all / roundtrip scaffolding for
  * routes NOT yet covered by the dispatcher. The bench currently drives
@@ -15,8 +14,10 @@
  * via ``generate-roundtrips*.mjs/py``, so the stubs below are not on the active
  * run path — they remain as a documented seam for future Node-side variants.
  *
- * Folio is npm-pinned (``@stll/folio-core`` / ``@stll/folio-agents`` in
- * package.json) and installed via ``bun install`` — never vendored.
+ * Folio is npm-pinned (``@stll/folio-core`` / ``@stll/folio-react`` in
+ * src/neurotic_docx_bench/utils/folio/package.json) and installed via
+ * ``bun install`` — never vendored. ``@stll/folio-agents`` was dropped when the
+ * redline path moved to folio-core's own ``generateRedlineDocx``.
  *
  * Usage: bun run scripts/generate-folio.ts --out=$RUN_DIR/docx --tool=folio [--accept|--roundtrip]
  */

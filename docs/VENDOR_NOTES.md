@@ -94,16 +94,49 @@ Two disclosures:
 | field | value |
 |---|---|
 | Packages | `@stll/folio-core` (generator), `@stll/folio-react` (viewer) |
-| Pinned in bench.yaml | core `0.3.1` — **12 minors stale** (latest `0.15.13`); react `0.5.0` (latest `0.13.2`) |
-| Harness-assisted | **Yes** |
+| Benchmarked | core **0.15.13**, react **0.13.2** (was pinned core `0.3.1` / react `0.5.0`) |
+| Harness-assisted | **No longer** — see below |
 
-folio exposes no single base+next→redline call. Our adapter composes two
-headless APIs (`compareDocxVersions`, then `FolioDocxReviewer.applyOperations`
-with tracked changes) to synthesise the operation the benchmark measures. **The
-alignment between those two steps is our code, not theirs**, so folio's score is
-a joint product. If a newer release provides a single compare call, dropping our
-composition measures them more purely and that change must be reported as a
-methodology change, not as a folio improvement.
+> **Retraction: every folio `script_redlines` number we published before
+> 2026-08-04 measured our translation layer, not folio.**
+
+folio 0.3.1 exposed no single base+next→redline call, so our adapter composed
+`compareDocxVersions` with `FolioDocxReviewer.applyOperations`. That
+composition was **silently wrong**. It passed a `modified` diff entry's
+`blockId` into `replaceInBlock`, but folio emits its diff in *revised-side*
+order and that id is the revised-side id — so **no base block ever matched**.
+Every modification operation was dropped, and any pair whose changes were all
+modifications fell through to an identity fallback that returned the base
+document unchanged.
+
+Measured over the first 60 manifest pairs on 0.3.1:
+
+| | 0.3.1 via our composition | 0.15.13 via `generateRedlineDocx` |
+|---|---|---|
+| `modified` entries translated | **0 of 157** | n/a — single call |
+| pairs emitting **no** tracked changes | **24 of 60** | 1 of 60 (folio itself reports zero changes) |
+| pairs carrying tracked changes | 36 of 60 | **59 of 60** |
+| generate failures | — | 0 |
+
+So folio's published fidelity scores (54.77 ITT mean / 55.31 mean) are not a
+measurement of folio. A tool handed our broken translation was scored on it.
+This is the exact hazard the "harness-assisted" mark exists to flag, and it
+turned out to be worse than assistance — it was corruption. The scores are
+withdrawn rather than corrected in place; folio must be re-measured on
+0.15.13 before any folio number is published again.
+
+**The good news, and it is real:** as of core **0.13.0** folio ships
+`generateRedlineDocx(base, revised, {author})`. `script_redlines` is now a
+one-call passthrough — the scored bytes are folio's own output, with no
+composition of ours in between. folio is therefore **no longer
+harness-assisted** for this benchmark, and its next number will be the purest
+one we have ever had for it. `@stll/folio-agents` was dropped entirely (it is
+now a thin re-export of folio-core).
+
+Also: 0.15.13 relaxes the empty-comment-author rule, so the two
+`vfdsdfcacawesd_suggesting_mixed_edits` pairs documented in `docs/FOLIO.md` as
+adapter limitations now generate with no adapter change at all — another
+"vendor limitation" that was ours.
 
 ### superdoc
 
