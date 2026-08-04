@@ -15,11 +15,12 @@ dependencies = [
     # pins the exact resolved version for `uv sync`).
     "scikit-image>=0.24,<0.28",
     "typer>=0.12",
+    "lxml>=6.0",
     "pyyaml>=6.0",
     "rich>=13.0",
     "docx-revisions>=0.1.5",
     "playwright>=1.61.0",
-    "superdoc-sdk==1.19.2",
+    "superdoc-sdk==2.0.0",
     # houfu/redlines — text redliner (JSON/Markdown/HTML). Extras: nupunkt (sentence
     # tokenization), levenshtein (distance stats). The `pdf` extra does not exist on
     # 0.6.1 (README documents it, PyPI does not ship it).
@@ -39,12 +40,13 @@ packages = ["src/neurotic_docx_bench"]
 [dependency-groups]
 dev = [
     "pytest>=8.0",
+    "pytest-xdist>=3.5",
     "ty>=0.0.56",
 ]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = "-ra"
+addopts = "-ra -n 12"
 
 [tool.ty.environment]
 python-version = "3.14"

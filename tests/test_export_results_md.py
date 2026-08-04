@@ -218,3 +218,334 @@ def test_main_writes_speed_when_present(
     text = out.read_text(encoding="utf-8")
     assert "jubarte-rust-inproc" in text
     assert "speed_redlines" in text
+
+
+# ── Intent-to-treat (PR2) ────────────────────────────────────────────────────
+
+
+def test_itt_stats_prefers_emitted_fields() -> None:
+    mean, median, n, n_fail = exp._itt_stats(
+        {
+            "itt_mean": 40.0,
+            "itt_median": 35.0,
+            "itt_n_docs": 5,
+            "scores": {"a": 100.0},
+            "failures": [{"doc": "b"}],
+        }
+    )
+    assert (mean, median, n, n_fail) == (40.0, 35.0, 5, 1)
+
+
+def test_itt_stats_derives_from_scores_and_failures() -> None:
+    mean, median, n, n_fail = exp._itt_stats(
+        {
+            "scores": {"a": 100.0, "b": 50.0},
+            "failures": [
+                {"doc": "c"},
+                {"doc": "c"},  # deduped
+                {"doc": "a"},  # already scored — keeps its score
+            ],
+        }
+    )
+    assert n == 3
+    assert median == 50.0
+    assert mean == 50.0
+    assert n_fail == 3
+
+
+def test_itt_stats_legacy_line_without_scores() -> None:
+    mean, median, n, n_fail = exp._itt_stats({"n_failures": 7})
+    assert (mean, median, n) == (None, None, None)
+    assert n_fail == 7
+
+
+def test_fidelity_sort_ranks_itt_below_completed_only() -> None:
+    clean = {
+        "vendor": "clean", "tool_version": "1", "benchmark": "script_redlines",
+        "mean": 80.0, "median": 80.0, "n_docs": 10,
+        "itt_mean": 80.0, "itt_median": 80.0, "itt_n": 10, "n_failures": 0,
+    }
+    crashy = {
+        "vendor": "crashy", "tool_version": "1", "benchmark": "script_redlines",
+        "mean": 90.0, "median": 90.0, "n_docs": 5,
+        "itt_mean": 45.0, "itt_median": 40.0, "itt_n": 10, "n_failures": 5,
+    }
+    ranked = sorted([crashy, clean], key=exp._fidelity_sort_key)
+    assert [r["vendor"] for r in ranked] == ["clean", "crashy"]
+
+
+def _subset_row(vendor: str, scores: dict[str, float]) -> dict[str, object]:
+    return {
+        "vendor": vendor, "tool_version": "1", "benchmark": "script_redlines",
+        "datetime": "t", "mean": 50.0, "median": 50.0, "n_docs": len(scores),
+        "itt_mean": 50.0, "itt_median": 50.0, "itt_n": len(scores),
+        "n_failures": 0, "scores": scores, "render": "soffice",
+        "exact_100": 0, "at_least_90": 0, "below_50": 0,
+    }
+
+
+def test_common_subset_section_ranks_on_shared_docs() -> None:
+    docs = [f"d{i}" for i in range(25)]
+    a = _subset_row("alpha", {d: 90.0 for d in docs} | {"only_a": 10.0})
+    b = _subset_row("beta", {d: 60.0 for d in docs} | {"only_b": 100.0})
+    section = exp._common_subset_section([a, b])
+    text = "\n".join(section)
+    assert "Common-subset ranking" in text
+    assert "**25** documents" in text
+    alpha_line = next(line for line in section if "alpha" in line)
+    assert alpha_line.startswith("| 1 ")
+    assert "90.00" in alpha_line
+
+
+def test_common_subset_section_skips_small_intersections() -> None:
+    a = _subset_row("alpha", {"d1": 90.0})
+    b = _subset_row("beta", {"d1": 60.0})
+    assert exp._common_subset_section([a, b]) == []
+
+
+def test_to_markdown_renders_itt_columns() -> None:
+    row = _subset_row("alpha", {"d1": 80.0, "d2": 90.0})
+    md = exp.to_fidelity_markdown([row], Path("results/bench.jsonl"))
+    assert "itt_median" in md
+    assert "failures" in md
+
+
+def test_paired_stats_section_win_loss_and_p() -> None:
+    docs = {f"d{i}": 80.0 + i * 0.1 for i in range(30)}
+    a = _subset_row("alpha", {k: v + 5.0 for k, v in docs.items()})
+    b = _subset_row("beta", dict(docs))
+    section = exp._paired_stats_section([a, b])
+    text = "\n".join(section)
+    assert "Paired comparisons" in text
+    row_line = next(line for line in section if "| alpha | beta |" in line)
+    assert "| 30 |" in row_line
+    assert "30/0/0" in row_line
+    assert "+5.00" in row_line
+
+
+def test_paired_stats_skips_small_overlap() -> None:
+    a = _subset_row("alpha", {"d1": 90.0})
+    b = _subset_row("beta", {"d1": 60.0})
+    assert exp._paired_stats_section([a, b]) == []
+
+
+def test_lens_health_section_lists_disagreeing_vendors() -> None:
+    rows = [
+        {
+            "vendor": "alpha", "tool_version": "1.0", "benchmark": "script_redlines",
+            "n_lens_disagree": 3, "lens_disagree_rate": 0.015,
+        },
+        {
+            "vendor": "beta", "tool_version": "2.0", "benchmark": "script_redlines",
+            "n_lens_disagree": 0, "lens_disagree_rate": 0.0,
+        },
+        {
+            "vendor": "gamma", "tool_version": "1.0", "benchmark": "visual_redlines",
+            "n_lens_disagree": 9, "lens_disagree_rate": 0.5,
+        },
+    ]
+    section = exp._lens_health_section(rows)
+    text = "\n".join(section)
+    assert "Lens health" in text
+    assert "alpha" in text
+    assert "3 doc(s)" in text
+    assert "1.5%" in text
+    assert "beta" not in text  # zero disagreements → no alarm line
+    assert "gamma" not in text  # other benchmarks excluded
+
+
+def test_lens_health_section_absent_when_clean() -> None:
+    rows = [
+        {"vendor": "alpha", "tool_version": "1.0", "benchmark": "script_redlines",
+         "n_lens_disagree": 0, "lens_disagree_rate": 0.0},
+        {"vendor": "old", "tool_version": "0.9", "benchmark": "script_redlines"},
+    ]
+    assert exp._lens_health_section(rows) == []
+
+
+def test_dedup_keeps_lens_alarm_from_shadowed_rerun(tmp_path: Path) -> None:
+    # _rank prefers the newest line (within the full-corpus bucket) among same
+    # (vendor, benchmark, version) reruns — which may be a clean/pre-lens line.
+    # The alarm must be max-over-reruns: a losing rerun that surfaced
+    # disagreements must not be silenced by the winner.
+    import json as _json
+
+    line_common = {
+        "vendor": "alpha", "benchmark": "script_redlines", "tool_version": "1.0",
+        "n_docs": 10, "exact_100": 0, "at_least_90": 5, "below_50": 0,
+        "min": 50.0, "max": 99.0, "std": 1.0,
+    }
+    with_alarm = {**line_common, "overall_mean": 80.0, "overall_median": 81.0,
+                  "timestamp": "2026-08-01T00:00:00+00:00",
+                  "n_lens_disagree": 4, "lens_disagree_rate": 0.4}
+    shadowing = {**line_common, "overall_mean": 90.0, "overall_median": 91.0,
+                 "timestamp": "2026-08-02T00:00:00+00:00"}
+    path = tmp_path / "bench.jsonl"
+    path.write_text(_json.dumps(with_alarm) + "\n" + _json.dumps(shadowing) + "\n")
+    rows = exp.rows_from_jsonl(path)
+    assert len(rows) == 1
+    assert rows[0]["mean"] == 90.0  # ranking uses the newest line
+    assert rows[0]["n_lens_disagree"] == 4  # but the alarm survives
+    assert rows[0]["lens_disagree_rate"] == 0.4
+
+
+def test_carry_foreign_marker_blocks(tmp_path: Path) -> None:
+    """A wholesale rewrite must not destroy marker-delimited sections owned by
+    sibling generators (e.g. the dual-path report's DUAL_PATH_QUALITY block)."""
+    out = tmp_path / "RESULTS.md"
+    block = (
+        "<!-- DUAL_PATH_QUALITY:BEGIN -->\n"
+        "## dual-path table\n"
+        "| a | b |\n"
+        "<!-- DUAL_PATH_QUALITY:END -->"
+    )
+    out.write_text(f"# old content\n\n{block}\n", encoding="utf-8")
+    merged = exp._carry_foreign_marker_blocks(out, "# new export\n")
+    assert block in merged
+    assert merged.startswith("# new export")
+    # A block the new markdown already contains is not duplicated.
+    merged2 = exp._carry_foreign_marker_blocks(out, f"# new export\n\n{block}\n")
+    assert merged2.count("DUAL_PATH_QUALITY:BEGIN") == 1
+    # No existing file → passthrough.
+    assert exp._carry_foreign_marker_blocks(tmp_path / "missing.md", "x") == "x"
+
+
+def _fidelity_line(vendor: str, *, corpus_revision: str | None, mean: float) -> dict:
+    line = {
+        "vendor": vendor,
+        "benchmark": "script_redlines",
+        "tool_version": "1.0.0",
+        "overall_mean": mean,
+        "overall_median": mean,
+        "itt_mean": mean,
+        "itt_median": mean,
+        "itt_n_docs": 763 if corpus_revision else 164,
+        "n_docs": 763 if corpus_revision else 164,
+        "timestamp": "2026-08-04T00:00:00Z",
+    }
+    if corpus_revision is not None:
+        line["corpus_revision"] = corpus_revision
+    return line
+
+
+def test_rows_carry_corpus_revision(tmp_path: Path) -> None:
+    """Without this field on the row the regime split below cannot be made at all."""
+    p = tmp_path / "bench.jsonl"
+    p.write_text(
+        json.dumps(_fidelity_line("current-tool", corpus_revision="b7f467074a51", mean=76.0))
+        + "\n"
+        + json.dumps(_fidelity_line("legacy-tool", corpus_revision=None, mean=92.0))
+        + "\n",
+    )
+    rows = exp.rows_from_jsonl(p)
+    by_vendor = {str(r["vendor"]): r for r in rows}
+    assert by_vendor["current-tool"]["corpus_revision"] == "b7f467074a51"
+    assert by_vendor["legacy-tool"]["corpus_revision"] is None
+
+
+def test_fidelity_tables_split_current_and_legacy_corpus_regimes(tmp_path: Path) -> None:
+    """README splits on `corpus_revision` presence; RESULTS.md's per-benchmark tables
+    still mixed regimes, so a legacy tool scored on 164 easy docs outranked a current
+    tool scored on 763 — a ranking that reads as a real result and is an artifact of
+    which corpus each line ran on.
+    """
+    p = tmp_path / "bench.jsonl"
+    p.write_text(
+        json.dumps(_fidelity_line("current-tool", corpus_revision="b7f467074a51", mean=76.0))
+        + "\n"
+        + json.dumps(_fidelity_line("legacy-tool", corpus_revision=None, mean=92.0))
+        + "\n",
+    )
+    md = exp.to_fidelity_markdown(exp.rows_from_jsonl(p), p)
+
+    assert "**Current corpus**" in md
+    assert "**Legacy corpus**" in md
+    # The legacy tool must not be ranked #1 over the current one: they live in
+    # different tables, so each table restarts its own numbering.
+    current_at = md.index("**Current corpus**")
+    legacy_at = md.index("**Legacy corpus**")
+    assert current_at < legacy_at
+    assert md.index("current-tool") < legacy_at, "current tool must sit in the current table"
+    assert md.index("legacy-tool") > legacy_at, "legacy tool must sit in the legacy table"
+
+
+def test_single_regime_renders_one_unsplit_table(tmp_path: Path) -> None:
+    """Splitting when there is nothing to split against would add noise to every
+    benchmark that only ever ran on one corpus."""
+    p = tmp_path / "bench.jsonl"
+    p.write_text(
+        json.dumps(_fidelity_line("a", corpus_revision="b7f467074a51", mean=76.0))
+        + "\n"
+        + json.dumps(_fidelity_line("b", corpus_revision="b7f467074a51", mean=80.0))
+        + "\n",
+    )
+    md = exp.to_fidelity_markdown(exp.rows_from_jsonl(p), p)
+    assert "**Current corpus**" not in md
+    assert "**Legacy corpus**" not in md
+    assert "a" in md and "b" in md
+
+
+def test_split_tables_rank_independently(tmp_path: Path) -> None:
+    """Each regime restarts at #1 — continuing the numbering across the split would
+    re-imply the cross-regime ordering the split exists to prevent."""
+    p = tmp_path / "bench.jsonl"
+    p.write_text(
+        "\n".join(
+            json.dumps(line)
+            for line in (
+                _fidelity_line("cur-hi", corpus_revision="rev", mean=80.0),
+                _fidelity_line("cur-lo", corpus_revision="rev", mean=70.0),
+                _fidelity_line("leg-hi", corpus_revision=None, mean=95.0),
+                _fidelity_line("leg-lo", corpus_revision=None, mean=90.0),
+            )
+        )
+        + "\n",
+    )
+    md = exp.to_fidelity_markdown(exp.rows_from_jsonl(p), p)
+    legacy_at = md.index("**Legacy corpus**")
+    current_block, legacy_block = md[:legacy_at], md[legacy_at:]
+    # "| 1 |" must appear in BOTH blocks — one rank-1 per regime.
+    assert "| 1 |" in current_block
+    assert "| 1 |" in legacy_block
+
+
+def test_holdout_blurb_reports_the_actual_sealed_size(tmp_path: Path) -> None:
+    """The blurb used to hard-code "20-pair" and word_based/holdout.txt. When the
+    SuperDoc subcorpus landed the sealed set became 40 and the published sentence
+    contradicted the n_holdout column printed directly beneath it.
+    """
+    p = tmp_path / "bench.jsonl"
+    main = _fidelity_line("v", corpus_revision="rev", mean=76.0)
+    main["holdout_mode"] = "excluded"
+    main["n_docs"] = 763
+    hold = _fidelity_line("v", corpus_revision="rev", mean=80.0)
+    hold["holdout_mode"] = "only"
+    hold["n_docs"] = 40
+    hold["scores"] = {f"k{i}": 80.0 + (i % 5) for i in range(40)}
+    p.write_text(json.dumps(main) + "\n" + json.dumps(hold) + "\n")
+
+    md = "\n".join(exp.holdout_gap_section(p))
+    assert "40-pair" in md
+    assert "20-pair" not in md
+    assert "corpus/holdout_combined.txt" in md
+
+
+def test_holdout_blurb_avoids_a_size_claim_when_vendors_disagree(tmp_path: Path) -> None:
+    """Mid-migration some vendors have 20-key holdout lines and others 40. Printing
+    either number would be wrong for half the table."""
+    p = tmp_path / "bench.jsonl"
+    lines = []
+    for vendor, n in (("v1", 20), ("v2", 40)):
+        main = _fidelity_line(vendor, corpus_revision="rev", mean=76.0)
+        main["holdout_mode"] = "excluded"
+        main["n_docs"] = 763
+        hold = _fidelity_line(vendor, corpus_revision="rev", mean=80.0)
+        hold["holdout_mode"] = "only"
+        hold["n_docs"] = n
+        hold["scores"] = {f"k{i}": 80.0 for i in range(n)}
+        lines += [main, hold]
+    p.write_text("\n".join(json.dumps(x) for x in lines) + "\n")
+
+    md = "\n".join(exp.holdout_gap_section(p))
+    assert "Sealed sealed holdout" not in md  # no double word
+    assert "20-pair" not in md and "40-pair" not in md

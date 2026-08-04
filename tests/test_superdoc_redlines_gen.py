@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import shutil
+import subprocess
 import zipfile
 from pathlib import Path
 
@@ -18,10 +19,40 @@ REPO = Path(__file__).resolve().parents[1] / "superdoc-redlines"
 _HAVE_TOOL = (REPO / "superdoc-redline.mjs").is_file() and (REPO / "node_modules").is_dir()
 _HAVE_NODE = shutil.which("node") is not None
 
-requires_tool = pytest.mark.skipif(
-    not (_HAVE_TOOL and _HAVE_NODE),
-    reason="superdoc-redlines clone (repo root, npm-installed) or node absent",
-)
+def _cli_runtime_broken() -> str | None:
+    """Probe the vendor CLI once; return why it is unusable, or None if it works.
+
+    Plan Chapter 6 D6: this machine runs a bleeding-edge Node, and the vendor's
+    transitive dependency (@harbour-enterprises/superdoc) dies there with
+    ``TypeError: varStorage.getItem is not a function``. Skipping with the reason
+    NAMED keeps the situation visible; letting the suite sit permanently red
+    hides real regressions behind a known one, and silently passing would hide it
+    entirely. This is a runtime-compatibility gap, and whether it counts against
+    the vendor is decided on a supported Node — not here.
+    """
+    if not (_HAVE_TOOL and _HAVE_NODE):
+        return "superdoc-redlines clone (repo root, npm-installed) or node absent"
+    # Probe through the generator's OWN invocation path, so this reflects what the
+    # bench actually runs. Probing bare `node` would report the pre-gate failure
+    # and skip tests that now pass — testing a path the code no longer takes.
+    probe = superdoc_redlines_gen._run_cli(REPO, ["--help"])
+    blob = (probe.stderr or "") + (probe.stdout or "")
+    if "varStorage.getItem is not a function" in blob:
+        node_v = subprocess.run(
+            ["node", "--version"], capture_output=True, text=True, check=False,
+        ).stdout.strip()
+        return (
+            f"superdoc-redlines CLI is unusable on this runtime ({node_v}): its dependency "
+            f"@harbour-enterprises/superdoc raises 'varStorage.getItem is not a function'. "
+            f"Vendor declares engines.node >=18.0.0. See plan Chapter 6 D6 — benchmark it "
+            f"on a supported Node LTS before attributing this to the vendor."
+        )
+    return None
+
+
+_CLI_BROKEN = _cli_runtime_broken()
+
+requires_tool = pytest.mark.skipif(_CLI_BROKEN is not None, reason=_CLI_BROKEN or "")
 requires_manifest = pytest.mark.skipif(not MANIFEST.is_file(), reason="corpus manifest absent")
 
 

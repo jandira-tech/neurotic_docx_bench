@@ -58,6 +58,7 @@ export type WordLensVerdict = {
 	sampled: number;
 	valid: number;
 	invalid: number;
+	unjudgeable?: number;
 	unavailable: boolean;
 };
 
@@ -210,7 +211,8 @@ export const renderScoreboardSection = (rows: ScoreboardRow[], meta: ScoreboardM
 		const disagreements = engineRows.filter((r) => r.disagreement).length;
 		const word = engineRows.find((r) => r.wordLens && !r.wordLens.unavailable)?.wordLens;
 		const wordCell = word
-			? `${word.valid}/${word.sampled} valid`
+			? `${word.valid}/${word.sampled} valid` +
+				(word.unjudgeable ? ` (${word.unjudgeable} unjudgeable)` : "")
 			: engineRows.some((r) => r.wordLens?.unavailable)
 				? "unavailable"
 				: "—";
@@ -432,12 +434,28 @@ const loadFolioJudge = async (folioDir: string): Promise<FolioJudge> => {
 /**
  * WV-1 sample: run `bench word-validate` over a dir of accepted outputs.
  *
- * A wholly-invalid sample retries ONCE: WV-1 infers "repair dialog" from
- * AppleScript silence, so a busy/relaunching Word marks every file invalid
- * (timeout ≠ dialog — TODO.md §1; observed live in the first D-2 sweep, where
- * 0/5 lossless "invalid" re-validated 5/5 minutes later). A retry that flips
- * the verdict is recorded as the flake it was.
+ * A wholly-invalid sample retries ONCE (historical stopgap for the timeout ≠
+ * dialog confusion — TODO.md §1; observed live in the first D-2 sweep, where
+ * 0/5 lossless "invalid" re-validated 5/5 minutes later). WV-1 now detects an
+ * ACTUAL modal via System Events and reports slow opens as UNJUDGEABLE instead
+ * of invalid, so wholesale false-invalid sweeps should no longer occur; the
+ * retry stays as a cheap belt-and-suspenders for invalid verdicts.
  */
+/**
+ * Parse `bench word-validate` per-doc output. UNJUDGEABLE (budget exhausted, no
+ * modal observed — Word merely slow) is its own outcome, reported separately;
+ * it contains no "VALID" substring so the valid arithmetic is unaffected.
+ */
+export const parseWordValidateOutput = (
+	stdout: string,
+	sampled: number,
+): WordLensVerdict => {
+	const validSubstrings = (stdout.match(/VALID/g) ?? []).length;
+	const invalid = (stdout.match(/INVALID/g) ?? []).length;
+	const unjudgeable = (stdout.match(/UNJUDGEABLE/g) ?? []).length;
+	return { sampled, valid: validSubstrings - invalid, invalid, unjudgeable, unavailable: false };
+};
+
 export const runWordSample = (sampleDir: string, sampled: number): WordLensVerdict => {
 	const attempt = (): WordLensVerdict => {
 		const proc = spawnSync("uv", ["run", "bench", "word-validate", sampleDir], {
@@ -448,9 +466,7 @@ export const runWordSample = (sampleDir: string, sampled: number): WordLensVerdi
 		if (proc.error || proc.status === 2) {
 			return { sampled, valid: 0, invalid: 0, unavailable: true };
 		}
-		const validSubstrings = (proc.stdout.match(/VALID/g) ?? []).length;
-		const invalid = (proc.stdout.match(/INVALID/g) ?? []).length;
-		return { sampled, valid: validSubstrings - invalid, invalid, unavailable: false };
+		return parseWordValidateOutput(proc.stdout, sampled);
 	};
 	const first = attempt();
 	if (first.unavailable || first.valid > 0) return first;

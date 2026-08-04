@@ -1,0 +1,1738 @@
+=== STEP baseline-accepted-rerun 01:15:38
+──────────────── folio-playwright-accepted  (render=playwright) ────────────────
+starting harness server for folio-playwright-accepted: cd 
+src/neurotic_docx_bench/utils/folio/harness/folio-viewer && 
+./node_modules/.bin/vite --port 5175 --host 127.0.0.1
+harness server ready → http://127.0.0.1:5175/harness.html
+tool_version: 0.5.0
+2 render failures
+visual report → 
+runs-compare/folio-playwright-accepted_2026-07-18_01-15/report.html
+
+────────────────────── benchmark: visual_accepted_changes ──────────────────────
+                            folio  ·  164 documents                             
+╭──────────────────────────────────────────────────────────────────────┬───────╮
+│ document                                                             │ score │
+├──────────────────────────────────────────────────────────────────────┼───────┤
+│ 1_5_line_spacing_id_paraid_overflow_24_id_paraid_overflow            │ 77.29 │
+│ 24_id_paraid_overflow_alternate_content                              │ 53.41 │
+│ alternate_content_anchor_images                                      │ 51.10 │
+│ blue_bold_centered_demo_id_paraid_overflow_blue_centered_title_demo_ │ 80.61 │
+│ style_default_missing                                                │       │
+│ blue_centered_title_demo_style_default_missing_blue_italic_text_demo │ 81.75 │
+│ _id_paraid_overflow                                                  │       │
+│ blue_italic_text_demo_id_paraid_overflow_blue_underline_combo_demo_i │ 55.69 │
+│ d_paraid_overflow                                                    │       │
+│ blue_underline_combo_demo_id_paraid_overflow_bold_and_italic_combo_s │ 55.40 │
+│ tyle_default_missing                                                 │       │
+│ bold_and_italic_combo_style_default_missing_bold_and_underline_combo │ 56.58 │
+│ _id_paraid_overflow                                                  │       │
+│ bold_and_underline_combo_id_paraid_overflow_bold_italic_combined_dem │ 82.23 │
+│ o_id_paraid_overflow                                                 │       │
+│ bold_italic_combined_demo_id_paraid_overflow_bold_italic_underline_d │ 55.67 │
+│ emo_id_paraid_overflow                                               │       │
+│ bold_italic_underline_demo_id_paraid_overflow_bold_red_text_combo_id │ 54.71 │
+│ _paraid_overflow                                                     │       │
+│ bold_red_text_combo_id_paraid_overflow_bold_superscript_demo_style_d │ 51.49 │
+│ efault_missing                                                       │       │
+│ bold_superscript_demo_style_default_missing_bold_text_formatting_dem │ 54.02 │
+│ o_id_paraid_overflow_2                                               │       │
+│ bold_text_formatting_demo_id_paraid_overflow_2_bold_text_formatting_ │ 77.37 │
+│ demo_id_paraid_overflow                                              │       │
+│ bold_text_formatting_demo_id_paraid_overflow_bold_underline_combined │ 56.26 │
+│ _demo_id_paraid_overflow                                             │       │
+│ bold_underline_combined_demo_id_paraid_overflow_bold_underline_highl │ 54.92 │
+│ ight_demo_id_paraid_overflow                                         │       │
+│ bold_underline_highlight_demo_id_paraid_overflow_book_catalog_id_par │ 74.44 │
+│ aid_overflow                                                         │       │
+│ book_catalog_id_paraid_overflow_book_catalog_table                   │ 63.15 │
+│ book_catalog_table_budget_report_q1_2026_suggesting_insertions       │ 48.89 │
+│ budget_report_q1_2026_suggesting_insertions_bullet_list_bold_demo_id │ 77.93 │
+│ _paraid_overflow                                                     │       │
+│ bullet_list_bold_demo_id_paraid_overflow_bullet_list_demo_id_paraid_ │ 57.00 │
+│ overflow                                                             │       │
+│ bullet_list_demo_id_paraid_overflow_calibri_bold_italic_demo_id_para │ 51.53 │
+│ id_overflow                                                          │       │
+│ calibri_bold_italic_demo_id_paraid_overflow_calibri_font_demo_id_par │ 51.16 │
+│ aid_overflow_2                                                       │       │
+│ calibri_font_demo_id_paraid_overflow_2_calibri_font_demo_id_paraid_o │ 52.08 │
+│ verflow                                                              │       │
+│ calibri_font_demo_id_paraid_overflow_calibri_heading_2_right_id_para │ 47.48 │
+│ id_overflow                                                          │       │
+│ calibri_heading_2_right_id_paraid_overflow_center_aligned_bold_text_ │ 55.26 │
+│ id_paraid_overflow                                                   │       │
+│ center_aligned_bold_text_id_paraid_overflow_center_alignment_demo_id │ 55.07 │
+│ _paraid_overflow_2                                                   │       │
+│ center_alignment_demo_id_paraid_overflow_2_center_alignment_demo_id_ │ 77.20 │
+│ paraid_overflow                                                      │       │
+│ center_alignment_demo_id_paraid_overflow_center_bold_demo_id_paraid_ │ 54.51 │
+│ overflow                                                             │       │
+│ center_bold_demo_id_paraid_overflow_clear_formatting_demo_id_paraid_ │ 54.98 │
+│ overflow                                                             │       │
+│ clear_formatting_demo_id_paraid_overflow_comments                    │ 46.47 │
+│ comments_complex_style_attr                                          │ 48.20 │
+│ complex_style_attr_contract_review_suggesting_insertions             │ 50.53 │
+│ contract_review_suggesting_insertions_contract_review_suggesting_mix │ 44.00 │
+│ ed_edits                                                             │       │
+│ contract_review_suggesting_mixed_edits_customer_satisfaction_survey_ │ 54.65 │
+│ q4_suggesting_insertions                                             │       │
+│ customer_satisfaction_survey_q4_suggesting_insertions_document_100_u │ 81.42 │
+│ ltimate_demo_id_paraid_overflow                                      │       │
+│ document_100_ultimate_demo_id_paraid_overflow_double_spacing_bold_de │ 76.97 │
+│ mo_id_paraid_overflow                                                │       │
+│ employee_directory_table_2_employee_directory_table                  │ 49.84 │
+│ employee_directory_table_employee_review_john_smith_suggesting_inser │ 48.82 │
+│ tions                                                                │       │
+│ font_color_blue_demo_style_default_missing_font_color_demo_style_def │ 55.10 │
+│ ault_missing                                                         │       │
+│ font_color_demo_style_default_missing_font_family_demo_id_paraid_ove │ 50.38 │
+│ rflow                                                                │       │
+│ font_family_demo_id_paraid_overflow_font_size_12_demo_id_paraid_over │ 51.45 │
+│ flow                                                                 │       │
+│ font_size_12_demo_id_paraid_overflow_font_size_18_demo_style_default │ 77.71 │
+│ _missing                                                             │       │
+│ font_size_18_demo_style_default_missing_font_size_24_demo_id_paraid_ │ 48.15 │
+│ overflow                                                             │       │
+│ font_size_24_demo_id_paraid_overflow_font_size_demo_id_paraid_overfl │ 77.75 │
+│ ow                                                                   │       │
+│ font_size_demo_id_paraid_overflow_footnotes_sample                   │ 47.95 │
+│ footnotes_sample_gdocs_comments_export                               │ 48.36 │
+│ gdocs_comments_export_green_bold_text_demo_id_paraid_overflow        │ 72.24 │
+│ green_bold_text_demo_id_paraid_overflow_green_highlight_demo_id_para │ 79.65 │
+│ id_overflow                                                          │       │
+│ green_highlight_demo_id_paraid_overflow_green_underline_bullet_list_ │ 56.11 │
+│ id_paraid_overflow                                                   │       │
+│ green_underline_bullet_list_id_paraid_overflow_header_no_rels        │ 48.56 │
+│ header_no_rels_heading_1_bold_demo_id_paraid_overflow                │ 50.46 │
+│ heading_1_bold_demo_id_paraid_overflow_heading_1_style_demo_id_parai │ 78.86 │
+│ d_overflow                                                           │       │
+│ heading_1_style_demo_id_paraid_overflow_heading_2_center_demo_id_par │ 77.17 │
+│ aid_overflow                                                         │       │
+│ heading_2_center_demo_id_paraid_overflow_heading_2_style_demo_id_par │ 77.95 │
+│ aid_overflow                                                         │       │
+│ heading_2_style_demo_id_paraid_overflow_heading_3_center_italic_id_p │ 77.65 │
+│ araid_overflow                                                       │       │
+│ heading_3_center_italic_id_paraid_overflow_heading_3_style_demo_id_p │ 77.75 │
+│ araid_overflow_2                                                     │       │
+│ heading_3_style_demo_id_paraid_overflow_2_heading_3_style_demo_id_pa │ 78.45 │
+│ raid_overflow                                                        │       │
+│ heading_3_style_demo_id_paraid_overflow_heading_4_right_italic_id_pa │ 77.97 │
+│ raid_overflow                                                        │       │
+│ heading_4_right_italic_id_paraid_overflow_heading_4_style_demo_id_pa │ 78.19 │
+│ raid_overflow_2                                                      │       │
+│ heading_4_style_demo_id_paraid_overflow_2_heading_4_style_demo_id_pa │ 78.64 │
+│ raid_overflow                                                        │       │
+│ heading_4_style_demo_id_paraid_overflow_helvetica_font_demo_style_de │ 60.68 │
+│ fault_missing                                                        │       │
+│ helvetica_font_demo_style_default_missing_hr_onboarding_checklist_ta │ 64.24 │
+│ ble                                                                  │       │
+│ insert_link_demo_id_paraid_overflow_inventory_list_suggesting_deleti │ 61.45 │
+│ ons                                                                  │       │
+│ inventory_list_suggesting_deletions_inventory_list_suggesting_mixed_ │ 42.86 │
+│ edits                                                                │       │
+│ inventory_list_suggesting_mixed_edits_it_security_policy_v2_suggesti │ 72.42 │
+│ ng_insertions                                                        │       │
+│ it_security_policy_v2_suggesting_insertions_italic_and_underline_com │ 47.55 │
+│ bo_style_default_missing                                             │       │
+│ italic_and_underline_combo_style_default_missing_italic_subscript_de │ 49.16 │
+│ mo_style_default_missing                                             │       │
+│ italic_subscript_demo_style_default_missing_italic_text_formatting_d │ 53.91 │
+│ emo_id_paraid_overflow_2                                             │       │
+│ italic_text_formatting_demo_id_paraid_overflow_2_italic_text_formatt │ 54.77 │
+│ ing_demo_id_paraid_overflow                                          │       │
+│ italic_text_formatting_demo_id_paraid_overflow_italic_underline_comb │ 55.20 │
+│ ined_demo_id_paraid_overflow                                         │       │
+│ italic_underline_combined_demo_id_paraid_overflow_justified_underlin │ 73.42 │
+│ e_demo_id_paraid_overflow                                            │       │
+│ justified_underline_demo_id_paraid_overflow_justify_alignment_demo_i │ 78.66 │
+│ d_paraid_overflow_2                                                  │       │
+│ justify_alignment_demo_id_paraid_overflow_2_justify_alignment_demo_i │ 49.97 │
+│ d_paraid_overflow                                                    │       │
+│ justify_alignment_demo_id_paraid_overflow_large_font_size_demo_id_pa │ 76.65 │
+│ raid_overflow                                                        │       │
+│ large_font_size_demo_id_paraid_overflow_left_alignment_demo_id_parai │ 82.09 │
+│ d_overflow                                                           │       │
+│ left_alignment_demo_id_paraid_overflow_line_spacing_demo_id_paraid_o │ 79.57 │
+│ verflow                                                              │       │
+│ line_spacing_demo_id_paraid_overflow_marketing_strategy_2026_suggest │ 76.00 │
+│ ing_insertions                                                       │       │
+│ mcdoc_meeting_agenda_table_2                                         │ 50.67 │
+│ meeting_agenda_table_2_meeting_agenda_table                          │ 58.08 │
+│ meeting_agenda_table_meeting_minutes_id_paraid_overflow              │ 45.72 │
+│ meeting_minutes_id_paraid_overflow_meeting_minutes_suggesting_insert │ 79.77 │
+│ ions                                                                 │       │
+│ meeting_minutes_suggesting_insertions_multi_section                  │ 51.01 │
+│ multi_section_nested_table_rowspan                                   │ 45.96 │
+│ nested_table_rowspan_numbered_list_demo_id_paraid_overflow           │ 43.78 │
+│ numbered_list_demo_id_paraid_overflow_numbered_list_italic_demo_id_p │ 54.30 │
+│ araid_overflow                                                       │       │
+│ numbered_list_italic_demo_id_paraid_overflow_numwords_fldsimple      │ 59.33 │
+│ numwords_fldsimple_ole_object                                        │ 35.46 │
+│ ole_object_ooxml_style_link                                          │ 43.73 │
+│ ooxml_style_link_open_sans_bold_underline_id_paraid_overflow         │ 51.68 │
+│ open_sans_bold_underline_id_paraid_overflow_open_sans_font_demo_id_p │ 51.82 │
+│ araid_overflow_2                                                     │       │
+│ open_sans_font_demo_id_paraid_overflow_2_open_sans_font_demo_id_para │ 52.00 │
+│ id_overflow                                                          │       │
+│ open_sans_font_demo_id_paraid_overflow_page_numbering_examples       │ 51.06 │
+│ page_numbering_examples_potpourritest                                │ 42.40 │
+│ potpourritest_product_roadmap_2026_suggesting_insertions             │ 42.51 │
+│ product_roadmap_2026_suggesting_insertions_project_plan_suggesting_i │ 54.25 │
+│ nsertions                                                            │       │
+│ project_plan_suggesting_insertions_project_proposal_id_paraid_overfl │ 74.65 │
+│ ow                                                                   │       │
+│ project_proposal_id_paraid_overflow_project_proposal_suggesting_inse │ 53.37 │
+│ rtions                                                               │       │
+│ project_proposal_suggesting_insertions_project_tasks_suggesting_inse │ 74.67 │
+│ rtions_2                                                             │       │
+│ project_tasks_suggesting_insertions_2_project_tasks_suggesting_inser │ 63.13 │
+│ tions                                                                │       │
+│ project_tasks_suggesting_insertions_q1_sales_summary_table_2         │ 58.32 │
+│ q1_sales_summary_table_2_q1_sales_summary_table                      │ 62.54 │
+│ q1_sales_summary_table_quarterly_performance_report_table_2          │ 50.50 │
+│ quarterly_performance_report_table_2_quarterly_performance_report_ta │ 58.08 │
+│ ble                                                                  │       │
+│ quarterly_performance_report_table_red_bold_heading_demo_style_defau │ 43.87 │
+│ lt_missing                                                           │       │
+│ red_bold_heading_demo_style_default_missing_red_bold_text_demo_id_pa │ 54.54 │
+│ raid_overflow                                                        │       │
+│ red_bold_text_demo_id_paraid_overflow_red_heading_demo_id_paraid_ove │ 77.99 │
+│ rflow                                                                │       │
+│ red_heading_demo_id_paraid_overflow_red_strikethrough_demo_style_def │ 78.83 │
+│ ault_missing                                                         │       │
+│ red_strikethrough_demo_style_default_missing_redline_cicerodo_v_plat │ 44.68 │
+│ e_30                                                                 │       │
+│ redline_cicerodo_v_plate_30_right_align_bold_demo_id_paraid_overflow │ 43.78 │
+│ right_align_bold_demo_id_paraid_overflow_right_aligned_italic_demo_i │ 78.74 │
+│ d_paraid_overflow                                                    │       │
+│ right_aligned_italic_demo_id_paraid_overflow_right_alignment_demo_id │ 55.02 │
+│ _paraid_overflow_2                                                   │       │
+│ right_alignment_demo_id_paraid_overflow_2_right_alignment_demo_id_pa │ 77.05 │
+│ raid_overflow                                                        │       │
+│ right_alignment_demo_id_paraid_overflow_risk_assessment_product_laun │ 72.86 │
+│ ch_suggesting_insertions                                             │       │
+│ risk_assessment_product_launch_suggesting_insertions_roboto_font_dem │ 51.18 │
+│ o_id_paraid_overflow_2                                               │       │
+│ roboto_font_demo_id_paraid_overflow_2_roboto_font_demo_id_paraid_ove │ 51.62 │
+│ rflow                                                                │       │
+│ roboto_font_demo_id_paraid_overflow_roboto_underline_demo_id_paraid_ │ 52.04 │
+│ overflow                                                             │       │
+│ roboto_underline_demo_id_paraid_overflow_sales_report_january_2026_s │ 56.62 │
+│ uggesting_insertions                                                 │       │
+│ sales_report_january_2026_suggesting_insertions_sample_document_afte │ 37.49 │
+│ rword_repaired_word_repaired                                         │       │
+│ sample_document_word_repair_of_our_output_iter2_word_repaired_sample │ 37.44 │
+│ _document_word_repair_of_our_output_word_repaired                    │       │
+│ sample_document_word_repair_of_our_output_word_repaired_sd_2517_loca │ 36.87 │
+│ lized_heading_styles                                                 │       │
+│ sd_2517_localized_heading_styles_sectpr_headerref                    │ 48.84 │
+│ sectpr_headerref_single_paragraph                                    │ 48.17 │
+│ single_paragraph_small_font_size_demo_id_paraid_overflow             │ 60.72 │
+│ small_font_size_demo_id_paraid_overflow_strict01_sdt_controls        │ 35.59 │
+│ strict01_sdt_controls_strict01                                       │ 36.74 │
+│ strict01_strikethrough_and_italic_combo_id_paraid_overflow           │ 44.62 │
+│ strikethrough_and_italic_combo_id_paraid_overflow_strikethrough_bold │ 78.68 │
+│ _demo_id_paraid_overflow                                             │       │
+│ strikethrough_bold_demo_id_paraid_overflow_strikethrough_text_demo_i │ 55.42 │
+│ d_paraid_overflow                                                    │       │
+│ strikethrough_text_demo_id_paraid_overflow_strikethrough_text_format │ 50.73 │
+│ ting_demo_id_paraid_overflow                                         │       │
+│ strikethrough_text_formatting_demo_id_paraid_overflow_subscript_demo │ 49.22 │
+│ _id_paraid_overflow                                                  │       │
+│ subscript_demo_id_paraid_overflow_subscript_demo_style_default_missi │ 49.34 │
+│ ng                                                                   │       │
+│ subscript_demo_style_default_missing_subtitle_style_demo_id_paraid_o │ 79.56 │
+│ verflow                                                              │       │
+│ subtitle_style_demo_id_paraid_overflow_subtitle_style_demo_style_def │ 78.50 │
+│ ault_missing                                                         │       │
+│ subtitle_style_demo_style_default_missing_superscript_demo_id_paraid │ 50.95 │
+│ _overflow_2                                                          │       │
+│ superscript_demo_id_paraid_overflow_2_superscript_demo_id_paraid_ove │ 51.17 │
+│ rflow                                                                │       │
+│ superscript_demo_id_paraid_overflow_superscript_demo_style_default_m │ 52.08 │
+│ issing                                                               │       │
+│ superscript_demo_style_default_missing_support_tickets_summary_id_pa │ 78.03 │
+│ raid_overflow                                                        │       │
+│ support_tickets_summary_id_paraid_overflow_support_tickets_table     │ 62.50 │
+│ support_tickets_table_table_bookmark_end                             │ 41.18 │
+│ table_bookmark_end_table_vmerge_colspan                              │ 41.54 │
+│ table_vmerge_colspan_text_box                                        │ 41.19 │
+│ text_box_text_highlight_demo_style_default_missing                   │ 56.34 │
+│ text_highlight_demo_style_default_missing_tiff_image                 │ 45.95 │
+│ tiff_image_times_new_roman_bold_id_paraid_overflow                   │ 83.34 │
+│ times_new_roman_bold_id_paraid_overflow_times_new_roman_font_id_para │ 78.12 │
+│ id_overflow                                                          │       │
+│ times_new_roman_font_id_paraid_overflow_title_style_centered_demo_id │ 76.27 │
+│ _paraid_overflow                                                     │       │
+│ title_style_centered_demo_id_paraid_overflow_title_style_demo_id_par │ 77.74 │
+│ aid_overflow                                                         │       │
+│ title_style_demo_id_paraid_overflow_title_style_demo_style_default_m │ 77.04 │
+│ issing                                                               │       │
+│ title_style_demo_style_default_missing_track_changes_editing_bullet_ │ 77.42 │
+│ id_paraid_overflow                                                   │       │
+│ track_changes_editing_bullet_id_paraid_overflow_track_changes_editin │ 78.40 │
+│ g_strikethrough_id_paraid_overflow                                   │       │
+│ track_changes_editing_strikethrough_id_paraid_overflow_track_changes │ 80.00 │
+│ _suggesting_bold_id_paraid_overflow                                  │       │
+│ track_changes_suggesting_bold_id_paraid_overflow_track_changes_sugge │ 50.79 │
+│ sting_calibri_id_paraid_overflow                                     │       │
+│ track_changes_suggesting_calibri_id_paraid_overflow_track_changes_su │ 54.82 │
+│ ggesting_center_id_paraid_overflow                                   │       │
+│ track_changes_suggesting_center_id_paraid_overflow_track_changes_sug │ 79.10 │
+│ gesting_heading_id_paraid_overflow                                   │       │
+│ track_changes_suggesting_heading_id_paraid_overflow_track_changes_su │ 78.60 │
+│ ggesting_italic_id_paraid_overflow                                   │       │
+│ track_changes_suggesting_italic_id_paraid_overflow_track_changes_sug │ 44.28 │
+│ gesting_title_id_paraid_overflow                                     │       │
+│ track_changes_suggesting_title_id_paraid_overflow_training_materials │ 74.36 │
+│ _onboarding_program_suggesting_insertions                            │       │
+│ training_materials_onboarding_program_suggesting_insertions_underlin │ 55.67 │
+│ e_text_demo_id_paraid_overflow                                       │       │
+│ underline_text_demo_id_paraid_overflow_underline_text_formatting_dem │ 53.88 │
+│ o_style_default_missing                                              │       │
+│ verdana_bold_large_font_id_paraid_overflow_verdana_font_demo_id_para │ 48.72 │
+│ id_overflow_2                                                        │       │
+│ verdana_font_demo_id_paraid_overflow_2_verdana_font_demo_id_paraid_o │ 48.90 │
+│ verflow                                                              │       │
+│ verdana_font_demo_id_paraid_overflow_verdana_italic_centered_demo_id │ 52.69 │
+│ _paraid_overflow                                                     │       │
+│ yellow_highlight_demo_id_paraid_overflow_yellow_highlight_italic_dem │ 54.30 │
+│ o_style_default_missing                                              │       │
+╰──────────────────────────────────────────────────────────────────────┴───────╯
+           mean 59.67 · median 54.95 · min 35.46 · max 83.34 · n 164            
+2 render failure(s) recorded on visual_accepted_changes
+page-count mismatch on 206 doc(s) (scored on the shared pages only): 
+1_5_line_spacing_id_paraid_overflow_24_id_paraid_overflow (oracle 1 vs candidate
+2); 24_id_paraid_overflow_alternate_content_word (oracle 1 vs candidate 2); 
+24_id_paraid_overflow_blue_bold_centered_demo_id_paraid_overflow (oracle 1 vs 
+candidate 2); alternate_content_anchor_images_word (oracle 1 vs candidate 2); 
+blue_bold_centered_demo_id_paraid_overflow_blue_centered_title_demo_style_defaul
+t_missing (oracle 1 vs candidate 2) …
+
+────────────────────────── benchmark: script_redlines ──────────────────────────
+                            folio  ·  230 documents                             
+╭──────────────────────────────────────────────────────────────────────┬───────╮
+│ document                                                             │ score │
+├──────────────────────────────────────────────────────────────────────┼───────┤
+│ 1_5_line_spacing_id_paraid_overflow_24_id_paraid_overflow            │ 45.81 │
+│ 24_id_paraid_overflow_alternate_content_word                         │ 51.19 │
+│ 24_id_paraid_overflow_blue_bold_centered_demo_id_paraid_overflow     │ 53.14 │
+│ alternate_content_anchor_images_word                                 │ 52.45 │
+│ blue_bold_centered_demo_id_paraid_overflow_blue_centered_title_demo_ │ 55.72 │
+│ style_default_missing                                                │       │
+│ blue_centered_title_demo_style_default_missing_blue_italic_text_demo │ 45.23 │
+│ _id_paraid_overflow                                                  │       │
+│ blue_italic_text_demo_id_paraid_overflow_blue_underline_combo_demo_i │ 54.35 │
+│ d_paraid_overflow                                                    │       │
+│ blue_underline_combo_demo_id_paraid_overflow_bold_and_italic_combo_s │ 50.39 │
+│ tyle_default_missing                                                 │       │
+│ bold_and_italic_combo_style_default_missing_bold_and_underline_combo │ 57.00 │
+│ _id_paraid_overflow                                                  │       │
+│ bold_and_underline_combo_id_paraid_overflow_bold_italic_combined_dem │ 51.55 │
+│ o_id_paraid_overflow                                                 │       │
+│ bold_italic_combined_demo_id_paraid_overflow_bold_italic_underline_d │ 54.86 │
+│ emo_id_paraid_overflow                                               │       │
+│ bold_italic_underline_demo_id_paraid_overflow_bold_red_text_combo_id │ 50.31 │
+│ _paraid_overflow                                                     │       │
+│ bold_red_text_combo_id_paraid_overflow_bold_superscript_demo_style_d │ 48.91 │
+│ efault_missing                                                       │       │
+│ bold_superscript_demo_style_default_missing_bold_text_formatting_dem │ 56.87 │
+│ o_id_paraid_overflow_2                                               │       │
+│ bold_text_formatting_demo_id_paraid_overflow_2_bold_text_formatting_ │ 77.24 │
+│ demo_id_paraid_overflow                                              │       │
+│ bold_text_formatting_demo_id_paraid_overflow_bold_underline_combined │ 55.47 │
+│ _demo_id_paraid_overflow                                             │       │
+│ bold_underline_combined_demo_id_paraid_overflow_bold_underline_highl │ 53.73 │
+│ ight_demo_id_paraid_overflow                                         │       │
+│ bold_underline_highlight_demo_id_paraid_overflow_book_catalog_id_par │ 51.28 │
+│ aid_overflow                                                         │       │
+│ book_catalog_id_paraid_overflow_book_catalog_table                   │ 60.84 │
+│ book_catalog_table_budget_report_q1_2026_suggesting_insertions       │ 58.41 │
+│ book_catalog_table_budget_report_q1_2026_suggesting_insertions_word  │ 58.39 │
+│ budget_report_q1_2026_suggesting_insertions_bullet_list_bold_demo_id │ 51.67 │
+│ _paraid_overflow                                                     │       │
+│ budget_report_q1_2026_suggesting_insertions_bullet_list_bold_demo_id │ 52.07 │
+│ _paraid_overflow_word                                                │       │
+│ bullet_list_bold_demo_id_paraid_overflow_bullet_list_demo_id_paraid_ │ 50.16 │
+│ overflow                                                             │       │
+│ bullet_list_demo_id_paraid_overflow_calibri_bold_italic_demo_id_para │ 49.69 │
+│ id_overflow                                                          │       │
+│ calibri_bold_italic_demo_id_paraid_overflow_calibri_font_demo_id_par │ 49.20 │
+│ aid_overflow_2                                                       │       │
+│ calibri_font_demo_id_paraid_overflow_2_calibri_font_demo_id_paraid_o │ 48.82 │
+│ verflow                                                              │       │
+│ calibri_font_demo_id_paraid_overflow_calibri_heading_2_right_id_para │ 54.52 │
+│ id_overflow                                                          │       │
+│ calibri_heading_2_right_id_paraid_overflow_center_aligned_bold_text_ │ 45.75 │
+│ id_paraid_overflow                                                   │       │
+│ center_aligned_bold_text_id_paraid_overflow_center_alignment_demo_id │ 51.06 │
+│ _paraid_overflow_2                                                   │       │
+│ center_alignment_demo_id_paraid_overflow_2_center_alignment_demo_id_ │ 54.23 │
+│ paraid_overflow                                                      │       │
+│ center_alignment_demo_id_paraid_overflow_center_bold_demo_id_paraid_ │ 52.41 │
+│ overflow                                                             │       │
+│ center_bold_demo_id_paraid_overflow_clear_formatting_demo_id_paraid_ │ 50.55 │
+│ overflow                                                             │       │
+│ clear_formatting_demo_id_paraid_overflow_comments_word               │ 45.42 │
+│ clear_formatting_demo_id_paraid_overflow_contract_review_suggesting_ │ 51.28 │
+│ insertions                                                           │       │
+│ comments_complex_style_attr_word                                     │ 47.37 │
+│ complex_style_attr_contract_review_suggesting_insertions_word        │ 50.87 │
+│ contract_review_suggesting_insertions_contract_review_suggesting_mix │ 49.90 │
+│ ed_edits                                                             │       │
+│ contract_review_suggesting_insertions_contract_review_suggesting_mix │ 52.34 │
+│ ed_edits_word                                                        │       │
+│ contract_review_suggesting_mixed_edits_customer_satisfaction_survey_ │ 51.59 │
+│ q4_suggesting_insertions                                             │       │
+│ contract_review_suggesting_mixed_edits_customer_satisfaction_survey_ │ 51.12 │
+│ q4_suggesting_insertions_word                                        │       │
+│ customer_satisfaction_survey_q4_suggesting_insertions_document_100_u │ 46.57 │
+│ ltimate_demo_id_paraid_overflow                                      │       │
+│ customer_satisfaction_survey_q4_suggesting_insertions_document_100_u │ 46.51 │
+│ ltimate_demo_id_paraid_overflow_word                                 │       │
+│ document_100_ultimate_demo_id_paraid_overflow_docx_lots_of_comments_ │ 35.67 │
+│ addition_redline_addition_v_removal                                  │       │
+│ document_100_ultimate_demo_id_paraid_overflow_double_spacing_bold_de │ 49.86 │
+│ mo_id_paraid_overflow_word                                           │       │
+│ docx_lots_of_comments_addition_docx_lots_of_comments                 │ 35.55 │
+│ docx_lots_of_comments_addition_redline_addition_v_removal_docx_lots_ │ 34.76 │
+│ of_comments_addition_redline                                         │       │
+│ docx_lots_of_comments_addition_redline_docx_lots_of_comments_additio │ 34.72 │
+│ n_removal_redline_removal_v_addition                                 │       │
+│ docx_lots_of_comments_addition_removal_docx_lots_of_comments_additio │ 34.76 │
+│ n                                                                    │       │
+│ docx_lots_of_comments_addition_removal_redline_docx_lots_of_comments │ 34.67 │
+│ _addition_removal                                                    │       │
+│ docx_lots_of_comments_addition_removal_redline_removal_v_addition_do │ 34.72 │
+│ cx_lots_of_comments_addition_removal_redline                         │       │
+│ docx_lots_of_comments_double_spacing_bold_demo_id_paraid_overflow    │ 34.45 │
+│ double_spacing_bold_demo_id_paraid_overflow_eigenpal_docx_editor_sug │ 43.67 │
+│ gesting_mixed_edits                                                  │       │
+│ eigenpal_docx_editor_suggesting_mixed_edits_employee_directory_table │ 42.31 │
+│ _2                                                                   │       │
+│ employee_directory_table_2_employee_directory_table                  │ 50.05 │
+│ employee_directory_table_employee_review_john_smith_suggesting_inser │ 50.28 │
+│ tions                                                                │       │
+│ employee_directory_table_employee_review_john_smith_suggesting_inser │ 50.15 │
+│ tions_word                                                           │       │
+│ employee_review_john_smith_suggesting_insertions_font_color_blue_dem │ 50.21 │
+│ o_style_default_missing                                              │       │
+│ font_color_blue_demo_style_default_missing_font_color_demo_style_def │ 51.60 │
+│ ault_missing                                                         │       │
+│ font_color_demo_style_default_missing_font_family_demo_id_paraid_ove │ 47.74 │
+│ rflow                                                                │       │
+│ font_family_demo_id_paraid_overflow_font_size_12_demo_id_paraid_over │ 48.39 │
+│ flow                                                                 │       │
+│ font_size_12_demo_id_paraid_overflow_font_size_18_demo_style_default │ 49.64 │
+│ _missing                                                             │       │
+│ font_size_18_demo_style_default_missing_font_size_24_demo_id_paraid_ │ 50.99 │
+│ overflow                                                             │       │
+│ font_size_24_demo_id_paraid_overflow_font_size_demo_id_paraid_overfl │ 48.63 │
+│ ow                                                                   │       │
+│ font_size_demo_id_paraid_overflow_footnotes_sample_word              │ 45.69 │
+│ font_size_demo_id_paraid_overflow_green_bold_text_demo_id_paraid_ove │ 50.77 │
+│ rflow                                                                │       │
+│ footnotes_sample_gdocs_comments_export_word                          │ 47.21 │
+│ gdocs_comments_export_green_bold_text_demo_id_paraid_overflow_word   │ 57.09 │
+│ green_bold_text_demo_id_paraid_overflow_green_highlight_demo_id_para │ 53.97 │
+│ id_overflow                                                          │       │
+│ green_highlight_demo_id_paraid_overflow_green_underline_bullet_list_ │ 50.68 │
+│ id_paraid_overflow                                                   │       │
+│ green_underline_bullet_list_id_paraid_overflow_header_no_rels_word   │ 46.33 │
+│ green_underline_bullet_list_id_paraid_overflow_heading_1_bold_demo_i │ 46.83 │
+│ d_paraid_overflow                                                    │       │
+│ header_no_rels_heading_1_bold_demo_id_paraid_overflow_word           │ 48.04 │
+│ heading_1_bold_demo_id_paraid_overflow_heading_1_style_demo_id_parai │ 49.38 │
+│ d_overflow                                                           │       │
+│ heading_1_style_demo_id_paraid_overflow_heading_2_center_demo_id_par │ 46.85 │
+│ aid_overflow                                                         │       │
+│ heading_2_center_demo_id_paraid_overflow_heading_2_style_demo_id_par │ 52.93 │
+│ aid_overflow                                                         │       │
+│ heading_2_style_demo_id_paraid_overflow_heading_3_center_italic_id_p │ 50.68 │
+│ araid_overflow                                                       │       │
+│ heading_3_center_italic_id_paraid_overflow_heading_3_style_demo_id_p │ 56.11 │
+│ araid_overflow_2                                                     │       │
+│ heading_3_style_demo_id_paraid_overflow_2_heading_3_style_demo_id_pa │ 51.13 │
+│ raid_overflow                                                        │       │
+│ heading_3_style_demo_id_paraid_overflow_heading_4_right_italic_id_pa │ 57.37 │
+│ raid_overflow                                                        │       │
+│ heading_4_right_italic_id_paraid_overflow_heading_4_style_demo_id_pa │ 52.97 │
+│ raid_overflow_2                                                      │       │
+│ heading_4_style_demo_id_paraid_overflow_2_heading_4_style_demo_id_pa │ 46.40 │
+│ raid_overflow                                                        │       │
+│ heading_4_style_demo_id_paraid_overflow_helvetica_font_demo_style_de │ 47.30 │
+│ fault_missing                                                        │       │
+│ helvetica_font_demo_style_default_missing_hr_onboarding_checklist_ta │ 59.38 │
+│ ble                                                                  │       │
+│ hr_onboarding_checklist_table_i_am_sharing_microsoft_word_vs_google_ │ 36.20 │
+│ docs_comprehensive_proof_with_you                                    │       │
+│ i_am_sharing_microsoft_word_vs_google_docs_comprehensive_proof_with_ │ 35.80 │
+│ you_increase_indent_demo_id_paraid_overflow                          │       │
+│ increase_indent_demo_id_paraid_overflow_insert_link_demo_id_paraid_o │ 52.78 │
+│ verflow                                                              │       │
+│ insert_link_demo_id_paraid_overflow_inventory_list_suggesting_deleti │ 58.62 │
+│ ons                                                                  │       │
+│ insert_link_demo_id_paraid_overflow_inventory_list_suggesting_deleti │ 57.92 │
+│ ons_word                                                             │       │
+│ inventory_list_suggesting_deletions_inventory_list_suggesting_mixed_ │ 48.56 │
+│ edits                                                                │       │
+│ inventory_list_suggesting_deletions_inventory_list_suggesting_mixed_ │ 48.47 │
+│ edits_word                                                           │       │
+│ inventory_list_suggesting_mixed_edits_it_security_policy_v2_suggesti │ 52.51 │
+│ ng_insertions                                                        │       │
+│ inventory_list_suggesting_mixed_edits_it_security_policy_v2_suggesti │ 53.02 │
+│ ng_insertions_word                                                   │       │
+│ it_security_policy_v2_suggesting_insertions_italic_and_underline_com │ 47.07 │
+│ bo_style_default_missing                                             │       │
+│ it_security_policy_v2_suggesting_insertions_italic_and_underline_com │ 47.16 │
+│ bo_style_default_missing_word                                        │       │
+│ italic_and_underline_combo_style_default_missing_italic_subscript_de │ 49.83 │
+│ mo_style_default_missing                                             │       │
+│ italic_subscript_demo_style_default_missing_italic_text_formatting_d │ 51.18 │
+│ emo_id_paraid_overflow_2                                             │       │
+│ italic_text_formatting_demo_id_paraid_overflow_2_italic_text_formatt │ 53.90 │
+│ ing_demo_id_paraid_overflow                                          │       │
+│ italic_text_formatting_demo_id_paraid_overflow_italic_underline_comb │ 55.37 │
+│ ined_demo_id_paraid_overflow                                         │       │
+│ italic_underline_combined_demo_id_paraid_overflow_justified_underlin │ 52.41 │
+│ e_demo_id_paraid_overflow                                            │       │
+│ justified_underline_demo_id_paraid_overflow_justify_alignment_demo_i │ 51.58 │
+│ d_paraid_overflow_2                                                  │       │
+│ justify_alignment_demo_id_paraid_overflow_2_justify_alignment_demo_i │ 53.76 │
+│ d_paraid_overflow                                                    │       │
+│ justify_alignment_demo_id_paraid_overflow_large_font_size_demo_id_pa │ 51.34 │
+│ raid_overflow                                                        │       │
+│ large_font_size_demo_id_paraid_overflow_left_alignment_demo_id_parai │ 46.76 │
+│ d_overflow                                                           │       │
+│ left_alignment_demo_id_paraid_overflow_line_spacing_demo_id_paraid_o │ 47.89 │
+│ verflow                                                              │       │
+│ line_spacing_demo_id_paraid_overflow_marketing_strategy_2026_suggest │ 52.22 │
+│ ing_insertions                                                       │       │
+│ line_spacing_demo_id_paraid_overflow_marketing_strategy_2026_suggest │ 52.21 │
+│ ing_insertions_word                                                  │       │
+│ marketing_strategy_2026_suggesting_insertions_meeting_agenda_table_2 │ 58.32 │
+│ mcdoc_meeting_agenda_table_2_word                                    │ 50.33 │
+│ meeting_agenda_table_2_meeting_agenda_table                          │ 64.02 │
+│ meeting_agenda_table_meeting_minutes_id_paraid_overflow              │ 49.64 │
+│ meeting_minutes_id_paraid_overflow_meeting_minutes_suggesting_insert │ 55.22 │
+│ ions                                                                 │       │
+│ meeting_minutes_id_paraid_overflow_meeting_minutes_suggesting_insert │ 55.00 │
+│ ions_word                                                            │       │
+│ meeting_minutes_suggesting_insertions_multi_section_word             │ 49.97 │
+│ meeting_minutes_suggesting_insertions_numbered_list_demo_id_paraid_o │ 50.10 │
+│ verflow                                                              │       │
+│ multi_section_nested_table_rowspan_word                              │ 45.98 │
+│ nested_table_rowspan_numbered_list_demo_id_paraid_overflow_word      │ 48.16 │
+│ numbered_list_demo_id_paraid_overflow_numbered_list_italic_demo_id_p │ 52.96 │
+│ araid_overflow                                                       │       │
+│ numbered_list_italic_demo_id_paraid_overflow_numwords_fldsimple_word │ 47.06 │
+│ numbered_list_italic_demo_id_paraid_overflow_open_sans_bold_underlin │ 53.71 │
+│ e_id_paraid_overflow                                                 │       │
+│ numwords_fldsimple_ole_object_word                                   │ 35.38 │
+│ ole_object_ooxml_style_link_word                                     │ 37.30 │
+│ ooxml_style_link_open_sans_bold_underline_id_paraid_overflow_word    │ 44.98 │
+│ open_sans_bold_underline_id_paraid_overflow_open_sans_font_demo_id_p │ 50.43 │
+│ araid_overflow_2                                                     │       │
+│ open_sans_font_demo_id_paraid_overflow_2_open_sans_font_demo_id_para │ 50.69 │
+│ id_overflow                                                          │       │
+│ open_sans_font_demo_id_paraid_overflow_page_numbering_examples_word  │ 51.03 │
+│ open_sans_font_demo_id_paraid_overflow_product_roadmap_2026_suggesti │ 50.59 │
+│ ng_insertions                                                        │       │
+│ page_numbering_examples_potpourritest_word                           │ 42.70 │
+│ potpourritest_product_roadmap_2026_suggesting_insertions_word        │ 42.54 │
+│ product_roadmap_2026_suggesting_insertions_project_plan_suggesting_i │ 50.54 │
+│ nsertions                                                            │       │
+│ product_roadmap_2026_suggesting_insertions_project_plan_suggesting_i │ 50.51 │
+│ nsertions_word                                                       │       │
+│ project_plan_suggesting_insertions_project_proposal_id_paraid_overfl │ 51.76 │
+│ ow                                                                   │       │
+│ project_plan_suggesting_insertions_project_proposal_id_paraid_overfl │ 52.14 │
+│ ow_word                                                              │       │
+│ project_proposal_id_paraid_overflow_project_proposal_suggesting_inse │ 53.43 │
+│ rtions                                                               │       │
+│ project_proposal_suggesting_insertions_project_tasks_suggesting_inse │ 50.95 │
+│ rtions_2                                                             │       │
+│ project_proposal_suggesting_insertions_project_tasks_suggesting_inse │ 50.99 │
+│ rtions_2_word                                                        │       │
+│ project_tasks_suggesting_insertions_2_project_tasks_suggesting_inser │ 57.46 │
+│ tions                                                                │       │
+│ project_tasks_suggesting_insertions_2_project_tasks_suggesting_inser │ 61.37 │
+│ tions_word                                                           │       │
+│ project_tasks_suggesting_insertions_q1_sales_summary_table_2         │ 61.56 │
+│ project_tasks_suggesting_insertions_q1_sales_summary_table_2_word    │ 62.26 │
+│ q1_sales_summary_table_2_q1_sales_summary_table                      │ 63.94 │
+│ q1_sales_summary_table_quarterly_performance_report_table_2          │ 50.31 │
+│ quarterly_performance_report_table_2_quarterly_performance_report_ta │ 62.94 │
+│ ble                                                                  │       │
+│ quarterly_performance_report_table_red_bold_heading_demo_style_defau │ 45.04 │
+│ lt_missing                                                           │       │
+│ red_bold_heading_demo_style_default_missing_red_bold_text_demo_id_pa │ 54.75 │
+│ raid_overflow                                                        │       │
+│ red_bold_text_demo_id_paraid_overflow_red_heading_demo_id_paraid_ove │ 48.67 │
+│ rflow                                                                │       │
+│ red_heading_demo_id_paraid_overflow_red_strikethrough_demo_style_def │ 50.06 │
+│ ault_missing                                                         │       │
+│ red_strikethrough_demo_style_default_missing_redline_cicerodo_v_plat │ 43.82 │
+│ e_30_word                                                            │       │
+│ red_strikethrough_demo_style_default_missing_right_align_bold_demo_i │ 52.13 │
+│ d_paraid_overflow                                                    │       │
+│ redline_cicerodo_v_plate_30_right_align_bold_demo_id_paraid_overflow │ 43.73 │
+│ _word                                                                │       │
+│ right_align_bold_demo_id_paraid_overflow_right_aligned_italic_demo_i │ 50.30 │
+│ d_paraid_overflow                                                    │       │
+│ right_aligned_italic_demo_id_paraid_overflow_right_alignment_demo_id │ 48.82 │
+│ _paraid_overflow_2                                                   │       │
+│ right_alignment_demo_id_paraid_overflow_2_right_alignment_demo_id_pa │ 54.46 │
+│ raid_overflow                                                        │       │
+│ right_alignment_demo_id_paraid_overflow_risk_assessment_product_laun │ 50.89 │
+│ ch_suggesting_insertions                                             │       │
+│ right_alignment_demo_id_paraid_overflow_risk_assessment_product_laun │ 50.87 │
+│ ch_suggesting_insertions_word                                        │       │
+│ risk_assessment_product_launch_suggesting_insertions_roboto_font_dem │ 47.63 │
+│ o_id_paraid_overflow_2                                               │       │
+│ risk_assessment_product_launch_suggesting_insertions_roboto_font_dem │ 48.03 │
+│ o_id_paraid_overflow_2_word                                          │       │
+│ roboto_font_demo_id_paraid_overflow_2_roboto_font_demo_id_paraid_ove │ 49.65 │
+│ rflow                                                                │       │
+│ roboto_font_demo_id_paraid_overflow_roboto_underline_demo_id_paraid_ │ 52.13 │
+│ overflow                                                             │       │
+│ roboto_underline_demo_id_paraid_overflow_sales_report_january_2026_s │ 50.06 │
+│ uggesting_insertions                                                 │       │
+│ roboto_underline_demo_id_paraid_overflow_sales_report_january_2026_s │ 50.07 │
+│ uggesting_insertions_word                                            │       │
+│ sales_report_january_2026_suggesting_insertions_sample_document_afte │ 39.08 │
+│ rword_repaired_word_repaired                                         │       │
+│ sales_report_january_2026_suggesting_insertions_sample_document_afte │ 38.89 │
+│ rword_repaired_word_repaired_word                                    │       │
+│ sample_document_afterword_repaired_word_repaired_sample_document_rea │ 37.51 │
+│ lly_repaired_word_repaired                                           │       │
+│ sample_document_really_repaired_word_repaired_sample_document_word_r │ 37.41 │
+│ epair_of_our_output_iter2_word_repaired                              │       │
+│ sample_document_word_repair_of_our_output_iter2_word_repaired_sample │ 37.34 │
+│ _document_word_repair_of_our_output_word_repaired                    │       │
+│ sample_document_word_repair_of_our_output_iter2_word_repaired_sample │ 37.07 │
+│ _document_word_repair_of_our_output_word_repaired_word               │       │
+│ sample_document_word_repair_of_our_output_word_repaired_sd_2517_loca │ 36.50 │
+│ lized_heading_styles_word                                            │       │
+│ sample_document_word_repair_of_our_output_word_repaired_small_font_s │ 38.82 │
+│ ize_demo_id_paraid_overflow                                          │       │
+│ sd_2517_localized_heading_styles_sectpr_headerref_word               │ 38.79 │
+│ sectpr_headerref_single_paragraph_word                               │ 46.12 │
+│ single_paragraph_small_font_size_demo_id_paraid_overflow_word        │ 53.33 │
+│ small_font_size_demo_id_paraid_overflow_strict01_sdt_controls_word   │ 35.83 │
+│ small_font_size_demo_id_paraid_overflow_strikethrough_and_italic_com │ 49.32 │
+│ bo_id_paraid_overflow                                                │       │
+│ strict01_sdt_controls_strict01_word                                  │ 36.73 │
+│ strict01_strikethrough_and_italic_combo_id_paraid_overflow_word      │ 36.70 │
+│ strikethrough_and_italic_combo_id_paraid_overflow_strikethrough_bold │ 48.88 │
+│ _demo_id_paraid_overflow                                             │       │
+│ strikethrough_bold_demo_id_paraid_overflow_strikethrough_text_demo_i │ 51.87 │
+│ d_paraid_overflow                                                    │       │
+│ strikethrough_text_demo_id_paraid_overflow_strikethrough_text_format │ 49.98 │
+│ ting_demo_id_paraid_overflow                                         │       │
+│ strikethrough_text_formatting_demo_id_paraid_overflow_subscript_demo │ 47.86 │
+│ _id_paraid_overflow                                                  │       │
+│ subscript_demo_id_paraid_overflow_subscript_demo_style_default_missi │ 48.03 │
+│ ng                                                                   │       │
+│ subscript_demo_style_default_missing_subtitle_style_demo_id_paraid_o │ 47.70 │
+│ verflow                                                              │       │
+│ subtitle_style_demo_id_paraid_overflow_subtitle_style_demo_style_def │ 55.74 │
+│ ault_missing                                                         │       │
+│ subtitle_style_demo_style_default_missing_superscript_demo_id_paraid │ 47.79 │
+│ _overflow_2                                                          │       │
+│ superscript_demo_id_paraid_overflow_2_superscript_demo_id_paraid_ove │ 49.80 │
+│ rflow                                                                │       │
+│ superscript_demo_id_paraid_overflow_superscript_demo_style_default_m │ 56.57 │
+│ issing                                                               │       │
+│ superscript_demo_style_default_missing_support_tickets_summary_id_pa │ 51.87 │
+│ raid_overflow_word                                                   │       │
+│ superscript_demo_style_default_missing_support_tickets_table         │ 60.34 │
+│ support_tickets_summary_id_paraid_overflow_support_tickets_table_wor │ 60.68 │
+│ d                                                                    │       │
+│ support_tickets_summary_id_paraid_overflow_text_highlight_demo_style │ 51.92 │
+│ _default_missing                                                     │       │
+│ support_tickets_table_support_tickets_summary_id_paraid_overflow     │ 49.04 │
+│ support_tickets_table_table_bookmark_end_word                        │ 41.52 │
+│ table_bookmark_end_table_vmerge_colspan_word                         │ 39.96 │
+│ table_vmerge_colspan_text_box_word                                   │ 44.13 │
+│ text_box_text_highlight_demo_style_default_missing_word              │ 51.00 │
+│ text_highlight_demo_style_default_missing_tiff_image_word            │ 44.75 │
+│ text_highlight_demo_style_default_missing_times_new_roman_bold_id_pa │ 54.56 │
+│ raid_overflow                                                        │       │
+│ tiff_image_times_new_roman_bold_id_paraid_overflow_word              │ 45.25 │
+│ times_new_roman_bold_id_paraid_overflow_times_new_roman_font_id_para │ 48.98 │
+│ id_overflow                                                          │       │
+│ times_new_roman_font_id_paraid_overflow_title_style_centered_demo_id │ 49.35 │
+│ _paraid_overflow                                                     │       │
+│ title_style_centered_demo_id_paraid_overflow_title_style_demo_id_par │ 46.81 │
+│ aid_overflow                                                         │       │
+│ title_style_demo_id_paraid_overflow_title_style_demo_style_default_m │ 48.07 │
+│ issing                                                               │       │
+│ title_style_demo_style_default_missing_track_changes_editing_bullet_ │ 49.15 │
+│ id_paraid_overflow                                                   │       │
+│ track_changes_editing_bullet_id_paraid_overflow_track_changes_editin │ 48.70 │
+│ g_strikethrough_id_paraid_overflow                                   │       │
+│ track_changes_editing_strikethrough_id_paraid_overflow_track_changes │ 52.64 │
+│ _suggesting_bold_id_paraid_overflow                                  │       │
+│ track_changes_suggesting_bold_id_paraid_overflow_track_changes_sugge │ 52.19 │
+│ sting_calibri_id_paraid_overflow                                     │       │
+│ track_changes_suggesting_calibri_id_paraid_overflow_track_changes_su │ 54.50 │
+│ ggesting_center_id_paraid_overflow                                   │       │
+│ track_changes_suggesting_center_id_paraid_overflow_track_changes_sug │ 48.37 │
+│ gesting_heading_id_paraid_overflow                                   │       │
+│ track_changes_suggesting_heading_id_paraid_overflow_track_changes_su │ 46.51 │
+│ ggesting_italic_id_paraid_overflow                                   │       │
+│ track_changes_suggesting_italic_id_paraid_overflow_track_changes_sug │ 45.88 │
+│ gesting_title_id_paraid_overflow                                     │       │
+│ track_changes_suggesting_title_id_paraid_overflow_training_materials │ 43.97 │
+│ _onboarding_program_suggesting_insertions                            │       │
+│ track_changes_suggesting_title_id_paraid_overflow_training_materials │ 43.97 │
+│ _onboarding_program_suggesting_insertions_word                       │       │
+│ training_materials_onboarding_program_suggesting_insertions_underlin │ 50.51 │
+│ e_text_demo_id_paraid_overflow                                       │       │
+│ training_materials_onboarding_program_suggesting_insertions_underlin │ 50.84 │
+│ e_text_demo_id_paraid_overflow_word                                  │       │
+│ underline_text_demo_id_paraid_overflow_underline_text_formatting_dem │ 54.54 │
+│ o_style_default_missing                                              │       │
+│ underline_text_formatting_demo_style_default_missing_verdana_bold_la │ 46.73 │
+│ rge_font_id_paraid_overflow                                          │       │
+│ verdana_bold_large_font_id_paraid_overflow_verdana_font_demo_id_para │ 47.92 │
+│ id_overflow                                                          │       │
+│ verdana_bold_large_font_id_paraid_overflow_verdana_font_demo_id_para │ 47.54 │
+│ id_overflow_2_word                                                   │       │
+│ verdana_font_demo_id_paraid_overflow_2_verdana_font_demo_id_paraid_o │ 47.93 │
+│ verflow_word                                                         │       │
+│ verdana_font_demo_id_paraid_overflow_verdana_italic_centered_demo_id │ 48.51 │
+│ _paraid_overflow                                                     │       │
+│ verdana_italic_centered_demo_id_paraid_overflow_word_clean_strict01  │ 35.91 │
+│ word_clean_strict01_word_tolerated_broken_media_rel                  │ 36.36 │
+│ word_tolerated_broken_media_rel_word_tolerated_duplicate_ppr         │ 43.39 │
+│ word_tolerated_duplicate_ppr_word_tolerated_misplaced_link           │ 44.18 │
+│ word_tolerated_misplaced_link_word_tolerated_misplaced_pgsz          │ 44.70 │
+│ word_tolerated_misplaced_pgsz_word_tolerated_misplaced_uipriority    │ 39.48 │
+│ word_tolerated_misplaced_uipriority_word_tolerated_orphan_comment    │ 39.62 │
+│ word_tolerated_orphan_comment_yellow_highlight_demo_id_paraid_overfl │ 55.43 │
+│ ow                                                                   │       │
+│ yellow_highlight_demo_id_paraid_overflow_yellow_highlight_italic_dem │ 49.62 │
+│ o_style_default_missing                                              │       │
+│ yellow_highlight_demo_id_paraid_overflow_yellow_highlight_italic_dem │ 51.69 │
+│ o_style_default_missing_word                                         │       │
+╰──────────────────────────────────────────────────────────────────────┴───────╯
+           mean 49.14 · median 50.06 · min 34.45 · max 77.24 · n 230            
+2 doc(s) recorded as failed in the JSONL
+jsonl: appended → results-compare/bench.jsonl
+jsonl: appended → results-compare/bench.jsonl
+harness server stopped
+=== STEP wasm-build 01:21:08
+=== STEP folio-wasm-smoke 01:21:08
+[folio-wasm] wrote 2 redline(s) → /private/tmp/claude-501/-Users-arthrod-temp-T-reconciliation-plan-folio/17a774cf-e084-4413-9a46-d6412eb325ea/scratchpad/smoke-wasm2/docx
+[folio-wasm] 1 pair(s) skipped:
+  24_id_paraid_overflow_alternate_content [generate]: every redline engine failed (1 attempt(s))
+1_5_line_spacing_id_paraid_overflow_24_id_paraid_overflow_folio-wasm_redline.docx
+24_id_paraid_overflow_blue_bold_centered_demo_id_paraid_overflow_folio-wasm_redline.docx
+=== STEP folio-wasm-full 01:21:08
+───────────────────── accepted ground truth → PDF (cached) ─────────────────────
+───────────────────────── folio-wasm  (render=soffice) ─────────────────────────
+tool_version: 0.1.0
+generate: 
+FOLIO_MODULE_ROOT=/Users/arthrod/temp/T/neurotic_docx_bench/src/neurotic_docx_be
+nch/utils/folio-current/node_modules 
+JUBARTE_WASM_DIR=/Users/arthrod/temp/T/neurotic_docx_bench/src/neurotic_docx_ben
+ch/utils/jubarte/jubarte-wasm/pkg /usr/bin/time -l -o 
+$RUN_DIR/generate_rusage.txt node --import tsx 
+scripts/generate-native-redlines.ts --method=folio-wasm --out=$RUN_DIR/docx 
+--run-dir=$RUN_DIR --tool=folio-wasm
+[folio-wasm] wrote 193 redline(s) → /Users/arthrod/temp/T/neurotic_docx_bench/runs-compare/folio-wasm_2026-07-18_01-21/docx
+[folio-wasm] 14 pair(s) skipped:
+  24_id_paraid_overflow_alternate_content [generate]: every redline engine failed (1 attempt(s))
+  alternate_content_anchor_images [generate]: every redline engine failed (1 attempt(s))
+  docx_lots_of_comments_addition_removal_redline_docx_lots_of_comments_addition_removal [generate]: every redline engine failed (1 attempt(s))
+  double_spacing_bold_demo_id_paraid_overflow_eigenpal_docx_editor_suggesting_mixed_edits [generate]: every redline engine failed (1 attempt(s))
+  font_color_demo_style_default_missing_font_family_demo_id_paraid_overflow [generate]: every redline engine failed (1 attempt(s))
+  header_no_rels_heading_1_bold_demo_id_paraid_overflow [generate]: every redline engine failed (1 attempt(s))
+  italic_underline_combined_demo_id_paraid_overflow_justified_underline_demo_id_paraid_overflow [generate]: every redline engine failed (1 attempt(s))
+  justified_underline_demo_id_paraid_overflow_justify_alignment_demo_id_paraid_overflow_2 [generate]: every redline engine failed (1 attempt(s))
+  numbered_list_italic_demo_id_paraid_overflow_numwords_fldsimple [generate]: every redline engine failed (1 attempt(s))
+  numwords_fldsimple_ole_object [generate]: every redline engine failed (1 attempt(s))
+visual report → runs-compare/folio-wasm_2026-07-18_01-21/report.html
+accept-compare: accepting tracked changes on the generated redlines
+4 accept failure(s)
+
+───────────────────────── benchmark: accepted_changes ──────────────────────────
+                          folio-wasm  ·  158 documents                          
+╭─────────────────────────┬───────────────┬──────────┬─────────────────────────╮
+│ document                │       redline │ accepted │                   delta │
+├─────────────────────────┼───────────────┼──────────┼─────────────────────────┤
+│ 1_5_line_spacing_id_par │         62.01 │    91.12 │                  +29.11 │
+│ aid_overflow_24_id_para │               │          │                         │
+│ id_overflow             │               │          │                         │
+│ 24_id_paraid_overflow_b │         98.50 │    91.90 │                   -6.60 │
+│ lue_bold_centered_demo_ │               │          │                         │
+│ id_paraid_overflow      │               │          │                         │
+│ blue_bold_centered_demo │         60.22 │    87.39 │                  +27.17 │
+│ _id_paraid_overflow_blu │               │          │                         │
+│ e_centered_title_demo_s │               │          │                         │
+│ tyle_default_missing    │               │          │                         │
+│ blue_centered_title_dem │         89.46 │    99.63 │                  +10.17 │
+│ o_style_default_missing │               │          │                         │
+│ _blue_italic_text_demo_ │               │          │                         │
+│ id_paraid_overflow      │               │          │                         │
+│ blue_italic_text_demo_i │        100.00 │   100.00 │                    0.00 │
+│ d_paraid_overflow_blue_ │               │          │                         │
+│ underline_combo_demo_id │               │          │                         │
+│ _paraid_overflow        │               │          │                         │
+│ blue_underline_combo_de │         99.69 │    81.21 │                  -18.48 │
+│ mo_id_paraid_overflow_b │               │          │                         │
+│ old_and_italic_combo_st │               │          │                         │
+│ yle_default_missing     │               │          │                         │
+│ bold_and_italic_combo_s │        100.00 │   100.00 │                    0.00 │
+│ tyle_default_missing_bo │               │          │                         │
+│ ld_and_underline_combo_ │               │          │                         │
+│ id_paraid_overflow      │               │          │                         │
+│ bold_and_underline_comb │        100.00 │   100.00 │                    0.00 │
+│ o_id_paraid_overflow_bo │               │          │                         │
+│ ld_italic_combined_demo │               │          │                         │
+│ _id_paraid_overflow     │               │          │                         │
+│ bold_italic_combined_de │         99.81 │   100.00 │                   +0.19 │
+│ mo_id_paraid_overflow_b │               │          │                         │
+│ old_italic_underline_de │               │          │                         │
+│ mo_id_paraid_overflow   │               │          │                         │
+│ bold_italic_underline_d │        100.00 │   100.00 │                   -0.00 │
+│ emo_id_paraid_overflow_ │               │          │                         │
+│ bold_red_text_combo_id_ │               │          │                         │
+│ paraid_overflow         │               │          │                         │
+│ bold_red_text_combo_id_ │         99.90 │    99.53 │                   -0.37 │
+│ paraid_overflow_bold_su │               │          │                         │
+│ perscript_demo_style_de │               │          │                         │
+│ fault_missing           │               │          │                         │
+│ bold_superscript_demo_s │         93.31 │    90.23 │                   -3.08 │
+│ tyle_default_missing_bo │               │          │                         │
+│ ld_text_formatting_demo │               │          │                         │
+│ _id_paraid_overflow_2   │               │          │                         │
+│ bold_text_formatting_de │        100.00 │   100.00 │                    0.00 │
+│ mo_id_paraid_overflow_2 │               │          │                         │
+│ _bold_text_formatting_d │               │          │                         │
+│ emo_id_paraid_overflow  │               │          │                         │
+│ bold_text_formatting_de │         97.85 │    99.92 │                   +2.07 │
+│ mo_id_paraid_overflow_b │               │          │                         │
+│ old_underline_combined_ │               │          │                         │
+│ demo_id_paraid_overflow │               │          │                         │
+│ bold_underline_combined │        100.00 │   100.00 │                   -0.00 │
+│ _demo_id_paraid_overflo │               │          │                         │
+│ w_bold_underline_highli │               │          │                         │
+│ ght_demo_id_paraid_over │               │          │                         │
+│ flow                    │               │          │                         │
+│ bold_underline_highligh │        100.00 │   100.00 │                   -0.00 │
+│ t_demo_id_paraid_overfl │               │          │                         │
+│ ow_book_catalog_id_para │               │          │                         │
+│ id_overflow             │               │          │                         │
+│ book_catalog_id_paraid_ │        100.00 │   100.00 │                   -0.00 │
+│ overflow_book_catalog_t │               │          │                         │
+│ able                    │               │          │                         │
+│ book_catalog_table_budg │         91.92 │    90.82 │                   -1.10 │
+│ et_report_q1_2026_sugge │               │          │                         │
+│ sting_insertions        │               │          │                         │
+│ budget_report_q1_2026_s │        100.00 │   100.00 │                    0.00 │
+│ uggesting_insertions_bu │               │          │                         │
+│ llet_list_bold_demo_id_ │               │          │                         │
+│ paraid_overflow         │               │          │                         │
+│ bullet_list_bold_demo_i │         92.02 │    85.21 │                   -6.81 │
+│ d_paraid_overflow_bulle │               │          │                         │
+│ t_list_demo_id_paraid_o │               │          │                         │
+│ verflow                 │               │          │                         │
+│ bullet_list_demo_id_par │         85.01 │    77.71 │                   -7.31 │
+│ aid_overflow_calibri_bo │               │          │                         │
+│ ld_italic_demo_id_parai │               │          │                         │
+│ d_overflow              │               │          │                         │
+│ calibri_bold_italic_dem │        100.00 │   100.00 │                    0.00 │
+│ o_id_paraid_overflow_ca │               │          │                         │
+│ libri_font_demo_id_para │               │          │                         │
+│ id_overflow_2           │               │          │                         │
+│ calibri_font_demo_id_pa │        100.00 │   100.00 │                    0.00 │
+│ raid_overflow_2_calibri │               │          │                         │
+│ _font_demo_id_paraid_ov │               │          │                         │
+│ erflow                  │               │          │                         │
+│ calibri_font_demo_id_pa │         82.51 │    68.02 │                  -14.49 │
+│ raid_overflow_calibri_h │               │          │                         │
+│ eading_2_right_id_parai │               │          │                         │
+│ d_overflow              │               │          │                         │
+│ calibri_heading_2_right │        100.00 │    90.24 │                   -9.76 │
+│ _id_paraid_overflow_cen │               │          │                         │
+│ ter_aligned_bold_text_i │               │          │                         │
+│ d_paraid_overflow       │               │          │                         │
+│ center_aligned_bold_tex │         82.79 │    81.48 │                   -1.31 │
+│ t_id_paraid_overflow_ce │               │          │                         │
+│ nter_alignment_demo_id_ │               │          │                         │
+│ paraid_overflow_2       │               │          │                         │
+│ center_alignment_demo_i │         81.52 │    80.73 │                   -0.78 │
+│ d_paraid_overflow_2_cen │               │          │                         │
+│ ter_alignment_demo_id_p │               │          │                         │
+│ araid_overflow          │               │          │                         │
+│ center_alignment_demo_i │         83.59 │    76.74 │                   -6.85 │
+│ d_paraid_overflow_cente │               │          │                         │
+│ r_bold_demo_id_paraid_o │               │          │                         │
+│ verflow                 │               │          │                         │
+│ center_bold_demo_id_par │        100.00 │   100.00 │                    0.00 │
+│ aid_overflow_clear_form │               │          │                         │
+│ atting_demo_id_paraid_o │               │          │                         │
+│ verflow                 │               │          │                         │
+│ clear_formatting_demo_i │        100.00 │   100.00 │                   -0.00 │
+│ d_paraid_overflow_contr │               │          │                         │
+│ act_review_suggesting_i │               │          │                         │
+│ nsertions               │               │          │                         │
+│ contract_review_suggest │        100.00 │   100.00 │                    0.00 │
+│ ing_insertions_contract │               │          │                         │
+│ _review_suggesting_mixe │               │          │                         │
+│ d_edits                 │               │          │                         │
+│ contract_review_suggest │        100.00 │   100.00 │                   -0.00 │
+│ ing_mixed_edits_custome │               │          │                         │
+│ r_satisfaction_survey_q │               │          │                         │
+│ 4_suggesting_insertions │               │          │                         │
+│ customer_satisfaction_s │        100.00 │   100.00 │                    0.00 │
+│ urvey_q4_suggesting_ins │               │          │                         │
+│ ertions_document_100_ul │               │          │                         │
+│ timate_demo_id_paraid_o │               │          │                         │
+│ verflow                 │               │          │                         │
+│ document_100_ultimate_d │         46.19 │    43.97 │                   -2.21 │
+│ emo_id_paraid_overflow_ │               │          │                         │
+│ docx_lots_of_comments_a │               │          │                         │
+│ ddition_redline_additio │               │          │                         │
+│ n_v_removal             │               │          │                         │
+│ docx_lots_of_comments_a │         40.29 │    51.79 │                  +11.50 │
+│ ddition_docx_lots_of_co │               │          │                         │
+│ mments                  │               │          │                         │
+│ docx_lots_of_comments_a │         52.69 │    52.68 │                   -0.01 │
+│ ddition_redline_additio │               │          │                         │
+│ n_v_removal_docx_lots_o │               │          │                         │
+│ f_comments_addition_red │               │          │                         │
+│ line                    │               │          │                         │
+│ docx_lots_of_comments_a │         53.98 │    54.03 │                   +0.04 │
+│ ddition_redline_docx_lo │               │          │                         │
+│ ts_of_comments_addition │               │          │                         │
+│ _removal_redline_remova │               │          │                         │
+│ l_v_addition            │               │          │                         │
+│ docx_lots_of_comments_a │         61.57 │    61.59 │                   +0.01 │
+│ ddition_removal_docx_lo │               │          │                         │
+│ ts_of_comments_addition │               │          │                         │
+│ docx_lots_of_comments_a │         52.10 │    52.12 │                   +0.02 │
+│ ddition_removal_redline │               │          │                         │
+│ _removal_v_addition_doc │               │          │                         │
+│ x_lots_of_comments_addi │               │          │                         │
+│ tion_removal_redline    │               │          │                         │
+│ docx_lots_of_comments_d │         74.86 │    49.34 │                  -25.52 │
+│ ouble_spacing_bold_demo │               │          │                         │
+│ _id_paraid_overflow     │               │          │                         │
+│ eigenpal_docx_editor_su │         53.11 │    57.61 │                   +4.50 │
+│ ggesting_mixed_edits_em │               │          │                         │
+│ ployee_directory_table_ │               │          │                         │
+│ 2                       │               │          │                         │
+│ employee_directory_tabl │        100.00 │   100.00 │                    0.00 │
+│ e_2_employee_directory_ │               │          │                         │
+│ table                   │               │          │                         │
+│ employee_directory_tabl │         90.54 │    80.61 │                   -9.93 │
+│ e_employee_review_john_ │               │          │                         │
+│ smith_suggesting_insert │               │          │                         │
+│ ions                    │               │          │                         │
+│ employee_review_john_sm │        100.00 │   100.00 │                    0.00 │
+│ ith_suggesting_insertio │               │          │                         │
+│ ns_font_color_blue_demo │               │          │                         │
+│ _style_default_missing  │               │          │                         │
+│ font_color_blue_demo_st │        100.00 │   100.00 │                    0.00 │
+│ yle_default_missing_fon │               │          │                         │
+│ t_color_demo_style_defa │               │          │                         │
+│ ult_missing             │               │          │                         │
+│ font_family_demo_id_par │         94.42 │    95.12 │                   +0.71 │
+│ aid_overflow_font_size_ │               │          │                         │
+│ 12_demo_id_paraid_overf │               │          │                         │
+│ low                     │               │          │                         │
+│ font_size_12_demo_id_pa │        100.00 │   100.00 │                   -0.00 │
+│ raid_overflow_font_size │               │          │                         │
+│ _18_demo_style_default_ │               │          │                         │
+│ missing                 │               │          │                         │
+│ font_size_18_demo_style │         96.78 │   100.00 │                   +3.22 │
+│ _default_missing_font_s │               │          │                         │
+│ ize_24_demo_id_paraid_o │               │          │                         │
+│ verflow                 │               │          │                         │
+│ font_size_24_demo_id_pa │         88.96 │   100.00 │                  +11.04 │
+│ raid_overflow_font_size │               │          │                         │
+│ _demo_id_paraid_overflo │               │          │                         │
+│ w                       │               │          │                         │
+│ font_size_demo_id_parai │         88.61 │    91.74 │                   +3.13 │
+│ d_overflow_green_bold_t │               │          │                         │
+│ ext_demo_id_paraid_over │               │          │                         │
+│ flow                    │               │          │                         │
+│ green_bold_text_demo_id │         95.37 │    95.66 │                   +0.29 │
+│ _paraid_overflow_green_ │               │          │                         │
+│ highlight_demo_id_parai │               │          │                         │
+│ d_overflow              │               │          │                         │
+│ green_highlight_demo_id │        100.00 │   100.00 │                   -0.00 │
+│ _paraid_overflow_green_ │               │          │                         │
+│ underline_bullet_list_i │               │          │                         │
+│ d_paraid_overflow       │               │          │                         │
+│ green_underline_bullet_ │        100.00 │    85.88 │                  -14.12 │
+│ list_id_paraid_overflow │               │          │                         │
+│ _heading_1_bold_demo_id │               │          │                         │
+│ _paraid_overflow        │               │          │                         │
+│ heading_1_bold_demo_id_ │         95.38 │    79.25 │                  -16.13 │
+│ paraid_overflow_heading │               │          │                         │
+│ _1_style_demo_id_paraid │               │          │                         │
+│ _overflow               │               │          │                         │
+│ heading_1_style_demo_id │        100.00 │    90.78 │                   -9.22 │
+│ _paraid_overflow_headin │               │          │                         │
+│ g_2_center_demo_id_para │               │          │                         │
+│ id_overflow             │               │          │                         │
+│ heading_2_center_demo_i │         94.85 │    81.49 │                  -13.35 │
+│ d_paraid_overflow_headi │               │          │                         │
+│ ng_2_style_demo_id_para │               │          │                         │
+│ id_overflow             │               │          │                         │
+│ heading_2_style_demo_id │         95.75 │    67.62 │                  -28.13 │
+│ _paraid_overflow_headin │               │          │                         │
+│ g_3_center_italic_id_pa │               │          │                         │
+│ raid_overflow           │               │          │                         │
+│ heading_3_center_italic │         88.18 │    64.91 │                  -23.27 │
+│ _id_paraid_overflow_hea │               │          │                         │
+│ ding_3_style_demo_id_pa │               │          │                         │
+│ raid_overflow_2         │               │          │                         │
+│ heading_3_style_demo_id │        100.00 │    87.46 │                  -12.54 │
+│ _paraid_overflow_2_head │               │          │                         │
+│ ing_3_style_demo_id_par │               │          │                         │
+│ aid_overflow            │               │          │                         │
+│ heading_3_style_demo_id │        100.00 │    88.22 │                  -11.78 │
+│ _paraid_overflow_headin │               │          │                         │
+│ g_4_right_italic_id_par │               │          │                         │
+│ aid_overflow            │               │          │                         │
+│ heading_4_right_italic_ │         96.00 │    67.60 │                  -28.40 │
+│ id_paraid_overflow_head │               │          │                         │
+│ ing_4_style_demo_id_par │               │          │                         │
+│ aid_overflow_2          │               │          │                         │
+│ heading_4_style_demo_id │        100.00 │    86.62 │                  -13.38 │
+│ _paraid_overflow_2_head │               │          │                         │
+│ ing_4_style_demo_id_par │               │          │                         │
+│ aid_overflow            │               │          │                         │
+│ heading_4_style_demo_id │        100.00 │   100.00 │                   -0.00 │
+│ _paraid_overflow_helvet │               │          │                         │
+│ ica_font_demo_style_def │               │          │                         │
+│ ault_missing            │               │          │                         │
+│ helvetica_font_demo_sty │        100.00 │   100.00 │                    0.00 │
+│ le_default_missing_hr_o │               │          │                         │
+│ nboarding_checklist_tab │               │          │                         │
+│ le                      │               │          │                         │
+│ hr_onboarding_checklist │         49.04 │    48.65 │                   -0.39 │
+│ _table_i_am_sharing_mic │               │          │                         │
+│ rosoft_word_vs_google_d │               │          │                         │
+│ ocs_comprehensive_proof │               │          │                         │
+│ _with_you               │               │          │                         │
+│ i_am_sharing_microsoft_ │         79.75 │    64.02 │                  -15.73 │
+│ word_vs_google_docs_com │               │          │                         │
+│ prehensive_proof_with_y │               │          │                         │
+│ ou_increase_indent_demo │               │          │                         │
+│ _id_paraid_overflow     │               │          │                         │
+│ increase_indent_demo_id │         86.24 │    76.37 │                   -9.87 │
+│ _paraid_overflow_insert │               │          │                         │
+│ _link_demo_id_paraid_ov │               │          │                         │
+│ erflow                  │               │          │                         │
+│ insert_link_demo_id_par │        100.00 │    94.04 │                   -5.96 │
+│ aid_overflow_inventory_ │               │          │                         │
+│ list_suggesting_deletio │               │          │                         │
+│ ns                      │               │          │                         │
+│ inventory_list_suggesti │        100.00 │   100.00 │                   -0.00 │
+│ ng_deletions_inventory_ │               │          │                         │
+│ list_suggesting_mixed_e │               │          │                         │
+│ dits                    │               │          │                         │
+│ inventory_list_suggesti │        100.00 │   100.00 │                    0.00 │
+│ ng_mixed_edits_it_secur │               │          │                         │
+│ ity_policy_v2_suggestin │               │          │                         │
+│ g_insertions            │               │          │                         │
+│ it_security_policy_v2_s │         69.77 │    62.23 │                   -7.54 │
+│ uggesting_insertions_it │               │          │                         │
+│ alic_and_underline_comb │               │          │                         │
+│ o_style_default_missing │               │          │                         │
+│ italic_and_underline_co │        100.00 │   100.00 │                   -0.00 │
+│ mbo_style_default_missi │               │          │                         │
+│ ng_italic_subscript_dem │               │          │                         │
+│ o_style_default_missing │               │          │                         │
+│ italic_subscript_demo_s │         93.81 │    90.43 │                   -3.38 │
+│ tyle_default_missing_it │               │          │                         │
+│ alic_text_formatting_de │               │          │                         │
+│ mo_id_paraid_overflow_2 │               │          │                         │
+│ italic_text_formatting_ │        100.00 │   100.00 │                    0.00 │
+│ demo_id_paraid_overflow │               │          │                         │
+│ _2_italic_text_formatti │               │          │                         │
+│ ng_demo_id_paraid_overf │               │          │                         │
+│ low                     │               │          │                         │
+│ italic_text_formatting_ │        100.00 │   100.00 │                    0.00 │
+│ demo_id_paraid_overflow │               │          │                         │
+│ _italic_underline_combi │               │          │                         │
+│ ned_demo_id_paraid_over │               │          │                         │
+│ flow                    │               │          │                         │
+│ justify_alignment_demo_ │         93.07 │    76.71 │                  -16.36 │
+│ id_paraid_overflow_2_ju │               │          │                         │
+│ stify_alignment_demo_id │               │          │                         │
+│ _paraid_overflow        │               │          │                         │
+│ justify_alignment_demo_ │         78.48 │    78.93 │                   +0.44 │
+│ id_paraid_overflow_larg │               │          │                         │
+│ e_font_size_demo_id_par │               │          │                         │
+│ aid_overflow            │               │          │                         │
+│ large_font_size_demo_id │        100.00 │   100.00 │                    0.00 │
+│ _paraid_overflow_left_a │               │          │                         │
+│ lignment_demo_id_paraid │               │          │                         │
+│ _overflow               │               │          │                         │
+│ left_alignment_demo_id_ │        100.00 │   100.00 │                    0.00 │
+│ paraid_overflow_line_sp │               │          │                         │
+│ acing_demo_id_paraid_ov │               │          │                         │
+│ erflow                  │               │          │                         │
+│ line_spacing_demo_id_pa │        100.00 │   100.00 │                    0.00 │
+│ raid_overflow_marketing │               │          │                         │
+│ _strategy_2026_suggesti │               │          │                         │
+│ ng_insertions           │               │          │                         │
+│ marketing_strategy_2026 │        100.00 │   100.00 │                    0.00 │
+│ _suggesting_insertions_ │               │          │                         │
+│ meeting_agenda_table_2  │               │          │                         │
+│ meeting_agenda_table_2_ │         97.41 │    99.89 │                   +2.48 │
+│ meeting_agenda_table    │               │          │                         │
+│ meeting_agenda_table_me │        100.00 │   100.00 │                    0.00 │
+│ eting_minutes_id_paraid │               │          │                         │
+│ _overflow               │               │          │                         │
+│ meeting_minutes_id_para │         79.36 │    79.52 │                   +0.16 │
+│ id_overflow_meeting_min │               │          │                         │
+│ utes_suggesting_inserti │               │          │                         │
+│ ons                     │               │          │                         │
+│ meeting_minutes_suggest │         91.59 │    87.82 │                   -3.77 │
+│ ing_insertions_numbered │               │          │                         │
+│ _list_demo_id_paraid_ov │               │          │                         │
+│ erflow                  │               │          │                         │
+│ numbered_list_demo_id_p │         92.74 │    89.05 │                   -3.69 │
+│ araid_overflow_numbered │               │          │                         │
+│ _list_italic_demo_id_pa │               │          │                         │
+│ raid_overflow           │               │          │                         │
+│ numbered_list_italic_de │        100.00 │   100.00 │                    0.00 │
+│ mo_id_paraid_overflow_o │               │          │                         │
+│ pen_sans_bold_underline │               │          │                         │
+│ _id_paraid_overflow     │               │          │                         │
+│ open_sans_bold_underlin │        100.00 │   100.00 │                    0.00 │
+│ e_id_paraid_overflow_op │               │          │                         │
+│ en_sans_font_demo_id_pa │               │          │                         │
+│ raid_overflow_2         │               │          │                         │
+│ open_sans_font_demo_id_ │        100.00 │   100.00 │                    0.00 │
+│ paraid_overflow_2_open_ │               │          │                         │
+│ sans_font_demo_id_parai │               │          │                         │
+│ d_overflow              │               │          │                         │
+│ open_sans_font_demo_id_ │        100.00 │   100.00 │                    0.00 │
+│ paraid_overflow_product │               │          │                         │
+│ _roadmap_2026_suggestin │               │          │                         │
+│ g_insertions            │               │          │                         │
+│ product_roadmap_2026_su │         81.91 │    75.80 │                   -6.11 │
+│ ggesting_insertions_pro │               │          │                         │
+│ ject_plan_suggesting_in │               │          │                         │
+│ sertions                │               │          │                         │
+│ project_plan_suggesting │        100.00 │   100.00 │                   -0.00 │
+│ _insertions_project_pro │               │          │                         │
+│ posal_id_paraid_overflo │               │          │                         │
+│ w                       │               │          │                         │
+│ project_proposal_id_par │         76.65 │    77.01 │                   +0.36 │
+│ aid_overflow_project_pr │               │          │                         │
+│ oposal_suggesting_inser │               │          │                         │
+│ tions                   │               │          │                         │
+│ project_proposal_sugges │        100.00 │   100.00 │                    0.00 │
+│ ting_insertions_project │               │          │                         │
+│ _tasks_suggesting_inser │               │          │                         │
+│ tions_2                 │               │          │                         │
+│ project_tasks_suggestin │        100.00 │   100.00 │                   -0.00 │
+│ g_insertions_2_project_ │               │          │                         │
+│ tasks_suggesting_insert │               │          │                         │
+│ ions                    │               │          │                         │
+│ project_tasks_suggestin │         97.23 │    93.90 │                   -3.33 │
+│ g_insertions_q1_sales_s │               │          │                         │
+│ ummary_table_2          │               │          │                         │
+│ q1_sales_summary_table_ │         99.89 │    99.89 │                   -0.01 │
+│ 2_q1_sales_summary_tabl │               │          │                         │
+│ e                       │               │          │                         │
+│ q1_sales_summary_table_ │         92.66 │    94.32 │                   +1.66 │
+│ quarterly_performance_r │               │          │                         │
+│ eport_table_2           │               │          │                         │
+│ quarterly_performance_r │         99.91 │    99.91 │                   -0.00 │
+│ eport_table_2_quarterly │               │          │                         │
+│ _performance_report_tab │               │          │                         │
+│ le                      │               │          │                         │
+│ quarterly_performance_r │        100.00 │   100.00 │                    0.00 │
+│ eport_table_red_bold_he │               │          │                         │
+│ ading_demo_style_defaul │               │          │                         │
+│ t_missing               │               │          │                         │
+│ red_bold_heading_demo_s │         86.60 │    99.97 │                  +13.36 │
+│ tyle_default_missing_re │               │          │                         │
+│ d_bold_text_demo_id_par │               │          │                         │
+│ aid_overflow            │               │          │                         │
+│ red_bold_text_demo_id_p │         96.30 │    65.86 │                  -30.44 │
+│ araid_overflow_red_head │               │          │                         │
+│ ing_demo_id_paraid_over │               │          │                         │
+│ flow                    │               │          │                         │
+│ red_heading_demo_id_par │        100.00 │   100.00 │                    0.00 │
+│ aid_overflow_red_strike │               │          │                         │
+│ through_demo_style_defa │               │          │                         │
+│ ult_missing             │               │          │                         │
+│ red_strikethrough_demo_ │        100.00 │   100.00 │                    0.00 │
+│ style_default_missing_r │               │          │                         │
+│ ight_align_bold_demo_id │               │          │                         │
+│ _paraid_overflow        │               │          │                         │
+│ right_align_bold_demo_i │         88.42 │    90.81 │                   +2.39 │
+│ d_paraid_overflow_right │               │          │                         │
+│ _aligned_italic_demo_id │               │          │                         │
+│ _paraid_overflow        │               │          │                         │
+│ right_aligned_italic_de │         75.91 │    67.11 │                   -8.80 │
+│ mo_id_paraid_overflow_r │               │          │                         │
+│ ight_alignment_demo_id_ │               │          │                         │
+│ paraid_overflow_2       │               │          │                         │
+│ right_alignment_demo_id │        100.00 │    88.25 │                  -11.75 │
+│ _paraid_overflow_2_righ │               │          │                         │
+│ t_alignment_demo_id_par │               │          │                         │
+│ aid_overflow            │               │          │                         │
+│ right_alignment_demo_id │        100.00 │   100.00 │                    0.00 │
+│ _paraid_overflow_risk_a │               │          │                         │
+│ ssessment_product_launc │               │          │                         │
+│ h_suggesting_insertions │               │          │                         │
+│ risk_assessment_product │        100.00 │   100.00 │                   -0.00 │
+│ _launch_suggesting_inse │               │          │                         │
+│ rtions_roboto_font_demo │               │          │                         │
+│ _id_paraid_overflow_2   │               │          │                         │
+│ roboto_font_demo_id_par │        100.00 │   100.00 │                    0.00 │
+│ aid_overflow_2_roboto_f │               │          │                         │
+│ ont_demo_id_paraid_over │               │          │                         │
+│ flow                    │               │          │                         │
+│ roboto_font_demo_id_par │        100.00 │   100.00 │                   -0.00 │
+│ aid_overflow_roboto_und │               │          │                         │
+│ erline_demo_id_paraid_o │               │          │                         │
+│ verflow                 │               │          │                         │
+│ roboto_underline_demo_i │        100.00 │   100.00 │                    0.00 │
+│ d_paraid_overflow_sales │               │          │                         │
+│ _report_january_2026_su │               │          │                         │
+│ ggesting_insertions     │               │          │                         │
+│ sales_report_january_20 │         67.66 │    70.40 │                   +2.74 │
+│ 26_suggesting_insertion │               │          │                         │
+│ s_sample_document_after │               │          │                         │
+│ word_repaired_word_repa │               │          │                         │
+│ ired                    │               │          │                         │
+│ sample_document_afterwo │         89.23 │    89.23 │                    0.00 │
+│ rd_repaired_word_repair │               │          │                         │
+│ ed_sample_document_real │               │          │                         │
+│ ly_repaired_word_repair │               │          │                         │
+│ ed                      │               │          │                         │
+│ sample_document_really_ │         67.98 │    70.19 │                   +2.21 │
+│ repaired_word_repaired_ │               │          │                         │
+│ sample_document_word_re │               │          │                         │
+│ pair_of_our_output_iter │               │          │                         │
+│ 2_word_repaired         │               │          │                         │
+│ sample_document_word_re │         76.01 │    81.15 │                   +5.13 │
+│ pair_of_our_output_iter │               │          │                         │
+│ 2_word_repaired_sample_ │               │          │                         │
+│ document_word_repair_of │               │          │                         │
+│ _our_output_word_repair │               │          │                         │
+│ ed                      │               │          │                         │
+│ sample_document_word_re │         78.17 │    61.06 │                  -17.11 │
+│ pair_of_our_output_word │               │          │                         │
+│ _repaired_small_font_si │               │          │                         │
+│ ze_demo_id_paraid_overf │               │          │                         │
+│ low                     │               │          │                         │
+│ small_font_size_demo_id │        100.00 │   100.00 │                    0.00 │
+│ _paraid_overflow_strike │               │          │                         │
+│ through_and_italic_comb │               │          │                         │
+│ o_id_paraid_overflow    │               │          │                         │
+│ strikethrough_and_itali │        100.00 │   100.00 │                    0.00 │
+│ c_combo_id_paraid_overf │               │          │                         │
+│ low_strikethrough_bold_ │               │          │                         │
+│ demo_id_paraid_overflow │               │          │                         │
+│ strikethrough_bold_demo │         99.87 │   100.00 │                   +0.13 │
+│ _id_paraid_overflow_str │               │          │                         │
+│ ikethrough_text_demo_id │               │          │                         │
+│ _paraid_overflow        │               │          │                         │
+│ strikethrough_text_demo │        100.00 │   100.00 │                    0.00 │
+│ _id_paraid_overflow_str │               │          │                         │
+│ ikethrough_text_formatt │               │          │                         │
+│ ing_demo_id_paraid_over │               │          │                         │
+│ flow                    │               │          │                         │
+│ strikethrough_text_form │        100.00 │   100.00 │                    0.00 │
+│ atting_demo_id_paraid_o │               │          │                         │
+│ verflow_subscript_demo_ │               │          │                         │
+│ id_paraid_overflow      │               │          │                         │
+│ subscript_demo_id_parai │        100.00 │   100.00 │                   -0.00 │
+│ d_overflow_subscript_de │               │          │                         │
+│ mo_style_default_missin │               │          │                         │
+│ g                       │               │          │                         │
+│ subscript_demo_style_de │        100.00 │    86.90 │                  -13.10 │
+│ fault_missing_subtitle_ │               │          │                         │
+│ style_demo_id_paraid_ov │               │          │                         │
+│ erflow                  │               │          │                         │
+│ subtitle_style_demo_id_ │         82.76 │    77.74 │                   -5.03 │
+│ paraid_overflow_subtitl │               │          │                         │
+│ e_style_demo_style_defa │               │          │                         │
+│ ult_missing             │               │          │                         │
+│ subtitle_style_demo_sty │        100.00 │   100.00 │                    0.00 │
+│ le_default_missing_supe │               │          │                         │
+│ rscript_demo_id_paraid_ │               │          │                         │
+│ overflow_2              │               │          │                         │
+│ superscript_demo_id_par │         99.50 │   100.00 │                   +0.50 │
+│ aid_overflow_2_superscr │               │          │                         │
+│ ipt_demo_id_paraid_over │               │          │                         │
+│ flow                    │               │          │                         │
+│ superscript_demo_id_par │         91.99 │    92.07 │                   +0.09 │
+│ aid_overflow_superscrip │               │          │                         │
+│ t_demo_style_default_mi │               │          │                         │
+│ ssing                   │               │          │                         │
+│ superscript_demo_style_ │        100.00 │   100.00 │                    0.00 │
+│ default_missing_support │               │          │                         │
+│ _tickets_table          │               │          │                         │
+│ support_tickets_summary │        100.00 │   100.00 │                    0.00 │
+│ _id_paraid_overflow_tex │               │          │                         │
+│ t_highlight_demo_style_ │               │          │                         │
+│ default_missing         │               │          │                         │
+│ support_tickets_table_s │         99.96 │    84.49 │                  -15.46 │
+│ upport_tickets_summary_ │               │          │                         │
+│ id_paraid_overflow      │               │          │                         │
+│ text_highlight_demo_sty │         90.80 │    80.84 │                   -9.96 │
+│ le_default_missing_time │               │          │                         │
+│ s_new_roman_bold_id_par │               │          │                         │
+│ aid_overflow            │               │          │                         │
+│ times_new_roman_bold_id │        100.00 │   100.00 │                    0.00 │
+│ _paraid_overflow_times_ │               │          │                         │
+│ new_roman_font_id_parai │               │          │                         │
+│ d_overflow              │               │          │                         │
+│ times_new_roman_font_id │         92.55 │    83.01 │                   -9.54 │
+│ _paraid_overflow_title_ │               │          │                         │
+│ style_centered_demo_id_ │               │          │                         │
+│ paraid_overflow         │               │          │                         │
+│ title_style_centered_de │         86.44 │    87.78 │                   +1.34 │
+│ mo_id_paraid_overflow_t │               │          │                         │
+│ itle_style_demo_id_para │               │          │                         │
+│ id_overflow             │               │          │                         │
+│ title_style_demo_id_par │         99.74 │    78.60 │                  -21.14 │
+│ aid_overflow_title_styl │               │          │                         │
+│ e_demo_style_default_mi │               │          │                         │
+│ ssing                   │               │          │                         │
+│ title_style_demo_style_ │        100.00 │    90.67 │                   -9.33 │
+│ default_missing_track_c │               │          │                         │
+│ hanges_editing_bullet_i │               │          │                         │
+│ d_paraid_overflow       │               │          │                         │
+│ track_changes_editing_b │        100.00 │   100.00 │                    0.00 │
+│ ullet_id_paraid_overflo │               │          │                         │
+│ w_track_changes_editing │               │          │                         │
+│ _strikethrough_id_parai │               │          │                         │
+│ d_overflow              │               │          │                         │
+│ track_changes_editing_s │        100.00 │   100.00 │                    0.00 │
+│ trikethrough_id_paraid_ │               │          │                         │
+│ overflow_track_changes_ │               │          │                         │
+│ suggesting_bold_id_para │               │          │                         │
+│ id_overflow             │               │          │                         │
+│ track_changes_suggestin │        100.00 │   100.00 │                    0.00 │
+│ g_bold_id_paraid_overfl │               │          │                         │
+│ ow_track_changes_sugges │               │          │                         │
+│ ting_calibri_id_paraid_ │               │          │                         │
+│ overflow                │               │          │                         │
+│ track_changes_suggestin │        100.00 │   100.00 │                    0.00 │
+│ g_calibri_id_paraid_ove │               │          │                         │
+│ rflow_track_changes_sug │               │          │                         │
+│ gesting_center_id_parai │               │          │                         │
+│ d_overflow              │               │          │                         │
+│ track_changes_suggestin │         91.55 │    68.59 │                  -22.96 │
+│ g_center_id_paraid_over │               │          │                         │
+│ flow_track_changes_sugg │               │          │                         │
+│ esting_heading_id_parai │               │          │                         │
+│ d_overflow              │               │          │                         │
+│ track_changes_suggestin │        100.00 │   100.00 │                    0.00 │
+│ g_heading_id_paraid_ove │               │          │                         │
+│ rflow_track_changes_sug │               │          │                         │
+│ gesting_italic_id_parai │               │          │                         │
+│ d_overflow              │               │          │                         │
+│ track_changes_suggestin │         90.43 │    81.30 │                   -9.13 │
+│ g_italic_id_paraid_over │               │          │                         │
+│ flow_track_changes_sugg │               │          │                         │
+│ esting_title_id_paraid_ │               │          │                         │
+│ overflow                │               │          │                         │
+│ track_changes_suggestin │        100.00 │   100.00 │                    0.00 │
+│ g_title_id_paraid_overf │               │          │                         │
+│ low_training_materials_ │               │          │                         │
+│ onboarding_program_sugg │               │          │                         │
+│ esting_insertions       │               │          │                         │
+│ training_materials_onbo │        100.00 │   100.00 │                    0.00 │
+│ arding_program_suggesti │               │          │                         │
+│ ng_insertions_underline │               │          │                         │
+│ _text_demo_id_paraid_ov │               │          │                         │
+│ erflow                  │               │          │                         │
+│ underline_text_demo_id_ │        100.00 │   100.00 │                    0.00 │
+│ paraid_overflow_underli │               │          │                         │
+│ ne_text_formatting_demo │               │          │                         │
+│ _style_default_missing  │               │          │                         │
+│ underline_text_formatti │        100.00 │   100.00 │                    0.00 │
+│ ng_demo_style_default_m │               │          │                         │
+│ issing_verdana_bold_lar │               │          │                         │
+│ ge_font_id_paraid_overf │               │          │                         │
+│ low                     │               │          │                         │
+│ verdana_bold_large_font │         99.90 │    99.56 │                   -0.34 │
+│ _id_paraid_overflow_ver │               │          │                         │
+│ dana_font_demo_id_parai │               │          │                         │
+│ d_overflow              │               │          │                         │
+│ verdana_font_demo_id_pa │        100.00 │   100.00 │                    0.00 │
+│ raid_overflow_verdana_i │               │          │                         │
+│ talic_centered_demo_id_ │               │          │                         │
+│ paraid_overflow         │               │          │                         │
+│ word_clean_strict01_wor │         38.07 │    37.47 │                   -0.60 │
+│ d_tolerated_broken_medi │               │          │                         │
+│ a_rel                   │               │          │                         │
+│ word_tolerated_broken_m │         49.65 │    60.41 │                  +10.76 │
+│ edia_rel_word_tolerated │               │          │                         │
+│ _duplicate_ppr          │               │          │                         │
+│ word_tolerated_duplicat │         76.45 │    71.39 │                   -5.05 │
+│ e_ppr_word_tolerated_mi │               │          │                         │
+│ splaced_link            │               │          │                         │
+│ word_tolerated_misplace │         73.58 │    90.77 │                  +17.19 │
+│ d_link_word_tolerated_m │               │          │                         │
+│ isplaced_pgsz           │               │          │                         │
+│ word_tolerated_misplace │         58.13 │    55.38 │                   -2.75 │
+│ d_pgsz_word_tolerated_m │               │          │                         │
+│ isplaced_uipriority     │               │          │                         │
+│ word_tolerated_misplace │         53.48 │    96.73 │                  +43.26 │
+│ d_uipriority_word_toler │               │          │                         │
+│ ated_orphan_comment     │               │          │                         │
+│ word_tolerated_orphan_c │         89.20 │    89.24 │                   +0.04 │
+│ omment_yellow_highlight │               │          │                         │
+│ _demo_id_paraid_overflo │               │          │                         │
+│ w                       │               │          │                         │
+│ yellow_highlight_demo_i │         93.22 │    85.39 │                   -7.83 │
+│ d_paraid_overflow_yello │               │          │                         │
+│ w_highlight_italic_demo │               │          │                         │
+│ _style_default_missing  │               │          │                         │
+├─────────────────────────┼───────────────┼──────────┼─────────────────────────┤
+│ ole_object_ooxml_style_ │ accept failed │          │ "There is no item named │
+│ link_folio-wasm_redline │               │          │ 'word/embeddings/Micro… │
+│ .docx                   │               │          │         in the archive" │
+│ strict01_sdt_controls_S │ accept failed │          │ "There is no item named │
+│ trict01_folio-wasm_redl │               │          │ 'word/embeddings/Micro… │
+│ ine.docx                │               │          │         in the archive" │
+│ strict01_strikethrough_ │ accept failed │          │ "There is no item named │
+│ and_italic_combo_id_par │               │          │ 'word/embeddings/Micro… │
+│ aid_overflow_folio-wasm │               │          │         in the archive" │
+│ _redline.docx           │               │          │                         │
+│ word_clean_strict01_wor │ accept failed │          │ "There is no item named │
+│ d_tolerated_broken_medi │               │          │ 'word/embeddings/Micro… │
+│ a_rel_folio-wasm_redlin │               │          │         in the archive" │
+│ e.docx                  │               │          │                         │
+╰─────────────────────────┴───────────────┴──────────┴─────────────────────────╯
+ redline  mean 91.16 · median 99.90    accepted  mean 88.92 · median 99.54    n 
+                                      158                                       
+accepted report → runs-compare/folio-wasm_2026-07-18_01-21/accepted_report.md
+page-count mismatch on 5 doc(s) (scored on the shared pages only): 
+docx_lots_of_comments_addition_docx_lots_of_comments (oracle 11 vs candidate 
+12); 
+sample_document_really_repaired_word_repaired_sample_document_word_repair_of_our
+_output_iter2_word_repaired (oracle 6 vs candidate 3); 
+sample_document_word_repair_of_our_output_iter2_word_repaired_sample_document_wo
+rd_repair_of_our_output_word_repaired (oracle 7 vs candidate 3); 
+sample_document_word_repair_of_our_output_word_repaired_small_font_size_demo_id_
+paraid_overflow (oracle 7 vs candidate 3); 
+word_clean_strict01_word_tolerated_broken_media_rel (oracle 12 vs candidate 769)
+
+────────────────────────── benchmark: script_redlines ──────────────────────────
+                            folio  ·  158 documents                             
+╭─────────────────────────────────────────────────────────────────────┬────────╮
+│ document                                                            │  score │
+├─────────────────────────────────────────────────────────────────────┼────────┤
+│ 1_5_line_spacing_id_paraid_overflow_24_id_paraid_overflow           │  62.01 │
+│ 24_id_paraid_overflow_blue_bold_centered_demo_id_paraid_overflow    │  98.50 │
+│ blue_bold_centered_demo_id_paraid_overflow_blue_centered_title_demo │  60.22 │
+│ _style_default_missing                                              │        │
+│ blue_centered_title_demo_style_default_missing_blue_italic_text_dem │  89.46 │
+│ o_id_paraid_overflow                                                │        │
+│ blue_italic_text_demo_id_paraid_overflow_blue_underline_combo_demo_ │ 100.00 │
+│ id_paraid_overflow                                                  │        │
+│ blue_underline_combo_demo_id_paraid_overflow_bold_and_italic_combo_ │  99.69 │
+│ style_default_missing                                               │        │
+│ bold_and_italic_combo_style_default_missing_bold_and_underline_comb │ 100.00 │
+│ o_id_paraid_overflow                                                │        │
+│ bold_and_underline_combo_id_paraid_overflow_bold_italic_combined_de │ 100.00 │
+│ mo_id_paraid_overflow                                               │        │
+│ bold_italic_combined_demo_id_paraid_overflow_bold_italic_underline_ │  99.81 │
+│ demo_id_paraid_overflow                                             │        │
+│ bold_italic_underline_demo_id_paraid_overflow_bold_red_text_combo_i │ 100.00 │
+│ d_paraid_overflow                                                   │        │
+│ bold_red_text_combo_id_paraid_overflow_bold_superscript_demo_style_ │  99.90 │
+│ default_missing                                                     │        │
+│ bold_superscript_demo_style_default_missing_bold_text_formatting_de │  93.31 │
+│ mo_id_paraid_overflow_2                                             │        │
+│ bold_text_formatting_demo_id_paraid_overflow_2_bold_text_formatting │ 100.00 │
+│ _demo_id_paraid_overflow                                            │        │
+│ bold_text_formatting_demo_id_paraid_overflow_bold_underline_combine │  97.85 │
+│ d_demo_id_paraid_overflow                                           │        │
+│ bold_underline_combined_demo_id_paraid_overflow_bold_underline_high │ 100.00 │
+│ light_demo_id_paraid_overflow                                       │        │
+│ bold_underline_highlight_demo_id_paraid_overflow_book_catalog_id_pa │ 100.00 │
+│ raid_overflow                                                       │        │
+│ book_catalog_id_paraid_overflow_book_catalog_table                  │ 100.00 │
+│ book_catalog_table_budget_report_q1_2026_suggesting_insertions      │  91.92 │
+│ budget_report_q1_2026_suggesting_insertions_bullet_list_bold_demo_i │ 100.00 │
+│ d_paraid_overflow                                                   │        │
+│ bullet_list_bold_demo_id_paraid_overflow_bullet_list_demo_id_paraid │  92.02 │
+│ _overflow                                                           │        │
+│ bullet_list_demo_id_paraid_overflow_calibri_bold_italic_demo_id_par │  85.01 │
+│ aid_overflow                                                        │        │
+│ calibri_bold_italic_demo_id_paraid_overflow_calibri_font_demo_id_pa │ 100.00 │
+│ raid_overflow_2                                                     │        │
+│ calibri_font_demo_id_paraid_overflow_2_calibri_font_demo_id_paraid_ │ 100.00 │
+│ overflow                                                            │        │
+│ calibri_font_demo_id_paraid_overflow_calibri_heading_2_right_id_par │  82.51 │
+│ aid_overflow                                                        │        │
+│ calibri_heading_2_right_id_paraid_overflow_center_aligned_bold_text │ 100.00 │
+│ _id_paraid_overflow                                                 │        │
+│ center_aligned_bold_text_id_paraid_overflow_center_alignment_demo_i │  82.79 │
+│ d_paraid_overflow_2                                                 │        │
+│ center_alignment_demo_id_paraid_overflow_2_center_alignment_demo_id │  81.52 │
+│ _paraid_overflow                                                    │        │
+│ center_alignment_demo_id_paraid_overflow_center_bold_demo_id_paraid │  83.59 │
+│ _overflow                                                           │        │
+│ center_bold_demo_id_paraid_overflow_clear_formatting_demo_id_paraid │ 100.00 │
+│ _overflow                                                           │        │
+│ clear_formatting_demo_id_paraid_overflow_contract_review_suggesting │ 100.00 │
+│ _insertions                                                         │        │
+│ contract_review_suggesting_insertions_contract_review_suggesting_mi │ 100.00 │
+│ xed_edits                                                           │        │
+│ contract_review_suggesting_mixed_edits_customer_satisfaction_survey │ 100.00 │
+│ _q4_suggesting_insertions                                           │        │
+│ customer_satisfaction_survey_q4_suggesting_insertions_document_100_ │ 100.00 │
+│ ultimate_demo_id_paraid_overflow                                    │        │
+│ document_100_ultimate_demo_id_paraid_overflow_docx_lots_of_comments │  46.19 │
+│ _addition_redline_addition_v_removal                                │        │
+│ docx_lots_of_comments_addition_docx_lots_of_comments                │  40.29 │
+│ docx_lots_of_comments_addition_redline_addition_v_removal_docx_lots │  52.69 │
+│ _of_comments_addition_redline                                       │        │
+│ docx_lots_of_comments_addition_redline_docx_lots_of_comments_additi │  53.98 │
+│ on_removal_redline_removal_v_addition                               │        │
+│ docx_lots_of_comments_addition_removal_docx_lots_of_comments_additi │  61.57 │
+│ on                                                                  │        │
+│ docx_lots_of_comments_addition_removal_redline_removal_v_addition_d │  52.10 │
+│ ocx_lots_of_comments_addition_removal_redline                       │        │
+│ docx_lots_of_comments_double_spacing_bold_demo_id_paraid_overflow   │  74.86 │
+│ eigenpal_docx_editor_suggesting_mixed_edits_employee_directory_tabl │  53.11 │
+│ e_2                                                                 │        │
+│ employee_directory_table_2_employee_directory_table                 │ 100.00 │
+│ employee_directory_table_employee_review_john_smith_suggesting_inse │  90.54 │
+│ rtions                                                              │        │
+│ employee_review_john_smith_suggesting_insertions_font_color_blue_de │ 100.00 │
+│ mo_style_default_missing                                            │        │
+│ font_color_blue_demo_style_default_missing_font_color_demo_style_de │ 100.00 │
+│ fault_missing                                                       │        │
+│ font_family_demo_id_paraid_overflow_font_size_12_demo_id_paraid_ove │  94.42 │
+│ rflow                                                               │        │
+│ font_size_12_demo_id_paraid_overflow_font_size_18_demo_style_defaul │ 100.00 │
+│ t_missing                                                           │        │
+│ font_size_18_demo_style_default_missing_font_size_24_demo_id_paraid │  96.78 │
+│ _overflow                                                           │        │
+│ font_size_24_demo_id_paraid_overflow_font_size_demo_id_paraid_overf │  88.96 │
+│ low                                                                 │        │
+│ font_size_demo_id_paraid_overflow_green_bold_text_demo_id_paraid_ov │  88.61 │
+│ erflow                                                              │        │
+│ green_bold_text_demo_id_paraid_overflow_green_highlight_demo_id_par │  95.37 │
+│ aid_overflow                                                        │        │
+│ green_highlight_demo_id_paraid_overflow_green_underline_bullet_list │ 100.00 │
+│ _id_paraid_overflow                                                 │        │
+│ green_underline_bullet_list_id_paraid_overflow_heading_1_bold_demo_ │ 100.00 │
+│ id_paraid_overflow                                                  │        │
+│ heading_1_bold_demo_id_paraid_overflow_heading_1_style_demo_id_para │  95.38 │
+│ id_overflow                                                         │        │
+│ heading_1_style_demo_id_paraid_overflow_heading_2_center_demo_id_pa │ 100.00 │
+│ raid_overflow                                                       │        │
+│ heading_2_center_demo_id_paraid_overflow_heading_2_style_demo_id_pa │  94.85 │
+│ raid_overflow                                                       │        │
+│ heading_2_style_demo_id_paraid_overflow_heading_3_center_italic_id_ │  95.75 │
+│ paraid_overflow                                                     │        │
+│ heading_3_center_italic_id_paraid_overflow_heading_3_style_demo_id_ │  88.18 │
+│ paraid_overflow_2                                                   │        │
+│ heading_3_style_demo_id_paraid_overflow_2_heading_3_style_demo_id_p │ 100.00 │
+│ araid_overflow                                                      │        │
+│ heading_3_style_demo_id_paraid_overflow_heading_4_right_italic_id_p │ 100.00 │
+│ araid_overflow                                                      │        │
+│ heading_4_right_italic_id_paraid_overflow_heading_4_style_demo_id_p │  96.00 │
+│ araid_overflow_2                                                    │        │
+│ heading_4_style_demo_id_paraid_overflow_2_heading_4_style_demo_id_p │ 100.00 │
+│ araid_overflow                                                      │        │
+│ heading_4_style_demo_id_paraid_overflow_helvetica_font_demo_style_d │ 100.00 │
+│ efault_missing                                                      │        │
+│ helvetica_font_demo_style_default_missing_hr_onboarding_checklist_t │ 100.00 │
+│ able                                                                │        │
+│ hr_onboarding_checklist_table_i_am_sharing_microsoft_word_vs_google │  49.04 │
+│ _docs_comprehensive_proof_with_you                                  │        │
+│ i_am_sharing_microsoft_word_vs_google_docs_comprehensive_proof_with │  79.75 │
+│ _you_increase_indent_demo_id_paraid_overflow                        │        │
+│ increase_indent_demo_id_paraid_overflow_insert_link_demo_id_paraid_ │  86.24 │
+│ overflow                                                            │        │
+│ insert_link_demo_id_paraid_overflow_inventory_list_suggesting_delet │ 100.00 │
+│ ions                                                                │        │
+│ inventory_list_suggesting_deletions_inventory_list_suggesting_mixed │ 100.00 │
+│ _edits                                                              │        │
+│ inventory_list_suggesting_mixed_edits_it_security_policy_v2_suggest │ 100.00 │
+│ ing_insertions                                                      │        │
+│ it_security_policy_v2_suggesting_insertions_italic_and_underline_co │  69.77 │
+│ mbo_style_default_missing                                           │        │
+│ italic_and_underline_combo_style_default_missing_italic_subscript_d │ 100.00 │
+│ emo_style_default_missing                                           │        │
+│ italic_subscript_demo_style_default_missing_italic_text_formatting_ │  93.81 │
+│ demo_id_paraid_overflow_2                                           │        │
+│ italic_text_formatting_demo_id_paraid_overflow_2_italic_text_format │ 100.00 │
+│ ting_demo_id_paraid_overflow                                        │        │
+│ italic_text_formatting_demo_id_paraid_overflow_italic_underline_com │ 100.00 │
+│ bined_demo_id_paraid_overflow                                       │        │
+│ justify_alignment_demo_id_paraid_overflow_2_justify_alignment_demo_ │  93.07 │
+│ id_paraid_overflow                                                  │        │
+│ justify_alignment_demo_id_paraid_overflow_large_font_size_demo_id_p │  78.48 │
+│ araid_overflow                                                      │        │
+│ large_font_size_demo_id_paraid_overflow_left_alignment_demo_id_para │ 100.00 │
+│ id_overflow                                                         │        │
+│ left_alignment_demo_id_paraid_overflow_line_spacing_demo_id_paraid_ │ 100.00 │
+│ overflow                                                            │        │
+│ line_spacing_demo_id_paraid_overflow_marketing_strategy_2026_sugges │ 100.00 │
+│ ting_insertions                                                     │        │
+│ marketing_strategy_2026_suggesting_insertions_meeting_agenda_table_ │ 100.00 │
+│ 2                                                                   │        │
+│ meeting_agenda_table_2_meeting_agenda_table                         │  97.41 │
+│ meeting_agenda_table_meeting_minutes_id_paraid_overflow             │ 100.00 │
+│ meeting_minutes_id_paraid_overflow_meeting_minutes_suggesting_inser │  79.36 │
+│ tions                                                               │        │
+│ meeting_minutes_suggesting_insertions_numbered_list_demo_id_paraid_ │  91.59 │
+│ overflow                                                            │        │
+│ numbered_list_demo_id_paraid_overflow_numbered_list_italic_demo_id_ │  92.74 │
+│ paraid_overflow                                                     │        │
+│ numbered_list_italic_demo_id_paraid_overflow_open_sans_bold_underli │ 100.00 │
+│ ne_id_paraid_overflow                                               │        │
+│ open_sans_bold_underline_id_paraid_overflow_open_sans_font_demo_id_ │ 100.00 │
+│ paraid_overflow_2                                                   │        │
+│ open_sans_font_demo_id_paraid_overflow_2_open_sans_font_demo_id_par │ 100.00 │
+│ aid_overflow                                                        │        │
+│ open_sans_font_demo_id_paraid_overflow_product_roadmap_2026_suggest │ 100.00 │
+│ ing_insertions                                                      │        │
+│ product_roadmap_2026_suggesting_insertions_project_plan_suggesting_ │  81.91 │
+│ insertions                                                          │        │
+│ project_plan_suggesting_insertions_project_proposal_id_paraid_overf │ 100.00 │
+│ low                                                                 │        │
+│ project_proposal_id_paraid_overflow_project_proposal_suggesting_ins │  76.65 │
+│ ertions                                                             │        │
+│ project_proposal_suggesting_insertions_project_tasks_suggesting_ins │ 100.00 │
+│ ertions_2                                                           │        │
+│ project_tasks_suggesting_insertions_2_project_tasks_suggesting_inse │ 100.00 │
+│ rtions                                                              │        │
+│ project_tasks_suggesting_insertions_q1_sales_summary_table_2        │  97.23 │
+│ q1_sales_summary_table_2_q1_sales_summary_table                     │  99.89 │
+│ q1_sales_summary_table_quarterly_performance_report_table_2         │  92.66 │
+│ quarterly_performance_report_table_2_quarterly_performance_report_t │  99.91 │
+│ able                                                                │        │
+│ quarterly_performance_report_table_red_bold_heading_demo_style_defa │ 100.00 │
+│ ult_missing                                                         │        │
+│ red_bold_heading_demo_style_default_missing_red_bold_text_demo_id_p │  86.60 │
+│ araid_overflow                                                      │        │
+│ red_bold_text_demo_id_paraid_overflow_red_heading_demo_id_paraid_ov │  96.30 │
+│ erflow                                                              │        │
+│ red_heading_demo_id_paraid_overflow_red_strikethrough_demo_style_de │ 100.00 │
+│ fault_missing                                                       │        │
+│ red_strikethrough_demo_style_default_missing_right_align_bold_demo_ │ 100.00 │
+│ id_paraid_overflow                                                  │        │
+│ right_align_bold_demo_id_paraid_overflow_right_aligned_italic_demo_ │  88.42 │
+│ id_paraid_overflow                                                  │        │
+│ right_aligned_italic_demo_id_paraid_overflow_right_alignment_demo_i │  75.91 │
+│ d_paraid_overflow_2                                                 │        │
+│ right_alignment_demo_id_paraid_overflow_2_right_alignment_demo_id_p │ 100.00 │
+│ araid_overflow                                                      │        │
+│ right_alignment_demo_id_paraid_overflow_risk_assessment_product_lau │ 100.00 │
+│ nch_suggesting_insertions                                           │        │
+│ risk_assessment_product_launch_suggesting_insertions_roboto_font_de │ 100.00 │
+│ mo_id_paraid_overflow_2                                             │        │
+│ roboto_font_demo_id_paraid_overflow_2_roboto_font_demo_id_paraid_ov │ 100.00 │
+│ erflow                                                              │        │
+│ roboto_font_demo_id_paraid_overflow_roboto_underline_demo_id_paraid │ 100.00 │
+│ _overflow                                                           │        │
+│ roboto_underline_demo_id_paraid_overflow_sales_report_january_2026_ │ 100.00 │
+│ suggesting_insertions                                               │        │
+│ sales_report_january_2026_suggesting_insertions_sample_document_aft │  67.66 │
+│ erword_repaired_word_repaired                                       │        │
+│ sample_document_afterword_repaired_word_repaired_sample_document_re │  89.23 │
+│ ally_repaired_word_repaired                                         │        │
+│ sample_document_really_repaired_word_repaired_sample_document_word_ │  67.98 │
+│ repair_of_our_output_iter2_word_repaired                            │        │
+│ sample_document_word_repair_of_our_output_iter2_word_repaired_sampl │  76.01 │
+│ e_document_word_repair_of_our_output_word_repaired                  │        │
+│ sample_document_word_repair_of_our_output_word_repaired_small_font_ │  78.17 │
+│ size_demo_id_paraid_overflow                                        │        │
+│ small_font_size_demo_id_paraid_overflow_strikethrough_and_italic_co │ 100.00 │
+│ mbo_id_paraid_overflow                                              │        │
+│ strikethrough_and_italic_combo_id_paraid_overflow_strikethrough_bol │ 100.00 │
+│ d_demo_id_paraid_overflow                                           │        │
+│ strikethrough_bold_demo_id_paraid_overflow_strikethrough_text_demo_ │  99.87 │
+│ id_paraid_overflow                                                  │        │
+│ strikethrough_text_demo_id_paraid_overflow_strikethrough_text_forma │ 100.00 │
+│ tting_demo_id_paraid_overflow                                       │        │
+│ strikethrough_text_formatting_demo_id_paraid_overflow_subscript_dem │ 100.00 │
+│ o_id_paraid_overflow                                                │        │
+│ subscript_demo_id_paraid_overflow_subscript_demo_style_default_miss │ 100.00 │
+│ ing                                                                 │        │
+│ subscript_demo_style_default_missing_subtitle_style_demo_id_paraid_ │ 100.00 │
+│ overflow                                                            │        │
+│ subtitle_style_demo_id_paraid_overflow_subtitle_style_demo_style_de │  82.76 │
+│ fault_missing                                                       │        │
+│ subtitle_style_demo_style_default_missing_superscript_demo_id_parai │ 100.00 │
+│ d_overflow_2                                                        │        │
+│ superscript_demo_id_paraid_overflow_2_superscript_demo_id_paraid_ov │  99.50 │
+│ erflow                                                              │        │
+│ superscript_demo_id_paraid_overflow_superscript_demo_style_default_ │  91.99 │
+│ missing                                                             │        │
+│ superscript_demo_style_default_missing_support_tickets_table        │ 100.00 │
+│ support_tickets_summary_id_paraid_overflow_text_highlight_demo_styl │ 100.00 │
+│ e_default_missing                                                   │        │
+│ support_tickets_table_support_tickets_summary_id_paraid_overflow    │  99.96 │
+│ text_highlight_demo_style_default_missing_times_new_roman_bold_id_p │  90.80 │
+│ araid_overflow                                                      │        │
+│ times_new_roman_bold_id_paraid_overflow_times_new_roman_font_id_par │ 100.00 │
+│ aid_overflow                                                        │        │
+│ times_new_roman_font_id_paraid_overflow_title_style_centered_demo_i │  92.55 │
+│ d_paraid_overflow                                                   │        │
+│ title_style_centered_demo_id_paraid_overflow_title_style_demo_id_pa │  86.44 │
+│ raid_overflow                                                       │        │
+│ title_style_demo_id_paraid_overflow_title_style_demo_style_default_ │  99.74 │
+│ missing                                                             │        │
+│ title_style_demo_style_default_missing_track_changes_editing_bullet │ 100.00 │
+│ _id_paraid_overflow                                                 │        │
+│ track_changes_editing_bullet_id_paraid_overflow_track_changes_editi │ 100.00 │
+│ ng_strikethrough_id_paraid_overflow                                 │        │
+│ track_changes_editing_strikethrough_id_paraid_overflow_track_change │ 100.00 │
+│ s_suggesting_bold_id_paraid_overflow                                │        │
+│ track_changes_suggesting_bold_id_paraid_overflow_track_changes_sugg │ 100.00 │
+│ esting_calibri_id_paraid_overflow                                   │        │
+│ track_changes_suggesting_calibri_id_paraid_overflow_track_changes_s │ 100.00 │
+│ uggesting_center_id_paraid_overflow                                 │        │
+│ track_changes_suggesting_center_id_paraid_overflow_track_changes_su │  91.55 │
+│ ggesting_heading_id_paraid_overflow                                 │        │
+│ track_changes_suggesting_heading_id_paraid_overflow_track_changes_s │ 100.00 │
+│ uggesting_italic_id_paraid_overflow                                 │        │
+│ track_changes_suggesting_italic_id_paraid_overflow_track_changes_su │  90.43 │
+│ ggesting_title_id_paraid_overflow                                   │        │
+│ track_changes_suggesting_title_id_paraid_overflow_training_material │ 100.00 │
+│ s_onboarding_program_suggesting_insertions                          │        │
+│ training_materials_onboarding_program_suggesting_insertions_underli │ 100.00 │
+│ ne_text_demo_id_paraid_overflow                                     │        │
+│ underline_text_demo_id_paraid_overflow_underline_text_formatting_de │ 100.00 │
+│ mo_style_default_missing                                            │        │
+│ underline_text_formatting_demo_style_default_missing_verdana_bold_l │ 100.00 │
+│ arge_font_id_paraid_overflow                                        │        │
+│ verdana_bold_large_font_id_paraid_overflow_verdana_font_demo_id_par │  99.90 │
+│ aid_overflow                                                        │        │
+│ verdana_font_demo_id_paraid_overflow_verdana_italic_centered_demo_i │ 100.00 │
+│ d_paraid_overflow                                                   │        │
+│ word_clean_strict01_word_tolerated_broken_media_rel                 │  38.07 │
+│ word_tolerated_broken_media_rel_word_tolerated_duplicate_ppr        │  49.65 │
+│ word_tolerated_duplicate_ppr_word_tolerated_misplaced_link          │  76.45 │
+│ word_tolerated_misplaced_link_word_tolerated_misplaced_pgsz         │  73.58 │
+│ word_tolerated_misplaced_pgsz_word_tolerated_misplaced_uipriority   │  58.13 │
+│ word_tolerated_misplaced_uipriority_word_tolerated_orphan_comment   │  53.48 │
+│ word_tolerated_orphan_comment_yellow_highlight_demo_id_paraid_overf │  89.20 │
+│ low                                                                 │        │
+│ yellow_highlight_demo_id_paraid_overflow_yellow_highlight_italic_de │  93.22 │
+│ mo_style_default_missing                                            │        │
+╰─────────────────────────────────────────────────────────────────────┴────────╯
+           mean 91.16 · median 99.90 · min 38.07 · max 100.00 · n 158           
+14 doc(s) recorded as failed in the JSONL
+jsonl: appended → results-compare/bench.jsonl
+jsonl: appended → results-compare/bench.jsonl
+=== POSTCHAIN DONE 01:25:21
