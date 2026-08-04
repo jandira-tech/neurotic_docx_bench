@@ -43,6 +43,17 @@ jobs:
         run: |
           uv run bench render corpus/word_based/docx_redlines_word /tmp/oracle --jobs 4
           cp /tmp/oracle/pdf/*.pdf corpus/word_based/pdf_redlines_word/
+          # Randomized chain oracle too — otherwise the randomized half of
+          # script_redlines is scored against locally-rendered PDFs while the
+          # candidates use this runner's LibreOffice.
+          uv run bench render corpus/word_based/docx_redlines_randomized /tmp/oracle_rand --jobs 4
+          cp /tmp/oracle_rand/pdf/*.pdf corpus/word_based/pdf_redlines_randomized/pdf/
+
+      # The in-image regeneration above intentionally rewrites the oracle, so the
+      # committed manifest no longer matches — re-baseline it here (ephemeral checkout)
+      # so the oracle-drift gate still protects the rest of this CI run.
+      - name: Re-baseline oracle manifest for the regenerated oracle
+        run: uv run bench oracle-manifest --write
 
       - name: Run bench (gate sets exit status)
         env:

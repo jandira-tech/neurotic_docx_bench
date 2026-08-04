@@ -1,0 +1,121 @@
+# Apples-to-apples folio comparison config (scratch; not part of the canonical bench).
+#
+# Two folio builds, identical tests:
+#   baseline  = the vendored pinned folio under src/neurotic_docx_bench/utils/folio
+#               (@stll/folio-core 0.3.1 generator · @stll/folio-react 0.5.0 viewer)
+#   current   = the working-tree build of ~/temp/T/reconciliation_plan/folio staged
+#               under src/neurotic_docx_bench/utils/folio-current
+#               (@stll/folio-core 0.11.0 · @stll/folio-react 0.10.2 · agents 0.6.1)
+#
+# Scoring/oracles identical to bench.yaml. Results are appended to a separate
+# --results-dir so the canonical trend log stays untouched.
+source_of_truth: corpus/word_based/pdf_redlines_word
+scoring:
+  dpi: 144
+
+accepted_ground_truth: corpus/word_based/docx_accepted_word
+
+visual_oracles:
+  visual_rendering: corpus/word_based/pdf_source
+  visual_redlines: corpus/word_based/pdf_redlines_word
+  visual_accepted_changes: corpus/word_based/pdf_accepted_word
+
+runs:
+  # ── headless generator (script_redlines · accepted_changes · roundtrip) ──
+  - name: folio
+    dist: src/neurotic_docx_bench/utils/folio/node_modules/@stll/folio-core
+    generate: "/usr/bin/time -l -o $RUN_DIR/generate_rusage.txt node --import tsx scripts/generate-native-redlines.ts --method=folio --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=folio"
+    render: soffice
+    jobs: 8
+    vendor: folio
+    benchmarks: [accepted_changes, script_redlines, roundtrip]
+
+  - name: folio-current
+    dist: src/neurotic_docx_bench/utils/folio-current/node_modules/@stll/folio-core
+    generate: "FOLIO_MODULE_ROOT=/Users/arthrod/temp/T/neurotic_docx_bench/src/neurotic_docx_bench/utils/folio-current/node_modules /usr/bin/time -l -o $RUN_DIR/generate_rusage.txt node --import tsx scripts/generate-native-redlines.ts --method=folio --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=folio-current"
+    render: soffice
+    jobs: 8
+    vendor: folio
+    benchmarks: [accepted_changes, script_redlines, roundtrip]
+
+  # ── folio orchestrator + jubarte-wasm forced as the ONLY engine ──
+  # Mirrors packages/playground/src/redline/engine.ts exactly: generateRedlineDocx
+  # with engines:[jubarte-wasm], selfCheck:"engine-lossless", no fallback rung.
+  # The wasm is a FRESH `wasm-pack build --target nodejs --release` of the
+  # canonical ~/T/jubarte-redlines source (GET_JUBARTE_RUST.md build flow).
+  # dist points at the wasm-pack pkg (content-hash pin via package.json version).
+  - name: folio-wasm
+    dist: src/neurotic_docx_bench/utils/jubarte/jubarte-wasm/pkg
+    generate: "FOLIO_MODULE_ROOT=/Users/arthrod/temp/T/neurotic_docx_bench/src/neurotic_docx_bench/utils/folio-current/node_modules JUBARTE_WASM_DIR=/Users/arthrod/temp/T/neurotic_docx_bench/src/neurotic_docx_bench/utils/jubarte/jubarte-wasm/pkg /usr/bin/time -l -o $RUN_DIR/generate_rusage.txt node --import tsx scripts/generate-native-redlines.ts --method=folio-wasm --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=folio-wasm"
+    render: soffice
+    jobs: 8
+    vendor: folio
+    benchmarks: [accepted_changes, script_redlines]
+
+  # ── viewer (visual_*) — baseline: vendored harness, port 5175 ──
+  - name: folio-playwright-rendering
+    dist: src/neurotic_docx_bench/utils/folio/node_modules/@stll/folio-react
+    docx: corpus/word_based/docx_source
+    render: playwright
+    jobs: 8
+    vendor: folio
+    benchmarks: [visual_rendering]
+    harness: &folio-harness-base
+      server: "cd src/neurotic_docx_bench/utils/folio/harness/folio-viewer && ./node_modules/.bin/vite --port 5175 --host 127.0.0.1"
+      url: "http://127.0.0.1:5175/harness.html"
+      file_input: "#fileInput"
+      page_selector: ".layout-page"
+      readiness_js: "window.__folioReady === true || document.querySelectorAll('.layout-page').length > 0"
+      timeout_ms: 90000
+
+  - name: folio-playwright-redlines
+    dist: src/neurotic_docx_bench/utils/folio/node_modules/@stll/folio-react
+    docx: corpus/word_based/docx_redlines_word
+    render: playwright
+    jobs: 8
+    vendor: folio
+    benchmarks: [visual_redlines]
+    harness: *folio-harness-base
+
+  - name: folio-playwright-accepted
+    dist: src/neurotic_docx_bench/utils/folio/node_modules/@stll/folio-react
+    docx: corpus/word_based/docx_accepted_word
+    render: playwright
+    jobs: 8
+    vendor: folio
+    benchmarks: [visual_accepted_changes]
+    harness: *folio-harness-base
+
+  # ── viewer (visual_*) — current build: harness-current, port 5176 ──
+  - name: folio-current-playwright-rendering
+    dist: harness/folio-viewer-current/node_modules/@stll/folio-react
+    docx: corpus/word_based/docx_source
+    render: playwright
+    jobs: 8
+    vendor: folio
+    benchmarks: [visual_rendering]
+    harness: &folio-harness-current
+      server: "cd harness/folio-viewer-current && ./node_modules/.bin/vite --port 5176 --host 127.0.0.1"
+      url: "http://127.0.0.1:5176/harness.html"
+      file_input: "#fileInput"
+      page_selector: ".layout-page"
+      readiness_js: "window.__folioReady === true || document.querySelectorAll('.layout-page').length > 0"
+      timeout_ms: 90000
+
+  - name: folio-current-playwright-redlines
+    dist: harness/folio-viewer-current/node_modules/@stll/folio-react
+    docx: corpus/word_based/docx_redlines_word
+    render: playwright
+    jobs: 8
+    vendor: folio
+    benchmarks: [visual_redlines]
+    harness: *folio-harness-current
+
+  - name: folio-current-playwright-accepted
+    dist: harness/folio-viewer-current/node_modules/@stll/folio-react
+    docx: corpus/word_based/docx_accepted_word
+    render: playwright
+    jobs: 8
+    vendor: folio
+    benchmarks: [visual_accepted_changes]
+    harness: *folio-harness-current

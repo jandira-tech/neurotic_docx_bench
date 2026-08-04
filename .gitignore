@@ -92,6 +92,14 @@ src/neurotic_docx_bench/utils/superdoc/harness-viewer-generation/node_modules/
 src/neurotic_docx_bench/utils/folio/folio
 
 # yuch85/superdoc-redlines — fresh clone + npm install at repo root (see AGENTS.md "Adding a tool")
+# SuperDoc monorepo clone (Harbour-Enterprises/SuperDoc). The superdoc-native
+# run's `dist:` points at superdoc/packages/super-editor. Too large to commit;
+# see AGENTS.md "Adding a tool".
+# Local Docxodus C# source + built npm package (the patched fork lives at
+# ~/T/react-docxodus-viewer/Docxodus). The docxodus-playwright-* runs point
+# their dist: here. Never was ignored, which is why it was never restored.
+src/neurotic_docx_bench/utils/docxodus/Docxodus/
+/superdoc/
 /superdoc-redlines/
 jubarte-rs-probe/
 jubarte-lossless/
@@ -108,3 +116,4 @@ results/redline_speed_bench/**/fixtures_bytes/
 
 # W1–W5 wasm perf/memory profiler dumps (217MB, regenerable; findings live in TODO.md/RESULTS.md)
 results/wasm_perf/
+harness/folio-viewer-current/node_modules/
