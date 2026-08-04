@@ -240,6 +240,39 @@ The nine, so nobody re-derives them:
    the benchmark cannot see (C9). Decide which before reverting — I nearly reverted a
    correct fix on this confusion.
 
+## C10 — A provenance control is only valid at the moment of use
+
+Added 2026-08-04 after the programme's **third** D5 split-brain in one day.
+
+**The defect.** Checking which build you have, and then using that build, are two events.
+Anything can happen between them on a shared machine — and did. A session ran
+`resolve_local_version` at some point before 17:31:25 and got `fcea02da49f4`; another
+session legitimately rebuilt the shared dist **at 17:31:25**; the first session generated
+its probe artefacts **at 17:32:05**. **Forty seconds.** Everything downstream was
+attributed to the wrong engine, and the conclusion drawn — "workstream S is already in
+the baseline, the plans are double-counting it" — would have stopped work on the only
+lever measured to deliver anything.
+
+**The contract.**
+
+1. **Stamp the version at generation time and carry it with the data.** Never check once
+   and trust it for a session. A control taken before the work describes the artifact as
+   it was, not as it is.
+2. **A vendored dist that is a symlink outside the repo is not pinned.**
+   `utils/jubarte/jubarte-wasm` points into `~/temp/T/jubarte-redlines`, so a branch
+   switch in the engine repo silently changes what the bench runs. Treat any such run as
+   unpinned until the artifact itself is hashed.
+3. **When a measurement is invalidated, bound the blast radius rather than discarding
+   everything.** The retraction above was made useful by establishing that
+   `word/document.xml` is byte-identical between the two builds on 197/197 — so
+   `document.xml`-derived results stood and only `styles.xml`-derived ones needed
+   relabelling. Partition results by which part they read.
+
+The three instances so far: the docxodus "9.0.0" run that executed 7.0.0; the
+`jubarte-wasm` pin that recorded four engines as `0.1.0` (fixed, `fafe4aad`); and this
+one. **D5 is not an occasional accident in this programme — it is the default failure
+mode of a shared checkout with rebuildable vendored artifacts.**
+
 ## C9 — The benchmark cannot price Word validity, and must say so
 
 **The defect.** Our oracle renders through LibreOffice. Schema validity and Word-repair
