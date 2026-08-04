@@ -163,6 +163,30 @@ export type RedlineEngine = ((
 
 /** Load the redline engine for `method` and return compare(base,next)->docx bytes. */
 /**
+ * Absolute path to a vendor package's entry, resolved PIN-TREE-FIRST.
+ *
+ * The bench.yaml `package:` pin installs into the repo-root `node_modules`, and
+ * `resolve_tool_version` reads the recorded version back from THERE. An adapter
+ * that imports a vendored sub-install instead will happily record one version
+ * and execute another (plan Chapter 6 D5) — which is exactly how a docxodus run
+ * was published as 9.0.0 while running 7.0.0. Root first, vendored as fallback.
+ */
+function resolveVendorEntry(
+	pkgSubpath: string,
+	vendorRelRoot: string,
+): string {
+	const roots = [
+		resolve(import.meta.dirname, "../node_modules"),
+		resolve(import.meta.dirname, vendorRelRoot),
+	];
+	for (const root of roots) {
+		const candidate = join(root, pkgSubpath);
+		if (existsSync(candidate)) return candidate;
+	}
+	return join(roots[roots.length - 1]!, pkgSubpath);
+}
+
+/**
  * Directory to import `@stll/folio-core` from.
  *
  * Prefers the repo-root `node_modules` because that is the ONE copy the
@@ -240,7 +264,12 @@ export async function loadEngine(
 		const dox: any = await import(
 			// Point at dist/index.js: Node ESM rejects bare directory imports under
 			// node_modules when the package uses an "exports" map (docxodus ≥7).
-			"../src/neurotic_docx_bench/utils/docxodus/node_modules/docxodus/dist/index.js"
+			// Resolved pin-tree-first — hardcoding the vendored path here is what
+			// published a "docxodus 9.0.0" result that actually ran 7.0.0.
+			resolveVendorEntry(
+				"docxodus/dist/index.js",
+				"../src/neurotic_docx_bench/utils/docxodus/node_modules",
+			)
 		);
 		if (dox.initialize) await dox.initialize();
 		// NAME the comparison engine. `compareDocuments(base, next)` with no options
