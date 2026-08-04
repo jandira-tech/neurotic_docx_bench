@@ -9,12 +9,43 @@ its accepted form (comparable to corpus/word_based/docx_accepted_word).
 from __future__ import annotations
 
 import shutil
+import zipfile
 from concurrent.futures import ProcessPoolExecutor
 from dataclasses import dataclass
 from pathlib import Path
 
 from docx.oxml.ns import qn
 from docx_revisions import RevisionDocument
+
+#: Every entry in a written DOCX gets this timestamp. python-docx's ``save()`` stamps the
+#: wall clock into each zip entry, so accepting the same input twice produced byte-different
+#: files with identical content. ``bench accept`` runs on every ``--generate``, which meant
+#: 232 phantom modifications in ``git status`` after every run — noise that hides real
+#: diffs. ``pdf_accepted_word`` is rendered from this corpus AND is pinned in
+#: oracle_manifest.json, so the churn was one re-render away from tripping the oracle gate
+#: exactly as ``pdf_source`` already did.
+FIXED_ZIP_DATE_TIME = (2024, 1, 1, 0, 0, 0)
+
+
+def _normalize_zip(path: Path) -> None:
+    """Rewrite ``path``'s zip container so identical content yields identical bytes.
+
+    Entry ORDER and payloads are preserved verbatim — only the per-entry timestamp and
+    compression settings are normalized. Order matters: OPC expects ``[Content_Types].xml``
+    first, and re-sorting a DOCX is a gratuitous risk for zero benefit.
+    """
+    with zipfile.ZipFile(path) as src:
+        entries = [(info, src.read(info.filename)) for info in src.infolist()]
+
+    tmp = path.with_name(path.name + ".norm")
+    with zipfile.ZipFile(tmp, "w", zipfile.ZIP_DEFLATED) as dst:
+        for info, data in entries:
+            entry = zipfile.ZipInfo(info.filename, date_time=FIXED_ZIP_DATE_TIME)
+            entry.compress_type = zipfile.ZIP_DEFLATED
+            entry.external_attr = info.external_attr
+            entry.create_system = info.create_system
+            dst.writestr(entry, data)
+    tmp.replace(path)
 
 
 def _strip_paragraph_mark_revisions(doc: RevisionDocument) -> None:
@@ -54,6 +85,7 @@ def accept_all(in_path: Path | str, out_path: Path | str) -> Path:
     rdoc.accept_all()
     _strip_paragraph_mark_revisions(rdoc)
     rdoc.save(str(out))
+    _normalize_zip(out)
     return out
 
 
@@ -66,6 +98,7 @@ def reject_all(in_path: Path | str, out_path: Path | str) -> Path:
     rdoc.reject_all()
     _strip_paragraph_mark_revisions(rdoc)
     rdoc.save(str(out))
+    _normalize_zip(out)
     return out
 
 
