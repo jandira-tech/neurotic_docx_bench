@@ -211,6 +211,26 @@ Disclosures:
   refuses rather than emits garbage is behaving *better* than one that emits
   garbage, and a pixel score cannot see that difference.
 
+- **Full-corpus result on 2.0.0 (2026-08-04): mean 45.19, median 46.72, but
+  n=331 of 763.** The engine declined 432 pairs, so the ITT figure is roughly
+  **19.6** — most of it zero-fill for output that was never produced. Read that
+  number with the paragraph above: those are *deliberate refusals*, not crashes.
+  The 1.19.2 engine attempted far more of the corpus.
+
+  This is the hardest fairness call in the ledger and it is being made in the
+  open: policy is to benchmark the **latest released version**, because that is
+  what a user installs today, and 2.0.0 is what they get. The consequence is
+  that superdoc's headline drops sharply for having become *more* conservative.
+  A tool that refuses a document it cannot render faithfully is behaving better
+  than one that emits broken markup, and a pixel-vs-oracle score is structurally
+  incapable of rewarding that. Anyone quoting superdoc's ITT number without this
+  paragraph is misrepresenting them.
+
+  Consequence for the tables (not yet done): superdoc should carry **two
+  labelled rows** — latest (2.0.0) as the headline, and the last
+  wider-coverage release (1.19.2) beside it — the same treatment the docxodus
+  fork gets. One number cannot express "worse score, better behaviour".
+
 - **Honest vendor-side data does exist** for the Python SDK: in the same sweep
   `superdoc` reported 22 pairs its engine explicitly declined (e.g. *"Header/
   footer replay skipped … section projection was not found"*, *"Invalid content
