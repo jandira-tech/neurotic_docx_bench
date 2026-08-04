@@ -34,37 +34,45 @@ bun run update-readme-ranking                 # tables between RANKING markers
 
 > [!WARNING]
 > **Do not read the cross-vendor rows below as a fair comparison yet.** We are jubarte's
-> authors, and an audit on 2026-08-04 found three defects in the comparison — *all three
-> favouring us*. They are being fixed in the open; until they are, jubarte-vs-competitor
-> rows are provisional. Details and per-vendor disclosures:
-> [`docs/VENDOR_NOTES.md`](docs/VENDOR_NOTES.md) · plan Chapter 6.
+> authors. An audit begun 2026-08-04 found **seven** defects in the comparison, most of
+> them favouring us, and several rows are **retracted outright**. Fixes are landing in
+> the open; per-vendor disclosures are in [`docs/VENDOR_NOTES.md`](docs/VENDOR_NOTES.md)
+> and the full write-up is Chapter 6 of the execution plan.
 >
-> 1. **Different document sets in the same table.** Corpus coverage is configured per run
->    and drifted: 4 of the 12 redline runs enumerate all three corpus pools (803 pairs)
->    while 8 silently run on one (207 pairs). Any row whose `Docs` differs from another
->    row's is *not the same measurement* — check the `Docs` / `ITT Docs` columns before
->    comparing anything. (This one does not split along vendor lines: `docxodus` has full
->    coverage, and our own `jubarte-wasm` is among the partial ones.)
-> 2. **Best-of-N for us, single-shot for them.** The tables show jubarte's **best** version
->    pin while each competitor shows its own pins. The maximum of several noisy runs is
->    biased upward; measured inflation on real data was **+3.6 to +8.8 points**.
-> 3. **Stale competitor versions.** Pins ran up to two majors behind (docxodus 7.0.0 vs
->    9.0.0 published, folio-core 0.3.1 vs 0.15.13, superdoc-sdk 1.19.2 vs 2.0.0). The pin
->    was even enforced *downward*: a run downgraded `package.json` from docxodus ^7.1.0 to
->    ^7.0.0.
+> **Retractions — these rows measured our bugs, not the vendor:**
+> - **folio**, all `script_redlines` scores. Our adapter matched a revised-side block id
+>   against base-side blocks, so **0 of 157** modification operations translated and
+>   **24 of 60** sampled pairs emitted no tracked changes at all. Through folio's own
+>   `generateRedlineDocx`, the same sample gives **59 of 60**.
+> - **superdoc-ts**, which scored zero because it died at engine load — before the first
+>   pair — on a module path our own updater never installs to.
+> - **superdoc-native** and **superdoc-redlines**, which failed on clones we never
+>   installed. `superdoc/` was not even gitignored, so installing it would have dirtied
+>   the tree.
+> - **docx-redline-js** is not the vendor's code at all: it builds
+>   `@arthrod/docx-redline-js@0.3.0`, *our* TypeScript migration, while upstream
+>   publishes 0.2.1. The row is named for them and runs us.
 >
-> **Retracted: every folio `script_redlines` score published before 2026-08-04.** Our
-> adapter composed two folio APIs and did it wrong — it matched a revised-side block id
-> against base-side blocks, so **0 of 157** modification operations translated and **24 of
-> 60** sampled pairs emitted no tracked changes at all. Those rows measured our
-> translation, not folio. On current folio (`generateRedlineDocx`, a single call) the same
-> sample gives **59 of 60** pairs with tracked changes. See
-> [`docs/VENDOR_NOTES.md`](docs/VENDOR_NOTES.md).
+> **Fixed, and why the numbers move:**
+> - **Corpus symmetry.** Coverage was per-run copy-paste: 4 of 12 runs covered all 803
+>   pairs, 8 covered 207, and all of them shared one table. Now 12 of 12 cover 803.
+>   (It never split along vendor lines — `docxodus` had full coverage; our own
+>   `jubarte-wasm` did not.)
+> - **Stale competitor versions**, up to two majors behind, with the pin enforced
+>   *downward* — a run downgraded `package.json` from docxodus `^7.1.0` to `^7.0.0`.
+>   All vendors now run their latest release.
+> - **Our clock recorded as their crash.** A fixed 1800s generate budget, unchanged since
+>   the corpus quadrupled, killed docxodus at 622/763 and logged it as a failure.
+> - **A competitor-only wipeout.** `docxodus` was the only generating run declaring
+>   `visual_*` benchmarks, so it alone carried two `n_docs=0` rows jubarte could not receive.
 >
-> Also load-bearing: some competitor scores are partly **our** code — superdoc-redlines has
-> no compare call at all, so our harness supplies the block alignment, which is arguably
-> the hardest part of redlining. Those are marked harness-assisted in the ledger. And a
-> failure only counts against a vendor when *their* code produced it: tools we failed to
+> **Still open:** jubarte is benchmarked at repo HEAD while competitors run published
+> releases; jubarte's tables show its *best* pin while competitors show every pin
+> (measured inflation **+3.6 to +8.8 points**); only jubarte has sealed-holdout
+> overfitting checks; and `superdoc-redlines`' score is substantially our code, since its
+> CLI has no compare call and our harness supplies the block alignment.
+>
+> A failure counts against a vendor only when *their* code produced it. Tools we failed to
 > install, or killed with our own timeout, are our gap — never their zero.
 
 <!-- RANKING-START -->
@@ -72,39 +80,46 @@ bun run update-readme-ranking                 # tables between RANKING markers
 
 Sorted by **ITT median** (intent-to-treat: every failed doc scores 0, so crashing on hard docs is penalized, not rewarded; 0–100, higher is closer to the oracle). Mean/Median cover completed docs only. `~` marks ITT stats approximated from summary numbers (older runs without per-doc scores). Jubarte families (**final**, **final-lossless**, **rust**) show only the **best** and **worst** version pin for this benchmark; other vendors list each pin.
 
-**Current corpus** (lines stamped with `corpus_revision` — the 403-pair corpus):
+**Current corpus** (lines stamped with `corpus_revision`)
+
+> ⚠️ **Rows below cover different document counts (763, 195) — they are not the same measurement.** A tool scored on fewer documents ran a different, usually easier, subset; its rank is not comparable with a row covering more. Compare only rows whose `ITT Docs` match.
 
 | Rank | Vendor | Version | Docs | ITT Docs | ITT Mean | ITT Median | Mean | Median | Perfect (100) | Failures |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | jubarte-rust | jubarte-rust@fcea02da49f4 | 383 | 383 | 85.02 | 93.37 | 85.02 | 93.37 | 126 | 0 |
-| 2 | jubarte (lossless) | jubarte-final@d43557e042c1 | 383 | 383 | 82.27 | 86.05 | 82.27 | 86.05 | 109 | 0 |
-| 3 | jubarte-ast | jubarte-final@d43557e042c1 | 375 | 383 | 73.43 | 75.45 | 75.00 | 77.14 | 40 | 9 |
+| 1 | jubarte-wasm | 0.1.0 | 195 | 195 | 85.92 | 94.42 | 85.92 | 94.42 | 59 | 0 |
+| 2 | jubarte (lossless) | jubarte-final@d43557e042c1 | 763 | 763 | 77.02 | 78.53 | 77.02 | 78.53 | 142 | 0 |
+| 3 | jubarte-rust | jubarte-rust@fcea02da49f4 | 763 | 763 | 76.21 | 77.95 | 76.21 | 77.95 | 158 | 0 |
+| 4 | jubarte-ast | jubarte-final@d43557e042c1 | 755 | 763 | 69.83 | 68.30 | 70.57 | 68.67 | 84 | 9 |
+| 5 | docxodus | 9.0.0 | 707 | 763 | 51.70 | 51.54 | 55.79 | 52.45 | 11 | 56 |
 
 **Legacy corpus** (older, smaller corpora — not comparable with the rows above; kept for history until each tool re-runs):
+
+> ⚠️ **Rows below cover different document counts (232, 230, 207, 196, 168, 167, 164, 9) — they are not the same measurement.** A tool scored on fewer documents ran a different, usually easier, subset; its rank is not comparable with a row covering more. Compare only rows whose `ITT Docs` match.
 
 | Rank | Vendor | Version | Docs | ITT Docs | ITT Mean | ITT Median | Mean | Median | Perfect (100) | Failures |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | jubarte-rust | jubarte-rust@63e57d122c83 (best) | 164 | 164 | 92.21 | 99.92 | 92.21 | 99.92 | 80 | 0 |
-| 2 | jubarte-wasm | 0.1.0 | 164 | 164 | 92.21 | 99.92 | 92.21 | 99.92 | 80 | 0 |
-| 3 | jubarte (final) | jubarte-final@3995702f73ed (best) | 163 | 167 | 87.89 | 91.84 | 90.04 | 91.99 | 44 | 4 |
-| 4 | jubarte (lossless) | jubarte-final@d5bd12d173d6+git.aaa85454f569b7174dd99d5244877d29819a99b9 (best) | 164 | 164 | 83.63 | 88.96 | 83.63 | 88.96 | 53 | 0 |
-| 5 | sanity-word | — | 230 | 230 | 68.17 | 70.48 | 68.17 | 70.48 | 0 | 0 |
-| 6 | jubarte (lossless) | jubarte-final@b4f90acaa85e (worst) | 196 | 196 | 64.69 | 63.48 | 64.69 | 63.48 | 0 | 0 |
-| 7 | jubarte-rust | jubarte-rust@b834d6e49fdb (worst) | 172 | 207 | 51.34 | 55.92 | 61.78 | 59.28 | 2 | 35 |
-| 8 | ooxmlsdk | — | 232 | 232 | 55.19 | 55.24 | 55.19 | 55.24 | 0 | 0 |
-| 9 | docxodus | 7.0.0 | 205 | 207 | 58.18 | 55.00 | 58.75 | 55.03 | 3 | 2 |
-| 10 | docxodus | 6.4.0 | 205 | 207 | 58.17 | 55.00 | 58.74 | 55.03 | 3 | 2 |
-| 11 | folio | 0.3.1 | 205 | 207 | 54.77 | 53.52 | 55.31 | 53.75 | 0 | 2 |
-| 12 | superdoc | 1.19.2 | 182 | 207 | 50.28 | 53.25 | 57.19 | 55.60 | 2 | 25 |
-| 13 | superdoc-redlines | 0.2.0 | 192 | 207 | 53.45 | 53.11 | 57.63 | 55.90 | 0 | 15 |
-| 14 | redlines | 0.6.1 | 200 | 207 | 49.55 | 51.32 | 51.28 | 51.77 | 0 | 7 |
-| 15 | docx-redline-js | 0.3.0-ts-migration | 161 | 168 | 48.43 | 50.09 | 50.53 | 50.26 | 0 | 7 |
-| 16 | jubarte (final) | jubarte-final@8b23cdc7eca8 (worst) | 207 | 207 | 48.31 | 49.46 | 48.31 | 49.46 | 0 | 0 |
-| 17 | docx-redline-js | — | 2 | 9 | 12.25 | 0.00 | 55.12 | 55.12 | 0 | 7 |
+| 2 | jubarte (final) | jubarte-final@3995702f73ed (best) | 163 | 167 | 87.89 | 91.84 | 90.04 | 91.99 | 44 | 4 |
+| 3 | jubarte (lossless) | jubarte-final@d5bd12d173d6+git.aaa85454f569b7174dd99d5244877d29819a99b9 (best) | 164 | 164 | 83.63 | 88.96 | 83.63 | 88.96 | 53 | 0 |
+| 4 | sanity-word | — | 230 | 230 | 68.17 | 70.48 | 68.17 | 70.48 | 0 | 0 |
+| 5 | jubarte (lossless) | jubarte-final@b4f90acaa85e (worst) | 196 | 196 | 64.69 | 63.48 | 64.69 | 63.48 | 0 | 0 |
+| 6 | jubarte-rust | jubarte-rust@b834d6e49fdb (worst) | 172 | 207 | 51.34 | 55.92 | 61.78 | 59.28 | 2 | 35 |
+| 7 | ooxmlsdk | — | 232 | 232 | 55.19 | 55.24 | 55.19 | 55.24 | 0 | 0 |
+| 8 | docxodus | 7.0.0 | 205 | 207 | 58.18 | 55.00 | 58.75 | 55.03 | 3 | 2 |
+| 9 | docxodus | 6.4.0 | 205 | 207 | 58.17 | 55.00 | 58.74 | 55.03 | 3 | 2 |
+| 10 | folio | 0.3.1 | 205 | 207 | 54.77 | 53.52 | 55.31 | 53.75 | 0 | 2 |
+| 11 | superdoc | 1.19.2 | 182 | 207 | 50.28 | 53.25 | 57.19 | 55.60 | 2 | 25 |
+| 12 | superdoc-redlines | 0.2.0 | 192 | 207 | 53.45 | 53.11 | 57.63 | 55.90 | 0 | 15 |
+| 13 | redlines | 0.6.1 | 200 | 207 | 49.55 | 51.32 | 51.28 | 51.77 | 0 | 7 |
+| 14 | docx-redline-js | 0.3.0-ts-migration | 161 | 168 | 48.43 | 50.09 | 50.53 | 50.26 | 0 | 7 |
+| 15 | jubarte (final) | jubarte-final@8b23cdc7eca8 (worst) | 207 | 207 | 48.31 | 49.46 | 48.31 | 49.46 | 0 | 0 |
+| 16 | docx-redline-js | — | 2 | 9 | 12.25 | 0.00 | 55.12 | 55.12 | 0 | 7 |
 
 ### accepted_changes — accept all changes, match final doc
 
 Sorted by **ITT median** (intent-to-treat: every failed doc scores 0, so crashing on hard docs is penalized, not rewarded; 0–100, higher is closer to the oracle). Mean/Median cover completed docs only. `~` marks ITT stats approximated from summary numbers (older runs without per-doc scores). Jubarte families (**final**, **final-lossless**, **rust**) show only the **best** and **worst** version pin for this benchmark; other vendors list each pin.
+
+> ⚠️ **Rows below cover different document counts (174, 166, 164) — they are not the same measurement.** A tool scored on fewer documents ran a different, usually easier, subset; its rank is not comparable with a row covering more. Compare only rows whose `ITT Docs` match.
 
 | Rank | Vendor | Version | Docs | ITT Docs | ITT Mean | ITT Median | Mean | Median | Perfect (100) | Failures |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -122,6 +137,8 @@ Sorted by **ITT median** (intent-to-treat: every failed doc scores 0, so crashin
 
 Sorted by **ITT median** (intent-to-treat: every failed doc scores 0, so crashing on hard docs is penalized, not rewarded; 0–100, higher is closer to the oracle). Mean/Median cover completed docs only. `~` marks ITT stats approximated from summary numbers (older runs without per-doc scores). Jubarte families (**final**, **final-lossless**, **rust**) show only the **best** and **worst** version pin for this benchmark; other vendors list each pin.
 
+> ⚠️ **Rows below cover different document counts (199, 198, 197, 192, 166) — they are not the same measurement.** A tool scored on fewer documents ran a different, usually easier, subset; its rank is not comparable with a row covering more. Compare only rows whose `ITT Docs` match.
+
 | Rank | Vendor | Version | Docs | ITT Docs | ITT Mean | ITT Median | Mean | Median | Perfect (100) | Failures |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | jubarte-rust | jubarte-rust@cbbcefb724a7 (best) | 166 | 166 | 99.17 | 100.00 | 99.17 | 100.00 | 157 | 0 |
@@ -138,6 +155,8 @@ Sorted by **ITT median** (intent-to-treat: every failed doc scores 0, so crashin
 
 Sorted by **ITT median** (intent-to-treat: every failed doc scores 0, so crashing on hard docs is penalized, not rewarded; 0–100, higher is closer to the oracle). Mean/Median cover completed docs only. `~` marks ITT stats approximated from summary numbers (older runs without per-doc scores). Jubarte families (**final**, **final-lossless**, **rust**) show only the **best** and **worst** version pin for this benchmark; other vendors list each pin.
 
+> ⚠️ **Rows below cover different document counts (199, 198) — they are not the same measurement.** A tool scored on fewer documents ran a different, usually easier, subset; its rank is not comparable with a row covering more. Compare only rows whose `ITT Docs` match.
+
 | Rank | Vendor | Version | Docs | ITT Docs | ITT Mean | ITT Median | Mean | Median | Perfect (100) | Failures |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | superdoc | 1.44.1 | 199 | 199 | 58.78 | 61.25 | 58.78 | 61.25 | 0 | 0 |
@@ -149,6 +168,16 @@ Sorted by **ITT median** (intent-to-treat: every failed doc scores 0, so crashin
 
 Sorted by **ITT median** (intent-to-treat: every failed doc scores 0, so crashing on hard docs is penalized, not rewarded; 0–100, higher is closer to the oracle). Mean/Median cover completed docs only. `~` marks ITT stats approximated from summary numbers (older runs without per-doc scores). Jubarte families (**final**, **final-lossless**, **rust**) show only the **best** and **worst** version pin for this benchmark; other vendors list each pin.
 
+**Current corpus** (lines stamped with `corpus_revision`)
+
+| Rank | Vendor | Version | Docs | ITT Docs | ITT Mean | ITT Median | Mean | Median | Perfect (100) | Failures |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | docxodus | 9.0.0 | 178 | 197 | 54.35 | 55.39 | 60.15 | 57.56 | 1 | 19 |
+
+**Legacy corpus** (older, smaller corpora — not comparable with the rows above; kept for history until each tool re-runs):
+
+> ⚠️ **Rows below cover different document counts (182, 166, 165) — they are not the same measurement.** A tool scored on fewer documents ran a different, usually easier, subset; its rank is not comparable with a row covering more. Compare only rows whose `ITT Docs` match.
+
 | Rank | Vendor | Version | Docs | ITT Docs | ITT Mean | ITT Median | Mean | Median | Perfect (100) | Failures |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | docxodus | 6.4.0 | 145 | 182 | 48.54 | 58.92 | 60.92 | 61.22 | 0 | 37 |
@@ -159,6 +188,8 @@ Sorted by **ITT median** (intent-to-treat: every failed doc scores 0, so crashin
 ### visual_accepted_changes — editor render of accepted DOCX
 
 Sorted by **ITT median** (intent-to-treat: every failed doc scores 0, so crashing on hard docs is penalized, not rewarded; 0–100, higher is closer to the oracle). Mean/Median cover completed docs only. `~` marks ITT stats approximated from summary numbers (older runs without per-doc scores). Jubarte families (**final**, **final-lossless**, **rust**) show only the **best** and **worst** version pin for this benchmark; other vendors list each pin.
+
+> ⚠️ **Rows below cover different document counts (165, 164, 152) — they are not the same measurement.** A tool scored on fewer documents ran a different, usually easier, subset; its rank is not comparable with a row covering more. Compare only rows whose `ITT Docs` match.
 
 | Rank | Vendor | Version | Docs | ITT Docs | ITT Mean | ITT Median | Mean | Median | Perfect (100) | Failures |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
