@@ -243,6 +243,52 @@ The same applies in reverse for the 110, and to ast against both.
 sibling" text in all three plans**, which never said how. It is also cheap: both artefacts
 already exist in any run directory.
 
+### Executed — and the answer prices the transfer stages honestly
+
+Run on the 78 documents where lossless clears 92 and rust does not, comparing
+`runs/jubarte-final-lossless_2026-08-04_17-31/docx` against
+`runs/jubarte-rust_2026-08-04_17-47/docx`, same source pair, winner against loser:
+
+| part | differs |
+|---|---|
+| `word/document.xml` | **78 / 78 (100%)** |
+| `word/settings.xml` | **78 / 78 (100%)** |
+| `word/styles.xml` | **78 / 78 (100%)** |
+| `word/theme/theme1.xml` | **78 / 78 (100%)** |
+| `word/numbering.xml` | 37 / 37 (100%) |
+| `word/header1.xml`, `word/footer1.xml` | 29 / 29 (100%) |
+| `word/fontTable.xml` | 47 / 78 (60%) |
+
+**Every part differs, in every document.** The two engines do not produce similar files
+with a localised divergence; they produce entirely different serialisations of the same
+logical document. rust additionally drops `word/header1.xml` in **14** of the 78.
+
+That is a genuinely bad result for the plans, and it must be said plainly: **the
+winner-vs-loser diff does not localise the defect, because there is no locality.**
+"Port what lossless does" is not a patch — the two engines share no serialisation
+surface to port across. Stages R1 / L1 / A1 are therefore **architectural** work
+(make one engine emit what the other emits), not the transfer-of-a-mechanism the
+plans describe and size.
+
+The preserve-vs-regenerate split confirms the same thing from the other direction:
+
+| part | lossless copies source verbatim | rust copies source verbatim |
+|---|---:|---:|
+| `theme/theme1.xml` | 94% (on its winning set) | **0%** |
+| `fontTable.xml` | 50% | 94% |
+| `styles.xml` | 0% | 0% |
+| `settings.xml` | 0% | 0% |
+
+Both engines regenerate `styles.xml` and `settings.xml` unconditionally. That is the
+re-serialisation habit Finding 2 identifies, present in both, and it is why both engines
+have a ≈50 cluster with the same term profile.
+
+**Seventh dead hypothesis, recorded:** rust's regenerated `theme1.xml` was the obvious
+suspect, since theme fonts resolve every `asciiTheme`/`minorHAnsi` run and a wrong
+typeface rewraps every line. It is not the cause — rust preserves the source's major and
+minor latin theme fonts in **390 of 390** documents checked. The theme regeneration is
+cosmetic.
+
 ---
 
 ## Pre-registered prediction for the run now in flight
