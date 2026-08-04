@@ -5,11 +5,11 @@
     "": {
       "name": "neurotic-docx-bench-docxodus",
       "dependencies": {
-        "docxodus": "7.0.0",
+        "docxodus": "9.0.0",
       },
     },
   },
   "packages": {
-    "docxodus": ["docxodus@7.0.0", "", { "peerDependencies": { "react": ">=16.8.0" }, "optionalPeers": ["react"] }, "sha512-y40/VfrqDCDNKaXFWf5bS62hXHQ9xHcyt+smpNX9PF/zlu7g9/tEaadUhLVK2fzK8cx4q3UZc831+dXL8QGFVw=="],
+    "docxodus": ["docxodus@9.0.0", "", { "peerDependencies": { "react": ">=16.8.0" }, "optionalPeers": ["react"] }, "sha512-3Q/0sn0qRrF6YfsVxjMBNsSbW5RlmTkxmRDUM1XT07zoWLLngkxK0KlITrYtYTSTQNwn455cPksovFUrE+zTSQ=="],
   }
 }
