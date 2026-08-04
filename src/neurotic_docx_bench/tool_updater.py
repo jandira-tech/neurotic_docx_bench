@@ -124,7 +124,7 @@ def installed_npm_version(package: str, cwd: Path) -> str | None:
 
 
 def update_npm_package(spec: str, cwd: Path, *, no_update: bool | None = None) -> str | None:
-    """``npm i <spec>`` (unless pinned) and return the resolved installed version.
+    """``bun add --exact <spec>`` (unless pinned) and return the resolved installed version.
 
     ``no_update=None`` consults ``BENCH_NO_UPDATE``. Returns None if resolution fails.
     """
@@ -133,13 +133,21 @@ def update_npm_package(spec: str, cwd: Path, *, no_update: bool | None = None) -
     package = _package_name(spec)
     if not no_update:
         subprocess.run(
-            # --save-exact: bench.yaml pins are EXACT, and the default caret range
-            # silently widens them. A run was observed rewriting
-            # ``"docxodus": "9.0.0"`` to ``"^9.0.0"``, after which a later install
-            # could resolve 9.1.0 while bench.yaml still claimed 9.0.0 — the
-            # recorded tool_version and the measured code drifting apart, which is
-            # the split-brain of plan Chapter 6 D5.
-            ["npm", "install", "--save-exact", spec],
+            # bun, not npm: this repo's package manager (AGENTS.md, bun.lock), and
+            # npm's strict cross-vendor peer resolution actively breaks the bench.
+            # All vendors share ONE node_modules, so one vendor's peers can refuse
+            # another's install — after superdoc@2.3.0 landed (peer
+            # pdfjs-dist ^5.4.296), `npm install @stll/folio-core@0.15.13` exited 1
+            # with ERESOLVE and BOTH folio and superdoc-ts were recorded as failed
+            # runs. That is our dependency graph printed as their crash, the D3
+            # disease again. bun installs the same specs without the conflict.
+            #
+            # --exact: bench.yaml pins are EXACT and a caret range silently widens
+            # them. A run was observed rewriting ``"docxodus": "9.0.0"`` to
+            # ``"^9.0.0"``, after which a later install could resolve 9.1.0 while
+            # bench.yaml still claimed 9.0.0 — the recorded tool_version and the
+            # measured code drifting apart, i.e. the D5 split-brain.
+            ["bun", "add", "--exact", spec],
             cwd=str(cwd),
             check=True,
             capture_output=True,
