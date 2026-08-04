@@ -313,7 +313,9 @@ with both holdouts excluded from the headline number (n ≈ 760), ITT policy
 pipeline only — no scorer changes ride along with engine changes, ever
 (separate PRs, separate runs).
 
-### 4.2 Baselines (403-pair corpus, holdout-excluded, snapshots committed)
+### 4.2 Baselines
+
+#### Superseded: 403-pair corpus (kept for the arithmetic below)
 
 | engine | mean | median | <70 | <90 | =100 | failures |
 |---|---|---|---|---|---|---|
@@ -321,10 +323,40 @@ pipeline only — no scorer changes ride along with engine changes, ever
 | jubarte (lossless) | 82.27 | 86.05 | 110 | 213 | 109 | 0 |
 | jubarte-ast | 75.00 | 77.14 | 147 | 282 | 40 | 9 (ITT 73.43) |
 
-Arithmetic of the gap (rust): +4.98 mean points over n=383 ≈ 1907 doc-points;
-the 99 sub-70 docs average ≈ 55, so lifting them to ≈ 75 closes it — i.e.
-**the campaign is won or lost entirely in the sub-70 tail**; polishing
-93→96 docs is noise. The same holds harder for the other two engines.
+#### Current: 803-pair corpus (M4 measured 2026-08-04)
+
+`corpus_revision b7f467074a51`, holdout-excluded, **n = 763**, ITT (`itt_n_docs`
+763 for all three — failures zero-filled, nothing hidden):
+
+| engine | ITT mean | ITT median | ≥90 | =100 | <50 | failures |
+|---|---|---|---|---|---|---|
+| jubarte (lossless) | **77.02** | 78.53 | 277 | 142 | 80 | 0 |
+| jubarte-rust | 76.21 | 77.95 | **307** | **158** | 108 | 0 |
+| jubarte-ast (native) | 69.83 | 68.30 | 178 | 84 | 142 | **9** |
+
+Two things this table says that a single ranking column would hide:
+
+- **rust is bimodal.** It wins outright on perfect scores (158 vs 142) and on
+  ≥90 (307 vs 277), yet loses the mean — because it also fails hardest (108
+  below 50 vs 80). Ranking these engines on the mean alone picks the wrong
+  winner for a "how often is it exactly right" question, and on the median for
+  a "how bad is the tail" question. Report both.
+- **The ast engine's 8 render failures are Word-validity failures**, not scoring
+  failures: LibreOffice cannot open the DOCX at all ("source file could not be
+  loaded"). Its raw pixel mean over the 755 openable docs is 70.57; ITT
+  zero-fills the 8 and gives 69.83. Reporting 70.57 would pay the tool for
+  output nobody can open.
+
+Subcorpus split (jubarte-rust): word_based n=383 mean 85.02 median 93.37;
+superdoc n=380 mean 67.32 median 62.42. **The new pool is much harder** — 23%
+of its pairs reach 90 against 57% on word_based. The word_based figure is
+identical to the pre-rebuild run, which is the control proving the rebuild
+perturbed nothing that already existed.
+
+Arithmetic of the gap (rust, on the current corpus): the miner puts the total
+at **+15.29 mean points** if every one of the 328 sub-70 documents reached 90.
+**The campaign is won or lost entirely in the sub-70 tail**; polishing 93→96
+docs is noise. The same holds harder for the other two engines.
 
 ### 4.3 Where the tail is (from committed snapshots — verify, then extend)
 
@@ -361,12 +393,41 @@ the 99 sub-70 docs average ≈ 55, so lifting them to ≈ 75 closes it — i.e.
    Reproduce each with the engine CLI directly on the pair's inputs, fix in
    the engine repo with a regression fixture there (red-green in THEIR test
    suite), rebuild, reinstall into the bench.
-2. **Pareto mining:** join snapshot scores with
-   `corpus/word_based/coverage_tags.json` (`pairs.<key>.features` /
-   `.revisions`) → table of (tag, n_docs<70, mean-points recoverable).
-   Attack clusters in recoverable-points order. Commit the mining script
-   (`scripts/mine_failure_clusters.py`, tested) — it will be rerun dozens of
-   times.
+2. **Pareto mining:** DONE — `scripts/mine_failure_clusters.py` (tested), joining
+   scores with `corpus/word_based/coverage_tags.json` +
+   `corpus/word_redlines_superdoc/coverage_tags.json`.
+
+   Two corrections this step forced, both worth carrying:
+
+   - The SuperDoc subcorpus had **no coverage tags at all**, so 380 of 763
+     documents were unjoined and 229 failing documents were invisible to the
+     ranking. Generating them (`bench coverage-matrix` over the SuperDoc
+     mapping, 400/400 tagged, 0 errors) took the join to 763/763. A new
+     subcorpus is not minable until its tags exist — check the "unjoined"
+     count before trusting any ranking.
+   - **Recoverable mean-points alone ranks by ubiquity, not by signal.**
+     `rev_ins` sits on 740 of 763 pairs and led every ranking while saying
+     nothing more than "documents fail". The miner now also reports
+     `lift` = tag failure rate ÷ corpus base rate; `rev_ins`/`rev_del` come in
+     at **1.02** (noise), and a universal tag is pinned at 1.0 by construction.
+     `rev_rPrChange` is **0.94** — run-property changes are *easier* than
+     average, which is a useful negative result for the format-changes corpus.
+
+   Attack order for jubarte-rust (base failure rate 43%), reading mass and
+   lift together:
+
+   | tag | tagged | failing | lift | recoverable |
+   |---|---|---|---|---|
+   | field | 186 | 72.6% | 1.69 | +6.35 |
+   | footer | 157 | 74.5% | 1.73 | +5.59 |
+   | numbering | 182 | 64.8% | 1.51 | +5.50 |
+   | image | 166 | 68.1% | 1.58 | +5.27 |
+   | content_control | 81 | 77.8% | 1.81 | +2.89 |
+   | rev_tblChange / tblGridChange / tcPrChange | 51 | 76.5% | 1.78 | +1.94 |
+
+   Highest lift overall sits in small clusters — textbox 1.96, rtl 1.90,
+   math 1.82 — worth a look only once the rows above are closed, since none
+   moves the mean by even half a point.
 3. **Per-cluster fix loop:** failing fixture test in the engine repo → fix →
    rebuild → reinstall → **targeted re-score of only that cluster's keys**
    (see this chapter's speed-up drop-in) → full corpus run only when the
@@ -381,8 +442,10 @@ the 99 sub-70 docs average ≈ 55, so lifting them to ≈ 75 closes it — i.e.
    - M1: ast crash-free (0 failures).
    - M2: no doc < 50 on any engine (kills the repair/sectPr cluster).
    - M3: mean ≥ 88 per engine on the 403-corpus.
-   - M4: Chapter-2 corpus lands → first 800-fixture full runs (expect a dip;
-     record it honestly — new-corpus baselines).
+   - M4: **DONE (2026-08-04)** — Chapter-2 corpus landed, first 803-pair full
+     runs recorded in §4.2. The dip was real and large: rust 85.02 → 76.21,
+     lossless 82.27 → 77.02, ast 75.00 → 69.83. Recorded as the new baseline,
+     not explained away.
    - M5: mean ≥ 90 AND median ≥ 90 per engine on the 800, holdout gap ≤2·SE.
 6. Every engine-repo change goes to that repo's own branch/PR; the bench
    repo only receives rebuilt artifacts + snapshot/results commits, each
