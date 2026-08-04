@@ -4,6 +4,25 @@ Evidence base: [docxodus-version-diff.md](docxodus-version-diff.md). Numbers fro
 `019fcc5d-34e6-7029-95d9-463d5513fe7c` on the 763-document ITT corpus, scorer
 `pagefair-v2`.
 
+## Binding: the execution contract
+
+This plan is governed by [jubarte-execution-contract.md](jubarte-execution-contract.md),
+which supplies the machinery the adversarial review found missing from all three plans:
+
+- **C1 regression ratchet** — R-perfect / R-92 / R-fail / R-tail gate every stage. All
+  target arithmetic in this plan is restated as **net** after each stage, never gross.
+- **C2 census checkpoint** — every sizing table below is an **entry-condition estimate
+  computed against the 2026-08-04 baseline, and expires at the first census.** No stage
+  may cite a previous stage's numbers.
+- **C3 floors and timeboxes** — every stage declares target / floor / timebox, and has a
+  defined branch for delivering less than predicted.
+- **C4 workstream S ownership** — owned by Plan 2 (jubarte-rust); no plan blocks on it.
+- **C5 Stage 0** — the lens partition and the residual-ink classifier this plan
+  presupposes are built first, as Stage 0 of the programme.
+- **C6 done is decidable** — holdout construction, a 5-point consistency threshold, and
+  an explicit divergence branch.
+- **C7** records the blind spot the machinery does not fix.
+
 **Scope note:** `jubarte-rust` and `jubarte-wasm` score identically (76.21 / 77.95 /
 158 on both rows) — same engine, two bindings. This plan covers both; any fix lands
 once. If at any point the two rows diverge, that divergence is itself a bug and takes

@@ -4,6 +4,25 @@ Evidence base: [docxodus-version-diff.md](docxodus-version-diff.md). Every numbe
 below is from run `019fcc6f-4eb8-72f7-957e-799895a04342` on the 763-document ITT
 corpus, scorer `pagefair-v2`.
 
+## Binding: the execution contract
+
+This plan is governed by [jubarte-execution-contract.md](jubarte-execution-contract.md),
+which supplies the machinery the adversarial review found missing from all three plans:
+
+- **C1 regression ratchet** — R-perfect / R-92 / R-fail / R-tail gate every stage. All
+  target arithmetic in this plan is restated as **net** after each stage, never gross.
+- **C2 census checkpoint** — every sizing table below is an **entry-condition estimate
+  computed against the 2026-08-04 baseline, and expires at the first census.** No stage
+  may cite a previous stage's numbers.
+- **C3 floors and timeboxes** — every stage declares target / floor / timebox, and has a
+  defined branch for delivering less than predicted.
+- **C4 workstream S ownership** — owned by Plan 2 (jubarte-rust); no plan blocks on it.
+- **C5 Stage 0** — the lens partition and the residual-ink classifier this plan
+  presupposes are built first, as Stage 0 of the programme.
+- **C6 done is decidable** — holdout construction, a 5-point consistency threshold, and
+  an explicit divergence branch.
+- **C7** records the blind spot the machinery does not fix.
+
 | | now | target | gap |
 |---|---:|---:|---:|
 | ITT mean | 77.02 | > 81 | **+3.98** |
@@ -80,7 +99,28 @@ Whatever L1 finds, this is the stage that buys **both** the mean and the median 
 > to Stage L4 (near-miss closure) and described this stage as the "mean lever" only.
 > That was wrong — see the box in Stage L4.
 
-Sub-work, ordered by the L1 partition — do only the buckets L1 actually populates.
+### L2 sub-work — one named mechanism per L1 bucket
+
+The first version of this stage said only "sub-work, ordered by the L1 partition" and
+never wrote it. That was the review's most damaging finding: the stage owning both the
+mean and the median target was a forward reference. Written out now.
+
+| L1 bucket | what the engine is doing | mechanism to build | touches |
+|---|---|---|---|
+| **reject holds, accept fails** | deletions marked; insertions missing or inert | emit `w:ins` runs for target-only content instead of dropping it; verify the run carries author/date so `accept` materialises it | insertion path |
+| **accept holds, reject fails** | insertions marked; deletions dropped rather than struck | emit `w:del` + `w:delText` for base-only content instead of removing it outright | deletion path |
+| **neither holds** | output is paint — no usable revision markup | establish whether the pair reached the diff at all; if it did, the markup is being written outside a tracked-change container | markup emission |
+| **both hold** | markup correct, scorer disagrees | **not engine work** — escalate per the L1 gate |
+
+**Entry condition:** L1 has run and the bucket populations are known. If buckets are
+roughly even, build the insertion and deletion paths first — largest by construction,
+and they share the revision-container plumbing.
+
+**Floor (contract C3):** ≥ 75% of the 166 cluster documents land **above 92**. Below
+that, bank the gain, run the census (C2), re-plan the remainder against the new baseline.
+
+**Ratchets (contract C1):** R-perfect, R-92, R-fail, R-tail all apply. The 142 existing
+perfect scores are protected — a lift that costs them is not a lift.
 
 ## Stage L3 — style-chain resolution (shared workstream S)
 
@@ -100,9 +140,18 @@ its numbers. Their approach, from the symbol names:
 - **drop** style references that cannot be resolved instead of emitting them
   (`DropDanglingParagraphStyleRefs`, `DropUnresolvableStyleRef`).
 
-Sized on our data: lever B is worth +1.88 mean and **+3.47 median** on lossless — the
-largest median contribution of any single feature-family fix we can size. Shared with
-Plans 2 and 3; implement once, in whatever layer all three engines can consume.
+Sized on our data: lever B is worth +1.88 mean and **+3.47 median** on lossless.
+
+> **Reconciliation (review gap: the median was accounted twice).** L3's +3.47 median is
+> **not additive** to Stage L2's landing table. The 40 style-family fixtures overlap the
+> ≈50 cluster, so L2's "cluster lifted to 93 → median 93.00" already contains most of
+> L3's contribution. Treat L3 as **a mechanism for accomplishing part of L2**, not as a
+> separate median source. The plan's median arithmetic is L2's table alone; L3 is one of
+> the ways L2's documents get lifted. Anything else double-counts.
+
+**Ownership (contract C4):** workstream S is owned by **Plan 2 / jubarte-rust**, which
+implements it first. If S has not landed in rust by the time this plan reaches L3, Plan 1
+implements its own copy and records the divergence — it does not block.
 
 ## Stage L4 — near-miss closure (**perfect-count lever only**)
 

@@ -4,6 +4,25 @@ Evidence base: [docxodus-version-diff.md](docxodus-version-diff.md). Numbers fro
 `019fcc7c-8d62-76ca-9532-1b2649691eb4` on the 763-document ITT corpus, scorer
 `pagefair-v2`.
 
+## Binding: the execution contract
+
+This plan is governed by [jubarte-execution-contract.md](jubarte-execution-contract.md),
+which supplies the machinery the adversarial review found missing from all three plans:
+
+- **C1 regression ratchet** — R-perfect / R-92 / R-fail / R-tail gate every stage. All
+  target arithmetic in this plan is restated as **net** after each stage, never gross.
+- **C2 census checkpoint** — every sizing table below is an **entry-condition estimate
+  computed against the 2026-08-04 baseline, and expires at the first census.** No stage
+  may cite a previous stage's numbers.
+- **C3 floors and timeboxes** — every stage declares target / floor / timebox, and has a
+  defined branch for delivering less than predicted.
+- **C4 workstream S ownership** — owned by Plan 2 (jubarte-rust); no plan blocks on it.
+- **C5 Stage 0** — the lens partition and the residual-ink classifier this plan
+  presupposes are built first, as Stage 0 of the programme.
+- **C6 done is decidable** — holdout construction, a 5-point consistency threshold, and
+  an explicit divergence branch.
+- **C7** records the blind spot the machinery does not fix.
+
 | | now | target | gap |
 |---|---:|---:|---:|
 | ITT mean | 69.83 | > 81 | **+11.17** |
@@ -54,6 +73,25 @@ mechanisms by which our own infrastructure recorded a vendor failure that never
 happened, and one of them (D4b, an orphaned generator) was found in this very sweep.
 
 Classify each of the 9 as engine-side or harness-side before assuming either.
+
+**Classification alone changes no score — A0 must repair, not just label.** Per
+classification:
+
+- **harness-side** → fix the harness (this audit has already fixed five such
+  mechanisms); the document then scores whatever the engine actually produces.
+- **engine-side** → the failure is a crash or an empty output; repair it to the point of
+  *producing* a document. Getting it to score *well* is A1/A2's job, not A0's.
+
+**Re-pricing (review gap: the 9 returning documents are unpriced).** Every table in this
+plan was computed with the 9 failures zero-filled. The moment they score, the ≈50
+cluster membership, the above-92 count, the near-miss pool and the median position all
+move. **Run the C2 census immediately after A0 and treat every downstream table as
+recomputed from it.** A0's own contribution to the mean is bounded: 9 documents at, say,
+50 each is +0.59 ITT mean, so A0 is a correctness stage, not a scoring stage.
+
+**Floor (C3):** all 9 classified and every harness-side cause repaired. **Timebox:** if
+an engine-side failure resists repair, record it as a known engine limit and proceed —
+9 documents must not block the programme.
 
 ## Stage A1 — harvest from both siblings
 
