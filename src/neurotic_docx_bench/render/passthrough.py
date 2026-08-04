@@ -26,7 +26,7 @@ class PassthroughRenderer:
         work_dir: Path,
         *,
         force: bool = False,
-        jobs: int = 4,
+        jobs: int = 12,
         timeout: float = 1200.0,
     ) -> RenderReport:
         if not source_dir.is_dir():

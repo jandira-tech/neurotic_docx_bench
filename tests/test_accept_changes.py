@@ -86,3 +86,56 @@ def test_process_folder_validates_dir_and_skips_temp(tmp_path):
     (in_dir / "~$lock.docx").write_bytes(b"PK")
     results = accept_changes.process_folder(in_dir, tmp_path / "out2")
     assert results == []
+
+
+def test_accepting_the_same_input_twice_is_byte_identical(tmp_path):
+    """`bench accept` runs on every `--generate`, so a non-deterministic writer rewrites
+    the whole accepted corpus with identical CONTENT but a fresh zip container.
+
+    That churned 232 files in `git status` after every generate run — phantom diffs that
+    hide real ones and invite committing noise. `pdf_accepted_word` is rendered from these
+    and IS pinned in oracle_manifest.json, so the same churn is one re-render away from
+    tripping the oracle gate the way `pdf_source` already did.
+    """
+    src = _a_tracked_redline()
+    first = accept_changes.accept_all(src, tmp_path / "a.docx")
+    second = accept_changes.accept_all(src, tmp_path / "b.docx")
+    assert first.read_bytes() == second.read_bytes()
+
+
+def test_accept_is_deterministic_across_zip_metadata_not_just_content(tmp_path):
+    """Guard the mechanism, not only the symptom: every entry must carry the fixed
+    timestamp. A writer that merely happened to run inside the same clock second would
+    pass the byte-equality test above while still churning on the next run.
+    """
+    src = _a_tracked_redline()
+    out = accept_changes.accept_all(src, tmp_path / "a.docx")
+    with zipfile.ZipFile(out) as z:
+        stamps = {i.date_time for i in z.infolist()}
+    assert stamps == {accept_changes.FIXED_ZIP_DATE_TIME}
+
+
+def test_accept_preserves_entry_order_and_payloads(tmp_path):
+    """Normalising the container must not reorder or re-encode the package: OPC wants
+    [Content_Types].xml first, and a payload change here would silently move the accepted
+    ground truth the functional lens compares against.
+    """
+    src = _a_tracked_redline()
+    out = accept_changes.accept_all(src, tmp_path / "a.docx")
+    with zipfile.ZipFile(out) as z:
+        names = z.namelist()
+        payloads = {n: z.read(n) for n in names}
+    assert names[0] == "[Content_Types].xml"
+
+    # Re-running must reproduce the exact same names in the exact same order.
+    again = accept_changes.accept_all(src, tmp_path / "b.docx")
+    with zipfile.ZipFile(again) as z:
+        assert z.namelist() == names
+        assert {n: z.read(n) for n in z.namelist()} == payloads
+
+
+def test_reject_is_deterministic_too(tmp_path):
+    src = _a_tracked_redline()
+    first = accept_changes.reject_all(src, tmp_path / "a.docx")
+    second = accept_changes.reject_all(src, tmp_path / "b.docx")
+    assert first.read_bytes() == second.read_bytes()

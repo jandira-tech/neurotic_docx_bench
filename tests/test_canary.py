@@ -10,7 +10,7 @@ from pathlib import Path
 import pytest
 
 from neurotic_docx_bench import canary
-from tests.helpers import requires_soffice
+from helpers import requires_soffice
 
 
 def test_parse_soffice_version() -> None:

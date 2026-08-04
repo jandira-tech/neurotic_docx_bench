@@ -90,6 +90,8 @@ export interface FidelityRow {
 	/** Run name from environment_config when available (e.g. jubarte-final-lossless). */
 	run_name: string;
 	family: JubarteFamily | null;
+	/** Oracle-manifest fingerprint; null on lines predating the 403-pair corpus. */
+	corpus_revision: string | null;
 }
 
 interface SpeedRow {
@@ -314,6 +316,8 @@ export function readFidelityRows(path: string): FidelityRow[] {
 			render: meta.render,
 			run_name: meta.run_name,
 			family,
+			corpus_revision:
+				data.corpus_revision == null ? null : String(data.corpus_revision),
 		});
 	}
 	return out;
@@ -436,20 +440,12 @@ function fmt(n: number, digits = 2): string {
 	return n.toFixed(digits);
 }
 
-export function buildFidelityTable(
-	best: Map<string, FidelityRow>,
-	benchmark: FidelityBenchmark,
-): string {
-	const rows = collapseJubarteFamilies(best, benchmark);
-	const title = FIDELITY_TITLES[benchmark];
-	if (rows.length === 0) {
-		return `### ${title}\n\n_No data yet._`;
-	}
+const FIDELITY_HEADER =
+	"| Rank | Vendor | Version | Docs | ITT Docs | ITT Mean | ITT Median | Mean | Median | Perfect (100) | Failures |\n" +
+	"| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |";
 
-	const header =
-		"| Rank | Vendor | Version | Docs | ITT Docs | ITT Mean | ITT Median | Mean | Median | Perfect (100) | Failures |\n" +
-		"| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |";
-	const body = rows
+function fidelityBody(rows: FidelityRow[]): string {
+	return rows
 		.map((r, i) => {
 			const displayVendor =
 				r.family === "jubarte-final-lossless"
@@ -469,6 +465,40 @@ export function buildFidelityTable(
 			);
 		})
 		.join("\n");
+}
+
+export function buildFidelityTable(
+	best: Map<string, FidelityRow>,
+	benchmark: FidelityBenchmark,
+): string {
+	const title = FIDELITY_TITLES[benchmark];
+	// Corpus regimes are not comparable: lines stamped with corpus_revision ran
+	// on the current (403-pair) corpus; older lines ran on smaller corpora and
+	// their means/medians must not rank against current runs.
+	const currentBest = new Map(
+		[...best].filter(([, r]) => r.corpus_revision != null),
+	);
+	const legacyBest = new Map(
+		[...best].filter(([, r]) => r.corpus_revision == null),
+	);
+	const currentRows = collapseJubarteFamilies(currentBest, benchmark);
+	const legacyRows = collapseJubarteFamilies(legacyBest, benchmark);
+	if (currentRows.length === 0 && legacyRows.length === 0) {
+		return `### ${title}\n\n_No data yet._`;
+	}
+
+	const header = FIDELITY_HEADER;
+	let body: string;
+	if (currentRows.length > 0 && legacyRows.length > 0) {
+		body =
+			`**Current corpus** (lines stamped with \`corpus_revision\` — the ` +
+			`403-pair corpus):\n\n${header}\n${fidelityBody(currentRows)}\n\n` +
+			`**Legacy corpus** (older, smaller corpora — not comparable with the ` +
+			`rows above; kept for history until each tool re-runs):\n\n` +
+			`${header}\n${fidelityBody(legacyRows)}`;
+	} else {
+		body = `${header}\n${fidelityBody(currentRows.length > 0 ? currentRows : legacyRows)}`;
+	}
 
 	return (
 		`### ${title}\n\n` +
@@ -479,7 +509,7 @@ export function buildFidelityTable(
 		`scores). Jubarte families (**final**, **final-lossless**, **rust**) show ` +
 		`only the **best** and **worst** version pin for this benchmark; other ` +
 		`vendors list each pin.\n\n` +
-		`${header}\n${body}`
+		`${body}`
 	);
 }
 
