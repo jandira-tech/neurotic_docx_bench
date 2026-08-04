@@ -201,6 +201,8 @@ def build_pairs(
     pool: list[PoolFile],
     target: int = TARGET_PAIRS,
     seed: int = PAIR_SEED,
+    initial: list[Pair] | None = None,
+    exclude: set[tuple[str, str]] | None = None,
 ) -> list[Pair]:
     """Exactly ``target`` deterministic pairs: bucket chains first, then seeded draws.
 
@@ -211,6 +213,11 @@ def build_pairs(
     Never emitted: a file with itself, two files with equal SHA-256 (Word's
     compare of identical content produces an empty redline), or a repeat of an
     already-emitted ordered pair.
+
+    ``initial`` seeds the result with pairs that already have a usable redline
+    and skips the chain phase — topping up after Word rejects some pairs must
+    not reshuffle the ones already compared. ``exclude`` lists ordered pairs
+    that must never be drawn again (the rejected ones).
     """
     ordered = sorted(pool, key=lambda p: p.relative_path)
     feasible = _feasible_ordered_pairs(ordered)
@@ -220,8 +227,9 @@ def build_pairs(
             f"only {feasible} distinct ordered pairs with differing content exist",
         )
 
-    pairs: list[Pair] = []
-    seen: set[tuple[str, str]] = set()
+    pairs: list[Pair] = list(initial or [])
+    seen: set[tuple[str, str]] = {(p.base.relative_path, p.next.relative_path) for p in pairs}
+    seen |= exclude or set()
 
     def emit(base: PoolFile, nxt: PoolFile, kind: str) -> bool:
         if base.relative_path == nxt.relative_path or base.sha256 == nxt.sha256:
@@ -233,12 +241,13 @@ def build_pairs(
         pairs.append(Pair(base, nxt, kind))
         return True
 
-    for left, right in zip(ordered, ordered[1:], strict=False):
-        if len(pairs) >= target:
-            return pairs
-        if bucket_of(left.relative_path) != bucket_of(right.relative_path):
-            continue
-        emit(left, right, "chain")
+    if initial is None:
+        for left, right in zip(ordered, ordered[1:], strict=False):
+            if len(pairs) >= target:
+                return pairs
+            if bucket_of(left.relative_path) != bucket_of(right.relative_path):
+                continue
+            emit(left, right, "chain")
 
     rng = random.Random(seed)
     size = len(ordered)
@@ -255,9 +264,17 @@ def build_pairs(
 
 
 def build_holdout(pairs: list[Pair], size: int = HOLDOUT_SIZE, seed: int = HOLDOUT_SEED) -> list[str]:
-    """Seal ``size`` pair keys as the overfitting detector for this subcorpus."""
+    """Seal ``size`` pair keys as the overfitting detector for this subcorpus.
+
+    Keys are LOWER-CASED because that is the scorer's key space
+    (``pipeline.redline_key`` lower-cases every stem it returns). A key sealed
+    with its original casing simply never matches, so the pair stays in the
+    headline score while appearing to be held out — a seal that silently leaks.
+    Four of this corpus's 20 keys contain capitals (``SD_732``, ``Hello``,
+    ``listWithSpacerNodes``), so this is not hypothetical.
+    """
     rng = random.Random(seed)
-    return sorted(rng.sample([pair_stem(p) for p in pairs], size))
+    return sorted(pair_stem(p).lower() for p in rng.sample(pairs, size))
 
 
 # --------------------------------------------------------------------------- #
@@ -377,6 +394,12 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--seed", type=lambda s: int(s, 0), default=PAIR_SEED)
     parser.add_argument("--dry-run", action="store_true", help="write manifests, skip staging")
     parser.add_argument(
+        "--top-up",
+        action="store_true",
+        help="keep pairs that already produced a usable redline and draw replacements "
+        "for the rejected ones, instead of redrawing the whole set",
+    )
+    parser.add_argument(
         "--exclude-list",
         type=Path,
         default=DEFAULT_OUT_ROOT / "word_unreadable.txt",
@@ -393,7 +416,40 @@ def main(argv: list[str] | None = None) -> int:
     if args.exclude_list.is_file():
         unreadable = {ln.strip() for ln in args.exclude_list.read_text().splitlines() if ln.strip()}
         pool = drop_unreadable(pool, unreadable)
-    pairs = build_pairs(pool, target=args.target, seed=args.seed)
+
+    initial: list[Pair] | None = None
+    exclude: set[tuple[str, str]] = set()
+    if args.top_up:
+        provenance = args.out_root / "pair_provenance.csv"
+        if not provenance.is_file():
+            print(f"--top-up needs {provenance}", file=sys.stderr)
+            return 2
+        # Carry each kept pair's original chain/cross provenance across the
+        # top-up instead of relabelling everything.
+        origin_by_stem: dict[str, str] = {}
+        mapping = args.out_root / "centralized_mapping.csv"
+        if mapping.is_file():
+            with mapping.open(newline="") as handle:
+                origin_by_stem = {
+                    r["pair_stem"]: r["origin"].removeprefix("superdoc_")
+                    for r in csv.DictReader(handle)
+                }
+
+        by_rel = {p.relative_path: p for p in pool}
+        initial = []
+        with provenance.open(newline="") as handle:
+            for row in csv.DictReader(handle):
+                key = (row["base_rel"], row["next_rel"])
+                if row["status"] == "ok" and key[0] in by_rel and key[1] in by_rel:
+                    kind = origin_by_stem.get(row["pair_id"], "chain")
+                    initial.append(Pair(by_rel[key[0]], by_rel[key[1]], kind))
+                else:
+                    # Word already rejected this pair (or a participant is now
+                    # excluded); never draw it again.
+                    exclude.add(key)
+        print(f"top-up:    keeping {len(initial)} usable pairs, barring {len(exclude)} rejected")
+
+    pairs = build_pairs(pool, target=args.target, seed=args.seed, initial=initial, exclude=exclude)
 
     # Two hard uniqueness gates. The source-stem one is not theoretical: `-` and
     # `_` both sanitize to `_`, so a pool with `a-b.docx` and `a_b.docx` in one
