@@ -49,6 +49,9 @@ bun run update-readme-ranking                 # tables between RANKING markers
 > - **superdoc-native** and **superdoc-redlines**, which failed on clones we never
 >   installed. `superdoc/` was not even gitignored, so installing it would have dirtied
 >   the tree.
+> - **docxodus**'s row is labelled `9.0.0` but that run executed **7.0.0** — the pin
+>   installs to the repo root where `tool_version` is read, while the adapter imported a
+>   vendored tree still holding 7.0.0. Re-run pending; do not quote it as a 9.0.0 result.
 > - **docx-redline-js** is not the vendor's code at all: it builds
 >   `@arthrod/docx-redline-js@0.3.0`, *our* TypeScript migration, while upstream
 >   publishes 0.2.1. The row is named for them and runs us.
@@ -82,15 +85,16 @@ Sorted by **ITT median** (intent-to-treat: every failed doc scores 0, so crashin
 
 **Current corpus** (lines stamped with `corpus_revision`)
 
-> ⚠️ **Rows below cover different document counts (763, 195) — they are not the same measurement.** A tool scored on fewer documents ran a different, usually easier, subset; its rank is not comparable with a row covering more. Compare only rows whose `ITT Docs` match.
-
 | Rank | Vendor | Version | Docs | ITT Docs | ITT Mean | ITT Median | Mean | Median | Perfect (100) | Failures |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | jubarte-wasm | 0.1.0 | 195 | 195 | 85.92 | 94.42 | 85.92 | 94.42 | 59 | 0 |
-| 2 | jubarte (lossless) | jubarte-final@d43557e042c1 | 763 | 763 | 77.02 | 78.53 | 77.02 | 78.53 | 142 | 0 |
-| 3 | jubarte-rust | jubarte-rust@fcea02da49f4 | 763 | 763 | 76.21 | 77.95 | 76.21 | 77.95 | 158 | 0 |
+| 1 | jubarte (lossless) | jubarte-final@d43557e042c1 | 763 | 763 | 77.02 | 78.53 | 77.02 | 78.53 | 142 | 0 |
+| 2 | jubarte-rust | jubarte-rust@fcea02da49f4 | 763 | 763 | 76.21 | 77.95 | 76.21 | 77.95 | 158 | 0 |
+| 3 | jubarte-wasm | 0.1.0 | 763 | 763 | 76.21 | 77.95 | 76.21 | 77.95 | 158 | 0 |
 | 4 | jubarte-ast | jubarte-final@d43557e042c1 | 755 | 763 | 69.83 | 68.30 | 70.57 | 68.67 | 84 | 9 |
 | 5 | docxodus | 9.0.0 | 707 | 763 | 51.70 | 51.54 | 55.79 | 52.45 | 11 | 56 |
+| 6 | superdoc | 1.21.3 | 665 | 763 | 46.30 | 50.16 | 53.13 | 51.56 | 3 | 115 |
+| 7 | redlines | 0.6.1 | 745 | 763 | 44.86 | 47.05 | 45.94 | 47.14 | 0 | 18 |
+| 8 | superdoc | 2.0.0 | 331 | 763 | 19.61 | 0.00 | 45.19 | 46.72 | 1 | 432 |
 
 **Legacy corpus** (older, smaller corpora — not comparable with the rows above; kept for history until each tool re-runs):
 
@@ -110,10 +114,9 @@ Sorted by **ITT median** (intent-to-treat: every failed doc scores 0, so crashin
 | 10 | folio | 0.3.1 | 205 | 207 | 54.77 | 53.52 | 55.31 | 53.75 | 0 | 2 |
 | 11 | superdoc | 1.19.2 | 182 | 207 | 50.28 | 53.25 | 57.19 | 55.60 | 2 | 25 |
 | 12 | superdoc-redlines | 0.2.0 | 192 | 207 | 53.45 | 53.11 | 57.63 | 55.90 | 0 | 15 |
-| 13 | redlines | 0.6.1 | 200 | 207 | 49.55 | 51.32 | 51.28 | 51.77 | 0 | 7 |
-| 14 | docx-redline-js | 0.3.0-ts-migration | 161 | 168 | 48.43 | 50.09 | 50.53 | 50.26 | 0 | 7 |
-| 15 | jubarte (final) | jubarte-final@8b23cdc7eca8 (worst) | 207 | 207 | 48.31 | 49.46 | 48.31 | 49.46 | 0 | 0 |
-| 16 | docx-redline-js | — | 2 | 9 | 12.25 | 0.00 | 55.12 | 55.12 | 0 | 7 |
+| 13 | docx-redline-js | 0.3.0-ts-migration | 161 | 168 | 48.43 | 50.09 | 50.53 | 50.26 | 0 | 7 |
+| 14 | jubarte (final) | jubarte-final@8b23cdc7eca8 (worst) | 207 | 207 | 48.31 | 49.46 | 48.31 | 49.46 | 0 | 0 |
+| 15 | docx-redline-js | — | 2 | 9 | 12.25 | 0.00 | 55.12 | 55.12 | 0 | 7 |
 
 ### accepted_changes — accept all changes, match final doc
 
