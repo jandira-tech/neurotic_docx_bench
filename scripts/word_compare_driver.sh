@@ -179,25 +179,45 @@ echo "    manifest: $(wc -l < "$STAGED_MANIFEST" | tr -d ' ') pairs -> $STAGED_M
 #  2. Word stops answering Apple events entirely. The log stops growing, the
 #     stall watcher notices and kills it.
 #
-# Resume (skip pairs whose output already exists) makes both safe, and
-# guarantees forward progress: each restart completes at least the pair that
-# failed. The run aborts if restarts stop producing progress.
+# Before every invocation the manifest is filtered down to pairs that have
+# neither succeeded nor failed yet. That is what makes termination guaranteed:
+# a permanently broken pair is attempted exactly ONCE and then drops out of the
+# work list. Skipping on "output exists" alone is not enough — a pair that
+# always fails never produces an output, so it would be retried forever (it
+# was: 4 restarts, same pair, log growing only with skip lines).
 STALL_SECS=420
 MAX_RESTARTS=80
 restarts=0
-stuck=0
 touch "$LOG"
 RESULT_FILE="$STAGE/.batch_result"
+REMAINING="$STAGE/.remaining.tsv"
+DONE_IDS="$STAGE/.done_ids"
 
 echo "==> comparing (log: $LOG)"
 while :; do
-	before=$(wc -l < "$LOG" | tr -d ' ')
+	grep -E '^\[(ok|fail)\] ' "$LOG" | awk '{print $2}' | sort -u > "$DONE_IDS"
+	awk -F'\t' 'NR==FNR { d[$1] = 1; next } !($1 in d)' "$DONE_IDS" "$STAGED_MANIFEST" > "$REMAINING"
+	remaining=$(wc -l < "$REMAINING" | tr -d ' ')
+	completed=$(wc -l < "$DONE_IDS" | tr -d ' ')
+
+	if [[ "$remaining" == "0" ]]; then
+		echo "    all pairs accounted for ($completed)"
+		break
+	fi
+	# --limit applies to the whole run, not to each restart.
+	if [[ "$LIMIT" != "0" ]] && (( completed >= LIMIT )); then
+		echo "    limit $LIMIT reached"
+		break
+	fi
+
+	batch_limit="$LIMIT"
+	[[ "$LIMIT" != "0" ]] && batch_limit=$(( LIMIT - completed ))
 
 	osascript "$REPO_ROOT/scripts/word_compare_batch.applescript" \
-		"$STAGED_MANIFEST" "$LOG" "$START" "$LIMIT" > "$RESULT_FILE" 2>&1 &
+		"$REMAINING" "$LOG" 1 "$batch_limit" > "$RESULT_FILE" 2>&1 &
 	pid=$!
 
-	last_size="$before"
+	last_size=$(wc -l < "$LOG" | tr -d ' ')
 	last_change=$SECONDS
 	wedged=0
 	while kill -0 "$pid" 2>/dev/null; do
@@ -206,7 +226,7 @@ while :; do
 		if [[ "$size" != "$last_size" ]]; then
 			last_size="$size"
 			last_change=$SECONDS
-			printf '\r    %s logged' "$size"
+			printf '\r    %s/%s done' "$size" "$(wc -l < "$STAGED_MANIFEST" | tr -d ' ')"
 		elif (( SECONDS - last_change > STALL_SECS )); then
 			wedged=1
 			break
@@ -217,30 +237,22 @@ while :; do
 	if [[ "$wedged" == "1" ]]; then
 		kill "$pid" 2>/dev/null || true
 		echo "    no progress for ${STALL_SECS}s — recycling Word" >&2
+		# A wedge leaves no log entry, so the pair would be retried forever.
+		# Record it as failed against the first outstanding pair.
+		stalled_id=$(head -1 "$REMAINING" | cut -f1)
+		printf '[fail] %s :: Word stopped responding (stall recovery)\n' "$stalled_id" >> "$LOG"
 	else
 		wait "$pid" 2>/dev/null || true
 	fi
 
 	result="$(tr -d '\n' < "$RESULT_FILE" 2>/dev/null || true)"
-	after=$(wc -l < "$LOG" | tr -d ' ')
-
-	# Normal completion: the batch ran to the end of the manifest.
 	if [[ "$wedged" != "1" && "$result" != POISON* ]]; then
-		break
+		continue  # batch ran clean to the end of its slice; loop re-checks remaining
 	fi
 
 	restarts=$((restarts + 1))
-	if (( after > before )); then
-		stuck=0
-	else
-		stuck=$((stuck + 1))
-	fi
 	if (( restarts > MAX_RESTARTS )); then
 		echo "!! $MAX_RESTARTS restarts reached; stopping. Inspect $LOG" >&2
-		break
-	fi
-	if (( stuck >= 3 )); then
-		echo "!! 3 restarts in a row made no progress; stopping. Inspect $LOG" >&2
 		break
 	fi
 	echo "    restart $restarts (${result:-stalled})" >&2

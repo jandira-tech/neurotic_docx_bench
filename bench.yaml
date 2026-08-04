@@ -10,10 +10,16 @@ source_of_truth: corpus/word_based/pdf_redlines_word
 # chained second invocation below) get them matched automatically.
 extra_oracle_dirs:
   - corpus/word_based/pdf_redlines_randomized/pdf
+  # SuperDoc-pool Word redlines (400 pairs): base/next drawn from the
+  # docx-validate SuperDoc fixture pool, redlined by Word's own Compare
+  # Documents, rendered by the same LibreOffice as every other oracle.
+  - corpus/word_redlines_superdoc/pdf_redlines_word
 # Sealed 20-pair holdout (overfitting detector): these keys are EXCLUDED from
 # every normal scoring run and scored separately on demand with
 # `bench run --holdout`; export surfaces the main-vs-holdout gap.
-holdout_list: corpus/word_based/holdout.txt
+# Union of the two sealed lists (word_based 20 + word_redlines_superdoc 20).
+# Built by concatenation; neither sealed file is ever edited.
+holdout_list: corpus/holdout_combined.txt
 scoring:
   dpi: 144
 
@@ -52,7 +58,7 @@ generate_scripts:
 runs:
   - name: jubarte-final-native
     dist: dist/jubarte-final
-    generate: "node --import tsx scripts/generate-native-redlines.ts --method=jubarte-native --dist=dist/jubarte-final --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=jubarte-final-native && node --import tsx scripts/generate-native-redlines.ts --method=jubarte-native --manifest=corpus/word_based/centralized_mapping_randomized.csv --source-dir=corpus/word_based/docx_source_randomized --dist=dist/jubarte-final --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=jubarte-final-native"
+    generate: "node --import tsx scripts/generate-native-redlines.ts --method=jubarte-native --dist=dist/jubarte-final --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=jubarte-final-native && node --import tsx scripts/generate-native-redlines.ts --method=jubarte-native --manifest=corpus/word_based/centralized_mapping_randomized.csv --source-dir=corpus/word_based/docx_source_randomized --dist=dist/jubarte-final --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=jubarte-final-native && node --import tsx scripts/generate-native-redlines.ts --method=jubarte-native --manifest=corpus/word_redlines_superdoc/centralized_mapping.csv --source-dir=corpus/word_redlines_superdoc/docx_source --dist=dist/jubarte-final --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=jubarte-final-native"
     render: soffice
     jobs: 12
     # Distinct vendor: this run and jubarte-final-lossless share the same dist
@@ -64,7 +70,7 @@ runs:
 
   - name: jubarte-final-lossless
     dist: dist/jubarte-final
-    generate: "node --import tsx scripts/generate-native-redlines.ts --method=jubarte-lossless --dist=dist/jubarte-final --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=jubarte-final-lossless && node --import tsx scripts/generate-native-redlines.ts --method=jubarte-lossless --manifest=corpus/word_based/centralized_mapping_randomized.csv --source-dir=corpus/word_based/docx_source_randomized --dist=dist/jubarte-final --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=jubarte-final-lossless"
+    generate: "node --import tsx scripts/generate-native-redlines.ts --method=jubarte-lossless --dist=dist/jubarte-final --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=jubarte-final-lossless && node --import tsx scripts/generate-native-redlines.ts --method=jubarte-lossless --manifest=corpus/word_based/centralized_mapping_randomized.csv --source-dir=corpus/word_based/docx_source_randomized --dist=dist/jubarte-final --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=jubarte-final-lossless && node --import tsx scripts/generate-native-redlines.ts --method=jubarte-lossless --manifest=corpus/word_redlines_superdoc/centralized_mapping.csv --source-dir=corpus/word_redlines_superdoc/docx_source --dist=dist/jubarte-final --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=jubarte-final-lossless"
     render: soffice
     jobs: 12
     vendor: jubarte
@@ -74,7 +80,7 @@ runs:
   # version is npm-resolved and stamped into tool_version.
   - name: docxodus
     package: "docxodus@7.0.0"
-    generate: "node --import tsx scripts/generate-native-redlines.ts --method=docxodus --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=docxodus && node --import tsx scripts/generate-native-redlines.ts --method=docxodus --manifest=corpus/word_based/centralized_mapping_randomized.csv --source-dir=corpus/word_based/docx_source_randomized --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=docxodus"
+    generate: "node --import tsx scripts/generate-native-redlines.ts --method=docxodus --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=docxodus && node --import tsx scripts/generate-native-redlines.ts --method=docxodus --manifest=corpus/word_based/centralized_mapping_randomized.csv --source-dir=corpus/word_based/docx_source_randomized --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=docxodus && node --import tsx scripts/generate-native-redlines.ts --method=docxodus --manifest=corpus/word_redlines_superdoc/centralized_mapping.csv --source-dir=corpus/word_redlines_superdoc/docx_source --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=docxodus"
     render: soffice
     jobs: 12
     vendor: docxodus
@@ -235,7 +241,7 @@ runs:
   # ../reconciliation_plan/GET_JUBARTE_RUST.md for the source-to-bench map.
   - name: jubarte-rust
     dist: src/neurotic_docx_bench/utils/jubarte/jubarte-rust
-    generate: "node --import tsx scripts/generate-native-redlines.ts --method=jubarte-rust --dist=src/neurotic_docx_bench/utils/jubarte/jubarte-rust --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=jubarte-rust && node --import tsx scripts/generate-native-redlines.ts --method=jubarte-rust --manifest=corpus/word_based/centralized_mapping_randomized.csv --source-dir=corpus/word_based/docx_source_randomized --dist=src/neurotic_docx_bench/utils/jubarte/jubarte-rust --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=jubarte-rust"
+    generate: "node --import tsx scripts/generate-native-redlines.ts --method=jubarte-rust --dist=src/neurotic_docx_bench/utils/jubarte/jubarte-rust --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=jubarte-rust && node --import tsx scripts/generate-native-redlines.ts --method=jubarte-rust --manifest=corpus/word_based/centralized_mapping_randomized.csv --source-dir=corpus/word_based/docx_source_randomized --dist=src/neurotic_docx_bench/utils/jubarte/jubarte-rust --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=jubarte-rust && node --import tsx scripts/generate-native-redlines.ts --method=jubarte-rust --manifest=corpus/word_redlines_superdoc/centralized_mapping.csv --source-dir=corpus/word_redlines_superdoc/docx_source --dist=src/neurotic_docx_bench/utils/jubarte/jubarte-rust --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=jubarte-rust"
     render: soffice
     jobs: 12
     vendor: jubarte-rust

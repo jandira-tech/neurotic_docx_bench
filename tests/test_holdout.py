@@ -172,9 +172,42 @@ def test_config_holdout_list_missing_file_raises(tmp_path):
 
 @requires_corpus
 def test_real_bench_yaml_wires_holdout():
+    """bench.yaml points at the COMBINED seal — `holdout_list` takes one path and
+    there are now two sealed corpora (word_based + word_redlines_superdoc)."""
     cfg = load_config(REPO_ROOT / "bench.yaml")
-    assert cfg.holdout_list == HOLDOUT_TXT
-    assert len(pipeline.load_holdout(cfg.holdout_list)) == 20
+    assert cfg.holdout_list == REPO_ROOT / "corpus" / "holdout_combined.txt"
+    assert len(pipeline.load_holdout(cfg.holdout_list)) == 40
+
+
+@requires_corpus
+def test_combined_holdout_is_exactly_the_union_of_the_sealed_lists():
+    """The combined file is DERIVED. If it ever drifts from its two sources, keys
+    silently stop being held out — so assert the union property, not a count."""
+    superdoc_txt = REPO_ROOT / "corpus" / "word_redlines_superdoc" / "holdout.txt"
+    combined = pipeline.load_holdout(REPO_ROOT / "corpus" / "holdout_combined.txt")
+    assert combined == pipeline.load_holdout(HOLDOUT_TXT) | pipeline.load_holdout(superdoc_txt)
+
+
+@requires_corpus
+def test_sealed_keys_are_lowercase_so_they_match_the_scorer():
+    """`pipeline.redline_key` lower-cases every stem. A sealed key carrying
+    capitals matches nothing, so its pair stays in the headline score while
+    appearing held out. Four superdoc keys contain capitals — caught in review,
+    and this is the regression guard."""
+    keys = pipeline.load_holdout(REPO_ROOT / "corpus" / "holdout_combined.txt")
+    assert all(k == k.lower() for k in keys), sorted(k for k in keys if k != k.lower())
+
+
+@requires_corpus
+def test_every_sealed_superdoc_key_exists_in_that_corpus():
+    """A sealed key that matches no pair holds nothing out."""
+    import csv
+
+    corpus = REPO_ROOT / "corpus" / "word_redlines_superdoc"
+    with (corpus / "centralized_mapping.csv").open(newline="") as handle:
+        stems = {row["pair_stem"].lower() for row in csv.DictReader(handle)}
+    sealed = pipeline.load_holdout(corpus / "holdout.txt")
+    assert sealed <= stems, sorted(sealed - stems)
 
 
 # ── skip-already-ran identity ────────────────────────────────────────────────

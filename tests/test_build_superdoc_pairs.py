@@ -207,6 +207,56 @@ def test_excluded_sources_never_appear_in_any_pair():
     assert not any(f"{bsp.flat_stem(r)}.docx" in bad for r in used)
 
 
+def test_build_pairs_tops_up_an_existing_set_without_disturbing_it():
+    """Word can only produce a usable redline for most pairs, not all. Topping up
+    must preserve the pairs already compared — redrawing from scratch reshuffles
+    every cross pair and throws away hours of Word time."""
+    pool = _pool(40)
+    first = bsp.build_pairs(pool, target=50)
+    kept, rejected = first[:45], first[45:]
+    exclude = {(p.base.relative_path, p.next.relative_path) for p in rejected}
+
+    topped = bsp.build_pairs(pool, target=50, initial=kept, exclude=exclude)
+
+    assert len(topped) == 50
+    assert topped[:45] == kept
+    keys = {(p.base.relative_path, p.next.relative_path) for p in topped}
+    assert not (keys & exclude), "a rejected pair was drawn again"
+    assert len(keys) == 50
+
+
+def test_top_up_is_deterministic():
+    pool = _pool(40)
+    kept = bsp.build_pairs(pool, target=50)[:45]
+    a = bsp.build_pairs(pool, target=50, initial=kept)
+    b = bsp.build_pairs(pool, target=50, initial=kept)
+    assert a == b
+
+
+def test_holdout_keys_are_lowercased_to_match_the_scorer_key_space():
+    """`pipeline.redline_key` lower-cases every stem, so a sealed key carrying
+    capitals never matches its pair — the pair stays in the headline score while
+    looking held out. A leaking seal is worse than no seal."""
+    pool = [
+        bsp.PoolFile(relative_path=f"behavior/SD_{i}_MixedCase.docx", sha256=f"{i:064x}", size=1)
+        for i in range(30)
+    ]
+    holdout = bsp.build_holdout(bsp.build_pairs(pool, target=100), size=20)
+    assert len(holdout) == 20
+    assert all(k == k.lower() for k in holdout), [k for k in holdout if k != k.lower()]
+
+
+def test_holdout_keys_all_exist_in_the_manifest():
+    pairs = bsp.build_pairs(_pool(40), target=400)
+    stems = {r["pair_stem"].lower() for r in bsp.mapping_rows(pairs)}
+    assert set(bsp.build_holdout(pairs)) <= stems
+
+
+def test_holdout_is_deterministic():
+    pairs = bsp.build_pairs(_pool(40), target=400)
+    assert bsp.build_holdout(pairs) == bsp.build_holdout(pairs)
+
+
 def test_build_pairs_raises_when_pool_cannot_supply_the_target():
     with pytest.raises(ValueError, match="cannot reach"):
         bsp.build_pairs(_pool(3), target=400)

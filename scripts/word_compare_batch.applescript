@@ -60,10 +60,14 @@ on run argv
 					set outP to item 4 of fieldsList
 					set doneCount to doneCount + 1
 
-					-- Idempotent resume: a crash mid-run costs nothing, and the
-					-- driver's wedge recovery relies on re-invoking this script.
+					-- Idempotent resume safety net. The driver already filters the
+					-- manifest down to outstanding pairs before each invocation,
+					-- so this normally matches nothing; it exists in case the log
+					-- is lost. Skips are NOT logged: they would otherwise dwarf
+					-- the real entries and make "the log grew" a false signal of
+					-- progress for the driver's stall detection.
 					if (do shell script "test -s " & quoted form of outP & " && echo yes || echo no") is "yes" then
-						my logLine(logPath, "[skip] " & pairId)
+						set doneCount to doneCount - 1
 					else
 						set failMsg to ""
 						set paraCount to missing value
