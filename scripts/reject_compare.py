@@ -85,7 +85,7 @@ def main() -> int:
     ap.add_argument("--tool", required=True)
     ap.add_argument("--backend", choices=["docx-revisions", "folio-wasm"], default="docx-revisions")
     ap.add_argument("--out", required=True)
-    ap.add_argument("--jobs", type=int, default=8)
+    ap.add_argument("--jobs", type=int, default=12)
     ap.add_argument("--dpi", type=int, default=144)
     args = ap.parse_args()
 

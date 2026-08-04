@@ -187,6 +187,46 @@ def match_by_stem(
     return [(key, oracle[key], candidate[key]) for key in shared]
 
 
+def load_holdout(path: Path) -> set[str]:
+    """Parse a sealed-holdout key list: one oracle ``<base>_<next>`` pair key per
+    line (the same key space :func:`_index_redlines_union` returns). Blank lines
+    and ``#`` comments are skipped; a duplicated key is a hard error — a bad merge
+    must never silently change the sealed set's size.
+    """
+    keys: set[str] = set()
+    for line_no, raw in enumerate(Path(path).read_text().splitlines(), start=1):
+        key = raw.strip()
+        if not key or key.startswith("#"):
+            continue
+        if key in keys:
+            raise ValueError(f"{path}:{line_no}: duplicate holdout key {key!r}")
+        keys.add(key)
+    return keys
+
+
+def filter_failure_records(
+    failures: list[dict[str, str]],
+    *,
+    exclude_keys: set[str] | None = None,
+    only_keys: set[str] | None = None,
+) -> list[dict[str, str]]:
+    """Apply the sealed-holdout key filter to failure records (same contract as
+    :func:`score_folders_full`'s ``exclude_keys``/``only_keys``).
+
+    Failure docs and scores must live in ONE universe: an unfiltered failure
+    list next to filtered scores makes the intent-to-treat stats leak across
+    the seal in both directions (sealed docs' failures enter the headline ITT
+    at 0.0; a holdout-only line's ITT absorbs non-holdout failures).
+    """
+    if exclude_keys is not None and only_keys is not None:
+        raise ValueError("exclude_keys and only_keys are mutually exclusive")
+    if exclude_keys is not None:
+        return [f for f in failures if str(f.get("doc", "")) not in exclude_keys]
+    if only_keys is not None:
+        return [f for f in failures if str(f.get("doc", "")) in only_keys]
+    return failures
+
+
 def coverage(
     oracle_dir: Path | Sequence[Path],
     candidate_dir: Path,
@@ -363,10 +403,13 @@ def score_folders_full(
     work_dir: Path,
     *,
     dpi: int = 144,
-    jobs: int = 4,
+    jobs: int = 12,
     candidate_tool: str | None = None,
     base_map: dict[str, Path] | None = None,
     null_cache_path: Path | None = None,
+    exclude_keys: set[str] | None = None,
+    only_keys: set[str] | None = None,
+    strict_filter_keys: bool = True,
 ) -> dict[str, ScoreResult]:
     """Score every matched pair; return ``{key: score_document_result}``.
 
@@ -377,8 +420,39 @@ def score_folders_full(
     keys. The null cache is read and written ONLY in this parent process — workers
     receive the cached value (or compute the null themselves) and the parent merges
     fresh entries back once, so pool workers never race on the file.
+
+    ``exclude_keys`` / ``only_keys`` (mutually exclusive) filter the matched pairs
+    BY ORACLE PAIR KEY before any scoring work happens — the sealed-holdout hook:
+    everything downstream (scores, per-doc entries, counts) only ever sees the
+    filtered set.
+
+    ``strict_filter_keys`` (default True): a requested filter key that matches
+    nothing in the ORACLE index is a hard error — a typo'd or drifted holdout
+    list must never silently no-op (the sealed doc would leak into the visible
+    score under its real key). The check is oracle-side on purpose: a missing
+    CANDIDATE for a sealed key is a tool failure (recorded via failure records
+    and ITT), not corpus drift, and ``--limit`` runs subset only the candidate
+    side. Secondary benchmarks whose oracle universe is a legitimate subset of
+    the holdout sampling universe (the accepted/visual corpora lack the
+    randomized pairs) pass ``False``; the primary ``script_redlines`` path
+    keeps the loud guard.
     """
+    if exclude_keys is not None and only_keys is not None:
+        raise ValueError("exclude_keys and only_keys are mutually exclusive")
+    requested = exclude_keys if exclude_keys is not None else only_keys
+    if requested is not None and strict_filter_keys:
+        oracle_keys = set(_index_redlines_union(oracle_dir, None))
+        unknown = set(requested) - oracle_keys
+        if unknown:
+            raise ValueError(
+                f"holdout filter key(s) not in the oracle index: {sorted(unknown)}"
+                " — corpus drift or a typo'd key list must never silently no-op"
+            )
     pairs = match_by_stem(oracle_dir, candidate_dir, candidate_tool=candidate_tool)
+    if exclude_keys is not None:
+        pairs = [p for p in pairs if p[0] not in exclude_keys]
+    elif only_keys is not None:
+        pairs = [p for p in pairs if p[0] in only_keys]
     if not pairs:
         return {}
     from neurotic_docx_bench import score_v2 as sv2
@@ -418,7 +492,7 @@ def score_folders(
     work_dir: Path,
     *,
     dpi: int = 144,
-    jobs: int = 4,
+    jobs: int = 12,
     candidate_tool: str | None = None,
 ) -> dict[str, float]:
     """Score every matched pair; return ``{key: overall_score}`` (0–100)."""
@@ -449,7 +523,7 @@ def score_folders_plain(
     work_dir: Path,
     *,
     dpi: int = 144,
-    jobs: int = 4,
+    jobs: int = 12,
 ) -> dict[str, ScoreResult]:
     """Score every matched pair by plain filename stem (roundtrip identity test).
 
@@ -501,7 +575,7 @@ def match_base_to_candidate(oracle_dir: Path, candidate_dir: Path) -> list[tuple
 
 
 def score_folders_base(
-    oracle_dir: Path, candidate_dir: Path, work_dir: Path, *, dpi: int = 144, jobs: int = 4,
+    oracle_dir: Path, candidate_dir: Path, work_dir: Path, *, dpi: int = 144, jobs: int = 12,
 ) -> dict[str, ScoreResult]:
     """Score every matched base pair (visual_rendering).
 
@@ -592,13 +666,33 @@ def match_accepted_to_candidate(
 
 
 def score_folders_accepted(
-    oracle_dir: Path, candidate_dir: Path, work_dir: Path, *, dpi: int = 144, jobs: int = 4,
+    oracle_dir: Path,
+    candidate_dir: Path,
+    work_dir: Path,
+    *,
+    dpi: int = 144,
+    jobs: int = 12,
+    exclude_keys: set[str] | None = None,
+    only_keys: set[str] | None = None,
 ) -> dict[str, ScoreResult]:
     """Score every matched accepted-changes pair (visual_accepted_changes).
 
     See :func:`match_accepted_to_candidate` for the pairing rule.
+
+    ``exclude_keys`` / ``only_keys`` apply the sealed-holdout filter by pair
+    key, mirroring :func:`score_folders_full`. No strict-key guard here: the
+    accepted oracle corpus covers only a subset of the holdout sampling
+    universe (no randomized pairs), so sealed keys absent from THIS oracle are
+    expected; holdout-list drift is guarded loudly on the primary
+    ``script_redlines`` path.
     """
+    if exclude_keys is not None and only_keys is not None:
+        raise ValueError("exclude_keys and only_keys are mutually exclusive")
     pairs = match_accepted_to_candidate(oracle_dir, candidate_dir)
+    if exclude_keys is not None:
+        pairs = [p for p in pairs if p[0] not in exclude_keys]
+    elif only_keys is not None:
+        pairs = [p for p in pairs if p[0] in only_keys]
     if not pairs:
         return {}
     tasks = [(key, o, c, work_dir, dpi) for key, o, c in pairs]
