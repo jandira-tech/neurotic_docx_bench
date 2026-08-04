@@ -308,17 +308,24 @@ export async function loadEngine(
 		};
 	}
 	if (method === "folio") {
-		// @stll/folio-core (Apache-2.0; stella/folio) has no single base+next→redline
-		// call, so we compose two headless APIs:
-		//   1. @stll/folio-agents.compareDocxVersions(base, next) → block-level diff
-		//      (added/deleted/modified + word-level segments).
-		//   2. FolioDocxReviewer.fromBuffer(base) → applyOperations(diff→ops,
-		//      {mode:"tracked-changes"}) → toBuffer() → redline DOCX with w:ins/w:del.
-		// Subtlety: compareDocxVersions returns REVISED-side block ids for added
-		// blocks, but insertAfterBlock anchors against a BASE-side id from the
-		// reviewer's own snapshot. modified/deleted blocks carry base ids that
-		// survive directly. We resolve insert anchors by walking the diff in
-		// revised-side order and tracking the last base-side block id seen.
+		// @stll/folio-core (Apache-2.0; stella/folio) ships a single base+next→redline
+		// call as of 0.13.0: `generateRedlineDocx(base, revised, { author })` returns
+		// the base package with tracked changes across every matched story. We call it
+		// directly — no diff translation, no op synthesis, no fallback of ours. Folio's
+		// score on script_redlines is folio's own output; see docs/FOLIO.md.
+		//
+		// This replaced a hand-rolled composition of
+		// @stll/folio-agents.compareDocxVersions + FolioDocxReviewer.applyOperations
+		// that was silently wrong: it fed a `modified` diff entry's `blockId` straight
+		// into replaceInBlock, but folio emits the diff in REVISED-side order and that
+		// id is the revised-side id, so no base block ever matched, every modification
+		// op was dropped, and pairs differing only by modified text returned the BASE
+		// document unchanged. 0.15.13 also adds diff kinds the old translation had no
+		// branch for at all (formatChanged / movedFrom / movedTo) and stories beyond
+		// the main body (headers, footers, footnotes), all of which generateRedlineDocx
+		// handles natively. Pinned regression: the "modification-only pair" case in
+		// scripts/generate-native-redlines.test.ts.
+		//
 		// FOLIO_MODULE_ROOT (absolute path to a node_modules dir) lets a comparison
 		// run swap in a different folio build; unset = the pinned vendored tree.
 		const folioModuleRoot =
@@ -327,80 +334,25 @@ export async function loadEngine(
 				import.meta.dirname,
 				"../src/neurotic_docx_bench/utils/folio/node_modules",
 			);
-		const [{ FolioDocxReviewer }, { compareDocxVersions }]: [any, any] =
-			await Promise.all([
-				import(join(folioModuleRoot, "@stll/folio-core/dist/server.js")),
-				import(join(folioModuleRoot, "@stll/folio-agents/dist/index.js")),
-			]);
+		const { generateRedlineDocx }: any = await import(
+			join(folioModuleRoot, "@stll/folio-core/dist/server.js")
+		);
 		// Copy a Uint8Array's bytes into a fresh ArrayBuffer (folio's APIs take
 		// ArrayBuffer; the engine contract hands us Uint8Array, often a Node Buffer
 		// whose .buffer is a larger slab shared with other data).
 		const toAB = (u: Uint8Array): ArrayBuffer =>
 			u.buffer.slice(u.byteOffset, u.byteOffset + u.byteLength) as ArrayBuffer;
 		return async (base, next) => {
-			const diff = await compareDocxVersions(toAB(base), toAB(next));
-			// fromBuffer is folio's strict native parse — a few corpus DOCX with empty
-			// comment authors throw here (e.g. vfdsdfcacawesd_suggesting_mixed_edits).
-			// That's folio-native, not our adapter; see docs/FOLIO.md.
-			const reviewer = await FolioDocxReviewer.fromBuffer(toAB(base), {
+			// generateRedlineDocx parses via folio's strict native reader — a few corpus
+			// DOCX with empty comment authors throw here (e.g.
+			// vfdsdfcacawesd_suggesting_mixed_edits). That's folio-native, not our
+			// adapter; see docs/FOLIO.md.
+			const result: any = await generateRedlineDocx(toAB(base), toAB(next), {
 				author: "folio",
 			});
-			const snap = reviewer.snapshot();
-			const baseIds = new Set(snap.blocks.map((b: any) => b.id));
-
-			// Walk the diff in revised-side document order (the order compareDocxVersions
-			// emits), remembering the most recent BASE-side block id we passed. For an
-			// `added` block, that remembered id is the correct insertAfterBlock anchor.
-			const ops: any[] = [];
-			let lastBaseAnchor: string | null = snap.blocks[0]?.id ?? null;
-			for (const c of diff.changes) {
-				if (c.type === "modified") {
-					if (!baseIds.has(c.blockId)) continue;
-					const before = c.segments
-						.filter((s: any) => s.type === "equal" || s.type === "del")
-						.map((s: any) => s.text)
-						.join("");
-					const after = c.segments
-						.filter((s: any) => s.type === "equal" || s.type === "ins")
-						.map((s: any) => s.text)
-						.join("");
-					if (before && after && before !== after) {
-						ops.push({
-							id: `m-${c.blockId}`,
-							type: "replaceInBlock",
-							blockId: c.blockId,
-							find: before,
-							replace: after,
-						});
-					}
-					lastBaseAnchor = c.blockId;
-				} else if (c.type === "deleted") {
-					if (!baseIds.has(c.blockId)) continue;
-					ops.push({
-						id: `d-${c.blockId}`,
-						type: "deleteBlock",
-						blockId: c.blockId,
-					});
-					lastBaseAnchor = c.blockId;
-				} else if (c.type === "added") {
-					if (lastBaseAnchor) {
-						ops.push({
-							id: `a-${c.blockId}`,
-							type: "insertAfterBlock",
-							blockId: lastBaseAnchor,
-							text: c.text,
-						});
-					}
-				}
-			}
-
-			// If the diff produced no translatable ops, return the base unchanged
-			// (mirrors jubarte-native's no-diff identity path) so the candidate still
-			// renders and scores, rather than writing nothing.
-			if (ops.length === 0) return base;
-			reviewer.applyOperations(ops, { mode: "tracked-changes" });
-			const out = await reviewer.toBuffer();
-			return out instanceof Uint8Array ? out : new Uint8Array(out);
+			// A zero-change comparison still returns a real package from folio, so there
+			// is no identity fallback here: whatever folio emits is what gets scored.
+			return new Uint8Array(result.buffer);
 		};
 	}
 	if (method === "folio-wasm") {

@@ -7,14 +7,13 @@ describe("folio capability assessment", () => {
 		// accepted_changes: proven (FolioDocxReviewer.acceptAll + toBuffer).
 		expect(result.accepted_changes.status).toBe("supported");
 		expect(result.accepted_changes.api).toContain("FolioDocxReviewer.toBuffer");
-		// script_redlines: proven by the loadEngine 'folio' adapter.
+		// script_redlines: proven by the loadEngine 'folio' adapter, which since
+		// folio-core 0.13.0 is a single native call — the catalog must not claim
+		// harness-composed APIs the adapter no longer uses.
 		expect(result.script_redlines.status).toBe("supported");
-		expect(result.script_redlines.api).toContain(
-			"@stll/folio-agents.compareDocxVersions",
-		);
-		expect(result.script_redlines.api).toContain(
-			"@stll/folio-core/server.FolioDocxReviewer.applyOperations",
-		);
+		expect(result.script_redlines.api).toEqual([
+			"@stll/folio-core/server.generateRedlineDocx",
+		]);
 	});
 
 	it("marks roundtrip + visual_* as needs-adapter until a real harness proves them", async () => {

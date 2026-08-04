@@ -265,6 +265,44 @@ describe("generate-native-redlines", () => {
     60_000,
   );
 
+  // Regression pin for the folio adapter's block-id contract.
+  //
+  // The pre-0.15 adapter composed compareDocxVersions + FolioDocxReviewer and
+  // assumed a `modified` FolioBlockDiff's `blockId` was a BASE-side id it could
+  // feed straight to replaceInBlock. It never was: folio emits the diff in
+  // revised-side order and `blockId` is the REVISED-side id, so every
+  // `baseIds.has(c.blockId)` guard failed, every replaceInBlock op was dropped,
+  // and `ops.length === 0` fell through to the "no diff" path that returns the
+  // BASE document unchanged. Pairs that differ only by modified text scored as
+  // "folio produced no redline" — a harness bug credited to folio.
+  //
+  // This pair's three body paragraphs are all `modified` and nothing else, so
+  // it is exactly the case the old translation dropped in full. The assertion is
+  // behavioural, not structural: the output must carry tracked changes AND must
+  // not be the base document handed back.
+  const MOD_ONLY_BASE = "blue_bold_centered_demo_id_paraid_overflow";
+  const MOD_ONLY_NEXT = "blue_centered_title_demo_style_default_missing";
+  const haveModOnlyPair =
+    existsSync(join(SOURCE, `${MOD_ONLY_BASE}.docx`)) &&
+    existsSync(join(SOURCE, `${MOD_ONLY_NEXT}.docx`));
+
+  it.runIf(haveFolio && haveModOnlyPair)(
+    "folio engine tracks changes on a modification-only pair (never returns base unchanged)",
+    async () => {
+      const base = new Uint8Array(readFileSync(join(SOURCE, `${MOD_ONLY_BASE}.docx`)));
+      const next = new Uint8Array(readFileSync(join(SOURCE, `${MOD_ONLY_NEXT}.docx`)));
+      const engine = await loadEngine("folio", "");
+      const out = await engine(base, next);
+
+      // The identity fallback returns the very same Uint8Array it was handed.
+      expect(out).not.toBe(base);
+      const xml = await documentXml(out);
+      expect(xml.includes("<w:ins")).toBe(true);
+      expect(xml.includes("<w:del")).toBe(true);
+    },
+    60_000,
+  );
+
   it.runIf(haveCorpus)(
     "superdoc-ts (TypeScript SDK) produces a redline docx with tracked changes",
     async () => {
