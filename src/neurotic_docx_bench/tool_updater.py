@@ -133,7 +133,13 @@ def update_npm_package(spec: str, cwd: Path, *, no_update: bool | None = None) -
     package = _package_name(spec)
     if not no_update:
         subprocess.run(
-            ["npm", "install", spec],
+            # --save-exact: bench.yaml pins are EXACT, and the default caret range
+            # silently widens them. A run was observed rewriting
+            # ``"docxodus": "9.0.0"`` to ``"^9.0.0"``, after which a later install
+            # could resolve 9.1.0 while bench.yaml still claimed 9.0.0 — the
+            # recorded tool_version and the measured code drifting apart, which is
+            # the split-brain of plan Chapter 6 D5.
+            ["npm", "install", "--save-exact", spec],
             cwd=str(cwd),
             check=True,
             capture_output=True,
