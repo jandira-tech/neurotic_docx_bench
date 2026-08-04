@@ -681,6 +681,32 @@ A cross-vendor number is publishable only when all six hold:
 6. **Disclosed thumbs.** Every place we touched a vendor's code, forked it, or
    know of an unfixed bug is written down next to the number.
 
+**D7 — A competitor carried benchmark rows that our own runs structurally could
+not receive.** Found 2026-08-04 in the docxodus 9.0.0 full-corpus result.
+
+Every `visual_*` benchmark in this config belongs to a dedicated
+`*-playwright-*` run whose entire purpose is rendering — that is how `folio`
+and `superdoc` are arranged, each with three separate playwright runs. But the
+**`docxodus` generating run** (`render: soffice`) *also* declared
+`visual_rendering`, `visual_redlines` and `visual_accepted_changes`. No other
+generating run does, including all three of ours, which declare only
+`accepted_changes`, `script_redlines`, `roundtrip`.
+
+Measured consequence: docxodus picked up three extra published rows, two of
+them **total wipeouts** (`visual_rendering` n_docs=0 of 20,
+`visual_accepted_changes` n_docs=0 of 19), while jubarte carried none and could
+not have. A competitor-only zero manufactured by our own configuration is not a
+measurement.
+
+Fixed by removing `visual_*` from the generating run; the `docxodus-playwright-*`
+runs already cover those oracles properly.
+
+The general rule this yields, added to 6.2: **two vendors are only comparable
+when they are asked the same questions.** Differing benchmark *sets* between
+runs of the same kind is the same defect class as differing corpora (D1) — it
+just hides one level up, in which rows exist at all rather than in how many
+documents each row covers.
+
 ### 6.2b Checked and cleared (negative results worth recording)
 
 Suspicions that were tested and did **not** hold. Recorded so nobody re-opens
