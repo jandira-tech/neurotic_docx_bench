@@ -762,6 +762,50 @@ Symptom-level guard already in place: `generate-native-redlines.test.ts`
 asserts the installed trees agree with the bench.yaml pin. Extend it to every
 vendor, and treat the assertion as a release gate rather than a unit test.
 
+### 6.1d The detector for the folio bug already existed and was never pointed at folio
+
+`functional_lens.py` (PR7) encodes the defining property of a redline:
+**accept(candidate) == next** and **reject(candidate) == base**, judged by the
+bench's own machinery rather than the tool's. A tool that returns the base
+document unchanged — precisely folio's silent failure mode on 24 of 60 sampled
+pairs — violates it by construction and would have been caught.
+
+It was not caught, because **no folio line ever carried functional-lens data**.
+Checked 2026-08-04: every published `folio` row (`script_redlines`,
+`accepted_changes`, `roundtrip`, all three `visual_*`) has no
+`n_functional_checked` / `n_lens_disagree` field at all. The instrument was
+built and never aimed at the vendor whose score it would have invalidated.
+
+Current runs do carry it, and the metric is informative (holdout runs excluded,
+so these are comparable):
+
+| vendor | n_docs | functionally checked | disagree | rate |
+|---|---|---|---|---|
+| docxodus (as run: 7.0.0) | 707 | 338 | 86 | **0.254** |
+| superdoc-ts 1.21.3 | 665 | 313 | 53 | 0.169 |
+| superdoc 1.19.2 | 171 | 157 | 25 | 0.159 |
+| jubarte-ast | 755 | 369 | 36 | 0.098 |
+| jubarte-rust / jubarte-wasm | 763 | 377 | 25 | 0.066 |
+| jubarte (lossless) | 763 | 377 | 20 | **0.053** |
+
+Two rules follow:
+
+1. **A published score without a functional-lens verdict is provisional.** The
+   pixel lens cannot distinguish a tracked change from paint, and cannot
+   distinguish a redline from no redline at all. Any row lacking the second
+   lens is one folio-class bug away from being fiction.
+2. **Only ~half of each run is functionally checked** (377 of 763 for jubarte,
+   338 of 707 for docxodus) because source resolution fails for the rest. That
+   is a coverage gap in the detector itself, and it is roughly uniform across
+   vendors — so it does not bias the comparison, but it does mean the rate is
+   measured on half the corpus. Raising that coverage is worth more than any
+   per-fixture point-chasing in 6.6.
+
+A near-miss worth recording as method: reading this table by "most recent line
+per vendor" initially compared competitors' main runs against jubarte's
+*holdout-only* runs (20 checked vs 338) and looked like a damning asymmetry. It
+was a query artifact. Always partition by `holdout_mode` before comparing.
+
 ### 6.2 Definition — what "pure juice" requires
 
 A cross-vendor number is publishable only when all six hold:
