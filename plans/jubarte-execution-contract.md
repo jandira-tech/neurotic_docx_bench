@@ -123,6 +123,36 @@ partition by the functional invariants (`accept(candidate) == next`,
 `reject(candidate) == base`) into: both hold / reject only / accept only / neither.
 Emits a per-document classification plus a summary table.
 
+> **Gate semantics — unjudgeable documents are excluded from the denominator.**
+> Surfaced during implementation and adopted, because it decides whether the L1 gate
+> can fire falsely.
+>
+> A **blind** pair (base text == next text) satisfies *both* invariants even for a
+> candidate that emits nothing at all. Filing blind pairs under BOTH_HOLD would inflate
+> the exact fraction the gate reads and manufacture a **false STOP_FIX_SCORER** —
+> halting the programme to fix a scorer that is not broken. Symmetrically, a crashed
+> lens run filed under NEITHER would invent an engine defect that does not exist.
+>
+> So blind, partial and errored documents are carried in a separate `unjudged` set and
+> excluded from the gate's denominator, which counts **judged documents only**. This
+> matches the existing house rule in `lens_health.py`, where `_functional_ok` already
+> returns `None` for blind and partial rather than a verdict.
+>
+> This is the D3 disease in miniature — our own measurement reporting a defect that is
+> ours, not the subject's — and the gate is precisely where it would have done the most
+> damage.
+>
+> **Threshold direction:** the plan says bucket 1 must *exceed* ~15% to stop, so the
+> comparison is strict and **exactly 15% proceeds**. The threshold is written
+> approximate; treating the boundary itself as a stop would invent precision the
+> contract does not claim.
+>
+> **Known limit of the real-data check:** the 166-document count for
+> `019fcc6f` reproduces, but it does **not** pin the half-open convention — that run has
+> zero documents scoring exactly 40.0 or 60.0, so the count is identical under
+> `[40,60)`, `(40,60)` or `[40,60]`. The boundary is pinned by synthetic tests only. A
+> future corpus with a document at exactly 60.0 would be the first real test of it.
+
 **S0.2 — residual-ink cause classifier.** For a given document, diff the candidate
 render against the oracle render, isolate the largest residual ink region, and attribute
 it to a cause class. Emits a per-document cause label and a frequency table over any
