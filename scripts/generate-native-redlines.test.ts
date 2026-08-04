@@ -1,8 +1,13 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { existsSync, readFileSync, readdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import JSZip from "../src/neurotic_docx_bench/utils/docx-redline-js/node_modules/jszip/lib/index.js";
+// Root jszip, not the docx-redline-js vendored copy: that tree's `@ansonlai/docx-redline-js`
+// is a `file:` dep pointing outside the repo, so on a fresh checkout it never installs and a
+// top-level import from it makes this WHOLE file fail to collect. jszip is a root dependency
+// and is always present after `bun install`. (The docx-redline-js *adapter* still loads its
+// own vendored jszip — only this test helper moved.)
+import JSZip from "../node_modules/jszip/lib/index.js";
 import { parseManifest, loadEngine, outputName, runBatch } from "./generate-native-redlines.ts";
 
 const MANIFEST = "corpus/word_based/centralized_mapping.csv";
@@ -13,9 +18,56 @@ const haveJubarte = existsSync(join(DIST, "node.cjs"));
 const haveSuperDocNative = existsSync("superdoc/packages/super-editor/vite.config.js");
 const haveFolio = existsSync("src/neurotic_docx_bench/utils/folio/node_modules/@stll/folio-core/package.json");
 
+// The two node_modules trees docxodus can live in. `DOCXODUS_ROOT_PKG` is the one
+// bench.yaml's `package:` pin installs into and reads `tool_version` back from
+// (tool_updater.resolve_tool_version is called with cwd=repo root); `DOCXODUS_VENDOR_PKG`
+// is the one loadEngine("docxodus") actually imports and therefore measures.
+const DOCXODUS_ROOT_PKG = "node_modules/docxodus/package.json";
+const DOCXODUS_VENDOR_PKG =
+  "src/neurotic_docx_bench/utils/docxodus/node_modules/docxodus/package.json";
+const DOCXODUS_ENTRY =
+  "../src/neurotic_docx_bench/utils/docxodus/node_modules/docxodus/dist/index.js";
+const haveDocxodus = existsSync(DOCXODUS_VENDOR_PKG);
+
+function installedVersion(pkgJson: string): string | null {
+  if (!existsSync(pkgJson)) return null;
+  return JSON.parse(readFileSync(pkgJson, "utf8")).version ?? null;
+}
+
+/** The version bench.yaml pins for the `docxodus` run, e.g. `docxodus@9.0.0` → `9.0.0`. */
+function benchYamlDocxodusPin(): string {
+  const m = readFileSync("bench.yaml", "utf8").match(/^\s*package:\s*"docxodus@([^"]+)"/m);
+  if (!m) throw new Error("bench.yaml has no `package: \"docxodus@<version>\"` pin");
+  return m[1]!;
+}
+
 async function documentXml(bytes: Uint8Array): Promise<string> {
   const zip = await JSZip.loadAsync(bytes);
   return zip.file("word/document.xml")!.async("string");
+}
+
+/** A run-stable structural signature of a redline. docxodus output is NOT byte-reproducible
+ *  (fresh zip mtimes and revision dates per call), but the tracked-change SHAPE is: repeated
+ *  calls on one engine give an identical signature, and the two comparison engines give
+ *  different ones. That makes this a sound way to prove WHICH engine produced a document. */
+async function redlineShape(bytes: Uint8Array) {
+  const xml = await documentXml(bytes);
+  return {
+    ins: (xml.match(/<w:ins[\s>]/g) ?? []).length,
+    del: (xml.match(/<w:del[\s>]/g) ?? []).length,
+    xmlLen: xml.length,
+  };
+}
+
+/** First corpus pair whose base and next DOCX both exist on disk. */
+function firstPair() {
+  const p = parseManifest(MANIFEST, ["ok"]).find(
+    (x) => existsSync(join(SOURCE, `${x.base}.docx`)) && existsSync(join(SOURCE, `${x.next}.docx`)),
+  )!;
+  return [
+    new Uint8Array(readFileSync(join(SOURCE, `${p.base}.docx`))),
+    new Uint8Array(readFileSync(join(SOURCE, `${p.next}.docx`))),
+  ] as const;
 }
 
 describe("generate-native-redlines", () => {
@@ -75,6 +127,102 @@ describe("generate-native-redlines", () => {
     },
     60_000,
   );
+
+  // ── docxodus is benchmarked at a KNOWN version driving a NAMED engine ──────────
+  //
+  // Two ways a docxodus run can silently measure something other than what it reports,
+  // both of which these tests make loud:
+  //
+  //  1. Version split-brain. bench.yaml's `package: "docxodus@X"` is installed into —
+  //     and read back from — the REPO ROOT node_modules, because cli.py calls
+  //     tool_updater.resolve_tool_version(cwd=Path.cwd()). The adapter, however,
+  //     imports docxodus from the VENDORED utils/docxodus/node_modules tree. Nothing
+  //     forces those two to hold the same version, so a run can record `tool_version:
+  //     7.0.0` while the numbers come from a different build entirely.
+  //
+  //  2. Unnamed engine. `compareDocuments(base, next)` with no options resolves the
+  //     engine from whatever the installed version happens to default to. docxodus
+  //     7.0.0 defaulted to WmlComparer; 9.0.0 flipped the unnamed default to DocxDiff
+  //     (`dist/index.js`: `const engine = options?.engine ?? ComparisonEngine.DocxDiff`).
+  //     Identical call, different comparison engine, no error, different scores.
+  describe("docxodus version + engine pinning", () => {
+    it("the docxodus that runs is the version bench.yaml pins", () => {
+      const pinned = benchYamlDocxodusPin();
+      // Both trees must agree with the pin: the root one because that is what the run
+      // RECORDS as tool_version, the vendored one because that is what it MEASURES.
+      expect(
+        { root: installedVersion(DOCXODUS_ROOT_PKG), vendor: installedVersion(DOCXODUS_VENDOR_PKG) },
+        "bench.yaml pins docxodus@" +
+          pinned +
+          " — the installed trees must match it, or the run records one version and measures another",
+      ).toEqual({ root: pinned, vendor: pinned });
+    });
+
+    it.runIf(haveCorpus && haveDocxodus)(
+      "the adapter names the comparison engine instead of inheriting the version default",
+      async () => {
+        // Stand in for docxodus and record exactly what the adapter passes through.
+        const seen: { options?: unknown } = {};
+        vi.doMock(DOCXODUS_ENTRY, () => ({
+          ComparisonEngine: { WmlComparer: 0, DocxDiff: 1 },
+          initialize: async () => {},
+          compareDocuments: async (_a: Uint8Array, _b: Uint8Array, options?: unknown) => {
+            seen.options = options;
+            return new Uint8Array([1, 2, 3]);
+          },
+        }));
+        try {
+          vi.resetModules();
+          const { loadEngine: freshLoadEngine } = await import("./generate-native-redlines.ts");
+          const engine = await freshLoadEngine("docxodus", "");
+          const [base, next] = firstPair();
+          await engine(base, next);
+          expect(
+            (seen.options as { engine?: number } | undefined)?.engine,
+            "loadEngine('docxodus') must pass an explicit CompareOptions.engine; passing none " +
+              "makes the benchmarked engine a property of the installed version, not of the bench",
+          ).toBe(1 /* ComparisonEngine.DocxDiff */);
+        } finally {
+          vi.doUnmock(DOCXODUS_ENTRY);
+          vi.resetModules();
+        }
+      },
+      30_000,
+    );
+
+    it.runIf(haveCorpus && haveDocxodus)(
+      "the engine the adapter names is still the one docxodus itself defaults to",
+      async () => {
+        const dox: any = await import(DOCXODUS_ENTRY);
+        await dox.initialize();
+        const [base, next] = firstPair();
+
+        const shapeOf = async (options?: unknown) =>
+          redlineShape(await dox.compareDocuments(base, next, options));
+        const unnamed = await shapeOf(undefined);
+        const wml = await shapeOf({ engine: dox.ComparisonEngine.WmlComparer });
+        const docxDiff = await shapeOf({ engine: dox.ComparisonEngine.DocxDiff });
+
+        // If the engines produced identical markup the rest of this proves nothing.
+        expect(wml, "the two comparison engines must produce materially different redlines").not.toEqual(
+          docxDiff,
+        );
+
+        // Drift alarm: we deliberately benchmark docxodus at ITS OWN current default rather
+        // than freezing a legacy engine. If a future release moves that default again, this
+        // fails and forces a re-review instead of quietly shifting every docxodus score.
+        expect(
+          unnamed,
+          "docxodus changed its unnamed default engine — re-review which engine the bench should name",
+        ).toEqual(docxDiff);
+
+        // And the adapter really drives that engine end to end.
+        const engine = await loadEngine("docxodus", "");
+        expect(await redlineShape(await engine(base, next))).toEqual(docxDiff);
+      },
+      60_000,
+    );
+  });
 
   it.runIf(haveCorpus)(
     "docx-redline-js adapter produces a redline docx with tracked changes",

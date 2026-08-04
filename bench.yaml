@@ -89,7 +89,7 @@ generate_scripts:
     command: "mkdir -p /tmp/pdf_source_render/pdf && cp -c corpus/word_based/pdf_source/*.pdf /tmp/pdf_source_render/pdf/ 2>/dev/null || cp corpus/word_based/pdf_source/*.pdf /tmp/pdf_source_render/pdf/ 2>/dev/null; uv run bench render corpus/word_based/docx_source /tmp/pdf_source_render --backend soffice --jobs 12 && mv -n /tmp/pdf_source_render/pdf/*.pdf corpus/word_based/pdf_source/ 2>/dev/null; true"
 
 # Tool versions are PINNED to the ones we reviewed:
-#   docxodus 7.0.0 · docx-redline-js = local TS migration (dist: sibling package)
+#   docxodus 9.0.0 · docx-redline-js = local TS migration (dist: sibling package)
 #   @stll/folio-core 0.3.1 (generator) · @stll/folio-react 0.5.0 (viewer)
 #   superdoc-sdk (Python) 1.19.2 · superdoc editor (npm) 1.44.1  ← different packages
 #   jubarte builds are content-hashed under dist/
@@ -118,8 +118,19 @@ runs:
 
   # (2) docxodus — WASM/.NET compareDocuments (JSv4/docxodus, MIT). npm-published, so its
   # version is npm-resolved and stamped into tool_version.
+  #
+  # This pin installs into (and is read back from) the REPO ROOT node_modules, while the
+  # adapter imports the VENDORED utils/docxodus/node_modules tree. Bump all three together
+  # — this pin, root package.json, and utils/docxodus/package.json — or the run records one
+  # version and measures another. generate-native-redlines.test.ts enforces the agreement,
+  # which is also why root package.json pins docxodus exactly rather than by ^range: a
+  # caret would let `bun install` drift the recorded version away from this pin.
+  #
+  # 9.0.0 moved the UNNAMED default comparison engine from WmlComparer to DocxDiff. The
+  # adapter now names the engine explicitly, so this bump changes the measured version
+  # without also making the measured engine a side effect of it.
   - name: docxodus
-    package: "docxodus@7.0.0"
+    package: "docxodus@9.0.0"
     generate: "node --import tsx scripts/generate-native-redlines.ts --method=docxodus --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=docxodus"
     render: soffice
     jobs: 12
