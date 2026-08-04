@@ -269,6 +269,26 @@ is not comparable to a tool that computes its own alignment.
 Its 2026-08-04 failure (`tool build dir not found`) was our missing clone, not
 their code.
 
+**And its second failure was our Node, not their code either.** After the clone
+landed, the CLI died at *import* time with
+`TypeError: varStorage.getItem is not a function`. Root cause established
+2026-08-04: **Node 25.x alone** defines a global `localStorage` whose methods
+are absent unless `--localstorage-file` is passed; lib0 (bundled inside
+`@harbour-enterprises/superdoc`, hence any yjs-family vendor) does
+`typeof localStorage !== "undefined" && localStorage`, adopts the stub, and
+dies. Measured on this machine: Node 20.20.2 / 24.18.0 / 26.6.0 → works;
+Node 25.9.0 → crashes. Upgrading the vendor's dependency does not help — the
+latest `@harbour-enterprises/superdoc` still crashes on 25.
+
+Verified fix: `NODE_OPTIONS=--no-experimental-webstorage` makes the CLI run
+normally here. So **superdoc-redlines is benchmarkable**, and any score recorded
+while it was crashing measures our interpreter choice, not their fidelity.
+
+The counter-argument, stated because it is real: `superdoc-redlines` declares
+`engines.node: ">=18.0.0"`, which does include 25. But that range predates Node
+25, and the crash comes from an experimental Node feature being on by default —
+scoring a vendor on that is scoring the runtime (plan Chapter 6 D6).
+
 ### docx-redline-js
 
 | field | value |
