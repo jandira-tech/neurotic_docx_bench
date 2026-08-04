@@ -139,7 +139,14 @@ runs:
     render: soffice
     jobs: 12
     vendor: docxodus
-    benchmarks: [accepted_changes, script_redlines, roundtrip, visual_rendering, visual_redlines, visual_accepted_changes]
+    # visual_* deliberately NOT here. This is a GENERATING run (render: soffice);
+    # the visual oracles belong to the dedicated docxodus-playwright-* runs, exactly
+    # as folio and superdoc are arranged. docxodus was the only generating run
+    # declaring them, which handed it three extra near-zero rows (visual_rendering
+    # and visual_accepted_changes both scored n_docs=0) that no other generating
+    # vendor carried -- including ours, whose runs declare only the three below.
+    # A competitor-only wipeout produced by our config is not a measurement.
+    benchmarks: [accepted_changes, script_redlines, roundtrip]
 
   # (2b) docxodus-playwright-* — render DOCX through react-docxodus-viewer via
   # Playwright. One run per visual_* oracle corpus (same pattern as folio-playwright-*).
