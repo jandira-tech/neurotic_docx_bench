@@ -44,21 +44,37 @@ reached the deficit belongs in this file, not in the competitor's score.
 | field | value |
 |---|---|
 | Package | npm `docxodus` (WASM build of the C# engine) |
-| Benchmarked | **9.0.0** (was pinned `7.0.0` — two majors stale) |
+| Pinned | **9.0.0** (was `7.0.0` — two majors stale) |
+| Actually measured so far | **7.0.0** — see the retraction below; a true 9.0.0 run is pending |
 | Harness-assisted | No — single `compareDocuments` call, now with an explicitly named engine |
-| Known-unfixed | See below — **may be resolved in 9.0.0** |
+| Known-unfixed | Yes — status against 9.0.0 **unknown**, see retraction |
 
-**9.0.0 is a different engine, and it matters for the claim below.** On the
-same 803-pair corpus, 7.0.0 crashed in `WmlComparer.AddFootnotesEndnotesStyles`
-(the old DOM comparer). 9.0.0's failures come from an entirely different,
-IR-based stack — `Docxodus.DocxDiff.Compare`, `Docxodus.Ir.IrReader.Read`,
-`Docxodus.Ir.Diff.IrMarkupRenderer.Render` — and the old crash site does not
-appear at all. 38 of 765 pairs failed generation, each an exception thrown by
-the vendor's own code on our input, so each is recorded as a genuine vendor
-failure under ITT.
-
-Two consequences for honesty: the engine we criticised is not the engine now
-shipping, and the pin that held us on 7.0.0 is what kept us criticising it.
+> **RETRACTED 2026-08-04 — the run labelled `docxodus 9.0.0` executed 7.0.0.**
+>
+> The `package:` pin installs into the repo-root `node_modules` and
+> `tool_version` is read back from there (9.0.0), but the adapter imports
+> `src/neurotic_docx_bench/utils/docxodus/node_modules`, which still held
+> **7.0.0**. The published line recorded one version and ran another — the D5
+> split-brain, in the very vendor whose upgrade introduced the D5 fix, caught by
+> that upgrade's own test only after the number had been published. The vendored
+> tree is now at 9.0.0 and **docxodus must be re-run** before any 9.0.0 number
+> is quoted.
+>
+> Two claims made on the strength of that run are withdrawn:
+>
+> 1. That **9.0.0 is a rewritten IR-based engine**, inferred from failures moving
+>    from `WmlComparer.AddFootnotesEndnotesStyles` to `Ir.IrReader` /
+>    `IrMarkupRenderer.Render`. The crash sites did move — but the same change
+>    also made the adapter **name the comparison engine explicitly**, selecting a
+>    different engine inside the *same* 7.0.0 build. Engine identity and version
+>    identity were confounded, and the version was the wrong explanation.
+> 2. That **the bug behind the rejected upstream PR may already be fixed.** That
+>    was inferred from the same moved crash site, inherits the same confound, and
+>    is not established in either direction.
+>
+> The ITT mean of **51.70** (n=707 of 763) stands only as a measurement of
+> *docxodus 7.0.0 driven with an explicitly named engine*. It is not a 9.0.0
+> result and must not be labelled one.
 
 Two disclosures:
 
@@ -86,7 +102,8 @@ Two disclosures:
    exists**, so no fork row can be produced here yet and those runs cannot
    resolve a version at all.
 
-3. **Observed crash on the current corpus (docxodus 7.0.0, 2026-08-04 sweep).**
+3. **Observed crash on the current corpus (docxodus 7.0.0, 2026-08-04 sweep,
+   default engine).**
    A recurring managed exception, thrown from the vendor's own stack:
 
    ```
@@ -99,7 +116,7 @@ Two disclosures:
    This is the vendor's code failing on our input, so under ITT it scores as a
    failure and is **not** excluded. Whether it is the same defect as the
    rejected PR is **not yet established** — do not assert the connection in
-   published material until it is checked against 9.0.0.
+   published material until it is checked against a genuine 9.0.0 run.
 
 ### folio
 
