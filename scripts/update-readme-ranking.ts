@@ -488,16 +488,33 @@ export function buildFidelityTable(
 	}
 
 	const header = FIDELITY_HEADER;
+	// Rows with different ITT Docs are different measurements, not noisier ones
+	// (plan Chapter 6, D1). The counts were always printed, but only as a column,
+	// and a reader ranking by score does not audit it — jubarte-wasm once sat at
+	// #1 on n=195 above jubarte-rust on n=763, i.e. ahead on an easier subset.
+	// State it in prose instead of trusting the column to be noticed.
+	const coverageNote = (rows: FidelityRow[]): string => {
+		const counts = [...new Set(rows.map((r) => r.itt_n))].sort((a, b) => b - a);
+		if (counts.length < 2) return "";
+		return (
+			`\n\n> ⚠️ **Rows below cover different document counts (${counts.join(", ")}) — ` +
+			`they are not the same measurement.** A tool scored on fewer documents ran a ` +
+			`different, usually easier, subset; its rank is not comparable with a row ` +
+			`covering more. Compare only rows whose \`ITT Docs\` match.`
+		);
+	};
 	let body: string;
 	if (currentRows.length > 0 && legacyRows.length > 0) {
 		body =
-			`**Current corpus** (lines stamped with \`corpus_revision\` — the ` +
-			`403-pair corpus):\n\n${header}\n${fidelityBody(currentRows)}\n\n` +
+			`**Current corpus** (lines stamped with \`corpus_revision\`)` +
+			`${coverageNote(currentRows)}\n\n${header}\n${fidelityBody(currentRows)}\n\n` +
 			`**Legacy corpus** (older, smaller corpora — not comparable with the ` +
-			`rows above; kept for history until each tool re-runs):\n\n` +
+			`rows above; kept for history until each tool re-runs):` +
+			`${coverageNote(legacyRows)}\n\n` +
 			`${header}\n${fidelityBody(legacyRows)}`;
 	} else {
-		body = `${header}\n${fidelityBody(currentRows.length > 0 ? currentRows : legacyRows)}`;
+		const only = currentRows.length > 0 ? currentRows : legacyRows;
+		body = `${coverageNote(only)}\n\n${header}\n${fidelityBody(only)}`.trimStart();
 	}
 
 	return (
