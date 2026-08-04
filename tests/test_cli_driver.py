@@ -98,7 +98,10 @@ def test_tool_version_stamped_in_jsonl(tmp_path, sample_oracle_pdfs):
     assert r.exit_code == 0, r.output
     line = jsonl_emit.last_line_for_benchmark(results / "bench.jsonl", "prebaked", "script_redlines")
     assert line is not None
-    assert line["tool_version"] == "2.3.4"
+    # tests that the dist's version is STAMPED into the row; the pin is
+    # "<version>@<content-hash>" since 2026-08-04 (a bare version cannot distinguish
+    # two builds — see test_local_version_from_package_json for why that changed).
+    assert line["tool_version"].startswith("2.3.4@")
     assert line["vendor"] == "prebaked"
     assert line["benchmark"] == "script_redlines"
 
