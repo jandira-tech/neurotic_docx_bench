@@ -92,6 +92,10 @@ src/neurotic_docx_bench/utils/superdoc/harness-viewer-generation/node_modules/
 src/neurotic_docx_bench/utils/folio/folio
 
 # yuch85/superdoc-redlines — fresh clone + npm install at repo root (see AGENTS.md "Adding a tool")
+# SuperDoc monorepo clone (Harbour-Enterprises/SuperDoc). The superdoc-native
+# run's `dist:` points at superdoc/packages/super-editor. Too large to commit;
+# see AGENTS.md "Adding a tool".
+/superdoc/
 /superdoc-redlines/
 jubarte-rs-probe/
 jubarte-lossless/
