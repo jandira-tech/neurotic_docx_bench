@@ -83,7 +83,7 @@ def test_moved_payload_is_recoverable_byte_for_byte(tmp_path: Path) -> None:
     _write(p, [original, _line("v", "1.0", "r2")])
     cr.compact(p, detail_dir=tmp_path / "results" / "detail", root=tmp_path)
 
-    detail = tmp_path / "results" / "detail" / "r1.json.gz"
+    detail = tmp_path / "results" / "detail" / "r1__script_redlines.json.gz"
     assert detail.is_file()
     with gzip.open(detail, "rt", encoding="utf-8") as fh:
         payload = json.load(fh)
@@ -199,7 +199,7 @@ def test_stub_path_is_root_relative_and_matches_what_hydrate_reads(tmp_path: Pat
     cr.compact(p, detail_dir=tmp_path / "results" / "detail", root=tmp_path)
 
     stub = json.loads(p.read_text().splitlines()[0])
-    assert stub["detail"] == "results/detail/r1.json.gz"
+    assert stub["detail"] == "results/detail/r1__script_redlines.json.gz"
     # and the anchor actually resolves
     assert (tmp_path / stub["detail"]).is_file()
     assert cr.hydrate(stub, root=tmp_path)["per_doc"] == _line("v", "1.0", "r1")["per_doc"]
@@ -213,3 +213,59 @@ def test_detail_dir_outside_root_is_rejected(tmp_path: Path) -> None:
     _write(p, [_line("v", "1.0", "r1"), _line("v", "1.0", "r2")])
     with pytest.raises(ValueError, match="not under root"):
         cr.compact(p, detail_dir=tmp_path / "detail", root=tmp_path / "elsewhere")
+
+
+def test_all_lines_also_compacts_the_current_line(tmp_path: Path) -> None:
+    """The plan's rule (supersededonly) recovers 18.9% on the real file because most
+    lines ARE the latest of their identity. `--all-lines` recovers 96.5%. It is opt-in
+    because it is only safe while nothing reads the moved fields back from this file.
+    """
+    p = tmp_path / "results" / "bench.jsonl"
+    p.parent.mkdir(parents=True)
+    _write(p, [_line("v", "1.0", "r1"), _line("v", "1.0", "r2")])
+    cr.compact(p, detail_dir=tmp_path / "results" / "detail", root=tmp_path, all_lines=True)
+
+    out = [json.loads(x) for x in p.read_text().splitlines()]
+    assert all("per_doc" not in line for line in out)
+    assert all(line["detail"] for line in out)
+    # Still fully recoverable — compaction never discards.
+    assert cr.hydrate(out[1], root=tmp_path)["per_doc"] == _line("v", "1.0", "r2")["per_doc"]
+
+
+def test_all_lines_still_keeps_scores_inline(tmp_path: Path) -> None:
+    p = tmp_path / "results" / "bench.jsonl"
+    p.parent.mkdir(parents=True)
+    _write(p, [_line("v", "1.0", "r1"), _line("v", "1.0", "r2")])
+    cr.compact(p, detail_dir=tmp_path / "results" / "detail", root=tmp_path, all_lines=True)
+    out = [json.loads(x) for x in p.read_text().splitlines()]
+    assert all(line["scores"] for line in out)
+
+
+def test_lines_sharing_an_id_run_do_not_overwrite_each_other(tmp_path: Path) -> None:
+    """`id_run` identifies a RUN, not a line: one bench run emits script_redlines,
+    accepted_changes, roundtrip and visual_redlines lines that all carry the same
+    id_run (up to 4 on the real file). Keying detail files on id_run alone made the
+    last line's payload overwrite the earlier ones — silent data loss, caught only by
+    hydrating every stub back and comparing against a pre-compaction backup.
+    """
+    p = tmp_path / "results" / "bench.jsonl"
+    p.parent.mkdir(parents=True)
+    lines = []
+    for bench in ("script_redlines", "accepted_changes", "roundtrip"):
+        old = _line("v", "1.0", "r1")
+        old["benchmark"] = bench
+        old["per_doc"] = {"marker": bench}          # distinct payload per benchmark
+        lines.append(old)
+        new = _line("v", "1.0", "r2")
+        new["benchmark"] = bench
+        lines.append(new)
+    _write(p, lines)
+
+    cr.compact(p, detail_dir=tmp_path / "results" / "detail", root=tmp_path)
+
+    out = [json.loads(x) for x in p.read_text().splitlines()]
+    stubs = [line for line in out if line.get("detail")]
+    assert len(stubs) == 3
+    assert len({s["detail"] for s in stubs}) == 3, "each line needs its OWN detail file"
+    for stub in stubs:
+        assert cr.hydrate(stub, root=tmp_path)["per_doc"] == {"marker": stub["benchmark"]}
