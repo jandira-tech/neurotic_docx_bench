@@ -162,7 +162,26 @@ export type RedlineEngine = ((
 ) => Promise<Uint8Array>) & { dispose?: () => Promise<void> };
 
 /** Load the redline engine for `method` and return compare(base,next)->docx bytes. */
-export async function loadEngine(
+export /**
+ * Directory to import `@stll/folio-core` from.
+ *
+ * Prefers the repo-root `node_modules` because that is the ONE copy the
+ * bench.yaml `package:` pin installs into and whose version is read back as
+ * `tool_version`. Three copies exist on disk (root, `utils/folio`,
+ * `harness/folio-viewer-current`) at three different versions, so importing by
+ * convenience rather than by the pin means recording one version and running
+ * another (plan Chapter 6 D5).
+ */
+function resolveFolioModuleRoot(): string {
+	const root = resolve(import.meta.dirname, "../node_modules");
+	if (existsSync(join(root, "@stll/folio-core/dist/server.js"))) return root;
+	return resolve(
+		import.meta.dirname,
+		"../src/neurotic_docx_bench/utils/folio/node_modules",
+	);
+}
+
+async function loadEngine(
 	method: string,
 	distPath: string,
 ): Promise<RedlineEngine> {
@@ -396,12 +415,17 @@ export async function loadEngine(
 		//
 		// FOLIO_MODULE_ROOT (absolute path to a node_modules dir) lets a comparison
 		// run swap in a different folio build; unset = the pinned vendored tree.
+		// Resolve from the tree the bench.yaml pin actually installs into (repo
+		// root), falling back to the vendored sub-install. Getting this backwards
+		// is plan Chapter 6 D5: `bench.yaml` pins @stll/folio-core@0.15.13, the
+		// updater installs it at the repo root and reports THAT version as
+		// tool_version, but this adapter used to import
+		// utils/folio/node_modules — which still holds 0.3.1. The run therefore
+		// recorded 0.15.13 while executing 0.3.1, and since generateRedlineDocx
+		// only exists from 0.13.0 the whole run died with "generateRedlineDocx is
+		// not a function" — attributed to folio, caused by us.
 		const folioModuleRoot =
-			process.env.FOLIO_MODULE_ROOT ??
-			resolve(
-				import.meta.dirname,
-				"../src/neurotic_docx_bench/utils/folio/node_modules",
-			);
+			process.env.FOLIO_MODULE_ROOT ?? resolveFolioModuleRoot();
 		const { generateRedlineDocx }: any = await import(
 			join(folioModuleRoot, "@stll/folio-core/dist/server.js")
 		);
