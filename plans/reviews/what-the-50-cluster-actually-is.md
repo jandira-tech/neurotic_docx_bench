@@ -316,12 +316,18 @@ answer to the question Finding 2 leaves open. Effective spacing resolved through
 docDefaults → `basedOn` chain → direct `pPr`, per attribute, over the 46 text-identical
 documents (3714 paragraphs), candidate against Word:
 
-| effective attribute | at the scored baseline | documents |
+| effective attribute | at `1be1fcd` (the **candidate**, 76.7112) | documents |
 |---|---:|---:|
 | `w:spacing/@line` | 436 paragraphs (11.7%) | 29/46 |
 | `w:spacing/@after` | 337 (9.1%) | 31/46 |
 | `w:spacing/@before` | 147 (4.0%) | 15/46 |
 | `w:spacing/@lineRule` | 130 (3.5%) | 6/46 |
+
+> **Column relabelled.** This column was first published — by its author and then by me,
+> copying the label without checking it — as "at the scored baseline." It is not; it is
+> the **post-style-work** state. The shape and the conclusion are unchanged (the defect
+> survives workstream S), but a reader comparing it against the 76.2072 baseline figures
+> elsewhere would be comparing two different engines.
 
 Top transitions (candidate → oracle):
 
