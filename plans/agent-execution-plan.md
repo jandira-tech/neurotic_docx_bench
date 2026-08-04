@@ -681,6 +681,23 @@ A cross-vendor number is publishable only when all six hold:
 6. **Disclosed thumbs.** Every place we touched a vendor's code, forked it, or
    know of an unfixed bug is written down next to the number.
 
+### 6.2b Checked and cleared (negative results worth recording)
+
+Suspicions that were tested and did **not** hold. Recorded so nobody re-opens
+them from first principles, and because a validity chapter that only lists
+confirmed defects looks like motivated reasoning.
+
+- **Author-name colour bias — REFUTED.** The Word oracle stamps
+  `w:author="Comparison"`, while every tool stamps its own
+  (`jubarte-native`, `folio`, `superdoc`, `redlines`, `docx-redline-js`).
+  Since LibreOffice colours tracked changes per author, this looked like a
+  systematic pixel penalty applied to every vendor for a cosmetic reason.
+  Tested directly: one oracle redline was copied twice, differing **only** in
+  `w:author`, rendered through the same LibreOffice, and scored against
+  itself. Result **100.00**. LibreOffice assigns colour by author *index*, not
+  by name, so a single-author document renders identically whatever the author
+  is called. No bias, no normalisation needed.
+
 ### 6.3 Tasks
 
 **6.3.1 — Corpus symmetry. ✅ DONE 2026-08-04.** Hoisted to a top-level
