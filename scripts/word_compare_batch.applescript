@@ -84,7 +84,18 @@ on run argv
 
 									-- Signature verified against this machine's sdef (Word 16.98).
 									-- `target` omitted => the result opens as a NEW document.
-									compare baseDoc path nextP ignore all comparison warnings true add to recent files false
+									--
+									-- `detect format changes true` makes Word emit *PrChange
+									-- revisions (w:rPrChange, w:pPrChange, w:tblPrChange, ...)
+									-- for formatting-only differences. With it OFF, a pair that
+									-- differs only in font, bullet glyph, spacing or table
+									-- properties compares to a document with no revisions at
+									-- all — indistinguishable from "compare silently failed".
+									-- It is ON for this corpus, so the ground truth covers
+									-- formatting fidelity and not just text edits. Flipping it
+									-- back would silently change what every score means: do not
+									-- flip it for part of a corpus.
+									compare baseDoc path nextP detect format changes true ignore all comparison warnings true add to recent files false
 
 									-- Identify the result by exclusion rather than trusting
 									-- `active document`: if compare silently produced nothing,

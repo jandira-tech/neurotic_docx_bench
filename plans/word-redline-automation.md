@@ -111,6 +111,37 @@ loop then saves. Still write one manual smoke test against a single pair and
 confirm the saved output's `word/document.xml` contains `<w:ins` / `<w:del`
 before building the loop.
 
+### `detect format changes` defaults to TRUE — measured, not assumed
+
+The sdef lists the parameter as optional and says nothing about its default.
+Do not guess it. A three-way probe on this machine (Word 16.98, 2026-08-04),
+run over four pairs of different character — a formatting-only pair
+(`word-native-bullet-disc` vs `-square`), a table-heavy pair, a list-heavy
+pair, and a wholesale-rewrite pair:
+
+| pair            | omitted            | `true`             | `false`           |
+|-----------------|--------------------|--------------------|-------------------|
+| bullet disc→sq  | 0 ins 0 del **6 PrChange** | 0/0 **6** | 0/0 **0**  |
+| bullet circ→sq  | 0/0 **6**          | 0/0 **6**          | 0/0 **0**         |
+| table pair      | 56/196 **2**       | 56/196 **2**       | 56/196 **0**      |
+| list pair       | 2/12 **12**        | 2/12 **12**        | 2/12 **0**        |
+
+Omitting the parameter is identical to passing `true`; only an explicit
+`false` suppresses `*PrChange`. The batch now passes `detect format changes
+true` **explicitly** — not because it changes today's output, but so the
+corpus does not silently change meaning if a future Word build flips the
+default.
+
+Two consequences worth internalising:
+
+- A formatting-only pair produces **zero** `w:ins`/`w:del` and only
+  `*PrChange` revisions. Any validator that looks for ins/del alone declares
+  such a redline empty and throws away exactly the ground truth that tests
+  formatting fidelity. That bug shipped here once (§5) and cost 115 pairs.
+- The flag must be the same for every pair in a corpus. Flipping it partway
+  makes two rows mean different things while looking identical, and no
+  downstream check can detect it.
+
 ## 4. The compare loop (reference implementation)
 
 One Word instance, strictly sequential — Word's Apple-events interface is not
@@ -191,9 +222,26 @@ checks, all three required per file:
 
 1. `unzip -t` passes (zip integrity).
 2. Python (`python-docx` or raw lxml): package opens, and `word/document.xml`
-   contains at least one `w:ins` or `w:del` element — an empty compare means
-   the pair was content-identical (see same-SHA rule in the pairing spec) or
-   the compare silently failed; mark `status=empty_redline`, don't ship it.
+   contains at least one **revision** — `w:ins`, `w:del`, *or* a `*PrChange`
+   formatting revision (`w:rPrChange`, `w:pPrChange`, `w:tblPrChange`,
+   `w:trPrChange`, `w:tcPrChange`, `w:sectPrChange`, `w:tblGridChange`). An
+   empty compare means the pair was content-identical (see same-SHA rule in
+   the pairing spec) or the compare silently failed; mark
+   `status=empty_redline`, don't ship it.
+
+   **Counting only ins/del is a real bug, not a theoretical one.** It shipped
+   in the first version of `scripts/validate_word_redlines.py` and rejected
+   every formatting-only pair — including both `word-native-bullet-*` pairs,
+   which carry 6 `w:rPrChange` revisions each and are the purest formatting
+   ground truth in the pool. The rejects were then replaced via `--top-up`,
+   which re-drew the seeded cross pairs from the point of the first exclusion
+   onward and shifted 115 of 400 pairs. Two lessons: count all revision
+   kinds, and treat "the pairing no longer reproduces from the seed" as a
+   defect in its own right.
+
+   Count XML **elements**, never substrings: `w:insideH` (table borders)
+   starts with `w:ins`, so a text search reports insertions in documents that
+   have none.
 3. LibreOffice render smoke: `soffice --headless --convert-to pdf` exits 0.
 
 Then one batch Word-reopen pass (reuse the §4 loop minus compare/save) over a

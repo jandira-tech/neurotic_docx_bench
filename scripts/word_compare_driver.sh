@@ -185,17 +185,40 @@ echo "    manifest: $(wc -l < "$STAGED_MANIFEST" | tr -d ' ') pairs -> $STAGED_M
 # work list. Skipping on "output exists" alone is not enough — a pair that
 # always fails never produces an output, so it would be retried forever (it
 # was: 4 restarts, same pair, log growing only with skip lines).
+#
+# But "has an [ok] line" is not enough either. The log is append-only and
+# outlives the manifest: re-pairing can re-introduce a pair whose redline was
+# since deleted, and its stale [ok] then hides it from every future run — it
+# silently never gets compared. So a pair counts as done when:
+#
+#   [ok] AND its redline exists   (repo dir, or still staged and uncollected)
+#   [fail] recorded IN THIS INVOCATION
+#
+# Only same-run failures block, so a stale [fail] cannot permanently bar a pair
+# either, while termination within a run is still guaranteed.
 STALL_SECS=420
 MAX_RESTARTS=80
 restarts=0
 touch "$LOG"
+LOG_START=$(wc -l < "$LOG" | tr -d ' ')
 RESULT_FILE="$STAGE/.batch_result"
 REMAINING="$STAGE/.remaining.tsv"
 DONE_IDS="$STAGE/.done_ids"
 
 echo "==> comparing (log: $LOG)"
 while :; do
-	grep -E '^\[(ok|fail)\] ' "$LOG" | awk '{print $2}' | sort -u > "$DONE_IDS"
+	# [ok] pairs, kept only if the redline they claim actually exists.
+	# `|| true` on both greps: an empty log (first run) or a run with no
+	# failures yet makes grep exit 1, and `set -e` would abort the driver.
+	{ grep -E '^\[ok\] ' "$LOG" || true; } | awk '{print $2}' | sort -u | while IFS= read -r id; do
+		if [[ -s "$CORPUS/docx_redlines_word/${id}_redline.docx" || -s "$STAGE/out/${id}_redline.docx" ]]; then
+			printf '%s\n' "$id"
+		fi
+	done > "$DONE_IDS"
+	# [fail] pairs from THIS invocation only (guarantees termination now,
+	# without a stale failure barring the pair forever).
+	{ tail -n "+$((LOG_START + 1))" "$LOG" | grep -E '^\[fail\] ' || true; } | awk '{print $2}' >> "$DONE_IDS"
+	sort -u -o "$DONE_IDS" "$DONE_IDS"
 	awk -F'\t' 'NR==FNR { d[$1] = 1; next } !($1 in d)' "$DONE_IDS" "$STAGED_MANIFEST" > "$REMAINING"
 	remaining=$(wc -l < "$REMAINING" | tr -d ' ')
 	completed=$(wc -l < "$DONE_IDS" | tr -d ' ')
