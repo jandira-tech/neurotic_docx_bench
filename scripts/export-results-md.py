@@ -417,10 +417,17 @@ def holdout_gap_section(path: Path) -> list[str]:
                         hold_by_vendor[vendor] = data
                 else:
                     main_lines.append(data)
+    # Describe the holdout by what the RUNS actually scored, not by a hard-coded size:
+    # the sealed set grew from 20 (word_based only) to 40 when the SuperDoc subcorpus
+    # landed, and the stale "20-pair" blurb contradicted the n_holdout column beside it.
+    hold_sizes = {_n_docs(line) for line in hold_by_vendor.values() if _n_docs(line)}
+    # Mid-migration vendors can disagree (20-key lines beside 40-key ones); printing
+    # either number would be wrong for half the table, so the claim is dropped.
+    sealed = f"Sealed {next(iter(hold_sizes))}-pair holdout" if len(hold_sizes) == 1 else "Sealed holdout"
     header = [
         "## Holdout gap",
         "",
-        "Sealed 20-pair holdout (`corpus/word_based/holdout.txt`) vs the visible "
+        f"{sealed} (`corpus/holdout_combined.txt`) vs the visible "
         "corpus, per vendor: the latest holdout-only run (`bench run --holdout`) "
         "next to the latest COMPARABLE main run — same tool_version, "
         "`holdout_mode=excluded` (disjoint from the sealed set), full corpus "
