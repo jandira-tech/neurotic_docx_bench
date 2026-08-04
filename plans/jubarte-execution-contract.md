@@ -187,6 +187,67 @@ rejecting the outcome.
   statement. This is the honesty clause; it is not optional and it is not negotiable
   after seeing the number.
 
+## C8 — An XML diff is not evidence until it survives a render
+
+Added 2026-08-04, after **nine** hypotheses died in a single day across four sessions.
+This is the cheapest clause in the contract and it would have saved most of that day.
+
+**The defect.** Every session, mine included, diagnosed a defect by finding a real
+difference in the OOXML and reasoning about what it must do to the render. Every one of
+those diagnoses was wrong. The benchmark scores a LibreOffice render against a
+LibreOffice render, and a correct, schema-relevant, Word-visible XML difference routinely
+moves **zero pixels**.
+
+The nine, so nobody re-derives them:
+
+| hypothesis | how it died |
+|---|---|
+| `color_sim ≈ 0` is an independent 13.5-point lever | collinear with alignment: ssim>0.99 → color_sim 0.9995 |
+| style-resolved paragraph spacing drives the drift | cumulative delta **median 0 twips** |
+| page geometry (`sectPr`) differs | 15/46, all default-value serialisation, zero layout effect |
+| dropped headers/footers shift the body origin | 57.8% of cluster, but ≥90 reference drops them at 41.4% |
+| list numbering is *the* cluster cause | 2.6× enriched, but no within-cluster discrimination |
+| rust regenerates `theme1.xml` with different fonts | fonts preserved **390/390** |
+| section-property merge policy is wrong | Word takes the revised side 88%; so do we |
+| `normalize_incomplete_spacing` rule 2 | 7 documents, **0.000 delta**, A/B'd |
+| dangling `numbering.xml` style refs | repaired **7 → 0**, **0.0000 delta** on all 763 |
+
+**The contract.**
+
+1. **No mechanism may be proposed as a cause, or sized in a plan, without an A/B
+   attached.** Both arms built from **one commit**, so the mechanism is the only variable.
+2. **Size against the full 763, never a cluster sample.** A hand-picked cluster sample
+   over-represents movers by roughly 2×: a 21-document A/B read **+3.64** mean where the
+   corpus read **+0.50**. Sampled deltas are an upper bound, not an estimate.
+3. **A flat score is not automatically a failed fix.** It may be a Word-validity repair
+   the benchmark cannot see (C9). Decide which before reverting — I nearly reverted a
+   correct fix on this confusion.
+
+## C9 — The benchmark cannot price Word validity, and must say so
+
+**The defect.** Our oracle renders through LibreOffice. Schema validity and Word-repair
+behaviour appear nowhere in a pixel score. Confirmed twice from different engines and
+different defect classes, both scoring exactly zero: the TS `numbering.xml` style-ref
+repair (7 → 0 dangling, 0.0000 across 763) and the Rust `numPr` child-order plus
+`tblGridChange` author/date fixes (invalid 103 → 93, score delta 0.000 on the 29
+documents whose bytes changed).
+
+**The contract.**
+
+- **Validity work is judged on the validity census, never on score.** See
+  [reviews/validity-census.md](reviews/validity-census.md).
+- **The census is published alongside the score table**, not in an appendix. It is the
+  only evidence on a dimension the score cannot reach.
+- **`55/504` — invalid output from clean input — is the figure that isolates us** and the
+  one to drive to zero. Word's own comparison output is invalid on **49/504 (9.7%)**, so
+  *match Word* and *be schema-valid* are different targets; where they conflict, the
+  governing standard is **Word valid** — opens in Word with no warning, error, or repair
+  offer — not the XSD.
+
+Whether the oracle should be Word rather than LibreOffice is the largest open question in
+the programme and is **not actionable unilaterally**: switching it invalidates every
+recorded score.
+
 ## C7 — What none of this fixes
 
 The reviewers converged independently on a blind spot the machinery above does not
