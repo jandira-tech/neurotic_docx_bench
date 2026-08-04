@@ -32,6 +32,31 @@ bun run update-readme-ranking                 # tables between RANKING markers
 > *redline-markup fidelity vs Word*, not renderer drift. Feeding the oracle’s own source
 > DOCX back through that pipeline scores **100** (sanity check).
 
+> [!WARNING]
+> **Do not read the cross-vendor rows below as a fair comparison yet.** We are jubarte's
+> authors, and an audit on 2026-08-04 found three defects in the comparison — *all three
+> favouring us*. They are being fixed in the open; until they are, jubarte-vs-competitor
+> rows are provisional. Details and per-vendor disclosures:
+> [`docs/VENDOR_NOTES.md`](docs/VENDOR_NOTES.md) · plan Chapter 6.
+>
+> 1. **Different document sets in the same table.** Only jubarte's run enumerated all three
+>    corpus pools (803 pairs); every competitor silently ran on one (207 pairs). Any row
+>    whose `Docs` differs from another row's is *not the same measurement* — check the
+>    `Docs` / `ITT Docs` columns before comparing anything.
+> 2. **Best-of-N for us, single-shot for them.** The tables show jubarte's **best** version
+>    pin while each competitor shows its own pins. The maximum of several noisy runs is
+>    biased upward; measured inflation on real data was **+3.6 to +8.8 points**.
+> 3. **Stale competitor versions.** Pins ran up to two majors behind (docxodus 7.0.0 vs
+>    9.0.0 published, folio-core 0.3.1 vs 0.15.13, superdoc-sdk 1.19.2 vs 2.0.0). The pin
+>    was even enforced *downward*: a run downgraded `package.json` from docxodus ^7.1.0 to
+>    ^7.0.0.
+>
+> Also load-bearing: some competitor scores are partly **our** code — folio has no single
+> compare call and superdoc-redlines has no compare at all, so our harness supplies the
+> alignment. Those are marked harness-assisted in the ledger. And a failure only counts
+> against a vendor when *their* code produced it: tools we failed to install are our gap,
+> never their zero.
+
 <!-- RANKING-START -->
 ### script_redlines — redline markup vs Word
 
