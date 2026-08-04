@@ -264,3 +264,59 @@ Near-miss inventory (documents in [90,100), the pool that must convert):
 *Corpus: 763 ITT documents (803 pairs less the 40-pair sealed holdout), scorer
 `pagefair-v2`, oracle LibreOffice 26.2.4.2. Runs `019fcd2f` (docxodus 9.0.0),
 `019fcc6f` (lossless), `019fcc5d` (rust), `019fcc7c` (ast).*
+
+---
+
+# Correction, 2026-08-04 (evening) — §7's token analysis does not survive Stage 1
+
+§7 argued that our weakest fixture-name tokens (`rstyle`, `combos`, `linked`,
+`styles`, `ooxml`) coincide with docxodus 8.0.0's 53 new Style symbols, and called
+that "two independent lines of evidence pointing at the same defect". **Stage 1
+measured it and the coincidence does not hold.** Recorded here because that argument
+is what targeted workstream S, and it targeted it at the wrong population.
+
+**Fixture-name tokens name what a fixture TESTS, not why we lose on it.**
+`ooxml_rfonts_rstyle_linked_combos_*` is a *combinatorial* family — its members pair
+formatting attributes two at a time — so the token marks correlation granularity, not
+a shared cause. Measured on the 25 `rstyle`/`combos` pairs after the Rust engine's
+style-chain work landed:
+
+| | count |
+|---|---:|
+| pairs whose output `document.xml` changed | **0 / 25** |
+| pairs with a *live* colliding style (the population S addresses) | 6 / 25 |
+
+The family's lowest scorers — `highlight × bold` 41.05, `highlight × italic` 41.18,
+`italic × rFonts` 43.59, `size × strike` 44.15 — have **zero** live collisions and
+**zero** body-markup change. Style-chain resolution cannot move them because their
+defect is not style inheritance.
+
+**What the symbol-name inference got wrong.** Reading a competitor's exported symbol
+names tells you what they *built*, not what *we* lack. Three of the four repairs the
+names suggested were already present in our engines under different names, worthless
+on this corpus, or actively harmful:
+
+- `ResolveEffectiveStyleFormatting` (walk `w:basedOn` before comparing) — 238 merge
+  verdicts flip in the TS engine, and in **0** of them do the two sides name a
+  different parent. Every flip is a no-op with ratchet risk.
+- `DropUnresolvableStyleRef` — **the wrong repair.** Word's own redline emits the
+  identical dangling `rStyle w:val="Hyperlink"`; dropping it moves us *away* from the
+  oracle. The remaining dangling-ref pairs already score 97.6 and 100.0.
+- `NormalizeInsertedParagraphStyle` / `CollectUsedStyleIdentities` / `EnsureStylesPart`
+  — already implemented in the TS engine as `CopyMissingStylesFromOneDocToAnother`,
+  `BuildMergedStyleLikeWord`, `EnrichDocDefaultsLikeWord`.
+
+**What the corpus said instead**, found by measuring the oracles rather than reading
+docxodus's exports: Word's Compare stylesheet takes the **revised** document's
+definition of every style both documents define and records the **original** inside a
+`w:pPrChange` / `w:rPrChange` **on the `w:style` element itself**. 52.5% of 564 corpus
+oracles carry style-level change markup. Our `copy_missing_styles` was keyed on
+`(type, styleId)` and skipped any id already present whatever its body, so the output
+kept the original's definition and recorded nothing — content on both sides rendered
+with the original's fonts, sizes and borders and the change was invisible.
+
+**136 of 597 corpus pairs carry at least one live collision. They score mean 59.7 /
+median 55.9, against 79.4 / 86.2 for pairs without one.**
+
+That is a real, sized, measured population — and it is not the one the token table
+pointed at. Use token tables to locate fixtures, never to attribute cause.
