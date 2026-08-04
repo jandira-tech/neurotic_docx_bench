@@ -29,6 +29,23 @@ to 99 raises the conversion requirement by one, silently.
 | **R-fail** | the failure count may not increase | a stage that raises the mean while reintroducing failures has not worked |
 | **R-tail** | no document may drop by more than 10 points | catches a stage that trades many small losses for a few large wins |
 
+> **R-tail's threshold is BELOW the measured noise floor and is not currently sound.**
+> Found 2026-08-04. Between the two `jubarte-rust` runs, **nine documents moved with
+> byte-identical input DOCX**, identical `score_config` and an unchanged oracle — one of
+> them by **+12.75**, above R-tail's own 10-point rule. Both runs are outside the
+> `soffice`-kill window, so it is not that.
+>
+> **Consequence: an R-tail trip at 10 points is not by itself evidence of a regression.**
+> Until the floor is re-measured and the threshold set above it, every R-tail trip must
+> be checked against the noise population before it is treated as real. The trip recorded
+> in [reviews/stage1-measured-impact.md](reviews/stage1-measured-impact.md) survives this
+> test comfortably — −47.03, nearly 4× the floor, with a diagnosed cause — but it survives
+> *on that margin*, not on the rule.
+>
+> This does not weaken C1; it means C1's numbers were set without measuring the
+> instrument. Re-derive R-tail's threshold from `results/noise_floor.json` and state the
+> floor alongside it.
+
 A stage that trips any ratchet is **not complete**. It is either fixed or reverted; it
 is never accepted with a note. Targets are restated as **net** figures after each stage,
 never gross.
