@@ -171,6 +171,29 @@ Disclosures:
   the vendor's score rather than zero-filled.
 - **`superdoc-native` failure was also ours**: `tool build dir not found:
   superdoc/packages/super-editor`, i.e. the gitignored monorepo clone was absent.
+- **Upgrading to latest LOWERS superdoc's coverage, and we are publishing the
+  lower number.** Measured A/B on the same first 25 pairs of
+  `corpus/word_based/centralized_mapping.csv`: `superdoc-sdk` **1.19.2
+  generated 25/25**, **2.0.0 generates 20/25**. The 5 losses are not adapter
+  bugs — they are deliberate engine-side refusals in 2.0.0, which declines
+  rather than emit markup it cannot author faithfully:
+  - `SOURCE_NOT_COMPLETE` ("synchronous compare capture requires a terminal
+    source-complete posture"). Permanent, not a race — it still fails after 6
+    retries. The async capture path has an `allowIncompleteSource` escape
+    hatch, but `doc.diff.capture` declares only `{doc, sessionId}`, so the SDK
+    cannot reach it.
+  - `diff.apply` refusing families deferred this release (`tracked-changes`,
+    `header-footer-parts`) — sources that already carry tracked changes.
+
+  This is the sharp edge of "benchmark the latest version": the latest is
+  sometimes *worse on coverage* because it got stricter. We publish 2.0.0
+  because that is what a user installs today, and we publish this paragraph
+  next to it so the drop is not mistaken for a capability regression we
+  discovered. Scoring the refusals as misses is the honest reading — the
+  current release genuinely cannot redline those pairs — but a vendor that
+  refuses rather than emits garbage is behaving *better* than one that emits
+  garbage, and a pixel score cannot see that difference.
+
 - **Honest vendor-side data does exist** for the Python SDK: in the same sweep
   `superdoc` reported 22 pairs its engine explicitly declined (e.g. *"Header/
   footer replay skipped … section projection was not found"*, *"Invalid content
