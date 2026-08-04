@@ -106,6 +106,24 @@ These have opposite consequences. Under (1) the fix is worth keeping and the cor
 worth extending. Under (2) it should be reverted. **Reachability is being measured
 separately; this document will be amended with the answer rather than guessing at it.**
 
+> **ANSWERED in Appendix §A — and the dichotomy above was wrong.** It is **(2), reachable
+> and inert**: rebuilding parent `2f4eb955c` shows dangling `Ttulo1..9` references in
+> `word/numbering.xml` going **7 → 0**, with `numbering.xml` a changed part on all seven,
+> and all seven scoring identically before and after.
+>
+> **But "revert" does not follow, and that inference was my error.** I conflated *inert in
+> the score* with *mechanism mis-diagnosed*. They are different things. The mechanism was
+> diagnosed correctly; the repair is invisible because **our oracle renders through
+> LibreOffice, and LibreOffice does not read the style→numbering binding**
+> (`w:lvl/w:pStyle`, `w:styleLink`, `w:numStyleLink`). In Word — the thing the fix is
+> actually for — outline numbering is restored on seven heading-heavy documents.
+>
+> **Verdict: KEEP.** This is a scorer blind spot, not a failed fix, and it is a
+> second instance of the pattern already noted for the `numPr` child-order and
+> `people.xml` defects: real Word-validity repairs that no pixel score can see. A
+> benchmark whose oracle is LibreOffice cannot price them, and that limitation should be
+> stated wherever these numbers are published rather than left for a reader to infer.
+
 What is settled either way: **this fix does not contribute to Plan 1's targets.** Any
 arithmetic that counted on Stage L3 / workstream S moving lossless's mean or median is
 short by whatever it assumed, and per C4 that shortfall must be found elsewhere or the
@@ -251,6 +269,180 @@ headroom, and it is a substantially larger project than the plans currently admi
 
 ---
 
+## Appendix — the reachability measurement, the affected population, and the noise floor
+
+Added 2026-08-04 by the agent that executed the two candidate runs. Everything above
+was written from `results/bench.jsonl` alone. This appendix adds what the score log
+cannot answer: **which documents each fix actually touched**, established by rebuilding
+each engine's parent commit and diffing its output part-by-part against the candidate's.
+It resolves the open question in Part 1's verdict and supplies the 136-pair test Part 2
+was written to perform.
+
+### A. Part 1's open question, answered: **reachable and inert**
+
+Part 1 leaves two readings alive — "correct but unreachable" (the corpus contains no
+document exercising the path) and "reachable but inert" (it runs and changes no pixel) —
+and says the answer will be measured rather than guessed. It has been measured. **It is
+(2), reachable but inert**, and the mechanism was not mis-diagnosed either.
+
+The parent commit `2f4eb955c` was rebuilt from a scratch clone and run over all 803
+pairs. Counting outputs that emit a style reference resolving to no definition:
+
+| | parent build | candidate build |
+|---|---:|---:|
+| pairs with a dangling style reference | **25** | **18** |
+| pairs with dangling `Ttulo1..9` refs in `word/numbering.xml` | **7** (9 refs each) | **0** |
+
+All seven are repaired, and `word/numbering.xml` is a changed part on all seven. The
+commit claims five; five is the count inside the 400-pair SuperDoc pool it measured. The
+other two live in `word_based`:
+`sample_document_word_repair_of_our_output_word_repaired_sd_2517_localized_heading_styles`
+and `sd_2517_localized_heading_styles_sectpr_headerref`. The 18 that remain are the
+deliberate ones the commit names — `Hyperlink`, `TableGrid`, plus `Heading*` / `Subtitle`
+/ `Title` / `style0` cases in the other pools.
+
+All seven repaired pairs are inside the scored 763, and all seven score **exactly the
+same before and after**: 55.1852, 44.4307, 43.6138, 44.3895, 44.6158, 43.3929, 82.0248.
+
+So outline numbering was restored on seven heading-heavy documents and the LibreOffice
+render did not move by one pixel. The style→numbering binding in `word/numbering.xml`
+(`w:lvl/w:pStyle`, `w:styleLink`, `w:numStyleLink`) is not something this rendering path
+reads. **Consequence for the verdict above: the fix should be kept, not reverted** — it
+repairs a real defect in a Word-validity sense — but Part 1's headline stands unchanged,
+and it contributes exactly zero to any lift table.
+
+Two further checks that this is not a stale dist: the new symbol
+`RemapStyleReferencesOutsideStylesPart` is present in the vendored
+`dist/jubarte-final/lossless.node.cjs` — the exact file the `jubarte-lossless` generator
+loads — and absent from the pre-change build.
+
+### B. The rust affected population: 256 pairs, not 136 — and they moved
+
+The Rust generator is **byte-deterministic** (regenerating pool 1 and the SuperDoc pool
+with the same binary produced 0 changed outputs of 607). That makes the parent-vs-
+candidate output diff an exact statement of the population the change touched, with no
+reimplementation of `merge_revised_style_definitions`' gate in the middle.
+
+**256 of 803 pairs changed, and in every one the only changed part is
+`word/styles.xml`.** 234 gained style-level change records (median 10 newly marked
+styles, max 51); the other 22 changed only through the element-order fixes the commit
+also carries. 222 of the 256 are inside the scored 763.
+
+| | n | baseline mean | candidate mean | Δ mean | Δ median | Δ below-50 | docs moved |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| **touched by the fix** | 222 | 64.0723 | 65.7362 | **+1.6639** | **+1.7291** | **−7** | 64 (52 up, 12 down) |
+| untouched | 541 | 81.1868 | 81.2148 | +0.0280 | 0.0000 | 0 | 9 (all noise, §D) |
+| all | 763 | 76.2072 | 76.7112 | +0.5040 | +1.0168 | −7 | 73 |
+
+Three readings, all of them load-bearing:
+
+1. **The population thesis is confirmed on this corpus.** Pairs carrying a live style
+   collision really are the weak ones — 64.07 against 81.19 for the rest. The claimed
+   59.7-vs-79.4 split was measured on 597 pairs with a 537-document scored subset; the
+   denominator is different but the shape reproduces.
+2. **Those pairs really did move**, and the entire below-50 improvement comes from them.
+3. **There is no collateral.** The untouched half moved +0.028, and every one of its nine
+   movers is a pipeline-noise document (§D) — no document with an unchanged input moved
+   for any other reason.
+
+**The affected population on the 803-pair corpus is 256, not 136.** The 136 figure is not
+wrong, it is measured on a different corpus; it should stop being quoted against this one.
+
+### C. C2 census delta, with the cluster membership enumerated
+
+| figure | baseline | candidate | Δ |
+|---|---:|---:|---:|
+| cluster [40,60) | 197 | 188 | **−9** |
+| above 92 | 282 | 283 | +1 |
+| near-miss [90,100) | 149 | 151 | +2 |
+| near-miss ≤ 92 | 25 | 26 | +1 |
+| perfect | 158 | 158 | 0 |
+| shortfall to majority (382) | 100 | 99 | −1 |
+
+`pool_shift = −0.0457`, `pool_churn = 0.0660`, **`sizing_void = False`** — the next
+stage's sizing table survives, at two-thirds of the 10% churn limit.
+
+Entered the cluster (2): `file_196_file_197`,
+`super_editor__sd_2534_collab_export_f3c7fdf7_super_editor__sd_2766_pirates_tracked_changes_3285d875`.
+
+Left the cluster (11): `behavior__sd_2447_toc_tab_alignment_8319c14c_super_editor__broken_complex_list_293fda86`,
+`evals__nda_7f304918_super_editor__numwords_393421eb`,
+`super_editor__custom_list_numbering1_7eb9fda4_super_editor__diff_before19_97e0f4e6`,
+`super_editor__h_f_normal_odd_even_firstpg_9b210d9a_super_editor__basic_footnotes_5be96945`,
+`super_editor__invalid_list_def_fallback_d7f55451_super_editor__line_break_627a7159`,
+`super_editor__list_with_table_break_ff0c4c1f_behavior__sd_2672_plain_3x3_87943d5d`,
+`super_editor__multi_section_doc_080d2655_behavior__pageref_standalone_uppercase_h_7701e07f`,
+`super_editor__multi_section_doc_080d2655_super_editor__multiple_nodes_in_list_79d915a2`,
+`super_editor__page_numbering_examples_13edaf84_super_editor__pagination_blank_2a98ed7a`,
+`super_editor__restart_numbering_sub_list_85ddcb79_super_editor__sd_1919_word_table_74726d6c`,
+`super_editor__simple_ordered_list_8288421a_super_editor__line_break_627a7159`.
+
+For the lossless run the C2 census is unchanged in every figure (cluster 166, above-92
+251, near-miss 135, perfect 142, shortfall 131; `pool_shift = 0.0`, `pool_churn = 0.0`).
+
+The R-tail offender named in Part 2 is inside the changed population: its
+`word/styles.xml` is the only changed part and the pass marked **40** styles on it — the
+same 40 as on its sibling pair that gained +45.64. Same stylesheet, same pass, ±45 in
+opposite directions.
+
+### D. The measurement noise floor — nine documents move with an unchanged input
+
+Because the Rust generator is byte-deterministic, the documents whose candidate DOCX did
+**not** change between the two runs can be isolated and asked whether their score moved.
+Nine of them did, with identical `score_config` and an oracle last written at 06:13,
+before both runs:
+
+| Δ | document |
+|---:|---|
+| **+12.7514** | `super_editor__advanced_text_78401c31_super_editor__google_docs_originated_comments___tcs_76ac865d` |
+| +4.0347 | `super_editor__table_widths_sd_732_12074135_super_editor__table_c70ca973` |
+| −3.8999 | `super_editor__ooxml_rfonts_rstyle_linked_combos_dem_213298de_behavior__sd_2672_rtl_table_63bd9d10` |
+| +2.3789 | `super_editor__table_width_issue_20b01504_super_editor__table_widths_sd_732_12074135` |
+| −0.9047 | `super_editor__advanced_text_78401c31_super_editor__alternatecontent_valid_de18b376` |
+| +0.7728 | `super_editor__alternatecontent_valid_de18b376_super_editor__anchor_images_3327faf8` |
+| −0.0021 | `behavior__math_groupchr_tests_4a4970fc_super_editor__diff_before16_f518c031` |
+| +0.0016 | `behavior__math_groupchr_tests_4a4970fc_behavior__math_limit_tests_6dc07867` |
+| −0.0008 | `behavior__math_groupchr_tests_4a4970fc_behavior__sd_2447_toc_tab_alignment_8319c14c` |
+
+This is render/raster nondeterminism confined to a handful of SuperDoc-pool fixtures
+(anchored images, tables, math) — the same fixtures behind the 0.004 disagreements in the
+existing native-vs-WASM control. **Its worst excursion, +12.75, exceeds R-tail's own
+10-point threshold.** Until that is characterised, a single-document R-tail trip on one of
+these fixtures cannot be distinguished from the pipeline. The trip reported in Part 2 is
+not one of them — it is four times larger and its input DOCX did change — but the
+contract's per-document guarantees are softer than they read.
+
+### E. `jubarte-final-native` / `jubarte-ast` is not affected, and was not re-run
+
+Commit `d99ccb5b3` touches exactly one source file, `src/lossless/WmlComparer.ts`, which
+is bundled only into `dist/jubarte-final/lossless.*`. The AST/native generator loads
+`dist/jubarte-final/node.cjs`, which contains **zero** occurrences of
+`RemapStyleReferencesOutsideStylesPart`, `CopyMissingNumberingFromOneDocToAnother`,
+`CanonicalizeNonSemanticStyleIds` or `ProduceDocumentWithTrackedRevisions`. Re-running it
+would have measured the render pipeline, not the change. If a run is wanted for the
+record, its baseline is `019fcc7c-8d62-76ca-9532-1b2649691eb4` (763 ITT, mean 70.5699).
+
+### F. A side finding: the lossless generator is not byte-reproducible
+
+Generating the same 207 pairs twice with the *same* build produces **206 different
+outputs**. The cause is benign — every `w:ins`/`w:del` carries a wall-clock `w:date` —
+but after normalising dates, **27 of 207 still differ**, through GUID-named media parts,
+`[Content_Types].xml` and `word/_rels/document.xml.rels`. The Rust engine has none of this
+(0 of 607 on the same test). It does not affect scores, but any future attempt to
+attribute a lossless change by diffing its output must normalise dates and ignore media
+naming, or it will report 800 of 803 pairs "changed" — as the first pass of this analysis
+did before the control was run.
+
+### G. Provenance, checked as hard as it can be checked
+
+The parent commit `d931a10` of the Rust engine was rebuilt from a scratch clone, and the
+resulting binary is **md5-identical** (`32484369cd2d407345283227382129d7`) to the one the
+baseline run used. The baseline is therefore exactly "the engine one commit earlier", not
+"whatever happened to be vendored" — which is what makes every diff in this appendix
+attributable to the single commit under test.
+
+---
+
 ## Part 2 (superseded — original entry, kept for the record)
 
 Status at the time of writing: **run in flight.**
@@ -264,6 +456,14 @@ Unlike the TS fix, this one has a **measured target population**: 136 of 597 pai
 a live styleId collision, and those 136 score mean **59.7** against **79.4** for the
 rest. If the fix works, the movement should be concentrated there — so the test is not
 just the headline delta but whether *those specific 136* moved.
+
+> **Superseded by Appendix §B: the population on this corpus is 256, not 136.** The 136
+> was measured on a different 597-pair corpus and should stop being quoted against the
+> 803-pair one. The subgroup test was performed and it passes cleanly: **touched pairs
+> (222 scored) move 64.07 → 65.74 (+1.66) while untouched pairs move +0.028**, and every
+> one of the nine movers among the untouched is pipeline noise. The population thesis
+> holds — collision-carrying pairs really are the weak ones — and the fix's effect is
+> entirely confined to them, with no collateral.
 
 Baseline to compare against (run `019fcc5d`, 2026-08-04T10:41:28,
 `jubarte-rust@fcea02da49f4`):
