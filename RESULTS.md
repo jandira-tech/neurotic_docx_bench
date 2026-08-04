@@ -1,6 +1,6 @@
 # Benchmark results
 
-Source: `results/bench.jsonl` — **167** fidelity row(s) (one per vendor×benchmark×**version**; 132 distinct vendor×version pin(s). docxodus rows with n_docs ≤ 100 are dropped as smoke/partial).
+Source: `results/bench.jsonl` — **168** fidelity row(s) (one per vendor×benchmark×**version**; 133 distinct vendor×version pin(s). docxodus rows with n_docs ≤ 100 are dropped as smoke/partial).
 
 Scores are 0–100 (higher = closer to the Microsoft Word oracle). Cross-renderer comparisons (LibreOffice vs Playwright) are **not** directly comparable — only compare within the same benchmark. Different **versions** of the same vendor are kept so you can compare pins (e.g. docxodus 6.4.0 vs 7.0.0).
 
@@ -20,10 +20,12 @@ script_redlines (LibreOffice render vs Word oracle)
 | 4 | jubarte-wasm | 0.1.0 | 76.2072 | 77.9542 | 76.2072 | 77.9542 | 86.1884 | 0 | 763 | 763 | 158 | 307 | 108 |
 | 5 | jubarte-ast | jubarte-final@d43557e042c1 | 70.5699 | 68.6678 | 69.83 | 68.2992 | 74.8855 | 9 | 755 | 763 | 84 | 178 | 142 |
 | 6 | superdoc | 1.19.2 | 56.3218 | 54.8131 | 49.3898 | 52.9529 | -0.0027 | 33 | 171 | 195 | 2 | 3 | 51 |
-| 7 | superdoc | 1.21.3 | 53.1281 | 51.5561 | 46.3043 | 50.1612 | -0.0027 | 115 | 665 | 763 | 3 | 14 | 278 |
-| 8 | docx-redline-js | 0.3.0 | 46.1928 | 47.4243 | 45.1636 | 47.2226 | -3.3472 | 17 | 746 | 763 | 0 | 0 | 517 |
-| 9 | redlines | 0.6.1 | 45.9391 | 47.1411 | 44.8554 | 47.0451 | -2.9557 | 18 | 745 | 763 | 0 | 0 | 488 |
-| 10 | superdoc | 2.0.0 | 45.1946 | 46.7186 | 19.606 | 0 | -16.4745 | 432 | 331 | 763 | 1 | 4 | 269 |
+| 7 | folio | 0.15.13 | 52.1299 | 50.4313 | 50.8318 | 50.2913 | 4.3275 | 19 | 744 | 763 | 0 | 5 | 354 |
+| 8 | superdoc | 1.21.3 | 53.1281 | 51.5561 | 46.3043 | 50.1612 | -0.0027 | 115 | 665 | 763 | 3 | 14 | 278 |
+| 9 | superdoc-redlines | 0.2.0 | 51.4092 | 50.1062 | 47.3665 | 49.1564 | 1.4947 | 68 | 703 | 763 | 0 | 5 | 346 |
+| 10 | docx-redline-js | 0.3.0 | 46.1928 | 47.4243 | 45.1636 | 47.2226 | -3.3472 | 17 | 746 | 763 | 0 | 0 | 517 |
+| 11 | redlines | 0.6.1 | 45.9391 | 47.1411 | 44.8554 | 47.0451 | -2.9557 | 18 | 745 | 763 | 0 | 0 | 488 |
+| 12 | superdoc | 2.0.0 | 45.1946 | 46.7186 | 19.606 | 0 | -16.4745 | 432 | 331 | 763 | 1 | 4 | 269 |
 
 **Legacy corpus** (older, smaller corpora — not comparable with the rows above; kept for history until each tool re-runs):
 
@@ -143,11 +145,10 @@ script_redlines (LibreOffice render vs Word oracle)
 | 112 | ooxmlsdk | — | 55.1866 | 55.2398 | 55.1866 | 55.2398 | — | 0 | 232 | 232 | 0 | 0 | 52 |
 | 113 | docxodus | 6.4.0 | 58.7425 | 55.0306 | 58.1749 | 54.9959 | — | 2 | 205 | 207 | 3 | 7 | 66 |
 | 114 | folio | 0.3.1 | 55.3092 | 53.7539 | 54.7748 | 53.525 | — | 2 | 205 | 207 | 0 | 1 | 75 |
-| 115 | superdoc-redlines | 0.2.0 | 57.6297 | 55.8997 | 53.4536 | 53.1078 | — | 15 | 192 | 207 | 0 | 1 | 63 |
-| 116 | docx-redline-js | 0.3.0-ts-migration | 50.5319 | 50.2615 | 48.4264 | 50.09 | — | 7 | 161 | 168 | 0 | 0 | 73 |
-| 117 | jubarte | jubarte-final@9991b783a190 | 48.9496 | 49.8858 | 48.9496 | 49.8858 | — | 0 | 164 | 164 | 0 | 0 | 84 |
-| 118 | docxodus | 7.0.0 | 50.4935 | 49.6384 | 50.4935 | 49.6384 | — | 0 | 196 | 196 | 0 | 0 | 102 |
-| 119 | docx-redline-js | — | 55.1236 | 55.1236 | 12.2497 | 0 | — | 7 | 2 | 9 | 0 | 0 | 1 |
+| 115 | docx-redline-js | 0.3.0-ts-migration | 50.5319 | 50.2615 | 48.4264 | 50.09 | — | 7 | 161 | 168 | 0 | 0 | 73 |
+| 116 | jubarte | jubarte-final@9991b783a190 | 48.9496 | 49.8858 | 48.9496 | 49.8858 | — | 0 | 164 | 164 | 0 | 0 | 84 |
+| 117 | docxodus | 7.0.0 | 50.4935 | 49.6384 | 50.4935 | 49.6384 | — | 0 | 196 | 196 | 0 | 0 | 102 |
+| 118 | docx-redline-js | — | 55.1236 | 55.1236 | 12.2497 | 0 | — | 7 | 2 | 9 | 0 | 0 | 1 |
 
 ### Common-subset ranking (script_redlines)
 
@@ -161,7 +162,7 @@ Paired comparison on the **139** documents every vendor below completed (best pi
 | 4 | jubarte | jubarte-final@3995702f73ed | 91.84 | 90.35 |
 | 5 | jubarte-ast | jubarte-final@d43557e042c1 | 91.36 | 89.39 |
 | 6 | sanity-word | — | 73.95 | 71.90 |
-| 7 | superdoc-redlines | 0.2.0 | 58.50 | 59.70 |
+| 7 | superdoc-redlines | 0.2.0 | 58.14 | 59.35 |
 | 8 | ooxmlsdk | — | 57.13 | 58.14 |
 | 9 | superdoc | 1.19.2 | 56.92 | 57.61 |
 | 10 | folio | 0.3.1 | 56.88 | 58.29 |
@@ -184,7 +185,7 @@ Per-doc paired deltas on shared documents (best pin per vendor); `win/loss/tie` 
 | docx-redline-js | redlines | 151 | 57/94/0 | -2.31 | 2.53e-02 |
 | docx-redline-js | sanity-word | 160 | 15/145/0 | -22.95 | 1.92e-24 |
 | docx-redline-js | superdoc | 144 | 33/111/0 | -6.01 | 2.67e-12 |
-| docx-redline-js | superdoc-redlines | 152 | 41/110/1 | -6.74 | 6.00e-15 |
+| docx-redline-js | superdoc-redlines | 143 | 41/101/1 | -6.25 | 2.46e-12 |
 | docxodus | folio | 194 | 189/5/0 | +37.84 | 4.62e-33 |
 | docxodus | jubarte | 154 | 93/23/38 | +2.67 | 3.87e-09 |
 | docxodus | jubarte-ast | 752 | 502/174/76 | +4.85 | 1.33e-45 |
@@ -194,7 +195,7 @@ Per-doc paired deltas on shared documents (best pin per vendor); `win/loss/tie` 
 | docxodus | redlines | 745 | 727/18/0 | +40.19 | 1.15e-121 |
 | docxodus | sanity-word | 154 | 151/3/0 | +22.80 | 6.28e-27 |
 | docxodus | superdoc | 171 | 167/2/2 | +39.77 | 9.69e-30 |
-| docxodus | superdoc-redlines | 180 | 175/5/0 | +36.31 | 7.69e-31 |
+| docxodus | superdoc-redlines | 700 | 662/37/1 | +31.15 | 8.01e-113 |
 | folio | jubarte | 163 | 1/162/0 | -32.57 | 1.95e-28 |
 | folio | jubarte-ast | 190 | 5/184/1 | -29.92 | 2.13e-32 |
 | folio | jubarte-rust | 164 | 1/163/0 | -35.63 | 1.36e-28 |
@@ -203,7 +204,7 @@ Per-doc paired deltas on shared documents (best pin per vendor); `win/loss/tie` 
 | folio | redlines | 187 | 136/51/0 | +4.21 | 5.93e-15 |
 | folio | sanity-word | 163 | 25/138/0 | -14.34 | 1.40e-19 |
 | folio | superdoc | 170 | 99/70/1 | +0.90 | 1.27e-01 |
-| folio | superdoc-redlines | 190 | 75/110/5 | -0.56 | 2.26e-03 |
+| folio | superdoc-redlines | 179 | 75/100/4 | -0.49 | 1.53e-01 |
 | jubarte | jubarte-ast | 154 | 22/6/126 | +0.00 | 2.47e-02 |
 | jubarte | jubarte-rust | 163 | 43/76/44 | +0.00 | 6.90e-04 |
 | jubarte | jubarte-wasm | 154 | 51/67/36 | +0.00 | 6.24e-02 |
@@ -211,35 +212,35 @@ Per-doc paired deltas on shared documents (best pin per vendor); `win/loss/tie` 
 | jubarte | redlines | 153 | 153/0/0 | +39.39 | 7.39e-27 |
 | jubarte | sanity-word | 162 | 155/7/0 | +18.71 | 3.30e-27 |
 | jubarte | superdoc | 146 | 144/1/1 | +34.98 | 1.53e-25 |
-| jubarte | superdoc-redlines | 154 | 153/1/0 | +29.84 | 6.16e-27 |
+| jubarte | superdoc-redlines | 145 | 144/1/0 | +29.87 | 1.84e-25 |
 | jubarte-ast | jubarte-rust | 154 | 41/77/36 | -0.00 | 1.87e-04 |
 | jubarte-ast | jubarte-wasm | 755 | 240/446/69 | -1.38 | 3.38e-19 |
 | jubarte-ast | ooxmlsdk | 154 | 153/1/0 | +32.00 | 5.27e-27 |
 | jubarte-ast | redlines | 744 | 705/39/0 | +23.52 | 8.78e-118 |
 | jubarte-ast | sanity-word | 153 | 144/9/0 | +18.26 | 2.30e-25 |
 | jubarte-ast | superdoc | 171 | 165/5/1 | +33.94 | 2.63e-29 |
-| jubarte-ast | superdoc-redlines | 176 | 170/5/1 | +27.61 | 5.05e-30 |
+| jubarte-ast | superdoc-redlines | 695 | 617/76/2 | +16.18 | 1.38e-93 |
 | jubarte-rust | jubarte-wasm | 155 | 29/0/126 | +0.00 | 8.76e-05 |
 | jubarte-rust | ooxmlsdk | 164 | 163/1/0 | +36.46 | 1.18e-28 |
 | jubarte-rust | redlines | 153 | 153/0/0 | +42.48 | 7.39e-27 |
 | jubarte-rust | sanity-word | 163 | 160/3/0 | +20.81 | 3.59e-28 |
 | jubarte-rust | superdoc | 146 | 144/0/2 | +38.60 | 1.08e-25 |
-| jubarte-rust | superdoc-redlines | 155 | 154/1/0 | +33.52 | 4.05e-27 |
+| jubarte-rust | superdoc-redlines | 146 | 145/1/0 | +33.91 | 1.18e-25 |
 | jubarte-wasm | ooxmlsdk | 155 | 153/2/0 | +35.52 | 3.68e-27 |
 | jubarte-wasm | redlines | 745 | 722/23/0 | +33.94 | 1.04e-120 |
 | jubarte-wasm | sanity-word | 154 | 149/5/0 | +20.21 | 1.66e-26 |
 | jubarte-wasm | superdoc | 171 | 166/3/2 | +36.85 | 1.06e-29 |
-| jubarte-wasm | superdoc-redlines | 180 | 174/6/0 | +29.53 | 1.00e-30 |
+| jubarte-wasm | superdoc-redlines | 703 | 657/44/2 | +25.97 | 2.40e-109 |
 | ooxmlsdk | redlines | 153 | 117/36/0 | +5.77 | 1.04e-16 |
 | ooxmlsdk | sanity-word | 230 | 15/215/0 | -14.02 | 3.48e-35 |
 | ooxmlsdk | superdoc | 146 | 82/64/0 | +2.00 | 2.59e-01 |
-| ooxmlsdk | superdoc-redlines | 155 | 74/81/0 | -0.50 | 9.07e-02 |
+| ooxmlsdk | superdoc-redlines | 146 | 74/72/0 | +0.10 | 2.96e-01 |
 | redlines | sanity-word | 152 | 7/145/0 | -19.63 | 3.01e-26 |
 | redlines | superdoc | 170 | 53/117/0 | -3.15 | 2.36e-09 |
-| redlines | superdoc-redlines | 173 | 41/132/0 | -4.11 | 5.72e-16 |
+| redlines | superdoc-redlines | 685 | 196/489/0 | -2.91 | 3.59e-35 |
 | sanity-word | superdoc | 145 | 120/25/0 | +15.73 | 1.52e-17 |
-| sanity-word | superdoc-redlines | 154 | 125/29/0 | +12.52 | 3.73e-16 |
-| superdoc | superdoc-redlines | 164 | 72/92/0 | -1.11 | 1.00e-02 |
+| sanity-word | superdoc-redlines | 145 | 121/24/0 | +13.41 | 3.07e-16 |
+| superdoc | superdoc-redlines | 164 | 75/89/0 | -0.95 | 3.00e-02 |
 
 ### Lens health (script_redlines)
 
@@ -247,6 +248,7 @@ Docs where the pixel lens and a judging lens (functional accept/reject invariant
 
 - **docx-redline-js** 0.3.0: 2 doc(s) where the lenses disagree (0.5% of two-lens docs)
 - **docxodus** 9.0.0: 86 doc(s) where the lenses disagree (25.4% of two-lens docs)
+- **folio** 0.15.13: 106 doc(s) where the lenses disagree (28.8% of two-lens docs)
 - **jubarte** jubarte-final@d43557e042c1: 20 doc(s) where the lenses disagree (5.3% of two-lens docs)
 - **jubarte-ast** jubarte-final@d43557e042c1: 36 doc(s) where the lenses disagree (9.8% of two-lens docs)
 - **jubarte-rust** jubarte-rust@fcea02da49f4: 25 doc(s) where the lenses disagree (6.6% of two-lens docs)
@@ -254,6 +256,7 @@ Docs where the pixel lens and a judging lens (functional accept/reject invariant
 - **redlines** 0.6.1: 64 doc(s) where the lenses disagree (17.6% of two-lens docs)
 - **superdoc** 1.19.2: 25 doc(s) where the lenses disagree (15.9% of two-lens docs)
 - **superdoc** 1.21.3: 53 doc(s) where the lenses disagree (16.9% of two-lens docs)
+- **superdoc-redlines** 0.2.0: 38 doc(s) where the lenses disagree (11.2% of two-lens docs)
 
 ### `accepted_changes`
 
@@ -355,6 +358,7 @@ visual_accepted_changes (Playwright)
 | docxodus | 7.0.0 | 2026-07-10T21:55:37.514080+00:00 | visual_rendering | 56.5017 | 49.7216 | 190 |
 | docxodus | 9.0.0 | 2026-08-04T14:30:46.167624+00:00 | script_redlines | 80.5535 | 91.1892 | 760 |
 | docxodus | 9.0.0 | 2026-08-04T13:11:19.057858+00:00 | visual_redlines | 60.1462 | 57.5572 | 178 |
+| folio | 0.15.13 | 2026-08-04T14:51:49.763490+00:00 | script_redlines | 52.1299 | 50.4313 | 744 |
 | folio | 0.3.1 | 2026-07-09T13:48:42.309993+00:00 | accepted_changes | 57.9094 | 55.608 | 164 |
 | folio | 0.3.1 | 2026-07-10T00:18:18.365930+00:00 | roundtrip | 98.0712 | 100 | 198 |
 | folio | 0.3.1 | 2026-07-09T13:01:34.270204+00:00 | script_redlines | 55.3092 | 53.7539 | 205 |
@@ -505,7 +509,7 @@ visual_accepted_changes (Playwright)
 | superdoc | 1.44.1 | 2026-07-09T18:22:07.033240+00:00 | visual_redlines | 55.3334 | 56.4237 | 164 |
 | superdoc | 1.44.1 | 2026-07-09T18:16:46.431642+00:00 | visual_rendering | 58.7798 | 61.2486 | 199 |
 | superdoc | 2.0.0 | 2026-08-04T13:58:56.768817+00:00 | script_redlines | 45.1946 | 46.7186 | 331 |
-| superdoc-redlines | 0.2.0 | 2026-07-12T08:32:43.871610+00:00 | script_redlines | 57.6297 | 55.8997 | 192 |
+| superdoc-redlines | 0.2.0 | 2026-08-04T15:03:29.049566+00:00 | script_redlines | 51.4092 | 50.1062 | 703 |
 
 ## Holdout gap
 
