@@ -172,7 +172,37 @@ badly to a full corpus, and should be treated as an upper bound.**
 
 The tripping document, enumerated as C1 requires:
 
-- `super_editor__two_column_two_page_0b8a37c5_behavior__sd_…` — **80.83 → 33.80 (−47.03)**
+- `super_editor__two_column_two_page_0b8a37c5_behavior__sd_2672_nested_table_…` —
+  **80.83 → 33.80 (−47.03)**
+
+**It is not drift. It is a layout blow-up, and the page data names it.** The candidate
+emits 21 pages (matching the oracle's 21), but pages **2 through 20 are byte-identical
+renders** — `ink_area` 191992 and `ink_f1` **0.010** on every one of them. One page
+repeated nineteen times, overlapping the oracle almost nowhere.
+
+The contrast with the sibling pairing is exact. `super_editor__two_column_two_page_0b8a37c5_super_editor__vrect_node_…`
+(the +45.64 gainer) emits 21 pages that **alternate** between `ink_area` 90419 and 102468
+at `ink_f1` **1.000** — a perfect match to Word. And a third pairing of the same family,
+`super_editor__two_column_two_page_arial_…`, scores **99.71**.
+
+So the same two-column base document, paired three ways, produces a perfect score, a
++45.64 gain, and a −47.03 collapse into a repeating page. This is a **section/column
+progression defect**, not a tuning imbalance, and it is the sharpest single engine bug
+found in this programme.
+
+> **Infrastructure integrity check (D3).** A teammate session reported killing shared
+> `soffice` processes with a broad pattern kill and warned this run might be corrupted.
+> **It is not.** `runs/jubarte-rust_2026-08-04_17-47` completed at 18:22:54; the kill
+> window belongs to `jubarte-wasm_2026-08-04_18-31`, which started afterwards. Verified
+> empirically rather than by timestamp: **docx 803 / pdf 803, zero missing, zero
+> zero-byte**, `n_failures=0`, `n_oracle_unmatched=0`, and this document's own PDF was
+> written at 17:53 with `page_count_candidate == page_count_oracle == 21`. The −47.03 is
+> the engine's, not ours.
+>
+> **`jubarte-wasm` is the run at risk and its result must not be trusted without a
+> re-check.** Plan 2 treats rust and wasm as one engine in two bindings that must score
+> identically (both 76.2072 / 77.9542 / 158 at baseline). If wasm diverges from rust, the
+> first hypothesis is the killed renderer, not a lossy binding.
 
 And the fact that makes it legible: the *same base document* paired the other way,
 `super_editor__two_column_two_page_0b8a37c5_super_editor_…`, moved **+45.64 (33.69 →
