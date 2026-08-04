@@ -109,7 +109,7 @@ def _normalize_candidate_names(pdf_dir: Path, out_dir: Path) -> int:
 def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--batch", type=Path, required=True, help="batch_to_fix directory")
-    p.add_argument("--jobs", type=int, default=8)
+    p.add_argument("--jobs", type=int, default=12)
     p.add_argument("--dpi", type=int, default=144)
     p.add_argument(
         "--pdf-dir",

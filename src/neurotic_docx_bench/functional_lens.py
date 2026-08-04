@@ -143,7 +143,7 @@ def _check_one(task: CheckTask) -> tuple[str, FunctionalVerdict]:
     return key, check_functional(candidate, base, next_, workdir)
 
 
-def check_folder(tasks: list[CheckTask], jobs: int = 1) -> dict[str, FunctionalVerdict]:
+def check_folder(tasks: list[CheckTask], jobs: int = 12) -> dict[str, FunctionalVerdict]:
     """Run :func:`check_functional` over ``tasks``, in a process pool when jobs > 1."""
     if jobs <= 1 or len(tasks) <= 1:
         return dict(_check_one(t) for t in tasks)

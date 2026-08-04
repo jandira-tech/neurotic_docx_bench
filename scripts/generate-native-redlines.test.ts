@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { existsSync, readFileSync, readdirSync, mkdtempSync, rmSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import JSZip from "../src/neurotic_docx_bench/utils/docx-redline-js/node_modules/jszip/lib/index.js";
@@ -192,4 +192,73 @@ describe("generate-native-redlines", () => {
     },
     30_000,
   );
+
+  // Newer jubarte builds return { criticmarkup, handle } from redlineDocx instead of
+  // the bare handle; redlineToDocx wants the handle either way. Stub node.cjs builds
+  // pin the unwrap so a jubarte upgrade can't silently break the native route.
+  describe("jubarte-native result unwrapping", () => {
+    function stubDist(nodeCjs: string): string {
+      const dist = mkdtempSync(join(tmpdir(), "jubarte-stub-"));
+      writeFileSync(join(dist, "node.cjs"), nodeCjs);
+      return dist;
+    }
+    const OUT = "[1,2,3]"; // JSON so the stub can return plain bytes
+
+    it("unwraps { criticmarkup, handle } and passes the handle to redlineToDocx", async () => {
+      const dist = stubDist(`
+        const SENTINEL = { tag: "handle" };
+        module.exports = {
+          redlineDocx: async () => ({ criticmarkup: "{++x++}", handle: SENTINEL }),
+          redlineToDocx: async (h) => {
+            if (h !== SENTINEL) throw new Error("redlineToDocx got the wrapper, not the handle");
+            return new Uint8Array(${OUT});
+          },
+        };
+      `);
+      try {
+        const engine = await loadEngine("jubarte-native", dist);
+        const out = await engine(new Uint8Array([0]), new Uint8Array([1]));
+        expect(Array.from(out)).toEqual([1, 2, 3]);
+      } finally {
+        rmSync(dist, { recursive: true, force: true });
+      }
+    });
+
+    it("still accepts a bare handle from older builds", async () => {
+      const dist = stubDist(`
+        const SENTINEL = { tag: "bare" };
+        module.exports = {
+          redlineDocx: async () => SENTINEL,
+          redlineToDocx: async (h) => {
+            if (h !== SENTINEL) throw new Error("expected the bare handle");
+            return new Uint8Array(${OUT});
+          },
+        };
+      `);
+      try {
+        const engine = await loadEngine("jubarte-native", dist);
+        const out = await engine(new Uint8Array([0]), new Uint8Array([1]));
+        expect(Array.from(out)).toEqual([1, 2, 3]);
+      } finally {
+        rmSync(dist, { recursive: true, force: true });
+      }
+    });
+
+    it("treats a wrapped null handle as no-differences identity", async () => {
+      const dist = stubDist(`
+        module.exports = {
+          redlineDocx: async () => ({ criticmarkup: null, handle: null }),
+          redlineToDocx: async () => { throw new Error("must not be called for no-diff"); },
+        };
+      `);
+      try {
+        const engine = await loadEngine("jubarte-native", dist);
+        const base = new Uint8Array([7, 7]);
+        const out = await engine(base, new Uint8Array([1]));
+        expect(out).toBe(base);
+      } finally {
+        rmSync(dist, { recursive: true, force: true });
+      }
+    });
+  });
 });

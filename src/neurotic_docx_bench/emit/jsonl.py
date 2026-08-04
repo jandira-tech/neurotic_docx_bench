@@ -120,6 +120,7 @@ def build_results_line(
     n_oracle_unmatched: int | None = None,
     scorer: str = "v1",
     corpus_revision: str | None = None,
+    holdout_mode: str | None = None,
 ) -> dict[str, object]:
     """Build a schema-v4 ``Results`` JSONL dict from a vendor×benchmark outcome.
 
@@ -150,6 +151,7 @@ def build_results_line(
         n_oracle_unmatched=n_oracle_unmatched,
         scorer=scorer,
         corpus_revision=corpus_revision,
+        holdout_mode=holdout_mode,
     ).to_json_dict()
 
 
@@ -273,6 +275,10 @@ def append_if_changed(jsonl_path: Path, line: dict[str, object]) -> bool:
             jsonl_path,
             cast("str", line["vendor"]),
             cast("str", line["benchmark"]),
+            # Change-detection must compare within the line's own holdout
+            # regime: a 20-doc holdout line always differs from a full line,
+            # and matching across regimes would defeat the delta-log dedup.
+            holdout_only=line.get("holdout_mode") == "only",
         )
     else:
         prev = last_line_for_tool(
@@ -296,6 +302,7 @@ def has_already_ran_benchmark(
     benchmark: str,
     tool_version: str | None,
     config_hash: str,
+    holdout_only: bool | None = None,
 ) -> dict[str, object] | None:
     """Return the matching prior ``Results`` line if ``(vendor, benchmark,
     tool_version, config_hash)`` already exists, else None.
@@ -303,6 +310,12 @@ def has_already_ran_benchmark(
     Used by ``bench run`` to skip unchanged reruns. A line matches when its
     ``vendor``/``benchmark``/``tool_version``/``config_hash`` all agree; legacy
     schema-v3 lines (which lack ``benchmark``) never match.
+
+    ``holdout_only`` (when given) additionally requires the line's
+    ``holdout_mode`` to be — or not be — ``"only"``: a holdout-only rerun must
+    never be satisfied by a full-corpus line, nor the reverse. Lines without the
+    field (pre-holdout vintage) count as full-corpus, so normal-run identity is
+    unchanged.
     """
     if tool_version is None:
         return None
@@ -312,17 +325,43 @@ def has_already_ran_benchmark(
             and line.get("benchmark") == benchmark
             and line.get("tool_version") == tool_version
             and line.get("config_hash") == config_hash
+            and (
+                holdout_only is None
+                # Pre-holdout lines (no holdout_mode key) satisfy full-corpus
+                # (holdout_only=False) identity. Safe today ONLY because
+                # config_hash is a byte-hash of bench.yaml, which changed when
+                # holdout_list was added — no pre-holdout line can share a
+                # config_hash with a holdout-era run, so none can ever satisfy
+                # this identity check. If config_hash ever becomes semantic
+                # (normalized / field-selective), revisit this fallback.
+                or (line.get("holdout_mode") == "only") == holdout_only
+            )
         ):
             return line
     return None
 
 
 def last_line_for_benchmark(
-    jsonl_path: Path, vendor: str, benchmark: str,
+    jsonl_path: Path,
+    vendor: str,
+    benchmark: str,
+    *,
+    holdout_only: bool | None = False,
 ) -> dict[str, object] | None:
-    """Most recent ``Results`` line for ``(vendor, benchmark)``."""
+    """Most recent ``Results`` line for ``(vendor, benchmark)``.
+
+    ``holdout_only`` mirrors :func:`has_already_ran_benchmark`: ``False`` (the
+    default) skips sealed-holdout diagnostic lines (``holdout_mode == "only"``)
+    — the safe default for every baseline-selection path, so ``accept-scores``
+    can never promote a 20-doc holdout line as the accepted baseline; ``True``
+    selects only holdout lines; ``None`` disables the filter.
+    """
     match = None
     for line in read_lines(jsonl_path):
         if line.get("vendor") == vendor and line.get("benchmark") == benchmark:
+            if holdout_only is not None and (
+                (line.get("holdout_mode") == "only") != holdout_only
+            ):
+                continue
             match = line
     return match

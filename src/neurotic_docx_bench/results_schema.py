@@ -133,6 +133,12 @@ class Results:
     # (e.g. the `_word_redline` dual-variant preference switch) become visible
     # in the data instead of silently mixing vintages.
     corpus_revision: str | None = None
+    # Sealed-holdout provenance (additive, like corpus_revision — old lines
+    # without it still parse): "excluded" when the configured holdout keys were
+    # filtered out of scoring (a normal run), "only" when the run scored just
+    # the holdout (`bench run --holdout`), None when no holdout is configured.
+    # Informational only — it never feeds config_hash / skip identity hashing.
+    holdout_mode: str | None = None
     timestamp: datetime = field(default_factory=lambda: datetime.now(UTC))
 
     def __post_init__(self) -> None:
@@ -203,6 +209,7 @@ def build_results(
     n_oracle_unmatched: int | None = None,
     scorer: str = "v1",
     corpus_revision: str | None = None,
+    holdout_mode: str | None = None,
 ) -> Results:
     rounded_scores = {k: round(float(v), 4) for k, v in scores.items()}
     aggregate = compute_aggregate(rounded_scores, per_doc=per_doc)
@@ -258,6 +265,7 @@ def build_results(
         build_recipe=build_recipe,
         config_hash=config_hash,
         corpus_revision=corpus_revision,
+        holdout_mode=holdout_mode,
         timestamp=timestamp,
     )
 
@@ -310,6 +318,9 @@ def _jsonable(value: Any) -> Any:
         return _jsonable(asdict(value))
     if isinstance(value, dict):
         return {str(k): _jsonable(v) for k, v in value.items()}
-    if isinstance(value, list):
+    if isinstance(value, (list, tuple)):
+        # asdict() preserves tuples (e.g. BenchConfig.extra_oracle_dirs, a
+        # tuple of Paths) — they must be recursed like lists or their
+        # elements reach json.dumps unconverted.
         return [_jsonable(v) for v in value]
     return value

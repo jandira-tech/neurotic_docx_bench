@@ -60,7 +60,7 @@ class Renderer(Protocol):
         work_dir: Path,
         *,
         force: bool = False,
-        jobs: int = 4,
+        jobs: int = 12,
     ) -> RenderReport:
         """Render every source document under ``source_dir`` to a PDF.
 
