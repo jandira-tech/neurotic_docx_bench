@@ -124,7 +124,7 @@ def installed_npm_version(package: str, cwd: Path) -> str | None:
 
 
 def update_npm_package(spec: str, cwd: Path, *, no_update: bool | None = None) -> str | None:
-    """``npm i <spec>`` (unless pinned) and return the resolved installed version.
+    """``bun add --exact <spec>`` (unless pinned) and return the resolved installed version.
 
     ``no_update=None`` consults ``BENCH_NO_UPDATE``. Returns None if resolution fails.
     """
@@ -133,7 +133,21 @@ def update_npm_package(spec: str, cwd: Path, *, no_update: bool | None = None) -
     package = _package_name(spec)
     if not no_update:
         subprocess.run(
-            ["npm", "install", spec],
+            # bun, not npm: this repo's package manager (AGENTS.md, bun.lock), and
+            # npm's strict cross-vendor peer resolution actively breaks the bench.
+            # All vendors share ONE node_modules, so one vendor's peers can refuse
+            # another's install — after superdoc@2.3.0 landed (peer
+            # pdfjs-dist ^5.4.296), `npm install @stll/folio-core@0.15.13` exited 1
+            # with ERESOLVE and BOTH folio and superdoc-ts were recorded as failed
+            # runs. That is our dependency graph printed as their crash, the D3
+            # disease again. bun installs the same specs without the conflict.
+            #
+            # --exact: bench.yaml pins are EXACT and a caret range silently widens
+            # them. A run was observed rewriting ``"docxodus": "9.0.0"`` to
+            # ``"^9.0.0"``, after which a later install could resolve 9.1.0 while
+            # bench.yaml still claimed 9.0.0 — the recorded tool_version and the
+            # measured code drifting apart, i.e. the D5 split-brain.
+            ["bun", "add", "--exact", spec],
             cwd=str(cwd),
             check=True,
             capture_output=True,
@@ -174,11 +188,37 @@ def resolve_tool_version(
 ) -> str | None:
     """Resolve a run's ``tool_version``: local build (``dist``) → npm (``package``) →
     Python package (``python_package``); returns None when none is configured.
+
+    A CONFIGURED source that fails to resolve raises instead of returning None. Runs
+    skip on (vendor, tool_version, config_hash), so a None version both records
+    ``tool_version: null`` in the JSONL and collides with every other unresolved run in
+    that identity — letting a stale line suppress a real one. ``dist`` already raised
+    (FileNotFoundError); npm and Python did not.
+
+    No configured source at all still returns None: ``generate:``-only runs legitimately
+    have no version pin.
     """
     if dist is not None:
         return resolve_local_version(dist)
     if package is not None:
-        return update_npm_package(package, cwd or Path.cwd(), no_update=no_update)
+        version = update_npm_package(package, cwd or Path.cwd(), no_update=no_update)
+        if not version:
+            raise RuntimeError(
+                f"tool_version unresolved for npm package {package!r}: no "
+                f"node_modules/{_package_name(package)}/package.json under "
+                f"{cwd or Path.cwd()}. Run `bun install` (the repo's package manager) "
+                f"before benchmarking, or drop the `package:` pin from this run.",
+            )
+        return version
     if python_package is not None:
-        return installed_python_version(python_package)
+        version = installed_python_version(python_package)
+        if not version:
+            raise RuntimeError(
+                f"tool_version unresolved for Python package "
+                f"{_python_package_name(python_package)!r}: not installed in this "
+                f"environment. Run `uv sync` (or `uv pip install "
+                f"{python_package}`) before benchmarking, or drop the "
+                f"`python_package:` pin from this run.",
+            )
+        return version
     return None
