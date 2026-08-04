@@ -130,3 +130,50 @@ def test_holdout_excluded_is_the_headline_run_and_must_be_mined(tmp_path: Path):
 
 def test_empty_score_set_does_not_divide_by_zero():
     assert mfc.mine({}, {}, threshold=70.0, target=90.0) == ([], [])
+
+
+def test_a_universal_tag_is_pinned_at_lift_one_and_carries_no_signal():
+    """`recoverable` ranks by mass, so a tag on ~every document floats to the top by
+    ubiquity alone — on the real corpus `rev_ins` sits on 740 of 763 pairs and led the
+    ranking while saying nothing more than "documents fail". Lift is what exposes that:
+    a tag covering the whole corpus has the corpus's own failure rate, so lift == 1.
+    """
+    scores = {f"d{i}": (10.0 if i < 40 else 95.0) for i in range(100)}
+    tags = {k: {"everywhere"} for k in scores}
+    clusters, _ = mfc.mine(scores, tags, threshold=70.0, target=90.0)
+    assert clusters[0].tag == "everywhere"
+    assert clusters[0].lift == 1.0
+    assert clusters[0].fail_rate == 0.4
+
+
+def test_lift_separates_a_concentrated_cluster_from_a_ubiquitous_one():
+    """The concentrated tag is worth less in absolute mean-points yet is the real lead:
+    every document carrying it fails, against a 20% corpus base rate."""
+    scores = {f"pass{i}": 95.0 for i in range(80)}
+    scores.update({f"fail{i}": 10.0 for i in range(20)})
+    tags = {k: {"broad"} for k in scores}
+    for i in range(10):
+        tags[f"fail{i}"].add("focused")
+
+    clusters, _ = mfc.mine(scores, tags, threshold=70.0, target=90.0)
+    by_tag = {c.tag: c for c in clusters}
+
+    assert by_tag["broad"].recoverable > by_tag["focused"].recoverable  # mass says "broad"
+    assert by_tag["broad"].lift == 1.0  # ...but broad is the corpus itself
+    assert by_tag["focused"].fail_rate == 1.0
+    assert by_tag["focused"].lift == 5.0  # 100% failing vs a 20% base rate
+
+
+def test_lift_is_below_one_when_a_tag_fails_less_than_the_corpus():
+    scores = {f"d{i}": (10.0 if i < 50 else 95.0) for i in range(100)}  # base rate 0.5
+    tags = {"d0": {"mild"}, "d50": {"mild"}, "d51": {"mild"}, "d52": {"mild"}}
+    clusters, _ = mfc.mine(scores, tags, threshold=70.0, target=90.0)
+    assert clusters[0].fail_rate == 0.25
+    assert clusters[0].lift == 0.5
+
+
+def test_lift_does_not_divide_by_zero_when_nothing_fails():
+    scores = {"a": 95.0, "b": 100.0}
+    clusters, untagged = mfc.mine(scores, {"a": {"t"}}, threshold=70.0, target=90.0)
+    assert clusters == []
+    assert untagged == []
