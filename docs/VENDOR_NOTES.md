@@ -217,6 +217,36 @@ is not comparable to a tool that computes its own alignment.
 Its 2026-08-04 failure (`tool build dir not found`) was our missing clone, not
 their code.
 
+### docx-redline-js
+
+| field | value |
+|---|---|
+| Upstream | `@ansonlai/docx-redline-js` — published **0.2.1** |
+| What we actually benchmark | **`@arthrod/docx-redline-js@0.3.0`** — *our own* TypeScript migration, built from the sibling repo `../docx-redline-migration-kit` |
+| Harness-assisted | Beyond assisted — it is our fork |
+
+> **The row labelled `docx-redline-js` is not running the vendor's published
+> code.** It runs our fork of it.
+
+This is the sharpest labelling problem in the ledger. The vendor column names
+AnsonLai's project, and a reader will attribute the score to that project, but
+the bytes under test are a migration we wrote and version ourselves. The
+`tool_version` string (`0.3.0-ts-migration`) hints at it; the vendor name does
+not, and the vendor name is what people read.
+
+It cuts in both directions and neither is acceptable unlabelled: if our
+migration is better than upstream we flatter them, and if it is worse we
+publish a low score under their name for defects we introduced. The same policy
+as docxodus applies and is not yet implemented here:
+
+- the **headline row must be the published upstream release** (0.2.1), because
+  that is what a user installs;
+- our fork is a **separate, explicitly-labelled row** — ideally under a vendor
+  name that is visibly ours, not theirs.
+
+Until that split exists, no `docx-redline-js` number should be published as a
+statement about AnsonLai's tool.
+
 ### redlines
 
 | field | value |
