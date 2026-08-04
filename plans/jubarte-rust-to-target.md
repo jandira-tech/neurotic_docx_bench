@@ -84,6 +84,37 @@ precisely so this is checkable rather than assumed.
 
 ## Stage R2 — the ≈50 cluster (mean lever)
 
+> **RE-SIZED by measurement, 2026-08-04. Read before acting on the table below.**
+>
+> This stage was written assuming rust's cluster fails the way lossless's does. **It
+> does not.** rust matches Word on in-place (`w:ins`+`w:del`) paragraphs at the median
+> — 1 vs 1, where lossless is 0 vs 1 — and only 25 of 197 have none where the oracle
+> has some (lossless: 69 of 124).
+>
+> The in-place deficit has **no explanatory power inside rust's cluster**: score
+> medians by group are NONE 50.23, FEWER 47.94, EQUAL 51.85, MORE 51.04. **46 of 197
+> have body text byte-identical to Word's oracle and still score 52.29.**
+>
+> **rust's cluster is cumulative vertical drift** — identical text, larger
+> inter-paragraph advance, drift compounding down the page; a 5-page oracle becomes 6.
+> Scorer drift map: median 117.9 px, p90 476.3 px. Leading cause is **style-chain
+> resolution — Stage R3** (candidate resolves a shared styleId differently from Word in
+> 148/194 of the cluster vs 19.3% reference, a 4.0x enrichment).
+>
+> **Consequences, both binding:**
+> 1. R2-as-markup-shape is worth ~**+0.16 ITT mean** (61/197 documents, ~2 points where
+>    present), not the lift the table below assumes.
+> 2. **R2 and R3 are the same work and are NOT additive.** The median-target arithmetic
+>    that leaned on this stage is void until R3's real effect is measured (contract C2:
+>    a sizing table expires when its input pool changes).
+>
+> D3 control clears — Word's own oracle re-rendered through our `soffice` path scores
+> 100.00, `ink_f1` 1.000. The loss is rust's, not our renderer's.
+>
+> Full evidence: [reviews/r2-probe-rust-cluster.md](reviews/r2-probe-rust-cluster.md).
+> This plan's own warning below ("marked correctly, rendered wrong") was correct; the
+> stage was sized as if it were not.
+
 Same lever as Plan 1 Stage L2, and rust's cluster is the middle-sized one.
 
 - **Target:** 197 documents at ≈50.6 → **above 92**. The threshold is load-bearing.
