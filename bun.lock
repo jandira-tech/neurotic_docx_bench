@@ -19,7 +19,7 @@
         "crypto-js": "^4.2.0",
         "csv-parse": "^7.0.1",
         "dingbat-to-unicode": "^1.0.1",
-        "docxodus": "^7.1.0",
+        "docxodus": "9.0.0",
         "es-toolkit": "^1.49.0",
         "fast-xml-parser": "^5.10.0",
         "fflate": "^0.8.3",
@@ -421,7 +421,7 @@
 
     "dingbat-to-unicode": ["dingbat-to-unicode@1.0.1", "", {}, "sha512-98l0sW87ZT58pU4i61wa2OHwxbiYSbuxsCBozaVnYX2iCnr3bLM3fIes1/ej7h1YdOKuKt/MLs706TVnALA65w=="],
 
-    "docxodus": ["docxodus@7.1.0", "", { "peerDependencies": { "react": ">=16.8.0" }, "optionalPeers": ["react"] }, "sha512-spwo6uJRWs2BVDNlIMq57Wvnrtlvgxvl0CsJkRHRODGiT/PeDe4YIBqDtWWGD5OLI8NLVhIpYzDOgp03oet4YA=="],
+    "docxodus": ["docxodus@9.0.0", "", { "peerDependencies": { "react": ">=16.8.0" }, "optionalPeers": ["react"] }, "sha512-3Q/0sn0qRrF6YfsVxjMBNsSbW5RlmTkxmRDUM1XT07zoWLLngkxK0KlITrYtYTSTQNwn455cPksovFUrE+zTSQ=="],
 
     "dompurify": ["dompurify@3.4.11", "", { "optionalDependencies": { "@types/trusted-types": "^2.0.7" } }, "sha512-zhlUV12GsaRzMsf9q5M254YhA4+VuF0fG+QFqu6aYpoGlKtz+w8//jBcGVYBgQkR5GHjUomejY84AV+/uPbWdw=="],
 
