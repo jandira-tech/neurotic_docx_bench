@@ -95,6 +95,10 @@ src/neurotic_docx_bench/utils/folio/folio
 # SuperDoc monorepo clone (Harbour-Enterprises/SuperDoc). The superdoc-native
 # run's `dist:` points at superdoc/packages/super-editor. Too large to commit;
 # see AGENTS.md "Adding a tool".
+# Local Docxodus C# source + built npm package (the patched fork lives at
+# ~/T/react-docxodus-viewer/Docxodus). The docxodus-playwright-* runs point
+# their dist: here. Never was ignored, which is why it was never restored.
+src/neurotic_docx_bench/utils/docxodus/Docxodus/
 /superdoc/
 /superdoc-redlines/
 jubarte-rs-probe/
