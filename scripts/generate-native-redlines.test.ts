@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { existsSync, readFileSync, readdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { join, resolve } from "node:path";
 // Root jszip, not the docx-redline-js vendored copy: that tree's `@ansonlai/docx-redline-js`
 // is a `file:` dep pointing outside the repo, so on a fresh checkout it never installs and a
 // top-level import from it makes this WHOLE file fail to collect. jszip is a root dependency
@@ -25,8 +25,20 @@ const haveFolio = existsSync("src/neurotic_docx_bench/utils/folio/node_modules/@
 const DOCXODUS_ROOT_PKG = "node_modules/docxodus/package.json";
 const DOCXODUS_VENDOR_PKG =
   "src/neurotic_docx_bench/utils/docxodus/node_modules/docxodus/package.json";
-const DOCXODUS_ENTRY =
-  "../src/neurotic_docx_bench/utils/docxodus/node_modules/docxodus/dist/index.js";
+// Must mirror resolveVendorEntry() in the adapter: pin-tree (repo root) first,
+// vendored sub-install as fallback. Mocking the wrong one silently lets the REAL
+// docxodus run and the assertion then reports "undefined" rather than a mismatch.
+const DOCXODUS_ENTRY = (() => {
+  const rel = "docxodus/dist/index.js";
+  const rootEntry = resolve(import.meta.dirname, "../node_modules", rel);
+  return existsSync(rootEntry)
+    ? rootEntry
+    : resolve(
+        import.meta.dirname,
+        "../src/neurotic_docx_bench/utils/docxodus/node_modules",
+        rel,
+      );
+})();
 const haveDocxodus = existsSync(DOCXODUS_VENDOR_PKG);
 
 function installedVersion(pkgJson: string): string | null {
