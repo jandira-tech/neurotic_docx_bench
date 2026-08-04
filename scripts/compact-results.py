@@ -86,6 +86,22 @@ def hydrate(line: dict, *, root: Path | None = None) -> dict:
     return merged
 
 
+def _detail_name(line: dict, run_id: str) -> str:
+    """Filename for a line's detail payload.
+
+    ``id_run`` identifies a RUN, not a line: a single bench run emits script_redlines,
+    accepted_changes, roundtrip and visual_* lines that ALL carry the same id_run (up to
+    4 on the real file). Keying on id_run alone made the last one overwrite the others —
+    silent data loss that only showed up when every stub was hydrated back and compared
+    against a pre-compaction backup. The benchmark (and holdout view) disambiguate.
+    """
+    parts = [str(run_id), str(line.get("benchmark") or line.get("stage") or "unknown")]
+    if line.get("holdout_mode"):
+        parts.append(str(line["holdout_mode"]))
+    safe = ["".join(c if c.isalnum() or c in "-_." else "_" for c in p) for p in parts]
+    return "__".join(safe) + ".json.gz"
+
+
 def _write_detail(path: Path, payload: dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     # mtime=0: the archive must be reproducible, so re-running the compactor on the same
@@ -100,6 +116,7 @@ def compact(
     detail_dir: Path | None = None,
     root: Path | None = None,
     dry_run: bool = False,
+    all_lines: bool = False,
 ) -> Stats:
     """Compact superseded lines in ``jsonl_path``. Returns what changed.
 
@@ -131,7 +148,8 @@ def compact(
     compacted = skipped_no_id = 0
 
     for i, (line, raw) in enumerate(zip(parsed, raw_lines, strict=True)):
-        if line is None or latest.get(_identity(line)) == i:
+        is_latest = latest.get(_identity(line)) == i if line is not None else False
+        if line is None or (is_latest and not all_lines):
             out.append(raw)
             continue
         payload = {f: line[f] for f in HEAVY_FIELDS if f in line}
@@ -151,11 +169,12 @@ def compact(
                 f"detail_dir {detail_dir} is not under root {root}; the `detail:` stub is "
                 f"stored root-relative and could not be resolved back",
             ) from exc
-        target = Path(detail_dir) / f"{run_id}.json.gz"
+        name = _detail_name(line, run_id)
+        target = Path(detail_dir) / name
         if not dry_run:
             _write_detail(target, payload)
         slim = {k: v for k, v in line.items() if k not in HEAVY_FIELDS}
-        slim["detail"] = (rel / f"{run_id}.json.gz").as_posix()
+        slim["detail"] = (rel / name).as_posix()
         out.append(json.dumps(slim))
         compacted += 1
 
@@ -183,9 +202,17 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--jsonl", type=Path, default=DEFAULT_JSONL)
     parser.add_argument("--detail-dir", type=Path, default=DEFAULT_DETAIL)
     parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument(
+        "--all-lines",
+        action="store_true",
+        help="also compact the CURRENT line of each identity. Safe only while no consumer "
+             "reads the moved fields back from this file (today none does — verify before use).",
+    )
     args = parser.parse_args(argv)
 
-    stats = compact(args.jsonl, detail_dir=args.detail_dir, dry_run=args.dry_run)
+    stats = compact(
+        args.jsonl, detail_dir=args.detail_dir, dry_run=args.dry_run, all_lines=args.all_lines,
+    )
     saved = stats.bytes_before - stats.bytes_after
     print(f"{'(dry run) ' if args.dry_run else ''}{args.jsonl}")
     print(f"  lines              {stats.total}")
