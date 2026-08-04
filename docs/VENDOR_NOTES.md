@@ -186,8 +186,23 @@ Disclosures:
   repo root while the adapter resolved it from `utils/superdoc/node_modules/`.
   A tool we failed to install is `UNINSTALLED` — our gap — and is excluded from
   the vendor's score rather than zero-filled.
-- **`superdoc-native` failure was also ours**: `tool build dir not found:
-  superdoc/packages/super-editor`, i.e. the gitignored monorepo clone was absent.
+- **`superdoc-native` has never been runnable in this checkout, and that is
+  entirely our gap.** Its first failure was `tool build dir not found:
+  superdoc/packages/super-editor` — the gitignored monorepo clone was absent.
+  Cloning SuperDoc (HEAD `5b1af90`, 2026-08-03) and running its `pnpm install`
+  fixed that, and revealed a second, larger problem: the run drives SuperDoc's
+  own vitest at
+  `superdoc/packages/super-editor/src/editors/v1/tests/redline-bench/redline.test.js`
+  — **a bench-authored harness file that exists nowhere.** Not in the upstream
+  clone (it is ours, not theirs), not in this repo, and not anywhere in git
+  history (searched across all refs, 2026-08-04).
+
+  So `superdoc-native` is `UNINSTALLED`: it is excluded from superdoc's score
+  and reported as a hole in *our* harness. It must never be zero-filled — doing
+  so would penalise SuperDoc for a file we never wrote or never committed.
+  Reconstructing that harness is required before superdoc's in-process engine
+  can be measured at all, and until then superdoc is represented only by its
+  Python and TypeScript SDKs.
 - **Upgrading to latest LOWERS superdoc's coverage, and we are publishing the
   lower number.** Measured A/B on the same first 25 pairs of
   `corpus/word_based/centralized_mapping.csv`: `superdoc-sdk` **1.19.2
