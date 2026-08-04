@@ -283,6 +283,69 @@ Both engines regenerate `styles.xml` and `settings.xml` unconditionally. That is
 re-serialisation habit Finding 2 identifies, present in both, and it is why both engines
 have a ≈50 cluster with the same term profile.
 
+### The named attribute set — the direct cause of the vertical advance
+
+Contributed by the `stage2-R2-inplace-rust` session and reproduced here because it is the
+answer to the question Finding 2 leaves open. Effective spacing resolved through
+docDefaults → `basedOn` chain → direct `pPr`, per attribute, over the 46 text-identical
+documents (3714 paragraphs), candidate against Word:
+
+| effective attribute | at the scored baseline | documents |
+|---|---:|---:|
+| `w:spacing/@line` | 436 paragraphs (11.7%) | 29/46 |
+| `w:spacing/@after` | 337 (9.1%) | 31/46 |
+| `w:spacing/@before` | 147 (4.0%) | 15/46 |
+| `w:spacing/@lineRule` | 130 (3.5%) | 6/46 |
+
+Top transitions (candidate → oracle):
+
+```
+130  after     cand=160   oracle=0
+123  line      cand=240   oracle=276
+104  line      cand=278   oracle=240
+102  lineRule  cand=None  oracle=auto
+ 69  line      cand=None  oracle=240
+ 56  before    cand=240   oracle=0
+```
+
+`after=160 line=278` is Word's modern (Calibri) default block; `after=0 line=240` is the
+classic one. **We get it wrong in both directions on different paragraphs of the same
+corpus** — 123 paragraphs where we write classic and Word writes modern, 104 the reverse.
+
+That is the diagnostic fact, and it rules out the obvious explanation. A global
+stylesheet mis-pick cannot produce both directions at once; **per-paragraph
+side-of-origin can** — i.e. whether a paragraph's style formatting is kept from A or
+taken from B. `docDefault_spacing` differs on only **1/46**, so the divergence lives in
+the paragraph-style layer, not in docDefaults.
+
+Two further results from the same measurement, both worth keeping:
+
+- **The defect substantially survives workstream S.** The style-chain work removes only
+  ~15% of the divergence (`line` 444 → 436). That is an independent confirmation of the
+  +0.50 headline in [stage1-measured-impact.md](stage1-measured-impact.md): S is real and
+  small, and it is not the spacing fix.
+- **`finalize.rs::normalize_incomplete_spacing` rule 2 is NOT the driver** — it accounts
+  for 21 paragraphs. It was the leading hypothesis (it adds `lineRule="auto" line="240"`
+  where Word writes neither, and its own doc comment says Word strips it) and its author
+  retracted it on measurement. An eighth dead hypothesis, and the best-named one.
+
+**This is the real Stage R3**: deciding per paragraph which side's paragraph-style
+formatting is live. It is the same class of change as workstream S, and it is the first
+mechanism identified in this programme that is both precisely specified and plausibly
+large enough to matter.
+
+> **Provenance warning attached to this measurement.** It was first reported alongside a
+> claim that `1be1fcd` produces output byte-identical to the scored baseline binary, and
+> therefore that workstream S was already priced into 76.2072. **That claim is false and
+> was retracted.** The dist binary was rebuilt from `1be1fcd` at 17:31, so comparing a
+> `1be1fcd` build against it is trivially identical and says nothing about the baseline.
+> The decisive counter-argument needs no file forensics: byte-identical binaries cannot
+> move 73 documents' scores, and `stage2-measure` independently found 256 of 803 pairs
+> producing different `word/styles.xml`. This is the D5 split-brain — provenance read off
+> an artifact mutated underneath the reader — and it is the second instance in this
+> programme after the docxodus "9.0.0" retraction. **The spacing table above is unaffected
+> and stands.**
+
 **Seventh dead hypothesis, recorded:** rust's regenerated `theme1.xml` was the obvious
 suspect, since theme fonts resolve every `asciiTheme`/`minorHAnsi` run and a wrong
 typeface rewraps every line. It is not the cause — rust preserves the source's major and
