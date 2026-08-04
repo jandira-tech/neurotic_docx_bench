@@ -156,8 +156,30 @@ export async function loadEngine(
 			"../src/neurotic_docx_bench/utils/docxodus/node_modules/docxodus/dist/index.js"
 		);
 		if (dox.initialize) await dox.initialize();
+		// NAME the comparison engine. `compareDocuments(base, next)` with no options
+		// resolves the engine from whatever the installed version defaults to, and that
+		// default is not stable across majors: docxodus 7.0.0 shipped
+		// `options?.engine ?? ComparisonEngine.WmlComparer`, 9.0.0 ships
+		// `options?.engine ?? ComparisonEngine.DocxDiff`. Same call, different engine,
+		// no error — an upgrade would silently move every docxodus score with nothing in
+		// the run recording why.
+		//
+		// We pin docxodus's OWN current default (DocxDiff) rather than freezing the
+		// legacy engine: the bench measures what a real docxodus 9 user gets. Reading the
+		// value off the shipped enum (never a hardcoded 0/1) keeps us on the package's
+		// wire contract, and generate-native-redlines.test.ts fails if a future release
+		// moves that default out from under this pin.
+		const engine = dox.ComparisonEngine?.DocxDiff;
+		if (typeof engine !== "number") {
+			throw new Error(
+				"docxodus: ComparisonEngine.DocxDiff missing from the installed package — " +
+					"cannot pin the comparison engine, and an unpinned engine makes the " +
+					"benchmarked engine a property of the installed version.",
+			);
+		}
+		const options = { engine };
 		return async (base, next) => {
-			const out = await dox.compareDocuments(base, next);
+			const out = await dox.compareDocuments(base, next, options);
 			return out instanceof Uint8Array ? out : new Uint8Array(out);
 		};
 	}
