@@ -681,9 +681,35 @@ A cross-vendor number is publishable only when all six hold:
 6. **Disclosed thumbs.** Every place we touched a vendor's code, forked it, or
    know of an unfixed bug is written down next to the number.
 
+### 6.2b Checked and cleared (negative results worth recording)
+
+Suspicions that were tested and did **not** hold. Recorded so nobody re-opens
+them from first principles, and because a validity chapter that only lists
+confirmed defects looks like motivated reasoning.
+
+- **Author-name colour bias — REFUTED.** The Word oracle stamps
+  `w:author="Comparison"`, while every tool stamps its own
+  (`jubarte-native`, `folio`, `superdoc`, `redlines`, `docx-redline-js`).
+  Since LibreOffice colours tracked changes per author, this looked like a
+  systematic pixel penalty applied to every vendor for a cosmetic reason.
+  Tested directly: one oracle redline was copied twice, differing **only** in
+  `w:author`, rendered through the same LibreOffice, and scored against
+  itself. Result **100.00**. LibreOffice assigns colour by author *index*, not
+  by name, so a single-author document renders identically whatever the author
+  is called. No bias, no normalisation needed.
+
 ### 6.3 Tasks
 
-**6.3.1 — Corpus symmetry.** Give every `script_redlines` run the same
+**6.3.1 — Corpus symmetry. ✅ DONE 2026-08-04.** Hoisted to a top-level
+`corpora:` list in bench.yaml; `config.expand_generate_commands` expands each
+run's single `generate:` once per pool. Verified: **12 of 12** `script_redlines`
+runs now cover all three pools (was 4 of 12), and all four hand-written 3-chains
+are gone. Hardcoding `--manifest`/`--source-dir` in a `generate:` is now
+rejected at config load, so the footgun cannot be reintroduced. A run that
+genuinely wants one pool declares `corpora: [<name>]`; silence means ALL.
+18 tests in `tests/test_corpus_symmetry.py`.
+
+**6.3.1-original — Corpus symmetry.** Give every `script_redlines` run the same
 three-manifest chain jubarte-rust has. All generators already accept
 `--manifest`/`--source-dir` (verified: `superdoc_gen.py:171`,
 `redlines_gen.py:240`, `superdoc_redlines_gen.py:248`, and
@@ -706,6 +732,13 @@ candidates. One agent per vendor family, in its own worktree, red-green: a
 failing smoke fixture first, then the adapter fix. A vendor whose API we
 cannot drive after honest effort is recorded `ADAPTER_GAP` with the specific
 call that broke — never silently zero.
+
+**6.3.3 status.** docxodus 7.0.0 → **9.0.0** done, including the D5
+split-brain fix (pin, root `package.json` and `utils/docxodus/package.json` now
+move together, with a test enforcing agreement) and an explicitly named
+comparison engine. folio → **core 0.15.13 / react 0.13.2** done, and it
+uncovered the retraction recorded in `docs/VENDOR_NOTES.md`. superdoc family
+in progress.
 
 **6.3.4 — Install the missing tools.** Clone `superdoc/` and
 `superdoc-redlines/`, restore the docxodus local build, fix the `superdoc-ts`
