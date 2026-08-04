@@ -58,7 +58,7 @@ generate_scripts:
 
 # Tool versions are PINNED to the ones we reviewed:
 #   docxodus 7.0.0 · docx-redline-js = local TS migration (dist: sibling package)
-#   @stll/folio-core 0.3.1 (generator) · @stll/folio-react 0.5.0 (viewer)
+#   @stll/folio-core 0.15.13 (generator) · @stll/folio-react 0.13.2 (viewer)
 #   superdoc-sdk (Python) 1.19.2 · superdoc editor (npm) 1.44.1  ← different packages
 #   jubarte builds are content-hashed under dist/
 # Do NOT bump to @latest without re-review — the pin keeps CI reproducible.
@@ -151,7 +151,7 @@ runs:
   # NOTE: the renderer reads DOCX via set_input_files (read-only upload) and
   # writes PDFs to the run dir — the source corpus is never mutated.
   - name: folio-playwright-rendering
-    package: "@stll/folio-react@0.5.0"
+    package: "@stll/folio-react@0.13.2"
     docx: corpus/word_based/docx_source
     render: playwright
     jobs: 12
@@ -162,11 +162,16 @@ runs:
       url: "http://127.0.0.1:5175/harness.html"
       file_input: "#fileInput"
       page_selector: ".layout-page"
-      readiness_js: "window.__folioReady === true || document.querySelectorAll('.layout-page').length > 0"
+      # No `|| .layout-page > 0` fallback: folio paginates incrementally, so the
+      # first page appears long before the last one, and the fallback let
+      # Playwright capture a partially paginated document. __folioReady is now set
+      # by the harness only after the page count + text length hold steady (see
+      # harness/folio-viewer/src/harness-main.ts:waitForStablePagination).
+      readiness_js: "window.__folioReady === true"
       timeout_ms: 90000
 
   - name: folio-playwright-redlines
-    package: "@stll/folio-react@0.5.0"
+    package: "@stll/folio-react@0.13.2"
     docx: corpus/word_based/docx_redlines_word
     render: playwright
     jobs: 12
@@ -175,7 +180,7 @@ runs:
     harness: *folio-harness
 
   - name: folio-playwright-accepted
-    package: "@stll/folio-react@0.5.0"
+    package: "@stll/folio-react@0.13.2"
     docx: corpus/word_based/docx_accepted_word
     render: playwright
     jobs: 12
@@ -195,12 +200,18 @@ runs:
     vendor: docx-redline-js
     benchmarks: [script_redlines]
 
-  # (3b) folio — @stll/folio-core compareDocxVersions + FolioDocxReviewer
-  # applyOperations(tracked-changes). No single base+next→redline call, so the
-  # loadEngine 'folio' adapter composes two headless APIs (see
-  # scripts/generate-native-redlines.ts). Pinned to @stll/folio-core 0.3.1.
+  # (3b) folio — @stll/folio-core generateRedlineDocx(base, next, {author}).
+  # Since 0.13.0 folio ships a single base+next→redline call, so the loadEngine
+  # 'folio' adapter is now a straight one-call passthrough (see
+  # scripts/generate-native-redlines.ts) with no harness-side diff translation.
+  # This run is NOT harness-assisted: the scored bytes are folio's own output.
+  # Before 0.15.13 we composed compareDocxVersions + FolioDocxReviewer
+  # .applyOperations ourselves, and that composition mis-read a `modified` diff
+  # entry's revised-side blockId as a base-side id — every modification op was
+  # dropped and modification-only pairs scored as "no redline". Those older
+  # folio numbers measured our translation, not folio.
   - name: folio
-    package: "@stll/folio-core@0.3.1"
+    package: "@stll/folio-core@0.15.13"
     generate: "node --import tsx scripts/generate-native-redlines.ts --method=folio --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=folio"
     render: soffice
     jobs: 12
