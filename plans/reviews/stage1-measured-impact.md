@@ -130,7 +130,100 @@ being the first move.**
 
 ---
 
-## Part 2 — jubarte-rust. Status: **run in flight.**
+## Part 2 — jubarte-rust. Verdict: **real, small, and it trips a ratchet.**
+
+### Provenance
+
+| | baseline | candidate |
+|---|---|---|
+| run | 2026-08-04T10:41:28 | 2026-08-04T21:47:16 |
+| `tool_version` | `jubarte-rust@fcea02da49f4` | `jubarte-rust@8a1e896365b3+git.1be1fcd060ce0d8e…` |
+| `corpus_revision` | `b7f467074a51` | `b7f467074a51` — same |
+| `scorer` / `score_config` | `pagefair-v2` | identical, byte-for-byte |
+| `holdout_mode` | `excluded` | `excluded` |
+| per-document keys | 763 | 763, **zero unique to either side** |
+
+Content hash moved and the commit is stamped. The rebuild took.
+
+### Result — and the pre-registered prediction was 2× optimistic
+
+| | predicted | **actual** | baseline → new |
+|---|---:|---:|---|
+| ITT mean | +0.94 | **+0.50** | 76.21 → 76.71 |
+| ITT median | — | **+1.02** | 77.95 → 78.97 |
+| above 92 | +9 | **+1** | 282 → 283 |
+| perfect | 0 | **0** | 158 → 158 |
+| cluster [40,60) | — | **−9** | 197 → 188 |
+
+**73 documents changed — 57 up, 16 down.** The direction and the sign were right; the
+magnitude was not. The 21-document A/B sample over-estimated the mean effect by ~2× and
+the above-92 effect by ~9×, because a hand-picked cluster sample over-represents movers.
+That is a calibration lesson worth more than the stage: **sampled A/B deltas extrapolate
+badly to a full corpus, and should be treated as an upper bound.**
+
+### Ratchets (C1)
+
+| ratchet | outcome |
+|---|---|
+| R-perfect | **PASS** — 158 → 158, no document left 100 |
+| R-92 | **PASS** — 282 → 283 |
+| R-fail | **PASS** — 0 → 0 |
+| R-tail | **TRIP** — one document dropped >10 points |
+
+The tripping document, enumerated as C1 requires:
+
+- `super_editor__two_column_two_page_0b8a37c5_behavior__sd_…` — **80.83 → 33.80 (−47.03)**
+
+And the fact that makes it legible: the *same base document* paired the other way,
+`super_editor__two_column_two_page_0b8a37c5_super_editor_…`, moved **+45.64 (33.69 →
+79.34)**. Same source, two pairings, ±45 points in opposite directions. The style-chain
+change flips which side's two-column section setup wins, and it is right in one pairing
+and wrong in the other. That is not a tuning problem; it is an unresolved **merge-policy
+question about section properties**, and it is the same question Finding 1 of
+[what-the-50-cluster-actually-is.md](what-the-50-cluster-actually-is.md) raises.
+
+**C1's deliberate-exception clause covers R-perfect and R-92 only — it does not extend to
+R-tail.** Read strictly, this stage is not complete. The net is positive (+0.50 mean, +1
+above 92, cluster −9) and the trip is a single document with a now-understood cause, so
+my recommendation is **keep the commit and open the two-column pairing as a named
+defect** rather than revert — but that is a deviation from the contract as written and
+it is recorded as one, not waved through.
+
+Top gainers, for the record: +45.64, +45.56 (`evals__nda…` 45.20 → 90.76), +37.70
+(`h_f_normal_odd_even_firstpg…` 59.65 → 97.36), +35.00, +33.70, +27.55.
+
+### Verdict
+
+Workstream S is **real and small**. Against rust's gaps it delivers **10% of the mean
+shortfall and 1% of the above-92 shortfall**. Contract C4 declared S "a dependency, not a
+bonus" in every plan that cites it; the dependency has now been priced, and every plan
+that leaned on it must find the remainder elsewhere or declare the target missed.
+
+---
+
+## Combined verdict on Stage 1
+
+| fix | ITT mean | above 92 | perfect |
+|---|---:|---:|---:|
+| jubarte-first `d99ccb5b3` (numbering.xml style refs) | **0.00** | 0 | 0 |
+| jubarte-redlines `1be1fcd` (style-chain resolution) | **+0.50** | +1 | 0 |
+
+Two engine fixes, both shipped, both correct as code, and together they close **~10% of
+one engine's mean gap and ~1% of its median gap.** Nothing in Stage 1 moved `perfect` by
+a single document.
+
+This is exactly what the cluster analysis predicts: the ≈50 cluster is accumulated layout
+drift past a 5 px tolerance, no single mechanism dominates it, and mechanism-fixing
+therefore returns fractions of a point. **Arthur — on this evidence the targets (mean 81
+/ median 92 / 200 perfect, on all three engines) are not reachable by the mechanism-fixing
+strategy the three plans describe.** The transfer matrix is the only route with enough
+headroom, and it is a substantially larger project than the plans currently admit.
+
+---
+
+## Part 2 (superseded — original entry, kept for the record)
+
+Status at the time of writing: **run in flight.**
 
 `bench run --only jubarte-rust --rerun --no-gate` is executing against
 `ENGINE_COMMIT.txt = 1be1fcd060ce0d8e2a1b0f91df618d8ec651e3ba`, the workstream S commit.
