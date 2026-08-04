@@ -711,6 +711,27 @@ different transitive version because vendor B was installed first — which is
 quiet, and which nothing currently detects. True isolation (one tree per
 vendor) is the real fix; `bun` only removes today's symptom.
 
+**D4b — A timed-out generate orphans its child process, which then competes with
+every later run.** Discovered 2026-08-04. When `_run_generate` raises on
+timeout, the shell command is killed but the `node` generator it spawned is
+not. A `node --import tsx generate-native-redlines.ts --method=docxodus` from
+the 08:25 timed-out run was found **still alive at 10:35 — 2 h 07 m later**,
+burning CPU throughout the entire competitor sweep. `pkill` on the Python
+driver does not reach it, because the driver is the parent and the match
+pattern is the driver's own command line.
+
+What this does and does not contaminate:
+
+- **Fidelity scores are safe.** They are deterministic pixel comparisons
+  against a fixed oracle; CPU contention cannot change them.
+- **Every timing number taken during that window is suspect**, and so is any
+  timeout attribution — a run competing with a runaway orphan is more likely to
+  hit our clock and be recorded as the vendor failing (D4).
+
+Fixes: kill the whole process group on timeout (`start_new_session=True` plus
+`os.killpg`), and have the driver refuse to start when a stale generator for
+any vendor is already running rather than silently sharing the machine.
+
 ### 6.1b D1 confirmed by measurement — and it cost us, not them
 
 `jubarte-wasm` re-run on the full corpus after corpus symmetry landed
