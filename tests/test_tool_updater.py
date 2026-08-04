@@ -224,3 +224,32 @@ def test_npm_install_pins_exactly_so_the_recorded_version_cannot_drift(monkeypat
     assert any(f in cmd for f in ("--save-exact", "--exact")), (
         f"install must pin exactly or the pin silently widens to a caret: {cmd}"
     )
+
+
+def test_npm_install_uses_bun_not_npm(monkeypatch, tmp_path):
+    """Vendor installs go through bun, the package manager this repo standardises on.
+
+    npm resolves peer dependencies strictly across ONE shared node_modules, so
+    installing one vendor can refuse to install another. Observed live: after
+    superdoc@2.3.0 landed (peer pdfjs-dist ^5.4.296), `npm install
+    @stll/folio-core@0.15.13` exited 1 with ERESOLVE, and BOTH folio and
+    superdoc-ts were recorded as failed runs -- our dependency graph, printed as
+    their crash. bun installs the same specs without the conflict and writes an
+    exact pin.
+    """
+    seen: list[list[str]] = []
+
+    def fake_run(cmd, **kwargs):
+        seen.append(list(cmd))
+        class R:
+            returncode = 0
+            stdout = stderr = ""
+        return R()
+
+    monkeypatch.setattr(tool_updater.subprocess, "run", fake_run)
+    monkeypatch.setattr(tool_updater, "installed_npm_version", lambda *a, **k: "0.15.13")
+
+    tool_updater.update_npm_package("@stll/folio-core@0.15.13", tmp_path, no_update=False)
+
+    assert seen, "no install command was issued"
+    assert seen[0][0] == "bun", f"must install with bun, not {seen[0][0]!r}: {seen[0]}"
