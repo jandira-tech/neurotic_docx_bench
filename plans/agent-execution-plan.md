@@ -627,6 +627,41 @@ happened to default to**. A vendor changing its default engine between releases
 would silently change what we measure while the version string moves as
 expected. Engine selection must be named explicitly.
 
+**D6 — The JS runtime is part of the measurement, and it is not neutral.**
+This machine runs **Node v25.9.0**, a bleeding-edge non-LTS release. Discovered
+2026-08-04 when the freshly-installed `superdoc-redlines` CLI crashed inside a
+transitive dependency:
+
+```
+@harbour-enterprises/superdoc/dist/chunks/index-BN3GuVpx.es.js:7087
+TypeError: varStorage.getItem is not a function
+```
+
+Its `package.json` declares `engines: {"node": ">=18.0.0"}`, so on a literal
+reading Node 25 is supported and this is the vendor's bug. But `>=18.0.0` is
+the usual open-ended default written before Node 25 existed, and a benchmark
+that leans on that technicality is scoring a footnote rather than the software.
+
+The part that makes this OUR problem rather than theirs:
+
+> **`jubarte-rust` is a native binary and is immune to the Node version.
+> `jubarte-wasm`, docxodus, folio, superdoc, superdoc-ts, docx-redline-js and
+> superdoc-redlines all run through Node and are not.** Choosing a bleeding-edge
+> runtime therefore imposes a risk on every JS competitor that our flagship
+> engine does not carry — an asymmetry we introduced by choosing the runtime,
+> not one the vendors chose.
+
+Rules adopted:
+
+1. **Publication runs execute on a current Node LTS**, not on whatever the
+   workstation happens to have. The Node version is recorded in the result line
+   the same way `tool_version` is — a score without its runtime is incomplete.
+2. A crash that reproduces on the LTS is the vendor's, and counts. A crash that
+   occurs only on a non-LTS runtime is reported as a compatibility note in
+   `docs/VENDOR_NOTES.md`, not as a score.
+3. Same rule for LibreOffice and the OS: any component shared by candidates but
+   *not* by the oracle is part of the method and gets recorded.
+
 ### 6.2 Definition — what "pure juice" requires
 
 A cross-vendor number is publishable only when all six hold:
