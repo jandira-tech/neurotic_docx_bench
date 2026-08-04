@@ -771,6 +771,18 @@ in progress.
 module resolution path. *Acceptance:* zero runs failing with `tool build dir
 not found` or `ERR_MODULE_NOT_FOUND`.
 
+**6.3.4b — Run the sealed holdout for COMPETITORS, not just for us.**
+The 40-pair sealed holdout is our overfitting detector, and today only the
+three jubarte engines have holdout runs (gap +3.90 / −1.35 / +6.60, all inside
+±2·SE — no evidence we overfit). No competitor has one.
+
+That asymmetry matters more than it looks, because **half the corpus (the
+400-pair pool) is drawn from SuperDoc's own fixture collection**. A reader is
+entitled to ask whether the corpus favours somebody, and right now we can only
+answer that question about ourselves. Running `--holdout` for every vendor
+costs 40 pairs each and makes the overfitting check symmetric: whatever
+standard we prove we meet, competitors get measured against too.
+
 **6.3.5 — Re-run the full sweep and publish** with per-subcorpus splits and a
 disclosure column.
 
