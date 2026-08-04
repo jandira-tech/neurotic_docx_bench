@@ -263,6 +263,32 @@ Run on the 78 documents where lossless clears 92 and rust does not, comparing
 with a localised divergence; they produce entirely different serialisations of the same
 logical document. rust additionally drops `word/header1.xml` in **14** of the 78.
 
+> **CORRECTION, and it weakens this table — I did not control for non-determinism.**
+> The `stage2-measure` session subsequently established that **the lossless generator is
+> not byte-reproducible**: the same build on the same inputs twice changes **206 of 207**
+> outputs, because a wall-clock `w:date` is written on every `w:ins`/`w:del`, and after
+> normalising dates **27 still differ** through GUID-named media parts. (rust has neither
+> problem — 0 changed over 607 regenerated pairs.)
+>
+> So `word/document.xml` differing on 78/78 was **guaranteed before any engine
+> difference is considered**, and the same applies to any part carrying a date or a media
+> reference. The 100% figures above are inflated by an unknown amount and **must not be
+> quoted as evidence of divergence.** It cost the other session a wrong answer too — its
+> first output diff read "800 of 803 changed" before it ran the control.
+>
+> **What survives the correction:** `word/styles.xml`, `word/settings.xml` and
+> `word/theme/theme1.xml` carry no timestamps or GUIDs, and the preserve-vs-regenerate
+> table below is computed against the *sources*, not between engines — so the finding
+> that **both engines regenerate `styles.xml` and `settings.xml` unconditionally**, and
+> that lossless preserves `theme1.xml` where rust never does, is unaffected. The
+> architectural reading stands on that evidence; it no longer stands on "100% of parts
+> differ."
+>
+> **Method, now binding for anyone repeating this:** normalise `w:date` and GUID media
+> names before diffing lossless output, and run a same-build-twice control first. This is
+> C8 applied to the diff itself — a byte difference is not evidence until you have shown
+> the generator would not have produced it anyway.
+
 That is a genuinely bad result for the plans, and it must be said plainly: **the
 winner-vs-loser diff does not localise the defect, because there is no locality.**
 "Port what lossless does" is not a patch — the two engines share no serialisation
