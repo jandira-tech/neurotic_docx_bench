@@ -26,9 +26,14 @@ We are jubarte's authors. Everything below is a thumb, ours included.
 
 **Ours.** Benchmarked at repo HEAD, not at a released version — every other
 vendor is benchmarked at a published release. It also carries the deepest
-adapter work in this repo, and until 2026-08-04 it was the **only** run whose
-`generate:` covered all three corpus pools while every competitor silently ran
-on one (Chapter 6 D1).
+adapter work in this repo.
+
+On corpus coverage, honesty requires a correction to an earlier draft of this
+file: it claimed jubarte was the only family covering all three corpus pools
+while competitors ran on one. That was false. `docxodus` already had full
+coverage, and our own `jubarte-wasm` was among the runs covering only 207
+pairs. Coverage was copy-pasted per run and drifted in both directions — it is
+a harness footgun, not a thumb on the scale (Chapter 6 D1).
 
 Stated plainly: the home team has the home-field advantage in integration
 effort. Chapter 6.2(5) ("adapter parity") is the remedy, and where parity is not

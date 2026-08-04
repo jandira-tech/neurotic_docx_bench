@@ -509,20 +509,36 @@ compares jubarte to another vendor may be published until 6.1–6.4 land.
 
 ### 6.1 The three defects (measured, not suspected)
 
-**D1 — Corpus asymmetry. Only jubarte-rust is scored on the full corpus.**
-`jubarte-rust`'s `generate:` chains three invocations (`word_based`,
-`word_based` randomized, `word_redlines_superdoc`) = 803 pairs. Every other
-run omits `--manifest`, so it inherits the argparse default
-`corpus/word_based/centralized_mapping.csv` — 207 pairs. Observed n from the
-1.4 sweep: `jubarte-wasm` **n=195**, `superdoc` **n=171**, against
-`jubarte-rust` **n=763**. The headline table therefore compares tools across
-*different document sets*. It is not that one number is slightly noisy; the
-numbers are not the same measurement.
+**D1 — Corpus asymmetry. Two thirds of the runs are scored on a quarter of the
+corpus, and they share a table with the ones that are not.**
 
-Note the direction: the SuperDoc pool is much harder (rust 67.32 there vs
-85.02 on word_based), so the asymmetry currently *understates* jubarte. That
-does not make it publishable. A comparison whose validity depends on which
-way the bias happens to point is not a measurement.
+Corpus coverage is copy-pasted per run, so it drifted. Of the 12 runs
+declaring `script_redlines` (measured by parsing bench.yaml, 2026-08-04):
+
+| coverage | runs |
+|---|---|
+| all three manifests — 803 pairs | `jubarte-rust`, `jubarte-final-native`, `jubarte-final-lossless`, **`docxodus`** |
+| single default manifest — 207 pairs | `docx-redline-js`, `folio`, `superdoc`, `redlines`, `superdoc-redlines`, **`jubarte-wasm`**, `superdoc-ts`, `superdoc-native` |
+
+A run that omits `--manifest` silently inherits the argparse default
+`corpus/word_based/centralized_mapping.csv`. Observed n from the 1.4 sweep:
+`jubarte-wasm` **n=195**, `superdoc` **n=171**, against `jubarte-rust`
+**n=763**. Rows with different n are published in the same comparison table,
+so they are not the same measurement.
+
+**Correction (2026-08-04):** an earlier draft of this section claimed *only
+jubarte-rust* had full coverage and that the asymmetry therefore ran in our
+favour. That was wrong, and the error is worth keeping visible: a competitor
+(`docxodus`) already had full coverage, and one of our own runs
+(`jubarte-wasm`) is among the partial ones. The split does not follow vendor
+lines at all — it follows which `generate:` line someone last copy-pasted.
+That makes the defect *more* worth fixing structurally, not less: a footgun
+that has already misfired in both directions will misfire again.
+
+Note on direction: the SuperDoc pool is much harder (rust 67.32 there vs
+85.02 on word_based), so full coverage *lowers* a tool's score. A comparison
+whose validity depends on which way the bias happens to point is not a
+measurement either way.
 
 **D2 — Version staleness. Competitors are frozen; jubarte is at HEAD.**
 Checked against the registries on 2026-08-04:
