@@ -53,11 +53,19 @@ bun run update-readme-ranking                 # tables between RANKING markers
 >    was even enforced *downward*: a run downgraded `package.json` from docxodus ^7.1.0 to
 >    ^7.0.0.
 >
-> Also load-bearing: some competitor scores are partly **our** code — folio has no single
-> compare call and superdoc-redlines has no compare at all, so our harness supplies the
-> alignment. Those are marked harness-assisted in the ledger. And a failure only counts
-> against a vendor when *their* code produced it: tools we failed to install are our gap,
-> never their zero.
+> **Retracted: every folio `script_redlines` score published before 2026-08-04.** Our
+> adapter composed two folio APIs and did it wrong — it matched a revised-side block id
+> against base-side blocks, so **0 of 157** modification operations translated and **24 of
+> 60** sampled pairs emitted no tracked changes at all. Those rows measured our
+> translation, not folio. On current folio (`generateRedlineDocx`, a single call) the same
+> sample gives **59 of 60** pairs with tracked changes. See
+> [`docs/VENDOR_NOTES.md`](docs/VENDOR_NOTES.md).
+>
+> Also load-bearing: some competitor scores are partly **our** code — superdoc-redlines has
+> no compare call at all, so our harness supplies the block alignment, which is arguably
+> the hardest part of redlining. Those are marked harness-assisted in the ledger. And a
+> failure only counts against a vendor when *their* code produced it: tools we failed to
+> install, or killed with our own timeout, are our gap — never their zero.
 
 <!-- RANKING-START -->
 ### script_redlines — redline markup vs Word
