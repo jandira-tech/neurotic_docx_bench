@@ -174,11 +174,37 @@ def resolve_tool_version(
 ) -> str | None:
     """Resolve a run's ``tool_version``: local build (``dist``) → npm (``package``) →
     Python package (``python_package``); returns None when none is configured.
+
+    A CONFIGURED source that fails to resolve raises instead of returning None. Runs
+    skip on (vendor, tool_version, config_hash), so a None version both records
+    ``tool_version: null`` in the JSONL and collides with every other unresolved run in
+    that identity — letting a stale line suppress a real one. ``dist`` already raised
+    (FileNotFoundError); npm and Python did not.
+
+    No configured source at all still returns None: ``generate:``-only runs legitimately
+    have no version pin.
     """
     if dist is not None:
         return resolve_local_version(dist)
     if package is not None:
-        return update_npm_package(package, cwd or Path.cwd(), no_update=no_update)
+        version = update_npm_package(package, cwd or Path.cwd(), no_update=no_update)
+        if not version:
+            raise RuntimeError(
+                f"tool_version unresolved for npm package {package!r}: no "
+                f"node_modules/{_package_name(package)}/package.json under "
+                f"{cwd or Path.cwd()}. Run `bun install` (the repo's package manager) "
+                f"before benchmarking, or drop the `package:` pin from this run.",
+            )
+        return version
     if python_package is not None:
-        return installed_python_version(python_package)
+        version = installed_python_version(python_package)
+        if not version:
+            raise RuntimeError(
+                f"tool_version unresolved for Python package "
+                f"{_python_package_name(python_package)!r}: not installed in this "
+                f"environment. Run `uv sync` (or `uv pip install "
+                f"{python_package}`) before benchmarking, or drop the "
+                f"`python_package:` pin from this run.",
+            )
+        return version
     return None

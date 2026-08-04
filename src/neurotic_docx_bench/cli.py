@@ -1609,10 +1609,24 @@ def _drive_runs(
                 progress.advance(current_task)
 
         if not rerun and not rc.generate and emit:
-            tv = tool_updater.resolve_tool_version(
-                dist=rc.dist, package=rc.package, python_package=rc.python_package,
-                cwd=Path.cwd(), no_update=no_update,
-            )
+            # resolve_tool_version raises when a CONFIGURED pin cannot be resolved.
+            # This call sits outside the per-run try/except below, so it must do its
+            # own isolation — otherwise one uninstalled tool aborts the whole bench
+            # instead of failing its own run.
+            try:
+                tv = tool_updater.resolve_tool_version(
+                    dist=rc.dist, package=rc.package, python_package=rc.python_package,
+                    cwd=Path.cwd(), no_update=no_update,
+                )
+            except Exception as exc:
+                console.print(f"[red]run '{rc.name}' FAILED:[/red] {exc}")
+                failures.append(rc.name)
+                worst_exit = max(worst_exit, 1)
+                if progress is not None and overall_task is not None:
+                    progress.advance(overall_task)
+                if progress is not None and current_task is not None:
+                    progress.remove_task(current_task)
+                continue
             vendor = rc.vendor or rc.name
             # Skip only when the run's PRIMARY benchmark (script_redlines) already
             # ran with the same (vendor, tool_version, config_hash) identity.
