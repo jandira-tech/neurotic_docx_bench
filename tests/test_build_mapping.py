@@ -25,6 +25,10 @@ _DIR_NAMES = {
     "accepted": "docx_accepted_word",
     "pdf_red": "pdf_redlines_word",
     "pdf_acc": "pdf_accepted_word",
+    # Randomized chain corpus (file_N → file_M); oracle PDFs live one level down.
+    "rand_source": "docx_source_randomized",
+    "rand_redline": "docx_redlines_randomized",
+    "rand_pdf": "pdf_redlines_randomized/pdf",
 }
 
 
@@ -45,7 +49,7 @@ def _run(tmp_path: Path, create_dirs: bool = True, **files: list[str]):
     if create_dirs:
         for key, dirname in _DIR_NAMES.items():
             d = tmp_path / dirname
-            d.mkdir()
+            d.mkdir(parents=True)
             for name in files.get(key, []):
                 (d / name).write_bytes(b"")
 
@@ -111,11 +115,14 @@ def test_missing_directories_handled_gracefully(tmp_path):
 
 
 def test_full_pair_both_origin_no_missing(tmp_path):
+    # Accepted docx carry the REDLINE names (they are the redline with all
+    # changes applied) — the old `_word_redline_accepted.docx` suffix matched
+    # zero real files.
     rows, _ = _run(
         tmp_path,
         source=["base.docx", "next.docx"],
         redline=["base_next_redline.docx"],
-        accepted=["base_next_word_redline_accepted.docx"],
+        accepted=["base_next_redline.docx"],
         pdf_red=["base_next_redline.pdf"],
         pdf_acc=["base_next_word_redline_accepted.pdf"],
     )
@@ -127,7 +134,7 @@ def test_full_pair_both_origin_no_missing(tmp_path):
     assert row["docx_source_next"] == "next.docx"
     assert row["redline_docx"] == "base_next_redline.docx"
     assert row["redline_docx_word"] == ""
-    assert row["accepted_docx"] == "base_next_word_redline_accepted.docx"
+    assert row["accepted_docx"] == "base_next_redline.docx"
     assert row["pdf_redline"] == "base_next_redline.pdf"
     assert row["pdf_accepted"] == "base_next_word_redline_accepted.pdf"
     assert row["missing"] == ""
@@ -183,7 +190,7 @@ def test_split_core_prefers_longest_source_suffix_match(tmp_path):
         tmp_path,
         source=["foo.docx", "next.docx", "sub_next.docx"],
         redline=["foo_sub_next_redline.docx"],
-        accepted=["foo_sub_next_word_redline_accepted.docx"],
+        accepted=["foo_sub_next_redline.docx"],
         pdf_red=["foo_sub_next_redline.pdf"],
         pdf_acc=["foo_sub_next_word_redline_accepted.pdf"],
     )
@@ -277,7 +284,7 @@ def test_origin_classification_all_three_kinds(tmp_path):
         tmp_path,
         source=["aa.docx", "bb.docx", "cc.docx", "dd.docx", "ee.docx", "ff.docx"],
         redline=["aa_bb_redline.docx", "cc_dd_redline.docx"],
-        accepted=["aa_bb_word_redline_accepted.docx", "ee_ff_word_redline_accepted.docx"],
+        accepted=["aa_bb_redline.docx", "ee_ff_redline.docx"],
     )
     assert _row(rows, "aa_bb")["origin"] == "both"
     assert _row(rows, "cc_dd")["origin"] == "redline_only"
@@ -294,7 +301,7 @@ def test_stdout_reports_inventory_and_summary_counts(tmp_path):
         tmp_path,
         source=["base.docx", "next.docx"],
         redline=["base_next_redline.docx"],
-        accepted=["base_next_word_redline_accepted.docx"],
+        accepted=["base_next_redline.docx"],
         pdf_red=["base_next_redline.pdf"],
         pdf_acc=["base_next_word_redline_accepted.pdf"],
     )
@@ -354,6 +361,96 @@ def test_stem_exactly_matches_a_registered_source_name(tmp_path):
     assert row["docx_source_next"] == "solo.docx"
     assert row["docx_source_base"] == ""
     assert "source_base" not in row["missing"].split("; ")
+
+
+def test_accepted_word_variant_preferred_when_both_exist(tmp_path):
+    """When docx_accepted_word holds both name variants for one stem, the
+    `_word_redline` (Word-capture, provenance-matching) variant wins."""
+    rows, _ = _run(
+        tmp_path,
+        source=["base.docx", "next.docx"],
+        redline=["base_next_redline.docx"],
+        accepted=["base_next_redline.docx", "base_next_word_redline.docx"],
+    )
+    row = _row(rows, "base_next")
+    assert row["accepted_docx"] == "base_next_word_redline.docx"
+    assert row["origin"] == "both"
+
+
+def test_pdf_redline_word_variant_fallback(tmp_path):
+    """43 real pairs only exist as `_word_redline.pdf` captures — the mapping must
+    record the file that exists, never a stale `_redline.pdf` guess."""
+    rows, _ = _run(
+        tmp_path,
+        source=["base.docx", "next.docx"],
+        redline=["base_next_redline.docx"],
+        pdf_red=["base_next_word_redline.pdf"],
+    )
+    row = _row(rows, "base_next")
+    assert row["pdf_redline"] == "base_next_word_redline.pdf"
+    assert "pdf_redline" not in row["missing"].split("; ")
+
+
+def test_pdf_redline_word_variant_preferred_over_plain(tmp_path):
+    rows, _ = _run(
+        tmp_path,
+        source=["base.docx", "next.docx"],
+        redline=["base_next_redline.docx"],
+        pdf_red=["base_next_redline.pdf", "base_next_word_redline.pdf"],
+    )
+    row = _row(rows, "base_next")
+    assert row["pdf_redline"] == "base_next_word_redline.pdf"
+
+
+# --------------------------------------------------------------------------- #
+# Randomized chain corpus (second CSV)
+# --------------------------------------------------------------------------- #
+
+
+def _rand_rows(tmp_path: Path) -> list[dict[str, str]]:
+    csv_path = tmp_path / "centralized_mapping_randomized.csv"
+    assert csv_path.exists(), "randomized CSV must always be written"
+    with csv_path.open(newline="") as f:
+        return list(csv.DictReader(f))
+
+
+def test_randomized_corpus_written_and_classified(tmp_path):
+    rows, stdout = _run(
+        tmp_path,
+        rand_source=["file_1.docx", "file_2.docx"],
+        rand_redline=["file_1_file_2_redline.docx"],
+        rand_pdf=["file_1_file_2_redline.pdf"],
+    )
+    assert rows == []  # named-corpus CSV untouched by randomized inputs
+    rand = _rand_rows(tmp_path)
+    assert len(rand) == 1
+    row = rand[0]
+    assert row["pair_stem"] == "file_1_file_2"
+    assert row["base"] == "file_1"
+    assert row["next"] == "file_2"
+    assert row["origin"] == "randomized_chain"
+    assert row["redline_docx"] == "file_1_file_2_redline.docx"
+    assert row["pdf_redline"] == "file_1_file_2_redline.pdf"
+    # No accepted artifacts exist for the randomized chain — always MISSING.
+    assert row["accepted_docx"] == "MISSING"
+    assert row["pdf_accepted"] == "MISSING"
+    assert "RANDOMIZED CHAIN CORPUS" in stdout
+
+
+def test_randomized_corpus_missing_oracle_pdf_flagged(tmp_path):
+    _run(
+        tmp_path,
+        rand_source=["file_1.docx", "file_2.docx"],
+        rand_redline=["file_1_file_2_redline.docx"],
+    )
+    row = _rand_rows(tmp_path)[0]
+    assert row["pdf_redline"] == "MISSING"
+    assert "pdf_redline" in row["missing"].split("; ")
+
+
+def test_randomized_corpus_empty_when_no_dirs(tmp_path):
+    _run(tmp_path, create_dirs=False)
+    assert _rand_rows(tmp_path) == []
 
 
 def test_non_matching_extensions_are_ignored(tmp_path):

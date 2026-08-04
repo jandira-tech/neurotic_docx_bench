@@ -67,7 +67,7 @@ def main() -> None:
 
     # Summary stats
     scores = sorted(
-        (k, v["overall_score"]) for k, v in results.items()
+        (k, pipeline.overall_from_result(v)) for k, v in results.items()
     )
     values = [s for _, s in scores]
     if values:
@@ -90,7 +90,7 @@ def main() -> None:
 
     # Build HTML gallery report (worst-first)
     documents: list[DocumentReportInput] = []
-    for key, result in sorted(results.items(), key=lambda kv: kv[1]["overall_score"]):
+    for key, result in sorted(results.items(), key=lambda kv: pipeline.overall_from_result(kv[1])):
         oracle_pages_dir = WORK_DIR / key / "oracle"
         cand_pages_dir = WORK_DIR / key / "candidate"
         oracle_pages = sorted(oracle_pages_dir.glob("page_*.png")) if oracle_pages_dir.exists() else []

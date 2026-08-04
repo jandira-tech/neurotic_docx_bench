@@ -5,7 +5,7 @@ JSONL line (PLAN §7) and by the gate.
 from __future__ import annotations
 
 import statistics
-from collections.abc import Mapping
+from collections.abc import Iterable, Mapping
 from dataclasses import asdict, dataclass
 
 
@@ -81,3 +81,19 @@ def compute_aggregate(
         page_mean=page_mean,
         page_median=page_median,
     )
+
+
+def compute_aggregate_itt(
+    scores: dict[str, float],
+    failure_docs: Iterable[str],
+    per_doc: Mapping[str, Mapping[str, object]] | None = None,
+) -> Aggregate:
+    """Intent-to-treat aggregate: every explicitly-failed doc scores 0.
+
+    The completed-only aggregate silently rewards a tool for crashing on hard documents
+    (the doc leaves the denominator). Here each unique failed doc that did not also
+    produce a score enters at 0.0; a doc that scored keeps its score even if a failure
+    record exists for it (non-fatal stage error). Failure docs are deduped.
+    """
+    zeroed = {doc: 0.0 for doc in set(failure_docs) if doc not in scores}
+    return compute_aggregate({**scores, **zeroed}, per_doc=per_doc)

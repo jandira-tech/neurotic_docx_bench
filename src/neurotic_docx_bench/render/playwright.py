@@ -178,7 +178,7 @@ class PlaywrightRenderer:
         work_dir: Path,
         *,
         force: bool = False,
-        jobs: int = 4,
+        jobs: int = 12,
         timeout: float = 1200.0,
     ) -> RenderReport:
         """Render every ``*.docx`` under ``source_dir`` to ``work_dir/pdf``.

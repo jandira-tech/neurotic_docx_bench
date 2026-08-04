@@ -7,6 +7,7 @@ Sequential multi-tool runs, JSONL emission and gating arrive in later PRs.
 
 from __future__ import annotations
 
+import csv
 import json
 import os
 import shutil
@@ -17,6 +18,7 @@ import tempfile
 import time
 import uuid
 from collections.abc import Callable, Iterable
+from functools import lru_cache
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import TypedDict, cast
@@ -42,9 +44,16 @@ from rich.table import Table
 from rich.text import Text
 from rich.theme import Theme
 
-from neurotic_docx_bench import pipeline, provenance, stages, tool_updater
+from neurotic_docx_bench import functional_lens, lens_health, noise_floor, pipeline, provenance, stages, tool_updater
 from neurotic_docx_bench.benchmarks import BenchmarkName, BenchmarkOutcome
-from neurotic_docx_bench.config import BenchConfig, RunConfig, environment_config_for_run, load_config
+from neurotic_docx_bench.config import (
+    BenchConfig,
+    RunConfig,
+    corpora_for_run,
+    environment_config_for_run,
+    expand_generate_commands,
+    load_config,
+)
 from neurotic_docx_bench.emit import gallery as gallery_emit
 from neurotic_docx_bench.emit import jsonl as jsonl_emit
 from neurotic_docx_bench.emit import snapshot as snapshot_emit
@@ -73,8 +82,111 @@ class ReportData(TypedDict):
 
 # Helper to extract overall_score safely
 def _get_overall_score(result: ScoreResult) -> float:
-    """Extract overall_score from a ScoreResult."""
-    return float(result["overall_score"])
+    """Doc-level score: pagefair when present (penalizes page-count mismatch), else raw."""
+    return pipeline.overall_from_result(result)
+
+
+def _base_pdf_map(cfg: BenchConfig) -> dict[str, Path] | None:
+    """Base-PDF resolver for the v2/skill metrics, by corpus convention: the mapping
+    CSVs and ``pdf_source`` dir live next to the oracle dir (``<corpus>/pdf_source``,
+    ``<corpus>/centralized_mapping*.csv``). Returns None when the convention does not
+    hold (synthetic test corpora) — v2 fields then stay None."""
+    corpus_root = cfg.source_of_truth.parent
+    base_dir = corpus_root / "pdf_source"
+    csvs = sorted(corpus_root.glob("centralized_mapping*.csv"))
+    if not base_dir.is_dir() or not csvs:
+        return None
+    from neurotic_docx_bench import score_v2 as sv2
+
+    return sv2.resolve_base_pdfs(csvs, base_dir) or None
+
+
+def _source_docx_map(cfg: BenchConfig) -> dict[str, tuple[Path, Path]] | None:
+    """Base/next source-DOCX resolver for the functional lens, by the same corpus
+    convention as :func:`_base_pdf_map` (``<corpus>/docx_source`` + mapping CSVs
+    next to the oracle dir). None when the convention does not hold."""
+    corpus_root = cfg.source_of_truth.parent
+    src_dirs = [
+        d
+        for d in (corpus_root / "docx_source", corpus_root / "docx_source_randomized")
+        if d.is_dir()
+    ]
+    csvs = sorted(corpus_root.glob("centralized_mapping*.csv"))
+    if not src_dirs or not csvs:
+        return None
+    return functional_lens.resolve_source_docx(csvs, src_dirs) or None
+
+
+def _functional_stage(
+    rc: RunConfig, run_dir: Path, src_dir: Path, per_doc: PerDocScores, cfg: BenchConfig,
+) -> list[FailureRecord]:
+    """Functional accept/reject invariant over the scored candidates (PR7).
+
+    Accepts and rejects each candidate DOCX with the bench's own neutral machinery
+    (docx-revisions — never the tool's own accept) and compares extracted text
+    against the next/base sources. Verdicts merge into ``per_doc``
+    (``functional_accept_ok``/``functional_reject_ok`` + ``*_strict``); a machinery
+    crash on a doc becomes a stage-"functional" failure record.
+    """
+    sources = _source_docx_map(cfg)
+    if not sources:
+        return []
+    candidates: dict[str, Path] = {}
+    colliding: set[str] = set()
+    for p in sorted(Path(src_dir).glob("*.docx")):
+        if p.name.startswith("~$"):
+            continue
+        key = pipeline.redline_key(p.stem, rc.name)
+        if key in candidates:
+            colliding.add(key)
+            continue
+        candidates[key] = p
+    if colliding:
+        # Two candidate files mapping to one key (e.g. `_redline` + `_word_redline`
+        # variants): never silently pick one — the verdict could be computed on a
+        # file that is not the scored candidate. Skip those keys.
+        for key in colliding:
+            candidates.pop(key, None)
+        console.print(
+            f"[yellow]functional lens: {len(colliding)} candidate key "
+            f"collision(s) skipped[/yellow]"
+        )
+    tasks: list[functional_lens.CheckTask] = []
+    for key in per_doc:
+        cand, pair = candidates.get(key), sources.get(key)
+        if cand is None or pair is None:
+            continue
+        tasks.append((key, cand, pair[0], pair[1], run_dir / "functional" / key))
+    if not tasks:
+        return []
+    verdicts = functional_lens.check_folder(tasks, jobs=rc.jobs)
+    failures: list[FailureRecord] = []
+    n_accept = n_reject = n_err = n_blind = 0
+    for key, v in verdicts.items():
+        d = per_doc[key]
+        d["functional_accept_ok"] = v.accept_ok
+        d["functional_reject_ok"] = v.reject_ok
+        d["functional_accept_strict"] = v.accept_strict
+        d["functional_reject_strict"] = v.reject_strict
+        d["functional_blind"] = v.blind
+        if v.error:
+            n_err += 1
+            failures.append({"doc": key, "stage": "functional", "error": v.error})
+        elif v.blind:
+            n_blind += 1
+        else:
+            n_accept += 1 if v.accept_ok else 0
+            n_reject += 1 if v.reject_ok else 0
+    # "checked" matches results_schema._functional_counts: crashed and blind
+    # (base ≡ next at text level — no signal) docs are excluded.
+    n_checked = len(verdicts) - n_err - n_blind
+    console.print(
+        f"functional lens: {n_checked} checked — "
+        f"accept-ok {n_accept}, reject-ok {n_reject}"
+        + (f", {n_blind} blind" if n_blind else "")
+        + (f", [yellow]{n_err} crashed[/yellow]" if n_err else "")
+    )
+    return failures
 
 
 app = typer.Typer(
@@ -300,7 +412,7 @@ def render(
     source: Path = typer.Argument(..., help="folder of DOCX (soffice) or PDF (passthrough)"),
     work_dir: Path = typer.Argument(..., help="scratch dir; PDFs land in <work_dir>/pdf"),
     backend: str = typer.Option("soffice", "--backend", "-b"),
-    jobs: int = typer.Option(4, "--jobs", "-j"),
+    jobs: int = typer.Option(12, "--jobs", "-j"),
     force: bool = typer.Option(False, "--force", "-f"),
 ) -> None:
     """Render a folder of documents to PDF."""
@@ -317,16 +429,28 @@ def render(
 @app.command(name="word-validate")
 def word_validate(
     target: Path = typer.Argument(..., help="a .docx file or a folder of .docx"),
-    timeout: float = typer.Option(60.0, "--timeout", help="seconds per file before a dialog is assumed"),
+    timeout: float = typer.Option(60.0, "--timeout", help="minimum per-file budget in seconds"),
+    k: float = typer.Option(4.0, "--k", help="budget multiplier over the measured reference open"),
+    reference: Path | None = typer.Option(
+        None, "--reference",
+        help="known-Word-valid .docx (or a dir; the largest .docx is used), opened "
+        "ONCE to calibrate the per-doc budget to this machine's Word speed",
+    ),
+    json_out: Path | None = typer.Option(
+        None, "--json", help="write per-doc outcomes (valid/invalid/unjudgeable) to this JSON file",
+    ),
 ) -> None:
-    """Word-validity gate: open each .docx in Microsoft Word, fail on any repair dialog.
+    """Word-validity gate: open each .docx in Microsoft Word; an observed modal
+    (repair/warning dialog, via System Events) is INVALID, a clean open is VALID,
+    and budget exhaustion with no modal is UNJUDGEABLE (recorded, not a failure —
+    Word was merely slow; TODO §1).
 
     LOCAL/INTERACTIVE only (macOS + Word). Word windows will open and close; grant
-    any automation-permission prompt. A repair/warning dialog counts as a failure.
+    any automation-permission prompt (permission prompts never fail validity).
     """
-    from neurotic_docx_bench.render.word import validate_one, word_available
+    from neurotic_docx_bench.render import word as word_mod
 
-    if not word_available():
+    if not word_mod.word_available():
         console.print("[red]word-validate needs macOS with Microsoft Word installed[/red]")
         raise typer.Exit(2)
     if not target.exists():
@@ -336,18 +460,64 @@ def word_validate(
     if not docs:
         console.print(f"[yellow]no .docx found at {target}[/yellow]")
         raise typer.Exit(2)
-    failures = 0
-    for docx in docs:
-        result = validate_one(docx, timeout=timeout)
-        if result.ok:
-            console.print(f"  [green]VALID[/green] {docx.name}")
+
+    ref_duration: float | None = None
+    if reference is not None:
+        ref_docx: Path | None = reference
+        if reference.is_dir():
+            candidates = sorted(reference.glob("*.docx"), key=lambda p: p.stat().st_size)
+            ref_docx = candidates[-1] if candidates else None
+        if ref_docx is None or not ref_docx.is_file():
+            console.print(f"[yellow]no reference .docx at {reference} — using plain timeout[/yellow]")
         else:
-            failures += 1
+            ref_duration = word_mod.measure_reference_open(ref_docx, timeout=max(timeout, 600.0))
+            if ref_duration is None:
+                console.print(
+                    f"[yellow]reference open failed ({ref_docx.name}) — using plain timeout[/yellow]",
+                )
+            else:
+                console.print(
+                    f"reference open {ref_docx.name}: {ref_duration:.1f}s → "
+                    f"budget {max(timeout, k * ref_duration):.0f}s per doc"
+                )
+
+    n_valid = n_invalid = n_unjudgeable = 0
+    records: dict[str, dict[str, object]] = {}
+    for docx in docs:
+        result = word_mod.validate_one(
+            docx, timeout=timeout, k=k, reference_duration_s=ref_duration,
+        )
+        records[docx.stem] = {
+            "outcome": result.outcome,
+            "error": result.error,
+            "duration_s": round(result.duration_s, 3),
+        }
+        if result.outcome == "valid":
+            n_valid += 1
+            console.print(f"  [green]VALID[/green] {docx.name}")
+        elif result.outcome == "invalid":
+            n_invalid += 1
             console.print(f"  [red]INVALID[/red] {docx.name}: {result.error}")
+        else:
+            n_unjudgeable += 1
+            console.print(f"  [yellow]UNJUDGEABLE[/yellow] {docx.name}: {result.error}")
     console.print(
-        f"word-validate: [green]{len(docs) - failures} valid[/green], [red]{failures} invalid[/red]",
+        f"word-validate: [green]{n_valid} valid[/green], [red]{n_invalid} invalid[/red], "
+        f"[yellow]{n_unjudgeable} unjudgeable[/yellow]",
     )
-    raise typer.Exit(1 if failures else 0)
+    if json_out is not None:
+        json_out.parent.mkdir(parents=True, exist_ok=True)
+        json_out.write_text(json.dumps({
+            "target": str(target),
+            "timeout": timeout,
+            "k": k,
+            "reference": str(reference) if reference else None,
+            "reference_duration_s": ref_duration,
+            "generated_at": datetime.now(UTC).isoformat(),
+            "results": records,
+        }, indent="\t", sort_keys=True) + "\n")
+        console.print(f"per-doc outcomes → {json_out}")
+    raise typer.Exit(1 if n_invalid else 0)
 
 
 @app.command()
@@ -356,7 +526,7 @@ def compare(
     oracle: Path = typer.Argument(..., help="folder of Word oracle PDFs"),
     tool: str | None = typer.Option(None, "--tool", help="tool token in candidate names (…_<tool>_redline)"),
     dpi: int = typer.Option(144, "--dpi"),
-    jobs: int = typer.Option(8, "--jobs", "-j"),
+    jobs: int = typer.Option(12, "--jobs", "-j"),
     limit: int | None = typer.Option(None, "--limit"),
     json_out: Path | None = typer.Option(None, "--json", help="write scores as JSON"),
 ) -> None:
@@ -455,19 +625,39 @@ def _accepted_report(
 
 
 def _accept_compare_stage(
-    rc: RunConfig, run_dir: Path, docx_source: Path, per_doc: PerDocScores, accepted_oracle_pdf: Path, use_dpi: int,
+    rc: RunConfig,
+    run_dir: Path,
+    docx_source: Path,
+    per_doc: PerDocScores,
+    accepted_oracle_pdf: Path,
+    use_dpi: int,
+    *,
+    exclude_keys: set[str] | None = None,
+    only_keys: set[str] | None = None,
 ) -> BenchmarkOutcome:
     """Copy the freshly generated redlines, accept ALL tracked changes, render, and score
     the accepted copies against the accepted ground truth; write the diff report.
     Returns a :class:`BenchmarkOutcome` with scores, per_doc, failures, and timings
     for the ``accepted_changes`` benchmark.
+
+    ``exclude_keys``/``only_keys`` apply the run's sealed-holdout filter to this
+    stage's scored keys AND failure records, so the emitted ``accepted_changes``
+    line's scoring universe matches its ``holdout_mode`` stamp (the accepted
+    side of a sealed pair must not be published by a normal run). Lenient key
+    matching (``strict_filter_keys=False``): the accepted oracle covers only a
+    subset of the holdout sampling universe.
     """
     from neurotic_docx_bench import accept_changes
 
     console.print("[bold]accept-compare:[/bold] accepting tracked changes on the generated redlines")
     accepted_dir = run_dir / "accepted_docx"
     results = accept_changes.process_folder(docx_source, accepted_dir, reject=False, jobs=rc.jobs)
-    accept_failures = [{"doc": r.source.name, "stage": "accept", "error": r.error} for r in results if not r.ok]
+    accept_failures = [
+        # Normalize into the score key space (strip .docx + `_<tool>_redline` infix).
+        {"doc": pipeline.redline_key(r.source.stem, rc.name), "stage": "accept", "error": r.error}
+        for r in results
+        if not r.ok
+    ]
     if accept_failures:
         console.print(f"[yellow]{len(accept_failures)} accept failure(s)[/yellow]")
 
@@ -482,6 +672,9 @@ def _accept_compare_stage(
         dpi=use_dpi,
         jobs=rc.jobs,
         candidate_tool=rc.name,
+        exclude_keys=exclude_keys,
+        only_keys=only_keys,
+        strict_filter_keys=False,
     )
     accepted_scores = {k: _get_overall_score(v) for k, v in accepted_per_doc.items()}
     redline_scores = {k: _get_overall_score(v) for k, v in per_doc.items()}
@@ -492,12 +685,16 @@ def _accept_compare_stage(
     console.print(f'accepted report → {run_dir / "accepted_report.md"}')
 
     # Collect accept-stage failures (accept + render) and timings for the
-    # self-contained Results line.
+    # self-contained Results line. Failures share the scores' holdout universe
+    # (else the line's ITT stats leak across the seal).
     stage_failures: list[FailureRecord] = list(accept_failures)
     stage_failures.extend(
         {"doc": pipeline.redline_key(r.source.stem, rc.name), "stage": "render", "error": r.error or "render failed"}
         for r in report.results
         if not r.ok
+    )
+    stage_failures = pipeline.filter_failure_records(
+        stage_failures, exclude_keys=exclude_keys, only_keys=only_keys,
     )
     stage_timings: dict[str, dict[str, float]] = {}
     for r in report.results:
@@ -592,12 +789,101 @@ def _roundtrip_stage(
     )
 
 
-def _run_generate(cmd: str, run_dir: Path) -> None:
-    """Execute a run's ``generate`` command with ``$RUN_DIR`` set; it writes ``$RUN_DIR/docx``."""
+class GenerateTimeout(RuntimeError):
+    """A run's ``generate`` command was killed by OUR clock, not by its own defect.
+
+    Kept distinct from a generic failure on purpose (plan Chapter 6, D4). A tool
+    that is merely *slow* must be reported as slow, with how far it got, because
+    zero-filling our budget as the vendor's score is both wrong and self-serving.
+    """
+
+
+#: Per-pair generate budget, and a floor so a small pool still covers process
+#: startup (Node/.NET/WASM cold start dwarfs per-document cost on tiny pools).
+GENERATE_S_PER_PAIR = 8.0
+GENERATE_TIMEOUT_FLOOR_S = 300.0
+
+
+@lru_cache(maxsize=None)
+def _manifest_pair_count(manifest: str) -> int:
+    """Rows in a corpus manifest, i.e. how many pairs a pool asks a tool to produce.
+
+    Best-effort: an unreadable manifest yields 0 so the floor applies, because a
+    missing count must never shrink a budget below the floor.
+    """
+    path = Path(manifest)
+    if not path.is_file():
+        return 0
+    try:
+        with path.open(newline="", encoding="utf-8") as fh:
+            return max(0, sum(1 for _ in csv.reader(fh)) - 1)  # minus header
+    except (OSError, csv.Error):
+        return 0
+
+
+def _generate_timeout_s(pairs: int) -> float:
+    """Budget for generating ``pairs`` documents.
+
+    The previous budget was a hard-coded 1800 s chosen when a run meant 207
+    pairs. The corpus later grew to 803 pairs against that unchanged clock, and
+    docxodus was killed at exactly 1800 s having produced 622 of ~763 documents
+    — recorded as ``1 run(s) failed``, which reads as the tool crashing.
+    """
+    return max(GENERATE_TIMEOUT_FLOOR_S, GENERATE_S_PER_PAIR * max(0, pairs))
+
+
+def _run_generate(cmds: list[str], run_dir: Path, timeout_s: float | None = None) -> None:
+    """Execute a run's ``generate`` command(s) with ``$RUN_DIR`` set; they write ``$RUN_DIR/docx``.
+
+    One command per corpus pool (see ``config.expand_generate_commands``). Every
+    generator *overwrites* ``$RUN_DIR/generate_timings.json`` and
+    ``generate_failures.json``, so across several invocations only the last pool's
+    artifacts would survive — ITT would silently under-count the per-doc failures
+    it exists to count. Collect and merge them here instead of changing four
+    generators.
+    """
     (run_dir / "docx").mkdir(parents=True, exist_ok=True)
     env = {**os.environ, "RUN_DIR": str(run_dir.resolve())}
-    console.print(f"generate: {cmd}")
-    subprocess.run(cmd, shell=True, cwd=str(Path.cwd()), env=env, check=True, timeout=1800)
+    single = len(cmds) <= 1
+    merged_timings: dict[str, object] = {}
+    merged_failures: list[object] = []
+    for cmd in cmds:
+        console.print(f"generate: {cmd}")
+        budget = timeout_s if timeout_s is not None else _generate_timeout_s(0)
+        try:
+            subprocess.run(cmd, shell=True, cwd=str(Path.cwd()), env=env, check=True, timeout=budget)
+        except subprocess.TimeoutExpired as exc:
+            # Report what the tool ACHIEVED, not just that we stopped it — the
+            # difference between "slow" and "broken" is the whole point (D4).
+            produced = len(list((run_dir / "docx").glob("*.docx")))
+            raise GenerateTimeout(
+                f"generate timed out after {budget}s having produced {produced} document(s): {cmd}. "
+                f"This is our budget, not necessarily the tool's defect — report it as a timeout "
+                f"with throughput, never as the vendor's failure.",
+            ) from exc
+        if single:  # byte-identical to the pre-expansion behaviour
+            continue
+        for fname, sink in (
+            ("generate_timings.json", merged_timings),
+            ("generate_failures.json", merged_failures),
+        ):
+            artifact = run_dir / fname
+            if not artifact.is_file():
+                continue
+            try:
+                payload = json.loads(artifact.read_text())
+            except (json.JSONDecodeError, OSError):
+                payload = None
+            # Consume it so the next invocation's write cannot be double-counted
+            # (and a generator that writes nothing cannot resurrect stale data).
+            artifact.unlink(missing_ok=True)
+            if isinstance(payload, dict) and isinstance(sink, dict):
+                sink.update(payload)
+            elif isinstance(payload, list) and isinstance(sink, list):
+                sink.extend(payload)
+    if not single:
+        (run_dir / "generate_timings.json").write_text(json.dumps(merged_timings))
+        (run_dir / "generate_failures.json").write_text(json.dumps(merged_failures, indent=2))
 
 
 def _collect_timings(
@@ -643,6 +929,21 @@ def _collect_timings(
     return timings
 
 
+def _corpus_revision(cfg: BenchConfig) -> str | None:
+    """Short content hash of the committed oracle manifest — stamps every Results
+    line with the exact corpus vintage it was scored against, so re-baselining
+    events (dual-variant preference, added randomized pairs) are visible in the
+    data instead of silently mixing vintages."""
+    import hashlib
+
+    from neurotic_docx_bench import oracle_manifest
+
+    path = oracle_manifest.default_manifest_path(cfg.source_of_truth)
+    if not path.is_file():
+        return None
+    return hashlib.sha256(path.read_bytes()).hexdigest()[:12]
+
+
 def _emit_and_gate_benchmark(
     *,
     benchmark: BenchmarkName,
@@ -662,6 +963,8 @@ def _emit_and_gate_benchmark(
     emit: bool,
     only_on_change: bool,
     do_gate: bool,
+    n_oracle_unmatched: int | None = None,
+    holdout_mode: str | None = None,
 ) -> int:
     """Emit one schema-v4 ``Results`` JSONL line for ``(vendor, benchmark)`` and gate it
     vs the benchmark's snapshot.
@@ -670,7 +973,9 @@ def _emit_and_gate_benchmark(
     (``script_redlines``, ``accepted_changes``, ``roundtrip``, …) is its own
     self-contained ``Results`` line keyed by ``vendor``/``benchmark``.
     """
-    if not scores:
+    # A run with zero scores but recorded failures is a total wipeout — it must land
+    # a line (ITT stats at 0), not vanish. Zero scores AND zero failures = nothing ran.
+    if not scores and not failures:
         return 0
     # A --no-emit run opts out of recording; do not gate against the snapshot
     # on data the user chose not to write (gating is a property of the emitted
@@ -692,6 +997,10 @@ def _emit_and_gate_benchmark(
         config_hash=cfg_hash,
         failures=failures,
         timings=timings,
+        n_oracle_unmatched=n_oracle_unmatched,
+        scorer=pipeline.scorer_for_benchmark(benchmark),
+        corpus_revision=_corpus_revision(cfg),
+        holdout_mode=holdout_mode,
     )
     appended = (
         jsonl_emit.append_if_changed(jsonl_path, line)
@@ -702,8 +1011,20 @@ def _emit_and_gate_benchmark(
         f'jsonl[{benchmark}]: {"appended" if appended else "no change, skipped"} → {jsonl_path}',
     )
     if do_gate:
+        if holdout_mode == "only":
+            # Holdout-only lines are diagnostics on the sealed subset — never
+            # regressions. Snapshots are keyed (vendor, benchmark) and hold the
+            # full-corpus baseline, so gating a 20-doc holdout line against one
+            # compares disjoint universes and manufactures spurious FAILs.
+            console.print(
+                f"gate[{benchmark}]: holdout-only line is a diagnostic — never gated",
+            )
+            return 0
         baseline = snapshot_emit.load_snapshot_for_benchmark(snapshots_dir, vendor, benchmark)
-        result = run_gate(scores, baseline)
+        result = run_gate(
+            scores, baseline,
+            eps=noise_floor.eps_from_file(jsonl_path.parent / "noise_floor.json"),
+        )
         colour = {"pass": "green", "warn": "yellow", "fail": "red"}[result.status]
         console.print(
             f"gate[{benchmark}]: [{colour}]{result.status.upper()}[/{colour}] — {result.reason}",
@@ -735,11 +1056,25 @@ def _execute_run(
     roundtrip: bool = False,
     roundtrip_oracle_pdf: Path | None = None,
     stage_cb: Callable[[str, int | None], None] | None = None,
+    holdout_keys: set[str] | None = None,
+    holdout_mode: str | None = None,
 ) -> int:
     """Run one tool: (update/resolve version) → generate/locate source → render → score →
     emit → gate. Returns this run's exit contribution (1 on gate FAIL).
+
+    ``holdout_keys``/``holdout_mode`` (from the config's ``holdout_list``): mode
+    "excluded" drops the sealed keys from the primary score, "only" scores just
+    them. The same filter is threaded through every pair-keyed benchmark
+    (script_redlines, accepted_changes, visual_redlines,
+    visual_accepted_changes) and their failure records, so each emitted line's
+    scoring universe matches its ``holdout_mode`` stamp. Benchmarks keyed by
+    plain doc stems (roundtrip, visual_rendering) cannot be filtered by pair
+    key and are stamped ``holdout_mode=None``.
     """
     run_dir.mkdir(parents=True, exist_ok=True)
+    # The two mutually-exclusive filter arguments, derived once from the mode.
+    holdout_exclude = holdout_keys if holdout_mode == "excluded" else None
+    holdout_only = holdout_keys if holdout_mode == "only" else None
 
     def _stage(name: str, total: int | None = None) -> None:
         """Notify the outer progress display that stage ``name`` started.
@@ -759,7 +1094,14 @@ def _execute_run(
     # Locate/produce the candidate source folder.
     if rc.generate:
         _stage("generate")
-        _run_generate(rc.generate, run_dir)
+        # Budget the LARGEST pool this run covers, applied to each invocation.
+        # Erring generous is deliberate: an over-tight clock misreports a slow
+        # tool as a broken one, which is the failure mode D4 exists to prevent.
+        pools = corpora_for_run(cfg, rc)
+        largest = max((_manifest_pair_count(c.manifest) for c in pools), default=0)
+        _run_generate(
+            expand_generate_commands(cfg, rc), run_dir, timeout_s=_generate_timeout_s(largest),
+        )
         source: Path | None = run_dir / "docx"
         pattern = "*.docx"
     elif rc.render in ("soffice", "playwright"):
@@ -773,6 +1115,8 @@ def _execute_run(
     _n_stages = 2  # setup + render/score (always run)
     if rc.generate:
         _n_stages += 1
+    if pattern == "*.docx":
+        _n_stages += 1  # functional lens (needs candidate DOCX)
     if accept_compare and accepted_oracle_pdf is not None and pattern == "*.docx":
         _n_stages += 1
     if roundtrip and roundtrip_oracle_pdf is not None:
@@ -793,7 +1137,11 @@ def _execute_run(
         if report.fail_count:
             console.print(f"[yellow]{report.fail_count} render failures[/yellow]")
         per_doc = pipeline.score_folders_full(
-            cfg.source_of_truth, report.pdf_dir, run_dir / "score", dpi=use_dpi, jobs=rc.jobs, candidate_tool=rc.name,
+            [cfg.source_of_truth, *cfg.extra_oracle_dirs],
+            report.pdf_dir, run_dir / "score", dpi=use_dpi, jobs=rc.jobs, candidate_tool=rc.name,
+            base_map=_base_pdf_map(cfg), null_cache_path=jsonl_path.parent / "null_baseline.json",
+            exclude_keys=holdout_exclude,
+            only_keys=holdout_only,
         )
         gallery_path = gallery_emit.write_gallery(
             run_dir,
@@ -801,10 +1149,17 @@ def _execute_run(
             title=f"{rc.name} — script_redlines vs Word oracle",
         )
         console.print(f"visual report → {gallery_path}")
+        functional_failures: list[FailureRecord] = []
+        if pattern == "*.docx":
+            _stage("functional lens")
+            functional_failures = _functional_stage(rc, run_dir, src_dir, per_doc, cfg)
         if accept_compare and accepted_oracle_pdf is not None:
             if pattern == "*.docx":
                 _stage("accept-compare")
-                accept_outcome = _accept_compare_stage(rc, run_dir, src_dir, per_doc, accepted_oracle_pdf, use_dpi)
+                accept_outcome = _accept_compare_stage(
+                    rc, run_dir, src_dir, per_doc, accepted_oracle_pdf, use_dpi,
+                    exclude_keys=holdout_exclude, only_keys=holdout_only,
+                )
             else:
                 console.print("[yellow]accept-compare skipped (no DOCX source for this run)[/yellow]")
         if roundtrip and roundtrip_oracle_pdf is not None:
@@ -835,6 +1190,12 @@ def _execute_run(
                 console.print(f"[yellow]{vis_name}: oracle {vis_oracle} missing, skipping[/yellow]")
                 continue
             _stage(f"visual: {vis_name}")
+            # visual_redlines / visual_accepted_changes are keyed by pair key,
+            # so the sealed-holdout filter applies to them exactly as it does
+            # to script_redlines (lenient key matching: their oracle corpora
+            # cover only a subset of the holdout sampling universe).
+            # visual_rendering is keyed by plain doc stems — unfilterable by
+            # pair key; its line is stamped holdout_mode=None at emission.
             if vis_name == "visual_rendering":
                 vis_per_doc = pipeline.score_folders_base(
                     Path(vis_oracle), report.pdf_dir, run_dir / f"score_{vis_name}",
@@ -844,26 +1205,43 @@ def _execute_run(
                 vis_per_doc = pipeline.score_folders_accepted(
                     Path(vis_oracle), report.pdf_dir, run_dir / f"score_{vis_name}",
                     dpi=use_dpi, jobs=rc.jobs,
+                    exclude_keys=holdout_exclude, only_keys=holdout_only,
                 )
             else:
                 vis_per_doc = pipeline.score_folders_full(
                     Path(vis_oracle), report.pdf_dir, run_dir / f"score_{vis_name}",
                     dpi=use_dpi, jobs=rc.jobs, candidate_tool=rc.name,
+                    exclude_keys=holdout_exclude, only_keys=holdout_only,
+                    strict_filter_keys=False,
                 )
-            vis_scores = {k: _get_overall_score(v) for k, v in vis_per_doc.items()}
+            # visual_* stay on the RAW score: candidate and oracle come from DIFFERENT
+            # engines, so repagination (page-count mismatch) is endemic and pagefair
+            # would measure pagination agreement instead of render quality.
+            vis_scores = {k: pipeline.raw_overall_from_result(v) for k, v in vis_per_doc.items()}
             if vis_scores:
                 _print_benchmark_block(
                     vis_scores, vendor=rc.vendor or rc.name, benchmark=vis_name,
                 )
-            if vis_render_failures:
+            # Pair-keyed visual lines share the scores' holdout universe for
+            # their failures too; visual_rendering (plain-stem keys, stamped
+            # holdout_mode=None) keeps the full failure list.
+            vis_failures = (
+                list(vis_render_failures)
+                if vis_name == "visual_rendering"
+                else pipeline.filter_failure_records(
+                    vis_render_failures,
+                    exclude_keys=holdout_exclude, only_keys=holdout_only,
+                )
+            )
+            if vis_failures:
                 console.print(
-                    f"[yellow]{len(vis_render_failures)} render failure(s) "
+                    f"[yellow]{len(vis_failures)} render failure(s) "
                     f"recorded on {vis_name}[/yellow]"
                 )
             visual_outcomes.append(BenchmarkOutcome(
                 benchmark=vis_name, scores=vis_scores,
                 per_doc=cast("dict[str, dict[str, object]] | None", vis_per_doc),
-                failures=list(vis_render_failures), speed_samples_ms=[],
+                failures=vis_failures, speed_samples_ms=[],
                 timings=vis_render_timings,
             ))
     finally:
@@ -878,11 +1256,19 @@ def _execute_run(
 
     # Record which docs did NOT work: generate failures (a generator writes
     # $RUN_DIR/generate_failures.json) + render failures (from the RenderReport).
+    # Failure doc keys are normalized through redline_key so they live in the SAME
+    # key space as the (lowercased) score keys — otherwise ITT dedup and the
+    # silent-drop diagnostic silently miscount (generators emit raw-case
+    # `<base>_<next>`; some stems are mixed-case).
     failures: list[FailureRecord] = []
     gen_fail = run_dir / "generate_failures.json"
     if gen_fail.is_file():
         try:
-            failures.extend(json.loads(gen_fail.read_text()))
+            failures.extend(
+                {**f, "doc": pipeline.redline_key(str(f.get("doc", "")), rc.name)}
+                for f in json.loads(gen_fail.read_text())
+                if isinstance(f, dict)
+            )
         except (json.JSONDecodeError, OSError):
             pass
     failures.extend(
@@ -890,16 +1276,89 @@ def _execute_run(
         for r in report.results
         if not r.ok
     )
+    # Functional-lens machinery crashes are recorded for visibility; the docs keep
+    # their pixel scores (ITT only zeroes docs with NO score).
+    failures.extend(functional_failures)
+    # The failures on a line must share the scores' holdout universe: scoring is
+    # key-filtered above but generate/render failures come from the FULL corpus,
+    # and compute_aggregate_itt zero-fills every failed doc — unfiltered, sealed
+    # docs' failures would enter the headline ITT (and a holdout-only line's ITT
+    # would absorb non-holdout failures).
+    failures = pipeline.filter_failure_records(
+        failures, exclude_keys=holdout_exclude, only_keys=holdout_only,
+    )
     if failures:
         console.print(f"[yellow]{len(failures)} doc(s) recorded as failed in the JSONL[/yellow]")
+
+    # Silent-drop diagnostic: oracle docs with neither a score nor a failure record.
+    # Only meaningful on a full run — a --limit run leaves most of the oracle unmatched
+    # by design, so the count would be noise there.
+    n_oracle_unmatched: int | None = None
+    if limit is None:
+        try:
+            oracle_only, _ = pipeline.coverage(
+                [cfg.source_of_truth, *cfg.extra_oracle_dirs],
+                report.pdf_dir, candidate_tool=rc.name,
+            )
+            # Same universe as the scores/failures: an excluded run must not
+            # count sealed docs as silently dropped, and a holdout-only run
+            # only cares about the sealed keys.
+            if holdout_exclude is not None:
+                oracle_only -= holdout_exclude
+            elif holdout_only is not None:
+                oracle_only &= holdout_only
+            failed_docs = {str(f.get("doc", "")) for f in failures}
+            n_oracle_unmatched = len(oracle_only - failed_docs)
+        except (OSError, ValueError):
+            n_oracle_unmatched = None
+
+    # Optional WV-1 lens: merge per-doc outcomes from a local `bench word-validate
+    # --json` record so the lens-disagreement metric sees all three lenses.
+    # Keyed by RUN NAME first (record stems embed the tool token, so a shared
+    # vendor file can only ever match the one run whose name equals that token);
+    # the vendor file stays as a fallback. Record stems are candidate filenames —
+    # normalized through redline_key into the score key space.
+    wv1_path = jsonl_path.parent / "wv1" / f"{rc.name}.json"
+    if not wv1_path.is_file() and rc.vendor and rc.vendor != rc.name:
+        wv1_path = jsonl_path.parent / "wv1" / f"{rc.vendor}.json"
+    wv1_outcomes = lens_health.load_wv1_outcomes(wv1_path)
+    if wv1_outcomes:
+        n_merged = 0
+        for stem, outcome in wv1_outcomes.items():
+            key = pipeline.redline_key(stem, rc.name)
+            if key in per_doc:
+                per_doc[key]["wv1_outcome"] = outcome
+                n_merged += 1
+        if n_merged:
+            recorded_at = ""
+            try:
+                raw = json.loads(wv1_path.read_text())
+                if isinstance(raw.get("generated_at"), str):
+                    recorded_at = f" (recorded {raw['generated_at'][:19]})"
+            except (json.JSONDecodeError, OSError):
+                pass
+            console.print(
+                f"WV-1 lens: merged {n_merged} outcome(s) from {wv1_path.name}{recorded_at}"
+                " — a local record; re-run word-validate --json after regenerating"
+                " candidates"
+            )
+        else:
+            # A configured lens silently discarded is a trap — say so.
+            console.print(
+                f"[yellow]WV-1 lens: {wv1_path.name} loaded "
+                f"{len(wv1_outcomes)} outcome(s) but 0 matched this run's doc keys "
+                f"(recorded for a different tool name?)[/yellow]"
+            )
 
     timings = _collect_timings(rc, run_dir, report, per_doc)
 
     # Schema v4: emit one self-contained Results line per benchmark. The primary
     # redline score is "script_redlines"; accept-compare and roundtrip are their
-    # own benchmark lines when those flags are enabled.
+    # own benchmark lines when those flags are enabled. A total wipeout (no scores
+    # but recorded failures) still emits, so intent-to-treat stats show the tool at
+    # 0 instead of the run vanishing from the record.
     worst = 0
-    if emit and scores:
+    if emit and (scores or failures):
         _stage("emit + gate")
         worst = max(worst, _emit_and_gate_benchmark(
             benchmark="script_redlines", rc=rc, cfg=cfg, tool_version=tool_version, scores=scores,
@@ -907,6 +1366,7 @@ def _execute_run(
             jsonl_path=jsonl_path, snapshots_dir=snapshots_dir,
             cfg_hash=cfg_hash, id_run=id_run, timestamp=timestamp,
             emit=emit, only_on_change=only_on_change, do_gate=do_gate,
+            n_oracle_unmatched=n_oracle_unmatched, holdout_mode=holdout_mode,
         ))
 
     if accept_outcome is not None:
@@ -919,6 +1379,7 @@ def _execute_run(
             jsonl_path=jsonl_path, snapshots_dir=snapshots_dir,
             cfg_hash=cfg_hash, id_run=id_run, timestamp=timestamp,
             emit=emit, only_on_change=only_on_change, do_gate=do_gate,
+            holdout_mode=holdout_mode,
         ))
 
     if roundtrip_outcome is not None:
@@ -931,6 +1392,11 @@ def _execute_run(
             jsonl_path=jsonl_path, snapshots_dir=snapshots_dir,
             cfg_hash=cfg_hash, id_run=id_run, timestamp=timestamp,
             emit=emit, only_on_change=only_on_change, do_gate=do_gate,
+            # roundtrip is keyed by plain roundtrip doc stems, not pair keys —
+            # the pair-key seal cannot filter it, so stamping the run's mode
+            # would be false provenance (and "only" would wrongly drop the line
+            # from every headline table). None = truthfully unfiltered.
+            holdout_mode=None,
         ))
 
     for vis_outcome in visual_outcomes:
@@ -946,6 +1412,12 @@ def _execute_run(
                 jsonl_path=jsonl_path, snapshots_dir=snapshots_dir,
                 cfg_hash=cfg_hash, id_run=id_run, timestamp=timestamp,
                 emit=emit, only_on_change=only_on_change, do_gate=do_gate,
+                # visual_rendering is keyed by plain doc stems — unfilterable
+                # by pair key, so its stamp is None (see roundtrip above). The
+                # pair-keyed visual_* lines were filtered and stamp truthfully.
+                holdout_mode=(
+                    None if vis_outcome.benchmark == "visual_rendering" else holdout_mode
+                ),
             ))
 
     # A run succeeds if ANY of its benchmarks produced scores — not just the
@@ -1024,6 +1496,67 @@ def _stop_harness_server(proc: subprocess.Popen[bytes] | None) -> None:
     console.print("[dim]harness server stopped[/dim]")
 
 
+def _canary_gate(
+    cfg: BenchConfig, names: list[str] | None, *, enabled: bool, dpi: int,
+) -> None:
+    """Renderer fingerprint check (PR5): abort before scoring when the LO/font
+    environment drifted. Runs only when a selected run uses the soffice renderer;
+    a missing baseline for this LO version warns and proceeds (CI runs another LO)."""
+    if not enabled:
+        return
+    selected = [r for r in cfg.runs if names is None or r.name in names]
+    if not any(r.render == "soffice" for r in selected):
+        return
+    from neurotic_docx_bench import canary as canary_mod
+
+    spec_path = canary_mod.DEFAULT_SPEC_PATH
+    with tempfile.TemporaryDirectory(prefix="bench-canary.") as work:
+        outcome = canary_mod.check(spec_path, Path(work), dpi=dpi)
+    if outcome.status == "ok":
+        console.print(f"renderer canary OK — {outcome.detail}")
+        return
+    if outcome.status == "no-baseline":
+        console.print(f"[yellow]renderer canary skipped: {outcome.detail}[/yellow]")
+        return
+    console.print(f"[red]RENDERER DRIFT — refusing to score:[/red] {outcome.detail}")
+    console.print(
+        "Every score produced in this environment would be incomparable with the "
+        "committed results. If the change is intentional (LO upgrade, font change), "
+        "re-baseline with `bench canary --write`; use --no-canary to bypass.",
+    )
+    raise typer.Exit(2)
+
+
+def _oracle_manifest_gate(cfg: BenchConfig, *, enabled: bool) -> None:
+    """Refuse to run against a drifted oracle (PR4). A missing manifest warns but
+    proceeds — synthetic test corpora and configs that have not adopted a manifest
+    must not hard-fail. ``--no-oracle-check`` disables entirely."""
+    if not enabled:
+        return
+    from neurotic_docx_bench import oracle_manifest
+
+    manifest_path = oracle_manifest.default_manifest_path(cfg.source_of_truth)
+    if not manifest_path.is_file():
+        console.print(
+            f"[yellow]no oracle manifest at {manifest_path} — oracle integrity unchecked "
+            f"(create one: bench oracle-manifest --write)[/yellow]",
+        )
+        return
+    corpus_root = cfg.source_of_truth.parent
+    dirs = oracle_manifest.oracle_dirs_from_config(cfg)
+    drift = oracle_manifest.verify_manifest(manifest_path, corpus_root, dirs)
+    if drift.clean:
+        console.print(f"oracle manifest OK ({manifest_path})")
+        return
+    console.print(f"[red]ORACLE DRIFT — refusing to score:[/red] {drift.summary()}")
+    console.print(
+        "If the change is intentional (oracle regenerated on purpose), re-baseline with "
+        "`bench oracle-manifest --write` and commit the manifest; otherwise restore the "
+        "oracle files. Use --no-oracle-check to bypass (scores would be incomparable).",
+    )
+    raise typer.Exit(2)
+
+
 def _drive_runs(
     *,
     config: Path,
@@ -1043,13 +1576,35 @@ def _drive_runs(
     roundtrip: bool,
     roundtrip_oracle_cache: Path,
     rerun: bool = False,
+    oracle_check: bool = True,
+    canary_check: bool = True,
+    holdout: bool = False,
 ) -> None:
     """Shared driver for ``run`` / ``run-all``: execute the selected bench.yaml runs
     sequentially. ``names=None`` runs everything; otherwise the runs execute in the
     given order (deduplicated).
+
+    With ``holdout_list`` configured, normal runs EXCLUDE the sealed keys from
+    scoring; ``holdout=True`` (``bench run --holdout``) flips to scoring ONLY them.
     """
     cfg = load_config(config)
+    holdout_keys: set[str] | None = None
+    holdout_mode: str | None = None
+    if cfg.holdout_list is not None:
+        holdout_keys = pipeline.load_holdout(cfg.holdout_list)
+        holdout_mode = "only" if holdout else "excluded"
+        console.print(
+            f"holdout: {len(holdout_keys)} sealed key(s) "
+            f'{"scored exclusively" if holdout else "excluded from scoring"} '
+            f"({cfg.holdout_list})",
+        )
+    elif holdout:
+        raise typer.BadParameter(
+            "--holdout needs 'holdout_list' in bench.yaml pointing at the sealed key list",
+        )
+    _oracle_manifest_gate(cfg, enabled=oracle_check)
     use_dpi = dpi if dpi is not None else cfg.scoring.dpi
+    _canary_gate(cfg, names, enabled=canary_check, dpi=use_dpi)
     if os.environ.get("BENCH_CLEAN_RUNS") == "1":
         clean_runs = True
     if os.environ.get("BENCH_NO_UPDATE") == "1":
@@ -1105,7 +1660,7 @@ def _drive_runs(
                 "existing folder (produce it with `bench accept … --out …` or `--generate`)",
             )
         console.rule("[bold]accepted ground truth → PDF (cached)[/bold]")
-        rep = SofficeRenderer().to_pdfs(agt, accepted_oracle_cache, jobs=8)
+        rep = SofficeRenderer().to_pdfs(agt, accepted_oracle_cache, jobs=12)
         if rep.fail_count:
             console.print(f"[yellow]{rep.fail_count} accepted-oracle render failure(s)[/yellow]")
         accepted_oracle_pdf = rep.pdf_dir
@@ -1115,7 +1670,7 @@ def _drive_runs(
         rt_corpus = Path("corpus/word_based/word_working_roundtrip")
         if rt_corpus.is_dir():
             console.rule("[bold]roundtrip oracle → PDF (cached)[/bold]")
-            rep = SofficeRenderer().to_pdfs(rt_corpus, roundtrip_oracle_cache, jobs=8)
+            rep = SofficeRenderer().to_pdfs(rt_corpus, roundtrip_oracle_cache, jobs=12)
             if rep.fail_count:
                 console.print(f"[yellow]{rep.fail_count} roundtrip-oracle render failure(s)[/yellow]")
             roundtrip_oracle_pdf = rep.pdf_dir
@@ -1159,10 +1714,24 @@ def _drive_runs(
                 progress.advance(current_task)
 
         if not rerun and not rc.generate and emit:
-            tv = tool_updater.resolve_tool_version(
-                dist=rc.dist, package=rc.package, python_package=rc.python_package,
-                cwd=Path.cwd(), no_update=no_update,
-            )
+            # resolve_tool_version raises when a CONFIGURED pin cannot be resolved.
+            # This call sits outside the per-run try/except below, so it must do its
+            # own isolation — otherwise one uninstalled tool aborts the whole bench
+            # instead of failing its own run.
+            try:
+                tv = tool_updater.resolve_tool_version(
+                    dist=rc.dist, package=rc.package, python_package=rc.python_package,
+                    cwd=Path.cwd(), no_update=no_update,
+                )
+            except Exception as exc:
+                console.print(f"[red]run '{rc.name}' FAILED:[/red] {exc}")
+                failures.append(rc.name)
+                worst_exit = max(worst_exit, 1)
+                if progress is not None and overall_task is not None:
+                    progress.advance(overall_task)
+                if progress is not None and current_task is not None:
+                    progress.remove_task(current_task)
+                continue
             vendor = rc.vendor or rc.name
             # Skip only when the run's PRIMARY benchmark (script_redlines) already
             # ran with the same (vendor, tool_version, config_hash) identity.
@@ -1177,6 +1746,9 @@ def _drive_runs(
                 benchmark="script_redlines",
                 tool_version=tv,
                 config_hash=cfg_hash,
+                # A holdout-only rerun is never satisfied by a full-corpus line
+                # (nor the reverse); pre-holdout lines count as full-corpus.
+                holdout_only=(holdout_mode == "only"),
             )
             if prior is not None:
                 console.print(
@@ -1234,6 +1806,8 @@ def _drive_runs(
                     roundtrip=roundtrip,
                     roundtrip_oracle_pdf=roundtrip_oracle_pdf,
                     stage_cb=_stage,
+                    holdout_keys=holdout_keys,
+                    holdout_mode=holdout_mode,
                 ),
             )
         except Exception as exc:  # one run's failure must not stop the rest
@@ -1326,6 +1900,22 @@ def run(
         help="force re-running even if (tool, tool_version, config_hash) already exists in "
         "results/bench.jsonl (env BENCH_RERUN=1 also enables this)",
     ),
+    oracle_check: bool = typer.Option(
+        True,
+        "--oracle-check/--no-oracle-check",
+        help="verify the committed oracle manifest before running (drift → exit 2)",
+    ),
+    canary_check: bool = typer.Option(
+        True,
+        "--canary/--no-canary",
+        help="verify the renderer fingerprint canary before soffice runs (drift → exit 2)",
+    ),
+    holdout: bool = typer.Option(
+        False,
+        "--holdout",
+        help="score ONLY the sealed holdout keys (yaml: holdout_list) instead of "
+        "excluding them — the on-demand overfitting check",
+    ),
 ) -> None:
     """Drive bench.yaml runs **sequentially** (one per tool). Each run gets its own
     ``runs/{name}_{datetime}`` work folder (kept locally; ``--clean-runs`` deletes it only
@@ -1356,7 +1946,203 @@ def run(
         roundtrip=roundtrip,
         roundtrip_oracle_cache=roundtrip_oracle_cache,
         rerun=rerun,
+        oracle_check=oracle_check,
+        canary_check=canary_check,
+        holdout=holdout,
     )
+
+
+@app.command(name="canary")
+def canary_cmd(
+    write: bool = typer.Option(
+        False, "--write", help="baseline the CURRENT environment's renderer fingerprint",
+    ),
+    dpi: int = typer.Option(144, "--dpi"),
+) -> None:
+    """Verify (default) or ``--write`` the renderer fingerprint canary.
+
+    Renders one small committed corpus DOCX via soffice and compares the page-1 PNG
+    hash against ``corpus/canary_expected.json`` for the current LibreOffice version.
+    Verify mode exits 2 on mismatch.
+    """
+    from neurotic_docx_bench import canary as canary_mod
+
+    with tempfile.TemporaryDirectory(prefix="bench-canary.") as work:
+        if write:
+            version = canary_mod.current_soffice_version()
+            if version is None:
+                console.print("[red]soffice not found on PATH[/red]")
+                raise typer.Exit(2)
+            digest = canary_mod.render_canary_hash(
+                canary_mod.DEFAULT_CANARY_DOCX, Path(work), dpi=dpi,
+            )
+            canary_mod.write_canary_spec(
+                canary_mod.DEFAULT_SPEC_PATH,
+                canary_mod.DEFAULT_CANARY_DOCX,
+                {version: {"dpi": dpi, "page1_sha256": digest}},
+            )
+            console.print(
+                f"baselined LibreOffice {version} @ {dpi}dpi → {canary_mod.DEFAULT_SPEC_PATH}",
+            )
+            return
+        outcome = canary_mod.check(canary_mod.DEFAULT_SPEC_PATH, Path(work), dpi=dpi)
+    colour = {"ok": "green", "no-baseline": "yellow", "mismatch": "red"}[outcome.status]
+    console.print(f"[{colour}]{outcome.status}[/{colour}] — {outcome.detail}")
+    if outcome.status == "mismatch":
+        raise typer.Exit(2)
+
+
+@app.command(name="noise-floor")
+def noise_floor_cmd(
+    docs: int = typer.Option(10, "--docs", help="number of oracle DOCX to double-render"),
+    dpi: int = typer.Option(144, "--dpi"),
+    source: Path = typer.Option(
+        Path("corpus/word_based/docx_redlines_word"), "--source",
+        help="DOCX folder to sample from",
+    ),
+    out: Path = typer.Option(Path("results/noise_floor.json"), "--out"),
+) -> None:
+    """Measure the render noise floor: render each sampled DOCX twice and score the
+    two renders' rasters against each other; record per-doc score deltas from 100.
+
+    Deterministic rendering ⇒ all-zero deltas (the expected result — recorded as
+    evidence). A nonzero sigma means rendering stopped being deterministic in THIS
+    environment, and the gate epsilon grows to 3σ automatically.
+    """
+    from neurotic_docx_bench import canary as canary_mod
+    from neurotic_docx_bench.render.soffice import SofficeRenderer
+
+    docx_files = sorted(source.glob("*.docx"))[:docs]
+    if not docx_files:
+        console.print(f"[red]no .docx under {source}[/red]")
+        raise typer.Exit(2)
+    renderer = SofficeRenderer()
+    deltas: list[float] = []
+    with tempfile.TemporaryDirectory(prefix="bench-noise.") as work_s:
+        work = Path(work_s)
+        for i, docx in enumerate(docx_files):
+            sub = work / f"d{i}"
+            src_dir = sub / "src"
+            src_dir.mkdir(parents=True)
+            shutil.copy(docx, src_dir / docx.name)
+            r1 = renderer.to_pdfs(src_dir, sub / "r1", jobs=1)
+            r2 = renderer.to_pdfs(src_dir, sub / "r2", jobs=1, force=True)
+            p1 = next(iter([r.pdf for r in r1.results if r.ok and r.pdf]), None)
+            p2 = next(iter([r.pdf for r in r2.results if r.ok and r.pdf]), None)
+            if p1 is None or p2 is None:
+                console.print(f"[yellow]render failed for {docx.name}; skipped[/yellow]")
+                continue
+            result = pipeline.score_pdf_pair(p1, p2, sub / "score", dpi=dpi)
+            deltas.append(abs(100.0 - float(result["overall_score"])))
+            console.print(f"{docx.name}: delta {deltas[-1]:.6f}")
+    record = noise_floor.write_noise_floor(
+        out, deltas, lo_version=canary_mod.current_soffice_version(), dpi=dpi,
+    )
+    console.print(
+        f"noise floor: n={record['n']} sigma={record['sigma']:.6f} "
+        f"max={record['max_delta']:.6f} → gate eps {noise_floor.eps_from_file(out):.6f} → {out}",
+    )
+
+
+@app.command(name="oracle-manifest")
+def oracle_manifest_cmd(
+    config: Path = typer.Option(Path("bench.yaml"), "--config", "-c"),
+    write: bool = typer.Option(
+        False, "--write", help="(re)generate the manifest from the current oracle state",
+    ),
+) -> None:
+    """Verify (default) or ``--write`` the oracle checksum manifest.
+
+    The manifest lives at ``<corpus root>/oracle_manifest.json`` (corpus root =
+    parent of ``source_of_truth``) and pins SHA-256 of every oracle PDF + mapping
+    CSV. Verify mode exits 2 on drift.
+    """
+    from neurotic_docx_bench import oracle_manifest
+
+    cfg = load_config(config)
+    manifest_path = oracle_manifest.default_manifest_path(cfg.source_of_truth)
+    corpus_root = cfg.source_of_truth.parent
+    dirs = oracle_manifest.oracle_dirs_from_config(cfg)
+    if write:
+        manifest = oracle_manifest.build_manifest(corpus_root, dirs)
+        oracle_manifest.write_manifest(manifest_path, manifest)
+        console.print(f"wrote {manifest_path} ({len(manifest)} files pinned)")
+        return
+    if not manifest_path.is_file():
+        console.print(f"[yellow]no manifest at {manifest_path} — run with --write first[/yellow]")
+        raise typer.Exit(2)
+    drift = oracle_manifest.verify_manifest(manifest_path, corpus_root, dirs)
+    if drift.clean:
+        console.print("oracle manifest OK")
+        return
+    console.print(f"[red]ORACLE DRIFT:[/red] {drift.summary()}")
+    for label, items in (("changed", drift.changed), ("missing", drift.missing), ("extra", drift.extra)):
+        for item in items[:20]:
+            console.print(f"  {label}: {item}")
+    raise typer.Exit(2)
+
+
+@app.command(name="coverage-matrix")
+def coverage_matrix_cmd(
+    mapping: list[Path] = typer.Option(
+        [
+            Path("corpus/word_based/centralized_mapping.csv"),
+            Path("corpus/word_based/centralized_mapping_randomized.csv"),
+        ],
+        "--mapping",
+        help="pair mapping CSV(s)",
+    ),
+    source_dir: list[Path] = typer.Option(
+        [
+            Path("corpus/word_based/docx_source"),
+            Path("corpus/word_based/docx_source_randomized"),
+        ],
+        "--source-dir",
+        help="folder(s) searched for source DOCX",
+    ),
+    redline_dir: list[Path] = typer.Option(
+        [
+            Path("corpus/word_based/docx_redlines_word"),
+            Path("corpus/word_based/docx_redlines_randomized"),
+        ],
+        "--redline-dir",
+        help="folder(s) searched for oracle redline DOCX",
+    ),
+    jsonl: Path | None = typer.Option(
+        None, "--jsonl",
+        help="bench JSONL; adds a per-tag per-vendor median score table "
+        "(each vendor's latest script_redlines line)",
+    ),
+    out_json: Path = typer.Option(Path("corpus/word_based/coverage_tags.json"), "--out-json"),
+    out_md: Path = typer.Option(Path("docs/COVERAGE.md"), "--out-md"),
+) -> None:
+    """Tag every corpus pair with OOXML feature + revision coverage → JSON + markdown.
+
+    Feature tags come from the pair's two source DOCX (union), revision tags from
+    its oracle redline (``redline_docx_word`` preferred). The markdown calls out
+    every known tag with ZERO pairs — the corpus's blind spots.
+    """
+    from neurotic_docx_bench import coverage_matrix
+
+    if jsonl is not None and not jsonl.is_file():
+        console.print(f"[red]no such JSONL:[/red] {jsonl}")
+        raise typer.Exit(2)
+    coverage = coverage_matrix.build_coverage(mapping, source_dir, redline_dir)
+    scores_by_vendor = coverage_matrix.latest_scores_by_vendor(jsonl) if jsonl else None
+    if scores_by_vendor:
+        coverage["unjoined_scores"] = coverage_matrix.unjoined_score_keys(coverage, scores_by_vendor)
+    out_json.parent.mkdir(parents=True, exist_ok=True)
+    out_json.write_text(json.dumps(coverage, indent=2, sort_keys=True) + "\n")
+    out_md.parent.mkdir(parents=True, exist_ok=True)
+    out_md.write_text(coverage_matrix.render_markdown(coverage, scores_by_vendor))
+    console.print(
+        f"tagged [green]{len(coverage['pairs'])}[/green] pairs "
+        f"({len(coverage['errors'])} errors, {len(coverage['skipped'])} skipped) → {out_json} + {out_md}",
+    )
+    for stem, reason in list(coverage["errors"].items())[:10]:
+        console.print(f"  [yellow]error[/yellow] {stem}: {reason}")
+    if coverage["zero_coverage"]:
+        console.print(f"[yellow]zero coverage:[/yellow] {', '.join(coverage['zero_coverage'])}")
 
 
 @app.command(name="run-all")
@@ -1421,6 +2207,11 @@ def run_all(
         help="force re-running even if (tool, tool_version, config_hash) already exists in "
         "results/bench.jsonl (env BENCH_RERUN=1 also enables this)",
     ),
+    oracle_check: bool = typer.Option(
+        True,
+        "--oracle-check/--no-oracle-check",
+        help="verify the committed oracle manifest before running (drift → exit 2)",
+    ),
 ) -> None:
     """Run the NAMED bench.yaml runs sequentially, in the given order, e.g.
     ``bench run-all jubarte-final-lossless docxodus superdoc``. With ``--really-all``
@@ -1461,6 +2252,7 @@ def run_all(
         roundtrip=roundtrip,
         roundtrip_oracle_cache=roundtrip_oracle_cache,
         rerun=rerun,
+        oracle_check=oracle_check,
     )
 
 

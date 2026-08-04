@@ -12,7 +12,7 @@ Faithful port requirements (must match the shell script's behaviour):
 - **Skip/force:** if not ``force`` and the target PDF already exists → skip (``ok=True,
   skipped=True``).
 - **Parallelism:** ``ThreadPoolExecutor(max_workers=jobs)`` over the source ``*.docx``
-  (top-level only, sorted), default ``jobs=4``.
+  (top-level only, sorted), default ``jobs=12``.
 - **Output dir:** ``<work_dir>/pdf`` (mirrors the shell script's ``<folder>/pdf``).
 """
 
@@ -124,7 +124,7 @@ class SofficeRenderer:
         work_dir: Path,
         *,
         force: bool = False,
-        jobs: int = 4,
+        jobs: int = 12,
         timeout: float = 1200.0,
     ) -> RenderReport:
         soffice = self._resolve_soffice()

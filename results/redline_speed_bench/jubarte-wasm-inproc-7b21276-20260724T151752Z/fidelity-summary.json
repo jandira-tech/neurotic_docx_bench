@@ -1,0 +1,152 @@
+{
+  "source_commit": "7b212761c2840f94e52bbe196d6c0e83173c5dc2",
+  "source_note": "fix: land hidden-gem peels on main after #5/#17 merge",
+  "native_wasm_agreement": {
+    "benchmark": "script_redlines",
+    "common_docs": 164,
+    "equal_scores": 164,
+    "mismatches": 0,
+    "verdict": "identical per-document scores",
+    "mean": 92.2147,
+    "median": 99.9187
+  },
+  "jubarte_runs": [
+    {
+      "vendor": "jubarte-rust",
+      "benchmark": "script_redlines",
+      "tool_version": "jubarte-rust@cbbcefb724a7",
+      "n_docs": 164,
+      "overall_mean": 92.2147,
+      "overall_median": 99.9187,
+      "exact_100": 80,
+      "at_least_90": 122,
+      "below_50": 3,
+      "timestamp": "2026-07-24T15:00:45.969613+00:00",
+      "source_commit": "7b212761c2840f94e52bbe196d6c0e83173c5dc2"
+    },
+    {
+      "vendor": "jubarte-rust",
+      "benchmark": "accepted_changes",
+      "tool_version": "jubarte-rust@cbbcefb724a7",
+      "n_docs": 164,
+      "overall_mean": 89.4476,
+      "overall_median": 99.7477,
+      "exact_100": 76,
+      "at_least_90": 103,
+      "below_50": 5,
+      "timestamp": "2026-07-24T15:00:45.969613+00:00",
+      "source_commit": "7b212761c2840f94e52bbe196d6c0e83173c5dc2"
+    },
+    {
+      "vendor": "jubarte-rust",
+      "benchmark": "roundtrip",
+      "tool_version": "jubarte-rust@cbbcefb724a7",
+      "n_docs": 166,
+      "overall_mean": 99.1706,
+      "overall_median": 100.0,
+      "exact_100": 157,
+      "at_least_90": 161,
+      "below_50": 1,
+      "timestamp": "2026-07-24T15:00:45.969613+00:00",
+      "source_commit": "7b212761c2840f94e52bbe196d6c0e83173c5dc2"
+    },
+    {
+      "vendor": "jubarte-wasm",
+      "benchmark": "script_redlines",
+      "tool_version": "0.1.0",
+      "n_docs": 164,
+      "overall_mean": 92.2147,
+      "overall_median": 99.9187,
+      "exact_100": 80,
+      "at_least_90": 122,
+      "below_50": 3,
+      "timestamp": "2026-07-24T15:13:19.462654+00:00",
+      "source_commit": "7b212761c2840f94e52bbe196d6c0e83173c5dc2"
+    }
+  ],
+  "peer_best_script_redlines": [
+    {
+      "vendor": "jubarte-rust",
+      "mean": 92.2148,
+      "median": 99.9187,
+      "n": 164,
+      "version": "jubarte-rust@a8ff27ccff8f"
+    },
+    {
+      "vendor": "jubarte-wasm",
+      "mean": 92.2147,
+      "median": 99.9187,
+      "n": 164,
+      "version": "0.1.0"
+    },
+    {
+      "vendor": "jubarte",
+      "mean": 83.6291,
+      "median": 88.9633,
+      "n": 164,
+      "version": "jubarte-final@d5bd12d173d6+git.aaa85454f569b7174dd99d5244877d29819a99b9"
+    },
+    {
+      "vendor": "sanity-word",
+      "mean": 68.1679,
+      "median": 70.4845,
+      "n": 230,
+      "version": null
+    },
+    {
+      "vendor": "docxodus",
+      "mean": 58.7507,
+      "median": 55.0306,
+      "n": 205,
+      "version": "7.0.0"
+    },
+    {
+      "vendor": "superdoc-redlines",
+      "mean": 57.6297,
+      "median": 55.8997,
+      "n": 192,
+      "version": "0.2.0"
+    },
+    {
+      "vendor": "superdoc",
+      "mean": 57.1871,
+      "median": 55.5996,
+      "n": 182,
+      "version": "1.19.2"
+    },
+    {
+      "vendor": "folio",
+      "mean": 55.3092,
+      "median": 53.7539,
+      "n": 205,
+      "version": "0.3.1"
+    },
+    {
+      "vendor": "ooxmlsdk",
+      "mean": 55.1866,
+      "median": 55.2398,
+      "n": 232,
+      "version": null
+    },
+    {
+      "vendor": "redlines",
+      "mean": 51.284,
+      "median": 51.7682,
+      "n": 200,
+      "version": "0.6.1"
+    },
+    {
+      "vendor": "docx-redline-js",
+      "mean": 50.5319,
+      "median": 50.2615,
+      "n": 161,
+      "version": "0.3.0-ts-migration"
+    }
+  ],
+  "speed_out": "results/redline_speed_bench/jubarte-wasm-inproc-7b21276-20260724T151752Z",
+  "speed_methods": [
+    "jubarte-wasm",
+    "jubarte-rust-inproc",
+    "jubarte-rust"
+  ]
+}

@@ -51,7 +51,12 @@ def test_run_passthrough(tmp_path, sample_oracle_pdfs):
         "runs:\n"
         f"  - {{name: prebaked, render: passthrough, modified: {cand}, unversioned: true, jobs: 1}}\n",
     )
-    result = runner.invoke(app, ["run", "--config", str(cfg)])
+    # --results-dir MUST be passed: without it the run appends a junk "prebaked" line
+    # to the real results/bench.jsonl on every test run (found 2026-08-02; RESULTS.md
+    # had been carrying one since July).
+    result = runner.invoke(
+        app, ["run", "--config", str(cfg), "--results-dir", str(tmp_path / "results"), "--runs-dir", str(tmp_path / "runs")],
+    )
     assert result.exit_code == 0, result.output
     assert "prebaked" in result.output
     assert "100.00" in result.output

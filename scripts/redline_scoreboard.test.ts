@@ -22,6 +22,7 @@ import {
 	MissingEnginePinError,
 	buildScoreboardRow,
 	detectLensDisagreement,
+	parseWordValidateOutput,
 	renderScoreboardSection,
 	resolveCorpusVintage,
 	resolveEnginePin,
@@ -217,5 +218,33 @@ describe("provenance resolution", () => {
 		} finally {
 			rmSync(dir, { recursive: true, force: true });
 		}
+	});
+});
+
+describe("WV-1 output parse (PR9: UNJUDGEABLE outcome)", () => {
+	it("counts valid/invalid/unjudgeable from per-doc lines", () => {
+		const stdout = [
+			"  VALID a.docx",
+			"  INVALID b.docx: repair dialog (modal detected)",
+			"  UNJUDGEABLE c.docx: slow open — no dialog observed within 240s budget",
+			"  VALID d.docx",
+			"word-validate: 2 valid, 1 invalid, 1 unjudgeable",
+		].join("\n");
+		const verdict = parseWordValidateOutput(stdout, 4);
+		expect(verdict.valid).toBe(2);
+		expect(verdict.invalid).toBe(1);
+		expect(verdict.unjudgeable).toBe(1);
+		expect(verdict.unavailable).toBe(false);
+	});
+
+	it("UNJUDGEABLE lines never leak into the valid count", () => {
+		const stdout = [
+			"  UNJUDGEABLE big.docx: slow open",
+			"word-validate: 0 valid, 0 invalid, 1 unjudgeable",
+		].join("\n");
+		const verdict = parseWordValidateOutput(stdout, 1);
+		expect(verdict.valid).toBe(0);
+		expect(verdict.invalid).toBe(0);
+		expect(verdict.unjudgeable).toBe(1);
 	});
 });

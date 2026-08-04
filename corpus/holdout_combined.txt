@@ -1,0 +1,65 @@
+# Combined sealed holdout — the union of the two per-corpus sealed lists:
+#   corpus/word_based/holdout.txt             (20 keys, named + randomized corpora)
+#   corpus/word_redlines_superdoc/holdout.txt (20 keys, SuperDoc-pool Word redlines)
+# bench.yaml's holdout_list takes ONE path, so the union lives here. This file is
+# DERIVED: neither sealed source file is ever edited (seals do not get rewritten).
+# Regenerate: cat corpus/word_based/holdout.txt corpus/word_redlines_superdoc/holdout.txt
+#
+# Sealed holdout set — 20 oracle pair keys EXCLUDED from the headline benchmark
+# score and scored separately on demand via `bench run --holdout` (overfitting
+# detector for the visible corpus; the main-vs-holdout gap is surfaced by
+# scripts/export-results-md.py under "## Holdout gap").
+# Provenance: sampled deterministically on 2026-08-03 with
+#   random.Random(0xD0C5).sample(sorted(keys), 20)
+# from the 403-key oracle-index universe (pdf_redlines_word union
+# pdf_redlines_randomized/pdf). Do not edit casually: changing this list
+# re-opens the seal.
+# Sealed holdout set — 20 oracle pair keys EXCLUDED from the headline benchmark
+# score and scored separately on demand via `bench run --holdout` (overfitting
+# detector for the visible corpus; the main-vs-holdout gap is surfaced by
+# scripts/export-results-md.py under "## Holdout gap").
+# Provenance: sampled deterministically on 2026-08-03 with
+#   random.Random(0xD0C5).sample(sorted(keys), 20)
+# from the 403-key oracle-index universe (pdf_redlines_word union
+# pdf_redlines_randomized/pdf). Do not edit casually: changing this list
+# re-opens the seal.
+bold_and_italic_combo_style_default_missing_bold_and_underline_combo_id_paraid_overflow
+bold_red_text_combo_id_paraid_overflow_bold_superscript_demo_style_default_missing
+employee_review_john_smith_suggesting_insertions_font_color_blue_demo_style_default_missing
+file_111_file_112
+file_122_file_123
+file_138_file_139
+file_140_file_141
+file_156_file_157
+file_33_file_34
+file_3_file_4
+file_87_file_88
+font_color_blue_demo_style_default_missing_font_color_demo_style_default_missing
+justify_alignment_demo_id_paraid_overflow_large_font_size_demo_id_paraid_overflow
+numbered_list_italic_demo_id_paraid_overflow_numwords_fldsimple
+open_sans_bold_underline_id_paraid_overflow_open_sans_font_demo_id_paraid_overflow_2
+open_sans_font_demo_id_paraid_overflow_page_numbering_examples
+quarterly_performance_report_table_red_bold_heading_demo_style_default_missing
+right_alignment_demo_id_paraid_overflow_2_right_alignment_demo_id_paraid_overflow
+track_changes_suggesting_calibri_id_paraid_overflow_track_changes_suggesting_center_id_paraid_overflow
+vfdsdfcacawesd_suggesting_mixed_edits_yellow_highlight_demo_id_paraid_overflow
+behavior__math_delimiter_tests_c9d034dc_behavior__word_native_bullet_disc_bfbeb2dd
+behavior__math_func_tests_0434dd11_super_editor__complex_list_def_short_fde20a67
+super_editor__base_custom_544164f9_super_editor__tab_alignment_test_184edb5d
+super_editor__basic_comment_d3ba5f1e_super_editor__basic_footnotes_5be96945
+super_editor__blank_doc_b2a325e7_super_editor__sdts_basic_45263ca5
+super_editor__complex_list_def_issue_326369f9_super_editor__complex_list_def_short_export_8fa15950
+super_editor__complexexport1_69441ab1_super_editor__contract_acc_bbd983a0
+super_editor__diff_after7_b998213e_super_editor__diff_after8_58e5c288
+super_editor__diff_after_10f1912e_super_editor__contract_acc_bbd983a0
+super_editor__doc_with_spacing_e3d47bd7_super_editor__list_with_break_exported_broken_45f7bd19
+super_editor__gdocs_single_comment_ac5db87f_super_editor__gdocs_tracked_changes_3c1de315
+super_editor__h_f_normal_5d2a8d96_super_editor__header_alternating_odd_even_11e01996
+super_editor__hyperlink_multiple_runs_0138c312_super_editor__hyperlink_node_52b7695b
+super_editor__invalid_list_def_fallback_d7f55451_behavior__tiff_image_2d531f83
+super_editor__line_space_table_9b1ee54b_super_editor__list_def_mix_d7cec092
+super_editor__list_with_table_break_ff0c4c1f_super_editor__broken_complex_list_293fda86
+super_editor__missing_separator_41c823b9_super_editor__diff_after9_a9d4b4b0
+super_editor__msword_tracked_changes_4794adc4_super_editor__multi_section_doc_080d2655
+super_editor__ooxml_underline_rstyle_linked_combos__a40afe78_super_editor__orderedlist_interrupted1_a3cd0dd3
+super_editor__super_basic_table_86d8d916_super_editor__superdoc_hyperlink_cases_1dde9cd3

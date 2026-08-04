@@ -38,14 +38,14 @@ def test_skip_already_ran(tmp_path, sample_oracle_pdfs, monkeypatch):
     cfg = _setup(tmp_path, sample_oracle_pdfs[0])
     results = tmp_path / "results"
 
-    r1 = runner.invoke(app, ["run", "-c", str(cfg), "--results-dir", str(results), "--no-update"])
+    r1 = runner.invoke(app, ["run", "-c", str(cfg), "--results-dir", str(results), "--runs-dir", str(tmp_path / "runs"), "--no-update"])
     assert r1.exit_code == 0, r1.output
     assert "appended" in r1.output
     jsonl = results / "bench.jsonl"
     lines = jsonl.read_text().strip().splitlines()
     assert len(lines) == 1
 
-    r2 = runner.invoke(app, ["run", "-c", str(cfg), "--results-dir", str(results), "--no-update"])
+    r2 = runner.invoke(app, ["run", "-c", str(cfg), "--results-dir", str(results), "--runs-dir", str(tmp_path / "runs"), "--no-update"])
     assert r2.exit_code == 0, r2.output
     assert "skip (already ran" in r2.output
     # no new line was appended
@@ -58,12 +58,12 @@ def test_rerun_flag_forces_reexecution(tmp_path, sample_oracle_pdfs, monkeypatch
     cfg = _setup(tmp_path, sample_oracle_pdfs[0])
     results = tmp_path / "results"
 
-    r1 = runner.invoke(app, ["run", "-c", str(cfg), "--results-dir", str(results), "--no-update"])
+    r1 = runner.invoke(app, ["run", "-c", str(cfg), "--results-dir", str(results), "--runs-dir", str(tmp_path / "runs"), "--no-update"])
     assert r1.exit_code == 0
     jsonl = results / "bench.jsonl"
     assert len(jsonl.read_text().strip().splitlines()) == 1
 
-    r2 = runner.invoke(app, ["run", "-c", str(cfg), "--results-dir", str(results), "--rerun", "--no-update"])
+    r2 = runner.invoke(app, ["run", "-c", str(cfg), "--results-dir", str(results), "--runs-dir", str(tmp_path / "runs"), "--rerun", "--no-update"])
     assert r2.exit_code == 0, r2.output
     assert "skip (already ran" not in r2.output
     assert "appended" in r2.output
@@ -75,13 +75,13 @@ def test_bench_rerun_env_overrides(tmp_path, sample_oracle_pdfs, monkeypatch):
     cfg = _setup(tmp_path, sample_oracle_pdfs[0])
     results = tmp_path / "results"
 
-    r1 = runner.invoke(app, ["run", "-c", str(cfg), "--results-dir", str(results), "--no-update"])
+    r1 = runner.invoke(app, ["run", "-c", str(cfg), "--results-dir", str(results), "--runs-dir", str(tmp_path / "runs"), "--no-update"])
     assert r1.exit_code == 0
     jsonl = results / "bench.jsonl"
     assert len(jsonl.read_text().strip().splitlines()) == 1
 
     monkeypatch.setenv("BENCH_RERUN", "1")
-    r2 = runner.invoke(app, ["run", "-c", str(cfg), "--results-dir", str(results), "--no-update"])
+    r2 = runner.invoke(app, ["run", "-c", str(cfg), "--results-dir", str(results), "--runs-dir", str(tmp_path / "runs"), "--no-update"])
     assert r2.exit_code == 0, r2.output
     assert "skip (already ran" not in r2.output
     assert len(jsonl.read_text().strip().splitlines()) == 2
@@ -113,13 +113,13 @@ def test_different_tool_version_not_skipped(tmp_path, sample_oracle_pdfs, monkey
     )
     results = tmp_path / "results"
 
-    r1 = runner.invoke(app, ["run", "-c", str(cfg_v1), "--results-dir", str(results), "--no-update"])
+    r1 = runner.invoke(app, ["run", "-c", str(cfg_v1), "--results-dir", str(results), "--runs-dir", str(tmp_path / "runs"), "--no-update"])
     assert r1.exit_code == 0
     jsonl = results / "bench.jsonl"
     assert len(jsonl.read_text().strip().splitlines()) == 1
 
     # Same tool name, different version → NOT skipped
-    r2 = runner.invoke(app, ["run", "-c", str(cfg_v2), "--results-dir", str(results), "--no-update"])
+    r2 = runner.invoke(app, ["run", "-c", str(cfg_v2), "--results-dir", str(results), "--runs-dir", str(tmp_path / "runs"), "--no-update"])
     assert r2.exit_code == 0, r2.output
     assert "skip (already ran" not in r2.output
     assert len(jsonl.read_text().strip().splitlines()) == 2
