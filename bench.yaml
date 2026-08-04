@@ -23,6 +23,38 @@ holdout_list: corpus/holdout_combined.txt
 scoring:
   dpi: 144
 
+# The corpus pools EVERY generating run is scored on — 207 + 196 + 400 = 803
+# pairs. Declared once, here, because coverage used to be per-run copy-paste, and
+# copy-paste does not propagate. Of the 12 runs declaring script_redlines, FOUR
+# (jubarte-rust, jubarte-final-native, jubarte-final-lossless, docxodus)
+# hand-chained three invocations with explicit --manifest/--source-dir = 803
+# pairs; the other EIGHT (docx-redline-js, folio, superdoc, redlines,
+# superdoc-redlines, jubarte-wasm, superdoc-ts, superdoc-native) omitted the
+# flags and silently inherited the generators' argparse default = pool #1 only,
+# 207 pairs. All 12 were published in the same comparison table, so rows with
+# different n were not the same measurement (plan Chapter 6, D1).
+#
+# Note the split is NOT "us vs them" — it is a footgun that has been tripped in
+# both directions. docxodus, a competitor, already had full coverage;
+# jubarte-wasm, ours, did not. Hoisting the list makes full coverage the DEFAULT
+# and asymmetry impossible to reintroduce.
+#
+# The driver now expands a run's single `generate:` command once per entry below
+# (see config.expand_generate_commands), so a fourth pool added here reaches
+# every vendor at once. A run that genuinely applies to one pool says so with its
+# own `corpora: [<name>]`; silence means ALL. Hardcoding --manifest/--source-dir
+# in a `generate:` is rejected at load time.
+corpora:
+  - name: word_based
+    manifest: corpus/word_based/centralized_mapping.csv
+    source_dir: corpus/word_based/docx_source
+  - name: word_based_randomized
+    manifest: corpus/word_based/centralized_mapping_randomized.csv
+    source_dir: corpus/word_based/docx_source_randomized
+  - name: word_redlines_superdoc
+    manifest: corpus/word_redlines_superdoc/centralized_mapping.csv
+    source_dir: corpus/word_redlines_superdoc/docx_source
+
 # Accepted ground truth: the Word oracle redlines with ALL tracked changes accepted
 # (produced by `bench accept corpus/word_based/docx_redlines_word --out …`, or via
 # `bench run --generate`). Used by `bench run --accept-compare`, which accepts each
@@ -57,7 +89,7 @@ generate_scripts:
     command: "mkdir -p /tmp/pdf_source_render/pdf && cp -c corpus/word_based/pdf_source/*.pdf /tmp/pdf_source_render/pdf/ 2>/dev/null || cp corpus/word_based/pdf_source/*.pdf /tmp/pdf_source_render/pdf/ 2>/dev/null; uv run bench render corpus/word_based/docx_source /tmp/pdf_source_render --backend soffice --jobs 12 && mv -n /tmp/pdf_source_render/pdf/*.pdf corpus/word_based/pdf_source/ 2>/dev/null; true"
 
 # Tool versions are PINNED to the ones we reviewed:
-#   docxodus 7.0.0 · docx-redline-js = local TS migration (dist: sibling package)
+#   docxodus 9.0.0 · docx-redline-js = local TS migration (dist: sibling package)
 #   @stll/folio-core 0.3.1 (generator) · @stll/folio-react 0.5.0 (viewer)
 #   superdoc-sdk (Python) 1.19.2 · superdoc editor (npm) 1.44.1  ← different packages
 #   jubarte builds are content-hashed under dist/
@@ -66,7 +98,7 @@ generate_scripts:
 runs:
   - name: jubarte-final-native
     dist: dist/jubarte-final
-    generate: "node --import tsx scripts/generate-native-redlines.ts --method=jubarte-native --dist=dist/jubarte-final --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=jubarte-final-native && node --import tsx scripts/generate-native-redlines.ts --method=jubarte-native --manifest=corpus/word_based/centralized_mapping_randomized.csv --source-dir=corpus/word_based/docx_source_randomized --dist=dist/jubarte-final --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=jubarte-final-native && node --import tsx scripts/generate-native-redlines.ts --method=jubarte-native --manifest=corpus/word_redlines_superdoc/centralized_mapping.csv --source-dir=corpus/word_redlines_superdoc/docx_source --dist=dist/jubarte-final --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=jubarte-final-native"
+    generate: "node --import tsx scripts/generate-native-redlines.ts --method=jubarte-native --dist=dist/jubarte-final --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=jubarte-final-native"
     render: soffice
     jobs: 12
     # Distinct vendor: this run and jubarte-final-lossless share the same dist
@@ -78,7 +110,7 @@ runs:
 
   - name: jubarte-final-lossless
     dist: dist/jubarte-final
-    generate: "node --import tsx scripts/generate-native-redlines.ts --method=jubarte-lossless --dist=dist/jubarte-final --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=jubarte-final-lossless && node --import tsx scripts/generate-native-redlines.ts --method=jubarte-lossless --manifest=corpus/word_based/centralized_mapping_randomized.csv --source-dir=corpus/word_based/docx_source_randomized --dist=dist/jubarte-final --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=jubarte-final-lossless && node --import tsx scripts/generate-native-redlines.ts --method=jubarte-lossless --manifest=corpus/word_redlines_superdoc/centralized_mapping.csv --source-dir=corpus/word_redlines_superdoc/docx_source --dist=dist/jubarte-final --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=jubarte-final-lossless"
+    generate: "node --import tsx scripts/generate-native-redlines.ts --method=jubarte-lossless --dist=dist/jubarte-final --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=jubarte-final-lossless"
     render: soffice
     jobs: 12
     vendor: jubarte
@@ -86,9 +118,20 @@ runs:
 
   # (2) docxodus — WASM/.NET compareDocuments (JSv4/docxodus, MIT). npm-published, so its
   # version is npm-resolved and stamped into tool_version.
+  #
+  # This pin installs into (and is read back from) the REPO ROOT node_modules, while the
+  # adapter imports the VENDORED utils/docxodus/node_modules tree. Bump all three together
+  # — this pin, root package.json, and utils/docxodus/package.json — or the run records one
+  # version and measures another. generate-native-redlines.test.ts enforces the agreement,
+  # which is also why root package.json pins docxodus exactly rather than by ^range: a
+  # caret would let `bun install` drift the recorded version away from this pin.
+  #
+  # 9.0.0 moved the UNNAMED default comparison engine from WmlComparer to DocxDiff. The
+  # adapter now names the engine explicitly, so this bump changes the measured version
+  # without also making the measured engine a side effect of it.
   - name: docxodus
-    package: "docxodus@7.0.0"
-    generate: "node --import tsx scripts/generate-native-redlines.ts --method=docxodus --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=docxodus && node --import tsx scripts/generate-native-redlines.ts --method=docxodus --manifest=corpus/word_based/centralized_mapping_randomized.csv --source-dir=corpus/word_based/docx_source_randomized --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=docxodus && node --import tsx scripts/generate-native-redlines.ts --method=docxodus --manifest=corpus/word_redlines_superdoc/centralized_mapping.csv --source-dir=corpus/word_redlines_superdoc/docx_source --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=docxodus"
+    package: "docxodus@9.0.0"
+    generate: "node --import tsx scripts/generate-native-redlines.ts --method=docxodus --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=docxodus"
     render: soffice
     jobs: 12
     vendor: docxodus
@@ -249,7 +292,7 @@ runs:
   # ../reconciliation_plan/GET_JUBARTE_RUST.md for the source-to-bench map.
   - name: jubarte-rust
     dist: src/neurotic_docx_bench/utils/jubarte/jubarte-rust
-    generate: "node --import tsx scripts/generate-native-redlines.ts --method=jubarte-rust --dist=src/neurotic_docx_bench/utils/jubarte/jubarte-rust --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=jubarte-rust && node --import tsx scripts/generate-native-redlines.ts --method=jubarte-rust --manifest=corpus/word_based/centralized_mapping_randomized.csv --source-dir=corpus/word_based/docx_source_randomized --dist=src/neurotic_docx_bench/utils/jubarte/jubarte-rust --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=jubarte-rust && node --import tsx scripts/generate-native-redlines.ts --method=jubarte-rust --manifest=corpus/word_redlines_superdoc/centralized_mapping.csv --source-dir=corpus/word_redlines_superdoc/docx_source --dist=src/neurotic_docx_bench/utils/jubarte/jubarte-rust --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=jubarte-rust"
+    generate: "node --import tsx scripts/generate-native-redlines.ts --method=jubarte-rust --dist=src/neurotic_docx_bench/utils/jubarte/jubarte-rust --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=jubarte-rust"
     render: soffice
     jobs: 12
     vendor: jubarte-rust

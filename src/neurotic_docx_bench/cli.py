@@ -44,7 +44,13 @@ from rich.theme import Theme
 
 from neurotic_docx_bench import functional_lens, lens_health, noise_floor, pipeline, provenance, stages, tool_updater
 from neurotic_docx_bench.benchmarks import BenchmarkName, BenchmarkOutcome
-from neurotic_docx_bench.config import BenchConfig, RunConfig, environment_config_for_run, load_config
+from neurotic_docx_bench.config import (
+    BenchConfig,
+    RunConfig,
+    environment_config_for_run,
+    expand_generate_commands,
+    load_config,
+)
 from neurotic_docx_bench.emit import gallery as gallery_emit
 from neurotic_docx_bench.emit import jsonl as jsonl_emit
 from neurotic_docx_bench.emit import snapshot as snapshot_emit
@@ -780,12 +786,47 @@ def _roundtrip_stage(
     )
 
 
-def _run_generate(cmd: str, run_dir: Path) -> None:
-    """Execute a run's ``generate`` command with ``$RUN_DIR`` set; it writes ``$RUN_DIR/docx``."""
+def _run_generate(cmds: list[str], run_dir: Path) -> None:
+    """Execute a run's ``generate`` command(s) with ``$RUN_DIR`` set; they write ``$RUN_DIR/docx``.
+
+    One command per corpus pool (see ``config.expand_generate_commands``). Every
+    generator *overwrites* ``$RUN_DIR/generate_timings.json`` and
+    ``generate_failures.json``, so across several invocations only the last pool's
+    artifacts would survive — ITT would silently under-count the per-doc failures
+    it exists to count. Collect and merge them here instead of changing four
+    generators.
+    """
     (run_dir / "docx").mkdir(parents=True, exist_ok=True)
     env = {**os.environ, "RUN_DIR": str(run_dir.resolve())}
-    console.print(f"generate: {cmd}")
-    subprocess.run(cmd, shell=True, cwd=str(Path.cwd()), env=env, check=True, timeout=1800)
+    single = len(cmds) <= 1
+    merged_timings: dict[str, object] = {}
+    merged_failures: list[object] = []
+    for cmd in cmds:
+        console.print(f"generate: {cmd}")
+        subprocess.run(cmd, shell=True, cwd=str(Path.cwd()), env=env, check=True, timeout=1800)
+        if single:  # byte-identical to the pre-expansion behaviour
+            continue
+        for fname, sink in (
+            ("generate_timings.json", merged_timings),
+            ("generate_failures.json", merged_failures),
+        ):
+            artifact = run_dir / fname
+            if not artifact.is_file():
+                continue
+            try:
+                payload = json.loads(artifact.read_text())
+            except (json.JSONDecodeError, OSError):
+                payload = None
+            # Consume it so the next invocation's write cannot be double-counted
+            # (and a generator that writes nothing cannot resurrect stale data).
+            artifact.unlink(missing_ok=True)
+            if isinstance(payload, dict) and isinstance(sink, dict):
+                sink.update(payload)
+            elif isinstance(payload, list) and isinstance(sink, list):
+                sink.extend(payload)
+    if not single:
+        (run_dir / "generate_timings.json").write_text(json.dumps(merged_timings))
+        (run_dir / "generate_failures.json").write_text(json.dumps(merged_failures, indent=2))
 
 
 def _collect_timings(
@@ -996,7 +1037,7 @@ def _execute_run(
     # Locate/produce the candidate source folder.
     if rc.generate:
         _stage("generate")
-        _run_generate(rc.generate, run_dir)
+        _run_generate(expand_generate_commands(cfg, rc), run_dir)
         source: Path | None = run_dir / "docx"
         pattern = "*.docx"
     elif rc.render in ("soffice", "playwright"):

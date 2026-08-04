@@ -598,6 +598,35 @@ throughput — not as failed. Two things follow:
    therefore not clean vendor data and is not publishable as a docxodus
    result — it is only evidence that the harness has defect D4.
 
+**D5 — Version split-brain: the version we record need not be the code we ran.**
+Found 2026-08-04 while bumping docxodus. A run's `package:` pin is installed
+into, and read back from, the **repo-root** `node_modules` (`cli.py` calls
+`resolve_tool_version` with `cwd=` the repo root), but the adapter
+`loadEngine("docxodus")` imports the **vendored**
+`src/neurotic_docx_bench/utils/docxodus/node_modules` tree. Nothing tied the
+two together.
+
+The checkout demonstrated the failure concretely: root held **7.1.0** against a
+**7.0.0** pin, so a run could stamp `tool_version` from one tree while
+measuring code from another. Every published docxodus number is only as
+trustworthy as that coupling, and the coupling did not exist.
+
+This generalises beyond docxodus — any vendor with both a root install and a
+vendored tree can drift the same way. Fixes required:
+
+1. Resolve `tool_version` from **the tree the adapter actually imports**, or
+   assert at run start that the two agree and abort loudly if they do not.
+2. Pin **exactly** (`name@x.y.z`), never a `^range`: a caret lets
+   `bun install` drift the installed version off the recorded pin, which
+   silently recreates the split.
+3. A test asserting the agreement, so this cannot regress.
+
+Related, same commit: the docxodus adapter called `compareDocuments(base, next)`
+with no options, so the **comparison engine was whatever the installed version
+happened to default to**. A vendor changing its default engine between releases
+would silently change what we measure while the version string moves as
+expected. Engine selection must be named explicitly.
+
 ### 6.2 Definition — what "pure juice" requires
 
 A cross-vendor number is publishable only when all six hold:
