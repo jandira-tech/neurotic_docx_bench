@@ -162,7 +162,7 @@ export type RedlineEngine = ((
 ) => Promise<Uint8Array>) & { dispose?: () => Promise<void> };
 
 /** Load the redline engine for `method` and return compare(base,next)->docx bytes. */
-export /**
+/**
  * Directory to import `@stll/folio-core` from.
  *
  * Prefers the repo-root `node_modules` because that is the ONE copy the
@@ -181,7 +181,7 @@ function resolveFolioModuleRoot(): string {
 	);
 }
 
-async function loadEngine(
+export async function loadEngine(
 	method: string,
 	distPath: string,
 ): Promise<RedlineEngine> {

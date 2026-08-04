@@ -688,6 +688,29 @@ runs of the same kind is the same defect class as differing corpora (D1) — it
 just hides one level up, in which rows exist at all rather than in how many
 documents each row covers.
 
+**D8 — One shared `node_modules` lets one vendor's dependencies fail another's
+run.** Every npm-published vendor is installed into the *same* tree, and npm
+resolves peer dependencies strictly across it. So a peer constraint belonging
+to vendor A can refuse to install vendor B.
+
+Observed 2026-08-04, live: once `superdoc@2.3.0` was installed (peerOptional
+`pdfjs-dist@^5.4.296`), the updater's `npm install @stll/folio-core@0.15.13`
+exited 1 with `ERESOLVE`, and **both `folio` and `superdoc-ts` were recorded as
+`1 run(s) failed`** — for a conflict neither vendor caused, and which does not
+exist in either vendor's own package.
+
+Fixed by installing with `bun add --exact`, which the repo already
+standardises on (`bun.lock`, AGENTS.md) and which resolves these specs without
+the conflict while still writing exact pins. The `npm` call was the odd one
+out.
+
+The deeper point, still open: **vendors sharing one dependency tree are not
+independent measurements.** Today the coupling shows up as an install failure,
+which is loud. It could equally show up as vendor A silently getting a
+different transitive version because vendor B was installed first — which is
+quiet, and which nothing currently detects. True isolation (one tree per
+vendor) is the real fix; `bun` only removes today's symptom.
+
 ### 6.1b D1 confirmed by measurement — and it cost us, not them
 
 `jubarte-wasm` re-run on the full corpus after corpus symmetry landed
