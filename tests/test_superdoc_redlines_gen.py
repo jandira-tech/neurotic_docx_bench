@@ -32,10 +32,10 @@ def _cli_runtime_broken() -> str | None:
     """
     if not (_HAVE_TOOL and _HAVE_NODE):
         return "superdoc-redlines clone (repo root, npm-installed) or node absent"
-    probe = subprocess.run(
-        ["node", str(REPO / "superdoc-redline.mjs"), "--help"],
-        capture_output=True, text=True, cwd=str(REPO), check=False,
-    )
+    # Probe through the generator's OWN invocation path, so this reflects what the
+    # bench actually runs. Probing bare `node` would report the pre-gate failure
+    # and skip tests that now pass — testing a path the code no longer takes.
+    probe = superdoc_redlines_gen._run_cli(REPO, ["--help"])
     blob = (probe.stderr or "") + (probe.stdout or "")
     if "varStorage.getItem is not a function" in blob:
         node_v = subprocess.run(
