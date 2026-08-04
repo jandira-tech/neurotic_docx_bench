@@ -39,10 +39,12 @@ bun run update-readme-ranking                 # tables between RANKING markers
 > rows are provisional. Details and per-vendor disclosures:
 > [`docs/VENDOR_NOTES.md`](docs/VENDOR_NOTES.md) · plan Chapter 6.
 >
-> 1. **Different document sets in the same table.** Only jubarte's run enumerated all three
->    corpus pools (803 pairs); every competitor silently ran on one (207 pairs). Any row
->    whose `Docs` differs from another row's is *not the same measurement* — check the
->    `Docs` / `ITT Docs` columns before comparing anything.
+> 1. **Different document sets in the same table.** Corpus coverage is configured per run
+>    and drifted: 4 of the 12 redline runs enumerate all three corpus pools (803 pairs)
+>    while 8 silently run on one (207 pairs). Any row whose `Docs` differs from another
+>    row's is *not the same measurement* — check the `Docs` / `ITT Docs` columns before
+>    comparing anything. (This one does not split along vendor lines: `docxodus` has full
+>    coverage, and our own `jubarte-wasm` is among the partial ones.)
 > 2. **Best-of-N for us, single-shot for them.** The tables show jubarte's **best** version
 >    pin while each competitor shows its own pins. The maximum of several noisy runs is
 >    biased upward; measured inflation on real data was **+3.6 to +8.8 points**.
