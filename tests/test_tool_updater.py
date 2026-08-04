@@ -14,11 +14,34 @@ DIST = REPO_ROOT / "dist"
 
 
 def test_local_version_from_package_json(tmp_path):
+    """package.json's version LABELS the pin; the content hash IDENTIFIES the build.
+
+    OVERTURNED 2026-08-04. This test previously asserted ``== "1.6.2"`` — that the
+    bare version was the whole pin. That encoded an assumption the corpus refutes:
+    ``jubarte-wasm``'s dist is a local wasm-pack build whose ``pkg/package.json``
+    carries a hand-written ``"0.1.0"`` nobody bumps, so 13 recorded runs spanning
+    four demonstrably different engines (ITT means 0, 85.92, 76.21, 76.58) all
+    logged version ``0.1.0``. A pin that cannot distinguish two engines is not
+    provenance, and this is the D5 split-brain that forced the docxodus "9.0.0"
+    retraction.
+
+    This is not a test weakened to make a change pass: the new contract is strictly
+    stronger. The version is still present and still readable; it is no longer
+    trusted to identify the bytes on its own.
+    """
     build = tmp_path / "mytool"
     build.mkdir()
     (build / "package.json").write_text(json.dumps({"version": "1.6.2"}))
     (build / "index.js").write_text("// code")
-    assert tool_updater.resolve_local_version(build) == "1.6.2"
+    v = tool_updater.resolve_local_version(build)
+    assert v.startswith("1.6.2@"), v
+    assert len(v.split("@")[1]) == 12, v
+    # the property the old assertion could not express: same version, different bytes
+    # → DIFFERENT pin.
+    (build / "index.js").write_text("// different code")
+    v2 = tool_updater.resolve_local_version(build)
+    assert v2.startswith("1.6.2@")
+    assert v2 != v, "a changed build must not reuse its predecessor's pin"
 
 
 def test_local_version_content_hash_fallback(tmp_path):
@@ -87,7 +110,9 @@ def test_resolve_precedence(tmp_path):
     build = tmp_path / "b"
     build.mkdir()
     (build / "package.json").write_text(json.dumps({"version": "9.9.9"}))
-    assert tool_updater.resolve_tool_version(dist=build) == "9.9.9"
+    # asserts PRECEDENCE (a dist resolves via the local build path); the exact pin
+    # format is test_local_version_from_package_json's contract, not this test's.
+    assert tool_updater.resolve_tool_version(dist=build).startswith("9.9.9@")
     assert tool_updater.resolve_tool_version() is None
 
 
