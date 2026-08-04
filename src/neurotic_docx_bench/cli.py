@@ -7,6 +7,7 @@ Sequential multi-tool runs, JSONL emission and gating arrive in later PRs.
 
 from __future__ import annotations
 
+import csv
 import json
 import os
 import shutil
@@ -17,6 +18,7 @@ import tempfile
 import time
 import uuid
 from collections.abc import Callable, Iterable
+from functools import lru_cache
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import TypedDict, cast
@@ -47,6 +49,7 @@ from neurotic_docx_bench.benchmarks import BenchmarkName, BenchmarkOutcome
 from neurotic_docx_bench.config import (
     BenchConfig,
     RunConfig,
+    corpora_for_run,
     environment_config_for_run,
     expand_generate_commands,
     load_config,
@@ -786,7 +789,50 @@ def _roundtrip_stage(
     )
 
 
-def _run_generate(cmds: list[str], run_dir: Path) -> None:
+class GenerateTimeout(RuntimeError):
+    """A run's ``generate`` command was killed by OUR clock, not by its own defect.
+
+    Kept distinct from a generic failure on purpose (plan Chapter 6, D4). A tool
+    that is merely *slow* must be reported as slow, with how far it got, because
+    zero-filling our budget as the vendor's score is both wrong and self-serving.
+    """
+
+
+#: Per-pair generate budget, and a floor so a small pool still covers process
+#: startup (Node/.NET/WASM cold start dwarfs per-document cost on tiny pools).
+GENERATE_S_PER_PAIR = 8.0
+GENERATE_TIMEOUT_FLOOR_S = 300.0
+
+
+@lru_cache(maxsize=None)
+def _manifest_pair_count(manifest: str) -> int:
+    """Rows in a corpus manifest, i.e. how many pairs a pool asks a tool to produce.
+
+    Best-effort: an unreadable manifest yields 0 so the floor applies, because a
+    missing count must never shrink a budget below the floor.
+    """
+    path = Path(manifest)
+    if not path.is_file():
+        return 0
+    try:
+        with path.open(newline="", encoding="utf-8") as fh:
+            return max(0, sum(1 for _ in csv.reader(fh)) - 1)  # minus header
+    except (OSError, csv.Error):
+        return 0
+
+
+def _generate_timeout_s(pairs: int) -> float:
+    """Budget for generating ``pairs`` documents.
+
+    The previous budget was a hard-coded 1800 s chosen when a run meant 207
+    pairs. The corpus later grew to 803 pairs against that unchanged clock, and
+    docxodus was killed at exactly 1800 s having produced 622 of ~763 documents
+    — recorded as ``1 run(s) failed``, which reads as the tool crashing.
+    """
+    return max(GENERATE_TIMEOUT_FLOOR_S, GENERATE_S_PER_PAIR * max(0, pairs))
+
+
+def _run_generate(cmds: list[str], run_dir: Path, timeout_s: float | None = None) -> None:
     """Execute a run's ``generate`` command(s) with ``$RUN_DIR`` set; they write ``$RUN_DIR/docx``.
 
     One command per corpus pool (see ``config.expand_generate_commands``). Every
@@ -803,7 +849,18 @@ def _run_generate(cmds: list[str], run_dir: Path) -> None:
     merged_failures: list[object] = []
     for cmd in cmds:
         console.print(f"generate: {cmd}")
-        subprocess.run(cmd, shell=True, cwd=str(Path.cwd()), env=env, check=True, timeout=1800)
+        budget = timeout_s if timeout_s is not None else _generate_timeout_s(0)
+        try:
+            subprocess.run(cmd, shell=True, cwd=str(Path.cwd()), env=env, check=True, timeout=budget)
+        except subprocess.TimeoutExpired as exc:
+            # Report what the tool ACHIEVED, not just that we stopped it — the
+            # difference between "slow" and "broken" is the whole point (D4).
+            produced = len(list((run_dir / "docx").glob("*.docx")))
+            raise GenerateTimeout(
+                f"generate timed out after {budget}s having produced {produced} document(s): {cmd}. "
+                f"This is our budget, not necessarily the tool's defect — report it as a timeout "
+                f"with throughput, never as the vendor's failure.",
+            ) from exc
         if single:  # byte-identical to the pre-expansion behaviour
             continue
         for fname, sink in (
@@ -1037,7 +1094,14 @@ def _execute_run(
     # Locate/produce the candidate source folder.
     if rc.generate:
         _stage("generate")
-        _run_generate(expand_generate_commands(cfg, rc), run_dir)
+        # Budget the LARGEST pool this run covers, applied to each invocation.
+        # Erring generous is deliberate: an over-tight clock misreports a slow
+        # tool as a broken one, which is the failure mode D4 exists to prevent.
+        pools = corpora_for_run(cfg, rc)
+        largest = max((_manifest_pair_count(c.manifest) for c in pools), default=0)
+        _run_generate(
+            expand_generate_commands(cfg, rc), run_dir, timeout_s=_generate_timeout_s(largest),
+        )
         source: Path | None = run_dir / "docx"
         pattern = "*.docx"
     elif rc.render in ("soffice", "playwright"):
