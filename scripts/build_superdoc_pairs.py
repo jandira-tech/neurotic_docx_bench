@@ -174,6 +174,19 @@ def inventory(root: Path) -> list[PoolFile]:
 # --------------------------------------------------------------------------- #
 
 
+def drop_unreadable(pool: list[PoolFile], unreadable: set[str]) -> list[PoolFile]:
+    """Remove sources Word cannot read, identified by STAGED filename.
+
+    These have to leave the pool entirely rather than just failing their own
+    pair: opening one leaves Word silently returning empty documents for every
+    later open in the same session, so a single survivor can invalidate a whole
+    batch. ``scripts/word_compare_driver.sh --screen`` produces the list.
+    """
+    if not unreadable:
+        return pool
+    return [p for p in pool if f"{flat_stem(p.relative_path)}.docx" not in unreadable]
+
+
 def _feasible_ordered_pairs(pool: list[PoolFile]) -> int:
     """Distinct ordered (base, next) pairs with different paths AND different content."""
     total = 0
@@ -363,6 +376,12 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--target", type=int, default=TARGET_PAIRS)
     parser.add_argument("--seed", type=lambda s: int(s, 0), default=PAIR_SEED)
     parser.add_argument("--dry-run", action="store_true", help="write manifests, skip staging")
+    parser.add_argument(
+        "--exclude-list",
+        type=Path,
+        default=DEFAULT_OUT_ROOT / "word_unreadable.txt",
+        help="staged filenames Word cannot read (from --screen); skipped if absent",
+    )
     args = parser.parse_args(argv)
 
     if not args.pool_root.is_dir():
@@ -370,6 +389,10 @@ def main(argv: list[str] | None = None) -> int:
         return 2
 
     pool = inventory(args.pool_root)
+    unreadable: set[str] = set()
+    if args.exclude_list.is_file():
+        unreadable = {ln.strip() for ln in args.exclude_list.read_text().splitlines() if ln.strip()}
+        pool = drop_unreadable(pool, unreadable)
     pairs = build_pairs(pool, target=args.target, seed=args.seed)
 
     # Two hard uniqueness gates. The source-stem one is not theoretical: `-` and
@@ -403,7 +426,7 @@ def main(argv: list[str] | None = None) -> int:
     write_compare_manifest(args.out_root / "compare_manifest.tsv", pairs, source_dir, redline_dir)
 
     chain = sum(1 for p in pairs if p.kind == "chain")
-    print(f"pool:      {len(pool)} usable .docx (encryption + ~$ lock files excluded)")
+    print(f"pool:      {len(pool)} usable .docx (encryption + ~$ lock files + {len(unreadable)} Word-unreadable excluded)")
     print(f"pairs:     {len(pairs)}  ({chain} chain / {len(pairs) - chain} cross)")
     print(f"sources:   {len({p.base.relative_path for p in pairs} | {p.next.relative_path for p in pairs})} distinct files, {staged} staged")
     print(f"holdout:   {len(holdout)} sealed keys -> {args.out_root / 'holdout.txt'}")
