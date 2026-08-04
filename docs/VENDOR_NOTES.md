@@ -44,9 +44,21 @@ reached the deficit belongs in this file, not in the competitor's score.
 | field | value |
 |---|---|
 | Package | npm `docxodus` (WASM build of the C# engine) |
-| Pinned in bench.yaml | `7.0.0` — **two majors stale**; published latest is `9.0.0` |
-| Harness-assisted | No — single `compareDocuments` call |
-| Known-unfixed | Yes, see below |
+| Benchmarked | **9.0.0** (was pinned `7.0.0` — two majors stale) |
+| Harness-assisted | No — single `compareDocuments` call, now with an explicitly named engine |
+| Known-unfixed | See below — **may be resolved in 9.0.0** |
+
+**9.0.0 is a different engine, and it matters for the claim below.** On the
+same 803-pair corpus, 7.0.0 crashed in `WmlComparer.AddFootnotesEndnotesStyles`
+(the old DOM comparer). 9.0.0's failures come from an entirely different,
+IR-based stack — `Docxodus.DocxDiff.Compare`, `Docxodus.Ir.IrReader.Read`,
+`Docxodus.Ir.Diff.IrMarkupRenderer.Render` — and the old crash site does not
+appear at all. 38 of 765 pairs failed generation, each an exception thrown by
+the vendor's own code on our input, so each is recorded as a genuine vendor
+failure under ITT.
+
+Two consequences for honesty: the engine we criticised is not the engine now
+shipping, and the pin that held us on 7.0.0 is what kept us criticising it.
 
 Two disclosures:
 
