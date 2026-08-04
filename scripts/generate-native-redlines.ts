@@ -20,6 +20,7 @@ import {
 } from "node:fs";
 import { createRequire } from "node:module";
 import { join, resolve } from "node:path";
+import { pathToFileURL } from "node:url";
 import { tmpdir } from "node:os";
 import { spawnSync } from "node:child_process";
 import { parse } from "csv-parse/sync";
@@ -93,11 +94,78 @@ export function resolveDistFile(distPath: string, filename: string): string {
 	);
 }
 
+/** Directory of the `@superdoc-dev/sdk` copy the bench actually benchmarks.
+ *
+ *  `tool_updater.update_npm_package` runs `npm install @superdoc-dev/sdk@<pin>` with
+ *  cwd = repo root (cli.py passes `Path.cwd()`) and reads the resolved version back out
+ *  of `<repo>/node_modules/@superdoc-dev/sdk/package.json`. So repo-root node_modules is
+ *  the ONE copy whose version lands in the JSONL as `tool_version`; importing any other
+ *  copy would benchmark a version we do not report. It is also where `bun install`
+ *  (the repo's package manager) puts the root `package.json` dependency.
+ *
+ *  `utils/superdoc/node_modules` stays as a fallback for checkouts that still carry the
+ *  old sub-install. `SUPERDOC_SDK_DIR` overrides both (mirrors FOLIO_MODULE_ROOT).
+ */
+export function resolveSuperDocSdkDir(
+	env: Record<string, string | undefined> = process.env,
+): string {
+	const PKG = "@superdoc-dev/sdk";
+	const override = env.SUPERDOC_SDK_DIR;
+	// import.meta.dirname is unreliable under some test transforms; cwd is the repo root
+	// for every bench invocation (bench.yaml commands all use repo-relative paths).
+	const roots = [process.cwd(), resolve(import.meta.dirname, "..")];
+	const candidates = override
+		? [override]
+		: roots.flatMap((root) => [
+				resolve(root, "node_modules", PKG),
+				resolve(
+					root,
+					"src/neurotic_docx_bench/utils/superdoc/node_modules",
+					PKG,
+				),
+			]);
+	const found = candidates.find((d) => existsSync(join(d, "package.json")));
+	if (!found) {
+		throw new Error(
+			`superdoc-ts: ${PKG} not found (checked ${candidates.join(", ")}). ` +
+				`Run \`bun install\` at the repo root, or set SUPERDOC_SDK_DIR.`,
+		);
+	}
+	return found;
+}
+
+/** ESM entry of an installed package dir, read from its package.json.
+ *
+ *  Importing the *directory* only works under loaders that add CJS-style directory
+ *  resolution (tsx does, plain Node ESM and vitest do not), and the CJS `main` loses
+ *  named exports on some bundles — so resolve the declared ESM entry explicitly. */
+function packageEntryUrl(pkgDir: string): string {
+	const pkg = JSON.parse(readFileSync(join(pkgDir, "package.json"), "utf8"));
+	const dot = pkg.exports?.["."];
+	const entry =
+		(typeof dot === "string" ? dot : (dot?.import ?? dot?.default)) ??
+		pkg.module ??
+		pkg.main;
+	if (!entry) {
+		throw new Error(`no import entry declared in ${join(pkgDir, "package.json")}`);
+	}
+	return pathToFileURL(resolve(pkgDir, entry)).href;
+}
+
+/** compare(base,next) → docx bytes, plus optional teardown for engines that hold a
+ *  long-lived resource. An engine backed by a persistent child process keeps the event
+ *  loop alive, so without `dispose` the batch writes every redline and then hangs
+ *  forever instead of exiting — `runBatch` calls it in a `finally`. */
+export type RedlineEngine = ((
+	base: Uint8Array,
+	next: Uint8Array,
+) => Promise<Uint8Array>) & { dispose?: () => Promise<void> };
+
 /** Load the redline engine for `method` and return compare(base,next)->docx bytes. */
 export async function loadEngine(
 	method: string,
 	distPath: string,
-): Promise<(base: Uint8Array, next: Uint8Array) => Promise<Uint8Array>> {
+): Promise<RedlineEngine> {
 	// jubarte ships TWO redline routes; the bench tests both:
 	//  - native:   redlineDocx (CriticMarkup) → redlineToDocx
 	//  - docxodus: DocumentComparer.CompareDocuments, the JS-friendly wrapper around
@@ -453,13 +521,17 @@ export async function loadEngine(
 		};
 	}
 	if (method === "superdoc-ts") {
-		// Native SuperDoc via the TypeScript SDK (@superdoc-dev/sdk). File-path based, so we
-		// round-trip through temp files. One client reused across pairs; unique session ids.
+		// Native SuperDoc via the TypeScript SDK (@superdoc-dev/sdk), driving the same
+		// Document Engine diff flow as the Python SDK:
+		//   target.diff.capture({}) → base.diff.compare({targetSnapshot})
+		//   → base.diff.apply({diff, changeMode:"tracked"}) → base.save({out, force})
+		// (@superdoc-dev/sdk 1.21.3 dist/generated/client.d.ts:89841-89843 —
+		//  capture/compare/apply on the bound `doc.diff` namespace.)
+		// File-path based, so we round-trip through temp files. One client reused across
+		// pairs; unique session ids.
 		const [{ SuperDocClient }, os, fs, path]: [any, any, any, any] =
 			await Promise.all([
-				import(
-					"../src/neurotic_docx_bench/utils/superdoc/node_modules/@superdoc-dev/sdk"
-				),
+				import(packageEntryUrl(resolveSuperDocSdkDir())),
 				import("node:os"),
 				import("node:fs"),
 				import("node:path"),
@@ -469,7 +541,7 @@ export async function loadEngine(
 		});
 		const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "sdts-"));
 		let ctr = 0;
-		return async (base, next) => {
+		const engine: RedlineEngine = async (base, next) => {
 			const i = ctr++;
 			const bp = path.join(tmp, `b${i}.docx`);
 			const np = path.join(tmp, `n${i}.docx`);
@@ -495,6 +567,15 @@ export async function loadEngine(
 				for (const f of [bp, np, op]) fs.rmSync(f, { force: true });
 			}
 		};
+		// SuperDocClient backs onto a long-lived `superdoc host --stdio` child process
+		// (dist/runtime/process.js) whose stdio pipes keep the event loop alive.
+		// SuperDocClient.dispose() is the only public teardown — 1.19.2 needed it too,
+		// but the run never got that far: it died at import (ERR_MODULE_NOT_FOUND).
+		engine.dispose = async () => {
+			await client.dispose().catch(() => {});
+			fs.rmSync(tmp, { recursive: true, force: true });
+		};
+		return engine;
 	}
 	// jubarte-redlines CLI (Rust). Dist dir holds the release `redline` binary
 	// (also copied as `jubarte` for older examples). Invoked as:
@@ -934,39 +1015,45 @@ export async function runBatch(
 	let ok = 0;
 	const failed: Failure[] = [];
 	const timings: Record<string, number> = {};
-	for (const pair of pairs) {
-		const doc = `${pair.base}_${pair.next}`;
-		const outNames = outputNames(pair, opts.tool);
-		const outPaths = outNames.map((n) => join(opts.out, n));
-		if (!opts.force && outPaths.every((p) => existsSync(p))) {
-			ok += outNames.length;
-			continue;
-		}
-		const basePath = join(opts.sourceDir, `${pair.base}.docx`);
-		const nextPath = join(opts.sourceDir, `${pair.next}.docx`);
-		if (!existsSync(basePath) || !existsSync(nextPath)) {
-			failed.push({
-				doc,
-				stage: "missing_source",
-				error: "source docx not found",
-			});
-			continue;
-		}
-		try {
-			const t0 = process.hrtime.bigint();
-			const bytes = await engine(
-				new Uint8Array(readFileSync(basePath)),
-				new Uint8Array(readFileSync(nextPath)),
-			);
-			const elapsedNs = Number(process.hrtime.bigint() - t0);
-			for (let i = 0; i < outPaths.length; i++) {
-				writeFileSync(outPaths[i], bytes);
-				timings[outNames[i].replace(/\.docx$/, "")] = elapsedNs;
+	try {
+		for (const pair of pairs) {
+			const doc = `${pair.base}_${pair.next}`;
+			const outNames = outputNames(pair, opts.tool);
+			const outPaths = outNames.map((n) => join(opts.out, n));
+			if (!opts.force && outPaths.every((p) => existsSync(p))) {
+				ok += outNames.length;
+				continue;
 			}
-			ok += outNames.length;
-		} catch (err) {
-			failed.push({ doc, stage: "generate", error: (err as Error).message });
+			const basePath = join(opts.sourceDir, `${pair.base}.docx`);
+			const nextPath = join(opts.sourceDir, `${pair.next}.docx`);
+			if (!existsSync(basePath) || !existsSync(nextPath)) {
+				failed.push({
+					doc,
+					stage: "missing_source",
+					error: "source docx not found",
+				});
+				continue;
+			}
+			try {
+				const t0 = process.hrtime.bigint();
+				const bytes = await engine(
+					new Uint8Array(readFileSync(basePath)),
+					new Uint8Array(readFileSync(nextPath)),
+				);
+				const elapsedNs = Number(process.hrtime.bigint() - t0);
+				for (let i = 0; i < outPaths.length; i++) {
+					writeFileSync(outPaths[i], bytes);
+					timings[outNames[i].replace(/\.docx$/, "")] = elapsedNs;
+				}
+				ok += outNames.length;
+			} catch (err) {
+				failed.push({ doc, stage: "generate", error: (err as Error).message });
+			}
 		}
+	} finally {
+		// Engines holding a child process (superdoc-ts) must be torn down or the
+		// process never exits — the bench would block on `generate:` forever.
+		await engine.dispose?.();
 	}
 	return { ok, failed, timings };
 }

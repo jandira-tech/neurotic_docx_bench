@@ -59,7 +59,11 @@ generate_scripts:
 # Tool versions are PINNED to the ones we reviewed:
 #   docxodus 7.0.0 · docx-redline-js = local TS migration (dist: sibling package)
 #   @stll/folio-core 0.3.1 (generator) · @stll/folio-react 0.5.0 (viewer)
-#   superdoc-sdk (Python) 1.19.2 · superdoc editor (npm) 1.44.1  ← different packages
+#   superdoc is THREE packages, pinned independently — never conflate them:
+#     superdoc-sdk (PyPI) 2.0.0        → run `superdoc`            (python_package:)
+#     @superdoc-dev/sdk (npm) 1.21.3   → run `superdoc-ts`         (package:)
+#     superdoc (npm, the editor) 2.3.0 → runs `superdoc-playwright-*` (package:)
+#   tests/test_superdoc_pins.py fails if any pin drifts from what is installed.
 #   jubarte builds are content-hashed under dist/
 # Do NOT bump to @latest without re-review — the pin keeps CI reproducible.
 
@@ -208,10 +212,28 @@ runs:
     benchmarks: [script_redlines, accepted_changes, roundtrip]
 
   # (4) superdoc — Python SuperDoc SDK (superdoc-sdk), Document Engine diff
-  # capture→compare→apply(tracked)→save. This is the *generator* pin (1.19.2).
+  # capture→compare→apply(tracked)→save. This is the *generator* pin (2.0.0).
   # The *editor* used for visual_* is a separate package — see superdoc-playwright-*.
+  # 1.19.2 → 2.0.0 is a major bump upstream, but the diff surface superdoc_gen drives
+  # (superdoc/generated/client.py _AsyncBoundDocDiffApi.capture/compare/apply) is
+  # byte-identical between the two; what moves is the bundled CLI engine
+  # (superdoc-sdk-cli-<platform>==2.0.0, a PEP 508 companion dependency).
+  #
+  # COVERAGE REGRESSION, measured A/B on the same first 25 pairs of
+  # corpus/word_based/centralized_mapping.csv: 1.19.2 generated 25/25, 2.0.0
+  # generates 20/25. The 5 losses are deliberate engine-side refusals in 2.0.0,
+  # not adapter bugs — it declines rather than emit markup it cannot author:
+  #   - SOURCE_NOT_COMPLETE "synchronous compare capture requires a terminal
+  #     source-complete posture" (e.g. alternate_content.docx — permanent, not a
+  #     race: it still fails after 6 retries). The engine's async capture path
+  #     takes an `allowIncompleteSource` escape hatch, but doc.diff.capture
+  #     declares only {doc, sessionId}, so the SDK cannot reach it.
+  #   - diff.apply refusing families it defers this release ("tracked-changes",
+  #     "header-footer-parts") — sources that already carry tracked changes.
+  # These land in generate_failures.json and are scored as misses, which is the
+  # honest reading: the vendor's current release cannot redline those pairs.
   - name: superdoc
-    python_package: "superdoc-sdk==1.19.2" # installed version → tool_version
+    python_package: "superdoc-sdk==2.0.0" # installed version → tool_version
     generate: "uv run python -m neurotic_docx_bench.superdoc_gen --out=$RUN_DIR/docx --tool=superdoc"
     render: soffice
     jobs: 12
@@ -270,7 +292,7 @@ runs:
   # (4b) superdoc via the TypeScript SDK (@superdoc-dev/sdk) — same Document Engine
   # family as the Python SDK, JS runtime. Version-aligned with superdoc-sdk 1.19.2.
   - name: superdoc-ts
-    package: "@superdoc-dev/sdk@1.19.2" # npm-resolved → tool_version
+    package: "@superdoc-dev/sdk@1.21.3" # npm-resolved → tool_version
     generate: "node --import tsx scripts/generate-native-redlines.ts --method=superdoc-ts --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=superdoc-ts"
     render: soffice
     jobs: 12
@@ -297,7 +319,7 @@ runs:
   # `superdoc@1.44.1`, NOT the Python/TS SDK 1.19.2). Same pattern as folio-playwright-*:
   # one run per visual_* oracle corpus. Harness lives under utils/superdoc.
   - name: superdoc-playwright-rendering
-    package: "superdoc@1.44.1"
+    package: "superdoc@2.3.0"
     docx: corpus/word_based/docx_source
     render: playwright
     jobs: 12
@@ -312,7 +334,7 @@ runs:
       timeout_ms: 90000
 
   - name: superdoc-playwright-redlines
-    package: "superdoc@1.44.1"
+    package: "superdoc@2.3.0"
     docx: corpus/word_based/docx_redlines_word
     render: playwright
     jobs: 12
@@ -321,7 +343,7 @@ runs:
     harness: *superdoc-harness
 
   - name: superdoc-playwright-accepted
-    package: "superdoc@1.44.1"
+    package: "superdoc@2.3.0"
     docx: corpus/word_based/docx_accepted_word
     render: playwright
     jobs: 12
