@@ -507,3 +507,45 @@ def test_split_tables_rank_independently(tmp_path: Path) -> None:
     # "| 1 |" must appear in BOTH blocks — one rank-1 per regime.
     assert "| 1 |" in current_block
     assert "| 1 |" in legacy_block
+
+
+def test_holdout_blurb_reports_the_actual_sealed_size(tmp_path: Path) -> None:
+    """The blurb used to hard-code "20-pair" and word_based/holdout.txt. When the
+    SuperDoc subcorpus landed the sealed set became 40 and the published sentence
+    contradicted the n_holdout column printed directly beneath it.
+    """
+    p = tmp_path / "bench.jsonl"
+    main = _fidelity_line("v", corpus_revision="rev", mean=76.0)
+    main["holdout_mode"] = "excluded"
+    main["n_docs"] = 763
+    hold = _fidelity_line("v", corpus_revision="rev", mean=80.0)
+    hold["holdout_mode"] = "only"
+    hold["n_docs"] = 40
+    hold["scores"] = {f"k{i}": 80.0 + (i % 5) for i in range(40)}
+    p.write_text(json.dumps(main) + "\n" + json.dumps(hold) + "\n")
+
+    md = "\n".join(exp.holdout_gap_section(p))
+    assert "40-pair" in md
+    assert "20-pair" not in md
+    assert "corpus/holdout_combined.txt" in md
+
+
+def test_holdout_blurb_avoids_a_size_claim_when_vendors_disagree(tmp_path: Path) -> None:
+    """Mid-migration some vendors have 20-key holdout lines and others 40. Printing
+    either number would be wrong for half the table."""
+    p = tmp_path / "bench.jsonl"
+    lines = []
+    for vendor, n in (("v1", 20), ("v2", 40)):
+        main = _fidelity_line(vendor, corpus_revision="rev", mean=76.0)
+        main["holdout_mode"] = "excluded"
+        main["n_docs"] = 763
+        hold = _fidelity_line(vendor, corpus_revision="rev", mean=80.0)
+        hold["holdout_mode"] = "only"
+        hold["n_docs"] = n
+        hold["scores"] = {f"k{i}": 80.0 for i in range(n)}
+        lines += [main, hold]
+    p.write_text("\n".join(json.dumps(x) for x in lines) + "\n")
+
+    md = "\n".join(exp.holdout_gap_section(p))
+    assert "Sealed sealed holdout" not in md  # no double word
+    assert "20-pair" not in md and "40-pair" not in md
