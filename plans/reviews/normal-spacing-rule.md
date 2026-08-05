@@ -184,3 +184,16 @@ the guard skips it. With the guard:
 
 Official jubarte-final-lossless run in flight at dist
 `jubarte-final@041a9bd0cbc3+git.8f8ea7594`.
+
+### v3 spacing-guard — NULL RESULT, reverted (2026-08-05)
+
+Extending the split-class guard to live-spacing-with-empty-old-pPr recovers
+all five v2 regressions (+31.1 file_147, +15.9, +4.0, +1.8, +1.8) but breaks
+three v2 winners (−27.1 file_116, −21.1 file_60, −8.1 exporttest):
+**net −3.44 ≈ zero**. The spacing-flip population is a coin-flip the output
+cannot call: token overlap between the flipped paragraph's del/ins text does
+NOT separate the classes (0.17/0.0 vs 0.0/0.14). The discriminator lives in
+Word's own word-level alignment (which cousins it merges), invisible
+post-hoc. v2 ships and stands; the −31 stays as a known bounded residual
+until the engine's word-LCS itself is aligned with Word's (the guard-stack
+port). The TS working tree is reverted to the committed v2 (8f8ea7594).
