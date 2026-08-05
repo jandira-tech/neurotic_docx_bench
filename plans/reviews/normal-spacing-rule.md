@@ -932,3 +932,19 @@ full A/B (2×814), suite (cargo test), commit, officials for BOTH
 jubarte-rust AND jubarte-wasm (rebuild wasm from same commit,
 wasm-pack build in a subshell, never cd the main shell out of the
 bench repo for uv run bench).
+
+Rust M-CARRIER first attempt (2026-08-05, NOT shipped): the arm is
+implemented in do_lcs_algorithm exactly per spec (working tree of
+~/T/jubarte-redlines, uncommitted). Exhibit result: block structure
+MATCH TRUE including the trailing same-empty (the old del-empty tail
+fixed), carrier keeps Heading1 LIVE — but score moved 52.73 → 51.55
+(−1.18) and C8 blocks shipping. Two visible defects in the carrier
+pPr: (1) NO rPr/del pilcrow mark (rust's finalize did not flip it —
+needs the region rule / or emit the pMark pair differently), (2) a
+leaked `xmlns:ns0="http://powertools.codeplex.com/2011"` declaration
+on the cloned w:pStyle. Debug next: why the −1.18 (compare renders —
+possibly the missing del mark changes LO paragraph spacing, or the
+xmlns leak, or the Equal pMark pair chose the wrong side's atoms);
+then the del-pilcrow emission. The rust baseline binary was RESTORED
+at src/neurotic_docx_bench/utils/jubarte/jubarte-rust/redline — the
+new binary is parked at /Users/arthrod/temp/T/r3/jubarte-rust-carrier.
