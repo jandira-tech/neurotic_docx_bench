@@ -163,3 +163,24 @@ vs rust's 100.00). The fix target in the TS engine is the pivot PLACEMENT:
 mark survival must migrate to the region's final A-paragraph. Verification
 population: the 449 kind-sequence mismatches, then the 107 perfect-sibling
 single-page failures.
+
+## SHIPPED — the lossless region-mark relocation (2026-08-05 early)
+
+Implemented as `RelocateRegionMarkSurvival` in jubarte-first's WmlComparer
+(engine commit `8f8ea7594`): interior pPrChange paragraphs flip to A's old
+pPr live + deleted mark, exactly the 283/287 oracle rule. The first A/B
+exposed the exception class — TWO high scorers destroyed (94.69→52.08,
+95.09→61.90), both with the same signature: A's old pPr style-less and B's
+live pPr carrying a pStyle (Heading1/TOC1). The oracles show Word SPLITS
+those paragraphs (B's styled paragraph inserted whole, A's deleted
+separately) rather than merging — a shape a mark flip cannot produce, so
+the guard skips it. With the guard:
+
+- corpus A/B (262 changed outputs, 154 with stored oracles):
+  **net +153.8 → +0.20 corpus mean**, worst regression −3.3,
+  +3 docs cross 92, one new exact-100 (63.05 → 100.00).
+- lossless suite 752/0; the full-repo suite's 8 failures reproduce
+  identically without the change (pre-existing, attributed by stash-rerun).
+
+Official jubarte-final-lossless run in flight at dist
+`jubarte-final@041a9bd0cbc3+git.8f8ea7594`.
