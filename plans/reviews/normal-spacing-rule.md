@@ -856,3 +856,41 @@ pure-deleted paragraphs. New list-level pass
 coalesce.ts, where sibling context exists): mix para + old pStyle
 Heading[1-9] + bare live style + next block pure-deleted → promote old
 pPr live, pilcrow del. Suite 661 pass. Full A/B pending.
+
+Heading-carrier full A/B (jfcN2 vs fresh 07bd8ba2 baseline arm): 31
+byte-changed docs, 25 scored (3 base-arm soffice failures in the
+rId-noise ole_object/strict01 family, twins all +0.00): **+288.12 →
++0.38 mean projection, 17 improved vs 1 (−4.10
+invalid_list_def_fallback), five new 100.00s** (sd_1919_word_simple,
+sd_1919_word_mixed, diff_before16×19, multipara_cell×missing_separator,
+hyperlink_node_internal×?). Shipped as 19b5f14c6; native official
+running.
+
+### QUEUE-TOP: rust carrier-merge port (~875-point gap, +1.15 mean)
+
+Rust trails the new lossless on **54 carrier-merge docs, 875.4 points**
+(multiple_nodes_in_list gap 51.7, doc_with_graphs 51.1, sd_1919 47.3,
+missing_sectpr×fields 46.2 …). rust sd_1919 emits [I 'Here's some
+text.', D 'Chapter One', D×5, D ''] vs oracle [mix, D×5, same ''] — the
+same class, plus rust dels B's trailing empty where Word keeps it Equal.
+
+The Word rule (validated across three engines): in a wholesale
+replacement, B's LAST paragraph's words ride into A's FIRST deleted
+paragraph — ONE carrier para: ins B-words then del A-words, A's pPr
+LIVE (Heading survives), pilcrow marked deleted (pPr/rPr/del). Leading
+B paras stay pure-ins, remaining A paras pure-del.
+
+Rust entry points located: `stamp_confetti_then_replace` (lcs.rs:789,
+wholesale-disjoint docs; residual pairing via `stamp_residual_pairs`
+jaccard ≥0.25 tiers — sd_1919 shares ZERO tokens → no pairs → insert-all
++ delete-all thrash), `detect_unrelated_sources_word_mode` (lcs.rs:4179)
+and the M104/M123/M133/M134 residual arms. Port shape: when residual
+pairing yields NO pair for (A first-contentful residual, B last
+residual), force-pair them so word-level LCS runs inside (the pair
+machinery already produces the mix para; verify the pMark comes out
+A-live + del — rust's finalize may need the same region rule as
+RelocateRegionMarkSurvival got). Then A/B per the standard discipline.
+The TS lossless implementation to mirror: the M×1 arm added OUTSIDE
+s_docsShareContentWords in DoLcsAlgorithm (WmlComparer.ts, commit
+ff4d09d67): ins(B lead) + ins(B carrier words) + del(A carrier words)
++ Equal(carrier pilcrows) + del(A tail).
