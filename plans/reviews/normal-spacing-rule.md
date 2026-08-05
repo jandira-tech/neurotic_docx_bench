@@ -472,3 +472,12 @@ sides share <0.08 significant tokens, with an `in_stamp_residual` settings
 flag protecting the confetti machinery's own windows. Exhibit
 52.58 → 99.66; blast radius 3 docs, net +43.9; file_151/127 byte-identical
 via the flag. Suite green; official run in flight at 8cd638d.
+
+### New class: in-block image loss (diff_before16×diff_before19, 53.9)
+
+Block structure IDENTICAL to the oracle ([ins, mix, tbl del, same]) yet
+53.9 — the loss is INSIDE the blocks, and the fixture is image-bearing
+('An image will be added below:'). Likely the drawing is dropped or
+misplaced within the mix/deleted table. Needs pixel-level comparison, not
+alignment work. Several image-named targets in the remaining 70 may share
+it (anchor_images at 89.99 post-fix, image_inline_and_block…).
