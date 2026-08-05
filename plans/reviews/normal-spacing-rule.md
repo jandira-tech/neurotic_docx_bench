@@ -553,3 +553,14 @@ unverified). The fold-position class stays open with one precise question
 for the instrumented cycle: print t1/t2 at the H1 seam on diff_after6.
 Session tally on this class: v12's empty-alpha void banked (+31.4 A/B,
 official 77.97/81.83/163/292); the remaining delta is fold position only.
+
+## SHIPPED — rows-aware gate (v13): TWO new perfects, zero regressions
+
+The fold-position class resolved without a fold-position rule at all: the
+H1-seam probe showed H1 was never reached — the ['.', pMark] anchor
+survived because the glue/empty-alpha gate required BOTH sides pure Words
+and the flattened window carries table ROWS. Letting sides carry Rows
+(run still pure-Words; single-para GLUE arm keeps the strict sides)
+voids the anchor and the wholesale emerges downstream on its own:
+diff_after6 48.10 → 100.00 EXACT, diff_before6 94.68 → 100.00, zero
+regressions, every canary byte-identical. Official run in flight.
