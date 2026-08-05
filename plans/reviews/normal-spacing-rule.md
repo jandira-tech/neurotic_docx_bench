@@ -794,3 +794,44 @@ sd_1919: exact oracle block MATCH, **52.7 → 100.00** (LO does NOT tank
 on the mix shape — the file_187 fear does not generalize here). Suite
 494 pass / same 2 pre-existing fails. ≥2×≥2 merge population left for a
 separate cycle (interacts with the early multi-para zip).
+
+Full A/B (jfcF vs installed): **n=117, +894.63 → +1.17 projected mean,
+perfects 5→20, above-92 11→37**, 51 improved vs 20 regressed. Shipped as
+ff4d09d67.
+
+**Regression class resolved: deleted table must extend the region in
+RelocateRegionMarkSurvival.** Top regression diff_before16×diff_before19
+(−46.16): the carrier para sits right before a wholesale-DELETED table;
+tables were transparent to the pass, so the carrier was the region's
+last A-origin paragraph and kept its live pPrChange (B pPr live, style
+lost, no del mark) where the oracle flips it (A's Heading1 live + del
+pilcrow). sd_1919 only worked because five deleted paras followed its
+carrier. Fix: a pure-deleted table joins the region as an A-origin
+member (never mutated itself — no pPrChange); a wholesale-inserted
+table joins as B-origin; other tables flush the region. Result:
+db16 → **100.00**, sd_1919 stays **100.00**. Suite green.
+
+Full region-fix A/B (jfcH vs jfcF): **n=10, +69.29, two more 100.00s**
+(diff_before16×19 +46.16, diff_after16×19 +30.81), word_based neutral.
+Shipped as 07bd8ba21 (carrier merge = ff4d09d67).
+
+**Open class from the region fix: sd_2672_sdt_table×sd_2750_borderbox
+−13.82** (89.36→75.54). The flipped member is an interior pPrChange
+para (live style-less, old Heading1) in a 73-member region of inserted
+paras ending [pA, TA-deleted-table]; it carries REAL deleted text, so
+del-content gates can't separate it, and the oracle still keeps it live
+with pPrChange. Three gate refinements (pure-ins skip; table-anchored
+del-content requirement; delText-only content test) were all
+behavior-neutral on the corpus and were reverted per C8. Needs its own
+truth table over pPrChange-para-before-deleted-table sites. Two smaller
+same-family residuals: multipara_cell×hyperlink_node −3.96,
+plain_3x3×hyperlink_node −2.41.
+
+**Remaining regression classes from the carrier merge** (accepted, net
++894.63): math_groupchr×diff_before16 −24.7, table_merged_cells×
+table_width −16.2, missing_sectpr×missing_separator −9.5 (block shapes
+IDENTICAL base vs idm at top level — the delta is run/pilcrow-level,
+uninvestigated), line_break×line_space −8.4, rtl_page_numpages×sd_1960
+−9.3. Next major population: the ≥2×≥2 wholesale merge (the rest of the
+99-seam class; interacts with the EARLY multi-para zip at
+WmlComparer.ts ~17454).
