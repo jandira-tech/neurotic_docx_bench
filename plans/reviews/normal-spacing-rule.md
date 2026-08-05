@@ -197,3 +197,18 @@ Word's own word-level alignment (which cousins it merges), invisible
 post-hoc. v2 ships and stands; the −31 stays as a known bounded residual
 until the engine's word-LCS itself is aligned with Word's (the guard-stack
 port). The TS working tree is reverted to the committed v2 (8f8ea7594).
+
+## ast at the new dist (2026-08-05 03:00 run)
+
+jubarte-ast (jubarte-final-native) at dist 041a9bd0cbc3: **ITT mean 69.83 →
+70.24 (+0.41), median 68.64** — and the vendor's FIRST full row with per_doc
+scores, so ast targeting is finally possible. The C1 gate reads FAIL from
+its 374-shared-doc ratchet slice (75.04→74.85, −0.19) while the full ITT
+moved up — mixed populations, both recorded.
+
+Named residual: **file_8_file_9 renders unloadable** ("source file could not
+be loaded", LibreOffice, deterministic) at this dist — a NEW failure (the
+other 9 ast failures are unchanged from d99ccb5b3). Valid zip, parseable
+XML; the defect is semantic. Not yet attributed (the ast path should not
+touch the WmlComparer post-pass); needs an old-dist rebuild for a clean A/B.
+Cost while open: one zero-filled doc ≈ 0.09 ast mean.
