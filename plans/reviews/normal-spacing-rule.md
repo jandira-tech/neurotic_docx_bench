@@ -699,3 +699,9 @@ exact-100s, worst −0.64. This also includes the note that the deferred
 amendments (f9c71f0c..6f9f76fc) drift 54/400 lossless outputs — needs its
 own explanation next cycle. Trace scaffolding fully stripped before the
 amended 22-insertion commit.
+
+Drift question CLOSED with a same-build-twice control: lossless
+document.xml is nondeterministic on 11/60 docs (18%) — GUID media names
+leak into document.xml via rIds on image-bearing pairs. The 54-doc
+"amendment drift" was this, not the amendments. All score-based verdicts
+stand; byte-diff attribution on lossless requires rId/media normalization.
