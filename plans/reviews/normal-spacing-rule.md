@@ -497,3 +497,17 @@ boundary mix), emit tables whole as del/ins in ins-first order; never
 fall through to the H4 word-flatten for these windows. Reference outputs:
 docxodus at 100 on the exhibit, generated at
 /Users/arthrod/temp/T/r3/dox_top/docx for the top-8 targets.
+
+H2b — byte-neutral, reverted (C8). A correct one-sided-table walk in step_h
+produces BYTE-IDENTICAL output to the current path: correlation already
+emits the deleted table whole; the flattening happens DOWNSTREAM. The 'p
+mix cell-00…' paragraphs mean the table's atoms are reconstructed as
+paragraph children — the produce/assemble layer (Phase B's "borrow the
+following paragraph's Unid prefix" with name-based share) mis-attributes
+deleted-table atoms in mixed windows. This is the same machinery family as
+the empty-paragraph drop (which was finalize's whitespace fold, found by
+build-bracketing). Next cycle: bracket-dump the assembled body for
+multipara_cell BEFORE finalize (the AFTER-MARK dump showed [p×7,tbl,p] for
+anchor_images — run the same dump here to see whether the tbl exists at
+assembly and dies in finalize, or never assembles). The class is worth
+~two of the worst remaining targets (41.6, 45.8) plus the table-named tail.
