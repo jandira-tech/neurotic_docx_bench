@@ -418,3 +418,15 @@ Word treats the hyperlink runs as atomic-ish and pairs at region end
 tokenizes/anchors URL text in compare — likely a word-separator or
 anchor-quality rule for runs inside w:hyperlink. Several hyperlink-named
 targets in the rust-72 set share this class.
+
+URL-anchoring class, sized and probed (7 rust targets, 52.6–90.9, ≈+0.18
+mean potential): deeper than tokenization. In hyperlink_node×internal the
+oracle redline contains ZERO w:hyperlink elements (Word unwrapped/dropped
+them; the deleted URL is plain runs), lossless keeps 1 (fully inserted),
+rust keeps 2. And Word DECLINES an exact-text paragraph anchor ('Some text
+bookmark' is verbatim in both inputs yet the oracle pure-inserts B's copy)
+— something invisible distinguishes the copies (bookmarkStart ids, rStyle,
+or hyperlink wrapping) and drives Word to region-end pairing. Next cycle:
+dump both inputs' 'Some text bookmark' paragraphs fully, find the
+distinguishing attribute, and derive the anchor-refusal rule from all 7
+pairs plus their perfect siblings' outputs.
