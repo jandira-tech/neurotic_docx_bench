@@ -623,3 +623,14 @@ official state. Next ast increment rebuilds from HEAD and batches both
 into one run. Residual question for that cycle: why the text-split arm
 lands multipara×hyperlink at 76.15 while the token arm hit 87.46 —
 diff those two arms' outputs on that doc.
+
+HARNESS BUG FOUND AND CHARACTERIZED (affects several ad-hoc A/Bs, NOT the
+officials): the scoring harness cached rasters under truncated keys
+(`k[:36]`/`k[:40]`), which COLLIDE across the multipara_cell×… pairs — the
+token-arm/text-arm "difference" on multipara×hyperlink (87.46 vs 76.15)
+was measured on BYTE-IDENTICAL outputs; one number scored the wrong
+cached render. Corrected conclusions: (1) the text-equality amendment's
+−2.6 "regression" was fake — its true A/B net was ≥ +13.9, and its
+official row (72.59/73.71) stands as the ground truth; (2) any future
+ad-hoc A/B must key raster caches by the FULL pair stem or a hash of it.
+The officials all used the bench's own pipeline and are unaffected.
