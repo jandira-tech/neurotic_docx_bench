@@ -1181,3 +1181,16 @@ the ast QUEUE (still ~2,100 pts vs lossless after this cycle) — next
 exhibits: instrtext_angled_brackets −9.7 regression, the remaining
 file_22-class docs still under lossless parity, and the ast junction
 follow-ups (imagedoc 59.7 with correct blocks = emit fidelity).
+
+**Over-mix population mapped (2026-08-05 late):** 38 docs / 1,263 pts
+where lossless over-mixes vs the oracle (r3/overmix_population.json).
+Dominant sub-class (~8 docs): the HEAD pair mixes (M then D…) where the
+oracle keeps B's first paragraph pure-I — sd_2517×sd_2672_gridbefore
+44.98 is the exhibit (B = [Heading1 para, TABLE, empty]; not a wholesale
+replacement, B continues with a content table). Porting rust's wholesale
+body-head/body-tail gates to the word-level XOR carrier arm did NOT move
+it (sd_1919/imgdoc sentinels held; reverted per C8) — the head mix comes
+from another site, likely the s_docsShareContentWords 1×1 rewrite arm or
+the ProcessCorrelatedHashes pairing; needs a JUB_TRACE session on the
+sd_2517 pair to find the firing arm before gating. Demo trio sub-class
+(MMM → MIMD/MIDM) is the m45 equal-count zip shape lossless lacks.
