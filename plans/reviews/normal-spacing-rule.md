@@ -212,3 +212,29 @@ other 9 ast failures are unchanged from d99ccb5b3). Valid zip, parseable
 XML; the defect is semantic. Not yet attributed (the ast path should not
 touch the WmlComparer post-pass); needs an old-dist rebuild for a clean A/B.
 Cost while open: one zero-filled doc ≈ 0.09 ast mean.
+
+## The remaining gap, fully named (2026-08-05, end of cycle)
+
+Refreshed perfect-sibling single-page target sets after tonight's ships:
+**rust 72** (was 128 — 56 cleared), **lossless 97** (was 107), **ast 163**.
+All three engines' residual losses trace to ONE theme — correlation that
+diverges from Word's word-level alignment — wearing three faces:
+
+1. **ast (163 targets, biggest win available)**: no cousin zip. On stamped
+   cousins (file_101_file_102, 45.6 vs lossless perfect) Word pairs
+   paragraphs positionally into mix paragraphs ('file_102101.docx',
+   'Underline Text FormattingCalibri Heading 2 R…'); ast emits ins-all →
+   del-all. The rust engine solved exactly this with the M126/M205/M75
+   diagonal-zip + stamp machinery in lcs.rs. Port target:
+   jubarte-first src/compare/correlate.ts. Most of ast's ~60 file_N targets
+   and its 7.5-point gap to lossless (same bundle!) sit here.
+2. **lossless (97)**: mid-region word-LCS pivots (partially fixed by the
+   post-pass; the spacing coin-flip class needs the LCS itself to align —
+   v3 null result proves post-hoc is exhausted).
+3. **rust (72)**: the multipara-cell mis-pair (identical-heading pairing,
+   H1 row flush) and the remaining docxodus-only wins.
+
+Priority for the next cycle, by measured value: (1) ast cousin-zip port,
+(2) lossless guard-stack port, (3) rust identical-heading pairing. The
+truth-table method (derive from all oracles → validate → A/B → official)
+is proven at 4-for-4 tonight and is the required workflow for each.
