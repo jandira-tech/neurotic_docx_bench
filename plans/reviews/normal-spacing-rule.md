@@ -948,3 +948,20 @@ xmlns leak, or the Equal pMark pair chose the wrong side's atoms);
 then the del-pilcrow emission. The rust baseline binary was RESTORED
 at src/neurotic_docx_bench/utils/jubarte/jubarte-rust/redline — the
 new binary is parked at /Users/arthrod/temp/T/r3/jubarte-rust-carrier.
+
+**Rust M-CARRIER attempt 2: sd_1919 52.73 → 100.00.** The fix: emit the
+carrier pMark as Deleted([A pilcrow]) and absorb B's pilcrow entirely
+(do not emit it) — the oracle carrier has exactly ONE paragraph mark,
+A's, deleted, with A's pPr live. The Equal pair from attempt 1 left the
+pilcrow unmarked (−1.18); the Deleted emission also serializes clean
+(the xmlns:ns0 powertools leak from attempt 1 is gone). Carrier now:
+pStyle Heading1 + rPr/del — exact oracle shape in all three engines.
+State: edit UNCOMMITTED in ~/T/jubarte-redlines working tree
+(lcs.rs do_lcs_algorithm M-CARRIER arm); new binary at
+/Users/arthrod/temp/T/r3/rustdist/redline; bench baseline binary still
+the OLD one (restored — do not run rust officials until the A/B
+verdict). In flight: full A/B arms (rust_carfull vs rust_basefull,
+2×814) and cargo test --release. Next: diff arms (r:-normalization),
+score changed docs, if net-positive → commit engine, install binary,
+rebuild wasm from same commit, officials for jubarte-rust AND
+jubarte-wasm, commit rows, push.
