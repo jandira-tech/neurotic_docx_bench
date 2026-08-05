@@ -364,3 +364,14 @@ minting missing") must cover inserted bare pMarks in flattened windows —
 verify their ancestor_unids at produce time, mint when absent, THEN
 re-apply the H1 textless-pairing rule, then A/B both on the 72-target set.
 This chain (H1 emission + produce minting) is one shippable unit.
+
+Phase B review: `assemble_ancestor_unids` DOES mint unids for every atom
+(pPr atoms via `unid_or_mint` per ancestor; others borrow the following
+paragraph's prefix with name-based share). So the empty grouping key is NOT
+missing unids — it is a LEVEL mismatch: the Step-1 key reads
+`ancestor_unids.get(level)` and the inserted pMark atoms in the flattened
+window likely carry SHORTER unid chains than the grouping level being
+coalesced (their `.get(level)` is None → empty key → filtered). Next probe
+(first action of the resumed cycle): print `ancestor_unids` and the
+grouping `level` for the two inserted pMark atoms at Step-1 time in
+anchor_images×annot2, then decide mint-at-level vs group-at-parent.
