@@ -1124,3 +1124,17 @@ consecutive LOW-similarity pairs between anchors into lead-I + junction +
 tail-D), NOT in the rewrite arm. Needs its own truth table over the
 paired-residual population before touching — next cycle's QUEUE-TOP for
 the lossless median.
+
+## 2026-08-05 rust MxN seam official (engine ebf1a79, +430 A/B)
+
+rust+wasm 79.46 / 84.89 / 178 / 318 in byte-parity. Gates that made it
+safe: TEXT-token jaccard (formatting-blind — protects file_N revision
+chains whose word hashes differ on rPr) and DIFFERING paragraph counts
+(equal-count pairs keep the m45 zip: MIX title | pure-I | pure-D | MIX
+last — the seam starved that post-pass, blue_underline 99.69→70.56 until
+gated). m146's no-mix pin updated to the junction expectation. Recorded
+tail: superdoc_table_tester −18.9 (double-mix), sd_2750 −18.2 (run-level,
+blocks already match oracle), diff_before19 −18.1.
+
+Day scoreboard: lossless 80.60/86.60/201 · rust+wasm 79.46/84.89/178 ·
+ast 73.87/75.87/96 · docxodus 80.55/91.19/187.
