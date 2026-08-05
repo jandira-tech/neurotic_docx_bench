@@ -375,3 +375,15 @@ coalesced (their `.get(level)` is None → empty key → filtered). Next probe
 (first action of the resumed cycle): print `ancestor_unids` and the
 grouping `level` for the two inserted pMark atoms at Step-1 time in
 anchor_images×annot2, then decide mint-at-level vs group-at-parent.
+
+Probe results, narrowing complete for tonight: with the H1 textless rule
+LIVE and a Step-1 drop probe LIVE, the exhibit shows **zero Step-1 drops
+and still no inserted empties in the output** — Step 1 is exonerated; the
+empties vanish between the correlation worklist and coalesce grouping.
+`build_paragraph`'s `if text.is_empty() { continue }` is the LEGACY
+atom-shortcut assembler, not the CoalesceRecurse path. Remaining suspects,
+in order: (a) the worklist resolution of the Inserted pMark-only
+CorrelatedSequence (atoms may never be tagged), (b) finalize's handling of
+inserted bare paragraph marks with no run content. Next probe: count
+Inserted-status pPr atoms entering CoalesceRecurse for the exhibit. All
+probes reverted; engine tree clean at 24b182f.
