@@ -1016,3 +1016,46 @@ order of A-first-para atoms vs B-last-para atoms), or restrict to
 unknowns whose atoms' document positions interleave rather than span
 disjoint neighborhoods. This single gate should rescue the three
 former-100s (−48.5/−47.8/−15.8) while keeping the +695 class.
+
+---
+
+## Cycle 2026-08-05 (post-compaction): lossless 79.19 → 80.36 official
+
+Goal moved to mean 90 / median 90 / 200 perfect (start lossless).
+
+**Shipped (engine a7ee150e3 + a9e4a33ac, official row pushed 464f4738):**
+1. `DropDanglingStyleReferences` final pass — Word drops style refs its
+   output styles part doesn't define (truth table 39/40 drops; the 1 kept
+   ref is defined in output). A/B: 16 changed, +38.7, 0 regressions.
+2. Junction carrier seam — group-level 1×N/M×1 arm (XOR-single, DIRECT
+   carrier emission; Unknown re-entry let recursion re-pair arbitrarily)
+   + unrelated-docs M×N fast-path seam (text-bearing junction gate:
+   38/52 junction-M, zero false positives). A/B: 61 changed, +831.5,
+   42↑/3↓, perfects +17.
+
+**Official: mean 80.36 / median 86.42 / perfect 188 / above92 319.**
+Projection 80.33 vs actual 80.36 — method holds.
+
+**Catastrophe averted + memory written** (truth-table-coverage-must-match-
+blast-radius): extending the group arm to M×N (`either side >1`) hijacked
+related-doc recursions (word-hash jaccard ≈ 0 when formatting differs) —
+−1801 pts, 59 perfects lost in A/B. Diff-first, then table the CHANGED set.
+
+**In flight: rule 4a** — interior junction-mix pilcrow deletion without
+pPrChange (RelocateRegionMarkSurvival). Truth table: 35/49 seam junctions
+pilDel in oracle; blast-radius check on the 76 out-of-evidence docs came
+back 55:1 goodflip:badflip (rule generalizes to related-doc regions).
+A/B scoring 93 docs now (arm_cand4 → arm_cand5, dist jfcW).
+
+**Open classes (recorded, unshipped):**
+- Guard scoping (rule 4b): `liveHasStyle && !oldHasStyle` skip should not
+  apply to unrelated-seam regions (two_column residual −0.44; oracle flips
+  styled junction, pPrChange rides last A para @151). Needs isolated A/B —
+  first attempt rode with the bad M×N gate and could not be attributed.
+- ooxml_bold_vals×diff_before8 −10.2: oracle = MMM positional correlation
+  of first min(nA,nB) paras between unrelated docs — different shape from
+  the junction seam; 'other-shape' bucket (11 pairs) likely same class.
+- title_style p2: Word emits wholesale ins-before-del inside a matched
+  paragraph even with a shared ≥5-letter token (strong-share rescue
+  over-correlates there); title pair residual 78.00 vs docxodus 100.
+- image_inline_and_block at 91.05 (was 30.46): remaining 9pts unknown.
