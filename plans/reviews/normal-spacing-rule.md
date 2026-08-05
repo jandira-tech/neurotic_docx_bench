@@ -1138,3 +1138,25 @@ blocks already match oracle), diff_before19 −18.1.
 
 Day scoreboard: lossless 80.60/86.60/201 · rust+wasm 79.46/84.89/178 ·
 ast 73.87/75.87/96 · docxodus 80.55/91.19/187.
+
+## 2026-08-05 AST campaign root cause: style-collision resolution (file_N class)
+
+file_22×23 exhibit: ast block structure matches the oracle EXACTLY (1112
+blocks) yet scores 41.94 — the render is 106 pages vs oracle 116. Cause:
+the merged styles part keeps A's Normal definition LIVE (spacing after=0
+line=240) where the oracle carries B's (no spacing → inherits docDefaults
+after=200 line=276) with only a pPrChange record. Ten pages of drift =
+every page after the first divergence mismatches.
+
+This is the [[style-collision-population]] class (136/597 pairs collide;
+Word takes B live + records A at style level). The ast styles merge
+(mergePackageGraphs A-base + B-gaps) resolves ~all collisions A-live; the
+morning truth table over oracle styles says 46% of colliding definitions
+are NOT A-live (B-live 714, attribute-merge/OTHER 2454 of 6831 rows).
+file_N deficit vs our own lossless engine: 2,577 pts over 183 pairs.
+
+NEXT (ast QUEUE-TOP): per-styleId truth table with proper canonicalization
+(strip rsid/attr-order/qFormat noise; compare pPr and rPr separately) to
+derive WHICH colliding styles flip to B-live — then implement in the ast
+package-merge with style-level pPrChange/rPrChange records. Verify on
+file_22×23 (expect 116-page render) before the corpus A/B.
