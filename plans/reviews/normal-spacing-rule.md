@@ -406,3 +406,15 @@ Method note for the record: the naive versions of BOTH rules each destroyed
 a different 100-scoring document, found only because the A/B scores every
 changed document against the officially recorded per-doc baseline. Blanket
 rules lose; scoped rules discovered by per-document decomposition win.
+
+### Next rust class: URL-interior anchoring (hyperlink pairs)
+
+`hyperlink_node × hyperlink_node_internal` (rust 52.6, lossless AND
+docxodus perfect): the two docs contain DIFFERENT URLs sharing long
+substrings ('https', 'stackoverflow.com/questions/…'); rust's word-LCS
+anchors inside the URLs and stitches the wrong paragraphs into mixes.
+Word treats the hyperlink runs as atomic-ish and pairs at region end
+([ins, ins, mix(last A×last B), del URL]). Study needed: how Word
+tokenizes/anchors URL text in compare — likely a word-separator or
+anchor-quality rule for runs inside w:hyperlink. Several hyperlink-named
+targets in the rust-72 set share this class.
