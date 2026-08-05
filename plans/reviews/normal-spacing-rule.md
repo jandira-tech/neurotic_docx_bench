@@ -1059,3 +1059,23 @@ A/B scoring 93 docs now (arm_cand4 → arm_cand5, dist jfcW).
   paragraph even with a shared ≥5-letter token (strong-share rescue
   over-correlates there); title pair residual 78.00 vs docxodus 100.
 - image_inline_and_block at 91.05 (was 30.46): remaining 9pts unknown.
+
+## 2026-08-05 afternoon: lossless 80.60 official; AST buffer-pooling bug found
+
+**Lossless OFFICIAL #2 (engine d44dc0749, row 5c64f427): mean 80.60 /
+median 86.60 / perfect 201 / above92 326.** The 200-perfect goal is met for
+lossless; mean and perfects now lead docxodus (80.55 / 187). Median 86.60
+vs docxodus 91.19 is the remaining axis.
+
+**AST root-cause discovery (jubarte-first b9f77679b):** mammoth's openZip
+accepted a bare Buffer through its `options.buffer` branch via the
+Buffer's own `.buffer` property — the WHOLE Node allocation pool. Node
+pools small readFileSync results into one shared ArrayBuffer; zip readers
+scan backward for the EOCD, so every pooled document parsed as whichever
+file sat LAST in the pool → compare saw identical sides → identity
+redline, zero revisions on differing documents (title_style pair reported
+0 revisions; with unpooled copies: 4). Every same-tick read pair was
+exposed — the bench generator reads exactly that way. Fix: openZip routes
+bare typed-array inputs as the exact view (JSZip is offset-correct).
+Follow-ups shipped: sequential side reads (ae810fd0f), dangling-style-ref
+strip in the style post-pass (50155bfba). AST official in flight.
