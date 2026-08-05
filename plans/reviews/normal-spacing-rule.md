@@ -522,3 +522,12 @@ deleted the tbl. One-line guard (fold target must be w:p). A/B: 7 changed,
 net +90.3, wins to +34.0; diff_after16 (the worst remaining target) now
 matches the oracle exactly and scores 65.99 — its residual is the in-block
 image class, not alignment.
+
+UNREL-PRE attempt — reverted (C8, third inert variant on this class). The
+pre-LCS wholesale at do_lcs_algorithm entry passes all canaries but misses
+diff_after6×7: the window carries B's TABLE groups, failing the all-Word
+gate; the actual shredding happens in an H1-created Words×Words sub-window
+that also did not re-enter the gate as expected. The class needs the
+window trace on diff_after6 specifically (which recursion entry resolves
+the A-para × B-first-words pairing) before the next variant. Score at
+stake: ~48.1 → ~90 on this exhibit plus the diff_after fixture family.
