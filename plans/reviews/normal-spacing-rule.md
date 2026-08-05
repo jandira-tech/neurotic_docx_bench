@@ -684,3 +684,18 @@ ProduceDocumentWithTrackedRevisions (its CoalesceRecurse / paragraph-mark
 conjoin analogs) on this exhibit, find the collapse, guard it for DELETED
 bare pMarks, A/B on the 11-target class (worth ≈+2–4 lossless points).
 Traces reverted; TS tree clean at 6f9f76fc.
+
+## SHIPPED — the empty-deleted-paragraph keep (jubarte-first HEAD, official in flight)
+
+The five-layer TS bracket hunt ended at a documented blanket rule:
+`RemoveEmptyDeletedParagraphMarks` stripped every empty deleted pilcrow
+(file_8×9 GT) while `EnsureEmptyDeletedBetweenShortPureDeleted` re-invented
+them for one-token shapes. The 22-line fix keeps an empty when BOTH
+adjacent paragraphs are text-bearing pure-deleted (a real source spacer in
+a continuing deleted run). Exhibit 8/8 oracle blocks (was 5/8, 57.8 vs
+rust 100). Slice A/B with a same-build CONTROL isolating the rule from
+54 docs of ambient drift: 73 attributable, 61 scored, net +87.9, two new
+exact-100s, worst −0.64. This also includes the note that the deferred
+amendments (f9c71f0c..6f9f76fc) drift 54/400 lossless outputs — needs its
+own explanation next cycle. Trace scaffolding fully stripped before the
+amended 22-insertion commit.
