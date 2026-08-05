@@ -911,3 +911,24 @@ nested-lcs(A-first-para, B-last-para) + del(A-rest). Trace first with
 eprintln at the emission candidates; cargo build --release; exhibit
 m_1919 via --method=jubarte-rust; keep wasm at parity (rebuild wasm
 dist from the same commit).
+
+Rust port FINAL SPEC: `resolve_correlated_sequences` (lcs.rs ~5000)
+mirrors the C# pipeline exactly — `do_lcs_algorithm(dom, unknown,
+settings)` is rust's DoLcsAlgorithm. Add the M×1 arm there, same
+placement as lossless (after the zero-length-side early branches,
+outside any share-words gating): all-Words both sides; pilcrow = Word
+unit whose single atom's content element is pPr; exactly one side has
+pilcrows==1 (other ≥2); both streams end at a pilcrow; content-word
+jaccard < 0.2 with the strong-share rescue (shared token ≥5 letters AND
+both sides ≤16 content words → skip). Emit: Inserted(B lead paras) +
+Inserted(B carrier words) + Deleted(A carrier words) + Equal([A
+pilcrow], [B pilcrow]) + Deleted(A tail paras). Then verify on m_1919
+that rust's finalize (region-end mark survival) yields A-pPr-live +
+del-pilcrow on the carrier; if not, rust needs the same region rule
+RelocateRegionMarkSurvival got. Build: (cd ~/T/jubarte-redlines &&
+cargo build --release), install target/release/jubarte as
+src/neurotic_docx_bench/utils/jubarte/jubarte-rust/redline, exhibit,
+full A/B (2×814), suite (cargo test), commit, officials for BOTH
+jubarte-rust AND jubarte-wasm (rebuild wasm from same commit,
+wasm-pack build in a subshell, never cd the main shell out of the
+bench repo for uv run bench).
