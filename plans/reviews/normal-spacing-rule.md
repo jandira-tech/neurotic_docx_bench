@@ -894,3 +894,20 @@ The TS lossless implementation to mirror: the M×1 arm added OUTSIDE
 s_docsShareContentWords in DoLcsAlgorithm (WmlComparer.ts, commit
 ff4d09d67): ins(B lead) + ins(B carrier words) + del(A carrier words)
 + Equal(carrier pilcrows) + del(A tail).
+
+Rust port increment (2026-08-05): `detect_unrelated_sources_word_mode`
+(lcs.rs:4179) is the whole-doc ins-all/del-all gate but its count gates
+need min side ≥2 contentful groups — sd_1919's B has ONE contentful
+group, so the pair BYPASSES this gate and full LCS produces the [I, D]
+shape elsewhere (trace needed: instrument lcs() entry for this pair
+next). Mechanism confirmed available: nesting a 1×1 para pair through
+`lcs(dom, vec![a], vec![b], settings)` produces the MIX paragraph
+(M125's comment documents exactly that — it gates AGAINST nesting for
+unrelated titles where Word pure-I's; our M×1 truth table is the
+counter-population where Word DOES mix). Port shape stays as recorded:
+fire only when exactly one side is a single contentful paragraph group
+(mirroring the shipped lossless M×1 gate), emit ins(B-lead groups) +
+nested-lcs(A-first-para, B-last-para) + del(A-rest). Trace first with
+eprintln at the emission candidates; cargo build --release; exhibit
+m_1919 via --method=jubarte-rust; keep wasm at parity (rebuild wasm
+dist from the same commit).
