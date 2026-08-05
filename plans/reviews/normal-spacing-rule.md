@@ -1209,3 +1209,18 @@ ab_wgates scored set (r3/ab_wgates/ab_scores.json + arm_cand7 kept) as a
 proper truth table: per changed doc, did blocking move TOWARD the oracle
 shape? Derive the gate from winners-vs-losers features there. Tree
 reverted to b256b039d.
+
+**43-doc truth table result (head-mix gate, evening 2):** per-doc labels
+are the wrong granularity. Oracle-M-at-mix-position predicts the delta
+sign 20/9, but the wholesale gates also perturbed docs whose base shape
+was ALREADY oracle-exact (sd_2672_plain_3x3 IIMT===oracle, −11.6;
+diff_after16 IIMT= −21.5; title MMIIM −12.9) — the gate's blast changes
+OTHER fires in the same doc. The keep-class head-Ms in file_N pairs are
+correlated STAMP mixes (a different mechanism than the XOR carrier).
+NEXT-STEP SPEC: instrument the XOR carrier arm per-FIRE (JUB_TRACE log:
+body-block index of the single side's paragraph, sides' pilcrow counts,
+doc stem), run over the 43-doc set, and label each FIRE by whether the
+oracle block at that body index is M — derive the gate from fire-level
+features (the per-doc score can't separate multi-fire docs). Evidence
+files: r3/ab_wgates/{changed,ab_scores}.json, arm_cand6 (base fires),
+arm_cand7 (all-blocked). Tree stays at b256b039d.
