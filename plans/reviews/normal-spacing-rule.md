@@ -1112,3 +1112,15 @@ A/B: 70 changed, +636.2, 28↑/5↓ (worst −10.3), perfects +11. Projection
 +0.83 mean → expect ~78.9 rust official. Binary installed; wasm rebuilt
 from the same commit; officials for jubarte-rust AND jubarte-wasm in
 flight.
+
+**Median campaign map (traced):** increase_indent×insert_link arrives at
+DoLcs as ONE 4×3 paragraph-group unknown; the title pair anchors (oracle
+merges titles too), then ProcessCorrelatedHashes similarity-pairs the
+residual paragraphs POSITIONALLY (A-p1↔B-p1, both start "This") and the
+word-level 1×1 rewrite makes each an in-para mix. The oracle instead
+keeps B-p1 pure-I and junctions A-first↔B-LAST (the standard seam). Fix
+belongs in the ProcessCorrelatedHashes pairing (re-shape a run of
+consecutive LOW-similarity pairs between anchors into lead-I + junction +
+tail-D), NOT in the rewrite arm. Needs its own truth table over the
+paired-residual population before touching — next cycle's QUEUE-TOP for
+the lossless median.
