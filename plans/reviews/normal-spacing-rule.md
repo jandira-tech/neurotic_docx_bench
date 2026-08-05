@@ -1000,3 +1000,19 @@ condition. The +0.91 net says the class is worth landing once the
 over-fire is gated. Scores: r3/rustcar_ab_scores.json; arms kept
 (rust_carfull / rust_basefull); binary parked at r3/rustdist/redline;
 bench baseline binary UNCHANGED (safe).
+
+Rust gate KEY FINDING (diff_after6×7 probe): the arm merged NON-ADJACENT
+paragraphs — base output had I@block2 ('This will be del…') and
+D@block6 ('Here's some tex…') with inserted TABLES between them; the
+car arm fused them into M@2 and deleted block 6. The unknown region
+that reached do_lcs_algorithm paired B-lead words with A-tail words
+from opposite sides of Equal-matched middles — NOT a physically
+contiguous replacement. The lossless engine's identical arm never sees
+such regions (its unknowns preserve adjacency). Gate: require the
+carrier pair to be layout-adjacent — e.g. fire only when the WHOLE
+unknown maps to one contiguous body neighborhood (no Equal/table
+content between the A-side and B-side atoms; check ancestor/document
+order of A-first-para atoms vs B-last-para atoms), or restrict to
+unknowns whose atoms' document positions interleave rather than span
+disjoint neighborhoods. This single gate should rescue the three
+former-100s (−48.5/−47.8/−15.8) while keeping the +695 class.
