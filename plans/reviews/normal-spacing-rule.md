@@ -761,14 +761,36 @@ improved > 0.5, zero regressed, 4 new perfects** (annot2, diff_after6×7,
 the exhibit, diff_before6×7 all 100.00). With the sink's +33.65 the
 cycle is +115.95 raw, no regressions.
 
-### Next lossless class: leading I+D replacement merge (sd_1919)
+### Lossless carrier-merge (I+D→M) — IMPLEMENTED, A/B pending
 
 `sd_1919_word_simple×diff_after5` (52.7): we emit [ins 'Here's some
 text.', del 'Chapter One', del..., same ''] where the oracle MERGES the
 leading inserted para into the first deleted para: [mix 'Here's some
-text.Chapter One', del..., same ''] — one fewer block, everything shifts
-up. This is the ins-first replacement-merge family. CAUTION: the
-MergeAdjacentShortInsDelTitles note (WmlComparer.ts ~2985) found the
-same shape tanks LO on file_187 (71.4→54.6) — markup-match ≠ LO lift.
-Must exhibit-score before believing; likely needs a narrow gate (leading
-position only, next-is-multi-del tail).
+text.Chapter One', del..., same '']. Scan: **99/400 superdoc pairs
+diverge first at exactly this seam, 93 exact-concat** — the largest
+remaining lossless class. 52/400 oracles keep adjacent [I,D] unmerged
+(separate correlation groups; coincidental adjacency), so a blind
+post-pass merge is wrong — the fix belongs where the group is known.
+
+Oracle carrier anatomy (sd_1919): ONE paragraph, A's pPr (Heading1) with
+rPr/del pilcrow mark, B's ins runs first, A's del runs after.
+
+Mechanism found in the lossless engine: DoLcsAlgorithm already has a
+validated 1×1 low-overlap rewrite emitting [ins(B words), del(A words),
+Equal(pilcrowA, pilcrowB)] — the Equal pilcrow pair is what fuses the
+mix paragraph. Dead ends on the way: (1) instrumented
+src/compare/correlate.ts first — that is the NATIVE engine, never loaded
+by the lossless adapter (lossless.node.cjs ← src/lossless only);
+reverted. (2) the new arm placed inside `if (s_docsShareContentWords)`
+never fired — sd_1919's docs share ZERO content words so that whole
+rewrite family is skipped; the arm must live OUTSIDE that gate.
+
+Shipped shape — M×1/1×N wholesale replacement arm (exactly one side is
+a single paragraph; all-words both sides; both streams end at a pilcrow;
+jaccard < 0.2 with the same strong-share rescue as 1×1): emit
+ins(B leading whole paras) + ins(B carrier words) + del(A carrier words)
++ Equal(carrier pilcrows) + del(A tail whole paras).
+sd_1919: exact oracle block MATCH, **52.7 → 100.00** (LO does NOT tank
+on the mix shape — the file_187 fear does not generalize here). Suite
+494 pass / same 2 pre-existing fails. ≥2×≥2 merge population left for a
+separate cycle (interacts with the early multi-para zip).
