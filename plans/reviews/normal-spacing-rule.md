@@ -338,3 +338,16 @@ candidate suspects: H2's Para/Table walk, the defensive flush, or an
 earlier produce-level merge). The edit was reverted unshipped (C8: an edit
 that does not move its motivating exhibit does not ship). Next context:
 re-instrument with a branch-labelled trace in step_h before re-attempting.
+
+SECOND CORRECTION, decisive: with a fire-probe, the H1 textless rule DOES
+fire (trace: `H1 iter lg[0]=Word rg[0]=Word lgTL=false rgTL=true` →
+inserted(B-empties) pushed) — and the final document STILL lacks the two
+inserted empty paragraphs. **The consumer is DOWNSTREAM of correlation**:
+the produce/coalesce/finalize layer drops inserted bare-paragraph-mark
+sequences (suspects: produce.rs coalesce_recurse or a finalize fixup that
+strips empty inserted paragraphs adjacent to tables). The earlier
+"H1 wasn't the path" reading was wrong in the opposite direction: H1 IS
+reachable and fixable, but fixing emission is NECESSARY-NOT-SUFFICIENT
+until the produce-layer drop is found. Hunt order for the next cycle:
+grep produce.rs/finalize.rs for empty-inserted-paragraph elision, fix, THEN
+re-apply the H1 rule, then A/B both together on the 72-target set.
