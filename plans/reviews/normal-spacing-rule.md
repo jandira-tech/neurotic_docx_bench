@@ -835,3 +835,24 @@ uninvestigated), line_break×line_space −8.4, rtl_page_numpages×sd_1960
 −9.3. Next major population: the ≥2×≥2 wholesale merge (the rest of the
 99-seam class; interacts with the EARLY multi-para zip at
 WmlComparer.ts ~17454).
+
+### Native (ast) heading-carrier rule — sd_1919 51.55 → 100.00
+
+Cross-engine follow-through: ast trails the new lossless by ~990 points
+across 58 carrier-merge docs. Investigation surprises: (1) the native
+doLcsNoMatch zip-gate loosening (parasB ≥ 1) was a NO-OP for sd_1919 —
+baseline native ALREADY produces the mix block structure via another
+path (13 byte-changed docs, all ≈ ±0; reverted per C8; the earlier
+"MATCH" exhibit test was against stale official per_doc, not a fresh
+baseline arm — always regenerate the baseline before exhibiting). (2)
+The real native deficit is the HOST pPr: the mix carrier keeps B's
+style-less live pPr + pPrChange, where the oracle hosts A's Heading1
+live with the pilcrow marked deleted. `wordParityMixedBoundaryHostPpr`
+already does exactly this promotion but excludes HeadingN (document_100
+Tip: Word keeps bare B when the region does NOT continue deleted). The
+region signal separates them: sd_1919's carrier is FOLLOWED by
+pure-deleted paragraphs. New list-level pass
+`wordParityHeadingCarrierBeforeDeletedRegion` (after regroup in
+coalesce.ts, where sibling context exists): mix para + old pStyle
+Heading[1-9] + bare live style + next block pure-deleted → promote old
+pPr live, pilcrow del. Suite 661 pass. Full A/B pending.
