@@ -965,3 +965,18 @@ verdict). In flight: full A/B arms (rust_carfull vs rust_basefull,
 score changed docs, if net-positive → commit engine, install binary,
 rebuild wasm from same commit, officials for jubarte-rust AND
 jubarte-wasm, commit rows, push.
+
+Rust suite gate (attempt 2): cargo test fails ONE test —
+m148_tolerated_inputs::canonicalizes_numeric_style_ids_to_word_names.
+Its synthetic 1×2 pair now routes through the M-CARRIER arm and the
+carrier mix para carries pPrChange{PreformattedText} with NO live
+pStyle — the test asserts B's numeric list style must remap to
+ListParagraph and survive live. Open question for the truth table: when
+B's carrier para is STYLE-BEARING (list), does Word keep B's style live
+in the replacement carrier (test's claim) or A's pPr live + del pilcrow
+(sd_1919's oracle, where B was style-less)? Either add a B-styled
+guard to the arm (skip when B carrier has pStyle/numPr) or update the
+test per oracle evidence. Both full A/B arms are GENERATED
+(rust_carfull vs rust_basefull, 814 docs each) — continuation: diff
+with r:-normalization, score changed, resolve the style question, then
+ship per the recorded pipeline.
