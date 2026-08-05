@@ -564,3 +564,12 @@ and the flattened window carries table ROWS. Letting sides carry Rows
 voids the anchor and the wholesale emerges downstream on its own:
 diff_after6 48.10 → 100.00 EXACT, diff_before6 94.68 → 100.00, zero
 regressions, every canary byte-identical. Official run in flight.
+
+TS punctuation-void transfer — inert on diff_after11, reverted (C8). The
+ast exhibit's anchor is real shared text ('text'/'this' between cousin
+paragraphs), not punctuation: it is the styled-boundary merge class as
+originally diagnosed, NOT the v13 visibility class. The v13 transfer may
+still pay on ast pairs whose anchors are separator-only, but with no
+moving exhibit in hand it does not ship. ast's cycle keeps its original
+spec: trace the interleave branch on diff_after11 (which TS seam pairs
+A-para1 with B-heading) and derive the split-vs-merge condition there.
