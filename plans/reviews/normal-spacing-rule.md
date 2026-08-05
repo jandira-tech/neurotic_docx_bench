@@ -1320,3 +1320,32 @@ beating docxodus on EVERY published number does not.
 - sink/B-blank-count classes: finalize.rs 1501–1595 has DIFFERENT
   implementations that may cover the same oracle classes — verify with
   exhibits per class before porting anything.
+
+═══════════════════════════════════════════════════════════════════
+## HANDOFF 2026-08-05 ~17:00 (Arthur: stopping; next agent takes over)
+═══════════════════════════════════════════════════════════════════
+
+**UNCOMMITTED work in ~/T/jubarte-redlines working tree** (established
+handoff pattern): `relocate_region_mark_survival` ported into
+src/document_comparer.rs (call site right before "M-PAG mechanism 2";
+function at end of file). Port of jubarte-first RelocateRegionMarkSurvival
+(interior pPrChange flip + liveStyle guard + table region membership +
+interior-mix pilcrow del [4a] + doc-final transplant [4b]).
+STATE: compiles clean, FULL cargo suite green, sd_1919 carrier intact,
+no sentinel regressions. NOT A/B'd, NOT committed, NOT installed.
+KNOWN GAP: the 4b transplant is inert on two_column (rust's seam emits
+the carrier WITHOUT a pPrChange donor, unlike lossless — the flip loop
+only donates from interior pPrChange paras). Next: either emit the
+pPrChange on rust's seam carrier (mirror lossless Equal-pilcrow
+downstream) or synthesize the donor in the pass; then full A/B
+(r3/gen_rust_arm.sh + ab_pipeline.py, baseline = installed binary at
+ebf1a79), suite, commit, install, wasm parity, officials.
+
+**Everything else is committed & pushed** through 26d64fda + speed rows
+bca2b301. Scoreboard: lossless 80.60/86.60/201 · rust+wasm
+79.46/84.89/178 · ast 74.45/76.81/96 · docxodus 80.55/91.19/187.
+Speed: rust-inproc 6.20/25.34/0-fail beats docxodus-inproc on every
+number (certified today). WAR PLAN above lists the ordered queue: this
+port → the shared Word-parity ALIGNER (the median race) → p95 tail
+profile. Corpus artifact decision (31 oracles) remains Arthur's call
+for absolute 90/90.
