@@ -1224,3 +1224,22 @@ oracle block at that body index is M — derive the gate from fire-level
 features (the per-doc score can't separate multi-fire docs). Evidence
 files: r3/ab_wgates/{changed,ab_scores}.json, arm_cand6 (base fires),
 arm_cand7 (all-blocked). Tree stays at b256b039d.
+
+**Head-mix derivation CLOSED (2026-08-05, per-fire data):** 29 fires
+captured (r3/fires.json + fire_runner.mjs). NO surface feature separates
+oracle-M from oracle-pure at the fire level — singleAfter=tbl splits
+10 block / 5 keep, END splits 5/6, side and index are uninformative. The
+oracle's merge decision reflects Word's own upstream ALIGNMENT (which
+paragraph pairs its LCS anchors), not a local gate on this arm. Verdict:
+no gate ships; the class needs alignment parity (ProcessCorrelatedHashes/
+FindCommonAtBeginningAndEnd residual pairing — same root as the median
+campaign and the m45 equal-count zip shape). Tree at b256b039d.
+
+**NEXT (fresh-context sized):** port the m45 equal-count zip to lossless —
+rust's calibrated shape for equal-count unrelated pairs is MIX title |
+pure-I B body | pure-D A body | MIX last (pinned by rust
+m45_equal_count_para_zip); the lossless demo-trio over-mix class (MMM →
+oracle MIMD/MIDM, blue_underline/heading_4/calibri_heading_2) is exactly
+this shape. Implementation site: the residual pairing (NOT the XOR arm);
+study rust's m45 zip emission and mirror it where lossless currently
+lets ProcessCorrelatedHashes pair positionally.
