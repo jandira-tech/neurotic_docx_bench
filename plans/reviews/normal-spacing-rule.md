@@ -600,3 +600,16 @@ two scopes and needs DATA: log (t1, t2, inter, ratio) at the seam for all
 offline like the Normal-spacing table. Candidate features: table-text-only
 overlap (cousins share cell text, diff_after doesn't), or ratio with
 stopword-extended sig. Both variants reverted; TS tree clean at f9c71f0c.
+
+## SHIPPED — ast styled-boundary split (engine 1cfd5d08)
+
+The seam's rule turned out to be exactly what the corpus-wide 69/44 signal
+hinted but could not prove: at the one-sided-table para pairing, split iff
+the REVISED first paragraph is pStyle'd and the original's is not. The
+derivation that made it shippable: feature-logging six A/B'd pairs at the
+seam showed token overlap is NON-separating (correct merges share 0.0,
+correct splits up to 0.57) while the style feature separates 6/6.
+Exhibit diff_after11×16 44.35 → 97.89; corpus A/B: 15 byte-changed, the
+only scored mover is the exhibit (+53.54), the token-split's three victims
+(one exact-100) byte-identical. Suite: only the two documented
+pre-existing failures. Official ast run in flight at 1cfd5d08.
