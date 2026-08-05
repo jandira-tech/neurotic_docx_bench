@@ -112,3 +112,33 @@ are untouched (the PR #81 caveat).
 3. rPr (sz/rFonts) live-value analogue of the same rule — our exhibit's live
    rPr carried `Arial sz24` where the oracle's live rPr is empty; same
    delta-under-context shape, second truth table.
+
+## Addendum — the lossless (TS) truth-table state (2026-08-04 late)
+
+The mixed-paragraph rule for lossless is PARTIALLY derived. On oracle
+paragraphs of pure replaced-in-place shape (del-text + ins-text, no equal
+runs), aligned back to their input paragraphs by text:
+
+| Word's choice | input pPr same | input pPr differs |
+|---|---:|---:|
+| paragraph mark deleted (A pPr live) | 86 | 152 |
+| pPrChange (B pPr live) | 2 | 52 |
+
+`chg` requires differing pPr (52 vs 2, as expected), but among differing-pPr
+paragraphs Word still picks delmark 152:52 — the remaining discriminator is
+NOT pPr equality, NOT paraId provenance (Word regenerates paraIds), NOT
+adjacency to inserted marks, NOT live pStyle. Leading hypothesis: the
+del/ins MARK-COUNT BALANCE of the containing replacement region (1:1 marks →
+the mark survives with pPrChange; n:m → surplus A marks die as delmark).
+Testing it needs replacement-region extraction around each paragraph — the
+next build. Population at stake: lossless has 449 kind-sequence structural
+mismatches vs the oracle corpus-wide, 343 of them scoring ≤92
+(`/Users/arthrod/temp/T/r3/lossless_struct_mismatch.json`), and 107
+single-page lossless failures have a PERFECT sibling. This is the dominant
+lossless defect class.
+
+Also measured while waiting: the AST engine's Normal spacing is nearly clean
+(1/164) — its 69.83 is NOT the spacing bug; its structural match rate (130/164
+kind-seq on the word_based manifest) is close to rust's (133), so its losses
+are formatting-level or concentrated in the superdoc manifest. Needs a scored
+run with per_doc to target (no ast row in bench.jsonl carries per_doc).
