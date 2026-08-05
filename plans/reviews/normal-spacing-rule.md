@@ -447,3 +447,16 @@ M-ANCHOR/confetti gating with the TS constant, emitting the boundary-mix
 wholesale. Covers most of the 7 hyperlink-named targets and likely other
 low-overlap cousins in the rust-72. One cycle, reference implementation
 in-tree.
+
+UNREL-LEX attempt 1 — inert, reverted (C8). The lexical gate was added to
+`detect_unrelated_sources_word_mode` (after `disjoint`, small-window
+2–3×≤6, <0.08 overlap, boundary-mix emission) and compiles clean, but the
+exhibit output is unchanged: rust consults the unrelated shortcut only
+AFTER the LCS finds no run, and on this pair the word-LCS accepts an
+anchor first ('link'-family tokens), so the check never runs. The TS
+engine runs DetectUnrelatedSources BEFORE correlation. The correct port is
+therefore an anchor-VOID: in do_lcs_algorithm's guard chain (next to
+M-ANCHOR, which requires min side >32 and thus skips small windows), void
+len>0 when the small-window lexical-unrelatedness test passes, letting the
+window fall through to the unrelated wholesale. One more cycle with the
+window trace to confirm the flow before re-implementing.
