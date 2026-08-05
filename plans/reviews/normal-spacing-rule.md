@@ -1194,3 +1194,18 @@ from another site, likely the s_docsShareContentWords 1×1 rewrite arm or
 the ProcessCorrelatedHashes pairing; needs a JUB_TRACE session on the
 sd_2517 pair to find the firing arm before gating. Demo trio sub-class
 (MMM → MIMD/MIDM) is the m45 equal-count zip shape lossless lacks.
+
+**Head-mix gate attempts (2026-08-05 evening, all reverted per C8):** the
+mix source is the XOR carrier arm at BOTH levels (group 1059×1, then on
+group-gating the recursion flattens and the word arm fires 62k×10 — gate
+both or neither). Full-wholesale gates fixed sd_2517-class (+27.6
+math_groupchr, +48.4 file_41_42) but net only +70.3 with 2 lost perfects
+(diff_after16×19 100→78.5 IIMT=→IIIDT=, title_style×track_changes
+100→87.1). Tried discriminators that all FAILED to separate the
+two exemplars: single-side-tail-only; multi-at-head⇒single-tail;
+s_docsShareContentWords. da16x19 fingerprints identically to sd_2517 on
+body position AND relatedness — the distinction needs the 43-doc
+ab_wgates scored set (r3/ab_wgates/ab_scores.json + arm_cand7 kept) as a
+proper truth table: per changed doc, did blocking move TOWARD the oracle
+shape? Derive the gate from winners-vs-losers features there. Tree
+reverted to b256b039d.
