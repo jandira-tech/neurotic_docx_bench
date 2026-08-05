@@ -258,3 +258,22 @@ super_editor cousins). This is a faithful-port task of ~a day with the
 truth-table method as the acceptance gate; it was NOT attempted in this
 cycle to avoid shipping an untuned zip (rust's own history shows blind zip
 regresses weak cousins — M126).
+
+## SHIPPED — the ast stamped-cousin pairing (2026-08-05, second wind)
+
+Ported rust's `stamp_confetti_then_replace` core into the ast engine's
+`wholesaleUnrelatedWordShape` (jubarte-first `f9c71f0c`): stamp-line digit
+confetti + residual pairing at rust's exact tier thresholds (M75/M95/M96 +
+end-zip) + unconditional boundary fold. Corpus A/B against the official
+jubarte-ast row: **174 outputs changed, net +1735 → +2.27 ITT corpus
+mean**, 119 up / 12 down, above-92 in the changed set 1 → 39, gains to
++50.7 (48.97 → 99.66).
+
+Second null result of the night, recorded: gating the boundary fold on
+shared vocabulary (to rescue file_170_171's −40) is **net −899** — the
+zero-overlap folds carry the biggest wins; Word folds the boundary pair
+even with no common words. The unconditional fold ships; file_170_171
+(−40) and file_59_60 (−29) stay as named residuals.
+
+Official jubarte-final-native run in flight at dist
+`jubarte-final@5bf73ce40d09+git.f9c71f0c`.
