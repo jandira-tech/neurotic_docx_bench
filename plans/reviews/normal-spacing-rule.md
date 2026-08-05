@@ -481,3 +481,19 @@ Block structure IDENTICAL to the oracle ([ins, mix, tbl del, same]) yet
 misplaced within the mix/deleted table. Needs pixel-level comparison, not
 alignment work. Several image-named targets in the remaining 70 may share
 it (anchor_images at 89.99 post-fix, image_inline_and_block…).
+
+### The dominant remaining rust class: one-sided table flattening (H2b)
+
+`diff_after16×diff_after19` (rust 41.6, docxodus 100, worst remaining
+target): rust's output contains NO tbl element — A's deleted table was
+H4-flattened into words and reconstructed as a mix PARAGRAPH. Word and
+docxodus keep the whole-table deletion: [ins B-paras (ins-first), mix at
+the para boundary, tbl del, same]. Same family as multipara_cell (70.3
+after the v6 partial fix) and likely several table-named targets in the
+remaining 70. Spec for the next cycle — a new step_h H2b for ONE-SIDED
+tables (left_tables>0 XOR right_tables>0): group-adjacent [Para-run,
+Table, Para-run]; pair para-runs as Unknown (para-level LCS supplies the
+boundary mix), emit tables whole as del/ins in ins-first order; never
+fall through to the H4 word-flatten for these windows. Reference outputs:
+docxodus at 100 on the exhibit, generated at
+/Users/arthrod/temp/T/r3/dox_top/docx for the top-8 targets.
