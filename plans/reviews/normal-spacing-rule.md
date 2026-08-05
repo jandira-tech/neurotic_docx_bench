@@ -238,3 +238,23 @@ Priority for the next cycle, by measured value: (1) ast cousin-zip port,
 (2) lossless guard-stack port, (3) rust identical-heading pairing. The
 truth-table method (derive from all oracles → validate → A/B → official)
 is proven at 4-for-4 tonight and is the required workflow for each.
+
+### ast port spec, exact (closing addendum)
+
+file_101_file_102's oracle is NOT a blind diagonal zip: Word confettis the
+stamped demos and then pairs SPECIFIC residuals — stamp line ↔ stamp line
+(mix 'file_102101.docx'), title ↔ title on shared last-significant token
+('…Demo': mix 'Underline Text FormattingCalibri Heading 2 R…'), body ↔ body
+— leaving the rest pure ins/del. That is EXACTLY jubarte-redlines'
+`stamp_residual_pairs` + `is_related_stamped_variant` machinery
+(src/comparer/lcs.rs: RELATED_STAMP_MIN_BODY_TOKENS=40,
+STAMP_CONFETTI_MAX_BODY_OVERLAP=0.55, tiers M75/M95/M96/M107/M114/M133/
+M135), already corpus-validated on the rust side. Port target:
+jubarte-first src/compare/correlate.ts `doLcsNoMatch` (the wholesale
+revised-first branch at ~line 1560) — replace the fixed
+ins-all/unk(A0,Blast)/del-all shape with confetti + residual pairing.
+Population: most of ast's 163 perfect-sibling targets (~60 file_N + the
+super_editor cousins). This is a faithful-port task of ~a day with the
+truth-table method as the acceptance gate; it was NOT attempted in this
+cycle to avoid shipping an untuned zip (rust's own history shows blind zip
+regresses weak cousins — M126).
