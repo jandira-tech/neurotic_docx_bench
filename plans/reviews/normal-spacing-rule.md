@@ -1093,3 +1093,22 @@ FindCommonAtBeginningAndEnd residual split (WmlComparer.ts ~13262) pairs
 ≤2 leftover paragraph chunks POSITIONALLY first-to-first. Next cycle:
 trace which branch pairs those residuals and apply the junction emission
 there (reverted both gates per C8; tree back at 50155bfba).
+
+## 2026-08-05 rust M-CARRIER shipped (engine 0f39b64e)
+
+The QUEUE-TOP adjacency gate resolved as a WHOLESALE gate: both sides of
+the unknown must start at their body's first content block AND end at its
+last (trailing empty paragraphs tolerated). diff_after6×7's fusion turned
+out to be a 1×N whose B side continued with content tables — Word keeps
+A's deleted paragraph whole after them (junction-pure, the same empty/
+continuation discriminator as the lossless truth table). All three former-
+100 sentinels verified back at baseline structure; sd_1919 keeps the
+carrier. The m148 suite question resolved WITH evidence: document-final
+carriers keep a LIVE mark with B pPr + pPrChange (Equal pilcrow pair),
+interior carriers keep A props + deleted mark — the lossless rule-4b
+split, ported. Full cargo suite green.
+
+A/B: 70 changed, +636.2, 28↑/5↓ (worst −10.3), perfects +11. Projection
++0.83 mean → expect ~78.9 rust official. Binary installed; wasm rebuilt
+from the same commit; officials for jubarte-rust AND jubarte-wasm in
+flight.
