@@ -717,3 +717,58 @@ reorder_replaced_blocks physics) — its conditions miss this two-table
 shape. Instrument: bracket that pass on this exhibit (the Z-dump pattern),
 inspect its gate, extend. 58 real lossless targets remain (artifact-31
 quarantined); several table-bearing ones likely share this class.
+
+**RESOLVED (2026-08-05): run-less inserted tables.** The sink's
+`isInsertedBlock` table arm required `runs.length > 0` — the exhibit's
+inserted tables have empty cells (zero `w:r`), so the pass never fired.
+Fix: run-less table arm = `Descendants(w:ins) > 0 && Descendants(w:del)
+== 0` (ins marks live on cell pilcrows/row marks). Exhibit 60.0 → 93.67,
+block order matches oracle except one trailing inserted blank after the
+table (Word drops it; the TS side lacks the rust trailing-empty strip —
+smaller follow-on class). Full-corpus A/B: 81 byte-changed docs, 68 of
+which are pure media-rId GUID nondeterminism (the r:embed="R<hex>" form —
+NOT the "rId" prefix; normalization must strip `r:(embed|id|link)="[^"]*"`),
+13 real: the exhibit + 6 word_based pairs ×2 corpora (OLE/sdt/strict docs
+with run-less inserted tables). Suite: 494 pass, only the two pre-existing
+failures (bookmarks self-compare, browser smoke). Second normalization
+pass: the "13 real" shrank to 1 — SmartArt relIds (r:dm/r:lo/r:qs/r:cs)
+are GUID-nondeterministic too; the definitive normalization is
+`r:[a-zA-Z]+="[^"]*"`. THE EXHIBIT IS THE ONLY REAL CHANGE in 814 docs.
+
+**Follow-on shipped same cycle: strip blank after inserted table.** With
+the sink fixed, the exhibit read [tbl ins, eI, del] vs oracle [tbl ins,
+del]. `StripMidstreamEmptyInsertedBeforePureDeleted` already handles
+[content-para, eI, pure-del] — its `prevIsContent` refused tables. Added
+`prev is wholesale-inserted tbl (hasIns && !hasDel)` arm. Exhibit 93.67 →
+**100.00, exact oracle block match** (rust and docxodus parity). Suite
+clean (same 2 pre-existing). A/B arm loss_stripfull vs loss_sinkfull.
+
+**Drop-vs-relocate: B's blank count decides (8/8 truth table).** The
+plain drop regressed word_based table pairs (book_catalog −10.22,
+project_tasks −8.07, support_tickets −7.72): their oracles show
+[eI, eI, tbl, del] — Word RELOCATES the misplaced blank back before the
+table. A content-based gate (relocate iff table has text) fixed those
+but broke the superdoc winners (annot2 100→49.95). The real feature is
+**B's source blank count immediately before that table vs ours**:
+relocate iff ours < B's (the producer split B's blank run around the
+table); equal counts mean separator surplus → drop. Validated 8/8:
+book_catalog/support_tickets/project_tasks B=2 ours=1 → relocate;
+annot2 B=2 ours=2, diff_before7/pirates/sd_1494 B=0, diff_after7 B=1
+ours=1 → drop. Implementation keys B's tables by concatenated live text
+(first 64 chars), max blank count on collision; wDoc2 threaded into the
+pass. Result vs sink baseline on the 13 affected rows: **+82.30, 10
+improved > 0.5, zero regressed, 4 new perfects** (annot2, diff_after6×7,
+the exhibit, diff_before6×7 all 100.00). With the sink's +33.65 the
+cycle is +115.95 raw, no regressions.
+
+### Next lossless class: leading I+D replacement merge (sd_1919)
+
+`sd_1919_word_simple×diff_after5` (52.7): we emit [ins 'Here's some
+text.', del 'Chapter One', del..., same ''] where the oracle MERGES the
+leading inserted para into the first deleted para: [mix 'Here's some
+text.Chapter One', del..., same ''] — one fewer block, everything shifts
+up. This is the ins-first replacement-merge family. CAUTION: the
+MergeAdjacentShortInsDelTitles note (WmlComparer.ts ~2985) found the
+same shape tanks LO on file_187 (71.4→54.6) — markup-match ≠ LO lift.
+Must exhibit-score before believing; likely needs a narrow gate (leading
+position only, next-is-multi-del tail).
