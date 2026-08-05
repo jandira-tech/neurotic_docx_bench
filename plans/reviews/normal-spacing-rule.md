@@ -531,3 +531,16 @@ that also did not re-enter the gate as expected. The class needs the
 window trace on diff_after6 specifically (which recursion entry resolves
 the A-para × B-first-words pairing) before the next variant. Score at
 stake: ~48.1 → ~90 on this exhibit plus the diff_after fixture family.
+
+## SHIPPED — empty-alpha anchor void (v12, pending official)
+
+diff_after6's surviving anchor decoded by trace as ['.', pMark] — Step F
+keeps it because pPr atoms are not w:t. Voided in the UNREL-GLUE gate
+(same unrelatedness + stamp-residual guards): A/B 8 changed, net +31.4,
+one new exact-100 (increase_indent×insert_link 86.24→100.00), residual
+−9.7 on product_roadmap (unrelated pair where the '.¶' anchor happened to
+align — same coin-flip family as the lossless spacing folds). The
+remaining diff_after6 delta is the fold POSITION rule: Word folds A0 into
+B's LAST paragraph (or defers the del entirely when B ends with a table);
+our H1 pairs A with B's FIRST words-group. That positional rule is the
+next increment on this class.
