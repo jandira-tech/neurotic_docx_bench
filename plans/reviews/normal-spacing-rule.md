@@ -330,3 +330,11 @@ step_h/H1 (lcs.rs):
    ordering to windows whose pairing was voided by rule 1, NOT change
    branch 4 globally (it is Word-verified on fixture f-4).
 Both are A/B-able on the 72-target rust set in one cycle.
+
+CORRECTION to the trace analysis: a textless-vs-contentful pairing rule
+added to H1's zip does NOT change the exhibit's output — the empties are
+consumed on a different path (H1's Words↔Words slot was not the consumer;
+candidate suspects: H2's Para/Table walk, the defensive flush, or an
+earlier produce-level merge). The edit was reverted unshipped (C8: an edit
+that does not move its motivating exhibit does not ship). Next context:
+re-instrument with a branch-labelled trace in step_h before re-attempting.
