@@ -1079,3 +1079,17 @@ exposed — the bench generator reads exactly that way. Fix: openZip routes
 bare typed-array inputs as the exact view (JSZip is offset-correct).
 Follow-ups shipped: sequential side reads (ae810fd0f), dangling-style-ref
 strip in the style post-pass (50155bfba). AST official in flight.
+
+**Median-90 campaign notes (2026-08-05):** gap is 35 docs ≥90 out of a
+105-doc 78-90 band; 42 band docs have docxodus ≥90. The top two exhibits
+(annot2×annotations_import 78.43, increase_indent×insert_link 78.59) both
+show the JUNCTION shape on RELATED-doc paths: oracle keeps B's middle
+paragraphs pure-I and rides B's LAST paragraph into A's FIRST deleted one
+(annot2: even when A-first is EMPTY — the fast-path text gate should be
+B-last-only when this ships). Two speculative DoLcs gates (fast-path
+afirst relax; low-jaccard residual junction before TryMultiParaPositional
+Zip) did NOT move either exhibit — the pairing happens elsewhere: the
+FindCommonAtBeginningAndEnd residual split (WmlComparer.ts ~13262) pairs
+≤2 leftover paragraph chunks POSITIONALLY first-to-first. Next cycle:
+trace which branch pairs those residuals and apply the junction emission
+there (reverted both gates per C8; tree back at 50155bfba).
