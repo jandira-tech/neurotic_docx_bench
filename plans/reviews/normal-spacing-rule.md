@@ -1243,3 +1243,60 @@ oracle MIMD/MIDM, blue_underline/heading_4/calibri_heading_2) is exactly
 this shape. Implementation site: the residual pairing (NOT the XOR arm);
 study rust's m45 zip emission and mirror it where lossless currently
 lets ProcessCorrelatedHashes pair positionally.
+
+═══════════════════════════════════════════════════════════════════
+## WAR PLAN 2026-08-05 — the path to #1 on BOTH axes (ultrathink)
+═══════════════════════════════════════════════════════════════════
+
+**Standings.** Accuracy table ranks by MEDIAN (export-results-md.py
+sorts −median). docxodus: 80.55 / 91.19 / 186 perfect / 392 ≥90 /
+95 <50. lossless: 80.60 / 86.60 / 201 / 347 / 69. We already WIN mean,
+perfects, and fewest-disasters; the race is the MEDIAN (−4.59) and the
+≥90 count (−45). Speed (large-N warm): rust-inproc WINS median 8.54 vs
+9.43 but loses mean 33.0 vs 29.9 (docxodus-inproc has 120/5000 failures
+vs our 0 — surface this in fairness notes); wasm beats docxodus-wasm
+15× on median. Speed rows were STALE (pre-M-CARRIER binaries) —
+re-certification launched with today's engine (inproc worker rebuilt
+from ebf1a79).
+
+**Fact 1 — the median race is the 86–92 band.** Median = 382nd/763.
+Need ~+40 docs above ~91. The 78–91 band holds 105+ docs; 42 have
+docxodus ≥90 (proven achievable).
+
+**Fact 2 — every closed derivation converged on ONE root: residual
+ALIGNMENT parity.** Head-mix, increase_indent positional pairing, m45
+equal-count zip: all are "which paragraph pairs with which" decisions.
+Word: similarity-anchored mesh (title↔title), junction seam at region
+tails, zip only true correspondents, pure I/D otherwise. Ours:
+hash-correlate then POSITIONAL residual pairing. This is the single
+biggest systematic median lever for BOTH engines.
+
+**Fact 3 — the cheapest verified points are ENGINE CROSS-PORTS.** Each
+engine holds calibrated rules the other lacks, all with truth tables +
+pinned tests on the source side:
+- lossless→rust: dangling-style refs, region-survival transplant (4b),
+  interior pilcrow del (4a), B-blank-count, sink passes, region
+  membership.
+- rust→lossless: m45 equal-count zip, M175/M168/M170 title-mesh
+  classes, stamp confetti (detect_unrelated_sources_word_mode encodes
+  ~10 measured Word behaviors lossless lacks).
+
+**Ceiling (say it plainly):** 31 oracle artifacts are quarantine-
+flagged (Arthur's open decision). Even docxodus (Word-lineage) sits at
+80.55 with 95 docs <50. Mean 90 likely requires the corpus decision;
+beating docxodus on EVERY published number does not.
+
+**ORDERED PLAN**
+1. Speed re-certify (running) → regenerate SPEED tables; add the
+   docxodus 120-failure note; then samply the p95 tail (mean gap is
+   tail-driven, 138.6 vs 110.7 p95).
+2. Cross-port sprint, rust-first (rust is the both-axes vehicle):
+   six lossless rules with per-rule A/B; wasm parity rides along.
+3. THE ALIGNER: one shared-spec Word-parity residual aligner
+   (mesh → junction → similarity-gated zip → pure I/D), implemented in
+   both engines from the same truth tables; rust's calibrated branches
+   are the skeleton. Target: 42 proven band docs + 38 over-mix docs →
+   +3–5 median.
+4. Perfects defense: sentinel A/B per cycle (existing protocol).
+5. ast paused except free shared-file ports; not the winning vehicle.
+6. Corpus artifact decision remains escalated for the absolute 90/90.
