@@ -544,3 +544,12 @@ remaining diff_after6 delta is the fold POSITION rule: Word folds A0 into
 B's LAST paragraph (or defers the del entirely when B ends with a table);
 our H1 pairs A with B's FIRST words-group. That positional rule is the
 next increment on this class.
+
+UNREL-H1 attempt — no-op, reverted (C8). The H1-walk ins-all/del-last rule
+passes every canary byte-identically but never fires on diff_after6; the
+suspected cause is para_text_tokens_from_units semantics over flattened
+WORD-unit windows at that seam (worked at the glue gate, inert here —
+unverified). The fold-position class stays open with one precise question
+for the instrumented cycle: print t1/t2 at the H1 seam on diff_after6.
+Session tally on this class: v12's empty-alpha void banked (+31.4 A/B,
+official 77.97/81.83/163/292); the remaining delta is fold position only.
