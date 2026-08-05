@@ -289,3 +289,14 @@ lossless work; (b) inserted tables precede deleted paragraph runs (oracle
 corpus 227 ins-first vs 23). Fix seam: ast correlate.ts doLcsNoMatch's
 words+rows interleave — trace which branch fires, then apply ins-first +
 styled-boundary no-merge. This is the first move of the next cycle.
+
+### Styled-boundary discriminator — measured, single-feature INSUFFICIENT
+
+Oracle-wide over all replacement regions containing both ins and del
+paragraphs: P(split | first B-para styled) = 0.69 (84:37) vs
+P(split | unstyled) = 0.44 (162:207). Real signal, not a rule — unlike the
+Normal-spacing table (100%) and the region-end rule (283/287), split-vs-merge
+needs multi-feature alignment modeling (boundary content overlap, run
+lengths, Word's own word-anchors). That modeling pass — inputs aligned to
+oracle regions with per-boundary features — is the specified centerpiece of
+the next cycle. Do NOT ship a pStyle-only guard on this number.
