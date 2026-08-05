@@ -460,3 +460,15 @@ M-ANCHOR, which requires min side >32 and thus skips small windows), void
 len>0 when the small-window lexical-unrelatedness test passes, letting the
 window fall through to the unrelated wholesale. One more cycle with the
 window trace to confirm the flow before re-implementing.
+
+## SHIPPED — UNREL-GLUE (engine 8cd638d)
+
+The hyperlink class closed in three iterations, each killed by evidence:
+detect_unrelated gate (inert — rust checks unrelatedness after LCS),
+token-level stamp exclusion (tokenizer splits 'file_151'), raw-text stamp
+check (stamp consumed upstream of residual windows). The shipped form:
+extend the existing glue-word anchor gate to multi-para windows whose
+sides share <0.08 significant tokens, with an `in_stamp_residual` settings
+flag protecting the confetti machinery's own windows. Exhibit
+52.58 → 99.66; blast radius 3 docs, net +43.9; file_151/127 byte-identical
+via the flag. Suite green; official run in flight at 8cd638d.
