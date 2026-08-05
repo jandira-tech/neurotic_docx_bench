@@ -312,3 +312,21 @@ drop that the Row-aware guard fixed — this one at region START, so the
 pMark-consumption happens in a different step_h/H1 walk. Method: re-add the
 env-gated LCS trace, find the consuming branch, fix, A/B. rust has 72
 remaining perfect-sibling targets; several in this family.
+
+Trace analysis for the anchor_images exhibit (saves the next hour): the top
+window is A=5 paras × B=[P,P,Table]. H4 flattens; the Row-aware guard
+correctly voids the anchor in the [w×485 × wwR] window, but H1's zip then
+pairs A's 485 CONTENT words against B's two EMPTY pMark words
+(Words↔Words positional pairing), and the lone-pMark pivot inside those
+table-free sub-windows merges B's empties into A paragraphs at positions 1
+and 221 — they vanish as separate paragraphs. Two rules needed in
+step_h/H1 (lcs.rs):
+1. Never pair a pure-textless Words-group against a contentful one — the
+   textless side is pure ins/del (safe for the PR #81 pivot windows, whose
+   short side always has content).
+2. Emission order: Word's oracle is [ins empties, ins Table, del A-run] —
+   contiguous B-first. H1's branch 4 (lg Word && rg != Word → delete lg
+   first) parks the table after the del-run; the fix must confine ins-first
+   ordering to windows whose pairing was voided by rule 1, NOT change
+   branch 4 globally (it is Word-verified on fixture f-4).
+Both are A/B-able on the 72-target rust set in one cycle.
