@@ -142,3 +142,24 @@ Also measured while waiting: the AST engine's Normal spacing is nearly clean
 kind-seq on the word_based manifest) is close to rust's (133), so its losses
 are formatting-level or concentrated in the superdoc manifest. Needs a scored
 run with per_doc to target (no ast row in bench.jsonl carries per_doc).
+
+### RESOLVED — the mixed-paragraph discriminator (same evening)
+
+The missing factor is REGION POSITION. Splitting every oracle body into
+maximal runs of fully-changed paragraphs (no equal-text runs) and locating
+each `pPrChange` paragraph within its region:
+
+> **chg is the LAST A-origin item of its region: 283 of 287.** (4 interior
+> exceptions, unexamined.)
+
+So Word's rule for a replaced region of n A-paragraphs and m B-paragraphs:
+the FINAL A-paragraph's mark survives, carrying B's final pPr live +
+`pPrChange`(A's old pPr); every INTERIOR A mark is deleted (`pPr/rPr/del`)
+with A's pPr left live; B's surplus marks are inserted. Lossless instead
+pairs marks mid-region wherever its word-level LCS pivot lands
+(file_83_file_84: pPrChange on the interior Title paragraph while the region
+continues — renders body-size where Word renders the Title formatting, 50.96
+vs rust's 100.00). The fix target in the TS engine is the pivot PLACEMENT:
+mark survival must migrate to the region's final A-paragraph. Verification
+population: the 449 kind-sequence mismatches, then the 107 perfect-sibling
+single-page failures.
