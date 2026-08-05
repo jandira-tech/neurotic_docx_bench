@@ -430,3 +430,20 @@ or hyperlink wrapping) and drives Word to region-end pairing. Next cycle:
 dump both inputs' 'Some text bookmark' paragraphs fully, find the
 distinguishing attribute, and derive the anchor-refusal rule from all 7
 pairs plus their perfect siblings' outputs.
+
+RE-DIAGNOSED — the "URL class" is the UNRELATED-THRESHOLD divergence.
+Inputs decoded: A=[title, URL-hyperlink-para], B=[title+bookmarks,
+'Some text bookmark', link-para] — 'Some text bookmark' exists ONLY in B
+(the earlier exact-text-anchor reading was wrong). Word's oracle shape is
+the revised-first wholesale with ONE boundary mix ([ins B0, ins B1,
+mix(A0×B_last), del A1]) — Word classified the pair UNRELATED. The TS ast
+engine already implements exactly this rule (correlate.ts
+DetectUnrelatedSources: unique-lexical overlap < UNRELATED_LEXICAL_FRACTION
+= 0.08 AND no top-level group key matches ⇒ wholesaleUnrelatedWordShape).
+rust's equivalent gate (`windows_related`, ≥20% of the smaller side's units
+sha1-matching) measures a different thing and does not fire on this pair.
+Port target: add the unique-lexical-fraction unrelatedness test to rust's
+M-ANCHOR/confetti gating with the TS constant, emitting the boundary-mix
+wholesale. Covers most of the 7 hyperlink-named targets and likely other
+low-overlap cousins in the rust-72. One cycle, reference implementation
+in-tree.
