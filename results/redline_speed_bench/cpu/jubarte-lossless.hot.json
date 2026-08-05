@@ -1,0 +1,216 @@
+{
+  "totalHits": 691109,
+  "durationMs": 846339.796,
+  "top": [
+    {
+      "name": "dflt",
+      "url": "/Users/arthrod/temp/T/neurotic_docx_bench/node_modules/fflate/lib/node.cjs",
+      "line": 667,
+      "hits": 64837,
+      "pct": 9.38
+    },
+    {
+      "name": "se",
+      "url": "/Users/arthrod/temp/T/neurotic_docx_bench/dist/jubarte-final/JsonToWmlConverter-UCwVY6cl.cjs",
+      "line": 8,
+      "hits": 42136,
+      "pct": 6.1
+    },
+    {
+      "name": "d",
+      "url": "/Users/arthrod/temp/T/neurotic_docx_bench/dist/jubarte-final/JsonToWmlConverter-UCwVY6cl.cjs",
+      "line": 8,
+      "hits": 38887,
+      "pct": 5.63
+    },
+    {
+      "name": "h",
+      "url": "/Users/arthrod/temp/T/neurotic_docx_bench/dist/jubarte-final/JsonToWmlConverter-UCwVY6cl.cjs",
+      "line": 8,
+      "hits": 38031,
+      "pct": 5.5
+    },
+    {
+      "name": "(garbage collector)",
+      "url": "",
+      "line": 0,
+      "hits": 33776,
+      "pct": 4.89
+    },
+    {
+      "name": "inflt",
+      "url": "/Users/arthrod/temp/T/neurotic_docx_bench/node_modules/fflate/lib/node.cjs",
+      "line": 258,
+      "hits": 33410,
+      "pct": 4.83
+    },
+    {
+      "name": "(anonymous)",
+      "url": "/Users/arthrod/temp/T/neurotic_docx_bench/dist/jubarte-final/lossless.node.cjs",
+      "line": 267,
+      "hits": 28637,
+      "pct": 4.14
+    },
+    {
+      "name": "get",
+      "url": "/Users/arthrod/temp/T/neurotic_docx_bench/dist/jubarte-final/JsonToWmlConverter-UCwVY6cl.cjs",
+      "line": 8,
+      "hits": 28091,
+      "pct": 4.06
+    },
+    {
+      "name": "Ve",
+      "url": "/Users/arthrod/temp/T/neurotic_docx_bench/dist/jubarte-final/lossless.node.cjs",
+      "line": 8,
+      "hits": 25605,
+      "pct": 3.7
+    },
+    {
+      "name": "a",
+      "url": "/Users/arthrod/temp/T/neurotic_docx_bench/dist/jubarte-final/JsonToWmlConverter-UCwVY6cl.cjs",
+      "line": 8,
+      "hits": 21567,
+      "pct": 3.12
+    },
+    {
+      "name": "encode",
+      "url": "node:internal/encoding",
+      "line": 355,
+      "hits": 21070,
+      "pct": 3.05
+    },
+    {
+      "name": "s",
+      "url": "/Users/arthrod/temp/T/neurotic_docx_bench/dist/jubarte-final/JsonToWmlConverter-UCwVY6cl.cjs",
+      "line": 8,
+      "hits": 16092,
+      "pct": 2.33
+    },
+    {
+      "name": "r",
+      "url": "/Users/arthrod/temp/T/neurotic_docx_bench/dist/jubarte-final/JsonToWmlConverter-UCwVY6cl.cjs",
+      "line": 8,
+      "hits": 14230,
+      "pct": 2.06
+    },
+    {
+      "name": "equals",
+      "url": "/Users/arthrod/temp/T/neurotic_docx_bench/dist/jubarte-final/JsonToWmlConverter-UCwVY6cl.cjs",
+      "line": 8,
+      "hits": 12713,
+      "pct": 1.84
+    },
+    {
+      "name": "cbuf",
+      "url": "/Users/arthrod/temp/T/neurotic_docx_bench/node_modules/fflate/lib/node.cjs",
+      "line": 272,
+      "hits": 11029,
+      "pct": 1.6
+    },
+    {
+      "name": "e",
+      "url": "/Users/arthrod/temp/T/neurotic_docx_bench/dist/jubarte-final/escape-DMnMtfxV.cjs",
+      "line": 8,
+      "hits": 10830,
+      "pct": 1.57
+    },
+    {
+      "name": "(anonymous)",
+      "url": "/Users/arthrod/temp/T/neurotic_docx_bench/dist/jubarte-final/JsonToWmlConverter-UCwVY6cl.cjs",
+      "line": 8,
+      "hits": 10703,
+      "pct": 1.55
+    },
+    {
+      "name": "e",
+      "url": "/Users/arthrod/temp/T/neurotic_docx_bench/dist/jubarte-final/JsonToWmlConverter-UCwVY6cl.cjs",
+      "line": 8,
+      "hits": 9727,
+      "pct": 1.41
+    },
+    {
+      "name": "AnnotateBlockContentElements",
+      "url": "/Users/arthrod/temp/T/neurotic_docx_bench/dist/jubarte-final/lossless.node.cjs",
+      "line": 8,
+      "hits": 9629,
+      "pct": 1.39
+    },
+    {
+      "name": "o",
+      "url": "/Users/arthrod/temp/T/neurotic_docx_bench/dist/jubarte-final/JsonToWmlConverter-UCwVY6cl.cjs",
+      "line": 8,
+      "hits": 9046,
+      "pct": 1.31
+    },
+    {
+      "name": "n",
+      "url": "/Users/arthrod/temp/T/neurotic_docx_bench/dist/jubarte-final/JsonToWmlConverter-UCwVY6cl.cjs",
+      "line": 8,
+      "hits": 8541,
+      "pct": 1.24
+    },
+    {
+      "name": "(program)",
+      "url": "",
+      "line": 0,
+      "hits": 7989,
+      "pct": 1.16
+    },
+    {
+      "name": "g",
+      "url": "/Users/arthrod/temp/T/neurotic_docx_bench/dist/jubarte-final/JsonToWmlConverter-UCwVY6cl.cjs",
+      "line": 8,
+      "hits": 7790,
+      "pct": 1.13
+    },
+    {
+      "name": "oe",
+      "url": "/Users/arthrod/temp/T/neurotic_docx_bench/dist/jubarte-final/lossless.node.cjs",
+      "line": 8,
+      "hits": 7533,
+      "pct": 1.09
+    },
+    {
+      "name": "hsh",
+      "url": "/Users/arthrod/temp/T/neurotic_docx_bench/node_modules/fflate/lib/node.cjs",
+      "line": 683,
+      "hits": 6775,
+      "pct": 0.98
+    },
+    {
+      "name": "bits16",
+      "url": "/Users/arthrod/temp/T/neurotic_docx_bench/node_modules/fflate/lib/node.cjs",
+      "line": 193,
+      "hits": 6719,
+      "pct": 0.97
+    },
+    {
+      "name": "hTree",
+      "url": "/Users/arthrod/temp/T/neurotic_docx_bench/node_modules/fflate/lib/node.cjs",
+      "line": 454,
+      "hits": 6713,
+      "pct": 0.97
+    },
+    {
+      "name": "hMap",
+      "url": "/Users/arthrod/temp/T/neurotic_docx_bench/node_modules/fflate/lib/node.cjs",
+      "line": 111,
+      "hits": 6416,
+      "pct": 0.93
+    },
+    {
+      "name": "f",
+      "url": "/Users/arthrod/temp/T/neurotic_docx_bench/dist/jubarte-final/lossless.node.cjs",
+      "line": 8,
+      "hits": 6113,
+      "pct": 0.88
+    },
+    {
+      "name": "wblk",
+      "url": "/Users/arthrod/temp/T/neurotic_docx_bench/node_modules/fflate/lib/node.cjs",
+      "line": 596,
+      "hits": 5412,
+      "pct": 0.78
+    }
+  ]
+}

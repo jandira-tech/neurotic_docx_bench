@@ -1,0 +1,216 @@
+{
+  "totalHits": 168064,
+  "durationMs": 210476.548,
+  "top": [
+    {
+      "name": "wasm-function[271]",
+      "url": "wasm://wasm/007cf7b2",
+      "line": 1,
+      "hits": 18872,
+      "pct": 11.23
+    },
+    {
+      "name": "wasm-function[637]",
+      "url": "wasm://wasm/007cf7b2",
+      "line": 1,
+      "hits": 16712,
+      "pct": 9.94
+    },
+    {
+      "name": "wasm-function[385]",
+      "url": "wasm://wasm/007cf7b2",
+      "line": 1,
+      "hits": 15369,
+      "pct": 9.14
+    },
+    {
+      "name": "wasm-function[409]",
+      "url": "wasm://wasm/007cf7b2",
+      "line": 1,
+      "hits": 11504,
+      "pct": 6.85
+    },
+    {
+      "name": "wasm-function[55]",
+      "url": "wasm://wasm/007cf7b2",
+      "line": 1,
+      "hits": 7653,
+      "pct": 4.55
+    },
+    {
+      "name": "wasm-function[378]",
+      "url": "wasm://wasm/007cf7b2",
+      "line": 1,
+      "hits": 6921,
+      "pct": 4.12
+    },
+    {
+      "name": "wasm-function[579]",
+      "url": "wasm://wasm/007cf7b2",
+      "line": 1,
+      "hits": 5766,
+      "pct": 3.43
+    },
+    {
+      "name": "wasm-function[7]",
+      "url": "wasm://wasm/007cf7b2",
+      "line": 1,
+      "hits": 5369,
+      "pct": 3.19
+    },
+    {
+      "name": "wasm-function[657]",
+      "url": "wasm://wasm/007cf7b2",
+      "line": 1,
+      "hits": 4445,
+      "pct": 2.64
+    },
+    {
+      "name": "wasm-function[232]",
+      "url": "wasm://wasm/007cf7b2",
+      "line": 1,
+      "hits": 3747,
+      "pct": 2.23
+    },
+    {
+      "name": "wasm-function[52]",
+      "url": "wasm://wasm/007cf7b2",
+      "line": 1,
+      "hits": 3373,
+      "pct": 2.01
+    },
+    {
+      "name": "wasm-function[68]",
+      "url": "wasm://wasm/007cf7b2",
+      "line": 1,
+      "hits": 3076,
+      "pct": 1.83
+    },
+    {
+      "name": "wasm-function[663]",
+      "url": "wasm://wasm/007cf7b2",
+      "line": 1,
+      "hits": 2997,
+      "pct": 1.78
+    },
+    {
+      "name": "wasm-function[394]",
+      "url": "wasm://wasm/007cf7b2",
+      "line": 1,
+      "hits": 2976,
+      "pct": 1.77
+    },
+    {
+      "name": "wasm-function[522]",
+      "url": "wasm://wasm/007cf7b2",
+      "line": 1,
+      "hits": 2902,
+      "pct": 1.73
+    },
+    {
+      "name": "wasm-function[148]",
+      "url": "wasm://wasm/007cf7b2",
+      "line": 1,
+      "hits": 2837,
+      "pct": 1.69
+    },
+    {
+      "name": "wasm-function[18]",
+      "url": "wasm://wasm/007cf7b2",
+      "line": 1,
+      "hits": 2733,
+      "pct": 1.63
+    },
+    {
+      "name": "wasm-function[39]",
+      "url": "wasm://wasm/007cf7b2",
+      "line": 1,
+      "hits": 2415,
+      "pct": 1.44
+    },
+    {
+      "name": "wasm-function[688]",
+      "url": "wasm://wasm/007cf7b2",
+      "line": 1,
+      "hits": 2247,
+      "pct": 1.34
+    },
+    {
+      "name": "wasm-function[276]",
+      "url": "wasm://wasm/007cf7b2",
+      "line": 1,
+      "hits": 2122,
+      "pct": 1.26
+    },
+    {
+      "name": "wasm-function[635]",
+      "url": "wasm://wasm/007cf7b2",
+      "line": 1,
+      "hits": 2068,
+      "pct": 1.23
+    },
+    {
+      "name": "wasm-function[321]",
+      "url": "wasm://wasm/007cf7b2",
+      "line": 1,
+      "hits": 1944,
+      "pct": 1.16
+    },
+    {
+      "name": "wasm-function[14]",
+      "url": "wasm://wasm/007cf7b2",
+      "line": 1,
+      "hits": 1618,
+      "pct": 0.96
+    },
+    {
+      "name": "wasm-function[716]",
+      "url": "wasm://wasm/007cf7b2",
+      "line": 1,
+      "hits": 1369,
+      "pct": 0.81
+    },
+    {
+      "name": "wasm-function[28]",
+      "url": "wasm://wasm/007cf7b2",
+      "line": 1,
+      "hits": 1368,
+      "pct": 0.81
+    },
+    {
+      "name": "wasm-function[207]",
+      "url": "wasm://wasm/007cf7b2",
+      "line": 1,
+      "hits": 1366,
+      "pct": 0.81
+    },
+    {
+      "name": "wasm-function[319]",
+      "url": "wasm://wasm/007cf7b2",
+      "line": 1,
+      "hits": 1269,
+      "pct": 0.76
+    },
+    {
+      "name": "wasm-function[679]",
+      "url": "wasm://wasm/007cf7b2",
+      "line": 1,
+      "hits": 1246,
+      "pct": 0.74
+    },
+    {
+      "name": "wasm-function[179]",
+      "url": "wasm://wasm/007cf7b2",
+      "line": 1,
+      "hits": 1245,
+      "pct": 0.74
+    },
+    {
+      "name": "wasm-function[359]",
+      "url": "wasm://wasm/007cf7b2",
+      "line": 1,
+      "hits": 1174,
+      "pct": 0.7
+    }
+  ]
+}
