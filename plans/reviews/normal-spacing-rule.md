@@ -660,3 +660,17 @@ rPrChange/2 pPrChange). Consequences:
 
 Full list of the 31 pairs printed in the session log; reproducible via:
 oracle has no ins/del AND doc_text(A) != doc_text(B).
+
+### Next lossless class, sized: dropped empty DELETED paragraphs (11 targets)
+
+Word's oracle keeps every empty/break-only paragraph of a deleted run as
+its own deleted paragraph; lossless collapses them — exhibit
+list_with_break_from_word×instrtext (57.8, rust perfect): oracle 8
+del-paras ('Item 1','','Break test','','Item 2','','New list…','Num 2'),
+lossless 5. Eleven real targets (57.8–90.7), two dropping 10 paragraphs
+each (diff_before×before10 81.5, diff_after×after10 83.6). Instrument for
+the next cycle: TS-side bracket dump of body child counts through
+WmlComparer's internal produce/conjoin passes on the exhibit — the rust
+twin of this class died in a finalize fold (M86); the TS drop site is
+likely its conjoin/coalesce analog. Population value: roughly +2–4 points
+across the 11 if the exhibit's +40-class recovery generalizes.
