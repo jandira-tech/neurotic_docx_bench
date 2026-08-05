@@ -613,3 +613,13 @@ Exhibit diff_after11×16 44.35 → 97.89; corpus A/B: 15 byte-changed, the
 only scored mover is the exhibit (+53.54), the token-split's three victims
 (one exact-100) byte-identical. Suite: only the two documented
 pre-existing failures. Official ast run in flight at 1cfd5d08.
+
+## Text-equality amendment — committed (jubarte-first HEAD), official DEFERRED
+
+Net +11.3 A/B'd (18 changed; +18.2 diff_after16; −3.7/−2.6 sd_2672×
+hyperlink residuals). Deferred from its own official run under the
+bench.jsonl budget (~4 slots left); the dist stays at the 1cfd5d08
+official state. Next ast increment rebuilds from HEAD and batches both
+into one run. Residual question for that cycle: why the text-split arm
+lands multipara×hyperlink at 76.15 while the token arm hit 87.46 —
+diff those two arms' outputs on that doc.
