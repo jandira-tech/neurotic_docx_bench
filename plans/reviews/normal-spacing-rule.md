@@ -583,3 +583,20 @@ rightWords=0 there). Corrected probe for the ast cycle: label EVERY return
 site in the TS doLcsAlgorithm/doLcsNoMatch with env-gated prints (as done
 for rust step_h) and run diff_after11 — find which branch creates the 1×1
 A-para×B-heading unknown, then apply the <0.08 unrelatedness split THERE.
+
+### ast one-sided-table seam — LOCATED and characterized; threshold underived
+
+The seam is found and proven: doLcsNoMatch's one-sided-tables walk pairs
+FIRST paras unconditionally (site: `lg.key === "para" && items>1 …
+unk([lg.items[0]],[rg.items[0]])`). Splitting on FIRST-PARA unrelatedness
+(<0.08 sig tokens) + ins-first wholesale takes diff_after11 44.35→97.89
+and diff_after16 +18.2 (net +35.2 on the 22-doc blast radius) BUT destroys
+sd_2672_nested_table×plain_3x3 (100→67) — related-table cousins whose
+first paras share nothing. WINDOW-level relatedness (culA/culB incl.
+tables) INVERTS: excludes the exhibit (one incidental shared ≥4-token)
+while still firing on the cousins. The separating feature is between those
+two scopes and needs DATA: log (t1, t2, inter, ratio) at the seam for all
+22 changed pairs + their outcomes, then derive the threshold/feature
+offline like the Normal-spacing table. Candidate features: table-text-only
+overlap (cousins share cell text, diff_after doesn't), or ratio with
+stopword-extended sig. Both variants reverted; TS tree clean at f9c71f0c.
