@@ -387,3 +387,22 @@ CorrelatedSequence (atoms may never be tagged), (b) finalize's handling of
 inserted bare paragraph marks with no run content. Next probe: count
 Inserted-status pPr atoms entering CoalesceRecurse for the exhibit. All
 probes reverted; engine tree clean at 24b182f.
+
+## SHIPPED — the empty-paragraph chain closed (engine 6817a28)
+
+The five-probe hunt ended in a two-line-of-logic fix, decomposed per
+regression: (1) H1 must not positionally pair a LEADING ≤3-run of bare
+paragraph marks on the revised side against contentful words
+(insert-direction only — the delete variant broke meeting_agenda's 100;
+leading-only after the first draft broke it anyway); (2) M86's run-less
+whitespace fold only applies when NO inserted block content follows the
+del run (file_173's 100 depends on the fold; anchor_images' 44 was caused
+by it). Final blast radius: **5 docs, all scored changes positive (+45.9,
++10.3, +7.7), zero regressions, exact-100 docs byte-identical.** Suite
+green. Official run in flight at jubarte-rust@74bbefc415c4+git.6817a28;
+wasm rebuilding from the same source.
+
+Method note for the record: the naive versions of BOTH rules each destroyed
+a different 100-scoring document, found only because the A/B scores every
+changed document against the officially recorded per-doc baseline. Blanket
+rules lose; scoped rules discovered by per-document decomposition win.
