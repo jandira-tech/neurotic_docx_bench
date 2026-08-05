@@ -511,3 +511,14 @@ multipara_cell BEFORE finalize (the AFTER-MARK dump showed [p×7,tbl,p] for
 anchor_images — run the same dump here to see whether the tbl exists at
 assembly and dies in finalize, or never assembles). The class is worth
 ~two of the worst remaining targets (41.6, 45.8) plus the table-named tail.
+
+## SHIPPED — the table-eating fold (engine pending-official)
+
+The one-sided-table flattening was NOT correlation and NOT assembly — the
+finalize bracket-dump pinned it to the SAME M86 whitespace fold (third
+defect from one function tonight): para_is_pure_deleted accepts an
+all-deleted TABLE, so the fold merged cell runs into a paragraph and
+deleted the tbl. One-line guard (fold target must be w:p). A/B: 7 changed,
+net +90.3, wins to +34.0; diff_after16 (the worst remaining target) now
+matches the oracle exactly and scores 65.99 — its residual is the in-block
+image class, not alignment.
