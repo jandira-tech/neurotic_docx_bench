@@ -1300,3 +1300,23 @@ beating docxodus on EVERY published number does not.
 4. Perfects defense: sentinel A/B per cycle (existing protocol).
 5. ast paused except free shared-file ports; not the winning vehicle.
 6. Corpus artifact decision remains escalated for the absolute 90/90.
+
+**Cross-port audit (2026-08-05, war-plan item 2):**
+- SPEED CERTIFIED (bca2b301): rust-inproc 6.20 median / 25.34 mean /
+  0 fail beats docxodus-inproc 9.43 / 29.90 / 120 fail on EVERY number
+  with all of today's accuracy rules included. Speed crown ours.
+- dangling-style refs: rust ALREADY HAS (document_comparer.rs:3117
+  strips pStyle/rStyle undefined in styles.xml across main+headers+
+  footers+notes+comments). No port needed.
+- **PORT TARGET #1: RelocateRegionMarkSurvival** — rust has NO
+  equivalent pass (only the in-arm carrier split references it). Port
+  the whole pass from WmlComparer.ts (~962–1140 current): region
+  detection (changed-para runs, tables as A-origin/B-origin/flush
+  members), interior pPrChange flip (liveHasStyle&&!oldHasStyle skip),
+  interior junction-mix pilcrow deletion (4a), document-final
+  region-survival transplant with CT_PPr order (4b). Worth +270
+  verified lossless points; rust's parallels should land similarly.
+  Implement as a post-produce pass over the output dom in finalize.rs.
+- sink/B-blank-count classes: finalize.rs 1501–1595 has DIFFERENT
+  implementations that may cover the same oracle classes — verify with
+  exhibits per class before porting anything.
