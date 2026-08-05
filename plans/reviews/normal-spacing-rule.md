@@ -980,3 +980,23 @@ test per oracle evidence. Both full A/B arms are GENERATED
 (rust_carfull vs rust_basefull, 814 docs each) — continuation: diff
 with r:-normalization, score changed, resolve the style question, then
 ship per the recorded pipeline.
+
+Rust M-CARRIER full A/B (attempt 2 binary): **n=177, +695.43 → +0.91
+mean, 60 improved vs 36 regressed, perfects 24 → 35**. NOT shipped yet:
+three former-100.00 docs broke — diff_after6×diff_after7 −48.50,
+diff_after11×? −47.81, msword_tracked_changes −15.79 (plus sdpr×sdt
+−28.6, math_groupchr −27.6, font_size×green_bold −19.96/−6.39 both
+corpora). Pattern: these are RELATED pairs whose interior unknown
+regions have 1×N pilcrow shape — rust's arm fires there while the
+lossless arm did NOT fire on the same pairs (they were absent from
+lossless's 117-doc changed set at 99.98/100 baselines). Gate refinement
+needed before ship; candidates: (a) fire only when the unknown region
+is the document-leading region or spans the whole body (wholesale
+replacement, not interior residual), (b) compare against what upstream
+already resolved — if the region is small relative to the resolved
+Equal mass, skip, (c) trace WHY lossless's identical gate doesn't see
+these regions (different unknown splitting upstream) and mirror that
+condition. The +0.91 net says the class is worth landing once the
+over-fire is gated. Scores: r3/rustcar_ab_scores.json; arms kept
+(rust_carfull / rust_basefull); binary parked at r3/rustdist/redline;
+bench baseline binary UNCHANGED (safe).
