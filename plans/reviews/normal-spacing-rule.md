@@ -277,3 +277,15 @@ even with no common words. The unconditional fold ships; file_170_171
 
 Official jubarte-final-native run in flight at dist
 `jubarte-final@5bf73ce40d09+git.f9c71f0c`.
+
+### Next ast exhibit, precisely cut (post-ship)
+
+`super_editor__diff_after11 × diff_after16` (ast 44.4, rust perfect):
+oracle = ins B-heading, ins B-TABLE, then del A's paragraphs — pure split,
+ins-first. ast = MIX(A-para1 × B-heading) then dels then the table LAST.
+Two known rules violated in one window: (a) Word splits rather than merges
+at a styled (Heading1) boundary — the same split-class derived during the
+lossless work; (b) inserted tables precede deleted paragraph runs (oracle
+corpus 227 ins-first vs 23). Fix seam: ast correlate.ts doLcsNoMatch's
+words+rows interleave — trace which branch fires, then apply ins-first +
+styled-boundary no-merge. This is the first move of the next cycle.
