@@ -573,3 +573,13 @@ still pay on ast pairs whose anchors are separator-only, but with no
 moving exhibit in hand it does not ship. ast's cycle keeps its original
 spec: trace the interleave branch on diff_after11 (which TS seam pairs
 A-para1 with B-heading) and derive the split-vs-merge condition there.
+
+ast interleave — second inert patch, reverted. The unrelated-para-run
+branch landed in the words+rows interleave walk (keys 'word'/'row' from
+interleaveKindOf — the 'para' condition was dead), which is also not the
+seam: the top [ppp]×[ptp] window resolves to a 1×1 para pairing through a
+path that is neither the pure-word zip nor the words+rows walk (leftWords=
+rightWords=0 there). Corrected probe for the ast cycle: label EVERY return
+site in the TS doLcsAlgorithm/doLcsNoMatch with env-gated prints (as done
+for rust step_h) and run diff_after11 — find which branch creates the 1×1
+A-para×B-heading unknown, then apply the <0.08 unrelatedness split THERE.
