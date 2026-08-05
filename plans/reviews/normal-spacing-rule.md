@@ -300,3 +300,15 @@ needs multi-feature alignment modeling (boundary content overlap, run
 lengths, Word's own word-anchors). That modeling pass — inputs aligned to
 oracle regions with per-boundary features — is the specified centerpiece of
 the next cycle. Do NOT ship a pStyle-only guard on this number.
+
+### Next rust exhibit, precisely cut
+
+`super_editor__anchor_images × annot2` (rust 44.1, lossless 100.00): rust
+DROPS B's two leading inserted empty paragraphs before the inserted table —
+oracle opens [p ins '', p ins '', tbl ins, del-run…], rust opens [tbl ins,
+del-run…] with two fewer blocks. Two-line displacement of the whole page.
+Same empty-paragraph-adjacent-to-table family as the ex1 between-tables
+drop that the Row-aware guard fixed — this one at region START, so the
+pMark-consumption happens in a different step_h/H1 walk. Method: re-add the
+env-gated LCS trace, find the consuming branch, fix, A/B. rust has 72
+remaining perfect-sibling targets; several in this family.
