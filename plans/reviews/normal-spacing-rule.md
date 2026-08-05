@@ -1,0 +1,114 @@
+# Word's Normal-spacing rewrite rule — derived, verified, shipped
+
+**Date:** 2026-08-04. **Engine commit:** jubarte-redlines `0954519`
+(`feat(compare): Word's Normal-spacing delta rule + one-sided-table anchor guard`).
+**Method:** truth table over every corpus Word oracle → closed form → engine
+reimplementation → full-corpus A/B. This is the C8 discipline end-to-end: no
+mechanism was proposed until the render said so, and the rule was validated
+against all 760 measurable pairs before one line of Rust changed.
+
+## What was wrong
+
+The scored rust baseline (`1be1fcd`) wrote the LIVE `w:spacing` of the output's
+`Normal` style from a hand-fit case cascade (stored/dd/factory arms, constants
+`160/278` and `0/240`). Corpus-wide comparison of the candidate's live Normal
+spacing against the Word oracle's showed **44 of 760 pairs wrong**, in both
+directions:
+
+| candidate live | oracle live | n |
+|---|---|---|
+| none | after=0 line=240 | 9 |
+| after=160 line=278 (factory) | none | 6 |
+| none | after=160 line=278 | 5 |
+| after=0 line=259 | after=160 line=259 | 5 |
+| attribute-presence diffs (0 vs absent) | — | ~10 |
+
+The exhibit that exposed it: `super_editor__basic_table_shading_d3212ffd ×
+super_editor__basic_tracked_change_5a9ff724` — A stores Normal `200/276`, B
+stores nothing, no docDefaults anywhere. Word's output Normal is **empty** (A's
+old value in `pPrChange` only); ours carried a live synthesized `after=160
+line=278`. LibreOffice reads the live value → every paragraph and table row
+inflates ~1.75× vertically → the exact cluster signature (ssim high, ink_f1
+collapsed). This is the mechanism behind the teammate's corpus-wide transition
+table (`after cand=160/oracle=0` ×130, `line cand=278/oracle=240` ×104).
+
+## The derivation
+
+Features extracted per pair from the two INPUT stylesheets: A/B Normal stored
+spacing, A/B docDefaults spacing, A/B Normal "structured" (any pPr/rPr content
+net of change records). Grouping all 752 measurable pairs by those features:
+**zero ambiguous groups** — the oracle outcome is a deterministic function of
+the inputs. The closed form that emerges:
+
+> Word rewrites Normal so **B's effective spacing survives under the output's
+> (A's) docDefaults**:
+> - `ctx(attr)` = A.docDefaults spacing attr, else app default
+>   (`after=0, line=240, lineRule=auto`)
+> - `b_eff(attr)` = B Normal stored attr, else B.docDefaults attr, else app
+>   default — the cascade is **per attribute**, not per element
+> - target = attributes where `b_eff ≠ ctx` over {after, line}; when `line` is
+>   written, `lineRule = b_eff(lineRule)` rides along; an empty target clears
+>   A's stored spacing (recording it in `pPrChange`)
+> - gate: two completely bare Normals are left untouched even when docDefaults
+>   differ (Word does not materialize dd into a style nobody shaped)
+
+Validation of the closed form against the oracles: **751/752**. The per-attribute
+cascade is what the old arms could not express — Word mixes sources within one
+spacing element (B stored `line=259` + B dd `after=160` → live `after=160
+line=259`) and omits attributes A's docDefaults already supply (live `line=276`
+with **no** `after`, 12 oracles). The old `FACTORY_NORMAL_SPACING` (160/278) and
+`EMPTY_B_SINGLE_LINE_NORMAL` (0/240) constants fall out as special cases: 0/240
+is `b_eff = app defaults` under a non-default A dd, and 160/278 was B's own
+docDefaults on the pairs that motivated it.
+
+After reimplementation the ENGINE's live Normal spacing matches the oracle on
+**758/760** pairs (was 716/760). The two remaining: one pair where neither
+input has a Normal style at all (Word synthesizes explicit 0/240) and one
+`invalid_list_def_fallback` pair — both logged, neither special-cased.
+
+## The companion fix (block anchors)
+
+`super_editor__sublist_issue × super_basic_table` (rust 54.48, lossless 100.00)
+showed rust splicing B's inserted table into the middle of A's deleted
+paragraph run by anchoring on EMPTY paragraphs. The engine already refuses
+textless anchors when tables are on BOTH sides (M-TBL rule 3); the corpus
+oracles show the same physics with one-sided tables (227 contiguous ins-first
+replacement runs vs 23 interleaved, Word-wide). The guard now fires when
+either side holds a table. Paragraph-merge pivot windows carry no tables and
+are untouched (the PR #81 caveat).
+
+## Measured effect (A/B, both arms from one commit each, date-normalized)
+
+- Control: base arm reproduces the scored run's 801 artifacts **801/801**.
+- Fix changes **58/801** outputs; 55 scored (3 have no stored oracle PDF).
+- **Sum +453.96 → projected full-763 ITT mean +0.60.**
+- Gains: +53.84 (43.30→97.14), +49.36 (50.64→**100.00**, new perfect),
+  +46.48, +40.67, +32.68, +25.70 … 18 docs improve >1; above-92 4→7 within
+  the changed set.
+- Regressions: −7.71, −6.55, −4.49 (all M-TBL anchor-refusal cases where the
+  fragmented layout accidentally overlapped better), then noise-level.
+- Engine test suite: green before and after.
+
+## What this is NOT
+
+- Not corpus-fitting: the rule is a semantic statement about Word Compare
+  (preserve B's effective appearance under A's docDefaults) with app-default
+  constants from Word's own documentation; the corpus was used to FALSIFY
+  candidate rules, and the winning rule has no per-pair branches.
+- Not the whole cluster: the multi-page hard core (89 docs) is untouched by
+  construction. This lever moves the single-page displacement class.
+
+## Next levers (in order of evidence)
+
+1. **lossless (TS) mixed-paragraph pPr**: on `file_83_file_84` (lossless 50.96,
+   rust 100.00) Word keeps A's pPr LIVE with the paragraph mark marked deleted
+   (`pPr/rPr/del`, pStyle=Title rendering large); lossless swaps to B's pPr +
+   `pPrChange` and renders body-size. Word DOES emit document-level pPrChange
+   on 363/828 oracles, so the rule is conditional — needs its own truth table
+   (probably: mark deleted when the paragraph CONTENT was replaced, format-
+   changed when content survived). This is the "in-place paragraph defect"
+   (69/124 lossless cluster docs) from the plans.
+2. The 2 unmatched Normal-spacing pairs above.
+3. rPr (sz/rFonts) live-value analogue of the same rule — our exhibit's live
+   rPr carried `Arial sz24` where the oracle's live rPr is empty; same
+   delta-under-context shape, second truth table.
