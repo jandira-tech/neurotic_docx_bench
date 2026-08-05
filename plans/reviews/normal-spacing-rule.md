@@ -674,3 +674,13 @@ WmlComparer's internal produce/conjoin passes on the exhibit — the rust
 twin of this class died in a finalize fold (M86); the TS drop site is
 likely its conjoin/coalesce analog. Population value: roughly +2–4 points
 across the 11 if the exhibit's +40-class recovery generalizes.
+
+Lossless empty-del-para class — drop site BRACKETED to one function:
+SRC1-RAW = 8 paragraphs [p,p0,p,p0,p,p0,p,p] (three empties), unchanged
+through PreProcessMarkup; POST-PRODUCE = 5 — the empties die INSIDE
+`ProduceDocumentWithTrackedRevisions` (TS WmlComparer). Same family as the
+rust producer's historical empty-para bugs. Next cycle: sub-bracket inside
+ProduceDocumentWithTrackedRevisions (its CoalesceRecurse / paragraph-mark
+conjoin analogs) on this exhibit, find the collapse, guard it for DELETED
+bare pMarks, A/B on the 11-target class (worth ≈+2–4 lossless points).
+Traces reverted; TS tree clean at 6f9f76fc.
