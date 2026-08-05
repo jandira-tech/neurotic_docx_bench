@@ -1172,3 +1172,12 @@ jubarte-first has the uncommitted package-merge.ts edit). Next: diff-only
 engine → official jubarte-final-native → row → push. gen tool:
 r3/gen_ast_arm.mjs (Node 26 REQUIRED — Node 25 breaks vendors);
 ab_pipeline.py unchanged.
+
+## 2026-08-05 ast style-collision official (engine b256b039d)
+
+ast 74.45 / 76.81 / 96 (was 73.87 / 75.87 / 96). The B-live collision
+resolution + rFonts/lang graft landed at projection. file_N class remains
+the ast QUEUE (still ~2,100 pts vs lossless after this cycle) — next
+exhibits: instrtext_angled_brackets −9.7 regression, the remaining
+file_22-class docs still under lossless parity, and the ast junction
+follow-ups (imagedoc 59.7 with correct blocks = emit fidelity).
