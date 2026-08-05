@@ -705,3 +705,15 @@ document.xml is nondeterministic on 11/60 docs (18%) — GUID media names
 leak into document.xml via rIds on image-bearing pairs. The 54-doc
 "amendment drift" was this, not the amendments. All score-based verdicts
 stand; byte-diff attribution on lossless requires rId/media normalization.
+
+### Queue-top for the next cycle: lossless table-sink class
+
+`diff_before3×sd_1494_table_left_indent` (60.0; rust AND docxodus perfect):
+lossless emits […, ins '', ins '', del 'Here's some text.', tbl ins, ins '']
+where the oracle is […, tbl ins, del] — the SECOND inserted table lands
+AFTER the deleted paragraph, plus two phantom inserted empties. The TS
+producer has `SinkDeletedBlocksBelowInsertions` (the rust twin's
+reorder_replaced_blocks physics) — its conditions miss this two-table
+shape. Instrument: bracket that pass on this exhibit (the Z-dump pattern),
+inspect its gate, extend. 58 real lossless targets remain (artifact-31
+quarantined); several table-bearing ones likely share this class.
