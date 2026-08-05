@@ -1160,3 +1160,15 @@ NEXT (ast QUEUE-TOP): per-styleId truth table with proper canonicalization
 derive WHICH colliding styles flip to B-live — then implement in the ast
 package-merge with style-level pPrChange/rPrChange records. Verify on
 file_22×23 (expect 116-page render) before the corpus A/B.
+
+**AST cycle in flight (2026-08-05 afternoon):** `preferRevisedCollidingStyles`
+implemented in package-merge.ts (B-live collision resolution + rFonts/lang
+attribute graft from A when B omits them — the i_am Calibri pin holds).
+file_22×23 exhibit renders EXACTLY 116 pages (was 106; oracle 116); ALL
+134 test files pass. Arms generating: aarm_base (dist/jubarte-final,
+engine 50155bfba) vs aarm_cand (dist/jfcAA, uncommitted working tree —
+jubarte-first has the uncommitted package-merge.ts edit). Next: diff-only
+→ blast-radius check vs the style-collision population → score → commit
+engine → official jubarte-final-native → row → push. gen tool:
+r3/gen_ast_arm.mjs (Node 26 REQUIRED — Node 25 breaks vendors);
+ab_pipeline.py unchanged.
