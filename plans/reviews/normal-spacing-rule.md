@@ -351,3 +351,16 @@ reachable and fixable, but fixing emission is NECESSARY-NOT-SUFFICIENT
 until the produce-layer drop is found. Hunt order for the next cycle:
 grep produce.rs/finalize.rs for empty-inserted-paragraph elision, fix, THEN
 re-apply the H1 rule, then A/B both together on the 72-target set.
+
+DROP SITE LOCATED (produce.rs, CoalesceRecurse Step 1): atoms are grouped
+by `(ancestor Unid, element type)` and the code **silently filters
+empty-key groups** (`grouped.filter(|(k,_)| !k.is_empty())`; key built from
+`ancestor_unids.get(level)` with `if u.is_empty() { return String::new() }`).
+Inserted bare-paragraph-mark atoms from B whose ancestor unids were never
+minted fall into the empty key and are DROPPED — B's two leading empty
+paragraphs in anchor_images×annot2 die here even after H1 emits them as
+Inserted. Fix path: `assemble_ancestor_unids` Phase B ("reverse walk,
+minting missing") must cover inserted bare pMarks in flattened windows —
+verify their ancestor_unids at produce time, mint when absent, THEN
+re-apply the H1 textless-pairing rule, then A/B both on the 72-target set.
+This chain (H1 emission + produce minting) is one shippable unit.
