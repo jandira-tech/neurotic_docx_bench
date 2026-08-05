@@ -634,3 +634,29 @@ cached render. Corrected conclusions: (1) the text-equality amendment's
 official row (72.59/73.71) stands as the ground truth; (2) any future
 ad-hoc A/B must key raster caches by the FULL pair stem or a hash of it.
 The officials all used the bench's own pipeline and are unaffected.
+
+## CORPUS-INTEGRITY FINDING — 31 zero-revision oracles over differing inputs
+
+Of the 92 measurable lossless perfect-sibling targets, **31 pairs' stored
+oracle redlines contain ZERO w:ins and ZERO w:del while their two input
+documents' texts DIFFER** — a Word compare of differing texts cannot
+produce a revision-free redline, so these stored oracles are NOT the
+compare of their mapped inputs (all are in the doctored word_based
+`id_paraid_overflow` / `style_default_missing` family; e.g.
+heading_4_style_demo×helvetica_font_demo, oracle = B's text with only 2
+rPrChange/2 pPrChange). Consequences:
+
+1. These 31 are NOT engine defects. Engines "win" them by accident (the
+   rust output there carries mark-only dels that render invisibly) and
+   "lose" them by doing a REAL compare (lossless's visible strikethrough
+   is CORRECT behavior scored as wrong). They must be quarantined or
+   their oracles regenerated — Arthur's call (bench-design, like C9).
+2. The real lossless perfect-sibling target list is ~60, not 97; every
+   engine's word_based-family scores carry some accidental credit.
+3. Truth tables derived from oracle CONTENT on these pairs (the
+   Normal-spacing table included them) should be spot-rechecked once the
+   oracles are regenerated, though styles.xml-level rules may be
+   unaffected.
+
+Full list of the 31 pairs printed in the session log; reproducible via:
+oracle has no ins/del AND doc_text(A) != doc_text(B).
