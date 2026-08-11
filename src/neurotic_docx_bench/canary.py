@@ -86,10 +86,10 @@ def load_canary_spec(path: Path) -> dict | None:
     if not path.is_file():
         return None
     try:
-        data = json.loads(path.read_text())
+        data = json.loads(path.read_text(encoding="utf-8"))
     except json.JSONDecodeError as exc:
         raise CanarySpecError(f"malformed canary spec at {path}: {exc}") from exc
-    except OSError as exc:
+    except (OSError, UnicodeDecodeError) as exc:
         raise CanarySpecError(f"unreadable canary spec at {path}: {exc}") from exc
     if not isinstance(data, dict) or "docx" not in data:
         raise CanarySpecError(f"canary spec at {path} missing required 'docx' field")
