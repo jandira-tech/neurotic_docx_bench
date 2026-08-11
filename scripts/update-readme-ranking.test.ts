@@ -1,8 +1,10 @@
 import { describe, expect, it } from "vitest";
+import { fileURLToPath } from "node:url";
 import {
 	buildFidelityTable,
 	computeIttStats,
 	type FidelityRow,
+	isMainPath,
 	mean,
 	median,
 } from "./update-readme-ranking.ts";
@@ -40,6 +42,22 @@ describe("median/mean", () => {
 		expect(median([1, 2, 3, 4])).toBe(2.5);
 		expect(mean([])).toBe(0);
 		expect(mean([1, 2, 3])).toBe(2);
+	});
+});
+
+describe("isMainPath", () => {
+	const moduleUrl = import.meta.url;
+
+	it("is true only for the exact resolved script path", () => {
+		const self = fileURLToPath(moduleUrl);
+		// This test file is not update-readme-ranking.ts — exact path to ranking script:
+		const rankingUrl = new URL("./update-readme-ranking.ts", import.meta.url).href;
+		const rankingPath = fileURLToPath(rankingUrl);
+		expect(isMainPath(rankingPath, rankingUrl)).toBe(true);
+		// Same basename, different directory → must NOT fire.
+		expect(isMainPath("/tmp/other/update-readme-ranking.ts", rankingUrl)).toBe(false);
+		expect(isMainPath(self, rankingUrl)).toBe(false);
+		expect(isMainPath(undefined, rankingUrl)).toBe(false);
 	});
 });
 

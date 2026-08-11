@@ -24,8 +24,8 @@
  * come from results/speed.jsonl + redline_speed_bench summaries via the same
  * pooling used by export-results-md (best by n, then lower median).
  */
-import { existsSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
-import { basename, join, resolve } from "node:path";
+import { existsSync, readFileSync, readdirSync, realpathSync, writeFileSync } from "node:fs";
+import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const ROOT = resolve(import.meta.dirname, "..");
@@ -745,14 +745,22 @@ function main() {
 
 // Same guard as redline_scoreboard.ts: run only when executed directly, so the
 // test suite can import the helpers without rewriting README.md.
-function isMain(): boolean {
-	const argv1 = process.argv[1];
+/** Exported for tests — pure path comparison (no basename fallback). */
+export function isMainPath(argv1: string | undefined, moduleUrl: string): boolean {
 	if (!argv1) return false;
-	// Normalize both sides so Windows drive letters / relative invocations match.
-	const scriptPath = resolve(fileURLToPath(import.meta.url));
+	const scriptPath = resolve(fileURLToPath(moduleUrl));
 	const invokedPath = resolve(argv1);
 	if (invokedPath === scriptPath) return true;
-	return basename(invokedPath) === basename(scriptPath);
+	// Symlink-safe: realpath both sides when they exist on disk.
+	try {
+		return realpathSync(invokedPath) === realpathSync(scriptPath);
+	} catch {
+		return false;
+	}
+}
+
+function isMain(): boolean {
+	return isMainPath(process.argv[1], import.meta.url);
 }
 
 if (isMain()) {

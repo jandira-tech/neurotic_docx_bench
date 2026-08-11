@@ -84,6 +84,13 @@ def test_check_malformed_spec_is_invalid_spec(tmp_path: Path) -> None:
     assert "malformed" in outcome.detail
 
 
+def test_check_non_utf8_spec_is_invalid_spec(tmp_path: Path) -> None:
+    path = tmp_path / "canary_expected.json"
+    path.write_bytes(b'{"docx": "x.docx"}\xff')
+    outcome = canary.check(path, tmp_path / "w", dpi=144)
+    assert outcome.status == "invalid-spec"
+
+
 def test_parse_soffice_version_from_stderr_style_banner() -> None:
     # Some LO builds put the banner on stderr; we concatenate both streams.
     assert canary.parse_soffice_version(

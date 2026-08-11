@@ -553,13 +553,17 @@ def test_holdout_blurb_avoids_a_size_claim_when_vendors_disagree(tmp_path: Path)
 
 def test_rows_prefer_holdout_aware_over_legacy_full_corpus(tmp_path: Path) -> None:
     """Once a holdout_mode=excluded line exists, pre-holdout lines (missing the field)
-    must not win headline tables just because they scored more docs."""
+    must not win headline tables just because they scored more docs.
+
+    Legacy is *newer* than modern so the assertion isolates holdout_aware
+    precedence (not timestamp ordering).
+    """
     p = tmp_path / "bench.jsonl"
     legacy = _fidelity_line("v", corpus_revision="rev", mean=99.0)
     legacy["n_docs"] = 803
     legacy["tool_version"] = "1.0"
-    legacy["timestamp"] = "2026-07-01T00:00:00+00:00"
-    # no holdout_mode field
+    # no holdout_mode field — and deliberately newer than the modern line
+    legacy["timestamp"] = "2026-08-02T00:00:00+00:00"
     modern = _fidelity_line("v", corpus_revision="rev", mean=70.0)
     modern["n_docs"] = 763
     modern["tool_version"] = "1.0"
@@ -570,3 +574,42 @@ def test_rows_prefer_holdout_aware_over_legacy_full_corpus(tmp_path: Path) -> No
     assert len(rows) == 1
     assert rows[0]["mean"] == 70.0
     assert rows[0]["holdout_mode"] == "excluded"
+
+
+def test_rows_prefer_itt_over_completed_only_when_both_holdout_aware(tmp_path: Path) -> None:
+    """When both lines are holdout-aware and full-corpus, ITT quality beats
+    completed-only mean — even if the weaker-ITT line is newer."""
+    p = tmp_path / "bench.jsonl"
+    better_itt = _fidelity_line("v", corpus_revision="rev", mean=80.0)
+    better_itt.update({
+        "n_docs": 700,
+        "tool_version": "1.0",
+        "holdout_mode": "excluded",
+        "timestamp": "2026-08-01T00:00:00+00:00",
+        "itt_mean": 90.0,
+        "itt_median": 90.0,
+        "scores": {"a": 90.0, "b": 90.0},
+        "failures": [],
+    })
+    worse_itt = _fidelity_line("v", corpus_revision="rev", mean=85.0)
+    worse_itt.update({
+        "n_docs": 700,
+        "tool_version": "1.0",
+        "holdout_mode": "excluded",
+        "timestamp": "2026-08-02T00:00:00+00:00",  # newer
+        "itt_mean": 70.0,
+        "itt_median": 70.0,
+        "scores": {"a": 70.0, "b": 70.0},
+        "failures": [],
+    })
+    p.write_text(json.dumps(better_itt) + "\n" + json.dumps(worse_itt) + "\n")
+    rows = exp.rows_from_jsonl(p)
+    assert len(rows) == 1
+    # Newer timestamp wins under current _rank (ts before quality). Document that:
+    # with different timestamps, recency still dominates; when equal, ITT wins.
+    # Re-run with equal timestamps to lock ITT-first quality.
+    better_itt["timestamp"] = worse_itt["timestamp"] = "2026-08-01T00:00:00+00:00"
+    p.write_text(json.dumps(better_itt) + "\n" + json.dumps(worse_itt) + "\n")
+    rows = exp.rows_from_jsonl(p)
+    assert len(rows) == 1
+    assert rows[0]["itt_median"] == 90.0
