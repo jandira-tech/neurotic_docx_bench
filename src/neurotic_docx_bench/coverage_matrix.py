@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import csv
 import json
+import math
 import statistics
 import zipfile
 from pathlib import Path
@@ -341,7 +342,16 @@ def latest_scores_by_vendor(jsonl_path: Path) -> dict[str, dict[str, float]]:
             vendor = record.get("vendor")
             scores = record.get("scores")
             if isinstance(vendor, str) and isinstance(scores, dict):
-                by_vendor[vendor] = {k: float(v) for k, v in scores.items()}
+                clean: dict[str, float] = {}
+                for k, v in scores.items():
+                    try:
+                        num = float(v)
+                    except (TypeError, ValueError):
+                        continue
+                    if math.isfinite(num):
+                        clean[str(k)] = num
+                # Always assign so a later all-invalid line clears a stale vendor map.
+                by_vendor[vendor] = clean
     return by_vendor
 
 
@@ -350,10 +360,11 @@ def unjoined_score_keys(coverage: dict, scores_by_vendor: dict[str, dict[str, fl
 
     These keys (e.g. ``<stem>_word`` variants, case mismatches) are excluded
     from every per-tag ``n`` — surfacing them keeps the join honest. No fuzzy
-    matching: suffix-stripping collides on real corpora."""
-    pairs = coverage["pairs"]
+    matching: suffix-stripping collides on real corpora. Score keys are
+    lowercased for the join (pipeline canonicalization)."""
+    pairs_lower = {str(s).lower() for s in coverage["pairs"]}
     return {
-        vendor: sorted(k for k in scores if k not in pairs)
+        vendor: sorted(k for k in scores if str(k).lower() not in pairs_lower)
         for vendor, scores in scores_by_vendor.items()
     }
 
@@ -406,14 +417,28 @@ def render_markdown(
         for stem, info in coverage["pairs"].items():
             for tag in info["features"] + info["revisions"]:
                 stems_by_tag.setdefault(tag, []).append(stem)
+        # Score keys are pipeline-canonicalized (lowercase); stems keep mapping casing.
+        # Local copy — never mutate the caller's scores_by_vendor.
+        lower_scores_by_vendor = {
+            vendor: {str(k).lower(): v for k, v in scores_by_vendor[vendor].items()}
+            for vendor in vendors
+        }
         for tag in _ordered_tags(tag_counts):
             cells = []
             for vendor in vendors:
-                scores = scores_by_vendor[vendor]
-                values = [scores[s] for s in stems_by_tag.get(tag, []) if s in scores]
+                scores = lower_scores_by_vendor[vendor]
+                values = [
+                    scores[s.lower()]
+                    for s in stems_by_tag.get(tag, [])
+                    if s.lower() in scores
+                ]
                 cells.append(f"{statistics.median(values):.1f} (n={len(values)})" if values else "—")
             lines.append(f"| `{tag}` | " + " | ".join(cells) + " |")
-        unjoined = {v: keys for v, keys in unjoined_score_keys(coverage, scores_by_vendor).items() if keys}
+        unjoined = {
+            v: keys
+            for v, keys in unjoined_score_keys(coverage, lower_scores_by_vendor).items()
+            if keys
+        }
         if unjoined:
             lines.append("")
             for vendor in sorted(unjoined):
