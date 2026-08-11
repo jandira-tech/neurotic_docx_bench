@@ -300,3 +300,19 @@ def test_extra_oracle_dirs_missing_dir_raises(tmp_path):
     )
     with pytest.raises(ValueError, match="extra_oracle_dirs"):
         load_config(cfg_path)
+
+
+def test_extra_oracle_dirs_non_list_raises(tmp_path):
+    (tmp_path / "oracle").mkdir()
+    cfg_path = tmp_path / "bench.yaml"
+    cfg_path.write_text(
+        "source_of_truth: oracle\n"
+        "extra_oracle_dirs: not_a_list\n"
+        "runs:\n"
+        "  - name: t\n"
+        "    render: passthrough\n"
+        "    modified: /x\n"
+        "    unversioned: true\n",
+    )
+    with pytest.raises(ValueError, match="must be a list"):
+        load_config(cfg_path)

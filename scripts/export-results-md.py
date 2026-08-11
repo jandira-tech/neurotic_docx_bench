@@ -73,12 +73,14 @@ def _rank(row: dict[str, object]) -> tuple:
     """Pick the best re-run of the *same* (vendor, benchmark, version).
 
     Prefer the render path that matches the benchmark family (playwright for
-    visual_*, soffice for script/accepted/roundtrip), then the full-corpus
-    bucket (n_docs > 100, consistent with the smoke-run filter), then the NEWER
-    timestamp. Raw n_docs must not dominate recency: a stale 403-doc
-    pre-holdout line would otherwise permanently beat every newer 383-doc
-    post-holdout line for an unchanged tool_version. Mean only breaks
-    timestamp ties.
+    visual_*, soffice for script/accepted/roundtrip), then holdout-aware lines
+    (``holdout_mode`` present) over pre-holdout legacy lines, then the
+    full-corpus bucket (n_docs > 100, consistent with the smoke-run filter),
+    then the NEWER timestamp. Raw n_docs must not dominate recency: a stale
+    403-doc pre-holdout line would otherwise permanently beat every newer
+    383-doc post-holdout line for an unchanged tool_version. Quality
+    tiebreakers use ITT median/mean when present (tables sort by ITT), falling
+    back to completed-only stats for legacy lines.
     """
     benchmark = str(row.get("benchmark") or "")
     render = str(row.get("render") or "")
@@ -90,13 +92,24 @@ def _rank(row: dict[str, object]) -> tuple:
         # line — deprioritize those.
         render_fit = 0 if render == "playwright" else 1
 
+    # Prefer holdout-stamped main lines over pre-holdout legacy (missing field).
+    holdout_aware = 1 if row.get("holdout_mode") not in (None, "") else 0
+
     n = row.get("n_docs")
-    mean = row.get("mean")
     ts = row.get("datetime") or ""
     n_v = int(n) if isinstance(n, (int, float)) else -1
     full_bucket = 1 if n_v > 100 else 0
+
+    # ITT-first quality so rerun selection matches table sort semantics.
+    med = row.get("itt_median")
+    if not isinstance(med, (int, float)):
+        med = row.get("median")
+    mean = row.get("itt_mean")
+    if not isinstance(mean, (int, float)):
+        mean = row.get("mean")
+    med_v = float(med) if isinstance(med, (int, float)) else float("-inf")
     m_v = float(mean) if isinstance(mean, (int, float)) else float("-inf")
-    return (render_fit, full_bucket, str(ts), m_v)
+    return (render_fit, holdout_aware, full_bucket, str(ts), med_v, m_v)
 
 
 def _itt_stats(
@@ -172,6 +185,7 @@ def rows_from_jsonl(path: Path) -> list[dict[str, object]]:
                 continue
 
             itt_mean, itt_median, itt_n, n_failures = _itt_stats(data)
+            holdout_mode = data.get("holdout_mode")
             row: dict[str, object] = {
                 "vendor": vendor,
                 "datetime": data.get("timestamp") or data.get("run_ts") or "",
@@ -187,6 +201,7 @@ def rows_from_jsonl(path: Path) -> list[dict[str, object]]:
                 "std": data.get("std"),
                 "tool_version": version,
                 "render": render,
+                "holdout_mode": holdout_mode,
                 "itt_mean": itt_mean,
                 "itt_median": itt_median,
                 "itt_n": itt_n,
@@ -374,7 +389,7 @@ def _holdout_se(hold_line: dict) -> float | None:
 
 
 def holdout_gap_section(path: Path) -> list[str]:
-    """"## Holdout gap" — per vendor, the sealed-holdout run vs a COMPARABLE
+    """## Holdout gap — per vendor, the sealed-holdout run vs a COMPARABLE
     main run, with ``gap = holdout − main``.
 
     Comparable means: same ``tool_version`` as the holdout line,

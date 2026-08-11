@@ -549,3 +549,24 @@ def test_holdout_blurb_avoids_a_size_claim_when_vendors_disagree(tmp_path: Path)
     md = "\n".join(exp.holdout_gap_section(p))
     assert "Sealed sealed holdout" not in md  # no double word
     assert "20-pair" not in md and "40-pair" not in md
+
+
+def test_rows_prefer_holdout_aware_over_legacy_full_corpus(tmp_path: Path) -> None:
+    """Once a holdout_mode=excluded line exists, pre-holdout lines (missing the field)
+    must not win headline tables just because they scored more docs."""
+    p = tmp_path / "bench.jsonl"
+    legacy = _fidelity_line("v", corpus_revision="rev", mean=99.0)
+    legacy["n_docs"] = 803
+    legacy["tool_version"] = "1.0"
+    legacy["timestamp"] = "2026-07-01T00:00:00+00:00"
+    # no holdout_mode field
+    modern = _fidelity_line("v", corpus_revision="rev", mean=70.0)
+    modern["n_docs"] = 763
+    modern["tool_version"] = "1.0"
+    modern["holdout_mode"] = "excluded"
+    modern["timestamp"] = "2026-08-01T00:00:00+00:00"
+    p.write_text(json.dumps(legacy) + "\n" + json.dumps(modern) + "\n")
+    rows = exp.rows_from_jsonl(p)
+    assert len(rows) == 1
+    assert rows[0]["mean"] == 70.0
+    assert rows[0]["holdout_mode"] == "excluded"
