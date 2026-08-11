@@ -183,10 +183,11 @@ def test_cli_word_validate_json(monkeypatch, tmp_path: Path) -> None:
     import json
 
     data = json.loads(json_path.read_text())
-    assert data["results"]["a"]["outcome"] == "valid"
-    assert data["results"]["b"]["outcome"] == "invalid"
-    assert data["results"]["c"]["outcome"] == "unjudgeable"
-    assert data["results"]["c"]["duration_s"] == 60.0
+    # Keys are relative paths under the target directory (filename for flat dirs).
+    assert data["results"]["a.docx"]["outcome"] == "valid"
+    assert data["results"]["b.docx"]["outcome"] == "invalid"
+    assert data["results"]["c.docx"]["outcome"] == "unjudgeable"
+    assert data["results"]["c.docx"]["duration_s"] == 60.0
 
 
 def test_cli_unjudgeable_alone_does_not_fail(monkeypatch, tmp_path: Path) -> None:
