@@ -74,6 +74,7 @@ def test_do_nothing_candidate_scores_near_zero_on_v2_and_skill(trio, tmp_path):
     # The candidate IS the null baseline: skill ~ 0, and the change region contains
     # none of the inserted clause's ink: v2 ~ 0.
     assert result["skill_score"] == pytest.approx(0.0, abs=5.0)
+    assert result["null_score"] == pytest.approx(result["overall_score"], abs=1.0)
     assert result["score_v2"] < 20.0
 
 

@@ -346,6 +346,21 @@ def test_render_markdown_vendor_medians(tmp_path: Path) -> None:
     assert "| `table` | 91.5 (n=1) | — |" in md
 
 
+def test_render_markdown_joins_mixed_case_stems_to_lowercase_scores(tmp_path: Path) -> None:
+    """Mapping stems keep casing; bench score keys are lowercased — join must normalize."""
+    root, src, red = _corpus(tmp_path)
+    make_docx(red / "File_A_File_B_redline.docx", _INS)
+    mapping = write_mapping(root / "map.csv", [{
+        "pair_stem": "File_A_File_B",
+        "docx_source_base": "a.docx", "docx_source_next": "b.docx",
+        "redline_docx": "File_A_File_B_redline.docx",
+    }])
+    coverage = build_coverage([mapping], [src], [red])
+    assert "File_A_File_B" in coverage["pairs"]
+    md = render_markdown(coverage, {"acme": {"file_a_file_b": 88.0}})
+    assert "88.0 (n=1)" in md
+
+
 def test_unjoined_score_keys_counted_per_vendor(tmp_path: Path) -> None:
     root, src, red = _corpus(tmp_path)
     make_docx(red / "p_redline.docx", _INS)
