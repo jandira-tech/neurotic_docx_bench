@@ -25,7 +25,8 @@
  * pooling used by export-results-md (best by n, then lower median).
  */
 import { existsSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
-import { join, resolve } from "node:path";
+import { basename, join, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 
 const ROOT = resolve(import.meta.dirname, "..");
 const BENCH_JSONL = resolve(ROOT, "results", "bench.jsonl");
@@ -745,9 +746,13 @@ function main() {
 // Same guard as redline_scoreboard.ts: run only when executed directly, so the
 // test suite can import the helpers without rewriting README.md.
 function isMain(): boolean {
-	if (!process.argv[1]) return false;
-	const self = new URL(import.meta.url).pathname;
-	return resolve(process.argv[1]) === self || self.endsWith(process.argv[1]);
+	const argv1 = process.argv[1];
+	if (!argv1) return false;
+	// Normalize both sides so Windows drive letters / relative invocations match.
+	const scriptPath = resolve(fileURLToPath(import.meta.url));
+	const invokedPath = resolve(argv1);
+	if (invokedPath === scriptPath) return true;
+	return basename(invokedPath) === basename(scriptPath);
 }
 
 if (isMain()) {

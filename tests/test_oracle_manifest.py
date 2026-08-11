@@ -75,6 +75,20 @@ def test_cli_oracle_manifest_write_and_verify(tmp_path):
     assert "a_b_redline.pdf" in v2.output
 
 
+def test_verify_corrupted_manifest_raises_or_reports(tmp_path):
+    root = _corpus(tmp_path)
+    manifest_path = root / "oracle_manifest.json"
+    manifest_path.write_text("{not-json")
+    try:
+        drift = oracle_manifest.verify_manifest(
+            manifest_path, root, [root / "pdf_oracle"],
+        )
+    except (json.JSONDecodeError, ValueError, OSError):
+        return  # fail-loud is acceptable
+    # If verify soft-handles corrupt JSON, it must not look clean.
+    assert not drift.clean
+
+
 def test_run_refuses_drifted_oracle(tmp_path):
     root = _corpus(tmp_path)
     cand = tmp_path / "cand"

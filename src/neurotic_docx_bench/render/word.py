@@ -163,6 +163,10 @@ def _interpret_open_exit(
     )
 
 
+class ModalProbeError(RuntimeError):
+    """System Events / Accessibility probe failed — validity cannot be judged."""
+
+
 def probe_modal(*, timeout: float = 10.0) -> bool | None:
     """Does Word currently show a sheet/dialog? None when the probe fails."""
     try:
@@ -243,11 +247,21 @@ def validate_one(
             return _interpret_open_exit(
                 returncode=proc.returncode, stdout=out, stderr=err, duration_s=elapsed,
             )
-        if probe_modal() is True:
+        modal = probe_modal()
+        if modal is True:
             _close_active_document()
             proc.kill()
             return ValidationResult(
                 "invalid", "repair dialog (modal detected)", elapsed,
+            )
+        if modal is None:
+            # Probe unavailable (permissions / osascript failure): do not treat as
+            # "no modal" — that would mis-label a blocked repair dialog as UNJUDGEABLE.
+            _close_active_document()
+            proc.kill()
+            raise ModalProbeError(
+                "Word modal probe failed (grant Accessibility / System Events "
+                "permissions for osascript); cannot judge validity safely",
             )
         if elapsed > budget:
             _close_active_document()

@@ -74,3 +74,18 @@ def test_canary_roundtrip_and_tamper(tmp_path: Path) -> None:
 def test_check_missing_spec_is_no_baseline(tmp_path: Path) -> None:
     outcome = canary.check(tmp_path / "nope.json", tmp_path / "w", dpi=144)
     assert outcome.status == "no-baseline"
+
+
+def test_check_malformed_spec_is_invalid_spec(tmp_path: Path) -> None:
+    path = tmp_path / "canary_expected.json"
+    path.write_text("{not-json")
+    outcome = canary.check(path, tmp_path / "w", dpi=144)
+    assert outcome.status == "invalid-spec"
+    assert "malformed" in outcome.detail
+
+
+def test_parse_soffice_version_from_stderr_style_banner() -> None:
+    # Some LO builds put the banner on stderr; we concatenate both streams.
+    assert canary.parse_soffice_version(
+        "\nLibreOffice 26.2.4.2 0229ac93fcf0d7cbc6376066c6f35021cef002dc\n",
+    ) == "26.2.4.2"
