@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import csv
 import json
+import math
 import statistics
 import zipfile
 from pathlib import Path
@@ -344,11 +345,13 @@ def latest_scores_by_vendor(jsonl_path: Path) -> dict[str, dict[str, float]]:
                 clean: dict[str, float] = {}
                 for k, v in scores.items():
                     try:
-                        clean[str(k)] = float(v)
+                        num = float(v)
                     except (TypeError, ValueError):
                         continue
-                if clean:
-                    by_vendor[vendor] = clean
+                    if math.isfinite(num):
+                        clean[str(k)] = num
+                # Always assign so a later all-invalid line clears a stale vendor map.
+                by_vendor[vendor] = clean
     return by_vendor
 
 
@@ -415,13 +418,15 @@ def render_markdown(
             for tag in info["features"] + info["revisions"]:
                 stems_by_tag.setdefault(tag, []).append(stem)
         # Score keys are pipeline-canonicalized (lowercase); stems keep mapping casing.
-        for vendor in vendors:
-            scores = scores_by_vendor[vendor]
-            scores_by_vendor[vendor] = {str(k).lower(): v for k, v in scores.items()}
+        # Local copy — never mutate the caller's scores_by_vendor.
+        lower_scores_by_vendor = {
+            vendor: {str(k).lower(): v for k, v in scores_by_vendor[vendor].items()}
+            for vendor in vendors
+        }
         for tag in _ordered_tags(tag_counts):
             cells = []
             for vendor in vendors:
-                scores = scores_by_vendor[vendor]
+                scores = lower_scores_by_vendor[vendor]
                 values = [
                     scores[s.lower()]
                     for s in stems_by_tag.get(tag, [])
@@ -429,7 +434,11 @@ def render_markdown(
                 ]
                 cells.append(f"{statistics.median(values):.1f} (n={len(values)})" if values else "—")
             lines.append(f"| `{tag}` | " + " | ".join(cells) + " |")
-        unjoined = {v: keys for v, keys in unjoined_score_keys(coverage, scores_by_vendor).items() if keys}
+        unjoined = {
+            v: keys
+            for v, keys in unjoined_score_keys(coverage, lower_scores_by_vendor).items()
+            if keys
+        }
         if unjoined:
             lines.append("")
             for vendor in sorted(unjoined):

@@ -484,6 +484,8 @@ def word_validate(
     n_valid = n_invalid = n_unjudgeable = 0
     records: dict[str, dict[str, object]] = {}
     target_resolved = target.resolve()
+    # Directory target → keys relative to the folder; single-file target → filename only.
+    record_root = target_resolved if target.is_dir() else target_resolved.parent
     for docx in docs:
         try:
             result = word_mod.validate_one(
@@ -493,7 +495,7 @@ def word_validate(
             console.print(f"[red]word-validate probe unavailable:[/red] {exc}")
             raise typer.Exit(2) from exc
         try:
-            record_key = str(docx.resolve().relative_to(target_resolved))
+            record_key = str(docx.resolve().relative_to(record_root))
         except ValueError:
             record_key = str(docx.resolve())
         records[record_key] = {
