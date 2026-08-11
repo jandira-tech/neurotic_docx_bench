@@ -38,6 +38,9 @@ def pdfs(tmp_path: Path) -> dict[str, Path]:
     return {
         "two_page": _make_pdf(tmp_path / "two_page.pdf", [PAGE_TEXT_A, PAGE_TEXT_B]),
         "one_page": _make_pdf(tmp_path / "one_page.pdf", [PAGE_TEXT_A]),
+        "three_page": _make_pdf(
+            tmp_path / "three_page.pdf", [PAGE_TEXT_A, PAGE_TEXT_B, PAGE_TEXT_A],
+        ),
     }
 
 
@@ -50,6 +53,22 @@ def test_pagefair_fields_present_and_identity_when_counts_match(pdfs, tmp_path):
     assert math.isclose(result["overall_score_pagefair"], result["overall_score"], abs_tol=1e-9)
     assert math.isclose(result["average_score_pagefair"], result["average_score"], abs_tol=1e-9)
     assert math.isclose(result["min_score_pagefair"], result["min_score"], abs_tol=1e-9)
+
+
+def test_pagefair_fields_present_and_identity_when_counts_match_multi_page(pdfs, tmp_path):
+    result = pipeline.score_pdf_pair(pdfs["two_page"], pdfs["two_page"], tmp_path / "w1m")
+    assert result["page_count_mismatch"] is False
+    assert math.isclose(result["overall_score_pagefair"], result["overall_score"], abs_tol=1e-9)
+    assert math.isclose(result["average_score_pagefair"], result["average_score"], abs_tol=1e-9)
+    assert math.isclose(result["min_score_pagefair"], result["min_score"], abs_tol=1e-9)
+
+
+def test_pagefair_penalizes_both_sides_with_unmatched_pages(pdfs, tmp_path):
+    """Both sides have unmatched pages (2 vs 3) → pagefair still penalizes."""
+    result = pipeline.score_pdf_pair(pdfs["two_page"], pdfs["three_page"], tmp_path / "w4")
+    assert result["page_count_mismatch"] is True
+    assert result["overall_score_pagefair"] < result["overall_score"]
+    assert result["average_score_pagefair"] < result["average_score"]
 
 
 def test_pagefair_penalizes_candidate_missing_a_page(pdfs, tmp_path):
