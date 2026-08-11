@@ -21,7 +21,6 @@ from __future__ import annotations
 import hashlib
 import json
 import re
-import shutil as _shutil
 import subprocess
 from dataclasses import dataclass
 from pathlib import Path
@@ -47,16 +46,21 @@ def parse_soffice_version(output: str) -> str | None:
 
 
 def current_soffice_version() -> str | None:
-    soffice = _shutil.which("soffice")
-    if not soffice:
+    """Resolve soffice the same way rendering does ($SOFFICE / PATH / app), then
+    parse ``--version`` from stdout+stderr (some LO builds put the banner on stderr)."""
+    from neurotic_docx_bench.render.soffice import find_soffice
+
+    try:
+        soffice = find_soffice()
+    except RuntimeError:
         return None
     try:
         proc = subprocess.run(
-            [soffice, "--version"], capture_output=True, text=True, timeout=60,
+            [str(soffice), "--version"], capture_output=True, text=True, timeout=60,
         )
     except (subprocess.TimeoutExpired, OSError):
         return None
-    return parse_soffice_version(proc.stdout or "")
+    return parse_soffice_version((proc.stdout or "") + "\n" + (proc.stderr or ""))
 
 
 def render_canary_hash(docx: Path, work_dir: Path, *, dpi: int = 144) -> str:
@@ -74,18 +78,29 @@ def render_canary_hash(docx: Path, work_dir: Path, *, dpi: int = 144) -> str:
     return hashlib.sha256(pages[0].read_bytes()).hexdigest()
 
 
+class CanarySpecError(ValueError):
+    """Raised when a canary expectation file exists but is unreadable/malformed."""
+
+
 def load_canary_spec(path: Path) -> dict | None:
     if not path.is_file():
         return None
     try:
-        data = json.loads(path.read_text())
-    except (json.JSONDecodeError, OSError):
-        return None
-    return data if isinstance(data, dict) and "docx" in data else None
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        raise CanarySpecError(f"malformed canary spec at {path}: {exc}") from exc
+    except (OSError, UnicodeDecodeError) as exc:
+        raise CanarySpecError(f"unreadable canary spec at {path}: {exc}") from exc
+    if not isinstance(data, dict) or "docx" not in data:
+        raise CanarySpecError(f"canary spec at {path} missing required 'docx' field")
+    return data
 
 
 def write_canary_spec(path: Path, docx: Path, expected: dict[str, dict]) -> None:
-    existing = load_canary_spec(path)
+    try:
+        existing = load_canary_spec(path)
+    except CanarySpecError:
+        existing = None  # overwrite a corrupt file with a clean baseline
     merged = dict((existing or {}).get("expected", {}))
     merged.update(expected)
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -104,12 +119,15 @@ def expected_hash(spec: dict, version: str, dpi: int) -> str | None:
 
 
 def check(spec_path: Path, work_dir: Path, *, dpi: int = 144) -> CanaryOutcome:
-    spec = load_canary_spec(spec_path)
+    try:
+        spec = load_canary_spec(spec_path)
+    except CanarySpecError as exc:
+        return CanaryOutcome("invalid-spec", str(exc))
     if spec is None:
         return CanaryOutcome("no-baseline", f"no canary spec at {spec_path}")
     version = current_soffice_version()
     if version is None:
-        return CanaryOutcome("no-baseline", "soffice not found on PATH")
+        return CanaryOutcome("no-baseline", "soffice not found ($SOFFICE / PATH / app bundle)")
     expected = expected_hash(spec, version, dpi)
     if expected is None:
         return CanaryOutcome(

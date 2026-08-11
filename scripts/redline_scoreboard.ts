@@ -450,10 +450,19 @@ export const parseWordValidateOutput = (
 	stdout: string,
 	sampled: number,
 ): WordLensVerdict => {
-	const validSubstrings = (stdout.match(/VALID/g) ?? []).length;
-	const invalid = (stdout.match(/INVALID/g) ?? []).length;
-	const unjudgeable = (stdout.match(/UNJUDGEABLE/g) ?? []).length;
-	return { sampled, valid: validSubstrings - invalid, invalid, unjudgeable, unavailable: false };
+	// Line-anchored: only count outcome prefixes. Filenames/errors may contain
+	// the tokens VALID/INVALID/UNJUDGEABLE and must not inflate the totals.
+	let valid = 0;
+	let invalid = 0;
+	let unjudgeable = 0;
+	for (const line of stdout.split(/\r?\n/)) {
+		const trimmed = line.trimStart();
+		if (/^word-validate:/i.test(trimmed)) continue;
+		if (/^VALID\b/.test(trimmed)) valid += 1;
+		else if (/^INVALID\b/.test(trimmed)) invalid += 1;
+		else if (/^UNJUDGEABLE\b/.test(trimmed)) unjudgeable += 1;
+	}
+	return { sampled, valid, invalid, unjudgeable, unavailable: false };
 };
 
 export const runWordSample = (sampleDir: string, sampled: number): WordLensVerdict => {

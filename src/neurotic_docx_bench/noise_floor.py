@@ -16,6 +16,7 @@ correct. This module still earns its keep two ways:
 from __future__ import annotations
 
 import json
+import math
 import statistics
 from datetime import UTC, datetime
 from pathlib import Path
@@ -35,13 +36,16 @@ def stats_from_deltas(deltas: list[float]) -> dict[str, float | int]:
 
 def eps_from_file(path: Path) -> float:
     """``max(DEFAULT_EPS, 3*sigma)`` from a recorded noise-floor file; the default
-    when the file is absent or unreadable."""
+    when the file is absent, unreadable, or carries a non-finite sigma."""
     if not path.is_file():
         return DEFAULT_EPS
     try:
         data = json.loads(path.read_text())
         sigma = float(data.get("sigma", 0.0))
     except (json.JSONDecodeError, OSError, TypeError, ValueError):
+        return DEFAULT_EPS
+    if not math.isfinite(sigma) or sigma < 0:
+        # Non-finite / negative would disable the gate or invert it — refuse them.
         return DEFAULT_EPS
     return max(DEFAULT_EPS, 3.0 * sigma)
 

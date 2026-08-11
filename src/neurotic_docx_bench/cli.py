@@ -483,11 +483,22 @@ def word_validate(
 
     n_valid = n_invalid = n_unjudgeable = 0
     records: dict[str, dict[str, object]] = {}
+    target_resolved = target.resolve()
+    # Directory target → keys relative to the folder; single-file target → filename only.
+    record_root = target_resolved if target.is_dir() else target_resolved.parent
     for docx in docs:
-        result = word_mod.validate_one(
-            docx, timeout=timeout, k=k, reference_duration_s=ref_duration,
-        )
-        records[docx.stem] = {
+        try:
+            result = word_mod.validate_one(
+                docx, timeout=timeout, k=k, reference_duration_s=ref_duration,
+            )
+        except word_mod.ModalProbeError as exc:
+            console.print(f"[red]word-validate probe unavailable:[/red] {exc}")
+            raise typer.Exit(2) from exc
+        try:
+            record_key = str(docx.resolve().relative_to(record_root))
+        except ValueError:
+            record_key = str(docx.resolve())
+        records[record_key] = {
             "outcome": result.outcome,
             "error": result.error,
             "duration_s": round(result.duration_s, 3),
@@ -1518,6 +1529,9 @@ def _canary_gate(
     if outcome.status == "no-baseline":
         console.print(f"[yellow]renderer canary skipped: {outcome.detail}[/yellow]")
         return
+    if outcome.status == "invalid-spec":
+        console.print(f"[red]RENDERER CANARY SPEC INVALID — refusing to score:[/red] {outcome.detail}")
+        raise typer.Exit(2)
     console.print(f"[red]RENDERER DRIFT — refusing to score:[/red] {outcome.detail}")
     console.print(
         "Every score produced in this environment would be incomparable with the "
@@ -1903,7 +1917,8 @@ def run(
     oracle_check: bool = typer.Option(
         True,
         "--oracle-check/--no-oracle-check",
-        help="verify the committed oracle manifest before running (drift → exit 2)",
+        help="verify the committed oracle manifest before running (drift → exit 2; "
+        "missing manifest warns and proceeds — synthetic corpora need not hard-fail)",
     ),
     canary_check: bool = typer.Option(
         True,
@@ -1986,9 +2001,14 @@ def canary_cmd(
             )
             return
         outcome = canary_mod.check(canary_mod.DEFAULT_SPEC_PATH, Path(work), dpi=dpi)
-    colour = {"ok": "green", "no-baseline": "yellow", "mismatch": "red"}[outcome.status]
+    colour = {
+        "ok": "green",
+        "no-baseline": "yellow",
+        "mismatch": "red",
+        "invalid-spec": "red",
+    }.get(outcome.status, "red")
     console.print(f"[{colour}]{outcome.status}[/{colour}] — {outcome.detail}")
-    if outcome.status == "mismatch":
+    if outcome.status in ("mismatch", "invalid-spec"):
         raise typer.Exit(2)
 
 
@@ -2027,8 +2047,8 @@ def noise_floor_cmd(
             shutil.copy(docx, src_dir / docx.name)
             r1 = renderer.to_pdfs(src_dir, sub / "r1", jobs=1)
             r2 = renderer.to_pdfs(src_dir, sub / "r2", jobs=1, force=True)
-            p1 = next(iter([r.pdf for r in r1.results if r.ok and r.pdf]), None)
-            p2 = next(iter([r.pdf for r in r2.results if r.ok and r.pdf]), None)
+            p1 = next((r.pdf for r in r1.results if r.ok and r.pdf), None)
+            p2 = next((r.pdf for r in r2.results if r.ok and r.pdf), None)
             if p1 is None or p2 is None:
                 console.print(f"[yellow]render failed for {docx.name}; skipped[/yellow]")
                 continue
@@ -2210,7 +2230,8 @@ def run_all(
     oracle_check: bool = typer.Option(
         True,
         "--oracle-check/--no-oracle-check",
-        help="verify the committed oracle manifest before running (drift → exit 2)",
+        help="verify the committed oracle manifest before running (drift → exit 2; "
+        "missing manifest warns and proceeds — synthetic corpora need not hard-fail)",
     ),
 ) -> None:
     """Run the NAMED bench.yaml runs sequentially, in the given order, e.g.

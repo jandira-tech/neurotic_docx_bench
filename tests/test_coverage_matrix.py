@@ -18,6 +18,7 @@ from neurotic_docx_bench.coverage_matrix import (
     KNOWN_FEATURES,
     KNOWN_REVISIONS,
     build_coverage,
+    latest_scores_by_vendor,
     render_markdown,
     tag_oracle_revisions,
     tag_source_docx,
@@ -344,6 +345,64 @@ def test_render_markdown_vendor_medians(tmp_path: Path) -> None:
     md = render_markdown(coverage, {"acme": {"p": 91.5}, "other": {"unrelated": 10.0}})
     assert "## Median score per tag per vendor" in md
     assert "| `table` | 91.5 (n=1) | — |" in md
+
+
+def test_render_markdown_joins_mixed_case_stems_to_lowercase_scores(tmp_path: Path) -> None:
+    """Mapping stems keep casing; bench score keys are lowercased — join must normalize."""
+    root, src, red = _corpus(tmp_path)
+    make_docx(red / "File_A_File_B_redline.docx", _INS)
+    mapping = write_mapping(root / "map.csv", [{
+        "pair_stem": "File_A_File_B",
+        "docx_source_base": "a.docx", "docx_source_next": "b.docx",
+        "redline_docx": "File_A_File_B_redline.docx",
+    }])
+    coverage = build_coverage([mapping], [src], [red])
+    assert "File_A_File_B" in coverage["pairs"]
+    scores = {"acme": {"file_a_file_b": 88.0, "MixedCase": 1.0}}
+    md = render_markdown(coverage, scores)
+    assert "88.0 (n=1)" in md
+    # Caller dict must not be mutated.
+    assert "MixedCase" in scores["acme"]
+    assert "mixedcase" not in scores["acme"]
+
+
+def test_latest_scores_by_vendor_filters_non_numeric_and_non_finite(tmp_path: Path) -> None:
+    p = tmp_path / "bench.jsonl"
+    p.write_text(json.dumps({
+        "vendor": "acme",
+        "benchmark": "script_redlines",
+        "scores": {
+            "ok": 90.0,
+            "string_num": "91.5",
+            "bad": "N/A",
+            "inf": "Infinity",
+            "nan": "NaN",
+        },
+    }) + "\n")
+    out = latest_scores_by_vendor(p)
+    assert out["acme"] == {"ok": 90.0, "string_num": 91.5}
+
+
+def test_latest_scores_by_vendor_empty_clears_stale(tmp_path: Path) -> None:
+    p = tmp_path / "bench.jsonl"
+    p.write_text(
+        json.dumps({"vendor": "acme", "benchmark": "script_redlines", "scores": {"a": 10.0}})
+        + "\n"
+        + json.dumps({"vendor": "acme", "benchmark": "script_redlines", "scores": {"a": "nope"}})
+        + "\n",
+    )
+    out = latest_scores_by_vendor(p)
+    assert out["acme"] == {}
+
+
+def test_unjoined_score_keys_ignores_case_differences() -> None:
+    coverage = {"pairs": {"File_A_File_B": {}}}
+    scores_by_vendor = {
+        "acme": {"file_a_file_b": 88.0, "unmatched_pair": 75.0},
+    }
+    unjoined = unjoined_score_keys(coverage, scores_by_vendor)
+    assert "file_a_file_b" not in unjoined["acme"]
+    assert "unmatched_pair" in unjoined["acme"]
 
 
 def test_unjoined_score_keys_counted_per_vendor(tmp_path: Path) -> None:

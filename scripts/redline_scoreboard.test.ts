@@ -247,4 +247,16 @@ describe("WV-1 output parse (PR9: UNJUDGEABLE outcome)", () => {
 		expect(verdict.invalid).toBe(0);
 		expect(verdict.unjudgeable).toBe(1);
 	});
+
+	it("does not count VALID/INVALID tokens inside filenames or error text", () => {
+		const stdout = [
+			"  VALID VALID_looking_name.docx",
+			"  INVALID other.docx: said VALID then INVALID then UNJUDGEABLE",
+			"word-validate: 1 valid, 1 invalid, 0 unjudgeable",
+		].join("\n");
+		const verdict = parseWordValidateOutput(stdout, 2);
+		expect(verdict.valid).toBe(1);
+		expect(verdict.invalid).toBe(1);
+		expect(verdict.unjudgeable).toBe(0);
+	});
 });
