@@ -1,6 +1,6 @@
 # Benchmark results
 
-Source: `results/bench.jsonl` — **168** fidelity row(s) (one per vendor×benchmark×**version**; 133 distinct vendor×version pin(s). docxodus rows with n_docs ≤ 100 are dropped as smoke/partial).
+Source: `results/bench.jsonl` — **281** fidelity row(s) (one per vendor×benchmark×**version**; 246 distinct vendor×version pin(s). docxodus rows with n_docs ≤ 100 are dropped as smoke/partial).
 
 Scores are 0–100 (higher = closer to the Microsoft Word oracle). Cross-renderer comparisons (LibreOffice vs Playwright) are **not** directly comparable — only compare within the same benchmark. Different **versions** of the same vendor are kept so you can compare pins (e.g. docxodus 6.4.0 vs 7.0.0).
 
@@ -15,17 +15,130 @@ script_redlines (LibreOffice render vs Word oracle)
 | # | vendor | version | mean | median | itt_mean | itt_median | skill_median | failures | n_docs | itt_n | exact_100 | ≥90 | <50 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | docxodus | 9.0.0 | 80.5535 | 91.1892 | 80.2368 | 91.108 | 100 | 4 | 760 | 763 | 186 | 392 | 95 |
-| 2 | jubarte | jubarte-final@d43557e042c1 | 77.0151 | 78.5311 | 77.0151 | 78.5311 | 53.0737 | 0 | 763 | 763 | 142 | 277 | 80 |
-| 3 | jubarte-rust | jubarte-rust@fcea02da49f4 | 76.2072 | 77.9542 | 76.2072 | 77.9542 | 86.1884 | 0 | 763 | 763 | 158 | 307 | 108 |
-| 4 | jubarte-wasm | 0.1.0 | 76.2072 | 77.9542 | 76.2072 | 77.9542 | 86.1884 | 0 | 763 | 763 | 158 | 307 | 108 |
-| 5 | jubarte-ast | jubarte-final@d43557e042c1 | 70.5699 | 68.6678 | 69.83 | 68.2992 | 74.8855 | 9 | 755 | 763 | 84 | 178 | 142 |
-| 6 | superdoc | 1.19.2 | 56.3218 | 54.8131 | 49.3898 | 52.9529 | -0.0027 | 33 | 171 | 195 | 2 | 3 | 51 |
-| 7 | folio | 0.15.13 | 52.1299 | 50.4313 | 50.8318 | 50.2913 | 4.3275 | 19 | 744 | 763 | 0 | 5 | 354 |
-| 8 | superdoc | 1.21.3 | 53.1281 | 51.5561 | 46.3043 | 50.1612 | -0.0027 | 115 | 665 | 763 | 3 | 14 | 278 |
-| 9 | superdoc-redlines | 0.2.0 | 51.4092 | 50.1062 | 47.3665 | 49.1564 | 1.4947 | 68 | 703 | 763 | 0 | 5 | 346 |
-| 10 | docx-redline-js | 0.3.0 | 46.1928 | 47.4243 | 45.1636 | 47.2226 | -3.3472 | 17 | 746 | 763 | 0 | 0 | 517 |
-| 11 | redlines | 0.6.1 | 45.9391 | 47.1411 | 44.8554 | 47.0451 | -2.9557 | 18 | 745 | 763 | 0 | 0 | 488 |
-| 12 | superdoc | 2.0.0 | 45.1946 | 46.7186 | 19.606 | 0 | -16.4745 | 432 | 331 | 763 | 1 | 4 | 269 |
+| 2 | jubarte-rust | jubarte-rust@4a6065089e4d+git.fc8c50f879974568278bcd33c476b153229313f0 | 81.4063 | 88.7331 | 81.4063 | 88.7331 | 93.199 | 0 | 763 | 763 | 193 | 368 | 49 |
+| 3 | jubarte-rust | jubarte-rust@eb34d99e486c+git.fc8c50f879974568278bcd33c476b153229313f0 | 81.3959 | 88.7331 | 81.3959 | 88.7331 | 93.199 | 0 | 763 | 763 | 193 | 367 | 49 |
+| 4 | jubarte-rust | jubarte-rust@3af52d7e2153+git.fc8c50f879974568278bcd33c476b153229313f0 | 81.3835 | 88.6893 | 81.3835 | 88.6893 | 93.199 | 0 | 763 | 763 | 193 | 367 | 49 |
+| 5 | jubarte-rust | jubarte-rust@1b9081666e72+git.fc8c50f879974568278bcd33c476b153229313f0 | 81.3463 | 88.6893 | 81.3463 | 88.6893 | 90.1215 | 0 | 763 | 763 | 193 | 365 | 49 |
+| 6 | jubarte-rust | jubarte-rust@9b88994c2a01+git.fc8c50f879974568278bcd33c476b153229313f0 | 81.3659 | 88.6089 | 81.3659 | 88.6089 | 90.1215 | 0 | 763 | 763 | 194 | 367 | 49 |
+| 7 | jubarte | jubarte-final@a58157a9cd2d | 81.4686 | 88.5972 | 81.4686 | 88.5972 | 79.25 | 0 | 763 | 763 | 202 | 369 | 65 |
+| 8 | jubarte | jubarte-final@138300e8471d | 81.4564 | 88.5972 | 81.4564 | 88.5972 | 79.25 | 0 | 763 | 763 | 202 | 368 | 65 |
+| 9 | jubarte | jubarte-final@300cc3edf753 | 81.4515 | 88.5972 | 81.4515 | 88.5972 | 79.25 | 0 | 763 | 763 | 202 | 368 | 65 |
+| 10 | jubarte | jubarte-final@a6caf6b44537 | 81.4453 | 88.5972 | 81.4453 | 88.5972 | 79.25 | 0 | 763 | 763 | 199 | 368 | 65 |
+| 11 | jubarte | jubarte-final@7ef64a75db56 | 81.4371 | 88.5972 | 81.4371 | 88.5972 | 79.25 | 0 | 763 | 763 | 201 | 367 | 65 |
+| 12 | jubarte | 0.1.0@0676fa9064f1 | 81.3788 | 88.5165 | 81.3788 | 88.5165 | 79.25 | 0 | 763 | 763 | 201 | 366 | 66 |
+| 13 | jubarte-rust | jubarte-rust@7ee5daea8fb9+git.fc8c50f879974568278bcd33c476b153229313f0 | 81.3062 | 88.5165 | 81.3062 | 88.5165 | 89.746 | 0 | 763 | 763 | 191 | 366 | 49 |
+| 14 | jubarte-rust | jubarte-rust@1ac8d72aa73a+git.fc8c50f879974568278bcd33c476b153229313f0 | 81.2996 | 88.5165 | 81.2996 | 88.5165 | 88.9724 | 0 | 763 | 763 | 187 | 364 | 49 |
+| 15 | jubarte-rust | jubarte-rust@f48dcacc7478+git.fc8c50f879974568278bcd33c476b153229313f0 | 81.2961 | 88.5165 | 81.2961 | 88.5165 | 89.746 | 0 | 763 | 763 | 191 | 366 | 49 |
+| 16 | jubarte | jubarte-final@38e6f956cb44 | 81.4165 | 88.5119 | 81.4165 | 88.5119 | 79.25 | 0 | 763 | 763 | 202 | 367 | 66 |
+| 17 | jubarte-rust | jubarte-rust@076ef86b4e40+git.fc8c50f879974568278bcd33c476b153229313f0 | 81.2339 | 88.4278 | 81.2339 | 88.4278 | 89.6361 | 0 | 763 | 763 | 191 | 363 | 49 |
+| 18 | jubarte-rust | jubarte-rust@b79584ee185e+git.7ff6c38606a1595e80a4600d81603640fbacd472 | 81.2453 | 88.3311 | 81.2453 | 88.3311 | 89.6361 | 0 | 763 | 763 | 187 | 364 | 49 |
+| 19 | jubarte-rust | jubarte-rust@f3609460e82a+git.3e1883881eef64647a81dabe858a137e60026a3a | 81.1322 | 88.182 | 81.1322 | 88.182 | 89.0123 | 0 | 763 | 763 | 184 | 362 | 50 |
+| 20 | jubarte-rust | jubarte-rust@9f4892c93e04+git.a6d5890 | 81.1095 | 88.182 | 81.1095 | 88.182 | 89.0123 | 0 | 763 | 763 | 184 | 363 | 49 |
+| 21 | jubarte-rust | jubarte-rust@59b02c068a09+git.0fcae65 | 81.1719 | 88.1561 | 81.1719 | 88.1561 | 89.0123 | 0 | 763 | 763 | 184 | 363 | 49 |
+| 22 | jubarte-rust | jubarte-rust@5d0e047c4d1e+git.963b8e2 | 81.1275 | 88.1561 | 81.1275 | 88.1561 | 89.0123 | 0 | 763 | 763 | 184 | 363 | 49 |
+| 23 | jubarte-rust | jubarte-rust@6691bea93ef4+git.a0281fc | 81.1268 | 88.1561 | 81.1268 | 88.1561 | 89.0123 | 0 | 763 | 763 | 185 | 363 | 49 |
+| 24 | jubarte-rust | jubarte-rust@d434447d27ce+git.fcb08274fcafbc0bf3669b26d1e9b0e957743a73 | 80.9224 | 86.7269 | 80.9224 | 86.7269 | 89.0123 | 0 | 763 | 763 | 182 | 358 | 49 |
+| 25 | jubarte | jubarte-final@88c1b1c36479 | 80.5701 | 86.6639 | 80.5701 | 86.6639 | 74.1998 | 0 | 763 | 763 | 197 | 346 | 69 |
+| 26 | jubarte | jubarte-final@6f48fe914d9a+git.d44dc07498de8ef7560e45ca7efcc3340f0b778e | 80.6024 | 86.6013 | 80.6024 | 86.6013 | 74.1998 | 0 | 763 | 763 | 201 | 347 | 69 |
+| 27 | jubarte-rust | jubarte-rust@49d62ef4590b+git.fcb08274fcafbc0bf3669b26d1e9b0e957743a73 | 80.7925 | 86.452 | 80.7925 | 86.452 | 89.0123 | 0 | 763 | 763 | 181 | 355 | 49 |
+| 28 | jubarte-rust | jubarte-rust@52cac2981586+git.fcb08274fcafbc0bf3669b26d1e9b0e957743a73 | 80.7045 | 86.4366 | 80.7045 | 86.4366 | 89.0123 | 0 | 763 | 763 | 181 | 354 | 49 |
+| 29 | jubarte | jubarte-final@43a6633fd17e+git.a9e4a33ac250293c547fe878ebb81068deebaeb6 | 80.3604 | 86.4243 | 80.3604 | 86.4243 | 74.1998 | 0 | 763 | 763 | 188 | 343 | 70 |
+| 30 | jubarte-rust | jubarte-rust@d100650f7be0+git.17afecafc3deb2b99c4577cbd0fbf6a0e6356daf | 80.5789 | 86.1607 | 80.5789 | 86.1607 | 89.0123 | 0 | 763 | 763 | 180 | 353 | 50 |
+| 31 | jubarte-rust | jubarte-rust@50fd692d367f+git.e2cf3556ddbdfb115161c47529e36f20ca3c233a | 80.5658 | 86.1607 | 80.5658 | 86.1607 | 89.0123 | 0 | 763 | 763 | 180 | 353 | 51 |
+| 32 | jubarte-rust | jubarte-rust@9b85d42d42e1+git.84bb80216132b6f249de1455dba9b6092664ecea | 80.5154 | 86.0126 | 80.5154 | 86.0126 | 89.0123 | 0 | 763 | 763 | 180 | 353 | 52 |
+| 33 | jubarte-rust | jubarte-rust@a46fb002a1a8+git.970a113dde4b71de07ccdda4a67cd2cbc68bdcc1 | 80.4136 | 86.0123 | 80.4136 | 86.0123 | 89.0123 | 0 | 763 | 763 | 180 | 352 | 54 |
+| 34 | jubarte | jubarte-final@066e56f0970b | 80.3036 | 85.9573 | 80.3036 | 85.9573 | 71.7327 | 0 | 763 | 763 | 199 | 344 | 69 |
+| 35 | jubarte-rust | jubarte-rust@60fe4f2fb0cd+git.ebf1a79 | 79.4668 | 85.9057 | 79.4668 | 85.9057 | 89.1943 | 0 | 763 | 763 | 173 | 351 | 71 |
+| 36 | jubarte-rust | jubarte-rust@656ba15ca16e+git.ebf1a79 | 79.4873 | 85.3205 | 79.4873 | 85.3205 | 89.1943 | 0 | 763 | 763 | 173 | 350 | 70 |
+| 37 | jubarte-rust | jubarte-rust@9854c9e68ddd+git.9d46888 | 80.0835 | 85.1649 | 80.0835 | 85.1649 | 89.0123 | 0 | 763 | 763 | 179 | 347 | 55 |
+| 38 | jubarte-rust | jubarte-rust@97da13af151c+git.ebf1a7996df49f99fb40f4f67713e61cfd19c731 | 79.581 | 84.8888 | 79.581 | 84.8888 | 89.6361 | 0 | 763 | 763 | 182 | 344 | 72 |
+| 39 | jubarte-rust | jubarte-rust@8047e6cb5052+git.fddb30f | 80.0073 | 84.8864 | 80.0073 | 84.8864 | 88.4951 | 0 | 763 | 763 | 176 | 343 | 56 |
+| 40 | jubarte-rust | jubarte-rust@9ba60702c118+git.e3bc6b6 | 79.6418 | 84.8864 | 79.6418 | 84.8864 | 89.0123 | 0 | 763 | 763 | 178 | 344 | 70 |
+| 41 | jubarte-rust | jubarte-rust@279e58418eaa+git.ebf1a7996df49f99fb40f4f67713e61cfd19c731 | 79.5678 | 84.8864 | 79.5678 | 84.8864 | 89.1943 | 0 | 763 | 763 | 182 | 344 | 72 |
+| 42 | jubarte-wasm | 0.1.0@4b36f4db1d2f+git.ebf1a7996df49f99fb40f4f67713e61cfd19c731 | 79.5678 | 84.8864 | 79.5678 | 84.8864 | 89.1943 | 0 | 763 | 763 | 182 | 344 | 72 |
+| 43 | jubarte-rust | jubarte-rust@ba4cfc3ecc67+git.ebf1a7996df49f99fb40f4f67713e61cfd19c731 | 79.5621 | 84.8864 | 79.5621 | 84.8864 | 89.1943 | 0 | 763 | 763 | 182 | 344 | 72 |
+| 44 | jubarte-wasm | 0.1.0@e1e19c982338+git.ebf1a7996df49f99fb40f4f67713e61cfd19c731 | 79.5621 | 84.8864 | 79.5621 | 84.8864 | 89.1943 | 0 | 763 | 763 | 182 | 344 | 72 |
+| 45 | jubarte-rust | jubarte-rust@bea5f183c4c5+git.f6959f8 | 79.5396 | 84.8864 | 79.5396 | 84.8864 | 89.0123 | 0 | 763 | 763 | 178 | 344 | 71 |
+| 46 | jubarte-rust | jubarte-rust@e0fe28e5b256+git.2351844 | 79.4635 | 84.8864 | 79.4635 | 84.8864 | 89.0123 | 0 | 763 | 763 | 178 | 343 | 71 |
+| 47 | jubarte-rust | jubarte-rust@f86091a180ce+git.ebf1a7996df49f99fb40f4f67713e61cfd19c731 | 79.4635 | 84.8864 | 79.4635 | 84.8864 | 89.0123 | 0 | 763 | 763 | 178 | 343 | 71 |
+| 48 | jubarte-wasm | 0.1.0@18f6c9fd87db+git.ebf1a7996df49f99fb40f4f67713e61cfd19c731 | 79.4635 | 84.8864 | 79.4635 | 84.8864 | 89.0123 | 0 | 763 | 763 | 178 | 343 | 71 |
+| 49 | jubarte-rust | jubarte-rust@94ac5db42c3b+git.196d97e | 80.0099 | 84.5408 | 80.0099 | 84.5408 | 89.0123 | 0 | 763 | 763 | 179 | 346 | 54 |
+| 50 | jubarte-rust | jubarte-rust@8dea7e733d6d+git.ec66729 | 79.9416 | 84.5408 | 79.9416 | 84.5408 | 88.4951 | 0 | 763 | 763 | 178 | 343 | 57 |
+| 51 | jubarte-rust | jubarte-rust@36224f1d081b+git.27c8c00 | 79.7128 | 84.4626 | 79.7128 | 84.4626 | 88.4951 | 0 | 763 | 763 | 176 | 343 | 60 |
+| 52 | jubarte-rust | jubarte-rust@0e0a602dab95+git.ebf1a7996df49f99fb40f4f67713e61cfd19c731 | 79.4838 | 84.4626 | 79.4838 | 84.4626 | 87.8941 | 0 | 763 | 763 | 179 | 340 | 72 |
+| 53 | jubarte-rust | jubarte-rust@5d8d1ac7be6e+git.a3c8d40 | 79.7484 | 84.3155 | 79.7484 | 84.3155 | 88.4951 | 0 | 763 | 763 | 173 | 341 | 55 |
+| 54 | jubarte-rust | jubarte-rust@66c3c793a724+git.059808d | 79.2188 | 84.222 | 79.2188 | 84.222 | 89.0123 | 0 | 763 | 763 | 177 | 339 | 71 |
+| 55 | jubarte-rust | jubarte-rust@7837955c0955+git.ebf1a7996df49f99fb40f4f67713e61cfd19c731 | 79.0459 | 83.5854 | 79.0459 | 83.5854 | 89.0123 | 0 | 763 | 763 | 175 | 334 | 71 |
+| 56 | jubarte-rust | jubarte-rust@39fcb0806e4c+git.0f39b64e69b54a04828d78e73d071d0949dee73c | 78.8943 | 83.5854 | 78.8943 | 83.5854 | 89.1943 | 0 | 763 | 763 | 176 | 337 | 75 |
+| 57 | jubarte-wasm | 0.1.0@a795fa73ea5f+git.0f39b64e69b54a04828d78e73d071d0949dee73c | 78.8943 | 83.5854 | 78.8943 | 83.5854 | 89.1943 | 0 | 763 | 763 | 176 | 337 | 75 |
+| 58 | jubarte | jubarte-final@389db881b0bf+git.07bd8ba2113c65fdb2fe4d4ab965060337f0a8e7 | 79.1927 | 83.2251 | 79.1927 | 83.2251 | 63.4649 | 0 | 763 | 763 | 174 | 323 | 74 |
+| 59 | jubarte-rust | jubarte-rust@367ee1c460ed+git.0ab0e1c | 79.3289 | 82.9931 | 79.3289 | 82.9931 | 84.575 | 0 | 763 | 763 | 171 | 334 | 63 |
+| 60 | jubarte-rust | jubarte-rust@5d704d24d79a+git.f91341b25e532ef7ff0a4ecb14e015a771f94c9f | 79.4531 | 82.7618 | 79.4531 | 82.7618 | 84.9356 | 0 | 763 | 763 | 166 | 336 | 57 |
+| 61 | jubarte-rust | jubarte-rust@38a1d9d3004f+git.eb5b8fe | 78.8714 | 82.3032 | 78.8714 | 82.3032 | 88.9386 | 0 | 763 | 763 | 166 | 329 | 69 |
+| 62 | jubarte-rust | jubarte-rust@d2de8e147655+git.b910a23bce9b63a393ac6186ab366a39d6aaa504 | 78.0451 | 81.8707 | 78.0451 | 81.8707 | 88.0561 | 0 | 763 | 763 | 165 | 321 | 82 |
+| 63 | jubarte-wasm | 0.1.0@2957178cc645+git.b910a23bce9b63a393ac6186ab366a39d6aaa504 | 78.0451 | 81.8707 | 78.0451 | 81.8707 | 88.0561 | 0 | 763 | 763 | 165 | 321 | 82 |
+| 64 | jubarte-wasm | 0.1.0@b13bcb128725+git.bae2df5748e5bce5a3873056a895cbe769285c74 | 77.9702 | 81.8301 | 77.9702 | 81.8301 | 88.0561 | 0 | 763 | 763 | 163 | 320 | 83 |
+| 65 | jubarte-rust | jubarte-rust@747fdf8585a7+git.bae2df5748e5bce5a3873056a895cbe769285c74 | 77.9701 | 81.8301 | 77.9701 | 81.8301 | 88.0561 | 0 | 763 | 763 | 163 | 320 | 83 |
+| 66 | jubarte-rust | jubarte-rust@667241eebe86+git.0e2923194145ea254ea617b9a99fb60ea9b1d431 | 77.9237 | 81.8301 | 77.9237 | 81.8301 | 87.9395 | 0 | 763 | 763 | 161 | 318 | 83 |
+| 67 | jubarte-wasm | 0.1.0@d3810de5aa53+git.0e2923194145ea254ea617b9a99fb60ea9b1d431 | 77.9237 | 81.8301 | 77.9237 | 81.8301 | 87.9395 | 0 | 763 | 763 | 161 | 318 | 83 |
+| 68 | jubarte-rust | jubarte-rust@bf7bb2748045+git.8cd638d6f0cdb261c55150c056af9cf44fa332a6 | 77.7516 | 81.4705 | 77.7516 | 81.4705 | 87.9395 | 0 | 763 | 763 | 161 | 317 | 86 |
+| 69 | jubarte-wasm | 0.1.0@1331a4ff7c61+git.8cd638d6f0cdb261c55150c056af9cf44fa332a6 | 77.7516 | 81.4705 | 77.7516 | 81.4705 | 87.9395 | 0 | 763 | 763 | 161 | 317 | 86 |
+| 70 | jubarte-rust | jubarte-rust@74bbefc415c4+git.6817a28378372d6e7c95227cf300889e74ab06e4 | 77.6944 | 81.4434 | 77.6944 | 81.4434 | 87.9395 | 0 | 763 | 763 | 161 | 316 | 86 |
+| 71 | jubarte-wasm | 0.1.0@dc46d94d88ab+git.6817a28378372d6e7c95227cf300889e74ab06e4 | 77.6944 | 81.4434 | 77.6944 | 81.4434 | 87.9395 | 0 | 763 | 763 | 161 | 316 | 86 |
+| 72 | jubarte-rust | jubarte-rust@736e49cff080+git.24b182f5824aaf9acdd3a0c00e9bf88b22b6fde9 | 77.555 | 81.1624 | 77.555 | 81.1624 | 86.1884 | 0 | 763 | 763 | 160 | 315 | 89 |
+| 73 | jubarte-wasm | 0.1.0@d5f48a35f21a+git.24b182f5824aaf9acdd3a0c00e9bf88b22b6fde9 | 77.555 | 81.1624 | 77.555 | 81.1624 | 86.1884 | 0 | 763 | 763 | 160 | 315 | 89 |
+| 74 | jubarte-rust | jubarte-rust@b9d4740f3529+git.ebf1a79 | 78.0735 | 81.1332 | 78.0735 | 81.1332 | 88.0561 | 0 | 763 | 763 | 163 | 329 | 85 |
+| 75 | jubarte-rust | jubarte-rust@644fa2c1c30a+git.d619d40 | 78.6064 | 81.1185 | 78.6064 | 81.1185 | 79.5577 | 0 | 763 | 763 | 149 | 313 | 63 |
+| 76 | jubarte | jubarte-final@7f6d70bdc3ce+git.b29cc0ab4efac5b6c25ad1fe0b08cbc2a8157970 | 78.1105 | 80.9583 | 78.1105 | 80.9583 | 60.2398 | 0 | 763 | 763 | 158 | 297 | 76 |
+| 77 | jubarte | jubarte-final@77e68faebcda+git.b76f204f67549088bcdda1f961bf47f8bf8116e5 | 77.9828 | 80.6738 | 77.9828 | 80.6738 | 55.3087 | 0 | 763 | 763 | 154 | 295 | 76 |
+| 78 | jubarte-rust | jubarte-rust@992b5db46add+git.09545197c99f7b21583e53cb6e2b220b50d295ac | 77.3357 | 80.4932 | 77.3357 | 80.4932 | 86.1884 | 0 | 763 | 763 | 159 | 312 | 88 |
+| 79 | jubarte-rust | jubarte-rust@09e60c15f5c5+git.d851cee4022bb956bf6615bb385b7bb8c4318e72 | 76.8002 | 80.4864 | 76.8002 | 80.4864 | 99.2508 | 0 | 96 | 96 | 18 | 35 | 11 |
+| 80 | jubarte | jubarte-final@041a9bd0cbc3+git.8f8ea75949175abde9b7700308190a3dcd3508ab | 77.7654 | 79.9837 | 77.7654 | 79.9837 | 54.1655 | 0 | 763 | 763 | 152 | 293 | 76 |
+| 81 | jubarte-rust | jubarte-rust@8a1e896365b3+git.1be1fcd060ce0d8e2a1b0f91df618d8ec651e3ba | 76.7112 | 78.971 | 76.7112 | 78.971 | 86.1884 | 0 | 763 | 763 | 158 | 309 | 101 |
+| 82 | jubarte-wasm | 0.1.0 | 76.6806 | 78.8046 | 76.5801 | 78.6382 | 86.0616 | 1 | 762 | 763 | 157 | 308 | 101 |
+| 83 | jubarte | jubarte-final@6db0dcdb2f1a+git.d99ccb5b3adda605e5304200ad88c1aff7fe53c2 | 77.0151 | 78.5311 | 77.0151 | 78.5311 | 53.0737 | 0 | 763 | 763 | 142 | 277 | 80 |
+| 84 | jubarte | jubarte-final@d43557e042c1 | 77.0151 | 78.5311 | 77.0151 | 78.5311 | 53.0737 | 0 | 763 | 763 | 142 | 277 | 80 |
+| 85 | jubarte-rust | jubarte-rust@fcea02da49f4 | 76.2072 | 77.9542 | 76.2072 | 77.9542 | 86.1884 | 0 | 763 | 763 | 158 | 307 | 108 |
+| 86 | jubarte-ast | jubarte-final@138300e8471d | 74.1963 | 76.1486 | 74.1963 | 76.1486 | 74.1998 | 0 | 763 | 763 | 96 | 236 | 114 |
+| 87 | jubarte-ast | jubarte-final@300cc3edf753 | 74.1963 | 76.1486 | 74.1963 | 76.1486 | 74.1998 | 0 | 763 | 763 | 96 | 236 | 114 |
+| 88 | jubarte-ast | jubarte-final@38e6f956cb44 | 74.1963 | 76.1486 | 74.1963 | 76.1486 | 74.1998 | 0 | 763 | 763 | 96 | 236 | 114 |
+| 89 | jubarte-ast | jubarte-final@7ef64a75db56 | 74.1963 | 76.1486 | 74.1963 | 76.1486 | 74.1998 | 0 | 763 | 763 | 96 | 236 | 114 |
+| 90 | jubarte-ast | jubarte-final@88c1b1c36479 | 74.1963 | 76.1486 | 74.1963 | 76.1486 | 74.1998 | 0 | 763 | 763 | 96 | 236 | 114 |
+| 91 | jubarte-ast | jubarte-final@a6caf6b44537 | 74.1963 | 76.1486 | 74.1963 | 76.1486 | 74.1998 | 0 | 763 | 763 | 96 | 236 | 114 |
+| 92 | jubarte-ast | 0.1.0@0676fa9064f1 | 74.1962 | 76.1486 | 74.1962 | 76.1486 | 74.1998 | 0 | 763 | 763 | 96 | 236 | 114 |
+| 93 | jubarte-ast | jubarte-final@a58157a9cd2d | 74.1962 | 76.1486 | 74.1962 | 76.1486 | 74.1998 | 0 | 763 | 763 | 96 | 236 | 114 |
+| 94 | jubarte-ast | jubarte-final@d294713913bb+git.b256b039d54561800b4462fb67cfcd5a8143f606 | 74.4501 | 76.7449 | 73.572 | 76.1486 | 75.0483 | 10 | 754 | 763 | 96 | 234 | 112 |
+| 95 | jubarte-rust | jubarte-rust@9457b6549b5d+git.ebf1a79 | 76.3953 | 76.0408 | 76.3953 | 76.0408 | 74.1998 | 0 | 763 | 763 | 144 | 301 | 90 |
+| 96 | jubarte-ast | jubarte-final@0a703664346d+git.50155bfba69385bf0e99dd3a19b15da1f58e104c | 73.8663 | 75.8715 | 72.995 | 75.1212 | 75.0483 | 10 | 754 | 763 | 96 | 233 | 124 |
+| 97 | jubarte-ast | jubarte-final@c043b0aaefb3+git.19b5f14c6088a71280786a864d45cac3aa6e7c92 | 73.8663 | 75.8715 | 72.995 | 75.1212 | 75.0483 | 10 | 754 | 763 | 96 | 233 | 124 |
+| 98 | jubarte-ast | jubarte-final@6e7229a4d930+git.6f9f76fcd961c9ace7fce9941307b712ada01282 | 73.4588 | 74.2932 | 72.5923 | 73.7072 | 75.0483 | 10 | 754 | 763 | 91 | 229 | 126 |
+| 99 | jubarte-ast | jubarte-final@dc06c68fa885+git.1cfd5d08a6d7283834465dfc84d04ee6fbac5f81 | 73.4438 | 74.1458 | 72.5775 | 73.5851 | 75.0483 | 10 | 754 | 763 | 91 | 229 | 126 |
+| 100 | jubarte-ast | jubarte-final@5bf73ce40d09+git.f9c71f0cd5b7ea561c4739d61cad72a65296ed65 | 73.3729 | 74.1068 | 72.5074 | 73.5649 | 75.0483 | 10 | 754 | 763 | 91 | 228 | 127 |
+| 101 | jubarte-ast | jubarte-final@041a9bd0cbc3+git.8f8ea75949175abde9b7700308190a3dcd3508ab | 71.0799 | 68.7935 | 70.2415 | 68.6388 | 75.0483 | 10 | 754 | 763 | 91 | 187 | 139 |
+| 102 | jubarte-ast | jubarte-final@d43557e042c1 | 70.5699 | 68.6678 | 69.83 | 68.2992 | 74.8855 | 9 | 755 | 763 | 84 | 178 | 142 |
+| 103 | jubarte | 0.1.0@2f698925be74 | 69.6309 | 66.5103 | 69.6309 | 66.5103 | 82.7781 | 0 | 48 | 48 | 2 | 12 | 9 |
+| 104 | jubarte-rust | jubarte-rust@caa8d34a98b4+git.41b8736 | 69.1388 | 66.4078 | 69.1388 | 66.4078 | 99.8489 | 0 | 48 | 48 | 2 | 11 | 8 |
+| 105 | jubarte-rust | jubarte-rust@2769f17ac3a4+git.41b8736 | 69.1386 | 66.4078 | 69.1386 | 66.4078 | 99.8489 | 0 | 48 | 48 | 2 | 11 | 8 |
+| 106 | jubarte-rust | jubarte-rust@6691bea93ef4+git.963b8e2 | 69.1198 | 66.4078 | 69.1198 | 66.4078 | 99.8489 | 0 | 48 | 48 | 2 | 10 | 8 |
+| 107 | jubarte-rust | jubarte-rust@10a1fc647c8b+git.7d39077ee01dc24fc73652f6ac870afbb8f67efc dirty-m441 | 69.0334 | 66.4078 | 69.0334 | 66.4078 | 99.8489 | 0 | 48 | 48 | 2 | 10 | 8 |
+| 108 | jubarte-rust | jubarte-rust@12be353c8b85+git.a6d5890 | 69.0334 | 66.4078 | 69.0334 | 66.4078 | 99.8489 | 0 | 48 | 48 | 2 | 10 | 8 |
+| 109 | jubarte-rust | jubarte-rust@59b02c068a09+git.a0281fc | 69.0334 | 66.4078 | 69.0334 | 66.4078 | 99.8489 | 0 | 48 | 48 | 2 | 10 | 8 |
+| 110 | jubarte-rust | jubarte-rust@6ba7b0edba5e+git.a6d5890 | 69.0334 | 66.4078 | 69.0334 | 66.4078 | 99.8489 | 0 | 48 | 48 | 2 | 10 | 8 |
+| 111 | jubarte-rust | jubarte-rust@892a9548fd07+git.fc8c50f879974568278bcd33c476b153229313f0 | 69.0334 | 66.4078 | 69.0334 | 66.4078 | 99.8489 | 0 | 48 | 48 | 2 | 10 | 8 |
+| 112 | jubarte-rust | jubarte-rust@9eb9d6d17689+git.6b1a0686f11e1f80778e9262137fb429200cc839 | 69.0334 | 66.4078 | 69.0334 | 66.4078 | 99.8489 | 0 | 48 | 48 | 2 | 10 | 8 |
+| 113 | jubarte-rust | jubarte-rust@f3609460e82a+git.a487f0753ce5a47d0b496b353624fee154c19a3a dirty-m442 | 69.0334 | 66.4078 | 69.0334 | 66.4078 | 99.8489 | 0 | 48 | 48 | 2 | 10 | 8 |
+| 114 | jubarte-rust | jubarte-rust@0e3ff4a17e9d+git.3e1883881eef64647a81dabe858a137e60026a3a dirty-m443 | 69.0333 | 66.4078 | 69.0333 | 66.4078 | 99.8489 | 0 | 48 | 48 | 2 | 10 | 8 |
+| 115 | jubarte-rust | jubarte-rust@df77b0f5e1a4+git.0fcae658fac7203c35b801b2ac3e0c68f8bd57b6 dirty-m440 | 69.0333 | 66.4078 | 69.0333 | 66.4078 | 99.8489 | 0 | 48 | 48 | 2 | 10 | 8 |
+| 116 | jubarte-rust | jubarte-rust@48766d2de95c+git.fcb08274fcafbc0bf3669b26d1e9b0e957743a73 | 67.9428 | 66.4078 | 67.9428 | 66.4078 | 79.5756 | 0 | 48 | 48 | 2 | 8 | 8 |
+| 117 | jubarte-rust | jubarte-rust@66ab19649ff7+git.963b8e2 | 68.7032 | 64.3121 | 68.7032 | 64.3121 | 99.8489 | 0 | 48 | 48 | 2 | 10 | 8 |
+| 118 | jubarte-ast | 0.1.0@2f698925be74 | 65.1798 | 63.3453 | 65.1798 | 63.3453 | 71.0088 | 0 | 48 | 48 | 1 | 7 | 12 |
+| 119 | superdoc | 1.19.2 | 56.3218 | 54.8131 | 49.3898 | 52.9529 | -0.0027 | 33 | 171 | 195 | 2 | 3 | 51 |
+| 120 | folio | 0.15.13 | 52.1299 | 50.4313 | 50.8318 | 50.2913 | 4.3275 | 19 | 744 | 763 | 0 | 5 | 354 |
+| 121 | superdoc | 1.21.3 | 53.1281 | 51.5561 | 46.3043 | 50.1612 | -0.0027 | 115 | 665 | 763 | 3 | 14 | 278 |
+| 122 | superdoc-redlines | 0.2.0 | 51.4092 | 50.1062 | 47.3665 | 49.1564 | 1.4947 | 68 | 703 | 763 | 0 | 5 | 346 |
+| 123 | docx-redline-js | 0.3.0 | 46.1928 | 47.4243 | 45.1636 | 47.2226 | -3.3472 | 17 | 746 | 763 | 0 | 0 | 517 |
+| 124 | redlines | 0.6.1 | 45.9391 | 47.1411 | 44.8554 | 47.0451 | -2.9557 | 18 | 745 | 763 | 0 | 0 | 488 |
+| 125 | superdoc | 2.0.0 | 45.1946 | 46.7186 | 19.606 | 0 | -16.4745 | 432 | 331 | 763 | 1 | 4 | 269 |
 
 **Legacy corpus** (older, smaller corpora — not comparable with the rows above; kept for history until each tool re-runs):
 
@@ -158,9 +271,9 @@ Paired comparison on the **139** documents every vendor below completed (best pi
 | --- | --- | --- | --- | --- |
 | 1 | docxodus | 9.0.0 | 100.00 | 96.06 |
 | 2 | jubarte-rust | jubarte-rust@01ed1fac181e | 100.00 | 94.12 |
-| 3 | jubarte-wasm | 0.1.0 | 98.44 | 92.86 |
+| 3 | jubarte-wasm | 0.1.0@4b36f4db1d2f+git.ebf1a7996df49f99fb40f4f67713e61cfd19c731 | 98.74 | 92.92 |
 | 4 | jubarte | jubarte-final@3995702f73ed | 91.84 | 90.35 |
-| 5 | jubarte-ast | jubarte-final@d43557e042c1 | 91.36 | 89.39 |
+| 5 | jubarte-ast | jubarte-final@138300e8471d | 91.73 | 89.00 |
 | 6 | sanity-word | — | 73.95 | 71.90 |
 | 7 | superdoc-redlines | 0.2.0 | 58.14 | 59.35 |
 | 8 | ooxmlsdk | — | 57.13 | 58.14 |
@@ -178,9 +291,9 @@ Per-doc paired deltas on shared documents (best pin per vendor); `win/loss/tie` 
 | docx-redline-js | docxodus | 152 | 4/148/0 | -48.70 | 1.37e-26 |
 | docx-redline-js | folio | 161 | 47/113/1 | -5.19 | 7.03e-14 |
 | docx-redline-js | jubarte | 161 | 0/161/0 | -42.56 | 3.59e-28 |
-| docx-redline-js | jubarte-ast | 152 | 2/150/0 | -41.16 | 1.22e-26 |
+| docx-redline-js | jubarte-ast | 152 | 4/148/0 | -41.16 | 3.07e-26 |
 | docx-redline-js | jubarte-rust | 161 | 0/161/0 | -46.99 | 3.59e-28 |
-| docx-redline-js | jubarte-wasm | 152 | 2/150/0 | -46.37 | 1.29e-26 |
+| docx-redline-js | jubarte-wasm | 152 | 2/150/0 | -46.47 | 1.29e-26 |
 | docx-redline-js | ooxmlsdk | 161 | 36/125/0 | -7.83 | 1.59e-12 |
 | docx-redline-js | redlines | 151 | 57/94/0 | -2.31 | 2.53e-02 |
 | docx-redline-js | sanity-word | 160 | 15/145/0 | -22.95 | 1.92e-24 |
@@ -188,49 +301,49 @@ Per-doc paired deltas on shared documents (best pin per vendor); `win/loss/tie` 
 | docx-redline-js | superdoc-redlines | 143 | 41/101/1 | -6.25 | 2.46e-12 |
 | docxodus | folio | 194 | 189/5/0 | +37.84 | 4.62e-33 |
 | docxodus | jubarte | 154 | 93/23/38 | +2.67 | 3.87e-09 |
-| docxodus | jubarte-ast | 752 | 502/174/76 | +4.85 | 1.33e-45 |
+| docxodus | jubarte-ast | 760 | 466/199/95 | +1.46 | 2.58e-28 |
 | docxodus | jubarte-rust | 155 | 62/30/63 | +0.00 | 8.06e-04 |
-| docxodus | jubarte-wasm | 760 | 395/259/106 | +0.18 | 4.43e-11 |
+| docxodus | jubarte-wasm | 760 | 343/285/132 | +0.00 | 2.48e-02 |
 | docxodus | ooxmlsdk | 155 | 154/1/0 | +38.36 | 3.54e-27 |
 | docxodus | redlines | 745 | 727/18/0 | +40.19 | 1.15e-121 |
 | docxodus | sanity-word | 154 | 151/3/0 | +22.80 | 6.28e-27 |
 | docxodus | superdoc | 171 | 167/2/2 | +39.77 | 9.69e-30 |
 | docxodus | superdoc-redlines | 700 | 662/37/1 | +31.15 | 8.01e-113 |
 | folio | jubarte | 163 | 1/162/0 | -32.57 | 1.95e-28 |
-| folio | jubarte-ast | 190 | 5/184/1 | -29.92 | 2.13e-32 |
+| folio | jubarte-ast | 194 | 6/188/0 | -29.82 | 1.12e-31 |
 | folio | jubarte-rust | 164 | 1/163/0 | -35.63 | 1.36e-28 |
-| folio | jubarte-wasm | 194 | 6/188/0 | -33.62 | 5.07e-33 |
+| folio | jubarte-wasm | 194 | 6/188/0 | -34.24 | 4.84e-33 |
 | folio | ooxmlsdk | 164 | 86/78/0 | +0.76 | 5.70e-01 |
 | folio | redlines | 187 | 136/51/0 | +4.21 | 5.93e-15 |
 | folio | sanity-word | 163 | 25/138/0 | -14.34 | 1.40e-19 |
 | folio | superdoc | 170 | 99/70/1 | +0.90 | 1.27e-01 |
 | folio | superdoc-redlines | 179 | 75/100/4 | -0.49 | 1.53e-01 |
-| jubarte | jubarte-ast | 154 | 22/6/126 | +0.00 | 2.47e-02 |
+| jubarte | jubarte-ast | 154 | 23/9/122 | +0.00 | 5.48e-02 |
 | jubarte | jubarte-rust | 163 | 43/76/44 | +0.00 | 6.90e-04 |
-| jubarte | jubarte-wasm | 154 | 51/67/36 | +0.00 | 6.24e-02 |
+| jubarte | jubarte-wasm | 154 | 50/68/36 | +0.00 | 3.95e-02 |
 | jubarte | ooxmlsdk | 163 | 163/0/0 | +33.15 | 1.69e-28 |
 | jubarte | redlines | 153 | 153/0/0 | +39.39 | 7.39e-27 |
 | jubarte | sanity-word | 162 | 155/7/0 | +18.71 | 3.30e-27 |
 | jubarte | superdoc | 146 | 144/1/1 | +34.98 | 1.53e-25 |
 | jubarte | superdoc-redlines | 145 | 144/1/0 | +29.87 | 1.84e-25 |
-| jubarte-ast | jubarte-rust | 154 | 41/77/36 | -0.00 | 1.87e-04 |
-| jubarte-ast | jubarte-wasm | 755 | 240/446/69 | -1.38 | 3.38e-19 |
-| jubarte-ast | ooxmlsdk | 154 | 153/1/0 | +32.00 | 5.27e-27 |
-| jubarte-ast | redlines | 744 | 705/39/0 | +23.52 | 8.78e-118 |
-| jubarte-ast | sanity-word | 153 | 144/9/0 | +18.26 | 2.30e-25 |
-| jubarte-ast | superdoc | 171 | 165/5/1 | +33.94 | 2.63e-29 |
-| jubarte-ast | superdoc-redlines | 695 | 617/76/2 | +16.18 | 1.38e-93 |
-| jubarte-rust | jubarte-wasm | 155 | 29/0/126 | +0.00 | 8.76e-05 |
+| jubarte-ast | jubarte-rust | 155 | 40/78/37 | -0.01 | 1.03e-04 |
+| jubarte-ast | jubarte-wasm | 763 | 217/455/91 | -1.95 | 9.02e-24 |
+| jubarte-ast | ooxmlsdk | 155 | 153/2/0 | +31.91 | 3.82e-27 |
+| jubarte-ast | redlines | 745 | 717/28/0 | +30.38 | 2.44e-120 |
+| jubarte-ast | sanity-word | 154 | 143/11/0 | +18.17 | 1.35e-25 |
+| jubarte-ast | superdoc | 171 | 165/4/2 | +33.76 | 1.67e-29 |
+| jubarte-ast | superdoc-redlines | 703 | 652/50/1 | +21.57 | 1.13e-106 |
+| jubarte-rust | jubarte-wasm | 155 | 31/10/114 | +0.00 | 6.91e-03 |
 | jubarte-rust | ooxmlsdk | 164 | 163/1/0 | +36.46 | 1.18e-28 |
 | jubarte-rust | redlines | 153 | 153/0/0 | +42.48 | 7.39e-27 |
 | jubarte-rust | sanity-word | 163 | 160/3/0 | +20.81 | 3.59e-28 |
 | jubarte-rust | superdoc | 146 | 144/0/2 | +38.60 | 1.08e-25 |
 | jubarte-rust | superdoc-redlines | 146 | 145/1/0 | +33.91 | 1.18e-25 |
 | jubarte-wasm | ooxmlsdk | 155 | 153/2/0 | +35.52 | 3.68e-27 |
-| jubarte-wasm | redlines | 745 | 722/23/0 | +33.94 | 1.04e-120 |
-| jubarte-wasm | sanity-word | 154 | 149/5/0 | +20.21 | 1.66e-26 |
-| jubarte-wasm | superdoc | 171 | 166/3/2 | +36.85 | 1.06e-29 |
-| jubarte-wasm | superdoc-redlines | 703 | 657/44/2 | +25.97 | 2.40e-109 |
+| jubarte-wasm | redlines | 745 | 726/19/0 | +38.47 | 5.58e-122 |
+| jubarte-wasm | sanity-word | 154 | 149/5/0 | +20.21 | 2.50e-26 |
+| jubarte-wasm | superdoc | 171 | 166/3/2 | +37.26 | 1.18e-29 |
+| jubarte-wasm | superdoc-redlines | 703 | 671/30/2 | +29.54 | 1.90e-113 |
 | ooxmlsdk | redlines | 153 | 117/36/0 | +5.77 | 1.04e-16 |
 | ooxmlsdk | sanity-word | 230 | 15/215/0 | -14.02 | 3.48e-35 |
 | ooxmlsdk | superdoc | 146 | 82/64/0 | +2.00 | 2.59e-01 |
@@ -249,10 +362,125 @@ Docs where the pixel lens and a judging lens (functional accept/reject invariant
 - **docx-redline-js** 0.3.0: 2 doc(s) where the lenses disagree (0.5% of two-lens docs)
 - **docxodus** 9.0.0: 86 doc(s) where the lenses disagree (25.4% of two-lens docs)
 - **folio** 0.15.13: 106 doc(s) where the lenses disagree (28.8% of two-lens docs)
+- **jubarte** 0.1.0@0676fa9064f1: 21 doc(s) where the lenses disagree (5.6% of two-lens docs)
+- **jubarte** 0.1.0@2f698925be74: 1 doc(s) where the lenses disagree (20.0% of two-lens docs)
+- **jubarte** jubarte-final@041a9bd0cbc3+git.8f8ea75949175abde9b7700308190a3dcd3508ab: 19 doc(s) where the lenses disagree (5.0% of two-lens docs)
+- **jubarte** jubarte-final@066e56f0970b: 20 doc(s) where the lenses disagree (5.3% of two-lens docs)
+- **jubarte** jubarte-final@138300e8471d: 21 doc(s) where the lenses disagree (5.6% of two-lens docs)
+- **jubarte** jubarte-final@300cc3edf753: 21 doc(s) where the lenses disagree (5.6% of two-lens docs)
+- **jubarte** jubarte-final@389db881b0bf+git.07bd8ba2113c65fdb2fe4d4ab965060337f0a8e7: 21 doc(s) where the lenses disagree (5.6% of two-lens docs)
+- **jubarte** jubarte-final@38e6f956cb44: 21 doc(s) where the lenses disagree (5.6% of two-lens docs)
+- **jubarte** jubarte-final@43a6633fd17e+git.a9e4a33ac250293c547fe878ebb81068deebaeb6: 21 doc(s) where the lenses disagree (5.6% of two-lens docs)
+- **jubarte** jubarte-final@6db0dcdb2f1a+git.d99ccb5b3adda605e5304200ad88c1aff7fe53c2: 20 doc(s) where the lenses disagree (5.3% of two-lens docs)
+- **jubarte** jubarte-final@6f48fe914d9a+git.d44dc07498de8ef7560e45ca7efcc3340f0b778e: 21 doc(s) where the lenses disagree (5.6% of two-lens docs)
+- **jubarte** jubarte-final@77e68faebcda+git.b76f204f67549088bcdda1f961bf47f8bf8116e5: 19 doc(s) where the lenses disagree (5.0% of two-lens docs)
+- **jubarte** jubarte-final@7ef64a75db56: 21 doc(s) where the lenses disagree (5.6% of two-lens docs)
+- **jubarte** jubarte-final@7f6d70bdc3ce+git.b29cc0ab4efac5b6c25ad1fe0b08cbc2a8157970: 19 doc(s) where the lenses disagree (5.0% of two-lens docs)
+- **jubarte** jubarte-final@88c1b1c36479: 21 doc(s) where the lenses disagree (5.6% of two-lens docs)
+- **jubarte** jubarte-final@a58157a9cd2d: 21 doc(s) where the lenses disagree (5.6% of two-lens docs)
+- **jubarte** jubarte-final@a6caf6b44537: 21 doc(s) where the lenses disagree (5.6% of two-lens docs)
 - **jubarte** jubarte-final@d43557e042c1: 20 doc(s) where the lenses disagree (5.3% of two-lens docs)
+- **jubarte-ast** 0.1.0@0676fa9064f1: 25 doc(s) where the lenses disagree (6.6% of two-lens docs)
+- **jubarte-ast** jubarte-final@041a9bd0cbc3+git.8f8ea75949175abde9b7700308190a3dcd3508ab: 36 doc(s) where the lenses disagree (9.8% of two-lens docs)
+- **jubarte-ast** jubarte-final@0a703664346d+git.50155bfba69385bf0e99dd3a19b15da1f58e104c: 25 doc(s) where the lenses disagree (6.8% of two-lens docs)
+- **jubarte-ast** jubarte-final@138300e8471d: 25 doc(s) where the lenses disagree (6.6% of two-lens docs)
+- **jubarte-ast** jubarte-final@300cc3edf753: 25 doc(s) where the lenses disagree (6.6% of two-lens docs)
+- **jubarte-ast** jubarte-final@38e6f956cb44: 25 doc(s) where the lenses disagree (6.6% of two-lens docs)
+- **jubarte-ast** jubarte-final@5bf73ce40d09+git.f9c71f0cd5b7ea561c4739d61cad72a65296ed65: 25 doc(s) where the lenses disagree (6.8% of two-lens docs)
+- **jubarte-ast** jubarte-final@6e7229a4d930+git.6f9f76fcd961c9ace7fce9941307b712ada01282: 25 doc(s) where the lenses disagree (6.8% of two-lens docs)
+- **jubarte-ast** jubarte-final@7ef64a75db56: 25 doc(s) where the lenses disagree (6.6% of two-lens docs)
+- **jubarte-ast** jubarte-final@88c1b1c36479: 25 doc(s) where the lenses disagree (6.6% of two-lens docs)
+- **jubarte-ast** jubarte-final@a58157a9cd2d: 25 doc(s) where the lenses disagree (6.6% of two-lens docs)
+- **jubarte-ast** jubarte-final@a6caf6b44537: 25 doc(s) where the lenses disagree (6.6% of two-lens docs)
+- **jubarte-ast** jubarte-final@c043b0aaefb3+git.19b5f14c6088a71280786a864d45cac3aa6e7c92: 25 doc(s) where the lenses disagree (6.8% of two-lens docs)
+- **jubarte-ast** jubarte-final@d294713913bb+git.b256b039d54561800b4462fb67cfcd5a8143f606: 25 doc(s) where the lenses disagree (6.8% of two-lens docs)
 - **jubarte-ast** jubarte-final@d43557e042c1: 36 doc(s) where the lenses disagree (9.8% of two-lens docs)
+- **jubarte-ast** jubarte-final@dc06c68fa885+git.1cfd5d08a6d7283834465dfc84d04ee6fbac5f81: 25 doc(s) where the lenses disagree (6.8% of two-lens docs)
+- **jubarte-rust** jubarte-rust@076ef86b4e40+git.fc8c50f879974568278bcd33c476b153229313f0: 22 doc(s) where the lenses disagree (5.8% of two-lens docs)
+- **jubarte-rust** jubarte-rust@09e60c15f5c5+git.d851cee4022bb956bf6615bb385b7bb8c4318e72: 1 doc(s) where the lenses disagree (3.2% of two-lens docs)
+- **jubarte-rust** jubarte-rust@0e0a602dab95+git.ebf1a7996df49f99fb40f4f67713e61cfd19c731: 25 doc(s) where the lenses disagree (6.6% of two-lens docs)
+- **jubarte-rust** jubarte-rust@0e3ff4a17e9d+git.3e1883881eef64647a81dabe858a137e60026a3a
+dirty-m443: 1 doc(s) where the lenses disagree (20.0% of two-lens docs)
+- **jubarte-rust** jubarte-rust@10a1fc647c8b+git.7d39077ee01dc24fc73652f6ac870afbb8f67efc
+dirty-m441: 1 doc(s) where the lenses disagree (20.0% of two-lens docs)
+- **jubarte-rust** jubarte-rust@12be353c8b85+git.a6d5890: 1 doc(s) where the lenses disagree (20.0% of two-lens docs)
+- **jubarte-rust** jubarte-rust@1ac8d72aa73a+git.fc8c50f879974568278bcd33c476b153229313f0: 22 doc(s) where the lenses disagree (5.8% of two-lens docs)
+- **jubarte-rust** jubarte-rust@1b9081666e72+git.fc8c50f879974568278bcd33c476b153229313f0: 22 doc(s) where the lenses disagree (5.8% of two-lens docs)
+- **jubarte-rust** jubarte-rust@2769f17ac3a4+git.41b8736: 1 doc(s) where the lenses disagree (20.0% of two-lens docs)
+- **jubarte-rust** jubarte-rust@279e58418eaa+git.ebf1a7996df49f99fb40f4f67713e61cfd19c731: 25 doc(s) where the lenses disagree (6.6% of two-lens docs)
+- **jubarte-rust** jubarte-rust@36224f1d081b+git.27c8c00: 23 doc(s) where the lenses disagree (6.1% of two-lens docs)
+- **jubarte-rust** jubarte-rust@367ee1c460ed+git.0ab0e1c: 22 doc(s) where the lenses disagree (5.8% of two-lens docs)
+- **jubarte-rust** jubarte-rust@38a1d9d3004f+git.eb5b8fe: 23 doc(s) where the lenses disagree (6.1% of two-lens docs)
+- **jubarte-rust** jubarte-rust@39fcb0806e4c+git.0f39b64e69b54a04828d78e73d071d0949dee73c: 25 doc(s) where the lenses disagree (6.6% of two-lens docs)
+- **jubarte-rust** jubarte-rust@3af52d7e2153+git.fc8c50f879974568278bcd33c476b153229313f0: 22 doc(s) where the lenses disagree (5.8% of two-lens docs)
+- **jubarte-rust** jubarte-rust@49d62ef4590b+git.fcb08274fcafbc0bf3669b26d1e9b0e957743a73: 22 doc(s) where the lenses disagree (5.8% of two-lens docs)
+- **jubarte-rust** jubarte-rust@4a6065089e4d+git.fc8c50f879974568278bcd33c476b153229313f0: 23 doc(s) where the lenses disagree (6.1% of two-lens docs)
+- **jubarte-rust** jubarte-rust@50fd692d367f+git.e2cf3556ddbdfb115161c47529e36f20ca3c233a: 22 doc(s) where the lenses disagree (5.8% of two-lens docs)
+- **jubarte-rust** jubarte-rust@52cac2981586+git.fcb08274fcafbc0bf3669b26d1e9b0e957743a73: 22 doc(s) where the lenses disagree (5.8% of two-lens docs)
+- **jubarte-rust** jubarte-rust@59b02c068a09+git.0fcae65: 22 doc(s) where the lenses disagree (5.8% of two-lens docs)
+- **jubarte-rust** jubarte-rust@59b02c068a09+git.a0281fc: 1 doc(s) where the lenses disagree (20.0% of two-lens docs)
+- **jubarte-rust** jubarte-rust@5d0e047c4d1e+git.963b8e2: 22 doc(s) where the lenses disagree (5.8% of two-lens docs)
+- **jubarte-rust** jubarte-rust@5d704d24d79a+git.f91341b25e532ef7ff0a4ecb14e015a771f94c9f: 22 doc(s) where the lenses disagree (5.8% of two-lens docs)
+- **jubarte-rust** jubarte-rust@5d8d1ac7be6e+git.a3c8d40: 24 doc(s) where the lenses disagree (6.4% of two-lens docs)
+- **jubarte-rust** jubarte-rust@60fe4f2fb0cd+git.ebf1a79: 24 doc(s) where the lenses disagree (6.4% of two-lens docs)
+- **jubarte-rust** jubarte-rust@644fa2c1c30a+git.d619d40: 21 doc(s) where the lenses disagree (5.6% of two-lens docs)
+- **jubarte-rust** jubarte-rust@656ba15ca16e+git.ebf1a79: 24 doc(s) where the lenses disagree (6.4% of two-lens docs)
+- **jubarte-rust** jubarte-rust@667241eebe86+git.0e2923194145ea254ea617b9a99fb60ea9b1d431: 25 doc(s) where the lenses disagree (6.6% of two-lens docs)
+- **jubarte-rust** jubarte-rust@6691bea93ef4+git.963b8e2: 1 doc(s) where the lenses disagree (20.0% of two-lens docs)
+- **jubarte-rust** jubarte-rust@6691bea93ef4+git.a0281fc: 21 doc(s) where the lenses disagree (5.6% of two-lens docs)
+- **jubarte-rust** jubarte-rust@66ab19649ff7+git.963b8e2: 1 doc(s) where the lenses disagree (20.0% of two-lens docs)
+- **jubarte-rust** jubarte-rust@66c3c793a724+git.059808d: 25 doc(s) where the lenses disagree (6.6% of two-lens docs)
+- **jubarte-rust** jubarte-rust@6ba7b0edba5e+git.a6d5890: 1 doc(s) where the lenses disagree (20.0% of two-lens docs)
+- **jubarte-rust** jubarte-rust@736e49cff080+git.24b182f5824aaf9acdd3a0c00e9bf88b22b6fde9: 25 doc(s) where the lenses disagree (6.6% of two-lens docs)
+- **jubarte-rust** jubarte-rust@747fdf8585a7+git.bae2df5748e5bce5a3873056a895cbe769285c74: 25 doc(s) where the lenses disagree (6.6% of two-lens docs)
+- **jubarte-rust** jubarte-rust@74bbefc415c4+git.6817a28378372d6e7c95227cf300889e74ab06e4: 25 doc(s) where the lenses disagree (6.6% of two-lens docs)
+- **jubarte-rust** jubarte-rust@7837955c0955+git.ebf1a7996df49f99fb40f4f67713e61cfd19c731: 24 doc(s) where the lenses disagree (6.4% of two-lens docs)
+- **jubarte-rust** jubarte-rust@7ee5daea8fb9+git.fc8c50f879974568278bcd33c476b153229313f0: 22 doc(s) where the lenses disagree (5.8% of two-lens docs)
+- **jubarte-rust** jubarte-rust@8047e6cb5052+git.fddb30f: 23 doc(s) where the lenses disagree (6.1% of two-lens docs)
+- **jubarte-rust** jubarte-rust@892a9548fd07+git.fc8c50f879974568278bcd33c476b153229313f0: 1 doc(s) where the lenses disagree (20.0% of two-lens docs)
+- **jubarte-rust** jubarte-rust@8a1e896365b3+git.1be1fcd060ce0d8e2a1b0f91df618d8ec651e3ba: 25 doc(s) where the lenses disagree (6.6% of two-lens docs)
+- **jubarte-rust** jubarte-rust@8dea7e733d6d+git.ec66729: 23 doc(s) where the lenses disagree (6.1% of two-lens docs)
+- **jubarte-rust** jubarte-rust@9457b6549b5d+git.ebf1a79: 26 doc(s) where the lenses disagree (6.9% of two-lens docs)
+- **jubarte-rust** jubarte-rust@94ac5db42c3b+git.196d97e: 22 doc(s) where the lenses disagree (5.8% of two-lens docs)
+- **jubarte-rust** jubarte-rust@97da13af151c+git.ebf1a7996df49f99fb40f4f67713e61cfd19c731: 25 doc(s) where the lenses disagree (6.6% of two-lens docs)
+- **jubarte-rust** jubarte-rust@9854c9e68ddd+git.9d46888: 23 doc(s) where the lenses disagree (6.1% of two-lens docs)
+- **jubarte-rust** jubarte-rust@992b5db46add+git.09545197c99f7b21583e53cb6e2b220b50d295ac: 24 doc(s) where the lenses disagree (6.4% of two-lens docs)
+- **jubarte-rust** jubarte-rust@9b85d42d42e1+git.84bb80216132b6f249de1455dba9b6092664ecea: 22 doc(s) where the lenses disagree (5.8% of two-lens docs)
+- **jubarte-rust** jubarte-rust@9b88994c2a01+git.fc8c50f879974568278bcd33c476b153229313f0: 22 doc(s) where the lenses disagree (5.8% of two-lens docs)
+- **jubarte-rust** jubarte-rust@9ba60702c118+git.e3bc6b6: 25 doc(s) where the lenses disagree (6.6% of two-lens docs)
+- **jubarte-rust** jubarte-rust@9eb9d6d17689+git.6b1a0686f11e1f80778e9262137fb429200cc839: 1 doc(s) where the lenses disagree (20.0% of two-lens docs)
+- **jubarte-rust** jubarte-rust@9f4892c93e04+git.a6d5890: 22 doc(s) where the lenses disagree (5.8% of two-lens docs)
+- **jubarte-rust** jubarte-rust@a46fb002a1a8+git.970a113dde4b71de07ccdda4a67cd2cbc68bdcc1: 22 doc(s) where the lenses disagree (5.8% of two-lens docs)
+- **jubarte-rust** jubarte-rust@b79584ee185e+git.7ff6c38606a1595e80a4600d81603640fbacd472: 22 doc(s) where the lenses disagree (5.8% of two-lens docs)
+- **jubarte-rust** jubarte-rust@b9d4740f3529+git.ebf1a79: 25 doc(s) where the lenses disagree (6.6% of two-lens docs)
+- **jubarte-rust** jubarte-rust@ba4cfc3ecc67+git.ebf1a7996df49f99fb40f4f67713e61cfd19c731: 25 doc(s) where the lenses disagree (6.6% of two-lens docs)
+- **jubarte-rust** jubarte-rust@bea5f183c4c5+git.f6959f8: 25 doc(s) where the lenses disagree (6.6% of two-lens docs)
+- **jubarte-rust** jubarte-rust@bf7bb2748045+git.8cd638d6f0cdb261c55150c056af9cf44fa332a6: 25 doc(s) where the lenses disagree (6.6% of two-lens docs)
+- **jubarte-rust** jubarte-rust@caa8d34a98b4+git.41b8736: 1 doc(s) where the lenses disagree (20.0% of two-lens docs)
+- **jubarte-rust** jubarte-rust@d100650f7be0+git.17afecafc3deb2b99c4577cbd0fbf6a0e6356daf: 22 doc(s) where the lenses disagree (5.8% of two-lens docs)
+- **jubarte-rust** jubarte-rust@d2de8e147655+git.b910a23bce9b63a393ac6186ab366a39d6aaa504: 25 doc(s) where the lenses disagree (6.6% of two-lens docs)
+- **jubarte-rust** jubarte-rust@d434447d27ce+git.fcb08274fcafbc0bf3669b26d1e9b0e957743a73: 22 doc(s) where the lenses disagree (5.8% of two-lens docs)
+- **jubarte-rust** jubarte-rust@df77b0f5e1a4+git.0fcae658fac7203c35b801b2ac3e0c68f8bd57b6
+dirty-m440: 1 doc(s) where the lenses disagree (20.0% of two-lens docs)
+- **jubarte-rust** jubarte-rust@e0fe28e5b256+git.2351844: 25 doc(s) where the lenses disagree (6.6% of two-lens docs)
+- **jubarte-rust** jubarte-rust@eb34d99e486c+git.fc8c50f879974568278bcd33c476b153229313f0: 22 doc(s) where the lenses disagree (5.8% of two-lens docs)
+- **jubarte-rust** jubarte-rust@f3609460e82a+git.3e1883881eef64647a81dabe858a137e60026a3a: 22 doc(s) where the lenses disagree (5.8% of two-lens docs)
+- **jubarte-rust** jubarte-rust@f3609460e82a+git.a487f0753ce5a47d0b496b353624fee154c19a3a
+dirty-m442: 1 doc(s) where the lenses disagree (20.0% of two-lens docs)
+- **jubarte-rust** jubarte-rust@f48dcacc7478+git.fc8c50f879974568278bcd33c476b153229313f0: 22 doc(s) where the lenses disagree (5.8% of two-lens docs)
+- **jubarte-rust** jubarte-rust@f86091a180ce+git.ebf1a7996df49f99fb40f4f67713e61cfd19c731: 25 doc(s) where the lenses disagree (6.6% of two-lens docs)
 - **jubarte-rust** jubarte-rust@fcea02da49f4: 25 doc(s) where the lenses disagree (6.6% of two-lens docs)
-- **jubarte-wasm** 0.1.0: 25 doc(s) where the lenses disagree (6.6% of two-lens docs)
+- **jubarte-wasm** 0.1.0: 25 doc(s) where the lenses disagree (6.7% of two-lens docs)
+- **jubarte-wasm** 0.1.0@1331a4ff7c61+git.8cd638d6f0cdb261c55150c056af9cf44fa332a6: 25 doc(s) where the lenses disagree (6.6% of two-lens docs)
+- **jubarte-wasm** 0.1.0@18f6c9fd87db+git.ebf1a7996df49f99fb40f4f67713e61cfd19c731: 25 doc(s) where the lenses disagree (6.6% of two-lens docs)
+- **jubarte-wasm** 0.1.0@2957178cc645+git.b910a23bce9b63a393ac6186ab366a39d6aaa504: 25 doc(s) where the lenses disagree (6.6% of two-lens docs)
+- **jubarte-wasm** 0.1.0@4b36f4db1d2f+git.ebf1a7996df49f99fb40f4f67713e61cfd19c731: 25 doc(s) where the lenses disagree (6.6% of two-lens docs)
+- **jubarte-wasm** 0.1.0@a795fa73ea5f+git.0f39b64e69b54a04828d78e73d071d0949dee73c: 25 doc(s) where the lenses disagree (6.6% of two-lens docs)
+- **jubarte-wasm** 0.1.0@b13bcb128725+git.bae2df5748e5bce5a3873056a895cbe769285c74: 25 doc(s) where the lenses disagree (6.6% of two-lens docs)
+- **jubarte-wasm** 0.1.0@d3810de5aa53+git.0e2923194145ea254ea617b9a99fb60ea9b1d431: 25 doc(s) where the lenses disagree (6.6% of two-lens docs)
+- **jubarte-wasm** 0.1.0@d5f48a35f21a+git.24b182f5824aaf9acdd3a0c00e9bf88b22b6fde9: 25 doc(s) where the lenses disagree (6.6% of two-lens docs)
+- **jubarte-wasm** 0.1.0@dc46d94d88ab+git.6817a28378372d6e7c95227cf300889e74ab06e4: 25 doc(s) where the lenses disagree (6.6% of two-lens docs)
+- **jubarte-wasm** 0.1.0@e1e19c982338+git.ebf1a7996df49f99fb40f4f67713e61cfd19c731: 25 doc(s) where the lenses disagree (6.6% of two-lens docs)
 - **redlines** 0.6.1: 64 doc(s) where the lenses disagree (17.6% of two-lens docs)
 - **superdoc** 1.19.2: 25 doc(s) where the lenses disagree (15.9% of two-lens docs)
 - **superdoc** 1.21.3: 53 doc(s) where the lenses disagree (16.9% of two-lens docs)
@@ -366,11 +594,16 @@ visual_accepted_changes (Playwright)
 | folio | 0.5.0 | 2026-07-08T20:20:25.117836+00:00 | visual_redlines | 51.5494 | 51.6497 | 164 |
 | folio | 0.5.0 | 2026-07-08T20:14:38.167302+00:00 | visual_rendering | 59.6494 | 55.0967 | 198 |
 | jubarte | 0.1.0 | 2026-07-18T03:54:08.020820+00:00 | script_redlines | 83.4039 | 88.6547 | 164 |
+| jubarte | 0.1.0@0676fa9064f1 | 2026-08-11T06:16:32.933733+00:00 | script_redlines | 81.3788 | 88.5165 | 763 |
+| jubarte | 0.1.0@2f698925be74 | 2026-08-11T06:07:58.493631+00:00 | script_redlines | 69.6309 | 66.5103 | 48 |
 | jubarte | jubarte-final@037857ee3c92 | 2026-07-30T11:35:09.023358+00:00 | script_redlines | 78.078 | 80.2213 | 164 |
+| jubarte | jubarte-final@041a9bd0cbc3+git.8f8ea75949175abde9b7700308190a3dcd3508ab | 2026-08-05T02:33:10.924626+00:00 | script_redlines | 77.7654 | 79.9837 | 763 |
 | jubarte | jubarte-final@04dabff1cfaf | 2026-07-11T00:05:44.072714+00:00 | script_redlines | 77.824 | 78.6169 | 207 |
+| jubarte | jubarte-final@066e56f0970b | 2026-08-05T21:38:30.354713+00:00 | script_redlines | 80.3036 | 85.9573 | 763 |
 | jubarte | jubarte-final@074c4727e65d | 2026-07-31T05:51:19.092773+00:00 | script_redlines | 87.9968 | 91.5066 | 163 |
 | jubarte | jubarte-final@089b9fd5a592 | 2026-07-30T06:02:04.657030+00:00 | script_redlines | 76.7878 | 79.9407 | 164 |
 | jubarte | jubarte-final@1348076d3f43 | 2026-07-30T05:40:54.600019+00:00 | script_redlines | 76.4512 | 79.7617 | 164 |
+| jubarte | jubarte-final@138300e8471d | 2026-08-11T09:09:21.597339+00:00 | script_redlines | 81.4564 | 88.5972 | 763 |
 | jubarte | jubarte-final@138efcf0b70b | 2026-07-30T15:40:23.260121+00:00 | script_redlines | 83.4424 | 88.614 | 164 |
 | jubarte | jubarte-final@15ed9cf09abd | 2026-07-30T21:21:11.870475+00:00 | script_redlines | 84.617 | 89.3249 | 163 |
 | jubarte | jubarte-final@1d02711eb646 | 2026-07-31T11:38:16.368658+00:00 | script_redlines | 89.6394 | 91.9481 | 163 |
@@ -378,11 +611,15 @@ visual_accepted_changes (Playwright)
 | jubarte | jubarte-final@218fbf85cc92 | 2026-07-31T10:02:28.471192+00:00 | script_redlines | 88.2694 | 91.5066 | 163 |
 | jubarte | jubarte-final@28f85285d077 | 2026-07-31T09:37:52.209821+00:00 | script_redlines | 87.4732 | 90.6342 | 163 |
 | jubarte | jubarte-final@2f41358dbc2c | 2026-07-15T12:21:54.426896+00:00 | script_redlines | 83.4039 | 88.6547 | 164 |
+| jubarte | jubarte-final@300cc3edf753 | 2026-08-11T07:40:26.733234+00:00 | script_redlines | 81.4515 | 88.5972 | 763 |
 | jubarte | jubarte-final@310289c069e0 | 2026-07-30T11:57:05.680767+00:00 | script_redlines | 79.0409 | 80.8419 | 164 |
 | jubarte | jubarte-final@37789c3f7619 | 2026-07-30T23:15:53.775791+00:00 | script_redlines | 85.3131 | 89.4571 | 163 |
+| jubarte | jubarte-final@389db881b0bf+git.07bd8ba2113c65fdb2fe4d4ab965060337f0a8e7 | 2026-08-05T10:46:59.204812+00:00 | script_redlines | 79.1927 | 83.2251 | 763 |
+| jubarte | jubarte-final@38e6f956cb44 | 2026-08-11T09:59:59.345659+00:00 | script_redlines | 81.4165 | 88.5119 | 763 |
 | jubarte | jubarte-final@3995702f73ed | 2026-07-31T12:24:01.065048+00:00 | script_redlines | 90.0433 | 91.9856 | 163 |
 | jubarte | jubarte-final@3a492480108b | 2026-07-31T04:21:46.044954+00:00 | script_redlines | 86.3084 | 89.4587 | 163 |
 | jubarte | jubarte-final@3a499185d2a6 | 2026-07-30T19:13:37.987453+00:00 | script_redlines | 83.546 | 88.6089 | 163 |
+| jubarte | jubarte-final@43a6633fd17e+git.a9e4a33ac250293c547fe878ebb81068deebaeb6 | 2026-08-05T14:03:36.252040+00:00 | script_redlines | 80.3604 | 86.4243 | 763 |
 | jubarte | jubarte-final@453850c8087b | 2026-07-31T02:23:21.188303+00:00 | script_redlines | 84.8877 | 88.6191 | 163 |
 | jubarte | jubarte-final@45e96376aa20 | 2026-07-30T21:41:26.590878+00:00 | script_redlines | 84.8108 | 89.4571 | 163 |
 | jubarte | jubarte-final@4f003998b8fa | 2026-07-30T17:39:44.029508+00:00 | script_redlines | 83.6628 | 88.8518 | 164 |
@@ -394,7 +631,9 @@ visual_accepted_changes (Playwright)
 | jubarte | jubarte-final@591b7504a890 | 2026-07-30T13:32:07.986651+00:00 | script_redlines | 83.4375 | 88.8518 | 164 |
 | jubarte | jubarte-final@5e534b75b66a | 2026-07-30T14:32:09.349466+00:00 | script_redlines | 83.5133 | 88.8518 | 164 |
 | jubarte | jubarte-final@6481c2fdbfc0 | 2026-07-11T00:38:01.460324+00:00 | script_redlines | 79.2475 | 78.8195 | 207 |
+| jubarte | jubarte-final@6db0dcdb2f1a+git.d99ccb5b3adda605e5304200ad88c1aff7fe53c2 | 2026-08-04T21:31:47.189077+00:00 | script_redlines | 77.0151 | 78.5311 | 763 |
 | jubarte | jubarte-final@6e909b7b4408 | 2026-07-31T10:33:31.259889+00:00 | script_redlines | 88.9047 | 91.9836 | 163 |
+| jubarte | jubarte-final@6f48fe914d9a+git.d44dc07498de8ef7560e45ca7efcc3340f0b778e | 2026-08-05T14:38:11.253906+00:00 | script_redlines | 80.6024 | 86.6013 | 763 |
 | jubarte | jubarte-final@70986060934f | 2026-07-30T15:46:45.680104+00:00 | script_redlines | 83.7379 | 89.2047 | 164 |
 | jubarte | jubarte-final@717311c03d4f | 2026-07-09T00:19:24.490489+00:00 | accepted_changes | 78.1534 | 80.639 | 166 |
 | jubarte | jubarte-final@717311c03d4f | 2026-07-10T00:06:11.537044+00:00 | roundtrip | 94.4868 | 100 | 199 |
@@ -402,6 +641,10 @@ visual_accepted_changes (Playwright)
 | jubarte | jubarte-final@755ee30d148c | 2026-07-11T00:22:44.799718+00:00 | script_redlines | 79.2153 | 78.8195 | 207 |
 | jubarte | jubarte-final@757360aba6a2 | 2026-07-30T12:45:09.842662+00:00 | script_redlines | 82.6342 | 88.0854 | 164 |
 | jubarte | jubarte-final@77d67f774b3e | 2026-07-30T12:13:33.635147+00:00 | script_redlines | 80.7225 | 84.8619 | 164 |
+| jubarte | jubarte-final@77e68faebcda+git.b76f204f67549088bcdda1f961bf47f8bf8116e5 | 2026-08-05T08:46:20.516338+00:00 | script_redlines | 77.9828 | 80.6738 | 763 |
+| jubarte | jubarte-final@7ef64a75db56 | 2026-08-11T07:02:28.859614+00:00 | script_redlines | 81.4371 | 88.5972 | 763 |
+| jubarte | jubarte-final@7f6d70bdc3ce+git.b29cc0ab4efac5b6c25ad1fe0b08cbc2a8157970 | 2026-08-05T09:45:35.759913+00:00 | script_redlines | 78.1105 | 80.9583 | 763 |
+| jubarte | jubarte-final@88c1b1c36479 | 2026-08-11T01:43:45.807916+00:00 | script_redlines | 80.5701 | 86.6639 | 763 |
 | jubarte | jubarte-final@8b23cdc7eca8 | 2026-07-13T19:44:34.588429+00:00 | script_redlines | 83.4166 | 88.6547 | 164 |
 | jubarte | jubarte-final@8b2e9bf2522a | 2026-07-13T23:45:59.667934+00:00 | script_redlines | 83.4234 | 88.6547 | 164 |
 | jubarte | jubarte-final@9650d0f6fd09 | 2026-07-30T15:31:09.495686+00:00 | script_redlines | 83.2401 | 88.614 | 164 |
@@ -416,6 +659,8 @@ visual_accepted_changes (Playwright)
 | jubarte | jubarte-final@a3f3744cd0c4 | 2026-07-31T04:47:11.875061+00:00 | script_redlines | 87.3174 | 90.5514 | 163 |
 | jubarte | jubarte-final@a56814ce307c | 2026-07-11T01:10:08.212708+00:00 | script_redlines | 79.1225 | 78.7802 | 207 |
 | jubarte | jubarte-final@a57e820404f3 | 2026-07-30T13:46:04.424550+00:00 | script_redlines | 83.5609 | 88.8518 | 164 |
+| jubarte | jubarte-final@a58157a9cd2d | 2026-08-11T10:33:59.842953+00:00 | script_redlines | 81.4686 | 88.5972 | 763 |
+| jubarte | jubarte-final@a6caf6b44537 | 2026-08-11T08:27:44.882913+00:00 | script_redlines | 81.4453 | 88.5972 | 763 |
 | jubarte | jubarte-final@a764898a424c | 2026-07-11T01:22:46.221863+00:00 | script_redlines | 79.1583 | 78.7802 | 207 |
 | jubarte | jubarte-final@ac1fcea44646 | 2026-07-10T23:54:03.912780+00:00 | script_redlines | 77.824 | 78.6169 | 207 |
 | jubarte | jubarte-final@af5279d4ff9d | 2026-07-30T12:40:47.288583+00:00 | script_redlines | 82.5623 | 88.0854 | 164 |
@@ -445,41 +690,117 @@ visual_accepted_changes (Playwright)
 | jubarte | jubarte-final@e5877596422c | 2026-07-31T10:46:38.882847+00:00 | script_redlines | 89.0074 | 91.9836 | 163 |
 | jubarte | jubarte-final@efe615504e85 | 2026-07-30T04:38:34.990709+00:00 | script_redlines | 74.1128 | 74.3749 | 164 |
 | jubarte | jubarte-final@f3ac233ba2cb | 2026-07-30T21:10:46.398529+00:00 | script_redlines | 84.3075 | 89.3249 | 163 |
+| jubarte-ast | 0.1.0@0676fa9064f1 | 2026-08-11T06:34:50.355176+00:00 | script_redlines | 74.1962 | 76.1486 | 763 |
+| jubarte-ast | 0.1.0@2f698925be74 | 2026-08-11T06:07:59.415431+00:00 | script_redlines | 65.1798 | 63.3453 | 48 |
+| jubarte-ast | jubarte-final@041a9bd0cbc3+git.8f8ea75949175abde9b7700308190a3dcd3508ab | 2026-08-05T03:00:38.422875+00:00 | script_redlines | 71.0799 | 68.7935 | 754 |
+| jubarte-ast | jubarte-final@0a703664346d+git.50155bfba69385bf0e99dd3a19b15da1f58e104c | 2026-08-05T14:55:51.076813+00:00 | script_redlines | 73.8663 | 75.8715 | 754 |
+| jubarte-ast | jubarte-final@138300e8471d | 2026-08-11T09:24:50.477795+00:00 | script_redlines | 74.1963 | 76.1486 | 763 |
+| jubarte-ast | jubarte-final@300cc3edf753 | 2026-08-11T07:56:13.856310+00:00 | script_redlines | 74.1963 | 76.1486 | 763 |
+| jubarte-ast | jubarte-final@38e6f956cb44 | 2026-08-11T10:15:28.295686+00:00 | script_redlines | 74.1963 | 76.1486 | 763 |
+| jubarte-ast | jubarte-final@5bf73ce40d09+git.f9c71f0cd5b7ea561c4739d61cad72a65296ed65 | 2026-08-05T03:45:38.780899+00:00 | script_redlines | 73.3729 | 74.1068 | 754 |
+| jubarte-ast | jubarte-final@6e7229a4d930+git.6f9f76fcd961c9ace7fce9941307b712ada01282 | 2026-08-05T08:07:06.048363+00:00 | script_redlines | 73.4588 | 74.2932 | 754 |
+| jubarte-ast | jubarte-final@7ef64a75db56 | 2026-08-11T07:19:50.503642+00:00 | script_redlines | 74.1963 | 76.1486 | 763 |
+| jubarte-ast | jubarte-final@88c1b1c36479 | 2026-08-11T01:43:45.078578+00:00 | script_redlines | 74.1963 | 76.1486 | 763 |
+| jubarte-ast | jubarte-final@a58157a9cd2d | 2026-08-11T10:49:32.739563+00:00 | script_redlines | 74.1962 | 76.1486 | 763 |
+| jubarte-ast | jubarte-final@a6caf6b44537 | 2026-08-11T08:43:13.792216+00:00 | script_redlines | 74.1963 | 76.1486 | 763 |
+| jubarte-ast | jubarte-final@c043b0aaefb3+git.19b5f14c6088a71280786a864d45cac3aa6e7c92 | 2026-08-05T11:18:23.391679+00:00 | script_redlines | 73.8663 | 75.8715 | 754 |
+| jubarte-ast | jubarte-final@d294713913bb+git.b256b039d54561800b4462fb67cfcd5a8143f606 | 2026-08-05T17:47:54.163333+00:00 | script_redlines | 74.4501 | 76.7449 | 754 |
 | jubarte-ast | jubarte-final@d43557e042c1 | 2026-08-04T11:15:42.562625+00:00 | script_redlines | 70.5699 | 68.6678 | 755 |
+| jubarte-ast | jubarte-final@dc06c68fa885+git.1cfd5d08a6d7283834465dfc84d04ee6fbac5f81 | 2026-08-05T07:47:52.355790+00:00 | script_redlines | 73.4438 | 74.1458 | 754 |
 | jubarte-rust | jubarte-rust@01ed1fac181e | 2026-07-16T23:14:23.444508+00:00 | script_redlines | 92.2148 | 99.9187 | 164 |
 | jubarte-rust | jubarte-rust@07493ca50fd6 | 2026-07-16T16:52:48.692756+00:00 | accepted_changes | 89.5096 | 99.8896 | 164 |
 | jubarte-rust | jubarte-rust@07493ca50fd6 | 2026-07-16T16:52:48.692756+00:00 | script_redlines | 92.1039 | 99.9187 | 164 |
+| jubarte-rust | jubarte-rust@076ef86b4e40+git.fc8c50f879974568278bcd33c476b153229313f0 | 2026-08-10T10:16:48.983319+00:00 | script_redlines | 81.2339 | 88.4278 | 763 |
+| jubarte-rust | jubarte-rust@09e60c15f5c5+git.d851cee4022bb956bf6615bb385b7bb8c4318e72 | 2026-08-09T19:22:14.236417+00:00 | script_redlines | 76.8002 | 80.4864 | 96 |
+| jubarte-rust | jubarte-rust@0e0a602dab95+git.ebf1a7996df49f99fb40f4f67713e61cfd19c731 | 2026-08-05T22:07:30.760086+00:00 | script_redlines | 79.4838 | 84.4626 | 763 |
+| jubarte-rust | jubarte-rust@0e3ff4a17e9d+git.3e1883881eef64647a81dabe858a137e60026a3a dirty-m443 | 2026-08-10T08:30:56.496782+00:00 | script_redlines | 69.0333 | 66.4078 | 48 |
+| jubarte-rust | jubarte-rust@10a1fc647c8b+git.7d39077ee01dc24fc73652f6ac870afbb8f67efc dirty-m441 | 2026-08-10T07:56:24.597748+00:00 | script_redlines | 69.0334 | 66.4078 | 48 |
+| jubarte-rust | jubarte-rust@12be353c8b85+git.a6d5890 | 2026-08-10T05:49:00.074071+00:00 | script_redlines | 69.0334 | 66.4078 | 48 |
+| jubarte-rust | jubarte-rust@1ac8d72aa73a+git.fc8c50f879974568278bcd33c476b153229313f0 | 2026-08-10T12:41:53.089859+00:00 | script_redlines | 81.2996 | 88.5165 | 763 |
+| jubarte-rust | jubarte-rust@1b9081666e72+git.fc8c50f879974568278bcd33c476b153229313f0 | 2026-08-10T15:29:08.728155+00:00 | script_redlines | 81.3463 | 88.6893 | 763 |
 | jubarte-rust | jubarte-rust@21f394cb95d8 | 2026-07-16T22:25:56.821511+00:00 | script_redlines | 84.2081 | 93.0906 | 196 |
 | jubarte-rust | jubarte-rust@267e2e589504 | 2026-07-15T17:33:08.665862+00:00 | script_redlines | 84.4755 | 89.4719 | 164 |
+| jubarte-rust | jubarte-rust@2769f17ac3a4+git.41b8736 | 2026-08-10T05:11:57.684407+00:00 | script_redlines | 69.1386 | 66.4078 | 48 |
+| jubarte-rust | jubarte-rust@279e58418eaa+git.ebf1a7996df49f99fb40f4f67713e61cfd19c731 | 2026-08-05T22:42:28.080931+00:00 | script_redlines | 79.5678 | 84.8864 | 763 |
 | jubarte-rust | jubarte-rust@27b57358b1c3 | 2026-07-15T17:38:41.179863+00:00 | script_redlines | 84.7354 | 89.3449 | 164 |
 | jubarte-rust | jubarte-rust@28c41564723b | 2026-07-16T14:48:33.227946+00:00 | accepted_changes | 87.1054 | 95.3936 | 164 |
 | jubarte-rust | jubarte-rust@28c41564723b | 2026-07-16T14:57:29.076498+00:00 | script_redlines | 84.009 | 93.0906 | 196 |
+| jubarte-rust | jubarte-rust@36224f1d081b+git.27c8c00 | 2026-08-06T23:46:24.753202+00:00 | script_redlines | 79.7128 | 84.4626 | 763 |
+| jubarte-rust | jubarte-rust@367ee1c460ed+git.0ab0e1c | 2026-08-06T21:45:04.942363+00:00 | script_redlines | 79.3289 | 82.9931 | 763 |
 | jubarte-rust | jubarte-rust@3838e1a2c0ae | 2026-07-15T18:13:36.622865+00:00 | script_redlines | 85.2628 | 89.4719 | 164 |
+| jubarte-rust | jubarte-rust@38a1d9d3004f+git.eb5b8fe | 2026-08-06T19:27:40.151858+00:00 | script_redlines | 78.8714 | 82.3032 | 763 |
+| jubarte-rust | jubarte-rust@39fcb0806e4c+git.0f39b64e69b54a04828d78e73d071d0949dee73c | 2026-08-05T15:30:40.564615+00:00 | script_redlines | 78.8943 | 83.5854 | 763 |
 | jubarte-rust | jubarte-rust@3ad02b0cd59e | 2026-07-16T22:15:20.559801+00:00 | script_redlines | 90.1694 | 98.7613 | 164 |
+| jubarte-rust | jubarte-rust@3af52d7e2153+git.fc8c50f879974568278bcd33c476b153229313f0 | 2026-08-10T13:39:44.263115+00:00 | script_redlines | 81.3835 | 88.6893 | 763 |
+| jubarte-rust | jubarte-rust@48766d2de95c+git.fcb08274fcafbc0bf3669b26d1e9b0e957743a73 | 2026-08-10T04:50:09.175286+00:00 | script_redlines | 67.9428 | 66.4078 | 48 |
+| jubarte-rust | jubarte-rust@49d62ef4590b+git.fcb08274fcafbc0bf3669b26d1e9b0e957743a73 | 2026-08-10T03:38:49.307028+00:00 | script_redlines | 80.7925 | 86.452 | 763 |
+| jubarte-rust | jubarte-rust@4a6065089e4d+git.fc8c50f879974568278bcd33c476b153229313f0 | 2026-08-10T17:16:15.909363+00:00 | script_redlines | 81.4063 | 88.7331 | 763 |
 | jubarte-rust | jubarte-rust@4ab62a18cf7a | 2026-07-18T03:49:20.923395+00:00 | script_redlines | 91.9831 | 99.904 | 164 |
 | jubarte-rust | jubarte-rust@4f964f7612f5 | 2026-07-16T15:04:52.289384+00:00 | script_redlines | 90.4602 | 95.6735 | 164 |
+| jubarte-rust | jubarte-rust@50fd692d367f+git.e2cf3556ddbdfb115161c47529e36f20ca3c233a | 2026-08-07T14:34:32.773470+00:00 | script_redlines | 80.5658 | 86.1607 | 763 |
 | jubarte-rust | jubarte-rust@51a93adf52ca | 2026-07-13T01:57:49.073008+00:00 | script_redlines | 80.2389 | 83.1955 | 207 |
+| jubarte-rust | jubarte-rust@52cac2981586+git.fcb08274fcafbc0bf3669b26d1e9b0e957743a73 | 2026-08-10T02:38:08.855646+00:00 | script_redlines | 80.7045 | 86.4366 | 763 |
+| jubarte-rust | jubarte-rust@59b02c068a09+git.0fcae65 | 2026-08-10T06:49:44.884280+00:00 | script_redlines | 81.1719 | 88.1561 | 763 |
+| jubarte-rust | jubarte-rust@59b02c068a09+git.a0281fc | 2026-08-10T06:45:51.007745+00:00 | script_redlines | 69.0334 | 66.4078 | 48 |
+| jubarte-rust | jubarte-rust@5d0e047c4d1e+git.963b8e2 | 2026-08-10T05:54:26.855087+00:00 | script_redlines | 81.1275 | 88.1561 | 763 |
+| jubarte-rust | jubarte-rust@5d704d24d79a+git.f91341b25e532ef7ff0a4ecb14e015a771f94c9f | 2026-08-07T13:27:23.431527+00:00 | script_redlines | 79.4531 | 82.7618 | 763 |
+| jubarte-rust | jubarte-rust@5d8d1ac7be6e+git.a3c8d40 | 2026-08-07T06:05:02.146869+00:00 | script_redlines | 79.7484 | 84.3155 | 763 |
 | jubarte-rust | jubarte-rust@5e1d044ac048 | 2026-07-16T15:51:29.108735+00:00 | script_redlines | 84.1728 | 93.0906 | 196 |
+| jubarte-rust | jubarte-rust@60fe4f2fb0cd+git.ebf1a79 | 2026-08-06T06:22:22.274196+00:00 | script_redlines | 79.4668 | 85.9057 | 763 |
 | jubarte-rust | jubarte-rust@6233a48e4ac8 | 2026-07-11T02:17:46.130799+00:00 | script_redlines | 66.3055 | 64.1705 | 196 |
 | jubarte-rust | jubarte-rust@63e57d122c83 | 2026-07-17T01:25:59.934705+00:00 | script_redlines | 92.2148 | 99.9187 | 164 |
+| jubarte-rust | jubarte-rust@644fa2c1c30a+git.d619d40 | 2026-08-07T08:09:00.811435+00:00 | script_redlines | 78.6064 | 81.1185 | 763 |
 | jubarte-rust | jubarte-rust@653876af82d6 | 2026-07-16T17:07:18.689291+00:00 | accepted_changes | 89.5841 | 99.8896 | 164 |
 | jubarte-rust | jubarte-rust@653876af82d6 | 2026-07-16T17:20:21.134814+00:00 | script_redlines | 84.172 | 93.0906 | 196 |
+| jubarte-rust | jubarte-rust@656ba15ca16e+git.ebf1a79 | 2026-08-06T04:22:42.751808+00:00 | script_redlines | 79.4873 | 85.3205 | 763 |
+| jubarte-rust | jubarte-rust@667241eebe86+git.0e2923194145ea254ea617b9a99fb60ea9b1d431 | 2026-08-05T05:35:07.209228+00:00 | script_redlines | 77.9237 | 81.8301 | 763 |
+| jubarte-rust | jubarte-rust@6691bea93ef4+git.963b8e2 | 2026-08-10T06:19:59.530064+00:00 | script_redlines | 69.1198 | 66.4078 | 48 |
+| jubarte-rust | jubarte-rust@6691bea93ef4+git.a0281fc | 2026-08-10T06:27:10.970368+00:00 | script_redlines | 81.1268 | 88.1561 | 763 |
+| jubarte-rust | jubarte-rust@66ab19649ff7+git.963b8e2 | 2026-08-10T06:13:40.953460+00:00 | script_redlines | 68.7032 | 64.3121 | 48 |
+| jubarte-rust | jubarte-rust@66c3c793a724+git.059808d | 2026-08-06T12:57:33.785486+00:00 | script_redlines | 79.2188 | 84.222 | 763 |
 | jubarte-rust | jubarte-rust@6b5740328b0a | 2026-07-16T16:33:52.098131+00:00 | script_redlines | 84.172 | 93.0906 | 196 |
+| jubarte-rust | jubarte-rust@6ba7b0edba5e+git.a6d5890 | 2026-08-10T05:39:17.735167+00:00 | script_redlines | 69.0334 | 66.4078 | 48 |
+| jubarte-rust | jubarte-rust@736e49cff080+git.24b182f5824aaf9acdd3a0c00e9bf88b22b6fde9 | 2026-08-05T01:33:59.928493+00:00 | script_redlines | 77.555 | 81.1624 | 763 |
+| jubarte-rust | jubarte-rust@747fdf8585a7+git.bae2df5748e5bce5a3873056a895cbe769285c74 | 2026-08-05T06:07:56.425508+00:00 | script_redlines | 77.9701 | 81.8301 | 763 |
+| jubarte-rust | jubarte-rust@74bbefc415c4+git.6817a28378372d6e7c95227cf300889e74ab06e4 | 2026-08-05T04:27:28.945896+00:00 | script_redlines | 77.6944 | 81.4434 | 763 |
+| jubarte-rust | jubarte-rust@7837955c0955+git.ebf1a7996df49f99fb40f4f67713e61cfd19c731 | 2026-08-06T02:22:53.248339+00:00 | script_redlines | 79.0459 | 83.5854 | 763 |
 | jubarte-rust | jubarte-rust@7eca5f3f80f7 | 2026-07-17T06:20:16.532124+00:00 | script_redlines | 91.9831 | 99.904 | 164 |
+| jubarte-rust | jubarte-rust@7ee5daea8fb9+git.fc8c50f879974568278bcd33c476b153229313f0 | 2026-08-10T11:08:37.068685+00:00 | script_redlines | 81.3062 | 88.5165 | 763 |
+| jubarte-rust | jubarte-rust@8047e6cb5052+git.fddb30f | 2026-08-07T04:05:04.520849+00:00 | script_redlines | 80.0073 | 84.8864 | 763 |
+| jubarte-rust | jubarte-rust@892a9548fd07+git.fc8c50f879974568278bcd33c476b153229313f0 | 2026-08-10T09:14:32.962196+00:00 | script_redlines | 69.0334 | 66.4078 | 48 |
+| jubarte-rust | jubarte-rust@8a1e896365b3+git.1be1fcd060ce0d8e2a1b0f91df618d8ec651e3ba | 2026-08-04T21:47:16.159213+00:00 | script_redlines | 76.7112 | 78.971 | 763 |
 | jubarte-rust | jubarte-rust@8a970b82f860 | 2026-07-15T18:08:21.829429+00:00 | script_redlines | 85.0487 | 89.3449 | 164 |
+| jubarte-rust | jubarte-rust@8dea7e733d6d+git.ec66729 | 2026-08-07T02:05:01.735557+00:00 | script_redlines | 79.9416 | 84.5408 | 763 |
 | jubarte-rust | jubarte-rust@8e77f696f091 | 2026-07-15T15:36:32.217189+00:00 | accepted_changes | 83.7563 | 87.9669 | 164 |
 | jubarte-rust | jubarte-rust@8e77f696f091 | 2026-07-15T15:36:32.217189+00:00 | script_redlines | 83.7652 | 88.5162 | 164 |
 | jubarte-rust | jubarte-rust@9190265c69a2 | 2026-07-16T16:13:12.470936+00:00 | script_redlines | 84.1728 | 93.0906 | 196 |
+| jubarte-rust | jubarte-rust@9457b6549b5d+git.ebf1a79 | 2026-08-06T08:22:07.009758+00:00 | script_redlines | 76.3953 | 76.0408 | 763 |
+| jubarte-rust | jubarte-rust@94ac5db42c3b+git.196d97e | 2026-08-07T09:23:45.045079+00:00 | script_redlines | 80.0099 | 84.5408 | 763 |
+| jubarte-rust | jubarte-rust@97da13af151c+git.ebf1a7996df49f99fb40f4f67713e61cfd19c731 | 2026-08-05T23:21:10.310455+00:00 | script_redlines | 79.581 | 84.8888 | 763 |
 | jubarte-rust | jubarte-rust@980adfca2fc6 | 2026-07-15T17:48:46.133050+00:00 | script_redlines | 84.8331 | 89.3449 | 164 |
+| jubarte-rust | jubarte-rust@9854c9e68ddd+git.9d46888 | 2026-08-07T08:57:57.118734+00:00 | script_redlines | 80.0835 | 85.1649 | 763 |
 | jubarte-rust | jubarte-rust@9882dd52cc11 | 2026-07-17T02:19:40.108625+00:00 | script_redlines | 91.9831 | 99.904 | 164 |
+| jubarte-rust | jubarte-rust@992b5db46add+git.09545197c99f7b21583e53cb6e2b220b50d295ac | 2026-08-05T01:18:04.625633+00:00 | script_redlines | 77.3357 | 80.4932 | 763 |
+| jubarte-rust | jubarte-rust@9b85d42d42e1+git.84bb80216132b6f249de1455dba9b6092664ecea | 2026-08-07T14:01:09.875712+00:00 | script_redlines | 80.5154 | 86.0126 | 763 |
+| jubarte-rust | jubarte-rust@9b88994c2a01+git.fc8c50f879974568278bcd33c476b153229313f0 | 2026-08-10T11:38:30.819266+00:00 | script_redlines | 81.3659 | 88.6089 | 763 |
+| jubarte-rust | jubarte-rust@9ba60702c118+git.e3bc6b6 | 2026-08-06T16:49:27.427467+00:00 | script_redlines | 79.6418 | 84.8864 | 763 |
+| jubarte-rust | jubarte-rust@9eb9d6d17689+git.6b1a0686f11e1f80778e9262137fb429200cc839 | 2026-08-10T08:40:47.961920+00:00 | script_redlines | 69.0334 | 66.4078 | 48 |
+| jubarte-rust | jubarte-rust@9f4892c93e04+git.a6d5890 | 2026-08-10T05:17:42.167503+00:00 | script_redlines | 81.1095 | 88.182 | 763 |
 | jubarte-rust | jubarte-rust@9fcc4289e375 | 2026-07-16T05:49:13.232283+00:00 | accepted_changes | 87.0018 | 95.3936 | 164 |
 | jubarte-rust | jubarte-rust@9fcc4289e375 | 2026-07-16T06:01:55.601043+00:00 | script_redlines | 90.0375 | 95.6735 | 164 |
+| jubarte-rust | jubarte-rust@a46fb002a1a8+git.970a113dde4b71de07ccdda4a67cd2cbc68bdcc1 | 2026-08-07T11:40:02.955603+00:00 | script_redlines | 80.4136 | 86.0123 | 763 |
 | jubarte-rust | jubarte-rust@a8ff27ccff8f | 2026-07-16T21:56:23.579662+00:00 | script_redlines | 84.2078 | 93.0906 | 196 |
 | jubarte-rust | jubarte-rust@aad3e04cebbd | 2026-07-15T18:02:55.334087+00:00 | script_redlines | 84.9762 | 89.3449 | 164 |
 | jubarte-rust | jubarte-rust@ae865542c28f | 2026-07-16T22:05:44.488927+00:00 | script_redlines | 84.2078 | 93.0906 | 196 |
+| jubarte-rust | jubarte-rust@b79584ee185e+git.7ff6c38606a1595e80a4600d81603640fbacd472 | 2026-08-10T08:56:23.927447+00:00 | script_redlines | 81.2453 | 88.3311 | 763 |
 | jubarte-rust | jubarte-rust@b834d6e49fdb | 2026-07-09T17:43:37.147567+00:00 | accepted_changes | 63.499 | 54.4541 | 147 |
 | jubarte-rust | jubarte-rust@b834d6e49fdb | 2026-07-10T00:21:53.149640+00:00 | roundtrip | 93.1152 | 100 | 171 |
 | jubarte-rust | jubarte-rust@b834d6e49fdb | 2026-07-09T17:36:04.577266+00:00 | script_redlines | 61.7832 | 59.2784 | 172 |
+| jubarte-rust | jubarte-rust@b9d4740f3529+git.ebf1a79 | 2026-08-06T10:22:08.672897+00:00 | script_redlines | 78.0735 | 81.1332 | 763 |
+| jubarte-rust | jubarte-rust@ba4cfc3ecc67+git.ebf1a7996df49f99fb40f4f67713e61cfd19c731 | 2026-08-05T21:07:56.099636+00:00 | script_redlines | 79.5621 | 84.8864 | 763 |
+| jubarte-rust | jubarte-rust@bea5f183c4c5+git.f6959f8 | 2026-08-06T14:49:23.352974+00:00 | script_redlines | 79.5396 | 84.8864 | 763 |
+| jubarte-rust | jubarte-rust@bf7bb2748045+git.8cd638d6f0cdb261c55150c056af9cf44fa332a6 | 2026-08-05T05:06:18.911799+00:00 | script_redlines | 77.7516 | 81.4705 | 763 |
+| jubarte-rust | jubarte-rust@caa8d34a98b4+git.41b8736 | 2026-08-10T05:01:23.274186+00:00 | script_redlines | 69.1388 | 66.4078 | 48 |
 | jubarte-rust | jubarte-rust@cbbcefb724a7 | 2026-07-24T15:00:45.969613+00:00 | accepted_changes | 89.4476 | 99.7477 | 164 |
 | jubarte-rust | jubarte-rust@cbbcefb724a7 | 2026-07-24T15:00:45.969613+00:00 | roundtrip | 99.1706 | 100 | 166 |
 | jubarte-rust | jubarte-rust@cbbcefb724a7 | 2026-07-24T15:00:45.969613+00:00 | script_redlines | 92.2147 | 99.9187 | 164 |
@@ -487,17 +808,37 @@ visual_accepted_changes (Playwright)
 | jubarte-rust | jubarte-rust@cdfef70a7156 | 2026-07-12T08:09:01.073181+00:00 | roundtrip | 99.1699 | 100 | 166 |
 | jubarte-rust | jubarte-rust@cdfef70a7156 | 2026-07-12T08:09:01.073181+00:00 | script_redlines | 81.0444 | 84.7199 | 207 |
 | jubarte-rust | jubarte-rust@cf12c65f1204 | 2026-07-17T03:15:59.269689+00:00 | script_redlines | 91.9831 | 99.904 | 164 |
+| jubarte-rust | jubarte-rust@d100650f7be0+git.17afecafc3deb2b99c4577cbd0fbf6a0e6356daf | 2026-08-09T14:49:25.517926+00:00 | script_redlines | 80.5789 | 86.1607 | 763 |
 | jubarte-rust | jubarte-rust@d269742c1397 | 2026-07-16T21:44:15.795654+00:00 | script_redlines | 91.9075 | 99.904 | 164 |
+| jubarte-rust | jubarte-rust@d2de8e147655+git.b910a23bce9b63a393ac6186ab366a39d6aaa504 | 2026-08-05T06:42:18.448015+00:00 | script_redlines | 78.0451 | 81.8707 | 763 |
+| jubarte-rust | jubarte-rust@d434447d27ce+git.fcb08274fcafbc0bf3669b26d1e9b0e957743a73 | 2026-08-10T04:28:09.572143+00:00 | script_redlines | 80.9224 | 86.7269 | 763 |
+| jubarte-rust | jubarte-rust@df77b0f5e1a4+git.0fcae658fac7203c35b801b2ac3e0c68f8bd57b6 dirty-m440 | 2026-08-10T07:35:34.929004+00:00 | script_redlines | 69.0333 | 66.4078 | 48 |
+| jubarte-rust | jubarte-rust@e0fe28e5b256+git.2351844 | 2026-08-06T12:27:24.605402+00:00 | script_redlines | 79.4635 | 84.8864 | 763 |
 | jubarte-rust | jubarte-rust@e12c880586ec | 2026-07-16T17:44:52.569983+00:00 | accepted_changes | 89.5838 | 99.8896 | 164 |
 | jubarte-rust | jubarte-rust@e12c880586ec | 2026-07-16T17:55:16.787714+00:00 | script_redlines | 84.2078 | 93.0906 | 196 |
+| jubarte-rust | jubarte-rust@eb34d99e486c+git.fc8c50f879974568278bcd33c476b153229313f0 | 2026-08-10T16:10:13.375483+00:00 | script_redlines | 81.3959 | 88.7331 | 763 |
+| jubarte-rust | jubarte-rust@f3609460e82a+git.3e1883881eef64647a81dabe858a137e60026a3a | 2026-08-10T08:16:19.352465+00:00 | script_redlines | 81.1322 | 88.182 | 763 |
+| jubarte-rust | jubarte-rust@f3609460e82a+git.a487f0753ce5a47d0b496b353624fee154c19a3a dirty-m442 | 2026-08-10T08:10:43.405519+00:00 | script_redlines | 69.0334 | 66.4078 | 48 |
 | jubarte-rust | jubarte-rust@f46f60951d28 | 2026-07-17T04:59:32.591233+00:00 | script_redlines | 91.9831 | 99.904 | 164 |
+| jubarte-rust | jubarte-rust@f48dcacc7478+git.fc8c50f879974568278bcd33c476b153229313f0 | 2026-08-10T10:35:21.096835+00:00 | script_redlines | 81.2961 | 88.5165 | 763 |
 | jubarte-rust | jubarte-rust@f6cc3a6a7eb8 | 2026-07-16T17:34:35.369086+00:00 | accepted_changes | 89.3128 | 99.8896 | 164 |
 | jubarte-rust | jubarte-rust@f6cc3a6a7eb8 | 2026-07-16T17:34:35.369086+00:00 | script_redlines | 91.8526 | 99.9187 | 164 |
 | jubarte-rust | jubarte-rust@f7960f5be6f3 | 2026-07-16T21:49:58.768940+00:00 | script_redlines | 91.8328 | 99.9187 | 164 |
+| jubarte-rust | jubarte-rust@f86091a180ce+git.ebf1a7996df49f99fb40f4f67713e61cfd19c731 | 2026-08-05T16:38:58.367659+00:00 | script_redlines | 79.4635 | 84.8864 | 763 |
 | jubarte-rust | jubarte-rust@fc29f56fd31d | 2026-07-15T15:50:15.935561+00:00 | roundtrip | 99.1697 | 100 | 166 |
 | jubarte-rust | jubarte-rust@fc29f56fd31d | 2026-07-15T15:50:15.935561+00:00 | script_redlines | 83.7652 | 88.5162 | 164 |
 | jubarte-rust | jubarte-rust@fcea02da49f4 | 2026-08-04T10:41:28.294117+00:00 | script_redlines | 76.2072 | 77.9542 | 763 |
-| jubarte-wasm | 0.1.0 | 2026-08-04T13:32:06.568520+00:00 | script_redlines | 76.2072 | 77.9542 | 763 |
+| jubarte-wasm | 0.1.0 | 2026-08-04T22:31:52.576960+00:00 | script_redlines | 76.6806 | 78.8046 | 762 |
+| jubarte-wasm | 0.1.0@1331a4ff7c61+git.8cd638d6f0cdb261c55150c056af9cf44fa332a6 | 2026-08-05T05:20:10.492821+00:00 | script_redlines | 77.7516 | 81.4705 | 763 |
+| jubarte-wasm | 0.1.0@18f6c9fd87db+git.ebf1a7996df49f99fb40f4f67713e61cfd19c731 | 2026-08-05T16:52:20.605597+00:00 | script_redlines | 79.4635 | 84.8864 | 763 |
+| jubarte-wasm | 0.1.0@2957178cc645+git.b910a23bce9b63a393ac6186ab366a39d6aaa504 | 2026-08-05T06:56:52.750427+00:00 | script_redlines | 78.0451 | 81.8707 | 763 |
+| jubarte-wasm | 0.1.0@4b36f4db1d2f+git.ebf1a7996df49f99fb40f4f67713e61cfd19c731 | 2026-08-05T22:59:39.181670+00:00 | script_redlines | 79.5678 | 84.8864 | 763 |
+| jubarte-wasm | 0.1.0@a795fa73ea5f+git.0f39b64e69b54a04828d78e73d071d0949dee73c | 2026-08-05T15:43:59.390623+00:00 | script_redlines | 78.8943 | 83.5854 | 763 |
+| jubarte-wasm | 0.1.0@b13bcb128725+git.bae2df5748e5bce5a3873056a895cbe769285c74 | 2026-08-05T06:23:27.017633+00:00 | script_redlines | 77.9702 | 81.8301 | 763 |
+| jubarte-wasm | 0.1.0@d3810de5aa53+git.0e2923194145ea254ea617b9a99fb60ea9b1d431 | 2026-08-05T05:49:24.865326+00:00 | script_redlines | 77.9237 | 81.8301 | 763 |
+| jubarte-wasm | 0.1.0@d5f48a35f21a+git.24b182f5824aaf9acdd3a0c00e9bf88b22b6fde9 | 2026-08-05T01:47:10.054544+00:00 | script_redlines | 77.555 | 81.1624 | 763 |
+| jubarte-wasm | 0.1.0@dc46d94d88ab+git.6817a28378372d6e7c95227cf300889e74ab06e4 | 2026-08-05T04:40:42.076254+00:00 | script_redlines | 77.6944 | 81.4434 | 763 |
+| jubarte-wasm | 0.1.0@e1e19c982338+git.ebf1a7996df49f99fb40f4f67713e61cfd19c731 | 2026-08-05T21:22:59.121758+00:00 | script_redlines | 79.5621 | 84.8864 | 763 |
 | ooxmlsdk | — | 2026-07-13T17:24:50.712941+00:00 | script_redlines | 55.1866 | 55.2398 | 232 |
 | redlines | 0.6.1 | 2026-08-04T14:04:12.116292+00:00 | script_redlines | 45.9391 | 47.1411 | 745 |
 | sanity-word | — | 2026-07-13T18:06:21.529826+00:00 | script_redlines | 68.1679 | 70.4845 | 230 |
@@ -559,12 +900,12 @@ Large fixture pools (often **1000 unique** docs → **5000 pairs**), including n
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | docxodus | dotnet-wasm | 200 | 500 | 148.753 | 607.385 | 3212.297 | 7017.889 | 1.6 | 496 | 4 | — |
 | 2 | docxodus-csharp | dotnet | 50 | 50 | 208.388 | 441.646 | 911.873 | 1154.008 | 2.3 | 50 | 0 | — |
-| 3 | jubarte-lossless | node | 1000 | 5000 | 54.642 | 168.184 | 592.49 | 1191.719 | 5.9 | 4997 | 3 | — |
+| 3 | jubarte-lossless | node | 1000 | 5000 | 56.465 | 168.791 | 609.005 | 1049.093 | 5.9 | 4997 | 3 | v8-inspector |
 | 4 | jubarte-native | node | 1000 | 5000 | 14.43 | 57.145 | 175.709 | 578.45 | 17.5 | 5000 | 0 | — |
 | 5 | jubarte-wasm | rust-wasm | 1000 | 5000 | 9.717 | 41.44 | 180.492 | 273.407 | 24.1 | 5000 | 0 | — |
-| 6 | jubarte-rust-inproc | rust | 1000 | 5000 | 8.54 | 33.049 | 138.572 | 231.746 | 30.3 | 5000 | 0 | — |
-| 7 | jubarte-rust | rust | 1000 | 5000 | 9.656 | 31.022 | 123.386 | 195.751 | 32.2 | 5000 | 0 | — |
-| 8 | docxodus-csharp-inproc | dotnet | 1000 | 5000 | 9.431 | 29.903 | 110.731 | 234.991 | 33.4 | 4880 | 120 | v8-inspector |
+| 6 | jubarte-rust | rust | 1000 | 5000 | 9.656 | 31.022 | 123.386 | 195.751 | 32.2 | 5000 | 0 | — |
+| 7 | docxodus-csharp-inproc | dotnet | 1000 | 5000 | 9.431 | 29.903 | 110.731 | 234.991 | 33.4 | 4880 | 120 | v8-inspector |
+| 8 | jubarte-rust-inproc | rust | 1000 | 5000 | 6.201 | 25.337 | 110.764 | 182.306 | 39.5 | 5000 | 0 | samply |
 
 ### Speed methodology notes
 

@@ -117,3 +117,21 @@ results/redline_speed_bench/**/fixtures_bytes/
 # W1–W5 wasm perf/memory profiler dumps (217MB, regenerable; findings live in TODO.md/RESULTS.md)
 results/wasm_perf/
 harness/folio-viewer-current/node_modules/
+
+# Run artifacts under results/ — keep only number/summary files in git
+# (summary.json, speed.jsonl, report.md, scores.*). Regenerable from benches.
+results/redline_speed_bench/**/pairs.json
+results/redline_speed_bench/**/run.log
+results/redline_speed_bench/**/*.log
+results/redline_speed_bench/**/cpu/
+results/redline_speed_bench/**/*.cpuprofile
+results/redline_speed_bench/**/*.profile.json.gz
+results/redline_speed_bench/**/*.samples.json
+results/redline_speed_bench/**/*.profile_keys.json
+results/redline_speed_bench/**/*.hot.json
+results/redline_speed_bench/**/*.bak
+results/redline_speed_bench/**/*-dist-fingerprint.json
+results/redline_speed_bench/**/fixtures/
+results/soffice_vs_word_redlines_randomized/**/docx/
+results/soffice_vs_word_redlines_randomized/**/score_work/
+generate_timings.json
