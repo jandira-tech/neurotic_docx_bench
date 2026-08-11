@@ -1,0 +1,376 @@
+{
+  "generated_at": "2026-08-04T20:43:02.048948+00:00",
+  "stage": "L1",
+  "plan": "plans/jubarte-lossless-to-target.md",
+  "run": {
+    "id_run": "019fcc6f-4eb8-72f7-957e-799895a04342",
+    "name": "jubarte-final-lossless",
+    "tool_version_recorded": "jubarte-final@d43557e042c1",
+    "tool_version_now": "jubarte-final@d43557e042c1",
+    "tool_version_match": true
+  },
+  "selection": {
+    "score_field": "overall_score_pagefair",
+    "band": {
+      "low": 40.0,
+      "high": 60.0,
+      "convention": "[low, high)"
+    },
+    "n_cluster": 166,
+    "cluster_median": 51.52237349949579
+  },
+  "regeneration": {
+    "workdir": "runs/l1_partition__jubarte-final-lossless",
+    "n_candidates": 166,
+    "n_unresolved_sources": 0,
+    "pools": [
+      {
+        "corpus": "word_based",
+        "tool": "jubarte-final-lossless",
+        "n_requested": 34,
+        "n_present": 34,
+        "n_newly_written": 34,
+        "returncode": 0,
+        "command": "node --import tsx scripts/generate-native-redlines.ts --method=jubarte-lossless --dist=dist/jubarte-final '--out=/Users/arthrod/temp/T/neurotic_docx_bench/runs/l1_partition__jubarte-final-lossless/docx' '--run-dir=/Users/arthrod/temp/T/neurotic_docx_bench/runs/l1_partition__jubarte-final-lossless' --tool=jubarte-final-lossless --manifest=/Users/arthrod/temp/T/neurotic_docx_bench/runs/l1_partition__jubarte-final-lossless/manifest__word_based.csv --source-dir=corpus/word_based/docx_source",
+        "stderr_tail": ""
+      },
+      {
+        "corpus": "word_based_randomized",
+        "tool": "jubarte-final-lossless",
+        "n_requested": 12,
+        "n_present": 12,
+        "n_newly_written": 12,
+        "returncode": 0,
+        "command": "node --import tsx scripts/generate-native-redlines.ts --method=jubarte-lossless --dist=dist/jubarte-final '--out=/Users/arthrod/temp/T/neurotic_docx_bench/runs/l1_partition__jubarte-final-lossless/docx' '--run-dir=/Users/arthrod/temp/T/neurotic_docx_bench/runs/l1_partition__jubarte-final-lossless' --tool=jubarte-final-lossless --manifest=/Users/arthrod/temp/T/neurotic_docx_bench/runs/l1_partition__jubarte-final-lossless/manifest__word_based_randomized.csv --source-dir=corpus/word_based/docx_source_randomized",
+        "stderr_tail": ""
+      },
+      {
+        "corpus": "word_redlines_superdoc",
+        "tool": "jubarte-final-lossless",
+        "n_requested": 120,
+        "n_present": 120,
+        "n_newly_written": 120,
+        "returncode": 0,
+        "command": "node --import tsx scripts/generate-native-redlines.ts --method=jubarte-lossless --dist=dist/jubarte-final '--out=/Users/arthrod/temp/T/neurotic_docx_bench/runs/l1_partition__jubarte-final-lossless/docx' '--run-dir=/Users/arthrod/temp/T/neurotic_docx_bench/runs/l1_partition__jubarte-final-lossless' --tool=jubarte-final-lossless --manifest=/Users/arthrod/temp/T/neurotic_docx_bench/runs/l1_partition__jubarte-final-lossless/manifest__word_redlines_superdoc.csv --source-dir=corpus/word_redlines_superdoc/docx_source",
+        "stderr_tail": ""
+      }
+    ],
+    "control": {
+      "n_compared": 46,
+      "n_agree": 46,
+      "agreement": 1.0,
+      "n_no_recorded_verdict": 120,
+      "disagreements": []
+    }
+  },
+  "partition": {
+    "buckets": {
+      "both_hold": 124,
+      "reject_only": 3,
+      "accept_only": 29,
+      "neither": 6
+    },
+    "n_judged": 162,
+    "n_unjudged": 4,
+    "unjudged_reasons": {
+      "error: ValueError: no `tc` element at grid_offset=0": 1,
+      "blind": 1,
+      "error: ValueError: no `tc` element at grid_offset=5": 2
+    },
+    "fractions_of_judged": {
+      "both_hold": 0.7654320987654321,
+      "reject_only": 0.018518518518518517,
+      "accept_only": 0.17901234567901234,
+      "neither": 0.037037037037037035
+    },
+    "members": {
+      "both_hold": [
+        "behavior__math_all_objects_36ab389c_behavior__math_delimiter_tests_c9d034dc",
+        "behavior__math_all_objects_36ab389c_super_editor__diff_after8_58e5c288",
+        "behavior__math_delimiter_tests_c9d034dc_behavior__math_eqarr_tests_40a1adb0",
+        "behavior__math_delimiter_tests_c9d034dc_super_editor__diff_after19_79c6b379",
+        "behavior__math_delimiter_tests_c9d034dc_super_editor__diff_after9_a9d4b4b0",
+        "behavior__math_func_tests_0434dd11_behavior__math_groupchr_tests_4a4970fc",
+        "behavior__math_groupchr_tests_4a4970fc_behavior__math_limit_tests_6dc07867",
+        "behavior__math_groupchr_tests_4a4970fc_behavior__sd_2447_toc_tab_alignment_8319c14c",
+        "behavior__math_limit_tests_6dc07867_behavior__math_matrix_tests_a3b17e15",
+        "behavior__math_limit_tests_6dc07867_behavior__word_native_bullet_square_da8bb73c",
+        "behavior__math_limit_tests_6dc07867_evals__document_9bff7e1b",
+        "behavior__math_matrix_tests_a3b17e15_behavior__math_nary_tests_dde91168",
+        "behavior__math_nary_tests_dde91168_behavior__math_phantom_tests_263131a8",
+        "behavior__rtl_header_footer_e1ac81f6_super_editor__complex_list_def_short_fde20a67",
+        "behavior__rtl_mixed_bidi_e955f185_behavior__rtl_page_numpages_54739e26",
+        "behavior__sd_2343_table_border_widths_b5148e83_behavior__sd_2447_toc_tab_alignment_8319c14c",
+        "behavior__sd_2672_merged_table_821b922c_super_editor__pci_table_dc840852",
+        "behavior__sd_2672_multipara_cell_4d1f068e_super_editor__broken_list_missing_items_36b4199e",
+        "behavior__sd_2750_borderbox_7cd3768d_behavior__sd_2888_hyperlink_with_ampersand_aaaac3bc",
+        "behavior__sd_2750_borderbox_7cd3768d_super_editor__list_with_break_exported_broken_45f7bd19",
+        "behavior__sd_2750_borderbox_7cd3768d_super_editor__pre_separated_list_bd330d28",
+        "behavior__tiff_image_2d531f83_behavior__sd_2750_borderbox_7cd3768d",
+        "blue_bold_centered_demo_id_paraid_overflow_blue_centered_title_demo_style_default_missing",
+        "calibri_heading_2_right_id_paraid_overflow_center_aligned_bold_text_id_paraid_overflow",
+        "cli_legacy__sample_3a8f1f93_super_editor__shape_group_ce60e1e6",
+        "doc_api_stories__diff_doc2_bc0da0ce_super_editor__diff_before16_f518c031",
+        "double_spacing_bold_demo_id_paraid_overflow_eigenpal_docx_editor_suggesting_mixed_edits",
+        "eigenpal_docx_editor_suggesting_mixed_edits_employee_directory_table_2",
+        "evals__employment_offer_4cf5a872_evals__lease_agreement_7081191d",
+        "evals__memorandum_258c774a_evals__nda_7f304918",
+        "evals__report_with_formatting_03f385ed_evals__table_doc_4d728d83",
+        "file_110_file_111",
+        "file_134_file_135",
+        "file_169_file_170",
+        "file_170_file_171",
+        "file_188_file_189",
+        "file_191_file_192",
+        "file_197_file_198",
+        "file_54_file_55",
+        "file_83_file_84",
+        "font_size_demo_id_paraid_overflow_footnotes_sample",
+        "green_underline_bullet_list_id_paraid_overflow_header_no_rels",
+        "heading_4_style_demo_id_paraid_overflow_helvetica_font_demo_style_default_missing",
+        "justify_alignment_demo_id_paraid_overflow_2_justify_alignment_demo_id_paraid_overflow",
+        "mcdoc_meeting_agenda_table_2",
+        "ooxml_style_link_open_sans_bold_underline_id_paraid_overflow",
+        "page_numbering_examples_potpourritest",
+        "potpourritest_product_roadmap_2026_suggesting_insertions",
+        "super_editor__advanced_text_78401c31_super_editor__google_docs_originated_comments___tcs_76ac865d",
+        "super_editor__basic_page_nums_d5b08fc3_behavior__math_func_tests_0434dd11",
+        "super_editor__bookmark_use_cases_d20f31f6_super_editor__broken_complex_list_293fda86",
+        "super_editor__broken_complex_list_293fda86_behavior__sd_2672_nested_table_dfac08bb",
+        "super_editor__broken_complex_list_293fda86_super_editor__list_numbering_reimport_d788d573",
+        "super_editor__broken_list_7e9b9bf7_super_editor__comment_23ee5ec1",
+        "super_editor__broken_list_missing_items_36b4199e_super_editor__broken_list_7e9b9bf7",
+        "super_editor__complex_list_def_short_fde20a67_super_editor__basic_list_0fcfe705",
+        "super_editor__complex_list_def_short_fde20a67_super_editor__sd_1480_two_col_index_0138dccc",
+        "super_editor__custom_list_numbering1_7eb9fda4_super_editor__custom_list1_77f82bd7",
+        "super_editor__custom_list_numbering1_7eb9fda4_super_editor__diff_before19_97e0f4e6",
+        "super_editor__diff_after2_fc1e0763_super_editor__simple_ordered_list_8288421a",
+        "super_editor__diff_after3_3f4fb6e8_behavior__math_matrix_tests_a3b17e15",
+        "super_editor__diff_after_10f1912e_super_editor__listwithspacernodes_cf53e890",
+        "super_editor__diff_before8_ba5faa9e_super_editor__instrtext_angled_brackets_bug_ed56f1fe",
+        "super_editor__doc_with_spaces_from_styles_734ca26f_super_editor__doc_with_spacing_e3d47bd7",
+        "super_editor__doc_with_spacing_e3d47bd7_super_editor__dropcaps_520cd049",
+        "super_editor__dropcaps_520cd049_super_editor__exported_list_font_8e6db734",
+        "super_editor__font_formatting_runs_8be3565a_behavior__math_phantom_tests_263131a8",
+        "super_editor__font_formatting_runs_8be3565a_super_editor__gdocs_comments_export_4c0bfa04",
+        "super_editor__google_docs_originated_comments___tcs_76ac865d_super_editor__hello_docx_world_12f11074",
+        "super_editor__h_f_normal_odd_even_b572e46d_super_editor__h_f_normal_5d2a8d96",
+        "super_editor__header_alternating_odd_even_11e01996_super_editor__heading_font_46041620",
+        "super_editor__hello_docx_world_12f11074_behavior__math_eqarr_tests_40a1adb0",
+        "super_editor__hummingbird_c5e5ac81_evals__employment_offer_4cf5a872",
+        "super_editor__hummingbird_c5e5ac81_super_editor__bookmark_use_cases_d20f31f6",
+        "super_editor__instrtext_angled_brackets_bug_ed56f1fe_super_editor__invalid_list_def_fallback_d7f55451",
+        "super_editor__list_def_mix_d7cec092_super_editor__list_numbering_reimport_d788d573",
+        "super_editor__list_with_break_exported_broken_45f7bd19_super_editor__list_with_break_from_word_5cc0d638",
+        "super_editor__list_with_break_from_word_5cc0d638_super_editor__instrtext_angled_brackets_bug_ed56f1fe",
+        "super_editor__list_with_break_from_word_5cc0d638_super_editor__list_with_table_break_ff0c4c1f",
+        "super_editor__multiple_nodes_in_list_79d915a2_super_editor__doc_with_graphs_diagrams_rotated_ef2e2f98",
+        "super_editor__nested_comments_84f214bb_behavior__math_matrix_tests_a3b17e15",
+        "super_editor__ooxml_bold_vals_demo_9e688d8f_super_editor__complex_list_def_issue_326369f9",
+        "super_editor__ooxml_bold_vals_demo_9e688d8f_super_editor__diff_before8_ba5faa9e",
+        "super_editor__ooxml_bold_vals_demo_9e688d8f_super_editor__ooxml_color_rstyle_linked_combos_demo_23e43bed",
+        "super_editor__ooxml_highlight_rstyle_linked_combos__eb448e21_super_editor__diff_before2_ca0c6859",
+        "super_editor__ooxml_highlight_rstyle_linked_combos__eb448e21_super_editor__ooxml_italic_rstyle_combos_demo_90894ac1",
+        "super_editor__ooxml_italic_rstyle_combos_demo_90894ac1_super_editor__base_ordered_fdff1fb2",
+        "super_editor__ooxml_italic_rstyle_combos_demo_90894ac1_super_editor__ooxml_rfonts_rstyle_linked_combos_dem_213298de",
+        "super_editor__ooxml_italic_rstyle_combos_demo_90894ac1_super_editor__paragraph_indent_normal_styles_85fe82d8",
+        "super_editor__ooxml_italic_rstyle_combos_demo_90894ac1_super_editor__pre_separated_list_bd330d28",
+        "super_editor__ooxml_rfonts_rstyle_linked_combos_dem_213298de_behavior__sd_2672_rtl_table_63bd9d10",
+        "super_editor__ooxml_rfonts_rstyle_linked_combos_dem_213298de_super_editor__ooxml_size_rstyle_linked_combos_demo_017c9552",
+        "super_editor__ooxml_rfonts_rstyle_linked_combos_dem_213298de_super_editor__sd_1494_table_left_indent_03277d35",
+        "super_editor__ooxml_size_rstyle_linked_combos_demo_017c9552_super_editor__ooxml_strike_rstyle_linked_combos_dem_b8167cd3",
+        "super_editor__ooxml_strike_rstyle_linked_combos_dem_b8167cd3_super_editor__ooxml_underline_rstyle_linked_combos__a40afe78",
+        "super_editor__page_numbering_examples_13edaf84_behavior__math_limit_tests_6dc07867",
+        "super_editor__page_numbering_examples_13edaf84_super_editor__pagination_blank_2a98ed7a",
+        "super_editor__paragraph_ppr_variations_a7653eb1_super_editor__paragraph_spacing_missing_de418c38",
+        "super_editor__paragraph_spacing_missing_de418c38_super_editor__pci_table_dc840852",
+        "super_editor__python_docx_comment_test_501f21cb_super_editor__paragraph_spacing_missing_de418c38",
+        "super_editor__python_docx_comment_test_501f21cb_super_editor__restart_numbering_sub_list_85ddcb79",
+        "super_editor__sd_1480_two_col_index_0138dccc_super_editor__sd_1480_two_col_tab_positions_00953280",
+        "super_editor__sd_1480_two_col_tab_positions_00953280_super_editor__missing_sectpr_967a402d",
+        "super_editor__sd_1494_table_left_indent_03277d35_super_editor__pre_separated_list_bd330d28",
+        "super_editor__sd_1919_word_mixed_33e049ca_super_editor__sd_1919_word_simple_e3a4a818",
+        "super_editor__sd_1919_word_simple_e3a4a818_super_editor__diff_after5_9fb9d5b4",
+        "super_editor__sd_1919_word_simple_e3a4a818_super_editor__sd_1919_word_table_74726d6c",
+        "super_editor__sd_1919_word_table_74726d6c_behavior__sd_2672_multipara_cell_4d1f068e",
+        "super_editor__sd_1919_word_table_74726d6c_super_editor__gdocs_comments_export_4c0bfa04",
+        "super_editor__sd_2766_pirates_tracked_changes_3285d875_behavior__sd_2343_table_border_widths_b5148e83",
+        "super_editor__sd_2766_pirates_tracked_changes_3285d875_super_editor__sd_1494_table_left_indent_11bb24c7",
+        "super_editor__superdoc_table_tester_3b2de2e1_super_editor__tab_alignment_test_184edb5d",
+        "super_editor__table_autofit_colspan_1fd7723c_super_editor__table_merged_cells_9c349334",
+        "super_editor__table_c70ca973_super_editor__text_color_highlight_36cb4c90",
+        "super_editor__table_widths_sd_732_12074135_super_editor__table_c70ca973",
+        "super_editor__vrect_node_c8e51f22_super_editor__diff_after_10f1912e",
+        "support_tickets_table_table_bookmark_end",
+        "table_bookmark_end_table_vmerge_colspan",
+        "tiff_image_times_new_roman_bold_id_paraid_overflow",
+        "title_style_demo_id_paraid_overflow_title_style_demo_style_default_missing",
+        "word_tolerated_broken_media_rel_word_tolerated_duplicate_ppr",
+        "word_tolerated_misplaced_link_word_tolerated_misplaced_pgsz",
+        "word_tolerated_misplaced_pgsz_word_tolerated_misplaced_uipriority",
+        "word_tolerated_misplaced_uipriority_word_tolerated_orphan_comment"
+      ],
+      "reject_only": [
+        "super_editor__contract_acc_bbd983a0_super_editor__diff_before7_5bad2542",
+        "super_editor__list_with_table_break_ff0c4c1f_behavior__sd_2672_plain_3x3_87943d5d",
+        "super_editor__tab_alignment_test_184edb5d_super_editor__tab_test_576c8317"
+      ],
+      "accept_only": [
+        "behavior__pageref_standalone_uppercase_h_7701e07f_behavior__rtl_header_footer_e1ac81f6",
+        "behavior__pageref_standalone_uppercase_h_7701e07f_super_editor__restart_numbering_sub_list_85ddcb79",
+        "behavior__sd_2447_toc_tab_alignment_8319c14c_behavior__sd_2517_localized_heading_styles_39c2e4a1",
+        "behavior__sd_2517_localized_heading_styles_39c2e4a1_behavior__sd_2750_borderbox_7cd3768d",
+        "behavior__sd_2672_plain_3x3_87943d5d_super_editor__hyperlink_node_internal_1c0232f9",
+        "doc_api_stories__diff_doc2_bc0da0ce_doc_api_stories__numwords_8be5f783",
+        "document_100_ultimate_demo_id_paraid_overflow_docx_lots_of_comments_addition_redline_addition_v_removal",
+        "evals__nda_7f304918_super_editor__numwords_393421eb",
+        "file_103_file_104",
+        "file_175_file_176",
+        "hr_onboarding_checklist_table_i_am_sharing_microsoft_word_vs_google_docs_comprehensive_proof_with_you",
+        "numwords_fldsimple_ole_object",
+        "red_strikethrough_demo_style_default_missing_redline_cicerodo_v_plate_30",
+        "redline_cicerodo_v_plate_30_right_align_bold_demo_id_paraid_overflow",
+        "sample_document_word_repair_of_our_output_word_repaired_sd_2517_localized_heading_styles",
+        "sd_2517_localized_heading_styles_sectpr_headerref",
+        "small_font_size_demo_id_paraid_overflow_strict01_sdt_controls",
+        "super_editor__annotations_import_2_eaae7b97_super_editor__base_custom_544164f9",
+        "super_editor__complex2_dbba7f05_super_editor__fields_test_4a8ffd8c",
+        "super_editor__complex2_dbba7f05_super_editor__pci_table_dc840852",
+        "super_editor__doc_with_spaces_from_styles_734ca26f_super_editor__table_width_issue_20b01504",
+        "super_editor__features_redlines_comments_annotation_769ed131_super_editor__fields_test_4a8ffd8c",
+        "super_editor__fields_test_4a8ffd8c_behavior__sd_2517_localized_heading_styles_39c2e4a1",
+        "super_editor__ooxml_bold_rstyle_linked_combos_demo_90819822_super_editor__ooxml_bold_vals_demo_9e688d8f",
+        "super_editor__superdoc_hyperlink_cases_1dde9cd3_behavior__sd_2672_rtl_table_63bd9d10",
+        "super_editor__superdoc_hyperlink_cases_1dde9cd3_super_editor__base_custom_544164f9",
+        "super_editor__superdoc_hyperlink_cases_1dde9cd3_super_editor__superdoc_table_tester_3b2de2e1",
+        "table_vmerge_colspan_text_box",
+        "verdana_italic_centered_demo_id_paraid_overflow_word_clean_strict01"
+      ],
+      "neither": [
+        "file_26_file_27",
+        "ole_object_ooxml_style_link",
+        "strict01_strikethrough_and_italic_combo_id_paraid_overflow",
+        "super_editor__advanced_text_78401c31_super_editor__alternatecontent_valid_de18b376",
+        "super_editor__alternatecontent_valid_de18b376_behavior__math_radical_tests_4c1ce187",
+        "word_clean_strict01_word_tolerated_broken_media_rel"
+      ]
+    },
+    "unjudged": {
+      "behavior__sd_2517_localized_heading_styles_39c2e4a1_behavior__sd_2672_gridbefore_vmerge_7c895dff": "error: ValueError: no `tc` element at grid_offset=0",
+      "sample_document_really_repaired_word_repaired_sample_document_word_repair_of_our_output_iter2_word_repaired": "blind",
+      "super_editor__table_width_issue_20b01504_super_editor__alternatecontent_valid_de18b376": "error: ValueError: no `tc` element at grid_offset=5",
+      "super_editor__table_width_issue_20b01504_super_editor__table_widths_sd_732_12074135": "error: ValueError: no `tc` element at grid_offset=5"
+    }
+  },
+  "gate": {
+    "verdict": "stop_fix_scorer",
+    "both_hold_fraction": 0.7654320987654321,
+    "n_both_hold": 124,
+    "n_judged": 162,
+    "reason": "124 of 162 judged documents (76.5%) have BOTH invariants holding, above the 15% threshold: the markup is correct and the scorer disagrees. Fix the scorer before lifting the cluster \u2014 a mean built on a scorer that under-credits correct markup optimises the engine against our own bug."
+  },
+  "cross_tabulation": {
+    "both_hold": [
+      {
+        "token": "list",
+        "n_in_bucket": 26,
+        "n_token_judged": 28,
+        "concentration": 0.9285714285714286
+      },
+      {
+        "token": "table",
+        "n_in_bucket": 22,
+        "n_token_judged": 29,
+        "concentration": 0.7586206896551724
+      },
+      {
+        "token": "math",
+        "n_in_bucket": 19,
+        "n_token_judged": 20,
+        "concentration": 0.95
+      },
+      {
+        "token": "demo",
+        "n_in_bucket": 16,
+        "n_token_judged": 22,
+        "concentration": 0.7272727272727273
+      },
+      {
+        "token": "ooxml",
+        "n_in_bucket": 15,
+        "n_token_judged": 17,
+        "concentration": 0.8823529411764706
+      },
+      {
+        "token": "diff",
+        "n_in_bucket": 13,
+        "n_token_judged": 15,
+        "concentration": 0.8666666666666667
+      },
+      {
+        "token": "word",
+        "n_in_bucket": 13,
+        "n_token_judged": 17,
+        "concentration": 0.7647058823529411
+      },
+      {
+        "token": "combos",
+        "n_in_bucket": 12,
+        "n_token_judged": 13,
+        "concentration": 0.9230769230769231
+      }
+    ],
+    "reject_only": [],
+    "accept_only": [
+      {
+        "token": "styles",
+        "n_in_bucket": 6,
+        "n_token_judged": 8,
+        "concentration": 0.75
+      },
+      {
+        "token": "demo",
+        "n_in_bucket": 6,
+        "n_token_judged": 22,
+        "concentration": 0.2727272727272727
+      },
+      {
+        "token": "table",
+        "n_in_bucket": 6,
+        "n_token_judged": 29,
+        "concentration": 0.20689655172413793
+      },
+      {
+        "token": "localized",
+        "n_in_bucket": 5,
+        "n_token_judged": 5,
+        "concentration": 1.0
+      },
+      {
+        "token": "heading",
+        "n_in_bucket": 5,
+        "n_token_judged": 8,
+        "concentration": 0.625
+      },
+      {
+        "token": "hyperlink",
+        "n_in_bucket": 4,
+        "n_token_judged": 5,
+        "concentration": 0.8
+      },
+      {
+        "token": "overflow",
+        "n_in_bucket": 4,
+        "n_token_judged": 15,
+        "concentration": 0.26666666666666666
+      },
+      {
+        "token": "paraid",
+        "n_in_bucket": 4,
+        "n_token_judged": 15,
+        "concentration": 0.26666666666666666
+      }
+    ],
+    "neither": []
+  }
+}

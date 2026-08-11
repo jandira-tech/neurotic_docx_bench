@@ -90,19 +90,49 @@ Sorted by **ITT median** (intent-to-treat: every failed doc scores 0, so crashin
 
 **Current corpus** (lines stamped with `corpus_revision`)
 
+> ⚠️ **Rows below cover different document counts (763, 48) — they are not the same measurement.** A tool scored on fewer documents ran a different, usually easier, subset; its rank is not comparable with a row covering more. Compare only rows whose `ITT Docs` match.
+
 | Rank | Vendor | Version | Docs | ITT Docs | ITT Mean | ITT Median | Mean | Median | Perfect (100) | Failures |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | docxodus | 9.0.0 | 760 | 763 | 80.24 | 91.11 | 80.55 | 91.19 | 186 | 4 |
-| 2 | jubarte (lossless) | jubarte-final@d43557e042c1 | 763 | 763 | 77.02 | 78.53 | 77.02 | 78.53 | 142 | 0 |
-| 3 | jubarte-rust | jubarte-rust@fcea02da49f4 | 763 | 763 | 76.21 | 77.95 | 76.21 | 77.95 | 158 | 0 |
-| 4 | jubarte-wasm | 0.1.0 | 763 | 763 | 76.21 | 77.95 | 76.21 | 77.95 | 158 | 0 |
-| 5 | jubarte-ast | jubarte-final@d43557e042c1 | 755 | 763 | 69.83 | 68.30 | 70.57 | 68.67 | 84 | 9 |
-| 6 | folio | 0.15.13 | 744 | 763 | 50.83 | 50.29 | 52.13 | 50.43 | 0 | 19 |
-| 7 | superdoc | 1.21.3 | 665 | 763 | 46.30 | 50.16 | 53.13 | 51.56 | 3 | 115 |
-| 8 | superdoc-redlines | 0.2.0 | 703 | 763 | 47.37 | 49.16 | 51.41 | 50.11 | 0 | 68 |
-| 9 | docx-redline-js | 0.3.0 | 746 | 763 | 45.16 | 47.22 | 46.19 | 47.42 | 0 | 17 |
-| 10 | redlines | 0.6.1 | 745 | 763 | 44.86 | 47.05 | 45.94 | 47.14 | 0 | 18 |
-| 11 | superdoc | 2.0.0 | 331 | 763 | 19.61 | 0.00 | 45.19 | 46.72 | 1 | 432 |
+| 2 | jubarte-rust | jubarte-rust@4a6065089e4d+git.fc8c50f879974568278bcd33c476b153229313f0 (best) | 763 | 763 | 81.41 | 88.73 | 81.41 | 88.73 | 193 | 0 |
+| 3 | jubarte (lossless) | jubarte-final@a58157a9cd2d (best) | 763 | 763 | 81.47 | 88.60 | 81.47 | 88.60 | 202 | 0 |
+| 4 | jubarte-wasm | 0.1.0@4b36f4db1d2f+git.ebf1a7996df49f99fb40f4f67713e61cfd19c731 | 763 | 763 | 79.57 | 84.89 | 79.57 | 84.89 | 182 | 0 |
+| 5 | jubarte-wasm | 0.1.0@e1e19c982338+git.ebf1a7996df49f99fb40f4f67713e61cfd19c731 | 763 | 763 | 79.56 | 84.89 | 79.56 | 84.89 | 182 | 0 |
+| 6 | jubarte-wasm | 0.1.0@18f6c9fd87db+git.ebf1a7996df49f99fb40f4f67713e61cfd19c731 | 763 | 763 | 79.46 | 84.89 | 79.46 | 84.89 | 178 | 0 |
+| 7 | jubarte-wasm | 0.1.0@a795fa73ea5f+git.0f39b64e69b54a04828d78e73d071d0949dee73c | 763 | 763 | 78.89 | 83.59 | 78.89 | 83.59 | 176 | 0 |
+| 8 | jubarte-wasm | 0.1.0@2957178cc645+git.b910a23bce9b63a393ac6186ab366a39d6aaa504 | 763 | 763 | 78.05 | 81.87 | 78.05 | 81.87 | 165 | 0 |
+| 9 | jubarte-wasm | 0.1.0@b13bcb128725+git.bae2df5748e5bce5a3873056a895cbe769285c74 | 763 | 763 | 77.97 | 81.83 | 77.97 | 81.83 | 163 | 0 |
+| 10 | jubarte-wasm | 0.1.0@d3810de5aa53+git.0e2923194145ea254ea617b9a99fb60ea9b1d431 | 763 | 763 | 77.92 | 81.83 | 77.92 | 81.83 | 161 | 0 |
+| 11 | jubarte-wasm | 0.1.0@1331a4ff7c61+git.8cd638d6f0cdb261c55150c056af9cf44fa332a6 | 763 | 763 | 77.75 | 81.47 | 77.75 | 81.47 | 161 | 0 |
+| 12 | jubarte-wasm | 0.1.0@dc46d94d88ab+git.6817a28378372d6e7c95227cf300889e74ab06e4 | 763 | 763 | 77.69 | 81.44 | 77.69 | 81.44 | 161 | 0 |
+| 13 | jubarte-wasm | 0.1.0@d5f48a35f21a+git.24b182f5824aaf9acdd3a0c00e9bf88b22b6fde9 | 763 | 763 | 77.56 | 81.16 | 77.56 | 81.16 | 160 | 0 |
+| 14 | jubarte-wasm | 0.1.0 | 763 | 763 | 76.21 | 77.95 | 76.21 | 77.95 | 158 | 0 |
+| 15 | jubarte-ast | jubarte-final@138300e8471d | 763 | 763 | 74.20 | 76.15 | 74.20 | 76.15 | 96 | 0 |
+| 16 | jubarte-ast | jubarte-final@300cc3edf753 | 763 | 763 | 74.20 | 76.15 | 74.20 | 76.15 | 96 | 0 |
+| 17 | jubarte-ast | jubarte-final@38e6f956cb44 | 763 | 763 | 74.20 | 76.15 | 74.20 | 76.15 | 96 | 0 |
+| 18 | jubarte-ast | jubarte-final@7ef64a75db56 | 763 | 763 | 74.20 | 76.15 | 74.20 | 76.15 | 96 | 0 |
+| 19 | jubarte-ast | jubarte-final@88c1b1c36479 | 763 | 763 | 74.20 | 76.15 | 74.20 | 76.15 | 96 | 0 |
+| 20 | jubarte-ast | jubarte-final@a6caf6b44537 | 763 | 763 | 74.20 | 76.15 | 74.20 | 76.15 | 96 | 0 |
+| 21 | jubarte-ast | 0.1.0@0676fa9064f1 | 763 | 763 | 74.20 | 76.15 | 74.20 | 76.15 | 96 | 0 |
+| 22 | jubarte-ast | jubarte-final@a58157a9cd2d | 763 | 763 | 74.20 | 76.15 | 74.20 | 76.15 | 96 | 0 |
+| 23 | jubarte-ast | jubarte-final@d294713913bb+git.b256b039d54561800b4462fb67cfcd5a8143f606 | 754 | 763 | 73.57 | 76.15 | 74.45 | 76.74 | 96 | 10 |
+| 24 | jubarte-ast | jubarte-final@0a703664346d+git.50155bfba69385bf0e99dd3a19b15da1f58e104c | 754 | 763 | 73.00 | 75.12 | 73.87 | 75.87 | 96 | 10 |
+| 25 | jubarte-ast | jubarte-final@c043b0aaefb3+git.19b5f14c6088a71280786a864d45cac3aa6e7c92 | 754 | 763 | 73.00 | 75.12 | 73.87 | 75.87 | 96 | 10 |
+| 26 | jubarte-ast | jubarte-final@6e7229a4d930+git.6f9f76fcd961c9ace7fce9941307b712ada01282 | 754 | 763 | 72.59 | 73.71 | 73.46 | 74.29 | 91 | 10 |
+| 27 | jubarte-ast | jubarte-final@dc06c68fa885+git.1cfd5d08a6d7283834465dfc84d04ee6fbac5f81 | 754 | 763 | 72.58 | 73.59 | 73.44 | 74.15 | 91 | 10 |
+| 28 | jubarte-ast | jubarte-final@5bf73ce40d09+git.f9c71f0cd5b7ea561c4739d61cad72a65296ed65 | 754 | 763 | 72.51 | 73.56 | 73.37 | 74.11 | 91 | 10 |
+| 29 | jubarte-ast | jubarte-final@041a9bd0cbc3+git.8f8ea75949175abde9b7700308190a3dcd3508ab | 754 | 763 | 70.24 | 68.64 | 71.08 | 68.79 | 91 | 10 |
+| 30 | jubarte-ast | jubarte-final@d43557e042c1 | 755 | 763 | 69.83 | 68.30 | 70.57 | 68.67 | 84 | 9 |
+| 31 | jubarte (lossless) | 0.1.0@2f698925be74 (worst) | 48 | 48 | 69.63 | 66.51 | 69.63 | 66.51 | 2 | 0 |
+| 32 | jubarte-rust | jubarte-rust@66ab19649ff7+git.963b8e2 (worst) | 48 | 48 | 68.70 | 64.31 | 68.70 | 64.31 | 2 | 0 |
+| 33 | jubarte-ast | 0.1.0@2f698925be74 | 48 | 48 | 65.18 | 63.35 | 65.18 | 63.35 | 1 | 0 |
+| 34 | folio | 0.15.13 | 744 | 763 | 50.83 | 50.29 | 52.13 | 50.43 | 0 | 19 |
+| 35 | superdoc | 1.21.3 | 665 | 763 | 46.30 | 50.16 | 53.13 | 51.56 | 3 | 115 |
+| 36 | superdoc-redlines | 0.2.0 | 703 | 763 | 47.37 | 49.16 | 51.41 | 50.11 | 0 | 68 |
+| 37 | docx-redline-js | 0.3.0 | 746 | 763 | 45.16 | 47.22 | 46.19 | 47.42 | 0 | 17 |
+| 38 | redlines | 0.6.1 | 745 | 763 | 44.86 | 47.05 | 45.94 | 47.14 | 0 | 18 |
+| 39 | superdoc | 2.0.0 | 331 | 763 | 19.61 | 0.00 | 45.19 | 46.72 | 1 | 432 |
 
 **Legacy corpus** (older, smaller corpora — not comparable with the rows above; kept for history until each tool re-runs):
 
@@ -215,10 +245,10 @@ Sorted by median **ms per redline** (lower is faster). Large-N warm rows (`*-inp
 
 | Rank | Tool | Runtime | Fixtures | Pairs | Median ms | Mean ms | p95 | /s | n | Failures |
 | --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| 1 | jubarte-rust-inproc | rust | 1000 | 5000 | 8.10 | 33.74 | 142.24 | 29.6 | 5000 | 0 |
+| 1 | jubarte-rust-inproc | rust | 1000 | 5000 | 6.20 | 25.34 | 110.76 | 39.5 | 5000 | 0 |
 | 2 | docxodus-csharp-inproc | dotnet | 1000 | 5000 | 9.43 | 29.90 | 110.73 | 33.4 | 4880 | 120 |
 | 3 | jubarte-rust | rust | 1000 | 5000 | 9.66 | 31.02 | 123.39 | 32.2 | 5000 | 0 |
-| 4 | jubarte-wasm | rust-wasm | 1000 | 5000 | 9.72 | 41.44 | 180.49 | 24.1 | 5000 | 0 |
+| 4 | jubarte-wasm | rust-wasm | 1000 | 5000 | 9.70 | 41.90 | 182.57 | 23.9 | 5000 | 0 |
 | 5 | jubarte-native | node | 1000 | 5000 | 14.43 | 57.15 | 175.71 | 17.5 | 5000 | 0 |
 | 6 | jubarte-lossless | node | 1000 | 5000 | 54.64 | 168.18 | 592.49 | 5.9 | 4997 | 3 |
 | 7 | docxodus | dotnet-wasm | 200 | 500 | 148.75 | 607.38 | 3212.30 | 1.6 | 496 | 4 |
