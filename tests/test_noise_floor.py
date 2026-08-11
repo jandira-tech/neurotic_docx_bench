@@ -42,6 +42,11 @@ def test_eps_from_noise_floor_file(tmp_path: Path) -> None:
     assert noise_floor.eps_from_file(p) == pytest.approx(1e-4)  # floor at default
     p.write_text("garbage")
     assert noise_floor.eps_from_file(p) == pytest.approx(1e-4)
+    # Non-finite / negative sigma must not disable the gate.
+    p.write_text(json.dumps({"sigma": "Infinity", "n": 1}))
+    assert noise_floor.eps_from_file(p) == pytest.approx(1e-4)
+    p.write_text(json.dumps({"sigma": -1.0, "n": 1}))
+    assert noise_floor.eps_from_file(p) == pytest.approx(1e-4)
 
 
 def test_measure_noise_floor_stats() -> None:
