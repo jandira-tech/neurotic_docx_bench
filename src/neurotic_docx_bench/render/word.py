@@ -251,6 +251,7 @@ def validate_one(
         if modal is True:
             _close_active_document()
             proc.kill()
+            proc.communicate()  # reap the killed osascript process
             return ValidationResult(
                 "invalid", "repair dialog (modal detected)", elapsed,
             )
@@ -259,6 +260,7 @@ def validate_one(
             # "no modal" — that would mis-label a blocked repair dialog as UNJUDGEABLE.
             _close_active_document()
             proc.kill()
+            proc.communicate()
             raise ModalProbeError(
                 "Word modal probe failed (grant Accessibility / System Events "
                 "permissions for osascript); cannot judge validity safely",
@@ -266,6 +268,7 @@ def validate_one(
         if elapsed > budget:
             _close_active_document()
             proc.kill()
+            proc.communicate()
             return ValidationResult(
                 "unjudgeable",
                 f"slow open — no dialog observed within {budget:.0f}s budget",
