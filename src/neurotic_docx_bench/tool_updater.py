@@ -22,8 +22,23 @@ from pathlib import Path
 def resolve_local_version(dist_path: Path) -> str:
     """Version identifier for a local tool build directory.
 
-    ``<build>/package.json``'s ``version`` if present, else ``<dirname>@<sha256[:12]>`` over
-    the (path, bytes) of every file in the build — stable and distinct per build.
+    ``<label>@<sha256[:12]>`` over the (path, bytes) of every file in the build —
+    stable and distinct per build. ``<label>`` is ``<build>/package.json``'s
+    ``version`` when present, else the directory name.
+
+    **The content hash is ALWAYS included, including when a package.json version
+    exists.** It used to short-circuit and return the bare version, and that made the
+    pin lie: ``jubarte-wasm``'s dist is a local ``wasm-pack`` build whose
+    ``pkg/package.json`` carries a hand-written ``"0.1.0"`` that nobody bumps, so
+    **13 runs spanning four demonstrably different engines** (ITT means 0, 85.92,
+    76.21, 76.58) were all recorded as version ``0.1.0``. A pin that cannot
+    distinguish two engines is not provenance. This is the same D5 split-brain that
+    forced the docxodus "9.0.0" retraction, where the pin recorded one version and the
+    run executed another.
+
+    A published package's version is authoritative for its bytes; a local build
+    directory's is not, and this function cannot tell them apart. So it trusts the
+    bytes and keeps the version only as a human-readable label.
 
     Content-hash pins are untraceable to source on their own, so when the build
     carries an ``ENGINE_COMMIT.txt`` (written at install time; the engine's git
@@ -35,12 +50,13 @@ def resolve_local_version(dist_path: Path) -> str:
     dist_path = Path(dist_path)
     if not dist_path.is_dir():
         raise FileNotFoundError(f"tool build dir not found: {dist_path}")
+    label = dist_path.name
     pkg = dist_path / "package.json"
     if pkg.is_file():
         try:
             version = json.loads(pkg.read_text()).get("version")
             if version:
-                return str(version)
+                label = str(version)
         except (json.JSONDecodeError, OSError):
             pass
     digest = hashlib.sha256()
@@ -49,7 +65,7 @@ def resolve_local_version(dist_path: Path) -> str:
             continue
         digest.update(f.relative_to(dist_path).as_posix().encode())
         digest.update(f.read_bytes())
-    pin = f"{dist_path.name}@{digest.hexdigest()[:12]}"
+    pin = f"{label}@{digest.hexdigest()[:12]}"
     commit_file = dist_path / "ENGINE_COMMIT.txt"
     if commit_file.is_file():
         commit = commit_file.read_text().strip()
