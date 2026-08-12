@@ -1,0 +1,252 @@
+{
+  "1_5_line_spacing_id_paraid_overflow_24_id_paraid_overflow": {
+    "baseline": 100.0,
+    "bucket": "canary100",
+    "docxodus": 100.0
+  },
+  "behavior__math_func_tests_0434dd11_behavior__math_groupchr_tests_4a4970fc": {
+    "baseline": 54.6433,
+    "bucket": "mid",
+    "docxodus": 57.6456
+  },
+  "behavior__pageref_standalone_uppercase_h_7701e07f_super_editor__restart_numbering_sub_list_85ddcb79": {
+    "baseline": 52.4707,
+    "bucket": "mid",
+    "docxodus": 56.6404
+  },
+  "behavior__sd_2517_localized_heading_styles_39c2e4a1_behavior__sd_2672_gridbefore_vmerge_7c895dff": {
+    "baseline": 43.6814,
+    "bucket": "tail",
+    "docxodus": 47.4768
+  },
+  "behavior__tiff_image_2d531f83_behavior__sd_2750_borderbox_7cd3768d": {
+    "baseline": 89.8409,
+    "bucket": "near90",
+    "docxodus": 45.3737
+  },
+  "behavior__tiff_image_2d531f83_behavior__two_column_simple_e77be963": {
+    "baseline": 39.6214,
+    "bucket": "tail",
+    "docxodus": 40.014
+  },
+  "behavior__tiff_image_2d531f83_super_editor__h_f_normal_5d2a8d96": {
+    "baseline": 37.9713,
+    "bucket": "tail",
+    "docxodus": 43.4129
+  },
+  "blue_centered_title_demo_style_default_missing_blue_italic_text_demo_id_paraid_overflow": {
+    "baseline": 89.4571,
+    "bucket": "near90",
+    "docxodus": 89.4812
+  },
+  "center_alignment_demo_id_paraid_overflow_2_center_alignment_demo_id_paraid_overflow": {
+    "baseline": 92.7177,
+    "bucket": "canary90",
+    "docxodus": 100.0
+  },
+  "cli_legacy__replace_test_0a793f01_super_editor__sdpr_8cc15994": {
+    "baseline": 42.5599,
+    "bucket": "tail",
+    "docxodus": 40.5234
+  },
+  "document_100_ultimate_demo_id_paraid_overflow_double_spacing_bold_demo_id_paraid_overflow": {
+    "baseline": 89.5135,
+    "bucket": "near90",
+    "docxodus": 100.0
+  },
+  "evals__employment_offer_4cf5a872_evals__lease_agreement_7081191d": {
+    "baseline": 51.7351,
+    "bucket": "dxwins",
+    "docxodus": 95.1312
+  },
+  "file_101_file_102": {
+    "baseline": 62.509,
+    "bucket": "dxwins",
+    "docxodus": 97.086
+  },
+  "file_110_file_111": {
+    "baseline": 55.7931,
+    "bucket": "dxwins",
+    "docxodus": 97.8095
+  },
+  "file_120_file_121": {
+    "baseline": 63.0975,
+    "bucket": "dxwins",
+    "docxodus": 97.3855
+  },
+  "file_148_file_149": {
+    "baseline": 89.4269,
+    "bucket": "near90",
+    "docxodus": 96.8964
+  },
+  "file_150_file_151": {
+    "baseline": 100.0,
+    "bucket": "canary100",
+    "docxodus": 96.8909
+  },
+  "file_180_file_181": {
+    "baseline": 61.2625,
+    "bucket": "dxwins",
+    "docxodus": 96.1934
+  },
+  "file_22_file_23": {
+    "baseline": 44.8146,
+    "bucket": "dxwins",
+    "docxodus": 94.0731
+  },
+  "file_28_file_29": {
+    "baseline": 89.3299,
+    "bucket": "near90",
+    "docxodus": 82.2893
+  },
+  "file_39_file_40": {
+    "baseline": 63.3959,
+    "bucket": "dxwins",
+    "docxodus": 97.9955
+  },
+  "file_40_file_41": {
+    "baseline": 62.4218,
+    "bucket": "mid",
+    "docxodus": 62.0061
+  },
+  "file_69_file_70": {
+    "baseline": 61.1334,
+    "bucket": "dxwins",
+    "docxodus": 90.4473
+  },
+  "file_72_file_73": {
+    "baseline": 100.0,
+    "bucket": "canary100",
+    "docxodus": 97.4721
+  },
+  "file_8_file_9": {
+    "baseline": 56.5928,
+    "bucket": "mid",
+    "docxodus": 37.7045
+  },
+  "font_size_demo_id_paraid_overflow_footnotes_sample": {
+    "baseline": 89.7075,
+    "bucket": "near90",
+    "docxodus": 91.5742
+  },
+  "footnotes_sample_gdocs_comments_export": {
+    "baseline": 97.3898,
+    "bucket": "canary90",
+    "docxodus": 97.3898
+  },
+  "it_security_policy_v2_suggesting_insertions_italic_and_underline_combo_style_default_missing": {
+    "baseline": 67.2948,
+    "bucket": "mid",
+    "docxodus": 92.6219
+  },
+  "italic_underline_combined_demo_id_paraid_overflow_justified_underline_demo_id_paraid_overflow": {
+    "baseline": 89.4867,
+    "bucket": "near90",
+    "docxodus": 99.8092
+  },
+  "right_align_bold_demo_id_paraid_overflow_right_aligned_italic_demo_id_paraid_overflow": {
+    "baseline": 89.7927,
+    "bucket": "near90",
+    "docxodus": 88.4236
+  },
+  "roboto_font_demo_id_paraid_overflow_2_roboto_font_demo_id_paraid_overflow": {
+    "baseline": 100.0,
+    "bucket": "canary100",
+    "docxodus": 100.0
+  },
+  "roboto_underline_demo_id_paraid_overflow_sales_report_january_2026_suggesting_insertions": {
+    "baseline": 99.4233,
+    "bucket": "canary90",
+    "docxodus": 100.0
+  },
+  "sample_document_word_repair_of_our_output_word_repaired_small_font_size_demo_id_paraid_overflow": {
+    "baseline": 37.0988,
+    "bucket": "tail",
+    "docxodus": 37.396
+  },
+  "sd_2517_localized_heading_styles_sectpr_headerref": {
+    "baseline": 43.0632,
+    "bucket": "tail",
+    "docxodus": 42.8658
+  },
+  "strict01_sdt_controls_strict01": {
+    "baseline": 61.0654,
+    "bucket": "mid",
+    "docxodus": 63.0678
+  },
+  "super_editor__anchor_images_3327faf8_super_editor__annot2_03ae6b74": {
+    "baseline": 89.9892,
+    "bucket": "near90",
+    "docxodus": 46.514
+  },
+  "super_editor__basic_comment_d3ba5f1e_cli_legacy__sample_3a8f1f93": {
+    "baseline": 50.5321,
+    "bucket": "dxwins",
+    "docxodus": 98.5157
+  },
+  "super_editor__basic_paragraph_1774f4e4_behavior__word_native_bullet_circle_80d6f323": {
+    "baseline": 65.1457,
+    "bucket": "mid",
+    "docxodus": 95.4536
+  },
+  "super_editor__fields_attrs1_83837249_super_editor__fields_attrs2_fonts_ebd792fb": {
+    "baseline": 100.0,
+    "bucket": "canary100",
+    "docxodus": 56.0442
+  },
+  "super_editor__font_formatting_runs_8be3565a_behavior__math_phantom_tests_263131a8": {
+    "baseline": 59.2943,
+    "bucket": "dxwins",
+    "docxodus": 97.1826
+  },
+  "super_editor__header_alternating_odd_even_11e01996_super_editor__heading_font_46041620": {
+    "baseline": 63.8318,
+    "bucket": "mid",
+    "docxodus": 78.9343
+  },
+  "super_editor__hyperlink_node_internal_1c0232f9_super_editor__image_inline_and_block_ad6109b3": {
+    "baseline": 99.9896,
+    "bucket": "canary90",
+    "docxodus": 100.0
+  },
+  "super_editor__image_inline_and_block_ad6109b3_behavior__rtl_page_numpages_54739e26": {
+    "baseline": 59.0301,
+    "bucket": "dxwins",
+    "docxodus": 96.8263
+  },
+  "super_editor__list_spacer1_06383c66_super_editor__list_with_break_exported_broken_45f7bd19": {
+    "baseline": 89.1163,
+    "bucket": "near90",
+    "docxodus": 94.5718
+  },
+  "super_editor__longer_header_sign_area_7c80b525_super_editor__missing_sectpr_967a402d": {
+    "baseline": 95.063,
+    "bucket": "canary90",
+    "docxodus": 95.066
+  },
+  "super_editor__sd_1494_table_left_indent_11bb24c7_super_editor__sdpr_titleonly_b0796676": {
+    "baseline": 50.3711,
+    "bucket": "mid",
+    "docxodus": 49.0218
+  },
+  "super_editor__sd_2534_collab_export_f3c7fdf7_super_editor__sd_2766_pirates_tracked_changes_3285d875": {
+    "baseline": 42.3782,
+    "bucket": "tail",
+    "docxodus": 38.4165
+  },
+  "super_editor__table_c70ca973_super_editor__text_color_highlight_36cb4c90": {
+    "baseline": 59.3545,
+    "bucket": "mid",
+    "docxodus": 59.3545
+  },
+  "super_editor__vrect_node_c8e51f22_super_editor__diff_after_10f1912e": {
+    "baseline": 43.1558,
+    "bucket": "tail",
+    "docxodus": 42.7896
+  },
+  "word_tolerated_misplaced_pgsz_word_tolerated_misplaced_uipriority": {
+    "baseline": 57.9062,
+    "bucket": "dxwins",
+    "docxodus": 96.8458
+  }
+}
