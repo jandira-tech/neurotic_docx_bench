@@ -1,0 +1,263 @@
+accepted_ground_truth: corpus/word_based/docx_accepted_word
+corpora:
+- manifest: /private/tmp/manifest_word_based_50.csv
+  name: word_based
+  source_dir: /Users/arthrod/temp/T/neurotic_docx_bench/corpus/word_based/docx_source
+- manifest: /private/tmp/manifest_randomized_50.csv
+  name: word_based_randomized
+  source_dir: /Users/arthrod/temp/T/neurotic_docx_bench/corpus/word_based/docx_source_randomized
+- manifest: /private/tmp/manifest_superdoc_50.csv
+  name: word_redlines_superdoc
+  source_dir: /Users/arthrod/temp/T/neurotic_docx_bench/corpus/word_redlines_superdoc/docx_source
+extra_oracle_dirs:
+- corpus/word_based/pdf_redlines_randomized/pdf
+- corpus/word_redlines_superdoc/pdf_redlines_word
+generate_scripts:
+- command: uv run bench accept corpus/word_based/docx_redlines_word --out corpus/word_based/docx_accepted_word
+  name: accepted-word
+- command: node scripts/generate-roundtrips.mjs --all
+  name: roundtrips-node
+- command: uv run python scripts/generate-roundtrips-superdoc.py
+  name: roundtrips-superdoc
+- command: mkdir -p /tmp/pdf_source_render/pdf && cp -c corpus/word_based/pdf_source/*.pdf
+    /tmp/pdf_source_render/pdf/ 2>/dev/null || cp corpus/word_based/pdf_source/*.pdf
+    /tmp/pdf_source_render/pdf/ 2>/dev/null; uv run bench render corpus/word_based/docx_source
+    /tmp/pdf_source_render --backend soffice --jobs 12 && mv -n /tmp/pdf_source_render/pdf/*.pdf
+    corpus/word_based/pdf_source/ 2>/dev/null; true
+  name: source-pdfs
+holdout_list: corpus/holdout_combined.txt
+runs:
+- benchmarks:
+  - accepted_changes
+  - script_redlines
+  - roundtrip
+  dist: dist/jubarte-final
+  generate: node --import tsx scripts/generate-native-redlines.ts --method=jubarte-native
+    --dist=dist/jubarte-final --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=jubarte-final-native
+  jobs: 12
+  name: jubarte-final-native
+  render: soffice
+  vendor: jubarte-ast
+- benchmarks:
+  - accepted_changes
+  - script_redlines
+  - roundtrip
+  dist: dist/jubarte-final
+  generate: node --import tsx scripts/generate-native-redlines.ts --method=jubarte-lossless
+    --dist=dist/jubarte-final --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=jubarte-final-lossless
+  jobs: 12
+  name: jubarte-final-lossless
+  render: soffice
+  vendor: jubarte
+- benchmarks:
+  - accepted_changes
+  - script_redlines
+  - roundtrip
+  generate: node --import tsx scripts/generate-native-redlines.ts --method=docxodus
+    --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=docxodus
+  jobs: 12
+  name: docxodus
+  package: docxodus@9.0.0
+  render: soffice
+  vendor: docxodus
+- benchmarks:
+  - visual_rendering
+  dist: src/neurotic_docx_bench/utils/docxodus/Docxodus/npm
+  docx: corpus/word_based/docx_source
+  harness: &id001
+    content_js: window.__rdvHasContent === true
+    error_js: window.__rdvError
+    file_input: '#fileInput'
+    page_selector: '[data-page-number]'
+    readiness_js: window.__rdvDocumentReady === true
+    reject_blank: true
+    server: cd src/neurotic_docx_bench/utils/docxodus/react-docxodus-viewer && npx
+      vite --port 5174 --host 127.0.0.1
+    timeout_ms: 60000
+    url: http://127.0.0.1:5174/harness.html
+  jobs: 12
+  name: docxodus-playwright-rendering
+  render: playwright
+  vendor: docxodus
+- benchmarks:
+  - visual_redlines
+  dist: src/neurotic_docx_bench/utils/docxodus/Docxodus/npm
+  docx: corpus/word_based/docx_redlines_word
+  harness: *id001
+  jobs: 12
+  name: docxodus-playwright-redlines
+  render: playwright
+  vendor: docxodus
+- benchmarks:
+  - visual_accepted_changes
+  dist: src/neurotic_docx_bench/utils/docxodus/Docxodus/npm
+  docx: corpus/word_based/docx_accepted_word
+  harness: *id001
+  jobs: 12
+  name: docxodus-playwright-accepted
+  render: playwright
+  vendor: docxodus
+- benchmarks:
+  - visual_rendering
+  docx: corpus/word_based/docx_source
+  harness: &id002
+    file_input: '#fileInput'
+    page_selector: .layout-page
+    readiness_js: window.__folioReady === true
+    server: cd harness/folio-viewer && npx vite --port 5175 --host 127.0.0.1
+    timeout_ms: 90000
+    url: http://127.0.0.1:5175/harness.html
+  jobs: 12
+  name: folio-playwright-rendering
+  package: '@stll/folio-react@0.13.2'
+  render: playwright
+  vendor: folio
+- benchmarks:
+  - visual_redlines
+  docx: corpus/word_based/docx_redlines_word
+  harness: *id002
+  jobs: 12
+  name: folio-playwright-redlines
+  package: '@stll/folio-react@0.13.2'
+  render: playwright
+  vendor: folio
+- benchmarks:
+  - visual_accepted_changes
+  docx: corpus/word_based/docx_accepted_word
+  harness: *id002
+  jobs: 12
+  name: folio-playwright-accepted
+  package: '@stll/folio-react@0.13.2'
+  render: playwright
+  vendor: folio
+- benchmarks:
+  - script_redlines
+  dist: ../docx-redline-migration-kit/dist/docx-redline-js
+  generate: node --import tsx scripts/generate-native-redlines.ts --method=docx-redline-js
+    --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=docx-redline-js
+  jobs: 12
+  name: docx-redline-js
+  render: soffice
+  vendor: docx-redline-js
+- benchmarks:
+  - script_redlines
+  - accepted_changes
+  - roundtrip
+  generate: node --import tsx scripts/generate-native-redlines.ts --method=folio --out=$RUN_DIR/docx
+    --run-dir=$RUN_DIR --tool=folio
+  jobs: 12
+  name: folio
+  package: '@stll/folio-core@0.15.13'
+  render: soffice
+  vendor: folio
+- benchmarks:
+  - accepted_changes
+  - script_redlines
+  - roundtrip
+  generate: uv run python -m neurotic_docx_bench.superdoc_gen --out=$RUN_DIR/docx
+    --tool=superdoc
+  jobs: 12
+  name: superdoc
+  python_package: superdoc-sdk==2.0.0
+  render: soffice
+  vendor: superdoc
+- benchmarks:
+  - script_redlines
+  generate: uv run python -m neurotic_docx_bench.redlines_gen --out=$RUN_DIR/docx
+    --tool=redlines
+  jobs: 12
+  name: redlines
+  python_package: redlines==0.6.1
+  render: soffice
+  vendor: redlines
+- benchmarks:
+  - script_redlines
+  dist: superdoc-redlines
+  generate: uv run python -m neurotic_docx_bench.superdoc_redlines_gen --out=$RUN_DIR/docx
+    --tool=superdoc-redlines --repo=superdoc-redlines
+  jobs: 12
+  name: superdoc-redlines
+  render: soffice
+  vendor: superdoc-redlines
+- benchmarks:
+  - script_redlines
+  - accepted_changes
+  - roundtrip
+  dist: src/neurotic_docx_bench/utils/jubarte/jubarte-rust
+  generate: node --import tsx scripts/generate-native-redlines.ts --method=jubarte-rust
+    --dist=src/neurotic_docx_bench/utils/jubarte/jubarte-rust --out=$RUN_DIR/docx
+    --run-dir=$RUN_DIR --tool=jubarte-rust
+  jobs: 12
+  name: jubarte-rust
+  render: soffice
+  vendor: jubarte-rust
+- benchmarks:
+  - script_redlines
+  dist: src/neurotic_docx_bench/utils/jubarte/jubarte-wasm/pkg
+  generate: node --import tsx scripts/generate-native-redlines.ts --method=jubarte-wasm
+    --dist=src/neurotic_docx_bench/utils/jubarte/jubarte-wasm/pkg --out=$RUN_DIR/docx
+    --run-dir=$RUN_DIR --tool=jubarte-wasm
+  jobs: 12
+  name: jubarte-wasm
+  render: soffice
+  vendor: jubarte-wasm
+- benchmarks:
+  - script_redlines
+  generate: node --import tsx scripts/generate-native-redlines.ts --method=superdoc-ts
+    --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=superdoc-ts
+  jobs: 12
+  name: superdoc-ts
+  package: '@superdoc-dev/sdk@1.21.3'
+  render: soffice
+  vendor: superdoc
+- benchmarks:
+  - script_redlines
+  dist: superdoc/packages/super-editor
+  generate: node --import tsx scripts/generate-native-redlines.ts --method=superdoc-native
+    --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=superdoc-native
+  jobs: 12
+  name: superdoc-native
+  render: soffice
+  vendor: superdoc
+- benchmarks:
+  - visual_rendering
+  docx: corpus/word_based/docx_source
+  harness: &id003
+    file_input: '#fileInput'
+    page_selector: .superdoc-page
+    readiness_js: window.__superdocReady === true && window.__superdocLayoutStable
+      === true && window.__superdocFontsReady === true
+    server: cd src/neurotic_docx_bench/utils/superdoc && npx vite --port 9106 --host
+      127.0.0.1 --strictPort
+    timeout_ms: 90000
+    url: http://127.0.0.1:9106/
+  jobs: 12
+  name: superdoc-playwright-rendering
+  package: superdoc@2.3.0
+  render: playwright
+  vendor: superdoc
+- benchmarks:
+  - visual_redlines
+  docx: corpus/word_based/docx_redlines_word
+  harness: *id003
+  jobs: 12
+  name: superdoc-playwright-redlines
+  package: superdoc@2.3.0
+  render: playwright
+  vendor: superdoc
+- benchmarks:
+  - visual_accepted_changes
+  docx: corpus/word_based/docx_accepted_word
+  harness: *id003
+  jobs: 12
+  name: superdoc-playwright-accepted
+  package: superdoc@2.3.0
+  render: playwright
+  vendor: superdoc
+scoring:
+  dpi: 144
+source_of_truth: corpus/word_based/pdf_redlines_word
+visual_oracles:
+  visual_accepted_changes: corpus/word_based/pdf_accepted_word
+  visual_redlines: corpus/word_based/pdf_redlines_word
+  visual_rendering: corpus/word_based/pdf_source

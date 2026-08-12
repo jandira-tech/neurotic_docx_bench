@@ -1,0 +1,201 @@
+{
+  "set": "worst30",
+  "n": 27,
+  "generate_ok": 27,
+  "generate_fail": 0,
+  "rows": [
+    {
+      "key": "super_editor__image_inline_and_block_ad6109b3_behavior__rtl_page_numpages_54739e26",
+      "baseline_score": 30.3398335397382,
+      "generate_ok": true,
+      "ms": 105.0,
+      "detail": "super_editor__image_inline_and_block_ad6109b3_behavior__rtl_page_numpages_54739e26_jubarte-rust_redline.docx"
+    },
+    {
+      "key": "super_editor__two_column_two_page_0b8a37c5_behavior__sd_2672_nested_table_dfac08bb",
+      "baseline_score": 33.800466963630974,
+      "generate_ok": true,
+      "ms": 169.74,
+      "detail": "super_editor__two_column_two_page_0b8a37c5_behavior__sd_2672_nested_table_dfac08bb_jubarte-rust_redline.docx"
+    },
+    {
+      "key": "super_editor__ooxml_highlight_rstyle_linked_combos__eb448e21_super_editor__ooxml_bold_rstyle_linked_combos_demo_90819822",
+      "baseline_score": 40.50476286734632,
+      "generate_ok": true,
+      "ms": 76.93,
+      "detail": "super_editor__ooxml_highlight_rstyle_linked_combos__eb448e21_super_editor__ooxml_bold_rstyle_linked_combos_demo_90819822_jubarte-rust_redline.docx"
+    },
+    {
+      "key": "super_editor__ooxml_highlight_rstyle_linked_combos__eb448e21_super_editor__ooxml_italic_rstyle_combos_demo_90894ac1",
+      "baseline_score": 40.725898630645794,
+      "generate_ok": true,
+      "ms": 68.03,
+      "detail": "super_editor__ooxml_highlight_rstyle_linked_combos__eb448e21_super_editor__ooxml_italic_rstyle_combos_demo_90894ac1_jubarte-rust_redline.docx"
+    },
+    {
+      "key": "behavior__tiff_image_2d531f83_super_editor__h_f_normal_5d2a8d96",
+      "baseline_score": 41.03266867472294,
+      "generate_ok": true,
+      "ms": 70.97,
+      "detail": "behavior__tiff_image_2d531f83_super_editor__h_f_normal_5d2a8d96_jubarte-rust_redline.docx"
+    },
+    {
+      "key": "super_editor__sd_2534_collab_export_f3c7fdf7_super_editor__sd_2766_pirates_tracked_changes_3285d875",
+      "baseline_score": 42.378229162413234,
+      "generate_ok": true,
+      "ms": 31.02,
+      "detail": "super_editor__sd_2534_collab_export_f3c7fdf7_super_editor__sd_2766_pirates_tracked_changes_3285d875_jubarte-rust_redline.docx"
+    },
+    {
+      "key": "super_editor__hummingbird_c5e5ac81_evals__employment_offer_4cf5a872",
+      "baseline_score": 42.38699371472246,
+      "generate_ok": true,
+      "ms": 104.33,
+      "detail": "super_editor__hummingbird_c5e5ac81_evals__employment_offer_4cf5a872_jubarte-rust_redline.docx"
+    },
+    {
+      "key": "cli_legacy__replace_test_0a793f01_super_editor__sdpr_8cc15994",
+      "baseline_score": 42.63388593962914,
+      "generate_ok": true,
+      "ms": 51.73,
+      "detail": "cli_legacy__replace_test_0a793f01_super_editor__sdpr_8cc15994_jubarte-rust_redline.docx"
+    },
+    {
+      "key": "super_editor__superdoc_hyperlink_cases_1dde9cd3_super_editor__superdoc_table_tester_3b2de2e1",
+      "baseline_score": 42.65466282061443,
+      "generate_ok": true,
+      "ms": 51.61,
+      "detail": "super_editor__superdoc_hyperlink_cases_1dde9cd3_super_editor__superdoc_table_tester_3b2de2e1_jubarte-rust_redline.docx"
+    },
+    {
+      "key": "super_editor__sd_2766_pirates_tracked_changes_3285d875_behavior__sd_2343_table_border_widths_b5148e83",
+      "baseline_score": 43.07745254688842,
+      "generate_ok": true,
+      "ms": 31.69,
+      "detail": "super_editor__sd_2766_pirates_tracked_changes_3285d875_behavior__sd_2343_table_border_widths_b5148e83_jubarte-rust_redline.docx"
+    },
+    {
+      "key": "behavior__tiff_image_2d531f83_behavior__two_column_simple_e77be963",
+      "baseline_score": 43.10388764529302,
+      "generate_ok": true,
+      "ms": 127.78,
+      "detail": "behavior__tiff_image_2d531f83_behavior__two_column_simple_e77be963_jubarte-rust_redline.docx"
+    },
+    {
+      "key": "super_editor__vrect_node_c8e51f22_super_editor__diff_after_10f1912e",
+      "baseline_score": 43.155762512471696,
+      "generate_ok": true,
+      "ms": 19.66,
+      "detail": "super_editor__vrect_node_c8e51f22_super_editor__diff_after_10f1912e_jubarte-rust_redline.docx"
+    },
+    {
+      "key": "sd_2517_localized_heading_styles_sectpr_headerref",
+      "baseline_score": 43.27987265313473,
+      "generate_ok": true,
+      "ms": 569.46,
+      "detail": "sd_2517_localized_heading_styles_sectpr_headerref_jubarte-rust_redline.docx"
+    },
+    {
+      "key": "super_editor__ooxml_size_rstyle_linked_combos_demo_017c9552_super_editor__ooxml_strike_rstyle_linked_combos_dem_b8167cd3",
+      "baseline_score": 43.37494261664985,
+      "generate_ok": true,
+      "ms": 69.3,
+      "detail": "super_editor__ooxml_size_rstyle_linked_combos_demo_017c9552_super_editor__ooxml_strike_rstyle_linked_combos_dem_b8167cd3_jubarte-rust_redline.docx"
+    },
+    {
+      "key": "behavior__sd_2517_localized_heading_styles_39c2e4a1_behavior__sd_2672_gridbefore_vmerge_7c895dff",
+      "baseline_score": 43.58697525916762,
+      "generate_ok": true,
+      "ms": 509.3,
+      "detail": "behavior__sd_2517_localized_heading_styles_39c2e4a1_behavior__sd_2672_gridbefore_vmerge_7c895dff_jubarte-rust_redline.docx"
+    },
+    {
+      "key": "behavior__sd_2517_localized_heading_styles_39c2e4a1_behavior__sd_2750_borderbox_7cd3768d",
+      "baseline_score": 43.701753356977314,
+      "generate_ok": true,
+      "ms": 526.41,
+      "detail": "behavior__sd_2517_localized_heading_styles_39c2e4a1_behavior__sd_2750_borderbox_7cd3768d_jubarte-rust_redline.docx"
+    },
+    {
+      "key": "super_editor__table_autofit_colspan_1fd7723c_super_editor__table_merged_cells_9c349334",
+      "baseline_score": 44.201918955196874,
+      "generate_ok": true,
+      "ms": 30.45,
+      "detail": "super_editor__table_autofit_colspan_1fd7723c_super_editor__table_merged_cells_9c349334_jubarte-rust_redline.docx"
+    },
+    {
+      "key": "evals__employment_offer_4cf5a872_evals__lease_agreement_7081191d",
+      "baseline_score": 44.33063296333072,
+      "generate_ok": true,
+      "ms": 83.47,
+      "detail": "evals__employment_offer_4cf5a872_evals__lease_agreement_7081191d_jubarte-rust_redline.docx"
+    },
+    {
+      "key": "super_editor__ooxml_italic_rstyle_combos_demo_90894ac1_super_editor__base_ordered_fdff1fb2",
+      "baseline_score": 44.34626324851357,
+      "generate_ok": true,
+      "ms": 69.39,
+      "detail": "super_editor__ooxml_italic_rstyle_combos_demo_90894ac1_super_editor__base_ordered_fdff1fb2_jubarte-rust_redline.docx"
+    },
+    {
+      "key": "super_editor__superdoc_table_tester_3b2de2e1_super_editor__tab_alignment_test_184edb5d",
+      "baseline_score": 44.88517973327639,
+      "generate_ok": true,
+      "ms": 45.2,
+      "detail": "super_editor__superdoc_table_tester_3b2de2e1_super_editor__tab_alignment_test_184edb5d_jubarte-rust_redline.docx"
+    },
+    {
+      "key": "doc_api_stories__diff_doc2_bc0da0ce_doc_api_stories__numwords_8be5f783",
+      "baseline_score": 44.97741737602161,
+      "generate_ok": true,
+      "ms": 18.41,
+      "detail": "doc_api_stories__diff_doc2_bc0da0ce_doc_api_stories__numwords_8be5f783_jubarte-rust_redline.docx"
+    },
+    {
+      "key": "file_22_file_23",
+      "baseline_score": 44.988653472345945,
+      "generate_ok": true,
+      "ms": 460.45,
+      "detail": "file_22_file_23_jubarte-rust_redline.docx"
+    },
+    {
+      "key": "super_editor__ooxml_bold_vals_demo_9e688d8f_super_editor__ooxml_color_rstyle_linked_combos_demo_23e43bed",
+      "baseline_score": 45.080288107785975,
+      "generate_ok": true,
+      "ms": 64.9,
+      "detail": "super_editor__ooxml_bold_vals_demo_9e688d8f_super_editor__ooxml_color_rstyle_linked_combos_demo_23e43bed_jubarte-rust_redline.docx"
+    },
+    {
+      "key": "file_34_file_35",
+      "baseline_score": 45.56996602897594,
+      "generate_ok": true,
+      "ms": 19.79,
+      "detail": "file_34_file_35_jubarte-rust_redline.docx"
+    },
+    {
+      "key": "document_100_ultimate_demo_id_paraid_overflow_docx_lots_of_comments_addition_redline_addition_v_removal",
+      "baseline_score": 45.696861826532675,
+      "generate_ok": true,
+      "ms": 141.56,
+      "detail": "document_100_ultimate_demo_id_paraid_overflow_docx_lots_of_comments_addition_redline_addition_v_removal_jubarte-rust_redline.docx"
+    },
+    {
+      "key": "behavior__sd_2750_borderbox_7cd3768d_super_editor__pre_separated_list_bd330d28",
+      "baseline_score": 45.75447560923408,
+      "generate_ok": true,
+      "ms": 17.97,
+      "detail": "behavior__sd_2750_borderbox_7cd3768d_super_editor__pre_separated_list_bd330d28_jubarte-rust_redline.docx"
+    },
+    {
+      "key": "super_editor__sd_1494_table_left_indent_03277d35_super_editor__pre_separated_list_bd330d28",
+      "baseline_score": 45.808977118319234,
+      "generate_ok": true,
+      "ms": 14.28,
+      "detail": "super_editor__sd_1494_table_left_indent_03277d35_super_editor__pre_separated_list_bd330d28_jubarte-rust_redline.docx"
+    }
+  ],
+  "gates": {
+    "generate_all_ok": true,
+    "note": "LO score A/B requires --score; regression gate uses baseline_score from last full run"
+  }
+}
