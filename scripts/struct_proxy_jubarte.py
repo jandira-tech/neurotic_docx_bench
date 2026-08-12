@@ -77,11 +77,15 @@ def doc_xml_of(path: Path) -> str | None:
 
 
 def main() -> None:
+    global BIN
     ap = argparse.ArgumentParser()
     ap.add_argument("--limit", type=int)
     ap.add_argument("--only", nargs="*")
     ap.add_argument("--out", type=Path, default=BENCH_ROOT / "results" / "struct_proxy.json")
+    ap.add_argument("--bin", type=Path, default=BIN,
+                    help="engine binary (default: installed bench dist)")
     a = ap.parse_args()
+    BIN = a.bin
 
     pairs = []
     for manifest, src, odir, pat in CORPORA:
