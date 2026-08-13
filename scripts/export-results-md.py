@@ -619,8 +619,20 @@ def to_fidelity_markdown(rows: list[dict[str, object]], source: Path) -> str:
         # Corpus regimes are NOT comparable — a legacy tool scored on 164 easy docs
         # would otherwise outrank a current tool scored on 763, and the table would
         # read as a real result. Each regime gets its own table and its own rank 1.
-        current = [r for r in items if r.get("corpus_revision") is not None]
-        legacy = [r for r in items if r.get("corpus_revision") is None]
+        #
+        # Presence of a stamp is not enough: 9.0.0 visual_redlines is stamped
+        # b7f467074a51 and 9.8.0 is stamped 5ed816028d99. Ranking those as one
+        # "current" table is the same lie as mixing stamped with unstamped.
+        # Current = the corpus_revision on the newest stamped line; everything
+        # else (older hashes, or no stamp) is legacy.
+        stamped = [r for r in items if r.get("corpus_revision")]
+        latest_rev = None
+        if stamped:
+            latest_rev = max(stamped, key=lambda r: str(r.get("timestamp") or "")).get(
+                "corpus_revision",
+            )
+        current = [r for r in items if r.get("corpus_revision") == latest_rev]
+        legacy = [r for r in items if r.get("corpus_revision") != latest_rev]
         if current and legacy:
             groups = [
                 ("**Current corpus** (lines stamped with `corpus_revision`):", current),
