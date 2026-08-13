@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { existsSync, readFileSync, readdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, readdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 // Root jszip, not the docx-redline-js vendored copy: that tree's `@ansonlai/docx-redline-js`
@@ -136,7 +136,8 @@ describe("generate-native-redlines", () => {
       );
       expect(out).toBeInstanceOf(Uint8Array);
       const xml = await documentXml(out);
-      expect(xml.includes("<w:ins") || xml.includes("<w:del")).toBe(true);
+      expect(xml.includes("<w:ins")).toBe(true);
+      expect(xml.includes("<w:del")).toBe(true);
     },
     60_000,
   );
@@ -174,6 +175,48 @@ describe("generate-native-redlines", () => {
       expect(pkg.version, "resolveDocxodusEntry must refuse a tree that is not the pin").toBe(
         pinned,
       );
+    });
+
+    it("package-lock.json, if present, resolves the same pin as bench.yaml", () => {
+      const lockPath = "package-lock.json";
+      if (!existsSync(lockPath)) return;
+      const lock = JSON.parse(readFileSync(lockPath, "utf8")) as {
+        packages?: Record<string, { version?: string }>;
+        dependencies?: Record<string, { version?: string }>;
+      };
+      const resolved =
+        lock.packages?.["node_modules/docxodus"]?.version ??
+        lock.dependencies?.docxodus?.version;
+      expect(
+        resolved,
+        "package-lock.json still resolves a different docxodus than bench.yaml — npm ci would measure the wrong engine",
+      ).toBe(benchYamlDocxodusPin());
+    });
+
+    it("resolveDocxodusEntry skips a stale root tree and uses the pinned vendor tree", () => {
+      const root = mkdtempSync(join(tmpdir(), "docxodus-pin-"));
+      try {
+        writeFileSync(
+          join(root, "package.json"),
+          JSON.stringify({ dependencies: { docxodus: "9.8.0" } }),
+        );
+        const stale = join(root, "node_modules/docxodus");
+        mkdirSync(join(stale, "dist"), { recursive: true });
+        writeFileSync(join(stale, "package.json"), JSON.stringify({ version: "7.0.0" }));
+        writeFileSync(join(stale, "dist/index.js"), "export {}\n");
+        const vendor = join(
+          root,
+          "src/neurotic_docx_bench/utils/docxodus/node_modules/docxodus",
+        );
+        mkdirSync(join(vendor, "dist"), { recursive: true });
+        writeFileSync(join(vendor, "package.json"), JSON.stringify({ version: "9.8.0" }));
+        writeFileSync(join(vendor, "dist/index.js"), "export {}\n");
+        mkdirSync(join(root, "scripts"), { recursive: true });
+        const entry = resolveDocxodusEntry(join(root, "scripts"));
+        expect(entry).toBe(join(vendor, "dist/index.js"));
+      } finally {
+        rmSync(root, { recursive: true, force: true });
+      }
     });
 
     it.runIf(haveCorpus && haveDocxodus)(
