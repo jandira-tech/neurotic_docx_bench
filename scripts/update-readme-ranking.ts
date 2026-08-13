@@ -473,14 +473,19 @@ export function buildFidelityTable(
 	benchmark: FidelityBenchmark,
 ): string {
 	const title = FIDELITY_TITLES[benchmark];
-	// Corpus regimes are not comparable: lines stamped with corpus_revision ran
-	// on the current (403-pair) corpus; older lines ran on smaller corpora and
-	// their means/medians must not rank against current runs.
+	// Corpus regimes are not comparable. Presence of a stamp is not enough:
+	// two stamps can be different corpora (docxodus 9.0.0 visual_redlines
+	// b7f467074a51 vs 9.8.0 5ed816028d99). Current = the revision on the
+	// newest stamped line; older hashes and unstamped lines are legacy.
+	const stamped = [...best.values()].filter((r) => r.corpus_revision != null);
+	const latestRev = stamped.length
+		? stamped.reduce((a, b) => (a.timestamp > b.timestamp ? a : b)).corpus_revision
+		: null;
 	const currentBest = new Map(
-		[...best].filter(([, r]) => r.corpus_revision != null),
+		[...best].filter(([, r]) => r.corpus_revision === latestRev && latestRev != null),
 	);
 	const legacyBest = new Map(
-		[...best].filter(([, r]) => r.corpus_revision == null),
+		[...best].filter(([, r]) => r.corpus_revision !== latestRev || latestRev == null),
 	);
 	const currentRows = collapseJubarteFamilies(currentBest, benchmark);
 	const legacyRows = collapseJubarteFamilies(legacyBest, benchmark);

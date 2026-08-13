@@ -469,6 +469,25 @@ def test_fidelity_tables_split_current_and_legacy_corpus_regimes(tmp_path: Path)
     assert md.index("legacy-tool") > legacy_at, "legacy tool must sit in the legacy table"
 
 
+def test_stale_corpus_revision_is_not_ranked_with_current(tmp_path: Path) -> None:
+    """Two stamped revisions are different corpora. Ranking 9.0.0 visual_redlines
+    (rev b7f467074a51) next to 9.8.0 (rev 5ed816028d99) as 'current' is a lie.
+    The newest timestamp's revision is current; older stamps go to legacy.
+    """
+    p = tmp_path / "bench.jsonl"
+    old = _fidelity_line("docxodus-old", corpus_revision="b7f467074a51", mean=60.0)
+    old["timestamp"] = "2026-08-04T13:11:19+00:00"
+    old["tool_version"] = "9.0.0"
+    new = _fidelity_line("docxodus-new", corpus_revision="5ed816028d99", mean=61.0)
+    new["timestamp"] = "2026-08-13T02:15:21+00:00"
+    new["tool_version"] = "9.8.0"
+    p.write_text(json.dumps(old) + "\n" + json.dumps(new) + "\n")
+    md = exp.to_fidelity_markdown(exp.rows_from_jsonl(p), p)
+    legacy_at = md.index("**Legacy corpus**")
+    assert md.index("9.8.0") < legacy_at
+    assert md.index("9.0.0") > legacy_at
+
+
 def test_single_regime_renders_one_unsplit_table(tmp_path: Path) -> None:
     """Splitting when there is nothing to split against would add noise to every
     benchmark that only ever ran on one corpus."""
