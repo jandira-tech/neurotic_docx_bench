@@ -4,16 +4,16 @@ The neurotic-docx-bench `docxodus-playwright-*` runs drive `demo/harness.html` v
 Playwright. The viewer must load a **matched pair** of Docxodus JS bindings and
 WASM — mixing published registry JS with a different local WASM (or the reverse)
 fails to boot the .NET runtime (stuck on "Loading document engine…", or worker 403).
-Current pin: **docxodus 7.0.0** (local `Docxodus/npm` + `public/wasm`).
+Current pin: **docxodus 9.8.0** (npm package + `public/wasm` copied from that tarball).
 
 ## What is wired
 
 | Piece | Path |
 |---|---|
-| JS + WASM package | `file:../Docxodus/npm` (see `package.json` → `dependencies.docxodus`) |
+| JS + WASM package | npm `docxodus@9.8.0` (see `package.json` → `devDependencies.docxodus`) |
 | Served WASM (harness `wasmBasePath`) | `public/wasm/` (copy of the package's `dist/wasm`) |
-| Vite allow-list | `../Docxodus/npm` so `docxodus.worker.js` is served (not 403) |
-| Version reported in JSONL | `Docxodus/npm/package.json` → `version` (`dist:` in `bench.yaml`) |
+| Vite allow-list | `node_modules/docxodus` so `docxodus.worker.js` is served (not 403) |
+| Version reported in JSONL | `package: "docxodus@9.8.0"` in `bench.yaml` |
 
 ## Rebuild matched JS + WASM
 

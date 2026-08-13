@@ -116,13 +116,13 @@ const demoConfig = defineConfig({
 			"Cross-Origin-Opener-Policy": "same-origin",
 			"Cross-Origin-Embedder-Policy": "require-corp",
 		},
-		// Local `docxodus` is linked via file:../Docxodus/npm (outside this package
-		// root). Vite must serve its worker script + ESM from that tree, otherwise
-		// createWorkerDocxodus() 403s and the harness stuck on init forever.
+		// npm `docxodus@9.8.0` lives under this package's node_modules. Vite
+		// must serve its worker script + ESM, otherwise createWorkerDocxodus()
+		// 403s and the harness stuck on init forever.
 		fs: {
 			allow: [
 				resolve(__dirname),
-				resolve(__dirname, "../Docxodus/npm"),
+				resolve(__dirname, "node_modules/docxodus"),
 			],
 		},
 		hmr: {
@@ -136,7 +136,15 @@ const demoConfig = defineConfig({
 		},
 	},
 	optimizeDeps: {
+		// Keep docxodus itself unbundled so the WASM/worker URLs stay intact.
+		// Its Atlaskit editor imports are CJS (bind-event-listener named
+		// `bind`); Vite must prebundle those or the harness pageerrors on load.
 		exclude: ["docxodus"],
+		include: [
+			"bind-event-listener",
+			"@atlaskit/pragmatic-drag-and-drop",
+			"@atlaskit/pragmatic-drag-and-drop-auto-scroll",
+		],
 	},
 	build: {
 		chunkSizeWarningLimit: 1000,

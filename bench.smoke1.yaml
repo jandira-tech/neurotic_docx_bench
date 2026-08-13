@@ -159,7 +159,7 @@ runs:
   # Rebuild: see react-docxodus-viewer/README.bench.md
   # Playwright fail-fasts on window.__rdvError instead of timing out.
   - name: docxodus-playwright-rendering
-    dist: src/neurotic_docx_bench/utils/docxodus/Docxodus/npm
+    package: "docxodus@9.8.0"
     docx: corpus/word_based/docx_source
     render: playwright
     jobs: 1
@@ -179,7 +179,7 @@ runs:
       timeout_ms: 60000
 
   - name: docxodus-playwright-redlines
-    dist: src/neurotic_docx_bench/utils/docxodus/Docxodus/npm
+    package: "docxodus@9.8.0"
     docx: corpus/word_based/docx_redlines_word
     render: playwright
     jobs: 1
@@ -188,7 +188,7 @@ runs:
     harness: *docxodus-harness
 
   - name: docxodus-playwright-accepted
-    dist: src/neurotic_docx_bench/utils/docxodus/Docxodus/npm
+    package: "docxodus@9.8.0"
     docx: corpus/word_based/docx_accepted_word
     render: playwright
     jobs: 1

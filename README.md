@@ -95,7 +95,7 @@ Sorted by **ITT median** (intent-to-treat: every failed doc scores 0, so crashin
 
 | Rank | Vendor | Version | Docs | ITT Docs | ITT Mean | ITT Median | Mean | Median | Perfect (100) | Failures |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | jubarte-rust | jubarte-rust@5c5581a12812+git.fc8c50f879974568278bcd33c476b153229313f0 (best) | 763 | 763 | 84.09 | 92.38 | 84.09 | 92.38 | 196 | 0 |
+| 1 | jubarte-rust | jubarte-rust@cacb0b9bcb34+git.fc8c50f879974568278bcd33c476b153229313f0 (best) | 763 | 763 | 84.40 | 92.61 | 84.40 | 92.61 | 196 | 0 |
 | 2 | docxodus | 9.0.0 | 760 | 763 | 80.24 | 91.11 | 80.55 | 91.19 | 186 | 4 |
 | 3 | docxodus | 9.8.0 | 760 | 763 | 80.24 | 91.11 | 80.55 | 91.19 | 186 | 4 |
 | 4 | jubarte (lossless) | jubarte-final@a58157a9cd2d (best) | 763 | 763 | 81.47 | 88.60 | 81.47 | 88.60 | 202 | 0 |
@@ -215,6 +215,14 @@ Sorted by **ITT median** (intent-to-treat: every failed doc scores 0, so crashin
 
 Sorted by **ITT median** (intent-to-treat: every failed doc scores 0, so crashing on hard docs is penalized, not rewarded; 0–100, higher is closer to the oracle). Mean/Median cover completed docs only. `~` marks ITT stats approximated from summary numbers (older runs without per-doc scores). Jubarte families (**final**, **final-lossless**, **rust**) show only the **best** and **worst** version pin for this benchmark; other vendors list each pin.
 
+**Current corpus** (lines stamped with `corpus_revision`)
+
+| Rank | Vendor | Version | Docs | ITT Docs | ITT Mean | ITT Median | Mean | Median | Perfect (100) | Failures |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | docxodus | 9.8.0 | 199 | 199 | 65.27 | 67.88 | 65.27 | 67.88 | 1 | 0 |
+
+**Legacy corpus** (older, smaller corpora — not comparable with the rows above; kept for history until each tool re-runs):
+
 > ⚠️ **Rows below cover different document counts (199, 198) — they are not the same measurement.** A tool scored on fewer documents ran a different, usually easier, subset; its rank is not comparable with a row covering more. Compare only rows whose `ITT Docs` match.
 
 | Rank | Vendor | Version | Docs | ITT Docs | ITT Mean | ITT Median | Mean | Median | Perfect (100) | Failures |
@@ -230,9 +238,12 @@ Sorted by **ITT median** (intent-to-treat: every failed doc scores 0, so crashin
 
 **Current corpus** (lines stamped with `corpus_revision`)
 
+> ⚠️ **Rows below cover different document counts (197, 155) — they are not the same measurement.** A tool scored on fewer documents ran a different, usually easier, subset; its rank is not comparable with a row covering more. Compare only rows whose `ITT Docs` match.
+
 | Rank | Vendor | Version | Docs | ITT Docs | ITT Mean | ITT Median | Mean | Median | Perfect (100) | Failures |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | docxodus | 9.0.0 | 178 | 197 | 54.35 | 55.39 | 60.15 | 57.56 | 1 | 19 |
+| 1 | docxodus | 9.8.0 | 155 | 155 | 61.10 | 62.44 | 61.10 | 62.44 | 0 | 0 |
+| 2 | docxodus | 9.0.0 | 178 | 197 | 54.35 | 55.39 | 60.15 | 57.56 | 1 | 19 |
 
 **Legacy corpus** (older, smaller corpora — not comparable with the rows above; kept for history until each tool re-runs):
 
@@ -248,6 +259,14 @@ Sorted by **ITT median** (intent-to-treat: every failed doc scores 0, so crashin
 ### visual_accepted_changes — editor render of accepted DOCX
 
 Sorted by **ITT median** (intent-to-treat: every failed doc scores 0, so crashing on hard docs is penalized, not rewarded; 0–100, higher is closer to the oracle). Mean/Median cover completed docs only. `~` marks ITT stats approximated from summary numbers (older runs without per-doc scores). Jubarte families (**final**, **final-lossless**, **rust**) show only the **best** and **worst** version pin for this benchmark; other vendors list each pin.
+
+**Current corpus** (lines stamped with `corpus_revision`)
+
+| Rank | Vendor | Version | Docs | ITT Docs | ITT Mean | ITT Median | Mean | Median | Perfect (100) | Failures |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | docxodus | 9.8.0 | 155 | 155 | 64.63 | 65.79 | 64.63 | 65.79 | 0 | 0 |
+
+**Legacy corpus** (older, smaller corpora — not comparable with the rows above; kept for history until each tool re-runs):
 
 > ⚠️ **Rows below cover different document counts (165, 164, 152) — they are not the same measurement.** A tool scored on fewer documents ran a different, usually easier, subset; its rank is not comparable with a row covering more. Compare only rows whose `ITT Docs` match.
 
