@@ -91,14 +91,28 @@ Sorted by **ITT median** (intent-to-treat: every failed doc scores 0, so crashin
 
 **Current corpus** (lines stamped with `corpus_revision`)
 
-> ⚠️ **Rows below cover different document counts (763, 50, 48) — they are not the same measurement.** A tool scored on fewer documents ran a different, usually easier, subset; its rank is not comparable with a row covering more. Compare only rows whose `ITT Docs` match.
+> ⚠️ **Rows below cover different document counts (763, 50) — they are not the same measurement.** A tool scored on fewer documents ran a different, usually easier, subset; its rank is not comparable with a row covering more. Compare only rows whose `ITT Docs` match.
 
 | Rank | Vendor | Version | Docs | ITT Docs | ITT Mean | ITT Median | Mean | Median | Perfect (100) | Failures |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | jubarte-rust | jubarte-rust@cacb0b9bcb34+git.fc8c50f879974568278bcd33c476b153229313f0 (best) | 763 | 763 | 84.40 | 92.61 | 84.40 | 92.61 | 196 | 0 |
-| 2 | docxodus | 9.0.0 | 760 | 763 | 80.24 | 91.11 | 80.55 | 91.19 | 186 | 4 |
-| 3 | docxodus | 9.8.0 | 760 | 763 | 80.24 | 91.11 | 80.55 | 91.19 | 186 | 4 |
-| 4 | jubarte (lossless) | jubarte-final@a58157a9cd2d (best) | 763 | 763 | 81.47 | 88.60 | 81.47 | 88.60 | 202 | 0 |
+| 2 | docxodus | 9.8.0 | 760 | 763 | 80.24 | 91.11 | 80.55 | 91.19 | 186 | 4 |
+| 3 | jubarte-rust | jubarte-rust@6923ca0b2b8e+git.fc8c50f879974568278bcd33c476b153229313f0 (worst) | 763 | 763 | 82.12 | 90.35 | 82.12 | 90.35 | 147 | 0 |
+| 4 | jubarte (lossless) | jubarte-final@070eea86ace3 (best) | 50 | 50 | 73.03 | 84.48 | 73.03 | 84.48 | 5 | 0 |
+| 5 | jubarte (lossless) | jubarte-final@965cfa575f2f (worst) | 50 | 50 | 72.82 | 82.28 | 72.82 | 82.28 | 7 | 0 |
+| 6 | jubarte-ast | jubarte-final@070eea86ace3 | 50 | 50 | 70.08 | 73.80 | 70.08 | 73.80 | 9 | 0 |
+| 7 | jubarte-ast | jubarte-final@6beb9cd08cae | 50 | 50 | 70.08 | 73.80 | 70.08 | 73.80 | 9 | 0 |
+
+**Legacy corpus** (older, smaller corpora — not comparable with the rows above; kept for history until each tool re-runs):
+
+> ⚠️ **Rows below cover different document counts (763, 232, 230, 207, 196, 168, 167, 164, 48, 9) — they are not the same measurement.** A tool scored on fewer documents ran a different, usually easier, subset; its rank is not comparable with a row covering more. Compare only rows whose `ITT Docs` match.
+
+| Rank | Vendor | Version | Docs | ITT Docs | ITT Mean | ITT Median | Mean | Median | Perfect (100) | Failures |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | jubarte-rust | jubarte-rust@63e57d122c83 (best) | 164 | 164 | 92.21 | 99.92 | 92.21 | 99.92 | 80 | 0 |
+| 2 | jubarte (final) | jubarte-final@3995702f73ed (best) | 163 | 167 | 87.89 | 91.84 | 90.04 | 91.99 | 44 | 4 |
+| 3 | docxodus | 9.0.0 | 760 | 763 | 80.24 | 91.11 | 80.55 | 91.19 | 186 | 4 |
+| 4 | jubarte (lossless) | jubarte-final@d5bd12d173d6+git.aaa85454f569b7174dd99d5244877d29819a99b9 (best) | 164 | 164 | 83.63 | 88.96 | 83.63 | 88.96 | 53 | 0 |
 | 5 | jubarte-wasm | 0.1.0@4b36f4db1d2f+git.ebf1a7996df49f99fb40f4f67713e61cfd19c731 | 763 | 763 | 79.57 | 84.89 | 79.57 | 84.89 | 182 | 0 |
 | 6 | jubarte-wasm | 0.1.0@e1e19c982338+git.ebf1a7996df49f99fb40f4f67713e61cfd19c731 | 763 | 763 | 79.56 | 84.89 | 79.56 | 84.89 | 182 | 0 |
 | 7 | jubarte-wasm | 0.1.0@18f6c9fd87db+git.ebf1a7996df49f99fb40f4f67713e61cfd19c731 | 763 | 763 | 79.46 | 84.89 | 79.46 | 84.89 | 178 | 0 |
@@ -121,43 +135,29 @@ Sorted by **ITT median** (intent-to-treat: every failed doc scores 0, so crashin
 | 24 | jubarte-ast | jubarte-final@d294713913bb+git.b256b039d54561800b4462fb67cfcd5a8143f606 | 754 | 763 | 73.57 | 76.15 | 74.45 | 76.74 | 96 | 10 |
 | 25 | jubarte-ast | jubarte-final@0a703664346d+git.50155bfba69385bf0e99dd3a19b15da1f58e104c | 754 | 763 | 73.00 | 75.12 | 73.87 | 75.87 | 96 | 10 |
 | 26 | jubarte-ast | jubarte-final@c043b0aaefb3+git.19b5f14c6088a71280786a864d45cac3aa6e7c92 | 754 | 763 | 73.00 | 75.12 | 73.87 | 75.87 | 96 | 10 |
-| 27 | jubarte-ast | jubarte-final@070eea86ace3 | 50 | 50 | 70.08 | 73.80 | 70.08 | 73.80 | 9 | 0 |
-| 28 | jubarte-ast | jubarte-final@6beb9cd08cae | 50 | 50 | 70.08 | 73.80 | 70.08 | 73.80 | 9 | 0 |
-| 29 | jubarte-ast | jubarte-final@6e7229a4d930+git.6f9f76fcd961c9ace7fce9941307b712ada01282 | 754 | 763 | 72.59 | 73.71 | 73.46 | 74.29 | 91 | 10 |
-| 30 | jubarte-ast | jubarte-final@dc06c68fa885+git.1cfd5d08a6d7283834465dfc84d04ee6fbac5f81 | 754 | 763 | 72.58 | 73.59 | 73.44 | 74.15 | 91 | 10 |
-| 31 | jubarte-ast | jubarte-final@5bf73ce40d09+git.f9c71f0cd5b7ea561c4739d61cad72a65296ed65 | 754 | 763 | 72.51 | 73.56 | 73.37 | 74.11 | 91 | 10 |
-| 32 | jubarte-ast | jubarte-final@041a9bd0cbc3+git.8f8ea75949175abde9b7700308190a3dcd3508ab | 754 | 763 | 70.24 | 68.64 | 71.08 | 68.79 | 91 | 10 |
-| 33 | jubarte-ast | jubarte-final@d43557e042c1 | 755 | 763 | 69.83 | 68.30 | 70.57 | 68.67 | 84 | 9 |
-| 34 | jubarte (lossless) | 0.1.0@2f698925be74 (worst) | 48 | 48 | 69.63 | 66.51 | 69.63 | 66.51 | 2 | 0 |
-| 35 | jubarte-rust | jubarte-rust@66ab19649ff7+git.963b8e2 (worst) | 48 | 48 | 68.70 | 64.31 | 68.70 | 64.31 | 2 | 0 |
-| 36 | jubarte-ast | 0.1.0@2f698925be74 | 48 | 48 | 65.18 | 63.35 | 65.18 | 63.35 | 1 | 0 |
-| 37 | folio | 0.15.13 | 744 | 763 | 50.83 | 50.29 | 52.13 | 50.43 | 0 | 19 |
-| 38 | superdoc | 1.21.3 | 665 | 763 | 46.30 | 50.16 | 53.13 | 51.56 | 3 | 115 |
-| 39 | superdoc-redlines | 0.2.0 | 703 | 763 | 47.37 | 49.16 | 51.41 | 50.11 | 0 | 68 |
-| 40 | docx-redline-js | 0.3.0 | 746 | 763 | 45.16 | 47.22 | 46.19 | 47.42 | 0 | 17 |
-| 41 | redlines | 0.6.1 | 745 | 763 | 44.86 | 47.05 | 45.94 | 47.14 | 0 | 18 |
-| 42 | superdoc | 2.0.0 | 331 | 763 | 19.61 | 0.00 | 45.19 | 46.72 | 1 | 432 |
-
-**Legacy corpus** (older, smaller corpora — not comparable with the rows above; kept for history until each tool re-runs):
-
-> ⚠️ **Rows below cover different document counts (232, 230, 207, 196, 168, 167, 164, 9) — they are not the same measurement.** A tool scored on fewer documents ran a different, usually easier, subset; its rank is not comparable with a row covering more. Compare only rows whose `ITT Docs` match.
-
-| Rank | Vendor | Version | Docs | ITT Docs | ITT Mean | ITT Median | Mean | Median | Perfect (100) | Failures |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | jubarte-rust | jubarte-rust@63e57d122c83 (best) | 164 | 164 | 92.21 | 99.92 | 92.21 | 99.92 | 80 | 0 |
-| 2 | jubarte (final) | jubarte-final@3995702f73ed (best) | 163 | 167 | 87.89 | 91.84 | 90.04 | 91.99 | 44 | 4 |
-| 3 | jubarte (lossless) | jubarte-final@d5bd12d173d6+git.aaa85454f569b7174dd99d5244877d29819a99b9 (best) | 164 | 164 | 83.63 | 88.96 | 83.63 | 88.96 | 53 | 0 |
-| 4 | sanity-word | — | 230 | 230 | 68.17 | 70.48 | 68.17 | 70.48 | 0 | 0 |
-| 5 | jubarte (lossless) | jubarte-final@b4f90acaa85e (worst) | 196 | 196 | 64.69 | 63.48 | 64.69 | 63.48 | 0 | 0 |
-| 6 | jubarte-rust | jubarte-rust@b834d6e49fdb (worst) | 172 | 207 | 51.34 | 55.92 | 61.78 | 59.28 | 2 | 35 |
-| 7 | ooxmlsdk | — | 232 | 232 | 55.19 | 55.24 | 55.19 | 55.24 | 0 | 0 |
-| 8 | docxodus | 7.0.0 | 205 | 207 | 58.18 | 55.00 | 58.75 | 55.03 | 3 | 2 |
-| 9 | docxodus | 6.4.0 | 205 | 207 | 58.17 | 55.00 | 58.74 | 55.03 | 3 | 2 |
-| 10 | folio | 0.3.1 | 205 | 207 | 54.77 | 53.52 | 55.31 | 53.75 | 0 | 2 |
-| 11 | superdoc | 1.19.2 | 182 | 207 | 50.28 | 53.25 | 57.19 | 55.60 | 2 | 25 |
-| 12 | docx-redline-js | 0.3.0-ts-migration | 161 | 168 | 48.43 | 50.09 | 50.53 | 50.26 | 0 | 7 |
-| 13 | jubarte (final) | jubarte-final@8b23cdc7eca8 (worst) | 207 | 207 | 48.31 | 49.46 | 48.31 | 49.46 | 0 | 0 |
-| 14 | docx-redline-js | — | 2 | 9 | 12.25 | 0.00 | 55.12 | 55.12 | 0 | 7 |
+| 27 | jubarte-ast | jubarte-final@6e7229a4d930+git.6f9f76fcd961c9ace7fce9941307b712ada01282 | 754 | 763 | 72.59 | 73.71 | 73.46 | 74.29 | 91 | 10 |
+| 28 | jubarte-ast | jubarte-final@dc06c68fa885+git.1cfd5d08a6d7283834465dfc84d04ee6fbac5f81 | 754 | 763 | 72.58 | 73.59 | 73.44 | 74.15 | 91 | 10 |
+| 29 | jubarte-ast | jubarte-final@5bf73ce40d09+git.f9c71f0cd5b7ea561c4739d61cad72a65296ed65 | 754 | 763 | 72.51 | 73.56 | 73.37 | 74.11 | 91 | 10 |
+| 30 | sanity-word | — | 230 | 230 | 68.17 | 70.48 | 68.17 | 70.48 | 0 | 0 |
+| 31 | jubarte-ast | jubarte-final@041a9bd0cbc3+git.8f8ea75949175abde9b7700308190a3dcd3508ab | 754 | 763 | 70.24 | 68.64 | 71.08 | 68.79 | 91 | 10 |
+| 32 | jubarte-ast | jubarte-final@d43557e042c1 | 755 | 763 | 69.83 | 68.30 | 70.57 | 68.67 | 84 | 9 |
+| 33 | jubarte (lossless) | jubarte-final@b4f90acaa85e (worst) | 196 | 196 | 64.69 | 63.48 | 64.69 | 63.48 | 0 | 0 |
+| 34 | jubarte-ast | 0.1.0@2f698925be74 | 48 | 48 | 65.18 | 63.35 | 65.18 | 63.35 | 1 | 0 |
+| 35 | jubarte-rust | jubarte-rust@b834d6e49fdb (worst) | 172 | 207 | 51.34 | 55.92 | 61.78 | 59.28 | 2 | 35 |
+| 36 | ooxmlsdk | — | 232 | 232 | 55.19 | 55.24 | 55.19 | 55.24 | 0 | 0 |
+| 37 | docxodus | 7.0.0 | 205 | 207 | 58.18 | 55.00 | 58.75 | 55.03 | 3 | 2 |
+| 38 | docxodus | 6.4.0 | 205 | 207 | 58.17 | 55.00 | 58.74 | 55.03 | 3 | 2 |
+| 39 | folio | 0.3.1 | 205 | 207 | 54.77 | 53.52 | 55.31 | 53.75 | 0 | 2 |
+| 40 | superdoc | 1.19.2 | 182 | 207 | 50.28 | 53.25 | 57.19 | 55.60 | 2 | 25 |
+| 41 | folio | 0.15.13 | 744 | 763 | 50.83 | 50.29 | 52.13 | 50.43 | 0 | 19 |
+| 42 | superdoc | 1.21.3 | 665 | 763 | 46.30 | 50.16 | 53.13 | 51.56 | 3 | 115 |
+| 43 | docx-redline-js | 0.3.0-ts-migration | 161 | 168 | 48.43 | 50.09 | 50.53 | 50.26 | 0 | 7 |
+| 44 | jubarte (final) | jubarte-final@8b23cdc7eca8 (worst) | 207 | 207 | 48.31 | 49.46 | 48.31 | 49.46 | 0 | 0 |
+| 45 | superdoc-redlines | 0.2.0 | 703 | 763 | 47.37 | 49.16 | 51.41 | 50.11 | 0 | 68 |
+| 46 | docx-redline-js | 0.3.0 | 746 | 763 | 45.16 | 47.22 | 46.19 | 47.42 | 0 | 17 |
+| 47 | redlines | 0.6.1 | 745 | 763 | 44.86 | 47.05 | 45.94 | 47.14 | 0 | 18 |
+| 48 | superdoc | 2.0.0 | 331 | 763 | 19.61 | 0.00 | 45.19 | 46.72 | 1 | 432 |
+| 49 | docx-redline-js | — | 2 | 9 | 12.25 | 0.00 | 55.12 | 55.12 | 0 | 7 |
 
 ### accepted_changes — accept all changes, match final doc
 
@@ -238,23 +238,21 @@ Sorted by **ITT median** (intent-to-treat: every failed doc scores 0, so crashin
 
 **Current corpus** (lines stamped with `corpus_revision`)
 
-> ⚠️ **Rows below cover different document counts (197, 155) — they are not the same measurement.** A tool scored on fewer documents ran a different, usually easier, subset; its rank is not comparable with a row covering more. Compare only rows whose `ITT Docs` match.
-
 | Rank | Vendor | Version | Docs | ITT Docs | ITT Mean | ITT Median | Mean | Median | Perfect (100) | Failures |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | docxodus | 9.8.0 | 155 | 155 | 61.10 | 62.44 | 61.10 | 62.44 | 0 | 0 |
-| 2 | docxodus | 9.0.0 | 178 | 197 | 54.35 | 55.39 | 60.15 | 57.56 | 1 | 19 |
 
 **Legacy corpus** (older, smaller corpora — not comparable with the rows above; kept for history until each tool re-runs):
 
-> ⚠️ **Rows below cover different document counts (182, 166, 165) — they are not the same measurement.** A tool scored on fewer documents ran a different, usually easier, subset; its rank is not comparable with a row covering more. Compare only rows whose `ITT Docs` match.
+> ⚠️ **Rows below cover different document counts (197, 182, 166, 165) — they are not the same measurement.** A tool scored on fewer documents ran a different, usually easier, subset; its rank is not comparable with a row covering more. Compare only rows whose `ITT Docs` match.
 
 | Rank | Vendor | Version | Docs | ITT Docs | ITT Mean | ITT Median | Mean | Median | Perfect (100) | Failures |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | docxodus | 6.4.0 | 145 | 182 | 48.54 | 58.92 | 60.92 | 61.22 | 0 | 37 |
 | 2 | superdoc | 1.44.1 | 164 | 165 | 55.00 | 56.34 | 55.33 | 56.42 | 0 | 1 |
-| 3 | folio | 0.5.0 | 164 | 166 | 50.93 | 51.48 | 51.55 | 51.65 | 0 | 2 |
-| 4 | docxodus | 7.0.0 | 164 | 166 | 47.65 | 48.03 | 48.23 | 48.08 | 0 | 2 |
+| 3 | docxodus | 9.0.0 | 178 | 197 | 54.35 | 55.39 | 60.15 | 57.56 | 1 | 19 |
+| 4 | folio | 0.5.0 | 164 | 166 | 50.93 | 51.48 | 51.55 | 51.65 | 0 | 2 |
+| 5 | docxodus | 7.0.0 | 164 | 166 | 47.65 | 48.03 | 48.23 | 48.08 | 0 | 2 |
 
 ### visual_accepted_changes — editor render of accepted DOCX
 
