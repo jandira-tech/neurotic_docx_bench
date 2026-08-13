@@ -281,14 +281,20 @@ script_redlines (LibreOffice render vs Word oracle)
 
 ### Common-subset ranking (script_redlines)
 
-Paired comparison on the **50** documents every vendor below completed (best pin per vendor). Unlike the aggregate tables, these medians are computed on the SAME documents for every vendor.
+Paired comparison on the **614** documents every full-map vendor below completed (largest score map per vendor; current-stamp smokes do not shrink the set). Keys: `results/common_subset_script_redlines.txt`. Unlike the aggregate tables, these medians are computed on the SAME documents.
 
 | # | vendor | version | median | mean |
 | --- | --- | --- | --- | --- |
-| 1 | jubarte-rust | jubarte-rust@cacb0b9bcb34+git.fc8c50f879974568278bcd33c476b153229313f0 | 89.47 | 82.52 |
-| 2 | jubarte | jubarte-final@070eea86ace3 | 84.48 | 73.03 |
-| 3 | docxodus | 9.8.0 | 84.20 | 75.80 |
-| 4 | jubarte-ast | jubarte-final@070eea86ace3 | 73.80 | 70.08 |
+| 1 | docxodus | 9.8.0 | 95.40 | 83.50 |
+| 2 | jubarte-rust | jubarte-rust@cacb0b9bcb34+git.fc8c50f879974568278bcd33c476b153229313f0 | 95.34 | 87.15 |
+| 3 | jubarte | jubarte-final@a58157a9cd2d | 92.29 | 84.19 |
+| 4 | jubarte-wasm | 0.1.0@4b36f4db1d2f+git.ebf1a7996df49f99fb40f4f67713e61cfd19c731 | 90.79 | 82.52 |
+| 5 | jubarte-ast | jubarte-final@138300e8471d | 80.42 | 76.64 |
+| 6 | superdoc | 1.21.3 | 52.14 | 53.71 |
+| 7 | superdoc-redlines | 0.2.0 | 51.24 | 52.58 |
+| 8 | folio | 0.15.13 | 51.10 | 53.93 |
+| 9 | docx-redline-js | 0.3.0 | 48.16 | 47.89 |
+| 10 | redlines | 0.6.1 | 47.96 | 47.32 |
 
 ### Paired comparisons (script_redlines)
 
@@ -296,12 +302,72 @@ Per-doc paired deltas on shared documents (best pin per vendor); `win/loss/tie` 
 
 | vendor A | vendor B | docs | win/loss/tie | median Δ | p |
 | --- | --- | --- | --- | --- | --- |
-| docxodus | jubarte | 50 | 31/14/5 | +0.24 | 1.35e-02 |
-| docxodus | jubarte-ast | 50 | 31/10/9 | +1.94 | 3.78e-04 |
+| docx-redline-js | docxodus | 743 | 22/721/0 | -41.10 | 3.54e-120 |
+| docx-redline-js | folio | 735 | 160/561/14 | -2.43 | 8.45e-58 |
+| docx-redline-js | jubarte | 746 | 22/722/2 | -41.76 | 4.15e-121 |
+| docx-redline-js | jubarte-ast | 746 | 24/721/1 | -29.73 | 3.47e-117 |
+| docx-redline-js | jubarte-rust | 746 | 8/736/2 | -43.83 | 4.02e-123 |
+| docx-redline-js | jubarte-wasm | 746 | 18/726/2 | -37.24 | 8.70e-122 |
+| docx-redline-js | ooxmlsdk | 152 | 30/122/0 | -8.11 | 1.77e-13 |
+| docx-redline-js | redlines | 736 | 368/367/1 | +0.01 | 8.11e-01 |
+| docx-redline-js | sanity-word | 151 | 12/139/0 | -23.41 | 5.12e-23 |
+| docx-redline-js | superdoc | 657 | 172/485/0 | -4.01 | 1.92e-43 |
+| docx-redline-js | superdoc-redlines | 689 | 208/468/13 | -2.05 | 1.20e-32 |
+| docxodus | folio | 741 | 703/38/0 | +29.90 | 2.60e-117 |
+| docxodus | jubarte | 760 | 292/345/123 | +0.00 | 1.15e-01 |
+| docxodus | jubarte-ast | 760 | 466/199/95 | +1.46 | 2.59e-28 |
 | docxodus | jubarte-rust | 760 | 268/365/127 | +0.00 | 1.40e-07 |
-| jubarte | jubarte-ast | 50 | 20/25/5 | -0.01 | 4.57e-01 |
-| jubarte | jubarte-rust | 50 | 10/33/7 | -4.03 | 1.06e-04 |
-| jubarte-ast | jubarte-rust | 50 | 7/35/8 | -9.36 | 3.47e-06 |
+| docxodus | jubarte-wasm | 760 | 343/286/131 | +0.00 | 2.55e-02 |
+| docxodus | ooxmlsdk | 155 | 154/1/0 | +38.36 | 3.54e-27 |
+| docxodus | redlines | 745 | 727/18/0 | +40.19 | 1.15e-121 |
+| docxodus | sanity-word | 154 | 151/3/0 | +22.80 | 6.28e-27 |
+| docxodus | superdoc | 662 | 616/44/2 | +35.15 | 1.31e-103 |
+| docxodus | superdoc-redlines | 700 | 662/38/0 | +31.15 | 8.06e-113 |
+| folio | jubarte | 744 | 40/702/2 | -31.76 | 3.64e-117 |
+| folio | jubarte-ast | 744 | 58/685/1 | -21.52 | 9.26e-110 |
+| folio | jubarte-rust | 744 | 18/724/2 | -34.05 | 1.74e-122 |
+| folio | jubarte-wasm | 744 | 39/703/2 | -28.28 | 1.78e-119 |
+| folio | ooxmlsdk | 154 | 85/69/0 | +1.65 | 3.53e-03 |
+| folio | redlines | 734 | 571/162/1 | +3.86 | 3.34e-60 |
+| folio | sanity-word | 153 | 34/119/0 | -11.62 | 3.78e-13 |
+| folio | superdoc | 657 | 350/306/1 | +0.30 | 1.67e-01 |
+| folio | superdoc-redlines | 685 | 412/233/40 | +0.19 | 4.69e-15 |
+| jubarte | jubarte-ast | 763 | 451/206/106 | +2.00 | 1.15e-26 |
+| jubarte | jubarte-rust | 763 | 241/334/188 | +0.00 | 1.81e-06 |
+| jubarte | jubarte-wasm | 763 | 332/241/190 | +0.00 | 1.56e-04 |
+| jubarte | ooxmlsdk | 155 | 149/6/0 | +32.88 | 7.68e-27 |
+| jubarte | redlines | 745 | 729/16/0 | +40.64 | 2.99e-122 |
+| jubarte | sanity-word | 154 | 134/20/0 | +18.50 | 8.79e-22 |
+| jubarte | superdoc | 665 | 619/41/5 | +35.69 | 8.34e-104 |
+| jubarte | superdoc-redlines | 703 | 672/29/2 | +32.76 | 6.71e-113 |
+| jubarte-ast | jubarte-rust | 763 | 157/528/78 | -5.06 | 3.62e-56 |
+| jubarte-ast | jubarte-wasm | 763 | 217/455/91 | -1.95 | 9.02e-24 |
+| jubarte-ast | ooxmlsdk | 155 | 153/2/0 | +31.91 | 3.82e-27 |
+| jubarte-ast | redlines | 745 | 717/28/0 | +30.38 | 2.44e-120 |
+| jubarte-ast | sanity-word | 154 | 143/11/0 | +18.17 | 1.35e-25 |
+| jubarte-ast | superdoc | 665 | 593/67/5 | +23.27 | 7.06e-95 |
+| jubarte-ast | superdoc-redlines | 703 | 652/50/1 | +21.57 | 1.13e-106 |
+| jubarte-rust | jubarte-wasm | 763 | 317/87/359 | +0.00 | 1.06e-33 |
+| jubarte-rust | ooxmlsdk | 155 | 154/1/0 | +35.77 | 3.54e-27 |
+| jubarte-rust | redlines | 745 | 740/5/0 | +42.24 | 1.76e-123 |
+| jubarte-rust | sanity-word | 154 | 150/4/0 | +20.64 | 1.22e-26 |
+| jubarte-rust | superdoc | 665 | 642/18/5 | +37.03 | 7.71e-109 |
+| jubarte-rust | superdoc-redlines | 703 | 685/16/2 | +35.36 | 5.77e-116 |
+| jubarte-wasm | ooxmlsdk | 155 | 153/2/0 | +35.52 | 3.68e-27 |
+| jubarte-wasm | redlines | 745 | 726/19/0 | +38.47 | 5.58e-122 |
+| jubarte-wasm | sanity-word | 154 | 149/5/0 | +20.21 | 2.50e-26 |
+| jubarte-wasm | superdoc | 665 | 622/38/5 | +33.16 | 1.12e-103 |
+| jubarte-wasm | superdoc-redlines | 703 | 671/30/2 | +29.54 | 1.90e-113 |
+| ooxmlsdk | redlines | 153 | 117/36/0 | +5.77 | 1.04e-16 |
+| ooxmlsdk | sanity-word | 230 | 15/215/0 | -14.02 | 3.48e-35 |
+| ooxmlsdk | superdoc | 146 | 82/64/0 | +2.00 | 2.59e-01 |
+| ooxmlsdk | superdoc-redlines | 146 | 74/72/0 | +0.10 | 2.96e-01 |
+| redlines | sanity-word | 152 | 7/145/0 | -19.63 | 3.01e-26 |
+| redlines | superdoc | 661 | 166/495/0 | -4.08 | 3.76e-48 |
+| redlines | superdoc-redlines | 685 | 196/489/0 | -2.91 | 3.59e-35 |
+| sanity-word | superdoc | 145 | 120/25/0 | +15.73 | 1.52e-17 |
+| sanity-word | superdoc-redlines | 145 | 121/24/0 | +13.41 | 3.07e-16 |
+| superdoc | superdoc-redlines | 629 | 345/284/0 | +0.60 | 3.61e-02 |
 
 ### Lens health (script_redlines)
 

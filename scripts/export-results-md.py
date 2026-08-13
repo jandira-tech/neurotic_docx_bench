@@ -319,30 +319,97 @@ def _script_redlines_current(rows: list[dict[str, object]]) -> list[dict[str, ob
     return current
 
 
-def _common_subset_section(rows: list[dict[str, object]]) -> list[str]:
-    """Paired ranking on the docs EVERY script_redlines vendor completed.
-
-    Aggregate means over different doc subsets are not comparable (each vendor fails
-    on different docs); this table re-ranks vendors on the intersection of their
-    per-doc score maps. One row per vendor: its best pin by the ITT sort. Skipped
-    when fewer than two vendors carry per-doc scores or the intersection is < 20 docs.
-    """
-    candidates = [
+def _script_redlines_scored(rows: list[dict[str, object]]) -> list[dict[str, object]]:
+    return [
         r
-        for r in _script_redlines_current(rows)
-        if isinstance(r.get("scores"), dict) and r["scores"]
+        for r in rows
+        if str(r["benchmark"]) == "script_redlines"
+        and isinstance(r.get("scores"), dict)
+        and r["scores"]
     ]
-    best_per_vendor: dict[str, dict[str, object]] = {}
-    for r in candidates:
+
+
+def _score_keys(r: dict[str, object]) -> set[str]:
+    scores = r.get("scores")
+    if not isinstance(scores, dict):
+        return set()
+    return {str(k) for k in scores}
+
+
+def _best_scored_pin_per_vendor(
+    rows: list[dict[str, object]],
+) -> dict[str, dict[str, object]]:
+    """One pin per vendor for document-set comparisons.
+
+    Largest score map wins. A current-stamp 50-doc smoke must not beat an
+    older-stamp 763-doc run of the same vendor — common-subset is document
+    identity. Equal map size: prefer the newest corpus_revision, then ITT.
+    """
+    sr = _script_redlines_scored(rows)
+    latest_rev = _latest_corpus_revision(sr)
+    best: dict[str, dict[str, object]] = {}
+    for r in sr:
         vendor = str(r["vendor"])
-        cur = best_per_vendor.get(vendor)
-        if cur is None or _fidelity_sort_key(r) < _fidelity_sort_key(cur):
-            best_per_vendor[vendor] = r
-    if len(best_per_vendor) < 2:
-        return []
-    doc_sets = [set(r["scores"]) for r in best_per_vendor.values()]  # type: ignore[arg-type]
-    common = set.intersection(*doc_sets)
-    if len(common) < 20:
+        cur = best.get(vendor)
+        if cur is None:
+            best[vendor] = r
+            continue
+        n_new, n_old = len(_score_keys(r)), len(_score_keys(cur))
+        if n_new != n_old:
+            if n_new > n_old:
+                best[vendor] = r
+            continue
+        r_cur = r.get("corpus_revision") == latest_rev
+        c_cur = cur.get("corpus_revision") == latest_rev
+        if r_cur != c_cur:
+            if r_cur:
+                best[vendor] = r
+            continue
+        if _fidelity_sort_key(r) < _fidelity_sort_key(cur):
+            best[vendor] = r
+    return best
+
+
+def _eligible_full_map_pins(
+    best: dict[str, dict[str, object]],
+) -> dict[str, dict[str, object]]:
+    """Drop smoke maps that would shrink the all-vendor intersection.
+
+    Floor is half the largest map (and at least the 20-doc publish cutoff).
+    When every vendor is small, they all stay.
+    """
+    if not best:
+        return {}
+    sizes = {v: len(_score_keys(r)) for v, r in best.items()}
+    floor = max(20, max(sizes.values()) // 2)
+    return {v: r for v, r in best.items() if sizes[v] >= floor}
+
+
+def _common_subset_selection(
+    rows: list[dict[str, object]],
+) -> tuple[dict[str, dict[str, object]], set[str]]:
+    eligible = _eligible_full_map_pins(_best_scored_pin_per_vendor(rows))
+    if len(eligible) < 2:
+        return {}, set()
+    common = set.intersection(*(_score_keys(r) for r in eligible.values()))
+    return eligible, common
+
+
+def _common_subset_doc_keys(rows: list[dict[str, object]]) -> tuple[str, ...]:
+    _pins, common = _common_subset_selection(rows)
+    return tuple(sorted(common))
+
+
+def _common_subset_section(rows: list[dict[str, object]]) -> list[str]:
+    """Paired ranking on the docs every full-map vendor completed.
+
+    Score-map intersection, not corpus_revision. A current-stamp smoke must
+    not shrink the set; an older-stamp full run of the same vendor is the
+    pin that found the documents. Skipped when fewer than two full-map
+    vendors remain or the intersection is < 20 docs.
+    """
+    best_per_vendor, common = _common_subset_selection(rows)
+    if len(best_per_vendor) < 2 or len(common) < 20:
         return []
     table_rows = []
     ranked = sorted(
@@ -361,9 +428,11 @@ def _common_subset_section(rows: list[dict[str, object]]) -> list[str]:
     return [
         "### Common-subset ranking (script_redlines)",
         "",
-        f"Paired comparison on the **{len(common)}** documents every vendor below "
-        "completed (best pin per vendor). Unlike the aggregate tables, these medians "
-        "are computed on the SAME documents for every vendor.",
+        f"Paired comparison on the **{len(common)}** documents every full-map "
+        "vendor below completed (largest score map per vendor; current-stamp "
+        "smokes do not shrink the set). Keys: "
+        "`results/common_subset_script_redlines.txt`. Unlike the aggregate "
+        "tables, these medians are computed on the SAME documents.",
         "",
         *_table(["#", "vendor", "version", "median", "mean"], table_rows),
         "",
@@ -553,17 +622,7 @@ def _paired_stats_section(rows: list[dict[str, object]]) -> list[str]:
     median paired delta, and a Wilcoxon signed-rank p-value (zsplit). Pairs with
     fewer than 20 shared docs are skipped.
     """
-    candidates = [
-        r
-        for r in _script_redlines_current(rows)
-        if isinstance(r.get("scores"), dict) and r["scores"]
-    ]
-    best_per_vendor: dict[str, dict[str, object]] = {}
-    for r in candidates:
-        vendor = str(r["vendor"])
-        cur = best_per_vendor.get(vendor)
-        if cur is None or _fidelity_sort_key(r) < _fidelity_sort_key(cur):
-            best_per_vendor[vendor] = r
+    best_per_vendor = _best_scored_pin_per_vendor(rows)
     vendors = sorted(best_per_vendor)
     if len(vendors) < 2:
         return []
@@ -1200,6 +1259,11 @@ def main(argv: list[str] | None = None) -> int:
         print(
             f"Wrote {len(rows)} fidelity + {len(speed_rows)} speed row(s) → {out}"
         )
+    keys = _common_subset_doc_keys(rows)
+    keys_path = root / "results" / "common_subset_script_redlines.txt"
+    keys_path.parent.mkdir(parents=True, exist_ok=True)
+    keys_path.write_text("".join(f"{k}\n" for k in keys), encoding="utf-8")
+    print(f"Wrote {len(keys)} common-subset keys → {keys_path}")
     return 0
 
 

@@ -322,6 +322,58 @@ def test_common_subset_does_not_crown_stale_pin() -> None:
     assert "9.0.0" not in text
 
 
+def test_common_subset_uses_full_score_map_not_current_smoke() -> None:
+    """A 50-doc current jubarte pin must not set the all-vendor intersection.
+    9.8.0 and rust share the full current keys; jubarte also has that set on
+    an older stamp. Common-subset is document identity, not stamp identity.
+    """
+    full = {f"d{i}": 70.0 for i in range(40)}
+    smoke_keys = {f"d{i}": 99.0 for i in range(20)}
+    rust = _subset_row("jubarte-rust", dict(full))
+    rust.update({
+        "tool_version": "rust-full",
+        "corpus_revision": "5ed816028d99",
+        "datetime": "2026-08-13T02:00:00+00:00",
+        "n_docs": 40,
+        "itt_n": 40,
+    })
+    dox = _subset_row("docxodus", {k: 80.0 for k in full})
+    dox.update({
+        "tool_version": "9.8.0",
+        "corpus_revision": "5ed816028d99",
+        "datetime": "2026-08-13T02:00:00+00:00",
+        "n_docs": 40,
+        "itt_n": 40,
+    })
+    jub_smoke = _subset_row("jubarte", smoke_keys)
+    jub_smoke.update({
+        "tool_version": "jubarte-smoke",
+        "corpus_revision": "5ed816028d99",
+        "datetime": "2026-08-13T03:00:00+00:00",
+        "itt_median": 99.0,
+        "itt_mean": 99.0,
+        "n_docs": 20,
+        "itt_n": 20,
+    })
+    jub_full = _subset_row("jubarte", {k: 60.0 for k in full})
+    jub_full.update({
+        "tool_version": "jubarte-full",
+        "corpus_revision": "b7f467074a51",
+        "datetime": "2026-08-04T00:00:00+00:00",
+        "itt_median": 60.0,
+        "itt_mean": 60.0,
+        "n_docs": 40,
+        "itt_n": 40,
+    })
+    section = exp._common_subset_section([rust, dox, jub_smoke, jub_full])
+    text = "\n".join(section)
+    assert "**40** documents" in text, text
+    assert "jubarte-full" in text
+    assert "jubarte-smoke" not in text
+    docs = exp._common_subset_doc_keys([rust, dox, jub_smoke, jub_full])
+    assert docs == tuple(sorted(full))
+
+
 def test_common_subset_section_ranks_on_shared_docs() -> None:
     docs = [f"d{i}" for i in range(25)]
     a = _subset_row("alpha", {d: 90.0 for d in docs} | {"only_a": 10.0})
