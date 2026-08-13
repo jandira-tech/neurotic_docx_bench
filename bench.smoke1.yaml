@@ -134,7 +134,7 @@ runs:
   # adapter now names the engine explicitly, so this bump changes the measured version
   # without also making the measured engine a side effect of it.
   - name: docxodus
-    package: "docxodus@9.0.0"
+    package: "docxodus@9.8.0"
     generate: "node --import tsx scripts/generate-native-redlines.ts --method=docxodus --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=docxodus"
     render: soffice
     jobs: 1
