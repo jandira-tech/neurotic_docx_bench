@@ -5,11 +5,21 @@
     "": {
       "name": "neurotic-docx-bench-docxodus",
       "dependencies": {
-        "docxodus": "9.0.0",
+        "docxodus": "9.8.0",
       },
     },
   },
   "packages": {
-    "docxodus": ["docxodus@9.0.0", "", { "peerDependencies": { "react": ">=16.8.0" }, "optionalPeers": ["react"] }, "sha512-3Q/0sn0qRrF6YfsVxjMBNsSbW5RlmTkxmRDUM1XT07zoWLLngkxK0KlITrYtYTSTQNwn455cPksovFUrE+zTSQ=="],
+    "@atlaskit/pragmatic-drag-and-drop": ["@atlaskit/pragmatic-drag-and-drop@2.0.2", "", { "dependencies": { "@babel/runtime": "^7.0.0", "bind-event-listener": "^3.0.0", "raf-schd": "^4.0.3" } }, "sha512-ou1j+lBqutK7p2S80lMresJeKu9qAL1zr1K+N0OyCTzbMpD6pXRHray8VkRoHgJICI7Wp1fk5ScJh6EctyAuPw=="],
+
+    "@atlaskit/pragmatic-drag-and-drop-auto-scroll": ["@atlaskit/pragmatic-drag-and-drop-auto-scroll@3.0.0", "", { "dependencies": { "@atlaskit/pragmatic-drag-and-drop": "^2.0.0", "@babel/runtime": "^7.0.0" } }, "sha512-8TlkMi417zIPrTnCpbNV0Ce63JTKBn3dGkqiadkGQROvzDAox7Y9TYRHpvbQiEdtPoHWnmyRBi+RsGDxXsQxgQ=="],
+
+    "@babel/runtime": ["@babel/runtime@7.29.7", "", {}, "sha512-Nq8OhGWiZIZGV6hLHoyAKLLcJihP/xFeBMGJoUrxTX2psI8dCifzLhZISFb+VWS3wFMRDmCGw5R+dOySCqPLhw=="],
+
+    "bind-event-listener": ["bind-event-listener@3.0.0", "", {}, "sha512-PJvH288AWQhKs2v9zyfYdPzlPqf5bXbGMmhmUIY9x4dAUGIWgomO771oBQNwJnMQSnUIXhKu6sgzpBRXTlvb8Q=="],
+
+    "docxodus": ["docxodus@9.8.0", "", { "dependencies": { "@atlaskit/pragmatic-drag-and-drop": "^2.0.2", "@atlaskit/pragmatic-drag-and-drop-auto-scroll": "^3.0.0" }, "peerDependencies": { "react": ">=16.8.0" }, "optionalPeers": ["react"] }, "sha512-Md/f5KRinZGejJSDxb/krLTvSA0pGANMeSUa9pP0riBP0/6ZtuIyHxXBp13b09x1iFEIgEPqd8jhCNQuSjWd0Q=="],
+
+    "raf-schd": ["raf-schd@4.0.3", "", {}, "sha512-tQkJl2GRWh83ui2DiPTJz9wEiMN20syf+5oKfB03yYP7ioZcJwsIK8FjrtLwH1m7C7e+Tt2yYBlrOpdT+dyeIQ=="],
   }
 }
