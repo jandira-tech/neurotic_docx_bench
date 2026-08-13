@@ -138,10 +138,11 @@ engine. The genuine version improvement is the one in this table.
    identified by its **git commit**, not by a package version that is either
    meaningless (`0.0.0`) or invented (`7.0.0`).
 
-   Still broken and recorded as ours: the three `docxodus-playwright-*` runs
-   point at `src/neurotic_docx_bench/utils/docxodus/Docxodus/npm`, which does
-   not exist, so they cannot resolve a version at all. Bumping the `docxodus`
-   pin to 9.0.0 did **not** fix them — they are a separate `dist:` path.
+   The three `docxodus-playwright-*` runs used to point at
+   `src/neurotic_docx_bench/utils/docxodus/Docxodus/npm`, which did not exist.
+   As of 2026-08-12 they pin `package: docxodus@9.8.0` and the harness loads
+   matched JS+WASM from the published tarball (`public/wasm` copied from
+   `docxodus@9.8.0`). A full visual re-bench landed the same day.
 
 3. **Observed crash on the current corpus (docxodus 7.0.0, 2026-08-04 sweep,
    default engine).**
