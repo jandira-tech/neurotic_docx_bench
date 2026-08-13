@@ -76,7 +76,7 @@ Key modules (`src/neurotic_docx_bench/`):
 |---|---|---|
 | `jubarte-final-native` | jubarte `redlineDocx` (CriticMarkup) | `dist/jubarte-final` content-hash |
 | `jubarte-final-lossless` | jubarte `compareDocx` (its in-tree docxodus port) | `dist/jubarte-final` content-hash |
-| `docxodus` | real JSv4/docxodus WASM `compareDocuments` | npm `docxodus@7.0.0` |
+| `docxodus` | real JSv4/docxodus WASM `compareDocuments` | npm `docxodus@9.8.0` |
 | `docx-redline-js` | `@ansonlai/docx-redline-js` OOXML reconciliation | npm `@0.2.0` |
 | `folio` | `@stll/folio-core` `compareDocxVersions`+`FolioDocxReviewer.applyOperations` | npm `@stll/folio-core@0.3.1` |
 | `superdoc` | SuperDoc SDK (Python) Document-Engine diff | pip `superdoc-sdk` |

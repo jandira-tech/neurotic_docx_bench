@@ -9,6 +9,7 @@ import { join, resolve } from "node:path";
 // own vendored jszip — only this test helper moved.)
 import JSZip from "../node_modules/jszip/lib/index.js";
 import { parseManifest, loadEngine, outputName, runBatch } from "./generate-native-redlines.ts";
+import { resolveDocxodusEntry } from "./docxodus-node-compat.mjs";
 
 const MANIFEST = "corpus/word_based/centralized_mapping.csv";
 const SOURCE = "corpus/word_based/docx_source";
@@ -168,6 +169,11 @@ describe("generate-native-redlines", () => {
           pinned +
           " — the installed trees must match it, or the run records one version and measures another",
       ).toEqual({ root: pinned, vendor: pinned });
+      const entry = resolveDocxodusEntry();
+      const pkg = JSON.parse(readFileSync(join(entry, "..", "..", "package.json"), "utf8"));
+      expect(pkg.version, "resolveDocxodusEntry must refuse a tree that is not the pin").toBe(
+        pinned,
+      );
     });
 
     it.runIf(haveCorpus && haveDocxodus)(

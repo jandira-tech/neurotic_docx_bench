@@ -57,12 +57,12 @@ runs:
     --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=docxodus
   jobs: 12
   name: docxodus
-  package: docxodus@9.0.0
+  package: docxodus@9.8.0
   render: soffice
   vendor: docxodus
 - benchmarks:
   - visual_rendering
-  dist: src/neurotic_docx_bench/utils/docxodus/Docxodus/npm
+  package: docxodus@9.8.0
   docx: corpus/word_based/docx_source
   harness: &id001
     content_js: window.__rdvHasContent === true
@@ -81,7 +81,7 @@ runs:
   vendor: docxodus
 - benchmarks:
   - visual_redlines
-  dist: src/neurotic_docx_bench/utils/docxodus/Docxodus/npm
+  package: docxodus@9.8.0
   docx: corpus/word_based/docx_redlines_word
   harness: *id001
   jobs: 12
@@ -90,7 +90,7 @@ runs:
   vendor: docxodus
 - benchmarks:
   - visual_accepted_changes
-  dist: src/neurotic_docx_bench/utils/docxodus/Docxodus/npm
+  package: docxodus@9.8.0
   docx: corpus/word_based/docx_accepted_word
   harness: *id001
   jobs: 12

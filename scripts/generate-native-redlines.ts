@@ -26,6 +26,7 @@ import { spawnSync } from "node:child_process";
 import { parse } from "csv-parse/sync";
 import { docxIn, toBytes } from "./docx-utils.mjs";
 import { wireJubarteLosslessAdapter } from "./jubarte-lossless-adapter.mjs";
+import { installDocxodusNodeCompat, resolveDocxodusEntry } from "./docxodus-node-compat.mjs";
 import { runSuperDocVitest } from "./prosemirror-headless-editor-server.ts";
 
 // Per-reply timeout for the long-lived inproc worker (READY handshake + each
@@ -261,15 +262,17 @@ export async function loadEngine(
 	}
 	if (method === "docxodus") {
 		// WASM engine (JSv4/docxodus, MIT); one-time initialize() loads the .NET runtime.
+		// docxodus ≥9.3 re-exports DocxEditor from the package root; that file imports
+		// Atlaskit via directory specifiers Node ESM rejects. Install the remap hook
+		// before the dynamic import so the published package still loads under node.
+		const entry = resolveDocxodusEntry();
+		installDocxodusNodeCompat(entry);
 		const dox: any = await import(
 			// Point at dist/index.js: Node ESM rejects bare directory imports under
 			// node_modules when the package uses an "exports" map (docxodus ≥7).
 			// Resolved pin-tree-first — hardcoding the vendored path here is what
 			// published a "docxodus 9.0.0" result that actually ran 7.0.0.
-			resolveVendorEntry(
-				"docxodus/dist/index.js",
-				"../src/neurotic_docx_bench/utils/docxodus/node_modules",
-			)
+			entry
 		);
 		if (dox.initialize) await dox.initialize();
 		// NAME the comparison engine. `compareDocuments(base, next)` with no options
