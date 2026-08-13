@@ -152,14 +152,13 @@ runs:
   # Playwright. One run per visual_* oracle corpus (same pattern as folio-playwright-*).
   # Prefer the vendored tree under utils/ (demo/harness.html).
   #
-  # Viewer stack is the *matched* local Docxodus npm+WASM build (not a registry
-  # JS build alone): `Docxodus/npm` JS bindings + rebuilt net10 WASM. JS/WASM
-  # mismatch left the engine stuck on "Loading document engine…". Version is
-  # the local package.json (7.0.0; includes null-safe DocumentSettingsPart).
-  # Rebuild: see react-docxodus-viewer/README.bench.md
+  # Viewer stack is the published npm package (JS + WASM from the same tarball).
+  # Mixing registry JS with a different local WASM stuck the engine on
+  # "Loading document engine…". Pin, viewer dep, and public/wasm must agree.
+  # Refresh WASM: see react-docxodus-viewer/README.bench.md
   # Playwright fail-fasts on window.__rdvError instead of timing out.
   - name: docxodus-playwright-rendering
-    dist: src/neurotic_docx_bench/utils/docxodus/Docxodus/npm
+    package: "docxodus@9.8.0"
     docx: corpus/word_based/docx_source
     render: playwright
     jobs: 12
@@ -179,7 +178,7 @@ runs:
       timeout_ms: 60000
 
   - name: docxodus-playwright-redlines
-    dist: src/neurotic_docx_bench/utils/docxodus/Docxodus/npm
+    package: "docxodus@9.8.0"
     docx: corpus/word_based/docx_redlines_word
     render: playwright
     jobs: 12
@@ -188,7 +187,7 @@ runs:
     harness: *docxodus-harness
 
   - name: docxodus-playwright-accepted
-    dist: src/neurotic_docx_bench/utils/docxodus/Docxodus/npm
+    package: "docxodus@9.8.0"
     docx: corpus/word_based/docx_accepted_word
     render: playwright
     jobs: 12
