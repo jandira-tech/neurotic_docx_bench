@@ -288,6 +288,9 @@ export function readFidelityRows(path: string): FidelityRow[] {
 
 		if (vendor === "docxodus" && n_docs <= 100) continue;
 		if (vendor === "prebaked") continue;
+		// Sealed-holdout lines are a 20/40-doc subset. A later --holdout run
+		// must not become the newest stamp and rewrite every current table.
+		if (data.holdout_mode === "only") continue;
 
 		const meta = runMetaFromEnv(data);
 		const tool_version =
@@ -476,16 +479,18 @@ export function buildFidelityTable(
 	// Corpus regimes are not comparable. Presence of a stamp is not enough:
 	// two stamps can be different corpora (docxodus 9.0.0 visual_redlines
 	// b7f467074a51 vs 9.8.0 5ed816028d99). Current = the revision on the
-	// newest stamped line; older hashes and unstamped lines are legacy.
-	const stamped = [...best.values()].filter((r) => r.corpus_revision != null);
+	// newest stamped line of THIS benchmark; a newer hash on another bench
+	// must not empty this table and dump every pin into one unlabeled list.
+	const forBench = [...best].filter(([, r]) => r.benchmark === benchmark);
+	const stamped = forBench.map(([, r]) => r).filter((r) => r.corpus_revision != null);
 	const latestRev = stamped.length
 		? stamped.reduce((a, b) => (a.timestamp > b.timestamp ? a : b)).corpus_revision
 		: null;
 	const currentBest = new Map(
-		[...best].filter(([, r]) => r.corpus_revision === latestRev && latestRev != null),
+		forBench.filter(([, r]) => r.corpus_revision === latestRev && latestRev != null),
 	);
 	const legacyBest = new Map(
-		[...best].filter(([, r]) => r.corpus_revision !== latestRev || latestRev == null),
+		forBench.filter(([, r]) => r.corpus_revision !== latestRev || latestRev == null),
 	);
 	const currentRows = collapseJubarteFamilies(currentBest, benchmark);
 	const legacyRows = collapseJubarteFamilies(legacyBest, benchmark);
@@ -512,10 +517,11 @@ export function buildFidelityTable(
 	let body: string;
 	if (currentRows.length > 0 && legacyRows.length > 0) {
 		body =
-			`**Current corpus** (lines stamped with \`corpus_revision\`)` +
+			`**Current corpus** (newest \`corpus_revision\` stamp: \`${latestRev}\`)` +
 			`${coverageNote(currentRows)}\n\n${header}\n${fidelityBody(currentRows)}\n\n` +
-			`**Legacy corpus** (older, smaller corpora — not comparable with the ` +
-			`rows above; kept for history until each tool re-runs):` +
+			`**Legacy corpus** (older \`corpus_revision\` stamps and unstamped ` +
+			`runs — not comparable with the rows above; kept for history until ` +
+			`each tool re-runs):` +
 			`${coverageNote(legacyRows)}\n\n` +
 			`${header}\n${fidelityBody(legacyRows)}`;
 	} else {
