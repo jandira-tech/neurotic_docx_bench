@@ -1,4 +1,7 @@
 import { describe, expect, it } from "vitest";
+import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
 	buildFidelityTable,
@@ -7,6 +10,7 @@ import {
 	isMainPath,
 	mean,
 	median,
+	readFidelityRows,
 } from "./update-readme-ranking.ts";
 
 const completed = { n_docs: 4, overall_median: 80, n_failures: 2 };
@@ -34,6 +38,46 @@ function row(partial: Partial<FidelityRow>): FidelityRow {
 		...partial,
 	} as FidelityRow;
 }
+
+describe("readFidelityRows holdout", () => {
+	it("drops holdout_mode=only so a 20-doc re-run cannot set current", () => {
+		const dir = mkdtempSync(join(tmpdir(), "fidelity-holdout-"));
+		const path = join(dir, "bench.jsonl");
+		try {
+			writeFileSync(
+				path,
+				[
+					JSON.stringify({
+						vendor: "folio",
+						benchmark: "script_redlines",
+						tool_version: "0.3.1",
+						corpus_revision: "5ed816028d99",
+						timestamp: "2026-08-13T02:00:00+00:00",
+						n_docs: 763,
+						overall_mean: 61,
+						overall_median: 61,
+					}),
+					JSON.stringify({
+						vendor: "folio",
+						benchmark: "script_redlines",
+						tool_version: "0.3.1",
+						corpus_revision: "holdoutonlyxx",
+						holdout_mode: "only",
+						timestamp: "2026-08-13T03:00:00+00:00",
+						n_docs: 40,
+						overall_mean: 80,
+						overall_median: 80,
+					}),
+				].join("\n") + "\n",
+			);
+			const rows = readFidelityRows(path);
+			expect(rows).toHaveLength(1);
+			expect(rows[0]?.corpus_revision).toBe("5ed816028d99");
+		} finally {
+			rmSync(dir, { recursive: true, force: true });
+		}
+	});
+});
 
 describe("median/mean", () => {
 	it("handles empty, odd, even", () => {
@@ -168,6 +212,124 @@ describe("fidelity table ITT ranking", () => {
 		const legacyIdx = table.indexOf("| stale |");
 		expect(currentIdx).toBeGreaterThan(0);
 		expect(currentIdx).toBeLessThan(legacyIdx);
+	});
+
+	it("does not rank an older corpus_revision stamp with current", () => {
+		const oldStamp = row({
+			vendor: "docxodus-old",
+			tool_version: "9.0.0",
+			corpus_revision: "b7f467074a51",
+			timestamp: "2026-08-04T13:11:19+00:00",
+			overall_mean: 60,
+			itt_mean: 60,
+			itt_median: 60,
+			overall_median: 60,
+		});
+		const newStamp = row({
+			vendor: "docxodus-new",
+			tool_version: "9.8.0",
+			corpus_revision: "5ed816028d99",
+			timestamp: "2026-08-13T02:15:21+00:00",
+			overall_mean: 61,
+			itt_mean: 61,
+			itt_median: 61,
+			overall_median: 61,
+		});
+		const table = buildFidelityTable(
+			new Map([
+				["old__script_redlines__9.0.0", oldStamp],
+				["new__script_redlines__9.8.0", newStamp],
+			]),
+			"script_redlines",
+		);
+		const legacyAt = table.indexOf("**Legacy corpus**");
+		expect(legacyAt).toBeGreaterThan(0);
+		expect(table.indexOf("9.8.0")).toBeLessThan(legacyAt);
+		expect(table.indexOf("9.0.0")).toBeGreaterThan(legacyAt);
+		const currentHeading = table.slice(table.indexOf("**Current corpus**"), legacyAt);
+		expect(currentHeading).not.toContain("lines stamped with");
+		expect(currentHeading.toLowerCase()).toContain("newest");
+		expect(currentHeading).toContain("5ed816028d99");
+		expect(table.slice(legacyAt, legacyAt + 200)).not.toContain("smaller corpora");
+	});
+
+	it("newest stamp wins even when the older hash has a higher ITT", () => {
+		const oldHigh = row({
+			vendor: "docxodus-old",
+			tool_version: "9.0.0",
+			corpus_revision: "b7f467074a51",
+			timestamp: "2026-08-04T13:11:19+00:00",
+			overall_mean: 90,
+			itt_mean: 90,
+			itt_median: 90,
+			overall_median: 90,
+		});
+		const newLow = row({
+			vendor: "docxodus-new",
+			tool_version: "9.8.0",
+			corpus_revision: "5ed816028d99",
+			timestamp: "2026-08-13T02:15:21+00:00",
+			overall_mean: 60,
+			itt_mean: 60,
+			itt_median: 60,
+			overall_median: 60,
+		});
+		const table = buildFidelityTable(
+			new Map([
+				["old__script_redlines__9.0.0", oldHigh],
+				["new__script_redlines__9.8.0", newLow],
+			]),
+			"script_redlines",
+		);
+		const legacyAt = table.indexOf("**Legacy corpus**");
+		expect(legacyAt).toBeGreaterThan(0);
+		expect(table.indexOf("9.8.0")).toBeLessThan(legacyAt);
+		expect(table.indexOf("9.0.0")).toBeGreaterThan(legacyAt);
+	});
+
+	it("does not let another bench's newer hash collapse this bench's split", () => {
+		const scriptStamped = row({
+			vendor: "fresh",
+			benchmark: "script_redlines",
+			corpus_revision: "aaaa1111aaaa",
+			timestamp: "2026-08-01T00:00:00+00:00",
+			overall_mean: 70,
+			itt_mean: 70,
+			itt_median: 70,
+			overall_median: 70,
+		});
+		const scriptUnstamped = row({
+			vendor: "stale",
+			benchmark: "script_redlines",
+			corpus_revision: null,
+			timestamp: "2026-08-01T00:00:00+00:00",
+			overall_mean: 95,
+			itt_mean: 95,
+			itt_median: 95,
+			overall_median: 95,
+		});
+		const visualNewer = row({
+			vendor: "other",
+			benchmark: "visual_redlines",
+			tool_version: "9.8.0",
+			corpus_revision: "bbbb2222bbbb",
+			timestamp: "2026-08-13T00:00:00+00:00",
+		});
+		const table = buildFidelityTable(
+			new Map([
+				["fresh__script_redlines__1", scriptStamped],
+				["stale__script_redlines__1", scriptUnstamped],
+				["other__visual_redlines__9.8.0", visualNewer],
+			]),
+			"script_redlines",
+		);
+		// Per-benchmark current is aaaa1111aaaa. A global picker would take
+		// bbbb2222bbbb, empty this bench's current, and dump fresh+stale
+		// into one unlabeled table.
+		expect(table).toContain("**Current corpus**");
+		expect(table).toContain("**Legacy corpus**");
+		expect(table.indexOf("| fresh |")).toBeLessThan(table.indexOf("| stale |"));
+		expect(table).not.toContain("9.8.0");
 	});
 
 	it("renders a single table when only one regime exists", () => {

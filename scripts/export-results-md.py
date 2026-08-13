@@ -210,10 +210,11 @@ def rows_from_jsonl(path: Path) -> list[dict[str, object]]:
                 "n_lens_disagree": data.get("n_lens_disagree"),
                 "lens_disagree_rate": data.get("lens_disagree_rate"),
                 "scores": data.get("scores") if isinstance(data.get("scores"), dict) else None,
-                # Regime marker: lines stamped with corpus_revision ran on the current
-                # corpus, older lines on smaller ones. Their means are not comparable,
-                # so to_fidelity_markdown ranks them in separate tables (same predicate
-                # as buildFidelityTable in scripts/update-readme-ranking.ts).
+                # Regime marker: current = the newest corpus_revision stamp;
+                # older hashes and unstamped lines are legacy. Means across
+                # regimes are not comparable, so to_fidelity_markdown ranks
+                # them in separate tables (same predicate as
+                # buildFidelityTable in scripts/update-readme-ranking.ts).
                 "corpus_revision": (
                     None if data.get("corpus_revision") is None else str(data["corpus_revision"])
                 ),
@@ -292,6 +293,32 @@ def _fidelity_sort_key(r: dict[str, object]) -> tuple:
     )
 
 
+def _latest_corpus_revision(rows: list[dict[str, object]]) -> object:
+    """corpus_revision on the newest stamped row. Clock field is `datetime`
+    (what rows_from_jsonl stores); `timestamp` is not on the row."""
+    stamped = [r for r in rows if r.get("corpus_revision")]
+    if not stamped:
+        return None
+    return max(stamped, key=lambda r: str(r.get("datetime") or "")).get(
+        "corpus_revision",
+    )
+
+
+def _split_corpus_regimes(
+    items: list[dict[str, object]],
+) -> tuple[list[dict[str, object]], list[dict[str, object]], object]:
+    latest_rev = _latest_corpus_revision(items)
+    current = [r for r in items if r.get("corpus_revision") == latest_rev]
+    legacy = [r for r in items if r.get("corpus_revision") != latest_rev]
+    return current, legacy, latest_rev
+
+
+def _script_redlines_current(rows: list[dict[str, object]]) -> list[dict[str, object]]:
+    sr = [r for r in rows if str(r["benchmark"]) == "script_redlines"]
+    current, _legacy, _rev = _split_corpus_regimes(sr)
+    return current
+
+
 def _common_subset_section(rows: list[dict[str, object]]) -> list[str]:
     """Paired ranking on the docs EVERY script_redlines vendor completed.
 
@@ -301,8 +328,9 @@ def _common_subset_section(rows: list[dict[str, object]]) -> list[str]:
     when fewer than two vendors carry per-doc scores or the intersection is < 20 docs.
     """
     candidates = [
-        r for r in rows
-        if str(r["benchmark"]) == "script_redlines" and isinstance(r.get("scores"), dict) and r["scores"]
+        r
+        for r in _script_redlines_current(rows)
+        if isinstance(r.get("scores"), dict) and r["scores"]
     ]
     best_per_vendor: dict[str, dict[str, object]] = {}
     for r in candidates:
@@ -526,8 +554,9 @@ def _paired_stats_section(rows: list[dict[str, object]]) -> list[str]:
     fewer than 20 shared docs are skipped.
     """
     candidates = [
-        r for r in rows
-        if str(r["benchmark"]) == "script_redlines" and isinstance(r.get("scores"), dict) and r["scores"]
+        r
+        for r in _script_redlines_current(rows)
+        if isinstance(r.get("scores"), dict) and r["scores"]
     ]
     best_per_vendor: dict[str, dict[str, object]] = {}
     for r in candidates:
@@ -625,20 +654,17 @@ def to_fidelity_markdown(rows: list[dict[str, object]], source: Path) -> str:
         # "current" table is the same lie as mixing stamped with unstamped.
         # Current = the corpus_revision on the newest stamped line; everything
         # else (older hashes, or no stamp) is legacy.
-        stamped = [r for r in items if r.get("corpus_revision")]
-        latest_rev = None
-        if stamped:
-            latest_rev = max(stamped, key=lambda r: str(r.get("timestamp") or "")).get(
-                "corpus_revision",
-            )
-        current = [r for r in items if r.get("corpus_revision") == latest_rev]
-        legacy = [r for r in items if r.get("corpus_revision") != latest_rev]
+        current, legacy, latest_rev = _split_corpus_regimes(items)
         if current and legacy:
             groups = [
-                ("**Current corpus** (lines stamped with `corpus_revision`):", current),
                 (
-                    "**Legacy corpus** (older, smaller corpora — not comparable with "
-                    "the rows above; kept for history until each tool re-runs):",
+                    f"**Current corpus** (newest `corpus_revision` stamp: `{latest_rev}`):",
+                    current,
+                ),
+                (
+                    "**Legacy corpus** (older `corpus_revision` stamps and unstamped "
+                    "runs — not comparable with the rows above; kept for history "
+                    "until each tool re-runs):",
                     legacy,
                 ),
             ]
