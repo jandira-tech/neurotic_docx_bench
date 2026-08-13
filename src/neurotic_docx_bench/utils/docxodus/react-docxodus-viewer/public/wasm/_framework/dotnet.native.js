@@ -30,11 +30,11 @@ Module['ready'] = new Promise((resolve, reject) => {
 
 // --pre-jses are emitted after the Module integration code, so that they can
 // refer to Module (if they choose; they can also define Module)
-// include: /usr/local/share/dotnet/packs/Microsoft.NETCore.App.Runtime.Mono.browser-wasm/10.0.7/runtimes/browser-wasm/native/src/es6/dotnet.es6.pre.js
+// include: /usr/share/dotnet/packs/Microsoft.NETCore.App.Runtime.Mono.browser-wasm/10.0.10/runtimes/browser-wasm/native/src/es6/dotnet.es6.pre.js
 if (_nativeModuleLoaded) throw new Error("Native module already loaded");
 _nativeModuleLoaded = true;
 createDotnetRuntime = Module = moduleArg(Module);
-// end include: /usr/local/share/dotnet/packs/Microsoft.NETCore.App.Runtime.Mono.browser-wasm/10.0.7/runtimes/browser-wasm/native/src/es6/dotnet.es6.pre.js
+// end include: /usr/share/dotnet/packs/Microsoft.NETCore.App.Runtime.Mono.browser-wasm/10.0.10/runtimes/browser-wasm/native/src/es6/dotnet.es6.pre.js
 
 
 // Sometimes an existing Module object exists with properties
@@ -3446,18 +3446,6 @@ function createWasm() {
         return stream;
       },
   };
-  function ___syscall_chmod(path, mode) {
-  try {
-  
-      path = SYSCALLS.getStr(path);
-      FS.chmod(path, mode);
-      return 0;
-    } catch (e) {
-    if (typeof FS == 'undefined' || !(e.name === 'ErrnoError')) throw e;
-    return -e.errno;
-  }
-  }
-
   function ___syscall_faccessat(dirfd, path, amode, flags) {
   try {
   
@@ -3489,17 +3477,6 @@ function createWasm() {
   var ___syscall_fadvise64 = (fd, offset, len, advice) => {
       return 0; // your advice is important to us (but we can't use it)
     };
-
-  function ___syscall_fchmod(fd, mode) {
-  try {
-  
-      FS.fchmod(fd, mode);
-      return 0;
-    } catch (e) {
-    if (typeof FS == 'undefined' || !(e.name === 'ErrnoError')) throw e;
-    return -e.errno;
-  }
-  }
 
   function ___syscall_fcntl64(fd, cmd, varargs) {
   SYSCALLS.varargs = varargs;
@@ -3631,56 +3608,6 @@ function createWasm() {
   }
   }
 
-  
-  function ___syscall_getdents64(fd, dirp, count) {
-  try {
-  
-      var stream = SYSCALLS.getStreamFromFD(fd)
-      stream.getdents ||= FS.readdir(stream.path);
-  
-      var struct_size = 280;
-      var pos = 0;
-      var off = FS.llseek(stream, 0, 1);
-  
-      var idx = Math.floor(off / struct_size);
-  
-      while (idx < stream.getdents.length && pos + struct_size <= count) {
-        var id;
-        var type;
-        var name = stream.getdents[idx];
-        if (name === '.') {
-          id = stream.node.id;
-          type = 4; // DT_DIR
-        }
-        else if (name === '..') {
-          var lookup = FS.lookupPath(stream.path, { parent: true });
-          id = lookup.node.id;
-          type = 4; // DT_DIR
-        }
-        else {
-          var child = FS.lookupNode(stream.node, name);
-          id = child.id;
-          type = FS.isChrdev(child.mode) ? 2 :  // DT_CHR, character device.
-                 FS.isDir(child.mode) ? 4 :     // DT_DIR, directory.
-                 FS.isLink(child.mode) ? 10 :   // DT_LNK, symbolic link.
-                 8;                             // DT_REG, regular file.
-        }
-        HEAP64[((dirp + pos)>>3)] = BigInt(id);
-        HEAP64[(((dirp + pos)+(8))>>3)] = BigInt((idx + 1) * struct_size);
-        HEAP16[(((dirp + pos)+(16))>>1)] = 280;
-        HEAP8[(dirp + pos)+(18)] = type;
-        stringToUTF8(name, dirp + pos + 19, 256);
-        pos += struct_size;
-        idx += 1;
-      }
-      FS.llseek(stream, idx * struct_size, 0);
-      return pos;
-    } catch (e) {
-    if (typeof FS == 'undefined' || !(e.name === 'ErrnoError')) throw e;
-    return -e.errno;
-  }
-  }
-
   function ___syscall_ioctl(fd, op, varargs) {
   SYSCALLS.varargs = varargs;
   try {
@@ -3787,23 +3714,6 @@ function createWasm() {
   }
   }
 
-  function ___syscall_mkdirat(dirfd, path, mode) {
-  try {
-  
-      path = SYSCALLS.getStr(path);
-      path = SYSCALLS.calculateAt(dirfd, path);
-      // remove a trailing slash, if one - /a/b/ has basename of '', but
-      // we want to create b in the context of this function
-      path = PATH.normalize(path);
-      if (path[path.length-1] === '/') path = path.substr(0, path.length-1);
-      FS.mkdir(path, mode, 0);
-      return 0;
-    } catch (e) {
-    if (typeof FS == 'undefined' || !(e.name === 'ErrnoError')) throw e;
-    return -e.errno;
-  }
-  }
-
   function ___syscall_newfstatat(dirfd, path, buf, flags) {
   try {
   
@@ -3856,18 +3766,6 @@ function createWasm() {
   }
   }
 
-  function ___syscall_rmdir(path) {
-  try {
-  
-      path = SYSCALLS.getStr(path);
-      FS.rmdir(path);
-      return 0;
-    } catch (e) {
-    if (typeof FS == 'undefined' || !(e.name === 'ErrnoError')) throw e;
-    return -e.errno;
-  }
-  }
-
   function ___syscall_stat64(path, buf) {
   try {
   
@@ -3891,35 +3789,6 @@ function createWasm() {
       } else {
         abort('Invalid flags passed to unlinkat');
       }
-      return 0;
-    } catch (e) {
-    if (typeof FS == 'undefined' || !(e.name === 'ErrnoError')) throw e;
-    return -e.errno;
-  }
-  }
-
-  var readI53FromI64 = (ptr) => {
-      return HEAPU32[((ptr)>>2)] + HEAP32[(((ptr)+(4))>>2)] * 4294967296;
-    };
-  
-  function ___syscall_utimensat(dirfd, path, times, flags) {
-  try {
-  
-      path = SYSCALLS.getStr(path);
-      path = SYSCALLS.calculateAt(dirfd, path, true);
-      if (!times) {
-        var atime = Date.now();
-        var mtime = atime;
-      } else {
-        var seconds = readI53FromI64(times);
-        var nanoseconds = HEAP32[(((times)+(8))>>2)];
-        atime = (seconds*1000) + (nanoseconds/(1000*1000));
-        times += 16;
-        seconds = readI53FromI64(times);
-        nanoseconds = HEAP32[(((times)+(8))>>2)];
-        mtime = (seconds*1000) + (nanoseconds/(1000*1000));
-      }
-      FS.utime(path, atime, mtime);
       return 0;
     } catch (e) {
     if (typeof FS == 'undefined' || !(e.name === 'ErrnoError')) throw e;
@@ -4254,32 +4123,6 @@ function createWasm() {
   
       var stream = SYSCALLS.getStreamFromFD(fd);
       FS.close(stream);
-      return 0;
-    } catch (e) {
-    if (typeof FS == 'undefined' || !(e.name === 'ErrnoError')) throw e;
-    return e.errno;
-  }
-  }
-
-  function _fd_fdstat_get(fd, pbuf) {
-  try {
-  
-      var rightsBase = 0;
-      var rightsInheriting = 0;
-      var flags = 0;
-      {
-        var stream = SYSCALLS.getStreamFromFD(fd);
-        // All character devices are terminals (other things a Linux system would
-        // assume is a character device, like the mouse, we have special APIs for).
-        var type = stream.tty ? 2 :
-                   FS.isDir(stream.mode) ? 3 :
-                   FS.isLink(stream.mode) ? 7 :
-                   4;
-      }
-      HEAP8[pbuf] = type;
-      HEAP16[(((pbuf)+(2))>>1)] = flags;
-      HEAP64[(((pbuf)+(8))>>3)] = BigInt(rightsBase);
-      HEAP64[(((pbuf)+(16))>>3)] = BigInt(rightsInheriting);
       return 0;
     } catch (e) {
     if (typeof FS == 'undefined' || !(e.name === 'ErrnoError')) throw e;
@@ -5214,18 +5057,14 @@ function createWasm() {
 
   FS.createPreloadedFile = FS_createPreloadedFile;
   FS.staticInit();Module["FS_createPath"] = FS.createPath;Module["FS_createDataFile"] = FS.createDataFile;Module["FS_createPath"] = FS.createPath;Module["FS_createDataFile"] = FS.createDataFile;Module["FS_createPreloadedFile"] = FS.createPreloadedFile;Module["FS_unlink"] = FS.unlink;Module["FS_createLazyFile"] = FS.createLazyFile;Module["FS_createDevice"] = FS.createDevice;;
-DOTNET.setup({ wasmEnableSIMD: true,wasmEnableEH: true,enableAotProfiler: false, enableDevToolsProfiler: false, enableLogProfiler: false, enableEventPipe: false, runAOTCompilation: false, wasmEnableThreads: false, gitHash: "b16286c2284fecf303dbc12a0bb152476d662e44", });;
+DOTNET.setup({ wasmEnableSIMD: true,wasmEnableEH: true,enableAotProfiler: false, enableDevToolsProfiler: false, enableLogProfiler: false, enableEventPipe: false, runAOTCompilation: false, wasmEnableThreads: false, gitHash: "f7d90799ce4ef09a0bb257852a57248d2a8fb8dd", });;
 var wasmImports = {
   /** @export */
   __assert_fail: ___assert_fail,
   /** @export */
-  __syscall_chmod: ___syscall_chmod,
-  /** @export */
   __syscall_faccessat: ___syscall_faccessat,
   /** @export */
   __syscall_fadvise64: ___syscall_fadvise64,
-  /** @export */
-  __syscall_fchmod: ___syscall_fchmod,
   /** @export */
   __syscall_fcntl64: ___syscall_fcntl64,
   /** @export */
@@ -5237,13 +5076,9 @@ var wasmImports = {
   /** @export */
   __syscall_getcwd: ___syscall_getcwd,
   /** @export */
-  __syscall_getdents64: ___syscall_getdents64,
-  /** @export */
   __syscall_ioctl: ___syscall_ioctl,
   /** @export */
   __syscall_lstat64: ___syscall_lstat64,
-  /** @export */
-  __syscall_mkdirat: ___syscall_mkdirat,
   /** @export */
   __syscall_newfstatat: ___syscall_newfstatat,
   /** @export */
@@ -5251,13 +5086,9 @@ var wasmImports = {
   /** @export */
   __syscall_readlinkat: ___syscall_readlinkat,
   /** @export */
-  __syscall_rmdir: ___syscall_rmdir,
-  /** @export */
   __syscall_stat64: ___syscall_stat64,
   /** @export */
   __syscall_unlinkat: ___syscall_unlinkat,
-  /** @export */
-  __syscall_utimensat: ___syscall_utimensat,
   /** @export */
   _emscripten_get_now_is_monotonic: __emscripten_get_now_is_monotonic,
   /** @export */
@@ -5290,8 +5121,6 @@ var wasmImports = {
   exit: _exit,
   /** @export */
   fd_close: _fd_close,
-  /** @export */
-  fd_fdstat_get: _fd_fdstat_get,
   /** @export */
   fd_pread: _fd_pread,
   /** @export */
