@@ -10,7 +10,7 @@ Scores are 0–100 (higher = closer to the Microsoft Word oracle). Cross-rendere
 
 script_redlines (LibreOffice render vs Word oracle)
 
-**Current corpus** (lines stamped with `corpus_revision`):
+**Current corpus** (newest `corpus_revision` stamp: `5ed816028d99`):
 
 | # | vendor | version | mean | median | itt_mean | itt_median | skill_median | failures | n_docs | itt_n | exact_100 | ≥90 | <50 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -31,7 +31,7 @@ script_redlines (LibreOffice render vs Word oracle)
 | 15 | jubarte-ast | jubarte-final@070eea86ace3 | 70.0817 | 73.8042 | 70.0817 | 73.8042 | 80.6632 | 0 | 50 | 50 | 9 | 11 | 16 |
 | 16 | jubarte-ast | jubarte-final@6beb9cd08cae | 70.0817 | 73.8042 | 70.0817 | 73.8042 | 80.6632 | 0 | 50 | 50 | 9 | 11 | 16 |
 
-**Legacy corpus** (older, smaller corpora — not comparable with the rows above; kept for history until each tool re-runs):
+**Legacy corpus** (older `corpus_revision` stamps and unstamped runs — not comparable with the rows above; kept for history until each tool re-runs):
 
 | # | vendor | version | mean | median | itt_mean | itt_median | skill_median | failures | n_docs | itt_n | exact_100 | ≥90 | <50 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -281,22 +281,14 @@ script_redlines (LibreOffice render vs Word oracle)
 
 ### Common-subset ranking (script_redlines)
 
-Paired comparison on the **139** documents every vendor below completed (best pin per vendor). Unlike the aggregate tables, these medians are computed on the SAME documents for every vendor.
+Paired comparison on the **50** documents every vendor below completed (best pin per vendor). Unlike the aggregate tables, these medians are computed on the SAME documents for every vendor.
 
 | # | vendor | version | median | mean |
 | --- | --- | --- | --- | --- |
-| 1 | docxodus | 9.0.0 | 100.00 | 96.06 |
-| 2 | jubarte-rust | jubarte-rust@01ed1fac181e | 100.00 | 94.12 |
-| 3 | jubarte-wasm | 0.1.0@4b36f4db1d2f+git.ebf1a7996df49f99fb40f4f67713e61cfd19c731 | 98.74 | 92.92 |
-| 4 | jubarte | jubarte-final@3995702f73ed | 91.84 | 90.35 |
-| 5 | jubarte-ast | jubarte-final@138300e8471d | 91.73 | 89.00 |
-| 6 | sanity-word | — | 73.95 | 71.90 |
-| 7 | superdoc-redlines | 0.2.0 | 58.14 | 59.35 |
-| 8 | ooxmlsdk | — | 57.13 | 58.14 |
-| 9 | superdoc | 1.19.2 | 56.92 | 57.61 |
-| 10 | folio | 0.3.1 | 56.88 | 58.29 |
-| 11 | redlines | 0.6.1 | 53.78 | 52.45 |
-| 12 | docx-redline-js | 0.3.0-ts-migration | 50.33 | 51.18 |
+| 1 | jubarte-rust | jubarte-rust@cacb0b9bcb34+git.fc8c50f879974568278bcd33c476b153229313f0 | 89.47 | 82.52 |
+| 2 | jubarte | jubarte-final@070eea86ace3 | 84.48 | 73.03 |
+| 3 | docxodus | 9.8.0 | 84.20 | 75.80 |
+| 4 | jubarte-ast | jubarte-final@070eea86ace3 | 73.80 | 70.08 |
 
 ### Paired comparisons (script_redlines)
 
@@ -304,72 +296,12 @@ Per-doc paired deltas on shared documents (best pin per vendor); `win/loss/tie` 
 
 | vendor A | vendor B | docs | win/loss/tie | median Δ | p |
 | --- | --- | --- | --- | --- | --- |
-| docx-redline-js | docxodus | 152 | 4/148/0 | -48.70 | 1.37e-26 |
-| docx-redline-js | folio | 161 | 47/113/1 | -5.19 | 7.03e-14 |
-| docx-redline-js | jubarte | 161 | 0/161/0 | -42.56 | 3.59e-28 |
-| docx-redline-js | jubarte-ast | 152 | 4/148/0 | -41.16 | 3.07e-26 |
-| docx-redline-js | jubarte-rust | 161 | 0/161/0 | -46.99 | 3.59e-28 |
-| docx-redline-js | jubarte-wasm | 152 | 2/150/0 | -46.47 | 1.29e-26 |
-| docx-redline-js | ooxmlsdk | 161 | 36/125/0 | -7.83 | 1.59e-12 |
-| docx-redline-js | redlines | 151 | 57/94/0 | -2.31 | 2.53e-02 |
-| docx-redline-js | sanity-word | 160 | 15/145/0 | -22.95 | 1.92e-24 |
-| docx-redline-js | superdoc | 144 | 33/111/0 | -6.01 | 2.67e-12 |
-| docx-redline-js | superdoc-redlines | 143 | 41/101/1 | -6.25 | 2.46e-12 |
-| docxodus | folio | 194 | 189/5/0 | +37.84 | 4.62e-33 |
-| docxodus | jubarte | 154 | 93/23/38 | +2.67 | 3.87e-09 |
-| docxodus | jubarte-ast | 760 | 466/199/95 | +1.46 | 2.58e-28 |
-| docxodus | jubarte-rust | 155 | 62/30/63 | +0.00 | 8.06e-04 |
-| docxodus | jubarte-wasm | 760 | 343/285/132 | +0.00 | 2.48e-02 |
-| docxodus | ooxmlsdk | 155 | 154/1/0 | +38.36 | 3.54e-27 |
-| docxodus | redlines | 745 | 727/18/0 | +40.19 | 1.15e-121 |
-| docxodus | sanity-word | 154 | 151/3/0 | +22.80 | 6.28e-27 |
-| docxodus | superdoc | 171 | 167/2/2 | +39.77 | 9.69e-30 |
-| docxodus | superdoc-redlines | 700 | 662/37/1 | +31.15 | 8.01e-113 |
-| folio | jubarte | 163 | 1/162/0 | -32.57 | 1.95e-28 |
-| folio | jubarte-ast | 194 | 6/188/0 | -29.82 | 1.12e-31 |
-| folio | jubarte-rust | 164 | 1/163/0 | -35.63 | 1.36e-28 |
-| folio | jubarte-wasm | 194 | 6/188/0 | -34.24 | 4.84e-33 |
-| folio | ooxmlsdk | 164 | 86/78/0 | +0.76 | 5.70e-01 |
-| folio | redlines | 187 | 136/51/0 | +4.21 | 5.93e-15 |
-| folio | sanity-word | 163 | 25/138/0 | -14.34 | 1.40e-19 |
-| folio | superdoc | 170 | 99/70/1 | +0.90 | 1.27e-01 |
-| folio | superdoc-redlines | 179 | 75/100/4 | -0.49 | 1.53e-01 |
-| jubarte | jubarte-ast | 154 | 23/9/122 | +0.00 | 5.48e-02 |
-| jubarte | jubarte-rust | 163 | 43/76/44 | +0.00 | 6.90e-04 |
-| jubarte | jubarte-wasm | 154 | 50/68/36 | +0.00 | 3.95e-02 |
-| jubarte | ooxmlsdk | 163 | 163/0/0 | +33.15 | 1.69e-28 |
-| jubarte | redlines | 153 | 153/0/0 | +39.39 | 7.39e-27 |
-| jubarte | sanity-word | 162 | 155/7/0 | +18.71 | 3.30e-27 |
-| jubarte | superdoc | 146 | 144/1/1 | +34.98 | 1.53e-25 |
-| jubarte | superdoc-redlines | 145 | 144/1/0 | +29.87 | 1.84e-25 |
-| jubarte-ast | jubarte-rust | 155 | 40/78/37 | -0.01 | 1.03e-04 |
-| jubarte-ast | jubarte-wasm | 763 | 217/455/91 | -1.95 | 9.02e-24 |
-| jubarte-ast | ooxmlsdk | 155 | 153/2/0 | +31.91 | 3.82e-27 |
-| jubarte-ast | redlines | 745 | 717/28/0 | +30.38 | 2.44e-120 |
-| jubarte-ast | sanity-word | 154 | 143/11/0 | +18.17 | 1.35e-25 |
-| jubarte-ast | superdoc | 171 | 165/4/2 | +33.76 | 1.67e-29 |
-| jubarte-ast | superdoc-redlines | 703 | 652/50/1 | +21.57 | 1.13e-106 |
-| jubarte-rust | jubarte-wasm | 155 | 31/10/114 | +0.00 | 6.91e-03 |
-| jubarte-rust | ooxmlsdk | 164 | 163/1/0 | +36.46 | 1.18e-28 |
-| jubarte-rust | redlines | 153 | 153/0/0 | +42.48 | 7.39e-27 |
-| jubarte-rust | sanity-word | 163 | 160/3/0 | +20.81 | 3.59e-28 |
-| jubarte-rust | superdoc | 146 | 144/0/2 | +38.60 | 1.08e-25 |
-| jubarte-rust | superdoc-redlines | 146 | 145/1/0 | +33.91 | 1.18e-25 |
-| jubarte-wasm | ooxmlsdk | 155 | 153/2/0 | +35.52 | 3.68e-27 |
-| jubarte-wasm | redlines | 745 | 726/19/0 | +38.47 | 5.58e-122 |
-| jubarte-wasm | sanity-word | 154 | 149/5/0 | +20.21 | 2.50e-26 |
-| jubarte-wasm | superdoc | 171 | 166/3/2 | +37.26 | 1.18e-29 |
-| jubarte-wasm | superdoc-redlines | 703 | 671/30/2 | +29.54 | 1.90e-113 |
-| ooxmlsdk | redlines | 153 | 117/36/0 | +5.77 | 1.04e-16 |
-| ooxmlsdk | sanity-word | 230 | 15/215/0 | -14.02 | 3.48e-35 |
-| ooxmlsdk | superdoc | 146 | 82/64/0 | +2.00 | 2.59e-01 |
-| ooxmlsdk | superdoc-redlines | 146 | 74/72/0 | +0.10 | 2.96e-01 |
-| redlines | sanity-word | 152 | 7/145/0 | -19.63 | 3.01e-26 |
-| redlines | superdoc | 170 | 53/117/0 | -3.15 | 2.36e-09 |
-| redlines | superdoc-redlines | 685 | 196/489/0 | -2.91 | 3.59e-35 |
-| sanity-word | superdoc | 145 | 120/25/0 | +15.73 | 1.52e-17 |
-| sanity-word | superdoc-redlines | 145 | 121/24/0 | +13.41 | 3.07e-16 |
-| superdoc | superdoc-redlines | 164 | 75/89/0 | -0.95 | 3.00e-02 |
+| docxodus | jubarte | 50 | 31/14/5 | +0.24 | 1.35e-02 |
+| docxodus | jubarte-ast | 50 | 31/10/9 | +1.94 | 3.78e-04 |
+| docxodus | jubarte-rust | 760 | 268/365/127 | +0.00 | 1.40e-07 |
+| jubarte | jubarte-ast | 50 | 20/25/5 | -0.01 | 4.57e-01 |
+| jubarte | jubarte-rust | 50 | 10/33/7 | -4.03 | 1.06e-04 |
+| jubarte-ast | jubarte-rust | 50 | 7/35/8 | -9.36 | 3.47e-06 |
 
 ### Lens health (script_redlines)
 
@@ -522,13 +454,13 @@ dirty-m442: 1 doc(s) where the lenses disagree (20.0% of two-lens docs)
 
 `accepted_changes`
 
-**Current corpus** (lines stamped with `corpus_revision`):
+**Current corpus** (newest `corpus_revision` stamp: `5ed816028d99`):
 
 | # | vendor | version | mean | median | itt_mean | itt_median | skill_median | failures | n_docs | itt_n | exact_100 | ≥90 | <50 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | docxodus | 9.8.0 | 90.1868 | 100 | 88.8203 | 100 | — | 4 | 195 | 198 | 119 | 145 | 18 |
 
-**Legacy corpus** (older, smaller corpora — not comparable with the rows above; kept for history until each tool re-runs):
+**Legacy corpus** (older `corpus_revision` stamps and unstamped runs — not comparable with the rows above; kept for history until each tool re-runs):
 
 | # | vendor | version | mean | median | itt_mean | itt_median | skill_median | failures | n_docs | itt_n | exact_100 | ≥90 | <50 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -553,13 +485,13 @@ dirty-m442: 1 doc(s) where the lenses disagree (20.0% of two-lens docs)
 
 roundtrip (self-diff → pdf_source)
 
-**Current corpus** (lines stamped with `corpus_revision`):
+**Current corpus** (newest `corpus_revision` stamp: `5ed816028d99`):
 
 | # | vendor | version | mean | median | itt_mean | itt_median | skill_median | failures | n_docs | itt_n | exact_100 | ≥90 | <50 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | docxodus | 9.8.0 | 99.9949 | 100 | 99.9949 | 100 | — | 0 | 166 | 166 | 163 | 166 | 0 |
 
-**Legacy corpus** (older, smaller corpora — not comparable with the rows above; kept for history until each tool re-runs):
+**Legacy corpus** (older `corpus_revision` stamps and unstamped runs — not comparable with the rows above; kept for history until each tool re-runs):
 
 | # | vendor | version | mean | median | itt_mean | itt_median | skill_median | failures | n_docs | itt_n | exact_100 | ≥90 | <50 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -578,13 +510,13 @@ roundtrip (self-diff → pdf_source)
 
 visual_rendering (Playwright viewer)
 
-**Current corpus** (lines stamped with `corpus_revision`):
+**Current corpus** (newest `corpus_revision` stamp: `5ed816028d99`):
 
 | # | vendor | version | mean | median | itt_mean | itt_median | skill_median | failures | n_docs | itt_n | exact_100 | ≥90 | <50 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | docxodus | 9.8.0 | 65.2677 | 67.8808 | 65.2677 | 67.8808 | — | 0 | 199 | 199 | 1 | 7 | 30 |
 
-**Legacy corpus** (older, smaller corpora — not comparable with the rows above; kept for history until each tool re-runs):
+**Legacy corpus** (older `corpus_revision` stamps and unstamped runs — not comparable with the rows above; kept for history until each tool re-runs):
 
 | # | vendor | version | mean | median | itt_mean | itt_median | skill_median | failures | n_docs | itt_n | exact_100 | ≥90 | <50 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -597,13 +529,13 @@ visual_rendering (Playwright viewer)
 
 visual_redlines (Playwright)
 
-**Current corpus** (lines stamped with `corpus_revision`):
+**Current corpus** (newest `corpus_revision` stamp: `5ed816028d99`):
 
 | # | vendor | version | mean | median | itt_mean | itt_median | skill_median | failures | n_docs | itt_n | exact_100 | ≥90 | <50 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | docxodus | 9.8.0 | 61.0993 | 62.44 | 61.0993 | 62.44 | — | 0 | 155 | 155 | 0 | 0 | 26 |
 
-**Legacy corpus** (older, smaller corpora — not comparable with the rows above; kept for history until each tool re-runs):
+**Legacy corpus** (older `corpus_revision` stamps and unstamped runs — not comparable with the rows above; kept for history until each tool re-runs):
 
 | # | vendor | version | mean | median | itt_mean | itt_median | skill_median | failures | n_docs | itt_n | exact_100 | ≥90 | <50 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -617,13 +549,13 @@ visual_redlines (Playwright)
 
 visual_accepted_changes (Playwright)
 
-**Current corpus** (lines stamped with `corpus_revision`):
+**Current corpus** (newest `corpus_revision` stamp: `5ed816028d99`):
 
 | # | vendor | version | mean | median | itt_mean | itt_median | skill_median | failures | n_docs | itt_n | exact_100 | ≥90 | <50 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | docxodus | 9.8.0 | 64.631 | 65.7934 | 64.631 | 65.7934 | — | 0 | 155 | 155 | 0 | 7 | 19 |
 
-**Legacy corpus** (older, smaller corpora — not comparable with the rows above; kept for history until each tool re-runs):
+**Legacy corpus** (older `corpus_revision` stamps and unstamped runs — not comparable with the rows above; kept for history until each tool re-runs):
 
 | # | vendor | version | mean | median | itt_mean | itt_median | skill_median | failures | n_docs | itt_n | exact_100 | ≥90 | <50 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
