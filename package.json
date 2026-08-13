@@ -31,7 +31,7 @@
 		"crypto-js": "^4.2.0",
 		"csv-parse": "^7.0.1",
 		"dingbat-to-unicode": "^1.0.1",
-		"docxodus": "9.0.0",
+		"docxodus": "9.8.0",
 		"es-toolkit": "^1.49.0",
 		"fast-xml-parser": "^5.10.0",
 		"fflate": "^0.8.3",

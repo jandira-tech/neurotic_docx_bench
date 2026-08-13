@@ -233,14 +233,20 @@ async function loadEngine(route, dist) {
 	// docxodus (npm): compareDocuments(base, base) self-diff.
 	// WASM engine; one-time initialize() loads the .NET runtime.
 	if (route === "docxodus") {
-		const dox = await import(
-			// Point at dist/index.js: Node ESM rejects bare directory imports under
-			// node_modules when the package uses an "exports" map (docxodus ≥7).
-			"../src/neurotic_docx_bench/utils/docxodus/node_modules/docxodus/dist/index.js"
+		const { installDocxodusNodeCompat, resolveDocxodusEntry } = await import(
+			"./docxodus-node-compat.mjs"
 		);
+		installDocxodusNodeCompat();
+		const dox = await import(resolveDocxodusEntry());
 		if (dox.initialize) await dox.initialize();
+		const engine = dox.ComparisonEngine?.DocxDiff;
+		if (typeof engine !== "number") {
+			throw new Error(
+				"docxodus: ComparisonEngine.DocxDiff missing — cannot pin the roundtrip engine",
+			);
+		}
 		return async (input) => {
-			const out = await dox.compareDocuments(input, input);
+			const out = await dox.compareDocuments(input, input, { engine });
 			return out instanceof Uint8Array ? out : new Uint8Array(out);
 		};
 	}

@@ -4,6 +4,6 @@
   "type": "module",
   "description": "docxodus dependencies for neurotic-docx-bench",
   "dependencies": {
-    "docxodus": "9.0.0"
+    "docxodus": "9.8.0"
   }
 }
