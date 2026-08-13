@@ -236,8 +236,9 @@ async function loadEngine(route, dist) {
 		const { installDocxodusNodeCompat, resolveDocxodusEntry } = await import(
 			"./docxodus-node-compat.mjs"
 		);
-		installDocxodusNodeCompat();
-		const dox = await import(resolveDocxodusEntry());
+		const entry = resolveDocxodusEntry();
+		installDocxodusNodeCompat(entry);
+		const dox = await import(entry);
 		if (dox.initialize) await dox.initialize();
 		const engine = dox.ComparisonEngine?.DocxDiff;
 		if (typeof engine !== "number") {

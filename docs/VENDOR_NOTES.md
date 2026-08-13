@@ -57,8 +57,9 @@ reached the deficit belongs in this file, not in the competitor's score.
 > **7.0.0**. The published line recorded one version and ran another — the D5
 > split-brain, in the very vendor whose upgrade introduced the D5 fix, caught by
 > that upgrade's own test only after the number had been published. The vendored
-> tree is now at 9.0.0 and **docxodus must be re-run** before any 9.0.0 number
-> is quoted.
+> tree was still 7.0.0. **Resolved 2026-08-12:** both trees are 9.8.0; genuine
+> 9.0.0 (2026-08-04) and 9.8.0 (2026-08-12) `script_redlines` rows exist. Do
+> not quote the retracted 51.70 ITT line as 9.0.0.
 >
 > Two claims made on the strength of that run are withdrawn:
 >
