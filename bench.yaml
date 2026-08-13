@@ -89,7 +89,7 @@ generate_scripts:
     command: "mkdir -p /tmp/pdf_source_render/pdf && cp -c corpus/word_based/pdf_source/*.pdf /tmp/pdf_source_render/pdf/ 2>/dev/null || cp corpus/word_based/pdf_source/*.pdf /tmp/pdf_source_render/pdf/ 2>/dev/null; uv run bench render corpus/word_based/docx_source /tmp/pdf_source_render --backend soffice --jobs 12 && mv -n /tmp/pdf_source_render/pdf/*.pdf corpus/word_based/pdf_source/ 2>/dev/null; true"
 
 # Tool versions are PINNED to the ones we reviewed:
-#   docxodus 9.0.0 · docx-redline-js = local TS migration (dist: sibling package)
+#   docxodus 9.8.0 · docx-redline-js = local TS migration (dist: sibling package)
 #   @stll/folio-core 0.15.13 (generator) · @stll/folio-react 0.13.2 (viewer)
 #   superdoc is THREE packages, pinned independently — never conflate them:
 #     superdoc-sdk (PyPI) 2.0.0        → run `superdoc`            (python_package:)
@@ -134,7 +134,7 @@ runs:
   # adapter now names the engine explicitly, so this bump changes the measured version
   # without also making the measured engine a side effect of it.
   - name: docxodus
-    package: "docxodus@9.0.0"
+    package: "docxodus@9.8.0"
     generate: "node --import tsx scripts/generate-native-redlines.ts --method=docxodus --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=docxodus"
     render: soffice
     jobs: 12
@@ -152,14 +152,13 @@ runs:
   # Playwright. One run per visual_* oracle corpus (same pattern as folio-playwright-*).
   # Prefer the vendored tree under utils/ (demo/harness.html).
   #
-  # Viewer stack is the *matched* local Docxodus npm+WASM build (not a registry
-  # JS build alone): `Docxodus/npm` JS bindings + rebuilt net10 WASM. JS/WASM
-  # mismatch left the engine stuck on "Loading document engine…". Version is
-  # the local package.json (7.0.0; includes null-safe DocumentSettingsPart).
-  # Rebuild: see react-docxodus-viewer/README.bench.md
+  # Viewer stack is the published npm package (JS + WASM from the same tarball).
+  # Mixing registry JS with a different local WASM stuck the engine on
+  # "Loading document engine…". Pin, viewer dep, and public/wasm must agree.
+  # Refresh WASM: see react-docxodus-viewer/README.bench.md
   # Playwright fail-fasts on window.__rdvError instead of timing out.
   - name: docxodus-playwright-rendering
-    dist: src/neurotic_docx_bench/utils/docxodus/Docxodus/npm
+    package: "docxodus@9.8.0"
     docx: corpus/word_based/docx_source
     render: playwright
     jobs: 12
@@ -179,7 +178,7 @@ runs:
       timeout_ms: 60000
 
   - name: docxodus-playwright-redlines
-    dist: src/neurotic_docx_bench/utils/docxodus/Docxodus/npm
+    package: "docxodus@9.8.0"
     docx: corpus/word_based/docx_redlines_word
     render: playwright
     jobs: 12
@@ -188,7 +187,7 @@ runs:
     harness: *docxodus-harness
 
   - name: docxodus-playwright-accepted
-    dist: src/neurotic_docx_bench/utils/docxodus/Docxodus/npm
+    package: "docxodus@9.8.0"
     docx: corpus/word_based/docx_accepted_word
     render: playwright
     jobs: 12

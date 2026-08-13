@@ -35,8 +35,10 @@ bun run update-readme-ranking                 # tables between RANKING markers
 > [!IMPORTANT]
 > **The audit changed who wins.** We are jubarte's authors. An audit begun 2026-08-04
 > found nine defects in this comparison, most of them favouring us. After fixing them,
-> **`docxodus 9.0.0` leads the redline table — 80.24 ITT mean / 91.11 median against
-> jubarte's best 77.02 / 78.53, with 186 perfect scores to our 158.**
+> **`docxodus 9.0.0` led the redline table — 80.24 ITT mean / 91.11 median against
+> jubarte's then-best 77.02 / 78.53, with 186 perfect scores to our 158.**
+> **Current pin is `docxodus@9.8.0` (2026-08-12):** same 80.24 / 91.11, same 186
+> perfects, same 4 failures as 9.0.0. **jubarte-rust HEAD now leads** (84.09 / 92.38).
 >
 > It was hidden by our own configuration: bench.yaml pinned `docxodus@7.0.0`, two majors
 > stale, and that build failed 38 documents where 9.0.0 fails 3. The engine we had been
@@ -54,9 +56,8 @@ bun run update-readme-ranking                 # tables between RANKING markers
 > - **superdoc-native** and **superdoc-redlines**, which failed on clones we never
 >   installed. `superdoc/` was not even gitignored, so installing it would have dirtied
 >   the tree.
-> - **docxodus**'s row is labelled `9.0.0` but that run executed **7.0.0** — the pin
->   installs to the repo root where `tool_version` is read, while the adapter imported a
->   vendored tree still holding 7.0.0. Re-run pending; do not quote it as a 9.0.0 result.
+> - **docxodus**'s first row labelled `9.0.0` executed **7.0.0** (pin/install split-brain).
+>   A genuine 9.0.0 run landed 2026-08-04; 9.8.0 was re-measured 2026-08-12 and matches it.
 > - **docx-redline-js** is not the vendor's code at all: it builds
 >   `@arthrod/docx-redline-js@0.3.0`, *our* TypeScript migration, while upstream
 >   publishes 0.2.1. The row is named for them and runs us.
@@ -90,49 +91,52 @@ Sorted by **ITT median** (intent-to-treat: every failed doc scores 0, so crashin
 
 **Current corpus** (lines stamped with `corpus_revision`)
 
-> ⚠️ **Rows below cover different document counts (763, 48) — they are not the same measurement.** A tool scored on fewer documents ran a different, usually easier, subset; its rank is not comparable with a row covering more. Compare only rows whose `ITT Docs` match.
+> ⚠️ **Rows below cover different document counts (763, 50, 48) — they are not the same measurement.** A tool scored on fewer documents ran a different, usually easier, subset; its rank is not comparable with a row covering more. Compare only rows whose `ITT Docs` match.
 
 | Rank | Vendor | Version | Docs | ITT Docs | ITT Mean | ITT Median | Mean | Median | Perfect (100) | Failures |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | docxodus | 9.0.0 | 760 | 763 | 80.24 | 91.11 | 80.55 | 91.19 | 186 | 4 |
-| 2 | jubarte-rust | jubarte-rust@4a6065089e4d+git.fc8c50f879974568278bcd33c476b153229313f0 (best) | 763 | 763 | 81.41 | 88.73 | 81.41 | 88.73 | 193 | 0 |
-| 3 | jubarte (lossless) | jubarte-final@a58157a9cd2d (best) | 763 | 763 | 81.47 | 88.60 | 81.47 | 88.60 | 202 | 0 |
-| 4 | jubarte-wasm | 0.1.0@4b36f4db1d2f+git.ebf1a7996df49f99fb40f4f67713e61cfd19c731 | 763 | 763 | 79.57 | 84.89 | 79.57 | 84.89 | 182 | 0 |
-| 5 | jubarte-wasm | 0.1.0@e1e19c982338+git.ebf1a7996df49f99fb40f4f67713e61cfd19c731 | 763 | 763 | 79.56 | 84.89 | 79.56 | 84.89 | 182 | 0 |
-| 6 | jubarte-wasm | 0.1.0@18f6c9fd87db+git.ebf1a7996df49f99fb40f4f67713e61cfd19c731 | 763 | 763 | 79.46 | 84.89 | 79.46 | 84.89 | 178 | 0 |
-| 7 | jubarte-wasm | 0.1.0@a795fa73ea5f+git.0f39b64e69b54a04828d78e73d071d0949dee73c | 763 | 763 | 78.89 | 83.59 | 78.89 | 83.59 | 176 | 0 |
-| 8 | jubarte-wasm | 0.1.0@2957178cc645+git.b910a23bce9b63a393ac6186ab366a39d6aaa504 | 763 | 763 | 78.05 | 81.87 | 78.05 | 81.87 | 165 | 0 |
-| 9 | jubarte-wasm | 0.1.0@b13bcb128725+git.bae2df5748e5bce5a3873056a895cbe769285c74 | 763 | 763 | 77.97 | 81.83 | 77.97 | 81.83 | 163 | 0 |
-| 10 | jubarte-wasm | 0.1.0@d3810de5aa53+git.0e2923194145ea254ea617b9a99fb60ea9b1d431 | 763 | 763 | 77.92 | 81.83 | 77.92 | 81.83 | 161 | 0 |
-| 11 | jubarte-wasm | 0.1.0@1331a4ff7c61+git.8cd638d6f0cdb261c55150c056af9cf44fa332a6 | 763 | 763 | 77.75 | 81.47 | 77.75 | 81.47 | 161 | 0 |
-| 12 | jubarte-wasm | 0.1.0@dc46d94d88ab+git.6817a28378372d6e7c95227cf300889e74ab06e4 | 763 | 763 | 77.69 | 81.44 | 77.69 | 81.44 | 161 | 0 |
-| 13 | jubarte-wasm | 0.1.0@d5f48a35f21a+git.24b182f5824aaf9acdd3a0c00e9bf88b22b6fde9 | 763 | 763 | 77.56 | 81.16 | 77.56 | 81.16 | 160 | 0 |
-| 14 | jubarte-wasm | 0.1.0 | 763 | 763 | 76.21 | 77.95 | 76.21 | 77.95 | 158 | 0 |
-| 15 | jubarte-ast | jubarte-final@138300e8471d | 763 | 763 | 74.20 | 76.15 | 74.20 | 76.15 | 96 | 0 |
-| 16 | jubarte-ast | jubarte-final@300cc3edf753 | 763 | 763 | 74.20 | 76.15 | 74.20 | 76.15 | 96 | 0 |
-| 17 | jubarte-ast | jubarte-final@38e6f956cb44 | 763 | 763 | 74.20 | 76.15 | 74.20 | 76.15 | 96 | 0 |
-| 18 | jubarte-ast | jubarte-final@7ef64a75db56 | 763 | 763 | 74.20 | 76.15 | 74.20 | 76.15 | 96 | 0 |
-| 19 | jubarte-ast | jubarte-final@88c1b1c36479 | 763 | 763 | 74.20 | 76.15 | 74.20 | 76.15 | 96 | 0 |
-| 20 | jubarte-ast | jubarte-final@a6caf6b44537 | 763 | 763 | 74.20 | 76.15 | 74.20 | 76.15 | 96 | 0 |
-| 21 | jubarte-ast | 0.1.0@0676fa9064f1 | 763 | 763 | 74.20 | 76.15 | 74.20 | 76.15 | 96 | 0 |
-| 22 | jubarte-ast | jubarte-final@a58157a9cd2d | 763 | 763 | 74.20 | 76.15 | 74.20 | 76.15 | 96 | 0 |
-| 23 | jubarte-ast | jubarte-final@d294713913bb+git.b256b039d54561800b4462fb67cfcd5a8143f606 | 754 | 763 | 73.57 | 76.15 | 74.45 | 76.74 | 96 | 10 |
-| 24 | jubarte-ast | jubarte-final@0a703664346d+git.50155bfba69385bf0e99dd3a19b15da1f58e104c | 754 | 763 | 73.00 | 75.12 | 73.87 | 75.87 | 96 | 10 |
-| 25 | jubarte-ast | jubarte-final@c043b0aaefb3+git.19b5f14c6088a71280786a864d45cac3aa6e7c92 | 754 | 763 | 73.00 | 75.12 | 73.87 | 75.87 | 96 | 10 |
-| 26 | jubarte-ast | jubarte-final@6e7229a4d930+git.6f9f76fcd961c9ace7fce9941307b712ada01282 | 754 | 763 | 72.59 | 73.71 | 73.46 | 74.29 | 91 | 10 |
-| 27 | jubarte-ast | jubarte-final@dc06c68fa885+git.1cfd5d08a6d7283834465dfc84d04ee6fbac5f81 | 754 | 763 | 72.58 | 73.59 | 73.44 | 74.15 | 91 | 10 |
-| 28 | jubarte-ast | jubarte-final@5bf73ce40d09+git.f9c71f0cd5b7ea561c4739d61cad72a65296ed65 | 754 | 763 | 72.51 | 73.56 | 73.37 | 74.11 | 91 | 10 |
-| 29 | jubarte-ast | jubarte-final@041a9bd0cbc3+git.8f8ea75949175abde9b7700308190a3dcd3508ab | 754 | 763 | 70.24 | 68.64 | 71.08 | 68.79 | 91 | 10 |
-| 30 | jubarte-ast | jubarte-final@d43557e042c1 | 755 | 763 | 69.83 | 68.30 | 70.57 | 68.67 | 84 | 9 |
-| 31 | jubarte (lossless) | 0.1.0@2f698925be74 (worst) | 48 | 48 | 69.63 | 66.51 | 69.63 | 66.51 | 2 | 0 |
-| 32 | jubarte-rust | jubarte-rust@66ab19649ff7+git.963b8e2 (worst) | 48 | 48 | 68.70 | 64.31 | 68.70 | 64.31 | 2 | 0 |
-| 33 | jubarte-ast | 0.1.0@2f698925be74 | 48 | 48 | 65.18 | 63.35 | 65.18 | 63.35 | 1 | 0 |
-| 34 | folio | 0.15.13 | 744 | 763 | 50.83 | 50.29 | 52.13 | 50.43 | 0 | 19 |
-| 35 | superdoc | 1.21.3 | 665 | 763 | 46.30 | 50.16 | 53.13 | 51.56 | 3 | 115 |
-| 36 | superdoc-redlines | 0.2.0 | 703 | 763 | 47.37 | 49.16 | 51.41 | 50.11 | 0 | 68 |
-| 37 | docx-redline-js | 0.3.0 | 746 | 763 | 45.16 | 47.22 | 46.19 | 47.42 | 0 | 17 |
-| 38 | redlines | 0.6.1 | 745 | 763 | 44.86 | 47.05 | 45.94 | 47.14 | 0 | 18 |
-| 39 | superdoc | 2.0.0 | 331 | 763 | 19.61 | 0.00 | 45.19 | 46.72 | 1 | 432 |
+| 1 | jubarte-rust | jubarte-rust@cacb0b9bcb34+git.fc8c50f879974568278bcd33c476b153229313f0 (best) | 763 | 763 | 84.40 | 92.61 | 84.40 | 92.61 | 196 | 0 |
+| 2 | docxodus | 9.0.0 | 760 | 763 | 80.24 | 91.11 | 80.55 | 91.19 | 186 | 4 |
+| 3 | docxodus | 9.8.0 | 760 | 763 | 80.24 | 91.11 | 80.55 | 91.19 | 186 | 4 |
+| 4 | jubarte (lossless) | jubarte-final@a58157a9cd2d (best) | 763 | 763 | 81.47 | 88.60 | 81.47 | 88.60 | 202 | 0 |
+| 5 | jubarte-wasm | 0.1.0@4b36f4db1d2f+git.ebf1a7996df49f99fb40f4f67713e61cfd19c731 | 763 | 763 | 79.57 | 84.89 | 79.57 | 84.89 | 182 | 0 |
+| 6 | jubarte-wasm | 0.1.0@e1e19c982338+git.ebf1a7996df49f99fb40f4f67713e61cfd19c731 | 763 | 763 | 79.56 | 84.89 | 79.56 | 84.89 | 182 | 0 |
+| 7 | jubarte-wasm | 0.1.0@18f6c9fd87db+git.ebf1a7996df49f99fb40f4f67713e61cfd19c731 | 763 | 763 | 79.46 | 84.89 | 79.46 | 84.89 | 178 | 0 |
+| 8 | jubarte-wasm | 0.1.0@a795fa73ea5f+git.0f39b64e69b54a04828d78e73d071d0949dee73c | 763 | 763 | 78.89 | 83.59 | 78.89 | 83.59 | 176 | 0 |
+| 9 | jubarte-wasm | 0.1.0@2957178cc645+git.b910a23bce9b63a393ac6186ab366a39d6aaa504 | 763 | 763 | 78.05 | 81.87 | 78.05 | 81.87 | 165 | 0 |
+| 10 | jubarte-wasm | 0.1.0@b13bcb128725+git.bae2df5748e5bce5a3873056a895cbe769285c74 | 763 | 763 | 77.97 | 81.83 | 77.97 | 81.83 | 163 | 0 |
+| 11 | jubarte-wasm | 0.1.0@d3810de5aa53+git.0e2923194145ea254ea617b9a99fb60ea9b1d431 | 763 | 763 | 77.92 | 81.83 | 77.92 | 81.83 | 161 | 0 |
+| 12 | jubarte-wasm | 0.1.0@1331a4ff7c61+git.8cd638d6f0cdb261c55150c056af9cf44fa332a6 | 763 | 763 | 77.75 | 81.47 | 77.75 | 81.47 | 161 | 0 |
+| 13 | jubarte-wasm | 0.1.0@dc46d94d88ab+git.6817a28378372d6e7c95227cf300889e74ab06e4 | 763 | 763 | 77.69 | 81.44 | 77.69 | 81.44 | 161 | 0 |
+| 14 | jubarte-wasm | 0.1.0@d5f48a35f21a+git.24b182f5824aaf9acdd3a0c00e9bf88b22b6fde9 | 763 | 763 | 77.56 | 81.16 | 77.56 | 81.16 | 160 | 0 |
+| 15 | jubarte-wasm | 0.1.0 | 763 | 763 | 76.21 | 77.95 | 76.21 | 77.95 | 158 | 0 |
+| 16 | jubarte-ast | jubarte-final@138300e8471d | 763 | 763 | 74.20 | 76.15 | 74.20 | 76.15 | 96 | 0 |
+| 17 | jubarte-ast | jubarte-final@300cc3edf753 | 763 | 763 | 74.20 | 76.15 | 74.20 | 76.15 | 96 | 0 |
+| 18 | jubarte-ast | jubarte-final@38e6f956cb44 | 763 | 763 | 74.20 | 76.15 | 74.20 | 76.15 | 96 | 0 |
+| 19 | jubarte-ast | jubarte-final@7ef64a75db56 | 763 | 763 | 74.20 | 76.15 | 74.20 | 76.15 | 96 | 0 |
+| 20 | jubarte-ast | jubarte-final@88c1b1c36479 | 763 | 763 | 74.20 | 76.15 | 74.20 | 76.15 | 96 | 0 |
+| 21 | jubarte-ast | jubarte-final@a6caf6b44537 | 763 | 763 | 74.20 | 76.15 | 74.20 | 76.15 | 96 | 0 |
+| 22 | jubarte-ast | 0.1.0@0676fa9064f1 | 763 | 763 | 74.20 | 76.15 | 74.20 | 76.15 | 96 | 0 |
+| 23 | jubarte-ast | jubarte-final@a58157a9cd2d | 763 | 763 | 74.20 | 76.15 | 74.20 | 76.15 | 96 | 0 |
+| 24 | jubarte-ast | jubarte-final@d294713913bb+git.b256b039d54561800b4462fb67cfcd5a8143f606 | 754 | 763 | 73.57 | 76.15 | 74.45 | 76.74 | 96 | 10 |
+| 25 | jubarte-ast | jubarte-final@0a703664346d+git.50155bfba69385bf0e99dd3a19b15da1f58e104c | 754 | 763 | 73.00 | 75.12 | 73.87 | 75.87 | 96 | 10 |
+| 26 | jubarte-ast | jubarte-final@c043b0aaefb3+git.19b5f14c6088a71280786a864d45cac3aa6e7c92 | 754 | 763 | 73.00 | 75.12 | 73.87 | 75.87 | 96 | 10 |
+| 27 | jubarte-ast | jubarte-final@070eea86ace3 | 50 | 50 | 70.08 | 73.80 | 70.08 | 73.80 | 9 | 0 |
+| 28 | jubarte-ast | jubarte-final@6beb9cd08cae | 50 | 50 | 70.08 | 73.80 | 70.08 | 73.80 | 9 | 0 |
+| 29 | jubarte-ast | jubarte-final@6e7229a4d930+git.6f9f76fcd961c9ace7fce9941307b712ada01282 | 754 | 763 | 72.59 | 73.71 | 73.46 | 74.29 | 91 | 10 |
+| 30 | jubarte-ast | jubarte-final@dc06c68fa885+git.1cfd5d08a6d7283834465dfc84d04ee6fbac5f81 | 754 | 763 | 72.58 | 73.59 | 73.44 | 74.15 | 91 | 10 |
+| 31 | jubarte-ast | jubarte-final@5bf73ce40d09+git.f9c71f0cd5b7ea561c4739d61cad72a65296ed65 | 754 | 763 | 72.51 | 73.56 | 73.37 | 74.11 | 91 | 10 |
+| 32 | jubarte-ast | jubarte-final@041a9bd0cbc3+git.8f8ea75949175abde9b7700308190a3dcd3508ab | 754 | 763 | 70.24 | 68.64 | 71.08 | 68.79 | 91 | 10 |
+| 33 | jubarte-ast | jubarte-final@d43557e042c1 | 755 | 763 | 69.83 | 68.30 | 70.57 | 68.67 | 84 | 9 |
+| 34 | jubarte (lossless) | 0.1.0@2f698925be74 (worst) | 48 | 48 | 69.63 | 66.51 | 69.63 | 66.51 | 2 | 0 |
+| 35 | jubarte-rust | jubarte-rust@66ab19649ff7+git.963b8e2 (worst) | 48 | 48 | 68.70 | 64.31 | 68.70 | 64.31 | 2 | 0 |
+| 36 | jubarte-ast | 0.1.0@2f698925be74 | 48 | 48 | 65.18 | 63.35 | 65.18 | 63.35 | 1 | 0 |
+| 37 | folio | 0.15.13 | 744 | 763 | 50.83 | 50.29 | 52.13 | 50.43 | 0 | 19 |
+| 38 | superdoc | 1.21.3 | 665 | 763 | 46.30 | 50.16 | 53.13 | 51.56 | 3 | 115 |
+| 39 | superdoc-redlines | 0.2.0 | 703 | 763 | 47.37 | 49.16 | 51.41 | 50.11 | 0 | 68 |
+| 40 | docx-redline-js | 0.3.0 | 746 | 763 | 45.16 | 47.22 | 46.19 | 47.42 | 0 | 17 |
+| 41 | redlines | 0.6.1 | 745 | 763 | 44.86 | 47.05 | 45.94 | 47.14 | 0 | 18 |
+| 42 | superdoc | 2.0.0 | 331 | 763 | 19.61 | 0.00 | 45.19 | 46.72 | 1 | 432 |
 
 **Legacy corpus** (older, smaller corpora — not comparable with the rows above; kept for history until each tool re-runs):
 
@@ -159,6 +163,14 @@ Sorted by **ITT median** (intent-to-treat: every failed doc scores 0, so crashin
 
 Sorted by **ITT median** (intent-to-treat: every failed doc scores 0, so crashing on hard docs is penalized, not rewarded; 0–100, higher is closer to the oracle). Mean/Median cover completed docs only. `~` marks ITT stats approximated from summary numbers (older runs without per-doc scores). Jubarte families (**final**, **final-lossless**, **rust**) show only the **best** and **worst** version pin for this benchmark; other vendors list each pin.
 
+**Current corpus** (lines stamped with `corpus_revision`)
+
+| Rank | Vendor | Version | Docs | ITT Docs | ITT Mean | ITT Median | Mean | Median | Perfect (100) | Failures |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | docxodus | 9.8.0 | 195 | 198 | 88.82 | 100.00 | 90.19 | 100.00 | 119 | 4 |
+
+**Legacy corpus** (older, smaller corpora — not comparable with the rows above; kept for history until each tool re-runs):
+
 > ⚠️ **Rows below cover different document counts (174, 166, 164) — they are not the same measurement.** A tool scored on fewer documents ran a different, usually easier, subset; its rank is not comparable with a row covering more. Compare only rows whose `ITT Docs` match.
 
 | Rank | Vendor | Version | Docs | ITT Docs | ITT Mean | ITT Median | Mean | Median | Perfect (100) | Failures |
@@ -176,6 +188,14 @@ Sorted by **ITT median** (intent-to-treat: every failed doc scores 0, so crashin
 ### roundtrip — self-diff must not invent noise
 
 Sorted by **ITT median** (intent-to-treat: every failed doc scores 0, so crashing on hard docs is penalized, not rewarded; 0–100, higher is closer to the oracle). Mean/Median cover completed docs only. `~` marks ITT stats approximated from summary numbers (older runs without per-doc scores). Jubarte families (**final**, **final-lossless**, **rust**) show only the **best** and **worst** version pin for this benchmark; other vendors list each pin.
+
+**Current corpus** (lines stamped with `corpus_revision`)
+
+| Rank | Vendor | Version | Docs | ITT Docs | ITT Mean | ITT Median | Mean | Median | Perfect (100) | Failures |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | docxodus | 9.8.0 | 166 | 166 | 99.99 | 100.00 | 99.99 | 100.00 | 163 | 0 |
+
+**Legacy corpus** (older, smaller corpora — not comparable with the rows above; kept for history until each tool re-runs):
 
 > ⚠️ **Rows below cover different document counts (199, 198, 197, 192, 166) — they are not the same measurement.** A tool scored on fewer documents ran a different, usually easier, subset; its rank is not comparable with a row covering more. Compare only rows whose `ITT Docs` match.
 
@@ -195,6 +215,14 @@ Sorted by **ITT median** (intent-to-treat: every failed doc scores 0, so crashin
 
 Sorted by **ITT median** (intent-to-treat: every failed doc scores 0, so crashing on hard docs is penalized, not rewarded; 0–100, higher is closer to the oracle). Mean/Median cover completed docs only. `~` marks ITT stats approximated from summary numbers (older runs without per-doc scores). Jubarte families (**final**, **final-lossless**, **rust**) show only the **best** and **worst** version pin for this benchmark; other vendors list each pin.
 
+**Current corpus** (lines stamped with `corpus_revision`)
+
+| Rank | Vendor | Version | Docs | ITT Docs | ITT Mean | ITT Median | Mean | Median | Perfect (100) | Failures |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | docxodus | 9.8.0 | 199 | 199 | 65.27 | 67.88 | 65.27 | 67.88 | 1 | 0 |
+
+**Legacy corpus** (older, smaller corpora — not comparable with the rows above; kept for history until each tool re-runs):
+
 > ⚠️ **Rows below cover different document counts (199, 198) — they are not the same measurement.** A tool scored on fewer documents ran a different, usually easier, subset; its rank is not comparable with a row covering more. Compare only rows whose `ITT Docs` match.
 
 | Rank | Vendor | Version | Docs | ITT Docs | ITT Mean | ITT Median | Mean | Median | Perfect (100) | Failures |
@@ -210,9 +238,12 @@ Sorted by **ITT median** (intent-to-treat: every failed doc scores 0, so crashin
 
 **Current corpus** (lines stamped with `corpus_revision`)
 
+> ⚠️ **Rows below cover different document counts (197, 155) — they are not the same measurement.** A tool scored on fewer documents ran a different, usually easier, subset; its rank is not comparable with a row covering more. Compare only rows whose `ITT Docs` match.
+
 | Rank | Vendor | Version | Docs | ITT Docs | ITT Mean | ITT Median | Mean | Median | Perfect (100) | Failures |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | docxodus | 9.0.0 | 178 | 197 | 54.35 | 55.39 | 60.15 | 57.56 | 1 | 19 |
+| 1 | docxodus | 9.8.0 | 155 | 155 | 61.10 | 62.44 | 61.10 | 62.44 | 0 | 0 |
+| 2 | docxodus | 9.0.0 | 178 | 197 | 54.35 | 55.39 | 60.15 | 57.56 | 1 | 19 |
 
 **Legacy corpus** (older, smaller corpora — not comparable with the rows above; kept for history until each tool re-runs):
 
@@ -228,6 +259,14 @@ Sorted by **ITT median** (intent-to-treat: every failed doc scores 0, so crashin
 ### visual_accepted_changes — editor render of accepted DOCX
 
 Sorted by **ITT median** (intent-to-treat: every failed doc scores 0, so crashing on hard docs is penalized, not rewarded; 0–100, higher is closer to the oracle). Mean/Median cover completed docs only. `~` marks ITT stats approximated from summary numbers (older runs without per-doc scores). Jubarte families (**final**, **final-lossless**, **rust**) show only the **best** and **worst** version pin for this benchmark; other vendors list each pin.
+
+**Current corpus** (lines stamped with `corpus_revision`)
+
+| Rank | Vendor | Version | Docs | ITT Docs | ITT Mean | ITT Median | Mean | Median | Perfect (100) | Failures |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | docxodus | 9.8.0 | 155 | 155 | 64.63 | 65.79 | 64.63 | 65.79 | 0 | 0 |
+
+**Legacy corpus** (older, smaller corpora — not comparable with the rows above; kept for history until each tool re-runs):
 
 > ⚠️ **Rows below cover different document counts (165, 164, 152) — they are not the same measurement.** A tool scored on fewer documents ran a different, usually easier, subset; its rank is not comparable with a row covering more. Compare only rows whose `ITT Docs` match.
 
@@ -328,7 +367,7 @@ Notes that matter when reading scores:
 | **jubarte** | In-repo `dist/jubarte-final` (`compareDocx` / CriticMarkup paths) | content-hash under `dist/` | Generator |
 | **jubarte-rust** | Native CLI built from canonical `../jubarte-redlines` | content-hash | Generator |
 | **jubarte-wasm** | wasm-bindgen adapter over canonical `../jubarte-redlines` | generated artifact + source commit | Generator |
-| **docxodus** | npm `docxodus` WASM `compareDocuments` | **6.4.0** | Generator + viewer |
+| **docxodus** | npm `docxodus` WASM `compareDocuments` | **9.8.0** | Generator + viewer |
 | **folio** | `@stll/folio-core` compare + applyOperations | **0.3.1** | Generator |
 | **folio** (viewer) | `@stll/folio-react` Playwright harness | **0.5.0** | Editor |
 | **superdoc** | Python `superdoc-sdk` Document Engine | **1.19.2** | Generator |

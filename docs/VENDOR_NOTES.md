@@ -44,10 +44,10 @@ reached the deficit belongs in this file, not in the competitor's score.
 | field | value |
 |---|---|
 | Package | npm `docxodus` (WASM build of the C# engine) |
-| Pinned | **9.0.0** (was `7.0.0` — two majors stale) |
-| Actually measured so far | **7.0.0** — see the retraction below; a true 9.0.0 run is pending |
+| Pinned | **9.8.0** (npm latest as of 2026-08-12; was 9.0.0) |
+| Actually measured so far | **9.8.0** — full-corpus `script_redlines` 2026-08-12 (760/763; ITT 80.24 / 91.11). Dead heat with 9.0.0 (mean 80.5534 vs 80.5535; same 186 perfects, same 4 failures, same 3 empty-result generate refusals). Also `accepted_changes` 90.19 / 100 (n=195) and `roundtrip` 99.99 / 100 (n=166, 166/166 self-diffs byte-identical). |
 | Harness-assisted | No — single `compareDocuments` call, now with an explicitly named engine |
-| Known-unfixed | Yes — status against 9.0.0 **unknown**, see retraction |
+| Known-unfixed | Three `Comparison failed - empty result` generate refusals (same pairs as 9.0.0). Published `index.js` re-exports `DocxEditor`, which imports Atlaskit via directory specifiers Node ESM rejects; the bench loads it through `scripts/docxodus-node-compat.mjs`. |
 
 > **RETRACTED 2026-08-04 — the run labelled `docxodus 9.0.0` executed 7.0.0.**
 >
@@ -57,8 +57,9 @@ reached the deficit belongs in this file, not in the competitor's score.
 > **7.0.0**. The published line recorded one version and ran another — the D5
 > split-brain, in the very vendor whose upgrade introduced the D5 fix, caught by
 > that upgrade's own test only after the number had been published. The vendored
-> tree is now at 9.0.0 and **docxodus must be re-run** before any 9.0.0 number
-> is quoted.
+> tree was still 7.0.0. **Resolved 2026-08-12:** both trees are 9.8.0; genuine
+> 9.0.0 (2026-08-04) and 9.8.0 (2026-08-12) `script_redlines` rows exist. Do
+> not quote the retracted 51.70 ITT line as 9.0.0.
 >
 > Two claims made on the strength of that run are withdrawn:
 >
@@ -138,10 +139,11 @@ engine. The genuine version improvement is the one in this table.
    identified by its **git commit**, not by a package version that is either
    meaningless (`0.0.0`) or invented (`7.0.0`).
 
-   Still broken and recorded as ours: the three `docxodus-playwright-*` runs
-   point at `src/neurotic_docx_bench/utils/docxodus/Docxodus/npm`, which does
-   not exist, so they cannot resolve a version at all. Bumping the `docxodus`
-   pin to 9.0.0 did **not** fix them — they are a separate `dist:` path.
+   The three `docxodus-playwright-*` runs used to point at
+   `src/neurotic_docx_bench/utils/docxodus/Docxodus/npm`, which did not exist.
+   As of 2026-08-12 they pin `package: docxodus@9.8.0` and the harness loads
+   matched JS+WASM from the published tarball (`public/wasm` copied from
+   `docxodus@9.8.0`). A full visual re-bench landed the same day.
 
 3. **Observed crash on the current corpus (docxodus 7.0.0, 2026-08-04 sweep,
    default engine).**
