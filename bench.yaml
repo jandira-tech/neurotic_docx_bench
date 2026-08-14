@@ -117,6 +117,10 @@ runs:
     generate: "node --import tsx scripts/generate-native-redlines.ts --method=jubarte-lossless --dist=dist/jubarte-final --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=jubarte-final-lossless"
     render: soffice
     jobs: 12
+    # Leftover output from this pin wedges LibreOffice 26.2.5.2 for the full
+    # 1200s default (then retries). Fail those docs as ITT 0 instead of
+    # stalling the 763-doc run for hours.
+    timeout: 180
     vendor: jubarte
     benchmarks: [accepted_changes, script_redlines, roundtrip]
 

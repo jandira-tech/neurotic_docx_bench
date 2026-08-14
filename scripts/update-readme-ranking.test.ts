@@ -39,6 +39,77 @@ function row(partial: Partial<FidelityRow>): FidelityRow {
 	} as FidelityRow;
 }
 
+describe("readFidelityRows jubarte full-corpus floor", () => {
+	it("drops jubarte-* rows with ITT docs under 760 so a 164-doc subset cannot rank", () => {
+		const dir = mkdtempSync(join(tmpdir(), "fidelity-jubarte-n-"));
+		const path = join(dir, "bench.jsonl");
+		try {
+			writeFileSync(
+				path,
+				[
+					JSON.stringify({
+						vendor: "jubarte-rust",
+						benchmark: "script_redlines",
+						tool_version: "jubarte-rust@subset164",
+						n_docs: 164,
+						itt_n_docs: 164,
+						itt_mean: 92.21,
+						itt_median: 99.92,
+						overall_mean: 92.21,
+						overall_median: 99.92,
+					}),
+					JSON.stringify({
+						vendor: "jubarte",
+						benchmark: "script_redlines",
+						tool_version: "jubarte-final@subset163",
+						n_docs: 163,
+						itt_n_docs: 167,
+						itt_mean: 87.89,
+						itt_median: 91.84,
+						overall_mean: 90.04,
+						overall_median: 91.99,
+					}),
+					JSON.stringify({
+						vendor: "jubarte-ast",
+						benchmark: "script_redlines",
+						tool_version: "jubarte-final@subset48",
+						n_docs: 48,
+						itt_n_docs: 48,
+						overall_mean: 65.18,
+						overall_median: 63.35,
+					}),
+					JSON.stringify({
+						vendor: "jubarte-rust",
+						benchmark: "script_redlines",
+						tool_version: "jubarte-rust@full763",
+						n_docs: 763,
+						itt_n_docs: 763,
+						itt_mean: 84.4,
+						itt_median: 92.61,
+						overall_mean: 84.4,
+						overall_median: 92.61,
+					}),
+					JSON.stringify({
+						vendor: "folio",
+						benchmark: "script_redlines",
+						tool_version: "0.3.1",
+						n_docs: 205,
+						overall_mean: 55.31,
+						overall_median: 53.75,
+					}),
+				].join("\n") + "\n",
+			);
+			const rows = readFidelityRows(path);
+			expect(rows.map((r) => r.tool_version).sort()).toEqual([
+				"0.3.1",
+				"jubarte-rust@full763",
+			]);
+		} finally {
+			rmSync(dir, { recursive: true, force: true });
+		}
+	});
+});
+
 describe("readFidelityRows holdout", () => {
 	it("drops holdout_mode=only so a 20-doc re-run cannot set current", () => {
 		const dir = mkdtempSync(join(tmpdir(), "fidelity-holdout-"));
