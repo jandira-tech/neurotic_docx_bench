@@ -28,6 +28,13 @@ We are jubarte's authors. Everything below is a thumb, ours included.
 vendor is benchmarked at a published release. It also carries the deepest
 adapter work in this repo.
 
+Measured current-corpus `script_redlines` (763 ITT, stamp `5ed816028d99`):
+- **jubarte-rust** `@17ea47e9+git.bf3d07d` — 84.47 / 92.66 / 197 perfects / 0 fails.
+- **jubarte-final-lossless** `@951a6e6b+git.98e641b1` — 81.99 / 91.31 / 186
+  perfects / 0 fails (ranks above `docxodus@9.8.0` 80.24 / 91.11 / 186 / 4).
+- **jubarte-ast** (`redlineDocx`) — no current-corpus 763. Last full row is
+  legacy stamp `b7f467074a51` `@a58157a9`: 74.20 / 76.15 / 96 perfects.
+
 On corpus coverage, honesty requires a correction to an earlier draft of this
 file: it claimed jubarte was the only family covering all three corpus pools
 while competitors ran on one. That was false. `docxodus` already had full

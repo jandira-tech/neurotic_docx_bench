@@ -259,6 +259,55 @@ def test_itt_stats_legacy_line_without_scores() -> None:
     assert n_fail == 7
 
 
+def test_rows_from_jsonl_drops_jubarte_under_760_itt(tmp_path: Path) -> None:
+    """jubarte-* subset lines (164/163/48) must not enter the ranking table."""
+    p = tmp_path / "bench.jsonl"
+    p.write_text(
+        "\n".join(
+            json.dumps(x)
+            for x in [
+                {
+                    "vendor": "jubarte-rust",
+                    "benchmark": "script_redlines",
+                    "tool_version": "jubarte-rust@subset164",
+                    "n_docs": 164,
+                    "itt_n_docs": 164,
+                    "itt_mean": 92.21,
+                    "itt_median": 99.92,
+                    "overall_mean": 92.21,
+                    "overall_median": 99.92,
+                },
+                {
+                    "vendor": "jubarte-rust",
+                    "benchmark": "script_redlines",
+                    "tool_version": "jubarte-rust@full763",
+                    "n_docs": 763,
+                    "itt_n_docs": 763,
+                    "itt_mean": 84.4,
+                    "itt_median": 92.61,
+                    "overall_mean": 84.4,
+                    "overall_median": 92.61,
+                },
+                {
+                    "vendor": "folio",
+                    "benchmark": "script_redlines",
+                    "tool_version": "0.3.1",
+                    "n_docs": 205,
+                    "overall_mean": 55.31,
+                    "overall_median": 53.75,
+                },
+            ]
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    rows = exp.rows_from_jsonl(p)
+    versions = {r.get("tool_version") for r in rows}
+    assert "jubarte-rust@subset164" not in versions
+    assert "jubarte-rust@full763" in versions
+    assert "0.3.1" in versions
+
+
 def test_fidelity_sort_ranks_itt_below_completed_only() -> None:
     clean = {
         "vendor": "clean", "tool_version": "1", "benchmark": "script_redlines",
@@ -282,6 +331,96 @@ def _subset_row(vendor: str, scores: dict[str, float]) -> dict[str, object]:
         "n_failures": 0, "scores": scores, "render": "soffice",
         "exact_100": 0, "at_least_90": 0, "below_50": 0,
     }
+
+
+def test_common_subset_does_not_crown_stale_pin() -> None:
+    """Best-pin-per-vendor without a corpus filter crowns docxodus 9.0.0
+    (higher ITT, older stamp) over 9.8.0 — the same ranking lie as mixing
+    current/legacy in the headline table.
+    """
+    docs = {f"d{i}": 100.0 for i in range(25)}
+    stale = _subset_row("docxodus", dict(docs))
+    stale.update({
+        "tool_version": "9.0.0",
+        "corpus_revision": "b7f467074a51",
+        "datetime": "2026-08-04T13:11:19+00:00",
+        "itt_median": 100.0,
+        "itt_mean": 100.0,
+        "mean": 100.0,
+        "median": 100.0,
+    })
+    fresh = _subset_row("docxodus", {k: 60.0 for k in docs})
+    fresh.update({
+        "tool_version": "9.8.0",
+        "corpus_revision": "5ed816028d99",
+        "datetime": "2026-08-13T02:15:21+00:00",
+        "itt_median": 60.0,
+        "itt_mean": 60.0,
+        "mean": 60.0,
+        "median": 60.0,
+    })
+    other = _subset_row("folio", {k: 70.0 for k in docs})
+    other.update({
+        "tool_version": "0.3.1",
+        "corpus_revision": "5ed816028d99",
+        "datetime": "2026-08-13T02:15:21+00:00",
+    })
+    section = exp._common_subset_section([stale, fresh, other])
+    text = "\n".join(section)
+    assert "9.8.0" in text
+    assert "9.0.0" not in text
+
+
+def test_common_subset_uses_full_score_map_not_current_smoke() -> None:
+    """A 50-doc current jubarte pin must not set the all-vendor intersection.
+    9.8.0 and rust share the full current keys; jubarte also has that set on
+    an older stamp. Common-subset is document identity, not stamp identity.
+    """
+    full = {f"d{i}": 70.0 for i in range(40)}
+    smoke_keys = {f"d{i}": 99.0 for i in range(20)}
+    rust = _subset_row("jubarte-rust", dict(full))
+    rust.update({
+        "tool_version": "rust-full",
+        "corpus_revision": "5ed816028d99",
+        "datetime": "2026-08-13T02:00:00+00:00",
+        "n_docs": 40,
+        "itt_n": 40,
+    })
+    dox = _subset_row("docxodus", {k: 80.0 for k in full})
+    dox.update({
+        "tool_version": "9.8.0",
+        "corpus_revision": "5ed816028d99",
+        "datetime": "2026-08-13T02:00:00+00:00",
+        "n_docs": 40,
+        "itt_n": 40,
+    })
+    jub_smoke = _subset_row("jubarte", smoke_keys)
+    jub_smoke.update({
+        "tool_version": "jubarte-smoke",
+        "corpus_revision": "5ed816028d99",
+        "datetime": "2026-08-13T03:00:00+00:00",
+        "itt_median": 99.0,
+        "itt_mean": 99.0,
+        "n_docs": 20,
+        "itt_n": 20,
+    })
+    jub_full = _subset_row("jubarte", {k: 60.0 for k in full})
+    jub_full.update({
+        "tool_version": "jubarte-full",
+        "corpus_revision": "b7f467074a51",
+        "datetime": "2026-08-04T00:00:00+00:00",
+        "itt_median": 60.0,
+        "itt_mean": 60.0,
+        "n_docs": 40,
+        "itt_n": 40,
+    })
+    section = exp._common_subset_section([rust, dox, jub_smoke, jub_full])
+    text = "\n".join(section)
+    assert "**40** documents" in text, text
+    assert "jubarte-full" in text
+    assert "jubarte-smoke" not in text
+    docs = exp._common_subset_doc_keys([rust, dox, jub_smoke, jub_full])
+    assert docs == tuple(sorted(full))
 
 
 def test_common_subset_section_ranks_on_shared_docs() -> None:
@@ -467,6 +606,52 @@ def test_fidelity_tables_split_current_and_legacy_corpus_regimes(tmp_path: Path)
     assert current_at < legacy_at
     assert md.index("current-tool") < legacy_at, "current tool must sit in the current table"
     assert md.index("legacy-tool") > legacy_at, "legacy tool must sit in the legacy table"
+
+
+def test_stale_corpus_revision_is_not_ranked_with_current(tmp_path: Path) -> None:
+    """Two stamped revisions are different corpora. Ranking 9.0.0 visual_redlines
+    (rev b7f467074a51) next to 9.8.0 (rev 5ed816028d99) as 'current' is a lie.
+    The newest timestamp's revision is current; older stamps go to legacy.
+    """
+    p = tmp_path / "bench.jsonl"
+    old = _fidelity_line("docxodus-old", corpus_revision="b7f467074a51", mean=60.0)
+    old["timestamp"] = "2026-08-04T13:11:19+00:00"
+    old["tool_version"] = "9.0.0"
+    new = _fidelity_line("docxodus-new", corpus_revision="5ed816028d99", mean=61.0)
+    new["timestamp"] = "2026-08-13T02:15:21+00:00"
+    new["tool_version"] = "9.8.0"
+    p.write_text(json.dumps(old) + "\n" + json.dumps(new) + "\n")
+    md = exp.to_fidelity_markdown(exp.rows_from_jsonl(p), p)
+    legacy_at = md.index("**Legacy corpus**")
+    assert md.index("9.8.0") < legacy_at
+    assert md.index("9.0.0") > legacy_at
+    # The heading must describe the new predicate. "lines stamped with
+    # corpus_revision" is the old rule (any stamp = current) and would put
+    # 9.0.0 back in Current if a reader trusted the caption over the rows.
+    current_heading = md[md.index("**Current corpus**") : legacy_at]
+    assert "lines stamped with" not in current_heading
+    assert "newest" in current_heading.lower()
+    assert "5ed816028d99" in current_heading
+    assert "smaller corpora" not in md[legacy_at : legacy_at + 200]
+
+
+def test_newest_stamp_wins_even_when_older_hash_has_higher_itt(tmp_path: Path) -> None:
+    """rows_from_jsonl stores the clock as `datetime`. If the picker reads
+    `timestamp` (missing on the row), max() is a no-op and ITT order decides
+    'current' — which is the ranking lie this split exists to stop.
+    """
+    p = tmp_path / "bench.jsonl"
+    old = _fidelity_line("docxodus-old", corpus_revision="b7f467074a51", mean=90.0)
+    old["timestamp"] = "2026-08-04T13:11:19+00:00"
+    old["tool_version"] = "9.0.0"
+    new = _fidelity_line("docxodus-new", corpus_revision="5ed816028d99", mean=60.0)
+    new["timestamp"] = "2026-08-13T02:15:21+00:00"
+    new["tool_version"] = "9.8.0"
+    p.write_text(json.dumps(old) + "\n" + json.dumps(new) + "\n")
+    md = exp.to_fidelity_markdown(exp.rows_from_jsonl(p), p)
+    legacy_at = md.index("**Legacy corpus**")
+    assert md.index("9.8.0") < legacy_at
+    assert md.index("9.0.0") > legacy_at
 
 
 def test_single_regime_renders_one_unsplit_table(tmp_path: Path) -> None:
