@@ -185,6 +185,12 @@ def rows_from_jsonl(path: Path) -> list[dict[str, object]]:
                 continue
 
             itt_mean, itt_median, itt_n, n_failures = _itt_stats(data)
+            # jubarte-* must be scored on the full ITT corpus (≥760). A 164-doc
+            # subset with a 99.92 median is not the same measurement.
+            if vendor.startswith("jubarte"):
+                attempted = itt_n if isinstance(itt_n, (int, float)) else n_docs
+                if isinstance(attempted, (int, float)) and int(attempted) < 760:
+                    continue
             holdout_mode = data.get("holdout_mode")
             row: dict[str, object] = {
                 "vendor": vendor,
@@ -1107,6 +1113,8 @@ def fidelity_methodology_and_legal() -> list[str]:
         "- **docxodus** filter: rows with **`n_docs ≤ 100`** are dropped (smoke / "
         "partial runs such as `visual_rendering` with n=21 or n=2). Full-corpus "
         "pins (typically n ≳ 145) are kept for every version.",
+        "- **jubarte-*** filter: rows with **ITT docs < 760** are dropped. A "
+        "164-doc subset is not the same measurement as the 763-doc ITT corpus.",
         "- Other vendors keep every version even if n is small (e.g. `prebaked` sanity).",
         "- Scores isolate *redline-markup fidelity vs Word* when candidates and the oracle "
         "share the same renderer (LibreOffice 26.2.4.2 for `script_redlines` / "

@@ -288,6 +288,10 @@ export function readFidelityRows(path: string): FidelityRow[] {
 
 		if (vendor === "docxodus" && n_docs <= 100) continue;
 		if (vendor === "prebaked") continue;
+		// jubarte-* subset / smoke / 164-doc cherry-picks are not the same
+		// measurement as the 763-doc ITT corpus. A 164-doc 99.92 median
+		// must not outrank a 763-doc full run. Other vendors keep small-n
+		// history (docxodus already has its own ≤100 smoke filter).
 		// Sealed-holdout lines are a 20/40-doc subset. A later --holdout run
 		// must not become the newest stamp and rewrite every current table.
 		if (data.holdout_mode === "only") continue;
@@ -302,6 +306,7 @@ export function readFidelityRows(path: string): FidelityRow[] {
 			meta.generate,
 		);
 		const itt = computeIttStats(data, { n_docs, overall_median, n_failures });
+		if (vendor.startsWith("jubarte") && itt.itt_n < 760) continue;
 
 		out.push({
 			vendor,
@@ -537,7 +542,7 @@ export function buildFidelityTable(
 		`stats approximated from summary numbers (older runs without per-doc ` +
 		`scores). Jubarte families (**final**, **final-lossless**, **rust**) show ` +
 		`only the **best** and **worst** version pin for this benchmark; other ` +
-		`vendors list each pin.\n\n` +
+		`vendors list each pin. Jubarte-\`*\` rows with ITT docs < 760 are omitted.\n\n` +
 		`${body}`
 	);
 }
