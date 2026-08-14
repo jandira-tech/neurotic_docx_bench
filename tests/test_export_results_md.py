@@ -259,6 +259,55 @@ def test_itt_stats_legacy_line_without_scores() -> None:
     assert n_fail == 7
 
 
+def test_rows_from_jsonl_drops_jubarte_under_760_itt(tmp_path: Path) -> None:
+    """jubarte-* subset lines (164/163/48) must not enter the ranking table."""
+    p = tmp_path / "bench.jsonl"
+    p.write_text(
+        "\n".join(
+            json.dumps(x)
+            for x in [
+                {
+                    "vendor": "jubarte-rust",
+                    "benchmark": "script_redlines",
+                    "tool_version": "jubarte-rust@subset164",
+                    "n_docs": 164,
+                    "itt_n_docs": 164,
+                    "itt_mean": 92.21,
+                    "itt_median": 99.92,
+                    "overall_mean": 92.21,
+                    "overall_median": 99.92,
+                },
+                {
+                    "vendor": "jubarte-rust",
+                    "benchmark": "script_redlines",
+                    "tool_version": "jubarte-rust@full763",
+                    "n_docs": 763,
+                    "itt_n_docs": 763,
+                    "itt_mean": 84.4,
+                    "itt_median": 92.61,
+                    "overall_mean": 84.4,
+                    "overall_median": 92.61,
+                },
+                {
+                    "vendor": "folio",
+                    "benchmark": "script_redlines",
+                    "tool_version": "0.3.1",
+                    "n_docs": 205,
+                    "overall_mean": 55.31,
+                    "overall_median": 53.75,
+                },
+            ]
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    rows = exp.rows_from_jsonl(p)
+    versions = {r.get("tool_version") for r in rows}
+    assert "jubarte-rust@subset164" not in versions
+    assert "jubarte-rust@full763" in versions
+    assert "0.3.1" in versions
+
+
 def test_fidelity_sort_ranks_itt_below_completed_only() -> None:
     clean = {
         "vendor": "clean", "tool_version": "1", "benchmark": "script_redlines",
