@@ -88,6 +88,22 @@ samply load results/redline_speed_bench/cpu/docxodus-csharp.profile.json.gz
 samply load results/redline_speed_bench/cpu/jubarte-rust.profile.json.gz
 ```
 
+### Latest same-run pack — 2026-08-15 (1000 fixtures → 5000 pairs, seed 42)
+
+Full report: [`results/redline_speed_bench/2026-08-15/report.md`](../results/redline_speed_bench/2026-08-15/report.md).
+
+| tool | mode | median ms | mean ms | p95 | p99 | throughput/s | failures |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| **`jubarte-rust-inproc`** | warm native (fair algorithm) | **6.353** | **25.985** | 103.676 | 161.464 | **38.5** | **0** |
+| `docxodus-csharp-inproc` | warm .NET | 8.664 | 27.392 | 108.668 | 194.521 | 36.5 | 120 |
+| `jubarte-wasm` | warm V8 WASM | 9.667 | 41.493 | 174.035 | 265.818 | 24.1 | 0 |
+| `jubarte-rust` | CLI spawn + I/O | 12.834 | 34.977 | 120.622 | 200.812 | 28.6 | 0 |
+| `docxodus` | npm WASM + V8 profile | 74.595 | 428.227 | 922.477 | 3970.72 | 2.3 | 0 |
+| `docxodus-csharp` | CLI | — | — | — | — | — | INIT FAILED (no `redline` binary in this checkout) |
+
+Matrix: **1000 fixtures → 5000 pairs**, seed **42**, warmup **50**, reps **1**.
+`docxodus-csharp` CLI was requested and recorded as init-failed — not silently dropped.
+
 ### Current snapshot — native/WASM/inproc @ `7b21276` (2026-07-24)
 
 **This is the publishable same-run pack** after rebuilding all three consumers

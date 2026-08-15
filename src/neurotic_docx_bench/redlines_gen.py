@@ -3,8 +3,8 @@
 ``redlines`` compares plain text (not OOXML). This adapter:
 
 1. Extracts paragraph text from base/next DOCX (python-docx).
-2. Runs ``Redlines`` (preferring ``NupunktProcessor`` when installed — better for
-   legal abbreviations / citations).
+2. Runs ``Redlines`` with ``NupunktProcessor`` (required — better for legal
+   abbreviations / citations).
 3. Writes a new DOCX whose body is the change stream as Word ``w:ins`` / ``w:del``
    markup so the soffice script_redlines pipeline can score it against the Word oracle.
 
@@ -32,14 +32,12 @@ from docx import Document
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 from redlines import Redlines
-from redlines.processor import WholeDocumentProcessor
+from redlines.processor import NupunktProcessor
 
-try:
-    from redlines.processor import NupunktProcessor
-
-    _PROCESSOR = NupunktProcessor()
-except Exception:  # pragma: no cover — nupunkt optional at import time
-    _PROCESSOR = WholeDocumentProcessor()
+# nupunkt is a required extra (pyproject: redlines[nupunkt] + nupunkt==0.6.0).
+# Silent fallback to WholeDocumentProcessor used to publish a weaker tokeniser
+# as "redlines 0.6.1". Fail at import if the extra is missing.
+_PROCESSOR = NupunktProcessor()
 
 
 @dataclass

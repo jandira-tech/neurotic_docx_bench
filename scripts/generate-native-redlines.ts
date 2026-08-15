@@ -718,6 +718,99 @@ export async function loadEngine(
 			buildHint: "Build utils/docxodus/docxodus-csharp-inproc.",
 		});
 	}
+	// stemma-cli (`stemma compare`). Dist dir holds the release `stemma` binary
+	// from crates.io `stemma-cli` 0.5.0 / git tag v0.5.0. Invoked as:
+	//   stemma compare <base> <next> -o <out> --author stemma
+	// create-new only: the CLI refuses an existing -o path (no --force). Always
+	// write to a fresh temp dest so a retry cannot collide with leftover output.
+	if (method === "stemma") {
+		const bin = resolve(distPath, "stemma");
+		if (!existsSync(bin)) {
+			throw new Error(
+				`stemma: no stemma binary at ${bin}. ` +
+					`Build stemma-cli 0.5.0 (cargo build -p stemma-cli --release ` +
+					`from the v0.5.0 tag) and copy target/release/stemma there.`,
+			);
+		}
+		let ctr = 0;
+		return async (base, next) => {
+			const dir = mkdtempSync(join(tmpdir(), "stemma-"));
+			const i = ctr++;
+			const bp = join(dir, `b${i}.docx`);
+			const np = join(dir, `n${i}.docx`);
+			const op = join(dir, `o${i}.docx`);
+			try {
+				writeFileSync(bp, base);
+				writeFileSync(np, next);
+				const r = spawnSync(
+					bin,
+					["compare", bp, np, "-o", op, "--author", "stemma"],
+					{ encoding: "utf8" },
+				);
+				if (r.status !== 0) {
+					throw new Error(
+						`stemma compare failed (exit ${r.status}): ` +
+							`${(r.stderr || r.stdout || "").trim() || "no output"}`,
+					);
+				}
+				if (!existsSync(op)) {
+					throw new Error(`stemma compare produced no output at ${op}`);
+				}
+				return new Uint8Array(readFileSync(op));
+			} finally {
+				rmSync(dir, { recursive: true, force: true });
+			}
+		};
+	}
+	// UseJunior/safe-docx `@usejunior/docx-compare` at PR 854 merge
+	// 7bd35c876493f2725b095f0190c28d2644962c78 (or later containing it).
+	// Dist dir is a slim runtime pin of that checkout's built package — NOT
+	// the published npm `@usejunior/docx-compare@0.19.1` tarball (2026-07-24,
+	// pre-854 field-husk engine). Single compareDocuments call; engine named.
+	if (method === "safe-docx" || method === "safe-docx-compare") {
+		const entry = resolve(
+			distPath,
+			"node_modules/@usejunior/docx-compare/dist/index.js",
+		);
+		if (!existsSync(entry)) {
+			throw new Error(
+				`safe-docx: no compareDocuments entry at ${entry}. ` +
+					`Checkout UseJunior/safe-docx at 7bd35c8, build ` +
+					`@usejunior/docx-compare, and copy the runtime pin into ${distPath}.`,
+			);
+		}
+		const cmp: {
+			compareDocuments: (
+				original: Uint8Array,
+				revised: Uint8Array,
+				options?: {
+					engine?: string;
+					author?: string;
+					reconstructionMode?: string;
+				},
+			) => Promise<{ document: Uint8Array }>;
+		} = await import(pathToFileURL(entry).href);
+		if (typeof cmp.compareDocuments !== "function") {
+			throw new Error(
+				`safe-docx: compareDocuments missing from ${entry}`,
+			);
+		}
+		return async (base, next) => {
+			const result = await cmp.compareDocuments(base, next, {
+				engine: "atomizer",
+				author: "safe-docx",
+			});
+			const doc = result?.document;
+			const bytes =
+				doc instanceof Uint8Array ? doc : new Uint8Array(doc ?? []);
+			if (bytes.length === 0) {
+				throw new Error(
+					"safe-docx compareDocuments returned empty output",
+				);
+			}
+			return bytes;
+		};
+	}
 	// jubarte-rust *in-process* worker — same `compare_documents` as the CLI,
 	// one long-lived process. Fair warm-process counterpart to csharp-inproc
 	// (spawn tax on the CLI is tiny for Rust, but thesis comparisons must be

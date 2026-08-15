@@ -102,6 +102,9 @@ Sorted by **ITT median** (intent-to-treat: every failed doc scores 0, so crashin
 | 2 | jubarte (lossless) | jubarte-final@951a6e6b453c+git.98e641b1f2ef3fa9b4416b197a4494cd6401fb9a (best) | 763 | 763 | 81.99 | 91.31 | 81.99 | 91.31 | 186 | 0 |
 | 3 | docxodus | 9.8.0 | 760 | 763 | 80.24 | 91.11 | 80.55 | 91.19 | 186 | 4 |
 | 4 | jubarte (lossless) | jubarte-final@e7bcd29bb5a9+git.98e641b1f2ef3fa9b4416b197a4494cd6401fb9a (worst) | 763 | 763 | 81.57 | 89.11 | 81.57 | 89.11 | 182 | 0 |
+| 5 | stemma | 0.5.0@2e7bdc832391+git.efaed0c1ecb41142b1465bbb124dd183c385a2b0 | 614 | 763 | 50.63 | 56.62 | 62.91 | 61.83 | 9 | 149 |
+| 6 | safe-docx | 0.19.1@e3f092da3639+git.7bd35c876493f2725b095f0190c28d2644962c78 | 688 | 763 | 48.38 | 49.69 | 53.65 | 51.31 | 6 | 75 |
+| 7 | redlines | 0.6.1 | 745 | 763 | 44.86 | 47.05 | 45.94 | 47.14 | 0 | 18 |
 
 **Legacy corpus** (older `corpus_revision` stamps and unstamped runs — not comparable with the rows above; kept for history until each tool re-runs):
 
@@ -127,9 +130,8 @@ Sorted by **ITT median** (intent-to-treat: every failed doc scores 0, so crashin
 | 16 | docxodus | 7.0.0 | 196 | 196 | 50.49 | 49.64 | 50.49 | 49.64 | 0 | 0 |
 | 17 | superdoc-redlines | 0.2.0 | 703 | 763 | 47.37 | 49.16 | 51.41 | 50.11 | 0 | 68 |
 | 18 | docx-redline-js | 0.3.0 | 746 | 763 | 45.16 | 47.22 | 46.19 | 47.42 | 0 | 17 |
-| 19 | redlines | 0.6.1 | 745 | 763 | 44.86 | 47.05 | 45.94 | 47.14 | 0 | 18 |
-| 20 | superdoc | 2.0.0 | 331 | 763 | 19.61 | 0.00 | 45.19 | 46.72 | 1 | 432 |
-| 21 | docx-redline-js | — | 2 | 9 | 12.25 | 0.00 | 55.12 | 55.12 | 0 | 7 |
+| 19 | superdoc | 2.0.0 | 331 | 763 | 19.61 | 0.00 | 45.19 | 46.72 | 1 | 432 |
+| 20 | docx-redline-js | — | 2 | 9 | 12.25 | 0.00 | 55.12 | 55.12 | 0 | 7 |
 
 ### accepted_changes — accept all changes, match final doc
 
@@ -137,9 +139,13 @@ Sorted by **ITT median** (intent-to-treat: every failed doc scores 0, so crashin
 
 **Current corpus** (newest `corpus_revision` stamp: `5ed816028d99`)
 
+> ⚠️ **Rows below cover different document counts (198, 178, 144) — they are not the same measurement.** A tool scored on fewer documents ran a different, usually easier, subset; its rank is not comparable with a row covering more. Compare only rows whose `ITT Docs` match.
+
 | Rank | Vendor | Version | Docs | ITT Docs | ITT Mean | ITT Median | Mean | Median | Perfect (100) | Failures |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | docxodus | 9.8.0 | 195 | 198 | 88.82 | 100.00 | 90.19 | 100.00 | 119 | 4 |
+| 2 | stemma | 0.5.0@2e7bdc832391+git.efaed0c1ecb41142b1465bbb124dd183c385a2b0 | 141 | 144 | 77.46 | 80.63 | 79.10 | 80.77 | 19 | 3 |
+| 3 | safe-docx | 0.19.1@e3f092da3639+git.7bd35c876493f2725b095f0190c28d2644962c78 | 177 | 178 | 63.73 | 59.71 | 64.09 | 60.22 | 9 | 1 |
 
 **Legacy corpus** (older `corpus_revision` stamps and unstamped runs — not comparable with the rows above; kept for history until each tool re-runs):
 
@@ -160,7 +166,9 @@ Sorted by **ITT median** (intent-to-treat: every failed doc scores 0, so crashin
 
 | Rank | Vendor | Version | Docs | ITT Docs | ITT Mean | ITT Median | Mean | Median | Perfect (100) | Failures |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | docxodus | 9.8.0 | 166 | 166 | 99.99 | 100.00 | 99.99 | 100.00 | 163 | 0 |
+| 1 | safe-docx | 0.19.1@e3f092da3639+git.7bd35c876493f2725b095f0190c28d2644962c78 | 166 | 166 | 100.00 | 100.00 | 100.00 | 100.00 | 166 | 0 |
+| 2 | docxodus | 9.8.0 | 166 | 166 | 99.99 | 100.00 | 99.99 | 100.00 | 163 | 0 |
+| 3 | stemma | 0.5.0@2e7bdc832391+git.efaed0c1ecb41142b1465bbb124dd183c385a2b0 | 166 | 166 | 99.95 | 100.00 | 99.95 | 100.00 | 161 | 0 |
 
 **Legacy corpus** (older `corpus_revision` stamps and unstamped runs — not comparable with the rows above; kept for history until each tool re-runs):
 
@@ -247,10 +255,10 @@ Sorted by median **ms per redline** (lower is faster). Large-N warm rows (`*-inp
 | 1 | jubarte-rust-inproc | rust | 1000 | 5000 | 6.20 | 25.34 | 110.76 | 39.5 | 5000 | 0 |
 | 2 | docxodus-csharp-inproc | dotnet | 1000 | 5000 | 7.89 | 25.83 | 101.85 | 38.7 | 4880 | 120 |
 | 3 | jubarte-rust | rust | 1000 | 5000 | 9.66 | 31.02 | 123.39 | 32.2 | 5000 | 0 |
-| 4 | jubarte-wasm | rust-wasm | 1000 | 5000 | 9.70 | 41.90 | 182.57 | 23.9 | 5000 | 0 |
+| 4 | jubarte-wasm | rust-wasm | 1000 | 5000 | 9.67 | 41.49 | 174.03 | 24.1 | 5000 | 0 |
 | 5 | jubarte-native | node | 1000 | 5000 | 14.43 | 57.15 | 175.71 | 17.5 | 5000 | 0 |
 | 6 | jubarte-lossless | node | 1000 | 5000 | 54.64 | 168.18 | 592.49 | 5.9 | 4997 | 3 |
-| 7 | docxodus | dotnet-wasm | 200 | 500 | 148.75 | 607.38 | 3212.30 | 1.6 | 496 | 4 |
+| 7 | docxodus | dotnet-wasm | 1000 | 5000 | 74.59 | 428.23 | 922.48 | 2.3 | 5000 | 0 |
 | 8 | docxodus-csharp | dotnet | 50 | 50 | 208.39 | 441.65 | 911.87 | 2.3 | 50 | 0 |
 
 **Microbench** (`kind: speed` — typically ~30–40 pairs × 3 reps):
@@ -333,8 +341,10 @@ Notes that matter when reading scores:
 | **superdoc** | Python `superdoc-sdk` Document Engine | **1.19.2** | Generator |
 | **superdoc** (editor) | npm `superdoc` Playwright harness | **1.44.1** | Editor |
 | **docx-redline-js** | `@ansonlai/docx-redline-js` OOXML reconciliation | **0.2.0** | Generator |
-| **redlines** | [houfu/redlines](https://github.com/houfu/redlines) text differ (`redlines_gen.py` wraps it with DOCX extract/rebuild) | **0.6.1** | Generator (text-level baseline) |
+| **redlines** | [houfu/redlines](https://github.com/houfu/redlines) text differ (`redlines_gen.py` + required `nupunkt==0.6.0`) | **0.6.1** + nupunkt 0.6.0 | Generator (text-level baseline) |
 | **superdoc-redlines** | [yuch85/superdoc-redlines](https://github.com/yuch85/superdoc-redlines) SuperDoc-headless CLI (`superdoc_redlines_gen.py` aligns blocks, the CLI applies word-diffed track changes) | **0.2.0** | Generator |
+| **stemma** | [stemma-sh/stemma](https://github.com/stemma-sh/stemma) `stemma compare` (stemma-cli 0.5.0) | **0.5.0** (content-hash + git v0.5.0) | Generator |
+| **safe-docx** | [UseJunior/safe-docx](https://github.com/UseJunior/safe-docx) `@usejunior/docx-compare` `compareDocuments` at PR 854 merge `7bd35c8` — **not** published `@usejunior/docx-compare@0.19.1` | **7bd35c8** (content-hash) | Generator |
 
 Pins live in [`bench.yaml`](bench.yaml). Do not bump to `@latest` without re-review — the
 pin is what keeps CI and published rankings reproducible.
