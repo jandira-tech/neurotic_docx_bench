@@ -80,10 +80,12 @@ Key modules (`src/neurotic_docx_bench/`):
 | `docx-redline-js` | `@ansonlai/docx-redline-js` OOXML reconciliation | npm `@0.2.0` |
 | `folio` | `@stll/folio-core` `compareDocxVersions`+`FolioDocxReviewer.applyOperations` | npm `@stll/folio-core@0.3.1` |
 | `superdoc` | SuperDoc SDK (Python) Document-Engine diff | pip `superdoc-sdk` |
-| `redlines` | houfu/redlines text diff → `w:ins`/`w:del` DOCX rewrite (`redlines_gen.py`) | pip `redlines` |
+| `redlines` | houfu/redlines text diff → `w:ins`/`w:del` DOCX rewrite (`redlines_gen.py`, required `nupunkt==0.6.0`) | pip `redlines==0.6.1` + `nupunkt==0.6.0` |
 | `superdoc-redlines` | yuch85/superdoc-redlines SuperDoc-headless CLI, extract→align→apply (`superdoc_redlines_gen.py`) | clone `package.json` version |
 | `jubarte-rust` | `jubarte-redlines` native CLI (Rust Word-mode comparer) | binary content-hash |
 | `jubarte-wasm` | wasm-bindgen adapter over the canonical `jubarte-redlines` library | generated WASM hash + source commit |
+| `stemma` | stemma-cli 0.5.0 `stemma compare` | binary content-hash + git tag v0.5.0 |
+| `safe-docx-compare` | UseJunior/safe-docx `compareDocuments` at PR 854 merge `7bd35c8` (not npm `@usejunior/docx-compare@0.19.1`) | dist content-hash + `ENGINE_COMMIT.txt` |
 | `word-redlines-soffice` | identity sanity (renders the Word redline DOCX) | — |
 
 **Tool versions are pinned** to the reviewed ones (see `bench.yaml`). Do **not** bump to

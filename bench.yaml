@@ -305,8 +305,9 @@ runs:
     benchmarks: [accepted_changes, script_redlines, roundtrip]
 
   # (4e) redlines — houfu/redlines pure-text differ (MIT). Extracts paragraph text
-  # from base/next DOCX, runs Redlines (+ nupunkt when installed), writes a new
-  # DOCX with w:ins/w:del. Text-level baseline only — no OOXML structure fidelity.
+  # from base/next DOCX, runs Redlines with required nupunkt==0.6.0 (NupunktProcessor),
+  # writes a new DOCX with w:ins/w:del. Text-level baseline only — no OOXML
+  # structure fidelity. nupunkt is a first-class pin, not an optional extra.
   - name: redlines
     python_package: "redlines==0.6.1"
     generate: "uv run python -m neurotic_docx_bench.redlines_gen --out=$RUN_DIR/docx --tool=redlines"
@@ -414,6 +415,35 @@ runs:
     vendor: superdoc
     benchmarks: [visual_accepted_changes]
     harness: *superdoc-harness
+
+  # (5) stemma — stemma-cli 0.5.0 `stemma compare` (stemma-sh/stemma, MIT OR Apache-2.0).
+  # Dist is the release binary from the v0.5.0 tag (crates.io stemma-cli 0.5.0).
+  # create-new only: the CLI refuses an existing -o; the adapter always writes a
+  # fresh temp dest. Packages missing word/_rels/document.xml.rels fail loud and
+  # land in generate_failures.json — they are not dropped from the corpus.
+  # No visual_*: stemma is not a layout/browser editor.
+  - name: stemma
+    dist: src/neurotic_docx_bench/utils/stemma
+    generate: "node --import tsx scripts/generate-native-redlines.ts --method=stemma --dist=src/neurotic_docx_bench/utils/stemma --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=stemma"
+    render: soffice
+    jobs: 12
+    vendor: stemma
+    benchmarks: [script_redlines, accepted_changes, roundtrip]
+
+  # (6) safe-docx-compare — UseJunior/safe-docx `@usejunior/docx-compare`
+  # compareDocuments at merge 7bd35c876493f2725b095f0190c28d2644962c78 of PR 854.
+  # Dist pin (not package:) because package: cannot express a git SHA, and the
+  # published npm `@usejunior/docx-compare@0.19.1` tarball is 2026-07-24 and
+  # predates PR 854 (retracted field-husk engine). ENGINE_COMMIT.txt records
+  # 7bd35c8; tool_version hashes the executed bytes.
+  # No visual_*: safe-docx is not a layout/browser editor.
+  - name: safe-docx-compare
+    dist: src/neurotic_docx_bench/utils/safe-docx-compare
+    generate: "node --import tsx scripts/generate-native-redlines.ts --method=safe-docx --dist=src/neurotic_docx_bench/utils/safe-docx-compare --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=safe-docx-compare"
+    render: soffice
+    jobs: 12
+    vendor: safe-docx
+    benchmarks: [script_redlines, accepted_changes, roundtrip]
 
   # Sanity/self-fidelity baseline: render the Word redline DOCX via LibreOffice and score
   # against the same redline as Word rendered it (identity ⇒ 100; validates the pipeline).

@@ -30,6 +30,16 @@ def test_parse_manifest_returns_pairs():
 
 
 @requires_redlines
+def test_shipped_processor_is_nupunkt():
+    """The bench must not silently fall back to WholeDocumentProcessor."""
+    from importlib.metadata import version
+    from redlines.processor import NupunktProcessor
+
+    assert isinstance(redlines_gen._PROCESSOR, NupunktProcessor)
+    assert version("nupunkt") == "0.6.0"
+
+
+@requires_redlines
 def test_generate_one_emits_tracked_changes(tmp_path):
     """Synthetic base/next → DOCX must carry w:ins and/or w:del."""
     from docx import Document

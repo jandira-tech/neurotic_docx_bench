@@ -381,19 +381,50 @@ level, that points at the wrong project.)
 
 | field | value |
 |---|---|
-| Package | PyPI `redlines` (houfu/redlines, MIT) |
-| Pinned | `0.6.1` — **current**, the only vendor not stale |
+| Package | PyPI `redlines` (houfu/redlines, MIT) + **required** `nupunkt==0.6.0` |
+| Pinned | `redlines==0.6.1` with `NupunktProcessor` (first-class `nupunkt==0.6.0` in pyproject; import fails if the extra is missing) |
 | Harness-assisted | Partly — see below |
 
 A pure-text differ by design. Our harness extracts paragraph text from the
-base/next DOCX, runs Redlines, and writes a new DOCX with `w:ins`/`w:del`. The
-DOCX construction is ours; the diff is theirs. It is a **text-level baseline
-only** and structurally cannot score well on OOXML fidelity — publishing it in
-the same column as structure-aware engines without this note would be
-misleading about what it is for.
+base/next DOCX, runs Redlines with `NupunktProcessor`, and writes a new DOCX
+with `w:ins`/`w:del`. The DOCX construction is ours; the diff and sentence
+tokenisation are theirs. It is a **text-level baseline only** and structurally
+cannot score well on OOXML fidelity — publishing it in the same column as
+structure-aware engines without this note would be misleading about what it is
+for.
 
-Also noted (deferred, plan 6.6): `nupunkt` improves its sentence tokenisation
-and is **not currently installed**, so this is not `redlines` at its best.
+Measured 2026-08-15 (nupunkt required, 803-pair generate, holdout excluded from
+scores): `script_redlines` 45.94 / 47.14 (n=745, 0 perfects, 18 generate fails).
+Generate universe 785 ok + 18 generate fails = 803. `tool_version` `0.6.1`.
+The previous 2026-08-04 row is numerically the same — nupunkt was already
+resolved via the `redlines[nupunkt]` extra; what changed is that a missing
+nupunkt can no longer silently fall back to `WholeDocumentProcessor`.
+
+### stemma
+
+| field | value |
+|---|---|
+| Upstream | [stemma-sh/stemma](https://github.com/stemma-sh/stemma) `stemma-cli` |
+| Pinned | **0.5.0** (crates.io / git tag `v0.5.0`, commit `efaed0c1ecb41142b1465bbb124dd183c385a2b0`) |
+| Surface | `stemma compare <base> <next> -o <out> --author stemma` |
+| Harness-assisted | No — one CLI compare call. Adapter I/O only: temp paths, a fresh `-o` dest (the CLI is create-new and refuses an existing path), batch failure recording. |
+| Known-unfixed | Fail-loud on packages missing `word/_rels/document.xml.rels`, missing `w:ins/@w:id`, numbering merge, dangling relationship ids, unbalanced deleted `fldChar`. Those pairs are generate failures, not dropped from the corpus. |
+| Measured (2026-08-15, 803-pair generate, holdout excluded from scores) | `script_redlines` 62.91 / 61.83 (n=614, 9 perfects, 149 generate fails in JSONL); `accepted_changes` 79.10 / 80.77 (n=141); `roundtrip` 99.95 / 100 (n=166, 161 perfects). Generate universe 647 ok + 156 generate fails = 803. `tool_version` `0.5.0@2e7bdc832391+git.efaed0c1ecb41142b1465bbb124dd183c385a2b0`. |
+
+`visual_*` is not declared: stemma is not a layout/browser editor.
+
+### safe-docx (docx-compare, PR 854)
+
+| field | value |
+|---|---|
+| Upstream | [UseJunior/safe-docx](https://github.com/UseJunior/safe-docx) `@usejunior/docx-compare` |
+| Pinned | git merge **`7bd35c876493f2725b095f0190c28d2644962c78`** of PR 854 |
+| Surface | `compareDocuments(original, revised, { engine: "atomizer", author: "safe-docx" })` |
+| Harness-assisted | No — one library call. Engine is named (`atomizer`) rather than inherited. |
+| Not benchmarked | Published npm `@usejunior/docx-compare@0.19.1` (2026-07-24). That tarball predates PR 854 and is the retracted field-husk engine the PR exists to replace. `package:` cannot express a git SHA, so this row is a `dist:` pin. |
+| Measured (2026-08-15, 803-pair generate, holdout excluded from scores) | `script_redlines` 53.65 / 51.31 (n=688, 6 perfects, 75 generate fails in JSONL); `accepted_changes` 64.09 / 60.22 (n=177); `roundtrip` 100.00 / 100 (n=166, 166 perfects). Generate universe 724 ok + 79 generate fails = 803. Failures are vendor refusals (ancillary story safety / unsupported `w:txbxContent`), not a corpus shrink. `tool_version` `0.19.1@e3f092da3639+git.7bd35c876493f2725b095f0190c28d2644962c78`. |
+
+`visual_*` is not declared: safe-docx is not a layout/browser editor.
 
 ## Standing rules
 

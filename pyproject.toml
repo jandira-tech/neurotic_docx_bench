@@ -23,8 +23,10 @@ dependencies = [
     "superdoc-sdk==2.0.0",
     # houfu/redlines — text redliner (JSON/Markdown/HTML). Extras: nupunkt (sentence
     # tokenization), levenshtein (distance stats). The `pdf` extra does not exist on
-    # 0.6.1 (README documents it, PyPI does not ship it).
+    # 0.6.1 (README documents it, PyPI does not ship it). nupunkt is also pinned
+    # first-class so a dropped extra cannot silently fall back to WholeDocumentProcessor.
     "redlines[levenshtein,nupunkt]==0.6.1",
+    "nupunkt==0.6.0",
 ]
 
 [project.scripts]

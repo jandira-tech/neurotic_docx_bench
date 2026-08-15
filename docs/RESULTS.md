@@ -1,6 +1,6 @@
 # Benchmark results
 
-Source: `results/bench.jsonl` — **60** fidelity row(s) (one per vendor×benchmark×**version**; 38 distinct vendor×version pin(s). docxodus rows with n_docs ≤ 100 are dropped as smoke/partial).
+Source: `results/bench.jsonl` — **66** fidelity row(s) (one per vendor×benchmark×**version**; 40 distinct vendor×version pin(s). docxodus rows with n_docs ≤ 100 are dropped as smoke/partial).
 
 Scores are 0–100 (higher = closer to the Microsoft Word oracle). Cross-renderer comparisons (LibreOffice vs Playwright) are **not** directly comparable — only compare within the same benchmark. Different **versions** of the same vendor are kept so you can compare pins (e.g. docxodus 6.4.0 vs 7.0.0).
 
@@ -28,6 +28,9 @@ script_redlines (LibreOffice render vs Word oracle)
 | 12 | jubarte | jubarte-final@76e503aae6c0+git.98e641b1f2ef3fa9b4416b197a4494cd6401fb9a | 81.5594 | 89.1671 | 81.5594 | 89.1671 | 77.3519 | 0 | 763 | 763 | 181 | 376 | 67 |
 | 13 | jubarte | jubarte-final@02df62305cf3+git.98e641b1f2ef3fa9b4416b197a4494cd6401fb9a | 81.5586 | 89.1671 | 81.5586 | 89.1671 | 78.3932 | 0 | 763 | 763 | 180 | 376 | 67 |
 | 14 | jubarte | jubarte-final@e7bcd29bb5a9+git.98e641b1f2ef3fa9b4416b197a4494cd6401fb9a | 81.5698 | 89.1133 | 81.5698 | 89.1133 | 77.3519 | 0 | 763 | 763 | 182 | 375 | 66 |
+| 15 | stemma | 0.5.0@2e7bdc832391+git.efaed0c1ecb41142b1465bbb124dd183c385a2b0 | 62.9106 | 61.8327 | 50.6253 | 56.6151 | 19.3181 | 149 | 614 | 763 | 9 | 39 | 131 |
+| 16 | safe-docx | 0.19.1@e3f092da3639+git.7bd35c876493f2725b095f0190c28d2644962c78 | 53.6532 | 51.3113 | 48.3793 | 49.6861 | 4.2245 | 75 | 688 | 763 | 6 | 18 | 317 |
+| 17 | redlines | 0.6.1 | 45.9391 | 47.1411 | 44.8554 | 47.0451 | -2.9557 | 18 | 745 | 763 | 0 | 0 | 488 |
 
 **Legacy corpus** (older `corpus_revision` stamps and unstamped runs — not comparable with the rows above; kept for history until each tool re-runs):
 
@@ -51,26 +54,27 @@ script_redlines (LibreOffice render vs Word oracle)
 | 16 | docxodus | 7.0.0 | 50.4935 | 49.6384 | 50.4935 | 49.6384 | — | 0 | 196 | 196 | 0 | 0 | 102 |
 | 17 | superdoc-redlines | 0.2.0 | 51.4092 | 50.1062 | 47.3665 | 49.1564 | 1.4947 | 68 | 703 | 763 | 0 | 5 | 346 |
 | 18 | docx-redline-js | 0.3.0 | 46.1928 | 47.4243 | 45.1636 | 47.2226 | -3.3472 | 17 | 746 | 763 | 0 | 0 | 517 |
-| 19 | redlines | 0.6.1 | 45.9391 | 47.1411 | 44.8554 | 47.0451 | -2.9557 | 18 | 745 | 763 | 0 | 0 | 488 |
-| 20 | superdoc | 2.0.0 | 45.1946 | 46.7186 | 19.606 | 0 | -16.4745 | 432 | 331 | 763 | 1 | 4 | 269 |
-| 21 | docx-redline-js | — | 55.1236 | 55.1236 | 12.2497 | 0 | — | 7 | 2 | 9 | 0 | 0 | 1 |
+| 19 | superdoc | 2.0.0 | 45.1946 | 46.7186 | 19.606 | 0 | -16.4745 | 432 | 331 | 763 | 1 | 4 | 269 |
+| 20 | docx-redline-js | — | 55.1236 | 55.1236 | 12.2497 | 0 | — | 7 | 2 | 9 | 0 | 0 | 1 |
 
 ### Common-subset ranking (script_redlines)
 
-Paired comparison on the **614** documents every full-map vendor below completed (largest score map per vendor; current-stamp smokes do not shrink the set). Keys: `results/common_subset_script_redlines.txt`. Unlike the aggregate tables, these medians are computed on the SAME documents.
+Paired comparison on the **488** documents every full-map vendor below completed (largest score map per vendor; current-stamp smokes do not shrink the set). Keys: `results/common_subset_script_redlines.txt`. Unlike the aggregate tables, these medians are computed on the SAME documents.
 
 | # | vendor | version | median | mean |
 | --- | --- | --- | --- | --- |
-| 1 | docxodus | 9.8.0 | 95.40 | 83.50 |
-| 2 | jubarte-rust | jubarte-rust@17ea47e9a0d7+git.bf3d07ddd61180e55f327c8e891affd0f6c18d64 | 95.36 | 87.23 |
-| 3 | jubarte | jubarte-final@951a6e6b453c+git.98e641b1f2ef3fa9b4416b197a4494cd6401fb9a | 94.27 | 84.74 |
-| 4 | jubarte-wasm | 0.1.0@4b36f4db1d2f+git.ebf1a7996df49f99fb40f4f67713e61cfd19c731 | 90.79 | 82.52 |
-| 5 | jubarte-ast | jubarte-final@a58157a9cd2d | 80.42 | 76.64 |
-| 6 | superdoc | 1.21.3 | 52.14 | 53.71 |
-| 7 | superdoc-redlines | 0.2.0 | 51.24 | 52.58 |
-| 8 | folio | 0.15.13 | 51.10 | 53.93 |
-| 9 | docx-redline-js | 0.3.0 | 48.16 | 47.89 |
-| 10 | redlines | 0.6.1 | 47.96 | 47.32 |
+| 1 | jubarte-rust | jubarte-rust@17ea47e9a0d7+git.bf3d07ddd61180e55f327c8e891affd0f6c18d64 | 97.25 | 88.89 |
+| 2 | docxodus | 9.8.0 | 96.86 | 85.48 |
+| 3 | jubarte | jubarte-final@951a6e6b453c+git.98e641b1f2ef3fa9b4416b197a4494cd6401fb9a | 95.47 | 85.72 |
+| 4 | jubarte-wasm | 0.1.0@4b36f4db1d2f+git.ebf1a7996df49f99fb40f4f67713e61cfd19c731 | 92.84 | 84.27 |
+| 5 | jubarte-ast | jubarte-final@a58157a9cd2d | 82.27 | 78.21 |
+| 6 | stemma | 0.5.0@2e7bdc832391+git.efaed0c1ecb41142b1465bbb124dd183c385a2b0 | 63.47 | 64.20 |
+| 7 | safe-docx | 0.19.1@e3f092da3639+git.7bd35c876493f2725b095f0190c28d2644962c78 | 52.72 | 55.64 |
+| 8 | superdoc | 1.21.3 | 52.51 | 54.48 |
+| 9 | folio | 0.15.13 | 52.42 | 55.30 |
+| 10 | superdoc-redlines | 0.2.0 | 52.08 | 53.91 |
+| 11 | redlines | 0.6.1 | 48.97 | 48.01 |
+| 12 | docx-redline-js | 0.3.0 | 48.82 | 48.86 |
 
 ### Paired comparisons (script_redlines)
 
@@ -86,7 +90,9 @@ Per-doc paired deltas on shared documents (best pin per vendor); `win/loss/tie` 
 | docx-redline-js | jubarte-wasm | 746 | 18/726/2 | -37.24 | 8.70e-122 |
 | docx-redline-js | ooxmlsdk | 152 | 30/122/0 | -8.11 | 1.77e-13 |
 | docx-redline-js | redlines | 736 | 368/367/1 | +0.01 | 8.11e-01 |
+| docx-redline-js | safe-docx | 684 | 214/469/1 | -2.91 | 2.30e-35 |
 | docx-redline-js | sanity-word | 151 | 12/139/0 | -23.41 | 5.12e-23 |
+| docx-redline-js | stemma | 606 | 85/517/4 | -12.98 | 8.87e-79 |
 | docx-redline-js | superdoc | 657 | 172/485/0 | -4.01 | 1.92e-43 |
 | docx-redline-js | superdoc-redlines | 689 | 208/468/13 | -2.05 | 1.20e-32 |
 | docxodus | folio | 741 | 703/38/0 | +29.90 | 2.60e-117 |
@@ -96,7 +102,9 @@ Per-doc paired deltas on shared documents (best pin per vendor); `win/loss/tie` 
 | docxodus | jubarte-wasm | 760 | 343/286/131 | +0.00 | 2.55e-02 |
 | docxodus | ooxmlsdk | 155 | 154/1/0 | +38.36 | 3.54e-27 |
 | docxodus | redlines | 745 | 727/18/0 | +40.19 | 1.15e-121 |
+| docxodus | safe-docx | 685 | 631/49/5 | +33.89 | 2.06e-102 |
 | docxodus | sanity-word | 154 | 151/3/0 | +22.80 | 6.28e-27 |
+| docxodus | stemma | 612 | 507/96/9 | +23.07 | 1.37e-64 |
 | docxodus | superdoc | 662 | 616/44/2 | +35.15 | 1.31e-103 |
 | docxodus | superdoc-redlines | 700 | 662/38/0 | +31.15 | 8.06e-113 |
 | folio | jubarte | 744 | 40/702/2 | -32.87 | 3.69e-117 |
@@ -105,7 +113,9 @@ Per-doc paired deltas on shared documents (best pin per vendor); `win/loss/tie` 
 | folio | jubarte-wasm | 744 | 39/703/2 | -28.28 | 1.78e-119 |
 | folio | ooxmlsdk | 154 | 85/69/0 | +1.65 | 3.53e-03 |
 | folio | redlines | 734 | 571/162/1 | +3.86 | 3.34e-60 |
+| folio | safe-docx | 679 | 369/309/1 | +0.43 | 1.58e-01 |
 | folio | sanity-word | 153 | 34/119/0 | -11.62 | 3.78e-13 |
+| folio | stemma | 605 | 153/448/4 | -6.15 | 2.31e-46 |
 | folio | superdoc | 657 | 350/306/1 | +0.30 | 1.67e-01 |
 | folio | superdoc-redlines | 685 | 412/233/40 | +0.19 | 4.69e-15 |
 | jubarte | jubarte-ast | 763 | 459/222/82 | +2.23 | 1.19e-27 |
@@ -113,36 +123,55 @@ Per-doc paired deltas on shared documents (best pin per vendor); `win/loss/tie` 
 | jubarte | jubarte-wasm | 763 | 344/248/171 | +0.00 | 1.23e-05 |
 | jubarte | ooxmlsdk | 155 | 149/6/0 | +34.01 | 7.68e-27 |
 | jubarte | redlines | 745 | 729/16/0 | +40.85 | 2.96e-122 |
+| jubarte | safe-docx | 688 | 636/48/4 | +34.42 | 1.87e-104 |
 | jubarte | sanity-word | 154 | 135/19/0 | +18.91 | 2.35e-22 |
+| jubarte | stemma | 614 | 520/85/9 | +21.63 | 6.96e-75 |
 | jubarte | superdoc | 665 | 620/41/4 | +36.24 | 4.86e-104 |
 | jubarte | superdoc-redlines | 703 | 672/29/2 | +33.52 | 7.64e-113 |
 | jubarte-ast | jubarte-rust | 763 | 156/529/78 | -5.14 | 8.73e-57 |
 | jubarte-ast | jubarte-wasm | 763 | 217/455/91 | -1.95 | 9.02e-24 |
 | jubarte-ast | ooxmlsdk | 155 | 153/2/0 | +31.91 | 3.82e-27 |
 | jubarte-ast | redlines | 745 | 717/28/0 | +30.38 | 2.44e-120 |
+| jubarte-ast | safe-docx | 688 | 603/79/6 | +20.08 | 5.90e-92 |
 | jubarte-ast | sanity-word | 154 | 143/11/0 | +18.17 | 1.35e-25 |
+| jubarte-ast | stemma | 614 | 475/131/8 | +9.85 | 3.76e-45 |
 | jubarte-ast | superdoc | 665 | 593/67/5 | +23.27 | 7.06e-95 |
 | jubarte-ast | superdoc-redlines | 703 | 652/50/1 | +21.57 | 1.13e-106 |
 | jubarte-rust | jubarte-wasm | 763 | 318/87/358 | +0.00 | 6.24e-34 |
 | jubarte-rust | ooxmlsdk | 155 | 154/1/0 | +35.77 | 3.54e-27 |
 | jubarte-rust | redlines | 745 | 740/5/0 | +42.33 | 1.76e-123 |
+| jubarte-rust | safe-docx | 688 | 660/22/6 | +35.90 | 4.58e-112 |
 | jubarte-rust | sanity-word | 154 | 150/4/0 | +20.64 | 1.22e-26 |
+| jubarte-rust | stemma | 614 | 557/48/9 | +24.01 | 4.65e-91 |
 | jubarte-rust | superdoc | 665 | 642/18/5 | +37.06 | 7.60e-109 |
 | jubarte-rust | superdoc-redlines | 703 | 685/16/2 | +35.37 | 5.77e-116 |
 | jubarte-wasm | ooxmlsdk | 155 | 153/2/0 | +35.52 | 3.68e-27 |
 | jubarte-wasm | redlines | 745 | 726/19/0 | +38.47 | 5.58e-122 |
+| jubarte-wasm | safe-docx | 688 | 629/53/6 | +30.17 | 2.15e-104 |
 | jubarte-wasm | sanity-word | 154 | 149/5/0 | +20.21 | 2.50e-26 |
+| jubarte-wasm | stemma | 614 | 515/92/7 | +19.47 | 3.42e-69 |
 | jubarte-wasm | superdoc | 665 | 622/38/5 | +33.16 | 1.12e-103 |
 | jubarte-wasm | superdoc-redlines | 703 | 671/30/2 | +29.54 | 1.90e-113 |
 | ooxmlsdk | redlines | 153 | 117/36/0 | +5.77 | 1.04e-16 |
+| ooxmlsdk | safe-docx | 149 | 63/86/0 | -1.26 | 7.56e-02 |
 | ooxmlsdk | sanity-word | 230 | 15/215/0 | -14.02 | 3.48e-35 |
+| ooxmlsdk | stemma | 113 | 25/88/0 | -10.43 | 2.27e-09 |
 | ooxmlsdk | superdoc | 146 | 82/64/0 | +2.00 | 2.59e-01 |
 | ooxmlsdk | superdoc-redlines | 146 | 74/72/0 | +0.10 | 2.96e-01 |
+| redlines | safe-docx | 685 | 182/503/0 | -3.25 | 4.43e-49 |
 | redlines | sanity-word | 152 | 7/145/0 | -19.63 | 3.01e-26 |
+| redlines | stemma | 612 | 62/550/0 | -13.11 | 1.66e-89 |
 | redlines | superdoc | 661 | 166/495/0 | -4.08 | 3.76e-48 |
 | redlines | superdoc-redlines | 685 | 196/489/0 | -2.91 | 3.59e-35 |
+| safe-docx | sanity-word | 148 | 32/116/0 | -13.68 | 4.02e-15 |
+| safe-docx | stemma | 564 | 118/438/8 | -5.89 | 7.56e-45 |
+| safe-docx | superdoc | 628 | 308/313/7 | +0.00 | 8.98e-01 |
+| safe-docx | superdoc-redlines | 644 | 358/283/3 | +0.53 | 5.68e-03 |
+| sanity-word | stemma | 113 | 71/42/0 | +4.35 | 2.50e-02 |
 | sanity-word | superdoc | 145 | 120/25/0 | +15.73 | 1.52e-17 |
 | sanity-word | superdoc-redlines | 145 | 121/24/0 | +13.41 | 3.07e-16 |
+| stemma | superdoc | 546 | 443/101/2 | +7.67 | 1.85e-52 |
+| stemma | superdoc-redlines | 573 | 453/112/8 | +6.77 | 4.63e-56 |
 | superdoc | superdoc-redlines | 629 | 345/284/0 | +0.60 | 3.61e-02 |
 
 ### Lens health (script_redlines)
@@ -173,6 +202,8 @@ Docs where the pixel lens and a judging lens (functional accept/reject invariant
 - **jubarte-wasm** 0.1.0: 25 doc(s) where the lenses disagree (6.6% of two-lens docs)
 - **jubarte-wasm** 0.1.0@4b36f4db1d2f+git.ebf1a7996df49f99fb40f4f67713e61cfd19c731: 25 doc(s) where the lenses disagree (6.6% of two-lens docs)
 - **redlines** 0.6.1: 64 doc(s) where the lenses disagree (17.6% of two-lens docs)
+- **safe-docx** 0.19.1@e3f092da3639+git.7bd35c876493f2725b095f0190c28d2644962c78: 70 doc(s) where the lenses disagree (20.8% of two-lens docs)
+- **stemma** 0.5.0@2e7bdc832391+git.efaed0c1ecb41142b1465bbb124dd183c385a2b0: 16 doc(s) where the lenses disagree (5.5% of two-lens docs)
 - **superdoc** 1.19.2: 25 doc(s) where the lenses disagree (15.9% of two-lens docs)
 - **superdoc** 1.21.3: 53 doc(s) where the lenses disagree (16.9% of two-lens docs)
 - **superdoc-redlines** 0.2.0: 38 doc(s) where the lenses disagree (11.2% of two-lens docs)
@@ -186,6 +217,8 @@ Docs where the pixel lens and a judging lens (functional accept/reject invariant
 | # | vendor | version | mean | median | itt_mean | itt_median | skill_median | failures | n_docs | itt_n | exact_100 | ≥90 | <50 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | docxodus | 9.8.0 | 90.1868 | 100 | 88.8203 | 100 | — | 4 | 195 | 198 | 119 | 145 | 18 |
+| 2 | stemma | 0.5.0@2e7bdc832391+git.efaed0c1ecb41142b1465bbb124dd183c385a2b0 | 79.1041 | 80.7673 | 77.4561 | 80.6255 | — | 3 | 141 | 144 | 19 | 48 | 13 |
+| 3 | safe-docx | 0.19.1@e3f092da3639+git.7bd35c876493f2725b095f0190c28d2644962c78 | 64.0903 | 60.2244 | 63.7302 | 59.7051 | — | 1 | 177 | 178 | 9 | 27 | 55 |
 
 **Legacy corpus** (older `corpus_revision` stamps and unstamped runs — not comparable with the rows above; kept for history until each tool re-runs):
 
@@ -204,7 +237,9 @@ roundtrip (self-diff → pdf_source)
 
 | # | vendor | version | mean | median | itt_mean | itt_median | skill_median | failures | n_docs | itt_n | exact_100 | ≥90 | <50 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | docxodus | 9.8.0 | 99.9949 | 100 | 99.9949 | 100 | — | 0 | 166 | 166 | 163 | 166 | 0 |
+| 1 | safe-docx | 0.19.1@e3f092da3639+git.7bd35c876493f2725b095f0190c28d2644962c78 | 100 | 100 | 100 | 100 | — | 0 | 166 | 166 | 166 | 166 | 0 |
+| 2 | docxodus | 9.8.0 | 99.9949 | 100 | 99.9949 | 100 | — | 0 | 166 | 166 | 163 | 166 | 0 |
+| 3 | stemma | 0.5.0@2e7bdc832391+git.efaed0c1ecb41142b1465bbb124dd183c385a2b0 | 99.9494 | 100 | 99.9494 | 100 | — | 0 | 166 | 166 | 161 | 166 | 0 |
 
 **Legacy corpus** (older `corpus_revision` stamps and unstamped runs — not comparable with the rows above; kept for history until each tool re-runs):
 
@@ -325,8 +360,14 @@ visual_accepted_changes (Playwright)
 | jubarte-wasm | 0.1.0 | 2026-08-04T13:32:06.568520+00:00 | script_redlines | 76.2072 | 77.9542 | 763 |
 | jubarte-wasm | 0.1.0@4b36f4db1d2f+git.ebf1a7996df49f99fb40f4f67713e61cfd19c731 | 2026-08-05T22:59:39.181670+00:00 | script_redlines | 79.5678 | 84.8864 | 763 |
 | ooxmlsdk | — | 2026-07-13T17:24:50.712941+00:00 | script_redlines | 55.1866 | 55.2398 | 232 |
-| redlines | 0.6.1 | 2026-08-04T14:04:12.116292+00:00 | script_redlines | 45.9391 | 47.1411 | 745 |
+| redlines | 0.6.1 | 2026-08-15T15:53:42.204313+00:00 | script_redlines | 45.9391 | 47.1411 | 745 |
+| safe-docx | 0.19.1@e3f092da3639+git.7bd35c876493f2725b095f0190c28d2644962c78 | 2026-08-15T15:08:16.344882+00:00 | accepted_changes | 64.0903 | 60.2244 | 177 |
+| safe-docx | 0.19.1@e3f092da3639+git.7bd35c876493f2725b095f0190c28d2644962c78 | 2026-08-15T15:08:16.344882+00:00 | roundtrip | 100 | 100 | 166 |
+| safe-docx | 0.19.1@e3f092da3639+git.7bd35c876493f2725b095f0190c28d2644962c78 | 2026-08-15T15:08:16.344882+00:00 | script_redlines | 53.6532 | 51.3113 | 688 |
 | sanity-word | — | 2026-07-13T18:06:21.529826+00:00 | script_redlines | 68.1679 | 70.4845 | 230 |
+| stemma | 0.5.0@2e7bdc832391+git.efaed0c1ecb41142b1465bbb124dd183c385a2b0 | 2026-08-15T14:40:31.132906+00:00 | accepted_changes | 79.1041 | 80.7673 | 141 |
+| stemma | 0.5.0@2e7bdc832391+git.efaed0c1ecb41142b1465bbb124dd183c385a2b0 | 2026-08-15T14:40:31.132906+00:00 | roundtrip | 99.9494 | 100 | 166 |
+| stemma | 0.5.0@2e7bdc832391+git.efaed0c1ecb41142b1465bbb124dd183c385a2b0 | 2026-08-15T14:40:31.132906+00:00 | script_redlines | 62.9106 | 61.8327 | 614 |
 | superdoc | 1.19.2 | 2026-07-09T15:38:31.872437+00:00 | accepted_changes | 63.818 | 61.1184 | 150 |
 | superdoc | 1.19.2 | 2026-07-09T18:25:24.395459+00:00 | roundtrip | 93.0017 | 100 | 194 |
 | superdoc | 1.19.2 | 2026-08-04T12:22:11.089004+00:00 | script_redlines | 56.3218 | 54.8131 | 171 |
@@ -377,11 +418,11 @@ Large fixture pools (often **1000 unique** docs → **5000 pairs**), including n
 
 | # | tool | runtime | fixtures | pairs | median ms | mean ms | p95 | p99 | /s | n | fail | profile |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | docxodus | dotnet-wasm | 200 | 500 | 148.753 | 607.385 | 3212.297 | 7017.889 | 1.6 | 496 | 4 | — |
+| 1 | docxodus | dotnet-wasm | 1000 | 5000 | 74.595 | 428.227 | 922.477 | 3970.72 | 2.3 | 5000 | 0 | v8-inspector |
 | 2 | docxodus-csharp | dotnet | 50 | 50 | 208.388 | 441.646 | 911.873 | 1154.008 | 2.3 | 50 | 0 | — |
 | 3 | jubarte-lossless | node | 1000 | 5000 | 56.465 | 168.791 | 609.005 | 1049.093 | 5.9 | 4997 | 3 | v8-inspector |
 | 4 | jubarte-native | node | 1000 | 5000 | 14.43 | 57.145 | 175.709 | 578.45 | 17.5 | 5000 | 0 | — |
-| 5 | jubarte-wasm | rust-wasm | 1000 | 5000 | 9.717 | 41.44 | 180.492 | 273.407 | 24.1 | 5000 | 0 | — |
+| 5 | jubarte-wasm | rust-wasm | 1000 | 5000 | 9.667 | 41.493 | 174.035 | 265.818 | 24.1 | 5000 | 0 | v8-inspector |
 | 6 | jubarte-rust | rust | 1000 | 5000 | 9.656 | 31.022 | 123.386 | 195.751 | 32.2 | 5000 | 0 | — |
 | 7 | docxodus-csharp-inproc | dotnet | 1000 | 5000 | 7.888 | 25.832 | 101.854 | 206.808 | 38.7 | 4880 | 120 | samply |
 | 8 | jubarte-rust-inproc | rust | 1000 | 5000 | 6.201 | 25.337 | 110.764 | 182.306 | 39.5 | 5000 | 0 | samply |
