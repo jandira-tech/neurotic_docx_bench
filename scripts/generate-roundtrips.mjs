@@ -18,6 +18,8 @@ import { createHash } from "node:crypto";
  *   │ docx-redline-js          │ soffice docx→html→docx                   │
  *   │                          │ (no HTML export of its own)              │
  *   │ superdoc-ts              │ client.open() → save()                   │
+ *   │ stemma                   │ stemma compare(file, file) self-diff     │
+ *   │ safe-docx-compare        │ compareDocuments(file, file) self-diff   │
  *   └──────────────────────────┴─────────────────────────────────────────┘
  *
  * The Python `superdoc` tool is handled by generate-roundtrips-superdoc.py.
@@ -42,14 +44,17 @@ import { createHash } from "node:crypto";
 import {
 	existsSync,
 	mkdirSync,
+	mkdtempSync,
 	readdirSync,
 	readFileSync,
 	rmSync,
 	writeFileSync,
 } from "node:fs";
+import { spawnSync } from "node:child_process";
 import { createRequire } from "node:module";
 import { tmpdir } from "node:os";
 import { basename, join, resolve } from "node:path";
+import { pathToFileURL } from "node:url";
 import { wireJubarteLosslessAdapter } from "./jubarte-lossless-adapter.mjs";
 
 const require = createRequire(import.meta.url);
@@ -74,6 +79,18 @@ const TOOLS = [
 	{ tool: "superdoc-ts", dist: null, route: "superdoc-ts" },
 	// folio: FolioDocxReviewer.fromBuffer → toBuffer (genuine re-serialization)
 	{ tool: "folio", dist: null, route: "folio" },
+	// stemma-cli 0.5.0: stemma compare(file, file) self-diff
+	{
+		tool: "stemma",
+		dist: "src/neurotic_docx_bench/utils/stemma",
+		route: "stemma",
+	},
+	// UseJunior/safe-docx compareDocuments at PR 854 merge (self-diff)
+	{
+		tool: "safe-docx-compare",
+		dist: "src/neurotic_docx_bench/utils/safe-docx-compare",
+		route: "safe-docx",
+	},
 ];
 
 // ── CLI ──────────────────────────────────────────────────────────────────────
@@ -322,6 +339,69 @@ async function loadEngine(route, dist) {
 	// with a full-repack fallback), so this is a genuine round-trip — not a no-op zip.
 	// folio's APIs take ArrayBuffer; copy the Uint8Array into a fresh slab (Node
 	// Buffers share a larger underlying ArrayBuffer that would corrupt the slice).
+	// stemma compare(file, file) self-diff — the CLI's own identity path.
+	// create-new only: never reuse -o; each call gets a fresh dest.
+	if (route === "stemma") {
+		const bin = resolve(dist, "stemma");
+		if (!existsSync(bin)) {
+			throw new Error(`stemma: no binary at ${bin}`);
+		}
+		let ctr = 0;
+		return async (input) => {
+			const dir = mkdtempSync(join(tmpdir(), "stemma-rt-"));
+			const i = ctr++;
+			const ip = join(dir, `in${i}.docx`);
+			const op = join(dir, `out${i}.docx`);
+			try {
+				writeFileSync(ip, input);
+				const r = spawnSync(
+					bin,
+					["compare", ip, ip, "-o", op, "--author", "stemma"],
+					{ encoding: "utf8" },
+				);
+				if (r.status !== 0) {
+					throw new Error(
+						`stemma compare self-diff failed (exit ${r.status}): ` +
+							`${(r.stderr || r.stdout || "").trim() || "no output"}`,
+					);
+				}
+				if (!existsSync(op)) {
+					throw new Error(`stemma compare produced no output at ${op}`);
+				}
+				return new Uint8Array(readFileSync(op));
+			} finally {
+				rmSync(dir, { recursive: true, force: true });
+			}
+		};
+	}
+
+	// safe-docx compareDocuments(input, input) self-diff (PR 854 pin).
+	if (route === "safe-docx") {
+		const entry = resolve(
+			dist,
+			"node_modules/@usejunior/docx-compare/dist/index.js",
+		);
+		if (!existsSync(entry)) {
+			throw new Error(`safe-docx: no compareDocuments at ${entry}`);
+		}
+		const cmp = await import(pathToFileURL(entry).href);
+		return async (input) => {
+			const result = await cmp.compareDocuments(input, input, {
+				engine: "atomizer",
+				author: "safe-docx",
+			});
+			const doc = result?.document;
+			const bytes =
+				doc instanceof Uint8Array ? doc : new Uint8Array(doc ?? []);
+			if (bytes.length === 0) {
+				throw new Error(
+					"safe-docx compareDocuments self-diff returned empty output",
+				);
+			}
+			return bytes;
+		};
+	}
+
 	if (route === "folio") {
 		// FOLIO_MODULE_ROOT (absolute node_modules dir) swaps in a different folio
 		// build for comparison runs; unset = the pinned vendored tree.

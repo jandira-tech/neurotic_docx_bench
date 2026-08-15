@@ -1,0 +1,7 @@
+{
+  "name": "@usejunior/docx-compare",
+  "version": "0.19.1",
+  "private": true,
+  "type": "module",
+  "description": "Post-PR-854 safe-docx compare pin (git 7bd35c8, not the published 0.19.1 tarball)"
+}
