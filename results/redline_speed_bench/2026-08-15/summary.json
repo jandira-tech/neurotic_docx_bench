@@ -1,0 +1,390 @@
+{
+  "runTs": "2026-08-15T16:10:03.661Z",
+  "rows": [
+    {
+      "schema": 1,
+      "kind": "redline_speed_bench",
+      "tool": "jubarte-rust-inproc",
+      "engine": "jubarte-rust-inproc",
+      "dist": "/Users/arthrod/temp/T/neurotic_docx_bench/src/neurotic_docx_bench/utils/jubarte/jubarte-rust",
+      "runtime": "rust",
+      "run_ts": "2026-08-15T16:10:03.661Z",
+      "seed": 42,
+      "fixture_count": 1000,
+      "fixture_target": 1000,
+      "pair_count": 5000,
+      "reps": 1,
+      "warmup": 50,
+      "init_ms": 117.263,
+      "wall_ms": 129927.005,
+      "failures": 0,
+      "unit": "ms_per_redline",
+      "n": 5000,
+      "mean": 25.985,
+      "median": 6.353,
+      "p90": 87.84,
+      "p95": 103.676,
+      "p99": 161.464,
+      "min": 1.463,
+      "max": 569.824,
+      "std": 49.442,
+      "total_ms": 129922.802,
+      "throughput_per_s": 38.5,
+      "mean_out_bytes": 63351,
+      "profile": "jubarte-rust-inproc.profile.json.gz",
+      "profile_tool": "samply",
+      "top_cpu": null,
+      "failure_samples": []
+    },
+    {
+      "schema": 1,
+      "kind": "redline_speed_bench",
+      "tool": "docxodus-csharp-inproc",
+      "engine": "docxodus-csharp-inproc",
+      "dist": "/Users/arthrod/temp/T/neurotic_docx_bench/src/neurotic_docx_bench/utils/docxodus/docxodus-csharp-inproc/bin/Release/net8.0",
+      "runtime": "dotnet",
+      "run_ts": "2026-08-15T16:10:03.661Z",
+      "seed": 42,
+      "fixture_count": 1000,
+      "fixture_target": 1000,
+      "pair_count": 5000,
+      "reps": 1,
+      "warmup": 50,
+      "init_ms": 208.372,
+      "wall_ms": 148595.345,
+      "failures": 120,
+      "unit": "ms_per_redline",
+      "n": 4880,
+      "mean": 27.392,
+      "median": 8.664,
+      "p90": 70.405,
+      "p95": 108.668,
+      "p99": 194.521,
+      "min": 1.679,
+      "max": 8140.26,
+      "std": 127.911,
+      "total_ms": 133671.811,
+      "throughput_per_s": 36.5,
+      "mean_out_bytes": 43915,
+      "profile": "docxodus-csharp-inproc.profile.json.gz",
+      "profile_tool": "samply",
+      "top_cpu": null,
+      "failure_samples": [
+        {
+          "key": "complex_style_attr__docx_lots_of_comments_addition_redline__400a8796__r0",
+          "error": "docxodus-csharp-inproc: 'rId12' ID conflicts with the ID of an existing relationship for the specified source."
+        },
+        {
+          "key": "contract_review_suggesting_mixed_edits_customer_satisfaction_survey_q4_suggesting_insertions_word_redline__9bdf32ba__file_196__r0",
+          "error": "docxodus-csharp-inproc: Document has no w:body element."
+        },
+        {
+          "key": "document_100_ultimate_demo_id_paraid_overflow_docx_lots_of_comments_addition_redline_addition_v_removal_redline__docx_lots_of_comments_addition_docx_lots_of_comments_redline__r0",
+          "error": "docxodus-csharp-inproc: 'rId12' ID conflicts with the ID of an existing relationship for the specified source."
+        },
+        {
+          "key": "docx_lots_of_comments_addition_redline_addition_v_removal__sample_document_word_repair_of_our_output_iter2_word_repaired__r0",
+          "error": "docxodus-csharp-inproc: 'rId7' ID conflicts with the ID of an existing relationship for the specified source."
+        },
+        {
+          "key": "docx_lots_of_comments_addition_removal__7b52de2b__I_am_sharing_Microsoft_Word_vs_Google_Docs_Comprehensive_Proof_with_you__r0",
+          "error": "docxodus-csharp-inproc: 'rId11' ID conflicts with the ID of an existing relationship for the specified source."
+        }
+      ]
+    },
+    {
+      "schema": 1,
+      "kind": "redline_speed_bench",
+      "tool": "jubarte-rust",
+      "engine": "jubarte-rust",
+      "dist": "/Users/arthrod/temp/T/neurotic_docx_bench/src/neurotic_docx_bench/utils/jubarte/jubarte-rust",
+      "runtime": "rust",
+      "run_ts": "2026-08-15T16:10:03.661Z",
+      "seed": 42,
+      "fixture_count": 1000,
+      "fixture_target": 1000,
+      "pair_count": 5000,
+      "reps": 1,
+      "warmup": 50,
+      "init_ms": 0.073,
+      "wall_ms": 174891.131,
+      "failures": 0,
+      "unit": "ms_per_redline",
+      "n": 5000,
+      "mean": 34.977,
+      "median": 12.834,
+      "p90": 100.464,
+      "p95": 120.622,
+      "p99": 200.812,
+      "min": 6.479,
+      "max": 2428.458,
+      "std": 65.252,
+      "total_ms": 174883.751,
+      "throughput_per_s": 28.6,
+      "mean_out_bytes": 63350,
+      "profile": "jubarte-rust.profile.json.gz",
+      "profile_tool": "samply",
+      "top_cpu": null,
+      "failure_samples": []
+    },
+    {
+      "schema": 1,
+      "kind": "redline_speed_bench",
+      "tool": "docxodus-csharp",
+      "engine": "docxodus-csharp",
+      "error": "docxodus-csharp: no redline binary at /Users/arthrod/temp/T/neurotic_docx_bench/src/neurotic_docx_bench/utils/docxodus/docxodus-csharp/redline. Build Docxodus/tools/redline (Release) and point --dist at bin/Release/net8.0 (or copy that dir under utils/docxodus/docxodus-csharp).",
+      "run_ts": "2026-08-15T16:10:03.661Z"
+    },
+    {
+      "schema": 1,
+      "kind": "redline_speed_bench",
+      "tool": "docxodus",
+      "engine": "docxodus",
+      "dist": "/Users/arthrod/temp/T/neurotic_docx_bench/dist/jubarte-final",
+      "runtime": "dotnet-wasm",
+      "run_ts": "2026-08-15T16:10:03.661Z",
+      "seed": 42,
+      "fixture_count": 1000,
+      "fixture_target": 1000,
+      "pair_count": 5000,
+      "reps": 1,
+      "warmup": 50,
+      "init_ms": 1382.933,
+      "wall_ms": 2141143.878,
+      "failures": 0,
+      "unit": "ms_per_redline",
+      "n": 5000,
+      "mean": 428.227,
+      "median": 74.595,
+      "p90": 784.115,
+      "p95": 922.477,
+      "p99": 3970.72,
+      "min": 20.136,
+      "max": 228069.816,
+      "std": 4544.297,
+      "total_ms": 2141134.883,
+      "throughput_per_s": 2.3,
+      "mean_out_bytes": 54807,
+      "profile": "docxodus.cpuprofile",
+      "profile_tool": "v8-inspector",
+      "top_cpu": [
+        {
+          "name": "wasm-function[85]",
+          "url": "wasm://wasm/004e2662",
+          "line": 1,
+          "hits": 1107966,
+          "pct": 64.52
+        },
+        {
+          "name": "wasm-function[89]",
+          "url": "wasm://wasm/004e2662",
+          "line": 1,
+          "hits": 61224,
+          "pct": 3.57
+        },
+        {
+          "name": "wasm-function[0]",
+          "url": "wasm://wasm/8e2e9b56",
+          "line": 1,
+          "hits": 44221,
+          "pct": 2.58
+        },
+        {
+          "name": "wasm-function[444]",
+          "url": "wasm://wasm/004e2662",
+          "line": 1,
+          "hits": 25785,
+          "pct": 1.5
+        },
+        {
+          "name": "wasm-function[0]",
+          "url": "wasm://wasm/38c68e36",
+          "line": 1,
+          "hits": 13958,
+          "pct": 0.81
+        },
+        {
+          "name": "wasm-function[0]",
+          "url": "wasm://wasm/7f758c82",
+          "line": 1,
+          "hits": 12724,
+          "pct": 0.74
+        },
+        {
+          "name": "wasm-function[1]",
+          "url": "wasm://wasm/ed463696",
+          "line": 1,
+          "hits": 11863,
+          "pct": 0.69
+        },
+        {
+          "name": "wasm-function[0]",
+          "url": "wasm://wasm/c22cf15e",
+          "line": 1,
+          "hits": 11373,
+          "pct": 0.66
+        },
+        {
+          "name": "wasm-function[4947]",
+          "url": "wasm://wasm/004e2662",
+          "line": 1,
+          "hits": 9907,
+          "pct": 0.58
+        },
+        {
+          "name": "wasm-function[1248]",
+          "url": "wasm://wasm/004e2662",
+          "line": 1,
+          "hits": 9851,
+          "pct": 0.57
+        },
+        {
+          "name": "wasm-function[225]",
+          "url": "wasm://wasm/004e2662",
+          "line": 1,
+          "hits": 9498,
+          "pct": 0.55
+        },
+        {
+          "name": "wasm-function[2]",
+          "url": "wasm://wasm/aefe2fde",
+          "line": 1,
+          "hits": 8876,
+          "pct": 0.52
+        }
+      ],
+      "failure_samples": []
+    },
+    {
+      "schema": 1,
+      "kind": "redline_speed_bench",
+      "tool": "jubarte-wasm",
+      "engine": "jubarte-wasm",
+      "dist": "/Users/arthrod/T/jubarte-redlines/jubarte-wasm/pkg",
+      "runtime": "rust-wasm",
+      "run_ts": "2026-08-15T16:10:03.661Z",
+      "seed": 42,
+      "fixture_count": 1000,
+      "fixture_target": 1000,
+      "pair_count": 5000,
+      "reps": 1,
+      "warmup": 50,
+      "init_ms": 4.842,
+      "wall_ms": 207468.992,
+      "failures": 0,
+      "unit": "ms_per_redline",
+      "n": 5000,
+      "mean": 41.493,
+      "median": 9.667,
+      "p90": 136.314,
+      "p95": 174.035,
+      "p99": 265.818,
+      "min": 1.894,
+      "max": 824.483,
+      "std": 76.06,
+      "total_ms": 207463.27,
+      "throughput_per_s": 24.1,
+      "mean_out_bytes": 63378,
+      "profile": "jubarte-wasm.cpuprofile",
+      "profile_tool": "v8-inspector",
+      "top_cpu": [
+        {
+          "name": "wasm-function[745]",
+          "url": "wasm://wasm/009c26de",
+          "line": 1,
+          "hits": 18460,
+          "pct": 11
+        },
+        {
+          "name": "wasm-function[306]",
+          "url": "wasm://wasm/009c26de",
+          "line": 1,
+          "hits": 17887,
+          "pct": 10.66
+        },
+        {
+          "name": "wasm-function[563]",
+          "url": "wasm://wasm/009c26de",
+          "line": 1,
+          "hits": 14610,
+          "pct": 8.71
+        },
+        {
+          "name": "wasm-function[483]",
+          "url": "wasm://wasm/009c26de",
+          "line": 1,
+          "hits": 12680,
+          "pct": 7.56
+        },
+        {
+          "name": "wasm-function[65]",
+          "url": "wasm://wasm/009c26de",
+          "line": 1,
+          "hits": 7136,
+          "pct": 4.25
+        },
+        {
+          "name": "wasm-function[446]",
+          "url": "wasm://wasm/009c26de",
+          "line": 1,
+          "hits": 6485,
+          "pct": 3.86
+        },
+        {
+          "name": "wasm-function[678]",
+          "url": "wasm://wasm/009c26de",
+          "line": 1,
+          "hits": 5735,
+          "pct": 3.42
+        },
+        {
+          "name": "wasm-function[9]",
+          "url": "wasm://wasm/009c26de",
+          "line": 1,
+          "hits": 4662,
+          "pct": 2.78
+        },
+        {
+          "name": "wasm-function[769]",
+          "url": "wasm://wasm/009c26de",
+          "line": 1,
+          "hits": 4270,
+          "pct": 2.54
+        },
+        {
+          "name": "wasm-function[60]",
+          "url": "wasm://wasm/009c26de",
+          "line": 1,
+          "hits": 3699,
+          "pct": 2.2
+        },
+        {
+          "name": "wasm-function[265]",
+          "url": "wasm://wasm/009c26de",
+          "line": 1,
+          "hits": 3676,
+          "pct": 2.19
+        },
+        {
+          "name": "wasm-function[466]",
+          "url": "wasm://wasm/009c26de",
+          "line": 1,
+          "hits": 3185,
+          "pct": 1.9
+        }
+      ],
+      "failure_samples": []
+    }
+  ],
+  "fixtures": 1000,
+  "pairs": 5000,
+  "seed": 42,
+  "methods": [
+    "jubarte-rust-inproc",
+    "docxodus-csharp-inproc",
+    "jubarte-rust",
+    "docxodus-csharp",
+    "docxodus",
+    "jubarte-wasm"
+  ]
+}

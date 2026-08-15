@@ -34,6 +34,53 @@ function runCli(args: string[]): {
 	}
 }
 
+const haveStemma = existsSync("src/neurotic_docx_bench/utils/stemma/stemma");
+const haveSafeDocx = existsSync(
+	"src/neurotic_docx_bench/utils/safe-docx-compare/node_modules/@usejunior/docx-compare/dist/index.js",
+);
+
+describe.runIf(haveCorpus && haveStemma)(
+	"generate-roundtrips stemma self-compare",
+	() => {
+		it("produces a valid DOCX via stemma compare(file, file)", () => {
+			const out = mkdtempSync(join(tmpdir(), "rt-stemma-"));
+			const r = runCli([
+				"--tool=stemma",
+				`--source-dir=${ROUNDTRIP_SOURCE}`,
+				`--out=${out}`,
+				"--limit=1",
+				"--force",
+			]);
+			expect(r.status).toBe(0);
+			const dir = join(out, "stemma");
+			const files = readdirSync(dir).filter((f) => f.endsWith(".docx"));
+			expect(files.length).toBeGreaterThanOrEqual(1);
+			expect(readFileSync(join(dir, files[0]!)).length).toBeGreaterThan(1000);
+		}, 120_000);
+	},
+);
+
+describe.runIf(haveCorpus && haveSafeDocx)(
+	"generate-roundtrips safe-docx self-compare",
+	() => {
+		it("produces a valid DOCX via compareDocuments(file, file)", () => {
+			const out = mkdtempSync(join(tmpdir(), "rt-safe-"));
+			const r = runCli([
+				"--tool=safe-docx-compare",
+				`--source-dir=${ROUNDTRIP_SOURCE}`,
+				`--out=${out}`,
+				"--limit=1",
+				"--force",
+			]);
+			expect(r.status).toBe(0);
+			const dir = join(out, "safe-docx-compare");
+			const files = readdirSync(dir).filter((f) => f.endsWith(".docx"));
+			expect(files.length).toBeGreaterThanOrEqual(1);
+			expect(readFileSync(join(dir, files[0]!)).length).toBeGreaterThan(1000);
+		}, 120_000);
+	},
+);
+
 describe.runIf(haveCorpus && haveFolio)(
 	"generate-roundtrips folio route",
 	() => {

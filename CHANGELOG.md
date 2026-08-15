@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Added
+- Generating runs for `stemma` (`stemma-cli` 0.5.0 `stemma compare`) and
+  `safe-docx-compare` (UseJunior/safe-docx `compareDocuments` at PR 854 merge
+  `7bd35c8`, not published `@usejunior/docx-compare@0.19.1`)
+- In-repo tests that drive each shipped compare on a real corpus pair and
+  assert native `w:ins`/`w:del`; pin tests refuse the pre-854 npm tarball
+- `nupunkt==0.6.0` as a first-class pin; `redlines_gen` now requires
+  `NupunktProcessor` (no silent WholeDocumentProcessor fallback)
+
+### Changed
+- Full-corpus `script_redlines` (plus accepted/roundtrip where declared) for
+  stemma, safe-docx, and redlines-with-nupunkt; 803-pair generate universe
+- Large-N `speed_redlines` pack (2026-08-15): 1000 fixtures → 5000 pairs
+  including jubarte inproc/CLI/WASM and docxodus WASM / csharp-inproc
+
 ## [0.50] - 2026-07-08
 
 ### Added
