@@ -9,8 +9,8 @@
 		"preview": "vite preview"
 	},
 	"dependencies": {
-		"@stll/folio-core": "0.15.13",
-		"@stll/folio-react": "0.13.2",
+		"@stll/folio-core": "0.17.1",
+		"@stll/folio-react": "0.13.4",
 		"react": "^19.0.0",
 		"react-dom": "^19.0.0",
 		"use-intl": "^4.0.0"
@@ -23,6 +23,6 @@
 		"vite": "^5.4.0"
 	},
 	"overrides": {
-		"@stll/folio-core": "0.15.13"
+		"@stll/folio-core": "0.17.1"
 	}
 }

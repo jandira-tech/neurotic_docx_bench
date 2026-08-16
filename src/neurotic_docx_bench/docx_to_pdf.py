@@ -29,11 +29,13 @@ WORD_CORPUS = REPO_ROOT / "corpus" / "no_comments_pdf_was_generated_by_word"
 FIXTURE_LIST = WORD_CORPUS / "docx_to_pdf_fixtures.txt"
 WORD_PDF_TOOLS = ("rdocx", "office2pdf", "pdfitdown", "doxx")
 
+# Oracle PDFs are pinned by SHA-256 in ORACLE_SHA_MANIFEST. Never rewrite them.
 POOLS: tuple[tuple[str, str, str], ...] = (
-    ("source", "docx_source", "pdf_source"),
-    ("redline", "docx_redlines_word", "pdf_redlines_word"),
     ("accepted", "docx_accepted_word", "pdf_accepted_word"),
+    ("redline_randomized", "docx_redlines_randomized", "pdf_redlines_randomized"),
 )
+ORACLE_PDF_DIRS: tuple[str, ...] = ("pdf_accepted_word", "pdf_redlines_randomized")
+ORACLE_SHA_MANIFEST = WORD_CORPUS / "docx_to_pdf_oracle_sha256.json"
 
 REQUIRED_FEATURES = frozenset(
     {"body_text", "table", "numbering", "image", "header_or_footer"},
@@ -106,8 +108,56 @@ def load_fixtures(path: Path = FIXTURE_LIST) -> list[Fixture]:
     return fixtures
 
 
+def oracle_pdf_dirs(root: Path = WORD_CORPUS) -> list[Path]:
+    """The two Word-export PDF folders used as DOCX→PDF ground truth."""
+    return [root / name for name in ORACLE_PDF_DIRS]
+
+
+def _oracle_pdf_sha_map(root: Path = WORD_CORPUS) -> dict[str, str]:
+    """SHA-256 of every ``*.pdf`` in the two pinned folders. Read-only."""
+    from neurotic_docx_bench.oracle_manifest import _sha256
+
+    out: dict[str, str] = {}
+    for folder in oracle_pdf_dirs(root):
+        for pdf in sorted(folder.glob("*.pdf")):
+            rel = pdf.resolve().relative_to(root.resolve()).as_posix()
+            out[rel] = _sha256(pdf)
+    return out
+
+
+def write_oracle_sha_manifest(
+    path: Path = ORACLE_SHA_MANIFEST, root: Path = WORD_CORPUS,
+) -> dict[str, str]:
+    """SHA-256 every oracle PDF. Does not write inside the PDF folders."""
+    from neurotic_docx_bench.oracle_manifest import write_manifest
+
+    manifest = _oracle_pdf_sha_map(root)
+    write_manifest(path, manifest)
+    return manifest
+
+
+def verify_oracle_sha_manifest(
+    path: Path = ORACLE_SHA_MANIFEST, root: Path = WORD_CORPUS,
+) -> None:
+    """Abort if any pinned oracle PDF is missing, extra, or has a different hash."""
+    from neurotic_docx_bench.oracle_manifest import ManifestDrift, load_manifest
+
+    if not path.is_file():
+        raise RuntimeError(f"DOCX→PDF oracle SHA manifest missing: {path}")
+    expected = load_manifest(path) or {}
+    actual = _oracle_pdf_sha_map(root)
+    changed = sorted(k for k in expected.keys() & actual.keys() if expected[k] != actual[k])
+    missing = sorted(expected.keys() - actual.keys())
+    extra = sorted(actual.keys() - expected.keys())
+    drift = ManifestDrift(changed=changed, missing=missing, extra=extra)
+    if not drift.clean:
+        raise RuntimeError(
+            f"DOCX→PDF oracle PDF drift (never regenerate those folders): {drift.summary()}",
+        )
+
+
 def discover_word_oracle_pairs(root: Path = WORD_CORPUS) -> list[Fixture]:
-    """Every valid Word-oracle pair in the three non-randomized pools."""
+    """Every valid pair whose oracle PDF lives in the two pinned Word-export folders."""
     found: list[Fixture] = []
     for kind, docx_dir, pdf_dir in POOLS:
         ddir = root / docx_dir
@@ -132,30 +182,28 @@ def discover_word_oracle_pairs(root: Path = WORD_CORPUS) -> list[Fixture]:
     return found
 
 
-def select_word_oracle_fixtures(n: int = 500, root: Path = WORD_CORPUS) -> list[Fixture]:
-    """Deterministic 500-set: all source, all redline, then accepted until ``n``."""
+def select_word_oracle_fixtures(n: int | None = None, root: Path = WORD_CORPUS) -> list[Fixture]:
+    """All Word-oracle pairs, or the first ``n`` in pool order (source, redline, accepted)."""
     by_kind: dict[str, list[Fixture]] = {kind: [] for kind, _, _ in POOLS}
     for item in discover_word_oracle_pairs(root):
         by_kind[item.kind].append(item)
     selected: list[Fixture] = []
     for kind, _, _ in POOLS:
-        for item in by_kind[kind]:
-            if len(selected) >= n:
-                return selected
-            selected.append(item)
-    if len(selected) < n:
-        raise RuntimeError(f"only {len(selected)} Word-oracle pairs available, need {n}")
+        selected.extend(by_kind[kind])
+    if n is not None:
+        if len(selected) < n:
+            raise RuntimeError(f"only {len(selected)} Word-oracle pairs available, need {n}")
+        selected = selected[:n]
     return selected
 
 
-def write_fixture_list(path: Path = FIXTURE_LIST, n: int = 500) -> list[Fixture]:
+def write_fixture_list(path: Path = FIXTURE_LIST, n: int | None = None) -> list[Fixture]:
     """Write the checked-in pin list from :func:`select_word_oracle_fixtures`."""
     items = select_word_oracle_fixtures(n=n)
     lines = [
-        "# 500 Word-oracle DOCX→PDF pin.",
-        "# Selection: all source, all redline, then accepted (sorted) until 500.",
-        "# Randomized pools are excluded. Staging key is {kind}__{original_stem}.",
-        "# Columns: kind<TAB>original_stem",
+        "# Word-oracle DOCX→PDF pin.",
+        "# Pools: pdf_accepted_word + pdf_redlines_randomized (SHA-256 pinned).",
+        "# Staging key is {kind}__{original_stem}. Columns: kind<TAB>original_stem",
     ]
     for item in items:
         lines.append(f"{item.kind}\t{item.original_stem}")
@@ -494,6 +542,12 @@ def run_eval(
         items = items[:limit]
     if not items:
         raise RuntimeError("no docx-to-pdf fixtures to evaluate")
+    verify_oracle_sha_manifest()
+    for item in items:
+        oracle = item.oracle.resolve()
+        allowed = {d.resolve() for d in oracle_pdf_dirs()}
+        if oracle.parent not in allowed:
+            raise RuntimeError(f"oracle {oracle} is not in the pinned Word-export folders")
 
     root = work_dir if work_dir is not None else json_out.parent / "docx_to_pdf_work"
     oracle_dir = stage_oracles(items, root / "oracle")
@@ -568,16 +622,11 @@ def render_docx_to_pdf_table(report: dict) -> str:
     rows.sort()
     n = report.get("n", "")
     lines = [
-        "### DOCX→PDF — 500 Word-oracle documents",
+        "### docx_to_pdf — DOCX to PDF vs Word export",
         "",
-        "Pixel score vs Microsoft Word–exported PDFs in "
-        "`corpus/no_comments_pdf_was_generated_by_word` (source + Word redlines + "
-        "accepted; no randomized clones, not the LibreOffice `pdf_source`). "
-        "Intent-to-treat: convert crash, empty output, or non-`%PDF-` is a generate "
-        "failure scored as 0. Mean and median are ITT. PdfItDown's Office path is "
-        "office2pdf; near-identical scores are expected, not a measurement error.",
-        "",
-        f"Measurement set: **{n}** unique stems.",
+        f"{n} unique stems. Oracle: pinned Word-export PDFs "
+        "(`pdf_accepted_word`, `pdf_redlines_randomized`). "
+        "Failed converts score 0 (ITT). Mean and median are ITT.",
         "",
         "| Rank | Tool | Version | n scored | ITT n | ITT Mean | ITT Median | Perfect (100) | Failures |",
         "| --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |",

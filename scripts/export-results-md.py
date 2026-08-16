@@ -1146,8 +1146,39 @@ def fidelity_methodology_and_legal() -> list[str]:
         "- Redistributing or reusing scores, corpus fixtures, or generated redlines "
         "must still respect the licenses of the underlying tools and any corpus rights.",
         "",
+        "- **docx_to_pdf** is a separate 500-stem Word-export measurement "
+        "(`results/docx_to_pdf_500.json`), not a `bench.jsonl` line.",
+        "",
         "Regenerate: `python3 scripts/export-results-md.py` "
-        "(reads `results/bench.jsonl` + `results/speed.jsonl`).",
+        "(reads `results/bench.jsonl` + `results/speed.jsonl` + "
+        "`results/docx_to_pdf_500.json`).",
+        "",
+    ]
+
+
+def docx_to_pdf_section(root: Path) -> list[str]:
+    """Published ``docx_to_pdf`` table from ``results/docx_to_pdf_500.json``."""
+    path = root / "results" / "docx_to_pdf_500.json"
+    if not path.is_file():
+        return []
+    src = str(path.relative_to(root)) if path.is_relative_to(root) else str(path)
+    try:
+        sys.path.insert(0, str(root / "src"))
+        from neurotic_docx_bench.docx_to_pdf import render_docx_to_pdf_table
+    except ImportError:
+        return [
+            "## docx_to_pdf",
+            "",
+            f"Source: `{src}` — install the package to render this table.",
+            "",
+        ]
+    report = json.loads(path.read_text(encoding="utf-8"))
+    return [
+        "## docx_to_pdf",
+        "",
+        f"Source: `{src}`.",
+        "",
+        render_docx_to_pdf_table(report).rstrip(),
         "",
     ]
 
@@ -1159,10 +1190,13 @@ def to_markdown(
     speed_rows: list[dict[str, object]] | None = None,
     speed_source: Path | None = None,
     holdout_lines: list[str] | None = None,
+    docx_to_pdf_lines: list[str] | None = None,
 ) -> str:
     lines = [to_fidelity_markdown(rows, source).rstrip(), ""]
     if holdout_lines:
         lines.extend(holdout_lines)
+    if docx_to_pdf_lines:
+        lines.extend(docx_to_pdf_lines)
     if speed_rows:
         lines.extend(speed_to_markdown(speed_rows, speed_source=speed_source))
     lines.extend(fidelity_methodology_and_legal())
@@ -1253,6 +1287,7 @@ def main(argv: list[str] | None = None) -> int:
         speed_rows=speed_rows or None,
         speed_source=speed_source,
         holdout_lines=holdout_gap_section(args.input),
+        docx_to_pdf_lines=docx_to_pdf_section(root),
     )
 
     outputs: list[Path]

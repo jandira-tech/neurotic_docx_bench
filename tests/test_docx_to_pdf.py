@@ -1,4 +1,4 @@
-"""DOCX→PDF track: 500 Word oracles, shipped adapters, ITT generate failures."""
+"""DOCX→PDF track: SHA-pinned Word-export oracles, shipped adapters, ITT failures."""
 
 from __future__ import annotations
 
@@ -11,58 +11,83 @@ import pytest
 
 from neurotic_docx_bench import pipeline
 from neurotic_docx_bench.docx_to_pdf import (
+    ORACLE_PDF_DIRS,
+    ORACLE_SHA_MANIFEST,
     REQUIRED_FEATURES,
     WORD_CORPUS,
     WORD_PDF_TOOLS,
     convert_command,
     feature_coverage,
     load_fixtures,
+    oracle_pdf_dirs,
     render_docx_to_pdf_table,
     run_eval,
     score_folder_pair,
     select_word_oracle_fixtures,
     try_convert_fixture,
     update_readme_docx_to_pdf,
+    verify_oracle_sha_manifest,
+    write_oracle_sha_manifest,
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 LIBREOFFICE_PDF_SOURCE = REPO_ROOT / "corpus" / "word_based" / "pdf_source"
 
 
-def test_fixture_set_is_500_unique_word_oracles():
+def test_oracles_are_only_the_two_pinned_word_export_folders():
     fixtures = load_fixtures()
-    assert len(fixtures) == 500
+    assert fixtures
     stems = [item.stem for item in fixtures]
-    assert len(set(stems)) == 500
-    originals = [(item.kind, item.original_stem) for item in fixtures]
-    assert len(set(originals)) == 500
-    word_root = WORD_CORPUS.resolve()
+    assert len(set(stems)) == len(fixtures)
+    allowed = {d.resolve() for d in oracle_pdf_dirs()}
+    assert {d.name for d in allowed} == set(ORACLE_PDF_DIRS)
     lo_root = LIBREOFFICE_PDF_SOURCE.resolve()
     kinds: set[str] = set()
     for item in fixtures:
         kinds.add(item.kind)
         assert item.docx.is_file(), f"missing DOCX {item.docx}"
-        assert item.docx.suffix == ".docx"
         assert item.oracle.is_file(), f"missing Word oracle {item.oracle}"
-        assert item.oracle.suffix == ".pdf"
         assert item.oracle.read_bytes()[:5] == b"%PDF-"
-        assert item.kind in {"source", "redline", "accepted"}
+        assert item.kind in {"accepted", "redline_randomized"}
         assert item.stem == f"{item.kind}__{item.original_stem}"
         oracle = item.oracle.resolve()
-        assert word_root in oracle.parents or oracle.parent == word_root
+        assert oracle.parent in allowed
         assert lo_root not in oracle.parents
-        assert "randomized" not in str(item.docx).lower()
-        assert "randomized" not in str(item.oracle).lower()
+        assert oracle.parent.name in ORACLE_PDF_DIRS
         head = item.oracle.read_bytes()[:65_536]
         assert b"LibreOffice" not in head, f"{item.stem} looks like a LibreOffice PDF"
-    assert "source" in kinds
-    assert "redline" in kinds
+    assert kinds == {"accepted", "redline_randomized"}
 
 
 def test_pin_list_matches_deterministic_word_pool_selection():
     pinned = [(item.kind, item.original_stem) for item in load_fixtures()]
-    expected = [(item.kind, item.original_stem) for item in select_word_oracle_fixtures(n=500)]
+    expected = [(item.kind, item.original_stem) for item in select_word_oracle_fixtures()]
     assert pinned == expected
+    assert {kind for kind, _ in pinned} == {"accepted", "redline_randomized"}
+
+
+def test_oracle_sha256_manifest_covers_every_pinned_pdf_and_detects_tamper(tmp_path):
+    verify_oracle_sha_manifest()
+    fixtures = load_fixtures()
+    from neurotic_docx_bench.oracle_manifest import load_manifest, _sha256
+
+    manifest = load_manifest(ORACLE_SHA_MANIFEST)
+    assert manifest
+    for item in fixtures:
+        rel = item.oracle.resolve().relative_to(WORD_CORPUS.resolve()).as_posix()
+        assert manifest[rel] == _sha256(item.oracle)
+    # Tamper detection uses a copy. The committed oracle PDFs are not written.
+    fake_root = tmp_path / "corpus"
+    for name in ORACLE_PDF_DIRS:
+        (fake_root / name).mkdir(parents=True)
+        src = next(p for p in fixtures if p.oracle.parent.name == name).oracle
+        dest = fake_root / name / src.name
+        dest.write_bytes(src.read_bytes())
+    write_oracle_sha_manifest(tmp_path / "sha.json", fake_root)
+    victim = next((fake_root / ORACLE_PDF_DIRS[0]).glob("*.pdf"))
+    victim.write_bytes(b"%PDF-TAMPER")
+    with pytest.raises(RuntimeError, match="oracle PDF drift"):
+        verify_oracle_sha_manifest(tmp_path / "sha.json", fake_root)
 
 
 def test_fixture_set_covers_required_document_features():
@@ -254,10 +279,10 @@ def test_readme_docx_to_pdf_table_matches_committed_artifact():
     artifact = REPO_ROOT / "results" / "docx_to_pdf_500.json"
     readme = REPO_ROOT / "README.md"
     report = json.loads(artifact.read_text(encoding="utf-8"))
-    assert report["n"] == 500
+    assert report["n"] == len(load_fixtures())
     for name, tool in report["tools"].items():
-        assert tool["itt_n"] == 500, name
-        assert len(tool["per_doc"]) == 500, name
+        assert tool["itt_n"] == report["n"], name
+        assert len(tool["per_doc"]) == report["n"], name
     expected = render_docx_to_pdf_table(report).strip()
     assert expected in readme.read_text(encoding="utf-8")
 

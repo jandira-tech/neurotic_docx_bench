@@ -35,9 +35,7 @@ describe.runIf(haveHarness)("folio viewer harness static contract", () => {
 		const pkg = JSON.parse(
 			readFileSync(join(HARNESS_DIR, "package.json"), "utf-8"),
 		);
-		expect(pkg.dependencies["@stll/folio-react"]).toBe("0.5.0");
-		// The override is load-bearing: folio-react@0.5.0 bundles imports that
-		// only resolve against folio-core@0.3.1, not the ^0.2.0 it declares.
-		expect(pkg.overrides["@stll/folio-core"]).toBe("0.3.1");
+		expect(pkg.dependencies["@stll/folio-react"]).toBe("0.13.4");
+		expect(pkg.overrides["@stll/folio-core"]).toBe("0.17.1");
 	});
 });

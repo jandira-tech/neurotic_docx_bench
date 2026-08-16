@@ -21,7 +21,7 @@
 		"@pdfme/converter": "^6.1.11",
 		"@pdfme/generator": "^6.1.11",
 		"@pdfme/schemas": "^6.1.11",
-		"@stll/folio-core": "0.15.13",
+		"@stll/folio-core": "0.17.1",
 		"@superdoc-dev/sdk": "1.21.3",
 		"@types/node": "^26.1.1",
 		"@xmldom/xmldom": "^0.9.10",

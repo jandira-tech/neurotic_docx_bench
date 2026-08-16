@@ -90,7 +90,7 @@ generate_scripts:
 
 # Tool versions are PINNED to the ones we reviewed:
 #   docxodus 9.8.0 · docx-redline-js = local TS migration (dist: sibling package)
-#   @stll/folio-core 0.15.13 (generator) · @stll/folio-react 0.13.2 (viewer)
+#   @stll/folio-core 0.17.1 (generator) · @stll/folio-react 0.13.4 (viewer)
 #   superdoc is THREE packages, pinned independently — never conflate them:
 #     superdoc-sdk (PyPI) 2.0.0        → run `superdoc`            (python_package:)
 #     @superdoc-dev/sdk (npm) 1.21.3   → run `superdoc-ts`         (package:)
@@ -208,7 +208,7 @@ runs:
   # NOTE: the renderer reads DOCX via set_input_files (read-only upload) and
   # writes PDFs to the run dir — the source corpus is never mutated.
   - name: folio-playwright-rendering
-    package: "@stll/folio-react@0.13.2"
+    package: "@stll/folio-react@0.13.4"
     docx: corpus/word_based/docx_source
     render: playwright
     jobs: 12
@@ -228,7 +228,7 @@ runs:
       timeout_ms: 90000
 
   - name: folio-playwright-redlines
-    package: "@stll/folio-react@0.13.2"
+    package: "@stll/folio-react@0.13.4"
     docx: corpus/word_based/docx_redlines_word
     render: playwright
     jobs: 12
@@ -237,7 +237,7 @@ runs:
     harness: *folio-harness
 
   - name: folio-playwright-accepted
-    package: "@stll/folio-react@0.13.2"
+    package: "@stll/folio-react@0.13.4"
     docx: corpus/word_based/docx_accepted_word
     render: playwright
     jobs: 12
@@ -268,7 +268,7 @@ runs:
   # dropped and modification-only pairs scored as "no redline". Those older
   # folio numbers measured our translation, not folio.
   - name: folio
-    package: "@stll/folio-core@0.15.13"
+    package: "@stll/folio-core@0.17.1"
     generate: "node --import tsx scripts/generate-native-redlines.ts --method=folio --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=folio"
     render: soffice
     jobs: 12

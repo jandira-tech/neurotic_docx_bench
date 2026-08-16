@@ -513,10 +513,8 @@ export function buildFidelityTable(
 		const counts = [...new Set(rows.map((r) => r.itt_n))].sort((a, b) => b - a);
 		if (counts.length < 2) return "";
 		return (
-			`\n\n> ⚠️ **Rows below cover different document counts (${counts.join(", ")}) — ` +
-			`they are not the same measurement.** A tool scored on fewer documents ran a ` +
-			`different, usually easier, subset; its rank is not comparable with a row ` +
-			`covering more. Compare only rows whose \`ITT Docs\` match.`
+			`\n\nITT Docs differs across rows (${counts.join(", ")}). ` +
+			`Those rows are not the same measurement. Compare rows with matching ITT Docs.`
 		);
 	};
 	let body: string;
@@ -524,9 +522,7 @@ export function buildFidelityTable(
 		body =
 			`**Current corpus** (newest \`corpus_revision\` stamp: \`${latestRev}\`)` +
 			`${coverageNote(currentRows)}\n\n${header}\n${fidelityBody(currentRows)}\n\n` +
-			`**Legacy corpus** (older \`corpus_revision\` stamps and unstamped ` +
-			`runs — not comparable with the rows above; kept for history until ` +
-			`each tool re-runs):` +
+			`**Legacy corpus** (older \`corpus_revision\` stamps and unstamped runs):` +
 			`${coverageNote(legacyRows)}\n\n` +
 			`${header}\n${fidelityBody(legacyRows)}`;
 	} else {
@@ -536,13 +532,10 @@ export function buildFidelityTable(
 
 	return (
 		`### ${title}\n\n` +
-		`Sorted by **ITT median** (intent-to-treat: every failed doc scores 0, so ` +
-		`crashing on hard docs is penalized, not rewarded; 0–100, higher is closer ` +
-		`to the oracle). Mean/Median cover completed docs only. \`~\` marks ITT ` +
-		`stats approximated from summary numbers (older runs without per-doc ` +
-		`scores). Jubarte families (**final**, **final-lossless**, **rust**) show ` +
-		`only the **best** and **worst** version pin for this benchmark; other ` +
-		`vendors list each pin. Jubarte-\`*\` rows with ITT docs < 760 are omitted.\n\n` +
+		`Sorted by ITT median (failed documents score 0). Mean and Median are ` +
+		`completed-only. \`~\` marks approximate ITT. Jubarte families list best ` +
+		`and worst pin; other vendors list each pin. Jubarte rows with ITT docs ` +
+		`< 760 are omitted.\n\n` +
 		`${body}`
 	);
 }
@@ -672,11 +665,9 @@ function buildSpeedTable(rows: SpeedRow[]): string {
 
 	const sections: string[] = [
 		`### ${title}\n`,
-		`Sorted by median **ms per redline** (lower is faster). ` +
-			`Large-N warm rows (\`*-inproc\`) measure algorithm cost in a long-lived process; ` +
-			`CLI rows include process spawn. Prefer warm rows for engine comparisons. ` +
-			`Methodology: [Speed methodology](#speed-methodology). ` +
-			`Raw log: \`results/speed.jsonl\`.\n`,
+		`Sorted by median ms per redline (lower is faster). ` +
+			`\`*-inproc\` rows are in-process; CLI rows include process spawn. ` +
+			`[Speed methodology](#speed-methodology). Log: \`results/speed.jsonl\`.\n`,
 	];
 
 	if (large.length) {
