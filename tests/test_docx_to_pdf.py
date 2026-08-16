@@ -72,6 +72,26 @@ def test_visibly_different_page_scores_below_100(tmp_path):
     assert score < 100.0
 
 
+def test_simple_calibri_fixture_scores_at_least_90_against_soffice(tmp_path):
+    """Shipped jubarte convert vs soffice oracle on the simplest Calibri page."""
+    from neurotic_docx_bench.docx_to_pdf import DEFAULT_CONVERTER, convert_fixture
+
+    if not DEFAULT_CONVERTER.is_file():
+        pytest.skip("jubarte release converter not built")
+    fixture = next(item for item in load_fixtures() if item.stem == "24_id_paraid_overflow")
+    dest = tmp_path / f"{fixture.stem}.pdf"
+    convert_fixture(DEFAULT_CONVERTER, fixture, dest)
+    odir = tmp_path / "oracle"
+    cdir = tmp_path / "cand"
+    odir.mkdir()
+    cdir.mkdir()
+    shutil.copy(fixture.oracle, odir / f"{fixture.stem}.pdf")
+    shutil.copy(dest, cdir / f"{fixture.stem}.pdf")
+    full = score_folder_pair(odir, cdir, tmp_path / "work", jobs=1)
+    score = pipeline.overall_from_result(full[fixture.stem])
+    assert score >= 90.0, f"{fixture.stem} scored {score:.2f} against soffice"
+
+
 def test_pairing_is_by_plain_stem_not_redline_key(tmp_path):
     oracle = tmp_path / "oracle"
     cand = tmp_path / "cand"
