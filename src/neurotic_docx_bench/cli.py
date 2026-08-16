@@ -589,19 +589,26 @@ def docx_to_pdf_eval(
     update_readme: bool = typer.Option(
         False, "--update-readme", help="rewrite the README DOCX→PDF table from this report",
     ),
+    track: str = typer.Option(
+        "docx_to_pdf",
+        "--track",
+        help="docx_to_pdf (accepted+randomized redlines) or docx_to_pdf_no_redline_docs (source PDFs).",
+    ),
 ) -> None:
-    """Score the pinned Word-oracle DOCX→PDF set (more than 500 stems).
+    """Score a pinned Word-oracle DOCX→PDF set.
 
     Each ``--tool`` is invoked on its own headless convert path. Convert crashes
     and non-PDF output are generate failures scored as 0 (intent-to-treat).
     """
-    from neurotic_docx_bench.docx_to_pdf import WORD_PDF_TOOLS, run_eval
+    from neurotic_docx_bench.docx_to_pdf import TRACKS, WORD_PDF_TOOLS, run_eval
 
     tools = tool or None
     if tools:
         unknown = [name for name in tools if name not in WORD_PDF_TOOLS and name != "jubarte"]
         if unknown:
             raise typer.BadParameter(f"unknown --tool: {', '.join(unknown)}")
+    if track not in TRACKS:
+        raise typer.BadParameter(f"unknown --track {track}; known: {sorted(TRACKS)}")
     report = run_eval(
         json_out,
         converter=converter,
@@ -612,6 +619,7 @@ def docx_to_pdf_eval(
         limit=limit,
         resume=resume,
         convert_workers=convert_workers,
+        track=track,
     )
     bits = [f"docx-to-pdf  n={report['n']}"]
     for name, data in (report.get("tools") or {}).items():
@@ -625,7 +633,7 @@ def docx_to_pdf_eval(
     if update_readme:
         from neurotic_docx_bench.docx_to_pdf import update_readme_docx_to_pdf
 
-        update_readme_docx_to_pdf(Path("README.md"), report)
+        update_readme_docx_to_pdf(Path("README.md"), report, track=track)
         console.print("updated README.md DOCX→PDF table")
 
 

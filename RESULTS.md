@@ -388,7 +388,7 @@ _no holdout runs recorded yet (`bench run --holdout`)_
 
 Source: `results/docx_to_pdf_500.json`.
 
-### docx_to_pdf — DOCX to PDF vs Word export
+docx_to_pdf — DOCX to PDF vs Word export
 
 428 unique stems. Oracle: pinned Word-export PDFs (`pdf_accepted_word`, `pdf_redlines_randomized`). Failed converts score 0 (ITT). Mean and median are ITT.
 
@@ -474,9 +474,9 @@ These numbers are **independent engineering measurements**, not endorsements, ce
 - **LibreOffice** is used only as a pinned PDF renderer for fair comparison; it is not a redline generator in this bench.
 - Redistributing or reusing scores, corpus fixtures, or generated redlines must still respect the licenses of the underlying tools and any corpus rights.
 
-- **docx_to_pdf** is a separate 500-stem Word-export measurement (`results/docx_to_pdf_500.json`), not a `bench.jsonl` line.
+- **docx_to_pdf** and **docx_to_pdf_no_redline_docs** are Word-export measurements (`results/docx_to_pdf_500.json`, `results/docx_to_pdf_no_redline.json`), not `bench.jsonl` lines.
 
-Regenerate: `python3 scripts/export-results-md.py` (reads `results/bench.jsonl` + `results/speed.jsonl` + `results/docx_to_pdf_500.json`).
+Regenerate: `python3 scripts/export-results-md.py` (reads `results/bench.jsonl` + `results/speed.jsonl` + the DOCX→PDF JSON artifacts).
 
 <!-- DUAL_PATH_QUALITY:BEGIN -->
 ## jubarte-first dual-path redline quality (lossless vs via-AST)

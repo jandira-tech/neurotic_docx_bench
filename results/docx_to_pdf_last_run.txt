@@ -1,0 +1,57 @@
+2026-08-16T02:43:12.228789+00:00 n=100 mean=63.50 median=60.81 ge90=27 min=21.67 max=97.95
+2026-08-16T03:00:13.218658+00:00 n=100 soffice_self_mean=100.0 converter_mean=61.9887 converter_median=61.348
+2026-08-16T03:30:31.575364+00:00 n=100 soffice_self_mean=100.0 converter_mean=62.7742 converter_median=61.6389
+2026-08-16T03:59:53.324633+00:00 n=100 soffice_self_mean=100.0 converter_mean=62.8334 converter_median=61.6389
+2026-08-16T04:30:00.285091+00:00 n=100 soffice_self_mean=100.0 converter_mean=63.1989 converter_median=61.6389
+2026-08-16T04:59:54.263965+00:00 n=100 soffice_self_mean=100.0 converter_mean=63.1969 converter_median=59.9415
+2026-08-16T05:29:55.484985+00:00 n=100 soffice_self_mean=100.0 converter_mean=63.4987 converter_median=61.6389
+2026-08-16T06:00:04.245765+00:00 n=100 soffice_self_mean=100.0 converter_mean=63.302 converter_median=61.7259
+2026-08-16T06:29:56.048180+00:00 n=100 soffice_self_mean=100.0 converter_mean=63.3045 converter_median=61.7259
+2026-08-16T07:00:02.638548+00:00 n=100 soffice_self_mean=100.0 converter_mean=63.3382 converter_median=61.7259
+2026-08-16T07:37:29.707997+00:00 n=100 soffice_self_mean=100.0 converter_mean=63.3682 converter_median=61.7259
+2026-08-16T07:59:50.593350+00:00 n=100 soffice_self_mean=100.0 converter_mean=63.1895 converter_median=61.7259
+2026-08-16T08:34:26.484268+00:00 n=100 soffice_self_mean=100.0 converter_mean=63.212 converter_median=61.7259
+2026-08-16T09:30:32.419421+00:00 n=100 soffice_self_mean=100.0 converter_mean=63.2967 converter_median=61.8361
+2026-08-16T09:59:46.171065+00:00 n=100 soffice_self_mean=100.0 converter_mean=63.4878 converter_median=61.8361
+2026-08-16T10:29:52.520508+00:00 n=100 soffice_self_mean=100.0 converter_mean=63.5071 converter_median=61.8361
+2026-08-16T11:29:45.795392+00:00 n=100 soffice_self_mean=100.0 converter_mean=63.9699 converter_median=61.8361
+2026-08-16T11:59:50.002773+00:00 n=100 soffice_self_mean=100.0 converter_mean=63.3598 converter_median=61.7259
+2026-08-16T12:29:44.918587+00:00 n=100 soffice_self_mean=100.0 converter_mean=63.3633 converter_median=61.7259
+2026-08-16T13:37:46.518870+00:00 n=100 soffice_self_mean=100.0 converter_mean=63.8175 converter_median=61.7259
+2026-08-16T13:55:53.291936+00:00 n=100 soffice_self_mean=100.0 converter_mean=63.8024 converter_median=61.7259
+2026-08-16T14:04:48.613348+00:00 n=100 soffice_self_mean=100.0 converter_mean=63.8046 converter_median=61.7259
+2026-08-16T14:10:42.893251+00:00 n=100 soffice_self_mean=100.0 converter_mean=63.8079 converter_median=61.7259
+2026-08-16T14:23:54.129679+00:00 n=100 soffice_self_mean=100.0 converter_mean=63.8499 converter_median=61.7259
+2026-08-16T14:30:57.220170+00:00 n=100 soffice_self_mean=100.0 converter_mean=63.8499 converter_median=61.7259
+2026-08-16T14:40:39.494441+00:00 n=100 soffice_self_mean=100.0 converter_mean=63.8588 converter_median=61.7259
+2026-08-16T15:00:45.765487+00:00 n=100 soffice_self_mean=100.0 converter_mean=63.8588 converter_median=61.7259
+2026-08-16T15:02:21.870307+00:00 n=100 soffice_self_mean=100.0 converter_mean=63.8612 converter_median=61.7259
+2026-08-16T15:12:34.329855+00:00 n=100 soffice_self_mean=100.0 converter_mean=63.4869 converter_median=61.5543
+2026-08-16T15:26:06.846368+00:00 n=100 soffice_self_mean=100.0 converter_mean=63.9628 converter_median=61.7259
+2026-08-16T15:52:29.864147+00:00 n=100 soffice_self_mean=100.0 converter_mean=64.8755 converter_median=61.7259
+2026-08-16T15:59:54.577855+00:00 n=100 soffice_self_mean=100.0 converter_mean=64.8755 converter_median=61.7259
+2026-08-16T16:30:38.589466+00:00 n=100 soffice_self_mean=100.0 converter_mean=64.008 converter_median=59.5004
+2026-08-16T17:55:47+00:00 n=100 soffice_self_mean=100.0 converter_mean=64.903 converter_median=59.443
+2026-08-16T18:04:10+00:00 n=100 soffice_self_mean=100.0 converter_mean=64.8979 converter_median=59.443 body_pbdr
+2026-08-16T18:14:43+00:00 n=100 soffice_self_mean=100.0 converter_mean=64.9132 converter_median=59.443 xml:space-preserve
+2026-08-16T18:25:30+00:00 n=100 soffice_self_mean=100.0 converter_mean=64.9321 converter_median=59.443 liberation-mono
+2026-08-16T18:56:08+00:00 n=100 soffice_self_mean=100.0 converter_mean=64.9406 converter_median=59.443 indent_right sd_2517=39.53 106pp
+2026-08-16T19:01:11+00:00 n=500 soffice_self_mean=NA oracle=microsoft_word converter_mean=64.2271 converter_median=66.2244
+2026-08-16T19:17:03+00:00 n=100 converter_mean=64.9428 converter_median=59.443 table_jc_center
+2026-08-16T19:32:11+00:00 n=500 soffice_self_mean=NA oracle=microsoft_word converter_mean=64.2271 converter_median=66.2244
+2026-08-16T19:37:09+00:00 n=100 converter_mean=65.2429 converter_median=59.443 inter-serif aptos-sans
+2026-08-16T19:36:56.815055+00:00 n=100 soffice_self_mean=100.0 converter_mean=65.2429 converter_median=59.443 preserve-pad-squeeze
+2026-08-16T20:10:00+00:00 n=100 converter_mean=65.2873 converter_median=59.443 heading1-majorHAnsi-only comments=43.84
+2026-08-16T20:30:00+00:00 n=100 converter_mean=65.3165 converter_median=60.1483 cellmar-108twips comments=44.17
+2026-08-16T20:34:46+00:00 n=857 soffice_self_mean=NA oracle=microsoft_word converter_mean=60.991 converter_median=62.544
+2026-08-16T20:43:12+00:00 n=100 converter_mean=65.3064 converter_median=60.1483 min=37.9856 ge90=9 ins-xml-space-explode sample/eigenpal
+2026-08-16T20:50:00+00:00 n=100 converter_mean=65.3064 converter_median=60.1483 wrap-runs-nlines hr=57.71
+2026-08-16T21:00:14+00:00 n=100 converter_mean=65.4385 converter_median=60.2423 min=37.9076 ge90=9 author-palette-gold-blue sample/eigenpal
+2026-08-16T21:04:47+00:00 n=428 soffice_self_mean=NA oracle=microsoft_word converter_mean=60.991 converter_median=62.544
+2026-08-16T21:15:00+00:00 n=100 converter_mean=65.381 converter_median=60.7067 title-line-size-mult hr=58.06
+2026-08-16T21:26:44+00:00 n=100 converter_mean=65.3504 converter_median=60.7067 min=38.3792 ge90=9 left-rev-bar sample/eigenpal
+2026-08-16T21:34:15+00:00 n=428 soffice_self_mean=NA oracle=microsoft_word converter_mean=60.991 converter_median=62.544
+2026-08-16T21:35:00+00:00 n=100 converter_mean=65.4737 converter_median=61.0682 superscript-0.65 raise-0.35
+2026-08-16T22:04:21+00:00 n=428 soffice_self_mean=NA oracle=microsoft_word converter_mean=60.991 converter_median=62.544
+2026-08-16T22:33:56+00:00 n=428 soffice_self_mean=NA oracle=microsoft_word converter_mean=60.991 converter_median=62.544
+2026-08-16T23:04:56+00:00 n=428 soffice_self_mean=NA oracle=microsoft_word converter_mean=60.991 converter_median=62.544
