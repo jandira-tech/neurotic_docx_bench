@@ -590,7 +590,7 @@ def docx_to_pdf_eval(
         False, "--update-readme", help="rewrite the README DOCX→PDF table from this report",
     ),
 ) -> None:
-    """Score the pinned 500-fixture DOCX→PDF set against Word-exported oracles.
+    """Score the pinned Word-oracle DOCX→PDF set (more than 500 stems).
 
     Each ``--tool`` is invoked on its own headless convert path. Convert crashes
     and non-PDF output are generate failures scored as 0 (intent-to-treat).

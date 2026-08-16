@@ -384,6 +384,22 @@ Sealed holdout (`corpus/holdout_combined.txt`) vs the visible corpus, per vendor
 
 _no holdout runs recorded yet (`bench run --holdout`)_
 
+## docx_to_pdf
+
+Source: `results/docx_to_pdf_500.json`.
+
+### docx_to_pdf — DOCX to PDF vs Word export
+
+428 unique stems. Oracle: pinned Word-export PDFs (`pdf_accepted_word`, `pdf_redlines_randomized`). Failed converts score 0 (ITT). Mean and median are ITT.
+
+| Rank | Tool | Version | n scored | ITT n | ITT Mean | ITT Median | Perfect (100) | Failures |
+| --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| 1 | jubarte | jubarte 0.7.0 | 428 | 428 | 60.70 | 62.54 | 0 | 0 |
+| 2 | office2pdf | office2pdf 0.6.7 | 413 | 428 | 60.26 | 57.01 | 0 | 15 |
+| 3 | pdfitdown | pdfitdown 4.0.0 | 413 | 428 | 60.26 | 57.01 | 0 | 15 |
+| 4 | rdocx | rdocx 0.7.0 | 428 | 428 | 50.30 | 48.79 | 0 | 0 |
+| 5 | doxx | doxx 0.1.4 | 0 | 428 | 0.00 | 0.00 | 0 | 428 |
+
 ## Redline generation speed
 
 Source: `results/speed.jsonl` (+ `results/redline_speed_bench/**/summary.json` when present). **19** generation row(s) after dedupe (one per tool×kind; prefer larger `n`, then lower median). Unit: **ms per redline** (lower = faster). See [`docs/SPEED.md`](docs/SPEED.md) for methodology.
@@ -458,7 +474,9 @@ These numbers are **independent engineering measurements**, not endorsements, ce
 - **LibreOffice** is used only as a pinned PDF renderer for fair comparison; it is not a redline generator in this bench.
 - Redistributing or reusing scores, corpus fixtures, or generated redlines must still respect the licenses of the underlying tools and any corpus rights.
 
-Regenerate: `python3 scripts/export-results-md.py` (reads `results/bench.jsonl` + `results/speed.jsonl`).
+- **docx_to_pdf** is a separate 500-stem Word-export measurement (`results/docx_to_pdf_500.json`), not a `bench.jsonl` line.
+
+Regenerate: `python3 scripts/export-results-md.py` (reads `results/bench.jsonl` + `results/speed.jsonl` + `results/docx_to_pdf_500.json`).
 
 <!-- DUAL_PATH_QUALITY:BEGIN -->
 ## jubarte-first dual-path redline quality (lossless vs via-AST)
