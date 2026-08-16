@@ -563,6 +563,54 @@ def compare(
         console.print(f"wrote {json_out}")
 
 
+@app.command(name="docx-to-pdf")
+def docx_to_pdf_eval(
+    converter: Path = typer.Option(
+        None,
+        "--converter",
+        help="independent DOCX→PDF converter binary (jubarte convert). Not soffice.",
+    ),
+    json_out: Path = typer.Option(
+        Path("results/docx_to_pdf.json"),
+        "--json",
+        help="write per-doc scores + aggregates",
+    ),
+    work_dir: Path | None = typer.Option(None, "--work-dir", help="scratch dir for PDFs and rasters"),
+    jobs: int = typer.Option(8, "--jobs", "-j"),
+    dpi: int = typer.Option(144, "--dpi"),
+    limit: int | None = typer.Option(None, "--limit", help="score only the first N fixtures (tests)"),
+) -> None:
+    """Score the pinned 100-fixture DOCX→PDF set against soffice oracles.
+
+    Converts each pinned source DOCX with ``CONVERTER convert`` (never soffice),
+    then runs the shipped visual scorer twice: soffice-vs-self (must be 100) and
+    converter-vs-soffice (the incremental quality metric).
+    """
+    from neurotic_docx_bench.docx_to_pdf import DEFAULT_CONVERTER, run_eval
+
+    binary = converter or DEFAULT_CONVERTER
+    if not binary.is_file():
+        raise typer.BadParameter(
+            f"converter not found: {binary} (build jubarte or pass --converter)",
+        )
+    report = run_eval(
+        binary,
+        json_out,
+        jobs=jobs,
+        dpi=dpi,
+        work_dir=work_dir,
+        limit=limit,
+    )
+    self_agg = report["soffice_self"]["aggregate"]
+    cand_agg = report["converter_vs_soffice"]["aggregate"]
+    console.print(
+        f"docx-to-pdf  n={report['n']}  "
+        f"soffice-self mean={self_agg.get('mean')}  "
+        f"converter-vs-soffice mean={cand_agg.get('mean')} median={cand_agg.get('median')}  "
+        f"→ {json_out}",
+    )
+
+
 def _agg(values: Iterable[float | None]) -> dict[str, float | int]:
     vals = [v for v in values if v is not None]
     if not vals:

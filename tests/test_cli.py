@@ -18,6 +18,13 @@ def test_version():
     assert result.stdout.strip()  # some version string
 
 
+def test_docx_to_pdf_help_lists_the_visual_track():
+    result = runner.invoke(app, ["docx-to-pdf", "--help"])
+    assert result.exit_code == 0, result.output
+    assert "soffice" in result.output.lower()
+    assert "--converter" in result.output
+
+
 def test_compare_passthrough_self(tmp_path, sample_oracle_pdfs):
     oracle = tmp_path / "oracle"
     cand = tmp_path / "cand"
