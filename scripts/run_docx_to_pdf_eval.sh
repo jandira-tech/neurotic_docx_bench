@@ -3,12 +3,11 @@
 #
 # SPDX-License-Identifier: AGPL-3.0-only
 #
-# The scheduled 30-minute DOCX→PDF visual test. Same command as one-shot verify:
-# convert the pinned 100 fixtures with jubarte, score soffice-vs-self and
-# converter-vs-soffice via the shipped visual pipeline.
+# Score the pinned 500 Word-oracle DOCX→PDF set with the four named converters.
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-JUBARTE="${JUBARTE:-$ROOT/../jubarte-redlines/target/release/jubarte}"
-OUT="${1:-$ROOT/results/docx_to_pdf.json}"
+OUT="${1:-$ROOT/results/docx_to_pdf_500.json}"
 cd "$ROOT"
-exec uv run bench docx-to-pdf --converter "$JUBARTE" --json "$OUT" --jobs 8
+exec uv run bench docx-to-pdf \
+  --tool jubarte --tool rdocx --tool office2pdf --tool pdfitdown --tool doxx \
+  --json "$OUT" --jobs 8

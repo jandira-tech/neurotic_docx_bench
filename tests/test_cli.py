@@ -21,8 +21,9 @@ def test_version():
 def test_docx_to_pdf_help_lists_the_visual_track():
     result = runner.invoke(app, ["docx-to-pdf", "--help"])
     assert result.exit_code == 0, result.output
-    assert "soffice" in result.output.lower()
+    assert "--tool" in result.output
     assert "--converter" in result.output
+    assert "rdocx" in result.output
 
 
 def test_compare_passthrough_self(tmp_path, sample_oracle_pdfs):

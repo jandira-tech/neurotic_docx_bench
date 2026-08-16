@@ -142,4 +142,10 @@ results/redline_speed_bench/**/*-dist-fingerprint.json
 results/redline_speed_bench/**/fixtures/
 results/soffice_vs_word_redlines_randomized/**/docx/
 results/soffice_vs_word_redlines_randomized/**/score_work/
+# DOCX→PDF raster/work trees (keep results/docx_to_pdf_500.json)
+results/docx_to_pdf_word500_work/
+results/docx_to_pdf_500_jubarte.json
+results/docx_to_pdf_work/
+results/docx_to_pdf_eval_work/
+results/docx_to_pdf_steer_work/
 generate_timings.json
