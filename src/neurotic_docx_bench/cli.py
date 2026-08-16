@@ -568,47 +568,65 @@ def docx_to_pdf_eval(
     converter: Path = typer.Option(
         None,
         "--converter",
-        help="independent DOCX→PDF converter binary (jubarte convert). Not soffice.",
+        help="override binary for a single --tool (or jubarte-shaped convert if no --tool).",
+    ),
+    tool: list[str] = typer.Option(
+        [],
+        "--tool",
+        help="converter to run (repeatable): rdocx, office2pdf, pdfitdown, doxx.",
     ),
     json_out: Path = typer.Option(
         Path("results/docx_to_pdf.json"),
         "--json",
-        help="write per-doc scores + aggregates",
+        help="write per-doc scores + ITT aggregates",
     ),
     work_dir: Path | None = typer.Option(None, "--work-dir", help="scratch dir for PDFs and rasters"),
     jobs: int = typer.Option(8, "--jobs", "-j"),
     dpi: int = typer.Option(144, "--dpi"),
     limit: int | None = typer.Option(None, "--limit", help="score only the first N fixtures (tests)"),
+    resume: bool = typer.Option(True, "--resume/--no-resume", help="reuse existing candidate PDFs"),
+    convert_workers: int = typer.Option(8, "--convert-workers", help="parallel convert processes per tool"),
+    update_readme: bool = typer.Option(
+        False, "--update-readme", help="rewrite the README DOCX→PDF table from this report",
+    ),
 ) -> None:
-    """Score the pinned 100-fixture DOCX→PDF set against soffice oracles.
+    """Score the pinned 500-fixture DOCX→PDF set against Word-exported oracles.
 
-    Converts each pinned source DOCX with ``CONVERTER convert`` (never soffice),
-    then runs the shipped visual scorer twice: soffice-vs-self (must be 100) and
-    converter-vs-soffice (the incremental quality metric).
+    Each ``--tool`` is invoked on its own headless convert path. Convert crashes
+    and non-PDF output are generate failures scored as 0 (intent-to-treat).
     """
-    from neurotic_docx_bench.docx_to_pdf import DEFAULT_CONVERTER, run_eval
+    from neurotic_docx_bench.docx_to_pdf import WORD_PDF_TOOLS, run_eval
 
-    binary = converter or DEFAULT_CONVERTER
-    if not binary.is_file():
-        raise typer.BadParameter(
-            f"converter not found: {binary} (build jubarte or pass --converter)",
-        )
+    tools = tool or None
+    if tools:
+        unknown = [name for name in tools if name not in WORD_PDF_TOOLS and name != "jubarte"]
+        if unknown:
+            raise typer.BadParameter(f"unknown --tool: {', '.join(unknown)}")
     report = run_eval(
-        binary,
         json_out,
+        converter=converter,
+        tools=tools,
         jobs=jobs,
         dpi=dpi,
         work_dir=work_dir,
         limit=limit,
+        resume=resume,
+        convert_workers=convert_workers,
     )
-    self_agg = report["soffice_self"]["aggregate"]
-    cand_agg = report["converter_vs_soffice"]["aggregate"]
-    console.print(
-        f"docx-to-pdf  n={report['n']}  "
-        f"soffice-self mean={self_agg.get('mean')}  "
-        f"converter-vs-soffice mean={cand_agg.get('mean')} median={cand_agg.get('median')}  "
-        f"→ {json_out}",
-    )
+    bits = [f"docx-to-pdf  n={report['n']}"]
+    for name, data in (report.get("tools") or {}).items():
+        bits.append(
+            f"{name}: scored={data.get('n_scored')} itt={data.get('itt_n')} "
+            f"mean={data.get('mean')} median={data.get('median')} "
+            f"fail={data.get('failures')}",
+        )
+    bits.append(f"→ {json_out}")
+    console.print("  ".join(bits))
+    if update_readme:
+        from neurotic_docx_bench.docx_to_pdf import update_readme_docx_to_pdf
+
+        update_readme_docx_to_pdf(Path("README.md"), report)
+        console.print("updated README.md DOCX→PDF table")
 
 
 def _agg(values: Iterable[float | None]) -> dict[str, float | int]:
