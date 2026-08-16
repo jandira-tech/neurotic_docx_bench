@@ -1146,41 +1146,42 @@ def fidelity_methodology_and_legal() -> list[str]:
         "- Redistributing or reusing scores, corpus fixtures, or generated redlines "
         "must still respect the licenses of the underlying tools and any corpus rights.",
         "",
-        "- **docx_to_pdf** is a separate 500-stem Word-export measurement "
-        "(`results/docx_to_pdf_500.json`), not a `bench.jsonl` line.",
+        "- **docx_to_pdf** and **docx_to_pdf_no_redline_docs** are Word-export "
+        "measurements (`results/docx_to_pdf_500.json`, "
+        "`results/docx_to_pdf_no_redline.json`), not `bench.jsonl` lines.",
         "",
         "Regenerate: `python3 scripts/export-results-md.py` "
         "(reads `results/bench.jsonl` + `results/speed.jsonl` + "
-        "`results/docx_to_pdf_500.json`).",
+        "the DOCX→PDF JSON artifacts).",
         "",
     ]
 
 
 def docx_to_pdf_section(root: Path) -> list[str]:
-    """Published ``docx_to_pdf`` table from ``results/docx_to_pdf_500.json``."""
-    path = root / "results" / "docx_to_pdf_500.json"
-    if not path.is_file():
-        return []
-    src = str(path.relative_to(root)) if path.is_relative_to(root) else str(path)
+    """Published DOCX→PDF tables from the committed eval artifacts."""
+    artifacts = (
+        ("docx_to_pdf", root / "results" / "docx_to_pdf_500.json"),
+        ("docx_to_pdf_no_redline_docs", root / "results" / "docx_to_pdf_no_redline.json"),
+    )
     try:
         sys.path.insert(0, str(root / "src"))
         from neurotic_docx_bench.docx_to_pdf import render_docx_to_pdf_table
     except ImportError:
-        return [
-            "## docx_to_pdf",
-            "",
-            f"Source: `{src}` — install the package to render this table.",
-            "",
-        ]
-    report = json.loads(path.read_text(encoding="utf-8"))
-    return [
-        "## docx_to_pdf",
-        "",
-        f"Source: `{src}`.",
-        "",
-        render_docx_to_pdf_table(report).rstrip(),
-        "",
-    ]
+        render_docx_to_pdf_table = None
+    lines: list[str] = []
+    for name, path in artifacts:
+        if not path.is_file():
+            continue
+        src = str(path.relative_to(root)) if path.is_relative_to(root) else str(path)
+        lines.extend([f"## {name}", "", f"Source: `{src}`.", ""])
+        if render_docx_to_pdf_table is None:
+            lines.append("Install the package to render this table.")
+            lines.append("")
+            continue
+        report = json.loads(path.read_text(encoding="utf-8"))
+        lines.append(render_docx_to_pdf_table(report).rstrip())
+        lines.append("")
+    return lines
 
 
 def to_markdown(

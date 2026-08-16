@@ -225,6 +225,12 @@ Sorted by median ms per redline (lower is faster). `*-inproc` rows are in-proces
 | 5 | doxx | doxx 0.1.4 | 0 | 428 | 0.00 | 0.00 | 0 | 428 |
 <!-- DOCX-TO-PDF-END -->
 
+<!-- DOCX-TO-PDF-NO-REDLINE-START -->
+### docx_to_pdf_no_redline_docs — source DOCX to PDF vs Word export
+
+Table is filled from `results/docx_to_pdf_no_redline.json` after that run.
+<!-- DOCX-TO-PDF-NO-REDLINE-END -->
+
 ---
 
 ## Benchmarks
@@ -240,6 +246,7 @@ Compare vendors only within one table. LibreOffice scores and Playwright scores 
 | **`visual_redlines`** | Word redline DOCX in the vendor web editor | `pdf_redlines_word` |
 | **`visual_accepted_changes`** | Accepted Word redline in the vendor web editor | `pdf_accepted_word` |
 | **`docx_to_pdf`** | Accepted Word redline DOCX + randomized redline DOCX | SHA-pinned `pdf_accepted_word` + `pdf_redlines_randomized` |
+| **`docx_to_pdf_no_redline_docs`** | Source DOCX + randomized source DOCX | SHA-pinned `pdf_source` + `pdf_source_randomized` |
 
 `visual_*` loads Word’s DOCX in the editor, not the tool’s own redline. Generator package and editor package are separate pins.
 
