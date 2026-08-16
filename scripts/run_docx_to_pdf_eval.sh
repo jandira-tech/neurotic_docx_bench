@@ -3,7 +3,7 @@
 #
 # SPDX-License-Identifier: AGPL-3.0-only
 #
-# Score the pinned 500 Word-oracle DOCX→PDF set with the four named converters.
+# Score the pinned Word-oracle DOCX→PDF set (n > 500).
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 OUT="${1:-$ROOT/results/docx_to_pdf_500.json}"
