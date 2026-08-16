@@ -25,6 +25,7 @@ regenerate:
 ```bash
 python3 scripts/export-results-md.py          # RESULTS.md + docs/RESULTS.md
 bun run update-readme-ranking                 # tables between RANKING markers
+uv run bench docx-to-pdf --update-readme      # 500-doc Word-oracle DOCX→PDF table
 ```
 
 > **The oracle in one sentence.** Markup comes from real Microsoft Word; PDFs are rendered
@@ -277,6 +278,22 @@ Sorted by median **ms per redline** (lower is faster). Large-N warm rows (`*-inp
 | 10 | superdoc | python | 40.89 | 94.19 | 619.93 | 10.6 | 90 | 0 |
 | 11 | docxodus | node | 75.27 | 236.57 | 1499.68 | 4.2 | 90 | 0 |
 <!-- RANKING-END -->
+
+<!-- DOCX-TO-PDF-START -->
+### DOCX→PDF — 500 Word-oracle documents
+
+Pixel score vs Microsoft Word–exported PDFs in `corpus/no_comments_pdf_was_generated_by_word` (source + Word redlines + accepted; no randomized clones, not the LibreOffice `pdf_source`). Intent-to-treat: convert crash, empty output, or non-`%PDF-` is a generate failure scored as 0. Mean and median are ITT. PdfItDown's Office path is office2pdf; near-identical scores are expected, not a measurement error.
+
+Measurement set: **500** unique stems.
+
+| Rank | Tool | Version | n scored | ITT n | ITT Mean | ITT Median | Perfect (100) | Failures |
+| --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| 1 | jubarte | jubarte 0.7.0 | 500 | 500 | 64.29 | 66.22 | 0 | 0 |
+| 2 | office2pdf | office2pdf 0.6.7 | 489 | 500 | 64.83 | 62.79 | 1 | 11 |
+| 3 | pdfitdown | pdfitdown 4.0.0 | 489 | 500 | 64.83 | 62.79 | 1 | 11 |
+| 4 | rdocx | rdocx 0.7.0 | 500 | 500 | 53.17 | 51.18 | 0 | 0 |
+| 5 | doxx | doxx 0.1.4 | 0 | 500 | 0.00 | 0.00 | 0 | 500 |
+<!-- DOCX-TO-PDF-END -->
 
 ---
 

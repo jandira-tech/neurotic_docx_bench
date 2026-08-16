@@ -1,37 +1,68 @@
-"""DOCX→PDF track: fixture pin, shipped visual scoring, plain-stem pairing."""
+"""DOCX→PDF track: 500 Word oracles, shipped adapters, ITT generate failures."""
 
 from __future__ import annotations
 
+import json
 import shutil
+import stat
+from pathlib import Path
 
 import pytest
 
 from neurotic_docx_bench import pipeline
 from neurotic_docx_bench.docx_to_pdf import (
     REQUIRED_FEATURES,
+    WORD_CORPUS,
+    WORD_PDF_TOOLS,
+    convert_command,
     feature_coverage,
     load_fixtures,
+    render_docx_to_pdf_table,
+    run_eval,
     score_folder_pair,
+    select_word_oracle_fixtures,
+    try_convert_fixture,
+    update_readme_docx_to_pdf,
 )
-from helpers import CORPUS
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
+LIBREOFFICE_PDF_SOURCE = REPO_ROOT / "corpus" / "word_based" / "pdf_source"
 
 
-PDF_SOURCE = CORPUS / "pdf_source"
-
-
-def test_fixture_set_is_100_distinct_docx_with_soffice_oracles():
+def test_fixture_set_is_500_unique_word_oracles():
     fixtures = load_fixtures()
-    assert len(fixtures) == 100
+    assert len(fixtures) == 500
     stems = [item.stem for item in fixtures]
-    assert len(set(stems)) == 100
+    assert len(set(stems)) == 500
+    originals = [(item.kind, item.original_stem) for item in fixtures]
+    assert len(set(originals)) == 500
+    word_root = WORD_CORPUS.resolve()
+    lo_root = LIBREOFFICE_PDF_SOURCE.resolve()
+    kinds: set[str] = set()
     for item in fixtures:
+        kinds.add(item.kind)
         assert item.docx.is_file(), f"missing DOCX {item.docx}"
         assert item.docx.suffix == ".docx"
-        assert item.oracle.is_file(), f"missing soffice oracle {item.oracle}"
+        assert item.oracle.is_file(), f"missing Word oracle {item.oracle}"
         assert item.oracle.suffix == ".pdf"
-        assert item.docx.stem == item.stem
-        assert item.oracle.stem == item.stem
         assert item.oracle.read_bytes()[:5] == b"%PDF-"
+        assert item.kind in {"source", "redline", "accepted"}
+        assert item.stem == f"{item.kind}__{item.original_stem}"
+        oracle = item.oracle.resolve()
+        assert word_root in oracle.parents or oracle.parent == word_root
+        assert lo_root not in oracle.parents
+        assert "randomized" not in str(item.docx).lower()
+        assert "randomized" not in str(item.oracle).lower()
+        head = item.oracle.read_bytes()[:65_536]
+        assert b"LibreOffice" not in head, f"{item.stem} looks like a LibreOffice PDF"
+    assert "source" in kinds
+    assert "redline" in kinds
+
+
+def test_pin_list_matches_deterministic_word_pool_selection():
+    pinned = [(item.kind, item.original_stem) for item in load_fixtures()]
+    expected = [(item.kind, item.original_stem) for item in select_word_oracle_fixtures(n=500)]
+    assert pinned == expected
 
 
 def test_fixture_set_covers_required_document_features():
@@ -72,26 +103,6 @@ def test_visibly_different_page_scores_below_100(tmp_path):
     assert score < 100.0
 
 
-def test_simple_calibri_fixture_scores_at_least_90_against_soffice(tmp_path):
-    """Shipped jubarte convert vs soffice oracle on the simplest Calibri page."""
-    from neurotic_docx_bench.docx_to_pdf import DEFAULT_CONVERTER, convert_fixture
-
-    if not DEFAULT_CONVERTER.is_file():
-        pytest.skip("jubarte release converter not built")
-    fixture = next(item for item in load_fixtures() if item.stem == "24_id_paraid_overflow")
-    dest = tmp_path / f"{fixture.stem}.pdf"
-    convert_fixture(DEFAULT_CONVERTER, fixture, dest)
-    odir = tmp_path / "oracle"
-    cdir = tmp_path / "cand"
-    odir.mkdir()
-    cdir.mkdir()
-    shutil.copy(fixture.oracle, odir / f"{fixture.stem}.pdf")
-    shutil.copy(dest, cdir / f"{fixture.stem}.pdf")
-    full = score_folder_pair(odir, cdir, tmp_path / "work", jobs=1)
-    score = pipeline.overall_from_result(full[fixture.stem])
-    assert score >= 90.0, f"{fixture.stem} scored {score:.2f} against soffice"
-
-
 def test_pairing_is_by_plain_stem_not_redline_key(tmp_path):
     oracle = tmp_path / "oracle"
     cand = tmp_path / "cand"
@@ -107,3 +118,172 @@ def test_pairing_is_by_plain_stem_not_redline_key(tmp_path):
     assert keys == ["alpha", "pair_redline"]
     redline_pairs = pipeline.match_by_stem(oracle, cand)
     assert [key for key, _, _ in redline_pairs] == ["pair"]
+
+
+def test_convert_command_rdocx_uses_native_to_pdf():
+    cmd = convert_command("rdocx", Path("in.docx"), Path("out.pdf"), binary=Path("/opt/rdocx"))
+    assert cmd == ["/opt/rdocx", "convert", "in.docx", "--to", "pdf", "-o", "out.pdf"]
+
+
+def test_convert_command_office2pdf_uses_native_cli():
+    cmd = convert_command(
+        "office2pdf", Path("in.docx"), Path("out.pdf"), binary=Path("/opt/office2pdf"),
+    )
+    assert cmd == ["/opt/office2pdf", "in.docx", "-o", "out.pdf"]
+
+
+def test_convert_command_pdfitdown_uses_native_cli():
+    cmd = convert_command(
+        "pdfitdown", Path("in.docx"), Path("out.pdf"), binary=Path("/opt/pdfitdown"),
+    )
+    assert cmd == ["/opt/pdfitdown", "-i", "in.docx", "-o", "out.pdf"]
+
+
+def test_convert_command_doxx_is_native_not_markdown_pipeline():
+    cmd = convert_command("doxx", Path("in.docx"), Path("out.pdf"), binary=Path("/opt/doxx"))
+    joined = " ".join(cmd).lower()
+    assert cmd[0] == "/opt/doxx"
+    assert "in.docx" in cmd
+    assert "pandoc" not in joined
+    assert "markdown" not in joined
+    assert "soffice" not in joined
+
+
+def test_convert_command_jubarte_uses_native_convert():
+    cmd = convert_command(
+        "jubarte", Path("in.docx"), Path("out.pdf"), binary=Path("/opt/jubarte"),
+    )
+    assert cmd == ["/opt/jubarte", "convert", "in.docx", "-o", "out.pdf", "--force"]
+    assert "soffice" not in " ".join(cmd).lower()
+
+
+def test_known_tools_are_the_four_named_converters():
+    assert WORD_PDF_TOOLS == ("rdocx", "office2pdf", "pdfitdown", "doxx")
+
+
+def test_try_convert_records_crash_as_generate_failure(tmp_path):
+    fixture = load_fixtures()[0]
+    dest = tmp_path / f"{fixture.stem}.pdf"
+    script = tmp_path / "boom"
+    script.write_text("#!/bin/sh\necho nope >&2\nexit 7\n")
+    script.chmod(script.stat().st_mode | stat.S_IEXEC)
+    fail = try_convert_fixture("rdocx", script, fixture, dest)
+    assert fail is not None
+    assert fail["doc"] == fixture.stem
+    assert fail["stage"] == "generate"
+    assert fail["error"]
+    assert fail["cmd"][0] == str(script)
+    assert not dest.is_file() or dest.read_bytes()[:5] != b"%PDF-"
+
+
+def test_try_convert_rejects_non_pdf_output(tmp_path):
+    fixture = load_fixtures()[0]
+    dest = tmp_path / f"{fixture.stem}.pdf"
+    script = tmp_path / "notpdf"
+    script.write_text("#!/bin/sh\nwhile [ $# -gt 0 ]; do\n  if [ \"$1\" = \"-o\" ]; then printf 'not-a-pdf' > \"$2\"; fi\n  shift\ndone\n")
+    script.chmod(script.stat().st_mode | stat.S_IEXEC)
+    fail = try_convert_fixture("rdocx", script, fixture, dest)
+    assert fail is not None
+    assert fail["stage"] == "generate"
+    assert "PDF" in fail["error"] or "pdf" in fail["error"].lower()
+
+
+def test_run_eval_itt_zero_on_convert_fail_and_does_not_abort(tmp_path):
+    items = load_fixtures()[:3]
+    script = tmp_path / "fail_all"
+    script.write_text("#!/bin/sh\nexit 1\n")
+    script.chmod(script.stat().st_mode | stat.S_IEXEC)
+    report = run_eval(
+        json_out=tmp_path / "out.json",
+        work_dir=tmp_path / "work",
+        tools=["rdocx"],
+        converter=script,
+        fixtures=items,
+        jobs=1,
+    )
+    assert report["n"] == 3
+    tool = report["tools"]["rdocx"]
+    assert tool["itt_n"] == 3
+    assert tool["n_scored"] == 0
+    assert tool["failures"] == 3
+    assert tool["mean"] == 0
+    assert tool["median"] == 0
+    assert tool["perfects"] == 0
+    assert len(tool["generate_failures"]) == 3
+    assert set(tool["per_doc"]) == {item.stem for item in items}
+    assert all(value == 0 for value in tool["per_doc"].values())
+    saved = json.loads((tmp_path / "out.json").read_text())
+    assert saved["tools"]["rdocx"]["failures"] == 3
+
+
+def test_render_table_uses_report_itt_fields_not_invented_means():
+    report = {
+        "n": 500,
+        "tools": {
+            "rdocx": {
+                "n_scored": 499,
+                "itt_n": 500,
+                "mean": 12.3456,
+                "median": 11.0,
+                "perfects": 2,
+                "failures": 1,
+            },
+            "doxx": {
+                "n_scored": 0,
+                "itt_n": 500,
+                "mean": 0.0,
+                "median": 0.0,
+                "perfects": 0,
+                "failures": 500,
+            },
+        },
+    }
+    table = render_docx_to_pdf_table(report)
+    assert "| rdocx |" in table
+    assert "| doxx |" in table
+    assert "499" in table
+    assert "500" in table
+    assert "12.35" in table or "12.3456" in table
+    data_rows = [line for line in table.splitlines() if line.startswith("|") and "Tool" not in line and "---" not in line]
+    assert any("| rdocx |" in line for line in data_rows)
+    assert any("| doxx |" in line for line in data_rows)
+    assert not any("| office2pdf |" in line for line in data_rows)
+
+
+def test_readme_docx_to_pdf_table_matches_committed_artifact():
+    artifact = REPO_ROOT / "results" / "docx_to_pdf_500.json"
+    readme = REPO_ROOT / "README.md"
+    report = json.loads(artifact.read_text(encoding="utf-8"))
+    assert report["n"] == 500
+    for name, tool in report["tools"].items():
+        assert tool["itt_n"] == 500, name
+        assert len(tool["per_doc"]) == 500, name
+    expected = render_docx_to_pdf_table(report).strip()
+    assert expected in readme.read_text(encoding="utf-8")
+
+
+def test_update_readme_replaces_marked_docx_to_pdf_block(tmp_path):
+    report = {
+        "n": 500,
+        "tools": {
+            "rdocx": {
+                "n_scored": 500,
+                "itt_n": 500,
+                "mean": 10.0,
+                "median": 9.0,
+                "perfects": 0,
+                "failures": 0,
+            },
+        },
+    }
+    readme = tmp_path / "README.md"
+    readme.write_text(
+        "head\n<!-- RANKING-END -->\n"
+        "<!-- DOCX-TO-PDF-START -->\nold table\n<!-- DOCX-TO-PDF-END -->\ntail\n",
+    )
+    update_readme_docx_to_pdf(readme, report)
+    text = readme.read_text()
+    assert "head" in text
+    assert "tail" in text
+    assert "old table" not in text
+    assert render_docx_to_pdf_table(report).strip() in text
