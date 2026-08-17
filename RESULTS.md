@@ -388,7 +388,7 @@ _no holdout runs recorded yet (`bench run --holdout`)_
 
 Source: `results/docx_to_pdf_500.json`.
 
-docx_to_pdf — DOCX to PDF vs Word export
+### docx_to_pdf — DOCX to PDF vs Word export
 
 428 unique stems. Oracle: pinned Word-export PDFs (`pdf_accepted_word`, `pdf_redlines_randomized`). Failed converts score 0 (ITT). Mean and median are ITT.
 
@@ -399,6 +399,22 @@ docx_to_pdf — DOCX to PDF vs Word export
 | 3 | pdfitdown | pdfitdown 4.0.0 | 413 | 428 | 60.26 | 57.01 | 0 | 15 |
 | 4 | rdocx | rdocx 0.7.0 | 428 | 428 | 50.30 | 48.79 | 0 | 0 |
 | 5 | doxx | doxx 0.1.4 | 0 | 428 | 0.00 | 0.00 | 0 | 428 |
+
+## docx_to_pdf_no_redline_docs
+
+Source: `results/docx_to_pdf_no_redline.json`.
+
+### docx_to_pdf_no_redline_docs — source DOCX to PDF vs Word export
+
+398 unique stems. Oracle: pinned Word-export PDFs (`pdf_source`, `pdf_source_randomized`). Failed converts score 0 (ITT). Mean and median are ITT.
+
+| Rank | Tool | Version | n scored | ITT n | ITT Mean | ITT Median | Perfect (100) | Failures |
+| --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| 1 | office2pdf | office2pdf 0.6.7 | 390 | 398 | 73.82 | 84.34 | 3 | 8 |
+| 2 | pdfitdown | pdfitdown 4.0.0 | 390 | 398 | 73.82 | 84.34 | 3 | 8 |
+| 3 | jubarte | jubarte 0.7.0 | 398 | 398 | 66.25 | 67.39 | 0 | 0 |
+| 4 | rdocx | rdocx 0.7.0 | 398 | 398 | 59.11 | 54.49 | 0 | 0 |
+| 5 | doxx | doxx 0.1.4 | 0 | 398 | 0.00 | 0.00 | 0 | 398 |
 
 ## Redline generation speed
 
