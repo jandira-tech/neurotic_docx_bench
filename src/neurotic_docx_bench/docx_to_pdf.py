@@ -703,7 +703,7 @@ def render_docx_to_pdf_table(report: dict, *, track: Track | str | None = None) 
     rows.sort()
     n = report.get("n", "")
     lines = [
-        spec.title,
+        f"### {spec.title}",
         "",
         f"{n} unique stems. Oracle: {spec.caption}. "
         "Failed converts score 0 (ITT). Mean and median are ITT.",

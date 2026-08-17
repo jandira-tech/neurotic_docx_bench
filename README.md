@@ -228,7 +228,15 @@ Sorted by median ms per redline (lower is faster). `*-inproc` rows are in-proces
 <!-- DOCX-TO-PDF-NO-REDLINE-START -->
 ### docx_to_pdf_no_redline_docs — source DOCX to PDF vs Word export
 
-Table is filled from `results/docx_to_pdf_no_redline.json` after that run.
+398 unique stems. Oracle: pinned Word-export PDFs (`pdf_source`, `pdf_source_randomized`). Failed converts score 0 (ITT). Mean and median are ITT.
+
+| Rank | Tool | Version | n scored | ITT n | ITT Mean | ITT Median | Perfect (100) | Failures |
+| --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| 1 | office2pdf | office2pdf 0.6.7 | 390 | 398 | 73.82 | 84.34 | 3 | 8 |
+| 2 | pdfitdown | pdfitdown 4.0.0 | 390 | 398 | 73.82 | 84.34 | 3 | 8 |
+| 3 | jubarte | jubarte 0.7.0 | 398 | 398 | 66.25 | 67.39 | 0 | 0 |
+| 4 | rdocx | rdocx 0.7.0 | 398 | 398 | 59.11 | 54.49 | 0 | 0 |
+| 5 | doxx | doxx 0.1.4 | 0 | 398 | 0.00 | 0.00 | 0 | 398 |
 <!-- DOCX-TO-PDF-NO-REDLINE-END -->
 
 ---
