@@ -10,6 +10,8 @@ repository's `src/neurotic_docx_bench/utils/jubarte/jubarte-rust` and
 `src/neurotic_docx_bench/utils/jubarte/jubarte-wasm/pkg` is a consumer artifact;
 never implement an engine fix in those copies.
 
+EXCEPT IF REQUESTED BY THE PERSON OR REQUIRED BY A SPECIFIC BENCHMARK OR TO DEVELOP A TOOL, YOU MUST RECORD THE RESULTS WITH RASTERS DELETED AFTER EACH TOOL SO SCORING DOESN'T FILL THE DISK.
+
 ## What this is
 
 A benchmark that measures how faithfully DOCX tools reproduce **Microsoft Word's**
@@ -253,6 +255,7 @@ the latest line to the baseline.
 - **Page-count mismatch** is surfaced + recorded (`page_count_mismatch` in per-doc), not
   penalised — the verbatim scorer only compares `min(pages)`. Changing that is a policy call.
 - **Scoring uses a process pool** (PyMuPDF/skimage aren't thread-safe).
+- EXCEPT IF REQUESTED BY THE PERSON OR REQUIRED BY A SPECIFIC BENCHMARK OR TO DEVELOP A TOOL, YOU MUST RECORD THE RESULTS WITH RASTERS DELETED AFTER EACH TOOL SO SCORING DOESN'T FILL THE DISK.
 - **soffice render** requires exit 0 **and** the output file, and deletes a stale PDF before
   a forced re-render (parity with the original shell script).
 
