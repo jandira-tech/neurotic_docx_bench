@@ -151,3 +151,10 @@ results/docx_to_pdf_work/
 results/docx_to_pdf_eval_work/
 results/docx_to_pdf_steer_work/
 generate_timings.json
+
+# Vendored docxide-pdf scorer: sources are committed, Cargo build output is not.
+src/neurotic_docx_bench/utils/docxide-metrics/target/
+# docxide_metrics sweep scratch (candidate PDFs + per-tool score dumps); the report
+# results/docxide_metrics.json is committed, the work dir and tee log are not.
+results/docxide_metrics_work/
+results/docxide_metrics_run.log
