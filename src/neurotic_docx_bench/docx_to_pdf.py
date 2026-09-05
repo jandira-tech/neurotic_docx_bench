@@ -26,7 +26,15 @@ from neurotic_docx_bench import pipeline
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 WORD_CORPUS = REPO_ROOT / "corpus" / "no_comments_pdf_was_generated_by_word"
-WORD_PDF_TOOLS = ("rdocx", "office2pdf", "pdfitdown", "doxx")
+WORD_PDF_TOOLS = (
+    "rdocx",
+    "office2pdf",
+    "pdfitdown",
+    "doxx",
+    "libreoffice_convert_rust",
+    "dxpdf",
+    "docxide-pdf",
+)
 
 REQUIRED_FEATURES = frozenset(
     {"body_text", "table", "numbering", "image", "header_or_footer"},
@@ -40,6 +48,9 @@ _TOOL_BINARIES: dict[str, tuple[str, ...]] = {
     "pdfitdown": ("pdfitdown",),
     "doxx": ("doxx",),
     "jubarte": ("jubarte",),
+    "libreoffice_convert_rust": ("libreoffice_convert", "libreoffice_convert_rust"),
+    "dxpdf": ("dxpdf",),
+    "docxide-pdf": ("docxide-pdf",),
 }
 
 RANKING_END = "<!-- RANKING-END -->"
@@ -371,6 +382,12 @@ def convert_command(tool: str, src: Path, dest: Path, *, binary: Path) -> list[s
         return [str(binary), str(src), "--export", "pdf"]
     if tool == "jubarte":
         return [str(binary), "convert", str(src), "-o", str(dest), "--force"]
+    if tool == "libreoffice_convert_rust":
+        return [str(binary), str(src), str(dest), "pdf"]
+    if tool == "dxpdf":
+        return [str(binary), str(src), "-o", str(dest)]
+    if tool == "docxide-pdf":
+        return [str(binary), str(src), str(dest)]
     raise ValueError(f"unknown DOCX→PDF tool {tool!r}")
 
 
@@ -542,10 +559,39 @@ def _copy(src: Path, dest: Path) -> None:
     dest.write_bytes(src.read_bytes())
 
 
+def _version_from_cargo_install_list(binary_name: str) -> str | None:
+    """Parse ``cargo install --list`` for the package owning ``binary_name``."""
+    try:
+        proc = subprocess.run(
+            ["cargo", "install", "--list"],
+            check=False,
+            capture_output=True,
+            text=True,
+            timeout=30,
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        return None
+    current: str | None = None
+    for line in (proc.stdout or "").splitlines():
+        stripped = line.strip()
+        if not stripped:
+            continue
+        if not line.startswith(" ") and line.startswith(" ") is False:
+            # Package header line: "<name> v<version>:"
+            if stripped.endswith(":"):
+                header = stripped[:-1]
+                if " v" in header:
+                    current = header
+        if stripped == binary_name:
+            return current
+    return None
+
+
 def tool_version(binary: Path | None) -> str | None:
     """Best-effort ``--version`` line for a converter binary."""
     if binary is None or not Path(binary).is_file():
         return None
+    binary_name = Path(binary).name
     try:
         proc = subprocess.run(
             [str(binary), "--version"],
@@ -556,8 +602,11 @@ def tool_version(binary: Path | None) -> str | None:
         )
     except (OSError, subprocess.TimeoutExpired):
         return None
-    text = (proc.stdout or proc.stderr or "").strip()
-    return text.splitlines()[0] if text else None
+    if proc.returncode == 0:
+        text = (proc.stdout or "").strip()
+        if text:
+            return text.splitlines()[0]
+    return _version_from_cargo_install_list(binary_name)
 
 
 def _tool_report(
