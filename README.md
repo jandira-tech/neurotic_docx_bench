@@ -234,10 +234,204 @@ Sorted by median ms per redline (lower is faster). `*-inproc` rows are in-proces
 | --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
 | 1 | office2pdf | office2pdf 0.6.7 | 390 | 398 | 73.82 | 84.34 | 3 | 8 |
 | 2 | pdfitdown | pdfitdown 4.0.0 | 390 | 398 | 73.82 | 84.34 | 3 | 8 |
-| 3 | jubarte | jubarte 0.7.0 | 398 | 398 | 66.25 | 67.39 | 0 | 0 |
-| 4 | rdocx | rdocx 0.7.0 | 398 | 398 | 59.11 | 54.49 | 0 | 0 |
-| 5 | doxx | doxx 0.1.4 | 0 | 398 | 0.00 | 0.00 | 0 | 398 |
+| 3 | libreoffice_convert_rust | LibreOffice Convert Rust v0.1.0 | 398 | 398 | 73.98 | 75.26 | 0 | 0 |
+| 4 | jubarte | jubarte 0.7.0 | 398 | 398 | 66.25 | 67.39 | 0 | 0 |
+| 5 | docxide-pdf | docxide-pdf v0.17.0 | 398 | 398 | 65.65 | 63.97 | 2 | 0 |
+| 6 | rdocx | rdocx 0.7.0 | 398 | 398 | 59.11 | 54.49 | 0 | 0 |
+| 7 | dxpdf | dxpdf 0.5.1 | 381 | 398 | 56.73 | 52.52 | 2 | 17 |
+| 8 | doxx | doxx 0.1.4 | 0 | 398 | 0.00 | 0.00 | 0 | 398 |
 <!-- DOCX-TO-PDF-NO-REDLINE-END -->
+
+### DOCX→PDF no-redline Rust converter deep-dive
+
+These three crates were installed with `cargo install` and benchmarked one-by-one
+against the 398 fixture `docx_to_pdf_no_redline_docs` Word-oracle set (144 DPI,
+the same oracle and scorer as the main table above).
+
+```bash
+cargo install libreoffice_convert_rust dxpdf docxide-pdf
+```
+
+**Benchmark command used:**
+
+```bash
+uv run bench docx-to-pdf --track docx_to_pdf_no_redline_docs \
+  --tool libreoffice_convert_rust --tool dxpdf --tool docxide-pdf \
+  --json results/docx_to_pdf_no_redline_new.json \
+  --convert-workers 8 --jobs 8
+```
+
+| Tool | Version | n scored | ITT Mean | ITT Median | Failures | Perfects |
+| --- | --- | ---: | ---: | ---: | ---: | ---: |
+| libreoffice_convert_rust | LibreOffice Convert Rust v0.1.0 | 398 | 73.98 | 75.26 | 0 | 0 |
+| dxpdf | dxpdf 0.5.1 | 381 | 56.73 | 52.52 | 17 | 2 |
+| docxide-pdf | docxide-pdf v0.17.0 | 398 | 65.65 | 63.97 | 0 | 2 |
+
+#### libreoffice_convert_rust
+
+- **Crate:** `libreoffice_convert_rust`
+- **Installed binary:** `/Users/arthrod/.cargo/bin/libreoffice_convert`
+- **Invocation:** `libreoffice_convert <input.docx> <output.pdf> pdf`
+
+| Metric | Value |
+| --- | --- |
+| n scored | 398 |
+| ITT n | 398 |
+| ITT Mean | 73.98 |
+| ITT Median | 75.26 |
+| Mean (scored only) | 73.98 |
+| Median (scored only) | 75.26 |
+| Min (scored) | 37.21 |
+| Max | 98.22 |
+| Perfect (>=100) | 0 |
+| Failures | 0 |
+
+**Per-feature ITT mean** (documents can carry multiple feature tags):
+| Feature | n | Mean | Median |
+| --- | ---: | ---: | ---: |
+| body_text | 398 | 73.98 | 75.26 |
+| table | 88 | 59.20 | 63.20 |
+| numbering | 38 | 59.27 | 53.59 |
+| image | 40 | 56.46 | 57.82 |
+| header_or_footer | 54 | 53.92 | 46.98 |
+
+**Worst 5 scored stems:**
+| Stem | Score |
+| --- | ---: |
+| source__docx_lots_of_comments_addition_removal_redline_removal_v_addition | 37.21 |
+| source_randomized__file_27 | 37.26 |
+| source__docx_lots_of_comments_addition_redline_addition_v_removal | 39.98 |
+| source_randomized__file_16 | 39.98 |
+| source__docx_lots_of_comments_addition | 40.33 |
+
+**Best 5 scored stems:**
+| Stem | Score |
+| --- | ---: |
+| source_randomized__file_55 | 98.22 |
+| source_randomized__file_64 | 97.76 |
+| source__gdocs_comments_export | 97.59 |
+| source_randomized__file_40 | 97.14 |
+| source_randomized__file_111 | 97.09 |
+
+#### dxpdf
+
+- **Crate:** `dxpdf`
+- **Installed binary:** `/Users/arthrod/.cargo/bin/dxpdf`
+- **Invocation:** `dxpdf <input.docx> -o <output.pdf>`
+
+| Metric | Value |
+| --- | --- |
+| n scored | 381 |
+| ITT n | 398 |
+| ITT Mean | 56.73 |
+| ITT Median | 52.52 |
+| Mean (scored only) | 59.26 |
+| Median (scored only) | 52.67 |
+| Min (scored) | 33.15 |
+| Max | 100.00 |
+| Perfect (>=100) | 2 |
+| Failures | 17 |
+
+**Per-feature ITT mean** (documents can carry multiple feature tags):
+| Feature | n | Mean | Median |
+| --- | ---: | ---: | ---: |
+| body_text | 398 | 56.73 | 52.52 |
+| table | 88 | 37.42 | 42.32 |
+| numbering | 38 | 31.96 | 41.88 |
+| image | 40 | 33.11 | 39.05 |
+| header_or_footer | 54 | 30.61 | 40.60 |
+
+**Worst 5 scored stems:**
+| Stem | Score |
+| --- | ---: |
+| source_randomized__file_27 | 33.15 |
+| source__docx_lots_of_comments_addition_removal_redline_removal_v_addition | 33.16 |
+| source__endnotes_sample | 36.89 |
+| source__docx_lots_of_comments_addition | 37.74 |
+| source__docx_lots_of_comments_addition_redline | 37.74 |
+
+**Best 5 scored stems:**
+| Stem | Score |
+| --- | ---: |
+| source_randomized__file_64 | 100.00 |
+| source_randomized__file_55 | 100.00 |
+| source_randomized__file_145 | 99.92 |
+| source_randomized__file_120 | 99.44 |
+| source__gdocs_comments_export | 98.87 |
+
+**Sample generate failures (17 total):**
+| Stem | Condensed error |
+| --- | --- |
+| source__Strict01 | error: Parse error: failed to deserialize XML: expected an integer or decimal measurement |
+| source__docx_lots_of_comments_addition_redline_addition_v_removal | error: Parse error: failed to deserialize XML: unknown variant `delInstrText`, expected one of `t`, `delText`, `tab`, `ptab`, `... |
+| source__docx_lots_of_comments_addition_removal | error: Parse error: failed to deserialize XML: unknown variant `delInstrText`, expected one of `t`, `delText`, `tab`, `ptab`, `... |
+| source__ole_object | error: Parse error: failed to deserialize XML: expected an integer or decimal measurement |
+| source__potpourritest | error: Parse error: failed to deserialize XML: unknown variant `delInstrText`, expected one of `t`, `delText`, `tab`, `ptab`, `... |
+| source__sample_document_word_repair_of_our_output_iter2_word_repaired_2 | error: Parse error: failed to deserialize XML: unknown variant `delInstrText`, expected one of `t`, `delText`, `tab`, `ptab`, `... |
+| source__strict01_sdt_controls | error: Parse error: failed to deserialize XML: expected an integer or decimal measurement |
+| source__word_clean_strict01 | error: Parse error: failed to deserialize XML: expected an integer or decimal measurement |
+
+#### docxide-pdf
+
+- **Crate:** `docxide-pdf`
+- **Installed binary:** `/Users/arthrod/.cargo/bin/docxide-pdf`
+- **Invocation:** `docxide-pdf <input.docx> <output.pdf>`
+
+| Metric | Value |
+| --- | --- |
+| n scored | 398 |
+| ITT n | 398 |
+| ITT Mean | 65.65 |
+| ITT Median | 63.97 |
+| Mean (scored only) | 65.65 |
+| Median (scored only) | 63.97 |
+| Min (scored) | 36.31 |
+| Max | 100.00 |
+| Perfect (>=100) | 2 |
+| Failures | 0 |
+
+**Per-feature ITT mean** (documents can carry multiple feature tags):
+| Feature | n | Mean | Median |
+| --- | ---: | ---: | ---: |
+| body_text | 398 | 65.65 | 63.97 |
+| table | 88 | 52.54 | 50.13 |
+| numbering | 38 | 52.20 | 50.07 |
+| image | 40 | 49.64 | 50.07 |
+| header_or_footer | 54 | 46.72 | 43.36 |
+
+**Worst 5 scored stems:**
+| Stem | Score |
+| --- | ---: |
+| source__docx_lots_of_comments_addition_removal_redline_removal_v_addition | 36.31 |
+| source_randomized__file_27 | 36.34 |
+| source__I_am_sharing_Microsoft_Word_vs_Google_Docs_Comprehensive_Proof_with_you | 36.44 |
+| source__sd_2517_localized_heading_styles | 39.90 |
+| source_randomized__file_22 | 39.90 |
+
+**Best 5 scored stems:**
+| Stem | Score |
+| --- | ---: |
+| source_randomized__file_64 | 100.00 |
+| source_randomized__file_55 | 100.00 |
+| source_randomized__file_145 | 99.92 |
+| source_randomized__file_120 | 99.44 |
+| source__gdocs_comments_export | 98.87 |
+
+#### Cross-tool observations
+
+- `libreoffice_convert_rust` is a thin Rust wrapper around a local LibreOffice
+  installation; it therefore inherits LibreOffice layout. It completed all 398
+  fixtures and ties the top of the table with `office2pdf` / `pdfitdown`.
+- `docxide-pdf` also converted every fixture and scored between `jubarte` and `rdocx`
+  overall, with a lower median than `libreoffice_convert_rust` but two perfect pages.
+- `dxpdf` produced the fewest perfectly-matching pages among the three and failed
+  on 17 fixtures, mostly with XML parse errors (`delInstrText`, decimal measurements)
+  or unsupported relationship types. Its average is dragged down by those 17 ITT zeros.
+- When `dxpdf` succeeded, its mean is ~59.3 and median ~52.7, still below the other
+  two Rust converters and the LibreOffice-based converters.
+- All three are pure Rust at the binary boundary, but only `dxpdf` and `docxide-pdf`
+  render without calling an external office suite. `libreoffice_convert_rust` still
+  requires `soffice` to be discoverable on `PATH` or via `LIBRE_OFFICE_EXE`.
 
 ---
 
@@ -279,6 +473,9 @@ Pins: [`bench.yaml`](bench.yaml).
 | **office2pdf** | [developer0hye/office2pdf](https://github.com/developer0hye/office2pdf) | 0.6.7 | Converter |
 | **pdfitdown** | [AstraBert/PdfItDown](https://github.com/AstraBert/PdfItDown) (`office2pdf` for Office) | 4.0.0 | Converter |
 | **doxx** | [bgreenwell/doxx](https://github.com/bgreenwell/doxx) | 0.1.4 | Converter (no PDF export) |
+| **libreoffice_convert_rust** | [dnrops/libreoffice_convert_rust](https://gitcode.com/dnrops/libreoffice_convert_rust) | 0.1.0 | Converter |
+| **dxpdf** | [nerdy-pro/dxpdf](https://github.com/nerdy-pro/dxpdf) | 0.5.1 | Converter |
+| **docxide-pdf** | [sverrejb/docxide-pdf](https://github.com/sverrejb/docxide-pdf) | 0.17.0 | Converter |
 
 ---
 

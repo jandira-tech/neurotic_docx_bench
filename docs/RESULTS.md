@@ -412,9 +412,12 @@ Source: `results/docx_to_pdf_no_redline.json`.
 | --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
 | 1 | office2pdf | office2pdf 0.6.7 | 390 | 398 | 73.82 | 84.34 | 3 | 8 |
 | 2 | pdfitdown | pdfitdown 4.0.0 | 390 | 398 | 73.82 | 84.34 | 3 | 8 |
-| 3 | jubarte | jubarte 0.7.0 | 398 | 398 | 66.25 | 67.39 | 0 | 0 |
-| 4 | rdocx | rdocx 0.7.0 | 398 | 398 | 59.11 | 54.49 | 0 | 0 |
-| 5 | doxx | doxx 0.1.4 | 0 | 398 | 0.00 | 0.00 | 0 | 398 |
+| 3 | libreoffice_convert_rust | LibreOffice Convert Rust v0.1.0 | 398 | 398 | 73.98 | 75.26 | 0 | 0 |
+| 4 | jubarte | jubarte 0.7.0 | 398 | 398 | 66.25 | 67.39 | 0 | 0 |
+| 5 | docxide-pdf | docxide-pdf v0.17.0 | 398 | 398 | 65.65 | 63.97 | 2 | 0 |
+| 6 | rdocx | rdocx 0.7.0 | 398 | 398 | 59.11 | 54.49 | 0 | 0 |
+| 7 | dxpdf | dxpdf 0.5.1 | 381 | 398 | 56.73 | 52.52 | 2 | 17 |
+| 8 | doxx | doxx 0.1.4 | 0 | 398 | 0.00 | 0.00 | 0 | 398 |
 
 ## Redline generation speed
 
