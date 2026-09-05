@@ -1,0 +1,47 @@
+{
+  "file_100_file_101_redline": {
+    "jaccard": 0.3885796949706527,
+    "max_break_drift": 42,
+    "pages": 13,
+    "ref_pages": 13,
+    "scored_pages": 13,
+    "ssim": 0.5822118682691164,
+    "text_boundary": 0.5
+  },
+  "file_101_file_102_redline": {
+    "jaccard": 0.15954073490704856,
+    "max_break_drift": 0,
+    "pages": 1,
+    "ref_pages": 1,
+    "scored_pages": 1,
+    "ssim": 0.3852205172837888,
+    "text_boundary": null
+  },
+  "file_102_file_103_redline": {
+    "jaccard": 0.3001562263770599,
+    "max_break_drift": 0,
+    "pages": 1,
+    "ref_pages": 1,
+    "scored_pages": 1,
+    "ssim": 0.7822805948686978,
+    "text_boundary": 1.0
+  },
+  "file_103_file_104_redline": {
+    "jaccard": 0.22768106758116824,
+    "max_break_drift": 0,
+    "pages": 1,
+    "ref_pages": 1,
+    "scored_pages": 1,
+    "ssim": 0.6462397018869797,
+    "text_boundary": 1.0
+  },
+  "file_104_file_105_redline": {
+    "jaccard": 0.17411475745377636,
+    "max_break_drift": 0,
+    "pages": 1,
+    "ref_pages": 1,
+    "scored_pages": 1,
+    "ssim": 0.573423213958543,
+    "text_boundary": 1.0
+  }
+}
