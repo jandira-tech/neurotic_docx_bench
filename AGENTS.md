@@ -47,6 +47,13 @@ Key modules (`src/neurotic_docx_bench/`):
 - `score.py` `diff.py` `raster.py` `report.py` `html_report.py` `utils.py` — the scoring
   core, **lifted verbatim** from superdoc-visual-benchmarks. **Do not edit their logic** —
   `tests/test_parity.py` guards byte-identical scoring against `tests/reference/`.
+- `docxide_metrics.py` + `utils/docxide-metrics/` — the **second scorer**, Jaccard / SSIM /
+  text-boundary at 150 DPI, **lifted verbatim** from sverrejb/docxide-pdf `tests/common/`
+  (Apache-2.0). Same rule: **do not edit the metric logic** — upstream is the authority and
+  `tests/test_docxide_metrics_parity.py` requires the same numbers as upstream's own
+  `page-metrics` binary, against frozen values in `tests/reference/docxide_page_metrics.json`.
+  Only `src/main.rs` (the batch driver) is ours; it rasterizes, scores and then deletes each
+  document's rasters before the next, so a 398-document sweep cannot fill the disk.
 - `pipeline.py` — match candidate↔oracle redlines by `<base>_<next>` key, rasterise, score.
 - `render/` — `soffice` (LibreOffice, default), `passthrough` (score existing PDFs),
   `playwright` (selector-driven web-editor render), `word` (local-only AppleScript).

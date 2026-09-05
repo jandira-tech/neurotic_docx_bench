@@ -7,6 +7,7 @@ Pixel scores of DOCX tools against Microsoft Word oracles.
 | **Scores** | 0–100 per document |
 | **Redline oracle** | Word tracked-change markup, rendered by LibreOffice 26.2.4.2 |
 | **DOCX→PDF oracle** | SHA-pinned Word-export PDFs in `pdf_accepted_word` and `pdf_redlines_randomized` |
+| **Second scorer** | `docxide_metrics` — docxide-pdf's own Jaccard / SSIM / text-boundary suite, same fixtures |
 | **Trend log** | `results/bench.jsonl` |
 | **Full tables** | [`RESULTS.md`](RESULTS.md) · [`docs/RESULTS.md`](docs/RESULTS.md) |
 | **Visual report** | `runs/<run>/report.html` |
@@ -18,6 +19,7 @@ Jubarte families list best and worst pin per fidelity table. Other vendors list 
 python3 scripts/export-results-md.py          # RESULTS.md + docs/RESULTS.md
 bun run update-readme-ranking                 # tables between RANKING markers
 uv run bench docx-to-pdf --update-readme      # docx_to_pdf table
+uv run bench docxide-metrics --update-readme  # docxide_metrics table (docxide-pdf's scorer)
 ```
 
 Redline markup is Microsoft Word. Candidate and oracle redline PDFs are both rendered with LibreOffice 26.2.4.2. The oracle DOCX through that pipeline scores 100.
@@ -242,6 +244,45 @@ Sorted by median ms per redline (lower is faster). `*-inproc` rows are in-proces
 | 8 | doxx | doxx 0.1.4 | 0 | 398 | 0.00 | 0.00 | 0 | 398 |
 <!-- DOCX-TO-PDF-NO-REDLINE-END -->
 
+<!-- DOCXIDE-METRICS-START -->
+### docxide_metrics — DOCX to PDF under docxide-pdf's own metrics
+
+The same 398 `docx_to_pdf_no_redline_docs` fixtures and the same pinned Word-export
+oracles as the table above, scored instead with the three metrics
+[sverrejb/docxide-pdf](https://github.com/sverrejb/docxide-pdf) uses to judge itself
+against Word, at its own 150 DPI. **Jaccard** is ink-pixel intersection over union
+(a pixel is ink when luma < 200) — placement is everything, a one-line shift sends it
+toward zero. **SSIM** uses 8×8 windows with a ±8px vertical search, skipping white
+windows. **Text boundary** is the share of lines that begin and end on the same words
+as Word, ignoring where the ink landed. Ranked by Jaccard median, docxide-pdf's
+headline number. Failed converts score 0 on all three (ITT), as does a document that
+produced no scorable page. `≥20%` / `≥75%` are docxide-pdf's own per-case pass
+thresholds for Jaccard and SSIM.
+
+| Rank | Tool | Version | n scored | ITT n | Jaccard Mean | Jaccard Median | SSIM Mean | SSIM Median | Text-bnd Mean | Text-bnd Median | Jaccard ≥20% | SSIM ≥75% | Failures |
+| --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| 1 | jubarte | jubarte 0.8.0 | 398 | 398 | 53.10 | 43.50 | 72.79 | 88.96 | 87.55 | 100.00 | 278 | 225 | 0 |
+| 2 | docxide-pdf | docxide-pdf v0.17.0 | 398 | 398 | 24.61 | 14.34 | 43.80 | 35.35 | 80.81 | 100.00 | 100 | 55 | 0 |
+<!-- DOCXIDE-METRICS-END -->
+
+**Two scorers, same fixtures.** Both agree on the order, and disagree sharply on the
+margin. Under the superdoc-visual-benchmarks core the two converters are almost level
+(jubarte 66.25 / 67.39 vs docxide-pdf 65.65 / 63.97); under docxide-pdf's own Jaccard
+they are 28.5pp apart on the mean and 29.2pp on the median. Jaccard is a raw ink
+intersection-over-union with no spatial tolerance whatsoever, so it collapses the moment
+a renderer sets a line a few points off, while the fused score mixes in ink-F1, edge-IoU
+and colour ΔE, several of which survive small displacement. It is not only vertical
+drift: docxide-pdf's SSIM already searches ±8px vertically and still reads 43.80 against
+jubarte's 72.79.
+
+The text-boundary column is the one where the two converters nearly meet — 80.81 vs
+87.55 mean, both 100.00 median. Both usually break lines exactly where Word does; what
+separates them is where the ink lands afterwards. And docxide-pdf clears its own
+published pass bars on 100/398 (Jaccard ≥20%) and 55/398 (SSIM ≥75%) here — those
+thresholds were set against its 37 handcrafted fixtures, not against this corpus, so
+read them as its stated bar rather than as a verdict from its authors.
+
+
 ### DOCX→PDF no-redline Rust converter deep-dive
 
 These three crates were installed with `cargo install` and benchmarked one-by-one
@@ -449,6 +490,7 @@ Compare vendors only within one table. LibreOffice scores and Playwright scores 
 | **`visual_accepted_changes`** | Accepted Word redline in the vendor web editor | `pdf_accepted_word` |
 | **`docx_to_pdf`** | Accepted Word redline DOCX + randomized redline DOCX | SHA-pinned `pdf_accepted_word` + `pdf_redlines_randomized` |
 | **`docx_to_pdf_no_redline_docs`** | Source DOCX + randomized source DOCX | SHA-pinned `pdf_source` + `pdf_source_randomized` |
+| **`docxide_metrics`** | The `docx_to_pdf_no_redline_docs` inputs, scored with docxide-pdf's Jaccard / SSIM / text-boundary suite at 150 DPI | Same SHA-pinned `pdf_source` + `pdf_source_randomized` |
 
 `visual_*` loads Word’s DOCX in the editor, not the tool’s own redline. Generator package and editor package are separate pins.
 
@@ -549,6 +591,8 @@ corpus/no_comments_pdf_was_generated_by_word/  # Word-exported PDFs (docx_to_pdf
 results/bench.jsonl        # redline trend log
 results/docx_to_pdf_500.json
 src/neurotic_docx_bench/
+src/neurotic_docx_bench/utils/docxide-metrics/  # vendored docxide-pdf scorer (Rust)
+results/docxide_metrics.json
 scripts/
 ```
 
@@ -560,6 +604,10 @@ scripts/
 
 - [balalofernandez/docx-revisions](https://github.com/balalofernandez/docx-revisions) — accept/reject (`bench accept` / `reject`)
 - [superdoc-dev/superdoc-visual-benchmarks](https://github.com/superdoc-dev/superdoc-visual-benchmarks) — scoring core
+- [sverrejb/docxide-pdf](https://github.com/sverrejb/docxide-pdf) (Apache-2.0) — the `docxide_metrics`
+  scorer. Its Jaccard / SSIM / text-boundary metrics are lifted verbatim from `tests/common/`
+  into `src/neurotic_docx_bench/utils/docxide-metrics/`; `tests/test_docxide_metrics_parity.py`
+  requires the same numbers as its own `page-metrics` binary. Also benchmarked as a converter.
 - [JSv4/docxodus](https://github.com/JSv4/docxodus), [react-docxodus-viewer](https://github.com/JSv4/react-docxodus-viewer) (MIT)
 - [AnsonLai/docx-redline-js](https://github.com/AnsonLai/docx-redline-js) (MIT)
 - [houfu/redlines](https://github.com/houfu/redlines) (MIT)
