@@ -637,6 +637,72 @@ def docx_to_pdf_eval(
         console.print("updated README.md DOCX→PDF table")
 
 
+@app.command(name="docxide-metrics")
+def docxide_metrics_eval(
+    tool: list[str] = typer.Option(
+        [],
+        "--tool",
+        help="converter to run (repeatable); default: docxide-pdf and jubarte.",
+    ),
+    converter: Path = typer.Option(
+        None, "--converter", help="override the binary when a single --tool is given.",
+    ),
+    json_out: Path = typer.Option(
+        Path("results/docxide_metrics.json"),
+        "--json",
+        help="write per-doc Jaccard/SSIM/text-boundary + ITT aggregates",
+    ),
+    work_dir: Path | None = typer.Option(None, "--work-dir", help="scratch dir for PDFs and rasters"),
+    limit: int | None = typer.Option(None, "--limit", help="score only the first N fixtures (tests)"),
+    resume: bool = typer.Option(True, "--resume/--no-resume", help="reuse existing candidate PDFs"),
+    convert_workers: int = typer.Option(8, "--convert-workers", help="parallel convert processes per tool"),
+    score_workers: int = typer.Option(4, "--score-workers", help="parallel documents in the scorer"),
+    update_readme: bool = typer.Option(
+        False, "--update-readme", help="rewrite the README docxide_metrics table from this report",
+    ),
+) -> None:
+    """Score the 398 no-redline fixtures with docxide-pdf's own metrics.
+
+    Same fixtures and same pinned Word oracles as ``docx-to-pdf --track
+    docx_to_pdf_no_redline_docs``; the scorer is docxide-pdf's Jaccard / SSIM /
+    text-boundary suite at 150 DPI instead of the superdoc-visual-benchmarks core.
+    Convert failures score 0 on all three metrics (intent-to-treat).
+    """
+    from neurotic_docx_bench import docxide_metrics as dm
+    from neurotic_docx_bench.docx_to_pdf import WORD_PDF_TOOLS
+
+    tools = tuple(tool) or dm.DEFAULT_TOOLS
+    unknown = [name for name in tools if name not in WORD_PDF_TOOLS and name != "jubarte"]
+    if unknown:
+        raise typer.BadParameter(f"unknown --tool: {', '.join(unknown)}")
+    report = dm.run_eval(
+        json_out,
+        tools=tools,
+        converter=converter,
+        work_dir=work_dir,
+        limit=limit,
+        resume=resume,
+        convert_workers=convert_workers,
+        score_workers=score_workers,
+    )
+    bits = [f"docxide-metrics  n={report['n']}"]
+    for name, data in (report.get("tools") or {}).items():
+        m = data.get("metrics") or {}
+        get = lambda key, stat: float((m.get(key) or {}).get(stat) or 0.0)  # noqa: E731
+        bits.append(
+            f"{name}: scored={data.get('n_scored')} "
+            f"jaccard={get('jaccard', 'mean'):.2f}/{get('jaccard', 'median'):.2f} "
+            f"ssim={get('ssim', 'mean'):.2f}/{get('ssim', 'median'):.2f} "
+            f"textbnd={get('text_boundary', 'mean'):.2f}/{get('text_boundary', 'median'):.2f} "
+            f"fail={data.get('failures')}",
+        )
+    bits.append(f"→ {json_out}")
+    console.print("  ".join(bits))
+    if update_readme:
+        dm.update_readme(Path("README.md"), report)
+        console.print("updated README.md docxide_metrics table")
+
+
 def _agg(values: Iterable[float | None]) -> dict[str, float | int]:
     vals = [v for v in values if v is not None]
     if not vals:

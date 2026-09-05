@@ -1,0 +1,4460 @@
+{
+  "dpi": 150,
+  "fixture_track": "docx_to_pdf_no_redline_docs",
+  "generated_at": "2026-09-05T07:30:17.417861+00:00",
+  "n": 398,
+  "oracle": "microsoft_word",
+  "scorer": "docxide-pdf metrics (Jaccard / SSIM / text boundary)",
+  "scorer_upstream": "https://github.com/sverrejb/docxide-pdf",
+  "stems": [
+    "source__1_5_line_spacing_id_paraid_overflow",
+    "source__24_id_paraid_overflow",
+    "source__I_am_sharing_Microsoft_Word_vs_Google_Docs_Comprehensive_Proof_with_you",
+    "source__Redline_CiceroDo_v_plate_30",
+    "source__Strict01",
+    "source__alternate_content",
+    "source__anchor_images",
+    "source__blue_bold_centered_demo_id_paraid_overflow",
+    "source__blue_centered_title_demo_style_default_missing",
+    "source__blue_italic_text_demo_id_paraid_overflow",
+    "source__blue_underline_combo_demo_id_paraid_overflow",
+    "source__bold_and_italic_combo_style_default_missing",
+    "source__bold_and_underline_combo_id_paraid_overflow",
+    "source__bold_italic_combined_demo_id_paraid_overflow",
+    "source__bold_italic_underline_demo_id_paraid_overflow",
+    "source__bold_red_text_combo_id_paraid_overflow",
+    "source__bold_superscript_demo_style_default_missing",
+    "source__bold_text_formatting_demo_id_paraid_overflow",
+    "source__bold_text_formatting_demo_id_paraid_overflow_2",
+    "source__bold_underline_combined_demo_id_paraid_overflow",
+    "source__bold_underline_highlight_demo_id_paraid_overflow",
+    "source__book_catalog_id_paraid_overflow",
+    "source__book_catalog_table",
+    "source__budget_report_q1_2026_suggesting_insertions",
+    "source__bullet_list_bold_demo_id_paraid_overflow",
+    "source__bullet_list_demo_id_paraid_overflow",
+    "source__calibri_bold_italic_demo_id_paraid_overflow",
+    "source__calibri_font_demo_id_paraid_overflow",
+    "source__calibri_font_demo_id_paraid_overflow_2",
+    "source__calibri_heading_2_right_id_paraid_overflow",
+    "source__center_aligned_bold_text_id_paraid_overflow",
+    "source__center_alignment_demo_id_paraid_overflow",
+    "source__center_alignment_demo_id_paraid_overflow_2",
+    "source__center_bold_demo_id_paraid_overflow",
+    "source__clear_formatting_demo_id_paraid_overflow",
+    "source__comments",
+    "source__complex_style_attr",
+    "source__contract_review_suggesting_insertions",
+    "source__contract_review_suggesting_mixed_edits",
+    "source__customer_satisfaction_survey_q4_suggesting_insertions",
+    "source__document_100_ultimate_demo_id_paraid_overflow",
+    "source__docx_lots_of_comments",
+    "source__docx_lots_of_comments_addition",
+    "source__docx_lots_of_comments_addition_redline",
+    "source__docx_lots_of_comments_addition_redline_addition_v_removal",
+    "source__docx_lots_of_comments_addition_removal",
+    "source__docx_lots_of_comments_addition_removal_redline",
+    "source__docx_lots_of_comments_addition_removal_redline_removal_v_addition",
+    "source__double_spacing_bold_demo_id_paraid_overflow",
+    "source__eigenpal_docx_editor_suggesting_mixed_edits",
+    "source__eigenpal_docx_editor_suggesting_mixed_edits_2",
+    "source__employee_directory_table",
+    "source__employee_directory_table_2",
+    "source__employee_review_john_smith_suggesting_insertions",
+    "source__endnotes_sample",
+    "source__font_color_blue_demo_style_default_missing",
+    "source__font_color_demo_style_default_missing",
+    "source__font_family_demo_id_paraid_overflow",
+    "source__font_size_12_demo_id_paraid_overflow",
+    "source__font_size_18_demo_style_default_missing",
+    "source__font_size_24_demo_id_paraid_overflow",
+    "source__font_size_demo_id_paraid_overflow",
+    "source__footnotes_sample",
+    "source__gdocs_comments_export",
+    "source__green_bold_text_demo_id_paraid_overflow",
+    "source__green_highlight_demo_id_paraid_overflow",
+    "source__green_underline_bullet_list_id_paraid_overflow",
+    "source__header_no_rels",
+    "source__heading_1_bold_demo_id_paraid_overflow",
+    "source__heading_1_style_demo_id_paraid_overflow",
+    "source__heading_2_center_demo_id_paraid_overflow",
+    "source__heading_2_style_demo_id_paraid_overflow",
+    "source__heading_3_center_italic_id_paraid_overflow",
+    "source__heading_3_style_demo_id_paraid_overflow",
+    "source__heading_3_style_demo_id_paraid_overflow_2",
+    "source__heading_4_right_italic_id_paraid_overflow",
+    "source__heading_4_style_demo_id_paraid_overflow",
+    "source__heading_4_style_demo_id_paraid_overflow_2",
+    "source__helvetica_font_demo_style_default_missing",
+    "source__hr_onboarding_checklist_table",
+    "source__image_out_of_folder",
+    "source__increase_indent_demo_id_paraid_overflow",
+    "source__insert_link_demo_id_paraid_overflow",
+    "source__inventory_list_suggesting_deletions",
+    "source__inventory_list_suggesting_mixed_edits",
+    "source__it_security_policy_v2_suggesting_insertions",
+    "source__italic_and_underline_combo_style_default_missing",
+    "source__italic_subscript_demo_style_default_missing",
+    "source__italic_text_formatting_demo_id_paraid_overflow",
+    "source__italic_text_formatting_demo_id_paraid_overflow_2",
+    "source__italic_underline_combined_demo_id_paraid_overflow",
+    "source__justified_underline_demo_id_paraid_overflow",
+    "source__justify_alignment_demo_id_paraid_overflow",
+    "source__justify_alignment_demo_id_paraid_overflow_2",
+    "source__large_font_size_demo_id_paraid_overflow",
+    "source__left_alignment_demo_id_paraid_overflow",
+    "source__line_spacing_demo_id_paraid_overflow",
+    "source__marketing_strategy_2026_suggesting_insertions",
+    "source__mcdoc",
+    "source__meeting_agenda_table",
+    "source__meeting_agenda_table_2",
+    "source__meeting_minutes_id_paraid_overflow",
+    "source__meeting_minutes_suggesting_insertions",
+    "source__multi_section",
+    "source__nested_table_rowspan",
+    "source__numbered_list_demo_id_paraid_overflow",
+    "source__numbered_list_italic_demo_id_paraid_overflow",
+    "source__numwords_fldsimple",
+    "source__ole_object",
+    "source__ooxml_style_link",
+    "source__open_sans_bold_underline_id_paraid_overflow",
+    "source__open_sans_font_demo_id_paraid_overflow",
+    "source__open_sans_font_demo_id_paraid_overflow_2",
+    "source__page_numbering_examples",
+    "source__potpourritest",
+    "source__product_roadmap_2026_suggesting_insertions",
+    "source__project_plan_suggesting_insertions",
+    "source__project_proposal_id_paraid_overflow",
+    "source__project_proposal_suggesting_insertions",
+    "source__project_tasks_suggesting_insertions",
+    "source__project_tasks_suggesting_insertions_2",
+    "source__q1_sales_summary_table",
+    "source__q1_sales_summary_table_2",
+    "source__quarterly_performance_report_table",
+    "source__quarterly_performance_report_table_2",
+    "source__red_bold_heading_demo_style_default_missing",
+    "source__red_bold_text_demo_id_paraid_overflow",
+    "source__red_heading_demo_id_paraid_overflow",
+    "source__red_strikethrough_demo_style_default_missing",
+    "source__right_align_bold_demo_id_paraid_overflow",
+    "source__right_aligned_italic_demo_id_paraid_overflow",
+    "source__right_alignment_demo_id_paraid_overflow",
+    "source__right_alignment_demo_id_paraid_overflow_2",
+    "source__risk_assessment_product_launch_suggesting_insertions",
+    "source__roboto_font_demo_id_paraid_overflow",
+    "source__roboto_font_demo_id_paraid_overflow_2",
+    "source__roboto_underline_demo_id_paraid_overflow",
+    "source__sales_report_january_2026_suggesting_insertions",
+    "source__sample_document_afterword_repaired_word_repaired",
+    "source__sample_document_really_repaired_word_repaired",
+    "source__sample_document_word_repair_of_our_output_iter2_word_repaired",
+    "source__sample_document_word_repair_of_our_output_iter2_word_repaired_2",
+    "source__sample_document_word_repair_of_our_output_word_repaired",
+    "source__sample_document_word_repair_of_our_output_word_repaired_2",
+    "source__sd_2517_localized_heading_styles",
+    "source__sectpr_headerref",
+    "source__single_paragraph",
+    "source__small_font_size_demo_id_paraid_overflow",
+    "source__strict01_sdt_controls",
+    "source__strikethrough_and_italic_combo_id_paraid_overflow",
+    "source__strikethrough_bold_demo_id_paraid_overflow",
+    "source__strikethrough_text_demo_id_paraid_overflow",
+    "source__strikethrough_text_formatting_demo_id_paraid_overflow",
+    "source__subscript_demo_id_paraid_overflow",
+    "source__subscript_demo_style_default_missing",
+    "source__subtitle_style_demo_id_paraid_overflow",
+    "source__subtitle_style_demo_style_default_missing",
+    "source__superscript_demo_id_paraid_overflow",
+    "source__superscript_demo_id_paraid_overflow_2",
+    "source__superscript_demo_style_default_missing",
+    "source__support_tickets_summary_id_paraid_overflow",
+    "source__support_tickets_table",
+    "source__table_bookmark_end",
+    "source__table_vmerge_colspan",
+    "source__text_box",
+    "source__text_highlight_demo_style_default_missing",
+    "source__tiff_image",
+    "source__times_new_roman_bold_id_paraid_overflow",
+    "source__times_new_roman_font_id_paraid_overflow",
+    "source__title_style_centered_demo_id_paraid_overflow",
+    "source__title_style_demo_id_paraid_overflow",
+    "source__title_style_demo_style_default_missing",
+    "source__track_changes_editing_bullet_id_paraid_overflow",
+    "source__track_changes_editing_strikethrough_id_paraid_overflow",
+    "source__track_changes_suggesting_bold_id_paraid_overflow",
+    "source__track_changes_suggesting_calibri_id_paraid_overflow",
+    "source__track_changes_suggesting_center_id_paraid_overflow",
+    "source__track_changes_suggesting_heading_id_paraid_overflow",
+    "source__track_changes_suggesting_italic_id_paraid_overflow",
+    "source__track_changes_suggesting_title_id_paraid_overflow",
+    "source__training_materials_onboarding_program_suggesting_insertions",
+    "source__underline_text_demo_id_paraid_overflow",
+    "source__underline_text_formatting_demo_style_default_missing",
+    "source__verdana_bold_large_font_id_paraid_overflow",
+    "source__verdana_font_demo_id_paraid_overflow",
+    "source__verdana_font_demo_id_paraid_overflow_2",
+    "source__verdana_italic_centered_demo_id_paraid_overflow",
+    "source__verdana_italic_centered_demo_id_paraid_overflow_2",
+    "source__vfdsdfcacawesd_suggesting_mixed_edits",
+    "source__word_clean_strict01",
+    "source__word_tolerated_broken_media_rel",
+    "source__word_tolerated_duplicate_ppr",
+    "source__word_tolerated_misplaced_link",
+    "source__word_tolerated_misplaced_pgsz",
+    "source__word_tolerated_misplaced_uipriority",
+    "source__word_tolerated_orphan_comment",
+    "source__yellow_highlight_demo_id_paraid_overflow",
+    "source__yellow_highlight_italic_demo_style_default_missing",
+    "source__yellow_highlight_italic_demo_style_default_missing_2",
+    "source_randomized__file_1",
+    "source_randomized__file_10",
+    "source_randomized__file_100",
+    "source_randomized__file_101",
+    "source_randomized__file_102",
+    "source_randomized__file_103",
+    "source_randomized__file_104",
+    "source_randomized__file_105",
+    "source_randomized__file_106",
+    "source_randomized__file_107",
+    "source_randomized__file_108",
+    "source_randomized__file_109",
+    "source_randomized__file_11",
+    "source_randomized__file_110",
+    "source_randomized__file_111",
+    "source_randomized__file_112",
+    "source_randomized__file_113",
+    "source_randomized__file_114",
+    "source_randomized__file_115",
+    "source_randomized__file_116",
+    "source_randomized__file_117",
+    "source_randomized__file_118",
+    "source_randomized__file_119",
+    "source_randomized__file_12",
+    "source_randomized__file_120",
+    "source_randomized__file_121",
+    "source_randomized__file_122",
+    "source_randomized__file_123",
+    "source_randomized__file_124",
+    "source_randomized__file_125",
+    "source_randomized__file_126",
+    "source_randomized__file_127",
+    "source_randomized__file_128",
+    "source_randomized__file_129",
+    "source_randomized__file_13",
+    "source_randomized__file_130",
+    "source_randomized__file_131",
+    "source_randomized__file_132",
+    "source_randomized__file_133",
+    "source_randomized__file_134",
+    "source_randomized__file_135",
+    "source_randomized__file_136",
+    "source_randomized__file_137",
+    "source_randomized__file_138",
+    "source_randomized__file_139",
+    "source_randomized__file_14",
+    "source_randomized__file_140",
+    "source_randomized__file_141",
+    "source_randomized__file_142",
+    "source_randomized__file_143",
+    "source_randomized__file_144",
+    "source_randomized__file_145",
+    "source_randomized__file_146",
+    "source_randomized__file_147",
+    "source_randomized__file_148",
+    "source_randomized__file_149",
+    "source_randomized__file_15",
+    "source_randomized__file_150",
+    "source_randomized__file_151",
+    "source_randomized__file_152",
+    "source_randomized__file_153",
+    "source_randomized__file_154",
+    "source_randomized__file_155",
+    "source_randomized__file_156",
+    "source_randomized__file_157",
+    "source_randomized__file_158",
+    "source_randomized__file_159",
+    "source_randomized__file_16",
+    "source_randomized__file_160",
+    "source_randomized__file_161",
+    "source_randomized__file_162",
+    "source_randomized__file_163",
+    "source_randomized__file_164",
+    "source_randomized__file_165",
+    "source_randomized__file_166",
+    "source_randomized__file_167",
+    "source_randomized__file_168",
+    "source_randomized__file_169",
+    "source_randomized__file_17",
+    "source_randomized__file_170",
+    "source_randomized__file_171",
+    "source_randomized__file_172",
+    "source_randomized__file_173",
+    "source_randomized__file_174",
+    "source_randomized__file_175",
+    "source_randomized__file_176",
+    "source_randomized__file_177",
+    "source_randomized__file_178",
+    "source_randomized__file_179",
+    "source_randomized__file_18",
+    "source_randomized__file_180",
+    "source_randomized__file_181",
+    "source_randomized__file_182",
+    "source_randomized__file_183",
+    "source_randomized__file_184",
+    "source_randomized__file_185",
+    "source_randomized__file_186",
+    "source_randomized__file_187",
+    "source_randomized__file_188",
+    "source_randomized__file_189",
+    "source_randomized__file_19",
+    "source_randomized__file_190",
+    "source_randomized__file_191",
+    "source_randomized__file_192",
+    "source_randomized__file_193",
+    "source_randomized__file_194",
+    "source_randomized__file_195",
+    "source_randomized__file_196",
+    "source_randomized__file_197",
+    "source_randomized__file_198",
+    "source_randomized__file_199",
+    "source_randomized__file_2",
+    "source_randomized__file_20",
+    "source_randomized__file_21",
+    "source_randomized__file_22",
+    "source_randomized__file_23",
+    "source_randomized__file_24",
+    "source_randomized__file_25",
+    "source_randomized__file_26",
+    "source_randomized__file_27",
+    "source_randomized__file_28",
+    "source_randomized__file_29",
+    "source_randomized__file_3",
+    "source_randomized__file_30",
+    "source_randomized__file_31",
+    "source_randomized__file_32",
+    "source_randomized__file_33",
+    "source_randomized__file_34",
+    "source_randomized__file_35",
+    "source_randomized__file_36",
+    "source_randomized__file_37",
+    "source_randomized__file_38",
+    "source_randomized__file_39",
+    "source_randomized__file_4",
+    "source_randomized__file_40",
+    "source_randomized__file_41",
+    "source_randomized__file_42",
+    "source_randomized__file_43",
+    "source_randomized__file_44",
+    "source_randomized__file_45",
+    "source_randomized__file_46",
+    "source_randomized__file_47",
+    "source_randomized__file_48",
+    "source_randomized__file_49",
+    "source_randomized__file_5",
+    "source_randomized__file_50",
+    "source_randomized__file_51",
+    "source_randomized__file_52",
+    "source_randomized__file_53",
+    "source_randomized__file_54",
+    "source_randomized__file_55",
+    "source_randomized__file_56",
+    "source_randomized__file_57",
+    "source_randomized__file_58",
+    "source_randomized__file_59",
+    "source_randomized__file_6",
+    "source_randomized__file_60",
+    "source_randomized__file_61",
+    "source_randomized__file_62",
+    "source_randomized__file_63",
+    "source_randomized__file_64",
+    "source_randomized__file_65",
+    "source_randomized__file_66",
+    "source_randomized__file_67",
+    "source_randomized__file_68",
+    "source_randomized__file_69",
+    "source_randomized__file_7",
+    "source_randomized__file_70",
+    "source_randomized__file_71",
+    "source_randomized__file_72",
+    "source_randomized__file_73",
+    "source_randomized__file_74",
+    "source_randomized__file_75",
+    "source_randomized__file_76",
+    "source_randomized__file_77",
+    "source_randomized__file_78",
+    "source_randomized__file_79",
+    "source_randomized__file_8",
+    "source_randomized__file_80",
+    "source_randomized__file_81",
+    "source_randomized__file_82",
+    "source_randomized__file_83",
+    "source_randomized__file_84",
+    "source_randomized__file_85",
+    "source_randomized__file_86",
+    "source_randomized__file_87",
+    "source_randomized__file_88",
+    "source_randomized__file_89",
+    "source_randomized__file_9",
+    "source_randomized__file_90",
+    "source_randomized__file_91",
+    "source_randomized__file_92",
+    "source_randomized__file_93",
+    "source_randomized__file_94",
+    "source_randomized__file_95",
+    "source_randomized__file_96",
+    "source_randomized__file_97",
+    "source_randomized__file_98",
+    "source_randomized__file_99"
+  ],
+  "tools": {
+    "docxide-pdf": {
+      "binary": "/Users/arthrod/.cargo/bin/docxide-pdf",
+      "failures": 0,
+      "generate_failures": [],
+      "itt_n": 398,
+      "metrics": {
+        "jaccard": {
+          "max": 98.0971,
+          "mean": 24.6065,
+          "median": 14.3354,
+          "min": 0.0
+        },
+        "ssim": {
+          "max": 99.9956,
+          "mean": 43.7979,
+          "median": 35.3502,
+          "min": 1.0363
+        },
+        "text_boundary": {
+          "max": 100.0,
+          "mean": 80.8095,
+          "median": 100.0,
+          "min": 0.0
+        }
+      },
+      "n_scored": 398,
+      "page_count_mismatch": 8,
+      "pass_jaccard_20": 100,
+      "pass_ssim_75": 55,
+      "per_doc": {
+        "source__1_5_line_spacing_id_paraid_overflow": {
+          "jaccard": 10.4103,
+          "ssim": 27.3704,
+          "text_boundary": 100.0
+        },
+        "source__24_id_paraid_overflow": {
+          "jaccard": 10.8475,
+          "ssim": 55.1464,
+          "text_boundary": 100.0
+        },
+        "source__I_am_sharing_Microsoft_Word_vs_Google_Docs_Comprehensive_Proof_with_you": {
+          "jaccard": 7.5703,
+          "ssim": 23.3346,
+          "text_boundary": 8.8235
+        },
+        "source__Redline_CiceroDo_v_plate_30": {
+          "jaccard": 17.2588,
+          "ssim": 27.9034,
+          "text_boundary": 28.0
+        },
+        "source__Strict01": {
+          "jaccard": 17.4072,
+          "ssim": 35.9071,
+          "text_boundary": 9.7015
+        },
+        "source__alternate_content": {
+          "jaccard": 19.6308,
+          "ssim": 29.2833,
+          "text_boundary": 50.0
+        },
+        "source__anchor_images": {
+          "jaccard": 22.601,
+          "ssim": 29.1868,
+          "text_boundary": 5.2632
+        },
+        "source__blue_bold_centered_demo_id_paraid_overflow": {
+          "jaccard": 14.8858,
+          "ssim": 37.5551,
+          "text_boundary": 100.0
+        },
+        "source__blue_centered_title_demo_style_default_missing": {
+          "jaccard": 97.093,
+          "ssim": 98.5213,
+          "text_boundary": 100.0
+        },
+        "source__blue_italic_text_demo_id_paraid_overflow": {
+          "jaccard": 9.7639,
+          "ssim": 30.5454,
+          "text_boundary": 100.0
+        },
+        "source__blue_underline_combo_demo_id_paraid_overflow": {
+          "jaccard": 11.0388,
+          "ssim": 49.8484,
+          "text_boundary": 100.0
+        },
+        "source__bold_and_italic_combo_style_default_missing": {
+          "jaccard": 17.8593,
+          "ssim": 38.9599,
+          "text_boundary": 33.3333
+        },
+        "source__bold_and_underline_combo_id_paraid_overflow": {
+          "jaccard": 20.2648,
+          "ssim": 49.688,
+          "text_boundary": 33.3333
+        },
+        "source__bold_italic_combined_demo_id_paraid_overflow": {
+          "jaccard": 18.4143,
+          "ssim": 39.4135,
+          "text_boundary": 0.0
+        },
+        "source__bold_italic_underline_demo_id_paraid_overflow": {
+          "jaccard": 19.194,
+          "ssim": 50.4994,
+          "text_boundary": 66.6667
+        },
+        "source__bold_red_text_combo_id_paraid_overflow": {
+          "jaccard": 10.477,
+          "ssim": 29.3299,
+          "text_boundary": 100.0
+        },
+        "source__bold_superscript_demo_style_default_missing": {
+          "jaccard": 10.6653,
+          "ssim": 37.9623,
+          "text_boundary": 33.3333
+        },
+        "source__bold_text_formatting_demo_id_paraid_overflow": {
+          "jaccard": 16.8424,
+          "ssim": 40.0887,
+          "text_boundary": 66.6667
+        },
+        "source__bold_text_formatting_demo_id_paraid_overflow_2": {
+          "jaccard": 12.2732,
+          "ssim": 32.8891,
+          "text_boundary": 100.0
+        },
+        "source__bold_underline_combined_demo_id_paraid_overflow": {
+          "jaccard": 18.9512,
+          "ssim": 48.7659,
+          "text_boundary": 33.3333
+        },
+        "source__bold_underline_highlight_demo_id_paraid_overflow": {
+          "jaccard": 19.8338,
+          "ssim": 45.0581,
+          "text_boundary": 33.3333
+        },
+        "source__book_catalog_id_paraid_overflow": {
+          "jaccard": 7.4929,
+          "ssim": 21.9094,
+          "text_boundary": 0.0
+        },
+        "source__book_catalog_table": {
+          "jaccard": 7.979,
+          "ssim": 63.6265,
+          "text_boundary": 100.0
+        },
+        "source__budget_report_q1_2026_suggesting_insertions": {
+          "jaccard": 10.4066,
+          "ssim": 28.0773,
+          "text_boundary": 85.7143
+        },
+        "source__bullet_list_bold_demo_id_paraid_overflow": {
+          "jaccard": 16.9202,
+          "ssim": 37.316,
+          "text_boundary": 0.0
+        },
+        "source__bullet_list_demo_id_paraid_overflow": {
+          "jaccard": 5.8355,
+          "ssim": 15.2829,
+          "text_boundary": 20.0
+        },
+        "source__calibri_bold_italic_demo_id_paraid_overflow": {
+          "jaccard": 19.5566,
+          "ssim": 30.347,
+          "text_boundary": 100.0
+        },
+        "source__calibri_font_demo_id_paraid_overflow": {
+          "jaccard": 13.9569,
+          "ssim": 27.4222,
+          "text_boundary": 100.0
+        },
+        "source__calibri_font_demo_id_paraid_overflow_2": {
+          "jaccard": 14.3321,
+          "ssim": 26.0565,
+          "text_boundary": 100.0
+        },
+        "source__calibri_heading_2_right_id_paraid_overflow": {
+          "jaccard": 23.2878,
+          "ssim": 39.6479,
+          "text_boundary": 66.6667
+        },
+        "source__center_aligned_bold_text_id_paraid_overflow": {
+          "jaccard": 16.4498,
+          "ssim": 35.901,
+          "text_boundary": 66.6667
+        },
+        "source__center_alignment_demo_id_paraid_overflow": {
+          "jaccard": 12.4887,
+          "ssim": 33.5481,
+          "text_boundary": 100.0
+        },
+        "source__center_alignment_demo_id_paraid_overflow_2": {
+          "jaccard": 11.1364,
+          "ssim": 29.1897,
+          "text_boundary": 100.0
+        },
+        "source__center_bold_demo_id_paraid_overflow": {
+          "jaccard": 16.724,
+          "ssim": 40.5255,
+          "text_boundary": 33.3333
+        },
+        "source__clear_formatting_demo_id_paraid_overflow": {
+          "jaccard": 11.5563,
+          "ssim": 31.5326,
+          "text_boundary": 100.0
+        },
+        "source__comments": {
+          "jaccard": 19.774,
+          "ssim": 48.9627,
+          "text_boundary": 100.0
+        },
+        "source__complex_style_attr": {
+          "jaccard": 14.5495,
+          "ssim": 37.9504,
+          "text_boundary": 100.0
+        },
+        "source__contract_review_suggesting_insertions": {
+          "jaccard": 7.8546,
+          "ssim": 57.1191,
+          "text_boundary": 100.0
+        },
+        "source__contract_review_suggesting_mixed_edits": {
+          "jaccard": 6.9434,
+          "ssim": 18.4169,
+          "text_boundary": 0.0
+        },
+        "source__customer_satisfaction_survey_q4_suggesting_insertions": {
+          "jaccard": 9.2978,
+          "ssim": 27.4809,
+          "text_boundary": 88.8889
+        },
+        "source__document_100_ultimate_demo_id_paraid_overflow": {
+          "jaccard": 97.558,
+          "ssim": 99.3753,
+          "text_boundary": 100.0
+        },
+        "source__docx_lots_of_comments": {
+          "jaccard": 13.5723,
+          "ssim": 26.1123,
+          "text_boundary": 31.0044
+        },
+        "source__docx_lots_of_comments_addition": {
+          "jaccard": 12.9936,
+          "ssim": 25.9483,
+          "text_boundary": 23.3438
+        },
+        "source__docx_lots_of_comments_addition_redline": {
+          "jaccard": 12.9936,
+          "ssim": 25.9483,
+          "text_boundary": 23.3438
+        },
+        "source__docx_lots_of_comments_addition_redline_addition_v_removal": {
+          "jaccard": 10.1915,
+          "ssim": 23.1475,
+          "text_boundary": 22.2222
+        },
+        "source__docx_lots_of_comments_addition_removal": {
+          "jaccard": 10.2247,
+          "ssim": 23.2265,
+          "text_boundary": 22.2222
+        },
+        "source__docx_lots_of_comments_addition_removal_redline": {
+          "jaccard": 12.9936,
+          "ssim": 25.9483,
+          "text_boundary": 23.3438
+        },
+        "source__docx_lots_of_comments_addition_removal_redline_removal_v_addition": {
+          "jaccard": 3.7214,
+          "ssim": 15.4734,
+          "text_boundary": 22.2222
+        },
+        "source__double_spacing_bold_demo_id_paraid_overflow": {
+          "jaccard": 16.7314,
+          "ssim": 37.6098,
+          "text_boundary": 0.0
+        },
+        "source__eigenpal_docx_editor_suggesting_mixed_edits": {
+          "jaccard": 7.1644,
+          "ssim": 23.8122,
+          "text_boundary": 26.25
+        },
+        "source__eigenpal_docx_editor_suggesting_mixed_edits_2": {
+          "jaccard": 18.4121,
+          "ssim": 31.5609,
+          "text_boundary": 44.3038
+        },
+        "source__employee_directory_table": {
+          "jaccard": 9.038,
+          "ssim": 61.7839,
+          "text_boundary": 100.0
+        },
+        "source__employee_directory_table_2": {
+          "jaccard": 8.2927,
+          "ssim": 60.2643,
+          "text_boundary": 100.0
+        },
+        "source__employee_review_john_smith_suggesting_insertions": {
+          "jaccard": 10.3284,
+          "ssim": 26.636,
+          "text_boundary": 83.3333
+        },
+        "source__endnotes_sample": {
+          "jaccard": 10.4676,
+          "ssim": 18.7486,
+          "text_boundary": 100.0
+        },
+        "source__font_color_blue_demo_style_default_missing": {
+          "jaccard": 8.8926,
+          "ssim": 31.0981,
+          "text_boundary": 100.0
+        },
+        "source__font_color_demo_style_default_missing": {
+          "jaccard": 10.3768,
+          "ssim": 26.9008,
+          "text_boundary": 100.0
+        },
+        "source__font_family_demo_id_paraid_overflow": {
+          "jaccard": 16.8648,
+          "ssim": 32.8295,
+          "text_boundary": 100.0
+        },
+        "source__font_size_12_demo_id_paraid_overflow": {
+          "jaccard": 10.0494,
+          "ssim": 26.1338,
+          "text_boundary": 100.0
+        },
+        "source__font_size_18_demo_style_default_missing": {
+          "jaccard": 10.6974,
+          "ssim": 27.5816,
+          "text_boundary": 100.0
+        },
+        "source__font_size_24_demo_id_paraid_overflow": {
+          "jaccard": 10.386,
+          "ssim": 25.8802,
+          "text_boundary": 100.0
+        },
+        "source__font_size_demo_id_paraid_overflow": {
+          "jaccard": 10.1468,
+          "ssim": 24.4728,
+          "text_boundary": 100.0
+        },
+        "source__footnotes_sample": {
+          "jaccard": 12.9895,
+          "ssim": 50.681,
+          "text_boundary": 100.0
+        },
+        "source__gdocs_comments_export": {
+          "jaccard": 65.1625,
+          "ssim": 99.9202,
+          "text_boundary": 100.0
+        },
+        "source__green_bold_text_demo_id_paraid_overflow": {
+          "jaccard": 13.8239,
+          "ssim": 37.0668,
+          "text_boundary": 66.6667
+        },
+        "source__green_highlight_demo_id_paraid_overflow": {
+          "jaccard": 56.5516,
+          "ssim": 55.8091,
+          "text_boundary": 100.0
+        },
+        "source__green_underline_bullet_list_id_paraid_overflow": {
+          "jaccard": 10.9882,
+          "ssim": 46.6777,
+          "text_boundary": 100.0
+        },
+        "source__header_no_rels": {
+          "jaccard": 26.0874,
+          "ssim": 38.0591,
+          "text_boundary": 100.0
+        },
+        "source__heading_1_bold_demo_id_paraid_overflow": {
+          "jaccard": 97.5235,
+          "ssim": 99.1534,
+          "text_boundary": 100.0
+        },
+        "source__heading_1_style_demo_id_paraid_overflow": {
+          "jaccard": 97.6683,
+          "ssim": 99.1563,
+          "text_boundary": 100.0
+        },
+        "source__heading_2_center_demo_id_paraid_overflow": {
+          "jaccard": 91.3328,
+          "ssim": 97.8989,
+          "text_boundary": 100.0
+        },
+        "source__heading_2_style_demo_id_paraid_overflow": {
+          "jaccard": 89.9038,
+          "ssim": 97.4242,
+          "text_boundary": 100.0
+        },
+        "source__heading_3_center_italic_id_paraid_overflow": {
+          "jaccard": 74.2974,
+          "ssim": 99.436,
+          "text_boundary": 100.0
+        },
+        "source__heading_3_style_demo_id_paraid_overflow": {
+          "jaccard": 75.6942,
+          "ssim": 99.7499,
+          "text_boundary": 100.0
+        },
+        "source__heading_3_style_demo_id_paraid_overflow_2": {
+          "jaccard": 75.7496,
+          "ssim": 99.4815,
+          "text_boundary": 100.0
+        },
+        "source__heading_4_right_italic_id_paraid_overflow": {
+          "jaccard": 93.8941,
+          "ssim": 99.9954,
+          "text_boundary": 100.0
+        },
+        "source__heading_4_style_demo_id_paraid_overflow": {
+          "jaccard": 91.9153,
+          "ssim": 99.7664,
+          "text_boundary": 100.0
+        },
+        "source__heading_4_style_demo_id_paraid_overflow_2": {
+          "jaccard": 94.74,
+          "ssim": 99.8942,
+          "text_boundary": 100.0
+        },
+        "source__helvetica_font_demo_style_default_missing": {
+          "jaccard": 16.3135,
+          "ssim": 32.9454,
+          "text_boundary": 100.0
+        },
+        "source__hr_onboarding_checklist_table": {
+          "jaccard": 6.0518,
+          "ssim": 66.6862,
+          "text_boundary": 100.0
+        },
+        "source__image_out_of_folder": {
+          "jaccard": 52.0751,
+          "ssim": 41.3012,
+          "text_boundary": 0.0
+        },
+        "source__increase_indent_demo_id_paraid_overflow": {
+          "jaccard": 10.8091,
+          "ssim": 28.081,
+          "text_boundary": 100.0
+        },
+        "source__insert_link_demo_id_paraid_overflow": {
+          "jaccard": 11.1633,
+          "ssim": 30.1538,
+          "text_boundary": 100.0
+        },
+        "source__inventory_list_suggesting_deletions": {
+          "jaccard": 5.8403,
+          "ssim": 62.2127,
+          "text_boundary": 75.0
+        },
+        "source__inventory_list_suggesting_mixed_edits": {
+          "jaccard": 12.8039,
+          "ssim": 34.4231,
+          "text_boundary": 0.0
+        },
+        "source__it_security_policy_v2_suggesting_insertions": {
+          "jaccard": 9.2561,
+          "ssim": 26.6884,
+          "text_boundary": 87.5
+        },
+        "source__italic_and_underline_combo_style_default_missing": {
+          "jaccard": 14.2508,
+          "ssim": 49.1133,
+          "text_boundary": 100.0
+        },
+        "source__italic_subscript_demo_style_default_missing": {
+          "jaccard": 14.0962,
+          "ssim": 31.5757,
+          "text_boundary": 100.0
+        },
+        "source__italic_text_formatting_demo_id_paraid_overflow": {
+          "jaccard": 11.3631,
+          "ssim": 32.2471,
+          "text_boundary": 100.0
+        },
+        "source__italic_text_formatting_demo_id_paraid_overflow_2": {
+          "jaccard": 11.9315,
+          "ssim": 32.9861,
+          "text_boundary": 100.0
+        },
+        "source__italic_underline_combined_demo_id_paraid_overflow": {
+          "jaccard": 14.7483,
+          "ssim": 49.5485,
+          "text_boundary": 100.0
+        },
+        "source__justified_underline_demo_id_paraid_overflow": {
+          "jaccard": 12.5692,
+          "ssim": 32.9446,
+          "text_boundary": 0.0
+        },
+        "source__justify_alignment_demo_id_paraid_overflow": {
+          "jaccard": 11.5492,
+          "ssim": 31.1035,
+          "text_boundary": 0.0
+        },
+        "source__justify_alignment_demo_id_paraid_overflow_2": {
+          "jaccard": 12.4211,
+          "ssim": 31.6155,
+          "text_boundary": 100.0
+        },
+        "source__large_font_size_demo_id_paraid_overflow": {
+          "jaccard": 11.0373,
+          "ssim": 27.0057,
+          "text_boundary": 100.0
+        },
+        "source__left_alignment_demo_id_paraid_overflow": {
+          "jaccard": 11.6539,
+          "ssim": 28.2338,
+          "text_boundary": 100.0
+        },
+        "source__line_spacing_demo_id_paraid_overflow": {
+          "jaccard": 10.2659,
+          "ssim": 28.8826,
+          "text_boundary": 100.0
+        },
+        "source__marketing_strategy_2026_suggesting_insertions": {
+          "jaccard": 10.6114,
+          "ssim": 29.7071,
+          "text_boundary": 100.0
+        },
+        "source__mcdoc": {
+          "jaccard": 0.0,
+          "ssim": 1.0363,
+          "text_boundary": 0.0
+        },
+        "source__meeting_agenda_table": {
+          "jaccard": 7.4098,
+          "ssim": 60.9651,
+          "text_boundary": 100.0
+        },
+        "source__meeting_agenda_table_2": {
+          "jaccard": 7.3791,
+          "ssim": 65.4034,
+          "text_boundary": 100.0
+        },
+        "source__meeting_minutes_id_paraid_overflow": {
+          "jaccard": 11.5989,
+          "ssim": 31.8666,
+          "text_boundary": 100.0
+        },
+        "source__meeting_minutes_suggesting_insertions": {
+          "jaccard": 10.8532,
+          "ssim": 30.9373,
+          "text_boundary": 100.0
+        },
+        "source__multi_section": {
+          "jaccard": 15.3642,
+          "ssim": 28.3322,
+          "text_boundary": 46.1538
+        },
+        "source__nested_table_rowspan": {
+          "jaccard": 11.2971,
+          "ssim": 21.2501,
+          "text_boundary": 100.0
+        },
+        "source__numbered_list_demo_id_paraid_overflow": {
+          "jaccard": 7.1755,
+          "ssim": 19.7294,
+          "text_boundary": 20.0
+        },
+        "source__numbered_list_italic_demo_id_paraid_overflow": {
+          "jaccard": 12.2893,
+          "ssim": 34.5494,
+          "text_boundary": 100.0
+        },
+        "source__numwords_fldsimple": {
+          "jaccard": 32.0806,
+          "ssim": 66.2504,
+          "text_boundary": 100.0
+        },
+        "source__ole_object": {
+          "jaccard": 17.4072,
+          "ssim": 35.9071,
+          "text_boundary": 9.7015
+        },
+        "source__ooxml_style_link": {
+          "jaccard": 8.2846,
+          "ssim": 17.8504,
+          "text_boundary": 91.3043
+        },
+        "source__open_sans_bold_underline_id_paraid_overflow": {
+          "jaccard": 21.9787,
+          "ssim": 40.4891,
+          "text_boundary": 33.3333
+        },
+        "source__open_sans_font_demo_id_paraid_overflow": {
+          "jaccard": 14.2795,
+          "ssim": 28.4809,
+          "text_boundary": 100.0
+        },
+        "source__open_sans_font_demo_id_paraid_overflow_2": {
+          "jaccard": 14.952,
+          "ssim": 30.8441,
+          "text_boundary": 100.0
+        },
+        "source__page_numbering_examples": {
+          "jaccard": 15.3642,
+          "ssim": 28.3322,
+          "text_boundary": 46.1538
+        },
+        "source__potpourritest": {
+          "jaccard": 5.6057,
+          "ssim": 16.7923,
+          "text_boundary": 14.8649
+        },
+        "source__product_roadmap_2026_suggesting_insertions": {
+          "jaccard": 9.4355,
+          "ssim": 26.8092,
+          "text_boundary": 100.0
+        },
+        "source__project_plan_suggesting_insertions": {
+          "jaccard": 9.3789,
+          "ssim": 25.7643,
+          "text_boundary": 100.0
+        },
+        "source__project_proposal_id_paraid_overflow": {
+          "jaccard": 12.394,
+          "ssim": 29.8551,
+          "text_boundary": 100.0
+        },
+        "source__project_proposal_suggesting_insertions": {
+          "jaccard": 11.0458,
+          "ssim": 27.1588,
+          "text_boundary": 100.0
+        },
+        "source__project_tasks_suggesting_insertions": {
+          "jaccard": 7.5164,
+          "ssim": 61.9971,
+          "text_boundary": 75.0
+        },
+        "source__project_tasks_suggesting_insertions_2": {
+          "jaccard": 10.2751,
+          "ssim": 27.4769,
+          "text_boundary": 0.0
+        },
+        "source__q1_sales_summary_table": {
+          "jaccard": 9.1589,
+          "ssim": 65.8499,
+          "text_boundary": 100.0
+        },
+        "source__q1_sales_summary_table_2": {
+          "jaccard": 9.0169,
+          "ssim": 61.9868,
+          "text_boundary": 100.0
+        },
+        "source__quarterly_performance_report_table": {
+          "jaccard": 7.0804,
+          "ssim": 61.9758,
+          "text_boundary": 100.0
+        },
+        "source__quarterly_performance_report_table_2": {
+          "jaccard": 7.003,
+          "ssim": 66.3738,
+          "text_boundary": 100.0
+        },
+        "source__red_bold_heading_demo_style_default_missing": {
+          "jaccard": 97.3008,
+          "ssim": 98.8857,
+          "text_boundary": 100.0
+        },
+        "source__red_bold_text_demo_id_paraid_overflow": {
+          "jaccard": 15.3454,
+          "ssim": 35.8326,
+          "text_boundary": 66.6667
+        },
+        "source__red_heading_demo_id_paraid_overflow": {
+          "jaccard": 96.3693,
+          "ssim": 98.8321,
+          "text_boundary": 100.0
+        },
+        "source__red_strikethrough_demo_style_default_missing": {
+          "jaccard": 11.238,
+          "ssim": 34.6149,
+          "text_boundary": 100.0
+        },
+        "source__right_align_bold_demo_id_paraid_overflow": {
+          "jaccard": 16.7192,
+          "ssim": 35.7335,
+          "text_boundary": 0.0
+        },
+        "source__right_aligned_italic_demo_id_paraid_overflow": {
+          "jaccard": 12.4051,
+          "ssim": 29.4676,
+          "text_boundary": 100.0
+        },
+        "source__right_alignment_demo_id_paraid_overflow": {
+          "jaccard": 16.6837,
+          "ssim": 36.0572,
+          "text_boundary": 50.0
+        },
+        "source__right_alignment_demo_id_paraid_overflow_2": {
+          "jaccard": 11.6675,
+          "ssim": 27.8586,
+          "text_boundary": 100.0
+        },
+        "source__risk_assessment_product_launch_suggesting_insertions": {
+          "jaccard": 9.4183,
+          "ssim": 27.656,
+          "text_boundary": 100.0
+        },
+        "source__roboto_font_demo_id_paraid_overflow": {
+          "jaccard": 17.2056,
+          "ssim": 36.3254,
+          "text_boundary": 100.0
+        },
+        "source__roboto_font_demo_id_paraid_overflow_2": {
+          "jaccard": 17.1356,
+          "ssim": 38.2236,
+          "text_boundary": 100.0
+        },
+        "source__roboto_underline_demo_id_paraid_overflow": {
+          "jaccard": 17.691,
+          "ssim": 49.8542,
+          "text_boundary": 100.0
+        },
+        "source__sales_report_january_2026_suggesting_insertions": {
+          "jaccard": 10.0349,
+          "ssim": 28.1006,
+          "text_boundary": 85.7143
+        },
+        "source__sample_document_afterword_repaired_word_repaired": {
+          "jaccard": 7.1644,
+          "ssim": 23.8122,
+          "text_boundary": 26.25
+        },
+        "source__sample_document_really_repaired_word_repaired": {
+          "jaccard": 7.1649,
+          "ssim": 23.8226,
+          "text_boundary": 26.25
+        },
+        "source__sample_document_word_repair_of_our_output_iter2_word_repaired": {
+          "jaccard": 7.3327,
+          "ssim": 24.4566,
+          "text_boundary": 26.25
+        },
+        "source__sample_document_word_repair_of_our_output_iter2_word_repaired_2": {
+          "jaccard": 7.9644,
+          "ssim": 21.0319,
+          "text_boundary": 30.2326
+        },
+        "source__sample_document_word_repair_of_our_output_word_repaired": {
+          "jaccard": 7.1649,
+          "ssim": 23.8226,
+          "text_boundary": 26.25
+        },
+        "source__sample_document_word_repair_of_our_output_word_repaired_2": {
+          "jaccard": 14.1647,
+          "ssim": 30.522,
+          "text_boundary": 47.5309
+        },
+        "source__sd_2517_localized_heading_styles": {
+          "jaccard": 9.5939,
+          "ssim": 28.6346,
+          "text_boundary": 5.0838
+        },
+        "source__sectpr_headerref": {
+          "jaccard": 11.9141,
+          "ssim": 24.8502,
+          "text_boundary": 45.4545
+        },
+        "source__single_paragraph": {
+          "jaccard": 20.4696,
+          "ssim": 29.0504,
+          "text_boundary": 100.0
+        },
+        "source__small_font_size_demo_id_paraid_overflow": {
+          "jaccard": 11.9441,
+          "ssim": 31.753,
+          "text_boundary": 100.0
+        },
+        "source__strict01_sdt_controls": {
+          "jaccard": 17.4072,
+          "ssim": 35.9071,
+          "text_boundary": 9.7015
+        },
+        "source__strikethrough_and_italic_combo_id_paraid_overflow": {
+          "jaccard": 12.9838,
+          "ssim": 35.7108,
+          "text_boundary": 100.0
+        },
+        "source__strikethrough_bold_demo_id_paraid_overflow": {
+          "jaccard": 17.5447,
+          "ssim": 38.4395,
+          "text_boundary": 0.0
+        },
+        "source__strikethrough_text_demo_id_paraid_overflow": {
+          "jaccard": 12.5712,
+          "ssim": 29.7431,
+          "text_boundary": 100.0
+        },
+        "source__strikethrough_text_formatting_demo_id_paraid_overflow": {
+          "jaccard": 13.1008,
+          "ssim": 34.8686,
+          "text_boundary": 100.0
+        },
+        "source__subscript_demo_id_paraid_overflow": {
+          "jaccard": 12.0545,
+          "ssim": 37.1872,
+          "text_boundary": 66.6667
+        },
+        "source__subscript_demo_style_default_missing": {
+          "jaccard": 12.3845,
+          "ssim": 40.3037,
+          "text_boundary": 66.6667
+        },
+        "source__subtitle_style_demo_id_paraid_overflow": {
+          "jaccard": 70.4751,
+          "ssim": 98.78,
+          "text_boundary": 100.0
+        },
+        "source__subtitle_style_demo_style_default_missing": {
+          "jaccard": 69.9868,
+          "ssim": 98.4157,
+          "text_boundary": 100.0
+        },
+        "source__superscript_demo_id_paraid_overflow": {
+          "jaccard": 8.9549,
+          "ssim": 41.2871,
+          "text_boundary": 66.6667
+        },
+        "source__superscript_demo_id_paraid_overflow_2": {
+          "jaccard": 8.9776,
+          "ssim": 41.3209,
+          "text_boundary": 66.6667
+        },
+        "source__superscript_demo_style_default_missing": {
+          "jaccard": 13.0084,
+          "ssim": 33.6991,
+          "text_boundary": 100.0
+        },
+        "source__support_tickets_summary_id_paraid_overflow": {
+          "jaccard": 12.7646,
+          "ssim": 32.0177,
+          "text_boundary": 100.0
+        },
+        "source__support_tickets_table": {
+          "jaccard": 7.7665,
+          "ssim": 65.3871,
+          "text_boundary": 100.0
+        },
+        "source__table_bookmark_end": {
+          "jaccard": 6.9825,
+          "ssim": 23.8229,
+          "text_boundary": 83.3333
+        },
+        "source__table_vmerge_colspan": {
+          "jaccard": 4.5334,
+          "ssim": 10.4611,
+          "text_boundary": 100.0
+        },
+        "source__text_box": {
+          "jaccard": 24.321,
+          "ssim": 60.1365,
+          "text_boundary": 100.0
+        },
+        "source__text_highlight_demo_style_default_missing": {
+          "jaccard": 14.3386,
+          "ssim": 33.0977,
+          "text_boundary": 100.0
+        },
+        "source__tiff_image": {
+          "jaccard": 1.0787,
+          "ssim": 63.6181,
+          "text_boundary": 100.0
+        },
+        "source__times_new_roman_bold_id_paraid_overflow": {
+          "jaccard": 21.0941,
+          "ssim": 35.1498,
+          "text_boundary": 100.0
+        },
+        "source__times_new_roman_font_id_paraid_overflow": {
+          "jaccard": 14.9659,
+          "ssim": 31.0734,
+          "text_boundary": 100.0
+        },
+        "source__title_style_centered_demo_id_paraid_overflow": {
+          "jaccard": 96.9606,
+          "ssim": 97.4869,
+          "text_boundary": 100.0
+        },
+        "source__title_style_demo_id_paraid_overflow": {
+          "jaccard": 87.8403,
+          "ssim": 98.5024,
+          "text_boundary": 100.0
+        },
+        "source__title_style_demo_style_default_missing": {
+          "jaccard": 98.0971,
+          "ssim": 98.7654,
+          "text_boundary": 100.0
+        },
+        "source__track_changes_editing_bullet_id_paraid_overflow": {
+          "jaccard": 15.6949,
+          "ssim": 32.7974,
+          "text_boundary": 20.0
+        },
+        "source__track_changes_editing_strikethrough_id_paraid_overflow": {
+          "jaccard": 12.119,
+          "ssim": 36.5394,
+          "text_boundary": 100.0
+        },
+        "source__track_changes_suggesting_bold_id_paraid_overflow": {
+          "jaccard": 16.915,
+          "ssim": 37.6567,
+          "text_boundary": 0.0
+        },
+        "source__track_changes_suggesting_calibri_id_paraid_overflow": {
+          "jaccard": 14.818,
+          "ssim": 29.4768,
+          "text_boundary": 100.0
+        },
+        "source__track_changes_suggesting_center_id_paraid_overflow": {
+          "jaccard": 13.4872,
+          "ssim": 46.595,
+          "text_boundary": 100.0
+        },
+        "source__track_changes_suggesting_heading_id_paraid_overflow": {
+          "jaccard": 87.0848,
+          "ssim": 98.3207,
+          "text_boundary": 100.0
+        },
+        "source__track_changes_suggesting_italic_id_paraid_overflow": {
+          "jaccard": 11.9554,
+          "ssim": 34.2197,
+          "text_boundary": 100.0
+        },
+        "source__track_changes_suggesting_title_id_paraid_overflow": {
+          "jaccard": 94.9434,
+          "ssim": 99.2412,
+          "text_boundary": 100.0
+        },
+        "source__training_materials_onboarding_program_suggesting_insertions": {
+          "jaccard": 9.7144,
+          "ssim": 30.2819,
+          "text_boundary": 100.0
+        },
+        "source__underline_text_demo_id_paraid_overflow": {
+          "jaccard": 12.702,
+          "ssim": 30.7196,
+          "text_boundary": 100.0
+        },
+        "source__underline_text_formatting_demo_style_default_missing": {
+          "jaccard": 13.846,
+          "ssim": 45.8391,
+          "text_boundary": 100.0
+        },
+        "source__verdana_bold_large_font_id_paraid_overflow": {
+          "jaccard": 15.6025,
+          "ssim": 23.4334,
+          "text_boundary": 0.0
+        },
+        "source__verdana_font_demo_id_paraid_overflow": {
+          "jaccard": 13.5761,
+          "ssim": 29.3387,
+          "text_boundary": 100.0
+        },
+        "source__verdana_font_demo_id_paraid_overflow_2": {
+          "jaccard": 94.267,
+          "ssim": 99.1419,
+          "text_boundary": 100.0
+        },
+        "source__verdana_italic_centered_demo_id_paraid_overflow": {
+          "jaccard": 12.6449,
+          "ssim": 29.7484,
+          "text_boundary": 100.0
+        },
+        "source__verdana_italic_centered_demo_id_paraid_overflow_2": {
+          "jaccard": 93.5557,
+          "ssim": 98.8948,
+          "text_boundary": 100.0
+        },
+        "source__vfdsdfcacawesd_suggesting_mixed_edits": {
+          "jaccard": 5.9254,
+          "ssim": 15.434,
+          "text_boundary": 63.6364
+        },
+        "source__word_clean_strict01": {
+          "jaccard": 17.4458,
+          "ssim": 36.0102,
+          "text_boundary": 9.7015
+        },
+        "source__word_tolerated_broken_media_rel": {
+          "jaccard": 14.9644,
+          "ssim": 32.5491,
+          "text_boundary": 100.0
+        },
+        "source__word_tolerated_duplicate_ppr": {
+          "jaccard": 88.2979,
+          "ssim": 99.9942,
+          "text_boundary": 100.0
+        },
+        "source__word_tolerated_misplaced_link": {
+          "jaccard": 8.2846,
+          "ssim": 17.8504,
+          "text_boundary": 91.3043
+        },
+        "source__word_tolerated_misplaced_pgsz": {
+          "jaccard": 6.4945,
+          "ssim": 15.2007,
+          "text_boundary": 0.0
+        },
+        "source__word_tolerated_misplaced_uipriority": {
+          "jaccard": 29.8904,
+          "ssim": 68.6335,
+          "text_boundary": 96.9697
+        },
+        "source__word_tolerated_orphan_comment": {
+          "jaccard": 14.053,
+          "ssim": 44.971,
+          "text_boundary": 100.0
+        },
+        "source__yellow_highlight_demo_id_paraid_overflow": {
+          "jaccard": 14.1129,
+          "ssim": 32.7713,
+          "text_boundary": 100.0
+        },
+        "source__yellow_highlight_italic_demo_style_default_missing": {
+          "jaccard": 13.4182,
+          "ssim": 34.5527,
+          "text_boundary": 100.0
+        },
+        "source__yellow_highlight_italic_demo_style_default_missing_2": {
+          "jaccard": 19.7163,
+          "ssim": 38.4785,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_1": {
+          "jaccard": 12.2007,
+          "ssim": 45.4893,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_10": {
+          "jaccard": 15.6275,
+          "ssim": 35.4117,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_100": {
+          "jaccard": 17.3859,
+          "ssim": 35.4742,
+          "text_boundary": 9.7015
+        },
+        "source_randomized__file_101": {
+          "jaccard": 27.1762,
+          "ssim": 34.9271,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_102": {
+          "jaccard": 18.0584,
+          "ssim": 48.6523,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_103": {
+          "jaccard": 12.2105,
+          "ssim": 44.2274,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_104": {
+          "jaccard": 11.1279,
+          "ssim": 25.4728,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_105": {
+          "jaccard": 14.4041,
+          "ssim": 34.0017,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_106": {
+          "jaccard": 13.6473,
+          "ssim": 45.0882,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_107": {
+          "jaccard": 17.1159,
+          "ssim": 38.2229,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_108": {
+          "jaccard": 7.4474,
+          "ssim": 22.3472,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_109": {
+          "jaccard": 14.4148,
+          "ssim": 34.9463,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_11": {
+          "jaccard": 10.724,
+          "ssim": 40.3108,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_110": {
+          "jaccard": 11.1888,
+          "ssim": 25.3856,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_111": {
+          "jaccard": 97.3826,
+          "ssim": 99.1459,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_112": {
+          "jaccard": 17.0921,
+          "ssim": 34.6557,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_113": {
+          "jaccard": 30.7571,
+          "ssim": 43.7673,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_114": {
+          "jaccard": 17.6921,
+          "ssim": 38.1572,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_115": {
+          "jaccard": 17.3467,
+          "ssim": 35.3709,
+          "text_boundary": 9.7015
+        },
+        "source_randomized__file_116": {
+          "jaccard": 17.0461,
+          "ssim": 33.5181,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_117": {
+          "jaccard": 97.5211,
+          "ssim": 99.2936,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_118": {
+          "jaccard": 14.087,
+          "ssim": 32.9915,
+          "text_boundary": 50.0
+        },
+        "source_randomized__file_119": {
+          "jaccard": 12.9905,
+          "ssim": 30.3182,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_12": {
+          "jaccard": 15.2238,
+          "ssim": 31.2596,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_120": {
+          "jaccard": 83.2248,
+          "ssim": 99.904,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_121": {
+          "jaccard": 13.2205,
+          "ssim": 37.3642,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_122": {
+          "jaccard": 14.8886,
+          "ssim": 33.7701,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_123": {
+          "jaccard": 17.2659,
+          "ssim": 38.4492,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_124": {
+          "jaccard": 9.992,
+          "ssim": 33.5647,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_125": {
+          "jaccard": 17.2671,
+          "ssim": 39.1432,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_126": {
+          "jaccard": 15.3703,
+          "ssim": 33.0073,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_127": {
+          "jaccard": 6.5645,
+          "ssim": 21.7166,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_128": {
+          "jaccard": 8.8501,
+          "ssim": 23.4149,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_129": {
+          "jaccard": 17.1775,
+          "ssim": 51.4268,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_13": {
+          "jaccard": 22.6866,
+          "ssim": 33.0355,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_130": {
+          "jaccard": 13.6403,
+          "ssim": 31.1577,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_131": {
+          "jaccard": 13.4193,
+          "ssim": 25.8554,
+          "text_boundary": 31.3043
+        },
+        "source_randomized__file_132": {
+          "jaccard": 15.6267,
+          "ssim": 34.081,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_133": {
+          "jaccard": 7.6958,
+          "ssim": 22.1292,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_134": {
+          "jaccard": 9.7656,
+          "ssim": 34.0344,
+          "text_boundary": 89.6552
+        },
+        "source_randomized__file_135": {
+          "jaccard": 77.3836,
+          "ssim": 98.2631,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_136": {
+          "jaccard": 13.688,
+          "ssim": 35.1104,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_137": {
+          "jaccard": 92.0461,
+          "ssim": 99.2942,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_138": {
+          "jaccard": 19.7383,
+          "ssim": 38.5189,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_139": {
+          "jaccard": 95.4083,
+          "ssim": 99.4014,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_14": {
+          "jaccard": 7.4724,
+          "ssim": 24.7678,
+          "text_boundary": 26.25
+        },
+        "source_randomized__file_140": {
+          "jaccard": 12.7168,
+          "ssim": 29.4679,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_141": {
+          "jaccard": 94.6636,
+          "ssim": 99.2425,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_142": {
+          "jaccard": 19.468,
+          "ssim": 36.0772,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_143": {
+          "jaccard": 7.5057,
+          "ssim": 24.7876,
+          "text_boundary": 26.25
+        },
+        "source_randomized__file_144": {
+          "jaccard": 14.0659,
+          "ssim": 29.352,
+          "text_boundary": 0.0
+        },
+        "source_randomized__file_145": {
+          "jaccard": 80.4482,
+          "ssim": 99.9956,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_146": {
+          "jaccard": 8.1001,
+          "ssim": 21.4032,
+          "text_boundary": 30.2326
+        },
+        "source_randomized__file_147": {
+          "jaccard": 22.6986,
+          "ssim": 48.121,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_148": {
+          "jaccard": 10.4673,
+          "ssim": 29.7897,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_149": {
+          "jaccard": 13.9852,
+          "ssim": 31.6074,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_15": {
+          "jaccard": 93.8163,
+          "ssim": 98.9312,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_150": {
+          "jaccard": 8.3353,
+          "ssim": 23.9023,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_151": {
+          "jaccard": 12.7374,
+          "ssim": 28.6229,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_152": {
+          "jaccard": 20.0125,
+          "ssim": 39.3944,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_153": {
+          "jaccard": 24.7137,
+          "ssim": 38.544,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_154": {
+          "jaccard": 16.3189,
+          "ssim": 36.266,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_155": {
+          "jaccard": 17.9259,
+          "ssim": 34.9123,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_156": {
+          "jaccard": 16.7855,
+          "ssim": 31.5491,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_157": {
+          "jaccard": 9.2367,
+          "ssim": 25.8701,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_158": {
+          "jaccard": 16.0595,
+          "ssim": 33.3585,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_159": {
+          "jaccard": 55.8676,
+          "ssim": 99.6664,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_16": {
+          "jaccard": 10.0555,
+          "ssim": 22.9358,
+          "text_boundary": 22.6131
+        },
+        "source_randomized__file_160": {
+          "jaccard": 17.8692,
+          "ssim": 50.7576,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_161": {
+          "jaccard": 8.0741,
+          "ssim": 25.5765,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_162": {
+          "jaccard": 6.2101,
+          "ssim": 20.76,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_163": {
+          "jaccard": 28.1788,
+          "ssim": 36.681,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_164": {
+          "jaccard": 18.086,
+          "ssim": 45.0768,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_165": {
+          "jaccard": 94.6439,
+          "ssim": 99.2447,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_166": {
+          "jaccard": 97.6543,
+          "ssim": 99.4726,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_167": {
+          "jaccard": 21.8511,
+          "ssim": 47.1544,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_168": {
+          "jaccard": 88.574,
+          "ssim": 97.602,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_169": {
+          "jaccard": 20.85,
+          "ssim": 37.8757,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_17": {
+          "jaccard": 12.5663,
+          "ssim": 29.9312,
+          "text_boundary": 0.0
+        },
+        "source_randomized__file_170": {
+          "jaccard": 5.5873,
+          "ssim": 17.9946,
+          "text_boundary": 29.0323
+        },
+        "source_randomized__file_171": {
+          "jaccard": 13.2171,
+          "ssim": 32.4181,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_172": {
+          "jaccard": 30.4487,
+          "ssim": 65.9893,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_173": {
+          "jaccard": 93.794,
+          "ssim": 98.9319,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_174": {
+          "jaccard": 2.2597,
+          "ssim": 56.7517,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_175": {
+          "jaccard": 14.7433,
+          "ssim": 27.2745,
+          "text_boundary": 63.75
+        },
+        "source_randomized__file_176": {
+          "jaccard": 14.3103,
+          "ssim": 30.9366,
+          "text_boundary": 47.5309
+        },
+        "source_randomized__file_177": {
+          "jaccard": 16.4387,
+          "ssim": 35.3295,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_178": {
+          "jaccard": 15.8705,
+          "ssim": 39.2815,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_179": {
+          "jaccard": 18.8294,
+          "ssim": 35.5185,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_18": {
+          "jaccard": 21.4687,
+          "ssim": 39.4636,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_180": {
+          "jaccard": 12.6143,
+          "ssim": 28.5954,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_181": {
+          "jaccard": 10.7711,
+          "ssim": 32.8209,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_182": {
+          "jaccard": 9.2592,
+          "ssim": 26.2246,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_183": {
+          "jaccard": 17.0663,
+          "ssim": 36.2165,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_184": {
+          "jaccard": 91.9445,
+          "ssim": 98.6768,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_185": {
+          "jaccard": 17.348,
+          "ssim": 35.3717,
+          "text_boundary": 9.7015
+        },
+        "source_randomized__file_186": {
+          "jaccard": 16.3967,
+          "ssim": 34.0937,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_187": {
+          "jaccard": 10.764,
+          "ssim": 36.0647,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_188": {
+          "jaccard": 7.5544,
+          "ssim": 24.8115,
+          "text_boundary": 26.25
+        },
+        "source_randomized__file_189": {
+          "jaccard": 15.8848,
+          "ssim": 35.1232,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_19": {
+          "jaccard": 17.9212,
+          "ssim": 26.1121,
+          "text_boundary": 34.2466
+        },
+        "source_randomized__file_190": {
+          "jaccard": 28.3504,
+          "ssim": 37.8683,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_191": {
+          "jaccard": 5.5256,
+          "ssim": 15.2338,
+          "text_boundary": 66.6667
+        },
+        "source_randomized__file_192": {
+          "jaccard": 20.5143,
+          "ssim": 45.8783,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_193": {
+          "jaccard": 20.256,
+          "ssim": 34.7575,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_194": {
+          "jaccard": 14.9602,
+          "ssim": 48.1489,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_195": {
+          "jaccard": 90.146,
+          "ssim": 98.0436,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_196": {
+          "jaccard": 17.3478,
+          "ssim": 35.3719,
+          "text_boundary": 9.7015
+        },
+        "source_randomized__file_197": {
+          "jaccard": 23.5355,
+          "ssim": 31.328,
+          "text_boundary": 10.5263
+        },
+        "source_randomized__file_198": {
+          "jaccard": 21.5531,
+          "ssim": 36.4408,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_199": {
+          "jaccard": 5.5017,
+          "ssim": 13.9247,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_2": {
+          "jaccard": 13.4698,
+          "ssim": 29.4504,
+          "text_boundary": 81.8182
+        },
+        "source_randomized__file_20": {
+          "jaccard": 10.8303,
+          "ssim": 41.0199,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_21": {
+          "jaccard": 14.4047,
+          "ssim": 33.3153,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_22": {
+          "jaccard": 9.5802,
+          "ssim": 28.6357,
+          "text_boundary": 5.1368
+        },
+        "source_randomized__file_23": {
+          "jaccard": 94.6466,
+          "ssim": 98.6973,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_24": {
+          "jaccard": 11.198,
+          "ssim": 35.1758,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_25": {
+          "jaccard": 17.6595,
+          "ssim": 36.315,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_26": {
+          "jaccard": 7.277,
+          "ssim": 20.9156,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_27": {
+          "jaccard": 3.7288,
+          "ssim": 15.5615,
+          "text_boundary": 22.6131
+        },
+        "source_randomized__file_28": {
+          "jaccard": 21.5443,
+          "ssim": 35.4045,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_29": {
+          "jaccard": 21.7899,
+          "ssim": 36.9047,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_3": {
+          "jaccard": 20.3742,
+          "ssim": 40.0586,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_30": {
+          "jaccard": 16.7708,
+          "ssim": 40.4779,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_31": {
+          "jaccard": 11.7986,
+          "ssim": 27.8297,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_32": {
+          "jaccard": 21.7644,
+          "ssim": 48.977,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_33": {
+          "jaccard": 97.583,
+          "ssim": 99.3269,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_34": {
+          "jaccard": 26.8691,
+          "ssim": 63.7356,
+          "text_boundary": 97.0149
+        },
+        "source_randomized__file_35": {
+          "jaccard": 19.728,
+          "ssim": 35.9816,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_36": {
+          "jaccard": 11.0219,
+          "ssim": 43.0411,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_37": {
+          "jaccard": 11.4563,
+          "ssim": 35.5567,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_38": {
+          "jaccard": 14.7086,
+          "ssim": 31.341,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_39": {
+          "jaccard": 15.7996,
+          "ssim": 33.7172,
+          "text_boundary": 50.0
+        },
+        "source_randomized__file_4": {
+          "jaccard": 22.4524,
+          "ssim": 36.5154,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_40": {
+          "jaccard": 96.5288,
+          "ssim": 99.0732,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_41": {
+          "jaccard": 13.4986,
+          "ssim": 29.5132,
+          "text_boundary": 81.8182
+        },
+        "source_randomized__file_42": {
+          "jaccard": 12.8086,
+          "ssim": 49.5465,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_43": {
+          "jaccard": 16.385,
+          "ssim": 37.7896,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_44": {
+          "jaccard": 14.5895,
+          "ssim": 35.6702,
+          "text_boundary": 0.0
+        },
+        "source_randomized__file_45": {
+          "jaccard": 13.4958,
+          "ssim": 31.8091,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_46": {
+          "jaccard": 22.6726,
+          "ssim": 36.0075,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_47": {
+          "jaccard": 3.7139,
+          "ssim": 9.045,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_48": {
+          "jaccard": 52.0751,
+          "ssim": 41.3012,
+          "text_boundary": 0.0
+        },
+        "source_randomized__file_49": {
+          "jaccard": 14.3426,
+          "ssim": 33.6831,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_5": {
+          "jaccard": 18.7381,
+          "ssim": 39.9991,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_50": {
+          "jaccard": 11.9559,
+          "ssim": 43.8875,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_51": {
+          "jaccard": 11.1057,
+          "ssim": 29.4964,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_52": {
+          "jaccard": 94.8352,
+          "ssim": 99.6143,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_53": {
+          "jaccard": 12.857,
+          "ssim": 25.7357,
+          "text_boundary": 23.5849
+        },
+        "source_randomized__file_54": {
+          "jaccard": 9.7364,
+          "ssim": 25.4008,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_55": {
+          "jaccard": 73.4014,
+          "ssim": 99.366,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_56": {
+          "jaccard": 16.1583,
+          "ssim": 46.0338,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_57": {
+          "jaccard": 2.9377,
+          "ssim": 13.0586,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_58": {
+          "jaccard": 11.2829,
+          "ssim": 36.1015,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_59": {
+          "jaccard": 80.4633,
+          "ssim": 96.6614,
+          "text_boundary": 96.0
+        },
+        "source_randomized__file_6": {
+          "jaccard": 12.8484,
+          "ssim": 25.754,
+          "text_boundary": 23.5849
+        },
+        "source_randomized__file_60": {
+          "jaccard": 13.6263,
+          "ssim": 30.279,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_61": {
+          "jaccard": 78.6935,
+          "ssim": 98.6393,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_62": {
+          "jaccard": 10.7662,
+          "ssim": 27.6571,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_63": {
+          "jaccard": 10.907,
+          "ssim": 24.1203,
+          "text_boundary": 0.0
+        },
+        "source_randomized__file_64": {
+          "jaccard": 83.4343,
+          "ssim": 99.7969,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_65": {
+          "jaccard": 24.505,
+          "ssim": 39.2822,
+          "text_boundary": 50.0
+        },
+        "source_randomized__file_66": {
+          "jaccard": 21.2029,
+          "ssim": 49.3481,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_67": {
+          "jaccard": 20.46,
+          "ssim": 48.912,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_68": {
+          "jaccard": 16.6996,
+          "ssim": 47.2642,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_69": {
+          "jaccard": 7.6613,
+          "ssim": 25.4168,
+          "text_boundary": 26.25
+        },
+        "source_randomized__file_7": {
+          "jaccard": 14.7558,
+          "ssim": 34.0983,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_70": {
+          "jaccard": 7.7374,
+          "ssim": 65.3571,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_71": {
+          "jaccard": 63.8453,
+          "ssim": 63.7098,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_72": {
+          "jaccard": 16.9682,
+          "ssim": 35.9355,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_73": {
+          "jaccard": 11.7688,
+          "ssim": 31.0247,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_74": {
+          "jaccard": 12.8423,
+          "ssim": 25.7128,
+          "text_boundary": 23.5849
+        },
+        "source_randomized__file_75": {
+          "jaccard": 23.5661,
+          "ssim": 34.0895,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_76": {
+          "jaccard": 11.8696,
+          "ssim": 41.6429,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_77": {
+          "jaccard": 27.7228,
+          "ssim": 60.2268,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_78": {
+          "jaccard": 7.4882,
+          "ssim": 24.8219,
+          "text_boundary": 26.25
+        },
+        "source_randomized__file_79": {
+          "jaccard": 11.6476,
+          "ssim": 37.349,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_8": {
+          "jaccard": 14.831,
+          "ssim": 27.1441,
+          "text_boundary": 31.4655
+        },
+        "source_randomized__file_80": {
+          "jaccard": 15.3031,
+          "ssim": 33.4245,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_81": {
+          "jaccard": 93.7804,
+          "ssim": 98.9788,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_82": {
+          "jaccard": 91.7833,
+          "ssim": 97.6871,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_83": {
+          "jaccard": 11.3615,
+          "ssim": 23.3731,
+          "text_boundary": 50.0
+        },
+        "source_randomized__file_84": {
+          "jaccard": 18.4945,
+          "ssim": 38.3956,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_85": {
+          "jaccard": 15.4386,
+          "ssim": 32.7191,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_86": {
+          "jaccard": 15.4773,
+          "ssim": 33.3344,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_87": {
+          "jaccard": 12.1617,
+          "ssim": 37.2318,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_88": {
+          "jaccard": 19.0459,
+          "ssim": 36.3922,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_89": {
+          "jaccard": 79.7509,
+          "ssim": 99.9197,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_9": {
+          "jaccard": 10.0834,
+          "ssim": 23.0228,
+          "text_boundary": 22.6131
+        },
+        "source_randomized__file_90": {
+          "jaccard": 10.3839,
+          "ssim": 32.7468,
+          "text_boundary": 80.0
+        },
+        "source_randomized__file_91": {
+          "jaccard": 13.0847,
+          "ssim": 33.9857,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_92": {
+          "jaccard": 24.4729,
+          "ssim": 39.2589,
+          "text_boundary": 50.0
+        },
+        "source_randomized__file_93": {
+          "jaccard": 86.4461,
+          "ssim": 98.395,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_94": {
+          "jaccard": 95.249,
+          "ssim": 99.2526,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_95": {
+          "jaccard": 22.6682,
+          "ssim": 38.6412,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_96": {
+          "jaccard": 87.3873,
+          "ssim": 98.5351,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_97": {
+          "jaccard": 33.8009,
+          "ssim": 45.0201,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_98": {
+          "jaccard": 12.5105,
+          "ssim": 47.9818,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_99": {
+          "jaccard": 17.3285,
+          "ssim": 35.1338,
+          "text_boundary": 100.0
+        }
+      },
+      "tool": "docxide-pdf",
+      "version": "docxide-pdf v0.17.0"
+    },
+    "jubarte": {
+      "binary": "/Users/arthrod/temp/T/jubarte-redlines/target/release/jubarte",
+      "failures": 0,
+      "generate_failures": [],
+      "itt_n": 398,
+      "metrics": {
+        "jaccard": {
+          "max": 100.0,
+          "mean": 53.0988,
+          "median": 43.4967,
+          "min": 0.0
+        },
+        "ssim": {
+          "max": 100.0,
+          "mean": 72.7925,
+          "median": 88.9627,
+          "min": 2.2873
+        },
+        "text_boundary": {
+          "max": 100.0,
+          "mean": 87.5532,
+          "median": 100.0,
+          "min": 0.0
+        }
+      },
+      "n_scored": 398,
+      "page_count_mismatch": 0,
+      "pass_jaccard_20": 278,
+      "pass_ssim_75": 225,
+      "per_doc": {
+        "source__1_5_line_spacing_id_paraid_overflow": {
+          "jaccard": 85.3066,
+          "ssim": 99.5281,
+          "text_boundary": 100.0
+        },
+        "source__24_id_paraid_overflow": {
+          "jaccard": 90.6667,
+          "ssim": 98.3515,
+          "text_boundary": 100.0
+        },
+        "source__I_am_sharing_Microsoft_Word_vs_Google_Docs_Comprehensive_Proof_with_you": {
+          "jaccard": 27.614,
+          "ssim": 58.8505,
+          "text_boundary": 69.5122
+        },
+        "source__Redline_CiceroDo_v_plate_30": {
+          "jaccard": 8.0742,
+          "ssim": 21.1927,
+          "text_boundary": 26.0
+        },
+        "source__Strict01": {
+          "jaccard": 43.4967,
+          "ssim": 56.1413,
+          "text_boundary": 29.927
+        },
+        "source__alternate_content": {
+          "jaccard": 17.4122,
+          "ssim": 20.0804,
+          "text_boundary": 0.0
+        },
+        "source__anchor_images": {
+          "jaccard": 14.3284,
+          "ssim": 20.752,
+          "text_boundary": 5.2632
+        },
+        "source__blue_bold_centered_demo_id_paraid_overflow": {
+          "jaccard": 95.127,
+          "ssim": 98.9192,
+          "text_boundary": 100.0
+        },
+        "source__blue_centered_title_demo_style_default_missing": {
+          "jaccard": 27.6664,
+          "ssim": 55.0238,
+          "text_boundary": 100.0
+        },
+        "source__blue_italic_text_demo_id_paraid_overflow": {
+          "jaccard": 94.4213,
+          "ssim": 98.8997,
+          "text_boundary": 100.0
+        },
+        "source__blue_underline_combo_demo_id_paraid_overflow": {
+          "jaccard": 80.7358,
+          "ssim": 94.2862,
+          "text_boundary": 100.0
+        },
+        "source__bold_and_italic_combo_style_default_missing": {
+          "jaccard": 98.5379,
+          "ssim": 99.7055,
+          "text_boundary": 100.0
+        },
+        "source__bold_and_underline_combo_id_paraid_overflow": {
+          "jaccard": 78.6904,
+          "ssim": 94.306,
+          "text_boundary": 100.0
+        },
+        "source__bold_italic_combined_demo_id_paraid_overflow": {
+          "jaccard": 97.3313,
+          "ssim": 99.4039,
+          "text_boundary": 100.0
+        },
+        "source__bold_italic_underline_demo_id_paraid_overflow": {
+          "jaccard": 77.6476,
+          "ssim": 94.5721,
+          "text_boundary": 100.0
+        },
+        "source__bold_red_text_combo_id_paraid_overflow": {
+          "jaccard": 95.7415,
+          "ssim": 98.974,
+          "text_boundary": 100.0
+        },
+        "source__bold_superscript_demo_style_default_missing": {
+          "jaccard": 44.9509,
+          "ssim": 44.5907,
+          "text_boundary": 100.0
+        },
+        "source__bold_text_formatting_demo_id_paraid_overflow": {
+          "jaccard": 96.0619,
+          "ssim": 99.0871,
+          "text_boundary": 100.0
+        },
+        "source__bold_text_formatting_demo_id_paraid_overflow_2": {
+          "jaccard": 97.6584,
+          "ssim": 99.4337,
+          "text_boundary": 100.0
+        },
+        "source__bold_underline_combined_demo_id_paraid_overflow": {
+          "jaccard": 77.2905,
+          "ssim": 94.0961,
+          "text_boundary": 100.0
+        },
+        "source__bold_underline_highlight_demo_id_paraid_overflow": {
+          "jaccard": 77.6558,
+          "ssim": 94.2891,
+          "text_boundary": 100.0
+        },
+        "source__book_catalog_id_paraid_overflow": {
+          "jaccard": 57.3431,
+          "ssim": 68.5671,
+          "text_boundary": 33.3333
+        },
+        "source__book_catalog_table": {
+          "jaccard": 13.267,
+          "ssim": 71.4115,
+          "text_boundary": 100.0
+        },
+        "source__budget_report_q1_2026_suggesting_insertions": {
+          "jaccard": 96.297,
+          "ssim": 98.8938,
+          "text_boundary": 100.0
+        },
+        "source__bullet_list_bold_demo_id_paraid_overflow": {
+          "jaccard": 96.0198,
+          "ssim": 99.0422,
+          "text_boundary": 100.0
+        },
+        "source__bullet_list_demo_id_paraid_overflow": {
+          "jaccard": 22.5336,
+          "ssim": 36.0401,
+          "text_boundary": 20.0
+        },
+        "source__calibri_bold_italic_demo_id_paraid_overflow": {
+          "jaccard": 26.6259,
+          "ssim": 32.2962,
+          "text_boundary": 100.0
+        },
+        "source__calibri_font_demo_id_paraid_overflow": {
+          "jaccard": 19.2477,
+          "ssim": 27.0789,
+          "text_boundary": 100.0
+        },
+        "source__calibri_font_demo_id_paraid_overflow_2": {
+          "jaccard": 19.29,
+          "ssim": 26.958,
+          "text_boundary": 100.0
+        },
+        "source__calibri_heading_2_right_id_paraid_overflow": {
+          "jaccard": 25.3575,
+          "ssim": 30.2221,
+          "text_boundary": 100.0
+        },
+        "source__center_aligned_bold_text_id_paraid_overflow": {
+          "jaccard": 97.712,
+          "ssim": 99.5762,
+          "text_boundary": 100.0
+        },
+        "source__center_alignment_demo_id_paraid_overflow": {
+          "jaccard": 96.2053,
+          "ssim": 99.1225,
+          "text_boundary": 100.0
+        },
+        "source__center_alignment_demo_id_paraid_overflow_2": {
+          "jaccard": 96.049,
+          "ssim": 99.1764,
+          "text_boundary": 100.0
+        },
+        "source__center_bold_demo_id_paraid_overflow": {
+          "jaccard": 94.1763,
+          "ssim": 98.3848,
+          "text_boundary": 100.0
+        },
+        "source__clear_formatting_demo_id_paraid_overflow": {
+          "jaccard": 97.3227,
+          "ssim": 99.3385,
+          "text_boundary": 100.0
+        },
+        "source__comments": {
+          "jaccard": 100.0,
+          "ssim": 100.0,
+          "text_boundary": 100.0
+        },
+        "source__complex_style_attr": {
+          "jaccard": 3.2741,
+          "ssim": 10.8874,
+          "text_boundary": 100.0
+        },
+        "source__contract_review_suggesting_insertions": {
+          "jaccard": 14.7496,
+          "ssim": 72.9508,
+          "text_boundary": 100.0
+        },
+        "source__contract_review_suggesting_mixed_edits": {
+          "jaccard": 31.251,
+          "ssim": 47.379,
+          "text_boundary": 33.3333
+        },
+        "source__customer_satisfaction_survey_q4_suggesting_insertions": {
+          "jaccard": 96.6609,
+          "ssim": 98.7742,
+          "text_boundary": 100.0
+        },
+        "source__document_100_ultimate_demo_id_paraid_overflow": {
+          "jaccard": 35.9896,
+          "ssim": 84.9779,
+          "text_boundary": 100.0
+        },
+        "source__docx_lots_of_comments": {
+          "jaccard": 31.6088,
+          "ssim": 68.2105,
+          "text_boundary": 79.4355
+        },
+        "source__docx_lots_of_comments_addition": {
+          "jaccard": 29.4976,
+          "ssim": 63.0842,
+          "text_boundary": 58.1871
+        },
+        "source__docx_lots_of_comments_addition_redline": {
+          "jaccard": 29.4976,
+          "ssim": 63.0842,
+          "text_boundary": 58.1871
+        },
+        "source__docx_lots_of_comments_addition_redline_addition_v_removal": {
+          "jaccard": 29.2922,
+          "ssim": 62.4783,
+          "text_boundary": 58.1871
+        },
+        "source__docx_lots_of_comments_addition_removal": {
+          "jaccard": 29.5382,
+          "ssim": 62.9998,
+          "text_boundary": 58.1871
+        },
+        "source__docx_lots_of_comments_addition_removal_redline": {
+          "jaccard": 29.4976,
+          "ssim": 63.0842,
+          "text_boundary": 58.1871
+        },
+        "source__docx_lots_of_comments_addition_removal_redline_removal_v_addition": {
+          "jaccard": 28.397,
+          "ssim": 64.0505,
+          "text_boundary": 34.4648
+        },
+        "source__double_spacing_bold_demo_id_paraid_overflow": {
+          "jaccard": 95.2624,
+          "ssim": 98.669,
+          "text_boundary": 100.0
+        },
+        "source__eigenpal_docx_editor_suggesting_mixed_edits": {
+          "jaccard": 17.8746,
+          "ssim": 41.5474,
+          "text_boundary": 37.5
+        },
+        "source__eigenpal_docx_editor_suggesting_mixed_edits_2": {
+          "jaccard": 19.1905,
+          "ssim": 48.4591,
+          "text_boundary": 97.5
+        },
+        "source__employee_directory_table": {
+          "jaccard": 13.7251,
+          "ssim": 72.4963,
+          "text_boundary": 100.0
+        },
+        "source__employee_directory_table_2": {
+          "jaccard": 13.2971,
+          "ssim": 68.603,
+          "text_boundary": 100.0
+        },
+        "source__employee_review_john_smith_suggesting_insertions": {
+          "jaccard": 95.9887,
+          "ssim": 98.827,
+          "text_boundary": 100.0
+        },
+        "source__endnotes_sample": {
+          "jaccard": 7.6232,
+          "ssim": 15.3362,
+          "text_boundary": 0.0
+        },
+        "source__font_color_blue_demo_style_default_missing": {
+          "jaccard": 94.7325,
+          "ssim": 99.1961,
+          "text_boundary": 100.0
+        },
+        "source__font_color_demo_style_default_missing": {
+          "jaccard": 98.0426,
+          "ssim": 99.6416,
+          "text_boundary": 100.0
+        },
+        "source__font_family_demo_id_paraid_overflow": {
+          "jaccard": 6.954,
+          "ssim": 21.3437,
+          "text_boundary": 100.0
+        },
+        "source__font_size_12_demo_id_paraid_overflow": {
+          "jaccard": 99.4443,
+          "ssim": 99.6815,
+          "text_boundary": 100.0
+        },
+        "source__font_size_18_demo_style_default_missing": {
+          "jaccard": 86.3504,
+          "ssim": 93.8584,
+          "text_boundary": 100.0
+        },
+        "source__font_size_24_demo_id_paraid_overflow": {
+          "jaccard": 92.4834,
+          "ssim": 97.0412,
+          "text_boundary": 100.0
+        },
+        "source__font_size_demo_id_paraid_overflow": {
+          "jaccard": 90.9067,
+          "ssim": 96.5164,
+          "text_boundary": 100.0
+        },
+        "source__footnotes_sample": {
+          "jaccard": 12.6792,
+          "ssim": 13.9622,
+          "text_boundary": 0.0
+        },
+        "source__gdocs_comments_export": {
+          "jaccard": 62.7641,
+          "ssim": 99.0098,
+          "text_boundary": 100.0
+        },
+        "source__green_bold_text_demo_id_paraid_overflow": {
+          "jaccard": 92.0785,
+          "ssim": 98.4094,
+          "text_boundary": 100.0
+        },
+        "source__green_highlight_demo_id_paraid_overflow": {
+          "jaccard": 96.4286,
+          "ssim": 98.3741,
+          "text_boundary": 100.0
+        },
+        "source__green_underline_bullet_list_id_paraid_overflow": {
+          "jaccard": 83.1085,
+          "ssim": 93.1167,
+          "text_boundary": 100.0
+        },
+        "source__header_no_rels": {
+          "jaccard": 76.9214,
+          "ssim": 96.3844,
+          "text_boundary": 100.0
+        },
+        "source__heading_1_bold_demo_id_paraid_overflow": {
+          "jaccard": 41.6859,
+          "ssim": 89.0417,
+          "text_boundary": 100.0
+        },
+        "source__heading_1_style_demo_id_paraid_overflow": {
+          "jaccard": 48.4085,
+          "ssim": 96.2618,
+          "text_boundary": 100.0
+        },
+        "source__heading_2_center_demo_id_paraid_overflow": {
+          "jaccard": 40.461,
+          "ssim": 92.7849,
+          "text_boundary": 100.0
+        },
+        "source__heading_2_style_demo_id_paraid_overflow": {
+          "jaccard": 42.7226,
+          "ssim": 94.5823,
+          "text_boundary": 100.0
+        },
+        "source__heading_3_center_italic_id_paraid_overflow": {
+          "jaccard": 54.5102,
+          "ssim": 99.5192,
+          "text_boundary": 100.0
+        },
+        "source__heading_3_style_demo_id_paraid_overflow": {
+          "jaccard": 49.4575,
+          "ssim": 99.7499,
+          "text_boundary": 100.0
+        },
+        "source__heading_3_style_demo_id_paraid_overflow_2": {
+          "jaccard": 55.9895,
+          "ssim": 99.5174,
+          "text_boundary": 100.0
+        },
+        "source__heading_4_right_italic_id_paraid_overflow": {
+          "jaccard": 53.4727,
+          "ssim": 99.9245,
+          "text_boundary": 100.0
+        },
+        "source__heading_4_style_demo_id_paraid_overflow": {
+          "jaccard": 52.6424,
+          "ssim": 99.9953,
+          "text_boundary": 100.0
+        },
+        "source__heading_4_style_demo_id_paraid_overflow_2": {
+          "jaccard": 55.2166,
+          "ssim": 99.9496,
+          "text_boundary": 100.0
+        },
+        "source__helvetica_font_demo_style_default_missing": {
+          "jaccard": 29.336,
+          "ssim": 97.4619,
+          "text_boundary": 100.0
+        },
+        "source__hr_onboarding_checklist_table": {
+          "jaccard": 16.4439,
+          "ssim": 78.6984,
+          "text_boundary": 100.0
+        },
+        "source__image_out_of_folder": {
+          "jaccard": 48.7934,
+          "ssim": 38.7643,
+          "text_boundary": 36.3636
+        },
+        "source__increase_indent_demo_id_paraid_overflow": {
+          "jaccard": 97.4673,
+          "ssim": 99.4124,
+          "text_boundary": 100.0
+        },
+        "source__insert_link_demo_id_paraid_overflow": {
+          "jaccard": 96.9212,
+          "ssim": 99.3592,
+          "text_boundary": 100.0
+        },
+        "source__inventory_list_suggesting_deletions": {
+          "jaccard": 13.7394,
+          "ssim": 74.3255,
+          "text_boundary": 100.0
+        },
+        "source__inventory_list_suggesting_mixed_edits": {
+          "jaccard": 67.484,
+          "ssim": 78.4149,
+          "text_boundary": 0.0
+        },
+        "source__it_security_policy_v2_suggesting_insertions": {
+          "jaccard": 96.4029,
+          "ssim": 98.3259,
+          "text_boundary": 100.0
+        },
+        "source__italic_and_underline_combo_style_default_missing": {
+          "jaccard": 74.293,
+          "ssim": 93.7566,
+          "text_boundary": 100.0
+        },
+        "source__italic_subscript_demo_style_default_missing": {
+          "jaccard": 24.7984,
+          "ssim": 38.7299,
+          "text_boundary": 100.0
+        },
+        "source__italic_text_formatting_demo_id_paraid_overflow": {
+          "jaccard": 98.0774,
+          "ssim": 99.6235,
+          "text_boundary": 100.0
+        },
+        "source__italic_text_formatting_demo_id_paraid_overflow_2": {
+          "jaccard": 99.1016,
+          "ssim": 99.8031,
+          "text_boundary": 100.0
+        },
+        "source__italic_underline_combined_demo_id_paraid_overflow": {
+          "jaccard": 74.1003,
+          "ssim": 94.3668,
+          "text_boundary": 100.0
+        },
+        "source__justified_underline_demo_id_paraid_overflow": {
+          "jaccard": 96.3198,
+          "ssim": 99.2249,
+          "text_boundary": 100.0
+        },
+        "source__justify_alignment_demo_id_paraid_overflow": {
+          "jaccard": 88.1976,
+          "ssim": 96.2763,
+          "text_boundary": 100.0
+        },
+        "source__justify_alignment_demo_id_paraid_overflow_2": {
+          "jaccard": 94.8902,
+          "ssim": 98.6635,
+          "text_boundary": 100.0
+        },
+        "source__large_font_size_demo_id_paraid_overflow": {
+          "jaccard": 78.7504,
+          "ssim": 97.0639,
+          "text_boundary": 100.0
+        },
+        "source__left_alignment_demo_id_paraid_overflow": {
+          "jaccard": 96.4727,
+          "ssim": 99.2208,
+          "text_boundary": 100.0
+        },
+        "source__line_spacing_demo_id_paraid_overflow": {
+          "jaccard": 85.4989,
+          "ssim": 99.4679,
+          "text_boundary": 100.0
+        },
+        "source__marketing_strategy_2026_suggesting_insertions": {
+          "jaccard": 96.5697,
+          "ssim": 99.0302,
+          "text_boundary": 100.0
+        },
+        "source__mcdoc": {
+          "jaccard": 68.2848,
+          "ssim": 77.9897,
+          "text_boundary": 100.0
+        },
+        "source__meeting_agenda_table": {
+          "jaccard": 13.385,
+          "ssim": 70.9903,
+          "text_boundary": 100.0
+        },
+        "source__meeting_agenda_table_2": {
+          "jaccard": 13.8719,
+          "ssim": 73.7218,
+          "text_boundary": 100.0
+        },
+        "source__meeting_minutes_id_paraid_overflow": {
+          "jaccard": 98.6467,
+          "ssim": 99.7154,
+          "text_boundary": 100.0
+        },
+        "source__meeting_minutes_suggesting_insertions": {
+          "jaccard": 95.6913,
+          "ssim": 97.8008,
+          "text_boundary": 100.0
+        },
+        "source__multi_section": {
+          "jaccard": 18.1372,
+          "ssim": 28.8551,
+          "text_boundary": 84.2105
+        },
+        "source__nested_table_rowspan": {
+          "jaccard": 1.7787,
+          "ssim": 15.7062,
+          "text_boundary": 0.0
+        },
+        "source__numbered_list_demo_id_paraid_overflow": {
+          "jaccard": 27.9265,
+          "ssim": 40.5209,
+          "text_boundary": 20.0
+        },
+        "source__numbered_list_italic_demo_id_paraid_overflow": {
+          "jaccard": 97.6145,
+          "ssim": 99.4568,
+          "text_boundary": 100.0
+        },
+        "source__numwords_fldsimple": {
+          "jaccard": 62.0553,
+          "ssim": 96.4007,
+          "text_boundary": 100.0
+        },
+        "source__ole_object": {
+          "jaccard": 43.4967,
+          "ssim": 56.1413,
+          "text_boundary": 29.927
+        },
+        "source__ooxml_style_link": {
+          "jaccard": 4.235,
+          "ssim": 10.047,
+          "text_boundary": 91.3043
+        },
+        "source__open_sans_bold_underline_id_paraid_overflow": {
+          "jaccard": 13.4145,
+          "ssim": 37.2521,
+          "text_boundary": 100.0
+        },
+        "source__open_sans_font_demo_id_paraid_overflow": {
+          "jaccard": 7.9604,
+          "ssim": 22.9826,
+          "text_boundary": 100.0
+        },
+        "source__open_sans_font_demo_id_paraid_overflow_2": {
+          "jaccard": 8.4237,
+          "ssim": 25.495,
+          "text_boundary": 100.0
+        },
+        "source__page_numbering_examples": {
+          "jaccard": 18.1372,
+          "ssim": 28.8551,
+          "text_boundary": 84.2105
+        },
+        "source__potpourritest": {
+          "jaccard": 9.4791,
+          "ssim": 24.0466,
+          "text_boundary": 22.6804
+        },
+        "source__product_roadmap_2026_suggesting_insertions": {
+          "jaccard": 96.1565,
+          "ssim": 98.3859,
+          "text_boundary": 100.0
+        },
+        "source__project_plan_suggesting_insertions": {
+          "jaccard": 96.3776,
+          "ssim": 98.8538,
+          "text_boundary": 100.0
+        },
+        "source__project_proposal_id_paraid_overflow": {
+          "jaccard": 96.93,
+          "ssim": 99.2703,
+          "text_boundary": 100.0
+        },
+        "source__project_proposal_suggesting_insertions": {
+          "jaccard": 91.6843,
+          "ssim": 96.9277,
+          "text_boundary": 100.0
+        },
+        "source__project_tasks_suggesting_insertions": {
+          "jaccard": 13.3181,
+          "ssim": 71.6121,
+          "text_boundary": 100.0
+        },
+        "source__project_tasks_suggesting_insertions_2": {
+          "jaccard": 58.974,
+          "ssim": 71.5238,
+          "text_boundary": 33.3333
+        },
+        "source__q1_sales_summary_table": {
+          "jaccard": 14.6756,
+          "ssim": 74.0533,
+          "text_boundary": 100.0
+        },
+        "source__q1_sales_summary_table_2": {
+          "jaccard": 14.1483,
+          "ssim": 71.17,
+          "text_boundary": 100.0
+        },
+        "source__quarterly_performance_report_table": {
+          "jaccard": 14.9322,
+          "ssim": 67.2062,
+          "text_boundary": 100.0
+        },
+        "source__quarterly_performance_report_table_2": {
+          "jaccard": 16.9915,
+          "ssim": 77.0108,
+          "text_boundary": 100.0
+        },
+        "source__red_bold_heading_demo_style_default_missing": {
+          "jaccard": 42.4585,
+          "ssim": 90.777,
+          "text_boundary": 100.0
+        },
+        "source__red_bold_text_demo_id_paraid_overflow": {
+          "jaccard": 94.5922,
+          "ssim": 98.746,
+          "text_boundary": 100.0
+        },
+        "source__red_heading_demo_id_paraid_overflow": {
+          "jaccard": 41.6363,
+          "ssim": 89.2112,
+          "text_boundary": 100.0
+        },
+        "source__red_strikethrough_demo_style_default_missing": {
+          "jaccard": 72.209,
+          "ssim": 88.8838,
+          "text_boundary": 100.0
+        },
+        "source__right_align_bold_demo_id_paraid_overflow": {
+          "jaccard": 94.3268,
+          "ssim": 98.4072,
+          "text_boundary": 100.0
+        },
+        "source__right_aligned_italic_demo_id_paraid_overflow": {
+          "jaccard": 93.0963,
+          "ssim": 98.3229,
+          "text_boundary": 100.0
+        },
+        "source__right_alignment_demo_id_paraid_overflow": {
+          "jaccard": 96.2331,
+          "ssim": 99.0857,
+          "text_boundary": 100.0
+        },
+        "source__right_alignment_demo_id_paraid_overflow_2": {
+          "jaccard": 96.6554,
+          "ssim": 99.1268,
+          "text_boundary": 100.0
+        },
+        "source__risk_assessment_product_launch_suggesting_insertions": {
+          "jaccard": 96.9581,
+          "ssim": 98.9862,
+          "text_boundary": 100.0
+        },
+        "source__roboto_font_demo_id_paraid_overflow": {
+          "jaccard": 16.3477,
+          "ssim": 37.736,
+          "text_boundary": 100.0
+        },
+        "source__roboto_font_demo_id_paraid_overflow_2": {
+          "jaccard": 15.1651,
+          "ssim": 35.6877,
+          "text_boundary": 100.0
+        },
+        "source__roboto_underline_demo_id_paraid_overflow": {
+          "jaccard": 16.5702,
+          "ssim": 41.7837,
+          "text_boundary": 100.0
+        },
+        "source__sales_report_january_2026_suggesting_insertions": {
+          "jaccard": 97.0585,
+          "ssim": 98.9835,
+          "text_boundary": 100.0
+        },
+        "source__sample_document_afterword_repaired_word_repaired": {
+          "jaccard": 17.8746,
+          "ssim": 41.5474,
+          "text_boundary": 37.5
+        },
+        "source__sample_document_really_repaired_word_repaired": {
+          "jaccard": 17.8944,
+          "ssim": 41.5863,
+          "text_boundary": 37.5
+        },
+        "source__sample_document_word_repair_of_our_output_iter2_word_repaired": {
+          "jaccard": 17.7978,
+          "ssim": 41.8438,
+          "text_boundary": 37.5
+        },
+        "source__sample_document_word_repair_of_our_output_iter2_word_repaired_2": {
+          "jaccard": 10.3937,
+          "ssim": 29.6778,
+          "text_boundary": 47.2727
+        },
+        "source__sample_document_word_repair_of_our_output_word_repaired": {
+          "jaccard": 17.8944,
+          "ssim": 41.5863,
+          "text_boundary": 37.5
+        },
+        "source__sample_document_word_repair_of_our_output_word_repaired_2": {
+          "jaccard": 13.2461,
+          "ssim": 38.755,
+          "text_boundary": 64.9007
+        },
+        "source__sd_2517_localized_heading_styles": {
+          "jaccard": 9.6212,
+          "ssim": 30.9981,
+          "text_boundary": 20.8835
+        },
+        "source__sectpr_headerref": {
+          "jaccard": 25.4541,
+          "ssim": 42.5317,
+          "text_boundary": 63.6364
+        },
+        "source__single_paragraph": {
+          "jaccard": 95.873,
+          "ssim": 98.8463,
+          "text_boundary": 100.0
+        },
+        "source__small_font_size_demo_id_paraid_overflow": {
+          "jaccard": 75.3551,
+          "ssim": 98.5955,
+          "text_boundary": 100.0
+        },
+        "source__strict01_sdt_controls": {
+          "jaccard": 43.4967,
+          "ssim": 56.1413,
+          "text_boundary": 29.927
+        },
+        "source__strikethrough_and_italic_combo_id_paraid_overflow": {
+          "jaccard": 67.2614,
+          "ssim": 88.3027,
+          "text_boundary": 100.0
+        },
+        "source__strikethrough_bold_demo_id_paraid_overflow": {
+          "jaccard": 77.3838,
+          "ssim": 85.8248,
+          "text_boundary": 100.0
+        },
+        "source__strikethrough_text_demo_id_paraid_overflow": {
+          "jaccard": 98.2026,
+          "ssim": 99.6211,
+          "text_boundary": 100.0
+        },
+        "source__strikethrough_text_formatting_demo_id_paraid_overflow": {
+          "jaccard": 67.5495,
+          "ssim": 89.3222,
+          "text_boundary": 100.0
+        },
+        "source__subscript_demo_id_paraid_overflow": {
+          "jaccard": 24.3442,
+          "ssim": 38.5167,
+          "text_boundary": 100.0
+        },
+        "source__subscript_demo_style_default_missing": {
+          "jaccard": 26.2281,
+          "ssim": 42.3869,
+          "text_boundary": 100.0
+        },
+        "source__subtitle_style_demo_id_paraid_overflow": {
+          "jaccard": 28.6191,
+          "ssim": 92.7231,
+          "text_boundary": 100.0
+        },
+        "source__subtitle_style_demo_style_default_missing": {
+          "jaccard": 25.9117,
+          "ssim": 90.5325,
+          "text_boundary": 100.0
+        },
+        "source__superscript_demo_id_paraid_overflow": {
+          "jaccard": 34.7206,
+          "ssim": 42.839,
+          "text_boundary": 100.0
+        },
+        "source__superscript_demo_id_paraid_overflow_2": {
+          "jaccard": 31.1312,
+          "ssim": 39.2176,
+          "text_boundary": 100.0
+        },
+        "source__superscript_demo_style_default_missing": {
+          "jaccard": 99.0566,
+          "ssim": 99.8663,
+          "text_boundary": 100.0
+        },
+        "source__support_tickets_summary_id_paraid_overflow": {
+          "jaccard": 69.9136,
+          "ssim": 79.611,
+          "text_boundary": 0.0
+        },
+        "source__support_tickets_table": {
+          "jaccard": 13.8559,
+          "ssim": 74.3058,
+          "text_boundary": 100.0
+        },
+        "source__table_bookmark_end": {
+          "jaccard": 7.4615,
+          "ssim": 36.2678,
+          "text_boundary": 89.2857
+        },
+        "source__table_vmerge_colspan": {
+          "jaccard": 1.9324,
+          "ssim": 12.3661,
+          "text_boundary": 100.0
+        },
+        "source__text_box": {
+          "jaccard": 15.7858,
+          "ssim": 32.3977,
+          "text_boundary": 100.0
+        },
+        "source__text_highlight_demo_style_default_missing": {
+          "jaccard": 98.3715,
+          "ssim": 99.5379,
+          "text_boundary": 100.0
+        },
+        "source__tiff_image": {
+          "jaccard": 46.8711,
+          "ssim": 65.995,
+          "text_boundary": 100.0
+        },
+        "source__times_new_roman_bold_id_paraid_overflow": {
+          "jaccard": 13.6415,
+          "ssim": 25.3291,
+          "text_boundary": 100.0
+        },
+        "source__times_new_roman_font_id_paraid_overflow": {
+          "jaccard": 9.7899,
+          "ssim": 26.4723,
+          "text_boundary": 100.0
+        },
+        "source__title_style_centered_demo_id_paraid_overflow": {
+          "jaccard": 28.0174,
+          "ssim": 52.312,
+          "text_boundary": 100.0
+        },
+        "source__title_style_demo_id_paraid_overflow": {
+          "jaccard": 37.8107,
+          "ssim": 60.6825,
+          "text_boundary": 100.0
+        },
+        "source__title_style_demo_style_default_missing": {
+          "jaccard": 26.7859,
+          "ssim": 50.5648,
+          "text_boundary": 100.0
+        },
+        "source__track_changes_editing_bullet_id_paraid_overflow": {
+          "jaccard": 95.3175,
+          "ssim": 98.6377,
+          "text_boundary": 100.0
+        },
+        "source__track_changes_editing_strikethrough_id_paraid_overflow": {
+          "jaccard": 68.9494,
+          "ssim": 88.6634,
+          "text_boundary": 100.0
+        },
+        "source__track_changes_suggesting_bold_id_paraid_overflow": {
+          "jaccard": 94.0666,
+          "ssim": 97.709,
+          "text_boundary": 100.0
+        },
+        "source__track_changes_suggesting_calibri_id_paraid_overflow": {
+          "jaccard": 21.7172,
+          "ssim": 33.733,
+          "text_boundary": 100.0
+        },
+        "source__track_changes_suggesting_center_id_paraid_overflow": {
+          "jaccard": 71.8583,
+          "ssim": 93.0388,
+          "text_boundary": 100.0
+        },
+        "source__track_changes_suggesting_heading_id_paraid_overflow": {
+          "jaccard": 36.688,
+          "ssim": 87.5003,
+          "text_boundary": 100.0
+        },
+        "source__track_changes_suggesting_italic_id_paraid_overflow": {
+          "jaccard": 96.6207,
+          "ssim": 99.3019,
+          "text_boundary": 100.0
+        },
+        "source__track_changes_suggesting_title_id_paraid_overflow": {
+          "jaccard": 16.355,
+          "ssim": 35.4101,
+          "text_boundary": 100.0
+        },
+        "source__training_materials_onboarding_program_suggesting_insertions": {
+          "jaccard": 96.2577,
+          "ssim": 98.8996,
+          "text_boundary": 100.0
+        },
+        "source__underline_text_demo_id_paraid_overflow": {
+          "jaccard": 98.852,
+          "ssim": 99.7582,
+          "text_boundary": 100.0
+        },
+        "source__underline_text_formatting_demo_style_default_missing": {
+          "jaccard": 74.2774,
+          "ssim": 93.7244,
+          "text_boundary": 100.0
+        },
+        "source__verdana_bold_large_font_id_paraid_overflow": {
+          "jaccard": 27.3456,
+          "ssim": 56.9402,
+          "text_boundary": 100.0
+        },
+        "source__verdana_font_demo_id_paraid_overflow": {
+          "jaccard": 28.6575,
+          "ssim": 94.9356,
+          "text_boundary": 100.0
+        },
+        "source__verdana_font_demo_id_paraid_overflow_2": {
+          "jaccard": 28.6575,
+          "ssim": 94.9356,
+          "text_boundary": 100.0
+        },
+        "source__verdana_italic_centered_demo_id_paraid_overflow": {
+          "jaccard": 27.9029,
+          "ssim": 93.5094,
+          "text_boundary": 100.0
+        },
+        "source__verdana_italic_centered_demo_id_paraid_overflow_2": {
+          "jaccard": 27.9029,
+          "ssim": 93.5094,
+          "text_boundary": 100.0
+        },
+        "source__vfdsdfcacawesd_suggesting_mixed_edits": {
+          "jaccard": 88.0303,
+          "ssim": 95.507,
+          "text_boundary": 100.0
+        },
+        "source__word_clean_strict01": {
+          "jaccard": 43.492,
+          "ssim": 56.2556,
+          "text_boundary": 29.927
+        },
+        "source__word_tolerated_broken_media_rel": {
+          "jaccard": 1.0216,
+          "ssim": 2.9129,
+          "text_boundary": 100.0
+        },
+        "source__word_tolerated_duplicate_ppr": {
+          "jaccard": 38.4358,
+          "ssim": 99.9942,
+          "text_boundary": 100.0
+        },
+        "source__word_tolerated_misplaced_link": {
+          "jaccard": 4.235,
+          "ssim": 10.047,
+          "text_boundary": 91.3043
+        },
+        "source__word_tolerated_misplaced_pgsz": {
+          "jaccard": 6.4004,
+          "ssim": 20.7865,
+          "text_boundary": 0.0
+        },
+        "source__word_tolerated_misplaced_uipriority": {
+          "jaccard": 60.9269,
+          "ssim": 92.4238,
+          "text_boundary": 96.9697
+        },
+        "source__word_tolerated_orphan_comment": {
+          "jaccard": 3.9526,
+          "ssim": 28.8054,
+          "text_boundary": 0.0
+        },
+        "source__yellow_highlight_demo_id_paraid_overflow": {
+          "jaccard": 94.4837,
+          "ssim": 98.541,
+          "text_boundary": 100.0
+        },
+        "source__yellow_highlight_italic_demo_style_default_missing": {
+          "jaccard": 94.0511,
+          "ssim": 98.3067,
+          "text_boundary": 100.0
+        },
+        "source__yellow_highlight_italic_demo_style_default_missing_2": {
+          "jaccard": 94.0511,
+          "ssim": 98.3067,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_1": {
+          "jaccard": 83.2387,
+          "ssim": 94.8723,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_10": {
+          "jaccard": 92.6916,
+          "ssim": 98.6393,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_100": {
+          "jaccard": 41.0081,
+          "ssim": 56.0466,
+          "text_boundary": 44.4444
+        },
+        "source_randomized__file_101": {
+          "jaccard": 6.9266,
+          "ssim": 10.1907,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_102": {
+          "jaccard": 74.538,
+          "ssim": 94.4388,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_103": {
+          "jaccard": 17.9534,
+          "ssim": 86.7807,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_104": {
+          "jaccard": 0.0,
+          "ssim": 2.2873,
+          "text_boundary": 0.0
+        },
+        "source_randomized__file_105": {
+          "jaccard": 93.5925,
+          "ssim": 98.3456,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_106": {
+          "jaccard": 18.1218,
+          "ssim": 86.5556,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_107": {
+          "jaccard": 94.3668,
+          "ssim": 98.3856,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_108": {
+          "jaccard": 97.1145,
+          "ssim": 98.8177,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_109": {
+          "jaccard": 25.1559,
+          "ssim": 40.696,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_11": {
+          "jaccard": 33.0104,
+          "ssim": 43.1848,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_110": {
+          "jaccard": 92.214,
+          "ssim": 97.3387,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_111": {
+          "jaccard": 35.4377,
+          "ssim": 74.6463,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_112": {
+          "jaccard": 95.535,
+          "ssim": 98.7406,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_113": {
+          "jaccard": 11.5585,
+          "ssim": 29.0408,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_114": {
+          "jaccard": 67.0968,
+          "ssim": 88.1483,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_115": {
+          "jaccard": 41.0192,
+          "ssim": 56.0969,
+          "text_boundary": 44.4444
+        },
+        "source_randomized__file_116": {
+          "jaccard": 96.4504,
+          "ssim": 99.0839,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_117": {
+          "jaccard": 36.4528,
+          "ssim": 76.1462,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_118": {
+          "jaccard": 60.3977,
+          "ssim": 72.5284,
+          "text_boundary": 50.0
+        },
+        "source_randomized__file_119": {
+          "jaccard": 97.7722,
+          "ssim": 99.5208,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_12": {
+          "jaccard": 11.4386,
+          "ssim": 21.2993,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_120": {
+          "jaccard": 12.621,
+          "ssim": 42.368,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_121": {
+          "jaccard": 94.6738,
+          "ssim": 98.867,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_122": {
+          "jaccard": 97.2909,
+          "ssim": 99.4214,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_123": {
+          "jaccard": 94.3077,
+          "ssim": 98.3984,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_124": {
+          "jaccard": 18.5813,
+          "ssim": 91.951,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_125": {
+          "jaccard": 98.8398,
+          "ssim": 99.6756,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_126": {
+          "jaccard": 97.5863,
+          "ssim": 99.4225,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_127": {
+          "jaccard": 96.556,
+          "ssim": 99.046,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_128": {
+          "jaccard": 96.2168,
+          "ssim": 98.5387,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_129": {
+          "jaccard": 74.2219,
+          "ssim": 93.465,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_13": {
+          "jaccard": 8.339,
+          "ssim": 25.594,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_130": {
+          "jaccard": 70.0923,
+          "ssim": 97.4279,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_131": {
+          "jaccard": 32.1614,
+          "ssim": 68.3061,
+          "text_boundary": 79.5181
+        },
+        "source_randomized__file_132": {
+          "jaccard": 95.3252,
+          "ssim": 98.6551,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_133": {
+          "jaccard": 96.6631,
+          "ssim": 98.4669,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_134": {
+          "jaccard": 8.855,
+          "ssim": 33.642,
+          "text_boundary": 92.8571
+        },
+        "source_randomized__file_135": {
+          "jaccard": 14.876,
+          "ssim": 52.7857,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_136": {
+          "jaccard": 99.0424,
+          "ssim": 99.7589,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_137": {
+          "jaccard": 12.5921,
+          "ssim": 26.3091,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_138": {
+          "jaccard": 97.332,
+          "ssim": 99.1377,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_139": {
+          "jaccard": 17.8421,
+          "ssim": 66.9017,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_14": {
+          "jaccard": 12.8668,
+          "ssim": 35.0733,
+          "text_boundary": 39.5062
+        },
+        "source_randomized__file_140": {
+          "jaccard": 99.475,
+          "ssim": 99.7157,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_141": {
+          "jaccard": 17.5742,
+          "ssim": 68.9778,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_142": {
+          "jaccard": 96.4105,
+          "ssim": 99.1992,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_143": {
+          "jaccard": 12.9768,
+          "ssim": 35.1691,
+          "text_boundary": 39.5062
+        },
+        "source_randomized__file_144": {
+          "jaccard": 88.8331,
+          "ssim": 96.1375,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_145": {
+          "jaccard": 10.9699,
+          "ssim": 40.7945,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_146": {
+          "jaccard": 8.2713,
+          "ssim": 26.9824,
+          "text_boundary": 48.6486
+        },
+        "source_randomized__file_147": {
+          "jaccard": 77.8701,
+          "ssim": 93.6408,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_148": {
+          "jaccard": 86.5018,
+          "ssim": 99.5085,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_149": {
+          "jaccard": 96.2937,
+          "ssim": 99.1404,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_15": {
+          "jaccard": 13.6861,
+          "ssim": 67.7794,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_150": {
+          "jaccard": 97.2514,
+          "ssim": 99.1238,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_151": {
+          "jaccard": 97.1711,
+          "ssim": 99.2957,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_152": {
+          "jaccard": 98.5387,
+          "ssim": 99.6701,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_153": {
+          "jaccard": 79.0774,
+          "ssim": 96.8561,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_154": {
+          "jaccard": 98.3476,
+          "ssim": 99.6851,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_155": {
+          "jaccard": 96.6784,
+          "ssim": 99.3032,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_156": {
+          "jaccard": 96.262,
+          "ssim": 99.1082,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_157": {
+          "jaccard": 96.7366,
+          "ssim": 98.6381,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_158": {
+          "jaccard": 99.019,
+          "ssim": 99.7633,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_159": {
+          "jaccard": 14.8072,
+          "ssim": 30.821,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_16": {
+          "jaccard": 29.782,
+          "ssim": 62.5546,
+          "text_boundary": 58.309
+        },
+        "source_randomized__file_160": {
+          "jaccard": 74.4647,
+          "ssim": 93.7073,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_161": {
+          "jaccard": 96.4487,
+          "ssim": 99.0513,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_162": {
+          "jaccard": 96.8081,
+          "ssim": 99.1852,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_163": {
+          "jaccard": 7.2455,
+          "ssim": 20.6721,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_164": {
+          "jaccard": 25.2925,
+          "ssim": 42.2108,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_165": {
+          "jaccard": 17.8241,
+          "ssim": 69.1127,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_166": {
+          "jaccard": 32.5802,
+          "ssim": 73.9349,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_167": {
+          "jaccard": 98.2801,
+          "ssim": 99.6223,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_168": {
+          "jaccard": 29.3343,
+          "ssim": 85.7435,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_169": {
+          "jaccard": 77.3951,
+          "ssim": 84.3736,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_17": {
+          "jaccard": 61.6337,
+          "ssim": 74.1135,
+          "text_boundary": 50.0
+        },
+        "source_randomized__file_170": {
+          "jaccard": 12.1995,
+          "ssim": 29.2413,
+          "text_boundary": 22.3404
+        },
+        "source_randomized__file_171": {
+          "jaccard": 98.3362,
+          "ssim": 99.6572,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_172": {
+          "jaccard": 62.6523,
+          "ssim": 95.9907,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_173": {
+          "jaccard": 13.8942,
+          "ssim": 68.0897,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_174": {
+          "jaccard": 51.328,
+          "ssim": 73.4992,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_175": {
+          "jaccard": 14.9101,
+          "ssim": 39.5669,
+          "text_boundary": 97.5309
+        },
+        "source_randomized__file_176": {
+          "jaccard": 11.1444,
+          "ssim": 36.0233,
+          "text_boundary": 65.7895
+        },
+        "source_randomized__file_177": {
+          "jaccard": 94.9364,
+          "ssim": 98.5923,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_178": {
+          "jaccard": 26.8516,
+          "ssim": 44.1281,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_179": {
+          "jaccard": 94.7031,
+          "ssim": 98.5217,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_18": {
+          "jaccard": 20.1513,
+          "ssim": 33.9994,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_180": {
+          "jaccard": 87.6362,
+          "ssim": 94.5988,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_181": {
+          "jaccard": 95.2647,
+          "ssim": 99.2182,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_182": {
+          "jaccard": 96.5227,
+          "ssim": 99.0532,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_183": {
+          "jaccard": 95.4512,
+          "ssim": 99.0301,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_184": {
+          "jaccard": 14.5666,
+          "ssim": 36.4333,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_185": {
+          "jaccard": 41.0199,
+          "ssim": 56.0971,
+          "text_boundary": 44.4444
+        },
+        "source_randomized__file_186": {
+          "jaccard": 98.4266,
+          "ssim": 99.6964,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_187": {
+          "jaccard": 18.1633,
+          "ssim": 93.4941,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_188": {
+          "jaccard": 13.0696,
+          "ssim": 35.2435,
+          "text_boundary": 39.5062
+        },
+        "source_randomized__file_189": {
+          "jaccard": 69.0973,
+          "ssim": 87.6091,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_19": {
+          "jaccard": 17.0287,
+          "ssim": 51.156,
+          "text_boundary": 72.6415
+        },
+        "source_randomized__file_190": {
+          "jaccard": 23.8898,
+          "ssim": 33.0666,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_191": {
+          "jaccard": 88.3341,
+          "ssim": 95.5735,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_192": {
+          "jaccard": 100.0,
+          "ssim": 100.0,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_193": {
+          "jaccard": 3.6709,
+          "ssim": 17.4449,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_194": {
+          "jaccard": 33.2763,
+          "ssim": 33.5906,
+          "text_boundary": 0.0
+        },
+        "source_randomized__file_195": {
+          "jaccard": 24.3335,
+          "ssim": 71.2897,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_196": {
+          "jaccard": 41.0199,
+          "ssim": 56.0971,
+          "text_boundary": 44.4444
+        },
+        "source_randomized__file_197": {
+          "jaccard": 13.478,
+          "ssim": 20.5733,
+          "text_boundary": 10.0
+        },
+        "source_randomized__file_198": {
+          "jaccard": 18.5944,
+          "ssim": 29.1984,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_199": {
+          "jaccard": 2.0055,
+          "ssim": 28.6802,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_2": {
+          "jaccard": 4.0896,
+          "ssim": 10.6493,
+          "text_boundary": 70.9677
+        },
+        "source_randomized__file_20": {
+          "jaccard": 36.7325,
+          "ssim": 45.7279,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_21": {
+          "jaccard": 95.9721,
+          "ssim": 99.0594,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_22": {
+          "jaccard": 9.6311,
+          "ssim": 31.0867,
+          "text_boundary": 20.9956
+        },
+        "source_randomized__file_23": {
+          "jaccard": 22.9189,
+          "ssim": 42.8237,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_24": {
+          "jaccard": 18.2874,
+          "ssim": 93.4488,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_25": {
+          "jaccard": 95.0271,
+          "ssim": 98.8194,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_26": {
+          "jaccard": 96.2505,
+          "ssim": 98.7229,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_27": {
+          "jaccard": 28.8646,
+          "ssim": 64.2566,
+          "text_boundary": 34.6354
+        },
+        "source_randomized__file_28": {
+          "jaccard": 16.1617,
+          "ssim": 27.0277,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_29": {
+          "jaccard": 3.8524,
+          "ssim": 17.6454,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_3": {
+          "jaccard": 97.9031,
+          "ssim": 99.5625,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_30": {
+          "jaccard": 4.9742,
+          "ssim": 15.2845,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_31": {
+          "jaccard": 91.5434,
+          "ssim": 96.9767,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_32": {
+          "jaccard": 78.8643,
+          "ssim": 94.1705,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_33": {
+          "jaccard": 42.266,
+          "ssim": 84.2384,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_34": {
+          "jaccard": 62.4404,
+          "ssim": 92.0694,
+          "text_boundary": 97.0149
+        },
+        "source_randomized__file_35": {
+          "jaccard": 67.519,
+          "ssim": 87.6479,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_36": {
+          "jaccard": 18.7651,
+          "ssim": 89.4346,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_37": {
+          "jaccard": 21.0587,
+          "ssim": 93.136,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_38": {
+          "jaccard": 96.273,
+          "ssim": 99.2046,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_39": {
+          "jaccard": 72.1879,
+          "ssim": 82.5818,
+          "text_boundary": 0.0
+        },
+        "source_randomized__file_4": {
+          "jaccard": 3.8439,
+          "ssim": 16.972,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_40": {
+          "jaccard": 33.7524,
+          "ssim": 73.2882,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_41": {
+          "jaccard": 4.1133,
+          "ssim": 10.688,
+          "text_boundary": 70.9677
+        },
+        "source_randomized__file_42": {
+          "jaccard": 80.9823,
+          "ssim": 93.3816,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_43": {
+          "jaccard": 72.1927,
+          "ssim": 87.1995,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_44": {
+          "jaccard": 70.2553,
+          "ssim": 80.1421,
+          "text_boundary": 0.0
+        },
+        "source_randomized__file_45": {
+          "jaccard": 98.0672,
+          "ssim": 99.551,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_46": {
+          "jaccard": 5.314,
+          "ssim": 21.2384,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_47": {
+          "jaccard": 1.5829,
+          "ssim": 14.156,
+          "text_boundary": 0.0
+        },
+        "source_randomized__file_48": {
+          "jaccard": 48.7934,
+          "ssim": 38.7643,
+          "text_boundary": 36.3636
+        },
+        "source_randomized__file_49": {
+          "jaccard": 74.8927,
+          "ssim": 98.7062,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_5": {
+          "jaccard": 97.5027,
+          "ssim": 99.4597,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_50": {
+          "jaccard": 17.4809,
+          "ssim": 87.3744,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_51": {
+          "jaccard": 98.6255,
+          "ssim": 99.6736,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_52": {
+          "jaccard": 22.9309,
+          "ssim": 76.9424,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_53": {
+          "jaccard": 29.9781,
+          "ssim": 63.1314,
+          "text_boundary": 58.309
+        },
+        "source_randomized__file_54": {
+          "jaccard": 86.1111,
+          "ssim": 99.5438,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_55": {
+          "jaccard": 52.6989,
+          "ssim": 99.996,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_56": {
+          "jaccard": 46.5309,
+          "ssim": 49.0495,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_57": {
+          "jaccard": 28.9565,
+          "ssim": 97.4571,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_58": {
+          "jaccard": 18.8735,
+          "ssim": 93.4194,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_59": {
+          "jaccard": 6.6962,
+          "ssim": 19.9756,
+          "text_boundary": 4.0
+        },
+        "source_randomized__file_6": {
+          "jaccard": 29.9562,
+          "ssim": 63.1192,
+          "text_boundary": 58.309
+        },
+        "source_randomized__file_60": {
+          "jaccard": 93.203,
+          "ssim": 97.5052,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_61": {
+          "jaccard": 16.6842,
+          "ssim": 58.7636,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_62": {
+          "jaccard": 95.8842,
+          "ssim": 98.4455,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_63": {
+          "jaccard": 34.3665,
+          "ssim": 49.1975,
+          "text_boundary": 50.0
+        },
+        "source_randomized__file_64": {
+          "jaccard": 17.5191,
+          "ssim": 54.4601,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_65": {
+          "jaccard": 15.9892,
+          "ssim": 28.0718,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_66": {
+          "jaccard": 77.5659,
+          "ssim": 93.2179,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_67": {
+          "jaccard": 77.9021,
+          "ssim": 93.9251,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_68": {
+          "jaccard": 72.1361,
+          "ssim": 92.5103,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_69": {
+          "jaccard": 12.8683,
+          "ssim": 35.4495,
+          "text_boundary": 39.5062
+        },
+        "source_randomized__file_7": {
+          "jaccard": 96.7403,
+          "ssim": 99.2585,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_70": {
+          "jaccard": 8.4183,
+          "ssim": 15.9726,
+          "text_boundary": 0.0
+        },
+        "source_randomized__file_71": {
+          "jaccard": 96.4286,
+          "ssim": 97.6927,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_72": {
+          "jaccard": 98.9391,
+          "ssim": 99.838,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_73": {
+          "jaccard": 97.5182,
+          "ssim": 99.445,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_74": {
+          "jaccard": 29.9756,
+          "ssim": 63.1245,
+          "text_boundary": 58.309
+        },
+        "source_randomized__file_75": {
+          "jaccard": 9.4256,
+          "ssim": 29.045,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_76": {
+          "jaccard": 18.3651,
+          "ssim": 79.877,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_77": {
+          "jaccard": 13.2139,
+          "ssim": 39.6451,
+          "text_boundary": 25.0
+        },
+        "source_randomized__file_78": {
+          "jaccard": 12.8821,
+          "ssim": 35.0637,
+          "text_boundary": 39.5062
+        },
+        "source_randomized__file_79": {
+          "jaccard": 21.5454,
+          "ssim": 93.1532,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_8": {
+          "jaccard": 28.8012,
+          "ssim": 61.6289,
+          "text_boundary": 70.0405
+        },
+        "source_randomized__file_80": {
+          "jaccard": 96.8198,
+          "ssim": 99.2078,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_81": {
+          "jaccard": 14.4822,
+          "ssim": 32.8366,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_82": {
+          "jaccard": 14.2943,
+          "ssim": 32.2541,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_83": {
+          "jaccard": 26.878,
+          "ssim": 46.9317,
+          "text_boundary": 66.6667
+        },
+        "source_randomized__file_84": {
+          "jaccard": 94.6357,
+          "ssim": 98.5753,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_85": {
+          "jaccard": 97.7491,
+          "ssim": 99.489,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_86": {
+          "jaccard": 95.5494,
+          "ssim": 98.7228,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_87": {
+          "jaccard": 19.1781,
+          "ssim": 93.4725,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_88": {
+          "jaccard": 94.4482,
+          "ssim": 97.9411,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_89": {
+          "jaccard": 40.9245,
+          "ssim": 99.2629,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_9": {
+          "jaccard": 29.996,
+          "ssim": 63.0355,
+          "text_boundary": 58.309
+        },
+        "source_randomized__file_90": {
+          "jaccard": 18.1832,
+          "ssim": 92.3853,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_91": {
+          "jaccard": 96.5679,
+          "ssim": 99.2794,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_92": {
+          "jaccard": 15.9892,
+          "ssim": 28.0714,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_93": {
+          "jaccard": 25.2528,
+          "ssim": 74.0715,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_94": {
+          "jaccard": 14.7,
+          "ssim": 63.143,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_95": {
+          "jaccard": 19.4012,
+          "ssim": 31.1472,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_96": {
+          "jaccard": 16.5986,
+          "ssim": 41.868,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_97": {
+          "jaccard": 7.298,
+          "ssim": 24.264,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_98": {
+          "jaccard": 18.782,
+          "ssim": 93.4282,
+          "text_boundary": 100.0
+        },
+        "source_randomized__file_99": {
+          "jaccard": 98.4482,
+          "ssim": 99.5774,
+          "text_boundary": 100.0
+        }
+      },
+      "tool": "jubarte",
+      "version": "jubarte 0.8.0"
+    }
+  },
+  "track": "docxide_metrics"
+}

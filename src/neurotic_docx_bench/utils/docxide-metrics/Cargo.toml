@@ -1,0 +1,26 @@
+[package]
+name = "docxide-metrics"
+version = "0.1.0"
+edition = "2024"
+publish = false
+license = "Apache-2.0"
+description = "Batch runner for docxide-pdf's own DOCX→PDF fidelity metrics (Jaccard / SSIM / text boundary)."
+
+# Standalone workspace: this crate is vendored inside a Python benchmark repo and
+# must not be pulled into any parent Cargo workspace.
+[workspace]
+
+[[bin]]
+name = "docxide-metrics"
+path = "src/main.rs"
+
+# The upstream metric code needs exactly these. `image` and `rayon` are pinned to the
+# same majors docxide-pdf's own tools crate uses, so the lifted code compiles unchanged.
+[dependencies]
+image = "0.25"
+rayon = "1"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+[profile.release]
+opt-level = 3
