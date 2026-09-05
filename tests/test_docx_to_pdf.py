@@ -182,8 +182,37 @@ def test_convert_command_jubarte_uses_native_convert():
     assert "soffice" not in " ".join(cmd).lower()
 
 
-def test_known_tools_are_the_four_named_converters():
-    assert WORD_PDF_TOOLS == ("rdocx", "office2pdf", "pdfitdown", "doxx")
+def test_convert_command_libreoffice_convert_rust_uses_positional_args():
+    cmd = convert_command(
+        "libreoffice_convert_rust", Path("in.docx"), Path("out.pdf"), binary=Path("/opt/libreoffice_convert"),
+    )
+    assert cmd == ["/opt/libreoffice_convert", "in.docx", "out.pdf", "pdf"]
+
+
+def test_convert_command_dxpdf_uses_output_flag():
+    cmd = convert_command(
+        "dxpdf", Path("in.docx"), Path("out.pdf"), binary=Path("/opt/dxpdf"),
+    )
+    assert cmd == ["/opt/dxpdf", "in.docx", "-o", "out.pdf"]
+
+
+def test_convert_command_docxide_pdf_uses_positional_output():
+    cmd = convert_command(
+        "docxide-pdf", Path("in.docx"), Path("out.pdf"), binary=Path("/opt/docxide-pdf"),
+    )
+    assert cmd == ["/opt/docxide-pdf", "in.docx", "out.pdf"]
+
+
+def test_known_tools_are_the_named_converters():
+    assert WORD_PDF_TOOLS == (
+        "rdocx",
+        "office2pdf",
+        "pdfitdown",
+        "doxx",
+        "libreoffice_convert_rust",
+        "dxpdf",
+        "docxide-pdf",
+    )
 
 
 def test_try_convert_records_crash_as_generate_failure(tmp_path):
