@@ -10,10 +10,12 @@ import { createHash } from "node:crypto";
  *   ┌──────────────────────────┬─────────────────────────────────────────┐
  *   │ Tool                     │ Roundtrip route                          │
  *   ├──────────────────────────┼─────────────────────────────────────────┤
- *   │ jubarte-*-native         │ docxToHtml → htmlToDocx                  │
- *   │                          │ (roundtripDocx is a no-op re-zip:        │
- *   │                          │  word/document.xml stays IDENTICAL)      │
- *   │ jubarte-*-docxodus       │ compareDocx(base, base) self-diff        │
+ *   │ jubarte-*-native         │ docxToAst → astToDocxDirect (the native  │
+ *   │                          │ redline writer; roundtripDocx and        │
+ *   │                          │ compareDocx(base, base) keep             │
+ *   │                          │ word/document.xml IDENTICAL)             │
+ *   │ jubarte-*-lossless       │ DocumentComparer.CompareDocuments(base,  │
+ *   │                          │ base) self-diff                          │
  *   │ docxodus                 │ compareDocuments(base, base) self-diff   │
  *   │ docx-redline-js          │ soffice docx→html→docx                   │
  *   │                          │ (no HTML export of its own)              │
@@ -201,22 +203,61 @@ function findDocxFiles(dir) {
 
 // ── Engine loaders ───────────────────────────────────────────────────────────
 /**
+ * The body's trailing `<w:sectPr>` (its last child), verbatim — a nested
+ * `w:sectPrChange` stays inside it, and that change's own `<w:sectPr>` is skipped by
+ * depth. Null when the body does not end with one.
+ */
+function trailingBodySectPr(documentXml) {
+	const end = documentXml.lastIndexOf("</w:body>");
+	if (end < 0) return null;
+	const head = documentXml.slice(0, end).trimEnd();
+	const selfClosing = /<w:sectPr\b[^>]*\/>$/.exec(head);
+	if (selfClosing) return selfClosing[0];
+	if (!head.endsWith("</w:sectPr>")) return null;
+	const tags = [...head.matchAll(/<\/w:sectPr>|<w:sectPr\b[^>]*>/g)];
+	let depth = 0;
+	for (let i = tags.length - 1; i >= 0; i--) {
+		const tag = tags[i][0];
+		if (tag.startsWith("</")) depth++;
+		else if (!tag.endsWith("/>") && --depth === 0) return head.slice(tags[i].index);
+	}
+	return null;
+}
+
+/**
  * Load a roundtrip engine for the given route.
  * Returns async (inputBytes: Uint8Array) => Promise<Uint8Array>.
  */
 async function loadEngine(route, dist) {
-	// jubarte-native: docxToHtml → htmlToDocx (genuine re-serialization).
-	// roundtripDocx is a no-op re-zip — word/document.xml stays byte-identical —
-	// so we route through jubarte's own HTML converter to force re-serialization.
+	// jubarte-native: docxToAst → astToDocxDirect — the native engine's own DOCX writer,
+	// the direct AST emitter compareDocx uses for jubarte-native script_redlines and
+	// accepted_changes, fed the same way (body + comment/note carriers, the source
+	// package, the verbatim trailing body sectPr).
+	// Neither shortcut re-serializes: roundtripDocx and compareDocx(base, base) both
+	// return word/document.xml byte-identical. The route used before,
+	// docxToHtml → htmlToDocx, measured jubarte's HTML converter rather than the native
+	// engine (it drops page setup: 1" margins came back as 1.25").
 	if (route === "jubarte-native") {
 		const mod = await import(resolveDistFile(dist, "node.cjs"));
 		return async (input) => {
-			const htmlOut = await mod.docxToHtml(docxIn(input));
-			const htmlStr =
-				typeof htmlOut === "string"
-					? htmlOut
-					: (htmlOut?.html ?? String(htmlOut));
-			return toBytes(await mod.htmlToDocx(htmlStr));
+			const { astPackage } = await mod.docxToAst(docxIn(input));
+			const graph = astPackage.package;
+			const documentXml = (
+				graph?.parts?.["word/document.xml"] ?? graph?.parts?.[graph?.mainDocumentPath]
+			)?.text;
+			const { bytes } = await mod.astToDocxDirect(
+				[
+					...astPackage.document.children,
+					...astPackage.document.comments,
+					...astPackage.document.notes,
+				],
+				{
+					sourcePackage: graph,
+					trailingSectPrXml:
+						typeof documentXml === "string" ? trailingBodySectPr(documentXml) : null,
+				},
+			);
+			return toBytes(bytes);
 		};
 	}
 
