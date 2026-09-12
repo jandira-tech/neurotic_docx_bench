@@ -20,6 +20,9 @@ import { createHash } from "node:crypto";
  *   │ docx-redline-js          │ soffice docx→html→docx                   │
  *   │                          │ (no HTML export of its own)              │
  *   │ superdoc-ts              │ client.open() → save()                   │
+ *   │ folio                    │ generateRedlineDocx(base, base, {author})│
+ *   │                          │ self-diff (FolioDocxReviewer.fromBuffer→ │
+ *   │                          │ toBuffer is a no-op with zero edits)     │
  *   │ stemma                   │ stemma compare(file, file) self-diff     │
  *   │ safe-docx-compare        │ compareDocuments(file, file) self-diff   │
  *   └──────────────────────────┴─────────────────────────────────────────┘
@@ -445,24 +448,48 @@ async function loadEngine(route, dist) {
 
 	if (route === "folio") {
 		// FOLIO_MODULE_ROOT (absolute node_modules dir) swaps in a different folio
-		// build for comparison runs; unset = the pinned vendored tree.
-		const folioModuleRoot =
-			process.env.FOLIO_MODULE_ROOT ??
-			resolve(
-				import.meta.dirname,
-				"../src/neurotic_docx_bench/utils/folio/node_modules",
+		// build for comparison runs. Unset: bench.yaml pins folio via `package:`
+		// with no `cwd:`, so `bun add` installs it into the bench's own shared
+		// node_modules (root) — NOT utils/folio/node_modules, which has a
+		// package.json + bun.lock but was never actually installed there. Check
+		// root first, then that vendored path as a fallback for a manual install.
+		// Mirrors resolveFolioModuleRoot() in generate-native-redlines.ts.
+		const folioModuleRoots = process.env.FOLIO_MODULE_ROOT
+			? [process.env.FOLIO_MODULE_ROOT]
+			: [
+					resolve(import.meta.dirname, "../node_modules"),
+					resolve(
+						import.meta.dirname,
+						"../src/neurotic_docx_bench/utils/folio/node_modules",
+					),
+				];
+		const folioServerEntry = folioModuleRoots
+			.map((root) => join(root, "@stll/folio-core/dist/server.js"))
+			.find((p) => existsSync(p));
+		if (!folioServerEntry) {
+			throw new Error(
+				`folio: no @stll/folio-core/dist/server.js under ${folioModuleRoots.join(", ")}`,
 			);
-		const { FolioDocxReviewer } = await import(
-			join(folioModuleRoot, "@stll/folio-core/dist/server.js")
+		}
+		// generateRedlineDocx(base, base, { author }) self-diff — the same call
+		// folio's real script_redlines/accepted_changes path uses (see
+		// generate-native-redlines.ts's "folio" method), not
+		// FolioDocxReviewer.fromBuffer→toBuffer (a different method the redline
+		// path never calls, and whose "selective patch" leaves every byte alone
+		// when there are zero edits to apply — a no-op, same failure class as
+		// jubarte's roundtripDocx/compareDocx(base,base)). generateRedlineDocx has
+		// no identity shortcut on a zero-change comparison (verified empirically
+		// and documented at generate-native-redlines.ts:477).
+		const { generateRedlineDocx } = await import(
+			pathToFileURL(folioServerEntry).href
 		);
 		const toAB = (u) =>
 			u.buffer.slice(u.byteOffset, u.byteOffset + u.byteLength);
 		return async (input) => {
-			const reviewer = await FolioDocxReviewer.fromBuffer(toAB(input), {
+			const result = await generateRedlineDocx(toAB(input), toAB(input), {
 				author: "folio-roundtrip",
 			});
-			const out = await reviewer.toBuffer();
-			return out instanceof Uint8Array ? out : new Uint8Array(out);
+			return new Uint8Array(result.buffer);
 		};
 	}
 
