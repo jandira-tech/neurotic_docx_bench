@@ -1,0 +1,42 @@
+name: Publish renderer comparison
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "corpus/no_comments_pdf_was_generated_by_word/renderer_corpus/**"
+      - ".github/workflows/renderer-pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out renderer corpus
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload renderer site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: corpus/no_comments_pdf_was_generated_by_word/renderer_corpus
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
