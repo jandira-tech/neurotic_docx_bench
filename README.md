@@ -29,8 +29,9 @@ Redline markup is Microsoft Word. Candidate and oracle redline PDFs are both ren
 The README is the minimum-publicity view. Use [`RESULTS.md`](RESULTS.md) for compact
 rankings, [`RESULTS_DETAILED.md`](RESULTS_DETAILED.md) for full tables, provenance,
 methodology, and benchmark-specific diagnostics, or the [`docs/RESULTS.md`](docs/RESULTS.md)
-published report. Generated result scripts write to the appropriate result file rather
-than expanding this README.
+published report. The three-way [`renderer corpus`](corpus/no_comments_pdf_was_generated_by_word/renderer_corpus/README.md)
+contains Word, Jubarte, and docxide-pdf PDFs for the same 398 source DOCX files. Generated
+result scripts write to the appropriate result file rather than expanding this README.
 
 ## Benchmarks
 
@@ -144,6 +145,7 @@ bun run redline-speed-bench:warm
 bench.yaml                 # runs, pins, oracles
 corpus/word_based/         # redline DOCX + LibreOffice oracle PDFs
 corpus/no_comments_pdf_was_generated_by_word/  # Word-exported PDFs (docx_to_pdf)
+corpus/no_comments_pdf_was_generated_by_word/renderer_corpus/  # Word/Jubarte/docxide PDFs
 results/bench.jsonl        # redline trend log
 results/docx_to_pdf_500.json
 src/neurotic_docx_bench/
@@ -160,13 +162,11 @@ scripts/
 
 - [balalofernandez/docx-revisions](https://github.com/balalofernandez/docx-revisions) — accept/reject (`bench accept` / `reject`)
 - [superdoc-dev/superdoc-visual-benchmarks](https://github.com/superdoc-dev/superdoc-visual-benchmarks) — scoring core
-- [sverrejb/docxide-pdf](https://github.com/sverrejb/docxide-pdf) (Apache-2.0) — the `docxide_metrics`
-  scorer. Its Jaccard / SSIM / text-boundary metrics are lifted verbatim from `tests/common/`
-  into `src/neurotic_docx_bench/utils/docxide-metrics/`; `tests/test_docxide_metrics_parity.py`
-  requires the same numbers as its own `page-metrics` binary. Also benchmarked as a converter.
-- [JSv4/docxodus](https://github.com/JSv4/docxodus), [react-docxodus-viewer](https://github.com/JSv4/react-docxodus-viewer) (MIT)
+- [sverrejb/docxide-pdf](https://github.com/sverrejb/docxide-pdf) (Apache-2.0) — DOCX→PDF converter and the `docxide_metrics` scorer. Its Jaccard / SSIM / text-boundary metrics are lifted verbatim from `tests/common/` into `src/neurotic_docx_bench/utils/docxide-metrics/`.
+- [jandira-tech/jubarte-redlines](https://github.com/jandira-tech/jubarte-redlines) (AGPL-3.0-only) — Jubarte DOCX redline and DOCX→PDF converter
+- [JSv4/docxodus](https://github.com/JSv4/docxodus) and [react-docxodus-viewer](https://github.com/JSv4/react-docxodus-viewer) (MIT)
 - [AnsonLai/docx-redline-js](https://github.com/AnsonLai/docx-redline-js) (MIT)
-- [houfu/redlines](https://github.com/houfu/redlines) (MIT)
+- [houfu/redlines](https://github.com/houfu/redlines) (MIT) and [nupunkt](https://github.com/JanWille/nupunkt) — text-level redline baseline
 - [yuch85/superdoc-redlines](https://github.com/yuch85/superdoc-redlines) (Apache-2.0)
 - [stella/folio](https://github.com/stella/folio) (Apache-2.0)
 - [Harbour-Enterprises/SuperDoc](https://github.com/Harbour-Enterprises/SuperDoc) (AGPL-3.0)
@@ -176,6 +176,10 @@ scripts/
 - [developer0hye/office2pdf](https://github.com/developer0hye/office2pdf)
 - [AstraBert/PdfItDown](https://github.com/AstraBert/PdfItDown)
 - [bgreenwell/doxx](https://github.com/bgreenwell/doxx)
+- [dnrops/libreoffice_convert_rust](https://gitcode.com/dnrops/libreoffice_convert_rust) — LibreOffice-based converter
+- [nerdy-pro/dxpdf](https://github.com/nerdy-pro/dxpdf) — Rust DOCX→PDF converter
+- [LibreOffice](https://www.libreoffice.org/) (MPL-2.0/LGPL-3+) — pinned renderer used for redline comparisons
+- Microsoft Word — proprietary reference renderer; Word is a Microsoft trademark
 
 ## License
 

@@ -1,6 +1,6 @@
 # Benchmark results
 
-Source: `results/bench.jsonl` — **70** fidelity row(s) (one per vendor×benchmark×**version**; 43 distinct vendor×version pin(s). docxodus rows with n_docs ≤ 100 are dropped as smoke/partial).
+Source: `results/bench.jsonl` — **82** fidelity row(s) (one per vendor×benchmark×**version**; 47 distinct vendor×version pin(s). docxodus rows with n_docs ≤ 100 are dropped as smoke/partial).
 
 Scores are 0–100 (higher = closer to the Microsoft Word oracle). Cross-renderer comparisons (LibreOffice vs Playwright) are **not** directly comparable — only compare within the same benchmark. Different **versions** of the same vendor are kept so you can compare pins (e.g. docxodus 6.4.0 vs 7.0.0).
 
@@ -223,17 +223,23 @@ Docs where the pixel lens and a judging lens (functional accept/reject invariant
 | # | vendor | version | mean | median | itt_mean | itt_median | skill_median | failures | n_docs | itt_n | exact_100 | ≥90 | <50 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | docxodus | 9.8.0 | 90.1868 | 100 | 88.8203 | 100 | — | 4 | 195 | 198 | 119 | 145 | 18 |
-| 2 | stemma | 0.5.0@2e7bdc832391+git.efaed0c1ecb41142b1465bbb124dd183c385a2b0 | 79.1041 | 80.7673 | 77.4561 | 80.6255 | — | 3 | 141 | 144 | 19 | 48 | 13 |
-| 3 | safe-docx | 0.19.1@e3f092da3639+git.7bd35c876493f2725b095f0190c28d2644962c78 | 64.0903 | 60.2244 | 63.7302 | 59.7051 | — | 1 | 177 | 178 | 9 | 27 | 55 |
+| 2 | jubarte | 0.2.0@1286be69c690+git.65014685f960a5c1b9a19250e23fccaa4df5e5ef | 86.3399 | 99.5223 | 84.1814 | 98.7328 | — | 5 | 195 | 200 | 66 | 119 | 16 |
+| 3 | jubarte-ast | 0.2.0@1286be69c690+git.65014685f960a5c1b9a19250e23fccaa4df5e5ef | 84.1685 | 88.8963 | 84.1685 | 88.8963 | — | 0 | 195 | 195 | 48 | 93 | 16 |
+| 4 | stemma | 0.5.0@2e7bdc832391+git.efaed0c1ecb41142b1465bbb124dd183c385a2b0 | 79.1041 | 80.7673 | 77.4561 | 80.6255 | — | 3 | 141 | 144 | 19 | 48 | 13 |
+| 5 | safe-docx | 0.19.1@e3f092da3639+git.7bd35c876493f2725b095f0190c28d2644962c78 | 64.0903 | 60.2244 | 63.7302 | 59.7051 | — | 1 | 177 | 178 | 9 | 27 | 55 |
 
 **Legacy corpus** (older `corpus_revision` stamps and unstamped runs — not comparable with the rows above; kept for history until each tool re-runs):
 
 | # | vendor | version | mean | median | itt_mean | itt_median | skill_median | failures | n_docs | itt_n | exact_100 | ≥90 | <50 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | docxodus | 6.4.0 | 68.9994 | 77.1882 | 68.9994 | 77.1882 | — | 0 | 164 | 164 | 14 | 22 | 43 |
-| 2 | docxodus | 7.0.0 | 70.1963 | 74.9182 | 70.1963 | 74.9182 | — | 0 | 164 | 164 | 17 | 44 | 49 |
-| 3 | superdoc | 1.19.2 | 63.818 | 61.1184 | 57.6669 | 55.8213 | — | 16 | 150 | 166 | 2 | 3 | 33 |
-| 4 | folio | 0.3.1 | 57.9094 | 55.608 | 54.5813 | 53.9618 | — | 10 | 164 | 174 | 3 | 4 | 61 |
+| 1 | jubarte-rust | jubarte-rust@cbbcefb724a7 | 89.4476 | 99.7477 | 89.4476 | 99.7477 | — | 0 | 164 | 164 | 76 | 103 | 5 |
+| 2 | jubarte | jubarte-final@dd16ad8fbcf3 | 86.534 | 94.4179 | 86.534 | 94.4179 | — | 0 | 164 | 164 | 63 | 87 | 7 |
+| 3 | jubarte | jubarte-final@717311c03d4f | 78.1534 | 80.639 | 78.1534 | 80.639 | — | 0 | 166 | 166 | 26 | 43 | 14 |
+| 4 | docxodus | 6.4.0 | 68.9994 | 77.1882 | 68.9994 | 77.1882 | — | 0 | 164 | 164 | 14 | 22 | 43 |
+| 5 | docxodus | 7.0.0 | 70.1963 | 74.9182 | 70.1963 | 74.9182 | — | 0 | 164 | 164 | 17 | 44 | 49 |
+| 6 | superdoc | 1.19.2 | 63.818 | 61.1184 | 57.6669 | 55.8213 | — | 16 | 150 | 166 | 2 | 3 | 33 |
+| 7 | folio | 0.3.1 | 57.9094 | 55.608 | 54.5813 | 53.9618 | — | 10 | 164 | 174 | 3 | 4 | 61 |
+| 8 | jubarte-rust | jubarte-rust@b834d6e49fdb | 63.499 | 54.4541 | 53.6457 | 49.1664 | — | 27 | 147 | 174 | 13 | 15 | 72 |
 
 ### `roundtrip`
 
@@ -246,16 +252,22 @@ roundtrip (self-diff → pdf_source)
 | 1 | safe-docx | 0.19.1@e3f092da3639+git.7bd35c876493f2725b095f0190c28d2644962c78 | 100 | 100 | 100 | 100 | — | 0 | 166 | 166 | 166 | 166 | 0 |
 | 2 | docxodus | 9.8.0 | 99.9949 | 100 | 99.9949 | 100 | — | 0 | 166 | 166 | 163 | 166 | 0 |
 | 3 | stemma | 0.5.0@2e7bdc832391+git.efaed0c1ecb41142b1465bbb124dd183c385a2b0 | 99.9494 | 100 | 99.9494 | 100 | — | 0 | 166 | 166 | 161 | 166 | 0 |
-| 4 | folio | 0.17.1 | 99.7582 | 100 | 97.9554 | 100 | — | 3 | 163 | 166 | 159 | 161 | 0 |
+| 4 | jubarte | 0.2.0@1286be69c690+git.65014685f960a5c1b9a19250e23fccaa4df5e5ef | 99.7523 | 100 | 99.7523 | 100 | — | 0 | 166 | 166 | 160 | 164 | 0 |
+| 5 | jubarte-ast | 0.2.0@1286be69c690+git.65014685f960a5c1b9a19250e23fccaa4df5e5ef | 99.1944 | 100 | 99.1944 | 100 | — | 0 | 166 | 166 | 155 | 160 | 0 |
+| 6 | folio | 0.17.1 | 99.7582 | 100 | 97.9554 | 100 | — | 3 | 163 | 166 | 159 | 161 | 0 |
 
 **Legacy corpus** (older `corpus_revision` stamps and unstamped runs — not comparable with the rows above; kept for history until each tool re-runs):
 
 | # | vendor | version | mean | median | itt_mean | itt_median | skill_median | failures | n_docs | itt_n | exact_100 | ≥90 | <50 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | folio | 0.3.1 | 98.0712 | 100 | 98.0712 | 100 | — | 0 | 198 | 198 | 185 | 190 | 4 |
-| 2 | docxodus | 7.0.0 | 97.4281 | 100 | 97.4281 | 100 | — | 0 | 166 | 166 | 148 | 157 | 4 |
-| 3 | docxodus | 6.4.0 | 92.2445 | 100 | 92.2445 | 100 | — | 0 | 198 | 198 | 144 | 161 | 13 |
-| 4 | superdoc | 1.19.2 | 93.0017 | 100 | 91.5854 | 100 | — | 3 | 194 | 197 | 144 | 158 | 8 |
+| 1 | jubarte-rust | jubarte-rust@cbbcefb724a7 | 99.1706 | 100 | 99.1706 | 100 | — | 0 | 166 | 166 | 157 | 161 | 1 |
+| 2 | folio | 0.3.1 | 98.0712 | 100 | 98.0712 | 100 | — | 0 | 198 | 198 | 185 | 190 | 4 |
+| 3 | jubarte | jubarte-final@dd16ad8fbcf3 | 97.6313 | 100 | 97.6313 | 100 | — | 0 | 166 | 166 | 152 | 156 | 3 |
+| 4 | docxodus | 7.0.0 | 97.4281 | 100 | 97.4281 | 100 | — | 0 | 166 | 166 | 148 | 157 | 4 |
+| 5 | jubarte | jubarte-final@717311c03d4f | 94.4868 | 100 | 94.4868 | 100 | — | 0 | 199 | 199 | 149 | 165 | 3 |
+| 6 | docxodus | 6.4.0 | 92.2445 | 100 | 92.2445 | 100 | — | 0 | 198 | 198 | 144 | 161 | 13 |
+| 7 | superdoc | 1.19.2 | 93.0017 | 100 | 91.5854 | 100 | — | 3 | 194 | 197 | 144 | 158 | 8 |
+| 8 | jubarte-rust | jubarte-rust@b834d6e49fdb | 93.1152 | 100 | 82.9307 | 100 | — | 23 | 171 | 192 | 120 | 137 | 6 |
 
 ### `visual_rendering`
 
@@ -349,11 +361,15 @@ visual_accepted_changes (Playwright)
 | folio | 0.5.0 | 2026-07-08T20:35:26.466209+00:00 | visual_accepted_changes | 59.671 | 54.9489 | 164 |
 | folio | 0.5.0 | 2026-07-08T20:20:25.117836+00:00 | visual_redlines | 51.5494 | 51.6497 | 164 |
 | folio | 0.5.0 | 2026-07-08T20:14:38.167302+00:00 | visual_rendering | 59.6494 | 55.0967 | 198 |
+| jubarte | 0.2.0@1286be69c690+git.65014685f960a5c1b9a19250e23fccaa4df5e5ef | 2026-09-11T05:50:48.318899+00:00 | accepted_changes | 86.3399 | 99.5223 | 195 |
+| jubarte | 0.2.0@1286be69c690+git.65014685f960a5c1b9a19250e23fccaa4df5e5ef | 2026-09-11T05:50:48.318899+00:00 | roundtrip | 99.7523 | 100 | 166 |
 | jubarte | 0.2.0@1286be69c690+git.65014685f960a5c1b9a19250e23fccaa4df5e5ef | 2026-09-11T05:50:48.318899+00:00 | script_redlines | 82.0829 | 91.414 | 763 |
 | jubarte | jubarte-final@02df62305cf3+git.98e641b1f2ef3fa9b4416b197a4494cd6401fb9a | 2026-08-14T10:15:55.237109+00:00 | script_redlines | 81.5586 | 89.1671 | 763 |
 | jubarte | jubarte-final@14094d7b65aa+git.98e641b1f2ef3fa9b4416b197a4494cd6401fb9a | 2026-08-14T13:02:00.690937+00:00 | script_redlines | 81.8985 | 90.7573 | 763 |
 | jubarte | jubarte-final@2140d6727f0d+git.98e641b1f2ef3fa9b4416b197a4494cd6401fb9a | 2026-08-14T13:50:05.579598+00:00 | script_redlines | 81.9552 | 91.0482 | 763 |
 | jubarte | jubarte-final@700ad3b32181+git.98e641b1f2ef3fa9b4416b197a4494cd6401fb9a | 2026-08-14T11:18:03.674556+00:00 | script_redlines | 81.6469 | 89.3249 | 763 |
+| jubarte | jubarte-final@717311c03d4f | 2026-07-09T00:19:24.490489+00:00 | accepted_changes | 78.1534 | 80.639 | 166 |
+| jubarte | jubarte-final@717311c03d4f | 2026-07-10T00:06:11.537044+00:00 | roundtrip | 94.4868 | 100 | 199 |
 | jubarte | jubarte-final@76e503aae6c0+git.98e641b1f2ef3fa9b4416b197a4494cd6401fb9a | 2026-08-14T09:49:24.680414+00:00 | script_redlines | 81.5594 | 89.1671 | 763 |
 | jubarte | jubarte-final@774e5a062abc+git.98e641b1f2ef3fa9b4416b197a4494cd6401fb9a | 2026-08-14T11:38:07.168458+00:00 | script_redlines | 81.647 | 89.3249 | 763 |
 | jubarte | jubarte-final@951a6e6b453c+git.98e641b1f2ef3fa9b4416b197a4494cd6401fb9a | 2026-08-14T14:11:30.524650+00:00 | script_redlines | 81.9937 | 91.3062 | 763 |
@@ -362,12 +378,20 @@ visual_accepted_changes (Playwright)
 | jubarte | jubarte-final@c43ad9297820+git.98e641b1f2ef3fa9b4416b197a4494cd6401fb9a | 2026-08-14T10:46:54.510626+00:00 | script_redlines | 81.76 | 90.1976 | 763 |
 | jubarte | jubarte-final@c4de03e2da52+git.98e641b1f2ef3fa9b4416b197a4494cd6401fb9a | 2026-08-14T12:26:35.586172+00:00 | script_redlines | 81.6772 | 89.4571 | 763 |
 | jubarte | jubarte-final@d43557e042c1 | 2026-08-04T11:01:14.552442+00:00 | script_redlines | 77.0151 | 78.5311 | 763 |
+| jubarte | jubarte-final@dd16ad8fbcf3 | 2026-07-12T07:58:10.784184+00:00 | accepted_changes | 86.534 | 94.4179 | 164 |
+| jubarte | jubarte-final@dd16ad8fbcf3 | 2026-07-12T07:58:10.784184+00:00 | roundtrip | 97.6313 | 100 | 166 |
 | jubarte | jubarte-final@e7bcd29bb5a9+git.98e641b1f2ef3fa9b4416b197a4494cd6401fb9a | 2026-08-14T09:13:10.968938+00:00 | script_redlines | 81.5698 | 89.1133 | 763 |
+| jubarte-ast | 0.2.0@1286be69c690+git.65014685f960a5c1b9a19250e23fccaa4df5e5ef | 2026-09-11T14:52:05.846988+00:00 | accepted_changes | 84.1685 | 88.8963 | 195 |
+| jubarte-ast | 0.2.0@1286be69c690+git.65014685f960a5c1b9a19250e23fccaa4df5e5ef | 2026-09-11T14:52:05.846988+00:00 | roundtrip | 99.1944 | 100 | 166 |
 | jubarte-ast | 0.2.0@1286be69c690+git.65014685f960a5c1b9a19250e23fccaa4df5e5ef | 2026-09-11T14:52:05.846988+00:00 | script_redlines | 74.1962 | 76.1486 | 763 |
 | jubarte-ast | jubarte-final@a58157a9cd2d | 2026-08-11T10:49:32.739563+00:00 | script_redlines | 74.1962 | 76.1486 | 763 |
 | jubarte-ast | jubarte-final@d43557e042c1 | 2026-08-04T11:15:42.562625+00:00 | script_redlines | 70.5699 | 68.6678 | 755 |
 | jubarte-rust | jubarte-rust@17ea47e9a0d7+git.bf3d07ddd61180e55f327c8e891affd0f6c18d64 | 2026-08-13T20:58:50.595888+00:00 | script_redlines | 84.4662 | 92.6623 | 763 |
 | jubarte-rust | jubarte-rust@9457b6549b5d+git.ebf1a79 | 2026-08-06T08:22:07.009758+00:00 | script_redlines | 76.3953 | 76.0408 | 763 |
+| jubarte-rust | jubarte-rust@b834d6e49fdb | 2026-07-09T17:43:37.147567+00:00 | accepted_changes | 63.499 | 54.4541 | 147 |
+| jubarte-rust | jubarte-rust@b834d6e49fdb | 2026-07-10T00:21:53.149640+00:00 | roundtrip | 93.1152 | 100 | 171 |
+| jubarte-rust | jubarte-rust@cbbcefb724a7 | 2026-07-24T15:00:45.969613+00:00 | accepted_changes | 89.4476 | 99.7477 | 164 |
+| jubarte-rust | jubarte-rust@cbbcefb724a7 | 2026-07-24T15:00:45.969613+00:00 | roundtrip | 99.1706 | 100 | 166 |
 | jubarte-wasm | 0.1.0 | 2026-08-04T13:32:06.568520+00:00 | script_redlines | 76.2072 | 77.9542 | 763 |
 | jubarte-wasm | 0.1.0@4b36f4db1d2f+git.ebf1a7996df49f99fb40f4f67713e61cfd19c731 | 2026-08-05T22:59:39.181670+00:00 | script_redlines | 79.5678 | 84.8864 | 763 |
 | ooxmlsdk | — | 2026-07-13T17:24:50.712941+00:00 | script_redlines | 55.1866 | 55.2398 | 232 |
@@ -487,7 +511,7 @@ Large fixture pools (often **1000 unique** docs → **5000 pairs**), including n
 - Deduplication: one line per `(vendor, benchmark, tool_version)`. Re-runs of the **same** triple keep the best by `(render_fit, full_corpus_bucket, timestamp, overall_mean)` — prefer playwright for `visual_*` and soffice for script/accepted/roundtrip, then full-corpus lines (n > 100) over smokes, then the newest line (so a 383-doc post-holdout line supersedes a stale 403-doc one).
 - **Versions are not collapsed.** docxodus `6.4.0` and `7.0.0` both appear so pins can be compared directly.
 - **docxodus** filter: rows with **`n_docs ≤ 100`** are dropped (smoke / partial runs such as `visual_rendering` with n=21 or n=2). Full-corpus pins (typically n ≳ 145) are kept for every version.
-- **jubarte-*** filter: rows with **ITT docs < 760** are dropped. A 164-doc subset is not the same measurement as the 763-doc ITT corpus.
+- **jubarte-*** filter: for `script_redlines` only, rows with **ITT docs < 760** are dropped because that benchmark's canonical corpus is 763 ITT docs. `accepted_changes` and `roundtrip` retain their smaller canonical current corpora.
 - Other vendors keep every version even if n is small (e.g. `prebaked` sanity).
 - Scores isolate *redline-markup fidelity vs Word* when candidates and the oracle share the same renderer (LibreOffice 26.2.4.2 for `script_redlines` / `accepted_changes` / `roundtrip`). Playwright `visual_*` scores are not cross-comparable with soffice scores.
 
@@ -498,11 +522,15 @@ These numbers are **independent engineering measurements**, not endorsements, ce
 - **This repository** (scoring core derived from [superdoc-visual-benchmarks](https://github.com/superdoc-dev/superdoc-visual-benchmarks)) is licensed under **AGPL-3.0-only**. See `LICENSE`.
 - **Microsoft Word** is a proprietary product of Microsoft. The Word oracle redlines are produced by Word for measurement only; Microsoft is not affiliated with this benchmark and does not endorse these results. Trademarks remain the property of their owners.
 - **Benchmarked engines** remain under their own licenses and copyrights; publishing a score does not change their terms:
-  - jubarte / in-repo ports — see their package licenses
+  - [jubarte-redlines](https://github.com/jandira-tech/jubarte-redlines) (AGPL-3.0-only)
+  - [docxide-pdf](https://github.com/sverrejb/docxide-pdf) (Apache-2.0)
   - [docxodus](https://github.com/JSv4/docxodus) (MIT)
   - [docx-redline-js](https://github.com/AnsonLai/docx-redline-js) (MIT)
   - [folio](https://github.com/stella/folio) (Apache-2.0)
   - [SuperDoc](https://github.com/Harbour-Enterprises/SuperDoc) (AGPL-3.0) and related SuperDoc tooling
+  - [redlines](https://github.com/houfu/redlines) (MIT), [stemma](https://github.com/stemma-sh/stemma), and [safe-docx](https://github.com/UseJunior/safe-docx)
+  - [rdocx](https://github.com/tensorbee/rdocx), [office2pdf](https://github.com/developer0hye/office2pdf), [PdfItDown](https://github.com/AstraBert/PdfItDown), [doxx](https://github.com/bgreenwell/doxx)
+  - [libreoffice_convert_rust](https://gitcode.com/dnrops/libreoffice_convert_rust) and [dxpdf](https://github.com/nerdy-pro/dxpdf)
 - **LibreOffice** is used only as a pinned PDF renderer for fair comparison; it is not a redline generator in this bench.
 - Redistributing or reusing scores, corpus fixtures, or generated redlines must still respect the licenses of the underlying tools and any corpus rights.
 

@@ -308,7 +308,10 @@ export function readFidelityRows(path: string): FidelityRow[] {
 			meta.generate,
 		);
 		const itt = computeIttStats(data, { n_docs, overall_median, n_failures });
-		if (vendor.startsWith("jubarte") && itt.itt_n < 760) continue;
+		// The 760-doc floor is specific to script_redlines (763-doc corpus).
+		// accepted_changes and roundtrip have smaller canonical corpora and must
+		// retain current Jubarte scores rather than disappearing from the tables.
+		if (vendor.startsWith("jubarte") && benchmarkRaw === "script_redlines" && itt.itt_n < 760) continue;
 
 		out.push({
 			vendor,
@@ -536,8 +539,8 @@ export function buildFidelityTable(
 		`### ${title}\n\n` +
 		`Sorted by ITT median (failed documents score 0). Mean and Median are ` +
 		`completed-only. \`~\` marks approximate ITT. Jubarte families list best ` +
-		`and worst pin; other vendors list each pin. Jubarte rows with ITT docs ` +
-		`< 760 are omitted.\n\n` +
+		`and worst pin; other vendors list each pin. The 760-doc floor applies ` +
+		`only to script_redlines; smaller canonical benchmarks retain their rows.\n\n` +
 		`${body}`
 	);
 }
