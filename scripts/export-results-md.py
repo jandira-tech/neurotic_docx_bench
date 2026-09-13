@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Export fidelity + speed aggregates into RESULTS.md.
+"""Export fidelity + speed aggregates into RESULTS_DETAILED.md.
 
 Fidelity: one row per **(vendor, benchmark, tool_version)** from
 ``results/bench.jsonl`` so different pins of the same engine (e.g. docxodus
@@ -1256,7 +1256,7 @@ def main(argv: list[str] | None = None) -> int:
         "--output",
         type=Path,
         default=None,
-        help="Markdown output path (default: RESULTS.md and docs/RESULTS.md)",
+        help="Markdown output path (default: RESULTS_DETAILED.md and docs/RESULTS.md)",
     )
     args = parser.parse_args(argv)
 
@@ -1295,7 +1295,7 @@ def main(argv: list[str] | None = None) -> int:
     if args.output is not None:
         outputs = [args.output]
     else:
-        outputs = [root / "RESULTS.md", root / "docs" / "RESULTS.md"]
+        outputs = [root / "RESULTS_DETAILED.md", root / "docs" / "RESULTS.md"]
 
     for out in outputs:
         out.parent.mkdir(parents=True, exist_ok=True)

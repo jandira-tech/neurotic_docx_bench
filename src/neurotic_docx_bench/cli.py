@@ -587,7 +587,7 @@ def docx_to_pdf_eval(
     resume: bool = typer.Option(True, "--resume/--no-resume", help="reuse existing candidate PDFs"),
     convert_workers: int = typer.Option(8, "--convert-workers", help="parallel convert processes per tool"),
     update_readme: bool = typer.Option(
-        False, "--update-readme", help="rewrite the README DOCX→PDF table from this report",
+        False, "--update-readme", help="rewrite the medium RESULTS.md DOCX→PDF table from this report",
     ),
     track: str = typer.Option(
         "docx_to_pdf",
@@ -633,8 +633,8 @@ def docx_to_pdf_eval(
     if update_readme:
         from neurotic_docx_bench.docx_to_pdf import update_readme_docx_to_pdf
 
-        update_readme_docx_to_pdf(Path("README.md"), report, track=track)
-        console.print("updated README.md DOCX→PDF table")
+        update_readme_docx_to_pdf(Path("RESULTS.md"), report, track=track)
+        console.print("updated RESULTS.md DOCX→PDF table")
 
 
 @app.command(name="docxide-metrics")
@@ -658,7 +658,7 @@ def docxide_metrics_eval(
     convert_workers: int = typer.Option(8, "--convert-workers", help="parallel convert processes per tool"),
     score_workers: int = typer.Option(4, "--score-workers", help="parallel documents in the scorer"),
     update_readme: bool = typer.Option(
-        False, "--update-readme", help="rewrite the README docxide_metrics table from this report",
+        False, "--update-readme", help="rewrite the medium RESULTS.md docxide_metrics table from this report",
     ),
 ) -> None:
     """Score the 398 no-redline fixtures with docxide-pdf's own metrics.
@@ -699,8 +699,8 @@ def docxide_metrics_eval(
     bits.append(f"→ {json_out}")
     console.print("  ".join(bits))
     if update_readme:
-        dm.update_readme(Path("README.md"), report)
-        console.print("updated README.md docxide_metrics table")
+        dm.update_readme(Path("RESULTS.md"), report)
+        console.print("updated RESULTS.md docxide_metrics table")
 
 
 def _agg(values: Iterable[float | None]) -> dict[str, float | int]:

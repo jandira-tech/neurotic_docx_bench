@@ -1,6 +1,6 @@
 # Benchmark results
 
-Source: `results/bench.jsonl` — **66** fidelity row(s) (one per vendor×benchmark×**version**; 40 distinct vendor×version pin(s). docxodus rows with n_docs ≤ 100 are dropped as smoke/partial).
+Source: `results/bench.jsonl` — **70** fidelity row(s) (one per vendor×benchmark×**version**; 43 distinct vendor×version pin(s). docxodus rows with n_docs ≤ 100 are dropped as smoke/partial).
 
 Scores are 0–100 (higher = closer to the Microsoft Word oracle). Cross-renderer comparisons (LibreOffice vs Playwright) are **not** directly comparable — only compare within the same benchmark. Different **versions** of the same vendor are kept so you can compare pins (e.g. docxodus 6.4.0 vs 7.0.0).
 
@@ -15,22 +15,25 @@ script_redlines (LibreOffice render vs Word oracle)
 | # | vendor | version | mean | median | itt_mean | itt_median | skill_median | failures | n_docs | itt_n | exact_100 | ≥90 | <50 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | jubarte-rust | jubarte-rust@17ea47e9a0d7+git.bf3d07ddd61180e55f327c8e891affd0f6c18d64 | 84.4662 | 92.6623 | 84.4662 | 92.6623 | 93.199 | 0 | 763 | 763 | 197 | 419 | 29 |
-| 2 | jubarte | jubarte-final@951a6e6b453c+git.98e641b1f2ef3fa9b4416b197a4494cd6401fb9a | 81.9937 | 91.3062 | 81.9937 | 91.3062 | 83.7884 | 0 | 763 | 763 | 186 | 393 | 67 |
-| 3 | docxodus | 9.8.0 | 80.5534 | 91.1892 | 80.2367 | 91.108 | 100 | 4 | 760 | 763 | 186 | 392 | 95 |
-| 4 | jubarte | jubarte-final@2140d6727f0d+git.98e641b1f2ef3fa9b4416b197a4494cd6401fb9a | 81.9552 | 91.0482 | 81.9552 | 91.0482 | 82.7849 | 0 | 763 | 763 | 185 | 391 | 67 |
-| 5 | jubarte | jubarte-final@c34fd18ff82b+git.98e641b1f2ef3fa9b4416b197a4494cd6401fb9a | 81.9545 | 91.0482 | 81.9545 | 91.0482 | 82.7849 | 0 | 763 | 763 | 185 | 391 | 67 |
-| 6 | jubarte | jubarte-final@14094d7b65aa+git.98e641b1f2ef3fa9b4416b197a4494cd6401fb9a | 81.8985 | 90.7573 | 81.8985 | 90.7573 | 81.0457 | 0 | 763 | 763 | 184 | 388 | 67 |
-| 7 | jubarte | jubarte-final@c437ad72f0d8+git.98e641b1f2ef3fa9b4416b197a4494cd6401fb9a | 81.7809 | 90.46 | 81.7809 | 90.46 | 80.6956 | 0 | 763 | 763 | 178 | 384 | 67 |
-| 8 | jubarte | jubarte-final@c43ad9297820+git.98e641b1f2ef3fa9b4416b197a4494cd6401fb9a | 81.76 | 90.1976 | 81.76 | 90.1976 | 78.3932 | 0 | 763 | 763 | 180 | 382 | 67 |
-| 9 | jubarte | jubarte-final@c4de03e2da52+git.98e641b1f2ef3fa9b4416b197a4494cd6401fb9a | 81.6772 | 89.4571 | 81.6772 | 89.4571 | 74.1998 | 0 | 763 | 763 | 160 | 377 | 67 |
-| 10 | jubarte | jubarte-final@774e5a062abc+git.98e641b1f2ef3fa9b4416b197a4494cd6401fb9a | 81.647 | 89.3249 | 81.647 | 89.3249 | 80.6956 | 0 | 763 | 763 | 173 | 377 | 67 |
-| 11 | jubarte | jubarte-final@700ad3b32181+git.98e641b1f2ef3fa9b4416b197a4494cd6401fb9a | 81.6469 | 89.3249 | 81.6469 | 89.3249 | 80.6956 | 0 | 763 | 763 | 172 | 377 | 67 |
-| 12 | jubarte | jubarte-final@76e503aae6c0+git.98e641b1f2ef3fa9b4416b197a4494cd6401fb9a | 81.5594 | 89.1671 | 81.5594 | 89.1671 | 77.3519 | 0 | 763 | 763 | 181 | 376 | 67 |
-| 13 | jubarte | jubarte-final@02df62305cf3+git.98e641b1f2ef3fa9b4416b197a4494cd6401fb9a | 81.5586 | 89.1671 | 81.5586 | 89.1671 | 78.3932 | 0 | 763 | 763 | 180 | 376 | 67 |
-| 14 | jubarte | jubarte-final@e7bcd29bb5a9+git.98e641b1f2ef3fa9b4416b197a4494cd6401fb9a | 81.5698 | 89.1133 | 81.5698 | 89.1133 | 77.3519 | 0 | 763 | 763 | 182 | 375 | 66 |
-| 15 | stemma | 0.5.0@2e7bdc832391+git.efaed0c1ecb41142b1465bbb124dd183c385a2b0 | 62.9106 | 61.8327 | 50.6253 | 56.6151 | 19.3181 | 149 | 614 | 763 | 9 | 39 | 131 |
-| 16 | safe-docx | 0.19.1@e3f092da3639+git.7bd35c876493f2725b095f0190c28d2644962c78 | 53.6532 | 51.3113 | 48.3793 | 49.6861 | 4.2245 | 75 | 688 | 763 | 6 | 18 | 317 |
-| 17 | redlines | 0.6.1 | 45.9391 | 47.1411 | 44.8554 | 47.0451 | -2.9557 | 18 | 745 | 763 | 0 | 0 | 488 |
+| 2 | jubarte | 0.2.0@1286be69c690+git.65014685f960a5c1b9a19250e23fccaa4df5e5ef | 82.0829 | 91.414 | 82.0829 | 91.414 | 83.7884 | 0 | 763 | 763 | 186 | 395 | 67 |
+| 3 | jubarte | jubarte-final@951a6e6b453c+git.98e641b1f2ef3fa9b4416b197a4494cd6401fb9a | 81.9937 | 91.3062 | 81.9937 | 91.3062 | 83.7884 | 0 | 763 | 763 | 186 | 393 | 67 |
+| 4 | docxodus | 9.8.0 | 80.5534 | 91.1892 | 80.2367 | 91.108 | 100 | 4 | 760 | 763 | 186 | 392 | 95 |
+| 5 | jubarte | jubarte-final@2140d6727f0d+git.98e641b1f2ef3fa9b4416b197a4494cd6401fb9a | 81.9552 | 91.0482 | 81.9552 | 91.0482 | 82.7849 | 0 | 763 | 763 | 185 | 391 | 67 |
+| 6 | jubarte | jubarte-final@c34fd18ff82b+git.98e641b1f2ef3fa9b4416b197a4494cd6401fb9a | 81.9545 | 91.0482 | 81.9545 | 91.0482 | 82.7849 | 0 | 763 | 763 | 185 | 391 | 67 |
+| 7 | jubarte | jubarte-final@14094d7b65aa+git.98e641b1f2ef3fa9b4416b197a4494cd6401fb9a | 81.8985 | 90.7573 | 81.8985 | 90.7573 | 81.0457 | 0 | 763 | 763 | 184 | 388 | 67 |
+| 8 | jubarte | jubarte-final@c437ad72f0d8+git.98e641b1f2ef3fa9b4416b197a4494cd6401fb9a | 81.7809 | 90.46 | 81.7809 | 90.46 | 80.6956 | 0 | 763 | 763 | 178 | 384 | 67 |
+| 9 | jubarte | jubarte-final@c43ad9297820+git.98e641b1f2ef3fa9b4416b197a4494cd6401fb9a | 81.76 | 90.1976 | 81.76 | 90.1976 | 78.3932 | 0 | 763 | 763 | 180 | 382 | 67 |
+| 10 | jubarte | jubarte-final@c4de03e2da52+git.98e641b1f2ef3fa9b4416b197a4494cd6401fb9a | 81.6772 | 89.4571 | 81.6772 | 89.4571 | 74.1998 | 0 | 763 | 763 | 160 | 377 | 67 |
+| 11 | jubarte | jubarte-final@774e5a062abc+git.98e641b1f2ef3fa9b4416b197a4494cd6401fb9a | 81.647 | 89.3249 | 81.647 | 89.3249 | 80.6956 | 0 | 763 | 763 | 173 | 377 | 67 |
+| 12 | jubarte | jubarte-final@700ad3b32181+git.98e641b1f2ef3fa9b4416b197a4494cd6401fb9a | 81.6469 | 89.3249 | 81.6469 | 89.3249 | 80.6956 | 0 | 763 | 763 | 172 | 377 | 67 |
+| 13 | jubarte | jubarte-final@76e503aae6c0+git.98e641b1f2ef3fa9b4416b197a4494cd6401fb9a | 81.5594 | 89.1671 | 81.5594 | 89.1671 | 77.3519 | 0 | 763 | 763 | 181 | 376 | 67 |
+| 14 | jubarte | jubarte-final@02df62305cf3+git.98e641b1f2ef3fa9b4416b197a4494cd6401fb9a | 81.5586 | 89.1671 | 81.5586 | 89.1671 | 78.3932 | 0 | 763 | 763 | 180 | 376 | 67 |
+| 15 | jubarte | jubarte-final@e7bcd29bb5a9+git.98e641b1f2ef3fa9b4416b197a4494cd6401fb9a | 81.5698 | 89.1133 | 81.5698 | 89.1133 | 77.3519 | 0 | 763 | 763 | 182 | 375 | 66 |
+| 16 | jubarte-ast | 0.2.0@1286be69c690+git.65014685f960a5c1b9a19250e23fccaa4df5e5ef | 74.1962 | 76.1486 | 74.1962 | 76.1486 | 74.1998 | 0 | 763 | 763 | 96 | 236 | 114 |
+| 17 | stemma | 0.5.0@2e7bdc832391+git.efaed0c1ecb41142b1465bbb124dd183c385a2b0 | 62.9106 | 61.8327 | 50.6253 | 56.6151 | 19.3181 | 149 | 614 | 763 | 9 | 39 | 131 |
+| 18 | folio | 0.17.1 | 52.1299 | 50.4313 | 50.8318 | 50.2913 | 4.3275 | 19 | 744 | 763 | 0 | 5 | 354 |
+| 19 | safe-docx | 0.19.1@e3f092da3639+git.7bd35c876493f2725b095f0190c28d2644962c78 | 53.6532 | 51.3113 | 48.3793 | 49.6861 | 4.2245 | 75 | 688 | 763 | 6 | 18 | 317 |
+| 20 | redlines | 0.6.1 | 45.9391 | 47.1411 | 44.8554 | 47.0451 | -2.9557 | 18 | 745 | 763 | 0 | 0 | 488 |
 
 **Legacy corpus** (older `corpus_revision` stamps and unstamped runs — not comparable with the rows above; kept for history until each tool re-runs):
 
@@ -65,13 +68,13 @@ Paired comparison on the **488** documents every full-map vendor below completed
 | --- | --- | --- | --- | --- |
 | 1 | jubarte-rust | jubarte-rust@17ea47e9a0d7+git.bf3d07ddd61180e55f327c8e891affd0f6c18d64 | 97.25 | 88.89 |
 | 2 | docxodus | 9.8.0 | 96.86 | 85.48 |
-| 3 | jubarte | jubarte-final@951a6e6b453c+git.98e641b1f2ef3fa9b4416b197a4494cd6401fb9a | 95.47 | 85.72 |
+| 3 | jubarte | 0.2.0@1286be69c690+git.65014685f960a5c1b9a19250e23fccaa4df5e5ef | 95.47 | 85.78 |
 | 4 | jubarte-wasm | 0.1.0@4b36f4db1d2f+git.ebf1a7996df49f99fb40f4f67713e61cfd19c731 | 92.84 | 84.27 |
-| 5 | jubarte-ast | jubarte-final@a58157a9cd2d | 82.27 | 78.21 |
+| 5 | jubarte-ast | 0.2.0@1286be69c690+git.65014685f960a5c1b9a19250e23fccaa4df5e5ef | 82.27 | 78.21 |
 | 6 | stemma | 0.5.0@2e7bdc832391+git.efaed0c1ecb41142b1465bbb124dd183c385a2b0 | 63.47 | 64.20 |
 | 7 | safe-docx | 0.19.1@e3f092da3639+git.7bd35c876493f2725b095f0190c28d2644962c78 | 52.72 | 55.64 |
 | 8 | superdoc | 1.21.3 | 52.51 | 54.48 |
-| 9 | folio | 0.15.13 | 52.42 | 55.30 |
+| 9 | folio | 0.17.1 | 52.42 | 55.30 |
 | 10 | superdoc-redlines | 0.2.0 | 52.08 | 53.91 |
 | 11 | redlines | 0.6.1 | 48.97 | 48.01 |
 | 12 | docx-redline-js | 0.3.0 | 48.82 | 48.86 |
@@ -84,7 +87,7 @@ Per-doc paired deltas on shared documents (best pin per vendor); `win/loss/tie` 
 | --- | --- | --- | --- | --- | --- |
 | docx-redline-js | docxodus | 743 | 22/721/0 | -41.10 | 3.54e-120 |
 | docx-redline-js | folio | 735 | 160/561/14 | -2.43 | 8.45e-58 |
-| docx-redline-js | jubarte | 746 | 22/722/2 | -42.83 | 3.70e-121 |
+| docx-redline-js | jubarte | 746 | 22/722/2 | -42.93 | 3.64e-121 |
 | docx-redline-js | jubarte-ast | 746 | 24/721/1 | -29.73 | 3.47e-117 |
 | docx-redline-js | jubarte-rust | 746 | 8/736/2 | -43.90 | 4.02e-123 |
 | docx-redline-js | jubarte-wasm | 746 | 18/726/2 | -37.24 | 8.70e-122 |
@@ -96,8 +99,8 @@ Per-doc paired deltas on shared documents (best pin per vendor); `win/loss/tie` 
 | docx-redline-js | superdoc | 657 | 172/485/0 | -4.01 | 1.92e-43 |
 | docx-redline-js | superdoc-redlines | 689 | 208/468/13 | -2.05 | 1.20e-32 |
 | docxodus | folio | 741 | 703/38/0 | +29.90 | 2.60e-117 |
-| docxodus | jubarte | 760 | 309/352/99 | +0.00 | 6.37e-02 |
-| docxodus | jubarte-ast | 760 | 466/198/96 | +1.46 | 2.37e-28 |
+| docxodus | jubarte | 760 | 307/354/99 | +0.00 | 4.23e-02 |
+| docxodus | jubarte-ast | 760 | 466/199/95 | +1.46 | 2.59e-28 |
 | docxodus | jubarte-rust | 760 | 267/366/127 | +0.00 | 7.92e-08 |
 | docxodus | jubarte-wasm | 760 | 343/286/131 | +0.00 | 2.55e-02 |
 | docxodus | ooxmlsdk | 155 | 154/1/0 | +38.36 | 3.54e-27 |
@@ -107,7 +110,7 @@ Per-doc paired deltas on shared documents (best pin per vendor); `win/loss/tie` 
 | docxodus | stemma | 612 | 507/96/9 | +23.07 | 1.37e-64 |
 | docxodus | superdoc | 662 | 616/44/2 | +35.15 | 1.31e-103 |
 | docxodus | superdoc-redlines | 700 | 662/38/0 | +31.15 | 8.06e-113 |
-| folio | jubarte | 744 | 40/702/2 | -32.87 | 3.69e-117 |
+| folio | jubarte | 744 | 40/702/2 | -32.98 | 3.50e-117 |
 | folio | jubarte-ast | 744 | 58/685/1 | -21.52 | 9.26e-110 |
 | folio | jubarte-rust | 744 | 18/724/2 | -34.10 | 1.74e-122 |
 | folio | jubarte-wasm | 744 | 39/703/2 | -28.28 | 1.78e-119 |
@@ -118,25 +121,25 @@ Per-doc paired deltas on shared documents (best pin per vendor); `win/loss/tie` 
 | folio | stemma | 605 | 153/448/4 | -6.15 | 2.31e-46 |
 | folio | superdoc | 657 | 350/306/1 | +0.30 | 1.67e-01 |
 | folio | superdoc-redlines | 685 | 412/233/40 | +0.19 | 4.69e-15 |
-| jubarte | jubarte-ast | 763 | 459/222/82 | +2.23 | 1.19e-27 |
-| jubarte | jubarte-rust | 763 | 247/331/185 | +0.00 | 5.51e-05 |
-| jubarte | jubarte-wasm | 763 | 344/248/171 | +0.00 | 1.23e-05 |
+| jubarte | jubarte-ast | 763 | 460/221/82 | +2.25 | 3.32e-28 |
+| jubarte | jubarte-rust | 763 | 248/330/185 | +0.00 | 8.99e-05 |
+| jubarte | jubarte-wasm | 763 | 346/246/171 | +0.00 | 5.95e-06 |
 | jubarte | ooxmlsdk | 155 | 149/6/0 | +34.01 | 7.68e-27 |
-| jubarte | redlines | 745 | 729/16/0 | +40.85 | 2.96e-122 |
-| jubarte | safe-docx | 688 | 636/48/4 | +34.42 | 1.87e-104 |
+| jubarte | redlines | 745 | 729/16/0 | +41.00 | 2.96e-122 |
+| jubarte | safe-docx | 688 | 636/48/4 | +34.50 | 1.83e-104 |
 | jubarte | sanity-word | 154 | 135/19/0 | +18.91 | 2.35e-22 |
-| jubarte | stemma | 614 | 520/85/9 | +21.63 | 6.96e-75 |
-| jubarte | superdoc | 665 | 620/41/4 | +36.24 | 4.86e-104 |
-| jubarte | superdoc-redlines | 703 | 672/29/2 | +33.52 | 7.64e-113 |
-| jubarte-ast | jubarte-rust | 763 | 156/529/78 | -5.14 | 8.73e-57 |
-| jubarte-ast | jubarte-wasm | 763 | 217/455/91 | -1.95 | 9.02e-24 |
+| jubarte | stemma | 614 | 520/85/9 | +21.64 | 6.12e-75 |
+| jubarte | superdoc | 665 | 620/41/4 | +36.33 | 4.80e-104 |
+| jubarte | superdoc-redlines | 703 | 672/29/2 | +33.63 | 7.58e-113 |
+| jubarte-ast | jubarte-rust | 763 | 156/529/78 | -5.14 | 8.75e-57 |
+| jubarte-ast | jubarte-wasm | 763 | 217/455/91 | -1.95 | 9.00e-24 |
 | jubarte-ast | ooxmlsdk | 155 | 153/2/0 | +31.91 | 3.82e-27 |
 | jubarte-ast | redlines | 745 | 717/28/0 | +30.38 | 2.44e-120 |
 | jubarte-ast | safe-docx | 688 | 603/79/6 | +20.08 | 5.90e-92 |
 | jubarte-ast | sanity-word | 154 | 143/11/0 | +18.17 | 1.35e-25 |
 | jubarte-ast | stemma | 614 | 475/131/8 | +9.85 | 3.76e-45 |
 | jubarte-ast | superdoc | 665 | 593/67/5 | +23.27 | 7.06e-95 |
-| jubarte-ast | superdoc-redlines | 703 | 652/50/1 | +21.57 | 1.13e-106 |
+| jubarte-ast | superdoc-redlines | 703 | 652/50/1 | +21.57 | 1.14e-106 |
 | jubarte-rust | jubarte-wasm | 763 | 318/87/358 | +0.00 | 6.24e-34 |
 | jubarte-rust | ooxmlsdk | 155 | 154/1/0 | +35.77 | 3.54e-27 |
 | jubarte-rust | redlines | 745 | 740/5/0 | +42.33 | 1.76e-123 |
@@ -182,6 +185,8 @@ Docs where the pixel lens and a judging lens (functional accept/reject invariant
 - **docxodus** 9.0.0: 86 doc(s) where the lenses disagree (25.4% of two-lens docs)
 - **docxodus** 9.8.0: 17 doc(s) where the lenses disagree (4.5% of two-lens docs)
 - **folio** 0.15.13: 106 doc(s) where the lenses disagree (28.8% of two-lens docs)
+- **folio** 0.17.1: 106 doc(s) where the lenses disagree (28.8% of two-lens docs)
+- **jubarte** 0.2.0@1286be69c690+git.65014685f960a5c1b9a19250e23fccaa4df5e5ef: 45 doc(s) where the lenses disagree (11.9% of two-lens docs)
 - **jubarte** jubarte-final@02df62305cf3+git.98e641b1f2ef3fa9b4416b197a4494cd6401fb9a: 44 doc(s) where the lenses disagree (11.7% of two-lens docs)
 - **jubarte** jubarte-final@14094d7b65aa+git.98e641b1f2ef3fa9b4416b197a4494cd6401fb9a: 45 doc(s) where the lenses disagree (11.9% of two-lens docs)
 - **jubarte** jubarte-final@2140d6727f0d+git.98e641b1f2ef3fa9b4416b197a4494cd6401fb9a: 45 doc(s) where the lenses disagree (11.9% of two-lens docs)
@@ -195,6 +200,7 @@ Docs where the pixel lens and a judging lens (functional accept/reject invariant
 - **jubarte** jubarte-final@c4de03e2da52+git.98e641b1f2ef3fa9b4416b197a4494cd6401fb9a: 44 doc(s) where the lenses disagree (11.7% of two-lens docs)
 - **jubarte** jubarte-final@d43557e042c1: 20 doc(s) where the lenses disagree (5.3% of two-lens docs)
 - **jubarte** jubarte-final@e7bcd29bb5a9+git.98e641b1f2ef3fa9b4416b197a4494cd6401fb9a: 43 doc(s) where the lenses disagree (11.4% of two-lens docs)
+- **jubarte-ast** 0.2.0@1286be69c690+git.65014685f960a5c1b9a19250e23fccaa4df5e5ef: 25 doc(s) where the lenses disagree (6.6% of two-lens docs)
 - **jubarte-ast** jubarte-final@a58157a9cd2d: 25 doc(s) where the lenses disagree (6.6% of two-lens docs)
 - **jubarte-ast** jubarte-final@d43557e042c1: 36 doc(s) where the lenses disagree (9.8% of two-lens docs)
 - **jubarte-rust** jubarte-rust@17ea47e9a0d7+git.bf3d07ddd61180e55f327c8e891affd0f6c18d64: 41 doc(s) where the lenses disagree (10.9% of two-lens docs)
@@ -240,6 +246,7 @@ roundtrip (self-diff → pdf_source)
 | 1 | safe-docx | 0.19.1@e3f092da3639+git.7bd35c876493f2725b095f0190c28d2644962c78 | 100 | 100 | 100 | 100 | — | 0 | 166 | 166 | 166 | 166 | 0 |
 | 2 | docxodus | 9.8.0 | 99.9949 | 100 | 99.9949 | 100 | — | 0 | 166 | 166 | 163 | 166 | 0 |
 | 3 | stemma | 0.5.0@2e7bdc832391+git.efaed0c1ecb41142b1465bbb124dd183c385a2b0 | 99.9494 | 100 | 99.9494 | 100 | — | 0 | 166 | 166 | 161 | 166 | 0 |
+| 4 | folio | 0.17.1 | 99.7582 | 100 | 97.9554 | 100 | — | 3 | 163 | 166 | 159 | 161 | 0 |
 
 **Legacy corpus** (older `corpus_revision` stamps and unstamped runs — not comparable with the rows above; kept for history until each tool re-runs):
 
@@ -334,12 +341,15 @@ visual_accepted_changes (Playwright)
 | docxodus | 9.8.0 | 2026-08-13T02:15:21.827989+00:00 | visual_redlines | 61.0993 | 62.44 | 155 |
 | docxodus | 9.8.0 | 2026-08-13T02:07:50.495893+00:00 | visual_rendering | 65.2677 | 67.8808 | 199 |
 | folio | 0.15.13 | 2026-08-04T14:51:49.763490+00:00 | script_redlines | 52.1299 | 50.4313 | 744 |
+| folio | 0.17.1 | 2026-09-12T06:22:32.472029+00:00 | roundtrip | 99.7582 | 100 | 163 |
+| folio | 0.17.1 | 2026-09-12T06:22:32.472029+00:00 | script_redlines | 52.1299 | 50.4313 | 744 |
 | folio | 0.3.1 | 2026-07-09T13:48:42.309993+00:00 | accepted_changes | 57.9094 | 55.608 | 164 |
 | folio | 0.3.1 | 2026-07-10T00:18:18.365930+00:00 | roundtrip | 98.0712 | 100 | 198 |
 | folio | 0.3.1 | 2026-07-09T13:01:34.270204+00:00 | script_redlines | 55.3092 | 53.7539 | 205 |
 | folio | 0.5.0 | 2026-07-08T20:35:26.466209+00:00 | visual_accepted_changes | 59.671 | 54.9489 | 164 |
 | folio | 0.5.0 | 2026-07-08T20:20:25.117836+00:00 | visual_redlines | 51.5494 | 51.6497 | 164 |
 | folio | 0.5.0 | 2026-07-08T20:14:38.167302+00:00 | visual_rendering | 59.6494 | 55.0967 | 198 |
+| jubarte | 0.2.0@1286be69c690+git.65014685f960a5c1b9a19250e23fccaa4df5e5ef | 2026-09-11T05:50:48.318899+00:00 | script_redlines | 82.0829 | 91.414 | 763 |
 | jubarte | jubarte-final@02df62305cf3+git.98e641b1f2ef3fa9b4416b197a4494cd6401fb9a | 2026-08-14T10:15:55.237109+00:00 | script_redlines | 81.5586 | 89.1671 | 763 |
 | jubarte | jubarte-final@14094d7b65aa+git.98e641b1f2ef3fa9b4416b197a4494cd6401fb9a | 2026-08-14T13:02:00.690937+00:00 | script_redlines | 81.8985 | 90.7573 | 763 |
 | jubarte | jubarte-final@2140d6727f0d+git.98e641b1f2ef3fa9b4416b197a4494cd6401fb9a | 2026-08-14T13:50:05.579598+00:00 | script_redlines | 81.9552 | 91.0482 | 763 |
@@ -353,6 +363,7 @@ visual_accepted_changes (Playwright)
 | jubarte | jubarte-final@c4de03e2da52+git.98e641b1f2ef3fa9b4416b197a4494cd6401fb9a | 2026-08-14T12:26:35.586172+00:00 | script_redlines | 81.6772 | 89.4571 | 763 |
 | jubarte | jubarte-final@d43557e042c1 | 2026-08-04T11:01:14.552442+00:00 | script_redlines | 77.0151 | 78.5311 | 763 |
 | jubarte | jubarte-final@e7bcd29bb5a9+git.98e641b1f2ef3fa9b4416b197a4494cd6401fb9a | 2026-08-14T09:13:10.968938+00:00 | script_redlines | 81.5698 | 89.1133 | 763 |
+| jubarte-ast | 0.2.0@1286be69c690+git.65014685f960a5c1b9a19250e23fccaa4df5e5ef | 2026-09-11T14:52:05.846988+00:00 | script_redlines | 74.1962 | 76.1486 | 763 |
 | jubarte-ast | jubarte-final@a58157a9cd2d | 2026-08-11T10:49:32.739563+00:00 | script_redlines | 74.1962 | 76.1486 | 763 |
 | jubarte-ast | jubarte-final@d43557e042c1 | 2026-08-04T11:15:42.562625+00:00 | script_redlines | 70.5699 | 68.6678 | 755 |
 | jubarte-rust | jubarte-rust@17ea47e9a0d7+git.bf3d07ddd61180e55f327c8e891affd0f6c18d64 | 2026-08-13T20:58:50.595888+00:00 | script_redlines | 84.4662 | 92.6623 | 763 |
@@ -421,7 +432,7 @@ Source: `results/docx_to_pdf_no_redline.json`.
 
 ## Redline generation speed
 
-Source: `results/speed.jsonl` (+ `results/redline_speed_bench/**/summary.json` when present). **19** generation row(s) after dedupe (one per tool×kind; prefer larger `n`, then lower median). Unit: **ms per redline** (lower = faster). See [`docs/SPEED.md`](docs/SPEED.md) for methodology.
+Source: `results/speed.jsonl` (+ `results/redline_speed_bench/**/summary.json` when present). **21** generation row(s) after dedupe (one per tool×kind; prefer larger `n`, then lower median). Unit: **ms per redline** (lower = faster). See [`docs/SPEED.md`](docs/SPEED.md) for methodology.
 
 **Fairness (read before citing):**
 
@@ -456,11 +467,13 @@ Large fixture pools (often **1000 unique** docs → **5000 pairs**), including n
 | 1 | docxodus | dotnet-wasm | 1000 | 5000 | 74.595 | 428.227 | 922.477 | 3970.72 | 2.3 | 5000 | 0 | v8-inspector |
 | 2 | docxodus-csharp | dotnet | 50 | 50 | 208.388 | 441.646 | 911.873 | 1154.008 | 2.3 | 50 | 0 | — |
 | 3 | jubarte-lossless | node | 1000 | 5000 | 56.465 | 168.791 | 609.005 | 1049.093 | 5.9 | 4997 | 3 | v8-inspector |
-| 4 | jubarte-native | node | 1000 | 5000 | 14.43 | 57.145 | 175.709 | 578.45 | 17.5 | 5000 | 0 | — |
-| 5 | jubarte-wasm | rust-wasm | 1000 | 5000 | 9.667 | 41.493 | 174.035 | 265.818 | 24.1 | 5000 | 0 | v8-inspector |
-| 6 | jubarte-rust | rust | 1000 | 5000 | 9.656 | 31.022 | 123.386 | 195.751 | 32.2 | 5000 | 0 | — |
-| 7 | docxodus-csharp-inproc | dotnet | 1000 | 5000 | 7.888 | 25.832 | 101.854 | 206.808 | 38.7 | 4880 | 120 | samply |
-| 8 | jubarte-rust-inproc | rust | 1000 | 5000 | 6.201 | 25.337 | 110.764 | 182.306 | 39.5 | 5000 | 0 | samply |
+| 4 | jubarte-final-lossless | node | 1000 | 5000 | 48.76 | 146.811 | 530.202 | 894.026 | 6.8 | 5000 | 0 | — |
+| 5 | jubarte-native | node | 1000 | 5000 | 14.43 | 57.145 | 175.709 | 578.45 | 17.5 | 5000 | 0 | — |
+| 6 | jubarte-wasm | rust-wasm | 1000 | 5000 | 9.667 | 41.493 | 174.035 | 265.818 | 24.1 | 5000 | 0 | v8-inspector |
+| 7 | jubarte-final-native | node | 1000 | 5000 | 8.694 | 35.357 | 103.869 | 317.77 | 28.3 | 5000 | 0 | — |
+| 8 | jubarte-rust | rust | 1000 | 5000 | 9.656 | 31.022 | 123.386 | 195.751 | 32.2 | 5000 | 0 | — |
+| 9 | docxodus-csharp-inproc | dotnet | 1000 | 5000 | 7.888 | 25.832 | 101.854 | 206.808 | 38.7 | 4880 | 120 | samply |
+| 10 | jubarte-rust-inproc | rust | 1000 | 5000 | 6.201 | 25.337 | 110.764 | 182.306 | 39.5 | 5000 | 0 | samply |
 
 ### Speed methodology notes
 
