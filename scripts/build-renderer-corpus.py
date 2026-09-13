@@ -220,12 +220,16 @@ canvas {{ width:100%; height:auto; display:block; background:#fff; }}
 small {{ color:#bbb; margin-left:12px; }}
 .status {{ color:#666; padding:8px; }}
 </style>
-<header><label>Case <select id="case">{options}</select></label><small>Word · Jubarte · docxide-pdf</small></header>
+<header><button id="previous" type="button">Previous</button> <button id="next" type="button">Next</button> <label>Case <select id="case">{options}</select></label><small>Word · docxide-pdf · Jubarte · use ←/→ or J/K to change cases</small></header>
 <main id="grid" class="grid"><div class="status">Select a case.</div></main>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>
 const cases={payload}; const sel=document.querySelector('#case');
+const previous=document.querySelector('#previous'), next=document.querySelector('#next');
 const engines=[['word','Microsoft Word'],['docxide-pdf','docxide-pdf'],['jubarte','Jubarte']];
+function move(delta) {{ sel.selectedIndex=(Number(sel.value)+delta+cases.length)%cases.length; show(); }}
+previous.addEventListener('click',()=>move(-1)); next.addEventListener('click',()=>move(1));
+document.addEventListener('keydown',event=>{{ if (event.target===sel) return; if (event.key==='ArrowLeft'||event.key.toLowerCase()==='k') move(-1); if (event.key==='ArrowRight'||event.key.toLowerCase()==='j') move(1); }});
 pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 async function loadPdf(url) {{ return pdfjsLib.getDocument(url).promise; }}
 async function show() {{
