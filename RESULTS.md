@@ -10,7 +10,7 @@ columns and the benchmark methodology kept in the detailed report.
 <!-- RANKING-START -->
 ### script_redlines — redline markup vs Word
 
-Sorted by ITT median (failed documents score 0). Mean and Median are completed-only. `~` marks approximate ITT. Jubarte families list best and worst pin; other vendors list each pin. Jubarte rows with ITT docs < 760 are omitted.
+Sorted by ITT median (failed documents score 0). Mean and Median are completed-only. `~` marks approximate ITT. Jubarte families list best and worst pin; other vendors list each pin. The 760-doc floor applies only to script_redlines; smaller canonical benchmarks retain their rows.
 
 **Current corpus** (newest `corpus_revision` stamp: `5ed816028d99`)
 
@@ -55,17 +55,19 @@ ITT Docs differs across rows (763, 232, 230, 207, 196, 195, 168, 9). Those rows 
 
 ### accepted_changes — accept all changes, match final doc
 
-Sorted by ITT median (failed documents score 0). Mean and Median are completed-only. `~` marks approximate ITT. Jubarte families list best and worst pin; other vendors list each pin. Jubarte rows with ITT docs < 760 are omitted.
+Sorted by ITT median (failed documents score 0). Mean and Median are completed-only. `~` marks approximate ITT. Jubarte families list best and worst pin; other vendors list each pin. The 760-doc floor applies only to script_redlines; smaller canonical benchmarks retain their rows.
 
 **Current corpus** (newest `corpus_revision` stamp: `5ed816028d99`)
 
-ITT Docs differs across rows (198, 178, 144). Those rows are not the same measurement. Compare rows with matching ITT Docs.
+ITT Docs differs across rows (200, 198, 195, 178, 144). Those rows are not the same measurement. Compare rows with matching ITT Docs.
 
 | Rank | Vendor | Version | Docs | ITT Docs | ITT Mean | ITT Median | Mean | Median | Perfect (100) | Failures |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | docxodus | 9.8.0 | 195 | 198 | 88.82 | 100.00 | 90.19 | 100.00 | 119 | 4 |
-| 2 | stemma | 0.5.0@2e7bdc832391+git.efaed0c1ecb41142b1465bbb124dd183c385a2b0 | 141 | 144 | 77.46 | 80.63 | 79.10 | 80.77 | 19 | 3 |
-| 3 | safe-docx | 0.19.1@e3f092da3639+git.7bd35c876493f2725b095f0190c28d2644962c78 | 177 | 178 | 63.73 | 59.71 | 64.09 | 60.22 | 9 | 1 |
+| 2 | jubarte (lossless) | 0.2.0@1286be69c690+git.65014685f960a5c1b9a19250e23fccaa4df5e5ef | 195 | 200 | 84.18 | 98.73 | 86.34 | 99.52 | 66 | 5 |
+| 3 | jubarte-ast | 0.2.0@1286be69c690+git.65014685f960a5c1b9a19250e23fccaa4df5e5ef | 195 | 195 | 84.17 | 88.90 | 84.17 | 88.90 | 48 | 0 |
+| 4 | stemma | 0.5.0@2e7bdc832391+git.efaed0c1ecb41142b1465bbb124dd183c385a2b0 | 141 | 144 | 77.46 | 80.63 | 79.10 | 80.77 | 19 | 3 |
+| 5 | safe-docx | 0.19.1@e3f092da3639+git.7bd35c876493f2725b095f0190c28d2644962c78 | 177 | 178 | 63.73 | 59.71 | 64.09 | 60.22 | 9 | 1 |
 
 **Legacy corpus** (older `corpus_revision` stamps and unstamped runs):
 
@@ -73,14 +75,19 @@ ITT Docs differs across rows (174, 166, 164). Those rows are not the same measur
 
 | Rank | Vendor | Version | Docs | ITT Docs | ITT Mean | ITT Median | Mean | Median | Perfect (100) | Failures |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | docxodus | 6.4.0 | 164 | 164 | 69.00 | 77.19 | 69.00 | 77.19 | 14 | 0 |
-| 2 | docxodus | 7.0.0 | 164 | 164 | 70.20 | 74.92 | 70.20 | 74.92 | 17 | 0 |
-| 3 | superdoc | 1.19.2 | 150 | 166 | 57.67 | 55.82 | 63.82 | 61.12 | 2 | 16 |
-| 4 | folio | 0.3.1 | 164 | 174 | 54.58 | 53.96 | 57.91 | 55.61 | 3 | 10 |
+| 1 | jubarte-rust | jubarte-rust@cbbcefb724a7 (best) | 164 | 164 | 89.45 | 99.75 | 89.45 | 99.75 | 76 | 0 |
+| 2 | jubarte (lossless) | jubarte-final@dd16ad8fbcf3 (best) | 164 | 164 | 86.53 | 94.42 | 86.53 | 94.42 | 63 | 0 |
+| 3 | jubarte (lossless) | jubarte-final@717311c03d4f (worst) | 166 | 166 | 78.15 | 80.64 | 78.15 | 80.64 | 26 | 0 |
+| 4 | docxodus | 6.4.0 | 164 | 164 | 69.00 | 77.19 | 69.00 | 77.19 | 14 | 0 |
+| 5 | docxodus | 7.0.0 | 164 | 164 | 70.20 | 74.92 | 70.20 | 74.92 | 17 | 0 |
+| 6 | superdoc | 1.19.2 | 150 | 166 | 57.67 | 55.82 | 63.82 | 61.12 | 2 | 16 |
+| 7 | folio | 0.3.1 | 164 | 174 | 54.58 | 53.96 | 57.91 | 55.61 | 3 | 10 |
+| 8 | jubarte (final) | jubarte-final@dd16ad8fbcf3 | 164 | 164 | 48.52 | 50.51 | 48.52 | 50.51 | 0 | 0 |
+| 9 | jubarte-rust | jubarte-rust@b834d6e49fdb (worst) | 147 | 174 | 53.65 | 49.17 | 63.50 | 54.45 | 13 | 27 |
 
 ### roundtrip — self-diff must not invent noise
 
-Sorted by ITT median (failed documents score 0). Mean and Median are completed-only. `~` marks approximate ITT. Jubarte families list best and worst pin; other vendors list each pin. Jubarte rows with ITT docs < 760 are omitted.
+Sorted by ITT median (failed documents score 0). Mean and Median are completed-only. `~` marks approximate ITT. Jubarte families list best and worst pin; other vendors list each pin. The 760-doc floor applies only to script_redlines; smaller canonical benchmarks retain their rows.
 
 **Current corpus** (newest `corpus_revision` stamp: `5ed816028d99`)
 
@@ -89,22 +96,29 @@ Sorted by ITT median (failed documents score 0). Mean and Median are completed-o
 | 1 | safe-docx | 0.19.1@e3f092da3639+git.7bd35c876493f2725b095f0190c28d2644962c78 | 166 | 166 | 100.00 | 100.00 | 100.00 | 100.00 | 166 | 0 |
 | 2 | docxodus | 9.8.0 | 166 | 166 | 99.99 | 100.00 | 99.99 | 100.00 | 163 | 0 |
 | 3 | stemma | 0.5.0@2e7bdc832391+git.efaed0c1ecb41142b1465bbb124dd183c385a2b0 | 166 | 166 | 99.95 | 100.00 | 99.95 | 100.00 | 161 | 0 |
-| 4 | folio | 0.17.1 | 163 | 166 | 97.96 | 100.00 | 99.76 | 100.00 | 159 | 3 |
+| 4 | jubarte (lossless) | 0.2.0@1286be69c690+git.65014685f960a5c1b9a19250e23fccaa4df5e5ef | 166 | 166 | 99.75 | 100.00 | 99.75 | 100.00 | 160 | 0 |
+| 5 | jubarte-ast | 0.2.0@1286be69c690+git.65014685f960a5c1b9a19250e23fccaa4df5e5ef | 166 | 166 | 99.19 | 100.00 | 99.19 | 100.00 | 155 | 0 |
+| 6 | folio | 0.17.1 | 163 | 166 | 97.96 | 100.00 | 99.76 | 100.00 | 159 | 3 |
 
 **Legacy corpus** (older `corpus_revision` stamps and unstamped runs):
 
-ITT Docs differs across rows (198, 197, 166). Those rows are not the same measurement. Compare rows with matching ITT Docs.
+ITT Docs differs across rows (199, 198, 197, 192, 166). Those rows are not the same measurement. Compare rows with matching ITT Docs.
 
 | Rank | Vendor | Version | Docs | ITT Docs | ITT Mean | ITT Median | Mean | Median | Perfect (100) | Failures |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | folio | 0.3.1 | 198 | 198 | 98.07 | 100.00 | 98.07 | 100.00 | 185 | 0 |
-| 2 | docxodus | 7.0.0 | 166 | 166 | 97.43 | 100.00 | 97.43 | 100.00 | 148 | 0 |
-| 3 | docxodus | 6.4.0 | 198 | 198 | 92.24 | 100.00 | 92.24 | 100.00 | 144 | 0 |
-| 4 | superdoc | 1.19.2 | 194 | 197 | 91.59 | 100.00 | 93.00 | 100.00 | 144 | 3 |
+| 1 | jubarte-rust | jubarte-rust@cbbcefb724a7 (best) | 166 | 166 | 99.17 | 100.00 | 99.17 | 100.00 | 157 | 0 |
+| 2 | folio | 0.3.1 | 198 | 198 | 98.07 | 100.00 | 98.07 | 100.00 | 185 | 0 |
+| 3 | jubarte (lossless) | jubarte-final@dd16ad8fbcf3 (best) | 166 | 166 | 97.63 | 100.00 | 97.63 | 100.00 | 152 | 0 |
+| 4 | docxodus | 7.0.0 | 166 | 166 | 97.43 | 100.00 | 97.43 | 100.00 | 148 | 0 |
+| 5 | jubarte (lossless) | jubarte-final@717311c03d4f (worst) | 199 | 199 | 94.49 | 100.00 | 94.49 | 100.00 | 149 | 0 |
+| 6 | docxodus | 6.4.0 | 198 | 198 | 92.24 | 100.00 | 92.24 | 100.00 | 144 | 0 |
+| 7 | superdoc | 1.19.2 | 194 | 197 | 91.59 | 100.00 | 93.00 | 100.00 | 144 | 3 |
+| 8 | jubarte-rust | jubarte-rust@b834d6e49fdb (worst) | 171 | 192 | 82.93 | 100.00 | 93.12 | 100.00 | 120 | 23 |
+| 9 | jubarte (final) | jubarte-final@dd16ad8fbcf3 | 166 | 166 | 52.63 | 53.23 | 52.63 | 53.23 | 0 | 0 |
 
 ### visual_rendering — editor render of plain DOCX
 
-Sorted by ITT median (failed documents score 0). Mean and Median are completed-only. `~` marks approximate ITT. Jubarte families list best and worst pin; other vendors list each pin. Jubarte rows with ITT docs < 760 are omitted.
+Sorted by ITT median (failed documents score 0). Mean and Median are completed-only. `~` marks approximate ITT. Jubarte families list best and worst pin; other vendors list each pin. The 760-doc floor applies only to script_redlines; smaller canonical benchmarks retain their rows.
 
 **Current corpus** (newest `corpus_revision` stamp: `5ed816028d99`)
 
@@ -125,7 +139,7 @@ ITT Docs differs across rows (199, 198). Those rows are not the same measurement
 
 ### visual_redlines — editor render of redline DOCX
 
-Sorted by ITT median (failed documents score 0). Mean and Median are completed-only. `~` marks approximate ITT. Jubarte families list best and worst pin; other vendors list each pin. Jubarte rows with ITT docs < 760 are omitted.
+Sorted by ITT median (failed documents score 0). Mean and Median are completed-only. `~` marks approximate ITT. Jubarte families list best and worst pin; other vendors list each pin. The 760-doc floor applies only to script_redlines; smaller canonical benchmarks retain their rows.
 
 **Current corpus** (newest `corpus_revision` stamp: `5ed816028d99`)
 
@@ -147,7 +161,7 @@ ITT Docs differs across rows (197, 182, 166, 165). Those rows are not the same m
 
 ### visual_accepted_changes — editor render of accepted DOCX
 
-Sorted by ITT median (failed documents score 0). Mean and Median are completed-only. `~` marks approximate ITT. Jubarte families list best and worst pin; other vendors list each pin. Jubarte rows with ITT docs < 760 are omitted.
+Sorted by ITT median (failed documents score 0). Mean and Median are completed-only. `~` marks approximate ITT. Jubarte families list best and worst pin; other vendors list each pin. The 760-doc floor applies only to script_redlines; smaller canonical benchmarks retain their rows.
 
 **Current corpus** (newest `corpus_revision` stamp: `5ed816028d99`)
 

@@ -185,9 +185,11 @@ def rows_from_jsonl(path: Path) -> list[dict[str, object]]:
                 continue
 
             itt_mean, itt_median, itt_n, n_failures = _itt_stats(data)
-            # jubarte-* must be scored on the full ITT corpus (≥760). A 164-doc
-            # subset with a 99.92 median is not the same measurement.
-            if vendor.startswith("jubarte"):
+            # The full-corpus floor applies to script_redlines, whose canonical
+            # corpus is 763 ITT documents. accepted_changes and roundtrip have
+            # smaller canonical corpora (198 and 166), so suppressing Jubarte
+            # there would incorrectly erase valid current scores.
+            if vendor.startswith("jubarte") and benchmark == "script_redlines":
                 attempted = itt_n if isinstance(itt_n, (int, float)) else n_docs
                 if isinstance(attempted, (int, float)) and int(attempted) < 760:
                     continue
@@ -1113,8 +1115,9 @@ def fidelity_methodology_and_legal() -> list[str]:
         "- **docxodus** filter: rows with **`n_docs ≤ 100`** are dropped (smoke / "
         "partial runs such as `visual_rendering` with n=21 or n=2). Full-corpus "
         "pins (typically n ≳ 145) are kept for every version.",
-        "- **jubarte-*** filter: rows with **ITT docs < 760** are dropped. A "
-        "164-doc subset is not the same measurement as the 763-doc ITT corpus.",
+        "- **jubarte-*** filter: for `script_redlines` only, rows with **ITT docs < 760** "
+        "are dropped because that benchmark's canonical corpus is 763 ITT docs. "
+        "`accepted_changes` and `roundtrip` retain their smaller canonical current corpora.",
         "- Other vendors keep every version even if n is small (e.g. `prebaked` sanity).",
         "- Scores isolate *redline-markup fidelity vs Word* when candidates and the oracle "
         "share the same renderer (LibreOffice 26.2.4.2 for `script_redlines` / "
@@ -1135,12 +1138,16 @@ def fidelity_methodology_and_legal() -> list[str]:
         "property of their owners.",
         "- **Benchmarked engines** remain under their own licenses and copyrights; "
         "publishing a score does not change their terms:",
-        "  - jubarte / in-repo ports — see their package licenses",
+        "  - [jubarte-redlines](https://github.com/jandira-tech/jubarte-redlines) (AGPL-3.0-only)",
+        "  - [docxide-pdf](https://github.com/sverrejb/docxide-pdf) (Apache-2.0)",
         "  - [docxodus](https://github.com/JSv4/docxodus) (MIT)",
         "  - [docx-redline-js](https://github.com/AnsonLai/docx-redline-js) (MIT)",
         "  - [folio](https://github.com/stella/folio) (Apache-2.0)",
         "  - [SuperDoc](https://github.com/Harbour-Enterprises/SuperDoc) (AGPL-3.0) and "
         "related SuperDoc tooling",
+        "  - [redlines](https://github.com/houfu/redlines) (MIT), [stemma](https://github.com/stemma-sh/stemma), and [safe-docx](https://github.com/UseJunior/safe-docx)",
+        "  - [rdocx](https://github.com/tensorbee/rdocx), [office2pdf](https://github.com/developer0hye/office2pdf), [PdfItDown](https://github.com/AstraBert/PdfItDown), [doxx](https://github.com/bgreenwell/doxx)",
+        "  - [libreoffice_convert_rust](https://gitcode.com/dnrops/libreoffice_convert_rust) and [dxpdf](https://github.com/nerdy-pro/dxpdf)",
         "- **LibreOffice** is used only as a pinned PDF renderer for fair comparison; "
         "it is not a redline generator in this bench.",
         "- Redistributing or reusing scores, corpus fixtures, or generated redlines "
