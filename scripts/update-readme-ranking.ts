@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 /**
- * Read results/bench.jsonl (+ speed.jsonl) and update the ranking tables in
- * README.md between RANKING-START and RANKING-END.
+ * Read results/bench.jsonl (+ speed.jsonl) and update the medium-detail ranking
+ * tables in RESULTS.md between RANKING markers. The detailed report is owned by
+ * scripts/export-results-md.py. README.md intentionally contains only the public
+ * summary and links.
  *
  * Fidelity: one competitive row per (vendor, benchmark, tool_version), then
  * **collapse** the three Jubarte families to **best + worst only** (by ITT
@@ -32,7 +34,7 @@ const ROOT = resolve(import.meta.dirname, "..");
 const BENCH_JSONL = resolve(ROOT, "results", "bench.jsonl");
 const SPEED_JSONL = resolve(ROOT, "results", "speed.jsonl");
 const REDLINE_SPEED_DIR = resolve(ROOT, "results", "redline_speed_bench");
-const README = resolve(ROOT, "README.md");
+const RESULT_FILES = [resolve(ROOT, "RESULTS.md")];
 
 /** Canonical fidelity benchmark names (order matters). */
 const FIDELITY_BENCHMARKS = [
@@ -714,21 +716,23 @@ function buildSpeedTable(rows: SpeedRow[]): string {
 	return sections.join("\n").trimEnd();
 }
 
-function updateReadme(tables: string[]): void {
-	const readme = readFileSync(README, "utf8");
+function updateResults(tables: string[]): void {
 	const startMarker = "<!-- RANKING-START -->";
 	const endMarker = "<!-- RANKING-END -->";
-	const start = readme.indexOf(startMarker);
-	const end = readme.indexOf(endMarker);
-	if (start === -1 || end === -1 || end <= start) {
-		throw new Error(
-			`README.md must contain both ${startMarker} and ${endMarker} markers in the correct order.`,
-		);
-	}
-	const before = readme.slice(0, start + startMarker.length);
-	const after = readme.slice(end);
 	const body = `\n${tables.join("\n\n")}\n`;
-	writeFileSync(README, `${before}${body}${after}`, "utf8");
+	for (const path of RESULT_FILES) {
+		const results = readFileSync(path, "utf8");
+		const start = results.indexOf(startMarker);
+		const end = results.indexOf(endMarker);
+		if (start === -1 || end === -1 || end <= start) {
+			throw new Error(
+				`${path} must contain both ${startMarker} and ${endMarker} markers in the correct order.`,
+			);
+		}
+		const before = results.slice(0, start + startMarker.length);
+		const after = results.slice(end);
+		writeFileSync(path, `${before}${body}${after}`, "utf8");
+	}
 }
 
 function main() {
@@ -743,10 +747,10 @@ function main() {
 	);
 	const speedTable = buildSpeedTable(readSpeedRows());
 	// Speed listed as a peer benchmark after fidelity tables.
-	updateReadme([...fidelityTables, speedTable]);
+	updateResults([...fidelityTables, speedTable]);
 
 	console.log(
-		`Updated README.md: ${FIDELITY_BENCHMARKS.length} fidelity tables (Jubarte best/worst) + speed.`,
+		`Updated RESULTS.md: ${FIDELITY_BENCHMARKS.length} fidelity tables (Jubarte best/worst) + speed.`,
 	);
 }
 
