@@ -212,19 +212,39 @@ def _comparison_html(cases: list[dict[str, object]]) -> str:
 body {{ margin:0; font:14px system-ui,sans-serif; color:#222; }}
 header {{ position:sticky; top:0; z-index:2; padding:10px; background:#222; color:#fff; }}
 select {{ max-width:70vw; padding:5px; }}
-.grid {{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; padding:8px; }}
-article {{ min-width:0; }}
-h2 {{ margin:0 0 6px; font-size:16px; }}
-iframe {{ width:100%; height:calc(100vh - 105px); min-height:650px; border:1px solid #bbb; }}
+.grid {{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; padding:8px; align-items:start; }}
+.column {{ min-width:0; }}
+h2 {{ position:sticky; top:52px; z-index:1; margin:0 0 6px; padding:6px 0; font-size:16px; background:#fff; }}
+.page {{ margin:0 0 12px; border:1px solid #bbb; background:#eee; }}
+canvas {{ width:100%; height:auto; display:block; background:#fff; }}
 small {{ color:#bbb; margin-left:12px; }}
+.status {{ color:#666; padding:8px; }}
 </style>
 <header><label>Case <select id="case">{options}</select></label><small>Word · Jubarte · docxide-pdf</small></header>
-<main class="grid"><article><h2>Microsoft Word</h2><iframe id="word" title="Microsoft Word"></iframe></article>
-<article><h2>Jubarte</h2><iframe id="jubarte" title="Jubarte"></iframe></article>
-<article><h2>docxide-pdf</h2><iframe id="docxide-pdf" title="docxide-pdf"></iframe></article></main>
+<main id="grid" class="grid"><div class="status">Select a case.</div></main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>
 const cases={payload}; const sel=document.querySelector('#case');
-function show() {{ const c=cases[Number(sel.value)]; for (const k of ['word','jubarte','docxide-pdf']) document.querySelector('#'+k).src=k+'/'+c.files[k]; }}
+const engines=[['word','Microsoft Word'],['docxide-pdf','docxide-pdf'],['jubarte','Jubarte']];
+pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+async function loadPdf(url) {{ return pdfjsLib.getDocument(url).promise; }}
+async function show() {{
+  const c=cases[Number(sel.value)], grid=document.querySelector('#grid'); grid.replaceChildren();
+  const columns=engines.map(([key,label]) => {{ const col=document.createElement('section'); col.className='column'; col.innerHTML='<h2>'+label+'</h2>'; grid.append(col); return col; }});
+  try {{
+    const pdfs=await Promise.all(engines.map(([key]) => loadPdf(key+'/'+c.files[key])));
+    const pageCount=Math.max(...pdfs.map(pdf => pdf.numPages));
+    for (let pageNo=1; pageNo<=pageCount; pageNo++) {{
+      await Promise.all(pdfs.map(async (pdf, i) => {{
+        const page=columns[i].appendChild(document.createElement('div')); page.className='page';
+        if (pageNo>pdf.numPages) {{ page.textContent='No page '+pageNo; return; }}
+        const p=await pdf.getPage(pageNo), viewport=p.getViewport({{scale:1.35}}), canvas=document.createElement('canvas');
+        canvas.width=viewport.width; canvas.height=viewport.height; page.append(canvas);
+        await p.render({{canvasContext:canvas.getContext('2d'),viewport}}).promise;
+      }}));
+    }}
+  }} catch (e) {{ grid.innerHTML='<div class="status">Could not load PDFs: '+e+'</div>'; }}
+}}
 sel.addEventListener('change',show); show();
 </script>'''
 
