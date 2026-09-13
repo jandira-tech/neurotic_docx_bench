@@ -306,7 +306,7 @@ def test_render_table_uses_report_itt_fields_not_invented_means():
 
 def test_readme_docx_to_pdf_table_matches_committed_artifact():
     artifact = REPO_ROOT / "results" / "docx_to_pdf_500.json"
-    readme = REPO_ROOT / "README.md"
+    readme = REPO_ROOT / "RESULTS.md"
     report = json.loads(artifact.read_text(encoding="utf-8"))
     assert report["n"] == len(load_fixtures())
     for name, tool in report["tools"].items():

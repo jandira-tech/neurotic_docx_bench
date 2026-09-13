@@ -5,7 +5,7 @@
  *   node scripts/redline_dual_path_report.mjs <runDir> [--update-docs]
  *
  * `--update-docs` rewrites the generated sections of RESULTS.md,
- * docs/RESULTS.md and docs/SPEED.md between their markers (idempotent — rerun
+ * RESULTS_DETAILED.md, docs/RESULTS.md and docs/SPEED.md between their markers (idempotent — rerun
  * after a fresh sweep and only the numbers move). Provenance (jubarte-first
  * pin, corpus vintage, bench commit, Node version) is stamped into each
  * section, matching this repo's A-4 hard-pin rule: a table without a pin
@@ -220,7 +220,7 @@ if (UPDATE_DOCS) {
   ].join("\n");
 
   console.log("\n─── doc updates ───");
-  for (const p of ["RESULTS.md", "docs/RESULTS.md"]) {
+  for (const p of ["RESULTS.md", "RESULTS_DETAILED.md", "docs/RESULTS.md"]) {
     console.log(spliceSection(join(ROOT, p), "DUAL_PATH_QUALITY", qualityBody));
   }
   console.log(spliceSection(join(ROOT, "docs/SPEED.md"), "DUAL_PATH_SPEED", speedBody));

@@ -158,7 +158,7 @@ def test_readme_no_redline_table_matches_committed_artifact():
     assert report["track"] == TRACK.name
     assert report["n"] == len(load_fixtures(track=TRACK))
     expected = render_docx_to_pdf_table(report, track=TRACK).strip()
-    assert expected in (REPO_ROOT / "README.md").read_text(encoding="utf-8")
+    assert expected in (REPO_ROOT / "RESULTS.md").read_text(encoding="utf-8")
 
 
 def test_update_readme_replaces_no_redline_marked_block(tmp_path):
