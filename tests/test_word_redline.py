@@ -901,3 +901,27 @@ def test_batched_redline_never_hands_the_user_s_folders_to_cleanup(
     for paths in seen:
         assert a not in paths, f"folder A was handed to cleanup: {paths}"
         assert b not in paths, f"folder B was handed to cleanup: {paths}"
+
+
+def test_redline_refuses_to_run_with_documents_already_open(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Redlining requires Word to hold only our documents, and the flag cannot waive it.
+
+    The compare identifies its result by exclusion: it walks `document i` and
+    takes the one whose name is not the base's (§14.1's fix). That is sound
+    exactly when every open document is ours. With a human's document open, the
+    walk can select *their* document and save it as the redline — a wrong
+    output, not merely a lost one. `--allow-open-docs` relaxes a precondition
+    this script's correctness depends on, so it is refused here rather than
+    honoured.
+    """
+    session = wp.WordSession()
+    monkeypatch.setattr(wp.WordSession, "available", staticmethod(lambda: True))
+    monkeypatch.setattr(session, "warm", lambda: True)
+    monkeypatch.setattr(session, "open_document_count", lambda: 2)
+
+    reason = wr.redline_preflight(session, allow_open_docs=True)
+    assert reason, "must refuse even with the override"
+    assert "compare" in reason.lower() or "identif" in reason.lower()
+    assert session.started_clean is False
