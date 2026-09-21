@@ -370,6 +370,13 @@ folder — calls a bare `activate` on every conversion, with no bouncer anywhere
   observed; `computeExitCode` returns 1 rather than 0 on a clean sweep whose detector was
   never proven. A clean result from a blind detector is not a pass. Nothing else in the
   corpus has a negative control.
+
+  **With one bypass, and it is a flag away.** The guard is
+  `if (meta.selftest && !meta.selftest.detectorProven) return 1;` (237), so it only fires
+  when a self-test ran at all. Under `--no-selftest` (47) `meta.selftest` is absent, the
+  condition short-circuits, and a clean sweep returns 0 with the detector unproven — exactly
+  the outcome the control exists to prevent. The idea is still the best in the corpus; the
+  gate just is not closed on the path that skips it.
 - **Filename-verified dialogs.** `redline-word-campaign.ts` requires the dialog text to name
   *this* file, killing false positives from stale dialogs, and requires the document count to
   rise before returning CLEAN, killing the false negative the comment records as having
@@ -580,7 +587,7 @@ one holds. Its cited proof — `report_one/scripts/compare-docs.sh` and
 |---|---|---|
 | `word_compare_batch.applescript` | 0.85 | Paragraph count is *taken* before comparing but never *gates* it: the compare and `save as` run regardless, and the count is only evaluated after `[ok]` is already logged (§14.1). Otherwise strong — classifies three failure shapes, logs `[fail] <id> :: <errMsg>` verbatim and `[warn]` for zero-paragraph, returns `POISON <id>` so the driver recycles, 300 s inner timeout. |
 | `word_screen_sources.applescript` | 1.00 | The dedicated detector. Healthy = a positive integer; a thrown error, `0`, and `missing value` are all poison, each recorded verbatim. Produces `word_unreadable.txt` as a reusable exclusion list. |
-| `word-open-check.mjs` | 1.00 | Verdict taxonomy OPENED-CLEAN / REPAIR-PROMPT / ERROR / BLOCKED; dialog text retained verbatim; per-file screenshot as evidence; an unmatched modal becomes ERROR, never a silent clean. |
+| `word-open-check.mjs` | 1.00 | Verdict taxonomy OPENED-CLEAN / REPAIR-PROMPT / ERROR / BLOCKED; dialog text retained verbatim; per-file screenshot as evidence. An unmatched modal is recorded in `row.notes` and drained, then the poll restarts (`drainDialogs(); continue;`, 622–631) rather than falling through to the opened branch — so it is never *silent*. It can still end OPENED-CLEAN if the document opens on a later poll; whether a drained unknown modal ought to poison the verdict is a judgement the code makes deliberately, with the comment to say so. |
 | `word_compare_driver.sh` | 0.95 | `--screen` pre-flight; stall recovery synthesises a `[fail]` so a wedging file cannot be retried forever; restarts Word on poison. |
 | `word-convert.sh` | 0.90 | Detects "Word found unreadable content" / "recover the contents", presses **No** — declining recovery is correct for an oracle, since recovering produces a *different* document — writes a dedicated `.error.txt` with input, output, timestamp and osascript output, exits 3, resets Word. |
 | `redline-word-campaign.ts` | 0.90 | Filename-verified UNREADABLE/ERROR; conservative default to UNREADABLE when neither open nor dialog is observed; drains before and after; JSON report. |
@@ -664,7 +671,7 @@ supervision, shardability, and doing non-Word work off the critical path.
 | `word_screen_sources.applescript` | 60 s per open | Right order of magnitude. Screening is open-and-count only, so 60 s is generous for a healthy document and bounded for a bad one — and it sits behind a pre-warmed, driver-recycled Word, so cold start never eats the budget. |
 | `word_compare_driver.sh` | `STALL_SECS=420`, polled every 15 s | Correctly larger than the batch's 300 s inner timeout — it must be, or it would kill a legitimately slow pair. But the margin is only 120 s, which is tight for a machine under load. Widen to ~600 s, or derive it as `inner + 50%`. |
 | `word_compare_batch.applescript` | 300 s per pair | Justifiably large: `compare` on a big document is genuinely slow. See the margin note above. |
-| `word-convert.sh` | outer `timeout 90`, inner `with timeout of 240`, poll loop 120 × 2 s = 240 s | **Incoherent — the only clearly wrong set.** 90 < 240, so the inner budget and the loop's tail are unreachable and the effective budget is 90 s, which is too short for a large DOCX→PDF. The loop does check `kill -0` and break, so nothing hangs; it is simply a 90 s cap wearing a 240 s costume. Fix: set the outer to inner + slack, or drop a layer. |
+| `word-convert.sh` | outer `timeout 90`, inner `with timeout of 240`, poll loop 120 × 2 s = 240 s | **Incoherent — the only clearly wrong set.** 90 < 240, so the inner budget and the loop's tail are unreachable and the effective budget is 90 s, which is too short for a large DOCX→PDF. **And 90 s is not even a reliable cap:** `timeout_cmd` is plain `timeout` (55) with no `-k`/`--kill-after` anywhere in the file, and `timeout(1)` sends SIGTERM, which is precisely the signal a blocked `osascript` ignores (§14.2). The `kill -0` poll can therefore stay true for its whole run and the following `wait` can block indefinitely. Fix: set the outer to inner + slack *and* give it `-k`, or drop a layer; raising or removing a timeout layer alone does not buy a hard stop. |
 | `word-convert.sh` UI probes | `timeout 8` / `10` / `12` | Fine. These are sub-second queries with a generous kill switch. |
 | `render/word.py` `convert_one` | 180 s flat | Reasonable for docx→PDF, but it is a flat constant in the same module where the validate path got the calibrated treatment. Inconsistent; the calibration belongs here too. |
 | `word_validate_batch.py` | `--timeout 25` default | **Too little, and it silently disables the calibration.** It overrides the module's 60 s *downward* and passes no `reference`, so `_budget` degenerates to a flat 25 s. Large documents come back UNJUDGEABLE — and the CLI then counts them as **invalid**, which is the opposite of what the module promises. `ValidationResult.ok` is `outcome == "valid"` (`render/word.py:126-127`), so UNJUDGEABLE is falsy; `word_validate_batch.py` writes it out as `"word_valid": res.ok` (60), reports it in `len(docs) - n_ok` "invalid" (76), and fails the whole batch on it (`return 0 if n_ok == len(docs) else 1`, 78). `render/word.py:118-119` states the intended contract in its own docstring — *"the budget ran out with NO modal observed — Word was merely slow on this machine; recorded, never treated as invalid"* — and the CLI contradicts it. So a too-short budget does not quietly shrink the denominator; it marks slow-but-valid documents invalid and turns a clean corpus red. |
@@ -826,7 +833,7 @@ rather than wedge (§12 residue 3).
 |---|---|---|---|---|
 | `word-probe-sweep.sh` | `quit saving no` → 2 s → `pkill -9 -f` → 1 s | **Yes** — `find "$AUTOREC" -mindepth 1 -delete`. The only one in all three repos | Yes, in the loop | No |
 | `word_compare_driver.sh` | `quit saving no` → 3 s → `pkill -x` (SIGTERM) → 2 s → relaunch + poll | No | Yes, after each restart | No |
-| `word-convert.sh` | decline dialog → close → `quit saving no` → 1 s → `pkill -x` | No | No | No |
+| `word-convert.sh` | decline dialog → close → `quit saving no` → 1 s → `pkill -x`. **Assumes Word is the batch's alone:** it closes whichever document is active and quits everything `saving no` (130–134), so a human's unsaved work is discarded if any is open — and §8 lists a live human Word session as an edge case this corpus meets. Correct escalation, wrong precondition: it needs a no-open-documents check, or to close only the staged document | No | No | No |
 | `word_validate_batch.py` | `pkill -x` only — **no graceful quit first** | No | No | No |
 | everything else | no kill at all | — | — | — |
 
@@ -1054,12 +1061,15 @@ which matches the process *name* and cannot do this.
 
 ### 14.6 What did survive verification
 
-Worth recording, because these were the load-bearing claims:
+Worth recording, because the rest of the audit leans on them:
 
-- **`word-open-check.mjs`'s detector gate is real.** `detectorProven` is computed from the
-  control file's actual verdict (`ctl.verdict === "REPAIR-PROMPT"`, line 871), consumed by
-  `computeExitCode` (line 237), reported in the summary (line 1029), and covered by a unit
-  test named *"returns 1 for a clean sweep when the detector was NOT proven"*. It is the only
+- **`word-open-check.mjs`'s detector gate is real — on the path that runs it.**
+  `detectorProven` is computed from the control file's actual verdict
+  (`ctl.verdict === "REPAIR-PROMPT"`, line 871), consumed by `computeExitCode` (line 237),
+  reported in the summary (line 1029), and covered by a unit test named *"returns 1 for a
+  clean sweep when the detector was NOT proven"*. `--no-selftest` skips the control, leaving
+  `meta.selftest` unset and the guard's first conjunct false, so that invocation passes a
+  clean sweep without proving anything (§5.11). It is the only
   claim in the corpus that is asserted in a comment, implemented in code, **and** pinned by a
   test. C1 stays 1.00.
 - **`redline-word-campaign.ts` genuinely never activates Word.** The only occurrence of the
