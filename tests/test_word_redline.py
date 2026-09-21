@@ -8,7 +8,9 @@ both patched, which also pins the argv order the AppleScript is handed.
 from __future__ import annotations
 
 import importlib.util
+import io
 import sys
+import zipfile
 from pathlib import Path
 
 import pytest
@@ -321,6 +323,75 @@ def test_redline_folders_docx_only_never_calls_the_pdf_exporter(
     assert exported == []
     assert (out / "deal.docx").exists()
     assert not (out / "deal.pdf").exists()
+
+
+def _tracked_changes_docx() -> bytes:
+    """A minimal Word-shaped package whose body carries one insertion and one deletion.
+
+    Synthesised rather than committed: a binary fixture has to be trusted on
+    sight, and the only thing this test needs from it is that both markup
+    families survive the trip to the delivered file.
+    """
+    document = (
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">'
+        "<w:body><w:p>"
+        '<w:ins w:id="1" w:author="Microsoft Word" w:date="2026-09-21T00:00:00Z">'
+        "<w:r><w:t>added</w:t></w:r></w:ins>"
+        '<w:del w:id="2" w:author="Microsoft Word" w:date="2026-09-21T00:00:00Z">'
+        "<w:r><w:delText>removed</w:delText></w:r></w:del>"
+        "</w:p></w:body></w:document>"
+    )
+    content_types = (
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
+        '<Default Extension="xml" ContentType="application/xml"/>'
+        '<Override PartName="/word/document.xml" ContentType="application/vnd.'
+        'openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>'
+    )
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as z:
+        z.writestr("[Content_Types].xml", content_types)
+        z.writestr("word/document.xml", document)
+    return buf.getvalue()
+
+
+def test_delivered_redline_docx_carries_tracked_changes(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """What is handed over must be the comparison, not a copy of an input.
+
+    `stub_word` already proves delivery is byte-faithful, but it proves it with
+    a sentinel that is not a document, so nothing pins the output *contract*:
+    a redline is a .docx carrying tracked changes. This drives the same path
+    with a real package and reads the markup back out of the delivered file, so
+    a regression that delivered the base instead of the comparison fails here.
+    Deterministic, and independent of Microsoft Word.
+    """
+    monkeypatch.setattr(wp, "CONTAINER_TMP", tmp_path / "container")
+
+    def fake_compare(base, rev, out, *, timeout=300.0):
+        out.write_bytes(_tracked_changes_docx())
+        return True, 2, ""
+
+    monkeypatch.setattr(wr, "compare_pair", fake_compare)
+    session = wp.WordSession()
+    monkeypatch.setattr(session, "warm", lambda: True)
+    monkeypatch.setattr(session, "recycle", lambda *f: True)
+    monkeypatch.setattr(session, "quit_if_ours", lambda: None)
+
+    a = _folder(tmp_path / "a", "deal.docx")
+    b = _folder(tmp_path / "b", "deal.docx")
+    out = tmp_path / "out"
+
+    results = wr.redline_folders(a, b, out, emit=wr.Emit.DOCX, session=session)
+
+    assert len(results) == 1 and results[0].ok
+    with zipfile.ZipFile(out / "deal.docx") as z:
+        body = z.read("word/document.xml").decode("utf-8")
+    assert "<w:ins " in body
+    assert "<w:del " in body
+    assert "<w:delText>" in body
 
 
 def test_redline_folders_stages_same_named_sides_apart(tmp_path: Path, stub_word) -> None:

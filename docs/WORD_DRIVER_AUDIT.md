@@ -884,7 +884,7 @@ but is empty; a large document that is slow but fine; an interrupted run.
 | `word_validate_batch.py` | 0.70 | `--limit`; empty-dir guard; `mkdir(parents=True)`; flush per row. Globs `~$` files. |
 | `redline-word-campaign.ts` | 0.50 | `pairs.json` existence check; bouncer in a `finally`. "Closes only `campaign-*` documents" was credited here until §5.13 established the loop uses `every document` and so may close nothing at all. `process.cwd()`-relative staging; first-N "sample"; an empty worklist exits 0; no platform preflight; unscoped `drainDialogs()`; sanitised-label collisions. |
 | `run_batch_retry.sh` | 0.60 | Excludes `~$` in three places; numeric sort with a documented reason; `PAIRS < 1` guard; `mkdir -p`; resume. Requires the `file_N.docx` convention; mutates `SOURCE_DIR` in place when stamping. |
-| `word-open-probe.sh` ×2 | 0.55 | File-existence check; escapes backslash and quote; `count of documents > 0` guard. Newline in a filename still breaks out; `$delay` interpolated unvalidated. |
+| `word-open-probe.sh` ×2 | 0.45 | File-existence check; escapes backslash and quote; `count of documents > 0` guard. Cut from 0.55 by §5.16, in the same rescore as C1: “Word already holding a human's documents” is on this section's own edge list, and the probe closes whichever document is active `saving no`. Newline in a filename still breaks out; `$delay` interpolated unvalidated. |
 | `batch_word_to_pdf.scpt` | 0.25 | `ls \| grep '\.docx$'` — no `~$` filter, breaks on a newline in a filename. No output-dir creation, no zero-file guard. |
 | family A (6 files) | 0.05 | Two of six carry 102 lock files *as work items*. Absolute single-machine paths, no directory creation, no stale-output handling, no Word-state check. |
 
@@ -1367,8 +1367,10 @@ Worth recording, because the rest of the audit leans on them:
   clean sweep when the detector was NOT proven"*. It is the only claim in the corpus that is
   asserted in a comment, implemented in code, **and** pinned by a test.
 
-  **C1 stays 1.00, and the `--no-selftest` opt-out (§5.11) does not change that** — the
-  question was raised and is worth answering rather than leaving to the reader. C1 is oracle
+  **The `--no-selftest` opt-out (§5.11) costs C1 nothing** — the question was raised and is
+  worth answering rather than leaving to the reader. (C1 is 0.85 rather than 1.00, but for
+  §5.15's unrelated reason: `activeDocText()` reads `active document`, not the file just
+  probed. The opt-out is not what moved it.) C1 is oracle
   integrity: whether a verdict can be trusted to mean what it says. On the default path the
   detector is proven or the run fails. On the opt-out path the exit-code contract states in
   its own docstring that skipping the control is a valid route to 0, so the verdict still

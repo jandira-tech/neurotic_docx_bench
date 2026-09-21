@@ -13,7 +13,10 @@ are checked mechanically now:
 3. a per-criterion detail table (§6 C4, §7 C5, §8 C6, §9 C7) carrying a score
    that disagrees with the same script's cell in the scorecard. That one bit
    twice: §8's C6 row for `word-convert.sh` sat at 0.85 for two revisions while
-   the scorecard said 0.80.
+   the scorecard said 0.80. Grouped rows count: a detail row may name several
+   scripts ("`word-open-probe.sh` ×2"), and every name in it is checked;
+4. two scorecard rows for the same script name (it exists in two repositories)
+   whose scores have drifted apart, which a grouped detail row cannot restate.
 
 Usage: check_audit_scores.py <audit.md> [<audit.md> ...]
 """
@@ -28,7 +31,12 @@ CRITERIA = ("C1", "C2", "C3", "C4", "C5", "C6", "C7")
 SCORECARD = re.compile(
     r"^\| `([^`]+)` \| (ndb|jf|jr) \| " + r"([\d.]+) \| " * 7 + r"\*\*([\d.]+)\*\* \| (\S+) \|$"
 )
-DETAIL = re.compile(r"^\| `([^`]+)` \| ([01]\.\d{2}) \| ")
+# The first cell is free text that mentions one or more scripts, because the
+# detail tables group scripts that share a score: "`word-open-probe.sh` ×2",
+# "`render/word.py`, `word_validate_batch.py`", "family A (6 files)". Anchoring
+# on a lone backticked name skipped every grouped row -- 6 of 54 in §6-§9.
+DETAIL = re.compile(r"^\| ([^|]*`[^|]*) \| ([01]\.\d{2}) \| ")
+NAME = re.compile(r"`([^`]+)`")
 # Which criterion each detail section scores, keyed by its heading number.
 SECTION_CRITERION = {"6": "C4", "7": "C5", "8": "C6", "9": "C7"}
 
@@ -37,18 +45,22 @@ def check(path: Path) -> list[str]:
     problems: list[str] = []
     lines = path.read_text(encoding="utf-8").splitlines()
 
-    scores: dict[str, dict[str, float]] = {}
+    # Keyed on (name, repo): two scripts share the name `word-open-probe.sh`,
+    # and keying on the name alone let the second row silently replace the
+    # first, so a divergence between the two copies could not be detected.
+    scores: dict[tuple[str, str], dict[str, float]] = {}
+    by_name: dict[str, list[tuple[str, dict[str, float]]]] = {}
     totals: list[tuple[str, float]] = []
     for line in lines:
         if m := SCORECARD.match(line):
-            name = m.group(1)
+            name, repo = m.group(1), m.group(2)
             comps = [float(m.group(i)) for i in range(3, 10)]
             total = float(m.group(10))
             if abs(round(sum(comps), 2) - total) > 1e-9:
                 problems.append(f"{name}: components sum {round(sum(comps), 2)}, stated {total}")
-            # Two scripts share the name `word-open-probe.sh`; key on name+repo.
-            scores.setdefault(name, {})
-            scores[name] = dict(zip(CRITERIA, comps, strict=True))
+            criteria = dict(zip(CRITERIA, comps, strict=True))
+            scores[name, repo] = criteria
+            by_name.setdefault(name, []).append((repo, criteria))
             totals.append((name, total))
 
     if not totals:
@@ -71,13 +83,26 @@ def check(path: Path) -> list[str]:
         if not criterion:
             continue
         if m := DETAIL.match(line):
-            name, shown = m.group(1), float(m.group(2))
-            expected = scores.get(name, {}).get(criterion)
-            if expected is not None and abs(expected - shown) > 1e-9:
-                problems.append(
-                    f"§{section} {criterion} row for {name}: shows {shown}, "
-                    f"scorecard says {expected}"
-                )
+            cell, shown = m.group(1), float(m.group(2))
+            for name in NAME.findall(cell):
+                entries = by_name.get(name)
+                if not entries:
+                    continue
+                seen = {repo: criteria[criterion] for repo, criteria in entries}
+                if len(set(seen.values())) > 1:
+                    # A grouped row states one score for copies that disagree,
+                    # so there is no single value it could be restating.
+                    problems.append(
+                        f"§{section} {criterion} row for {name}: scorecard copies "
+                        f"disagree across repos ({seen})"
+                    )
+                    continue
+                expected = next(iter(seen.values()))
+                if abs(expected - shown) > 1e-9:
+                    problems.append(
+                        f"§{section} {criterion} row for {name}: shows {shown}, "
+                        f"scorecard says {expected}"
+                    )
     return [f"{path.name}: {p}" for p in problems]
 
 
