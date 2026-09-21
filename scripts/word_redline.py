@@ -429,7 +429,7 @@ def redline_folders(
     timeout: float = 300.0,
     pdf_timeout: float = 180.0,
     session: WordSession | None = None,
-    one_osascript: bool = False,
+    one_osascript: bool = True,
     max_passes: int = 3,
     poison_streak: int = 3,
 ) -> list[PairResult]:
@@ -440,7 +440,7 @@ def redline_folders(
     would drive the same instance. Parallelism needs separate macOS user
     sessions or VMs (§9), which is why there is no `--jobs`.
 
-    `one_osascript` runs the whole job as TWO monolithic AppleScripts — every
+    `one_osascript` (the default) runs the whole job as TWO monolithic AppleScripts — every
     comparison, then every PDF — instead of one `osascript` per step per pair.
     """
     a_docs, b_docs = iter_docx(folder_a), iter_docx(folder_b)
@@ -895,12 +895,14 @@ def main(
     one_osascript: Annotated[
         bool,
         typer.Option(
-            "--one-redline-osascript",
-            help="Run the job as TWO monolithic AppleScripts — every comparison, then "
-            "every PDF — instead of one osascript per step per pair. Resumes "
-            "automatically if either run wedges.",
+            "--one-redline-osascript/--no-one-redline-osascript",
+            help="Run the job as TWO monolithic AppleScripts (default) — every "
+            "comparison, then every PDF — instead of one osascript per step per "
+            "pair. Resumes automatically if either run wedges. "
+            "--no-one-redline-osascript pays two processes per pair to gain a "
+            "boundary between them.",
         ),
-    ] = False,
+    ] = True,
     check_preset: Annotated[
         bool,
         typer.Option(

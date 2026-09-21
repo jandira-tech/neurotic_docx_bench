@@ -1072,7 +1072,7 @@ def convert_folder(
     timeout: float = 180.0,
     session: WordSession | None = None,
     stage: Stage | None = None,
-    one_osascript: bool = False,
+    one_osascript: bool = True,
     max_passes: int = 3,
     poison_streak: int = 3,
 ) -> list[Result]:
@@ -1083,11 +1083,14 @@ def convert_folder(
     would drive the same instance. Parallelism here needs separate macOS user
     sessions or VMs (§9). The signature therefore takes no `jobs`.
 
-    `one_osascript` runs the whole folder inside a single monolithic AppleScript
-    instead of one `osascript` per document. What that saves is real but modest —
-    a process spawn and an Apple-event connection per file — and what it costs is
-    the ability to act between documents. It is offered because the folder-sized
-    batch is the shape the old corpus used and the one this replaces.
+    `one_osascript` (the default) runs the whole folder inside a single
+    monolithic AppleScript instead of one `osascript` per document. The per-file
+    process spawn and Apple-event connection it saves are modest; what it gives
+    up is the ability to act between documents. That ability is worth less than
+    it looks, because the batch writes an `[ok]` / `[fail]` line per item as it
+    goes and resumes from that log when a run wedges — so the folder-sized batch
+    is the normal shape, and `one_osascript=False` is the opt-out for when you
+    genuinely need a process boundary around every document.
     """
     docs = iter_docx(src)
     if not docs:
@@ -1359,10 +1362,10 @@ def preflight(
     session.started_clean = count == 0
     if count > 0 and one_osascript:
         return (
-            f"Word has {count} document(s) open and --one-osascript suppresses "
-            "Word's alerts for the whole run and cannot act between documents. "
-            "--allow-open-docs does not waive this. Close them, or drop "
-            "--one-osascript to export one document per osascript."
+            f"Word has {count} document(s) open, and the default monolithic run "
+            "suppresses Word's alerts for the whole run and cannot act between "
+            "documents. --allow-open-docs does not waive this. Close them, or "
+            "pass --no-one-osascript to export one document per osascript."
         )
     if count > 0 and not allow_open_docs:
         return (
@@ -1395,11 +1398,13 @@ def main(
     one_osascript: Annotated[
         bool,
         typer.Option(
-            "--one-osascript",
-            help="Run the whole folder in ONE monolithic AppleScript instead of one "
-            "osascript per document. Resumes automatically if the run wedges.",
+            "--one-osascript/--no-one-osascript",
+            help="Run the whole folder in ONE monolithic AppleScript (default) "
+            "instead of one osascript per document. Resumes automatically if the "
+            "run wedges. --no-one-osascript pays a process per document to gain a "
+            "boundary between them.",
         ),
-    ] = False,
+    ] = True,
     check_preset: Annotated[
         bool,
         typer.Option(
