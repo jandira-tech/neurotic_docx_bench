@@ -254,8 +254,11 @@ Be clear about what that buys, though: it characterises the selector and file-vs
 the machine and Word build that runs it**. It cannot validate the `-1708` report, because the
 script that produced it does not exist to re-run and the report is pinned to Word 16.112. A
 clean four-run result would mean the README's rule does not hold *here*; it would not explain
-what happened *there*. If file-vs-inline is not the variable,
-`batch_word_to_pdf.scpt` is repairable and family A never needed to exist.
+what happened *there*. So if file-vs-inline turns out not to be the variable, what follows
+is bounded the same way: `batch_word_to_pdf.scpt` is repairable **on the tested machine and
+build**. That is not a finding about family A. The script whose failure prompted the rule
+was never committed and the report is pinned to Word 16.112, so four runs here cannot
+establish what failed there, and this experiment is not grounds for removing family A.
 
 ### 5.3 Two scripts say to stage inside Word's container; two say the opposite, both with reasons
 
@@ -886,9 +889,14 @@ unaffected by the uncertainty above: whether `word-open-check.mjs`'s panel ends 
 is undetermined, but that its handler does not itself activate is plain from line 348.
 
 Unlike the per-process TCC rule (§5.1) and the file-versus-inline `-1708` rule (§5.2), this
-one holds. Its cited proof — `report_one/scripts/compare-docs.sh` and
-`report_one/scripts/redline-word-pdf.py` — still does not exist in any of these checkouts
-(§5.13), so it is confirmed by `word-convert.sh`'s behaviour rather than by the attribution.
+one survives. It is not proven, and the distinction matters: reading the handlers shows
+whether each calls `activate` before it presses, and that is all local code can show. That
+the panel rendered, that the grant persisted, and that frontmost state was the variable
+are target-machine reports. So the honest statement is that this explanation is
+**consistent with the reported behaviour and with the inspected control flow**, and that
+the table's result column inherits that condition. Its cited proof —
+`report_one/scripts/compare-docs.sh` and `report_one/scripts/redline-word-pdf.py` — still
+does not exist in any of these checkouts (§5.13), so nothing here rests on the attribution.
 
 ### 6.2 Scores and why
 
@@ -1071,8 +1079,11 @@ What a killed Word *actually* leaves behind — three things, not two:
 
 1. **AutoRecovery files → the Document Recovery pane on next launch.** Microsoft's own
    documentation is that Document Recovery opens automatically when AutoRecover files exist.
-   That pane appears *before* any script command runs, so `set displayAlerts to false` cannot
-   reach it — the next `open` simply never gets answered.
+   That pane appears *before* any script command runs, so `set displayAlerts to false`
+   cannot reach it. **What that does to the next Apple event is unverified for the target
+   build:** Microsoft documents when the pane opens, not that it blocks `open` from being
+   answered. The restart-and-clean recommendation below rests on it, so it is worth
+   measuring rather than assuming.
 2. **`~$*.docx` owner/lock files** in every folder Word had a document open from. A killed
    Word never removes them. The next glob picks them up as work items and each costs a full
    AppleEvent timeout (§5.5: 102 of them are committed into family A).
@@ -1099,17 +1110,25 @@ What a killed Word *actually* leaves behind — three things, not two:
 The obvious fix is to do what the person does: click the decline button. There is a
 structural reason no script here can, and it is not the button lists.
 
-**Every dialog handler in all three repos is blind to MERP.** MERP runs as its own process,
-so a handler has to address it by name. All **13** `tell process` blocks across the 21
-scripts target `"Microsoft Word"`; not one targets the reporter, and no script mentions
-Microsoft Error Reporting, "Don't Send" or "Send Report" anywhere:
+**No dialog handler in all three repos addresses MERP by name.** That part is measured.
+All **13** `tell process` blocks across the 21 scripts target `"Microsoft Word"`; not one
+targets the reporter, and no script mentions Microsoft Error Reporting, "Don't Send" or
+"Send Report" anywhere:
 
 ```
 $ grep -rhoE 'tell process "[^"]+"' <all three repos>
   13 tell process "Microsoft Word"
 ```
 
-So `word_dialog_watchdog.applescript` could not dismiss this dialog even if its button list
+**Whether that makes them blind to it is one step further, and that step is not
+established here.** It follows only if the dialog is owned by the `Microsoft Error
+Reporting` accessibility process rather than by Word: a separate executable existing is
+not by itself proof of which process owns a given window. Nothing in this corpus, and
+nothing found in the public documentation, settles that. What would: the accessibility
+dump below, on the target machine. Read the rest of this section as conditional on it.
+
+If the reporter does own the window, then `word_dialog_watchdog.applescript` could not
+dismiss this dialog even if its button list
 were right, and `word-convert.sh`'s and `word-open-check.mjs`'s UI scrapes cannot see it
 either. Fixing button names would change nothing; the process target is the blocker.
 
@@ -1118,8 +1137,11 @@ non-recommendation.** Not a ranking of interchangeable options: only 1 and 2 are
 batch can do for itself, 3 and 4 are settings whose effect on the *dialog* is unestablished,
 and 5 is listed to be refused. None of them has been run here.
 
-1. **Do not create the condition.** MERP fires on unclean exit, so a graceful
-   `quit saving no` that actually succeeds produces no dialog at all. This is the only option
+1. **Do not create the condition.** MERP is reported to fire on unclean exit, so a
+   graceful `quit saving no` that actually succeeds should produce no dialog at all.
+   **Target-build hypothesis, not a measurement:** the direct evidence is a single
+   observation after one force-quit path, which shows the dialog appearing, not the
+   clean quit preventing it. Worth testing first because it is the cheapest to test. This is the only option
    that is not suppression, and three of the four killing scripts already try the graceful
    quit first (§12's table): `word-probe-sweep.sh` (24–26), `word_compare_driver.sh` and
    `word-convert.sh` (130–134) all issue `quit saving no` before any signal.
@@ -1148,8 +1170,11 @@ and 5 is listed to be refused. None of them has been run here.
    Microsoft-documented. One-time and manual; no confirmed `defaults` key backs it, and I am
    not inventing one.
 5. **Listed only to be refused — do not delete `Microsoft Error Reporting.app`** from the Word bundle's `SharedSupport/`.
-   Circulates as a fix; **do not**. It modifies an application bundle, breaks code signing,
-   and an Office update restores it.
+   Circulates as a fix; **do not**. It modifies an application bundle, which is unsupported
+   and is reason enough on its own. The further claims usually attached to it — that it
+   breaks code signing, and that an Office update restores the file — are repeated here
+   from circulation and were **not** established by the documentation search; do not rely
+   on either as a reason.
 
 **What would settle it**, in order of cost: force-quit Word once by hand, then on the next
 launch dump `System Events` for every process and window to get the reporter's real process
@@ -1289,10 +1314,16 @@ The merges worth making are small and specific:
 5. Give `render/word.py`'s **PDF path** the kill-and-warm that `word_validate_batch.py`
    already wraps around its validate path, and the calibrated budget that `validate_one`
    already has.
-6. Add **AutoRecovery cleanup** to `word_compare_driver.sh`'s `restart_word`, in the
-   mtime-scoped form of §12 step 4, and the graceful-quit-first escalation to
-   `word-probe-sweep.sh`'s `kill_word` — whose wipe should be narrowed to that same
-   scope. Each already has the half the other is missing.
+6. Add **AutoRecovery cleanup** to `word_compare_driver.sh`'s `restart_word`, in the form
+   §12 step 4 actually specifies, and the graceful-quit-first escalation to
+   `word-probe-sweep.sh`'s `kill_word` — whose wipe should be narrowed the same way.
+   Each already has the half the other is missing. **Read as "mtime-scoped" this is
+   unsafe, and §12 says so:** the timestamp is a filter, not the control. The control is
+   the preflight condition that Word held no documents when the session started, because
+   AutoRecover rewrites a person's open document every ten minutes and an mtime past the
+   run's start does not make that copy ours. Where that condition is false or an operator
+   has overridden it, the cleanup must leave AutoRecovery untouched and pay the Document
+   Recovery pane instead.
 7. Fix `word-convert.sh`'s **timeout layering** (§10) — including `-k` on the recovery
    path's own `timeout 10` wrappers — give it a bouncer or drop its `activate` (§5.9),
    give the staged output a name that cannot collide with the staged input (§5.14), bind
@@ -1653,8 +1684,8 @@ matches the `.docx` that `--emit both` would have written.
 
 - SIGKILL produces no **Apple** crash report, and watchdog terminations do: [Apple, EXC_CRASH (SIGKILL)](https://developer.apple.com/documentation/xcode/sigkill) · [Addressing watchdog terminations, Apple](https://developer.apple.com/documentation/xcode/addressing-watchdog-terminations) · [How macOS reports crashes, The Eclectic Light Company](https://eclecticlight.co/2021/12/10/how-macos-reports-crashes/)
 - Office for Mac diagnostic-data preference `DiagnosticDataTypePreference` (`ZeroDiagnosticData`, Office 16.28+): [Use preferences to manage privacy controls for Office for Mac, Microsoft Learn](https://learn.microsoft.com/en-us/microsoft-365-apps/privacy/mac-privacy-preferences). Whether it suppresses the MERP crash-report dialog is **not** established by that page — see §12.1.
-- UI scripting addresses one process at a time via `tell process "<name>"`, which is why a handler aimed at Word cannot see a dialog owned by another process: [Automating the User Interface, Apple](https://developer.apple.com/library/archive/documentation/LanguagesUtilities/Conceptual/MacAutomationScriptingGuide/AutomatetheUserInterface.html) · [AppleScript Essentials: User Interface Scripting, MacTech](http://preserve.mactech.com/articles/mactech/Vol.21/21.06/UserInterfaceScripting/index.html)
-- Microsoft Error Reporting is a separate Office application with its own Preferences, independent of ReportCrash: [Get rid of Microsoft Error Reporting 2.2 on Mac, Microsoft Q&A](https://learn.microsoft.com/en-us/answers/questions/5650864/get-rid-of-microsoft-error-reporting-2-2-on-mac) · [Microsoft Office error reporting popups on Mac, The Mac Observer](https://www.macobserver.com/tips/microsoft-office-error-reporting-popups-on-mac/). That Word raises it after a `pkill -9` **with no document open** is Arthur's direct observation on the target machine, not a documented claim.
+- UI scripting addresses one process at a time via `tell process "<name>"`, which is why a handler aimed at Word cannot see a dialog owned by another process: [Automating the User Interface, Apple](https://developer.apple.com/library/archive/documentation/LanguagesUtilities/Conceptual/MacAutomationScriptingGuide/AutomatetheUserInterface.html) · [AppleScript Essentials: User Interface Scripting, MacTech](http://preserve.mactech.com/articles/mactech/Vol.21/21.06/UserInterfaceScripting/index.html). Apple's page carries the claim on its own; the MacTech link is corroboration and returned **HTTP 403** when checked from this environment, which is as likely to be a crawler restriction as a dead page — unconfirmed either way, because archive.org was also unreachable from here.
+- Microsoft Error Reporting is a separate Office application with its own Preferences, independent of ReportCrash: [Get rid of Microsoft Error Reporting 2.2 on Mac, Microsoft Q&A](https://learn.microsoft.com/en-us/answers/questions/5650864/get-rid-of-microsoft-error-reporting-2-2-on-mac) · [Microsoft Office error reporting popups on Mac, The Mac Observer](https://www.macobserver.com/tips/microsoft-office-error-reporting-popups-on-mac/) (this second link did not resolve at all from this environment; the Microsoft Q&A carries the claim). **Note what this does and does not support:** that MERP is a separate application is documented. That the crash dialog a person sees is *owned by* that process, rather than by Word, is the step §12.1 marks as unestablished. That Word raises it after a `pkill -9` **with no document open** is Arthur's direct observation on the target machine, not a documented claim.
 - Document Recovery opens when AutoRecover files exist: [Recover files in Office for Mac, Microsoft Support](https://support.microsoft.com/en-us/office/recover-files-in-office-for-mac-6c6425b1-6559-4bbf-8f80-4f038402ff02)
 - AutoRecover's off switch in the object model, quoted in §12: *"Set the **SaveInterval** property to 0 (zero) to turn off saving AutoRecover information."* — [Options.SaveInterval property (Word), Microsoft Learn](https://learn.microsoft.com/en-us/office/vba/api/word.options.saveinterval). That page names **no** Office or Word version and does not distinguish Windows from Mac (checked against its source, `MicrosoftDocs/VBA-Docs/api/Word.Options.SaveInterval.md`, whose front-matter carries only `ms.date: 06/08/2017`), and VBA availability does not imply an AppleScript equivalent — §12 says what to check locally instead.
 - AutoRecover interval and storage location, the GUI control only: [Change save frequency and where Word AutoRecovery files are stored, Microsoft Support](https://support.microsoft.com/en-us/office/change-save-frequency-and-where-word-autorecovery-files-are-stored-ddd81816-39ff-48f4-989e-8bf1db78b2d9)
