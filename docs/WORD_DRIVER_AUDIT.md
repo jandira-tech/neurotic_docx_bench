@@ -1158,10 +1158,17 @@ conditions, not one:
   open, with no error at all — one poison file cost 203 others. The paragraph-count check on
   every open is what catches that, and a run of failures is what it looks like from outside.
 
-In one-osascript mode the same three steps are the batch script's per-item
-`try … on error … close every document saving no … end try`; the repair prompt is answered
-concurrently by the watchdog, which runs in its own process and can act while the batch
-script is blocked on `open`.
+In one-osascript mode the same three steps are the batch script's `try … on error … close
+every document saving no … end try`, which sits **inside** the `repeat` over manifest rows —
+so it is per item by construction, even though the whole folder is one script: an error on
+one row is caught, logged and stepped over without leaving the loop.
+
+The repair prompt is answered by the watchdogs, and they are genuinely concurrent because
+they are **not** part of that script. `Watchdogs` runs Python threads, and each poll shells
+out to its own `osascript` process. So while the batch script's single `osascript` sits
+blocked on `open`, a second and third `osascript` are free to inspect Word's windows and
+press a button. One monolithic script for the *work* does not mean one process on the
+machine.
 
 ### One osascript for the whole job
 
@@ -1173,7 +1180,8 @@ input list is the first script's output list, and one wedge would otherwise lose
 of the work. The second script is `word_pdf`'s own batch script unchanged: a redline `.docx`
 is a `.docx`.
 
-What this actually buys is a process spawn and an Apple-event connection per item. It is
+What this actually **saves** is a process spawn and an Apple-event connection *per item* —
+one of each for the whole folder instead of one of each per document. It is
 **not** the per-osascript permission prompt that `CLAUDE.md` rule 1 claims, which §5.1 found
 unsupported — TCC automation grants are keyed on the responsible client app and persist.
 The mode is offered because the folder-sized batch is the shape the old corpus used.
