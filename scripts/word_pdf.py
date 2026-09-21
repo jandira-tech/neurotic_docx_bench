@@ -493,6 +493,17 @@ class WordSession:
     started: float = field(default_factory=time.time)
     """Wall clock, because it is compared against file mtimes. Everything
     older than this belongs to someone else and is never deleted."""
+    started_clean: bool = True
+    """True only once `preflight` has seen Word holding **zero** documents.
+
+    This is what makes the mtime cutoff in `clean_after_kill` mean anything. With
+    no document open when we start, every AutoRecovery entry written afterwards
+    is ours. Under `--allow-open-docs` that premise is gone and the cutoff stops
+    protecting anyone: Word's AutoRecover interval defaults to 10 minutes, so a
+    human's open document has its recovery copy rewritten *during* a longer run,
+    with an mtime past ours, and "newer than the run" would sweep it up. So the
+    precondition is the control, not the timestamp.
+    """
 
     @staticmethod
     def available() -> bool:
@@ -540,10 +551,22 @@ class WordSession:
         when it would be convenient to drop it. The same cutoff applies to `~$`
         lock files, on top of the folders already being ours.
 
-        A file Word wrote *before* we started is by definition not ours, so the
-        conservative direction is also the correct one.
+        A file Word wrote *before* we started is by definition not ours. That
+        alone is not enough, which is why `started_clean` gates this: see its
+        docstring for the autosave-during-the-run case the timestamp cannot
+        catch. When we did not start clean, AutoRecovery is left entirely alone
+        and the Document Recovery pane is the price. Lock files in the folders
+        we staged are still ours.
         """
-        for child in _entries_since(AUTORECOVERY, self.started):
+        if self.started_clean:
+            entries = _entries_since(AUTORECOVERY, self.started)
+        else:
+            entries = []
+            logger.warning(
+                "[word] Word held documents at startup; leaving AutoRecovery "
+                "untouched. Expect the Document Recovery pane on relaunch."
+            )
+        for child in entries:
             with contextlib_suppress():
                 if child.is_dir():
                     shutil.rmtree(child, ignore_errors=True)
@@ -1208,6 +1231,7 @@ def preflight(session: WordSession, *, allow_open_docs: bool) -> str:
     if not session.warm():
         return "Word did not become responsive"
     count = session.open_document_count()
+    session.started_clean = count == 0
     if count > 0 and not allow_open_docs:
         return (
             f"Word has {count} document(s) open and this batch closes documents "
