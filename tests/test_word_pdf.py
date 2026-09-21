@@ -855,7 +855,7 @@ def test_write_manifest_round_trips_as_tsv(tmp_path: Path) -> None:
     [
         ("[ok]\t0\n[done]\t1\t0\n", {"0": (True, "")}, True),
         ("[ok]\t0\t17\n[done]\t1\t0\n", {"0": (True, "17")}, True),
-        ("[fail]\t0\tboom\n[done]\t0\t1\n", {"0": (False, "boom")}, False or True),
+        ("[fail]\t0\tboom\n[done]\t0\t1\n", {"0": (False, "boom")}, True),
         ("[fail]\t0\n", {"0": (False, "unspecified error")}, False),
         ("[ok]\t0\nrandom noise\n", {"0": (True, "")}, False),
         ("", {}, False),

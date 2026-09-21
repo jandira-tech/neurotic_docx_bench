@@ -65,6 +65,7 @@ import threading
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
+from typing import Annotated, Self
 
 import typer
 from loguru import logger
@@ -116,7 +117,7 @@ def is_word_temp(name: str) -> bool:
 
     They are created beside any open document and left behind by a killed Word.
     """
-    return name.startswith("~$") or name.startswith(".~")
+    return name.startswith(("~$", ".~"))
 
 
 def iter_docx(folder: Path) -> list[Path]:
@@ -185,6 +186,7 @@ def osa(script: str, *args: str, timeout: float = 60.0) -> tuple[int | None, str
             capture_output=True,
             text=True,
             timeout=timeout,
+            check=False,
         )
     except subprocess.TimeoutExpired:
         return None, "", "osascript timed out"
@@ -486,7 +488,7 @@ class Watchdogs:
         for t in self._threads:
             t.join(timeout=3)
 
-    def __enter__(self) -> Watchdogs:
+    def __enter__(self) -> Self:
         self.start()
         return self
 
@@ -541,7 +543,7 @@ class WordSession:
         if self.responsive():
             return True
         self.launched_by_us = True
-        subprocess.run(["open", "-g", "-a", str(WORD_APP)], capture_output=True)
+        subprocess.run(["open", "-g", "-a", str(WORD_APP)], capture_output=True, check=False)
         deadline = time.monotonic() + self.warm_timeout
         while time.monotonic() < deadline:
             if self.responsive():
@@ -621,19 +623,20 @@ class WordSession:
         osa('tell application "Microsoft Word" to quit saving no', timeout=15)
         time.sleep(2)
         if self._alive():
-            subprocess.run(["pkill", "-x", WORD_PROC], capture_output=True)
+            subprocess.run(["pkill", "-x", WORD_PROC], capture_output=True, check=False)
             time.sleep(2)
         if self._alive():
-            subprocess.run(["pkill", "-9", "-x", WORD_PROC], capture_output=True)
+            subprocess.run(["pkill", "-9", "-x", WORD_PROC], capture_output=True, check=False)
             time.sleep(1)
         self.clean_after_kill(*folders)
         return self.warm()
 
     @staticmethod
     def _alive() -> bool:
-        return (
-            subprocess.run(["pgrep", "-x", WORD_PROC], capture_output=True).returncode == 0
+        proc = subprocess.run(
+            ["pgrep", "-x", WORD_PROC], capture_output=True, check=False
         )
+        return proc.returncode == 0
 
     def quit_if_ours(self) -> None:
         if self.launched_by_us:
@@ -683,7 +686,7 @@ class Stage:
     prefix: str = "wordrun"
     root: Path | None = None
 
-    def __enter__(self) -> Stage:
+    def __enter__(self) -> Self:
         CONTAINER_TMP.mkdir(parents=True, exist_ok=True)
         self.root = Path(tempfile.mkdtemp(prefix=f"{self.prefix}.", dir=CONTAINER_TMP))
         (self.root / "in").mkdir()
@@ -865,7 +868,7 @@ class _Progress:
                 seen = count
                 logger.info(f"[batch{self.label}] {count}/{self.total}")
 
-    def __enter__(self) -> _Progress:
+    def __enter__(self) -> Self:
         self._thread = threading.Thread(target=self._loop, daemon=True)
         self._thread.start()
         return self
@@ -1361,26 +1364,41 @@ app = typer.Typer(add_completion=False, help=__doc__)
 
 @app.command()
 def main(
-    src: Path = typer.Option(..., "--src", "-s", help="Folder of .docx to export."),
-    out: Path | None = typer.Option(
-        None, "--out", "-o", help="Where PDFs go. Default: beside each .docx."
-    ),
-    force: bool = typer.Option(False, "--force", help="Re-export even if the PDF exists."),
-    timeout: float = typer.Option(180.0, "--timeout", help="Seconds per document."),
-    one_osascript: bool = typer.Option(
-        False,
-        "--one-osascript",
-        help="Run the whole folder in ONE monolithic AppleScript instead of one "
-        "osascript per document. Resumes automatically if the run wedges.",
-    ),
-    check_preset: bool = typer.Option(
-        True, "--check-preset/--no-check-preset", help="Print the PDF-preset reminder."
-    ),
-    allow_open_docs: bool = typer.Option(
-        False, "--allow-open-docs", help="Run even if Word already has documents open."
-    ),
-    quiet: bool = typer.Option(False, "--quiet", "-q", help="Errors and summary only."),
-    log_file: Path | None = typer.Option(None, "--log", help="Also write a log file."),
+    src: Annotated[Path, typer.Option("--src", "-s", help="Folder of .docx to export.")],
+    out: Annotated[
+        Path | None,
+        typer.Option("--out", "-o", help="Where PDFs go. Default: beside each .docx."),
+    ] = None,
+    force: Annotated[
+        bool, typer.Option("--force", help="Re-export even if the PDF exists.")
+    ] = False,
+    timeout: Annotated[
+        float, typer.Option("--timeout", help="Seconds per document.")
+    ] = 180.0,
+    one_osascript: Annotated[
+        bool,
+        typer.Option(
+            "--one-osascript",
+            help="Run the whole folder in ONE monolithic AppleScript instead of one "
+            "osascript per document. Resumes automatically if the run wedges.",
+        ),
+    ] = False,
+    check_preset: Annotated[
+        bool,
+        typer.Option(
+            "--check-preset/--no-check-preset", help="Print the PDF-preset reminder."
+        ),
+    ] = True,
+    allow_open_docs: Annotated[
+        bool,
+        typer.Option("--allow-open-docs", help="Run even if Word already has documents open."),
+    ] = False,
+    quiet: Annotated[
+        bool, typer.Option("--quiet", "-q", help="Errors and summary only.")
+    ] = False,
+    log_file: Annotated[
+        Path | None, typer.Option("--log", help="Also write a log file.")
+    ] = None,
 ) -> None:
     """Export every .docx in a folder to PDF using Microsoft Word."""
     logger.remove()
