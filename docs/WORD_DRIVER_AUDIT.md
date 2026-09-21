@@ -378,7 +378,8 @@ folder — calls a bare `activate` on every conversion, with no bouncer anywhere
 
   That is not a hole someone left open — it is written into `computeExitCode`'s own contract,
   which defines exit 0 as *"every probed file OPENED-CLEAN with the detector proven (**or an
-  explicit `--skip-word` / `--no-selftest` run that produced no failing verdict**)"* (222–227).
+  explicit `--skip-word` / `--no-selftest` run that produced no failing verdict**)"*
+  (`word-open-check.mjs:226–227`, in the docstring at 216–228 directly above the function).
   An operator who passes the flag has asked for the control to be skipped, and gets what they
   asked for. The one operational consequence worth knowing: the console warning at 1029 is
   guarded by the same `meta.selftest &&`, so a `--no-selftest` run says nothing about the
@@ -520,10 +521,11 @@ that never rendered; nothing is granted, and the next file prompts again.
 | `word-open-check.mjs` | Not in the handler. `grantFileAccess()` (348) AXPresses without activating; its two `activate` calls are elsewhere — forcing the GUI launch during warm-up (827) and a screenshot after a clean verdict (894) | **Undetermined.** The warm-up `activate` precedes the probes and this script runs no bouncer, so Word may well still be frontmost when the handler fires. What the code shows is that the handler does not *itself* ensure it; whether the panel then renders is not decidable from source |
 | `redline-word-campaign.ts` | No, and it runs a bouncer that pushes Word *out* of frontmost every 0.5 s | Flow cannot complete; re-prompts |
 
-So "asks only once" is the first row. "Asks every time, even on folders already seen" fits
-the third, whose bouncer actively prevents the panel rendering; the second is the one the
-code cannot settle, because Word's frontmost state there depends on a warm-up `activate`
-several hundred lines earlier rather than on the handler. The grant mechanism is not the
+So "asks only once" is `word-convert.sh`. "Asks every time, even on folders already seen"
+fits `redline-word-campaign.ts`, whose bouncer actively prevents the panel rendering.
+`word-open-check.mjs` is the one the code cannot settle, because Word's frontmost state
+there depends on a warm-up `activate` several hundred lines earlier rather than on the
+handler. The grant mechanism is not the
 problem; not *ensuring* Word is frontmost at the moment of the press is.
 
 **The irony is worth recording.** `redline-word-campaign.ts` is the only script that
@@ -866,9 +868,21 @@ whole AutoRecovery directory rather than its own entries (step 4).
    open, a human's unsaved work included, and §8 lists a live human Word session as an
    edge case this corpus meets. Take the run's start time and delete only entries
    modified at or after it — a file Word wrote before the run began is by definition
-   not the run's, and the conservative direction is also the correct one. The unscoped
-   form (`find "$AUTOREC" -mindepth 1 -delete`) destroys that human's recovery copy
-   along with the automation residue; §15's `clean_after_kill()` is the scoped form.
+   not the run's.
+
+   **The timestamp is the filter, not the control. The precondition is the control.**
+   Word's AutoRecover interval defaults to 10 minutes
+   ([Microsoft Support](https://support.microsoft.com/en-us/office/change-save-frequency-and-where-word-autorecovery-files-are-stored-ddd81816-39ff-48f4-989e-8bf1db78b2d9)),
+   so a human's document open across a longer run has its recovery copy rewritten
+   *after* the run started, and "newer than the run" sweeps it up exactly as the wipe
+   would. Everything written during the run is ours only if nothing else was open when
+   the run began. So establish that first: refuse to start while Word holds documents,
+   and when an operator overrides that refusal, leave AutoRecovery entirely alone —
+   they have just told you a document is open, which is precisely when mtimes stop
+   being evidence of ownership. §15's `clean_after_kill()` gates on that precondition
+   and falls back to touching nothing, paying the Document Recovery pane rather than a
+   stranger's afternoon. The unscoped form (`find "$AUTOREC" -mindepth 1 -delete`) has
+   neither guard.
    That clears Document Recovery and the lock files. It does **not** clear MERP's
    "send a report" prompt, which is a separate mechanism (residue 3) and is unhandled by
    every one of the 21 scripts audited here.
@@ -1161,7 +1175,7 @@ once.
 | §14.1 success recorded before health | Paragraph count is checked before the compare runs; the comparison result is found by exclusion, never by whichever document is frontmost |
 | §14.2 `SIGTERM` on a wedged `osascript` | The timeout SIGKILLs **its own child**, which is what `subprocess.run` already does (`Popen.kill()`, never `terminate()`) — and SIGKILL is the part that matters against a blocked `osascript`, which ignores SIGTERM. Deliberately **no `pkill osascript`**: it would match the watchdogs' own polls, every one of which is an `osascript`, plus anything the user is running |
 | §14.5 `pkill -9 -f` matching helpers | `pkill -x` only, by exact process name, and escalated: `quit saving no` → `-x` → `-9 -x` |
-| §12 Document Recovery after a kill | `clean_after_kill()` removes AutoRecovery entries and `~$` files **modified at or after this session started**, then re-warms. Never the whole directory: it holds a human's unsaved-work recovery copies, and a file older than the run is not the run's |
+| §12 Document Recovery after a kill | `clean_after_kill()` removes AutoRecovery entries and `~$` files **modified at or after this session started**, then re-warms. Never the whole directory. And the timestamp only proves ownership because `preflight` established that Word held **zero** documents at startup: under `--allow-open-docs` that premise is gone, so AutoRecovery is skipped entirely rather than filtered, and the Document Recovery pane is the price (§12 step 4) |
 | §10 timeouts that must cover a cold start | Word is pre-warmed once with `open -g`; per-document budgets cover work only |
 | §5, §6 one poison file costing the batch | Any failure recycles Word before the next item |
 | §9 concurrency | Neither script takes `--jobs`. Word is single-instance and user-session-bound; a second worker would drive the same instance |
@@ -1186,7 +1200,10 @@ is the same in both scripts and both modes:
 A restart, when one does happen, cleans **only this run's** residue: AutoRecovery entries
 and `~$` lock files modified at or after the session started, never the whole AutoRecovery
 directory, which holds the recovery copy of every document Word has open including a human's
-unsaved work (§12 step 4).
+unsaved work (§12 step 4). The cutoff carries that guarantee only under the precondition
+`preflight` enforces — no document open when the run began — because Word autosaves every
+10 minutes and would stamp a human's copy mid-run. When the operator overrides the
+precondition with `--allow-open-docs`, AutoRecovery is left untouched and the run says so.
 
 **Word is restarted only on evidence that Word itself is the problem**, which is two
 conditions, not one:
