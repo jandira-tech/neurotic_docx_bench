@@ -371,12 +371,19 @@ folder — calls a bare `activate` on every conversion, with no bouncer anywhere
   never proven. A clean result from a blind detector is not a pass. Nothing else in the
   corpus has a negative control.
 
-  **With one bypass, and it is a flag away.** The guard is
+  **With one opt-out, and it is deliberate.** The guard is
   `if (meta.selftest && !meta.selftest.detectorProven) return 1;` (237), so it only fires
-  when a self-test ran at all. Under `--no-selftest` (47) `meta.selftest` is absent, the
-  condition short-circuits, and a clean sweep returns 0 with the detector unproven — exactly
-  the outcome the control exists to prevent. The idea is still the best in the corpus; the
-  gate just is not closed on the path that skips it.
+  when a self-test ran at all; under `--no-selftest` (47) `meta.selftest` is absent and a
+  clean sweep returns 0 with the detector unproven.
+
+  That is not a hole someone left open — it is written into `computeExitCode`'s own contract,
+  which defines exit 0 as *"every probed file OPENED-CLEAN with the detector proven (**or an
+  explicit `--skip-word` / `--no-selftest` run that produced no failing verdict**)"* (222–227).
+  An operator who passes the flag has asked for the control to be skipped, and gets what they
+  asked for. The one operational consequence worth knowing: the console warning at 1029 is
+  guarded by the same `meta.selftest &&`, so a `--no-selftest` run says nothing about the
+  detector either way. Its exit 0 means "nothing failed", not "a blind pass was excluded" —
+  a distinction that matters if such an invocation is ever wired into CI as a gate.
 - **Filename-verified dialogs.** `redline-word-campaign.ts` requires the dialog text to name
   *this* file, killing false positives from stale dialogs, and requires the document count to
   rise before returning CLEAN, killing the false negative the comment records as having
@@ -671,7 +678,7 @@ supervision, shardability, and doing non-Word work off the critical path.
 | `word_screen_sources.applescript` | 60 s per open | Right order of magnitude. Screening is open-and-count only, so 60 s is generous for a healthy document and bounded for a bad one — and it sits behind a pre-warmed, driver-recycled Word, so cold start never eats the budget. |
 | `word_compare_driver.sh` | `STALL_SECS=420`, polled every 15 s | Correctly larger than the batch's 300 s inner timeout — it must be, or it would kill a legitimately slow pair. But the margin is only 120 s, which is tight for a machine under load. Widen to ~600 s, or derive it as `inner + 50%`. |
 | `word_compare_batch.applescript` | 300 s per pair | Justifiably large: `compare` on a big document is genuinely slow. See the margin note above. |
-| `word-convert.sh` | outer `timeout 90`, inner `with timeout of 240`, poll loop 120 × 2 s = 240 s | **Incoherent — the only clearly wrong set.** 90 < 240, so the inner budget and the loop's tail are unreachable and the effective budget is 90 s, which is too short for a large DOCX→PDF. **And 90 s is not even a reliable cap:** `timeout_cmd` is plain `timeout` (55) with no `-k`/`--kill-after` anywhere in the file, and `timeout(1)` sends SIGTERM, which is precisely the signal a blocked `osascript` ignores (§14.2). The `kill -0` poll can therefore stay true for its whole run and the following `wait` can block indefinitely. Fix: set the outer to inner + slack *and* give it `-k`, or drop a layer; raising or removing a timeout layer alone does not buy a hard stop. |
+| `word-convert.sh` | outer `timeout 90`, inner `with timeout of 240`, poll loop 120 × 2 s = 240 s | **Incoherent — the only clearly wrong set.** 90 < 240, so the inner budget and the loop's tail are unreachable and the effective budget is 90 s, which is too short for a large DOCX→PDF. **And 90 s is not even a reliable cap:** `word-convert.sh:55` sets `timeout_cmd="${WORD_CONVERT_TIMEOUT_CMD:-timeout}"` — plain `timeout`, with no `-k`/`--kill-after` anywhere in that file (`grep -c -- '-k\|--kill-after' scripts/word-convert.sh` → 0), and `timeout(1)` sends SIGTERM, which is precisely the signal a blocked `osascript` ignores (§14.2). The `kill -0` poll can therefore stay true for its whole run and the following `wait` can block indefinitely. Fix: set the outer to inner + slack *and* give it `-k`, or drop a layer; raising or removing a timeout layer alone does not buy a hard stop. |
 | `word-convert.sh` UI probes | `timeout 8` / `10` / `12` | Fine. These are sub-second queries with a generous kill switch. |
 | `render/word.py` `convert_one` | 180 s flat | Reasonable for docx→PDF, but it is a flat constant in the same module where the validate path got the calibrated treatment. Inconsistent; the calibration belongs here too. |
 | `word_validate_batch.py` | `--timeout 25` default | **Too little, and it silently disables the calibration.** It overrides the module's 60 s *downward* and passes no `reference`, so `_budget` degenerates to a flat 25 s. Large documents come back UNJUDGEABLE — and the CLI then counts them as **invalid**, which is the opposite of what the module promises. `ValidationResult.ok` is `outcome == "valid"` (`render/word.py:126-127`), so UNJUDGEABLE is falsy; `word_validate_batch.py` writes it out as `"word_valid": res.ok` (60), reports it in `len(docs) - n_ok` "invalid" (76), and fails the whole batch on it (`return 0 if n_ok == len(docs) else 1`, 78). `render/word.py:118-119` states the intended contract in its own docstring — *"the budget ran out with NO modal observed — Word was merely slow on this machine; recorded, never treated as invalid"* — and the CLI contradicts it. So a too-short budget does not quietly shrink the denominator; it marks slow-but-valid documents invalid and turns a clean corpus red. |
@@ -1067,11 +1074,17 @@ Worth recording, because the rest of the audit leans on them:
   `detectorProven` is computed from the control file's actual verdict
   (`ctl.verdict === "REPAIR-PROMPT"`, line 871), consumed by `computeExitCode` (line 237),
   reported in the summary (line 1029), and covered by a unit test named *"returns 1 for a
-  clean sweep when the detector was NOT proven"*. `--no-selftest` skips the control, leaving
-  `meta.selftest` unset and the guard's first conjunct false, so that invocation passes a
-  clean sweep without proving anything (§5.11). It is the only
-  claim in the corpus that is asserted in a comment, implemented in code, **and** pinned by a
-  test. C1 stays 1.00.
+  clean sweep when the detector was NOT proven"*. It is the only claim in the corpus that is
+  asserted in a comment, implemented in code, **and** pinned by a test.
+
+  **C1 stays 1.00, and the `--no-selftest` opt-out (§5.11) does not change that** — the
+  question was raised and is worth answering rather than leaving to the reader. C1 is oracle
+  integrity: whether a verdict can be trusted to mean what it says. On the default path the
+  detector is proven or the run fails. On the opt-out path the exit-code contract states in
+  its own docstring that skipping the control is a valid route to 0, so the verdict still
+  means what the tool says it means; an operator who disables a control has not been misled
+  by one. A score would be owed if the flag silently weakened the default, or if the contract
+  claimed proof it did not have. Neither holds.
 - **`redline-word-campaign.ts` genuinely never activates Word.** The only occurrence of the
   string `activate` in the file is the comment saying it never does.
 - **`word-convert.sh`'s `activate` is genuinely unconditional** — inside the per-conversion
