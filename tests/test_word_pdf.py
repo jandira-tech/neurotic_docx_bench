@@ -379,6 +379,28 @@ def test_preflight_refuses_one_osascript_while_documents_are_open(
     assert wp.preflight(session, allow_open_docs=False, one_osascript=True) == ""
 
 
+def test_preflight_refuses_when_the_document_count_is_unknown(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """`open_document_count()` returns -1 when the query itself fails.
+
+    Both guards below it test `count > 0`, so an unknown count slipped past
+    them and the run proceeded without ever establishing the no-open-documents
+    premise. That matters more now that the monolithic batch is the default:
+    it binds `document 1` after each open and closes it without saving, so a
+    pre-existing document the failed query hid could be the one it takes.
+    """
+    session = wp.WordSession()
+    monkeypatch.setattr(wp.WordSession, "available", staticmethod(lambda: True))
+    monkeypatch.setattr(session, "warm", lambda: True)
+    monkeypatch.setattr(session, "open_document_count", lambda: -1)
+
+    # Refused in every combination, including the most permissive one.
+    for allow, one in ((True, True), (True, False), (False, True), (False, False)):
+        problem = wp.preflight(session, allow_open_docs=allow, one_osascript=one)
+        assert "could not determine" in problem, (allow, one, problem)
+
+
 def test_export_batch_closes_only_the_document_it_opened() -> None:
     """`close every document saving no` discards unsaved work that is not ours.
 

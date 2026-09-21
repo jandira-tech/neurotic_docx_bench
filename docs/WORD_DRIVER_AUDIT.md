@@ -63,7 +63,8 @@ Each scored 0–1. Σ is a plain sum out of 7.00 — a ranking device, not a gra
 - **C4** because the whole of family A exists to avoid a permission prompt that, per §5.1,
   was never going to fire.
 - **C5** because the corpus's own measured cascades are malformed-item failures: the
-  223-file screen where one poison document took 203 others with it (§5.20), and the
+  223-file screen where one poison document took 203 others with it
+  (`word_screen_sources.applescript`'s header, 16–20; §5.20), and the
   34-real-then-88-phantom probe sweep (§5.8).
 - **C6/C7** because 102 of family A's work items are lock files (§5.5) and because the one
   place real parallelism is available — Rust redline generation in `redline-sweep.sh` — runs
@@ -680,12 +681,29 @@ repair prompt, and then proceeds straight to the real corpus with only
 `closeOurDocs(); cancelGrantDialogs(); drainDialogs();` between them (876–878). There is no
 recycle, no re-warm, and no health check.
 
-That is the one sequence this document establishes as dangerous. §5 and §7 record that a
-malformed open leaves Word answering normally while returning empty documents for everything
-after it — the failure that cost `word_screen_sources` 203 files, and the reason §15's
-replacement pair recycles on a failure streak at all. The control is a *deliberate* malformed
-open, so it is the most predictable instance of the trigger in the entire corpus, and it runs
-immediately before the measurements it is supposed to make trustworthy.
+That is the one sequence this document establishes as dangerous.
+`word_screen_sources.applescript`'s own header (16–20) is where the failure mode is
+recorded: *"a single poison document leaves Word degraded for the REST OF THE SESSION.
+Every subsequent open returns an empty document, silently — no error, no dialog. Screening
+223 files in one Word session reported 213 as unreadable when only a handful actually are;
+the other 203 were collateral damage from file #11."* §5.8's probe sweep is the same
+failure measured a second time, and it is the reason §15's replacement pair recycles on a
+failure streak at all. (§7 scores the *detector* for this condition — positive integer
+healthy; thrown error, `0` and `missing value` all poison — not the cascade itself.)
+
+The committed `source_screen.tsv` does **not** show that cascade, and is not evidence
+against it. The script was rewritten to stop at the first failure (`return "POISON " &
+fname`, 84) and to skip rows already logged (43–47), so the log is the accumulated output
+of many restarted passes, not one session: 223 document rows plus a `__SCREEN_DONE__`
+sentinel, 217 healthy, 6 flagged (3 AppleEvent timeouts, 3 `missing value`), and no two
+flagged rows adjacent anywhere in the file. A stop-and-restart contract produces that
+shape by construction. (`word_unreadable.txt` carries a seventh name,
+`super_editor__image_out_of_folder_19763c1d.docx`, that the screen itself logged healthy
+at 6 paragraphs — excluded on some basis the artifacts do not record.)
+
+The control is a *deliberate* malformed open, so it is the most predictable instance of the
+trigger in the entire corpus, and it runs immediately before the measurements it is supposed
+to make trustworthy.
 
 The irony is worth stating plainly, because it cuts against the credit given elsewhere in this
 document: the mechanism that makes this the only script proving its detector is also the one
@@ -966,7 +984,7 @@ work alone — and where the document size varies by orders of magnitude, calibr
 | `word-convert.sh` | 1 attempt, then reset Word and exit 3 | Correct **as a retry policy**: it does not retry into a degraded Word, it hands the decision to the caller. The reset it runs first is a separate question, and §12's residue table answers it: `reset_word_after_failure` (129–135) closes whichever document is active `saving no` and quits everything `saving no`, with no precondition that Word held nothing else. Right escalation, wrong precondition. |
 | `render/word.py` | 1 attempt. `_close_active_document` tries close → Escape → close | Correct — those three are cleanup steps, not retries of the work. |
 | `render/soffice.py` (contrast) | `retries=1`, each attempt in a **fresh isolated profile** | The right model, and the one Word cannot copy cheaply: Word's equivalent of a fresh profile is a full relaunch. |
-| `redline-word-campaign.ts` | 2 attempts, no backoff, **no Word recycle between them** | **The weakest retry in the corpus.** Retrying the same open against the same possibly-degraded Word is the one thing the rest of these repos proves does not work (§5.4's cascade, `word_screen_sources`' 203-file contamination). Either kill and warm between attempts, or drop the second attempt and report. |
+| `redline-word-campaign.ts` | 2 attempts, no backoff, **no Word recycle between them** | **The weakest retry in the corpus.** Retrying the same open against the same possibly-degraded Word is the one thing the rest of these repos proves does not work (§5.8's cascade, `word_screen_sources`' 203-file contamination). Either kill and warm between attempts, or drop the second attempt and report. |
 | `run_batch_retry.sh` | Named "retry", retries nothing within a run; resume-on-rerun only | The name is misleading; the behaviour is fine. |
 | family A | 0 retries, 0 recovery | A failed file is simply lost, discovered later as a missing PDF — which `CLAUDE.md` then repurposes as the broken-fixture worklist. That works, but it is a side effect, not a design. |
 
@@ -1458,7 +1476,7 @@ once.
 | §14.5 `pkill -9 -f` matching helpers | `pkill -x` only, by exact process name, and escalated: `quit saving no` → `-x` → `-9 -x` |
 | §12 Document Recovery after a kill | `clean_after_kill()` removes AutoRecovery entries and `~$` files **modified at or after this session started**, then re-warms. Never the whole directory. And the timestamp only proves ownership because `preflight` established that Word held **zero** documents at startup: under `--allow-open-docs` that premise is gone, so AutoRecovery is skipped entirely rather than filtered, and the Document Recovery pane is the price. The `~$` sweep runs only over the staging directories this run made: Word opens the staged copy, never the user's original, so a lock file in their folder is someone else's (§12 step 4) |
 | §10 timeouts that must cover a cold start | Word is pre-warmed once with `open -g`; per-document budgets cover work only |
-| §5, §7 one poison file costing the batch | Any failure recycles Word before the next item |
+| §5.8, §5.20 one poison file costing the batch | Any failure recycles Word before the next item |
 | §9 concurrency | Neither script takes `--jobs`. Word is single-instance and user-session-bound; a second worker would drive the same instance |
 
 ### Malformed documents: decline, close, skip
@@ -1511,9 +1529,10 @@ conditions, not one:
 
 - `close every document saving no` leaves documents still open, i.e. Word did not come back
   clean; or
-- **three failures in a row** (`--poison-streak`). This is the §5/§7 finding: after a bad
+- **three failures in a row** (`--poison-streak`). This is the §5.20 finding: after a bad
   document Word keeps answering Apple events while returning EMPTY documents for every later
-  open, with no error at all — one poison file cost 203 others. The paragraph-count check on
+  open, with no error at all — one poison file cost 203 others
+  (`word_screen_sources.applescript`'s header, 16–20). The paragraph-count check on
   every open is what catches that, and a run of failures is what it looks like from outside.
 
 In one-osascript mode the same three steps are the batch script's `try … on error … close

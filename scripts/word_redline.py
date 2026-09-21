@@ -35,7 +35,7 @@ Design decisions carried over from `docs/WORD_DRIVER_AUDIT.md`:
   no revisions legitimately; the count is surfaced so a batch of unexpected
   zeroes is visible instead of silently passing.
 - **One failed pair recycles Word.** After a bad document Word keeps answering,
-  returning empty documents for every later open, with no error (§5, §7).
+  returning empty documents for every later open, with no error (§5.20).
 
 Plumbing, noted because it is visible in the staging directory and is not a
 finding: the two sides of a pair go in under `base__` / `rev__` prefixes. A pair
@@ -554,7 +554,7 @@ def _redline_serial(
             if len(streak) >= poison_streak:
                 # Unless they keep failing. A Word degraded by a bad document
                 # answers normally and returns empty documents for everything
-                # after it (§5, §7), which is what a failure run looks like.
+                # after it (§5.20), which is what a failure run looks like.
                 logger.warning(
                     f"[word] {len(streak)} failures in a row — recycling rather than "
                     "trusting Word to still be reading documents"
@@ -579,7 +579,7 @@ def _replay_pairs(
 
     The streak is the reason for the restart: a Word degraded by one bad
     document answers normally and returns empty documents for everything after
-    it (§5, §7). The base paragraph-count check turns those into failures rather
+    it (§5.20). The base paragraph-count check turns those into failures rather
     than false passes, which is the half that matters — but nothing in a failure
     distinguishes Word's fault from the file's, so leaving them would report
     healthy pairs as permanently broken. Whatever fails again keeps its verdict.

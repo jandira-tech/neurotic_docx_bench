@@ -769,7 +769,7 @@ def recover_after_failure(
 
     The escalation is not optional. The audit found that after a bad document
     Word keeps answering Apple events while returning EMPTY documents for every
-    later open, with no error at all (§5, §6): one poison file cost 203 others.
+    later open, with no error at all (§5.20): one poison file cost 203 others.
     The paragraph-count check on every open is what catches that, and a Word that
     cannot be brought back to zero open documents is assumed to be in it.
     """
@@ -1172,7 +1172,7 @@ def _convert_serial(
             if len(streak) >= poison_streak:
                 # Unless they keep failing. A Word degraded by a bad document
                 # answers normally and returns empty documents for everything
-                # after it (§5, §6), which is what a failure run looks like.
+                # after it (§5.20), which is what a failure run looks like.
                 logger.warning(
                     f"[word] {len(streak)} failures in a row — recycling rather than "
                     "trusting Word to still be reading documents"
@@ -1196,7 +1196,7 @@ def _replay(
     """Re-run a failure streak against a freshly restarted Word, in place.
 
     The streak is why we restarted: a Word degraded by one bad document answers
-    normally and returns empty documents for everything after it (§5, §6). The
+    normally and returns empty documents for everything after it (§5.20). The
     paragraph-count check turns those into failures rather than false passes,
     which is the half that matters — but they are failures of *Word*, and
     nothing in a `[fail]` distinguishes them from a genuinely malformed file.
@@ -1360,6 +1360,17 @@ def preflight(
         return "Word did not become responsive"
     count = session.open_document_count()
     session.started_clean = count == 0
+    if count < 0:
+        # -1 means the query itself failed, not that Word is empty. Both guards
+        # below test `count > 0`, so an unknown count used to slip past them and
+        # the run proceeded having established nothing. The batch binds
+        # `document 1` after each open and closes it without saving, so a
+        # document the failed query hid could be the one it takes.
+        return (
+            "could not determine whether Word has documents open (the count "
+            "query failed). Refusing rather than assuming it is empty: close "
+            "Word, or make sure it is responding, and re-run."
+        )
     if count > 0 and one_osascript:
         return (
             f"Word has {count} document(s) open, and the default monolithic run "
