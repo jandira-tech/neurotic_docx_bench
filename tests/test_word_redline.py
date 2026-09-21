@@ -546,3 +546,322 @@ def test_cli_runs_the_batch_and_returns_the_report_code(
     assert seen["emit"] is wr.Emit.BOTH
     assert seen["cross"] is True and seen["swap"] is True and seen["force"] is True
     assert seen["out"] == tmp_path / "out"
+
+
+# ─── malformed documents ─────────────────────────────────────────────────────
+
+
+def test_serial_failure_recovers_without_restarting_word(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(wp, "CONTAINER_TMP", tmp_path / "container")
+    a = _folder(tmp_path / "a", "bad.docx", "good.docx")
+    b = _folder(tmp_path / "b", "bad.docx", "good.docx")
+
+    monkeypatch.setattr(
+        wr,
+        "compare_pair",
+        lambda base, rev, out, timeout=300.0: (
+            (False, -1, "base loaded empty (Word could not read it)")
+            if "bad" in out.name
+            else (True, 2, _touch(out, b"PK") and "")
+        ),
+    )
+    monkeypatch.setattr(
+        wr, "export_pdf", lambda s, d, timeout=180.0: (True, _touch(d, b"%PDF") and "")
+    )
+    recovered: list[object] = []
+    recycled: list[object] = []
+    monkeypatch.setattr(wr, "recover_after_failure", lambda s, *f: recovered.append(f) or True)
+    session = wp.WordSession()
+    monkeypatch.setattr(session, "warm", lambda: True)
+    monkeypatch.setattr(session, "quit_if_ours", lambda: None)
+    monkeypatch.setattr(session, "recycle", lambda *f: recycled.append(f) or True)
+
+    results = wr.redline_folders(a, b, tmp_path / "out", session=session)
+
+    assert [r.ok for r in results] == [False, True]
+    assert len(recovered) == 1
+    assert recycled == []
+
+
+def test_serial_recycles_after_a_streak_of_failures(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(wp, "CONTAINER_TMP", tmp_path / "container")
+    names = ("a.docx", "b.docx", "c.docx")
+    a = _folder(tmp_path / "a", *names)
+    b = _folder(tmp_path / "b", *names)
+
+    monkeypatch.setattr(
+        wr, "compare_pair", lambda base, rev, out, timeout=300.0: (False, -1, "empty")
+    )
+    monkeypatch.setattr(wr, "recover_after_failure", lambda s, *f: True)
+    session = wp.WordSession()
+    monkeypatch.setattr(session, "warm", lambda: True)
+    monkeypatch.setattr(session, "quit_if_ours", lambda: None)
+    recycled: list[object] = []
+    monkeypatch.setattr(session, "recycle", lambda *f: recycled.append(f) or True)
+
+    wr.redline_folders(a, b, tmp_path / "out", session=session, poison_streak=3)
+    assert len(recycled) == 1
+
+
+# ─── two-osascript batch mode ────────────────────────────────────────────────
+
+
+def test_compare_batch_script_keeps_every_per_pair_rule() -> None:
+    src = wr._COMPARE_BATCH
+    assert "active document" not in src
+    assert "repeat with i from 1 to docCount" in src
+    assert "detect format changes true" in src
+    assert src.index("count of paragraphs") < src.index("compare baseDoc")
+    # One bad pair closes and continues rather than stopping the run.
+    assert "on error errMsg" in src
+    assert src.count("close every document saving no") >= 4
+    # The revision count rides out on the [ok] line.
+    assert '"[ok]" & tab & itemId & tab & revisionCount' in src
+    assert "set displayAlerts to false" in src
+
+
+def test_redline_batched_runs_compare_then_pdf_as_two_scripts(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(wp, "CONTAINER_TMP", tmp_path / "container")
+    a = _folder(tmp_path / "a", "deal.docx", "nda.docx")
+    b = _folder(tmp_path / "b", "deal.docx", "nda.docx")
+    scripts: list[str] = []
+
+    def fake_osa(script, *args, timeout=60.0):
+        scripts.append(script)
+        manifest, log = Path(args[0]), Path(args[1])
+        rows = [ln.split("\t") for ln in manifest.read_text().splitlines() if ln]
+        lines = []
+        for row in rows:
+            out = Path(row[-1])
+            out.parent.mkdir(parents=True, exist_ok=True)
+            out.write_bytes(b"PK" if out.suffix == ".docx" else b"%PDF")
+            lines.append(f"[ok]\t{row[0]}" + ("\t5" if script is wr._COMPARE_BATCH else ""))
+        lines.append(f"[done]\t{len(rows)}\t0")
+        log.write_text("\n".join(lines) + "\n")
+        return 0, "", ""
+
+    monkeypatch.setattr(wp, "osa", fake_osa)
+    session = wp.WordSession()
+    monkeypatch.setattr(session, "warm", lambda: True)
+    monkeypatch.setattr(session, "quit_if_ours", lambda: None)
+
+    results = wr.redline_folders(a, b, tmp_path / "out", session=session, one_osascript=True)
+
+    assert scripts == [wr._COMPARE_BATCH, wr._EXPORT_BATCH]  # exactly two, in order
+    assert all(r.ok for r in results)
+    assert all(r.revisions == 5 for r in results)  # read off the [ok] line
+    assert all(r.timing_exact is False for r in results)
+    assert (tmp_path / "out" / "deal.pdf").exists()
+    assert (tmp_path / "out" / "nda.pdf").exists()
+    assert not (tmp_path / "out" / "deal.docx").exists()  # --emit pdf discards it
+
+
+def test_redline_batched_docx_only_runs_one_script(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(wp, "CONTAINER_TMP", tmp_path / "container")
+    a = _folder(tmp_path / "a", "deal.docx")
+    b = _folder(tmp_path / "b", "deal.docx")
+    scripts: list[str] = []
+
+    def fake_osa(script, *args, timeout=60.0):
+        scripts.append(script)
+        manifest, log = Path(args[0]), Path(args[1])
+        rows = [ln.split("\t") for ln in manifest.read_text().splitlines() if ln]
+        lines = []
+        for row in rows:
+            Path(row[-1]).write_bytes(b"PK")
+            lines.append(f"[ok]\t{row[0]}\t3")
+        lines.append(f"[done]\t{len(rows)}\t0")
+        log.write_text("\n".join(lines) + "\n")
+        return 0, "", ""
+
+    monkeypatch.setattr(wp, "osa", fake_osa)
+    session = wp.WordSession()
+    monkeypatch.setattr(session, "warm", lambda: True)
+    monkeypatch.setattr(session, "quit_if_ours", lambda: None)
+
+    results = wr.redline_folders(
+        a, b, tmp_path / "out", emit=wr.Emit.DOCX, session=session, one_osascript=True
+    )
+
+    assert scripts == [wr._COMPARE_BATCH]  # no PDF pass when none was asked for
+    assert results[0].ok and results[0].revisions == 3
+    assert (tmp_path / "out" / "deal.docx").read_bytes() == b"PK"
+
+
+def test_redline_batched_records_a_failed_pair_and_finishes_the_rest(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(wp, "CONTAINER_TMP", tmp_path / "container")
+    a = _folder(tmp_path / "a", "bad.docx", "good.docx")
+    b = _folder(tmp_path / "b", "bad.docx", "good.docx")
+
+    def fake_osa(script, *args, timeout=60.0):
+        manifest, log = Path(args[0]), Path(args[1])
+        rows = [ln.split("\t") for ln in manifest.read_text().splitlines() if ln]
+        lines = []
+        for row in rows:
+            out = Path(row[-1])
+            if "bad" in out.name:
+                lines.append(f"[fail]\t{row[0]}\tbase loaded empty (Word could not read it)")
+                continue
+            out.write_bytes(b"PK" if out.suffix == ".docx" else b"%PDF")
+            lines.append(f"[ok]\t{row[0]}" + ("\t1" if script is wr._COMPARE_BATCH else ""))
+        lines.append(f"[done]\t{len(rows)}\t0")
+        log.write_text("\n".join(lines) + "\n")
+        return 0, "", ""
+
+    monkeypatch.setattr(wp, "osa", fake_osa)
+    session = wp.WordSession()
+    monkeypatch.setattr(session, "warm", lambda: True)
+    monkeypatch.setattr(session, "quit_if_ours", lambda: None)
+
+    results = wr.redline_folders(a, b, tmp_path / "out", session=session, one_osascript=True)
+
+    assert [(r.base.name, r.ok) for r in results] == [("bad.docx", False), ("good.docx", True)]
+    assert "could not read" in results[0].error
+    assert (tmp_path / "out" / "good.pdf").exists()
+    assert not (tmp_path / "out" / "bad.pdf").exists()
+
+
+def test_redline_batched_skips_existing_and_stages_the_rest(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(wp, "CONTAINER_TMP", tmp_path / "container")
+    a = _folder(tmp_path / "a", "deal.docx", "nda.docx")
+    b = _folder(tmp_path / "b", "deal.docx", "nda.docx")
+    _touch(tmp_path / "out" / "deal.pdf", b"%PDF")
+    manifests: list[int] = []
+
+    def fake_osa(script, *args, timeout=60.0):
+        manifest, log = Path(args[0]), Path(args[1])
+        rows = [ln.split("\t") for ln in manifest.read_text().splitlines() if ln]
+        manifests.append(len(rows))
+        lines = []
+        for row in rows:
+            out = Path(row[-1])
+            out.write_bytes(b"PK" if out.suffix == ".docx" else b"%PDF")
+            lines.append(f"[ok]\t{row[0]}" + ("\t2" if script is wr._COMPARE_BATCH else ""))
+        lines.append(f"[done]\t{len(rows)}\t0")
+        log.write_text("\n".join(lines) + "\n")
+        return 0, "", ""
+
+    monkeypatch.setattr(wp, "osa", fake_osa)
+    session = wp.WordSession()
+    monkeypatch.setattr(session, "warm", lambda: True)
+    monkeypatch.setattr(session, "quit_if_ours", lambda: None)
+
+    results = wr.redline_folders(a, b, tmp_path / "out", session=session, one_osascript=True)
+
+    assert results[0].skipped and results[1].ok
+    assert manifests == [1, 1]  # only nda went into either script
+
+
+def test_redline_batched_resumes_the_compare_pass_after_a_wedge(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(wp, "CONTAINER_TMP", tmp_path / "container")
+    names = ("one.docx", "two.docx")
+    a = _folder(tmp_path / "a", *names)
+    b = _folder(tmp_path / "b", *names)
+    calls = {"n": 0}
+
+    def fake_osa(script, *args, timeout=60.0):
+        calls["n"] += 1
+        manifest, log = Path(args[0]), Path(args[1])
+        rows = [ln.split("\t") for ln in manifest.read_text().splitlines() if ln]
+        wedge = calls["n"] == 1
+        lines = []
+        for row in rows[: 1 if wedge else len(rows)]:
+            out = Path(row[-1])
+            out.write_bytes(b"PK" if out.suffix == ".docx" else b"%PDF")
+            lines.append(f"[ok]\t{row[0]}" + ("\t4" if script is wr._COMPARE_BATCH else ""))
+        if not wedge:
+            lines.append(f"[done]\t{len(rows)}\t0")
+        log.write_text("\n".join(lines) + "\n")
+        return (None if wedge else 0), "", ""
+
+    monkeypatch.setattr(wp, "osa", fake_osa)
+    session = wp.WordSession()
+    monkeypatch.setattr(session, "warm", lambda: True)
+    monkeypatch.setattr(session, "quit_if_ours", lambda: None)
+    recycled: list[object] = []
+    monkeypatch.setattr(session, "recycle", lambda *f: recycled.append(f) or True)
+
+    results = wr.redline_folders(a, b, tmp_path / "out", session=session, one_osascript=True)
+
+    assert all(r.ok for r in results)
+    assert len(recycled) == 1  # recycled between compare passes
+    assert calls["n"] == 3  # compare, compare-resume, pdf
+
+
+def test_redline_batched_stages_same_named_sides_apart(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(wp, "CONTAINER_TMP", tmp_path / "container")
+    a = _folder(tmp_path / "a", "deal.docx")
+    _touch(a / "deal.docx", b"AAA")
+    b = _folder(tmp_path / "b", "deal.docx")
+    _touch(b / "deal.docx", b"BBB")
+    seen: dict[str, bytes] = {}
+
+    def fake_osa(script, *args, timeout=60.0):
+        manifest, log = Path(args[0]), Path(args[1])
+        rows = [ln.split("\t") for ln in manifest.read_text().splitlines() if ln]
+        lines = []
+        for row in rows:
+            if script is wr._COMPARE_BATCH:
+                seen["base"] = Path(row[1]).read_bytes()
+                seen["rev"] = Path(row[2]).read_bytes()
+            out = Path(row[-1])
+            out.write_bytes(b"PK" if out.suffix == ".docx" else b"%PDF")
+            lines.append(f"[ok]\t{row[0]}" + ("\t1" if script is wr._COMPARE_BATCH else ""))
+        lines.append(f"[done]\t{len(rows)}\t0")
+        log.write_text("\n".join(lines) + "\n")
+        return 0, "", ""
+
+    monkeypatch.setattr(wp, "osa", fake_osa)
+    session = wp.WordSession()
+    monkeypatch.setattr(session, "warm", lambda: True)
+    monkeypatch.setattr(session, "quit_if_ours", lambda: None)
+
+    wr.redline_folders(a, b, tmp_path / "out", session=session, one_osascript=True)
+    assert seen == {"base": b"AAA", "rev": b"BBB"}
+
+
+def test_cli_wires_the_two_script_flag_through(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from typer.testing import CliRunner
+
+    a = _folder(tmp_path / "a", "deal.docx")
+    b = _folder(tmp_path / "b", "deal.docx")
+    seen: dict[str, object] = {}
+
+    monkeypatch.setattr(wr, "preflight", lambda s, *, allow_open_docs: "")
+    monkeypatch.setattr(wr.Watchdogs, "start", lambda self: None)
+    monkeypatch.setattr(wr.Watchdogs, "stop", lambda self: None)
+    monkeypatch.setattr(wr.WordSession, "quit_if_ours", lambda self: None)
+    monkeypatch.setattr(wr, "redline_folders", lambda fa, fb, out, **kw: seen.update(kw) or [])
+
+    result = CliRunner().invoke(
+        wr.app,
+        ["--a", str(a), "--b", str(b), "--one-redline-osascript", "--no-check-preset"],
+    )
+    assert result.exit_code == 0
+    assert seen["one_osascript"] is True
+
+
+def test_report_pairs_does_not_call_a_batch_average_a_median(tmp_path: Path) -> None:
+    batched = wr.PairResult(
+        base=tmp_path / "a.docx", revision=tmp_path / "b.docx", ok=True,
+        revisions=3, seconds=4.0, timing_exact=False,
+    )
+    assert wr.report_pairs([batched]) == 0
