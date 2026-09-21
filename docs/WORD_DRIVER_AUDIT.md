@@ -210,19 +210,32 @@ two models does not establish a third. Three cells cannot identify four paramete
 matrix cannot distinguish an interaction from anything else — the reported failure is
 *consistent with* an interaction, which is not the same as sitting on one.
 
-A larger hole sits outside the matrix: `compare-documents.scpt` is not in the tree, so there
-is no way to confirm it differs from the working scripts *only* along these two axes. A third
-difference would put the cause outside this 2×2 entirely.
+A larger hole sits outside the matrix. `compare-documents.scpt` is not in the tree — and
+not merely untracked now: it appears in **no commit in the repository's history**
+(`git log --all -- '*compare-documents*'` returns nothing, and no tree in the history
+contains a blob by that name). The corpus README lists it and `compare-documents-fixed.scpt`
+in a file table as though they sit in `scripts/`; neither was ever committed. The README also
+ties the failure to a specific build, **Word 16.112**.
+
+So there is no way to confirm the failing script differed from the working ones *only* along
+these two axes — a third difference, in its content or in the Word build, would put the cause
+outside this 2×2 entirely.
 
 So the classification stays open. An earlier draft claimed the evidence identified
 `active document` as the cause, and a later one claimed the failure sat on the interaction;
 both overreached and both are withdrawn. Nothing here licenses rewriting
 `batch_word_to_pdf.scpt` or deleting family A.
 
-Four runs close it, as two pairs. From a **file**, the same `save as` against
+Four runs bound it, as two pairs. From a **file**, the same `save as` against
 `active document` and once against `document 1` — that tests the selector. Then the same
 pair **inline**, which fills the empty cell and tests file-vs-inline. Only both together
-separate the two factors. If file-vs-inline is not the variable,
+separate the two factors.
+
+Be clear about what that buys, though: it characterises the selector and file-vs-inline **on
+the machine and Word build that runs it**. It cannot validate the `-1708` report, because the
+script that produced it does not exist to re-run and the report is pinned to Word 16.112. A
+clean four-run result would mean the README's rule does not hold *here*; it would not explain
+what happened *there*. If file-vs-inline is not the variable,
 `batch_word_to_pdf.scpt` is repairable and family A never needed to exist.
 
 ### 5.3 Two scripts say to stage inside Word's container; two say the opposite, both with reasons
@@ -623,9 +636,10 @@ The merges worth making are small and specific:
 
 1. **Settle §5.3** (staging), because until the container question has an answer every one of
    these scripts is guessing about the thing that decides whether it can run unattended.
-2. **Settle §5.2** (`-1708`) with the four runs in that section — the selector pair from a
-   file, then the same pair inline to fill the unobserved cell. Only a complete matrix
-   identifies the variable; until then family A stays as it is.
+2. **Characterise §5.2's two axes** with the four runs in that section — the selector pair
+   from a file, then the same pair inline to fill the unobserved cell. That settles how this
+   machine behaves; it cannot settle the `-1708` report itself, whose script was never
+   committed. Until the matrix is complete, family A stays as it is.
 3. **Correct `CLAUDE.md` rule 1** per §5.1 — Apple Events consent is scoped to a
    (responsible client, target) pair and persists until revoked, reset with
    `tccutil reset AppleEvents`, or invalidated by re-signing; it is not per process and not
