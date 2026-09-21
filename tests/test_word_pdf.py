@@ -353,6 +353,67 @@ def test_preflight_reports_unresponsive_word(monkeypatch: pytest.MonkeyPatch) ->
     assert "responsive" in wp.preflight(session, allow_open_docs=True)
 
 
+def test_preflight_refuses_one_osascript_while_documents_are_open(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """`--allow-open-docs` cannot waive this one, the way it can for the serial path.
+
+    The serial export binds the document it opened and closes only that one, so
+    leaving a human's documents open costs them Word restarts and nothing else.
+    The batch script cannot offer the same deal: it suppresses Word's alerts for
+    the whole run, and it has no way to act between documents. So the flag is
+    accepted on the command line and declined here, with the reason.
+    """
+    session = wp.WordSession()
+    monkeypatch.setattr(wp.WordSession, "available", staticmethod(lambda: True))
+    monkeypatch.setattr(session, "warm", lambda: True)
+    monkeypatch.setattr(session, "open_document_count", lambda: 2)
+
+    problem = wp.preflight(session, allow_open_docs=True, one_osascript=True)
+    assert "--one-osascript" in problem
+    # The serial path is still the operator's call to make.
+    assert wp.preflight(session, allow_open_docs=True, one_osascript=False) == ""
+    # And a clean machine may use either.
+    monkeypatch.setattr(session, "open_document_count", lambda: 0)
+    assert wp.preflight(session, allow_open_docs=False, one_osascript=True) == ""
+
+
+def test_export_batch_closes_only_the_document_it_opened() -> None:
+    """`close every document saving no` discards unsaved work that is not ours.
+
+    `_EXPORT_PDF` was corrected for this; the batch script kept the destructive
+    form at all three sites, including the success path. The preflight gate above
+    is the real guarantee, but `convert_folder` is callable directly, so the
+    script must not be destructive on its own.
+    """
+    assert "close every document" not in wp._EXPORT_BATCH
+    assert wp._EXPORT_BATCH.count("close theDoc saving no") == 3
+
+
+def test_cli_tells_preflight_which_mode_it_is_about_to_run(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The gate is worthless if `main` never passes the flag through."""
+    from typer.testing import CliRunner
+
+    seen: dict[str, bool] = {}
+
+    def fake_preflight(_session, *, allow_open_docs, one_osascript):
+        seen["allow_open_docs"] = allow_open_docs
+        seen["one_osascript"] = one_osascript
+        return "refused"
+
+    src = tmp_path / "src"
+    src.mkdir()
+    monkeypatch.setattr(wp, "preflight", fake_preflight)
+    result = CliRunner().invoke(
+        wp.app,
+        ["--src", str(src), "--no-check-preset", "--one-osascript", "--allow-open-docs"],
+    )
+    assert result.exit_code == 2
+    assert seen == {"allow_open_docs": True, "one_osascript": True}
+
+
 # ─── watchdogs ───────────────────────────────────────────────────────────────
 
 
@@ -516,7 +577,7 @@ def test_cli_stops_when_preflight_refuses(
     from typer.testing import CliRunner
 
     (tmp_path / "src").mkdir()
-    monkeypatch.setattr(wp, "preflight", lambda s, *, allow_open_docs: "Word is busy")
+    monkeypatch.setattr(wp, "preflight", lambda s, *, allow_open_docs, one_osascript=False: "Word is busy")
     result = CliRunner().invoke(wp.app, ["--src", str(tmp_path / "src"), "--no-check-preset"])
     assert result.exit_code == 2
 
@@ -528,7 +589,7 @@ def test_cli_runs_the_batch_and_returns_the_report_code(
 
     src = tmp_path / "src"
     _touch(src / "a.docx")
-    monkeypatch.setattr(wp, "preflight", lambda s, *, allow_open_docs: "")
+    monkeypatch.setattr(wp, "preflight", lambda s, *, allow_open_docs, one_osascript=False: "")
     monkeypatch.setattr(wp.Watchdogs, "start", lambda self: None)
     monkeypatch.setattr(wp.Watchdogs, "stop", lambda self: None)
     monkeypatch.setattr(wp.WordSession, "quit_if_ours", lambda self: None)
@@ -1045,8 +1106,15 @@ def test_export_batch_script_closes_and_continues_on_a_bad_document() -> None:
     src = wp._EXPORT_BATCH
     assert "set displayAlerts to false" in src
     assert "on error errMsg" in src
-    # Close whatever is open, record it, move to the next file.
-    assert src.count("close every document saving no") >= 3
+    # Close the document WE opened, record it, move to the next file. This
+    # asserted `close every document saving no` until that was found to discard
+    # a human's unsaved work; the contract is "one bad document does not stop
+    # the run", never "close whatever is open".
+    assert "close every document" not in src
+    assert src.count("close theDoc saving no") == 3
+    # The error handler must not close a document the `open` never produced.
+    assert "set theDoc to missing value" in src
+    assert "if theDoc is not missing value then" in src
     assert '"[fail]" & tab & itemId' in src
     assert '"[done]"' in src
     # Health before the save, and nothing interpolated: paths arrive by manifest.

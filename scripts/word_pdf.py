@@ -970,11 +970,14 @@ def run_batch_with_resume(
 
 
 # One osascript for the whole folder. The per-document
-# `try … on error … close every document saving no … end try` IS the
-# malformed-document contract: answer nothing, close whatever is open, record
-# it, move to the next file. The repair prompt itself is answered concurrently
-# by the watchdog, which runs in its own process and can act while this script
-# is blocked on `open`.
+# `try … on error … close theDoc saving no … end try` IS the malformed-document
+# contract: answer nothing, close the document we opened, record it, move to the
+# next file. It closes `theDoc` and never `every document`, because a document
+# this script did not open is someone else's unsaved work. `preflight` refuses
+# `--one-osascript` while Word holds documents, which is the real guarantee;
+# this is what keeps the script safe when `convert_folder` is called directly.
+# The repair prompt itself is answered concurrently by the watchdog, which runs
+# in its own process and can act while this script is blocked on `open`.
 _EXPORT_BATCH = r"""
 on splitTabs(t)
   set od to AppleScript's text item delimiters
@@ -1005,17 +1008,20 @@ on run argv
         set itemId to item 1 of f
         set inP to item 2 of f
         set outP to item 3 of f
+        set theDoc to missing value
         try
           with timeout of 600 seconds
             tell application "Microsoft Word"
               open POSIX file inP
               set theDoc to document 1
               if (count of paragraphs of theDoc) is 0 then
-                close every document saving no
+                close theDoc saving no
+                set theDoc to missing value
                 error "document loaded empty (Word could not read it)"
               end if
               save as theDoc file name outP file format format PDF
-              close every document saving no
+              close theDoc saving no
+              set theDoc to missing value
             end tell
           end timeout
           set okCount to okCount + 1
@@ -1023,7 +1029,9 @@ on run argv
         on error errMsg
           set failCount to failCount + 1
           try
-            tell application "Microsoft Word" to close every document saving no
+            if theDoc is not missing value then
+              tell application "Microsoft Word" to close theDoc saving no
+            end if
           end try
           my logLine(logPath, "[fail]" & tab & itemId & tab & errMsg)
         end try
@@ -1311,14 +1319,31 @@ def preset_notice() -> None:
     console.print(f"[yellow]▸[/] {PRESET_REMINDER}")
 
 
-def preflight(session: WordSession, *, allow_open_docs: bool) -> str:
-    """Refuse to start on a machine that is not ready. Returns '' when ready."""
+def preflight(
+    session: WordSession, *, allow_open_docs: bool, one_osascript: bool = False
+) -> str:
+    """Refuse to start on a machine that is not ready. Returns '' when ready.
+
+    `--allow-open-docs` is a trade the operator is entitled to make for the
+    serial path: it costs them Word restarts, and the export binds the document
+    it opened and closes only that one. `--one-osascript` cannot offer the same
+    deal. It sets `displayAlerts` to false for the whole run and has no way to
+    act between documents, so it is refused while Word holds anything, the way
+    `word_redline.py` refuses the flag outright.
+    """
     if not WordSession.available():
         return "needs macOS with Microsoft Word installed"
     if not session.warm():
         return "Word did not become responsive"
     count = session.open_document_count()
     session.started_clean = count == 0
+    if count > 0 and one_osascript:
+        return (
+            f"Word has {count} document(s) open and --one-osascript suppresses "
+            "Word's alerts for the whole run and cannot act between documents. "
+            "--allow-open-docs does not waive this. Close them, or drop "
+            "--one-osascript to export one document per osascript."
+        )
     if count > 0 and not allow_open_docs:
         return (
             f"Word has {count} document(s) open and this batch closes documents "
@@ -1370,7 +1395,9 @@ def main(
         preset_notice()
 
     session = WordSession()
-    if problem := preflight(session, allow_open_docs=allow_open_docs):
+    if problem := preflight(
+        session, allow_open_docs=allow_open_docs, one_osascript=one_osascript
+    ):
         console.print(f"[red]{problem}[/]")
         raise typer.Exit(2)
 
