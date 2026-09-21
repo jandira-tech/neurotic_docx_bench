@@ -643,14 +643,66 @@ What a killed Word *actually* leaves behind — three things, not two:
    Two things about it are **unverified here** and should be checked on the machine before
    anything is automated: whether MERP's dialog actually blocks Word from answering Apple
    events (if it does not, a kill-and-warm loop may survive it and merely accumulate
-   dialogs), and which suppression route the target Office build honours. The documented
-   routes are MERP's own Preferences checkbox, reached by launching
-   `Microsoft Error Reporting.app` directly, and the Office-wide diagnostic-data setting. I
-   have not confirmed a `defaults` key for either and am not guessing one.
+   dialogs), and which suppression route the target Office build honours. §12.1 lists the
+   candidates, why no script here can currently dismiss it, and what would settle each.
 
 4. Possibly a "Word did not shut down correctly / open in Safe Mode?" prompt, distinct from
    MERP's. **Unverified** — I could not confirm this for the build these repos target, and no
    script here handles it.
+
+### 12.1 Declining the report the way a human would — candidate solutions, none verified
+
+The obvious fix is to do what the person does: click the decline button. There is a
+structural reason no script here can, and it is not the button lists.
+
+**Every dialog handler in all three repos is blind to MERP.** MERP runs as its own process,
+so a handler has to address it by name. All **13** `tell process` blocks across the 21
+scripts target `"Microsoft Word"`; not one targets the reporter, and no script mentions
+Microsoft Error Reporting, "Don't Send" or "Send Report" anywhere:
+
+```
+$ grep -rhoE 'tell process "[^"]+"' <all three repos>
+  13 tell process "Microsoft Word"
+```
+
+So `word_dialog_watchdog.applescript` could not dismiss this dialog even if its button list
+were right, and `word-convert.sh`'s and `word-open-check.mjs`'s UI scrapes cannot see it
+either. Fixing button names would change nothing; the process target is the blocker.
+
+**Candidates, best first. I have not run any of these and cannot confirm which works.**
+
+1. **Do not create the condition.** MERP fires on unclean exit, so a graceful
+   `quit saving no` that actually succeeds produces no dialog at all. This is the only option
+   that is not suppression, and three of the four killing scripts already escalate rather
+   than kill outright (§12's table); `word_validate_batch.py` is the exception and goes
+   straight to `pkill -x`. Uncertainty: none about the mechanism, but a wedged Word is
+   precisely the case where the graceful quit fails, which is when the kill — and the dialog
+   — happen.
+2. **A watchdog that targets the reporter's own process.** The direct analogue of clicking
+   the button: `tell process "Microsoft Error Reporting"` and press the decline control.
+   Unverified: the exact process name as System Events sees it, and the decline button's
+   label on the target build. Both are one `System Events` dump away on the machine and
+   neither should be guessed. This also inherits the Accessibility grant requirement.
+3. **Office diagnostic-data preference.**
+   `defaults write com.microsoft.office DiagnosticDataTypePreference ZeroDiagnosticData` is
+   documented by Microsoft for Office 16.28 and later. **Unverified and the main open
+   question:** that key governs the diagnostic-data *level*, and it is not established that
+   it suppresses the MERP crash-report *dialog*. It may reduce what is sent while leaving the
+   prompt intact.
+4. **MERP's own Preferences checkbox**, reached by launching
+   `Microsoft Error Reporting.app` directly. Community-documented rather than
+   Microsoft-documented. One-time and manual; no confirmed `defaults` key backs it, and I am
+   not inventing one.
+5. **Deleting `Microsoft Error Reporting.app`** from the Word bundle's `SharedSupport/`.
+   Circulates as a fix; **do not**. It modifies an application bundle, breaks code signing,
+   and an Office update restores it.
+
+**What would settle it**, in order of cost: force-quit Word once by hand, then on the next
+launch dump `System Events` for every process and window to get the reporter's real process
+name and button labels (settles 2); apply 3 and force-quit again to see whether the prompt
+still appears (settles 3); and check whether the prompt blocks Word from answering Apple
+events at all, since if it does not, a kill-and-warm loop may simply accumulate dialogs
+rather than wedge (§12 residue 3).
 
 **Who handles what today**
 
@@ -898,6 +950,8 @@ them worth writing down.
 ## Sources for the external claims
 
 - SIGKILL produces no **Apple** crash report, and watchdog terminations do: [Apple, EXC_CRASH (SIGKILL)](https://developer.apple.com/documentation/xcode/sigkill) · [Addressing watchdog terminations, Apple](https://developer.apple.com/documentation/xcode/addressing-watchdog-terminations) · [How macOS reports crashes, The Eclectic Light Company](https://eclecticlight.co/2021/12/10/how-macos-reports-crashes/)
+- Office for Mac diagnostic-data preference `DiagnosticDataTypePreference` (`ZeroDiagnosticData`, Office 16.28+): [Use preferences to manage privacy controls for Office for Mac, Microsoft Learn](https://learn.microsoft.com/en-us/microsoft-365-apps/privacy/mac-privacy-preferences). Whether it suppresses the MERP crash-report dialog is **not** established by that page — see §12.1.
+- UI scripting addresses one process at a time via `tell process "<name>"`, which is why a handler aimed at Word cannot see a dialog owned by another process: [Automating the User Interface, Apple](https://developer.apple.com/library/archive/documentation/LanguagesUtilities/Conceptual/MacAutomationScriptingGuide/AutomatetheUserInterface.html) · [AppleScript Essentials: User Interface Scripting, MacTech](http://preserve.mactech.com/articles/mactech/Vol.21/21.06/UserInterfaceScripting/index.html)
 - Microsoft Error Reporting is a separate Office application with its own Preferences, independent of ReportCrash: [Get rid of Microsoft Error Reporting 2.2 on Mac, Microsoft Q&A](https://learn.microsoft.com/en-us/answers/questions/5650864/get-rid-of-microsoft-error-reporting-2-2-on-mac) · [Microsoft Office error reporting popups on Mac, The Mac Observer](https://www.macobserver.com/tips/microsoft-office-error-reporting-popups-on-mac/). That Word raises it after a `pkill -9` **with no document open** is Arthur's direct observation on the target machine, not a documented claim.
 - Document Recovery opens when AutoRecover files exist: [Recover files in Office for Mac, Microsoft Support](https://support.microsoft.com/en-us/office/recover-files-in-office-for-mac-6c6425b1-6559-4bbf-8f80-4f038402ff02)
 - AutoRecover interval and its off switch: [Change save frequency and where Word AutoRecovery files are stored, Microsoft Support](https://support.microsoft.com/en-us/office/change-save-frequency-and-where-word-autorecovery-files-are-stored-ddd81816-39ff-48f4-989e-8bf1db78b2d9)
