@@ -404,6 +404,51 @@ Word's container. Three viable strategies:
 | Grant the folder once by hand | `CLAUDE.md` notes it persists | One human interaction per folder, per machine |
 | Nothing | family A, `render/word.py`, all three probes/sweeps | A human at the keyboard, or a hang |
 
+### 6.1 Why some scripts prompt once and some prompt every time
+
+Observed on the target machine: the Grant File Access prompt fires **per file close**, varies
+with where the script is run from, and some scripts re-prompt on folders they have already
+been granted while others ask only once. All three follow from how the grant persists.
+
+**The grant persists only if the panel flow is completed.** "Grant File Access" is Word's
+wrapper over Powerbox. Its `Select…` button opens an `NSOpenPanel`; confirming *that panel*
+is what lets Word persist a security-scoped bookmark. Anything that ends the dialog without
+completing the panel — Cancel, Escape, a timeout, or no handler at all — grants nothing, so
+the next access re-prompts. That is the whole once-versus-every-time split:
+
+| Behaviour | Scripts | Why |
+|---|---|---|
+| **Never prompts** | `run_batch_retry.sh`, `word_compare_driver.sh`, `word-convert.sh` | Everything is staged inside a container Word already owns, so Powerbox is never invoked |
+| **Prompts once per folder** | `word-convert.sh` (also stages), `word-open-check.mjs`, `redline-word-campaign.ts` | They complete the flow. `word-convert.sh` clicks `Select…` then `key code 36` to confirm the panel; the other two AXPress buttons matching Grant/Open/Select/Allow in a loop, so they walk `Select…` *and* the panel's confirm |
+| **Prompts every time** | family A, `batch_word_to_pdf.scpt`, `render/word.py`, `word_validate_batch.py`, both `word-open-probe.sh`, `word-probe-sweep.sh`, `redline-sweep.sh` | No handler. The dialog stands until the AppleEvent times out; nothing is ever granted |
+| **Prompts every time, and denies** | `word_dialog_watchdog.applescript` | Its button list is `{OK, Ok, Cancel, Close, Don't Save, No}` — no Grant, Select, Open or Allow. On a Grant sheet it presses **Cancel**, so it actively refuses the grant on every appearance |
+
+The watchdog row is the sharpest case: it does not merely fail to persist a grant, it denies
+one, forever, on folders it has already seen. Any run that pairs the watchdog with
+out-of-container paths will prompt on every single file and never stop.
+
+**"Each time a file is closed"** is the save side. Most of these batches read from one folder
+and write to another, so there are *two* folders to grant, and the output folder is first
+touched at `save as` — i.e. as the document is finished and closed. Counting distinct folders
+each generated batch makes Word touch: `batch_convert.scpt` 2,
+`batch_jubarte_lossless_pdf.applescript` 2 (it writes into a `pdf/` subfolder),
+`batch_sanity_pdf.applescript` **6** — so six grants minimum for that one even if every grant
+persists perfectly.
+
+**"Depending on where the script is run"** has a concrete cause in at least one script:
+`redline-word-campaign.ts` computes `PROBE_DIR` as `process.cwd()`-relative
+(§5.13). Invoke it from a different directory and Word is asked for a different folder, so a
+previously granted run prompts again. That is invocation location literally determining
+whether a prompt appears.
+
+**One thing this does not settle, and it needs a check on the machine.** Whether Word
+persists the grant for the *enclosing folder* or only for the *item selected in the panel*.
+If it is per item, then even the handlers that complete the flow will re-prompt per file, and
+the "prompts once per folder" row above is wrong for them. The distinguishing test is cheap:
+run `word-open-check.mjs` twice over two different files in one already-granted folder and
+see whether the second file prompts. Until that is done, treat the middle row as *at most*
+once per folder, not as established.
+
 **Scores and why**
 
 | File | C4 | Rationale |
@@ -415,7 +460,7 @@ Word's container. Three viable strategies:
 | `run_batch_retry.sh` | 0.80 | Full app-container staging for both src and out. No P1 precheck, no dialog fallback if staging is bypassed. |
 | `word-open-check.mjs` | 0.70 | AXPress dismissal, and it *distinguishes* the permission sheet from a repair dialog rather than draining both — a permission prompt is recorded, never counted as invalid. |
 | `redline-word-campaign.ts` | 0.60 | AXPress dismissal (Grant/Open/Select/Allow, up to 8 passes) but stages outside on purpose, so it pays a UI round-trip per file and hard-depends on Accessibility. |
-| `word_dialog_watchdog.applescript` | 0.30 | Deliberately clicks only OK/Cancel/Close/Don't Save/No — never Grant/Allow. Correct as a safety policy, but it means the watchdog does not help with P2, and a "Cancel" landing on a Grant sheet would actively deny access. |
+| `word_dialog_watchdog.applescript` | 0.15 | Deliberately clicks only OK/Cancel/Close/Don't Save/No — never Grant/Select/Open/Allow. Sound as a safety policy, but on a Grant sheet it presses **Cancel**: it does not merely fail to help with P2, it denies the grant, every time, on folders already seen (§6.1). |
 | `render/word.py`, `word_validate_batch.py` | 0.25 | Docstring is honest — *"Word may prompt for automation permission (grant it) … Run interactively, not from unattended automation"* — but `word_validate_batch.py` is explicitly a large-batch tool, so the gap bites hardest there. |
 | `word-probe-sweep.sh` | 0.15 | Nothing for P2; its AutoRecovery wipe addresses a different dialog entirely. |
 | family A, `batch_word_to_pdf.scpt` | 0.15 | No staging, no dismissal, arbitrary paths. `displayAlerts false` does **not** suppress the sandbox sheet. `batch_sanity_pdf` spans six directories. |
@@ -770,7 +815,9 @@ and `Cancel`, so the watchdog will click **Cancel** and actively deny Word the a
 asked for.
 
 This is a constraint on §5.3, not just a score change: **the watchdog and out-of-container
-staging are mutually incompatible.** Family C is safe only because it stages everything
+staging are mutually incompatible** — and the consequence is observable, not theoretical:
+the prompt recurs on every file, on folders already granted (§6.1). Family C is safe only
+because it stages everything
 inside the Group container, so the sheet never appears. Anyone resolving the staging
 contradiction in favour of `redline-word-campaign.ts`'s outside-staging cannot also run this
 watchdog without first teaching it to distinguish a permission sheet from an error dialog —
