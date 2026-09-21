@@ -23,10 +23,11 @@ which reviewed the 21 scripts this one replaces:
   carry to the next file in the same folder (§6.1). A per-run `mktemp` avoids
   the file-access error other scripts hit when reusing one shared staging
   directory (§5.3).
-- **The result is identified by exclusion, never `active document`.** A compare
-  that silently produces nothing leaves the base frontmost, and saving that
-  ships a change-free document that scores as garbage (§14.1). Used by
-  `word_redline.py`; kept here because the rule is the same for any save.
+- **The document acted on is the one that was named, never `active document`.**
+  A script should name the document it means, or find it by exclusion, rather
+  than take whichever one Word happens to have in front (§5.18). Used by
+  `word_redline.py`, where `compare` returns its result as a new document;
+  kept here because the rule is the same for any save.
 - **Health is evaluated before success is recorded**, not after (§14.1).
 - **`osascript` is killed with SIGKILL.** Blocked on an unanswered Apple event
   it ignores SIGTERM, so a plain timeout never fires (§14.2).
@@ -40,8 +41,14 @@ which reviewed the 21 scripts this one replaces:
   Reporting, which is a separate process: all 13 `tell process` blocks in the
   audited corpus targeted `"Microsoft Word"`, so none of them could ever see
   MERP's prompt (§12.1).
-- **Word is pre-warmed.** A cold start is ~30s; budgets that cover launch *and*
-  work are wrong in both directions at once (§10).
+- **Word is pre-warmed, and an already-running Word is left exactly as found.**
+  A cold start is ~30s, and budgets that cover launch *and* work are wrong in
+  both directions at once (§10). But warming never restarts a Word that is
+  already up: it returns the running instance untouched and does not claim
+  ownership of it, so the batch cannot quit someone else's session on the way
+  out. That matters beyond tidiness — the two sticky settings below live in
+  that instance, and losing them mid-batch would change every later PDF
+  without anything failing.
 
 PDF preset: `save as … file format format PDF` inherits whatever "Optimize for"
 was last chosen in Word's own Save As dialog. For print-fidelity output pick
@@ -618,6 +625,16 @@ class WordSession:
             )
             return False
 
+        if not self.launched_by_us:
+            # Starting clean only means no documents were open. Word itself may
+            # have been running, and a restart takes its sticky settings with
+            # it. Recovery is still worth more than the risk, so this warns
+            # rather than refusing — but it must not be silent.
+            logger.warning(
+                "[word] restarting a Word this run did not launch. If you set "
+                '"Optimize for: Best for printing" by hand, re-check it before '
+                "trusting the PDFs rendered after this point."
+            )
         self.restarts += 1
         logger.warning(f"[word] recycling (restart {self.restarts})")
         osa('tell application "Microsoft Word" to quit saving no', timeout=15)
