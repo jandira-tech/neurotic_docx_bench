@@ -170,13 +170,21 @@ Two data points, one confound:
 | **inline** | works (`run_batch_retry.sh`, `word-convert.sh`) | — |
 | **file** | reported `-1708` (`compare-documents.scpt`) | **works** — 529 `[ok]`, 400 outputs (`word_compare_batch.applescript`) |
 
-The `document i` + file cell is established by committed artifacts, not by inference.
+The `document i` + file cell rests on committed artifacts.
 `corpus/word_redlines_superdoc/compare.log` (tracked, 1,188 lines) records **529 `[ok]`**
 entries and five `[done] processed=N ok=N fail=0` summaries against 9 `[fail]`, and
 `corpus/word_redlines_superdoc/docx_redlines_word/` holds **400 `.docx`** outputs. Those
-files can only exist if `save as cmpDoc file name outP file format format document`
-succeeded from a script **file** run as `osascript <file>`. (529 `[ok]` against 400 files is
-expected: the log is append-only and outlives the manifest, which is exactly why the driver
+artifacts are **consistent with** `save as cmpDoc file name outP file format format document`
+succeeding from a script **file**: the `[ok] <pairId>` and `[done] processed=… ok=… fail=…`
+lines are exactly the format `word_compare_batch.applescript`'s `logLine` handler emits, and
+`word_compare_driver.sh:239` invokes that script as `osascript <file>`. Both halves of that
+are read off the current source.
+
+What the artifacts do **not** record is the invocation or the script revision in force at run
+time. So this is a chain of inference from code plus output, not a run transcript: it does
+not exclude those outputs having come from an inline variant, an earlier revision, or a hand
+run. Treat it as strong corroboration of the `document i` + file cell, not as proof of it.
+(529 `[ok]` against 400 files is expected: the log is append-only and outlives the manifest, which is exactly why the driver
 requires `[ok]` *and* an existing redline before counting a pair done.)
 
 The inline + `active document` cell has its own artifact:
@@ -439,8 +447,8 @@ the next access re-prompts. That is the whole once-versus-every-time split:
 
 | Behaviour | Scripts | Why |
 |---|---|---|
-| **Never prompts** | `run_batch_retry.sh`, `word_compare_driver.sh`, `word-convert.sh` | Everything is staged inside a container Word already owns, so Powerbox is never invoked |
-| **Prompts once, then persists** | `word-convert.sh` (also stages) | `set frontmost to true` *inside* the Grant handler, then `click button "Select..."` and `key code 36`. Word is active, so the panel renders and accepts — the grant completes and carries (§6.1) |
+| **Never prompts** | `run_batch_retry.sh`, `word_compare_driver.sh`, `word-convert.sh` **as shipped** | Everything is staged inside a container Word already owns, so Powerbox is never invoked |
+| **Prompts once, then persists** | `word-convert.sh` **only when staging is bypassed** | Not a second behaviour of the same run: `word-convert.sh:49` stages into `$HOME/Library/Containers/com.microsoft.Word/Data/tmp/…` unless `WORD_CONVERT_STAGE_ROOT` overrides that root to a path outside the container. Only then is Powerbox invoked, and only then does its Grant handler run — `set frontmost to true` (236) before `click button "Select..."` and `key code 36`, so the panel renders and accepts and the grant carries (§6.1) |
 | **Prompts every file, and answers nothing** | `word-open-check.mjs`, `redline-word-campaign.ts` | They AXPress Grant/Open/Select/Allow in a loop *without* activating Word, so the panel never renders to accept the press. A UI round-trip per file that grants nothing |
 | **Prompts every time** | family A, `batch_word_to_pdf.scpt`, `render/word.py`, `word_validate_batch.py`, both `word-open-probe.sh`, `word-probe-sweep.sh`, `redline-sweep.sh` | No handler. The dialog stands until the AppleEvent times out; nothing is ever granted |
 | **Prompts every time, and denies** | `word_dialog_watchdog.applescript` | Its button list is `{OK, Ok, Cancel, Close, Don't Save, No}` — no Grant, Select, Open or Allow. On a Grant sheet it presses **Cancel**, so it actively refuses the grant on every appearance |
@@ -467,6 +475,15 @@ whether a prompt appears.
 **Persistence is conditional on the panel flow actually completing — and it only completes
 when Word is frontmost.** This is the real variable, and exactly one script gets it right.
 
+**Provenance, because the three inputs are not the same kind of claim.** Two are *reported*
+and were not verified here: that a completed grant persists at all, which `CLAUDE.md` states
+and this audit did not re-test; and the target-machine observation that some scripts ask once
+while others ask on every file, which is Arthur's, on the machine these run on — no macOS,
+Word or `osascript` was available in the authoring environment. The third, the table below, is
+*code-derived* and checkable by line number: which script activates Word before pressing, and
+where. The conclusion is the two reports joined by the code. If either report is wrong the
+join does not hold, and the table still stands on its own.
+
 `CLAUDE.md` states the mechanism: the Grant File Access sequence *"`Select…` →
 `NSOpenPanel` → grant … **will not render/accept `AXPress` unless Word is the active
 app**"*. So a handler that presses buttons without activating Word is pressing at a panel
@@ -474,7 +491,7 @@ that never rendered; nothing is granted, and the next file prompts again.
 
 | Script | Activates Word for the grant? | Result |
 |---|---|---|
-| `word-convert.sh` | **Yes** — `set frontmost to true` at line 236, inside the Grant handler, immediately before `click button "Select..."` and `key code 36` | Flow completes; **grant persists** |
+| `word-convert.sh` | **Yes** — `set frontmost to true` at line 236, inside the Grant handler, immediately before `click button "Select..."` and `key code 36`. It also `activate`s Word at line 147 on the ordinary open path, so Word is frontmost before a sheet can even appear | Flow completes; **grant persists**. Reached only when `WORD_CONVERT_STAGE_ROOT` moves staging outside the container (49); as shipped it stages inside and never prompts |
 | `word-open-check.mjs` | No. Its two `activate` calls are elsewhere — forcing the GUI launch during warm-up (827) and taking a screenshot after a clean verdict (894). `grantFileAccess()` AXPresses without activating | Flow does not complete; re-prompts |
 | `redline-word-campaign.ts` | No, and it runs a bouncer that pushes Word *out* of frontmost every 0.5 s | Flow cannot complete; re-prompts |
 
@@ -742,9 +759,16 @@ either. Fixing button names would change nothing; the process target is the bloc
 
 1. **Do not create the condition.** MERP fires on unclean exit, so a graceful
    `quit saving no` that actually succeeds produces no dialog at all. This is the only option
-   that is not suppression, and three of the four killing scripts already escalate rather
-   than kill outright (§12's table); `word_validate_batch.py` is the exception and goes
-   straight to `pkill -x`. Uncertainty: none about the mechanism, but a wedged Word is
+   that is not suppression, and three of the four killing scripts already try the graceful
+   quit first (§12's table): `word-probe-sweep.sh` (24–26), `word_compare_driver.sh` and
+   `word-convert.sh` (130–134) all issue `quit saving no` before any signal.
+   `word_validate_batch.py` is the exception and goes straight to `pkill -x` (25).
+
+   That count answers "who gives Word a chance to exit cleanly", which is the question
+   MERP turns on. It is **not** the same as "who never reaches an unclean kill" — only two
+   stop short of SIGKILL (`word_compare_driver.sh` and `word-convert.sh`, both ending at
+   `pkill -x`); `word-probe-sweep.sh` escalates to `pkill -9 -f`, so whenever its graceful
+   quit fails it lands exactly where this candidate is trying not to be. Uncertainty: none about the mechanism, but a wedged Word is
    precisely the case where the graceful quit fails, which is when the kill — and the dialog
    — happen.
 2. **A watchdog that targets the reporter's own process.** The direct analogue of clicking
@@ -805,13 +829,25 @@ pattern match (`-f`) that can match more than Word.
    the Office-wide diagnostic setting — rather than per batch; a kill loop will otherwise
    raise it on every recovery.
 5. **Better than cleaning up: do not generate the state.** Microsoft documents
-   `Options.SaveInterval = 0` as AutoRecover's off switch — that is the VBA object model
-   member, documented on Microsoft Learn, not the Preferences page cited in the sources
-   below, which covers the GUI control (Preferences → Save) only. Set it
-   once for the batch session and step 4's first half becomes unnecessary. The AppleScript
-   term for it should be read off the local dictionary rather than guessed —
-   `sdef /Applications/Microsoft\ Word.app | grep -i 'save interval'`. Restore it afterwards;
-   a benchmark harness that permanently disables a human's autosave is not a good guest.
+   `Options.SaveInterval = 0` as AutoRecover's off switch: *"Returns or sets the time
+   interval in minutes for saving AutoRecover information… Set the **SaveInterval** property
+   to 0 (zero) to turn off saving AutoRecover information."* — [Options.SaveInterval property
+   (Word), Microsoft Learn](https://learn.microsoft.com/en-us/office/vba/api/word.options.saveinterval).
+   That is the VBA object model member, not the Preferences page cited in the sources below,
+   which covers the GUI control (Preferences → Save) only.
+
+   **Applicability is not established, and the page does not establish it.** That reference
+   names no Office or Word version and does not distinguish Windows from Mac (verified
+   against its source, `MicrosoftDocs/VBA-Docs/api/Word.Options.SaveInterval.md`, whose
+   front-matter carries only `ms.date: 06/08/2017` and no applies-to). Nor does VBA
+   availability imply an AppleScript equivalent — they are separate surfaces, and these
+   scripts drive Word through AppleScript. So read the term off the local dictionary before
+   relying on it, rather than guessing or assuming parity:
+   `sdef /Applications/Microsoft\ Word.app | grep -i 'save interval'`. If it is absent, this
+   step does not apply on that machine and step 4's first half stays necessary.
+
+   Set it once for the batch session and restore it afterwards; a benchmark harness that
+   permanently disables a human's autosave is not a good guest.
 6. Re-warm before the next document. Do not let the next file's timeout pay for the cold
    start (§10).
 
@@ -1020,10 +1056,20 @@ them worth writing down.
 
 ## 15. The replacement pair
 
-The audit's conclusions are implemented as two scripts in
-`neurotic_docx_bench/scripts/`. They are a pair on purpose: the redline script
-imports the PDF script rather than restating it, so the process lifecycle, the
-container staging, the watchdogs and the PDF export exist once.
+The audit's conclusions are implemented, and they are implemented in **one** of the three
+repositories this document spans (§1): the `neurotic_docx_bench` repo, at
+`scripts/word_pdf.py` and `scripts/word_redline.py`, with their specs at
+`tests/test_word_pdf.py` and `tests/test_word_redline.py`.
+
+**This file is copied verbatim into all three repos**, so in a `jubarte-first` or
+`jubarte-redlines` checkout there is no `scripts/word_pdf.py` and no
+`neurotic_docx_bench/` directory — nothing at that path to run or inspect. Read this section
+there as a cross-reference to the sibling repository, not as a description of the checkout
+you are in. Everything below is committed code in `neurotic_docx_bench`, not a proposal.
+
+They are a pair on purpose: the redline script imports the PDF script rather than restating
+it, so the process lifecycle, the container staging, the watchdogs and the PDF export exist
+once.
 
 | | `word_pdf.py` | `word_redline.py` |
 |---|---|---|
@@ -1051,9 +1097,83 @@ container staging, the watchdogs and the PDF export exist once.
 | §5, §6 one poison file costing the batch | Any failure recycles Word before the next item |
 | §9 concurrency | Neither script takes `--jobs`. Word is single-instance and user-session-bound; a second worker would drive the same instance |
 
+### Malformed documents: decline, close, skip
+
+A file Word cannot read is an ordinary outcome in this corpus, not an incident. The contract
+is the same in both scripts and both modes:
+
+1. **Answer the repair prompt "No."** Matched on *window text* —
+   `Word found unreadable content`, `Do you want to recover the contents of this document` —
+   not on a button name, so it cannot fire on an unrelated alert. "Yes" would make Word
+   rewrite the document, and the benchmark would then be measuring Word's repair rather than
+   the file it was handed. If the button is unreachable, Escape. This is
+   `word-convert.sh`'s `decline_unreadable_dialog`, which is the one handler in the audited
+   corpus that gets this right; it now runs *before* the generic dismiss handlers, which
+   would otherwise press "OK" on a repair sheet.
+2. **Close whatever is open** — `close every document saving no`.
+3. **Record it and move to the next item.** No restart. A malformed document costs one
+   failed open, not a ~30s Word relaunch.
+
+**Word is restarted only on evidence that Word itself is the problem**, which is two
+conditions, not one:
+
+- `close every document saving no` leaves documents still open, i.e. Word did not come back
+  clean; or
+- **three failures in a row** (`--poison-streak`). This is the §5/§6 finding: after a bad
+  document Word keeps answering Apple events while returning EMPTY documents for every later
+  open, with no error at all — one poison file cost 203 others. The paragraph-count check on
+  every open is what catches that, and a run of failures is what it looks like from outside.
+
+In one-osascript mode the same three steps are the batch script's per-item
+`try … on error … close every document saving no … end try`; the repair prompt is answered
+concurrently by the watchdog, which runs in its own process and can act while the batch
+script is blocked on `open`.
+
+### One osascript for the whole job
+
+`word_pdf.py --one-osascript` runs the folder inside a single monolithic AppleScript.
+`word_redline.py --one-redline-osascript` runs **two**: every comparison, then every PDF.
+Two, not one, because Word yields a comparison only as an open document — every redline
+`.docx` has to exist on disk before anything can be rendered from it, so the second script's
+input list is the first script's output list, and one wedge would otherwise lose both halves
+of the work. The second script is `word_pdf`'s own batch script unchanged: a redline `.docx`
+is a `.docx`.
+
+What this actually buys is a process spawn and an Apple-event connection per item. It is
+**not** the per-osascript permission prompt that `CLAUDE.md` rule 1 claims, which §5.1 found
+unsupported — TCC automation grants are keyed on the responsible client app and persist.
+The mode is offered because the folder-sized batch is the shape the old corpus used.
+
+What it costs:
+
+- **Every input is staged before the run starts**, because the manifest references all of
+  them at once. For a 1,224-document folder that is 1,224 copies live in Word's container
+  until the run ends.
+- **Nothing can act between items.** No per-item recycle, no per-item budget — only the
+  batch script's own `try` block.
+
+Neither is a reason to avoid it, and both are reasons the per-item mode stays the default.
+
+**Wedges are resumed, not retried wholesale.** The batch script writes `[ok]` or `[fail]`
+per item and `[done]` at the end. Three outcomes, and they are not interchangeable: `[ok]`
+and `[fail]` are final, because a malformed document will be malformed next pass too; an item
+with **no line at all** was never reached, which is the only case worth another pass. Those
+items alone go into the next manifest, after Word is recycled — so a wedge costs the
+remainder of one pass, not the batch. Three passes by default, then the item is reported as
+never reached.
+
+Two details that exist because a batch is not a loop. Paths reach the script through a **TSV
+manifest** named by one of exactly two argv arguments, never on argv itself — a thousand
+absolute paths would be tens of thousands of characters against `ARG_MAX`, and staged names
+are sanitised (`safe_stage_name`) because a tab in a filename would split one manifest row
+into two and silently misalign every field after it. And the summary labels batch timings
+**"seconds per document (batch avg)"** rather than "median seconds", because a batch pass
+times the whole run and cannot say what any single document cost.
+
 ### What they deliberately do not do
 
 - **No parallelism.** See §9 — it needs separate macOS user sessions or VMs, not threads.
+  One-osascript mode is not parallelism: it is still one document at a time, in one Word.
 - **No PDF preset control.** `save as … file format format PDF` inherits the last
   "Optimize for" choice from Word's own Save As dialog; nothing in AppleScript sets it.
   `--check-preset` (on by default) prints the reminder to pick the second option,

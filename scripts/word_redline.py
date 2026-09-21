@@ -73,6 +73,7 @@ if str(_HERE) not in sys.path:
     sys.path.insert(0, str(_HERE))
 
 from word_pdf import (  # noqa: E402  (must follow the sys.path guard above)
+    _EXPORT_BATCH,
     Stage,
     Watchdogs,
     WordSession,
@@ -83,6 +84,9 @@ from word_pdf import (  # noqa: E402  (must follow the sys.path guard above)
     osa,
     preflight,
     preset_notice,
+    recover_after_failure,
+    run_batch_with_resume,
+    safe_stage_name,
 )
 
 MARKUP_REMINDER = (
@@ -194,6 +198,8 @@ class PairResult:
     revisions: int = -1
     error: str = ""
     seconds: float = 0.0
+    timing_exact: bool = True
+    """False when `seconds` is a per-pair average from a batch pass."""
 
     @property
     def label(self) -> str:
@@ -260,6 +266,89 @@ end run
 """.strip()
 
 
+# The same comparison, once per manifest row, inside one osascript. The
+# per-pair `try … on error … close every document saving no … end try` IS the
+# malformed-document contract: answer nothing, close whatever is open, record
+# it, move to the next pair. `[ok]` carries the revision count as a third
+# field; the repair prompt is answered concurrently by the watchdog.
+_COMPARE_BATCH = r"""
+on splitTabs(t)
+  set od to AppleScript's text item delimiters
+  set AppleScript's text item delimiters to tab
+  set parts to text items of t
+  set AppleScript's text item delimiters to od
+  return parts
+end splitTabs
+
+on logLine(logPath, msg)
+  do shell script "printf '%s\\n' " & quoted form of msg & " >> " & quoted form of logPath
+end logLine
+
+on run argv
+  set manifestPath to item 1 of argv
+  set logPath to item 2 of argv
+  set rows to paragraphs of (read POSIX file manifestPath)
+  tell application "Microsoft Word"
+    set displayAlerts to false
+  end tell
+  set okCount to 0
+  set failCount to 0
+  repeat with r in rows
+    set rowText to r as string
+    if rowText is not "" then
+      set f to my splitTabs(rowText)
+      if (count of f) is 4 then
+        set itemId to item 1 of f
+        set baseP to item 2 of f
+        set revP to item 3 of f
+        set outP to item 4 of f
+        set revisionCount to -1
+        try
+          with timeout of 900 seconds
+            tell application "Microsoft Word"
+              open POSIX file baseP
+              set baseDoc to document 1
+              set baseName to name of baseDoc
+              if (count of paragraphs of baseDoc) is 0 then
+                close every document saving no
+                error "base loaded empty (Word could not read it)"
+              end if
+              compare baseDoc path revP detect format changes true ignore all comparison warnings true add to recent files false
+              set cmpDoc to missing value
+              set docCount to count of documents
+              repeat with i from 1 to docCount
+                set dd to document i
+                if (name of dd) is not baseName then set cmpDoc to dd
+              end repeat
+              if cmpDoc is missing value then
+                close every document saving no
+                error "compare produced no result document"
+              end if
+              try
+                set revisionCount to count of revisions of cmpDoc
+              end try
+              save as cmpDoc file name outP file format format document
+              close every document saving no
+            end tell
+          end timeout
+          set okCount to okCount + 1
+          my logLine(logPath, "[ok]" & tab & itemId & tab & revisionCount)
+        on error errMsg
+          set failCount to failCount + 1
+          try
+            tell application "Microsoft Word" to close every document saving no
+          end try
+          my logLine(logPath, "[fail]" & tab & itemId & tab & errMsg)
+        end try
+      end if
+    end if
+  end repeat
+  my logLine(logPath, "[done]" & tab & okCount & tab & failCount)
+  return "ok=" & okCount & " fail=" & failCount
+end run
+""".strip()
+
+
 def compare_pair(
     staged_base: Path, staged_revision: Path, staged_out: Path, *, timeout: float = 300.0
 ) -> tuple[bool, int, str]:
@@ -293,6 +382,9 @@ def redline_folders(
     timeout: float = 300.0,
     pdf_timeout: float = 180.0,
     session: WordSession | None = None,
+    one_osascript: bool = False,
+    max_passes: int = 3,
+    poison_streak: int = 3,
 ) -> list[PairResult]:
     """Redline every pair drawn from two folders. Serial, by necessity.
 
@@ -300,6 +392,9 @@ def redline_folders(
     equivalent of LibreOffice's `-env:UserInstallation`, so a second worker
     would drive the same instance. Parallelism needs separate macOS user
     sessions or VMs (§9), which is why there is no `--jobs`.
+
+    `one_osascript` runs the whole job as TWO monolithic AppleScripts — every
+    comparison, then every PDF — instead of one `osascript` per step per pair.
     """
     a_docs, b_docs = iter_docx(folder_a), iter_docx(folder_b)
     if cross:
@@ -326,52 +421,99 @@ def redline_folders(
             for a, b in pairs
         ]
 
-    results: list[PairResult] = []
     with Stage(prefix="wordredline") as stage:
         try:
-            for i, (base, revision) in enumerate(pairs, 1):
-                outputs = plan_outputs(base, revision, out_dir, docx_dir, emit)
-                label = f"{base.name} → {revision.name}"
-                if should_skip(outputs, force=force):
-                    results.append(
-                        PairResult(
-                            base=base,
-                            revision=revision,
-                            docx=outputs.docx,
-                            pdf=outputs.pdf,
-                            ok=True,
-                            skipped=True,
-                        )
-                    )
-                    logger.debug(f"[{i}/{len(pairs)}] skip (exists): {label}")
-                    continue
-
-                started = time.monotonic()
-                result = _redline_one(
-                    base,
-                    revision,
-                    outputs,
-                    stage=stage,
-                    timeout=timeout,
-                    pdf_timeout=pdf_timeout,
-                )
-                result.seconds = time.monotonic() - started
-                results.append(result)
-
-                if result.ok:
-                    note = "" if result.revisions < 0 else f", {result.revisions} revisions"
-                    logger.info(f"[{i}/{len(pairs)}] ok ({result.seconds:.1f}s{note}): {label}")
-                    if result.revisions == 0:
-                        logger.warning(f"  compared clean (no revisions): {label}")
-                else:
-                    logger.error(f"[{i}/{len(pairs)}] FAIL: {label} — {result.error}")
-                    # A bad document leaves Word answering but returning empty
-                    # documents for every later open, silently. Recycle rather
-                    # than carry on: in the old corpus one poison file cost 203.
-                    session.recycle(stage.inbox, stage.outbox, folder_a, folder_b)
+            run = _redline_batched if one_osascript else _redline_serial
+            return run(
+                pairs,
+                out_dir,
+                docx_dir,
+                emit,
+                stage=stage,
+                session=session,
+                folder_a=folder_a,
+                folder_b=folder_b,
+                force=force,
+                timeout=timeout,
+                pdf_timeout=pdf_timeout,
+                max_passes=max_passes,
+                poison_streak=poison_streak,
+            )
         finally:
             if owns_session:
                 session.quit_if_ours()
+
+
+def _redline_serial(
+    pairs: list[tuple[Path, Path]],
+    out_dir: Path,
+    docx_dir: Path | None,
+    emit: Emit,
+    *,
+    stage: Stage,
+    session: WordSession,
+    folder_a: Path,
+    folder_b: Path,
+    force: bool,
+    timeout: float,
+    pdf_timeout: float,
+    max_passes: int = 3,
+    poison_streak: int = 3,
+) -> list[PairResult]:
+    """One `osascript` per comparison, with the malformed-document path in Python."""
+    results: list[PairResult] = []
+    streak = 0
+    for i, (base, revision) in enumerate(pairs, 1):
+        outputs = plan_outputs(base, revision, out_dir, docx_dir, emit)
+        label = f"{base.name} → {revision.name}"
+        if should_skip(outputs, force=force):
+            results.append(
+                PairResult(
+                    base=base,
+                    revision=revision,
+                    docx=outputs.docx,
+                    pdf=outputs.pdf,
+                    ok=True,
+                    skipped=True,
+                )
+            )
+            logger.debug(f"[{i}/{len(pairs)}] skip (exists): {label}")
+            continue
+
+        started = time.monotonic()
+        result = _redline_one(
+            base,
+            revision,
+            outputs,
+            stage=stage,
+            timeout=timeout,
+            pdf_timeout=pdf_timeout,
+        )
+        result.seconds = time.monotonic() - started
+        results.append(result)
+
+        if result.ok:
+            streak = 0
+            note = "" if result.revisions < 0 else f", {result.revisions} revisions"
+            logger.info(f"[{i}/{len(pairs)}] ok ({result.seconds:.1f}s{note}): {label}")
+            if result.revisions == 0:
+                logger.warning(f"  compared clean (no revisions): {label}")
+        else:
+            streak += 1
+            logger.error(f"[{i}/{len(pairs)}] FAIL: {label} — {result.error}")
+            # Decline the repair prompt, close whatever is open, move on. A
+            # restart costs ~30s and is not what a malformed document needs.
+            recover_after_failure(session, stage.inbox, stage.outbox, folder_a, folder_b)
+            if streak >= poison_streak:
+                # Unless they keep failing. A Word degraded by a bad document
+                # answers normally and returns empty documents for everything
+                # after it (§5, §6), which is what a failure run looks like.
+                logger.warning(
+                    f"[word] {streak} failures in a row — recycling rather than "
+                    "trusting Word to still be reading documents"
+                )
+                session.recycle(stage.inbox, stage.outbox, folder_a, folder_b)
+                streak = 0
     return results
 
 
@@ -433,6 +575,155 @@ def _deliver(staged: Path, final: Path) -> None:
     shutil.copy2(staged, final)
 
 
+def _redline_batched(
+    pairs: list[tuple[Path, Path]],
+    out_dir: Path,
+    docx_dir: Path | None,
+    emit: Emit,
+    *,
+    stage: Stage,
+    session: WordSession,
+    folder_a: Path,
+    folder_b: Path,
+    force: bool,
+    timeout: float,
+    pdf_timeout: float,
+    max_passes: int = 3,
+    poison_streak: int = 3,  # part of the shared dispatch signature; serial-only
+) -> list[PairResult]:
+    """Two monolithic AppleScripts: every compare, then every PDF.
+
+    They have to be two. Word yields a comparison only as an open document, so
+    every redline .docx has to exist on disk before anything can be rendered from
+    it — the second script's input list is the first script's output list. Doing
+    both in one script would mean one wedge losing both halves of the work.
+
+    The second script is `word_pdf`'s own `_EXPORT_BATCH`, unchanged: a redline
+    .docx is a .docx, and nothing about rendering one differs.
+    """
+    outcomes: dict[tuple[Path, Path], PairResult] = {}
+    todo: list[tuple[Path, Path]] = []
+    plans: dict[tuple[Path, Path], Outputs] = {}
+    for base, revision in pairs:
+        outputs = plan_outputs(base, revision, out_dir, docx_dir, emit)
+        plans[(base, revision)] = outputs
+        if should_skip(outputs, force=force):
+            outcomes[(base, revision)] = PairResult(
+                base=base,
+                revision=revision,
+                docx=outputs.docx,
+                pdf=outputs.pdf,
+                ok=True,
+                skipped=True,
+            )
+        else:
+            todo.append((base, revision))
+    if not todo:
+        return [outcomes[p] for p in pairs]
+
+    # ── pass 1: every comparison ────────────────────────────────────────────
+    rows: list[tuple[str, ...]] = []
+    staged: dict[str, tuple[tuple[Path, Path], Path, Path, Path]] = {}
+    for i, (base, revision) in enumerate(todo):
+        item = str(i)
+        stem = redline_stem(base, revision)
+        staged_base = stage.place_as(base, safe_stage_name(i, f"base__{stem}.docx"))
+        staged_rev = stage.place_as(revision, safe_stage_name(i, f"rev__{stem}.docx"))
+        staged_docx = stage.outbox / safe_stage_name(i, f"{stem}.docx")
+        rows.append((item, str(staged_base), str(staged_rev), str(staged_docx)))
+        staged[item] = ((base, revision), staged_base, staged_rev, staged_docx)
+
+    logger.info(f"[batch] one osascript for {len(rows)} comparison(s)")
+    started = time.monotonic()
+    compared = run_batch_with_resume(
+        _COMPARE_BATCH,
+        rows,
+        stage.root or stage.inbox.parent,
+        per_item_timeout=timeout,
+        session=session,
+        recycle_paths=(stage.inbox, stage.outbox, folder_a, folder_b),
+        max_passes=max_passes,
+        label=" compare",
+    )
+    per_pair = (time.monotonic() - started) / max(1, len(rows))
+
+    # ── pass 2: every PDF, from the redlines that pass 1 actually produced ───
+    pdf_rows: list[tuple[str, ...]] = []
+    pdf_staged: dict[str, Path] = {}
+    for item, (pair, staged_base, staged_rev, staged_docx) in staged.items():
+        staged_base.unlink(missing_ok=True)
+        staged_rev.unlink(missing_ok=True)
+        ok, detail = compared[item]
+        if ok and staged_docx.exists() and staged_docx.stat().st_size > 0:
+            if plans[pair].pdf is not None:
+                staged_pdf = stage.outbox / f"{staged_docx.stem}.pdf"
+                pdf_rows.append((item, str(staged_docx), str(staged_pdf)))
+                pdf_staged[item] = staged_pdf
+
+    rendered: dict[str, tuple[bool, str]] = {}
+    if pdf_rows:
+        logger.info(f"[batch] one osascript for {len(pdf_rows)} redline PDF(s)")
+        rendered = run_batch_with_resume(
+            _EXPORT_BATCH,
+            pdf_rows,
+            stage.root or stage.inbox.parent,
+            per_item_timeout=pdf_timeout,
+            session=session,
+            recycle_paths=(stage.inbox, stage.outbox, folder_a, folder_b),
+            max_passes=max_passes,
+            label=" pdf",
+        )
+
+    # ── deliver ─────────────────────────────────────────────────────────────
+    for item, (pair, _base_in, _rev_in, staged_docx) in staged.items():
+        base, revision = pair
+        outputs = plans[pair]
+        result = PairResult(
+            base=base, revision=revision, seconds=per_pair, timing_exact=False
+        )
+        ok, detail = compared[item]
+        result.revisions = parse_revision_count(detail) if ok else -1
+        produced = staged_docx.exists() and staged_docx.stat().st_size > 0
+
+        if not ok or not produced:
+            result.error = classify_failure(0 if ok else 1, detail, produced)
+            logger.error(f"[batch] FAIL: {result.label} — {result.error}")
+        elif outputs.pdf is not None:
+            pdf_ok, pdf_detail = rendered.get(item, (False, "PDF pass never ran"))
+            staged_pdf = pdf_staged.get(item)
+            pdf_made = (
+                staged_pdf is not None
+                and staged_pdf.exists()
+                and staged_pdf.stat().st_size > 0
+            )
+            if pdf_ok and pdf_made:
+                assert staged_pdf is not None
+                _deliver(staged_pdf, outputs.pdf)
+                result.pdf = outputs.pdf
+                result.ok = True
+            else:
+                result.error = (
+                    "redline saved but PDF export failed: "
+                    + classify_failure(0 if pdf_ok else 1, pdf_detail, pdf_made)
+                )
+                logger.error(f"[batch] FAIL: {result.label} — {result.error}")
+        else:
+            result.ok = True
+
+        if result.ok and outputs.docx is not None:
+            _deliver(staged_docx, outputs.docx)
+            result.docx = outputs.docx
+        if result.ok and result.revisions == 0:
+            logger.warning(f"  compared clean (no revisions): {result.label}")
+
+        staged_docx.unlink(missing_ok=True)
+        if (staged_pdf := pdf_staged.get(item)) is not None:
+            staged_pdf.unlink(missing_ok=True)
+        outcomes[pair] = result
+
+    return [outcomes[p] for p in pairs]
+
+
 # ─── reporting ───────────────────────────────────────────────────────────────
 
 
@@ -453,7 +744,12 @@ def report_pairs(results: list[PairResult], title: str = "Word redline") -> int:
         table.add_row("compared clean (0 revisions)", str(len(clean)), style="yellow")
     if done:
         seconds = sorted(r.seconds for r in done)
-        table.add_row("median seconds", f"{seconds[len(done) // 2]:.1f}")
+        middle = f"{seconds[len(done) // 2]:.1f}"
+        if all(r.timing_exact for r in done):
+            table.add_row("median seconds", middle)
+        else:
+            # A batch pass times the whole run, not each pair in it.
+            table.add_row("seconds per pair (batch avg)", middle)
         counted = [r.revisions for r in done if r.revisions >= 0]
         if counted:
             table.add_row("total revisions", str(sum(counted)))
@@ -497,6 +793,13 @@ def main(
     force: bool = typer.Option(False, "--force", help="Redo pairs whose output exists."),
     timeout: float = typer.Option(300.0, "--timeout", help="Seconds per comparison."),
     pdf_timeout: float = typer.Option(180.0, "--pdf-timeout", help="Seconds per PDF export."),
+    one_osascript: bool = typer.Option(
+        False,
+        "--one-redline-osascript",
+        help="Run the job as TWO monolithic AppleScripts — every comparison, then "
+        "every PDF — instead of one osascript per step per pair. Resumes "
+        "automatically if either run wedges.",
+    ),
     check_preset: bool = typer.Option(
         True, "--check-preset/--no-check-preset", help="Print the Word-settings reminders."
     ),
@@ -545,6 +848,7 @@ def main(
             timeout=timeout,
             pdf_timeout=pdf_timeout,
             session=session,
+            one_osascript=one_osascript,
         )
         session.quit_if_ours()
     raise typer.Exit(report_pairs(results, f"redline: {folder_a.name} → {folder_b.name}"))
