@@ -139,7 +139,7 @@ It conflates two unrelated prompts:
    behaviour corroborates it: it spawns a fresh `osascript` per batch chunk, per restart,
    per precondition probe, and never mentions a repeated prompt.
 2. **Word's own "Grant File Access" sandbox sheet.** Raised by Word's sandbox when it reads
-   or writes outside its container. This one *is* per file or per folder, and it is the one
+   or writes outside its container. This one *is* per file (§6.1), and it is the one
    that container staging solves.
 
 Rule 1's arithmetic belongs to prompt 2; its mechanism is attributed to prompt 1. The
@@ -252,8 +252,27 @@ container: family B and `word-convert.sh` use the app container
 (`~/Library/Containers/com.microsoft.Word/Data/tmp`), family C uses the Group container
 (`~/Library/Group Containers/UBF8T346G9.Office`), and nothing explains the difference.
 
-This is the most expensive unresolved disagreement in the corpus, because it decides whether
-an unattended batch runs at all.
+**§6.1 resolves this, and it resolves toward staging.** `CLAUDE.md` rule 3's *arithmetic*
+was right even though its neighbouring claim about folder grants persisting was not: because
+the grant does not carry from one file to the next, an out-of-container batch pays a prompt
+**per file**, not per folder. That is 232 prompts for `batch_convert.scpt` and 1,224 for
+`batch_sanity_pdf.applescript` — answered by a script where one exists, unanswerable where
+one does not. Staging is the only strategy that makes the prompt not happen.
+
+That does not make the outside-stagers wrong about *their* problem. The file-access error
+they recorded under rapid sandbox-tmp reuse is a real report, and staging into one shared
+container directory is what provokes it. The two constraints are not actually in conflict,
+and one script already satisfies both: `word-convert.sh` stages inside the app container
+**and** takes a fresh `mktemp -d` per run, so no two runs reuse a path. That pattern — inside
+the container, unique subdirectory per run, cleaned on exit — is what §5.3 should have
+recommended from the start.
+
+What stays open is narrower and much cheaper: **which** container. Family B and
+`word-convert.sh` use the app container
+(`~/Library/Containers/com.microsoft.Word/Data/tmp`), family C the Group container
+(`~/Library/Group Containers/UBF8T346G9.Office`). Both are in Word's entitlements and
+neither prompts; nothing in the corpus explains the choice, and nothing so far suggests it
+matters.
 
 ### 5.4 `run_batch_retry.sh` can save a base document as a redline, silently
 
@@ -394,14 +413,14 @@ probes with a cheap `get name`, and if it fails, exits with the exact one-liner 
 is the correct treatment — this prompt cannot be dismissed programmatically, so the only
 options are "already granted" or "stop and tell the human".
 
-**P2 — Word's "Grant File Access" sandbox sheet.** Per file or per folder, for paths outside
+**P2 — Word's "Grant File Access" sandbox sheet.** Per file (§6.1), for paths outside
 Word's container. Three viable strategies:
 
 | Strategy | Who | Cost |
 |---|---|---|
 | Stage inside the container | `run_batch_retry.sh`, `word_compare_driver.sh`, `word-convert.sh` | One copy per file; zero prompts |
 | Dismiss via Accessibility AXPress | `word-convert.sh`, `redline-word-campaign.ts`, `word-open-check.mjs` | A UI round-trip per file; needs the Accessibility grant |
-| Grant the folder once by hand | `CLAUDE.md` notes it persists | One human interaction per folder, per machine |
+| ~~Grant the folder once by hand~~ | `CLAUDE.md` claims this persists; §6.1 reports it does not | **Not a strategy.** The grant does not carry to the next file, so this is one human interaction *per file* |
 | Nothing | family A, `render/word.py`, all three probes/sweeps | A human at the keyboard, or a hang |
 
 ### 6.1 Why some scripts prompt once and some prompt every time
@@ -419,7 +438,7 @@ the next access re-prompts. That is the whole once-versus-every-time split:
 | Behaviour | Scripts | Why |
 |---|---|---|
 | **Never prompts** | `run_batch_retry.sh`, `word_compare_driver.sh`, `word-convert.sh` | Everything is staged inside a container Word already owns, so Powerbox is never invoked |
-| **Prompts once per folder** | `word-convert.sh` (also stages), `word-open-check.mjs`, `redline-word-campaign.ts` | They complete the flow. `word-convert.sh` clicks `Select…` then `key code 36` to confirm the panel; the other two AXPress buttons matching Grant/Open/Select/Allow in a loop, so they walk `Select…` *and* the panel's confirm |
+| **Prompts per file, but answers itself** | `word-convert.sh` (also stages), `word-open-check.mjs`, `redline-word-campaign.ts` | They complete the flow — `word-convert.sh` clicks `Select…` then `key code 36`; the other two AXPress Grant/Open/Select/Allow in a loop — but the grant does not carry to the next file, so this is a UI round-trip *per file*, paid by the script rather than the human |
 | **Prompts every time** | family A, `batch_word_to_pdf.scpt`, `render/word.py`, `word_validate_batch.py`, both `word-open-probe.sh`, `word-probe-sweep.sh`, `redline-sweep.sh` | No handler. The dialog stands until the AppleEvent times out; nothing is ever granted |
 | **Prompts every time, and denies** | `word_dialog_watchdog.applescript` | Its button list is `{OK, Ok, Cancel, Close, Don't Save, No}` — no Grant, Select, Open or Allow. On a Grant sheet it presses **Cancel**, so it actively refuses the grant on every appearance |
 
@@ -432,8 +451,8 @@ and write to another, so there are *two* folders to grant, and the output folder
 touched at `save as` — i.e. as the document is finished and closed. Counting distinct folders
 each generated batch makes Word touch: `batch_convert.scpt` 2,
 `batch_jubarte_lossless_pdf.applescript` 2 (it writes into a `pdf/` subfolder),
-`batch_sanity_pdf.applescript` **6** — so six grants minimum for that one even if every grant
-persists perfectly.
+`batch_sanity_pdf.applescript` **6**. Those are the folder counts; since the grant does not
+carry between files, the prompt count is the *file* count — 1,224 for that one.
 
 **"Depending on where the script is run"** has a concrete cause in at least one script:
 `redline-word-campaign.ts` computes `PROBE_DIR` as `process.cwd()`-relative
@@ -441,13 +460,28 @@ persists perfectly.
 previously granted run prompts again. That is invocation location literally determining
 whether a prompt appears.
 
-**One thing this does not settle, and it needs a check on the machine.** Whether Word
-persists the grant for the *enclosing folder* or only for the *item selected in the panel*.
-If it is per item, then even the handlers that complete the flow will re-prompt per file, and
-the "prompts once per folder" row above is wrong for them. The distinguishing test is cheap:
-run `word-open-check.mjs` twice over two different files in one already-granted folder and
-see whether the second file prompts. Until that is done, treat the middle row as *at most*
-once per folder, not as established.
+**The grant does not carry to the enclosing folder.** Reported from the target machine:
+completing the panel for one file does not stop the next file in the same folder prompting
+again. Whether the grant is scoped to the selected item, or scoped to the folder but lost
+when Word relaunches, is not settled here — but the conclusion does not depend on which,
+because these scripts restart Word constantly anyway.
+
+Two consequences follow, and they are the practical ones:
+
+- **Completing the dialog is a per-file tax, not a fix.** The middle row above is
+  automation, not avoidance: the script clicks so the human does not have to, but the
+  round-trip is paid on every file, and it needs the Accessibility grant to work at all.
+- **Container staging is not one option among three — it is the only one that scales.**
+  It is the only strategy in the corpus that makes the prompt not happen, rather than making
+  something answer it.
+
+**This contradicts `CLAUDE.md`.** Its macOS section states: *"Granting a folder once persists
+Word's access to it, so subsequent opens from that folder need no activation."* Observation
+says otherwise. That claim is attributed to `report_one/scripts/compare-docs.sh` and
+`report_one/scripts/redline-word-pdf.py` — neither of which exists in any of these three
+checkouts (§5.13), so the attribution cannot be checked either. It is the third piece of
+`CLAUDE.md` Word lore this audit has found unsupported, after the per-process TCC rule (§5.1)
+and the file-versus-inline `-1708` rule (§5.2).
 
 **Scores and why**
 
@@ -761,8 +795,10 @@ what it is.
 
 The merges worth making are small and specific:
 
-1. **Settle §5.3** (staging), because until the container question has an answer every one of
-   these scripts is guessing about the thing that decides whether it can run unattended.
+1. **Adopt `word-convert.sh`'s staging pattern everywhere** (§5.3): inside a container Word
+   owns, a fresh `mktemp -d` per run, cleaned on exit. §6.1 settled the question — grants do
+   not carry between files, so out-of-container batches pay a prompt per file, and staging is
+   the only strategy that avoids rather than answers it.
 2. **Characterise §5.2's two axes** with the four runs in that section — the selector pair
    from a file, then the same pair inline to fill the unobserved cell. That settles how this
    machine behaves; it cannot settle the `-1708` report itself, whose script was never
