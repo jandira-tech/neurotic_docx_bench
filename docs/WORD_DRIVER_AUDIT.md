@@ -1530,8 +1530,9 @@ machine.
 
 ### One osascript for the whole job
 
-`word_pdf.py --one-osascript` runs the folder inside a single monolithic AppleScript.
-`word_redline.py --one-redline-osascript` runs **two**: every comparison, then every PDF.
+This is the **default** in both scripts; `--no-one-osascript` and
+`--no-one-redline-osascript` are the opt-outs. `word_pdf.py` runs the folder inside a single
+monolithic AppleScript. `word_redline.py` runs **two**: every comparison, then every PDF.
 Two, not one, because Word yields a comparison only as an open document — every redline
 `.docx` has to exist on disk before anything can be rendered from it, so the second script's
 input list is the first script's output list, and one wedge would otherwise lose both halves
