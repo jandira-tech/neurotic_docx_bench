@@ -203,14 +203,23 @@ that caveat carried through:
   If the report is right, file-vs-inline matters when targeting `active document` — which is
   the README's own rule, in the one row where it could be tested.
 
-Under that same *if*, neither factor appears only in failing cells, so neither would be a
-main effect and the failure would sit on the *interaction*. An earlier draft of this section
-claimed the evidence identified `active document` as the cause; it does not, and the claim
-has been withdrawn. Both single-factor readings remain live, the second-hand cell is
-unconfirmed, the fourth cell is empty, and nothing here licenses rewriting
+Under that same *if*, one thing is ruled out and nothing is ruled in. Neither factor acts
+**alone**: a pure `active document` effect would make inline + `active document` fail, and it
+works; a pure `file` effect would make file + `document i` fail, and it works. But ruling out
+two models does not establish a third. Three cells cannot identify four parameters, so the
+matrix cannot distinguish an interaction from anything else — the reported failure is
+*consistent with* an interaction, which is not the same as sitting on one.
+
+A larger hole sits outside the matrix: `compare-documents.scpt` is not in the tree, so there
+is no way to confirm it differs from the working scripts *only* along these two axes. A third
+difference would put the cause outside this 2×2 entirely.
+
+So the classification stays open. An earlier draft claimed the evidence identified
+`active document` as the cause, and a later one claimed the failure sat on the interaction;
+both overreached and both are withdrawn. Nothing here licenses rewriting
 `batch_word_to_pdf.scpt` or deleting family A.
 
-Two experiments close it, not one. From a **file**, the same `save as` against
+Four runs close it, as two pairs. From a **file**, the same `save as` against
 `active document` and once against `document 1` — that tests the selector. Then the same
 pair **inline**, which fills the empty cell and tests file-vs-inline. Only both together
 separate the two factors. If file-vs-inline is not the variable,
@@ -614,9 +623,9 @@ The merges worth making are small and specific:
 
 1. **Settle §5.3** (staging), because until the container question has an answer every one of
    these scripts is guessing about the thing that decides whether it can run unattended.
-2. **Settle §5.2** (`-1708`) with the two experiments in that section — the selector pair
-   from a file, and the same pair inline to fill the unobserved cell. If file-vs-inline is not the
-   variable, family A can be deleted rather than regenerated.
+2. **Settle §5.2** (`-1708`) with the four runs in that section — the selector pair from a
+   file, then the same pair inline to fill the unobserved cell. Only a complete matrix
+   identifies the variable; until then family A stays as it is.
 3. **Correct `CLAUDE.md` rule 1** per §5.1 — Apple Events consent is scoped to a
    (responsible client, target) pair and persists until revoked, reset with
    `tccutil reset AppleEvents`, or invalidated by re-signing; it is not per process and not
