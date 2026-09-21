@@ -18,7 +18,7 @@ July is brute force; August names the failure modes; September detects them.
 
 | Family | Date | Files | Job |
 |---|---|---|---|
-| **A** | 13–15 Jul | `batch_convert.scpt`, `batch_inline.applescript`, `batch_inline2.applescript`, `batch_sanity_pdf.applescript`, `batch_jubarte_lossless_pdf.applescript`, `batch_jubarte_rs_probe_pdf.applescript`, `batch_word_to_pdf.scpt` | DOCX → PDF, generated and fully unrolled |
+| **A** | 13–15 Jul | Six generated, fully unrolled: `batch_convert.scpt`, `batch_inline.applescript`, `batch_inline2.applescript`, `batch_sanity_pdf.applescript`, `batch_jubarte_lossless_pdf.applescript`, `batch_jubarte_rs_probe_pdf.applescript`. Plus one generic looping script, `batch_word_to_pdf.scpt`, counted separately wherever this document says "family A" or "the six generated batches" | DOCX → PDF |
 | **B** | 10 Jul | `run_batch_retry.sh` | Consecutive-pair Word `compare`, per-pair heredoc |
 | **C** | 4 Aug | `word_compare_driver.sh`, `word_compare_batch.applescript`, `word_screen_sources.applescript`, `word_dialog_watchdog.applescript` | Manifest-driven compare pipeline |
 | **D** | 11 Aug | `render/word.py`, `word_validate_batch.py` | Library renderer + Word-validity gate |
@@ -55,8 +55,9 @@ Each scored 0–1. Σ is a plain sum out of 7.00 — a ranking device, not a gra
 
 - **C4** because the whole of family A exists to avoid a permission prompt that, per §5.1,
   was never going to fire.
-- **C5** because the corpus's own worst measured incident (§5.4) is a malformed-item
-  cascade.
+- **C5** because the corpus's own measured cascades are malformed-item failures: the
+  223-file screen where one poison document took 203 others with it (§6, C2), and the
+  34-real-then-88-phantom probe sweep (§5.8).
 - **C6/C7** because 102 of family A's work items are lock files (§5.5) and because the one
   place real parallelism is available — Rust redline generation in `redline-sweep.sh` — runs
   serially.
@@ -68,19 +69,19 @@ Each scored 0–1. Σ is a plain sum out of 7.00 — a ranking device, not a gra
 | File | Repo | C1 | C2 | C3 | C4 | C5 | C6 | C7 | Σ | Tests |
 |---|---|---|---|---|---|---|---|---|---|---|
 | `word_compare_driver.sh` | ndb | 0.85 | 0.90 | 0.85 | 1.00 | 0.95 | 0.95 | 0.75 | **6.25** | none |
-| `word_compare_batch.applescript` | ndb | 0.85 | 0.90 | 0.80 | 0.90 | 1.00 | 0.90 | 0.50 | **5.85** | none |
 | `word-open-check.mjs` | jf | 1.00 | 0.80 | 0.90 | 0.70 | 1.00 | 0.95 | 0.40 | **5.75** | 25 |
+| `word_compare_batch.applescript` | ndb | 0.85 | 0.90 | 0.80 | 0.90 | 0.85 | 0.90 | 0.50 | **5.70** | none |
 | `word_screen_sources.applescript` | ndb | 0.95 | 0.90 | 0.80 | 0.85 | 1.00 | 0.75 | 0.40 | **5.65** | none |
 | `word-convert.sh` | jf | 0.70 | 0.70 | 0.80 | 0.95 | 0.90 | 0.85 | 0.30 | **5.20** | none |
-| `word_dialog_watchdog.applescript` | ndb | 0.70 | 0.90 | 0.80 | 0.15 | 0.70 | 0.70 | 0.80 | **4.75** | none |
-| `render/word.py` | ndb | 0.75 | 0.65 | 0.90 | 0.25 | 0.80 | 0.80 | 0.25 | **4.40** | 15 |
 | `redline-word-campaign.ts` | jf | 0.95 | 0.70 | 0.55 | 0.60 | 0.90 | 0.70 | 0.50 | **4.90** | none |
+| `word_dialog_watchdog.applescript` | ndb | 0.70 | 0.90 | 0.80 | 0.15 | 0.70 | 0.70 | 0.80 | **4.75** | none |
 | `word_validate_batch.py` | ndb | 0.70 | 0.80 | 0.85 | 0.25 | 0.85 | 0.70 | 0.30 | **4.45** | none |
+| `render/word.py` | ndb | 0.75 | 0.65 | 0.90 | 0.25 | 0.80 | 0.80 | 0.25 | **4.40** | 15 |
 | `word-probe-sweep.sh` | jr | 0.60 | 0.90 | 0.40 | 0.15 | 0.85 | 0.70 | 0.20 | **3.80** | none |
+| `run_batch_retry.sh` | ndb | 0.20 | 0.40 | 0.60 | 0.80 | 0.50 | 0.60 | 0.20 | **3.30** | none |
 | `redline-sweep.sh` | jr | 0.80 | 0.30 | 0.80 | 0.10 | 0.35 | 0.70 | 0.20 | **3.25** | none |
 | `word-open-probe.sh` | jf | 0.60 | 0.40 | 0.70 | 0.10 | 0.50 | 0.55 | 0.20 | **3.05** | none |
 | `word-open-probe.sh` | jr | 0.60 | 0.40 | 0.70 | 0.10 | 0.50 | 0.55 | 0.20 | **3.05** | none |
-| `run_batch_retry.sh` | ndb | 0.20 | 0.40 | 0.60 | 0.80 | 0.50 | 0.60 | 0.20 | **3.30** | none |
 | `batch_word_to_pdf.scpt` | ndb | 0.20 | 0.25 | 0.30 | 0.15 | 0.35 | 0.25 | 0.10 | **1.60** | none |
 | `batch_convert.scpt` | ndb | 0.15 | 0.35 | 0.05 | 0.15 | 0.30 | 0.05 | 0.05 | **1.10** | none |
 | `batch_jubarte_lossless_pdf.applescript` | ndb | 0.15 | 0.35 | 0.05 | 0.15 | 0.30 | 0.05 | 0.05 | **1.10** | none |
@@ -92,10 +93,11 @@ Each scored 0–1. Σ is a plain sum out of 7.00 — a ranking device, not a gra
 `ndb` = neurotic_docx_bench, `jf` = jubarte-first, `jr` = jubarte-redlines.
 
 Scores marked in §14 were revised downward after re-verifying the code paths against the
-header comments that assert them. The top three are not interchangeable. `word_compare_batch.applescript` is the best at
-knowing what it produced; `word_compare_driver.sh` is the best at surviving Word;
-`word-open-check.mjs` is the only one that proves its own detector works before trusting a
-clean result.
+header comments that assert them. The top three are not interchangeable:
+`word_compare_driver.sh` is the best at surviving Word; `word-open-check.mjs` holds the only
+unreduced C1 in the corpus and is the only script that proves its own detector works before
+trusting a clean result; `word_compare_batch.applescript` has the best *idea* of how to know
+what it produced (identification by exclusion) and implements it one step short (§14.1).
 
 ---
 
@@ -142,8 +144,11 @@ consequence is that per-file `osascript` invocation was ruled out on a false bas
 per-file invocation is what buys per-file timeouts, per-file error attribution and
 shardability — exactly the three things family A lacks.
 
-**Action:** correct the rule to *"one TCC grant per terminal, once, forever; stage inside
-the container to avoid the sandbox sheet"*, and stop generating unrolled scripts.
+**Action:** correct the rule to *"one TCC consent per (responsible client app, target app)
+pair — for `osascript` from a terminal, that is the terminal — which persists until it is
+revoked in System Settings, reset with `tccutil reset AppleEvents`, or invalidated by the
+client being re-signed; stage inside the container to avoid the sandbox sheet"*, and stop
+generating unrolled scripts.
 
 ### 5.2 The `-1708` folklore is confounded, and one script is evidence against it
 
@@ -158,7 +163,14 @@ Two data points, one confound:
 | | `active document` | `document i` |
 |---|---|---|
 | **inline** | works (`run_batch_retry.sh`, `word-convert.sh`) | — |
-| **file** | reported `-1708` (`compare-documents.scpt`) | works (`word_compare_batch.applescript`) |
+| **file** | reported `-1708` (`compare-documents.scpt`) | **unverified** — see below (`word_compare_batch.applescript`) |
+
+The `document i` + file cell is **not** established by a run. No Word or `osascript` was
+available here, so what the source shows is that `word_compare_driver.sh` invokes
+`word_compare_batch.applescript` as `osascript <file>` and that its entire done-accounting
+assumes the `save as` produces output — i.e. the August pipeline is *built on* that cell
+being true, which is suggestive but is not evidence that it is. Treat it as unverified until
+someone runs it.
 
 The disambiguating experiment is four lines: same `save as` from a file, once against
 `active document`, once against `document 1`. If file-vs-inline is not the variable,
@@ -207,7 +219,7 @@ Measured directly from the scripts:
 
 The first three read the same source directory and write the same output directory. All 232
 of `batch_convert`'s files appear in `batch_inline`; `batch_inline` and `batch_inline2` share
-211. None skips an existing PDF, so running the set re-renders the same ~200 documents three
+211 files. None skips an existing PDF, so running the set re-renders the same ~200 documents three
 times.
 
 102 of those work items are `~$*.docx` Word owner/lock files — not documents. Each costs a
@@ -351,7 +363,7 @@ Word's container. Three viable strategies:
 
 | File | C5 | Behaviour on a broken input |
 |---|---|---|
-| `word_compare_batch.applescript` | 1.00 | Paragraph-count health check **before** comparing; classifies three failure shapes; logs `[fail] <id> :: <errMsg>` verbatim and `[warn]` for zero-paragraph; returns `POISON <id>` so the driver recycles; 300 s inner timeout. |
+| `word_compare_batch.applescript` | 0.85 | Paragraph count is *taken* before comparing but never *gates* it: the compare and `save as` run regardless, and the count is only evaluated after `[ok]` is already logged (§14.1). Otherwise strong — classifies three failure shapes, logs `[fail] <id> :: <errMsg>` verbatim and `[warn]` for zero-paragraph, returns `POISON <id>` so the driver recycles, 300 s inner timeout. |
 | `word_screen_sources.applescript` | 1.00 | The dedicated detector. Healthy = a positive integer; a thrown error, `0`, and `missing value` are all poison, each recorded verbatim. Produces `word_unreadable.txt` as a reusable exclusion list. |
 | `word-open-check.mjs` | 1.00 | Verdict taxonomy OPENED-CLEAN / REPAIR-PROMPT / ERROR / BLOCKED; dialog text retained verbatim; per-file screenshot as evidence; an unmatched modal becomes ERROR, never a silent clean. |
 | `word_compare_driver.sh` | 0.95 | `--screen` pre-flight; stall recovery synthesises a `[fail]` so a wedging file cannot be retried forever; restarts Word on poison. |
@@ -480,10 +492,16 @@ kill-and-warm is a new experiment. An attempt that does not is the same experime
 
 ## 12. The error Word throws when we force-quit it
 
-First, a correction that removes a whole class of speculation: **`pkill -9` / SIGKILL does
-not produce a macOS crash report or a "quit unexpectedly" dialog.** ReportCrash fires on
-uncaught exceptions — SIGSEGV, SIGABRT, SIGILL, SIGBUS. A SIGKILL is a termination, not a
-crash, and leaves no crash log. Nothing here needs
+First, a correction that removes a whole class of speculation: **a direct `pkill -9` from
+the shell does not produce a macOS crash report or a "quit unexpectedly" dialog.**
+ReportCrash fires on uncaught exceptions — SIGSEGV, SIGABRT, SIGILL, SIGBUS — and a signal
+you send yourself is a termination, not a crash, so it leaves no crash log.
+
+Be precise about the scope of that claim: `EXC_CRASH (SIGKILL)` *does* appear in crash
+reports when the **system** kills a process — a watchdog termination carries
+`EXC_CRASH (SIGKILL)` with `EXC_CORPSE_NOTIFY` and a termination reason such as
+`0x8badf00d`. That is a different path from the one these scripts take, and none of them can
+trigger it by calling `pkill`. The conclusion stands for our case only: nothing here needs
 `defaults write com.apple.CrashReporter DialogType none`; that would be a system-wide change
 for a problem that does not exist.
 
@@ -527,7 +545,9 @@ pattern match (`-f`) that can match more than Word.
    `~/Library/Containers/com.microsoft.Word/Data/Library/Preferences/AutoRecovery/*` so no
    Document Recovery pane appears, and `rm -f <dir>/~\$*.docx` in every folder Word touched.
 5. **Better than cleaning up: do not generate the state.** Microsoft documents
-   `Options.SaveInterval = 0` as AutoRecover's off switch (GUI: Preferences → Save). Set it
+   `Options.SaveInterval = 0` as AutoRecover's off switch — that is the VBA object model
+   member, documented on Microsoft Learn, not the Preferences page cited in the sources
+   below, which covers the GUI control (Preferences → Save) only. Set it
    once for the batch session and step 4's first half becomes unnecessary. The AppleScript
    term for it should be read off the local dictionary rather than guessed —
    `sdef /Applications/Microsoft\ Word.app | grep -i 'save interval'`. Restore it afterwards;
@@ -610,7 +630,9 @@ A pair whose base Word could not read, but whose `compare` did not throw, is log
 
 Both conditions are satisfied, so the pair is permanently marked done. The warning is
 written to a log nothing reads. **C1: 1.00 → 0.85.** Fix: move the health evaluation above
-the `failMsg` branch, or make the driver treat `[warn]` as `[fail]`.
+the `failMsg` branch, or make the driver treat `[warn]` as `[fail]` **and delete the output
+it already wrote**, so the pair is not left on disk looking complete. **C5: 1.00 → 0.85** for
+the same defect — an unreadable base is a malformed item, and this records one as a success.
 
 ### 14.2 `word_compare_driver.sh` kills a wedged `osascript` with SIGTERM
 
