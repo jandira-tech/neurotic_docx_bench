@@ -61,6 +61,7 @@ import time
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
+from typing import Annotated
 
 import typer
 from loguru import logger
@@ -72,7 +73,7 @@ _HERE = Path(__file__).resolve().parent
 if str(_HERE) not in sys.path:
     sys.path.insert(0, str(_HERE))
 
-from word_pdf import (  # noqa: E402  (must follow the sys.path guard above)
+from word_pdf import (  # must follow the sys.path guard above
     _EXPORT_BATCH,
     Stage,
     Watchdogs,
@@ -722,11 +723,11 @@ def _redline_batched(
         staged_base.unlink(missing_ok=True)
         staged_rev.unlink(missing_ok=True)
         ok, detail = compared[item]
-        if ok and staged_docx.exists() and staged_docx.stat().st_size > 0:
-            if plans[pair].pdf is not None:
-                staged_pdf = stage.outbox / f"{staged_docx.stem}.pdf"
-                pdf_rows.append((item, str(staged_docx), str(staged_pdf)))
-                pdf_staged[item] = staged_pdf
+        produced = ok and staged_docx.exists() and staged_docx.stat().st_size > 0
+        if produced and plans[pair].pdf is not None:
+            staged_pdf = stage.outbox / f"{staged_docx.stem}.pdf"
+            pdf_rows.append((item, str(staged_docx), str(staged_pdf)))
+            pdf_staged[item] = staged_pdf
 
     rendered: dict[str, tuple[bool, str]] = {}
     if pdf_rows:
@@ -837,45 +838,71 @@ app = typer.Typer(add_completion=False, help=__doc__)
 
 @app.command()
 def main(
-    folder_a: Path = typer.Option(
-        ..., "--a", "-a", help="Folder of originals (the base of each comparison)."
-    ),
-    folder_b: Path = typer.Option(
-        ..., "--b", "-b", help="Folder of revisions (compared against A)."
-    ),
-    out: Path = typer.Option(
-        Path("redlines"), "--out", "-o", help="Where the redlines land."
-    ),
-    docx_out: Path | None = typer.Option(
-        None, "--docx-out", help="Separate folder for the .docx. Default: alongside --out."
-    ),
-    emit: Emit = typer.Option(
-        Emit.PDF, "--emit", help="pdf | docx | both. Default pdf: the .docx is discarded."
-    ),
-    cross: bool = typer.Option(
-        False, "--cross", help="Compare every A against every B instead of matching names."
-    ),
-    swap: bool = typer.Option(
-        False, "--swap", help="Use B as the base and A as the revision."
-    ),
-    force: bool = typer.Option(False, "--force", help="Redo pairs whose output exists."),
-    timeout: float = typer.Option(300.0, "--timeout", help="Seconds per comparison."),
-    pdf_timeout: float = typer.Option(180.0, "--pdf-timeout", help="Seconds per PDF export."),
-    one_osascript: bool = typer.Option(
-        False,
-        "--one-redline-osascript",
-        help="Run the job as TWO monolithic AppleScripts — every comparison, then "
-        "every PDF — instead of one osascript per step per pair. Resumes "
-        "automatically if either run wedges.",
-    ),
-    check_preset: bool = typer.Option(
-        True, "--check-preset/--no-check-preset", help="Print the Word-settings reminders."
-    ),
-    allow_open_docs: bool = typer.Option(
-        False, "--allow-open-docs", help="Run even if Word already has documents open."
-    ),
-    quiet: bool = typer.Option(False, "--quiet", "-q", help="Errors and summary only."),
-    log_file: Path | None = typer.Option(None, "--log", help="Also write a log file."),
+    folder_a: Annotated[
+        Path,
+        typer.Option("--a", "-a", help="Folder of originals (the base of each comparison)."),
+    ],
+    folder_b: Annotated[
+        Path, typer.Option("--b", "-b", help="Folder of revisions (compared against A).")
+    ],
+    out: Annotated[
+        Path, typer.Option("--out", "-o", help="Where the redlines land.")
+    ] = Path("redlines"),
+    docx_out: Annotated[
+        Path | None,
+        typer.Option(
+            "--docx-out", help="Separate folder for the .docx. Default: alongside --out."
+        ),
+    ] = None,
+    emit: Annotated[
+        Emit,
+        typer.Option(
+            "--emit", help="pdf | docx | both. Default pdf: the .docx is discarded."
+        ),
+    ] = Emit.PDF,
+    cross: Annotated[
+        bool,
+        typer.Option(
+            "--cross", help="Compare every A against every B instead of matching names."
+        ),
+    ] = False,
+    swap: Annotated[
+        bool, typer.Option("--swap", help="Use B as the base and A as the revision.")
+    ] = False,
+    force: Annotated[
+        bool, typer.Option("--force", help="Redo pairs whose output exists.")
+    ] = False,
+    timeout: Annotated[
+        float, typer.Option("--timeout", help="Seconds per comparison.")
+    ] = 300.0,
+    pdf_timeout: Annotated[
+        float, typer.Option("--pdf-timeout", help="Seconds per PDF export.")
+    ] = 180.0,
+    one_osascript: Annotated[
+        bool,
+        typer.Option(
+            "--one-redline-osascript",
+            help="Run the job as TWO monolithic AppleScripts — every comparison, then "
+            "every PDF — instead of one osascript per step per pair. Resumes "
+            "automatically if either run wedges.",
+        ),
+    ] = False,
+    check_preset: Annotated[
+        bool,
+        typer.Option(
+            "--check-preset/--no-check-preset", help="Print the Word-settings reminders."
+        ),
+    ] = True,
+    allow_open_docs: Annotated[
+        bool,
+        typer.Option("--allow-open-docs", help="Run even if Word already has documents open."),
+    ] = False,
+    quiet: Annotated[
+        bool, typer.Option("--quiet", "-q", help="Errors and summary only.")
+    ] = False,
+    log_file: Annotated[
+        Path | None, typer.Option("--log", help="Also write a log file.")
+    ] = None,
 ) -> None:
     """Redline folder A against folder B using Microsoft Word's Compare Documents."""
     logger.remove()
