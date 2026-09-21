@@ -9,6 +9,7 @@ which is patched, so the AppleScript strings themselves are covered as data
 from __future__ import annotations
 
 import importlib.util
+import os
 import sys
 from pathlib import Path
 
@@ -130,13 +131,18 @@ def test_osa_passes_script_and_args_as_argv(monkeypatch: pytest.MonkeyPatch) -> 
     assert seen["kw"]["timeout"] == 5
 
 
-def test_osa_timeout_kills_and_reports(monkeypatch: pytest.MonkeyPatch) -> None:
-    killed: list[list[str]] = []
+def test_osa_timeout_never_reaches_for_pkill(monkeypatch: pytest.MonkeyPatch) -> None:
+    """`subprocess.run` SIGKILLs its own child; pkill would hit everyone else's.
+
+    A global `pkill osascript` would match this module's own watchdog threads —
+    every poll is an osascript — and any automation the user is running.
+    """
+    other: list[list[str]] = []
 
     def fake_run(cmd, **kw):
         if cmd[0] == "osascript":
             raise wp.subprocess.TimeoutExpired(cmd, 1)
-        killed.append(cmd)
+        other.append(cmd)
 
         class _Done:
             returncode = 0
@@ -150,8 +156,17 @@ def test_osa_timeout_kills_and_reports(monkeypatch: pytest.MonkeyPatch) -> None:
 
     assert rc is None and out == ""
     assert "timed out" in err
-    # SIGKILL, by exact process name: a blocked osascript ignores SIGTERM.
-    assert killed == [["pkill", "-9", "-x", "osascript"]]
+    assert other == []  # nothing beyond the one osascript call
+
+
+def test_osa_timeout_asks_subprocess_to_kill_not_terminate() -> None:
+    """The SIGKILL claim is about `subprocess.run`, so pin it to the stdlib."""
+    import inspect
+
+    src = inspect.getsource(wp.subprocess.run)
+    body = src[src.index("except TimeoutExpired") :]
+    assert "process.kill()" in body
+    assert "terminate()" not in body
 
 
 def test_osa_survives_missing_osascript(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -406,15 +421,23 @@ def test_watchdog_stop_is_idempotent(monkeypatch: pytest.MonkeyPatch) -> None:
 # ─── WordSession ─────────────────────────────────────────────────────────────
 
 
-def test_recycle_escalates_gracefully_then_cleans(
+def test_recycle_escalates_gracefully_then_cleans_only_our_debris(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """quit → pkill -x → pkill -9 -x, never pkill -f, then wipe the debris."""
+    """quit → pkill -x → pkill -9 -x, never pkill -f, then OUR debris only.
+
+    The AutoRecovery directory is the user's, not this run's: it holds the
+    recovery copy of every document Word has open, a human's unsaved work
+    included. Clearing all of it to remove our own residue would destroy theirs.
+    """
     recovery = tmp_path / "AutoRecovery"
-    _touch(recovery / "stale.olk")
     folder = tmp_path / "work"
-    _touch(folder / "~$deal.docx")
-    _touch(folder / "deal.docx")
+    # Predates the session: a human's unsaved document, and someone else's lock.
+    stale_recovery = _touch(recovery / "someones-unsaved-work.olk")
+    stale_lock = _touch(folder / "~$their-doc.docx")
+    long_ago = 1_000_000.0
+    os.utime(stale_recovery, (long_ago, long_ago))
+    os.utime(stale_lock, (long_ago, long_ago))
 
     monkeypatch.setattr(wp, "AUTORECOVERY", recovery)
     monkeypatch.setattr(wp, "osa", lambda *a, **k: (0, "", ""))
@@ -434,13 +457,39 @@ def test_recycle_escalates_gracefully_then_cleans(
     session = wp.WordSession()
     monkeypatch.setattr(session, "warm", lambda: True)
 
+    # Created after the session started: ours.
+    _touch(recovery / "ours.olk")
+    _touch(folder / "~$deal.docx")
+    _touch(folder / "deal.docx")
+
     assert session.recycle(folder) is True
     assert ["pkill", "-x", wp.WORD_PROC] in cmds
     assert ["pkill", "-9", "-x", wp.WORD_PROC] in cmds
     assert not any("-f" in c for c in cmds)
-    assert list(recovery.iterdir()) == []
+
+    assert stale_recovery.exists(), "a human's recovery copy must survive"
+    assert stale_lock.exists(), "a lock file we did not create must survive"
+    assert not (recovery / "ours.olk").exists()
     assert not (folder / "~$deal.docx").exists()
-    assert (folder / "deal.docx").exists()
+    assert (folder / "deal.docx").exists()  # never a real document
+
+
+def test_entries_since_skips_older_and_unreadable(tmp_path: Path) -> None:
+    fresh = _touch(tmp_path / "fresh.olk")
+    old = _touch(tmp_path / "old.olk")
+    os.utime(old, (1_000_000.0, 1_000_000.0))
+
+    got = wp._entries_since(tmp_path, cutoff=fresh.stat().st_mtime)
+    assert got == [fresh]
+
+    assert wp._entries_since(tmp_path / "absent", cutoff=0) == []
+    assert wp._entries_since(None, cutoff=0) == []  # type: ignore[arg-type]
+
+
+def test_entries_since_honours_the_pattern(tmp_path: Path) -> None:
+    lock = _touch(tmp_path / "~$deal.docx")
+    _touch(tmp_path / "deal.docx")
+    assert wp._entries_since(tmp_path, cutoff=0, pattern="~$*") == [lock]
 
 
 # ─── CLI smoke ───────────────────────────────────────────────────────────────
