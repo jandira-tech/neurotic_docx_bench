@@ -409,8 +409,14 @@ folder — calls a bare `activate` on every conversion, with no bouncer anywhere
   rise before returning CLEAN, killing the false negative the comment records as having
   masked CU003 in the first run.
 - **Identification by exclusion.** `word_compare_batch.applescript` walks `document i` and
-  takes the one whose name is not the base's — because if compare silently produced nothing,
-  `active document` is still the base. It also notes that `repeat with d in documents` makes
+  takes the one whose name is not the base's. Its own comment (100–102) gives the reason as
+  "if compare silently produced nothing, `active document` is still the BASE, and saving that
+  as [the result]". **That premise is wrong, corrected from the target machine:** `compare`
+  yields its result as a *new* document, and that new document, as created, is the redline.
+  Because it is unsaved, Word prompts for a location unless the caller supplies one. The
+  technique survives the correction — naming the document you mean beats taking whichever is
+  frontmost (§5.18) — but it is good practice rather than a guard against that failure, and
+  §15's pair states it that way. It also notes that `repeat with d in documents` makes
   AppleScript send `count` to `every document`, which that Word build rejects outright.
 
 ### 5.12 Two of 21 have tests, and both test the right thing
@@ -1493,9 +1499,10 @@ Word restarts, so a wedged Word ends the run instead of being recovered.
 
 **The redline script declines the override entirely** (`redline_preflight`). Its correctness
 rests on the precondition, not merely its tidiness: `_COMPARE` identifies the result by
-exclusion, walking `document i` for the one whose name is not the base's — §14.1's fix for
-`active document` still being the base after a compare that silently produced nothing. That
-walk is sound exactly while every open document is ours. With a person's document open it
+exclusion, walking `document i` for the one whose name is not the base's, because `compare`
+returns its result as a new document and that is how a script names the one it means (§5.11
+records the mistaken premise this replaced). That walk is sound exactly while every open
+document is ours. With a person's document open it
 can select theirs and save it as the redline, which is a wrong artifact rather than a
 missing one, and wrong artifacts are what this pair exists to prevent.
 
