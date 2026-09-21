@@ -1247,3 +1247,51 @@ def test_recycle_refuses_to_quit_word_over_a_human_s_documents(
 
     assert session.recycle(tmp_path) is False
     assert not ran, "no pkill, no quit, nothing destructive"
+
+
+def test_serial_replays_the_failure_streak_after_recycling(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A recycle means the earlier failures are no longer trustworthy.
+
+    The streak exists because a Word degraded by one bad document answers
+    normally and returns empty documents for everything after it. The
+    paragraph-count check turns those into failures rather than false passes,
+    which is the important half — but they are failures of *Word*, not of the
+    files, and they were final. So up to `poison_streak - 1` healthy documents
+    could be reported as permanently failed.
+
+    After a recycle, the streak is replayed against the fresh Word. Whatever
+    fails a second time is the file's own fault and stays failed.
+    """
+    monkeypatch.setattr(wp, "CONTAINER_TMP", tmp_path / "container")
+    src = tmp_path / "src"
+    for name in ("poison.docx", "healthy-a.docx", "healthy-b.docx"):
+        _touch(src / name)
+
+    calls: list[str] = []
+
+    def fake_export(sin, sout, timeout=180.0):
+        calls.append(sin.name)
+        # poison.docx is genuinely bad and fails every time. The other two only
+        # fail while Word is degraded, i.e. on their first attempt.
+        if "poison" in sin.name:
+            return False, "document loaded empty (Word could not read it)"
+        if calls.count(sin.name) == 1:
+            return False, "document loaded empty (Word could not read it)"
+        _touch(sout, b"%PDF")
+        return True, ""
+
+    monkeypatch.setattr(wp, "export_pdf", fake_export)
+    monkeypatch.setattr(wp, "recover_after_failure", lambda s, *f, **kw: True)
+    session = wp.WordSession()
+    monkeypatch.setattr(session, "warm", lambda: True)
+    monkeypatch.setattr(session, "recycle", lambda *f: True)
+
+    results = wp.convert_folder(src, tmp_path / "out", session=session)
+    by_name = {r.source.name: r for r in results}
+
+    assert by_name["healthy-a.docx"].ok, "a healthy file must not stay failed after a recycle"
+    assert by_name["healthy-b.docx"].ok
+    assert not by_name["poison.docx"].ok, "the genuinely bad file stays failed"
+    assert calls.count("poison.docx") == 2, "replayed once, then left alone"
