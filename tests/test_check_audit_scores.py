@@ -122,6 +122,23 @@ def test_identical_duplicate_rows_still_validate_against_the_detail(
     assert _check(tmp_path, doc) == []
 
 
+def test_duplicate_rows_are_compared_on_every_criterion_without_a_detail_row(
+    tmp_path: Path,
+) -> None:
+    """Divergence was only caught where a detail row happened to restate it.
+
+    The comparison ran inside the detail-row loop and only looked at that
+    section's criterion, so a C1 to C3 disagreement was never examined at all,
+    and a C4 to C7 one slipped through whenever no detail row named the script.
+    Two copies of one script that have drifted apart are wrong on their own.
+    """
+    jf = [0.99, 0.40, 0.70, 0.10, 0.50, 0.45, 0.20]
+    jr = [0.10, 0.40, 0.70, 0.10, 0.50, 0.45, 0.20]  # C1 diverges
+    doc = _doc([_row("p.sh", "jf", jf), _row("p.sh", "jr", jr)])  # no detail rows
+    problems = _check(tmp_path, doc)
+    assert any("C1" in p and "disagree" in p.lower() for p in problems), problems
+
+
 # ─── multi-name detail rows ──────────────────────────────────────────────────
 
 
@@ -175,3 +192,53 @@ def test_missing_file_is_reported_not_raised(tmp_path: Path) -> None:
     problems = cas.check(missing)
     assert problems and any("nope.md" in p for p in problems)
     assert any("cannot read" in p.lower() or "no such" in p.lower() for p in problems)
+
+
+# ─── the checker's own edges ─────────────────────────────────────────────────
+
+
+def test_a_document_with_no_scorecard_says_so(tmp_path: Path) -> None:
+    """A renamed heading or a reformatted table silently parses to nothing.
+
+    Returning `[]` there would report "ok" for a file the checker never read,
+    which is worse than a failure: it is a green light for an unchecked doc.
+    """
+    problems = _check(tmp_path, "# Audit\n\nNo tables here at all.\n")
+    assert any("no scorecard rows parsed" in p for p in problems), problems
+
+
+def test_detail_rows_naming_an_unknown_script_are_skipped(tmp_path: Path) -> None:
+    """§6-§9 name scripts the scorecard drops; there is nothing to compare them to."""
+    doc = _doc([_row("x.sh", "ndb", _SEVEN)], details="| `absent.sh` | 0.05 | why |")
+    assert _check(tmp_path, doc) == []
+
+
+def test_only_the_out_of_order_adjacent_pair_is_reported(tmp_path: Path) -> None:
+    """The scan walks every adjacent pair, so ordered ones must stay quiet."""
+    doc = _doc(
+        [
+            _row("a.sh", "ndb", [0.70] * 7),
+            _row("b.sh", "ndb", [0.30] * 7),
+            _row("c.sh", "ndb", [0.50] * 7),  # only b→c is out of order
+        ]
+    )
+    order = [p for p in _check(tmp_path, doc) if "order:" in p]
+    assert len(order) == 1, order
+    assert "b.sh" in order[0] and "c.sh" in order[0]
+
+
+def test_main_prints_ok_and_returns_zero_for_a_clean_file(
+    tmp_path: Path, capsys
+) -> None:
+    p = tmp_path / "audit.md"
+    p.write_text(_doc([_row("a.sh", "ndb", _SEVEN)]), encoding="utf-8")
+    assert cas.main([str(p)]) == 0
+    assert "ok " in capsys.readouterr().out
+
+
+def test_main_prints_each_problem_and_returns_one(tmp_path: Path, capsys) -> None:
+    p = tmp_path / "audit.md"
+    p.write_text(_doc([_row("a.sh", "ndb", _SEVEN, total=9.99)]), encoding="utf-8")
+    assert cas.main([str(p)]) == 1
+    out = capsys.readouterr().out
+    assert "FAIL" in out and "components sum" in out

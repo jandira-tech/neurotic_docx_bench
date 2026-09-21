@@ -79,6 +79,20 @@ def check(path: Path) -> list[str]:
                     f"{totals[i + 1][0]} ({ordered[i + 1]})"
                 )
 
+    # Two copies of one script that have drifted apart are wrong on their own,
+    # whatever the detail tables happen to restate. Checking this inside the
+    # detail-row loop only looked at that section's criterion, so C1 to C3 were
+    # never examined and C4 to C7 were skipped whenever no row named the script.
+    for name, entries in sorted(by_name.items()):
+        if len(entries) < 2:
+            continue
+        for criterion in CRITERIA:
+            seen = {repo: criteria[criterion] for repo, criteria in entries}
+            if len(set(seen.values())) > 1:
+                problems.append(
+                    f"{criterion} scorecard copies for {name} disagree across repos ({seen})"
+                )
+
     section = ""
     for line in lines:
         if m := re.match(r"^## (\d+)\. ", line):
@@ -94,12 +108,10 @@ def check(path: Path) -> list[str]:
                     continue
                 seen = {repo: criteria[criterion] for repo, criteria in entries}
                 if len(set(seen.values())) > 1:
-                    # A grouped row states one score for copies that disagree,
-                    # so there is no single value it could be restating.
-                    problems.append(
-                        f"§{section} {criterion} row for {name}: scorecard copies "
-                        f"disagree across repos ({seen})"
-                    )
+                    # Already reported above, against every criterion rather
+                    # than only this section's. A grouped row cannot restate a
+                    # value the copies do not agree on, so there is nothing
+                    # further to compare here.
                     continue
                 expected = next(iter(seen.values()))
                 if abs(expected - shown) > 1e-9:
