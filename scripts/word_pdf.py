@@ -168,8 +168,16 @@ def osa(script: str, *args: str, timeout: float = 60.0) -> tuple[int | None, str
     Arguments reach the script through `on run argv`, so nothing is interpolated
     into the source and any path character is safe.
 
-    SIGKILL rather than the default SIGTERM: an `osascript` blocked on an
-    unanswered Apple event ignores SIGTERM, so a plain timeout never lands.
+    On timeout the child is SIGKILLed, which is what a blocked `osascript`
+    needs — held on an unanswered Apple event it ignores SIGTERM. That is
+    `subprocess.run`'s own behaviour: it calls `Popen.kill()`, not `terminate()`.
+    The distinction matters against shell `timeout(1)`, which sends SIGTERM
+    unless given `-k`, and it is why nothing here reaches for `pkill`.
+
+    Never `pkill osascript`. It would match every `osascript` on the machine:
+    this module's OWN watchdog threads (each poll is an `osascript`), any other
+    automation running in the user's session, and anything they are running by
+    hand. `subprocess.run` already kills exactly the child it started.
     """
     try:
         proc = subprocess.run(
@@ -179,7 +187,6 @@ def osa(script: str, *args: str, timeout: float = 60.0) -> tuple[int | None, str
             timeout=timeout,
         )
     except subprocess.TimeoutExpired:
-        subprocess.run(["pkill", "-9", "-x", "osascript"], capture_output=True)
         return None, "", "osascript timed out"
     except OSError as exc:  # osascript missing: not a macOS box
         return None, "", str(exc)
@@ -483,6 +490,9 @@ class WordSession:
     warm_timeout: float = 90.0
     launched_by_us: bool = False
     restarts: int = 0
+    started: float = field(default_factory=time.time)
+    """Wall clock, because it is compared against file mtimes. Everything
+    older than this belongs to someone else and is never deleted."""
 
     @staticmethod
     def available() -> bool:
@@ -516,24 +526,33 @@ class WordSession:
         return False
 
     def clean_after_kill(self, *folders: Path) -> None:
-        """Remove what a killed Word leaves behind.
+        """Remove what a killed Word left behind **in this run**, and nothing else.
 
         AutoRecovery files make the next launch open the Document Recovery pane,
         which appears before any script command runs; lock files become work
         items for the next glob (§12).
+
+        The cutoff is not decoration. That directory is the user's, not this
+        run's: it holds the recovery copies for every document Word has open,
+        including a human's unsaved work. Deleting all of it to clear our own
+        residue would destroy theirs — so only entries modified at or after this
+        session started are removed, and a pre-existing file is left alone even
+        when it would be convenient to drop it. The same cutoff applies to `~$`
+        lock files, on top of the folders already being ours.
+
+        A file Word wrote *before* we started is by definition not ours, so the
+        conservative direction is also the correct one.
         """
-        if AUTORECOVERY.is_dir():
-            for child in AUTORECOVERY.iterdir():
-                with contextlib_suppress():
-                    if child.is_dir():
-                        shutil.rmtree(child, ignore_errors=True)
-                    else:
-                        child.unlink(missing_ok=True)
+        for child in _entries_since(AUTORECOVERY, self.started):
+            with contextlib_suppress():
+                if child.is_dir():
+                    shutil.rmtree(child, ignore_errors=True)
+                else:
+                    child.unlink(missing_ok=True)
         for folder in folders:
-            if folder and folder.is_dir():
-                for lock in folder.glob("~$*"):
-                    with contextlib_suppress():
-                        lock.unlink(missing_ok=True)
+            for lock in _entries_since(folder, self.started, pattern="~$*"):
+                with contextlib_suppress():
+                    lock.unlink(missing_ok=True)
 
     def recycle(self, *folders: Path) -> bool:
         """Graceful quit, then SIGTERM, then SIGKILL — then clean and re-warm.
@@ -565,6 +584,24 @@ class WordSession:
         if self.launched_by_us:
             osa(_CLOSE_ALL, timeout=15)
             osa('tell application "Microsoft Word" to quit saving no', timeout=15)
+
+
+def _entries_since(folder: Path, cutoff: float, *, pattern: str = "*") -> list[Path]:
+    """Direct children of `folder` last modified at or after `cutoff`.
+
+    Anything older predates this run and is left alone. Unreadable entries are
+    skipped rather than guessed at: cleanup must never delete on a stat failure.
+    """
+    if not folder or not folder.is_dir():
+        return []
+    found: list[Path] = []
+    for child in folder.glob(pattern):
+        try:
+            if child.stat().st_mtime >= cutoff:
+                found.append(child)
+        except OSError:
+            continue
+    return found
 
 
 class contextlib_suppress:
