@@ -625,7 +625,7 @@ but is empty; a large document that is slow but fine; an interrupted run.
 | `word-convert.sh` | 0.85 | Arg count, file existence and extension whitelist; `mkdir -p`; per-run `mktemp -d` with `trap cleanup EXIT`; argv-safe paths; records that `format Unicode text` is rejected by this build; removes stale output before starting. |
 | `render/word.py` | 0.80 | Platform gate; skip-existing with `force`; reference calibration so a slow machine does not read as a broken document; reaps killed processes; `_close_active_document` with an Escape fallback. Globs `*.docx` including `~$`; no staging. |
 | `word_screen_sources.applescript` | 0.75 | `\|\| true` so an empty dir does not error; skips already-logged entries; three failure shapes. No `~$` filter. |
-| `word-probe-sweep.sh` | 0.70 | `[ -e ]` guard for an empty glob; deletes `~$`; pays the cold start explicitly; wipes AutoRecovery; `set -uo pipefail` without `-e` deliberately. Hardcoded `PROBE` path. |
+| `word-probe-sweep.sh` | 0.70 | `[ -e ]` guard for an empty glob; deletes `~$`; pays the cold start explicitly; wipes AutoRecovery (unscoped — §12 step 4); `set -uo pipefail` without `-e` deliberately. Hardcoded `PROBE` path. |
 | `redline-sweep.sh` | 0.70 | Rejects unknown flags; three preconditions; per-sweep manifest; missing-baseline hard fail. `IFS=,` breaks on quoted commas; `BASH_SOURCE` under a `zsh` shebang. |
 | `word_dialog_watchdog.applescript` | 0.70 | `try`-wrapped throughout; handles sheets and standalone dialogs. No self-exit if orphaned by a killed parent. |
 | `word_validate_batch.py` | 0.70 | `--limit`; empty-dir guard; `mkdir(parents=True)`; flush per row. Globs `~$` files. |
@@ -700,7 +700,7 @@ work alone — and where the document size varies by orders of magnitude, calibr
 |---|---|---|
 | `word_compare_driver.sh` | `MAX_RESTARTS=80`, no backoff | Sound. 80 is high but bounded, and the work list shrinks monotonically (documented at lines 182–198), so termination is guaranteed rather than hoped for. No backoff is correct: each restart follows a *specific* event, not a repeat of the same attempt. |
 | `word-probe-sweep.sh` | 1 attempt per file; kill + warm after each failure | Correct shape. No retry at all — recovery instead. |
-| `word-convert.sh` | 1 attempt, then reset Word and exit 3 | Correct. It does not retry into a degraded Word; it hands the decision to the caller. |
+| `word-convert.sh` | 1 attempt, then reset Word and exit 3 | Correct **as a retry policy**: it does not retry into a degraded Word, it hands the decision to the caller. The reset it runs first is a separate question, and §12's residue table answers it: `reset_word_after_failure` (129–135) closes whichever document is active `saving no` and quits everything `saving no`, with no precondition that Word held nothing else. Right escalation, wrong precondition. |
 | `render/word.py` | 1 attempt. `_close_active_document` tries close → Escape → close | Correct — those three are cleanup steps, not retries of the work. |
 | `render/soffice.py` (contrast) | `retries=1`, each attempt in a **fresh isolated profile** | The right model, and the one Word cannot copy cheaply: Word's equivalent of a fresh profile is a full relaunch. |
 | `redline-word-campaign.ts` | 2 attempts, no backoff, **no Word recycle between them** | **The weakest retry in the corpus.** Retrying the same open against the same possibly-degraded Word is the one thing the rest of these repos proves does not work (§5.4's cascade, `word_screen_sources`' 203-file contamination). Either kill and warm between attempts, or drop the second attempt and report. |
@@ -838,7 +838,7 @@ rather than wedge (§12 residue 3).
 
 | Script | Escalation | AutoRecovery | `~$` cleanup | MERP prompt |
 |---|---|---|---|---|
-| `word-probe-sweep.sh` | `quit saving no` → 2 s → `pkill -9 -f` → 1 s | **Yes** — `find "$AUTOREC" -mindepth 1 -delete`. The only one in all three repos | Yes, in the loop | No |
+| `word-probe-sweep.sh` | `quit saving no` → 2 s → `pkill -9 -f` → 1 s | **Yes** — `find "$AUTOREC" -mindepth 1 -delete`. The only one in all three repos, and unscoped: that is the whole directory, not this run's entries (step 4 below) | Yes, in the loop | No |
 | `word_compare_driver.sh` | `quit saving no` → 3 s → `pkill -x` (SIGTERM) → 2 s → relaunch + poll | No | Yes, after each restart | No |
 | `word-convert.sh` | decline dialog → close → `quit saving no` → 1 s → `pkill -x`. **Assumes Word is the batch's alone:** it closes whichever document is active and quits everything `saving no` (130–134), so a human's unsaved work is discarded if any is open — and §8 lists a live human Word session as an edge case this corpus meets. Correct escalation, wrong precondition: it needs a no-open-documents check, or to close only the staged document | No | No | No |
 | `word_validate_batch.py` | `pkill -x` only — **no graceful quit first** | No | No | No |
@@ -846,8 +846,9 @@ rather than wedge (§12 residue 3).
 
 Two of these are half-right in opposite directions. `word_compare_driver.sh` has the correct
 *escalation* (graceful quit, then SIGTERM via `pkill -x`, never `-9`) but no AutoRecovery
-handling. `word-probe-sweep.sh` has the only correct *cleanup* but jumps to `-9` with a
-pattern match (`-f`) that can match more than Word.
+handling. `word-probe-sweep.sh` is the only one that cleans up at all, but it jumps to `-9`
+with a pattern match (`-f`) that can match more than Word, and its wipe takes the
+whole AutoRecovery directory rather than its own entries (step 4).
 
 **The complete recipe**
 
@@ -857,9 +858,17 @@ pattern match (`-f`) that can match more than Word.
    `-f` matches the full command line and can hit an unrelated process whose arguments
    contain the string.
 3. Only then `pkill -9 -x`.
-4. After any kill: delete
-   `~/Library/Containers/com.microsoft.Word/Data/Library/Preferences/AutoRecovery/*` so no
-   Document Recovery pane appears, and `rm -f <dir>/~\$*.docx` in every folder Word touched.
+4. After any kill: clear the recovery state **this run** produced, so no Document
+   Recovery pane appears, and `rm -f <dir>/~\$*.docx` in every folder Word touched.
+   **Scope the AutoRecovery deletion by mtime; do not wipe the directory.**
+   `~/Library/Containers/com.microsoft.Word/Data/Library/Preferences/AutoRecovery/` is
+   the user's, not the run's: it holds a recovery copy for every document Word has
+   open, a human's unsaved work included, and §8 lists a live human Word session as an
+   edge case this corpus meets. Take the run's start time and delete only entries
+   modified at or after it — a file Word wrote before the run began is by definition
+   not the run's, and the conservative direction is also the correct one. The unscoped
+   form (`find "$AUTOREC" -mindepth 1 -delete`) destroys that human's recovery copy
+   along with the automation residue; §15's `clean_after_kill()` is the scoped form.
    That clears Document Recovery and the lock files. It does **not** clear MERP's
    "send a report" prompt, which is a separate mechanism (residue 3) and is unhandled by
    every one of the 21 scripts audited here.
@@ -933,9 +942,10 @@ The merges worth making are small and specific:
 5. Give `render/word.py`'s **PDF path** the kill-and-warm that `word_validate_batch.py`
    already wraps around its validate path, and the calibrated budget that `validate_one`
    already has.
-6. Add **AutoRecovery cleanup** to `word_compare_driver.sh`'s `restart_word`, and the
-   graceful-quit-first escalation to `word-probe-sweep.sh`'s `kill_word`. Each already has
-   the half the other is missing.
+6. Add **AutoRecovery cleanup** to `word_compare_driver.sh`'s `restart_word`, in the
+   mtime-scoped form of §12 step 4, and the graceful-quit-first escalation to
+   `word-probe-sweep.sh`'s `kill_word` — whose wipe should be narrowed to that same
+   scope. Each already has the half the other is missing.
 7. Fix `word-convert.sh`'s **timeout layering** (§10) and give it a bouncer or drop its
    `activate` (§5.9).
 8. Parallelise `redline-sweep.sh`'s **generation loop** (§9) — it does not touch Word.
