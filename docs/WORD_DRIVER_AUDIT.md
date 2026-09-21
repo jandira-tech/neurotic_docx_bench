@@ -725,7 +725,7 @@ the next access re-prompts. That is the whole once-versus-every-time split:
 | Behaviour | Scripts | Why |
 |---|---|---|
 | **Never prompts** | `run_batch_retry.sh`, `word_compare_driver.sh`, `word-convert.sh` **as shipped** | Everything is staged inside a container Word already owns, so Powerbox is never invoked |
-| **Prompts once, then persists** | `word-convert.sh` **only when staging is bypassed** | Not a second behaviour of the same run: `word-convert.sh:49` stages into `$HOME/Library/Containers/com.microsoft.Word/Data/tmp/…` unless `WORD_CONVERT_STAGE_ROOT` overrides that root to a path outside the container. Only then is Powerbox invoked, and only then does its Grant handler run — `set frontmost to true` (236) before `click button "Select..."` and `key code 36`, so the panel renders and accepts and the grant carries (§6.1) |
+| **Prompts once, then persists** | `word-convert.sh` **only when staging is bypassed** | Not a second behaviour of the same run: `word-convert.sh:49` stages into `$HOME/Library/Containers/com.microsoft.Word/Data/tmp/…` unless `WORD_CONVERT_STAGE_ROOT` overrides that root to a path outside the container. Only then is Powerbox invoked, and only then does its Grant handler run — `set frontmost to true` (236) before `click button "Select..."` and `key code 36`, so the panel renders and accepts and the grant carries |
 | **Prompts every file, and answers nothing** | `word-open-check.mjs`, `redline-word-campaign.ts` | They AXPress Grant/Open/Select/Allow in a loop *without* activating Word, so the panel never renders to accept the press. A UI round-trip per file that grants nothing |
 | **Prompts every time** | family A, `batch_word_to_pdf.scpt`, `render/word.py`, `word_validate_batch.py`, both `word-open-probe.sh`, `word-probe-sweep.sh`, `redline-sweep.sh` | No handler. The dialog stands until the AppleEvent times out; nothing is ever granted |
 | **Prompts every time, and denies** | `word_dialog_watchdog.applescript` | Its button list is `{OK, Ok, Cancel, Close, Don't Save, No}` — no Grant, Select, Open or Allow. On a Grant sheet it presses **Cancel**, so it actively refuses the grant on every appearance |
@@ -822,7 +822,7 @@ one holds. Its cited proof — `report_one/scripts/compare-docs.sh` and
 `report_one/scripts/redline-word-pdf.py` — still does not exist in any of these checkouts
 (§5.13), so it is confirmed by `word-convert.sh`'s behaviour rather than by the attribution.
 
-**Scores and why**
+### 6.2 Scores and why
 
 | File | C4 | Rationale |
 |---|---|---|
