@@ -744,14 +744,22 @@ def test_warm_gives_up_at_its_deadline(monkeypatch: pytest.MonkeyPatch) -> None:
 
 
 def test_quit_if_ours_only_quits_a_word_we_launched(monkeypatch: pytest.MonkeyPatch) -> None:
+    """A Word this run did not launch is never quit, whatever is open in it.
+
+    This used to also assert that exit ran `close every document saving no`
+    first. It no longer does, and should not: see
+    `test_quit_if_ours_leaves_word_alone_when_a_document_is_open`.
+    """
     calls: list[str] = []
     monkeypatch.setattr(wp, "osa", lambda script, *a, **k: calls.append(script) or (0, "", ""))
+    monkeypatch.setattr(wp.WordSession, "open_document_count", lambda self: 0)
 
     wp.WordSession(launched_by_us=False).quit_if_ours()
     assert calls == []
 
     wp.WordSession(launched_by_us=True).quit_if_ours()
-    assert wp._CLOSE_ALL in calls
+    assert any("quit saving no" in c for c in calls), calls
+    assert wp._CLOSE_ALL not in calls
 
 
 def test_watchdog_dismisses_an_ordinary_alert_without_activating(
@@ -1389,14 +1397,21 @@ def test_recover_after_failure_closes_only_ours_when_word_was_not_clean(
 def test_recover_after_failure_closes_everything_when_word_started_clean(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """Started clean means every open document is ours, so close-all is correct."""
+    """Close-all is still the escalation when the narrow close does not settle it.
+
+    Started clean no longer makes the blanket close the *first* move when the
+    failing item has a name -- a document opened after preflight would be
+    caught by it -- but it must stay reachable, because a Word that will not
+    come back to zero is the degraded-instance signal the recycle depends on.
+    """
     calls: list[str] = []
     monkeypatch.setattr(wp, "osa", lambda s, *a, **k: calls.append(s) or (0, "", ""))
     session = wp.WordSession(started_clean=True)
-    monkeypatch.setattr(session, "open_document_count", lambda: 0)
+    counts = iter([1, 0])  # named close leaves one open; close-all settles it
+    monkeypatch.setattr(session, "open_document_count", lambda: next(counts))
 
     assert wp.recover_after_failure(session, only="00001__deal.docx") is True
-    assert wp._CLOSE_ALL in calls
+    assert calls.index(wp._CLOSE_NAMED) < calls.index(wp._CLOSE_ALL), calls
 
 
 def test_recycle_refuses_to_quit_word_over_a_human_s_documents(
@@ -1460,3 +1475,126 @@ def test_serial_replays_the_failure_streak_after_recycling(
     assert by_name["healthy-b.docx"].ok
     assert not by_name["poison.docx"].ok, "the genuinely bad file stays failed"
     assert calls.count("poison.docx") == 2, "replayed once, then left alone"
+
+
+# ─── timeouts that are not times ─────────────────────────────────────────────
+
+
+@pytest.mark.parametrize(
+    "raised",
+    [ValueError("cannot convert float NaN to integer"),
+     OverflowError("cannot convert float infinity to integer")],
+)
+def test_osa_never_raises_on_a_non_finite_timeout(raised, monkeypatch) -> None:
+    """`osa`'s docstring says "Never raises"; two values made it a liar.
+
+    `subprocess.run` converts the timeout to an integer before spawning, so
+    `nan` raises ValueError and `inf` raises OverflowError -- neither caught.
+    The exception is raised here rather than passing the real value, because on
+    a box with no `osascript` the OSError fires first and the timeout is never
+    converted, so the live values prove nothing.
+
+    (A negative or zero timeout does *not* raise: `subprocess.run` accepts it
+    and reports TimeoutExpired at once, so every call "times out" instead. That
+    one is the CLI's to reject, below.)
+    """
+
+    def boom(*args, **kwargs):
+        raise raised
+
+    monkeypatch.setattr(wp.subprocess, "run", boom)
+    rc, out, err = wp.osa("return 1", timeout=float("nan"))
+    assert rc is None and out == ""
+    assert "invalid timeout" in err.lower()
+
+
+def test_cli_rejects_a_timeout_that_is_not_a_positive_duration(tmp_path: Path) -> None:
+    from typer.testing import CliRunner
+
+    src, out = tmp_path / "src", tmp_path / "out"
+    src.mkdir()
+    for bad in ("0", "-1", "nan", "inf"):
+        res = CliRunner().invoke(
+            wp.app, ["--src", str(src), "--out", str(out), "--timeout", bad]
+        )
+        assert res.exit_code == 2, f"--timeout {bad} was accepted: {res.output}"
+        assert "--timeout" in res.output
+
+
+def test_module_docstring_does_not_promise_an_autorecovery_wipe() -> None:
+    """`clean_after_kill` never wipes it; the header said it did.
+
+    The method deletes only entries modified at or after this session started,
+    and skips AutoRecovery entirely when preflight did not establish a clean
+    Word. A header promising a wipe invites a future edit back to the
+    destructive form.
+    """
+    head = (wp.__doc__ or "")
+    assert "AutoRecovery is wiped" not in head
+    assert "scoped" in head or "only" in head
+
+
+# ─── ownership is not settled once at startup ────────────────────────────────
+
+
+def test_quit_if_ours_leaves_word_alone_when_a_document_is_open(monkeypatch) -> None:
+    """`launched_by_us` identifies the process, not the documents in it.
+
+    Exit used to run `close every document saving no` and then quit, on the
+    strength of having launched Word. A person who opened something in that
+    instance mid-run lost it. The run's own documents are already closed by the
+    time this fires, so anything still open is either a cleanup that did not
+    finish or someone else's -- and neither is ours to discard.
+    """
+    calls: list[str] = []
+
+    def fake_osa(script: str, *args: str, **kw):
+        calls.append(script)
+        return 0, "", ""
+
+    session = wp.WordSession(launched_by_us=True)
+    monkeypatch.setattr(wp, "osa", fake_osa)
+    monkeypatch.setattr(wp.WordSession, "open_document_count", lambda self: 1)
+
+    session.quit_if_ours()
+    assert not any("close every document" in c for c in calls), calls
+    assert not any("quit saving no" in c for c in calls), calls
+
+
+def test_quit_if_ours_quits_when_word_holds_nothing(monkeypatch) -> None:
+    calls: list[str] = []
+    monkeypatch.setattr(
+        wp, "osa", lambda script, *a, **k: (calls.append(script), (0, "", ""))[1]
+    )
+    monkeypatch.setattr(wp.WordSession, "open_document_count", lambda self: 0)
+
+    wp.WordSession(launched_by_us=True).quit_if_ours()
+    assert any("quit saving no" in c for c in calls), calls
+
+
+def test_recovery_prefers_closing_our_document_by_name(monkeypatch) -> None:
+    """A foreign document can arrive after preflight and before cleanup.
+
+    `started_clean` records one observation, taken before the first file. The
+    close-all it gates runs after every failure for the rest of the run, so a
+    document opened in between was closed unsaved. When the failing item has a
+    name, closing that is both narrower and sufficient.
+    """
+    calls: list[tuple[str, tuple[str, ...]]] = []
+
+    def fake_osa(script: str, *args: str, **kw):
+        calls.append((script, args))
+        return 0, "", ""
+
+    session = wp.WordSession()
+    session.started_clean = True
+    monkeypatch.setattr(wp, "osa", fake_osa)
+    # Word reports a document still open after the named close: the run's own
+    # base document in a redline pair, or a foreign one. Either way the
+    # escalation still has to be reachable.
+    monkeypatch.setattr(wp.WordSession, "open_document_count", lambda self: 0)
+
+    wp.recover_after_failure(session, only="staged__deal.docx")
+    scripts = [s for s, _ in calls]
+    assert any("close" in s and "name" in s for s in scripts), scripts
+    assert not any("close every document" in s for s in scripts), scripts
