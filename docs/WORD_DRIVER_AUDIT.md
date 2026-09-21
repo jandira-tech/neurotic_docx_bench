@@ -153,7 +153,7 @@ revoked in System Settings, reset with `tccutil reset AppleEvents`, or invalidat
 client being re-signed; stage inside the container to avoid the sandbox sheet"*, and stop
 generating unrolled scripts.
 
-### 5.2 The `-1708` folklore is confounded, and one script is evidence against it
+### 5.2 The `-1708` rule is confounded, and the run logs narrow it to one combination
 
 `corpus/word_based/docx_redlines_word/README.md` and `CLAUDE.md` both state the rule as
 *inline heredoc works, `.scpt` file fails with `-1708`*. But the broken example they cite
@@ -183,13 +183,26 @@ The inline + `active document` cell has its own artifact:
 196 `ok`, 4 `fail`, with per-pair durations — and 196 matching `.docx` outputs sit beside it.
 
 So three of the four cells are backed by run evidence, and the only reported `-1708` is the
-file + `active document` cell. That makes `active document` the variable that co-varies with
-the failure, and file-vs-inline the one that does not — which is the opposite of what the
-README rule says. It is not yet proof, because the `-1708` report is second-hand and the
-failing script is not in the tree.
+file + `active document` cell. That **isolates the failing combination**. It does not
+identify which factor is causal, and the earlier draft of this section wrongly claimed it
+did. Read the table one row and one column at a time:
 
-The disambiguating experiment is still four lines: same `save as` from a file, once against
-`active document`, once against `document 1`. If file-vs-inline is not the variable,
+- Holding **file** constant: `active document` fails, `document i` works. The document
+  selector matters when running from a file.
+- Holding **`active document`** constant: inline works, file fails. File-vs-inline matters
+  when targeting `active document` — which is the README's own rule, in the one row where it
+  can be tested.
+
+Neither factor appears only in failing cells, so neither is a main effect; the failure sits
+on the *interaction*. The fourth cell, inline + `document i`, is unobserved, and the `-1708`
+report is second-hand with the failing script absent from the tree. Both single-factor
+readings therefore remain live, and nothing here licenses rewriting
+`batch_word_to_pdf.scpt` or deleting family A on the strength of it.
+
+Two experiments close it, not one. From a **file**, the same `save as` against
+`active document` and once against `document 1` — that tests the selector. Then the same
+pair **inline**, which fills the empty cell and tests file-vs-inline. Only both together
+separate the two factors. If file-vs-inline is not the variable,
 `batch_word_to_pdf.scpt` is repairable and family A never needed to exist.
 
 ### 5.3 Two scripts say to stage inside Word's container; two say the opposite, both with reasons
@@ -588,7 +601,8 @@ The merges worth making are small and specific:
 
 1. **Settle §5.3** (staging), because until the container question has an answer every one of
    these scripts is guessing about the thing that decides whether it can run unattended.
-2. **Settle §5.2** (`-1708`) with the four-line experiment. If file-vs-inline is not the
+2. **Settle §5.2** (`-1708`) with the two experiments in that section — the selector pair
+   from a file, and the same pair inline to fill the unobserved cell. If file-vs-inline is not the
    variable, family A can be deleted rather than regenerated.
 3. **Correct `CLAUDE.md` rule 1** per §5.1 — one TCC grant per terminal, forever; the
    per-file prompt is Word's sandbox sheet and staging is its cure.
