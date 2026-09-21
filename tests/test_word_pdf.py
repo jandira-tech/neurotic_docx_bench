@@ -650,6 +650,66 @@ def test_warm_launches_in_background_and_silences_alerts(
     assert wp._SET_ALERTS in scripts
 
 
+def test_warm_leaves_an_already_running_word_alone(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Pre-warming must never restart a Word that is already up.
+
+    Two sticky settings this tool cannot set for you live in that running
+    instance: the PDF "Optimize for" choice and the markup display. Relaunching
+    Word to "warm" it risks losing the selection the operator was told to make
+    by hand, and every PDF after that point would render at the wrong setting
+    without anything failing. So a responsive Word is returned as found: no
+    `open`, and no claim of ownership, which is what keeps `quit_if_ours()`
+    from closing someone else's session at the end of the batch.
+    """
+    launched: list[list[str]] = []
+    monkeypatch.setattr(wp, "osa", lambda *a, **k: (0, "0", ""))  # responsive
+    monkeypatch.setattr(wp.subprocess, "run", lambda cmd, **k: launched.append(cmd))
+
+    session = wp.WordSession()
+    assert session.warm() is True
+    assert launched == [], "warm() relaunched a Word that was already running"
+    assert session.launched_by_us is False
+
+    # And therefore the batch does not quit it on the way out.
+    calls: list[str] = []
+    monkeypatch.setattr(wp, "osa", lambda script, *a, **k: calls.append(script) or (0, "", ""))
+    session.quit_if_ours()
+    assert calls == []
+
+
+def test_recycle_warns_before_restarting_a_word_it_did_not_launch(
+    monkeypatch: pytest.MonkeyPatch, caplog
+) -> None:
+    """A clean start is not the same as a Word we own.
+
+    `recycle` already refuses when documents were open. A Word left open with
+    *no* documents still starts clean, so recovery may restart it — and that
+    restart carries the same risk to the operator's sticky PDF and markup
+    settings. Recovery is still worth having, so this warns rather than
+    refusing, but it must not be silent.
+    """
+    monkeypatch.setattr(wp, "osa", lambda *a, **k: (0, "", ""))
+    monkeypatch.setattr(wp.subprocess, "run", lambda cmd, **k: None)
+    monkeypatch.setattr(wp.time, "sleep", lambda _s: None)
+    monkeypatch.setattr(wp.WordSession, "_alive", staticmethod(lambda: False))
+    monkeypatch.setattr(wp.WordSession, "clean_after_kill", lambda self, *f: None)
+    monkeypatch.setattr(wp.WordSession, "warm", lambda self: True)
+
+    messages: list[str] = []
+    sink = wp.logger.add(lambda m: messages.append(str(m)), level="WARNING")
+    try:
+        session = wp.WordSession(launched_by_us=False)
+        assert session.recycle() is True
+    finally:
+        wp.logger.remove(sink)
+
+    joined = " ".join(messages)
+    assert "did not launch" in joined
+    assert "Optimize for" in joined
+
+
 def test_warm_gives_up_at_its_deadline(monkeypatch: pytest.MonkeyPatch) -> None:
     clock = iter([0.0, 0.0, 5.0, 999.0])
     monkeypatch.setattr(wp, "osa", lambda *a, **k: (1, "", "no"))

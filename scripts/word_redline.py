@@ -21,21 +21,28 @@ dialog and error-report watchdogs (`Watchdogs`), and the PDF export itself
 
 Design decisions carried over from `docs/WORD_DRIVER_AUDIT.md`:
 
-- **The comparison result is identified by exclusion.** Word leaves the base
-  frontmost when a compare silently produces nothing, so saving whichever
-  document is frontmost would ship a change-free file that looks valid and
-  scores as garbage (§14.1).
+- **The comparison result is the new document Word creates, delivered as is.**
+  `compare` yields its result as a fresh, unsaved document. That document is
+  the redline; nothing is reconstructed from it. Because it is unsaved, Word
+  would prompt for a location, which is exactly why `save as` is handed the
+  path instead. The script finds it by exclusion — the open document whose
+  name is not the base's — because naming the document you mean is the rule
+  (§5.18), not because the base would otherwise be served up in its place.
 - **Base health is checked before the compare runs**, not after. An unreadable
   base loads as a document with zero paragraphs and the compare then fails with
   an error naming the *other* file (§14.1).
 - **Zero revisions is reported, not failed.** Two identical documents compare to
   no revisions legitimately; the count is surfaced so a batch of unexpected
   zeroes is visible instead of silently passing.
-- **Both sides are staged under distinct names.** Name-paired redlines routinely
-  compare `deal.docx` against `deal.docx`, and one staging inbox cannot hold
-  both under one name.
 - **One failed pair recycles Word.** After a bad document Word keeps answering,
-  returning empty documents for every later open, with no error (§5, §6).
+  returning empty documents for every later open, with no error (§5, §7).
+
+Plumbing, noted because it is visible in the staging directory and is not a
+finding: the two sides of a pair go in under `base__` / `rev__` prefixes. A pair
+is `A/deal.docx` against `B/deal.docx` — one pair, with one name between its two
+sides — and a single inbox cannot hold two files called `deal.docx`. That says
+nothing about duplicates *inside* either folder, which a filesystem forbids
+anyway.
 
 Two Word settings this script cannot set for you, both sticky, both worth one
 minute by hand before a batch:
@@ -143,8 +150,15 @@ def cross_pairs(a_docs: list[Path], b_docs: list[Path]) -> list[tuple[Path, Path
 
 
 def redline_stem(a: Path, b: Path) -> str:
-    """Output name for one pair: the shared name, or both names when they differ."""
-    return a.stem if a.stem == b.stem else f"{a.stem}__vs__{b.stem}"
+    """Output name for one pair: always both sides, joined.
+
+    Same-stem pairs used to collapse to the bare shared name, so comparing
+    `before/deal.docx` against `after/deal.docx` landed as `deal.docx` — a
+    tracked-changes document named exactly like both of the documents it came
+    from. Naming both sides every time keeps a redline distinguishable from
+    its own inputs, and changes nothing when the stems already differ.
+    """
+    return f"{a.stem}__vs__{b.stem}"
 
 
 @dataclass(slots=True, frozen=True)
@@ -239,10 +253,11 @@ on run argv
         error "base loaded empty (Word could not read it)"
       end if
       compare baseDoc path revPath detect format changes true ignore all comparison warnings true add to recent files false
-      -- Identify the result by exclusion rather than by whichever document is
-      -- frontmost: a compare that silently produced nothing leaves the BASE
-      -- frontmost, and saving that ships a change-free document that looks
-      -- valid and scores as garbage.
+      -- `compare` yields its result as a NEW unsaved document, and that
+      -- document as created is what ships. Find it by exclusion (the one whose
+      -- name is not the base's) rather than by `active document`, because the
+      -- rule is to name the document you mean (§5.18). The `save as` below
+      -- supplies the path, which is what stops Word prompting for one.
       -- Index explicitly: `repeat with d in documents` makes AppleScript send
       -- `count` to `every document`, which this Word build rejects outright.
       set cmpDoc to missing value
@@ -379,10 +394,9 @@ def redline_preflight(session: WordSession, *, allow_open_docs: bool) -> str:
     rests on the precondition, not just its tidiness.
 
     `_COMPARE` identifies the result by exclusion — it walks `document i` and
-    takes the one whose name is not the base's, which is §14.1's fix for
-    `active document` still being the base after a compare that silently
-    produced nothing. That walk is sound exactly while every open document is
-    ours. With a human's document open it can select *theirs* and save it as
+    takes the one whose name is not the base's, because `compare` returns its
+    result as a new document and that is how a script names the one it means.
+    That walk is sound exactly while every open document is ours. With a human's document open it can select *theirs* and save it as
     the redline: a wrong artifact that looks like a real one, which is the
     failure this pair exists to prevent.
 
@@ -540,7 +554,7 @@ def _redline_serial(
             if len(streak) >= poison_streak:
                 # Unless they keep failing. A Word degraded by a bad document
                 # answers normally and returns empty documents for everything
-                # after it (§5, §6), which is what a failure run looks like.
+                # after it (§5, §7), which is what a failure run looks like.
                 logger.warning(
                     f"[word] {len(streak)} failures in a row — recycling rather than "
                     "trusting Word to still be reading documents"
@@ -565,7 +579,7 @@ def _replay_pairs(
 
     The streak is the reason for the restart: a Word degraded by one bad
     document answers normally and returns empty documents for everything after
-    it (§5, §6). The base paragraph-count check turns those into failures rather
+    it (§5, §7). The base paragraph-count check turns those into failures rather
     than false passes, which is the half that matters — but nothing in a failure
     distinguishes Word's fault from the file's, so leaving them would report
     healthy pairs as permanently broken. Whatever fails again keeps its verdict.
