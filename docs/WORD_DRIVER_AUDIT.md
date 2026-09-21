@@ -4,7 +4,7 @@ Audit of every script across `neurotic_docx_bench`, `jubarte-first` and `jubarte
 that drives Microsoft Word for Mac to redline a document or export a PDF.
 
 **Scope:** 21 files. **Read:** 21 Sep 2026, at the checked-out revisions.
-**Method:** source reading plus direct measurement of the scripts (open counts, lock-file
+**Method:** code-path reading plus direct measurement of the scripts (open counts, lock-file
 entries, set overlaps). No macOS, Word or `osascript` was available in this environment, so
 nothing here is from a run — every claim is traceable to a file and line, to a documented
 Microsoft/Apple behaviour, or is marked as unverified.
@@ -67,14 +67,14 @@ Each scored 0–1. Σ is a plain sum out of 7.00 — a ranking device, not a gra
 
 | File | Repo | C1 | C2 | C3 | C4 | C5 | C6 | C7 | Σ | Tests |
 |---|---|---|---|---|---|---|---|---|---|---|
-| `word_compare_driver.sh` | ndb | 0.85 | 1.00 | 0.85 | 1.00 | 0.95 | 0.95 | 0.75 | **6.35** | none |
-| `word_compare_batch.applescript` | ndb | 1.00 | 0.90 | 0.80 | 0.90 | 1.00 | 0.90 | 0.50 | **6.00** | none |
+| `word_compare_driver.sh` | ndb | 0.85 | 0.90 | 0.85 | 1.00 | 0.95 | 0.95 | 0.75 | **6.25** | none |
+| `word_compare_batch.applescript` | ndb | 0.85 | 0.90 | 0.80 | 0.90 | 1.00 | 0.90 | 0.50 | **5.85** | none |
 | `word-open-check.mjs` | jf | 1.00 | 0.80 | 0.90 | 0.70 | 1.00 | 0.95 | 0.40 | **5.75** | 25 |
 | `word_screen_sources.applescript` | ndb | 0.95 | 0.90 | 0.80 | 0.85 | 1.00 | 0.75 | 0.40 | **5.65** | none |
 | `word-convert.sh` | jf | 0.70 | 0.70 | 0.80 | 0.95 | 0.90 | 0.85 | 0.30 | **5.20** | none |
-| `word_dialog_watchdog.applescript` | ndb | 0.70 | 0.90 | 0.80 | 0.30 | 0.70 | 0.70 | 0.80 | **4.90** | none |
+| `word_dialog_watchdog.applescript` | ndb | 0.70 | 0.90 | 0.80 | 0.15 | 0.70 | 0.70 | 0.80 | **4.75** | none |
 | `render/word.py` | ndb | 0.75 | 0.65 | 0.90 | 0.25 | 0.80 | 0.80 | 0.25 | **4.40** | 15 |
-| `redline-word-campaign.ts` | jf | 0.95 | 0.70 | 0.70 | 0.60 | 0.90 | 0.70 | 0.50 | **5.05** | none |
+| `redline-word-campaign.ts` | jf | 0.95 | 0.70 | 0.55 | 0.60 | 0.90 | 0.70 | 0.50 | **4.90** | none |
 | `word_validate_batch.py` | ndb | 0.70 | 0.80 | 0.85 | 0.25 | 0.85 | 0.70 | 0.30 | **4.45** | none |
 | `word-probe-sweep.sh` | jr | 0.60 | 0.90 | 0.40 | 0.15 | 0.85 | 0.70 | 0.20 | **3.80** | none |
 | `redline-sweep.sh` | jr | 0.80 | 0.30 | 0.80 | 0.10 | 0.35 | 0.70 | 0.20 | **3.25** | none |
@@ -91,7 +91,8 @@ Each scored 0–1. Σ is a plain sum out of 7.00 — a ranking device, not a gra
 
 `ndb` = neurotic_docx_bench, `jf` = jubarte-first, `jr` = jubarte-redlines.
 
-The top three are not interchangeable. `word_compare_batch.applescript` is the best at
+Scores marked in §14 were revised downward after re-verifying the code paths against the
+header comments that assert them. The top three are not interchangeable. `word_compare_batch.applescript` is the best at
 knowing what it produced; `word_compare_driver.sh` is the best at surviving Word;
 `word-open-check.mjs` is the only one that proves its own detector works before trusting a
 clean result.
@@ -566,6 +567,159 @@ The merges worth making are small and specific:
 7. Fix `word-convert.sh`'s **timeout layering** (§10) and give it a bouncer or drop its
    `activate` (§5.9).
 8. Parallelise `redline-sweep.sh`'s **generation loop** (§9) — it does not touch Word.
+
+---
+
+---
+
+## 14. Code versus comment
+
+This corpus is unusually well commented, which is a trap: several headers assert a property
+the code implements one step short of. Every score above was re-derived from the code path,
+and five claims did not survive. All of them are in the highest-scoring files — the unrolled
+generated scripts have almost no comments and no gap between claim and behaviour.
+
+### 14.1 `word_compare_batch.applescript` records `[ok]` before it evaluates base health
+
+The header (lines 80–83) says the paragraph-count check exists so that an unreadable base
+cannot be compared against. The code checks it — and then orders the outcomes wrongly:
+
+```applescript
+if failMsg is "" then
+    set okCount to okCount + 1
+    my logLine(logPath, "[ok] " & pairId)        -- logged FIRST
+else
+    ...
+    return "POISON " & pairId
+end if
+
+if not baseHealthy then                          -- evaluated AFTER
+    my logLine(logPath, "[warn] " & pairId & " :: base reported no paragraphs")
+    return "POISON " & pairId
+end if
+```
+
+A pair whose base Word could not read, but whose `compare` did not throw, is logged as
+**both `[ok]` and `[warn]`**. `save as cmpDoc` has already written the output. And
+`word_compare_driver.sh:213` greps only `^\[ok\] `, never `[warn]`:
+
+```bash
+{ grep -E '^\[ok\] ' "$LOG" || true; } | awk '{print $2}' | sort -u | while IFS= read -r id; do
+    if [[ -s "$CORPUS/docx_redlines_word/${id}_redline.docx" || ... ]]; then
+```
+
+Both conditions are satisfied, so the pair is permanently marked done. The warning is
+written to a log nothing reads. **C1: 1.00 → 0.85.** Fix: move the health evaluation above
+the `failMsg` branch, or make the driver treat `[warn]` as `[fail]`.
+
+### 14.2 `word_compare_driver.sh` kills a wedged `osascript` with SIGTERM
+
+Line 261, in the stall-recovery branch:
+
+```bash
+kill "$pid" 2>/dev/null || true
+```
+
+Plain SIGTERM — on exactly the condition `word-open-check.mjs:248–251` documents as the one
+where SIGTERM does not land: *"osascript blocked on an unanswered Apple event … IGNORES the
+default SIGTERM, so a plain `timeout` never fires."* The driver recovers anyway, but by side
+effect: `restart_word`'s `pkill -x "Microsoft Word"` unblocks the Apple event and the orphan
+then exits. Until it does, a process the driver believes it killed can still write
+`$RESULT_FILE`. **C2: 1.00 → 0.90.** Fix: `kill -9 "$pid"`.
+
+One repo already knew this and the other did not — the finding is dated 9 Sep, the driver
+4 Aug.
+
+### 14.3 The watchdog clicks `Cancel` on a Grant File Access sheet
+
+`word_dialog_watchdog.applescript:31` — the actual button list, in priority order:
+
+```applescript
+repeat with wanted in {"OK", "Ok", "Cancel", "Close", "Don't Save", "No"}
+```
+
+No `Grant`, no `Select`, no `Allow`. The header calls this "the most conservative dismiss
+button available… never one that could confirm a destructive or format-changing action",
+which is true and is a good policy — but a Grant File Access sheet's buttons are `Select…`
+and `Cancel`, so the watchdog will click **Cancel** and actively deny Word the access it
+asked for.
+
+This is a constraint on §5.3, not just a score change: **the watchdog and out-of-container
+staging are mutually incompatible.** Family C is safe only because it stages everything
+inside the Group container, so the sheet never appears. Anyone resolving the staging
+contradiction in favour of `redline-word-campaign.ts`'s outside-staging cannot also run this
+watchdog without first teaching it to distinguish a permission sheet from an error dialog —
+which `word-open-check.mjs` already does and this does not. **C4: 0.30 → 0.15.**
+
+### 14.4 `redline-word-campaign.ts`'s bouncer outlives the process that starts it
+
+```ts
+const proc = spawn("osascript", ["-e", script], { detached: true, stdio: "ignore" });
+```
+
+The script is an unbounded `repeat … delay 0.5 … end repeat`. Cleanup exists only in
+`main()`'s `finally`. The file contains **zero** `process.on("SIGINT" | "SIGTERM" | "exit")`
+handlers.
+
+So Ctrl-C during a campaign — the most likely way a long Word run ends — leaves a detached
+`osascript` spinning at 2 Hz forever, forcibly yanking focus back to whatever app was
+frontmost when the run started. That is the exact opposite of the bouncer's purpose, and it
+survives the terminal session. **C3: 0.70 → 0.55.** Fix: register the stop function on
+`SIGINT`/`SIGTERM`, or have the bouncer script poll for its parent's PID and self-exit.
+
+### 14.5 `pkill -9 -f 'Microsoft Word'` matches the script's own helpers
+
+`word-probe-sweep.sh:23–28`:
+
+```bash
+kill_word() {
+  osascript -e 'tell application "Microsoft Word" to quit saving no' >/dev/null 2>&1
+  sleep 2
+  pkill -9 -f 'Microsoft Word' >/dev/null 2>&1
+```
+
+`-f` matches the full command line. The `osascript` on line 24 — and `warm_word`'s probe on
+line 38 — both carry the literal string `Microsoft Word` in their arguments. The `sleep 2`
+serialises them today, so this is latent rather than active, but the pattern also matches any
+unrelated process whose command line mentions Word: another script, an editor with the file
+open, a concurrent sweep. `word_compare_driver.sh:121` uses `pkill -x "Microsoft Word"`,
+which matches the process *name* and cannot do this.
+
+### 14.6 What did survive verification
+
+Worth recording, because these were the load-bearing claims:
+
+- **`word-open-check.mjs`'s detector gate is real.** `detectorProven` is computed from the
+  control file's actual verdict (`ctl.verdict === "REPAIR-PROMPT"`, line 871), consumed by
+  `computeExitCode` (line 237), reported in the summary (line 1029), and covered by a unit
+  test named *"returns 1 for a clean sweep when the detector was NOT proven"*. It is the only
+  claim in the corpus that is asserted in a comment, implemented in code, **and** pinned by a
+  test. C1 stays 1.00.
+- **`redline-word-campaign.ts` genuinely never activates Word.** The only occurrence of the
+  string `activate` in the file is the comment saying it never does.
+- **`word-convert.sh`'s `activate` is genuinely unconditional** — inside the per-conversion
+  `tell` block, before `open`, on every single call.
+- **`render/word.py` really verifies its output** (`proc.returncode == 0 and pdf.exists()`),
+  and `jobs` really is unused — `results = [convert_one(...) for docx in docs]`, a plain list
+  comprehension.
+- **`word_compare_driver.sh`'s hardcoded `${id}_redline.docx`** matches what
+  `build_superdoc_pairs.py:383` writes. It reconstructs the output name instead of reading
+  field 4 of the manifest it was given, which is unnecessary coupling, but it is not
+  currently wrong.
+- **`displayAlerts to false` is executed in nine files** — the six unrolled batches,
+  `batch_word_to_pdf.scpt`, `word_screen_sources.applescript`,
+  `word_compare_batch.applescript`. The two further matches, in `word_compare_driver.sh:12`
+  and `word_dialog_watchdog.applescript:6`, are comments explaining what it does *not*
+  suppress.
+
+### 14.7 The pattern
+
+Comment quality predicts code quality here, but it inverts at the top: the three files with
+the most carefully reasoned headers are the three where a header describes an intent the code
+implements one step short of — a check evaluated after the record it should gate, a kill that
+cannot land on the process it targets, a cleanup path that only runs on the happy exit. Each
+is a single line to fix. None would be found by reading the comments, which is what makes
+them worth writing down.
 
 ---
 
