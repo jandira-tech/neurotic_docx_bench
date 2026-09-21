@@ -72,12 +72,12 @@ Each scored 0–1. Σ is a plain sum out of 7.00 — a ranking device, not a gra
 | File | Repo | C1 | C2 | C3 | C4 | C5 | C6 | C7 | Σ | Tests |
 |---|---|---|---|---|---|---|---|---|---|---|
 | `word_compare_driver.sh` | ndb | 0.85 | 0.90 | 0.85 | 1.00 | 0.95 | 0.95 | 0.75 | **6.25** | none |
-| `word-open-check.mjs` | jf | 1.00 | 0.80 | 0.90 | 0.70 | 1.00 | 0.95 | 0.40 | **5.75** | 25 |
 | `word_compare_batch.applescript` | ndb | 0.85 | 0.90 | 0.80 | 0.90 | 0.85 | 0.90 | 0.50 | **5.70** | none |
 | `word_screen_sources.applescript` | ndb | 0.95 | 0.90 | 0.80 | 0.85 | 1.00 | 0.75 | 0.40 | **5.65** | none |
-| `word-convert.sh` | jf | 0.70 | 0.70 | 0.80 | 0.95 | 0.90 | 0.85 | 0.30 | **5.20** | none |
-| `redline-word-campaign.ts` | jf | 0.95 | 0.70 | 0.55 | 0.60 | 0.90 | 0.70 | 0.50 | **4.90** | none |
+| `word-open-check.mjs` | jf | 0.85 | 0.80 | 0.90 | 0.70 | 1.00 | 0.85 | 0.40 | **5.50** | 25 |
+| `word-convert.sh` | jf | 0.50 | 0.70 | 0.80 | 0.95 | 0.90 | 0.80 | 0.30 | **4.95** | none |
 | `word_dialog_watchdog.applescript` | ndb | 0.70 | 0.90 | 0.80 | 0.15 | 0.70 | 0.70 | 0.80 | **4.75** | none |
+| `redline-word-campaign.ts` | jf | 0.95 | 0.60 | 0.55 | 0.60 | 0.90 | 0.60 | 0.50 | **4.70** | none |
 | `word_validate_batch.py` | ndb | 0.70 | 0.80 | 0.85 | 0.25 | 0.85 | 0.70 | 0.30 | **4.45** | none |
 | `render/word.py` | ndb | 0.75 | 0.65 | 0.90 | 0.25 | 0.80 | 0.80 | 0.25 | **4.40** | 15 |
 | `word-probe-sweep.sh` | jr | 0.60 | 0.90 | 0.40 | 0.15 | 0.85 | 0.70 | 0.20 | **3.80** | none |
@@ -95,12 +95,18 @@ Each scored 0–1. Σ is a plain sum out of 7.00 — a ranking device, not a gra
 
 `ndb` = neurotic_docx_bench, `jf` = jubarte-first, `jr` = jubarte-redlines.
 
-Scores marked in §14 were revised downward after re-verifying the code paths against the
-header comments that assert them. The top three are not interchangeable:
-`word_compare_driver.sh` is the best at surviving Word; `word-open-check.mjs` holds the only
-unreduced C1 in the corpus and is the only script that proves its own detector works before
-trusting a clean result; `word_compare_batch.applescript` has the best *idea* of how to know
-what it produced (identification by exclusion) and implements it one step short (§14.1).
+Scores marked in §14 and §5.14–§5.15 were revised downward after re-verifying the code paths
+against the header comments that assert them. **No script in this corpus holds an unreduced
+C1.** `word-open-check.mjs` came closest and lost it to §5.15: it is still the only script
+that proves its own detector works before trusting a clean result, but its text probe reads
+`active document` rather than the document it just matched — the same defect §14.1 docks
+`word_compare_batch.applescript` for.
+
+The leaders are not interchangeable: `word_compare_driver.sh` is the best at surviving Word;
+`word_compare_batch.applescript` has the best *idea* of how to know what it produced
+(identification by exclusion) and implements it one step short (§14.1);
+`word-open-check.mjs` is the only one that proves its detector before trusting a clean sweep,
+and Σ understates it for that reason — a unique property scores once, like any other.
 
 ---
 
@@ -354,9 +360,18 @@ folder — calls a bare `activate` on every conversion, with no bouncer anywhere
 
 ### 5.10 Path handling ranges from injection-proof to injection-prone
 
-- **Safe by construction:** `word-convert.sh` passes paths as `argv` into a quoted heredoc
-  and says so in its header. `render/word.py` and the TS/MJS harnesses get the same from
-  `osascript -e` plus argv.
+- **Safe by construction (argv):** `word-convert.sh` passes paths as `argv` into a quoted
+  heredoc and says so in its header. `render/word.py` does the same —
+  `["osascript", "-e", _APPLESCRIPT, str(docx.resolve()), str(pdf.resolve())]` against an
+  `on run argv` handler (59, 25–27). In both, the path never appears in AppleScript source.
+- **Source-escaped, and not argv:** the two TS/MJS harnesses. An earlier revision of this
+  document grouped them with the row above; that was wrong. Both call
+  `execFileSync("osascript", ["-e", script])` with nothing after the script
+  (`word-open-check.mjs:257`, `redline-word-campaign.ts:51`) and build `script` by embedding
+  paths through `JSON.stringify`. The argument array rules out *shell* injection, and JSON
+  string syntax does escape safely into an AppleScript literal, so this is sound as written.
+  But the safety is the escaper's rather than the interpreter's, which is a weaker guarantee
+  than it looked: argv cannot be undone by editing the script text, and this can.
 - **Hand-escaped:** `word-open-probe.sh` escapes backslash then quote (correct as far as it
   goes; a newline in a filename still escapes the literal). Its second argument `$delay` is
   interpolated into the script body unvalidated.
@@ -427,10 +442,79 @@ are pure text processing and are currently proven only by having been run.
 - `word-open-probe.sh` exists twice, byte-identical apart from an SPDX header and one word,
   in two repos with different licences (GPL-3.0-only and AGPL-3.0-only). No shared source, so
   they will drift.
+- `word-open-check.mjs`'s `makeCorruptControl()` runs `rm -rf` unconditionally on
+  `<artifacts>/q4woc-00-corrupt-control.docx.unpacked` (530–531) before building the control.
+  Nothing establishes that the directory is this run's, so a pre-existing one under that name
+  is destroyed. `mkdtemp`, or refusing a path that already exists, costs nothing. Same class
+  as §12 step 4: a name is not ownership.
+- `redline-word-campaign.ts`'s `drainDialogs()` (63–78) walks **every** Word window whose
+  subrole is `AXDialog` and presses `No`, `OK` or `Cancel`, with no filename check, before and
+  after each probe. Closing only `campaign-*` documents does not make it isolated: with a
+  human's Word session open it can decline their recovery prompt or dismiss their modal. It
+  needs the no-open-documents preflight, or filename-scoped matching like the one it already
+  applies to its verdicts.
+- `redline-word-campaign.ts` writes `${p.label.replace(/[^a-z0-9]+/gi, "-")}.docx` (257), so
+  two labels differing only in punctuation (`A/B` and `A-B`) normalise to one filename. The
+  later pair silently overwrites the earlier while the report still lists both rows, and
+  nothing records which artifact survived. An index prefix, or rejecting duplicate normalised
+  names, fixes it.
 - `CLAUDE.md` cites `report_one/scripts/compare-docs.sh` and
   `report_one/scripts/redline-word-pdf.py` as the proof for the focus-bouncer recipe. Neither
   file, nor a `report_one/` directory, exists in any of these three checkouts — that claim
   could not be verified here.
+
+---
+
+### 5.14 `word-convert.sh` can report a conversion it never performed
+
+`docx` is a supported output format (40; the usage line offers
+`<output.{pdf,html,rtf,docx}>`), and both staged paths are derived from basenames into one
+directory:
+
+```sh
+word_in_abs="$stage_dir/$(basename "$in_abs")"    # 52
+word_out_abs="$stage_dir/$(basename "$out_abs")"  # 53
+cp -p "$in_abs" "$word_in_abs"                    # 54
+```
+
+So `word-convert.sh in/deal.docx out/deal.docx` resolves both to `$stage_dir/deal.docx`, and
+line 54 creates the supposed output before Word has been asked for anything. The poll that
+waits for the conversion is `if [ -f "$word_out_abs" ]; then break; fi` (172), true on its
+first pass. `wait` then discards the AppleScript's exit status, and the final branch copies
+`$word_out_abs` — still the unmodified input — to the destination and prints `saved`
+(249–250).
+
+The result is a successful-looking no-op: the caller gets its own input back under the output
+name, with exit 0 and no error file. `rm -f "$out_abs"` at 47 clears the *destination* before
+starting, which is what C6 credited; the staged output has no equivalent guard, and the
+staged one is what both the poll and the copy read. A distinct staged output name, or a
+second `mktemp -d`, closes it.
+
+C1 drops to 0.50. A converter that cannot distinguish "finished" from "never started" is not
+an oracle, whatever else it does well.
+
+### 5.15 `word-open-check.mjs` reads the text of whichever document is active
+
+`supervisedOpen()` locates the target's window by filename and holds it as `docWin`, then
+asks for the text through `activeDocText()` (680–681). All three of that function's probes
+are bound to `active document`:
+
+```applescript
+content of text object of active document   -- 461–463
+content of active document                  -- 464
+count of characters of active document      -- 466–468
+```
+
+Nothing ties the answer back to `docWin`. If Word is already running with another non-empty
+document, or if focus moves between the window match and the text probe, that unrelated
+document satisfies the non-empty check and an empty target is recorded OPENED-CLEAN.
+
+This is the defect §14.1 docks `word_compare_batch.applescript` for and §5.11 praises its fix
+for: name the document you mean, or find it by exclusion, but never take whichever one is
+frontmost. The negative control is not a substitute. It proves the repair dialog *would* be
+seen; it says nothing about which document got measured once no dialog appeared.
+
+C1 drops to 0.85, below `word_screen_sources.applescript` and `redline-word-campaign.ts` at 0.95. What survives the cut is the property no score captures and no other script has: it is the only one here that proves its detector works before it trusts a clean result. That is still the reason §13 keeps it.
 
 ---
 
@@ -596,7 +680,7 @@ one holds. Its cited proof — `report_one/scripts/compare-docs.sh` and
 |---|---|---|
 | `word_compare_batch.applescript` | 0.85 | Paragraph count is *taken* before comparing but never *gates* it: the compare and `save as` run regardless, and the count is only evaluated after `[ok]` is already logged (§14.1). Otherwise strong — classifies three failure shapes, logs `[fail] <id> :: <errMsg>` verbatim and `[warn]` for zero-paragraph, returns `POISON <id>` so the driver recycles, 300 s inner timeout. |
 | `word_screen_sources.applescript` | 1.00 | The dedicated detector. Healthy = a positive integer; a thrown error, `0`, and `missing value` are all poison, each recorded verbatim. Produces `word_unreadable.txt` as a reusable exclusion list. |
-| `word-open-check.mjs` | 1.00 | Verdict taxonomy OPENED-CLEAN / REPAIR-PROMPT / ERROR / BLOCKED; dialog text retained verbatim; per-file screenshot as evidence. An unmatched modal is recorded in `row.notes` and drained, then the poll restarts (`drainDialogs(); continue;`, 622–631) rather than falling through to the opened branch — so it is never *silent*. It can still end OPENED-CLEAN if the document opens on a later poll; whether a drained unknown modal ought to poison the verdict is a judgement the code makes deliberately, with the comment to say so. |
+| `word-open-check.mjs` | 1.00 | Verdict taxonomy OPENED-CLEAN / REPAIR-PROMPT / ERROR / BLOCKED; dialog text retained verbatim; per-file screenshot as evidence. An unmatched modal is recorded in `row.notes` and drained, then the poll restarts (`drainDialogs(); continue;`, 622–631) rather than falling through to the opened branch — so it is never *silent*. It can still end OPENED-CLEAN if the document opens on a later poll; whether a drained unknown modal ought to poison the verdict is a judgement the code makes deliberately, with the comment to say so. C5 is unaffected by §5.15, but that finding applies here too: what gets measured after a clean open is `active document`, not necessarily the file just probed. |
 | `word_compare_driver.sh` | 0.95 | `--screen` pre-flight; stall recovery synthesises a `[fail]` so a wedging file cannot be retried forever; restarts Word on poison. |
 | `word-convert.sh` | 0.90 | Detects "Word found unreadable content" / "recover the contents", presses **No** — declining recovery is correct for an oracle, since recovering produces a *different* document — writes a dedicated `.error.txt` with input, output, timestamp and osascript output, exits 3, resets Word. |
 | `redline-word-campaign.ts` | 0.90 | Filename-verified UNREADABLE/ERROR; conservative default to UNREADABLE when neither open nor dialog is observed; drains before and after; JSON report. |
@@ -622,16 +706,16 @@ but is empty; a large document that is slow but fine; an interrupted run.
 | File | C6 | Notable coverage / notable gaps |
 |---|---|---|
 | `word_compare_driver.sh` | 0.95 | Refuses to run over open documents; Word-installed, manifest and TCC prechecks; Accessibility degrades to a warning rather than a failure; `shopt -s nullglob`; `\|\| true` on greps so an empty log cannot abort under `set -e` (documented); cleans `~$` after each restart; `MAX_RESTARTS` and stall bounds; a written termination argument. |
-| `word-open-check.mjs` | 0.95 | BLOCKED verdict when Accessibility is revoked mid-run; `SIGKILL` because a blocked `osascript` ignores SIGTERM; `rm -f` before `zip` because zip *updates* archives; quits Word only if it launched it; records the strict-packages corpus gap rather than silently skipping it. |
+| `word-open-check.mjs` | 0.85 | Docked for `makeCorruptControl()`'s unconditional `rm -rf` on an `--artifacts` path it does not own (§5.13). Otherwise: BLOCKED verdict when Accessibility is revoked mid-run; `SIGKILL` because a blocked `osascript` ignores SIGTERM; `rm -f` before `zip` because zip *updates* archives; quits Word only if it launched it; records the strict-packages corpus gap rather than silently skipping it. |
 | `word_compare_batch.applescript` | 0.90 | Skips existing output; tolerates blank rows and wrong field counts; start/count slicing; avoids `repeat with d in documents` because that Word build rejects `count of every document`. |
-| `word-convert.sh` | 0.85 | Arg count, file existence and extension whitelist; `mkdir -p`; per-run `mktemp -d` with `trap cleanup EXIT`; argv-safe paths; records that `format Unicode text` is rejected by this build; removes stale output before starting. |
+| `word-convert.sh` | 0.85 | Arg count, file existence and extension whitelist; `mkdir -p`; per-run `mktemp -d` with `trap cleanup EXIT`; argv-safe paths; records that `format Unicode text` is rejected by this build; removes stale output before starting — the *destination* (47), not the staged output, which is the one the completion poll reads (§5.14). Score cut from 0.85 for that gap, and for inner `timeout 10` wrappers with no `-k` (§10). |
 | `render/word.py` | 0.80 | Platform gate; skip-existing with `force`; reference calibration so a slow machine does not read as a broken document; reaps killed processes; `_close_active_document` with an Escape fallback. Globs `*.docx` including `~$`; no staging. |
 | `word_screen_sources.applescript` | 0.75 | `\|\| true` so an empty dir does not error; skips already-logged entries; three failure shapes. No `~$` filter. |
 | `word-probe-sweep.sh` | 0.70 | `[ -e ]` guard for an empty glob; deletes `~$`; pays the cold start explicitly; wipes AutoRecovery (unscoped — §12 step 4); `set -uo pipefail` without `-e` deliberately. Hardcoded `PROBE` path. |
 | `redline-sweep.sh` | 0.70 | Rejects unknown flags; three preconditions; per-sweep manifest; missing-baseline hard fail. `IFS=,` breaks on quoted commas; `BASH_SOURCE` under a `zsh` shebang. |
 | `word_dialog_watchdog.applescript` | 0.70 | `try`-wrapped throughout; handles sheets and standalone dialogs. No self-exit if orphaned by a killed parent. |
 | `word_validate_batch.py` | 0.70 | `--limit`; empty-dir guard; `mkdir(parents=True)`; flush per row. Globs `~$` files. |
-| `redline-word-campaign.ts` | 0.70 | `pairs.json` existence check; closes only `campaign-*` documents; bouncer in a `finally`. `process.cwd()`-relative staging; first-N "sample". |
+| `redline-word-campaign.ts` | 0.60 | `pairs.json` existence check; closes only `campaign-*` documents; bouncer in a `finally`. `process.cwd()`-relative staging; first-N "sample". Docked for the unscoped `drainDialogs()` and the sanitised-label collision, both §5.13. |
 | `run_batch_retry.sh` | 0.60 | Excludes `~$` in three places; numeric sort with a documented reason; `PAIRS < 1` guard; `mkdir -p`; resume. Requires the `file_N.docx` convention; mutates `SOURCE_DIR` in place when stamping. |
 | `word-open-probe.sh` ×2 | 0.55 | File-existence check; escapes backslash and quote; `count of documents > 0` guard. Newline in a filename still breaks out; `$delay` interpolated unvalidated. |
 | `batch_word_to_pdf.scpt` | 0.25 | `ls \| grep '\.docx$'` — no `~$` filter, breaks on a newline in a filename. No output-dir creation, no zero-file guard. |
@@ -680,7 +764,7 @@ supervision, shardability, and doing non-Word work off the critical path.
 | `word_screen_sources.applescript` | 60 s per open | Right order of magnitude. Screening is open-and-count only, so 60 s is generous for a healthy document and bounded for a bad one — and it sits behind a pre-warmed, driver-recycled Word, so cold start never eats the budget. |
 | `word_compare_driver.sh` | `STALL_SECS=420`, polled every 15 s | Correctly larger than the batch's 300 s inner timeout — it must be, or it would kill a legitimately slow pair. But the margin is only 120 s, which is tight for a machine under load. Widen to ~600 s, or derive it as `inner + 50%`. |
 | `word_compare_batch.applescript` | 300 s per pair | Justifiably large: `compare` on a big document is genuinely slow. See the margin note above. |
-| `word-convert.sh` | outer `timeout 90`, inner `with timeout of 240`, poll loop 120 × 2 s = 240 s | **Incoherent — the only clearly wrong set.** 90 < 240, so the inner budget and the loop's tail are unreachable and the effective budget is 90 s, which is too short for a large DOCX→PDF. **And 90 s is not even a reliable cap:** `word-convert.sh:55` sets `timeout_cmd="${WORD_CONVERT_TIMEOUT_CMD:-timeout}"` — plain `timeout`, with no `-k`/`--kill-after` anywhere in that file (`grep -c -- '-k\|--kill-after' scripts/word-convert.sh` → 0), and `timeout(1)` sends SIGTERM, which is precisely the signal a blocked `osascript` ignores (§14.2). The `kill -0` poll can therefore stay true for its whole run and the following `wait` can block indefinitely. Fix: set the outer to inner + slack *and* give it `-k`, or drop a layer; raising or removing a timeout layer alone does not buy a hard stop. |
+| `word-convert.sh` | outer `timeout 90`, inner `with timeout of 240`, poll loop 120 × 2 s = 240 s | **Incoherent — the only clearly wrong set.** 90 < 240, so the inner budget and the loop's tail are unreachable and the effective budget is 90 s, which is too short for a large DOCX→PDF. **And 90 s is not even a reliable cap:** `word-convert.sh:55` sets `timeout_cmd="${WORD_CONVERT_TIMEOUT_CMD:-timeout}"` — plain `timeout`, with no `-k`/`--kill-after` anywhere in that file (`grep -c -- '-k\|--kill-after' scripts/word-convert.sh` → 0), and `timeout(1)` sends SIGTERM, which is precisely the signal a blocked `osascript` ignores (§14.2). The `kill -0` poll can therefore stay true for its whole run and the following `wait` can block indefinitely. Fix: set the outer to inner + slack *and* give it `-k`, or drop a layer; raising or removing a timeout layer alone does not buy a hard stop. **The same gap sits on the recovery path**, which is worse: `reset_word_after_failure` closes and quits Word through two `$timeout_cmd 10 osascript` calls (131–132), so a Word wedged behind an unanswered Apple event ignores both SIGTERMs and the `pkill` that follows never gets its turn. Every `timeout` wrapper around Word in this file needs `-k`, not just the outer one. |
 | `word-convert.sh` UI probes | `timeout 8` / `10` / `12` | Fine. These are sub-second queries with a generous kill switch. |
 | `render/word.py` `convert_one` | 180 s flat | Reasonable for docx→PDF, but it is a flat constant in the same module where the validate path got the calibrated treatment. Inconsistent; the calibration belongs here too. |
 | `word_validate_batch.py` | `--timeout 25` default | **Too little, and it silently disables the calibration.** It overrides the module's 60 s *downward* and passes no `reference`, so `_budget` degenerates to a flat 25 s. Large documents come back UNJUDGEABLE — and the CLI then counts them as **invalid**, which is the opposite of what the module promises. `ValidationResult.ok` is `outcome == "valid"` (`render/word.py:126-127`), so UNJUDGEABLE is falsy; `word_validate_batch.py` writes it out as `"word_valid": res.ok` (60), reports it in `len(docs) - n_ok` "invalid" (76), and fails the whole batch on it (`return 0 if n_ok == len(docs) else 1`, 78). `render/word.py:118-119` states the intended contract in its own docstring — *"the budget ran out with NO modal observed — Word was merely slow on this machine; recorded, never treated as invalid"* — and the CLI contradicts it. So a too-short budget does not quietly shrink the denominator; it marks slow-but-valid documents invalid and turns a clean corpus red. |
@@ -938,7 +1022,8 @@ done by hand.
 ## 13. If you keep four
 
 `word_compare_driver.sh` + `word_compare_batch.applescript` for redlining,
-`word-open-check.mjs` for validity, `render/word.py` for DOCX→PDF. Between them they cover
+`word-open-check.mjs` for validity (with §5.15 fixed first — bind its text probe to the
+document it matched, not to `active document`), `render/word.py` for DOCX→PDF. Between them they cover
 every job the other seventeen do, and they are the four that record *why* each decision is
 what it is.
 
@@ -965,8 +1050,10 @@ The merges worth making are small and specific:
    mtime-scoped form of §12 step 4, and the graceful-quit-first escalation to
    `word-probe-sweep.sh`'s `kill_word` — whose wipe should be narrowed to that same
    scope. Each already has the half the other is missing.
-7. Fix `word-convert.sh`'s **timeout layering** (§10) and give it a bouncer or drop its
-   `activate` (§5.9).
+7. Fix `word-convert.sh`'s **timeout layering** (§10) — including `-k` on the recovery
+   path's own `timeout 10` wrappers — give it a bouncer or drop its `activate` (§5.9),
+   and give the staged output a name that cannot collide with the staged input (§5.14).
+   Until that last one is fixed, do not use it for `docx` → `docx`.
 8. Parallelise `redline-sweep.sh`'s **generation loop** (§9) — it does not touch Word.
 
 ---
