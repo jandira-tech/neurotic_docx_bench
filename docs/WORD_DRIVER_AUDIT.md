@@ -824,10 +824,23 @@ pattern match (`-f`) that can match more than Word.
    `~/Library/Containers/com.microsoft.Word/Data/Library/Preferences/AutoRecovery/*` so no
    Document Recovery pane appears, and `rm -f <dir>/~\$*.docx` in every folder Word touched.
    That clears Document Recovery and the lock files. It does **not** clear MERP's
-   "send a report" prompt, which is a separate mechanism (residue 3) and is currently
-   unhandled by every script here. Settle MERP once, out of band — via its Preferences or
-   the Office-wide diagnostic setting — rather than per batch; a kill loop will otherwise
-   raise it on every recovery.
+   "send a report" prompt, which is a separate mechanism (residue 3) and is unhandled by
+   every one of the 21 scripts audited here.
+
+   The only route to that prompt this audit establishes is the one above: a graceful
+   `quit saving no` that actually succeeds is not an unclean exit, so no dialog is raised
+   (§12.1 candidate 1). That is also exactly what a wedged Word denies you, which is when
+   the kill — and the prompt — happen. For that case the replacement pair implements
+   §12.1 candidate 2, a watchdog on `tell process "Microsoft Error Reporting"` (§15); it is
+   written but has never met a live prompt, so it logs every button label it encounters on
+   first contact instead of assuming one.
+
+   The two settings-based options — MERP's own Preferences checkbox and the Office-wide
+   `DiagnosticDataTypePreference` — are **experimental and unverified** (§12.1 candidates 3
+   and 4). Neither is established to suppress the *dialog*: the Microsoft page cited below
+   governs the diagnostic-data level, and no `defaults` key is confirmed for the checkbox.
+   Do not plan a batch around either, and do not treat either as having settled MERP. A
+   kill loop raises the prompt on every recovery until something is confirmed to stop it.
 5. **Better than cleaning up: do not generate the state.** Microsoft documents
    `Options.SaveInterval = 0` as AutoRecover's off switch: *"Returns or sets the time
    interval in minutes for saving AutoRecover information… Set the **SaveInterval** property
