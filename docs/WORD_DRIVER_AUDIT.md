@@ -3,7 +3,11 @@
 Audit of every script across `neurotic_docx_bench`, `jubarte-first` and `jubarte-redlines`
 that drives Microsoft Word for Mac to redline a document or export a PDF.
 
-**Scope:** 21 files. **Read:** 21 Sep 2026, at the checked-out revisions.
+**Scope:** 21 files. **Read:** 21 Sep 2026, at these revisions: `neurotic_docx_bench`
+`a660f32`, `jubarte-first` `e796d8f`, `jubarte-redlines` `ac9d120`. Every cross-repository
+citation below (`word-open-check.mjs:324–338` and the like) is a line number **at those
+commits**, and two of the three repositories are not the one you are reading this in, so a
+line that has since moved should be checked against the pinned revision, not the branch tip.
 **Method:** code-path reading, direct measurement of the scripts (open counts, lock-file
 entries, set overlaps), and the **committed run artifacts** these pipelines left behind —
 `compare.log`, `batch_retry_log.csv`, `source_screen.tsv`, `word_unreadable.txt` and the
@@ -59,7 +63,7 @@ Each scored 0–1. Σ is a plain sum out of 7.00 — a ranking device, not a gra
 - **C4** because the whole of family A exists to avoid a permission prompt that, per §5.1,
   was never going to fire.
 - **C5** because the corpus's own measured cascades are malformed-item failures: the
-  223-file screen where one poison document took 203 others with it (§6, C2), and the
+  223-file screen where one poison document took 203 others with it (§5.20), and the
   34-real-then-88-phantom probe sweep (§5.8).
 - **C6/C7** because 102 of family A's work items are lock files (§5.5) and because the one
   place real parallelism is available — Rust redline generation in `redline-sweep.sh` — runs
@@ -670,7 +674,7 @@ repair prompt, and then proceeds straight to the real corpus with only
 `closeOurDocs(); cancelGrantDialogs(); drainDialogs();` between them (876–878). There is no
 recycle, no re-warm, and no health check.
 
-That is the one sequence this document establishes as dangerous. §5 and §6 record that a
+That is the one sequence this document establishes as dangerous. §5 and §7 record that a
 malformed open leaves Word answering normally while returning empty documents for everything
 after it — the failure that cost `word_screen_sources` 203 files, and the reason §15's
 replacement pair recycles on a failure streak at all. The control is a *deliberate* malformed
@@ -993,9 +997,10 @@ earlier draft of this section got the second one badly wrong by reasoning from t
   did not, MERP raises its own "send a report" dialog.
 
 The earlier draft concluded "there is no crash dialog to suppress". That was a non-sequitur:
-it checked one mechanism and generalised to all of them. Observed behaviour contradicts it —
-after a force-quit, Word asks to send a report on the next launch **even with no document
-open**. That detail is what separates the two dialogs: with nothing open there is nothing to
+it checked one mechanism and generalised to all of them. **Reported from the target machine
+and unverified here:** after a force-quit, Word asks to send a report on the next launch
+**even with no document open**. That is Arthur's direct observation, not a documented claim,
+and the Sources section says so; nothing below it is stronger than that one report. That detail is what separates the two dialogs: with nothing open there is nothing to
 recover, so the prompt is MERP, not Document Recovery.
 
 What a killed Word *actually* leaves behind — three things, not two:
@@ -1008,8 +1013,10 @@ What a killed Word *actually* leaves behind — three things, not two:
    Word never removes them. The next glob picks them up as work items and each costs a full
    AppleEvent timeout (§5.5: 102 of them are committed into family A).
 3. **An unclean-exit flag → Microsoft Error Reporting's "send a report" dialog on next
-   launch.** Independent of AutoRecovery: it fires with no document open, and therefore after
-   *every* kill in a recovery loop, not only after one that had work in progress. **No script
+   launch.** Independent of AutoRecovery: on the single report above it fires with no document
+   open, which would mean after *every* kill in a recovery loop rather than only after one
+   that had work in progress. That generalisation inherits the report's status — one machine,
+   unverified here. **No script
    in any of the three repos handles it.** `word-probe-sweep.sh`'s AutoRecovery wipe does not
    touch it, because it is not AutoRecovery.
 
@@ -1445,7 +1452,7 @@ once.
 | §14.5 `pkill -9 -f` matching helpers | `pkill -x` only, by exact process name, and escalated: `quit saving no` → `-x` → `-9 -x` |
 | §12 Document Recovery after a kill | `clean_after_kill()` removes AutoRecovery entries and `~$` files **modified at or after this session started**, then re-warms. Never the whole directory. And the timestamp only proves ownership because `preflight` established that Word held **zero** documents at startup: under `--allow-open-docs` that premise is gone, so AutoRecovery is skipped entirely rather than filtered, and the Document Recovery pane is the price. The `~$` sweep runs only over the staging directories this run made: Word opens the staged copy, never the user's original, so a lock file in their folder is someone else's (§12 step 4) |
 | §10 timeouts that must cover a cold start | Word is pre-warmed once with `open -g`; per-document budgets cover work only |
-| §5, §6 one poison file costing the batch | Any failure recycles Word before the next item |
+| §5, §7 one poison file costing the batch | Any failure recycles Word before the next item |
 | §9 concurrency | Neither script takes `--jobs`. Word is single-instance and user-session-bound; a second worker would drive the same instance |
 
 ### Malformed documents: decline, close, skip
@@ -1497,7 +1504,7 @@ conditions, not one:
 
 - `close every document saving no` leaves documents still open, i.e. Word did not come back
   clean; or
-- **three failures in a row** (`--poison-streak`). This is the §5/§6 finding: after a bad
+- **three failures in a row** (`--poison-streak`). This is the §5/§7 finding: after a bad
   document Word keeps answering Apple events while returning EMPTY documents for every later
   open, with no error at all — one poison file cost 203 others. The paragraph-count check on
   every open is what catches that, and a run of failures is what it looks like from outside.
