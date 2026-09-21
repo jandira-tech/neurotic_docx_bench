@@ -503,7 +503,7 @@ def _redline_serial(
             logger.error(f"[{i}/{len(pairs)}] FAIL: {label} — {result.error}")
             # Decline the repair prompt, close whatever is open, move on. A
             # restart costs ~30s and is not what a malformed document needs.
-            recover_after_failure(session, stage.inbox, stage.outbox, folder_a, folder_b)
+            recover_after_failure(session, stage.inbox, stage.outbox)
             if streak >= poison_streak:
                 # Unless they keep failing. A Word degraded by a bad document
                 # answers normally and returns empty documents for everything
@@ -512,7 +512,7 @@ def _redline_serial(
                     f"[word] {streak} failures in a row — recycling rather than "
                     "trusting Word to still be reading documents"
                 )
-                session.recycle(stage.inbox, stage.outbox, folder_a, folder_b)
+                session.recycle(stage.inbox, stage.outbox)
                 streak = 0
     return results
 

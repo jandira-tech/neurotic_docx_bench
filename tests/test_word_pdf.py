@@ -1150,3 +1150,36 @@ def test_preflight_records_whether_word_started_clean(
     monkeypatch.setattr(unknown, "open_document_count", lambda: -1)
     wp.preflight(unknown, allow_open_docs=True)
     assert unknown.started_clean is False
+
+
+def test_cleanup_never_sweeps_lock_files_in_the_user_s_own_folder(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Only folders this run created are swept for `~$` files.
+
+    Word never opens anything from `--src`: every document is copied into the
+    container inbox first (`Stage.place`) and Word opens the copy. So a `~$`
+    file in the source folder was put there by someone else's Word, and the
+    mtime cutoff does not save it if that human opened their document while our
+    run was going. `iter_docx()` already excludes `~$*` from the work list, so
+    sweeping the source folder buys nothing and can only break a stranger's
+    lock.
+    """
+    monkeypatch.setattr(wp, "CONTAINER_TMP", tmp_path / "container")
+    src = tmp_path / "src"
+    _touch(src / "bad.docx")
+    human_lock = _touch(src / "~$their-open-doc.docx")
+
+    monkeypatch.setattr(wp, "export_pdf", lambda sin, sout, timeout=180.0: (False, "boom"))
+    session = wp.WordSession()
+    monkeypatch.setattr(session, "warm", lambda: True)
+    swept: list[tuple[Path, ...]] = []
+    monkeypatch.setattr(session, "recycle", lambda *f: swept.append(f) or True)
+    monkeypatch.setattr(session, "clean_after_kill", lambda *f: swept.append(f))
+
+    wp.convert_folder(src, tmp_path / "out", session=session)
+
+    assert swept, "the failure path must have run a cleanup"
+    for folders in swept:
+        assert src not in folders, f"the user's source folder was handed to cleanup: {folders}"
+    assert human_lock.exists(), "someone else's lock file must survive"

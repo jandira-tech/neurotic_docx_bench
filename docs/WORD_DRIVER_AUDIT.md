@@ -861,7 +861,12 @@ whole AutoRecovery directory rather than its own entries (step 4).
    contain the string.
 3. Only then `pkill -9 -x`.
 4. After any kill: clear the recovery state **this run** produced, so no Document
-   Recovery pane appears, and `rm -f <dir>/~\$*.docx` in every folder Word touched.
+   Recovery pane appears, and `rm -f <dir>/~\$*.docx` in every folder **the run
+   created** — not every folder it read. A driver that stages into Word's container
+   never has Word open anything from the user's own folder, so a `~$` file sitting
+   there is another Word's owner file, and deleting it tells that Word its document
+   is unlocked. Excluding `~$*` from the work list, which the driver must do anyway,
+   already covers the only reason to care about them there.
    **Scope the AutoRecovery deletion by mtime; do not wipe the directory.**
    `~/Library/Containers/com.microsoft.Word/Data/Library/Preferences/AutoRecovery/` is
    the user's, not the run's: it holds a recovery copy for every document Word has
@@ -1175,7 +1180,7 @@ once.
 | §14.1 success recorded before health | Paragraph count is checked before the compare runs; the comparison result is found by exclusion, never by whichever document is frontmost |
 | §14.2 `SIGTERM` on a wedged `osascript` | The timeout SIGKILLs **its own child**, which is what `subprocess.run` already does (`Popen.kill()`, never `terminate()`) — and SIGKILL is the part that matters against a blocked `osascript`, which ignores SIGTERM. Deliberately **no `pkill osascript`**: it would match the watchdogs' own polls, every one of which is an `osascript`, plus anything the user is running |
 | §14.5 `pkill -9 -f` matching helpers | `pkill -x` only, by exact process name, and escalated: `quit saving no` → `-x` → `-9 -x` |
-| §12 Document Recovery after a kill | `clean_after_kill()` removes AutoRecovery entries and `~$` files **modified at or after this session started**, then re-warms. Never the whole directory. And the timestamp only proves ownership because `preflight` established that Word held **zero** documents at startup: under `--allow-open-docs` that premise is gone, so AutoRecovery is skipped entirely rather than filtered, and the Document Recovery pane is the price (§12 step 4) |
+| §12 Document Recovery after a kill | `clean_after_kill()` removes AutoRecovery entries and `~$` files **modified at or after this session started**, then re-warms. Never the whole directory. And the timestamp only proves ownership because `preflight` established that Word held **zero** documents at startup: under `--allow-open-docs` that premise is gone, so AutoRecovery is skipped entirely rather than filtered, and the Document Recovery pane is the price. The `~$` sweep runs only over the staging directories this run made: Word opens the staged copy, never the user's original, so a lock file in their folder is someone else's (§12 step 4) |
 | §10 timeouts that must cover a cold start | Word is pre-warmed once with `open -g`; per-document budgets cover work only |
 | §5, §6 one poison file costing the batch | Any failure recycles Word before the next item |
 | §9 concurrency | Neither script takes `--jobs`. Word is single-instance and user-session-bound; a second worker would drive the same instance |
