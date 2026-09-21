@@ -641,7 +641,7 @@ def _redline_batched(
         stage.root or stage.inbox.parent,
         per_item_timeout=timeout,
         session=session,
-        recycle_paths=(stage.inbox, stage.outbox, folder_a, folder_b),
+        recycle_paths=(stage.inbox, stage.outbox),
         max_passes=max_passes,
         label=" compare",
     )
@@ -669,7 +669,7 @@ def _redline_batched(
             stage.root or stage.inbox.parent,
             per_item_timeout=pdf_timeout,
             session=session,
-            recycle_paths=(stage.inbox, stage.outbox, folder_a, folder_b),
+            recycle_paths=(stage.inbox, stage.outbox),
             max_passes=max_passes,
             label=" pdf",
         )
