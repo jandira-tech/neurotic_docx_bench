@@ -551,6 +551,14 @@ class WordSession:
         when it would be convenient to drop it. The same cutoff applies to `~$`
         lock files, on top of the folders already being ours.
 
+        "Ours" is literal: only folders this run created are ever passed in. Word
+        never opens anything from `--src`, because `Stage.place` copies each
+        document into the container inbox and Word opens the copy. So a `~$` file
+        in the user's own folder is some other Word's, and the cutoff would not
+        save it if that person opened their document while we were running.
+        `iter_docx()` already keeps `~$*` out of the work list, so sweeping their
+        folder buys nothing and can only break a stranger's lock.
+
         A file Word wrote *before* we started is by definition not ours. That
         alone is not enough, which is why `started_clean` gates this: see its
         docstring for the autosave-during-the-run case the timestamp cannot
@@ -1092,7 +1100,7 @@ def _convert_serial(
             staged_out.unlink(missing_ok=True)
             # Decline the repair prompt, close whatever is open, move on. A
             # restart costs ~30s and is not what a malformed document needs.
-            recover_after_failure(session, stage.inbox, stage.outbox, src)
+            recover_after_failure(session, stage.inbox, stage.outbox)
             if streak >= poison_streak:
                 # Unless they keep failing. A Word degraded by a bad document
                 # answers normally and returns empty documents for everything
@@ -1101,7 +1109,7 @@ def _convert_serial(
                     f"[word] {streak} failures in a row — recycling rather than "
                     "trusting Word to still be reading documents"
                 )
-                session.recycle(stage.inbox, stage.outbox, src)
+                session.recycle(stage.inbox, stage.outbox)
                 streak = 0
 
         staged_in.unlink(missing_ok=True)
@@ -1154,7 +1162,7 @@ def _convert_batched(
         stage.root or stage.inbox.parent,
         per_item_timeout=timeout,
         session=session,
-        recycle_paths=(stage.inbox, stage.outbox, src),
+        recycle_paths=(stage.inbox, stage.outbox),
         max_passes=max_passes,
         label=" pdf",
     )
