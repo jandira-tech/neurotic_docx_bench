@@ -1110,7 +1110,7 @@ def _convert_serial(
 ) -> list[Result]:
     """One `osascript` per document, with the malformed-document path in Python."""
     results: list[Result] = []
-    streak = 0
+    streak: list[Path] = []
     for i, docx in enumerate(docs, 1):
         final_pdf = pdf_path_for(docx, out_dir)
         if final_pdf.exists() and final_pdf.stat().st_size > 0 and not force:
@@ -1125,32 +1125,74 @@ def _convert_serial(
         elapsed = time.monotonic() - started
 
         if ok:
-            streak = 0
+            streak.clear()
             final_pdf.parent.mkdir(parents=True, exist_ok=True)
             shutil.move(str(staged_out), final_pdf)
             results.append(Result(source=docx, output=final_pdf, ok=True, seconds=elapsed))
             logger.info(f"[{i}/{len(docs)}] ok ({elapsed:.1f}s): {docx.name}")
         else:
-            streak += 1
+            streak.append(docx)
             results.append(Result(source=docx, error=err, seconds=elapsed))
             logger.error(f"[{i}/{len(docs)}] FAIL: {docx.name} — {err}")
             staged_out.unlink(missing_ok=True)
             # Decline the repair prompt, close whatever is open, move on. A
             # restart costs ~30s and is not what a malformed document needs.
             recover_after_failure(session, stage.inbox, stage.outbox, only=staged_in.name)
-            if streak >= poison_streak:
+            if len(streak) >= poison_streak:
                 # Unless they keep failing. A Word degraded by a bad document
                 # answers normally and returns empty documents for everything
                 # after it (§5, §6), which is what a failure run looks like.
                 logger.warning(
-                    f"[word] {streak} failures in a row — recycling rather than "
+                    f"[word] {len(streak)} failures in a row — recycling rather than "
                     "trusting Word to still be reading documents"
                 )
-                session.recycle(stage.inbox, stage.outbox)
-                streak = 0
+                if session.recycle(stage.inbox, stage.outbox):
+                    _replay(streak, results, out_dir=out_dir, stage=stage, timeout=timeout)
+                streak.clear()
 
         staged_in.unlink(missing_ok=True)
     return results
+
+
+def _replay(
+    docs: list[Path],
+    results: list[Result],
+    *,
+    out_dir: Path | None,
+    stage: Stage,
+    timeout: float,
+) -> None:
+    """Re-run a failure streak against a freshly restarted Word, in place.
+
+    The streak is why we restarted: a Word degraded by one bad document answers
+    normally and returns empty documents for everything after it (§5, §6). The
+    paragraph-count check turns those into failures rather than false passes,
+    which is the half that matters — but they are failures of *Word*, and
+    nothing in a `[fail]` distinguishes them from a genuinely malformed file.
+    Leaving them would report healthy documents as permanently broken.
+
+    So the streak gets one attempt against the fresh Word. Whatever fails again
+    is the file's own fault and keeps its original verdict.
+    """
+    for docx in docs:
+        final_pdf = pdf_path_for(docx, out_dir)
+        staged_in = stage.place(docx)
+        staged_out = stage.outbox / final_pdf.name
+        started = time.monotonic()
+        ok, err = export_pdf(staged_in, staged_out, timeout=timeout)
+        elapsed = time.monotonic() - started
+        staged_in.unlink(missing_ok=True)
+        if not ok:
+            staged_out.unlink(missing_ok=True)
+            logger.info(f"[replay] still failing, so it is the file: {docx.name} — {err}")
+            continue
+        final_pdf.parent.mkdir(parents=True, exist_ok=True)
+        shutil.move(str(staged_out), final_pdf)
+        logger.info(f"[replay] ok after restart ({elapsed:.1f}s): {docx.name}")
+        for n, prior in enumerate(results):
+            if prior.source == docx and not prior.ok:
+                results[n] = Result(source=docx, output=final_pdf, ok=True, seconds=elapsed)
+                break
 
 
 def _convert_batched(

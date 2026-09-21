@@ -494,7 +494,7 @@ def _redline_serial(
 ) -> list[PairResult]:
     """One `osascript` per comparison, with the malformed-document path in Python."""
     results: list[PairResult] = []
-    streak = 0
+    streak: list[tuple[Path, Path, Outputs]] = []
     for i, (base, revision) in enumerate(pairs, 1):
         outputs = plan_outputs(base, revision, out_dir, docx_dir, emit)
         label = f"{base.name} → {revision.name}"
@@ -525,28 +525,64 @@ def _redline_serial(
         results.append(result)
 
         if result.ok:
-            streak = 0
+            streak.clear()
             note = "" if result.revisions < 0 else f", {result.revisions} revisions"
             logger.info(f"[{i}/{len(pairs)}] ok ({result.seconds:.1f}s{note}): {label}")
             if result.revisions == 0:
                 logger.warning(f"  compared clean (no revisions): {label}")
         else:
-            streak += 1
+            streak.append((base, revision, outputs))
             logger.error(f"[{i}/{len(pairs)}] FAIL: {label} — {result.error}")
             # Decline the repair prompt, close whatever is open, move on. A
             # restart costs ~30s and is not what a malformed document needs.
             recover_after_failure(session, stage.inbox, stage.outbox)
-            if streak >= poison_streak:
+            if len(streak) >= poison_streak:
                 # Unless they keep failing. A Word degraded by a bad document
                 # answers normally and returns empty documents for everything
                 # after it (§5, §6), which is what a failure run looks like.
                 logger.warning(
-                    f"[word] {streak} failures in a row — recycling rather than "
+                    f"[word] {len(streak)} failures in a row — recycling rather than "
                     "trusting Word to still be reading documents"
                 )
-                session.recycle(stage.inbox, stage.outbox)
-                streak = 0
+                if session.recycle(stage.inbox, stage.outbox):
+                    _replay_pairs(
+                        streak, results, stage=stage, timeout=timeout, pdf_timeout=pdf_timeout
+                    )
+                streak.clear()
     return results
+
+
+def _replay_pairs(
+    pending: list[tuple[Path, Path, Outputs]],
+    results: list[PairResult],
+    *,
+    stage: Stage,
+    timeout: float,
+    pdf_timeout: float,
+) -> None:
+    """Re-run a failure streak against a freshly restarted Word, in place.
+
+    The streak is the reason for the restart: a Word degraded by one bad
+    document answers normally and returns empty documents for everything after
+    it (§5, §6). The base paragraph-count check turns those into failures rather
+    than false passes, which is the half that matters — but nothing in a failure
+    distinguishes Word's fault from the file's, so leaving them would report
+    healthy pairs as permanently broken. Whatever fails again keeps its verdict.
+    """
+    for base, revision, outputs in pending:
+        started = time.monotonic()
+        again = _redline_one(
+            base, revision, outputs, stage=stage, timeout=timeout, pdf_timeout=pdf_timeout
+        )
+        again.seconds = time.monotonic() - started
+        if not again.ok:
+            logger.info(f"[replay] still failing, so it is the pair: {base.name}")
+            continue
+        logger.info(f"[replay] ok after restart ({again.seconds:.1f}s): {base.name}")
+        for n, prior in enumerate(results):
+            if prior.base == base and prior.revision == revision and not prior.ok:
+                results[n] = again
+                break
 
 
 def _redline_one(

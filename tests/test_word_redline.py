@@ -925,3 +925,37 @@ def test_redline_refuses_to_run_with_documents_already_open(
     assert reason, "must refuse even with the override"
     assert "compare" in reason.lower() or "identif" in reason.lower()
     assert session.started_clean is False
+
+
+def test_redline_serial_replays_the_failure_streak_after_recycling(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Same gap as the PDF path: a recycle invalidates the failures that caused it."""
+    monkeypatch.setattr(wp, "CONTAINER_TMP", tmp_path / "container")
+    a = _folder(tmp_path / "a", "poison.docx", "healthy-a.docx", "healthy-b.docx")
+    b = _folder(tmp_path / "b", "poison.docx", "healthy-a.docx", "healthy-b.docx")
+
+    seen: list[str] = []
+
+    def fake_one(base, revision, outputs, **kw):
+        seen.append(base.name)
+        bad = "poison" in base.name or seen.count(base.name) == 1
+        if bad:
+            return wr.PairResult(base=base, revision=revision, error="base loaded empty")
+        outputs.pdf.parent.mkdir(parents=True, exist_ok=True)
+        outputs.pdf.write_bytes(b"%PDF")
+        return wr.PairResult(base=base, revision=revision, pdf=outputs.pdf, ok=True)
+
+    monkeypatch.setattr(wr, "_redline_one", fake_one)
+    monkeypatch.setattr(wr, "recover_after_failure", lambda s, *f, **kw: True)
+    session = wp.WordSession()
+    monkeypatch.setattr(session, "warm", lambda: True)
+    monkeypatch.setattr(session, "quit_if_ours", lambda: None)
+    monkeypatch.setattr(session, "recycle", lambda *f: True)
+
+    results = wr.redline_folders(a, b, tmp_path / "out", session=session)
+    by_name = {r.base.name: r for r in results}
+
+    assert by_name["healthy-a.docx"].ok
+    assert by_name["healthy-b.docx"].ok
+    assert not by_name["poison.docx"].ok
