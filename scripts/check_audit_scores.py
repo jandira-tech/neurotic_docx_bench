@@ -5,8 +5,8 @@
 # ///
 """Check the Word-driver audit's scorecard against itself.
 
-Three classes of drift have already happened in this document by hand, so they
-are checked mechanically now:
+Four classes of drift, three of which have already happened in this document by
+hand, are checked mechanically now:
 
 1. a row's Σ not matching the seven criteria beside it;
 2. the table not being sorted by Σ, which is how it claims to be ordered;
@@ -43,7 +43,11 @@ SECTION_CRITERION = {"6": "C4", "7": "C5", "8": "C6", "9": "C7"}
 
 def check(path: Path) -> list[str]:
     problems: list[str] = []
-    lines = path.read_text(encoding="utf-8").splitlines()
+    try:
+        lines = path.read_text(encoding="utf-8").splitlines()
+    except OSError as exc:
+        # A typo'd path in CI should name itself, not raise through main().
+        return [f"{path}: cannot read ({exc.strerror})"]
 
     # Keyed on (name, repo): two scripts share the name `word-open-probe.sh`,
     # and keying on the name alone let the second row silently replace the
@@ -107,6 +111,9 @@ def check(path: Path) -> list[str]:
 
 
 def main(argv: list[str]) -> int:
+    if any(a in {"-h", "--help"} for a in argv):
+        print(__doc__)
+        return 0
     if not argv:
         print(__doc__)
         return 2

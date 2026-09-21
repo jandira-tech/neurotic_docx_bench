@@ -160,3 +160,18 @@ def test_the_checked_in_audit_is_clean() -> None:
 
 def test_main_returns_two_without_arguments() -> None:
     assert cas.main([]) == 2
+
+
+def test_help_flag_prints_usage_instead_of_crashing(capsys) -> None:
+    """`--help` treated the flag as a path and raised FileNotFoundError."""
+    code = cas.main(["--help"])
+    assert code == 0
+    assert "Usage:" in capsys.readouterr().out
+
+
+def test_missing_file_is_reported_not_raised(tmp_path: Path) -> None:
+    """A typo'd path in CI should say so, not dump a traceback."""
+    missing = tmp_path / "nope.md"
+    problems = cas.check(missing)
+    assert problems and any("nope.md" in p for p in problems)
+    assert any("cannot read" in p.lower() or "no such" in p.lower() for p in problems)
