@@ -1091,3 +1091,62 @@ def test_progress_survives_a_log_that_is_not_there_yet(
     monkeypatch.setattr(wp.logger, "info", lambda msg: None)
     with wp._Progress(tmp_path / "absent.log", total=1, poll=0.01):
         wp.time.sleep(0.05)
+
+
+def test_clean_after_kill_skips_autorecovery_when_a_human_doc_was_open(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A run started with documents open must not touch AutoRecovery at all.
+
+    The mtime cutoff is only sound because `preflight` refuses to start while
+    Word holds documents: with none open, every AutoRecovery entry written
+    during the run is ours. Under `--allow-open-docs` that premise is gone, and
+    the cutoff stops protecting anyone: Word's AutoRecover interval defaults to
+    10 minutes, so a human's document open during a longer run gets its recovery
+    copy rewritten *after* the run started and would be deleted as ours.
+
+    So the cutoff is not the control here; the precondition is. When the run did
+    not start clean, AutoRecovery is left entirely alone. Lock files in our own
+    staging folders are still ours to remove.
+    """
+    recovery = tmp_path / "AutoRecovery"
+    folder = tmp_path / "work"
+    monkeypatch.setattr(wp, "AUTORECOVERY", recovery)
+    monkeypatch.setattr(wp, "osa", lambda *a, **k: (0, "", ""))
+
+    session = wp.WordSession(started_clean=False)
+
+    # Word autosaved a human's open document mid-run: newer than session.started.
+    human_copy = _touch(recovery / "AutoRecovery save of Their Thesis.olk")
+    ours = _touch(folder / "~$deal.docx")
+
+    session.clean_after_kill(folder)
+
+    assert human_copy.exists(), "a human's mid-run autosave must survive"
+    assert not ours.exists(), "our own lock file is still ours to remove"
+
+
+def test_preflight_records_whether_word_started_clean(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """`preflight` is where the no-open-documents premise is established."""
+    monkeypatch.setattr(wp.WordSession, "available", staticmethod(lambda: True))
+
+    session = wp.WordSession()
+    monkeypatch.setattr(session, "warm", lambda: True)
+    monkeypatch.setattr(session, "open_document_count", lambda: 0)
+    assert wp.preflight(session, allow_open_docs=False) == ""
+    assert session.started_clean is True
+
+    open_session = wp.WordSession()
+    monkeypatch.setattr(open_session, "warm", lambda: True)
+    monkeypatch.setattr(open_session, "open_document_count", lambda: 2)
+    assert wp.preflight(open_session, allow_open_docs=True) == ""
+    assert open_session.started_clean is False
+
+    # Word not answering: we cannot prove it started clean, so we must not assume it.
+    unknown = wp.WordSession()
+    monkeypatch.setattr(unknown, "warm", lambda: True)
+    monkeypatch.setattr(unknown, "open_document_count", lambda: -1)
+    wp.preflight(unknown, allow_open_docs=True)
+    assert unknown.started_clean is False
