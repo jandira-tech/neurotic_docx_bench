@@ -556,20 +556,31 @@ kill-and-warm is a new experiment. An attempt that does not is the same experime
 
 ## 12. The error Word throws when we force-quit it
 
-First, a correction that removes a whole class of speculation: **a direct `pkill -9` from
-the shell does not produce a macOS crash report or a "quit unexpectedly" dialog.**
-ReportCrash fires on uncaught exceptions — SIGSEGV, SIGABRT, SIGILL, SIGBUS — and a signal
-you send yourself is a termination, not a crash, so it leaves no crash log.
+**A `pkill -9` does not produce an Apple crash report — and Word still asks to send an
+error report on the next launch.** Both are true, because they are different mechanisms. An
+earlier draft of this section got the second one badly wrong by reasoning from the first.
 
-Be precise about the scope of that claim: `EXC_CRASH (SIGKILL)` *does* appear in crash
-reports when the **system** kills a process — a watchdog termination carries
-`EXC_CRASH (SIGKILL)` with `EXC_CORPSE_NOTIFY` and a termination reason such as
-`0x8badf00d`. That is a different path from the one these scripts take, and none of them can
-trigger it by calling `pkill`. The conclusion stands for our case only: nothing here needs
-`defaults write com.apple.CrashReporter DialogType none`; that would be a system-wide change
-for a problem that does not exist.
+- **Apple's ReportCrash** fires on uncaught exceptions — SIGSEGV, SIGABRT, SIGILL, SIGBUS. A
+  signal you send yourself is a termination, not a crash, so `pkill -9` leaves no crash log
+  and raises no "X quit unexpectedly" panel from the OS. (`EXC_CRASH (SIGKILL)` *does* appear
+  in crash reports when the **system** kills a process — a watchdog termination carries it
+  with `EXC_CORPSE_NOTIFY` and a reason such as `0x8badf00d` — but no `pkill` from these
+  scripts reaches that path.) So `defaults write com.apple.CrashReporter DialogType none` is
+  not the fix for anything here.
+- **Microsoft Error Reporting (MERP)** is Office's own reporter, shipped as a separate
+  application — `Microsoft Error Reporting.app`, under
+  `/Applications/Microsoft Word.app/Contents/SharedSupport/` in current Office and
+  `/Library/Application Support/Microsoft/MERP2.0/` historically. It does **not** depend on
+  ReportCrash. Word records whether it exited cleanly and, finding on the next launch that it
+  did not, MERP raises its own "send a report" dialog.
 
-What a killed Word *actually* leaves behind:
+The earlier draft concluded "there is no crash dialog to suppress". That was a non-sequitur:
+it checked one mechanism and generalised to all of them. Observed behaviour contradicts it —
+after a force-quit, Word asks to send a report on the next launch **even with no document
+open**. That detail is what separates the two dialogs: with nothing open there is nothing to
+recover, so the prompt is MERP, not Document Recovery.
+
+What a killed Word *actually* leaves behind — three things, not two:
 
 1. **AutoRecovery files → the Document Recovery pane on next launch.** Microsoft's own
    documentation is that Document Recovery opens automatically when AutoRecover files exist.
@@ -578,19 +589,33 @@ What a killed Word *actually* leaves behind:
 2. **`~$*.docx` owner/lock files** in every folder Word had a document open from. A killed
    Word never removes them. The next glob picks them up as work items and each costs a full
    AppleEvent timeout (§5.5: 102 of them are committed into family A).
-3. Possibly a "Word did not shut down correctly / open in Safe Mode?" prompt. **Unverified** —
-   I could not confirm this behaviour for the Word build these repos target, and no script
-   here handles it. Worth checking before writing a handler for it.
+3. **An unclean-exit flag → Microsoft Error Reporting's "send a report" dialog on next
+   launch.** Independent of AutoRecovery: it fires with no document open, and therefore after
+   *every* kill in a recovery loop, not only after one that had work in progress. **No script
+   in any of the three repos handles it.** `word-probe-sweep.sh`'s AutoRecovery wipe does not
+   touch it, because it is not AutoRecovery.
+
+   Two things about it are **unverified here** and should be checked on the machine before
+   anything is automated: whether MERP's dialog actually blocks Word from answering Apple
+   events (if it does not, a kill-and-warm loop may survive it and merely accumulate
+   dialogs), and which suppression route the target Office build honours. The documented
+   routes are MERP's own Preferences checkbox, reached by launching
+   `Microsoft Error Reporting.app` directly, and the Office-wide diagnostic-data setting. I
+   have not confirmed a `defaults` key for either and am not guessing one.
+
+4. Possibly a "Word did not shut down correctly / open in Safe Mode?" prompt, distinct from
+   MERP's. **Unverified** — I could not confirm this for the build these repos target, and no
+   script here handles it.
 
 **Who handles what today**
 
-| Script | Escalation | AutoRecovery | `~$` cleanup |
-|---|---|---|---|
-| `word-probe-sweep.sh` | `quit saving no` → 2 s → `pkill -9 -f` → 1 s | **Yes** — `find "$AUTOREC" -mindepth 1 -delete`. The only one in all three repos | Yes, in the loop |
-| `word_compare_driver.sh` | `quit saving no` → 3 s → `pkill -x` (SIGTERM) → 2 s → relaunch + poll | No | Yes, after each restart |
-| `word-convert.sh` | decline dialog → close → `quit saving no` → 1 s → `pkill -x` | No | No |
-| `word_validate_batch.py` | `pkill -x` only — **no graceful quit first** | No | No |
-| everything else | no kill at all | — | — |
+| Script | Escalation | AutoRecovery | `~$` cleanup | MERP prompt |
+|---|---|---|---|---|
+| `word-probe-sweep.sh` | `quit saving no` → 2 s → `pkill -9 -f` → 1 s | **Yes** — `find "$AUTOREC" -mindepth 1 -delete`. The only one in all three repos | Yes, in the loop | No |
+| `word_compare_driver.sh` | `quit saving no` → 3 s → `pkill -x` (SIGTERM) → 2 s → relaunch + poll | No | Yes, after each restart | No |
+| `word-convert.sh` | decline dialog → close → `quit saving no` → 1 s → `pkill -x` | No | No | No |
+| `word_validate_batch.py` | `pkill -x` only — **no graceful quit first** | No | No | No |
+| everything else | no kill at all | — | — | — |
 
 Two of these are half-right in opposite directions. `word_compare_driver.sh` has the correct
 *escalation* (graceful quit, then SIGTERM via `pkill -x`, never `-9`) but no AutoRecovery
@@ -608,6 +633,11 @@ pattern match (`-f`) that can match more than Word.
 4. After any kill: delete
    `~/Library/Containers/com.microsoft.Word/Data/Library/Preferences/AutoRecovery/*` so no
    Document Recovery pane appears, and `rm -f <dir>/~\$*.docx` in every folder Word touched.
+   That clears Document Recovery and the lock files. It does **not** clear MERP's
+   "send a report" prompt, which is a separate mechanism (residue 3) and is currently
+   unhandled by every script here. Settle MERP once, out of band — via its Preferences or
+   the Office-wide diagnostic setting — rather than per batch; a kill loop will otherwise
+   raise it on every recovery.
 5. **Better than cleaning up: do not generate the state.** Microsoft documents
    `Options.SaveInterval = 0` as AutoRecover's off switch — that is the VBA object model
    member, documented on Microsoft Learn, not the Preferences page cited in the sources
@@ -820,7 +850,8 @@ them worth writing down.
 
 ## Sources for the external claims
 
-- SIGKILL produces no crash report: [Apple, EXC_CRASH (SIGKILL)](https://developer.apple.com/documentation/xcode/sigkill) · [How macOS reports crashes, The Eclectic Light Company](https://eclecticlight.co/2021/12/10/how-macos-reports-crashes/)
+- SIGKILL produces no **Apple** crash report, and watchdog terminations do: [Apple, EXC_CRASH (SIGKILL)](https://developer.apple.com/documentation/xcode/sigkill) · [Addressing watchdog terminations, Apple](https://developer.apple.com/documentation/xcode/addressing-watchdog-terminations) · [How macOS reports crashes, The Eclectic Light Company](https://eclecticlight.co/2021/12/10/how-macos-reports-crashes/)
+- Microsoft Error Reporting is a separate Office application with its own Preferences, independent of ReportCrash: [Get rid of Microsoft Error Reporting 2.2 on Mac, Microsoft Q&A](https://learn.microsoft.com/en-us/answers/questions/5650864/get-rid-of-microsoft-error-reporting-2-2-on-mac) · [Microsoft Office error reporting popups on Mac, The Mac Observer](https://www.macobserver.com/tips/microsoft-office-error-reporting-popups-on-mac/). That Word raises it after a `pkill -9` **with no document open** is Arthur's direct observation on the target machine, not a documented claim.
 - Document Recovery opens when AutoRecover files exist: [Recover files in Office for Mac, Microsoft Support](https://support.microsoft.com/en-us/office/recover-files-in-office-for-mac-6c6425b1-6559-4bbf-8f80-4f038402ff02)
 - AutoRecover interval and its off switch: [Change save frequency and where Word AutoRecovery files are stored, Microsoft Support](https://support.microsoft.com/en-us/office/change-save-frequency-and-where-word-autorecovery-files-are-stored-ddd81816-39ff-48f4-989e-8bf1db78b2d9)
 - TCC automation grants are keyed on the responsible client app, not the process: [Avoiding AppleScript Security and Privacy Requests, Scripting OS X](https://scriptingosx.com/2020/09/avoiding-applescript-security-and-privacy-requests/) · [AppleScript Permissions on macOS, MAMP Documentation](https://documentation.mamp.info/en/MAMP-PRO-Mac/FAQ/General/AppleScript-Permissions-on-macOS/)
