@@ -95,6 +95,18 @@ MERP_DECLINE = ("Don't Send", "Don’t Send", "Cancel", "Close", "Quit", "No")
 GRANT_BUTTONS = ("Grant Access", "Grant", "Select…", "Select...", "Select", "Open", "Allow")
 DISMISS_BUTTONS = ("OK", "Ok", "Close", "Don't Save", "No", "Cancel")
 
+# Word's "repair this document?" prompt, matched on WINDOW TEXT rather than on a
+# button name. The answer has to be "No": "Yes" makes Word rewrite the document
+# and we would then be measuring Word's repair, not the file we were handed.
+# Matching on text is what makes the No specific — a blind press of "No" from the
+# generic list could land on an unrelated alert. Strings and the fallback to
+# Escape are word-convert.sh's (decline_unreadable_dialog), which is the one
+# handler in the audited corpus that gets this right.
+REPAIR_MARKERS = (
+    "Word found unreadable content",
+    "Do you want to recover the contents of this document",
+)
+
 
 # ─── pure helpers (no Word, no macOS — unit-testable anywhere) ────────────────
 
@@ -142,6 +154,9 @@ class Result:
     skipped: bool = False
     error: str = ""
     seconds: float = 0.0
+    timing_exact: bool = True
+    """False when `seconds` is a per-item average from a batch pass, not a
+    measurement of this document. The summary labels the row accordingly."""
 
 
 # ─── osascript ───────────────────────────────────────────────────────────────
@@ -309,6 +324,64 @@ end run
 """.strip()
 
 
+# Walk a window's text, press "No" if it is the repair prompt, Escape if the
+# button is not reachable. `-1` as the marker count means "no repair dialog
+# found", which the watchdog uses to fall through to the generic handlers.
+_DECLINE_REPAIR = """
+on textOf(el)
+  set acc to ""
+  try
+    set acc to acc & (name of el as string) & " "
+  end try
+  try
+    set acc to acc & (value of el as string) & " "
+  end try
+  try
+    set acc to acc & (title of el as string) & " "
+  end try
+  try
+    repeat with child in UI elements of el
+      set acc to acc & my textOf(child)
+    end repeat
+  end try
+  return acc
+end textOf
+
+on pressNamed(el, nm)
+  try
+    perform action "AXPress" of button nm of el
+    return true
+  end try
+  try
+    repeat with child in UI elements of el
+      if my pressNamed(child, nm) then return true
+    end repeat
+  end try
+  return false
+end pressNamed
+
+on run argv
+  set markers to items 1 thru -1 of argv
+  tell application "System Events"
+    if not (exists process "Microsoft Word") then return ""
+    tell process "Microsoft Word"
+      repeat with w in windows
+        set wText to my textOf(w)
+        repeat with m in markers
+          if wText contains (m as string) then
+            if my pressNamed(w, "No") then return "No"
+            key code 53
+            return "escape"
+          end if
+        end repeat
+      end repeat
+    end tell
+  end tell
+  return ""
+end run
+""".strip()
+
+
 @dataclass
 class Watchdogs:
     """Two pollers: Word's own modals, and Microsoft Error Reporting.
@@ -325,6 +398,7 @@ class Watchdogs:
     seen: set[str] = field(default_factory=set)
     dismissed: int = 0
     granted: int = 0
+    declined: int = 0
 
     def _note_buttons(self, proc: str) -> None:
         _, out, _ = osa(_DUMP_BUTTONS, proc, timeout=8)
@@ -339,7 +413,15 @@ class Watchdogs:
             if not count:
                 continue
             self._note_buttons(WORD_PROC)
-            # Accept a sandbox grant first. Never Cancel one: denying guarantees
+            # The repair prompt first, and answered "No". It is matched on window
+            # text, so this cannot fire on an unrelated alert — and it has to run
+            # before the generic handlers, which would otherwise press "OK" on it.
+            _, pressed, _ = osa(_DECLINE_REPAIR, *REPAIR_MARKERS, timeout=15)
+            if pressed:
+                self.declined += 1
+                logger.warning(f"[watchdog] repair prompt declined via {pressed!r}")
+                continue
+            # Accept a sandbox grant next. Never Cancel one: denying guarantees
             # a re-prompt on every later file (§14.3).
             # A grant must be pressed with Word frontmost or the panel never
             # renders to accept it (§6.1). Focus is handed straight back.
@@ -560,6 +642,295 @@ def export_pdf(
     return False, classify_failure(rc, err, produced)
 
 
+# ─── malformed documents ─────────────────────────────────────────────────────
+
+
+def recover_after_failure(session: WordSession, *folders: Path) -> bool:
+    """Answer the repair prompt "No", close whatever is open, and keep going.
+
+    This is the cheap path, and it is the one that should run almost always: a
+    malformed document costs one failed open, not a ~30s Word restart. Only if
+    Word does not come back clean — still answering, with no document left open —
+    does it escalate to a full recycle.
+
+    The escalation is not optional. The audit found that after a bad document
+    Word keeps answering Apple events while returning EMPTY documents for every
+    later open, with no error at all (§5, §6): one poison file cost 203 others.
+    The paragraph-count check on every open is what catches that, and a Word that
+    cannot be brought back to zero open documents is assumed to be in it.
+    """
+    osa(_DECLINE_REPAIR, *REPAIR_MARKERS, timeout=15)
+    osa(_CLOSE_ALL, timeout=20)
+    if session.open_document_count() == 0:
+        return True
+    logger.warning("[word] did not come back clean after a failure; recycling")
+    return session.recycle(*folders)
+
+
+# ─── one-osascript batch mode ────────────────────────────────────────────────
+
+
+def safe_stage_name(index: int, name: str) -> str:
+    """A staged filename that cannot break a tab-separated manifest.
+
+    Manifest rows are TSV, so a tab, CR or newline in a source filename would
+    split one row into two and silently misalign every field after it. The index
+    prefix also makes the name unique, so two folders' same-named documents can
+    share one inbox.
+    """
+    cleaned = "".join("_" if ch in "\t\r\n" else ch for ch in name)
+    return f"{index:05d}__{cleaned}"
+
+
+def write_manifest(rows: list[tuple[str, ...]], path: Path) -> Path:
+    """Write TSV rows for a batch script to read. Returns the path."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text("".join("\t".join(r) + "\n" for r in rows), encoding="utf-8")
+    return path
+
+
+@dataclass(slots=True)
+class BatchLog:
+    """What a batch script recorded: per-item outcome, and whether it finished."""
+
+    results: dict[str, tuple[bool, str]] = field(default_factory=dict)
+    done: bool = False
+
+
+def parse_batch_log(text: str) -> BatchLog:
+    """Read a batch script's append-only log.
+
+    Only `[ok]`, `[fail]` and `[done]` lines are read; anything else is ignored,
+    which is what makes an error message containing a newline harmless. An item
+    with no line at all was never reached — the run died before it — and that is
+    the difference between "failed" and "retry in the next pass".
+    """
+    log = BatchLog()
+    for line in text.splitlines():
+        fields = line.split("\t")
+        head = fields[0]
+        if head == "[ok]" and len(fields) >= 2:
+            log.results[fields[1]] = (True, "\t".join(fields[2:]).strip())
+        elif head == "[fail]" and len(fields) >= 2:
+            detail = "\t".join(fields[2:]).strip()
+            log.results[fields[1]] = (False, detail or "unspecified error")
+        elif head == "[done]":
+            log.done = True
+    return log
+
+
+@dataclass(slots=True)
+class BatchRun:
+    """One invocation of a monolithic batch script."""
+
+    log: BatchLog
+    returncode: int | None
+    stderr: str = ""
+
+    @property
+    def wedged(self) -> bool:
+        """True when the script did not reach its own `[done]` line."""
+        return not self.log.done
+
+
+@dataclass
+class _Progress:
+    """Tail a batch log so a long monolithic run is not silent.
+
+    A batch script is one blocking `osascript`, so its own `logLine` calls are
+    the only signal available while it runs.
+    """
+
+    log_path: Path
+    total: int
+    label: str = ""
+    poll: float = 5.0
+    _stop: threading.Event = field(default_factory=threading.Event)
+    _thread: threading.Thread | None = None
+
+    def _loop(self) -> None:
+        seen = -1
+        while not self._stop.wait(self.poll):
+            try:
+                text = self.log_path.read_text(errors="replace")
+            except OSError:
+                continue
+            count = sum(1 for ln in text.splitlines() if ln.startswith(("[ok]", "[fail]")))
+            if count != seen:
+                seen = count
+                logger.info(f"[batch{self.label}] {count}/{self.total}")
+
+    def __enter__(self) -> _Progress:
+        self._thread = threading.Thread(target=self._loop, daemon=True)
+        self._thread.start()
+        return self
+
+    def __exit__(self, *exc: object) -> None:
+        self._stop.set()
+        if self._thread:
+            self._thread.join(timeout=3)
+
+
+def batch_timeout(per_item: float, count: int, *, floor: float = 120.0) -> float:
+    """Whole-batch budget. A per-item budget cannot bound a monolithic run.
+
+    `floor` is headroom on top of the per-item budget — Word's warm-up, the final
+    close, the manifest read — and it is also what an empty batch gets. A
+    negative `per_item` is clamped rather than shortening the budget.
+    """
+    return floor + max(0.0, per_item) * count
+
+
+def run_batch(
+    script: str,
+    rows: list[tuple[str, ...]],
+    work_dir: Path,
+    *,
+    timeout: float,
+    label: str = "",
+) -> BatchRun:
+    """Run one monolithic AppleScript over a manifest of work items.
+
+    Nothing is interpolated into the script: it receives two argv paths, the
+    manifest and its log, and reads the rest itself. That also sidesteps
+    `ARG_MAX` — a thousand pairs of absolute paths on argv is tens of thousands
+    of characters, and this passes two.
+    """
+    manifest = write_manifest(rows, work_dir / "manifest.tsv")
+    log_path = work_dir / "batch.log"
+    log_path.write_text("", encoding="utf-8")
+    with _Progress(log_path, len(rows), label):
+        rc, _, err = osa(script, str(manifest), str(log_path), timeout=timeout)
+    try:
+        text = log_path.read_text(errors="replace")
+    except OSError:
+        text = ""
+    return BatchRun(log=parse_batch_log(text), returncode=rc, stderr=err)
+
+
+def run_batch_with_resume(
+    script: str,
+    rows: list[tuple[str, ...]],
+    work_dir: Path,
+    *,
+    per_item_timeout: float,
+    session: WordSession,
+    recycle_paths: tuple[Path, ...] = (),
+    max_passes: int = 3,
+    label: str = "",
+) -> dict[str, tuple[bool, str]]:
+    """Run a batch script, retrying only the items it never reached.
+
+    Three outcomes per item, and they are not interchangeable:
+
+    - `[ok]` / `[fail]` — the script reached it and said so. Final either way; a
+      malformed document is not retried, because it will be malformed next pass
+      too.
+    - **no line at all** — the run died before getting there. That is the only
+      case worth another pass, and it gets one after Word is recycled.
+
+    Items already recorded are dropped from the next manifest, so a wedge costs
+    the remainder of one pass rather than the whole batch.
+    """
+    final: dict[str, tuple[bool, str]] = {}
+    pending = list(rows)
+    for attempt in range(1, max_passes + 1):
+        if not pending:
+            break
+        run = run_batch(
+            script,
+            pending,
+            work_dir,
+            timeout=batch_timeout(per_item_timeout, len(pending)),
+            label=f"{label} {attempt}",
+        )
+        still: list[tuple[str, ...]] = []
+        for row in pending:
+            recorded = run.log.results.get(row[0])
+            if recorded is None:
+                still.append(row)
+            else:
+                final[row[0]] = recorded
+        pending = still
+        if pending:
+            why = "wedged before [done]" if run.wedged else "ended without reaching them"
+            logger.warning(
+                f"[batch{label}] {len(pending)} item(s) never reached ({why}); "
+                f"recycling Word and retrying (pass {attempt + 1} of {max_passes})"
+            )
+            session.recycle(*recycle_paths)
+    for row in pending:
+        final[row[0]] = (False, f"never reached in {max_passes} batch pass(es)")
+    return final
+
+
+# One osascript for the whole folder. The per-document
+# `try … on error … close every document saving no … end try` IS the
+# malformed-document contract: answer nothing, close whatever is open, record
+# it, move to the next file. The repair prompt itself is answered concurrently
+# by the watchdog, which runs in its own process and can act while this script
+# is blocked on `open`.
+_EXPORT_BATCH = r"""
+on splitTabs(t)
+  set od to AppleScript's text item delimiters
+  set AppleScript's text item delimiters to tab
+  set parts to text items of t
+  set AppleScript's text item delimiters to od
+  return parts
+end splitTabs
+
+on logLine(logPath, msg)
+  do shell script "printf '%s\\n' " & quoted form of msg & " >> " & quoted form of logPath
+end logLine
+
+on run argv
+  set manifestPath to item 1 of argv
+  set logPath to item 2 of argv
+  set rows to paragraphs of (read POSIX file manifestPath)
+  tell application "Microsoft Word"
+    set displayAlerts to false
+  end tell
+  set okCount to 0
+  set failCount to 0
+  repeat with r in rows
+    set rowText to r as string
+    if rowText is not "" then
+      set f to my splitTabs(rowText)
+      if (count of f) is 3 then
+        set itemId to item 1 of f
+        set inP to item 2 of f
+        set outP to item 3 of f
+        try
+          with timeout of 600 seconds
+            tell application "Microsoft Word"
+              open POSIX file inP
+              set theDoc to document 1
+              if (count of paragraphs of theDoc) is 0 then
+                close every document saving no
+                error "document loaded empty (Word could not read it)"
+              end if
+              save as theDoc file name outP file format format PDF
+              close every document saving no
+            end tell
+          end timeout
+          set okCount to okCount + 1
+          my logLine(logPath, "[ok]" & tab & itemId)
+        on error errMsg
+          set failCount to failCount + 1
+          try
+            tell application "Microsoft Word" to close every document saving no
+          end try
+          my logLine(logPath, "[fail]" & tab & itemId & tab & errMsg)
+        end try
+      end if
+    end if
+  end repeat
+  my logLine(logPath, "[done]" & tab & okCount & tab & failCount)
+  return "ok=" & okCount & " fail=" & failCount
+end run
+""".strip()
+
+
 def convert_folder(
     src: Path,
     out_dir: Path | None,
@@ -568,6 +939,9 @@ def convert_folder(
     timeout: float = 180.0,
     session: WordSession | None = None,
     stage: Stage | None = None,
+    one_osascript: bool = False,
+    max_passes: int = 3,
+    poison_streak: int = 3,
 ) -> list[Result]:
     """Export every real .docx in `src` to PDF. Serial, by necessity.
 
@@ -575,6 +949,12 @@ def convert_folder(
     equivalent of LibreOffice's `-env:UserInstallation`, so a second worker
     would drive the same instance. Parallelism here needs separate macOS user
     sessions or VMs (§9). The signature therefore takes no `jobs`.
+
+    `one_osascript` runs the whole folder inside a single monolithic AppleScript
+    instead of one `osascript` per document. What that saves is real but modest —
+    a process spawn and an Apple-event connection per file — and what it costs is
+    the ability to act between documents. It is offered because the folder-sized
+    batch is the shape the old corpus used and the one this replaces.
     """
     docs = iter_docx(src)
     if not docs:
@@ -584,7 +964,6 @@ def convert_folder(
     owns_session = session is None
     owns_stage = stage is None
     session = session or WordSession()
-    results: list[Result] = []
 
     if owns_session and not session.warm():
         return [Result(source=d, error="Word did not become responsive") for d in docs]
@@ -593,41 +972,156 @@ def convert_folder(
     stage = stage or (ctx.__enter__() if ctx else None)
     assert stage is not None
     try:
-        for i, docx in enumerate(docs, 1):
-            final_pdf = pdf_path_for(docx, out_dir)
-            if final_pdf.exists() and final_pdf.stat().st_size > 0 and not force:
-                results.append(Result(source=docx, output=final_pdf, ok=True, skipped=True))
-                logger.debug(f"[{i}/{len(docs)}] skip (exists): {docx.name}")
-                continue
-
-            started = time.monotonic()
-            staged_in = stage.place(docx)
-            staged_out = stage.outbox / final_pdf.name
-            ok, err = export_pdf(staged_in, staged_out, timeout=timeout)
-            elapsed = time.monotonic() - started
-
-            if ok:
-                final_pdf.parent.mkdir(parents=True, exist_ok=True)
-                shutil.move(str(staged_out), final_pdf)
-                results.append(
-                    Result(source=docx, output=final_pdf, ok=True, seconds=elapsed)
-                )
-                logger.info(f"[{i}/{len(docs)}] ok ({elapsed:.1f}s): {docx.name}")
-            else:
-                results.append(Result(source=docx, error=err, seconds=elapsed))
-                logger.error(f"[{i}/{len(docs)}] FAIL: {docx.name} — {err}")
-                # One bad document leaves Word returning empty documents for
-                # every later open, silently. Recycle rather than carry on
-                # (§5/§6: one poison file cost 203 others in the old corpus).
-                session.recycle(stage.inbox, stage.outbox, src)
-
-            staged_in.unlink(missing_ok=True)
+        run = _convert_batched if one_osascript else _convert_serial
+        return run(
+            docs,
+            out_dir,
+            src,
+            stage=stage,
+            session=session,
+            force=force,
+            timeout=timeout,
+            max_passes=max_passes,
+            poison_streak=poison_streak,
+        )
     finally:
         if ctx:
             ctx.__exit__(None, None, None)
         if owns_session:
             session.quit_if_ours()
+
+
+def _convert_serial(
+    docs: list[Path],
+    out_dir: Path | None,
+    src: Path,
+    *,
+    stage: Stage,
+    session: WordSession,
+    force: bool,
+    timeout: float,
+    max_passes: int = 3,
+    poison_streak: int = 3,
+) -> list[Result]:
+    """One `osascript` per document, with the malformed-document path in Python."""
+    results: list[Result] = []
+    streak = 0
+    for i, docx in enumerate(docs, 1):
+        final_pdf = pdf_path_for(docx, out_dir)
+        if final_pdf.exists() and final_pdf.stat().st_size > 0 and not force:
+            results.append(Result(source=docx, output=final_pdf, ok=True, skipped=True))
+            logger.debug(f"[{i}/{len(docs)}] skip (exists): {docx.name}")
+            continue
+
+        started = time.monotonic()
+        staged_in = stage.place(docx)
+        staged_out = stage.outbox / final_pdf.name
+        ok, err = export_pdf(staged_in, staged_out, timeout=timeout)
+        elapsed = time.monotonic() - started
+
+        if ok:
+            streak = 0
+            final_pdf.parent.mkdir(parents=True, exist_ok=True)
+            shutil.move(str(staged_out), final_pdf)
+            results.append(Result(source=docx, output=final_pdf, ok=True, seconds=elapsed))
+            logger.info(f"[{i}/{len(docs)}] ok ({elapsed:.1f}s): {docx.name}")
+        else:
+            streak += 1
+            results.append(Result(source=docx, error=err, seconds=elapsed))
+            logger.error(f"[{i}/{len(docs)}] FAIL: {docx.name} — {err}")
+            staged_out.unlink(missing_ok=True)
+            # Decline the repair prompt, close whatever is open, move on. A
+            # restart costs ~30s and is not what a malformed document needs.
+            recover_after_failure(session, stage.inbox, stage.outbox, src)
+            if streak >= poison_streak:
+                # Unless they keep failing. A Word degraded by a bad document
+                # answers normally and returns empty documents for everything
+                # after it (§5, §6), which is what a failure run looks like.
+                logger.warning(
+                    f"[word] {streak} failures in a row — recycling rather than "
+                    "trusting Word to still be reading documents"
+                )
+                session.recycle(stage.inbox, stage.outbox, src)
+                streak = 0
+
+        staged_in.unlink(missing_ok=True)
     return results
+
+
+def _convert_batched(
+    docs: list[Path],
+    out_dir: Path | None,
+    src: Path,
+    *,
+    stage: Stage,
+    session: WordSession,
+    force: bool,
+    timeout: float,
+    max_passes: int = 3,
+    poison_streak: int = 3,
+) -> list[Result]:
+    """One monolithic AppleScript for the whole folder, resumed if it dies.
+
+    Every input is staged before the run starts, because the manifest references
+    all of them at once — that is inherent to a single-script batch, and it is
+    the mode's real cost: N copies live in the container until the run ends.
+    """
+    outcomes: dict[Path, Result] = {}
+    todo: list[Path] = []
+    for doc in docs:
+        final = pdf_path_for(doc, out_dir)
+        if final.exists() and final.stat().st_size > 0 and not force:
+            outcomes[doc] = Result(source=doc, output=final, ok=True, skipped=True)
+        else:
+            todo.append(doc)
+    if not todo:
+        return [outcomes[doc] for doc in docs]
+
+    rows: list[tuple[str, ...]] = []
+    staged: dict[str, tuple[Path, Path, Path]] = {}
+    for i, doc in enumerate(todo):
+        item = str(i)
+        staged_in = stage.place_as(doc, safe_stage_name(i, doc.name))
+        staged_out = stage.outbox / f"{safe_stage_name(i, doc.stem)}.pdf"
+        rows.append((item, str(staged_in), str(staged_out)))
+        staged[item] = (doc, staged_in, staged_out)
+
+    logger.info(f"[batch] one osascript for {len(rows)} document(s)")
+    started = time.monotonic()
+    recorded = run_batch_with_resume(
+        _EXPORT_BATCH,
+        rows,
+        stage.root or stage.inbox.parent,
+        per_item_timeout=timeout,
+        session=session,
+        recycle_paths=(stage.inbox, stage.outbox, src),
+        max_passes=max_passes,
+        label=" pdf",
+    )
+    per_item = (time.monotonic() - started) / max(1, len(rows))
+
+    for item, (doc, staged_in, staged_out) in staged.items():
+        staged_in.unlink(missing_ok=True)
+        ok, detail = recorded[item]
+        produced = staged_out.exists() and staged_out.stat().st_size > 0
+        if ok and produced:
+            final = pdf_path_for(doc, out_dir)
+            final.parent.mkdir(parents=True, exist_ok=True)
+            shutil.move(str(staged_out), final)
+            outcomes[doc] = Result(
+                source=doc, output=final, ok=True, seconds=per_item, timing_exact=False
+            )
+        else:
+            outcomes[doc] = Result(
+                source=doc,
+                error=classify_failure(0 if ok else 1, detail, produced),
+                seconds=per_item,
+                timing_exact=False,
+            )
+            staged_out.unlink(missing_ok=True)
+            logger.error(f"[batch] FAIL: {doc.name} — {outcomes[doc].error}")
+
+    return [outcomes[doc] for doc in docs]
 
 
 # ─── reporting ───────────────────────────────────────────────────────────────
@@ -644,7 +1138,12 @@ def report(results: list[Result], title: str = "Word export") -> int:
     table.add_row("skipped (exists)", str(len(skipped)))
     table.add_row("failed", str(len(failed)), style="red" if failed else None)
     if ok:
-        table.add_row("median seconds", f"{sorted(r.seconds for r in ok)[len(ok) // 2]:.1f}")
+        seconds = sorted(r.seconds for r in ok)
+        if all(r.timing_exact for r in ok):
+            table.add_row("median seconds", f"{seconds[len(ok) // 2]:.1f}")
+        else:
+            # A batch pass times the whole run, not each document in it.
+            table.add_row("seconds per document (batch avg)", f"{seconds[len(ok) // 2]:.1f}")
     console.print(table)
     for r in failed:
         console.print(f"  [red]FAIL[/] {r.source.name}: {r.error}")
@@ -693,6 +1192,12 @@ def main(
     ),
     force: bool = typer.Option(False, "--force", help="Re-export even if the PDF exists."),
     timeout: float = typer.Option(180.0, "--timeout", help="Seconds per document."),
+    one_osascript: bool = typer.Option(
+        False,
+        "--one-osascript",
+        help="Run the whole folder in ONE monolithic AppleScript instead of one "
+        "osascript per document. Resumes automatically if the run wedges.",
+    ),
     check_preset: bool = typer.Option(
         True, "--check-preset/--no-check-preset", help="Print the PDF-preset reminder."
     ),
@@ -720,7 +1225,14 @@ def main(
         raise typer.Exit(2)
 
     with Watchdogs():
-        results = convert_folder(src, out, force=force, timeout=timeout, session=session)
+        results = convert_folder(
+            src,
+            out,
+            force=force,
+            timeout=timeout,
+            session=session,
+            one_osascript=one_osascript,
+        )
         session.quit_if_ours()
     raise typer.Exit(report(results, f"DOCX → PDF: {src}"))
 
