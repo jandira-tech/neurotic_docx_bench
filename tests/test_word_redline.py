@@ -39,6 +39,17 @@ def _touch(p: Path, body: bytes = b"x") -> Path:
     return p
 
 
+def _applescript_code(src: str) -> str:
+    """The script with its comments stripped.
+
+    Asserting that a forbidden construct is absent has to look at the code. A
+    comment that names `active document` in order to say the script avoids it
+    is documentation doing its job, and must not fail the check that the code
+    really does avoid it.
+    """
+    return "\n".join(ln for ln in src.splitlines() if not ln.strip().startswith("--"))
+
+
 def _folder(root: Path, *names: str) -> Path:
     root.mkdir(parents=True, exist_ok=True)
     for n in names:
@@ -101,8 +112,15 @@ def test_cross_pairs_drops_self_pairs_when_both_folders_are_one(tmp_path: Path) 
 # ─── naming ──────────────────────────────────────────────────────────────────
 
 
-def test_redline_stem_uses_the_shared_name_when_the_pair_shares_one(tmp_path: Path) -> None:
-    assert wr.redline_stem(tmp_path / "a" / "deal.docx", tmp_path / "b" / "deal.docx") == "deal"
+def test_redline_stem_names_both_sides_even_when_they_match(tmp_path: Path) -> None:
+    """A redline must not be named exactly like either document it came from.
+
+    Same-stem pairs used to collapse to the bare shared name, so comparing
+    `before/deal.docx` against `after/deal.docx` produced `deal.docx` — a
+    tracked-changes document indistinguishable by name from both its inputs.
+    """
+    got = wr.redline_stem(tmp_path / "a" / "deal.docx", tmp_path / "b" / "deal.docx")
+    assert got == "deal__vs__deal"
 
 
 def test_redline_stem_names_both_sides_when_they_differ(tmp_path: Path) -> None:
@@ -121,7 +139,7 @@ def test_plan_outputs_pdf_only_is_the_default_shape(tmp_path: Path) -> None:
         None,
         wr.Emit.PDF,
     )
-    assert out.pdf == tmp_path / "out" / "deal.pdf"
+    assert out.pdf == tmp_path / "out" / "deal__vs__deal.pdf"
     assert out.docx is None
 
 
@@ -133,7 +151,7 @@ def test_plan_outputs_docx_only(tmp_path: Path) -> None:
         None,
         wr.Emit.DOCX,
     )
-    assert out.docx == tmp_path / "out" / "deal.docx"
+    assert out.docx == tmp_path / "out" / "deal__vs__deal.docx"
     assert out.pdf is None
 
 
@@ -145,8 +163,8 @@ def test_plan_outputs_both_can_split_the_destinations(tmp_path: Path) -> None:
         tmp_path / "docx",
         wr.Emit.BOTH,
     )
-    assert out.pdf == tmp_path / "pdf" / "deal.pdf"
-    assert out.docx == tmp_path / "docx" / "deal.docx"
+    assert out.pdf == tmp_path / "pdf" / "deal__vs__deal.pdf"
+    assert out.docx == tmp_path / "docx" / "deal__vs__deal.docx"
 
 
 def test_plan_outputs_wants_docx_internally_for_every_mode(tmp_path: Path) -> None:
@@ -159,8 +177,8 @@ def test_plan_outputs_wants_docx_internally_for_every_mode(tmp_path: Path) -> No
 
 
 def test_should_skip_only_when_every_wanted_output_is_present(tmp_path: Path) -> None:
-    pdf = _touch(tmp_path / "out" / "deal.pdf", b"%PDF")
-    docx = tmp_path / "out" / "deal.docx"
+    pdf = _touch(tmp_path / "out" / "deal__vs__deal.pdf", b"%PDF")
+    docx = tmp_path / "out" / "deal__vs__deal.docx"
 
     assert wr.should_skip(wr.Outputs(docx=None, pdf=pdf), force=False) is True
     assert wr.should_skip(wr.Outputs(docx=docx, pdf=pdf), force=False) is False
@@ -168,7 +186,7 @@ def test_should_skip_only_when_every_wanted_output_is_present(tmp_path: Path) ->
 
 
 def test_should_skip_rejects_a_zero_byte_leftover(tmp_path: Path) -> None:
-    pdf = _touch(tmp_path / "out" / "deal.pdf", b"")
+    pdf = _touch(tmp_path / "out" / "deal__vs__deal.pdf", b"")
     assert wr.should_skip(wr.Outputs(docx=None, pdf=pdf), force=False) is False
 
 
@@ -232,9 +250,17 @@ def test_compare_pair_surfaces_the_applescript_error(
 
 
 def test_compare_applescript_identifies_the_result_by_exclusion() -> None:
-    """`active document` is still the BASE when compare silently produced nothing."""
+    """`compare` returns a NEW document; name the one you mean, never the active one.
+
+    The earlier docstring here claimed `active document` stays on the BASE when
+    a compare silently produces nothing. That premise is wrong (§5.11): the
+    result arrives as a new, unsaved document. Identifying it by exclusion is
+    still right, because a script should name the document it means.
+    """
     src = wr._COMPARE
-    assert "active document" not in src
+    assert "active document" not in _applescript_code(src)
+    # It is named in a comment, as the thing being avoided.
+    assert "active document" in src
     assert "repeat with i from 1 to docCount" in src
     assert "detect format changes true" in src
     # Health is evaluated before anything is saved.
@@ -291,8 +317,8 @@ def test_redline_folders_default_writes_pdf_only(tmp_path: Path, stub_word) -> N
     results = wr.redline_folders(a, b, out, session=session)
 
     assert len(results) == 1 and results[0].ok
-    assert (out / "deal.pdf").exists()
-    assert not (out / "deal.docx").exists()
+    assert (out / "deal__vs__deal.pdf").exists()
+    assert not (out / "deal__vs__deal.docx").exists()
     assert len(compared) == 1 and len(exported) == 1
 
 
@@ -306,8 +332,8 @@ def test_redline_folders_both_keeps_the_tracked_changes_docx(
 
     wr.redline_folders(a, b, out, emit=wr.Emit.BOTH, session=session)
 
-    assert (out / "deal.pdf").exists()
-    assert (out / "deal.docx").read_bytes() == b"PK-redline"
+    assert (out / "deal__vs__deal.pdf").exists()
+    assert (out / "deal__vs__deal.docx").read_bytes() == b"PK-redline"
 
 
 def test_redline_folders_docx_only_never_calls_the_pdf_exporter(
@@ -321,8 +347,8 @@ def test_redline_folders_docx_only_never_calls_the_pdf_exporter(
     wr.redline_folders(a, b, out, emit=wr.Emit.DOCX, session=session)
 
     assert exported == []
-    assert (out / "deal.docx").exists()
-    assert not (out / "deal.pdf").exists()
+    assert (out / "deal__vs__deal.docx").exists()
+    assert not (out / "deal__vs__deal.pdf").exists()
 
 
 def _tracked_changes_docx() -> bytes:
@@ -387,7 +413,7 @@ def test_delivered_redline_docx_carries_tracked_changes(
     results = wr.redline_folders(a, b, out, emit=wr.Emit.DOCX, session=session)
 
     assert len(results) == 1 and results[0].ok
-    with zipfile.ZipFile(out / "deal.docx") as z:
+    with zipfile.ZipFile(out / "deal__vs__deal.docx") as z:
         body = z.read("word/document.xml").decode("utf-8")
     assert "<w:ins " in body
     assert "<w:del " in body
@@ -428,7 +454,7 @@ def test_redline_folders_skips_existing_unless_forced(tmp_path: Path, stub_word)
     a = _folder(tmp_path / "a", "deal.docx")
     b = _folder(tmp_path / "b", "deal.docx")
     out = tmp_path / "out"
-    _touch(out / "deal.pdf", b"%PDF")
+    _touch(out / "deal__vs__deal.pdf", b"%PDF")
 
     results = wr.redline_folders(a, b, out, session=session)
     assert results[0].skipped and results[0].ok and compared == []
@@ -683,7 +709,7 @@ def test_serial_recycles_after_a_streak_of_failures(
 
 def test_compare_batch_script_keeps_every_per_pair_rule() -> None:
     src = wr._COMPARE_BATCH
-    assert "active document" not in src
+    assert "active document" not in _applescript_code(src)
     assert "repeat with i from 1 to docCount" in src
     assert "detect format changes true" in src
     assert src.index("count of paragraphs") < src.index("compare baseDoc")
@@ -728,9 +754,9 @@ def test_redline_batched_runs_compare_then_pdf_as_two_scripts(
     assert all(r.ok for r in results)
     assert all(r.revisions == 5 for r in results)  # read off the [ok] line
     assert all(r.timing_exact is False for r in results)
-    assert (tmp_path / "out" / "deal.pdf").exists()
-    assert (tmp_path / "out" / "nda.pdf").exists()
-    assert not (tmp_path / "out" / "deal.docx").exists()  # --emit pdf discards it
+    assert (tmp_path / "out" / "deal__vs__deal.pdf").exists()
+    assert (tmp_path / "out" / "nda__vs__nda.pdf").exists()
+    assert not (tmp_path / "out" / "deal__vs__deal.docx").exists()  # --emit pdf discards it
 
 
 def test_redline_batched_docx_only_runs_one_script(
@@ -764,7 +790,7 @@ def test_redline_batched_docx_only_runs_one_script(
 
     assert scripts == [wr._COMPARE_BATCH]  # no PDF pass when none was asked for
     assert results[0].ok and results[0].revisions == 3
-    assert (tmp_path / "out" / "deal.docx").read_bytes() == b"PK"
+    assert (tmp_path / "out" / "deal__vs__deal.docx").read_bytes() == b"PK"
 
 
 def test_redline_batched_records_a_failed_pair_and_finishes_the_rest(
@@ -798,8 +824,8 @@ def test_redline_batched_records_a_failed_pair_and_finishes_the_rest(
 
     assert [(r.base.name, r.ok) for r in results] == [("bad.docx", False), ("good.docx", True)]
     assert "could not read" in results[0].error
-    assert (tmp_path / "out" / "good.pdf").exists()
-    assert not (tmp_path / "out" / "bad.pdf").exists()
+    assert (tmp_path / "out" / "good__vs__good.pdf").exists()
+    assert not (tmp_path / "out" / "bad__vs__bad.pdf").exists()
 
 
 def test_redline_batched_skips_existing_and_stages_the_rest(
@@ -808,7 +834,7 @@ def test_redline_batched_skips_existing_and_stages_the_rest(
     monkeypatch.setattr(wp, "CONTAINER_TMP", tmp_path / "container")
     a = _folder(tmp_path / "a", "deal.docx", "nda.docx")
     b = _folder(tmp_path / "b", "deal.docx", "nda.docx")
-    _touch(tmp_path / "out" / "deal.pdf", b"%PDF")
+    _touch(tmp_path / "out" / "deal__vs__deal.pdf", b"%PDF")
     manifests: list[int] = []
 
     def fake_osa(script, *args, timeout=60.0):
