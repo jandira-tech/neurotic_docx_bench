@@ -77,14 +77,14 @@ Each scored 0–1. Σ is a plain sum out of 7.00 — a ranking device, not a gra
 | `word-open-check.mjs` | jf | 0.85 | 0.80 | 0.90 | 0.70 | 1.00 | 0.85 | 0.40 | **5.50** | 25 |
 | `word-convert.sh` | jf | 0.50 | 0.70 | 0.80 | 0.95 | 0.90 | 0.80 | 0.30 | **4.95** | none |
 | `word_dialog_watchdog.applescript` | ndb | 0.70 | 0.90 | 0.80 | 0.15 | 0.70 | 0.70 | 0.80 | **4.75** | none |
-| `redline-word-campaign.ts` | jf | 0.95 | 0.60 | 0.55 | 0.60 | 0.90 | 0.60 | 0.50 | **4.70** | none |
+| `redline-word-campaign.ts` | jf | 0.95 | 0.60 | 0.45 | 0.60 | 0.90 | 0.60 | 0.50 | **4.60** | none |
 | `word_validate_batch.py` | ndb | 0.70 | 0.80 | 0.85 | 0.25 | 0.85 | 0.70 | 0.30 | **4.45** | none |
 | `render/word.py` | ndb | 0.75 | 0.65 | 0.90 | 0.25 | 0.80 | 0.80 | 0.25 | **4.40** | 15 |
 | `word-probe-sweep.sh` | jr | 0.60 | 0.90 | 0.40 | 0.15 | 0.85 | 0.70 | 0.20 | **3.80** | none |
 | `run_batch_retry.sh` | ndb | 0.20 | 0.40 | 0.60 | 0.80 | 0.50 | 0.60 | 0.20 | **3.30** | none |
 | `redline-sweep.sh` | jr | 0.80 | 0.30 | 0.80 | 0.10 | 0.35 | 0.70 | 0.20 | **3.25** | none |
-| `word-open-probe.sh` | jf | 0.60 | 0.40 | 0.70 | 0.10 | 0.50 | 0.55 | 0.20 | **3.05** | none |
-| `word-open-probe.sh` | jr | 0.60 | 0.40 | 0.70 | 0.10 | 0.50 | 0.55 | 0.20 | **3.05** | none |
+| `word-open-probe.sh` | jf | 0.45 | 0.40 | 0.70 | 0.10 | 0.50 | 0.45 | 0.20 | **2.80** | none |
+| `word-open-probe.sh` | jr | 0.45 | 0.40 | 0.70 | 0.10 | 0.50 | 0.45 | 0.20 | **2.80** | none |
 | `batch_word_to_pdf.scpt` | ndb | 0.20 | 0.25 | 0.30 | 0.15 | 0.35 | 0.25 | 0.10 | **1.60** | none |
 | `batch_convert.scpt` | ndb | 0.15 | 0.35 | 0.05 | 0.15 | 0.30 | 0.05 | 0.05 | **1.10** | none |
 | `batch_jubarte_lossless_pdf.applescript` | ndb | 0.15 | 0.35 | 0.05 | 0.15 | 0.30 | 0.05 | 0.05 | **1.10** | none |
@@ -515,6 +515,56 @@ frontmost. The negative control is not a substitute. It proves the repair dialog
 seen; it says nothing about which document got measured once no dialog appeared.
 
 C1 drops to 0.85, below `word_screen_sources.applescript` and `redline-word-campaign.ts` at 0.95. What survives the cut is the property no score captures and no other script has: it is the only one here that proves its detector works before it trusts a clean result. That is still the reason §13 keeps it.
+
+---
+
+### 5.16 `word-open-probe.sh` certifies whichever document Word happens to have
+
+The probe's whole verdict rests on a global count:
+
+```applescript
+if (count of documents) > 0 then          -- 31
+  set theName to name of active document  -- 32
+  close active document saving no         -- 33
+  return "OPENED: " & theName             -- 34
+```
+
+Nothing checks that the count *rose*, and nothing ties `active document` to the file just
+asked for. With a human's document already open, an `open` that silently adds nothing —
+the false-clean shape §5.15 and §14.1 both describe — leaves `count of documents` at 1, and
+line 32 reports the human's document as the successful probe of ours. Line 33 then closes
+it `saving no`, so the same bug that fabricates a pass also destroys the evidence and the
+person's unsaved edits.
+
+A count taken before the open and compared after, or matching by name as
+`redline-word-campaign.ts` does for its verdicts, settles both halves. C1 drops to 0.45 and
+C6 to 0.45, in both copies of the file.
+
+### 5.17 The campaign's 20-second timeout does not bound anything
+
+`redline-word-campaign.ts`'s `osa()` is `execFileSync("osascript", ["-e", script], {
+encoding: "utf-8", timeout: 20000 })` (49–51), and `attempt()` calls it for the open before
+any grant or dialog handling can run. `execFileSync` sends `killSignal` on timeout, which
+defaults to `SIGTERM` — the one signal §14.2 establishes a blocked `osascript` ignores.
+
+Measured rather than assumed, with a child that ignores `SIGTERM`:
+
+```
+$ node -e '…execFileSync("node", ["-e", ignoreSigterm], {timeout: 1000})…'
+threw: ETIMEDOUT
+elapsed_ms: 10047   (timeout was 1000)
+```
+
+The call blocked for the child's full lifetime and only then reported a timeout. So a Grant
+File Access sheet or a repair modal hangs the campaign outright: the retry and the 16-second
+poll are never reached, because nothing returns. The right rating is not "too short" but
+"not a timeout"; `killSignal: "SIGKILL"`, or an asynchronously supervised child, is what
+would make the number mean something. C3 drops to 0.45.
+
+**The contrast with `render/word.py` is exact and worth keeping.** Python's
+`subprocess.run(timeout=…)` calls `Popen.kill()` — `SIGKILL` — on its own child, which is
+why §14.2 credits that shape. Node's synchronous helper does not. Two languages, the same
+API shape, opposite guarantees.
 
 ---
 
@@ -1030,9 +1080,12 @@ what it is.
 The merges worth making are small and specific:
 
 1. **Adopt `word-convert.sh`'s staging pattern everywhere** (§5.3): inside a container Word
-   owns, a fresh `mktemp -d` per run, cleaned on exit. §6.1 settled the question — grants do
-   not carry between files, so out-of-container batches pay a prompt per file, and staging is
-   the only strategy that avoids rather than answers it.
+   owns, a fresh `mktemp -d` per run, cleaned on exit. §6.1 settled the question, but not the way
+   an earlier revision of this item said: grants **do** carry, once the panel flow has been
+   completed with Word frontmost. What does not carry is a press made while Word is not
+   frontmost, which is the state a focus-bouncer batch is deliberately in. So an
+   out-of-container batch either pays a prompt per file or gives up the bouncer; staging is
+   the only strategy that removes the choice instead of making it.
 2. **Characterise §5.2's two axes** with the four runs in that section — the selector pair
    from a file, then the same pair inline to fill the unobserved cell. That settles how this
    machine behaves; it cannot settle the `-1708` report itself, whose script was never
@@ -1296,6 +1349,25 @@ unsaved work (§12 step 4). The cutoff carries that guarantee only under the pre
 `preflight` enforces — no document open when the run began — because Word autosaves every
 10 minutes and would stamp a human's copy mid-run. When the operator overrides the
 precondition with `--allow-open-docs`, AutoRecovery is left untouched and the run says so.
+
+**The override protects the documents, not just the residue**, which an earlier revision of
+this pair got wrong in the direction that matters. `--allow-open-docs` exists so the batch
+can coexist with a person's Word session, and every cleanup path was closing their documents
+anyway: `_EXPORT_PDF` ran `close every document saving no` after a *successful* save, so no
+failure was needed to lose their work. Now the export closes only the document it opened;
+`recover_after_failure` closes everything only when `preflight` established there was
+nothing else to close, and otherwise closes the staged document by name; and `recycle`,
+which quits Word `saving no`, refuses outright when the run did not start clean. The cost is
+stated up front rather than discovered: the preflight message says the override disables
+Word restarts, so a wedged Word ends the run instead of being recovered.
+
+**The redline script declines the override entirely** (`redline_preflight`). Its correctness
+rests on the precondition, not merely its tidiness: `_COMPARE` identifies the result by
+exclusion, walking `document i` for the one whose name is not the base's — §14.1's fix for
+`active document` still being the base after a compare that silently produced nothing. That
+walk is sound exactly while every open document is ours. With a person's document open it
+can select theirs and save it as the redline, which is a wrong artifact rather than a
+missing one, and wrong artifacts are what this pair exists to prevent.
 
 **Word is restarted only on evidence that Word itself is the problem**, which is two
 conditions, not one:
