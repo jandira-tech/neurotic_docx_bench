@@ -524,10 +524,15 @@ paragraph: it finishes with `key code 36` where `CLAUDE.md` says to use `AXPress
 keystrokes"*. The combination that satisfies everything is activate → `AXPress` the grant →
 let the bouncer restore focus, and no script in the corpus does all three.
 
-Two consequences follow, and they are the practical ones:
+Three consequences follow, and they are the practical ones:
 
-- **Pressing buttons without activating Word is not automation, it is a no-op with a
-  delay.** Two of the three handlers pay a UI round-trip per file and grant nothing.
+- **Pressing buttons without activating Word can be a no-op with a delay.** Established for
+  one of the three handlers: `redline-word-campaign.ts`'s bouncer removes Word from
+  frontmost every 0.5 s, so its panel cannot render to accept the press. Left open for the
+  second, `word-open-check.mjs`, whose handler does not activate but which may inherit
+  frontmost from its warm-up. So: one handler pays a round-trip per file and grants nothing,
+  and a second may be doing the same — the table above does not settle it, and neither does
+  this bullet.
 - **Container staging remains the first choice**, because it makes the prompt not happen at
   all rather than answering it — and it needs neither the Accessibility grant nor the focus
   interruption that activating requires.
@@ -540,8 +545,10 @@ access to it, so subsequent opens from that folder need no activation."* That is
 the grant and misleading about the activation: the grant persists only once it has been
 completed, and completing it is exactly what needs Word frontmost. The sentence reads as
 though activation stops being necessary in general, when what it means is that a *completed*
-grant does not need re-granting. Two of the three handlers here appear to have read it the
-first way.
+grant does not need re-granting. Two of the three handlers do not activate inside the
+handler at all, which is what reading it the first way looks like in code. That count is
+unaffected by the uncertainty above: whether `word-open-check.mjs`'s panel ends up rendering
+is undetermined, but that its handler does not itself activate is plain from line 348.
 
 Unlike the per-process TCC rule (§5.1) and the file-versus-inline `-1708` rule (§5.2), this
 one holds. Its cited proof — `report_one/scripts/compare-docs.sh` and
