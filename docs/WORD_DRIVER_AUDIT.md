@@ -112,7 +112,7 @@ what it produced (identification by exclusion) and implements it one step short 
 | **Sandbox staging** | App container `~/Library/Containers/com.microsoft.Word/Data/tmp` (`run_batch_retry.sh`, `word-convert.sh`) · Group container `~/Library/Group Containers/UBF8T346G9.Office` (`word_compare_driver.sh`) · deliberately outside (`redline-word-campaign.ts`, `word-open-check.mjs`) · none (family A, `render/word.py`, the probes) |
 | **Alert strategy** | `displayAlerts false` only (families A and C) · UI detection only (`word-convert.sh`, the TS/MJS harnesses) · both (family C, via the watchdog) · neither (`run_batch_retry.sh`, `render/word.py`, the probes) |
 | **Result identification** | `active document` / `front document` (family A, `run_batch_retry.sh`, `word-convert.sh`, `render/word.py`) · indexed by exclusion (`word_compare_batch.applescript`) · document count must rise (`redline-word-campaign.ts`) · window named for this file (`word-open-check.mjs`) |
-| **Poison recovery** | None (family A) · close-all between items (`run_batch_retry.sh`) · quit + `pkill -x` + relaunch-poll (`word_compare_driver.sh`, `word-convert.sh`) · plus AutoRecovery wipe (`word-probe-sweep.sh`, the only one) · kill-after-each-failure (`word_validate_batch.py`) |
+| **Poison recovery** | None (family A) · close-all between items (`run_batch_retry.sh`) · quit + `pkill -x` + relaunch-poll (`word_compare_driver.sh`) · quit + `pkill -x` then **exit**, leaving the next invocation to cold-start Word (`word-convert.sh`: `reset_word_after_failure` is followed by `record_error` and `exit`, 225–228 and 257–259) · plus AutoRecovery wipe (`word-probe-sweep.sh`, the only one) · kill-after-each-failure (`word_validate_batch.py`) |
 | **Focus behaviour** | Bare `activate`, no bouncer (`word-convert.sh`) · bouncer, never activates (`redline-word-campaign.ts`) · `open -g` background launch (`word-probe-sweep.sh`) · unaddressed (everything else) |
 | **Compare semantics** | `detect format changes true` (`word_compare_batch.applescript` only, with a written warning never to flip it mid-corpus) · omitted (`run_batch_retry.sh`). Both pass `ignore all comparison warnings true` |
 | **Resume** | None (family A) · output exists (`run_batch_retry.sh`, `render/word.py`, `word_compare_batch.applescript`) · log + output cross-check with same-run failure accounting (`word_compare_driver.sh`, the only one that provably terminates) |
@@ -382,12 +382,20 @@ folder — calls a bare `activate` on every conversion, with no bouncer anywhere
 ### 5.12 Two of 21 have tests, and both test the right thing
 
 `word-open-check.mjs` exports `REPAIR_DIALOG_RE`, `parseUiLines`, `windowAlertTexts`,
-`findDialogs` and `computeExitCode` as pure functions, covered by 25 specs that run on Linux
-with no Word present. `render/word.py` does the same with `_budget`,
-`_interpret_modal_probe` and `_interpret_open_exit`, covered by 15 tests including
+`findDialogs` and `computeExitCode` as pure functions, covered by **19** specs in
+`tests/scripts/word-open-check.spec.ts` that run on Linux with no Word present.
+`render/word.py` does the same with `_budget`, `_interpret_modal_probe` and
+`_interpret_open_exit`, covered by 15 tests including
 `test_budget_exhausted_without_modal_is_unjudgeable`.
 
-That is the entire verdict-deciding surface of both harnesses, testable off-platform. The
+**That is not the whole verdict-deciding surface, and this document previously said it
+was.** `supervisedOpen()` is the function that actually chooses between OPENED-CLEAN,
+REPAIR-PROMPT, ERROR and BLOCKED, and it is neither exported nor imported by the spec, which
+pulls in only those five helpers. Its orchestration — UI collection, unknown-modal draining,
+window matching, late-sheet handling — is unproven off-platform, so a regression that
+wrongly returns OPENED-CLEAN would pass every one of these tests. What is testable
+off-platform is the *predicate layer* under the verdict, which is still the right layer to
+have isolated. The
 pattern transfers directly: `word_compare_driver.sh`'s done-accounting and stall arithmetic
 are pure text processing and are currently proven only by having been run.
 
@@ -424,20 +432,23 @@ is the correct treatment — this prompt cannot be dismissed programmatically, s
 options are "already granted" or "stop and tell the human".
 
 **P2 — Word's "Grant File Access" sandbox sheet.** Per file (§6.1), for paths outside
-Word's container. Three viable strategies:
+Word's container. **Three strategies, and one absence of one:**
 
 | Strategy | Who | Cost |
 |---|---|---|
-| Stage inside the container | `run_batch_retry.sh`, `word_compare_driver.sh`, `word-convert.sh` | One copy per file; zero prompts |
-| Dismiss via Accessibility AXPress | `word-convert.sh`, `redline-word-campaign.ts`, `word-open-check.mjs` | A UI round-trip per file; needs the Accessibility grant |
-| Grant the folder once by hand | Persists — but only once the panel is completed, which needs Word frontmost (§6.1) | One human interaction per folder, per machine. Viable, but it is a manual step a batch cannot perform for itself |
-| Nothing | family A, `render/word.py`, all three probes/sweeps | A human at the keyboard, or a hang |
+| Stage inside the container | `run_batch_retry.sh`, `word_compare_driver.sh`, `word-convert.sh` (as shipped) | One copy per file; zero prompts |
+| Dismiss via Accessibility AXPress | `word-convert.sh` (only out of container), `redline-word-campaign.ts`, `word-open-check.mjs` | A UI round-trip per file; needs the Accessibility grant |
+| Grant the folder once by hand | A human, before the batch | One interaction per folder, per machine — and it persists only once the panel is completed, which needs Word frontmost (§6.1). Viable, but a batch cannot do it for itself |
+| *(none)* | family A, `render/word.py`, all three probes/sweeps | Not a strategy. A human at the keyboard, or a hang |
 
 ### 6.1 Why some scripts prompt once and some prompt every time
 
-Observed on the target machine: the Grant File Access prompt fires **per file close**, varies
-with where the script is run from, and some scripts re-prompt on folders they have already
-been granted while others ask only once. All three follow from how the grant persists.
+**Reported from the target machine, and not verified here** (no macOS, Word or `osascript`
+was available in the authoring environment, and no run artifact in these repositories records
+prompt behaviour): the Grant File Access prompt fires **per file close**, varies with where
+the script is run from, and some scripts re-prompt on folders they have already been granted
+while others ask only once. Everything below explains those three reports from the code; if a
+report is wrong, the explanation for it goes with it.
 
 **The grant persists only if the panel flow is completed.** "Grant File Access" is Word's
 wrapper over Powerbox. Its `Select…` button opens an `NSOpenPanel`; confirming *that panel*
@@ -492,12 +503,14 @@ that never rendered; nothing is granted, and the next file prompts again.
 | Script | Activates Word for the grant? | Result |
 |---|---|---|
 | `word-convert.sh` | **Yes** — `set frontmost to true` at line 236, inside the Grant handler, immediately before `click button "Select..."` and `key code 36`. It also `activate`s Word at line 147 on the ordinary open path, so Word is frontmost before a sheet can even appear | Flow completes; **grant persists**. Reached only when `WORD_CONVERT_STAGE_ROOT` moves staging outside the container (49); as shipped it stages inside and never prompts |
-| `word-open-check.mjs` | No. Its two `activate` calls are elsewhere — forcing the GUI launch during warm-up (827) and taking a screenshot after a clean verdict (894). `grantFileAccess()` AXPresses without activating | Flow does not complete; re-prompts |
+| `word-open-check.mjs` | Not in the handler. `grantFileAccess()` (348) AXPresses without activating; its two `activate` calls are elsewhere — forcing the GUI launch during warm-up (827) and a screenshot after a clean verdict (894) | **Undetermined.** The warm-up `activate` precedes the probes and this script runs no bouncer, so Word may well still be frontmost when the handler fires. What the code shows is that the handler does not *itself* ensure it; whether the panel then renders is not decidable from source |
 | `redline-word-campaign.ts` | No, and it runs a bouncer that pushes Word *out* of frontmost every 0.5 s | Flow cannot complete; re-prompts |
 
-So the observed "asks every time, even on folders already seen" is the second and third rows,
-and "asks only once" is the first. The grant mechanism is not the problem; not activating
-Word is.
+So "asks only once" is the first row. "Asks every time, even on folders already seen" fits
+the third, whose bouncer actively prevents the panel rendering; the second is the one the
+code cannot settle, because Word's frontmost state there depends on a warm-up `activate`
+several hundred lines earlier rather than on the handler. The grant mechanism is not the
+problem; not *ensuring* Word is frontmost at the moment of the press is.
 
 **The irony is worth recording.** `redline-word-campaign.ts` is the only script that
 implements `CLAUDE.md`'s focus-bouncer rule properly (§5.9) — and the bouncer is precisely
@@ -755,7 +768,10 @@ So `word_dialog_watchdog.applescript` could not dismiss this dialog even if its 
 were right, and `word-convert.sh`'s and `word-open-check.mjs`'s UI scrapes cannot see it
 either. Fixing button names would change nothing; the process target is the blocker.
 
-**Candidates, best first. I have not run any of these and cannot confirm which works.**
+**Prevention first, then two unverified candidates, then a manual one-off, then a
+non-recommendation.** Not a ranking of interchangeable options: only 1 and 2 are things a
+batch can do for itself, 3 and 4 are settings whose effect on the *dialog* is unestablished,
+and 5 is listed to be refused. None of them has been run here.
 
 1. **Do not create the condition.** MERP fires on unclean exit, so a graceful
    `quit saving no` that actually succeeds produces no dialog at all. This is the only option
@@ -782,11 +798,11 @@ either. Fixing button names would change nothing; the process target is the bloc
    question:** that key governs the diagnostic-data *level*, and it is not established that
    it suppresses the MERP crash-report *dialog*. It may reduce what is sent while leaving the
    prompt intact.
-4. **MERP's own Preferences checkbox**, reached by launching
+4. **A manual one-off, not a candidate a script can use: MERP's own Preferences checkbox**, reached by launching
    `Microsoft Error Reporting.app` directly. Community-documented rather than
    Microsoft-documented. One-time and manual; no confirmed `defaults` key backs it, and I am
    not inventing one.
-5. **Deleting `Microsoft Error Reporting.app`** from the Word bundle's `SharedSupport/`.
+5. **Listed only to be refused — do not delete `Microsoft Error Reporting.app`** from the Word bundle's `SharedSupport/`.
    Circulates as a fix; **do not**. It modifies an application bundle, breaks code signing,
    and an Office update restores it.
 
@@ -1103,9 +1119,9 @@ once.
 | §14.3 watchdog clicking `Cancel` on a Grant sheet | Grant labels are tried first and accepted; `Cancel` is only reachable once no grant button matched |
 | §12.1 Microsoft Error Reporting | A **second** watchdog on `tell process "Microsoft Error Reporting"`. Every button label it meets is logged the first time, so the real control names come from a live run instead of a guess |
 | §14.1 success recorded before health | Paragraph count is checked before the compare runs; the comparison result is found by exclusion, never by whichever document is frontmost |
-| §14.2 `SIGTERM` on a wedged `osascript` | `pkill -9 -x osascript` on timeout — a blocked `osascript` ignores `SIGTERM` |
+| §14.2 `SIGTERM` on a wedged `osascript` | The timeout SIGKILLs **its own child**, which is what `subprocess.run` already does (`Popen.kill()`, never `terminate()`) — and SIGKILL is the part that matters against a blocked `osascript`, which ignores SIGTERM. Deliberately **no `pkill osascript`**: it would match the watchdogs' own polls, every one of which is an `osascript`, plus anything the user is running |
 | §14.5 `pkill -9 -f` matching helpers | `pkill -x` only, by exact process name, and escalated: `quit saving no` → `-x` → `-9 -x` |
-| §12 Document Recovery after a kill | `clean_after_kill()` wipes AutoRecovery and removes `~$` files before re-warming |
+| §12 Document Recovery after a kill | `clean_after_kill()` removes AutoRecovery entries and `~$` files **modified at or after this session started**, then re-warms. Never the whole directory: it holds a human's unsaved-work recovery copies, and a file older than the run is not the run's |
 | §10 timeouts that must cover a cold start | Word is pre-warmed once with `open -g`; per-document budgets cover work only |
 | §5, §6 one poison file costing the batch | Any failure recycles Word before the next item |
 | §9 concurrency | Neither script takes `--jobs`. Word is single-instance and user-session-bound; a second worker would drive the same instance |
@@ -1126,6 +1142,11 @@ is the same in both scripts and both modes:
 2. **Close whatever is open** — `close every document saving no`.
 3. **Record it and move to the next item.** No restart. A malformed document costs one
    failed open, not a ~30s Word relaunch.
+
+A restart, when one does happen, cleans **only this run's** residue: AutoRecovery entries
+and `~$` lock files modified at or after the session started, never the whole AutoRecovery
+directory, which holds the recovery copy of every document Word has open including a human's
+unsaved work (§12 step 4).
 
 **Word is restarted only on evidence that Word itself is the problem**, which is two
 conditions, not one:
@@ -1207,5 +1228,6 @@ matches the `.docx` that `--emit both` would have written.
 - UI scripting addresses one process at a time via `tell process "<name>"`, which is why a handler aimed at Word cannot see a dialog owned by another process: [Automating the User Interface, Apple](https://developer.apple.com/library/archive/documentation/LanguagesUtilities/Conceptual/MacAutomationScriptingGuide/AutomatetheUserInterface.html) · [AppleScript Essentials: User Interface Scripting, MacTech](http://preserve.mactech.com/articles/mactech/Vol.21/21.06/UserInterfaceScripting/index.html)
 - Microsoft Error Reporting is a separate Office application with its own Preferences, independent of ReportCrash: [Get rid of Microsoft Error Reporting 2.2 on Mac, Microsoft Q&A](https://learn.microsoft.com/en-us/answers/questions/5650864/get-rid-of-microsoft-error-reporting-2-2-on-mac) · [Microsoft Office error reporting popups on Mac, The Mac Observer](https://www.macobserver.com/tips/microsoft-office-error-reporting-popups-on-mac/). That Word raises it after a `pkill -9` **with no document open** is Arthur's direct observation on the target machine, not a documented claim.
 - Document Recovery opens when AutoRecover files exist: [Recover files in Office for Mac, Microsoft Support](https://support.microsoft.com/en-us/office/recover-files-in-office-for-mac-6c6425b1-6559-4bbf-8f80-4f038402ff02)
-- AutoRecover interval and its off switch: [Change save frequency and where Word AutoRecovery files are stored, Microsoft Support](https://support.microsoft.com/en-us/office/change-save-frequency-and-where-word-autorecovery-files-are-stored-ddd81816-39ff-48f4-989e-8bf1db78b2d9)
+- AutoRecover's off switch in the object model, quoted in §12: *"Set the **SaveInterval** property to 0 (zero) to turn off saving AutoRecover information."* — [Options.SaveInterval property (Word), Microsoft Learn](https://learn.microsoft.com/en-us/office/vba/api/word.options.saveinterval). That page names **no** Office or Word version and does not distinguish Windows from Mac (checked against its source, `MicrosoftDocs/VBA-Docs/api/Word.Options.SaveInterval.md`, whose front-matter carries only `ms.date: 06/08/2017`), and VBA availability does not imply an AppleScript equivalent — §12 says what to check locally instead.
+- AutoRecover interval and storage location, the GUI control only: [Change save frequency and where Word AutoRecovery files are stored, Microsoft Support](https://support.microsoft.com/en-us/office/change-save-frequency-and-where-word-autorecovery-files-are-stored-ddd81816-39ff-48f4-989e-8bf1db78b2d9)
 - TCC automation grants are keyed on the responsible client app, not the process: [Avoiding AppleScript Security and Privacy Requests, Scripting OS X](https://scriptingosx.com/2020/09/avoiding-applescript-security-and-privacy-requests/) · [AppleScript Permissions on macOS, MAMP Documentation](https://documentation.mamp.info/en/MAMP-PRO-Mac/FAQ/General/AppleScript-Permissions-on-macOS/)
