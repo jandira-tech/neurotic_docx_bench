@@ -314,7 +314,7 @@ def test_redline_folders_default_writes_pdf_only(tmp_path: Path, stub_word) -> N
     b = _folder(tmp_path / "b", "deal.docx")
     out = tmp_path / "out"
 
-    results = wr.redline_folders(a, b, out, session=session)
+    results = wr.redline_folders(a, b, out, session=session, one_osascript=False)
 
     assert len(results) == 1 and results[0].ok
     assert (out / "deal__vs__deal.pdf").exists()
@@ -330,7 +330,7 @@ def test_redline_folders_both_keeps_the_tracked_changes_docx(
     b = _folder(tmp_path / "b", "deal.docx")
     out = tmp_path / "out"
 
-    wr.redline_folders(a, b, out, emit=wr.Emit.BOTH, session=session)
+    wr.redline_folders(a, b, out, emit=wr.Emit.BOTH, session=session, one_osascript=False)
 
     assert (out / "deal__vs__deal.pdf").exists()
     assert (out / "deal__vs__deal.docx").read_bytes() == b"PK-redline"
@@ -344,7 +344,7 @@ def test_redline_folders_docx_only_never_calls_the_pdf_exporter(
     b = _folder(tmp_path / "b", "deal.docx")
     out = tmp_path / "out"
 
-    wr.redline_folders(a, b, out, emit=wr.Emit.DOCX, session=session)
+    wr.redline_folders(a, b, out, emit=wr.Emit.DOCX, session=session, one_osascript=False)
 
     assert exported == []
     assert (out / "deal__vs__deal.docx").exists()
@@ -410,7 +410,7 @@ def test_delivered_redline_docx_carries_tracked_changes(
     b = _folder(tmp_path / "b", "deal.docx")
     out = tmp_path / "out"
 
-    results = wr.redline_folders(a, b, out, emit=wr.Emit.DOCX, session=session)
+    results = wr.redline_folders(a, b, out, emit=wr.Emit.DOCX, session=session, one_osascript=False)
 
     assert len(results) == 1 and results[0].ok
     with zipfile.ZipFile(out / "deal__vs__deal.docx") as z:
@@ -425,7 +425,7 @@ def test_redline_folders_stages_same_named_sides_apart(tmp_path: Path, stub_word
     a = _folder(tmp_path / "a", "deal.docx")
     b = _folder(tmp_path / "b", "deal.docx")
 
-    wr.redline_folders(a, b, tmp_path / "out", session=session)
+    wr.redline_folders(a, b, tmp_path / "out", session=session, one_osascript=False)
 
     call = compared[0]
     assert call["base"] != call["rev"]
@@ -442,7 +442,7 @@ def test_redline_folders_swap_reverses_which_side_is_the_original(
     b = _folder(tmp_path / "b", "deal.docx")
     _touch(b / "deal.docx", b"BBB")
 
-    wr.redline_folders(a, b, tmp_path / "out", swap=True, session=session)
+    wr.redline_folders(a, b, tmp_path / "out", swap=True, session=session, one_osascript=False)
 
     call = compared[0]
     assert call["base_bytes"] == b"BBB"
@@ -456,10 +456,10 @@ def test_redline_folders_skips_existing_unless_forced(tmp_path: Path, stub_word)
     out = tmp_path / "out"
     _touch(out / "deal__vs__deal.pdf", b"%PDF")
 
-    results = wr.redline_folders(a, b, out, session=session)
+    results = wr.redline_folders(a, b, out, session=session, one_osascript=False)
     assert results[0].skipped and results[0].ok and compared == []
 
-    wr.redline_folders(a, b, out, force=True, session=session)
+    wr.redline_folders(a, b, out, force=True, session=session, one_osascript=False)
     assert len(compared) == 1
 
 
@@ -486,7 +486,7 @@ def test_redline_folders_recycles_word_after_a_failed_pair(
     recycled: list[tuple] = []
     monkeypatch.setattr(session, "recycle", lambda *f: recycled.append(f) or True)
 
-    results = wr.redline_folders(a, b, tmp_path / "out", session=session)
+    results = wr.redline_folders(a, b, tmp_path / "out", session=session, one_osascript=False)
 
     assert [r.ok for r in results] == [False, True]
     assert len(recycled) == 1
@@ -510,7 +510,7 @@ def test_redline_folders_records_a_change_free_comparison_without_failing_it(
     monkeypatch.setattr(session, "warm", lambda: True)
     monkeypatch.setattr(session, "quit_if_ours", lambda: None)
 
-    results = wr.redline_folders(a, b, tmp_path / "out", session=session)
+    results = wr.redline_folders(a, b, tmp_path / "out", session=session, one_osascript=False)
     assert results[0].ok is True
     assert results[0].revisions == 0
 
@@ -520,7 +520,7 @@ def test_redline_folders_cross_mode_runs_every_combination(tmp_path: Path, stub_
     a = _folder(tmp_path / "a", "one.docx", "two.docx")
     b = _folder(tmp_path / "b", "x.docx")
 
-    results = wr.redline_folders(a, b, tmp_path / "out", cross=True, session=session)
+    results = wr.redline_folders(a, b, tmp_path / "out", cross=True, session=session, one_osascript=False)
 
     assert len(results) == 2
     assert len(compared) == 2
@@ -675,7 +675,7 @@ def test_serial_failure_recovers_without_restarting_word(
     monkeypatch.setattr(session, "quit_if_ours", lambda: None)
     monkeypatch.setattr(session, "recycle", lambda *f: recycled.append(f) or True)
 
-    results = wr.redline_folders(a, b, tmp_path / "out", session=session)
+    results = wr.redline_folders(a, b, tmp_path / "out", session=session, one_osascript=False)
 
     assert [r.ok for r in results] == [False, True]
     assert len(recovered) == 1
@@ -700,11 +700,47 @@ def test_serial_recycles_after_a_streak_of_failures(
     recycled: list[object] = []
     monkeypatch.setattr(session, "recycle", lambda *f: recycled.append(f) or True)
 
-    wr.redline_folders(a, b, tmp_path / "out", session=session, poison_streak=3)
+    wr.redline_folders(a, b, tmp_path / "out", session=session, one_osascript=False, poison_streak=3)
     assert len(recycled) == 1
 
 
 # ─── two-osascript batch mode ────────────────────────────────────────────────
+
+
+def test_one_redline_osascript_is_the_default(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A folder-sized redline runs as the monolithic pair unless told otherwise."""
+    import inspect
+
+    assert inspect.signature(wr.redline_folders).parameters["one_osascript"].default is True
+    assert inspect.signature(wr.main).parameters["one_osascript"].default is True
+
+    # And driving it without the argument really does take the batch path.
+    monkeypatch.setattr(wp, "CONTAINER_TMP", tmp_path / "container")
+    a = _folder(tmp_path / "a", "deal.docx")
+    b = _folder(tmp_path / "b", "deal.docx")
+    scripts: list[str] = []
+
+    def fake_osa(script, *args, timeout=60.0):
+        scripts.append(script)
+        manifest, log = Path(args[0]), Path(args[1])
+        rows = [ln.split("\t") for ln in manifest.read_text().splitlines() if ln]
+        lines = []
+        for row in rows:
+            Path(row[-1]).write_bytes(b"PK")
+            lines.append(f"[ok]\t{row[0]}\t3" if script is wr._COMPARE_BATCH else f"[ok]\t{row[0]}")
+        log.write_text("\n".join(lines) + "\n")
+        return 0, "ok", ""
+
+    # The batch runner is `word_pdf.run_batch_with_resume`, so it is word_pdf's
+    # `osa` that gets called, not word_redline's.
+    monkeypatch.setattr(wp, "osa", fake_osa)
+    session = wp.WordSession()
+    monkeypatch.setattr(session, "warm", lambda: True)
+    monkeypatch.setattr(session, "quit_if_ours", lambda: None)
+    wr.redline_folders(a, b, tmp_path / "out", session=session)
+    assert wr._COMPARE_BATCH in scripts
 
 
 def test_compare_batch_script_keeps_every_per_pair_rule() -> None:
@@ -1050,7 +1086,7 @@ def test_redline_serial_replays_the_failure_streak_after_recycling(
     monkeypatch.setattr(session, "quit_if_ours", lambda: None)
     monkeypatch.setattr(session, "recycle", lambda *f: True)
 
-    results = wr.redline_folders(a, b, tmp_path / "out", session=session)
+    results = wr.redline_folders(a, b, tmp_path / "out", session=session, one_osascript=False)
     by_name = {r.base.name: r for r in results}
 
     assert by_name["healthy-a.docx"].ok

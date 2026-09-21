@@ -280,11 +280,11 @@ def test_convert_folder_skips_existing_unless_forced(
     session = wp.WordSession()
     monkeypatch.setattr(session, "warm", lambda: True)
 
-    results = wp.convert_folder(src, tmp_path / "out", session=session)
+    results = wp.convert_folder(src, tmp_path / "out", session=session, one_osascript=False)
     assert len(results) == 1 and results[0].skipped and results[0].ok
     assert calls == []
 
-    results = wp.convert_folder(src, tmp_path / "out", force=True, session=session)
+    results = wp.convert_folder(src, tmp_path / "out", force=True, session=session, one_osascript=False)
     assert len(calls) == 1
     assert results[0].ok and not results[0].skipped
 
@@ -310,7 +310,7 @@ def test_convert_folder_recycles_word_after_a_failure(
     recycled: list[tuple] = []
     monkeypatch.setattr(session, "recycle", lambda *f: recycled.append(f) or True)
 
-    results = wp.convert_folder(src, tmp_path / "out", session=session)
+    results = wp.convert_folder(src, tmp_path / "out", session=session, one_osascript=False)
     assert [r.ok for r in results] == [False, True]
     assert len(recycled) == 1
 
@@ -370,7 +370,8 @@ def test_preflight_refuses_one_osascript_while_documents_are_open(
     monkeypatch.setattr(session, "open_document_count", lambda: 2)
 
     problem = wp.preflight(session, allow_open_docs=True, one_osascript=True)
-    assert "--one-osascript" in problem
+    # The message must name the way out, which is now the opt-out flag.
+    assert "--no-one-osascript" in problem
     # The serial path is still the operator's call to make.
     assert wp.preflight(session, allow_open_docs=True, one_osascript=False) == ""
     # And a clean machine may use either.
@@ -817,7 +818,7 @@ def test_serial_failure_recovers_without_restarting_word(
     monkeypatch.setattr(session, "warm", lambda: True)
     monkeypatch.setattr(session, "recycle", lambda *f: recycled.append(f) or True)
 
-    results = wp.convert_folder(src, tmp_path / "out", session=session)
+    results = wp.convert_folder(src, tmp_path / "out", session=session, one_osascript=False)
 
     assert [r.ok for r in results] == [False, True]
     assert len(recovered) == 1
@@ -840,7 +841,7 @@ def test_serial_recycles_once_the_failures_stop_looking_isolated(
     recycled: list[object] = []
     monkeypatch.setattr(session, "recycle", lambda *f: recycled.append(f) or True)
 
-    wp.convert_folder(src, tmp_path / "out", session=session, poison_streak=3)
+    wp.convert_folder(src, tmp_path / "out", session=session, one_osascript=False, poison_streak=3)
     assert len(recycled) == 1  # fires at the third, resets, and 4 is not 6
 
 
@@ -1162,6 +1163,20 @@ def test_convert_folder_one_osascript_resumes_after_a_wedge(
     assert len(recycled) == 1
 
 
+def test_one_osascript_is_the_default_everywhere() -> None:
+    """The monolithic run is the normal one; per-document is the opt-out.
+
+    One osascript per document pays a process spawn and an Apple-event
+    connection per file for the ability to act between documents. The batch
+    already resumes from its own log when it wedges, so that ability is worth
+    less than it costs on a folder-sized job.
+    """
+    import inspect
+
+    assert inspect.signature(wp.convert_folder).parameters["one_osascript"].default is True
+    assert inspect.signature(wp.main).parameters["one_osascript"].default is True
+
+
 def test_export_batch_script_closes_and_continues_on_a_bad_document() -> None:
     src = wp._EXPORT_BATCH
     assert "set displayAlerts to false" in src
@@ -1416,7 +1431,7 @@ def test_serial_replays_the_failure_streak_after_recycling(
     monkeypatch.setattr(session, "warm", lambda: True)
     monkeypatch.setattr(session, "recycle", lambda *f: True)
 
-    results = wp.convert_folder(src, tmp_path / "out", session=session)
+    results = wp.convert_folder(src, tmp_path / "out", session=session, one_osascript=False)
     by_name = {r.source.name: r for r in results}
 
     assert by_name["healthy-a.docx"].ok, "a healthy file must not stay failed after a recycle"
