@@ -587,3 +587,458 @@ def test_watchdog_dismisses_an_ordinary_alert_without_activating(
 
     assert dogs.dismissed >= 1
     assert dogs.granted == 0
+
+
+# ─── malformed documents ─────────────────────────────────────────────────────
+
+
+def test_recover_after_failure_declines_closes_and_keeps_going(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """A malformed document costs one failed open, not a ~30s Word restart."""
+    ran: list[str] = []
+
+    monkeypatch.setattr(wp, "osa", lambda script, *a, **k: ran.append(script) or (0, "", ""))
+    session = wp.WordSession()
+    monkeypatch.setattr(session, "open_document_count", lambda: 0)
+    recycled: list[object] = []
+    monkeypatch.setattr(session, "recycle", lambda *f: recycled.append(f) or True)
+
+    assert wp.recover_after_failure(session) is True
+    assert wp._DECLINE_REPAIR in ran  # answer the repair prompt "No"
+    assert wp._CLOSE_ALL in ran  # close the file if one is open
+    assert recycled == []  # and do NOT restart Word
+
+
+def test_recover_after_failure_escalates_when_word_stays_dirty(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(wp, "osa", lambda *a, **k: (0, "", ""))
+    session = wp.WordSession()
+    monkeypatch.setattr(session, "open_document_count", lambda: 2)
+    recycled: list[object] = []
+    monkeypatch.setattr(session, "recycle", lambda *f: recycled.append(f) or True)
+
+    assert wp.recover_after_failure(session, Path("/tmp/x")) is True
+    assert len(recycled) == 1
+
+
+def test_serial_failure_recovers_without_restarting_word(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(wp, "CONTAINER_TMP", tmp_path / "container")
+    src = tmp_path / "src"
+    _touch(src / "bad.docx")
+    _touch(src / "good.docx")
+
+    monkeypatch.setattr(
+        wp,
+        "export_pdf",
+        lambda sin, sout, timeout=180.0: (
+            (False, "unreadable") if "bad" in sin.name else (True, _touch(sout, b"%PDF") and "")
+        ),
+    )
+    recovered: list[object] = []
+    recycled: list[object] = []
+    monkeypatch.setattr(wp, "recover_after_failure", lambda s, *f: recovered.append(f) or True)
+    session = wp.WordSession()
+    monkeypatch.setattr(session, "warm", lambda: True)
+    monkeypatch.setattr(session, "recycle", lambda *f: recycled.append(f) or True)
+
+    results = wp.convert_folder(src, tmp_path / "out", session=session)
+
+    assert [r.ok for r in results] == [False, True]
+    assert len(recovered) == 1
+    assert recycled == []  # one bad file is not a reason to restart Word
+
+
+def test_serial_recycles_once_the_failures_stop_looking_isolated(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A Word degraded by a poison document answers fine and returns empty docs."""
+    monkeypatch.setattr(wp, "CONTAINER_TMP", tmp_path / "container")
+    src = tmp_path / "src"
+    for name in ("a.docx", "b.docx", "c.docx", "d.docx"):
+        _touch(src / name)
+
+    monkeypatch.setattr(wp, "export_pdf", lambda sin, sout, timeout=180.0: (False, "empty"))
+    monkeypatch.setattr(wp, "recover_after_failure", lambda s, *f: True)
+    session = wp.WordSession()
+    monkeypatch.setattr(session, "warm", lambda: True)
+    recycled: list[object] = []
+    monkeypatch.setattr(session, "recycle", lambda *f: recycled.append(f) or True)
+
+    wp.convert_folder(src, tmp_path / "out", session=session, poison_streak=3)
+    assert len(recycled) == 1  # fires at the third, resets, and 4 is not 6
+
+
+def test_watchdog_answers_the_repair_prompt_no_before_anything_generic(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """"Yes" would make Word rewrite the file and we would measure the repair."""
+    order: list[str] = []
+
+    def fake_osa(script, *args, timeout=60.0):
+        if script is wp._DUMP_BUTTONS:
+            return (0, "Yes\tNo\t", "") if args[0] == wp.WORD_PROC else (0, "", "")
+        order.append(script)
+        if script is wp._DECLINE_REPAIR:
+            return 0, "No", ""
+        return 0, "", ""
+
+    monkeypatch.setattr(wp, "osa", fake_osa)
+    dogs = wp.Watchdogs(poll=0.01)
+    dogs.start()
+    deadline = wp.time.monotonic() + 3
+    while dogs.declined == 0 and wp.time.monotonic() < deadline:
+        wp.time.sleep(0.02)
+    dogs.stop()
+
+    assert dogs.declined >= 1
+    assert order[0] is wp._DECLINE_REPAIR
+    # A match short-circuits: neither generic handler runs on a repair prompt.
+    assert wp._PRESS_ACTIVATED not in order and wp._PRESS not in order
+
+
+def test_decline_repair_matches_on_window_text_not_a_button_name() -> None:
+    src = wp._DECLINE_REPAIR
+    assert "wText contains" in src
+    assert 'pressNamed(w, "No")' in src
+    assert "key code 53" in src  # Escape, when the button is unreachable
+    assert '"Yes"' not in src  # never repair the document under test
+    for marker in wp.REPAIR_MARKERS:
+        assert marker  # markers are supplied via argv, never interpolated
+    assert "item 1 of argv" not in src or "items 1 thru -1 of argv" in src
+
+
+# ─── one-osascript batch mode ────────────────────────────────────────────────
+
+
+@pytest.mark.parametrize(
+    ("index", "name", "expected"),
+    [
+        (0, "deal.docx", "00000__deal.docx"),
+        (7, "a\tb.docx", "00007__a_b.docx"),
+        (12, "line\nbreak.docx", "00012__line_break.docx"),
+        (3, "cr\rhere.docx", "00003__cr_here.docx"),
+    ],
+)
+def test_safe_stage_name(index: int, name: str, expected: str) -> None:
+    """A tab in a filename would split one TSV row into two, silently."""
+    assert wp.safe_stage_name(index, name) == expected
+
+
+def test_safe_stage_name_is_unique_across_same_named_sources() -> None:
+    assert wp.safe_stage_name(0, "deal.docx") != wp.safe_stage_name(1, "deal.docx")
+
+
+def test_write_manifest_round_trips_as_tsv(tmp_path: Path) -> None:
+    rows = [("0", "/in/a.docx", "/out/a.pdf"), ("1", "/in/b.docx", "/out/b.pdf")]
+    path = wp.write_manifest(rows, tmp_path / "deep" / "manifest.tsv")
+    assert [tuple(ln.split("\t")) for ln in path.read_text().splitlines()] == rows
+
+
+@pytest.mark.parametrize(
+    ("text", "expected_results", "expected_done"),
+    [
+        ("[ok]\t0\n[done]\t1\t0\n", {"0": (True, "")}, True),
+        ("[ok]\t0\t17\n[done]\t1\t0\n", {"0": (True, "17")}, True),
+        ("[fail]\t0\tboom\n[done]\t0\t1\n", {"0": (False, "boom")}, False or True),
+        ("[fail]\t0\n", {"0": (False, "unspecified error")}, False),
+        ("[ok]\t0\nrandom noise\n", {"0": (True, "")}, False),
+        ("", {}, False),
+    ],
+)
+def test_parse_batch_log(text: str, expected_results: dict, expected_done: bool) -> None:
+    log = wp.parse_batch_log(text)
+    assert log.results == expected_results
+    assert log.done is ("[done]" in text)
+
+
+def test_parse_batch_log_keeps_a_multi_field_error_whole() -> None:
+    log = wp.parse_batch_log("[fail]\t3\tWord said: -1728\tand more\n")
+    assert log.results["3"] == (False, "Word said: -1728\tand more")
+
+
+def test_parse_batch_log_omits_items_the_run_never_reached() -> None:
+    """No line at all is not a failure — it is the only case worth retrying."""
+    log = wp.parse_batch_log("[ok]\t0\n[ok]\t1\n")
+    assert "2" not in log.results
+    assert log.done is False
+
+
+def test_batch_timeout_is_headroom_plus_the_work() -> None:
+    assert wp.batch_timeout(180, 10) == 180 * 10 + 120
+    assert wp.batch_timeout(180, 0) == 120  # an empty batch gets the headroom
+    assert wp.batch_timeout(1, 1, floor=500) == 501
+    assert wp.batch_timeout(-5, 10) == 120  # a nonsense budget never shortens it
+
+
+def _fake_batch_osa(*, fails: tuple[str, ...] = (), stop_after: int | None = None, detail: str = ""):
+    """Stand in for the monolithic AppleScript: read manifest, write log + outputs.
+
+    `stop_after` simulates a wedge — the run stops mid-manifest and never reaches
+    its own `[done]` line, which is what resume has to detect.
+    """
+
+    def fake(script, *args, timeout=60.0):
+        manifest, log = Path(args[0]), Path(args[1])
+        rows = [ln.split("\t") for ln in manifest.read_text().splitlines() if ln]
+        lines: list[str] = []
+        ok = bad = 0
+        for i, row in enumerate(rows):
+            if stop_after is not None and i >= stop_after:
+                break
+            out = Path(row[-1])
+            if row[0] in fails:
+                bad += 1
+                lines.append(f"[fail]\t{row[0]}\tWord could not read it")
+            else:
+                out.parent.mkdir(parents=True, exist_ok=True)
+                out.write_bytes(b"OUT")
+                ok += 1
+                lines.append(f"[ok]\t{row[0]}" + (f"\t{detail}" if detail else ""))
+        if stop_after is None:
+            lines.append(f"[done]\t{ok}\t{bad}")
+        log.write_text("\n".join(lines) + "\n")
+        return (None if stop_after is not None else 0), "", ""
+
+    return fake
+
+
+def test_run_batch_passes_only_two_argv_paths(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A thousand absolute paths on argv would risk ARG_MAX; this passes two."""
+    seen: dict[str, object] = {}
+
+    def fake(script, *args, timeout=60.0):
+        seen["args"] = args
+        Path(args[1]).write_text("[ok]\t0\n[done]\t1\t0\n")
+        return 0, "", ""
+
+    monkeypatch.setattr(wp, "osa", fake)
+    run = wp.run_batch("SCRIPT", [("0", "/in/a", "/out/a")], tmp_path, timeout=30)
+
+    assert len(seen["args"]) == 2
+    assert seen["args"][0] == str(tmp_path / "manifest.tsv")
+    assert run.log.results == {"0": (True, "")}
+    assert run.wedged is False
+
+
+def test_run_batch_reports_a_run_that_never_reached_done(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(wp, "osa", _fake_batch_osa(stop_after=1))
+    rows = [("0", "/in/a", str(tmp_path / "a.pdf")), ("1", "/in/b", str(tmp_path / "b.pdf"))]
+    run = wp.run_batch("SCRIPT", rows, tmp_path, timeout=30)
+
+    assert run.wedged is True
+    assert "0" in run.log.results and "1" not in run.log.results
+
+
+def test_run_batch_with_resume_retries_only_what_was_never_reached(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    manifests: list[list[str]] = []
+    calls = {"n": 0}
+
+    def fake(script, *args, timeout=60.0):
+        calls["n"] += 1
+        manifest, log = Path(args[0]), Path(args[1])
+        rows = [ln.split("\t") for ln in manifest.read_text().splitlines() if ln]
+        manifests.append([r[0] for r in rows])
+        if calls["n"] == 1:  # wedges after the first two, and one of them failed
+            log.write_text("[ok]\t0\n[fail]\t1\tbad file\n")
+            return None, "", ""
+        log.write_text("".join(f"[ok]\t{r[0]}\n" for r in rows) + "[done]\t9\t0\n")
+        return 0, "", ""
+
+    monkeypatch.setattr(wp, "osa", fake)
+    session = wp.WordSession()
+    recycled: list[object] = []
+    monkeypatch.setattr(session, "recycle", lambda *f: recycled.append(f) or True)
+
+    rows = [(str(i), f"/in/{i}", f"/out/{i}") for i in range(4)]
+    got = wp.run_batch_with_resume(
+        "SCRIPT", rows, tmp_path, per_item_timeout=10, session=session, max_passes=3
+    )
+
+    assert manifests[0] == ["0", "1", "2", "3"]
+    assert manifests[1] == ["2", "3"]  # only the unreached; the failure is final
+    assert got["0"] == (True, "")
+    assert got["1"] == (False, "bad file")
+    assert got["2"][0] and got["3"][0]
+    assert len(recycled) == 1  # Word is recycled between passes, not within one
+
+
+def test_run_batch_with_resume_gives_up_and_says_so(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(wp, "osa", _fake_batch_osa(stop_after=0))
+    session = wp.WordSession()
+    monkeypatch.setattr(session, "recycle", lambda *f: True)
+
+    got = wp.run_batch_with_resume(
+        "SCRIPT",
+        [("0", "/in/0", str(tmp_path / "0.pdf"))],
+        tmp_path,
+        per_item_timeout=1,
+        session=session,
+        max_passes=2,
+    )
+    assert got["0"][0] is False
+    assert "never reached in 2" in got["0"][1]
+
+
+def test_convert_folder_one_osascript_converts_the_whole_folder(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(wp, "CONTAINER_TMP", tmp_path / "container")
+    src = tmp_path / "src"
+    for name in ("a.docx", "b.docx", "~$a.docx"):
+        _touch(src / name)
+    monkeypatch.setattr(wp, "osa", _fake_batch_osa())
+    session = wp.WordSession()
+    monkeypatch.setattr(session, "warm", lambda: True)
+
+    results = wp.convert_folder(src, tmp_path / "out", session=session, one_osascript=True)
+
+    assert [r.source.name for r in results] == ["a.docx", "b.docx"]  # lock file excluded
+    assert all(r.ok for r in results)
+    assert (tmp_path / "out" / "a.pdf").exists() and (tmp_path / "out" / "b.pdf").exists()
+    assert all(r.timing_exact is False for r in results)
+
+
+def test_convert_folder_one_osascript_records_a_bad_document_and_finishes(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The batch script closes the file and moves on; it does not stop."""
+    monkeypatch.setattr(wp, "CONTAINER_TMP", tmp_path / "container")
+    src = tmp_path / "src"
+    _touch(src / "a.docx")
+    _touch(src / "bad.docx")
+    _touch(src / "c.docx")
+    monkeypatch.setattr(wp, "osa", _fake_batch_osa(fails=("1",)))  # index 1 == bad.docx
+    session = wp.WordSession()
+    monkeypatch.setattr(session, "warm", lambda: True)
+    recycled: list[object] = []
+    monkeypatch.setattr(session, "recycle", lambda *f: recycled.append(f) or True)
+
+    results = wp.convert_folder(src, tmp_path / "out", session=session, one_osascript=True)
+
+    assert [(r.source.name, r.ok) for r in results] == [
+        ("a.docx", True),
+        ("bad.docx", False),
+        ("c.docx", True),
+    ]
+    assert "could not read" in results[1].error
+    assert recycled == []  # nothing was left unreached, so nothing to resume
+
+
+def test_convert_folder_one_osascript_skips_existing(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(wp, "CONTAINER_TMP", tmp_path / "container")
+    src = tmp_path / "src"
+    _touch(src / "a.docx")
+    _touch(src / "b.docx")
+    _touch(tmp_path / "out" / "a.pdf", b"%PDF")
+    staged_rows: list[list[str]] = []
+
+    inner = _fake_batch_osa()
+
+    def fake(script, *args, timeout=60.0):
+        staged_rows.append(Path(args[0]).read_text().splitlines())
+        return inner(script, *args, timeout=timeout)
+
+    monkeypatch.setattr(wp, "osa", fake)
+    session = wp.WordSession()
+    monkeypatch.setattr(session, "warm", lambda: True)
+
+    results = wp.convert_folder(src, tmp_path / "out", session=session, one_osascript=True)
+    assert results[0].skipped and results[1].ok
+    assert len(staged_rows[0]) == 1  # only b.docx made it into the manifest
+
+
+def test_convert_folder_one_osascript_resumes_after_a_wedge(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(wp, "CONTAINER_TMP", tmp_path / "container")
+    src = tmp_path / "src"
+    for name in ("a.docx", "b.docx", "c.docx"):
+        _touch(src / name)
+
+    calls = {"n": 0}
+    complete = _fake_batch_osa()
+    wedge = _fake_batch_osa(stop_after=1)
+
+    def fake(script, *args, timeout=60.0):
+        calls["n"] += 1
+        return (wedge if calls["n"] == 1 else complete)(script, *args, timeout=timeout)
+
+    monkeypatch.setattr(wp, "osa", fake)
+    session = wp.WordSession()
+    monkeypatch.setattr(session, "warm", lambda: True)
+    recycled: list[object] = []
+    monkeypatch.setattr(session, "recycle", lambda *f: recycled.append(f) or True)
+
+    results = wp.convert_folder(src, tmp_path / "out", session=session, one_osascript=True)
+
+    assert all(r.ok for r in results)
+    assert calls["n"] == 2
+    assert len(recycled) == 1
+
+
+def test_export_batch_script_closes_and_continues_on_a_bad_document() -> None:
+    src = wp._EXPORT_BATCH
+    assert "set displayAlerts to false" in src
+    assert "on error errMsg" in src
+    # Close whatever is open, record it, move to the next file.
+    assert src.count("close every document saving no") >= 3
+    assert '"[fail]" & tab & itemId' in src
+    assert '"[done]"' in src
+    # Health before the save, and nothing interpolated: paths arrive by manifest.
+    assert src.index("count of paragraphs") < src.index("save as theDoc")
+    assert "item 1 of argv" in src and "item 2 of argv" in src
+
+
+def test_report_does_not_call_a_batch_average_a_median(tmp_path: Path) -> None:
+    batched = wp.Result(
+        source=tmp_path / "a.docx", output=tmp_path / "a.pdf", ok=True,
+        seconds=2.5, timing_exact=False,
+    )
+    wp.report([batched])  # exercised for the label branch; exit code checked below
+    assert wp.report([batched]) == 0
+
+
+def test_progress_reports_the_batch_log_as_it_grows(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A monolithic run is one blocking osascript; its log is the only signal."""
+    log = tmp_path / "batch.log"
+    log.write_text("")
+    seen: list[str] = []
+    monkeypatch.setattr(wp.logger, "info", lambda msg: seen.append(str(msg)))
+
+    with wp._Progress(log, total=3, label=" pdf", poll=0.01):
+        log.write_text("[ok]\t0\n")
+        deadline = wp.time.monotonic() + 3
+        while not seen and wp.time.monotonic() < deadline:
+            wp.time.sleep(0.02)
+        log.write_text("[ok]\t0\n[fail]\t1\tboom\nnoise\n")
+        deadline = wp.time.monotonic() + 3
+        while not any("2/3" in m for m in seen) and wp.time.monotonic() < deadline:
+            wp.time.sleep(0.02)
+
+    assert any("1/3" in m for m in seen)
+    assert any("2/3" in m for m in seen)  # noise lines are not progress
+    assert all("[batch pdf]" in m for m in seen)
+
+
+def test_progress_survives_a_log_that_is_not_there_yet(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(wp.logger, "info", lambda msg: None)
+    with wp._Progress(tmp_path / "absent.log", total=1, poll=0.01):
+        wp.time.sleep(0.05)
