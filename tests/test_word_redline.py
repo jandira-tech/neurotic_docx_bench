@@ -33,6 +33,20 @@ wp = _load("word_pdf")
 wr = _load("word_redline")
 
 
+def _verified_session(**kw) -> wp.WordSession:
+    """A session in the state `preflight()` leaves behind on a clean Word.
+
+    `redline_folders()` refuses an unverified session, because `started_clean`
+    defaults to True and is a claim nobody checked. Tests have to present the
+    same proof a real caller does, so this is what `preflight()` sets after it
+    has asked Word and been told zero.
+    """
+    session = wp.WordSession(**kw)
+    session.preflighted = True
+    session.started_clean = True
+    return session
+
+
 def _touch(p: Path, body: bytes = b"x") -> Path:
     p.parent.mkdir(parents=True, exist_ok=True)
     p.write_bytes(body)
@@ -301,7 +315,7 @@ def stub_word(monkeypatch: pytest.MonkeyPatch, tmp_path: Path):
 
     monkeypatch.setattr(wr, "compare_pair", fake_compare)
     monkeypatch.setattr(wr, "export_pdf", fake_export)
-    session = wp.WordSession()
+    session = _verified_session()
     monkeypatch.setattr(session, "warm", lambda: True)
     monkeypatch.setattr(session, "recycle", lambda *f: True)
     monkeypatch.setattr(session, "quit_if_ours", lambda: None)
@@ -401,7 +415,7 @@ def test_delivered_redline_docx_carries_tracked_changes(
         return True, 2, ""
 
     monkeypatch.setattr(wr, "compare_pair", fake_compare)
-    session = wp.WordSession()
+    session = _verified_session()
     monkeypatch.setattr(session, "warm", lambda: True)
     monkeypatch.setattr(session, "recycle", lambda *f: True)
     monkeypatch.setattr(session, "quit_if_ours", lambda: None)
@@ -480,7 +494,7 @@ def test_redline_folders_recycles_word_after_a_failed_pair(
     monkeypatch.setattr(
         wr, "export_pdf", lambda s, d, timeout=180.0: (True, _touch(d, b"%PDF") and "")
     )
-    session = wp.WordSession()
+    session = _verified_session()
     monkeypatch.setattr(session, "warm", lambda: True)
     monkeypatch.setattr(session, "quit_if_ours", lambda: None)
     recycled: list[tuple] = []
@@ -506,7 +520,7 @@ def test_redline_folders_records_a_change_free_comparison_without_failing_it(
     monkeypatch.setattr(
         wr, "export_pdf", lambda s, d, timeout=180.0: (True, _touch(d, b"%PDF") and "")
     )
-    session = wp.WordSession()
+    session = _verified_session()
     monkeypatch.setattr(session, "warm", lambda: True)
     monkeypatch.setattr(session, "quit_if_ours", lambda: None)
 
@@ -670,7 +684,7 @@ def test_serial_failure_recovers_without_restarting_word(
     recovered: list[object] = []
     recycled: list[object] = []
     monkeypatch.setattr(wr, "recover_after_failure", lambda s, *f: recovered.append(f) or True)
-    session = wp.WordSession()
+    session = _verified_session()
     monkeypatch.setattr(session, "warm", lambda: True)
     monkeypatch.setattr(session, "quit_if_ours", lambda: None)
     monkeypatch.setattr(session, "recycle", lambda *f: recycled.append(f) or True)
@@ -694,7 +708,7 @@ def test_serial_recycles_after_a_streak_of_failures(
         wr, "compare_pair", lambda base, rev, out, timeout=300.0: (False, -1, "empty")
     )
     monkeypatch.setattr(wr, "recover_after_failure", lambda s, *f: True)
-    session = wp.WordSession()
+    session = _verified_session()
     monkeypatch.setattr(session, "warm", lambda: True)
     monkeypatch.setattr(session, "quit_if_ours", lambda: None)
     recycled: list[object] = []
@@ -736,7 +750,7 @@ def test_one_redline_osascript_is_the_default(
     # The batch runner is `word_pdf.run_batch_with_resume`, so it is word_pdf's
     # `osa` that gets called, not word_redline's.
     monkeypatch.setattr(wp, "osa", fake_osa)
-    session = wp.WordSession()
+    session = _verified_session()
     monkeypatch.setattr(session, "warm", lambda: True)
     monkeypatch.setattr(session, "quit_if_ours", lambda: None)
     wr.redline_folders(a, b, tmp_path / "out", session=session)
@@ -780,7 +794,7 @@ def test_redline_batched_runs_compare_then_pdf_as_two_scripts(
         return 0, "", ""
 
     monkeypatch.setattr(wp, "osa", fake_osa)
-    session = wp.WordSession()
+    session = _verified_session()
     monkeypatch.setattr(session, "warm", lambda: True)
     monkeypatch.setattr(session, "quit_if_ours", lambda: None)
 
@@ -816,7 +830,7 @@ def test_redline_batched_docx_only_runs_one_script(
         return 0, "", ""
 
     monkeypatch.setattr(wp, "osa", fake_osa)
-    session = wp.WordSession()
+    session = _verified_session()
     monkeypatch.setattr(session, "warm", lambda: True)
     monkeypatch.setattr(session, "quit_if_ours", lambda: None)
 
@@ -852,7 +866,7 @@ def test_redline_batched_records_a_failed_pair_and_finishes_the_rest(
         return 0, "", ""
 
     monkeypatch.setattr(wp, "osa", fake_osa)
-    session = wp.WordSession()
+    session = _verified_session()
     monkeypatch.setattr(session, "warm", lambda: True)
     monkeypatch.setattr(session, "quit_if_ours", lambda: None)
 
@@ -887,7 +901,7 @@ def test_redline_batched_skips_existing_and_stages_the_rest(
         return 0, "", ""
 
     monkeypatch.setattr(wp, "osa", fake_osa)
-    session = wp.WordSession()
+    session = _verified_session()
     monkeypatch.setattr(session, "warm", lambda: True)
     monkeypatch.setattr(session, "quit_if_ours", lambda: None)
 
@@ -922,7 +936,7 @@ def test_redline_batched_resumes_the_compare_pass_after_a_wedge(
         return (None if wedge else 0), "", ""
 
     monkeypatch.setattr(wp, "osa", fake_osa)
-    session = wp.WordSession()
+    session = _verified_session()
     monkeypatch.setattr(session, "warm", lambda: True)
     monkeypatch.setattr(session, "quit_if_ours", lambda: None)
     recycled: list[object] = []
@@ -961,7 +975,7 @@ def test_redline_batched_stages_same_named_sides_apart(
         return 0, "", ""
 
     monkeypatch.setattr(wp, "osa", fake_osa)
-    session = wp.WordSession()
+    session = _verified_session()
     monkeypatch.setattr(session, "warm", lambda: True)
     monkeypatch.setattr(session, "quit_if_ours", lambda: None)
 
@@ -1024,7 +1038,7 @@ def test_batched_redline_never_hands_the_user_s_folders_to_cleanup(
         return {row[0]: (True, "5" if script is wr._COMPARE_BATCH else "") for row in rows}
 
     monkeypatch.setattr(wr, "run_batch_with_resume", fake_resume)
-    session = wp.WordSession()
+    session = _verified_session()
     monkeypatch.setattr(session, "warm", lambda: True)
     monkeypatch.setattr(session, "quit_if_ours", lambda: None)
 
@@ -1049,7 +1063,7 @@ def test_redline_refuses_to_run_with_documents_already_open(
     this script's correctness depends on, so it is refused here rather than
     honoured.
     """
-    session = wp.WordSession()
+    session = _verified_session()
     monkeypatch.setattr(wp.WordSession, "available", staticmethod(lambda: True))
     monkeypatch.setattr(session, "warm", lambda: True)
     monkeypatch.setattr(session, "open_document_count", lambda: 2)
@@ -1081,7 +1095,7 @@ def test_redline_serial_replays_the_failure_streak_after_recycling(
 
     monkeypatch.setattr(wr, "_redline_one", fake_one)
     monkeypatch.setattr(wr, "recover_after_failure", lambda s, *f, **kw: True)
-    session = wp.WordSession()
+    session = _verified_session()
     monkeypatch.setattr(session, "warm", lambda: True)
     monkeypatch.setattr(session, "quit_if_ours", lambda: None)
     monkeypatch.setattr(session, "recycle", lambda *f: True)
@@ -1092,3 +1106,104 @@ def test_redline_serial_replays_the_failure_streak_after_recycling(
     assert by_name["healthy-a.docx"].ok
     assert by_name["healthy-b.docx"].ok
     assert not by_name["poison.docx"].ok
+
+
+# ─── the API path must carry the precondition, not just the CLI ──────────────
+
+
+def test_redline_folders_refuses_a_session_never_checked_against_word(
+    tmp_path: Path, monkeypatch
+) -> None:
+    """`redline_preflight` guarded `main()`, and nothing else.
+
+    `WordSession.started_clean` defaults to **True**, so a fresh session claims
+    a clean Word without ever having asked it. `redline_folders()` took that
+    claim at face value and went straight to `_COMPARE` / `_COMPARE_BATCH`,
+    both of which run `close every document saving no` and identify the result
+    by exclusion. Importing the module and calling the function was therefore
+    enough to close a person's documents and save theirs as the redline --
+    exactly the failure `redline_preflight`'s own docstring says this pair
+    exists to prevent.
+    """
+    a, b = tmp_path / "a", tmp_path / "b"
+    _touch(a / "deal.docx")
+    _touch(b / "deal.docx")
+    monkeypatch.setattr(wp, "CONTAINER_TMP", tmp_path / "container")
+
+    ran: list[str] = []
+    monkeypatch.setattr(wr, "osa", lambda *args, **kw: ran.append("osa") or (0, "", ""))
+    monkeypatch.setattr(
+        wr, "compare_pair", lambda *a, **k: ran.append("compare") or (0, "")
+    )
+
+    session = wr.WordSession()  # never preflighted
+    results = wr.redline_folders(a, b, tmp_path / "out", session=session)
+
+    assert ran == [], f"reached Word without a verified session: {ran}"
+    assert results and all(r.error for r in results)
+    assert any("preflight" in (r.error or "").lower() for r in results), results
+
+
+def test_redline_folders_refuses_when_word_holds_foreign_documents(
+    tmp_path: Path, monkeypatch
+) -> None:
+    """The same guard, reached through a session that was checked and failed."""
+    a, b = tmp_path / "a", tmp_path / "b"
+    _touch(a / "deal.docx")
+    _touch(b / "deal.docx")
+    monkeypatch.setattr(wp, "CONTAINER_TMP", tmp_path / "container")
+
+    ran: list[str] = []
+    monkeypatch.setattr(wr, "osa", lambda *args, **kw: ran.append("osa") or (0, "", ""))
+
+    session = wr.WordSession()
+    session.preflighted = True
+    session.started_clean = False  # Word holds someone else's document
+
+    results = wr.redline_folders(a, b, tmp_path / "out", session=session)
+    assert ran == [], f"reached Word with foreign documents open: {ran}"
+    assert results and all(r.error for r in results)
+
+
+def test_compare_batch_restores_word_alert_state(tmp_path: Path) -> None:
+    """`set displayAlerts to false` was never undone.
+
+    `word_pdf`'s module contract promises an already-running Word is left
+    exactly as found. Both batch scripts set `displayAlerts` false for the whole
+    run and neither read the prior value or put it back, so a run silently
+    disarmed Word's prompts for whatever the person did next.
+    """
+    src = _applescript_code(wr._COMPARE_BATCH)
+    assert "set displayAlerts to false" in src
+    assert "set priorAlerts to displayAlerts" in src, "prior value never captured"
+    # AppleScript has no `finally`, so the restore is a handler called from both
+    # the normal exit and the wrapper that catches anything the loop throws.
+    assert "on restoreAlerts(priorAlerts)" in src
+    assert src.count("my restoreAlerts(priorAlerts)") >= 2, (
+        "must restore on the normal path and on the error path"
+    )
+
+
+def test_redline_folders_preflights_the_session_it_creates(
+    tmp_path: Path, monkeypatch
+) -> None:
+    """`session=None` is the convenience path, not a way around the check."""
+    a, b = tmp_path / "a", tmp_path / "b"
+    _touch(a / "deal.docx")
+    _touch(b / "deal.docx")
+    monkeypatch.setattr(wp, "CONTAINER_TMP", tmp_path / "container")
+
+    asked: list[bool] = []
+
+    def fake_preflight(session, *, allow_open_docs):
+        asked.append(allow_open_docs)
+        return "Word has documents open."
+
+    monkeypatch.setattr(wr, "redline_preflight", fake_preflight)
+    ran: list[str] = []
+    monkeypatch.setattr(wr, "osa", lambda *a, **k: ran.append("osa") or (0, "", ""))
+
+    results = wr.redline_folders(a, b, tmp_path / "out")
+    assert asked == [False], "must preflight, and must not waive --allow-open-docs"
+    assert ran == []
+    assert results and all("documents open" in (r.error or "") for r in results)

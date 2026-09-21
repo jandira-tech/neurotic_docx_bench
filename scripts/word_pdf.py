@@ -34,9 +34,13 @@ which reviewed the 21 scripts this one replaces:
 - **Escalation is graceful-first:** `quit saving no`, then `pkill -x` (SIGTERM,
   exact name — never `-f`, which matches any command line mentioning Word),
   then `pkill -9 -x` (§12, §14.5).
-- **After any kill: AutoRecovery is wiped and lock files removed**, or the next
-  launch opens the Document Recovery pane and blocks before any script command
-  runs (§12).
+- **After any kill: cleanup is scoped to what this run owns.** AutoRecovery
+  entries and `~$` lock files are removed only when they were written at or
+  after this session started, and only in folders this run created; anything
+  older is a person's and is left alone. When preflight did **not** establish
+  that Word held zero documents, AutoRecovery is not touched at all and the
+  Document Recovery pane is the price. Nothing here ever wipes that directory
+  (§12 step 4).
 - **Two watchdogs, not one.** Word's own modal dialogs *and* Microsoft Error
   Reporting, which is a separate process: all 13 `tell process` blocks in the
   audited corpus targeted `"Microsoft Word"`, so none of them could ever see
@@ -63,6 +67,7 @@ Usage:
 
 from __future__ import annotations
 
+import math
 import os
 import shutil
 import signal
@@ -199,7 +204,31 @@ def osa(script: str, *args: str, timeout: float = 60.0) -> tuple[int | None, str
         return None, "", "osascript timed out"
     except OSError as exc:  # osascript missing: not a macOS box
         return None, "", str(exc)
+    except (ValueError, OverflowError) as exc:
+        # `subprocess.run` converts the timeout to an integer, so `nan` raises
+        # ValueError and `inf` raises OverflowError before the child is ever
+        # spawned. The CLI rejects both, but this function promises never to
+        # raise and is reachable from the API, so it keeps that promise here
+        # rather than relying on every caller having validated first.
+        return None, "", f"invalid timeout ({timeout!r}): {exc}"
     return proc.returncode, proc.stdout.strip(), proc.stderr.strip()
+
+
+def positive_seconds(value: float, param: str) -> float:
+    """A timeout has to be a real, positive duration.
+
+    Neither half of this is pedantry. `nan` and `inf` reach `subprocess.run`
+    and break it before the child is spawned, and zero or a negative value is
+    worse than an error: `subprocess.run` accepts it and reports TimeoutExpired
+    immediately, so every call "times out" and the run fails uniformly with a
+    plausible-looking reason.
+    """
+    if not math.isfinite(value) or value <= 0:
+        raise typer.BadParameter(
+            f"{param} must be a positive number of seconds, not {value!r}",
+            param_hint=param,
+        )
+    return value
 
 
 _SET_ALERTS = """
@@ -516,6 +545,17 @@ class WordSession:
     started: float = field(default_factory=time.time)
     """Wall clock, because it is compared against file mtimes. Everything
     older than this belongs to someone else and is never deleted."""
+    preflighted: bool = False
+    """True only once `preflight` has actually asked Word how many documents
+    it holds.
+
+    `started_clean` defaults to True, which is a claim, not an observation: a
+    session nobody preflighted asserts a clean Word without having looked. That
+    was safe while every entry point ran `preflight` first, and stopped being
+    safe the moment a caller could reach `redline_folders()` by importing the
+    module. So ownership now needs both flags: this one says the question was
+    put to Word, `started_clean` says what Word answered.
+    """
     started_clean: bool = True
     """True only once `preflight` has seen Word holding **zero** documents.
 
@@ -656,9 +696,29 @@ class WordSession:
         return proc.returncode == 0
 
     def quit_if_ours(self) -> None:
-        if self.launched_by_us:
-            osa(_CLOSE_ALL, timeout=15)
-            osa('tell application "Microsoft Word" to quit saving no', timeout=15)
+        """Quit the Word this run launched, and only when nothing is open.
+
+        `launched_by_us` says the run started the *process*. It says nothing
+        about the documents in it: a person can open one in that instance while
+        the batch is running, and the close-all-then-quit this used to do
+        discarded it unsaved. By the time this fires the run's own documents
+        are already closed, so anything still open is either a cleanup that did
+        not finish or someone else's — neither of which is ours to throw away.
+        Leaving Word running costs nothing; the alternative costs their work.
+        """
+        if not self.launched_by_us:
+            return
+        count = self.open_document_count()
+        if count != 0:
+            logger.warning(
+                f"[word] leaving Word running: {count} document(s) still open at "
+                "exit, and this run cannot prove they are its own"
+                if count > 0
+                else "[word] leaving Word running: could not determine whether "
+                "any documents are open"
+            )
+            return
+        osa('tell application "Microsoft Word" to quit saving no', timeout=15)
 
 
 def _entries_since(folder: Path, cutoff: float, *, pattern: str = "*") -> list[Path]:
@@ -774,8 +834,22 @@ def recover_after_failure(
     cannot be brought back to zero open documents is assumed to be in it.
     """
     osa(_DECLINE_REPAIR, *REPAIR_MARKERS, timeout=15)
-    if session.started_clean:
-        # Every open document is ours, so closing all of them is exactly right.
+    if session.started_clean and only:
+        # `started_clean` is one observation, taken before the first file, and
+        # this runs after every failure for the rest of the batch. A document
+        # opened in between would be closed unsaved by the blanket close below,
+        # so when the failing item has a name, close that instead: narrower,
+        # and enough on its own if Word is healthy. The close-all stays as the
+        # escalation when the named close does not bring Word back to zero.
+        osa(_CLOSE_NAMED, only, timeout=20)
+        if session.open_document_count() == 0:
+            return True
+        osa(_CLOSE_ALL, timeout=20)
+        if session.open_document_count() == 0:
+            return True
+    elif session.started_clean:
+        # No name to aim at — the PDF path's own failures reach here — so the
+        # blanket close is all that is left.
         osa(_CLOSE_ALL, timeout=20)
         if session.open_document_count() == 0:
             return True
@@ -1011,53 +1085,70 @@ on logLine(logPath, msg)
   do shell script "printf '%s\\n' " & quoted form of msg & " >> " & quoted form of logPath
 end logLine
 
+on restoreAlerts(priorAlerts)
+  if priorAlerts is missing value then return
+  try
+    tell application "Microsoft Word" to set displayAlerts to priorAlerts
+  end try
+end restoreAlerts
+
 on run argv
   set manifestPath to item 1 of argv
   set logPath to item 2 of argv
   set rows to paragraphs of (read POSIX file manifestPath)
+  set priorAlerts to missing value
   tell application "Microsoft Word"
+    try
+      set priorAlerts to displayAlerts
+    end try
     set displayAlerts to false
   end tell
   set okCount to 0
   set failCount to 0
-  repeat with r in rows
-    set rowText to r as string
-    if rowText is not "" then
-      set f to my splitTabs(rowText)
-      if (count of f) is 3 then
-        set itemId to item 1 of f
-        set inP to item 2 of f
-        set outP to item 3 of f
-        set theDoc to missing value
-        try
-          with timeout of 600 seconds
-            tell application "Microsoft Word"
-              open POSIX file inP
-              set theDoc to document 1
-              if (count of paragraphs of theDoc) is 0 then
+  try
+    repeat with r in rows
+      set rowText to r as string
+      if rowText is not "" then
+        set f to my splitTabs(rowText)
+        if (count of f) is 3 then
+          set itemId to item 1 of f
+          set inP to item 2 of f
+          set outP to item 3 of f
+          set theDoc to missing value
+          try
+            with timeout of 600 seconds
+              tell application "Microsoft Word"
+                open POSIX file inP
+                set theDoc to document 1
+                if (count of paragraphs of theDoc) is 0 then
+                  close theDoc saving no
+                  set theDoc to missing value
+                  error "document loaded empty (Word could not read it)"
+                end if
+                save as theDoc file name outP file format format PDF
                 close theDoc saving no
                 set theDoc to missing value
-                error "document loaded empty (Word could not read it)"
+              end tell
+            end timeout
+            set okCount to okCount + 1
+            my logLine(logPath, "[ok]" & tab & itemId)
+          on error errMsg
+            set failCount to failCount + 1
+            try
+              if theDoc is not missing value then
+                tell application "Microsoft Word" to close theDoc saving no
               end if
-              save as theDoc file name outP file format format PDF
-              close theDoc saving no
-              set theDoc to missing value
-            end tell
-          end timeout
-          set okCount to okCount + 1
-          my logLine(logPath, "[ok]" & tab & itemId)
-        on error errMsg
-          set failCount to failCount + 1
-          try
-            if theDoc is not missing value then
-              tell application "Microsoft Word" to close theDoc saving no
-            end if
+            end try
+            my logLine(logPath, "[fail]" & tab & itemId & tab & errMsg)
           end try
-          my logLine(logPath, "[fail]" & tab & itemId & tab & errMsg)
-        end try
+        end if
       end if
-    end if
-  end repeat
+    end repeat
+  on error errText
+    my restoreAlerts(priorAlerts)
+    error errText
+  end try
+  my restoreAlerts(priorAlerts)
   my logLine(logPath, "[done]" & tab & okCount & tab & failCount)
   return "ok=" & okCount & " fail=" & failCount
 end run
@@ -1360,6 +1451,7 @@ def preflight(
         return "Word did not become responsive"
     count = session.open_document_count()
     session.started_clean = count == 0
+    session.preflighted = True
     if count < 0:
         # -1 means the query itself failed, not that Word is empty. Both guards
         # below test `count > 0`, so an unknown count used to slip past them and
@@ -1434,6 +1526,7 @@ def main(
     ] = None,
 ) -> None:
     """Export every .docx in a folder to PDF using Microsoft Word."""
+    timeout = positive_seconds(timeout, "--timeout")
     logger.remove()
     logger.add(lambda m: console.print(m, end=""), level="ERROR" if quiet else "INFO")
     if log_file:

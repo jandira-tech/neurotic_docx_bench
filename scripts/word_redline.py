@@ -90,6 +90,7 @@ from word_pdf import (  # must follow the sys.path guard above
     export_pdf,
     iter_docx,
     osa,
+    positive_seconds,
     preflight,
     preset_notice,
     recover_after_failure,
@@ -300,65 +301,82 @@ on logLine(logPath, msg)
   do shell script "printf '%s\\n' " & quoted form of msg & " >> " & quoted form of logPath
 end logLine
 
+on restoreAlerts(priorAlerts)
+  if priorAlerts is missing value then return
+  try
+    tell application "Microsoft Word" to set displayAlerts to priorAlerts
+  end try
+end restoreAlerts
+
 on run argv
   set manifestPath to item 1 of argv
   set logPath to item 2 of argv
   set rows to paragraphs of (read POSIX file manifestPath)
+  set priorAlerts to missing value
   tell application "Microsoft Word"
+    try
+      set priorAlerts to displayAlerts
+    end try
     set displayAlerts to false
   end tell
   set okCount to 0
   set failCount to 0
-  repeat with r in rows
-    set rowText to r as string
-    if rowText is not "" then
-      set f to my splitTabs(rowText)
-      if (count of f) is 4 then
-        set itemId to item 1 of f
-        set baseP to item 2 of f
-        set revP to item 3 of f
-        set outP to item 4 of f
-        set revisionCount to -1
-        try
-          with timeout of 900 seconds
-            tell application "Microsoft Word"
-              open POSIX file baseP
-              set baseDoc to document 1
-              set baseName to name of baseDoc
-              if (count of paragraphs of baseDoc) is 0 then
-                close every document saving no
-                error "base loaded empty (Word could not read it)"
-              end if
-              compare baseDoc path revP detect format changes true ignore all comparison warnings true add to recent files false
-              set cmpDoc to missing value
-              set docCount to count of documents
-              repeat with i from 1 to docCount
-                set dd to document i
-                if (name of dd) is not baseName then set cmpDoc to dd
-              end repeat
-              if cmpDoc is missing value then
-                close every document saving no
-                error "compare produced no result document"
-              end if
-              try
-                set revisionCount to count of revisions of cmpDoc
-              end try
-              save as cmpDoc file name outP file format format document
-              close every document saving no
-            end tell
-          end timeout
-          set okCount to okCount + 1
-          my logLine(logPath, "[ok]" & tab & itemId & tab & revisionCount)
-        on error errMsg
-          set failCount to failCount + 1
+  try
+    repeat with r in rows
+      set rowText to r as string
+      if rowText is not "" then
+        set f to my splitTabs(rowText)
+        if (count of f) is 4 then
+          set itemId to item 1 of f
+          set baseP to item 2 of f
+          set revP to item 3 of f
+          set outP to item 4 of f
+          set revisionCount to -1
           try
-            tell application "Microsoft Word" to close every document saving no
+            with timeout of 900 seconds
+              tell application "Microsoft Word"
+                open POSIX file baseP
+                set baseDoc to document 1
+                set baseName to name of baseDoc
+                if (count of paragraphs of baseDoc) is 0 then
+                  close every document saving no
+                  error "base loaded empty (Word could not read it)"
+                end if
+                compare baseDoc path revP detect format changes true ignore all comparison warnings true add to recent files false
+                set cmpDoc to missing value
+                set docCount to count of documents
+                repeat with i from 1 to docCount
+                  set dd to document i
+                  if (name of dd) is not baseName then set cmpDoc to dd
+                end repeat
+                if cmpDoc is missing value then
+                  close every document saving no
+                  error "compare produced no result document"
+                end if
+                try
+                  set revisionCount to count of revisions of cmpDoc
+                end try
+                save as cmpDoc file name outP file format format document
+                close every document saving no
+              end tell
+            end timeout
+            set okCount to okCount + 1
+            my logLine(logPath, "[ok]" & tab & itemId & tab & revisionCount)
+          on error errMsg
+            set failCount to failCount + 1
+            try
+              tell application "Microsoft Word" to close every document saving no
+            end try
+            my logLine(logPath, "[fail]" & tab & itemId & tab & errMsg)
           end try
-          my logLine(logPath, "[fail]" & tab & itemId & tab & errMsg)
-        end try
+        end if
       end if
-    end if
-  end repeat
+    end repeat
+  on error errText
+    my restoreAlerts(priorAlerts)
+    error errText
+  end try
+  my restoreAlerts(priorAlerts)
   my logLine(logPath, "[done]" & tab & okCount & tab & failCount)
   return "ok=" & okCount & " fail=" & failCount
 end run
@@ -462,6 +480,35 @@ def redline_folders(
 
     owns_session = session is None
     session = session or WordSession()
+
+    # The precondition belongs to this function, not to the CLI that usually
+    # calls it. `_COMPARE` and `_COMPARE_BATCH` both close every document and
+    # both identify the compare result by exclusion, and neither is sound while
+    # Word holds a document that is not ours -- so a caller who imports this
+    # module and calls this function gets the same refusal `main()` does,
+    # rather than a run that can close their work and save it as a redline.
+    # A supplied session must carry proof it was checked: `started_clean`
+    # alone defaults to True and would be a claim nobody verified.
+    if owns_session:
+        problem = redline_preflight(session, allow_open_docs=False)
+    elif not session.preflighted:
+        problem = (
+            "this session has not been preflighted, so nothing has established "
+            "that Word holds no documents of yours. Call redline_preflight() "
+            "first, or pass session=None and let redline_folders() do it."
+        )
+    elif not session.started_clean:
+        problem = (
+            "Word has documents open. Redlining identifies its result by "
+            "exclusion (the document that is not the base), which only holds "
+            "while every open document is ours. Close them and re-run."
+        )
+    else:
+        problem = ""
+    if problem:
+        logger.error(f"[redline] refusing to start: {problem}")
+        return [PairResult(base=a, revision=b, error=problem) for a, b in pairs]
+
     if owns_session and not session.warm():
         return [
             PairResult(base=a, revision=b, error="Word did not become responsive")
@@ -921,6 +968,8 @@ def main(
     ] = None,
 ) -> None:
     """Redline folder A against folder B using Microsoft Word's Compare Documents."""
+    timeout = positive_seconds(timeout, "--timeout")
+    pdf_timeout = positive_seconds(pdf_timeout, "--pdf-timeout")
     logger.remove()
     logger.add(lambda m: console.print(m, end=""), level="ERROR" if quiet else "INFO")
     if log_file:
