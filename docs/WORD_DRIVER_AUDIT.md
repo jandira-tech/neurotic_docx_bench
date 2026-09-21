@@ -283,10 +283,21 @@ needs neither the Accessibility grant nor a focus interruption.
 That does not make the outside-stagers wrong about *their* problem. The file-access error
 they recorded under rapid sandbox-tmp reuse is a real report, and staging into one shared
 container directory is what provokes it. The two constraints are not actually in conflict,
-and one script already satisfies both: `word-convert.sh` stages inside the app container
+and one script goes part of the way: `word-convert.sh` stages inside the app container
 **and** takes a fresh `mktemp -d` per run, so no two runs reuse a path. That pattern — inside
 the container, unique subdirectory per run, cleaned on exit — is what §5.3 should have
 recommended from the start.
+
+**It does not, however, clear the reported trigger, and this document should not claim it
+does.** `word-convert.sh` converts **one file per invocation**, so its fresh directory holds
+exactly one document; what the outside-stagers reported is many files written into one
+sandbox-tmp directory and reopened rapidly. That workload never runs under
+`word-convert.sh`. It does run under the monolithic default, which stages the whole folder
+before the first open — §15's "One osascript for the whole job" puts it at 1,224 copies
+live in the container for a
+1,224-document run. Unique-per-run removes *cross-run* reuse and nothing more; whether
+many-files-in-one-directory provokes the error **within** a run is untested here and needs
+the target machine. If it does, the answer is a subdirectory per item, not per run.
 
 What stays open is narrower and much cheaper: **which** container. Family B and
 `word-convert.sh` use the app container
@@ -450,6 +461,26 @@ are pure text processing and are currently proven only by having been run.
   not a sample; on an alphabetically ordered corpus that is a biased subset. `PROBE_DIR` is
   `process.cwd()`-relative, so it silently writes elsewhere when invoked from another
   directory.
+- **`--word-sample` turns a malformed value into a silent clean pass.**
+  `Number.parseInt(args[sampleIdx + 1], 10)` (223) yields `NaN` for a missing or
+  non-numeric value and keeps `0` or a negative one. Every downstream test is
+  `wordSample > 0` — `willProbeWord` (235) and the per-row `wantWord` (266) — and all of
+  them are false for `NaN`, `0` and negatives alike. So `--word-sample` with nothing after
+  it marks every row `SKIPPED`, leaves `wordBad` at zero, and exits **0**: an operator who
+  explicitly asked for Word validation is told the corpus is clean without a single
+  document having been opened. The file already knows the idiom — `wordDocCount` guards
+  the identical call with `|| 0` (59) — it is this one argument that does not. A positive
+  integer should be required, and anything else refused.
+- **The validation scratch path collides between concurrent runs.** Every pair is written
+  to `redline-out/_validate/v-${i}.docx` under `process.cwd()` (258–262) with `i` the
+  1-based loop index, and `validate()` is awaited *after* the write. Two campaigns started
+  from one working directory both begin at `v-1.docx`, so either can overwrite the other's
+  file in the window between `writeFileSync` and the read — and the errors then come back
+  attributed to the wrong pair. This is the same `process.cwd()` assumption as `PROBE_DIR`
+  above, with a worse failure: not output in the wrong place, but a verdict against the
+  wrong document. A per-run temporary directory fixes both. Until then the pure-TypeScript
+  phase is not safely shardable, which is worth stating because §9 marks it as the one
+  genuinely parallelisable step in the corpus.
 - `word-open-probe.sh` exists twice, byte-identical apart from an SPDX header and one word,
   in two repos with different licences (GPL-3.0-only and AGPL-3.0-only). No shared source, so
   they will drift.
@@ -558,7 +589,13 @@ for: name the document you mean, or find it by exclusion, but never take whichev
 frontmost. The negative control is not a substitute. It proves the repair dialog *would* be
 seen; it says nothing about which document got measured once no dialog appeared.
 
-C1 drops to 0.85, below `word_screen_sources.applescript` and `redline-word-campaign.ts` at 0.95. What survives the cut is the property no score captures and no other script has: it is the only one here that proves its detector works before it trusts a clean result. That is still the reason §13 keeps it.
+C1 drops to 0.85 — below `word_screen_sources.applescript` at 0.95, but still above
+`redline-word-campaign.ts`, which §5.18 docks to 0.80 for taking a risen count as proof
+without a content check.
+
+What survives the cut is the property no score captures and no other script has: it is the
+only one here that proves its detector works before it trusts a clean result. That is still
+the reason §13 keeps it.
 
 ---
 
@@ -618,14 +655,13 @@ API shape, opposite guarantees.
 
 ---
 
-### 5.18 Five scripts act on whichever document Word happens to have
+### 5.18 Four scripts act on whichever document Word happens to have
 
 This is the single most repeated defect in the corpus, and this document found it one script
 at a time instead of naming it once. Collected:
 
 | Script | What it binds to | What that costs |
 |---|---|---|
-| `word_compare_batch.applescript` | `active document` after a compare (§14.1) | records `[ok]` against the base when the compare produced nothing |
 | `word-open-check.mjs` | `active document` in `activeDocText()` (§5.15) | an empty target reads as OPENED-CLEAN off another document's text |
 | `word-open-probe.sh` | `active document` off `(count of documents) > 0` (§5.16) | certifies a stranger's document as our probe, then closes it unsaved |
 | `word-convert.sh` | `active document` on the **normal** conversion path (147–160) | saves the stranger's document into our output, closes it, deletes it with the staging directory, and reports success |
@@ -640,7 +676,7 @@ If Word was already holding a person's document and the staged open silently add
 theirs is what gets written to the output, closed, and then removed with `$stage_dir` on exit
 — with exit 0 and no error log. C1 drops to 0.35.
 
-**The campaign is the least wrong of the five, and deserves the credit.** It is the only one
+**The campaign is the least wrong of the four, and deserves the credit.** It is the only one
 that takes a count *before* the open and requires it to rise (`:148–156`), with a comment
 saying why: "CLEAN only if the document ACTUALLY opens (count rises) — never default to CLEAN
 just because no dialog was seen yet". That is exactly the remedy §5.16 recommends for
@@ -649,8 +685,12 @@ definition of Word valid requires "at least some content", so C1 drops to 0.80 r
 further. Binding to the staged filename would close the remaining gap, since a concurrent
 unrelated open also raises the count.
 
-**The fix is the same in all five places** and one of them already implements it: identify the
-document by name, or by exclusion, and never by which one is frontmost (§5.11).
+**The fix is the same in all four places**, and a fifth script already implements it:
+`word_compare_batch.applescript` walks `document i` and takes the one whose name is not
+the base's (§5.11). It was listed here in an earlier revision, wrongly: its defect is
+§14.1's ordering bug, logging `[ok]` before it evaluates base health, not binding to
+whichever document is frontmost. Identify the document by name, or by exclusion, and
+never by which one is frontmost.
 
 ### 5.19 `word-convert.sh` deletes its input when asked to convert a file to itself
 
@@ -1572,7 +1612,9 @@ What it costs:
 - **Nothing can act between items.** No per-item recycle, no per-item budget — only the
   batch script's own `try` block.
 
-Neither is a reason to avoid it, and both are reasons the per-item mode stays the default.
+Neither is a reason to avoid it, and both are what `--no-one-osascript` and
+`--no-one-redline-osascript` buy back when a run needs per-item recycling or per-item
+budgets. The monolithic run remains the default.
 
 **Wedges are resumed, not retried wholesale.** The batch script writes `[ok]` or `[fail]`
 per item and `[done]` at the end. Three outcomes, and they are not interchangeable: `[ok]`
