@@ -865,3 +865,39 @@ def test_report_pairs_does_not_call_a_batch_average_a_median(tmp_path: Path) -> 
         revisions=3, seconds=4.0, timing_exact=False,
     )
     assert wr.report_pairs([batched]) == 0
+
+
+def test_batched_redline_never_hands_the_user_s_folders_to_cleanup(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Both batch passes sweep only the staging directories this run created.
+
+    The serial path was fixed first and this one was missed: `recycle_paths`
+    still carried `folder_a` and `folder_b`, which are `--a` and `--b`. Word
+    opens the staged copy, never the original, so a `~$` file in either of those
+    is another Word's owner file and removing it unlocks a stranger's document.
+    """
+    monkeypatch.setattr(wp, "CONTAINER_TMP", tmp_path / "container")
+    a = _folder(tmp_path / "a", "deal.docx")
+    b = _folder(tmp_path / "b", "deal.docx")
+    seen: list[tuple[Path, ...]] = []
+
+    def fake_resume(script, rows, root, **kw):
+        seen.append(tuple(kw["recycle_paths"]))
+        for row in rows:
+            out = Path(row[-1])
+            out.parent.mkdir(parents=True, exist_ok=True)
+            out.write_bytes(b"PK" if out.suffix == ".docx" else b"%PDF")
+        return {row[0]: (True, "5" if script is wr._COMPARE_BATCH else "") for row in rows}
+
+    monkeypatch.setattr(wr, "run_batch_with_resume", fake_resume)
+    session = wp.WordSession()
+    monkeypatch.setattr(session, "warm", lambda: True)
+    monkeypatch.setattr(session, "quit_if_ours", lambda: None)
+
+    wr.redline_folders(a, b, tmp_path / "out", session=session, one_osascript=True)
+
+    assert len(seen) == 2, "compare pass and pdf pass both report their cleanup scope"
+    for paths in seen:
+        assert a not in paths, f"folder A was handed to cleanup: {paths}"
+        assert b not in paths, f"folder B was handed to cleanup: {paths}"
