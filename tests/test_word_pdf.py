@@ -689,7 +689,9 @@ def test_serial_failure_recovers_without_restarting_word(
     )
     recovered: list[object] = []
     recycled: list[object] = []
-    monkeypatch.setattr(wp, "recover_after_failure", lambda s, *f: recovered.append(f) or True)
+    monkeypatch.setattr(
+        wp, "recover_after_failure", lambda s, *f, **kw: recovered.append(f) or True
+    )
     session = wp.WordSession()
     monkeypatch.setattr(session, "warm", lambda: True)
     monkeypatch.setattr(session, "recycle", lambda *f: recycled.append(f) or True)
@@ -711,7 +713,7 @@ def test_serial_recycles_once_the_failures_stop_looking_isolated(
         _touch(src / name)
 
     monkeypatch.setattr(wp, "export_pdf", lambda sin, sout, timeout=180.0: (False, "empty"))
-    monkeypatch.setattr(wp, "recover_after_failure", lambda s, *f: True)
+    monkeypatch.setattr(wp, "recover_after_failure", lambda s, *f, **kw: True)
     session = wp.WordSession()
     monkeypatch.setattr(session, "warm", lambda: True)
     recycled: list[object] = []
@@ -1183,3 +1185,65 @@ def test_cleanup_never_sweeps_lock_files_in_the_user_s_own_folder(
     for folders in swept:
         assert src not in folders, f"the user's source folder was handed to cleanup: {folders}"
     assert human_lock.exists(), "someone else's lock file must survive"
+
+
+def test_export_pdf_closes_only_the_document_it_opened() -> None:
+    """The export script must not close documents it did not open.
+
+    Under `--allow-open-docs` a human's documents are open alongside ours, and
+    `close every document saving no` discards their unsaved work on *every*
+    conversion, not only on failure.
+    """
+    assert "close every document saving no" not in wp._EXPORT_PDF
+    assert wp._EXPORT_PDF.count("close theDoc saving no") == 2
+
+
+def test_recover_after_failure_closes_only_ours_when_word_was_not_clean(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Not started clean means a human's documents are open. Close ours by name."""
+    calls: list[tuple[str, tuple[str, ...]]] = []
+
+    def fake_osa(script, *args, timeout=60.0):
+        calls.append((script, args))
+        return 0, "", ""
+
+    monkeypatch.setattr(wp, "osa", fake_osa)
+    session = wp.WordSession(started_clean=False)
+    monkeypatch.setattr(session, "open_document_count", lambda: 1)
+
+    assert wp.recover_after_failure(session, only="00001__deal.docx") is True
+
+    scripts = [s for s, _ in calls]
+    assert wp._CLOSE_ALL not in scripts, "must not close a human's documents"
+    assert wp._CLOSE_NAMED in scripts
+    named = next(a for s, a in calls if s is wp._CLOSE_NAMED)
+    assert named == ("00001__deal.docx",)
+
+
+def test_recover_after_failure_closes_everything_when_word_started_clean(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Started clean means every open document is ours, so close-all is correct."""
+    calls: list[str] = []
+    monkeypatch.setattr(wp, "osa", lambda s, *a, **k: calls.append(s) or (0, "", ""))
+    session = wp.WordSession(started_clean=True)
+    monkeypatch.setattr(session, "open_document_count", lambda: 0)
+
+    assert wp.recover_after_failure(session, only="00001__deal.docx") is True
+    assert wp._CLOSE_ALL in calls
+
+
+def test_recycle_refuses_to_quit_word_over_a_human_s_documents(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    """`recycle` quits Word `saving no`. That is not ours to do when we did not
+    start clean: the operator asked us to coexist with their documents, not to
+    discard them. Refuse and report instead."""
+    ran: list[list[str]] = []
+    monkeypatch.setattr(wp, "osa", lambda *a, **k: (0, "", ""))
+    monkeypatch.setattr(wp.subprocess, "run", lambda cmd, **kw: ran.append(cmd))
+    session = wp.WordSession(started_clean=False)
+
+    assert session.recycle(tmp_path) is False
+    assert not ran, "no pkill, no quit, nothing destructive"
