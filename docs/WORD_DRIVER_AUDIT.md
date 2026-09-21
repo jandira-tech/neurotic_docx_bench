@@ -153,14 +153,15 @@ revoked in System Settings, reset with `tccutil reset AppleEvents`, or invalidat
 client being re-signed; stage inside the container to avoid the sandbox sheet"*, and stop
 generating unrolled scripts.
 
-### 5.2 The `-1708` rule is confounded, and the run logs narrow it to one combination
+### 5.2 The `-1708` rule is confounded, and only two of its four cells have run evidence
 
 `corpus/word_based/docx_redlines_word/README.md` and `CLAUDE.md` both state the rule as
 *inline heredoc works, `.scpt` file fails with `-1708`*. But the broken example they cite
 uses `active document`, and `word_compare_batch.applescript` — a **file** run as
 `osascript word_compare_batch.applescript …` — calls `save as cmpDoc` on an explicitly
-indexed `document i` rather than on `active document`, and it demonstrably works: see the
-run evidence below.
+indexed `document i` rather than on `active document` — and that combination is one of the
+two with committed run artifacts behind it (`compare.log`, below). The cell the README's
+rule actually indicts is never logged anywhere.
 
 Two data points, one confound:
 
@@ -182,22 +183,32 @@ The inline + `active document` cell has its own artifact:
 `corpus/word_based/docx_redlines_randomized/batch_retry_log.csv` (tracked) records 200 pairs,
 196 `ok`, 4 `fail`, with per-pair durations — and 196 matching `.docx` outputs sit beside it.
 
-So three of the four cells are backed by run evidence, and the only reported `-1708` is the
-file + `active document` cell. That **isolates the failing combination**. It does not
-identify which factor is causal, and the earlier draft of this section wrongly claimed it
-did. Read the table one row and one column at a time:
+Be exact about what each cell rests on, because the three kinds of evidence are not
+interchangeable:
 
-- Holding **file** constant: `active document` fails, `document i` works. The document
-  selector matters when running from a file.
-- Holding **`active document`** constant: inline works, file fails. File-vs-inline matters
-  when targeting `active document` — which is the README's own rule, in the one row where it
-  can be tested.
+- **Two cells have committed run artifacts**, and both of them *work*: inline +
+  `active document` (`batch_retry_log.csv`) and file + `document i` (`compare.log`).
+- **One cell is a second-hand report**: file + `active document` was *reported* to fail with
+  `-1708` in the corpus README. No log records it, and the script said to have failed
+  (`compare-documents.scpt`) is not in the tree.
+- **One cell is unobserved**: inline + `document i`. Nothing has ever been run there.
 
-Neither factor appears only in failing cells, so neither is a main effect; the failure sits
-on the *interaction*. The fourth cell, inline + `document i`, is unobserved, and the `-1708`
-report is second-hand with the failing script absent from the tree. Both single-factor
-readings therefore remain live, and nothing here licenses rewriting
-`batch_word_to_pdf.scpt` or deleting family A on the strength of it.
+So the run logs do not isolate the failure. What they establish is that two combinations
+work; the failure's location rests entirely on the README's report. Reading the table with
+that caveat carried through:
+
+- Holding **file** constant: `document i` works (logged), `active document` was reported to
+  fail. If the report is right, the selector matters when running from a file.
+- Holding **`active document`** constant: inline works (logged), file was reported to fail.
+  If the report is right, file-vs-inline matters when targeting `active document` — which is
+  the README's own rule, in the one row where it could be tested.
+
+Under that same *if*, neither factor appears only in failing cells, so neither would be a
+main effect and the failure would sit on the *interaction*. An earlier draft of this section
+claimed the evidence identified `active document` as the cause; it does not, and the claim
+has been withdrawn. Both single-factor readings remain live, the second-hand cell is
+unconfirmed, the fourth cell is empty, and nothing here licenses rewriting
+`batch_word_to_pdf.scpt` or deleting family A.
 
 Two experiments close it, not one. From a **file**, the same `save as` against
 `active document` and once against `document 1` — that tests the selector. Then the same
@@ -353,8 +364,10 @@ are pure text processing and are currently proven only by having been run.
 
 Two mechanisms, routinely conflated (see §5.1).
 
-**P1 — TCC Apple-events automation.** One prompt per (terminal app → Word), persisted.
-Not per process, not per file. Only `word_compare_driver.sh:64–72` handles it at all: it
+**P1 — TCC Apple-events automation.** One prompt per (responsible client, target) pair —
+for `osascript` from a terminal, that is the terminal — persisting until it is revoked in
+System Settings, reset with `tccutil reset AppleEvents`, or invalidated by the client being
+re-signed. Not per process, not per file, and not permanent. Only `word_compare_driver.sh:64–72` handles it at all: it
 probes with a cheap `get name`, and if it fails, exits with the exact one-liner to run. That
 is the correct treatment — this prompt cannot be dismissed programmatically, so the only
 options are "already granted" or "stop and tell the human".
@@ -604,8 +617,10 @@ The merges worth making are small and specific:
 2. **Settle §5.2** (`-1708`) with the two experiments in that section — the selector pair
    from a file, and the same pair inline to fill the unobserved cell. If file-vs-inline is not the
    variable, family A can be deleted rather than regenerated.
-3. **Correct `CLAUDE.md` rule 1** per §5.1 — one TCC grant per terminal, forever; the
-   per-file prompt is Word's sandbox sheet and staging is its cure.
+3. **Correct `CLAUDE.md` rule 1** per §5.1 — Apple Events consent is scoped to a
+   (responsible client, target) pair and persists until revoked, reset with
+   `tccutil reset AppleEvents`, or invalidated by re-signing; it is not per process and not
+   permanent. The per-file prompt is Word's separate sandbox sheet, and staging is its cure.
 4. Give the compare pipeline `word-open-check.mjs`'s **negative control**, so a clean corpus
    is provably clean rather than possibly unmeasured.
 5. Give `render/word.py`'s **PDF path** the kill-and-warm that `word_validate_batch.py`
