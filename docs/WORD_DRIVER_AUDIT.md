@@ -254,10 +254,12 @@ container: family B and `word-convert.sh` use the app container
 
 **§6.1 resolves this, and it resolves toward staging.** `CLAUDE.md` rule 3's *arithmetic*
 was right even though its neighbouring claim about folder grants persisting was not: because
-the grant does not carry from one file to the next, an out-of-container batch pays a prompt
-**per file**, not per folder. That is 232 prompts for `batch_convert.scpt` and 1,224 for
-`batch_sanity_pdf.applescript` — answered by a script where one exists, unanswerable where
-one does not. Staging is the only strategy that makes the prompt not happen.
+a grant only persists once its panel has been completed — which requires Word frontmost
+(§6.1) — an out-of-container batch whose handler does not activate Word pays a prompt **per
+file**. That is 232 prompts for `batch_convert.scpt` and 1,224 for
+`batch_sanity_pdf.applescript`, none of which have a handler at all. Staging is the only
+strategy that makes the prompt not happen rather than answering it, and the only one that
+needs neither the Accessibility grant nor a focus interruption.
 
 That does not make the outside-stagers wrong about *their* problem. The file-access error
 they recorded under rapid sandbox-tmp reuse is a real report, and staging into one shared
@@ -420,7 +422,7 @@ Word's container. Three viable strategies:
 |---|---|---|
 | Stage inside the container | `run_batch_retry.sh`, `word_compare_driver.sh`, `word-convert.sh` | One copy per file; zero prompts |
 | Dismiss via Accessibility AXPress | `word-convert.sh`, `redline-word-campaign.ts`, `word-open-check.mjs` | A UI round-trip per file; needs the Accessibility grant |
-| ~~Grant the folder once by hand~~ | `CLAUDE.md` claims this persists; §6.1 reports it does not | **Not a strategy.** The grant does not carry to the next file, so this is one human interaction *per file* |
+| Grant the folder once by hand | Persists — but only once the panel is completed, which needs Word frontmost (§6.1) | One human interaction per folder, per machine. Viable, but it is a manual step a batch cannot perform for itself |
 | Nothing | family A, `render/word.py`, all three probes/sweeps | A human at the keyboard, or a hang |
 
 ### 6.1 Why some scripts prompt once and some prompt every time
@@ -438,7 +440,8 @@ the next access re-prompts. That is the whole once-versus-every-time split:
 | Behaviour | Scripts | Why |
 |---|---|---|
 | **Never prompts** | `run_batch_retry.sh`, `word_compare_driver.sh`, `word-convert.sh` | Everything is staged inside a container Word already owns, so Powerbox is never invoked |
-| **Prompts per file, but answers itself** | `word-convert.sh` (also stages), `word-open-check.mjs`, `redline-word-campaign.ts` | They complete the flow — `word-convert.sh` clicks `Select…` then `key code 36`; the other two AXPress Grant/Open/Select/Allow in a loop — but the grant does not carry to the next file, so this is a UI round-trip *per file*, paid by the script rather than the human |
+| **Prompts once, then persists** | `word-convert.sh` (also stages) | `set frontmost to true` *inside* the Grant handler, then `click button "Select..."` and `key code 36`. Word is active, so the panel renders and accepts — the grant completes and carries (§6.1) |
+| **Prompts every file, and answers nothing** | `word-open-check.mjs`, `redline-word-campaign.ts` | They AXPress Grant/Open/Select/Allow in a loop *without* activating Word, so the panel never renders to accept the press. A UI round-trip per file that grants nothing |
 | **Prompts every time** | family A, `batch_word_to_pdf.scpt`, `render/word.py`, `word_validate_batch.py`, both `word-open-probe.sh`, `word-probe-sweep.sh`, `redline-sweep.sh` | No handler. The dialog stands until the AppleEvent times out; nothing is ever granted |
 | **Prompts every time, and denies** | `word_dialog_watchdog.applescript` | Its button list is `{OK, Ok, Cancel, Close, Don't Save, No}` — no Grant, Select, Open or Allow. On a Grant sheet it presses **Cancel**, so it actively refuses the grant on every appearance |
 
@@ -451,8 +454,9 @@ and write to another, so there are *two* folders to grant, and the output folder
 touched at `save as` — i.e. as the document is finished and closed. Counting distinct folders
 each generated batch makes Word touch: `batch_convert.scpt` 2,
 `batch_jubarte_lossless_pdf.applescript` 2 (it writes into a `pdf/` subfolder),
-`batch_sanity_pdf.applescript` **6**. Those are the folder counts; since the grant does not
-carry between files, the prompt count is the *file* count — 1,224 for that one.
+`batch_sanity_pdf.applescript` **6**. Those are the folder counts, and they would be the
+prompt counts for a script that completes each grant. None of family A has a handler at all,
+so for them the prompt count is the *file* count — 1,224 for that one.
 
 **"Depending on where the script is run"** has a concrete cause in at least one script:
 `redline-word-campaign.ts` computes `PROBE_DIR` as `process.cwd()`-relative
@@ -460,28 +464,59 @@ carry between files, the prompt count is the *file* count — 1,224 for that one
 previously granted run prompts again. That is invocation location literally determining
 whether a prompt appears.
 
-**The grant does not carry to the enclosing folder.** Reported from the target machine:
-completing the panel for one file does not stop the next file in the same folder prompting
-again. Whether the grant is scoped to the selected item, or scoped to the folder but lost
-when Word relaunches, is not settled here — but the conclusion does not depend on which,
-because these scripts restart Word constantly anyway.
+**Persistence is conditional on the panel flow actually completing — and it only completes
+when Word is frontmost.** This is the real variable, and exactly one script gets it right.
+
+`CLAUDE.md` states the mechanism: the Grant File Access sequence *"`Select…` →
+`NSOpenPanel` → grant … **will not render/accept `AXPress` unless Word is the active
+app**"*. So a handler that presses buttons without activating Word is pressing at a panel
+that never rendered; nothing is granted, and the next file prompts again.
+
+| Script | Activates Word for the grant? | Result |
+|---|---|---|
+| `word-convert.sh` | **Yes** — `set frontmost to true` at line 236, inside the Grant handler, immediately before `click button "Select..."` and `key code 36` | Flow completes; **grant persists** |
+| `word-open-check.mjs` | No. Its two `activate` calls are elsewhere — forcing the GUI launch during warm-up (827) and taking a screenshot after a clean verdict (894). `grantFileAccess()` AXPresses without activating | Flow does not complete; re-prompts |
+| `redline-word-campaign.ts` | No, and it runs a bouncer that pushes Word *out* of frontmost every 0.5 s | Flow cannot complete; re-prompts |
+
+So the observed "asks every time, even on folders already seen" is the second and third rows,
+and "asks only once" is the first. The grant mechanism is not the problem; not activating
+Word is.
+
+**The irony is worth recording.** `redline-word-campaign.ts` is the only script that
+implements `CLAUDE.md`'s focus-bouncer rule properly (§5.9) — and the bouncer is precisely
+what stops its grant completing. Two rules in the same `CLAUDE.md` paragraph are in tension,
+and that paragraph names the exception: activate *for this flow specifically*, with the
+bouncer restoring focus immediately afterwards. `redline-word-campaign.ts` takes the rule and
+not the exception.
+
+`word-convert.sh` gets the outcome right while breaking a different clause of the same
+paragraph: it finishes with `key code 36` where `CLAUDE.md` says to use `AXPress` and *"never
+keystrokes"*. The combination that satisfies everything is activate → `AXPress` the grant →
+let the bouncer restore focus, and no script in the corpus does all three.
 
 Two consequences follow, and they are the practical ones:
 
-- **Completing the dialog is a per-file tax, not a fix.** The middle row above is
-  automation, not avoidance: the script clicks so the human does not have to, but the
-  round-trip is paid on every file, and it needs the Accessibility grant to work at all.
-- **Container staging is not one option among three — it is the only one that scales.**
-  It is the only strategy in the corpus that makes the prompt not happen, rather than making
-  something answer it.
+- **Pressing buttons without activating Word is not automation, it is a no-op with a
+  delay.** Two of the three handlers pay a UI round-trip per file and grant nothing.
+- **Container staging remains the first choice**, because it makes the prompt not happen at
+  all rather than answering it — and it needs neither the Accessibility grant nor the focus
+  interruption that activating requires.
+- **Where out-of-container access is unavoidable**, `word-convert.sh`'s activate-then-grant
+  is the only pattern here that actually persists, and it should be paired with a bouncer so
+  net focus stays with the user.
 
-**This contradicts `CLAUDE.md`.** Its macOS section states: *"Granting a folder once persists
-Word's access to it, so subsequent opens from that folder need no activation."* Observation
-says otherwise. That claim is attributed to `report_one/scripts/compare-docs.sh` and
-`report_one/scripts/redline-word-pdf.py` — neither of which exists in any of these three
-checkouts (§5.13), so the attribution cannot be checked either. It is the third piece of
-`CLAUDE.md` Word lore this audit has found unsupported, after the per-process TCC rule (§5.1)
-and the file-versus-inline `-1708` rule (§5.2).
+**On `CLAUDE.md`'s claim.** Its macOS section says *"Granting a folder once persists Word's
+access to it, so subsequent opens from that folder need no activation."* That is right about
+the grant and misleading about the activation: the grant persists only once it has been
+completed, and completing it is exactly what needs Word frontmost. The sentence reads as
+though activation stops being necessary in general, when what it means is that a *completed*
+grant does not need re-granting. Two of the three handlers here appear to have read it the
+first way.
+
+Unlike the per-process TCC rule (§5.1) and the file-versus-inline `-1708` rule (§5.2), this
+one holds. Its cited proof — `report_one/scripts/compare-docs.sh` and
+`report_one/scripts/redline-word-pdf.py` — still does not exist in any of these checkouts
+(§5.13), so it is confirmed by `word-convert.sh`'s behaviour rather than by the attribution.
 
 **Scores and why**
 
@@ -982,6 +1017,55 @@ is a single line to fix. None would be found by reading the comments, which is w
 them worth writing down.
 
 ---
+
+## 15. The replacement pair
+
+The audit's conclusions are implemented as two scripts in
+`neurotic_docx_bench/scripts/`. They are a pair on purpose: the redline script
+imports the PDF script rather than restating it, so the process lifecycle, the
+container staging, the watchdogs and the PDF export exist once.
+
+| | `word_pdf.py` | `word_redline.py` |
+|---|---|---|
+| Input | one folder of `.docx` | folder A and folder B |
+| Work | export each to PDF | compare each A against its B (Word's own Compare Documents) |
+| Output | `.pdf` beside the source, or into `--out` | `--emit pdf` (default), `docx`, or `both` |
+| Pairing | n/a | filename match, or `--cross` for every A against every B; `--swap` reverses which side is the base |
+| Owns | `WordSession`, `Stage`, `Watchdogs`, `export_pdf`, `iter_docx` | `compare_pair`, pairing, emit rules — everything else is imported |
+
+### What each finding turned into
+
+| Finding | In the code |
+|---|---|
+| §5.10 paths interpolated into AppleScript | `osa()` runs `osascript -e SCRIPT arg1 arg2` with `on run argv`; no path is ever concatenated into source |
+| §5.5 `~$*.docx` treated as documents | `is_word_temp()` / `iter_docx()` exclude them at every entry point |
+| §6.1 the sandbox prompt | Inputs **and** outputs staged inside `~/Library/Containers/com.microsoft.Word/Data/tmp`, where no grant is asked for at all; a fresh `mktemp` directory per run (§5.3) |
+| §6.1 grant handlers that press without activating | `_PRESS_ACTIVATED` activates Word, `AXPress`es the grant, then hands focus straight back — the pattern no script in the corpus had in full |
+| §14.3 watchdog clicking `Cancel` on a Grant sheet | Grant labels are tried first and accepted; `Cancel` is only reachable once no grant button matched |
+| §12.1 Microsoft Error Reporting | A **second** watchdog on `tell process "Microsoft Error Reporting"`. Every button label it meets is logged the first time, so the real control names come from a live run instead of a guess |
+| §14.1 success recorded before health | Paragraph count is checked before the compare runs; the comparison result is found by exclusion, never by whichever document is frontmost |
+| §14.2 `SIGTERM` on a wedged `osascript` | `pkill -9 -x osascript` on timeout — a blocked `osascript` ignores `SIGTERM` |
+| §14.5 `pkill -9 -f` matching helpers | `pkill -x` only, by exact process name, and escalated: `quit saving no` → `-x` → `-9 -x` |
+| §12 Document Recovery after a kill | `clean_after_kill()` wipes AutoRecovery and removes `~$` files before re-warming |
+| §10 timeouts that must cover a cold start | Word is pre-warmed once with `open -g`; per-document budgets cover work only |
+| §5, §6 one poison file costing the batch | Any failure recycles Word before the next item |
+| §9 concurrency | Neither script takes `--jobs`. Word is single-instance and user-session-bound; a second worker would drive the same instance |
+
+### What they deliberately do not do
+
+- **No parallelism.** See §9 — it needs separate macOS user sessions or VMs, not threads.
+- **No PDF preset control.** `save as … file format format PDF` inherits the last
+  "Optimize for" choice from Word's own Save As dialog; nothing in AppleScript sets it.
+  `--check-preset` (on by default) prints the reminder to pick the second option,
+  "Best for printing", once by hand.
+- **No markup-display control.** A redline PDF renders tracked changes the way Word is
+  currently set to show them. Confirm one redline by hand before committing a batch to it.
+- **No repair of a document Word refuses.** A missing output after a full run is the
+  worklist, not a bug in the driver.
+
+`--emit pdf` is the default and it discards the tracked-changes `.docx` once the PDF is
+rendered. `--emit both` keeps it. Both come from the same saved file, so the PDF always
+matches the `.docx` that `--emit both` would have written.
 
 ## Sources for the external claims
 
