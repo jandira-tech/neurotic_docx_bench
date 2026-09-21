@@ -369,6 +369,38 @@ def compare_pair(
 # ─── batch ───────────────────────────────────────────────────────────────────
 
 
+def redline_preflight(session: WordSession, *, allow_open_docs: bool) -> str:
+    """Refuse to redline while Word holds documents that are not ours.
+
+    `word_pdf.py`'s `--allow-open-docs` is a trade the operator is entitled to
+    make: it costs them Word restarts, and the export closes only the document
+    it opened. Redlining cannot offer the same deal, because its *correctness*
+    rests on the precondition, not just its tidiness.
+
+    `_COMPARE` identifies the result by exclusion — it walks `document i` and
+    takes the one whose name is not the base's, which is §14.1's fix for
+    `active document` still being the base after a compare that silently
+    produced nothing. That walk is sound exactly while every open document is
+    ours. With a human's document open it can select *theirs* and save it as
+    the redline: a wrong artifact that looks like a real one, which is the
+    failure this pair exists to prevent.
+
+    So the flag is accepted on the command line and declined here, with the
+    reason, rather than honoured silently.
+    """
+    if problem := preflight(session, allow_open_docs=allow_open_docs):
+        return problem
+    if not session.started_clean:
+        return (
+            "Word has documents open. Redlining identifies its result by "
+            "exclusion (the document that is not the base), which only holds "
+            "while every open document is ours — with yours open it can save "
+            "your document as the redline. --allow-open-docs cannot waive this. "
+            "Close them and re-run."
+        )
+    return ""
+
+
 def redline_folders(
     folder_a: Path,
     folder_b: Path,
@@ -831,7 +863,7 @@ def main(
             )
 
     session = WordSession()
-    if problem := preflight(session, allow_open_docs=allow_open_docs):
+    if problem := redline_preflight(session, allow_open_docs=allow_open_docs):
         console.print(f"[red]{problem}[/]")
         raise typer.Exit(2)
 

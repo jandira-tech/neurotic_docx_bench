@@ -203,6 +203,20 @@ _COUNT_DOCS = 'tell application "Microsoft Word" to count of documents'
 
 _CLOSE_ALL = 'tell application "Microsoft Word" to close every document saving no'
 
+# Closing *ours* rather than everything. Only correct when we know the name, and
+# only needed when Word is not ours alone (`--allow-open-docs`): there, `close
+# every document saving no` would discard a human's unsaved work to clean up
+# after our own bad file.
+_CLOSE_NAMED = """
+on run argv
+  tell application "Microsoft Word"
+    repeat with i from (count documents) to 1 by -1
+      if name of document i is (item 1 of argv) then close document i saving no
+    end repeat
+  end tell
+end run
+""".strip()
+
 # Open, save as PDF, close. `document 1` rather than `active document`: the
 # indexed form is what the audit found working from a script file, and it is
 # never ambiguous (§5.2, §14.1).
@@ -216,11 +230,11 @@ on run argv
       set theDoc to document 1
       set paraCount to count of paragraphs of theDoc
       if paraCount is 0 then
-        close every document saving no
+        close theDoc saving no
         error "document loaded empty (Word could not read it)"
       end if
       save as theDoc file name outPath file format format PDF
-      close every document saving no
+      close theDoc saving no
     end tell
   end timeout
   return "ok"
@@ -592,6 +606,16 @@ class WordSession:
         would also kill helper `osascript`s and any unrelated process whose
         arguments mention Word (§14.5).
         """
+        if not self.started_clean:
+            # `recycle` quits Word `saving no`. With a human's documents open
+            # that discards their work, which no failure of ours justifies.
+            logger.error(
+                "[word] refusing to restart Word: it held documents at startup "
+                "(--allow-open-docs), and a restart would discard them unsaved. "
+                "Close them and re-run without the flag to enable recovery."
+            )
+            return False
+
         self.restarts += 1
         logger.warning(f"[word] recycling (restart {self.restarts})")
         osa('tell application "Microsoft Word" to quit saving no', timeout=15)
@@ -713,7 +737,9 @@ def export_pdf(
 # ─── malformed documents ─────────────────────────────────────────────────────
 
 
-def recover_after_failure(session: WordSession, *folders: Path) -> bool:
+def recover_after_failure(
+    session: WordSession, *folders: Path, only: str | None = None
+) -> bool:
     """Answer the repair prompt "No", close whatever is open, and keep going.
 
     This is the cheap path, and it is the one that should run almost always: a
@@ -728,8 +754,19 @@ def recover_after_failure(session: WordSession, *folders: Path) -> bool:
     cannot be brought back to zero open documents is assumed to be in it.
     """
     osa(_DECLINE_REPAIR, *REPAIR_MARKERS, timeout=15)
-    osa(_CLOSE_ALL, timeout=20)
-    if session.open_document_count() == 0:
+    if session.started_clean:
+        # Every open document is ours, so closing all of them is exactly right.
+        osa(_CLOSE_ALL, timeout=20)
+        if session.open_document_count() == 0:
+            return True
+    elif only:
+        # Word is not ours alone. Close the one document we opened and leave the
+        # rest of the session standing: the operator asked us to coexist with
+        # their documents, not to discard them to tidy up after our own file.
+        osa(_CLOSE_NAMED, only, timeout=20)
+        return True
+    else:
+        logger.warning("[word] Word was not ours at startup and no document name was given; leaving it alone")
         return True
     logger.warning("[word] did not come back clean after a failure; recycling")
     return session.recycle(*folders)
@@ -1100,7 +1137,7 @@ def _convert_serial(
             staged_out.unlink(missing_ok=True)
             # Decline the repair prompt, close whatever is open, move on. A
             # restart costs ~30s and is not what a malformed document needs.
-            recover_after_failure(session, stage.inbox, stage.outbox)
+            recover_after_failure(session, stage.inbox, stage.outbox, only=staged_in.name)
             if streak >= poison_streak:
                 # Unless they keep failing. A Word degraded by a bad document
                 # answers normally and returns empty documents for everything
@@ -1243,7 +1280,9 @@ def preflight(session: WordSession, *, allow_open_docs: bool) -> str:
     if count > 0 and not allow_open_docs:
         return (
             f"Word has {count} document(s) open and this batch closes documents "
-            "without saving. Close them, or pass --allow-open-docs."
+            "without saving. Close them, or pass --allow-open-docs — which keeps "
+            "your documents open, but disables Word restarts, so a wedged Word "
+            "ends the run instead of being recovered."
         )
     return ""
 
