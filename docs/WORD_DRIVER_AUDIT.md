@@ -4,10 +4,13 @@ Audit of every script across `neurotic_docx_bench`, `jubarte-first` and `jubarte
 that drives Microsoft Word for Mac to redline a document or export a PDF.
 
 **Scope:** 21 files. **Read:** 21 Sep 2026, at the checked-out revisions.
-**Method:** code-path reading plus direct measurement of the scripts (open counts, lock-file
-entries, set overlaps). No macOS, Word or `osascript` was available in this environment, so
-nothing here is from a run — every claim is traceable to a file and line, to a documented
-Microsoft/Apple behaviour, or is marked as unverified.
+**Method:** code-path reading, direct measurement of the scripts (open counts, lock-file
+entries, set overlaps), and the **committed run artifacts** these pipelines left behind —
+`compare.log`, `batch_retry_log.csv`, `source_screen.tsv`, `word_unreadable.txt` and the
+output corpora, all tracked in git. No macOS, Word or `osascript` was available here, so
+nothing was re-run; where a claim rests on a past run it cites that run's artifact. Every
+other claim is traceable to a file and line, to documented Microsoft/Apple behaviour, or is
+marked unverified.
 
 ---
 
@@ -156,23 +159,36 @@ generating unrolled scripts.
 *inline heredoc works, `.scpt` file fails with `-1708`*. But the broken example they cite
 uses `active document`, and `word_compare_batch.applescript` — a **file** run as
 `osascript word_compare_batch.applescript …` — calls `save as cmpDoc` on an explicitly
-indexed `document i`, successfully, and the entire August pipeline depends on that.
+indexed `document i` rather than on `active document`, and it demonstrably works: see the
+run evidence below.
 
 Two data points, one confound:
 
 | | `active document` | `document i` |
 |---|---|---|
 | **inline** | works (`run_batch_retry.sh`, `word-convert.sh`) | — |
-| **file** | reported `-1708` (`compare-documents.scpt`) | **unverified** — see below (`word_compare_batch.applescript`) |
+| **file** | reported `-1708` (`compare-documents.scpt`) | **works** — 529 `[ok]`, 400 outputs (`word_compare_batch.applescript`) |
 
-The `document i` + file cell is **not** established by a run. No Word or `osascript` was
-available here, so what the source shows is that `word_compare_driver.sh` invokes
-`word_compare_batch.applescript` as `osascript <file>` and that its entire done-accounting
-assumes the `save as` produces output — i.e. the August pipeline is *built on* that cell
-being true, which is suggestive but is not evidence that it is. Treat it as unverified until
-someone runs it.
+The `document i` + file cell is established by committed artifacts, not by inference.
+`corpus/word_redlines_superdoc/compare.log` (tracked, 1,188 lines) records **529 `[ok]`**
+entries and five `[done] processed=N ok=N fail=0` summaries against 9 `[fail]`, and
+`corpus/word_redlines_superdoc/docx_redlines_word/` holds **400 `.docx`** outputs. Those
+files can only exist if `save as cmpDoc file name outP file format format document`
+succeeded from a script **file** run as `osascript <file>`. (529 `[ok]` against 400 files is
+expected: the log is append-only and outlives the manifest, which is exactly why the driver
+requires `[ok]` *and* an existing redline before counting a pair done.)
 
-The disambiguating experiment is four lines: same `save as` from a file, once against
+The inline + `active document` cell has its own artifact:
+`corpus/word_based/docx_redlines_randomized/batch_retry_log.csv` (tracked) records 200 pairs,
+196 `ok`, 4 `fail`, with per-pair durations — and 196 matching `.docx` outputs sit beside it.
+
+So three of the four cells are backed by run evidence, and the only reported `-1708` is the
+file + `active document` cell. That makes `active document` the variable that co-varies with
+the failure, and file-vs-inline the one that does not — which is the opposite of what the
+README rule says. It is not yet proof, because the `-1708` report is second-hand and the
+failing script is not in the tree.
+
+The disambiguating experiment is still four lines: same `save as` from a file, once against
 `active document`, once against `document 1`. If file-vs-inline is not the variable,
 `batch_word_to_pdf.scpt` is repairable and family A never needed to exist.
 
@@ -633,6 +649,11 @@ written to a log nothing reads. **C1: 1.00 → 0.85.** Fix: move the health eval
 the `failMsg` branch, or make the driver treat `[warn]` as `[fail]` **and delete the output
 it already wrote**, so the pair is not left on disk looking complete. **C5: 1.00 → 0.85** for
 the same defect — an unreadable base is a malformed item, and this records one as a success.
+
+One qualification, from the artifact: `compare.log` contains **zero `[warn]` lines** across
+its 1,188 entries. The defect is real in the code and would mis-record a pair if it fired,
+but on this corpus it never has. Latent, not observed — which is why both scores are reduced
+rather than collapsed.
 
 ### 14.2 `word_compare_driver.sh` kills a wedged `osascript` with SIGTERM
 
