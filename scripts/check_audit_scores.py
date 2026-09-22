@@ -42,6 +42,13 @@ SECTION_CRITERION = {"6": "C4", "7": "C5", "8": "C6", "9": "C7"}
 
 
 def check(path: Path) -> list[str]:
+    """Return every drift found in one audit file, as human-readable lines.
+
+    An empty list means the four classes in the module docstring all hold. A
+    file that cannot be read, or that parses to no scorecard at all, reports
+    that rather than passing silently -- "ok" on a file nobody managed to read
+    is the one outcome worse than a failure.
+    """
     problems: list[str] = []
     try:
         lines = path.read_text(encoding="utf-8").splitlines()
@@ -123,6 +130,7 @@ def check(path: Path) -> list[str]:
 
 
 def main(argv: list[str]) -> int:
+    """Check every file named on the command line. Exit 0 clean, 1 drift, 2 usage."""
     if any(a in {"-h", "--help"} for a in argv):
         print(__doc__)
         return 0
