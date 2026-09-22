@@ -1586,7 +1586,7 @@ once.
 | §14.5 `pkill -9 -f` matching helpers | `pkill -x` only, by exact process name, and escalated: `quit saving no` → `-x` → `-9 -x` |
 | §12 Document Recovery after a kill | `clean_after_kill()` removes AutoRecovery entries and `~$` files **modified at or after this session started**, then re-warms. Never the whole directory. And the timestamp only proves ownership because `preflight` established that Word held **zero** documents at startup: under `--allow-open-docs` that premise is gone, so AutoRecovery is skipped entirely rather than filtered, and the Document Recovery pane is the price. The `~$` sweep runs only over the staging directories this run made: Word opens the staged copy, never the user's original, so a lock file in their folder is someone else's (§12 step 4) |
 | §10 timeouts that must cover a cold start | Word is pre-warmed once with `open -g`; per-document budgets cover work only |
-| §5.8, §5.20 one poison file costing the batch | Any failure recycles Word before the next item |
+| §5.8, §5.20 one poison file costing the batch | A malformed document is declined, closed and skipped — one failed open, not a ~30 s restart. Word is recycled only after **three consecutive failures** (`--poison-streak`), which is what a degraded instance looks like from outside, and the streak is then replayed against the fresh Word |
 | §9 concurrency | Neither script takes `--jobs`. Word is single-instance and user-session-bound; a second worker would drive the same instance |
 
 ### Malformed documents: decline, close, skip
