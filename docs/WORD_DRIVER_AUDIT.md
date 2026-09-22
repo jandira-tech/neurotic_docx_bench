@@ -79,12 +79,12 @@ Each scored 0–1. Σ is a plain sum out of 7.00 — a ranking device, not a gra
 | `word_compare_driver.sh` | ndb | 0.85 | 0.90 | 0.85 | 1.00 | 0.95 | 0.95 | 0.75 | **6.25** | none |
 | `word_compare_batch.applescript` | ndb | 0.85 | 0.90 | 0.80 | 0.90 | 0.85 | 0.90 | 0.50 | **5.70** | none |
 | `word_screen_sources.applescript` | ndb | 0.95 | 0.90 | 0.80 | 0.85 | 1.00 | 0.75 | 0.40 | **5.65** | none |
-| `word-open-check.mjs` | jf | 0.85 | 0.55 | 0.90 | 0.70 | 0.85 | 0.60 | 0.40 | **4.85** | 19 |
 | `word_dialog_watchdog.applescript` | ndb | 0.70 | 0.90 | 0.80 | 0.15 | 0.70 | 0.70 | 0.80 | **4.75** | none |
 | `word-convert.sh` | jf | 0.35 | 0.70 | 0.80 | 0.95 | 0.90 | 0.65 | 0.30 | **4.65** | none |
+| `word-open-check.mjs` | jf | 0.75 | 0.55 | 0.85 | 0.60 | 0.70 | 0.60 | 0.40 | **4.45** | 19 |
 | `word_validate_batch.py` | ndb | 0.70 | 0.80 | 0.85 | 0.25 | 0.85 | 0.70 | 0.30 | **4.45** | none |
 | `render/word.py` | ndb | 0.75 | 0.65 | 0.90 | 0.25 | 0.80 | 0.80 | 0.25 | **4.40** | 15 |
-| `redline-word-campaign.ts` | jf | 0.80 | 0.45 | 0.45 | 0.60 | 0.90 | 0.50 | 0.50 | **4.20** | none |
+| `redline-word-campaign.ts` | jf | 0.70 | 0.45 | 0.45 | 0.60 | 0.90 | 0.50 | 0.50 | **4.10** | none |
 | `word-probe-sweep.sh` | jr | 0.60 | 0.90 | 0.40 | 0.15 | 0.85 | 0.70 | 0.20 | **3.80** | none |
 | `run_batch_retry.sh` | ndb | 0.20 | 0.40 | 0.60 | 0.80 | 0.50 | 0.60 | 0.20 | **3.30** | none |
 | `redline-sweep.sh` | jr | 0.80 | 0.30 | 0.80 | 0.10 | 0.35 | 0.70 | 0.20 | **3.25** | none |
@@ -102,10 +102,13 @@ Each scored 0–1. Σ is a plain sum out of 7.00 — a ranking device, not a gra
 
 Scores marked in §14 and §5.14–§5.15 were revised downward after re-verifying the code paths
 against the header comments that assert them. **No script in this corpus holds an unreduced
-C1.** `word-open-check.mjs` came closest and lost it to §5.15: it is still the only script
-that proves its own detector works before trusting a clean result, but its text probe reads
-`active document` rather than the document it just matched — the same defect §14.1 docks
-`word_compare_batch.applescript` for.
+C1.** The highest is `word_screen_sources.applescript` at 0.95. `word-open-check.mjs` held
+second place through several revisions and no longer does: §5.15 docked it because its text
+probe reads `active document` rather than the document it just matched — the same defect
+§14.1 docks `word_compare_batch.applescript` for — and §5.15's later paragraph docks it again
+for accepting a character count that an empty document still satisfies. It remains the only
+script that proves its own detector works before trusting a clean result; that property and a
+sound oracle are different things.
 
 The leaders are not interchangeable: `word_compare_driver.sh` is the best at surviving Word;
 `word_compare_batch.applescript` has the best *idea* of how to know what it produced
@@ -608,6 +611,19 @@ for: name the document you mean, or find it by exclusion, but never take whichev
 frontmost. The negative control is not a substitute. It proves the repair dialog *would* be
 seen; it says nothing about which document got measured once no dialog appeared.
 
+**And binding the probe to the right document would not by itself close the empty-target
+path.** `activeDocText()` (`:458–481`) tries three probes in order. `osa()` returns its child's
+output `.trim()`ed (`:263`), so a document holding only whitespace comes back as `""` and both
+text probes are skipped by the `r.out === ""` guard. The third is `count of characters of
+active document`, accepted on `Number.isFinite(n)`, and the caller gates on `text.length <= 0`
+(`:683`). A Word document with no content still carries its terminal paragraph mark, so the
+count is positive rather than zero, clears both guards, and the file is recorded OPENED-CLEAN
+on the strength of a paragraph mark. `length > 0` is the wrong test; substantive text is.
+C1 drops a further notch to 0.75 for this, separately from the `active document` binding.
+Unverified: that an empty document's `count of characters` is exactly 1 is Word object-model
+behaviour this environment cannot exercise. The structural point does not depend on the
+value — only on its being greater than zero.
+
 C1 drops to 0.85 — below `word_screen_sources.applescript` at 0.95, but still above
 `redline-word-campaign.ts`, which §5.18 docks to 0.80 for taking a risen count as proof
 without a content check.
@@ -723,6 +739,16 @@ at a time instead of naming it once. Collected:
 | `word-open-probe.sh` | `active document` off `(count of documents) > 0` (§5.16) | certifies a stranger's document as our probe, then closes it unsaved |
 | `word-convert.sh` | `active document` on the **normal** conversion path (147–160) | saves the stranger's document into our output, closes it, deletes it with the staging directory, and reports success |
 | `redline-word-campaign.ts` | a count that rose, with no content check (145–156) | an openable but empty engine output gets the campaign's strongest verdict |
+
+`redline-word-campaign.ts` carries a second oracle defect of the same family, and its C1 drops
+0.80 → 0.70 for it. `attempt()` (`:148–160`) polls sixteen times, checking `detectDialog()`
+and then whether the count rose; the first iteration where the count has risen returns `CLEAN`
+and nothing looks at the UI again. A warning sheet that becomes visible after that moment is
+dismissed by the trailing `drainDialogs()` (`:163`) with the verdict already fixed, so the
+dialog is answered and never recorded. `word-open-check.mjs` has exactly the guard this wants
+— a settle plus a post-open sheet inspection that excludes grant prompts (`:668`) — and the
+campaign does not. What it needs is a filename-scoped dialog check *after* the count rises,
+not only interleaved with it.
 
 The `word-convert.sh` row is the one this document had not reached. §5.14 covered the staged
 path collision and §11 covered the reset; the ordinary happy path has the same flaw and worse
@@ -964,7 +990,7 @@ does not exist in any of these checkouts (§5.13), so nothing here rests on the 
 | `word_compare_batch.applescript` | 0.90 | Inherits staging; header forbids pointing it at repo paths. |
 | `word_screen_sources.applescript` | 0.85 | Same, via the staged dir passed as argv. |
 | `run_batch_retry.sh` | 0.80 | Full app-container staging for both src and out. No P1 precheck, no dialog fallback if staging is bypassed. |
-| `word-open-check.mjs` | 0.70 | AXPress dismissal, and it *distinguishes* the permission sheet from a repair dialog rather than draining both — a permission prompt is recorded, never counted as invalid. |
+| `word-open-check.mjs` | 0.60 | AXPress dismissal, and it *distinguishes* the permission sheet from a repair dialog rather than draining both. **Cut from 0.70 because the second half of that sentence was wrong.** An earlier revision said a permission prompt is "recorded, never counted as invalid". It is recorded — and when `grantFileAccess()` cannot complete the panel, which §6.1 rates *Undetermined* for this very script, the prompt is re-recorded each poll until the deadline and `supervisedOpen()` returns `ERROR`. `computeExitCode()` returns **1** on any `ERROR` (`:226–236`), so the file is counted as failed. The row asserted an outcome the exit-code contract contradicts, and contradicted §6.1 four hundred lines earlier. Fix: a distinct non-invalid `BLOCKED` when access cannot be granted, which the taxonomy already has room for. |
 | `redline-word-campaign.ts` | 0.60 | AXPress dismissal (Grant/Open/Select/Allow, up to 8 passes) but stages outside on purpose, so it pays a UI round-trip per file and hard-depends on Accessibility. |
 | `word_dialog_watchdog.applescript` | 0.15 | Deliberately clicks only OK/Cancel/Close/Don't Save/No — never Grant/Select/Open/Allow. Sound as a safety policy, but on a Grant sheet it presses **Cancel**: it does not merely fail to help with P2, it denies the grant, every time, on folders already seen (§6.1). |
 | `render/word.py`, `word_validate_batch.py` | 0.25 | Docstring is honest — *"Word may prompt for automation permission (grant it) … Run interactively, not from unattended automation"* — but `word_validate_batch.py` is explicitly a large-batch tool, so the gap bites hardest there. |
@@ -980,7 +1006,7 @@ does not exist in any of these checkouts (§5.13), so nothing here rests on the 
 |---|---|---|
 | `word_compare_batch.applescript` | 0.85 | Paragraph count is *taken* before comparing but never *gates* it: the compare and `save as` run regardless, and the count is only evaluated after `[ok]` is already logged (§14.1). Otherwise strong — classifies three failure shapes, logs `[fail] <id> :: <errMsg>` verbatim and `[warn]` for zero-paragraph, returns `POISON <id>` so the driver recycles, 300 s inner timeout. |
 | `word_screen_sources.applescript` | 1.00 | The dedicated detector. Healthy = a positive integer; a thrown error, `0`, and `missing value` are all poison, each recorded verbatim. Produces `word_unreadable.txt` as a reusable exclusion list. |
-| `word-open-check.mjs` | 0.85 | Verdict taxonomy OPENED-CLEAN / REPAIR-PROMPT / ERROR / BLOCKED; dialog text retained verbatim; per-file screenshot as evidence. An unmatched modal is recorded in `row.notes` and drained, then the poll restarts (`drainDialogs(); continue;`, 622–631) rather than falling through to the opened branch — so it is never *silent*. **Cut from 1.00 for where that path ends.** A modal whose wording is absent from `REPAIR_DIALOG_RE` is noted, dismissed by a generic button press, and the poll continues to a possible OPENED-CLEAN — so a file can be certified after Word displayed a warning this script did not recognise, or after `OK` accepted a repair. `AGENTS.md`'s definition of Word-valid is a file that shows *no* warning, error or offer to fix, which makes that a false clean rather than a judgement call, however deliberately the code makes it; an earlier revision of this row treated the comment above it as sufficient justification. The taxonomy and the verbatim evidence are why the cut is one notch and not more. Fix: return ERROR or BLOCKED once an unknown modal is observed. C5 is unaffected by §5.15, but that finding applies here too: what gets measured after a clean open is `active document`, not necessarily the file just probed. |
+| `word-open-check.mjs` | 0.70 | Verdict taxonomy OPENED-CLEAN / REPAIR-PROMPT / ERROR / BLOCKED; dialog text retained verbatim; screenshots **best-effort, not per-file** — an earlier revision of this row promised one for every probed file, and the caller captures only on `OPENED-CLEAN` (`:892–896`, its own comment says "for the clean case"), while the `ERROR` return for opened-but-unreadable text (`:683–689`) takes no screenshot at all. The path where visual evidence would settle the most is the one path without it; the generated summary's own fallback lists cases with neither screenshot nor PDF. **A second cut, to 0.70, for a false-negative the taxonomy cannot express.** `findDialogs()` (`:206–216`) treats every window whose subrole is not `AXStandardWindow` as dialog-like, so `unknownModal` matches an ordinary floating palette; `drainDialogs()` (`:324–338`) presses buttons only inside windows whose subrole *is* `AXDialog`, so that palette is never dismissed. The two predicates disagree, the poll therefore restarts forever against furniture it cannot clear, and a perfectly clean document times out as `ERROR`. The source acknowledges benign non-standard windows in its later-sheet branch and not here. Fix: restrict `unknownModal` to real dialogs and sheets, or widen the drain to match what the finder counts. An unmatched modal is recorded in `row.notes` and drained, then the poll restarts (`drainDialogs(); continue;`, 622–631) rather than falling through to the opened branch — so it is never *silent*. **Cut from 1.00 for where that path ends.** A modal whose wording is absent from `REPAIR_DIALOG_RE` is noted, dismissed by a generic button press, and the poll continues to a possible OPENED-CLEAN — so a file can be certified after Word displayed a warning this script did not recognise, or after `OK` accepted a repair. `AGENTS.md`'s definition of Word-valid is a file that shows *no* warning, error or offer to fix, which makes that a false clean rather than a judgement call, however deliberately the code makes it; an earlier revision of this row treated the comment above it as sufficient justification. The taxonomy and the verbatim evidence are why the cut is one notch and not more. Fix: return ERROR or BLOCKED once an unknown modal is observed. C5 is unaffected by §5.15, but that finding applies here too: what gets measured after a clean open is `active document`, not necessarily the file just probed. |
 | `word_compare_driver.sh` | 0.95 | `--screen` pre-flight; stall recovery synthesises a `[fail]` so a wedging file cannot be retried forever; restarts Word on poison. |
 | `word-convert.sh` | 0.90 | Detects "Word found unreadable content" / "recover the contents", presses **No** — declining recovery is correct for an oracle, since recovering produces a *different* document — writes a dedicated `.error.txt` with input, output, timestamp and osascript output, exits 3, resets Word. |
 | `redline-word-campaign.ts` | 0.90 | Filename-verified UNREADABLE/ERROR; conservative default to UNREADABLE when neither open nor dialog is observed; drains before and after; JSON report. |
@@ -1060,7 +1086,7 @@ supervision, shardability, and doing non-Word work off the critical path.
 | Script | Value | Verdict |
 |---|---|---|
 | `render/word.py` `validate_one` | 60 s, budget = `max(timeout, 4 × reference_open)` | **The best timeout design in the corpus.** It is the only one that solves *slow ≠ broken*: it measures a known-good document on this machine and scales the budget from that, so a 1,000-page document does not read as a repair prompt. |
-| `word-open-check.mjs` | `osa` 30 s, doc-count probe 8 s, 45 s per-file deadline, 0.7 s poll | Well layered. 45 s for one attempt is generous; a 0.7 s poll is responsive without hammering System Events. |
+| `word-open-check.mjs` | `osa` 30 s, doc-count probe 8 s, **45 s UI-poll deadline (not per file)**, 0.7 s poll | **The layering is thinner than an earlier revision of this row claimed**, which called 45 s a per-file deadline and the design well layered — both reversed by §5.17 in this same document. The 45 s bounds the UI poll alone (`:577`); once the window is seen, `activeDocText()` can spend three sequential `osa(..., 30000)` calls (`:472`), so a file whose text Apple events wedge runs past two minutes while this table advertises 45. The 0.7 s poll is genuinely well chosen. C3 drops to 0.85. Fix: one deadline across `supervisedOpen()`, or advertise the real total. |
 | `word_screen_sources.applescript` | 60 s per open | Right order of magnitude. Screening is open-and-count only, so 60 s is generous for a healthy document and bounded for a bad one — and it sits behind a pre-warmed, driver-recycled Word, so cold start never eats the budget. |
 | `word_compare_driver.sh` | `STALL_SECS=420`, polled every 15 s | Correctly larger than the batch's 300 s inner timeout — it must be, or it would kill a legitimately slow pair. But the margin is only 120 s, which is tight for a machine under load. Widen to ~600 s, or derive it as `inner + 50%`. |
 | `word_compare_batch.applescript` | 300 s per pair | Justifiably large: `compare` on a big document is genuinely slow. See the margin note above. |
@@ -1069,7 +1095,7 @@ supervision, shardability, and doing non-Word work off the critical path.
 | `render/word.py` `convert_one` | 180 s flat | Reasonable for docx→PDF, but it is a flat constant in the same module where the validate path got the calibrated treatment. Inconsistent; the calibration belongs here too. |
 | `word_validate_batch.py` | `--timeout 25` default | **Too little, and it silently disables the calibration.** It overrides the module's 60 s *downward* and passes no `reference`, so `_budget` degenerates to a flat 25 s. Large documents come back UNJUDGEABLE — and the CLI then counts them as **invalid**, which is the opposite of what the module promises. `ValidationResult.ok` is `outcome == "valid"` (`render/word.py:126-127`), so UNJUDGEABLE is falsy; `word_validate_batch.py` writes it out as `"word_valid": res.ok` (60), reports it in `len(docs) - n_ok` "invalid" (76), and fails the whole batch on it (`return 0 if n_ok == len(docs) else 1`, 78). `render/word.py:118-119` states the intended contract in its own docstring — *"the budget ran out with NO modal observed — Word was merely slow on this machine; recorded, never treated as invalid"* — and the CLI contradicts it. So a too-short budget does not quietly shrink the denominator; it marks slow-but-valid documents invalid and turns a clean corpus red. |
 | `word-open-probe.sh` ×2 | `with timeout of 60` covering launch **and** open | **Too little when Word is cold, too much when the file is fine.** `word-probe-sweep.sh`'s own header says Word needs ~30 s to cold start, so half the budget can go to launching. Meanwhile a healthy open is 1–3 s, so a bad file burns the full 60 s. Fix: pre-warm (the sweep does), then 20 s is ample. |
-| `redline-word-campaign.ts` | 20 s per `osascript`, 16 × 1 s poll per attempt | **16 s is too little for a first open against a cold Word.** The retry masks it, at the cost of always wasting the first attempt when Word was not already running. Pre-warm instead. |
+| `redline-word-campaign.ts` | 20 s per `osascript`, 16 × 1 s poll per attempt | **Not a timeout at all**, which is the rating §5.17 measured and an earlier revision of this row still contradicted by calling 16 s merely "too little" and recommending a pre-warm. `execFileSync`'s timeout sends SIGTERM, which a blocked `osascript` ignores, so the synchronous `osa(open …)` can outlive its 20 s for as long as Word holds the Apple event — and the 16 s poll and the retry are then never reached, because nothing returns. Pre-warming would fix a cold start and does nothing for the modal wedge. Fix: `killSignal: "SIGKILL"`, or supervise the child asynchronously. |
 | `word-probe-sweep.sh` `warm_word` | 40 × 2 s = 80 s, 5 s per responsiveness probe | Correct. Generous for cold start, and it is the only script that pays that cost explicitly rather than charging it to the next file's budget. |
 | `word_compare_driver.sh` `restart_word` | quit → 3 s → `pkill` → 2 s → `open` → 30 × 1 s | The 30 s relaunch poll sits right at the documented ~30 s cold start. Raise to 60 to stop a slow relaunch counting as a failed one. |
 
@@ -1348,9 +1374,18 @@ done by hand.
 `word-open-check.mjs` for validity (with §5.15 and §5.20 fixed first — bind its text probe
 to the document it matched rather than to `active document`, and recycle Word after the
 corrupt control before trusting anything measured afterwards), `render/word.py` for
-DOCX→PDF. Between them they cover
-every job the other seventeen do, and they are the four that record *why* each decision is
-what it is.
+DOCX→PDF. They are the four that record *why* each decision is what it is.
+
+**They do not, however, cover every job the other seventeen do, and an earlier revision of
+this section claimed they did.** `word-open-check.mjs` is not a general validity tool: its
+corpus is the hard-coded eight-entry `CASES` array (`:85`), and its CLI reads only
+`--skip-word`, `--artifacts` and `--no-selftest` — no file, directory or manifest argument
+anywhere. It answers "are these eight known cases still Word-valid", which is what it was
+built for, and cannot be pointed at an arbitrary document or a folder of them. So the
+shortlist as it stands drops arbitrary-file probing and batch validation. Either generalise
+the harness to take a path or a manifest, or keep a generic probe and validator alongside the
+four; `word_validate_batch.py` and the probes are what currently fill that role, whatever
+their own defects.
 
 The merges worth making are small and specific:
 
