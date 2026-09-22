@@ -648,7 +648,7 @@ condemns a document that is fine. This document already prices that combination:
 `word-convert.sh` carries **C1 0.35**, and §5.18 is where that lands — it bundles
 §5.14's staged-path collision (which on its own took C1 to 0.50) with the active-document
 binding on the happy path, and says *"C1 drops to 0.35"* in as many words. The probe gets
-the same for the same reason, in both copies: **C1 0.45 → 0.35**, Σ 2.80 → 2.60.
+the same for the same reason, in both copies: **C1 0.45 → 0.35**.
 
 **C6 moves with it, 0.45 → 0.35.** An earlier revision of this paragraph said C6 was
 untouched because an ungranted folder "is not an edge case the probe mishandles, it is one
@@ -656,6 +656,11 @@ it never handles". That inverts §8's own taxonomy. §8's edge list names *"Acce
 granted"* outright, and §8 **credits** `word-open-check.mjs` for returning BLOCKED when
 Accessibility is revoked mid-run — so a permission state the script must cope with is
 precisely a C6 edge, and handling none of it is the gap, not an exemption from the axis.
+
+Both cuts together take the row from **Σ 2.80 to Σ 2.60**, in both copies. Stated here rather
+than beside either cut on its own, because 2.80 is the row with *both* criteria at 0.45 and
+the two 0.10 steps are what close the gap to 2.60; attaching the total to the C1 sentence
+alone left a reader unable to make the arithmetic work until the next paragraph.
 
 ### 5.17 The campaign's 20-second timeout does not bound anything
 
