@@ -88,8 +88,8 @@ Each scored 0–1. Σ is a plain sum out of 7.00 — a ranking device, not a gra
 | `word-probe-sweep.sh` | jr | 0.60 | 0.90 | 0.40 | 0.15 | 0.85 | 0.70 | 0.20 | **3.80** | none |
 | `run_batch_retry.sh` | ndb | 0.20 | 0.40 | 0.60 | 0.80 | 0.50 | 0.60 | 0.20 | **3.30** | none |
 | `redline-sweep.sh` | jr | 0.80 | 0.30 | 0.80 | 0.10 | 0.35 | 0.70 | 0.20 | **3.25** | none |
-| `word-open-probe.sh` | jf | 0.35 | 0.40 | 0.70 | 0.10 | 0.50 | 0.45 | 0.20 | **2.70** | none |
-| `word-open-probe.sh` | jr | 0.35 | 0.40 | 0.70 | 0.10 | 0.50 | 0.45 | 0.20 | **2.70** | none |
+| `word-open-probe.sh` | jf | 0.35 | 0.40 | 0.70 | 0.10 | 0.50 | 0.35 | 0.20 | **2.60** | none |
+| `word-open-probe.sh` | jr | 0.35 | 0.40 | 0.70 | 0.10 | 0.50 | 0.35 | 0.20 | **2.60** | none |
 | `batch_word_to_pdf.scpt` | ndb | 0.20 | 0.25 | 0.30 | 0.15 | 0.35 | 0.25 | 0.10 | **1.60** | none |
 | `batch_convert.scpt` | ndb | 0.15 | 0.35 | 0.05 | 0.15 | 0.30 | 0.05 | 0.05 | **1.10** | none |
 | `batch_jubarte_lossless_pdf.applescript` | ndb | 0.15 | 0.35 | 0.05 | 0.15 | 0.30 | 0.05 | 0.05 | **1.10** | none |
@@ -623,7 +623,7 @@ person's unsaved edits.
 A count taken before the open and compared after, or matching by name as
 `redline-word-campaign.ts` does for its verdicts, settles both halves. That is **one** class
 of oracle defect, a false positive, and on its own it takes C1 to 0.45 and C6 to 0.45 in
-both copies of the file. The paragraph below adds a second class and moves C1 again.
+both copies of the file. The paragraph below adds a second class and moves both again.
 
 **The missing grant handler is an oracle defect too, not only a permission cost.** The
 script has no handler at all, so on a folder Word has not been granted the `open` sits
@@ -644,12 +644,18 @@ above was "already low enough to carry it", which was circular: 0.45 was derived
 false-positive class alone, before this second class had been identified at all, so it
 cannot have accounted for it. The script now carries **two independent oracle defects in
 opposite directions** — it certifies a document that is not the one it asked for, and it
-condemns a document that is fine. This document already prices that combination: §5.14 and
-§5.19 give `word-convert.sh` **C1 0.35** for exactly two such classes. The probe gets the
-same, in both copies: **C1 0.45 → 0.35**, Σ 2.80 → 2.70. C6 is untouched at 0.45, because
-the edge case it prices — a human's documents already open — is the false-positive half
-only; an ungranted folder is not an edge case the probe mishandles, it is one it never
-handles.
+condemns a document that is fine. This document already prices that combination:
+`word-convert.sh` carries **C1 0.35**, and §5.18 is where that lands — it bundles
+§5.14's staged-path collision (which on its own took C1 to 0.50) with the active-document
+binding on the happy path, and says *"C1 drops to 0.35"* in as many words. The probe gets
+the same for the same reason, in both copies: **C1 0.45 → 0.35**, Σ 2.80 → 2.60.
+
+**C6 moves with it, 0.45 → 0.35.** An earlier revision of this paragraph said C6 was
+untouched because an ungranted folder "is not an edge case the probe mishandles, it is one
+it never handles". That inverts §8's own taxonomy. §8's edge list names *"Accessibility not
+granted"* outright, and §8 **credits** `word-open-check.mjs` for returning BLOCKED when
+Accessibility is revoked mid-run — so a permission state the script must cope with is
+precisely a C6 edge, and handling none of it is the gap, not an exemption from the axis.
 
 ### 5.17 The campaign's 20-second timeout does not bound anything
 
@@ -988,7 +994,7 @@ but is empty; a large document that is slow but fine; an interrupted run.
 | `word_validate_batch.py` | 0.70 | `--limit`; empty-dir guard; `mkdir(parents=True)`; flush per row. Globs `~$` files. |
 | `redline-word-campaign.ts` | 0.50 | `pairs.json` existence check; bouncer in a `finally`. "Closes only `campaign-*` documents" was credited here until §5.13 established the loop uses `every document` and so may close nothing at all. `process.cwd()`-relative staging; first-N "sample"; an empty worklist exits 0; no platform preflight; unscoped `drainDialogs()`; sanitised-label collisions. |
 | `run_batch_retry.sh` | 0.60 | Excludes `~$` in three places; numeric sort with a documented reason; `PAIRS < 1` guard; `mkdir -p`; resume. Requires the `file_N.docx` convention; mutates `SOURCE_DIR` in place when stamping. |
-| `word-open-probe.sh` ×2 | 0.45 | File-existence check; escapes backslash and quote; `count of documents > 0` guard. Cut from 0.55 by §5.16, in the same rescore as C1: “Word already holding a human's documents” is on this section's own edge list, and the probe closes whichever document is active `saving no`. Newline in a filename still breaks out; `$delay` interpolated unvalidated. |
+| `word-open-probe.sh` ×2 | 0.35 | File-existence check; escapes backslash and quote; `count of documents > 0` guard. Cut from 0.55 to 0.45 by §5.16's false-positive class — “Word already holding a human's documents” is on this section's own edge list, and the probe closes whichever document is active `saving no`. Cut again to 0.35 for the second class in the same section: “Accessibility not granted” is *also* on the list above, and the probe has no grant handling of any kind, so an ungranted folder becomes a timeout and then a verdict against the file. Newline in a filename still breaks out; `$delay` interpolated unvalidated. |
 | `batch_word_to_pdf.scpt` | 0.25 | `ls \| grep '\.docx$'` — no `~$` filter, breaks on a newline in a filename. No output-dir creation, no zero-file guard. |
 | family A (6 files) | 0.05 | Two of six carry 102 lock files *as work items*. Absolute single-machine paths, no directory creation, no stale-output handling, no Word-state check. |
 
