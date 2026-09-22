@@ -577,6 +577,15 @@ class WordSession:
         return rc == 0 and out.isdigit()
 
     def open_document_count(self) -> int:
+        """How many documents Word holds, or **-1 when the question failed**.
+
+        The -1 is not "none". It means the Apple event did not come back with a
+        number -- Word is wedged, launching, or not answering -- and callers
+        must treat it as unknown rather than empty. `preflight` refuses on it
+        for exactly that reason: every close-all and every AutoRecovery sweep
+        in this module rests on having *established* that Word was empty, and
+        a failed query establishes nothing.
+        """
         rc, out, _ = osa(_COUNT_DOCS, timeout=10)
         return int(out) if rc == 0 and out.isdigit() else -1
 
@@ -1397,6 +1406,12 @@ def _convert_batched(
 
 
 def report(results: list[Result], title: str = "Word export") -> int:
+    """Print the run summary and return the process exit code.
+
+    Skipped items are not failures: they are outputs that already existed and
+    were left alone, so they count against neither column. The exit code is
+    non-zero only when something was actually attempted and did not work.
+    """
     ok = [r for r in results if r.ok and not r.skipped]
     skipped = [r for r in results if r.skipped]
     failed = [r for r in results if not r.ok]
@@ -1430,6 +1445,13 @@ PRESET_REMINDER = (
 
 
 def preset_notice() -> None:
+    """Print the PDF-preset reminder.
+
+    Separate from the export because nothing here can *set* the preset:
+    `save as … file format format PDF` inherits whatever "Optimize for" was
+    last chosen in Word's own Save As dialog, so the only remedy is a human
+    picking it once.
+    """
     console.print(f"[yellow]▸[/] {PRESET_REMINDER}")
 
 
