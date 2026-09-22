@@ -79,7 +79,7 @@ Each scored 0–1. Σ is a plain sum out of 7.00 — a ranking device, not a gra
 | `word_compare_driver.sh` | ndb | 0.85 | 0.90 | 0.85 | 1.00 | 0.95 | 0.95 | 0.75 | **6.25** | none |
 | `word_compare_batch.applescript` | ndb | 0.85 | 0.90 | 0.80 | 0.90 | 0.85 | 0.90 | 0.50 | **5.70** | none |
 | `word_screen_sources.applescript` | ndb | 0.95 | 0.90 | 0.80 | 0.85 | 1.00 | 0.75 | 0.40 | **5.65** | none |
-| `word-open-check.mjs` | jf | 0.85 | 0.65 | 0.90 | 0.70 | 1.00 | 0.75 | 0.40 | **5.25** | 25 |
+| `word-open-check.mjs` | jf | 0.85 | 0.65 | 0.90 | 0.70 | 1.00 | 0.75 | 0.40 | **5.25** | 19 |
 | `word_dialog_watchdog.applescript` | ndb | 0.70 | 0.90 | 0.80 | 0.15 | 0.70 | 0.70 | 0.80 | **4.75** | none |
 | `word-convert.sh` | jf | 0.35 | 0.70 | 0.80 | 0.95 | 0.90 | 0.65 | 0.30 | **4.65** | none |
 | `word_validate_batch.py` | ndb | 0.70 | 0.80 | 0.85 | 0.25 | 0.85 | 0.70 | 0.30 | **4.45** | none |
@@ -624,6 +624,21 @@ A count taken before the open and compared after, or matching by name as
 `redline-word-campaign.ts` does for its verdicts, settles both halves. C1 drops to 0.45 and
 C6 to 0.45, in both copies of the file.
 
+**The missing grant handler is an oracle defect too, not only a permission cost.** The
+script has no handler at all, so on a folder Word has not been granted the `open` sits
+behind the Powerbox sheet until the 60-second `with timeout` expires; the `on error` branch
+returns `ERROR <n>: <msg>` and the script exits non-zero. `redline-sweep.sh --probe`
+consumes that as a failed document. It is not one. `AGENTS.md`'s own definition of Word
+valid is explicit that *"when there is a requirement to provide more permissions by Word,
+such requirement would not render such file not Word valid"* — so the probe converts a
+permission state into a verdict against the file, and a whole ungranted folder reads as a
+corpus of broken documents. That is the same class of error as §5.15's and this section's
+false *positives*, pointing the other way: a false negative, produced by the absence of a
+handler rather than by binding to the wrong document. The fix is either to answer the grant
+(with Word frontmost, per §6.1) or to return a distinct `BLOCKED` verdict that the sweep does
+not count as invalid. The permission cost is filed under C4; this half belongs to C1, and
+the 0.45 above is already low enough to carry it.
+
 ### 5.17 The campaign's 20-second timeout does not bound anything
 
 `redline-word-campaign.ts`'s `osa()` is `execFileSync("osascript", ["-e", script], {
@@ -797,7 +812,8 @@ the next access re-prompts. That is the whole once-versus-every-time split:
 |---|---|---|
 | **Never prompts** | `run_batch_retry.sh`, `word_compare_driver.sh`, `word-convert.sh` **as shipped** | Everything is staged inside a container Word already owns, so Powerbox is never invoked |
 | **Prompts once, then persists** | `word-convert.sh` **only when staging is bypassed** | Not a second behaviour of the same run: `word-convert.sh:49` stages into `$HOME/Library/Containers/com.microsoft.Word/Data/tmp/…` unless `WORD_CONVERT_STAGE_ROOT` overrides that root to a path outside the container. Only then is Powerbox invoked, and only then does its Grant handler run — `set frontmost to true` (236) before `click button "Select..."` and `key code 36`, so the panel renders and accepts and the grant carries |
-| **Prompts every file, and answers nothing** | `word-open-check.mjs`, `redline-word-campaign.ts` | They AXPress Grant/Open/Select/Allow in a loop *without* activating Word, so the panel never renders to accept the press. A UI round-trip per file that grants nothing |
+| **Prompts every file, and answers nothing** | `redline-word-campaign.ts` | It AXPresses Grant/Open/Select/Allow in a loop *without* activating Word, and its own bouncer takes Word out of frontmost every 0.5 s, so the panel never renders to accept the press. A UI round-trip per file that grants nothing |
+| **Prompts every file; whether it answers is undetermined** | `word-open-check.mjs` | Its handler does not activate either, but it has no bouncer and its warm-up *does* activate Word, so Word may still be frontmost when `grantFileAccess()` presses. If it is, the panel renders, the press lands and the grant persists. Reading the handler cannot tell which, and this is not grouped with the campaign for that reason |
 | **Prompts every time** | family A, `batch_word_to_pdf.scpt`, `render/word.py`, `word_validate_batch.py`, both `word-open-probe.sh`, `word-probe-sweep.sh`, `redline-sweep.sh` | No handler. The dialog stands until the AppleEvent times out; nothing is ever granted |
 | **Prompts every time, and denies** | `word_dialog_watchdog.applescript` | Its button list is `{OK, Ok, Cancel, Close, Don't Save, No}` — no Grant, Select, Open or Allow. On a Grant sheet it presses **Cancel**, so it actively refuses the grant on every appearance |
 
@@ -980,7 +996,7 @@ supervision, shardability, and doing non-Word work off the critical path.
 
 | File | C7 | Rationale |
 |---|---|---|
-| `word_dialog_watchdog.applescript` | 0.80 | It *is* the concurrent component: a second process watching Word's UI while the batch holds the Apple-event channel. The only true concurrency in the corpus. |
+| `word_dialog_watchdog.applescript` | 0.80 | It *is* the concurrent component: a second process watching Word's UI while the batch holds the Apple-event channel, and the only one whose concurrent work does something the batch needs. Not the only concurrent process in the corpus, though — `redline-word-campaign.ts` spawns a detached `osascript` focus bouncer (`:193`, `detached: true`) that polls every 0.5 s alongside the probe. That one exists to protect the user's focus rather than to advance the run, which is why it scores lower here, not because it is not concurrent. |
 | `word_compare_driver.sh` | 0.75 | Runs the watchdog concurrently, and supervises the batch from the shell while it runs (the stall watcher polls the log every 15 s). `--start` / `--limit` allow manual sharding. Word work correctly serial. |
 | `word_compare_batch.applescript` | 0.50 | Serial by necessity, but argv `start`/`count` make it shardable, which is what the driver exploits. |
 | `redline-word-campaign.ts` | 0.50 | Two-tier screening is the right instinct — `docx-validate` on all pairs, Word on a subset. The bouncer runs concurrently. But the jubarte compare itself is pure TS with no Word involvement and runs sequentially. |
