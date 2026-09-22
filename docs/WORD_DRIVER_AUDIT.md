@@ -88,8 +88,8 @@ Each scored 0–1. Σ is a plain sum out of 7.00 — a ranking device, not a gra
 | `word-probe-sweep.sh` | jr | 0.60 | 0.90 | 0.40 | 0.15 | 0.85 | 0.70 | 0.20 | **3.80** | none |
 | `run_batch_retry.sh` | ndb | 0.20 | 0.40 | 0.60 | 0.80 | 0.50 | 0.60 | 0.20 | **3.30** | none |
 | `redline-sweep.sh` | jr | 0.80 | 0.30 | 0.80 | 0.10 | 0.35 | 0.70 | 0.20 | **3.25** | none |
-| `word-open-probe.sh` | jf | 0.45 | 0.40 | 0.70 | 0.10 | 0.50 | 0.45 | 0.20 | **2.80** | none |
-| `word-open-probe.sh` | jr | 0.45 | 0.40 | 0.70 | 0.10 | 0.50 | 0.45 | 0.20 | **2.80** | none |
+| `word-open-probe.sh` | jf | 0.35 | 0.40 | 0.70 | 0.10 | 0.50 | 0.45 | 0.20 | **2.70** | none |
+| `word-open-probe.sh` | jr | 0.35 | 0.40 | 0.70 | 0.10 | 0.50 | 0.45 | 0.20 | **2.70** | none |
 | `batch_word_to_pdf.scpt` | ndb | 0.20 | 0.25 | 0.30 | 0.15 | 0.35 | 0.25 | 0.10 | **1.60** | none |
 | `batch_convert.scpt` | ndb | 0.15 | 0.35 | 0.05 | 0.15 | 0.30 | 0.05 | 0.05 | **1.10** | none |
 | `batch_jubarte_lossless_pdf.applescript` | ndb | 0.15 | 0.35 | 0.05 | 0.15 | 0.30 | 0.05 | 0.05 | **1.10** | none |
@@ -602,7 +602,7 @@ the reason §13 keeps it.
 
 ---
 
-### 5.16 `word-open-probe.sh` certifies whichever document Word happens to have
+### 5.16 `word-open-probe.sh` certifies the wrong document, and condemns the right one
 
 The probe's whole verdict rests on a global count:
 
@@ -621,8 +621,9 @@ it `saving no`, so the same bug that fabricates a pass also destroys the evidenc
 person's unsaved edits.
 
 A count taken before the open and compared after, or matching by name as
-`redline-word-campaign.ts` does for its verdicts, settles both halves. C1 drops to 0.45 and
-C6 to 0.45, in both copies of the file.
+`redline-word-campaign.ts` does for its verdicts, settles both halves. That is **one** class
+of oracle defect, a false positive, and on its own it takes C1 to 0.45 and C6 to 0.45 in
+both copies of the file. The paragraph below adds a second class and moves C1 again.
 
 **The missing grant handler is an oracle defect too, not only a permission cost.** The
 script has no handler at all, so on a folder Word has not been granted the `open` sits
@@ -636,8 +637,19 @@ corpus of broken documents. That is the same class of error as §5.15's and this
 false *positives*, pointing the other way: a false negative, produced by the absence of a
 handler rather than by binding to the wrong document. The fix is either to answer the grant
 (with Word frontmost, per §6.1) or to return a distinct `BLOCKED` verdict that the sweep does
-not count as invalid. The permission cost is filed under C4; this half belongs to C1, and
-the 0.45 above is already low enough to carry it.
+not count as invalid. The permission cost stays filed under C4; this half belongs to C1.
+
+**So C1 is recomputed, not stretched.** An earlier revision of this section said the 0.45
+above was "already low enough to carry it", which was circular: 0.45 was derived from the
+false-positive class alone, before this second class had been identified at all, so it
+cannot have accounted for it. The script now carries **two independent oracle defects in
+opposite directions** — it certifies a document that is not the one it asked for, and it
+condemns a document that is fine. This document already prices that combination: §5.14 and
+§5.19 give `word-convert.sh` **C1 0.35** for exactly two such classes. The probe gets the
+same, in both copies: **C1 0.45 → 0.35**, Σ 2.80 → 2.70. C6 is untouched at 0.45, because
+the edge case it prices — a human's documents already open — is the false-positive half
+only; an ungranted folder is not an edge case the probe mishandles, it is one it never
+handles.
 
 ### 5.17 The campaign's 20-second timeout does not bound anything
 
