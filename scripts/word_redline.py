@@ -701,6 +701,12 @@ def _redline_one(
 
 
 def _deliver(staged: Path, final: Path) -> None:
+    """Copy one finished artifact out of the container into the user's folder.
+
+    `copy2` rather than `move`, and copy rather than write-in-place: the staged
+    file stays where Word left it until the run ends, so a failure partway
+    through delivery loses nothing that cannot be re-delivered from staging.
+    """
     final.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(staged, final)
 
