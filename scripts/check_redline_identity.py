@@ -78,6 +78,7 @@ def main(
         print(
             f"BAD  {base_stem[:12]} vs {revision_stem[:12]} "
             f"before/base={verdict.sim_base:.2f} after/revision={verdict.sim_revision:.2f}"
+            f" ({verdict.reason})"
         )
         if delete:
             path.unlink()
