@@ -1108,9 +1108,36 @@ def test_run_batch_passes_only_two_argv_paths(
     run = wp.run_batch("SCRIPT", [("0", "/in/a", "/out/a")], tmp_path, timeout=30)
 
     assert len(seen["args"]) == 2
-    assert seen["args"][0] == str(tmp_path / "manifest.tsv")
+    assert seen["args"][0] == str(tmp_path / "batch.tsv")
     assert run.log.results == {"0": (True, "")}
     assert run.wedged is False
+
+
+def test_each_batch_pass_keeps_its_own_manifest_and_log(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A redline run's PDF pass used to overwrite the compare pass's log.
+
+    After a wedge that log is the only record of how far the compare got, so
+    every pass writes `<label>.tsv` / `<label>.log` beside the others.
+    """
+    written: list[str] = []
+
+    def fake(script, *args, timeout=60.0):
+        written.extend(Path(a).name for a in args)
+        Path(args[1]).write_text("[ok]\t0\n[done]\t1\t0\n")
+        return 0, "", ""
+
+    monkeypatch.setattr(wp, "osa", fake)
+    for label in (" compare 1", " compare 2", " pdf 1"):
+        wp.run_batch("SCRIPT", [("0", "/in/a", "/out/a")], tmp_path, timeout=30, label=label)
+
+    assert written == [
+        "batch-compare-1.tsv", "batch-compare-1.log",
+        "batch-compare-2.tsv", "batch-compare-2.log",
+        "batch-pdf-1.tsv", "batch-pdf-1.log",
+    ]  # fmt: skip
+    assert all((tmp_path / name).exists() for name in written)
 
 
 def test_run_batch_reports_a_run_that_never_reached_done(
@@ -1790,3 +1817,16 @@ def test_a_failed_delivery_is_that_document_s_error_not_the_run_s(
     results = wp.convert_folder(src, tmp_path / "out", session=session, one_osascript=False)
     assert [(r.source.name, r.ok) for r in results] == [("a.docx", False), ("b.docx", True)]
     assert "disk full" in results[0].error
+
+
+@pytest.mark.parametrize("bad", [0.0, -1.0, float("nan"), float("inf")])
+def test_the_api_rejects_a_timeout_the_cli_would(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, bad: float
+) -> None:
+    """Zero or negative made every osascript 'time out' at once, and each of
+    those failures ran cleanup and, three in a row, a Word recycle."""
+    src = tmp_path / "src"
+    _touch(src / "a.docx")
+    monkeypatch.setattr(wp, "CONTAINER_TMP", tmp_path / "container")
+    with pytest.raises(ValueError, match="timeout"):
+        wp.convert_folder(src, tmp_path / "out", timeout=bad, session=_verified_session())
