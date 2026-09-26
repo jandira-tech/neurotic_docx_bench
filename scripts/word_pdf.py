@@ -69,6 +69,7 @@ from __future__ import annotations
 
 import math
 import os
+import re
 from contextvars import ContextVar
 import shutil
 import signal
@@ -239,11 +240,16 @@ def positive_seconds(value: float, param: str) -> float:
     immediately, so every call "times out" and the run fails uniformly with a
     plausible-looking reason.
     """
+    try:
+        return require_positive_seconds(value, param)
+    except ValueError as exc:
+        raise typer.BadParameter(str(exc), param_hint=param) from exc
+
+
+def require_positive_seconds(value: float, name: str) -> float:
+    """`positive_seconds` for API callers: the same rule, as a ValueError."""
     if not math.isfinite(value) or value <= 0:
-        raise typer.BadParameter(
-            f"{param} must be a positive number of seconds, not {value!r}",
-            param_hint=param,
-        )
+        raise ValueError(f"{name} must be a positive number of seconds, not {value!r}")
     return value
 
 
@@ -1034,8 +1040,11 @@ def run_batch(
     `ARG_MAX` — a thousand pairs of absolute paths on argv is tens of thousands
     of characters, and this passes two.
     """
-    manifest = write_manifest(rows, work_dir / "manifest.tsv")
-    log_path = work_dir / "batch.log"
+    # One name per pass and stage ("batch-compare-2"), so a later pass does not
+    # overwrite the log that records how far an earlier one got.
+    name = "-".join(["batch", *re.findall(r"[A-Za-z0-9]+", label)])
+    manifest = write_manifest(rows, work_dir / f"{name}.tsv")
+    log_path = work_dir / f"{name}.log"
     log_path.write_text("", encoding="utf-8")
     with _Progress(log_path, len(rows), label):
         rc, _, err = osa(script, str(manifest), str(log_path), timeout=timeout)
@@ -1274,6 +1283,7 @@ def convert_folder(
     is the normal shape, and `one_osascript=False` is the opt-out for when you
     genuinely need a process boundary around every document.
     """
+    require_positive_seconds(timeout, "timeout")
     docs = iter_docx(src)
     if not docs:
         logger.warning(f"no .docx in {src} (lock files excluded)")

@@ -1437,3 +1437,68 @@ def test_an_undeliverable_redline_fails_that_pair_and_the_run_goes_on(
     )
     assert [(r.base.name, r.ok) for r in results] == [("deal.docx", False), ("nda.docx", True)]
     assert results[0].error == "disk full"
+
+
+@pytest.mark.parametrize("field", ["timeout", "pdf_timeout"])
+def test_redline_api_rejects_a_timeout_the_cli_would(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, field: str
+) -> None:
+    monkeypatch.setattr(wp, "CONTAINER_TMP", tmp_path / "container")
+    a = _folder(tmp_path / "a", "deal.docx")
+    b = _folder(tmp_path / "b", "deal.docx")
+    with pytest.raises(ValueError, match=field):
+        wr.redline_folders(a, b, tmp_path / "out", session=_verified_session(), **{field: -5.0})
+
+
+@pytest.mark.parametrize("inside", ["a", "b", "a/sub"])
+def test_redline_docx_may_not_land_where_the_next_run_reads_its_inputs(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, inside: str
+) -> None:
+    """`deal__vs__deal.docx` in folder A is a new base document next run."""
+    monkeypatch.setattr(wp, "CONTAINER_TMP", tmp_path / "container")
+    a = _folder(tmp_path / "a", "deal.docx")
+    b = _folder(tmp_path / "b", "deal.docx")
+    reached: list[str] = []
+    monkeypatch.setattr(wr, "compare_pair", lambda *a, **k: reached.append("compare"))
+    monkeypatch.setattr(wp, "osa", lambda *a, **k: reached.append("osa") or (0, "", ""))
+
+    results = wr.redline_folders(
+        a, b, tmp_path / "out", docx_dir=tmp_path / inside, emit="both",
+        session=_verified_session(),
+    )  # fmt: skip
+    assert reached == []
+    assert results and all("input folder" in (r.error or "") for r in results)
+
+
+def test_pdf_only_output_inside_an_input_folder_is_allowed(tmp_path: Path, stub_word) -> None:
+    """PDFs are never read back as inputs, so they may sit beside the sources."""
+    session, _, _ = stub_word
+    a = _folder(tmp_path / "a", "deal.docx")
+    b = _folder(tmp_path / "b", "deal.docx")
+    results = wr.redline_folders(a, b, a / "pdf", session=session, one_osascript=False)
+    assert results[0].ok, results[0].error
+
+
+def test_cli_refuses_docx_inside_an_input_folder_before_touching_word(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The default preflight closes every document, so the refusal must come first."""
+    from typer.testing import CliRunner
+
+    a = _folder(tmp_path / "a", "deal.docx")
+    b = _folder(tmp_path / "b", "deal.docx")
+    reached: list[str] = []
+    monkeypatch.setattr(
+        wr,
+        "preflight",
+        lambda s, *, allow_open_docs, close_documents=True: reached.append("preflight") or "",
+    )
+
+    result = CliRunner().invoke(
+        wr.app,
+        ["--a", str(a), "--b", str(b), "--out", str(a / "redlines"), "--emit", "both",
+         "--no-check-preset"],
+    )  # fmt: skip
+    assert result.exit_code == 2
+    assert reached == []
+    assert "input folder" in result.output

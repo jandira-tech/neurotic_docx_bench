@@ -67,7 +67,10 @@ def no_live_word(monkeypatch: pytest.MonkeyPatch):
         argv = [str(part) for part in cmd] if isinstance(cmd, (list, tuple)) else [str(cmd)]
         if argv and Path(argv[0]).name in _LIVE_WORD_PROGRAMS:
             reached.append(argv[:2])
-            return subprocess.CompletedProcess(argv, 1, "", "live Word is fenced off in tests")
+            # Fail at the call, not at teardown: a leak inside a polling loop
+            # (`warm`, `recycle`) would otherwise spin until its deadline. The
+            # exception is BaseException, so no `except Exception` swallows it.
+            pytest.fail(f"test reached the live Word through {argv[:2]}")
         return real_run(cmd, *args, **kwargs)
 
     monkeypatch.setattr(subprocess, "run", fenced_run)
