@@ -1321,6 +1321,7 @@ def convert_folder(
     assert stage is not None
     try:
         run = _convert_batched if one_osascript else _convert_serial
+        logger.info(f"[word] export: one_osascript={one_osascript} documents={len(docs)}")
         return run(
             docs,
             out_dir,
@@ -1628,6 +1629,10 @@ def preflight(
     count = session.open_document_count()
     session.started_clean = count == 0
     session.preflighted = True
+    logger.info(
+        f"[word] preflight: open_documents={count} started_clean={session.started_clean} "
+        f"launched_by_us={session.launched_by_us} close_documents={close_documents}"
+    )
     if count < 0:
         # -1 means the query itself failed, not that Word is empty. Both guards
         # below test `count > 0`, so an unknown count used to slip past them and
@@ -1712,7 +1717,12 @@ def main(
         Path | None, typer.Option("--log", help="Also write a log file.")
     ] = None,
 ) -> None:
-    """Export every .docx in a folder to PDF using Microsoft Word."""
+    """Export every .docx in a folder to PDF using Microsoft Word.
+
+    Do not work in Word during a run: by default every open document is
+    closed without saving (Word itself keeps running). --do-not-close keeps
+    documents that were open before the run.
+    """
     timeout = positive_seconds(timeout, "--timeout")
     logger.remove()
     logger.add(lambda m: console.print(m, end=""), level="ERROR" if quiet else "INFO")

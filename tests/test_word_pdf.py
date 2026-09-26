@@ -1844,3 +1844,21 @@ def test_the_api_rejects_a_timeout_the_cli_would(
     monkeypatch.setattr(wp, "CONTAINER_TMP", tmp_path / "container")
     with pytest.raises(ValueError, match="timeout"):
         wp.convert_folder(src, tmp_path / "out", timeout=bad, session=_verified_session())
+
+
+def test_preflight_records_what_it_established(monkeypatch: pytest.MonkeyPatch) -> None:
+    """An incident starts from the session state, so the run log carries it."""
+    session = wp.WordSession()
+    monkeypatch.setattr(wp.WordSession, "available", staticmethod(lambda: True))
+    monkeypatch.setattr(session, "warm", lambda: True)
+    monkeypatch.setattr(session, "open_document_count", lambda: 2)
+    lines: list[str] = []
+    sink = wp.logger.add(lines.append, level="INFO", format="{message}")
+    try:
+        wp.preflight(session, allow_open_docs=False, one_osascript=True)
+    finally:
+        wp.logger.remove(sink)
+    record = "".join(lines)
+    for fact in ("open_documents=2", "started_clean=False", "launched_by_us=False",
+                 "close_documents=True"):  # fmt: skip
+        assert fact in record, record
