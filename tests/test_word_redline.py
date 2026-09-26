@@ -9,11 +9,17 @@ from __future__ import annotations
 
 import importlib.util
 import io
+import shutil
 import sys
 import zipfile
 from pathlib import Path
 
 import pytest
+
+# Every test here stubs Word. The fence turns a missed stub into a failure
+# instead of a close-all sent to the Word that is actually running. The
+# placeholder fixture is defined below, after `wr` is loaded.
+pytestmark = pytest.mark.usefixtures("no_live_word", "placeholders_pass_the_identity_check")
 
 _SCRIPTS = Path(__file__).resolve().parents[1] / "scripts"
 
@@ -31,6 +37,19 @@ def _load(name: str):
 
 wp = _load("word_pdf")
 wr = _load("word_redline")
+# Captured before the autouse fixture below stubs it for placeholder tests.
+_REAL_REJECT_WRONG_PAIR = wr._reject_wrong_pair
+
+
+@pytest.fixture
+def placeholders_pass_the_identity_check(monkeypatch: pytest.MonkeyPatch) -> None:
+    """These tests plant `PK` bytes where Word would have saved a package.
+
+    `matches_pair` fails anything that is not a docx package, which is right for
+    a real run and wrong for a placeholder. The check has its own tests
+    (`test_redline_identity.py`); the wiring test below restores the real one.
+    """
+    monkeypatch.setattr(wr, "_reject_wrong_pair", lambda staged, base, revision: "")
 
 
 def _verified_session(**kw) -> wp.WordSession:
@@ -497,6 +516,9 @@ def test_redline_folders_recycles_word_after_a_failed_pair(
     session = _verified_session()
     monkeypatch.setattr(session, "warm", lambda: True)
     monkeypatch.setattr(session, "quit_if_ours", lambda: None)
+    # Word answers the cleanup but keeps a document open: the escalation case.
+    monkeypatch.setattr(wp, "osa", lambda *a, **k: (0, "", ""))
+    monkeypatch.setattr(session, "open_document_count", lambda: 1)
     recycled: list[tuple] = []
     monkeypatch.setattr(session, "recycle", lambda *f: recycled.append(f) or True)
 
@@ -596,7 +618,11 @@ def test_cli_warns_that_pdf_only_discards_the_redline_docx(
 
     a = _folder(tmp_path / "a", "deal.docx")
     b = _folder(tmp_path / "b", "deal.docx")
-    monkeypatch.setattr(wr, "preflight", lambda s, *, allow_open_docs: "Word is busy")
+    monkeypatch.setattr(
+        wr,
+        "preflight",
+        lambda s, *, allow_open_docs, close_documents=True: "Word is busy",
+    )
 
     result = CliRunner().invoke(wr.app, ["--a", str(a), "--b", str(b)])
     assert result.exit_code == 2
@@ -612,7 +638,11 @@ def test_cli_docx_only_skips_the_pdf_reminders(
 
     a = _folder(tmp_path / "a", "deal.docx")
     b = _folder(tmp_path / "b", "deal.docx")
-    monkeypatch.setattr(wr, "preflight", lambda s, *, allow_open_docs: "Word is busy")
+    monkeypatch.setattr(
+        wr,
+        "preflight",
+        lambda s, *, allow_open_docs, close_documents=True: "Word is busy",
+    )
 
     result = CliRunner().invoke(wr.app, ["--a", str(a), "--b", str(b), "--emit", "docx"])
     assert "Best for printing" not in result.output
@@ -627,7 +657,9 @@ def test_cli_runs_the_batch_and_returns_the_report_code(
     b = _folder(tmp_path / "b", "deal.docx")
     seen: dict[str, object] = {}
 
-    monkeypatch.setattr(wr, "preflight", lambda s, *, allow_open_docs: "")
+    monkeypatch.setattr(
+        wr, "preflight", lambda s, *, allow_open_docs, close_documents=True: ""
+    )
     monkeypatch.setattr(wr.Watchdogs, "start", lambda self: None)
     monkeypatch.setattr(wr.Watchdogs, "stop", lambda self: None)
     monkeypatch.setattr(wr.WordSession, "quit_if_ours", lambda self: None)
@@ -761,11 +793,24 @@ def test_compare_batch_script_keeps_every_per_pair_rule() -> None:
     src = wr._COMPARE_BATCH
     assert "active document" not in _applescript_code(src)
     assert "repeat with i from 1 to docCount" in src
+    assert "cmpCount is not 1" in src
+    assert "seenBeforeCompare does not contain nm" in src
+    assert "refusing to guess" in src
+    assert "close every document" not in wr._COMPARE_BATCH_KEEP_OPEN
     assert "detect format changes true" in src
     assert src.index("count of paragraphs") < src.index("compare baseDoc")
     # One bad pair closes and continues rather than stopping the run.
     assert "on error errMsg" in src
     assert src.count("close every document saving no") >= 4
+    # A timeout, or a streak of empty bases, poisons every later compare (§5.20).
+    # The timed-out pair is a final [fail] and the batch stops. Empty-load streaks
+    # are [retry], which the log parser ignores, so they are retried after a recycle.
+    assert "set emptyStreak to 0" in src
+    assert '"[retry]" & tab & itemId' in src
+    assert 'errMsg contains "loaded empty"' in src
+    assert 'if errMsg contains "timed out" then' in src
+    assert "exit repeat" in src
+    assert "emptyStreak ≥ 3" in src
     # The revision count rides out on the [ok] line.
     assert '"[ok]" & tab & itemId & tab & revisionCount' in src
     assert "set displayAlerts to false" in src
@@ -992,7 +1037,9 @@ def test_cli_wires_the_two_script_flag_through(
     b = _folder(tmp_path / "b", "deal.docx")
     seen: dict[str, object] = {}
 
-    monkeypatch.setattr(wr, "preflight", lambda s, *, allow_open_docs: "")
+    monkeypatch.setattr(
+        wr, "preflight", lambda s, *, allow_open_docs, close_documents=True: ""
+    )
     monkeypatch.setattr(wr.Watchdogs, "start", lambda self: None)
     monkeypatch.setattr(wr.Watchdogs, "stop", lambda self: None)
     monkeypatch.setattr(wr.WordSession, "quit_if_ours", lambda self: None)
@@ -1055,21 +1102,21 @@ def test_redline_refuses_to_run_with_documents_already_open(
 ) -> None:
     """Redlining requires Word to hold only our documents, and the flag cannot waive it.
 
-    The compare identifies its result by exclusion: it walks `document i` and
-    takes the one whose name is not the base's (§14.1's fix). That is sound
-    exactly when every open document is ours. With a human's document open, the
-    walk can select *their* document and save it as the redline — a wrong
-    output, not merely a lost one. `--allow-open-docs` relaxes a precondition
-    this script's correctness depends on, so it is refused here rather than
-    honoured.
+    The compare names the base and the result by the document names that are
+    new after `open` and after `compare`, and errors unless exactly one is. A
+    human's document with a base's name hides that base, so each such pair
+    fails, and none of this has been exercised against a Word holding foreign
+    documents. `--allow-open-docs` is therefore refused here, not honoured.
     """
     session = _verified_session()
     monkeypatch.setattr(wp.WordSession, "available", staticmethod(lambda: True))
     monkeypatch.setattr(session, "warm", lambda: True)
     monkeypatch.setattr(session, "open_document_count", lambda: 2)
 
-    reason = wr.redline_preflight(session, allow_open_docs=True)
-    assert reason, "must refuse even with the override"
+    # Default closes every document and leaves Word running, so this is not a refusal.
+    assert wr.redline_preflight(session, allow_open_docs=True) == ""
+    reason = wr.redline_preflight(session, allow_open_docs=True, close_documents=False)
+    assert reason, "--do-not-close must still refuse while a foreign document is open"
     assert "compare" in reason.lower() or "identif" in reason.lower()
     assert session.started_clean is False
 
@@ -1160,7 +1207,10 @@ def test_redline_folders_refuses_when_word_holds_foreign_documents(
     session.preflighted = True
     session.started_clean = False  # Word holds someone else's document
 
-    results = wr.redline_folders(a, b, tmp_path / "out", session=session)
+    # Default closes those documents. --do-not-close is what still refuses.
+    results = wr.redline_folders(
+        a, b, tmp_path / "out", session=session, close_documents=False
+    )
     assert ran == [], f"reached Word with foreign documents open: {ran}"
     assert results and all(r.error for r in results)
 
@@ -1195,7 +1245,7 @@ def test_redline_folders_preflights_the_session_it_creates(
 
     asked: list[bool] = []
 
-    def fake_preflight(session, *, allow_open_docs):
+    def fake_preflight(session, *, allow_open_docs, close_documents=True):
         asked.append(allow_open_docs)
         return "Word has documents open."
 
@@ -1207,3 +1257,275 @@ def test_redline_folders_preflights_the_session_it_creates(
     assert asked == [False], "must preflight, and must not waive --allow-open-docs"
     assert ran == []
     assert results and all("documents open" in (r.error or "") for r in results)
+
+
+# ─── identity gate ───────────────────────────────────────────────────────────
+
+_W = "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+
+
+def _package(path: Path, *, text: str = "", deleted: str = "", inserted: str = "") -> Path:
+    body = ""
+    if text:
+        body += f"<w:p><w:r><w:t>{text}</w:t></w:r></w:p>"
+    if deleted:
+        body += f"<w:p><w:del><w:r><w:delText>{deleted}</w:delText></w:r></w:del></w:p>"
+    if inserted:
+        body += f"<w:p><w:ins><w:r><w:t>{inserted}</w:t></w:r></w:ins></w:p>"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with zipfile.ZipFile(path, "w") as package:
+        package.writestr(
+            "word/document.xml",
+            f'<w:document xmlns:w="{_W}"><w:body>{body}</w:body></w:document>',
+        )
+    return path
+
+
+_BASE_TEXT = "alpha sentence that only the base document carries"
+_REV_TEXT = "beta sentence that only the revision document carries"
+_FOREIGN = "gamma sentence from a document nobody asked to compare"
+
+
+@pytest.mark.parametrize("one_osascript", [False, True])
+def test_a_redline_saved_from_the_wrong_document_is_not_delivered(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, one_osascript: bool
+) -> None:
+    """The leftover-document failure: Word saves some other file under this name.
+
+    Both driver paths run the real identity check on what Word saved, drop a
+    foreign document, and still deliver the pair that is right.
+    """
+    monkeypatch.setattr(wr, "_reject_wrong_pair", _REAL_REJECT_WRONG_PAIR)
+    monkeypatch.setattr(wp, "CONTAINER_TMP", tmp_path / "container")
+    a, b = tmp_path / "a", tmp_path / "b"
+    for folder, text in ((a, _BASE_TEXT), (b, _REV_TEXT)):
+        _package(folder / "right.docx", text=text)
+        _package(folder / "wrong.docx", text=text)
+
+    def save_redline(out: Path) -> None:
+        if "wrong" in out.name:
+            _package(out, text=_FOREIGN)
+        else:
+            _package(out, deleted=_BASE_TEXT, inserted=_REV_TEXT)
+
+    def fake_compare(base, rev, out, *, timeout=300.0):
+        save_redline(out)
+        return True, 2, ""
+
+    def fake_osa(script, *args, timeout=60.0):
+        if "manifestPath" not in script:  # serial failure cleanup, not a batch
+            return 0, "", ""
+        manifest, log = Path(args[0]), Path(args[1])
+        rows = [ln.split("\t") for ln in manifest.read_text().splitlines() if ln]
+        lines = []
+        for row in rows:
+            save_redline(Path(row[-1]))
+            lines.append(f"[ok]\t{row[0]}\t2")
+        lines.append(f"[done]\t{len(rows)}\t0")
+        log.write_text("\n".join(lines) + "\n")
+        return 0, "", ""
+
+    monkeypatch.setattr(wr, "compare_pair", fake_compare)
+    monkeypatch.setattr(wp, "osa", fake_osa)
+    session = _verified_session()
+    monkeypatch.setattr(session, "warm", lambda: True)
+    monkeypatch.setattr(session, "recycle", lambda *f: True)
+    monkeypatch.setattr(session, "open_document_count", lambda: 0)
+    monkeypatch.setattr(session, "quit_if_ours", lambda: None)
+    out = tmp_path / "out"
+
+    results = wr.redline_folders(
+        a, b, out, emit="docx", session=session, one_osascript=one_osascript
+    )
+
+    verdicts = {r.base.name: r for r in results}
+    assert verdicts["right.docx"].ok, verdicts["right.docx"].error
+    assert not verdicts["wrong.docx"].ok
+    assert "missing" in verdicts["wrong.docx"].error
+    assert (out / "right__vs__right.docx").exists()
+    assert not (out / "wrong__vs__wrong.docx").exists()
+
+
+# ─── the AppleScript itself ──────────────────────────────────────────────────
+
+_WORD_APP = Path("/Applications/Microsoft Word.app")
+_ALL_SCRIPTS = [
+    (wp, "_EXPORT_PDF"),
+    (wp, "_EXPORT_PDF_KEEP_OPEN"),
+    (wp, "_EXPORT_BATCH"),
+    (wp, "_EXPORT_BATCH_KEEP_OPEN"),
+    (wr, "_COMPARE"),
+    (wr, "_COMPARE_KEEP_OPEN"),
+    (wr, "_COMPARE_BATCH"),
+    (wr, "_COMPARE_BATCH_KEEP_OPEN"),
+]
+
+
+@pytest.mark.skipif(
+    not (shutil.which("osacompile") and _WORD_APP.exists()),
+    reason="needs osacompile and Word's scripting dictionary",
+)
+@pytest.mark.parametrize(("module", "name"), _ALL_SCRIPTS, ids=[n for _, n in _ALL_SCRIPTS])
+def test_every_driver_script_compiles(module, name: str, tmp_path: Path) -> None:
+    """String surgery on AppleScript is only safe if the result still parses.
+
+    `_COMPARE_BATCH_KEEP_OPEN` once turned `tell application "Microsoft Word"
+    to close every document saving no` into `... to -- do-not-close`, which
+    osacompile rejects, so every `--do-not-close` batch failed before its first
+    pair. Compiling runs nothing and does not touch the running Word.
+    """
+    import subprocess
+
+    out = tmp_path / f"{name}.scpt"
+    proc = subprocess.run(
+        ["osacompile", "-o", str(out), "-e", getattr(module, name)],
+        capture_output=True,
+        text=True,
+        timeout=60,
+        check=False,
+    )
+    assert proc.returncode == 0, proc.stderr
+
+
+@pytest.mark.parametrize("name", ["_COMPARE_KEEP_OPEN", "_COMPARE_BATCH_KEEP_OPEN"])
+def test_do_not_close_still_closes_the_documents_each_pair_opened(name: str) -> None:
+    """Keeping the operator's documents is not leaving ours behind.
+
+    A blanket comment-out left the base and the compare result open after every
+    pair, success included: two documents per pair piling up in Word. The
+    keep-open script closes exactly what appeared after `seenBeforeOpen`.
+    """
+    src = getattr(wr, name)
+    assert "close every document" not in _applescript_code(src)
+    assert "on closeNew(seen)" in src
+    assert "if seen is missing value then return" in src
+    code = _applescript_code(src)
+    # The save is followed by closing what this pair opened.
+    after_save = code[code.index("save as cmpDoc") :]
+    assert "my closeNew(seenBeforeOpen)" in after_save
+    # Nothing is closed before the snapshot of what was already open.
+    assert code.index("set seenBeforeOpen to {}") < code.index("my closeNew(seenBeforeOpen)")
+
+
+@pytest.mark.parametrize("one_osascript", [False, True])
+def test_an_undeliverable_redline_fails_that_pair_and_the_run_goes_on(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, stub_word, one_osascript: bool
+) -> None:
+    session, _, _ = stub_word
+    a = _folder(tmp_path / "a", "deal.docx", "nda.docx")
+    b = _folder(tmp_path / "b", "deal.docx", "nda.docx")
+
+    def fake_osa(script, *args, timeout=60.0):
+        if "manifestPath" not in script:
+            return 0, "", ""
+        manifest, log = Path(args[0]), Path(args[1])
+        rows = [ln.split("\t") for ln in manifest.read_text().splitlines() if ln]
+        for row in rows:
+            Path(row[-1]).write_bytes(b"PK")
+        lines = [f"[ok]\t{row[0]}\t1" for row in rows] + [f"[done]\t{len(rows)}\t0"]
+        log.write_text("\n".join(lines) + "\n")
+        return 0, "", ""
+
+    monkeypatch.setattr(wp, "osa", fake_osa)
+    monkeypatch.setattr(
+        wr, "publish", lambda staged, final: "disk full" if "deal" in final.name else ""
+    )
+    results = wr.redline_folders(
+        a, b, tmp_path / "out", emit="docx", session=session, one_osascript=one_osascript
+    )
+    assert [(r.base.name, r.ok) for r in results] == [("deal.docx", False), ("nda.docx", True)]
+    assert results[0].error == "disk full"
+
+
+@pytest.mark.parametrize("field", ["timeout", "pdf_timeout"])
+def test_redline_api_rejects_a_timeout_the_cli_would(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, field: str
+) -> None:
+    monkeypatch.setattr(wp, "CONTAINER_TMP", tmp_path / "container")
+    a = _folder(tmp_path / "a", "deal.docx")
+    b = _folder(tmp_path / "b", "deal.docx")
+    with pytest.raises(ValueError, match=field):
+        wr.redline_folders(a, b, tmp_path / "out", session=_verified_session(), **{field: -5.0})
+
+
+@pytest.mark.parametrize("inside", ["a", "b", "a/sub"])
+def test_redline_docx_may_not_land_where_the_next_run_reads_its_inputs(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, inside: str
+) -> None:
+    """`deal__vs__deal.docx` in folder A is a new base document next run."""
+    monkeypatch.setattr(wp, "CONTAINER_TMP", tmp_path / "container")
+    a = _folder(tmp_path / "a", "deal.docx")
+    b = _folder(tmp_path / "b", "deal.docx")
+    reached: list[str] = []
+    monkeypatch.setattr(wr, "compare_pair", lambda *a, **k: reached.append("compare"))
+    monkeypatch.setattr(wp, "osa", lambda *a, **k: reached.append("osa") or (0, "", ""))
+
+    results = wr.redline_folders(
+        a, b, tmp_path / "out", docx_dir=tmp_path / inside, emit="both",
+        session=_verified_session(),
+    )  # fmt: skip
+    assert reached == []
+    assert results and all("input folder" in (r.error or "") for r in results)
+
+
+def test_pdf_only_output_inside_an_input_folder_is_allowed(tmp_path: Path, stub_word) -> None:
+    """PDFs are never read back as inputs, so they may sit beside the sources."""
+    session, _, _ = stub_word
+    a = _folder(tmp_path / "a", "deal.docx")
+    b = _folder(tmp_path / "b", "deal.docx")
+    results = wr.redline_folders(a, b, a / "pdf", session=session, one_osascript=False)
+    assert results[0].ok, results[0].error
+
+
+def test_cli_refuses_docx_inside_an_input_folder_before_touching_word(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The default preflight closes every document, so the refusal must come first."""
+    from typer.testing import CliRunner
+
+    a = _folder(tmp_path / "a", "deal.docx")
+    b = _folder(tmp_path / "b", "deal.docx")
+    reached: list[str] = []
+    monkeypatch.setattr(
+        wr,
+        "preflight",
+        lambda s, *, allow_open_docs, close_documents=True: reached.append("preflight") or "",
+    )
+
+    result = CliRunner().invoke(
+        wr.app,
+        ["--a", str(a), "--b", str(b), "--out", str(a / "redlines"), "--emit", "both",
+         "--no-check-preset"],
+    )  # fmt: skip
+    assert result.exit_code == 2
+    assert reached == []
+    assert "input folder" in result.output
+
+
+def test_both_foreign_document_refusals_give_the_same_current_reason(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The CLI's refusal and the API's said different things, both out of date."""
+    session = _verified_session()
+    monkeypatch.setattr(wp.WordSession, "available", staticmethod(lambda: True))
+    monkeypatch.setattr(session, "warm", lambda: True)
+    monkeypatch.setattr(session, "open_document_count", lambda: 2)
+    cli_reason = wr.redline_preflight(session, allow_open_docs=True, close_documents=False)
+
+    a = _folder(tmp_path / "a", "deal.docx")
+    b = _folder(tmp_path / "b", "deal.docx")
+    api = wr.redline_folders(a, b, tmp_path / "out", session=session, close_documents=False)
+
+    assert api[0].error == cli_reason
+    assert "exclusion" not in cli_reason
+    assert "name" in cli_reason
+
+
+@pytest.mark.parametrize("module", [wr, wp], ids=["redline", "pdf"])
+def test_cli_help_says_a_run_closes_open_documents(module) -> None:
+    """The default closes without asking; the help is where an operator learns that."""
+    from typer.testing import CliRunner
+
+    result = CliRunner().invoke(module.app, ["--help"], env={"COLUMNS": "200"})
+    assert result.exit_code == 0
+    assert "Do not work in Word during a run" in " ".join(result.output.split())

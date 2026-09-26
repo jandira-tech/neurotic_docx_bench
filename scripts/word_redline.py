@@ -25,17 +25,24 @@ Design decisions carried over from `docs/WORD_DRIVER_AUDIT.md`:
   `compare` yields its result as a fresh, unsaved document. That document is
   the redline; nothing is reconstructed from it. Because it is unsaved, Word
   would prompt for a location, which is exactly why `save as` is handed the
-  path instead. The script finds it by exclusion — the open document whose
-  name is not the base's — because naming the document you mean is the rule
-  (§5.18), not because the base would otherwise be served up in its place.
+  path instead. The script finds it by what is new — it snapshots the open
+  documents' names before `open` and before `compare`, and errors unless
+  exactly one name appeared — because naming the document you mean is the
+  rule (§5.18), not because the base would otherwise be served up in its place.
 - **Base health is checked before the compare runs**, not after. An unreadable
   base loads as a document with zero paragraphs and the compare then fails with
   an error naming the *other* file (§14.1).
 - **Zero revisions is reported, not failed.** Two identical documents compare to
   no revisions legitimately; the count is surfaced so a batch of unexpected
   zeroes is visible instead of silently passing.
-- **One failed pair recycles Word.** After a bad document Word keeps answering,
-  returning empty documents for every later open, with no error (§5.20).
+- **A failed pair is cleaned up, not restarted.** The repair prompt is declined
+  and the documents closed; Word is recycled only when that cleanup cannot
+  bring it back to zero open documents, or after `poison_streak` (3)
+  consecutive failures, when the streak is replayed on the fresh Word. After a
+  bad document Word can keep answering while returning empty documents for
+  every later open, with no error (§5.20). In one-osascript mode a timeout, a
+  dropped connection or three empty loads in a row stop the batch, and the
+  resume recycles before retrying the rows that never finished.
 
 Plumbing, noted because it is visible in the staging directory and is not a
 finding: the two sides of a pair go in under `base__` / `rev__` prefixes. A pair
@@ -61,7 +68,8 @@ minute by hand before a batch:
 from __future__ import annotations
 
 import os
-import shutil
+import re
+from contextvars import ContextVar
 import signal
 import sys
 import time
@@ -80,8 +88,11 @@ _HERE = Path(__file__).resolve().parent
 if str(_HERE) not in sys.path:
     sys.path.insert(0, str(_HERE))
 
+from redline_identity import matches_pair
 from word_pdf import (  # must follow the sys.path guard above
     _EXPORT_BATCH,
+    _EXPORT_BATCH_KEEP_OPEN,
+    _close_documents as pdf_close_documents,
     Stage,
     Watchdogs,
     WordSession,
@@ -93,7 +104,9 @@ from word_pdf import (  # must follow the sys.path guard above
     positive_seconds,
     preflight,
     preset_notice,
+    publish,
     recover_after_failure,
+    require_positive_seconds,
     run_batch_with_resume,
     safe_stage_name,
 )
@@ -115,6 +128,25 @@ class Emit(str, Enum):
 
 
 # ─── pure helpers ────────────────────────────────────────────────────────────
+
+
+def docx_lands_in_an_input(
+    folder_a: Path, folder_b: Path, out_dir: Path, docx_dir: Path | None, emit: Emit
+) -> Path | None:
+    """The input folder the kept redlines would land in, if any.
+
+    `iter_docx` globs its folder, so `deal__vs__deal.docx` written into A (or
+    under it) is a base document the next run compares. PDFs are never read
+    back as inputs and may sit anywhere.
+    """
+    if emit not in (Emit.DOCX, Emit.BOTH):
+        return None
+    target = (docx_dir or out_dir).resolve()
+    for folder in (folder_a, folder_b):
+        root = folder.resolve()
+        if target == root or root in target.parents:
+            return folder
+    return None
 
 
 @dataclass(slots=True, frozen=True)
@@ -236,6 +268,17 @@ class PairResult:
 # `format document` is WdSaveFormat 12 (wdFormatXMLDocument, i.e. .docx). The
 # legacy binary format is the separate `format document97` — not the same thing.
 _COMPARE = """
+-- `--do-not-close` only: close the documents that appeared after `seen` was
+-- taken, newest first, and leave everything that was already open alone.
+on closeNew(seen)
+  if seen is missing value then return
+  tell application "Microsoft Word"
+    repeat with i from (count of documents) to 1 by -1
+      if seen does not contain (name of document i) then close document i saving no
+    end repeat
+  end tell
+end closeNew
+
 on run argv
   set basePath to item 1 of argv
   set revPath to item 2 of argv
@@ -243,9 +286,32 @@ on run argv
   set revisionCount to -1
   with timeout of 900 seconds
     tell application "Microsoft Word"
+      -- Start from an empty Word (the documents, never Word itself): a leftover
+      -- document is what got saved under the next pair's name after a dropped
+      -- connection. `--do-not-close` drops this line and closes only its own.
+      close every document saving no
+      set seenBeforeOpen to {}
+      repeat with i from 1 to (count of documents)
+        set end of seenBeforeOpen to name of document i
+      end repeat
       open POSIX file basePath
-      set baseDoc to document 1
-      set baseName to name of baseDoc
+      -- The base is the document that appeared. Compare is then given that
+      -- document and the revision's filename; the revision is not opened.
+      -- The redline is the document that appears after compare. Never
+      -- `active document`.
+      set baseDoc to missing value
+      set baseCount to 0
+      repeat with i from 1 to (count of documents)
+        set nm to name of document i
+        if seenBeforeOpen does not contain nm then
+          set baseDoc to document i
+          set baseCount to baseCount + 1
+        end if
+      end repeat
+      if baseCount is not 1 then
+        close every document saving no
+        error "open produced " & baseCount & " new documents; refusing to guess"
+      end if
       -- Health BEFORE the compare. An unreadable base loads as a document with
       -- zero paragraphs and the compare then fails with an error naming the
       -- OTHER file, which sends every diagnosis to the wrong document.
@@ -253,23 +319,26 @@ on run argv
         close every document saving no
         error "base loaded empty (Word could not read it)"
       end if
+      set seenBeforeCompare to {}
+      set seenCount to count of documents
+      repeat with i from 1 to seenCount
+        set end of seenBeforeCompare to name of document i
+      end repeat
       compare baseDoc path revPath detect format changes true ignore all comparison warnings true add to recent files false
-      -- `compare` yields its result as a NEW unsaved document, and that
-      -- document as created is what ships. Find it by exclusion (the one whose
-      -- name is not the base's) rather than by `active document`, because the
-      -- rule is to name the document you mean (§5.18). The `save as` below
-      -- supplies the path, which is what stops Word prompting for one.
-      -- Index explicitly: `repeat with d in documents` makes AppleScript send
-      -- `count` to `every document`, which this Word build rejects outright.
       set cmpDoc to missing value
+      set cmpCount to 0
       set docCount to count of documents
       repeat with i from 1 to docCount
         set dd to document i
-        if (name of dd) is not baseName then set cmpDoc to dd
+        set nm to name of dd
+        if seenBeforeCompare does not contain nm then
+          set cmpDoc to dd
+          set cmpCount to cmpCount + 1
+        end if
       end repeat
-      if cmpDoc is missing value then
+      if cmpCount is not 1 then
         close every document saving no
-        error "compare produced no result document"
+        error "compare produced " & cmpCount & " new documents; refusing to guess"
       end if
       try
         set revisionCount to count of revisions of cmpDoc
@@ -308,6 +377,17 @@ on restoreAlerts(priorAlerts)
   end try
 end restoreAlerts
 
+-- `--do-not-close` only: close the documents that appeared after `seen` was
+-- taken, newest first, and leave everything that was already open alone.
+on closeNew(seen)
+  if seen is missing value then return
+  tell application "Microsoft Word"
+    repeat with i from (count of documents) to 1 by -1
+      if seen does not contain (name of document i) then close document i saving no
+    end repeat
+  end tell
+end closeNew
+
 on run argv
   set manifestPath to item 1 of argv
   set logPath to item 2 of argv
@@ -321,6 +401,7 @@ on run argv
   end tell
   set okCount to 0
   set failCount to 0
+  set emptyStreak to 0
   try
     repeat with r in rows
       set rowText to r as string
@@ -332,26 +413,53 @@ on run argv
           set revP to item 3 of f
           set outP to item 4 of f
           set revisionCount to -1
+          set seenBeforeOpen to missing value
           try
             with timeout of 900 seconds
               tell application "Microsoft Word"
+                close every document saving no
+                set seenBeforeOpen to {}
+                repeat with i from 1 to (count of documents)
+                  set end of seenBeforeOpen to name of document i
+                end repeat
                 open POSIX file baseP
-                set baseDoc to document 1
-                set baseName to name of baseDoc
+                set baseDoc to missing value
+                set baseCount to 0
+                repeat with i from 1 to (count of documents)
+                  set nm to name of document i
+                  if seenBeforeOpen does not contain nm then
+                    set baseDoc to document i
+                    set baseCount to baseCount + 1
+                  end if
+                end repeat
+                if baseCount is not 1 then
+                  close every document saving no
+                  error "open produced " & baseCount & " new documents; refusing to guess"
+                end if
                 if (count of paragraphs of baseDoc) is 0 then
                   close every document saving no
                   error "base loaded empty (Word could not read it)"
                 end if
+                set seenBeforeCompare to {}
+                set seenCount to count of documents
+                repeat with i from 1 to seenCount
+                  set end of seenBeforeCompare to name of document i
+                end repeat
                 compare baseDoc path revP detect format changes true ignore all comparison warnings true add to recent files false
                 set cmpDoc to missing value
+                set cmpCount to 0
                 set docCount to count of documents
                 repeat with i from 1 to docCount
                   set dd to document i
-                  if (name of dd) is not baseName then set cmpDoc to dd
+                  set nm to name of dd
+                  if seenBeforeCompare does not contain nm then
+                    set cmpDoc to dd
+                    set cmpCount to cmpCount + 1
+                  end if
                 end repeat
-                if cmpDoc is missing value then
+                if cmpCount is not 1 then
                   close every document saving no
-                  error "compare produced no result document"
+                  error "compare produced " & cmpCount & " new documents; refusing to guess"
                 end if
                 try
                   set revisionCount to count of revisions of cmpDoc
@@ -360,14 +468,32 @@ on run argv
                 close every document saving no
               end tell
             end timeout
+            set emptyStreak to 0
             set okCount to okCount + 1
             my logLine(logPath, "[ok]" & tab & itemId & tab & revisionCount)
           on error errMsg
-            set failCount to failCount + 1
             try
               tell application "Microsoft Word" to close every document saving no
             end try
-            my logLine(logPath, "[fail]" & tab & itemId & tab & errMsg)
+            -- Same poison as word_pdf. A timeout is a final [fail] and stops
+            -- the batch. An empty-load streak is [retry], which the log parser
+            -- ignores, so those pairs are retried after a recycle.
+            if errMsg contains "timed out" then
+              set failCount to failCount + 1
+              my logLine(logPath, "[fail]" & tab & itemId & tab & errMsg)
+              exit repeat
+            else if errMsg contains "Connection is invalid" or errMsg contains "isn't running" or errMsg contains ("isn" & (character id 8217) & "t running") then
+              my logLine(logPath, "[retry]" & tab & itemId & tab & errMsg)
+              exit repeat
+            else if errMsg contains "loaded empty" then
+              set emptyStreak to emptyStreak + 1
+              my logLine(logPath, "[retry]" & tab & itemId & tab & errMsg)
+              if emptyStreak ≥ 3 then exit repeat
+            else
+              set emptyStreak to 0
+              set failCount to failCount + 1
+              my logLine(logPath, "[fail]" & tab & itemId & tab & errMsg)
+            end if
           end try
         end if
       end if
@@ -383,12 +509,48 @@ end run
 """.strip()
 
 
+
+def _keep_open(script: str) -> str:
+    """The `--do-not-close` variant: close only what this pair opened.
+
+    The opening close-all goes; every other close-all, including the error
+    handler's `tell … to` one-liner, becomes `closeNew(seenBeforeOpen)`. A
+    plain comment-out left `tell … to -- …`, which does not compile, and left
+    the base and the result open after every pair. The candidate-count checks
+    still refuse to guess, so a leftover cannot be saved under this pair's name.
+    """
+    out, opening = re.subn(
+        r"close every document saving no\n\s*(set seenBeforeOpen to \{\})", r"\1", script
+    )
+    out = out.replace(
+        'tell application "Microsoft Word" to close every document saving no',
+        "my closeNew(seenBeforeOpen)",
+    )
+    out = out.replace("close every document saving no", "my closeNew(seenBeforeOpen)")
+    if opening != 1 or "close every document saving no" in out:
+        raise RuntimeError("keep-open rewrite no longer matches the compare script")
+    return out
+
+
+_COMPARE_KEEP_OPEN = _keep_open(_COMPARE)
+_COMPARE_BATCH_KEEP_OPEN = _keep_open(_COMPARE_BATCH)
+
+
+def _reject_wrong_pair(staged: Path, base: Path, revision: Path) -> str:
+    """Empty when the saved docx is this pair. Otherwise the reason to drop it."""
+    verdict = matches_pair(staged, base, revision)
+    return "" if verdict.ok else verdict.reason
+
+
+_close_documents: ContextVar[bool] = ContextVar("redline_close_documents", default=True)
+
+
 def compare_pair(
     staged_base: Path, staged_revision: Path, staged_out: Path, *, timeout: float = 300.0
 ) -> tuple[bool, int, str]:
     """Compare one staged pair into one staged .docx. Returns (ok, revisions, error)."""
     rc, out, err = osa(
-        _COMPARE,
+        _COMPARE if _close_documents.get() else _COMPARE_KEEP_OPEN,
         str(staged_base),
         str(staged_revision),
         str(staged_out),
@@ -403,34 +565,48 @@ def compare_pair(
 # ─── batch ───────────────────────────────────────────────────────────────────
 
 
-def redline_preflight(session: WordSession, *, allow_open_docs: bool) -> str:
+_FOREIGN_DOCUMENTS_OPEN = (
+    "Word has documents open. Redlining names the base and the compare result by the "
+    "document names that are new after each step, so one of yours with a base's "
+    "name makes that pair fail, and the mode is unverified with your documents "
+    "open. --allow-open-docs cannot waive this. Close them and re-run."
+)
+
+
+def redline_preflight(
+    session: WordSession, *, allow_open_docs: bool, close_documents: bool = True
+) -> str:
     """Refuse to redline while Word holds documents that are not ours.
+
+    The default closes every open document before each pair (without asking,
+    never Word itself), so this only refuses under `--do-not-close`.
 
     `word_pdf.py`'s `--allow-open-docs` is a trade the operator is entitled to
     make: it costs them Word restarts, and the export closes only the document
     it opened. Redlining cannot offer the same deal, because its *correctness*
     rests on the precondition, not just its tidiness.
 
-    `_COMPARE` identifies the result by exclusion — it walks `document i` and
-    takes the one whose name is not the base's, because `compare` returns its
-    result as a new document and that is how a script names the one it means.
-    That walk is sound exactly while every open document is ours. With a human's document open it can select *theirs* and save it as
-    the redline: a wrong artifact that looks like a real one, which is the
-    failure this pair exists to prevent.
+    `_COMPARE` names the base and the result by what is new: it snapshots the
+    open documents' names before `open` and before `compare`, and errors unless
+    exactly one name appeared. That keeps a human's document from being saved
+    as the redline, but names are not identities: their document with a base's
+    name hides that base, so the pair fails, and the mode has never been
+    exercised against a Word holding documents that are not ours.
 
     So the flag is accepted on the command line and declined here, with the
     reason, rather than honoured silently.
     """
-    if problem := preflight(session, allow_open_docs=allow_open_docs):
+    if problem := preflight(
+        session,
+        allow_open_docs=allow_open_docs or close_documents,
+        close_documents=close_documents,
+    ):
         return problem
-    if not session.started_clean:
-        return (
-            "Word has documents open. Redlining identifies its result by "
-            "exclusion (the document that is not the base), which only holds "
-            "while every open document is ours — with yours open it can save "
-            "your document as the redline. --allow-open-docs cannot waive this. "
-            "Close them and re-run."
-        )
+    # Default closes every document and leaves Word running, so an open file
+    # here is not a reason to refuse. --do-not-close is the case that still
+    # cannot tell a leftover from the compare result.
+    if not session.started_clean and not close_documents:
+        return _FOREIGN_DOCUMENTS_OPEN
     return ""
 
 
@@ -448,6 +624,7 @@ def redline_folders(
     pdf_timeout: float = 180.0,
     session: WordSession | None = None,
     one_osascript: bool = True,
+    close_documents: bool = True,
     max_passes: int = 3,
     poison_streak: int = 3,
 ) -> list[PairResult]:
@@ -461,6 +638,8 @@ def redline_folders(
     `one_osascript` (the default) runs the whole job as TWO monolithic AppleScripts — every
     comparison, then every PDF — instead of one `osascript` per step per pair.
     """
+    require_positive_seconds(timeout, "timeout")
+    require_positive_seconds(pdf_timeout, "pdf_timeout")
     a_docs, b_docs = iter_docx(folder_a), iter_docx(folder_b)
     if cross:
         pairs = cross_pairs(a_docs, b_docs)
@@ -478,31 +657,39 @@ def redline_folders(
         logger.warning(f"nothing to compare between {folder_a} and {folder_b}")
         return []
 
+    inside = docx_lands_in_an_input(folder_a, folder_b, out_dir, docx_dir, emit)
+    if inside is not None:
+        problem = (
+            f"the redline docx would be written inside the input folder {inside}, "
+            "where the next run reads it back as a document to compare. "
+            "Pick a docx folder outside both inputs."
+        )
+        logger.error(f"[redline] refusing to start: {problem}")
+        return [PairResult(base=a, revision=b, error=problem) for a, b in pairs]
+
     owns_session = session is None
     session = session or WordSession()
 
     # The precondition belongs to this function, not to the CLI that usually
     # calls it. `_COMPARE` and `_COMPARE_BATCH` both close every document and
-    # both identify the compare result by exclusion, and neither is sound while
-    # Word holds a document that is not ours -- so a caller who imports this
-    # module and calls this function gets the same refusal `main()` does,
-    # rather than a run that can close their work and save it as a redline.
+    # both name their documents by what is new since a snapshot, and neither
+    # has been exercised while Word holds a document that is not ours -- so a
+    # caller who imports this module and calls this function gets the same
+    # refusal `main()` does, rather than a run that can close their work.
     # A supplied session must carry proof it was checked: `started_clean`
     # alone defaults to True and would be a claim nobody verified.
     if owns_session:
-        problem = redline_preflight(session, allow_open_docs=False)
+        problem = redline_preflight(
+            session, allow_open_docs=False, close_documents=close_documents
+        )
     elif not session.preflighted:
         problem = (
             "this session has not been preflighted, so nothing has established "
             "that Word holds no documents of yours. Call redline_preflight() "
             "first, or pass session=None and let redline_folders() do it."
         )
-    elif not session.started_clean:
-        problem = (
-            "Word has documents open. Redlining identifies its result by "
-            "exclusion (the document that is not the base), which only holds "
-            "while every open document is ours. Close them and re-run."
-        )
+    elif not session.started_clean and not close_documents:
+        problem = _FOREIGN_DOCUMENTS_OPEN
     else:
         problem = ""
     if problem:
@@ -518,6 +705,7 @@ def redline_folders(
     with Stage(prefix="wordredline") as stage:
         try:
             run = _redline_batched if one_osascript else _redline_serial
+            logger.info(f"[redline] one_osascript={one_osascript} pairs={len(pairs)}")
             return run(
                 pairs,
                 out_dir,
@@ -532,6 +720,7 @@ def redline_folders(
                 pdf_timeout=pdf_timeout,
                 max_passes=max_passes,
                 poison_streak=poison_streak,
+                close_documents=close_documents,
             )
         finally:
             if owns_session:
@@ -553,6 +742,7 @@ def _redline_serial(
     pdf_timeout: float,
     max_passes: int = 3,
     poison_streak: int = 3,
+    close_documents: bool = True,
 ) -> list[PairResult]:
     """One `osascript` per comparison, with the malformed-document path in Python."""
     results: list[PairResult] = []
@@ -582,6 +772,7 @@ def _redline_serial(
             stage=stage,
             timeout=timeout,
             pdf_timeout=pdf_timeout,
+            close_documents=close_documents,
         )
         result.seconds = time.monotonic() - started
         results.append(result)
@@ -608,7 +799,12 @@ def _redline_serial(
                 )
                 if session.recycle(stage.inbox, stage.outbox):
                     _replay_pairs(
-                        streak, results, stage=stage, timeout=timeout, pdf_timeout=pdf_timeout
+                        streak,
+                        results,
+                        stage=stage,
+                        timeout=timeout,
+                        pdf_timeout=pdf_timeout,
+                        close_documents=close_documents,
                     )
                 streak.clear()
     return results
@@ -621,6 +817,7 @@ def _replay_pairs(
     stage: Stage,
     timeout: float,
     pdf_timeout: float,
+    close_documents: bool = True,
 ) -> None:
     """Re-run a failure streak against a freshly restarted Word, in place.
 
@@ -634,7 +831,13 @@ def _replay_pairs(
     for base, revision, outputs in pending:
         started = time.monotonic()
         again = _redline_one(
-            base, revision, outputs, stage=stage, timeout=timeout, pdf_timeout=pdf_timeout
+            base,
+            revision,
+            outputs,
+            stage=stage,
+            timeout=timeout,
+            pdf_timeout=pdf_timeout,
+            close_documents=close_documents,
         )
         again.seconds = time.monotonic() - started
         if not again.ok:
@@ -655,6 +858,7 @@ def _redline_one(
     stage: Stage,
     timeout: float,
     pdf_timeout: float,
+    close_documents: bool = True,
 ) -> PairResult:
     """One comparison, start to finish, entirely inside Word's own container.
 
@@ -671,25 +875,41 @@ def _redline_one(
     result = PairResult(base=base, revision=revision)
 
     try:
-        ok, revisions, err = compare_pair(
-            staged_base, staged_revision, staged_docx, timeout=timeout
-        )
+        token = _close_documents.set(close_documents)
+        try:
+            ok, revisions, err = compare_pair(
+                staged_base, staged_revision, staged_docx, timeout=timeout
+            )
+        finally:
+            _close_documents.reset(token)
         result.revisions = revisions
         if not ok:
             result.error = err
             return result
+        wrong = _reject_wrong_pair(staged_docx, base, revision)
+        if wrong:
+            result.error = wrong
+            return result
 
         if outputs.pdf is not None:
             staged_pdf = stage.outbox / f"{stem}.pdf"
-            ok, err = export_pdf(staged_docx, staged_pdf, timeout=pdf_timeout)
+            pdf_token = pdf_close_documents.set(close_documents)
+            try:
+                ok, err = export_pdf(staged_docx, staged_pdf, timeout=pdf_timeout)
+            finally:
+                pdf_close_documents.reset(pdf_token)
             if not ok:
                 result.error = f"redline saved but PDF export failed: {err}"
                 return result
-            _deliver(staged_pdf, outputs.pdf)
+            if undelivered := _deliver(staged_pdf, outputs.pdf):
+                result.error = undelivered
+                return result
             result.pdf = outputs.pdf
 
         if outputs.docx is not None:
-            _deliver(staged_docx, outputs.docx)
+            if undelivered := _deliver(staged_docx, outputs.docx):
+                result.error = undelivered
+                return result
             result.docx = outputs.docx
 
         result.ok = True
@@ -700,15 +920,13 @@ def _redline_one(
         staged_docx.unlink(missing_ok=True)
 
 
-def _deliver(staged: Path, final: Path) -> None:
-    """Copy one finished artifact out of the container into the user's folder.
+def _deliver(staged: Path, final: Path) -> str:
+    """Put one finished artifact in the user's folder. '' on success.
 
-    `copy2` rather than `move`, and copy rather than write-in-place: the staged
-    file stays where Word left it until the run ends, so a failure partway
-    through delivery loses nothing that cannot be re-delivered from staging.
+    `publish` copies beside `final` and renames it in, so a copy that dies
+    partway leaves the previous result intact rather than truncated.
     """
-    final.parent.mkdir(parents=True, exist_ok=True)
-    shutil.copy2(staged, final)
+    return publish(staged, final)
 
 
 def _redline_batched(
@@ -726,6 +944,7 @@ def _redline_batched(
     pdf_timeout: float,
     max_passes: int = 3,
     poison_streak: int = 3,  # part of the shared dispatch signature; serial-only
+    close_documents: bool = True,
 ) -> list[PairResult]:
     """Two monolithic AppleScripts: every compare, then every PDF.
 
@@ -742,9 +961,9 @@ def _redline_batched(
     plans: dict[tuple[Path, Path], Outputs] = {}
     for base, revision in pairs:
         outputs = plan_outputs(base, revision, out_dir, docx_dir, emit)
-        plans[(base, revision)] = outputs
+        plans[base, revision] = outputs
         if should_skip(outputs, force=force):
-            outcomes[(base, revision)] = PairResult(
+            outcomes[base, revision] = PairResult(
                 base=base,
                 revision=revision,
                 docx=outputs.docx,
@@ -772,7 +991,7 @@ def _redline_batched(
     logger.info(f"[batch] one osascript for {len(rows)} comparison(s)")
     started = time.monotonic()
     compared = run_batch_with_resume(
-        _COMPARE_BATCH,
+        _COMPARE_BATCH if close_documents else _COMPARE_BATCH_KEEP_OPEN,
         rows,
         stage.root or stage.inbox.parent,
         per_item_timeout=timeout,
@@ -800,7 +1019,7 @@ def _redline_batched(
     if pdf_rows:
         logger.info(f"[batch] one osascript for {len(pdf_rows)} redline PDF(s)")
         rendered = run_batch_with_resume(
-            _EXPORT_BATCH,
+            _EXPORT_BATCH if close_documents else _EXPORT_BATCH_KEEP_OPEN,
             pdf_rows,
             stage.root or stage.inbox.parent,
             per_item_timeout=pdf_timeout,
@@ -820,6 +1039,13 @@ def _redline_batched(
         ok, detail = compared[item]
         result.revisions = parse_revision_count(detail) if ok else -1
         produced = staged_docx.exists() and staged_docx.stat().st_size > 0
+        if produced:
+            wrong = _reject_wrong_pair(staged_docx, base, revision)
+            if wrong:
+                produced = False
+                ok = False
+                detail = wrong
+                staged_docx.unlink(missing_ok=True)
 
         if not ok or not produced:
             result.error = classify_failure(0 if ok else 1, detail, produced)
@@ -834,9 +1060,12 @@ def _redline_batched(
             )
             if pdf_ok and pdf_made:
                 assert staged_pdf is not None
-                _deliver(staged_pdf, outputs.pdf)
-                result.pdf = outputs.pdf
-                result.ok = True
+                if undelivered := _deliver(staged_pdf, outputs.pdf):
+                    result.error = undelivered
+                    logger.error(f"[batch] FAIL: {result.label} — {undelivered}")
+                else:
+                    result.pdf = outputs.pdf
+                    result.ok = True
             else:
                 result.error = (
                     "redline saved but PDF export failed: "
@@ -847,8 +1076,12 @@ def _redline_batched(
             result.ok = True
 
         if result.ok and outputs.docx is not None:
-            _deliver(staged_docx, outputs.docx)
-            result.docx = outputs.docx
+            if undelivered := _deliver(staged_docx, outputs.docx):
+                result.ok = False
+                result.error = undelivered
+                logger.error(f"[batch] FAIL: {result.label} — {undelivered}")
+            else:
+                result.docx = outputs.docx
         if result.ok and result.revisions == 0:
             logger.warning(f"  compared clean (no revisions): {result.label}")
 
@@ -966,6 +1199,15 @@ def main(
         bool,
         typer.Option("--allow-open-docs", help="Run even if Word already has documents open."),
     ] = False,
+    do_not_close: Annotated[
+        bool,
+        typer.Option(
+            "--do-not-close",
+            help="Do not close documents Word already has open. The default closes "
+            "every document and leaves Word itself running, so a leftover file "
+            "cannot be saved as the next redline.",
+        ),
+    ] = False,
     quiet: Annotated[
         bool, typer.Option("--quiet", "-q", help="Errors and summary only.")
     ] = False,
@@ -973,7 +1215,12 @@ def main(
         Path | None, typer.Option("--log", help="Also write a log file.")
     ] = None,
 ) -> None:
-    """Redline folder A against folder B using Microsoft Word's Compare Documents."""
+    """Redline folder A against folder B using Microsoft Word's Compare Documents.
+
+    Do not work in Word during a run: by default every open document is
+    closed without saving (Word itself keeps running). --do-not-close keeps
+    documents that were open before the run.
+    """
     timeout = positive_seconds(timeout, "--timeout")
     pdf_timeout = positive_seconds(pdf_timeout, "--pdf-timeout")
     logger.remove()
@@ -985,6 +1232,13 @@ def main(
         if not folder.is_dir():
             console.print(f"[red]{label} is not a folder:[/] {folder}")
             raise typer.Exit(2)
+    # Before the preflight, which by default closes every document in Word.
+    if inside := docx_lands_in_an_input(folder_a, folder_b, out, docx_out, emit):
+        console.print(
+            f"[red]the redline .docx would land inside the input folder {inside}, "
+            "where the next run reads it back as a document. Use --docx-out.[/]"
+        )
+        raise typer.Exit(2)
 
     if check_preset:
         if emit is not Emit.DOCX:
@@ -997,7 +1251,9 @@ def main(
             )
 
     session = WordSession()
-    if problem := redline_preflight(session, allow_open_docs=allow_open_docs):
+    if problem := redline_preflight(
+        session, allow_open_docs=allow_open_docs, close_documents=not do_not_close
+    ):
         console.print(f"[red]{problem}[/]")
         raise typer.Exit(2)
 
@@ -1015,6 +1271,7 @@ def main(
             pdf_timeout=pdf_timeout,
             session=session,
             one_osascript=one_osascript,
+            close_documents=not do_not_close,
         )
         session.quit_if_ours()
     raise typer.Exit(report_pairs(results, f"redline: {folder_a.name} → {folder_b.name}"))
