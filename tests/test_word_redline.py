@@ -1519,3 +1519,13 @@ def test_both_foreign_document_refusals_give_the_same_current_reason(
     assert api[0].error == cli_reason
     assert "exclusion" not in cli_reason
     assert "name" in cli_reason
+
+
+@pytest.mark.parametrize("module", [wr, wp], ids=["redline", "pdf"])
+def test_cli_help_says_a_run_closes_open_documents(module) -> None:
+    """The default closes without asking; the help is where an operator learns that."""
+    from typer.testing import CliRunner
+
+    result = CliRunner().invoke(module.app, ["--help"], env={"COLUMNS": "200"})
+    assert result.exit_code == 0
+    assert "Do not work in Word during a run" in " ".join(result.output.split())
