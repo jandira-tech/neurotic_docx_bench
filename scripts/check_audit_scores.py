@@ -39,6 +39,11 @@ DETAIL = re.compile(r"^\| ([^|]*`[^|]*) \| ([01]\.\d{2}) \| ")
 NAME = re.compile(r"`([^`]+)`")
 # Which criterion each detail section scores, keyed by its heading number.
 SECTION_CRITERION = {"6": "C4", "7": "C5", "8": "C6", "9": "C7"}
+# The row pattern stays loose on purpose: a row it does not match is skipped
+# silently, so a strict pattern there would hide the malformed row. Each cell
+# is held to the audit's own grammar here and reported when it is off.
+SCORE = re.compile(r"\d\.\d{2}")
+MAX_TOTAL = float(len(CRITERIA))
 
 
 def check(path: Path) -> list[str]:
@@ -62,11 +67,24 @@ def check(path: Path) -> list[str]:
     scores: dict[tuple[str, str], dict[str, float]] = {}
     by_name: dict[str, list[tuple[str, dict[str, float]]]] = {}
     totals: list[tuple[str, float]] = []
+    matched = 0
     for line in lines:
         if m := SCORECARD.match(line):
+            matched += 1
             name, repo = m.group(1), m.group(2)
-            comps = [float(m.group(i)) for i in range(3, 10)]
-            total = float(m.group(10))
+            cells = [m.group(i) for i in range(3, 11)]
+            if bad := [c for c in cells if not SCORE.fullmatch(c)]:
+                problems.append(f"{name} ({repo}): not a d.dd score: {', '.join(map(repr, bad))}")
+                continue
+            comps = [float(c) for c in cells[:7]]
+            total = float(cells[7])
+            for criterion, value in zip(CRITERIA, comps, strict=True):
+                if not 0.0 <= value <= 1.0:
+                    problems.append(f"{name} ({repo}): {criterion} {value} outside [0.00, 1.00]")
+            if not 0.0 <= total <= MAX_TOTAL:
+                problems.append(f"{name} ({repo}): total {total} outside [0.00, {MAX_TOTAL:.2f}]")
+            if (name, repo) in scores:
+                problems.append(f"{name} ({repo}): scored twice in the scorecard")
             if abs(round(sum(comps), 2) - total) > 1e-9:
                 problems.append(f"{name}: components sum {round(sum(comps), 2)}, stated {total}")
             criteria = dict(zip(CRITERIA, comps, strict=True))
@@ -74,17 +92,15 @@ def check(path: Path) -> list[str]:
             by_name.setdefault(name, []).append((repo, criteria))
             totals.append((name, total))
 
-    if not totals:
+    if not matched:
         return [f"{path}: no scorecard rows parsed"]
 
     ordered = [t for _, t in totals]
-    if ordered != sorted(ordered, reverse=True):
-        for i in range(len(ordered) - 1):
-            if ordered[i] < ordered[i + 1]:
-                problems.append(
-                    f"order: {totals[i][0]} ({ordered[i]}) precedes "
-                    f"{totals[i + 1][0]} ({ordered[i + 1]})"
-                )
+    problems.extend(
+        f"order: {totals[i][0]} ({ordered[i]}) precedes {totals[i + 1][0]} ({ordered[i + 1]})"
+        for i in range(len(ordered) - 1)
+        if ordered[i] < ordered[i + 1]
+    )
 
     # Two copies of one script that have drifted apart are wrong on their own,
     # whatever the detail tables happen to restate. Checking this inside the
