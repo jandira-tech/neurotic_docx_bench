@@ -34,8 +34,14 @@ Design decisions carried over from `docs/WORD_DRIVER_AUDIT.md`:
 - **Zero revisions is reported, not failed.** Two identical documents compare to
   no revisions legitimately; the count is surfaced so a batch of unexpected
   zeroes is visible instead of silently passing.
-- **One failed pair recycles Word.** After a bad document Word keeps answering,
-  returning empty documents for every later open, with no error (§5.20).
+- **A failed pair is cleaned up, not restarted.** The repair prompt is declined
+  and the documents closed; Word is recycled only when that cleanup cannot
+  bring it back to zero open documents, or after `poison_streak` (3)
+  consecutive failures, when the streak is replayed on the fresh Word. After a
+  bad document Word can keep answering while returning empty documents for
+  every later open, with no error (§5.20). In one-osascript mode a timeout, a
+  dropped connection or three empty loads in a row stop the batch, and the
+  resume recycles before retrying the rows that never finished.
 
 Plumbing, noted because it is visible in the staging directory and is not a
 finding: the two sides of a pair go in under `base__` / `rev__` prefixes. A pair
@@ -63,7 +69,6 @@ from __future__ import annotations
 import os
 import re
 from contextvars import ContextVar
-import shutil
 import signal
 import sys
 import time
@@ -98,6 +103,7 @@ from word_pdf import (  # must follow the sys.path guard above
     positive_seconds,
     preflight,
     preset_notice,
+    publish,
     recover_after_failure,
     run_batch_with_resume,
     safe_stage_name,
@@ -543,6 +549,9 @@ def redline_preflight(
 ) -> str:
     """Refuse to redline while Word holds documents that are not ours.
 
+    The default closes every open document before each pair (without asking,
+    never Word itself), so this only refuses under `--do-not-close`.
+
     `word_pdf.py`'s `--allow-open-docs` is a trade the operator is entitled to
     make: it costs them Word restarts, and the export closes only the document
     it opened. Redlining cannot offer the same deal, because its *correctness*
@@ -860,11 +869,15 @@ def _redline_one(
             if not ok:
                 result.error = f"redline saved but PDF export failed: {err}"
                 return result
-            _deliver(staged_pdf, outputs.pdf)
+            if undelivered := _deliver(staged_pdf, outputs.pdf):
+                result.error = undelivered
+                return result
             result.pdf = outputs.pdf
 
         if outputs.docx is not None:
-            _deliver(staged_docx, outputs.docx)
+            if undelivered := _deliver(staged_docx, outputs.docx):
+                result.error = undelivered
+                return result
             result.docx = outputs.docx
 
         result.ok = True
@@ -875,15 +888,13 @@ def _redline_one(
         staged_docx.unlink(missing_ok=True)
 
 
-def _deliver(staged: Path, final: Path) -> None:
-    """Copy one finished artifact out of the container into the user's folder.
+def _deliver(staged: Path, final: Path) -> str:
+    """Put one finished artifact in the user's folder. '' on success.
 
-    `copy2` rather than `move`, and copy rather than write-in-place: the staged
-    file stays where Word left it until the run ends, so a failure partway
-    through delivery loses nothing that cannot be re-delivered from staging.
+    `publish` copies beside `final` and renames it in, so a copy that dies
+    partway leaves the previous result intact rather than truncated.
     """
-    final.parent.mkdir(parents=True, exist_ok=True)
-    shutil.copy2(staged, final)
+    return publish(staged, final)
 
 
 def _redline_batched(
@@ -1017,9 +1028,12 @@ def _redline_batched(
             )
             if pdf_ok and pdf_made:
                 assert staged_pdf is not None
-                _deliver(staged_pdf, outputs.pdf)
-                result.pdf = outputs.pdf
-                result.ok = True
+                if undelivered := _deliver(staged_pdf, outputs.pdf):
+                    result.error = undelivered
+                    logger.error(f"[batch] FAIL: {result.label} — {undelivered}")
+                else:
+                    result.pdf = outputs.pdf
+                    result.ok = True
             else:
                 result.error = (
                     "redline saved but PDF export failed: "
@@ -1030,8 +1044,12 @@ def _redline_batched(
             result.ok = True
 
         if result.ok and outputs.docx is not None:
-            _deliver(staged_docx, outputs.docx)
-            result.docx = outputs.docx
+            if undelivered := _deliver(staged_docx, outputs.docx):
+                result.ok = False
+                result.error = undelivered
+                logger.error(f"[batch] FAIL: {result.label} — {undelivered}")
+            else:
+                result.docx = outputs.docx
         if result.ok and result.revisions == 0:
             logger.warning(f"  compared clean (no revisions): {result.label}")
 
