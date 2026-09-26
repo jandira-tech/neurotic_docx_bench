@@ -61,6 +61,7 @@ minute by hand before a batch:
 from __future__ import annotations
 
 import os
+import re
 from contextvars import ContextVar
 import shutil
 import signal
@@ -240,13 +241,16 @@ class PairResult:
 # `format document` is WdSaveFormat 12 (wdFormatXMLDocument, i.e. .docx). The
 # legacy binary format is the separate `format document97` — not the same thing.
 _COMPARE = """
-on compareBasename(posixPath)
-  set od to AppleScript's text item delimiters
-  set AppleScript's text item delimiters to "/"
-  set bits to text items of posixPath
-  set AppleScript's text item delimiters to od
-  return last item of bits
-end compareBasename
+-- `--do-not-close` only: close the documents that appeared after `seen` was
+-- taken, newest first, and leave everything that was already open alone.
+on closeNew(seen)
+  if seen is missing value then return
+  tell application "Microsoft Word"
+    repeat with i from (count of documents) to 1 by -1
+      if seen does not contain (name of document i) then close document i saving no
+    end repeat
+  end tell
+end closeNew
 
 on run argv
   set basePath to item 1 of argv
@@ -255,8 +259,9 @@ on run argv
   set revisionCount to -1
   with timeout of 900 seconds
     tell application "Microsoft Word"
-      -- Default: close every document, not Word. A leftover document is what
-      -- got saved under the next pair's name after a dropped connection.
+      -- Start from an empty Word (the documents, never Word itself): a leftover
+      -- document is what got saved under the next pair's name after a dropped
+      -- connection. `--do-not-close` drops this line and closes only its own.
       close every document saving no
       set seenBeforeOpen to {}
       repeat with i from 1 to (count of documents)
@@ -345,13 +350,16 @@ on restoreAlerts(priorAlerts)
   end try
 end restoreAlerts
 
-on compareBasename(posixPath)
-  set od to AppleScript's text item delimiters
-  set AppleScript's text item delimiters to "/"
-  set bits to text items of posixPath
-  set AppleScript's text item delimiters to od
-  return last item of bits
-end compareBasename
+-- `--do-not-close` only: close the documents that appeared after `seen` was
+-- taken, newest first, and leave everything that was already open alone.
+on closeNew(seen)
+  if seen is missing value then return
+  tell application "Microsoft Word"
+    repeat with i from (count of documents) to 1 by -1
+      if seen does not contain (name of document i) then close document i saving no
+    end repeat
+  end tell
+end closeNew
 
 on run argv
   set manifestPath to item 1 of argv
@@ -378,6 +386,7 @@ on run argv
           set revP to item 3 of f
           set outP to item 4 of f
           set revisionCount to -1
+          set seenBeforeOpen to missing value
           try
             with timeout of 900 seconds
               tell application "Microsoft Word"
@@ -472,12 +481,32 @@ on run argv
 end run
 """.strip()
 
-# `--do-not-close` keeps whatever is already open. The candidate-count check
-# still refuses to guess, so a leftover cannot be saved under this pair's name.
-_COMPARE_KEEP_OPEN = _COMPARE.replace("close every document saving no", "-- do-not-close")
-_COMPARE_BATCH_KEEP_OPEN = _COMPARE_BATCH.replace(
-    "close every document saving no", "-- do-not-close"
-)
+
+
+def _keep_open(script: str) -> str:
+    """The `--do-not-close` variant: close only what this pair opened.
+
+    The opening close-all goes; every other close-all, including the error
+    handler's `tell … to` one-liner, becomes `closeNew(seenBeforeOpen)`. A
+    plain comment-out left `tell … to -- …`, which does not compile, and left
+    the base and the result open after every pair. The candidate-count checks
+    still refuse to guess, so a leftover cannot be saved under this pair's name.
+    """
+    out, opening = re.subn(
+        r"close every document saving no\n\s*(set seenBeforeOpen to \{\})", r"\1", script
+    )
+    out = out.replace(
+        'tell application "Microsoft Word" to close every document saving no',
+        "my closeNew(seenBeforeOpen)",
+    )
+    out = out.replace("close every document saving no", "my closeNew(seenBeforeOpen)")
+    if opening != 1 or "close every document saving no" in out:
+        raise RuntimeError("keep-open rewrite no longer matches the compare script")
+    return out
+
+
+_COMPARE_KEEP_OPEN = _keep_open(_COMPARE)
+_COMPARE_BATCH_KEEP_OPEN = _keep_open(_COMPARE_BATCH)
 
 
 def _reject_wrong_pair(staged: Path, base: Path, revision: Path) -> str:
