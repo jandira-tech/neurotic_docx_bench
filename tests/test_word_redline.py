@@ -596,7 +596,11 @@ def test_cli_warns_that_pdf_only_discards_the_redline_docx(
 
     a = _folder(tmp_path / "a", "deal.docx")
     b = _folder(tmp_path / "b", "deal.docx")
-    monkeypatch.setattr(wr, "preflight", lambda s, *, allow_open_docs: "Word is busy")
+    monkeypatch.setattr(
+        wr,
+        "preflight",
+        lambda s, *, allow_open_docs, close_documents=True: "Word is busy",
+    )
 
     result = CliRunner().invoke(wr.app, ["--a", str(a), "--b", str(b)])
     assert result.exit_code == 2
@@ -612,7 +616,11 @@ def test_cli_docx_only_skips_the_pdf_reminders(
 
     a = _folder(tmp_path / "a", "deal.docx")
     b = _folder(tmp_path / "b", "deal.docx")
-    monkeypatch.setattr(wr, "preflight", lambda s, *, allow_open_docs: "Word is busy")
+    monkeypatch.setattr(
+        wr,
+        "preflight",
+        lambda s, *, allow_open_docs, close_documents=True: "Word is busy",
+    )
 
     result = CliRunner().invoke(wr.app, ["--a", str(a), "--b", str(b), "--emit", "docx"])
     assert "Best for printing" not in result.output
@@ -627,7 +635,9 @@ def test_cli_runs_the_batch_and_returns_the_report_code(
     b = _folder(tmp_path / "b", "deal.docx")
     seen: dict[str, object] = {}
 
-    monkeypatch.setattr(wr, "preflight", lambda s, *, allow_open_docs: "")
+    monkeypatch.setattr(
+        wr, "preflight", lambda s, *, allow_open_docs, close_documents=True: ""
+    )
     monkeypatch.setattr(wr.Watchdogs, "start", lambda self: None)
     monkeypatch.setattr(wr.Watchdogs, "stop", lambda self: None)
     monkeypatch.setattr(wr.WordSession, "quit_if_ours", lambda self: None)
@@ -761,11 +771,24 @@ def test_compare_batch_script_keeps_every_per_pair_rule() -> None:
     src = wr._COMPARE_BATCH
     assert "active document" not in _applescript_code(src)
     assert "repeat with i from 1 to docCount" in src
+    assert "cmpCount is not 1" in src
+    assert "seenBeforeCompare does not contain nm" in src
+    assert "refusing to guess" in src
+    assert "close every document" not in wr._COMPARE_BATCH_KEEP_OPEN
     assert "detect format changes true" in src
     assert src.index("count of paragraphs") < src.index("compare baseDoc")
     # One bad pair closes and continues rather than stopping the run.
     assert "on error errMsg" in src
     assert src.count("close every document saving no") >= 4
+    # A timeout, or a streak of empty bases, poisons every later compare (§5.20).
+    # The timed-out pair is a final [fail] and the batch stops. Empty-load streaks
+    # are [retry], which the log parser ignores, so they are retried after a recycle.
+    assert "set emptyStreak to 0" in src
+    assert '"[retry]" & tab & itemId' in src
+    assert 'errMsg contains "loaded empty"' in src
+    assert 'if errMsg contains "timed out" then' in src
+    assert "exit repeat" in src
+    assert "emptyStreak ≥ 3" in src
     # The revision count rides out on the [ok] line.
     assert '"[ok]" & tab & itemId & tab & revisionCount' in src
     assert "set displayAlerts to false" in src
@@ -992,7 +1015,9 @@ def test_cli_wires_the_two_script_flag_through(
     b = _folder(tmp_path / "b", "deal.docx")
     seen: dict[str, object] = {}
 
-    monkeypatch.setattr(wr, "preflight", lambda s, *, allow_open_docs: "")
+    monkeypatch.setattr(
+        wr, "preflight", lambda s, *, allow_open_docs, close_documents=True: ""
+    )
     monkeypatch.setattr(wr.Watchdogs, "start", lambda self: None)
     monkeypatch.setattr(wr.Watchdogs, "stop", lambda self: None)
     monkeypatch.setattr(wr.WordSession, "quit_if_ours", lambda self: None)
@@ -1068,8 +1093,10 @@ def test_redline_refuses_to_run_with_documents_already_open(
     monkeypatch.setattr(session, "warm", lambda: True)
     monkeypatch.setattr(session, "open_document_count", lambda: 2)
 
-    reason = wr.redline_preflight(session, allow_open_docs=True)
-    assert reason, "must refuse even with the override"
+    # Default closes every document and leaves Word running, so this is not a refusal.
+    assert wr.redline_preflight(session, allow_open_docs=True) == ""
+    reason = wr.redline_preflight(session, allow_open_docs=True, close_documents=False)
+    assert reason, "--do-not-close must still refuse while a foreign document is open"
     assert "compare" in reason.lower() or "identif" in reason.lower()
     assert session.started_clean is False
 
@@ -1160,7 +1187,10 @@ def test_redline_folders_refuses_when_word_holds_foreign_documents(
     session.preflighted = True
     session.started_clean = False  # Word holds someone else's document
 
-    results = wr.redline_folders(a, b, tmp_path / "out", session=session)
+    # Default closes those documents. --do-not-close is what still refuses.
+    results = wr.redline_folders(
+        a, b, tmp_path / "out", session=session, close_documents=False
+    )
     assert ran == [], f"reached Word with foreign documents open: {ran}"
     assert results and all(r.error for r in results)
 
@@ -1195,7 +1225,7 @@ def test_redline_folders_preflights_the_session_it_creates(
 
     asked: list[bool] = []
 
-    def fake_preflight(session, *, allow_open_docs):
+    def fake_preflight(session, *, allow_open_docs, close_documents=True):
         asked.append(allow_open_docs)
         return "Word has documents open."
 

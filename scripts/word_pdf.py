@@ -69,6 +69,7 @@ from __future__ import annotations
 
 import math
 import os
+from contextvars import ContextVar
 import shutil
 import signal
 import subprocess
@@ -99,7 +100,22 @@ AUTORECOVERY = (
 # because macOS UI labels normally use U+2019 and a straight-quote match would
 # silently never fire. The watchdog logs every button it actually sees the first
 # time it meets this dialog, so the real label is recorded rather than guessed.
-MERP_DECLINE = ("Don't Send", "Don’t Send", "Cancel", "Close", "Quit", "No")
+#
+# Don't Send stays first: when that button exists, it is the one that refuses
+# the report. OK is last. On this Mac the window has no Don't Send — its
+# buttons are OK, More Information, and an unnamed control reported as
+# "missing value". OK closes that window. More Information only opens the
+# details pane, so it is not listed.
+MERP_DECLINE = (
+    "Don't Send",
+    "Don’t Send",
+    "Cancel",
+    "Close",
+    "Quit",
+    "No",
+    "OK",
+    "Ok",
+)
 
 # Word's own alerts. Grant/Select/Open/Allow are pressed to ACCEPT a sandbox
 # prompt; Cancel is pressed only on a non-grant alert. Pressing Cancel on a
@@ -264,20 +280,33 @@ on run argv
   set outPath to item 2 of argv
   with timeout of 600 seconds
     tell application "Microsoft Word"
+      set theDoc to missing value
+      close every document saving no
       open (POSIX file inPath) confirm conversions false add to recent files false
       set theDoc to document 1
       set paraCount to count of paragraphs of theDoc
       if paraCount is 0 then
-        close theDoc saving no
+        close every document saving no
         error "document loaded empty (Word could not read it)"
       end if
       save as theDoc file name outPath file format format PDF
-      close theDoc saving no
+      close every document saving no
     end tell
   end timeout
   return "ok"
 end run
 """.strip()
+
+# `--do-not-close`: close only the document this export opened.
+# Default closes every document. `--do-not-close` flips this for the export
+# that is about to run. A context var so callers that replace `export_pdf`
+# in tests are not forced to grow a parameter.
+_close_documents: ContextVar[bool] = ContextVar("word_close_documents", default=True)
+
+_EXPORT_PDF_KEEP_OPEN = _EXPORT_PDF.replace(
+    "close every document saving no",
+    "if theDoc is not missing value then close theDoc saving no",
+)
 
 
 # ─── watchdogs ───────────────────────────────────────────────────────────────
@@ -816,7 +845,8 @@ def export_pdf(
     staged_docx: Path, staged_pdf: Path, *, timeout: float = 180.0
 ) -> tuple[bool, str]:
     """Open one staged DOCX and save it as PDF. Returns (ok, error)."""
-    rc, _, err = osa(_EXPORT_PDF, str(staged_docx), str(staged_pdf), timeout=timeout)
+    script = _EXPORT_PDF if _close_documents.get() else _EXPORT_PDF_KEEP_OPEN
+    rc, _, err = osa(script, str(staged_docx), str(staged_pdf), timeout=timeout)
     produced = staged_pdf.exists() and staged_pdf.stat().st_size > 0
     if rc == 0 and produced:
         return True, ""
@@ -1114,6 +1144,7 @@ on run argv
   end tell
   set okCount to 0
   set failCount to 0
+  set emptyStreak to 0
   try
     repeat with r in rows
       set rowText to r as string
@@ -1127,28 +1158,49 @@ on run argv
           try
             with timeout of 600 seconds
               tell application "Microsoft Word"
+                set theDoc to missing value
+                close every document saving no
                 open POSIX file inP
                 set theDoc to document 1
                 if (count of paragraphs of theDoc) is 0 then
-                  close theDoc saving no
+                  close every document saving no
                   set theDoc to missing value
                   error "document loaded empty (Word could not read it)"
                 end if
                 save as theDoc file name outP file format format PDF
-                close theDoc saving no
+                close every document saving no
                 set theDoc to missing value
               end tell
             end timeout
+            set emptyStreak to 0
             set okCount to okCount + 1
             my logLine(logPath, "[ok]" & tab & itemId)
           on error errMsg
-            set failCount to failCount + 1
             try
-              if theDoc is not missing value then
-                tell application "Microsoft Word" to close theDoc saving no
-              end if
+              tell application "Microsoft Word" to close every document saving no
             end try
-            my logLine(logPath, "[fail]" & tab & itemId & tab & errMsg)
+            -- A timeout leaves Word returning empty documents for later opens
+            -- (§5.20). Record that file as a final failure and stop, so the
+            -- tail is retried after a recycle and this file is not first again.
+            -- Three empty loads in a row is the same poison when the timeout was
+            -- in a previous process. [retry] is not a [fail]: the parser ignores
+            -- it, so those rows are retried instead of frozen.
+            if errMsg contains "timed out" then
+              set failCount to failCount + 1
+              my logLine(logPath, "[fail]" & tab & itemId & tab & errMsg)
+              exit repeat
+            else if errMsg contains "Connection is invalid" or errMsg contains "isn't running" or errMsg contains "isn’t running" then
+              my logLine(logPath, "[retry]" & tab & itemId & tab & errMsg)
+              exit repeat
+            else if errMsg contains "loaded empty" then
+              set emptyStreak to emptyStreak + 1
+              my logLine(logPath, "[retry]" & tab & itemId & tab & errMsg)
+              if emptyStreak ≥ 3 then exit repeat
+            else
+              set emptyStreak to 0
+              set failCount to failCount + 1
+              my logLine(logPath, "[fail]" & tab & itemId & tab & errMsg)
+            end if
           end try
         end if
       end if
@@ -1163,6 +1215,12 @@ on run argv
 end run
 """.strip()
 
+# `--do-not-close` closes only the document this batch opened.
+_EXPORT_BATCH_KEEP_OPEN = _EXPORT_BATCH.replace(
+    "close every document saving no",
+    "if theDoc is not missing value then close theDoc saving no",
+)
+
 
 def convert_folder(
     src: Path,
@@ -1173,6 +1231,7 @@ def convert_folder(
     session: WordSession | None = None,
     stage: Stage | None = None,
     one_osascript: bool = True,
+    close_documents: bool = True,
     max_passes: int = 3,
     poison_streak: int = 3,
 ) -> list[Result]:
@@ -1219,6 +1278,7 @@ def convert_folder(
             timeout=timeout,
             max_passes=max_passes,
             poison_streak=poison_streak,
+            close_documents=close_documents,
         )
     finally:
         if ctx:
@@ -1238,6 +1298,7 @@ def _convert_serial(
     timeout: float,
     max_passes: int = 3,
     poison_streak: int = 3,
+    close_documents: bool = True,
 ) -> list[Result]:
     """One `osascript` per document, with the malformed-document path in Python."""
     results: list[Result] = []
@@ -1252,7 +1313,11 @@ def _convert_serial(
         started = time.monotonic()
         staged_in = stage.place(docx)
         staged_out = stage.outbox / final_pdf.name
-        ok, err = export_pdf(staged_in, staged_out, timeout=timeout)
+        token = _close_documents.set(close_documents)
+        try:
+            ok, err = export_pdf(staged_in, staged_out, timeout=timeout)
+        finally:
+            _close_documents.reset(token)
         elapsed = time.monotonic() - started
 
         if ok:
@@ -1278,7 +1343,14 @@ def _convert_serial(
                     "trusting Word to still be reading documents"
                 )
                 if session.recycle(stage.inbox, stage.outbox):
-                    _replay(streak, results, out_dir=out_dir, stage=stage, timeout=timeout)
+                    _replay(
+                        streak,
+                        results,
+                        out_dir=out_dir,
+                        stage=stage,
+                        timeout=timeout,
+                        close_documents=close_documents,
+                    )
                 streak.clear()
 
         staged_in.unlink(missing_ok=True)
@@ -1292,6 +1364,7 @@ def _replay(
     out_dir: Path | None,
     stage: Stage,
     timeout: float,
+    close_documents: bool = True,
 ) -> None:
     """Re-run a failure streak against a freshly restarted Word, in place.
 
@@ -1310,7 +1383,11 @@ def _replay(
         staged_in = stage.place(docx)
         staged_out = stage.outbox / final_pdf.name
         started = time.monotonic()
-        ok, err = export_pdf(staged_in, staged_out, timeout=timeout)
+        token = _close_documents.set(close_documents)
+        try:
+            ok, err = export_pdf(staged_in, staged_out, timeout=timeout)
+        finally:
+            _close_documents.reset(token)
         elapsed = time.monotonic() - started
         staged_in.unlink(missing_ok=True)
         if not ok:
@@ -1337,6 +1414,7 @@ def _convert_batched(
     timeout: float,
     max_passes: int = 3,
     poison_streak: int = 3,
+    close_documents: bool = True,
 ) -> list[Result]:
     """One monolithic AppleScript for the whole folder, resumed if it dies.
 
@@ -1367,7 +1445,7 @@ def _convert_batched(
     logger.info(f"[batch] one osascript for {len(rows)} document(s)")
     started = time.monotonic()
     recorded = run_batch_with_resume(
-        _EXPORT_BATCH,
+        _EXPORT_BATCH if close_documents else _EXPORT_BATCH_KEEP_OPEN,
         rows,
         stage.root or stage.inbox.parent,
         per_item_timeout=timeout,
@@ -1456,7 +1534,11 @@ def preset_notice() -> None:
 
 
 def preflight(
-    session: WordSession, *, allow_open_docs: bool, one_osascript: bool = False
+    session: WordSession,
+    *,
+    allow_open_docs: bool,
+    one_osascript: bool = False,
+    close_documents: bool = True,
 ) -> str:
     """Refuse to start on a machine that is not ready. Returns '' when ready.
 
@@ -1485,14 +1567,17 @@ def preflight(
             "query failed). Refusing rather than assuming it is empty: close "
             "Word, or make sure it is responding, and re-run."
         )
-    if count > 0 and one_osascript:
+    # Default closes every document and does not quit Word. --do-not-close is
+    # the only mode that still has to refuse a batch while something is open,
+    # because that mode will not clear a leftover before the next save.
+    if count > 0 and not close_documents and one_osascript:
         return (
-            f"Word has {count} document(s) open, and the default monolithic run "
-            "suppresses Word's alerts for the whole run and cannot act between "
-            "documents. --allow-open-docs does not waive this. Close them, or "
-            "pass --no-one-osascript to export one document per osascript."
+            f"Word has {count} document(s) open. --do-not-close will not close "
+            "them, and the monolithic run would then save whichever document "
+            "is open. Drop --do-not-close (the default closes documents, not "
+            "Word), or pass --no-one-osascript."
         )
-    if count > 0 and not allow_open_docs:
+    if count > 0 and not close_documents and not allow_open_docs:
         return (
             f"Word has {count} document(s) open and this batch closes documents "
             "without saving. Close them, or pass --allow-open-docs — which keeps "
@@ -1540,6 +1625,14 @@ def main(
         bool,
         typer.Option("--allow-open-docs", help="Run even if Word already has documents open."),
     ] = False,
+    do_not_close: Annotated[
+        bool,
+        typer.Option(
+            "--do-not-close",
+            help="Do not close documents Word already has open. The default closes "
+            "every document and leaves Word itself running.",
+        ),
+    ] = False,
     quiet: Annotated[
         bool, typer.Option("--quiet", "-q", help="Errors and summary only.")
     ] = False,
@@ -1562,7 +1655,10 @@ def main(
 
     session = WordSession()
     if problem := preflight(
-        session, allow_open_docs=allow_open_docs, one_osascript=one_osascript
+        session,
+        allow_open_docs=allow_open_docs,
+        one_osascript=one_osascript,
+        close_documents=not do_not_close,
     ):
         console.print(f"[red]{problem}[/]")
         raise typer.Exit(2)
@@ -1575,6 +1671,7 @@ def main(
             timeout=timeout,
             session=session,
             one_osascript=one_osascript,
+            close_documents=not do_not_close,
         )
         session.quit_if_ours()
     raise typer.Exit(report(results, f"DOCX → PDF: {src}"))

@@ -342,8 +342,12 @@ def test_preflight_refuses_when_word_has_documents_open(monkeypatch: pytest.Monk
     monkeypatch.setattr(session, "warm", lambda: True)
     monkeypatch.setattr(session, "open_document_count", lambda: 3)
 
-    assert "--allow-open-docs" in wp.preflight(session, allow_open_docs=False)
-    assert wp.preflight(session, allow_open_docs=True) == ""
+    # Default closes the documents and leaves Word running.
+    assert wp.preflight(session, allow_open_docs=False) == ""
+    assert "--allow-open-docs" in wp.preflight(
+        session, allow_open_docs=False, close_documents=False
+    )
+    assert wp.preflight(session, allow_open_docs=True, close_documents=False) == ""
 
 
 def test_preflight_reports_unresponsive_word(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -369,9 +373,12 @@ def test_preflight_refuses_one_osascript_while_documents_are_open(
     monkeypatch.setattr(session, "warm", lambda: True)
     monkeypatch.setattr(session, "open_document_count", lambda: 2)
 
-    problem = wp.preflight(session, allow_open_docs=True, one_osascript=True)
-    # The message must name the way out, which is now the opt-out flag.
-    assert "--no-one-osascript" in problem
+    # Default closes documents, so an open file is not a refusal.
+    assert wp.preflight(session, allow_open_docs=True, one_osascript=True) == ""
+    problem = wp.preflight(
+        session, allow_open_docs=True, one_osascript=True, close_documents=False
+    )
+    assert "--do-not-close" in problem
     # The serial path is still the operator's call to make.
     assert wp.preflight(session, allow_open_docs=True, one_osascript=False) == ""
     # And a clean machine may use either.
@@ -401,16 +408,16 @@ def test_preflight_refuses_when_the_document_count_is_unknown(
         assert "could not determine" in problem, (allow, one, problem)
 
 
-def test_export_batch_closes_only_the_document_it_opened() -> None:
-    """`close every document saving no` discards unsaved work that is not ours.
+def test_export_batch_closes_every_document_and_does_not_quit_word() -> None:
+    """A leftover open document is what got saved as the next file.
 
-    `_EXPORT_PDF` was corrected for this; the batch script kept the destructive
-    form at all three sites, including the success path. The preflight gate above
-    is the real guarantee, but `convert_folder` is callable directly, so the
-    script must not be destructive on its own.
+    The default closes every document between files and does not quit Word.
+    `--do-not-close` is the script that only closes the document it opened.
     """
-    assert "close every document" not in wp._EXPORT_BATCH
-    assert wp._EXPORT_BATCH.count("close theDoc saving no") == 3
+    assert "close every document saving no" in wp._EXPORT_BATCH
+    assert "quit" not in wp._EXPORT_BATCH
+    assert "close every document" not in wp._EXPORT_BATCH_KEEP_OPEN
+    assert "close theDoc saving no" in wp._EXPORT_BATCH_KEEP_OPEN
 
 
 def test_cli_tells_preflight_which_mode_it_is_about_to_run(
@@ -421,9 +428,10 @@ def test_cli_tells_preflight_which_mode_it_is_about_to_run(
 
     seen: dict[str, bool] = {}
 
-    def fake_preflight(_session, *, allow_open_docs, one_osascript):
+    def fake_preflight(_session, *, allow_open_docs, one_osascript, close_documents=True):
         seen["allow_open_docs"] = allow_open_docs
         seen["one_osascript"] = one_osascript
+        seen["close_documents"] = close_documents
         return "refused"
 
     src = tmp_path / "src"
@@ -434,7 +442,7 @@ def test_cli_tells_preflight_which_mode_it_is_about_to_run(
         ["--src", str(src), "--no-check-preset", "--one-osascript", "--allow-open-docs"],
     )
     assert result.exit_code == 2
-    assert seen == {"allow_open_docs": True, "one_osascript": True}
+    assert seen == {"allow_open_docs": True, "one_osascript": True, "close_documents": True}
 
 
 # ─── watchdogs ───────────────────────────────────────────────────────────────
@@ -492,6 +500,43 @@ def test_watchdog_declines_error_reporting_as_its_own_process(
     dogs.stop()
 
     assert wp.MERP_PROC in pressed_on
+
+
+def test_watchdog_closes_error_report_ok_and_not_more_information(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """This machine's report window is OK / More Information, not Don't Send.
+
+    OK dismisses it. More Information only opens the details pane, so it must
+    not be pressed. The button dump also reports an unnamed control as
+    'missing value'; that is not a button to hit.
+    """
+    pressed: list[str] = []
+    present = {"OK", "More Information"}
+
+    def fake_osa(script, *args, timeout=60.0):
+        if script is wp._DUMP_BUTTONS:
+            shown = "OK\tMore Information\tmissing value\t" if args[0] == wp.MERP_PROC else ""
+            return 0, shown, ""
+        if script is wp._PRESS and args and args[0] == wp.MERP_PROC:
+            for name in args[1:]:
+                if name in present:
+                    pressed.append(name)
+                    return 0, name, ""
+            return 0, "", ""
+        return 0, "", ""
+
+    monkeypatch.setattr(wp, "osa", fake_osa)
+    dogs = wp.Watchdogs(poll=0.01)
+    dogs.start()
+    deadline = wp.time.monotonic() + 3
+    while not pressed and wp.time.monotonic() < deadline:
+        wp.time.sleep(0.02)
+    dogs.stop()
+
+    assert pressed and set(pressed) == {"OK"}
+    assert "More Information" not in wp.MERP_DECLINE
+    assert "missing value" not in wp.MERP_DECLINE
 
 
 def test_watchdog_stop_is_idempotent(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -600,7 +645,11 @@ def test_cli_stops_when_preflight_refuses(
     from typer.testing import CliRunner
 
     (tmp_path / "src").mkdir()
-    monkeypatch.setattr(wp, "preflight", lambda s, *, allow_open_docs, one_osascript=False: "Word is busy")
+    monkeypatch.setattr(
+        wp,
+        "preflight",
+        lambda s, *, allow_open_docs, one_osascript=False, close_documents=True: "Word is busy",
+    )
     result = CliRunner().invoke(wp.app, ["--src", str(tmp_path / "src"), "--no-check-preset"])
     assert result.exit_code == 2
 
@@ -612,7 +661,11 @@ def test_cli_runs_the_batch_and_returns_the_report_code(
 
     src = tmp_path / "src"
     _touch(src / "a.docx")
-    monkeypatch.setattr(wp, "preflight", lambda s, *, allow_open_docs, one_osascript=False: "")
+    monkeypatch.setattr(
+        wp,
+        "preflight",
+        lambda s, *, allow_open_docs, one_osascript=False, close_documents=True: "",
+    )
     monkeypatch.setattr(wp.Watchdogs, "start", lambda self: None)
     monkeypatch.setattr(wp.Watchdogs, "stop", lambda self: None)
     monkeypatch.setattr(wp.WordSession, "quit_if_ours", lambda self: None)
@@ -963,6 +1016,18 @@ def test_parse_batch_log_keeps_a_multi_field_error_whole() -> None:
     assert log.results["3"] == (False, "Word said: -1728\tand more")
 
 
+def test_parse_batch_log_ignores_retry_so_poison_is_not_final() -> None:
+    """[retry] is how a batch says 'Word was poisoned, try this again'.
+
+    [fail] is final. A timeout's empty followers must not be [fail], or one
+    wedged Word permanently condemns the rest of the folder.
+    """
+    log = wp.parse_batch_log("[retry]\t0\tAppleEvent timed out\n[ok]\t1\n[done]\t1\t0\n")
+    assert "0" not in log.results
+    assert log.results["1"] == (True, "")
+    assert log.done is True
+
+
 def test_parse_batch_log_omits_items_the_run_never_reached() -> None:
     """No line at all is not a failure — it is the only case worth retrying."""
     log = wp.parse_batch_log("[ok]\t0\n[ok]\t1\n")
@@ -1211,17 +1276,24 @@ def test_export_batch_script_closes_and_continues_on_a_bad_document() -> None:
     src = wp._EXPORT_BATCH
     assert "set displayAlerts to false" in src
     assert "on error errMsg" in src
-    # Close the document WE opened, record it, move to the next file. This
-    # asserted `close every document saving no` until that was found to discard
-    # a human's unsaved work; the contract is "one bad document does not stop
-    # the run", never "close whatever is open".
-    assert "close every document" not in src
-    assert src.count("close theDoc saving no") == 3
-    # The error handler must not close a document the `open` never produced.
+    # Default closes every open document between files and does not quit Word.
+    # A leftover was saved under the next filename after Word's connection died.
+    assert "close every document saving no" in src
+    assert "quit" not in src
     assert "set theDoc to missing value" in src
-    assert "if theDoc is not missing value then" in src
     assert '"[fail]" & tab & itemId' in src
     assert '"[done]"' in src
+    # A timed-out Apple event leaves Word returning empty documents for every
+    # later open (§5.20). The timed-out file is a final [fail] and the batch
+    # stops, so the tail is retried after a recycle without lining that file up
+    # first again. A streak of empty loads is the same poison when the timeout
+    # was in a previous process: [retry] is not a [fail], so those are retried.
+    assert "set emptyStreak to 0" in src
+    assert '"[retry]" & tab & itemId' in src
+    assert 'errMsg contains "loaded empty"' in src
+    assert 'if errMsg contains "timed out" then' in src
+    assert "exit repeat" in src
+    assert "emptyStreak ≥ 3" in src
     # Health before the save, and nothing interpolated: paths arrive by manifest.
     assert src.index("count of paragraphs") < src.index("save as theDoc")
     assert "item 1 of argv" in src and "item 2 of argv" in src
@@ -1360,15 +1432,14 @@ def test_cleanup_never_sweeps_lock_files_in_the_user_s_own_folder(
     assert human_lock.exists(), "someone else's lock file must survive"
 
 
-def test_export_pdf_closes_only_the_document_it_opened() -> None:
-    """The export script must not close documents it did not open.
+def test_export_pdf_closes_every_document_and_the_flag_does_not() -> None:
+    """Default closes every document. `--do-not-close` closes only ours.
 
-    Under `--allow-open-docs` a human's documents are open alongside ours, and
-    `close every document saving no` discards their unsaved work on *every*
-    conversion, not only on failure.
+    Neither script quits Word.
     """
-    assert "close every document saving no" not in wp._EXPORT_PDF
-    assert wp._EXPORT_PDF.count("close theDoc saving no") == 2
+    assert "close every document saving no" in wp._EXPORT_PDF
+    assert "quit" not in wp._EXPORT_PDF
+    assert "close every document" not in wp._EXPORT_PDF_KEEP_OPEN
 
 
 def test_recover_after_failure_closes_only_ours_when_word_was_not_clean(
