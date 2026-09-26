@@ -705,6 +705,7 @@ def redline_folders(
     with Stage(prefix="wordredline") as stage:
         try:
             run = _redline_batched if one_osascript else _redline_serial
+            logger.info(f"[redline] one_osascript={one_osascript} pairs={len(pairs)}")
             return run(
                 pairs,
                 out_dir,
@@ -1214,7 +1215,12 @@ def main(
         Path | None, typer.Option("--log", help="Also write a log file.")
     ] = None,
 ) -> None:
-    """Redline folder A against folder B using Microsoft Word's Compare Documents."""
+    """Redline folder A against folder B using Microsoft Word's Compare Documents.
+
+    Do not work in Word during a run: by default every open document is
+    closed without saving (Word itself keeps running). --do-not-close keeps
+    documents that were open before the run.
+    """
     timeout = positive_seconds(timeout, "--timeout")
     pdf_timeout = positive_seconds(pdf_timeout, "--pdf-timeout")
     logger.remove()
