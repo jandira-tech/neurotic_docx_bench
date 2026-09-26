@@ -40,3 +40,40 @@ def docx_dir(tmp_path, sample_docx) -> Path:
     for src in sample_docx:
         shutil.copy(src, d / src.name)
     return d
+
+
+# Programs that reach the live Microsoft Word on the machine running the tests.
+_LIVE_WORD_PROGRAMS = frozenset({"osascript", "open", "pkill", "pgrep"})
+
+
+@pytest.fixture
+def no_live_word(monkeypatch: pytest.MonkeyPatch):
+    """Fail any test that reaches the real Word instead of a stub.
+
+    `word_pdf.osa()` shells out to `osascript`. A test that forgets to stub one
+    path (failure recovery is the one that slipped) sends close-all and a
+    document count to whatever Word is running, and then passes or fails on how
+    many documents that Word happens to hold. A test that patches
+    `subprocess.run` itself still wins: its patch is applied after this one.
+    """
+    import functools
+    import subprocess
+
+    real_run = subprocess.run
+    reached: list[list[str]] = []
+
+    @functools.wraps(real_run)
+    def fenced_run(cmd, *args, **kwargs):
+        argv = [str(part) for part in cmd] if isinstance(cmd, (list, tuple)) else [str(cmd)]
+        if argv and Path(argv[0]).name in _LIVE_WORD_PROGRAMS:
+            reached.append(argv[:2])
+            # Fail at the call, not at teardown: a leak inside a polling loop
+            # (`warm`, `recycle`) would otherwise spin until its deadline. The
+            # exception is BaseException, so no `except Exception` swallows it.
+            pytest.fail(f"test reached the live Word through {argv[:2]}")
+        return real_run(cmd, *args, **kwargs)
+
+    monkeypatch.setattr(subprocess, "run", fenced_run)
+    yield
+    if reached:
+        pytest.fail(f"test reached the live Word through {len(reached)} call(s): {reached[:3]}")
