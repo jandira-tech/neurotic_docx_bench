@@ -20,11 +20,10 @@ W = "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
 
 def _docx(path: Path, paragraphs: list[str], *, deleted: str = "", inserted: str = "") -> None:
     bits = [
-        f'<?xml version="1.0"?>',
+        '<?xml version="1.0"?>',
         f'<w:document xmlns:w="{W}"><w:body>',
     ]
-    for text in paragraphs:
-        bits.append(f"<w:p><w:r><w:t>{text}</w:t></w:r></w:p>")
+    bits.extend(f"<w:p><w:r><w:t>{text}</w:t></w:r></w:p>" for text in paragraphs)
     if deleted:
         bits.append(f"<w:p><w:del><w:r><w:delText>{deleted}</w:delText></w:r></w:del></w:p>")
     if inserted:
