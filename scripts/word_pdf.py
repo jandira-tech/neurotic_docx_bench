@@ -1651,10 +1651,10 @@ def preflight(
         )
     if count > 0 and not close_documents and not allow_open_docs:
         return (
-            f"Word has {count} document(s) open and this batch closes documents "
-            "without saving. Close them, or pass --allow-open-docs — which keeps "
-            "your documents open, but disables Word restarts, so a wedged Word "
-            "ends the run instead of being recovered."
+            f"Word has {count} document(s) open. --do-not-close keeps them, and "
+            "keeping them means a failed document is never recovered by a Word "
+            "restart, so a wedged Word ends the run. Close them, or pass "
+            "--allow-open-docs to accept that."
         )
     return ""
 
