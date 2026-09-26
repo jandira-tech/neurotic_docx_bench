@@ -16,8 +16,9 @@ from pathlib import Path
 import pytest
 
 # Every test here stubs Word. The fence turns a missed stub into a failure
-# instead of a close-all sent to the Word that is actually running.
-pytestmark = pytest.mark.usefixtures("no_live_word")
+# instead of a close-all sent to the Word that is actually running. The
+# placeholder fixture is defined below, after `wr` is loaded.
+pytestmark = pytest.mark.usefixtures("no_live_word", "placeholders_pass_the_identity_check")
 
 _SCRIPTS = Path(__file__).resolve().parents[1] / "scripts"
 
@@ -35,6 +36,19 @@ def _load(name: str):
 
 wp = _load("word_pdf")
 wr = _load("word_redline")
+# Captured before the autouse fixture below stubs it for placeholder tests.
+_REAL_REJECT_WRONG_PAIR = wr._reject_wrong_pair
+
+
+@pytest.fixture
+def placeholders_pass_the_identity_check(monkeypatch: pytest.MonkeyPatch) -> None:
+    """These tests plant `PK` bytes where Word would have saved a package.
+
+    `matches_pair` fails anything that is not a docx package, which is right for
+    a real run and wrong for a placeholder. The check has its own tests
+    (`test_redline_identity.py`); the wiring test below restores the real one.
+    """
+    monkeypatch.setattr(wr, "_reject_wrong_pair", lambda staged, base, revision: "")
 
 
 def _verified_session(**kw) -> wp.WordSession:
@@ -1245,3 +1259,89 @@ def test_redline_folders_preflights_the_session_it_creates(
     assert ran == []
     assert results and all("documents open" in (r.error or "") for r in results)
 
+
+# ─── identity gate ───────────────────────────────────────────────────────────
+
+_W = "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+
+
+def _package(path: Path, *, text: str = "", deleted: str = "", inserted: str = "") -> Path:
+    body = ""
+    if text:
+        body += f"<w:p><w:r><w:t>{text}</w:t></w:r></w:p>"
+    if deleted:
+        body += f"<w:p><w:del><w:r><w:delText>{deleted}</w:delText></w:r></w:del></w:p>"
+    if inserted:
+        body += f"<w:p><w:ins><w:r><w:t>{inserted}</w:t></w:r></w:ins></w:p>"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with zipfile.ZipFile(path, "w") as package:
+        package.writestr(
+            "word/document.xml",
+            f'<w:document xmlns:w="{_W}"><w:body>{body}</w:body></w:document>',
+        )
+    return path
+
+
+_BASE_TEXT = "alpha sentence that only the base document carries"
+_REV_TEXT = "beta sentence that only the revision document carries"
+_FOREIGN = "gamma sentence from a document nobody asked to compare"
+
+
+@pytest.mark.parametrize("one_osascript", [False, True])
+def test_a_redline_saved_from_the_wrong_document_is_not_delivered(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, one_osascript: bool
+) -> None:
+    """The leftover-document failure: Word saves some other file under this name.
+
+    Both driver paths run the real identity check on what Word saved, drop a
+    foreign document, and still deliver the pair that is right.
+    """
+    monkeypatch.setattr(wr, "_reject_wrong_pair", _REAL_REJECT_WRONG_PAIR)
+    monkeypatch.setattr(wp, "CONTAINER_TMP", tmp_path / "container")
+    a, b = tmp_path / "a", tmp_path / "b"
+    for folder, text in ((a, _BASE_TEXT), (b, _REV_TEXT)):
+        _package(folder / "right.docx", text=text)
+        _package(folder / "wrong.docx", text=text)
+
+    def save_redline(out: Path) -> None:
+        if "wrong" in out.name:
+            _package(out, text=_FOREIGN)
+        else:
+            _package(out, deleted=_BASE_TEXT, inserted=_REV_TEXT)
+
+    def fake_compare(base, rev, out, *, timeout=300.0):
+        save_redline(out)
+        return True, 2, ""
+
+    def fake_osa(script, *args, timeout=60.0):
+        if "manifestPath" not in script:  # serial failure cleanup, not a batch
+            return 0, "", ""
+        manifest, log = Path(args[0]), Path(args[1])
+        rows = [ln.split("\t") for ln in manifest.read_text().splitlines() if ln]
+        lines = []
+        for row in rows:
+            save_redline(Path(row[-1]))
+            lines.append(f"[ok]\t{row[0]}\t2")
+        lines.append(f"[done]\t{len(rows)}\t0")
+        log.write_text("\n".join(lines) + "\n")
+        return 0, "", ""
+
+    monkeypatch.setattr(wr, "compare_pair", fake_compare)
+    monkeypatch.setattr(wp, "osa", fake_osa)
+    session = _verified_session()
+    monkeypatch.setattr(session, "warm", lambda: True)
+    monkeypatch.setattr(session, "recycle", lambda *f: True)
+    monkeypatch.setattr(session, "open_document_count", lambda: 0)
+    monkeypatch.setattr(session, "quit_if_ours", lambda: None)
+    out = tmp_path / "out"
+
+    results = wr.redline_folders(
+        a, b, out, emit="docx", session=session, one_osascript=one_osascript
+    )
+
+    verdicts = {r.base.name: r for r in results}
+    assert verdicts["right.docx"].ok, verdicts["right.docx"].error
+    assert not verdicts["wrong.docx"].ok
+    assert "missing" in verdicts["wrong.docx"].error
+    assert (out / "right__vs__right.docx").exists()
+    assert not (out / "wrong__vs__wrong.docx").exists()

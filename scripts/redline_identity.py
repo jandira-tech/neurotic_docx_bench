@@ -108,16 +108,17 @@ def matches_pair(
     """True only when A's text is in the before-view and B's text is in the after-view.
 
     The two coverages are not combined. Either file missing fails the redline.
-    A file that is not a docx package is left alone: the Word drivers' unit tests
-    plant a `PK` placeholder where a real save has not happened. Word's own
-    `save as` always writes a package, and that is what this checks.
+    So does any of the three that is not a docx package: Word's own `save as`
+    always writes one, so a redline that is not a package is a truncated or
+    foreign save, and a source that is not one cannot have been compared.
     """
-    try:
-        packages = all(zipfile.is_zipfile(p) for p in (redline, base, revision))
-    except OSError:
-        packages = False
-    if not packages:
-        return Identity(True, 1.0, 1.0, "not a docx package; not checked")
+    for path in (redline, base, revision):
+        try:
+            package = zipfile.is_zipfile(path)
+        except OSError:
+            package = False
+        if not package:
+            return Identity(False, 0.0, 0.0, f"not a docx package: {path.name}")
     try:
         before = body_text(redline, "original")
         after = body_text(redline, "revised")
