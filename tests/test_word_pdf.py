@@ -34,6 +34,18 @@ def _load():
 wp = _load()
 
 
+def _verified_session(**kw) -> wp.WordSession:
+    """A session in the state `preflight()` leaves behind on a clean Word.
+
+    `convert_folder()` refuses a supplied session that cannot show it was
+    preflighted, because `started_clean` defaults to True and proves nothing.
+    """
+    session = wp.WordSession(**kw)
+    session.preflighted = True
+    session.started_clean = True
+    return session
+
+
 def _touch(p: Path, body: bytes = b"x") -> Path:
     p.parent.mkdir(parents=True, exist_ok=True)
     p.write_bytes(body)
@@ -281,7 +293,7 @@ def test_convert_folder_skips_existing_unless_forced(
         return True, ""
 
     monkeypatch.setattr(wp, "export_pdf", fake_export)
-    session = wp.WordSession()
+    session = _verified_session()
     monkeypatch.setattr(session, "warm", lambda: True)
 
     results = wp.convert_folder(src, tmp_path / "out", session=session, one_osascript=False)
@@ -309,7 +321,7 @@ def test_convert_folder_recycles_word_after_a_failure(
             (False, "boom") if "bad" in sin.name else (True, _touch(sout, b"%PDF") and "")
         ),
     )
-    session = wp.WordSession()
+    session = _verified_session()
     monkeypatch.setattr(session, "warm", lambda: True)
     # Word answers the cleanup but keeps a document open: the escalation case.
     monkeypatch.setattr(wp, "osa", lambda *a, **k: (0, "", ""))
@@ -904,7 +916,7 @@ def test_serial_failure_recovers_without_restarting_word(
     monkeypatch.setattr(
         wp, "recover_after_failure", lambda s, *f, **kw: recovered.append(f) or True
     )
-    session = wp.WordSession()
+    session = _verified_session()
     monkeypatch.setattr(session, "warm", lambda: True)
     monkeypatch.setattr(session, "recycle", lambda *f: recycled.append(f) or True)
 
@@ -926,7 +938,7 @@ def test_serial_recycles_once_the_failures_stop_looking_isolated(
 
     monkeypatch.setattr(wp, "export_pdf", lambda sin, sout, timeout=180.0: (False, "empty"))
     monkeypatch.setattr(wp, "recover_after_failure", lambda s, *f, **kw: True)
-    session = wp.WordSession()
+    session = _verified_session()
     monkeypatch.setattr(session, "warm", lambda: True)
     recycled: list[object] = []
     monkeypatch.setattr(session, "recycle", lambda *f: recycled.append(f) or True)
@@ -1174,7 +1186,7 @@ def test_convert_folder_one_osascript_converts_the_whole_folder(
     for name in ("a.docx", "b.docx", "~$a.docx"):
         _touch(src / name)
     monkeypatch.setattr(wp, "osa", _fake_batch_osa())
-    session = wp.WordSession()
+    session = _verified_session()
     monkeypatch.setattr(session, "warm", lambda: True)
 
     results = wp.convert_folder(src, tmp_path / "out", session=session, one_osascript=True)
@@ -1195,7 +1207,7 @@ def test_convert_folder_one_osascript_records_a_bad_document_and_finishes(
     _touch(src / "bad.docx")
     _touch(src / "c.docx")
     monkeypatch.setattr(wp, "osa", _fake_batch_osa(fails=("1",)))  # index 1 == bad.docx
-    session = wp.WordSession()
+    session = _verified_session()
     monkeypatch.setattr(session, "warm", lambda: True)
     recycled: list[object] = []
     monkeypatch.setattr(session, "recycle", lambda *f: recycled.append(f) or True)
@@ -1228,7 +1240,7 @@ def test_convert_folder_one_osascript_skips_existing(
         return inner(script, *args, timeout=timeout)
 
     monkeypatch.setattr(wp, "osa", fake)
-    session = wp.WordSession()
+    session = _verified_session()
     monkeypatch.setattr(session, "warm", lambda: True)
 
     results = wp.convert_folder(src, tmp_path / "out", session=session, one_osascript=True)
@@ -1253,7 +1265,7 @@ def test_convert_folder_one_osascript_resumes_after_a_wedge(
         return (wedge if calls["n"] == 1 else complete)(script, *args, timeout=timeout)
 
     monkeypatch.setattr(wp, "osa", fake)
-    session = wp.WordSession()
+    session = _verified_session()
     monkeypatch.setattr(session, "warm", lambda: True)
     recycled: list[object] = []
     monkeypatch.setattr(session, "recycle", lambda *f: recycled.append(f) or True)
@@ -1425,7 +1437,7 @@ def test_cleanup_never_sweeps_lock_files_in_the_user_s_own_folder(
     human_lock = _touch(src / "~$their-open-doc.docx")
 
     monkeypatch.setattr(wp, "export_pdf", lambda sin, sout, timeout=180.0: (False, "boom"))
-    session = wp.WordSession()
+    session = _verified_session()
     monkeypatch.setattr(session, "warm", lambda: True)
     swept: list[tuple[Path, ...]] = []
     monkeypatch.setattr(session, "recycle", lambda *f: swept.append(f) or True)
@@ -1545,7 +1557,7 @@ def test_serial_replays_the_failure_streak_after_recycling(
 
     monkeypatch.setattr(wp, "export_pdf", fake_export)
     monkeypatch.setattr(wp, "recover_after_failure", lambda s, *f, **kw: True)
-    session = wp.WordSession()
+    session = _verified_session()
     monkeypatch.setattr(session, "warm", lambda: True)
     monkeypatch.setattr(session, "recycle", lambda *f: True)
 
@@ -1679,3 +1691,102 @@ def test_recovery_prefers_closing_our_document_by_name(monkeypatch) -> None:
     scripts = [s for s, _ in calls]
     assert any("close" in s and "name" in s for s in scripts), scripts
     assert not any("close every document" in s for s in scripts), scripts
+
+
+# ─── the API is held to the CLI's preflight ──────────────────────────────────
+
+
+def test_convert_folder_preflights_the_session_it_creates(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """`session=None` is the convenience path, not a way around the check.
+
+    `WordSession.started_clean` defaults to True, so a bare session claims a
+    clean Word nobody asked. Recovery then trusts that claim before a
+    close-all or a recycle (`quit saving no`).
+    """
+    src = tmp_path / "src"
+    _touch(src / "a.docx")
+    monkeypatch.setattr(wp, "CONTAINER_TMP", tmp_path / "container")
+    asked: list[dict[str, bool]] = []
+
+    def fake_preflight(session, *, allow_open_docs, one_osascript=False, close_documents=True):
+        asked.append(
+            {"allow": allow_open_docs, "one": one_osascript, "close": close_documents}
+        )
+        return "Word did not become responsive"
+
+    monkeypatch.setattr(wp, "preflight", fake_preflight)
+    ran: list[str] = []
+    monkeypatch.setattr(wp, "osa", lambda *a, **k: ran.append("osa") or (0, "", ""))
+
+    results = wp.convert_folder(src, tmp_path / "out", one_osascript=True, close_documents=False)
+    assert asked == [{"allow": False, "one": True, "close": False}]
+    assert ran == []
+    assert results and all("responsive" in (r.error or "") for r in results)
+
+
+def test_convert_folder_refuses_a_session_nobody_preflighted(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    src = tmp_path / "src"
+    _touch(src / "a.docx")
+    monkeypatch.setattr(wp, "CONTAINER_TMP", tmp_path / "container")
+    ran: list[str] = []
+    monkeypatch.setattr(wp, "osa", lambda *a, **k: ran.append("osa") or (0, "", ""))
+    monkeypatch.setattr(wp, "export_pdf", lambda *a, **k: ran.append("export") or (True, ""))
+
+    results = wp.convert_folder(src, tmp_path / "out", session=wp.WordSession())
+    assert ran == []
+    assert results and all("preflight" in (r.error or "") for r in results)
+
+
+
+# ─── delivery ────────────────────────────────────────────────────────────────
+
+
+def test_publish_keeps_the_previous_result_when_the_copy_dies_partway(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A copy that fails after writing some bytes must not truncate the old file."""
+    staged = _touch(tmp_path / "stage" / "a.pdf", b"%PDF-new-and-longer")
+    final = _touch(tmp_path / "out" / "a.pdf", b"%PDF-previous")
+
+    def dying_copy(src, dst, *a, **k):
+        Path(dst).write_bytes(b"%PD")  # a partial write, then the disk goes away
+        raise OSError(28, "No space left on device")
+
+    monkeypatch.setattr(wp.shutil, "copy2", dying_copy)
+    problem = wp.publish(staged, final)
+
+    assert "No space left" in problem
+    assert final.read_bytes() == b"%PDF-previous"
+    assert staged.exists(), "the staged artifact survives for a re-delivery"
+    assert sorted(p.name for p in final.parent.iterdir()) == ["a.pdf"], "no temp left behind"
+
+
+def test_publish_replaces_the_result_whole(tmp_path: Path) -> None:
+    staged = _touch(tmp_path / "stage" / "a.pdf", b"%PDF-new")
+    final = _touch(tmp_path / "out" / "sub" / "a.pdf", b"%PDF-old")
+    assert wp.publish(staged, final) == ""
+    assert final.read_bytes() == b"%PDF-new"
+    assert sorted(p.name for p in final.parent.iterdir()) == ["a.pdf"]
+
+
+def test_a_failed_delivery_is_that_document_s_error_not_the_run_s(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(wp, "CONTAINER_TMP", tmp_path / "container")
+    src = tmp_path / "src"
+    _touch(src / "a.docx")
+    _touch(src / "b.docx")
+    monkeypatch.setattr(
+        wp, "export_pdf", lambda sin, sout, timeout=180.0: (True, _touch(sout, b"%PDF") and "")
+    )
+    monkeypatch.setattr(
+        wp, "publish", lambda staged, final: "disk full" if final.stem == "a" else ""
+    )
+    session = _verified_session()
+    results = wp.convert_folder(src, tmp_path / "out", session=session, one_osascript=False)
+    assert [(r.source.name, r.ok) for r in results] == [("a.docx", False), ("b.docx", True)]
+    assert "disk full" in results[0].error
