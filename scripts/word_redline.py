@@ -25,9 +25,10 @@ Design decisions carried over from `docs/WORD_DRIVER_AUDIT.md`:
   `compare` yields its result as a fresh, unsaved document. That document is
   the redline; nothing is reconstructed from it. Because it is unsaved, Word
   would prompt for a location, which is exactly why `save as` is handed the
-  path instead. The script finds it by exclusion — the open document whose
-  name is not the base's — because naming the document you mean is the rule
-  (§5.18), not because the base would otherwise be served up in its place.
+  path instead. The script finds it by what is new — it snapshots the open
+  documents' names before `open` and before `compare`, and errors unless
+  exactly one name appeared — because naming the document you mean is the
+  rule (§5.18), not because the base would otherwise be served up in its place.
 - **Base health is checked before the compare runs**, not after. An unreadable
   base loads as a document with zero paragraphs and the compare then fails with
   an error naming the *other* file (§14.1).
@@ -564,6 +565,14 @@ def compare_pair(
 # ─── batch ───────────────────────────────────────────────────────────────────
 
 
+_FOREIGN_DOCUMENTS_OPEN = (
+    "Word has documents open. Redlining names the base and the compare result by the "
+    "document names that are new after each step, so one of yours with a base's "
+    "name makes that pair fail, and the mode is unverified with your documents "
+    "open. --allow-open-docs cannot waive this. Close them and re-run."
+)
+
+
 def redline_preflight(
     session: WordSession, *, allow_open_docs: bool, close_documents: bool = True
 ) -> str:
@@ -577,12 +586,12 @@ def redline_preflight(
     it opened. Redlining cannot offer the same deal, because its *correctness*
     rests on the precondition, not just its tidiness.
 
-    `_COMPARE` identifies the result by exclusion — it walks `document i` and
-    takes the one whose name is not the base's, because `compare` returns its
-    result as a new document and that is how a script names the one it means.
-    That walk is sound exactly while every open document is ours. With a human's document open it can select *theirs* and save it as
-    the redline: a wrong artifact that looks like a real one, which is the
-    failure this pair exists to prevent.
+    `_COMPARE` names the base and the result by what is new: it snapshots the
+    open documents' names before `open` and before `compare`, and errors unless
+    exactly one name appeared. That keeps a human's document from being saved
+    as the redline, but names are not identities: their document with a base's
+    name hides that base, so the pair fails, and the mode has never been
+    exercised against a Word holding documents that are not ours.
 
     So the flag is accepted on the command line and declined here, with the
     reason, rather than honoured silently.
@@ -597,13 +606,7 @@ def redline_preflight(
     # here is not a reason to refuse. --do-not-close is the case that still
     # cannot tell a leftover from the compare result.
     if not session.started_clean and not close_documents:
-        return (
-            "Word has documents open. Redlining identifies its result by "
-            "exclusion (the document that is not the base), which only holds "
-            "while every open document is ours — with yours open it can save "
-            "your document as the redline. --allow-open-docs cannot waive this. "
-            "Close them and re-run."
-        )
+        return _FOREIGN_DOCUMENTS_OPEN
     return ""
 
 
@@ -669,10 +672,10 @@ def redline_folders(
 
     # The precondition belongs to this function, not to the CLI that usually
     # calls it. `_COMPARE` and `_COMPARE_BATCH` both close every document and
-    # both identify the compare result by exclusion, and neither is sound while
-    # Word holds a document that is not ours -- so a caller who imports this
-    # module and calls this function gets the same refusal `main()` does,
-    # rather than a run that can close their work and save it as a redline.
+    # both name their documents by what is new since a snapshot, and neither
+    # has been exercised while Word holds a document that is not ours -- so a
+    # caller who imports this module and calls this function gets the same
+    # refusal `main()` does, rather than a run that can close their work.
     # A supplied session must carry proof it was checked: `started_clean`
     # alone defaults to True and would be a claim nobody verified.
     if owns_session:
@@ -686,11 +689,7 @@ def redline_folders(
             "first, or pass session=None and let redline_folders() do it."
         )
     elif not session.started_clean and not close_documents:
-        problem = (
-            "Word has documents open. Redlining identifies its result by "
-            "exclusion (the document that is not the base), which only holds "
-            "while every open document is ours. Close them and re-run."
-        )
+        problem = _FOREIGN_DOCUMENTS_OPEN
     else:
         problem = ""
     if problem:

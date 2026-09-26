@@ -1102,13 +1102,11 @@ def test_redline_refuses_to_run_with_documents_already_open(
 ) -> None:
     """Redlining requires Word to hold only our documents, and the flag cannot waive it.
 
-    The compare identifies its result by exclusion: it walks `document i` and
-    takes the one whose name is not the base's (§14.1's fix). That is sound
-    exactly when every open document is ours. With a human's document open, the
-    walk can select *their* document and save it as the redline — a wrong
-    output, not merely a lost one. `--allow-open-docs` relaxes a precondition
-    this script's correctness depends on, so it is refused here rather than
-    honoured.
+    The compare names the base and the result by the document names that are
+    new after `open` and after `compare`, and errors unless exactly one is. A
+    human's document with a base's name hides that base, so each such pair
+    fails, and none of this has been exercised against a Word holding foreign
+    documents. `--allow-open-docs` is therefore refused here, not honoured.
     """
     session = _verified_session()
     monkeypatch.setattr(wp.WordSession, "available", staticmethod(lambda: True))
@@ -1502,3 +1500,22 @@ def test_cli_refuses_docx_inside_an_input_folder_before_touching_word(
     assert result.exit_code == 2
     assert reached == []
     assert "input folder" in result.output
+
+
+def test_both_foreign_document_refusals_give_the_same_current_reason(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The CLI's refusal and the API's said different things, both out of date."""
+    session = _verified_session()
+    monkeypatch.setattr(wp.WordSession, "available", staticmethod(lambda: True))
+    monkeypatch.setattr(session, "warm", lambda: True)
+    monkeypatch.setattr(session, "open_document_count", lambda: 2)
+    cli_reason = wr.redline_preflight(session, allow_open_docs=True, close_documents=False)
+
+    a = _folder(tmp_path / "a", "deal.docx")
+    b = _folder(tmp_path / "b", "deal.docx")
+    api = wr.redline_folders(a, b, tmp_path / "out", session=session, close_documents=False)
+
+    assert api[0].error == cli_reason
+    assert "exclusion" not in cli_reason
+    assert "name" in cli_reason
