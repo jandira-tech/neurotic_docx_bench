@@ -369,6 +369,20 @@ def test_preflight_refuses_when_word_has_documents_open(monkeypatch: pytest.Monk
     assert wp.preflight(session, allow_open_docs=True, close_documents=False) == ""
 
 
+def test_do_not_close_refusal_names_the_restart_it_gives_up(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Under --do-not-close nothing is closed; what the flag waives is recovery."""
+    session = wp.WordSession()
+    monkeypatch.setattr(wp.WordSession, "available", staticmethod(lambda: True))
+    monkeypatch.setattr(session, "warm", lambda: True)
+    monkeypatch.setattr(session, "open_document_count", lambda: 2)
+
+    problem = wp.preflight(session, allow_open_docs=False, close_documents=False)
+    assert "closes documents" not in problem
+    assert "restart" in problem
+
+
 def test_preflight_reports_unresponsive_word(monkeypatch: pytest.MonkeyPatch) -> None:
     session = wp.WordSession()
     monkeypatch.setattr(wp.WordSession, "available", staticmethod(lambda: True))
