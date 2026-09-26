@@ -85,12 +85,62 @@ def test_foreign_document_saved_under_this_name_is_rejected(tmp_path: Path) -> N
     assert verdict.sim_revision < 0.5
 
 
-def test_placeholder_bytes_are_not_rejected(tmp_path: Path) -> None:
-    """Driver tests plant a PK marker where Word has not actually saved."""
+def test_a_redline_that_is_not_a_package_fails(tmp_path: Path) -> None:
+    """Word's `save as` always writes a package, so anything else is not the pair.
+
+    This used to pass as "not checked", which let a truncated or foreign save
+    through both the driver gate and `check_redline_identity.py`.
+    """
     base = tmp_path / "a.docx"
     revision = tmp_path / "b.docx"
-    redline = tmp_path / "redline.docx"
-    _docx(base, ["alpha"])
-    _docx(revision, ["beta"])
+    _docx(base, ["alpha sentence from the base document only"])
+    _docx(revision, ["beta sentence from the revision document only"])
+    redline = tmp_path / "a__vs__b.docx"
     redline.write_bytes(b"PK")
-    assert matches_pair(redline, base, revision).ok
+
+    verdict = matches_pair(redline, base, revision)
+    assert not verdict.ok
+    assert "not a docx package" in verdict.reason
+    assert "a__vs__b.docx" in verdict.reason
+
+
+def test_an_unreadable_source_fails_rather_than_passing(tmp_path: Path) -> None:
+    base = tmp_path / "a.docx"
+    base.write_bytes(b"not a zip")
+    revision = tmp_path / "b.docx"
+    _docx(revision, ["beta sentence from the revision document only"])
+    redline = tmp_path / "a__vs__b.docx"
+    _docx(redline, [], inserted="beta sentence from the revision document only")
+
+    verdict = matches_pair(redline, base, revision)
+    assert not verdict.ok
+    assert "a.docx" in verdict.reason
+
+
+def test_a_missing_file_fails_rather_than_raising(tmp_path: Path) -> None:
+    base = tmp_path / "a.docx"
+    _docx(base, ["alpha"])
+    verdict = matches_pair(tmp_path / "gone.docx", base, base)
+    assert not verdict.ok
+    assert "gone.docx" in verdict.reason
+
+
+def test_cli_names_why_a_redline_failed_and_exits_1(tmp_path: Path) -> None:
+    """Two 0.00 scores alone do not say whether the file was foreign or broken."""
+    import subprocess
+
+    a, b, red = tmp_path / "a", tmp_path / "b", tmp_path / "redlines"
+    _docx(a / "x.docx", ["alpha sentence from the base document only"])
+    _docx(b / "y.docx", ["beta sentence from the revision document only"])
+    red.mkdir()
+    (red / "x__vs__y.docx").write_bytes(b"PK")
+
+    script = _SCRIPT.with_name("check_redline_identity.py")
+    proc = subprocess.run(
+        [sys.executable, str(script), "--a", str(a), "--b", str(b), "--redlines", str(red)],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert proc.returncode == 1, proc.stderr
+    assert "not a docx package: x__vs__y.docx" in proc.stdout
