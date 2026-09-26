@@ -108,7 +108,7 @@ AUTORECOVERY = (
 # details pane, so it is not listed.
 MERP_DECLINE = (
     "Don't Send",
-    "Don’t Send",
+    "Don\u2019t Send",
     "Cancel",
     "Close",
     "Quit",
@@ -1189,7 +1189,7 @@ on run argv
               set failCount to failCount + 1
               my logLine(logPath, "[fail]" & tab & itemId & tab & errMsg)
               exit repeat
-            else if errMsg contains "Connection is invalid" or errMsg contains "isn't running" or errMsg contains "isn’t running" then
+            else if errMsg contains "Connection is invalid" or errMsg contains "isn't running" or errMsg contains ("isn" & (character id 8217) & "t running") then
               my logLine(logPath, "[retry]" & tab & itemId & tab & errMsg)
               exit repeat
             else if errMsg contains "loaded empty" then

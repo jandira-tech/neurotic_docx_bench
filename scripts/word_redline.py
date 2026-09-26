@@ -455,7 +455,7 @@ on run argv
               set failCount to failCount + 1
               my logLine(logPath, "[fail]" & tab & itemId & tab & errMsg)
               exit repeat
-            else if errMsg contains "Connection is invalid" or errMsg contains "isn't running" or errMsg contains "isn’t running" then
+            else if errMsg contains "Connection is invalid" or errMsg contains "isn't running" or errMsg contains ("isn" & (character id 8217) & "t running") then
               my logLine(logPath, "[retry]" & tab & itemId & tab & errMsg)
               exit repeat
             else if errMsg contains "loaded empty" then
@@ -918,9 +918,9 @@ def _redline_batched(
     plans: dict[tuple[Path, Path], Outputs] = {}
     for base, revision in pairs:
         outputs = plan_outputs(base, revision, out_dir, docx_dir, emit)
-        plans[(base, revision)] = outputs
+        plans[base, revision] = outputs
         if should_skip(outputs, force=force):
-            outcomes[(base, revision)] = PairResult(
+            outcomes[base, revision] = PairResult(
                 base=base,
                 revision=revision,
                 docx=outputs.docx,

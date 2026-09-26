@@ -492,10 +492,10 @@ def test_watchdog_declines_error_reporting_as_its_own_process(
 
     def fake_osa(script, *args, timeout=60.0):
         if script is wp._DUMP_BUTTONS:
-            return (0, "Don’t Send\tSend\t", "") if args[0] == wp.MERP_PROC else (0, "", "")
+            return (0, "Don\u2019t Send\tSend\t", "") if args[0] == wp.MERP_PROC else (0, "", "")
         if script is wp._PRESS:
             pressed_on.append(args[0])
-            return 0, "Don’t Send", ""
+            return 0, "Don\u2019t Send", ""
         return 0, "", ""
 
     monkeypatch.setattr(wp, "osa", fake_osa)
