@@ -1104,11 +1104,12 @@ def run_batch_with_resume(
 
 # One osascript for the whole folder. The per-document
 # `try … on error … close theDoc saving no … end try` IS the malformed-document
-# contract: answer nothing, close the document we opened, record it, move to the
-# next file. It closes `theDoc` and never `every document`, because a document
-# this script did not open is someone else's unsaved work. `preflight` refuses
-# `--one-osascript` while Word holds documents, which is the real guarantee;
-# this is what keeps the script safe when `convert_folder` is called directly.
+# contract: answer nothing, close what is open, record it, move to the next
+# file. By default every document is closed before each open and after each
+# save (never Word itself), because a leftover document is what got saved under
+# the next file's name after a dropped connection; open documents are closed
+# without a prompt. `_EXPORT_BATCH_KEEP_OPEN` (`--do-not-close`) closes only
+# `theDoc`, and `preflight` refuses that mode while Word holds documents.
 # The repair prompt itself is answered concurrently by the watchdog, which runs
 # in its own process and can act while this script is blocked on `open`.
 _EXPORT_BATCH = r"""
@@ -1222,6 +1223,28 @@ _EXPORT_BATCH_KEEP_OPEN = _EXPORT_BATCH.replace(
 )
 
 
+def publish(staged: Path, final: Path) -> str:
+    """Put one finished artifact at `final`, whole or not at all. '' on success.
+
+    `shutil.move` and `copy2` write the destination in place, so a copy that
+    dies partway (a full disk, a vanished network share) truncates whatever
+    result was already there, and the staging directory holding the good copy
+    is removed with the run. This copies beside the destination first and
+    `os.replace`s it in, which is atomic within one filesystem. The staged file
+    is left for the stage to clean up. A failure is returned as that item's
+    error, never raised: one undeliverable file is not a reason to stop a batch.
+    """
+    temp = final.with_name(f".{final.name}.{os.getpid()}.part")
+    try:
+        final.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(staged, temp)
+        os.replace(temp, final)
+    except OSError as exc:
+        temp.unlink(missing_ok=True)
+        return f"could not deliver {final.name}: {exc}"
+    return ""
+
+
 def convert_folder(
     src: Path,
     out_dir: Path | None,
@@ -1260,8 +1283,28 @@ def convert_folder(
     owns_stage = stage is None
     session = session or WordSession()
 
-    if owns_session and not session.warm():
-        return [Result(source=d, error="Word did not become responsive") for d in docs]
+    # The API is held to the CLI's check. `started_clean` defaults to True, so
+    # a bare session claims a clean Word nobody asked, and recovery trusts that
+    # claim before a close-all or a recycle (`quit saving no`). A session we
+    # create is preflighted here; one we are handed must show it was.
+    if owns_session:
+        problem = preflight(
+            session,
+            allow_open_docs=False,
+            one_osascript=one_osascript,
+            close_documents=close_documents,
+        )
+    elif not session.preflighted:
+        problem = (
+            "this session has not been preflighted, so nothing has established "
+            "what Word holds. Call preflight() first, or pass session=None and "
+            "let convert_folder() do it."
+        )
+    else:
+        problem = ""
+    if problem:
+        logger.error(f"[word] {problem}")
+        return [Result(source=d, error=problem) for d in docs]
 
     ctx = Stage(prefix="wordpdf") if owns_stage else None
     stage = stage or (ctx.__enter__() if ctx else None)
@@ -1321,11 +1364,19 @@ def _convert_serial(
         elapsed = time.monotonic() - started
 
         if ok:
+            # Word did its part, so a delivery failure is not a poison signal:
+            # it is recorded against the file and Word is left alone.
             streak.clear()
-            final_pdf.parent.mkdir(parents=True, exist_ok=True)
-            shutil.move(str(staged_out), final_pdf)
-            results.append(Result(source=docx, output=final_pdf, ok=True, seconds=elapsed))
-            logger.info(f"[{i}/{len(docs)}] ok ({elapsed:.1f}s): {docx.name}")
+            undelivered = publish(staged_out, final_pdf)
+            staged_out.unlink(missing_ok=True)
+            if undelivered:
+                results.append(Result(source=docx, error=undelivered, seconds=elapsed))
+                logger.error(f"[{i}/{len(docs)}] FAIL: {docx.name} — {undelivered}")
+            else:
+                results.append(
+                    Result(source=docx, output=final_pdf, ok=True, seconds=elapsed)
+                )
+                logger.info(f"[{i}/{len(docs)}] ok ({elapsed:.1f}s): {docx.name}")
         else:
             streak.append(docx)
             results.append(Result(source=docx, error=err, seconds=elapsed))
@@ -1394,8 +1445,11 @@ def _replay(
             staged_out.unlink(missing_ok=True)
             logger.info(f"[replay] still failing, so it is the file: {docx.name} — {err}")
             continue
-        final_pdf.parent.mkdir(parents=True, exist_ok=True)
-        shutil.move(str(staged_out), final_pdf)
+        undelivered = publish(staged_out, final_pdf)
+        staged_out.unlink(missing_ok=True)
+        if undelivered:
+            logger.error(f"[replay] converted but {undelivered}")
+            continue
         logger.info(f"[replay] ok after restart ({elapsed:.1f}s): {docx.name}")
         for n, prior in enumerate(results):
             if prior.source == docx and not prior.ok:
@@ -1460,10 +1514,17 @@ def _convert_batched(
         staged_in.unlink(missing_ok=True)
         ok, detail = recorded[item]
         produced = staged_out.exists() and staged_out.stat().st_size > 0
+        undelivered = ""
         if ok and produced:
             final = pdf_path_for(doc, out_dir)
-            final.parent.mkdir(parents=True, exist_ok=True)
-            shutil.move(str(staged_out), final)
+            undelivered = publish(staged_out, final)
+            staged_out.unlink(missing_ok=True)
+        if undelivered:
+            outcomes[doc] = Result(
+                source=doc, error=undelivered, seconds=per_item, timing_exact=False
+            )
+            logger.error(f"[batch] FAIL: {doc.name} — {undelivered}")
+        elif ok and produced:
             outcomes[doc] = Result(
                 source=doc, output=final, ok=True, seconds=per_item, timing_exact=False
             )
@@ -1542,12 +1603,13 @@ def preflight(
 ) -> str:
     """Refuse to start on a machine that is not ready. Returns '' when ready.
 
-    `--allow-open-docs` is a trade the operator is entitled to make for the
-    serial path: it costs them Word restarts, and the export binds the document
-    it opened and closes only that one. `--one-osascript` cannot offer the same
-    deal. It sets `displayAlerts` to false for the whole run and has no way to
-    act between documents, so it is refused while Word holds anything, the way
-    `word_redline.py` refuses the flag outright.
+    By default the run closes every open document without saving and without
+    asking (never Word itself), so documents already open are not a refusal.
+    The refusals below are for `--do-not-close`: there `--allow-open-docs` is a
+    trade the operator may make for the serial path (it costs them Word
+    restarts, and the export closes only the document it opened), while the
+    one-osascript batch sets `displayAlerts` to false for the whole run and
+    cannot act between documents, so it is refused while Word holds anything.
     """
     if not WordSession.available():
         return "needs macOS with Microsoft Word installed"

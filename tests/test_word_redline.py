@@ -1407,3 +1407,33 @@ def test_do_not_close_still_closes_the_documents_each_pair_opened(name: str) -> 
     assert "my closeNew(seenBeforeOpen)" in after_save
     # Nothing is closed before the snapshot of what was already open.
     assert code.index("set seenBeforeOpen to {}") < code.index("my closeNew(seenBeforeOpen)")
+
+
+@pytest.mark.parametrize("one_osascript", [False, True])
+def test_an_undeliverable_redline_fails_that_pair_and_the_run_goes_on(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, stub_word, one_osascript: bool
+) -> None:
+    session, _, _ = stub_word
+    a = _folder(tmp_path / "a", "deal.docx", "nda.docx")
+    b = _folder(tmp_path / "b", "deal.docx", "nda.docx")
+
+    def fake_osa(script, *args, timeout=60.0):
+        if "manifestPath" not in script:
+            return 0, "", ""
+        manifest, log = Path(args[0]), Path(args[1])
+        rows = [ln.split("\t") for ln in manifest.read_text().splitlines() if ln]
+        for row in rows:
+            Path(row[-1]).write_bytes(b"PK")
+        lines = [f"[ok]\t{row[0]}\t1" for row in rows] + [f"[done]\t{len(rows)}\t0"]
+        log.write_text("\n".join(lines) + "\n")
+        return 0, "", ""
+
+    monkeypatch.setattr(wp, "osa", fake_osa)
+    monkeypatch.setattr(
+        wr, "publish", lambda staged, final: "disk full" if "deal" in final.name else ""
+    )
+    results = wr.redline_folders(
+        a, b, tmp_path / "out", emit="docx", session=session, one_osascript=one_osascript
+    )
+    assert [(r.base.name, r.ok) for r in results] == [("deal.docx", False), ("nda.docx", True)]
+    assert results[0].error == "disk full"
