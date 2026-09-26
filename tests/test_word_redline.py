@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import importlib.util
 import io
+import shutil
 import sys
 import zipfile
 from pathlib import Path
@@ -1345,3 +1346,64 @@ def test_a_redline_saved_from_the_wrong_document_is_not_delivered(
     assert "missing" in verdicts["wrong.docx"].error
     assert (out / "right__vs__right.docx").exists()
     assert not (out / "wrong__vs__wrong.docx").exists()
+
+
+# ─── the AppleScript itself ──────────────────────────────────────────────────
+
+_WORD_APP = Path("/Applications/Microsoft Word.app")
+_ALL_SCRIPTS = [
+    (wp, "_EXPORT_PDF"),
+    (wp, "_EXPORT_PDF_KEEP_OPEN"),
+    (wp, "_EXPORT_BATCH"),
+    (wp, "_EXPORT_BATCH_KEEP_OPEN"),
+    (wr, "_COMPARE"),
+    (wr, "_COMPARE_KEEP_OPEN"),
+    (wr, "_COMPARE_BATCH"),
+    (wr, "_COMPARE_BATCH_KEEP_OPEN"),
+]
+
+
+@pytest.mark.skipif(
+    not (shutil.which("osacompile") and _WORD_APP.exists()),
+    reason="needs osacompile and Word's scripting dictionary",
+)
+@pytest.mark.parametrize(("module", "name"), _ALL_SCRIPTS, ids=[n for _, n in _ALL_SCRIPTS])
+def test_every_driver_script_compiles(module, name: str, tmp_path: Path) -> None:
+    """String surgery on AppleScript is only safe if the result still parses.
+
+    `_COMPARE_BATCH_KEEP_OPEN` once turned `tell application "Microsoft Word"
+    to close every document saving no` into `... to -- do-not-close`, which
+    osacompile rejects, so every `--do-not-close` batch failed before its first
+    pair. Compiling runs nothing and does not touch the running Word.
+    """
+    import subprocess
+
+    out = tmp_path / f"{name}.scpt"
+    proc = subprocess.run(
+        ["osacompile", "-o", str(out), "-e", getattr(module, name)],
+        capture_output=True,
+        text=True,
+        timeout=60,
+        check=False,
+    )
+    assert proc.returncode == 0, proc.stderr
+
+
+@pytest.mark.parametrize("name", ["_COMPARE_KEEP_OPEN", "_COMPARE_BATCH_KEEP_OPEN"])
+def test_do_not_close_still_closes_the_documents_each_pair_opened(name: str) -> None:
+    """Keeping the operator's documents is not leaving ours behind.
+
+    A blanket comment-out left the base and the compare result open after every
+    pair, success included: two documents per pair piling up in Word. The
+    keep-open script closes exactly what appeared after `seenBeforeOpen`.
+    """
+    src = getattr(wr, name)
+    assert "close every document" not in _applescript_code(src)
+    assert "on closeNew(seen)" in src
+    assert "if seen is missing value then return" in src
+    code = _applescript_code(src)
+    # The save is followed by closing what this pair opened.
+    after_save = code[code.index("save as cmpDoc") :]
+    assert "my closeNew(seenBeforeOpen)" in after_save
+    # Nothing is closed before the snapshot of what was already open.
+    assert code.index("set seenBeforeOpen to {}") < code.index("my closeNew(seenBeforeOpen)")
