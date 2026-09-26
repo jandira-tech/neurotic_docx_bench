@@ -134,7 +134,7 @@ runs:
   # adapter now names the engine explicitly, so this bump changes the measured version
   # without also making the measured engine a side effect of it.
   - name: docxodus
-    package: "docxodus@9.8.0"
+    package: "docxodus@12.6.2"
     generate: "node --import tsx scripts/generate-native-redlines.ts --method=docxodus --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=docxodus"
     render: soffice
     jobs: 1
@@ -158,7 +158,7 @@ runs:
   # Refresh WASM: see react-docxodus-viewer/README.bench.md
   # Playwright fail-fasts on window.__rdvError instead of timing out.
   - name: docxodus-playwright-rendering
-    package: "docxodus@9.8.0"
+    package: "docxodus@12.6.2"
     docx: corpus/word_based/docx_source
     render: playwright
     jobs: 1
@@ -178,7 +178,7 @@ runs:
       timeout_ms: 60000
 
   - name: docxodus-playwright-redlines
-    package: "docxodus@9.8.0"
+    package: "docxodus@12.6.2"
     docx: corpus/word_based/docx_redlines_word
     render: playwright
     jobs: 1
@@ -187,7 +187,7 @@ runs:
     harness: *docxodus-harness
 
   - name: docxodus-playwright-accepted
-    package: "docxodus@9.8.0"
+    package: "docxodus@12.6.2"
     docx: corpus/word_based/docx_accepted_word
     render: playwright
     jobs: 1
@@ -293,7 +293,7 @@ runs:
   # These land in generate_failures.json and are scored as misses, which is the
   # honest reading: the vendor's current release cannot redline those pairs.
   - name: superdoc
-    python_package: "superdoc-sdk==2.0.0" # installed version → tool_version
+    python_package: "superdoc-sdk==2.15.0" # installed version → tool_version
     generate: "uv run python -m neurotic_docx_bench.superdoc_gen --out=$RUN_DIR/docx --tool=superdoc"
     render: soffice
     jobs: 1
@@ -379,7 +379,7 @@ runs:
   # `superdoc@1.44.1`, NOT the Python/TS SDK 1.19.2). Same pattern as folio-playwright-*:
   # one run per visual_* oracle corpus. Harness lives under utils/superdoc.
   - name: superdoc-playwright-rendering
-    package: "superdoc@2.3.0"
+    package: "superdoc@2.18.0"
     docx: corpus/word_based/docx_source
     render: playwright
     jobs: 1
@@ -394,7 +394,7 @@ runs:
       timeout_ms: 90000
 
   - name: superdoc-playwright-redlines
-    package: "superdoc@2.3.0"
+    package: "superdoc@2.18.0"
     docx: corpus/word_based/docx_redlines_word
     render: playwright
     jobs: 1
@@ -403,7 +403,7 @@ runs:
     harness: *superdoc-harness
 
   - name: superdoc-playwright-accepted
-    package: "superdoc@2.3.0"
+    package: "superdoc@2.18.0"
     docx: corpus/word_based/docx_accepted_word
     render: playwright
     jobs: 1
