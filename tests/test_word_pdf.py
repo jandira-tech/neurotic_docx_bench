@@ -15,6 +15,10 @@ from pathlib import Path
 
 import pytest
 
+# Every test here stubs Word. The fence turns a missed stub into a failure
+# instead of a close-all sent to the Word that is actually running.
+pytestmark = pytest.mark.usefixtures("no_live_word")
+
 _SCRIPT = Path(__file__).resolve().parents[1] / "scripts" / "word_pdf.py"
 
 
@@ -307,6 +311,9 @@ def test_convert_folder_recycles_word_after_a_failure(
     )
     session = wp.WordSession()
     monkeypatch.setattr(session, "warm", lambda: True)
+    # Word answers the cleanup but keeps a document open: the escalation case.
+    monkeypatch.setattr(wp, "osa", lambda *a, **k: (0, "", ""))
+    monkeypatch.setattr(session, "open_document_count", lambda: 1)
     recycled: list[tuple] = []
     monkeypatch.setattr(session, "recycle", lambda *f: recycled.append(f) or True)
 
@@ -1423,8 +1430,11 @@ def test_cleanup_never_sweeps_lock_files_in_the_user_s_own_folder(
     swept: list[tuple[Path, ...]] = []
     monkeypatch.setattr(session, "recycle", lambda *f: swept.append(f) or True)
     monkeypatch.setattr(session, "clean_after_kill", lambda *f: swept.append(f))
+    # `export_pdf` is the serial path's; the batch path would run real osascript.
+    monkeypatch.setattr(wp, "osa", lambda *a, **k: (0, "", ""))
+    monkeypatch.setattr(session, "open_document_count", lambda: 1)
 
-    wp.convert_folder(src, tmp_path / "out", session=session)
+    wp.convert_folder(src, tmp_path / "out", session=session, one_osascript=False)
 
     assert swept, "the failure path must have run a cleanup"
     for folders in swept:
