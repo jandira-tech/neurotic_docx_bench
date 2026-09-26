@@ -242,3 +242,30 @@ def test_main_prints_each_problem_and_returns_one(tmp_path: Path, capsys) -> Non
     assert cas.main([str(p)]) == 1
     out = capsys.readouterr().out
     assert "FAIL" in out and "components sum" in out
+
+
+def test_a_malformed_decimal_is_reported_not_raised(tmp_path: Path) -> None:
+    """`[\\d.]+` matches `1.2.3`, and float() then raised through main()."""
+    row = _row("a.sh", "ndb", _SEVEN).replace("| 0.50 |", "| 1.2.3 |", 1)
+    path = tmp_path / "audit.md"
+    path.write_text(_doc([row]))
+    problems = cas.check(path)
+    assert any("a.sh" in p and "'1.2.3'" in p for p in problems), problems
+
+
+def test_scores_outside_their_range_are_reported(tmp_path: Path) -> None:
+    over = [1.20, 0.50, 0.50, 0.50, 0.50, 0.50, 0.50]
+    many = [1.00] * 7
+    path = tmp_path / "audit.md"
+    path.write_text(_doc([_row("a.sh", "ndb", over), _row("b.sh", "ndb", many, total=7.50)]))
+    problems = cas.check(path)
+    assert any("a.sh" in p and "C1" in p and "1.2" in p and "[0.00, 1.00]" in p for p in problems)
+    assert any("b.sh" in p and "7.5" in p and "[0.00, 7.00]" in p for p in problems)
+
+
+def test_the_same_script_twice_in_one_repo_is_reported(tmp_path: Path) -> None:
+    """Two rows for one (script, repo) cannot both be the score; the second won silently."""
+    path = tmp_path / "audit.md"
+    path.write_text(_doc([_row("a.sh", "ndb", _SEVEN), _row("a.sh", "ndb", _SEVEN)]))
+    problems = cas.check(path)
+    assert any("a.sh" in p and "ndb" in p and "twice" in p for p in problems), problems

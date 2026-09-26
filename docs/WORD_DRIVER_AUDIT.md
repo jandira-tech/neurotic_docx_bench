@@ -1357,6 +1357,12 @@ whole AutoRecovery directory rather than its own entries (step 4).
    `sdef /Applications/Microsoft\ Word.app | grep -i 'save interval'`. If it is absent, this
    step does not apply on that machine and step 4's first half stays necessary.
 
+   **Read on one machine (26 Sep 2026, Word for Mac 16.114):** the dictionary has it —
+   `save interval` (integer, *"the time interval in minutes for saving autorecover
+   information"*) on class `Word options`, so the term exists on the AppleScript surface
+   there. That settles the term, not the effect: nobody has yet set it to 0 and watched
+   whether a killed Word still leaves AutoRecover files, so step 4 stays until that run.
+
    Set it once for the batch session and restore it afterwards; a benchmark harness that
    permanently disables a human's autosave is not a good guest.
 6. Re-warm before the next document. Do not let the next file's timeout pay for the cold
