@@ -44,6 +44,12 @@ dev = [
     "pytest>=8.0",
     "pytest-xdist>=3.5",
     "ty>=0.0.56",
+    # scripts/word_pdf.py and scripts/word_redline.py are standalone PEP 723
+    # scripts (they declare their own deps for `uv run --script`), but
+    # tests/test_word_pdf.py and tests/test_word_redline.py import them, so the
+    # test environment needs what they import. typer and rich are already
+    # project dependencies; loguru is not.
+    "loguru>=0.7",
 ]
 
 [tool.pytest.ini_options]
