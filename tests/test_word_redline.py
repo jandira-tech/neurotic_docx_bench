@@ -15,6 +15,10 @@ from pathlib import Path
 
 import pytest
 
+# Every test here stubs Word. The fence turns a missed stub into a failure
+# instead of a close-all sent to the Word that is actually running.
+pytestmark = pytest.mark.usefixtures("no_live_word")
+
 _SCRIPTS = Path(__file__).resolve().parents[1] / "scripts"
 
 
@@ -497,6 +501,9 @@ def test_redline_folders_recycles_word_after_a_failed_pair(
     session = _verified_session()
     monkeypatch.setattr(session, "warm", lambda: True)
     monkeypatch.setattr(session, "quit_if_ours", lambda: None)
+    # Word answers the cleanup but keeps a document open: the escalation case.
+    monkeypatch.setattr(wp, "osa", lambda *a, **k: (0, "", ""))
+    monkeypatch.setattr(session, "open_document_count", lambda: 1)
     recycled: list[tuple] = []
     monkeypatch.setattr(session, "recycle", lambda *f: recycled.append(f) or True)
 
@@ -1237,3 +1244,4 @@ def test_redline_folders_preflights_the_session_it_creates(
     assert asked == [False], "must preflight, and must not waive --allow-open-docs"
     assert ran == []
     assert results and all("documents open" in (r.error or "") for r in results)
+
