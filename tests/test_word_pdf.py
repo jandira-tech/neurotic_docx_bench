@@ -15,6 +15,10 @@ from pathlib import Path
 
 import pytest
 
+# Every test here stubs Word. The fence turns a missed stub into a failure
+# instead of a close-all sent to the Word that is actually running.
+pytestmark = pytest.mark.usefixtures("no_live_word")
+
 _SCRIPT = Path(__file__).resolve().parents[1] / "scripts" / "word_pdf.py"
 
 
@@ -28,6 +32,18 @@ def _load():
 
 
 wp = _load()
+
+
+def _verified_session(**kw) -> wp.WordSession:
+    """A session in the state `preflight()` leaves behind on a clean Word.
+
+    `convert_folder()` refuses a supplied session that cannot show it was
+    preflighted, because `started_clean` defaults to True and proves nothing.
+    """
+    session = wp.WordSession(**kw)
+    session.preflighted = True
+    session.started_clean = True
+    return session
 
 
 def _touch(p: Path, body: bytes = b"x") -> Path:
@@ -277,7 +293,7 @@ def test_convert_folder_skips_existing_unless_forced(
         return True, ""
 
     monkeypatch.setattr(wp, "export_pdf", fake_export)
-    session = wp.WordSession()
+    session = _verified_session()
     monkeypatch.setattr(session, "warm", lambda: True)
 
     results = wp.convert_folder(src, tmp_path / "out", session=session, one_osascript=False)
@@ -305,8 +321,11 @@ def test_convert_folder_recycles_word_after_a_failure(
             (False, "boom") if "bad" in sin.name else (True, _touch(sout, b"%PDF") and "")
         ),
     )
-    session = wp.WordSession()
+    session = _verified_session()
     monkeypatch.setattr(session, "warm", lambda: True)
+    # Word answers the cleanup but keeps a document open: the escalation case.
+    monkeypatch.setattr(wp, "osa", lambda *a, **k: (0, "", ""))
+    monkeypatch.setattr(session, "open_document_count", lambda: 1)
     recycled: list[tuple] = []
     monkeypatch.setattr(session, "recycle", lambda *f: recycled.append(f) or True)
 
@@ -342,8 +361,26 @@ def test_preflight_refuses_when_word_has_documents_open(monkeypatch: pytest.Monk
     monkeypatch.setattr(session, "warm", lambda: True)
     monkeypatch.setattr(session, "open_document_count", lambda: 3)
 
-    assert "--allow-open-docs" in wp.preflight(session, allow_open_docs=False)
-    assert wp.preflight(session, allow_open_docs=True) == ""
+    # Default closes the documents and leaves Word running.
+    assert wp.preflight(session, allow_open_docs=False) == ""
+    assert "--allow-open-docs" in wp.preflight(
+        session, allow_open_docs=False, close_documents=False
+    )
+    assert wp.preflight(session, allow_open_docs=True, close_documents=False) == ""
+
+
+def test_do_not_close_refusal_names_the_restart_it_gives_up(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Under --do-not-close nothing is closed; what the flag waives is recovery."""
+    session = wp.WordSession()
+    monkeypatch.setattr(wp.WordSession, "available", staticmethod(lambda: True))
+    monkeypatch.setattr(session, "warm", lambda: True)
+    monkeypatch.setattr(session, "open_document_count", lambda: 2)
+
+    problem = wp.preflight(session, allow_open_docs=False, close_documents=False)
+    assert "closes documents" not in problem
+    assert "restart" in problem
 
 
 def test_preflight_reports_unresponsive_word(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -369,9 +406,12 @@ def test_preflight_refuses_one_osascript_while_documents_are_open(
     monkeypatch.setattr(session, "warm", lambda: True)
     monkeypatch.setattr(session, "open_document_count", lambda: 2)
 
-    problem = wp.preflight(session, allow_open_docs=True, one_osascript=True)
-    # The message must name the way out, which is now the opt-out flag.
-    assert "--no-one-osascript" in problem
+    # Default closes documents, so an open file is not a refusal.
+    assert wp.preflight(session, allow_open_docs=True, one_osascript=True) == ""
+    problem = wp.preflight(
+        session, allow_open_docs=True, one_osascript=True, close_documents=False
+    )
+    assert "--do-not-close" in problem
     # The serial path is still the operator's call to make.
     assert wp.preflight(session, allow_open_docs=True, one_osascript=False) == ""
     # And a clean machine may use either.
@@ -401,16 +441,16 @@ def test_preflight_refuses_when_the_document_count_is_unknown(
         assert "could not determine" in problem, (allow, one, problem)
 
 
-def test_export_batch_closes_only_the_document_it_opened() -> None:
-    """`close every document saving no` discards unsaved work that is not ours.
+def test_export_batch_closes_every_document_and_does_not_quit_word() -> None:
+    """A leftover open document is what got saved as the next file.
 
-    `_EXPORT_PDF` was corrected for this; the batch script kept the destructive
-    form at all three sites, including the success path. The preflight gate above
-    is the real guarantee, but `convert_folder` is callable directly, so the
-    script must not be destructive on its own.
+    The default closes every document between files and does not quit Word.
+    `--do-not-close` is the script that only closes the document it opened.
     """
-    assert "close every document" not in wp._EXPORT_BATCH
-    assert wp._EXPORT_BATCH.count("close theDoc saving no") == 3
+    assert "close every document saving no" in wp._EXPORT_BATCH
+    assert "quit" not in wp._EXPORT_BATCH
+    assert "close every document" not in wp._EXPORT_BATCH_KEEP_OPEN
+    assert "close theDoc saving no" in wp._EXPORT_BATCH_KEEP_OPEN
 
 
 def test_cli_tells_preflight_which_mode_it_is_about_to_run(
@@ -421,9 +461,10 @@ def test_cli_tells_preflight_which_mode_it_is_about_to_run(
 
     seen: dict[str, bool] = {}
 
-    def fake_preflight(_session, *, allow_open_docs, one_osascript):
+    def fake_preflight(_session, *, allow_open_docs, one_osascript, close_documents=True):
         seen["allow_open_docs"] = allow_open_docs
         seen["one_osascript"] = one_osascript
+        seen["close_documents"] = close_documents
         return "refused"
 
     src = tmp_path / "src"
@@ -434,7 +475,7 @@ def test_cli_tells_preflight_which_mode_it_is_about_to_run(
         ["--src", str(src), "--no-check-preset", "--one-osascript", "--allow-open-docs"],
     )
     assert result.exit_code == 2
-    assert seen == {"allow_open_docs": True, "one_osascript": True}
+    assert seen == {"allow_open_docs": True, "one_osascript": True, "close_documents": True}
 
 
 # ─── watchdogs ───────────────────────────────────────────────────────────────
@@ -477,10 +518,10 @@ def test_watchdog_declines_error_reporting_as_its_own_process(
 
     def fake_osa(script, *args, timeout=60.0):
         if script is wp._DUMP_BUTTONS:
-            return (0, "Don’t Send\tSend\t", "") if args[0] == wp.MERP_PROC else (0, "", "")
+            return (0, "Don\u2019t Send\tSend\t", "") if args[0] == wp.MERP_PROC else (0, "", "")
         if script is wp._PRESS:
             pressed_on.append(args[0])
-            return 0, "Don’t Send", ""
+            return 0, "Don\u2019t Send", ""
         return 0, "", ""
 
     monkeypatch.setattr(wp, "osa", fake_osa)
@@ -492,6 +533,43 @@ def test_watchdog_declines_error_reporting_as_its_own_process(
     dogs.stop()
 
     assert wp.MERP_PROC in pressed_on
+
+
+def test_watchdog_closes_error_report_ok_and_not_more_information(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """This machine's report window is OK / More Information, not Don't Send.
+
+    OK dismisses it. More Information only opens the details pane, so it must
+    not be pressed. The button dump also reports an unnamed control as
+    'missing value'; that is not a button to hit.
+    """
+    pressed: list[str] = []
+    present = {"OK", "More Information"}
+
+    def fake_osa(script, *args, timeout=60.0):
+        if script is wp._DUMP_BUTTONS:
+            shown = "OK\tMore Information\tmissing value\t" if args[0] == wp.MERP_PROC else ""
+            return 0, shown, ""
+        if script is wp._PRESS and args and args[0] == wp.MERP_PROC:
+            for name in args[1:]:
+                if name in present:
+                    pressed.append(name)
+                    return 0, name, ""
+            return 0, "", ""
+        return 0, "", ""
+
+    monkeypatch.setattr(wp, "osa", fake_osa)
+    dogs = wp.Watchdogs(poll=0.01)
+    dogs.start()
+    deadline = wp.time.monotonic() + 3
+    while not pressed and wp.time.monotonic() < deadline:
+        wp.time.sleep(0.02)
+    dogs.stop()
+
+    assert pressed and set(pressed) == {"OK"}
+    assert "More Information" not in wp.MERP_DECLINE
+    assert "missing value" not in wp.MERP_DECLINE
 
 
 def test_watchdog_stop_is_idempotent(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -600,7 +678,11 @@ def test_cli_stops_when_preflight_refuses(
     from typer.testing import CliRunner
 
     (tmp_path / "src").mkdir()
-    monkeypatch.setattr(wp, "preflight", lambda s, *, allow_open_docs, one_osascript=False: "Word is busy")
+    monkeypatch.setattr(
+        wp,
+        "preflight",
+        lambda s, *, allow_open_docs, one_osascript=False, close_documents=True: "Word is busy",
+    )
     result = CliRunner().invoke(wp.app, ["--src", str(tmp_path / "src"), "--no-check-preset"])
     assert result.exit_code == 2
 
@@ -612,7 +694,11 @@ def test_cli_runs_the_batch_and_returns_the_report_code(
 
     src = tmp_path / "src"
     _touch(src / "a.docx")
-    monkeypatch.setattr(wp, "preflight", lambda s, *, allow_open_docs, one_osascript=False: "")
+    monkeypatch.setattr(
+        wp,
+        "preflight",
+        lambda s, *, allow_open_docs, one_osascript=False, close_documents=True: "",
+    )
     monkeypatch.setattr(wp.Watchdogs, "start", lambda self: None)
     monkeypatch.setattr(wp.Watchdogs, "stop", lambda self: None)
     monkeypatch.setattr(wp.WordSession, "quit_if_ours", lambda self: None)
@@ -844,7 +930,7 @@ def test_serial_failure_recovers_without_restarting_word(
     monkeypatch.setattr(
         wp, "recover_after_failure", lambda s, *f, **kw: recovered.append(f) or True
     )
-    session = wp.WordSession()
+    session = _verified_session()
     monkeypatch.setattr(session, "warm", lambda: True)
     monkeypatch.setattr(session, "recycle", lambda *f: recycled.append(f) or True)
 
@@ -866,7 +952,7 @@ def test_serial_recycles_once_the_failures_stop_looking_isolated(
 
     monkeypatch.setattr(wp, "export_pdf", lambda sin, sout, timeout=180.0: (False, "empty"))
     monkeypatch.setattr(wp, "recover_after_failure", lambda s, *f, **kw: True)
-    session = wp.WordSession()
+    session = _verified_session()
     monkeypatch.setattr(session, "warm", lambda: True)
     recycled: list[object] = []
     monkeypatch.setattr(session, "recycle", lambda *f: recycled.append(f) or True)
@@ -963,6 +1049,18 @@ def test_parse_batch_log_keeps_a_multi_field_error_whole() -> None:
     assert log.results["3"] == (False, "Word said: -1728\tand more")
 
 
+def test_parse_batch_log_ignores_retry_so_poison_is_not_final() -> None:
+    """[retry] is how a batch says 'Word was poisoned, try this again'.
+
+    [fail] is final. A timeout's empty followers must not be [fail], or one
+    wedged Word permanently condemns the rest of the folder.
+    """
+    log = wp.parse_batch_log("[retry]\t0\tAppleEvent timed out\n[ok]\t1\n[done]\t1\t0\n")
+    assert "0" not in log.results
+    assert log.results["1"] == (True, "")
+    assert log.done is True
+
+
 def test_parse_batch_log_omits_items_the_run_never_reached() -> None:
     """No line at all is not a failure — it is the only case worth retrying."""
     log = wp.parse_batch_log("[ok]\t0\n[ok]\t1\n")
@@ -1024,9 +1122,36 @@ def test_run_batch_passes_only_two_argv_paths(
     run = wp.run_batch("SCRIPT", [("0", "/in/a", "/out/a")], tmp_path, timeout=30)
 
     assert len(seen["args"]) == 2
-    assert seen["args"][0] == str(tmp_path / "manifest.tsv")
+    assert seen["args"][0] == str(tmp_path / "batch.tsv")
     assert run.log.results == {"0": (True, "")}
     assert run.wedged is False
+
+
+def test_each_batch_pass_keeps_its_own_manifest_and_log(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A redline run's PDF pass used to overwrite the compare pass's log.
+
+    After a wedge that log is the only record of how far the compare got, so
+    every pass writes `<label>.tsv` / `<label>.log` beside the others.
+    """
+    written: list[str] = []
+
+    def fake(script, *args, timeout=60.0):
+        written.extend(Path(a).name for a in args)
+        Path(args[1]).write_text("[ok]\t0\n[done]\t1\t0\n")
+        return 0, "", ""
+
+    monkeypatch.setattr(wp, "osa", fake)
+    for label in (" compare 1", " compare 2", " pdf 1"):
+        wp.run_batch("SCRIPT", [("0", "/in/a", "/out/a")], tmp_path, timeout=30, label=label)
+
+    assert written == [
+        "batch-compare-1.tsv", "batch-compare-1.log",
+        "batch-compare-2.tsv", "batch-compare-2.log",
+        "batch-pdf-1.tsv", "batch-pdf-1.log",
+    ]  # fmt: skip
+    assert all((tmp_path / name).exists() for name in written)
 
 
 def test_run_batch_reports_a_run_that_never_reached_done(
@@ -1102,7 +1227,7 @@ def test_convert_folder_one_osascript_converts_the_whole_folder(
     for name in ("a.docx", "b.docx", "~$a.docx"):
         _touch(src / name)
     monkeypatch.setattr(wp, "osa", _fake_batch_osa())
-    session = wp.WordSession()
+    session = _verified_session()
     monkeypatch.setattr(session, "warm", lambda: True)
 
     results = wp.convert_folder(src, tmp_path / "out", session=session, one_osascript=True)
@@ -1123,7 +1248,7 @@ def test_convert_folder_one_osascript_records_a_bad_document_and_finishes(
     _touch(src / "bad.docx")
     _touch(src / "c.docx")
     monkeypatch.setattr(wp, "osa", _fake_batch_osa(fails=("1",)))  # index 1 == bad.docx
-    session = wp.WordSession()
+    session = _verified_session()
     monkeypatch.setattr(session, "warm", lambda: True)
     recycled: list[object] = []
     monkeypatch.setattr(session, "recycle", lambda *f: recycled.append(f) or True)
@@ -1156,7 +1281,7 @@ def test_convert_folder_one_osascript_skips_existing(
         return inner(script, *args, timeout=timeout)
 
     monkeypatch.setattr(wp, "osa", fake)
-    session = wp.WordSession()
+    session = _verified_session()
     monkeypatch.setattr(session, "warm", lambda: True)
 
     results = wp.convert_folder(src, tmp_path / "out", session=session, one_osascript=True)
@@ -1181,7 +1306,7 @@ def test_convert_folder_one_osascript_resumes_after_a_wedge(
         return (wedge if calls["n"] == 1 else complete)(script, *args, timeout=timeout)
 
     monkeypatch.setattr(wp, "osa", fake)
-    session = wp.WordSession()
+    session = _verified_session()
     monkeypatch.setattr(session, "warm", lambda: True)
     recycled: list[object] = []
     monkeypatch.setattr(session, "recycle", lambda *f: recycled.append(f) or True)
@@ -1211,17 +1336,24 @@ def test_export_batch_script_closes_and_continues_on_a_bad_document() -> None:
     src = wp._EXPORT_BATCH
     assert "set displayAlerts to false" in src
     assert "on error errMsg" in src
-    # Close the document WE opened, record it, move to the next file. This
-    # asserted `close every document saving no` until that was found to discard
-    # a human's unsaved work; the contract is "one bad document does not stop
-    # the run", never "close whatever is open".
-    assert "close every document" not in src
-    assert src.count("close theDoc saving no") == 3
-    # The error handler must not close a document the `open` never produced.
+    # Default closes every open document between files and does not quit Word.
+    # A leftover was saved under the next filename after Word's connection died.
+    assert "close every document saving no" in src
+    assert "quit" not in src
     assert "set theDoc to missing value" in src
-    assert "if theDoc is not missing value then" in src
     assert '"[fail]" & tab & itemId' in src
     assert '"[done]"' in src
+    # A timed-out Apple event leaves Word returning empty documents for every
+    # later open (§5.20). The timed-out file is a final [fail] and the batch
+    # stops, so the tail is retried after a recycle without lining that file up
+    # first again. A streak of empty loads is the same poison when the timeout
+    # was in a previous process: [retry] is not a [fail], so those are retried.
+    assert "set emptyStreak to 0" in src
+    assert '"[retry]" & tab & itemId' in src
+    assert 'errMsg contains "loaded empty"' in src
+    assert 'if errMsg contains "timed out" then' in src
+    assert "exit repeat" in src
+    assert "emptyStreak ≥ 3" in src
     # Health before the save, and nothing interpolated: paths arrive by manifest.
     assert src.index("count of paragraphs") < src.index("save as theDoc")
     assert "item 1 of argv" in src and "item 2 of argv" in src
@@ -1346,13 +1478,16 @@ def test_cleanup_never_sweeps_lock_files_in_the_user_s_own_folder(
     human_lock = _touch(src / "~$their-open-doc.docx")
 
     monkeypatch.setattr(wp, "export_pdf", lambda sin, sout, timeout=180.0: (False, "boom"))
-    session = wp.WordSession()
+    session = _verified_session()
     monkeypatch.setattr(session, "warm", lambda: True)
     swept: list[tuple[Path, ...]] = []
     monkeypatch.setattr(session, "recycle", lambda *f: swept.append(f) or True)
     monkeypatch.setattr(session, "clean_after_kill", lambda *f: swept.append(f))
+    # `export_pdf` is the serial path's; the batch path would run real osascript.
+    monkeypatch.setattr(wp, "osa", lambda *a, **k: (0, "", ""))
+    monkeypatch.setattr(session, "open_document_count", lambda: 1)
 
-    wp.convert_folder(src, tmp_path / "out", session=session)
+    wp.convert_folder(src, tmp_path / "out", session=session, one_osascript=False)
 
     assert swept, "the failure path must have run a cleanup"
     for folders in swept:
@@ -1360,15 +1495,14 @@ def test_cleanup_never_sweeps_lock_files_in_the_user_s_own_folder(
     assert human_lock.exists(), "someone else's lock file must survive"
 
 
-def test_export_pdf_closes_only_the_document_it_opened() -> None:
-    """The export script must not close documents it did not open.
+def test_export_pdf_closes_every_document_and_the_flag_does_not() -> None:
+    """Default closes every document. `--do-not-close` closes only ours.
 
-    Under `--allow-open-docs` a human's documents are open alongside ours, and
-    `close every document saving no` discards their unsaved work on *every*
-    conversion, not only on failure.
+    Neither script quits Word.
     """
-    assert "close every document saving no" not in wp._EXPORT_PDF
-    assert wp._EXPORT_PDF.count("close theDoc saving no") == 2
+    assert "close every document saving no" in wp._EXPORT_PDF
+    assert "quit" not in wp._EXPORT_PDF
+    assert "close every document" not in wp._EXPORT_PDF_KEEP_OPEN
 
 
 def test_recover_after_failure_closes_only_ours_when_word_was_not_clean(
@@ -1464,7 +1598,7 @@ def test_serial_replays_the_failure_streak_after_recycling(
 
     monkeypatch.setattr(wp, "export_pdf", fake_export)
     monkeypatch.setattr(wp, "recover_after_failure", lambda s, *f, **kw: True)
-    session = wp.WordSession()
+    session = _verified_session()
     monkeypatch.setattr(session, "warm", lambda: True)
     monkeypatch.setattr(session, "recycle", lambda *f: True)
 
@@ -1598,3 +1732,133 @@ def test_recovery_prefers_closing_our_document_by_name(monkeypatch) -> None:
     scripts = [s for s, _ in calls]
     assert any("close" in s and "name" in s for s in scripts), scripts
     assert not any("close every document" in s for s in scripts), scripts
+
+
+# ─── the API is held to the CLI's preflight ──────────────────────────────────
+
+
+def test_convert_folder_preflights_the_session_it_creates(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """`session=None` is the convenience path, not a way around the check.
+
+    `WordSession.started_clean` defaults to True, so a bare session claims a
+    clean Word nobody asked. Recovery then trusts that claim before a
+    close-all or a recycle (`quit saving no`).
+    """
+    src = tmp_path / "src"
+    _touch(src / "a.docx")
+    monkeypatch.setattr(wp, "CONTAINER_TMP", tmp_path / "container")
+    asked: list[dict[str, bool]] = []
+
+    def fake_preflight(session, *, allow_open_docs, one_osascript=False, close_documents=True):
+        asked.append(
+            {"allow": allow_open_docs, "one": one_osascript, "close": close_documents}
+        )
+        return "Word did not become responsive"
+
+    monkeypatch.setattr(wp, "preflight", fake_preflight)
+    ran: list[str] = []
+    monkeypatch.setattr(wp, "osa", lambda *a, **k: ran.append("osa") or (0, "", ""))
+
+    results = wp.convert_folder(src, tmp_path / "out", one_osascript=True, close_documents=False)
+    assert asked == [{"allow": False, "one": True, "close": False}]
+    assert ran == []
+    assert results and all("responsive" in (r.error or "") for r in results)
+
+
+def test_convert_folder_refuses_a_session_nobody_preflighted(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    src = tmp_path / "src"
+    _touch(src / "a.docx")
+    monkeypatch.setattr(wp, "CONTAINER_TMP", tmp_path / "container")
+    ran: list[str] = []
+    monkeypatch.setattr(wp, "osa", lambda *a, **k: ran.append("osa") or (0, "", ""))
+    monkeypatch.setattr(wp, "export_pdf", lambda *a, **k: ran.append("export") or (True, ""))
+
+    results = wp.convert_folder(src, tmp_path / "out", session=wp.WordSession())
+    assert ran == []
+    assert results and all("preflight" in (r.error or "") for r in results)
+
+
+
+# ─── delivery ────────────────────────────────────────────────────────────────
+
+
+def test_publish_keeps_the_previous_result_when_the_copy_dies_partway(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A copy that fails after writing some bytes must not truncate the old file."""
+    staged = _touch(tmp_path / "stage" / "a.pdf", b"%PDF-new-and-longer")
+    final = _touch(tmp_path / "out" / "a.pdf", b"%PDF-previous")
+
+    def dying_copy(src, dst, *a, **k):
+        Path(dst).write_bytes(b"%PD")  # a partial write, then the disk goes away
+        raise OSError(28, "No space left on device")
+
+    monkeypatch.setattr(wp.shutil, "copy2", dying_copy)
+    problem = wp.publish(staged, final)
+
+    assert "No space left" in problem
+    assert final.read_bytes() == b"%PDF-previous"
+    assert staged.exists(), "the staged artifact survives for a re-delivery"
+    assert sorted(p.name for p in final.parent.iterdir()) == ["a.pdf"], "no temp left behind"
+
+
+def test_publish_replaces_the_result_whole(tmp_path: Path) -> None:
+    staged = _touch(tmp_path / "stage" / "a.pdf", b"%PDF-new")
+    final = _touch(tmp_path / "out" / "sub" / "a.pdf", b"%PDF-old")
+    assert wp.publish(staged, final) == ""
+    assert final.read_bytes() == b"%PDF-new"
+    assert sorted(p.name for p in final.parent.iterdir()) == ["a.pdf"]
+
+
+def test_a_failed_delivery_is_that_document_s_error_not_the_run_s(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(wp, "CONTAINER_TMP", tmp_path / "container")
+    src = tmp_path / "src"
+    _touch(src / "a.docx")
+    _touch(src / "b.docx")
+    monkeypatch.setattr(
+        wp, "export_pdf", lambda sin, sout, timeout=180.0: (True, _touch(sout, b"%PDF") and "")
+    )
+    monkeypatch.setattr(
+        wp, "publish", lambda staged, final: "disk full" if final.stem == "a" else ""
+    )
+    session = _verified_session()
+    results = wp.convert_folder(src, tmp_path / "out", session=session, one_osascript=False)
+    assert [(r.source.name, r.ok) for r in results] == [("a.docx", False), ("b.docx", True)]
+    assert "disk full" in results[0].error
+
+
+@pytest.mark.parametrize("bad", [0.0, -1.0, float("nan"), float("inf")])
+def test_the_api_rejects_a_timeout_the_cli_would(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, bad: float
+) -> None:
+    """Zero or negative made every osascript 'time out' at once, and each of
+    those failures ran cleanup and, three in a row, a Word recycle."""
+    src = tmp_path / "src"
+    _touch(src / "a.docx")
+    monkeypatch.setattr(wp, "CONTAINER_TMP", tmp_path / "container")
+    with pytest.raises(ValueError, match="timeout"):
+        wp.convert_folder(src, tmp_path / "out", timeout=bad, session=_verified_session())
+
+
+def test_preflight_records_what_it_established(monkeypatch: pytest.MonkeyPatch) -> None:
+    """An incident starts from the session state, so the run log carries it."""
+    session = wp.WordSession()
+    monkeypatch.setattr(wp.WordSession, "available", staticmethod(lambda: True))
+    monkeypatch.setattr(session, "warm", lambda: True)
+    monkeypatch.setattr(session, "open_document_count", lambda: 2)
+    lines: list[str] = []
+    sink = wp.logger.add(lines.append, level="INFO", format="{message}")
+    try:
+        wp.preflight(session, allow_open_docs=False, one_osascript=True)
+    finally:
+        wp.logger.remove(sink)
+    record = "".join(lines)
+    for fact in ("open_documents=2", "started_clean=False", "launched_by_us=False",
+                 "close_documents=True"):  # fmt: skip
+        assert fact in record, record
