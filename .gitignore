@@ -56,6 +56,7 @@ __pycache__/
 
 # bench generated work folders (kept locally, cleaned in CI; see PLAN §4)
 /runs/
+/grok_run/
 # local bench logs (RESULTS live in results/; these are tee captures)
 /logs/
 
@@ -158,3 +159,12 @@ src/neurotic_docx_bench/utils/docxide-metrics/target/
 # results/docxide_metrics.json is committed, the work dir and tee log are not.
 results/docxide_metrics_work/
 results/docxide_metrics_run.log
+
+# coverage.py artifacts. `/coverage` above only covers the directory; these are
+# what `pytest --cov` writes beside it (the data file, the XML/LCOV exports and
+# the HTML report), including the per-worker files pytest-xdist leaves.
+.coverage
+.coverage.*
+coverage.xml
+lcov.info
+htmlcov/
