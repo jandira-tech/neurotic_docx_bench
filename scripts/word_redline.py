@@ -105,6 +105,7 @@ from word_pdf import (  # must follow the sys.path guard above
     preset_notice,
     publish,
     recover_after_failure,
+    require_positive_seconds,
     run_batch_with_resume,
     safe_stage_name,
 )
@@ -126,6 +127,25 @@ class Emit(str, Enum):
 
 
 # ─── pure helpers ────────────────────────────────────────────────────────────
+
+
+def docx_lands_in_an_input(
+    folder_a: Path, folder_b: Path, out_dir: Path, docx_dir: Path | None, emit: Emit
+) -> Path | None:
+    """The input folder the kept redlines would land in, if any.
+
+    `iter_docx` globs its folder, so `deal__vs__deal.docx` written into A (or
+    under it) is a base document the next run compares. PDFs are never read
+    back as inputs and may sit anywhere.
+    """
+    if emit not in (Emit.DOCX, Emit.BOTH):
+        return None
+    target = (docx_dir or out_dir).resolve()
+    for folder in (folder_a, folder_b):
+        root = folder.resolve()
+        if target == root or root in target.parents:
+            return folder
+    return None
 
 
 @dataclass(slots=True, frozen=True)
@@ -615,6 +635,8 @@ def redline_folders(
     `one_osascript` (the default) runs the whole job as TWO monolithic AppleScripts — every
     comparison, then every PDF — instead of one `osascript` per step per pair.
     """
+    require_positive_seconds(timeout, "timeout")
+    require_positive_seconds(pdf_timeout, "pdf_timeout")
     a_docs, b_docs = iter_docx(folder_a), iter_docx(folder_b)
     if cross:
         pairs = cross_pairs(a_docs, b_docs)
@@ -631,6 +653,16 @@ def redline_folders(
     if not pairs:
         logger.warning(f"nothing to compare between {folder_a} and {folder_b}")
         return []
+
+    inside = docx_lands_in_an_input(folder_a, folder_b, out_dir, docx_dir, emit)
+    if inside is not None:
+        problem = (
+            f"the redline docx would be written inside the input folder {inside}, "
+            "where the next run reads it back as a document to compare. "
+            "Pick a docx folder outside both inputs."
+        )
+        logger.error(f"[redline] refusing to start: {problem}")
+        return [PairResult(base=a, revision=b, error=problem) for a, b in pairs]
 
     owns_session = session is None
     session = session or WordSession()
@@ -1195,6 +1227,13 @@ def main(
         if not folder.is_dir():
             console.print(f"[red]{label} is not a folder:[/] {folder}")
             raise typer.Exit(2)
+    # Before the preflight, which by default closes every document in Word.
+    if inside := docx_lands_in_an_input(folder_a, folder_b, out, docx_out, emit):
+        console.print(
+            f"[red]the redline .docx would land inside the input folder {inside}, "
+            "where the next run reads it back as a document. Use --docx-out.[/]"
+        )
+        raise typer.Exit(2)
 
     if check_preset:
         if emit is not Emit.DOCX:
