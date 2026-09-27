@@ -2423,6 +2423,74 @@ def retract_cmd(
     console.print(f"retracted {id_run}: {reason.strip()}")
 
 
+@app.command(name="calibrate")
+def calibrate_cmd(
+    config: Path = typer.Option(Path("bench.yaml"), "--config", "-c"),
+    out: Path = typer.Option(Path("runs/calibration"), "--out", help="work folder for the candidate DOCX"),
+    limit: int | None = typer.Option(None, "--limit", help="cap docs per run (smoke)"),
+    results_dir: Path = typer.Option(Path("results"), "--results-dir"),
+) -> None:
+    """Emit the oracle-identity and null-baseline rows for script_redlines on the current
+    corpus, through the same driver as every vendor run."""
+    import yaml
+
+    from neurotic_docx_bench import calibration as cal
+
+    base = yaml.safe_load(Path(config).read_text(encoding="utf-8"))
+    if not isinstance(base, dict):
+        raise typer.BadParameter(f"{config}: not a mapping")
+    dirs: dict[str, Path] = {}
+    for kind in cal.KINDS:
+        out_dir = out / kind / "docx"
+        total = 0
+        for corpus in base.get("corpora") or []:
+            manifest = Path(corpus["manifest"])
+            root = manifest.parent
+            report = cal.build_candidates(
+                kind,
+                manifest=manifest,
+                source_dir=Path(corpus["source_dir"]),
+                redline_dirs=[root / "docx_redlines_word", root / "docx_redlines_randomized"],
+                out_dir=out_dir,
+            )
+            total += report.written
+        console.print(f"{kind}: {total} candidate DOCX in {out_dir}")
+        dirs[kind] = out_dir
+    derived = out / "bench.calibration.yaml"
+    derived.parent.mkdir(parents=True, exist_ok=True)
+    derived.write_text(
+        yaml.safe_dump(
+            cal.calibration_config(
+                base, oracle_dir=dirs["oracle-identity"], null_dir=dirs["null-baseline"]
+            ),
+            sort_keys=False,
+        ),
+        encoding="utf-8",
+    )
+    _drive_runs(
+        config=derived,
+        names=None,
+        limit=limit,
+        dpi=None,
+        results_dir=results_dir,
+        runs_dir=out / "runs",
+        clean_runs=False,
+        no_update=True,
+        emit=True,
+        only_on_change=False,
+        do_gate=False,
+        generate=False,
+        accept_compare=False,
+        accepted_oracle_cache=Path("out/accepted_oracle"),
+        roundtrip=False,
+        roundtrip_oracle_cache=Path("out/roundtrip_oracle"),
+        rerun=True,
+        oracle_check=True,
+        canary_check=True,
+        holdout=False,
+    )
+
+
 @app.command(name="coverage-matrix")
 def coverage_matrix_cmd(
     mapping: list[Path] = typer.Option(
