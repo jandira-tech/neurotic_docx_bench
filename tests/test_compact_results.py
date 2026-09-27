@@ -29,7 +29,9 @@ def _load():
 cr = _load()
 
 
-def _line(vendor: str, version: str, run_id: str, *, mean: float = 80.0) -> dict:
+def _line(
+    vendor: str, version: str, run_id: str, *, mean: float = 80.0, docset: str = "rev1"
+) -> dict:
     return {
         "vendor": vendor,
         "benchmark": "script_redlines",
@@ -41,7 +43,10 @@ def _line(vendor: str, version: str, run_id: str, *, mean: float = 80.0) -> dict
         "itt_median": mean,
         "itt_n_docs": 2,
         "n_docs": 2,
-        "corpus_revision": "rev1",
+        "corpus_revision": docset,
+        "docset_id": docset,
+        # Word-rendered, so the row is eligible for the headline table (policy item 2).
+        "renderer_id": "word-16.0",
         "timestamp": f"2026-08-0{run_id[-1]}T00:00:00Z",
         "scores": {"a": mean, "b": mean},
         "per_doc": {"a": {"pages": [1, 2, 3]}, "b": {"pages": [4, 5, 6]}},
@@ -162,6 +167,19 @@ def test_holdout_lines_are_compacted_on_their_own_identity(tmp_path: Path) -> No
     assert out[0]["per_doc"], "the holdout line is the latest of its own identity"
 
 
+GATE_DOCSETS = {"rev1": {"n": 2}, "g1": {"n": 2, "gate_of": "rev1"}}
+
+
+def _gate_lines() -> list[dict]:
+    """A gate-set run per tool plus the null baseline, so the tools pass the gate
+    (policy item 4) and the headline table has rows for compaction to preserve."""
+    return [
+        _line("v", "1.0", "g1", mean=90.0, docset="g1"),
+        _line("w", "3.0", "g2", mean=90.0, docset="g1"),
+        _line("null-baseline", "0", "g3", mean=10.0, docset="g1"),
+    ]
+
+
 def _headline_markdown(path: Path) -> str:
     """The script_redlines headline table the ledger would publish from ``path``."""
     from neurotic_docx_bench.ledger import policy as ledger_policy
@@ -176,17 +194,21 @@ def _headline_markdown(path: Path) -> str:
                 id=v,
                 vendor=v,
                 display=v,
-                role="generator",
+                role="calibration" if v == "null-baseline" else "generator",
                 engine=v,
                 bench_vendors=(v,),
             )
-            for v in ("v", "w")
+            for v in ("v", "w", "null-baseline")
         ),
     )
     rows, unmapped = ledger_rows.load_bench_rows(path, registry)
     assert unmapped == []
     tables = ledger_policy.select_headline(
-        rows, registry=registry, retractions=[], docsets={}, tie_fn=lambda a, b: False
+        rows,
+        registry=registry,
+        retractions=[],
+        docsets=GATE_DOCSETS,
+        tie_fn=lambda a, b: False,
     )
     return ledger_tables.fidelity_table(tables["script_redlines"], row_ci={})
 
@@ -201,10 +223,11 @@ def test_results_md_is_byte_identical_after_compaction(tmp_path: Path) -> None:
             _line("v", "1.0", "r1", mean=70.0),
             _line("v", "1.0", "r2", mean=80.0),
             _line("w", "3.0", "r3", mean=90.0),
+            *_gate_lines(),
         ],
     )
     before = _headline_markdown(p)
-    assert "| v |" in before and "| w |" in before
+    assert "| v |" in before and "| w |" in before, before
     cr.compact(p, detail_dir=tmp_path / "results" / "detail", root=tmp_path)
     after = _headline_markdown(p)
     assert before == after
