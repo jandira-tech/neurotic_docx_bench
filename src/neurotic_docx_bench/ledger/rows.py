@@ -64,6 +64,8 @@ class ResultRow(BaseModel):
     # Lens-disagreement bench-health alarm carried from the line; never a ranking input.
     n_lens_disagree: int | None = None
     lens_disagree_rate: float | None = None
+    # True for rows read from results/archive/: history only, never ranked.
+    archived: bool = False
 
     @property
     def provenance(self) -> Provenance:
@@ -229,9 +231,10 @@ def row_from_bench_line(data: dict, registry: Registry) -> ResultRow | None:
 
 
 def load_bench_rows(
-    path: Path, registry: Registry
+    path: Path, registry: Registry, *, archived: bool = False
 ) -> tuple[list[ResultRow], list[dict]]:
-    """All rows in ``path`` plus the raw lines the registry could not map."""
+    """All rows in ``path`` plus the raw lines the registry could not map. ``archived``
+    marks every row as history-only."""
     rows: list[ResultRow] = []
     unmapped: list[dict] = []
     with Path(path).open(encoding="utf-8") as fh:
@@ -254,7 +257,7 @@ def load_bench_rows(
                     }
                 )
                 continue
-            rows.append(row)
+            rows.append(row.model_copy(update={"archived": True}) if archived else row)
     return rows, unmapped
 
 
