@@ -165,3 +165,128 @@ def test_pin_and_render_and_run_name_are_carried(registry) -> None:
     assert row.render == "soffice"
     assert row.run_name == "docxodus"
     assert row.timestamp.year == 2026
+
+
+# ---- speed rows ---------------------------------------------------------------
+
+
+def _speed_line(**over) -> dict:
+    base = {
+        "schema": 1,
+        "kind": "speed_redlines",
+        "tool": "jubarte-rust-inproc",
+        "runtime": "rust",
+        "run_ts": "2026-08-15T10:00:00Z",
+        "fixture_count": 1000,
+        "pair_count": 5000,
+        "n": 5000,
+        "failures": 0,
+        "unit": "ms_per_redline",
+        "mean": 25.34,
+        "median": 6.2,
+        "p95": 110.76,
+        "throughput_per_s": 39.5,
+        "tool_version": "jubarte-rust@17ea47e9a0d7+git.bf3d07d",
+        "hardware": {"cpu": "Apple M3", "cores": 12},
+    }
+    base.update(over)
+    return base
+
+
+def _registry_with(tmp_path: Path, *entries: dict):
+    doc = yaml.safe_load((tmp_path / "reg.yaml").read_text())
+    doc["tools"].extend(entries)
+    (tmp_path / "reg2.yaml").write_text(yaml.safe_dump(doc))
+    return load_registry(tmp_path / "reg2.yaml")
+
+
+_JUBARTE_RUST = {
+    "id": "jubarte-rust",
+    "vendor": "jubarte",
+    "display": "jubarte-rust",
+    "role": "generator",
+    "engine": "jubarte-redlines",
+    "affiliated": True,
+    "speed_tools": ["jubarte-rust"],
+}
+_CSHARP = {
+    "id": "docxodus-csharp",
+    "vendor": "docxodus",
+    "display": "docxodus (C#)",
+    "role": "generator",
+    "engine": "docxodus",
+    "speed_tools": ["docxodus-csharp"],
+}
+
+
+def test_speed_row_maps_tool_and_inproc(tmp_path: Path, registry) -> None:
+    reg2 = _registry_with(tmp_path, _JUBARTE_RUST)
+    row = rws.speed_row_from_line(_speed_line(), reg2)
+    assert row is not None
+    assert row.tool_id == "jubarte-rust" and row.inproc is True and row.kind == "large"
+    assert row.pin.display == "jubarte-rust@17ea47e9a0d7+git.bf3d07d"
+    assert row.median_ms == 6.2 and row.fixture_count == 1000 and row.n == 5000
+    assert row.hardware == {"cpu": "Apple M3", "cores": 12}
+    assert row.affiliated is True
+
+
+def test_speed_row_without_version_is_unpinned(tmp_path: Path, registry) -> None:
+    reg2 = _registry_with(tmp_path, _CSHARP)
+    row = rws.speed_row_from_line(
+        _speed_line(
+            tool="docxodus-csharp", tool_version=None, hardware=None, kind="speed"
+        ),
+        reg2,
+    )
+    assert row is not None and row.pin.pinned is False and row.kind == "micro"
+    assert row.hardware is None and row.inproc is False
+
+
+def test_speed_row_rejects_other_units_errors_and_unknown_tools(
+    tmp_path: Path, registry
+) -> None:
+    reg2 = _registry_with(tmp_path, _JUBARTE_RUST)
+    assert rws.speed_row_from_line(_speed_line(unit="ms_per_render"), reg2) is None
+    assert rws.speed_row_from_line(_speed_line(error="boom", median=None), reg2) is None
+    assert rws.speed_row_from_line(_speed_line(tool="nobody"), reg2) is None
+    assert rws.speed_row_from_line(_speed_line(n=0), reg2) is None
+
+
+def test_load_speed_rows_reads_jsonl_and_summaries(tmp_path: Path, registry) -> None:
+    reg2 = _registry_with(tmp_path, _JUBARTE_RUST)
+    (tmp_path / "speed.jsonl").write_text(
+        json.dumps(_speed_line())
+        + "\n"
+        + json.dumps(_speed_line(tool="ghost-tool"))
+        + "\n"
+    )
+    summary_dir = tmp_path / "redline_speed_bench" / "run1"
+    summary_dir.mkdir(parents=True)
+    (summary_dir / "summary.json").write_text(
+        json.dumps(
+            {
+                "runTs": "2026-08-16T10:00:00Z",
+                "fixtures": 200,
+                "pairs": 500,
+                "rows": [
+                    dict(
+                        _speed_line(
+                            kind="redline_speed_bench",
+                            fixture_count=None,
+                            pair_count=None,
+                            run_ts=None,
+                        )
+                    )
+                ],
+            }
+        )
+    )
+    rows, unmapped = rws.load_speed_rows(
+        tmp_path / "speed.jsonl", tmp_path / "redline_speed_bench", reg2
+    )
+    assert [u["tool"] for u in unmapped] == ["ghost-tool"]
+    assert sorted((r.fixture_count, r.pair_count) for r in rows) == [
+        (200, 500),
+        (1000, 5000),
+    ]
+    assert {r.timestamp.day for r in rows} == {15, 16}
