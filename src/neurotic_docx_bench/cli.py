@@ -2809,5 +2809,102 @@ def serve(
         console.print("\n[yellow]stopped[/yellow]")
 
 
+# --- Hugging Face hub: fixtures and results datasets ------------------------
+
+fixtures_app = typer.Typer(
+    name="fixtures",
+    help="Source fixtures dataset on the Hugging Face hub (sha256-verified).",
+    no_args_is_help=True,
+)
+results_app = typer.Typer(
+    name="results",
+    help="Results dataset on the Hugging Face hub (stores, pages, fixtures used, run outputs).",
+    no_args_is_help=True,
+)
+app.add_typer(fixtures_app)
+app.add_typer(results_app)
+
+
+@fixtures_app.command(name="download")
+def fixtures_download_cmd(
+    dest: Path = typer.Option(Path("corpus"), "--dest", help="where the fixtures land"),
+    revision: str | None = typer.Option(None, "--revision", help="tag, branch or commit of the dataset (default main)"),
+    repo: str = typer.Option(None, "--repo", help="dataset repo id", show_default=False),
+) -> None:
+    """Download the source fixtures and verify every file against MANIFEST.sha256.json."""
+    from neurotic_docx_bench import hub
+
+    repo_id = repo or hub.FIXTURES_REPO
+    try:
+        report = hub.download_fixtures(dest, api=hub.default_api(), repo_id=repo_id, revision=revision)
+    except hub.ManifestError as exc:
+        console.print(f"[red]refused[/red] {exc}")
+        raise typer.Exit(code=1) from exc
+    console.print(f"{repo_id}@{revision or 'main'} → {dest}: {report.describe()}")
+
+
+@fixtures_app.command(name="upload")
+def fixtures_upload_cmd(
+    root: Path = typer.Option(Path("corpus"), "--root", help="fixture tree to upload"),
+    repo: str = typer.Option(None, "--repo", help="dataset repo id", show_default=False),
+    dry_run: bool = typer.Option(False, "--dry-run", help="count the files, touch nothing, call nothing"),
+) -> None:
+    """Write MANIFEST.sha256.json and the dataset card, then upload the whole fixture tree."""
+    from neurotic_docx_bench import hub
+
+    repo_id = repo or hub.FIXTURES_REPO
+    report = hub.upload_fixtures(root, api=hub.default_api(), repo_id=repo_id, dry_run=dry_run)
+    if report.dry_run:
+        console.print(f"dry run: {report.n_files} files would go to {repo_id}")
+        return
+    if not report.verified:
+        console.print(f"[red]hub copy differs[/red] for: {', '.join(report.mismatched)}")
+        raise typer.Exit(code=1)
+    console.print(f"uploaded {report.n_files} files to {repo_id}; hashes verified")
+
+
+@results_app.command(name="upload")
+def results_upload_cmd(
+    root: Path = typer.Option(Path("."), "--root", help="repository root"),
+    bench_version_opt: str | None = typer.Option(
+        None, "--version", help="bench version folder (default: the installed package version)",
+    ),
+    with_outputs: bool = typer.Option(False, "--with-outputs", help="also upload the raw run outputs under runs/"),
+    run_dir: list[Path] = typer.Option(
+        [], "--run-dir", help="with --with-outputs: only these run folders (default: every folder under runs/)",
+    ),
+    prune_local: bool = typer.Option(
+        False,
+        "--prune-local",
+        help="delete the uploaded run folders, only after every uploaded hash was read back and matched",
+    ),
+    repo: str = typer.Option(None, "--repo", help="dataset repo id", show_default=False),
+    dry_run: bool = typer.Option(False, "--dry-run", help="stage under results/hub/ and stop"),
+) -> None:
+    """Stage results/, the pages, the fixtures each docset used and (optionally) run outputs; upload; verify."""
+    from neurotic_docx_bench import hub
+
+    repo_id = repo or hub.RESULTS_REPO
+    report = hub.upload_results(
+        root,
+        api=hub.default_api(),
+        repo_id=repo_id,
+        version=bench_version_opt,
+        with_outputs=with_outputs,
+        run_dirs=run_dir or None,
+        prune_local=prune_local,
+        dry_run=dry_run,
+    )
+    if report.dry_run:
+        console.print(f"dry run: {report.n_files} files staged under {report.root} for {repo_id} (v{report.version})")
+        return
+    if not report.verified:
+        console.print(f"[red]hub copy differs[/red] for: {', '.join(report.mismatched)}; nothing pruned")
+        raise typer.Exit(code=1)
+    console.print(f"uploaded {report.n_files} files to {repo_id} (v{report.version}); hashes verified")
+    if prune_local:
+        console.print(f"pruned {len(report.pruned)} run folders" + (": " + ", ".join(str(p) for p in report.pruned) if report.pruned else ""))
+
+
 if __name__ == "__main__":
     app()
