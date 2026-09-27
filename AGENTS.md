@@ -202,7 +202,8 @@ not use the cache.
 
 `bench profile [--run NAME]... [--sample N] [--seed S] [--dpi D] [--json OUT]
 [--roundtrip] [--accept-compare]` drives `_drive_runs` with `emit=False`,
-`do_gate=False`, `rerun=True`, `no_update=True` and the content cache configured off, so
+`do_gate=False`, `rerun=True`, `no_update=True`, `oracle_check=False`, `canary_check=False`
+and the content cache configured off, so
 a profile is always one fresh pass and never lands in `results/`. `limit=N` with
 `sample_seed=S` makes `_limited_source` take `profile.sample_files` (a
 `random.Random(seed)` sample of the sorted file list, returned sorted) instead of the
