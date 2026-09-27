@@ -131,6 +131,18 @@ uv run bench cache --clear
 
 `bench compare` never reads the cache.
 
+### Profiling the pipeline
+
+`bench profile` times every stage (generate, render, raster, score) on a seeded sample of documents and prints, per run and benchmark, each stage's count, total, mean, median, p95, max and share of the run, plus the run's wall time and renderer. It is one uncached pass and never a result: nothing is appended to `results/bench.jsonl`, no gate runs, and recorded runs are not skipped.
+
+```bash
+uv run bench profile --run jubarte                     # 10 documents, seed 0
+uv run bench profile --run jubarte --sample 25 --seed 3 --json out/profile.json
+uv run bench profile --roundtrip --accept-compare      # time those stages too
+```
+
+The same `--sample` and `--seed` pick the same documents, so two profiles (before and after a scorer change, or CPU against a torch device) compare like for like.
+
 ---
 
 ## Speed methodology

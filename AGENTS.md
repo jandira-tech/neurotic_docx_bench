@@ -198,6 +198,24 @@ the task tuple. A hit still writes the page PNGs under the run's work dir, so ga
 the residual-ink diagnostics read the same paths as an uncached run. `bench compare` does
 not use the cache.
 
+## Profiling (`src/neurotic_docx_bench/profile.py`, `bench profile`)
+
+`bench profile [--run NAME]... [--sample N] [--seed S] [--dpi D] [--json OUT]
+[--roundtrip] [--accept-compare]` drives `_drive_runs` with `emit=False`,
+`do_gate=False`, `rerun=True`, `no_update=True` and the content cache configured off, so
+a profile is always one fresh pass and never lands in `results/`. `limit=N` with
+`sample_seed=S` makes `_limited_source` take `profile.sample_files` (a
+`random.Random(seed)` sample of the sorted file list, returned sorted) instead of the
+first N files; the roundtrip stage samples the same way. `_execute_run` fills a
+`timings_sink` with each benchmark's per-document stage seconds (the same
+`_collect_timings` / `BenchmarkOutcome.timings` dicts that feed the emitted speed
+stats), and `_drive_runs` wraps them with the run's wall time and `hardware.renderer_id`.
+`profile.summarize` aggregates a benchmark's timings into per-stage `n`, `total_s`,
+`mean_s`, `median_s`, `p95_s` (nearest rank), `max_s` and `share` (stage total over the
+sum of stage totals); `build_report` adds `sample`, `seed`, `dpi`, the scorer fingerprint
+and raster engine; `render_tables` prints one 80-column table per run. Passthrough runs
+time raster and score only (no render duration), generated runs add `generate`.
+
 ## Regenerating the Word oracle PDFs (macOS + Word, local-only)
 
 The committed oracle PDFs (`corpus/word_based/pdf_redlines_word/*.pdf`) are Word redline
