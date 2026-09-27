@@ -56,8 +56,8 @@ ORACLE_NOTES: dict[str, str] = {
         "Oracle: SHA-pinned Word-export PDFs of the source; the candidate is the converter's PDF."
     ),
     "docxide_metrics": (
-        "Same inputs and oracles as docx_to_pdf_no_redline_docs, scored with docxide-pdf's Jaccard, "
-        "SSIM and text-boundary metrics at 150 DPI; ranked on Jaccard, docxide-pdf's headline number."
+        "Same inputs and oracles as docx_to_pdf_no_redline_docs, scored with docxide-pdf's Jaccard "
+        "and text-boundary metrics at 150 DPI; ranked on Jaccard, docxide-pdf's headline number."
     ),
 }
 
