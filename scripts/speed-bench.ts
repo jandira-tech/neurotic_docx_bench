@@ -72,9 +72,16 @@ const METHODS: MethodConfig[] = [
 	{ method: "docxodus", dist: "" },
 	{ method: "docx-redline-js", dist: "" },
 	{ method: "superdoc-ts", dist: "" },
+	// Canonical Rust engine: the native CLI (spawn per pair) and the WASM build in V8.
+	{
+		method: "jubarte-rust",
+		dist: process.env.JUBARTE_RUST_DIST ?? "src/neurotic_docx_bench/utils/jubarte/jubarte-rust",
+	},
+	{ method: "jubarte-wasm", dist: "src/neurotic_docx_bench/utils/jubarte/jubarte-wasm" },
 ];
 // method label → the loadEngine method id (jubarte-final-native still loads via "jubarte-native")
 function engineMethod(label: string): string {
+	if (label === "jubarte-rust" || label === "jubarte-wasm") return label;
 	if (label.includes("native")) return "jubarte-native";
 	if (label.includes("jubarte")) return "jubarte-lossless";
 	return label;
