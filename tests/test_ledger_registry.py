@@ -6,6 +6,7 @@ from pathlib import Path
 
 import pytest
 import yaml
+from pydantic import ValidationError
 
 from neurotic_docx_bench.ledger import registry as reg
 
@@ -148,6 +149,88 @@ def test_not_applicable_lists_benchmarks(tmp_path: Path) -> None:
 def test_unknown_field_rejected(tmp_path: Path) -> None:
     with pytest.raises(ValueError):
         reg.load_registry(_write(tmp_path, _minimal(typo_field=1)))
+
+
+@pytest.mark.parametrize(
+    "field, label",
+    [
+        ("run_names", "run name"),
+        ("speed_tools", "speed tool"),
+        ("converter_tools", "converter tool"),
+    ],
+)
+def test_duplicate_aliases_across_tools_are_rejected(tmp_path: Path, field, label) -> None:
+    doc = _minimal(**{field: ["shared"]})
+    other = dict(doc["tools"][0], id="other", run_names=[])
+    other[field] = ["shared"]
+    doc["tools"].append(other)
+    message = f"{label} 'shared' claimed by 'acme' and 'other'"
+    with pytest.raises(ValidationError, match=message):
+        reg.load_registry(_write(tmp_path, doc))
+
+
+def test_aliases_in_different_namespaces_do_not_conflict(tmp_path: Path) -> None:
+    doc = _minimal(run_names=["shared"])
+    doc["tools"].append(
+        dict(doc["tools"][0], id="other", run_names=[], speed_tools=["shared"])
+    )
+    r = reg.load_registry(_write(tmp_path, doc))
+    assert r.resolve_bench(vendor="", run_name="shared", render="") == r.by_id("acme")
+    entry, inproc = r.resolve_speed("shared")
+    assert entry == r.by_id("other") and inproc is False
+
+
+@pytest.mark.parametrize("content", ["", "null\n", "[]\n", "- acme\n", "acme\n"])
+def test_registry_requires_a_yaml_mapping(tmp_path: Path, content) -> None:
+    path = tmp_path / "invalid.yaml"
+    path.write_text(content)
+    with pytest.raises(TypeError, match="registry must be a mapping"):
+        reg.load_registry(path)
+
+
+@pytest.mark.parametrize("field, value", [("role", "unknown"), ("status", "disabled")])
+def test_registry_rejects_invalid_tool_enums(tmp_path: Path, field, value) -> None:
+    with pytest.raises(ValidationError, match=field):
+        reg.load_registry(_write(tmp_path, _minimal(**{field: value})))
+
+
+def test_registry_rejects_unknown_top_level_fields(tmp_path: Path) -> None:
+    doc = dict(_minimal(), typo=1)
+    with pytest.raises(ValidationError, match="extra_forbidden"):
+        reg.load_registry(_write(tmp_path, doc))
+
+
+@pytest.mark.parametrize("role, render", [("generator", "playwright"), ("editor", "soffice")])
+def test_vendor_fallback_works_when_preferred_role_is_absent(tmp_path: Path, role, render) -> None:
+    r = reg.load_registry(_write(tmp_path, _minimal(role=role)))
+    hit = r.resolve_bench(vendor="acme", run_name="legacy", render=render)
+    assert hit == r.by_id("acme")
+    assert r.resolve_bench(vendor="unknown", run_name="legacy", render=render) is None
+
+
+def test_exact_run_name_overrides_playwright_role_preference(tmp_path: Path) -> None:
+    doc = _minimal()
+    doc["tools"].insert(
+        0, dict(doc["tools"][0], id="viewer", role="editor", run_names=["viewer"])
+    )
+    r = reg.load_registry(_write(tmp_path, doc))
+    hit = r.resolve_bench(vendor="acme", run_name="acme", render="playwright")
+    assert hit == r.by_id("acme")
+
+
+def test_explicit_inproc_alias_and_unknown_suffix(tmp_path: Path) -> None:
+    r = reg.load_registry(_write(tmp_path, _minimal(speed_tools=["native-inproc"])))
+    assert r.resolve_speed("native-inproc") == (r.by_id("acme"), True)
+    assert r.resolve_speed("native") == (None, False)
+    assert r.resolve_speed("unknown-inproc") == (None, False)
+
+
+def test_registry_and_tool_entries_are_frozen(tmp_path: Path) -> None:
+    r = reg.load_registry(_write(tmp_path, _minimal()))
+    with pytest.raises(ValidationError, match="frozen_instance"):
+        r.tools = ()
+    with pytest.raises(ValidationError, match="frozen_instance"):
+        r.by_id("acme").role = "editor"
 
 
 # ---- the committed registry --------------------------------------------------
