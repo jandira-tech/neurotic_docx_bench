@@ -170,3 +170,6 @@ lcov.info
 htmlcov/
 # hub upload staging (bench results upload); rebuilt from results/ every time
 results/hub/
+
+# content-addressed render/raster/score cache (bench run; see content_cache.py)
+/.bench-cache/
