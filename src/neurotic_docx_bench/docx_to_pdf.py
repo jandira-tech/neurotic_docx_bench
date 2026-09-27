@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import json
 import math
+import os
 import shutil
 import statistics
 import subprocess
@@ -392,9 +393,15 @@ def convert_command(tool: str, src: Path, dest: Path, *, binary: Path) -> list[s
 
 
 def resolve_tool_binary(tool: str, override: Path | None = None) -> Path:
-    """Resolve a converter binary from ``override``, PATH, or ``~/.cargo/bin``."""
+    """Resolve a converter binary: ``override``, ``JUBARTE_BIN``, PATH, then ``~/.cargo/bin``."""
     if override is not None:
         return override
+    env_bin = os.environ.get("JUBARTE_BIN") if tool == "jubarte" else None
+    if env_bin:
+        env_path = Path(env_bin).expanduser()
+        if not env_path.is_file():
+            raise FileNotFoundError(f"JUBARTE_BIN points to a missing file: {env_path}")
+        return env_path
     if tool == "jubarte" and DEFAULT_CONVERTER.is_file():
         return DEFAULT_CONVERTER
     names = _TOOL_BINARIES.get(tool, (tool,))

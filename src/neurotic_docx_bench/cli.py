@@ -3183,5 +3183,207 @@ def results_upload_cmd(
         console.print(f"pruned {len(report.pruned)} run folders" + (": " + ", ".join(str(p) for p in report.pruned) if report.pruned else ""))
 
 
+# --- bench try: one fixture, any tool, against jubarte -----------------------
+
+try_app = typer.Typer(
+    name="try",
+    help="Pick one tryout fixture (random or by name), run your tool on it, score it against Word "
+    "next to jubarte's precomputed output. Nothing is written under results/.",
+    no_args_is_help=True,
+)
+app.add_typer(try_app)
+
+
+def _try_fail(message: str, code: int = 1) -> typer.Exit:
+    console.print(f"[red]refused[/red] {message}")
+    return typer.Exit(code=code)
+
+
+def _try_candidate(
+    template: str,
+    fixture: Any,
+    task: str,
+    out_dir: Path,
+    *,
+    root: Path,
+    renderer: str,
+    label: str,
+) -> tuple[Path, str, dict[str, float]]:
+    """Run ``template`` for ``fixture`` and render its output; the PDF to score."""
+    from neurotic_docx_bench import tryout
+
+    ext = "pdf" if renderer == "passthrough" else "docx"
+    run = tryout.run_tool(template, fixture, task, out_dir / label, root=root, ext=ext)
+    rendered = tryout.render(run.output, renderer, out_dir / f"{label}_render")
+    return rendered.pdf, rendered.renderer_id, {f"{label}_s": run.seconds, f"{label}_render_s": rendered.seconds}
+
+
+@try_app.command(name="list")
+def try_list_cmd(
+    root: Path = typer.Option(Path("."), "--root", help="repository root (or a `bench try fetch` dest)"),
+) -> None:
+    """Print every fixture of the tryout set."""
+    from neurotic_docx_bench import tryout
+
+    try:
+        tryout_set = tryout.load_set(root)
+    except tryout.TryoutError as exc:
+        raise _try_fail(str(exc)) from exc
+    for fixture in tryout_set.fixtures:
+        console.print(f"{fixture.pair_stem}  ({fixture.base} → {fixture.next})", highlight=False)
+    console.print(f"{len(tryout_set.fixtures)} fixtures in {tryout_set.csv_path} (sha256 {tryout_set.sha256[:12]})")
+
+
+@try_app.command(name="run")
+def try_run_cmd(
+    root: Path = typer.Option(Path("."), "--root", help="repository root (or a `bench try fetch` dest)"),
+    random_pick: bool = typer.Option(False, "--random", help="pick a fixture at random (see --seed)"),
+    seed: int | None = typer.Option(None, "--seed", help="with --random: the seed; default a fresh one, reported"),
+    fixture_stem: str | None = typer.Option(None, "--fixture", help="pick this pair_stem"),
+    task: str = typer.Option("redline", "--task", help="redline | convert"),
+    tool: str | None = typer.Option(
+        None,
+        "--tool",
+        help="command template: {base} {next} {out} for redline, {input} {out} for convert",
+    ),
+    against: str = typer.Option(
+        "jubarte", "--against", help="jubarte (precomputed), another command template, or a PDF path"
+    ),
+    renderer: str = typer.Option(
+        "passthrough", "--renderer", help="passthrough (the tool writes the PDF) | soffice | word"
+    ),
+    out: Path = typer.Option(Path("runs/try"), "--out", help="where the tool output and the pages go"),
+    json_out: Path | None = typer.Option(None, "--json", help="write the report here"),
+    dpi: int = typer.Option(144, "--dpi"),
+) -> None:
+    """Run one tool on one fixture and score it against Word next to jubarte."""
+    from neurotic_docx_bench import tryout
+
+    if random_pick == (fixture_stem is not None):
+        raise _try_fail("pass exactly one of --random or --fixture PAIR_STEM", code=2)
+    if not tool:
+        raise _try_fail("--tool is required: a command template with {out}", code=2)
+    if task not in tryout.TASKS:
+        raise _try_fail(f"--task must be one of {', '.join(tryout.TASKS)}", code=2)
+    if renderer not in tryout.RENDERERS:
+        raise _try_fail(f"--renderer must be one of {', '.join(tryout.RENDERERS)}", code=2)
+    try:
+        tryout_set = tryout.load_set(root)
+        picked = tryout.pick(tryout_set, stem=fixture_stem, seed=seed if random_pick else None)
+        fixture = picked.fixture
+        out_dir = out / fixture.pair_stem
+        candidate, renderer_id, timings = _try_candidate(
+            tool, fixture, task, out_dir, root=root, renderer=renderer, label="tool"
+        )
+        against_pdf: Path | None = None
+        against_label: str | None = None
+        if against != "jubarte":
+            if "{out}" in against:
+                against_pdf, _, more = _try_candidate(
+                    against, fixture, task, out_dir, root=root, renderer=renderer, label="against"
+                )
+                timings.update(more)
+                against_label = against
+            else:
+                against_pdf = Path(against)
+                if not against_pdf.is_file():
+                    raise tryout.TryoutError(
+                        f"--against is neither jubarte, a template with {{out}}, nor a PDF: {against}"
+                    )
+        report = tryout.compare(
+            tryout_set,
+            fixture,
+            task,
+            candidate,
+            out_dir / "pages",
+            dpi=dpi,
+            renderer_id=renderer_id,
+            against_pdf=against_pdf,
+            against_label=against_label,
+            timings=timings,
+            seed=picked.seed,
+        )
+    except tryout.TryoutError as exc:
+        raise _try_fail(str(exc)) from exc
+
+    table = Table(title=f"{fixture.pair_stem} · {task} · oracle {report.oracle.name}", box=box.SIMPLE)
+    for column in ("candidate", "overall", "raw", "score_v2", "pages", "sha256"):
+        table.add_column(column)
+    for label, scores, sha in (
+        ("your tool", report.tool, report.sha256["candidate"]),
+        (report.against_label, report.against, report.sha256["against"]),
+    ):
+        v2 = scores["score_v2"]
+        table.add_row(
+            label,
+            f"{scores['overall']:.2f}",
+            f"{scores['overall_raw']:.2f}",
+            "" if v2 is None else f"{float(v2):.2f}",
+            f"{scores['page_count_candidate']}/{scores['page_count_oracle']}",
+            sha[:12],
+        )
+    console.print(table)
+    sign = "+" if report.delta >= 0 else ""
+    console.print(
+        f"delta {sign}{report.delta:.2f} points (your tool minus {report.against_label}); "
+        f"renderer {report.renderer_id}, scorer {report.scorer_fingerprint}, engine {report.raster_engine}, dpi {dpi}"
+    )
+    if picked.seed is not None:
+        console.print(f"seed {picked.seed} (pass --seed {picked.seed} to pick {fixture.pair_stem} again)")
+    console.print(f"pages under {out_dir / 'pages'}")
+    if json_out is not None:
+        json_out.parent.mkdir(parents=True, exist_ok=True)
+        json_out.write_text(json.dumps(report.to_dict(), indent=1))
+        console.print(f"report {json_out}")
+
+
+@try_app.command(name="build-set")
+def try_build_set_cmd(
+    root: Path = typer.Option(Path("."), "--root", help="repository root"),
+    size: int = typer.Option(None, "--size", help="fixtures in the set", show_default="100"),
+    seed: int = typer.Option(None, "--seed", help="sampling seed", show_default="20260927"),
+    force: bool = typer.Option(False, "--force", help="rewrite an existing set"),
+) -> None:
+    """Draw the tryout set from the Word corpus and write corpus/tryout/tryout_100.csv."""
+    from neurotic_docx_bench import tryout
+
+    target = root / tryout.TRYOUT_DIR / tryout.SET_NAME
+    if target.is_file() and not force:
+        raise _try_fail(
+            f"{target} exists; pass --force to rewrite it (jubarte's outputs then need regenerating)", code=2
+        )
+    try:
+        fixtures = tryout.build_set(
+            root, size=size if size is not None else tryout.SET_SIZE, seed=seed if seed is not None else tryout.SET_SEED
+        )
+    except tryout.TryoutError as exc:
+        raise _try_fail(str(exc)) from exc
+    path = tryout.write_set(root, fixtures)
+    console.print(f"wrote {path}: {len(fixtures)} pairs from {tryout.CORPUS}")
+
+
+@try_app.command(name="fetch")
+def try_fetch_cmd(
+    stem: str = typer.Argument(..., help="pair_stem of the fixture to download"),
+    dest: Path = typer.Option(
+        Path("tryout_dl"), "--dest", help="root to download under (then `bench try run --root DEST`)"
+    ),
+    repo: str = typer.Option(None, "--repo", help="dataset repo id", show_default=False),
+    revision: str | None = typer.Option(None, "--revision", help="tag, branch or commit (default main)"),
+) -> None:
+    """Download one fixture of the tryout set (and jubarte's outputs for it), sha256-verified."""
+    from neurotic_docx_bench import hub, tryout
+
+    repo_id = repo or hub.FIXTURES_REPO
+    try:
+        tryout_set, fixture = tryout.fetch(repo_id, revision, stem, dest, api=hub.default_api())
+    except tryout.TryoutError as exc:
+        raise _try_fail(str(exc)) from exc
+    console.print(
+        f"{repo_id}@{revision or 'main'}: {fixture.pair_stem} → {dest} "
+        f"({len(fixture.files)} files, jubarte outputs verified); {len(tryout_set.fixtures)} fixtures in the set"
+    )
+
+
 if __name__ == "__main__":
     app()
