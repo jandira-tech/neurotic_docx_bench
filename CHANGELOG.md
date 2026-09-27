@@ -22,6 +22,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Large-N `speed_redlines` pack (2026-08-15): 1000 fixtures → 5000 pairs
   including jubarte inproc/CLI/WASM and docxodus WASM / csharp-inproc
 
+### Fixed
+- `scripts/docx_to_pdf_speed.py`: version probes time out after 30 s; an
+  empty corpus stops the run before any output; a tool with no successful
+  conversion keeps a row (n 0, failures, null timings); p95 is the
+  nearest-rank sample, as in `speed_stats` (it was the maximum at n = 20)
+- `scripts/speed-bench.ts`: a missing jubarte-rust/jubarte-wasm build exits
+  1 instead of writing a table without jubarte; `JUBARTE_WASM_DIST`
+  overrides the WASM path
+
 ## [0.50] - 2026-07-08
 
 ### Added
