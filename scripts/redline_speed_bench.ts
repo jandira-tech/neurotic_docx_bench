@@ -41,6 +41,7 @@ import { Session } from "node:inspector/promises";
 import { basename, dirname, join, resolve } from "node:path";
 import { performance } from "node:perf_hooks";
 import { fileURLToPath } from "node:url";
+import { hardwareInfo, toolVersionForMethod } from "./lib/provenance.ts";
 import {
 	loadEngine,
 	shutdownAllLongLivedWorkers,
@@ -1043,6 +1044,10 @@ async function main() {
 			std: round(st.std),
 			total_ms: round(st.total),
 			throughput_per_s: round(st.throughput_per_s, 1),
+			// Provenance (consolidation): the pin and the machine, without which the
+			// number is not comparable to any other row.
+			tool_version: toolVersionForMethod(engId, dist, ROOT),
+			hardware: hardwareInfo(),
 			mean_out_bytes: outSizes.length
 				? Math.round(outSizes.reduce((a, b) => a + b, 0) / outSizes.length)
 				: null,

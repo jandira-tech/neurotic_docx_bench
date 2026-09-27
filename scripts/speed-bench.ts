@@ -22,7 +22,11 @@
 import { readFileSync, appendFileSync, mkdirSync, existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { performance } from "node:perf_hooks";
+import { fileURLToPath } from "node:url";
 import { parseManifest, loadEngine } from "./generate-native-redlines.ts";
+import { hardwareInfo, toolVersionForMethod } from "./lib/provenance.ts";
+
+const SPEED_ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
 interface Stats {
 	n: number;
@@ -175,6 +179,9 @@ async function main() {
 			failures,
 			unit: "ms_per_redline",
 			...roundStats(st),
+			// Provenance (consolidation): the pin and the machine.
+			tool_version: toolVersionForMethod(engineMethod(mc.method), mc.dist ?? "", SPEED_ROOT),
+			hardware: hardwareInfo(),
 		};
 		rows.push(row);
 		appendFileSync(outPath, JSON.stringify(row) + "\n");
