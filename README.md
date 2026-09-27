@@ -143,6 +143,17 @@ uv run bench profile --roundtrip --accept-compare      # time those stages too
 
 The same `--sample` and `--seed` pick the same documents, so two profiles (before and after a scorer change, or CPU against a torch device) compare like for like.
 
+### Torch backend for the scorer kernels
+
+The scorer's two heaviest kernels, the CIEDE2000 colour distance and SSIM, have a torch port behind `--device` on `bench run`, `bench profile` and `bench compare` (the `gpu` extra: `uv sync --extra gpu`). The default is the skimage path, which the parity tests lock byte for byte; the torch path reproduces it within float32 tolerance and is checked against it by `tests/test_kernels.py`.
+
+```bash
+uv run bench profile --run jubarte --device mps      # Apple silicon
+uv run bench run --device auto                       # cuda, then mps, else the numpy path
+```
+
+`auto` is silent when no GPU is present; `cpu`, `mps` and `cuda` fall back to the numpy path with one warning when torch or that device is unavailable. The device is exported as `BENCH_DEVICE` for the command's duration only, so worker processes inherit it; the backend id (`numpy`, `torch-mps`, ...) is part of the content-cache score key, the profile report (`scorer_backend`) and the hardware stamp on every result. On CPU the torch kernels are no faster per core than skimage (each pool worker is limited to its share of the cores), so `--device cpu` is for parity checks; the gain is on a GPU.
+
 ---
 
 ## Speed methodology

@@ -217,6 +217,31 @@ sum of stage totals); `build_report` adds `sample`, `seed`, `dpi`, the scorer fi
 and raster engine; `render_tables` prints one 80-column table per run. Passthrough runs
 time raster and score only (no render duration), generated runs add `generate`.
 
+## Scorer kernels (`src/neurotic_docx_bench/kernels.py`, `--device`)
+
+`score.py` calls `kernels.delta_e_mean` (mean CIEDE2000 over the ink mask) and
+`kernels.ssim` instead of skimage directly. Each has two implementations: the
+skimage/scipy path (`*_numpy`, the parity-locked default, byte-identical to the old
+scorer) and a torch port (`rgb2lab_torch`, `ciede2000_torch`, `delta_e_mean_torch`,
+`ssim_torch`; skimage's constants, float32, `avg_pool2d` for SSIM's 7x7 uniform window
+with sample covariance over the valid interior). Dispatch reads `BENCH_DEVICE`:
+`resolve_device` maps `auto` to cuda, then mps, else `None` (silent), and `cpu|mps|cuda`
+to that device or `None` with one `RuntimeWarning` when torch or the device is missing;
+the result is cached per spec (`kernels.reset()` clears it). `kernels.device_env(spec)`
+is the CLI wrapper: it validates the spec, exports `BENCH_DEVICE` around `_drive_runs`
+(or `score_folders_full` for `compare`) so pool workers inherit it, and restores the
+previous value; `pipeline._run_tasks` installs `kernels.worker_init(jobs)` as the pool
+initializer, which on a torch device gives each worker `cpu_count // jobs` intra-op
+threads so `jobs` workers do not oversubscribe the cores (torch's default is one thread
+pool per process; `BENCH_TORCH_THREADS` overrides the count). The device is deliberately
+not part of `ScoreConfig` or
+`result["config"]`; `kernels.backend_id()` (`numpy`, `torch-<device>`) goes into the
+content-cache score key, `hardware_info()["scorer_backend"]` and the profile report's
+`scorer_backend`. `kernels.py` is in the scorer fingerprint. `tests/test_kernels.py`
+checks the torch port against skimage (elementwise Lab and deltaE at 2e-3, page deltaE at
+1e-3, SSIM at 1e-4, `score_document` at 1e-3 on synthetic pages and 1e-2 overall on
+two real oracle pages) and skips when torch is not installed.
+
 ## Regenerating the Word oracle PDFs (macOS + Word, local-only)
 
 The committed oracle PDFs (`corpus/word_based/pdf_redlines_word/*.pdf`) are Word redline

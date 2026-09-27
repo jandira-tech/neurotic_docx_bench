@@ -23,6 +23,7 @@ from skimage import color
 # score.py is parity-locked (tests/test_parity.py); we import its helpers instead of
 # duplicating the ink model, and never modify it.
 from neurotic_docx_bench import content_cache as cc
+from neurotic_docx_bench import kernels
 from neurotic_docx_bench import page_metrics as pm
 from neurotic_docx_bench import raster
 from neurotic_docx_bench.score import (
@@ -466,7 +467,7 @@ def _score_one(args: tuple) -> tuple[str, ScoreResult]:
 
 def _run_tasks(tasks: list[tuple], jobs: int) -> dict[str, ScoreResult]:
     if jobs and jobs > 1 and len(tasks) > 1:
-        with ProcessPoolExecutor(max_workers=jobs) as pool:
+        with ProcessPoolExecutor(max_workers=jobs, initializer=kernels.worker_init, initargs=(jobs,)) as pool:
             return dict(pool.map(_score_one, tasks))
     return dict(_score_one(t) for t in tasks)
 

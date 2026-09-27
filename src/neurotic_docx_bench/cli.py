@@ -48,6 +48,7 @@ from neurotic_docx_bench import (
     content_cache,
     functional_lens,
     hardware,
+    kernels,
     lens_health,
     noise_floor,
     pipeline,
@@ -264,6 +265,23 @@ def _renderer(backend: str, harness: HarnessConfig | None = None) -> Renderer:
 
         return WordRenderer()
     raise typer.BadParameter(f"unknown render backend: {backend!r}")
+
+
+def _device_option() -> Any:
+    return typer.Option(
+        None,
+        "--device",
+        help="run the scorer kernels (CIEDE2000, SSIM) on torch: auto|cpu|mps|cuda "
+        "(the gpu extra); default is the parity-locked numpy path. An unavailable "
+        "device warns and falls back to numpy",
+        callback=_validate_device,
+    )
+
+
+def _validate_device(value: str | None) -> str | None:
+    if value and value not in kernels.DEVICE_SPECS:
+        raise typer.BadParameter(f"expected one of: {', '.join(kernels.DEVICE_SPECS)}")
+    return value
 
 
 def _limited_source(
@@ -579,11 +597,12 @@ def compare(
     jobs: int = typer.Option(12, "--jobs", "-j"),
     limit: int | None = typer.Option(None, "--limit"),
     json_out: Path | None = typer.Option(None, "--json", help="write scores as JSON"),
+    device: str | None = _device_option(),
 ) -> None:
     """Score a folder of candidate redline PDFs against the Word oracle redlines."""
     cand_dir, is_temp = _limited_source(candidate, "*.pdf", limit)
     try:
-        with tempfile.TemporaryDirectory(prefix="bench-work.") as work:
+        with tempfile.TemporaryDirectory(prefix="bench-work.") as work, kernels.device_env(device):
             per_doc = pipeline.score_folders_full(
                 oracle, cand_dir, Path(work), dpi=dpi, jobs=jobs, candidate_tool=tool,
             )
@@ -2299,6 +2318,7 @@ def run(
         help="reuse renders, rasters and scores by content hash from .bench-cache/ next "
         "to the results dir (BENCH_CACHE_DIR moves it, BENCH_NO_CACHE=1 disables it)",
     ),
+    device: str | None = _device_option(),
 ) -> None:
     """Drive bench.yaml runs **sequentially** (one per tool). Each run gets its own
     ``runs/{name}_{datetime}`` work folder (kept locally; ``--clean-runs`` deletes it only
@@ -2316,29 +2336,30 @@ def run(
     # process, a test) inherits it.
     content_cache.configure(content_cache.from_env(Path(results_dir).resolve().parent, enabled=use_cache))
     try:
-        _drive_runs(
-            config=config,
-            names=[only] if only else None,
-            limit=limit,
-            dpi=dpi,
-            results_dir=results_dir,
-            runs_dir=runs_dir,
-            clean_runs=clean_runs,
-            no_update=no_update,
-            emit=emit,
-            only_on_change=only_on_change,
-            do_gate=do_gate,
-            generate=generate,
-            accept_compare=accept_compare,
-            accepted_oracle_cache=accepted_oracle_cache,
-            roundtrip=roundtrip,
-            roundtrip_oracle_cache=roundtrip_oracle_cache,
-            rerun=rerun,
-            oracle_check=oracle_check,
-            canary_check=canary_check,
-            holdout=holdout,
-            gate_set=gate_set,
-        )
+        with kernels.device_env(device):
+            _drive_runs(
+                config=config,
+                names=[only] if only else None,
+                limit=limit,
+                dpi=dpi,
+                results_dir=results_dir,
+                runs_dir=runs_dir,
+                clean_runs=clean_runs,
+                no_update=no_update,
+                emit=emit,
+                only_on_change=only_on_change,
+                do_gate=do_gate,
+                generate=generate,
+                accept_compare=accept_compare,
+                accepted_oracle_cache=accepted_oracle_cache,
+                roundtrip=roundtrip,
+                roundtrip_oracle_cache=roundtrip_oracle_cache,
+                rerun=rerun,
+                oracle_check=oracle_check,
+                canary_check=canary_check,
+                holdout=holdout,
+                gate_set=gate_set,
+            )
     finally:
         content_cache.configure(None)
 
@@ -2382,6 +2403,7 @@ def profile_cmd(
     roundtrip: bool = typer.Option(False, "--roundtrip/--no-roundtrip", help="also time the roundtrip stage"),
     roundtrip_oracle_cache: Path = typer.Option(Path("out/roundtrip_oracle"), "--roundtrip-oracle-cache"),
     json_out: Path | None = typer.Option(None, "--json", help="write the per-stage report here"),
+    device: str | None = _device_option(),
 ) -> None:
     """Time every pipeline stage (generate, render, raster, score) on a seeded sample of
     documents and print per-benchmark statistics (n, total, mean, median, p95, max and
@@ -2395,38 +2417,40 @@ def profile_cmd(
     sink: dict[str, dict[str, Any]] = {}
     content_cache.configure(None)
     try:
-        _drive_runs(
-            config=config,
-            names=list(run_names) if run_names else None,
-            limit=sample,
-            dpi=use_dpi,
-            results_dir=results_dir,
-            runs_dir=runs_dir,
-            clean_runs=clean_runs,
-            no_update=True,
-            emit=False,
-            only_on_change=False,
-            do_gate=False,
-            generate=False,
-            accept_compare=accept_compare,
-            accepted_oracle_cache=accepted_oracle_cache,
-            roundtrip=roundtrip,
-            roundtrip_oracle_cache=roundtrip_oracle_cache,
-            rerun=True,
-            # A profile is never a result, so the comparability gates (oracle manifest,
-            # renderer canary) do not apply to it.
-            oracle_check=False,
-            canary_check=False,
-            timings_sink=sink,
-            sample_seed=seed,
-        )
+        with kernels.device_env(device):
+            backend = kernels.backend_id()
+            _drive_runs(
+                config=config,
+                names=list(run_names) if run_names else None,
+                limit=sample,
+                dpi=use_dpi,
+                results_dir=results_dir,
+                runs_dir=runs_dir,
+                clean_runs=clean_runs,
+                no_update=True,
+                emit=False,
+                only_on_change=False,
+                do_gate=False,
+                generate=False,
+                accept_compare=accept_compare,
+                accepted_oracle_cache=accepted_oracle_cache,
+                roundtrip=roundtrip,
+                roundtrip_oracle_cache=roundtrip_oracle_cache,
+                rerun=True,
+                # A profile is never a result, so the comparability gates (oracle manifest,
+                # renderer canary) do not apply to it.
+                oracle_check=False,
+                canary_check=False,
+                timings_sink=sink,
+                sample_seed=seed,
+            )
     finally:
         content_cache.configure(None)
-    report = profile.build_report(sink, sample=sample, seed=seed, dpi=use_dpi)
+    report = profile.build_report(sink, sample=sample, seed=seed, dpi=use_dpi, backend=backend)
     for table in profile.render_tables(report):
         console.print(table)
     console.print(f"sample {sample} (seed {seed}), dpi {use_dpi}, cache off, stage columns in seconds")
-    console.print(f"scorer {report['scorer_fingerprint']}, engine {report['raster_engine']}")
+    console.print(f"scorer {report['scorer_fingerprint']}, engine {report['raster_engine']}, backend {backend}")
     if json_out is not None:
         json_out.parent.mkdir(parents=True, exist_ok=True)
         json_out.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n")

@@ -33,13 +33,13 @@ from pathlib import Path
 
 import pymupdf as fitz
 
-from neurotic_docx_bench import raster
+from neurotic_docx_bench import kernels, raster
 from neurotic_docx_bench.render.base import Renderer, RenderReport, RenderResult
 
 DEFAULT_DIRNAME = ".bench-cache"
 COMPLETE_MARKER = ".complete"
 SCHEMA = 1
-_SCORER_MODULES = ("score.py", "score_v2.py", "page_metrics.py", "pipeline.py", "raster.py")
+_SCORER_MODULES = ("score.py", "score_v2.py", "page_metrics.py", "pipeline.py", "raster.py", "kernels.py")
 _active: ContentCache | None = None
 
 
@@ -78,9 +78,13 @@ def score_key(
     dpi: int,
     renderer_id: str,
     scorer: str | None = None,
+    backend: str | None = None,
 ) -> str:
+    """The score-row key; ``backend`` is the scorer kernel backend (``kernels.backend_id()``
+    when omitted), so rows scored on torch never serve a numpy run or vice versa."""
     scorer = scorer if scorer is not None else scorer_fingerprint()
-    parts = (candidate_sha, oracle_sha, base_sha or "", str(dpi), renderer_id, scorer)
+    backend = backend if backend is not None else kernels.backend_id()
+    parts = (candidate_sha, oracle_sha, base_sha or "", str(dpi), renderer_id, scorer, backend)
     return hashlib.sha256("\n".join(parts).encode()).hexdigest()
 
 

@@ -9,7 +9,9 @@ from typing import TypedDict
 import numpy as np
 from PIL import Image
 from scipy import ndimage
-from skimage import color, feature, filters, measure, metrics, morphology, registration, transform
+from skimage import color, feature, filters, measure, morphology, registration, transform
+
+from neurotic_docx_bench import kernels
 
 
 @dataclass(frozen=True)
@@ -203,10 +205,7 @@ def _blob_penalty(mismatch: np.ndarray, ink_union: np.ndarray, min_size: int) ->
 def _delta_e_mean(a_rgb: np.ndarray, b_rgb: np.ndarray, mask: np.ndarray) -> float:
     if mask.sum() == 0:
         return 0.0
-    a_lab = color.rgb2lab(a_rgb)
-    b_lab = color.rgb2lab(b_rgb)
-    delta = color.deltaE_ciede2000(a_lab, b_lab)
-    return float(delta[mask].mean())
+    return kernels.delta_e_mean(a_rgb, b_rgb, mask)
 
 
 def _vertical_map_from_ink(
@@ -265,7 +264,7 @@ def _compute_metrics(word_rgb: np.ndarray, sd_rgb: np.ndarray, config: ScoreConf
     ink_sd = _ink_mask(sd_gray, config.ink_min_size)
     ink_union = np.logical_or(ink_word, ink_sd)
 
-    ssim_full = metrics.structural_similarity(word_gray, sd_gray, data_range=1.0)
+    ssim_full = kernels.ssim(word_gray, sd_gray)
 
     if config.downscale_factor < 1.0:
         small_shape = (
@@ -274,7 +273,7 @@ def _compute_metrics(word_rgb: np.ndarray, sd_rgb: np.ndarray, config: ScoreConf
         )
         word_small = _resize_image(word_gray, small_shape, None)
         sd_small = _resize_image(sd_gray, small_shape, None)
-        ssim_small = metrics.structural_similarity(word_small, sd_small, data_range=1.0)
+        ssim_small = kernels.ssim(word_small, sd_small)
     else:
         ssim_small = ssim_full
 
