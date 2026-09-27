@@ -162,6 +162,31 @@ export type RedlineEngine = ((
 	next: Uint8Array,
 ) => Promise<Uint8Array>) & { dispose?: () => Promise<void> };
 
+/** Load the redline engine for `method` and return compare(base,next)->docx bytes. */
+/**
+ * Absolute path to a vendor package's entry, resolved PIN-TREE-FIRST.
+ *
+ * The bench.yaml `package:` pin installs into the repo-root `node_modules`, and
+ * `resolve_tool_version` reads the recorded version back from THERE. An adapter
+ * that imports a vendored sub-install instead will happily record one version
+ * and execute another (plan Chapter 6 D5) — which is exactly how a docxodus run
+ * was published as 9.0.0 while running 7.0.0. Root first, vendored as fallback.
+ */
+function resolveVendorEntry(
+	pkgSubpath: string,
+	vendorRelRoot: string,
+): string {
+	const roots = [
+		resolve(import.meta.dirname, "../node_modules"),
+		resolve(import.meta.dirname, vendorRelRoot),
+	];
+	for (const root of roots) {
+		const candidate = join(root, pkgSubpath);
+		if (existsSync(candidate)) return candidate;
+	}
+	return join(roots[roots.length - 1]!, pkgSubpath);
+}
+
 /**
  * Directory to import `@stll/folio-core` from.
  *
@@ -181,7 +206,6 @@ function resolveFolioModuleRoot(): string {
 	);
 }
 
-/** Load the redline engine for `method` and return compare(base,next)->docx bytes. */
 export async function loadEngine(
 	method: string,
 	distPath: string,
@@ -264,16 +288,6 @@ export async function loadEngine(
 		// value off the shipped enum (never a hardcoded 0/1) keeps us on the package's
 		// wire contract, and generate-native-redlines.test.ts fails if a future release
 		// moves that default out from under this pin.
-		//
-		// docxodus ≥12 dropped the enum and `CompareOptions.engine`: compareDocuments()
-		// has one engine, so there is nothing left to pin. The enum's absence together
-		// with compareDocuments is that contract; call it plainly.
-		if (!("ComparisonEngine" in dox) && typeof dox.compareDocuments === "function") {
-			return async (base, next) => {
-				const out = await dox.compareDocuments(base, next);
-				return out instanceof Uint8Array ? out : new Uint8Array(out);
-			};
-		}
 		const engine = dox.ComparisonEngine?.DocxDiff;
 		if (typeof engine !== "number") {
 			throw new Error(
@@ -1112,8 +1126,6 @@ async function runSuperDocNativeBatch(
 export async function runBatch(
 	opts: GenOptions,
 ): Promise<{ ok: number; failed: Failure[]; timings: Record<string, number> }> {
-	// The superdoc-native plan and the CLI's generate_failures/timings JSON land here.
-	mkdirSync(opts.runDir, { recursive: true });
 	if (opts.method === "superdoc-native") return runSuperDocNativeBatch(opts);
 	mkdirSync(opts.out, { recursive: true });
 	const engine = await loadEngine(opts.method, opts.dist);
