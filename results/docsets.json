@@ -1,16 +1,46 @@
 {
+	"296737d89155": {
+		"benchmark": "visual_rendering",
+		"computed_at": "2026-09-27T17:08:35.256836+00:00",
+		"gate_of": "6cc8f3b525d3",
+		"holdout_mode": "excluded",
+		"n": 50,
+		"source_dirs": [
+			"corpus/word_based/pdf_source"
+		]
+	},
 	"56a686ebe1a8": {
 		"benchmark": "visual_redlines",
-		"computed_at": "2026-09-27T09:52:06.608965+00:00",
+		"computed_at": "2026-09-27T17:08:35.256836+00:00",
 		"holdout_mode": "excluded",
 		"n": 195,
 		"source_dirs": [
 			"corpus/word_based/pdf_redlines_word"
 		]
 	},
+	"580d88bb8a00": {
+		"benchmark": "visual_accepted_changes",
+		"computed_at": "2026-09-27T17:08:35.256836+00:00",
+		"gate_of": "9fcb7fe7bd2f",
+		"holdout_mode": "excluded",
+		"n": 50,
+		"source_dirs": [
+			"corpus/word_based/pdf_accepted_word"
+		]
+	},
+	"6614112fa55e": {
+		"benchmark": "roundtrip",
+		"computed_at": "2026-09-27T17:08:35.256836+00:00",
+		"gate_of": "f2a8d3031771",
+		"holdout_mode": "excluded",
+		"n": 50,
+		"source_dirs": [
+			"corpus/word_based/word_working_roundtrip"
+		]
+	},
 	"6cc8f3b525d3": {
 		"benchmark": "visual_rendering",
-		"computed_at": "2026-09-27T09:52:06.608965+00:00",
+		"computed_at": "2026-09-27T17:08:35.256836+00:00",
 		"holdout_mode": "excluded",
 		"n": 205,
 		"source_dirs": [
@@ -19,7 +49,7 @@
 	},
 	"782a0f380c89": {
 		"benchmark": "script_redlines",
-		"computed_at": "2026-09-27T09:52:06.608965+00:00",
+		"computed_at": "2026-09-27T17:08:35.256836+00:00",
 		"holdout_mode": "excluded",
 		"n": 763,
 		"source_dirs": [
@@ -30,20 +60,42 @@
 	},
 	"9fcb7fe7bd2f": {
 		"benchmark": "visual_accepted_changes",
-		"computed_at": "2026-09-27T09:52:06.608965+00:00",
+		"computed_at": "2026-09-27T17:08:35.256836+00:00",
 		"holdout_mode": "excluded",
 		"n": 155,
 		"source_dirs": [
 			"corpus/word_based/pdf_accepted_word"
 		]
 	},
+	"e58382e29949": {
+		"benchmark": "visual_redlines",
+		"computed_at": "2026-09-27T17:08:35.256836+00:00",
+		"gate_of": "56a686ebe1a8",
+		"holdout_mode": "excluded",
+		"n": 50,
+		"source_dirs": [
+			"corpus/word_based/pdf_redlines_word"
+		]
+	},
 	"f2a8d3031771": {
 		"benchmark": "roundtrip",
-		"computed_at": "2026-09-27T09:52:06.608965+00:00",
+		"computed_at": "2026-09-27T17:08:35.256836+00:00",
 		"holdout_mode": "excluded",
 		"n": 166,
 		"source_dirs": [
 			"corpus/word_based/word_working_roundtrip"
+		]
+	},
+	"fdf1033081b0": {
+		"benchmark": "script_redlines",
+		"computed_at": "2026-09-27T17:08:35.256836+00:00",
+		"gate_of": "782a0f380c89",
+		"holdout_mode": "excluded",
+		"n": 50,
+		"source_dirs": [
+			"corpus/word_based/pdf_redlines_word",
+			"corpus/word_based/pdf_redlines_randomized/pdf",
+			"corpus/word_redlines_superdoc/pdf_redlines_word"
 		]
 	}
 }

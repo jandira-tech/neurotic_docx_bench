@@ -26,6 +26,7 @@ def _line(
     n: int = 25,
     version: str = "1.0",
     benchmark: str = "script_redlines",
+    docset: str = "dset1",
 ) -> dict:
     scores = {f"doc{i}": median for i in range(n)}
     return {
@@ -47,10 +48,22 @@ def _line(
         "corpus_revision": "rev1",
         "scorer": "pagefair-v2",
         "holdout_mode": "excluded",
-        "docset_id": "dset1",
-        "renderer_id": "soffice-26.2.4.2",
-        "environment_config": {"runs": [{"name": vendor, "render": "soffice"}]},
+        "docset_id": docset,
+        "renderer_id": "word-16.101.1",
+        "environment_config": {"runs": [{"name": vendor, "render": "word"}]},
     }
+
+
+def _gate_lines(*vendors: str, benchmark: str = "script_redlines") -> str:
+    """A passing gate run per vendor plus the null-baseline row on the gate set."""
+    ts = "2026-08-31T00:00:00+00:00"
+    lines = [
+        _line(v, 90.0, ts, n=2, benchmark=benchmark, docset="gset1") for v in vendors
+    ]
+    lines.append(
+        _line("null-baseline", 10.0, ts, n=2, benchmark=benchmark, docset="gset1")
+    )
+    return "".join(json.dumps(x) + "\n" for x in lines)
 
 
 @pytest.fixture
@@ -82,6 +95,15 @@ def repo(tmp_path: Path) -> Path:
                         "bench_vendors": ["b"],
                         "affiliated": True,
                     },
+                    {
+                        "id": "null-baseline",
+                        "vendor": "bench",
+                        "display": "null baseline",
+                        "role": "calibration",
+                        "engine": "pipeline",
+                        "run_names": ["null-baseline"],
+                        "bench_vendors": ["null-baseline"],
+                    },
                 ],
             }
         )
@@ -91,9 +113,15 @@ def repo(tmp_path: Path) -> Path:
         + "\n"
         + json.dumps(_line("b", 90.0, "2026-09-02T00:00:00+00:00"))
         + "\n"
+        + _gate_lines("a", "b")
     )
     (tmp_path / "results" / "docsets.json").write_text(
-        json.dumps({"dset1": {"benchmark": "script_redlines", "n": 25}})
+        json.dumps(
+            {
+                "dset1": {"benchmark": "script_redlines", "n": 25},
+                "gset1": {"benchmark": "script_redlines", "n": 2, "gate_of": "dset1"},
+            }
+        )
     )
     (tmp_path / "results" / "speed.jsonl").write_text(
         json.dumps(
@@ -133,6 +161,42 @@ def test_build_produces_all_views(repo: Path) -> None:
     assert "## Methodology" in bundle.detailed_md
     assert "| [acme](https://example.com/a) |" in bundle.readme_vendor_table
     assert "Generated 2026-09-27" in bundle.results_md
+    # every tool passed its gate here, so the section is absent
+    assert "## Below the gate" not in bundle.detailed_md
+
+
+def test_detailed_page_lists_tools_below_the_gate(repo: Path) -> None:
+    with (repo / "results" / "bench.jsonl").open("a", encoding="utf-8") as fh:
+        fh.write(json.dumps(_line("c", 85.0, "2026-09-03T00:00:00+00:00")) + "\n")
+        fh.write(
+            json.dumps(
+                _line("c", 15.0, "2026-08-31T00:00:00+00:00", n=2, docset="gset1")
+            )
+            + "\n"
+        )
+    reg = yaml.safe_load((repo / "bench.registry.yaml").read_text())
+    reg["tools"].append(
+        {
+            "id": "c",
+            "vendor": "c",
+            "display": "charlie",
+            "role": "generator",
+            "engine": "c",
+            "run_names": ["c"],
+            "bench_vendors": ["c"],
+        }
+    )
+    (repo / "bench.registry.yaml").write_text(yaml.safe_dump(reg))
+    bundle = bd.build(repo, now=datetime(2026, 9, 27, tzinfo=UTC))
+    assert (
+        "charlie"
+        not in bundle.results_md.split("### speed_redlines")[0].split("Not ranked")[0]
+    )
+    assert "## Below the gate" in bundle.detailed_md
+    assert (
+        "| charlie | 1.0 | 2026-08-31 | 15.00 | 10.00 | [15.00, 15.00] | `gset1` | "
+        "below the gate: median 15.00 vs null 10.00, needs +10.00 |"
+    ) in bundle.detailed_md
 
 
 def test_write_replaces_readme_block_and_is_idempotent(repo: Path) -> None:
@@ -197,7 +261,7 @@ def test_results_page_states_its_provenance(repo: Path) -> None:
         bench_version="0.7.0",
         docsets=("dset1",),
         scorers=("pagefair-v2",),
-        renderers=("soffice-26.2.4.2",),
+        renderers=("word-16.101.1",),
     )
     assert bd.provenance("# Benchmark results\n\nlegacy\n") is None
 
@@ -219,7 +283,7 @@ def test_freeze_writes_previous_page_once(repo: Path) -> None:
     assert "Frozen 2026-09-27 09:30 UTC when the bench moved to 0.7.0." in text
     assert "Docsets: dset1." in text
     assert "Scorers: pagefair-v2." in text
-    assert "Renderers: soffice-26.2.4.2." in text
+    assert "Renderers: word-16.101.1." in text
     assert bd.GENERATED_NOTE not in text
     body = old_page[old_page.index("# Benchmark results") :]
     assert body.strip() in text
@@ -243,7 +307,7 @@ def test_freeze_of_unmarked_page_is_the_pre_stamp_version(repo: Path) -> None:
     assert "| legacy | table |" in text
     # Metadata comes from the stores when the old page did not state it.
     assert "Docsets: dset1." in text
-    assert "Renderers: soffice-26.2.4.2." in text
+    assert "Renderers: word-16.101.1." in text
 
 
 def test_freeze_skips_unknown_versions(repo: Path) -> None:

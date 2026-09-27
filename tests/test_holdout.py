@@ -41,8 +41,23 @@ def _ledger_registry(*vendors: str) -> Registry:
                 run_names=(v,),
             )
             for v in vendors
+        )
+        + (
+            ToolEntry(
+                id=ledger_policy.NULL_BASELINE_ID,
+                vendor=ledger_policy.NULL_BASELINE_ID,
+                display="null",
+                role="calibration",
+                engine="null",
+                bench_vendors=(ledger_policy.NULL_BASELINE_ID,),
+                run_names=(ledger_policy.NULL_BASELINE_ID,),
+            ),
         ),
     )
+
+
+# The docsets the ranking tests stamp: "dset" is the full corpus, "gate" its gate set.
+DOCSETS = {"dset": {"n": 3}, "gate": {"n": 1, "gate_of": "dset"}}
 
 
 def _ranked_rows(path: Path, *vendors: str) -> list[ledger_rows.ResultRow]:
@@ -52,7 +67,7 @@ def _ranked_rows(path: Path, *vendors: str) -> list[ledger_rows.ResultRow]:
         rows,
         registry=_ledger_registry(*vendors),
         retractions=[],
-        docsets={},
+        docsets=DOCSETS,
         tie_fn=lambda a, b: False,
     )
     table = tables.get("script_redlines")
@@ -765,13 +780,21 @@ def test_cli_holdout_itt_excludes_visible_failures(tmp_path, sample_oracle_pdfs)
 # ── finding 4: export ranking — recency wins within the full-corpus bucket ───
 
 
-def _stamped(mean: float, n: int, ts: str, *, holdout: str = "excluded") -> dict:
+def _stamped(
+    mean: float,
+    n: int,
+    ts: str,
+    *,
+    holdout: str = "excluded",
+    vendor: str = "v",
+    docset: str = "dset",
+) -> dict:
     scores = {f"d{i}": mean for i in range(n)}
     return {
-        "vendor": "v",
+        "vendor": vendor,
         "benchmark": "script_redlines",
         "tool_version": "1",
-        "id_run": f"run-{ts}",
+        "id_run": f"run-{vendor}-{docset}-{ts}",
         "overall_mean": mean,
         "overall_median": mean,
         "n_docs": n,
@@ -780,10 +803,19 @@ def _stamped(mean: float, n: int, ts: str, *, holdout: str = "excluded") -> dict
         "itt_mean": mean,
         "itt_median": mean,
         "corpus_revision": "rev1",
-        "docset_id": "dset",
+        "docset_id": docset,
         "holdout_mode": holdout,
         "timestamp": ts,
+        "renderer_id": "word-16.1",
     }
+
+
+def _gate_lines(vendor: str = "v", ts: str = "2025-12-01T00:00:00+00:00") -> list[dict]:
+    """The gate-set run and null-baseline row a tool needs before it can rank."""
+    return [
+        _stamped(90.0, 1, ts, vendor=vendor, docset="gate"),
+        _stamped(10.0, 1, ts, vendor=ledger_policy.NULL_BASELINE_ID, docset="gate"),
+    ]
 
 
 def test_export_rank_newest_eligible_run_wins_over_older_better_run(tmp_path):
@@ -791,6 +823,7 @@ def test_export_rank_newest_eligible_run_wins_over_older_better_run(tmp_path):
     _write_jsonl(
         p,
         [
+            *_gate_lines(),
             _stamped(95.0, 3, "2026-01-01T00:00:00+00:00"),
             _stamped(90.0, 3, "2026-06-01T00:00:00+00:00"),
         ],
@@ -805,6 +838,7 @@ def test_export_rank_complete_run_still_beats_newer_smoke(tmp_path):
     _write_jsonl(
         p,
         [
+            *_gate_lines(),
             _stamped(90.0, 3, "2026-01-01T00:00:00+00:00"),
             _stamped(
                 99.0, 1, "2026-06-01T00:00:00+00:00"

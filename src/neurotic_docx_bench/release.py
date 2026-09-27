@@ -131,11 +131,14 @@ def changelog_section(path: Path, version: str) -> str | None:
 
 
 def word_version(run: Runner) -> str | None:
-    proc = run(list(_WORD_VERSION_ARGV))
-    if proc.returncode != 0:
-        return None
-    out = (proc.stdout or "").strip()
-    return out or None
+    """Word's version through the release runner (one command, so the gate's fake
+    runner can answer it); the parsing is the renderer's own."""
+    from neurotic_docx_bench.render import word
+
+    def _run(argv: list[str], **_: object) -> ProcLike:
+        return run(argv)
+
+    return word.word_version(_run, argv=_WORD_VERSION_ARGV)
 
 
 def word_rows_check(store: Path, version: str) -> Check:

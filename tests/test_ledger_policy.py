@@ -56,6 +56,14 @@ def registry(tmp_path: Path):
                 "bench_vendors": ["cal"],
             },
             {
+                "id": "null-baseline",
+                "vendor": "bench",
+                "display": "null baseline",
+                "role": "calibration",
+                "engine": "pipeline",
+                "bench_vendors": ["null-baseline"],
+            },
+            {
                 "id": "na",
                 "vendor": "na",
                 "display": "NA",
@@ -78,7 +86,7 @@ def row(
     n: int = 3,
     days: int = 0,
     docset: str | None = "d1",
-    renderer: str | None = "soffice-26",
+    renderer: str | None = "word-16.1",
     scores: dict | None = None,
     holdout: str | None = "excluded",
     pin: str = "1.0",
@@ -144,12 +152,57 @@ def srow(
     )
 
 
-def _select(rows, registry, retractions=(), docsets=None, tie=False):
+def _with_gates(rows, docsets):
+    """A passing gate row per (tool, benchmark, docset, renderer) plus a null-baseline
+    row on every full docset's gate set, so tests about other rules can rank rows."""
+    docsets = dict(docsets)
+    full_ids = [d for d, v in docsets.items() if not v.get("gate_of")]
+    extra = []
+    for did in full_ids:
+        gid = f"g-{did}"
+        docsets[gid] = {"n": 2, "gate_of": did}
+        seen = set()
+        for r in rows:
+            if r.docset_id != did or r.tool_id == "null-baseline":
+                continue
+            sig = (r.tool_id, r.benchmark, r.renderer_id)
+            if sig in seen:
+                continue
+            seen.add(sig)
+            extra.append(
+                row(
+                    r.tool_id,
+                    median=90,
+                    n=2,
+                    days=-1,
+                    docset=gid,
+                    renderer=r.renderer_id,
+                    benchmark=r.benchmark,
+                ).model_copy(update={"id_run": f"gate-{r.tool_id}-{r.benchmark}-{gid}"})
+            )
+        for benchmark in sorted({r.benchmark for r in rows if r.docset_id == did}):
+            extra.append(
+                row(
+                    "null-baseline",
+                    median=10,
+                    n=2,
+                    days=-1,
+                    docset=gid,
+                    benchmark=benchmark,
+                ).model_copy(update={"id_run": f"gate-null-{benchmark}-{gid}"})
+            )
+    return list(rows) + extra, docsets
+
+
+def _select(rows, registry, retractions=(), docsets=None, tie=False, gates=True):
+    docsets = docsets if docsets is not None else {"d1": {"n": 3}}
+    if gates:
+        rows, docsets = _with_gates(rows, docsets)
     return pol.select_headline(
         rows,
         registry=registry,
         retractions=list(retractions),
-        docsets=docsets if docsets is not None else {"d1": {"n": 3}},
+        docsets=docsets,
         tie_fn=lambda x, y: tie,
     )
 

@@ -8,6 +8,7 @@ from collections.abc import Mapping, Sequence
 from datetime import datetime
 from pathlib import Path
 
+from neurotic_docx_bench.ledger import docset as ds
 from neurotic_docx_bench.ledger import policy as pol
 from neurotic_docx_bench.ledger import stats as st
 from neurotic_docx_bench.ledger.registry import Registry
@@ -30,15 +31,15 @@ TITLES: dict[str, str] = {
 
 ORACLE_NOTES: dict[str, str] = {
     "script_redlines": (
-        "Oracle: LibreOffice render of Word's tracked-change DOCX; candidates are rendered by the "
-        "same LibreOffice build, so 100 means pixel-identical to Word's DOCX as LibreOffice draws it."
+        "Oracle: Word's render of Word's tracked-change DOCX; candidates are rendered by the "
+        "same Word build, so 100 means pixel-identical to Word's DOCX as Word draws it."
     ),
     "accepted_changes": (
-        "Oracle: LibreOffice render of Word's accepted DOCX; the candidate is the tool's own "
+        "Oracle: Word's render of Word's accepted DOCX; the candidate is the tool's own "
         "redline with every change accepted."
     ),
     "roundtrip": (
-        "Oracle: LibreOffice render of the unchanged source; the candidate is the tool's roundtrip output."
+        "Oracle: Word's render of the unchanged source; the candidate is the tool's roundtrip output."
     ),
     "visual_rendering": (
         "Oracle: Word's own PDF export of the source; the candidate is a Playwright capture of the vendor editor."
@@ -349,7 +350,11 @@ def history_section(
             body = []
             for r in sorted(members, key=lambda m: (m.display, m.timestamp)):
                 v = pol.eligibility(
-                    r, expected=exp, retractions=retractions, registry=registry
+                    r,
+                    expected=exp,
+                    retractions=retractions,
+                    registry=registry,
+                    docsets=docsets,
                 )
                 approx = "~" if r.itt_approx else ""
                 body.append(
@@ -385,6 +390,60 @@ def history_section(
             )
         out.append("")
     return "\n".join(out).rstrip() + "\n"
+
+
+def below_gate_section(tables: Mapping[str, pol.HeadlineTable]) -> str:
+    """Tools whose latest candidate run did not pass the gate, per benchmark."""
+    blocks: list[str] = []
+    for benchmark, table in sorted(tables.items()):
+        if not table.below_gate:
+            continue
+        body = []
+        for g in table.below_gate:
+            body.append(
+                [
+                    _tool_cell(g.row),
+                    g.row.pin.display,
+                    fmt_date(g.gate_row.timestamp) if g.gate_row else "n/a",
+                    fmt(g.gate_row.itt_median) if g.gate_row else "n/a",
+                    fmt(g.null_row.itt_median) if g.null_row else "n/a",
+                    _ci_cell(g.ci),
+                    f"`{g.gate_docset}`" if g.gate_docset else "n/a",
+                    g.reason,
+                ]
+            )
+        blocks.append(f"### {TITLES.get(benchmark, benchmark)}")
+        blocks.append("")
+        blocks.append(
+            md_table(
+                [
+                    "Tool",
+                    "Pin",
+                    "Gate run",
+                    "Gate median",
+                    "Null median",
+                    "95% CI",
+                    "Gate set",
+                    "Reason",
+                ],
+                body,
+            )
+        )
+        blocks.append("")
+    if not blocks:
+        return ""
+    head = [
+        "## Below the gate",
+        "",
+        (
+            f"A tool enters the main page once its latest run on the gate set beats the null "
+            f"baseline's ITT median by {pol.GATE_MARGIN:g} points and the 95% bootstrap CI of "
+            "its gate median stays above the null median. These tools have a full run that "
+            "is otherwise eligible but no passing gate run yet."
+        ),
+        "",
+    ]
+    return "\n".join(head + blocks).rstrip() + "\n"
 
 
 def paired_section(tables: Mapping[str, pol.HeadlineTable]) -> str:
@@ -504,11 +563,21 @@ def methodology_section(*, noise_sigma: float | None, lo_version: str | None) ->
                 "formula byte-identical to upstream."
             ),
             "",
-            "Oracles. The redline benchmarks compare LibreOffice's render of the candidate DOCX to "
-            "LibreOffice's render of Word's DOCX. The docx_to_pdf and visual_* benchmarks compare to "
-            "Word's own PDF export. A tool can score 100 on the first family and well below 100 on "
-            "the second, because the second also measures the renderer's distance from Word. "
-            + noise,
+            "Oracles. The redline benchmarks compare Word's render of the candidate DOCX to "
+            "Word's render of Word's DOCX; only Word-rendered rows are ranked, and rows rendered "
+            "with LibreOffice stay in the History section. The docx_to_pdf and visual_* benchmarks "
+            "compare to Word's own PDF export. A tool can score 100 on the first family and well "
+            "below 100 on the second, because the second also measures the renderer's distance "
+            "from Word. " + noise,
+            "",
+            (
+                f"The gate. A tool enters a main-page table once its latest run on that benchmark's "
+                f"gate set ({ds.GATE_N} documents drawn across the corpus strata, recorded in "
+                f"`results/docsets.json` with its own docset id) beats the null baseline's ITT median "
+                f"by {pol.GATE_MARGIN:g} points and the 95% bootstrap CI of its gate median stays "
+                f"above the null median. Tools with an eligible full run and no passing gate run are "
+                f"listed under Below the gate."
+            ),
             "",
             (
                 "Denominators. Every benchmark has a fixed document set (`results/docsets.json`); a "

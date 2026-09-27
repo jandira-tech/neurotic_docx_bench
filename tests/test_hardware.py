@@ -45,7 +45,41 @@ def test_renderer_id_for_each_render_backend(monkeypatch) -> None:
     assert (
         hardware.renderer_id(RunConfig(name="x", render="passthrough")) == "passthrough"
     )
-    assert hardware.renderer_id(RunConfig(name="x", render="word")) == "word"
+    monkeypatch.setattr(hardware, "word_version", lambda: "16.101.1")
+    assert hardware.renderer_id(RunConfig(name="x", render="word")) == "word-16.101.1"
+    monkeypatch.setattr(hardware, "word_version", lambda: None)
+    assert hardware.renderer_id(RunConfig(name="x", render="word")) == "word-unknown"
+
+
+def test_word_version_comes_from_osascript() -> None:
+    from subprocess import CompletedProcess
+
+    from neurotic_docx_bench.render import word
+
+    calls: list[list[str]] = []
+
+    def run(argv, **_):
+        calls.append(list(argv))
+        return CompletedProcess(argv, 0, stdout="16.101.1\n", stderr="")
+
+    assert word.word_version(run) == "16.101.1"
+    assert calls == [list(word.WORD_VERSION_ARGV)]
+    assert (
+        word.word_version(lambda argv, **_: CompletedProcess(argv, 1, "", "no word"))
+        is None
+    )
+    assert (
+        word.word_version(lambda argv, **_: CompletedProcess(argv, 0, "\n", "")) is None
+    )
+
+
+def test_word_version_is_none_without_osascript(monkeypatch) -> None:
+    from neurotic_docx_bench.render import word
+
+    monkeypatch.setattr(
+        word, "WORD_VERSION_ARGV", ("definitely-not-osascript", "-e", "x")
+    )
+    assert word.word_version() is None
 
 
 def test_renderer_id_soffice_unknown_version(monkeypatch) -> None:
