@@ -11,6 +11,8 @@ from collections.abc import Iterable, Mapping
 from pathlib import Path
 from typing import Any
 
+from neurotic_docx_bench import version
+
 DEFAULT_CONVERTERS_PATH = Path("results/converters.jsonl")
 DOCXIDE_TRACK = "docxide_metrics"
 DOCXIDE_PRIMARY = "jaccard"
@@ -133,6 +135,7 @@ def lines_from_report(
                 "extra": extra,
                 "hardware": dict(hardware) if hardware else None,
                 "report_path": report_path,
+                "bench_version": version.bench_version(),
             }
         )
     return lines

@@ -124,7 +124,8 @@ def fidelity_table(
         )
         out.append(
             f"Document set `{g.docset}` ({table.expected_n} documents), renderer `{g.renderer}`, "
-            f"scorer `{g.scorer}`. One row per tool: its latest eligible run. Sorted by ITT median, "
+            f"scorer `{g.scorer}`, bench `{g.bench}`. One row per tool: its latest eligible run. "
+            "Sorted by ITT median, "
             "then ITT mean. Failed documents score 0 (intent-to-treat); Mean and Median are over "
             "scored documents only. 95% CI is a percentile bootstrap of the ITT median (2000 "
             "resamples, seed 42). An equal rank (`n=`) means the paired bootstrap interval of the "
@@ -342,7 +343,7 @@ def history_section(
             out.append("")
             out.append(
                 f"Group: document set `{g.docset}`, renderer `{g.renderer}`, scorer `{g.scorer}`, "
-                f"expected {exp} documents."
+                f"bench `{g.bench}`, expected {exp} documents."
             )
             out.append("")
             body = []

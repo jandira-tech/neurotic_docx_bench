@@ -114,7 +114,10 @@ def test_build_results_empty_scores_zero_aggregate() -> None:
 
 
 def test_uuid_not_v7_raises() -> None:
-    from neurotic_docx_bench.results_schema import ScoreConfigMetadata, ScoreWeightsMetadata
+    from neurotic_docx_bench.results_schema import (
+        ScoreConfigMetadata,
+        ScoreWeightsMetadata,
+    )
 
     try:
         Results(
@@ -142,15 +145,31 @@ def test_uuid_not_v7_raises() -> None:
             q1_speed=0.0,
             q3_speed=0.0,
             score_config=ScoreConfigMetadata(
-                max_shift_px=5.0, align_upsample=10, downscale_factor=0.25,
-                edge_sigma=1.2, edge_dilate=1, ink_min_size=24, ink_tol_px=2.0,
-                drift_sigma=2.0, min_drift_px=1.0, single_issue_cap=30.0,
-                single_issue_min_gain=15.0, single_issue_min_ssim_small=0.7,
-                single_issue_min_ink_f1=0.65, single_issue_min_edge_iou=0.5,
-                single_issue_max_blob_penalty=0.03, color_deltaE_max=20.0,
+                max_shift_px=5.0,
+                align_upsample=10,
+                downscale_factor=0.25,
+                edge_sigma=1.2,
+                edge_dilate=1,
+                ink_min_size=24,
+                ink_tol_px=2.0,
+                drift_sigma=2.0,
+                min_drift_px=1.0,
+                single_issue_cap=30.0,
+                single_issue_min_gain=15.0,
+                single_issue_min_ssim_small=0.7,
+                single_issue_min_ink_f1=0.65,
+                single_issue_min_edge_iou=0.5,
+                single_issue_max_blob_penalty=0.03,
+                color_deltaE_max=20.0,
                 blob_min_size=40,
-                weights=ScoreWeightsMetadata(ssim_full=0.25, ssim_small=0.15,
-                    ink_f1=0.2, edge_iou=0.15, color_sim=0.15, blob_sim=0.1),
+                weights=ScoreWeightsMetadata(
+                    ssim_full=0.25,
+                    ssim_small=0.15,
+                    ink_f1=0.2,
+                    edge_iou=0.15,
+                    color_sim=0.15,
+                    blob_sim=0.1,
+                ),
             ),
             environment_config=BenchConfig(source_of_truth=Path("oracle")),
         )
@@ -194,3 +213,31 @@ def test_build_results_carries_render_timings_to_speed_stats() -> None:
     assert line["overall_mean_speed"] == 23.0
     assert line["overall_median_speed"] == 23.0
     assert line["min_speed"] == 12.0 and line["max_speed"] == 34.0
+
+
+def test_build_results_stamps_the_bench_version_by_default() -> None:
+    cfg = BenchConfig(source_of_truth=Path("corpus/oracle"))
+    result = build_results(
+        id_run=uuid.uuid7(),
+        vendor="docxodus",
+        benchmark="script_redlines",
+        scores={"a": 100.0},
+        per_doc=None,
+        speed_samples_ms=[],
+        environment_config=cfg,
+        timestamp=datetime(2026, 7, 7, tzinfo=UTC),
+    )
+    line = result.to_json_dict()
+    assert line["bench_version"] and line["bench_version"] != "0.0.0+unknown"
+    pinned = build_results(
+        id_run=uuid.uuid7(),
+        vendor="docxodus",
+        benchmark="script_redlines",
+        scores={"a": 100.0},
+        per_doc=None,
+        speed_samples_ms=[],
+        environment_config=cfg,
+        timestamp=datetime(2026, 7, 7, tzinfo=UTC),
+        bench_version="9.9.9",
+    )
+    assert pinned.to_json_dict()["bench_version"] == "9.9.9"
