@@ -635,10 +635,13 @@ def holdout_gap_section(path: Path) -> list[str]:
     header = [
         "## Holdout gap",
         "",
-        f"{sealed} (`corpus/holdout_combined.txt`) vs the visible corpus, per vendor: the "
-        "latest holdout-only run (`bench run --holdout`) next to the latest comparable main "
-        "run (same tool_version, `holdout_mode=excluded`, full corpus with n > 100). "
-        "`gap = holdout - main`; a strongly negative gap flags overfitting to the visible corpus.",
+        (
+            f"{sealed} (`corpus/holdout_combined.txt`) vs the visible corpus, per vendor: "
+            "the latest holdout-only run (`bench run --holdout`) next to the latest "
+            "comparable main run (same tool_version, `holdout_mode=excluded`, full corpus "
+            "with n > 100). `gap = holdout - main`; a strongly negative gap flags "
+            "overfitting to the visible corpus."
+        ),
         "",
     ]
     if not hold_by_vendor:
@@ -699,7 +702,9 @@ def holdout_gap_section(path: Path) -> list[str]:
             table_rows,
         ),
         "",
-        "`± 2·SE` uses the holdout line's per-doc scores; a |gap| below roughly 2·SE is within "
-        "sampling noise, not evidence of overfitting.",
+        (
+            "`± 2·SE` uses the holdout line's per-doc scores; a |gap| below roughly 2·SE "
+            "is within sampling noise, not evidence of overfitting."
+        ),
         "",
     ]
