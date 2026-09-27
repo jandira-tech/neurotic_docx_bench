@@ -57,6 +57,10 @@ __pycache__/
 # bench generated work folders (kept locally, cleaned in CI; see PLAN §4)
 /runs/
 /grok_run/
+# the Word corpus (bench corpus build): documents travel with `bench fixtures upload`,
+# provenance, tables, notes and manifests are tracked
+/corpus/word/**/*.docx
+/corpus/word/**/*.pdf
 # local bench logs (RESULTS live in results/; these are tee captures)
 /logs/
 

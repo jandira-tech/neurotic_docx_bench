@@ -117,6 +117,29 @@ uv run bench try fetch <pair_stem> --dest tryout_dl && uv run bench try run --ro
 
 `--renderer passthrough` (default) expects the tool to write the PDF itself; `soffice` and `word` render a `.docx` output first. `--against` takes another command template or a PDF path instead of jubarte. `--seed` repeats a random pick. `scripts/tryout_jubarte.py` regenerates jubarte's outputs for the set (`bench try build-set` redraws it).
 
+### The Word corpus
+
+Word is the source of truth for PDFs. What it produced lives under `corpus/word/`, one docset per folder, built by copy from Word's working folders (`grok_run/`, gitignored) and from the July export under `corpus/no_comments_pdf_was_generated_by_word/` (which stays where it is); nothing is moved or deleted. Only what Word finished is in: docx Word could not open, documents Word did not render to PDF, blacklisted stems and the compares touching them are left out and listed in each docset's `PROVENANCE.json`.
+
+| docset | what |
+| --- | --- |
+| `sources_500` | 500 docx-corpus documents with their Word PDF; 18 re-rendered by a later Word build, the earlier render kept under `pdf_word_prior/` |
+| `en_pairs_500` | 1000 English documents; the first Word pass is the reference, the second pass only fills the 4 stems the first lacks (`filled` in the provenance) |
+| `redlines_a100_b10`, `redlines_en_500` | Word compares with the Word PDF of the compared document; `pairs.csv` is a base/next manifest |
+| `oracles_wordpdf` | September 2026 Word renders of the tracked redline docx of `word_based`, `word_based_randomized` and `word_redlines_superdoc`, comments printed where the docx carries them, keyed like the scorer keys them |
+| `oracles_wordpdf_nocomments` | the July 2026 renders of the `word_based` redlines, comments stripped: the same pairs in a second document state |
+
+Every table row (`documents.csv`, `pairs.csv`, `oracles.csv`) carries the state of the docx read from its XML: `tracked_changes`, `comments` and `pdf_markup` (`none`, `tracked`, `comments`, `tracked_comments`), the markup of the docx the PDF renders. `corpus/word/index.csv` lists every document of every docset with those columns, so a run can select by state. Each docset carries `PROVENANCE.json` (origins, counts, absences, exclusions, states, docset id, ODC-By-1.0 attribution) and the tree is pinned by `MANIFEST.sha256.json`. docx and PDF files are gitignored and travel with `bench fixtures upload`; the manifests, provenance, tables and notes are tracked.
+
+```bash
+uv run bench corpus build --dry-run     # plan against grok_run/, copy nothing
+uv run bench corpus build               # copy (a clone on APFS), write provenance, tables, index, manifest
+uv run bench corpus check               # verify corpus/word against its manifest (exit 1 on drift)
+uv run bench corpus list                # the docsets with keys, ids, states and counts
+```
+
+A destination file whose bytes changed is refused unless `--force`; `--only <docset>` builds a subset.
+
 ---
 
 ## Scoring
