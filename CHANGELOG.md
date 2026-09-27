@@ -22,6 +22,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Large-N `speed_redlines` pack (2026-08-15): 1000 fixtures → 5000 pairs
   including jubarte inproc/CLI/WASM and docxodus WASM / csharp-inproc
 
+## [0.7.0] - 2026-09-27
+
+### Added
+- `bench_version` stamped on every store line; the report groups by bench series
+  (major.minor), unstamped lines read as `0.6`
+- Hugging Face datasets: `bench fixtures download|upload`
+  (`arthrod/neurotic_docx_bench-fixtures`, sha256 manifest verified on download)
+  and `bench results upload [--with-outputs] [--prune-local]`
+  (`arthrod/neurotic_docx_bench`: per-version stores, pages, registry, the
+  oracle files each docset used, optional run outputs; local outputs pruned only
+  after every uploaded hash is read back and matches)
+- `scripts/release.py`: refuses to release unless Microsoft Word on the machine
+  answers, renders, and rendered the store's Word rows; pages current; tree
+  clean; tag free; changelog entry present. Then tag, `uv build`, `uv publish`,
+  GitHub release
+
+### Changed
+- Wheel no longer ships the vendored competitor tools (`utils/`); competitor SDKs
+  moved to the `competitors` extra, torch to the `gpu` extra
+
+## [0.6.0] - 2026-09-27
+
+### Changed
+- Packaging only: the last pre-consolidation tree (`bench/latest-competitors-0926`)
+  published as a wheel without the vendored competitor tools; competitor SDKs
+  under the `competitors` extra
+
 ## [0.50] - 2026-07-08
 
 ### Added
