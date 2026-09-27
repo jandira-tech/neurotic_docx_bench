@@ -451,3 +451,11 @@ def test_load_docsets_json_reads_the_mapping_and_tolerates_absence(
     assert pol.load_docsets_json(tmp_path / "missing.json") == {}
     (tmp_path / "list.json").write_text("[1, 2]", encoding="utf-8")
     assert pol.load_docsets_json(tmp_path / "list.json") == {}
+
+
+def test_group_key_carries_the_bench_series_and_labels_unstamped_rows() -> None:
+    new = row("a", median=1).model_copy(update={"bench_version": "0.7.2"})
+    old = row("a", median=1)
+    assert pol.group_key(new).bench == "0.7"
+    assert pol.group_key(old).bench == "0.6"
+    assert pol.group_key(new) != pol.group_key(old)

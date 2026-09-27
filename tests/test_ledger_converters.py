@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
 import pytest
@@ -168,3 +169,18 @@ def test_converter_rows_load_with_tool_ids(tmp_path: Path, registry) -> None:
     assert rows[1].itt_scores() == {"s1": 0.0, "s2": 0.0, "s3": 0.0}
     assert rows[2].lens == "jaccard" and rows[2].extra["ssim"]["median"] == 89.0
     assert rws.load_converter_rows(tmp_path / "missing.jsonl", registry) == ([], [])
+
+
+def test_converter_lines_and_rows_carry_the_bench_version(
+    tmp_path: Path, registry
+) -> None:
+    lines = cv.lines_from_report(_report(), hardware=None, report_path="r.json")
+    assert all(line["bench_version"] for line in lines)
+    p = tmp_path / "converters.jsonl"
+    cv.append_report(p, _report(), hardware=None, report_path="r.json")
+    rows, _ = rws.load_converter_rows(p, registry)
+    assert rows[0].bench_version == lines[0]["bench_version"]
+    with p.open("w") as fh:
+        fh.write(json.dumps({**lines[0], "bench_version": None}) + "\n")
+    rows, _ = rws.load_converter_rows(p, registry)
+    assert rows[0].bench_version is None

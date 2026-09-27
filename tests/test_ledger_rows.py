@@ -293,3 +293,11 @@ def test_load_speed_rows_reads_jsonl_and_summaries(tmp_path: Path, registry) -> 
         (1000, 5000),
     ]
     assert {r.timestamp.day for r in rows} == {15, 16}
+
+
+def test_bench_version_is_carried_and_absent_on_old_lines(registry) -> None:
+    stamped = rws.row_from_bench_line(_line(bench_version="0.7.0"), registry)
+    old = rws.row_from_bench_line(_line(), registry)
+    assert stamped is not None and old is not None
+    assert stamped.bench_version == "0.7.0"
+    assert old.bench_version is None

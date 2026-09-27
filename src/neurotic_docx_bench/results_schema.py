@@ -17,7 +17,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
-from neurotic_docx_bench import lens_health
+from neurotic_docx_bench import lens_health, version
 from neurotic_docx_bench.aggregate import (
     compute_aggregate,
     compute_aggregate_itt,
@@ -155,6 +155,8 @@ class Results:
     docset_id: str | None = None
     renderer_id: str | None = None
     hardware: dict[str, object] | None = None
+    # Bench version that produced the line; major.minor is part of the comparability group.
+    bench_version: str | None = None
     timestamp: datetime = field(default_factory=lambda: datetime.now(UTC))
 
     def __post_init__(self) -> None:
@@ -235,6 +237,7 @@ def build_results(
     docset_id: str | None = None,
     renderer_id: str | None = None,
     hardware: dict[str, object] | None = None,
+    bench_version: str | None = None,
 ) -> Results:
     rounded_scores = {k: round(float(v), 4) for k, v in scores.items()}
     aggregate = compute_aggregate(rounded_scores, per_doc=per_doc)
@@ -298,6 +301,7 @@ def build_results(
         docset_id=docset_id,
         renderer_id=renderer_id,
         hardware=hardware,
+        bench_version=bench_version or version.bench_version(),
         timestamp=timestamp,
     )
 
