@@ -148,3 +148,86 @@ def test_docset_command_lists_benchmarks(tmp_path: Path, monkeypatch) -> None:
     assert result.exit_code == 0, result.output
     assert "script_redlines: 2 documents" in result.output
     assert (tmp_path / "results" / "docsets.json").is_file()
+
+
+# ---- gate set: 50 documents per benchmark, stratified by oracle directory, own id ----
+
+
+def test_gate_subset_is_proportional_deterministic_and_a_subset() -> None:
+    strata = {
+        "dirA": [f"a{i}" for i in range(120)],
+        "dirB": [f"b{i}" for i in range(80)],
+    }
+    keys = ds.gate_subset(strata, n=50)
+    assert len(keys) == 50
+    assert sum(k.startswith("a") for k in keys) == 30
+    assert sum(k.startswith("b") for k in keys) == 20
+    assert keys == ds.gate_subset(strata, n=50)
+    assert set(keys) <= {k for ks in strata.values() for k in ks}
+    assert keys == tuple(sorted(keys))
+    # Not the alphabetical head of each stratum: the pick is hashed.
+    assert keys[:30] != tuple(sorted(strata["dirA"])[:30])
+
+
+def test_gate_subset_largest_remainder_and_small_sets() -> None:
+    strata = {"x": [f"x{i}" for i in range(150)], "y": [f"y{i}" for i in range(50)]}
+    keys = ds.gate_subset(strata, n=50)
+    counts = (sum(k[0] == "x" for k in keys), sum(k[0] == "y" for k in keys))
+    assert counts in {(38, 12), (37, 13)} and sum(counts) == 50
+    assert ds.gate_subset({"x": ["p", "q"]}, n=50) == ("p", "q")
+    assert ds.gate_subset({}, n=50) == ()
+
+
+def test_gate_docset_has_its_own_id_and_points_at_the_full_set(tmp_path: Path) -> None:
+    a = _touch(tmp_path / "a", *[f"a{i}_b_redline.pdf" for i in range(60)])
+    b = _touch(tmp_path / "b", *[f"c{i}_d_redline.pdf" for i in range(40)])
+    full = ds.benchmark_docset(
+        "script_redlines", [a, b], holdout={"a1_b"}, holdout_mode="excluded"
+    )
+    strata = ds.benchmark_strata([a, b], "redline", full.keys)
+    assert set(strata) == {str(a), str(b)}
+    assert "a1_b" not in strata[str(a)]
+    gate = ds.gate_docset(full, strata)
+    assert gate.n == ds.GATE_N == 50
+    assert gate.gate_of == full.id and gate.id != full.id
+    assert set(gate.keys) <= set(full.keys)
+    assert gate.benchmark == full.benchmark and gate.holdout_mode == "excluded"
+    p = tmp_path / "docsets.json"
+    ds.write_docsets(p, [full, gate], source_dirs={full.id: [str(a), str(b)]})
+    loaded = ds.load_docsets(p)
+    assert loaded[gate.id]["gate_of"] == full.id and loaded[gate.id]["n"] == 50
+    assert "gate_of" not in loaded[full.id]
+    assert ds.gate_docset_id(loaded, full.id) == gate.id
+    assert ds.gate_docset_id(loaded, "nope") is None
+
+
+def test_docset_command_records_the_gate_set(tmp_path: Path, monkeypatch) -> None:
+    from typer.testing import CliRunner
+
+    from neurotic_docx_bench.cli import app
+
+    oracle = _touch(
+        tmp_path / "pdf_redlines_word", *[f"a{i}_b_redline.pdf" for i in range(70)]
+    )
+    (tmp_path / "bench.yaml").write_text(
+        f"source_of_truth: {oracle}\nscoring: {{dpi: 144}}\nruns: []\n"
+    )
+    monkeypatch.chdir(tmp_path)
+    result = CliRunner().invoke(app, ["docset", "--config", "bench.yaml", "--write"])
+    assert result.exit_code == 0, result.output
+    assert "script_redlines: 70 documents" in result.output
+    assert "gate: 50 documents" in result.output
+    loaded = ds.load_docsets(tmp_path / "results" / "docsets.json")
+    gates = [v for v in loaded.values() if v.get("gate_of")]
+    assert len(gates) == 1 and gates[0]["n"] == 50
+    assert gates[0]["gate_of"] in loaded
+
+
+def test_stem_in_keys_matches_redline_accepted_and_plain_stems() -> None:
+    keys = {"a_b", "plain"}
+    assert ds.stem_in_keys("a_b_t_redline", keys, "t")
+    assert ds.stem_in_keys("A_B_redline", keys)
+    assert ds.stem_in_keys("a_b_word_redline_accepted", keys)
+    assert ds.stem_in_keys("PLAIN", keys)
+    assert not ds.stem_in_keys("c_d_t_redline", keys, "t")
+    assert not ds.stem_in_keys("a_b_other_redline", keys, "t")

@@ -14,9 +14,10 @@ import platform
 import shutil
 import subprocess
 import time
+from collections.abc import Callable, Sequence
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Literal
+from typing import Literal, Protocol
 
 from neurotic_docx_bench.render.base import RenderReport, RenderResult
 
@@ -35,6 +36,37 @@ end run
 """.strip()
 
 _WORD_APP = Path("/Applications/Microsoft Word.app")
+WORD_VERSION_ARGV: tuple[str, ...] = (
+    "osascript",
+    "-e",
+    'version of application "Microsoft Word"',
+)
+
+
+class VersionProc(Protocol):
+    """What ``word_version`` reads off the process it ran: the shape of
+    ``subprocess.CompletedProcess[str]``, so any runner that returns one fits."""
+
+    returncode: int
+    stdout: str
+
+
+def word_version(
+    run: Callable[..., VersionProc] = subprocess.run,
+    *,
+    argv: Sequence[str] | None = None,
+) -> str | None:
+    """Word's version string as Word reports it (``16.101.1``), or None when Word or
+    osascript is absent. The renderer id of every Word-rendered row is ``word-<this>``."""
+    argv = list(argv if argv is not None else WORD_VERSION_ARGV)
+    try:
+        proc = run(argv, capture_output=True, text=True, timeout=30)
+    except FileNotFoundError, subprocess.TimeoutExpired:
+        return None
+    if proc.returncode != 0:
+        return None
+    out = (proc.stdout or "").strip()
+    return out or None
 
 
 def word_available() -> bool:
