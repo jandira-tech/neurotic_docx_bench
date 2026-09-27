@@ -2369,6 +2369,9 @@ def report_cmd(
             raise typer.Exit(code=1)
         console.print("published views are current")
         return
+    frozen = ledger_build.freeze(root, bundle)
+    if frozen is not None:
+        console.print(f"froze {frozen.name}")
     for p in ledger_build.write(root, bundle):
         console.print(f"wrote {p}")
 
