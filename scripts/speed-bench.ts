@@ -82,17 +82,20 @@ const METHODS: MethodConfig[] = [
 		dist: process.env.JUBARTE_WASM_DIST ?? "src/neurotic_docx_bench/utils/jubarte/jubarte-wasm",
 	},
 ];
+function isJubarte(method: string): boolean {
+	return method === "jubarte-rust" || method === "jubarte-wasm";
+}
 // The jubarte dists are local builds (git-ignored), made from the canonical
 // jubarte-redlines checkout. A missing one is a setup error, not a skipped row:
 // a speed table without jubarte measures nothing.
 function missingJubarteDists(methods: MethodConfig[]): string[] {
 	return methods
-		.filter((m) => (m.method === "jubarte-rust" || m.method === "jubarte-wasm") && !existsSync(m.dist))
+		.filter((m) => isJubarte(m.method) && !existsSync(m.dist))
 		.map((m) => `${m.method}: ${m.dist}`);
 }
 // method label → the loadEngine method id (jubarte-final-native still loads via "jubarte-native")
 function engineMethod(label: string): string {
-	if (label === "jubarte-rust" || label === "jubarte-wasm") return label;
+	if (isJubarte(label)) return label;
 	if (label.includes("native")) return "jubarte-native";
 	if (label.includes("jubarte")) return "jubarte-lossless";
 	return label;
@@ -154,6 +157,9 @@ async function main() {
 			engine = await loadEngine(engineMethod(mc.method), mc.dist);
 		} catch (e) {
 			console.error(`  ${mc.method}: init failed: ${(e as Error).message}`);
+			// A jubarte method, or any method named in --methods, is the point of
+			// the run: an incomplete build must not end it with a missing row.
+			if (isJubarte(mc.method) || wanted?.has(mc.method)) process.exit(1);
 			continue;
 		}
 		const initMs = performance.now() - t0;
