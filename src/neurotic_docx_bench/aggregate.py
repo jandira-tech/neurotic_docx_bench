@@ -83,17 +83,26 @@ def compute_aggregate(
     )
 
 
+def failed_doc_keys(scores: Mapping[str, float], failure_docs: Iterable[str]) -> set[str]:
+    """Documents that produced no score: the ones that enter the ITT pool at 0.
+
+    A failure record naming a doc that scored anyway is a non-fatal stage event and
+    does not make the doc "failed" for ranking purposes.
+    """
+    return {doc for doc in set(failure_docs) if doc not in scores}
+
+
 def compute_aggregate_itt(
     scores: dict[str, float],
     failure_docs: Iterable[str],
     per_doc: Mapping[str, Mapping[str, object]] | None = None,
 ) -> Aggregate:
-    """Intent-to-treat aggregate: every explicitly-failed doc scores 0.
+    """Intent-to-treat aggregate: every failed doc (see :func:`failed_doc_keys`) scores 0.
 
     The completed-only aggregate silently rewards a tool for crashing on hard documents
     (the doc leaves the denominator). Here each unique failed doc that did not also
     produce a score enters at 0.0; a doc that scored keeps its score even if a failure
-    record exists for it (non-fatal stage error). Failure docs are deduped.
+    record exists for it (non-fatal stage error).
     """
-    zeroed = {doc: 0.0 for doc in set(failure_docs) if doc not in scores}
+    zeroed = {doc: 0.0 for doc in failed_doc_keys(scores, failure_docs)}
     return compute_aggregate({**scores, **zeroed}, per_doc=per_doc)
