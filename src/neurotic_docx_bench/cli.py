@@ -17,7 +17,7 @@ import sys
 import tempfile
 import time
 import uuid
-from collections.abc import Callable, Iterable
+from collections.abc import Callable, Collection, Iterable
 from functools import lru_cache
 from datetime import UTC, datetime
 from pathlib import Path
@@ -252,13 +252,25 @@ def _renderer(backend: str, harness: HarnessConfig | None = None) -> Renderer:
     raise typer.BadParameter(f"unknown render backend: {backend!r}")
 
 
-def _limited_source(source: Path, pattern: str, limit: int | None) -> tuple[Path, bool]:
-    """Return (source_dir, is_temp). If limit is set, copy the first N matching files into
-    a temp dir so only a subset is rendered/scored.
+def _limited_source(
+    source: Path,
+    pattern: str,
+    limit: int | None,
+    *,
+    keys: Collection[str] | None = None,
+    tool: str | None = None,
+) -> tuple[Path, bool]:
+    """Return (source_dir, is_temp). With ``keys`` (document keys, matched through the
+    redline key of each file's stem for ``tool`` or its plain stem) or ``limit``, copy
+    the selected files into a temp dir so only that subset is rendered and scored.
     """
-    if not limit:
+    if not limit and keys is None:
         return source, False
-    files = sorted(source.glob(pattern))[:limit]
+    files = sorted(source.glob(pattern))
+    if keys is not None:
+        files = [f for f in files if docset_mod.stem_in_keys(f.stem, keys, tool)]
+    if limit:
+        files = files[:limit]
     tmp = Path(tempfile.mkdtemp(prefix="bench-subset."))
     for f in files:
         _ = shutil.copy(f, tmp / f.name)
@@ -1144,17 +1156,46 @@ def _registry_configuration(rc: RunConfig) -> str | None:
 
 
 def _docset_for(
-    cfg: BenchConfig, benchmark: BenchmarkName, holdout_mode: str | None
+    cfg: BenchConfig,
+    benchmark: BenchmarkName,
+    holdout_mode: str | None,
+    *,
+    gate_set: bool = False,
 ) -> docset_mod.DocSet | None:
     """The benchmark's fixed document set for this run's holdout regime, or None when
-    the oracle directory is not configured (the line is then emitted without a docset)."""
+    the oracle directory is not configured (the line is then emitted without a docset).
+    With ``gate_set`` it is the benchmark's gate subset (its own docset id)."""
     dirs = docset_mod.oracle_dirs_for(cfg, benchmark)
     if not any(Path(d).is_dir() for d in dirs):
         return None
     holdout: set[str] = set()
     if cfg.holdout_list and Path(cfg.holdout_list).is_file():
         holdout = pipeline.load_holdout(cfg.holdout_list)
-    return docset_mod.benchmark_docset(benchmark, dirs, holdout=holdout, holdout_mode=holdout_mode)
+    full = docset_mod.benchmark_docset(
+        benchmark, dirs, holdout=holdout, holdout_mode=holdout_mode
+    )
+    if not gate_set:
+        return full
+    strata = docset_mod.benchmark_strata(dirs, docset_mod.KEY_KIND[benchmark], full.keys)
+    return docset_mod.gate_docset(full, strata)
+
+
+def _gate_keys_for_run(
+    cfg: BenchConfig, rc: RunConfig, holdout_mode: str | None
+) -> set[str]:
+    """The union of the gate subsets of every source-keyed benchmark this run can
+    emit, so the renderer only sees the gate documents. Roundtrip is left out: its
+    documents come from the fixed roundtrip corpus, not from the run's source, and
+    the family is detailed-only, so it has no gate."""
+    benchmarks: list[str] = ["script_redlines", "accepted_changes"]
+    if cfg.visual_oracles:
+        benchmarks.extend(name for name, _ in visual_benchmarks_for_run(rc, cfg.visual_oracles))
+    keys: set[str] = set()
+    for b in benchmarks:
+        d = _docset_for(cfg, cast("BenchmarkName", b), holdout_mode, gate_set=True)
+        if d is not None:
+            keys |= set(d.keys)
+    return keys
 
 
 def _emit_and_gate_benchmark(
@@ -1178,9 +1219,11 @@ def _emit_and_gate_benchmark(
     do_gate: bool,
     n_oracle_unmatched: int | None = None,
     holdout_mode: str | None = None,
+    gate_set: bool = False,
 ) -> int:
     """Emit one schema-v4 ``Results`` JSONL line for ``(vendor, benchmark)`` and gate it
-    vs the benchmark's snapshot.
+    vs the benchmark's snapshot. With ``gate_set`` the line is restricted to, and
+    stamped with, the benchmark's gate subset.
 
     Returns the gate's exit contribution (1 on FAIL, 0 otherwise). Each benchmark
     (``script_redlines``, ``accepted_changes``, ``roundtrip``, …) is its own
@@ -1197,8 +1240,14 @@ def _emit_and_gate_benchmark(
         return 0
     vendor = rc.vendor or rc.name
     speed_samples_ms = stages.speed_samples_from_timings(timings, speed_key)
-    docset = _docset_for(cfg, benchmark, holdout_mode)
+    docset = _docset_for(cfg, benchmark, holdout_mode, gate_set=gate_set)
     failures = list(failures)
+    if docset is not None and gate_set:
+        full = _docset_for(cfg, benchmark, holdout_mode)
+        console.print(
+            f"{benchmark}: gate set: {docset.n} of {full.n if full else 0} documents "
+            f"(docset {docset.id}, gate of {docset.gate_of})"
+        )
     if docset is not None:
         restricted = docset_mod.restrict_to_docset(docset.keys, scores, per_doc, failures)
         if restricted.dropped_scores or restricted.dropped_failures:
@@ -1289,9 +1338,11 @@ def _execute_run(
     stage_cb: Callable[[str, int | None], None] | None = None,
     holdout_keys: set[str] | None = None,
     holdout_mode: str | None = None,
+    gate_set: bool = False,
 ) -> int:
     """Run one tool: (update/resolve version) → generate/locate source → render → score →
     emit → gate. Returns this run's exit contribution (1 on gate FAIL).
+    ``gate_set`` renders and scores only the gate subset of each benchmark's set.
 
     ``holdout_keys``/``holdout_mode`` (from the config's ``holdout_list``): mode
     "excluded" drops the sealed keys from the primary score, "only" scores just
@@ -1361,7 +1412,13 @@ def _execute_run(
     roundtrip_outcome: BenchmarkOutcome | None = None
     accept_outcome: BenchmarkOutcome | None = None
     visual_outcomes: list[BenchmarkOutcome] = []
-    src_dir, is_temp = _limited_source(Path(source), pattern, limit)
+    src_dir, is_temp = _limited_source(
+        Path(source),
+        pattern,
+        limit,
+        keys=_gate_keys_for_run(cfg, rc, holdout_mode) if gate_set else None,
+        tool=rc.name,
+    )
     try:
         _stage("render + score")
         report = _renderer(rc.render, rc.harness).to_pdfs(src_dir, run_dir, jobs=rc.jobs, timeout=rc.timeout)
@@ -1400,7 +1457,7 @@ def _execute_run(
         # produced by the renderer above) against each visual_* oracle declared on
         # the run. visual_rendering uses the plain-stem matcher (base PDFs); the
         # redlines/accepted variants use the redline-key matcher. Each emits its
-        # own JSONL line. This makes rc.benchmarks load-bearing for visual_*.
+        # own JSONL line. This is what makes rc.benchmarks decide the visual_* lines.
         # The three visual_* benchmarks share ONE render pass (the ``report``
         # above), so they share its render-speed distribution: build the per-doc
         # ``render_s`` timings once and attach to each outcome.
@@ -1598,6 +1655,7 @@ def _execute_run(
             cfg_hash=cfg_hash, id_run=id_run, timestamp=timestamp,
             emit=emit, only_on_change=only_on_change, do_gate=do_gate,
             n_oracle_unmatched=n_oracle_unmatched, holdout_mode=holdout_mode,
+            gate_set=gate_set,
         ))
 
     if accept_outcome is not None:
@@ -1610,7 +1668,7 @@ def _execute_run(
             jsonl_path=jsonl_path, snapshots_dir=snapshots_dir,
             cfg_hash=cfg_hash, id_run=id_run, timestamp=timestamp,
             emit=emit, only_on_change=only_on_change, do_gate=do_gate,
-            holdout_mode=holdout_mode,
+            holdout_mode=holdout_mode, gate_set=gate_set,
         ))
 
     if roundtrip_outcome is not None:
@@ -1627,7 +1685,9 @@ def _execute_run(
             # the pair-key seal cannot filter it, so stamping the run's mode
             # would be false provenance (and "only" would wrongly drop the line
             # from every headline table). None = truthfully unfiltered.
-            holdout_mode=None,
+            # The gate set does not reach roundtrip either (see _gate_keys_for_run),
+            # so the line keeps its full docset.
+            holdout_mode=None, gate_set=False,
         ))
 
     for vis_outcome in visual_outcomes:
@@ -1649,6 +1709,7 @@ def _execute_run(
                 holdout_mode=(
                     None if vis_outcome.benchmark == "visual_rendering" else holdout_mode
                 ),
+                gate_set=gate_set,
             ))
 
     # A run succeeds if ANY of its benchmarks produced scores — not just the
@@ -1813,6 +1874,7 @@ def _drive_runs(
     oracle_check: bool = True,
     canary_check: bool = True,
     holdout: bool = False,
+    gate_set: bool = False,
 ) -> None:
     """Shared driver for ``run`` / ``run-all``: execute the selected bench.yaml runs
     sequentially. ``names=None`` runs everything; otherwise the runs execute in the
@@ -2042,6 +2104,7 @@ def _drive_runs(
                     stage_cb=_stage,
                     holdout_keys=holdout_keys,
                     holdout_mode=holdout_mode,
+                    gate_set=gate_set,
                 ),
             )
         except Exception as exc:  # one run's failure must not stop the rest
@@ -2151,6 +2214,13 @@ def run(
         help="score ONLY the sealed holdout keys (yaml: holdout_list) instead of "
         "excluding them — the on-demand overfitting check",
     ),
+    gate_set: bool = typer.Option(
+        False,
+        "--gate-set",
+        help="render and score only each benchmark's gate subset (50 documents per "
+        "family, stamped with the gate set's own docset id); the run a tool needs "
+        "before it enters the main page",
+    ),
 ) -> None:
     """Drive bench.yaml runs **sequentially** (one per tool). Each run gets its own
     ``runs/{name}_{datetime}`` work folder (kept locally; ``--clean-runs`` deletes it only
@@ -2184,6 +2254,7 @@ def run(
         oracle_check=oracle_check,
         canary_check=canary_check,
         holdout=holdout,
+        gate_set=gate_set,
     )
 
 
@@ -2347,6 +2418,10 @@ def docset_cmd(
         sets.append(d)
         dirs_by_id[d.id] = [str(p) for p in dirs]
         console.print(f"{benchmark}: {d.n} documents, docset {d.id}")
+        strata = docset_mod.benchmark_strata(dirs, docset_mod.KEY_KIND[benchmark], d.keys)
+        g = docset_mod.gate_docset(d, strata)
+        sets.append(g)
+        console.print(f"  gate: {g.n} documents, docset {g.id} (gate of {d.id})")
     if write:
         docset_mod.write_docsets(docset_mod.DEFAULT_DOCSETS_PATH, sets, source_dirs=dirs_by_id)
         console.print(f"wrote {docset_mod.DEFAULT_DOCSETS_PATH}")

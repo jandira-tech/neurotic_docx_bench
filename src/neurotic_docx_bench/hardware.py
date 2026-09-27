@@ -74,9 +74,18 @@ def hardware_info() -> dict[str, object]:
     }
 
 
+def word_version() -> str | None:
+    """Microsoft Word's version string; None when Word is not reachable."""
+    from neurotic_docx_bench.render import word
+
+    return word.word_version()
+
+
 def renderer_id(rc: RunConfig) -> str:
     if rc.render == "soffice":
         return f"soffice-{soffice_version() or 'unknown'}"
+    if rc.render == "word":
+        return f"word-{word_version() or 'unknown'}"
     if rc.render == "playwright":
         return f"playwright:{rc.package or rc.name}"
     return rc.render

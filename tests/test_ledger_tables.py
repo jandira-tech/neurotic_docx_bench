@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 import pytest
@@ -49,6 +49,14 @@ def registry(tmp_path: Path):
                 "bench_vendors": ["cal"],
             },
             {
+                "id": "null-baseline",
+                "vendor": "bench",
+                "display": "null baseline",
+                "role": "calibration",
+                "engine": "pipeline",
+                "bench_vendors": ["null-baseline"],
+            },
+            {
                 "id": "na",
                 "vendor": "na",
                 "display": "doxx",
@@ -79,7 +87,7 @@ def _row(
         timestamp=T0,
         corpus_revision="rev",
         docset_id=docset,
-        renderer_id="soffice-26.2.4.2",
+        renderer_id="word-16.101.1",
         scorer="pagefair-v2",
         n_scored=n,
         n_failed_docs=2,
@@ -95,12 +103,50 @@ def _row(
     )
 
 
-def _select(rows, registry, tie=False):
+GATED = {"d1": {"n": 32}, "g1": {"n": 2, "gate_of": "d1"}}
+
+
+def _gated(rows):
+    """The rows plus a passing gate run per tool and a null-baseline gate row, in each
+    row's own group, so tables tests exercise the layout rather than the gate."""
+    extra = []
+    seen = set()
+    for r in rows:
+        for tool, median in ((r.tool_id, 90.0), ("null-baseline", 10.0)):
+            sig = (tool, r.benchmark, r.lens, r.renderer_id, r.scorer)
+            if sig in seen or r.tool_id == "cal":
+                continue
+            seen.add(sig)
+            extra.append(
+                r.model_copy(
+                    update={
+                        "id_run": f"gate-{tool}-{r.benchmark}-{r.lens}",
+                        "tool_id": tool,
+                        "display": tool,
+                        "docset_id": "g1",
+                        "timestamp": T0 - timedelta(days=1),
+                        "scores": {"doc0": median, "doc1": median},
+                        "n_scored": 2,
+                        "n_failed_docs": 0,
+                        "n_failure_events": 0,
+                        "itt_n": 2,
+                        "itt_mean": median,
+                        "itt_median": median,
+                        "mean": median,
+                        "median": median,
+                        "extra": {},
+                    }
+                )
+            )
+    return list(rows) + extra
+
+
+def _select(rows, registry, tie=False, docsets=GATED):
     return pol.select_headline(
-        rows,
+        _gated(rows),
         registry=registry,
         retractions=[],
-        docsets={"d1": {"n": 32}},
+        docsets=docsets,
         tie_fn=lambda x, y: tie,
     )["script_redlines"]
 
@@ -120,7 +166,7 @@ def test_fidelity_table_layout(registry) -> None:
     )
     assert md.startswith("### script_redlines")
     assert "Document set `d1` (32 documents)" in md
-    assert "renderer `soffice-26.2.4.2`" in md and "scorer `pagefair-v2`" in md
+    assert "renderer `word-16.101.1`" in md and "scorer `pagefair-v2`" in md
     assert "bench `0.6`" in md
     assert "| 1 | jubarte-x †" in md
     assert "| 2 | acme |" in md
@@ -133,13 +179,10 @@ def test_fidelity_table_layout(registry) -> None:
 
 
 def test_caption_says_when_the_document_set_was_inferred(registry) -> None:
-    t = pol.select_headline(
-        [_row("a", "acme", 80.0)],
-        registry=registry,
-        retractions=[],
-        docsets={},
-        tie_fn=lambda x, y: False,
-    )["script_redlines"]
+    # the gate set is recorded, the full set it points at is not
+    t = _select(
+        [_row("a", "acme", 80.0)], registry, docsets={"g1": {"n": 2, "gate_of": "d1"}}
+    )
     assert t.docset_recorded is False
     assert "inferred from the largest ITT n" in tb.fidelity_table(t, row_ci={})
 
@@ -205,10 +248,11 @@ def test_speed_table_layout(registry) -> None:
 def test_history_table_lists_every_row_with_verdicts(registry) -> None:
     rows = [_row("a", "acme", 80.0), _row("a", "acme", 70.0, n=5, pin="1.0.0")]
     md = tb.history_section(
-        rows, registry=registry, retractions=[], docsets={"d1": {"n": 32}}
+        _gated(rows), registry=registry, retractions=[], docsets=GATED
     )
     assert "## History" in md and "1.0.0" in md
     assert "incomplete: 7 of 32 documents" in md and "eligible" in md
+    assert "gate-set run" in md
 
 
 def test_paired_section_lists_pairs_with_intervals(registry) -> None:
