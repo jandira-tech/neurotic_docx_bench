@@ -2,8 +2,11 @@
 
 from __future__ import annotations
 
+import json
+import statistics
 from collections.abc import Mapping, Sequence
 from datetime import datetime
+from pathlib import Path
 
 from neurotic_docx_bench.ledger import policy as pol
 from neurotic_docx_bench.ledger import stats as st
@@ -550,3 +553,153 @@ def vendor_table(registry: Registry) -> str:
     return (
         md_table(["Tool", "Role", "Engine", "Author-affiliated", "Note"], rows) + "\n"
     )
+
+
+# ---- holdout gap ----------------------------------------------------------------
+
+
+def _format_num(value: object, digits: int = 4) -> str:
+    if value is None:
+        return "n/a"
+    if isinstance(value, float):
+        text = f"{value:.{digits}f}".rstrip("0").rstrip(".")
+        return text if text else "0"
+    return str(value)
+
+
+def _escape_cell(value: object) -> str:
+    text = "" if value is None else str(value)
+    return text.replace("|", "\\|").replace("\n", " ")
+
+
+def _norm_version(value: object) -> str:
+    if value is None:
+        return "n/a"
+    text = str(value).strip()
+    return text if text else "n/a"
+
+
+def _holdout_se(hold_line: dict) -> float | None:
+    """Standard error of the holdout line's mean from its per-doc scores; None below 2."""
+    scores = hold_line.get("scores")
+    if not isinstance(scores, dict) or len(scores) < 2:
+        return None
+    values = [float(v) for v in scores.values() if isinstance(v, int | float)]
+    if len(values) < 2:
+        return None
+    return statistics.stdev(values) / (len(values) ** 0.5)
+
+
+def holdout_gap_section(path: Path) -> list[str]:
+    """Per vendor, the sealed-holdout run vs a comparable main run, gap = holdout - main.
+
+    Comparable means the same tool_version as the holdout line, holdout_mode
+    "excluded" (disjoint from the sealed set), and full-corpus size (n_docs > 100). The
+    log is append-only, so the latest qualifying line wins. Reads the raw store so a
+    holdout-only line (never a ranked row) still counts here.
+    """
+
+    def _n_docs(line: dict) -> int:
+        n = line.get("n_docs")
+        return int(n) if isinstance(n, int | float) else 0
+
+    main_lines: list[dict] = []
+    hold_by_vendor: dict[str, dict] = {}
+    if Path(path).is_file():
+        with Path(path).open(encoding="utf-8") as fh:
+            for raw in fh:
+                raw = raw.strip()
+                if not raw:
+                    continue
+                try:
+                    data = json.loads(raw)
+                except json.JSONDecodeError:
+                    continue
+                if str(data.get("benchmark") or "") != "script_redlines":
+                    continue
+                vendor = str(data.get("vendor") or "")
+                if not vendor:
+                    continue
+                if data.get("holdout_mode") == "only":
+                    prev = hold_by_vendor.get(vendor)
+                    if prev is None or _n_docs(data) >= _n_docs(prev):
+                        hold_by_vendor[vendor] = data
+                else:
+                    main_lines.append(data)
+    hold_sizes = {_n_docs(line) for line in hold_by_vendor.values() if _n_docs(line)}
+    sealed = (
+        f"Sealed {next(iter(hold_sizes))}-pair holdout"
+        if len(hold_sizes) == 1
+        else "Sealed holdout"
+    )
+    header = [
+        "## Holdout gap",
+        "",
+        f"{sealed} (`corpus/holdout_combined.txt`) vs the visible corpus, per vendor: the "
+        "latest holdout-only run (`bench run --holdout`) next to the latest comparable main "
+        "run (same tool_version, `holdout_mode=excluded`, full corpus with n > 100). "
+        "`gap = holdout - main`; a strongly negative gap flags overfitting to the visible corpus.",
+        "",
+    ]
+    if not hold_by_vendor:
+        return [*header, "_no holdout runs recorded yet (`bench run --holdout`)_", ""]
+    table_rows: list[list[str]] = []
+    for vendor in sorted(hold_by_vendor):
+        hold_line = hold_by_vendor[vendor]
+        hold_mean = hold_line.get("overall_mean")
+        hold_version = _norm_version(hold_line.get("tool_version"))
+        main_line: dict | None = None
+        for data in main_lines:
+            n = data.get("n_docs")
+            if (
+                str(data.get("vendor") or "") == vendor
+                and _norm_version(data.get("tool_version")) == hold_version
+                and data.get("holdout_mode") == "excluded"
+                and isinstance(n, int | float)
+                and int(n) > 100
+            ):
+                main_line = data
+        if main_line is None:
+            table_rows.append(
+                [
+                    _escape_cell(vendor),
+                    "no comparable main run",
+                    "n/a",
+                    _escape_cell(_format_num(hold_mean)),
+                    _escape_cell(_format_num(hold_line.get("n_docs"))),
+                    "n/a",
+                ]
+            )
+            continue
+        main_mean = main_line.get("overall_mean")
+        if isinstance(hold_mean, int | float) and isinstance(main_mean, int | float):
+            gap_value = float(hold_mean) - float(main_mean)
+            se = _holdout_se(hold_line)
+            gap = (
+                f"{gap_value:+.2f} ± {2 * se:.2f}"
+                if se is not None
+                else f"{gap_value:+.2f}"
+            )
+        else:
+            gap = "n/a"
+        table_rows.append(
+            [
+                _escape_cell(vendor),
+                _escape_cell(_format_num(main_mean)),
+                _escape_cell(_format_num(main_line.get("n_docs"))),
+                _escape_cell(_format_num(hold_mean)),
+                _escape_cell(_format_num(hold_line.get("n_docs"))),
+                gap,
+            ]
+        )
+    return [
+        *header,
+        md_table(
+            ["vendor", "main mean", "n_main", "holdout mean", "n_holdout", "gap"],
+            table_rows,
+        ),
+        "",
+        "`± 2·SE` uses the holdout line's per-doc scores; a |gap| below roughly 2·SE is within "
+        "sampling noise, not evidence of overfitting.",
+        "",
+    ]
