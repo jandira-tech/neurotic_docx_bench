@@ -27,6 +27,7 @@ dependencies = [
     # first-class so a dropped extra cannot silently fall back to WholeDocumentProcessor.
     "redlines[levenshtein,nupunkt]==0.6.1",
     "nupunkt==0.6.0",
+    "pydantic>=2.11",
 ]
 
 [project.scripts]
@@ -50,6 +51,7 @@ dev = [
     # test environment needs what they import. typer and rich are already
     # project dependencies; loguru is not.
     "loguru>=0.7",
+    "pytest-cov>=6.0",
 ]
 
 [tool.pytest.ini_options]
