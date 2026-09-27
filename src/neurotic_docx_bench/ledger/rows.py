@@ -51,17 +51,34 @@ class ResultRow(BaseModel):
     median: float
     exact_100: int
     scores: dict[str, float] = {}
+    # Documents that produced no score and enter the ITT pool at 0.
+    failed_docs: tuple[str, ...] = ()
     holdout_mode: str | None = None
     hardware: dict[str, object] | None = None
     render: str | None = None
     run_name: str | None = None
     configuration: str | None = None
+    # Secondary metrics of a multi-metric lens (docxide_metrics: ssim, text_boundary),
+    # each as {"mean": x, "median": y}; the primary metric is in the score fields.
+    extra: dict[str, dict[str, float]] = {}
+    # Lens-disagreement bench-health alarm carried from the line; never a ranking input.
+    n_lens_disagree: int | None = None
+    lens_disagree_rate: float | None = None
 
     @property
     def provenance(self) -> Provenance:
         if self.corpus_revision and self.scores and not self.itt_approx:
             return "stamped"
         return "legacy"
+
+    @property
+    def key(self) -> str:
+        """One run id can carry several benchmarks; this names one row."""
+        return f"{self.id_run}|{self.benchmark}"
+
+    def itt_scores(self) -> dict[str, float]:
+        """Per-document scores over the ITT pool: scored docs plus failed docs at 0."""
+        return {**self.scores, **{d: 0.0 for d in self.failed_docs}}
 
 
 def _num(value: object, default: float = 0.0) -> float:
@@ -188,11 +205,22 @@ def row_from_bench_line(data: dict, registry: Registry) -> ResultRow | None:
         median=_num(data.get("overall_median")),
         exact_100=int(_num(data.get("exact_100"))),
         scores=scores,
+        failed_docs=tuple(sorted(failed_docs - scores.keys())) if scores else (),
         holdout_mode=(str(data["holdout_mode"]) if data.get("holdout_mode") else None),
         hardware=hardware if isinstance(hardware, dict) else None,
         render=render or None,
         run_name=run_name or None,
         configuration=entry.configuration,
+        n_lens_disagree=(
+            int(_num(data["n_lens_disagree"]))
+            if data.get("n_lens_disagree") is not None
+            else None
+        ),
+        lens_disagree_rate=(
+            _num(data["lens_disagree_rate"])
+            if data.get("lens_disagree_rate") is not None
+            else None
+        ),
     )
 
 
