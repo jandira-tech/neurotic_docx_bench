@@ -694,20 +694,21 @@ def docxide_metrics_eval(
     json_out: Path = typer.Option(
         Path("results/docxide_metrics.json"),
         "--json",
-        help="write per-doc Jaccard/SSIM/text-boundary + ITT aggregates",
+        help="write per-doc Jaccard/text-boundary + ITT aggregates",
     ),
-    work_dir: Path | None = typer.Option(None, "--work-dir", help="scratch dir for PDFs and rasters"),
+    work_dir: Path | None = typer.Option(None, "--work-dir", help="scratch dir for candidate PDFs"),
     limit: int | None = typer.Option(None, "--limit", help="score only the first N fixtures (tests)"),
     resume: bool = typer.Option(True, "--resume/--no-resume", help="reuse existing candidate PDFs"),
     convert_workers: int = typer.Option(8, "--convert-workers", help="parallel convert processes per tool"),
-    score_workers: int = typer.Option(4, "--score-workers", help="parallel documents in the scorer"),
+    score_workers: int = typer.Option(4, "--score-workers", help="parallel scoring processes"),
 ) -> None:
     """Score the 398 no-redline fixtures with docxide-pdf's own metrics.
 
     Same fixtures and same pinned Word oracles as ``docx-to-pdf --track
-    docx_to_pdf_no_redline_docs``; the scorer is docxide-pdf's Jaccard / SSIM /
-    text-boundary suite at 150 DPI instead of the superdoc-visual-benchmarks core.
-    Convert failures score 0 on all three metrics (intent-to-treat).
+    docx_to_pdf_no_redline_docs``; the scorer is docxide-pdf's Jaccard and
+    text-boundary metrics (page_metrics.py) at 150 DPI instead of the
+    superdoc-visual-benchmarks core. Convert failures score 0 on both metrics
+    (intent-to-treat).
     """
     from neurotic_docx_bench import docxide_metrics as dm
     from neurotic_docx_bench.docx_to_pdf import WORD_PDF_TOOLS

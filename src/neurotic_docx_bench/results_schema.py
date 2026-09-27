@@ -116,6 +116,13 @@ class Results:
     skill_median: float | None = None
     v2_mean: float | None = None
     v2_median: float | None = None
+    # docxide-pdf's page metrics (0.7.0), aggregated over docs where computable:
+    # ink Jaccard over common pages and the share of text lines that start and end
+    # on the same words as the oracle. Informational columns, never a ranking input.
+    ink_jaccard_mean: float | None = None
+    ink_jaccard_median: float | None = None
+    text_boundary_mean: float | None = None
+    text_boundary_median: float | None = None
     # Functional accept/reject invariant (PR7): docs where the neutral
     # accept/reject machinery ran, and how many satisfied each invariant
     # (accept(candidate) ≡ next, reject(candidate) ≡ base, text-level).
@@ -243,6 +250,8 @@ def build_results(
     aggregate = compute_aggregate(rounded_scores, per_doc=per_doc)
     skill_mean, skill_median = _optional_metric_stats(per_doc, "skill_score")
     v2_mean, v2_median = _optional_metric_stats(per_doc, "score_v2")
+    ink_jaccard_mean, ink_jaccard_median = _optional_metric_stats(per_doc, "ink_jaccard")
+    text_boundary_mean, text_boundary_median = _optional_metric_stats(per_doc, "text_boundary")
     n_functional_checked, n_accept_ok, n_reject_ok = _functional_counts(per_doc)
     n_lens_disagree, lens_disagree_rate = lens_health.summarize(per_doc)
     failure_list = failures or []
@@ -283,6 +292,10 @@ def build_results(
         skill_median=skill_median,
         v2_mean=v2_mean,
         v2_median=v2_median,
+        ink_jaccard_mean=ink_jaccard_mean,
+        ink_jaccard_median=ink_jaccard_median,
+        text_boundary_mean=text_boundary_mean,
+        text_boundary_median=text_boundary_median,
         n_functional_checked=n_functional_checked,
         n_accept_ok=n_accept_ok,
         n_reject_ok=n_reject_ok,
