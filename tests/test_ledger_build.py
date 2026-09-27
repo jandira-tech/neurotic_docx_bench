@@ -182,3 +182,95 @@ def test_cli_report_and_check(repo: Path, monkeypatch) -> None:
     r = CliRunner().invoke(app, ["report", "--check"])
     assert r.exit_code == 1
     assert "RESULTS.md" in r.output
+
+
+# ---- frozen pages: RESULTS_v{bench_version}.md, written once when the version moves ----
+
+T1 = datetime(2026, 9, 20, 12, 0, tzinfo=UTC)
+T2 = datetime(2026, 9, 27, 9, 30, tzinfo=UTC)
+
+
+def test_results_page_states_its_provenance(repo: Path) -> None:
+    bundle = bd.build(repo, now=T1, version="0.7.0")
+    prov = bd.provenance(bundle.results_md)
+    assert prov == bd.Provenance(
+        bench_version="0.7.0",
+        docsets=("dset1",),
+        scorers=("pagefair-v2",),
+        renderers=("soffice-26.2.4.2",),
+    )
+    assert bd.provenance("# Benchmark results\n\nlegacy\n") is None
+
+
+def test_provenance_round_trips_empty_lists() -> None:
+    prov = bd.Provenance(bench_version="0.7.0", docsets=(), scorers=(), renderers=())
+    assert bd.provenance(prov.line() + "\n") == prov
+
+
+def test_freeze_writes_previous_page_once(repo: Path) -> None:
+    bd.write(repo, bd.build(repo, now=T1, version="0.6.0"))
+    old_page = (repo / "RESULTS.md").read_text()
+    new = bd.build(repo, now=T2, version="0.7.0")
+    frozen = bd.freeze(repo, new, now=T2)
+    assert frozen == repo / "RESULTS_v0.6.0.md"
+    text = frozen.read_text()
+    assert text.startswith(bd.FROZEN_NOTE)
+    assert "# Benchmark results, frozen at bench 0.6.0" in text
+    assert "Frozen 2026-09-27 09:30 UTC when the bench moved to 0.7.0." in text
+    assert "Docsets: dset1." in text
+    assert "Scorers: pagefair-v2." in text
+    assert "Renderers: soffice-26.2.4.2." in text
+    assert bd.GENERATED_NOTE not in text
+    body = old_page[old_page.index("# Benchmark results") :]
+    assert body.strip() in text
+    # Nothing to freeze once RESULTS.md carries the current version.
+    bd.write(repo, new)
+    assert bd.freeze(repo, new, now=T2) is None
+    # A frozen page is never overwritten.
+    (repo / "RESULTS.md").write_text(old_page)
+    frozen.write_text("kept\n")
+    assert bd.freeze(repo, new, now=T2) is None
+    assert frozen.read_text() == "kept\n"
+
+
+def test_freeze_of_unmarked_page_is_the_pre_stamp_version(repo: Path) -> None:
+    (repo / "RESULTS.md").write_text("# Benchmark results\n\n| legacy | table |\n")
+    new = bd.build(repo, now=T2, version="0.7.0")
+    frozen = bd.freeze(repo, new, now=T2)
+    assert frozen is not None and frozen.name == "RESULTS_v0.6.0.md"
+    text = frozen.read_text()
+    assert "frozen at bench 0.6.0" in text
+    assert "| legacy | table |" in text
+    # Metadata comes from the stores when the old page did not state it.
+    assert "Docsets: dset1." in text
+    assert "Renderers: soffice-26.2.4.2." in text
+
+
+def test_freeze_skips_unknown_versions(repo: Path) -> None:
+    from neurotic_docx_bench.version import UNKNOWN
+
+    bd.write(repo, bd.build(repo, now=T1, version="0.6.0"))
+    assert bd.freeze(repo, bd.build(repo, now=T2, version=UNKNOWN), now=T2) is None
+    bd.write(repo, bd.build(repo, now=T1, version=UNKNOWN))
+    assert bd.freeze(repo, bd.build(repo, now=T2, version="0.7.0"), now=T2) is None
+    assert not list(repo.glob("RESULTS_v*.md"))
+
+
+def test_cli_report_freezes_when_the_version_moves(repo: Path, monkeypatch) -> None:
+    from neurotic_docx_bench import version as ver
+
+    monkeypatch.chdir(repo)
+    monkeypatch.setattr(ver, "bench_version", lambda: "0.6.0")
+    r = CliRunner().invoke(app, ["report"])
+    assert r.exit_code == 0, r.output
+    assert "froze" not in r.output
+    monkeypatch.setattr(ver, "bench_version", lambda: "0.7.0")
+    r = CliRunner().invoke(app, ["report", "--check"])
+    assert r.exit_code == 1, r.output  # the page still says 0.6.0
+    assert not (repo / "RESULTS_v0.6.0.md").exists()  # --check never writes
+    r = CliRunner().invoke(app, ["report"])
+    assert r.exit_code == 0, r.output
+    assert "froze RESULTS_v0.6.0.md" in r.output
+    assert (repo / "RESULTS_v0.6.0.md").is_file()
+    r = CliRunner().invoke(app, ["report", "--check"])
+    assert r.exit_code == 0, r.output
