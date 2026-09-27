@@ -1,0 +1,46 @@
+Word cannot export the comparisons listed below to PDF.
+A redline was produced and Word then refused the PDF save
+(the document does not understand Save As, comes back empty, or the connection dies).
+Those PDFs are absent on purpose. That is expected. Do not retry them.
+
+Expected PDF absences: 10
+
+- 000014a959f5225c658740fd7915cd50c5728c9cbe06c7d72d79a9708244ec1f__vs__00b5defcad6e58038eac35472a2d48c89905068e5ece0cc3ceeb58c37bbd538c
+  redline saved but PDF export failed: 463:511: execution error: document loaded empty (Word could not read it) (-2700)
+
+- 000014a959f5225c658740fd7915cd50c5728c9cbe06c7d72d79a9708244ec1f__vs__017447de83753a0e3b7afc659df038ef56972925336c6a5b1f9c03300e105ca1
+  redline saved but PDF export failed: 463:511: execution error: document loaded empty (Word could not read it) (-2700)
+
+- 00515f13495e5bf0867b319b035d4a83c7904b55056c38f86e8672ab0192e903__vs__0004c94ca2a8684d47449bb0e7abf87de1df71a7e654325270931607df696aec
+  redline saved but PDF export failed: 531:586: execution error: Microsoft Word got an error: document "00515f13495e5bf0867b319b035d4a83c7904b55056c38f86e8672ab0192e903__vs__0004c94ca2a8684d47449bb0e7abf87de1df71a7e654325270931607df696aec.
+
+- 00515f13495e5bf0867b319b035d4a83c7904b55056c38f86e8672ab0192e903__vs__000ee64ef7226d353297888f59a251e24ce5d776fea000fa9ec9cb41dbbbcf76
+  redline saved but PDF export failed: 531:586: execution error: Microsoft Word got an error: document "00515f13495e5bf0867b319b035d4a83c7904b55056c38f86e8672ab0192e903__vs__000ee64ef7226d353297888f59a251e24ce5d776fea000fa9ec9cb41dbbbcf76.
+
+- 00515f13495e5bf0867b319b035d4a83c7904b55056c38f86e8672ab0192e903__vs__001342333d45627868f4dc5282abbba4598a91b4a7584b08a679c945c2f006ca
+  redline saved but PDF export failed: 531:586: execution error: Microsoft Word got an error: document "00515f13495e5bf0867b319b035d4a83c7904b55056c38f86e8672ab0192e903__vs__001342333d45627868f4dc5282abbba4598a91b4a7584b08a679c945c2f006ca.
+
+- 00515f13495e5bf0867b319b035d4a83c7904b55056c38f86e8672ab0192e903__vs__002aa60c2ae1187417b4b157c5ec6450324cc056ec551a129c83d3b9561f2fde
+  redline saved but PDF export failed: 463:511: execution error: document loaded empty (Word could not read it) (-2700)
+
+- 00515f13495e5bf0867b319b035d4a83c7904b55056c38f86e8672ab0192e903__vs__003416d620331122b93b434dad901db5836f60d2cad4b53379dcdeb760475147
+  redline saved but PDF export failed: 463:511: execution error: document loaded empty (Word could not read it) (-2700)
+
+- 00515f13495e5bf0867b319b035d4a83c7904b55056c38f86e8672ab0192e903__vs__017447de83753a0e3b7afc659df038ef56972925336c6a5b1f9c03300e105ca1
+  redline saved but PDF export failed: 463:511: execution error: document loaded empty (Word could not read it) (-2700)
+
+- 00a54bff7e15af78fe7cfc20219c28cb208fde807bd28d441231458a94c131e4__vs__003416d620331122b93b434dad901db5836f60d2cad4b53379dcdeb760475147
+  redline saved but PDF export failed: 463:511: execution error: document loaded empty (Word could not read it) (-2700)
+
+- 019d92d986c5ba33a57df54db0056f3731e3254fcbe8ac65e84d217551e28023__vs__001342333d45627868f4dc5282abbba4598a91b4a7584b08a679c945c2f006ca
+  redline saved but PDF export failed: 463:511: execution error: document loaded empty (Word could not read it) (-2700)
+
+The other missing names in this folder are not PDF-export failures.
+Word never produced a single comparison document for them
+(it opened 0 or 2 documents and the script refused to guess, or it rejected the base).
+Those are in grok_run/MANIFEST.json and grok_run/comparisons.jsonl
+as compare_refused or word_rejected_base.
+
+Saved redlines in this folder: one PDF per saved docx, same stem.
+Identity: each saved redline contains file A's own text and file B's own text.
+Those two checks are separate. They are not averaged.

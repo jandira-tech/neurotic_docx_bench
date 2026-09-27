@@ -1,0 +1,62 @@
+{
+ "absent": [
+  "word_based/I_am_sharing_Microsoft_Word_vs_Google_Docs_Comprehensive_Proof_with_you_increase_indent_demo_id_paraid_overflow_redline",
+  "word_based/multi_section_nested_table_rowspan_word_redline",
+  "word_based/word_clean_strict01_word_tolerated_broken_media_rel_redline",
+  "word_redlines_superdoc/behavior__sd_2517_localized_heading_styles_39c2e4a1_behavior__sd_2750_borderbox_7cd3768d_redline"
+ ],
+ "corpora": {
+  "word_based": {
+   "docset_id": "a57178f68593",
+   "docx_dir": "corpus/word_based/docx_redlines_word",
+   "n_files": 229,
+   "n_keys": 204
+  },
+  "word_based_randomized": {
+   "docset_id": "ff1b11591295",
+   "docx_dir": "corpus/word_based/docx_redlines_randomized",
+   "n_files": 196,
+   "n_keys": 196
+  },
+  "word_redlines_superdoc": {
+   "docset_id": "fb749139de07",
+   "docx_dir": "corpus/word_redlines_superdoc/docx_redlines_word",
+   "n_files": 399,
+   "n_keys": 399
+  }
+ },
+ "counts": {
+  "pdf_redline_word": 824
+ },
+ "dataset": null,
+ "description": "Word renders (September 2026) of the tracked redline docx of word_based, word_based_randomized and word_redlines_superdoc, comments printed where the docx carries them: the Word PDF oracle for those corpora, keyed like the scorer keys them.",
+ "docset": "oracles_wordpdf",
+ "docset_id": "b90b4fc19112",
+ "excluded": {},
+ "family": "redline",
+ "filled": [],
+ "license": null,
+ "n_keys": 799,
+ "notes": [],
+ "origins": {
+  "pdf_redline_word": [
+   "grok_run/wordpdf_redline_oracles/word_based",
+   "grok_run/wordpdf_redline_oracles/word_based_randomized",
+   "grok_run/wordpdf_redline_oracles/word_redlines_superdoc"
+  ]
+ },
+ "orphans": [],
+ "producer": "Microsoft Word for Mac (PDF via macOS Quartz PDFContext)",
+ "sources_docset": null,
+ "states": {
+  "comments": 170,
+  "pdf_markup": {
+   "comments": 2,
+   "tracked": 654,
+   "tracked_comments": 168
+  },
+  "tracked_changes": 822
+ },
+ "superseded": [],
+ "table": "oracles.csv"
+}
