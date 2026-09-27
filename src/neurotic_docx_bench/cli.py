@@ -2373,6 +2373,56 @@ def report_cmd(
         console.print(f"wrote {p}")
 
 
+@app.command(name="archive")
+def archive_cmd(
+    dry_run: bool = typer.Option(False, "--dry-run", help="report what would move, change nothing"),
+) -> None:
+    """Move legacy, holdout-only and retracted rows from results/bench.jsonl to results/archive/."""
+    from neurotic_docx_bench.ledger import archive as ledger_archive
+    from neurotic_docx_bench.ledger import policy as ledger_policy
+    from neurotic_docx_bench.ledger.registry import DEFAULT_REGISTRY_PATH, load_registry
+
+    result = ledger_archive.split_store(
+        Path("results/bench.jsonl"),
+        ledger_archive.DEFAULT_ARCHIVE_DIR,
+        registry=load_registry(DEFAULT_REGISTRY_PATH),
+        retractions=ledger_policy.load_retractions(ledger_policy.DEFAULT_RETRACTIONS_PATH),
+        now=datetime.now(UTC),
+        dry_run=dry_run,
+    )
+    verb = "would archive" if dry_run else "archived"
+    console.print(f"kept {result.kept}, {verb} {result.archived}")
+    if result.archive_path:
+        console.print(f"archive: {result.archive_path}; manifest: {result.manifest_path}")
+
+
+@app.command(name="retract")
+def retract_cmd(
+    id_run: str = typer.Argument(..., help="the id_run of the line to retract"),
+    reason: str = typer.Option(..., "--reason", help="why the run is not a measurement of the tool"),
+    by: str = typer.Option(os.environ.get("USER", "unknown"), "--by"),
+    benchmark: str | None = typer.Option(
+        None, "--benchmark", help="limit the retraction to one benchmark of that run"
+    ),
+) -> None:
+    """Record that a run must never be ranked, with the reason stated. Never deletes data."""
+    from neurotic_docx_bench.ledger import policy as ledger_policy
+
+    if not reason.strip():
+        raise typer.BadParameter("--reason must state why")
+    ledger_policy.append_retraction(
+        ledger_policy.DEFAULT_RETRACTIONS_PATH,
+        ledger_policy.Retraction(
+            id_run=id_run,
+            benchmark=benchmark,
+            reason=reason.strip(),
+            retracted_at=datetime.now(UTC),
+            by=by,
+        ),
+    )
+    console.print(f"retracted {id_run}: {reason.strip()}")
+
+
 @app.command(name="coverage-matrix")
 def coverage_matrix_cmd(
     mapping: list[Path] = typer.Option(

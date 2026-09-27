@@ -115,6 +115,8 @@ def eligibility(
 ) -> Verdict:
     reasons: list[str] = []
     entry = registry.by_id(row.tool_id)
+    if row.archived:
+        reasons.append("archived")
     if row.provenance != "stamped":
         reasons.append("legacy provenance")
     if row.holdout_mode == "only":

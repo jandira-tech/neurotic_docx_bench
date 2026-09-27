@@ -65,6 +65,12 @@ def build(root: Path, *, now: datetime | None = None) -> Bundle:
             f"results/converters.jsonl has tools the registry cannot map: {tools}"
         )
     rows = rows + conv_rows
+    archived_rows: list[rws.ResultRow] = []
+    archive_dir = root / "results" / "archive"
+    if archive_dir.is_dir():
+        for archive in sorted(archive_dir.glob("*.jsonl")):
+            found, _ = rws.load_bench_rows(archive, registry, archived=True)
+            archived_rows.extend(found)
     retractions = pol.load_retractions(root / pol.DEFAULT_RETRACTIONS_PATH)
     docsets = pol.load_docsets_json(root / "results" / "docsets.json")
     tables = pol.select_headline(
@@ -114,7 +120,10 @@ def build(root: Path, *, now: datetime | None = None) -> Bundle:
     detailed_parts.append(tb.paired_section(tables))
     detailed_parts.append(
         tb.history_section(
-            rows, registry=registry, retractions=retractions, docsets=docsets
+            rows + archived_rows,
+            registry=registry,
+            retractions=retractions,
+            docsets=docsets,
         )
     )
     lens = tb.lens_health_section(rows)
