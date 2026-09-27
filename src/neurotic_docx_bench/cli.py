@@ -3385,5 +3385,95 @@ def try_fetch_cmd(
     )
 
 
+# --- bench corpus: the Word corpus under corpus/word ---------------------------
+
+corpus_app = typer.Typer(
+    name="corpus",
+    help="Gather what Word produced (grok_run/ and the Word oracle renders) into corpus/word, one docset "
+    "per folder with provenance, a documents or pairs table and a sha256 manifest. Copies only: the "
+    "origins are never moved or deleted.",
+    no_args_is_help=True,
+)
+app.add_typer(corpus_app)
+
+
+def _corpus_fail(message: str, code: int = 1) -> typer.Exit:
+    console.print(f"[red]refused[/red] {message}")
+    return typer.Exit(code=code)
+
+
+@corpus_app.command(name="build")
+def corpus_build_cmd(
+    root: Path = typer.Option(Path("."), "--root", help="repository root (grok_run/ and corpus/ live under it)"),
+    dest: Path | None = typer.Option(None, "--dest", help="where the docsets go", show_default="corpus/word"),
+    only: list[str] = typer.Option([], "--only", help="build these docsets only (repeatable)"),
+    force: bool = typer.Option(False, "--force", help="replace a destination file whose bytes differ"),
+    dry_run: bool = typer.Option(False, "--dry-run", help="plan and report; copy nothing"),
+) -> None:
+    """Copy the Word docsets into --dest and write their provenance, tables and manifest."""
+    from neurotic_docx_bench import word_corpus
+
+    target = dest if dest is not None else root / word_corpus.DEFAULT_DEST
+    try:
+        report = word_corpus.build(root, target, only=tuple(only) or None, force=force, dry_run=dry_run)
+    except word_corpus.CorpusError as exc:
+        raise _corpus_fail(str(exc)) from exc
+    for plan_ in report.plans:
+        counts = ", ".join(f"{k} {v}" for k, v in plan_.counts.items())
+        line = f"{plan_.docset.name}: {len(plan_.keys)} keys ({counts})"
+        if plan_.absent:
+            line += f"; {len(plan_.absent)} without a Word PDF (left out)"
+        if plan_.superseded:
+            line += f"; {len(plan_.superseded)} with an earlier render kept"
+        if plan_.filled:
+            line += f"; {len(plan_.filled)} filled from the fallback pass"
+        states = plan_.states
+        line += f"; tracked {states['tracked_changes']}, comments {states['comments']}"
+        if plan_.orphans:
+            line += f"; {len(plan_.orphans)} PDFs whose docx is gone (not copied)"
+        if plan_.excluded:
+            line += "; excluded " + ", ".join(f"{k} {len(v)}" for k, v in plan_.excluded.items())
+        console.print(line, highlight=False)
+    prefix = "would have " if dry_run else ""
+    console.print(f"{prefix}{report.describe()} under {target}")
+
+
+@corpus_app.command(name="check")
+def corpus_check_cmd(
+    dest: Path = typer.Option(Path("corpus/word"), "--dest", help="the built Word corpus"),
+) -> None:
+    """Verify every file of the Word corpus against its manifest (exit 1 on drift)."""
+    from neurotic_docx_bench import word_corpus
+
+    try:
+        report = word_corpus.check(dest)
+    except word_corpus.CorpusError as exc:
+        raise _corpus_fail(str(exc)) from exc
+    console.print(report.describe(), highlight=False)
+    if not report.ok:
+        raise typer.Exit(code=1)
+
+
+@corpus_app.command(name="list")
+def corpus_list_cmd(
+    dest: Path = typer.Option(Path("corpus/word"), "--dest", help="the built Word corpus"),
+) -> None:
+    """Print the docsets of the Word corpus with their keys, ids and counts."""
+    from neurotic_docx_bench import word_corpus
+
+    rows = word_corpus.summary(dest)
+    if not rows:
+        raise _corpus_fail(f"no docset under {dest}; run `bench corpus build` first")
+    for row in rows:
+        counts = ", ".join(f"{k} {v}" for k, v in row["counts"].items())
+        console.print(
+            f"{row['name']}  {row['family']}  {row['n_keys']} keys  id {row['docset_id']}  {counts}; "
+            f"tracked {row['tracked_changes']}, comments {row['comments']}; "
+            f"absent {row['absent']}, superseded {row['superseded']}, filled {row['filled']}, "
+            f"orphans {row['orphans']}, excluded {row['excluded']}",
+            highlight=False,
+        )
+
+
 if __name__ == "__main__":
     app()
