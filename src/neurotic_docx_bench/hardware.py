@@ -11,6 +11,7 @@ import platform
 import subprocess
 from collections.abc import Callable
 
+from neurotic_docx_bench import kernels
 from neurotic_docx_bench.config import RunConfig
 
 
@@ -71,6 +72,7 @@ def hardware_info() -> dict[str, object]:
         "cores": os.cpu_count() or 1,
         "ram_gb": _ram_gb() or 0.1,
         "python": platform.python_version(),
+        "scorer_backend": kernels.backend_id(),
     }
 
 

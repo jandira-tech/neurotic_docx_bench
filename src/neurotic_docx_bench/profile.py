@@ -14,7 +14,7 @@ import random
 from pathlib import Path
 from typing import Any, TypedDict
 
-from neurotic_docx_bench import content_cache
+from neurotic_docx_bench import content_cache, kernels
 
 STAGES: tuple[str, ...] = ("generate_s", "render_s", "raster_s", "score_s")
 
@@ -92,12 +92,14 @@ def build_report(
     sample: int,
     seed: int,
     dpi: int,
+    backend: str | None = None,
 ) -> dict[str, Any]:
     """Assemble the ``bench profile --json`` document.
 
     ``runs`` maps run name to ``{"renderer_id", "wall_s", "benchmarks": {benchmark:
     {doc_key: {stage: seconds}}}}``; every benchmark is kept, summarised (empty when
-    no document timed it).
+    no document timed it). ``backend`` is the scorer kernel backend the sample ran on
+    (``kernels.backend_id()`` at run time; the current one when omitted).
     """
     return {
         "cached": False,
@@ -106,6 +108,7 @@ def build_report(
         "dpi": dpi,
         "scorer_fingerprint": content_cache.scorer_fingerprint(),
         "raster_engine": content_cache.raster_engine(),
+        "scorer_backend": backend if backend is not None else kernels.backend_id(),
         "runs": {
             name: {
                 "renderer_id": run.get("renderer_id"),
