@@ -22,8 +22,14 @@ from skimage import color
 
 # score.py is parity-locked (tests/test_parity.py); we import its helpers instead of
 # duplicating the ink model, and never modify it.
+from neurotic_docx_bench import page_metrics as pm
 from neurotic_docx_bench import raster
-from neurotic_docx_bench.score import ScoreConfig, _ink_mask, _load_image, score_document
+from neurotic_docx_bench.score import (
+    ScoreConfig,
+    _ink_mask,
+    _load_image,
+    score_document,
+)
 
 _REDLINE = "_redline"
 
@@ -60,6 +66,14 @@ class ScoreResult(TypedDict):
     score_v2: float | None
     raster_ns: int
     score_ns: int
+    # docxide-pdf's page metrics (page_metrics.py), computed in the same pass from the
+    # same rasters: ink Jaccard over the common pages (None when a page pair's sizes
+    # differ by more than 2px or there are no common pages), the share of text lines
+    # that start and end on the same words as the oracle (None when no lines were
+    # compared), and the signed largest page-break drift in words.
+    ink_jaccard: float | None
+    text_boundary: float | None
+    max_break_drift: int
     # Functional accept/reject invariant (merged in AFTER scoring by the CLI, only
     # for script_redlines docs whose base/next sources resolve — hence NotRequired).
     functional_accept_ok: NotRequired[bool | None]
@@ -288,10 +302,25 @@ def score_pdf_pair(
         pages_root=work_dir / subdir,
         dpi=dpi,
     )
+    _add_page_metrics(result, oracle_pdf, candidate_pdf, oracle_pages, cand_pages)
     t_score = time.perf_counter_ns()
     result["raster_ns"] = t_raster - t0  # type: ignore[assignment]
     result["score_ns"] = t_score - t_raster  # type: ignore[assignment]
     return result  # type: ignore[return-value]
+
+
+def _add_page_metrics(
+    result: dict,
+    oracle_pdf: Path,
+    candidate_pdf: Path,
+    oracle_pages: list[Path],
+    cand_pages: list[Path],
+) -> None:
+    """docxide's metrics as columns on the same row, from the rasters this pass made."""
+    result["ink_jaccard"] = pm.jaccard_from_rasters(oracle_pages, cand_pages)
+    boundary = pm.text_boundary_for_pdfs(oracle_pdf, candidate_pdf)
+    result["text_boundary"] = boundary.line_match_pct()
+    result["max_break_drift"] = boundary.max_break_drift
 
 
 def _unmatched_page_weight(png: Path) -> int:

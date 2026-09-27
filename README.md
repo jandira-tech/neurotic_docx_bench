@@ -7,7 +7,7 @@ Pixel scores of DOCX tools against Microsoft Word oracles.
 | **Scores** | 0 to 100 per document |
 | **Redline oracle** | Word tracked-change DOCX, rendered by LibreOffice 26.2.4.2 for oracle and candidates alike |
 | **DOCX to PDF oracle** | SHA-pinned Word-export PDFs (`pdf_accepted_word`, `pdf_redlines_randomized`, `pdf_source`, `pdf_source_randomized`) |
-| **Second lens** | `docxide_metrics`: docxide-pdf's own Jaccard / SSIM / text-boundary suite on the same fixtures |
+| **Second lens** | `docxide_metrics`: docxide-pdf's own Jaccard / text-boundary metrics on the same fixtures, and the same two columns on every redline row |
 | **Stores** | `results/bench.jsonl` (fidelity), `results/converters.jsonl` (DOCX to PDF), `results/speed.jsonl` + `results/redline_speed_bench/` (speed), `results/archive/` (history only) |
 | **Results** | [`RESULTS.md`](RESULTS.md) (headline) and [`RESULTS_DETAILED.md`](RESULTS_DETAILED.md) (history, paired comparisons, methodology), both generated |
 | **Visual report** | `runs/<run>/report.html` |
@@ -40,7 +40,7 @@ Compare vendors only within one table. LibreOffice scores and Playwright scores 
 | **`visual_accepted_changes`** | Accepted Word redline in the vendor web editor | `pdf_accepted_word` |
 | **`docx_to_pdf`** | Accepted Word redline DOCX + randomized redline DOCX | SHA-pinned `pdf_accepted_word` + `pdf_redlines_randomized` |
 | **`docx_to_pdf_no_redline_docs`** | Source DOCX + randomized source DOCX | SHA-pinned `pdf_source` + `pdf_source_randomized` |
-| **`docxide_metrics`** | The `docx_to_pdf_no_redline_docs` inputs, scored with docxide-pdf's Jaccard / SSIM / text-boundary suite at 150 DPI | Same SHA-pinned `pdf_source` + `pdf_source_randomized` |
+| **`docxide_metrics`** | The `docx_to_pdf_no_redline_docs` inputs, scored with docxide-pdf's Jaccard / text-boundary metrics at 150 DPI | Same SHA-pinned `pdf_source` + `pdf_source_randomized` |
 
 `visual_*` loads Word's DOCX in the editor, not the tool's own redline. Generator package and editor package are separate pins.
 
@@ -153,7 +153,6 @@ results/retractions.jsonl  # runs that must never be ranked, with reasons
 results/archive/           # legacy rows and their manifest (history only)
 src/neurotic_docx_bench/
 src/neurotic_docx_bench/ledger/         # registry, rows, policy, stats, tables, build (`bench report`)
-src/neurotic_docx_bench/utils/docxide-metrics/  # vendored docxide-pdf scorer (Rust)
 scripts/
 ```
 
@@ -165,7 +164,7 @@ scripts/
 
 - [balalofernandez/docx-revisions](https://github.com/balalofernandez/docx-revisions) — accept/reject (`bench accept` / `reject`)
 - [superdoc-dev/superdoc-visual-benchmarks](https://github.com/superdoc-dev/superdoc-visual-benchmarks) — scoring core
-- [sverrejb/docxide-pdf](https://github.com/sverrejb/docxide-pdf) (Apache-2.0) — DOCX→PDF converter and the `docxide_metrics` scorer. Its Jaccard / SSIM / text-boundary metrics are lifted verbatim from `tests/common/` into `src/neurotic_docx_bench/utils/docxide-metrics/`.
+- [sverrejb/docxide-pdf](https://github.com/sverrejb/docxide-pdf) (Apache-2.0): DOCX→PDF converter and the `docxide_metrics` scorer. Its Jaccard and text-boundary metrics (`tests/common/`) are ported to Python in `src/neurotic_docx_bench/page_metrics.py`, held to upstream's frozen numbers by `tests/test_page_metrics.py`.
 - [jandira-tech/jubarte-redlines](https://github.com/jandira-tech/jubarte-redlines) (AGPL-3.0-only) — Jubarte DOCX redline and DOCX→PDF converter
 - [JSv4/docxodus](https://github.com/JSv4/docxodus) and [react-docxodus-viewer](https://github.com/JSv4/react-docxodus-viewer) (MIT)
 - [AnsonLai/docx-redline-js](https://github.com/AnsonLai/docx-redline-js) (MIT)
