@@ -44,7 +44,16 @@ from rich.table import Table
 from rich.text import Text
 from rich.theme import Theme
 
-from neurotic_docx_bench import functional_lens, lens_health, noise_floor, pipeline, provenance, stages, tool_updater
+from neurotic_docx_bench import (
+    functional_lens,
+    hardware,
+    lens_health,
+    noise_floor,
+    pipeline,
+    provenance,
+    stages,
+    tool_updater,
+)
 from neurotic_docx_bench.benchmarks import BenchmarkName, BenchmarkOutcome
 from neurotic_docx_bench.config import (
     BenchConfig,
@@ -1096,6 +1105,27 @@ def _corpus_revision(cfg: BenchConfig) -> str | None:
     return hashlib.sha256(path.read_bytes()).hexdigest()[:12]
 
 
+def _registry_entry(rc: RunConfig):
+    """The registry entry for a run, or None when there is no registry file."""
+    from neurotic_docx_bench.ledger.registry import DEFAULT_REGISTRY_PATH, load_registry
+
+    if not DEFAULT_REGISTRY_PATH.is_file():
+        return None
+    return load_registry(DEFAULT_REGISTRY_PATH).resolve_bench(
+        vendor=rc.vendor or rc.name, run_name=rc.name, render=rc.render
+    )
+
+
+def _registry_tool_id(rc: RunConfig) -> str | None:
+    entry = _registry_entry(rc)
+    return entry.id if entry else None
+
+
+def _registry_configuration(rc: RunConfig) -> str | None:
+    entry = _registry_entry(rc)
+    return entry.configuration if entry else None
+
+
 def _docset_for(
     cfg: BenchConfig, benchmark: BenchmarkName, holdout_mode: str | None
 ) -> docset_mod.DocSet | None:
@@ -1181,6 +1211,10 @@ def _emit_and_gate_benchmark(
         corpus_revision=_corpus_revision(cfg),
         holdout_mode=holdout_mode,
         docset_id=docset.id if docset is not None else None,
+        tool_id=_registry_tool_id(rc),
+        configuration=_registry_configuration(rc),
+        renderer_id=hardware.renderer_id(rc),
+        hardware=hardware.hardware_info(),
     )
     appended = (
         jsonl_emit.append_if_changed(jsonl_path, line)
