@@ -30,6 +30,12 @@ class ToolPin(BaseModel):
 
     @classmethod
     def parse(cls, raw: object) -> ToolPin:
+        """Parse a stripped version string, treating None, empty text, and "None" as unpinned.
+
+        Recognize ``label@hash[+git.sha]`` with a 6–64 digit lowercase hex hash
+        and an optional 7–40 digit lowercase hex SHA. Other text is retained as
+        both raw version and label; non-None inputs are converted to strings.
+        """
         if raw is None:
             return cls(raw=None, label=None, content_hash=None, git_sha=None)
         text = str(raw).strip()
@@ -47,6 +53,7 @@ class ToolPin(BaseModel):
 
     @property
     def pinned(self) -> bool:
+        """Whether a raw version is present, even without a content hash or commit."""
         return self.raw is not None
 
     @property
@@ -58,6 +65,7 @@ class ToolPin(BaseModel):
 
     @property
     def display(self) -> str:
+        """Return "unpinned", raw text, or a label with hash/SHA shortened to 12/7 characters."""
         if self.raw is None:
             return "unpinned"
         if self.content_hash is None:
@@ -68,6 +76,7 @@ class ToolPin(BaseModel):
         return out
 
     def same_commit(self, other: ToolPin) -> bool:
+        """Compare SHA prefixes through the shorter length; return False if either is absent."""
         if not self.git_sha or not other.git_sha:
             return False
         n = min(len(self.git_sha), len(other.git_sha))
