@@ -2,10 +2,17 @@
 
 - A row is *eligible* when it is stamped (corpus_revision + per-doc scores), complete
   (its ITT n equals the document set size), not a holdout-only run, not retracted,
-  from an active tool, and not a calibration row.
+  from an active tool, not a calibration row, rendered by Microsoft Word (its
+  ``renderer_id`` starts with ``word-``, or is the Word oracle), and not a run on a
+  gate set.
+- A tool enters the main page through the *gate*: on the gate set of the row's
+  document set (same renderer, scorer, lens and bench series), its latest usable run
+  must beat the null baseline's median by ``GATE_MARGIN`` points with a 95% CI of
+  its median that stays above the null median. Rows that fail are excluded with the
+  reason and listed under "Below the gate".
 - Rows compare only inside one *group*: (benchmark, lens, document set, renderer,
-  scorer). The *current* group of a benchmark is the one holding the newest eligible
-  row.
+  scorer, bench series). The *current* group of a benchmark is the one holding the
+  newest eligible row.
 - The headline shows one row per tool: the latest eligible run in the current group.
   There is no best-of-N over runs and no best pin; that is what history is for.
 - Rank ties come from ``tie_fn`` (stats: the paired bootstrap interval of the median
@@ -22,12 +29,39 @@ from pathlib import Path
 from pydantic import BaseModel, ConfigDict
 
 from neurotic_docx_bench import version
+from neurotic_docx_bench.ledger import stats as st
 from neurotic_docx_bench.ledger.registry import Registry, ToolEntry
 from neurotic_docx_bench.ledger.rows import ResultRow, SpeedRow
 
 DEFAULT_RETRACTIONS_PATH = Path("results/retractions.jsonl")
 CANONICAL_SPEED_FIXTURES = 1000
 MIN_MICRO_N = 30
+# Renderer ids that count as Microsoft Word: ``word-<version>`` from the Word render
+# path, and the Word oracle the converter benchmarks are scored against.
+WORD_RENDERER_PREFIXES: tuple[str, ...] = ("word-", "oracle:microsoft_word")
+NULL_BASELINE_ID = "null-baseline"
+GATE_MARGIN = 10.0
+# The benchmarks `bench run` emits, the ones with a gate set (`bench docset`) and a
+# null-baseline run. The converter benchmarks (docx_to_pdf and kin, scored against
+# Word's own export by the converter ledger) have neither and are not gated.
+GATED_BENCHMARKS: frozenset[str] = frozenset(
+    {
+        "script_redlines",
+        "accepted_changes",
+        "roundtrip",
+        "visual_rendering",
+        "visual_redlines",
+        "visual_accepted_changes",
+    }
+)
+
+
+def is_word_rendered(renderer_id: str | None) -> bool:
+    return bool(renderer_id) and str(renderer_id).startswith(WORD_RENDERER_PREFIXES)
+
+
+def is_gated_benchmark(benchmark: str) -> bool:
+    return benchmark in GATED_BENCHMARKS
 
 
 class Retraction(BaseModel):
@@ -110,12 +144,30 @@ class Verdict(BaseModel):
     reasons: tuple[str, ...] = ()
 
 
+def is_gate_docset(
+    docset_id: str | None, docsets: Mapping[str, Mapping[str, object]] | None
+) -> bool:
+    if not docset_id or not docsets or docset_id not in docsets:
+        return False
+    return bool(docsets[docset_id].get("gate_of"))
+
+
+def gate_docset_id(
+    docsets: Mapping[str, Mapping[str, object]], full_id: str
+) -> str | None:
+    for did, entry in docsets.items():
+        if entry.get("gate_of") == full_id:
+            return str(did)
+    return None
+
+
 def eligibility(
     row: ResultRow,
     *,
     expected: int,
     retractions: Sequence[Retraction],
     registry: Registry,
+    docsets: Mapping[str, Mapping[str, object]] | None = None,
 ) -> Verdict:
     reasons: list[str] = []
     entry = registry.by_id(row.tool_id)
@@ -125,6 +177,10 @@ def eligibility(
         reasons.append("legacy provenance")
     if row.holdout_mode == "only":
         reasons.append("holdout-only run")
+    if not is_word_rendered(row.renderer_id):
+        reasons.append(f"renderer {group_key(row).renderer} is not Word")
+    if is_gate_docset(row.docset_id, docsets):
+        reasons.append("gate-set run")
     if expected and row.itt_n != expected:
         reasons.append(f"incomplete: {row.itt_n} of {expected} documents")
     if entry.status == "retired":
@@ -154,6 +210,20 @@ class ExcludedRow(BaseModel):
     verdict: Verdict
 
 
+class GateResult(BaseModel):
+    """The gate verdict for one candidate row (a run on a full document set)."""
+
+    model_config = ConfigDict(frozen=True)
+
+    row: ResultRow
+    gate_docset: str | None
+    gate_row: ResultRow | None = None
+    null_row: ResultRow | None = None
+    ci: tuple[float, float] | None = None
+    passed: bool
+    reason: str = ""
+
+
 class HeadlineTable(BaseModel):
     model_config = ConfigDict(frozen=True)
 
@@ -167,9 +237,106 @@ class HeadlineTable(BaseModel):
     excluded: list[ExcludedRow]
     not_applicable: list[ToolEntry]
     history_groups: list[GroupKey]
+    # Gate verdicts for the latest candidate row per tool, passed or not.
+    gates: list[GateResult] = []
+
+    @property
+    def below_gate(self) -> list[GateResult]:
+        return [g for g in self.gates if not g.passed]
 
 
 TieFn = Callable[[ResultRow, ResultRow], bool]
+CiFn = Callable[[Sequence[float]], tuple[float, float] | None]
+
+
+def _usable_gate_row(
+    row: ResultRow, *, expected: int, retractions: Sequence[Retraction]
+) -> bool:
+    return (
+        row.provenance == "stamped"
+        and not row.archived
+        and row.holdout_mode != "only"
+        and (not expected or row.itt_n == expected)
+        and find_retraction(row, retractions) is None
+    )
+
+
+def gate_check(
+    row: ResultRow,
+    *,
+    groups: Mapping[GroupKey, Sequence[ResultRow]],
+    docsets: Mapping[str, Mapping[str, object]],
+    retractions: Sequence[Retraction],
+    ci_fn: CiFn,
+) -> GateResult:
+    key = group_key(row)
+    gate_id = gate_docset_id(docsets, key.docset)
+    if gate_id is None:
+        return GateResult(
+            row=row,
+            gate_docset=None,
+            passed=False,
+            reason=f"no gate set recorded for `{key.docset}`",
+        )
+    members = groups.get(key.model_copy(update={"docset": gate_id}), ())
+    expected = expected_n(members, docsets)
+    usable = sorted(
+        (
+            m
+            for m in members
+            if _usable_gate_row(m, expected=expected, retractions=retractions)
+        ),
+        key=lambda m: m.timestamp,
+    )
+    tool_runs = [m for m in usable if m.tool_id == row.tool_id]
+    null_runs = [m for m in usable if m.tool_id == NULL_BASELINE_ID]
+    if not tool_runs:
+        return GateResult(
+            row=row,
+            gate_docset=gate_id,
+            null_row=null_runs[-1] if null_runs else None,
+            passed=False,
+            reason=f"no gate run on `{gate_id}`",
+        )
+    gate_row = tool_runs[-1]
+    if not null_runs:
+        return GateResult(
+            row=row,
+            gate_docset=gate_id,
+            gate_row=gate_row,
+            passed=False,
+            reason=f"gate `{gate_id}` has no null-baseline row",
+        )
+    null_row = null_runs[-1]
+    ci = ci_fn(list(gate_row.itt_scores().values()))
+
+    def verdict(passed: bool, reason: str = "") -> GateResult:
+        return GateResult(
+            row=row,
+            gate_docset=gate_id,
+            gate_row=gate_row,
+            null_row=null_row,
+            ci=ci,
+            passed=passed,
+            reason=reason,
+        )
+
+    if ci is None:
+        return verdict(False, f"gate run on `{gate_id}` has no per-document scores")
+    margin = gate_row.itt_median - null_row.itt_median
+    if margin < GATE_MARGIN:
+        return verdict(
+            False,
+            f"below the gate: median {gate_row.itt_median:.2f} vs null "
+            f"{null_row.itt_median:.2f}, needs +{GATE_MARGIN:.2f}",
+        )
+    if ci[0] <= null_row.itt_median:
+        return verdict(
+            False,
+            f"below the gate: 95% CI [{ci[0]:.2f}, {ci[1]:.2f}] of the gate median "
+            f"reaches null {null_row.itt_median:.2f}",
+        )
+    return verdict(True)
 
 
 def _latest_per_tool(rows: Sequence[ResultRow]) -> list[ResultRow]:
@@ -201,6 +368,7 @@ def select_headline(
     retractions: Sequence[Retraction],
     docsets: Mapping[str, Mapping[str, object]],
     tie_fn: TieFn,
+    ci_fn: CiFn = st.bootstrap_median_ci,
 ) -> dict[str, HeadlineTable]:
     by_bench: dict[str, list[ResultRow]] = {}
     for r in rows:
@@ -218,8 +386,40 @@ def select_headline(
             expected_by_group[g] = exp
             for r in members:
                 verdicts[(r.id_run, r.benchmark)] = eligibility(
-                    r, expected=exp, retractions=retractions, registry=registry
+                    r,
+                    expected=exp,
+                    retractions=retractions,
+                    registry=registry,
+                    docsets=docsets,
                 )
+        # The gate: checked on the latest candidate per tool; a failed gate excludes
+        # every candidate row of that tool, with the gate's reason.
+        gates: list[GateResult] = []
+        candidates = [
+            r for r in bench_rows if verdicts[(r.id_run, r.benchmark)].eligible
+        ]
+        gated = [r for r in candidates if is_gated_benchmark(r.benchmark)]
+        for r in _latest_per_tool(gated):
+            gates.append(
+                gate_check(
+                    r,
+                    groups=groups,
+                    docsets=docsets,
+                    retractions=retractions,
+                    ci_fn=ci_fn,
+                )
+            )
+        failed = {g.row.tool_id: g for g in gates if not g.passed}
+        for r in candidates:
+            g = failed.get(r.tool_id)
+            if g is not None:
+                verdicts[(r.id_run, r.benchmark)] = Verdict(
+                    eligible=False, reasons=(g.reason,)
+                )
+        gates.sort(key=lambda g: g.row.display)
+        # Gate-set groups are not "other measurements" of the benchmark; they are
+        # reported through the gate verdicts and the History section.
+        history = [g for g in groups if not is_gate_docset(g.docset, docsets)]
 
         def verdict(
             r: ResultRow, _v: dict[tuple[str, str], Verdict] = verdicts
@@ -238,9 +438,11 @@ def select_headline(
                 excluded=[
                     ExcludedRow(row=r, verdict=verdict(r))
                     for r in _latest_per_tool(bench_rows)
+                    if registry.by_id(r.tool_id).role != "calibration"
                 ],
                 not_applicable=not_applicable,
-                history_groups=sorted(groups, key=lambda g: g.docset),
+                history_groups=sorted(history, key=lambda g: g.docset),
+                gates=gates,
             )
             continue
         newest = max(eligible, key=lambda r: r.timestamp)
@@ -273,8 +475,9 @@ def select_headline(
             excluded=excluded,
             not_applicable=not_applicable,
             history_groups=sorted(
-                (g for g in groups if g != current), key=lambda g: g.docset
+                (g for g in history if g != current), key=lambda g: g.docset
             ),
+            gates=gates,
         )
     return tables
 

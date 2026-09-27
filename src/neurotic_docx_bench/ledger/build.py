@@ -211,6 +211,9 @@ def build(
     for b in ordered:
         detailed_parts.append(tb.fidelity_table(tables[b], row_ci=row_ci))
     detailed_parts.append(tb.speed_tables(speed))
+    below = tb.below_gate_section(tables)
+    if below:
+        detailed_parts.append(below)
     detailed_parts.append(tb.paired_section(tables))
     detailed_parts.append(
         tb.history_section(
