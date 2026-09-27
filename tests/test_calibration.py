@@ -147,7 +147,7 @@ def test_calibrate_command_builds_candidates_and_drives_two_runs(
 
     corpus = tmp_path / "corpus" / "word_based"
     corpus.mkdir(parents=True)
-    src, red, mapping = _corpus(corpus)
+    src, _red, mapping = _corpus(corpus)
     (tmp_path / "bench.yaml").write_text(
         yaml.safe_dump(
             {
