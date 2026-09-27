@@ -53,28 +53,34 @@ Compare vendors only within one table. LibreOffice scores and Playwright scores 
 
 Pins: [`bench.yaml`](bench.yaml).
 
-| Vendor | What runs | Pin | Role |
-| --- | --- | --- | --- |
-| **jubarte** | `dist/jubarte-final` | content-hash | Generator |
-| **jubarte-rust** / **jubarte** (`docx_to_pdf`) | `../jubarte-redlines` CLI | content-hash / 0.7.0 | Generator, converter |
-| **jubarte-wasm** | wasm-bindgen over `../jubarte-redlines` | artifact + source commit | Generator |
-| **docxodus** | npm `docxodus` `compareDocuments` | 9.8.0 | Generator + viewer |
-| **folio** | `@stll/folio-core` `generateRedlineDocx` | 0.17.1 | Generator |
-| **folio** (viewer) | `@stll/folio-react` | 0.13.4 | Editor |
-| **superdoc** | `superdoc-sdk` | 2.0.0 | Generator |
-| **superdoc** (editor) | npm `superdoc` | 2.3.0 | Editor |
-| **docx-redline-js** | local TS migration of `@ansonlai/docx-redline-js` | dist pin | Generator |
-| **redlines** | [houfu/redlines](https://github.com/houfu/redlines) + `nupunkt==0.6.0` | 0.6.1 | Generator |
-| **superdoc-redlines** | [yuch85/superdoc-redlines](https://github.com/yuch85/superdoc-redlines) | 0.2.0 | Generator |
-| **stemma** | [stemma-sh/stemma](https://github.com/stemma-sh/stemma) `stemma compare` | 0.5.0 | Generator |
-| **safe-docx** | [UseJunior/safe-docx](https://github.com/UseJunior/safe-docx) at `7bd35c8` | content-hash | Generator |
-| **rdocx** | [tensorbee/rdocx](https://github.com/tensorbee/rdocx) `convert --to pdf` | 0.7.0 | Converter |
-| **office2pdf** | [developer0hye/office2pdf](https://github.com/developer0hye/office2pdf) | 0.6.7 | Converter |
-| **pdfitdown** | [AstraBert/PdfItDown](https://github.com/AstraBert/PdfItDown) (`office2pdf` for Office) | 4.0.0 | Converter |
-| **doxx** | [bgreenwell/doxx](https://github.com/bgreenwell/doxx) | 0.1.4 | Converter (no PDF export) |
-| **libreoffice_convert_rust** | [dnrops/libreoffice_convert_rust](https://gitcode.com/dnrops/libreoffice_convert_rust) | 0.1.0 | Converter |
-| **dxpdf** | [nerdy-pro/dxpdf](https://github.com/nerdy-pro/dxpdf) | 0.5.1 | Converter |
-| **docxide-pdf** | [sverrejb/docxide-pdf](https://github.com/sverrejb/docxide-pdf) | 0.17.0 | Converter |
+<!-- VENDORS-START -->
+| Tool | Role | Engine | Author-affiliated | Note |
+| --- | --- | --- | --- | --- |
+| [jubarte (lossless)](https://github.com/jandira-tech/jubarte-redlines) | generator | jubarte-final | yes |  |
+| [jubarte (ast)](https://github.com/jandira-tech/jubarte-redlines) | generator | jubarte-final | yes |  |
+| [jubarte-rust](https://github.com/jandira-tech/jubarte-redlines) | generator | jubarte-redlines | yes |  |
+| [jubarte-wasm](https://github.com/jandira-tech/jubarte-redlines) | generator | jubarte-redlines | yes |  |
+| [docxodus](https://github.com/JSv4/docxodus) | generator | docxodus |  |  |
+| [docxodus (C#)](https://github.com/JSv4/docxodus) | generator | docxodus |  | C# build of docxodus; speed benchmark only. |
+| [folio](https://github.com/stella/folio) | generator | @stll/folio-core |  |  |
+| [superdoc](https://github.com/Harbour-Enterprises/SuperDoc) | generator | superdoc-sdk |  |  |
+| [docx-redline-js](https://github.com/AnsonLai/docx-redline-js) | generator | docx-redline-js |  |  |
+| [redlines](https://github.com/houfu/redlines) | generator | redlines |  |  |
+| [superdoc-redlines](https://github.com/yuch85/superdoc-redlines) | generator | superdoc-redlines |  |  |
+| [stemma](https://github.com/stemma-sh/stemma) | generator | stemma |  |  |
+| [safe-docx](https://github.com/UseJunior/safe-docx) | generator | safe-docx |  |  |
+| [docxodus (viewer)](https://github.com/JSv4/react-docxodus-viewer) | editor | react-docxodus-viewer |  |  |
+| [folio (viewer)](https://github.com/stella/folio) | editor | @stll/folio-react |  |  |
+| [superdoc (editor)](https://github.com/Harbour-Enterprises/SuperDoc) | editor | superdoc |  |  |
+| [jubarte](https://github.com/jandira-tech/jubarte-redlines) | converter | jubarte-redlines | yes |  |
+| [rdocx](https://github.com/tensorbee/rdocx) | converter | rdocx |  |  |
+| [office2pdf](https://github.com/developer0hye/office2pdf) | converter | office2pdf (Typst) |  |  |
+| [pdfitdown](https://github.com/AstraBert/PdfItDown) | converter | office2pdf (Typst) |  | Delegates Office formats to office2pdf; same engine, listed for completeness. |
+| [doxx](https://github.com/bgreenwell/doxx) | converter | doxx |  | No PDF export; listed as not applicable, never ranked. |
+| [libreoffice_convert_rust](https://gitcode.com/dnrops/libreoffice_convert_rust) | converter | LibreOffice |  |  |
+| [dxpdf](https://github.com/nerdy-pro/dxpdf) | converter | dxpdf |  |  |
+| [docxide-pdf](https://github.com/sverrejb/docxide-pdf) | converter | docxide-pdf |  |  |
+<!-- VENDORS-END -->
 
 ---
 
