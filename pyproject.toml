@@ -20,13 +20,14 @@ dependencies = [
     "rich>=13.0",
     "docx-revisions>=0.1.5",
     "playwright>=1.61.0",
-    "superdoc-sdk==2.0.0",
+    "superdoc-sdk==2.15.0",
     # houfu/redlines — text redliner (JSON/Markdown/HTML). Extras: nupunkt (sentence
     # tokenization), levenshtein (distance stats). The `pdf` extra does not exist on
     # 0.6.1 (README documents it, PyPI does not ship it). nupunkt is also pinned
     # first-class so a dropped extra cannot silently fall back to WholeDocumentProcessor.
     "redlines[levenshtein,nupunkt]==0.6.1",
     "nupunkt==0.6.0",
+    "pydantic>=2.11",
 ]
 
 [project.scripts]
@@ -50,6 +51,7 @@ dev = [
     # test environment needs what they import. typer and rich are already
     # project dependencies; loguru is not.
     "loguru>=0.7",
+    "pytest-cov>=6.0",
 ]
 
 [tool.pytest.ini_options]

@@ -1,0 +1,262 @@
+# Vendor registry: every spelling a store uses for a tool maps to one id here.
+# Loaded by neurotic_docx_bench.report.registry; validated by tests/test_report_registry.py.
+schema_version: 1
+tools:
+  # ---- redline generators (author-affiliated) ----
+  - id: jubarte-lossless
+    vendor: jubarte
+    display: "jubarte (lossless)"
+    role: generator
+    engine: jubarte-final
+    configuration: lossless
+    affiliated: true
+    run_names: [jubarte-final-lossless]
+    bench_vendors: [jubarte]
+    speed_tools: [jubarte-lossless, jubarte-final-lossless]
+    url: https://github.com/jandira-tech/jubarte-redlines
+  - id: jubarte-ast
+    vendor: jubarte
+    display: "jubarte (ast)"
+    role: generator
+    engine: jubarte-final
+    configuration: ast
+    affiliated: true
+    run_names: [jubarte-final-native]
+    bench_vendors: [jubarte-ast]
+    speed_tools: [jubarte-native, jubarte-final-native]
+    url: https://github.com/jandira-tech/jubarte-redlines
+  - id: jubarte-rust
+    vendor: jubarte
+    display: jubarte-rust
+    role: generator
+    engine: jubarte-redlines
+    affiliated: true
+    run_names: [jubarte-rust]
+    bench_vendors: [jubarte-rust, jubarte-rs]
+    speed_tools: [jubarte-rust]
+    url: https://github.com/jandira-tech/jubarte-redlines
+  - id: jubarte-wasm
+    vendor: jubarte
+    display: jubarte-wasm
+    role: generator
+    engine: jubarte-redlines
+    configuration: wasm
+    affiliated: true
+    run_names: [jubarte-wasm]
+    bench_vendors: [jubarte-wasm]
+    speed_tools: [jubarte-wasm]
+    url: https://github.com/jandira-tech/jubarte-redlines
+  # ---- redline generators (third party) ----
+  - id: docxodus
+    vendor: docxodus
+    display: docxodus
+    role: generator
+    engine: docxodus
+    run_names: [docxodus]
+    bench_vendors: [docxodus]
+    speed_tools: [docxodus]
+    url: https://github.com/JSv4/docxodus
+  - id: docxodus-csharp
+    vendor: docxodus
+    display: "docxodus (C#)"
+    role: generator
+    engine: docxodus
+    configuration: csharp
+    speed_tools: [docxodus-csharp]
+    note: "C# build of docxodus; speed benchmark only."
+    url: https://github.com/JSv4/docxodus
+  - id: folio
+    vendor: folio
+    display: folio
+    role: generator
+    engine: "@stll/folio-core"
+    run_names: [folio]
+    bench_vendors: [folio]
+    url: https://github.com/stella/folio
+  - id: superdoc
+    vendor: superdoc
+    display: superdoc
+    role: generator
+    engine: superdoc-sdk
+    run_names: [superdoc, superdoc-ts, superdoc-native]
+    bench_vendors: [superdoc]
+    speed_tools: [superdoc]
+    url: https://github.com/Harbour-Enterprises/SuperDoc
+  - id: docx-redline-js
+    vendor: docx-redline-js
+    display: docx-redline-js
+    role: generator
+    engine: docx-redline-js
+    run_names: [docx-redline-js]
+    bench_vendors: [docx-redline-js]
+    speed_tools: [docx-redline-js]
+    url: https://github.com/AnsonLai/docx-redline-js
+  - id: redlines
+    vendor: redlines
+    display: redlines
+    role: generator
+    engine: redlines
+    run_names: [redlines]
+    bench_vendors: [redlines]
+    url: https://github.com/houfu/redlines
+  - id: superdoc-redlines
+    vendor: superdoc-redlines
+    display: superdoc-redlines
+    role: generator
+    engine: superdoc-redlines
+    run_names: [superdoc-redlines]
+    bench_vendors: [superdoc-redlines]
+    url: https://github.com/yuch85/superdoc-redlines
+  - id: stemma
+    vendor: stemma
+    display: stemma
+    role: generator
+    engine: stemma
+    run_names: [stemma]
+    bench_vendors: [stemma]
+    url: https://github.com/stemma-sh/stemma
+  - id: safe-docx
+    vendor: safe-docx
+    display: safe-docx
+    role: generator
+    engine: safe-docx
+    run_names: [safe-docx-compare]
+    bench_vendors: [safe-docx]
+    url: https://github.com/UseJunior/safe-docx
+  # ---- editors (playwright renders) ----
+  - id: docxodus-viewer
+    vendor: docxodus
+    display: "docxodus (viewer)"
+    role: editor
+    engine: react-docxodus-viewer
+    run_names: [docxodus-playwright-rendering, docxodus-playwright-redlines, docxodus-playwright-accepted]
+    bench_vendors: [docxodus]
+    url: https://github.com/JSv4/react-docxodus-viewer
+  - id: folio-viewer
+    vendor: folio
+    display: "folio (viewer)"
+    role: editor
+    engine: "@stll/folio-react"
+    run_names: [folio-playwright-rendering, folio-playwright-redlines, folio-playwright-accepted]
+    bench_vendors: [folio]
+    url: https://github.com/stella/folio
+  - id: superdoc-editor
+    vendor: superdoc
+    display: "superdoc (editor)"
+    role: editor
+    engine: superdoc
+    run_names: [superdoc-playwright-rendering, superdoc-playwright-redlines, superdoc-playwright-accepted]
+    bench_vendors: [superdoc]
+    url: https://github.com/Harbour-Enterprises/SuperDoc
+  # ---- DOCX to PDF converters ----
+  - id: jubarte-pdf
+    vendor: jubarte
+    display: jubarte
+    role: converter
+    engine: jubarte-redlines
+    affiliated: true
+    converter_tools: [jubarte]
+    url: https://github.com/jandira-tech/jubarte-redlines
+  - id: rdocx
+    vendor: rdocx
+    display: rdocx
+    role: converter
+    engine: rdocx
+    converter_tools: [rdocx]
+    url: https://github.com/tensorbee/rdocx
+  - id: office2pdf
+    vendor: office2pdf
+    display: office2pdf
+    role: converter
+    engine: office2pdf (Typst)
+    converter_tools: [office2pdf]
+    url: https://github.com/developer0hye/office2pdf
+  - id: pdfitdown
+    vendor: pdfitdown
+    display: pdfitdown
+    role: converter
+    engine: office2pdf (Typst)
+    converter_tools: [pdfitdown]
+    note: "Delegates Office formats to office2pdf; same engine, listed for completeness."
+    url: https://github.com/AstraBert/PdfItDown
+  - id: doxx
+    vendor: doxx
+    display: doxx
+    role: converter
+    engine: doxx
+    converter_tools: [doxx]
+    not_applicable: [docx_to_pdf, docx_to_pdf_no_redline_docs, docxide_metrics]
+    note: "No PDF export; listed as not applicable, never ranked."
+    url: https://github.com/bgreenwell/doxx
+  - id: libreoffice_convert_rust
+    vendor: libreoffice_convert_rust
+    display: libreoffice_convert_rust
+    role: converter
+    engine: LibreOffice
+    converter_tools: [libreoffice_convert_rust]
+    url: https://gitcode.com/dnrops/libreoffice_convert_rust
+  - id: dxpdf
+    vendor: dxpdf
+    display: dxpdf
+    role: converter
+    engine: dxpdf
+    converter_tools: [dxpdf]
+    url: https://github.com/nerdy-pro/dxpdf
+  - id: docxide-pdf
+    vendor: docxide-pdf
+    display: docxide-pdf
+    role: converter
+    engine: docxide-pdf
+    converter_tools: [docxide-pdf]
+    url: https://github.com/sverrejb/docxide-pdf
+  # ---- calibration rows (never ranked, always shown) ----
+  - id: oracle-identity
+    vendor: bench
+    display: "oracle DOCX (identity)"
+    role: calibration
+    engine: pipeline
+    run_names: [oracle-identity]
+    bench_vendors: [oracle-identity]
+    note: "The oracle DOCX through the candidate pipeline; must score 100."
+  - id: null-baseline
+    vendor: bench
+    display: "null baseline (base unchanged)"
+    role: calibration
+    engine: pipeline
+    run_names: [null-baseline]
+    bench_vendors: [null-baseline]
+    note: "The base DOCX submitted unchanged; the floor a redline tool must beat."
+  # ---- retired identities kept so history stays readable ----
+  - id: sanity-word
+    vendor: bench
+    display: sanity-word
+    role: calibration
+    engine: passthrough
+    status: retired
+    run_names: [sanity-word]
+    bench_vendors: [sanity-word]
+    note: "July 2026 passthrough of pre-rendered PDFs from a directory no longer in the repo."
+  - id: ooxmlsdk
+    vendor: ooxmlsdk
+    display: ooxmlsdk
+    role: generator
+    engine: ooxmlsdk
+    status: retired
+    run_names: [ooxmlsdk]
+    bench_vendors: [ooxmlsdk]
+  - id: prebaked
+    vendor: bench
+    display: prebaked
+    role: generator
+    engine: prebaked
+    status: retired
+    bench_vendors: [prebaked]
+  - id: jubarte-dev-variants
+    vendor: jubarte
+    display: "jubarte (dev variants)"
+    role: generator
+    engine: jubarte-final
+    affiliated: true
+    status: retired
+    speed_tools: [jubarte-second-native, jubarte-second-docxodus, jubarte-third-native, jubarte-third-docxodus]
+    note: "Development builds measured in July 2026 microbenchmarks; never published as vendors."
