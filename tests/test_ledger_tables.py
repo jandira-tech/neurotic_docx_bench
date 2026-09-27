@@ -121,6 +121,7 @@ def test_fidelity_table_layout(registry) -> None:
     assert md.startswith("### script_redlines")
     assert "Document set `d1` (32 documents)" in md
     assert "renderer `soffice-26.2.4.2`" in md and "scorer `pagefair-v2`" in md
+    assert "bench `0.6`" in md
     assert "| 1 | jubarte-x †" in md
     assert "| 2 | acme |" in md
     assert "[88.50, 91.00]" in md

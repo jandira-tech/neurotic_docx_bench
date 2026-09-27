@@ -21,6 +21,7 @@ from pathlib import Path
 
 from pydantic import BaseModel, ConfigDict
 
+from neurotic_docx_bench import version
 from neurotic_docx_bench.ledger.registry import Registry, ToolEntry
 from neurotic_docx_bench.ledger.rows import ResultRow, SpeedRow
 
@@ -74,6 +75,8 @@ class GroupKey(BaseModel):
     docset: str
     renderer: str
     scorer: str
+    # Bench series (major.minor) that produced the row; ``0.6`` when unstamped.
+    bench: str
 
 
 def group_key(row: ResultRow) -> GroupKey:
@@ -84,6 +87,7 @@ def group_key(row: ResultRow) -> GroupKey:
         renderer=row.renderer_id
         or (f"legacy-{row.render}" if row.render else "unknown"),
         scorer=row.scorer,
+        bench=version.series(row.bench_version),
     )
 
 
