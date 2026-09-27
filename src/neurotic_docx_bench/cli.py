@@ -55,6 +55,7 @@ from neurotic_docx_bench.config import (
     load_config,
 )
 from neurotic_docx_bench.emit import gallery as gallery_emit
+from neurotic_docx_bench.ledger import docset as docset_mod
 from neurotic_docx_bench.emit import jsonl as jsonl_emit
 from neurotic_docx_bench.emit import snapshot as snapshot_emit
 from neurotic_docx_bench.gate import gate as run_gate
@@ -1095,6 +1096,20 @@ def _corpus_revision(cfg: BenchConfig) -> str | None:
     return hashlib.sha256(path.read_bytes()).hexdigest()[:12]
 
 
+def _docset_for(
+    cfg: BenchConfig, benchmark: BenchmarkName, holdout_mode: str | None
+) -> docset_mod.DocSet | None:
+    """The benchmark's fixed document set for this run's holdout regime, or None when
+    the oracle directory is not configured (the line is then emitted without a docset)."""
+    dirs = docset_mod.oracle_dirs_for(cfg, benchmark)
+    if not any(Path(d).is_dir() for d in dirs):
+        return None
+    holdout: set[str] = set()
+    if cfg.holdout_list and Path(cfg.holdout_list).is_file():
+        holdout = pipeline.load_holdout(cfg.holdout_list)
+    return docset_mod.benchmark_docset(benchmark, dirs, holdout=holdout, holdout_mode=holdout_mode)
+
+
 def _emit_and_gate_benchmark(
     *,
     benchmark: BenchmarkName,
@@ -1135,6 +1150,19 @@ def _emit_and_gate_benchmark(
         return 0
     vendor = rc.vendor or rc.name
     speed_samples_ms = stages.speed_samples_from_timings(timings, speed_key)
+    docset = _docset_for(cfg, benchmark, holdout_mode)
+    failures = list(failures)
+    if docset is not None:
+        restricted = docset_mod.restrict_to_docset(docset.keys, scores, per_doc, failures)
+        if restricted.dropped_scores or restricted.dropped_failures:
+            console.print(
+                f"[yellow]{benchmark}: {len(restricted.dropped_scores)} scored and "
+                f"{len(restricted.dropped_failures)} failed document(s) are outside the "
+                f"document set {docset.id}; kept out of the ITT pool[/yellow]"
+            )
+        scores = restricted.scores
+        per_doc = cast("PerDocScores | None", restricted.per_doc)
+        failures = cast("list[FailureRecord]", restricted.failures)
     line = jsonl_emit.build_results_line(
         id_run=id_run,
         vendor=vendor,
@@ -1152,6 +1180,7 @@ def _emit_and_gate_benchmark(
         scorer=pipeline.scorer_for_benchmark(benchmark),
         corpus_revision=_corpus_revision(cfg),
         holdout_mode=holdout_mode,
+        docset_id=docset.id if docset is not None else None,
     )
     appended = (
         jsonl_emit.append_if_changed(jsonl_path, line)
@@ -2240,6 +2269,36 @@ def oracle_manifest_cmd(
         for item in items[:20]:
             console.print(f"  {label}: {item}")
     raise typer.Exit(2)
+
+
+@app.command(name="docset")
+def docset_cmd(
+    config: Path = typer.Option(Path("bench.yaml"), "--config", "-c"),
+    write: bool = typer.Option(
+        False, "--write", help="record every benchmark's document set in results/docsets.json"
+    ),
+) -> None:
+    """Print (and with --write record) the fixed document set of every benchmark."""
+    from neurotic_docx_bench.benchmarks import BENCHMARKS
+
+    cfg = load_config(config)
+    holdout: set[str] = set()
+    if cfg.holdout_list and Path(cfg.holdout_list).is_file():
+        holdout = pipeline.load_holdout(cfg.holdout_list)
+    sets: list[docset_mod.DocSet] = []
+    dirs_by_id: dict[str, list[str]] = {}
+    for benchmark in BENCHMARKS:
+        dirs = docset_mod.oracle_dirs_for(cfg, benchmark)
+        if not any(Path(d).is_dir() for d in dirs):
+            console.print(f"{benchmark}: no oracle directory configured")
+            continue
+        d = docset_mod.benchmark_docset(benchmark, dirs, holdout=holdout, holdout_mode="excluded")
+        sets.append(d)
+        dirs_by_id[d.id] = [str(p) for p in dirs]
+        console.print(f"{benchmark}: {d.n} documents, docset {d.id}")
+    if write:
+        docset_mod.write_docsets(docset_mod.DEFAULT_DOCSETS_PATH, sets, source_dirs=dirs_by_id)
+        console.print(f"wrote {docset_mod.DEFAULT_DOCSETS_PATH}")
 
 
 @app.command(name="coverage-matrix")
