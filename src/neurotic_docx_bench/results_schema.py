@@ -18,7 +18,11 @@ from pathlib import Path
 from typing import Any
 
 from neurotic_docx_bench import lens_health
-from neurotic_docx_bench.aggregate import compute_aggregate, compute_aggregate_itt
+from neurotic_docx_bench.aggregate import (
+    compute_aggregate,
+    compute_aggregate_itt,
+    failed_doc_keys,
+)
 from neurotic_docx_bench.benchmarks import BenchmarkName
 from neurotic_docx_bench.config import BenchConfig
 from neurotic_docx_bench.score import ScoreConfig, ScoreWeights
@@ -139,6 +143,18 @@ class Results:
     # the holdout (`bench run --holdout`), None when no holdout is configured.
     # Informational only — it never feeds config_hash / skip identity hashing.
     holdout_mode: str | None = None
+    # Failure accounting (consolidation): ``n_failure_events`` counts records in
+    # ``failures``; ``n_failed_docs`` counts documents with no score, i.e. the docs
+    # zeroed by ITT. ``n_docs + n_failed_docs == itt_n_docs`` always holds.
+    n_failed_docs: int = 0
+    n_failure_events: int = 0
+    # Provenance (consolidation): registry tool id and configuration, the hash of
+    # the benchmark's document set, the renderer identity, and the machine.
+    tool_id: str | None = None
+    configuration: str | None = None
+    docset_id: str | None = None
+    renderer_id: str | None = None
+    hardware: dict[str, object] | None = None
     timestamp: datetime = field(default_factory=lambda: datetime.now(UTC))
 
     def __post_init__(self) -> None:
@@ -178,7 +194,11 @@ def aggregate_speed(samples_ms: list[float]) -> SpeedAggregate:
     values = [float(v) for v in samples_ms]
     if not values:
         return SpeedAggregate(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
-    q = statistics.quantiles(values, n=4, method="inclusive") if len(values) >= 2 else [values[0]] * 3
+    q = (
+        statistics.quantiles(values, n=4, method="inclusive")
+        if len(values) >= 2
+        else [values[0]] * 3
+    )
     return SpeedAggregate(
         overall_mean_speed=round(statistics.mean(values), 4),
         overall_median_speed=round(statistics.median(values), 4),
@@ -210,6 +230,11 @@ def build_results(
     scorer: str = "v1",
     corpus_revision: str | None = None,
     holdout_mode: str | None = None,
+    tool_id: str | None = None,
+    configuration: str | None = None,
+    docset_id: str | None = None,
+    renderer_id: str | None = None,
+    hardware: dict[str, object] | None = None,
 ) -> Results:
     rounded_scores = {k: round(float(v), 4) for k, v in scores.items()}
     aggregate = compute_aggregate(rounded_scores, per_doc=per_doc)
@@ -218,9 +243,9 @@ def build_results(
     n_functional_checked, n_accept_ok, n_reject_ok = _functional_counts(per_doc)
     n_lens_disagree, lens_disagree_rate = lens_health.summarize(per_doc)
     failure_list = failures or []
-    itt = compute_aggregate_itt(
-        rounded_scores, [str(f.get("doc", "")) for f in failure_list],
-    )
+    failure_docs = [str(f.get("doc", "")) for f in failure_list]
+    itt = compute_aggregate_itt(rounded_scores, failure_docs)
+    n_failed_docs = len(failed_doc_keys(rounded_scores, failure_docs))
     speed = aggregate_speed(speed_samples_ms)
     return Results(
         id_run=id_run,
@@ -266,6 +291,13 @@ def build_results(
         config_hash=config_hash,
         corpus_revision=corpus_revision,
         holdout_mode=holdout_mode,
+        n_failed_docs=n_failed_docs,
+        n_failure_events=len(failure_list),
+        tool_id=tool_id,
+        configuration=configuration,
+        docset_id=docset_id,
+        renderer_id=renderer_id,
+        hardware=hardware,
         timestamp=timestamp,
     )
 
@@ -294,7 +326,8 @@ def _functional_counts(
 
 
 def _optional_metric_stats(
-    per_doc: dict[str, dict[str, object]] | None, field_name: str,
+    per_doc: dict[str, dict[str, object]] | None,
+    field_name: str,
 ) -> tuple[float | None, float | None]:
     """(mean, median) over docs where the optional metric is present, else (None, None)."""
     values = [
