@@ -38,6 +38,8 @@ class ResultRow(BaseModel):
     corpus_revision: str | None = None
     docset_id: str | None = None
     renderer_id: str | None = None
+    # Bench version that produced the line (absent before 0.7.0).
+    bench_version: str | None = None
     scorer: str = "v1"
     n_scored: int
     n_failed_docs: int
@@ -198,6 +200,9 @@ def row_from_bench_line(data: dict, registry: Registry) -> ResultRow | None:
         ),
         docset_id=(str(data["docset_id"]) if data.get("docset_id") else None),
         renderer_id=(str(data["renderer_id"]) if data.get("renderer_id") else None),
+        bench_version=(
+            str(data["bench_version"]) if data.get("bench_version") else None
+        ),
         scorer=str(data.get("scorer") or "v1"),
         n_scored=n_scored,
         n_failed_docs=n_failed_docs,
@@ -419,6 +424,9 @@ def row_from_converter_line(data: dict, registry: Registry) -> ResultRow | None:
         corpus_revision=docset,
         docset_id=docset,
         renderer_id=f"oracle:{data.get('oracle') or 'unknown'}",
+        bench_version=(
+            str(data["bench_version"]) if data.get("bench_version") else None
+        ),
         scorer=str(data.get("scorer") or "v1"),
         n_scored=n_scored,
         n_failed_docs=max(itt_n - n_scored, 0),
