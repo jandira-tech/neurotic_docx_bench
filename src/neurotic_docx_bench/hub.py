@@ -87,6 +87,16 @@ class HubApi(Protocol):
         expand: bool = True,
     ) -> Iterable[Any]: ...
 
+    def hf_hub_download(
+        self,
+        repo_id: str,
+        filename: str,
+        *,
+        repo_type: str,
+        revision: str | None = None,
+        local_dir: str | Path | None = None,
+    ) -> str: ...
+
 
 def default_api() -> HubApi:
     """The real client; imported lazily so the module stays cheap to import."""
