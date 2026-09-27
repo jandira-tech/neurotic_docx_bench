@@ -253,11 +253,11 @@ def select_headline(
                 and r.provenance == "stamped"
             ]
         )
-        shown = {r.row.id_run for r in ranked} | {c.id_run for c in calibration}
+        # Calibration rows are listed in their own block, never as exclusions.
         excluded = [
             ExcludedRow(row=r, verdict=verdict(r))
             for r in _latest_per_tool([m for m in members if not verdict(m).eligible])
-            if r.id_run not in shown and registry.by_id(r.tool_id).role != "calibration"
+            if registry.by_id(r.tool_id).role != "calibration"
         ]
         tables[benchmark] = HeadlineTable(
             benchmark=benchmark,
