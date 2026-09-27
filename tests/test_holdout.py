@@ -263,12 +263,12 @@ def test_skip_identity_distinguishes_holdout_lines(tmp_path):
         "tool_version": "1.0",
         "config_hash": "abc",
     }
-    kwargs = dict(
-        vendor="v",
-        benchmark="script_redlines",
-        tool_version="1.0",
-        config_hash="abc",
-    )
+    kwargs = {
+        "vendor": "v",
+        "benchmark": "script_redlines",
+        "tool_version": "1.0",
+        "config_hash": "abc",
+    }
     # A pre-holdout line (no holdout_mode field) satisfies a normal run…
     p.write_text(json.dumps(ident) + "\n")
     assert jsonl.has_already_ran_benchmark(p, **kwargs, holdout_only=False) is not None
