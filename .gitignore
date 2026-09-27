@@ -168,3 +168,5 @@ results/docxide_metrics_run.log
 coverage.xml
 lcov.info
 htmlcov/
+# hub upload staging (bench results upload); rebuilt from results/ every time
+results/hub/
