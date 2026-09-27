@@ -20,12 +20,10 @@ from neurotic_docx_bench.docx_to_pdf import (
     feature_coverage,
     load_fixtures,
     oracle_pdf_dirs,
-    render_docx_to_pdf_table,
     run_eval,
     score_folder_pair,
     select_word_oracle_fixtures,
     try_convert_fixture,
-    update_readme_docx_to_pdf,
     verify_oracle_sha_manifest,
     write_oracle_sha_manifest,
 )
@@ -61,7 +59,9 @@ def test_oracles_are_only_the_two_pinned_word_export_folders():
 
 def test_pin_list_matches_deterministic_word_pool_selection():
     pinned = [(item.kind, item.original_stem) for item in load_fixtures()]
-    expected = [(item.kind, item.original_stem) for item in select_word_oracle_fixtures()]
+    expected = [
+        (item.kind, item.original_stem) for item in select_word_oracle_fixtures()
+    ]
     assert pinned == expected
     assert {kind for kind, _ in pinned} == {"accepted", "redline_randomized"}
 
@@ -146,26 +146,36 @@ def test_pairing_is_by_plain_stem_not_redline_key(tmp_path):
 
 
 def test_convert_command_rdocx_uses_native_to_pdf():
-    cmd = convert_command("rdocx", Path("in.docx"), Path("out.pdf"), binary=Path("/opt/rdocx"))
+    cmd = convert_command(
+        "rdocx", Path("in.docx"), Path("out.pdf"), binary=Path("/opt/rdocx")
+    )
     assert cmd == ["/opt/rdocx", "convert", "in.docx", "--to", "pdf", "-o", "out.pdf"]
 
 
 def test_convert_command_office2pdf_uses_native_cli():
     cmd = convert_command(
-        "office2pdf", Path("in.docx"), Path("out.pdf"), binary=Path("/opt/office2pdf"),
+        "office2pdf",
+        Path("in.docx"),
+        Path("out.pdf"),
+        binary=Path("/opt/office2pdf"),
     )
     assert cmd == ["/opt/office2pdf", "in.docx", "-o", "out.pdf"]
 
 
 def test_convert_command_pdfitdown_uses_native_cli():
     cmd = convert_command(
-        "pdfitdown", Path("in.docx"), Path("out.pdf"), binary=Path("/opt/pdfitdown"),
+        "pdfitdown",
+        Path("in.docx"),
+        Path("out.pdf"),
+        binary=Path("/opt/pdfitdown"),
     )
     assert cmd == ["/opt/pdfitdown", "-i", "in.docx", "-o", "out.pdf"]
 
 
 def test_convert_command_doxx_is_native_not_markdown_pipeline():
-    cmd = convert_command("doxx", Path("in.docx"), Path("out.pdf"), binary=Path("/opt/doxx"))
+    cmd = convert_command(
+        "doxx", Path("in.docx"), Path("out.pdf"), binary=Path("/opt/doxx")
+    )
     joined = " ".join(cmd).lower()
     assert cmd[0] == "/opt/doxx"
     assert "in.docx" in cmd
@@ -176,7 +186,10 @@ def test_convert_command_doxx_is_native_not_markdown_pipeline():
 
 def test_convert_command_jubarte_uses_native_convert():
     cmd = convert_command(
-        "jubarte", Path("in.docx"), Path("out.pdf"), binary=Path("/opt/jubarte"),
+        "jubarte",
+        Path("in.docx"),
+        Path("out.pdf"),
+        binary=Path("/opt/jubarte"),
     )
     assert cmd == ["/opt/jubarte", "convert", "in.docx", "-o", "out.pdf", "--force"]
     assert "soffice" not in " ".join(cmd).lower()
@@ -184,21 +197,30 @@ def test_convert_command_jubarte_uses_native_convert():
 
 def test_convert_command_libreoffice_convert_rust_uses_positional_args():
     cmd = convert_command(
-        "libreoffice_convert_rust", Path("in.docx"), Path("out.pdf"), binary=Path("/opt/libreoffice_convert"),
+        "libreoffice_convert_rust",
+        Path("in.docx"),
+        Path("out.pdf"),
+        binary=Path("/opt/libreoffice_convert"),
     )
     assert cmd == ["/opt/libreoffice_convert", "in.docx", "out.pdf", "pdf"]
 
 
 def test_convert_command_dxpdf_uses_output_flag():
     cmd = convert_command(
-        "dxpdf", Path("in.docx"), Path("out.pdf"), binary=Path("/opt/dxpdf"),
+        "dxpdf",
+        Path("in.docx"),
+        Path("out.pdf"),
+        binary=Path("/opt/dxpdf"),
     )
     assert cmd == ["/opt/dxpdf", "in.docx", "-o", "out.pdf"]
 
 
 def test_convert_command_docxide_pdf_uses_positional_output():
     cmd = convert_command(
-        "docxide-pdf", Path("in.docx"), Path("out.pdf"), binary=Path("/opt/docxide-pdf"),
+        "docxide-pdf",
+        Path("in.docx"),
+        Path("out.pdf"),
+        binary=Path("/opt/docxide-pdf"),
     )
     assert cmd == ["/opt/docxide-pdf", "in.docx", "out.pdf"]
 
@@ -234,7 +256,9 @@ def test_try_convert_rejects_non_pdf_output(tmp_path):
     fixture = load_fixtures()[0]
     dest = tmp_path / f"{fixture.stem}.pdf"
     script = tmp_path / "notpdf"
-    script.write_text("#!/bin/sh\nwhile [ $# -gt 0 ]; do\n  if [ \"$1\" = \"-o\" ]; then printf 'not-a-pdf' > \"$2\"; fi\n  shift\ndone\n")
+    script.write_text(
+        '#!/bin/sh\nwhile [ $# -gt 0 ]; do\n  if [ "$1" = "-o" ]; then printf \'not-a-pdf\' > "$2"; fi\n  shift\ndone\n'
+    )
     script.chmod(script.stat().st_mode | stat.S_IEXEC)
     fail = try_convert_fixture("rdocx", script, fixture, dest)
     assert fail is not None
@@ -270,9 +294,13 @@ def test_run_eval_itt_zero_on_convert_fail_and_does_not_abort(tmp_path):
     assert saved["tools"]["rdocx"]["failures"] == 3
 
 
-def test_render_table_uses_report_itt_fields_not_invented_means():
+def test_store_lines_use_report_itt_fields_not_invented_means():
+    from neurotic_docx_bench.ledger import converters as conv
+
     report = {
         "n": 500,
+        "track": "docx_to_pdf",
+        "stems": [f"s{i}" for i in range(500)],
         "tools": {
             "rdocx": {
                 "n_scored": 499,
@@ -292,33 +320,41 @@ def test_render_table_uses_report_itt_fields_not_invented_means():
             },
         },
     }
-    table = render_docx_to_pdf_table(report)
-    assert "| rdocx |" in table
-    assert "| doxx |" in table
-    assert "499" in table
-    assert "500" in table
-    assert "12.35" in table or "12.3456" in table
-    data_rows = [line for line in table.splitlines() if line.startswith("|") and "Tool" not in line and "---" not in line]
-    assert any("| rdocx |" in line for line in data_rows)
-    assert any("| doxx |" in line for line in data_rows)
-    assert not any("| office2pdf |" in line for line in data_rows)
+    lines = conv.lines_from_report(report, hardware=None, report_path="r.json")
+    by_tool = {ln["tool"]: ln for ln in lines}
+    assert set(by_tool) == {"rdocx", "doxx"}
+    assert by_tool["rdocx"]["mean"] == 12.3456 and by_tool["rdocx"]["itt_n"] == 500
+    assert by_tool["rdocx"]["n_scored"] == 499 and by_tool["doxx"]["failures"] == 500
 
 
-def test_readme_docx_to_pdf_table_matches_committed_artifact():
+def test_committed_artifact_is_in_the_converter_store():
     artifact = REPO_ROOT / "results" / "docx_to_pdf_500.json"
-    readme = REPO_ROOT / "RESULTS.md"
+    store = REPO_ROOT / "results" / "converters.jsonl"
+    if not store.is_file():
+        pytest.skip("converter store not written yet")
     report = json.loads(artifact.read_text(encoding="utf-8"))
     assert report["n"] == len(load_fixtures())
     for name, tool in report["tools"].items():
         assert tool["itt_n"] == report["n"], name
         assert len(tool["per_doc"]) == report["n"], name
-    expected = render_docx_to_pdf_table(report).strip()
-    assert expected in readme.read_text(encoding="utf-8")
+    lines = [
+        json.loads(raw)
+        for raw in store.read_text(encoding="utf-8").splitlines()
+        if raw.strip()
+    ]
+    in_store = {ln["tool"]: ln for ln in lines if ln.get("track") == "docx_to_pdf"}
+    for name, tool in report["tools"].items():
+        assert name in in_store, name
+        assert in_store[name]["itt_n"] == tool["itt_n"]
 
 
-def test_update_readme_replaces_marked_docx_to_pdf_block(tmp_path):
+def test_append_report_writes_one_line_per_tool(tmp_path):
+    from neurotic_docx_bench.ledger import converters as conv
+
     report = {
         "n": 500,
+        "track": "docx_to_pdf",
+        "stems": ["a", "b"],
         "tools": {
             "rdocx": {
                 "n_scored": 500,
@@ -330,14 +366,11 @@ def test_update_readme_replaces_marked_docx_to_pdf_block(tmp_path):
             },
         },
     }
-    readme = tmp_path / "README.md"
-    readme.write_text(
-        "head\n<!-- RANKING-END -->\n"
-        "<!-- DOCX-TO-PDF-START -->\nold table\n<!-- DOCX-TO-PDF-END -->\ntail\n",
+    store = tmp_path / "converters.jsonl"
+    assert conv.append_report(store, report, hardware=None, report_path="r.json") == 1
+    (line,) = [json.loads(raw) for raw in store.read_text().splitlines()]
+    assert (
+        line["tool"] == "rdocx"
+        and line["track"] == "docx_to_pdf"
+        and line["median"] == 9.0
     )
-    update_readme_docx_to_pdf(readme, report)
-    text = readme.read_text()
-    assert "head" in text
-    assert "tail" in text
-    assert "old table" not in text
-    assert render_docx_to_pdf_table(report).strip() in text

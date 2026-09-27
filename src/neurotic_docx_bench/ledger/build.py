@@ -56,6 +56,15 @@ def build(root: Path, *, now: datetime | None = None) -> Bundle:
         raise ValueError(
             f"results/bench.jsonl has lines the registry cannot map: {names}"
         )
+    conv_rows, conv_unmapped = rws.load_converter_rows(
+        root / "results" / "converters.jsonl", registry
+    )
+    if conv_unmapped:
+        tools = sorted({str(u["tool"]) for u in conv_unmapped})
+        raise ValueError(
+            f"results/converters.jsonl has tools the registry cannot map: {tools}"
+        )
+    rows = rows + conv_rows
     retractions = pol.load_retractions(root / pol.DEFAULT_RETRACTIONS_PATH)
     docsets = pol.load_docsets_json(root / "results" / "docsets.json")
     tables = pol.select_headline(
@@ -77,7 +86,8 @@ def build(root: Path, *, now: datetime | None = None) -> Bundle:
 
     stamp = (
         f"{STAMP_PREFIX}{now.strftime('%Y-%m-%d %H:%M UTC')} from `results/bench.jsonl`, "
-        "`results/speed.jsonl` and `results/redline_speed_bench/**/summary.json`."
+        "`results/converters.jsonl`, `results/speed.jsonl` and "
+        "`results/redline_speed_bench/**/summary.json`."
     )
     ordered = [b for b in tb.TITLES if b in tables]
     results_parts = [

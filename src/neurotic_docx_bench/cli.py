@@ -573,6 +573,35 @@ def compare(
         console.print(f"wrote {json_out}")
 
 
+def _append_converter_lines(report: dict, json_out: Path) -> None:
+    """Append one store line per tool of a converter report to results/converters.jsonl;
+    the published tables are built from that store by ``bench report``."""
+    from neurotic_docx_bench.ledger import converters as conv
+
+    n = conv.append_report(
+        conv.DEFAULT_CONVERTERS_PATH,
+        report,
+        hardware=hardware.hardware_info(),
+        report_path=str(json_out),
+    )
+    console.print(f"appended {n} line(s) to {conv.DEFAULT_CONVERTERS_PATH}")
+
+
+@app.command(name="ingest-converter-reports")
+def ingest_converter_reports(
+    reports: list[Path] = typer.Argument(..., help="report JSON files from docx-to-pdf / docxide-metrics"),
+    store: Path = typer.Option(Path("results/converters.jsonl"), "--store"),
+) -> None:
+    """Backfill results/converters.jsonl from existing report JSON files (one line per tool)."""
+    from neurotic_docx_bench.ledger import converters as conv
+
+    total = 0
+    for p in reports:
+        report = json.loads(Path(p).read_text(encoding="utf-8"))
+        total += conv.append_report(store, report, hardware=None, report_path=str(p))
+    console.print(f"appended {total} line(s) to {store}")
+
+
 @app.command(name="docx-to-pdf")
 def docx_to_pdf_eval(
     converter: Path = typer.Option(
@@ -596,9 +625,6 @@ def docx_to_pdf_eval(
     limit: int | None = typer.Option(None, "--limit", help="score only the first N fixtures (tests)"),
     resume: bool = typer.Option(True, "--resume/--no-resume", help="reuse existing candidate PDFs"),
     convert_workers: int = typer.Option(8, "--convert-workers", help="parallel convert processes per tool"),
-    update_readme: bool = typer.Option(
-        False, "--update-readme", help="rewrite the medium RESULTS.md DOCX→PDF table from this report",
-    ),
     track: str = typer.Option(
         "docx_to_pdf",
         "--track",
@@ -640,11 +666,7 @@ def docx_to_pdf_eval(
         )
     bits.append(f"→ {json_out}")
     console.print("  ".join(bits))
-    if update_readme:
-        from neurotic_docx_bench.docx_to_pdf import update_readme_docx_to_pdf
-
-        update_readme_docx_to_pdf(Path("RESULTS.md"), report, track=track)
-        console.print("updated RESULTS.md DOCX→PDF table")
+    _append_converter_lines(report, json_out)
 
 
 @app.command(name="docxide-metrics")
@@ -667,9 +689,6 @@ def docxide_metrics_eval(
     resume: bool = typer.Option(True, "--resume/--no-resume", help="reuse existing candidate PDFs"),
     convert_workers: int = typer.Option(8, "--convert-workers", help="parallel convert processes per tool"),
     score_workers: int = typer.Option(4, "--score-workers", help="parallel documents in the scorer"),
-    update_readme: bool = typer.Option(
-        False, "--update-readme", help="rewrite the medium RESULTS.md docxide_metrics table from this report",
-    ),
 ) -> None:
     """Score the 398 no-redline fixtures with docxide-pdf's own metrics.
 
@@ -708,9 +727,7 @@ def docxide_metrics_eval(
         )
     bits.append(f"→ {json_out}")
     console.print("  ".join(bits))
-    if update_readme:
-        dm.update_readme(Path("RESULTS.md"), report)
-        console.print("updated RESULTS.md docxide_metrics table")
+    _append_converter_lines(report, json_out)
 
 
 def _agg(values: Iterable[float | None]) -> dict[str, float | int]:

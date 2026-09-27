@@ -314,19 +314,3 @@ def render_table(report: dict) -> str:
             f"{data.get('failures', 0)} |",
         )
     return "\n".join(lines) + "\n"
-
-
-def update_readme(readme: Path, report: dict) -> None:
-    """Replace or append the README docxide-metrics block."""
-    block = f"{README_START}\n{render_table(report)}{README_END}"
-    text = readme.read_text(encoding="utf-8")
-    if README_START in text and README_END in text:
-        start = text.index(README_START)
-        end = text.index(README_END) + len(README_END)
-        text = text[:start] + block + text[end:]
-    elif d2p.NO_REDLINE_TRACK.readme_end in text:
-        anchor = d2p.NO_REDLINE_TRACK.readme_end
-        text = text.replace(anchor, anchor + "\n\n" + block, 1)
-    else:
-        text = text.rstrip() + "\n\n" + block + "\n"
-    readme.write_text(text, encoding="utf-8")

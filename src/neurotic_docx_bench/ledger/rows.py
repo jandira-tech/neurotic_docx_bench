@@ -67,7 +67,11 @@ class ResultRow(BaseModel):
 
     @property
     def provenance(self) -> Provenance:
-        if self.corpus_revision and self.scores and not self.itt_approx:
+        if self.itt_approx:
+            return "legacy"
+        if self.source == "converter":
+            return "stamped" if self.docset_id else "legacy"
+        if self.corpus_revision and self.scores:
             return "stamped"
         return "legacy"
 
@@ -373,4 +377,87 @@ def load_speed_rows(
                 ingest(
                     data, str(summary), payload.get("fixtures"), payload.get("pairs")
                 )
+    return rows, unmapped
+
+
+# ---- converter rows -----------------------------------------------------------
+
+
+def row_from_converter_line(data: dict, registry: Registry) -> ResultRow | None:
+    tool = str(data.get("tool") or "")
+    entry = registry.resolve_converter(tool)
+    track = str(data.get("track") or "")
+    if entry is None or not track:
+        return None
+    scores = {str(k): _num(v) for k, v in (data.get("scores") or {}).items()}
+    failed = tuple(
+        sorted(str(d) for d in (data.get("failed_docs") or []) if str(d) not in scores)
+    )
+    itt_n = int(_num(data.get("itt_n")))
+    n_scored = int(_num(data.get("n_scored")))
+    docset = str(data.get("docset_id") or "") or None
+    extra_raw = data.get("extra") or {}
+    extra = {
+        str(k): {str(m): _num(x) for m, x in v.items()}
+        for k, v in extra_raw.items()
+        if isinstance(v, dict)
+    }
+    hardware = data.get("hardware")
+    return ResultRow(
+        source="converter",
+        id_run=str(data.get("id_run") or ""),
+        tool_id=entry.id,
+        display=entry.display,
+        affiliated=entry.affiliated,
+        benchmark=track,
+        lens=str(data.get("lens") or "pixel"),
+        pin=ToolPin.parse(data.get("version")),
+        timestamp=_timestamp(data),
+        corpus_revision=docset,
+        docset_id=docset,
+        renderer_id=f"oracle:{data.get('oracle') or 'unknown'}",
+        scorer=str(data.get("scorer") or "v1"),
+        n_scored=n_scored,
+        n_failed_docs=max(itt_n - n_scored, 0),
+        n_failure_events=int(_num(data.get("failures"))),
+        itt_n=itt_n,
+        itt_mean=_num(data.get("mean")),
+        itt_median=_num(data.get("median")),
+        itt_approx=False,
+        mean=_num(data.get("mean")),
+        median=_num(data.get("median")),
+        exact_100=int(_num(data.get("perfects"))),
+        scores=scores,
+        failed_docs=failed,
+        hardware=hardware if isinstance(hardware, dict) else None,
+        extra=extra,
+    )
+
+
+def load_converter_rows(
+    path: Path, registry: Registry
+) -> tuple[list[ResultRow], list[dict]]:
+    rows: list[ResultRow] = []
+    unmapped: list[dict] = []
+    if not Path(path).is_file():
+        return rows, unmapped
+    with Path(path).open(encoding="utf-8") as fh:
+        for raw in fh:
+            if not raw.strip():
+                continue
+            try:
+                data = json.loads(raw)
+            except json.JSONDecodeError:
+                continue
+            row = row_from_converter_line(data, registry)
+            if row is None:
+                unmapped.append(
+                    {
+                        "tool": data.get("tool"),
+                        "track": data.get("track"),
+                        "id_run": data.get("id_run"),
+                    }
+                )
+                continue
+            rows.append(row)
     return rows, unmapped
