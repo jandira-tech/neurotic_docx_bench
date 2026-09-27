@@ -104,6 +104,19 @@ uv run bench render <docx-dir> <work-dir> -b soffice
 uv run bench compare <candidate-pdfs> <oracle-pdfs> --tool name
 ```
 
+### Try one fixture with your own tool
+
+`bench try` scores any tool on one fixture of the tryout set (100 pairs drawn from the Word-exported corpus, `corpus/tryout/tryout_100.csv`) against the Word oracle, next to jubarte's precomputed output for the same pair. Nothing is written under `results/`.
+
+```bash
+uv run bench try list
+uv run bench try run --random --task redline --tool "mytool {base} {next} -o {out}" --json out/try.json
+uv run bench try run --fixture <pair_stem> --task convert --tool "mytool {input} -o {out}" --renderer soffice
+uv run bench try fetch <pair_stem> --dest tryout_dl && uv run bench try run --root tryout_dl --fixture <pair_stem> --tool "..."
+```
+
+`--renderer passthrough` (default) expects the tool to write the PDF itself; `soffice` and `word` render a `.docx` output first. `--against` takes another command template or a PDF path instead of jubarte. `--seed` repeats a random pick. `scripts/tryout_jubarte.py` regenerates jubarte's outputs for the set (`bench try build-set` redraws it).
+
 ---
 
 ## Scoring
