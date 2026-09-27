@@ -43,47 +43,60 @@ the Space never needs the binary or Word.
 
 ### 2.1 The tryout set
 
-Pool: `corpus/word_based`. It is the only corpus that gives both tasks a Word oracle
-from the same pair: `pdf_source/<base>.pdf` and `pdf_source/<next>.pdf` (Word's own
-render of the sources, the convert oracle), `pdf_redlines_word/<pair>_redline.pdf`
-(the redline oracle) and, for 155 of its pairs, `pdf_accepted_word/...` (the accept
-oracle). Counting today: 207 rows, 195 with base and next docx, both source PDFs and a
-redline oracle and not on `holdout.txt`; 155 of those also have an accepted oracle.
-`word_redlines_superdoc` has redline oracles only and no source PDFs, so it is not the
-pool (Arthur can flip this).
+Pool: `corpus/no_comments_pdf_was_generated_by_word`. It is the corpus whose PDFs were
+exported by Word itself (producer `macOS ... Quartz PDFContext`); every PDF under
+`corpus/word_based` and `corpus/word_redlines_superdoc` carries the producer
+`LibreOffice 26.2.4.2 / Writer`, so a comparison against those measures a renderer
+against LibreOffice, not against Word. The pool gives every task a Word oracle from
+the same pair: `pdf_source/<base>.pdf` and `pdf_source/<next>.pdf` (the convert
+oracle), `pdf_redlines_word/<pair>_word_redline.pdf` or `<pair>_redline.pdf` (the
+redline oracle; the `_word_redline` variant is preferred when both exist, as
+`pipeline._index_redlines` does) and `pdf_accepted_word/<pair>_redline.pdf` (the
+accept oracle), plus the comment-stripped `docx_source`, `docx_redlines_word` and
+`docx_accepted_word` inputs. The corpus's `centralized_mapping.csv` supplies only
+`pair_stem`, `base` and `next`; its accepted-file columns are stale, so every file is
+located on the filesystem. Counting today: 207 rows, 193 eligible (2 lack a Word
+redline PDF, 12 are on a holdout).
 
-Selection: the 155 pairs with all three oracles, sorted by `pair_stem`, sampled with
-`random.Random(20260927).sample(..., 100)`, sorted again. Deterministic, holdout-free,
-recorded once in `corpus/tryout/tryout_100.csv` with columns `pair_stem, base, next,
-docx_base, docx_next, pdf_base_word, pdf_next_word, pdf_redline_word,
-pdf_accepted_word, sha256_docx_base, sha256_docx_next, sha256_pdf_redline_word,
-sha256_pdf_base_word, sha256_pdf_next_word, sha256_pdf_accepted_word`. The CSV is the
-contract; a test asserts it has 100 rows, no holdout stems, every referenced file
-present with its sha256. The selection script (`bench try build-set`) is idempotent and
-refuses to rewrite an existing CSV without `--force`.
+Selection: the eligible pairs sorted by `pair_stem`, sampled with
+`random.Random(20260927).sample(..., 100)`, sorted again. Holdouts are the union of
+`corpus/holdout_combined.txt` and `corpus/word_based/holdout.txt` (40 keys). The set
+is recorded once in `corpus/tryout/tryout_100.csv` with columns `pair_stem, base,
+next, docx_base, docx_next, pdf_base_word, pdf_next_word, docx_redline_word,
+pdf_redline_word, docx_accepted_word, pdf_accepted_word` and a `sha256_<column>` for
+each of the eight files. The CSV is the contract; a test asserts it has 100 rows, no
+holdout stems, every referenced file present with its sha256. The selection script
+(`scripts/tryout_jubarte.py`, later `bench try build-set`) is idempotent, refuses to
+rewrite an existing CSV without `--force-set`, and refuses a CSV drawn from another
+corpus or lacking the docx columns unless `--force-set` is passed.
 
 ### 2.2 jubarte outputs for the set
 
 Redline: `jubarte <base.docx> <next.docx> -o <out.docx> --force --quiet` for each of
-the 100 pairs, then soffice render to PDF (the same renderer the user's tool gets, so
-the comparison is renderer-neutral; Word rendering is offered as `--renderer word` on a
-Mac with Word, not the default). Convert: `jubarte convert <docx> -o <out.pdf> --force`
-for the 200 source documents. Both go to `corpus/tryout/jubarte/{redline,convert}/`
-with `corpus/tryout/jubarte/MANIFEST.json` (binary path, `jubarte --version`,
-ENGINE_COMMIT and SOURCE_COMMIT from the vendored copy, sha256 of every output,
-renderer id for the redline PDFs).
+the 100 pairs, then `jubarte convert <out.docx> -o <out.pdf> --force` so the redline
+PDF is jubarte's own render. No soffice: the point of the comparison is jubarte's PDF
+against Word's PDF, renderer included. Convert: `jubarte convert <base.docx> -o
+<out.pdf> --force` for the 100 base documents. Both go to
+`corpus/tryout/jubarte/{redline,convert}/` with `corpus/tryout/jubarte/MANIFEST.json`
+(binary path, `jubarte --version`, ENGINE_COMMIT and SOURCE_COMMIT from the vendored
+copy, sha256 of every output, `set_sha256` of the CSV the outputs were made from, and
+`corpus`). A manifest whose `set_sha256` differs from the current CSV marks the
+outputs stale and the script refuses to resume over them without `--force`.
 
 The binary is macOS arm64 and the VM is Linux without cargo, so this step runs on the
-Mac. The plan provides the exact command (`bench try build-jubarte --jubarte-bin
-/Users/arthrod/T/jubarte-redlines/target/release/jubarte`); Arthur runs it or tells me
-to run it on the Mac through the shell tool. `docx_to_pdf.DEFAULT_CONVERTER` currently
-resolves to `<repo parent>/jubarte-redlines/...`, which on the Mac is
-`/Users/arthrod/temp/T/...`, not the path given; PR 16 adds `JUBARTE_BIN` (env) and
-`--jubarte-bin` (option), consulted first by `resolve_tool_binary`.
+Mac: `uv run scripts/tryout_jubarte.py --jubarte-bin
+/Users/arthrod/T/jubarte-redlines/target/release/jubarte`. Arthur runs it.
+`docx_to_pdf.DEFAULT_CONVERTER` currently resolves to `<repo parent>/jubarte-redlines/...`,
+which on the Mac is `/Users/arthrod/temp/T/...`, not the path given; PR 16 adds
+`JUBARTE_BIN` (env) and `--jubarte-bin` (option), consulted first by
+`resolve_tool_binary`.
+
+The user's tool in `bench try` gets the same treatment: `--renderer passthrough` is
+the default (the tool writes the PDF that is scored), `soffice` and `word` are
+explicit opt-ins for tools that only write DOCX.
 
 Until the Mac step has run, the VM tests use a fake tool (a Python script that copies
-its input) and a fake manifest; `runs/jubarte-rust_2026-09-26_14-41/pdf` (803 soffice
-renders of jubarte redlines) covers the redline side for manual checks in the VM.
+its input) and a fake manifest.
 
 ### 2.3 Publication
 
@@ -103,8 +116,8 @@ bench try (--random [--seed N] | --fixture PAIR_STEM | --list)
           --tool "<command template>"          # {base} {next} {out} for redline,
                                                # {input} {out} for convert
           [--against jubarte|"<template>"]     # default jubarte (precomputed)
-          [--renderer soffice|word|passthrough]  # default soffice; passthrough when
-                                               # the tool already writes a PDF
+          [--renderer passthrough|soffice|word]  # default passthrough (the tool writes
+                                               # the PDF); soffice/word for DOCX tools
           [--set-dir DIR | --repo ID --revision R]  # local set or Hub download
           [--out DIR] [--json OUT] [--dpi 144]
 ```
@@ -170,14 +183,14 @@ manifest and refuses a mismatched sha256; CLI: `--list`, `--fixture`, `--random
 
 ## 5. Open questions (answered by Arthur, defaults apply if unanswered)
 
-1. Pool for the tryout set: `corpus/word_based`, 155 pairs with all three oracles,
-   seed 20260927. Default: yes.
+1. Pool for the tryout set: `corpus/no_comments_pdf_was_generated_by_word`, 193
+   eligible pairs, seed 20260927. Default: yes.
 2. Who runs the jubarte step on the Mac: Arthur with the command from 2.2, or me through
    the shell tool on request. Default: Arthur.
 3. `score.patch` applied with a parity test; `pipeline.patch` rebased by hand as in
    section 1; `score_v2.patch` held. Default: yes.
-4. `--against jubarte` compares against the precomputed soffice render; `word` render of
-   jubarte's redline is added only if Arthur wants a Word-rendered comparison shipped.
+4. `--against jubarte` compares against jubarte's own precomputed PDF render (no
+   soffice); a Word render of jubarte's redline is not shipped unless Arthur asks.
 
 ## 6. Order
 
