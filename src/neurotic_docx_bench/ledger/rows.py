@@ -224,3 +224,125 @@ def load_bench_rows(
                 continue
             rows.append(row)
     return rows, unmapped
+
+
+# ---- speed rows ---------------------------------------------------------------
+
+
+class SpeedRow(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
+    tool_id: str
+    display: str
+    affiliated: bool
+    kind: Literal["large", "micro"]
+    inproc: bool
+    runtime: str
+    pin: ToolPin
+    timestamp: datetime
+    fixture_count: int | None
+    pair_count: int | None
+    n: int
+    failures: int
+    median_ms: float
+    mean_ms: float
+    p95_ms: float | None
+    hardware: dict[str, object] | None = None
+    source_path: str = ""
+
+
+_LARGE_KINDS = {"speed_redlines", "redline_speed_bench"}
+
+
+def speed_row_from_line(
+    data: dict, registry: Registry, *, source_path: str = ""
+) -> SpeedRow | None:
+    if str(data.get("unit") or "ms_per_redline") != "ms_per_redline":
+        return None
+    if data.get("error") and data.get("median") is None:
+        return None
+    kind: Literal["large", "micro"] = (
+        "large" if str(data.get("kind") or "speed") in _LARGE_KINDS else "micro"
+    )
+    tool = str(data.get("tool") or data.get("engine") or "")
+    entry, inproc = registry.resolve_speed(tool)
+    if entry is None or not tool:
+        return None
+    n = int(_num(data.get("n")))
+    if n <= 0:
+        return None
+    fixture = data.get("fixture_count", data.get("fixture_target"))
+    pair = data.get("pair_count")
+    hardware = data.get("hardware")
+    return SpeedRow(
+        tool_id=entry.id,
+        display=entry.display,
+        affiliated=entry.affiliated,
+        kind=kind,
+        inproc=inproc,
+        runtime=str(data.get("runtime") or ""),
+        pin=ToolPin.parse(data.get("tool_version")),
+        timestamp=_timestamp(data),
+        fixture_count=int(_num(fixture)) if fixture is not None else None,
+        pair_count=int(_num(pair)) if pair is not None else None,
+        n=n,
+        failures=int(_num(data.get("failures"))),
+        median_ms=_num(data.get("median")),
+        mean_ms=_num(data.get("mean")),
+        p95_ms=_num(data["p95"]) if data.get("p95") is not None else None,
+        hardware=hardware if isinstance(hardware, dict) else None,
+        source_path=source_path,
+    )
+
+
+def load_speed_rows(
+    speed_jsonl: Path, summaries_root: Path, registry: Registry
+) -> tuple[list[SpeedRow], list[dict]]:
+    """Rows from ``results/speed.jsonl`` and every ``summary.json`` under
+    ``results/redline_speed_bench``, plus the tool names the registry cannot map."""
+    rows: list[SpeedRow] = []
+    unmapped: list[dict] = []
+
+    def ingest(
+        data: dict, source: str, fixtures: object = None, pairs: object = None
+    ) -> None:
+        data = dict(data)
+        if data.get("fixture_count") is None and fixtures is not None:
+            data["fixture_count"] = fixtures
+        if data.get("pair_count") is None and pairs is not None:
+            data["pair_count"] = pairs
+        row = speed_row_from_line(data, registry, source_path=source)
+        if row is None:
+            tool = data.get("tool") or data.get("engine")
+            if tool and registry.resolve_speed(str(tool))[0] is None:
+                unmapped.append({"tool": tool, "source": source})
+            return
+        rows.append(row)
+
+    if Path(speed_jsonl).is_file():
+        with Path(speed_jsonl).open(encoding="utf-8") as fh:
+            for raw in fh:
+                if not raw.strip():
+                    continue
+                try:
+                    ingest(json.loads(raw), str(speed_jsonl))
+                except json.JSONDecodeError:
+                    continue
+    if Path(summaries_root).is_dir():
+        for summary in sorted(Path(summaries_root).rglob("summary.json")):
+            try:
+                payload = json.loads(summary.read_text())
+            except json.JSONDecodeError, OSError:
+                continue
+            for raw_row in payload.get("rows") or []:
+                if not isinstance(raw_row, dict):
+                    continue
+                data = dict(raw_row)
+                if not data.get("kind"):
+                    data["kind"] = "speed_redlines"
+                if not data.get("run_ts") and payload.get("runTs"):
+                    data["run_ts"] = payload["runTs"]
+                ingest(
+                    data, str(summary), payload.get("fixtures"), payload.get("pairs")
+                )
+    return rows, unmapped
