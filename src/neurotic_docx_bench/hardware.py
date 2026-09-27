@@ -9,6 +9,7 @@ from __future__ import annotations
 import os
 import platform
 import subprocess
+from collections.abc import Callable
 
 from neurotic_docx_bench.config import RunConfig
 
@@ -23,11 +24,17 @@ def soffice_version() -> str | None:
         return None
 
 
-def _cpu_brand() -> str:
-    system = platform.system()
+def _cpu_brand(
+    *,
+    system: str | None = None,
+    cpuinfo: str = "/proc/cpuinfo",
+    run: Callable[..., subprocess.CompletedProcess[str]] = subprocess.run,
+) -> str:
+    """CPU brand string; the OS boundaries are parameters so each branch is testable."""
+    system = platform.system() if system is None else system
     try:
         if system == "Darwin":
-            out = subprocess.run(
+            out = run(
                 ["sysctl", "-n", "machdep.cpu.brand_string"],
                 capture_output=True,
                 text=True,
@@ -37,7 +44,7 @@ def _cpu_brand() -> str:
             if out.returncode == 0 and out.stdout.strip():
                 return out.stdout.strip()
         elif system == "Linux":
-            with open("/proc/cpuinfo", encoding="utf-8") as fh:
+            with open(cpuinfo, encoding="utf-8") as fh:
                 for line in fh:
                     if line.lower().startswith("model name"):
                         return line.split(":", 1)[1].strip()
