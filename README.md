@@ -116,6 +116,21 @@ Scoring core is a verbatim lift of [superdoc-visual-benchmarks](https://github.c
 
 Regression gate (CI tooling, not methodology): 100 always passes; a per-document drop vs the accepted snapshot warns; an aggregate mean or median drop beyond `eps = max(1e-4, 3 sigma)` from `results/noise_floor.json` fails. Promote with `uv run bench accept-scores <tool>`.
 
+### Content cache
+
+`bench run` reuses renders, page rasters and scored rows across runs from `.bench-cache/` (next to `results/`, git-ignored). Entries are keyed by content, never by path: candidate sha256, oracle sha256 (and base sha256 when a base PDF joins the row), DPI, renderer id, and a scorer fingerprint (sha256 over `score.py`, `score_v2.py`, `page_metrics.py`, `pipeline.py`, `raster.py`, the MuPDF build and the cache schema). Editing any scoring source or upgrading PyMuPDF invalidates every score entry on its own; nothing needs clearing by hand.
+
+A row restored from the cache carries `cached: true` and no `raster_ns`/`score_ns`; a restored render has `cached: true` and no `duration_ns`. Timings (`render_s`, `raster_s`, `score_s`, the `visual_*` render-speed stats) therefore come only from fresh work. Rasters are still written under the run's work dir so galleries and diagnostics read them as before.
+
+```bash
+uv run bench run --no-cache        # score everything fresh (BENCH_NO_CACHE=1 does the same)
+BENCH_CACHE_DIR=/fast/disk uv run bench run
+uv run bench cache                 # root, entry counts, size, scorer fingerprint
+uv run bench cache --clear
+```
+
+`bench compare` never reads the cache.
+
 ---
 
 ## Speed methodology

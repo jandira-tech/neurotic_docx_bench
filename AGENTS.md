@@ -174,6 +174,30 @@ samples include the full open/save disk cycle. Render-speed uses a fresh browser
 per call (mirroring `PlaywrightRenderer.to_pdfs`) so a stale readiness flag can't leak
 between docs. CI runs a smaller 20×2 sample and appends.
 
+The content cache (below) changes what these per-run numbers cover: a render or scored
+row restored from `.bench-cache/` carries `cached: true` and no `duration_ns` /
+`raster_ns` / `score_ns`, so `render_s`, `raster_s`, `score_s` and the `overall_*_speed`
+stats describe only the documents actually rendered and scored in that run. A run meant
+to measure speed passes `--no-cache`.
+
+## Content cache (`src/neurotic_docx_bench/content_cache.py`)
+
+`bench run` reuses renders, page rasters and scored rows by content hash from
+`.bench-cache/` next to `results/` (git-ignored; `BENCH_CACHE_DIR` moves it,
+`BENCH_NO_CACHE=1` or `--no-cache` disables it; `bench cache [--clear]` inspects it).
+Keys: candidate sha256, oracle sha256, base sha256 when present, DPI, renderer id
+(`hardware.renderer_id`, e.g. `soffice-26.2.4.2`, `word-16.x`) and the scorer fingerprint,
+16 hex chars over `score.py`, `score_v2.py`, `page_metrics.py`, `pipeline.py`, `raster.py`,
+the MuPDF build (`mupdf-<version>`) and `content_cache.SCHEMA`. Touching any of those
+sources changes the fingerprint, so a scorer edit never reads stale rows; bump `SCHEMA`
+when the on-disk layout changes. `score_pdf_pair` takes `cache=` and `renderer_id=`; the
+run path passes the active cache (`content_cache.active()`) to every `score_folders_*`
+call and wraps the renderer in `CachedRenderer`, which restores PDFs by source sha256 and
+only invokes the inner renderer for misses. Process-pool workers receive the cache through
+the task tuple. A hit still writes the page PNGs under the run's work dir, so galleries and
+the residual-ink diagnostics read the same paths as an uncached run. `bench compare` does
+not use the cache.
+
 ## Regenerating the Word oracle PDFs (macOS + Word, local-only)
 
 The committed oracle PDFs (`corpus/word_based/pdf_redlines_word/*.pdf`) are Word redline

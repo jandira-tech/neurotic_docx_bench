@@ -45,6 +45,7 @@ from rich.text import Text
 from rich.theme import Theme
 
 from neurotic_docx_bench import (
+    content_cache,
     functional_lens,
     hardware,
     lens_health,
@@ -233,6 +234,18 @@ console = Console(
         },
     ),
 )
+
+
+def _cached_renderer(renderer: Renderer, renderer_id: str) -> Renderer:
+    """``renderer`` behind the active content cache (content_cache.py), or as is."""
+    cache = content_cache.active()
+    if cache is None:
+        return renderer
+    return content_cache.CachedRenderer(renderer, cache, renderer_id=renderer_id)
+
+
+def _soffice_renderer_id() -> str:
+    return f"soffice-{hardware.soffice_version() or 'unknown'}"
 
 
 def _renderer(backend: str, harness: HarnessConfig | None = None) -> Renderer:
@@ -852,7 +865,8 @@ def _accept_compare_stage(
     if accept_failures:
         console.print(f"[yellow]{len(accept_failures)} accept failure(s)[/yellow]")
 
-    report = SofficeRenderer().to_pdfs(accepted_dir, run_dir / "accepted", jobs=rc.jobs)
+    soffice_id = _soffice_renderer_id()
+    report = _cached_renderer(SofficeRenderer(), soffice_id).to_pdfs(accepted_dir, run_dir / "accepted", jobs=rc.jobs)
     if report.fail_count:
         console.print(f"[yellow]{report.fail_count} accepted-render failure(s)[/yellow]")
 
@@ -864,6 +878,8 @@ def _accept_compare_stage(
         jobs=rc.jobs,
         candidate_tool=rc.name,
         exclude_keys=exclude_keys,
+        cache=content_cache.active(),
+        renderer_id=soffice_id,
         only_keys=only_keys,
         strict_filter_keys=False,
     )
@@ -928,11 +944,13 @@ def _roundtrip_stage(
     console.print(f"[bold]roundtrip:[/bold] scoring {rc.name} roundtrip fidelity ({rt_dir})")
     rt_source, is_temp = _limited_source(rt_dir, "*.docx", limit)
     try:
-        report = SofficeRenderer().to_pdfs(rt_source, run_dir / "roundtrip", jobs=rc.jobs)
+        soffice_id = _soffice_renderer_id()
+        report = _cached_renderer(SofficeRenderer(), soffice_id).to_pdfs(rt_source, run_dir / "roundtrip", jobs=rc.jobs)
         if report.fail_count:
             console.print(f"[yellow]{report.fail_count} roundtrip-render failure(s)[/yellow]")
         per_doc = pipeline.score_folders_plain(
             roundtrip_oracle_pdf, report.pdf_dir, run_dir / "roundtrip_score", dpi=use_dpi, jobs=rc.jobs,
+            cache=content_cache.active(), renderer_id=soffice_id,
         )
     finally:
         if is_temp:
@@ -1422,16 +1440,27 @@ def _execute_run(
     )
     try:
         _stage("render + score")
-        report = _renderer(rc.render, rc.harness).to_pdfs(src_dir, run_dir, jobs=rc.jobs, timeout=rc.timeout)
+        run_renderer_id = hardware.renderer_id(rc)
+        cache = content_cache.active()
+        report = _cached_renderer(_renderer(rc.render, rc.harness), run_renderer_id).to_pdfs(
+            src_dir, run_dir, jobs=rc.jobs, timeout=rc.timeout,
+        )
         if report.fail_count:
             console.print(f"[yellow]{report.fail_count} render failures[/yellow]")
+        restored = sum(1 for r in report.results if r.cached)
+        if restored:
+            console.print(f"content cache: {restored} render(s) restored")
         per_doc = pipeline.score_folders_full(
             [cfg.source_of_truth, *cfg.extra_oracle_dirs],
             report.pdf_dir, run_dir / "score", dpi=use_dpi, jobs=rc.jobs, candidate_tool=rc.name,
             base_map=_base_pdf_map(cfg), null_cache_path=jsonl_path.parent / "null_baseline.json",
             exclude_keys=holdout_exclude,
             only_keys=holdout_only,
+            cache=cache, renderer_id=run_renderer_id,
         )
+        hits = sum(1 for v in per_doc.values() if v.get("cached"))
+        if hits:
+            console.print(f"content cache: {hits}/{len(per_doc)} score(s) restored")
         gallery_path = gallery_emit.write_gallery(
             run_dir,
             {k: _get_overall_score(v) for k, v in per_doc.items()},
@@ -1488,20 +1517,21 @@ def _execute_run(
             if vis_name == "visual_rendering":
                 vis_per_doc = pipeline.score_folders_base(
                     Path(vis_oracle), report.pdf_dir, run_dir / f"score_{vis_name}",
-                    dpi=use_dpi, jobs=rc.jobs,
+                    dpi=use_dpi, jobs=rc.jobs, cache=cache, renderer_id=run_renderer_id,
                 )
             elif vis_name == "visual_accepted_changes":
                 vis_per_doc = pipeline.score_folders_accepted(
                     Path(vis_oracle), report.pdf_dir, run_dir / f"score_{vis_name}",
                     dpi=use_dpi, jobs=rc.jobs,
                     exclude_keys=holdout_exclude, only_keys=holdout_only,
+                    cache=cache, renderer_id=run_renderer_id,
                 )
             else:
                 vis_per_doc = pipeline.score_folders_full(
                     Path(vis_oracle), report.pdf_dir, run_dir / f"score_{vis_name}",
                     dpi=use_dpi, jobs=rc.jobs, candidate_tool=rc.name,
                     exclude_keys=holdout_exclude, only_keys=holdout_only,
-                    strict_filter_keys=False,
+                    strict_filter_keys=False, cache=cache, renderer_id=run_renderer_id,
                 )
             # visual_* stay on the RAW score: candidate and oracle come from DIFFERENT
             # engines, so repagination (page-count mismatch) is endemic and pagefair
@@ -2222,6 +2252,12 @@ def run(
         "family, stamped with the gate set's own docset id); the run a tool needs "
         "before it enters the main page",
     ),
+    use_cache: bool = typer.Option(
+        True,
+        "--cache/--no-cache",
+        help="reuse renders, rasters and scores by content hash from .bench-cache/ next "
+        "to the results dir (BENCH_CACHE_DIR moves it, BENCH_NO_CACHE=1 disables it)",
+    ),
 ) -> None:
     """Drive bench.yaml runs **sequentially** (one per tool). Each run gets its own
     ``runs/{name}_{datetime}`` work folder (kept locally; ``--clean-runs`` deletes it only
@@ -2234,29 +2270,56 @@ def run(
     """
     if os.environ.get("BENCH_RERUN"):
         rerun = True
-    _drive_runs(
-        config=config,
-        names=[only] if only else None,
-        limit=limit,
-        dpi=dpi,
-        results_dir=results_dir,
-        runs_dir=runs_dir,
-        clean_runs=clean_runs,
-        no_update=no_update,
-        emit=emit,
-        only_on_change=only_on_change,
-        do_gate=do_gate,
-        generate=generate,
-        accept_compare=accept_compare,
-        accepted_oracle_cache=accepted_oracle_cache,
-        roundtrip=roundtrip,
-        roundtrip_oracle_cache=roundtrip_oracle_cache,
-        rerun=rerun,
-        oracle_check=oracle_check,
-        canary_check=canary_check,
-        holdout=holdout,
-        gate_set=gate_set,
-    )
+    # The content cache is scoped to this command: the stages read it through
+    # ``content_cache.active()``, and nothing after the run (another command in the same
+    # process, a test) inherits it.
+    content_cache.configure(content_cache.from_env(Path(results_dir).resolve().parent, enabled=use_cache))
+    try:
+        _drive_runs(
+            config=config,
+            names=[only] if only else None,
+            limit=limit,
+            dpi=dpi,
+            results_dir=results_dir,
+            runs_dir=runs_dir,
+            clean_runs=clean_runs,
+            no_update=no_update,
+            emit=emit,
+            only_on_change=only_on_change,
+            do_gate=do_gate,
+            generate=generate,
+            accept_compare=accept_compare,
+            accepted_oracle_cache=accepted_oracle_cache,
+            roundtrip=roundtrip,
+            roundtrip_oracle_cache=roundtrip_oracle_cache,
+            rerun=rerun,
+            oracle_check=oracle_check,
+            canary_check=canary_check,
+            holdout=holdout,
+            gate_set=gate_set,
+        )
+    finally:
+        content_cache.configure(None)
+
+
+@app.command(name="cache")
+def cache_cmd(
+    results_dir: Path = typer.Option(Path("results"), "--results-dir", help="locates the default cache dir"),
+    clear: bool = typer.Option(False, "--clear", help="delete every cached render, raster and score"),
+) -> None:
+    """Show (or ``--clear``) the content-addressed render/raster/score cache."""
+    cache = content_cache.from_env(Path(results_dir).resolve().parent)
+    if cache is None:
+        console.print("content cache disabled (BENCH_NO_CACHE)")
+        return
+    if clear:
+        cache.clear()
+        console.print(f"cleared {cache.root}")
+    stats = cache.stats()
+    console.print(cache.root, soft_wrap=True)
+    console.print(f"render: {stats['render']}, raster: {stats['raster']}, score: {stats['score']}")
+    console.print(f"{stats['bytes'] / 2**20:.1f} MiB")
+    console.print(f"scorer fingerprint {content_cache.scorer_fingerprint()}, engine {content_cache.raster_engine()}")
 
 
 @app.command(name="canary")
