@@ -21,7 +21,7 @@ from collections.abc import Callable, Collection, Iterable
 from functools import lru_cache
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import TypedDict, cast
+from typing import Any, TypedDict, cast
 from urllib.error import URLError
 from urllib.request import urlopen
 
@@ -51,6 +51,7 @@ from neurotic_docx_bench import (
     lens_health,
     noise_floor,
     pipeline,
+    profile,
     provenance,
     stages,
     tool_updater,
@@ -272,10 +273,13 @@ def _limited_source(
     *,
     keys: Collection[str] | None = None,
     tool: str | None = None,
+    seed: int | None = None,
 ) -> tuple[Path, bool]:
     """Return (source_dir, is_temp). With ``keys`` (document keys, matched through the
     redline key of each file's stem for ``tool`` or its plain stem) or ``limit``, copy
     the selected files into a temp dir so only that subset is rendered and scored.
+    ``limit`` takes the first files in name order; with ``seed`` it takes a
+    deterministic random sample instead (``bench profile``).
     """
     if not limit and keys is None:
         return source, False
@@ -283,7 +287,7 @@ def _limited_source(
     if keys is not None:
         files = [f for f in files if docset_mod.stem_in_keys(f.stem, keys, tool)]
     if limit:
-        files = files[:limit]
+        files = profile.sample_files(files, limit, seed) if seed is not None else files[:limit]
     tmp = Path(tempfile.mkdtemp(prefix="bench-subset."))
     for f in files:
         _ = shutil.copy(f, tmp / f.name)
@@ -929,6 +933,7 @@ def _accept_compare_stage(
 
 def _roundtrip_stage(
     rc: RunConfig, run_dir: Path, roundtrip_oracle_pdf: Path, use_dpi: int, limit: int | None,
+    sample_seed: int | None = None,
 ) -> BenchmarkOutcome | None:
     """Score the tool's roundtrip output (``out/roundtrip/<tool>/``) against the original
     corpus rendered to PDF — an identity / re-serialization fidelity test. A perfect
@@ -942,7 +947,7 @@ def _roundtrip_stage(
         return None
 
     console.print(f"[bold]roundtrip:[/bold] scoring {rc.name} roundtrip fidelity ({rt_dir})")
-    rt_source, is_temp = _limited_source(rt_dir, "*.docx", limit)
+    rt_source, is_temp = _limited_source(rt_dir, "*.docx", limit, seed=sample_seed)
     try:
         soffice_id = _soffice_renderer_id()
         report = _cached_renderer(SofficeRenderer(), soffice_id).to_pdfs(rt_source, run_dir / "roundtrip", jobs=rc.jobs)
@@ -1358,10 +1363,14 @@ def _execute_run(
     holdout_keys: set[str] | None = None,
     holdout_mode: str | None = None,
     gate_set: bool = False,
+    timings_sink: dict[str, dict[str, dict[str, float]]] | None = None,
+    sample_seed: int | None = None,
 ) -> int:
     """Run one tool: (update/resolve version) → generate/locate source → render → score →
     emit → gate. Returns this run's exit contribution (1 on gate FAIL).
     ``gate_set`` renders and scores only the gate subset of each benchmark's set.
+    ``timings_sink`` (``bench profile``) receives each benchmark's per-document stage
+    timings; ``sample_seed`` turns ``limit`` into a seeded sample instead of the head.
 
     ``holdout_keys``/``holdout_mode`` (from the config's ``holdout_list``): mode
     "excluded" drops the sealed keys from the primary score, "only" scores just
@@ -1437,6 +1446,7 @@ def _execute_run(
         limit,
         keys=_gate_keys_for_run(cfg, rc, holdout_mode) if gate_set else None,
         tool=rc.name,
+        seed=sample_seed,
     )
     try:
         _stage("render + score")
@@ -1482,7 +1492,9 @@ def _execute_run(
                 console.print("[yellow]accept-compare skipped (no DOCX source for this run)[/yellow]")
         if roundtrip and roundtrip_oracle_pdf is not None:
             _stage("roundtrip")
-            roundtrip_outcome = _roundtrip_stage(rc, run_dir, roundtrip_oracle_pdf, use_dpi, limit)
+            roundtrip_outcome = _roundtrip_stage(
+                rc, run_dir, roundtrip_oracle_pdf, use_dpi, limit, sample_seed=sample_seed,
+            )
         # Visual benchmarks: re-score the SAME rendered candidate PDFs (already
         # produced by the renderer above) against each visual_* oracle declared on
         # the run. visual_rendering uses the plain-stem matcher (base PDFs); the
@@ -1670,6 +1682,17 @@ def _execute_run(
             )
 
     timings = _collect_timings(rc, run_dir, report, per_doc)
+    if timings_sink is not None:
+        # ``bench profile``: hand every benchmark's per-document stage seconds back to
+        # the driver, whether or not the benchmark is emitted.
+        if scores or failures:
+            timings_sink["script_redlines"] = timings
+        if accept_outcome is not None:
+            timings_sink[accept_outcome.benchmark] = accept_outcome.timings
+        if roundtrip_outcome is not None:
+            timings_sink[roundtrip_outcome.benchmark] = roundtrip_outcome.timings
+        for vis_outcome in visual_outcomes:
+            timings_sink[vis_outcome.benchmark] = vis_outcome.timings
 
     # Schema v4: emit one self-contained Results line per benchmark. The primary
     # redline score is "script_redlines"; accept-compare and roundtrip are their
@@ -1906,13 +1929,19 @@ def _drive_runs(
     canary_check: bool = True,
     holdout: bool = False,
     gate_set: bool = False,
+    timings_sink: dict[str, dict[str, Any]] | None = None,
+    sample_seed: int | None = None,
 ) -> None:
-    """Shared driver for ``run`` / ``run-all``: execute the selected bench.yaml runs
-    sequentially. ``names=None`` runs everything; otherwise the runs execute in the
-    given order (deduplicated).
+    """Shared driver for ``run`` / ``run-all`` / ``profile``: execute the selected
+    bench.yaml runs sequentially. ``names=None`` runs everything; otherwise the runs
+    execute in the given order (deduplicated).
 
     With ``holdout_list`` configured, normal runs EXCLUDE the sealed keys from
     scoring; ``holdout=True`` (``bench run --holdout``) flips to scoring ONLY them.
+
+    ``timings_sink`` (``bench profile``) receives, per run name, ``{"renderer_id",
+    "wall_s", "benchmarks": {benchmark: {doc_key: {stage: seconds}}}}``;
+    ``sample_seed`` makes ``limit`` a seeded sample instead of the first files.
     """
     cfg = load_config(config)
     holdout_keys: set[str] | None = None
@@ -2110,6 +2139,10 @@ def _drive_runs(
                 if progress is not None and current_task is not None:
                     progress.remove_task(current_task)
                 continue
+        run_sink: dict[str, dict[str, dict[str, float]]] | None = (
+            {} if timings_sink is not None else None
+        )
+        wall_start = time.perf_counter()
         try:
             worst_exit = max(
                 worst_exit,
@@ -2136,6 +2169,8 @@ def _drive_runs(
                     holdout_keys=holdout_keys,
                     holdout_mode=holdout_mode,
                     gate_set=gate_set,
+                    timings_sink=run_sink,
+                    sample_seed=sample_seed,
                 ),
             )
         except Exception as exc:  # one run's failure must not stop the rest
@@ -2159,6 +2194,12 @@ def _drive_runs(
                 console.print(f"cleaned {run_dir}")
         finally:
             _stop_harness_server(server_proc)
+            if timings_sink is not None and run_sink is not None:
+                timings_sink[rc.name] = {
+                    "renderer_id": hardware.renderer_id(rc),
+                    "wall_s": time.perf_counter() - wall_start,
+                    "benchmarks": run_sink,
+                }
         # one run processed (ok or failed) → advance the overall bar and retire the
         # per-run bar (skips & harness failures do their own cleanup before `continue`).
         if progress is not None and overall_task is not None:
@@ -2320,6 +2361,72 @@ def cache_cmd(
     console.print(f"render: {stats['render']}, raster: {stats['raster']}, score: {stats['score']}")
     console.print(f"{stats['bytes'] / 2**20:.1f} MiB")
     console.print(f"scorer fingerprint {content_cache.scorer_fingerprint()}, engine {content_cache.raster_engine()}")
+
+
+@app.command(name="profile")
+def profile_cmd(
+    config: Path = typer.Option(Path("bench.yaml"), "--config", "-c"),
+    run_names: list[str] | None = typer.Option(
+        None, "--run", help="profile only this run name (repeatable); default: every run",
+    ),
+    sample: int = typer.Option(10, "--sample", min=1, help="documents per benchmark, a seeded sample"),
+    seed: int = typer.Option(0, "--seed", help="sample seed; the same seed picks the same documents"),
+    dpi: int | None = typer.Option(None, "--dpi"),
+    results_dir: Path = typer.Option(Path("results"), "--results-dir", help="nothing is written under it"),
+    runs_dir: Path = typer.Option(Path("runs"), "--runs-dir", help="per-run work folders"),
+    clean_runs: bool = typer.Option(False, "--clean-runs", help="delete each run's work folder at its end"),
+    accept_compare: bool = typer.Option(
+        False, "--accept-compare/--no-accept-compare", help="also time the accept-compare stage",
+    ),
+    accepted_oracle_cache: Path = typer.Option(Path("out/accepted_oracle"), "--accepted-oracle-cache"),
+    roundtrip: bool = typer.Option(False, "--roundtrip/--no-roundtrip", help="also time the roundtrip stage"),
+    roundtrip_oracle_cache: Path = typer.Option(Path("out/roundtrip_oracle"), "--roundtrip-oracle-cache"),
+    json_out: Path | None = typer.Option(None, "--json", help="write the per-stage report here"),
+) -> None:
+    """Time every pipeline stage (generate, render, raster, score) on a seeded sample of
+    documents and print per-benchmark statistics (n, total, mean, median, p95, max and
+    each stage's share of the run) plus each run's wall time.
+
+    Profiling is always one uncached pass (the content cache is neither read nor
+    written) and never a bench result: nothing is appended to ``results/bench.jsonl``,
+    no gate runs, and already-recorded runs are not skipped.
+    """
+    use_dpi = dpi if dpi is not None else load_config(config).scoring.dpi
+    sink: dict[str, dict[str, Any]] = {}
+    content_cache.configure(None)
+    try:
+        _drive_runs(
+            config=config,
+            names=list(run_names) if run_names else None,
+            limit=sample,
+            dpi=use_dpi,
+            results_dir=results_dir,
+            runs_dir=runs_dir,
+            clean_runs=clean_runs,
+            no_update=True,
+            emit=False,
+            only_on_change=False,
+            do_gate=False,
+            generate=False,
+            accept_compare=accept_compare,
+            accepted_oracle_cache=accepted_oracle_cache,
+            roundtrip=roundtrip,
+            roundtrip_oracle_cache=roundtrip_oracle_cache,
+            rerun=True,
+            timings_sink=sink,
+            sample_seed=seed,
+        )
+    finally:
+        content_cache.configure(None)
+    report = profile.build_report(sink, sample=sample, seed=seed, dpi=use_dpi)
+    for table in profile.render_tables(report):
+        console.print(table)
+    console.print(f"sample {sample} (seed {seed}), dpi {use_dpi}, cache off, stage columns in seconds")
+    console.print(f"scorer {report['scorer_fingerprint']}, engine {report['raster_engine']}")
+    if json_out is not None:
+        json_out.parent.mkdir(parents=True, exist_ok=True)
+        json_out.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n")
+        console.print(f"wrote {json_out}")
 
 
 @app.command(name="canary")
