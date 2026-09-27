@@ -20,7 +20,7 @@ dependencies = [
     "rich>=13.0",
     "docx-revisions>=0.1.5",
     "pydantic>=2.11",
-    "huggingface-hub>=0.30",
+    "huggingface-hub>=2.0",
 ]
 
 [project.optional-dependencies]
