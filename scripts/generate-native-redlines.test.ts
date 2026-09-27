@@ -26,7 +26,7 @@ const haveFolio = existsSync("src/neurotic_docx_bench/utils/folio/node_modules/@
 const DOCXODUS_ROOT_PKG = "node_modules/docxodus/package.json";
 const DOCXODUS_VENDOR_PKG =
   "src/neurotic_docx_bench/utils/docxodus/node_modules/docxodus/package.json";
-// Must mirror resolveVendorEntry() in the adapter: pin-tree (repo root) first,
+// Must mirror resolveDocxodusEntry() (docxodus-node-compat.mjs): pin-tree (repo root) first,
 // vendored sub-install as fallback. Mocking the wrong one silently lets the REAL
 // docxodus run and the assertion then reports "undefined" rather than a mismatch.
 const DOCXODUS_ENTRY = (() => {
@@ -252,11 +252,46 @@ describe("generate-native-redlines", () => {
     );
 
     it.runIf(haveCorpus && haveDocxodus)(
+      "docxodus ≥12 (no ComparisonEngine enum, one engine) compares without an engine option",
+      async () => {
+        const seen: { calls: number; options?: unknown } = { calls: 0 };
+        vi.doMock(DOCXODUS_ENTRY, () => ({
+          initialize: async () => {},
+          compareDocuments: async (_a: Uint8Array, _b: Uint8Array, options?: unknown) => {
+            seen.calls += 1;
+            seen.options = options;
+            return new Uint8Array([1, 2, 3]);
+          },
+        }));
+        try {
+          vi.resetModules();
+          const { loadEngine: freshLoadEngine } = await import("./generate-native-redlines.ts");
+          const engine = await freshLoadEngine("docxodus", "");
+          const [base, next] = firstPair();
+          expect(await engine(base, next)).toEqual(new Uint8Array([1, 2, 3]));
+          expect(seen).toEqual({ calls: 1, options: undefined });
+        } finally {
+          vi.doUnmock(DOCXODUS_ENTRY);
+          vi.resetModules();
+        }
+      },
+      30_000,
+    );
+
+    it.runIf(haveCorpus && haveDocxodus)(
       "the engine the adapter names is still the one docxodus itself defaults to",
       async () => {
         const dox: any = await import(DOCXODUS_ENTRY);
         await dox.initialize();
         const [base, next] = firstPair();
+        if (!("ComparisonEngine" in dox)) {
+          // docxodus ≥12: one engine, no default to drift. The adapter must still drive it.
+          const engine = await loadEngine("docxodus", "");
+          expect(await redlineShape(await engine(base, next))).toEqual(
+            await redlineShape(await dox.compareDocuments(base, next)),
+          );
+          return;
+        }
 
         const shapeOf = async (options?: unknown) =>
           redlineShape(await dox.compareDocuments(base, next, options));
@@ -412,6 +447,31 @@ describe("generate-native-redlines", () => {
     },
     120_000,
   );
+
+  it("runBatch creates the run dir the CLI writes generate_failures.json into", async () => {
+    const tmp = mkdtempSync(join(tmpdir(), "gen-rundir-"));
+    try {
+      const manifest = join(tmp, "manifest.csv");
+      writeFileSync(manifest, "pair_stem,base,next\n");
+      const runDir = join(tmp, "run", "nested");
+      const res = await runBatch({
+        method: "docxodus",
+        dist: "",
+        out: join(tmp, "out"),
+        runDir,
+        manifest,
+        sourceDir: tmp,
+        status: "ok",
+        limit: 0,
+        tool: "docxodus",
+        force: true,
+      });
+      expect(res).toEqual({ ok: 0, failed: [], timings: {} });
+      expect(existsSync(runDir)).toBe(true);
+    } finally {
+      rmSync(tmp, { recursive: true, force: true });
+    }
+  }, 60_000);
 
   it.runIf(haveCorpus && haveJubarte)(
     "runBatch writes a redline whose name normalizes to the pair key",
