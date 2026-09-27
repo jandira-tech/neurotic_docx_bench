@@ -640,7 +640,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "docx-revisions", specifier = ">=0.1.5" },
-    { name = "huggingface-hub", specifier = ">=0.30" },
+    { name = "huggingface-hub", specifier = ">=2.0" },
     { name = "lxml", specifier = ">=6.0" },
     { name = "numpy", specifier = ">=2.0" },
     { name = "nupunkt", marker = "extra == 'competitors'", specifier = "==0.6.0" },
