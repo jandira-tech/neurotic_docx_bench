@@ -7,9 +7,16 @@ Sequential and round-robin: each document is converted by every tool back to bac
 sample is one CLI call (process start included) — the cost a user pays. soffice keeps
 one warm user profile. Failed conversions are excluded from timing and counted.
 
+--warm times a long-lived worker per tool instead (tools/d2p-warm, one binary per
+tool, the same library calls as each CLI): read + convert + write, measured inside the
+worker, with process start and one-time initialisation paid once, as a service would.
+A worker past --timeout is killed, respawned, and the document counts as failed.
+soffice has no warm worker here: driving it warm needs LibreOffice's bundled Python
+(UNO), which macOS kills at start on this install (its app bundle seal is invalid).
+
 Usage:
   uv run python scripts/docx_to_pdf_speed.py --jubarte BIN --corpus NAME=DIR [--corpus ...]
-      [--tools jubarte,docxide,soffice,rdocx,office2pdf] [--limit N] --out results/docx_to_pdf_speed
+      [--tools jubarte,docxide,soffice,rdocx,office2pdf] [--limit N] [--warm] --out results/docx_to_pdf_speed
 Writes <out>/<run_ts>/files.jsonl (one row per sample) and appends one row per tool and
 corpus (plus a pooled row, corpus "all") to <out>/speed.jsonl (unit ms_per_docx).
 """
@@ -18,6 +25,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import selectors
 import shutil
 import statistics
 import subprocess
@@ -46,6 +54,50 @@ def version_of(tool: str, jubarte: str) -> str:
     return version
 
 
+WARM_BIN = Path(__file__).resolve().parent.parent / 'tools' / 'd2p-warm' / 'bin'
+
+
+class Worker:
+    """One d2p-warm process: `src\tdst` in, `ok <ms>` / `err <ms> <msg>` out."""
+
+    def __init__(self, tool: str, timeout: float) -> None:
+        self.tool, self.timeout, self.proc = tool, timeout, None
+
+    def start(self) -> None:
+        self.proc = subprocess.Popen(
+            [str(WARM_BIN / f'd2p-warm-{self.tool}'), self.tool],
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.DEVNULL,
+            text=True,
+            bufsize=1,
+        )
+
+    def convert(self, src: Path, dst: Path) -> tuple[float, bool]:
+        if self.proc is None or self.proc.poll() is not None:
+            self.start()
+        t0 = time.perf_counter()
+        self.proc.stdin.write(f'{src}\t{dst}\n')
+        self.proc.stdin.flush()
+        sel = selectors.DefaultSelector()
+        sel.register(self.proc.stdout, selectors.EVENT_READ)
+        ready = sel.select(self.timeout)
+        sel.close()
+        line = self.proc.stdout.readline() if ready else ''
+        if not line:
+            self.proc.kill()
+            self.proc.wait()
+            self.proc = None
+            return (time.perf_counter() - t0) * 1000, False
+        status, ms, *_ = line.split(' ', 2)
+        return float(ms), status == 'ok' and dst.exists() and dst.stat().st_size > 0
+
+    def close(self) -> None:
+        if self.proc is not None:
+            self.proc.stdin.close()
+            self.proc.wait()
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument('--jubarte', required=True)
@@ -54,9 +106,19 @@ def main() -> None:
     ap.add_argument('--limit', type=int, default=0, help='documents per corpus (0 = all)')
     ap.add_argument('--timeout', type=int, default=120)
     ap.add_argument('--out', default='results/docx_to_pdf_speed')
+    ap.add_argument('--warm', action='store_true', help='time warm workers (tools/d2p-warm)')
     args = ap.parse_args()
 
     tools = args.tools.split(',')
+    if args.warm and 'soffice' in tools:
+        tools.remove('soffice')
+        print('--warm: soffice skipped (no warm worker; see the module docstring)', flush=True)
+    workers = {t: Worker(t, args.timeout) for t in tools} if args.warm else {}
+    # The warm jubarte row is labelled with --jubarte's version, so its worker must
+    # be built from the same source: a worker older than that binary is stale.
+    warm_jubarte = WARM_BIN / 'd2p-warm-jubarte'
+    if 'jubarte' in workers and warm_jubarte.stat().st_mtime < Path(args.jubarte).stat().st_mtime:
+        raise SystemExit(f'{warm_jubarte} predates {args.jubarte}: rebuild it from the same checkout')
     versions = {t: version_of(t, args.jubarte) for t in tools}
     run_ts = datetime.now(timezone.utc).strftime('%Y-%m-%dT%H-%M-%SZ')
     run_dir = Path(args.out) / run_ts
@@ -85,6 +147,8 @@ def main() -> None:
     def once(tool: str, src: Path) -> tuple[float, bool]:
         dst = work / f'{tool}.pdf'
         dst.unlink(missing_ok=True)
+        if tool in workers:
+            return workers[tool].convert(src, dst)
         t0 = time.perf_counter()
         try:
             rc = subprocess.run(cmd(tool, src, dst), capture_output=True, timeout=args.timeout).returncode
@@ -141,10 +205,18 @@ def main() -> None:
                 'mean': round(statistics.fmean(xs), 3),
                 'median': round(statistics.median(xs), 3),
                 'p95': round(xs[min(len(xs) - 1, int(0.95 * len(xs)))], 3),
-                'note': 'sequential round-robin, one CLI call per sample (process start included)',
+                'note': (
+                    'warm: sequential round-robin, one long-lived worker per tool (library calls as the CLI, '
+                    'read + convert + write timed in-process)'
+                    if args.warm
+                    else 'sequential round-robin, one CLI call per sample (process start included)'
+                ),
+                'mode': 'warm' if args.warm else 'cold',
             }
             out.write(json.dumps(row) + '\n')
             print(json.dumps(row), flush=True)
+    for w in workers.values():
+        w.close()
     shutil.rmtree(work, ignore_errors=True)
 
 
