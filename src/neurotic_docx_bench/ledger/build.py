@@ -129,6 +129,9 @@ def build(root: Path, *, now: datetime | None = None) -> Bundle:
     lens = tb.lens_health_section(rows)
     if lens:
         detailed_parts.append(lens)
+    detailed_parts.append(
+        "\n".join(tb.holdout_gap_section(root / "results" / "bench.jsonl"))
+    )
     detailed_parts.append(tb.methodology_section(noise_sigma=sigma, lo_version=lo))
     return Bundle(
         results_md="\n".join(results_parts).rstrip() + "\n",

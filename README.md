@@ -4,34 +4,27 @@ Pixel scores of DOCX tools against Microsoft Word oracles.
 
 | | |
 | --- | --- |
-| **Scores** | 0–100 per document |
-| **Redline oracle** | Word tracked-change markup, rendered by LibreOffice 26.2.4.2 |
-| **DOCX→PDF oracle** | SHA-pinned Word-export PDFs in `pdf_accepted_word` and `pdf_redlines_randomized` |
-| **Second scorer** | `docxide_metrics` — docxide-pdf's own Jaccard / SSIM / text-boundary suite, same fixtures |
-| **Trend log** | `results/bench.jsonl` |
-| **Results** | [`RESULTS.md`](RESULTS.md) (medium) · [`RESULTS_DETAILED.md`](RESULTS_DETAILED.md) (detailed) · [`docs/RESULTS.md`](docs/RESULTS.md) (published report) |
+| **Scores** | 0 to 100 per document |
+| **Redline oracle** | Word tracked-change DOCX, rendered by LibreOffice 26.2.4.2 for oracle and candidates alike |
+| **DOCX to PDF oracle** | SHA-pinned Word-export PDFs (`pdf_accepted_word`, `pdf_redlines_randomized`, `pdf_source`, `pdf_source_randomized`) |
+| **Second lens** | `docxide_metrics`: docxide-pdf's own Jaccard / SSIM / text-boundary suite on the same fixtures |
+| **Stores** | `results/bench.jsonl` (fidelity), `results/converters.jsonl` (DOCX to PDF), `results/speed.jsonl` + `results/redline_speed_bench/` (speed), `results/archive/` (history only) |
+| **Results** | [`RESULTS.md`](RESULTS.md) (headline) and [`RESULTS_DETAILED.md`](RESULTS_DETAILED.md) (history, paired comparisons, methodology), both generated |
 | **Visual report** | `runs/<run>/report.html` |
 | **Speed** | [`docs/SPEED.md`](docs/SPEED.md) |
 
-Jubarte families list best and worst pin per fidelity table. Other vendors list each published pin. Compare rows only within one table and only when `ITT Docs` matches.
+One row per tool in every headline table: its latest eligible run in the current comparability group (same document set, renderer and scorer). No best pin, no best-of-N. Author-affiliated tools (Jubarte) are marked and follow the same rules. Compare rows only within one table.
 
 ```bash
-python3 scripts/export-results-md.py          # RESULTS_DETAILED.md + docs/RESULTS.md
-bun run update-readme-ranking                 # medium tables in RESULTS.md
-uv run bench docx-to-pdf --update-readme      # docx_to_pdf table
-uv run bench docxide-metrics --update-readme  # docxide_metrics table (docxide-pdf's scorer)
+uv run bench report            # regenerates RESULTS.md, RESULTS_DETAILED.md and the vendor table below
+uv run bench report --check    # exit 1 when the published views are stale (CI)
 ```
 
-Redline markup is Microsoft Word. Candidate and oracle redline PDFs are both rendered with LibreOffice 26.2.4.2. The oracle DOCX through that pipeline scores 100.
+Candidate and oracle redline PDFs are both rendered with LibreOffice 26.2.4.2; re-rendering the same DOCX is byte-identical on one build (`results/noise_floor.json`). The `oracle-identity` calibration row (`bench calibrate`) is Word's own DOCX through the candidate pipeline and must score 100; the `null-baseline` row is the base document unchanged, the floor a redline tool must beat.
 
 ## Results visibility
 
-The README is the minimum-publicity view. Use [`RESULTS.md`](RESULTS.md) for compact
-rankings, [`RESULTS_DETAILED.md`](RESULTS_DETAILED.md) for full tables, provenance,
-methodology, and benchmark-specific diagnostics, or the [`docs/RESULTS.md`](docs/RESULTS.md)
-published report. The three-way [`renderer corpus`](corpus/no_comments_pdf_was_generated_by_word/renderer_corpus/README.md)
-contains Word, Jubarte, and docxide-pdf PDFs for the same 398 source DOCX files. Generated
-result scripts write to the appropriate result file rather than expanding this README.
+[`RESULTS.md`](RESULTS.md) is the headline: one table per benchmark, intervals, calibration rows, and the reason for every row that is not ranked. [`RESULTS_DETAILED.md`](RESULTS_DETAILED.md) holds every row in the stores grouped by comparability group with its eligibility verdict, pairwise comparisons, lens-health alarms, and the methodology. Rows that predate provenance stamping, holdout-only runs and retracted runs live in `results/archive/` with a manifest and appear only in the history. The three-way [`renderer corpus`](corpus/no_comments_pdf_was_generated_by_word/renderer_corpus/README.md) contains Word, Jubarte, and docxide-pdf PDFs for the same 398 source DOCX files.
 
 ## Benchmarks
 
@@ -49,9 +42,9 @@ Compare vendors only within one table. LibreOffice scores and Playwright scores 
 | **`docx_to_pdf_no_redline_docs`** | Source DOCX + randomized source DOCX | SHA-pinned `pdf_source` + `pdf_source_randomized` |
 | **`docxide_metrics`** | The `docx_to_pdf_no_redline_docs` inputs, scored with docxide-pdf's Jaccard / SSIM / text-boundary suite at 150 DPI | Same SHA-pinned `pdf_source` + `pdf_source_randomized` |
 
-`visual_*` loads Word’s DOCX in the editor, not the tool’s own redline. Generator package and editor package are separate pins.
+`visual_*` loads Word's DOCX in the editor, not the tool's own redline. Generator package and editor package are separate pins.
 
-Pins: [`bench.yaml`](bench.yaml).
+Pins: [`bench.yaml`](bench.yaml). Tool identities: [`bench.registry.yaml`](bench.registry.yaml) (the table below is generated from it).
 
 <!-- VENDORS-START -->
 | Tool | Role | Engine | Author-affiliated | Note |
@@ -115,13 +108,13 @@ uv run bench compare <candidate-pdfs> <oracle-pdfs> --tool name
 
 ## Scoring
 
-1. Match candidate PDF to oracle PDF by `<base>_<next>` (redlines) or plain stem (`docx_to_pdf`, roundtrip).
+1. Match candidate PDF to oracle PDF by `<base>_<next>` (redlines) or plain stem (`docx_to_pdf`, roundtrip). The denominator is the oracle document set (`results/docsets.json`); a document with no candidate output enters at 0 (intent-to-treat).
 2. Raster each page at 144 DPI.
-3. Score with SSIM, ink-F1, edge-IoU, colour ΔE, and blob metrics (0–100).
+3. Score each page 0 to 100 as a weighted sum: SSIM 40, ink F1 20, edge IoU 15, colour 15, blob 10. A document scores 0.7 times its page mean plus 0.3 times its worst page; "Perfect (100)" counts documents within 1e-6 of 100.
 
-Scoring core is a verbatim lift of [superdoc-visual-benchmarks](https://github.com/superdoc-dev/superdoc-visual-benchmarks). `tests/test_parity.py` checks byte-identical behaviour. Page-count mismatch is recorded; only `min(pages)` is scored.
+Scoring core is a verbatim lift of [superdoc-visual-benchmarks](https://github.com/superdoc-dev/superdoc-visual-benchmarks); `tests/test_parity.py` checks byte-identical behaviour. Pages present on only one side enter at 0, ink-weighted (`pagefair-v2`), for script_redlines, accepted_changes and roundtrip; the visual_* benchmarks rank on the raw score because cross-engine repagination is expected there. Rank ties: adjacent rows tie when the paired bootstrap interval of their median difference includes 0.
 
-Gate: 100 always passes. Per-document drop vs snapshot → warning. Aggregate mean or median drop → fail. Promote with `uv run bench accept-scores <tool>`.
+Regression gate (CI tooling, not methodology): 100 always passes; a per-document drop vs the accepted snapshot warns; an aggregate mean or median drop beyond `eps = max(1e-4, 3 sigma)` from `results/noise_floor.json` fails. Promote with `uv run bench accept-scores <tool>`.
 
 ---
 
@@ -152,11 +145,15 @@ bench.yaml                 # runs, pins, oracles
 corpus/word_based/         # redline DOCX + LibreOffice oracle PDFs
 corpus/no_comments_pdf_was_generated_by_word/  # Word-exported PDFs (docx_to_pdf)
 corpus/no_comments_pdf_was_generated_by_word/renderer_corpus/  # Word/Jubarte/docxide PDFs
-results/bench.jsonl        # redline trend log
-results/docx_to_pdf_500.json
+bench.registry.yaml        # tool identities (one id per spelling in every store)
+results/bench.jsonl        # fidelity store (LFS)
+results/converters.jsonl   # DOCX to PDF store (one line per report and tool)
+results/docsets.json       # document set per benchmark (the ITT denominators)
+results/retractions.jsonl  # runs that must never be ranked, with reasons
+results/archive/           # legacy rows and their manifest (history only)
 src/neurotic_docx_bench/
+src/neurotic_docx_bench/ledger/         # registry, rows, policy, stats, tables, build (`bench report`)
 src/neurotic_docx_bench/utils/docxide-metrics/  # vendored docxide-pdf scorer (Rust)
-results/docxide_metrics.json
 scripts/
 ```
 
