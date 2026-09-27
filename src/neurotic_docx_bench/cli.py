@@ -2413,6 +2413,10 @@ def profile_cmd(
             roundtrip=roundtrip,
             roundtrip_oracle_cache=roundtrip_oracle_cache,
             rerun=True,
+            # A profile is never a result, so the comparability gates (oracle manifest,
+            # renderer canary) do not apply to it.
+            oracle_check=False,
+            canary_check=False,
             timings_sink=sink,
             sample_seed=seed,
         )
