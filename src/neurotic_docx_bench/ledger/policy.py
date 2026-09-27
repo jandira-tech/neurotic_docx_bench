@@ -154,6 +154,8 @@ class HeadlineTable(BaseModel):
     benchmark: str
     group: GroupKey | None
     expected_n: int
+    # False when expected_n came from the rows themselves (no docsets.json entry).
+    docset_recorded: bool = True
     rows: list[RankedRow]
     calibration: list[ResultRow]
     excluded: list[ExcludedRow]
@@ -259,6 +261,7 @@ def select_headline(
             benchmark=benchmark,
             group=current,
             expected_n=expected_by_group[current],
+            docset_recorded=current.docset in docsets,
             rows=ranked,
             calibration=calibration,
             excluded=excluded,

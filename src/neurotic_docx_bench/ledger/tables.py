@@ -1,0 +1,552 @@
+"""Markdown rendering. Every table states its own policy, group and uncertainty."""
+
+from __future__ import annotations
+
+from collections.abc import Mapping, Sequence
+from datetime import datetime
+
+from neurotic_docx_bench.ledger import policy as pol
+from neurotic_docx_bench.ledger import stats as st
+from neurotic_docx_bench.ledger.registry import Registry
+from neurotic_docx_bench.ledger.rows import ResultRow
+from neurotic_docx_bench.score import ScoreWeights
+
+AFFILIATED_MARK = "†"
+
+TITLES: dict[str, str] = {
+    "script_redlines": "script_redlines: redline markup vs Word",
+    "accepted_changes": "accepted_changes: accept all changes, match the final document",
+    "roundtrip": "roundtrip: self-diff must not invent noise",
+    "visual_rendering": "visual_rendering: editor render of the plain DOCX",
+    "visual_redlines": "visual_redlines: editor render of the redline DOCX",
+    "visual_accepted_changes": "visual_accepted_changes: editor render of the accepted DOCX",
+    "docx_to_pdf": "docx_to_pdf: accepted and randomized redline DOCX to PDF vs Word export",
+    "docx_to_pdf_no_redline_docs": "docx_to_pdf_no_redline_docs: source DOCX to PDF vs Word export",
+    "docxide_metrics": "docxide_metrics: source DOCX to PDF under docxide-pdf's own metrics",
+}
+
+ORACLE_NOTES: dict[str, str] = {
+    "script_redlines": (
+        "Oracle: LibreOffice render of Word's tracked-change DOCX; candidates are rendered by the "
+        "same LibreOffice build, so 100 means pixel-identical to Word's DOCX as LibreOffice draws it."
+    ),
+    "accepted_changes": (
+        "Oracle: LibreOffice render of Word's accepted DOCX; the candidate is the tool's own "
+        "redline with every change accepted."
+    ),
+    "roundtrip": (
+        "Oracle: LibreOffice render of the unchanged source; the candidate is the tool's roundtrip output."
+    ),
+    "visual_rendering": (
+        "Oracle: Word's own PDF export of the source; the candidate is a Playwright capture of the vendor editor."
+    ),
+    "visual_redlines": (
+        "Oracle: Word's own PDF export of the redline; the candidate is a Playwright capture of the "
+        "vendor editor loading Word's DOCX."
+    ),
+    "visual_accepted_changes": (
+        "Oracle: Word's own PDF export of the accepted DOCX; the candidate is a Playwright capture of the vendor editor."
+    ),
+    "docx_to_pdf": "Oracle: SHA-pinned Word-export PDFs; the candidate is the converter's PDF.",
+    "docx_to_pdf_no_redline_docs": (
+        "Oracle: SHA-pinned Word-export PDFs of the source; the candidate is the converter's PDF."
+    ),
+    "docxide_metrics": (
+        "Same inputs and oracles as docx_to_pdf_no_redline_docs, scored with docxide-pdf's Jaccard, "
+        "SSIM and text-boundary metrics at 150 DPI; ranked on Jaccard, docxide-pdf's headline number."
+    ),
+}
+
+
+def fmt(x: float) -> str:
+    return f"{x:.2f}"
+
+
+def fmt_date(ts: datetime) -> str:
+    return ts.strftime("%Y-%m-%d")
+
+
+def md_table(headers: Sequence[str], rows: Sequence[Sequence[str]]) -> str:
+    head = "| " + " | ".join(headers) + " |"
+    sep = "| " + " | ".join("---" for _ in headers) + " |"
+    body = ["| " + " | ".join(r) + " |" for r in rows]
+    return "\n".join([head, sep, *body])
+
+
+def _tool_cell(row: ResultRow) -> str:
+    return f"{row.display} {AFFILIATED_MARK}" if row.affiliated else row.display
+
+
+def _rank_cell(r: pol.RankedRow) -> str:
+    return f"{r.rank}=" if r.tied_with_previous else str(r.rank)
+
+
+def _ci_cell(ci: tuple[float, float] | None) -> str:
+    return f"[{fmt(ci[0])}, {fmt(ci[1])}]" if ci else "n/a"
+
+
+def _hardware_cell(hw: Mapping[str, object] | None) -> str:
+    if not hw:
+        return "unknown"
+    cpu = str(hw.get("cpu") or hw.get("machine") or "unknown")
+    cores = hw.get("cores")
+    return f"{cpu} ({cores} cores)" if cores else cpu
+
+
+def _extra_metrics(rows: Sequence[ResultRow]) -> list[str]:
+    names: list[str] = []
+    for r in rows:
+        for k in r.extra:
+            if k not in names:
+                names.append(k)
+    return names
+
+
+def fidelity_table(
+    table: pol.HeadlineTable, *, row_ci: Mapping[str, tuple[float, float] | None]
+) -> str:
+    title = TITLES.get(table.benchmark, table.benchmark)
+    out: list[str] = [f"### {title}", "", ORACLE_NOTES.get(table.benchmark, "")]
+    if table.group is None or not table.rows:
+        out.append("")
+        out.append("No eligible rows for this benchmark yet.")
+    else:
+        g = table.group
+        out.append("")
+        inferred = (
+            " The document set was inferred from the largest ITT n in this group because these "
+            "rows predate document-set stamping; a re-run stamps it."
+            if not table.docset_recorded
+            else ""
+        )
+        out.append(
+            f"Document set `{g.docset}` ({table.expected_n} documents), renderer `{g.renderer}`, "
+            f"scorer `{g.scorer}`. One row per tool: its latest eligible run. Sorted by ITT median, "
+            "then ITT mean. Failed documents score 0 (intent-to-treat); Mean and Median are over "
+            "scored documents only. 95% CI is a percentile bootstrap of the ITT median (2000 "
+            "resamples, seed 42). An equal rank (`n=`) means the paired bootstrap interval of the "
+            f"median difference to the row above includes 0. {AFFILIATED_MARK} marks an "
+            "author-affiliated tool; the same rules apply to it." + inferred
+        )
+        out.append("")
+        extras = _extra_metrics([r.row for r in table.rows])
+        headers = [
+            "Rank",
+            "Tool",
+            "Pin",
+            "Run",
+            "Docs",
+            "Failed",
+            "ITT Mean",
+            "ITT Median",
+            "95% CI",
+            "Mean",
+            "Median",
+            "Perfect (100)",
+            *[f"{m} median" for m in extras],
+        ]
+        body = []
+        for r in table.rows:
+            cells = [
+                _rank_cell(r),
+                _tool_cell(r.row),
+                r.row.pin.display,
+                fmt_date(r.row.timestamp),
+                str(r.row.n_scored),
+                str(r.row.n_failed_docs),
+                fmt(r.row.itt_mean),
+                fmt(r.row.itt_median),
+                _ci_cell(row_ci.get(r.row.key)),
+                fmt(r.row.mean),
+                fmt(r.row.median),
+                str(r.row.exact_100),
+            ]
+            for m in extras:
+                v = r.row.extra.get(m, {}).get("median")
+                cells.append(fmt(v) if v is not None else "n/a")
+            body.append(cells)
+        out.append(md_table(headers, body))
+    if table.calibration:
+        out.append("")
+        out.append("Calibration rows (never ranked; the pipeline's own anchors):")
+        out.append("")
+        out.append(
+            md_table(
+                [
+                    "Row",
+                    "Pin",
+                    "Run",
+                    "Docs",
+                    "Failed",
+                    "ITT Mean",
+                    "ITT Median",
+                    "Perfect (100)",
+                ],
+                [
+                    [
+                        c.display,
+                        c.pin.display,
+                        fmt_date(c.timestamp),
+                        str(c.n_scored),
+                        str(c.n_failed_docs),
+                        fmt(c.itt_mean),
+                        fmt(c.itt_median),
+                        str(c.exact_100),
+                    ]
+                    for c in table.calibration
+                ],
+            )
+        )
+    if table.excluded:
+        out.append("")
+        out.append("Not ranked in this group (latest run per tool, with the reason):")
+        out.append("")
+        for e in table.excluded:
+            out.append(
+                f"- {_tool_cell(e.row)} {e.row.pin.display} ({fmt_date(e.row.timestamp)}): "
+                f"{'; '.join(e.verdict.reasons)}"
+            )
+    if table.not_applicable:
+        out.append("")
+        out.append(
+            "Not applicable: "
+            + "; ".join(
+                f"{t.display} ({t.note})" if t.note else t.display
+                for t in table.not_applicable
+            )
+        )
+    if table.history_groups:
+        out.append("")
+        out.append(
+            "Other document sets or renderers measured for this benchmark are listed under History "
+            "in RESULTS_DETAILED.md: "
+            + ", ".join(f"`{g.docset}`/`{g.renderer}`" for g in table.history_groups)
+        )
+    return "\n".join(out).rstrip() + "\n"
+
+
+def _speed_rows(ranked: Sequence[pol.RankedSpeed]) -> list[list[str]]:
+    return [
+        [
+            str(r.rank),
+            (
+                f"{r.row.display} {AFFILIATED_MARK}"
+                if r.row.affiliated
+                else r.row.display
+            ),
+            "in-process" if r.row.inproc else "cli",
+            r.row.runtime or "unknown",
+            r.row.pin.display,
+            fmt_date(r.row.timestamp),
+            str(r.row.fixture_count or "n/a"),
+            str(r.row.pair_count or "n/a"),
+            fmt(r.row.median_ms),
+            fmt(r.row.mean_ms),
+            fmt(r.row.p95_ms) if r.row.p95_ms is not None else "n/a",
+            str(r.row.n),
+            str(r.row.failures),
+            _hardware_cell(r.row.hardware),
+        ]
+        for r in ranked
+    ]
+
+
+_SPEED_HEADERS = [
+    "Rank",
+    "Tool",
+    "Mode",
+    "Runtime",
+    "Pin",
+    "Run",
+    "Fixtures",
+    "Pairs",
+    "Median ms",
+    "Mean ms",
+    "p95 ms",
+    "n",
+    "Failures",
+    "Machine",
+]
+
+
+def speed_tables(h: pol.SpeedHeadline) -> str:
+    out = ["### speed_redlines: generation time in ms per redline", ""]
+    out.append(
+        "Lower is faster. One row per tool and mode: its latest pinned run. Large-N rows rank only "
+        f"at the canonical {pol.CANONICAL_SPEED_FIXTURES} fixtures; failures are excluded from the "
+        "timing and counted in the Failures column, so read the two together. In-process rows skip "
+        "process spawn; cli rows include it. The machine is part of the row because the number "
+        "means nothing without it."
+    )
+    out.append("")
+    out.append("Large-N:")
+    out.append("")
+    out.append(
+        md_table(_SPEED_HEADERS, _speed_rows(h.large))
+        if h.large
+        else "No pinned large-N speed rows yet."
+    )
+    out.append("")
+    out.append("Microbench (30 to 40 pairs, 3 repetitions):")
+    out.append("")
+    out.append(
+        md_table(_SPEED_HEADERS, _speed_rows(h.micro))
+        if h.micro
+        else "No pinned microbench rows yet."
+    )
+    if h.excluded:
+        out.append("")
+        out.append("Not ranked (latest row per tool and mode):")
+        out.append("")
+        for e in h.excluded:
+            mode = "in-process" if e.row.inproc else "cli"
+            out.append(
+                f"- {e.row.display} ({mode}, {e.row.kind}, {fmt_date(e.row.timestamp)}): "
+                f"{'; '.join(e.verdict.reasons)}"
+            )
+    return "\n".join(out).rstrip() + "\n"
+
+
+def history_section(
+    rows: Sequence[ResultRow],
+    *,
+    registry: Registry,
+    retractions: Sequence[pol.Retraction],
+    docsets: Mapping[str, Mapping[str, object]],
+) -> str:
+    out = [
+        "## History",
+        "",
+        (
+            "Every row in the store, grouped by benchmark and comparability group, with the eligibility "
+            "verdict the headline applied. Rows in different groups are different measurements."
+        ),
+        "",
+    ]
+    by_bench: dict[str, list[ResultRow]] = {}
+    for r in rows:
+        by_bench.setdefault(r.benchmark, []).append(r)
+    for benchmark, bench_rows in sorted(by_bench.items()):
+        out.append(f"### {benchmark}")
+        groups: dict[pol.GroupKey, list[ResultRow]] = {}
+        for r in bench_rows:
+            groups.setdefault(pol.group_key(r), []).append(r)
+        ordered = sorted(
+            groups.items(), key=lambda kv: max(m.timestamp for m in kv[1]), reverse=True
+        )
+        for g, members in ordered:
+            exp = pol.expected_n(members, docsets)
+            out.append("")
+            out.append(
+                f"Group: document set `{g.docset}`, renderer `{g.renderer}`, scorer `{g.scorer}`, "
+                f"expected {exp} documents."
+            )
+            out.append("")
+            body = []
+            for r in sorted(members, key=lambda m: (m.display, m.timestamp)):
+                v = pol.eligibility(
+                    r, expected=exp, retractions=retractions, registry=registry
+                )
+                approx = "~" if r.itt_approx else ""
+                body.append(
+                    [
+                        _tool_cell(r),
+                        r.pin.display,
+                        fmt_date(r.timestamp),
+                        str(r.n_scored),
+                        str(r.n_failed_docs),
+                        str(r.itt_n),
+                        fmt(r.itt_median) + approx,
+                        fmt(r.itt_mean) + approx,
+                        "eligible" if v.eligible else "; ".join(v.reasons),
+                        r.id_run,
+                    ]
+                )
+            out.append(
+                md_table(
+                    [
+                        "Tool",
+                        "Pin",
+                        "Run",
+                        "Docs",
+                        "Failed",
+                        "ITT n",
+                        "ITT Median",
+                        "ITT Mean",
+                        "Verdict",
+                        "id_run",
+                    ],
+                    body,
+                )
+            )
+        out.append("")
+    return "\n".join(out).rstrip() + "\n"
+
+
+def paired_section(tables: Mapping[str, pol.HeadlineTable]) -> str:
+    out = [
+        "## Paired comparisons",
+        "",
+        (
+            "Per-document deltas on the documents both tools scored, inside the headline group. "
+            "`win/loss/tie` counts documents where the first tool scores higher, lower, or equal. The "
+            "interval is a percentile bootstrap of the median delta (2000 resamples, seed 42); it "
+            "includes 0 when the two tools are not distinguishable on this corpus."
+        ),
+        "",
+    ]
+    any_rows = False
+    for benchmark, t in sorted(tables.items()):
+        ranked = [r.row for r in t.rows if r.row.scores]
+        if len(ranked) < 2:
+            continue
+        body = []
+        for i, a in enumerate(ranked):
+            for b in ranked[i + 1 :]:
+                d = st.paired_median_diff(a.itt_scores(), b.itt_scores())
+                if d is None:
+                    continue
+                body.append(
+                    [
+                        _tool_cell(a),
+                        _tool_cell(b),
+                        str(d.n),
+                        f"{d.wins}/{d.losses}/{d.ties}",
+                        f"{d.median_delta:+.2f}",
+                        f"[{d.ci_low:+.2f}, {d.ci_high:+.2f}]",
+                    ]
+                )
+        if body:
+            any_rows = True
+            out.append(f"### {benchmark}")
+            out.append("")
+            out.append(
+                md_table(
+                    [
+                        "Tool A",
+                        "Tool B",
+                        "Docs",
+                        "win/loss/tie",
+                        "Median delta",
+                        "95% CI",
+                    ],
+                    body,
+                )
+            )
+            out.append("")
+    if not any_rows:
+        out.append("No benchmark has two ranked rows with per-document scores yet.")
+    return "\n".join(out).rstrip() + "\n"
+
+
+def lens_health_section(rows: Sequence[ResultRow]) -> str:
+    flagged = [r for r in rows if (r.n_lens_disagree or 0) > 0]
+    if not flagged:
+        return ""
+    body = [
+        [
+            _tool_cell(r),
+            r.benchmark,
+            r.pin.display,
+            fmt_date(r.timestamp),
+            str(r.n_lens_disagree),
+            f"{r.lens_disagree_rate or 0:.2f}",
+        ]
+        for r in sorted(flagged, key=lambda r: -(r.lens_disagree_rate or 0))
+    ]
+    return (
+        "\n".join(
+            [
+                "## Lens health",
+                "",
+                (
+                    "Runs where the pixel lens and the functional lens disagreed on some documents. "
+                    "A bench-health alarm, never a ranking input."
+                ),
+                "",
+                md_table(
+                    ["Tool", "Benchmark", "Pin", "Run", "Docs disagreeing", "Rate"],
+                    body,
+                ),
+            ]
+        )
+        + "\n"
+    )
+
+
+def methodology_section(*, noise_sigma: float | None, lo_version: str | None) -> str:
+    w = ScoreWeights()
+    if noise_sigma is not None and lo_version:
+        noise = (
+            f"Re-rendering the same DOCX with the same LibreOffice build ({lo_version}) gives a "
+            f"score standard deviation of {noise_sigma:.1e} (results/noise_floor.json)."
+        )
+    else:
+        noise = "Noise floor not recorded; run `bench noise-floor`."
+    return "\n".join(
+        [
+            "## Methodology",
+            "",
+            (
+                "Scoring. Each page pair is rasterized at 144 DPI and scored 0 to 100 as a weighted sum "
+                "lifted verbatim from superdoc-visual-benchmarks: "
+                f"SSIM full {w.ssim_full:g}, SSIM small {w.ssim_small:g}, ink F1 {w.ink_f1:g}, "
+                f"edge IoU {w.edge_iou:g}, colour {w.color_sim:g}, blob {w.blob_sim:g}. "
+                "A document scores 0.7 times its page mean plus 0.3 times its worst page. For "
+                "script_redlines, accepted_changes and roundtrip the ranked score is `pagefair-v2`: "
+                "pages present on only one side enter at 0, ink-weighted. The visual_* benchmarks rank "
+                "on the raw score because cross-engine repagination is expected there. SuperDoc, whose "
+                "benchmark the formula comes from, is itself a ranked vendor; the parity tests keep the "
+                "formula byte-identical to upstream."
+            ),
+            "",
+            "Oracles. The redline benchmarks compare LibreOffice's render of the candidate DOCX to "
+            "LibreOffice's render of Word's DOCX. The docx_to_pdf and visual_* benchmarks compare to "
+            "Word's own PDF export. A tool can score 100 on the first family and well below 100 on "
+            "the second, because the second also measures the renderer's distance from Word. "
+            + noise,
+            "",
+            (
+                "Denominators. Every benchmark has a fixed document set (`results/docsets.json`); a "
+                "document with no candidate output enters at 0 (intent-to-treat). Documents named by a "
+                "non-fatal stage warning but scored keep their score and are not counted as failed."
+            ),
+            "",
+            (
+                "Selection. One row per tool: its latest eligible run in the current comparability "
+                "group. There is no best-of-N over runs and no best pin. A run that is wrong for a reason "
+                "unrelated to the tool is retracted with a stated reason in `results/retractions.jsonl` "
+                "and listed as such."
+            ),
+            "",
+            (
+                "Uncertainty. Per-row intervals are a percentile bootstrap of the ITT median. Adjacent "
+                "rows tie when the paired bootstrap interval of their median difference includes 0."
+            ),
+            "",
+            (
+                "Disclosure. The benchmark is maintained by the author of the Jubarte tools. Those rows "
+                "are marked and follow the same rules as every other row."
+            ),
+            "",
+        ]
+    )
+
+
+def vendor_table(registry: Registry) -> str:
+    rows = []
+    for t in registry.tools:
+        if t.status != "active" or t.role == "calibration":
+            continue
+        rows.append(
+            [
+                f"[{t.display}]({t.url})" if t.url else t.display,
+                t.role,
+                t.engine,
+                "yes" if t.affiliated else "",
+                t.note or "",
+            ]
+        )
+    return (
+        md_table(["Tool", "Role", "Engine", "Author-affiliated", "Note"], rows) + "\n"
+    )

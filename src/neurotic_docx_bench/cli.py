@@ -2335,6 +2335,27 @@ def docset_cmd(
         console.print(f"wrote {docset_mod.DEFAULT_DOCSETS_PATH}")
 
 
+@app.command(name="report")
+def report_cmd(
+    root: Path = typer.Option(Path("."), "--root", help="repository root"),
+    check: bool = typer.Option(False, "--check", help="exit 1 when the published views are stale"),
+) -> None:
+    """Regenerate RESULTS.md, RESULTS_DETAILED.md and the README vendor table from the stores."""
+    from neurotic_docx_bench.ledger import build as ledger_build
+
+    bundle = ledger_build.build(root)
+    if check:
+        stale = ledger_build.changed_files(root, bundle)
+        for p in stale:
+            console.print(f"stale: {p}")
+        if stale:
+            raise typer.Exit(code=1)
+        console.print("published views are current")
+        return
+    for p in ledger_build.write(root, bundle):
+        console.print(f"wrote {p}")
+
+
 @app.command(name="coverage-matrix")
 def coverage_matrix_cmd(
     mapping: list[Path] = typer.Option(

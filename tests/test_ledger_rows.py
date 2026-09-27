@@ -83,8 +83,11 @@ def test_failed_docs_exclude_docs_that_also_scored(registry) -> None:
     assert row.n_scored == 3
     assert row.n_failure_events == 2
     assert row.n_failed_docs == 1  # only "d" is zeroed
+    assert row.failed_docs == ("d",)
     assert row.itt_n == 4  # 3 scored + 1 zeroed
     assert row.n_scored + row.n_failed_docs == row.itt_n
+    assert row.itt_scores() == {"a": 100.0, "b": 90.0, "c": 50.0, "d": 0.0}
+    assert row.key == "019ff85b-23fd-7450-9744-5669ef0d3c1e|script_redlines"
 
 
 def test_emitted_itt_fields_win_over_recomputation(registry) -> None:
