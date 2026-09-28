@@ -44,10 +44,15 @@ _PROCESSOR = NupunktProcessor()
 class Pair:
     base: str
     next: str
+    key: str = ""  # the Word stem of a corpus/word pool; empty for a legacy manifest
 
 
 def output_name(pair: Pair, tool: str) -> str:
-    """Canonical candidate name: ``<base>_<next>_<tool>_redline.docx``."""
+    """Candidate name: the Word stem plus ``_<tool>`` when the pool carries a ``key``
+    (``<idA>_<a>__vs__<idB>_<b>_redline_<idC>_<tool>.docx``), else the legacy
+    ``<base>_<next>_<tool>_redline.docx``."""
+    if pair.key:
+        return f"{pair.key}_{tool}.docx"
     return f"{pair.base}_{pair.next}_{tool}_redline.docx"
 
 
@@ -63,7 +68,7 @@ def parse_manifest(csv_path: Path, statuses: set[str]) -> list[Pair]:
                 continue
             if statuses and status and status not in statuses:
                 continue
-            pairs.append(Pair(base=base, next=nxt))
+            pairs.append(Pair(base=base, next=nxt, key=(row.get("key") or "").strip()))
     return pairs
 
 
@@ -206,7 +211,7 @@ def run_batch(
     failed: list[dict] = []
     timings: dict[str, int] = {}
     for pair in pairs:
-        doc = f"{pair.base}_{pair.next}"
+        doc = pair.key or f"{pair.base}_{pair.next}"
         name = output_name(pair, tool)
         out_path = out / name
         if not force and out_path.exists():
