@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# Entry point the bench resolves for --tool pymupdf-pro. Runs convert.py in this
+# directory's isolated env (create it with: uv sync --project <this dir>).
+here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+exec "$here/.venv/bin/python" "$here/convert.py" "$@"

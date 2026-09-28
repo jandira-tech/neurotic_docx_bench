@@ -3,6 +3,16 @@
 # (see plan Context §7). Candidates are rendered the same way, so scores isolate
 # redline-markup fidelity vs Word rather than renderer drift.
 source_of_truth: corpus/word_based/pdf_redlines_word
+# docx-to-pdf and docxide-metrics read word_pdf, not source_of_truth.
+# A pair is <state>/pdf/<stem>.pdf with <state>/docx/<stem>.docx.
+# pdf_prior is an earlier Word render, not the oracle those commands score.
+word_pdf:
+  root: corpus/word
+  states:
+    - clean
+    - tracking_without_comments
+    - with_comments_clean
+    - with_comments_tracking
 # Randomized file_N→file_N+1 chain corpus (196 pairs) union-indexed with the
 # named oracle for script_redlines: ~403 fixtures total. Kept out of
 # source_of_truth so visual_redlines' default and single-dir consumers are
