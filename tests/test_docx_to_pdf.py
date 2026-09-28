@@ -13,6 +13,7 @@ from neurotic_docx_bench import pipeline
 from neurotic_docx_bench.docx_to_pdf import (
     ORACLE_PDF_DIRS,
     ORACLE_SHA_MANIFEST,
+    PYMUPDF_PRO_CONVERTER,
     REQUIRED_FEATURES,
     WORD_CORPUS,
     WORD_PDF_TOOLS,
@@ -20,6 +21,7 @@ from neurotic_docx_bench.docx_to_pdf import (
     feature_coverage,
     load_fixtures,
     oracle_pdf_dirs,
+    resolve_tool_binary,
     run_eval,
     score_folder_pair,
     select_word_oracle_fixtures,
@@ -191,7 +193,16 @@ def test_convert_command_jubarte_uses_native_convert():
         Path("out.pdf"),
         binary=Path("/opt/jubarte"),
     )
-    assert cmd == ["/opt/jubarte", "convert", "in.docx", "-o", "out.pdf", "--force"]
+    assert cmd == [
+        "/opt/jubarte",
+        "convert",
+        "in.docx",
+        "-o",
+        "out.pdf",
+        "--force",
+        "--revisions",
+        "word",
+    ]
     assert "soffice" not in " ".join(cmd).lower()
 
 
@@ -234,7 +245,24 @@ def test_known_tools_are_the_named_converters():
         "libreoffice_convert_rust",
         "dxpdf",
         "docxide-pdf",
+        "pymupdf-pro",
     )
+
+
+def test_convert_command_pymupdf_pro_uses_positional_output():
+    cmd = convert_command(
+        "pymupdf-pro",
+        Path("in.docx"),
+        Path("out.pdf"),
+        binary=Path("/opt/pymupdf-pro-convert"),
+    )
+    assert cmd == ["/opt/pymupdf-pro-convert", "in.docx", "out.pdf"]
+
+
+def test_pymupdf_pro_resolves_to_the_in_repo_wrapper(monkeypatch):
+    monkeypatch.setattr(shutil, "which", lambda _name: None)
+    assert resolve_tool_binary("pymupdf-pro") == PYMUPDF_PRO_CONVERTER
+    assert PYMUPDF_PRO_CONVERTER.name == "pymupdf-pro-convert"
 
 
 def test_try_convert_records_crash_as_generate_failure(tmp_path):
