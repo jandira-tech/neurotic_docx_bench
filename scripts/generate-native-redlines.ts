@@ -44,6 +44,9 @@ export interface Pair {
 	status: string;
 	redlineDocx?: string;
 	redlineDocxWord?: string;
+	/** The Word stem of a corpus/word pool row (`<idA>_<a>__vs__<idB>_<b>_redline_<idC>`);
+	 *  absent for a legacy centralized_mapping.csv row. */
+	key?: string;
 }
 
 export interface GenOptions {
@@ -59,7 +62,8 @@ export interface GenOptions {
 	force: boolean;
 }
 
-/** Parse the committed centralized_mapping.csv into base→next pairs. */
+/** Parse a pairs CSV (a corpus/word pool or the legacy centralized_mapping.csv) into
+ *  base→next pairs. */
 export function parseManifest(csvPath: string, statuses: string[]): Pair[] {
 	const rows: Record<string, string>[] = parse(readFileSync(csvPath, "utf8"), {
 		columns: true,
@@ -73,11 +77,12 @@ export function parseManifest(csvPath: string, statuses: string[]): Pair[] {
 		const status = (r.batch_status || "").trim();
 		const redlineDocx = (r.redline_docx || "").trim();
 		const redlineDocxWord = (r.redline_docx_word || "").trim();
+		const key = (r.key || "").trim();
 		if (!base || !next) continue;
 		// Only filter when the manifest carries a status (older schema); the current manifest
 		// dropped batch_status, so an empty status means "include".
 		if (wanted.size && status && !wanted.has(status)) continue;
-		pairs.push({ base, next, status, redlineDocx, redlineDocxWord });
+		pairs.push({ base, next, status, redlineDocx, redlineDocxWord, ...(key ? { key } : {}) });
 	}
 	return pairs;
 }
@@ -1013,8 +1018,11 @@ async function loadLongLivedCompareWorker(opts: {
 	};
 }
 
-/** The output filename for a pair — must normalize (via redline_key) back to `<base>_<next>`. */
+/** The output filename for a pair. A corpus/word pool row carries the Word stem as `key`,
+ *  and the candidate is `<key>_<tool>.docx` (the scorer's redline_key strips `_<tool>`);
+ *  a legacy row keeps `<base>_<next>_<tool>_redline.docx`. */
 export function outputName(pair: Pair, tool: string): string {
+	if (pair.key) return `${pair.key}_${tool}.docx`;
 	return `${pair.base}_${pair.next}_${tool}_redline.docx`;
 }
 
@@ -1058,7 +1066,7 @@ async function runSuperDocNativeBatch(
 	const plan: { fileA: string; fileB: string; output: string }[] = [];
 	const planDocs: string[] = [];
 	for (const pair of pairs) {
-		const doc = `${pair.base}_${pair.next}`;
+		const doc = pair.key || `${pair.base}_${pair.next}`;
 		const outPath = join(opts.out, outputName(pair, opts.tool));
 		if (!opts.force && existsSync(outPath)) {
 			ok += 1;
@@ -1128,7 +1136,7 @@ export async function runBatch(
 	const timings: Record<string, number> = {};
 	try {
 		for (const pair of pairs) {
-			const doc = `${pair.base}_${pair.next}`;
+			const doc = pair.key || `${pair.base}_${pair.next}`;
 			const outNames = outputNames(pair, opts.tool);
 			const outPaths = outNames.map((n) => join(opts.out, n));
 			if (!opts.force && outPaths.every((p) => existsSync(p))) {

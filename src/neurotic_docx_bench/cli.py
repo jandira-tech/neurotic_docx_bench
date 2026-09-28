@@ -1548,7 +1548,7 @@ def _execute_run(
             if vis_name == "visual_rendering":
                 vis_per_doc = pipeline.score_folders_base(
                     Path(vis_oracle), report.pdf_dir, run_dir / f"score_{vis_name}",
-                    dpi=use_dpi, jobs=rc.jobs, cache=cache, renderer_id=run_renderer_id,
+                    dpi=use_dpi, jobs=rc.jobs, cache=cache, renderer_id=run_renderer_id, candidate_tool=rc.name,
                 )
             elif vis_name == "visual_accepted_changes":
                 vis_per_doc = pipeline.score_folders_accepted(
@@ -3389,8 +3389,9 @@ def try_fetch_cmd(
 
 corpus_app = typer.Typer(
     name="corpus",
-    help="Gather what Word produced (grok_run/ and the Word oracle renders) into corpus/word, one docset "
-    "per folder with provenance, a documents or pairs table and a sha256 manifest. Copies only: the "
+    help="Gather what Word produced (grok_run/, the Word oracle renders, corpus/word_based and its siblings, "
+    "optionally the jubarte-first fixtures) into corpus/word: one state folder per kind of document, one "
+    "naming scheme, a rename record, tables, pools, provenance and a sha256 manifest. Copies only: the "
     "origins are never moved or deleted.",
     no_args_is_help=True,
 )
@@ -3405,37 +3406,47 @@ def _corpus_fail(message: str, code: int = 1) -> typer.Exit:
 @corpus_app.command(name="build")
 def corpus_build_cmd(
     root: Path = typer.Option(Path("."), "--root", help="repository root (grok_run/ and corpus/ live under it)"),
-    dest: Path | None = typer.Option(None, "--dest", help="where the docsets go", show_default="corpus/word"),
-    only: list[str] = typer.Option([], "--only", help="build these docsets only (repeatable)"),
+    dest: Path | None = typer.Option(None, "--dest", help="where the corpus goes", show_default="corpus/word"),
+    fixtures: Path | None = typer.Option(
+        None, "--fixtures", help="the jubarte-first _fixtures folder; without it the fixtures sets are skipped"
+    ),
+    only: list[str] = typer.Option([], "--only", help="build these sets only (repeatable)"),
     force: bool = typer.Option(False, "--force", help="replace a destination file whose bytes differ"),
     dry_run: bool = typer.Option(False, "--dry-run", help="plan and report; copy nothing"),
 ) -> None:
-    """Copy the Word docsets into --dest and write their provenance, tables and manifest."""
+    """Copy the Word sets into --dest and write their tables, pools, notices, provenance and manifest."""
     from neurotic_docx_bench import word_corpus
 
     target = dest if dest is not None else root / word_corpus.DEFAULT_DEST
     try:
-        report = word_corpus.build(root, target, only=tuple(only) or None, force=force, dry_run=dry_run)
+        report = word_corpus.build(
+            root, target, fixtures=fixtures, only=tuple(only) or None, force=force, dry_run=dry_run
+        )
     except word_corpus.CorpusError as exc:
         raise _corpus_fail(str(exc)) from exc
-    for plan_ in report.plans:
-        counts = ", ".join(f"{k} {v}" for k, v in plan_.counts.items())
-        line = f"{plan_.docset.name}: {len(plan_.keys)} keys ({counts})"
-        if plan_.absent:
-            line += f"; {len(plan_.absent)} without a Word PDF (left out)"
-        if plan_.superseded:
-            line += f"; {len(plan_.superseded)} with an earlier render kept"
-        if plan_.filled:
-            line += f"; {len(plan_.filled)} filled from the fallback pass"
-        states = plan_.states
-        line += f"; tracked {states['tracked_changes']}, comments {states['comments']}"
-        if plan_.orphans:
-            line += f"; {len(plan_.orphans)} PDFs whose docx is gone (not copied)"
-        if plan_.excluded:
-            line += "; excluded " + ", ".join(f"{k} {len(v)}" for k, v in plan_.excluded.items())
+    for name, s in report.plan.sets.items():
+        line = f"{name}: {len(s.documents)} documents, {len(s.comparisons)} comparisons"
+        if s.absent:
+            line += f"; {len(s.absent)} without a Word PDF (left out)"
+        if s.superseded:
+            line += f"; {len(s.superseded)} whose render of this set went to pdf_prior"
+        if s.filled:
+            line += f"; {len(s.filled)} filled from a fallback folder"
+        if s.orphans:
+            line += f"; {len(s.orphans)} PDFs whose docx is gone (not copied)"
+        if s.unresolved:
+            line += f"; {len(s.unresolved)} compares whose base/next are unknown (left out)"
+        if s.refused:
+            line += f"; {len(s.refused)} PDFs not produced by Word (left out)"
+        if s.excluded:
+            line += "; excluded " + ", ".join(f"{k} {len(v)}" for k, v in s.excluded.items())
         console.print(line, highlight=False)
+    if report.plan.skipped:
+        console.print(
+            f"skipped for want of --fixtures: {', '.join(report.plan.skipped)}", highlight=False
+        )
     prefix = "would have " if dry_run else ""
-    console.print(f"{prefix}{report.describe()} under {target}")
+    console.print(f"{prefix}{report.describe()} under {target}", highlight=False)
 
 
 @corpus_app.command(name="check")
@@ -3458,19 +3469,18 @@ def corpus_check_cmd(
 def corpus_list_cmd(
     dest: Path = typer.Option(Path("corpus/word"), "--dest", help="the built Word corpus"),
 ) -> None:
-    """Print the docsets of the Word corpus with their keys, ids and counts."""
+    """Print the sets of the Word corpus with their counts and docset ids."""
     from neurotic_docx_bench import word_corpus
 
     rows = word_corpus.summary(dest)
     if not rows:
-        raise _corpus_fail(f"no docset under {dest}; run `bench corpus build` first")
+        raise _corpus_fail(f"no corpus under {dest}; run `bench corpus build` first")
     for row in rows:
-        counts = ", ".join(f"{k} {v}" for k, v in row["counts"].items())
         console.print(
-            f"{row['name']}  {row['family']}  {row['n_keys']} keys  id {row['docset_id']}  {counts}; "
-            f"tracked {row['tracked_changes']}, comments {row['comments']}; "
-            f"absent {row['absent']}, superseded {row['superseded']}, filled {row['filled']}, "
-            f"orphans {row['orphans']}, excluded {row['excluded']}",
+            f"{row['name']}  {row['documents']} documents, {row['comparisons']} comparisons  "
+            f"id {row['docset_id']}; absent {row['absent']}, superseded {row['superseded']}, "
+            f"filled {row['filled']}, orphans {row['orphans']}, unresolved {row['unresolved']}, "
+            f"excluded {row['excluded']}, refused {row['refused']}",
             highlight=False,
         )
 
