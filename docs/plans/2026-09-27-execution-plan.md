@@ -197,3 +197,30 @@ manifest and refuses a mismatched sha256; CLI: `--list`, `--fixture`, `--random
 PR 16 first (Arthur's newest request, and its `score_against` helper is reused by
 PR 14), then 11-families, 12-corpus, 13-word-control, 14-score-cli, 15-bun-ci, then
 the full-suite verification and the hand-off.
+
+## 7. Status at the end of 2026-09-27, and what changed in the plan
+
+Done and committed: PR 16 (`9ddcf7a9`), the three-patch disposition (section 1), and
+12-corpus as `88225dd2`, which supersedes the item 7 description in section 3: the corpus
+is not a set of grok_run imports next to the old folders but one tree,
+`corpus/word/<state>/{docx,pdf,pdf_prior}`, built by copy from every Word origin
+(grok_run, the July no-comments export, `corpus/word_based` and its siblings, the
+jubarte-first `_fixtures`), with id-keyed names (`<id>_<name>`,
+`<idA>_<a>__vs__<idB>_<b>_redline_<idC>`), `notices/`, tables, pools, provenance and a
+sha256 manifest. The scorer keys a candidate by stripping its trailing `_<tool>`; the
+generators emit `<key>_<tool>.docx` when the pool carries `key`.
+
+Decided with Arthur (option C, results may start over): `bench.yaml` pools carry oracles
+keyed by renderer; a run scores the pools that have an oracle for its renderer; soffice
+runs go to a secondary table; passthrough and playwright runs name `oracle:` explicitly;
+new sealed holdouts for the hash pools. Two PRs: C1 (config schema, `corpora_for_run`,
+`calibration.build_candidates` and the `docx_to_pdf` tracks over `corpus/word`, generator
+defaults) and C2 (the `bench.yaml` switch and the results reset). Both come before
+11-families in the order of section 6.
+
+Also queued, from Arthur: `scripts/device_ab.py` orders jobs by page count and never
+splits a document across workers.
+
+Verification: 1346 passed, 13 known failures (12 pre-existing at 09-policy, 1 a run-tree
+symlink artefact), listed with the rest of the open items, the Mac-only steps and the
+jubarte one-liners in `docs/plans/2026-09-27-handoff.md`.
