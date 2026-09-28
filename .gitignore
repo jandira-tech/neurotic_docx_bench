@@ -173,3 +173,21 @@ results/hub/
 
 # content-addressed render/raster/score cache (bench run; see content_cache.py)
 /.bench-cache/
+Claude outputs/
+corpus/moved_out_from_word_folder/
+corpus/mutation_probes/
+corpus/no_comments_pdf_was_generated_by_word/
+corpus/word_based/
+corpus/word_redlines_superdoc/
+corpus/canary_expected.json
+corpus/holdout_combined.txt
+docs/
+grok_run/
+logs/
+results/converters.jsonl
+results/accepted-reports/
+results-compare/
+sample/
+.generate_100.py.swp
+score_v2.patch
+plans/
