@@ -7,10 +7,16 @@ pair is ``<base>_<next>_<tool>_redline.pdf``. The shared key is therefore ``<bas
 — obtained by stripping the trailing ``_redline`` (oracle) or ``_<tool>_redline``
 (candidate). The oracle dir ALSO contains non-redline base PDFs; those are excluded.
 Collisions (two files mapping to one key) are raised, never silently last-wins.
+
+The Word corpus (``corpus/word``, see :mod:`neurotic_docx_bench.word_corpus`) names a
+comparison ``<idA>_<a>__vs__<idB>_<b>_redline_<idC>``; that whole stem is the key, and a
+tool's candidate for it is the stem plus ``_<tool>``. A document render is keyed by its
+stem ``<idA>_<a>``, the candidate again with ``_<tool>`` appended.
 """
 
 from __future__ import annotations
 
+import re
 import shutil
 import time
 from collections.abc import Mapping, Sequence
@@ -90,16 +96,36 @@ class ScoreResult(TypedDict):
     cached: NotRequired[bool]
 
 
-def is_redline(stem: str) -> bool:
-    """True for a redline filename (``…_redline``); base/source PDFs are not redlines."""
-    return stem.lower().endswith(_REDLINE)
+# A Word-corpus comparison stem ends in ``_redline_<id>`` where the id is the
+# comparison docx's own ten-hex id (word_corpus.py); a tool's candidate for it is
+# the same stem plus ``_<tool>``.
+_CORPUS_REDLINE = re.compile(r"_redline_[0-9a-f]{10}$")
+
+
+def _strip_tool(stem: str, tool: str | None) -> str:
+    """``stem`` (already lower-cased) without a trailing ``_<tool>``."""
+    if tool:
+        suffix = f"_{tool.lower()}"
+        if stem.endswith(suffix):
+            return stem[: -len(suffix)]
+    return stem
+
+
+def is_redline(stem: str, tool: str | None = None) -> bool:
+    """True for a comparison filename: a Word-corpus ``…_redline_<id>`` stem (or that
+    stem plus ``_<tool>`` when ``tool`` is given) or a legacy ``…_redline`` stem.
+    Document renders (``<id>_<name>``, ``<id>_<name>_<tool>``) are not comparisons."""
+    s = stem.lower()
+    return s.endswith(_REDLINE) or bool(_CORPUS_REDLINE.search(_strip_tool(s, tool)))
 
 
 def redline_key(stem: str, tool: str | None = None) -> str:
-    """Canonical ``<base>_<next>`` key for a redline filename.
+    """Canonical key for a comparison filename.
 
-    Oracle redline ``<base>_<next>_redline`` → ``<base>_<next>``.
-    Tool candidate ``<base>_<next>_<tool>_redline`` (pass ``tool``) → ``<base>_<next>``.
+    Word-corpus stem ``<idA>_<a>__vs__<idB>_<b>_redline_<idC>`` → itself; the tool
+    candidate ``<that>_<tool>`` (pass ``tool``) → the Word stem.
+    Legacy oracle ``<base>_<next>_redline`` → ``<base>_<next>``; legacy tool candidate
+    ``<base>_<next>_<tool>_redline`` (pass ``tool``) → ``<base>_<next>``.
     A non-redline stem is returned lower-cased unchanged.
     """
     s = stem.lower()
@@ -107,9 +133,18 @@ def redline_key(stem: str, tool: str | None = None) -> str:
         suffix = f"_{tool.lower()}{_REDLINE}"
         if s.endswith(suffix):
             return s[: -len(suffix)]
+    stripped = _strip_tool(s, tool)
+    if _CORPUS_REDLINE.search(stripped):
+        return stripped
     if s.endswith(_REDLINE):
         return s[: -len(_REDLINE)]
     return s
+
+
+def render_key(stem: str, tool: str | None) -> str:
+    """Key of a document render: the lower-cased stem without a trailing ``_<tool>``
+    (``<idA>_<a>_<tool>`` keys as the Word render ``<idA>_<a>``)."""
+    return _strip_tool(stem.lower(), tool)
 
 
 # Backwards-compatible alias for the previous public name.
@@ -145,7 +180,7 @@ def _index_redlines(directory: Path, tool: str | None) -> dict[str, Path]:
     ranks: dict[str, int] = {}
     collisions: dict[str, list[str]] = {}
     for pdf in sorted(directory.glob("*.pdf")):
-        if not is_redline(pdf.stem):
+        if not is_redline(pdf.stem, tool):
             continue
         key = redline_key(pdf.stem, tool)
         rank = 0
@@ -613,16 +648,16 @@ def score_folders_plain(
     return _run_tasks(tasks, jobs)
 
 
-def _index_plain(directory: Path) -> dict[str, Path]:
-    """Map lowercased stem → PDF for every PDF in ``directory`` (no redline filtering).
+def _index_plain(directory: Path, tool: str | None = None) -> dict[str, Path]:
+    """Map :func:`render_key` → PDF for every PDF in ``directory`` (no redline filtering).
 
-    Two files colliding on the case-insensitive key is a hard error, mirroring
+    Two files colliding on the key is a hard error, mirroring
     :func:`_index_redlines`'s collision guarantee.
     """
     index: dict[str, Path] = {}
     collisions: dict[str, list[str]] = {}
     for pdf in sorted(directory.glob("*.pdf")):
-        key = pdf.stem.lower()
+        key = render_key(pdf.stem, tool)
         if key in index:
             collisions.setdefault(key, [index[key].name]).append(pdf.name)
         index[key] = pdf
@@ -632,15 +667,18 @@ def _index_plain(directory: Path) -> dict[str, Path]:
     return index
 
 
-def match_base_to_candidate(oracle_dir: Path, candidate_dir: Path) -> list[tuple[str, Path, Path]]:
-    """Pair oracle and candidate PDFs by plain lowercased stem, for ``visual_rendering``
+def match_base_to_candidate(
+    oracle_dir: Path, candidate_dir: Path, candidate_tool: str | None = None
+) -> list[tuple[str, Path, Path]]:
+    """Pair oracle and candidate PDFs by :func:`render_key`, for ``visual_rendering``
     (base/source DOCX rendered through a viewer vs committed base PDFs).
 
     Unlike :func:`match_by_stem`, this does NOT require a ``_redline`` suffix —
-    both sides are plain ``<name>.pdf``. Returns pairs for keys in BOTH dirs.
+    both sides are ``<name>.pdf``, the candidate optionally ``<name>_<tool>.pdf``
+    (pass ``candidate_tool``). Returns pairs for keys in BOTH dirs.
     """
     oracle = _index_plain(oracle_dir)
-    candidate = _index_plain(candidate_dir)
+    candidate = _index_plain(candidate_dir, candidate_tool)
     shared = sorted(oracle.keys() & candidate.keys())
     return [(key, oracle[key], candidate[key]) for key in shared]
 
@@ -654,13 +692,14 @@ def score_folders_base(
     jobs: int = 12,
     cache: cc.ContentCache | None = None,
     renderer_id: str = "",
+    candidate_tool: str | None = None,
 ) -> dict[str, ScoreResult]:
     """Score every matched base pair (visual_rendering).
 
-    See :func:`match_base_to_candidate` for the pairing rule (plain lowercased stem,
+    See :func:`match_base_to_candidate` for the pairing rule (render key,
     no redline-suffix logic — unlike :func:`score_folders_full`).
     """
-    pairs = match_base_to_candidate(oracle_dir, candidate_dir)
+    pairs = match_base_to_candidate(oracle_dir, candidate_dir, candidate_tool)
     if not pairs:
         return {}
     tasks = [(key, o, c, work_dir, dpi, None, None, cache, renderer_id) for key, o, c in pairs]

@@ -37,6 +37,7 @@ class Pair:
     next: str
     redline_docx: str = ""
     redline_docx_word: str = ""
+    key: str = ""  # the Word stem of a corpus/word pool; empty for a legacy manifest
 
 
 def output_names(pair: Pair, tool: str) -> list[str]:
@@ -47,7 +48,12 @@ def output_names(pair: Pair, tool: str) -> list[str]:
     so deriving the candidate name from the oracle *DOCX* filename (which sometimes carries
     a ``_word`` infix) produced a candidate key that never matched the oracle PDF key —
     silently dropping ~43/207 pairs from every tool's score.
+
+    A corpus/word pool carries the Word stem as ``key``; the candidate is then
+    ``<key>_<tool>.docx``.
     """
+    if pair.key:
+        return [f"{pair.key}_{tool}.docx"]
     return [f"{pair.base}_{pair.next}_{tool}_redline.docx"]
 
 
@@ -70,6 +76,7 @@ def parse_manifest(csv_path: Path, statuses: set[str]) -> list[Pair]:
                 next=nxt,
                 redline_docx=(row.get("redline_docx") or "").strip(),
                 redline_docx_word=(row.get("redline_docx_word") or "").strip(),
+                key=(row.get("key") or "").strip(),
             ))
     return pairs
 
@@ -132,7 +139,7 @@ async def run_batch(
     timings: dict[str, int] = {}
     async with AsyncSuperDocClient(user={"name": author, "email": "bench@example.com"}) as client:
         for idx, pair in enumerate(pairs):
-            doc = f"{pair.base}_{pair.next}"
+            doc = pair.key or f"{pair.base}_{pair.next}"
             out_names = output_names(pair, tool)
             out_paths = [out / n for n in out_names]
             if not force and all(p.exists() for p in out_paths):

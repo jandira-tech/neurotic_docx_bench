@@ -119,26 +119,44 @@ uv run bench try fetch <pair_stem> --dest tryout_dl && uv run bench try run --ro
 
 ### The Word corpus
 
-Word is the source of truth for PDFs. What it produced lives under `corpus/word/`, one docset per folder, built by copy from Word's working folders (`grok_run/`, gitignored) and from the July export under `corpus/no_comments_pdf_was_generated_by_word/` (which stays where it is); nothing is moved or deleted. Only what Word finished is in: docx Word could not open, documents Word did not render to PDF, blacklisted stems and the compares touching them are left out and listed in each docset's `PROVENANCE.json`.
+Word is the source of truth for PDFs. Everything Word produced lives under `corpus/word/`, built by copy from Word's working folders (`grok_run/`, gitignored), from the July export under `corpus/no_comments_pdf_was_generated_by_word/`, from `corpus/word_based` and its siblings and, when `--fixtures` points at it, from the jubarte-first `_fixtures` folder; the origins stay where they are, nothing is moved or deleted. Only what Word finished is in: docx Word could not open, blacklisted stems and the compares touching them, rejected compares and, in the sets that are Word render runs, documents Word did not render to PDF are left out and listed per set in `PROVENANCE.json`. A PDF whose producer is not Word (LibreOffice, a tool's own writer) is refused.
 
-| docset | what |
-| --- | --- |
-| `sources_500` | 500 docx-corpus documents with their Word PDF; 18 re-rendered by a later Word build, the earlier render kept under `pdf_word_prior/` |
-| `en_pairs_500` | 1000 English documents; the first Word pass is the reference, the second pass only fills the 4 stems the first lacks (`filled` in the provenance) |
-| `redlines_a100_b10`, `redlines_en_500` | Word compares with the Word PDF of the compared document; `pairs.csv` is a base/next manifest |
-| `oracles_wordpdf` | September 2026 Word renders of the tracked redline docx of `word_based`, `word_based_randomized` and `word_redlines_superdoc`, comments printed where the docx carries them, keyed like the scorer keys them |
-| `oracles_wordpdf_nocomments` | the July 2026 renders of the `word_based` redlines, comments stripped: the same pairs in a second document state |
+The tree is laid out by provider and by the state of the docx, read from its XML:
 
-Every table row (`documents.csv`, `pairs.csv`, `oracles.csv`) carries the state of the docx read from its XML: `tracked_changes`, `comments` and `pdf_markup` (`none`, `tracked`, `comments`, `tracked_comments`), the markup of the docx the PDF renders. `corpus/word/index.csv` lists every document of every docset with those columns, so a run can select by state. Each docset carries `PROVENANCE.json` (origins, counts, absences, exclusions, states, docset id, ODC-By-1.0 attribution) and the tree is pinned by `MANIFEST.sha256.json`. docx and PDF files are gitignored and travel with `bench fixtures upload`; the manifests, provenance, tables and notes are tracked.
-
-```bash
-uv run bench corpus build --dry-run     # plan against grok_run/, copy nothing
-uv run bench corpus build               # copy (a clone on APFS), write provenance, tables, index, manifest
-uv run bench corpus check               # verify corpus/word against its manifest (exit 1 on drift)
-uv run bench corpus list                # the docsets with keys, ids, states and counts
+```
+corpus/word/
+  clean/                      docx/  pdf/  pdf_prior/
+  tracking_without_comments/  docx/  pdf/  pdf_prior/
+  with_comments_clean/        docx/  pdf/  pdf_prior/
+  with_comments_tracking/     docx/  pdf/  pdf_prior/
+  documents.csv  comparisons.csv  pools/  notices/  PROVENANCE.json  README.md  MANIFEST.sha256.json
 ```
 
-A destination file whose bytes changed is refused unless `--force`; `--only <docset>` builds a subset.
+`pdf/` holds the current Word render of each docx, `pdf_prior/` the render an earlier Word build made of the same docx, under the same name. A comparison lives in the state of the compared docx.
+
+Every file carries the id of the docx it represents, the first 10 hex digits of the sha256 of the docx bytes. A document is `<id>_<name>`; a Word compare of two documents is `<idA>_<a>__vs__<idB>_<b>_redline_<idC>`, idC being the compare's own id; the Word PDF shares its docx's stem. A tool's output for either is the Word stem plus `_<tool>`, and the scorer keys a candidate by stripping that suffix (`pipeline.redline_key`, `pipeline.render_key`). Names are lower-cased, folded to `[a-z0-9_-]` and cut at 48 characters; the original names are kept in `notices/RENAMED.csv` and in the `names` column of the tables. Byte-identical docx from several origins are one file with every origin name and set recorded on it; two different docx sharing an id fail the build.
+
+| set | what |
+| --- | --- |
+| `sources_500` | docx-corpus documents with their Word PDF; the stems a later Word build re-rendered keep the earlier render under `pdf_prior/` |
+| `en_pairs_500` | the English base/next documents; the first Word pass is the reference, the second pass only fills the stems the first lacks (`filled` in the provenance) |
+| `redlines_a100_b10`, `redlines_en_500` | Word compares of those documents (`<base>__vs__<next>`) with the Word PDF of each compared document |
+| `word_based`, `word_based_randomized`, `word_redlines_superdoc` | the documents of those folders and Word's compares of their pairs (resolved through `centralized_mapping.csv`) with the September 2026 Word renders of the compares |
+| `word_based_0926`, `word_based_randomized_0926`, `word_redlines_superdoc_0926` | the September 2026 compare run: fresh compares of the same pairs with their Word PDFs, other bytes, so other documents |
+| `nocomments`, `nocomments_randomized` | the July 2026 Word run with comments stripped: documents and compares with their Word PDFs |
+| `fixtures_originals`, `fixtures_word_compares` | the jubarte-first fixtures and Word's compares of them (no Word PDF exists of either); built only with `--fixtures` |
+
+`documents.csv` and `comparisons.csv` list every entry with its id, state, paths, sets, names, sha256 and PDF producer; `comparisons.csv` also carries `key`, `base_id` and `next_id`. `pools/<set>_pairs.csv` (key, base, next, docx, pdf, state) and `pools/<set>_renders.csv` are what `bench.yaml` points a run at. `notices/` holds the rename record, the naming note, the ODC-By-1.0 license and the origins' own notes and logs. `PROVENANCE.json` records origins, counts, what was left out and why, states and the docset id of each set; the tree is pinned by `MANIFEST.sha256.json`. docx and PDF files are gitignored and travel with `bench fixtures upload`; the tables, pools, notices, provenance and manifest are tracked.
+
+```bash
+uv run bench corpus build --dry-run     # plan against the origins, copy nothing
+uv run bench corpus build               # copy (a clone on APFS), write tables, pools, notices, provenance, manifest
+uv run bench corpus build --fixtures /path/to/jubarte-first/_fixtures   # the fixtures sets too
+uv run bench corpus check               # verify corpus/word against its manifest (exit 1 on drift)
+uv run bench corpus list                # the sets with counts, docset ids and what was left out
+```
+
+A destination file whose bytes changed is refused unless `--force`; `--only <set>` builds a subset (a comparison set needs its sources set in the selection).
 
 ---
 
@@ -216,6 +234,7 @@ bun run redline-speed-bench:warm
 
 ```
 bench.yaml                 # runs, pins, oracles
+corpus/word/               # what Word produced, by document state (bench corpus build)
 corpus/word_based/         # redline DOCX + LibreOffice oracle PDFs
 corpus/no_comments_pdf_was_generated_by_word/  # Word-exported PDFs (docx_to_pdf)
 corpus/no_comments_pdf_was_generated_by_word/renderer_corpus/  # Word/Jubarte/docxide PDFs

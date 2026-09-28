@@ -230,7 +230,7 @@ def run_batch(
 
     def _one(pair: Pair) -> None:
         nonlocal ok
-        doc = f"{pair.base}_{pair.next}"
+        doc = pair.key or f"{pair.base}_{pair.next}"
         name = output_name(pair, tool)
         out_path = out / name
         if not force and out_path.exists():

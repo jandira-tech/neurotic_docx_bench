@@ -90,6 +90,32 @@ describe("generate-native-redlines", () => {
     );
   });
 
+  it("outputName is the Word-corpus key plus the tool when the pool has a key", () => {
+    const keyed = {
+      base: "clean/docx/0123456789_a",
+      next: "clean/docx/abcdef0123_b",
+      status: "ok",
+      key: "0123456789_a__vs__abcdef0123_b_redline_fedcba9876",
+    };
+    expect(outputName(keyed, "jubarte")).toBe("0123456789_a__vs__abcdef0123_b_redline_fedcba9876_jubarte.docx");
+  });
+
+  it("parseManifest reads the key of a Word-corpus pool", () => {
+    const dir = mkdtempSync(join(tmpdir(), "ndb-pool-"));
+    const pool = join(dir, "sources_pairs.csv");
+    writeFileSync(
+      pool,
+      "key,base,next,base_name,next_name,docx,pdf,state\n" +
+        "0123456789_a__vs__abcdef0123_b_redline_fedcba9876,clean/docx/0123456789_a,clean/docx/abcdef0123_b,a,b," +
+        "clean/docx/0123456789_a__vs__abcdef0123_b_redline_fedcba9876.docx,clean/pdf/0123456789_a__vs__abcdef0123_b_redline_fedcba9876.pdf,clean\n",
+    );
+    const pairs = parseManifest(pool, ["ok"]);
+    expect(pairs).toHaveLength(1);
+    expect(pairs[0].base).toBe("clean/docx/0123456789_a");
+    expect(pairs[0].next).toBe("clean/docx/abcdef0123_b");
+    expect(pairs[0].key).toBe("0123456789_a__vs__abcdef0123_b_redline_fedcba9876");
+  });
+
   it.runIf(haveCorpus)("parseManifest returns ok pairs with base+next", () => {
     const pairs = parseManifest(MANIFEST, ["ok"]);
     expect(pairs.length).toBeGreaterThan(0);
