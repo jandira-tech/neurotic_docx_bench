@@ -1,77 +1,163 @@
-# Word corpus
+# The Word corpus
 
-Reference material produced by Microsoft Word, gathered from its working folders by
-`bench corpus build` (see `neurotic_docx_bench/word_corpus.py` for the docset table). Every
-file here is a copy; the origins were not moved or deleted. Only what Word finished is here:
-a docx Word could not open, a document or compare it did not render, and a blacklisted
-document with the pairs that touch it are listed in each docset's `PROVENANCE.json`
-(`excluded`, `absent`) and not copied. `bench corpus check` verifies the tree against
-`MANIFEST.sha256.json`; `bench corpus list` prints the table below from the
-`PROVENANCE.json` of each docset.
+What Microsoft Word produced, gathered from its working folders by `bench corpus build`
+(the set table is `DOCSETS` in `neurotic_docx_bench/word_corpus.py`). Every file here is a
+copy; the origins were not moved or deleted. Only what Word finished is here: a docx Word
+could not open, a document or compare it did not render in a render run, a blacklisted
+document with the pairs that touch it, and a PDF another producer made are listed per set in
+`PROVENANCE.json` (`excluded`, `absent`, `refused`) and not copied. `bench corpus check`
+verifies the tree against `MANIFEST.sha256.json`; `bench corpus list` prints the table below.
 
-Every document row carries its state, read from the docx XML: `tracked_changes`, `comments`
-and `pdf_markup`, the markup Word printed into the PDF (`none`, `tracked`, `comments`,
-`tracked_comments`). `index.csv` lists every document of every docset with it, so a
-state is a filter over the corpus rather than a folder of it.
+Files are named by the id of their docx and live by state; `notices/README.md` has the
+scheme and `notices/RENAMED.csv` the rename record. `documents.csv` and
+`comparisons.csv` list every entry with its state, sets, origin names, sha256 and the
+producer of its Word PDF. `pools/<set>_pairs.csv` (key, base, next, ...) is the manifest a
+generator takes with `--source-dir` pointing here, and `pools/<set>_renders.csv` lists the
+docx that set's Word run rendered with their PDFs.
 
 docx and PDF files are gitignored (they live in the fixtures dataset on the Hub); the
-manifests, provenance, tables and notes are tracked.
+manifest, provenance, tables, pools and notices are tracked.
 
-| docset | family | keys | docset id | counts | tracked | comments | absent | superseded |
-|---|---|---:|---|---|---:|---:|---:|---:|
-| sources_500 | render | 500 | 403295884e59 | docx 500, pdf_word 500, pdf_word_prior 18 | 4 | 1 | 0 | 18 |
-| en_pairs_500 | render | 1000 | 6b4fcb4b90ee | docx 1000, pdf_word 1000 | 28 | 10 | 0 | 0 |
-| redlines_a100_b10 | redline | 965 | e5302ff95869 | docx_redline 965, pdf_redline_word 965 | 965 | 0 | 4 | 0 |
-| redlines_en_500 | redline | 450 | 381ef584a2f7 | docx_redline 450, pdf_redline_word 450 | 450 | 9 | 19 | 0 |
-| oracles_wordpdf | redline | 799 | b90b4fc19112 | pdf_redline_word 824 | 822 | 170 | 4 | 0 |
-| oracles_wordpdf_nocomments | redline | 205 | fa7911683bfd | pdf_redline_word 230 | 228 | 0 | 2 | 0 |
+| set | documents | comparisons | docset id | absent | superseded | filled | unresolved | excluded | refused |
+|---|---:|---:|---|---:|---:|---:|---:|---:|---:|
+| sources_500 | 448 | 0 | db3f71a066b1 | 52 | 18 | 0 | 0 | 0 | 52 |
+| en_pairs_500 | 785 | 0 | e0c2040c90b0 | 215 | 0 | 3 | 0 | 0 | 215 |
+| redlines_a100_b10 | 0 | 604 | 69ae4b3b1088 | 361 | 0 | 0 | 4 | 0 | 357 |
+| redlines_en_500 | 0 | 191 | dc30aba2d312 | 276 | 0 | 0 | 2 | 1 | 257 |
+| word_based | 194 | 214 | 37fae20b629d | 17 | 0 | 0 | 1 | 0 | 14 |
+| word_based_randomized | 199 | 178 | ceb524116e1a | 18 | 0 | 0 | 0 | 0 | 18 |
+| word_redlines_superdoc | 210 | 0 | c45369ff5c32 | 7 | 0 | 0 | 393 | 0 | 6 |
+| word_based_0926 | 0 | 183 | fc606370508d | 16 | 0 | 0 | 1 | 0 | 14 |
+| word_based_randomized_0926 | 0 | 172 | d5d8d193de2c | 13 | 0 | 0 | 0 | 0 | 13 |
+| word_redlines_superdoc_0926 | 0 | 0 | e3b0c44298fc | 7 | 0 | 0 | 355 | 0 | 6 |
+| nocomments | 192 | 215 | bdac56835236 | 20 | 2 | 0 | 2 | 0 | 18 |
+| nocomments_randomized | 194 | 179 | b26e3d6114e9 | 22 | 1 | 0 | 0 | 0 | 22 |
+| fixtures_originals | 207 | 0 | c555d1b4d484 | 0 | 0 | 0 | 0 | 0 | 0 |
+| fixtures_word_compares | 0 | 164 | a251277596bd | 0 | 0 | 0 | 2 | 0 | 0 |
 
-## Docsets
+## Sets
 
 ### sources_500
 
-500 docx sampled from the superdoc docx-corpus, each with its Word PDF; 18 stems were re-rendered by a later Word build (the earlier render is kept under pdf_word_prior).
+500 docx sampled from the superdoc docx-corpus with their Word PDFs; the stems a later Word build re-rendered keep the earlier render under pdf_prior.
 
-* `docx/` from `grok_run/fixtures_500`
-* `pdf_word/` from `grok_run/fixtures_500_pdf`
-* `pdf_word_prior/` from `grok_run/fixtures_500_pdf`
-* license ODC-By-1.0 (superdoc-dev/docx-corpus); see `LICENSE-ODC-BY-1.0.txt`
+* documents: `grok_run/fixtures_500`
+* their Word PDFs: `grok_run/fixtures_500_pdf`
 
 ### en_pairs_500
 
-1000 English docx (500 base/next pairs, parts a and b) with Word PDFs from the first Word pass; the second pass (run2, same Word build, the same render up to live date fields) fills the stems the first pass lacks and is otherwise left in grok_run.
+1000 English docx (500 base/next pairs, parts a and b) with the Word PDFs of the first Word pass; the second pass (run2) fills the stems the first pass lacks and otherwise stays behind.
 
-* `docx/` from `grok_run/500_docx_part_a_original`, `grok_run/500_docx_part_b_original`
-* `pdf_word/` from `grok_run/500_pdf_part_a_original`, `grok_run/500_pdf_part_b_original`, `grok_run/500_pdf_part_a_run2`, `grok_run/500_pdf_part_b_run2`
-* license ODC-By-1.0 (superdoc-dev/docx-corpus); see `LICENSE-ODC-BY-1.0.txt`
+* documents: `grok_run/500_docx_part_a_original`, `grok_run/500_docx_part_b_original`
+* their Word PDFs: `grok_run/500_pdf_part_a_original`, `grok_run/500_pdf_part_b_original`
+* filling the gaps: `grok_run/500_pdf_part_a_run2`, `grok_run/500_pdf_part_b_run2`
 
 ### redlines_a100_b10
 
-Word compares of 100 base documents against 10 next documents from sources_500 (a__vs__b), each with the Word PDF of the compared document; a pair Word did not render is left out.
+Word compares of 100 base documents against 10 next documents of sources_500 (a__vs__b) with the Word PDF of each compared document.
 
-* `docx_redline/` from `grok_run/compared_a_100_vs_b_10_docx`
-* `pdf_redline_word/` from `grok_run/compared_a_100_vs_b_10_pdf`
-* base/next docx: `sources_500/docx/`
-* license ODC-By-1.0 (superdoc-dev/docx-corpus); see `LICENSE-ODC-BY-1.0.txt`
+* comparisons: `grok_run/compared_a_100_vs_b_10_docx`
+* their Word PDFs: `grok_run/compared_a_100_vs_b_10_pdf`
+* base/next documents: the `sources_500` set
 
 ### redlines_en_500
 
-Word compares of the en_pairs_500 base/next pairs, each with the Word PDF of the compared document; a pair Word did not render, and the pairs of a blacklisted document, are left out.
+Word compares of the en_pairs_500 base/next pairs with the Word PDF of each compared document; the pairs of a blacklisted document and the rejected compares are left out.
 
-* `docx_redline/` from `grok_run/500_extra_docx_redlines`
-* `pdf_redline_word/` from `grok_run/500_extra_pdf_redlines`
-* base/next docx: `en_pairs_500/docx/`
-* license ODC-By-1.0 (superdoc-dev/docx-corpus); see `LICENSE-ODC-BY-1.0.txt`
+* comparisons: `grok_run/500_extra_docx_redlines`
+* their Word PDFs: `grok_run/500_extra_pdf_redlines`
+* base/next documents: the `en_pairs_500` set
 
-### oracles_wordpdf
+### word_based
 
-Word renders (September 2026) of the tracked redline docx of word_based, word_based_randomized and word_redlines_superdoc, comments printed where the docx carries them: the Word PDF oracle for those corpora, keyed like the scorer keys them.
+The word_based documents (docx_source) and Word's compares of their pairs (docx_redlines_word) with the September 2026 Word renders of those compares.
 
-* `pdf_redline_word/` from `grok_run/wordpdf_redline_oracles/word_based`, `grok_run/wordpdf_redline_oracles/word_based_randomized`, `grok_run/wordpdf_redline_oracles/word_redlines_superdoc`
+* documents: `corpus/word_based/docx_source`
+* comparisons: `corpus/word_based/docx_redlines_word`
+* their Word PDFs: `grok_run/wordpdf_redline_oracles/word_based`
+* pairs: `corpus/word_based/centralized_mapping.csv`
+* base/next documents: the `word_based` set
 
-### oracles_wordpdf_nocomments
+### word_based_randomized
 
-Word renders (July 2026) of the word_based tracked redline docx with their comments stripped: the same pairs as oracles_wordpdf in the state 'tracked changes, no comments'. The origin is the tracked folder corpus/no_comments_pdf_was_generated_by_word (which stays where it is).
+The randomized word_based documents and Word's compares of their pairs with the September 2026 Word renders.
 
-* `pdf_redline_word/` from `corpus/no_comments_pdf_was_generated_by_word/pdf_redlines_word`
+* documents: `corpus/word_based/docx_source_randomized`
+* comparisons: `corpus/word_based/docx_redlines_randomized`
+* their Word PDFs: `grok_run/wordpdf_redline_oracles/word_based_randomized`
+* pairs: `corpus/word_based/centralized_mapping_randomized.csv`
+* base/next documents: the `word_based_randomized` set
+
+### word_redlines_superdoc
+
+The superdoc documents and Word's compares of their pairs with the September 2026 Word renders.
+
+* documents: `corpus/word_redlines_superdoc/docx_source`
+* comparisons: `corpus/word_redlines_superdoc/docx_redlines_word`
+* their Word PDFs: `grok_run/wordpdf_redline_oracles/word_redlines_superdoc`
+* pairs: `corpus/word_redlines_superdoc/centralized_mapping.csv`
+* base/next documents: the `word_redlines_superdoc` set
+
+### word_based_0926
+
+The September 2026 compare run of the word_based pairs: fresh Word compares with their Word PDFs.
+
+* comparisons: `grok_run/wr0926/word_based/docx`
+* their Word PDFs: `grok_run/wr0926/word_based/pdf`
+* pairs: `corpus/word_based/centralized_mapping.csv`
+* base/next documents: the `word_based` set
+
+### word_based_randomized_0926
+
+The September 2026 compare run of the randomized word_based pairs.
+
+* comparisons: `grok_run/wr0926/word_based_randomized/docx`
+* their Word PDFs: `grok_run/wr0926/word_based_randomized/pdf`
+* pairs: `corpus/word_based/centralized_mapping_randomized.csv`
+* base/next documents: the `word_based_randomized` set
+
+### word_redlines_superdoc_0926
+
+The September 2026 compare run of the superdoc pairs.
+
+* comparisons: `grok_run/wr0926/word_redlines_superdoc/docx`
+* their Word PDFs: `grok_run/wr0926/word_redlines_superdoc/pdf`
+* pairs: `corpus/word_redlines_superdoc/centralized_mapping.csv`
+* base/next documents: the `word_redlines_superdoc` set
+
+### nocomments
+
+The July 2026 Word run over word_based with comments stripped: the documents with their Word PDFs and the compares (tracked changes, no comments) with theirs.
+
+* documents: `corpus/no_comments_pdf_was_generated_by_word/docx_source`
+* their Word PDFs: `corpus/no_comments_pdf_was_generated_by_word/pdf_source`
+* comparisons: `corpus/no_comments_pdf_was_generated_by_word/docx_redlines_word`
+* their Word PDFs: `corpus/no_comments_pdf_was_generated_by_word/pdf_redlines_word`
+* pairs: `corpus/no_comments_pdf_was_generated_by_word/centralized_mapping.csv`
+* base/next documents: the `nocomments` set
+
+### nocomments_randomized
+
+The July 2026 Word run over the randomized word_based pairs with comments stripped.
+
+* documents: `corpus/no_comments_pdf_was_generated_by_word/docx_source_randomized`
+* their Word PDFs: `corpus/no_comments_pdf_was_generated_by_word/pdf_source_randomized`
+* comparisons: `corpus/no_comments_pdf_was_generated_by_word/docx_redlines_randomized`
+* their Word PDFs: `corpus/no_comments_pdf_was_generated_by_word/pdf_redlines_randomized`
+* pairs: `corpus/no_comments_pdf_was_generated_by_word/centralized_mapping_randomized.csv`
+* base/next documents: the `nocomments_randomized` set
+
+### fixtures_originals
+
+The original fixtures of jubarte-first (_fixtures/original_fixtures): the docx the word_based documents were made from, some under their original names; no Word PDF of them exists.
+
+* documents: `_fixtures/original_fixtures`
+
+### fixtures_word_compares
+
+Word compares of the original fixtures (_fixtures/word_redlined_fixtures) resolved through the word_based mapping; no Word PDF of them exists.
+
+* comparisons: `_fixtures/word_redlined_fixtures`
+* pairs: `corpus/word_based/centralized_mapping.csv`
+* base/next documents: the `word_based` set
 
