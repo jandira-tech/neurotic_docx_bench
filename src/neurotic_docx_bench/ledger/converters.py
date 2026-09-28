@@ -15,6 +15,8 @@ from neurotic_docx_bench import version
 
 DEFAULT_CONVERTERS_PATH = Path("results/converters.jsonl")
 DOCXIDE_TRACK = "docxide_metrics"
+# The page-capped comparison runs the same scorer on a named subset of the corpus.
+DOCXIDE_LE3PAGES_TRACK = f"{DOCXIDE_TRACK}:le3pages"
 DOCXIDE_PRIMARY = "jaccard"
 DOCXIDE_SCORER = "docxide-150dpi"
 
@@ -87,7 +89,7 @@ def lines_from_report(
         failed = _failed_docs(data)
         failed_set = set(failed)
         extra: dict[str, dict[str, float]] = {}
-        if track == DOCXIDE_TRACK:
+        if track in (DOCXIDE_TRACK, DOCXIDE_LE3PAGES_TRACK):
             metrics_raw: Any = data.get("metrics")
             metrics: dict[str, Any] = (
                 metrics_raw if isinstance(metrics_raw, dict) else {}
@@ -97,7 +99,12 @@ def lines_from_report(
                 primary_raw if isinstance(primary_raw, dict) else {}
             )
             lens, scorer = DOCXIDE_PRIMARY, DOCXIDE_SCORER
-            scores = _lens_scores(per_doc, DOCXIDE_PRIMARY, failed_set)
+            # A converted document with no scorable page has no number: it counts
+            # as 0 under ITT like a failure and stays out of the scored-only stats.
+            unscored_raw: Any = data.get("unscored_docs") or []
+            unscored = {str(d) for d in unscored_raw} - failed_set
+            failed = sorted(failed_set | unscored)
+            scores = _lens_scores(per_doc, DOCXIDE_PRIMARY, failed_set | unscored)
             mean = _num(primary.get("mean"))
             median = _num(primary.get("median"))
             for k, v in metrics.items():

@@ -35,6 +35,7 @@ WORD_PDF_TOOLS = (
     "libreoffice_convert_rust",
     "dxpdf",
     "docxide-pdf",
+    "pymupdf-pro",
 )
 
 REQUIRED_FEATURES = frozenset(
@@ -42,6 +43,8 @@ REQUIRED_FEATURES = frozenset(
 )
 
 DEFAULT_CONVERTER = REPO_ROOT.parent / "jubarte-redlines" / "target" / "release" / "jubarte"
+# PyMuPDF Pro pins its own PyMuPDF, so it runs from an isolated venv (see its pyproject).
+PYMUPDF_PRO_CONVERTER = Path(__file__).resolve().parent / "utils" / "pymupdf-pro" / "pymupdf-pro-convert"
 
 _TOOL_BINARIES: dict[str, tuple[str, ...]] = {
     "rdocx": ("rdocx", "rdocx-cli"),
@@ -52,6 +55,7 @@ _TOOL_BINARIES: dict[str, tuple[str, ...]] = {
     "libreoffice_convert_rust": ("libreoffice_convert", "libreoffice_convert_rust"),
     "dxpdf": ("dxpdf",),
     "docxide-pdf": ("docxide-pdf",),
+    "pymupdf-pro": ("pymupdf-pro-convert",),
 }
 
 RANKING_END = "<!-- RANKING-END -->"
@@ -382,12 +386,13 @@ def convert_command(tool: str, src: Path, dest: Path, *, binary: Path) -> list[s
         # is the honest convert attempt; a non-PDF result is a generate failure.
         return [str(binary), str(src), "--export", "pdf"]
     if tool == "jubarte":
-        return [str(binary), "convert", str(src), "-o", str(dest), "--force"]
+        # Paint tracked changes the way Microsoft Word's Save as PDF does.
+        return [str(binary), "convert", str(src), "-o", str(dest), "--force", "--revisions", "word"]
     if tool == "libreoffice_convert_rust":
         return [str(binary), str(src), str(dest), "pdf"]
     if tool == "dxpdf":
         return [str(binary), str(src), "-o", str(dest)]
-    if tool == "docxide-pdf":
+    if tool in ("docxide-pdf", "pymupdf-pro"):
         return [str(binary), str(src), str(dest)]
     raise ValueError(f"unknown DOCX→PDF tool {tool!r}")
 
@@ -404,6 +409,8 @@ def resolve_tool_binary(tool: str, override: Path | None = None) -> Path:
         return env_path
     if tool == "jubarte" and DEFAULT_CONVERTER.is_file():
         return DEFAULT_CONVERTER
+    if tool == "pymupdf-pro" and PYMUPDF_PRO_CONVERTER.is_file():
+        return PYMUPDF_PRO_CONVERTER
     names = _TOOL_BINARIES.get(tool, (tool,))
     for name in names:
         found = shutil.which(name)
@@ -538,21 +545,46 @@ def try_convert_fixtures(
     return failures
 
 
+def link_or_copy(src: Path, target: Path) -> None:
+    """Hardlink ``src`` onto ``target``, or copy the bytes when the link fails."""
+    target.parent.mkdir(parents=True, exist_ok=True)
+    if target.exists() or target.is_symlink():
+        target.unlink()
+    try:
+        if _same_fs(src, target.parent):
+            target.hardlink_to(src)
+            return
+    except OSError:
+        pass
+    _copy(src, target)
+
+
 def stage_oracles(fixtures: list[Fixture], dest_dir: Path) -> Path:
     """Copy Word oracles into ``dest_dir`` under their unique staging stems."""
     dest_dir.mkdir(parents=True, exist_ok=True)
     for item in fixtures:
-        target = dest_dir / f"{item.stem}.pdf"
-        if target.exists() or target.is_symlink():
-            target.unlink()
-        try:
-            if _same_fs(item.oracle, dest_dir):
-                target.hardlink_to(item.oracle)
-            else:
-                _copy(item.oracle, target)
-        except OSError:
-            _copy(item.oracle, target)
+        link_or_copy(item.oracle, dest_dir / f"{item.stem}.pdf")
     return dest_dir
+
+
+def stage_candidates(fixtures: list[Fixture], sources: dict[str, Path], dest_dir: Path) -> list[dict[str, object]]:
+    """Stage score-only PDFs under each fixture stem. Missing sources are failures."""
+    dest_dir.mkdir(parents=True, exist_ok=True)
+    failures: list[dict[str, object]] = []
+    for item in fixtures:
+        src = sources.get(item.stem)
+        if src is None or not src.is_file():
+            failures.append(
+                {
+                    "doc": item.stem,
+                    "stage": "generate",
+                    "error": "no PDF to score",
+                    "cmd": [],
+                },
+            )
+            continue
+        link_or_copy(src, dest_dir / f"{item.stem}.pdf")
+    return failures
 
 
 def _same_fs(src: Path, dest_dir: Path) -> bool:
@@ -662,40 +694,71 @@ def run_eval(
     resume: bool = True,
     convert_workers: int = 8,
     track: Track | str | None = None,
+    check_pins: bool = True,
+    score_only: bool = False,
+    candidates: dict[str, Path] | None = None,
+    warnings: Sequence[str] | None = None,
 ) -> dict:
     """Convert the pin list with each tool and score against Word oracles.
 
     Convert failures do not abort the rest of the set. Missing candidates are
     ITT-scored as 0. Returns the report dict and writes it to ``json_out``.
+
+    ``check_pins`` is for the SHA-pinned Word sets. Corpus selections pass
+    ``fixtures`` and ``check_pins=False``. ``score_only`` skips every converter
+    and scores ``candidates`` (fixture stem to PDF) instead.
     """
-    spec = resolve_track(track)
+    if fixtures is None:
+        spec = resolve_track(track)
+        items = load_fixtures(track=spec)
+    else:
+        spec = resolve_track(track) if check_pins else None
+        items = list(fixtures)
     if tools is None:
         tools = ("jubarte",) if converter is not None else WORD_PDF_TOOLS
-    items = list(fixtures if fixtures is not None else load_fixtures(track=spec))
     if limit is not None:
         items = items[:limit]
     if not items:
         raise RuntimeError("no docx-to-pdf fixtures to evaluate")
-    verify_oracle_sha_manifest(track=spec)
-    for item in items:
-        oracle = item.oracle.resolve()
-        allowed = {d.resolve() for d in oracle_pdf_dirs(track=spec)}
-        if oracle.parent not in allowed:
-            raise RuntimeError(f"oracle {oracle} is not in the pinned Word-export folders")
+    if check_pins:
+        if spec is None:
+            spec = resolve_track(track)
+        verify_oracle_sha_manifest(track=spec)
+        for item in items:
+            oracle = item.oracle.resolve()
+            allowed = {d.resolve() for d in oracle_pdf_dirs(track=spec)}
+            if oracle.parent not in allowed:
+                raise RuntimeError(f"oracle {oracle} is not in the pinned Word-export folders")
 
     root = work_dir if work_dir is not None else json_out.parent / "docx_to_pdf_work"
     oracle_dir = stage_oracles(items, root / "oracle")
     stems = [item.stem for item in items]
+    track_name = spec.name if spec is not None else (track if isinstance(track, str) else "word")
     report: dict = {
-        "track": spec.name,
+        "track": track_name,
         "oracle": "microsoft_word",
         "generated_at": datetime.now(UTC).isoformat(),
         "n": len(items),
         "stems": stems,
+        "warnings": list(warnings or []),
         "tools": {},
     }
 
     for tool in tools:
+        if score_only:
+            print(f"scoring {tool} vs Word oracle ({len(items)} docs)", flush=True)
+            cand_dir = root / tool / "candidate"
+            failures = stage_candidates(items, candidates or {}, cand_dir)
+            score_dir = root / tool / "score"
+            cand_full = score_folder_pair(
+                oracle_dir, cand_dir, score_dir, dpi=dpi, jobs=jobs,
+            )
+            cand_scores = _overall_map(cand_full)
+            shutil.rmtree(score_dir, ignore_errors=True)
+            report["tools"][tool] = _tool_report(
+                tool, None, stems, cand_scores, failures, version=None,
+            )
+            continue
         print(f"converting with {tool} ({len(items)} docs)", flush=True)
         try:
             binary: Path | None = resolve_tool_binary(tool, converter if len(list(tools)) == 1 else None)

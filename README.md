@@ -71,8 +71,10 @@ Pins: [`bench.yaml`](bench.yaml). Tool identities: [`bench.registry.yaml`](bench
 | [pdfitdown](https://github.com/AstraBert/PdfItDown) | converter | office2pdf (Typst) |  | Delegates Office formats to office2pdf; same engine, listed for completeness. |
 | [doxx](https://github.com/bgreenwell/doxx) | converter | doxx |  | No PDF export; listed as not applicable, never ranked. |
 | [libreoffice_convert_rust](https://gitcode.com/dnrops/libreoffice_convert_rust) | converter | LibreOffice |  |  |
+| [soffice](https://www.libreoffice.org/) | converter | LibreOffice |  |  |
 | [dxpdf](https://github.com/nerdy-pro/dxpdf) | converter | dxpdf |  |  |
 | [docxide-pdf](https://github.com/sverrejb/docxide-pdf) | converter | docxide-pdf |  |  |
+| [PyMuPDF Pro](https://pymupdf.io/pro) | converter | pymupdf-pro |  | Unlicensed (Restricted Mode): converts only the first 3 pages, so it is scored on the at-most-3-page set. |
 <!-- VENDORS-END -->
 
 ---

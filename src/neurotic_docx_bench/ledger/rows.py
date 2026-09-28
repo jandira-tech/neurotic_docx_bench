@@ -435,8 +435,10 @@ def row_from_converter_line(data: dict, registry: Registry) -> ResultRow | None:
         itt_mean=_num(data.get("mean")),
         itt_median=_num(data.get("median")),
         itt_approx=False,
-        mean=_num(data.get("mean")),
-        median=_num(data.get("median")),
+        # The report's mean/median are ITT (failures score 0); the table's Mean and
+        # Median columns are over the documents that produced a score.
+        mean=round(statistics.mean(scores.values()), 4) if scores else 0.0,
+        median=round(statistics.median(scores.values()), 4) if scores else 0.0,
         exact_100=int(_num(data.get("perfects"))),
         scores=scores,
         failed_docs=failed,

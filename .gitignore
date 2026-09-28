@@ -131,6 +131,9 @@ results/redline_speed_bench/**/fixtures_bytes/
 results/wasm_perf/
 harness/folio-viewer-current/node_modules/
 
+# Converter scratch (candidate PDFs, page rasters): gigabytes per corpus/word run.
+results/*_work/
+
 # Run artifacts under results/ — keep only number/summary files in git
 # (summary.json, speed.jsonl, report.md, scores.*). Regenerable from benches.
 results/redline_speed_bench/**/pairs.json

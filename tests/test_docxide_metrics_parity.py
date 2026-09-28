@@ -73,6 +73,22 @@ def test_itt_zeroes_a_failed_convert() -> None:
     assert report["metrics"]["jaccard"]["mean"] == 25.0
     assert report["pass_jaccard_20"] == 1
     assert "pass_ssim_75" not in report
+    assert report["unscored_docs"] == []
+
+
+def test_a_converted_document_with_no_scorable_page_is_named_unscored() -> None:
+    ok = {"converted": True, "jaccard": 0.5, "text_boundary": 0.5, "ref_pages": 1, "pages": 1}
+    landscape = {"converted": True, "jaccard": None, "text_boundary": None, "ref_pages": 1, "pages": 1}
+    report = dm._tool_report(
+        "toy",
+        None,
+        ["a", "b", "c"],
+        {"a": ok, "b": landscape},
+        [{"doc": "c", "stage": "generate", "error": "boom", "cmd": ["toy"]}],
+    )
+    assert report["unscored_docs"] == ["b"]
+    assert report["per_doc"]["b"] == {"jaccard": 0.0, "text_boundary": 0.0}
+    assert report["n_scored"] + report["failures"] + len(report["unscored_docs"]) == report["itt_n"]
 
 
 def test_render_table_has_no_ssim_columns() -> None:

@@ -155,6 +155,12 @@ def _tool_report(
         "metrics": metrics,
         "pass_jaccard_20": sum(1 for v in jaccard_vals if v >= JACCARD_THRESHOLD),
         "per_doc": per_doc,
+        # Converted, but no number (no scorable page): 0 in per_doc like a failure.
+        "unscored_docs": [
+            stem for stem in stems
+            if stem not in failed
+            and not ((rows.get(stem) or {}).get("converted") and (rows.get(stem) or {}).get("jaccard") is not None)
+        ],
         "generate_failures": failures,
     }
 
@@ -169,25 +175,42 @@ def run_eval(
     resume: bool = True,
     convert_workers: int = 8,
     score_workers: int = 4,
+    fixtures: Sequence[d2p.Fixture] | None = None,
+    check_pins: bool = True,
+    score_only: bool = False,
+    candidates: dict[str, Path] | None = None,
+    warnings: Sequence[str] | None = None,
+    fixture_track: str | None = None,
 ) -> dict:
-    """Convert the 398 pinned fixtures with each tool and score them docxide-style."""
-    spec = d2p.resolve_track(FIXTURE_TRACK)
-    items = d2p.load_fixtures(track=spec)
+    """Convert the pinned fixtures with each tool and score them docxide-style.
+
+    Corpus selections pass ``fixtures`` and ``check_pins=False``. ``score_only``
+    skips every converter and scores ``candidates`` (fixture stem to PDF).
+    """
+    if fixtures is None:
+        spec = d2p.resolve_track(FIXTURE_TRACK)
+        items = d2p.load_fixtures(track=spec)
+    else:
+        spec = d2p.resolve_track(FIXTURE_TRACK) if check_pins else None
+        items = list(fixtures)
     if limit is not None:
         items = items[:limit]
     if not items:
         raise RuntimeError("no docxide-metrics fixtures to evaluate")
-    d2p.verify_oracle_sha_manifest(track=spec)
-    allowed = {d.resolve() for d in d2p.oracle_pdf_dirs(track=spec)}
-    for item in items:
-        if item.oracle.resolve().parent not in allowed:
-            raise RuntimeError(f"oracle {item.oracle} is not in the pinned Word-export folders")
+    if check_pins:
+        if spec is None:
+            spec = d2p.resolve_track(FIXTURE_TRACK)
+        d2p.verify_oracle_sha_manifest(track=spec)
+        allowed = {d.resolve() for d in d2p.oracle_pdf_dirs(track=spec)}
+        for item in items:
+            if item.oracle.resolve().parent not in allowed:
+                raise RuntimeError(f"oracle {item.oracle} is not in the pinned Word-export folders")
 
     root = work_dir if work_dir is not None else json_out.parent / "docxide_metrics_work"
     stems = [item.stem for item in items]
     report: dict = {
         "track": "docxide_metrics",
-        "fixture_track": spec.name,
+        "fixture_track": spec.name if spec is not None else (fixture_track or "corpus/word"),
         "scorer": "docxide-pdf metrics (Jaccard / text boundary), page_metrics.py port",
         "scorer_upstream": "https://github.com/sverrejb/docxide-pdf",
         "dpi": DPI,
@@ -195,10 +218,28 @@ def run_eval(
         "generated_at": datetime.now(UTC).isoformat(),
         "n": len(items),
         "stems": stems,
+        "warnings": list(warnings or []),
         "tools": {},
     }
 
     for tool in tools:
+        if score_only:
+            print(f"scoring {tool} with docxide-pdf metrics ({len(items)} docs)", flush=True)
+            cand_dir = root / tool / "candidate"
+            failures = d2p.stage_candidates(items, candidates or {}, cand_dir)
+            present = [
+                item for item in items
+                if (cand_dir / f"{item.stem}.pdf").is_file()
+            ]
+            rows = (
+                score_candidates(present, cand_dir, root / tool / "scores.json", workers=score_workers)
+                if present
+                else {}
+            )
+            report["tools"][tool] = _tool_report(
+                tool, None, stems, rows, failures, version=None,
+            )
+            continue
         print(f"converting with {tool} ({len(items)} docs)", flush=True)
         try:
             binary: Path | None = d2p.resolve_tool_binary(

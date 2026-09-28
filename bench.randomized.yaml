@@ -2,6 +2,16 @@
 # (corpus/word_based/docx_source_randomized + pdf_redlines_randomized).
 # Oracle PDFs: Word redlines rendered by LibreOffice via `bench render`.
 source_of_truth: corpus/word_based/pdf_redlines_randomized/pdf
+# docx-to-pdf and docxide-metrics read word_pdf, not source_of_truth.
+# A pair is <state>/pdf/<stem>.pdf with <state>/docx/<stem>.docx.
+# pdf_prior is an earlier Word render, not the oracle those commands score.
+word_pdf:
+  root: corpus/word
+  states:
+    - clean
+    - tracking_without_comments
+    - with_comments_clean
+    - with_comments_tracking
 scoring:
   dpi: 144
 

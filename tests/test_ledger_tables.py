@@ -175,16 +175,16 @@ def test_fidelity_table_layout(registry) -> None:
     assert "oracle DOCX (identity)" in md and "Calibration" in md
     assert "Not applicable" in md and "doxx" in md and "no PDF export" in md
     assert "author-affiliated" in md
-    assert "inferred" not in md
+    assert "not recorded in results/docsets.json" not in md
 
 
-def test_caption_says_when_the_document_set_was_inferred(registry) -> None:
+def test_caption_says_when_the_document_set_is_not_recorded(registry) -> None:
     # the gate set is recorded, the full set it points at is not
     t = _select(
         [_row("a", "acme", 80.0)], registry, docsets={"g1": {"n": 2, "gate_of": "d1"}}
     )
     assert t.docset_recorded is False
-    assert "inferred from the largest ITT n" in tb.fidelity_table(t, row_ci={})
+    assert "not recorded in results/docsets.json, so its size is the largest ITT n" in tb.fidelity_table(t, row_ci={})
 
 
 def test_tied_rank_is_marked(registry) -> None:
