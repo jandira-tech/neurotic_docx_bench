@@ -58,7 +58,7 @@ __pycache__/
 /runs/
 /grok_run/
 # the Word corpus (bench corpus build): documents travel with `bench fixtures upload`,
-# provenance, tables, notes and manifests are tracked
+# tables, pools, notices, provenance and the manifest are tracked
 /corpus/word/**/*.docx
 /corpus/word/**/*.pdf
 # local bench logs (RESULTS live in results/; these are tee captures)

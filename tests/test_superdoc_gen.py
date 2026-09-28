@@ -51,3 +51,24 @@ def test_run_batch_produces_tracked_redline(tmp_path):
     with zipfile.ZipFile(outs[0]) as z:
         xml = z.read("word/document.xml").decode("utf-8", "ignore")
     assert "<w:ins" in xml or "<w:del" in xml
+
+
+def test_parse_manifest_reads_the_pool_key(tmp_path):
+    """A Word-corpus pool (`pools/<set>_pairs.csv`) carries the Word stem as `key`."""
+    pool = tmp_path / "sources_pairs.csv"
+    pool.write_text(
+        "key,base,next,base_name,next_name,docx,pdf,state\n"
+        "0123456789_a__vs__abcdef0123_b_redline_fedcba9876,clean/docx/0123456789_a,clean/docx/abcdef0123_b,a,b,"
+        "clean/docx/0123456789_a__vs__abcdef0123_b_redline_fedcba9876.docx,clean/pdf/0123456789_a__vs__abcdef0123_b_redline_fedcba9876.pdf,clean\n"
+    )
+    (pair,) = superdoc_gen.parse_manifest(pool, {"ok"})
+    assert (pair.base, pair.next) == ("clean/docx/0123456789_a", "clean/docx/abcdef0123_b")
+    assert pair.key == "0123456789_a__vs__abcdef0123_b_redline_fedcba9876"
+
+
+def test_output_name_is_the_key_plus_the_tool_when_the_pool_has_a_key():
+    key = "0123456789_a__vs__abcdef0123_b_redline_fedcba9876"
+    keyed = superdoc_gen.Pair(base="clean/docx/0123456789_a", next="clean/docx/abcdef0123_b", key=key)
+    assert superdoc_gen.output_names(keyed, "superdoc") == [f"{key}_superdoc.docx"]
+    legacy = superdoc_gen.Pair(base="a_x", next="b_y")
+    assert superdoc_gen.output_names(legacy, "superdoc") == ["a_x_b_y_superdoc_redline.docx"]
