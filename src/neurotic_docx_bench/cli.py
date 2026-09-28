@@ -621,6 +621,29 @@ def compare(
         console.print(f"wrote {json_out}")
 
 
+def _stamp_tool_version(report: dict, json_out: Path, tool_version: str | None) -> None:
+    """Record ``tool_version`` on every tool row that has none, and rewrite ``json_out``.
+
+    A ``--score-only`` run never sees the binary that made the PDFs, so without
+    this its report and its converters.jsonl line carry ``version: null``.
+    """
+    if not tool_version:
+        return
+    for data in (report.get("tools") or {}).values():
+        if data.get("version") is None:
+            data["version"] = tool_version
+    json_out.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+
+def _ledger_report_path(json_out: Path) -> str:
+    """``json_out`` relative to the working directory when it lies inside it, so a
+    converters.jsonl line does not carry one machine's absolute path."""
+    try:
+        return Path(json_out).resolve().relative_to(Path.cwd().resolve()).as_posix()
+    except ValueError:
+        return str(json_out)
+
+
 def _append_converter_lines(report: dict, json_out: Path) -> None:
     """Append one store line per tool of a converter report to results/converters.jsonl;
     the published tables are built from that store by ``bench report``."""
@@ -630,7 +653,7 @@ def _append_converter_lines(report: dict, json_out: Path) -> None:
         conv.DEFAULT_CONVERTERS_PATH,
         report,
         hardware=hardware.hardware_info(),
-        report_path=str(json_out),
+        report_path=_ledger_report_path(json_out),
     )
     console.print(f"appended {n} line(s) to {conv.DEFAULT_CONVERTERS_PATH}")
 
@@ -648,6 +671,51 @@ def ingest_converter_reports(
         report = json.loads(Path(p).read_text(encoding="utf-8"))
         total += conv.append_report(store, report, hardware=None, report_path=str(p))
     console.print(f"appended {total} line(s) to {store}")
+
+
+def _corpus_word_selection(
+    *,
+    origin: str | None,
+    files_list: list[Path],
+    score_only: bool,
+    locations: list[Path],
+    config: Path,
+    tool: str | None,
+):
+    """Resolve corpus/word pairs for the two DOCX→PDF commands. Warn, do not fail, on gaps."""
+    from neurotic_docx_bench.word_pdf_source import select_corpus_word_pdfs, word_pdf_from_config
+
+    root, states = word_pdf_from_config(config)
+    try:
+        selected = select_corpus_word_pdfs(
+            origin=origin or "all",
+            root=root,
+            states=states,
+            files_list=files_list,
+            score_only=score_only,
+            locations=locations,
+            tool=tool,
+        )
+    except ValueError as exc:
+        raise typer.BadParameter(str(exc)) from exc
+    for warning in selected.warnings:
+        console.print(f"warning: {warning}")
+    return selected
+
+
+def _write_empty_word_pdf_report(json_out: Path, track: str, warnings: list[str]) -> dict:
+    """A selection with nothing to measure is a warning, not a failed run."""
+    report = {
+        "track": track,
+        "oracle": "microsoft_word",
+        "n": 0,
+        "stems": [],
+        "warnings": warnings,
+        "tools": {},
+    }
+    json_out.parent.mkdir(parents=True, exist_ok=True)
+    json_out.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
+    return report
 
 
 @app.command(name="docx-to-pdf")
@@ -673,13 +741,60 @@ def docx_to_pdf_eval(
     limit: int | None = typer.Option(None, "--limit", help="score only the first N fixtures (tests)"),
     resume: bool = typer.Option(True, "--resume/--no-resume", help="reuse existing candidate PDFs"),
     convert_workers: int = typer.Option(8, "--convert-workers", help="parallel convert processes per tool"),
-    track: str = typer.Option(
-        "docx_to_pdf",
+    track: str | None = typer.Option(
+        None,
         "--track",
-        help="docx_to_pdf (accepted+randomized redlines) or docx_to_pdf_no_redline_docs (source PDFs).",
+        help=(
+            "legacy pinned set: docx_to_pdf (accepted+randomized redlines) or "
+            "docx_to_pdf_no_redline_docs (source PDFs). Omit this to measure corpus/word."
+        ),
+    ),
+    origin: str | None = typer.Option(
+        None,
+        "--origin",
+        help=(
+            "corpus/word state to convert: clean, tracking_without_comments, "
+            "with_comments_clean, with_comments_tracking, all, or list. "
+            "Default when --track is omitted: all."
+        ),
+    ),
+    files_list: list[Path] = typer.Option(
+        [],
+        "--files-list",
+        help=(
+            "with --origin list: a corpus docx that has its Word PDF, or a Word PDF "
+            "under <state>/pdf. Repeat for each path."
+        ),
+    ),
+    score_only: bool = typer.Option(
+        False,
+        "--score-only",
+        help="skip conversion and score the PDFs given by --location-to-score.",
+    ),
+    location_to_score: list[Path] = typer.Option(
+        [],
+        "--location-to-score",
+        help="with --score-only: a folder of PDFs, or a PDF path. Repeatable.",
+    ),
+    config: Path = typer.Option(
+        Path("bench.yaml"),
+        "--config",
+        help="bench yaml whose word_pdf.root is the corpus (default corpus/word).",
+    ),
+    tool_version: str | None = typer.Option(
+        None,
+        "--tool-version",
+        help="with --score-only: version of the tool that made the PDFs (e.g. 'jubarte 0.9.3').",
     ),
 ) -> None:
-    """Score a pinned Word-oracle DOCX→PDF set.
+    """Score Word PDFs from corpus/word.
+
+    ``--origin`` is one of the four states, ``all``, or ``list``. Conversion
+    runs on every Word PDF that has a DOCX with the same stem. A DOCX with no
+    Word PDF is a warning and is not converted. ``--score-only`` skips
+    conversion and scores every Word PDF that also has a PDF under
+    ``--location-to-score``. ``--track`` is the older pinned set and does not
+    combine with ``--origin``.
 
     Each ``--tool`` is invoked on its own headless convert path. Convert crashes
     and non-PDF output are generate failures scored as 0 (intent-to-treat).
@@ -691,20 +806,64 @@ def docx_to_pdf_eval(
         unknown = [name for name in tools if name not in WORD_PDF_TOOLS and name != "jubarte"]
         if unknown:
             raise typer.BadParameter(f"unknown --tool: {', '.join(unknown)}")
-    if track not in TRACKS:
-        raise typer.BadParameter(f"unknown --track {track}; known: {sorted(TRACKS)}")
-    report = run_eval(
-        json_out,
-        converter=converter,
-        tools=tools,
-        jobs=jobs,
-        dpi=dpi,
-        work_dir=work_dir,
-        limit=limit,
-        resume=resume,
-        convert_workers=convert_workers,
-        track=track,
-    )
+    if track is not None:
+        if origin is not None or files_list or score_only or location_to_score:
+            raise typer.BadParameter(
+                "--track uses the pinned Word sets and does not take "
+                "--origin, --files-list, --score-only, or --location-to-score",
+            )
+        if track not in TRACKS:
+            raise typer.BadParameter(f"unknown --track {track}; known: {sorted(TRACKS)}")
+        report = run_eval(
+            json_out,
+            converter=converter,
+            tools=tools,
+            jobs=jobs,
+            dpi=dpi,
+            work_dir=work_dir,
+            limit=limit,
+            resume=resume,
+            convert_workers=convert_workers,
+            track=track,
+        )
+    else:
+        if score_only and len(tool) > 1:
+            raise typer.BadParameter("--score-only scores one PDF set; pass a single --tool")
+        label = tool[0] if score_only and len(tool) == 1 else None
+        run_tools = (label,) if score_only and label else (("candidates",) if score_only else tools)
+        selected = _corpus_word_selection(
+            origin=origin,
+            files_list=files_list,
+            score_only=score_only,
+            locations=location_to_score,
+            config=config,
+            tool=label,
+        )
+        if not selected.fixtures:
+            report = _write_empty_word_pdf_report(
+                json_out, f"corpus/word:{origin or 'all'}", selected.warnings,
+            )
+            console.print(f"docx-to-pdf  n=0  → {json_out}")
+            return
+        report = run_eval(
+            json_out,
+            converter=converter,
+            tools=run_tools,
+            jobs=jobs,
+            dpi=dpi,
+            work_dir=work_dir,
+            limit=limit,
+            resume=resume,
+            convert_workers=convert_workers,
+            track=f"corpus/word:{origin or 'all'}",
+            fixtures=selected.fixtures,
+            check_pins=False,
+            score_only=score_only,
+            candidates=selected.candidates,
+            warnings=selected.warnings,
+        )
+        if score_only:
+            _stamp_tool_version(report, json_out, tool_version)
     bits = [f"docx-to-pdf  n={report['n']}"]
     for name, data in (report.get("tools") or {}).items():
         bits.append(
@@ -737,22 +896,80 @@ def docxide_metrics_eval(
     resume: bool = typer.Option(True, "--resume/--no-resume", help="reuse existing candidate PDFs"),
     convert_workers: int = typer.Option(8, "--convert-workers", help="parallel convert processes per tool"),
     score_workers: int = typer.Option(4, "--score-workers", help="parallel scoring processes"),
+    origin: str | None = typer.Option(
+        None,
+        "--origin",
+        help=(
+            "corpus/word state to convert: clean, tracking_without_comments, "
+            "with_comments_clean, with_comments_tracking, all, or list. Default: all."
+        ),
+    ),
+    files_list: list[Path] = typer.Option(
+        [],
+        "--files-list",
+        help=(
+            "with --origin list: a corpus docx that has its Word PDF, or a Word PDF "
+            "under <state>/pdf. Repeat for each path."
+        ),
+    ),
+    score_only: bool = typer.Option(
+        False,
+        "--score-only",
+        help="skip conversion and score the PDFs given by --location-to-score.",
+    ),
+    location_to_score: list[Path] = typer.Option(
+        [],
+        "--location-to-score",
+        help="with --score-only: a folder of PDFs, or a PDF path. Repeatable.",
+    ),
+    config: Path = typer.Option(
+        Path("bench.yaml"),
+        "--config",
+        help="bench yaml whose word_pdf.root is the corpus (default corpus/word).",
+    ),
+    tool_version: str | None = typer.Option(
+        None,
+        "--tool-version",
+        help="with --score-only: version of the tool that made the PDFs (e.g. 'jubarte 0.9.3').",
+    ),
 ) -> None:
-    """Score the 398 no-redline fixtures with docxide-pdf's own metrics.
+    """Score corpus/word with docxide-pdf's Jaccard and text-boundary metrics.
 
-    Same fixtures and same pinned Word oracles as ``docx-to-pdf --track
-    docx_to_pdf_no_redline_docs``; the scorer is docxide-pdf's Jaccard and
-    text-boundary metrics (page_metrics.py) at 150 DPI instead of the
-    superdoc-visual-benchmarks core. Convert failures score 0 on both metrics
-    (intent-to-treat).
+    ``--origin`` is one of the four states, ``all``, or ``list``. Conversion
+    runs on every Word PDF that has a DOCX with the same stem. A DOCX with no
+    Word PDF is a warning and is not converted. ``--score-only`` skips
+    conversion and scores every Word PDF that also has a PDF under
+    ``--location-to-score``. Metrics are page_metrics.py at 150 DPI. Convert
+    failures score 0 on both metrics (intent-to-treat).
     """
     from neurotic_docx_bench import docxide_metrics as dm
     from neurotic_docx_bench.docx_to_pdf import WORD_PDF_TOOLS
 
-    tools = tuple(tool) or dm.DEFAULT_TOOLS
-    unknown = [name for name in tools if name not in WORD_PDF_TOOLS and name != "jubarte"]
+    if score_only and len(tool) > 1:
+        raise typer.BadParameter("--score-only scores one PDF set; pass a single --tool")
+    if score_only:
+        tools = (tool[0],) if tool else ("candidates",)
+        label = tool[0] if tool else None
+    else:
+        tools = tuple(tool) or dm.DEFAULT_TOOLS
+        label = None
+    unknown = [name for name in tools if name not in WORD_PDF_TOOLS and name != "jubarte" and name != "candidates"]
     if unknown:
         raise typer.BadParameter(f"unknown --tool: {', '.join(unknown)}")
+    selected = _corpus_word_selection(
+        origin=origin,
+        files_list=files_list,
+        score_only=score_only,
+        locations=location_to_score,
+        config=config,
+        tool=label,
+    )
+    if not selected.fixtures:
+        _write_empty_word_pdf_report(
+            json_out, f"corpus/word:{origin or 'all'}", selected.warnings,
+        )
+        console.print(f"docxide-metrics  n=0  → {json_out}")
+        return
     report = dm.run_eval(
         json_out,
         tools=tools,
@@ -762,7 +979,15 @@ def docxide_metrics_eval(
         resume=resume,
         convert_workers=convert_workers,
         score_workers=score_workers,
+        fixtures=selected.fixtures,
+        check_pins=False,
+        score_only=score_only,
+        candidates=selected.candidates,
+        warnings=selected.warnings,
+        fixture_track=f"corpus/word:{origin or 'all'}",
     )
+    if score_only:
+        _stamp_tool_version(report, json_out, tool_version)
     bits = [f"docxide-metrics  n={report['n']}"]
     for name, data in (report.get("tools") or {}).items():
         m = data.get("metrics") or {}

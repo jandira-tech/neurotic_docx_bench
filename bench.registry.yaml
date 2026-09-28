@@ -195,6 +195,13 @@ tools:
     engine: LibreOffice
     converter_tools: [libreoffice_convert_rust]
     url: https://gitcode.com/dnrops/libreoffice_convert_rust
+  - id: soffice
+    vendor: soffice
+    display: soffice
+    role: converter
+    engine: LibreOffice
+    converter_tools: [soffice]
+    url: https://www.libreoffice.org/
   - id: dxpdf
     vendor: dxpdf
     display: dxpdf
@@ -209,6 +216,14 @@ tools:
     engine: docxide-pdf
     converter_tools: [docxide-pdf]
     url: https://github.com/sverrejb/docxide-pdf
+  - id: pymupdf-pro
+    vendor: pymupdf-pro
+    display: PyMuPDF Pro
+    role: converter
+    engine: pymupdf-pro
+    converter_tools: [pymupdf-pro]
+    url: https://pymupdf.io/pro
+    note: "Unlicensed (Restricted Mode): converts only the first 3 pages, so it is scored on the at-most-3-page set."
   # ---- calibration rows (never ranked, always shown) ----
   - id: oracle-identity
     vendor: bench

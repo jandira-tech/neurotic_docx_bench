@@ -26,7 +26,10 @@ TITLES: dict[str, str] = {
     "visual_accepted_changes": "visual_accepted_changes: editor render of the accepted DOCX",
     "docx_to_pdf": "docx_to_pdf: accepted and randomized redline DOCX to PDF vs Word export",
     "docx_to_pdf_no_redline_docs": "docx_to_pdf_no_redline_docs: source DOCX to PDF vs Word export",
-    "docxide_metrics": "docxide_metrics: source DOCX to PDF under docxide-pdf's own metrics",
+    "corpus/word:all": "corpus/word:all: every corpus/word DOCX to PDF vs Word's own PDF",
+    "docxide_metrics": "docxide_metrics: DOCX to PDF under docxide-pdf's own metrics",
+    "corpus/word:le3pages": "below 3 pages: corpus/word DOCX to PDF vs Word's own PDF",
+    "docxide_metrics:le3pages": "below 3 pages: docxide_metrics on the same documents",
 }
 
 ORACLE_NOTES: dict[str, str] = {
@@ -55,9 +58,21 @@ ORACLE_NOTES: dict[str, str] = {
     "docx_to_pdf_no_redline_docs": (
         "Oracle: SHA-pinned Word-export PDFs of the source; the candidate is the converter's PDF."
     ),
+    "corpus/word:all": (
+        "Oracle: Word's PDF export of each DOCX in the four corpus/word states; the candidate is "
+        "the converter's PDF of the same DOCX."
+    ),
     "docxide_metrics": (
-        "Same inputs and oracles as docx_to_pdf_no_redline_docs, scored with docxide-pdf's Jaccard "
+        "Word-export PDFs of the document set named below, scored with docxide-pdf's Jaccard "
         "and text-boundary metrics at 150 DPI; ranked on Jaccard, docxide-pdf's headline number."
+    ),
+    "corpus/word:le3pages": (
+        "The corpus/word:all benchmark restricted to the documents Word lays out in 1 to 3 pages, "
+        "so a converter that only renders the first 3 pages (unlicensed PyMuPDF Pro) is compared "
+        "with every other converter on the same documents."
+    ),
+    "docxide_metrics:le3pages": (
+        "The docxide_metrics benchmark on the same 1 to 3 page documents; ranked on Jaccard."
     ),
 }
 
@@ -118,8 +133,8 @@ def fidelity_table(
         g = table.group
         out.append("")
         inferred = (
-            " The document set was inferred from the largest ITT n in this group because these "
-            "rows predate document-set stamping; a re-run stamps it."
+            " This document set is not recorded in results/docsets.json, so its size is the "
+            "largest ITT n in this group."
             if not table.docset_recorded
             else ""
         )
