@@ -1,0 +1,297 @@
+2026-09-26 15:06:02.880 | INFO     | word_pdf:preflight:1632 - [word] preflight: open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-09-26 15:06:02.917 | INFO     | __main__:redline_folders:708 - [redline] one_osascript=True pairs=400
+2026-09-26 15:06:15.235 | INFO     | __main__:_redline_batched:991 - [batch] one osascript for 400 comparison(s)
+2026-09-26 15:06:20.271 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 1/400
+2026-09-26 15:06:24.637 | INFO     | word_pdf:_note_buttons:502 - [watchdog] Microsoft Word shows button 'missing value'
+2026-09-26 15:06:25.311 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 4/400
+2026-09-26 15:06:30.336 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 6/400
+2026-09-26 15:06:35.367 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 8/400
+2026-09-26 15:06:40.401 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 10/400
+2026-09-26 15:06:45.431 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 12/400
+2026-09-26 15:06:50.456 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 14/400
+2026-09-26 15:06:55.524 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 16/400
+2026-09-26 15:07:00.553 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 18/400
+2026-09-26 15:07:05.584 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 19/400
+2026-09-26 15:07:10.614 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 21/400
+2026-09-26 15:07:15.639 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 23/400
+2026-09-26 15:07:20.668 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 25/400
+2026-09-26 15:07:25.690 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 27/400
+2026-09-26 15:07:30.722 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 29/400
+2026-09-26 15:07:35.764 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 31/400
+2026-09-26 15:07:40.803 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 33/400
+2026-09-26 15:07:45.827 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 35/400
+2026-09-26 15:07:50.865 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 38/400
+2026-09-26 15:07:55.902 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 40/400
+2026-09-26 15:08:00.938 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 41/400
+2026-09-26 15:08:05.979 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 43/400
+2026-09-26 15:08:11.005 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 45/400
+2026-09-26 15:08:16.027 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 47/400
+2026-09-26 15:08:21.051 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 49/400
+2026-09-26 15:08:26.074 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 51/400
+2026-09-26 15:08:31.098 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 53/400
+2026-09-26 15:08:36.129 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 55/400
+2026-09-26 15:08:41.164 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 57/400
+2026-09-26 15:08:46.197 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 59/400
+2026-09-26 15:08:51.222 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 61/400
+2026-09-26 15:08:56.245 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 63/400
+2026-09-26 15:09:01.283 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 65/400
+2026-09-26 15:09:06.306 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 67/400
+2026-09-26 15:09:11.333 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 69/400
+2026-09-26 15:09:16.364 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 70/400
+2026-09-26 15:09:21.389 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 72/400
+2026-09-26 15:09:26.419 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 74/400
+2026-09-26 15:09:31.446 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 76/400
+2026-09-26 15:09:36.466 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 78/400
+2026-09-26 15:09:41.483 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 80/400
+2026-09-26 15:09:46.530 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 82/400
+2026-09-26 15:09:51.592 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 83/400
+2026-09-26 15:09:56.644 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 85/400
+2026-09-26 15:10:01.679 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 87/400
+2026-09-26 15:10:06.715 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 89/400
+2026-09-26 15:10:11.763 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 91/400
+2026-09-26 15:10:16.801 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 93/400
+2026-09-26 15:10:21.826 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 95/400
+2026-09-26 15:10:26.853 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 97/400
+2026-09-26 15:10:31.881 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 99/400
+2026-09-26 15:10:36.908 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 101/400
+2026-09-26 15:10:41.941 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 103/400
+2026-09-26 15:10:46.965 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 105/400
+2026-09-26 15:10:51.998 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 106/400
+2026-09-26 15:10:57.043 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 108/400
+2026-09-26 15:11:02.065 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 110/400
+2026-09-26 15:11:07.093 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 112/400
+2026-09-26 15:11:12.123 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 113/400
+2026-09-26 15:11:17.152 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 115/400
+2026-09-26 15:11:22.179 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 117/400
+2026-09-26 15:11:27.228 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 118/400
+2026-09-26 15:11:32.263 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 120/400
+2026-09-26 15:11:37.300 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 122/400
+2026-09-26 15:11:42.317 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 125/400
+2026-09-26 15:11:47.341 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 127/400
+2026-09-26 15:11:52.355 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 130/400
+2026-09-26 15:11:57.382 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 132/400
+2026-09-26 15:12:02.395 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 135/400
+2026-09-26 15:12:07.420 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 137/400
+2026-09-26 15:12:12.449 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 140/400
+2026-09-26 15:12:17.471 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 143/400
+2026-09-26 15:12:22.497 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 145/400
+2026-09-26 15:12:27.516 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 148/400
+2026-09-26 15:12:32.538 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 150/400
+2026-09-26 15:12:37.562 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 153/400
+2026-09-26 15:12:42.586 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 155/400
+2026-09-26 15:12:47.610 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 157/400
+2026-09-26 15:12:52.641 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 160/400
+2026-09-26 15:12:57.668 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 162/400
+2026-09-26 15:13:02.686 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 164/400
+2026-09-26 15:13:07.710 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 167/400
+2026-09-26 15:13:12.734 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 169/400
+2026-09-26 15:13:17.752 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 172/400
+2026-09-26 15:13:22.775 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 174/400
+2026-09-26 15:13:27.801 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 176/400
+2026-09-26 15:13:32.825 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 179/400
+2026-09-26 15:13:37.848 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 181/400
+2026-09-26 15:13:42.870 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 183/400
+2026-09-26 15:13:47.896 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 185/400
+2026-09-26 15:13:52.919 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 188/400
+2026-09-26 15:13:57.946 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 190/400
+2026-09-26 15:14:02.968 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 192/400
+2026-09-26 15:14:07.992 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 194/400
+2026-09-26 15:14:13.025 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 197/400
+2026-09-26 15:14:18.052 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 199/400
+2026-09-26 15:14:23.076 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 201/400
+2026-09-26 15:14:28.101 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 203/400
+2026-09-26 15:14:33.125 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 205/400
+2026-09-26 15:14:38.144 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 207/400
+2026-09-26 15:14:43.162 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 209/400
+2026-09-26 15:14:48.187 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 211/400
+2026-09-26 15:14:53.226 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 214/400
+2026-09-26 15:14:58.250 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 216/400
+2026-09-26 15:15:03.271 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 218/400
+2026-09-26 15:15:08.293 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 220/400
+2026-09-26 15:15:13.315 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 223/400
+2026-09-26 15:15:18.331 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 225/400
+2026-09-26 15:15:23.357 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 227/400
+2026-09-26 15:15:28.379 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 229/400
+2026-09-26 15:15:33.405 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 231/400
+2026-09-26 15:15:38.433 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 233/400
+2026-09-26 15:15:43.458 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 235/400
+2026-09-26 15:15:48.482 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 238/400
+2026-09-26 15:15:53.509 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 240/400
+2026-09-26 15:15:58.527 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 242/400
+2026-09-26 15:16:03.549 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 244/400
+2026-09-26 15:16:08.575 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 246/400
+2026-09-26 15:16:13.601 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 248/400
+2026-09-26 15:16:18.632 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 250/400
+2026-09-26 15:16:23.654 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 252/400
+2026-09-26 15:16:28.679 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 254/400
+2026-09-26 15:16:33.704 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 256/400
+2026-09-26 15:16:38.729 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 258/400
+2026-09-26 15:16:43.753 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 260/400
+2026-09-26 15:16:48.781 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 262/400
+2026-09-26 15:16:53.806 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 264/400
+2026-09-26 15:16:58.830 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 266/400
+2026-09-26 15:17:03.858 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 268/400
+2026-09-26 15:17:08.883 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 270/400
+2026-09-26 15:17:13.901 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 272/400
+2026-09-26 15:17:18.918 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 274/400
+2026-09-26 15:17:23.942 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 276/400
+2026-09-26 15:17:28.970 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 277/400
+2026-09-26 15:17:34.007 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 279/400
+2026-09-26 15:17:39.037 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 280/400
+2026-09-26 15:17:44.070 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 281/400
+2026-09-26 15:17:49.165 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 282/400
+2026-09-26 15:17:54.202 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 283/400
+2026-09-26 15:17:59.235 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 284/400
+2026-09-26 15:18:04.266 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 285/400
+2026-09-26 15:18:09.298 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 286/400
+2026-09-26 15:18:14.330 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 287/400
+2026-09-26 15:18:19.367 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 288/400
+2026-09-26 15:18:24.398 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 289/400
+2026-09-26 15:18:29.423 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 290/400
+2026-09-26 15:18:34.450 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 291/400
+2026-09-26 15:18:39.496 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 292/400
+2026-09-26 15:18:44.549 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 293/400
+2026-09-26 15:18:49.583 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 294/400
+2026-09-26 15:18:54.607 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 295/400
+2026-09-26 15:18:59.633 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 296/400
+2026-09-26 15:19:04.661 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 297/400
+2026-09-26 15:19:09.694 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 298/400
+2026-09-26 15:19:14.753 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 299/400
+2026-09-26 15:19:19.787 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 300/400
+2026-09-26 15:19:24.822 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 301/400
+2026-09-26 15:19:29.865 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 302/400
+2026-09-26 15:19:34.904 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 303/400
+2026-09-26 15:19:39.944 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 304/400
+2026-09-26 15:19:44.966 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 305/400
+2026-09-26 15:19:50.001 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 306/400
+2026-09-26 15:19:55.023 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 307/400
+2026-09-26 15:20:00.054 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 308/400
+2026-09-26 15:20:05.083 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 309/400
+2026-09-26 15:20:10.121 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 310/400
+2026-09-26 15:20:15.157 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 311/400
+2026-09-26 15:20:20.188 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 312/400
+2026-09-26 15:20:25.218 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 313/400
+2026-09-26 15:20:30.254 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 314/400
+2026-09-26 15:20:35.300 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 315/400
+2026-09-26 15:20:40.334 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 316/400
+2026-09-26 15:20:45.362 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 317/400
+2026-09-26 15:20:50.392 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 318/400
+2026-09-26 15:21:00.426 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 319/400
+2026-09-26 15:21:05.467 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 320/400
+2026-09-26 15:21:10.495 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 321/400
+2026-09-26 15:21:15.539 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 322/400
+2026-09-26 15:21:20.591 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 323/400
+2026-09-26 15:21:25.651 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 324/400
+2026-09-26 15:21:30.682 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 325/400
+2026-09-26 15:21:35.729 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 326/400
+2026-09-26 15:21:40.758 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 327/400
+2026-09-26 15:21:45.788 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 328/400
+2026-09-26 15:21:50.813 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 329/400
+2026-09-26 15:21:55.849 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 330/400
+2026-09-26 15:22:00.888 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 331/400
+2026-09-26 15:22:05.904 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 332/400
+2026-09-26 15:22:10.926 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 333/400
+2026-09-26 15:22:15.955 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 334/400
+2026-09-26 15:22:20.985 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 335/400
+2026-09-26 15:22:26.012 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 336/400
+2026-09-26 15:22:31.035 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 337/400
+2026-09-26 15:22:36.059 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 338/400
+2026-09-26 15:22:41.090 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 339/400
+2026-09-26 15:22:46.115 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 340/400
+2026-09-26 15:22:51.137 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 341/400
+2026-09-26 15:22:56.167 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 342/400
+2026-09-26 15:23:01.189 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 343/400
+2026-09-26 15:23:06.208 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 344/400
+2026-09-26 15:23:11.234 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 345/400
+2026-09-26 15:23:16.254 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 346/400
+2026-09-26 15:23:26.313 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 347/400
+2026-09-26 15:23:31.340 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 348/400
+2026-09-26 15:23:36.368 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 349/400
+2026-09-26 15:23:41.388 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 350/400
+2026-09-26 15:23:46.416 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 351/400
+2026-09-26 15:23:51.448 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 352/400
+2026-09-26 15:23:56.494 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 353/400
+2026-09-26 15:24:01.528 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 354/400
+2026-09-26 15:24:06.559 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 355/400
+2026-09-26 15:24:11.582 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 356/400
+2026-09-26 15:24:21.633 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 357/400
+2026-09-26 15:24:26.664 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 358/400
+2026-09-26 15:24:31.691 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 359/400
+2026-09-26 15:24:36.724 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 360/400
+2026-09-26 15:24:41.755 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 361/400
+2026-09-26 15:24:46.784 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 362/400
+2026-09-26 15:24:51.827 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 363/400
+2026-09-26 15:25:01.887 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 364/400
+2026-09-26 15:25:06.918 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 365/400
+2026-09-26 15:25:11.950 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 366/400
+2026-09-26 15:25:16.990 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 367/400
+2026-09-26 15:25:22.032 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 368/400
+2026-09-26 15:25:27.078 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 369/400
+2026-09-26 15:25:32.104 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 370/400
+2026-09-26 15:25:42.156 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 371/400
+2026-09-26 15:25:47.181 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 372/400
+2026-09-26 15:25:52.222 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 373/400
+2026-09-26 15:25:57.251 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 374/400
+2026-09-26 15:26:02.285 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 375/400
+2026-09-26 15:26:12.321 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 376/400
+2026-09-26 15:26:17.353 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 377/400
+2026-09-26 15:26:22.399 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 378/400
+2026-09-26 15:26:27.434 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 379/400
+2026-09-26 15:26:32.475 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 380/400
+2026-09-26 15:26:42.523 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 381/400
+2026-09-26 15:26:47.547 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 382/400
+2026-09-26 15:26:52.568 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 383/400
+2026-09-26 15:26:57.592 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 384/400
+2026-09-26 15:27:02.621 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 385/400
+2026-09-26 15:27:12.690 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 386/400
+2026-09-26 15:27:17.718 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 387/400
+2026-09-26 15:27:22.744 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 388/400
+2026-09-26 15:27:27.770 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 389/400
+2026-09-26 15:27:32.806 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 390/400
+2026-09-26 15:27:37.885 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 391/400
+2026-09-26 15:27:47.934 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 392/400
+2026-09-26 15:27:52.962 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 393/400
+2026-09-26 15:27:57.988 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 394/400
+2026-09-26 15:28:03.023 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 395/400
+2026-09-26 15:28:13.107 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 396/400
+2026-09-26 15:28:18.183 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 397/400
+2026-09-26 15:28:23.221 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 398/400
+2026-09-26 15:28:33.249 | INFO     | word_pdf:_loop:1005 - [batch compare 1] 399/400
+2026-09-26 15:28:36.096 | ERROR    | __main__:_redline_batched:1052 - [batch] FAIL: p0001.docx → p0001.docx — redline is missing base 86% of that file; the two sides are not averaged
+2026-09-26 15:28:36.193 | ERROR    | __main__:_redline_batched:1052 - [batch] FAIL: p0007.docx → p0007.docx — redline is missing base 82% of that file; the two sides are not averaged
+2026-09-26 15:28:36.307 | ERROR    | __main__:_redline_batched:1052 - [batch] FAIL: p0016.docx → p0016.docx — redline is missing revision 0% of that file; the two sides are not averaged
+2026-09-26 15:28:36.314 | ERROR    | __main__:_redline_batched:1052 - [batch] FAIL: p0017.docx → p0017.docx — redline is missing base 0% of that file; the two sides are not averaged
+2026-09-26 15:28:37.611 | ERROR    | __main__:_redline_batched:1052 - [batch] FAIL: p0048.docx → p0048.docx — redline is missing base 67% of that file; the two sides are not averaged
+2026-09-26 15:28:37.727 | ERROR    | __main__:_redline_batched:1052 - [batch] FAIL: p0065.docx → p0065.docx — redline is missing revision 0% of that file; the two sides are not averaged
+2026-09-26 15:28:37.732 | ERROR    | __main__:_redline_batched:1052 - [batch] FAIL: p0066.docx → p0066.docx — redline is missing base 0% of that file; the two sides are not averaged
+2026-09-26 15:28:37.829 | ERROR    | __main__:_redline_batched:1052 - [batch] FAIL: p0079.docx → p0079.docx — redline is missing revision 0% of that file; the two sides are not averaged
+2026-09-26 15:28:38.103 | ERROR    | __main__:_redline_batched:1052 - [batch] FAIL: p0108.docx → p0108.docx — redline is missing revision 67% of that file; the two sides are not averaged
+2026-09-26 15:28:38.109 | ERROR    | __main__:_redline_batched:1052 - [batch] FAIL: p0109.docx → p0109.docx — redline is missing base 67% of that file; the two sides are not averaged
+2026-09-26 15:28:38.170 | ERROR    | __main__:_redline_batched:1052 - [batch] FAIL: p0115.docx → p0115.docx — redline is missing revision 0% of that file; the two sides are not averaged
+2026-09-26 15:28:38.189 | ERROR    | __main__:_redline_batched:1052 - [batch] FAIL: p0116.docx → p0116.docx — redline is missing base 0% of that file; the two sides are not averaged
+2026-09-26 15:28:38.274 | ERROR    | __main__:_redline_batched:1052 - [batch] FAIL: p0123.docx → p0123.docx — redline is missing revision 0% of that file; the two sides are not averaged
+2026-09-26 15:28:38.281 | ERROR    | __main__:_redline_batched:1052 - [batch] FAIL: p0124.docx → p0124.docx — redline is missing base 0% of that file; the two sides are not averaged
+2026-09-26 15:28:38.616 | ERROR    | __main__:_redline_batched:1052 - [batch] FAIL: p0145.docx → p0145.docx — redline is missing revision 0% of that file; the two sides are not averaged
+2026-09-26 15:28:38.627 | ERROR    | __main__:_redline_batched:1052 - [batch] FAIL: p0146.docx → p0146.docx — redline is missing base 0% of that file; the two sides are not averaged
+2026-09-26 15:28:38.649 | ERROR    | __main__:_redline_batched:1052 - [batch] FAIL: p0149.docx → p0149.docx — redline is missing revision 0% of that file; the two sides are not averaged
+2026-09-26 15:28:38.656 | ERROR    | __main__:_redline_batched:1052 - [batch] FAIL: p0150.docx → p0150.docx — redline is missing base 0% of that file; the two sides are not averaged
+2026-09-26 15:28:38.926 | ERROR    | __main__:_redline_batched:1052 - [batch] FAIL: p0181.docx → p0181.docx — redline is missing revision 38% of that file; the two sides are not averaged
+2026-09-26 15:28:38.938 | ERROR    | __main__:_redline_batched:1052 - [batch] FAIL: p0182.docx → p0182.docx — redline is missing base 38% of that file; the two sides are not averaged
+2026-09-26 15:28:39.039 | ERROR    | __main__:_redline_batched:1052 - [batch] FAIL: p0192.docx → p0192.docx — redline is missing revision 50% of that file; the two sides are not averaged
+2026-09-26 15:28:39.047 | ERROR    | __main__:_redline_batched:1052 - [batch] FAIL: p0193.docx → p0193.docx — redline is missing base 50% of that file; the two sides are not averaged
+2026-09-26 15:28:39.059 | ERROR    | __main__:_redline_batched:1052 - [batch] FAIL: p0195.docx → p0195.docx — redline is missing revision 50% of that file; the two sides are not averaged
+2026-09-26 15:28:39.462 | ERROR    | __main__:_redline_batched:1052 - [batch] FAIL: p0231.docx → p0231.docx — redline is missing base 50% of that file; the two sides are not averaged
+2026-09-26 15:28:39.491 | ERROR    | __main__:_redline_batched:1052 - [batch] FAIL: p0234.docx → p0234.docx — redline is missing base 38% of that file; the two sides are not averaged
+2026-09-26 15:28:39.539 | ERROR    | __main__:_redline_batched:1052 - [batch] FAIL: p0239.docx → p0239.docx — redline is missing revision 67% of that file; the two sides are not averaged
+2026-09-26 15:28:39.583 | ERROR    | __main__:_redline_batched:1052 - [batch] FAIL: p0244.docx → p0244.docx — redline is missing base 67% of that file; the two sides are not averaged
+2026-09-26 15:28:39.679 | ERROR    | __main__:_redline_batched:1052 - [batch] FAIL: p0257.docx → p0257.docx — redline is missing base 0% of that file; the two sides are not averaged
+2026-09-26 15:28:39.818 | ERROR    | __main__:_redline_batched:1052 - [batch] FAIL: p0275.docx → p0275.docx — redline is missing base 50% of that file; the two sides are not averaged
+2026-09-26 15:28:39.855 | ERROR    | __main__:_redline_batched:1052 - [batch] FAIL: p0281.docx → p0281.docx — redline is missing revision 50% of that file; the two sides are not averaged
+2026-09-26 15:28:40.387 | ERROR    | __main__:_redline_batched:1052 - [batch] FAIL: p0294.docx → p0294.docx — redline is missing base 0% of that file; the two sides are not averaged
+2026-09-26 15:28:40.646 | ERROR    | __main__:_redline_batched:1052 - [batch] FAIL: p0319.docx → p0319.docx — redline is missing base 0% of that file; the two sides are not averaged
+2026-09-26 15:28:40.675 | ERROR    | __main__:_redline_batched:1052 - [batch] FAIL: p0324.docx → p0324.docx — redline is missing revision 67% of that file; the two sides are not averaged
+2026-09-26 15:28:40.696 | ERROR    | __main__:_redline_batched:1052 - [batch] FAIL: p0327.docx → p0327.docx — redline is missing base 0% of that file; the two sides are not averaged
+2026-09-26 15:28:40.764 | ERROR    | __main__:_redline_batched:1052 - [batch] FAIL: p0338.docx → p0338.docx — redline is missing base 0% of that file; the two sides are not averaged
+2026-09-26 15:28:41.023 | ERROR    | __main__:_redline_batched:1052 - [batch] FAIL: p0365.docx → p0365.docx — redline is missing revision 38% of that file; the two sides are not averaged
+2026-09-26 15:28:41.563 | ERROR    | __main__:_redline_batched:1052 - [batch] FAIL: p0379.docx → p0379.docx — redline is missing base 0% of that file; the two sides are not averaged
+2026-09-26 15:28:42.052 | ERROR    | __main__:_redline_batched:1052 - [batch] FAIL: p0389.docx → p0389.docx — redline is missing revision 50% of that file; the two sides are not averaged

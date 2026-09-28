@@ -1,0 +1,17 @@
+Contains information from docx-corpus (superdoc-dev/docx-corpus)
+https://huggingface.co/datasets/superdoc-dev/docx-corpus
+which is made available under the ODC Attribution License (ODC-By v1.0).
+https://opendatacommons.org/licenses/by/1.0/
+
+The full license is LICENSE-ODC-BY-1.0.txt in this folder.
+Cite the dataset as superdoc-dev/docx-corpus. Built by SuperDoc.
+
+ODC-BY covers the database (the collection, its selection and arrangement).
+It does not license copyright in the individual .docx files. Those files were
+collected from the public web and may have their own rights. See section 2.4
+of the license.
+
+File names are the dataset id (SHA-256). The PDF export of a fixture uses that
+same stem, so <id>.docx and <id>.pdf are the same document. The original web
+filename is recorded in fixtures_500/manifest.jsonl; those names collide and
+are not used as file names.
