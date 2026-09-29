@@ -117,5 +117,14 @@ def test_convert_with_workers_makes_every_pdf_and_one_log_row_each(tmp_path, mon
     assert all(r["ok"] for r in rows)
 
 
+def test_pymupdf_pro_runs_on_every_selection_and_long_documents_are_flagged():
+    assert "pymupdf-pro" in mb.default_tools(None)
+    assert "pymupdf-pro" in mb.default_tools(3)
+    pages = {"clean__a": 2, "clean__b": 7, "clean__c": 4}
+    note = mb.pymupdf_note(["clean__a", "clean__b", "clean__c"], pages.__getitem__)
+    assert "2 of 3" in note and "first 3 pages" in note
+    assert mb.pymupdf_note(["clean__a"], pages.__getitem__) == ""
+
+
 def test_key_splits_into_state_and_stem():
     assert mb.split_key("with_comments_clean__abc_def") == ("with_comments_clean", "abc_def")
