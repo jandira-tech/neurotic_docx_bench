@@ -1221,12 +1221,19 @@ async function main() {
 	const md: string[] = [];
 	md.push("# redline_speed_bench (speed_redlines)");
 	md.push("");
-	md.push(
-		`- **fixtures:** ${fixtures.length} unique (target ${fixtureCount}) from ${fixturesDirs.length} dirs`,
-	);
-	md.push(
-		`- **pairs:** ${pairs.length} (every fixture × random partner, seed=${seed}, min=${minPairs})`,
-	);
+	if (plan) {
+		md.push(
+			`- **fixtures:** ${fixtures.length} unique documents named by the plan`,
+		);
+		md.push(`- **pairs:** ${pairs.length} planned in ${pairsCsv}`);
+	} else {
+		md.push(
+			`- **fixtures:** ${fixtures.length} unique (target ${fixtureCount}) from ${fixturesDirs.length} dirs`,
+		);
+		md.push(
+			`- **pairs:** ${pairs.length} (every fixture × random partner, seed=${seed}, min=${minPairs})`,
+		);
+	}
 	md.push(`- **warmup:** ${warmup}  **reps:** ${reps}`);
 	md.push(`- **run_ts:** ${runTs}`);
 	md.push("");
