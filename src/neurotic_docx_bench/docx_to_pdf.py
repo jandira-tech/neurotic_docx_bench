@@ -36,6 +36,7 @@ WORD_PDF_TOOLS = (
     "dxpdf",
     "docxide-pdf",
     "pymupdf-pro",
+    "genoffice",
 )
 
 REQUIRED_FEATURES = frozenset(
@@ -56,6 +57,7 @@ _TOOL_BINARIES: dict[str, tuple[str, ...]] = {
     "dxpdf": ("dxpdf",),
     "docxide-pdf": ("docxide-pdf",),
     "pymupdf-pro": ("pymupdf-pro-convert",),
+    "genoffice": ("genoffice",),
 }
 
 RANKING_END = "<!-- RANKING-END -->"
@@ -394,6 +396,8 @@ def convert_command(tool: str, src: Path, dest: Path, *, binary: Path) -> list[s
         return [str(binary), str(src), "-o", str(dest)]
     if tool in ("docxide-pdf", "pymupdf-pro"):
         return [str(binary), str(src), str(dest)]
+    if tool == "genoffice":
+        return [str(binary), "convert", str(src), "--to", "pdf", "--out", str(dest), "--force"]
     raise ValueError(f"unknown DOCX→PDF tool {tool!r}")
 
 

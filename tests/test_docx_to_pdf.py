@@ -246,7 +246,18 @@ def test_known_tools_are_the_named_converters():
         "dxpdf",
         "docxide-pdf",
         "pymupdf-pro",
+        "genoffice",
     )
+
+
+def test_convert_command_genoffice_uses_its_convert_subcommand():
+    cmd = convert_command(
+        "genoffice",
+        Path("in.docx"),
+        Path("out.pdf"),
+        binary=Path("/usr/local/bin/genoffice"),
+    )
+    assert cmd == ["/usr/local/bin/genoffice", "convert", "in.docx", "--to", "pdf", "--out", "out.pdf", "--force"]
 
 
 def test_convert_command_pymupdf_pro_uses_positional_output():
