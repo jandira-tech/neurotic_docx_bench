@@ -867,7 +867,7 @@ async function loadLongLivedCompareWorker(opts: {
 	binCandidates: string[];
 	tmpPrefix: string;
 	buildHint: string;
-}): Promise<(base: Uint8Array, next: Uint8Array) => Promise<Uint8Array>> {
+}): Promise<RedlineEngine> {
 	const { spawn } = await import("node:child_process");
 	const bin = opts.binCandidates.find((p) => existsSync(p));
 	if (!bin) {
@@ -993,7 +993,9 @@ async function loadLongLivedCompareWorker(opts: {
 	};
 	_longLivedShutdowns.push(shutdown);
 	process.on("exit", shutdown);
-	return async (base, next) => {
+	// runBatch ends with `engine.dispose?.()`; without it the worker's stdio
+	// keeps the CLI alive after the last redline is written.
+	const engine: RedlineEngine = async (base, next) => {
 		if (dead) {
 			throw new Error(`${opts.label}: worker already shut down`);
 		}
@@ -1016,6 +1018,8 @@ async function loadLongLivedCompareWorker(opts: {
 		}
 		return new Uint8Array(readFileSync(op));
 	};
+	engine.dispose = async () => shutdown();
+	return engine;
 }
 
 /** The output filename for a pair. A corpus/word pool row carries the Word stem as `key`,
