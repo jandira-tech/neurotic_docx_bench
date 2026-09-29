@@ -27,6 +27,8 @@ from superdoc import AsyncSuperDocClient
 
 from neurotic_docx_bench.superdoc_gen import generate_one, parse_manifest
 
+USER = {'name': 'speed', 'email': 'speed@x.com'}
+
 
 def _stats(xs: list[float]) -> dict:
     """Distribution stats — delegates to :mod:`neurotic_docx_bench.speed_stats` so the
@@ -66,43 +68,57 @@ async def run(pairs, reps: int, warmup: int, *, per_pair_out: Path | None = None
     samples: list[float] = []
     failures = 0
     timeouts = 0
+    restarts = 0
     log = per_pair_out.open('w') if per_pair_out else None
     t0 = time.perf_counter()
+    client = AsyncSuperDocClient(user=USER)
     try:
-        async with AsyncSuperDocClient(user={'name': 'speed', 'email': 'speed@x.com'}) as client:
-            init_ms = (time.perf_counter() - t0) * 1000.0
+        await client.connect()
+        init_ms = (time.perf_counter() - t0) * 1000.0
 
-            async def one(idx: int, base: Path, nxt: Path) -> tuple[bool, float, str]:
-                out = tmp / f'o{idx}.docx'
-                t = time.perf_counter()
-                try:
-                    await asyncio.wait_for(generate_one(client, base, nxt, out, idx), timeout=timeout_s)
-                    return True, (time.perf_counter() - t) * 1000.0, ''
-                except TimeoutError:
-                    return False, (time.perf_counter() - t) * 1000.0, 'timeout'
-                except Exception as e:  # the SDK refuses many pairs; that is a failure, not a crash
-                    return False, (time.perf_counter() - t) * 1000.0, str(e)[:300]
-                finally:
-                    out.unlink(missing_ok=True)
+        async def one(idx: int, base: Path, nxt: Path) -> tuple[bool, float, str]:
+            nonlocal client, restarts
+            out = tmp / f'o{idx}.docx'
+            t = time.perf_counter()
+            try:
+                await asyncio.wait_for(generate_one(client, base, nxt, out, idx), timeout=timeout_s)
+                return True, (time.perf_counter() - t) * 1000.0, ''
+            except TimeoutError:
+                ms = (time.perf_counter() - t) * 1000.0
+                # The cancelled call only ends the await: the SDK host is still computing
+                # that pair. Dispose it (the SDK kills a host that does not shut down) and
+                # start a fresh one, untimed, so the next pair does not queue behind it.
+                await client.dispose()
+                client = AsyncSuperDocClient(user=USER)
+                await client.connect()
+                restarts += 1
+                return False, ms, 'timeout'
+            except Exception as e:  # the SDK refuses many pairs; that is a failure, not a crash
+                return False, (time.perf_counter() - t) * 1000.0, str(e)[:300]
+            finally:
+                out.unlink(missing_ok=True)
 
-            for w in range(min(warmup, len(plan))):  # warmup (untimed)
-                await one(100_000 + w, plan[w][1], plan[w][2])
-            idx = 0
-            for _ in range(reps):
-                for key, base, nxt, category in plan:
-                    ok, ms, err = await one(idx, base, nxt)
-                    idx += 1
-                    if ok:
-                        samples.append(ms)
-                    else:
-                        failures += 1
-                        timeouts += err == 'timeout'
-                    if log:
-                        rec = {'key': key, 'category': category, 'ok': ok, 'ms': round(ms, 3)}
-                        if not ok:
-                            rec['error'] = err
-                        log.write(json.dumps(rec) + '\n')
+        for w in range(min(warmup, len(plan))):  # warmup (untimed)
+            await one(100_000 + w, plan[w][1], plan[w][2])
+        restarts = 0
+        idx = 0
+        for _ in range(reps):
+            for key, base, nxt, category in plan:
+                ok, ms, err = await one(idx, base, nxt)
+                idx += 1
+                if ok:
+                    samples.append(ms)
+                else:
+                    failures += 1
+                    timeouts += err == 'timeout'
+                if log:
+                    rec = {'key': key, 'category': category, 'ok': ok, 'ms': round(ms, 3)}
+                    if not ok:
+                        rec['error'] = err
+                    log.write(json.dumps(rec) + '\n')
+                    log.flush()  # a stopped run keeps every pair it finished
     finally:
+        await client.dispose()
         if log:
             log.close()
         shutil.rmtree(tmp, ignore_errors=True)
@@ -114,6 +130,7 @@ async def run(pairs, reps: int, warmup: int, *, per_pair_out: Path | None = None
         'init_ms': round(init_ms, 3),
         'failures': failures,
         'timeouts': timeouts,
+        'host_restarts': restarts,
         'unit': 'ms_per_redline',
         'note': 'full file-based SDK cycle (open+capture+compare+apply+save), not in-memory',
         **_stats(samples),

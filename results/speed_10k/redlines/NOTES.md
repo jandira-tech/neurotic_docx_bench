@@ -16,7 +16,7 @@
   `outSizes`). The keys are contiguous from p00000 to p01334, so no pair in that range failed.
 - `per_pair/docxodus.jsonl` holds them with `"source": "salvaged"`. The 120 s per-pair timeout
   now used by every lane is applied to them after the fact: the 21 slower pairs are rows with
-  `ok: false`, `error: "timeout"`, `ms: 120000` and their real time in `measured_ms`.
+  `ok: false`, `timeout: true`, `ms: 120000` and their real time in `measured_ms`.
 - SuperDoc and the rest of docxodus (from p01335, with the per-pair timeout) are run separately.
 
 ## Load

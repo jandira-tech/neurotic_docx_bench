@@ -994,7 +994,7 @@
 {"key": "p00993_word_compare", "category": "word_compare", "ok": true, "ms": 49133.933, "out_bytes": 155449, "source": "salvaged"}
 {"key": "p00994_word_compare", "category": "word_compare", "ok": true, "ms": 2329.148, "out_bytes": 60734, "source": "salvaged"}
 {"key": "p00995_word_compare", "category": "word_compare", "ok": true, "ms": 14443.421, "out_bytes": 88204, "source": "salvaged"}
-{"key": "p00996_word_compare", "category": "word_compare", "ok": false, "ms": 120000, "out_bytes": 323817, "source": "salvaged", "error": "timeout", "measured_ms": 296771.334}
+{"key": "p00996_word_compare", "category": "word_compare", "ok": false, "ms": 120000, "out_bytes": 323817, "source": "salvaged", "error": "timeout after 120000 ms", "measured_ms": 296771.334, "timeout": true}
 {"key": "p00997_word_compare", "category": "word_compare", "ok": true, "ms": 2047.487, "out_bytes": 453015, "source": "salvaged"}
 {"key": "p00998_word_compare", "category": "word_compare", "ok": true, "ms": 11683.156, "out_bytes": 27166, "source": "salvaged"}
 {"key": "p00999_word_compare", "category": "word_compare", "ok": true, "ms": 82.776, "out_bytes": 28974, "source": "salvaged"}
@@ -1027,7 +1027,7 @@
 {"key": "p01026_word_compare", "category": "word_compare", "ok": true, "ms": 4606.097, "out_bytes": 572983, "source": "salvaged"}
 {"key": "p01027_word_compare", "category": "word_compare", "ok": true, "ms": 930.707, "out_bytes": 40812, "source": "salvaged"}
 {"key": "p01028_word_compare", "category": "word_compare", "ok": true, "ms": 637.609, "out_bytes": 948145, "source": "salvaged"}
-{"key": "p01029_word_compare", "category": "word_compare", "ok": false, "ms": 120000, "out_bytes": 1031138, "source": "salvaged", "error": "timeout", "measured_ms": 438438.77}
+{"key": "p01029_word_compare", "category": "word_compare", "ok": false, "ms": 120000, "out_bytes": 1031138, "source": "salvaged", "error": "timeout after 120000 ms", "measured_ms": 438438.77, "timeout": true}
 {"key": "p01030_word_compare", "category": "word_compare", "ok": true, "ms": 228.032, "out_bytes": 81565, "source": "salvaged"}
 {"key": "p01031_word_compare", "category": "word_compare", "ok": true, "ms": 835.216, "out_bytes": 938973, "source": "salvaged"}
 {"key": "p01032_word_compare", "category": "word_compare", "ok": true, "ms": 15947.217, "out_bytes": 223191, "source": "salvaged"}
@@ -1063,7 +1063,7 @@
 {"key": "p01062_word_compare", "category": "word_compare", "ok": true, "ms": 28.546, "out_bytes": 32838, "source": "salvaged"}
 {"key": "p01063_word_compare", "category": "word_compare", "ok": true, "ms": 77.735, "out_bytes": 54712, "source": "salvaged"}
 {"key": "p01064_word_compare", "category": "word_compare", "ok": true, "ms": 2212.964, "out_bytes": 99770, "source": "salvaged"}
-{"key": "p01065_word_compare", "category": "word_compare", "ok": false, "ms": 120000, "out_bytes": 126799, "source": "salvaged", "error": "timeout", "measured_ms": 438763.898}
+{"key": "p01065_word_compare", "category": "word_compare", "ok": false, "ms": 120000, "out_bytes": 126799, "source": "salvaged", "error": "timeout after 120000 ms", "measured_ms": 438763.898, "timeout": true}
 {"key": "p01066_word_compare", "category": "word_compare", "ok": true, "ms": 544.801, "out_bytes": 165784, "source": "salvaged"}
 {"key": "p01067_word_compare", "category": "word_compare", "ok": true, "ms": 3934.619, "out_bytes": 346753, "source": "salvaged"}
 {"key": "p01068_word_compare", "category": "word_compare", "ok": true, "ms": 29.773, "out_bytes": 84483, "source": "salvaged"}
@@ -1074,9 +1074,9 @@
 {"key": "p01073_word_compare", "category": "word_compare", "ok": true, "ms": 91.828, "out_bytes": 75572, "source": "salvaged"}
 {"key": "p01074_word_compare", "category": "word_compare", "ok": true, "ms": 896.032, "out_bytes": 436803, "source": "salvaged"}
 {"key": "p01075_word_compare", "category": "word_compare", "ok": true, "ms": 1888.063, "out_bytes": 74782, "source": "salvaged"}
-{"key": "p01076_word_compare", "category": "word_compare", "ok": false, "ms": 120000, "out_bytes": 75242, "source": "salvaged", "error": "timeout", "measured_ms": 120432.584}
+{"key": "p01076_word_compare", "category": "word_compare", "ok": false, "ms": 120000, "out_bytes": 75242, "source": "salvaged", "error": "timeout after 120000 ms", "measured_ms": 120432.584, "timeout": true}
 {"key": "p01077_word_compare", "category": "word_compare", "ok": true, "ms": 9347.324, "out_bytes": 303824, "source": "salvaged"}
-{"key": "p01078_word_compare", "category": "word_compare", "ok": false, "ms": 120000, "out_bytes": 223011, "source": "salvaged", "error": "timeout", "measured_ms": 155446.727}
+{"key": "p01078_word_compare", "category": "word_compare", "ok": false, "ms": 120000, "out_bytes": 223011, "source": "salvaged", "error": "timeout after 120000 ms", "measured_ms": 155446.727, "timeout": true}
 {"key": "p01079_word_compare", "category": "word_compare", "ok": true, "ms": 11653.237, "out_bytes": 757812, "source": "salvaged"}
 {"key": "p01080_word_compare", "category": "word_compare", "ok": true, "ms": 956.853, "out_bytes": 252870, "source": "salvaged"}
 {"key": "p01081_word_compare", "category": "word_compare", "ok": true, "ms": 2023.254, "out_bytes": 103263, "source": "salvaged"}
@@ -1096,7 +1096,7 @@
 {"key": "p01095_word_compare", "category": "word_compare", "ok": true, "ms": 3905.826, "out_bytes": 25851, "source": "salvaged"}
 {"key": "p01096_word_compare", "category": "word_compare", "ok": true, "ms": 2680.296, "out_bytes": 88861, "source": "salvaged"}
 {"key": "p01097_word_compare", "category": "word_compare", "ok": true, "ms": 99.064, "out_bytes": 313625, "source": "salvaged"}
-{"key": "p01098_word_compare", "category": "word_compare", "ok": false, "ms": 120000, "out_bytes": 70945, "source": "salvaged", "error": "timeout", "measured_ms": 320811.872}
+{"key": "p01098_word_compare", "category": "word_compare", "ok": false, "ms": 120000, "out_bytes": 70945, "source": "salvaged", "error": "timeout after 120000 ms", "measured_ms": 320811.872, "timeout": true}
 {"key": "p01099_word_compare", "category": "word_compare", "ok": true, "ms": 13812.488, "out_bytes": 127131, "source": "salvaged"}
 {"key": "p01100_word_compare", "category": "word_compare", "ok": true, "ms": 260.713, "out_bytes": 187677, "source": "salvaged"}
 {"key": "p01101_word_compare", "category": "word_compare", "ok": true, "ms": 81011.358, "out_bytes": 1651202, "source": "salvaged"}
@@ -1120,7 +1120,7 @@
 {"key": "p01119_word_compare", "category": "word_compare", "ok": true, "ms": 1146.046, "out_bytes": 48933, "source": "salvaged"}
 {"key": "p01120_word_compare", "category": "word_compare", "ok": true, "ms": 3894.142, "out_bytes": 343432, "source": "salvaged"}
 {"key": "p01121_word_compare", "category": "word_compare", "ok": true, "ms": 2925.618, "out_bytes": 22440, "source": "salvaged"}
-{"key": "p01122_word_compare", "category": "word_compare", "ok": false, "ms": 120000, "out_bytes": 274661, "source": "salvaged", "error": "timeout", "measured_ms": 2242027.965}
+{"key": "p01122_word_compare", "category": "word_compare", "ok": false, "ms": 120000, "out_bytes": 274661, "source": "salvaged", "error": "timeout after 120000 ms", "measured_ms": 2242027.965, "timeout": true}
 {"key": "p01123_word_compare", "category": "word_compare", "ok": true, "ms": 45.11, "out_bytes": 992658, "source": "salvaged"}
 {"key": "p01124_word_compare", "category": "word_compare", "ok": true, "ms": 81.28, "out_bytes": 484604, "source": "salvaged"}
 {"key": "p01125_word_compare", "category": "word_compare", "ok": true, "ms": 1502.278, "out_bytes": 226228, "source": "salvaged"}
@@ -1151,13 +1151,13 @@
 {"key": "p01150_word_compare", "category": "word_compare", "ok": true, "ms": 129.254, "out_bytes": 244973, "source": "salvaged"}
 {"key": "p01151_word_compare", "category": "word_compare", "ok": true, "ms": 13181.884, "out_bytes": 98855, "source": "salvaged"}
 {"key": "p01152_word_compare", "category": "word_compare", "ok": true, "ms": 48815.871, "out_bytes": 183900, "source": "salvaged"}
-{"key": "p01153_word_compare", "category": "word_compare", "ok": false, "ms": 120000, "out_bytes": 152986, "source": "salvaged", "error": "timeout", "measured_ms": 236825.122}
+{"key": "p01153_word_compare", "category": "word_compare", "ok": false, "ms": 120000, "out_bytes": 152986, "source": "salvaged", "error": "timeout after 120000 ms", "measured_ms": 236825.122, "timeout": true}
 {"key": "p01154_word_compare", "category": "word_compare", "ok": true, "ms": 30.922, "out_bytes": 45005, "source": "salvaged"}
-{"key": "p01155_word_compare", "category": "word_compare", "ok": false, "ms": 120000, "out_bytes": 1994712, "source": "salvaged", "error": "timeout", "measured_ms": 182037.317}
+{"key": "p01155_word_compare", "category": "word_compare", "ok": false, "ms": 120000, "out_bytes": 1994712, "source": "salvaged", "error": "timeout after 120000 ms", "measured_ms": 182037.317, "timeout": true}
 {"key": "p01156_word_compare", "category": "word_compare", "ok": true, "ms": 124.451, "out_bytes": 444920, "source": "salvaged"}
 {"key": "p01157_word_compare", "category": "word_compare", "ok": true, "ms": 100.739, "out_bytes": 45233, "source": "salvaged"}
 {"key": "p01158_word_compare", "category": "word_compare", "ok": true, "ms": 911.333, "out_bytes": 36829, "source": "salvaged"}
-{"key": "p01159_word_compare", "category": "word_compare", "ok": false, "ms": 120000, "out_bytes": 360965, "source": "salvaged", "error": "timeout", "measured_ms": 402097.358}
+{"key": "p01159_word_compare", "category": "word_compare", "ok": false, "ms": 120000, "out_bytes": 360965, "source": "salvaged", "error": "timeout after 120000 ms", "measured_ms": 402097.358, "timeout": true}
 {"key": "p01160_word_compare", "category": "word_compare", "ok": true, "ms": 2087.336, "out_bytes": 31344, "source": "salvaged"}
 {"key": "p01161_word_compare", "category": "word_compare", "ok": true, "ms": 8966.758, "out_bytes": 341570, "source": "salvaged"}
 {"key": "p01162_word_compare", "category": "word_compare", "ok": true, "ms": 144.893, "out_bytes": 248119, "source": "salvaged"}
@@ -1165,7 +1165,7 @@
 {"key": "p01164_word_compare", "category": "word_compare", "ok": true, "ms": 25281.856, "out_bytes": 118812, "source": "salvaged"}
 {"key": "p01165_word_compare", "category": "word_compare", "ok": true, "ms": 419.628, "out_bytes": 15059, "source": "salvaged"}
 {"key": "p01166_word_compare", "category": "word_compare", "ok": true, "ms": 1329.802, "out_bytes": 80258, "source": "salvaged"}
-{"key": "p01167_word_compare", "category": "word_compare", "ok": false, "ms": 120000, "out_bytes": 320818, "source": "salvaged", "error": "timeout", "measured_ms": 391234.558}
+{"key": "p01167_word_compare", "category": "word_compare", "ok": false, "ms": 120000, "out_bytes": 320818, "source": "salvaged", "error": "timeout after 120000 ms", "measured_ms": 391234.558, "timeout": true}
 {"key": "p01168_word_compare", "category": "word_compare", "ok": true, "ms": 907.491, "out_bytes": 91096, "source": "salvaged"}
 {"key": "p01169_word_compare", "category": "word_compare", "ok": true, "ms": 3817.82, "out_bytes": 18491, "source": "salvaged"}
 {"key": "p01170_word_compare", "category": "word_compare", "ok": true, "ms": 1376.124, "out_bytes": 211591, "source": "salvaged"}
@@ -1191,7 +1191,7 @@
 {"key": "p01190_word_compare", "category": "word_compare", "ok": true, "ms": 8743.673, "out_bytes": 643668, "source": "salvaged"}
 {"key": "p01191_word_compare", "category": "word_compare", "ok": true, "ms": 10772.332, "out_bytes": 98116, "source": "salvaged"}
 {"key": "p01192_word_compare", "category": "word_compare", "ok": true, "ms": 653.587, "out_bytes": 513851, "source": "salvaged"}
-{"key": "p01193_word_compare", "category": "word_compare", "ok": false, "ms": 120000, "out_bytes": 159062, "source": "salvaged", "error": "timeout", "measured_ms": 349191.225}
+{"key": "p01193_word_compare", "category": "word_compare", "ok": false, "ms": 120000, "out_bytes": 159062, "source": "salvaged", "error": "timeout after 120000 ms", "measured_ms": 349191.225, "timeout": true}
 {"key": "p01194_word_compare", "category": "word_compare", "ok": true, "ms": 1228.968, "out_bytes": 122439, "source": "salvaged"}
 {"key": "p01195_word_compare", "category": "word_compare", "ok": true, "ms": 2058.427, "out_bytes": 52701, "source": "salvaged"}
 {"key": "p01196_word_compare", "category": "word_compare", "ok": true, "ms": 15.411, "out_bytes": 12451, "source": "salvaged"}
@@ -1207,7 +1207,7 @@
 {"key": "p01206_word_compare", "category": "word_compare", "ok": true, "ms": 74.51, "out_bytes": 33541, "source": "salvaged"}
 {"key": "p01207_word_compare", "category": "word_compare", "ok": true, "ms": 2302.805, "out_bytes": 269527, "source": "salvaged"}
 {"key": "p01208_word_compare", "category": "word_compare", "ok": true, "ms": 251.024, "out_bytes": 52223, "source": "salvaged"}
-{"key": "p01209_word_compare", "category": "word_compare", "ok": false, "ms": 120000, "out_bytes": 163703, "source": "salvaged", "error": "timeout", "measured_ms": 217197.558}
+{"key": "p01209_word_compare", "category": "word_compare", "ok": false, "ms": 120000, "out_bytes": 163703, "source": "salvaged", "error": "timeout after 120000 ms", "measured_ms": 217197.558, "timeout": true}
 {"key": "p01210_word_compare", "category": "word_compare", "ok": true, "ms": 3569.712, "out_bytes": 74320, "source": "salvaged"}
 {"key": "p01211_word_compare", "category": "word_compare", "ok": true, "ms": 70.801, "out_bytes": 30335, "source": "salvaged"}
 {"key": "p01212_word_compare", "category": "word_compare", "ok": true, "ms": 3433.687, "out_bytes": 73381, "source": "salvaged"}
@@ -1224,16 +1224,16 @@
 {"key": "p01223_word_compare", "category": "word_compare", "ok": true, "ms": 30332.446, "out_bytes": 107360, "source": "salvaged"}
 {"key": "p01224_word_compare", "category": "word_compare", "ok": true, "ms": 29070.139, "out_bytes": 47963, "source": "salvaged"}
 {"key": "p01225_word_compare", "category": "word_compare", "ok": true, "ms": 91.993, "out_bytes": 248044, "source": "salvaged"}
-{"key": "p01226_word_compare", "category": "word_compare", "ok": false, "ms": 120000, "out_bytes": 230477, "source": "salvaged", "error": "timeout", "measured_ms": 124193.147}
+{"key": "p01226_word_compare", "category": "word_compare", "ok": false, "ms": 120000, "out_bytes": 230477, "source": "salvaged", "error": "timeout after 120000 ms", "measured_ms": 124193.147, "timeout": true}
 {"key": "p01227_word_compare", "category": "word_compare", "ok": true, "ms": 108.321, "out_bytes": 38434, "source": "salvaged"}
-{"key": "p01228_word_compare", "category": "word_compare", "ok": false, "ms": 120000, "out_bytes": 692938, "source": "salvaged", "error": "timeout", "measured_ms": 489882.801}
+{"key": "p01228_word_compare", "category": "word_compare", "ok": false, "ms": 120000, "out_bytes": 692938, "source": "salvaged", "error": "timeout after 120000 ms", "measured_ms": 489882.801, "timeout": true}
 {"key": "p01229_word_compare", "category": "word_compare", "ok": true, "ms": 199.986, "out_bytes": 108754, "source": "salvaged"}
 {"key": "p01230_word_compare", "category": "word_compare", "ok": true, "ms": 87.665, "out_bytes": 1151231, "source": "salvaged"}
 {"key": "p01231_word_compare", "category": "word_compare", "ok": true, "ms": 11232.437, "out_bytes": 72625, "source": "salvaged"}
 {"key": "p01232_word_compare", "category": "word_compare", "ok": true, "ms": 80.923, "out_bytes": 317971, "source": "salvaged"}
 {"key": "p01233_word_compare", "category": "word_compare", "ok": true, "ms": 27.168, "out_bytes": 28659, "source": "salvaged"}
 {"key": "p01234_word_compare", "category": "word_compare", "ok": true, "ms": 9088.696, "out_bytes": 44061, "source": "salvaged"}
-{"key": "p01235_word_compare", "category": "word_compare", "ok": false, "ms": 120000, "out_bytes": 744497, "source": "salvaged", "error": "timeout", "measured_ms": 3211728.292}
+{"key": "p01235_word_compare", "category": "word_compare", "ok": false, "ms": 120000, "out_bytes": 744497, "source": "salvaged", "error": "timeout after 120000 ms", "measured_ms": 3211728.292, "timeout": true}
 {"key": "p01236_word_compare", "category": "word_compare", "ok": true, "ms": 107.2, "out_bytes": 46778, "source": "salvaged"}
 {"key": "p01237_word_compare", "category": "word_compare", "ok": true, "ms": 233.06, "out_bytes": 170146, "source": "salvaged"}
 {"key": "p01238_word_compare", "category": "word_compare", "ok": true, "ms": 91.887, "out_bytes": 87795, "source": "salvaged"}
@@ -1259,7 +1259,7 @@
 {"key": "p01258_word_compare", "category": "word_compare", "ok": true, "ms": 53.284, "out_bytes": 36995, "source": "salvaged"}
 {"key": "p01259_word_compare", "category": "word_compare", "ok": true, "ms": 140.776, "out_bytes": 196395, "source": "salvaged"}
 {"key": "p01260_word_compare", "category": "word_compare", "ok": true, "ms": 50141.211, "out_bytes": 363064, "source": "salvaged"}
-{"key": "p01261_word_compare", "category": "word_compare", "ok": false, "ms": 120000, "out_bytes": 190891, "source": "salvaged", "error": "timeout", "measured_ms": 409035.394}
+{"key": "p01261_word_compare", "category": "word_compare", "ok": false, "ms": 120000, "out_bytes": 190891, "source": "salvaged", "error": "timeout after 120000 ms", "measured_ms": 409035.394, "timeout": true}
 {"key": "p01262_word_compare", "category": "word_compare", "ok": true, "ms": 10473.798, "out_bytes": 81558, "source": "salvaged"}
 {"key": "p01263_word_compare", "category": "word_compare", "ok": true, "ms": 2024.845, "out_bytes": 228651, "source": "salvaged"}
 {"key": "p01264_word_compare", "category": "word_compare", "ok": true, "ms": 2652.644, "out_bytes": 53419, "source": "salvaged"}
@@ -1286,7 +1286,7 @@
 {"key": "p01285_word_compare", "category": "word_compare", "ok": true, "ms": 4135.894, "out_bytes": 18213, "source": "salvaged"}
 {"key": "p01286_word_compare", "category": "word_compare", "ok": true, "ms": 2288.359, "out_bytes": 38564, "source": "salvaged"}
 {"key": "p01287_word_compare", "category": "word_compare", "ok": true, "ms": 73.29, "out_bytes": 413256, "source": "salvaged"}
-{"key": "p01288_word_compare", "category": "word_compare", "ok": false, "ms": 120000, "out_bytes": 132351, "source": "salvaged", "error": "timeout", "measured_ms": 165749.862}
+{"key": "p01288_word_compare", "category": "word_compare", "ok": false, "ms": 120000, "out_bytes": 132351, "source": "salvaged", "error": "timeout after 120000 ms", "measured_ms": 165749.862, "timeout": true}
 {"key": "p01289_word_compare", "category": "word_compare", "ok": true, "ms": 189.658, "out_bytes": 43844, "source": "salvaged"}
 {"key": "p01290_word_compare", "category": "word_compare", "ok": true, "ms": 555.571, "out_bytes": 56304, "source": "salvaged"}
 {"key": "p01291_word_compare", "category": "word_compare", "ok": true, "ms": 40675.709, "out_bytes": 63968, "source": "salvaged"}
@@ -1317,9 +1317,9 @@
 {"key": "p01316_word_compare", "category": "word_compare", "ok": true, "ms": 15106.841, "out_bytes": 37064, "source": "salvaged"}
 {"key": "p01317_word_compare", "category": "word_compare", "ok": true, "ms": 688.043, "out_bytes": 210070, "source": "salvaged"}
 {"key": "p01318_word_compare", "category": "word_compare", "ok": true, "ms": 369.86, "out_bytes": 23757, "source": "salvaged"}
-{"key": "p01319_word_compare", "category": "word_compare", "ok": false, "ms": 120000, "out_bytes": 7517313, "source": "salvaged", "error": "timeout", "measured_ms": 1083987.827}
-{"key": "p01320_word_compare", "category": "word_compare", "ok": false, "ms": 120000, "out_bytes": 960675, "source": "salvaged", "error": "timeout", "measured_ms": 7162025.188}
-{"key": "p01321_word_compare", "category": "word_compare", "ok": false, "ms": 120000, "out_bytes": 39055, "source": "salvaged", "error": "timeout", "measured_ms": 202529.727}
+{"key": "p01319_word_compare", "category": "word_compare", "ok": false, "ms": 120000, "out_bytes": 7517313, "source": "salvaged", "error": "timeout after 120000 ms", "measured_ms": 1083987.827, "timeout": true}
+{"key": "p01320_word_compare", "category": "word_compare", "ok": false, "ms": 120000, "out_bytes": 960675, "source": "salvaged", "error": "timeout after 120000 ms", "measured_ms": 7162025.188, "timeout": true}
+{"key": "p01321_word_compare", "category": "word_compare", "ok": false, "ms": 120000, "out_bytes": 39055, "source": "salvaged", "error": "timeout after 120000 ms", "measured_ms": 202529.727, "timeout": true}
 {"key": "p01322_word_compare", "category": "word_compare", "ok": true, "ms": 74.234, "out_bytes": 125915, "source": "salvaged"}
 {"key": "p01323_word_compare", "category": "word_compare", "ok": true, "ms": 2583.901, "out_bytes": 35111, "source": "salvaged"}
 {"key": "p01324_word_compare", "category": "word_compare", "ok": true, "ms": 23431.316, "out_bytes": 53881, "source": "salvaged"}
