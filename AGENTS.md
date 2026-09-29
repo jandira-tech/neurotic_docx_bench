@@ -321,6 +321,39 @@ for m in missing: print(f'  {m.name}')
    understand the 'save as' message"). Retry just those individually with a `delay 2`
    after `open`.
 
+## Remote tryout (`bench try remote`, `tryout_remote.py`, `jubarte_release.py`)
+
+Scores one tool on random documents from the Hugging Face dataset `superdoc-dev/docx-corpus`
+(one parquet index; every row a `url` to the docx). The docx-corpus bytes are the bytes
+`corpus/word` holds, so the SOT is looked up by sha256: Word's PDF (`documents.csv`) for
+`convert`, Word's compare (`comparisons.csv`) for `redline`. Without it the fallback SOT is
+docxodus (redline), soffice (DOCX->PDF) and pdftoppm (PDF->PNG, of the `convert` SOT PDF).
+`--with-sot` picks only documents or pairs we hold Word SOT for (about 1.5k documents,
+1.4k pairs); a plain random pick almost never has it.
+
+```bash
+uv run bench try remote --tool jubarte --version 0.10.0 --seed 5 --with-sot --jsonl runs/try_remote.jsonl
+uv run bench try remote --tool pymupdf                     # png only: a tool runs the tasks it can
+uv run bench try remote --tool "mytool {input} {out}"      # a template; its placeholders name its task
+```
+
+- `--tool` is a known name (`KNOWN_TASKS`: jubarte, docxodus, soffice, pdftoppm, mutool,
+  pymupdf) or a template: `{base} {next} {out}` redline, `{input} {out}` convert,
+  `{pdf}`/`{input}` + `{outdir}` (+ `{dpi}`) png. `--task` narrows; asking for a task the
+  tool cannot run is refused. A tool that is a task's fallback SOT is skipped, not scored
+  against itself (a skip exits 0, an error exits 1).
+- `--version` is jubarte only: local first (`BENCH_JUBARTE`, `PATH`, `~/.cargo/bin`, the
+  cache, the vendored copy, `../speed_bins/jubarte-*`; never a `target/` dev build), else
+  the GitHub release asset of `jandira-tech/jubarte-redlines` checked against its
+  `SHA256SUMS.txt`, else `cargo install jubarte-redlines --version X`, else it fails. No
+  version = the latest GitHub release. Downloads go to `BENCH_JUBARTE_CACHE`
+  (`~/.cache/neurotic-docx-bench/jubarte`).
+- Both redlines go through `--renderer` (soffice by default). A stored `corpus/libreoffice`
+  render of Word's compare stands in only when `word_map.csv` says the installed soffice
+  build made it; otherwise Word's compare is rendered again.
+- Nothing is written under `results/` unless `--jsonl`/`--json` says so; rasters and
+  downloads live in temporary folders deleted on return.
+
 ## Gate (CI)
 
 100 always passes. Per-doc decrease vs the accepted snapshot → **warning**; aggregate
