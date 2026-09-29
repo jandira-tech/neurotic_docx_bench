@@ -156,7 +156,13 @@ def pair_stem(name: str) -> str:
         if stem.endswith(suffix):
             stem = stem[: -len(suffix)]
             break
-    return _PAIR_BAD.sub("_", stem).strip("_")
+    return fold_key(stem)
+
+
+def fold_key(key: str) -> str:
+    """A mapping ``pair_stem`` as :func:`pair_stem` folds a compare name, suffix left alone:
+    lower-cased, anything but ``[a-z0-9]`` folded to ``_``."""
+    return _PAIR_BAD.sub("_", key.lower()).strip("_")
 
 
 # --- the PDF producer --------------------------------------------------------------
@@ -281,8 +287,8 @@ class Docset:
 
 
 _G = "grok_run"
-_WB = "corpus/word_based"
-_SD = "corpus/word_redlines_superdoc"
+_WB = f"{_G}/word_based"
+_SD = f"{_G}/word_redlines_superdoc"
 _NC = f"{_G}/no_comments_pdf_was_generated_by_word"
 _OR = f"{_G}/wordpdf_redline_oracles"
 _WR = f"{_G}/wr0926"
@@ -404,6 +410,13 @@ DOCSETS: tuple[Docset, ...] = (
         comparisons=Group((f"{_SD}/docx_redlines_word",), (f"{_OR}/word_redlines_superdoc",), require_pdf=True),
         mapping=f"{_SD}/centralized_mapping.csv",
         sources="word_redlines_superdoc",
+    ),
+    Docset(
+        "word_based_accepted_word",
+        "Word compares of the word_based pairs with every tracked change accepted in Word "
+        "(word_working_roundtrip, named <pair>_word_redline_accepted); the LibreOffice render of each "
+        "is the visual_accepted_changes oracle. No Word PDF of them exists.",
+        documents=Group((f"{_WB}/word_working_roundtrip",)),
     ),
     Docset(
         "word_based_0926",
@@ -669,7 +682,8 @@ class _Planner:
             if not path.is_file():
                 raise CorpusError(f"missing mapping {rel}")
             with path.open(newline="") as fh:
-                self.mappings[rel] = {r["pair_stem"]: (r["base"], r["next"]) for r in csv.DictReader(fh)}
+                # keyed as pair_stem folds a compare name (the superdoc mapping keeps `__`)
+                self.mappings[rel] = {fold_key(r["pair_stem"]): (r["base"], r["next"]) for r in csv.DictReader(fh)}
         return self.mappings[rel]
 
     def exclusions(self, ds: Docset) -> dict[str, set[str]]:
