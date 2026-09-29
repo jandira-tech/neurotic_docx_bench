@@ -533,6 +533,87 @@ def test_accept_all_needs_the_batch_path(tmp_path: Path) -> None:
         )
 
 
+# ─── reject all ──────────────────────────────────────────────────────────────
+
+
+@pytest.mark.parametrize("close_documents", [True, False])
+def test_reject_batch_rejects_then_saves_docx_before_the_pdf(close_documents: bool) -> None:
+    """Word's own reject, saved as docx, then the same open document exported as PDF."""
+    script = wp.batch_script(close_documents=close_documents, accept=True, reject=True)
+    assert "accept all revisions" not in script
+    reject = script.index("reject all revisions theDoc")
+    docx = script.index("file format format document")
+    pdf = script.index("file format format PDF")
+    assert reject < docx < pdf
+    assert "if (count of f) is 4 then" in script
+
+
+def test_convert_folder_reject_all_delivers_docx_and_pdf(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(wp, "CONTAINER_TMP", tmp_path / "container")
+    _touch(tmp_path / "src" / "a.docx")
+    seen: dict[str, object] = {}
+
+    def fake_batch(script, rows, workdir, **kw):
+        seen["script"] = script
+        for item, _in, pdf, docx in rows:
+            _touch(Path(pdf), b"%PDF")
+            _touch(Path(docx), b"PK")
+        return {row[0]: (True, "") for row in rows}
+
+    monkeypatch.setattr(wp, "run_batch_with_resume", fake_batch)
+    results = wp.convert_folder(
+        tmp_path / "src",
+        tmp_path / "out",
+        session=_verified_session(),
+        accept_suffix="_rejected_tracking",
+        reject=True,
+    )
+    assert "reject all revisions theDoc" in seen["script"]
+    assert "accept all revisions" not in seen["script"]
+    assert results[0].ok
+    assert (tmp_path / "out" / "a_rejected_tracking.docx").read_bytes() == b"PK"
+
+
+def test_reject_needs_a_suffix(tmp_path: Path) -> None:
+    _touch(tmp_path / "src" / "a.docx")
+    with pytest.raises(ValueError, match="suffix"):
+        wp.convert_folder(tmp_path / "src", None, session=_verified_session(), reject=True)
+
+
+def test_cli_refuses_accept_all_with_reject_all(tmp_path: Path) -> None:
+    from typer.testing import CliRunner
+
+    (tmp_path / "src").mkdir()
+    result = CliRunner().invoke(
+        wp.app,
+        ["--src", str(tmp_path / "src"), "--no-check-preset", "--one-osascript", "--accept-all", "--reject-all"],
+    )
+    assert result.exit_code == 2
+    assert "exclusive" in result.output
+
+
+def test_cli_passes_reject_all_through(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    from typer.testing import CliRunner
+
+    seen: dict[str, object] = {}
+
+    def fake_convert(src, out, **kw):
+        seen.update(kw)
+        return []
+
+    (tmp_path / "src").mkdir()
+    monkeypatch.setattr(wp, "preflight", lambda *_a, **_k: "")
+    monkeypatch.setattr(wp, "convert_folder", fake_convert)
+    monkeypatch.setattr(wp.WordSession, "quit_if_ours", lambda self: None)
+    CliRunner().invoke(
+        wp.app, ["--src", str(tmp_path / "src"), "--no-check-preset", "--one-osascript", "--reject-all"]
+    )
+    assert seen["reject"] is True
+    assert seen["accept_suffix"] == "_rejected_tracking"
+
+
 def test_cli_tells_preflight_which_mode_it_is_about_to_run(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
