@@ -3676,6 +3676,29 @@ def corpus_build_cmd(
     console.print(f"{prefix}{report.describe()} under {target}", highlight=False)
 
 
+@corpus_app.command(name="libreoffice")
+def corpus_libreoffice_cmd(
+    root: Path = typer.Option(Path("."), "--root", help="repository root (grok_run/ and corpus/ live under it)"),
+    dest: Path = typer.Option(Path("corpus/libreoffice"), "--dest", help="where the LibreOffice corpus goes"),
+    word: Path = typer.Option(Path("corpus/word"), "--word", help="the built Word corpus"),
+    dry_run: bool = typer.Option(False, "--dry-run", help="plan and report; copy nothing"),
+) -> None:
+    """File the LibreOffice renders the bench used as oracles under their Word stems, with word_map.csv."""
+    from neurotic_docx_bench import libreoffice_corpus
+
+    try:
+        plan_ = libreoffice_corpus.build(root, dest, word=word, dry_run=dry_run)
+    except libreoffice_corpus.LibreofficeCorpusError as exc:
+        raise _corpus_fail(str(exc)) from exc
+    for name, s in plan_.sets.items():
+        with_pdf = sum(1 for e in s.entries if e.word_pdf)
+        console.print(
+            f"{name}: {len(s.entries)} renders, {with_pdf} with a Word PDF; unmatched {len(s.unmatched)}, "
+            f"refused {len(s.refused)}, redundant {len(s.redundant)}",
+            highlight=False,
+        )
+
+
 @corpus_app.command(name="check")
 def corpus_check_cmd(
     dest: Path = typer.Option(Path("corpus/word"), "--dest", help="the built Word corpus"),

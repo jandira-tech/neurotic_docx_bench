@@ -62,6 +62,7 @@ __pycache__/
 # tables, pools, notices, provenance and the manifest are tracked
 /corpus/word/**/*.docx
 /corpus/word/**/*.pdf
+/corpus/libreoffice/**/*.pdf
 # local bench logs (RESULTS live in results/; these are tee captures)
 /logs/
 

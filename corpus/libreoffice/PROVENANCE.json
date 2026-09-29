@@ -1,0 +1,75 @@
+{
+ "scheme": "<state>/pdf/<stem>.pdf, the stem of the rendered docx in corpus/word",
+ "sets": {
+  "word_based_accepted_word": {
+   "docx": "grok_run/word_based/word_working_roundtrip",
+   "n": 166,
+   "pdf": "grok_run/word_based/pdf_accepted_word",
+   "redundant": [],
+   "refused": {},
+   "unmatched": {},
+   "used_as": "visual_accepted_changes oracle",
+   "with_word_pdf": 0
+  },
+  "word_based_randomized_redlines": {
+   "docx": "grok_run/word_based/docx_redlines_randomized",
+   "n": 196,
+   "pdf": "grok_run/word_based/pdf_redlines_randomized/pdf",
+   "redundant": [],
+   "refused": {},
+   "unmatched": {},
+   "used_as": "script_redlines oracle (bench.yaml extra_oracle_dirs)",
+   "with_word_pdf": 196
+  },
+  "word_based_redlines": {
+   "docx": "grok_run/word_based/docx_redlines_word",
+   "n": 228,
+   "pdf": "grok_run/word_based/pdf_redlines_word",
+   "redundant": [],
+   "refused": {},
+   "unmatched": {
+    "grok_run/word_based/pdf_redlines_word/I_am_sharing_Microsoft_Word_vs_Google_Docs_Comprehensive_Proof_with_you_increase_indent_demo_id_paraid_overflow_redline.pdf": "grok_run/word_based/docx_redlines_word/I_am_sharing_Microsoft_Word_vs_Google_Docs_Comprehensive_Proof_with_you_increase_indent_demo_id_paraid_overflow_redline.docx is not in the Word corpus",
+    "grok_run/word_based/pdf_redlines_word/redline_cicerodo_v_plate_30_right_align_bold_demo_id_paraid_overflow_word_redline.pdf": "grok_run/word_based/docx_redlines_word/redline_cicerodo_v_plate_30_right_align_bold_demo_id_paraid_overflow_word_redline.docx is not in the Word corpus",
+    "grok_run/word_based/pdf_redlines_word/strict01_strikethrough_and_italic_combo_id_paraid_overflow_word_redline.pdf": "grok_run/word_based/docx_redlines_word/strict01_strikethrough_and_italic_combo_id_paraid_overflow_word_redline.docx is not in the Word corpus",
+    "grok_run/word_based/pdf_redlines_word/word_clean_strict01_word_tolerated_broken_media_rel_redline.pdf": "grok_run/word_based/docx_redlines_word/word_clean_strict01_word_tolerated_broken_media_rel_redline.docx is not in the Word corpus"
+   },
+   "used_as": "script_redlines and visual_redlines oracle (bench.yaml source_of_truth)",
+   "with_word_pdf": 227
+  },
+  "word_based_sources": {
+   "docx": "grok_run/word_based/docx_source",
+   "n": 194,
+   "pdf": "grok_run/word_based/pdf_source",
+   "redundant": [
+    "grok_run/word_based/pdf_source/ole_object.pdf",
+    "grok_run/word_based/pdf_source/page_numbering_examples.pdf",
+    "grok_run/word_based/pdf_source/strict01_sdt_controls.pdf",
+    "grok_run/word_based/pdf_source/word_clean_strict01.pdf",
+    "grok_run/word_based/pdf_source/word_tolerated_misplaced_link.pdf"
+   ],
+   "refused": {},
+   "unmatched": {
+    "grok_run/word_based/pdf_source/annotations_orphan_rel.pdf": "no docx grok_run/word_based/docx_source/annotations_orphan_rel.docx",
+    "grok_run/word_based/pdf_source/drawing_scalar_whitespace.pdf": "no docx grok_run/word_based/docx_source/drawing_scalar_whitespace.docx",
+    "grok_run/word_based/pdf_source/empty_filetime_customprops.pdf": "no docx grok_run/word_based/docx_source/empty_filetime_customprops.docx",
+    "grok_run/word_based/pdf_source/math_body_level.pdf": "no docx grok_run/word_based/docx_source/math_body_level.docx",
+    "grok_run/word_based/pdf_source/sample_document_our_repaired_word_broken.pdf": "no docx grok_run/word_based/docx_source/sample_document_our_repaired_word_broken.docx",
+    "grok_run/word_based/pdf_source/unknown_element.pdf": "no docx grok_run/word_based/docx_source/unknown_element.docx"
+   },
+   "used_as": "visual_rendering oracle",
+   "with_word_pdf": 194
+  },
+  "word_redlines_superdoc_redlines": {
+   "docx": "grok_run/word_redlines_superdoc/docx_redlines_word",
+   "n": 399,
+   "pdf": "grok_run/word_redlines_superdoc/pdf_redlines_word",
+   "redundant": [],
+   "refused": {},
+   "unmatched": {
+    "grok_run/word_redlines_superdoc/pdf_redlines_word/behavior__sd_2517_localized_heading_styles_39c2e4a1_behavior__sd_2750_borderbox_7cd3768d_redline.pdf": "grok_run/word_redlines_superdoc/docx_redlines_word/behavior__sd_2517_localized_heading_styles_39c2e4a1_behavior__sd_2750_borderbox_7cd3768d_redline.docx is not in the Word corpus"
+   },
+   "used_as": "script_redlines oracle (bench.yaml extra_oracle_dirs)",
+   "with_word_pdf": 399
+  }
+ }
+}
