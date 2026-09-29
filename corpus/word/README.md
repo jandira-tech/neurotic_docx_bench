@@ -24,13 +24,14 @@ manifest, provenance, tables, pools and notices are tracked.
 | en_pairs_500 | 1000 | 0 | fec675dffc49 | 0 | 0 | 4 | 0 | 0 | 0 |
 | redlines_a100_b10 | 0 | 965 | c507a7eef23d | 4 | 0 | 0 | 0 | 0 | 0 |
 | redlines_en_500 | 0 | 450 | 759e0aa44e12 | 19 | 0 | 0 | 0 | 1 | 0 |
-| word_based | 194 | 226 | 6135c9c2e86a | 3 | 0 | 0 | 3 | 0 | 0 |
+| word_based | 194 | 227 | 477c5f19f71b | 3 | 0 | 0 | 2 | 0 | 0 |
 | word_based_randomized | 199 | 196 | 1892074cca61 | 0 | 0 | 0 | 0 | 0 | 0 |
-| word_redlines_superdoc | 210 | 0 | c45369ff5c32 | 1 | 0 | 0 | 399 | 0 | 0 |
-| word_based_0926 | 0 | 195 | 9ec0aaa20445 | 2 | 0 | 0 | 3 | 0 | 0 |
+| word_redlines_superdoc | 210 | 399 | 5c286d4a4ad9 | 1 | 0 | 0 | 0 | 0 | 0 |
+| word_based_accepted_word | 166 | 0 | 1d111c4d275c | 0 | 0 | 0 | 0 | 0 | 0 |
+| word_based_0926 | 0 | 196 | 6c45909f0203 | 2 | 0 | 0 | 2 | 0 | 0 |
 | word_based_randomized_0926 | 0 | 185 | 718e98c4452f | 0 | 0 | 0 | 0 | 0 | 0 |
-| word_redlines_superdoc_0926 | 0 | 0 | e3b0c44298fc | 1 | 0 | 0 | 361 | 0 | 0 |
-| nocomments | 194 | 227 | f714a39fa281 | 2 | 3 | 0 | 3 | 0 | 0 |
+| word_redlines_superdoc_0926 | 0 | 361 | e512e5f3427c | 1 | 0 | 0 | 0 | 0 | 0 |
+| nocomments | 194 | 228 | 496a0782b581 | 2 | 3 | 0 | 2 | 0 | 0 |
 | nocomments_randomized | 199 | 196 | 61778f5d5461 | 0 | 1 | 0 | 0 | 0 | 0 |
 | fixtures_originals | 196 | 0 | 08fb9032341a | 0 | 0 | 0 | 0 | 11 | 0 |
 | fixtures_word_compares | 0 | 164 | a251277596bd | 0 | 0 | 0 | 2 | 0 | 0 |
@@ -75,31 +76,37 @@ Word compares of the en_pairs_500 base/next pairs with the Word PDF of each comp
 
 The word_based documents (docx_source) and Word's compares of their pairs (docx_redlines_word) with the September 2026 Word renders of those compares.
 
-* documents: `corpus/word_based/docx_source`
-* comparisons: `corpus/word_based/docx_redlines_word`
+* documents: `grok_run/word_based/docx_source`
+* comparisons: `grok_run/word_based/docx_redlines_word`
 * their Word PDFs: `grok_run/wordpdf_redline_oracles/word_based`
-* pairs: `corpus/word_based/centralized_mapping.csv`
+* pairs: `grok_run/word_based/centralized_mapping.csv`
 * base/next documents: the `word_based` set
 
 ### word_based_randomized
 
 The randomized word_based documents and Word's compares of their pairs with the September 2026 Word renders.
 
-* documents: `corpus/word_based/docx_source_randomized`
-* comparisons: `corpus/word_based/docx_redlines_randomized`
+* documents: `grok_run/word_based/docx_source_randomized`
+* comparisons: `grok_run/word_based/docx_redlines_randomized`
 * their Word PDFs: `grok_run/wordpdf_redline_oracles/word_based_randomized`
-* pairs: `corpus/word_based/centralized_mapping_randomized.csv`
+* pairs: `grok_run/word_based/centralized_mapping_randomized.csv`
 * base/next documents: the `word_based_randomized` set
 
 ### word_redlines_superdoc
 
 The superdoc documents and Word's compares of their pairs with the September 2026 Word renders.
 
-* documents: `corpus/word_redlines_superdoc/docx_source`
-* comparisons: `corpus/word_redlines_superdoc/docx_redlines_word`
+* documents: `grok_run/word_redlines_superdoc/docx_source`
+* comparisons: `grok_run/word_redlines_superdoc/docx_redlines_word`
 * their Word PDFs: `grok_run/wordpdf_redline_oracles/word_redlines_superdoc`
-* pairs: `corpus/word_redlines_superdoc/centralized_mapping.csv`
+* pairs: `grok_run/word_redlines_superdoc/centralized_mapping.csv`
 * base/next documents: the `word_redlines_superdoc` set
+
+### word_based_accepted_word
+
+Word compares of the word_based pairs with every tracked change accepted in Word (word_working_roundtrip, named <pair>_word_redline_accepted); the LibreOffice render of each is the visual_accepted_changes oracle. No Word PDF of them exists.
+
+* documents: `grok_run/word_based/word_working_roundtrip`
 
 ### word_based_0926
 
@@ -107,7 +114,7 @@ The September 2026 compare run of the word_based pairs: fresh Word compares with
 
 * comparisons: `grok_run/wr0926/word_based/docx`
 * their Word PDFs: `grok_run/wr0926/word_based/pdf`
-* pairs: `corpus/word_based/centralized_mapping.csv`
+* pairs: `grok_run/word_based/centralized_mapping.csv`
 * base/next documents: the `word_based` set
 
 ### word_based_randomized_0926
@@ -116,7 +123,7 @@ The September 2026 compare run of the randomized word_based pairs.
 
 * comparisons: `grok_run/wr0926/word_based_randomized/docx`
 * their Word PDFs: `grok_run/wr0926/word_based_randomized/pdf`
-* pairs: `corpus/word_based/centralized_mapping_randomized.csv`
+* pairs: `grok_run/word_based/centralized_mapping_randomized.csv`
 * base/next documents: the `word_based_randomized` set
 
 ### word_redlines_superdoc_0926
@@ -125,7 +132,7 @@ The September 2026 compare run of the superdoc pairs.
 
 * comparisons: `grok_run/wr0926/word_redlines_superdoc/docx`
 * their Word PDFs: `grok_run/wr0926/word_redlines_superdoc/pdf`
-* pairs: `corpus/word_redlines_superdoc/centralized_mapping.csv`
+* pairs: `grok_run/word_redlines_superdoc/centralized_mapping.csv`
 * base/next documents: the `word_redlines_superdoc` set
 
 ### nocomments
@@ -161,7 +168,7 @@ The original fixtures of jubarte-first (_fixtures/original_fixtures): the docx t
 Word compares of the original fixtures (_fixtures/word_redlined_fixtures) resolved through the word_based mapping; no Word PDF of them exists.
 
 * comparisons: `_fixtures/word_redlined_fixtures`
-* pairs: `corpus/word_based/centralized_mapping.csv`
+* pairs: `grok_run/word_based/centralized_mapping.csv`
 * base/next documents: the `word_based` set
 
 ### pdf_fill_0928

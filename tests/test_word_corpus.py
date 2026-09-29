@@ -30,8 +30,8 @@ F = "f" * 8
 G = "g" * 8
 H = "h" * 8
 NC = "grok_run/no_comments_pdf_was_generated_by_word"
-WB = "corpus/word_based"
-SD = "corpus/word_redlines_superdoc"
+WB = "grok_run/word_based"
+SD = "grok_run/word_redlines_superdoc"
 FIX = word_corpus.FIXTURES_PREFIX
 QUARTZ = rb"macOS Version 26.6.2 \(Build 25G83\) Quartz PDFContext"
 LIBREOFFICE_HEX = b"FEFF004C0069006200720065004F00660066006900630065"  # "LibreOffice" in UTF-16BE
@@ -149,6 +149,8 @@ def make_tree(root: Path) -> Path:
     _docx(root / WB / "docx_redlines_word" / "y_z_word_redline.docx", "redline y z", tracked=True)
     _pdf(g / "wordpdf_redline_oracles" / "word_based" / "x_y_redline.pdf", "pdf redline x y")
     _pdf(g / "wordpdf_redline_oracles" / "word_based" / "y_z_word_redline.pdf", "pdf redline y z")
+    # Word's accept-all of x_y, saved by Word (no Word PDF of it)
+    _docx(root / WB / "word_working_roundtrip" / "x_y_word_redline_accepted.docx", "x y accepted", comments=True)
     # word_based_randomized and word_redlines_superdoc: one pair each
     _docx(root / WB / "docx_source_randomized" / "file_1.docx", "docx file_1")
     _docx(root / WB / "docx_source_randomized" / "file_2.docx", "docx file_2")
@@ -481,6 +483,26 @@ def test_plan_comparisons_carry_base_next_and_the_redline_id(tree: Path) -> None
     assert plan_.sets["word_based"].comparisons == (xy.id, yz.id)
 
 
+def test_plan_resolves_mapping_keys_that_keep_double_underscores(tree: Path) -> None:
+    # the superdoc mapping keeps `__` in its pair_stem column, a compare name folds it to `_`
+    sd = tree / SD
+    # and mixed case; a key whose next document is itself named `..._redline` keeps that tail
+    for name in ("s__p_1", "s__q_2", "Big_R", "y_redline"):
+        _docx(sd / "docx_source" / f"{name}.docx", f"docx {name}")
+    pairs = [("p_q", "p", "q"), ("s__p_1_s__q_2", "s__p_1", "s__q_2"), ("Big_R_y_redline", "Big_R", "y_redline")]
+    _mapping(sd / "centralized_mapping.csv", pairs)
+    oracles = tree / "grok_run" / "wordpdf_redline_oracles" / "word_redlines_superdoc"
+    for cmp_name in ("s__p_1_s__q_2_redline", "Big_R_y_redline_redline"):
+        _docx(sd / "docx_redlines_word" / f"{cmp_name}.docx", f"redline {cmp_name}", tracked=True)
+        _pdf(oracles / f"{cmp_name}.pdf", f"pdf {cmp_name}")
+    plan_ = word_corpus.plan(tree, only=["word_redlines_superdoc"])
+    assert plan_.sets["word_redlines_superdoc"].unresolved == {}
+    pq = _cmp(plan_, "s__p_1_s__q_2_redline")
+    assert (pq.base_id, pq.next_id) == (_doc(plan_, "s__p_1").id, _doc(plan_, "s__q_2").id)
+    ry = _cmp(plan_, "Big_R_y_redline_redline")
+    assert (ry.base_id, ry.next_id) == (_doc(plan_, "Big_R").id, _doc(plan_, "y_redline").id)
+
+
 def test_plan_wr0926_sets_are_new_documents_of_the_same_pairs(tree: Path) -> None:
     plan_ = word_corpus.plan(tree, only=["word_based", "word_based_0926"])
     old = _cmp(plan_, "x_y_redline", in_set="word_based")
@@ -509,7 +531,7 @@ def test_plan_dedupes_identical_docx_across_sets_and_records_every_name(tree: Pa
     assert plan_.sets["fixtures_originals"].refused == {}  # the LibreOffice PDF is not an origin of that set
     # a compare of names the mapping does not know is recorded, not guessed
     assert plan_.sets["fixtures_word_compares"].unresolved == {
-        "Sample-Document_x_word_redline": "pair sample_document_x is not in corpus/word_based/centralized_mapping.csv"
+        "Sample-Document_x_word_redline": "pair sample_document_x is not in grok_run/word_based/centralized_mapping.csv"
     }
     xy = _cmp(plan_, "x_y_word_redline")
     assert xy.sets == ("fixtures_word_compares",) and xy.pdf == ""
@@ -985,3 +1007,11 @@ def test_plan_a_third_render_of_the_same_bytes_in_an_untagged_set_is_redundant(t
     report = plan.sets["nocomments"]
     assert report.superseded == ("x_again",) and report.redundant == ("x_third",)
     assert f"{NC}/pdf_source/x_third.pdf" not in {r.original for r in plan.renames}
+
+
+def test_plan_word_accepted_documents_have_no_pdf(tree: Path) -> None:
+    plan_ = word_corpus.plan(tree, only=["word_based_accepted_word"])
+    acc = _doc(plan_, "x_y_word_redline_accepted")
+    assert acc.sets == ("word_based_accepted_word",)
+    assert acc.state == "with_comments_clean" and acc.pdf == ""
+    assert plan_.sets["word_based_accepted_word"].documents == (acc.id,)
