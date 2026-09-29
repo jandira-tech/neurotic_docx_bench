@@ -65,7 +65,7 @@ def test_plan_files_each_render_under_the_stem_of_its_word_docx(tree: Path) -> N
         f'/pdf/{words[hub.sha256_file(tree / WB / "docx_source" / "x.docx")]["stem"]}.pdf'
     )
     acc = by_origin[f'{WB}/pdf_accepted_word/x_y_word_redline_accepted.pdf']
-    assert acc.word_pdf == ''  # Word never printed its accept-all
+    assert acc.word_pdf.endswith("_x_y_word_redline_accepted.pdf")  # the Word render of the same docx
     assert by_origin[f'{WB}/pdf_redlines_randomized/pdf/file_1_file_2_redline.pdf'].kind == 'comparison'
     assert by_origin[f'{SD}/pdf_redlines_word/p_q_redline.pdf'].set == 'word_redlines_superdoc_redlines'
     sources = plan_.sets['word_based_sources']

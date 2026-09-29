@@ -12,4 +12,4 @@ same docx share a name. `word_map.csv` maps every render to that Word docx and W
 | word_based_randomized_redlines | 196 | 196 | 0 | 0 | script_redlines oracle (bench.yaml extra_oracle_dirs) |
 | word_redlines_superdoc_redlines | 399 | 399 | 1 | 0 | script_redlines oracle (bench.yaml extra_oracle_dirs) |
 | word_based_sources | 194 | 194 | 6 | 0 | visual_rendering oracle |
-| word_based_accepted_word | 166 | 0 | 0 | 0 | visual_accepted_changes oracle |
+| word_based_accepted_word | 166 | 166 | 0 | 0 | visual_accepted_changes oracle |

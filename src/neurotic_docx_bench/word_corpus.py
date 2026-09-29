@@ -270,6 +270,7 @@ class Docset:
     sources: str | None = None  # the set whose documents are the base/next of the comparisons
     notes: tuple[Note, ...] = ()
     exclusions: tuple[Exclusion, ...] = ()
+    holdout: str | None = None  # a sealed list of this set's pairs, one legacy <base>_<next> key per line
 
     @property
     def folders(self) -> tuple[str, ...]:
@@ -393,6 +394,7 @@ DOCSETS: tuple[Docset, ...] = (
         comparisons=Group((f"{_WB}/docx_redlines_word",), (f"{_OR}/word_based",), require_pdf=True),
         mapping=f"{_WB}/centralized_mapping.csv",
         sources="word_based",
+        holdout=f"{_WB}/holdout.txt",
     ),
     Docset(
         "word_based_randomized",
@@ -402,6 +404,7 @@ DOCSETS: tuple[Docset, ...] = (
         comparisons=Group((f"{_WB}/docx_redlines_randomized",), (f"{_OR}/word_based_randomized",), require_pdf=True),
         mapping=f"{_WB}/centralized_mapping_randomized.csv",
         sources="word_based_randomized",
+        holdout=f"{_WB}/holdout.txt",
     ),
     Docset(
         "word_redlines_superdoc",
@@ -410,13 +413,14 @@ DOCSETS: tuple[Docset, ...] = (
         comparisons=Group((f"{_SD}/docx_redlines_word",), (f"{_OR}/word_redlines_superdoc",), require_pdf=True),
         mapping=f"{_SD}/centralized_mapping.csv",
         sources="word_redlines_superdoc",
+        holdout=f"{_SD}/holdout.txt",
     ),
     Docset(
         "word_based_accepted_word",
         "Word compares of the word_based pairs with every tracked change accepted in Word "
-        "(word_working_roundtrip, named <pair>_word_redline_accepted); the LibreOffice render of each "
-        "is the visual_accepted_changes oracle. No Word PDF of them exists.",
-        documents=Group((f"{_WB}/word_working_roundtrip",)),
+        "(word_working_roundtrip, named <pair>_word_redline_accepted), with the Word PDFs of the "
+        "September 29 2026 render; the LibreOffice render of each was the visual_accepted_changes oracle.",
+        documents=Group((f"{_WB}/word_working_roundtrip",), (f"{_G}/wr0929/word_based_accepted_word_pdf",)),
     ),
     Docset(
         "word_based_0926",
@@ -614,6 +618,8 @@ class Plan:
     renames: tuple[Rename, ...]
     notes: tuple[CopyItem, ...]
     skipped: tuple[str, ...]  # fixtures sets left out for want of a fixtures root
+    holdout: tuple[str, ...] = ()  # comparison stems of the sealed holdout lists
+    holdout_missing: dict[str, tuple[str, ...]] = field(default_factory=dict)  # list -> keys matching no compare
 
     @property
     def entries(self) -> tuple[Document, ...]:
@@ -909,6 +915,7 @@ class _Planner:
         for ds in selected:
             if ds.comparisons:
                 self.plan_group(ds, ds.comparisons, comparisons=True)
+        holdout, missing = self.holdout(selected)
         return Plan(
             tuple(self.documents),
             tuple(self.comparisons),
@@ -916,7 +923,35 @@ class _Planner:
             tuple(self.renames),
             self.notes(selected),
             tuple(skipped),
+            holdout,
+            missing,
         )
+
+    def holdout(self, selected: Sequence[Docset]) -> tuple[tuple[str, ...], dict[str, tuple[str, ...]]]:
+        """The comparison stems of every sealed list of the selection, found through the legacy
+        ``<base>_<next>`` keys of their origin names, and the keys of each list no compare carries."""
+        lists: dict[str, list[str]] = {}
+        for ds in selected:
+            if ds.holdout:
+                lists.setdefault(ds.holdout, []).append(ds.name)
+        stems: list[str] = []
+        missing: dict[str, tuple[str, ...]] = {}
+        for rel, set_names in lists.items():
+            path = self.resolve(rel)
+            if not path.is_file():
+                raise CorpusError(f"missing holdout list {rel}")
+            keys = [k.strip() for k in path.read_text().splitlines() if k.strip() and not k.lstrip().startswith("#")]
+            by_key: dict[str, str] = {}
+            for c in self.comparisons:
+                if set(c.sets) & set(set_names):
+                    for name in c.names:
+                        by_key.setdefault(pair_stem(name), c.stem)
+            found = [by_key[fold_key(k)] for k in keys if fold_key(k) in by_key]
+            stems.extend(s for s in found if s not in stems)
+            gone = tuple(k for k in keys if fold_key(k) not in by_key)
+            if gone:
+                missing[rel] = gone
+        return tuple(stems), missing
 
 
 def plan(root: Path, *, fixtures: Path | None = None, only: Sequence[str] | None = None) -> Plan:
@@ -1029,8 +1064,22 @@ def _set_entries(plan_: Plan, set_name: str) -> tuple[list[Document], list[Compa
     return docs, cmps
 
 
+HOLDOUT_NAME = "holdout.txt"
+
+
 def _write_pools(dest: Path, plan_: Plan) -> None:
     by_id = {e.id: e for e in plan_.entries}
+    holdout = dest / POOLS_DIR / HOLDOUT_NAME
+    if plan_.holdout:
+        origins = sorted({ds.holdout for ds in DOCSETS if ds.name in plan_.sets and ds.holdout})
+        header = [
+            "# Sealed holdout: comparison stems left out of every normal scoring run (bench run --holdout).",
+            "# Translated from the legacy <base>_<next> keys of " + ", ".join(origins) + ".",
+        ]
+        holdout.parent.mkdir(parents=True, exist_ok=True)
+        holdout.write_text("\n".join([*header, *plan_.holdout]) + "\n")
+    elif holdout.exists():
+        holdout.unlink()
     for name in plan_.sets:
         docs, cmps = _set_entries(plan_, name)
         pairs = dest / POOLS_DIR / f"{name}_pairs.csv"
@@ -1098,6 +1147,11 @@ def _provenance(plan_: Plan) -> dict[str, Any]:
         "sets": sets,
         "skipped": list(plan_.skipped),
         "notes": [item.dst for item in plan_.notes],
+        "holdout": {
+            "list": f"{POOLS_DIR}/{HOLDOUT_NAME}" if plan_.holdout else None,
+            "n": len(plan_.holdout),
+            "missing": {k: list(v) for k, v in plan_.holdout_missing.items()},
+        },
     }
 
 

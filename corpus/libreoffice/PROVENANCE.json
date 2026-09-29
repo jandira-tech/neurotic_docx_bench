@@ -9,7 +9,7 @@
    "refused": {},
    "unmatched": {},
    "used_as": "visual_accepted_changes oracle",
-   "with_word_pdf": 0
+   "with_word_pdf": 166
   },
   "word_based_randomized_redlines": {
    "docx": "grok_run/word_based/docx_redlines_randomized",
