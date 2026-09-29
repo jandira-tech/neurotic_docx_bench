@@ -67,18 +67,24 @@ Key modules (`src/neurotic_docx_bench/`):
 
 ## The oracle — READ THIS
 
-- Ground truth: `corpus/word_based/pdf_redlines_word/*.pdf`, named `<base>_<next>_redline.pdf`.
-  The tracked-change **markup** is Microsoft Word's; the PDF **rendering** is
-  **LibreOffice 26.2.4.2** (`Producer` metadata). Candidates are rendered the same way, so a
-  score isolates *redline-markup fidelity vs Word*, not renderer drift.
-- Rendering the oracle's own source DOCX via LibreOffice 26.2.4.2 reproduces it
-  **pixel-for-pixel → 100** (the `word-redlines-soffice` sanity run). The bench is therefore
-  **pinned to LibreOffice 26.2.4.2**; CI regenerates the oracle in-image so any LO version
-  works there (see `.github/workflows/bench.yml`).
-- `pdf_redlines_word/` also holds ~163 **non-redline base PDFs**; matching excludes them
-  (`pipeline.is_redline`) and **raises on any key collision** — never silent last-wins.
-- The authoritative pairing is `corpus/word_based/centralized_mapping.csv`
-  (`base`, `next`, `pdf_redline = <base>_<next>_redline.pdf`, …).
+- Everything Word produced lives in **`corpus/word/<state>/{docx,pdf}`** (states: `clean`,
+  `tracking_without_comments`, `with_comments_tracking`, `with_comments_clean`,
+  `accept_all`, `reject_all`), one naming scheme (`<idA>_<a>__vs__<idB>_<b>_redline_<idC>`
+  for comparisons), built by `bench corpus build` from the `grok_run/` origins. Lists live in
+  `corpus/word/pools/` (`<set>_pairs.csv`: key, base, next, docx, pdf, state; base/next are
+  paths under `corpus/word` without the suffix). docx/pdf are git-ignored; tables are tracked.
+- The oracle's **markup** is Word's; its **rendering** must match the candidates' renderer.
+  `bench.yaml` has `renderer: auto` and `oracle_roots: {word: corpus/word, soffice:
+  corpus/libreoffice}`: with Word on the machine (`render/auto.py`, `BENCH_RENDERER=word|soffice`
+  pins it) candidates render through `scripts/word_pdf.py` and score against Word's PDFs;
+  otherwise through LibreOffice against `corpus/libreoffice/<state>/pdf`, the LibreOffice
+  26.2.4.2 renders filed under the same Word stems (`word_map.csv` maps each to its Word PDF).
+  A docx run whose renderer differs from the oracle's is refused at config load.
+- Candidates are `<key>_<tool>`; matching (`pipeline.redline_key`) **raises on any key
+  collision** — never silent last-wins. `corpus/word_based` and friends are gone: code reads
+  `corpus/word` and its pools; one-off research scripts read the `grok_run/` origins.
+- CI has neither Word nor the git-ignored corpus files, so `.github/workflows/bench.yml` cannot
+  run the bench as written; it still names the old `corpus/word_based` paths.
 
 ## Tools benchmarked
 
@@ -160,7 +166,7 @@ per-doc `timings` map with `render_s` derived from the `PlaywrightRenderer`'s `d
 they share its render-speed distribution); (2) standalone with reps/warmup/full percentiles:
 
 ```bash
-uv run python -m neurotic_docx_bench.playwright_speed --docx-dir corpus/word_based/docx_redlines_word \
+uv run python -m neurotic_docx_bench.playwright_speed --docx-dir corpus/word/tracking_without_comments/docx \
   --pairs 30 --reps 3 --warmup 3 --out results/speed.jsonl --tool folio-playwright \
   --url http://127.0.0.1:5175/harness.html --file-input "#fileInput" --page-selector ".layout-page" \
   --readiness-js "window.__folioReady === true" --server "cd harness/folio-viewer && npx vite --port 5175 --host 127.0.0.1"
@@ -244,7 +250,7 @@ two real oracle pages) and skips when torch is not installed.
 
 ## Regenerating the Word oracle PDFs (macOS + Word, local-only)
 
-The committed oracle PDFs (`corpus/word_based/pdf_redlines_word/*.pdf`) are Word redline
+The committed oracle PDFs (`grok_run/word_based/pdf_redlines_word/*.pdf`) are Word redline
 markup rendered to PDF. To regenerate them (or render a new set into a sanity directory),
 use the `WordRenderer` (`src/neurotic_docx_bench/render/word.py`) or the batch script.
 
@@ -265,14 +271,14 @@ All subsequent `save as ... file format format PDF` calls inherit that choice.
 
 ```bash
 # 1. Clean Word temp/lock files (~$ prefix) from the source dir — they cause failures:
-rm -f corpus/word_based/docx_redlines_word/~\$*.docx
+rm -f grok_run/word_based/docx_redlines_word/~\$*.docx
 
 # 2. Manually export one PDF in Word GUI choosing "Best for printing" (sets sticky pref).
 
 # 3. Generate a single monolithic AppleScript for all DOCX files:
 python3 -c "
 from pathlib import Path
-src = Path('corpus/word_based/docx_redlines_word').resolve()
+src = Path('grok_run/word_based/docx_redlines_word').resolve()
 out = Path('sanity_word/sanity_pdf_redlines_word').resolve()
 out.mkdir(parents=True, exist_ok=True)
 docs = sorted(src.glob('*.docx'))
@@ -296,7 +302,7 @@ print(chr(10).join(lines))
 # 4. Check for any missing PDFs and retry just those:
 python3 -c "
 from pathlib import Path
-src = Path('corpus/word_based/docx_redlines_word').resolve()
+src = Path('grok_run/word_based/docx_redlines_word').resolve()
 out = Path('sanity_word/sanity_pdf_redlines_word').resolve()
 missing = [d for d in sorted(src.glob('*.docx')) if not (out / (d.stem + '.pdf')).exists()]
 print(f'Missing: {len(missing)}')
@@ -309,7 +315,7 @@ for m in missing: print(f'  {m.name}')
 2. **Run in foreground** (`osascript ...` directly, not backgrounded). Background mode
    buries the permission dialog where you can't see/click it.
 3. **Use inline/heredoc AppleScript**, not `.scpt` files. Compiled `.scpt` triggers
-   `-1708` errors on `save as` (see `corpus/word_based/docx_redlines_word/README.md`).
+   `-1708` errors on `save as` (see `grok_run/word_based/docx_redlines_word/README.md`).
 4. **Delete `~$` temp files first** — Word lock files cause spurious failures.
 5. Some files intermittently fail `save as` with `-1708` ("active document doesn't
    understand the 'save as' message"). Retry just those individually with a `delay 2`
