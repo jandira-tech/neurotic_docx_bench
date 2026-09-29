@@ -42,6 +42,16 @@ def docx_dir(tmp_path, sample_docx) -> Path:
     return d
 
 
+@pytest.fixture(autouse=True)
+def _auto_renders_with_soffice(monkeypatch: pytest.MonkeyPatch) -> None:
+    """``render: auto`` resolves to LibreOffice in tests, on a Mac with Word as in CI.
+
+    A test about the resolution itself clears ``BENCH_RENDERER`` and stubs
+    ``word.word_available``.
+    """
+    monkeypatch.setenv("BENCH_RENDERER", "soffice")
+
+
 # Programs that reach the live Microsoft Word on the machine running the tests.
 _LIVE_WORD_PROGRAMS = frozenset({"osascript", "open", "pkill", "pgrep"})
 
