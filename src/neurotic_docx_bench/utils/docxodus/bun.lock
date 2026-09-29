@@ -5,7 +5,7 @@
     "": {
       "name": "neurotic-docx-bench-docxodus",
       "dependencies": {
-        "docxodus": "12.6.2",
+        "docxodus": "12.6.4",
       },
     },
   },
@@ -18,7 +18,7 @@
 
     "bind-event-listener": ["bind-event-listener@3.0.0", "", {}, "sha512-PJvH288AWQhKs2v9zyfYdPzlPqf5bXbGMmhmUIY9x4dAUGIWgomO771oBQNwJnMQSnUIXhKu6sgzpBRXTlvb8Q=="],
 
-    "docxodus": ["docxodus@12.6.2", "", { "dependencies": { "@atlaskit/pragmatic-drag-and-drop": "^2.0.2", "@atlaskit/pragmatic-drag-and-drop-auto-scroll": "^3.0.0" }, "peerDependencies": { "react": ">=16.8.0" }, "optionalPeers": ["react"] }, "sha512-siYwg1RNtjWsQFefhY0L7Yhj7F/kviHjY/78MNfkc8ZA2FOKnIpXakqsfbNHfqPBpCa4VvV6rsLMexgROTyKdg=="],
+    "docxodus": ["docxodus@12.6.4", "", { "dependencies": { "@atlaskit/pragmatic-drag-and-drop": "^2.0.2", "@atlaskit/pragmatic-drag-and-drop-auto-scroll": "^3.0.0" }, "peerDependencies": { "react": ">=16.8.0" }, "optionalPeers": ["react"] }, "sha512-RxjTezC0510DcSHEcaJRBItQ4N9Y2OAL+ZVFgruJIPNRoFpDwPRK2pHfgCYrp1A9motlqXD5OHys0eVLHKxZvg=="],
 
     "raf-schd": ["raf-schd@4.0.3", "", {}, "sha512-tQkJl2GRWh83ui2DiPTJz9wEiMN20syf+5oKfB03yYP7ioZcJwsIK8FjrtLwH1m7C7e+Tt2yYBlrOpdT+dyeIQ=="],
   }
