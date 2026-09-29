@@ -3655,6 +3655,8 @@ def corpus_build_cmd(
             line += f"; {len(s.absent)} without a Word PDF (left out)"
         if s.superseded:
             line += f"; {len(s.superseded)} whose render of this set went to pdf_prior"
+        if s.redundant:
+            line += f"; {len(s.redundant)} further renders of bytes that already had two (not copied)"
         if s.filled:
             line += f"; {len(s.filled)} filled from a fallback folder"
         if s.orphans:
