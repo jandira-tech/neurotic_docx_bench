@@ -2,102 +2,9 @@
 <!-- provenance: bench_version=0.7.0; docsets=27122f4d945e,552da2e38184,7a172fe59b04,c947065c59b2; scorers=docxide-150dpi,v1; renderers=oracle:microsoft_word -->
 # Benchmark results
 
-Generated 2026-09-28 17:16 UTC from `results/bench.jsonl`, `results/converters.jsonl`, `results/speed.jsonl` and `results/redline_speed_bench/**/summary.json`.
+Generated 2026-09-29 20:27 UTC from `results/bench.jsonl`, `results/converters.jsonl`, `results/redlines_*/scores.jsonl`, `results/speed.jsonl` and `results/redline_speed_bench/**/summary.json`.
 
 Compare rows only within one table. Full history, paired comparisons and methodology: [RESULTS_DETAILED.md](RESULTS_DETAILED.md).
-
-### script_redlines: redline markup vs Word
-
-Oracle: Word's render of Word's tracked-change DOCX; candidates are rendered by the same Word build, so 100 means pixel-identical to Word's DOCX as Word draws it.
-
-No eligible rows for this benchmark yet.
-
-Not ranked in this group (latest run per tool, with the reason):
-
-- jubarte (lossless) † 0.2.0@1286be69c690+git.6501468 (2026-09-11): renderer legacy-soffice is not Word
-- jubarte (ast) † 0.2.0@1286be69c690+git.6501468 (2026-09-11): renderer legacy-soffice is not Word
-- superdoc 2.0.0 (2026-08-04): renderer legacy-soffice is not Word
-- docxodus 9.8.0 (2026-08-12): renderer legacy-soffice is not Word
-- jubarte-wasm † 0.1.0@4b36f4db1d2f+git.ebf1a79 (2026-08-05): renderer legacy-soffice is not Word
-- redlines 0.6.1 (2026-08-15): renderer legacy-soffice is not Word
-- docx-redline-js 0.3.0 (2026-08-04): renderer legacy-soffice is not Word
-- folio 0.17.1 (2026-09-12): renderer legacy-soffice is not Word
-- superdoc-redlines 0.2.0 (2026-08-04): renderer legacy-soffice is not Word
-- jubarte-rust † jubarte-rust@360edb5d9a29+git.673aff7 (2026-09-28): renderer soffice-26.8.0.3 is not Word
-- stemma 0.5.0@2e7bdc832391+git.efaed0c (2026-08-15): renderer legacy-soffice is not Word
-- safe-docx 0.19.1@e3f092da3639+git.7bd35c8 (2026-08-15): renderer legacy-soffice is not Word
-
-Other document sets or renderers measured for this benchmark are listed under History in RESULTS_DETAILED.md: `5ed816028d99`/`legacy-soffice`, `782a0f380c89`/`soffice-26.8.0.3`, `b7f467074a51`/`legacy-soffice`
-
-### accepted_changes: accept all changes, match the final document
-
-Oracle: Word's render of Word's accepted DOCX; the candidate is the tool's own redline with every change accepted.
-
-No eligible rows for this benchmark yet.
-
-Not ranked in this group (latest run per tool, with the reason):
-
-- docxodus 9.8.0 (2026-08-12): renderer legacy-soffice is not Word; incomplete: 198 of 200 documents
-- stemma 0.5.0@2e7bdc832391+git.efaed0c (2026-08-15): renderer legacy-soffice is not Word; incomplete: 144 of 200 documents
-- safe-docx 0.19.1@e3f092da3639+git.7bd35c8 (2026-08-15): renderer legacy-soffice is not Word; incomplete: 178 of 200 documents
-- jubarte (lossless) † 0.2.0@1286be69c690+git.6501468 (2026-09-11): renderer legacy-soffice is not Word
-- jubarte (ast) † 0.2.0@1286be69c690+git.6501468 (2026-09-11): renderer legacy-soffice is not Word; incomplete: 195 of 200 documents
-
-Other document sets or renderers measured for this benchmark are listed under History in RESULTS_DETAILED.md: `5ed816028d99`/`legacy-soffice`
-
-### roundtrip: self-diff must not invent noise
-
-Oracle: Word's render of the unchanged source; the candidate is the tool's roundtrip output.
-
-No eligible rows for this benchmark yet.
-
-Not ranked in this group (latest run per tool, with the reason):
-
-- docxodus 9.8.0 (2026-08-12): renderer legacy-soffice is not Word
-- stemma 0.5.0@2e7bdc832391+git.efaed0c (2026-08-15): renderer legacy-soffice is not Word
-- safe-docx 0.19.1@e3f092da3639+git.7bd35c8 (2026-08-15): renderer legacy-soffice is not Word
-- jubarte (lossless) † 0.2.0@1286be69c690+git.6501468 (2026-09-11): renderer legacy-soffice is not Word
-- jubarte (ast) † 0.2.0@1286be69c690+git.6501468 (2026-09-11): renderer legacy-soffice is not Word
-- folio 0.17.1 (2026-09-12): renderer legacy-soffice is not Word
-
-Other document sets or renderers measured for this benchmark are listed under History in RESULTS_DETAILED.md: `5ed816028d99`/`legacy-soffice`
-
-### visual_rendering: editor render of the plain DOCX
-
-Oracle: Word's own PDF export of the source; the candidate is a Playwright capture of the vendor editor.
-
-No eligible rows for this benchmark yet.
-
-Not ranked in this group (latest run per tool, with the reason):
-
-- docxodus (viewer) 9.8.0 (2026-08-13): renderer legacy-playwright is not Word
-
-Other document sets or renderers measured for this benchmark are listed under History in RESULTS_DETAILED.md: `5ed816028d99`/`legacy-playwright`
-
-### visual_redlines: editor render of the redline DOCX
-
-Oracle: Word's own PDF export of the redline; the candidate is a Playwright capture of the vendor editor loading Word's DOCX.
-
-No eligible rows for this benchmark yet.
-
-Not ranked in this group (latest run per tool, with the reason):
-
-- docxodus 9.0.0 (2026-08-04): renderer legacy-soffice is not Word
-- docxodus (viewer) 9.8.0 (2026-08-13): renderer legacy-playwright is not Word
-
-Other document sets or renderers measured for this benchmark are listed under History in RESULTS_DETAILED.md: `5ed816028d99`/`legacy-playwright`, `b7f467074a51`/`legacy-soffice`
-
-### visual_accepted_changes: editor render of the accepted DOCX
-
-Oracle: Word's own PDF export of the accepted DOCX; the candidate is a Playwright capture of the vendor editor.
-
-No eligible rows for this benchmark yet.
-
-Not ranked in this group (latest run per tool, with the reason):
-
-- docxodus (viewer) 9.8.0 (2026-08-13): renderer legacy-playwright is not Word
-
-Other document sets or renderers measured for this benchmark are listed under History in RESULTS_DETAILED.md: `5ed816028d99`/`legacy-playwright`
 
 ### docx_to_pdf: accepted and randomized redline DOCX to PDF vs Word export
 
@@ -111,12 +18,6 @@ Document set `552da2e38184` (428 documents), renderer `oracle:microsoft_word`, s
 | 2 | office2pdf | office2pdf 0.6.7 | 2026-08-16 | 413 | 15 | 60.26 | 57.01 | [54.90, 59.46] | 62.44 | 57.92 | 0 |
 | 2= | pdfitdown | pdfitdown 4.0.0 | 2026-08-16 | 413 | 15 | 60.26 | 57.01 | [54.90, 59.46] | 62.44 | 57.92 | 0 |
 | 4 | rdocx | rdocx 0.7.0 | 2026-08-16 | 428 | 0 | 50.30 | 48.79 | [48.33, 49.25] | 50.30 | 48.79 | 0 |
-
-Not ranked in this group (latest run per tool, with the reason):
-
-- doxx doxx 0.1.4 (2026-08-16): not applicable
-
-Not applicable: doxx (No PDF export; listed as not applicable, never ranked.)
 
 ### docx_to_pdf_no_redline_docs: source DOCX to PDF vs Word export
 
@@ -134,12 +35,6 @@ Document set `c947065c59b2` (398 documents), renderer `oracle:microsoft_word`, s
 | 6 | rdocx | rdocx 0.7.0 | 2026-09-05 | 398 | 0 | 59.11 | 54.49 | [53.38, 55.31] | 59.11 | 54.49 | 0 |
 | 7 | dxpdf | dxpdf 0.5.1 | 2026-09-05 | 381 | 17 | 56.73 | 52.52 | [52.15, 52.94] | 59.26 | 52.67 | 2 |
 
-Not ranked in this group (latest run per tool, with the reason):
-
-- doxx doxx 0.1.4 (2026-09-05): not applicable
-
-Not applicable: doxx (No PDF export; listed as not applicable, never ranked.)
-
 ### corpus/word:all: every corpus/word DOCX to PDF vs Word's own PDF
 
 Oracle: Word's PDF export of each DOCX in the four corpus/word states; the candidate is the converter's PDF of the same DOCX.
@@ -151,6 +46,14 @@ Document set `7a172fe59b04` (3554 documents), renderer `oracle:microsoft_word`, 
 | 1 | jubarte † | jubarte 0.9.3 | 2026-09-28 | 3554 | 0 | 77.76 | 81.73 | [81.36, 82.14] | 77.76 | 81.73 | 6 |
 | 2 | soffice | LibreOffice 26.8.0.3 bce0998afefdbc355585ca324285661a2170ba77 | 2026-09-28 | 3515 | 39 | 62.85 | 65.75 | [64.83, 66.57] | 63.55 | 65.98 | 0 |
 | 3 | docxide-pdf | docxide-pdf v0.17.1 | 2026-09-28 | 3554 | 0 | 52.79 | 51.50 | [50.85, 52.09] | 52.79 | 51.50 | 2 |
+
+By corpus state (ITT mean / ITT median; the number of documents of each state in brackets):
+
+| Tool | clean (1529) | tracking_without_comments (1883) | with_comments_tracking (130) | with_comments_clean (12) |
+| --- | --- | --- | --- | --- |
+| jubarte † | 80.92 / 86.68 | 76.43 / 80.65 | 61.66 / 67.40 | 59.89 / 63.38 |
+| soffice | 65.06 / 67.66 | 62.42 / 65.87 | 44.91 / 45.99 | 41.93 / 40.82 |
+| docxide-pdf | 57.38 / 53.64 | 49.98 / 51.21 | 40.38 / 40.92 | 44.44 / 39.93 |
 
 ### docxide_metrics: DOCX to PDF under docxide-pdf's own metrics
 
@@ -164,9 +67,13 @@ Document set `7a172fe59b04` (3554 documents), renderer `oracle:microsoft_word`, 
 | 2 | soffice | LibreOffice 26.8.0.3 bce0998afefdbc355585ca324285661a2170ba77 | 2026-09-28 | 3498 | 56 | 27.77 | 23.48 | [22.99, 24.10] | 28.21 | 23.76 | 0 | 87.87 |
 | 3 | docxide-pdf | docxide-pdf v0.17.1 | 2026-09-28 | 3501 | 53 | 19.55 | 11.35 | [11.12, 11.85] | 19.84 | 11.55 | 0 | 24.33 |
 
-Not applicable: doxx (No PDF export; listed as not applicable, never ranked.)
+By corpus state (ITT mean / ITT median; the number of documents of each state in brackets):
 
-Other document sets or renderers measured for this benchmark are listed under History in RESULTS_DETAILED.md: `48ccc0e9fbec`/`oracle:microsoft_word`, `c947065c59b2`/`oracle:microsoft_word`
+| Tool | clean (1529) | tracking_without_comments (1883) | with_comments_tracking (130) | with_comments_clean (12) |
+| --- | --- | --- | --- | --- |
+| jubarte † | 68.99 / 77.75 | 62.09 / 66.42 | 30.16 / 31.50 | 33.11 / 32.30 |
+| soffice | 32.28 / 26.51 | 25.78 / 22.63 | 5.33 / 3.17 | 6.77 / 4.46 |
+| docxide-pdf | 26.65 / 15.57 | 15.03 / 9.83 | 2.67 / 1.42 | 6.24 / 6.82 |
 
 ### below 3 pages: corpus/word DOCX to PDF vs Word's own PDF
 
@@ -181,6 +88,15 @@ Document set `27122f4d945e` (2626 documents), renderer `oracle:microsoft_word`, 
 | 3 | PyMuPDF Pro | pymupdf-pro 1.28.2 (unlicensed, first 3 pages) | 2026-09-28 | 2601 | 25 | 60.02 | 60.06 | [59.09, 60.77] | 60.60 | 60.29 | 0 |
 | 4 | docxide-pdf | docxide-pdf v0.17.1 | 2026-09-28 | 2626 | 0 | 56.00 | 54.24 | [53.81, 54.89] | 56.00 | 54.24 | 2 |
 
+By corpus state (ITT mean / ITT median; the number of documents of each state in brackets):
+
+| Tool | clean (1188) | tracking_without_comments (1366) | with_comments_tracking (69) | with_comments_clean (3) |
+| --- | --- | --- | --- | --- |
+| jubarte † | 83.49 / 88.11 | 80.02 / 82.44 | 71.28 / 72.84 | 66.84 / 69.88 |
+| soffice | 67.22 / 69.81 | 66.53 / 68.39 | 45.48 / 46.56 | 43.02 / 40.69 |
+| PyMuPDF Pro | 64.36 / 67.45 | 57.12 / 57.81 | 43.42 / 46.51 | 43.15 / 41.46 |
+| docxide-pdf | 59.28 / 57.57 | 53.69 / 53.88 | 45.97 / 47.24 | 42.65 / 40.71 |
+
 ### below 3 pages: docxide_metrics on the same documents
 
 The docxide_metrics benchmark on the same 1 to 3 page documents; ranked on Jaccard.
@@ -194,6 +110,30 @@ Document set `27122f4d945e` (2626 documents), renderer `oracle:microsoft_word`, 
 | 3 | PyMuPDF Pro | pymupdf-pro 1.28.2 (unlicensed, first 3 pages) | 2026-09-28 | 2595 | 31 | 26.77 | 21.86 | [20.96, 22.71] | 27.09 | 22.10 | 0 | 36.36 |
 | 4 | docxide-pdf | docxide-pdf v0.17.1 | 2026-09-28 | 2619 | 7 | 19.93 | 11.42 | [11.17, 11.96] | 19.98 | 11.43 | 0 | 24.32 |
 
+By corpus state (ITT mean / ITT median; the number of documents of each state in brackets):
+
+| Tool | clean (1188) | tracking_without_comments (1366) | with_comments_tracking (69) | with_comments_clean (3) |
+| --- | --- | --- | --- | --- |
+| jubarte † | 71.68 / 79.24 | 66.40 / 70.50 | 40.72 / 41.71 | 33.35 / 33.91 |
+| soffice | 32.58 / 26.33 | 26.67 / 22.90 | 1.71 / 1.17 | 3.07 / 4.02 |
+| PyMuPDF Pro | 35.08 / 31.69 | 20.91 / 18.55 | 0.83 / 0.26 | 2.88 / 3.75 |
+| docxide-pdf | 27.31 / 15.60 | 14.46 / 9.95 | 1.87 / 0.89 | 3.81 / 4.51 |
+
+### redlines accepted or rejected by Word
+
+Each tool redlines the pair; Word accepts or rejects every change in that redline and exports it to PDF, scored with the pixel scorer against Word's own compare accepted or rejected the same way. A pair with no scored PDF counts 0 in the ITT columns. The = 100, >= 90 and < 50 counts and the docxide-pdf Ink Jaccard and Text boundary means (0 to 1) are over the scored PDFs only. Why pairs are missing: `redlines_0929_split/SUMMARY.md`.
+
+| Tool | Version | Action | Scored | ITT Mean | ITT Median | = 100 | >= 90 | < 50 | Ink Jaccard mean | Text boundary mean |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| word-identity | Word's own compare (calibration) | accept_all | 400/400 | 100.00 | 100.00 | 400 | 400 | 0 | 1.00 | 1.00 |
+| jubarte-rust | jubarte 0.9.3 (673aff74) | accept_all | 400/400 | 87.56 | 99.70 | 181 | 261 | 33 | 0.80 | 0.94 |
+| docxodus | docxodus 12.6.4 (npm) | accept_all | 394/400 | 90.07 | 99.87 | 166 | 299 | 16 | 0.85 | 0.96 |
+| superdoc | superdoc-sdk 2.15.0 | accept_all | 58/400 | 13.95 | 0.00 | 4 | 52 | 1 | 0.95 | 0.98 |
+| word-identity | Word's own compare (calibration) | reject_all | 400/400 | 100.00 | 100.00 | 400 | 400 | 0 | 1.00 | 1.00 |
+| jubarte-rust | jubarte 0.9.3 (673aff74) | reject_all | 400/400 | 86.22 | 99.85 | 186 | 260 | 35 | 0.77 | 0.91 |
+| docxodus | docxodus 12.6.4 (npm) | reject_all | 385/400 | 85.38 | 99.80 | 155 | 275 | 26 | 0.80 | 0.94 |
+| superdoc | superdoc-sdk 2.15.0 | reject_all | 49/400 | 11.07 | 0.00 | 1 | 36 | 1 | 0.83 | 0.95 |
+
 ### speed_redlines: generation time in ms per redline
 
 Lower is faster. One row per tool and mode: its latest pinned run. Large-N rows rank only at the canonical 1000 fixtures; failures are excluded from the timing and counted in the Failures column, so read the two together. In-process rows skip process spawn; cli rows include it. The machine is part of the row because the number means nothing without it.
@@ -205,20 +145,3 @@ No pinned large-N speed rows yet.
 Microbench (30 to 40 pairs, 3 repetitions):
 
 No pinned microbench rows yet.
-
-Not ranked (latest row per tool and mode):
-
-- jubarte (ast) (cli, micro, 2026-07-05): unpinned speed row
-- jubarte (lossless) (cli, micro, 2026-07-05): unpinned speed row
-- jubarte (dev variants) (cli, micro, 2026-07-05): unpinned speed row; retired tool
-- docxodus (cli, micro, 2026-07-05): unpinned speed row
-- docx-redline-js (cli, micro, 2026-07-05): unpinned speed row
-- superdoc (cli, micro, 2026-07-05): unpinned speed row
-- jubarte (ast) (cli, large, 2026-09-11): unpinned speed row
-- jubarte (lossless) (cli, large, 2026-09-11): unpinned speed row
-- jubarte-rust (cli, large, 2026-08-15): unpinned speed row
-- docxodus (C#) (cli, large, 2026-07-15): unpinned speed row; incomplete: 50 of 1000 fixtures
-- docxodus (C#) (in-process, large, 2026-08-15): unpinned speed row
-- docxodus (cli, large, 2026-08-15): unpinned speed row
-- jubarte-rust (in-process, large, 2026-08-15): unpinned speed row
-- jubarte-wasm (cli, large, 2026-08-15): unpinned speed row
