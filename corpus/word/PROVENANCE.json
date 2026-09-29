@@ -2,10 +2,15 @@
  "counts": {
   "comparisons": 3502,
   "documents": 2866,
-  "pdf": 6201,
+  "pdf": 6367,
   "pdf_prior": 30
  },
  "dataset": "superdoc-dev/docx-corpus",
+ "holdout": {
+  "list": "pools/holdout.txt",
+  "missing": {},
+  "n": 40
+ },
  "id_scheme": "sha256[:10] of the docx bytes",
  "license": "ODC-By-1.0",
  "notes": [
@@ -436,7 +441,7 @@
   },
   "word_based_accepted_word": {
    "absent": [],
-   "description": "Word compares of the word_based pairs with every tracked change accepted in Word (word_working_roundtrip, named <pair>_word_redline_accepted); the LibreOffice render of each is the visual_accepted_changes oracle. No Word PDF of them exists.",
+   "description": "Word compares of the word_based pairs with every tracked change accepted in Word (word_working_roundtrip, named <pair>_word_redline_accepted), with the Word PDFs of the September 29 2026 render; the LibreOffice render of each was the visual_accepted_changes oracle.",
    "docset_id": "1d111c4d275c",
    "excluded": {},
    "filled": [],
@@ -444,7 +449,8 @@
    "n_comparisons": 0,
    "n_documents": 166,
    "origins": [
-    "grok_run/word_based/word_working_roundtrip"
+    "grok_run/word_based/word_working_roundtrip",
+    "grok_run/wr0929/word_based_accepted_word_pdf"
    ],
    "orphans": [],
    "redundant": [],

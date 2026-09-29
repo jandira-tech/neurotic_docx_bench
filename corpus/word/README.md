@@ -104,9 +104,10 @@ The superdoc documents and Word's compares of their pairs with the September 202
 
 ### word_based_accepted_word
 
-Word compares of the word_based pairs with every tracked change accepted in Word (word_working_roundtrip, named <pair>_word_redline_accepted); the LibreOffice render of each is the visual_accepted_changes oracle. No Word PDF of them exists.
+Word compares of the word_based pairs with every tracked change accepted in Word (word_working_roundtrip, named <pair>_word_redline_accepted), with the Word PDFs of the September 29 2026 render; the LibreOffice render of each was the visual_accepted_changes oracle.
 
 * documents: `grok_run/word_based/word_working_roundtrip`
+* their Word PDFs: `grok_run/wr0929/word_based_accepted_word_pdf`
 
 ### word_based_0926
 

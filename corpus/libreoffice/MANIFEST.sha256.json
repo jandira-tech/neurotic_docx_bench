@@ -1,8 +1,8 @@
 {
   "algorithm": "sha256",
   "files": {
-    "PROVENANCE.json": "adcf3537182f965012a93cc3ab683c3c93fbc7cdaa3b8ff54a023601760d464b",
-    "README.md": "4caf600778a6bb7c3decf8d57d7fc8f250af431b2c42f41850ecd4678a57011c",
+    "PROVENANCE.json": "5d967cf897400a7f4559cb2798687ce3a078d43f959a20fbd5ecbb528c28ef9c",
+    "README.md": "4132698f16cd9b2dfe6867d3657d5377ef5bf80644c6ddfa6e567819971cc4e6",
     "clean/pdf/008908795c_increase_indent_demo_id_paraid_overflow.pdf": "8d104c07a083e24678b1f6c5463e5ae6fc426665181ce9c7d0421478209ecaf3",
     "clean/pdf/00da16e738_heading_4_style_demo_id_paraid_overflow_2.pdf": "90a86e6b359be893e34936293ecfc9bdc03c8ef34c11d7917747508c7629ebad",
     "clean/pdf/017c22e2a3_heading_3_style_demo_id_paraid_overflow_2.pdf": "2628bbfb8880544b3f8877feca7a5e87c0648df46a9c92c2fae524cb638d9502",
@@ -1186,7 +1186,7 @@
     "with_comments_tracking/pdf/f71a12ee23_super_editor__fields_attrs1_83837249__vs__3539cf2404_cli_legacy__replace_test_0a793f01_redline_7a1d3fbeba.pdf": "fa6ccd23713e4fb92d5ea5b6a6f1bba138b016d969f94c3b246d065e8ec1a6ad",
     "with_comments_tracking/pdf/f782ae23ec_super_editor__wordoriginatedcomments_c146be65__vs__3539cf2404_cli_legacy__replace_test_0a793f01_redline_a7cfb33589.pdf": "b1deaf8b4b4c34a31692cd221cd7a47a78475cb77c055e41496a18577a046a2f",
     "with_comments_tracking/pdf/faa7c6b110_file_88__vs__57ff9e1b30_file_89_redline_4319e3d7c7.pdf": "cefc272b5e3ba6824473020d8bc58ab9e04f9400fc598a29674c89e7d58d78c0",
-    "word_map.csv": "67538f46e7a7c4c585ae861d43580cbea90a426a1c93e91bff5563dadc47d215"
+    "word_map.csv": "0ffe43134bb1e73c3e64fe566bf51ddfc5e89a527cae5df085ed8272a7e220c4"
   },
   "n_files": 1186
 }
