@@ -1208,6 +1208,94 @@ def test_run_batch_with_resume_crash_passes_do_not_spend_the_wedge_budget(
     assert manifests[1] == ["2", "3", "1"]
 
 
+def test_word_waits_240_seconds_per_apple_event_everywhere() -> None:
+    """A hang used to cost 600 s per document before Word gave up."""
+    scripts = [wp._EXPORT_PDF, wp._EXPORT_PDF_KEEP_OPEN, wp._EXPORT_BATCH, wp._EXPORT_BATCH_KEEP_OPEN]
+    assert wp.APPLE_EVENT_TIMEOUT == 240
+    for s in scripts:
+        assert "with timeout of 240 seconds" in s
+        assert "600" not in s
+
+
+def test_parse_batch_log_keeps_every_retry() -> None:
+    log = wp.parse_batch_log("[retry]\t4\tloaded empty\n[retry]\t5\tConnection is invalid.\n")
+    assert log.retried == {"4": "loaded empty", "5": "Connection is invalid."}
+
+
+def _retry_osa(script_of_pass: list[dict[str, str]], manifests: list[list[str]]):
+    """Pass n logs [retry] for the ids in script_of_pass[n] (then stops), [ok] for the rest."""
+
+    def fake(script, *args, timeout=60.0):
+        manifest, log = Path(args[0]), Path(args[1])
+        rows = [ln.split("\t") for ln in manifest.read_text().splitlines() if ln]
+        plan = script_of_pass[len(manifests)] if len(manifests) < len(script_of_pass) else {}
+        manifests.append([r[0] for r in rows])
+        lines = []
+        for r in rows:
+            if r[0] in plan:
+                lines.append(f"[retry]\t{r[0]}\t{plan[r[0]]}")
+                if len([ln for ln in lines if ln.startswith("[retry]")]) == len(plan):
+                    break
+            else:
+                lines.append(f"[ok]\t{r[0]}")
+        lines.append("[done]\t0\t0")
+        log.write_text("\n".join(lines) + "\n")
+        return 0, "", ""
+
+    return fake
+
+
+def test_run_batch_with_resume_retries_empty_loads_last_and_gives_up_after_two(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Three Word-invalid files in a row used to end every pass before anything else ran."""
+    manifests: list[list[str]] = []
+    empty = {i: "document loaded empty (Word could not read it)" for i in ("0", "1", "2")}
+    monkeypatch.setattr(wp, "osa", _retry_osa([empty, empty], manifests))
+    session = wp.WordSession()
+    monkeypatch.setattr(session, "recycle", lambda *f: True)
+
+    rows = [(str(i), f"/in/{i}", f"/out/{i}") for i in range(5)]
+    got = wp.run_batch_with_resume(
+        "SCRIPT", rows, tmp_path, per_item_timeout=10, session=session, max_passes=1
+    )
+
+    assert manifests[0] == ["0", "1", "2", "3", "4"]
+    assert manifests[1] == ["3", "4", "0", "1", "2"]  # retried items go last
+    assert got["3"] == (True, "") and got["4"] == (True, "")
+    for i in ("0", "1", "2"):
+        assert got[i][0] is False and "loaded empty" in got[i][1]
+
+
+def test_run_batch_with_resume_puts_the_item_a_wedged_pass_stopped_on_last(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    manifests: list[list[str]] = []
+    calls = {"n": 0}
+
+    def fake(script, *args, timeout=60.0):
+        calls["n"] += 1
+        manifest, log = Path(args[0]), Path(args[1])
+        rows = [ln.split("\t")[0] for ln in manifest.read_text().splitlines() if ln]
+        manifests.append(rows)
+        if calls["n"] == 1:  # hangs on item 1: no line for it, no [done]
+            log.write_text("[ok]\t0\n")
+            return None, "", ""
+        log.write_text("".join(f"[ok]\t{r}\n" for r in rows) + "[done]\t9\t0\n")
+        return 0, "", ""
+
+    monkeypatch.setattr(wp, "osa", fake)
+    session = wp.WordSession()
+    monkeypatch.setattr(session, "recycle", lambda *f: True)
+
+    rows = [(str(i), f"/in/{i}", f"/out/{i}") for i in range(4)]
+    got = wp.run_batch_with_resume(
+        "SCRIPT", rows, tmp_path, per_item_timeout=10, session=session, max_passes=3
+    )
+    assert manifests[1] == ["2", "3", "1"]
+    assert all(ok for ok, _ in got.values())
+
+
 def test_parse_batch_log_omits_items_the_run_never_reached() -> None:
     """No line at all is not a failure — it is the only case worth retrying."""
     log = wp.parse_batch_log("[ok]\t0\n[ok]\t1\n")
@@ -1340,7 +1428,9 @@ def test_run_batch_with_resume_retries_only_what_was_never_reached(
     )
 
     assert manifests[0] == ["0", "1", "2", "3"]
-    assert manifests[1] == ["2", "3"]  # only the unreached; the failure is final
+    # only the unreached; the failure is final, and "2", where the wedged pass
+    # stopped, is retried last
+    assert manifests[1] == ["3", "2"]
     assert got["0"] == (True, "")
     assert got["1"] == (False, "bad file")
     assert got["2"][0] and got["3"][0]
