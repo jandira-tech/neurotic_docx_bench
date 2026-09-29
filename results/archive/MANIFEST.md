@@ -44,3 +44,23 @@
 | 2026-09-27 | 019fb821-a729-77dc-aa37-f73566fc8444 | jubarte | script_redlines | 2026-07-31T12:24:01 | legacy provenance |
 | 2026-09-27 | 019fcce6-6511-7762-b6db-9193668ca847 | docxodus | visual_rendering | 2026-08-04T13:11:19 | legacy provenance |
 | 2026-09-27 | 019fcce6-6511-7762-b6db-9193668ca847 | docxodus | visual_accepted_changes | 2026-08-04T13:11:19 | legacy provenance |
+| 2026-09-29 | 01a0ee2a-bb73-7452-b0ff-d5a8b8fe7250 | jubarte | docx_to_pdf | 2026-08-16T22:55:26 | superseded by a later store line (docx_to_pdf.json) |
+| 2026-09-29 | 01a0ee2a-bb77-772a-b3cb-a5b0e81ad1e2 | jubarte | docx_to_pdf | 2026-08-16T19:28:16 | superseded by a later store line (docx_to_pdf_500_jubarte.json) |
+| 2026-09-29 | 01a0ee2a-bb7a-7054-9833-d866ede066f2 | jubarte | docx_to_pdf | 2026-09-27T09:08:18 | dev build, superseded (docx_to_pdf_jubarte-65ce9de.json) |
+| 2026-09-29 | 01a0ee2a-bb81-7057-8363-557f65fd1b19 | jubarte | docx_to_pdf | 2026-09-26T18:34:26 | dev build, superseded (docx_to_pdf_jubarte-cb33ec3.json) |
+| 2026-09-29 | 01a0ee2a-bb89-77b1-8b84-43580bef7d5a | jubarte | docx_to_pdf | 2026-09-11T06:45:47 | dev build, superseded (docx_to_pdf_jubarte-first-0.2.0_docx_to_pdf.json) |
+| 2026-09-29 | 01a0ee2a-bb8a-7254-ad51-471623423656 | jubarte | docx_to_pdf_no_redline_docs | 2026-09-11T06:51:14 | dev build, superseded (docx_to_pdf_jubarte-first-0.2.0_docx_to_pdf_no_redline_docs.json) |
+| 2026-09-29 | 01a0ee2a-bb8c-7630-9063-a137ce91bccd | docxide-pdf | docx_to_pdf_no_redline_docs | 2026-09-05T09:17:47 | experiment variant (docxide default fonts) (docx_to_pdf_no_redline_docxide_dfonts.json) |
+| 2026-09-29 | 01a0ee2a-bb8e-7635-bb03-7c00c8797df7 | jubarte | docx_to_pdf_no_redline_docs | 2026-09-27T09:01:05 | dev build, superseded (docx_to_pdf_no_redline_jubarte-65ce9de.json) |
+| 2026-09-29 | 01a0ee2a-bb90-763b-861b-9e4a8c27da11 | jubarte | docx_to_pdf_no_redline_docs | 2026-09-26T18:29:29 | dev build, superseded (docx_to_pdf_no_redline_jubarte-cb33ec3.json) |
+| 2026-09-29 | 01a0ee2a-bb92-7133-bbde-ff90318d64aa | jubarte | docx_to_pdf_no_redline_docs | 2026-09-26T14:36:10 | dev build, superseded (docx_to_pdf_no_redline_jubarte-f154091.json) |
+| 2026-09-29 | 01a0ee2a-bb93-7248-a55a-442e60aa08db | jubarte | docx_to_pdf | 2026-09-22T22:25:44 | dev build, superseded (docx_to_pdf_v0.9.1.json) |
+| 2026-09-29 | 01a0ee2a-bb95-7526-bacf-70744d2ed1e1 | docxide-pdf | docxide_metrics | 2026-09-05T09:15:01 | experiment variant (docxide default fonts) (docxide_metrics_docxide_dfonts.json) |
+| 2026-09-29 | 01a0ee2a-bb98-74a0-9563-7c18604e742f | jubarte | docxide_metrics | 2026-09-26T15:23:47 | dev build, superseded (docxide_metrics_jubarte-1b72452-compressed.json) |
+| 2026-09-29 | 01a0ee2a-bb9b-7616-83d7-482de2cfbe63 | jubarte | docxide_metrics | 2026-09-26T14:14:23 | dev build, superseded (docxide_metrics_jubarte-23abeb2-compressed.json) |
+| 2026-09-29 | 01a0ee2a-bba0-768a-b9dd-a452ba9160e7 | jubarte | docxide_metrics | 2026-09-26T14:13:52 | dev build, superseded (docxide_metrics_jubarte-23abeb2.json) |
+| 2026-09-29 | 01a0ee2a-bba6-703b-a788-8561096fda31 | jubarte | docxide_metrics | 2026-09-26T15:35:57 | dev build, superseded (docxide_metrics_jubarte-530f46c-compressed.json) |
+| 2026-09-29 | 01a0ee2a-bbac-755b-aae6-d092baa49bba | jubarte | docxide_metrics | 2026-09-27T09:05:40 | dev build, superseded (docxide_metrics_jubarte-65ce9de.json) |
+| 2026-09-29 | 01a0ee2a-bbae-76a3-b93e-1c2c8b17affb | jubarte | docxide_metrics | 2026-09-26T18:28:57 | dev build, superseded (docxide_metrics_jubarte-cb33ec3.json) |
+| 2026-09-29 | 01a0ee2a-bbb1-7223-b910-6b800466480d | jubarte | docxide_metrics | 2026-09-11T14:46:04 | dev build, superseded (docxide_metrics_jubarte-first-0.2.0.json) |
+| 2026-09-29 | 01a0ee2a-bbb2-7779-ae40-da40d0d491b9 | soffice | docxide_metrics | 2026-09-26T14:34:10 | superseded by the 26.8.0.3 run (docxide_metrics_soffice-26.8.0.json) |
