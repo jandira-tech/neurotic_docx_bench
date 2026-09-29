@@ -29,7 +29,7 @@ E = "e" * 8
 F = "f" * 8
 G = "g" * 8
 H = "h" * 8
-NC = "corpus/no_comments_pdf_was_generated_by_word"
+NC = "grok_run/no_comments_pdf_was_generated_by_word"
 WB = "corpus/word_based"
 SD = "corpus/word_redlines_superdoc"
 FIX = word_corpus.FIXTURES_PREFIX
@@ -192,6 +192,28 @@ def make_tree(root: Path) -> Path:
     _mapping(root / NC / "centralized_mapping_randomized.csv", [("file_1_file_2", "file_1", "file_2")])
     _docx(root / NC / "docx_redlines_randomized" / "file_1_file_2_redline.docx", "redline 1 2 nc", tracked=True)
     _pdf(root / NC / "pdf_redlines_randomized" / "file_1_file_2_redline.pdf", "pdf redline 1 2 nc")
+    # pdf_fill_0928: z (word_based, registered without a Word PDF) rendered now; G and B with the
+    # renders they already had; the G vs B compare (no PDF until now) through the set's own mapping
+    pf = g / "wr0928" / "pdf_fill"
+    (pf / "documents_docx").mkdir(parents=True)
+    (pf / "documents_pdf").mkdir(parents=True)
+    (pf / "documents_docx" / "z_doc.docx").write_bytes((root / WB / "docx_source" / "z.docx").read_bytes())
+    _pdf(pf / "documents_pdf" / "z_doc.pdf", "pdf z filled")
+    for name, doc, render in (("g_doc", G, f"{G}.pdf"), ("b_doc", B, f"{B}.w26092233.pdf")):
+        (pf / "documents_docx" / f"{name}.docx").write_bytes((g / "fixtures_500" / f"{doc}.docx").read_bytes())
+        (pf / "documents_pdf" / f"{name}.pdf").write_bytes((g / "fixtures_500_pdf" / render).read_bytes())
+    (pf / "word_refused").mkdir(parents=True)
+    (pf / "comparisons_docx").mkdir(parents=True)
+    (pf / "comparisons_docx" / "g_b_cmp.docx").write_bytes(
+        (g / "compared_a_100_vs_b_10_docx" / f"{G}__vs__{B}.docx").read_bytes()
+    )
+    _pdf(pf / "comparisons_pdf" / "g_b_cmp.pdf", "pdf compare G B filled")
+    _mapping(pf / "mapping.csv", [("g_b_cmp", "g_doc", "b_doc")])
+    # accepted_tracking_0928: a compare with its changes accepted, and its Word PDF
+    at = g / "wr0928" / "accepted_tracking"
+    _docx(at / "docx" / "cmp0000001_accepted_tracking.docx", "compare A B accepted")
+    _pdf(at / "pdf" / "cmp0000001_accepted_tracking.pdf", "pdf compare A B accepted")
+    _put(at / "selection.csv", "key,id\n")
     return root
 
 
@@ -335,6 +357,19 @@ def test_pdf_meta_reads_word_and_refuses_other_producers(tmp_path: Path) -> None
     assert word_corpus.is_word_pdf(word_corpus.pdf_meta(big))
 
 
+def test_pdf_meta_finds_an_info_dictionary_a_long_xref_table_pushed_out_of_the_tail(tmp_path: Path) -> None:
+    """A 107-page Quartz render keeps its Info object before a 1195-entry xref table: the
+    dictionary sits neither in the head nor in the tail window, and the Word PDF read as
+    nobody's. With nothing found in the window the whole file is read."""
+    info = b"<</Producer(macOS Version 26.6.2 \\(Build 25G83\\) Quartz PDFContext)>>\n"
+    xref = b"xref\n" + b"0000000000 00000 n \n" * 20_000 + b"trailer\n%%EOF\n"
+    path = tmp_path / "long_xref.pdf"
+    path.write_bytes(b"%PDF-1.3\n" + b"s" * 50_000 + info + xref)
+    meta = word_corpus.pdf_meta(path)
+    assert meta.producer == "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+    assert word_corpus.is_word_pdf(meta)
+
+
 # --- planning ------------------------------------------------------------------
 
 
@@ -394,6 +429,24 @@ def test_plan_applies_exclusion_folders_and_the_blacklist(tree: Path) -> None:
         "500_extra_redlines_rejected": (f"{D}__vs__{H}",),
     }
     assert [c.names for c in plan_.comparisons] == [(f"{D}__vs__{F}",)]
+
+
+def test_plan_word_invalid_list_removes_documents_and_their_compares_from_every_set(tree: Path) -> None:
+    """A docx Word will not open cleanly is out of the corpus by its id, whatever it is called in a
+    set, and every compare built on it goes with it."""
+    x_id = _id(tree / WB / "docx_source" / "x.docx")
+    ab_id = _id(tree / "grok_run" / "compared_a_100_vs_b_10_docx" / f"{A}__vs__{B}.docx")
+    _put(tree / word_corpus.WORD_INVALID, f"{x_id}\trecover-contents prompt\n{ab_id}\trepair prompt\n")
+    plan_ = word_corpus.plan(tree, only=["sources_500", "redlines_a100_b10", "word_based", "nocomments"])
+    assert "x" not in {n for d in plan_.documents for n in d.names}
+    assert {c.id for c in plan_.comparisons}.isdisjoint({ab_id})
+    assert not [c for c in plan_.comparisons if "x_y_redline" in c.names]
+    label = word_corpus.WORD_INVALID_LABEL
+    assert plan_.sets["word_based"].excluded == {label: ("x", "x_y_redline")}
+    assert plan_.sets["nocomments"].excluded == {label: ("x", "x_y_redline")}
+    assert plan_.sets["redlines_a100_b10"].excluded == {label: (f"{A}__vs__{B}",)}
+    assert _doc(plan_, "y").id  # the other side of the pair stays
+    assert word_corpus.WORD_INVALID in word_corpus.origins()
 
 
 def test_plan_without_a_blacklist_excludes_nothing(tree: Path) -> None:
@@ -727,6 +780,22 @@ def test_check_reports_drift(tree: Path) -> None:
     assert not word_corpus.check(dest).ok
 
 
+def test_plan_pdf_fill_gives_documents_and_compares_the_word_pdf_they_lacked(tree: Path) -> None:
+    plan = word_corpus.plan(tree)
+    z = _doc(plan, "z")
+    assert z.pdf_src == "grok_run/wr0928/pdf_fill/documents_pdf/z_doc.pdf"
+    assert z.stem.endswith("_z") and "z_doc" in z.names and "pdf_fill_0928" in z.sets
+    gdoc, bdoc = _doc(plan, G), _doc(plan, B)
+    assert gdoc.pdf_src == f"grok_run/fixtures_500_pdf/{G}.pdf"
+    assert bdoc.pdf_src == f"grok_run/fixtures_500_pdf/{B}.w26092233.pdf"
+    assert not gdoc.pdf_prior_src and plan.sets["pdf_fill_0928"].superseded == ()
+    (gb,) = [e for e in plan.comparisons if e.pdf_src.endswith("g_b_cmp.pdf")]
+    assert (gb.base_id, gb.next_id) == (gdoc.id, bdoc.id)
+    assert gb.stem.startswith(f"{gdoc.stem}__vs__{bdoc.stem}")
+    (accepted,) = [d for d in plan.documents if "accepted_tracking_0928" in d.sets]
+    assert accepted.stem.endswith("_cmp0000001_accepted_tracking") and accepted.pdf_src
+
+
 def test_summary_and_corpus_entries(tree: Path) -> None:
     dest = tree / "corpus" / "word"
     assert word_corpus.summary(dest) == []
@@ -749,6 +818,7 @@ def test_summary_and_corpus_entries(tree: Path) -> None:
         "word_word_redlines_superdoc_0926",
         "word_nocomments",
         "word_nocomments_randomized",
+        "word_pdf_fill_0928",
     }
     e = entries["word_redlines_a100_b10"]
     assert e.manifest == (dest / "pools" / "redlines_a100_b10_pairs.csv").as_posix()
@@ -891,3 +961,20 @@ def test_plan_records_every_name_of_the_same_bytes(tree: Path) -> None:
     assert x.names == ("x", "x_copy") and x.sets == ("word_based",)
     assert [d for d in plan_.documents if "x_copy" in d.names] == [x]
     assert plan_.sets["word_based"].documents.count(x.id) == 1
+
+
+def test_plan_a_third_render_of_the_same_bytes_in_an_untagged_set_is_redundant(tree: Path) -> None:
+    """nocomments holds strict01 under four names, each rendered by Word on its own: the first
+    render is current, the next prior, the rest redundant (reported, not copied). Only a tagged
+    set, whose names say which render is which, still refuses a second prior."""
+    same = (tree / WB / "docx_source" / "x.docx").read_bytes()
+    for name in ("x_again", "x_third"):
+        (tree / NC / "docx_source" / f"{name}.docx").write_bytes(same)
+        _pdf(tree / NC / "pdf_source" / f"{name}.pdf", f"pdf {name} july")
+    plan = word_corpus.plan(tree)
+    x = _doc(plan, "x")
+    assert x.pdf_src == f"{NC}/pdf_source/x.pdf"
+    assert x.pdf_prior_src == f"{NC}/pdf_source/x_again.pdf"
+    report = plan.sets["nocomments"]
+    assert report.superseded == ("x_again",) and report.redundant == ("x_third",)
+    assert f"{NC}/pdf_source/x_third.pdf" not in {r.original for r in plan.renames}

@@ -20,20 +20,22 @@ manifest, provenance, tables, pools and notices are tracked.
 
 | set | documents | comparisons | docset id | absent | superseded | filled | unresolved | excluded | refused |
 |---|---:|---:|---|---:|---:|---:|---:|---:|---:|
-| sources_500 | 448 | 0 | db3f71a066b1 | 52 | 18 | 0 | 0 | 0 | 52 |
-| en_pairs_500 | 785 | 0 | e0c2040c90b0 | 215 | 0 | 3 | 0 | 0 | 215 |
-| redlines_a100_b10 | 0 | 604 | 69ae4b3b1088 | 361 | 0 | 0 | 4 | 0 | 357 |
-| redlines_en_500 | 0 | 191 | dc30aba2d312 | 276 | 0 | 0 | 2 | 1 | 257 |
-| word_based | 194 | 214 | 37fae20b629d | 17 | 0 | 0 | 1 | 0 | 14 |
-| word_based_randomized | 199 | 178 | ceb524116e1a | 18 | 0 | 0 | 0 | 0 | 18 |
-| word_redlines_superdoc | 210 | 0 | c45369ff5c32 | 7 | 0 | 0 | 393 | 0 | 6 |
-| word_based_0926 | 0 | 183 | fc606370508d | 16 | 0 | 0 | 1 | 0 | 14 |
-| word_based_randomized_0926 | 0 | 172 | d5d8d193de2c | 13 | 0 | 0 | 0 | 0 | 13 |
-| word_redlines_superdoc_0926 | 0 | 0 | e3b0c44298fc | 7 | 0 | 0 | 355 | 0 | 6 |
-| nocomments | 192 | 215 | bdac56835236 | 20 | 2 | 0 | 2 | 0 | 18 |
-| nocomments_randomized | 194 | 179 | b26e3d6114e9 | 22 | 1 | 0 | 0 | 0 | 22 |
-| fixtures_originals | 207 | 0 | c555d1b4d484 | 0 | 0 | 0 | 0 | 0 | 0 |
+| sources_500 | 500 | 0 | 29e26304c8ad | 0 | 18 | 0 | 0 | 0 | 0 |
+| en_pairs_500 | 1000 | 0 | fec675dffc49 | 0 | 0 | 4 | 0 | 0 | 0 |
+| redlines_a100_b10 | 0 | 965 | c507a7eef23d | 4 | 0 | 0 | 0 | 0 | 0 |
+| redlines_en_500 | 0 | 450 | 759e0aa44e12 | 19 | 0 | 0 | 0 | 1 | 0 |
+| word_based | 194 | 226 | 6135c9c2e86a | 3 | 0 | 0 | 3 | 0 | 0 |
+| word_based_randomized | 199 | 196 | 1892074cca61 | 0 | 0 | 0 | 0 | 0 | 0 |
+| word_redlines_superdoc | 210 | 0 | c45369ff5c32 | 1 | 0 | 0 | 399 | 0 | 0 |
+| word_based_0926 | 0 | 195 | 9ec0aaa20445 | 2 | 0 | 0 | 3 | 0 | 0 |
+| word_based_randomized_0926 | 0 | 185 | 718e98c4452f | 0 | 0 | 0 | 0 | 0 | 0 |
+| word_redlines_superdoc_0926 | 0 | 0 | e3b0c44298fc | 1 | 0 | 0 | 361 | 0 | 0 |
+| nocomments | 194 | 227 | f714a39fa281 | 2 | 3 | 0 | 3 | 0 | 0 |
+| nocomments_randomized | 199 | 196 | 61778f5d5461 | 0 | 1 | 0 | 0 | 0 | 0 |
+| fixtures_originals | 196 | 0 | 08fb9032341a | 0 | 0 | 0 | 0 | 11 | 0 |
 | fixtures_word_compares | 0 | 164 | a251277596bd | 0 | 0 | 0 | 2 | 0 | 0 |
+| pdf_fill_0928 | 608 | 106 | df018bfc7332 | 1 | 8 | 0 | 0 | 11 | 0 |
+| accepted_tracking_0928 | 100 | 0 | c9cfd04d45a4 | 0 | 0 | 0 | 0 | 0 | 0 |
 
 ## Sets
 
@@ -129,22 +131,22 @@ The September 2026 compare run of the superdoc pairs.
 
 The July 2026 Word run over word_based with comments stripped: the documents with their Word PDFs and the compares (tracked changes, no comments) with theirs.
 
-* documents: `corpus/no_comments_pdf_was_generated_by_word/docx_source`
-* their Word PDFs: `corpus/no_comments_pdf_was_generated_by_word/pdf_source`
-* comparisons: `corpus/no_comments_pdf_was_generated_by_word/docx_redlines_word`
-* their Word PDFs: `corpus/no_comments_pdf_was_generated_by_word/pdf_redlines_word`
-* pairs: `corpus/no_comments_pdf_was_generated_by_word/centralized_mapping.csv`
+* documents: `grok_run/no_comments_pdf_was_generated_by_word/docx_source`
+* their Word PDFs: `grok_run/no_comments_pdf_was_generated_by_word/pdf_source`
+* comparisons: `grok_run/no_comments_pdf_was_generated_by_word/docx_redlines_word`
+* their Word PDFs: `grok_run/no_comments_pdf_was_generated_by_word/pdf_redlines_word`
+* pairs: `grok_run/no_comments_pdf_was_generated_by_word/centralized_mapping.csv`
 * base/next documents: the `nocomments` set
 
 ### nocomments_randomized
 
 The July 2026 Word run over the randomized word_based pairs with comments stripped.
 
-* documents: `corpus/no_comments_pdf_was_generated_by_word/docx_source_randomized`
-* their Word PDFs: `corpus/no_comments_pdf_was_generated_by_word/pdf_source_randomized`
-* comparisons: `corpus/no_comments_pdf_was_generated_by_word/docx_redlines_randomized`
-* their Word PDFs: `corpus/no_comments_pdf_was_generated_by_word/pdf_redlines_randomized`
-* pairs: `corpus/no_comments_pdf_was_generated_by_word/centralized_mapping_randomized.csv`
+* documents: `grok_run/no_comments_pdf_was_generated_by_word/docx_source_randomized`
+* their Word PDFs: `grok_run/no_comments_pdf_was_generated_by_word/pdf_source_randomized`
+* comparisons: `grok_run/no_comments_pdf_was_generated_by_word/docx_redlines_randomized`
+* their Word PDFs: `grok_run/no_comments_pdf_was_generated_by_word/pdf_redlines_randomized`
+* pairs: `grok_run/no_comments_pdf_was_generated_by_word/centralized_mapping_randomized.csv`
 * base/next documents: the `nocomments_randomized` set
 
 ### fixtures_originals
@@ -160,4 +162,22 @@ Word compares of the original fixtures (_fixtures/word_redlined_fixtures) resolv
 * comparisons: `_fixtures/word_redlined_fixtures`
 * pairs: `corpus/word_based/centralized_mapping.csv`
 * base/next documents: the `word_based` set
+
+### pdf_fill_0928
+
+The September 28 2026 Word render of the documents and compares that had no Word PDF (notices/audit_2026-09-28_docx_without_word_pdf.csv); word_refused holds the documents Word would not open, left out through the word_invalid list.
+
+* documents: `grok_run/wr0928/pdf_fill/documents_docx`, `grok_run/wr0928/pdf_fill/word_refused`
+* their Word PDFs: `grok_run/wr0928/pdf_fill/documents_pdf`
+* comparisons: `grok_run/wr0928/pdf_fill/comparisons_docx`
+* their Word PDFs: `grok_run/wr0928/pdf_fill/comparisons_pdf`
+* pairs: `grok_run/wr0928/pdf_fill/mapping.csv`
+* base/next documents: the `pdf_fill_0928` set
+
+### accepted_tracking_0928
+
+100 Word compares (40 with comments, 60 without; accepted_tracking_selection.csv) with every tracked change accepted by Word, named <compare id>_accepted_tracking, with their Word PDFs.
+
+* documents: `grok_run/wr0928/accepted_tracking/docx`
+* their Word PDFs: `grok_run/wr0928/accepted_tracking/pdf`
 
