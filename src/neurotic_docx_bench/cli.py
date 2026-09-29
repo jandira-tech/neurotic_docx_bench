@@ -99,11 +99,37 @@ def _get_overall_score(result: ScoreResult) -> float:
     return pipeline.overall_from_result(result)
 
 
+def _pool_rows(cfg: BenchConfig) -> list[dict[str, str]]:
+    """The ``key, base, next`` rows of every ``corpora:`` pool table (corpus/word/pools)."""
+    rows: list[dict[str, str]] = []
+    for entry in cfg.corpora:
+        manifest = Path(entry.manifest)
+        manifest = manifest if manifest.is_absolute() else cfg.config_dir / manifest
+        if not manifest.is_file():
+            continue
+        with manifest.open(encoding="utf-8", newline="") as fh:
+            rows.extend(r for r in csv.DictReader(fh) if r.get("key") and r.get("base") and r.get("next"))
+    return rows
+
+
 def _base_pdf_map(cfg: BenchConfig) -> dict[str, Path] | None:
-    """Base-PDF resolver for the v2/skill metrics, by corpus convention: the mapping
-    CSVs and ``pdf_source`` dir live next to the oracle dir (``<corpus>/pdf_source``,
-    ``<corpus>/centralized_mapping*.csv``). Returns None when the convention does not
-    hold (synthetic test corpora) — v2 fields then stay None."""
+    """Base-PDF resolver for the v2/skill metrics.
+
+    With ``oracle_roots``: the pool tables name each pair's base docx under the corpus
+    root, and its PDF sits at ``<state>/pdf/<stem>.pdf`` under the root of the renderer
+    in use, so the base is rendered like the oracle. Otherwise by the legacy corpus
+    convention: the mapping CSVs and ``pdf_source`` dir live next to the oracle dir
+    (``<corpus>/pdf_source``, ``<corpus>/centralized_mapping*.csv``). Returns None when
+    neither holds (synthetic test corpora); v2 fields then stay None."""
+    if cfg.oracle_roots:
+        root = cfg.oracle_roots[cfg.renderer]
+        found = {}
+        for row in _pool_rows(cfg):
+            state, _, stem = row["base"].rpartition("/docx/")
+            pdf = root / state / "pdf" / f"{stem}.pdf"
+            if pdf.is_file():
+                found[row["key"].lower()] = pdf
+        return found or None
     corpus_root = cfg.source_of_truth.parent
     base_dir = corpus_root / "pdf_source"
     csvs = sorted(corpus_root.glob("centralized_mapping*.csv"))
@@ -117,7 +143,16 @@ def _base_pdf_map(cfg: BenchConfig) -> dict[str, Path] | None:
 def _source_docx_map(cfg: BenchConfig) -> dict[str, tuple[Path, Path]] | None:
     """Base/next source-DOCX resolver for the functional lens, by the same corpus
     convention as :func:`_base_pdf_map` (``<corpus>/docx_source`` + mapping CSVs
-    next to the oracle dir). None when the convention does not hold."""
+    next to the oracle dir), or from the pool tables and the Word corpus when the config
+    has ``oracle_roots``. None when the convention does not hold."""
+    if "word" in cfg.oracle_roots:
+        word = cfg.oracle_roots["word"]
+        pairs = {}
+        for row in _pool_rows(cfg):
+            base, next_ = word / f"{row['base']}.docx", word / f"{row['next']}.docx"
+            if base.is_file() and next_.is_file():
+                pairs[row["key"].lower()] = (base, next_)
+        return pairs or None
     corpus_root = cfg.source_of_truth.parent
     src_dirs = [
         d
@@ -248,6 +283,24 @@ def _cached_renderer(renderer: Renderer, renderer_id: str) -> Renderer:
 
 def _soffice_renderer_id() -> str:
     return f"soffice-{hardware.soffice_version() or 'unknown'}"
+
+
+def _seed_word_pdfs(docx_dir: Path, work_dir: Path, backend: str) -> int:
+    """Clone the Word PDFs filed beside ``docx_dir`` (``../pdf/<stem>.pdf``) into the
+    renderer's ``work_dir/pdf`` when the renderer is Word, so it does not print them
+    again; returns how many. A LibreOffice cache is never seeded with Word PDFs."""
+    pdfs = docx_dir.parent / "pdf"
+    if backend != "word" or not pdfs.is_dir():
+        return 0
+    from neurotic_docx_bench.word_corpus import copy_file
+
+    seeded = 0
+    for docx in sorted(docx_dir.glob("*.docx")):
+        src, dst = pdfs / f"{docx.stem}.pdf", work_dir / "pdf" / f"{docx.stem}.pdf"
+        if src.is_file() and not dst.exists():
+            copy_file(src, dst)
+            seeded += 1
+    return seeded
 
 
 def _docx_renderer(backend: str) -> tuple[Renderer, str]:
@@ -2239,7 +2292,7 @@ def _drive_runs(
         raise typer.BadParameter(f"no runs to execute (names={names!r})")
 
     rid = provenance.run_id()
-    cfg_hash = provenance.config_hash(config)
+    cfg_hash = provenance.config_hash(config, renderer=cfg.renderer)
     jsonl_path = results_dir / "bench.jsonl"
     snapshots_dir = results_dir / "score-snapshots"
     worst_exit = 0
@@ -2277,6 +2330,7 @@ def _drive_runs(
             )
         console.rule("[bold]accepted ground truth → PDF (cached)[/bold]")
         # one cache per renderer: the ground truth is rendered like the candidates
+        _seed_word_pdfs(agt, accepted_oracle_cache / cfg.renderer, cfg.renderer)
         rep = _docx_renderer(cfg.renderer)[0].to_pdfs(agt, accepted_oracle_cache / cfg.renderer, jobs=12)
         if rep.fail_count:
             console.print(f"[yellow]{rep.fail_count} accepted-oracle render failure(s)[/yellow]")
@@ -2285,6 +2339,13 @@ def _drive_runs(
     roundtrip_oracle_pdf: Path | None = None
     if roundtrip:
         rt_corpus = Path("corpus/word_based/word_working_roundtrip")
+        if cfg.roundtrip_list is not None:
+            from neurotic_docx_bench.word_corpus import stage_list
+
+            staged = roundtrip_oracle_cache / "source"
+            stage_list(cfg.roundtrip_list, staged)
+            rt_corpus = staged / "docx"
+            _seed_word_pdfs(rt_corpus, roundtrip_oracle_cache / cfg.renderer, cfg.renderer)
         if rt_corpus.is_dir():
             console.rule("[bold]roundtrip oracle → PDF (cached)[/bold]")
             rep = _docx_renderer(cfg.renderer)[0].to_pdfs(rt_corpus, roundtrip_oracle_cache / cfg.renderer, jobs=12)
@@ -3714,6 +3775,41 @@ def corpus_libreoffice_cmd(
             f"refused {len(s.refused)}, redundant {len(s.redundant)}",
             highlight=False,
         )
+
+
+@corpus_app.command(name="actions")
+def corpus_actions_cmd(
+    root: Path = typer.Option(Path("."), "--root", help="repository root"),
+    dest: Path = typer.Option(Path("corpus/word"), "--dest", help="the built Word corpus"),
+    accept_out: Path = typer.Option(
+        Path("grok_run/wr0929/pool_compares_accepted"), "--accept-out",
+        help="word_pdf.py --accept-all output folder",
+    ),
+    reject_out: Path = typer.Option(
+        Path("grok_run/wr0929/pool_compares_rejected"), "--reject-out",
+        help="word_pdf.py --reject-all output folder",
+    ),
+) -> None:
+    """File Word's Accept All / Reject All of the split comparisons under their pair keys."""
+    from neurotic_docx_bench import word_actions
+
+    try:
+        counts = word_actions.build(root, dest, {"accept_all": accept_out, "reject_all": reject_out})
+    except word_actions.WordActionsError as exc:
+        raise _corpus_fail(str(exc)) from exc
+    for action, c in counts.items():
+        console.print(f"{action}: " + ", ".join(f"{k} {v}" for k, v in sorted(c.items())), highlight=False)
+
+
+@corpus_app.command(name="stage")
+def corpus_stage_cmd(
+    list_csv: Path = typer.Argument(..., help="a pool table with docx/pdf columns (corpus/word/pools/*.csv)"),
+    out: Path = typer.Argument(..., help="working folder; files land in <out>/docx and <out>/pdf"),
+) -> None:
+    """Clone the documents a pool table names into a working folder (a list made a folder, when needed)."""
+    from neurotic_docx_bench.word_corpus import stage_list
+
+    console.print(f"staged {stage_list(list_csv, out)} docx into {out}", highlight=False)
 
 
 @corpus_app.command(name="check")
