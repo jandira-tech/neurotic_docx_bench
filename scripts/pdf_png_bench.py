@@ -17,7 +17,7 @@ lenses compare same-size pages. Candidates:
   from (``jubarte convert --png``). Its row measures jubarte's own layout plus
   rasterization, not PDF rasterization; the summary says so.
 
-``--oracles`` (default ``libreoffice,pymupdf,jubarte``) makes each of them an oracle in
+``--oracles`` (default ``libreoffice,pymupdf``) makes each of them an oracle in
 turn: every tool is rendered once per document and scored against every oracle but
 itself, one summary table per oracle. ``sanity`` renders 10 pages twice with each oracle
 and scores the second render against the first (100 expected).
@@ -435,17 +435,17 @@ def main() -> None:
     r.add_argument("--dpi", type=int, default=144)
     r.add_argument("--timeout", type=float, default=120)
     r.add_argument("--workers", type=int, default=6)
-    r.add_argument("--oracles", default=f"{SOT},pymupdf,jubarte", help="comma list; each scores every other tool")
+    r.add_argument("--oracles", default=f"{SOT},pymupdf", help="comma list; each scores every other tool")
     sn = sub.add_parser("sanity")
     sn.add_argument("--selection", action="append", required=True)
-    sn.add_argument("--oracles", default=f"{SOT},pymupdf,jubarte")
+    sn.add_argument("--oracles", default=f"{SOT},pymupdf")
     sn.add_argument("--pages", type=int, default=10)
     sn.add_argument("--dpi", type=int, default=144)
     s = sub.add_parser("summary")
     s.add_argument("--selection", action="append", required=True)
     s.add_argument("--tools")
     s.add_argument("--dpi", type=int, default=144)
-    s.add_argument("--oracles", default=f"{SOT},pymupdf,jubarte")
+    s.add_argument("--oracles", default=f"{SOT},pymupdf")
     args = ap.parse_args()
     if args.cmd == "run":
         cmd_run(args)
