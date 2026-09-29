@@ -1,8 +1,8 @@
 {
   "algorithm": "sha256",
   "files": {
-    "PROVENANCE.json": "49b4a883471c79a816d7202f46248ad8ddfe28edd75aa5406b83a9a1470bb322",
-    "README.md": "8c874c6260b8d397c6cdfb3ac4bd3e6ab72f32c0c9c836cc40710c740440b076",
+    "PROVENANCE.json": "e72d994b4ba3d0d710cb773560c63a24e15ec584ec9b4dc13962852a6ec22342",
+    "README.md": "c56c6db08fb2524bb440fd4727f7ee3d2d7d49ad5450ba5e20183869679493d2",
     "clean/docx/00163e55a0_7d35102e1569471281c726baa1f9e9cc31e56e839f337972.docx": "00163e55a0329e4965c944ee41cf7f4ea3fb92bb3faf3523ebd21374909a8596",
     "clean/docx/0018843794_889f4c3958e28978a0d96a95a8938d9eb0dc100e66f7c483.docx": "00188437944693a7c8445b5743e396247b001d8ee22caca62f3698f69e58be7d",
     "clean/docx/0048ba31dd_000be19a055234f8e79ec0baadc41d2a49050b2ea0a60654.docx": "0048ba31dd09858f0cdb791e866796f171a8aa9fd9fff2bee6b3d1964af8b49b",
@@ -1178,6 +1178,7 @@
     "clean/docx/80efad84d3_3691648ca828914f876d636bc9681b6ec9447969ab5ca800.docx": "80efad84d30aaa70a7234a93e23dbd33a3a161f9b4c3ab86a5d2eb6e1ee59206",
     "clean/docx/8116a767f0_723ae78054da0840fa9f450784fd17e0564865cb53a6bdd5.docx": "8116a767f0d2600c86060ec3f6f4decf0ee50b98c43d303b26f30b1a8ebeb6eb",
     "clean/docx/812c0181d7_file_68.docx": "812c0181d72997225099a06fa8deb99b9831d3f5590bde2cc519d2300c9ac9eb",
+    "clean/docx/812c85cf2e_c964f553ef_rejected_tracking.docx": "812c85cf2e2ab7d674b4a92e83cf8850b84733ff42c86ac0713708d91a2d9537",
     "clean/docx/812f9a84da_00ac06fef95cc36c8559ec486c7822d97e29002456b38066.docx": "812f9a84dafdd83b9e7e0c56809b2f88e24c6f3acb9a9fe65fe10899a62fae67",
     "clean/docx/813771d860_9e288428882b21a59d50f62a44c24f3fa9c01f8c2be6eb24.docx": "813771d8602fafe9719fe8813093d970be77433c6e994b9ca66c3250121d3ccb",
     "clean/docx/8138a2180b_file_145.docx": "8138a2180bc6dd598974f669b700e267ca16f36cdb5dd492391fc5d91dbecc09",
@@ -3509,6 +3510,7 @@
     "clean/pdf/80efad84d3_3691648ca828914f876d636bc9681b6ec9447969ab5ca800.pdf": "4ecd2e87189b4c0efe849d37494148b84b732883a817cceda614a8b092d53cd5",
     "clean/pdf/8116a767f0_723ae78054da0840fa9f450784fd17e0564865cb53a6bdd5.pdf": "82e11cb685470c98440fd0ea873f1fe7f2f8c5a53cff15b6e79e8521aae50c2f",
     "clean/pdf/812c0181d7_file_68.pdf": "08cfae57d25d8bb232a5fbe4ded8cce32697925669e2d3d6f07f73f9dfbc31e2",
+    "clean/pdf/812c85cf2e_c964f553ef_rejected_tracking.pdf": "51fa0692d649fa725b82672c9c9acb9e4d392367e78fa1f04b619d8a52b82f74",
     "clean/pdf/812f9a84da_00ac06fef95cc36c8559ec486c7822d97e29002456b38066.pdf": "a4684f655506e75dd50fa22af3fa0cfb290ccb01b1f829aaded19228534a8a7b",
     "clean/pdf/813771d860_9e288428882b21a59d50f62a44c24f3fa9c01f8c2be6eb24.pdf": "bfd90eed9ca809a05fce52e941ad25370322c9c4fc89cf55c45a8d7e40c7a3d7",
     "clean/pdf/8138a2180b_file_145.pdf": "fed056e6c55503b84ed326d060d327cf541243c564d255f48e1cf65b19a0667a",
@@ -4684,7 +4686,7 @@
     "clean/pdf_prior/f5a2874f01_014b42f2b871a56421fcacd3fab65aa3f69a6c5332eee715.pdf": "24fb511c25d2e87e93fc2a492dd960f4dcac5707bbf6342f982e44a235620af8",
     "clean/pdf_prior/f8d8b26ec9_image_out_of_folder.pdf": "1af524f19039179969bf405a18ed508962554d968d5b7093fe8cbf681c8b73f0",
     "comparisons.csv": "a6d4d2d87a5b547c4763ab91bd0f89360081df08eef763dd43a8d55957f970d2",
-    "documents.csv": "46929e6b1fc14e990fb04e121f3beb5ec5646a77e6908e3482ea874037911de2",
+    "documents.csv": "de088c12786e99fe2f4c4c32ec02b250bc7a5254f6b08f65e89c65eadee740ee",
     "notices/500_en_pairs.tsv": "e0ad653f9d36e8a479ffde231dad9d3167049c62ec912871fffed05c105f7708",
     "notices/500_en_sources.jsonl": "888a04d927faca762562d41deaa23fadc83d51ad9d70cf94b1d2409724d28c0e",
     "notices/EXTRA_REFERENCES.md": "3b0d985dde37e61a1c1cebc5e8e7322c8fd1168b128d574d25fa1ff8f7fbb252",
@@ -4693,7 +4695,7 @@
     "notices/NOTE": "a7187d28b9c4706c87ec4861bf0a0f0f510f405d94df09c4bfb8cd1d18f40f4b",
     "notices/NOTICE": "48702ddcbca487751ab38c1126d6c8f24af1cc755ae713900d9b47e11b6af079",
     "notices/README.md": "e8525fe31d35dc217690f15f6f5c333d5c5a50edd26afb89ab10ec565d1cd30a",
-    "notices/RENAMED.csv": "99cfdd094da8ce4c713940ba2527e911e96f765746716d8b7f1b958b1e02a537",
+    "notices/RENAMED.csv": "b27cdd28710c5548bd1e61d3480d477d4013bfcfb922db4afffb9c0aeb931458",
     "notices/accepted_tracking_selection.csv": "555c52d38d38ad0266ce8b7988e18042d3ab51198f2ff7cb4e55ee5bf27bc186",
     "notices/audit_2026-09-28_docx_without_word_pdf.csv": "7a5797a524e94b50f116523fe3f55deb382c4180a55b0f099880045a7bac0e70",
     "notices/blacklist.tsv": "85bc51d4e56eac93556137f89e78ace6930e0596e202d54fef92eaacde7e9c3f",
@@ -4716,7 +4718,7 @@
     "pools/redlines_a100_b10_renders.csv": "ca04a47adcccba134ab064a9348f866d23a1d0fbd192fd70b74b00e0f123b686",
     "pools/redlines_en_500_pairs.csv": "ec7093d530936802776d0f990d20475b5a8dfe9e0f7be056ebf17d0f6fc1c1ef",
     "pools/redlines_en_500_renders.csv": "c4908bfb8fee8c6e5e2afb0d79737c8796d632f6a9232e6e3ce295d6517efb3b",
-    "pools/rejected_tracking_0928_renders.csv": "70227e5063b8fb60620d3b9492dcfec06c29e6e94760b533fe34a21071d853af",
+    "pools/rejected_tracking_0928_renders.csv": "71a96dec04889406344d8f985c9d11e93a679922f4d9dd0b54b252522bb18491",
     "pools/sources_500_renders.csv": "ee7906cdf913a53831c7aa01cec869b498ea8b6a5f6a2d8d45a8dff2d1c0abf7",
     "pools/word_based_0926_pairs.csv": "4bee1013ba46ae14bbc85b8bcc852ff4f6e88c506ca51144da399dc943cd0514",
     "pools/word_based_0926_renders.csv": "11411dc7b0cfc47db9cb6db379551dcb0b3c3aa0c3c77af6c7052a5e23ab6575",
@@ -10954,5 +10956,5 @@
     "with_comments_tracking/pdf_prior/970fd9303f_sample_document_word_repair_of_our_output_word_r__vs__8441c4ae21_sd_2517_localized_heading_styles_redline_9c71031b8a.pdf": "fdc463c1d7f277116a718e04891b72709665f1c1f865c7fdcd95de4e5aba3869",
     "with_comments_tracking/pdf_prior/e355cec096_small_font_size_demo_id_paraid_overflow__vs__60697d46b7_strict01_redline_0cd32d67b2.pdf": "4751ff327e1421f5dc9140d9dda2f42e9665e0a84cc56334450b163622d3a7c9"
   },
-  "n_files": 10952
+  "n_files": 10954
 }
