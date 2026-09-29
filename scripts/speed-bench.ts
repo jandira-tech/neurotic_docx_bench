@@ -103,9 +103,9 @@ async function main() {
 	const outPath = arg("--out", "results/speed.jsonl");
 	const manifest = arg(
 		"--manifest",
-		"corpus/word_based/centralized_mapping.csv",
+		"corpus/word/pools/word_based_pairs.csv",
 	);
-	const sourceDir = arg("--source-dir", "corpus/word_based/docx_source");
+	const sourceDir = arg("--source-dir", "corpus/word");
 	const only = arg("--methods", "");
 	const wanted = only ? new Set(only.split(",")) : null;
 	const runTs = arg("--run-ts", "");

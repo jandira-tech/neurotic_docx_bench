@@ -5,7 +5,8 @@ import { join } from "node:path";
 import { execSync } from "node:child_process";
 import JSZip from "jszip";
 
-const ROUNDTRIP_SOURCE = "corpus/word_based/word_working_roundtrip";
+// staged by `bench corpus stage corpus/word/pools/word_based_accepted_word_renders.csv out/roundtrip_source`
+const ROUNDTRIP_SOURCE = "out/roundtrip_source/docx";
 const haveCorpus = existsSync(ROUNDTRIP_SOURCE);
 const haveFolio = existsSync("node_modules/@stll/folio-core/package.json");
 const haveJubarteFinal = existsSync("dist/jubarte-final/node.cjs");

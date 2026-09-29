@@ -78,14 +78,9 @@ def repo(tmp_path: Path) -> Path:
             },
         ],
     )
-    (tmp_path / "corpus" / "word_based" / "docx_source").mkdir(parents=True)
-    (
-        tmp_path
-        / "corpus"
-        / "word_based"
-        / "docx_source"
-        / "24_id_paraid_overflow.docx"
-    ).write_bytes(b"PK")
+    smoke = tmp_path / release.SMOKE_DOCX
+    smoke.parent.mkdir(parents=True)
+    smoke.write_bytes(b"PK")
     return tmp_path
 
 

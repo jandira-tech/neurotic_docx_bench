@@ -43,6 +43,27 @@ def test_plain_keys_lowercase_stems(tmp_path: Path) -> None:
     assert ds.keys_in_dir(d, "plain") == {"alpha", "beta"}
 
 
+def test_a_pool_table_is_an_oracle_source_keyed_by_its_docx_stems(tmp_path: Path) -> None:
+    table = tmp_path / "pools" / "roundtrip.csv"
+    table.parent.mkdir()
+    table.write_text(
+        "key,docx,pdf\nk1,clean/docx/Alpha.docx,clean/pdf/Alpha.pdf\nk2,clean/docx/beta.docx,\nk3,,\n"
+    )
+    assert ds.present(table) and not ds.present(tmp_path / "nope.csv")
+    assert ds.keys_in_dir(table, "plain") == {"alpha", "beta"}
+    full = ds.benchmark_docset("roundtrip", [table], holdout=set(), holdout_mode=None)
+    assert full.keys == ("alpha", "beta")
+    assert ds.benchmark_strata([table], "plain", full.keys) == {str(table): ["alpha", "beta"]}
+
+
+def test_roundtrip_set_is_the_roundtrip_list_when_one_is_configured(tmp_path: Path) -> None:
+    from types import SimpleNamespace
+
+    table = tmp_path / "rt.csv"
+    assert ds.oracle_dirs_for(SimpleNamespace(roundtrip_list=table), "roundtrip") == [table]
+    assert ds.oracle_dirs_for(SimpleNamespace(roundtrip_list=None), "roundtrip") == []
+
+
 def test_docset_id_is_order_independent_and_12_hex() -> None:
     a = ds.docset_id({"x", "y"})
     b = ds.docset_id(["y", "x"])

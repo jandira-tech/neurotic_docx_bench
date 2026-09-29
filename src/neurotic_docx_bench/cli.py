@@ -1502,7 +1502,7 @@ def _docset_for(
     the oracle directory is not configured (the line is then emitted without a docset).
     With ``gate_set`` it is the benchmark's gate subset (its own docset id)."""
     dirs = docset_mod.oracle_dirs_for(cfg, benchmark)
-    if not any(Path(d).is_dir() for d in dirs):
+    if not any(docset_mod.present(d) for d in dirs):
         return None
     holdout: set[str] = set()
     if cfg.holdout_list and Path(cfg.holdout_list).is_file():
@@ -2338,7 +2338,7 @@ def _drive_runs(
 
     roundtrip_oracle_pdf: Path | None = None
     if roundtrip:
-        rt_corpus = Path("corpus/word_based/word_working_roundtrip")
+        rt_corpus = Path("<no roundtrip_list in the config>")
         if cfg.roundtrip_list is not None:
             from neurotic_docx_bench.word_corpus import stage_list
 
@@ -2810,7 +2810,7 @@ def noise_floor_cmd(
     docs: int = typer.Option(10, "--docs", help="number of oracle DOCX to double-render"),
     dpi: int = typer.Option(144, "--dpi"),
     source: Path = typer.Option(
-        Path("corpus/word_based/docx_redlines_word"), "--source",
+        Path("corpus/word/tracking_without_comments/docx"), "--source",
         help="DOCX folder to sample from",
     ),
     out: Path = typer.Option(Path("results/noise_floor.json"), "--out"),
@@ -2913,7 +2913,7 @@ def docset_cmd(
     dirs_by_id: dict[str, list[str]] = {}
     for benchmark in BENCHMARKS:
         dirs = docset_mod.oracle_dirs_for(cfg, benchmark)
-        if not any(Path(d).is_dir() for d in dirs):
+        if not any(docset_mod.present(d) for d in dirs):
             console.print(f"{benchmark}: no oracle directory configured")
             continue
         d = docset_mod.benchmark_docset(benchmark, dirs, holdout=holdout, holdout_mode="excluded")
@@ -3075,25 +3075,19 @@ def calibrate_cmd(
 def coverage_matrix_cmd(
     mapping: list[Path] = typer.Option(
         [
-            Path("corpus/word_based/centralized_mapping.csv"),
-            Path("corpus/word_based/centralized_mapping_randomized.csv"),
+            Path("corpus/word/pools/word_based_pairs.csv"),
+            Path("corpus/word/pools/word_based_randomized_pairs.csv"),
         ],
         "--mapping",
         help="pair mapping CSV(s)",
     ),
     source_dir: list[Path] = typer.Option(
-        [
-            Path("corpus/word_based/docx_source"),
-            Path("corpus/word_based/docx_source_randomized"),
-        ],
+        [Path("corpus/word")],
         "--source-dir",
         help="folder(s) searched for source DOCX",
     ),
     redline_dir: list[Path] = typer.Option(
-        [
-            Path("corpus/word_based/docx_redlines_word"),
-            Path("corpus/word_based/docx_redlines_randomized"),
-        ],
+        [Path("corpus/word")],
         "--redline-dir",
         help="folder(s) searched for oracle redline DOCX",
     ),
@@ -3102,7 +3096,7 @@ def coverage_matrix_cmd(
         help="bench JSONL; adds a per-tag per-vendor median score table "
         "(each vendor's latest script_redlines line)",
     ),
-    out_json: Path = typer.Option(Path("corpus/word_based/coverage_tags.json"), "--out-json"),
+    out_json: Path = typer.Option(Path("corpus/word/pools/coverage_tags.json"), "--out-json"),
     out_md: Path = typer.Option(Path("docs/COVERAGE.md"), "--out-md"),
 ) -> None:
     """Tag every corpus pair with OOXML feature + revision coverage → JSON + markdown.
@@ -3692,7 +3686,7 @@ def try_fetch_cmd(
 
 corpus_app = typer.Typer(
     name="corpus",
-    help="Gather what Word produced (grok_run/, the Word oracle renders, corpus/word_based and its siblings, "
+    help="Gather what Word produced (grok_run/, the Word oracle renders, grok_run/word_based and its siblings, "
     "optionally the jubarte-first fixtures) into corpus/word: one state folder per kind of document, one "
     "naming scheme, a rename record, tables, pools, provenance and a sha256 manifest. Copies only: the "
     "origins are never moved or deleted.",

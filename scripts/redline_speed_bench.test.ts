@@ -17,7 +17,7 @@ import {
 	stats,
 } from "./redline_speed_bench.ts";
 
-const SOURCE = "corpus/word_based/docx_source";
+const SOURCE = "corpus/word/clean/docx";
 const haveCorpus = existsSync(SOURCE);
 
 const csharpDist = defaultCsharpDist(process.cwd());
@@ -36,13 +36,12 @@ const haveRustInproc =
 	existsSync(join(rustInprocDist, "jubarte-inproc"));
 
 const FIXTURE_DIRS = [
-	"corpus/word_based/docx_source",
-	"corpus/word_based/docx_source_randomized",
-	"corpus/word_based/docx_accepted_word",
-	"corpus/no_comments_pdf_was_generated_by_word/docx_source",
-	"corpus/no_comments_pdf_was_generated_by_word/docx_accepted_word",
-	"corpus/word_based/docx_redlines_word",
-	"corpus/no_comments_pdf_was_generated_by_word/docx_redlines_word",
+	"corpus/word/clean/docx",
+	"corpus/word/accept_all/docx",
+	"corpus/word/reject_all/docx",
+	"corpus/word/with_comments_clean/docx",
+	"corpus/word/tracking_without_comments/docx",
+	"corpus/word/with_comments_tracking/docx",
 ];
 
 async function documentXml(bytes: Uint8Array): Promise<string> {
@@ -107,8 +106,8 @@ describe("redline_speed_bench helpers", () => {
 		() => {
 			const fx = collectFixtures(
 				[
-					"corpus/word_based/docx_source",
-					"corpus/word_based/docx_accepted_word",
+					"corpus/word/clean/docx",
+					"corpus/word/accept_all/docx",
 				],
 				50,
 			);

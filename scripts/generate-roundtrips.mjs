@@ -3,7 +3,8 @@ import { execSync } from "node:child_process";
 import { createHash } from "node:crypto";
 /**
  * Generate genuinely re-serialized DOCX round-trips for every Node-based tool in
- * bench.yaml, over all files in corpus/word_based/word_working_roundtrip.
+ * bench.yaml, over all files in out/roundtrip_source/docx (staged from
+ * corpus/word/pools/word_based_accepted_word_renders.csv by `bench corpus stage`).
  *
  * Per-tool roundtrip route (from the re-serialization analysis):
  *
@@ -109,7 +110,7 @@ function parseArgs(argv) {
 	return {
 		all: argv.includes("--all"),
 		tool: get("--tool", ""),
-		sourceDir: get("--source-dir", "corpus/word_based/word_working_roundtrip"),
+		sourceDir: get("--source-dir", "out/roundtrip_source/docx"),
 		out: get("--out", "out/roundtrip"),
 		limit: Number(get("--limit", "0")) || 0,
 		force: argv.includes("--force"),
