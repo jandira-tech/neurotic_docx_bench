@@ -15,8 +15,13 @@ soffice has no warm worker here: driving it warm needs LibreOffice's bundled Pyt
 (UNO), which macOS kills at start on this install (its app bundle seal is invalid).
 
 Usage:
-  uv run python scripts/docx_to_pdf_speed.py --jubarte BIN --corpus NAME=DIR [--corpus ...]
-      [--tools jubarte,docxide,soffice,rdocx,office2pdf] [--limit N] [--warm] --out results/docx_to_pdf_speed
+  uv run python scripts/docx_to_pdf_speed.py --jubarte BIN --corpus NAME=DIR [--corpus NAME=@LIST ...]
+      [--tools jubarte,jubarte-compress,docxide,soffice,rdocx,office2pdf] [--limit N] [--warm]
+      --out results/docx_to_pdf_speed
+A corpus is a directory of .docx files or, with ``@``, a text file listing one .docx path
+per line (kept in its order). ``jubarte-compress`` is the jubarte call plus ``--compress``.
+Every PDF is written to one temp file per tool, overwritten by the next sample and removed
+at the end: nothing converted is kept.
 Writes <out>/<run_ts>/files.jsonl (one row per sample) and appends one row per tool and
 corpus (plus a pooled row, corpus "all") to <out>/speed.jsonl (unit ms_per_docx).
 """
@@ -36,6 +41,8 @@ from pathlib import Path
 
 
 def version_of(tool: str, jubarte: str) -> str:
+    if tool == 'jubarte-compress':
+        return version_of('jubarte', jubarte) + ' --compress'
     probes = {
         'jubarte': [jubarte, '--version'],
         'soffice': ['soffice', '--version'],
@@ -52,6 +59,39 @@ def version_of(tool: str, jubarte: str) -> str:
     if tool == 'jubarte' and '-' in Path(jubarte).name:
         version += '@' + Path(jubarte).name.rsplit('-', 1)[1]
     return version
+
+
+def tool_cmd(tool: str, src: Path, dst: Path, *, jubarte: str, profile: Path, lo_dir: Path) -> list[str]:
+    jub = [jubarte, 'convert', str(src), '-o', str(dst), '--force', '--revisions', 'word']
+    return {
+        'jubarte': jub,
+        'jubarte-compress': [*jub, '--compress'],
+        'docxide': ['docxide-pdf', str(src), str(dst)],
+        'rdocx': ['rdocx', 'convert', '--to', 'pdf', '-o', str(dst), str(src)],
+        'office2pdf': ['office2pdf', '-o', str(dst), str(src)],
+        'soffice': [
+            'soffice',
+            f'-env:UserInstallation=file://{profile}',
+            '--headless',
+            '--convert-to',
+            'pdf',
+            '--outdir',
+            str(lo_dir),
+            str(src),
+        ],
+    }[tool]
+
+
+def load_corpus(spec: str) -> tuple[str, list[Path]]:
+    """``NAME=DIR`` (sorted .docx, no ``~$`` lock files) or ``NAME=@LIST`` (paths in file order)."""
+    name, _, where = spec.partition('=')
+    if where.startswith('@'):
+        docs = [Path(ln.strip()) for ln in Path(where[1:]).read_text().splitlines() if ln.strip()]
+        missing = [d for d in docs if not d.is_file()]
+        if missing:
+            raise SystemExit(f'{spec}: {len(missing)} listed file(s) missing, first {missing[0]}')
+        return name, docs
+    return name, sorted(p for p in Path(where).glob('*.docx') if not p.name.startswith('~$'))
 
 
 WARM_BIN = Path(__file__).resolve().parent.parent / 'tools' / 'd2p-warm' / 'bin'
@@ -127,22 +167,7 @@ def main() -> None:
     profile = work / 'lo_profile'
 
     def cmd(tool: str, src: Path, dst: Path) -> list[str]:
-        return {
-            'jubarte': [args.jubarte, 'convert', str(src), '-o', str(dst), '--force', '--revisions', 'word'],
-            'docxide': ['docxide-pdf', str(src), str(dst)],
-            'rdocx': ['rdocx', 'convert', '--to', 'pdf', '-o', str(dst), str(src)],
-            'office2pdf': ['office2pdf', '-o', str(dst), str(src)],
-            'soffice': [
-                'soffice',
-                f'-env:UserInstallation=file://{profile}',
-                '--headless',
-                '--convert-to',
-                'pdf',
-                '--outdir',
-                str(work / 'lo'),
-                str(src),
-            ],
-        }[tool]
+        return tool_cmd(tool, src, dst, jubarte=args.jubarte, profile=profile, lo_dir=work / 'lo')
 
     def once(tool: str, src: Path) -> tuple[float, bool]:
         dst = work / f'{tool}.pdf'
@@ -163,8 +188,7 @@ def main() -> None:
 
     corpora = []
     for spec in args.corpus:
-        name, _, d = spec.partition('=')
-        docs = sorted(p for p in Path(d).glob('*.docx') if not p.name.startswith('~$'))
+        name, docs = load_corpus(spec)
         corpora.append((name, docs[: args.limit] if args.limit else docs))
     # Warm every tool once (soffice profile creation, page cache) — untimed.
     first = corpora[0][1][0]
@@ -202,6 +226,7 @@ def main() -> None:
                 'run_ts': run_ts,
                 'n': len(xs),
                 'failed': failed.get((t, name), 0),
+                'total_s': round(sum(xs) / 1000, 3),
                 'mean': round(statistics.fmean(xs), 3),
                 'median': round(statistics.median(xs), 3),
                 'p95': round(xs[min(len(xs) - 1, int(0.95 * len(xs)))], 3),
