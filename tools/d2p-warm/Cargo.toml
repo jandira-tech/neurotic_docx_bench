@@ -19,7 +19,7 @@ office2pdf = ["dep:office2pdf"]
 [dependencies]
 # The same library versions the cold run's CLIs are built from.
 docxide-pdf = { version = "=0.17.1", default-features = false, optional = true }
-office2pdf = { version = "=0.7.0", optional = true }
+office2pdf = { version = "=0.8.0", optional = true }
 rdocx = { version = "=0.14.0", features = ["system-fonts"], optional = true }
 # Built from the canonical checkout, never a copied binary.
 jubarte-redlines = { path = "../../../jubarte-redlines", optional = true }
