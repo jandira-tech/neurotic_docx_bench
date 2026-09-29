@@ -297,6 +297,7 @@ _FX = FIXTURES_PREFIX
 _PF = f"{_G}/wr0928/pdf_fill"
 _AT = f"{_G}/wr0928/accepted_tracking"
 _RT = f"{_G}/wr0928/rejected_tracking"
+_CB = f"{_G}/comment_balloons_0929"
 _BLACKLIST = Exclusion(f"{_G}/word_blacklist/blacklist.tsv", "word_blacklist", blacklist=True)
 #: Ids (``sha256[:10]`` of the docx) Word will not open cleanly: a repair / recover-contents
 #: prompt, an error, a hang. Applies to every set by content, whatever a set calls the file,
@@ -505,6 +506,16 @@ DOCSETS: tuple[Docset, ...] = (
         "<compare id>_rejected_tracking, with their Word PDFs.",
         documents=Group((f"{_RT}/docx",), (f"{_RT}/pdf",), require_pdf=True),
         notes=(Note(f"{_RT}/selection.csv", "rejected_tracking_selection.csv"),),
+    ),
+    Docset(
+        "comment_balloons_0929",
+        "Synthetic A/B documents from the September 29 2026 investigation of when Word draws no "
+        "comment balloon (a commentRangeEnd at body level or first in its paragraph), with their Word "
+        "PDFs; the generators, truth tables and findings are in comment_balloons_0929.md. word_invalid "
+        "holds variants with a dangling commentReference, which Word offers to repair.",
+        documents=Group((f"{_CB}/docx", f"{_CB}/ab_docx"), (f"{_CB}/pdf", f"{_CB}/ab_pdf"), require_pdf=True),
+        notes=(Note(f"{_CB}/README.md", "comment_balloons_0929.md"),),
+        exclusions=(Exclusion(f"{_CB}/word_invalid", "comment_balloons_0929_word_invalid"),),
     ),
 )
 

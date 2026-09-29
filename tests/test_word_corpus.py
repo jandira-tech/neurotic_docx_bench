@@ -225,6 +225,15 @@ def make_tree(root: Path) -> Path:
     _docx(rt / "docx" / "cmp0000002_rejected_tracking.docx", "compare B A rejected")
     _pdf(rt / "pdf" / "cmp0000002_rejected_tracking.pdf", "pdf compare B A rejected")
     _put(rt / "selection.csv", "key,id\n")
+    # comment_balloons_0929: synthetic comment A/B documents with their Word PDFs, in two folder
+    # pairs, a README, and a Word-invalid variant kept aside
+    cb = g / "comment_balloons_0929"
+    _docx(cb / "docx" / "R5_00_one_para.docx", "comment balloon one para", comments=True)
+    _pdf(cb / "pdf" / "R5_00_one_para.pdf", "pdf comment balloon one para")
+    _docx(cb / "ab_docx" / "AB4_0_base_control.docx", "comment balloon ab control", comments=True)
+    _pdf(cb / "ab_pdf" / "AB4_0_base_control.pdf", "pdf comment balloon ab control")
+    _docx(cb / "word_invalid" / "R3_keep_4_dangling_ref.docx", "comment balloon dangling", comments=True)
+    _put(cb / "README.md", "# comment_balloons_0929\n")
     return root
 
 
@@ -827,6 +836,11 @@ def test_plan_pdf_fill_gives_documents_and_compares_the_word_pdf_they_lacked(tre
     assert accepted.stem.endswith("_cmp0000001_accepted_tracking") and accepted.pdf_src
     (rejected,) = [d for d in plan.documents if "rejected_tracking_0928" in d.sets]
     assert rejected.stem.endswith("_cmp0000002_rejected_tracking") and rejected.pdf_src
+    balloons = {d.stem.split("_", 1)[1]: d for d in plan.documents if "comment_balloons_0929" in d.sets}
+    assert set(balloons) == {"r5_00_one_para", "ab4_0_base_control"}
+    assert balloons["r5_00_one_para"].pdf_src == "grok_run/comment_balloons_0929/pdf/R5_00_one_para.pdf"
+    assert balloons["ab4_0_base_control"].pdf_src == "grok_run/comment_balloons_0929/ab_pdf/AB4_0_base_control.pdf"
+    assert balloons["r5_00_one_para"].state == "with_comments_clean"
 
 
 def test_summary_and_corpus_entries(tree: Path) -> None:

@@ -1,9 +1,9 @@
 {
  "counts": {
   "comparisons": 3503,
-  "documents": 2866,
-  "pdf": 6368,
-  "pdf_prior": 30
+  "documents": 2925,
+  "pdf": 6427,
+  "pdf_prior": 36
  },
  "dataset": "superdoc-dev/docx-corpus",
  "holdout": {
@@ -61,6 +61,37 @@
    "refused": {},
    "sources": null,
    "superseded": [],
+   "unresolved": {}
+  },
+  "comment_balloons_0929": {
+   "absent": [],
+   "description": "Synthetic A/B documents from the September 29 2026 investigation of when Word draws no comment balloon (a commentRangeEnd at body level or first in its paragraph), with their Word PDFs; the generators, truth tables and findings are in comment_balloons_0929.md. word_invalid holds variants with a dangling commentReference, which Word offers to repair.",
+   "docset_id": "eb94ee26a164",
+   "excluded": {},
+   "filled": [],
+   "mapping": null,
+   "n_comparisons": 0,
+   "n_documents": 59,
+   "origins": [
+    "grok_run/comment_balloons_0929/docx",
+    "grok_run/comment_balloons_0929/ab_docx",
+    "grok_run/comment_balloons_0929/pdf",
+    "grok_run/comment_balloons_0929/ab_pdf"
+   ],
+   "orphans": [],
+   "redundant": [
+    "Z00_file27_control"
+   ],
+   "refused": {},
+   "sources": null,
+   "superseded": [
+    "AB3_00_jubarte",
+    "R2_00_control",
+    "R3_00_control",
+    "R4_00_control",
+    "S12_sandwich_P_P_P",
+    "S13_all_landscape"
+   ],
    "unresolved": {}
   },
   "en_pairs_500": {
