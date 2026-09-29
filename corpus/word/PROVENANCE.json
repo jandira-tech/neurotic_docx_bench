@@ -1,8 +1,8 @@
 {
  "counts": {
   "comparisons": 2739,
-  "documents": 2600,
-  "pdf": 5338,
+  "documents": 2699,
+  "pdf": 5437,
   "pdf_prior": 30
  },
  "dataset": "superdoc-dev/docx-corpus",
@@ -34,7 +34,8 @@
   "notices/wr0926_word_redlines_superdoc_redline_pass1.log",
   "notices/wr0926_word_redlines_superdoc_redline_pass2.log",
   "notices/wr0926_word_redlines_superdoc_word_pdf.log",
-  "notices/accepted_tracking_selection.csv"
+  "notices/accepted_tracking_selection.csv",
+  "notices/rejected_tracking_selection.csv"
  ],
  "sets": {
   "accepted_tracking_0928": {
@@ -318,6 +319,26 @@
    "redundant": [],
    "refused": {},
    "sources": "en_pairs_500",
+   "superseded": [],
+   "unresolved": {}
+  },
+  "rejected_tracking_0928": {
+   "absent": [],
+   "description": "100 more Word compares (25 with comments, 75 without; rejected_tracking_selection.csv), none of them in accepted_tracking_0928, with every tracked change rejected by Word, named <compare id>_rejected_tracking, with their Word PDFs.",
+   "docset_id": "ff19663035ef",
+   "excluded": {},
+   "filled": [],
+   "mapping": null,
+   "n_comparisons": 0,
+   "n_documents": 99,
+   "origins": [
+    "grok_run/wr0928/rejected_tracking/docx",
+    "grok_run/wr0928/rejected_tracking/pdf"
+   ],
+   "orphans": [],
+   "redundant": [],
+   "refused": {},
+   "sources": null,
    "superseded": [],
    "unresolved": {}
   },
