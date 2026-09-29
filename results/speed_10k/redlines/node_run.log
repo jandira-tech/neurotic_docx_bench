@@ -1,0 +1,44 @@
+redline_speed_bench: 10000 planned pairs from results/speed_10k/pairs_10k.csv
+  unique fixtures: 2565 (target 1000)
+  loaded 266.1 MiB in 385.026ms
+  pairs=10000 (min=5000, seed=42, rounds≈1)
+  methods=jubarte-rust-inproc, jubarte-rust, jubarte-wasm, docxodus warmup=20 reps=1 profile=false
+  jubarte-dist=/Users/arthrod/temp/T/neurotic_docx_bench/dist/jubarte-final
+  rust-dist=/Users/arthrod/temp/T/neurotic_docx_bench/src/neurotic_docx_bench/utils/jubarte/jubarte-rust
+  csharp-dist=/Users/arthrod/temp/T/neurotic_docx_bench/src/neurotic_docx_bench/utils/docxodus/docxodus-csharp
+  csharp-inproc-dist=/Users/arthrod/temp/T/neurotic_docx_bench/src/neurotic_docx_bench/utils/docxodus/docxodus-csharp-inproc/bin/Release/net8.0
+  rust-inproc-dist=/Users/arthrod/temp/T/speed_bins/jubarte-inproc-673aff74
+  wasm-dist=/Users/arthrod/temp/T/speed_bins/jubarte-wasm-673aff74
+  out=/Users/arthrod/temp/T/neurotic_docx_bench/results/speed_10k/redlines
+
+▶ jubarte-rust-inproc (engine=jubarte-rust-inproc, dist=/Users/arthrod/temp/T/speed_bins/jubarte-inproc-673aff74, native=false)
+  init 3.713ms
+  wall 743.28s  median 38.90ms  mean 74.33ms  p95 234.31ms  p99 611.29ms  13.5/s  (n=10000, fail=0)
+
+▶ jubarte-rust (engine=jubarte-rust, dist=/Users/arthrod/temp/T/neurotic_docx_bench/src/neurotic_docx_bench/utils/jubarte/jubarte-rust, native=true)
+  init 0.375ms
+  wall 830.11s  median 45.03ms  mean 83.01ms  p95 246.73ms  p99 658.10ms  12.0/s  (n=10000, fail=0)
+
+▶ jubarte-wasm (engine=jubarte-wasm, dist=/Users/arthrod/temp/T/speed_bins/jubarte-wasm-673aff74, native=false)
+  init 12.721ms
+  wall 1406.13s  median 70.87ms  mean 140.61ms  p95 459.75ms  p99 1200.63ms  7.1/s  (n=10000, fail=0)
+
+▶ docxodus (engine=docxodus, dist=/Users/arthrod/temp/T/neurotic_docx_bench/dist/jubarte-final, native=false)
+MONO_WASM: Jiterpreter table 3 is not yet initialized
+MONO_WASM: Jiterpreter table 12 is not yet initialized
+MONO_WASM: Jiterpreter table 13 is not yet initialized
+MONO_WASM: Jiterpreter table 31 is not yet initialized
+MONO_WASM: Jiterpreter table 31 is not yet initialized
+MONO_WASM: Jiterpreter table 4 is not yet initialized
+MONO_WASM: Jiterpreter table 3 is not yet initialized
+MONO_WASM: Jiterpreter table 2 is not yet initialized
+MONO_WASM: Jiterpreter table 3 is not yet initialized
+  init 1449.874ms
+Debugger listening on ws://127.0.0.1:9229/a1580125-79bb-4319-a931-ed2214de2575
+For help, see: https://nodejs.org/learn/getting-started/debugging
+Debugger attached.
+Debugger ending on ws://127.0.0.1:9229/a1580125-79bb-4319-a931-ed2214de2575
+For help, see: https://nodejs.org/learn/getting-started/debugging
+Debugger attached.
+Debugger ending on ws://127.0.0.1:9229/a1580125-79bb-4319-a931-ed2214de2575
+For help, see: https://nodejs.org/learn/getting-started/debugging
