@@ -46,6 +46,11 @@ import {
 	loadEngine,
 	shutdownAllLongLivedWorkers,
 } from "./generate-native-redlines.ts";
+import {
+	type CallResult,
+	type EngineSpec,
+	TimedEngine,
+} from "./lib/timed_engine.ts";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(HERE, "..");
@@ -117,6 +122,13 @@ const rustInprocDist = resolve(
 );
 const wasmDist = resolve(ROOT, arg("--wasm-dist", defaultJubarteWasmDist()));
 const pairsCsv = arg("--pairs-csv", "");
+// Per-pair timeout for the in-process engines (0 = the old unguarded in-process loop). With a
+// timeout each engine runs in its own child process (scripts/lib/timed_engine.ts), which is
+// killed and restarted when a call passes it; the call is a failure with ms = the timeout.
+// Native CLI lanes keep their own spawn path. Per-pair rows are written as each call ends.
+const pairTimeoutMs = Number(arg("--pair-timeout-ms", "120000"));
+// Resume a --pairs-csv run: start at this key and append to per_pair/<method>.jsonl.
+const startAt = arg("--start-at", "");
 const fixturesDirArg = arg("--fixtures", "");
 const fixturesDirs = fixturesDirArg
 	? [resolve(ROOT, fixturesDirArg)]
@@ -754,6 +766,64 @@ async function timedLoop(
 	};
 }
 
+/** The in-process loop, one engine child per call sequence, each call capped at `timeoutMs`. */
+export async function timedLoopIsolated(
+	spec: EngineSpec,
+	pairs: Pair[],
+	repsN: number,
+	warmPairs: Pair[],
+	timeoutMs: number,
+	onCall?: (p: Pair, r: CallResult) => void,
+): Promise<{
+	samples: number[];
+	sampleKeys: string[];
+	failures: { key: string; error: string; ms?: number }[];
+	outSizes: number[];
+	wallMs: number;
+	initMs: number;
+	restarts: number;
+	timeouts: number;
+}> {
+	const eng = new TimedEngine(spec, timeoutMs);
+	await eng.start();
+	const samples: number[] = [];
+	const sampleKeys: string[] = [];
+	const failures: { key: string; error: string; ms?: number }[] = [];
+	const outSizes: number[] = [];
+	let timeouts = 0;
+	try {
+		for (const w of warmPairs) await eng.call(w.base, w.next); // untimed
+		const warmRestarts = eng.restarts;
+		const wall0 = performance.now();
+		for (let r = 0; r < repsN; r++) {
+			for (const p of pairs) {
+				const res = await eng.call(p.base, p.next);
+				if (res.ok) {
+					samples.push(res.ms);
+					sampleKeys.push(p.key);
+					outSizes.push(res.outBytes ?? 0);
+				} else {
+					failures.push({ key: p.key, error: res.error ?? "", ms: res.ms });
+					timeouts += res.timedOut ? 1 : 0;
+				}
+				onCall?.(p, res);
+			}
+		}
+		return {
+			samples,
+			sampleKeys,
+			failures,
+			outSizes,
+			wallMs: performance.now() - wall0,
+			initMs: eng.initMs[0]!,
+			restarts: eng.restarts - warmRestarts,
+			timeouts,
+		};
+	} finally {
+		await eng.close();
+	}
+}
+
 // ── inner worker (spawned under samply) ──────────────────────────────────────
 
 async function innerMain(): Promise<void> {
@@ -909,6 +979,18 @@ async function main() {
 				};
 			})
 		: buildPairs(names, bytes, minPairs, seed);
+	// Warm up on the plan's first pairs even when resuming, as the interrupted run did.
+	const warmPairs = pairs.slice(0, warmup);
+	if (startAt) {
+		const at = pairs.findIndex((p) => p.key === startAt);
+		if (!plan || at < 0) {
+			throw new Error(
+				`--start-at ${startAt}: not a key of the --pairs-csv plan`,
+			);
+		}
+		pairs.splice(0, at);
+		console.log(`  resuming at ${startAt}: ${pairs.length} pairs left`);
+	}
 	console.log(
 		`  pairs=${pairs.length} (min=${minPairs}, seed=${seed}, rounds≈${(pairs[pairs.length - 1]?.round ?? 0) + 1})`,
 	);
@@ -965,10 +1047,12 @@ async function main() {
 			`▶ ${method} (engine=${engId}, dist=${dist}, native=${native})\n`,
 		);
 
+		// With a per-pair timeout the engine lives in a child process, loaded there.
+		const isolated = pairTimeoutMs > 0 && !native;
 		const tInit0 = performance.now();
-		let engine: (base: Uint8Array, next: Uint8Array) => Promise<Uint8Array>;
+		let engine!: (base: Uint8Array, next: Uint8Array) => Promise<Uint8Array>;
 		try {
-			engine = await loadEngine(engId, dist);
+			if (!isolated) engine = await loadEngine(engId, dist);
 		} catch (e) {
 			console.error(`  INIT FAILED: ${(e as Error).message}`);
 			rows.push({
@@ -981,8 +1065,10 @@ async function main() {
 			});
 			continue;
 		}
-		const initMs = performance.now() - tInit0;
-		console.log(`  init ${round(initMs)}ms`);
+		let initMs = performance.now() - tInit0;
+		if (!isolated) console.log(`  init ${round(initMs)}ms`);
+		let timeouts = 0;
+		let restarts = 0;
 
 		let samples: number[] = [];
 		let sampleKeys: string[] = [];
@@ -996,7 +1082,71 @@ async function main() {
 		const useSamply = !skipProfile && usesSamplyProfile(method);
 		const useV8 = !skipProfile && !usesSamplyProfile(method);
 
-		if (useSamply) {
+		if (isolated) {
+			if (!skipProfile) {
+				console.warn(
+					"  profiling skipped: with --pair-timeout-ms the engine runs in a child process",
+				);
+			}
+			const perPairPath = join(outDir, "per_pair", `${method}.jsonl`);
+			mkdirSync(dirname(perPairPath), { recursive: true });
+			if (!startAt) writeFileSync(perPairPath, "");
+			let done = 0;
+			let failed = 0;
+			try {
+				const timed = await timedLoopIsolated(
+					{ engId, dist },
+					pairs,
+					reps,
+					warmPairs,
+					pairTimeoutMs,
+					(p, r) => {
+						appendFileSync(
+							perPairPath,
+							`${JSON.stringify({
+								key: p.key,
+								category: category.get(p.key),
+								ok: r.ok,
+								ms: round(r.ms),
+								...(r.ok
+									? { out_bytes: r.outBytes }
+									: { error: (r.error ?? "").slice(0, 300) }),
+								...(r.timedOut ? { timeout: true } : {}),
+							})}\n`,
+						);
+						done++;
+						failed += r.ok ? 0 : 1;
+						if (done % 250 === 0) {
+							console.log(
+								`  [${done}/${pairs.length * reps}] failed ${failed} (${new Date().toISOString()})`,
+							);
+						}
+					},
+				);
+				samples = timed.samples;
+				sampleKeys = timed.sampleKeys;
+				failures = timed.failures;
+				outSizes = timed.outSizes;
+				wallMs = timed.wallMs;
+				initMs = timed.initMs;
+				timeouts = timed.timeouts;
+				restarts = timed.restarts;
+				console.log(
+					`  init ${round(initMs)}ms (child process), timeout ${pairTimeoutMs}ms per pair`,
+				);
+			} catch (e) {
+				console.error(`  INIT FAILED: ${(e as Error).message}`);
+				rows.push({
+					schema: 1,
+					kind: "redline_speed_bench",
+					tool: method,
+					engine: engId,
+					error: (e as Error).message,
+					run_ts: runTs,
+				});
+				continue;
+			}
+		} else if (useSamply) {
 			const samplyOut = join(outDir, "cpu", `${method}.profile.json.gz`);
 			const samplesPath = join(outDir, "cpu", `${method}.samples.json`);
 			const profileKeys =
@@ -1068,7 +1218,7 @@ async function main() {
 			}
 		}
 
-		if (plan && sampleKeys.length === samples.length) {
+		if (plan && !isolated && sampleKeys.length === samples.length) {
 			// Per-pair timings (ok and failed), so a run can be read by variation category.
 			mkdirSync(join(outDir, "per_pair"), { recursive: true });
 			const lines = samples.map((ms, i) =>
@@ -1141,6 +1291,10 @@ async function main() {
 			init_ms: round(initMs),
 			wall_ms: round(wallMs),
 			failures: failures.length,
+			pair_timeout_ms: isolated ? pairTimeoutMs : null,
+			timeouts,
+			engine_restarts: restarts,
+			start_at: startAt || null,
 			unit: "ms_per_redline",
 			n: st.n,
 			mean: round(st.mean),
