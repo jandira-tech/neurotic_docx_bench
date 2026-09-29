@@ -70,6 +70,7 @@ from __future__ import annotations
 import math
 import os
 import re
+from collections.abc import Callable
 from contextvars import ContextVar
 import shutil
 import signal
@@ -997,32 +998,81 @@ class BatchRun:
         return not self.log.done
 
 
+DIAGNOSTIC_REPORTS = Path.home() / "Library/Logs/DiagnosticReports"
+_STALL_PROBES = (
+    ("Word windows {name, subrole}",
+     'tell application "System Events" to tell process "Microsoft Word" to get {name, subrole} of every window'),
+    # A modal's own name is usually empty; its text is what says what it is
+    # ("Word found unreadable content in ...").
+    ("Word window text",
+     'tell application "System Events" to tell process "Microsoft Word" to get value of every static text of every window'),
+    ("crash reporters",
+     'tell application "System Events" to get name of every process whose name contains "Error Reporting" or name contains "Crash"'),
+)
+
+
+def stall_report(log_path: Path, *, diagnostic_reports: Path = DIAGNOSTIC_REPORTS) -> str:
+    """What Word is doing while an item sits in the batch: its windows and their
+    text, any crash reporter, the batch log so far, the newest diagnostic reports."""
+    parts = []
+    for title, script in _STALL_PROBES:
+        _, out, err = osa(script, timeout=10)
+        parts.append(f"-- {title}: {(out or err).strip()}")
+    try:
+        log = log_path.read_text(errors="replace").strip()
+    except OSError as exc:
+        log = str(exc)
+    parts.append(f"-- {log_path.name}:\n{log}")
+    try:
+        newest = sorted(diagnostic_reports.iterdir(), key=lambda p: p.stat().st_mtime, reverse=True)[:5]
+        parts.append("-- newest diagnostic reports: " + ", ".join(p.name for p in newest))
+    except OSError as exc:
+        parts.append(f"-- diagnostic reports: {exc}")
+    return "\n".join(parts)
+
+
 @dataclass
 class _Progress:
     """Tail a batch log so a long monolithic run is not silent.
 
     A batch script is one blocking `osascript`, so its own `logLine` calls are
-    the only signal available while it runs.
+    the only signal available while it runs. An item still open after
+    `stall_after` seconds gets one `diagnose` report (logged, nothing pressed or
+    killed); the next item that stalls gets its own.
     """
 
     log_path: Path
     total: int
     label: str = ""
     poll: float = 5.0
+    stall_after: float = 30.0
+    diagnose: Callable[[Path], str] = stall_report
     _stop: threading.Event = field(default_factory=threading.Event)
     _thread: threading.Thread | None = None
 
     def _loop(self) -> None:
         seen = -1
+        since = time.monotonic()
+        probed = False
         while not self._stop.wait(self.poll):
             try:
                 text = self.log_path.read_text(errors="replace")
             except OSError:
-                continue
-            count = sum(1 for ln in text.splitlines() if ln.startswith(("[ok]", "[fail]")))
-            if count != seen:
-                seen = count
-                logger.info(f"[batch{self.label}] {count}/{self.total}")
+                text = None
+            if text is not None:
+                count = sum(1 for ln in text.splitlines() if ln.startswith(("[ok]", "[fail]")))
+                if count != seen:
+                    seen = count
+                    since, probed = time.monotonic(), False
+                    logger.info(f"[batch{self.label}] {count}/{self.total}")
+            if not probed and time.monotonic() - since > self.stall_after:
+                probed = True
+                item = max(seen, 0) + 1
+                report = self.diagnose(self.log_path)
+                logger.warning(
+                    f"[batch{self.label}] item {item}/{self.total} open for more than "
+                    f"{self.stall_after:.0f} s:\n{report}"
+                )
 
     def __enter__(self) -> Self:
         self._thread = threading.Thread(target=self._loop, daemon=True)

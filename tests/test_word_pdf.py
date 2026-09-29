@@ -1710,6 +1710,60 @@ def test_progress_reports_the_batch_log_as_it_grows(
     assert all("[batch pdf]" in m for m in seen)
 
 
+def test_progress_probes_word_once_per_item_that_stalls(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """An item still open past `stall_after` gets one probe; the next item gets its own."""
+    log = tmp_path / "batch.log"
+    log.write_text("")
+    monkeypatch.setattr(wp.logger, "info", lambda msg: None)
+    warned: list[str] = []
+    monkeypatch.setattr(wp.logger, "warning", lambda msg: warned.append(str(msg)))
+    probed: list[Path] = []
+
+    def probe(path: Path) -> str:
+        probed.append(path)
+        return "WORD STATE"
+
+    def wait_for(n: int) -> None:
+        deadline = wp.time.monotonic() + 3
+        while len(probed) < n and wp.time.monotonic() < deadline:
+            wp.time.sleep(0.02)
+
+    with wp._Progress(log, total=3, label=" pdf", poll=0.01, stall_after=0.05, diagnose=probe):
+        wait_for(1)
+        wp.time.sleep(0.15)  # still the same item: no second probe
+        assert len(probed) == 1
+        log.write_text("[ok]\t0\n")
+        wait_for(2)
+
+    assert probed == [log, log]
+    assert any("1/3" in m and "WORD STATE" in m for m in warned)
+    assert any("2/3" in m and "WORD STATE" in m for m in warned)
+
+
+def test_stall_report_runs_every_probe(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    log = tmp_path / "batch-pdf-3.log"
+    log.write_text("[ok]\t0\n")
+    reports = tmp_path / "DiagnosticReports"
+    reports.mkdir()
+    (reports / "Microsoft Word-2026-09-29.ips").write_text("")
+    scripts: list[str] = []
+
+    def fake_osa(script: str, *args: str, timeout: float = 60.0) -> tuple[int, str, str]:
+        scripts.append(script)
+        return 0, f"out{len(scripts)}", ""
+
+    monkeypatch.setattr(wp, "osa", fake_osa)
+    text = wp.stall_report(log, diagnostic_reports=reports)
+
+    assert any("{name, subrole} of every window" in s for s in scripts)
+    assert any('name contains "Error Reporting" or name contains "Crash"' in s for s in scripts)
+    assert "[ok]\t0" in text  # the batch log itself
+    assert "Microsoft Word-2026-09-29.ips" in text
+    assert all(f"out{i}" in text for i in range(1, len(scripts) + 1))
+
+
 def test_progress_survives_a_log_that_is_not_there_yet(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
