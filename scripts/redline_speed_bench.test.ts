@@ -10,7 +10,9 @@ import {
 	defaultCsharpInprocDist,
 	defaultRustInprocDist,
 	engineMethodId,
+	fixturesFromPaths,
 	isNativeCliMethod,
+	pairsFromCsv,
 	mulberry32,
 	stats,
 } from "./redline_speed_bench.ts";
@@ -190,10 +192,7 @@ describe("jubarte-rust engine (speed bench path)", () => {
 		async () => {
 			const sources = twoSources();
 			expect(sources.length).toBe(2);
-			const engine = await loadEngine(
-				"jubarte-rust-inproc",
-				rustInprocDist,
-			);
+			const engine = await loadEngine("jubarte-rust-inproc", rustInprocDist);
 			const out = await engine(
 				new Uint8Array(readFileSync(sources[0]!)),
 				new Uint8Array(readFileSync(sources[1]!)),
@@ -224,6 +223,40 @@ describe("speed_redlines pair plan", () => {
 				42,
 			);
 			expect(pairs.length).toBe(5000);
+		},
+	);
+});
+
+describe("--pairs-csv plan", () => {
+	it("pairsFromCsv reads key, base, next and category in file order", () => {
+		const rows = pairsFromCsv(
+			"key,base,next,category\nk1,a/x.docx,b/y.docx,real\nk2,b/y.docx,a/x.docx,cross\n",
+		);
+		expect(rows).toEqual([
+			{ key: "k1", base: "a/x.docx", next: "b/y.docx", category: "real" },
+			{ key: "k2", base: "b/y.docx", next: "a/x.docx", category: "cross" },
+		]);
+	});
+
+	it("pairsFromCsv rejects a duplicate key or a missing column", () => {
+		expect(() => pairsFromCsv("key,base,next\nk,a,b\nk,b,a\n")).toThrow(
+			/duplicate/,
+		);
+		expect(() => pairsFromCsv("key,base\nk,a\n")).toThrow(/next/);
+	});
+
+	it.runIf(haveCorpus)(
+		"fixturesFromPaths dedupes by content and keeps names unique",
+		() => {
+			const files = readdirSync(SOURCE)
+				.filter((f) => f.endsWith(".docx"))
+				.slice(0, 2);
+			const a = join(SOURCE, files[0]!);
+			const b = join(SOURCE, files[1]!);
+			const { fixtures, nameOf } = fixturesFromPaths([a, b, a]);
+			expect(fixtures.length).toBe(2);
+			expect(nameOf.get(a)).not.toBe(nameOf.get(b));
+			expect(new Set(fixtures.map((f) => f.name)).size).toBe(2);
 		},
 	);
 });
