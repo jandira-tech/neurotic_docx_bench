@@ -7,8 +7,8 @@ the Word oracle. Reference: https://docs.superdoc.dev (Compare documents).
 
 Usage:
   uv run python scripts/generate_superdoc_redlines.py --out $RUN_DIR/docx --tool superdoc \
-    [--manifest corpus/word_based/centralized_mapping.csv] \
-    [--source-dir corpus/word_based/docx_source] [--status ok] [--limit N]
+    [--manifest corpus/word/pools/word_based_pairs.csv] \
+    [--source-dir corpus/word] [--status ok] [--limit N]
 """
 
 from __future__ import annotations
@@ -182,8 +182,8 @@ def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser(description="SuperDoc native redline generator")
     default_out = os.path.join(os.environ["RUN_DIR"], "docx") if os.environ.get("RUN_DIR") else "out/docx"
     p.add_argument("--out", default=default_out)
-    p.add_argument("--manifest", default="corpus/word_based/centralized_mapping.csv")
-    p.add_argument("--source-dir", default="corpus/word_based/docx_source")
+    p.add_argument("--manifest", default="corpus/word/pools/word_based_pairs.csv")
+    p.add_argument("--source-dir", default="corpus/word")
     p.add_argument("--status", default="ok")
     p.add_argument("--limit", type=int, default=None)
     p.add_argument("--tool", default="superdoc")

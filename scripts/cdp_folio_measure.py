@@ -17,7 +17,7 @@ as the bench renderer, so a stale readiness flag can never leak between docs).
 Usage:
   uv run python scripts/cdp_folio_measure.py \
     --url http://127.0.0.1:5175/harness.html \
-    --docx-dir corpus/word_based/docx_source \
+    --docx-dir grok_run/word_based/docx_source \
     --tool folio-base --benchmark visual_rendering \
     --out results-compare/cdp_folio-base_visual_rendering.jsonl [--workers 4]
 """

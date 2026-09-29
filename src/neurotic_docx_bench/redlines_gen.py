@@ -14,8 +14,8 @@ toward Word's document-level tracked changes.
 
 Usage:
   uv run python -m neurotic_docx_bench.redlines_gen --out $RUN_DIR/docx --tool redlines \
-    [--manifest corpus/word_based/centralized_mapping.csv] \
-    [--source-dir corpus/word_based/docx_source] [--limit N]
+    [--manifest corpus/word/pools/word_based_pairs.csv] \
+    [--source-dir corpus/word] [--limit N]
 """
 
 from __future__ import annotations
@@ -240,8 +240,8 @@ def main(argv: list[str] | None = None) -> int:
         os.path.join(os.environ["RUN_DIR"], "docx") if os.environ.get("RUN_DIR") else "out/docx"
     )
     p.add_argument("--out", default=default_out)
-    p.add_argument("--manifest", default="corpus/word_based/centralized_mapping.csv")
-    p.add_argument("--source-dir", default="corpus/word_based/docx_source")
+    p.add_argument("--manifest", default="corpus/word/pools/word_based_pairs.csv")
+    p.add_argument("--source-dir", default="corpus/word")
     p.add_argument("--status", default="ok")
     p.add_argument("--limit", type=int, default=None)
     p.add_argument("--tool", default="redlines")

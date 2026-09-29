@@ -13,8 +13,8 @@ import { parseManifest } from "./generate-native-redlines.ts";
 const PKG = resolve(
 	"src/neurotic_docx_bench/utils/jubarte/jubarte-wasm/pkg/jubarte_wasm.js",
 );
-const MANIFEST = "corpus/word_based/centralized_mapping.csv";
-const SOURCE = "corpus/word_based/docx_source";
+const MANIFEST = "corpus/word/pools/word_based_pairs.csv";
+const SOURCE = "corpus/word";
 const havePkg = existsSync(PKG);
 const haveCorpus = existsSync(MANIFEST) && existsSync(SOURCE);
 

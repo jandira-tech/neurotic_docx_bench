@@ -3,7 +3,7 @@
 Mirror of the bench's accept-compare stage, pointed the other way: rejecting every
 tracked change in a redline of ``base -> next`` must reproduce ``base``, so the
 rejected DOCX is rendered (soffice) and pixel-scored against the committed
-``corpus/word_based/pdf_source/<base>.pdf`` oracle. A perfect reject scores 100.
+``grok_run/word_based/pdf_source/<base>.pdf`` oracle. A perfect reject scores 100.
 
 Two reject backends:
   - ``docx-revisions`` (default): the bench's own tool-neutral accept/reject helper,
@@ -31,8 +31,8 @@ from neurotic_docx_bench import pipeline
 from neurotic_docx_bench.accept_changes import process_folder
 from neurotic_docx_bench.render.soffice import SofficeRenderer
 
-ORACLE = Path("corpus/word_based/pdf_source")
-MANIFEST = Path("corpus/word_based/centralized_mapping.csv")
+ORACLE = Path("grok_run/word_based/pdf_source")
+MANIFEST = Path("grok_run/word_based/centralized_mapping.csv")
 
 NODE_REJECT_SHIM = """
 const { readFileSync, writeFileSync, readdirSync } = require("node:fs");
@@ -94,7 +94,7 @@ def main() -> int:
     if not docs:
         print(f"no docx in {redline_dir}")
         return 1
-    bases = {p.stem for p in Path("corpus/word_based/docx_source").glob("*.docx")}
+    bases = {p.stem for p in Path("grok_run/word_based/docx_source").glob("*.docx")}
 
     t0 = time.perf_counter()
     with tempfile.TemporaryDirectory(prefix="reject-cmp.") as work:

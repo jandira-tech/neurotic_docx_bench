@@ -24,7 +24,7 @@ done
 typeset -A URLS
 URLS=(folio-base "http://127.0.0.1:5175/harness.html" folio-current "http://127.0.0.1:5176/harness.html")
 typeset -A CORPORA
-CORPORA=(visual_rendering corpus/word_based/docx_source visual_redlines corpus/word_based/docx_redlines_word visual_accepted_changes corpus/word_based/docx_accepted_word)
+CORPORA=(visual_rendering grok_run/word_based/docx_source visual_redlines grok_run/word_based/docx_redlines_word visual_accepted_changes grok_run/word_based/docx_accepted_word)
 
 echo "── CDP per-document passes (full corpus)"
 for tool in folio-base folio-current; do

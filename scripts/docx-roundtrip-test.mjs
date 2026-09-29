@@ -31,7 +31,7 @@ import {
 
 const SAMPLE =
 	process.argv[2] ??
-	"corpus/word_based/docx_source/1_5_line_spacing_id_paraid_overflow.docx";
+	"grok_run/word_based/docx_source/1_5_line_spacing_id_paraid_overflow.docx";
 const OUT_DIR = "out/roundtrip-test";
 const JUBARTE_DIST = "dist/jubarte-final";
 

@@ -264,6 +264,19 @@ def _tag_redline_revisions(row: dict[str, str], redline_dirs: list[Path]) -> set
     raise RuntimeError("all redline candidates failed — " + "; ".join(failures))
 
 
+def _mapping_row(row: dict[str, str]) -> dict[str, str]:
+    """A Word-corpus pool table row (``key, base, next, docx``: paths under the corpus
+    root, base/next without suffix) as a mapping row; a mapping row passes through."""
+    if "pair_stem" in row or "key" not in row:
+        return row
+    return {
+        "pair_stem": row["key"],
+        "docx_source_base": f"{row['base']}.docx",
+        "docx_source_next": f"{row['next']}.docx",
+        "redline_docx_word": row.get("docx") or "",
+    }
+
+
 def build_coverage(
     mapping_csvs: list[Path],
     source_dirs: list[Path],
@@ -281,7 +294,8 @@ def build_coverage(
     total_rows = 0
     for csv_path in mapping_csvs:
         with csv_path.open(newline="", encoding="utf-8") as fh:
-            for row in csv.DictReader(fh):
+            for raw in csv.DictReader(fh):
+                row = _mapping_row(raw)
                 stem = (row.get("pair_stem") or "").strip()
                 if not stem:
                     continue

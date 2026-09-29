@@ -66,13 +66,12 @@ function has(flag: string): boolean {
 }
 
 const DEFAULT_FIXTURE_DIRS = [
-	"corpus/word_based/docx_source",
-	"corpus/word_based/docx_source_randomized",
-	"corpus/word_based/docx_accepted_word",
-	"corpus/no_comments_pdf_was_generated_by_word/docx_source",
-	"corpus/no_comments_pdf_was_generated_by_word/docx_accepted_word",
-	"corpus/word_based/docx_redlines_word",
-	"corpus/no_comments_pdf_was_generated_by_word/docx_redlines_word",
+	"corpus/word/clean/docx",
+	"corpus/word/accept_all/docx",
+	"corpus/word/reject_all/docx",
+	"corpus/word/with_comments_clean/docx",
+	"corpus/word/tracking_without_comments/docx",
+	"corpus/word/with_comments_tracking/docx",
 ];
 
 const fixtureCount = Number(arg("--fixture-count", "1000"));

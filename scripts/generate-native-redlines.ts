@@ -7,8 +7,8 @@
  * Usage:
  *   node --import tsx scripts/generate-native-redlines.ts \
  *     --method jubarte --dist dist/jubarte --out $RUN_DIR/docx --run-dir $RUN_DIR \
- *     [--manifest corpus/word_based/centralized_mapping.csv] \
- *     [--source-dir corpus/word_based/docx_source] [--status ok] [--limit N] [--tool NAME]
+ *     [--manifest corpus/word/pools/word_based_pairs.csv] \
+ *     [--source-dir corpus/word] [--status ok] [--limit N] [--tool NAME]
  */
 import {
 	readFileSync,
@@ -1194,8 +1194,8 @@ function parseArgs(argv: string[]): GenOptions {
 			process.env.RUN_DIR ? join(process.env.RUN_DIR, "docx") : "out/docx",
 		),
 		runDir: get("--run-dir", process.env.RUN_DIR ?? "."),
-		manifest: get("--manifest", "corpus/word_based/centralized_mapping.csv"),
-		sourceDir: get("--source-dir", "corpus/word_based/docx_source"),
+		manifest: get("--manifest", "corpus/word/pools/word_based_pairs.csv"),
+		sourceDir: get("--source-dir", "corpus/word"),
 		status: get("--status", "ok"),
 		limit: limitRaw ? Number(limitRaw) : undefined,
 		tool: get("--tool", method),

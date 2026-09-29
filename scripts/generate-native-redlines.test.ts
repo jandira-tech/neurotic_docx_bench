@@ -11,8 +11,8 @@ import JSZip from "../node_modules/jszip/lib/index.js";
 import { parseManifest, loadEngine, outputName, runBatch } from "./generate-native-redlines.ts";
 import { resolveDocxodusEntry } from "./docxodus-node-compat.mjs";
 
-const MANIFEST = "corpus/word_based/centralized_mapping.csv";
-const SOURCE = "corpus/word_based/docx_source";
+const MANIFEST = "corpus/word/pools/word_based_pairs.csv";
+const SOURCE = "corpus/word";
 const DIST = "dist/jubarte";
 const haveCorpus = existsSync(MANIFEST) && existsSync(SOURCE);
 const haveJubarte = existsSync(join(DIST, "node.cjs"));

@@ -239,8 +239,8 @@ def test_real_bench_yaml_wires_holdout():
 def test_combined_holdout_is_exactly_the_union_of_the_sealed_lists():
     """The combined file is DERIVED. If it ever drifts from its two sources, keys
     silently stop being held out — so assert the union property, not a count."""
-    superdoc_txt = REPO_ROOT / "corpus" / "word_redlines_superdoc" / "holdout.txt"
-    combined = pipeline.load_holdout(REPO_ROOT / "corpus" / "holdout_combined.txt")
+    superdoc_txt = REPO_ROOT / "grok_run" / "word_redlines_superdoc" / "holdout.txt"
+    combined = pipeline.load_holdout(REPO_ROOT / "grok_run" / "holdout_combined.txt")
     assert combined == pipeline.load_holdout(HOLDOUT_TXT) | pipeline.load_holdout(
         superdoc_txt
     )
@@ -252,7 +252,7 @@ def test_sealed_keys_are_lowercase_so_they_match_the_scorer():
     capitals matches nothing, so its pair stays in the headline score while
     appearing held out. Four superdoc keys contain capitals — caught in review,
     and this is the regression guard."""
-    keys = pipeline.load_holdout(REPO_ROOT / "corpus" / "holdout_combined.txt")
+    keys = pipeline.load_holdout(REPO_ROOT / "grok_run" / "holdout_combined.txt")
     assert all(k == k.lower() for k in keys), sorted(k for k in keys if k != k.lower())
 
 
@@ -261,7 +261,7 @@ def test_every_sealed_superdoc_key_exists_in_that_corpus():
     """A sealed key that matches no pair holds nothing out."""
     import csv
 
-    corpus = REPO_ROOT / "corpus" / "word_redlines_superdoc"
+    corpus = REPO_ROOT / "grok_run" / "word_redlines_superdoc"
     with (corpus / "centralized_mapping.csv").open(newline="") as handle:
         stems = {row["pair_stem"].lower() for row in csv.DictReader(handle)}
     sealed = pipeline.load_holdout(corpus / "holdout.txt")

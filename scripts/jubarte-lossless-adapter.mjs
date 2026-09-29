@@ -14,7 +14,7 @@
  * tsx/TS loader), so this module has to be importable from both that script
  * and generate-native-redlines.ts without a build step.
  *
- * Verified against the full corpus (`corpus/word_based/centralized_mapping.csv`,
+ * Verified against the full corpus (`grok_run/word_based/centralized_mapping.csv`,
  * 207 pairs) — 207/207 produce non-empty `w:ins`/`w:del` output.
  */
 

@@ -19,7 +19,7 @@ from superdoc import SuperDocClient
 SAMPLE = (
     sys.argv[1]
     if len(sys.argv) > 1
-    else "corpus/word_based/docx_source/1_5_line_spacing_id_paraid_overflow.docx"
+    else "grok_run/word_based/docx_source/1_5_line_spacing_id_paraid_overflow.docx"
 )
 OUT_DIR = Path("out/roundtrip-test")
 OUT_DIR.mkdir(parents=True, exist_ok=True)

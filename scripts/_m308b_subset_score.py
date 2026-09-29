@@ -15,9 +15,9 @@ OUT = ROOT / "runs" / "m308b_subset"
 
 def find_oracle(key: str) -> Path | None:
     oracle_dirs = [
-        ROOT / "corpus/word_based/pdf_redlines_word",
-        ROOT / "corpus/word_based/pdf_redlines_randomized/pdf",
-        ROOT / "corpus/word_redlines_superdoc/pdf_redlines_word",
+        ROOT / "grok_run/word_based/pdf_redlines_word",
+        ROOT / "grok_run/word_based/pdf_redlines_randomized/pdf",
+        ROOT / "grok_run/word_redlines_superdoc/pdf_redlines_word",
     ]
     for d in oracle_dirs:
         for name in [f"{key}_redline.pdf", f"{key}_word_redline.pdf"]:

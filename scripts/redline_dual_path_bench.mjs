@@ -58,12 +58,12 @@ const readManifest = (csvPath, sourceDir) => {
 
 const collectPairs = () => [
   ...readManifest(
-    join(ROOT, "corpus/word_based/centralized_mapping.csv"),
-    join(ROOT, "corpus/word_based/docx_source"),
+    join(ROOT, "grok_run/word_based/centralized_mapping.csv"),
+    join(ROOT, "grok_run/word_based/docx_source"),
   ),
   ...readManifest(
-    join(ROOT, "corpus/word_based/centralized_mapping_randomized.csv"),
-    join(ROOT, "corpus/word_based/docx_source_randomized"),
+    join(ROOT, "grok_run/word_based/centralized_mapping_randomized.csv"),
+    join(ROOT, "grok_run/word_based/docx_source_randomized"),
   ),
 ];
 
