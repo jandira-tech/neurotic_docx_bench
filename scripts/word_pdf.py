@@ -1288,8 +1288,10 @@ _EXPORT_BATCH_KEEP_OPEN = _EXPORT_BATCH.replace(
 
 # `--accept-all`: Word's own Accept All Changes, the result saved as docx and the
 # same open document then exported as PDF, so the PDF is the render of the docx
-# delivered next to it. Rows carry a fourth field, the docx path.
+# delivered next to it. Rows carry a fourth field, the docx path. `--reject-all`
+# is the same batch with Word's Reject All Changes in place of the accept.
 ACCEPT_SUFFIX = "_accepted_tracking"
+REJECT_SUFFIX = "_rejected_tracking"
 _ACCEPT_EDITS = (
     ("if (count of f) is 3 then", "if (count of f) is 4 then"),
     ("set outP to item 3 of f", "set outP to item 3 of f\n          set docxP to item 4 of f"),
@@ -1303,12 +1305,18 @@ _ACCEPT_EDITS = (
 )
 
 
-def batch_script(*, close_documents: bool, accept: bool) -> str:
-    """The monolithic batch AppleScript for the chosen close policy, with accept-all when asked."""
+def batch_script(*, close_documents: bool, accept: bool, reject: bool = False) -> str:
+    """The monolithic batch AppleScript for the chosen close policy.
+
+    `accept` resolves every tracked change before the docx + PDF are saved:
+    Word's Accept All, or its Reject All when `reject` is set too.
+    """
     script = _EXPORT_BATCH if close_documents else _EXPORT_BATCH_KEEP_OPEN
     if not accept:
         return script
     for old, new in _ACCEPT_EDITS:
+        if reject:
+            new = new.replace("accept all revisions", "reject all revisions")
         if script.count(old) != 1:
             raise RuntimeError(f"accept-all edit does not apply to the batch script: {old!r}")
         script = script.replace(old, new)
@@ -1356,6 +1364,7 @@ def convert_folder(
     max_passes: int = 3,
     poison_streak: int = 3,
     accept_suffix: str = "",
+    reject: bool = False,
 ) -> list[Result]:
     """Export every real .docx in `src` to PDF. Serial, by necessity.
 
@@ -1375,9 +1384,12 @@ def convert_folder(
 
     `accept_suffix` turns on accept-all: Word accepts every tracked change and
     the result lands as `<stem><suffix>.docx` with its PDF `<stem><suffix>.pdf`.
-    Only the batch path does this.
+    Only the batch path does this. `reject` makes it Word's Reject All
+    instead; it needs the suffix too.
     """
     require_positive_seconds(timeout, "timeout")
+    if reject and not accept_suffix:
+        raise ValueError("reject-all needs an output suffix (accept_suffix)")
     if accept_suffix and not one_osascript:
         raise ValueError("accept-all runs only in the batch path (one_osascript=True)")
     docs = iter_docx(src)
@@ -1416,9 +1428,14 @@ def convert_folder(
     stage = stage or (ctx.__enter__() if ctx else None)
     assert stage is not None
     try:
-        run = partial(_convert_batched, accept_suffix=accept_suffix) if one_osascript else _convert_serial
+        run = (
+            partial(_convert_batched, accept_suffix=accept_suffix, reject=reject)
+            if one_osascript
+            else _convert_serial
+        )
         logger.info(
-            f"[word] export: one_osascript={one_osascript} documents={len(docs)} accept_all={bool(accept_suffix)}"
+            f"[word] export: one_osascript={one_osascript} documents={len(docs)} "
+            f"accept_all={bool(accept_suffix) and not reject} reject_all={reject}"
         )
         return run(
             docs,
@@ -1579,6 +1596,7 @@ def _convert_batched(
     poison_streak: int = 3,
     close_documents: bool = True,
     accept_suffix: str = "",
+    reject: bool = False,
 ) -> list[Result]:
     """One monolithic AppleScript for the whole folder, resumed if it dies.
 
@@ -1617,7 +1635,7 @@ def _convert_batched(
     logger.info(f"[batch] one osascript for {len(rows)} document(s)")
     started = time.monotonic()
     recorded = run_batch_with_resume(
-        batch_script(close_documents=close_documents, accept=bool(accept_suffix)),
+        batch_script(close_documents=close_documents, accept=bool(accept_suffix), reject=reject),
         rows,
         stage.root or stage.inbox.parent,
         per_item_timeout=timeout,
@@ -1833,6 +1851,17 @@ def main(
     accept_suffix: Annotated[
         str, typer.Option("--accept-suffix", help="Suffix of the accepted outputs.")
     ] = ACCEPT_SUFFIX,
+    reject_all: Annotated[
+        bool,
+        typer.Option(
+            "--reject-all",
+            help="Reject every tracked change in Word first; writes <stem><suffix>.docx "
+            "and its PDF <stem><suffix>.pdf. Batch mode only.",
+        ),
+    ] = False,
+    reject_suffix: Annotated[
+        str, typer.Option("--reject-suffix", help="Suffix of the rejected outputs.")
+    ] = REJECT_SUFFIX,
     quiet: Annotated[
         bool, typer.Option("--quiet", "-q", help="Errors and summary only.")
     ] = False,
@@ -1855,8 +1884,14 @@ def main(
     if not src.is_dir():
         console.print(f"[red]not a folder:[/] {src}")
         raise typer.Exit(2)
+    if accept_all and reject_all:
+        console.print("[red]--accept-all and --reject-all are mutually exclusive[/]")
+        raise typer.Exit(2)
     if accept_all and (not one_osascript or not accept_suffix):
         console.print("[red]--accept-all needs --one-osascript and a non-empty --accept-suffix[/]")
+        raise typer.Exit(2)
+    if reject_all and (not one_osascript or not reject_suffix):
+        console.print("[red]--reject-all needs --one-osascript and a non-empty --reject-suffix[/]")
         raise typer.Exit(2)
     if check_preset:
         preset_notice()
@@ -1880,10 +1915,17 @@ def main(
             session=session,
             one_osascript=one_osascript,
             close_documents=not do_not_close,
-            accept_suffix=accept_suffix if accept_all else "",
+            accept_suffix=accept_suffix if accept_all else reject_suffix if reject_all else "",
+            reject=reject_all,
         )
         session.quit_if_ours()
-    title = "accept all → DOCX + PDF" if accept_all else "DOCX → PDF"
+    title = (
+        "accept all → DOCX + PDF"
+        if accept_all
+        else "reject all → DOCX + PDF"
+        if reject_all
+        else "DOCX → PDF"
+    )
     raise typer.Exit(report(results, f"{title}: {src}"))
 
 
