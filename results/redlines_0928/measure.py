@@ -3,11 +3,11 @@
     uv run python results/redlines_0928/measure.py redlines jubarte-rust docxodus superdoc
     uv run python results/redlines_0928/measure.py accepted jubarte-rust docxodus superdoc
 
-redlines: ``<tool>/pdf/<key>_<tool>.pdf`` (the tool's redline, rendered by Word) against
+redlines: ``<tool>/pdf_by_word/<key>_<tool>.pdf`` (the tool's redline, rendered by Word) against
 ``oracle_pdf/<key>.pdf`` (Word's own compare, rendered by Word), through
 ``pipeline.score_folders_full``.
 
-accepted: ``<tool>/accepted/out/<cmp>_accepted_tracking_<tool>.pdf`` (the tool's redline
+accepted: ``<tool>/accepted/by_word/<cmp>_accepted_tracking_<tool>.pdf`` (the tool's redline
 with every change accepted by Word) against the corpus render of Word's own compare
 accepted the same way (``corpus/word`` pool ``accepted_tracking_0928``), through
 ``pipeline.score_folders_plain`` on link folders named ``<cmp>.pdf``.
@@ -62,11 +62,16 @@ def _summary(rows: dict[str, dict], expected: int) -> dict:
     }
 
 
+def _word_dir(tool: str, new: str, old: str) -> Path:
+    """The Word-made folder: ``provenance.py --apply`` renames ``old`` to ``new``."""
+    return HERE / tool / new if (HERE / tool / new).exists() else HERE / tool / old
+
+
 def redlines(tool: str) -> tuple[dict, list[str]]:
     oracle = HERE / "oracle_pdf"
     keys = sorted(p.stem for p in oracle.glob("*.pdf"))
     with tempfile.TemporaryDirectory(prefix=f"measure-{tool}.") as work:
-        rows = pipeline.score_folders_full(oracle, HERE / tool / "pdf", Path(work), candidate_tool=tool)
+        rows = pipeline.score_folders_full(oracle, _word_dir(tool, "pdf_by_word", "pdf"), Path(work), candidate_tool=tool)
     return {k: _scalars(v) for k, v in rows.items()}, keys
 
 
@@ -83,7 +88,7 @@ def accepted(tool: str) -> tuple[dict, list[str]]:
             d.mkdir()
         for cmp_id in selected:
             (o / f"{cmp_id}.pdf").symlink_to(word[cmp_id].resolve())
-        for pdf in (HERE / tool / "accepted" / "out").glob(f"*{suffix}.pdf"):
+        for pdf in _word_dir(tool, "accepted/by_word", "accepted/out").glob(f"*{suffix}.pdf"):
             (c / f"{pdf.stem.removesuffix(suffix)}.pdf").symlink_to(pdf.resolve())
         rows = pipeline.score_folders_plain(o, c, work)
     return {k: _scalars(v) for k, v in rows.items()}, selected
