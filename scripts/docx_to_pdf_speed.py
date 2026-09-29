@@ -206,7 +206,15 @@ def main() -> None:
                 for t in order:
                     ms, ok = once(t, src)
                     rows.write(
-                        json.dumps({'corpus': name, 'doc': src.name, 'tool': t, 'ms': round(ms, 3), 'ok': ok}) + '\n'
+                        json.dumps({
+                            'corpus': name,
+                            'doc': src.name,
+                            'path': str(src),
+                            'tool': t,
+                            'ms': round(ms, 3),
+                            'ok': ok,
+                        })
+                        + '\n'
                     )
                     for key in ((t, name), (t, 'all')):
                         if ok:
