@@ -72,3 +72,16 @@ def test_output_name_is_the_key_plus_the_tool_when_the_pool_has_a_key():
     assert superdoc_gen.output_names(keyed, "superdoc") == [f"{key}_superdoc.docx"]
     legacy = superdoc_gen.Pair(base="a_x", next="b_y")
     assert superdoc_gen.output_names(legacy, "superdoc") == ["a_x_b_y_superdoc_redline.docx"]
+
+
+def test_session_ids_are_unique_across_processes(monkeypatch):
+    """SuperDoc keeps session contexts in one per-user store (``~/.superdoc-cli/state``), so
+    two generator processes numbering pairs from 0 open ``base0`` twice and one fails with
+    'Session "base0" is already open'. The ids carry the process id."""
+    monkeypatch.setattr(superdoc_gen.os, "getpid", lambda: 111)
+    first = superdoc_gen.session_ids(0)
+    monkeypatch.setattr(superdoc_gen.os, "getpid", lambda: 222)
+    second = superdoc_gen.session_ids(0)
+    assert len(set(first)) == 2
+    assert not set(first) & set(second)
+    assert superdoc_gen.session_ids(1) != second
