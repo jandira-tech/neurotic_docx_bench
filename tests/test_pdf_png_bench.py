@@ -113,3 +113,41 @@ def test_summary_counts_a_failed_or_missing_document_as_zero():
     assert s["n"] == 3 and s["ok"] == 1
     assert s["pixel_mean"] == 30.0 and s["jaccard_mean"] == 80.0 / 3
     assert s["ms_per_page_median"] == 5.0
+
+
+def test_two_oracles_score_every_other_tool_against_each(tmp_path, monkeypatch):
+    pdf = _pdf(tmp_path / "a.pdf", pages=1)
+    monkeypatch.setitem(pb.RENDERERS, pb.SOT, pb.RENDERERS["pymupdf"])
+    vers = {pb.SOT: "sot 1", "pymupdf": "mu 1", "pdftoppm": "p 1"}
+    rows = pb.process_doc({"key": "clean__a", "pdf": str(pdf), "sha256": "s"}, ["pymupdf", "pdftoppm"], dpi=144,
+                          timeout=60, versions=vers, oracles=(pb.SOT, "pymupdf"))
+    pairs = {(r["tool"], r["sot"]) for r in rows if r["tool"] != r["sot"]}
+    assert pairs == {("pymupdf", pb.SOT), ("pdftoppm", pb.SOT), (pb.SOT, "pymupdf"), ("pdftoppm", "pymupdf")}
+    lo_vs_mu = next(r for r in rows if (r["tool"], r["sot"]) == (pb.SOT, "pymupdf"))
+    assert lo_vs_mu["sot_version"] == "mu 1" and lo_vs_mu["pixel"] == pytest.approx(100.0)
+    assert {r["tool"] for r in rows if r["tool"] == r["sot"]} == {pb.SOT, "pymupdf"}
+
+
+def test_todo_with_two_oracles_needs_the_missing_pairs_only(tmp_path):
+    store = tmp_path / "scores.jsonl"
+    # An old row without "sot" was scored against LibreOffice.
+    store.write_text(json.dumps({"tool": "pymupdf", "version": "mu 1", "sot_version": "sot 1", "dpi": 144,
+                                 "sha256": "s1", "key": "clean__a", "ok": True}) + "\n")
+    docs = [{"key": "clean__a", "sha256": "s1"}]
+    vers = {pb.SOT: "sot 1", "pymupdf": "mu 1"}
+    got = pb.todo(docs, ["pymupdf"], vers, 144, pb.load_store(store), oracles=(pb.SOT, "pymupdf"))
+    # pymupdf vs LibreOffice is stored; LibreOffice vs pymupdf is not.
+    assert got == [("clean__a", [pb.SOT])]
+
+
+def test_sanity_renders_each_oracle_twice_and_scores_ten_pages_against_itself(tmp_path):
+    docs = [{"key": f"clean__{i}", "pdf": str(_pdf(tmp_path / f"{i}.pdf", pages=3)), "sha256": str(i)} for i in range(5)]
+    rows = pb.sanity(docs, "pymupdf", pages=10, dpi=72, timeout=60)
+    assert len(rows) == 10
+    assert all(r["pixel"] == pytest.approx(100.0) and r["jaccard"] == pytest.approx(100.0) for r in rows)
+    assert rows[0]["key"] == "clean__0" and rows[0]["page"] == 1 and rows[-1]["key"] == "clean__3"
+    assert not list(tmp_path.glob("**/*.png"))
+
+
+def test_jubarte_is_an_oracle_option():
+    assert "jubarte" in pb.RENDERERS and pb.SOURCE_INPUT["jubarte"] == "docx"
