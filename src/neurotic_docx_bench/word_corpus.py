@@ -987,6 +987,26 @@ def _clone_enabled() -> bool:
     return sys.platform == "darwin"
 
 
+def stage_list(list_csv: Path, out: Path) -> int:
+    """Clone the files a pool table names into ``out/docx`` and ``out/pdf``; returns the
+    number of docx. The table's ``docx`` / ``pdf`` columns are relative to the corpus
+    root (the folder above ``pools/``); an empty ``pdf`` is skipped. Idempotent."""
+    list_csv, out = Path(list_csv), Path(out)
+    root = list_csv.resolve().parent.parent
+    n = 0
+    with list_csv.open(newline="") as fh:
+        for row in csv.DictReader(fh):
+            for column in ("docx", "pdf"):
+                rel = row.get(column) or ""
+                if not rel:
+                    continue
+                dst = out / column / Path(rel).name
+                if not dst.exists():
+                    copy_file(root / rel, dst)
+            n += bool(row.get("docx"))
+    return n
+
+
 def copy_file(src: Path, dst: Path) -> None:
     """Copy ``src`` to ``dst``: a clone on APFS (``cp -c``), a plain copy elsewhere. Never a hardlink:
     an edit to the copy must not reach the origin."""

@@ -395,3 +395,15 @@ def test_oracle_roots_must_cover_the_renderer(tmp_path, monkeypatch):
     p.write_text(p.read_text().replace("  soffice: corpus/libreoffice\n", ""))
     with pytest.raises(ValueError, match="oracle_roots has no 'soffice'"):
         load_config(p)
+
+
+def test_config_hash_tells_a_word_run_from_a_soffice_run(tmp_path):
+    # render: auto makes one yaml mean two renderers; skip-already-ran must not confuse them
+    from neurotic_docx_bench import provenance
+
+    p = tmp_path / "bench.yaml"
+    p.write_text("source_of_truth: x\n")
+    legacy = provenance.config_hash(p)
+    assert provenance.config_hash(p, renderer="soffice") == legacy  # soffice rows keep their hash
+    assert provenance.config_hash(p, renderer="word") != legacy
+    assert len(provenance.config_hash(p, renderer="word")) == 12

@@ -228,9 +228,10 @@ def test_config_holdout_list_missing_file_raises(tmp_path):
 @requires_corpus
 def test_real_bench_yaml_wires_holdout():
     """bench.yaml points at the COMBINED seal — `holdout_list` takes one path and
-    there are now two sealed corpora (word_based + word_redlines_superdoc)."""
+    there are two sealed corpora (word_based + word_redlines_superdoc), written as
+    Word corpus keys by `bench corpus build`."""
     cfg = load_config(REPO_ROOT / "bench.yaml")
-    assert cfg.holdout_list == REPO_ROOT / "corpus" / "holdout_combined.txt"
+    assert cfg.holdout_list == REPO_ROOT / "corpus" / "word" / "pools" / "holdout.txt"
     assert len(pipeline.load_holdout(cfg.holdout_list)) == 40
 
 
