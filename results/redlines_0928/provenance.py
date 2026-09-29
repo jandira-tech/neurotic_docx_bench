@@ -91,11 +91,11 @@ def word_writing_to(folder: Path) -> bool:
 def source_for(file: Path, src_dir: Path, tool: str) -> Path | None:
     """The tool redline this Word file came from, matched by stem."""
     stem = file.stem
-    for cand in (f'{stem}.docx', f'{stem.replace("_accepted_tracking_", "_")}.docx'):
+    for cand in (f'{stem}.docx', *(f'{stem.replace(f"_{a}_tracking_", "_")}.docx' for a in ('accepted', 'rejected'))):
         if (src_dir / cand).exists():
             return src_dir / cand
-    # accepted copies are named <cmp>_accepted_tracking_<tool>; sources <cmp>_<tool> or <key>_<tool>
-    cmp_id = stem.removesuffix(f'_accepted_tracking_{tool}')
+    # Word's copies are named <cmp>_{accepted,rejected}_tracking_<tool>; sources <cmp>, <cmp>_<tool> or <key>_<tool>
+    cmp_id = stem.removesuffix(f'_accepted_tracking_{tool}').removesuffix(f'_rejected_tracking_{tool}')
     hits = sorted(src_dir.glob(f'{cmp_id}*.docx'))
     return hits[0] if len(hits) == 1 else None
 
