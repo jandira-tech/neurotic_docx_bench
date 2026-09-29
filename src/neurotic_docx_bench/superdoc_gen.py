@@ -17,6 +17,7 @@ import argparse
 import asyncio
 import csv
 import json
+import os
 import shutil
 import time
 from dataclasses import dataclass
@@ -81,6 +82,13 @@ def parse_manifest(csv_path: Path, statuses: set[str]) -> list[Pair]:
     return pairs
 
 
+def session_ids(idx: int) -> tuple[str, str]:
+    """(base, target) session ids for pair ``idx``. SuperDoc keeps session contexts in one
+    per-user store, so the ids carry the process id: parallel generator processes would
+    otherwise both open ``base0`` and one fails with 'Session "base0" is already open'."""
+    return f"base{os.getpid()}-{idx}", f"target{os.getpid()}-{idx}"
+
+
 async def generate_one(
     client: AsyncSuperDocClient, base_path: Path, next_path: Path, out_path: Path, idx: int,
 ) -> None:
@@ -105,9 +113,10 @@ async def generate_one(
             # the pair as failed. __aexit__ on the client reaps what it can.
             pass
 
-    base = await client.open({"sessionId": f"base{idx}", "doc": str(base_path)})
+    base_id, target_id = session_ids(idx)
+    base = await client.open({"sessionId": base_id, "doc": str(base_path)})
     try:
-        target = await client.open({"sessionId": f"target{idx}", "doc": str(next_path)})
+        target = await client.open({"sessionId": target_id, "doc": str(next_path)})
         try:
             snapshot = await target.diff.capture({})
         finally:
@@ -170,8 +179,6 @@ async def run_batch(
 
 
 def main(argv: list[str] | None = None) -> int:
-    import os
-
     p = argparse.ArgumentParser(description="SuperDoc native redline generator")
     default_out = os.path.join(os.environ["RUN_DIR"], "docx") if os.environ.get("RUN_DIR") else "out/docx"
     p.add_argument("--out", default=default_out)
