@@ -1,8 +1,23 @@
 # neurotic-docx-bench — sequential multi-tool config.
-# Oracle = the committed Microsoft Word redline PDFs, rendered by LibreOffice 26.2.4.2
-# (see plan Context §7). Candidates are rendered the same way, so scores isolate
-# redline-markup fidelity vs Word rather than renderer drift.
-source_of_truth: corpus/word_based/pdf_redlines_word
+# The docx are rendered by `renderer`: auto = Microsoft Word through
+# scripts/word_pdf.py where this machine has Word, LibreOffice 26.2.4.2 where it
+# does not (BENCH_RENDERER=word|soffice pins it). The oracle is always a render
+# by that same program: a Word render is scored against the Word PDFs in
+# corpus/word, a LibreOffice render against the LibreOffice renders of the same
+# Word docx in corpus/libreoffice (same <state>/pdf/<stem>.pdf layout, mapped in
+# corpus/libreoffice/word_map.csv). Either way the score isolates redline-markup
+# fidelity vs Word rather than renderer drift.
+renderer: auto
+oracle_roots:
+  word: corpus/word
+  soffice: corpus/libreoffice
+# Relative to the oracle root of the renderer in use. Every comparison of every
+# pool is filed under the state of its docx; the pairs scored are the ones the
+# corpora below generate.
+source_of_truth: tracking_without_comments/pdf
+extra_oracle_dirs:
+  - with_comments_tracking/pdf
+  - with_comments_clean/pdf
 # docx-to-pdf and docxide-metrics read word_pdf, not source_of_truth.
 # A pair is <state>/pdf/<stem>.pdf with <state>/docx/<stem>.docx.
 # pdf_prior is an earlier Word render, not the oracle those commands score.
@@ -13,90 +28,61 @@ word_pdf:
     - tracking_without_comments
     - with_comments_clean
     - with_comments_tracking
-# Randomized file_N→file_N+1 chain corpus (196 pairs) union-indexed with the
-# named oracle for script_redlines: ~403 fixtures total. Kept out of
-# source_of_truth so visual_redlines' default and single-dir consumers are
-# untouched; runs whose generators also produce randomized candidates (the
-# chained second invocation below) get them matched automatically.
-extra_oracle_dirs:
-  - corpus/word_based/pdf_redlines_randomized/pdf
-  # SuperDoc-pool Word redlines (400 pairs): base/next drawn from the
-  # docx-validate SuperDoc fixture pool, redlined by Word's own Compare
-  # Documents, rendered by the same LibreOffice as every other oracle.
-  - corpus/word_redlines_superdoc/pdf_redlines_word
-# Sealed 20-pair holdout (overfitting detector): these keys are EXCLUDED from
+# Sealed 40-pair holdout (overfitting detector): these keys are EXCLUDED from
 # every normal scoring run and scored separately on demand with
-# `bench run --holdout`; export surfaces the main-vs-holdout gap.
-# Union of the two sealed lists (word_based 20 + word_redlines_superdoc 20).
-# Built by concatenation; neither sealed file is ever edited.
-holdout_list: corpus/holdout_combined.txt
+# `bench run --holdout`; export surfaces the main-vs-holdout gap. The two sealed
+# lists (word_based 20 + word_redlines_superdoc 20) as Word corpus keys, written
+# by `bench corpus build`.
+holdout_list: corpus/word/pools/holdout.txt
 scoring:
   dpi: 144
 
-# The corpus pools EVERY generating run is scored on — 207 + 196 + 400 = 803
-# pairs. Declared once, here, because coverage used to be per-run copy-paste, and
-# copy-paste does not propagate. Of the 12 runs declaring script_redlines, FOUR
-# (jubarte-rust, jubarte-final-native, jubarte-final-lossless, docxodus)
-# hand-chained three invocations with explicit --manifest/--source-dir = 803
-# pairs; the other EIGHT (docx-redline-js, folio, superdoc, redlines,
-# superdoc-redlines, jubarte-wasm, superdoc-ts, superdoc-native) omitted the
-# flags and silently inherited the generators' argparse default = pool #1 only,
-# 207 pairs. All 12 were published in the same comparison table, so rows with
-# different n were not the same measurement (plan Chapter 6, D1).
-#
-# Note the split is NOT "us vs them" — it is a footgun that has been tripped in
-# both directions. docxodus, a competitor, already had full coverage;
-# jubarte-wasm, ours, did not. Hoisting the list makes full coverage the DEFAULT
-# and asymmetry impossible to reintroduce.
-#
-# The driver now expands a run's single `generate:` command once per entry below
-# (see config.expand_generate_commands), so a fourth pool added here reaches
-# every vendor at once. A run that genuinely applies to one pool says so with its
-# own `corpora: [<name>]`; silence means ALL. Hardcoding --manifest/--source-dir
-# in a `generate:` is rejected at load time.
+# The corpus pools EVERY generating run is scored on: 227 + 196 + 399 = 822
+# pairs, the rows of the pool tables `bench corpus build` writes. Declared once,
+# here, because coverage used to be per-run copy-paste, and copy-paste does not
+# propagate (8 of 12 runs once scored 207 pairs while 4 scored 803, all in one
+# table). The driver expands a run's single `generate:` command once per entry
+# below (config.expand_generate_commands), so a pool added here reaches every
+# vendor at once. A run that genuinely applies to one pool says so with its own
+# `corpora: [<name>]`; silence means ALL. Hardcoding --manifest/--source-dir in a
+# `generate:` is rejected at load time.
 corpora:
   - name: word_based
-    manifest: corpus/word_based/centralized_mapping.csv
-    source_dir: corpus/word_based/docx_source
+    manifest: corpus/word/pools/word_based_pairs.csv
+    source_dir: corpus/word
   - name: word_based_randomized
-    manifest: corpus/word_based/centralized_mapping_randomized.csv
-    source_dir: corpus/word_based/docx_source_randomized
+    manifest: corpus/word/pools/word_based_randomized_pairs.csv
+    source_dir: corpus/word
   - name: word_redlines_superdoc
-    manifest: corpus/word_redlines_superdoc/centralized_mapping.csv
-    source_dir: corpus/word_redlines_superdoc/docx_source
+    manifest: corpus/word/pools/word_redlines_superdoc_pairs.csv
+    source_dir: corpus/word
 
-# Accepted ground truth: the Word oracle redlines with ALL tracked changes accepted
-# (produced by `bench accept corpus/word_based/docx_redlines_word --out …`, or via
-# `bench run --generate`). Used by `bench run --accept-compare`, which accepts each
-# tool's freshly generated redlines and diffs them against this corpus.
-accepted_ground_truth: corpus/word_based/docx_accepted_word
+# Accepted ground truth: Word's own Accept All on 400 of the pool comparisons
+# (grok_run/wr0929/accept_reject_split.csv; the other 400 are Word's Reject All,
+# corpus/word/reject_all). Filed as <pair key>.docx/.pdf by `bench corpus actions`.
+# Used by `bench run --accept-compare`, which accepts each tool's freshly
+# generated redlines and diffs them against this corpus, rendered by `renderer`.
+accepted_ground_truth: corpus/word/accept_all/docx
 
-# Visual-benchmark oracle PDF folders. Consumed when a run declares visual_*
-# benchmarks. visual_redlines defaults to source_of_truth if omitted; the other
-# two are required when any run declares them.
+# Visual-benchmark oracle PDF folders: what Word prints, whatever renderer the
+# docx runs use, since a viewer is measured against Word.
 visual_oracles:
-  visual_rendering: corpus/word_based/pdf_source
-  visual_redlines: corpus/word_based/pdf_redlines_word
-  visual_accepted_changes: corpus/word_based/pdf_accepted_word
+  visual_rendering: corpus/word/clean/pdf
+  visual_redlines: corpus/word/tracking_without_comments/pdf
+  visual_accepted_changes: corpus/word/accept_all/pdf
 
 # Standalone generation scripts, executed in order by `bench run --generate`.
+# The accepted ground truth and the source PDFs are Word's, filed by
+# `bench corpus build` / `bench corpus actions`; nothing here writes the corpus.
 generate_scripts:
-  - name: accepted-word
-    command: "uv run bench accept corpus/word_based/docx_redlines_word --out corpus/word_based/docx_accepted_word"
   - name: roundtrips-node
-    command: "node scripts/generate-roundtrips.mjs --all"
+    command: "uv run bench corpus stage corpus/word/pools/word_based_accepted_word_renders.csv out/roundtrip_source && node scripts/generate-roundtrips.mjs --all --source-dir out/roundtrip_source/docx"
   - name: roundtrips-superdoc
-    command: "uv run python scripts/generate-roundtrips-superdoc.py"
-  # No --force. corpus/word_based/pdf_source IS the visual_rendering oracle and
-  # is pinned in oracle_manifest.json. Re-rendering it produces pixel-identical
-  # PDFs (verified: 0 differing pixels at 144 dpi) with fresh /CreationDate, so
-  # every --generate run changed 199 oracle hashes and made the NEXT run exit 2
-  # on ORACLE DRIFT. Without --force, existing oracle PDFs are skipped and only
-  # genuinely new sources get rendered. Regenerating the oracle on purpose is
-  # `bench render ... --force` by hand, followed by `bench oracle-manifest
-  # --write` — a deliberate re-baseline, not a side effect of running a tool.
-  - name: source-pdfs
-    command: "mkdir -p /tmp/pdf_source_render/pdf && cp -c corpus/word_based/pdf_source/*.pdf /tmp/pdf_source_render/pdf/ 2>/dev/null || cp corpus/word_based/pdf_source/*.pdf /tmp/pdf_source_render/pdf/ 2>/dev/null; uv run bench render corpus/word_based/docx_source /tmp/pdf_source_render --backend soffice --jobs 12 && mv -n /tmp/pdf_source_render/pdf/*.pdf corpus/word_based/pdf_source/ 2>/dev/null; true"
+    command: "uv run bench corpus stage corpus/word/pools/word_based_accepted_word_renders.csv out/roundtrip_source && uv run python scripts/generate-roundtrips-superdoc.py --source-dir out/roundtrip_source/docx"
+
+# The documents the roundtrip benchmark re-serializes: Word's own accept-all of the
+# word_based redlines (166), listed by `bench corpus build`, staged at run time.
+roundtrip_list: corpus/word/pools/word_based_accepted_word_renders.csv
 
 # Tool versions are PINNED to the ones we reviewed:
 #   docxodus 9.8.0 · docx-redline-js = local TS migration (dist: sibling package)
@@ -113,7 +99,7 @@ runs:
   - name: jubarte-final-native
     dist: dist/jubarte-final
     generate: "node --import tsx scripts/generate-native-redlines.ts --method=jubarte-native --dist=dist/jubarte-final --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=jubarte-final-native"
-    render: soffice
+    render: auto
     jobs: 12
     # Distinct vendor: this run and jubarte-final-lossless share the same dist
     # build (identical tool_version), so with vendor "jubarte" the two engines'
@@ -125,7 +111,7 @@ runs:
   - name: jubarte-final-lossless
     dist: dist/jubarte-final
     generate: "node --import tsx scripts/generate-native-redlines.ts --method=jubarte-lossless --dist=dist/jubarte-final --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=jubarte-final-lossless"
-    render: soffice
+    render: auto
     jobs: 12
     # Leftover output from this pin wedges LibreOffice 26.2.5.2 for the full
     # 1200s default (then retries). Fail those docs as ITT 0 instead of
@@ -150,10 +136,10 @@ runs:
   - name: docxodus
     package: "docxodus@12.6.4"
     generate: "node --import tsx scripts/generate-native-redlines.ts --method=docxodus --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=docxodus"
-    render: soffice
+    render: auto
     jobs: 12
     vendor: docxodus
-    # visual_* deliberately NOT here. This is a GENERATING run (render: soffice);
+    # visual_* deliberately NOT here. This is a GENERATING run (render: auto);
     # the visual oracles belong to the dedicated docxodus-playwright-* runs, exactly
     # as folio and superdoc are arranged. docxodus was the only generating run
     # declaring them, which handed it three extra near-zero rows (visual_rendering
@@ -173,7 +159,7 @@ runs:
   # Playwright fail-fasts on window.__rdvError instead of timing out.
   - name: docxodus-playwright-rendering
     package: "docxodus@12.6.4"
-    docx: corpus/word_based/docx_source
+    docx: corpus/word/clean/docx
     render: playwright
     jobs: 12
     vendor: docxodus
@@ -193,7 +179,7 @@ runs:
 
   - name: docxodus-playwright-redlines
     package: "docxodus@12.6.4"
-    docx: corpus/word_based/docx_redlines_word
+    docx: corpus/word/tracking_without_comments/docx
     render: playwright
     jobs: 12
     vendor: docxodus
@@ -202,7 +188,7 @@ runs:
 
   - name: docxodus-playwright-accepted
     package: "docxodus@12.6.4"
-    docx: corpus/word_based/docx_accepted_word
+    docx: corpus/word/accept_all/docx
     render: playwright
     jobs: 12
     vendor: docxodus
@@ -219,7 +205,7 @@ runs:
   # writes PDFs to the run dir — the source corpus is never mutated.
   - name: folio-playwright-rendering
     package: "@stll/folio-react@0.13.4"
-    docx: corpus/word_based/docx_source
+    docx: corpus/word/clean/docx
     render: playwright
     jobs: 12
     vendor: folio
@@ -239,7 +225,7 @@ runs:
 
   - name: folio-playwright-redlines
     package: "@stll/folio-react@0.13.4"
-    docx: corpus/word_based/docx_redlines_word
+    docx: corpus/word/tracking_without_comments/docx
     render: playwright
     jobs: 12
     vendor: folio
@@ -248,7 +234,7 @@ runs:
 
   - name: folio-playwright-accepted
     package: "@stll/folio-react@0.13.4"
-    docx: corpus/word_based/docx_accepted_word
+    docx: corpus/word/accept_all/docx
     render: playwright
     jobs: 12
     vendor: folio
@@ -262,7 +248,7 @@ runs:
   - name: docx-redline-js
     dist: ../docx-redline-migration-kit/dist/docx-redline-js
     generate: "node --import tsx scripts/generate-native-redlines.ts --method=docx-redline-js --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=docx-redline-js"
-    render: soffice
+    render: auto
     jobs: 12
     vendor: docx-redline-js
     benchmarks: [script_redlines]
@@ -280,7 +266,7 @@ runs:
   - name: folio
     package: "@stll/folio-core@0.17.1"
     generate: "node --import tsx scripts/generate-native-redlines.ts --method=folio --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=folio"
-    render: soffice
+    render: auto
     jobs: 12
     vendor: folio
     benchmarks: [script_redlines, accepted_changes, roundtrip]
@@ -313,7 +299,7 @@ runs:
   - name: superdoc
     python_package: "superdoc-sdk==2.15.0" # installed version → tool_version
     generate: "uv run python -m neurotic_docx_bench.superdoc_gen --out=$RUN_DIR/docx --tool=superdoc"
-    render: soffice
+    render: auto
     jobs: 12
     vendor: superdoc
     benchmarks: [accepted_changes, script_redlines, roundtrip]
@@ -325,7 +311,7 @@ runs:
   - name: redlines
     python_package: "redlines==0.6.1"
     generate: "uv run python -m neurotic_docx_bench.redlines_gen --out=$RUN_DIR/docx --tool=redlines"
-    render: soffice
+    render: auto
     jobs: 12
     vendor: redlines
     benchmarks: [script_redlines]
@@ -340,7 +326,7 @@ runs:
   - name: superdoc-redlines
     dist: superdoc-redlines
     generate: "uv run python -m neurotic_docx_bench.superdoc_redlines_gen --out=$RUN_DIR/docx --tool=superdoc-redlines --repo=superdoc-redlines"
-    render: soffice
+    render: auto
     jobs: 12
     vendor: superdoc-redlines
     benchmarks: [script_redlines]
@@ -351,7 +337,7 @@ runs:
   - name: jubarte-rust
     dist: src/neurotic_docx_bench/utils/jubarte/jubarte-rust
     generate: "node --import tsx scripts/generate-native-redlines.ts --method=jubarte-rust --dist=src/neurotic_docx_bench/utils/jubarte/jubarte-rust --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=jubarte-rust"
-    render: soffice
+    render: auto
     jobs: 12
     vendor: jubarte-rust
     benchmarks: [script_redlines, accepted_changes, roundtrip]
@@ -362,7 +348,7 @@ runs:
   - name: jubarte-wasm
     dist: src/neurotic_docx_bench/utils/jubarte/jubarte-wasm/pkg
     generate: "node --import tsx scripts/generate-native-redlines.ts --method=jubarte-wasm --dist=src/neurotic_docx_bench/utils/jubarte/jubarte-wasm/pkg --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=jubarte-wasm"
-    render: soffice
+    render: auto
     jobs: 12
     vendor: jubarte-wasm
     benchmarks: [script_redlines]
@@ -374,7 +360,7 @@ runs:
   - name: superdoc-ts
     package: "@superdoc-dev/sdk@1.21.3" # npm-resolved → tool_version
     generate: "node --import tsx scripts/generate-native-redlines.ts --method=superdoc-ts --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=superdoc-ts"
-    render: soffice
+    render: auto
     jobs: 12
     vendor: superdoc
     benchmarks: [script_redlines]
@@ -390,7 +376,7 @@ runs:
   - name: superdoc-native
     dist: superdoc/packages/super-editor
     generate: "node --import tsx scripts/generate-native-redlines.ts --method=superdoc-native --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=superdoc-native"
-    render: soffice
+    render: auto
     jobs: 12
     vendor: superdoc
     benchmarks: [script_redlines]
@@ -400,7 +386,7 @@ runs:
   # one run per visual_* oracle corpus. Harness lives under utils/superdoc.
   - name: superdoc-playwright-rendering
     package: "superdoc@2.18.0"
-    docx: corpus/word_based/docx_source
+    docx: corpus/word/clean/docx
     render: playwright
     jobs: 12
     vendor: superdoc
@@ -415,7 +401,7 @@ runs:
 
   - name: superdoc-playwright-redlines
     package: "superdoc@2.18.0"
-    docx: corpus/word_based/docx_redlines_word
+    docx: corpus/word/tracking_without_comments/docx
     render: playwright
     jobs: 12
     vendor: superdoc
@@ -424,7 +410,7 @@ runs:
 
   - name: superdoc-playwright-accepted
     package: "superdoc@2.18.0"
-    docx: corpus/word_based/docx_accepted_word
+    docx: corpus/word/accept_all/docx
     render: playwright
     jobs: 12
     vendor: superdoc
@@ -440,7 +426,7 @@ runs:
   - name: stemma
     dist: src/neurotic_docx_bench/utils/stemma
     generate: "node --import tsx scripts/generate-native-redlines.ts --method=stemma --dist=src/neurotic_docx_bench/utils/stemma --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=stemma"
-    render: soffice
+    render: auto
     jobs: 12
     vendor: stemma
     benchmarks: [script_redlines, accepted_changes, roundtrip]
@@ -455,7 +441,7 @@ runs:
   - name: safe-docx-compare
     dist: src/neurotic_docx_bench/utils/safe-docx-compare
     generate: "node --import tsx scripts/generate-native-redlines.ts --method=safe-docx --dist=src/neurotic_docx_bench/utils/safe-docx-compare --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=safe-docx-compare"
-    render: soffice
+    render: auto
     jobs: 12
     vendor: safe-docx
     benchmarks: [script_redlines, accepted_changes, roundtrip]
@@ -464,5 +450,5 @@ runs:
   # against the same redline as Word rendered it (identity ⇒ 100; validates the pipeline).
   # - name: word-redlines-soffice
   #  render: soffice
-  # docx: corpus/word_based/docx_redlines_word
+  # docx: corpus/word/tracking_without_comments/docx
   #  jobs: 12

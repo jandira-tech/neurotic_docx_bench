@@ -108,6 +108,11 @@ class BenchConfig:
     # ``extra_oracle_dirs`` are relative to the root of ``renderer``, so a Word render
     # is scored against Word PDFs and a LibreOffice render against LibreOffice PDFs.
     oracle_roots: dict[str, Path] = field(default_factory=dict)
+    # The yaml's folder: relative ``corpora:`` paths resolve against it.
+    config_dir: Path = Path()
+    # A pool table of the documents the roundtrip benchmark re-serializes, staged into
+    # a working folder at run time (word_corpus.stage_list). None: the legacy folder.
+    roundtrip_list: Path | None = None
 
 
 def corpora_for_run(cfg: BenchConfig, rc: RunConfig) -> tuple[CorpusEntry, ...]:
@@ -424,6 +429,11 @@ def load_config(path: Path | str) -> BenchConfig:
             )
         extra_oracle_dirs.append(resolved_extra)
 
+    roundtrip_raw = data.get("roundtrip_list")
+    roundtrip_list = _resolve(roundtrip_raw)
+    if roundtrip_list is not None and not roundtrip_list.is_file():
+        raise ValueError(f"{path}: roundtrip_list not found: {roundtrip_raw}")
+
     holdout_raw = data.get("holdout_list")
     holdout_list = _resolve(holdout_raw)
     if holdout_list is not None and not holdout_list.is_file():
@@ -442,6 +452,8 @@ def load_config(path: Path | str) -> BenchConfig:
         corpora=corpora,
         renderer=renderer,
         oracle_roots=oracle_roots,
+        config_dir=base,
+        roundtrip_list=roundtrip_list,
     )
 
 
