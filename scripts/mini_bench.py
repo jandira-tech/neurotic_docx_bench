@@ -18,8 +18,9 @@ by name, with its source score) and ``files.txt`` (the Word PDFs, the
 row per document and tool (ok, ms, error), with a per-call timeout. The CLI tools use
 ``docx_to_pdf.convert_command``; ``soffice`` runs headless with its own profile;
 ``office2pdf-lib`` is office2pdf as a library, in-process (``tools/d2p-warm``, the
-``office2pdf::convert_bytes`` call of the crate README). Conversions are sequential, so
-the ms column is a single-load figure, not the speed benchmark.
+``office2pdf::convert_bytes`` call of the crate README). ``--workers`` converts that many
+documents at once per tool (each worker has its own soffice profile or library process);
+every row records ``workers``, and the ms column is never the speed benchmark.
 
 ``score`` runs ``docx_to_pdf.run_eval`` (pixel scorer) and ``docxide_metrics.run_eval``
 (Jaccard / text boundary) in score-only mode over the whole selection: a document a tool
@@ -40,8 +41,11 @@ import shutil
 import signal
 import statistics
 import subprocess
+import queue
 import tempfile
+import threading
 import time
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -258,55 +262,75 @@ def cmd_convert(args: argparse.Namespace) -> None:
     vers = versions(tools, jubarte)
     (out / "versions.json").write_text(json.dumps(vers, indent=2) + "\n")
     log = open(out / "convert.jsonl", "a")
+    lock = threading.Lock()
+    workers = max(1, getattr(args, "workers", 1) or 1)
     for tool in tools:
         dest_dir = out / "pdf" / tool
         dest_dir.mkdir(parents=True, exist_ok=True)
-        lo_tmp = Path(tempfile.mkdtemp(prefix=f"mini-{tool}.")) if tool == "soffice" else None
-        worker = LibWorker(LIB_TOOLS[tool], args.timeout) if tool in LIB_TOOLS else None
         binary = None
-        if tool not in LIB_TOOLS and tool not in ("soffice",):
+        if tool not in LIB_TOOLS and tool != "soffice":
             binary = jubarte if (tool == "jubarte" and jubarte) else d2p.resolve_tool_binary(tool)
-        ok_n = 0
-        for i, r in enumerate(rows, 1):
-            src = (ROOT / r["docx"]).resolve()
-            dst = dest_dir / f"{r['key']}.pdf"
-            if _is_pdf(dst):
-                ok_n += 1
-                continue
-            dst.unlink(missing_ok=True)
-            t0 = time.perf_counter()
-            if worker is not None:
-                ok, err = worker.convert(src, dst)
-            elif tool == "soffice":
-                rc, text, _ = _capped(
-                    ["soffice", f"-env:UserInstallation=file://{lo_tmp / 'profile'}", "--headless",
-                     "--convert-to", "pdf", "--outdir", str(lo_tmp / "o"), str(src)],
-                    args.timeout,
-                )
-                made = lo_tmp / "o" / f"{src.stem}.pdf"
-                if made.exists():
-                    shutil.move(str(made), str(dst))
-                ok, err = rc == 0, text.strip()[-500:]
-            else:
-                cmd = d2p.convert_command(tool, src, dst, binary=binary)
-                # doxx writes next to its cwd; give each call a scratch cwd.
-                with tempfile.TemporaryDirectory(prefix=f"mini-{tool}.") as cwd:
-                    rc, text, _ = _capped(cmd, args.timeout, cwd=Path(cwd))
-                ok, err = rc == 0, text.strip()[-500:]
-            ms = (time.perf_counter() - t0) * 1000
-            ok = ok and _is_pdf(dst)
-            if not ok:
+        # One slot per worker: its own soffice profile or in-process library worker.
+        slots: queue.Queue = queue.Queue()
+        scratch = []
+        for _ in range(workers):
+            lo_tmp = Path(tempfile.mkdtemp(prefix=f"mini-{tool}.")) if tool == "soffice" else None
+            scratch.append(lo_tmp)
+            slots.put((lo_tmp, LibWorker(LIB_TOOLS[tool], args.timeout) if tool in LIB_TOOLS else None))
+        todo = [r for r in rows if not _is_pdf(dest_dir / f"{r['key']}.pdf")]
+        done = [len(rows) - len(todo), len(rows) - len(todo)]  # [finished, PDFs]
+
+        def one(r: dict, tool: str = tool, dest_dir: Path = dest_dir, binary: Path | None = binary) -> None:
+            lo_tmp, worker = slots.get()
+            try:
+                src = (ROOT / r["docx"]).resolve()
+                dst = dest_dir / f"{r['key']}.pdf"
                 dst.unlink(missing_ok=True)
-            ok_n += ok
-            log.write(json.dumps({"tool": tool, "version": vers[tool], "key": r["key"], "ok": ok, "ms": round(ms, 3),
-                                  **({} if ok else {"error": err or "no PDF written"})}) + "\n")
-            log.flush()
-            if i % 25 == 0 or i == len(rows):
-                print(f"{tool}: {i}/{len(rows)} ({ok_n} PDFs)", flush=True)
-        if worker is not None:
-            worker.close()
-        if lo_tmp is not None:
-            shutil.rmtree(lo_tmp, ignore_errors=True)
+                t0 = time.perf_counter()
+                if worker is not None:
+                    ok, err = worker.convert(src, dst)
+                elif tool == "soffice":
+                    rc, text, _ = _capped(
+                        ["soffice", f"-env:UserInstallation=file://{lo_tmp / 'profile'}", "--headless",
+                         "--convert-to", "pdf", "--outdir", str(lo_tmp / "o"), str(src)],
+                        args.timeout,
+                    )
+                    made = lo_tmp / "o" / f"{src.stem}.pdf"
+                    if made.exists():
+                        shutil.move(str(made), str(dst))
+                    ok, err = rc == 0, text.strip()[-500:]
+                else:
+                    cmd = d2p.convert_command(tool, src, dst, binary=binary)
+                    # doxx writes next to its cwd; give each call a scratch cwd.
+                    with tempfile.TemporaryDirectory(prefix=f"mini-{tool}.") as cwd:
+                        rc, text, _ = _capped(cmd, args.timeout, cwd=Path(cwd))
+                    ok, err = rc == 0, text.strip()[-500:]
+                ms = (time.perf_counter() - t0) * 1000
+                ok = ok and _is_pdf(dst)
+                if not ok:
+                    dst.unlink(missing_ok=True)
+            finally:
+                slots.put((lo_tmp, worker))
+            with lock:
+                log.write(json.dumps({"tool": tool, "version": vers[tool], "key": r["key"], "ok": ok, "ms": round(ms, 3),
+                                      "workers": workers, **({} if ok else {"error": err or "no PDF written"})}) + "\n")
+                log.flush()
+                done[0] += 1
+                done[1] += ok
+                if done[0] % 25 == 0 or done[0] == len(rows):
+                    print(f"{tool}: {done[0]}/{len(rows)} ({done[1]} PDFs)", flush=True)
+
+        with ThreadPoolExecutor(max_workers=workers) as pool:
+            list(pool.map(one, todo))
+        if not todo:
+            print(f"{tool}: {len(rows)}/{len(rows)} ({done[1]} PDFs, all present)", flush=True)
+        while not slots.empty():
+            _, worker = slots.get()
+            if worker is not None:
+                worker.close()
+        for lo_tmp in scratch:
+            if lo_tmp is not None:
+                shutil.rmtree(lo_tmp, ignore_errors=True)
 
 
 def _itt(report_tool: dict, keys: list[str], field: str | None) -> list[float]:
@@ -424,6 +448,7 @@ def main() -> None:
     c.add_argument("--tools", help="default: DEFAULT_TOOLS, plus pymupdf-pro when the selection is <= 3 pages")
     c.add_argument("--jubarte", help="jubarte binary (default: docx_to_pdf's resolution)")
     c.add_argument("--timeout", type=float, default=120)
+    c.add_argument("--workers", type=int, default=1, help="documents converted at once per tool")
     sc = sub.add_parser("score")
     sc.add_argument("--out", required=True)
     sc.add_argument("--tools", help="default: every tool in versions.json")
