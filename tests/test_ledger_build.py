@@ -199,6 +199,12 @@ def test_detailed_page_lists_tools_below_the_gate(repo: Path) -> None:
     ) in bundle.detailed_md
 
 
+def test_results_md_carries_no_exclusion_lists(repo: Path) -> None:
+    bundle = bd.build(repo, now=datetime(2026, 9, 27, tzinfo=UTC))
+    for text in ("Not ranked", "Not applicable", "No eligible rows", "listed under History"):
+        assert text not in bundle.results_md
+
+
 def test_write_replaces_readme_block_and_is_idempotent(repo: Path) -> None:
     now = datetime(2026, 9, 27, tzinfo=UTC)
     written = bd.write(repo, bd.build(repo, now=now))
@@ -338,3 +344,15 @@ def test_cli_report_freezes_when_the_version_moves(repo: Path, monkeypatch) -> N
     assert (repo / "RESULTS_v0.6.0.md").is_file()
     r = CliRunner().invoke(app, ["report", "--check"])
     assert r.exit_code == 0, r.output
+
+
+def test_redline_split_scores_reach_both_pages(repo: Path) -> None:
+    run = repo / "results" / "redlines_z"
+    run.mkdir(parents=True)
+    (run / "scores.jsonl").write_text(json.dumps({
+        "tool": "acme", "action": "reject_all", "pairs": 2, "scored": 2, "itt_mean": 50.0, "itt_median": 50.0,
+        "overall": {"exact_100": 0, "at_least_90": 0, "below_50": 0}, "timestamp": "2026-09-29T00:00:00+00:00",
+    }) + "\n")
+    bundle = bd.build(repo, now=datetime(2026, 9, 29, tzinfo=UTC))
+    for page in (bundle.results_md, bundle.detailed_md):
+        assert "### redlines accepted or rejected by Word" in page and "| acme | unknown | reject_all | 2/2 |" in page

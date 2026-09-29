@@ -183,7 +183,7 @@ def build(
 
     stamp = (
         f"{STAMP_PREFIX}{now.strftime('%Y-%m-%d %H:%M UTC')} from `results/bench.jsonl`, "
-        "`results/converters.jsonl`, `results/speed.jsonl` and "
+        "`results/converters.jsonl`, `results/redlines_*/scores.jsonl`, `results/speed.jsonl` and "
         "`results/redline_speed_bench/**/summary.json`."
     )
     ordered = [b for b in tb.TITLES if b in tables]
@@ -203,13 +203,22 @@ def build(
         "",
     ]
     for b in ordered:
-        results_parts.append(tb.fidelity_table(tables[b], row_ci=row_ci))
-    results_parts.append(tb.speed_tables(speed))
+        part = tb.fidelity_table(tables[b], row_ci=row_ci, compact=True)
+        if part:
+            results_parts.append(part)
+    redline_runs = [
+        sec
+        for d in sorted((root / "results").glob("redlines_*/scores.jsonl"))
+        if (sec := tb.redline_action_section(d.parent))
+    ]
+    results_parts.extend(redline_runs)
+    results_parts.append(tb.speed_tables(speed, compact=True))
 
     sigma, lo = _noise_floor(root)
     detailed_parts = [GENERATED_NOTE, "# Benchmark results, detailed", "", stamp, ""]
     for b in ordered:
         detailed_parts.append(tb.fidelity_table(tables[b], row_ci=row_ci))
+    detailed_parts.extend(redline_runs)
     detailed_parts.append(tb.speed_tables(speed))
     below = tb.below_gate_section(tables)
     if below:

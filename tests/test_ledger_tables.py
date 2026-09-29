@@ -128,6 +128,7 @@ def _gated(rows):
                         "scores": {"doc0": median, "doc1": median},
                         "n_scored": 2,
                         "n_failed_docs": 0,
+                        "failed_docs": [],
                         "n_failure_events": 0,
                         "itt_n": 2,
                         "itt_mean": median,
@@ -201,6 +202,50 @@ def test_excluded_rows_listed_with_reasons(registry) -> None:
         and "jubarte-x" in md
         and "incomplete: 12 of 32 documents" in md
     )
+
+
+def test_compact_table_keeps_only_the_ranked_and_calibration_rows(registry) -> None:
+    rows = [
+        _row("a", "acme", 80.0),
+        _row("b", "jubarte-x", 90.0, n=10),
+        _row("cal", "oracle DOCX (identity)", 100.0),
+    ]
+    md = tb.fidelity_table(_select(rows, registry), row_ci={}, compact=True)
+    assert "| 1 | acme |" in md and "Calibration" in md
+    assert "Not ranked" not in md and "incomplete" not in md
+    assert "Not applicable" not in md and "doxx" not in md
+
+
+def test_state_breakdown_splits_the_itt_pool_by_corpus_state(registry) -> None:
+    scores = {"clean__a": 80.0, "clean__b": 60.0, "tracking_without_comments__c": 50.0}
+    r = _row("a", "acme", 80.0, n=3).model_copy(
+        update={"scores": scores, "failed_docs": ["tracking_without_comments__d"], "n_scored": 3, "n_failed_docs": 1, "itt_n": 4}
+    )
+    md = tb.state_breakdown(_select([r], registry, docsets={"d1": {"n": 4}, "g1": {"n": 2, "gate_of": "d1"}}))
+    assert "| Tool | clean (2) | tracking_without_comments (2) |" in md
+    # ITT: the failed document counts 0 → (50 + 0) / 2 = 25.
+    assert "| acme | 70.00 / 70.00 | 25.00 / 25.00 |" in md
+
+
+def test_state_breakdown_is_empty_without_state_keys(registry) -> None:
+    assert tb.state_breakdown(_select([_row("a", "acme", 80.0)], registry)) == ""
+
+
+def test_compact_empty_table_is_omitted(registry) -> None:
+    t = _select([_row("a", "acme", 80.0, n=5)], registry)
+    assert tb.fidelity_table(t, row_ci={}, compact=True) == ""
+
+
+def test_compact_speed_table_drops_the_not_ranked_list(registry) -> None:
+    srow = SpeedRow(
+        tool_id="a", display="acme", affiliated=False, kind="large", inproc=True, runtime="rust",
+        pin=ToolPin.parse("x@abcdefabcdef"), timestamp=T0, fixture_count=1000, pair_count=5000,
+        n=5000, failures=3, median_ms=6.2, mean_ms=25.3, p95_ms=110.8, hardware=None,
+    )
+    unpinned = srow.model_copy(update={"tool_id": "b", "display": "bravo", "pin": ToolPin.parse("")})
+    h = pol.select_speed_headline([srow, unpinned], registry=registry)
+    assert "Not ranked" in tb.speed_tables(h)
+    assert "Not ranked" not in tb.speed_tables(h, compact=True)
 
 
 def test_empty_table_says_so(registry) -> None:
@@ -292,3 +337,33 @@ def test_vendor_table_skips_retired_and_calibration(registry) -> None:
     md = tb.vendor_table(registry)
     assert "acme" in md and "doxx" in md and "no PDF export" in md
     assert "oracle DOCX (identity)" not in md
+
+
+def test_redline_action_section_lists_each_tool_per_action(tmp_path) -> None:
+    import json
+
+    run = tmp_path / "redlines_x"
+    run.mkdir()
+    lines = [
+        {"tool": "acme", "action": "accept_all", "pairs": 4, "scored": 3, "itt_mean": 70.0, "itt_median": 90.0,
+         "overall": {"exact_100": 1, "at_least_90": 2, "below_50": 1, "mean": 70.0, "median": 90.0, "n": 4},
+         "ink_jaccard": {"median": 0.95}, "text_boundary": {"median": 0.99}, "timestamp": "2026-09-29T15:00:00+00:00"},
+        {"tool": "acme", "action": "accept_all", "pairs": 4, "scored": 4, "itt_mean": 80.0, "itt_median": 95.0,
+         "overall": {"exact_100": 2, "at_least_90": 3, "below_50": 0, "mean": 80.0, "median": 95.0, "n": 4},
+         "ink_jaccard": {"mean": 0.97}, "text_boundary": {"mean": 0.98}, "timestamp": "2026-09-29T16:00:00+00:00"},
+        {"tool": "acme", "action": "reject_all", "pairs": 4, "scored": 4, "itt_mean": 60.0, "itt_median": 65.0,
+         "overall": {"exact_100": 0, "at_least_90": 1, "below_50": 1, "mean": 60.0, "median": 65.0, "n": 4},
+         "ink_jaccard": {"mean": 0.9}, "text_boundary": {"mean": 0.9}, "timestamp": "2026-09-29T16:00:00+00:00"},
+    ]
+    (run / "scores.jsonl").write_text("".join(json.dumps(x) + "\n" for x in lines))
+    (run / "versions.json").write_text(json.dumps({"acme": "acme 1.0"}))
+    md = tb.redline_action_section(run)
+    assert md.startswith("### redlines accepted or rejected by Word")
+    # The latest line per (tool, action) wins.
+    assert "| acme | acme 1.0 | accept_all | 4/4 | 80.00 | 95.00 | 2 | 3 | 0 | 0.97 | 0.98 |" in md
+    assert "| acme | acme 1.0 | reject_all | 4/4 | 60.00 | 65.00 | 0 | 1 | 1 | 0.90 | 0.90 |" in md
+    assert "`redlines_x/SUMMARY.md`" in md
+
+
+def test_redline_action_section_is_empty_without_scores(tmp_path) -> None:
+    assert tb.redline_action_section(tmp_path / "missing") == ""

@@ -121,9 +121,59 @@ def _extra_metrics(rows: Sequence[ResultRow]) -> list[str]:
     return names
 
 
+CORPUS_STATES = (
+    "clean",
+    "tracking_without_comments",
+    "with_comments_tracking",
+    "with_comments_clean",
+    "accept_all",
+    "reject_all",
+)
+
+
+def state_breakdown(table: pol.HeadlineTable) -> str:
+    """The ranked rows' ITT pools split by corpus/word state (the ``<state>__`` prefix of
+    each document key); empty when the documents are not corpus/word keys."""
+    if not table.rows:
+        return ""
+    pools = [(r.row, r.row.itt_scores()) for r in table.rows]
+    counts: dict[str, int] = {}
+    for _, pool in pools:
+        for key in pool:
+            state, sep, _ = key.partition("__")
+            if not sep or state not in CORPUS_STATES:
+                return ""
+    for key in pools[0][1]:
+        state = key.partition("__")[0]
+        counts[state] = counts.get(state, 0) + 1
+    states = [s for s in CORPUS_STATES if s in counts]
+    body = []
+    for row, pool in pools:
+        cells = [_tool_cell(row)]
+        for s in states:
+            vals = [v for k, v in pool.items() if k.startswith(f"{s}__")]
+            cells.append(f"{fmt(statistics.fmean(vals))} / {fmt(statistics.median(vals))}" if vals else "n/a")
+        body.append(cells)
+    return "\n".join(
+        [
+            "By corpus state (ITT mean / ITT median; the number of documents of each state in brackets):",
+            "",
+            md_table(["Tool", *[f"{s} ({counts[s]})" for s in states]], body),
+        ]
+    )
+
+
 def fidelity_table(
-    table: pol.HeadlineTable, *, row_ci: Mapping[str, tuple[float, float] | None]
+    table: pol.HeadlineTable,
+    *,
+    row_ci: Mapping[str, tuple[float, float] | None],
+    compact: bool = False,
 ) -> str:
+    """One benchmark's table. ``compact`` (RESULTS.md) keeps the ranked and calibration
+    rows only: no not-ranked or not-applicable lists, no History pointer, and an empty
+    string for a benchmark with no eligible rows. RESULTS_DETAILED.md keeps all of it."""
+    if compact and (table.group is None or not table.rows):
+        return ""
     title = TITLES.get(table.benchmark, table.benchmark)
     out: list[str] = [f"### {title}", "", ORACLE_NOTES.get(table.benchmark, "")]
     if table.group is None or not table.rows:
@@ -186,6 +236,10 @@ def fidelity_table(
                 cells.append(fmt(v) if v is not None else "n/a")
             body.append(cells)
         out.append(md_table(headers, body))
+        by_state = state_breakdown(table)
+        if by_state:
+            out.append("")
+            out.append(by_state)
     if table.calibration:
         out.append("")
         out.append("Calibration rows (never ranked; the pipeline's own anchors):")
@@ -217,7 +271,7 @@ def fidelity_table(
                 ],
             )
         )
-    if table.excluded:
+    if table.excluded and not compact:
         out.append("")
         out.append("Not ranked in this group (latest run per tool, with the reason):")
         out.append("")
@@ -226,7 +280,7 @@ def fidelity_table(
                 f"- {_tool_cell(e.row)} {e.row.pin.display} ({fmt_date(e.row.timestamp)}): "
                 f"{'; '.join(e.verdict.reasons)}"
             )
-    if table.not_applicable:
+    if table.not_applicable and not compact:
         out.append("")
         out.append(
             "Not applicable: "
@@ -235,7 +289,7 @@ def fidelity_table(
                 for t in table.not_applicable
             )
         )
-    if table.history_groups:
+    if table.history_groups and not compact:
         out.append("")
         out.append(
             "Other document sets or renderers measured for this benchmark are listed under History "
@@ -289,7 +343,7 @@ _SPEED_HEADERS = [
 ]
 
 
-def speed_tables(h: pol.SpeedHeadline) -> str:
+def speed_tables(h: pol.SpeedHeadline, *, compact: bool = False) -> str:
     out = ["### speed_redlines: generation time in ms per redline", ""]
     out.append(
         "Lower is faster. One row per tool and mode: its latest pinned run. Large-N rows rank only "
@@ -314,7 +368,7 @@ def speed_tables(h: pol.SpeedHeadline) -> str:
         if h.micro
         else "No pinned microbench rows yet."
     )
-    if h.excluded:
+    if h.excluded and not compact:
         out.append("")
         out.append("Not ranked (latest row per tool and mode):")
         out.append("")
@@ -793,3 +847,67 @@ def holdout_gap_section(path: Path) -> list[str]:
         ),
         "",
     ]
+
+
+def _fmt_or_na(v: object) -> str:
+    return fmt(float(v)) if isinstance(v, int | float) else "n/a"
+
+
+def redline_action_section(run_dir: Path) -> str:
+    """Tool redlines accepted or rejected by Word, scored against Word's own compare
+    accepted or rejected the same way (``results/redlines_*/scores.jsonl``, written by the
+    run's ``measure.py``). The latest line per (tool, action) wins; versions come from the
+    run's ``versions.json``."""
+    path = Path(run_dir) / "scores.jsonl"
+    if not path.is_file():
+        return ""
+    latest: dict[tuple[str, str], dict] = {}
+    for ln in path.read_text().splitlines():
+        if ln.strip():
+            line = json.loads(ln)
+            latest[(str(line["tool"]), str(line["action"]))] = line
+    vpath = Path(run_dir) / "versions.json"
+    versions = json.loads(vpath.read_text()) if vpath.is_file() else {}
+    tools = list(dict.fromkeys(t for t, _ in latest))
+    body = []
+    for action in ("accept_all", "reject_all"):
+        for tool in tools:
+            line = latest.get((tool, action))
+            if line is None:
+                continue
+            ov = line.get("overall") or {}
+            body.append(
+                [
+                    tool,
+                    str(versions.get(tool, "unknown")),
+                    action,
+                    f"{line.get('scored', 0)}/{line.get('pairs', 0)}",
+                    _fmt_or_na(line.get("itt_mean")),
+                    _fmt_or_na(line.get("itt_median")),
+                    str(ov.get("exact_100", 0)),
+                    str(ov.get("at_least_90", 0)),
+                    str(ov.get("below_50", 0)),
+                    _fmt_or_na((line.get("ink_jaccard") or {}).get("mean")),
+                    _fmt_or_na((line.get("text_boundary") or {}).get("mean")),
+                ]
+            )
+    name = Path(run_dir).name
+    return "\n".join(
+        [
+            "### redlines accepted or rejected by Word",
+            "",
+            "Each tool redlines the pair; Word accepts or rejects every change in that redline "
+            "and exports it to PDF, scored with the pixel scorer against Word's own compare "
+            "accepted or rejected the same way. A pair with no scored PDF counts 0 in the ITT "
+            "columns. The = 100, >= 90 and < 50 counts and the docxide-pdf Ink Jaccard and Text "
+            "boundary means (0 to 1) are over the scored PDFs only. Why pairs are missing: "
+            f"`{name}/SUMMARY.md`.",
+            "",
+            md_table(
+                ["Tool", "Version", "Action", "Scored", "ITT Mean", "ITT Median", "= 100", ">= 90",
+                 "< 50", "Ink Jaccard mean", "Text boundary mean"],
+                body,
+            ),
+            "",
+        ]
+    )
