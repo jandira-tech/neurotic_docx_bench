@@ -30,8 +30,10 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import selectors
 import shutil
+import signal
 import statistics
 import subprocess
 import tempfile
@@ -80,6 +82,21 @@ def tool_cmd(tool: str, src: Path, dst: Path, *, jubarte: str, profile: Path, lo
             str(src),
         ],
     }[tool]
+
+
+def run_capped(cmd: list[str], timeout: float) -> tuple[int, bool]:
+    """Run ``cmd`` in its own process group; past ``timeout`` s SIGKILL the whole group.
+
+    ``subprocess.run(timeout=)`` kills only the direct child, so a converter's helper
+    processes (soffice's, for one) would outlive a timeout and hold its profile.
+    Returns ``(returncode, timed_out)``.
+    """
+    proc = subprocess.Popen(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True)
+    try:
+        return proc.wait(timeout=timeout), False
+    except subprocess.TimeoutExpired:
+        os.killpg(proc.pid, signal.SIGKILL)
+        return proc.wait(), True
 
 
 def load_corpus(spec: str) -> tuple[str, list[Path]]:
@@ -169,22 +186,20 @@ def main() -> None:
     def cmd(tool: str, src: Path, dst: Path) -> list[str]:
         return tool_cmd(tool, src, dst, jubarte=args.jubarte, profile=profile, lo_dir=work / 'lo')
 
-    def once(tool: str, src: Path) -> tuple[float, bool]:
+    def once(tool: str, src: Path) -> tuple[float, bool, bool]:
+        """(ms, ok, timed_out) for one conversion."""
         dst = work / f'{tool}.pdf'
         dst.unlink(missing_ok=True)
         if tool in workers:
-            return workers[tool].convert(src, dst)
+            return (*workers[tool].convert(src, dst), False)
         t0 = time.perf_counter()
-        try:
-            rc = subprocess.run(cmd(tool, src, dst), capture_output=True, timeout=args.timeout).returncode
-        except subprocess.TimeoutExpired:
-            rc = -1
+        rc, timed_out = run_capped(cmd(tool, src, dst), args.timeout)
         ms = (time.perf_counter() - t0) * 1000
         if tool == 'soffice':
             lo = work / 'lo' / (src.stem + '.pdf')
             if lo.exists():
                 shutil.move(str(lo), str(dst))
-        return ms, rc == 0 and dst.exists() and dst.stat().st_size > 0
+        return ms, rc == 0 and dst.exists() and dst.stat().st_size > 0, timed_out
 
     corpora = []
     for spec in args.corpus:
@@ -204,7 +219,7 @@ def main() -> None:
                 order = tools[i % len(tools) :] + tools[: i % len(tools)]
                 i += 1
                 for t in order:
-                    ms, ok = once(t, src)
+                    ms, ok, timed_out = once(t, src)
                     rows.write(
                         json.dumps({
                             'corpus': name,
@@ -213,9 +228,11 @@ def main() -> None:
                             'tool': t,
                             'ms': round(ms, 3),
                             'ok': ok,
+                            **({'timeout': True} if timed_out else {}),
                         })
                         + '\n'
                     )
+                    rows.flush()  # a stopped run keeps every document it finished
                     for key in ((t, name), (t, 'all')):
                         if ok:
                             samples.setdefault(key, []).append(ms)
