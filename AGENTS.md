@@ -332,6 +332,20 @@ the latest line to the baseline.
   penalised — the verbatim scorer only compares `min(pages)`. Changing that is a policy call.
 - **Scoring uses a process pool** (PyMuPDF/skimage aren't thread-safe).
 - EXCEPT IF REQUESTED BY THE PERSON OR REQUIRED BY A SPECIFIC BENCHMARK OR TO DEVELOP A TOOL, YOU MUST RECORD THE RESULTS WITH RASTERS DELETED AFTER EACH TOOL SO SCORING DOESN'T FILL THE DISK.
+- **The agent shell is zsh: it does not word-split unquoted variables.** `M="--manifest x --source-dir y"; node gen.ts $M`
+  passes ONE argument; `generate-native-redlines.ts` then ignores it and runs its default manifest (207
+  word_based pairs) with exit 0, while `superdoc_gen` rejects it. Write the flags out, use an array
+  (`M=(--manifest x --source-dir y)`) or `${=M}`, and check the output count against the manifest.
+- **grok_run/ holds symlinks for its duplicate copies.** `scripts/grok_run_dedupe.py` (report by
+  default, `--apply` to fold) keeps one copy of each byte-identical group and replaces the others
+  with relative symlinks, moving their bytes to `grok_run_attic/dedupe/` (git-ignored, ledger in
+  `moved.csv`). Copies inside a corpus origin (`word_corpus.origins()`, the `_fixtures` ones
+  included) are never folded: `bench corpus build` reads same bytes under different names as
+  aliases and renders. Code that walks grok_run must follow symlinks.
+- **A file that crashes Word** (`[retry]` with "Connection is invalid") goes to the back of the
+  next batch pass in `scripts/word_pdf.py` and fails for good after two crashes; such passes do
+  not spend the 3-pass wedge budget. Before this, one crasher led every pass and the rest of the
+  folder was reported "never reached".
 - **soffice render** requires exit 0 **and** the output file, and deletes a stale PDF before
   a forced re-render (parity with the original shell script).
 
