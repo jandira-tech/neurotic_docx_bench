@@ -1,0 +1,3 @@
+superdoc-speed: 10000 pairs, reps=1, warmup=20
+  superdoc  init 876ms  median 75.7ms  mean 418.9ms  p95 1623.1ms  2.39/s  (n=798, fail=9202)
+wrote 1 row → results/speed_10k/redlines/speed.jsonl
