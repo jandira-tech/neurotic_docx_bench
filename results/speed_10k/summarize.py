@@ -69,15 +69,22 @@ def redlines() -> None:
     cuts = quartiles([int(r['base_bytes']) for r in plan.values()])
     by_cat: dict[tuple[str, str], list[dict]] = defaultdict(list)
     by_q: dict[tuple[str, str], list[dict]] = defaultdict(list)
+    per_tool: dict[str, dict[str, dict]] = {}
     for f in sorted((out / 'per_pair').glob('*.jsonl')):
         tool = f.stem
+        per_tool[tool] = {}
         for line in f.open():
             r = json.loads(line)
+            per_tool[tool][r['key']] = r
             p = plan[r['key']]
             q = sum(int(p['base_bytes']) >= c for c in cuts)
             for key in ((tool, 'all'), (tool, r['category'])):
                 by_cat[key].append(r)
             by_q[tool, f'Q{q + 1}'].append(r)
+    # A tool that has not covered the whole plan is only comparable on the pairs it did run.
+    common = set.intersection(*(set(rows) for rows in per_tool.values())) if per_tool else set()
+    by_common = {(tool, f'{len(common)} common'): [rows[k] for k in common] for tool, rows in per_tool.items()}
+    coverage = [f'- {tool}: {len(rows)} of {len(plan)} planned pairs' for tool, rows in sorted(per_tool.items())]
     md = [
         '# Redline speed, 10,000 planned pairs',
         '',
@@ -85,7 +92,13 @@ def redlines() -> None:
         'in-memory `compare(base, next)`; `jubarte-rust` spawns the CLI per pair (process start and file '
         "I/O included); SuperDoc's SDK is file based (open, compare, apply, save). No redline is kept.",
         f'Base size quartile cuts: {cuts} bytes. Machine state: ENV.txt.',
+        'A call past the per-pair timeout (120 s) is a failure; its row keeps the timeout as its time.',
         '',
+        '## Coverage',
+        '',
+        *coverage,
+        '',
+        *table('Same pairs for every tool', by_common, 'pairs'),
         *table('By pair category', by_cat, 'category'),
         *table('By base size quartile', by_q, 'quartile'),
     ]
