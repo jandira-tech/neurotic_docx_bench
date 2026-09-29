@@ -38,6 +38,7 @@ manifest, provenance, tables, pools and notices are tracked.
 | pdf_fill_0928 | 608 | 106 | df018bfc7332 | 1 | 8 | 0 | 0 | 11 | 0 |
 | accepted_tracking_0928 | 100 | 0 | c9cfd04d45a4 | 0 | 0 | 0 | 0 | 0 | 0 |
 | rejected_tracking_0928 | 100 | 0 | ec0859439dfc | 0 | 0 | 0 | 0 | 0 | 0 |
+| comment_balloons_0929 | 59 | 0 | eb94ee26a164 | 0 | 6 | 0 | 0 | 0 | 0 |
 
 ## Sets
 
@@ -197,3 +198,9 @@ The September 28 2026 Word render of the documents and compares that had no Word
 * documents: `grok_run/wr0928/rejected_tracking/docx`
 * their Word PDFs: `grok_run/wr0928/rejected_tracking/pdf`
 
+### comment_balloons_0929
+
+Synthetic A/B documents from the September 29 2026 investigation of when Word draws no comment balloon (a commentRangeEnd at body level or first in its paragraph), with their Word PDFs; the generators, truth tables and findings are in comment_balloons_0929.md. word_invalid holds variants with a dangling commentReference, which Word offers to repair.
+
+* documents: `grok_run/comment_balloons_0929/docx`, `grok_run/comment_balloons_0929/ab_docx`
+* their Word PDFs: `grok_run/comment_balloons_0929/pdf`, `grok_run/comment_balloons_0929/ab_pdf`
