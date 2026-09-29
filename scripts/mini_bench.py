@@ -277,8 +277,12 @@ def cmd_convert(args: argparse.Namespace) -> None:
             lo_tmp = Path(tempfile.mkdtemp(prefix=f"mini-{tool}.")) if tool == "soffice" else None
             scratch.append(lo_tmp)
             slots.put((lo_tmp, LibWorker(LIB_TOOLS[tool], args.timeout) if tool in LIB_TOOLS else None))
-        todo = [r for r in rows if not _is_pdf(dest_dir / f"{r['key']}.pdf")]
-        done = [len(rows) - len(todo), len(rows) - len(todo)]  # [finished, PDFs]
+        # Both scorers already have these documents from an earlier run of this exact version.
+        covered = {} if getattr(args, "no_reuse", False) else prior_covered(tool, vers[tool], out)
+        if covered:
+            print(f"{tool}: {sum(r['key'] in covered for r in rows)} documents reused from earlier runs, not converted", flush=True)
+        todo = [r for r in rows if r["key"] not in covered and not _is_pdf(dest_dir / f"{r['key']}.pdf")]
+        done = [len(rows) - len(todo), sum(_is_pdf(dest_dir / f"{r['key']}.pdf") for r in rows)]  # [finished, PDFs]
 
         def one(r: dict, tool: str = tool, dest_dir: Path = dest_dir, binary: Path | None = binary) -> None:
             lo_tmp, worker = slots.get()
@@ -345,6 +349,139 @@ def _itt(report_tool: dict, keys: list[str], field: str | None) -> list[float]:
     return vals
 
 
+# Reports whose documents are corpus/word ``<state>__<stem>`` keys: the full-corpus runs
+# and other mini-bench selections. Older tracks used other corpora and never match.
+_REUSABLE_TRACKS = ("corpus/word", "mini_bench:")
+_LEDGER_LENS = {"pixel": "pixel", "docxide": "jaccard"}
+
+
+def _is_docxide(report: dict) -> bool:
+    return str(report.get("track") or "").startswith("docxide_metrics")
+
+
+def prior_per_doc(reports: list[tuple[str, dict]], tool: str, version: str, scorer: str) -> dict[str, tuple[str, object, bool]]:
+    """``key -> (source, per_doc value, converted)`` from earlier reports of the same tool,
+    exact version, scorer and corpus. A document the earlier run failed is covered too: it
+    counts 0, as it would here. The first source that covers a key wins."""
+    got: dict[str, tuple[str, object, bool]] = {}
+    for label, rep in reports:
+        if _is_docxide(rep) != (scorer == "docxide"):
+            continue
+        corpus = rep.get("fixture_track") if scorer == "docxide" else rep.get("track")
+        if not str(corpus or "").startswith(_REUSABLE_TRACKS):
+            continue
+        data = (rep.get("tools") or {}).get(tool)
+        if not isinstance(data, dict) or data.get("version") != version:
+            continue
+        failed = {str(f["doc"] if isinstance(f, dict) else f) for f in data.get("generate_failures") or []}
+        per = data.get("per_doc") or {}
+        zero: object = {"jaccard": 0.0, "text_boundary": 0.0} if scorer == "docxide" else 0.0
+        for key in rep.get("stems") or []:
+            if key not in got:
+                ok = key not in failed
+                got[key] = (label, per.get(key, zero) if ok else zero, ok)
+    return got
+
+
+_REPORT_CACHE: dict[str, dict | None] = {}
+
+
+def _load_report(path: str) -> dict | None:
+    """A report from the working tree or, once deleted, from the commit before its deletion."""
+    if path in _REPORT_CACHE:
+        return _REPORT_CACHE[path]
+    rep = None
+    p = Path(path) if Path(path).is_absolute() else ROOT / path
+    if p.is_file():
+        rep = json.loads(p.read_text())
+    elif p.is_relative_to(ROOT):
+        rel = str(p.relative_to(ROOT))
+        sha = subprocess.run(["git", "log", "-1", "--format=%H", "--diff-filter=D", "--", rel],
+                             capture_output=True, text=True, cwd=ROOT).stdout.strip()
+        if sha:
+            shown = subprocess.run(["git", "show", f"{sha}^:{rel}"], capture_output=True, text=True, cwd=ROOT)
+            if shown.returncode == 0:
+                rep = json.loads(shown.stdout)
+    _REPORT_CACHE[path] = rep
+    return rep
+
+
+def prior_reports(tool: str, version: str, scorer: str, exclude: Path | None = None) -> list[tuple[str, dict]]:
+    """Every earlier report for this tool, version and scorer: ``results/converters.jsonl``
+    lines (their reports read from git history once deleted), then the other mini-bench
+    selections' reports. The label names the source run."""
+    found: list[tuple[str, dict]] = []
+    ledger = ROOT / "results" / "converters.jsonl"
+    seen: set[str] = set()
+    if ledger.is_file():
+        for ln in ledger.read_text().splitlines():
+            if not ln.strip():
+                continue
+            row = json.loads(ln)
+            if row.get("tool") != tool or row.get("version") != version or row.get("lens") != _LEDGER_LENS[scorer]:
+                continue
+            path = row.get("report_path")
+            if not path or path in seen:
+                continue
+            seen.add(path)
+            rep = _load_report(path)
+            if rep is not None:
+                found.append((f"{row['id_run']} ({path})", rep))
+    for p in sorted((ROOT / "results" / "mini_bench").glob(f"*/reports/{tool}__{scorer}.json")):
+        if exclude is not None and p.parents[1].resolve() == exclude.resolve():
+            continue
+        found.append((str(p.relative_to(ROOT)), json.loads(p.read_text())))
+    return found
+
+
+def prior_covered(tool: str, version: str, out_dir: Path) -> dict[str, tuple[str, object, bool]]:
+    """Documents both scorers already have for this tool and version (conversion is skipped)."""
+    px = prior_per_doc(prior_reports(tool, version, "pixel", out_dir), tool, version, "pixel")
+    dx = prior_per_doc(prior_reports(tool, version, "docxide", out_dir), tool, version, "docxide")
+    return {k: v for k, v in px.items() if k in dx}
+
+
+def _stats(vals: list[float]) -> dict[str, float | None]:
+    return {"mean": statistics.fmean(vals) if vals else None, "median": statistics.median(vals) if vals else None}
+
+
+def merge_reused(fresh: dict | None, prior: dict[str, tuple[str, object, bool]], keys: list[str], tool: str,
+                 scorer: str, *, version: str | None = None, track: str | None = None) -> dict:
+    """One report over ``keys``: prior values for covered documents, ``fresh`` (scored on
+    the rest) for the others. Summary fields are recomputed over the merged documents."""
+    rep = dict(fresh or {"track": "docxide_metrics" if scorer == "docxide" else track, "oracle": "microsoft_word"})
+    if scorer == "docxide" and fresh is None:
+        rep["fixture_track"], rep["dpi"] = track, 150
+    old = (fresh or {}).get("tools", {}).get(tool, {})
+    data = dict(old) if old else {"tool": tool, "version": version}
+    for stale in ("aggregate", "perfects", "pass_jaccard_20", "page_count_mismatch"):
+        data.pop(stale, None)  # computed over the fresh subset only
+    per = dict(old.get("per_doc") or {})
+    failures = list(old.get("generate_failures") or [])
+    reused: dict[str, int] = {}
+    for k in keys:
+        if k in prior and k not in per:
+            label, value, ok = prior[k]
+            per[k] = value
+            reused[label] = reused.get(label, 0) + 1
+            if not ok:
+                failures.append({"doc": k, "stage": "generate", "error": f"failed in reused run {label}"})
+    failed = {f["doc"] for f in failures}
+    unscored = set(old.get("unscored_docs") or [])
+    per = {k: per[k] for k in keys if k in per}
+    scored = [k for k in keys if k in per and k not in failed and k not in unscored]
+    rep["stems"] = list(keys)
+    rep["n"] = len(keys)
+    data.update(per_doc=per, generate_failures=failures, itt_n=len(keys), n_scored=len(scored),
+                failures=len(failed), reused_from=reused)
+    if scorer == "docxide":
+        data["metrics"] = {m: _stats([float(per[k][m]) for k in scored]) for m in ("jaccard", "text_boundary")}
+    else:
+        data.update(_stats([float(per[k]) for k in scored]))
+    rep["tools"] = {tool: data}
+    return rep
+
+
 def cmd_score(args: argparse.Namespace) -> None:
     from neurotic_docx_bench import docx_to_pdf as d2p
     from neurotic_docx_bench import docxide_metrics as dm
@@ -368,27 +505,35 @@ def cmd_score(args: argparse.Namespace) -> None:
     reports.mkdir(exist_ok=True)
     track = f"mini_bench:{out.name}"
     hw = hardware.hardware_info()
+    keys = [r["key"] for r in rows]
     for tool in tools:
         pdf_dir = out / "pdf" / tool
-        cands = {f.stem: pdf_dir / f"{f.stem}.pdf" for f in fixtures if (pdf_dir / f"{f.stem}.pdf").is_file()}
         for scorer, runner in (("pixel", d2p.run_eval), ("docxide", dm.run_eval)):
             json_out = reports / f"{tool}__{scorer}.json"
             if json_out.exists() and not args.force:
                 print(f"{tool} {scorer}: exists, skipped")
                 continue
-            with tempfile.TemporaryDirectory(prefix=f"mini-score-{tool}.") as tmp:
-                kw = dict(tools=(tool,), work_dir=Path(tmp), fixtures=fixtures, check_pins=False,
-                          score_only=True, candidates=cands, warnings=sel.warnings)
-                if scorer == "pixel":
-                    report = runner(json_out, track=track, jobs=args.jobs, **kw)
-                else:
-                    report = runner(json_out, fixture_track=track, score_workers=args.jobs, **kw)
+            # Documents an earlier run of this exact tool version already scored are reused.
+            prior = {} if args.no_reuse else prior_per_doc(
+                prior_reports(tool, vers.get(tool), scorer, out), tool, vers.get(tool), scorer)
+            todo = [f for f in fixtures if f.stem not in prior]
+            report = None
+            if todo:
+                cands = {f.stem: pdf_dir / f"{f.stem}.pdf" for f in todo if (pdf_dir / f"{f.stem}.pdf").is_file()}
+                with tempfile.TemporaryDirectory(prefix=f"mini-score-{tool}.") as tmp:
+                    kw = dict(tools=(tool,), work_dir=Path(tmp), fixtures=todo, check_pins=False,
+                              score_only=True, candidates=cands, warnings=sel.warnings)
+                    if scorer == "pixel":
+                        report = runner(json_out, track=track, jobs=args.jobs, **kw)
+                    else:
+                        report = runner(json_out, fixture_track=track, score_workers=args.jobs, **kw)
+            report = merge_reused(report, prior, keys, tool, scorer, version=vers.get(tool), track=track)
             report["tools"][tool]["version"] = vers.get(tool)
             json_out.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n")
             rel = json_out.resolve()
             rel = rel.relative_to(ROOT) if rel.is_relative_to(ROOT) else rel
             conv.append_report(out / "converters.jsonl", report, hardware=hw, report_path=str(rel))
-            print(f"{tool} {scorer}: {len(cands)}/{len(fixtures)} converted", flush=True)
+            print(f"{tool} {scorer}: {len(todo)} scored, {len(keys) - len(todo)} reused", flush=True)
     write_summary(out)
 
 
@@ -413,15 +558,24 @@ def write_summary(out: Path) -> None:
     buckets = {"all": [r["key"] for r in rows], "worst": [r["key"] for r in rows if r["bucket"] == "worst"],
                "spread": [r["key"] for r in rows if r["bucket"] == "spread"]}
     table = []
+    reuse_notes: list[str] = []
     for tool in vers:
         px_p, dx_p = out / "reports" / f"{tool}__pixel.json", out / "reports" / f"{tool}__docxide.json"
         if not (px_p.exists() and dx_p.exists()):
             continue
         px = json.loads(px_p.read_text())["tools"][tool]
         dx = json.loads(dx_p.read_text())["tools"][tool]
-        made = sum(1 for k in buckets["all"] if (out / "pdf" / tool / f"{k}.pdf").is_file())
-        line = {"tool": tool, "version": vers[tool], "pdfs": made}
+        # Converted = not a generate failure, here or in the earlier run a document was reused from.
+        failed = {f["doc"] if isinstance(f, dict) else f for f in px.get("generate_failures") or []}
+        made = sum(1 for k in buckets["all"] if k not in failed)
+        line = {"tool": tool, "version": vers[tool], "pdfs": made, "reused": sum((px.get("reused_from") or {}).values())}
+        if line["reused"]:
+            reuse_notes.append(f"{tool}: {line['reused']} of {len(rows)} documents reused from "
+                               + ", ".join(f"`{src}` ({n})" for src, n in px["reused_from"].items()))
         for b, keys in buckets.items():
+            if not keys:
+                line[b] = (float("nan"),) * 4
+                continue
             pix = _itt(px, keys, None)
             jac = _itt(dx, keys, "jaccard")
             tb = _itt(dx, keys, "text_boundary")
@@ -449,6 +603,10 @@ def write_summary(out: Path) -> None:
         md.append(f"| {d['tool']}{mark} | {d['version']} | {d['pdfs']} | {a[0]:.2f} | {a[1]:.2f} | {a[2]:.2f} | {a[3]:.2f} | {w[0]:.2f} | {s[0]:.2f} |")
     if note:
         md += ["", note]
+    if reuse_notes:
+        md += ["", "Scores reused from earlier runs of the same tool version on the same corpus/word documents "
+               "(pixel lens; the docxide lens reuses the same runs' docxide reports):", ""]
+        md += [f"- {n}" for n in reuse_notes]
     (out / "SUMMARY.md").write_text("\n".join(md) + "\n")
     print("\n".join(md))
 
@@ -467,11 +625,13 @@ def main() -> None:
     c.add_argument("--jubarte", help="jubarte binary (default: docx_to_pdf's resolution)")
     c.add_argument("--timeout", type=float, default=120)
     c.add_argument("--workers", type=int, default=1, help="documents converted at once per tool")
+    c.add_argument("--no-reuse", action="store_true", help="convert every document, even ones an earlier run scored")
     sc = sub.add_parser("score")
     sc.add_argument("--out", required=True)
     sc.add_argument("--tools", help="default: every tool in versions.json")
     sc.add_argument("--jobs", type=int, default=6)
     sc.add_argument("--force", action="store_true")
+    sc.add_argument("--no-reuse", action="store_true", help="score every document, even ones an earlier run has")
     sm = sub.add_parser("summary")
     sm.add_argument("--out", required=True)
     args = ap.parse_args()
