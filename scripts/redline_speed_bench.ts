@@ -142,6 +142,7 @@ const fixturesDirs = fixturesDirArg
 export function defaultCsharpDist(root: string = ROOT): string {
 	const candidates = [
 		join(root, "src/neurotic_docx_bench/utils/docxodus/docxodus-csharp"),
+		join(root, "../ooxmlsdk/Docxodus/tools/redline/bin/Release/net10.0"),
 		join(root, "../ooxmlsdk/Docxodus/tools/redline/bin/Release/net8.0"),
 		join(root, "../ooxmlsdk/Docxodus/tools/redline/bin/Release/net9.0"),
 	];
@@ -154,6 +155,10 @@ export function defaultCsharpDist(root: string = ROOT): string {
 /** Long-lived in-process Docxodus worker (docxodus-inproc binary). */
 export function defaultCsharpInprocDist(root: string = ROOT): string {
 	const candidates = [
+		join(
+			root,
+			"src/neurotic_docx_bench/utils/docxodus/docxodus-csharp-inproc/bin/Release/net10.0",
+		),
 		join(
 			root,
 			"src/neurotic_docx_bench/utils/docxodus/docxodus-csharp-inproc/bin/Release/net8.0",
