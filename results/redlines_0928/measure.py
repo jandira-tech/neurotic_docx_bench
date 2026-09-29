@@ -2,6 +2,7 @@
 
     uv run python results/redlines_0928/measure.py redlines jubarte-rust docxodus superdoc
     uv run python results/redlines_0928/measure.py accepted jubarte-rust docxodus superdoc
+    uv run python results/redlines_0928/measure.py rejected jubarte-rust docxodus superdoc
 
 redlines: ``<tool>/pdf_by_word/<key>_<tool>.pdf`` (the tool's redline, rendered by Word) against
 ``oracle_pdf/<key>.pdf`` (Word's own compare, rendered by Word), through
@@ -27,11 +28,12 @@ import sys
 import tempfile
 from pathlib import Path
 
-from neurotic_docx_bench import pipeline
+from neurotic_docx_bench import kernels, pipeline
 
 HERE = Path(__file__).parent
-CORPUS = Path("corpus/word")
-ACCEPTED_POOL = CORPUS / "pools" / "accepted_tracking_0928_renders.csv"
+CORPUS = Path('corpus/word')
+ACCEPTED_POOL = CORPUS / 'pools' / 'accepted_tracking_0928_renders.csv'
+REJECTED = Path('grok_run/wr0928/rejected_tracking/pdf')
 
 
 def _scalars(row: dict) -> dict:
@@ -40,25 +42,26 @@ def _scalars(row: dict) -> dict:
 
 def _summary(rows: dict[str, dict], expected: int) -> dict:
     overall = [pipeline.overall_from_result(r) for r in rows.values()]
-    ink = [r["ink_jaccard"] for r in rows.values() if r.get("ink_jaccard") is not None]
-    tb = [r["text_boundary"] for r in rows.values() if r.get("text_boundary") is not None]
+    ink = [r['ink_jaccard'] for r in rows.values() if r.get('ink_jaccard') is not None]
+    tb = [r['text_boundary'] for r in rows.values() if r.get('text_boundary') is not None]
 
     def stats(xs: list[float]) -> dict:
         if not xs:
-            return {"n": 0}
-        return {"n": len(xs), "mean": statistics.fmean(xs), "median": statistics.median(xs)}
+            return {'n': 0}
+        return {'n': len(xs), 'mean': statistics.fmean(xs), 'median': statistics.median(xs)}
 
     return {
-        "pairs": expected,
-        "scored": len(rows),
-        "missing": expected - len(rows),
-        "overall": stats(overall) | {
-            "exact_100": sum(x >= 100 for x in overall),
-            "at_least_90": sum(x >= 90 for x in overall),
-            "below_50": sum(x < 50 for x in overall),
+        'pairs': expected,
+        'scored': len(rows),
+        'missing': expected - len(rows),
+        'overall': stats(overall)
+        | {
+            'exact_100': sum(x >= 100 for x in overall),
+            'at_least_90': sum(x >= 90 for x in overall),
+            'below_50': sum(x < 50 for x in overall),
         },
-        "ink_jaccard": stats(ink),
-        "text_boundary": stats(tb),
+        'ink_jaccard': stats(ink),
+        'text_boundary': stats(tb),
     }
 
 
@@ -68,37 +71,59 @@ def _word_dir(tool: str, new: str, old: str) -> Path:
 
 
 def redlines(tool: str) -> tuple[dict, list[str]]:
-    oracle = HERE / "oracle_pdf"
-    keys = sorted(p.stem for p in oracle.glob("*.pdf"))
-    with tempfile.TemporaryDirectory(prefix=f"measure-{tool}.") as work:
-        rows = pipeline.score_folders_full(oracle, _word_dir(tool, "pdf_by_word", "pdf"), Path(work), candidate_tool=tool)
+    oracle = HERE / 'oracle_pdf'
+    keys = sorted(p.stem for p in oracle.glob('*.pdf'))
+    with tempfile.TemporaryDirectory(prefix=f'measure-{tool}.') as work:
+        rows = pipeline.score_folders_full(
+            oracle, _word_dir(tool, 'pdf_by_word', 'pdf'), Path(work), candidate_tool=tool
+        )
     return {k: _scalars(v) for k, v in rows.items()}, keys
 
 
 def accepted(tool: str) -> tuple[dict, list[str]]:
     word = {}
     for row in csv.DictReader(open(ACCEPTED_POOL)):
-        cmp_id = row["key"].split("_")[1]
-        word[cmp_id] = CORPUS / row["pdf"]
-    selected = sorted(p.stem for p in (HERE / tool / "accepted" / "src").glob("*.docx"))
-    suffix = f"_accepted_tracking_{tool}"
-    with tempfile.TemporaryDirectory(prefix=f"measure-acc-{tool}.") as tmp:
-        o, c, work = (Path(tmp) / d for d in ("oracle", "candidate", "work"))
+        cmp_id = row['key'].split('_')[1]
+        word[cmp_id] = CORPUS / row['pdf']
+    selected = sorted(p.stem for p in (HERE / tool / 'accepted' / 'src').glob('*.docx'))
+    suffix = f'_accepted_tracking_{tool}'
+    with tempfile.TemporaryDirectory(prefix=f'measure-acc-{tool}.') as tmp:
+        o, c, work = (Path(tmp) / d for d in ('oracle', 'candidate', 'work'))
         for d in (o, c, work):
             d.mkdir()
         for cmp_id in selected:
-            (o / f"{cmp_id}.pdf").symlink_to(word[cmp_id].resolve())
-        for pdf in _word_dir(tool, "accepted/by_word", "accepted/out").glob(f"*{suffix}.pdf"):
-            (c / f"{pdf.stem.removesuffix(suffix)}.pdf").symlink_to(pdf.resolve())
+            (o / f'{cmp_id}.pdf').symlink_to(word[cmp_id].resolve())
+        for pdf in _word_dir(tool, 'accepted/by_word', 'accepted/out').glob(f'*{suffix}.pdf'):
+            (c / f'{pdf.stem.removesuffix(suffix)}.pdf').symlink_to(pdf.resolve())
+        rows = pipeline.score_folders_plain(o, c, work)
+    return {k: _scalars(v) for k, v in rows.items()}, selected
+
+
+def rejected(tool: str) -> tuple[dict, list[str]]:
+    """Each tool's redline with every change rejected by Word, against Word's own compare
+    rejected the same way (``grok_run/wr0928/rejected_tracking``, corpus set
+    ``rejected_tracking_0928``). A faithful redline rejects back to the base document."""
+    word_dir = REJECTED if REJECTED.exists() else REJECTED.parent / 'out'
+    word = {p.stem.removesuffix('_rejected_tracking'): p for p in word_dir.glob('*_rejected_tracking.pdf')}
+    selected = sorted(p.stem for p in (HERE / tool / 'rejected' / 'src').glob('*.docx') if p.stem in word)
+    suffix = f'_rejected_tracking_{tool}'
+    with tempfile.TemporaryDirectory(prefix=f'measure-rej-{tool}.') as tmp:
+        o, c, work = (Path(tmp) / d for d in ('oracle', 'candidate', 'work'))
+        for d in (o, c, work):
+            d.mkdir()
+        for cmp_id in selected:
+            (o / f'{cmp_id}.pdf').symlink_to(word[cmp_id].resolve())
+        for pdf in _word_dir(tool, 'rejected/by_word', 'rejected/out').glob(f'*{suffix}.pdf'):
+            (c / f'{pdf.stem.removesuffix(suffix)}.pdf').symlink_to(pdf.resolve())
         rows = pipeline.score_folders_plain(o, c, work)
     return {k: _scalars(v) for k, v in rows.items()}, selected
 
 
 def identity(tool: str) -> tuple[dict, list[str]]:
     """Control: Word's accepted renders scored against themselves (``tool`` is a label)."""
-    selected = [row["pdf"] for row in csv.DictReader(open(ACCEPTED_POOL))]
-    with tempfile.TemporaryDirectory(prefix="measure-identity.") as tmp:
-        o, c, work = (Path(tmp) / d for d in ("oracle", "candidate", "work"))
+    selected = [row['pdf'] for row in csv.DictReader(open(ACCEPTED_POOL))]
+    with tempfile.TemporaryDirectory(prefix='measure-identity.') as tmp:
+        o, c, work = (Path(tmp) / d for d in ('oracle', 'candidate', 'work'))
         for d in (o, c, work):
             d.mkdir()
         for rel in selected:
@@ -110,20 +135,21 @@ def identity(tool: str) -> tuple[dict, list[str]]:
 
 def main() -> None:
     track, tools = sys.argv[1], sys.argv[2:]
-    run = {"redlines": redlines, "accepted": accepted, "identity": identity}[track]
+    run = {'redlines': redlines, 'accepted': accepted, 'rejected': rejected, 'identity': identity}[track]
     for tool in tools:
         rows, expected = run(tool)
         summary = _summary(rows, len(expected))
-        out = HERE / f"scores_{track}_{tool}.json"
+        out = HERE / f'scores_{track}_{tool}.json'
         missing = sorted(set(expected) - set(rows))
-        out.write_text(json.dumps({"summary": summary, "missing": missing, "rows": rows}, indent=1, sort_keys=True))
-        o = summary["overall"]
+        summary['scorer_backend'] = kernels.backend_id()
+        out.write_text(json.dumps({'summary': summary, 'missing': missing, 'rows': rows}, indent=1, sort_keys=True))
+        o = summary['overall']
         print(
-            f"{track} {tool}: {summary['scored']}/{summary['pairs']} scored, "
-            f"mean {o.get('mean', 0):.2f}, median {o.get('median', 0):.2f}, "
-            f"100: {o['exact_100'] if o['n'] else 0}, >=90: {o['at_least_90'] if o['n'] else 0} -> {out}"
+            f'{track} {tool}: {summary["scored"]}/{summary["pairs"]} scored, '
+            f'mean {o.get("mean", 0):.2f}, median {o.get("median", 0):.2f}, '
+            f'100: {o["exact_100"] if o["n"] else 0}, >=90: {o["at_least_90"] if o["n"] else 0} -> {out}'
         )
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
