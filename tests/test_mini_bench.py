@@ -126,5 +126,76 @@ def test_pymupdf_pro_runs_on_every_selection_and_long_documents_are_flagged():
     assert mb.pymupdf_note(["clean__a"], pages.__getitem__) == ""
 
 
+def _prior(tool, version, per_doc, stems, *, scorer="pixel", failed=(), track="corpus/word:all"):
+    data = {"tool": tool, "version": version, "per_doc": per_doc,
+            "generate_failures": [{"doc": d, "stage": "generate", "error": "boom"} for d in failed]}
+    rep = {"stems": list(stems), "tools": {tool: data}}
+    if scorer == "pixel":
+        rep["track"] = track
+    else:
+        rep["track"], rep["fixture_track"] = "docxide_metrics", track
+    return rep
+
+
+def test_prior_per_doc_takes_only_the_same_tool_version_scorer_and_corpus():
+    reports = [
+        ("old", _prior("soffice", "LO 1", {"clean__a": 11.0}, ["clean__a"])),
+        ("other-corpus", _prior("soffice", "LO 2", {"clean__b": 12.0}, ["clean__b"], track="docx_to_pdf")),
+        ("jac", _prior("soffice", "LO 2", {"clean__a": {"jaccard": 5.0, "text_boundary": 9.0}}, ["clean__a"], scorer="docxide")),
+        ("good", _prior("soffice", "LO 2", {"clean__a": 80.0}, ["clean__a", "clean__c"], failed=["clean__c"])),
+    ]
+    got = mb.prior_per_doc(reports, "soffice", "LO 2", "pixel")
+    # clean__c is covered: the prior run failed it, which is a result (0 under ITT).
+    assert got == {"clean__a": ("good", 80.0, True), "clean__c": ("good", 0.0, False)}
+    jac = mb.prior_per_doc(reports, "soffice", "LO 2", "docxide")
+    assert jac == {"clean__a": ("jac", {"jaccard": 5.0, "text_boundary": 9.0}, True)}
+
+
+def test_merge_reused_keeps_prior_values_and_fresh_scores_with_provenance():
+    prior = {"clean__a": ("run-1", 80.0, True), "clean__c": ("run-1", 0.0, False)}
+    fresh = {"stems": ["clean__b"], "track": "mini_bench:x", "tools": {"soffice": {
+        "tool": "soffice", "version": "LO 2", "per_doc": {"clean__b": 60.0}, "generate_failures": []}}}
+    rep = mb.merge_reused(fresh, prior, ["clean__a", "clean__b", "clean__c"], "soffice", "pixel")
+    data = rep["tools"]["soffice"]
+    assert rep["stems"] == ["clean__a", "clean__b", "clean__c"]
+    assert data["per_doc"] == {"clean__a": 80.0, "clean__b": 60.0, "clean__c": 0.0}
+    assert [f["doc"] for f in data["generate_failures"]] == ["clean__c"]
+    assert data["itt_n"] == 3 and data["n_scored"] == 2 and data["failures"] == 1
+    assert data["mean"] == 70.0 and data["median"] == 70.0
+    assert data["reused_from"] == {"run-1": 2}
+
+
+def test_merge_reused_with_everything_covered_needs_no_fresh_report():
+    prior = {"clean__a": ("r", {"jaccard": 40.0, "text_boundary": 90.0}, True)}
+    rep = mb.merge_reused(None, prior, ["clean__a"], "soffice", "docxide", version="LO 2", track="mini_bench:x")
+    data = rep["tools"]["soffice"]
+    assert rep["track"] == "docxide_metrics" and data["version"] == "LO 2"
+    assert data["metrics"]["jaccard"]["mean"] == 40.0 and data["metrics"]["text_boundary"]["median"] == 90.0
+    assert data["reused_from"] == {"r": 1}
+
+
+def test_convert_skips_documents_both_scorers_already_have(tmp_path, monkeypatch):
+    fake = tmp_path / "fake-conv"
+    fake.write_text('#!/bin/sh\nprintf "%%PDF-1.4 fake" > "$2"\n')
+    fake.chmod(0o755)
+    lines = ["bucket,rank,key,source_score,docx,pdf"]
+    for k in ("a", "b"):
+        (tmp_path / f"{k}.docx").write_bytes(b"PK")
+        lines.append(f"worst,1,clean__{k},1.0,{tmp_path / f'{k}.docx'},x.pdf")
+    out = tmp_path / "sel"
+    out.mkdir()
+    (out / "selection.csv").write_text("\n".join(lines) + "\n")
+    (out / "selection.json").write_text("{}")
+    from neurotic_docx_bench import docx_to_pdf as d2p
+
+    monkeypatch.setattr(d2p, "resolve_tool_binary", lambda tool, override=None: fake)
+    monkeypatch.setattr(mb, "versions", lambda tools, jubarte: {t: "fake 1" for t in tools})
+    covered = {"clean__a": ("r", 1.0, True)}
+    monkeypatch.setattr(mb, "prior_covered", lambda tool, version, out_dir: covered)
+    args = mb.argparse.Namespace(out=str(out), tools="docxide-pdf", jubarte=None, timeout=10, workers=1)
+    mb.cmd_convert(args)
+    assert sorted(p.name for p in (out / "pdf" / "docxide-pdf").iterdir()) == ["clean__b.pdf"]
+
+
 def test_key_splits_into_state_and_stem():
     assert mb.split_key("with_comments_clean__abc_def") == ("with_comments_clean", "abc_def")
