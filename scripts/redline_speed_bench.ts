@@ -106,10 +106,7 @@ const rustDist = resolve(
 				: "src/neurotic_docx_bench/utils/jubarte/jubarte-rust",
 	),
 );
-const csharpDist = resolve(
-	ROOT,
-	arg("--csharp-dist", defaultCsharpDist()),
-);
+const csharpDist = resolve(ROOT, arg("--csharp-dist", defaultCsharpDist()));
 const csharpInprocDist = resolve(
 	ROOT,
 	arg("--csharp-inproc-dist", defaultCsharpInprocDist()),
@@ -118,10 +115,8 @@ const rustInprocDist = resolve(
 	ROOT,
 	arg("--rust-inproc-dist", defaultRustInprocDist()),
 );
-const wasmDist = resolve(
-	ROOT,
-	arg("--wasm-dist", defaultJubarteWasmDist()),
-);
+const wasmDist = resolve(ROOT, arg("--wasm-dist", defaultJubarteWasmDist()));
+const pairsCsv = arg("--pairs-csv", "");
 const fixturesDirArg = arg("--fixtures", "");
 const fixturesDirs = fixturesDirArg
 	? [resolve(ROOT, fixturesDirArg)]
@@ -136,10 +131,7 @@ export function defaultCsharpDist(root: string = ROOT): string {
 	const candidates = [
 		join(root, "src/neurotic_docx_bench/utils/docxodus/docxodus-csharp"),
 		join(root, "../ooxmlsdk/Docxodus/tools/redline/bin/Release/net8.0"),
-		join(
-			root,
-			"../ooxmlsdk/Docxodus/tools/redline/bin/Release/net9.0",
-		),
+		join(root, "../ooxmlsdk/Docxodus/tools/redline/bin/Release/net9.0"),
 	];
 	for (const c of candidates) {
 		if (existsSync(join(c, "redline"))) return c;
@@ -154,10 +146,7 @@ export function defaultCsharpInprocDist(root: string = ROOT): string {
 			root,
 			"src/neurotic_docx_bench/utils/docxodus/docxodus-csharp-inproc/bin/Release/net8.0",
 		),
-		join(
-			root,
-			"src/neurotic_docx_bench/utils/docxodus/docxodus-csharp-inproc",
-		),
+		join(root, "src/neurotic_docx_bench/utils/docxodus/docxodus-csharp-inproc"),
 	];
 	for (const c of candidates) {
 		if (existsSync(join(c, "docxodus-inproc"))) return c;
@@ -173,10 +162,7 @@ export function defaultRustInprocDist(root: string = ROOT): string {
 			root,
 			"src/neurotic_docx_bench/utils/jubarte/jubarte-rust-inproc/target/release",
 		),
-		join(
-			root,
-			"src/neurotic_docx_bench/utils/jubarte/jubarte-rust-inproc",
-		),
+		join(root, "src/neurotic_docx_bench/utils/jubarte/jubarte-rust-inproc"),
 	];
 	for (const c of candidates) {
 		if (
@@ -347,6 +333,70 @@ export function buildPairs(
 
 // ── engine resolution ────────────────────────────────────────────────────────
 
+/** One row of a `--pairs-csv` plan: header `key,base,next[,category]`, paths without commas. */
+export interface PlannedPair {
+	key: string;
+	base: string;
+	next: string;
+	category: string;
+}
+
+export function pairsFromCsv(text: string): PlannedPair[] {
+	const lines = text.split(/\r?\n/).filter((l) => l.trim() !== "");
+	const head = (lines.shift() ?? "").split(",");
+	const col = (name: string) => {
+		const i = head.indexOf(name);
+		if (i === -1)
+			throw new Error(
+				`pairs csv: no ${name} column (header: ${head.join(",")})`,
+			);
+		return i;
+	};
+	const [k, b, n] = [col("key"), col("base"), col("next")];
+	const c = head.indexOf("category");
+	const seen = new Set<string>();
+	return lines.map((line) => {
+		const f = line.split(",");
+		const key = f[k]!;
+		if (seen.has(key)) throw new Error(`pairs csv: duplicate key ${key}`);
+		seen.add(key);
+		return {
+			key,
+			base: f[b]!,
+			next: f[n]!,
+			category: c === -1 ? "" : (f[c] ?? ""),
+		};
+	});
+}
+
+/**
+ * Fixtures for a planned pair list: one per distinct content (SHA-1), named by basename
+ * (a hash suffix on a name clash). `nameOf` maps every given path to its fixture name.
+ */
+export function fixturesFromPaths(paths: string[]): {
+	fixtures: FixtureFile[];
+	nameOf: Map<string, string>;
+} {
+	const byHash = new Map<string, FixtureFile>();
+	const usedNames = new Set<string>();
+	const nameOf = new Map<string, string>();
+	for (const path of paths) {
+		if (nameOf.has(path)) continue;
+		const sha1 = createHash("sha1").update(readFileSync(path)).digest("hex");
+		let fx = byHash.get(sha1);
+		if (!fx) {
+			let name = basename(path);
+			if (usedNames.has(name))
+				name = `${name.replace(/\.docx$/i, "")}__${sha1.slice(0, 8)}.docx`;
+			usedNames.add(name);
+			fx = { name, path, sha1 };
+			byHash.set(sha1, fx);
+		}
+		nameOf.set(path, fx.name);
+	}
+	return { fixtures: [...byHash.values()], nameOf };
+}
+
 export function isNativeCliMethod(method: string): boolean {
 	const id = engineMethodId(method);
 	// True CLI-per-call engines (spawn per redline).
@@ -365,19 +415,13 @@ export function usesSamplyProfile(method: string): boolean {
 }
 
 export function engineMethodId(method: string): string {
-	if (
-		method === "docxodus-cs-inproc" ||
-		method === "docxodus-csharp-inproc"
-	) {
+	if (method === "docxodus-cs-inproc" || method === "docxodus-csharp-inproc") {
 		return "docxodus-csharp-inproc";
 	}
 	if (method === "docxodus-cs" || method === "docxodus-csharp") {
 		return "docxodus-csharp";
 	}
-	if (
-		method === "jubarte-rust-inproc" ||
-		method === "jubarte-rs-inproc"
-	) {
+	if (method === "jubarte-rust-inproc" || method === "jubarte-rs-inproc") {
 		return "jubarte-rust-inproc";
 	}
 	// Before generic "rust" match — jubarte-rust-wasm would otherwise collapse.
@@ -415,14 +459,10 @@ const JUBARTE_LANES = new Set([
 ]);
 {
 	const requested = new Set(
-		methods
-			.map((m) => engineMethodId(m))
-			.filter((id) => JUBARTE_LANES.has(id)),
+		methods.map((m) => engineMethodId(m)).filter((id) => JUBARTE_LANES.has(id)),
 	);
 	if (requested.size > 0 && requested.size < JUBARTE_LANES.size) {
-		const missing = [...JUBARTE_LANES].filter(
-			(id) => !requested.has(id),
-		);
+		const missing = [...JUBARTE_LANES].filter((id) => !requested.has(id));
 		console.error(
 			`error: --methods includes jubarte lanes ${[...requested].join(", ")} ` +
 				`but is missing ${missing.join(", ")}. The three jubarte lanes ` +
@@ -671,7 +711,8 @@ async function timedLoop(
 	warmupN: number,
 ): Promise<{
 	samples: number[];
-	failures: { key: string; error: string }[];
+	sampleKeys: string[];
+	failures: { key: string; error: string; ms?: number }[];
 	outSizes: number[];
 	wallMs: number;
 }> {
@@ -683,7 +724,8 @@ async function timedLoop(
 		}
 	}
 	const samples: number[] = [];
-	const failures: { key: string; error: string }[] = [];
+	const sampleKeys: string[] = [];
+	const failures: { key: string; error: string; ms?: number }[] = [];
 	const outSizes: number[] = [];
 	const wall0 = performance.now();
 	for (let r = 0; r < repsN; r++) {
@@ -692,17 +734,20 @@ async function timedLoop(
 			try {
 				const out = await engine(p.base, p.next);
 				samples.push(performance.now() - s);
+				sampleKeys.push(p.key);
 				outSizes.push(out.byteLength);
 			} catch (e) {
 				failures.push({
 					key: p.key,
 					error: (e as Error).message || String(e),
+					ms: performance.now() - s,
 				});
 			}
 		}
 	}
 	return {
 		samples,
+		sampleKeys,
 		failures,
 		outSizes,
 		wallMs: performance.now() - wall0,
@@ -800,14 +845,32 @@ async function main() {
 	mkdirSync(join(outDir, "cpu"), { recursive: true });
 	mkdirSync(join(outDir, "fixtures_bytes"), { recursive: true });
 
-	console.log(`redline_speed_bench: collecting up to ${fixtureCount} fixtures`);
-	console.log(`  dirs:\n    ${fixturesDirs.join("\n    ")}`);
-	const fixtures = collectFixtures(fixturesDirs, fixtureCount);
+	const plan = pairsCsv
+		? pairsFromCsv(readFileSync(resolve(ROOT, pairsCsv), "utf8"))
+		: null;
+	const planned = plan
+		? fixturesFromPaths(
+				plan.flatMap((p) => [resolve(ROOT, p.base), resolve(ROOT, p.next)]),
+			)
+		: null;
+	if (plan) {
+		console.log(
+			`redline_speed_bench: ${plan.length} planned pairs from ${pairsCsv}`,
+		);
+	} else {
+		console.log(
+			`redline_speed_bench: collecting up to ${fixtureCount} fixtures`,
+		);
+		console.log(`  dirs:\n    ${fixturesDirs.join("\n    ")}`);
+	}
+	const fixtures = planned
+		? planned.fixtures
+		: collectFixtures(fixturesDirs, fixtureCount);
 	console.log(`  unique fixtures: ${fixtures.length} (target ${fixtureCount})`);
 	if (fixtures.length < 2) {
 		throw new Error("need ≥2 unique fixtures");
 	}
-	if (fixtures.length < fixtureCount) {
+	if (!plan && fixtures.length < fixtureCount) {
 		console.warn(
 			`  ⚠ only ${fixtures.length} unique fixtures available (asked ${fixtureCount})`,
 		);
@@ -830,7 +893,22 @@ async function main() {
 	);
 
 	const names = fixtures.map((f) => f.name);
-	const pairs = buildPairs(names, bytes, minPairs, seed);
+	const category = new Map<string, string>();
+	const pairs: Pair[] = plan
+		? plan.map((p) => {
+				const baseName = planned!.nameOf.get(resolve(ROOT, p.base))!;
+				const nextName = planned!.nameOf.get(resolve(ROOT, p.next))!;
+				category.set(p.key, p.category);
+				return {
+					key: p.key,
+					baseName,
+					nextName,
+					base: bytes.get(baseName)!,
+					next: bytes.get(nextName)!,
+					round: 0,
+				};
+			})
+		: buildPairs(names, bytes, minPairs, seed);
 	console.log(
 		`  pairs=${pairs.length} (min=${minPairs}, seed=${seed}, rounds≈${(pairs[pairs.length - 1]?.round ?? 0) + 1})`,
 	);
@@ -907,7 +985,8 @@ async function main() {
 		console.log(`  init ${round(initMs)}ms`);
 
 		let samples: number[] = [];
-		let failures: { key: string; error: string }[] = [];
+		let sampleKeys: string[] = [];
+		let failures: { key: string; error: string; ms?: number }[] = [];
 		let outSizes: number[] = [];
 		let wallMs = 0;
 		let profilePath: string | null = null;
@@ -960,6 +1039,7 @@ async function main() {
 				);
 				const timed = await timedLoop(engine, pairs, reps, warmup);
 				samples = timed.samples;
+				sampleKeys = timed.sampleKeys;
 				failures = timed.failures;
 				outSizes = timed.outSizes;
 				wallMs = timed.wallMs;
@@ -970,6 +1050,7 @@ async function main() {
 				async () => timedLoop(engine, pairs, reps, warmup),
 			);
 			samples = timed.samples;
+			sampleKeys = timed.sampleKeys;
 			failures = timed.failures;
 			outSizes = timed.outSizes;
 			wallMs = timed.wallMs;
@@ -987,6 +1068,34 @@ async function main() {
 			}
 		}
 
+		if (plan && sampleKeys.length === samples.length) {
+			// Per-pair timings (ok and failed), so a run can be read by variation category.
+			mkdirSync(join(outDir, "per_pair"), { recursive: true });
+			const lines = samples.map((ms, i) =>
+				JSON.stringify({
+					key: sampleKeys[i],
+					category: category.get(sampleKeys[i]!),
+					ok: true,
+					ms: round(ms),
+					out_bytes: outSizes[i],
+				}),
+			);
+			for (const f of failures) {
+				lines.push(
+					JSON.stringify({
+						key: f.key,
+						category: category.get(f.key),
+						ok: false,
+						ms: f.ms === undefined ? null : round(f.ms),
+						error: f.error.slice(0, 300),
+					}),
+				);
+			}
+			writeFileSync(
+				join(outDir, "per_pair", `${method}.jsonl`),
+				`${lines.join("\n")}\n`,
+			);
+		}
 		if (samples.length === 0) {
 			console.error(
 				`  ALL ${failures.length} calls failed — sample: ${failures[0]?.error}`,
@@ -1135,7 +1244,9 @@ async function main() {
 	md.push("");
 	md.push("## Profiles");
 	md.push("");
-	md.push("Native engines use **samply** (open in Firefox Profiler / samply load):");
+	md.push(
+		"Native engines use **samply** (open in Firefox Profiler / samply load):",
+	);
 	md.push("");
 	md.push("```bash");
 	for (const m of methods) {
