@@ -3682,6 +3682,93 @@ def try_fetch_cmd(
     )
 
 
+@try_app.command(name="remote")
+def try_remote_cmd(
+    tool: str = typer.Option(
+        ...,
+        "--tool",
+        help="a known tool (jubarte, docxodus, soffice, pdftoppm, mutool, pymupdf) or a command template: "
+        "{base} {next} {out} redline, {input} {out} convert, {pdf}|{input} {outdir} [{dpi}] png",
+    ),
+    version: str | None = typer.Option(
+        None, "--version", help="jubarte only: exact version (local, else GitHub release, else crates.io); default latest"
+    ),
+    tasks: list[str] | None = typer.Option(None, "--task", help="redline | convert | png; default every task the tool runs"),
+    seed: int | None = typer.Option(None, "--seed", help="pick seed; default a fresh one, reported"),
+    language: str | None = typer.Option("en", "--language", help="docx-corpus language filter ('' for any)"),
+    doc_type: str | None = typer.Option(None, "--type", help="docx-corpus document type filter (legal, forms, ...)"),
+    with_sot: bool = typer.Option(False, "--with-sot", help="pick only documents (pairs) we hold Word SOT for"),
+    renderer: str = typer.Option("soffice", "--renderer", help="renders both redlines: soffice | word"),
+    corpus_root: Path = typer.Option(Path("corpus/word"), "--corpus-root", help="where the Word SOT lives"),
+    root: Path = typer.Option(Path("."), "--root", help="repository root (docxodus runs from here)"),
+    dpi: int = typer.Option(144, "--dpi"),
+    json_out: Path | None = typer.Option(None, "--json", help="write the report here"),
+    jsonl_out: Path | None = typer.Option(None, "--jsonl", help="append one line per task here"),
+    revision: str | None = typer.Option(None, "--revision", help="docx-corpus dataset revision (default main)"),
+) -> None:
+    """Score a tool on random superdoc docx-corpus documents: against Word when we hold its
+    output for them, else against docxodus (redline), soffice (DOCX->PDF), pdftoppm (PDF->PNG)."""
+    import random as _random
+    import tempfile as _tempfile
+
+    from neurotic_docx_bench import jubarte_release, tryout_remote as tr
+
+    if renderer not in ("soffice", "word"):
+        raise _try_fail("--renderer must be soffice or word", code=2)
+    try:
+        the_tool = tr.make_tool(tool, root=root, version=version)
+        chosen = tr.select_tasks(the_tool, tasks)
+        seed = seed if seed is not None else _random.SystemRandom().randrange(1, 2**31)
+        sot = tr.load_sot(corpus_root)
+        need = max(tr.DOCS_NEEDED[t] for t in chosen)
+        rows = tr.pick_rows(tr.load_index(revision=revision), need, seed=seed, language=language or None,
+                            doc_type=doc_type, sot=sot if with_sot else None)
+        with _tempfile.TemporaryDirectory(prefix="bench-try-docs.") as tmp:
+            docs = [tr.download_doc(r, Path(tmp), fetch=jubarte_release.http_get) for r in rows]
+            results = tr.run(the_tool, docs, sot, chosen, fallback=tr.fallback_tools(root), renderer=renderer, dpi=dpi)
+    except tr.RemoteError as exc:
+        raise _try_fail(str(exc)) from exc
+
+    table = Table(title=f"{the_tool.version} · seed {seed}", box=box.SIMPLE)
+    for column in ("task", "SOT", "score", "jaccard", "pages", "tool s", "note"):
+        table.add_column(column)
+    for r in results:
+        s = r["scores"] or {}
+        score = s.get("overall", s.get("pixel"))
+        jac = s.get("jaccard", s.get("ink_jaccard"))
+        if jac is not None and "ink_jaccard" in s:
+            jac = 100.0 * float(jac)
+        sot_label = f"{r['sot']['source']}" if r["sot"] else "-"
+        table.add_row(
+            r["task"],
+            sot_label,
+            "" if score is None else f"{score:.2f}",
+            "" if jac is None else f"{jac:.2f}",
+            f"{s['page_count_candidate']}/{s['page_count_oracle']}" if s else "",
+            f"{r['seconds'].get('tool', 0):.2f}" if "tool" in r["seconds"] else "",
+            r["skipped"] or r["error"] or "",
+        )
+    console.print(table)
+    for doc in docs:
+        console.print(f"{doc.id[:16]}  {doc.language}/{doc.type}  {doc.url}", highlight=False)
+    console.print(f"seed {seed} (pass --seed {seed} to pick these documents again)")
+    stamp = {"timestamp": datetime.now(UTC).isoformat(timespec="seconds"), "seed": seed, "renderer": renderer,
+             "language": language or None, "type": doc_type, "with_sot": with_sot}
+    lines = [{**stamp, **r} for r in results]
+    if json_out is not None:
+        json_out.parent.mkdir(parents=True, exist_ok=True)
+        json_out.write_text(json.dumps(lines, indent=1))
+        console.print(f"report {json_out}")
+    if jsonl_out is not None:
+        jsonl_out.parent.mkdir(parents=True, exist_ok=True)
+        with jsonl_out.open("a") as fh:
+            for line in lines:
+                fh.write(json.dumps(line) + "\n")
+        console.print(f"appended {len(lines)} lines to {jsonl_out}")
+    if any(r["error"] for r in results):  # a skip (the tool is the SOT) is not a failure
+        raise typer.Exit(code=1)
+
+
 # --- bench corpus: the Word corpus under corpus/word ---------------------------
 
 corpus_app = typer.Typer(
