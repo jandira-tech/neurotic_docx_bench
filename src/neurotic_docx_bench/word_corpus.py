@@ -178,7 +178,8 @@ def _pdf_string(lit: bytes | None, hexs: bytes | None) -> str:
 
 def pdf_meta(path: Path) -> PdfMeta:
     """``/Producer`` and ``/Creator`` of the PDF at ``path`` (empty when absent). The Info
-    dictionary usually sits at the tail, so the head and the tail of the file are read."""
+    dictionary usually sits at the tail, so the head and the tail of the file are read; a long
+    xref table can push it out of that window, and then the whole file is."""
     size = path.stat().st_size
     with path.open("rb") as fh:
         if size <= _PDF_HEAD + _PDF_TAIL:
@@ -187,6 +188,9 @@ def pdf_meta(path: Path) -> PdfMeta:
             head = fh.read(_PDF_HEAD)
             fh.seek(size - _PDF_TAIL)
             data = head + fh.read()
+            if not _PDF_STRING.search(data):
+                fh.seek(0)
+                data = fh.read()
     producer = creator = ""
     for m in _PDF_STRING.finditer(data):
         value = _pdf_string(m.group("lit"), m.group("hex"))
@@ -279,11 +283,20 @@ class Docset:
 _G = "grok_run"
 _WB = "corpus/word_based"
 _SD = "corpus/word_redlines_superdoc"
-_NC = "corpus/no_comments_pdf_was_generated_by_word"
+_NC = f"{_G}/no_comments_pdf_was_generated_by_word"
 _OR = f"{_G}/wordpdf_redline_oracles"
 _WR = f"{_G}/wr0926"
 _FX = FIXTURES_PREFIX
+_PF = f"{_G}/wr0928/pdf_fill"
+_AT = f"{_G}/wr0928/accepted_tracking"
 _BLACKLIST = Exclusion(f"{_G}/word_blacklist/blacklist.tsv", "word_blacklist", blacklist=True)
+#: Ids (``sha256[:10]`` of the docx) Word will not open cleanly: a repair / recover-contents
+#: prompt, an error, a hang. Applies to every set by content, whatever a set calls the file,
+#: and takes every compare built on such a document with it. First column the id, then why.
+#: Only the corpus's own originals belong here; a tool's output Word will not open is that
+#: tool's failure, scored against it, and never a reason to drop a corpus document.
+WORD_INVALID = f"{_G}/word_invalid/word_invalid.tsv"
+WORD_INVALID_LABEL = "word_invalid"
 _FIXTURE_NOTES = (
     Note(f"{_G}/fixtures_500/{LICENSE_FILE}", LICENSE_FILE),
     Note(f"{_G}/fixtures_500/NOTICE", "NOTICE"),
@@ -450,12 +463,29 @@ DOCSETS: tuple[Docset, ...] = (
         mapping=f"{_WB}/centralized_mapping.csv",
         sources="word_based",
     ),
+    Docset(
+        "pdf_fill_0928",
+        "The September 28 2026 Word render of the documents and compares that had no Word PDF "
+        "(notices/audit_2026-09-28_docx_without_word_pdf.csv); word_refused holds the documents Word "
+        "would not open, left out through the word_invalid list.",
+        documents=Group((f"{_PF}/documents_docx", f"{_PF}/word_refused"), (f"{_PF}/documents_pdf",), require_pdf=True),
+        comparisons=Group((f"{_PF}/comparisons_docx",), (f"{_PF}/comparisons_pdf",), require_pdf=True),
+        mapping=f"{_PF}/mapping.csv",
+        sources="pdf_fill_0928",
+    ),
+    Docset(
+        "accepted_tracking_0928",
+        "100 Word compares (40 with comments, 60 without; accepted_tracking_selection.csv) with every "
+        "tracked change accepted by Word, named <compare id>_accepted_tracking, with their Word PDFs.",
+        documents=Group((f"{_AT}/docx",), (f"{_AT}/pdf",), require_pdf=True),
+        notes=(Note(f"{_AT}/selection.csv", "accepted_tracking_selection.csv"),),
+    ),
 )
 
 
 def origins() -> tuple[str, ...]:
     """Every origin folder or file the sets read, in table order, once."""
-    seen: dict[str, None] = {}
+    seen: dict[str, None] = {WORD_INVALID: None}
     for ds in DOCSETS:
         for rel in (*ds.folders, ds.mapping, *(n.origin for n in ds.notes), *(e.origin for e in ds.exclusions)):
             if rel:
@@ -534,6 +564,9 @@ class SetReport:
     orphans: tuple[str, ...] = ()  # PDF origins without a docx
     filled: tuple[str, ...] = ()  # names whose PDF came from a later folder
     superseded: tuple[str, ...] = ()  # names whose render of this set went to pdf_prior
+    # names whose render is a third one of bytes that already carry a current and a prior render
+    # (the same docx under several names of an untagged set, each rendered on its own): not copied
+    redundant: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -585,8 +618,18 @@ class _Planner:
         self.renames: list[Rename] = []
         self.mappings: dict[str, dict[str, tuple[str, str]]] = {}
         self.shas: dict[str, str] = {}
+        self._invalid: set[str] | None = None
+        self.invalid_names: dict[str, set[str]] = {}  # set -> origin names left out as Word-invalid
 
     # -- origins
+
+    @property
+    def invalid_ids(self) -> set[str]:
+        if self._invalid is None:
+            path = self.root / WORD_INVALID
+            lines = path.read_text().splitlines() if path.is_file() else []
+            self._invalid = {line.split("\t", 1)[0].strip() for line in lines if line.strip()}
+        return self._invalid
 
     def resolve(self, rel: str) -> Path:
         if rel.startswith(FIXTURES_PREFIX + "/"):
@@ -721,7 +764,9 @@ class _Planner:
         self.renames.append(Rename(rel, existing.docx, existing.id, sha, ds.name))
         return existing
 
-    def attach(self, ds: Docset, entry: Document, rel: str, *, prior: bool, name: str) -> None:
+    def attach(
+        self, ds: Docset, entry: Document, rel: str, *, prior: bool, name: str, group: Group | None = None
+    ) -> None:
         sha = self.sha(rel)
         if not prior and not entry.pdf_src:
             entry.pdf_src, entry.pdf_sha, entry.pdf_set = rel, sha, ds.name
@@ -731,6 +776,10 @@ class _Planner:
         if sha in (entry.pdf_sha, entry.pdf_prior_sha):
             return  # the same render seen from another origin
         if entry.pdf_prior_src:
+            if group and not group.tagged and entry.pdf_prior_src.rpartition("/")[0] in group.pdf + group.fallback:
+                # the same docx under several names of this set, each rendered on its own
+                self.sets[ds.name].redundant += (name,)
+                return
             raise CorpusError(f"second prior render for {entry.stem}: {entry.pdf_prior_src} and {rel}")
         entry.pdf_prior_src, entry.pdf_prior_sha = rel, sha
         self.renames.append(Rename(rel, entry.pdf_prior, entry.id, sha, ds.name))
@@ -761,6 +810,10 @@ class _Planner:
                 if isinstance(pair, tuple):
                     names = (name, *pair)
             labels = [label for label, members in excluded.items() if any(n in members for n in names)]
+            sources_invalid = self.invalid_names.get(ds.sources or ds.name, set()) if comparisons else set()
+            if self.sha(rel)[:ID_LEN] in self.invalid_ids or sources_invalid.intersection(names[1:]):
+                self.invalid_names.setdefault(ds.name, set()).add(name)
+                labels.append(WORD_INVALID_LABEL)
             if labels:
                 for label in labels:
                     report.excluded[label] = (*report.excluded.get(label, ()), name)
@@ -788,11 +841,11 @@ class _Planner:
                     continue
             entry = self.entry(ds, rel, name, base, nxt)
             if pdf_rel:
-                self.attach(ds, entry, pdf_rel, prior=False, name=name)
+                self.attach(ds, entry, pdf_rel, prior=False, name=name, group=group)
                 if name in filled:
                     report.filled += (name,)
             if prior_rel:
-                self.attach(ds, entry, prior_rel, prior=True, name=name)
+                self.attach(ds, entry, prior_rel, prior=True, name=name, group=group)
             if entry.id not in ids:
                 ids.append(entry.id)
         if comparisons:
@@ -1000,6 +1053,7 @@ def _provenance(plan_: Plan) -> dict[str, Any]:
             "docset_id": docset_id_for(plan_, name),
             "absent": list(report.absent),
             "superseded": list(report.superseded),
+            "redundant": list(report.redundant),
             "filled": list(report.filled),
             "orphans": list(report.orphans),
             "excluded": {k: list(v) for k, v in report.excluded.items()},
