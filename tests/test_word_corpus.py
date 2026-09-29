@@ -214,6 +214,11 @@ def make_tree(root: Path) -> Path:
     _docx(at / "docx" / "cmp0000001_accepted_tracking.docx", "compare A B accepted")
     _pdf(at / "pdf" / "cmp0000001_accepted_tracking.pdf", "pdf compare A B accepted")
     _put(at / "selection.csv", "key,id\n")
+    # rejected_tracking_0928: the same with the changes rejected
+    rt = g / "wr0928" / "rejected_tracking"
+    _docx(rt / "docx" / "cmp0000002_rejected_tracking.docx", "compare B A rejected")
+    _pdf(rt / "pdf" / "cmp0000002_rejected_tracking.pdf", "pdf compare B A rejected")
+    _put(rt / "selection.csv", "key,id\n")
     return root
 
 
@@ -794,6 +799,8 @@ def test_plan_pdf_fill_gives_documents_and_compares_the_word_pdf_they_lacked(tre
     assert gb.stem.startswith(f"{gdoc.stem}__vs__{bdoc.stem}")
     (accepted,) = [d for d in plan.documents if "accepted_tracking_0928" in d.sets]
     assert accepted.stem.endswith("_cmp0000001_accepted_tracking") and accepted.pdf_src
+    (rejected,) = [d for d in plan.documents if "rejected_tracking_0928" in d.sets]
+    assert rejected.stem.endswith("_cmp0000002_rejected_tracking") and rejected.pdf_src
 
 
 def test_summary_and_corpus_entries(tree: Path) -> None:
