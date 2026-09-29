@@ -10,6 +10,7 @@ A call past the per-pair timeout (120 s) is a failure; its row keeps the timeout
 - jubarte-rust: 10000 of 10000 planned pairs
 - jubarte-rust-inproc: 10000 of 10000 planned pairs
 - jubarte-wasm: 10000 of 10000 planned pairs
+- superdoc: 10000 of 10000 planned pairs
 
 ## Same pairs for every tool
 
@@ -19,6 +20,7 @@ A call past the per-pair timeout (120 s) is a failure; its row keeps the timeout
 | jubarte-rust | 1335 common | 1335 | 1335 | 0 | 56.0 | 88.2 | 203.0 | 548.1 | 3818.1 | 117.8 |
 | jubarte-rust-inproc | 1335 common | 1335 | 1335 | 0 | 49.8 | 81.7 | 195.9 | 510.2 | 3818.8 | 109.1 |
 | jubarte-wasm | 1335 common | 1335 | 1335 | 0 | 90.4 | 149.7 | 383.5 | 928.8 | 5859.9 | 199.9 |
+| superdoc | 1335 common | 1335 | 0 | 1335 | - | - | - | - | - | - |
 
 ## By pair category
 
@@ -41,6 +43,11 @@ A call past the per-pair timeout (120 s) is a failure; its row keeps the timeout
 | jubarte-wasm | identity | 300 | 300 | 0 | 4.4 | 18.6 | 76.5 | 294.7 | 474.3 | 5.6 |
 | jubarte-wasm | reverse | 1000 | 1000 | 0 | 56.2 | 99.6 | 308.1 | 759.8 | 5146.3 | 99.6 |
 | jubarte-wasm | word_compare | 2739 | 2739 | 0 | 54.0 | 99.1 | 295.9 | 793.4 | 5859.9 | 271.4 |
+| superdoc | all | 10000 | 798 | 9202 | 75.7 | 418.9 | 1623.1 | 6350.0 | 31746.8 | 334.3 |
+| superdoc | grid | 5961 | 16 | 5945 | 93.4 | 336.2 | 3585.5 | 3585.5 | 3585.5 | 5.4 |
+| superdoc | identity | 300 | 265 | 35 | 343.2 | 1095.9 | 3403.1 | 12359.0 | 31746.8 | 290.4 |
+| superdoc | reverse | 1000 | 144 | 856 | 65.6 | 76.4 | 129.4 | 208.3 | 228.7 | 11.0 |
+| superdoc | word_compare | 2739 | 373 | 2366 | 59.0 | 73.7 | 156.1 | 219.3 | 291.8 | 27.5 |
 
 ## By base size quartile
 
@@ -62,3 +69,7 @@ A call past the per-pair timeout (120 s) is a failure; its row keeps the timeout
 | jubarte-wasm | Q2 | 2497 | 2497 | 0 | 38.9 | 80.1 | 229.5 | 883.2 | 3453.3 | 200.0 |
 | jubarte-wasm | Q3 | 2502 | 2502 | 0 | 96.6 | 154.3 | 405.1 | 1182.5 | 4454.4 | 386.0 |
 | jubarte-wasm | Q4 | 2502 | 2502 | 0 | 185.1 | 269.2 | 762.0 | 1974.9 | 5859.9 | 673.4 |
+| superdoc | Q1 | 2499 | 585 | 1914 | 63.3 | 86.3 | 173.5 | 282.7 | 3585.5 | 50.5 |
+| superdoc | Q2 | 2497 | 85 | 2412 | 236.1 | 285.4 | 685.0 | 1512.0 | 1512.0 | 24.3 |
+| superdoc | Q3 | 2502 | 73 | 2429 | 696.1 | 1212.9 | 5847.2 | 7270.1 | 7270.1 | 88.5 |
+| superdoc | Q4 | 2502 | 55 | 2447 | 1623.1 | 3109.2 | 12359.0 | 31746.8 | 31746.8 | 171.0 |
