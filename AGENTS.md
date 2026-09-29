@@ -342,10 +342,12 @@ the latest line to the baseline.
   `moved.csv`). Copies inside a corpus origin (`word_corpus.origins()`, the `_fixtures` ones
   included) are never folded: `bench corpus build` reads same bytes under different names as
   aliases and renders. Code that walks grok_run must follow symlinks.
-- **A file that crashes Word** (`[retry]` with "Connection is invalid") goes to the back of the
-  next batch pass in `scripts/word_pdf.py` and fails for good after two crashes; such passes do
-  not spend the 3-pass wedge budget. Before this, one crasher led every pass and the rest of the
-  folder was reported "never reached".
+- **Every retried file goes to the back of the next batch pass** in `scripts/word_pdf.py`: one
+  that crashes Word ("Connection is invalid"), one that loads empty (a declined repair prompt), and
+  the one a wedged pass stopped on. A `[retry]` file fails for good after two such passes, and a
+  pass that logged a `[retry]` does not spend the 3-pass stall budget. Before this, one bad file (or
+  three Word-invalid files in a row) led every pass and the rest of the folder was reported "never
+  reached". Word's AppleEvent timeout is `APPLE_EVENT_TIMEOUT` = 240 s (was 600).
 - **soffice render** requires exit 0 **and** the output file, and deletes a stale PDF before
   a forced re-render (parity with the original shell script).
 
