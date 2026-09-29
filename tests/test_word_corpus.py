@@ -149,8 +149,12 @@ def make_tree(root: Path) -> Path:
     _docx(root / WB / "docx_redlines_word" / "y_z_word_redline.docx", "redline y z", tracked=True)
     _pdf(g / "wordpdf_redline_oracles" / "word_based" / "x_y_redline.pdf", "pdf redline x y")
     _pdf(g / "wordpdf_redline_oracles" / "word_based" / "y_z_word_redline.pdf", "pdf redline y z")
+    # the sealed holdout lists, in the legacy <base>_<next> key space
+    _put(root / WB / "holdout.txt", "# sealed\nx_y\nfile_1_file_2\nnot_a_pair\n")
+    _put(root / SD / "holdout.txt", "p_q\n")
     # Word's accept-all of x_y, saved by Word (no Word PDF of it)
     _docx(root / WB / "word_working_roundtrip" / "x_y_word_redline_accepted.docx", "x y accepted", comments=True)
+    _pdf(g / "wr0929" / "word_based_accepted_word_pdf" / "x_y_word_redline_accepted.pdf", "pdf x y accepted")
     # word_based_randomized and word_redlines_superdoc: one pair each
     _docx(root / WB / "docx_source_randomized" / "file_1.docx", "docx file_1")
     _docx(root / WB / "docx_source_randomized" / "file_2.docx", "docx file_2")
@@ -1009,9 +1013,25 @@ def test_plan_a_third_render_of_the_same_bytes_in_an_untagged_set_is_redundant(t
     assert f"{NC}/pdf_source/x_third.pdf" not in {r.original for r in plan.renames}
 
 
-def test_plan_word_accepted_documents_have_no_pdf(tree: Path) -> None:
+def test_plan_word_accepted_documents_carry_their_word_pdf(tree: Path) -> None:
     plan_ = word_corpus.plan(tree, only=["word_based_accepted_word"])
     acc = _doc(plan_, "x_y_word_redline_accepted")
     assert acc.sets == ("word_based_accepted_word",)
-    assert acc.state == "with_comments_clean" and acc.pdf == ""
+    assert acc.state == "with_comments_clean"
+    assert acc.pdf_src == "grok_run/wr0929/word_based_accepted_word_pdf/x_y_word_redline_accepted.pdf"
     assert plan_.sets["word_based_accepted_word"].documents == (acc.id,)
+
+
+def test_build_writes_the_holdout_as_word_keys(tree: Path) -> None:
+    dest = tree / "corpus" / "word"
+    sets = ["word_based", "word_based_randomized", "word_redlines_superdoc", "word_based_0926"]
+    report = word_corpus.build(tree, dest, only=sets)
+    stems = {n: _cmp(report.plan, n, in_set=s).stem for n, s in (
+        ("x_y_redline", "word_based"), ("file_1_file_2_redline", "word_based_randomized"),
+        ("p_q_redline", "word_redlines_superdoc"),
+    )}
+    lines = (dest / "pools" / "holdout.txt").read_text().splitlines()
+    assert sorted(line for line in lines if not line.startswith("#")) == sorted(stems.values())
+    prov = json.loads((dest / "PROVENANCE.json").read_text())
+    assert prov["holdout"]["missing"] == {f"{WB}/holdout.txt": ["not_a_pair"]}
+    assert prov["holdout"]["n"] == 3
