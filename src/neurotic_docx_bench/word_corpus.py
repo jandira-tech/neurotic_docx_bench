@@ -289,6 +289,7 @@ _WR = f"{_G}/wr0926"
 _FX = FIXTURES_PREFIX
 _PF = f"{_G}/wr0928/pdf_fill"
 _AT = f"{_G}/wr0928/accepted_tracking"
+_RT = f"{_G}/wr0928/rejected_tracking"
 _BLACKLIST = Exclusion(f"{_G}/word_blacklist/blacklist.tsv", "word_blacklist", blacklist=True)
 #: Ids (``sha256[:10]`` of the docx) Word will not open cleanly: a repair / recover-contents
 #: prompt, an error, a hang. Applies to every set by content, whatever a set calls the file,
@@ -479,6 +480,14 @@ DOCSETS: tuple[Docset, ...] = (
         "tracked change accepted by Word, named <compare id>_accepted_tracking, with their Word PDFs.",
         documents=Group((f"{_AT}/docx",), (f"{_AT}/pdf",), require_pdf=True),
         notes=(Note(f"{_AT}/selection.csv", "accepted_tracking_selection.csv"),),
+    ),
+    Docset(
+        "rejected_tracking_0928",
+        "100 more Word compares (25 with comments, 75 without; rejected_tracking_selection.csv), none of "
+        "them in accepted_tracking_0928, with every tracked change rejected by Word, named "
+        "<compare id>_rejected_tracking, with their Word PDFs.",
+        documents=Group((f"{_RT}/docx",), (f"{_RT}/pdf",), require_pdf=True),
+        notes=(Note(f"{_RT}/selection.csv", "rejected_tracking_selection.csv"),),
     ),
 )
 

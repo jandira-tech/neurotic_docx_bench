@@ -36,6 +36,7 @@ manifest, provenance, tables, pools and notices are tracked.
 | fixtures_word_compares | 0 | 164 | a251277596bd | 0 | 0 | 0 | 2 | 0 | 0 |
 | pdf_fill_0928 | 608 | 106 | df018bfc7332 | 1 | 8 | 0 | 0 | 11 | 0 |
 | accepted_tracking_0928 | 100 | 0 | c9cfd04d45a4 | 0 | 0 | 0 | 0 | 0 | 0 |
+| rejected_tracking_0928 | 99 | 0 | ff19663035ef | 0 | 0 | 0 | 0 | 0 | 0 |
 
 ## Sets
 
@@ -180,4 +181,11 @@ The September 28 2026 Word render of the documents and compares that had no Word
 
 * documents: `grok_run/wr0928/accepted_tracking/docx`
 * their Word PDFs: `grok_run/wr0928/accepted_tracking/pdf`
+
+### rejected_tracking_0928
+
+100 more Word compares (25 with comments, 75 without; rejected_tracking_selection.csv), none of them in accepted_tracking_0928, with every tracked change rejected by Word, named <compare id>_rejected_tracking, with their Word PDFs.
+
+* documents: `grok_run/wr0928/rejected_tracking/docx`
+* their Word PDFs: `grok_run/wr0928/rejected_tracking/pdf`
 
