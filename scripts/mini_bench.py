@@ -52,9 +52,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 CORPUS = ROOT / "corpus" / "word"
 WARM_BIN = ROOT / "tools" / "d2p-warm" / "bin"
-# pymupdf-pro joins only a --max-pages <= 3 selection: unlicensed it converts only the
-# first 3 pages, and the pixel scorer compares min(pages), so on a longer document it
-# would be scored on a truncated copy.
+# pymupdf-pro runs on every selection, but unlicensed it converts only the first 3 pages
+# and the pixel scorer compares min(pages): on a longer document it is judged on those 3
+# pages only. SUMMARY.md says how many selected documents that affects (pymupdf_note).
 DEFAULT_TOOLS = (
     "jubarte",
     "docxide-pdf",
@@ -257,7 +257,7 @@ def cmd_convert(args: argparse.Namespace) -> None:
         tools = args.tools.split(",")
     else:
         max_pages = json.loads((out / "selection.json").read_text()).get("max_pages")
-        tools = [*DEFAULT_TOOLS, *(["pymupdf-pro"] if max_pages is not None and max_pages <= 3 else [])]
+        tools = default_tools(max_pages)
     jubarte =Path(args.jubarte).resolve() if args.jubarte else None
     vers = versions(tools, jubarte)
     (out / "versions.json").write_text(json.dumps(vers, indent=2) + "\n")
@@ -392,6 +392,20 @@ def cmd_score(args: argparse.Namespace) -> None:
     write_summary(out)
 
 
+def default_tools(max_pages: int | None) -> list[str]:
+    """Every tool; ``max_pages`` no longer changes the list (pymupdf-pro is flagged instead)."""
+    return [*DEFAULT_TOOLS, "pymupdf-pro"]
+
+
+def pymupdf_note(keys: list[str], pages_of) -> str:
+    """The caveat for pymupdf-pro's row, empty when no selected document is past page 3."""
+    over = sum(pages_of(k) > 3 for k in keys)
+    if not over:
+        return ""
+    return (f"pymupdf-pro (unlicensed) converts only the first 3 pages: {over} of {len(keys)} selected "
+            "documents are longer, and on those it is scored on its 3 pages only.")
+
+
 def write_summary(out: Path) -> None:
     rows = _selection(out)
     vers = json.loads((out / "versions.json").read_text())
@@ -415,6 +429,7 @@ def write_summary(out: Path) -> None:
         table.append(line)
     table.sort(key=lambda d: -d["all"][0])
     n = len(rows)
+    note = pymupdf_note(buckets["all"], _word_pdf_pages) if any(d["tool"] == "pymupdf-pro" for d in table) else ""
     md = [
         f"# Mini-bench {out.name}",
         "",
@@ -430,7 +445,10 @@ def write_summary(out: Path) -> None:
     ]
     for d in table:
         a, w, s = d["all"], d["worst"], d["spread"]
-        md.append(f"| {d['tool']} | {d['version']} | {d['pdfs']} | {a[0]:.2f} | {a[1]:.2f} | {a[2]:.2f} | {a[3]:.2f} | {w[0]:.2f} | {s[0]:.2f} |")
+        mark = " (first 3 pages only)" if d["tool"] == "pymupdf-pro" and note else ""
+        md.append(f"| {d['tool']}{mark} | {d['version']} | {d['pdfs']} | {a[0]:.2f} | {a[1]:.2f} | {a[2]:.2f} | {a[3]:.2f} | {w[0]:.2f} | {s[0]:.2f} |")
+    if note:
+        md += ["", note]
     (out / "SUMMARY.md").write_text("\n".join(md) + "\n")
     print("\n".join(md))
 
@@ -445,7 +463,7 @@ def main() -> None:
     s.add_argument("--out", required=True)
     c = sub.add_parser("convert")
     c.add_argument("--out", required=True)
-    c.add_argument("--tools", help="default: DEFAULT_TOOLS, plus pymupdf-pro when the selection is <= 3 pages")
+    c.add_argument("--tools", help="default: DEFAULT_TOOLS plus pymupdf-pro")
     c.add_argument("--jubarte", help="jubarte binary (default: docx_to_pdf's resolution)")
     c.add_argument("--timeout", type=float, default=120)
     c.add_argument("--workers", type=int, default=1, help="documents converted at once per tool")
