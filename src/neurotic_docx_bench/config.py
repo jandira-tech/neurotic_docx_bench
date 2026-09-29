@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import re
 import shlex
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from pathlib import Path
 from typing import Any
 
@@ -43,7 +43,7 @@ class CorpusEntry:
 @dataclass(frozen=True)
 class RunConfig:
     name: str
-    render: str  # "soffice" | "passthrough" (more in later PRs)
+    render: str  # "soffice" | "word" | "passthrough" | "playwright"; "auto" resolved at load
     docx: Path | None = None       # folder of candidate DOCX to render (soffice)
     modified: Path | None = None   # folder of already-rendered PDFs (passthrough)
     generate: str | None = None    # shell command to produce candidate docx (writes $RUN_DIR/docx)
@@ -100,6 +100,14 @@ class BenchConfig:
     # ⇒ legacy behaviour: each run's ``generate`` command is executed verbatim
     # and inherits the generators' own argparse defaults.
     corpora: tuple[CorpusEntry, ...] = field(default_factory=tuple)
+    # The backend every docx the bench renders goes through (candidate redlines, the
+    # accepted and roundtrip copies, their ground truth): ``word`` where this machine
+    # has Word, ``soffice`` elsewhere, unless the yaml names one.
+    renderer: str = "soffice"
+    # ``{renderer: corpus root}``. When declared, ``source_of_truth`` and
+    # ``extra_oracle_dirs`` are relative to the root of ``renderer``, so a Word render
+    # is scored against Word PDFs and a LibreOffice render against LibreOffice PDFs.
+    oracle_roots: dict[str, Path] = field(default_factory=dict)
 
 
 def corpora_for_run(cfg: BenchConfig, rc: RunConfig) -> tuple[CorpusEntry, ...]:
@@ -137,7 +145,9 @@ def expand_generate_commands(cfg: BenchConfig, rc: RunConfig) -> list[str]:
     ]
 
 
-_KNOWN_RENDERERS = frozenset({"soffice", "passthrough", "playwright", "word"})
+_KNOWN_RENDERERS = frozenset({"auto", "soffice", "passthrough", "playwright", "word"})
+# The backends that render docx and so must match the oracle they are scored against.
+_DOCX_RENDERERS = frozenset({"soffice", "word"})
 
 # Exact version pins. Anchored with \A...\z so the WHOLE string must match
 # (the previous unanchored .search() accepted malformed tails like
@@ -295,11 +305,31 @@ def load_config(path: Path | str) -> BenchConfig:
         p = Path(value)
         return p if p.is_absolute() else (base / p)
 
+    from neurotic_docx_bench.render import resolve_backend
+
+    renderer = resolve_backend(str(data.get("renderer") or "auto"))
+    if renderer not in _DOCX_RENDERERS:
+        raise ValueError(f"{path}: 'renderer' must be auto, word or soffice, got '{renderer}'")
+    oracle_roots: dict[str, Path] = {}
+    for backend, root in (data.get("oracle_roots") or {}).items():
+        resolved_root = _resolve(root)
+        assert resolved_root is not None
+        oracle_roots[str(backend)] = resolved_root
+    if oracle_roots and renderer not in oracle_roots:
+        raise ValueError(f"{path}: oracle_roots has no '{renderer}' root for the renderer in use")
+
+    def _oracle(value: str, backend: str = renderer) -> Path:
+        # relative to the renderer's corpus root when roots are declared
+        if oracle_roots:
+            return oracle_roots[backend] / value
+        resolved = _resolve(value)
+        assert resolved is not None
+        return resolved
+
     sot = data.get("source_of_truth")
     if not sot:
         raise ValueError(f"{path}: 'source_of_truth' is required")
-    source_of_truth = _resolve(sot)
-    assert source_of_truth is not None
+    source_of_truth = _oracle(sot)
 
     scoring_raw = data.get("scoring") or {}
     scoring = ScoringConfig(dpi=int(scoring_raw.get("dpi", 144)))
@@ -318,6 +348,12 @@ def load_config(path: Path | str) -> BenchConfig:
             raise ValueError(
                 f"{path}: run '{name}' has unknown render backend '{render}' "
                 f"(known: {', '.join(sorted(_KNOWN_RENDERERS))})",
+            )
+        render = renderer if render == "auto" else render
+        if oracle_roots and render in _DOCX_RENDERERS and render != renderer:
+            raise ValueError(
+                f"{path}: run '{name}' renders with {render} but the oracle is {renderer}; "
+                "use render: auto, or set the top-level renderer",
             )
         _validate_pin(path, name, raw)
         run_corpora = _parse_run_corpora(path, name, raw, corpora)
@@ -371,16 +407,17 @@ def load_config(path: Path | str) -> BenchConfig:
                 f"{path}: visual_oracles.{vname} not found or not a directory: {vp}",
             )
         visual_oracles[vname] = resolved
-    # visual_redlines defaults to source_of_truth if not explicitly declared.
+    # visual_redlines defaults to source_of_truth if not explicitly declared; a viewer is
+    # measured against what Word prints, so the Word root wins when there is one.
     if "visual_redlines" not in visual_oracles:
-        visual_oracles["visual_redlines"] = source_of_truth
+        visual_oracles["visual_redlines"] = _oracle(sot, "word") if "word" in oracle_roots else source_of_truth
 
     extra_raw = data.get("extra_oracle_dirs") or []
     if not isinstance(extra_raw, list):
         raise ValueError(f"{path}: 'extra_oracle_dirs' must be a list of paths")
     extra_oracle_dirs: list[Path] = []
     for entry in extra_raw:
-        resolved_extra = _resolve(entry)
+        resolved_extra = _oracle(entry)
         if resolved_extra is None or not resolved_extra.is_dir():
             raise ValueError(
                 f"{path}: extra_oracle_dirs entry not found or not a directory: {entry}",
@@ -403,6 +440,8 @@ def load_config(path: Path | str) -> BenchConfig:
         extra_oracle_dirs=tuple(extra_oracle_dirs),
         holdout_list=holdout_list,
         corpora=corpora,
+        renderer=renderer,
+        oracle_roots=oracle_roots,
     )
 
 
@@ -421,15 +460,4 @@ def environment_config_for_run(cfg: BenchConfig, run_name: str) -> BenchConfig:
             f"No run named {run_name!r} in config (available: "
             f"{[r.name for r in cfg.runs]})",
         )
-    return BenchConfig(
-        source_of_truth=cfg.source_of_truth,
-        scoring=cfg.scoring,
-        runs=matching,
-        accepted_ground_truth=cfg.accepted_ground_truth,
-        generate_scripts=cfg.generate_scripts,
-        visual_oracles=cfg.visual_oracles,
-        memory_budgets=cfg.memory_budgets,
-        extra_oracle_dirs=cfg.extra_oracle_dirs,
-        holdout_list=cfg.holdout_list,
-        corpora=cfg.corpora,
-    )
+    return replace(cfg, runs=matching)
