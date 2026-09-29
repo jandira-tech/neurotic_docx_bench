@@ -127,7 +127,7 @@ def cmd_select(args: argparse.Namespace) -> None:
     pool = {**{k: 0.0 for k in failed}, **line["scores"]}
     pool = filter_pages(pool, _word_pdf_pages, args.max_pages)
     picks = select_docs(pool, args.n)
-    out = Path(args.out)
+    out = Path(args.out).resolve()
     out.mkdir(parents=True, exist_ok=True)
     missing = []
     with open(out / "selection.csv", "w", newline="") as fh:
@@ -247,7 +247,7 @@ def versions(tools: list[str], jubarte: Path | None) -> dict[str, str]:
 def cmd_convert(args: argparse.Namespace) -> None:
     from neurotic_docx_bench import docx_to_pdf as d2p
 
-    out = Path(args.out)
+    out = Path(args.out).resolve()
     rows = _selection(out)
     if args.tools:
         tools = args.tools.split(",")
@@ -328,7 +328,7 @@ def cmd_score(args: argparse.Namespace) -> None:
     from neurotic_docx_bench.ledger import converters as conv
     from neurotic_docx_bench.word_pdf_source import select_corpus_word_pdfs, word_pdf_from_config
 
-    out = Path(args.out)
+    out = Path(args.out).resolve()
     rows = _selection(out)
     vers = json.loads((out / "versions.json").read_text())
     tools = args.tools.split(",") if args.tools else list(vers)

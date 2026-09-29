@@ -70,5 +70,26 @@ def test_itt_reads_per_doc_and_counts_a_missing_document_as_zero():
     assert mb._itt(docxide, ["clean__a", "clean__b"], "jaccard") == [40.0, 0.0]
 
 
+def test_convert_writes_cli_pdfs_under_a_relative_out(tmp_path, monkeypatch):
+    # Each CLI call runs in a scratch cwd, so a relative --out must be resolved first.
+    fake = tmp_path / "fake-conv"
+    fake.write_text('#!/bin/sh\nprintf "%%PDF-1.4 fake" > "$2"\n')
+    fake.chmod(0o755)
+    docx = tmp_path / "a.docx"
+    docx.write_bytes(b"PK")
+    monkeypatch.chdir(tmp_path)
+    out = Path("sel")
+    out.mkdir()
+    (out / "selection.csv").write_text(f"bucket,rank,key,source_score,docx,pdf\nworst,1,clean__a,1.0,{docx},x.pdf\n")
+    (out / "selection.json").write_text("{}")
+    from neurotic_docx_bench import docx_to_pdf as d2p
+
+    monkeypatch.setattr(d2p, "resolve_tool_binary", lambda tool, override=None: fake)
+    monkeypatch.setattr(mb, "versions", lambda tools, jubarte: {t: "fake 1" for t in tools})
+    args = mb.argparse.Namespace(out="sel", tools="docxide-pdf", jubarte=None, timeout=10)
+    mb.cmd_convert(args)
+    assert (tmp_path / "sel" / "pdf" / "docxide-pdf" / "clean__a.pdf").read_bytes().startswith(b"%PDF-")
+
+
 def test_key_splits_into_state_and_stem():
     assert mb.split_key("with_comments_clean__abc_def") == ("with_comments_clean", "abc_def")
