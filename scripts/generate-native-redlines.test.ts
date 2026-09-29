@@ -532,6 +532,75 @@ describe("generate-native-redlines", () => {
     30_000,
   );
 
+  it.each(["jubarte-rust-inproc", "docxodus-csharp-inproc"])(
+    "a %s pair that times out costs only that pair: the stuck worker is killed and the next pair gets a fresh one",
+    async (method) => {
+      const tmp = mkdtempSync(join(tmpdir(), "gen-inproc-timeout-"));
+      const before = process.env.WORKER_REPLY_TIMEOUT_MS;
+      process.env.WORKER_REPLY_TIMEOUT_MS = "1000";
+      try {
+        const dist = join(tmp, "dist");
+        mkdirSync(dist);
+        const pidFile = join(tmp, "worker.pids");
+        const worker = [
+          "#!/bin/sh",
+          `echo $$ >> '${pidFile}'`,
+          "echo READY",
+          "while read cmd a b c; do",
+          '  case "$cmd" in',
+          '    COMPARE) if grep -q slow "$a"; then while :; do :; done; fi; cp "$b" "$c"; echo "OK 1 1";;',
+          "    QUIT) echo BYE; exit 0;;",
+          "  esac",
+          "done",
+        ].join("\n");
+        for (const name of ["jubarte-worker", "docxodus-inproc"]) {
+          writeFileSync(join(dist, name), worker, { mode: 0o755 });
+        }
+        writeFileSync(join(tmp, "slow.docx"), "slow");
+        writeFileSync(join(tmp, "a.docx"), "base");
+        writeFileSync(join(tmp, "b.docx"), "next");
+        writeFileSync(join(tmp, "c.docx"), "next2");
+        const manifest = join(tmp, "manifest.csv");
+        writeFileSync(manifest, "key,base,next\nk1,slow,b\nk2,a,b\nk3,a,c\n");
+        const t0 = Date.now();
+        const res = await runBatch({
+          method,
+          dist,
+          out: join(tmp, "out"),
+          runDir: join(tmp, "run"),
+          manifest,
+          sourceDir: tmp,
+          status: "",
+          tool: "t",
+          force: true,
+        });
+        expect(Date.now() - t0).toBeLessThan(10_000);
+        expect(res.failed.map((f) => f.doc)).toEqual(["k1"]);
+        expect(res.failed[0].error).toMatch(/timeout/);
+        expect(readFileSync(join(tmp, "out", "k2_t.docx"), "utf8")).toBe("next");
+        expect(readFileSync(join(tmp, "out", "k3_t.docx"), "utf8")).toBe("next2");
+        const pids = readFileSync(pidFile, "utf8").trim().split("\n").map(Number);
+        expect(pids).toHaveLength(2);
+        const alive = (pid: number) => {
+          try {
+            process.kill(pid, 0);
+            return true;
+          } catch {
+            return false;
+          }
+        };
+        const deadline = Date.now() + 3000;
+        while (pids.some(alive) && Date.now() < deadline) await new Promise((r) => setTimeout(r, 50));
+        expect(pids.filter(alive)).toEqual([]);
+      } finally {
+        if (before === undefined) delete process.env.WORKER_REPLY_TIMEOUT_MS;
+        else process.env.WORKER_REPLY_TIMEOUT_MS = before;
+        rmSync(tmp, { recursive: true, force: true });
+      }
+    },
+    90_000,
+  );
+
   it("runBatch creates the run dir the CLI writes generate_failures.json into", async () => {
     const tmp = mkdtempSync(join(tmpdir(), "gen-rundir-"));
     try {

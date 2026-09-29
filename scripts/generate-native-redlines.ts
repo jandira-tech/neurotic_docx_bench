@@ -30,13 +30,12 @@ import { installDocxodusNodeCompat, resolveDocxodusEntry } from "./docxodus-node
 import { runSuperDocVitest } from "./prosemirror-headless-editor-server.ts";
 
 // Per-reply timeout for the long-lived inproc worker (READY handshake + each
-// COMPARE reply). The 15s default is ample for the normal corpus (median
-// ~17ms) but too short for pathological run-fragmented inputs like the 276k-run
-// dissertation, whose single compare takes ~35s natively (WASM_PERF_PLAN /
-// jubarte TODO §1). Override with WORKER_REPLY_TIMEOUT_MS for large-doc runs so
-// the inproc "fair algorithm" lane reports instead of spuriously timing out.
-const WORKER_REPLY_TIMEOUT_MS =
-	Number(process.env.WORKER_REPLY_TIMEOUT_MS) || 15_000;
+// COMPARE reply), read from WORKER_REPLY_TIMEOUT_MS when a worker loads. The 15s
+// default is ample for the normal corpus (median ~17ms) but too short for
+// pathological run-fragmented inputs like the 276k-run dissertation, whose single
+// compare takes ~35s natively (WASM_PERF_PLAN / jubarte TODO §1). Raise it for
+// large-doc runs so the inproc "fair algorithm" lane reports instead of spuriously
+// timing out.
 
 export interface Pair {
 	base: string;
@@ -876,115 +875,138 @@ async function loadLongLivedCompareWorker(opts: {
 				`(checked ${opts.binCandidates.join(", ")}). ${opts.buildHint}`,
 		);
 	}
-	const child = spawn(bin, [], { stdio: ["pipe", "pipe", "pipe"] });
-	let buf = "";
-	const waiters: Array<(line: string) => void> = [];
-	let spawnExit: { code: number | null; signal: NodeJS.Signals | null } | null =
-		null;
-	let stderrAcc = "";
-	const pushLine = (line: string) => {
-		const w = waiters.shift();
-		if (w) w(line);
-		else buf = buf ? `${buf}\n${line}` : line;
-	};
-	child.stdout!.setEncoding("utf8");
-	child.stderr!.setEncoding("utf8");
-	child.stderr!.on("data", (chunk: string) => {
-		stderrAcc += chunk;
-	});
-	let acc = "";
-	child.stdout!.on("data", (chunk: string) => {
-		acc += chunk;
-		let idx: number;
-		while ((idx = acc.indexOf("\n")) >= 0) {
-			const line = acc.slice(0, idx).replace(/\r$/, "");
-			acc = acc.slice(idx + 1);
-			pushLine(line);
-		}
-	});
-	child.on("exit", (code, signal) => {
-		spawnExit = { code, signal };
-		// Unblock any waiter so we fail fast instead of 120s hang.
-		const msg = `${opts.label}: worker exited before reply (code=${code} signal=${signal}) bin=${bin}`;
-		while (waiters.length) {
+	// Read per load, not at import, so a caller (or a test) can set it first.
+	const replyTimeoutMs = Number(process.env.WORKER_REPLY_TIMEOUT_MS) || 15_000;
+	type Worker = { readLine: () => Promise<string>; write: (s: string) => void; kill: () => void };
+	// One worker process. A compare that times out leaves the worker busy on it, and
+	// every later COMPARE would queue behind it and time out too, so the engine kills
+	// a worker on timeout (or when it dies) and starts a fresh one for the next pair.
+	const start = async (): Promise<Worker> => {
+		const child = spawn(bin, [], { stdio: ["pipe", "pipe", "pipe"] });
+		let buf = "";
+		const waiters: Array<(line: string) => void> = [];
+		let spawnExit: { code: number | null; signal: NodeJS.Signals | null } | null =
+			null;
+		let stderrAcc = "";
+		const pushLine = (line: string) => {
 			const w = waiters.shift();
-			// reject via throwing into the waiter channel as a special line
-			w?.(`__EXIT__ ${msg}`);
-		}
-	});
-	const readLine = (): Promise<string> =>
-		new Promise((resolveLine, reject) => {
-			if (buf) {
-				const lines = buf.split("\n");
-				const first = lines.shift()!;
-				buf = lines.join("\n");
-				resolveLine(first);
-				return;
+			if (w) w(line);
+			else buf = buf ? `${buf}\n${line}` : line;
+		};
+		child.stdout!.setEncoding("utf8");
+		child.stderr!.setEncoding("utf8");
+		child.stderr!.on("data", (chunk: string) => {
+			stderrAcc += chunk;
+		});
+		let acc = "";
+		child.stdout!.on("data", (chunk: string) => {
+			acc += chunk;
+			let idx: number;
+			while ((idx = acc.indexOf("\n")) >= 0) {
+				const line = acc.slice(0, idx).replace(/\r$/, "");
+				acc = acc.slice(idx + 1);
+				pushLine(line);
 			}
-			if (spawnExit) {
-				reject(
-					new Error(
-						`${opts.label}: worker already exited (code=${spawnExit.code} signal=${spawnExit.signal}) bin=${bin}` +
-							(stderrAcc ? ` stderr=${stderrAcc.trim()}` : ""),
-					),
-				);
-				return;
+		});
+		child.on("exit", (code, signal) => {
+			spawnExit = { code, signal };
+			// Unblock any waiter so we fail fast instead of 120s hang.
+			const msg = `${opts.label}: worker exited before reply (code=${code} signal=${signal}) bin=${bin}`;
+			while (waiters.length) {
+				const w = waiters.shift();
+				// reject via throwing into the waiter channel as a special line
+				w?.(`__EXIT__ ${msg}`);
 			}
-			const timer = setTimeout(
-				() =>
+		});
+		const readLine = (): Promise<string> =>
+			new Promise((resolveLine, reject) => {
+				if (buf) {
+					const lines = buf.split("\n");
+					const first = lines.shift()!;
+					buf = lines.join("\n");
+					resolveLine(first);
+					return;
+				}
+				if (spawnExit) {
 					reject(
 						new Error(
-							`${opts.label}: timeout waiting for worker reply bin=${bin}` +
-								(spawnExit
-									? ` exit=${spawnExit.code}/${spawnExit.signal}`
-									: "") +
+							`${opts.label}: worker already exited (code=${spawnExit.code} signal=${spawnExit.signal}) bin=${bin}` +
 								(stderrAcc ? ` stderr=${stderrAcc.trim()}` : ""),
 						),
-					),
-				WORKER_REPLY_TIMEOUT_MS,
-			);
-			waiters.push((line) => {
-				clearTimeout(timer);
-				if (line.startsWith("__EXIT__ ")) {
-					reject(new Error(line.slice("__EXIT__ ".length)));
-				} else {
-					resolveLine(line);
+					);
+					return;
 				}
+				const timer = setTimeout(
+					() =>
+						reject(
+							new Error(
+								`${opts.label}: timeout waiting for worker reply after ${replyTimeoutMs} ms bin=${bin}` +
+									(spawnExit
+										? ` exit=${spawnExit.code}/${spawnExit.signal}`
+										: "") +
+									(stderrAcc ? ` stderr=${stderrAcc.trim()}` : ""),
+							),
+						),
+					replyTimeoutMs,
+				);
+				waiters.push((line) => {
+					clearTimeout(timer);
+					if (line.startsWith("__EXIT__ ")) {
+						reject(new Error(line.slice("__EXIT__ ".length)));
+					} else {
+						resolveLine(line);
+					}
+				});
 			});
+		let killed = false;
+		const kill = () => {
+			if (killed) return;
+			killed = true;
+			try {
+				child.stdin!.write("QUIT\n");
+				child.stdin!.end();
+			} catch {
+				/* ignore */
+			}
+			try {
+				child.kill("SIGTERM");
+			} catch {
+				/* ignore */
+			}
+			// Hard kill if QUIT ignored (a worker stuck in a compare never reads it).
+			setTimeout(() => {
+				try {
+					child.kill("SIGKILL");
+				} catch {
+					/* ignore */
+				}
+			}, 500).unref?.();
+		};
+		const write = (s: string) => {
+			child.stdin!.write(s);
+		};
+		const ready = await readLine().catch((err) => {
+			kill();
+			throw err;
 		});
-	const ready = await readLine();
-	if (ready !== "READY") {
-		child.kill();
-		throw new Error(
-			`${opts.label}: expected READY, got ${ready} bin=${bin}` +
-				(stderrAcc ? ` stderr=${stderrAcc.trim()}` : ""),
-		);
-	}
+		if (ready !== "READY") {
+			kill();
+			throw new Error(
+				`${opts.label}: expected READY, got ${ready} bin=${bin}` +
+					(stderrAcc ? ` stderr=${stderrAcc.trim()}` : ""),
+			);
+		}
+		return { readLine, write, kill };
+	};
+	let worker: Worker | null = await start();
 	const workDir = mkdtempSync(join(tmpdir(), opts.tmpPrefix));
 	let ctr = 0;
 	let dead = false;
 	const shutdown = () => {
 		if (dead) return;
 		dead = true;
-		try {
-			child.stdin!.write("QUIT\n");
-			child.stdin!.end();
-		} catch {
-			/* ignore */
-		}
-		try {
-			child.kill("SIGTERM");
-		} catch {
-			/* ignore */
-		}
-		// Hard kill if QUIT ignored (should not happen).
-		setTimeout(() => {
-			try {
-				child.kill("SIGKILL");
-			} catch {
-				/* ignore */
-			}
-		}, 500).unref?.();
+		worker?.kill();
+		worker = null;
 		try {
 			rmSync(workDir, { recursive: true, force: true });
 		} catch {
@@ -999,14 +1021,22 @@ async function loadLongLivedCompareWorker(opts: {
 		if (dead) {
 			throw new Error(`${opts.label}: worker already shut down`);
 		}
+		const w = worker ?? (worker = await start());
 		const i = ctr++;
 		const bp = join(workDir, `b${i}.docx`);
 		const np = join(workDir, `n${i}.docx`);
 		const op = join(workDir, `o${i}.docx`);
 		writeFileSync(bp, base);
 		writeFileSync(np, next);
-		child.stdin!.write(`COMPARE ${bp} ${np} ${op}\n`);
-		const reply = await readLine();
+		let reply: string;
+		try {
+			w.write(`COMPARE ${bp} ${np} ${op}\n`);
+			reply = await w.readLine();
+		} catch (err) {
+			w.kill();
+			if (worker === w) worker = null;
+			throw err;
+		}
 		if (reply.startsWith("ERR ")) {
 			throw new Error(`${opts.label}: ${reply.slice(4)}`);
 		}
