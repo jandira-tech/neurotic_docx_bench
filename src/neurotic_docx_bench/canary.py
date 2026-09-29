@@ -28,7 +28,7 @@ from pathlib import Path
 from neurotic_docx_bench import raster
 from neurotic_docx_bench.render.soffice import SofficeRenderer, convert_one
 
-DEFAULT_CANARY_DOCX = Path("corpus/word_based/docx_source/24_id_paraid_overflow.docx")
+DEFAULT_CANARY_DOCX = Path("corpus/word/clean/docx/6a65e5219d_24_id_paraid_overflow.docx")
 DEFAULT_SPEC_PATH = Path("corpus/canary_expected.json")
 
 _VERSION_RE = re.compile(r"LibreOffice\s+(\d+(?:\.\d+)+)")

@@ -281,7 +281,7 @@ runs:
   # (superdoc-sdk-cli-<platform>==2.0.0, a PEP 508 companion dependency).
   #
   # COVERAGE REGRESSION, measured A/B on the same first 25 pairs of
-  # corpus/word_based/centralized_mapping.csv: 1.19.2 generated 25/25, 2.0.0
+  # grok_run/word_based/centralized_mapping.csv: 1.19.2 generated 25/25, 2.0.0
   # generates 20/25. The 5 losses are deliberate engine-side refusals in 2.0.0,
   # not adapter bugs — it declines rather than emit markup it cannot author:
   #   - SOURCE_NOT_COMPLETE "synchronous compare capture requires a terminal

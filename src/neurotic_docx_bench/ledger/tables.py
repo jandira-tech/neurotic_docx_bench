@@ -721,7 +721,7 @@ def holdout_gap_section(path: Path) -> list[str]:
         "## Holdout gap",
         "",
         (
-            f"{sealed} (`corpus/holdout_combined.txt`) vs the visible corpus, per vendor: "
+            f"{sealed} (`corpus/word/pools/holdout.txt`) vs the visible corpus, per vendor: "
             "the latest holdout-only run (`bench run --holdout`) next to the latest "
             "comparable main run (same tool_version, `holdout_mode=excluded`, full corpus "
             "with n > 100). `gap = holdout - main`; a strongly negative gap flags "

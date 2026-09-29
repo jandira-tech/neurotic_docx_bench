@@ -14,6 +14,7 @@ which full set it gates (``gate_of``).
 
 from __future__ import annotations
 
+import csv
 import hashlib
 import json
 from collections.abc import Collection, Iterable, Mapping, Sequence
@@ -39,7 +40,6 @@ KEY_KIND: dict[str, KeyKind] = {
     "visual_accepted_changes": "accepted",
 }
 
-ROUNDTRIP_CORPUS = Path("corpus/word_based/word_working_roundtrip")
 DEFAULT_DOCSETS_PATH = Path("results/docsets.json")
 MISSING_OUTPUT_STAGE = "missing_output"
 MISSING_OUTPUT_ERROR = "no candidate output for this document"
@@ -63,8 +63,21 @@ class DocSet(BaseModel):
         return len(self.keys)
 
 
+def present(source: Path) -> bool:
+    """An oracle source: a folder of oracle files, or a pool table (``.csv``) naming them."""
+    source = Path(source)
+    return source.is_dir() or (source.is_file() and source.suffix.lower() == ".csv")
+
+
+def _stems(source: Path) -> set[str]:
+    if source.is_file():  # a pool table: the stems of its docx column
+        with source.open(newline="") as fh:
+            return {Path(r["docx"]).stem for r in csv.DictReader(fh) if r.get("docx")}
+    return {p.stem for p in source.iterdir() if p.suffix.lower() in _SUFFIXES}
+
+
 def keys_in_dir(directory: Path, kind: KeyKind) -> set[str]:
-    stems = {p.stem for p in Path(directory).iterdir() if p.suffix.lower() in _SUFFIXES}
+    stems = _stems(Path(directory))
     if kind == "redline":
         return {pipeline.oracle_pair_key(s) for s in stems if pipeline.is_redline(s)}
     if kind == "accepted":
@@ -89,7 +102,7 @@ def benchmark_docset(
     kind = KEY_KIND[benchmark]
     keys: set[str] = set()
     for d in oracle_dirs:
-        if Path(d).is_dir():
+        if present(d):
             keys |= keys_in_dir(Path(d), kind)
     if holdout_mode == "excluded":
         keys -= holdout
@@ -113,7 +126,7 @@ def benchmark_strata(
     strata: dict[str, list[str]] = {}
     seen: set[str] = set()
     for d in oracle_dirs:
-        if not Path(d).is_dir():
+        if not present(d):
             continue
         mine = sorted((keys_in_dir(Path(d), kind) & wanted) - seen)
         seen |= set(mine)
@@ -198,7 +211,7 @@ def oracle_dirs_for(cfg: BenchConfig, benchmark: str) -> list[Path]:
     if benchmark == "accepted_changes":
         return [Path(cfg.accepted_ground_truth)] if cfg.accepted_ground_truth else []
     if benchmark == "roundtrip":
-        return [ROUNDTRIP_CORPUS]
+        return [Path(cfg.roundtrip_list)] if cfg.roundtrip_list else []
     visual = cfg.visual_oracles or {}
     return [Path(visual[benchmark])] if benchmark in visual else []
 

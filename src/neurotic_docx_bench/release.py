@@ -37,7 +37,7 @@ import typer
 PACKAGE = "neurotic-docx-bench"
 WORD_VERSION_CMD = 'osascript -e version of application "Microsoft Word"'
 _WORD_VERSION_ARGV = ["osascript", "-e", 'version of application "Microsoft Word"']
-SMOKE_DOCX = Path("corpus/word_based/docx_source/24_id_paraid_overflow.docx")
+SMOKE_DOCX = Path("corpus/word/clean/docx/6a65e5219d_24_id_paraid_overflow.docx")
 BUILD_DIR = Path("build/release")
 CHECK_NAMES = (
     "word installed",

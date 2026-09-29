@@ -6,12 +6,12 @@
 """Build the 100-fixture tryout set and run jubarte on it.
 
 Selection (deterministic): from ``corpus/no_comments_pdf_was_generated_by_word`` (the
-corpus whose PDFs Microsoft Word exported itself; ``corpus/word_based`` holds LibreOffice
+corpus whose PDFs Microsoft Word exported itself; ``grok_run/word_based`` holds LibreOffice
 renders and is NOT used) keep the pairs of ``centralized_mapping.csv`` whose base and
 next docx (``docx_source``), Word source PDFs of both (``pdf_source``), Word redline docx
 and PDF (``docx_redlines_word``, ``pdf_redlines_word``) and Word accepted docx and PDF
 (``docx_accepted_word``, ``pdf_accepted_word``) all exist and whose stems are on neither
-``corpus/holdout_combined.txt`` nor ``corpus/word_based/holdout.txt``; sort by pair stem;
+``grok_run/holdout_combined.txt`` nor ``grok_run/word_based/holdout.txt``; sort by pair stem;
 ``random.Random(20260927).sample(..., 100)``; sort again. When a pair has both
 ``<pair>_redline`` and ``<pair>_word_redline`` oracles the Word-captured variant wins,
 as in ``pipeline._index_redlines``. The set is written once to
@@ -68,7 +68,7 @@ SET_SIZE = 100
 SET_SEED = 20260927
 SET_NAME = "tryout_100.csv"
 CORPUS = Path("corpus/no_comments_pdf_was_generated_by_word")
-HOLDOUTS = (Path("corpus/holdout_combined.txt"), Path("corpus/word_based/holdout.txt"))
+HOLDOUTS = (Path("grok_run/holdout_combined.txt"), Path("grok_run/word_based/holdout.txt"))
 WORD_VARIANT = "_word_redline"
 TRYOUT = Path("corpus/tryout")
 DEFAULT_BIN = Path("/Users/arthrod/T/jubarte-redlines/target/release/jubarte")

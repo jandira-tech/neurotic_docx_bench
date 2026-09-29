@@ -27,8 +27,8 @@
  * Usage (scheduled job):
  *   node --import tsx scripts/redline_scoreboard.ts \
  *     [--engines jubarte-native,jubarte-first-lossless] [--limit N] \
- *     [--manifest corpus/word_based/centralized_mapping_randomized.csv] \
- *     [--source-dir corpus/word_based/docx_source_randomized] \
+ *     [--manifest corpus/word/pools/word_based_randomized_pairs.csv] \
+ *     [--source-dir corpus/word] \
  *     [--jubarte-cli ../jubarte-redlines/target/release/jubarte] \
  *     [--jubarte-first-dir ../jubarte-first] [--folio-dir <folio checkout>] \
  *     [--word-validate] [--update-results] [--out runs/d2-scoreboard]
@@ -624,10 +624,10 @@ const isMain = (): boolean => {
 
 if (isMain()) {
 	const options: ScoreboardJobOptions = {
-		manifest: arg("--manifest", "corpus/word_based/centralized_mapping_randomized.csv"),
+		manifest: arg("--manifest", "corpus/word/pools/word_based_randomized_pairs.csv"),
 		sourceDir: resolve(
 			ROOT,
-			arg("--source-dir", "corpus/word_based/docx_source_randomized"),
+			arg("--source-dir", "corpus/word"),
 		),
 		engines: arg("--engines", "jubarte-native,jubarte-first-lossless").split(","),
 		limit: process.argv.includes("--limit")

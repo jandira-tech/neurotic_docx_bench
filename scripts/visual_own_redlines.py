@@ -4,7 +4,7 @@ Extension of the visual_* family for the folio comparison: the standard
 visual_redlines renders WORD's redline corpus, which never varies by generator.
 This lane renders <run>/docx (a generator's actual output) through ONE fixed
 folio viewer harness and scores the pages against the same
-corpus/word_based/pdf_redlines_word oracle, so the only variable between lanes
+grok_run/word_based/pdf_redlines_word oracle, so the only variable between lanes
 is the generated redline itself.
 
 Usage:
@@ -25,7 +25,7 @@ from pathlib import Path
 from neurotic_docx_bench import pipeline
 from neurotic_docx_bench.render.playwright import PlaywrightRenderer
 
-ORACLE = Path("corpus/word_based/pdf_redlines_word")
+ORACLE = Path("grok_run/word_based/pdf_redlines_word")
 
 HARNESS = {
     "file_input": "#fileInput",
