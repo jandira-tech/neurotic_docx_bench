@@ -250,8 +250,19 @@ def _soffice_renderer_id() -> str:
     return f"soffice-{hardware.soffice_version() or 'unknown'}"
 
 
+def _docx_renderer(backend: str) -> tuple[Renderer, str]:
+    """The renderer for the bench's own docx renders (accepted and roundtrip copies,
+    their ground truth) and its content-cache id: Word or LibreOffice, per ``backend``."""
+    if backend == "word":
+        return _renderer("word"), f"word-{hardware.word_version() or 'unknown'}"
+    return SofficeRenderer(), _soffice_renderer_id()
+
+
 def _renderer(backend: str, harness: HarnessConfig | None = None) -> Renderer:
-    """Factory for render backends."""
+    """Factory for render backends; ``auto`` is Word where this machine has it, else soffice."""
+    from neurotic_docx_bench.render import resolve_backend
+
+    backend = resolve_backend(backend)
     if backend == "soffice":
         return SofficeRenderer()
     if backend == "passthrough":
@@ -466,9 +477,12 @@ def _print_accept_compare_table(data: ReportData) -> None:
 
 @app.command()
 def render(
-    source: Path = typer.Argument(..., help="folder of DOCX (soffice) or PDF (passthrough)"),
+    source: Path = typer.Argument(..., help="folder of DOCX (auto/word/soffice) or PDF (passthrough)"),
     work_dir: Path = typer.Argument(..., help="scratch dir; PDFs land in <work_dir>/pdf"),
-    backend: str = typer.Option("soffice", "--backend", "-b"),
+    backend: str = typer.Option(
+        "auto", "--backend", "-b",
+        help="auto = Word through scripts/word_pdf.py where this machine has it, else soffice",
+    ),
     jobs: int = typer.Option(12, "--jobs", "-j"),
     force: bool = typer.Option(False, "--force", "-f"),
 ) -> None:
@@ -1086,6 +1100,7 @@ def _accept_compare_stage(
     *,
     exclude_keys: set[str] | None = None,
     only_keys: set[str] | None = None,
+    backend: str = "soffice",
 ) -> BenchmarkOutcome:
     """Copy the freshly generated redlines, accept ALL tracked changes, render, and score
     the accepted copies against the accepted ground truth; write the diff report.
@@ -1113,8 +1128,8 @@ def _accept_compare_stage(
     if accept_failures:
         console.print(f"[yellow]{len(accept_failures)} accept failure(s)[/yellow]")
 
-    soffice_id = _soffice_renderer_id()
-    report = _cached_renderer(SofficeRenderer(), soffice_id).to_pdfs(accepted_dir, run_dir / "accepted", jobs=rc.jobs)
+    docx_renderer, soffice_id = _docx_renderer(backend)
+    report = _cached_renderer(docx_renderer, soffice_id).to_pdfs(accepted_dir, run_dir / "accepted", jobs=rc.jobs)
     if report.fail_count:
         console.print(f"[yellow]{report.fail_count} accepted-render failure(s)[/yellow]")
 
@@ -1177,7 +1192,7 @@ def _accept_compare_stage(
 
 def _roundtrip_stage(
     rc: RunConfig, run_dir: Path, roundtrip_oracle_pdf: Path, use_dpi: int, limit: int | None,
-    sample_seed: int | None = None,
+    sample_seed: int | None = None, backend: str = "soffice",
 ) -> BenchmarkOutcome | None:
     """Score the tool's roundtrip output (``out/roundtrip/<tool>/``) against the original
     corpus rendered to PDF — an identity / re-serialization fidelity test. A perfect
@@ -1193,8 +1208,8 @@ def _roundtrip_stage(
     console.print(f"[bold]roundtrip:[/bold] scoring {rc.name} roundtrip fidelity ({rt_dir})")
     rt_source, is_temp = _limited_source(rt_dir, "*.docx", limit, seed=sample_seed)
     try:
-        soffice_id = _soffice_renderer_id()
-        report = _cached_renderer(SofficeRenderer(), soffice_id).to_pdfs(rt_source, run_dir / "roundtrip", jobs=rc.jobs)
+        docx_renderer, soffice_id = _docx_renderer(backend)
+        report = _cached_renderer(docx_renderer, soffice_id).to_pdfs(rt_source, run_dir / "roundtrip", jobs=rc.jobs)
         if report.fail_count:
             console.print(f"[yellow]{report.fail_count} roundtrip-render failure(s)[/yellow]")
         per_doc = pipeline.score_folders_plain(
@@ -1730,7 +1745,7 @@ def _execute_run(
                 _stage("accept-compare")
                 accept_outcome = _accept_compare_stage(
                     rc, run_dir, src_dir, per_doc, accepted_oracle_pdf, use_dpi,
-                    exclude_keys=holdout_exclude, only_keys=holdout_only,
+                    exclude_keys=holdout_exclude, only_keys=holdout_only, backend=cfg.renderer,
                 )
             else:
                 console.print("[yellow]accept-compare skipped (no DOCX source for this run)[/yellow]")
@@ -1738,6 +1753,7 @@ def _execute_run(
             _stage("roundtrip")
             roundtrip_outcome = _roundtrip_stage(
                 rc, run_dir, roundtrip_oracle_pdf, use_dpi, limit, sample_seed=sample_seed,
+                backend=cfg.renderer,
             )
         # Visual benchmarks: re-score the SAME rendered candidate PDFs (already
         # produced by the renderer above) against each visual_* oracle declared on
@@ -2260,7 +2276,8 @@ def _drive_runs(
                 "existing folder (produce it with `bench accept … --out …` or `--generate`)",
             )
         console.rule("[bold]accepted ground truth → PDF (cached)[/bold]")
-        rep = SofficeRenderer().to_pdfs(agt, accepted_oracle_cache, jobs=12)
+        # one cache per renderer: the ground truth is rendered like the candidates
+        rep = _docx_renderer(cfg.renderer)[0].to_pdfs(agt, accepted_oracle_cache / cfg.renderer, jobs=12)
         if rep.fail_count:
             console.print(f"[yellow]{rep.fail_count} accepted-oracle render failure(s)[/yellow]")
         accepted_oracle_pdf = rep.pdf_dir
@@ -2270,7 +2287,7 @@ def _drive_runs(
         rt_corpus = Path("corpus/word_based/word_working_roundtrip")
         if rt_corpus.is_dir():
             console.rule("[bold]roundtrip oracle → PDF (cached)[/bold]")
-            rep = SofficeRenderer().to_pdfs(rt_corpus, roundtrip_oracle_cache, jobs=12)
+            rep = _docx_renderer(cfg.renderer)[0].to_pdfs(rt_corpus, roundtrip_oracle_cache / cfg.renderer, jobs=12)
             if rep.fail_count:
                 console.print(f"[yellow]{rep.fail_count} roundtrip-oracle render failure(s)[/yellow]")
             roundtrip_oracle_pdf = rep.pdf_dir
