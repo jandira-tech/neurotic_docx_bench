@@ -453,6 +453,86 @@ def test_export_batch_closes_every_document_and_does_not_quit_word() -> None:
     assert "close theDoc saving no" in wp._EXPORT_BATCH_KEEP_OPEN
 
 
+# ─── accept all ──────────────────────────────────────────────────────────────
+
+
+def test_accepted_paths_append_the_suffix_to_both_outputs(tmp_path: Path) -> None:
+    docx, pdf = wp.accepted_paths_for(tmp_path / "src" / "a.docx", tmp_path / "out", "_accepted_tracking")
+    assert docx == tmp_path / "out" / "a_accepted_tracking.docx"
+    assert pdf == tmp_path / "out" / "a_accepted_tracking.pdf"
+
+
+@pytest.mark.parametrize("close_documents", [True, False])
+def test_accept_batch_accepts_then_saves_docx_before_the_pdf(close_documents: bool) -> None:
+    """Word's own accept, saved as docx, then the same open document exported as PDF."""
+    script = wp.batch_script(close_documents=close_documents, accept=True)
+    accept = script.index("accept all revisions theDoc")
+    docx = script.index("file format format document")
+    pdf = script.index("file format format PDF")
+    assert accept < docx < pdf
+    assert "if (count of f) is 4 then" in script
+    assert "set docxP to item 4 of f" in script
+    assert ("close every document saving no" in script) is close_documents
+    assert wp.batch_script(close_documents=close_documents, accept=False) == (
+        wp._EXPORT_BATCH if close_documents else wp._EXPORT_BATCH_KEEP_OPEN
+    )
+
+
+def test_convert_folder_accept_all_delivers_docx_and_pdf(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(wp, "CONTAINER_TMP", tmp_path / "container")
+    src = tmp_path / "src"
+    _touch(src / "a.docx")
+    seen: dict[str, object] = {}
+
+    def fake_batch(script, rows, workdir, **kw):
+        seen["script"], seen["rows"] = script, rows
+        for item, _in, pdf, docx in rows:
+            _touch(Path(pdf), b"%PDF")
+            _touch(Path(docx), b"PK")
+        return {row[0]: (True, "") for row in rows}
+
+    monkeypatch.setattr(wp, "run_batch_with_resume", fake_batch)
+    session = _verified_session()
+    results = wp.convert_folder(src, tmp_path / "out", session=session, accept_suffix="_accepted_tracking")
+    assert "accept all revisions theDoc" in seen["script"]
+    assert all(len(r) == 4 for r in seen["rows"])
+    assert results[0].ok
+    assert (tmp_path / "out" / "a_accepted_tracking.docx").read_bytes() == b"PK"
+    assert results[0].output == tmp_path / "out" / "a_accepted_tracking.pdf"
+    # both outputs present: skipped next time
+    again = wp.convert_folder(src, tmp_path / "out", session=session, accept_suffix="_accepted_tracking")
+    assert again[0].skipped
+
+
+def test_convert_folder_accept_all_fails_the_item_when_the_docx_is_missing(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(wp, "CONTAINER_TMP", tmp_path / "container")
+    _touch(tmp_path / "src" / "a.docx")
+
+    def fake_batch(script, rows, workdir, **kw):
+        for item, _in, pdf, _docx in rows:
+            _touch(Path(pdf), b"%PDF")
+        return {row[0]: (True, "") for row in rows}
+
+    monkeypatch.setattr(wp, "run_batch_with_resume", fake_batch)
+    results = wp.convert_folder(
+        tmp_path / "src", tmp_path / "out", session=_verified_session(), accept_suffix="_accepted_tracking"
+    )
+    assert not results[0].ok
+    assert not (tmp_path / "out" / "a_accepted_tracking.pdf").exists()
+
+
+def test_accept_all_needs_the_batch_path(tmp_path: Path) -> None:
+    _touch(tmp_path / "src" / "a.docx")
+    with pytest.raises(ValueError, match="one_osascript"):
+        wp.convert_folder(
+            tmp_path / "src", None, session=_verified_session(), one_osascript=False, accept_suffix="_x"
+        )
+
+
 def test_cli_tells_preflight_which_mode_it_is_about_to_run(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
@@ -1059,6 +1139,73 @@ def test_parse_batch_log_ignores_retry_so_poison_is_not_final() -> None:
     assert "0" not in log.results
     assert log.results["1"] == (True, "")
     assert log.done is True
+
+
+def test_parse_batch_log_names_the_item_word_crashed_on() -> None:
+    """A dropped connection is Word dying on that very item; an empty load is
+    poison from an earlier one, so only the first names a culprit."""
+    log = wp.parse_batch_log(
+        "[retry]\t4\tloaded empty\n[retry]\t5\tMicrosoft Word got an error: Connection is invalid.\n[done]\t0\t0\n"
+    )
+    assert log.crashed == {"5": "Microsoft Word got an error: Connection is invalid."}
+    assert "5" not in log.results
+
+
+def _crashing_osa(crashers: tuple[str, ...], manifests: list[list[str]]):
+    """Word dies on every item in `crashers`: the script logs [retry] and stops."""
+
+    def fake(script, *args, timeout=60.0):
+        manifest, log = Path(args[0]), Path(args[1])
+        rows = [ln.split("\t") for ln in manifest.read_text().splitlines() if ln]
+        manifests.append([r[0] for r in rows])
+        lines = []
+        for r in rows:
+            if r[0] in crashers:
+                lines.append(f"[retry]\t{r[0]}\tMicrosoft Word got an error: Connection is invalid.")
+                break
+            lines.append(f"[ok]\t{r[0]}")
+        lines.append("[done]\t0\t0")
+        log.write_text("\n".join(lines) + "\n")
+        return 0, "", ""
+
+    return fake
+
+
+def test_run_batch_with_resume_moves_a_crasher_back_and_fails_it_on_the_second_crash(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """One file that kills Word used to lead every pass, so nothing after it ran."""
+    manifests: list[list[str]] = []
+    monkeypatch.setattr(wp, "osa", _crashing_osa(("1",), manifests))
+    session = wp.WordSession()
+    monkeypatch.setattr(session, "recycle", lambda *f: True)
+
+    rows = [(str(i), f"/in/{i}", f"/out/{i}") for i in range(5)]
+    got = wp.run_batch_with_resume(
+        "SCRIPT", rows, tmp_path, per_item_timeout=10, session=session, max_passes=1
+    )
+
+    assert manifests == [["0", "1", "2", "3", "4"], ["2", "3", "4", "1"]]
+    assert all(got[i] == (True, "") for i in ("0", "2", "3", "4"))
+    assert got["1"][0] is False and "crashed" in got["1"][1]
+
+
+def test_run_batch_with_resume_crash_passes_do_not_spend_the_wedge_budget(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    manifests: list[list[str]] = []
+    monkeypatch.setattr(wp, "osa", _crashing_osa(("1", "2"), manifests))
+    session = wp.WordSession()
+    monkeypatch.setattr(session, "recycle", lambda *f: True)
+
+    rows = [(str(i), f"/in/{i}", f"/out/{i}") for i in range(4)]
+    got = wp.run_batch_with_resume(
+        "SCRIPT", rows, tmp_path, per_item_timeout=10, session=session, max_passes=1
+    )
+
+    assert got["0"][0] and got["3"][0]
+    assert not got["1"][0] and not got["2"][0]
+    assert manifests[1] == ["2", "3", "1"]
 
 
 def test_parse_batch_log_omits_items_the_run_never_reached() -> None:

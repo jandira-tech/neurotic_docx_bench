@@ -78,6 +78,7 @@ import tempfile
 import threading
 import time
 from dataclasses import dataclass, field
+from functools import partial
 from pathlib import Path
 from typing import Annotated, Self
 
@@ -939,15 +940,22 @@ class BatchLog:
 
     results: dict[str, tuple[bool, str]] = field(default_factory=dict)
     done: bool = False
+    # items Word died on (a `[retry]` for a dropped connection), with the message
+    crashed: dict[str, str] = field(default_factory=dict)
+
+
+_CRASH_MARKS = ("Connection is invalid", "isn't running", "isn’t running")
 
 
 def parse_batch_log(text: str) -> BatchLog:
     """Read a batch script's append-only log.
 
-    Only `[ok]`, `[fail]` and `[done]` lines are read; anything else is ignored,
-    which is what makes an error message containing a newline harmless. An item
-    with no line at all was never reached — the run died before it — and that is
-    the difference between "failed" and "retry in the next pass".
+    Only `[ok]`, `[fail]`, `[retry]` and `[done]` lines are read; anything else is
+    ignored, which is what makes an error message containing a newline harmless.
+    An item with no line at all was never reached — the run died before it — and
+    that is the difference between "failed" and "retry in the next pass". A
+    `[retry]` is never a result; one for a dropped connection names the item Word
+    died on (`crashed`), while an empty load is poison from an earlier item.
     """
     log = BatchLog()
     for line in text.splitlines():
@@ -958,6 +966,10 @@ def parse_batch_log(text: str) -> BatchLog:
         elif head == "[fail]" and len(fields) >= 2:
             detail = "\t".join(fields[2:]).strip()
             log.results[fields[1]] = (False, detail or "unspecified error")
+        elif head == "[retry]" and len(fields) >= 2:
+            detail = "\t".join(fields[2:]).strip()
+            if any(mark in detail for mark in _CRASH_MARKS):
+                log.crashed[fields[1]] = detail
         elif head == "[done]":
             log.done = True
     return log
@@ -1064,6 +1076,7 @@ def run_batch_with_resume(
     session: WordSession,
     recycle_paths: tuple[Path, ...] = (),
     max_passes: int = 3,
+    crash_limit: int = 2,
     label: str = "",
 ) -> dict[str, tuple[bool, str]]:
     """Run a batch script, retrying only the items it never reached.
@@ -1075,15 +1088,20 @@ def run_batch_with_resume(
       too.
     - **no line at all** — the run died before getting there. That is the only
       case worth another pass, and it gets one after Word is recycled.
+    - **Word died on it** (`crashed`) — the script stops there. The item goes to
+      the back of the next manifest so the rest run first, and after
+      `crash_limit` crashes it is a final failure. A pass that ended on a named
+      crash made progress, so only the other passes spend `max_passes`.
 
     Items already recorded are dropped from the next manifest, so a wedge costs
     the remainder of one pass rather than the whole batch.
     """
     final: dict[str, tuple[bool, str]] = {}
+    crashes: dict[str, int] = {}
     pending = list(rows)
-    for attempt in range(1, max_passes + 1):
-        if not pending:
-            break
+    attempt = wedges = 0
+    while pending and wedges < max_passes:
+        attempt += 1
         run = run_batch(
             script,
             pending,
@@ -1092,18 +1110,36 @@ def run_batch_with_resume(
             label=f"{label} {attempt}",
         )
         still: list[tuple[str, ...]] = []
+        crashed_now = False
         for row in pending:
             recorded = run.log.results.get(row[0])
-            if recorded is None:
-                still.append(row)
-            else:
+            if recorded is not None:
                 final[row[0]] = recorded
-        pending = still
+            elif row[0] in run.log.crashed:
+                crashed_now = True
+                crashes[row[0]] = crashes.get(row[0], 0) + 1
+                if crashes[row[0]] >= crash_limit:
+                    final[row[0]] = (
+                        False,
+                        f"Word crashed on it in {crashes[row[0]]} passes: {run.log.crashed[row[0]]}",
+                    )
+                else:
+                    still.append(row)
+            else:
+                still.append(row)
+        pending = sorted(still, key=lambda r: crashes.get(r[0], 0))
+        if not crashed_now:
+            wedges += 1
         if pending:
-            why = "wedged before [done]" if run.wedged else "ended without reaching them"
+            why = (
+                "Word crashed on an item"
+                if crashed_now
+                else ("wedged before [done]" if run.wedged else "ended without reaching them")
+            )
             logger.warning(
                 f"[batch{label}] {len(pending)} item(s) never reached ({why}); "
-                f"recycling Word and retrying (pass {attempt + 1} of {max_passes})"
+                f"recycling Word and retrying (pass {attempt + 1}, "
+                f"{wedges} of {max_passes} non-crash passes used)"
             )
             session.recycle(*recycle_paths)
     for row in pending:
@@ -1231,6 +1267,40 @@ _EXPORT_BATCH_KEEP_OPEN = _EXPORT_BATCH.replace(
     "if theDoc is not missing value then close theDoc saving no",
 )
 
+# `--accept-all`: Word's own Accept All Changes, the result saved as docx and the
+# same open document then exported as PDF, so the PDF is the render of the docx
+# delivered next to it. Rows carry a fourth field, the docx path.
+ACCEPT_SUFFIX = "_accepted_tracking"
+_ACCEPT_EDITS = (
+    ("if (count of f) is 3 then", "if (count of f) is 4 then"),
+    ("set outP to item 3 of f", "set outP to item 3 of f\n          set docxP to item 4 of f"),
+    (
+        "                save as theDoc file name outP file format format PDF",
+        "                accept all revisions theDoc\n"
+        "                save as theDoc file name docxP file format format document\n"
+        "                set theDoc to document 1\n"
+        "                save as theDoc file name outP file format format PDF",
+    ),
+)
+
+
+def batch_script(*, close_documents: bool, accept: bool) -> str:
+    """The monolithic batch AppleScript for the chosen close policy, with accept-all when asked."""
+    script = _EXPORT_BATCH if close_documents else _EXPORT_BATCH_KEEP_OPEN
+    if not accept:
+        return script
+    for old, new in _ACCEPT_EDITS:
+        if script.count(old) != 1:
+            raise RuntimeError(f"accept-all edit does not apply to the batch script: {old!r}")
+        script = script.replace(old, new)
+    return script
+
+
+def accepted_paths_for(docx: Path, out_dir: Path | None, suffix: str) -> tuple[Path, Path]:
+    """The accepted docx and its PDF: `<stem><suffix>.docx|.pdf` in `out_dir` (default beside it)."""
+    folder = out_dir or docx.parent
+    return folder / f"{docx.stem}{suffix}.docx", folder / f"{docx.stem}{suffix}.pdf"
+
 
 def publish(staged: Path, final: Path) -> str:
     """Put one finished artifact at `final`, whole or not at all. '' on success.
@@ -1266,6 +1336,7 @@ def convert_folder(
     close_documents: bool = True,
     max_passes: int = 3,
     poison_streak: int = 3,
+    accept_suffix: str = "",
 ) -> list[Result]:
     """Export every real .docx in `src` to PDF. Serial, by necessity.
 
@@ -1282,8 +1353,14 @@ def convert_folder(
     goes and resumes from that log when a run wedges — so the folder-sized batch
     is the normal shape, and `one_osascript=False` is the opt-out for when you
     genuinely need a process boundary around every document.
+
+    `accept_suffix` turns on accept-all: Word accepts every tracked change and
+    the result lands as `<stem><suffix>.docx` with its PDF `<stem><suffix>.pdf`.
+    Only the batch path does this.
     """
     require_positive_seconds(timeout, "timeout")
+    if accept_suffix and not one_osascript:
+        raise ValueError("accept-all runs only in the batch path (one_osascript=True)")
     docs = iter_docx(src)
     if not docs:
         logger.warning(f"no .docx in {src} (lock files excluded)")
@@ -1320,8 +1397,10 @@ def convert_folder(
     stage = stage or (ctx.__enter__() if ctx else None)
     assert stage is not None
     try:
-        run = _convert_batched if one_osascript else _convert_serial
-        logger.info(f"[word] export: one_osascript={one_osascript} documents={len(docs)}")
+        run = partial(_convert_batched, accept_suffix=accept_suffix) if one_osascript else _convert_serial
+        logger.info(
+            f"[word] export: one_osascript={one_osascript} documents={len(docs)} accept_all={bool(accept_suffix)}"
+        )
         return run(
             docs,
             out_dir,
@@ -1480,6 +1559,7 @@ def _convert_batched(
     max_passes: int = 3,
     poison_streak: int = 3,
     close_documents: bool = True,
+    accept_suffix: str = "",
 ) -> list[Result]:
     """One monolithic AppleScript for the whole folder, resumed if it dies.
 
@@ -1487,11 +1567,18 @@ def _convert_batched(
     all of them at once — that is inherent to a single-script batch, and it is
     the mode's real cost: N copies live in the container until the run ends.
     """
+    def finals(doc: Path) -> tuple[Path, Path | None]:
+        if accept_suffix:
+            docx_out, pdf_out = accepted_paths_for(doc, out_dir, accept_suffix)
+            return pdf_out, docx_out
+        return pdf_path_for(doc, out_dir), None
+
     outcomes: dict[Path, Result] = {}
     todo: list[Path] = []
     for doc in docs:
-        final = pdf_path_for(doc, out_dir)
-        if final.exists() and final.stat().st_size > 0 and not force:
+        final, final_docx = finals(doc)
+        done = [p for p in (final, final_docx) if p is not None]
+        if all(p.exists() and p.stat().st_size > 0 for p in done) and not force:
             outcomes[doc] = Result(source=doc, output=final, ok=True, skipped=True)
         else:
             todo.append(doc)
@@ -1499,18 +1586,19 @@ def _convert_batched(
         return [outcomes[doc] for doc in docs]
 
     rows: list[tuple[str, ...]] = []
-    staged: dict[str, tuple[Path, Path, Path]] = {}
+    staged: dict[str, tuple[Path, Path, Path, Path | None]] = {}
     for i, doc in enumerate(todo):
         item = str(i)
         staged_in = stage.place_as(doc, safe_stage_name(i, doc.name))
         staged_out = stage.outbox / f"{safe_stage_name(i, doc.stem)}.pdf"
-        rows.append((item, str(staged_in), str(staged_out)))
-        staged[item] = (doc, staged_in, staged_out)
+        staged_docx = stage.outbox / f"{safe_stage_name(i, doc.stem)}.docx" if accept_suffix else None
+        rows.append((item, str(staged_in), str(staged_out), *([str(staged_docx)] if staged_docx else [])))
+        staged[item] = (doc, staged_in, staged_out, staged_docx)
 
     logger.info(f"[batch] one osascript for {len(rows)} document(s)")
     started = time.monotonic()
     recorded = run_batch_with_resume(
-        _EXPORT_BATCH if close_documents else _EXPORT_BATCH_KEEP_OPEN,
+        batch_script(close_documents=close_documents, accept=bool(accept_suffix)),
         rows,
         stage.root or stage.inbox.parent,
         per_item_timeout=timeout,
@@ -1521,14 +1609,17 @@ def _convert_batched(
     )
     per_item = (time.monotonic() - started) / max(1, len(rows))
 
-    for item, (doc, staged_in, staged_out) in staged.items():
+    for item, (doc, staged_in, staged_out, staged_docx) in staged.items():
         staged_in.unlink(missing_ok=True)
         ok, detail = recorded[item]
-        produced = staged_out.exists() and staged_out.stat().st_size > 0
+        produced = all(p.exists() and p.stat().st_size > 0 for p in (staged_out, staged_docx) if p is not None)
         undelivered = ""
+        final, final_docx = finals(doc)
         if ok and produced:
-            final = pdf_path_for(doc, out_dir)
-            undelivered = publish(staged_out, final)
+            if staged_docx is not None and final_docx is not None:
+                undelivered = publish(staged_docx, final_docx)
+                staged_docx.unlink(missing_ok=True)
+            undelivered = undelivered or publish(staged_out, final)
             staged_out.unlink(missing_ok=True)
         if undelivered:
             outcomes[doc] = Result(
@@ -1547,6 +1638,8 @@ def _convert_batched(
                 timing_exact=False,
             )
             staged_out.unlink(missing_ok=True)
+            if staged_docx is not None:
+                staged_docx.unlink(missing_ok=True)
             logger.error(f"[batch] FAIL: {doc.name} — {outcomes[doc].error}")
 
     return [outcomes[doc] for doc in docs]
@@ -1710,6 +1803,17 @@ def main(
             "every document and leaves Word itself running.",
         ),
     ] = False,
+    accept_all: Annotated[
+        bool,
+        typer.Option(
+            "--accept-all",
+            help="Accept every tracked change in Word first; writes <stem><suffix>.docx "
+            "and its PDF <stem><suffix>.pdf. Batch mode only.",
+        ),
+    ] = False,
+    accept_suffix: Annotated[
+        str, typer.Option("--accept-suffix", help="Suffix of the accepted outputs.")
+    ] = ACCEPT_SUFFIX,
     quiet: Annotated[
         bool, typer.Option("--quiet", "-q", help="Errors and summary only.")
     ] = False,
@@ -1731,6 +1835,9 @@ def main(
 
     if not src.is_dir():
         console.print(f"[red]not a folder:[/] {src}")
+        raise typer.Exit(2)
+    if accept_all and (not one_osascript or not accept_suffix):
+        console.print("[red]--accept-all needs --one-osascript and a non-empty --accept-suffix[/]")
         raise typer.Exit(2)
     if check_preset:
         preset_notice()
@@ -1754,9 +1861,11 @@ def main(
             session=session,
             one_osascript=one_osascript,
             close_documents=not do_not_close,
+            accept_suffix=accept_suffix if accept_all else "",
         )
         session.quit_if_ours()
-    raise typer.Exit(report(results, f"DOCX → PDF: {src}"))
+    title = "accept all → DOCX + PDF" if accept_all else "DOCX → PDF"
+    raise typer.Exit(report(results, f"{title}: {src}"))
 
 
 if __name__ == "__main__":
