@@ -91,5 +91,31 @@ def test_convert_writes_cli_pdfs_under_a_relative_out(tmp_path, monkeypatch):
     assert (tmp_path / "sel" / "pdf" / "docxide-pdf" / "clean__a.pdf").read_bytes().startswith(b"%PDF-")
 
 
+def test_convert_with_workers_makes_every_pdf_and_one_log_row_each(tmp_path, monkeypatch):
+    fake = tmp_path / "fake-conv"
+    fake.write_text('#!/bin/sh\nsleep 0.2\nprintf "%%PDF-1.4 fake" > "$2"\n')
+    fake.chmod(0o755)
+    lines = ["bucket,rank,key,source_score,docx,pdf"]
+    for i in range(8):
+        (tmp_path / f"d{i}.docx").write_bytes(b"PK")
+        lines.append(f"worst,{i + 1},clean__d{i},1.0,{tmp_path / f'd{i}.docx'},x.pdf")
+    out = tmp_path / "sel"
+    out.mkdir()
+    (out / "selection.csv").write_text("\n".join(lines) + "\n")
+    (out / "selection.json").write_text("{}")
+    from neurotic_docx_bench import docx_to_pdf as d2p
+
+    monkeypatch.setattr(d2p, "resolve_tool_binary", lambda tool, override=None: fake)
+    monkeypatch.setattr(mb, "versions", lambda tools, jubarte: {t: "fake 1" for t in tools})
+    args = mb.argparse.Namespace(out=str(out), tools="docxide-pdf", jubarte=None, timeout=10, workers=4)
+    t0 = mb.time.perf_counter()
+    mb.cmd_convert(args)
+    assert mb.time.perf_counter() - t0 < 1.2  # 8 x 0.2 s one at a time is >= 1.6 s
+    assert sorted(p.name for p in (out / "pdf" / "docxide-pdf").iterdir()) == [f"clean__d{i}.pdf" for i in range(8)]
+    rows = [mb.json.loads(ln) for ln in (out / "convert.jsonl").read_text().splitlines()]
+    assert sorted(r["key"] for r in rows) == [f"clean__d{i}" for i in range(8)]
+    assert all(r["ok"] for r in rows)
+
+
 def test_key_splits_into_state_and_stem():
     assert mb.split_key("with_comments_clean__abc_def") == ("with_comments_clean", "abc_def")
