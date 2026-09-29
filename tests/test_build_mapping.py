@@ -17,7 +17,7 @@ import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-SCRIPT_SRC = (REPO_ROOT / "corpus" / "word_based" / "build_mapping.py").read_text()
+SCRIPT_SRC = (REPO_ROOT / "grok_run" / "word_based" / "build_mapping.py").read_text()
 
 _DIR_NAMES = {
     "source": "docx_source",

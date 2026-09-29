@@ -78,9 +78,10 @@ def make_corpus(
         writer = csv.DictWriter(fh, fieldnames=["pair_stem", "base", "next", "origin"])
         writer.writeheader()
         writer.writerows(rows)
-    (root / "corpus" / "holdout_combined.txt").write_text("# comment\n\n" + "\n".join(holdout[:1]) + "\n")
-    (root / "corpus" / "word_based").mkdir(parents=True, exist_ok=True)
-    (root / "corpus" / "word_based" / "holdout.txt").write_text("\n".join(holdout[1:]) + "\n")
+    combined, word_based = tryout.HOLDOUTS
+    (root / word_based).parent.mkdir(parents=True, exist_ok=True)
+    (root / combined).write_text("# comment\n\n" + "\n".join(holdout[:1]) + "\n")
+    (root / word_based).write_text("\n".join(holdout[1:]) + "\n")
 
 
 PAIRS = [(f"doc{i:02d}", f"doc{i + 1:02d}") for i in range(0, 12, 2)]  # 6 pairs

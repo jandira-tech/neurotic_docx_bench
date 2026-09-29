@@ -37,19 +37,19 @@ BIN = BENCH_ROOT / "src/neurotic_docx_bench/utils/jubarte/jubarte-rust/redline"
 CORPORA = [
     # (manifest, source_dir, oracle_pdf_dir)
     (
-        "corpus/word_based/centralized_mapping.csv",
-        "corpus/word_based/docx_source",
-        "corpus/word_based/pdf_redlines_word",
+        "grok_run/word_based/centralized_mapping.csv",
+        "grok_run/word_based/docx_source",
+        "grok_run/word_based/pdf_redlines_word",
     ),
     (
-        "corpus/word_based/centralized_mapping_randomized.csv",
-        "corpus/word_based/docx_source_randomized",
-        "corpus/word_based/pdf_redlines_randomized/pdf",
+        "grok_run/word_based/centralized_mapping_randomized.csv",
+        "grok_run/word_based/docx_source_randomized",
+        "grok_run/word_based/pdf_redlines_randomized/pdf",
     ),
     (
-        "corpus/word_redlines_superdoc/centralized_mapping.csv",
-        "corpus/word_redlines_superdoc/docx_source",
-        "corpus/word_redlines_superdoc/pdf_redlines_word",
+        "grok_run/word_redlines_superdoc/centralized_mapping.csv",
+        "grok_run/word_redlines_superdoc/docx_source",
+        "grok_run/word_redlines_superdoc/pdf_redlines_word",
     ),
 ]
 

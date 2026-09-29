@@ -1,7 +1,7 @@
 """The Word corpus: ``corpus/word/<state>/docx|pdf|pdf_prior``, one tree for what Word produced.
 
 Word is the source of truth for PDFs in this benchmark. Its output accumulated under
-``grok_run/`` (gitignored working folders), under ``corpus/word_based`` and its siblings,
+``grok_run/`` (gitignored working folders), under ``grok_run/word_based`` and its siblings,
 under ``corpus/no_comments_pdf_was_generated_by_word/`` and in the ``_fixtures`` folder of
 jubarte-first. This module gathers the docx Word made or was given, and the PDFs Word
 printed of them, into one tree with one naming scheme, a rename record, the origins'

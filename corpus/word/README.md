@@ -23,7 +23,7 @@ manifest, provenance, tables, pools and notices are tracked.
 | sources_500 | 500 | 0 | 29e26304c8ad | 0 | 18 | 0 | 0 | 0 | 0 |
 | en_pairs_500 | 1000 | 0 | fec675dffc49 | 0 | 0 | 4 | 0 | 0 | 0 |
 | redlines_a100_b10 | 0 | 965 | c507a7eef23d | 4 | 0 | 0 | 0 | 0 | 0 |
-| redlines_en_500 | 0 | 450 | 759e0aa44e12 | 19 | 0 | 0 | 0 | 1 | 0 |
+| redlines_en_500 | 0 | 451 | 947122b42898 | 18 | 0 | 0 | 0 | 1 | 0 |
 | word_based | 194 | 227 | 477c5f19f71b | 3 | 0 | 0 | 2 | 0 | 0 |
 | word_based_randomized | 199 | 196 | 1892074cca61 | 0 | 0 | 0 | 0 | 0 | 0 |
 | word_redlines_superdoc | 210 | 399 | 5c286d4a4ad9 | 1 | 0 | 0 | 0 | 0 | 0 |
