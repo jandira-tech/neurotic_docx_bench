@@ -278,6 +278,10 @@ on run argv
 end run
 """.strip()
 
+# How long one AppleEvent to Word (open, save, close) may block before AppleScript
+# gives up. A hung document costs this much per pass; it was 600 s.
+APPLE_EVENT_TIMEOUT = 240
+
 # Open, save as PDF, close. `document 1` rather than `active document`: the
 # indexed form is what the audit found working from a script file, and it is
 # never ambiguous (§5.2, §14.1).
@@ -285,7 +289,7 @@ _EXPORT_PDF = """
 on run argv
   set inPath to item 1 of argv
   set outPath to item 2 of argv
-  with timeout of 600 seconds
+  with timeout of __AE_TIMEOUT__ seconds
     tell application "Microsoft Word"
       set theDoc to missing value
       close every document saving no
@@ -309,6 +313,8 @@ end run
 # that is about to run. A context var so callers that replace `export_pdf`
 # in tests are not forced to grow a parameter.
 _close_documents: ContextVar[bool] = ContextVar("word_close_documents", default=True)
+
+_EXPORT_PDF = _EXPORT_PDF.replace("__AE_TIMEOUT__", str(APPLE_EVENT_TIMEOUT))
 
 _EXPORT_PDF_KEEP_OPEN = _EXPORT_PDF.replace(
     "close every document saving no",
@@ -940,7 +946,8 @@ class BatchLog:
 
     results: dict[str, tuple[bool, str]] = field(default_factory=dict)
     done: bool = False
-    # items Word died on (a `[retry]` for a dropped connection), with the message
+    # every `[retry]` item with its message, and the subset Word died on
+    retried: dict[str, str] = field(default_factory=dict)
     crashed: dict[str, str] = field(default_factory=dict)
 
 
@@ -968,6 +975,7 @@ def parse_batch_log(text: str) -> BatchLog:
             log.results[fields[1]] = (False, detail or "unspecified error")
         elif head == "[retry]" and len(fields) >= 2:
             detail = "\t".join(fields[2:]).strip()
+            log.retried[fields[1]] = detail
             if any(mark in detail for mark in _CRASH_MARKS):
                 log.crashed[fields[1]] = detail
         elif head == "[done]":
@@ -1081,26 +1089,33 @@ def run_batch_with_resume(
 ) -> dict[str, tuple[bool, str]]:
     """Run a batch script, retrying only the items it never reached.
 
-    Three outcomes per item, and they are not interchangeable:
+    Four outcomes per item, and they are not interchangeable:
 
     - `[ok]` / `[fail]` — the script reached it and said so. Final either way; a
       malformed document is not retried, because it will be malformed next pass
       too.
     - **no line at all** — the run died before getting there. That is the only
       case worth another pass, and it gets one after Word is recycled.
-    - **Word died on it** (`crashed`) — the script stops there. The item goes to
-      the back of the next manifest so the rest run first, and after
-      `crash_limit` crashes it is a final failure. A pass that ended on a named
-      crash made progress, so only the other passes spend `max_passes`.
+    - **`[retry]`** — Word died on it (`crashed`) or it loaded empty (a declined
+      repair prompt, or poison from an earlier file). It is retried after Word is
+      recycled, and after `crash_limit` such passes it is a final failure.
+    - **the item a wedged pass stopped on** (the first one without a line when
+      the run never reached `[done]`) is retried too.
+
+    Every retried item goes to the back of the next manifest, so one bad file no
+    longer leads every pass while the rest of the folder waits behind it. A pass
+    that logged a `[retry]` named its culprit and made progress; only the other
+    passes spend `max_passes`.
 
     Items already recorded are dropped from the next manifest, so a wedge costs
     the remainder of one pass rather than the whole batch.
     """
     final: dict[str, tuple[bool, str]] = {}
-    crashes: dict[str, int] = {}
+    retries: dict[str, int] = {}  # [retry] lines per item, capped by crash_limit
+    moved: dict[str, int] = {}  # times an item was sent to the back
     pending = list(rows)
-    attempt = wedges = 0
-    while pending and wedges < max_passes:
+    attempt = stalls = 0
+    while pending and stalls < max_passes:
         attempt += 1
         run = run_batch(
             script,
@@ -1110,36 +1125,38 @@ def run_batch_with_resume(
             label=f"{label} {attempt}",
         )
         still: list[tuple[str, ...]] = []
-        crashed_now = False
+        named = False
         for row in pending:
-            recorded = run.log.results.get(row[0])
+            rid = row[0]
+            recorded = run.log.results.get(rid)
             if recorded is not None:
-                final[row[0]] = recorded
-            elif row[0] in run.log.crashed:
-                crashed_now = True
-                crashes[row[0]] = crashes.get(row[0], 0) + 1
-                if crashes[row[0]] >= crash_limit:
-                    final[row[0]] = (
-                        False,
-                        f"Word crashed on it in {crashes[row[0]]} passes: {run.log.crashed[row[0]]}",
-                    )
-                else:
-                    still.append(row)
-            else:
-                still.append(row)
-        pending = sorted(still, key=lambda r: crashes.get(r[0], 0))
-        if not crashed_now:
-            wedges += 1
+                final[rid] = recorded
+                continue
+            if rid in run.log.retried:
+                named = True
+                moved[rid] = moved.get(rid, 0) + 1
+                retries[rid] = retries.get(rid, 0) + 1
+                if retries[rid] >= crash_limit:
+                    what = "Word crashed on it" if rid in run.log.crashed else "Word could not load it"
+                    final[rid] = (False, f"{what} in {retries[rid]} passes: {run.log.retried[rid]}")
+                    continue
+            still.append(row)
+        if run.wedged and not named and still:
+            stuck = still[0][0]  # the first item without a line: where the run hung
+            moved[stuck] = moved.get(stuck, 0) + 1
+        pending = sorted(still, key=lambda r: moved.get(r[0], 0))
+        if not named:
+            stalls += 1
         if pending:
             why = (
-                "Word crashed on an item"
-                if crashed_now
+                "Word crashed on or could not load an item"
+                if named
                 else ("wedged before [done]" if run.wedged else "ended without reaching them")
             )
             logger.warning(
                 f"[batch{label}] {len(pending)} item(s) never reached ({why}); "
-                f"recycling Word and retrying (pass {attempt + 1}, "
-                f"{wedges} of {max_passes} non-crash passes used)"
+                f"recycling Word and retrying the rest first, retried items last (pass {attempt + 1}, "
+                f"{stalls} of {max_passes} stalled passes used)"
             )
             session.recycle(*recycle_paths)
     for row in pending:
@@ -1202,7 +1219,7 @@ on run argv
           set outP to item 3 of f
           set theDoc to missing value
           try
-            with timeout of 600 seconds
+            with timeout of __AE_TIMEOUT__ seconds
               tell application "Microsoft Word"
                 set theDoc to missing value
                 close every document saving no
@@ -1262,6 +1279,8 @@ end run
 """.strip()
 
 # `--do-not-close` closes only the document this batch opened.
+_EXPORT_BATCH = _EXPORT_BATCH.replace("__AE_TIMEOUT__", str(APPLE_EVENT_TIMEOUT))
+
 _EXPORT_BATCH_KEEP_OPEN = _EXPORT_BATCH.replace(
     "close every document saving no",
     "if theDoc is not missing value then close theDoc saving no",
