@@ -1,5 +1,5 @@
-> **See every page side by side: [jandira-tech.github.io/jubarte-redlines](https://jandira-tech.github.io/jubarte-redlines/)**  
-> DOCX to PDF across engines, and redlines against Word ([/redlines/](https://jandira-tech.github.io/jubarte-redlines/redlines/)), scored per page.
+> **See every page side by side: [jandira-tech.github.io/neurotic_docx_bench](https://jandira-tech.github.io/neurotic_docx_bench/)**  
+> DOCX to PDF across engines, and redlines against Word ([/redlines/](https://jandira-tech.github.io/neurotic_docx_bench/redlines/)), scored per page.
 
 # neurotic-docx-bench
 
