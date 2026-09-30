@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 """Move superseded per-doc payloads out of ``results/bench.jsonl`` into gzipped detail files.
 
-Plan reference: ``plans/agent-execution-plan.md`` Chapter 1.5.
-
 ``results/bench.jsonl`` is append-only and reached 103 MB over 203 lines. 90% of that is
 ``per_doc`` and 6.5% ``timings`` — payloads that only the line's *own* run ever needed.
 This does NOT rewrite history: for every line that has been superseded by a newer line

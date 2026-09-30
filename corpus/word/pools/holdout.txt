@@ -1,5 +1,5 @@
 # Sealed holdout: comparison stems left out of every normal scoring run (bench run --holdout).
-# Translated from the legacy <base>_<next> keys of grok_run/word_based/holdout.txt, grok_run/word_redlines_superdoc/holdout.txt.
+# Translated from the legacy <base>_<next> keys of notices/holdout_word_based.txt, notices/holdout_word_redlines_superdoc.txt.
 48cd1e0a53_bold_and_italic_combo_style_default_missing__vs__187c1cd53e_bold_and_underline_combo_id_paraid_overflow_redline_c4e9d43965
 4ad775158b_bold_red_text_combo_id_paraid_overflow__vs__02c9605488_bold_superscript_demo_style_default_missing_redline_2693af7e81
 963d40d5f8_employee_review_john_smith_suggesting_insertions__vs__93485182eb_font_color_blue_demo_style_default_missing_redline_909ff013f1

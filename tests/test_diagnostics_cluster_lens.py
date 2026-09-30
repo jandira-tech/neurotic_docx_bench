@@ -23,7 +23,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 BENCH_JSONL = REPO_ROOT / "results" / "bench.jsonl"
 
 # The recorded jubarte-lossless script_redlines run the plan's arithmetic was
-# derived from (plans/jubarte-lossless-to-target.md, "Supporting shape").
+# derived from (the jubarte-lossless plan, "Supporting shape").
 LOSSLESS_RUN = "019fcc6f-4eb8-72f7-957e-799895a04342"
 LOSSLESS_CLUSTER_N = 166
 

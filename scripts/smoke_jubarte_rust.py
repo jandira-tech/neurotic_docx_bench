@@ -20,7 +20,6 @@ Usage:
 from __future__ import annotations
 
 import argparse
-import csv
 import json
 import shutil
 import statistics
@@ -30,49 +29,25 @@ import tempfile
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
+from neurotic_docx_bench import corpus_paths
+
 BENCH_ROOT = Path(__file__).resolve().parents[1]
 SMOKE_JSON = BENCH_ROOT / "results" / "smoke50.json"
 BIN = BENCH_ROOT / "src/neurotic_docx_bench/utils/jubarte/jubarte-rust/redline"
 
-CORPORA = [
-    # (manifest, source_dir, oracle_pdf_dir)
-    (
-        "grok_run/word_based/centralized_mapping.csv",
-        "grok_run/word_based/docx_source",
-        "grok_run/word_based/pdf_redlines_word",
-    ),
-    (
-        "grok_run/word_based/centralized_mapping_randomized.csv",
-        "grok_run/word_based/docx_source_randomized",
-        "grok_run/word_based/pdf_redlines_randomized/pdf",
-    ),
-    (
-        "grok_run/word_redlines_superdoc/centralized_mapping.csv",
-        "grok_run/word_redlines_superdoc/docx_source",
-        "grok_run/word_redlines_superdoc/pdf_redlines_word",
-    ),
-]
-
 
 def load_pair_index() -> dict[str, dict]:
-    """pair_stem -> {base, next, oracle_pdf} with absolute paths."""
+    """pair_stem -> {base, next, oracle_pdf} with absolute paths. The oracle PDF is
+    LibreOffice's render of Word's redline (``corpus/libreoffice``)."""
     idx: dict[str, dict] = {}
-    for manifest, source_dir, oracle_dir in CORPORA:
-        mp = BENCH_ROOT / manifest
-        if not mp.exists():
-            continue
-        src = BENCH_ROOT / source_dir
-        odir = BENCH_ROOT / oracle_dir
-        with mp.open() as f:
-            for row in csv.DictReader(f):
-                stem = row["pair_stem"]
-                oracle_name = row.get("pdf_redline") or f"{stem}_redline.pdf"
-                entry = {
-                    "base": src / row["docx_source_base"],
-                    "next": src / row["docx_source_next"],
-                    "oracle_pdf": odir / oracle_name,
-                }
-                idx[stem] = entry
+    for set_name in corpus_paths.REDLINE_SETS:
+        for p in corpus_paths.by_stem(set_name, word=BENCH_ROOT / corpus_paths.WORD,
+                                      libreoffice=BENCH_ROOT / corpus_paths.LIBREOFFICE).values():
+            idx[p.stem] = {
+                "base": p.base,
+                "next": p.next,
+                "oracle_pdf": p.libreoffice_pdf,
+            }
     return idx
 
 
@@ -203,7 +178,7 @@ def run(keep: bool = False, jobs: int = 10, subset: list[str] | None = None) -> 
         if stem in gen_fail:
             continue
         op = idx[stem]["oracle_pdf"]
-        if op.exists():
+        if op is not None and op.exists():
             shutil.copy2(op, oracle_dir / f"{stem}_redline.pdf")
         else:
             print(f"warning: missing oracle pdf {op}", file=sys.stderr)

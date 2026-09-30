@@ -1,11 +1,13 @@
 """The Word corpus: ``corpus/word/<state>/docx|pdf|pdf_prior``, one tree for what Word produced.
 
-Word is the source of truth for PDFs in this benchmark. Its output accumulated under
-``grok_run/`` (gitignored working folders), under ``grok_run/word_based`` and its siblings,
-under ``corpus/no_comments_pdf_was_generated_by_word/`` and in the ``_fixtures`` folder of
-jubarte-first. This module gathers the docx Word made or was given, and the PDFs Word
-printed of them, into one tree with one naming scheme, a rename record, the origins'
-own notices, two tables and a sha256 manifest.
+Word is the source of truth for PDFs in this benchmark. Its output accumulated in Word's
+working folders (``word_based`` and its siblings, the ``wr09xx`` runs, the 500-document
+fixtures) and in the ``_fixtures`` folder of jubarte-first. This module gathers the docx Word
+made or was given, and the PDFs Word printed of them, into one tree with one naming scheme, a
+rename record, the origins' own notices, two tables and a sha256 manifest. The tree it built,
+``corpus/word``, is tracked and is the one source of truth; the working folders are not in the
+repository any more, and a build names their root explicitly (``bench corpus build --origins``).
+Origin paths in the tables of the first build carry the ``grok_run/`` prefix that root had.
 
 The scheme:
 
@@ -287,29 +289,28 @@ class Docset:
         return any(f.startswith(FIXTURES_PREFIX + "/") for f in self.folders)
 
 
-_G = "grok_run"
-_WB = f"{_G}/word_based"
-_SD = f"{_G}/word_redlines_superdoc"
-_NC = f"{_G}/no_comments_pdf_was_generated_by_word"
-_OR = f"{_G}/wordpdf_redline_oracles"
-_WR = f"{_G}/wr0926"
+_WB = "word_based"
+_SD = "word_redlines_superdoc"
+_NC = "no_comments_pdf_was_generated_by_word"
+_OR = "wordpdf_redline_oracles"
+_WR = "wr0926"
 _FX = FIXTURES_PREFIX
-_PF = f"{_G}/wr0928/pdf_fill"
-_AT = f"{_G}/wr0928/accepted_tracking"
-_RT = f"{_G}/wr0928/rejected_tracking"
-_CB = f"{_G}/comment_balloons_0929"
-_BLACKLIST = Exclusion(f"{_G}/word_blacklist/blacklist.tsv", "word_blacklist", blacklist=True)
+_PF = "wr0928/pdf_fill"
+_AT = "wr0928/accepted_tracking"
+_RT = "wr0928/rejected_tracking"
+_CB = "comment_balloons_0929"
+_BLACKLIST = Exclusion("word_blacklist/blacklist.tsv", "word_blacklist", blacklist=True)
 #: Ids (``sha256[:10]`` of the docx) Word will not open cleanly: a repair / recover-contents
 #: prompt, an error, a hang. Applies to every set by content, whatever a set calls the file,
 #: and takes every compare built on such a document with it. First column the id, then why.
 #: Only the corpus's own originals belong here; a tool's output Word will not open is that
 #: tool's failure, scored against it, and never a reason to drop a corpus document.
-WORD_INVALID = f"{_G}/word_invalid/word_invalid.tsv"
+WORD_INVALID = "word_invalid/word_invalid.tsv"
 WORD_INVALID_LABEL = "word_invalid"
 _FIXTURE_NOTES = (
-    Note(f"{_G}/fixtures_500/{LICENSE_FILE}", LICENSE_FILE),
-    Note(f"{_G}/fixtures_500/NOTICE", "NOTICE"),
-    Note(f"{_G}/MANIFEST.json", "MANIFEST.json"),
+    Note(f"fixtures_500/{LICENSE_FILE}", LICENSE_FILE),
+    Note("fixtures_500/NOTICE", "NOTICE"),
+    Note("MANIFEST.json", "MANIFEST.json"),
 )
 
 
@@ -325,33 +326,33 @@ DOCSETS: tuple[Docset, ...] = (
         "sources_500",
         "500 docx sampled from the superdoc docx-corpus with their Word PDFs; the stems a later "
         "Word build re-rendered keep the earlier render under pdf_prior.",
-        documents=Group((f"{_G}/fixtures_500",), (f"{_G}/fixtures_500_pdf",), tagged=True, require_pdf=True),
+        documents=Group(("fixtures_500",), ("fixtures_500_pdf",), tagged=True, require_pdf=True),
         notes=_FIXTURE_NOTES
         + (
-            Note(f"{_G}/fixtures_500/manifest.jsonl", "manifest.jsonl"),
-            Note(f"{_G}/fixtures_500/split_a_100_b_10.json", "split_a_100_b_10.json"),
-            Note(f"{_G}/fixtures_500_pdf/EXTRA_REFERENCES.md", "EXTRA_REFERENCES.md"),
+            Note("fixtures_500/manifest.jsonl", "manifest.jsonl"),
+            Note("fixtures_500/split_a_100_b_10.json", "split_a_100_b_10.json"),
+            Note("fixtures_500_pdf/EXTRA_REFERENCES.md", "EXTRA_REFERENCES.md"),
         ),
-        exclusions=(Exclusion(f"{_G}/fixtures_500_failed", "fixtures_500_failed"),),
+        exclusions=(Exclusion("fixtures_500_failed", "fixtures_500_failed"),),
     ),
     Docset(
         "en_pairs_500",
         "1000 English docx (500 base/next pairs, parts a and b) with the Word PDFs of the first Word "
         "pass; the second pass (run2) fills the stems the first pass lacks and otherwise stays behind.",
         documents=Group(
-            (f"{_G}/500_docx_part_a_original", f"{_G}/500_docx_part_b_original"),
-            (f"{_G}/500_pdf_part_a_original", f"{_G}/500_pdf_part_b_original"),
-            fallback=(f"{_G}/500_pdf_part_a_run2", f"{_G}/500_pdf_part_b_run2"),
+            ("500_docx_part_a_original", "500_docx_part_b_original"),
+            ("500_pdf_part_a_original", "500_pdf_part_b_original"),
+            fallback=("500_pdf_part_a_run2", "500_pdf_part_b_run2"),
             require_pdf=True,
         ),
         notes=_FIXTURE_NOTES
         + (
-            Note(f"{_G}/500_en_sources.jsonl", "500_en_sources.jsonl"),
-            Note(f"{_G}/500_en_pairs.tsv", "500_en_pairs.tsv"),
+            Note("500_en_sources.jsonl", "500_en_sources.jsonl"),
+            Note("500_en_pairs.tsv", "500_en_pairs.tsv"),
         ),
         exclusions=(
-            Exclusion(f"{_G}/500_docx_part_a_word_invalid", "500_docx_part_a_word_invalid"),
-            Exclusion(f"{_G}/500_docx_part_b_word_invalid", "500_docx_part_b_word_invalid"),
+            Exclusion("500_docx_part_a_word_invalid", "500_docx_part_a_word_invalid"),
+            Exclusion("500_docx_part_b_word_invalid", "500_docx_part_b_word_invalid"),
         ),
     ),
     Docset(
@@ -359,14 +360,14 @@ DOCSETS: tuple[Docset, ...] = (
         "Word compares of 100 base documents against 10 next documents of sources_500 (a__vs__b) "
         "with the Word PDF of each compared document.",
         comparisons=Group(
-            (f"{_G}/compared_a_100_vs_b_10_docx",), (f"{_G}/compared_a_100_vs_b_10_pdf",), require_pdf=True
+            ("compared_a_100_vs_b_10_docx",), ("compared_a_100_vs_b_10_pdf",), require_pdf=True
         ),
         pair_split=True,
         sources="sources_500",
         notes=_FIXTURE_NOTES
         + (
-            Note(f"{_G}/compared_a_100_vs_b_10_pdf/NOTE", "NOTE"),
-            Note(f"{_G}/fixtures_500/split_a_100_b_10.json", "split_a_100_b_10.json"),
+            Note("compared_a_100_vs_b_10_pdf/NOTE", "NOTE"),
+            Note("fixtures_500/split_a_100_b_10.json", "split_a_100_b_10.json"),
         ),
         exclusions=(_BLACKLIST,),
     ),
@@ -374,17 +375,17 @@ DOCSETS: tuple[Docset, ...] = (
         "redlines_en_500",
         "Word compares of the en_pairs_500 base/next pairs with the Word PDF of each compared "
         "document; the pairs of a blacklisted document and the rejected compares are left out.",
-        comparisons=Group((f"{_G}/500_extra_docx_redlines",), (f"{_G}/500_extra_pdf_redlines",), require_pdf=True),
+        comparisons=Group(("500_extra_docx_redlines",), ("500_extra_pdf_redlines",), require_pdf=True),
         pair_split=True,
         sources="en_pairs_500",
         notes=_FIXTURE_NOTES
         + (
-            Note(f"{_G}/500_en_pairs.tsv", "500_en_pairs.tsv"),
-            Note(f"{_G}/word_blacklist/blacklist.tsv", "blacklist.tsv"),
+            Note("500_en_pairs.tsv", "500_en_pairs.tsv"),
+            Note("word_blacklist/blacklist.tsv", "blacklist.tsv"),
         ),
         exclusions=(
             _BLACKLIST,
-            Exclusion(f"{_G}/500_extra_redlines_rejected/500_extra_docx_redlines", "500_extra_redlines_rejected"),
+            Exclusion("500_extra_redlines_rejected/500_extra_docx_redlines", "500_extra_redlines_rejected"),
         ),
     ),
     Docset(
@@ -421,7 +422,7 @@ DOCSETS: tuple[Docset, ...] = (
         "Word compares of the word_based pairs with every tracked change accepted in Word "
         "(word_working_roundtrip, named <pair>_word_redline_accepted), with the Word PDFs of the "
         "September 29 2026 render; the LibreOffice render of each was the visual_accepted_changes oracle.",
-        documents=Group((f"{_WB}/word_working_roundtrip",), (f"{_G}/wr0929/word_based_accepted_word_pdf",)),
+        documents=Group((f"{_WB}/word_working_roundtrip",), ("wr0929/word_based_accepted_word_pdf",)),
     ),
     Docset(
         "word_based_0926",
@@ -1238,8 +1239,9 @@ def _readme(rows: Sequence[dict[str, Any]]) -> str:
         "generator takes with `--source-dir` pointing here, and `pools/<set>_renders.csv` lists the",
         "docx that set's Word run rendered with their PDFs.",
         "",
-        "docx and PDF files are gitignored (they live in the fixtures dataset on the Hub); the",
-        "manifest, provenance, tables, pools and notices are tracked.",
+        "Everything here is tracked, docx and PDF files included; this tree is the source of truth.",
+        "The origin folders named below are relative to the `--origins` root of the build (Word's",
+        "working folders, not part of the repository).",
         "",
         "| set | documents | comparisons | docset id | absent | superseded | filled | unresolved "
         "| excluded | refused |",
