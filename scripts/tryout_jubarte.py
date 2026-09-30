@@ -1,23 +1,11 @@
-#!/usr/bin/env -S uv run --script
-# /// script
-# requires-python = ">=3.12"
-# dependencies = ["typer>=0.12", "rich>=13"]
-# ///
-"""Build the 100-fixture tryout set and run jubarte on it.
+"""Run jubarte on the 100-fixture tryout set.
 
-Selection (deterministic): from ``corpus/no_comments_pdf_was_generated_by_word`` (the
-corpus whose PDFs Microsoft Word exported itself; ``grok_run/word_based`` holds LibreOffice
-renders and is NOT used) keep the pairs of ``centralized_mapping.csv`` whose base and
-next docx (``docx_source``), Word source PDFs of both (``pdf_source``), Word redline docx
-and PDF (``docx_redlines_word``, ``pdf_redlines_word``) and Word accepted docx and PDF
-(``docx_accepted_word``, ``pdf_accepted_word``) all exist and whose stems are on neither
-``grok_run/holdout_combined.txt`` nor ``grok_run/word_based/holdout.txt``; sort by pair stem;
-``random.Random(20260927).sample(..., 100)``; sort again. When a pair has both
-``<pair>_redline`` and ``<pair>_word_redline`` oracles the Word-captured variant wins,
-as in ``pipeline._index_redlines``. The set is written once to
-``corpus/tryout/tryout_100.csv`` with every file's sha256 and is not rewritten unless
-``--force-set`` is given. If the set changes, the previous jubarte outputs are stale and
-the run refuses to resume over them without ``--force``.
+The set is ``corpus/tryout/tryout_100.csv``, drawn from the Word corpus by
+:func:`neurotic_docx_bench.tryout.build_set` (the same draw as ``bench try build-set``): the
+word_based, word_based_randomized and word_redlines_superdoc compares Word accepted cleanly,
+off the sealed holdout, with all eight files present, ``random.Random(20260927).sample(..., 100)``.
+An existing set is reused unless ``--force-set`` is given. If the set changes, the previous
+jubarte outputs are stale and the run refuses to resume over them without ``--force``.
 
 jubarte (the release binary, macOS) then runs on the set:
 
@@ -28,7 +16,7 @@ jubarte (the release binary, macOS) then runs on the set:
   render of its own redline; the Word oracle is the set's ``pdf_redline_word``)
 * convert, 100 runs: ``jubarte convert <base.docx> -o <out.pdf> --force`` into
   ``corpus/tryout/jubarte/convert/<base>_jubarte.pdf`` (the base document of each pair;
-  its Word oracle is ``pdf_source/<base>.pdf``)
+  its Word oracle is the set's ``pdf_base_word``)
 
 No other renderer touches jubarte's output: the PDFs jubarte writes are what gets
 scored against Word's PDFs.
@@ -41,16 +29,13 @@ timings and failures.
 
 Run from the repository root::
 
-    uv run scripts/tryout_jubarte.py --jubarte-bin /Users/arthrod/T/jubarte-redlines/target/release/jubarte
-    uv run scripts/tryout_jubarte.py --task redline --dry-run     # selection only
+    uv run python scripts/tryout_jubarte.py --jubarte-bin /Users/arthrod/T/jubarte-redlines/target/release/jubarte
+    uv run python scripts/tryout_jubarte.py --task redline --dry-run     # selection only
 """
 
 from __future__ import annotations
 
-import csv
-import hashlib
 import json
-import random
 import subprocess
 import time
 from dataclasses import asdict, dataclass
@@ -61,179 +46,15 @@ import typer
 from rich.console import Console
 from rich.table import Table
 
+from neurotic_docx_bench import tryout
+from neurotic_docx_bench.hub import sha256_file
+
 console = Console()
 app = typer.Typer(add_completion=False)
 
-SET_SIZE = 100
-SET_SEED = 20260927
-SET_NAME = "tryout_100.csv"
-CORPUS = Path("corpus/no_comments_pdf_was_generated_by_word")
-HOLDOUTS = (Path("grok_run/holdout_combined.txt"), Path("grok_run/word_based/holdout.txt"))
-WORD_VARIANT = "_word_redline"
-TRYOUT = Path("corpus/tryout")
+TRYOUT = tryout.TRYOUT_DIR
 DEFAULT_BIN = Path("/Users/arthrod/T/jubarte-redlines/target/release/jubarte")
 TIMEOUT_S = 180.0
-
-SET_COLUMNS = (
-    "pair_stem",
-    "base",
-    "next",
-    "docx_base",
-    "docx_next",
-    "pdf_base_word",
-    "pdf_next_word",
-    "docx_redline_word",
-    "pdf_redline_word",
-    "docx_accepted_word",
-    "pdf_accepted_word",
-    "sha256_docx_base",
-    "sha256_docx_next",
-    "sha256_pdf_base_word",
-    "sha256_pdf_next_word",
-    "sha256_docx_redline_word",
-    "sha256_pdf_redline_word",
-    "sha256_docx_accepted_word",
-    "sha256_pdf_accepted_word",
-)
-
-
-def sha256_file(path: Path) -> str:
-    h = hashlib.sha256()
-    with path.open("rb") as fh:
-        for chunk in iter(lambda: fh.read(1 << 20), b""):
-            h.update(chunk)
-    return h.hexdigest()
-
-
-@dataclass(frozen=True)
-class Pair:
-    pair_stem: str
-    base: str
-    next: str
-    docx_base: Path
-    docx_next: Path
-    pdf_base_word: Path
-    pdf_next_word: Path
-    docx_redline_word: Path
-    pdf_redline_word: Path
-    docx_accepted_word: Path
-    pdf_accepted_word: Path
-
-    def files(self) -> dict[str, Path]:
-        return {
-            "docx_base": self.docx_base,
-            "docx_next": self.docx_next,
-            "pdf_base_word": self.pdf_base_word,
-            "pdf_next_word": self.pdf_next_word,
-            "docx_redline_word": self.docx_redline_word,
-            "pdf_redline_word": self.pdf_redline_word,
-            "docx_accepted_word": self.docx_accepted_word,
-            "pdf_accepted_word": self.pdf_accepted_word,
-        }
-
-
-def read_holdout(path: Path) -> set[str]:
-    """One pair key per line; blank lines and ``#`` comments skipped; missing file is empty."""
-    if not path.is_file():
-        return set()
-    keys = set()
-    for raw in path.read_text().splitlines():
-        line = raw.strip()
-        if line and not line.startswith("#"):
-            keys.add(line)
-    return keys
-
-
-def word_variant(directory: Path, pair_stem: str, suffix: str) -> Path | None:
-    """``<pair>_word_redline<suffix>`` if present, else ``<pair>_redline<suffix>``, else None.
-
-    Same preference as ``pipeline._index_redlines``: the Word-captured variant wins.
-    """
-    for name in (f"{pair_stem}{WORD_VARIANT}{suffix}", f"{pair_stem}_redline{suffix}"):
-        if (directory / name).is_file():
-            return directory / name
-    return None
-
-
-def eligible_pairs(corpus: Path, root: Path) -> list[Pair]:
-    """Pairs with every input and every Word oracle present and no stem on a holdout.
-
-    ``corpus`` is relative to ``root``; the returned paths are relative to ``root`` too.
-    The mapping CSV supplies ``pair_stem``, ``base`` and ``next`` only; every file is
-    located on disk (the CSV's accepted columns are stale in this corpus).
-    """
-    holdout: set[str] = set()
-    for h in HOLDOUTS:
-        holdout |= read_holdout(root / h)
-    out: list[Pair] = []
-    with (root / corpus / "centralized_mapping.csv").open(newline="") as fh:
-        for row in csv.DictReader(fh):
-            stem, base, next_ = row["pair_stem"], row["base"], row["next"]
-            if {stem, base, next_} & holdout:
-                continue
-            found = {
-                "docx_redline_word": word_variant(root / corpus / "docx_redlines_word", stem, ".docx"),
-                "pdf_redline_word": word_variant(root / corpus / "pdf_redlines_word", stem, ".pdf"),
-                "docx_accepted_word": word_variant(root / corpus / "docx_accepted_word", stem, ".docx"),
-                "pdf_accepted_word": word_variant(root / corpus / "pdf_accepted_word", stem, ".pdf"),
-            }
-            if any(p is None for p in found.values()):
-                continue
-            pair = Pair(
-                pair_stem=stem,
-                base=base,
-                next=next_,
-                docx_base=corpus / "docx_source" / f"{base}.docx",
-                docx_next=corpus / "docx_source" / f"{next_}.docx",
-                pdf_base_word=corpus / "pdf_source" / f"{base}.pdf",
-                pdf_next_word=corpus / "pdf_source" / f"{next_}.pdf",
-                **{k: p.relative_to(root) for k, p in found.items() if p is not None},
-            )
-            if all((root / p).is_file() for p in pair.files().values()):
-                out.append(pair)
-    return sorted(out, key=lambda p: p.pair_stem)
-
-
-def select_set(pairs: list[Pair], size: int = SET_SIZE, seed: int = SET_SEED) -> list[Pair]:
-    ordered = sorted(pairs, key=lambda p: p.pair_stem)
-    if len(ordered) < size:
-        raise ValueError(f"only {len(ordered)} eligible pairs, need {size}")
-    chosen = random.Random(seed).sample(ordered, size)
-    return sorted(chosen, key=lambda p: p.pair_stem)
-
-
-def write_set(pairs: list[Pair], csv_path: Path, root: Path) -> None:
-    csv_path.parent.mkdir(parents=True, exist_ok=True)
-    with csv_path.open("w", newline="") as fh:
-        w = csv.DictWriter(fh, fieldnames=SET_COLUMNS)
-        w.writeheader()
-        for p in pairs:
-            row = {"pair_stem": p.pair_stem, "base": p.base, "next": p.next}
-            for key, path in p.files().items():
-                row[key] = path.as_posix()
-                row[f"sha256_{key}"] = sha256_file(root / path)
-            w.writerow(row)
-
-
-def read_set(csv_path: Path) -> list[Pair]:
-    with csv_path.open(newline="") as fh:
-        rows = list(csv.DictReader(fh))
-    return [
-        Pair(
-            pair_stem=r["pair_stem"],
-            base=r["base"],
-            next=r["next"],
-            docx_base=Path(r["docx_base"]),
-            docx_next=Path(r["docx_next"]),
-            pdf_base_word=Path(r["pdf_base_word"]),
-            pdf_next_word=Path(r["pdf_next_word"]),
-            docx_redline_word=Path(r["docx_redline_word"]),
-            pdf_redline_word=Path(r["pdf_redline_word"]),
-            docx_accepted_word=Path(r["docx_accepted_word"]),
-            pdf_accepted_word=Path(r["pdf_accepted_word"]),
-        )
-        for r in rows
-    ]
 
 
 def redline_cmd(binary: Path, base: Path, next_: Path, out: Path) -> list[str]:
@@ -340,33 +161,25 @@ def main(
     if task not in ("redline", "convert", "both"):
         raise typer.BadParameter("--task must be redline, convert or both")
     root = root.resolve()
-    corpus = CORPUS
-    set_csv = root / TRYOUT / SET_NAME
-    if set_csv.is_file() and not force_set:
-        try:
-            pairs = read_set(set_csv)
-        except KeyError as exc:
-            console.print(f"[red]{set_csv.relative_to(root)} lacks column {exc}: an older set; pass --force-set[/red]")
-            raise typer.Exit(code=2) from None
-        if not pairs or not pairs[0].docx_base.as_posix().startswith(corpus.as_posix() + "/"):
-            console.print(f"[red]{set_csv.relative_to(root)} is not drawn from {corpus}; pass --force-set[/red]")
-            raise typer.Exit(code=2)
-        console.print(f"using existing set {set_csv.relative_to(root)} ({len(pairs)} pairs)")
-    else:
-        if not (root / corpus / "centralized_mapping.csv").is_file():
-            raise typer.BadParameter(f"no {corpus / 'centralized_mapping.csv'} under {root}; pass --root")
-        eligible = eligible_pairs(corpus, root)
-        console.print(f"{len(eligible)} eligible pairs in {corpus} (all Word oracles present, off the holdouts)")
-        pairs = select_set(eligible)
-        write_set(pairs, set_csv, root)
-        console.print(f"wrote {set_csv.relative_to(root)} ({len(pairs)} pairs, seed {SET_SEED})")
-    if len(pairs) != SET_SIZE:
-        console.print(f"[red]set has {len(pairs)} pairs, expected {SET_SIZE}[/red]")
+    set_csv = root / TRYOUT / tryout.SET_NAME
+    try:
+        if set_csv.is_file() and not force_set:
+            fixtures = list(tryout.load_set(root).fixtures)
+            console.print(f"using existing set {set_csv.relative_to(root)} ({len(fixtures)} pairs)")
+        else:
+            fixtures = tryout.build_set(root)
+            tryout.write_set(root, fixtures)
+            console.print(f"wrote {set_csv.relative_to(root)} ({len(fixtures)} pairs, seed {tryout.SET_SEED})")
+    except tryout.TryoutError as exc:
+        console.print(f"[red]{exc}; pass --force-set to redraw it[/red]")
+        raise typer.Exit(code=2) from None
+    if len(fixtures) != tryout.SET_SIZE:
+        console.print(f"[red]set has {len(fixtures)} pairs, expected {tryout.SET_SIZE}[/red]")
         raise typer.Exit(code=2)
     if dry_run:
-        for p in pairs[:5]:
-            console.print(f"  {p.pair_stem}")
-        console.print(f"  ... {len(pairs)} pairs; dry run, jubarte not invoked")
+        for f in fixtures[:5]:
+            console.print(f"  {f.pair_stem}")
+        console.print(f"  ... {len(fixtures)} pairs; dry run, jubarte not invoked")
         return
     if not jubarte_bin.is_file():
         raise typer.BadParameter(f"jubarte binary not found at {jubarte_bin}")
@@ -390,30 +203,30 @@ def main(
             raise typer.Exit(code=2)
     records: list[RunRecord] = []
     started = datetime.now(UTC).isoformat()
-    with typer.progressbar(pairs, label="jubarte", length=len(pairs)) as bar:
-        for p in bar:
+    with typer.progressbar(fixtures, label="jubarte", length=len(fixtures)) as bar:
+        for f in bar:
             if task in ("redline", "both"):
-                out = out_dir / "redline" / f"{p.pair_stem}_jubarte_redline.docx"
-                cmd = redline_cmd(jubarte_bin, root / p.docx_base, root / p.docx_next, out)
-                rec = run_one("redline", p.pair_stem, cmd, out, force=force)
+                out = out_dir / "redline" / f"{f.pair_stem}_jubarte_redline.docx"
+                cmd = redline_cmd(jubarte_bin, f.path("docx_base", root), f.path("docx_next", root), out)
+                rec = run_one("redline", f.pair_stem, cmd, out, force=force)
                 records.append(rec)
                 if rec.status != "failed":
                     pdf = out.with_suffix(".pdf")
                     cmd = convert_cmd(jubarte_bin, out, pdf)
-                    records.append(run_one("redline_pdf", p.pair_stem, cmd, pdf, force=force))
+                    records.append(run_one("redline_pdf", f.pair_stem, cmd, pdf, force=force))
             if task in ("convert", "both"):
-                out = out_dir / "convert" / f"{p.base}_jubarte.pdf"
-                cmd = convert_cmd(jubarte_bin, root / p.docx_base, out)
-                records.append(run_one("convert", p.base, cmd, out, force=force))
+                out = out_dir / "convert" / f"{f.base}_jubarte.pdf"
+                cmd = convert_cmd(jubarte_bin, f.path("docx_base", root), out)
+                records.append(run_one("convert", f.base, cmd, out, force=force))
 
     manifest = {
         "generated_at": started,
         "finished_at": datetime.now(UTC).isoformat(),
-        "set": (TRYOUT / SET_NAME).as_posix(),
+        "set": (TRYOUT / tryout.SET_NAME).as_posix(),
         "set_sha256": set_sha,
-        "set_size": len(pairs),
-        "set_seed": SET_SEED,
-        "corpus": corpus.as_posix(),
+        "set_size": len(fixtures),
+        "set_seed": tryout.SET_SEED,
+        "corpus": tryout.CORPUS.as_posix(),
         "binary": str(jubarte_bin),
         "binary_sha256": sha256_file(jubarte_bin),
         "binary_version": binary_version(jubarte_bin),

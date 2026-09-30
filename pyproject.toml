@@ -53,7 +53,7 @@ packages = ["src/neurotic_docx_bench"]
 exclude = ["src/neurotic_docx_bench/utils/**", "**/__pycache__", "**/.DS_Store"]
 
 [tool.hatch.build.targets.sdist]
-exclude = ["src/neurotic_docx_bench/utils/**", "corpus/**", "results/**", "grok_run/**", "runs/**", ".old/**", "docx-viewer/**", "node_modules/**"]
+exclude = ["src/neurotic_docx_bench/utils/**", "corpus/**", "results/**", "runs/**", ".old/**", "docx-viewer/**", "node_modules/**"]
 
 [dependency-groups]
 dev = [

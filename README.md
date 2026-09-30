@@ -1,5 +1,8 @@
 > **See every page side by side: [jandira-tech.github.io/neurotic_docx_bench](https://jandira-tech.github.io/neurotic_docx_bench/)**  
-> DOCX to PDF across engines, and redlines against Word ([/redlines/](https://jandira-tech.github.io/neurotic_docx_bench/redlines/)), scored per page.
+> DOCX to PDF across engines, and redlines against Word ([/redlines/](https://jandira-tech.github.io/neurotic_docx_bench/redlines/)), scored per page.  
+> Navigator: [DOCX to PDF](https://jandira-tech.github.io/neurotic_docx_bench/) ·
+> [redlines vs Word](https://jandira-tech.github.io/neurotic_docx_bench/redlines/) (jubarte 0.10.0 and 0.9.3, docxodus, SuperDoc; redlines, accepted, rejected) ·
+> [speed](https://jandira-tech.github.io/neurotic_docx_bench/speed/)
 
 # neurotic-docx-bench
 
@@ -124,7 +127,7 @@ uv run bench try fetch <pair_stem> --dest tryout_dl && uv run bench try run --ro
 
 ### The Word corpus
 
-Word is the source of truth for PDFs. Everything Word produced lives under `corpus/word/`, built by copy from Word's working folders (`grok_run/`, gitignored), from the July export under `corpus/no_comments_pdf_was_generated_by_word/`, from `corpus/word_based` and its siblings and, when `--fixtures` points at it, from the jubarte-first `_fixtures` folder; the origins stay where they are, nothing is moved or deleted. Only what Word finished is in: docx Word could not open, blacklisted stems and the compares touching them, rejected compares and, in the sets that are Word render runs, documents Word did not render to PDF are left out and listed per set in `PROVENANCE.json`. A PDF whose producer is not Word (LibreOffice, a tool's own writer) is refused.
+Word is the source of truth for PDFs. Everything Word produced lives under `corpus/word/`, tracked in this repository (docx and PDFs included) and the one source of truth. It was built by copy (`bench corpus build --origins`) from Word's working folders and, with `--fixtures`, from the jubarte-first `_fixtures` folder; those folders are not part of the repository. Only what Word finished is in: docx Word could not open, blacklisted stems and the compares touching them, rejected compares and, in the sets that are Word render runs, documents Word did not render to PDF are left out and listed per set in `PROVENANCE.json`. A PDF whose producer is not Word (LibreOffice, a tool's own writer) is refused.
 
 The tree is laid out by provider and by the state of the docx, read from its XML:
 

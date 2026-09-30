@@ -58,7 +58,7 @@ corpora:
     source_dir: corpus/word
 
 # Accepted ground truth: Word's own Accept All on 400 of the pool comparisons
-# (grok_run/wr0929/accept_reject_split.csv; the other 400 are Word's Reject All,
+# (corpus/word/pools/accept_reject_split.csv; the other 400 are Word's Reject All,
 # corpus/word/reject_all). Filed as <pair key>.docx/.pdf by `bench corpus actions`.
 # Used by `bench run --accept-compare`, which accepts each tool's freshly
 # generated redlines and diffs them against this corpus, rendered by `renderer`.
@@ -281,7 +281,7 @@ runs:
   # (superdoc-sdk-cli-<platform>==2.0.0, a PEP 508 companion dependency).
   #
   # COVERAGE REGRESSION, measured A/B on the same first 25 pairs of
-  # grok_run/word_based/centralized_mapping.csv: 1.19.2 generated 25/25, 2.0.0
+  # word_based (legacy centralized_mapping.csv order): 1.19.2 generated 25/25, 2.0.0
   # generates 20/25. The 5 losses are deliberate engine-side refusals in 2.0.0,
   # not adapter bugs — it declines rather than emit markup it cannot author:
   #   - SOURCE_NOT_COMPLETE "synchronous compare capture requires a terminal

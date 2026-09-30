@@ -13,7 +13,6 @@ always unpack both DOCXs and classify paragraphs from the real OOXML.
 from __future__ import annotations
 
 import argparse
-import csv
 import json
 import subprocess
 import zipfile
@@ -21,25 +20,9 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 from xml.dom import minidom
 
-ROOT = Path(__file__).resolve().parents[1]
+from neurotic_docx_bench import corpus_paths
 
-MAPS = [
-    (
-        ROOT / "grok_run/word_based/centralized_mapping.csv",
-        ROOT / "grok_run/word_based/docx_source",
-        ROOT / "grok_run/word_based/docx_redlines_word",
-    ),
-    (
-        ROOT / "grok_run/word_based/centralized_mapping_randomized.csv",
-        ROOT / "grok_run/word_based/docx_source_randomized",
-        ROOT / "grok_run/word_based/docx_redlines_randomized",
-    ),
-    (
-        ROOT / "grok_run/word_redlines_superdoc/centralized_mapping.csv",
-        ROOT / "grok_run/word_redlines_superdoc/docx_source",
-        ROOT / "grok_run/word_redlines_superdoc/docx_redlines_word",
-    ),
-]
+ROOT = Path(__file__).resolve().parents[1]
 
 
 def local(tag: str) -> str:
@@ -122,27 +105,17 @@ def class_seq(rows: list[dict]) -> str:
 
 def load_mapping() -> dict[str, dict]:
     by_key: dict[str, dict] = {}
-    for mpath, sdir, rdir in MAPS:
-        if not mpath.exists():
-            continue
-        with mpath.open(newline="") as f:
-            for row in csv.DictReader(f):
-                stem = (row.get("pair_stem") or "").strip()
-                if not stem or stem in by_key:
-                    continue
-                base = (row.get("base") or "").replace(".docx", "")
-                nxt = (row.get("next") or "").replace(".docx", "")
-                candidates = [
-                    rdir / f"{stem}_redline.docx",
-                    rdir / f"{stem}_word_redline.docx",
-                    ROOT / "grok_run/word_based/docx_redlines_word" / f"{stem}_redline.docx",
-                ]
-                word = next((p for p in candidates if p.exists()), None)
-                by_key[stem] = {
-                    "base": sdir / f"{base}.docx",
-                    "next": sdir / f"{nxt}.docx",
-                    "word": word,
-                }
+    for set_name in corpus_paths.REDLINE_SETS:
+        # first pair per stem: where a stem has both, the `<stem>_redline` compare, as before
+        for p in corpus_paths.pairs(set_name, word=ROOT / corpus_paths.WORD,
+                                    libreoffice=ROOT / corpus_paths.LIBREOFFICE):
+            if p.stem in by_key:
+                continue
+            by_key[p.stem] = {
+                "base": p.base,
+                "next": p.next,
+                "word": p.redline if p.redline.exists() else None,
+            }
     return by_key
 
 

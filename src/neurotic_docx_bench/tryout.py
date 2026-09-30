@@ -1,8 +1,8 @@
 """``bench try``: score one tryout fixture through any tool and compare it with jubarte.
 
-The tryout set is 100 fixture pairs drawn once from
-``corpus/no_comments_pdf_was_generated_by_word`` (the corpus whose PDFs Microsoft Word
-exported itself), recorded in ``corpus/tryout/tryout_100.csv`` with the sha256 of every
+The tryout set is 100 fixture pairs drawn once from the Word compares of ``corpus/word`` that
+Word also accepted (``pools/accept_all.csv``; every file, PDF included, is Word's own), minus
+the sealed holdout, recorded in ``corpus/tryout/tryout_100.csv`` with the sha256 of every
 file, and shipped with jubarte's precomputed outputs under ``corpus/tryout/jubarte/``.
 A Hugging Face Space (or anyone) picks one fixture, random or by name, runs a tool on
 it, and gets the tool's score against the Word oracle next to jubarte's score against
@@ -32,21 +32,22 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Protocol
 
-from neurotic_docx_bench import content_cache, pipeline
+from neurotic_docx_bench import content_cache, corpus_paths, pipeline
 from neurotic_docx_bench.hub import sha256_file
 from neurotic_docx_bench.render.base import Renderer
 
 SET_SIZE = 100
 SET_SEED = 20260927
 SET_NAME = "tryout_100.csv"
-CORPUS = Path("corpus/no_comments_pdf_was_generated_by_word")
-HOLDOUTS = (Path("grok_run/holdout_combined.txt"), Path("grok_run/word_based/holdout.txt"))
+CORPUS = corpus_paths.WORD
+LIBREOFFICE = corpus_paths.LIBREOFFICE
+SETS = corpus_paths.REDLINE_SETS  # the Word compare sets whose split compares Word also accepted
+HOLDOUT = CORPUS / "pools" / "holdout.txt"
+ACCEPTED = CORPUS / "pools" / "accept_all.csv"
 TRYOUT_DIR = Path("corpus/tryout")
 JUBARTE_SUBDIR = "jubarte"
 JUBARTE_MANIFEST = "MANIFEST.json"
 HUB_PREFIX = Path("corpus")  # the fixtures dataset is rooted at corpus/
-WORD_VARIANT = "_word_redline"
-PLAIN_VARIANT = "_redline"
 TASKS = ("redline", "convert")
 RENDERERS = ("passthrough", "soffice", "word")
 FILE_COLUMNS = (
@@ -183,51 +184,33 @@ def read_holdout(path: Path) -> set[str]:
     return out
 
 
-def word_variant(directory: Path, stem: str, suffix: str) -> Path | None:
-    """``<stem>_word_redline<suffix>`` when it exists, else ``<stem>_redline<suffix>``,
-    else None (the same preference as ``pipeline._index_redlines``)."""
-    for variant in (WORD_VARIANT, PLAIN_VARIANT):
-        candidate = directory / f"{stem}{variant}{suffix}"
-        if candidate.is_file():
-            return candidate
-    return None
-
-
-def eligible_pairs(root: Path, corpus: Path = CORPUS, holdouts: tuple[Path, ...] = HOLDOUTS) -> list[Fixture]:
-    """Mapping rows whose eight files all exist and whose stem is on no holdout, sorted
-    by ``pair_stem``. The mapping supplies only ``pair_stem``, ``base`` and ``next``;
-    every file is located on the filesystem. ``sha256`` is left empty here."""
+def eligible_pairs(root: Path, corpus: Path = CORPUS) -> list[Fixture]:
+    """The ``SETS`` compares Word accepted cleanly (``pools/accept_all.csv``, status ``ok``), not
+    on the sealed holdout (``pools/holdout.txt``) and with all eight files present, sorted by
+    ``pair_stem``, which is the corpus key. ``base``/``next`` are the documents' own names.
+    ``sha256`` is left empty here."""
     root = Path(root)
-    holdout: set[str] = set()
-    for h in holdouts:
-        holdout |= read_holdout(root / h)
-    mapping = root / corpus / "centralized_mapping.csv"
-    if not mapping.is_file():
-        raise TryoutError(f"{mapping} is missing")
+    holdout = read_holdout(root / corpus / HOLDOUT.relative_to(CORPUS))
+    accepted_table = root / corpus / ACCEPTED.relative_to(CORPUS)
+    if not accepted_table.is_file():
+        raise TryoutError(f"{accepted_table} is missing")
+    with accepted_table.open(newline="") as fh:
+        accepted = {r["key"]: r for r in csv.DictReader(fh) if r["status"] == "ok"}
     pairs: list[Fixture] = []
-    with mapping.open(newline="") as fh:
-        for row in csv.DictReader(fh):
-            stem = row["pair_stem"]
-            if stem in holdout:
+    for set_name in SETS:
+        for p in corpus_paths.pairs(set_name, word=root / corpus, libreoffice=root / LIBREOFFICE):
+            if p.key in holdout or p.key not in accepted:
                 continue
             located = {
-                "docx_redline_word": word_variant(root / corpus / "docx_redlines_word", stem, ".docx"),
-                "pdf_redline_word": word_variant(root / corpus / "pdf_redlines_word", stem, ".pdf"),
-                "docx_accepted_word": word_variant(root / corpus / "docx_accepted_word", stem, ".docx"),
-                "pdf_accepted_word": word_variant(root / corpus / "pdf_accepted_word", stem, ".pdf"),
+                "docx_base": p.base, "docx_next": p.next, "pdf_base_word": p.base_pdf, "pdf_next_word": p.next_pdf,
+                "docx_redline_word": p.redline, "pdf_redline_word": p.redline_pdf,
+                "docx_accepted_word": root / corpus / accepted[p.key]["docx"],
+                "pdf_accepted_word": root / corpus / accepted[p.key]["pdf"],
             }
-            if any(p is None for p in located.values()):
+            if any(f is None or not f.is_file() for f in located.values()):
                 continue
-            files: dict[str, Path] = {
-                "docx_base": corpus / "docx_source" / f"{row['base']}.docx",
-                "docx_next": corpus / "docx_source" / f"{row['next']}.docx",
-                "pdf_base_word": corpus / "pdf_source" / f"{row['base']}.pdf",
-                "pdf_next_word": corpus / "pdf_source" / f"{row['next']}.pdf",
-            }
-            files.update({k: p.relative_to(root) for k, p in located.items() if p is not None})
-            if not all((root / p).is_file() for p in files.values()):
-                continue
-            pairs.append(Fixture(pair_stem=stem, base=row["base"], next=row["next"], files=files, sha256={}))
+            files = {k: f.relative_to(root) for k, f in located.items() if f is not None}
+            pairs.append(Fixture(pair_stem=p.key, base=p.base_name, next=p.next_name, files=files, sha256={}))
     pairs.sort(key=lambda f: f.pair_stem)
     return pairs
 

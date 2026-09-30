@@ -58,11 +58,9 @@ __pycache__/
 /runs/
 /grok_run/
 /grok_run_attic/
-# the Word corpus (bench corpus build): documents travel with `bench fixtures upload`,
-# tables, pools, notices, provenance and the manifest are tracked
-/corpus/word/**/*.docx
-/corpus/word/**/*.pdf
-/corpus/libreoffice/**/*.pdf
+# the Word corpus (corpus/word) and its LibreOffice renders (corpus/libreoffice) are tracked in
+# full: documents, PDFs, tables, pools, notices, provenance and the manifest. corpus/ is the one
+# source of truth; nothing reads the old working folders.
 # local bench logs (RESULTS live in results/; these are tee captures)
 /logs/
 
@@ -187,3 +185,10 @@ results/hub/
 Claude outputs/
 *.swp
 score_v2.patch
+
+# .NET build outputs of the in-process docxodus driver (the net8.0 build is tracked; newer builds are local)
+/src/neurotic_docx_bench/utils/docxodus/docxodus-csharp-inproc/bin/
+/src/neurotic_docx_bench/utils/docxodus/docxodus-csharp-inproc/obj/
+
+# separate Cloudflare worker project, kept locally, not part of the bench
+/docx-viewer/
