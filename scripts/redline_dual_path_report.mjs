@@ -31,7 +31,7 @@ const git = (cwd, ...args) => {
 const PROV = {
   jubarteFirst: git(JF, "rev-parse", "--short=7", "HEAD"),
   bench: git(ROOT, "rev-parse", "--short=7", "HEAD"),
-  corpus: git(ROOT, "log", "-1", "--format=%h", "--", "grok_run/word_based"),
+  corpus: git(ROOT, "log", "-1", "--format=%h", "--", "corpus/word"),
   node: process.version,
 };
 
@@ -199,7 +199,7 @@ if (UPDATE_DOCS) {
     stamp,
     "",
     "Both TypeScript paths in `jubarte-first` over the same base→next pairs from",
-    "`centralized_mapping.csv` + `centralized_mapping_randomized.csv`. Timing covers the",
+    "`corpus/word/pools/word_based_pairs.csv` + `word_based_randomized_pairs.csv`. Timing covers the",
     "`compare()` call only — accept/reject and judging are excluded, so this is the redline",
     "engine and not the harness. Single process, sequential, no warmup.",
     "",

@@ -13,7 +13,6 @@ Usage:
 from __future__ import annotations
 
 import argparse
-import csv
 import re
 import subprocess
 import sys
@@ -21,17 +20,18 @@ import tempfile
 import zipfile
 from pathlib import Path
 
+from neurotic_docx_bench import corpus_paths
+
 BENCH_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_BIN = BENCH_ROOT / "src/neurotic_docx_bench/utils/jubarte/jubarte-rust/redline"
 
-CORPORA = [
-    ("grok_run/word_based/centralized_mapping.csv", "grok_run/word_based/docx_source",
-     "grok_run/word_based/docx_redlines_word", "{stem}_word_redline.docx|{stem}_redline.docx"),
-    ("grok_run/word_based/centralized_mapping_randomized.csv", "grok_run/word_based/docx_source_randomized",
-     "grok_run/word_based/docx_redlines_randomized", "{stem}_redline.docx"),
-    ("grok_run/word_redlines_superdoc/centralized_mapping.csv", "grok_run/word_redlines_superdoc/docx_source",
-     "grok_run/word_redlines_superdoc/docx_redlines_word", "{stem}_redline.docx"),
-]
+
+def oracle_pairs():
+    """One Word compare per pair stem over the three redline sets."""
+    for set_name in corpus_paths.REDLINE_SETS:
+        yield from corpus_paths.by_stem(set_name, word=BENCH_ROOT / corpus_paths.WORD,
+                                        libreoffice=BENCH_ROOT / corpus_paths.LIBREOFFICE).values()
+
 
 STYLE_RE = re.compile(r'<w:style [^>]*?w:styleId="([^"]*)".*?</w:style>', re.S)
 ATTR = lambda el, a: re.search(rf'{a}="([^"]*)"', el)
@@ -129,32 +129,19 @@ def main():
     a = ap.parse_args()
 
     if a.pair:
-        for man, src, odir, pat in CORPORA:
-            mp = BENCH_ROOT / man
-            if not mp.exists():
+        for p in oracle_pairs():
+            if p.stem != a.pair:
                 continue
-            for row in csv.DictReader(mp.open()):
-                if row["pair_stem"] != a.pair:
-                    continue
-                oracle = None
-                for cand in pat.format(stem=a.pair).split("|"):
-                    p = BENCH_ROOT / odir / cand
-                    if p.exists():
-                        oracle = p
-                        break
-                if oracle is None:
-                    sys.exit("oracle docx not found")
-                ours = Path(tempfile.mkdtemp()) / "ours.docx"
-                r = subprocess.run(
-                    [str(a.bin), str(BENCH_ROOT / src / row["docx_source_base"]),
-                     str(BENCH_ROOT / src / row["docx_source_next"]), "-o", str(ours),
-                     "--force", "--quiet"], capture_output=True)
-                if r.returncode != 0:
-                    sys.exit(f"generate failed: {r.stderr[:200]}")
-                a.docs = [str(ours), str(oracle)]
-                break
-            if a.docs:
-                break
+            if not p.redline.exists():
+                sys.exit("oracle docx not found")
+            ours = Path(tempfile.mkdtemp()) / "ours.docx"
+            r = subprocess.run(
+                [str(a.bin), str(p.base), str(p.next), "-o", str(ours),
+                 "--force", "--quiet"], capture_output=True)
+            if r.returncode != 0:
+                sys.exit(f"generate failed: {r.stderr[:200]}")
+            a.docs = [str(ours), str(p.redline)]
+            break
     if len(a.docs) != 2:
         sys.exit("need ours.docx oracle.docx (or --pair)")
 

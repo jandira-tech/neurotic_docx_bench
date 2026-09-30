@@ -3,7 +3,8 @@
 Mirror of the bench's accept-compare stage, pointed the other way: rejecting every
 tracked change in a redline of ``base -> next`` must reproduce ``base``, so the
 rejected DOCX is rendered (soffice) and pixel-scored against the committed
-``grok_run/word_based/pdf_source/<base>.pdf`` oracle. A perfect reject scores 100.
+LibreOffice render of the pair's base (``corpus/libreoffice``, via the ``word_based``
+pairs of ``corpus_paths``). A perfect reject scores 100.
 
 Two reject backends:
   - ``docx-revisions`` (default): the bench's own tool-neutral accept/reject helper,
@@ -27,12 +28,11 @@ import tempfile
 import time
 from pathlib import Path
 
-from neurotic_docx_bench import pipeline
+from neurotic_docx_bench import corpus_paths, pipeline
 from neurotic_docx_bench.accept_changes import process_folder
 from neurotic_docx_bench.render.soffice import SofficeRenderer
 
-ORACLE = Path("grok_run/word_based/pdf_source")
-MANIFEST = Path("grok_run/word_based/centralized_mapping.csv")
+SET = "word_based"
 
 NODE_REJECT_SHIM = """
 const { readFileSync, writeFileSync, readdirSync } = require("node:fs");
@@ -72,11 +72,18 @@ const { join } = require("node:path");
 """
 
 
-def base_of(redline_stem: str, tool: str, bases: set[str]) -> str | None:
-    """``<base>_<next>_<tool>_redline`` → ``<base>`` via longest known-base prefix."""
-    stem = redline_stem.removesuffix(f"_{tool}_redline")
-    candidates = [b for b in bases if stem == b or stem.startswith(b + "_")]
-    return max(candidates, key=len) if candidates else None
+def base_oracles() -> dict[str, Path]:
+    """Pair stem ``<base>_<next>`` → LibreOffice's render of the pair's base."""
+    return {
+        stem: p.base_libreoffice_pdf
+        for stem, p in corpus_paths.by_stem(SET).items()
+        if p.base_libreoffice_pdf is not None
+    }
+
+
+def oracle_of(redline_stem: str, tool: str, oracles: dict[str, Path]) -> Path | None:
+    """``<base>_<next>_<tool>_redline`` → the base oracle PDF of that pair."""
+    return oracles.get(redline_stem.removesuffix(f"_{tool}_redline"))
 
 
 def main() -> int:
@@ -94,7 +101,7 @@ def main() -> int:
     if not docs:
         print(f"no docx in {redline_dir}")
         return 1
-    bases = {p.stem for p in Path("grok_run/word_based/docx_source").glob("*.docx")}
+    oracles = base_oracles()
 
     t0 = time.perf_counter()
     with tempfile.TemporaryDirectory(prefix="reject-cmp.") as work:
@@ -124,15 +131,14 @@ def main() -> int:
 
         report = SofficeRenderer().to_pdfs(rejected, work_dir / "render", jobs=args.jobs)
 
-        # Pair each rejected-redline PDF with its BASE oracle PDF by manifest bases.
+        # Pair each rejected-redline PDF with its BASE oracle PDF by pair stem.
         scores: dict[str, float] = {}
         missing = 0
         pairs = []
         for r in report.results:
             if not r.ok or r.pdf is None:
                 continue
-            base = base_of(r.source.stem, args.tool, bases)
-            oracle_pdf = ORACLE / f"{base}.pdf" if base else None
+            oracle_pdf = oracle_of(r.source.stem, args.tool, oracles)
             if oracle_pdf is None or not oracle_pdf.exists():
                 missing += 1
                 continue

@@ -1,9 +1,9 @@
 """The balloon detector flags a narrowed page with revision boxes on the right.
 
 Thresholds were measured on the pair in
-``grok_run/compared_a_100_vs_b_10_pdf/{with,without}_balloons_do_not_use.pdf``.
-Those files are not in git. The synthetic pages below freeze the same geometry,
-and the real pair is checked when it is on disk.
+``tests/data/balloons/{with,without}_balloons_do_not_use.pdf`` (Word's export of one
+compared_a_100_vs_b_10 comparison with and without balloons). The synthetic pages below
+freeze the same geometry, and the real pair is checked too.
 """
 
 from __future__ import annotations
@@ -18,8 +18,8 @@ import pytest
 
 _SCRIPT = Path(__file__).resolve().parents[1] / "scripts" / "detect_review_balloons.py"
 _ROOT = Path(__file__).resolve().parents[1]
-_WITH = _ROOT / "grok_run/compared_a_100_vs_b_10_pdf/with_balloons_do_not_use.pdf"
-_WITHOUT = _ROOT / "grok_run/compared_a_100_vs_b_10_pdf/without_balloons_do_not_use.pdf"
+_WITH = _ROOT / "tests/data/balloons/with_balloons_do_not_use.pdf"
+_WITHOUT = _ROOT / "tests/data/balloons/without_balloons_do_not_use.pdf"
 
 
 def _load():

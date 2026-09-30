@@ -176,17 +176,13 @@ def test_generate_then_render(tmp_path):
     # oracle: render the same redline docx set is heavy; instead point oracle at the real
     # redline PDFs and generate by copying the matching redline DOCX.
     import pytest
-    from helpers import CORPUS
+    from helpers import MANIFEST, word_based_pairs
 
-    # Find a redline DOCX whose matching oracle redline PDF exists (skip the _word_redline
-    # variant, which has no direct pdf oracle).
+    # A Word compare whose LibreOffice-rendered oracle PDF is filed (corpus/libreoffice).
     one = oracle_pdf = None
-    for d in sorted((CORPUS / "docx_redlines_word").glob("*_redline.docx")):
-        if d.stem.endswith("_word_redline"):
-            continue
-        cand_pdf = CORPUS / "pdf_redlines_word" / f"{d.stem}.pdf"
-        if cand_pdf.exists():
-            one, oracle_pdf = d, cand_pdf
+    for p in word_based_pairs() if MANIFEST.is_file() else ():
+        if p.libreoffice_pdf is not None and p.libreoffice_pdf.exists():
+            one, oracle_pdf = p.redline, p.libreoffice_pdf
             break
     if one is None or oracle_pdf is None:
         pytest.skip("no redline docx with a matching oracle pdf")

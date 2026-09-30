@@ -11,7 +11,8 @@ to be wrong. The identity checkers must reject every file here.
 
 - **Sources.** `a/` and `b/` hold the source documents the names refer to.
 - **Build.** `build_messed_fixtures.sh OUT` rebuilds the fixtures from
-  `grok_run`.
+  `corpus/word` (`pools/redlines_en_500_pairs.csv` and `documents.csv`). R's
+  redline was rejected from the corpus, so its PDF comes from `pdfs/` here.
 - **Real pairs used.** `pairs.txt` lists them.
   - X = `23ba7149…__vs__0ba09db4…`
   - Y = `782587f6…__vs__7672b472…`

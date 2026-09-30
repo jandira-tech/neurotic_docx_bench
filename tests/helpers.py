@@ -11,10 +11,20 @@ from pathlib import Path
 
 import pytest
 
+from neurotic_docx_bench import corpus_paths
+
 REPO_ROOT = Path(__file__).resolve().parents[1]
-CORPUS = REPO_ROOT / "grok_run" / "word_based"
-DOCX_SOURCE = CORPUS / "docx_source"
-PDF_REDLINES = CORPUS / "pdf_redlines_word"
+CORPUS = REPO_ROOT / corpus_paths.WORD
+LIBREOFFICE = REPO_ROOT / corpus_paths.LIBREOFFICE
+# a generator's --manifest / --source-dir, as the bench driver passes them for the word_based pool
+MANIFEST = CORPUS / "pools" / "word_based_pairs.csv"
+SOURCE = CORPUS
+
+
+def word_based_pairs() -> list[corpus_paths.Pair]:
+    """The word_based Word compares, every path resolved under this checkout's corpus."""
+    return corpus_paths.pairs("word_based", word=CORPUS, libreoffice=LIBREOFFICE)
+
 
 _HAS_SOFFICE = (
     shutil.which("soffice") is not None
@@ -22,4 +32,4 @@ _HAS_SOFFICE = (
 )
 
 requires_soffice = pytest.mark.skipif(not _HAS_SOFFICE, reason="soffice not installed")
-requires_corpus = pytest.mark.skipif(not CORPUS.is_dir(), reason="corpus absent")
+requires_corpus = pytest.mark.skipif(not MANIFEST.is_file(), reason="corpus absent")

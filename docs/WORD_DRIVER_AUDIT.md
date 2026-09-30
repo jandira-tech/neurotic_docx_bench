@@ -3,6 +3,9 @@
 Audit of every script across `neurotic_docx_bench`, `jubarte-first` and `jubarte-redlines`
 that drives Microsoft Word for Mac to redline a document or export a PDF.
 
+The `neurotic_docx_bench` scripts of families A, B and C are no longer in the repository:
+`scripts/word_pdf.py` and `scripts/word_redline.py` replaced them. Read them at `a660f32`.
+
 **Scope:** 21 files. **Read:** 21 Sep 2026, at these revisions: `neurotic_docx_bench`
 `a660f32`, `jubarte-first` `e796d8f`, `jubarte-redlines` `ac9d120`. Every cross-repository
 citation below (`word-open-check.mjs:324–338` and the like) is a line number **at those

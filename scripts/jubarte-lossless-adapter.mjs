@@ -14,8 +14,9 @@
  * tsx/TS loader), so this module has to be importable from both that script
  * and generate-native-redlines.ts without a build step.
  *
- * Verified against the full corpus (`grok_run/word_based/centralized_mapping.csv`,
- * 207 pairs) — 207/207 produce non-empty `w:ins`/`w:del` output.
+ * Verified against the full corpus (the word_based pairs, now
+ * `corpus/word/pools/word_based_pairs.csv`; 207 pairs at the time): 207/207
+ * produce non-empty `w:ins`/`w:del` output.
  */
 
 import { readFileSync, writeFileSync } from "node:fs";

@@ -3,9 +3,9 @@
 Extension of the visual_* family for the folio comparison: the standard
 visual_redlines renders WORD's redline corpus, which never varies by generator.
 This lane renders <run>/docx (a generator's actual output) through ONE fixed
-folio viewer harness and scores the pages against the same
-grok_run/word_based/pdf_redlines_word oracle, so the only variable between lanes
-is the generated redline itself.
+folio viewer harness and scores the pages against the same oracle (LibreOffice's
+render of Word's redline for every word_based pair, from corpus/libreoffice), so the
+only variable between lanes is the generated redline itself.
 
 Usage:
   uv run python scripts/visual_own_redlines.py \
@@ -22,10 +22,10 @@ import tempfile
 import time
 from pathlib import Path
 
-from neurotic_docx_bench import pipeline
+from neurotic_docx_bench import corpus_paths, pipeline
 from neurotic_docx_bench.render.playwright import PlaywrightRenderer
 
-ORACLE = Path("grok_run/word_based/pdf_redlines_word")
+SET = "word_based"
 
 HARNESS = {
     "file_input": "#fileInput",
@@ -36,6 +36,16 @@ HARNESS = {
     ),
     "timeout_ms": 90000,
 }
+
+
+def stage_oracle(dest: Path) -> Path:
+    """Link each pair's oracle PDF into ``dest`` under the ``<stem>_redline.pdf`` name the
+    scorer keys on."""
+    dest.mkdir(parents=True)
+    for stem, p in corpus_paths.by_stem(SET).items():
+        if p.libreoffice_pdf is not None:
+            (dest / f"{stem}_redline.pdf").symlink_to(p.libreoffice_pdf.resolve())
+    return dest
 
 
 def main() -> int:
@@ -63,7 +73,7 @@ def main() -> int:
             r.duration_ns / 1e9 for r in report.results if r.ok and r.duration_ns
         ]
         per_doc = pipeline.score_folders_full(
-            ORACLE,
+            stage_oracle(work_dir / "oracle"),
             report.pdf_dir,
             work_dir / "score",
             dpi=args.dpi,

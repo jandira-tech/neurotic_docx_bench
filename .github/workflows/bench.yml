@@ -1,8 +1,9 @@
 name: bench
 
+# Manual only. The LibreOffice oracle (corpus/libreoffice) is LibreOffice 26.2.4.2's render of
+# the Word corpus; a runner whose apt LibreOffice is another build scores against renders its own
+# build did not make. Install 26.2.4.2 on the runner before putting this back on a schedule.
 on:
-  schedule:
-    - cron: "17 6 * * 1"   # weekly, Monday ~06:17 UTC (off the :00 mark)
   workflow_dispatch: {}
 
 permissions:
@@ -35,25 +36,6 @@ jobs:
         run: |
           uv sync --frozen
           bun install --frozen-lockfile
-
-      # Renderer-agnostic oracle: re-render the committed Word redline DOCX with THIS
-      # runner's LibreOffice, so oracle and candidates share one renderer (plan Context §7).
-      # The checkout is ephemeral, so overwriting the committed PDFs here is safe.
-      - name: Regenerate oracle PDFs (match runner's LibreOffice)
-        run: |
-          uv run bench render corpus/word_based/docx_redlines_word /tmp/oracle --jobs 4
-          cp /tmp/oracle/pdf/*.pdf corpus/word_based/pdf_redlines_word/
-          # Randomized chain oracle too — otherwise the randomized half of
-          # script_redlines is scored against locally-rendered PDFs while the
-          # candidates use this runner's LibreOffice.
-          uv run bench render corpus/word_based/docx_redlines_randomized /tmp/oracle_rand --jobs 4
-          cp /tmp/oracle_rand/pdf/*.pdf corpus/word_based/pdf_redlines_randomized/pdf/
-
-      # The in-image regeneration above intentionally rewrites the oracle, so the
-      # committed manifest no longer matches — re-baseline it here (ephemeral checkout)
-      # so the oracle-drift gate still protects the rest of this CI run.
-      - name: Re-baseline oracle manifest for the regenerated oracle
-        run: uv run bench oracle-manifest --write
 
       - name: Run bench (gate sets exit status)
         env:
@@ -102,8 +84,7 @@ jobs:
         run: |
           git config user.name  "bench-bot"
           git config user.email "bench@users.noreply.github.com"
-          # Only the durable outputs — never the regenerated oracle or runs/ intermediates.
-          git checkout -- corpus/word_based/pdf_redlines_word/ || true
+          # Only the durable outputs, never runs/ intermediates.
           # Stage FIRST, then diff the index — plain `git diff` ignores brand-new
           # (untracked) files like results/score-snapshots/*.json, so a run that only
           # adds new snapshots would be silently dropped.

@@ -263,7 +263,7 @@ def test_real_jubarte_rust_census_matches_the_execution_contract() -> None:
     assert run is not None, f"run {JUBARTE_RUST_RUN} not in {BENCH_JSONL}"
     assert run.vendor == "jubarte-rust"
     c = ratchet.census(run.itt_scores, n_itt=run.itt_n_docs)
-    # Figures quoted in plans/jubarte-execution-contract.md and the three stage
+    # Figures quoted in the jubarte execution contract and the three stage
     # tables that bind to it. These are not free parameters.
     assert c.n_cluster == 197              # the ≈50 cluster, [40,60)
     assert c.above_92 == 282

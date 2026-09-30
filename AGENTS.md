@@ -70,9 +70,11 @@ Key modules (`src/neurotic_docx_bench/`):
 - Everything Word produced lives in **`corpus/word/<state>/{docx,pdf}`** (states: `clean`,
   `tracking_without_comments`, `with_comments_tracking`, `with_comments_clean`,
   `accept_all`, `reject_all`), one naming scheme (`<idA>_<a>__vs__<idB>_<b>_redline_<idC>`
-  for comparisons), built by `bench corpus build` from the `grok_run/` origins. Lists live in
+  for comparisons), built by `bench corpus build --origins <Word's working folders>`. Lists live in
   `corpus/word/pools/` (`<set>_pairs.csv`: key, base, next, docx, pdf, state; base/next are
-  paths under `corpus/word` without the suffix). docx/pdf are git-ignored; tables are tracked.
+  paths under `corpus/word` without the suffix). Everything under `corpus/` is tracked, docx and
+  PDFs included: it is the one source of truth. Code finds files through
+  `neurotic_docx_bench.corpus_paths` (`pairs(set)`, `documents(set)`, `comparisons(set)`).
 - The oracle's **markup** is Word's; its **rendering** must match the candidates' renderer.
   `bench.yaml` has `renderer: auto` and `oracle_roots: {word: corpus/word, soffice:
   corpus/libreoffice}`: with Word on the machine (`render/auto.py`, `BENCH_RENDERER=word|soffice`
@@ -81,10 +83,10 @@ Key modules (`src/neurotic_docx_bench/`):
   26.2.4.2 renders filed under the same Word stems (`word_map.csv` maps each to its Word PDF).
   A docx run whose renderer differs from the oracle's is refused at config load.
 - Candidates are `<key>_<tool>`; matching (`pipeline.redline_key`) **raises on any key
-  collision** — never silent last-wins. `corpus/word_based` and friends are gone: code reads
-  `corpus/word` and its pools; one-off research scripts read the `grok_run/` origins.
-- CI has neither Word nor the git-ignored corpus files, so `.github/workflows/bench.yml` cannot
-  run the bench as written; it still names the old `corpus/word_based` paths.
+  collision** — never silent last-wins. `corpus/word_based` and the old working folders are
+  gone: code and research scripts read `corpus/word` and its pools. A pair's `stem` in
+  `corpus_paths` is its pre-corpus `<base>_<next>` name (from `notices/RENAMED.csv`), so older
+  results keyed by it still line up.
 
 ## Tools benchmarked
 
@@ -250,72 +252,33 @@ two real oracle pages) and skips when torch is not installed.
 
 ## Regenerating the Word oracle PDFs (macOS + Word, local-only)
 
-The committed oracle PDFs (`grok_run/word_based/pdf_redlines_word/*.pdf`) are Word redline
-markup rendered to PDF. To regenerate them (or render a new set into a sanity directory),
-use the `WordRenderer` (`src/neurotic_docx_bench/render/word.py`) or the batch script.
+Word's PDFs of the corpus live beside their docx in `corpus/word/<state>/pdf`. To render a set
+again (or a sanity copy of it), stage the docx a pool names into a working folder and drive Word
+with `scripts/word_pdf.py`, which runs the whole folder in one AppleScript (one permission prompt),
+skips `~$` lock files and resumes a wedged pass:
 
-**Permission-prompt trap — read this first:** macOS shows one AppleScript permission dialog
-per `osascript` process. The `WordRenderer.to_pdfs()` calls `osascript` **once per file**,
-so 232 DOCX files = 232 permission prompts. Never run it for a full batch. Instead, generate
-a **single monolithic AppleScript** that processes all files inside one
-`tell application "Microsoft Word"` block and pipe it to **one** `osascript` call — one prompt
-for the entire batch.
+```bash
+# 1. Manually export one PDF in Word GUI choosing "Best for printing" (sets the sticky pref).
+# 2. Stage the documents and render them (foreground, so the permission dialog is visible):
+uv run bench corpus stage corpus/word/pools/word_based_renders.csv work/word_based
+uv run scripts/word_pdf.py --src work/word_based/docx --out work/word_based/pdf_again
+```
+
+**Permission-prompt trap:** macOS shows one AppleScript permission dialog per `osascript`
+process. `WordRenderer.to_pdfs()` (`src/neurotic_docx_bench/render/word.py`) calls `osascript`
+**once per file**, so 232 DOCX files = 232 prompts. Never use it for a full batch.
 
 **"Best for printing" export quality:** Word's AppleScript `save as` does not expose the
 "Optimize for: Best for printing / Best for online viewing" radio button. The setting is
-**sticky** — Word reuses whatever you last chose in the GUI Export dialog. So before a batch:
-open any DOCX in Word → File → Export... → PDF → select **"Best for printing"** → Export.
-All subsequent `save as ... file format format PDF` calls inherit that choice.
-
-**Step-by-step batch conversion (one permission prompt):**
-
-```bash
-# 1. Clean Word temp/lock files (~$ prefix) from the source dir — they cause failures:
-rm -f grok_run/word_based/docx_redlines_word/~\$*.docx
-
-# 2. Manually export one PDF in Word GUI choosing "Best for printing" (sets sticky pref).
-
-# 3. Generate a single monolithic AppleScript for all DOCX files:
-python3 -c "
-from pathlib import Path
-src = Path('grok_run/word_based/docx_redlines_word').resolve()
-out = Path('sanity_word/sanity_pdf_redlines_word').resolve()
-out.mkdir(parents=True, exist_ok=True)
-docs = sorted(src.glob('*.docx'))
-lines = ['tell application \"Microsoft Word\"', '  set displayAlerts to false']
-for docx in docs:
-    pdf = out / (docx.stem + '.pdf')
-    lines += ['  try',
-              f'    open POSIX file \"{docx}\"',
-              '    set theDoc to active document',
-              f'    save as theDoc file name \"{pdf}\" file format format PDF',
-              '    close theDoc saving no',
-              '  on error',
-              '    try',
-              '      close every document saving no',
-              '    end try',
-              '  end try']
-lines += ['  set displayAlerts to true', 'end tell']
-print(chr(10).join(lines))
-" | osascript   # MUST run in foreground so the single permission dialog is visible
-
-# 4. Check for any missing PDFs and retry just those:
-python3 -c "
-from pathlib import Path
-src = Path('grok_run/word_based/docx_redlines_word').resolve()
-out = Path('sanity_word/sanity_pdf_redlines_word').resolve()
-missing = [d for d in sorted(src.glob('*.docx')) if not (out / (d.stem + '.pdf')).exists()]
-print(f'Missing: {len(missing)}')
-for m in missing: print(f'  {m.name}')
-"
-```
+**sticky**: Word reuses whatever you last chose in the GUI Export dialog, so set it once by hand
+(File → Export... → PDF → **"Best for printing"**) before a batch.
 
 **Rules to avoid the permission-prompt nightmare:**
 1. **One `osascript` call, all files inside.** Never loop `osascript` per-file.
 2. **Run in foreground** (`osascript ...` directly, not backgrounded). Background mode
    buries the permission dialog where you can't see/click it.
 3. **Use inline/heredoc AppleScript**, not `.scpt` files. Compiled `.scpt` triggers
-   `-1708` errors on `save as` (see `grok_run/word_based/docx_redlines_word/README.md`).
+   `-1708` errors on `save as`.
 4. **Delete `~$` temp files first** — Word lock files cause spurious failures.
 5. Some files intermittently fail `save as` with `-1708` ("active document doesn't
    understand the 'save as' message"). Retry just those individually with a `delay 2`
@@ -375,12 +338,6 @@ the latest line to the baseline.
   passes ONE argument; `generate-native-redlines.ts` then ignores it and runs its default manifest (207
   word_based pairs) with exit 0, while `superdoc_gen` rejects it. Write the flags out, use an array
   (`M=(--manifest x --source-dir y)`) or `${=M}`, and check the output count against the manifest.
-- **grok_run/ holds symlinks for its duplicate copies.** `scripts/grok_run_dedupe.py` (report by
-  default, `--apply` to fold) keeps one copy of each byte-identical group and replaces the others
-  with relative symlinks, moving their bytes to `grok_run_attic/dedupe/` (git-ignored, ledger in
-  `moved.csv`). Copies inside a corpus origin (`word_corpus.origins()`, the `_fixtures` ones
-  included) are never folded: `bench corpus build` reads same bytes under different names as
-  aliases and renders. Code that walks grok_run must follow symlinks.
 - **Every retried file goes to the back of the next batch pass** in `scripts/word_pdf.py`: one
   that crashes Word ("Connection is invalid"), one that loads empty (a declined repair prompt), and
   the one a wedged pass stopped on. A `[retry]` file fails for good after two such passes, and a

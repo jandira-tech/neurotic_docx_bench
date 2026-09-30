@@ -2,7 +2,7 @@
 
 Built in response to the adversarial review, which found that four stages across
 the three plans depend on tools that were never built, scheduled, or owned. The
-execution contract (``plans/jubarte-execution-contract.md``) makes them Stage 0:
+jubarte execution contract makes them Stage 0:
 nothing else starts, because every downstream stage is specified in terms of
 their output.
 
