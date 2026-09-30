@@ -1,5 +1,8 @@
 > **See every page side by side: [jandira-tech.github.io/neurotic_docx_bench](https://jandira-tech.github.io/neurotic_docx_bench/)**  
-> DOCX to PDF across engines, and redlines against Word ([/redlines/](https://jandira-tech.github.io/neurotic_docx_bench/redlines/)), scored per page.
+> DOCX to PDF across engines, and redlines against Word ([/redlines/](https://jandira-tech.github.io/neurotic_docx_bench/redlines/)), scored per page.  
+> Navigator: [DOCX to PDF](https://jandira-tech.github.io/neurotic_docx_bench/) ·
+> [redlines vs Word](https://jandira-tech.github.io/neurotic_docx_bench/redlines/) (jubarte 0.10.0 and 0.9.3, docxodus, SuperDoc; redlines, accepted, rejected) ·
+> [speed](https://jandira-tech.github.io/neurotic_docx_bench/speed/)
 
 # neurotic-docx-bench
 
