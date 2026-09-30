@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 """Rank OOXML feature/revision tags by how many mean-points a fix could recover.
 
-Plan reference: ``plans/agent-execution-plan.md`` Chapter 4.5 step 2.
-
 The 90/90 campaign is won in the sub-70 tail, not by polishing 93→96. This joins
 a vendor's per-document scores with the corpus coverage tags and answers one
 question per tag: *if every failing document carrying this tag were lifted to the

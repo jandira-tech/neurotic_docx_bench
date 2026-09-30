@@ -8,18 +8,25 @@ import shutil
 from pathlib import Path
 
 import pytest
-from helpers import CORPUS, PDF_REDLINES, REPO_ROOT, requires_corpus
+from helpers import CORPUS, LIBREOFFICE, REPO_ROOT, requires_corpus
 from typer.testing import CliRunner
 
-from neurotic_docx_bench import pipeline
+from neurotic_docx_bench import corpus_paths, pipeline
 from neurotic_docx_bench.cli import app
 from neurotic_docx_bench.config import environment_config_for_run, load_config
 from neurotic_docx_bench.emit import jsonl
 from neurotic_docx_bench.emit import snapshot as snapshot_emit
 from neurotic_docx_bench.gate import gate as run_gate
 
-HOLDOUT_TXT = CORPUS / "holdout.txt"
-RANDOMIZED_PDF = CORPUS / "pdf_redlines_randomized" / "pdf"
+# the two sealed lists as written (legacy <base>_<next> stems, with their provenance headers) and
+# the one the bench reads (pools/holdout.txt, the same pairs as corpus keys)
+HOLDOUT_TXT = CORPUS / "notices" / "holdout_word_based.txt"
+SUPERDOC_HOLDOUT_TXT = CORPUS / "notices" / "holdout_word_redlines_superdoc.txt"
+POOL_HOLDOUT = CORPUS / "pools" / "holdout.txt"
+
+
+def _redline_pairs() -> list[corpus_paths.Pair]:
+    return [p for s in corpus_paths.REDLINE_SETS for p in corpus_paths.pairs(s, word=CORPUS, libreoffice=LIBREOFFICE)]
 
 from neurotic_docx_bench.ledger import policy as ledger_policy
 from neurotic_docx_bench.ledger import rows as ledger_rows
@@ -174,15 +181,12 @@ def test_holdout_txt_integrity():
     assert "0xD0C5" in text
 
 
-@pytest.mark.skipif(
-    not (PDF_REDLINES.is_dir() and RANDOMIZED_PDF.is_dir()),
-    reason="oracle corpus absent",
-)
-def test_holdout_keys_exist_in_oracle_index():
-    index = pipeline._index_redlines_union([PDF_REDLINES, RANDOMIZED_PDF], None)
-    keys = pipeline.load_holdout(HOLDOUT_TXT)
-    missing = keys - set(index)
-    assert not missing, f"holdout keys not in the oracle index union: {sorted(missing)}"
+@requires_corpus
+def test_pool_holdout_keys_are_corpus_compares():
+    """Every sealed key is a Word compare of one of the three redline sets."""
+    keys = {p.key for p in _redline_pairs()}
+    missing = pipeline.load_holdout(POOL_HOLDOUT) - keys
+    assert not missing, f"holdout keys that are no corpus compare: {sorted(missing)}"
 
 
 # ── config wiring ────────────────────────────────────────────────────────────
@@ -236,14 +240,15 @@ def test_real_bench_yaml_wires_holdout():
 
 
 @requires_corpus
-def test_combined_holdout_is_exactly_the_union_of_the_sealed_lists():
-    """The combined file is DERIVED. If it ever drifts from its two sources, keys
-    silently stop being held out — so assert the union property, not a count."""
-    superdoc_txt = REPO_ROOT / "grok_run" / "word_redlines_superdoc" / "holdout.txt"
-    combined = pipeline.load_holdout(REPO_ROOT / "grok_run" / "holdout_combined.txt")
-    assert combined == pipeline.load_holdout(HOLDOUT_TXT) | pipeline.load_holdout(
-        superdoc_txt
-    )
+def test_pool_holdout_is_exactly_the_two_seals_translated_to_corpus_keys():
+    """pools/holdout.txt is DERIVED from the two seals. If it drifts from them, keys silently
+    stop being held out, so assert the translation, not a count."""
+    by_stem: dict[str, set[str]] = {}
+    for p in _redline_pairs():
+        by_stem.setdefault(p.stem.lower(), set()).add(p.key)
+    sealed = pipeline.load_holdout(HOLDOUT_TXT) | pipeline.load_holdout(SUPERDOC_HOLDOUT_TXT)
+    assert sealed <= set(by_stem), sorted(sealed - set(by_stem))
+    assert set().union(*(by_stem[k] for k in sealed)) == pipeline.load_holdout(POOL_HOLDOUT)
 
 
 @requires_corpus
@@ -252,19 +257,15 @@ def test_sealed_keys_are_lowercase_so_they_match_the_scorer():
     capitals matches nothing, so its pair stays in the headline score while
     appearing held out. Four superdoc keys contain capitals — caught in review,
     and this is the regression guard."""
-    keys = pipeline.load_holdout(REPO_ROOT / "grok_run" / "holdout_combined.txt")
+    keys = pipeline.load_holdout(POOL_HOLDOUT)
     assert all(k == k.lower() for k in keys), sorted(k for k in keys if k != k.lower())
 
 
 @requires_corpus
 def test_every_sealed_superdoc_key_exists_in_that_corpus():
     """A sealed key that matches no pair holds nothing out."""
-    import csv
-
-    corpus = REPO_ROOT / "grok_run" / "word_redlines_superdoc"
-    with (corpus / "centralized_mapping.csv").open(newline="") as handle:
-        stems = {row["pair_stem"].lower() for row in csv.DictReader(handle)}
-    sealed = pipeline.load_holdout(corpus / "holdout.txt")
+    stems = {p.stem.lower() for p in corpus_paths.pairs("word_redlines_superdoc", word=CORPUS, libreoffice=LIBREOFFICE)}
+    sealed = pipeline.load_holdout(SUPERDOC_HOLDOUT_TXT)
     assert sealed <= stems, sorted(sealed - stems)
 
 
