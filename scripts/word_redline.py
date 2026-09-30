@@ -248,6 +248,8 @@ class PairResult:
     seconds: float = 0.0
     timing_exact: bool = True
     """False when `seconds` is a per-pair average from a batch pass."""
+    unmatched: str = ""
+    """Why the identity check failed a redline delivered anyway under `keep_unmatched`."""
 
     @property
     def label(self) -> str:
@@ -542,7 +544,19 @@ def _reject_wrong_pair(staged: Path, base: Path, revision: Path) -> str:
     return "" if verdict.ok else verdict.reason
 
 
+def _gate(result: PairResult, staged: Path, base: Path, revision: Path) -> str:
+    """The identity check on what Word saved: the reason to drop it, or '' to deliver it.
+    Under `keep_unmatched` a failing redline is delivered and the reason kept on the result."""
+    wrong = _reject_wrong_pair(staged, base, revision)
+    if wrong and _keep_unmatched.get():
+        result.unmatched = wrong
+        logger.warning(f"[redline] UNMATCHED, kept: {result.label} — {wrong}")
+        return ""
+    return wrong
+
+
 _close_documents: ContextVar[bool] = ContextVar("redline_close_documents", default=True)
+_keep_unmatched: ContextVar[bool] = ContextVar("redline_keep_unmatched", default=False)
 
 
 def compare_pair(
@@ -627,6 +641,7 @@ def redline_folders(
     close_documents: bool = True,
     max_passes: int = 3,
     poison_streak: int = 3,
+    keep_unmatched: bool = False,
 ) -> list[PairResult]:
     """Redline every pair drawn from two folders. Serial, by necessity.
 
@@ -637,6 +652,9 @@ def redline_folders(
 
     `one_osascript` (the default) runs the whole job as TWO monolithic AppleScripts — every
     comparison, then every PDF — instead of one `osascript` per step per pair.
+
+    `keep_unmatched` delivers a redline the identity check fails instead of dropping it, with
+    the reason on `PairResult.unmatched`; the caller judges those itself.
     """
     require_positive_seconds(timeout, "timeout")
     require_positive_seconds(pdf_timeout, "pdf_timeout")
@@ -703,6 +721,7 @@ def redline_folders(
         ]
 
     with Stage(prefix="wordredline") as stage:
+        keep_token = _keep_unmatched.set(keep_unmatched)
         try:
             run = _redline_batched if one_osascript else _redline_serial
             logger.info(f"[redline] one_osascript={one_osascript} pairs={len(pairs)}")
@@ -723,6 +742,7 @@ def redline_folders(
                 close_documents=close_documents,
             )
         finally:
+            _keep_unmatched.reset(keep_token)
             if owns_session:
                 session.quit_if_ours()
 
@@ -886,7 +906,7 @@ def _redline_one(
         if not ok:
             result.error = err
             return result
-        wrong = _reject_wrong_pair(staged_docx, base, revision)
+        wrong = _gate(result, staged_docx, base, revision)
         if wrong:
             result.error = wrong
             return result
@@ -1040,7 +1060,7 @@ def _redline_batched(
         result.revisions = parse_revision_count(detail) if ok else -1
         produced = staged_docx.exists() and staged_docx.stat().st_size > 0
         if produced:
-            wrong = _reject_wrong_pair(staged_docx, base, revision)
+            wrong = _gate(result, staged_docx, base, revision)
             if wrong:
                 produced = False
                 ok = False
@@ -1102,6 +1122,7 @@ def report_pairs(results: list[PairResult], title: str = "Word redline") -> int:
     skipped = [r for r in results if r.skipped]
     failed = [r for r in results if not r.ok]
     clean = [r for r in done if r.revisions == 0]
+    unmatched = [r for r in done if r.unmatched]
 
     table = Table(title=title, show_lines=False)
     table.add_column("outcome")
@@ -1111,6 +1132,8 @@ def report_pairs(results: list[PairResult], title: str = "Word redline") -> int:
     table.add_row("failed", str(len(failed)), style="red" if failed else None)
     if clean:
         table.add_row("compared clean (0 revisions)", str(len(clean)), style="yellow")
+    if unmatched:
+        table.add_row("kept, identity check failed", str(len(unmatched)), style="yellow")
     if done:
         seconds = sorted(r.seconds for r in done)
         middle = f"{seconds[len(done) // 2]:.1f}"
@@ -1126,6 +1149,8 @@ def report_pairs(results: list[PairResult], title: str = "Word redline") -> int:
 
     for r in clean:
         console.print(f"  [yellow]clean[/] {r.label}: Word found no differences")
+    for r in unmatched:
+        console.print(f"  [yellow]UNMATCHED[/] {r.label}: {r.unmatched}")
     for r in failed:
         console.print(f"  [red]FAIL[/] {r.label}: {r.error}")
     return 1 if failed else 0
@@ -1208,6 +1233,14 @@ def main(
             "cannot be saved as the next redline.",
         ),
     ] = False,
+    keep_unmatched: Annotated[
+        bool,
+        typer.Option(
+            "--keep-unmatched",
+            help="Deliver a redline the identity check fails (listed as UNMATCHED) "
+            "instead of dropping it. For pairs the loose check misjudges; judge each yourself.",
+        ),
+    ] = False,
     quiet: Annotated[
         bool, typer.Option("--quiet", "-q", help="Errors and summary only.")
     ] = False,
@@ -1272,6 +1305,7 @@ def main(
             session=session,
             one_osascript=one_osascript,
             close_documents=not do_not_close,
+            keep_unmatched=keep_unmatched,
         )
         session.quit_if_ours()
     raise typer.Exit(report_pairs(results, f"redline: {folder_a.name} → {folder_b.name}"))
