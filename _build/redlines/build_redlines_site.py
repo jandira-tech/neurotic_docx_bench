@@ -3,7 +3,10 @@
 Two tracks, every PDF rendered by Microsoft Word for Mac:
 
 - redlines: each tool's compare of a corpus pair (base -> next) against Word's own compare
-  of the same pair (neurotic-docx-bench results/redlines_0928: 1164 pairs of corpus/word).
+  of the same pair (neurotic-docx-bench results/<REDLINES_RUN>, default redlines_0929_full:
+  2611 pairs of corpus/word; redlines_0928 is the 1164-pair run of jubarte 0.9.3). A run
+  with gen_pairs.csv names each tool's redline after its pair's first compare key, and a
+  compare Word made again (FRESH, measure.py --fresh) replaces that compare's oracle.
 - accepted: the 100 pairs of accept_selection.csv, with every tracked change of the redline
   accepted by Word; each tool's redline accepted that way against Word's compare accepted
   that way (corpus/word pool accepted_tracking_0928).
@@ -22,6 +25,7 @@ from __future__ import annotations
 
 import csv
 import json
+import os
 import random
 import re
 import shutil
@@ -37,8 +41,10 @@ import build_site as bs
 HERE = aj.HERE
 OUT = HERE / "redlines_site"
 BENCH = HERE.parent / "neurotic_docx_bench"
-R = BENCH / "results" / "redlines_0928"
+RUN = os.environ.get("REDLINES_RUN", "redlines_0929_full")
+R = BENCH / "results" / RUN
 CORPUS = BENCH / "corpus" / "word"
+FRESH = Path.home() / "temp" / "T" / "compare_regen" / "out"  # Word compares made again (0929 only)
 TOOLS = ["jubarte-rust", "docxodus", "superdoc"]
 STATES = ["with_comments_tracking", "tracking_without_comments"]
 SEED = 20260928
@@ -47,15 +53,25 @@ ACCEPTED_N = 20  # per state
 JOBS = 8
 ENGINES = [["reference", "Word"], ["jubarte-rust", "jubarte"], ["docxodus", "docxodus"], ["superdoc", "SuperDoc"]]
 VERSIONS = {
-    "reference": "Word 16.114 compare",
-    "jubarte-rust": "0.9.3 @673aff7",
-    "docxodus": "12.6.4",
-    "superdoc": "superdoc-sdk 2.15.0",
-}
+    "redlines_0928": {
+        "reference": "Word 16.114 compare",
+        "jubarte-rust": "0.9.3 @673aff7",
+        "docxodus": "12.6.4",
+        "superdoc": "superdoc-sdk 2.15.0",
+    },
+    "redlines_0929_full": {
+        "reference": "Word 16.114 compare",
+        "jubarte-rust": "0.10.0 @86b6b5d3",
+        "docxodus": "12.6.5",
+        "superdoc": "superdoc-sdk 2.16.0",
+    },
+}[RUN]
 
 
-def redline_pdfs(key: str) -> dict[str, Path]:
-    out = {"reference": R / "oracle_pdf" / f"{key}.pdf"}
+def redline_pdfs(row: dict) -> dict[str, Path]:
+    key = row["key"]
+    fresh = FRESH / f'{row["id"]}__vs__{row["id"]}.pdf'
+    out = {"reference": fresh if RUN != "redlines_0928" and fresh.is_file() else R / "oracle_pdf" / f"{key}.pdf"}
     out |= {t: R / t / "pdf_by_word" / f"{key}_{t}.pdf" for t in TOOLS}
     return {k: p for k, p in out.items() if p.is_file()}
 
@@ -113,6 +129,8 @@ def summary_line(track: str) -> str:
     parts = []
     for t in TOOLS:
         f = R / f"scores_{track}_{t}.json"
+        if track == "redlines" and not f.exists():
+            f = R / f"scores_{t}.json"  # the 0929 measure.py writes redline scores unprefixed
         if not f.exists():
             continue
         s = json.loads(f.read_text())["summary"]
@@ -125,13 +143,15 @@ def summary_line(track: str) -> str:
 def main() -> None:
     t0 = time.time()
     rng = random.Random(SEED)
-    pool = list(csv.DictReader(open(R / "pool_pairs.csv")))
+    # gen_pairs.csv: one row per pair, keyed by the compare the tools' redlines are named after
+    pool_csv = R / "gen_pairs.csv" if (R / "gen_pairs.csv").exists() else R / "pool_pairs.csv"
+    pool = list(csv.DictReader(open(pool_csv)))
 
     jobs = []
     for state in STATES:
         rows = [r for r in pool if r["state"] == state]
-        for r in pick(rows, REDLINE_N, lambda r: len(redline_pdfs(r["key"])) == 4, rng):
-            jobs.append((f"redlines/{state}", r["id"], redline_pdfs(r["key"])))
+        for r in pick(rows, REDLINE_N, lambda r: len(redline_pdfs(r)) == 4, rng):
+            jobs.append((f"redlines/{state}", r["id"], redline_pdfs(r)))
 
     word = {row["key"].split("_")[1]: CORPUS / row["pdf"]
             for row in csv.DictReader(open(CORPUS / "pools" / "accepted_tracking_0928_renders.csv"))}
@@ -165,12 +185,12 @@ def main() -> None:
             "every page. <b>redlines</b>: the tool&#8217;s compare of a corpus pair vs Word&#8217;s compare of it. "
             "<b>accepted</b>: the same redlines with every tracked change accepted by Word, vs Word&#8217;s compare "
             "accepted the same way. Shown: a seeded sample, half of it from pairs all three tools produced; first 3 "
-            "pages at 100 DPI. Bench scores over every pair (1164 redline pairs, 100 accepted, 100 rejected): redlines: "
+            f"pages at 100 DPI. Bench scores over every pair ({len(pool)} redline pairs, 100 accepted, 100 rejected): redlines: "
             + summary_line("redlines") + ". accepted: " + summary_line("accepted") + (". rejected (every change rejected by Word, vs Word&#8217;s compare rejected "
             "the same way): " + summary_line("rejected") if rej_groups else "") + ". SuperDoc (latest SDK) "
             "refuses most pairs, so its column is often empty. Scores: _build/redlines/.</span>")
     note = note.replace("'", "&#8217;")
-    aj.ec.HTML_TEMPLATE = bs.patched_template(note, mode="redline").replace(
+    aj.ec.HTML_TEMPLATE = bs.patched_template(note).replace(
         "<title>jubarte DOCX to PDF vs Microsoft Word: engine comparison</title>",
         "<title>Redlines vs Microsoft Word: jubarte, docxodus, SuperDoc</title>").replace(
         "<kbd>1</kbd>-<kbd>8</kbd> engines", "<kbd>1</kbd>-<kbd>4</kbd> engines")

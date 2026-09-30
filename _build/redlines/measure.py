@@ -1,154 +1,255 @@
-"""Score the 0928 tool runs against Word, both tracks, with the bench's own scorers.
+"""Score each tool's Word-rendered redlines against Word's own compares.
 
-    uv run python results/redlines_0928/measure.py redlines jubarte-rust docxodus superdoc
-    uv run python results/redlines_0928/measure.py accepted jubarte-rust docxodus superdoc
-    uv run python results/redlines_0928/measure.py rejected jubarte-rust docxodus superdoc
+    uv run python results/redlines_0929_full/measure.py jubarte-rust docxodus [superdoc]
+    uv run python results/redlines_0929_full/measure.py --fresh ~/temp/T/compare_regen/out --device mps jubarte-rust
 
-redlines: ``<tool>/pdf_by_word/<key>_<tool>.pdf`` (the tool's redline, rendered by Word) against
-``oracle_pdf/<key>.pdf`` (Word's own compare, rendered by Word), through
-``pipeline.score_folders_full``.
+For every row of ``pool_pairs.csv`` the candidate is the tool's redline of that row's pair
+(``<tool>/pdf_by_word/<first key of the pair>_<tool>.pdf``), scored against the row's own
+Word compare (``oracle_pdf/<key>.pdf``) through ``pipeline.score_folders_full``. Rasters
+live in a temporary folder deleted before the next tool starts. Writes
+``scores_<tool>.json``: a summary (overall and per compare state) and one row per compare.
 
-accepted: ``<tool>/accepted/by_word/<cmp>_accepted_tracking_<tool>.pdf`` (the tool's redline
-with every change accepted by Word) against the corpus render of Word's own compare
-accepted the same way (``corpus/word`` pool ``accepted_tracking_0928``), through
-``pipeline.score_folders_plain`` on link folders named ``<cmp>.pdf``.
-
-Each tool is scored in its own temporary work folder, so its rasters are gone before the
-next tool starts. Writes ``scores_<track>_<tool>.json``: a summary and one row per pair
-with the scalar columns of the score row; pairs of the pool without a candidate PDF are
-listed as ``missing``.
+``--fresh DIR`` replaces the oracle of every compare Word made again: ``DIR/<id>__vs__<id>.pdf``
+(``scripts/word_redline.py`` output over the ``compare_regen`` A/B folders, one file per
+compare id) stands in for ``oracle_pdf/<key>.pdf``. Each row records which oracle it used,
+and the summary counts both. ``--regen-list`` names the ids meant to be fresh; one without a
+fresh PDF keeps its old oracle and is listed under ``fresh_missing``. ``--device`` sets the
+scorer kernels (``kernels.device_env``); ``--sample N --seed S`` scores a stratified sample
+(``stratified``) into ``scores_<tool>_sampleN_seedS.json`` and lists it in ``sampleN_seedS.csv``;
+``--sample-csv FILE`` scores exactly the keys of a saved sample (so every tool is scored on the
+same compares) into ``scores_<tool>_<FILE stem>.json`` and lists its PDFs in ``<FILE stem>_<tool>.csv``;
+``--jobs`` the scoring processes (every core by default). Scoring runs in ``--chunk`` batches; after
+each, the rows so far are saved to ``scores_<tool>[suffix].partial.json``, a rerun of the same
+command resumes from it, and it is removed once the final JSON is written. A rerun after a finished
+run reuses that JSON's rows and scores only candidate PDFs that are new (``_resume``).
+``--cand-dir DIR`` reads the candidates from ``DIR`` instead of ``<tool>/pdf_by_word`` (same file
+names), e.g. PDFs a running Word export has made but not delivered yet. Runs writing the same
+``scores_<tool>[suffix].json`` hold ``.scores_<tool>[suffix].lock``: a second one waits, then resumes.
 """
 
 from __future__ import annotations
 
+import argparse
 import csv
+import fcntl
+import hashlib
 import json
+import os
+import random
 import statistics
-import sys
 import tempfile
 from pathlib import Path
 
 from neurotic_docx_bench import kernels, pipeline
 
 HERE = Path(__file__).parent
-CORPUS = Path('corpus/word')
-ACCEPTED_POOL = CORPUS / 'pools' / 'accepted_tracking_0928_renders.csv'
-REJECTED = Path('grok_run/wr0928/rejected_tracking/pdf')
+
+
+def _sha(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def _scalars(row: dict) -> dict:
     return {k: v for k, v in row.items() if isinstance(v, (int, float, str, bool)) or v is None}
 
 
-def _summary(rows: dict[str, dict], expected: int) -> dict:
-    overall = [pipeline.overall_from_result(r) for r in rows.values()]
-    ink = [r['ink_jaccard'] for r in rows.values() if r.get('ink_jaccard') is not None]
-    tb = [r['text_boundary'] for r in rows.values() if r.get('text_boundary') is not None]
+def _stats(rows: list[dict], expected: int) -> dict:
+    overall = [pipeline.overall_from_result(r) for r in rows]
+    ink = [r['ink_jaccard'] for r in rows if r.get('ink_jaccard') is not None]
+    out = {'pairs': expected, 'scored': len(rows), 'missing': expected - len(rows)}
+    for name, xs in (('overall', overall), ('ink_jaccard', ink)):
+        out[name] = {'n': len(xs)} | ({'mean': statistics.fmean(xs), 'median': statistics.median(xs)} if xs else {})
+    if overall:
+        out['overall'] |= {'exact_100': sum(x >= 100 for x in overall), 'at_least_90': sum(x >= 90 for x in overall),
+                           'below_50': sum(x < 50 for x in overall)}
+    return out
 
-    def stats(xs: list[float]) -> dict:
-        if not xs:
-            return {'n': 0}
-        return {'n': len(xs), 'mean': statistics.fmean(xs), 'median': statistics.median(xs)}
 
-    return {
-        'pairs': expected,
-        'scored': len(rows),
-        'missing': expected - len(rows),
-        'overall': stats(overall)
-        | {
-            'exact_100': sum(x >= 100 for x in overall),
-            'at_least_90': sum(x >= 90 for x in overall),
-            'below_50': sum(x < 50 for x in overall),
-        },
-        'ink_jaccard': stats(ink),
-        'text_boundary': stats(tb),
+def oracles(pool: list[dict], fresh: Path | None) -> dict[str, tuple[Path, str]]:
+    """Each compare key's oracle PDF and where it came from (``fresh`` or ``corpus``)."""
+    out = {}
+    for r in pool:
+        new = fresh / f'{r["id"]}__vs__{r["id"]}.pdf' if fresh else None
+        if new is not None and new.is_file():
+            out[r['key']] = (new.resolve(), 'fresh')
+        else:
+            out[r['key']] = ((HERE / 'oracle_pdf' / f'{r["key"]}.pdf').resolve(), 'corpus')
+    return out
+
+
+def stratified(pool: list[dict], kind: dict[str, str], n: int, seed: int) -> list[dict]:
+    """``n`` compares spread over compare state x corpus set x oracle source.
+
+    Each stratum gets its share of ``n`` by largest remainder, and at least one compare
+    while ``n`` covers every stratum. Within a stratum the pick is a seeded shuffle that
+    takes one compare per (base, next) pair, so a pair Word compared several times is
+    not scored twice; a stratum that runs out of pairs leaves its places to the rest.
+    """
+    rng = random.Random(seed)
+    strata: dict[tuple, list[dict]] = {}
+    for r in sorted(pool, key=lambda r: r['key']):
+        strata.setdefault((r['state'], r['sets'], kind[r['key']]), []).append(r)
+    for rows in strata.values():
+        rng.shuffle(rows)
+    quota = {k: n * len(v) / len(pool) for k, v in strata.items()}
+    take = {k: int(q) for k, q in quota.items()}
+    if n >= len(strata):
+        take = {k: max(1, t) for k, t in take.items()}
+    for k in sorted(quota, key=lambda k: quota[k] - int(quota[k]), reverse=True):
+        if sum(take.values()) >= n:
+            break
+        take[k] += 1
+    chosen, pairs = [], set()
+    rest = []
+    for k in sorted(strata):
+        got = 0
+        for r in strata[k]:
+            pair = (r['base'], r['next'])
+            if got < take[k] and pair not in pairs:
+                chosen.append(r)
+                pairs.add(pair)
+                got += 1
+            else:
+                rest.append(r)
+    rng.shuffle(rest)
+    for r in rest:
+        if len(chosen) >= n:
+            break
+        if (r['base'], r['next']) not in pairs:
+            chosen.append(r)
+            pairs.add((r['base'], r['next']))
+    return sorted(chosen[:n], key=lambda r: r['key'])
+
+
+def _write_listing(path: Path, pool: list[dict], oracle: dict, cand: dict[str, Path]) -> None:
+    """One row per sampled compare: its oracle and candidate PDF with their sha256 (blank when absent)."""
+    with open(path, 'w', newline='') as fh:
+        w = csv.writer(fh)
+        w.writerow(['key', 'id', 'state', 'sets', 'oracle', 'oracle_pdf', 'oracle_sha256', 'candidate_pdf',
+                    'candidate_sha256'])
+        for r in pool:
+            orc_pdf, cand_pdf = oracle[r['key']][0], cand[r['key']]
+            w.writerow([r['key'], r['id'], r['state'], r['sets'], oracle[r['key']][1], orc_pdf, _sha(orc_pdf),
+                        cand_pdf.resolve() if cand_pdf.is_file() else '', _sha(cand_pdf) if cand_pdf.is_file() else ''])
+
+
+def _resume(partial: Path, out: Path, fresh: Path | None) -> dict[str, dict]:
+    """Rows already scored for this output: a killed run's ``partial``, else the last finished ``out``.
+
+    Either must have been scored against the same oracles (``--fresh``). Rerunning after more
+    candidate PDFs arrive therefore scores only the new ones; delete both files to start over.
+    """
+    for path in (partial, out):
+        if not path.is_file():
+            continue
+        saved = json.loads(path.read_text())
+        used = saved.get('fresh_dir', saved.get('summary', {}).get('fresh_dir'))
+        if used != (str(fresh) if fresh else None):
+            raise SystemExit(f'{path} was scored with --fresh {used}; delete it or match it')
+        return saved['rows']
+    return {}
+
+
+def measure(tool: str, fresh: Path | None, regen: set[str], jobs: int, sample: int = 0, seed: int = 0,
+            sample_csv: Path | None = None, chunk: int = 250, cand_dir: Path | None = None) -> None:
+    pool = list(csv.DictReader(open(HERE / 'pool_pairs.csv')))
+    first = {(r['base'], r['next']): r['key'] for r in reversed(list(csv.DictReader(open(HERE / 'gen_pairs.csv'))))}
+    oracle = oracles(pool, fresh)
+    src = cand_dir or HERE / tool / 'pdf_by_word'
+    cands = {r['key']: src / f'{first[(r["base"], r["next"])]}_{tool}.pdf' for r in pool}
+    suffix = ''
+    if sample_csv:
+        keys = {r['key'] for r in csv.DictReader(open(sample_csv))}
+        pool = [r for r in pool if r['key'] in keys]
+        if len(pool) != len(keys):
+            raise SystemExit(f'{sample_csv}: {len(keys) - len(pool)} keys are not in pool_pairs.csv')
+        suffix = f'_{sample_csv.stem}'
+        _write_listing(HERE / f'{sample_csv.stem}_{tool}.csv', pool, oracle, cands)
+    elif sample:
+        scoreable = [r for r in pool if cands[r['key']].is_file()]
+        pool = stratified(scoreable, {k: v[1] for k, v in oracle.items()}, sample, seed)
+        suffix = f'_sample{sample}_seed{seed}'
+        _write_listing(HERE / f'sample{sample}_seed{seed}.csv', pool, oracle, cands)
+    out = HERE / f'scores_{tool}{suffix}.json'
+    partial = out.with_suffix('.partial.json')
+    lock = open(HERE / f'.{out.stem}.lock', 'w')
+    try:
+        fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except BlockingIOError:
+        print(f'{tool}: another run holds {out.name}; waiting', flush=True)
+        fcntl.flock(lock, fcntl.LOCK_EX)
+    rows = {k: v for k, v in _resume(partial, out, fresh).items() if k in {r['key'] for r in pool}}
+    todo = [r for r in pool if r['key'] not in rows and cands[r['key']].is_file()]
+    if rows:
+        print(f'{tool}: resuming: {len(rows)} already scored, {len(todo)} to go', flush=True)
+    for i in range(0, len(todo), chunk):
+        part = todo[i:i + chunk]
+        with tempfile.TemporaryDirectory(prefix=f'measure-{tool}.') as tmp:
+            orc, cand, work = Path(tmp) / 'oracle', Path(tmp) / 'candidate', Path(tmp) / 'work'
+            for d in (orc, cand, work):
+                d.mkdir()
+            for r in part:
+                (orc / f'{r["key"]}.pdf').symlink_to(oracle[r['key']][0])
+                (cand / f'{r["key"]}_{tool}.pdf').symlink_to(cands[r['key']].resolve())
+            got = pipeline.score_folders_full(orc, cand, work, candidate_tool=tool, jobs=jobs)
+        rows |= {k: _scalars(v) | {'oracle': oracle[k][1]} for k, v in got.items()}
+        partial.write_text(json.dumps({'fresh_dir': str(fresh) if fresh else None, 'rows': rows}, sort_keys=True))
+        print(f'{tool}: {len(rows)} scored, {len(todo) - i - len(part)} to go -> {partial.name}', flush=True)
+    state = {r['key']: r['state'] for r in pool}
+    kind = {r['key']: oracle[r['key']][1] for r in pool}
+    summary = _stats(list(rows.values()), len(pool))
+    summary['by_state'] = {
+        s: _stats([v for k, v in rows.items() if state.get(k) == s], sum(st == s for st in state.values()))
+        for s in sorted(set(state.values()))
     }
-
-
-def _word_dir(tool: str, new: str, old: str) -> Path:
-    """The Word-made folder: ``provenance.py --apply`` renames ``old`` to ``new``."""
-    return HERE / tool / new if (HERE / tool / new).exists() else HERE / tool / old
-
-
-def redlines(tool: str) -> tuple[dict, list[str]]:
-    oracle = HERE / 'oracle_pdf'
-    keys = sorted(p.stem for p in oracle.glob('*.pdf'))
-    with tempfile.TemporaryDirectory(prefix=f'measure-{tool}.') as work:
-        rows = pipeline.score_folders_full(
-            oracle, _word_dir(tool, 'pdf_by_word', 'pdf'), Path(work), candidate_tool=tool
-        )
-    return {k: _scalars(v) for k, v in rows.items()}, keys
-
-
-def accepted(tool: str) -> tuple[dict, list[str]]:
-    word = {}
-    for row in csv.DictReader(open(ACCEPTED_POOL)):
-        cmp_id = row['key'].split('_')[1]
-        word[cmp_id] = CORPUS / row['pdf']
-    selected = sorted(p.stem for p in (HERE / tool / 'accepted' / 'src').glob('*.docx'))
-    suffix = f'_accepted_tracking_{tool}'
-    with tempfile.TemporaryDirectory(prefix=f'measure-acc-{tool}.') as tmp:
-        o, c, work = (Path(tmp) / d for d in ('oracle', 'candidate', 'work'))
-        for d in (o, c, work):
-            d.mkdir()
-        for cmp_id in selected:
-            (o / f'{cmp_id}.pdf').symlink_to(word[cmp_id].resolve())
-        for pdf in _word_dir(tool, 'accepted/by_word', 'accepted/out').glob(f'*{suffix}.pdf'):
-            (c / f'{pdf.stem.removesuffix(suffix)}.pdf').symlink_to(pdf.resolve())
-        rows = pipeline.score_folders_plain(o, c, work)
-    return {k: _scalars(v) for k, v in rows.items()}, selected
-
-
-def rejected(tool: str) -> tuple[dict, list[str]]:
-    """Each tool's redline with every change rejected by Word, against Word's own compare
-    rejected the same way (``grok_run/wr0928/rejected_tracking``, corpus set
-    ``rejected_tracking_0928``). A faithful redline rejects back to the base document."""
-    word_dir = REJECTED if REJECTED.exists() else REJECTED.parent / 'out'
-    word = {p.stem.removesuffix('_rejected_tracking'): p for p in word_dir.glob('*_rejected_tracking.pdf')}
-    selected = sorted(p.stem for p in (HERE / tool / 'rejected' / 'src').glob('*.docx') if p.stem in word)
-    suffix = f'_rejected_tracking_{tool}'
-    with tempfile.TemporaryDirectory(prefix=f'measure-rej-{tool}.') as tmp:
-        o, c, work = (Path(tmp) / d for d in ('oracle', 'candidate', 'work'))
-        for d in (o, c, work):
-            d.mkdir()
-        for cmp_id in selected:
-            (o / f'{cmp_id}.pdf').symlink_to(word[cmp_id].resolve())
-        for pdf in _word_dir(tool, 'rejected/by_word', 'rejected/out').glob(f'*{suffix}.pdf'):
-            (c / f'{pdf.stem.removesuffix(suffix)}.pdf').symlink_to(pdf.resolve())
-        rows = pipeline.score_folders_plain(o, c, work)
-    return {k: _scalars(v) for k, v in rows.items()}, selected
-
-
-def identity(tool: str) -> tuple[dict, list[str]]:
-    """Control: Word's accepted renders scored against themselves (``tool`` is a label)."""
-    selected = [row['pdf'] for row in csv.DictReader(open(ACCEPTED_POOL))]
-    with tempfile.TemporaryDirectory(prefix='measure-identity.') as tmp:
-        o, c, work = (Path(tmp) / d for d in ('oracle', 'candidate', 'work'))
-        for d in (o, c, work):
-            d.mkdir()
-        for rel in selected:
-            for d in (o, c):
-                (d / Path(rel).name).symlink_to((CORPUS / rel).resolve())
-        rows = pipeline.score_folders_plain(o, c, work)
-    return {k: _scalars(v) for k, v in rows.items()}, [Path(r).stem for r in selected]
+    summary['by_oracle'] = {
+        o: _stats([v for v in rows.values() if v['oracle'] == o], sum(x == o for x in kind.values()))
+        for o in ('fresh', 'corpus')
+    }
+    summary['fresh_dir'] = str(fresh) if fresh else None
+    summary['sample'] = ({'csv': sample_csv.name} if sample_csv else {'n': sample, 'seed': seed} if sample else None)
+    summary['scorer_backend'] = kernels.backend_id()
+    missing = sorted(set(state) - set(rows))
+    fresh_missing = sorted(r['id'] for r in pool if r['id'] in regen and oracle[r['key']][1] != 'fresh')
+    out.write_text(json.dumps({'summary': summary, 'missing': missing, 'fresh_missing': fresh_missing, 'rows': rows},
+                              indent=1, sort_keys=True))
+    partial.unlink(missing_ok=True)
+    o = summary['overall']
+    print(f'{tool}: {summary["scored"]}/{summary["pairs"]} scored, mean {o.get("mean", 0):.2f}, '
+          f'median {o.get("median", 0):.2f}, >=90: {o.get("at_least_90", 0)}; '
+          f'fresh oracles {summary["by_oracle"]["fresh"]["pairs"]}, meant fresh but old {len(fresh_missing)}; '
+          f'{summary["scorer_backend"]} -> {out}')
 
 
 def main() -> None:
-    track, tools = sys.argv[1], sys.argv[2:]
-    run = {'redlines': redlines, 'accepted': accepted, 'rejected': rejected, 'identity': identity}[track]
-    for tool in tools:
-        rows, expected = run(tool)
-        summary = _summary(rows, len(expected))
-        out = HERE / f'scores_{track}_{tool}.json'
-        missing = sorted(set(expected) - set(rows))
-        summary['scorer_backend'] = kernels.backend_id()
-        out.write_text(json.dumps({'summary': summary, 'missing': missing, 'rows': rows}, indent=1, sort_keys=True))
-        o = summary['overall']
-        print(
-            f'{track} {tool}: {summary["scored"]}/{summary["pairs"]} scored, '
-            f'mean {o.get("mean", 0):.2f}, median {o.get("median", 0):.2f}, '
-            f'100: {o["exact_100"] if o["n"] else 0}, >=90: {o["at_least_90"] if o["n"] else 0} -> {out}'
-        )
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument('tools', nargs='+')
+    ap.add_argument('--fresh', type=Path, help='folder of <id>__vs__<id>.pdf Word compares made again')
+    ap.add_argument('--regen-list', type=Path, help='CSV with an id column: the compares meant to be fresh')
+    ap.add_argument('--device', choices=kernels.DEVICE_SPECS, help='scorer kernels (cpu, mps, cuda, auto)')
+    ap.add_argument('--jobs', type=int, default=os.cpu_count() or 12, help='scoring worker processes (default: every core)')
+    ap.add_argument('--sample', type=int, default=0, help='score a stratified sample of this many compares')
+    ap.add_argument('--seed', type=int, default=0, help='seed of --sample')
+    ap.add_argument('--sample-csv', type=Path,
+                    help='score exactly the compares listed in this CSV (a key column), e.g. sample500_seed0.csv')
+    ap.add_argument('--chunk', type=int, default=250,
+                    help='compares scored per batch; scores_<tool>*.partial.json is saved after each, and a rerun resumes from it')
+    ap.add_argument('--cand-dir', type=Path, help='read <first key>_<tool>.pdf candidates from here, not <tool>/pdf_by_word')
+    ap.add_argument('--dry-run', action='store_true', help='print the oracle counts and stop')
+    a = ap.parse_args()
+    regen = {r['id'] for r in csv.DictReader(open(a.regen_list))} if a.regen_list else set()
+    if a.dry_run:
+        pool = list(csv.DictReader(open(HERE / 'pool_pairs.csv')))
+        got = oracles(pool, a.fresh)
+        fresh = sum(v[1] == 'fresh' for v in got.values())
+        print(f'pool {len(pool)}; fresh {fresh}; corpus {len(pool) - fresh}; '
+              f'regen ids in pool {sum(r["id"] in regen for r in pool)}; '
+              f'regen without fresh {sum(r["id"] in regen and got[r["key"]][1] != "fresh" for r in pool)}; '
+              f'corpus oracles missing {sum(not v[0].is_file() for v in got.values())}')
+        return
+    with kernels.device_env(a.device):
+        for t in a.tools:
+            measure(t, a.fresh, regen, a.jobs, a.sample, a.seed, a.sample_csv, a.chunk, a.cand_dir)
 
 
 if __name__ == '__main__':

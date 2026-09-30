@@ -14,16 +14,13 @@ fi
 rm -rf ~/temp/T/ndb-gh-pages/redlines
 cp -R redlines_site ~/temp/T/ndb-gh-pages/redlines
 mkdir -p ~/temp/T/ndb-gh-pages/_build/redlines
-cp ~/temp/T/neurotic_docx_bench/results/redlines_0928/scores_*.json \
-   ~/temp/T/neurotic_docx_bench/results/redlines_0928/measure.py \
-   ~/temp/T/neurotic_docx_bench/results/redlines_0928/select_accept.py \
-   ~/temp/T/neurotic_docx_bench/results/redlines_0928/select_reject.py \
-   ~/temp/T/neurotic_docx_bench/results/redlines_0928/accept_selection.csv \
-   ~/temp/T/neurotic_docx_bench/results/redlines_0928/pool_pairs.csv \
+RUN=~/temp/T/neurotic_docx_bench/results/${REDLINES_RUN:-redlines_0929_full}
+OLD=~/temp/T/neurotic_docx_bench/results/redlines_0928
+rm -f ~/temp/T/ndb-gh-pages/_build/redlines/*.json ~/temp/T/ndb-gh-pages/_build/redlines/*.csv ~/temp/T/ndb-gh-pages/_build/redlines/*.py
+cp $RUN/scores_*.json $RUN/*.py $RUN/*.csv $OLD/select_accept.py $OLD/select_reject.py \
    build_redlines_site.py publish_redlines.sh \
    ~/temp/T/ndb-gh-pages/_build/redlines/
-[ -f ~/temp/T/neurotic_docx_bench/results/redlines_0928/reject_selection.csv ] && \
-  cp ~/temp/T/neurotic_docx_bench/results/redlines_0928/reject_selection.csv ~/temp/T/ndb-gh-pages/_build/redlines/
+[ -f $RUN/measure_tracks.py ] && cp $OLD/measure.py ~/temp/T/ndb-gh-pages/_build/redlines/measure_0928.py
 
 # One link from the DOCX->PDF page to the redlines section, added once.
 grep -q 'href="redlines/"' ~/temp/T/ndb-gh-pages/index.html || \
