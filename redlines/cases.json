@@ -1,0 +1,5283 @@
+[
+ {
+  "group": "redlines/with_comments_tracking",
+  "case": "0f031c23c3",
+  "pages": {
+   "reference": [
+    "redlines/with_comments_tracking/0f031c23c3/reference/page_001.webp",
+    "redlines/with_comments_tracking/0f031c23c3/reference/page_002.webp",
+    "redlines/with_comments_tracking/0f031c23c3/reference/page_003.webp"
+   ],
+   "jubarte-rust": [
+    "redlines/with_comments_tracking/0f031c23c3/jubarte-rust/page_001.webp",
+    "redlines/with_comments_tracking/0f031c23c3/jubarte-rust/page_002.webp",
+    "redlines/with_comments_tracking/0f031c23c3/jubarte-rust/page_003.webp"
+   ],
+   "docxodus": [
+    "redlines/with_comments_tracking/0f031c23c3/docxodus/page_001.webp",
+    "redlines/with_comments_tracking/0f031c23c3/docxodus/page_002.webp",
+    "redlines/with_comments_tracking/0f031c23c3/docxodus/page_003.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 13,
+   "jubarte-rust": 12,
+   "docxodus": 13
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 5.3,
+    "ssim": 13.6,
+    "text_boundary": 37.6
+   },
+   "docxodus": {
+    "jaccard": 3.4,
+    "ssim": 12.7,
+    "text_boundary": 50.1
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "redlines/with_comments_tracking",
+  "case": "01f3deda92",
+  "pages": {
+   "reference": [
+    "redlines/with_comments_tracking/01f3deda92/reference/page_001.webp",
+    "redlines/with_comments_tracking/01f3deda92/reference/page_002.webp"
+   ],
+   "jubarte-rust": [
+    "redlines/with_comments_tracking/01f3deda92/jubarte-rust/page_001.webp",
+    "redlines/with_comments_tracking/01f3deda92/jubarte-rust/page_002.webp"
+   ],
+   "docxodus": [
+    "redlines/with_comments_tracking/01f3deda92/docxodus/page_001.webp",
+    "redlines/with_comments_tracking/01f3deda92/docxodus/page_002.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 2,
+   "jubarte-rust": 2,
+   "docxodus": 2
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 63.7,
+    "ssim": 70.5,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 98.0,
+    "ssim": 99.5,
+    "text_boundary": 97.4
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "redlines/with_comments_tracking",
+  "case": "2e3f1e261d",
+  "pages": {
+   "reference": [
+    "redlines/with_comments_tracking/2e3f1e261d/reference/page_001.webp",
+    "redlines/with_comments_tracking/2e3f1e261d/reference/page_002.webp",
+    "redlines/with_comments_tracking/2e3f1e261d/reference/page_003.webp"
+   ],
+   "jubarte-rust": [
+    "redlines/with_comments_tracking/2e3f1e261d/jubarte-rust/page_001.webp",
+    "redlines/with_comments_tracking/2e3f1e261d/jubarte-rust/page_002.webp",
+    "redlines/with_comments_tracking/2e3f1e261d/jubarte-rust/page_003.webp"
+   ],
+   "docxodus": [
+    "redlines/with_comments_tracking/2e3f1e261d/docxodus/page_001.webp",
+    "redlines/with_comments_tracking/2e3f1e261d/docxodus/page_002.webp",
+    "redlines/with_comments_tracking/2e3f1e261d/docxodus/page_003.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 9,
+   "jubarte-rust": 9,
+   "docxodus": 9
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 5.1,
+    "ssim": 14.9,
+    "text_boundary": 86.5
+   },
+   "docxodus": {
+    "jaccard": 5.4,
+    "ssim": 14.4,
+    "text_boundary": 93.6
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "redlines/with_comments_tracking",
+  "case": "4eff11f045",
+  "pages": {
+   "reference": [
+    "redlines/with_comments_tracking/4eff11f045/reference/page_001.webp",
+    "redlines/with_comments_tracking/4eff11f045/reference/page_002.webp",
+    "redlines/with_comments_tracking/4eff11f045/reference/page_003.webp"
+   ],
+   "jubarte-rust": [
+    "redlines/with_comments_tracking/4eff11f045/jubarte-rust/page_001.webp",
+    "redlines/with_comments_tracking/4eff11f045/jubarte-rust/page_002.webp",
+    "redlines/with_comments_tracking/4eff11f045/jubarte-rust/page_003.webp"
+   ],
+   "docxodus": [
+    "redlines/with_comments_tracking/4eff11f045/docxodus/page_001.webp",
+    "redlines/with_comments_tracking/4eff11f045/docxodus/page_002.webp",
+    "redlines/with_comments_tracking/4eff11f045/docxodus/page_003.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 9,
+   "jubarte-rust": 9,
+   "docxodus": 9
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 6.4,
+    "ssim": 14.6,
+    "text_boundary": 60.1
+   },
+   "docxodus": {
+    "jaccard": 6.8,
+    "ssim": 15.1,
+    "text_boundary": 72.4
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "redlines/with_comments_tracking",
+  "case": "7cc19c9376",
+  "pages": {
+   "reference": [
+    "redlines/with_comments_tracking/7cc19c9376/reference/page_001.webp",
+    "redlines/with_comments_tracking/7cc19c9376/reference/page_002.webp",
+    "redlines/with_comments_tracking/7cc19c9376/reference/page_003.webp"
+   ],
+   "jubarte-rust": [
+    "redlines/with_comments_tracking/7cc19c9376/jubarte-rust/page_001.webp",
+    "redlines/with_comments_tracking/7cc19c9376/jubarte-rust/page_002.webp",
+    "redlines/with_comments_tracking/7cc19c9376/jubarte-rust/page_003.webp"
+   ],
+   "docxodus": [
+    "redlines/with_comments_tracking/7cc19c9376/docxodus/page_001.webp",
+    "redlines/with_comments_tracking/7cc19c9376/docxodus/page_002.webp",
+    "redlines/with_comments_tracking/7cc19c9376/docxodus/page_003.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 3,
+   "jubarte-rust": 3,
+   "docxodus": 3
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 50.3,
+    "ssim": 63.5,
+    "text_boundary": 45.6
+   },
+   "docxodus": {
+    "jaccard": 97.9,
+    "ssim": 99.3,
+    "text_boundary": 98.8
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "redlines/with_comments_tracking",
+  "case": "9c8876c6d7",
+  "pages": {
+   "reference": [
+    "redlines/with_comments_tracking/9c8876c6d7/reference/page_001.webp",
+    "redlines/with_comments_tracking/9c8876c6d7/reference/page_002.webp",
+    "redlines/with_comments_tracking/9c8876c6d7/reference/page_003.webp"
+   ],
+   "jubarte-rust": [
+    "redlines/with_comments_tracking/9c8876c6d7/jubarte-rust/page_001.webp",
+    "redlines/with_comments_tracking/9c8876c6d7/jubarte-rust/page_002.webp",
+    "redlines/with_comments_tracking/9c8876c6d7/jubarte-rust/page_003.webp"
+   ],
+   "docxodus": [
+    "redlines/with_comments_tracking/9c8876c6d7/docxodus/page_001.webp",
+    "redlines/with_comments_tracking/9c8876c6d7/docxodus/page_002.webp",
+    "redlines/with_comments_tracking/9c8876c6d7/docxodus/page_003.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 6,
+   "jubarte-rust": 6,
+   "docxodus": 6
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 48.9,
+    "ssim": 69.5,
+    "text_boundary": 74.2
+   },
+   "docxodus": {
+    "jaccard": 78.3,
+    "ssim": 86.1,
+    "text_boundary": 95.3
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "redlines/with_comments_tracking",
+  "case": "9e3417adee",
+  "pages": {
+   "reference": [
+    "redlines/with_comments_tracking/9e3417adee/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "redlines/with_comments_tracking/9e3417adee/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "redlines/with_comments_tracking/9e3417adee/docxodus/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 99.7,
+    "ssim": 99.8,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 26.9,
+    "ssim": 43.6
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "redlines/with_comments_tracking",
+  "case": "25f1d6ecc3",
+  "pages": {
+   "reference": [
+    "redlines/with_comments_tracking/25f1d6ecc3/reference/page_001.webp",
+    "redlines/with_comments_tracking/25f1d6ecc3/reference/page_002.webp",
+    "redlines/with_comments_tracking/25f1d6ecc3/reference/page_003.webp"
+   ],
+   "jubarte-rust": [
+    "redlines/with_comments_tracking/25f1d6ecc3/jubarte-rust/page_001.webp",
+    "redlines/with_comments_tracking/25f1d6ecc3/jubarte-rust/page_002.webp",
+    "redlines/with_comments_tracking/25f1d6ecc3/jubarte-rust/page_003.webp"
+   ],
+   "docxodus": [
+    "redlines/with_comments_tracking/25f1d6ecc3/docxodus/page_001.webp",
+    "redlines/with_comments_tracking/25f1d6ecc3/docxodus/page_002.webp",
+    "redlines/with_comments_tracking/25f1d6ecc3/docxodus/page_003.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 3,
+   "jubarte-rust": 3,
+   "docxodus": 3
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 72.3,
+    "ssim": 93.9,
+    "text_boundary": 79.7
+   },
+   "docxodus": {
+    "jaccard": 84.0,
+    "ssim": 90.9,
+    "text_boundary": 92.4
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "redlines/with_comments_tracking",
+  "case": "29e3872eed",
+  "pages": {
+   "reference": [
+    "redlines/with_comments_tracking/29e3872eed/reference/page_001.webp",
+    "redlines/with_comments_tracking/29e3872eed/reference/page_002.webp",
+    "redlines/with_comments_tracking/29e3872eed/reference/page_003.webp"
+   ],
+   "jubarte-rust": [
+    "redlines/with_comments_tracking/29e3872eed/jubarte-rust/page_001.webp",
+    "redlines/with_comments_tracking/29e3872eed/jubarte-rust/page_002.webp",
+    "redlines/with_comments_tracking/29e3872eed/jubarte-rust/page_003.webp"
+   ],
+   "docxodus": [
+    "redlines/with_comments_tracking/29e3872eed/docxodus/page_001.webp",
+    "redlines/with_comments_tracking/29e3872eed/docxodus/page_002.webp",
+    "redlines/with_comments_tracking/29e3872eed/docxodus/page_003.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 11,
+   "jubarte-rust": 11,
+   "docxodus": 11
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 6.0,
+    "ssim": 14.8,
+    "text_boundary": 45.2
+   },
+   "docxodus": {
+    "jaccard": 6.1,
+    "ssim": 14.8,
+    "text_boundary": 78.4
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "redlines/with_comments_tracking",
+  "case": "30f20e787b",
+  "pages": {
+   "reference": [
+    "redlines/with_comments_tracking/30f20e787b/reference/page_001.webp",
+    "redlines/with_comments_tracking/30f20e787b/reference/page_002.webp",
+    "redlines/with_comments_tracking/30f20e787b/reference/page_003.webp"
+   ],
+   "jubarte-rust": [
+    "redlines/with_comments_tracking/30f20e787b/jubarte-rust/page_001.webp",
+    "redlines/with_comments_tracking/30f20e787b/jubarte-rust/page_002.webp",
+    "redlines/with_comments_tracking/30f20e787b/jubarte-rust/page_003.webp"
+   ],
+   "docxodus": [
+    "redlines/with_comments_tracking/30f20e787b/docxodus/page_001.webp",
+    "redlines/with_comments_tracking/30f20e787b/docxodus/page_002.webp",
+    "redlines/with_comments_tracking/30f20e787b/docxodus/page_003.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 13,
+   "jubarte-rust": 13,
+   "docxodus": 11
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 5.3,
+    "ssim": 11.5,
+    "text_boundary": 70.7
+   },
+   "docxodus": {
+    "jaccard": 3.1,
+    "ssim": 9.4,
+    "text_boundary": 17.4
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "redlines/with_comments_tracking",
+  "case": "70a6883d16",
+  "pages": {
+   "reference": [
+    "redlines/with_comments_tracking/70a6883d16/reference/page_001.webp",
+    "redlines/with_comments_tracking/70a6883d16/reference/page_002.webp",
+    "redlines/with_comments_tracking/70a6883d16/reference/page_003.webp"
+   ],
+   "jubarte-rust": [
+    "redlines/with_comments_tracking/70a6883d16/jubarte-rust/page_001.webp",
+    "redlines/with_comments_tracking/70a6883d16/jubarte-rust/page_002.webp",
+    "redlines/with_comments_tracking/70a6883d16/jubarte-rust/page_003.webp"
+   ],
+   "docxodus": [
+    "redlines/with_comments_tracking/70a6883d16/docxodus/page_001.webp",
+    "redlines/with_comments_tracking/70a6883d16/docxodus/page_002.webp",
+    "redlines/with_comments_tracking/70a6883d16/docxodus/page_003.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 11,
+   "jubarte-rust": 11,
+   "docxodus": 11
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 5.8,
+    "ssim": 14.7,
+    "text_boundary": 90.2
+   },
+   "docxodus": {
+    "jaccard": 6.0,
+    "ssim": 14.3,
+    "text_boundary": 94.8
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "redlines/with_comments_tracking",
+  "case": "145b9e67e2",
+  "pages": {
+   "reference": [
+    "redlines/with_comments_tracking/145b9e67e2/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "redlines/with_comments_tracking/145b9e67e2/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "redlines/with_comments_tracking/145b9e67e2/docxodus/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 94.9,
+    "ssim": 98.0,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 90.8,
+    "ssim": 96.4,
+    "text_boundary": 83.3
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "redlines/with_comments_tracking",
+  "case": "485b916ef9",
+  "pages": {
+   "reference": [
+    "redlines/with_comments_tracking/485b916ef9/reference/page_001.webp",
+    "redlines/with_comments_tracking/485b916ef9/reference/page_002.webp",
+    "redlines/with_comments_tracking/485b916ef9/reference/page_003.webp"
+   ],
+   "jubarte-rust": [
+    "redlines/with_comments_tracking/485b916ef9/jubarte-rust/page_001.webp",
+    "redlines/with_comments_tracking/485b916ef9/jubarte-rust/page_002.webp",
+    "redlines/with_comments_tracking/485b916ef9/jubarte-rust/page_003.webp"
+   ],
+   "docxodus": [
+    "redlines/with_comments_tracking/485b916ef9/docxodus/page_001.webp",
+    "redlines/with_comments_tracking/485b916ef9/docxodus/page_002.webp",
+    "redlines/with_comments_tracking/485b916ef9/docxodus/page_003.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 3,
+   "jubarte-rust": 3,
+   "docxodus": 3
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 96.8,
+    "ssim": 99.4,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 97.8,
+    "ssim": 99.0,
+    "text_boundary": 87.5
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "redlines/with_comments_tracking",
+  "case": "589b832f86",
+  "pages": {
+   "reference": [
+    "redlines/with_comments_tracking/589b832f86/reference/page_001.webp",
+    "redlines/with_comments_tracking/589b832f86/reference/page_002.webp",
+    "redlines/with_comments_tracking/589b832f86/reference/page_003.webp"
+   ],
+   "jubarte-rust": [
+    "redlines/with_comments_tracking/589b832f86/jubarte-rust/page_001.webp",
+    "redlines/with_comments_tracking/589b832f86/jubarte-rust/page_002.webp",
+    "redlines/with_comments_tracking/589b832f86/jubarte-rust/page_003.webp"
+   ],
+   "docxodus": [
+    "redlines/with_comments_tracking/589b832f86/docxodus/page_001.webp",
+    "redlines/with_comments_tracking/589b832f86/docxodus/page_002.webp",
+    "redlines/with_comments_tracking/589b832f86/docxodus/page_003.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 11,
+   "jubarte-rust": 12,
+   "docxodus": 12
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 5.5,
+    "ssim": 13.8,
+    "text_boundary": 29.7
+   },
+   "docxodus": {
+    "jaccard": 5.4,
+    "ssim": 13.8,
+    "text_boundary": 29.7
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "redlines/with_comments_tracking",
+  "case": "7787357743",
+  "pages": {
+   "reference": [
+    "redlines/with_comments_tracking/7787357743/reference/page_001.webp",
+    "redlines/with_comments_tracking/7787357743/reference/page_002.webp",
+    "redlines/with_comments_tracking/7787357743/reference/page_003.webp"
+   ],
+   "jubarte-rust": [
+    "redlines/with_comments_tracking/7787357743/jubarte-rust/page_001.webp",
+    "redlines/with_comments_tracking/7787357743/jubarte-rust/page_002.webp",
+    "redlines/with_comments_tracking/7787357743/jubarte-rust/page_003.webp"
+   ],
+   "docxodus": [
+    "redlines/with_comments_tracking/7787357743/docxodus/page_001.webp",
+    "redlines/with_comments_tracking/7787357743/docxodus/page_002.webp",
+    "redlines/with_comments_tracking/7787357743/docxodus/page_003.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 11,
+   "jubarte-rust": 11,
+   "docxodus": 11
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 5.5,
+    "ssim": 13.0,
+    "text_boundary": 74.9
+   },
+   "docxodus": {
+    "jaccard": 5.7,
+    "ssim": 13.3,
+    "text_boundary": 98.4
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "redlines/with_comments_tracking",
+  "case": "a202881c62",
+  "pages": {
+   "reference": [
+    "redlines/with_comments_tracking/a202881c62/reference/page_001.webp",
+    "redlines/with_comments_tracking/a202881c62/reference/page_002.webp"
+   ],
+   "jubarte-rust": [
+    "redlines/with_comments_tracking/a202881c62/jubarte-rust/page_001.webp",
+    "redlines/with_comments_tracking/a202881c62/jubarte-rust/page_002.webp"
+   ],
+   "docxodus": [
+    "redlines/with_comments_tracking/a202881c62/docxodus/page_001.webp",
+    "redlines/with_comments_tracking/a202881c62/docxodus/page_002.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 2,
+   "jubarte-rust": 2,
+   "docxodus": 2
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 64.3,
+    "ssim": 70.6,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 99.2,
+    "ssim": 99.2,
+    "text_boundary": 100.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "redlines/with_comments_tracking",
+  "case": "af568343b6",
+  "pages": {
+   "reference": [
+    "redlines/with_comments_tracking/af568343b6/reference/page_001.webp",
+    "redlines/with_comments_tracking/af568343b6/reference/page_002.webp",
+    "redlines/with_comments_tracking/af568343b6/reference/page_003.webp"
+   ],
+   "jubarte-rust": [
+    "redlines/with_comments_tracking/af568343b6/jubarte-rust/page_001.webp",
+    "redlines/with_comments_tracking/af568343b6/jubarte-rust/page_002.webp",
+    "redlines/with_comments_tracking/af568343b6/jubarte-rust/page_003.webp"
+   ],
+   "docxodus": [
+    "redlines/with_comments_tracking/af568343b6/docxodus/page_001.webp",
+    "redlines/with_comments_tracking/af568343b6/docxodus/page_002.webp",
+    "redlines/with_comments_tracking/af568343b6/docxodus/page_003.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 6,
+   "jubarte-rust": 5,
+   "docxodus": 6
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 34.5,
+    "ssim": 51.0,
+    "text_boundary": 75.0
+   },
+   "docxodus": {
+    "jaccard": 99.1,
+    "ssim": 99.5,
+    "text_boundary": 99.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "redlines/with_comments_tracking",
+  "case": "b3cc5c1abe",
+  "pages": {
+   "reference": [
+    "redlines/with_comments_tracking/b3cc5c1abe/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "redlines/with_comments_tracking/b3cc5c1abe/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "redlines/with_comments_tracking/b3cc5c1abe/docxodus/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 92.5,
+    "ssim": 95.2,
+    "text_boundary": 60.0
+   },
+   "docxodus": {
+    "jaccard": 95.2,
+    "ssim": 97.6,
+    "text_boundary": 80.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "redlines/with_comments_tracking",
+  "case": "c0a3ea22ca",
+  "pages": {
+   "reference": [
+    "redlines/with_comments_tracking/c0a3ea22ca/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "redlines/with_comments_tracking/c0a3ea22ca/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "redlines/with_comments_tracking/c0a3ea22ca/docxodus/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 61.7,
+    "ssim": 73.1,
+    "text_boundary": 50.0
+   },
+   "docxodus": {
+    "jaccard": 58.4,
+    "ssim": 71.1,
+    "text_boundary": 25.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "redlines/with_comments_tracking",
+  "case": "c6d6371812",
+  "pages": {
+   "reference": [
+    "redlines/with_comments_tracking/c6d6371812/reference/page_001.webp",
+    "redlines/with_comments_tracking/c6d6371812/reference/page_002.webp",
+    "redlines/with_comments_tracking/c6d6371812/reference/page_003.webp"
+   ],
+   "jubarte-rust": [
+    "redlines/with_comments_tracking/c6d6371812/jubarte-rust/page_001.webp",
+    "redlines/with_comments_tracking/c6d6371812/jubarte-rust/page_002.webp",
+    "redlines/with_comments_tracking/c6d6371812/jubarte-rust/page_003.webp"
+   ],
+   "docxodus": [
+    "redlines/with_comments_tracking/c6d6371812/docxodus/page_001.webp",
+    "redlines/with_comments_tracking/c6d6371812/docxodus/page_002.webp",
+    "redlines/with_comments_tracking/c6d6371812/docxodus/page_003.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 5,
+   "jubarte-rust": 5,
+   "docxodus": 5
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 99.4,
+    "ssim": 99.3,
+    "text_boundary": 98.0
+   },
+   "docxodus": {
+    "jaccard": 82.3,
+    "ssim": 86.1,
+    "text_boundary": 77.5
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "redlines/with_comments_tracking",
+  "case": "c46dee2ac8",
+  "pages": {
+   "reference": [
+    "redlines/with_comments_tracking/c46dee2ac8/reference/page_001.webp",
+    "redlines/with_comments_tracking/c46dee2ac8/reference/page_002.webp",
+    "redlines/with_comments_tracking/c46dee2ac8/reference/page_003.webp"
+   ],
+   "jubarte-rust": [
+    "redlines/with_comments_tracking/c46dee2ac8/jubarte-rust/page_001.webp",
+    "redlines/with_comments_tracking/c46dee2ac8/jubarte-rust/page_002.webp",
+    "redlines/with_comments_tracking/c46dee2ac8/jubarte-rust/page_003.webp"
+   ],
+   "docxodus": [
+    "redlines/with_comments_tracking/c46dee2ac8/docxodus/page_001.webp",
+    "redlines/with_comments_tracking/c46dee2ac8/docxodus/page_002.webp",
+    "redlines/with_comments_tracking/c46dee2ac8/docxodus/page_003.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 3,
+   "jubarte-rust": 3,
+   "docxodus": 3
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 36.1,
+    "ssim": 54.7,
+    "text_boundary": 63.3
+   },
+   "docxodus": {
+    "jaccard": 56.6,
+    "ssim": 69.2,
+    "text_boundary": 57.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "redlines/with_comments_tracking",
+  "case": "c69908f44a",
+  "pages": {
+   "reference": [
+    "redlines/with_comments_tracking/c69908f44a/reference/page_001.webp",
+    "redlines/with_comments_tracking/c69908f44a/reference/page_002.webp",
+    "redlines/with_comments_tracking/c69908f44a/reference/page_003.webp"
+   ],
+   "jubarte-rust": [
+    "redlines/with_comments_tracking/c69908f44a/jubarte-rust/page_001.webp",
+    "redlines/with_comments_tracking/c69908f44a/jubarte-rust/page_002.webp",
+    "redlines/with_comments_tracking/c69908f44a/jubarte-rust/page_003.webp"
+   ],
+   "docxodus": [
+    "redlines/with_comments_tracking/c69908f44a/docxodus/page_001.webp",
+    "redlines/with_comments_tracking/c69908f44a/docxodus/page_002.webp",
+    "redlines/with_comments_tracking/c69908f44a/docxodus/page_003.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 5,
+   "jubarte-rust": 5,
+   "docxodus": 5
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 97.3,
+    "ssim": 96.3,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 96.3,
+    "ssim": 95.9,
+    "text_boundary": 98.8
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "redlines/with_comments_tracking",
+  "case": "cbf73c2d81",
+  "pages": {
+   "reference": [
+    "redlines/with_comments_tracking/cbf73c2d81/reference/page_001.webp",
+    "redlines/with_comments_tracking/cbf73c2d81/reference/page_002.webp",
+    "redlines/with_comments_tracking/cbf73c2d81/reference/page_003.webp"
+   ],
+   "jubarte-rust": [
+    "redlines/with_comments_tracking/cbf73c2d81/jubarte-rust/page_001.webp",
+    "redlines/with_comments_tracking/cbf73c2d81/jubarte-rust/page_002.webp",
+    "redlines/with_comments_tracking/cbf73c2d81/jubarte-rust/page_003.webp"
+   ],
+   "docxodus": [
+    "redlines/with_comments_tracking/cbf73c2d81/docxodus/page_001.webp",
+    "redlines/with_comments_tracking/cbf73c2d81/docxodus/page_002.webp",
+    "redlines/with_comments_tracking/cbf73c2d81/docxodus/page_003.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 11,
+   "jubarte-rust": 11,
+   "docxodus": 11
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 5.7,
+    "ssim": 14.6,
+    "text_boundary": 57.2
+   },
+   "docxodus": {
+    "jaccard": 5.7,
+    "ssim": 14.2,
+    "text_boundary": 81.5
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "redlines/with_comments_tracking",
+  "case": "d12806f3e8",
+  "pages": {
+   "reference": [
+    "redlines/with_comments_tracking/d12806f3e8/reference/page_001.webp",
+    "redlines/with_comments_tracking/d12806f3e8/reference/page_002.webp",
+    "redlines/with_comments_tracking/d12806f3e8/reference/page_003.webp"
+   ],
+   "jubarte-rust": [
+    "redlines/with_comments_tracking/d12806f3e8/jubarte-rust/page_001.webp",
+    "redlines/with_comments_tracking/d12806f3e8/jubarte-rust/page_002.webp",
+    "redlines/with_comments_tracking/d12806f3e8/jubarte-rust/page_003.webp"
+   ],
+   "docxodus": [
+    "redlines/with_comments_tracking/d12806f3e8/docxodus/page_001.webp",
+    "redlines/with_comments_tracking/d12806f3e8/docxodus/page_002.webp",
+    "redlines/with_comments_tracking/d12806f3e8/docxodus/page_003.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 11,
+   "jubarte-rust": 11,
+   "docxodus": 11
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 5.9,
+    "ssim": 15.1,
+    "text_boundary": 44.7
+   },
+   "docxodus": {
+    "jaccard": 5.9,
+    "ssim": 14.5,
+    "text_boundary": 80.9
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "redlines/with_comments_tracking",
+  "case": "db13a691da",
+  "pages": {
+   "reference": [
+    "redlines/with_comments_tracking/db13a691da/reference/page_001.webp",
+    "redlines/with_comments_tracking/db13a691da/reference/page_002.webp",
+    "redlines/with_comments_tracking/db13a691da/reference/page_003.webp"
+   ],
+   "jubarte-rust": [
+    "redlines/with_comments_tracking/db13a691da/jubarte-rust/page_001.webp",
+    "redlines/with_comments_tracking/db13a691da/jubarte-rust/page_002.webp",
+    "redlines/with_comments_tracking/db13a691da/jubarte-rust/page_003.webp"
+   ],
+   "docxodus": [
+    "redlines/with_comments_tracking/db13a691da/docxodus/page_001.webp",
+    "redlines/with_comments_tracking/db13a691da/docxodus/page_002.webp",
+    "redlines/with_comments_tracking/db13a691da/docxodus/page_003.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 11,
+   "jubarte-rust": 11,
+   "docxodus": 11
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 5.6,
+    "ssim": 14.3,
+    "text_boundary": 38.9
+   },
+   "docxodus": {
+    "jaccard": 5.8,
+    "ssim": 14.4,
+    "text_boundary": 80.2
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "redlines/with_comments_tracking",
+  "case": "ddd1e0f952",
+  "pages": {
+   "reference": [
+    "redlines/with_comments_tracking/ddd1e0f952/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "redlines/with_comments_tracking/ddd1e0f952/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "redlines/with_comments_tracking/ddd1e0f952/docxodus/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 93.3,
+    "ssim": 97.0,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 93.6,
+    "ssim": 98.5,
+    "text_boundary": 87.5
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "redlines/with_comments_tracking",
+  "case": "e2b71d27e7",
+  "pages": {
+   "reference": [
+    "redlines/with_comments_tracking/e2b71d27e7/reference/page_001.webp",
+    "redlines/with_comments_tracking/e2b71d27e7/reference/page_002.webp",
+    "redlines/with_comments_tracking/e2b71d27e7/reference/page_003.webp"
+   ],
+   "jubarte-rust": [
+    "redlines/with_comments_tracking/e2b71d27e7/jubarte-rust/page_001.webp",
+    "redlines/with_comments_tracking/e2b71d27e7/jubarte-rust/page_002.webp",
+    "redlines/with_comments_tracking/e2b71d27e7/jubarte-rust/page_003.webp"
+   ],
+   "docxodus": [
+    "redlines/with_comments_tracking/e2b71d27e7/docxodus/page_001.webp",
+    "redlines/with_comments_tracking/e2b71d27e7/docxodus/page_002.webp",
+    "redlines/with_comments_tracking/e2b71d27e7/docxodus/page_003.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 3,
+   "jubarte-rust": 3,
+   "docxodus": 3
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 93.1,
+    "ssim": 96.5,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 63.9,
+    "ssim": 89.8,
+    "text_boundary": 57.1
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "redlines/with_comments_tracking",
+  "case": "e212b559b2",
+  "pages": {
+   "reference": [
+    "redlines/with_comments_tracking/e212b559b2/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "redlines/with_comments_tracking/e212b559b2/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "redlines/with_comments_tracking/e212b559b2/docxodus/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 89.0,
+    "ssim": 94.3,
+    "text_boundary": 66.7
+   },
+   "docxodus": {
+    "jaccard": 95.6,
+    "ssim": 97.6,
+    "text_boundary": 83.3
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "redlines/with_comments_tracking",
+  "case": "ebeb91fe7f",
+  "pages": {
+   "reference": [
+    "redlines/with_comments_tracking/ebeb91fe7f/reference/page_001.webp",
+    "redlines/with_comments_tracking/ebeb91fe7f/reference/page_002.webp",
+    "redlines/with_comments_tracking/ebeb91fe7f/reference/page_003.webp"
+   ],
+   "jubarte-rust": [
+    "redlines/with_comments_tracking/ebeb91fe7f/jubarte-rust/page_001.webp",
+    "redlines/with_comments_tracking/ebeb91fe7f/jubarte-rust/page_002.webp",
+    "redlines/with_comments_tracking/ebeb91fe7f/jubarte-rust/page_003.webp"
+   ],
+   "docxodus": [
+    "redlines/with_comments_tracking/ebeb91fe7f/docxodus/page_001.webp",
+    "redlines/with_comments_tracking/ebeb91fe7f/docxodus/page_002.webp",
+    "redlines/with_comments_tracking/ebeb91fe7f/docxodus/page_003.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 11,
+   "jubarte-rust": 11,
+   "docxodus": 11
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 6.0,
+    "ssim": 12.3,
+    "text_boundary": 98.8
+   },
+   "docxodus": {
+    "jaccard": 6.0,
+    "ssim": 12.4,
+    "text_boundary": 99.1
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "redlines/with_comments_tracking",
+  "case": "ff27140d0a",
+  "pages": {
+   "reference": [
+    "redlines/with_comments_tracking/ff27140d0a/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "redlines/with_comments_tracking/ff27140d0a/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "redlines/with_comments_tracking/ff27140d0a/docxodus/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 45.1,
+    "ssim": 65.3
+   },
+   "docxodus": {
+    "jaccard": 73.5,
+    "ssim": 81.5,
+    "text_boundary": 66.7
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "redlines/tracking_without_comments",
+  "case": "0a6d6296ec",
+  "pages": {
+   "reference": [
+    "redlines/tracking_without_comments/0a6d6296ec/reference/page_001.webp",
+    "redlines/tracking_without_comments/0a6d6296ec/reference/page_002.webp"
+   ],
+   "jubarte-rust": [
+    "redlines/tracking_without_comments/0a6d6296ec/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "redlines/tracking_without_comments/0a6d6296ec/docxodus/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 2,
+   "jubarte-rust": 1,
+   "docxodus": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 15.6,
+    "ssim": 27.6,
+    "text_boundary": 57.1
+   },
+   "docxodus": {
+    "jaccard": 16.1,
+    "ssim": 27.6,
+    "text_boundary": 57.1
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "redlines/tracking_without_comments",
+  "case": "3b38c427df",
+  "pages": {
+   "reference": [
+    "redlines/tracking_without_comments/3b38c427df/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "redlines/tracking_without_comments/3b38c427df/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "redlines/tracking_without_comments/3b38c427df/docxodus/page_001.webp"
+   ],
+   "superdoc": [
+    "redlines/tracking_without_comments/3b38c427df/superdoc/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1,
+   "superdoc": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "superdoc": {
+    "jaccard": 6.5,
+    "ssim": 16.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "redlines/tracking_without_comments",
+  "case": "3e548d2eec",
+  "pages": {
+   "reference": [
+    "redlines/tracking_without_comments/3e548d2eec/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "redlines/tracking_without_comments/3e548d2eec/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "redlines/tracking_without_comments/3e548d2eec/docxodus/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 96.8,
+    "ssim": 99.6,
+    "text_boundary": 100.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "redlines/tracking_without_comments",
+  "case": "4c8efcc17b",
+  "pages": {
+   "reference": [
+    "redlines/tracking_without_comments/4c8efcc17b/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "redlines/tracking_without_comments/4c8efcc17b/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "redlines/tracking_without_comments/4c8efcc17b/docxodus/page_001.webp"
+   ],
+   "superdoc": [
+    "redlines/tracking_without_comments/4c8efcc17b/superdoc/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1,
+   "superdoc": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 31.0,
+    "ssim": 53.9,
+    "text_boundary": 60.0
+   },
+   "superdoc": {
+    "jaccard": 3.9,
+    "ssim": 13.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "redlines/tracking_without_comments",
+  "case": "7c91c539fa",
+  "pages": {
+   "reference": [
+    "redlines/tracking_without_comments/7c91c539fa/reference/page_001.webp",
+    "redlines/tracking_without_comments/7c91c539fa/reference/page_002.webp",
+    "redlines/tracking_without_comments/7c91c539fa/reference/page_003.webp"
+   ],
+   "jubarte-rust": [
+    "redlines/tracking_without_comments/7c91c539fa/jubarte-rust/page_001.webp",
+    "redlines/tracking_without_comments/7c91c539fa/jubarte-rust/page_002.webp",
+    "redlines/tracking_without_comments/7c91c539fa/jubarte-rust/page_003.webp"
+   ],
+   "docxodus": [
+    "redlines/tracking_without_comments/7c91c539fa/docxodus/page_001.webp",
+    "redlines/tracking_without_comments/7c91c539fa/docxodus/page_002.webp",
+    "redlines/tracking_without_comments/7c91c539fa/docxodus/page_003.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 12,
+   "jubarte-rust": 12,
+   "docxodus": 12
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 24.1,
+    "ssim": 50.8,
+    "text_boundary": 62.3
+   },
+   "docxodus": {
+    "jaccard": 17.6,
+    "ssim": 37.6,
+    "text_boundary": 81.9
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "redlines/tracking_without_comments",
+  "case": "7dc048a022",
+  "pages": {
+   "reference": [
+    "redlines/tracking_without_comments/7dc048a022/reference/page_001.webp",
+    "redlines/tracking_without_comments/7dc048a022/reference/page_002.webp",
+    "redlines/tracking_without_comments/7dc048a022/reference/page_003.webp"
+   ],
+   "jubarte-rust": [
+    "redlines/tracking_without_comments/7dc048a022/jubarte-rust/page_001.webp",
+    "redlines/tracking_without_comments/7dc048a022/jubarte-rust/page_002.webp",
+    "redlines/tracking_without_comments/7dc048a022/jubarte-rust/page_003.webp"
+   ],
+   "docxodus": [
+    "redlines/tracking_without_comments/7dc048a022/docxodus/page_001.webp",
+    "redlines/tracking_without_comments/7dc048a022/docxodus/page_002.webp",
+    "redlines/tracking_without_comments/7dc048a022/docxodus/page_003.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 8,
+   "jubarte-rust": 8,
+   "docxodus": 8
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 98.0,
+    "ssim": 98.7,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 98.0,
+    "ssim": 98.7,
+    "text_boundary": 100.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "redlines/tracking_without_comments",
+  "case": "18b8ae1706",
+  "pages": {
+   "reference": [
+    "redlines/tracking_without_comments/18b8ae1706/reference/page_001.webp",
+    "redlines/tracking_without_comments/18b8ae1706/reference/page_002.webp",
+    "redlines/tracking_without_comments/18b8ae1706/reference/page_003.webp"
+   ],
+   "jubarte-rust": [
+    "redlines/tracking_without_comments/18b8ae1706/jubarte-rust/page_001.webp",
+    "redlines/tracking_without_comments/18b8ae1706/jubarte-rust/page_002.webp",
+    "redlines/tracking_without_comments/18b8ae1706/jubarte-rust/page_003.webp"
+   ],
+   "docxodus": [
+    "redlines/tracking_without_comments/18b8ae1706/docxodus/page_001.webp",
+    "redlines/tracking_without_comments/18b8ae1706/docxodus/page_002.webp",
+    "redlines/tracking_without_comments/18b8ae1706/docxodus/page_003.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 3,
+   "jubarte-rust": 3,
+   "docxodus": 3
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 48.7,
+    "ssim": 60.6,
+    "text_boundary": 45.1
+   },
+   "docxodus": {
+    "jaccard": 99.0,
+    "ssim": 99.6,
+    "text_boundary": 100.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "redlines/tracking_without_comments",
+  "case": "24c220ff48",
+  "pages": {
+   "reference": [
+    "redlines/tracking_without_comments/24c220ff48/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "redlines/tracking_without_comments/24c220ff48/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "redlines/tracking_without_comments/24c220ff48/docxodus/page_001.webp"
+   ],
+   "superdoc": [
+    "redlines/tracking_without_comments/24c220ff48/superdoc/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1,
+   "superdoc": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "superdoc": {
+    "jaccard": 17.6,
+    "ssim": 31.4
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "redlines/tracking_without_comments",
+  "case": "68a593987f",
+  "pages": {
+   "reference": [
+    "redlines/tracking_without_comments/68a593987f/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "redlines/tracking_without_comments/68a593987f/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "redlines/tracking_without_comments/68a593987f/docxodus/page_001.webp"
+   ],
+   "superdoc": [
+    "redlines/tracking_without_comments/68a593987f/superdoc/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1,
+   "superdoc": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "superdoc": {
+    "jaccard": 24.6,
+    "ssim": 40.1
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "redlines/tracking_without_comments",
+  "case": "292dea4ba5",
+  "pages": {
+   "reference": [
+    "redlines/tracking_without_comments/292dea4ba5/reference/page_001.webp",
+    "redlines/tracking_without_comments/292dea4ba5/reference/page_002.webp",
+    "redlines/tracking_without_comments/292dea4ba5/reference/page_003.webp"
+   ],
+   "jubarte-rust": [
+    "redlines/tracking_without_comments/292dea4ba5/jubarte-rust/page_001.webp",
+    "redlines/tracking_without_comments/292dea4ba5/jubarte-rust/page_002.webp",
+    "redlines/tracking_without_comments/292dea4ba5/jubarte-rust/page_003.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 3,
+   "jubarte-rust": 3
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 50.4,
+    "ssim": 56.9,
+    "text_boundary": 51.1
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "redlines/tracking_without_comments",
+  "case": "357b5237e5",
+  "pages": {
+   "reference": [
+    "redlines/tracking_without_comments/357b5237e5/reference/page_001.webp",
+    "redlines/tracking_without_comments/357b5237e5/reference/page_002.webp",
+    "redlines/tracking_without_comments/357b5237e5/reference/page_003.webp"
+   ],
+   "jubarte-rust": [
+    "redlines/tracking_without_comments/357b5237e5/jubarte-rust/page_001.webp",
+    "redlines/tracking_without_comments/357b5237e5/jubarte-rust/page_002.webp",
+    "redlines/tracking_without_comments/357b5237e5/jubarte-rust/page_003.webp"
+   ],
+   "docxodus": [
+    "redlines/tracking_without_comments/357b5237e5/docxodus/page_001.webp",
+    "redlines/tracking_without_comments/357b5237e5/docxodus/page_002.webp",
+    "redlines/tracking_without_comments/357b5237e5/docxodus/page_003.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 6,
+   "jubarte-rust": 6,
+   "docxodus": 6
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 97.3,
+    "ssim": 98.4,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 33.0,
+    "ssim": 47.7,
+    "text_boundary": 48.4
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "redlines/tracking_without_comments",
+  "case": "8918f9bcdf",
+  "pages": {
+   "reference": [
+    "redlines/tracking_without_comments/8918f9bcdf/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "redlines/tracking_without_comments/8918f9bcdf/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "redlines/tracking_without_comments/8918f9bcdf/docxodus/page_001.webp"
+   ],
+   "superdoc": [
+    "redlines/tracking_without_comments/8918f9bcdf/superdoc/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1,
+   "superdoc": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "superdoc": {
+    "jaccard": 8.3,
+    "ssim": 19.4
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "redlines/tracking_without_comments",
+  "case": "9014a2c35a",
+  "pages": {
+   "reference": [
+    "redlines/tracking_without_comments/9014a2c35a/reference/page_001.webp",
+    "redlines/tracking_without_comments/9014a2c35a/reference/page_002.webp",
+    "redlines/tracking_without_comments/9014a2c35a/reference/page_003.webp"
+   ],
+   "jubarte-rust": [
+    "redlines/tracking_without_comments/9014a2c35a/jubarte-rust/page_001.webp",
+    "redlines/tracking_without_comments/9014a2c35a/jubarte-rust/page_002.webp",
+    "redlines/tracking_without_comments/9014a2c35a/jubarte-rust/page_003.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 7,
+   "jubarte-rust": 8
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 37.4,
+    "ssim": 55.0,
+    "text_boundary": 75.9
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "redlines/tracking_without_comments",
+  "case": "9471ca9d3a",
+  "pages": {
+   "reference": [
+    "redlines/tracking_without_comments/9471ca9d3a/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "redlines/tracking_without_comments/9471ca9d3a/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "redlines/tracking_without_comments/9471ca9d3a/docxodus/page_001.webp"
+   ],
+   "superdoc": [
+    "redlines/tracking_without_comments/9471ca9d3a/superdoc/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1,
+   "superdoc": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 78.7,
+    "ssim": 83.7,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 78.8,
+    "ssim": 83.7,
+    "text_boundary": 100.0
+   },
+   "superdoc": {
+    "jaccard": 14.1,
+    "ssim": 27.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "redlines/tracking_without_comments",
+  "case": "83586affa8",
+  "pages": {
+   "reference": [
+    "redlines/tracking_without_comments/83586affa8/reference/page_001.webp",
+    "redlines/tracking_without_comments/83586affa8/reference/page_002.webp"
+   ],
+   "jubarte-rust": [
+    "redlines/tracking_without_comments/83586affa8/jubarte-rust/page_001.webp",
+    "redlines/tracking_without_comments/83586affa8/jubarte-rust/page_002.webp"
+   ],
+   "docxodus": [
+    "redlines/tracking_without_comments/83586affa8/docxodus/page_001.webp",
+    "redlines/tracking_without_comments/83586affa8/docxodus/page_002.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 2,
+   "jubarte-rust": 2,
+   "docxodus": 2
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 59.0,
+    "ssim": 74.8,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 69.3,
+    "ssim": 73.1,
+    "text_boundary": 77.5
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "redlines/tracking_without_comments",
+  "case": "660862c753",
+  "pages": {
+   "reference": [
+    "redlines/tracking_without_comments/660862c753/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "redlines/tracking_without_comments/660862c753/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "redlines/tracking_without_comments/660862c753/docxodus/page_001.webp"
+   ],
+   "superdoc": [
+    "redlines/tracking_without_comments/660862c753/superdoc/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1,
+   "superdoc": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "superdoc": {
+    "jaccard": 23.4,
+    "ssim": 37.7
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "redlines/tracking_without_comments",
+  "case": "9151609eeb",
+  "pages": {
+   "reference": [
+    "redlines/tracking_without_comments/9151609eeb/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "redlines/tracking_without_comments/9151609eeb/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "redlines/tracking_without_comments/9151609eeb/docxodus/page_001.webp"
+   ],
+   "superdoc": [
+    "redlines/tracking_without_comments/9151609eeb/superdoc/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1,
+   "superdoc": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 25.6,
+    "ssim": 37.7
+   },
+   "superdoc": {
+    "jaccard": 17.6,
+    "ssim": 31.1
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "redlines/tracking_without_comments",
+  "case": "55646200ab",
+  "pages": {
+   "reference": [
+    "redlines/tracking_without_comments/55646200ab/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "redlines/tracking_without_comments/55646200ab/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "redlines/tracking_without_comments/55646200ab/docxodus/page_001.webp"
+   ],
+   "superdoc": [
+    "redlines/tracking_without_comments/55646200ab/superdoc/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1,
+   "superdoc": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "superdoc": {
+    "jaccard": 24.8,
+    "ssim": 37.8,
+    "text_boundary": 0.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "redlines/tracking_without_comments",
+  "case": "aab02de072",
+  "pages": {
+   "reference": [
+    "redlines/tracking_without_comments/aab02de072/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "redlines/tracking_without_comments/aab02de072/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "redlines/tracking_without_comments/aab02de072/docxodus/page_001.webp"
+   ],
+   "superdoc": [
+    "redlines/tracking_without_comments/aab02de072/superdoc/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1,
+   "superdoc": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "superdoc": {
+    "jaccard": 40.0,
+    "ssim": 65.9,
+    "text_boundary": 100.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "redlines/tracking_without_comments",
+  "case": "acd5cf3bf2",
+  "pages": {
+   "reference": [
+    "redlines/tracking_without_comments/acd5cf3bf2/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "redlines/tracking_without_comments/acd5cf3bf2/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "redlines/tracking_without_comments/acd5cf3bf2/docxodus/page_001.webp"
+   ],
+   "superdoc": [
+    "redlines/tracking_without_comments/acd5cf3bf2/superdoc/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1,
+   "superdoc": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 93.9,
+    "ssim": 95.3,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 93.9,
+    "ssim": 95.3,
+    "text_boundary": 100.0
+   },
+   "superdoc": {
+    "jaccard": 14.8,
+    "ssim": 26.7
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "redlines/tracking_without_comments",
+  "case": "b45c815da3",
+  "pages": {
+   "reference": [
+    "redlines/tracking_without_comments/b45c815da3/reference/page_001.webp",
+    "redlines/tracking_without_comments/b45c815da3/reference/page_002.webp",
+    "redlines/tracking_without_comments/b45c815da3/reference/page_003.webp"
+   ],
+   "jubarte-rust": [
+    "redlines/tracking_without_comments/b45c815da3/jubarte-rust/page_001.webp",
+    "redlines/tracking_without_comments/b45c815da3/jubarte-rust/page_002.webp",
+    "redlines/tracking_without_comments/b45c815da3/jubarte-rust/page_003.webp"
+   ],
+   "docxodus": [
+    "redlines/tracking_without_comments/b45c815da3/docxodus/page_001.webp",
+    "redlines/tracking_without_comments/b45c815da3/docxodus/page_002.webp",
+    "redlines/tracking_without_comments/b45c815da3/docxodus/page_003.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 5,
+   "jubarte-rust": 5,
+   "docxodus": 5
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 28.8,
+    "ssim": 35.6,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 26.9,
+    "ssim": 33.5,
+    "text_boundary": 100.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "redlines/tracking_without_comments",
+  "case": "bd704500fb",
+  "pages": {
+   "reference": [
+    "redlines/tracking_without_comments/bd704500fb/reference/page_001.webp",
+    "redlines/tracking_without_comments/bd704500fb/reference/page_002.webp",
+    "redlines/tracking_without_comments/bd704500fb/reference/page_003.webp"
+   ],
+   "jubarte-rust": [
+    "redlines/tracking_without_comments/bd704500fb/jubarte-rust/page_001.webp",
+    "redlines/tracking_without_comments/bd704500fb/jubarte-rust/page_002.webp",
+    "redlines/tracking_without_comments/bd704500fb/jubarte-rust/page_003.webp"
+   ],
+   "docxodus": [
+    "redlines/tracking_without_comments/bd704500fb/docxodus/page_001.webp",
+    "redlines/tracking_without_comments/bd704500fb/docxodus/page_002.webp",
+    "redlines/tracking_without_comments/bd704500fb/docxodus/page_003.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 5,
+   "jubarte-rust": 4,
+   "docxodus": 4
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 7.2,
+    "ssim": 26.0
+   },
+   "docxodus": {
+    "jaccard": 6.9,
+    "ssim": 25.5
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "redlines/tracking_without_comments",
+  "case": "c0d5b06bcf",
+  "pages": {
+   "reference": [
+    "redlines/tracking_without_comments/c0d5b06bcf/reference/page_001.webp",
+    "redlines/tracking_without_comments/c0d5b06bcf/reference/page_002.webp",
+    "redlines/tracking_without_comments/c0d5b06bcf/reference/page_003.webp"
+   ],
+   "jubarte-rust": [
+    "redlines/tracking_without_comments/c0d5b06bcf/jubarte-rust/page_001.webp",
+    "redlines/tracking_without_comments/c0d5b06bcf/jubarte-rust/page_002.webp",
+    "redlines/tracking_without_comments/c0d5b06bcf/jubarte-rust/page_003.webp"
+   ],
+   "docxodus": [
+    "redlines/tracking_without_comments/c0d5b06bcf/docxodus/page_001.webp",
+    "redlines/tracking_without_comments/c0d5b06bcf/docxodus/page_002.webp",
+    "redlines/tracking_without_comments/c0d5b06bcf/docxodus/page_003.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 8,
+   "jubarte-rust": 8,
+   "docxodus": 8
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 95.0,
+    "ssim": 98.7,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 34.6,
+    "ssim": 43.5,
+    "text_boundary": 15.8
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "redlines/tracking_without_comments",
+  "case": "c71f6afdd8",
+  "pages": {
+   "reference": [
+    "redlines/tracking_without_comments/c71f6afdd8/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "redlines/tracking_without_comments/c71f6afdd8/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "redlines/tracking_without_comments/c71f6afdd8/docxodus/page_001.webp"
+   ],
+   "superdoc": [
+    "redlines/tracking_without_comments/c71f6afdd8/superdoc/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1,
+   "superdoc": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 8.8,
+    "ssim": 27.2,
+    "text_boundary": 100.0
+   },
+   "superdoc": {
+    "jaccard": 17.0,
+    "ssim": 36.2
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "redlines/tracking_without_comments",
+  "case": "d40e4d812a",
+  "pages": {
+   "reference": [
+    "redlines/tracking_without_comments/d40e4d812a/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "redlines/tracking_without_comments/d40e4d812a/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "redlines/tracking_without_comments/d40e4d812a/docxodus/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 39.7,
+    "ssim": 53.4,
+    "text_boundary": 28.6
+   },
+   "docxodus": {
+    "jaccard": 37.9,
+    "ssim": 51.1,
+    "text_boundary": 14.3
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "redlines/tracking_without_comments",
+  "case": "d109f1d68e",
+  "pages": {
+   "reference": [
+    "redlines/tracking_without_comments/d109f1d68e/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "redlines/tracking_without_comments/d109f1d68e/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "redlines/tracking_without_comments/d109f1d68e/docxodus/page_001.webp"
+   ],
+   "superdoc": [
+    "redlines/tracking_without_comments/d109f1d68e/superdoc/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1,
+   "superdoc": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 99.4,
+    "ssim": 99.7,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 95.1,
+    "ssim": 97.9,
+    "text_boundary": 75.0
+   },
+   "superdoc": {
+    "jaccard": 8.4,
+    "ssim": 20.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "redlines/tracking_without_comments",
+  "case": "d075545d45",
+  "pages": {
+   "reference": [
+    "redlines/tracking_without_comments/d075545d45/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "redlines/tracking_without_comments/d075545d45/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "redlines/tracking_without_comments/d075545d45/docxodus/page_001.webp"
+   ],
+   "superdoc": [
+    "redlines/tracking_without_comments/d075545d45/superdoc/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1,
+   "superdoc": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "superdoc": {
+    "jaccard": 29.7,
+    "ssim": 50.4
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "redlines/tracking_without_comments",
+  "case": "dde913904e",
+  "pages": {
+   "reference": [
+    "redlines/tracking_without_comments/dde913904e/reference/page_001.webp",
+    "redlines/tracking_without_comments/dde913904e/reference/page_002.webp",
+    "redlines/tracking_without_comments/dde913904e/reference/page_003.webp"
+   ],
+   "jubarte-rust": [
+    "redlines/tracking_without_comments/dde913904e/jubarte-rust/page_001.webp",
+    "redlines/tracking_without_comments/dde913904e/jubarte-rust/page_002.webp",
+    "redlines/tracking_without_comments/dde913904e/jubarte-rust/page_003.webp"
+   ],
+   "docxodus": [
+    "redlines/tracking_without_comments/dde913904e/docxodus/page_001.webp",
+    "redlines/tracking_without_comments/dde913904e/docxodus/page_002.webp",
+    "redlines/tracking_without_comments/dde913904e/docxodus/page_003.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 11,
+   "jubarte-rust": 11,
+   "docxodus": 11
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 90.6,
+    "ssim": 92.9,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 90.6,
+    "ssim": 92.9,
+    "text_boundary": 100.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "redlines/tracking_without_comments",
+  "case": "f61afdb6f8",
+  "pages": {
+   "reference": [
+    "redlines/tracking_without_comments/f61afdb6f8/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "redlines/tracking_without_comments/f61afdb6f8/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "redlines/tracking_without_comments/f61afdb6f8/docxodus/page_001.webp"
+   ],
+   "superdoc": [
+    "redlines/tracking_without_comments/f61afdb6f8/superdoc/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1,
+   "superdoc": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 88.7,
+    "ssim": 92.9,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "superdoc": {
+    "jaccard": 17.1,
+    "ssim": 32.1
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "redlines/tracking_without_comments",
+  "case": "fd7dbb0869",
+  "pages": {
+   "reference": [
+    "redlines/tracking_without_comments/fd7dbb0869/reference/page_001.webp",
+    "redlines/tracking_without_comments/fd7dbb0869/reference/page_002.webp",
+    "redlines/tracking_without_comments/fd7dbb0869/reference/page_003.webp"
+   ],
+   "jubarte-rust": [
+    "redlines/tracking_without_comments/fd7dbb0869/jubarte-rust/page_001.webp",
+    "redlines/tracking_without_comments/fd7dbb0869/jubarte-rust/page_002.webp",
+    "redlines/tracking_without_comments/fd7dbb0869/jubarte-rust/page_003.webp"
+   ],
+   "docxodus": [
+    "redlines/tracking_without_comments/fd7dbb0869/docxodus/page_001.webp",
+    "redlines/tracking_without_comments/fd7dbb0869/docxodus/page_002.webp",
+    "redlines/tracking_without_comments/fd7dbb0869/docxodus/page_003.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 3,
+   "jubarte-rust": 3,
+   "docxodus": 3
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 97.4,
+    "ssim": 99.3,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 58.9,
+    "ssim": 65.6,
+    "text_boundary": 100.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "accepted/with_comments_tracking",
+  "case": "01f3deda92",
+  "pages": {
+   "reference": [
+    "accepted/with_comments_tracking/01f3deda92/reference/page_001.webp",
+    "accepted/with_comments_tracking/01f3deda92/reference/page_002.webp"
+   ],
+   "jubarte-rust": [
+    "accepted/with_comments_tracking/01f3deda92/jubarte-rust/page_001.webp",
+    "accepted/with_comments_tracking/01f3deda92/jubarte-rust/page_002.webp"
+   ],
+   "docxodus": [
+    "accepted/with_comments_tracking/01f3deda92/docxodus/page_001.webp",
+    "accepted/with_comments_tracking/01f3deda92/docxodus/page_002.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 2,
+   "jubarte-rust": 2,
+   "docxodus": 2
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 61.3,
+    "ssim": 67.2,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "accepted/with_comments_tracking",
+  "case": "2e3f1e261d",
+  "pages": {
+   "reference": [
+    "accepted/with_comments_tracking/2e3f1e261d/reference/page_001.webp",
+    "accepted/with_comments_tracking/2e3f1e261d/reference/page_002.webp",
+    "accepted/with_comments_tracking/2e3f1e261d/reference/page_003.webp"
+   ],
+   "jubarte-rust": [
+    "accepted/with_comments_tracking/2e3f1e261d/jubarte-rust/page_001.webp",
+    "accepted/with_comments_tracking/2e3f1e261d/jubarte-rust/page_002.webp",
+    "accepted/with_comments_tracking/2e3f1e261d/jubarte-rust/page_003.webp"
+   ],
+   "docxodus": [
+    "accepted/with_comments_tracking/2e3f1e261d/docxodus/page_001.webp",
+    "accepted/with_comments_tracking/2e3f1e261d/docxodus/page_002.webp",
+    "accepted/with_comments_tracking/2e3f1e261d/docxodus/page_003.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 9,
+   "jubarte-rust": 9,
+   "docxodus": 9
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 5.2,
+    "ssim": 12.2,
+    "text_boundary": 98.4
+   },
+   "docxodus": {
+    "jaccard": 5.3,
+    "ssim": 12.0,
+    "text_boundary": 99.2
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "accepted/with_comments_tracking",
+  "case": "4eff11f045",
+  "pages": {
+   "reference": [
+    "accepted/with_comments_tracking/4eff11f045/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "accepted/with_comments_tracking/4eff11f045/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "accepted/with_comments_tracking/4eff11f045/docxodus/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 56.1,
+    "ssim": 72.1,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "accepted/with_comments_tracking",
+  "case": "5b878b9756",
+  "pages": {
+   "reference": [
+    "accepted/with_comments_tracking/5b878b9756/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "accepted/with_comments_tracking/5b878b9756/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "accepted/with_comments_tracking/5b878b9756/docxodus/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 15.7,
+    "ssim": 51.7,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 34.7,
+    "ssim": 51.4,
+    "text_boundary": 100.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "accepted/with_comments_tracking",
+  "case": "5f0fed8e2a",
+  "pages": {
+   "reference": [
+    "accepted/with_comments_tracking/5f0fed8e2a/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "accepted/with_comments_tracking/5f0fed8e2a/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "accepted/with_comments_tracking/5f0fed8e2a/docxodus/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 44.6,
+    "ssim": 99.8,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "accepted/with_comments_tracking",
+  "case": "2288f27be1",
+  "pages": {
+   "reference": [
+    "accepted/with_comments_tracking/2288f27be1/reference/page_001.webp",
+    "accepted/with_comments_tracking/2288f27be1/reference/page_002.webp",
+    "accepted/with_comments_tracking/2288f27be1/reference/page_003.webp"
+   ],
+   "jubarte-rust": [
+    "accepted/with_comments_tracking/2288f27be1/jubarte-rust/page_001.webp",
+    "accepted/with_comments_tracking/2288f27be1/jubarte-rust/page_002.webp",
+    "accepted/with_comments_tracking/2288f27be1/jubarte-rust/page_003.webp"
+   ],
+   "docxodus": [
+    "accepted/with_comments_tracking/2288f27be1/docxodus/page_001.webp",
+    "accepted/with_comments_tracking/2288f27be1/docxodus/page_002.webp",
+    "accepted/with_comments_tracking/2288f27be1/docxodus/page_003.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 11,
+   "jubarte-rust": 11,
+   "docxodus": 11
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 5.0,
+    "ssim": 10.7,
+    "text_boundary": 65.4
+   },
+   "docxodus": {
+    "jaccard": 5.6,
+    "ssim": 11.2,
+    "text_boundary": 64.3
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "accepted/with_comments_tracking",
+  "case": "3866f441cc",
+  "pages": {
+   "reference": [
+    "accepted/with_comments_tracking/3866f441cc/reference/page_001.webp",
+    "accepted/with_comments_tracking/3866f441cc/reference/page_002.webp",
+    "accepted/with_comments_tracking/3866f441cc/reference/page_003.webp"
+   ],
+   "jubarte-rust": [
+    "accepted/with_comments_tracking/3866f441cc/jubarte-rust/page_001.webp",
+    "accepted/with_comments_tracking/3866f441cc/jubarte-rust/page_002.webp",
+    "accepted/with_comments_tracking/3866f441cc/jubarte-rust/page_003.webp"
+   ],
+   "docxodus": [
+    "accepted/with_comments_tracking/3866f441cc/docxodus/page_001.webp",
+    "accepted/with_comments_tracking/3866f441cc/docxodus/page_002.webp",
+    "accepted/with_comments_tracking/3866f441cc/docxodus/page_003.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 4,
+   "jubarte-rust": 4,
+   "docxodus": 4
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 17.0,
+    "ssim": 25.9,
+    "text_boundary": 24.8
+   },
+   "docxodus": {
+    "jaccard": 42.0,
+    "ssim": 49.4,
+    "text_boundary": 24.8
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "accepted/with_comments_tracking",
+  "case": "957168bc45",
+  "pages": {
+   "reference": [
+    "accepted/with_comments_tracking/957168bc45/reference/page_001.webp",
+    "accepted/with_comments_tracking/957168bc45/reference/page_002.webp",
+    "accepted/with_comments_tracking/957168bc45/reference/page_003.webp"
+   ],
+   "jubarte-rust": [
+    "accepted/with_comments_tracking/957168bc45/jubarte-rust/page_001.webp",
+    "accepted/with_comments_tracking/957168bc45/jubarte-rust/page_002.webp",
+    "accepted/with_comments_tracking/957168bc45/jubarte-rust/page_003.webp"
+   ],
+   "docxodus": [
+    "accepted/with_comments_tracking/957168bc45/docxodus/page_001.webp",
+    "accepted/with_comments_tracking/957168bc45/docxodus/page_002.webp",
+    "accepted/with_comments_tracking/957168bc45/docxodus/page_003.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 3,
+   "jubarte-rust": 3,
+   "docxodus": 3
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 98.6,
+    "ssim": 99.0,
+    "text_boundary": 98.7
+   },
+   "docxodus": {
+    "jaccard": 87.8,
+    "ssim": 91.0,
+    "text_boundary": 98.7
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "accepted/with_comments_tracking",
+  "case": "3796807136",
+  "pages": {
+   "reference": [
+    "accepted/with_comments_tracking/3796807136/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "accepted/with_comments_tracking/3796807136/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "accepted/with_comments_tracking/3796807136/docxodus/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 28.6,
+    "ssim": 94.6,
+    "text_boundary": 100.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "accepted/with_comments_tracking",
+  "case": "a202881c62",
+  "pages": {
+   "reference": [
+    "accepted/with_comments_tracking/a202881c62/reference/page_001.webp",
+    "accepted/with_comments_tracking/a202881c62/reference/page_002.webp"
+   ],
+   "jubarte-rust": [
+    "accepted/with_comments_tracking/a202881c62/jubarte-rust/page_001.webp",
+    "accepted/with_comments_tracking/a202881c62/jubarte-rust/page_002.webp"
+   ],
+   "docxodus": [
+    "accepted/with_comments_tracking/a202881c62/docxodus/page_001.webp",
+    "accepted/with_comments_tracking/a202881c62/docxodus/page_002.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 2,
+   "jubarte-rust": 2,
+   "docxodus": 2
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 61.9,
+    "ssim": 67.5,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "accepted/with_comments_tracking",
+  "case": "af568343b6",
+  "pages": {
+   "reference": [
+    "accepted/with_comments_tracking/af568343b6/reference/page_001.webp",
+    "accepted/with_comments_tracking/af568343b6/reference/page_002.webp",
+    "accepted/with_comments_tracking/af568343b6/reference/page_003.webp"
+   ],
+   "jubarte-rust": [
+    "accepted/with_comments_tracking/af568343b6/jubarte-rust/page_001.webp",
+    "accepted/with_comments_tracking/af568343b6/jubarte-rust/page_002.webp",
+    "accepted/with_comments_tracking/af568343b6/jubarte-rust/page_003.webp"
+   ],
+   "docxodus": [
+    "accepted/with_comments_tracking/af568343b6/docxodus/page_001.webp",
+    "accepted/with_comments_tracking/af568343b6/docxodus/page_002.webp",
+    "accepted/with_comments_tracking/af568343b6/docxodus/page_003.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 5,
+   "jubarte-rust": 5,
+   "docxodus": 5
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 33.1,
+    "ssim": 44.8,
+    "text_boundary": 75.0
+   },
+   "docxodus": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "accepted/with_comments_tracking",
+  "case": "bc6f8076f9",
+  "pages": {
+   "reference": [
+    "accepted/with_comments_tracking/bc6f8076f9/reference/page_001.webp",
+    "accepted/with_comments_tracking/bc6f8076f9/reference/page_002.webp",
+    "accepted/with_comments_tracking/bc6f8076f9/reference/page_003.webp"
+   ],
+   "jubarte-rust": [
+    "accepted/with_comments_tracking/bc6f8076f9/jubarte-rust/page_001.webp",
+    "accepted/with_comments_tracking/bc6f8076f9/jubarte-rust/page_002.webp",
+    "accepted/with_comments_tracking/bc6f8076f9/jubarte-rust/page_003.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 11,
+   "jubarte-rust": 11
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 5.4,
+    "ssim": 11.2,
+    "text_boundary": 78.9
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "accepted/with_comments_tracking",
+  "case": "bfff2b1ab0",
+  "pages": {
+   "reference": [
+    "accepted/with_comments_tracking/bfff2b1ab0/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "accepted/with_comments_tracking/bfff2b1ab0/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "accepted/with_comments_tracking/bfff2b1ab0/docxodus/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 49.3,
+    "ssim": 70.3
+   },
+   "docxodus": {
+    "jaccard": 44.9,
+    "ssim": 68.3
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "accepted/with_comments_tracking",
+  "case": "c0a3ea22ca",
+  "pages": {
+   "reference": [
+    "accepted/with_comments_tracking/c0a3ea22ca/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "accepted/with_comments_tracking/c0a3ea22ca/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "accepted/with_comments_tracking/c0a3ea22ca/docxodus/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 60.4,
+    "ssim": 70.5
+   },
+   "docxodus": {
+    "jaccard": 60.4,
+    "ssim": 70.4
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "accepted/with_comments_tracking",
+  "case": "c9fc2e8899",
+  "pages": {
+   "reference": [
+    "accepted/with_comments_tracking/c9fc2e8899/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "accepted/with_comments_tracking/c9fc2e8899/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "accepted/with_comments_tracking/c9fc2e8899/docxodus/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "accepted/with_comments_tracking",
+  "case": "d6b1d609c1",
+  "pages": {
+   "reference": [
+    "accepted/with_comments_tracking/d6b1d609c1/reference/page_001.webp",
+    "accepted/with_comments_tracking/d6b1d609c1/reference/page_002.webp",
+    "accepted/with_comments_tracking/d6b1d609c1/reference/page_003.webp"
+   ],
+   "jubarte-rust": [
+    "accepted/with_comments_tracking/d6b1d609c1/jubarte-rust/page_001.webp",
+    "accepted/with_comments_tracking/d6b1d609c1/jubarte-rust/page_002.webp",
+    "accepted/with_comments_tracking/d6b1d609c1/jubarte-rust/page_003.webp"
+   ],
+   "docxodus": [
+    "accepted/with_comments_tracking/d6b1d609c1/docxodus/page_001.webp",
+    "accepted/with_comments_tracking/d6b1d609c1/docxodus/page_002.webp",
+    "accepted/with_comments_tracking/d6b1d609c1/docxodus/page_003.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 11,
+   "jubarte-rust": 11,
+   "docxodus": 11
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 6.0,
+    "ssim": 12.1,
+    "text_boundary": 98.8
+   },
+   "docxodus": {
+    "jaccard": 6.0,
+    "ssim": 12.3,
+    "text_boundary": 99.4
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "accepted/with_comments_tracking",
+  "case": "d12806f3e8",
+  "pages": {
+   "reference": [
+    "accepted/with_comments_tracking/d12806f3e8/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "accepted/with_comments_tracking/d12806f3e8/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "accepted/with_comments_tracking/d12806f3e8/docxodus/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 71.3,
+    "ssim": 80.6
+   },
+   "docxodus": {
+    "jaccard": 71.3,
+    "ssim": 80.5
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "accepted/with_comments_tracking",
+  "case": "ebeb91fe7f",
+  "pages": {
+   "reference": [
+    "accepted/with_comments_tracking/ebeb91fe7f/reference/page_001.webp",
+    "accepted/with_comments_tracking/ebeb91fe7f/reference/page_002.webp",
+    "accepted/with_comments_tracking/ebeb91fe7f/reference/page_003.webp"
+   ],
+   "jubarte-rust": [
+    "accepted/with_comments_tracking/ebeb91fe7f/jubarte-rust/page_001.webp",
+    "accepted/with_comments_tracking/ebeb91fe7f/jubarte-rust/page_002.webp",
+    "accepted/with_comments_tracking/ebeb91fe7f/jubarte-rust/page_003.webp"
+   ],
+   "docxodus": [
+    "accepted/with_comments_tracking/ebeb91fe7f/docxodus/page_001.webp",
+    "accepted/with_comments_tracking/ebeb91fe7f/docxodus/page_002.webp",
+    "accepted/with_comments_tracking/ebeb91fe7f/docxodus/page_003.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 11,
+   "jubarte-rust": 11,
+   "docxodus": 11
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 6.0,
+    "ssim": 12.1,
+    "text_boundary": 98.8
+   },
+   "docxodus": {
+    "jaccard": 6.1,
+    "ssim": 12.3,
+    "text_boundary": 99.1
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "accepted/with_comments_tracking",
+  "case": "f00b7032aa",
+  "pages": {
+   "reference": [
+    "accepted/with_comments_tracking/f00b7032aa/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "accepted/with_comments_tracking/f00b7032aa/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "accepted/with_comments_tracking/f00b7032aa/docxodus/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 36.0,
+    "ssim": 46.9
+   },
+   "docxodus": {
+    "jaccard": 98.8,
+    "ssim": 99.8,
+    "text_boundary": 100.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "accepted/with_comments_tracking",
+  "case": "f64bfdeadc",
+  "pages": {
+   "reference": [
+    "accepted/with_comments_tracking/f64bfdeadc/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "accepted/with_comments_tracking/f64bfdeadc/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "accepted/with_comments_tracking/f64bfdeadc/docxodus/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 84.9,
+    "ssim": 92.8,
+    "text_boundary": 33.3
+   },
+   "docxodus": {
+    "jaccard": 99.9,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "accepted/tracking_without_comments",
+  "case": "7f437ab2c3",
+  "pages": {
+   "reference": [
+    "accepted/tracking_without_comments/7f437ab2c3/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "accepted/tracking_without_comments/7f437ab2c3/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "accepted/tracking_without_comments/7f437ab2c3/docxodus/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "accepted/tracking_without_comments",
+  "case": "218c9d60d5",
+  "pages": {
+   "reference": [
+    "accepted/tracking_without_comments/218c9d60d5/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "accepted/tracking_without_comments/218c9d60d5/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "accepted/tracking_without_comments/218c9d60d5/docxodus/page_001.webp"
+   ],
+   "superdoc": [
+    "accepted/tracking_without_comments/218c9d60d5/superdoc/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1,
+   "superdoc": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 70.0,
+    "ssim": 80.4,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "superdoc": {
+    "jaccard": 98.0,
+    "ssim": 99.9,
+    "text_boundary": 100.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "accepted/tracking_without_comments",
+  "case": "1855b51281",
+  "pages": {
+   "reference": [
+    "accepted/tracking_without_comments/1855b51281/reference/page_001.webp",
+    "accepted/tracking_without_comments/1855b51281/reference/page_002.webp",
+    "accepted/tracking_without_comments/1855b51281/reference/page_003.webp"
+   ],
+   "docxodus": [
+    "accepted/tracking_without_comments/1855b51281/docxodus/page_001.webp",
+    "accepted/tracking_without_comments/1855b51281/docxodus/page_002.webp",
+    "accepted/tracking_without_comments/1855b51281/docxodus/page_003.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 3,
+   "docxodus": 3
+  },
+  "scores": {
+   "docxodus": {
+    "jaccard": 79.9,
+    "ssim": 85.6,
+    "text_boundary": 100.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "accepted/tracking_without_comments",
+  "case": "4548a5e33f",
+  "pages": {
+   "reference": [
+    "accepted/tracking_without_comments/4548a5e33f/reference/page_001.webp",
+    "accepted/tracking_without_comments/4548a5e33f/reference/page_002.webp"
+   ],
+   "jubarte-rust": [
+    "accepted/tracking_without_comments/4548a5e33f/jubarte-rust/page_001.webp",
+    "accepted/tracking_without_comments/4548a5e33f/jubarte-rust/page_002.webp"
+   ],
+   "docxodus": [
+    "accepted/tracking_without_comments/4548a5e33f/docxodus/page_001.webp",
+    "accepted/tracking_without_comments/4548a5e33f/docxodus/page_002.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 2,
+   "jubarte-rust": 2,
+   "docxodus": 2
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 53.4,
+    "ssim": 62.6,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 51.0,
+    "ssim": 61.1,
+    "text_boundary": 100.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "accepted/tracking_without_comments",
+  "case": "8836f9bbdb",
+  "pages": {
+   "reference": [
+    "accepted/tracking_without_comments/8836f9bbdb/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "accepted/tracking_without_comments/8836f9bbdb/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "accepted/tracking_without_comments/8836f9bbdb/docxodus/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 98.5,
+    "ssim": 99.2,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 100.0,
+    "ssim": 99.9,
+    "text_boundary": 100.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "accepted/tracking_without_comments",
+  "case": "56915a8dc8",
+  "pages": {
+   "reference": [
+    "accepted/tracking_without_comments/56915a8dc8/reference/page_001.webp",
+    "accepted/tracking_without_comments/56915a8dc8/reference/page_002.webp"
+   ],
+   "jubarte-rust": [
+    "accepted/tracking_without_comments/56915a8dc8/jubarte-rust/page_001.webp",
+    "accepted/tracking_without_comments/56915a8dc8/jubarte-rust/page_002.webp"
+   ],
+   "docxodus": [
+    "accepted/tracking_without_comments/56915a8dc8/docxodus/page_001.webp",
+    "accepted/tracking_without_comments/56915a8dc8/docxodus/page_002.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 2,
+   "jubarte-rust": 2,
+   "docxodus": 2
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 51.3,
+    "ssim": 66.6,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 51.3,
+    "ssim": 66.7,
+    "text_boundary": 100.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "accepted/tracking_without_comments",
+  "case": "429328c875",
+  "pages": {
+   "reference": [
+    "accepted/tracking_without_comments/429328c875/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "accepted/tracking_without_comments/429328c875/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "accepted/tracking_without_comments/429328c875/docxodus/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 99.9,
+    "ssim": 99.9,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 99.8,
+    "ssim": 99.9,
+    "text_boundary": 100.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "accepted/tracking_without_comments",
+  "case": "73105518ef",
+  "pages": {
+   "reference": [
+    "accepted/tracking_without_comments/73105518ef/reference/page_001.webp",
+    "accepted/tracking_without_comments/73105518ef/reference/page_002.webp"
+   ],
+   "jubarte-rust": [
+    "accepted/tracking_without_comments/73105518ef/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "accepted/tracking_without_comments/73105518ef/docxodus/page_001.webp",
+    "accepted/tracking_without_comments/73105518ef/docxodus/page_002.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 2,
+   "jubarte-rust": 1,
+   "docxodus": 2
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 98.5,
+    "ssim": 99.2,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "accepted/tracking_without_comments",
+  "case": "a52462ea98",
+  "pages": {
+   "reference": [
+    "accepted/tracking_without_comments/a52462ea98/reference/page_001.webp",
+    "accepted/tracking_without_comments/a52462ea98/reference/page_002.webp"
+   ],
+   "jubarte-rust": [
+    "accepted/tracking_without_comments/a52462ea98/jubarte-rust/page_001.webp",
+    "accepted/tracking_without_comments/a52462ea98/jubarte-rust/page_002.webp"
+   ],
+   "docxodus": [
+    "accepted/tracking_without_comments/a52462ea98/docxodus/page_001.webp",
+    "accepted/tracking_without_comments/a52462ea98/docxodus/page_002.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 2,
+   "jubarte-rust": 2,
+   "docxodus": 2
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 99.9,
+    "ssim": 99.9,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 99.9,
+    "ssim": 99.9,
+    "text_boundary": 100.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "accepted/tracking_without_comments",
+  "case": "b3e000423e",
+  "pages": {
+   "reference": [
+    "accepted/tracking_without_comments/b3e000423e/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "accepted/tracking_without_comments/b3e000423e/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "accepted/tracking_without_comments/b3e000423e/docxodus/page_001.webp"
+   ],
+   "superdoc": [
+    "accepted/tracking_without_comments/b3e000423e/superdoc/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1,
+   "superdoc": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "superdoc": {
+    "jaccard": 97.5,
+    "ssim": 99.7,
+    "text_boundary": 100.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "accepted/tracking_without_comments",
+  "case": "b42b3ae070",
+  "pages": {
+   "reference": [
+    "accepted/tracking_without_comments/b42b3ae070/reference/page_001.webp",
+    "accepted/tracking_without_comments/b42b3ae070/reference/page_002.webp"
+   ],
+   "jubarte-rust": [
+    "accepted/tracking_without_comments/b42b3ae070/jubarte-rust/page_001.webp",
+    "accepted/tracking_without_comments/b42b3ae070/jubarte-rust/page_002.webp"
+   ],
+   "docxodus": [
+    "accepted/tracking_without_comments/b42b3ae070/docxodus/page_001.webp",
+    "accepted/tracking_without_comments/b42b3ae070/docxodus/page_002.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 2,
+   "jubarte-rust": 2,
+   "docxodus": 2
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 60.0,
+    "ssim": 69.0,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "accepted/tracking_without_comments",
+  "case": "c8db65e1fd",
+  "pages": {
+   "reference": [
+    "accepted/tracking_without_comments/c8db65e1fd/reference/page_001.webp",
+    "accepted/tracking_without_comments/c8db65e1fd/reference/page_002.webp"
+   ],
+   "jubarte-rust": [
+    "accepted/tracking_without_comments/c8db65e1fd/jubarte-rust/page_001.webp",
+    "accepted/tracking_without_comments/c8db65e1fd/jubarte-rust/page_002.webp"
+   ],
+   "docxodus": [
+    "accepted/tracking_without_comments/c8db65e1fd/docxodus/page_001.webp",
+    "accepted/tracking_without_comments/c8db65e1fd/docxodus/page_002.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 2,
+   "jubarte-rust": 2,
+   "docxodus": 2
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 98.8,
+    "ssim": 99.8,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 99.8,
+    "ssim": 99.9,
+    "text_boundary": 100.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "accepted/tracking_without_comments",
+  "case": "c719b900f0",
+  "pages": {
+   "reference": [
+    "accepted/tracking_without_comments/c719b900f0/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "accepted/tracking_without_comments/c719b900f0/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "accepted/tracking_without_comments/c719b900f0/docxodus/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 62.9,
+    "ssim": 90.1,
+    "text_boundary": 90.9
+   },
+   "docxodus": {
+    "jaccard": 98.4,
+    "ssim": 99.2,
+    "text_boundary": 100.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "accepted/tracking_without_comments",
+  "case": "c842fd0e02",
+  "pages": {
+   "reference": [
+    "accepted/tracking_without_comments/c842fd0e02/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "accepted/tracking_without_comments/c842fd0e02/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "accepted/tracking_without_comments/c842fd0e02/docxodus/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "accepted/tracking_without_comments",
+  "case": "cda19d51ed",
+  "pages": {
+   "reference": [
+    "accepted/tracking_without_comments/cda19d51ed/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "accepted/tracking_without_comments/cda19d51ed/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "accepted/tracking_without_comments/cda19d51ed/docxodus/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 26.5,
+    "ssim": 36.2,
+    "text_boundary": 90.9
+   },
+   "docxodus": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "accepted/tracking_without_comments",
+  "case": "ce433a28fb",
+  "pages": {
+   "reference": [
+    "accepted/tracking_without_comments/ce433a28fb/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "accepted/tracking_without_comments/ce433a28fb/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "accepted/tracking_without_comments/ce433a28fb/docxodus/page_001.webp"
+   ],
+   "superdoc": [
+    "accepted/tracking_without_comments/ce433a28fb/superdoc/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1,
+   "superdoc": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "superdoc": {
+    "jaccard": 95.1,
+    "ssim": 99.7,
+    "text_boundary": 100.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "accepted/tracking_without_comments",
+  "case": "ece42865e7",
+  "pages": {
+   "reference": [
+    "accepted/tracking_without_comments/ece42865e7/reference/page_001.webp",
+    "accepted/tracking_without_comments/ece42865e7/reference/page_002.webp",
+    "accepted/tracking_without_comments/ece42865e7/reference/page_003.webp"
+   ],
+   "jubarte-rust": [
+    "accepted/tracking_without_comments/ece42865e7/jubarte-rust/page_001.webp",
+    "accepted/tracking_without_comments/ece42865e7/jubarte-rust/page_002.webp",
+    "accepted/tracking_without_comments/ece42865e7/jubarte-rust/page_003.webp"
+   ],
+   "docxodus": [
+    "accepted/tracking_without_comments/ece42865e7/docxodus/page_001.webp",
+    "accepted/tracking_without_comments/ece42865e7/docxodus/page_002.webp",
+    "accepted/tracking_without_comments/ece42865e7/docxodus/page_003.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 3,
+   "jubarte-rust": 3,
+   "docxodus": 3
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 9.2,
+    "ssim": 21.5,
+    "text_boundary": 43.0
+   },
+   "docxodus": {
+    "jaccard": 95.4,
+    "ssim": 97.1,
+    "text_boundary": 100.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "accepted/tracking_without_comments",
+  "case": "f48c29c41f",
+  "pages": {
+   "reference": [
+    "accepted/tracking_without_comments/f48c29c41f/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "accepted/tracking_without_comments/f48c29c41f/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "accepted/tracking_without_comments/f48c29c41f/docxodus/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "accepted/tracking_without_comments",
+  "case": "fe2fb2ad13",
+  "pages": {
+   "reference": [
+    "accepted/tracking_without_comments/fe2fb2ad13/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "accepted/tracking_without_comments/fe2fb2ad13/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "accepted/tracking_without_comments/fe2fb2ad13/docxodus/page_001.webp"
+   ],
+   "superdoc": [
+    "accepted/tracking_without_comments/fe2fb2ad13/superdoc/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1,
+   "superdoc": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "superdoc": {
+    "jaccard": 96.6,
+    "ssim": 98.9,
+    "text_boundary": 100.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "accepted/tracking_without_comments",
+  "case": "ff1a81cf73",
+  "pages": {
+   "reference": [
+    "accepted/tracking_without_comments/ff1a81cf73/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "accepted/tracking_without_comments/ff1a81cf73/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "accepted/tracking_without_comments/ff1a81cf73/docxodus/page_001.webp"
+   ],
+   "superdoc": [
+    "accepted/tracking_without_comments/ff1a81cf73/superdoc/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1,
+   "superdoc": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "superdoc": {
+    "jaccard": 98.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "rejected/with_comments_tracking",
+  "case": "0f031c23c3",
+  "pages": {
+   "reference": [
+    "rejected/with_comments_tracking/0f031c23c3/reference/page_001.webp",
+    "rejected/with_comments_tracking/0f031c23c3/reference/page_002.webp",
+    "rejected/with_comments_tracking/0f031c23c3/reference/page_003.webp"
+   ],
+   "jubarte-rust": [
+    "rejected/with_comments_tracking/0f031c23c3/jubarte-rust/page_001.webp",
+    "rejected/with_comments_tracking/0f031c23c3/jubarte-rust/page_002.webp",
+    "rejected/with_comments_tracking/0f031c23c3/jubarte-rust/page_003.webp"
+   ],
+   "docxodus": [
+    "rejected/with_comments_tracking/0f031c23c3/docxodus/page_001.webp",
+    "rejected/with_comments_tracking/0f031c23c3/docxodus/page_002.webp",
+    "rejected/with_comments_tracking/0f031c23c3/docxodus/page_003.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 11,
+   "jubarte-rust": 10,
+   "docxodus": 11
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 4.5,
+    "ssim": 12.7,
+    "text_boundary": 53.0
+   },
+   "docxodus": {
+    "jaccard": 4.3,
+    "ssim": 12.4,
+    "text_boundary": 11.6
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "rejected/with_comments_tracking",
+  "case": "1dbbf3be63",
+  "pages": {
+   "reference": [
+    "rejected/with_comments_tracking/1dbbf3be63/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "rejected/with_comments_tracking/1dbbf3be63/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "rejected/with_comments_tracking/1dbbf3be63/docxodus/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 99.5,
+    "ssim": 99.9,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 99.5,
+    "ssim": 99.9,
+    "text_boundary": 100.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "rejected/with_comments_tracking",
+  "case": "7cc19c9376",
+  "pages": {
+   "reference": [
+    "rejected/with_comments_tracking/7cc19c9376/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "rejected/with_comments_tracking/7cc19c9376/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "rejected/with_comments_tracking/7cc19c9376/docxodus/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 4.6,
+    "ssim": 22.4,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 11.3,
+    "ssim": 28.5,
+    "text_boundary": 100.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "rejected/with_comments_tracking",
+  "case": "7da45f822a",
+  "pages": {
+   "reference": [
+    "rejected/with_comments_tracking/7da45f822a/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "rejected/with_comments_tracking/7da45f822a/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "rejected/with_comments_tracking/7da45f822a/docxodus/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 95.9,
+    "ssim": 96.9,
+    "text_boundary": 66.7
+   },
+   "docxodus": {
+    "jaccard": 0.9,
+    "ssim": 6.2
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "rejected/with_comments_tracking",
+  "case": "30f20e787b",
+  "pages": {
+   "reference": [
+    "rejected/with_comments_tracking/30f20e787b/reference/page_001.webp",
+    "rejected/with_comments_tracking/30f20e787b/reference/page_002.webp",
+    "rejected/with_comments_tracking/30f20e787b/reference/page_003.webp"
+   ],
+   "jubarte-rust": [
+    "rejected/with_comments_tracking/30f20e787b/jubarte-rust/page_001.webp",
+    "rejected/with_comments_tracking/30f20e787b/jubarte-rust/page_002.webp",
+    "rejected/with_comments_tracking/30f20e787b/jubarte-rust/page_003.webp"
+   ],
+   "docxodus": [
+    "rejected/with_comments_tracking/30f20e787b/docxodus/page_001.webp",
+    "rejected/with_comments_tracking/30f20e787b/docxodus/page_002.webp",
+    "rejected/with_comments_tracking/30f20e787b/docxodus/page_003.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 11,
+   "jubarte-rust": 12,
+   "docxodus": 11
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 3.8,
+    "ssim": 12.6,
+    "text_boundary": 21.5
+   },
+   "docxodus": {
+    "jaccard": 6.2,
+    "ssim": 12.5,
+    "text_boundary": 90.8
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "rejected/with_comments_tracking",
+  "case": "58c827e77a",
+  "pages": {
+   "reference": [
+    "rejected/with_comments_tracking/58c827e77a/reference/page_001.webp",
+    "rejected/with_comments_tracking/58c827e77a/reference/page_002.webp",
+    "rejected/with_comments_tracking/58c827e77a/reference/page_003.webp"
+   ],
+   "jubarte-rust": [
+    "rejected/with_comments_tracking/58c827e77a/jubarte-rust/page_001.webp",
+    "rejected/with_comments_tracking/58c827e77a/jubarte-rust/page_002.webp",
+    "rejected/with_comments_tracking/58c827e77a/jubarte-rust/page_003.webp"
+   ],
+   "docxodus": [
+    "rejected/with_comments_tracking/58c827e77a/docxodus/page_001.webp",
+    "rejected/with_comments_tracking/58c827e77a/docxodus/page_002.webp",
+    "rejected/with_comments_tracking/58c827e77a/docxodus/page_003.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 11,
+   "jubarte-rust": 9,
+   "docxodus": 10
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 4.7,
+    "ssim": 13.0,
+    "text_boundary": 23.1
+   },
+   "docxodus": {
+    "jaccard": 4.7,
+    "ssim": 12.5,
+    "text_boundary": 33.9
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "rejected/with_comments_tracking",
+  "case": "69a4d71d6f",
+  "pages": {
+   "reference": [
+    "rejected/with_comments_tracking/69a4d71d6f/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "rejected/with_comments_tracking/69a4d71d6f/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "rejected/with_comments_tracking/69a4d71d6f/docxodus/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "rejected/with_comments_tracking",
+  "case": "79f93926e2",
+  "pages": {
+   "reference": [
+    "rejected/with_comments_tracking/79f93926e2/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "rejected/with_comments_tracking/79f93926e2/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "rejected/with_comments_tracking/79f93926e2/docxodus/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "rejected/with_comments_tracking",
+  "case": "589b832f86",
+  "pages": {
+   "reference": [
+    "rejected/with_comments_tracking/589b832f86/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "rejected/with_comments_tracking/589b832f86/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "rejected/with_comments_tracking/589b832f86/docxodus/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 40.5,
+    "ssim": 50.8,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 5.7,
+    "ssim": 12.3
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "rejected/with_comments_tracking",
+  "case": "849e0cb7c4",
+  "pages": {
+   "reference": [
+    "rejected/with_comments_tracking/849e0cb7c4/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "rejected/with_comments_tracking/849e0cb7c4/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "rejected/with_comments_tracking/849e0cb7c4/docxodus/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "rejected/with_comments_tracking",
+  "case": "2061218d44",
+  "pages": {
+   "reference": [
+    "rejected/with_comments_tracking/2061218d44/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "rejected/with_comments_tracking/2061218d44/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "rejected/with_comments_tracking/2061218d44/docxodus/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "rejected/with_comments_tracking",
+  "case": "71159007ab",
+  "pages": {
+   "reference": [
+    "rejected/with_comments_tracking/71159007ab/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "rejected/with_comments_tracking/71159007ab/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "rejected/with_comments_tracking/71159007ab/docxodus/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 94.3,
+    "ssim": 96.6,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 94.3,
+    "ssim": 96.6,
+    "text_boundary": 100.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "rejected/with_comments_tracking",
+  "case": "7787357743",
+  "pages": {
+   "reference": [
+    "rejected/with_comments_tracking/7787357743/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "rejected/with_comments_tracking/7787357743/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "rejected/with_comments_tracking/7787357743/docxodus/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 44.9,
+    "ssim": 60.3,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 3.7,
+    "ssim": 9.2
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "rejected/with_comments_tracking",
+  "case": "a6aab38897",
+  "pages": {
+   "reference": [
+    "rejected/with_comments_tracking/a6aab38897/reference/page_001.webp",
+    "rejected/with_comments_tracking/a6aab38897/reference/page_002.webp",
+    "rejected/with_comments_tracking/a6aab38897/reference/page_003.webp"
+   ],
+   "jubarte-rust": [
+    "rejected/with_comments_tracking/a6aab38897/jubarte-rust/page_001.webp",
+    "rejected/with_comments_tracking/a6aab38897/jubarte-rust/page_002.webp",
+    "rejected/with_comments_tracking/a6aab38897/jubarte-rust/page_003.webp"
+   ],
+   "docxodus": [
+    "rejected/with_comments_tracking/a6aab38897/docxodus/page_001.webp",
+    "rejected/with_comments_tracking/a6aab38897/docxodus/page_002.webp",
+    "rejected/with_comments_tracking/a6aab38897/docxodus/page_003.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 9,
+   "jubarte-rust": 8,
+   "docxodus": 8
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 4.6,
+    "ssim": 12.0,
+    "text_boundary": 39.3
+   },
+   "docxodus": {
+    "jaccard": 5.1,
+    "ssim": 12.7,
+    "text_boundary": 41.3
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "rejected/with_comments_tracking",
+  "case": "c69908f44a",
+  "pages": {
+   "reference": [
+    "rejected/with_comments_tracking/c69908f44a/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "rejected/with_comments_tracking/c69908f44a/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "rejected/with_comments_tracking/c69908f44a/docxodus/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "rejected/with_comments_tracking",
+  "case": "cbd854cb68",
+  "pages": {
+   "reference": [
+    "rejected/with_comments_tracking/cbd854cb68/reference/page_001.webp",
+    "rejected/with_comments_tracking/cbd854cb68/reference/page_002.webp",
+    "rejected/with_comments_tracking/cbd854cb68/reference/page_003.webp"
+   ],
+   "jubarte-rust": [
+    "rejected/with_comments_tracking/cbd854cb68/jubarte-rust/page_001.webp",
+    "rejected/with_comments_tracking/cbd854cb68/jubarte-rust/page_002.webp",
+    "rejected/with_comments_tracking/cbd854cb68/jubarte-rust/page_003.webp"
+   ],
+   "docxodus": [
+    "rejected/with_comments_tracking/cbd854cb68/docxodus/page_001.webp",
+    "rejected/with_comments_tracking/cbd854cb68/docxodus/page_002.webp",
+    "rejected/with_comments_tracking/cbd854cb68/docxodus/page_003.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 3,
+   "jubarte-rust": 3,
+   "docxodus": 3
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 87.6,
+    "ssim": 92.3,
+    "text_boundary": 98.7
+   },
+   "docxodus": {
+    "jaccard": 21.2,
+    "ssim": 41.4,
+    "text_boundary": 98.7
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "rejected/with_comments_tracking",
+  "case": "cbf73c2d81",
+  "pages": {
+   "reference": [
+    "rejected/with_comments_tracking/cbf73c2d81/reference/page_001.webp",
+    "rejected/with_comments_tracking/cbf73c2d81/reference/page_002.webp",
+    "rejected/with_comments_tracking/cbf73c2d81/reference/page_003.webp"
+   ],
+   "jubarte-rust": [
+    "rejected/with_comments_tracking/cbf73c2d81/jubarte-rust/page_001.webp",
+    "rejected/with_comments_tracking/cbf73c2d81/jubarte-rust/page_002.webp",
+    "rejected/with_comments_tracking/cbf73c2d81/jubarte-rust/page_003.webp"
+   ],
+   "docxodus": [
+    "rejected/with_comments_tracking/cbf73c2d81/docxodus/page_001.webp",
+    "rejected/with_comments_tracking/cbf73c2d81/docxodus/page_002.webp",
+    "rejected/with_comments_tracking/cbf73c2d81/docxodus/page_003.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 11,
+   "jubarte-rust": 9,
+   "docxodus": 9
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 4.1,
+    "ssim": 12.4,
+    "text_boundary": 68.8
+   },
+   "docxodus": {
+    "jaccard": 5.2,
+    "ssim": 12.4,
+    "text_boundary": 68.4
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "rejected/with_comments_tracking",
+  "case": "d20ada3e0a",
+  "pages": {
+   "reference": [
+    "rejected/with_comments_tracking/d20ada3e0a/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "rejected/with_comments_tracking/d20ada3e0a/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "rejected/with_comments_tracking/d20ada3e0a/docxodus/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 89.7,
+    "ssim": 94.8,
+    "text_boundary": 60.0
+   },
+   "docxodus": {
+    "jaccard": 0.5,
+    "ssim": 5.3
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "rejected/with_comments_tracking",
+  "case": "db13a691da",
+  "pages": {
+   "reference": [
+    "rejected/with_comments_tracking/db13a691da/reference/page_001.webp",
+    "rejected/with_comments_tracking/db13a691da/reference/page_002.webp",
+    "rejected/with_comments_tracking/db13a691da/reference/page_003.webp"
+   ],
+   "jubarte-rust": [
+    "rejected/with_comments_tracking/db13a691da/jubarte-rust/page_001.webp",
+    "rejected/with_comments_tracking/db13a691da/jubarte-rust/page_002.webp",
+    "rejected/with_comments_tracking/db13a691da/jubarte-rust/page_003.webp"
+   ],
+   "docxodus": [
+    "rejected/with_comments_tracking/db13a691da/docxodus/page_001.webp",
+    "rejected/with_comments_tracking/db13a691da/docxodus/page_002.webp",
+    "rejected/with_comments_tracking/db13a691da/docxodus/page_003.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 11,
+   "jubarte-rust": 8,
+   "docxodus": 9
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 3.7,
+    "ssim": 12.1,
+    "text_boundary": 68.8
+   },
+   "docxodus": {
+    "jaccard": 5.2,
+    "ssim": 12.4,
+    "text_boundary": 68.4
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "rejected/with_comments_tracking",
+  "case": "e212b559b2",
+  "pages": {
+   "reference": [
+    "rejected/with_comments_tracking/e212b559b2/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "rejected/with_comments_tracking/e212b559b2/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "rejected/with_comments_tracking/e212b559b2/docxodus/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 86.8,
+    "ssim": 94.0,
+    "text_boundary": 33.3
+   },
+   "docxodus": {
+    "jaccard": 99.9,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "rejected/tracking_without_comments",
+  "case": "3bc839e440",
+  "pages": {
+   "reference": [
+    "rejected/tracking_without_comments/3bc839e440/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "rejected/tracking_without_comments/3bc839e440/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "rejected/tracking_without_comments/3bc839e440/docxodus/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "rejected/tracking_without_comments",
+  "case": "5b44fd7ae2",
+  "pages": {
+   "reference": [
+    "rejected/tracking_without_comments/5b44fd7ae2/reference/page_001.webp",
+    "rejected/tracking_without_comments/5b44fd7ae2/reference/page_002.webp",
+    "rejected/tracking_without_comments/5b44fd7ae2/reference/page_003.webp"
+   ],
+   "jubarte-rust": [
+    "rejected/tracking_without_comments/5b44fd7ae2/jubarte-rust/page_001.webp",
+    "rejected/tracking_without_comments/5b44fd7ae2/jubarte-rust/page_002.webp",
+    "rejected/tracking_without_comments/5b44fd7ae2/jubarte-rust/page_003.webp"
+   ],
+   "docxodus": [
+    "rejected/tracking_without_comments/5b44fd7ae2/docxodus/page_001.webp",
+    "rejected/tracking_without_comments/5b44fd7ae2/docxodus/page_002.webp",
+    "rejected/tracking_without_comments/5b44fd7ae2/docxodus/page_003.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 3,
+   "jubarte-rust": 3,
+   "docxodus": 3
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 3.6,
+    "ssim": 14.3,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 4.0,
+    "ssim": 14.3
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "rejected/tracking_without_comments",
+  "case": "9abf4fa5b5",
+  "pages": {
+   "reference": [
+    "rejected/tracking_without_comments/9abf4fa5b5/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "rejected/tracking_without_comments/9abf4fa5b5/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "rejected/tracking_without_comments/9abf4fa5b5/docxodus/page_001.webp"
+   ],
+   "superdoc": [
+    "rejected/tracking_without_comments/9abf4fa5b5/superdoc/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1,
+   "superdoc": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "superdoc": {
+    "jaccard": 91.9,
+    "ssim": 100.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "rejected/tracking_without_comments",
+  "case": "14f0524539",
+  "pages": {
+   "reference": [
+    "rejected/tracking_without_comments/14f0524539/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "rejected/tracking_without_comments/14f0524539/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "rejected/tracking_without_comments/14f0524539/docxodus/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "rejected/tracking_without_comments",
+  "case": "26fa719cba",
+  "pages": {
+   "reference": [
+    "rejected/tracking_without_comments/26fa719cba/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "rejected/tracking_without_comments/26fa719cba/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "rejected/tracking_without_comments/26fa719cba/docxodus/page_001.webp"
+   ],
+   "superdoc": [
+    "rejected/tracking_without_comments/26fa719cba/superdoc/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1,
+   "superdoc": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "superdoc": {
+    "jaccard": 97.8,
+    "ssim": 99.6,
+    "text_boundary": 100.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "rejected/tracking_without_comments",
+  "case": "75c971b32c",
+  "pages": {
+   "reference": [
+    "rejected/tracking_without_comments/75c971b32c/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "rejected/tracking_without_comments/75c971b32c/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "rejected/tracking_without_comments/75c971b32c/docxodus/page_001.webp"
+   ],
+   "superdoc": [
+    "rejected/tracking_without_comments/75c971b32c/superdoc/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1,
+   "superdoc": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "superdoc": {
+    "jaccard": 96.7,
+    "ssim": 99.5,
+    "text_boundary": 100.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "rejected/tracking_without_comments",
+  "case": "77fb9bd2e1",
+  "pages": {
+   "reference": [
+    "rejected/tracking_without_comments/77fb9bd2e1/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "rejected/tracking_without_comments/77fb9bd2e1/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "rejected/tracking_without_comments/77fb9bd2e1/docxodus/page_001.webp"
+   ],
+   "superdoc": [
+    "rejected/tracking_without_comments/77fb9bd2e1/superdoc/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1,
+   "superdoc": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "superdoc": {
+    "jaccard": 99.1,
+    "ssim": 99.8,
+    "text_boundary": 100.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "rejected/tracking_without_comments",
+  "case": "97e2fdc9ba",
+  "pages": {
+   "reference": [
+    "rejected/tracking_without_comments/97e2fdc9ba/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "rejected/tracking_without_comments/97e2fdc9ba/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "rejected/tracking_without_comments/97e2fdc9ba/docxodus/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 62.0,
+    "ssim": 58.7,
+    "text_boundary": 100.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "rejected/tracking_without_comments",
+  "case": "159ce5c93c",
+  "pages": {
+   "reference": [
+    "rejected/tracking_without_comments/159ce5c93c/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "rejected/tracking_without_comments/159ce5c93c/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "rejected/tracking_without_comments/159ce5c93c/docxodus/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 8.7,
+    "ssim": 20.6,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 8.7,
+    "ssim": 20.6,
+    "text_boundary": 100.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "rejected/tracking_without_comments",
+  "case": "340dd11242",
+  "pages": {
+   "reference": [
+    "rejected/tracking_without_comments/340dd11242/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "rejected/tracking_without_comments/340dd11242/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "rejected/tracking_without_comments/340dd11242/docxodus/page_001.webp"
+   ],
+   "superdoc": [
+    "rejected/tracking_without_comments/340dd11242/superdoc/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1,
+   "superdoc": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 70.6,
+    "ssim": 84.0
+   },
+   "docxodus": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "superdoc": {
+    "jaccard": 94.7,
+    "ssim": 99.4,
+    "text_boundary": 100.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "rejected/tracking_without_comments",
+  "case": "823e29543e",
+  "pages": {
+   "reference": [
+    "rejected/tracking_without_comments/823e29543e/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "rejected/tracking_without_comments/823e29543e/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "rejected/tracking_without_comments/823e29543e/docxodus/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 9.6,
+    "ssim": 19.3
+   },
+   "docxodus": {
+    "jaccard": 3.5,
+    "ssim": 18.4,
+    "text_boundary": 75.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "rejected/tracking_without_comments",
+  "case": "16833a9d55",
+  "pages": {
+   "reference": [
+    "rejected/tracking_without_comments/16833a9d55/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "rejected/tracking_without_comments/16833a9d55/jubarte-rust/page_001.webp",
+    "rejected/tracking_without_comments/16833a9d55/jubarte-rust/page_002.webp",
+    "rejected/tracking_without_comments/16833a9d55/jubarte-rust/page_003.webp"
+   ],
+   "docxodus": [
+    "rejected/tracking_without_comments/16833a9d55/docxodus/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 3,
+   "docxodus": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 0.0,
+    "ssim": 2.0
+   },
+   "docxodus": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "rejected/tracking_without_comments",
+  "case": "205503ead9",
+  "pages": {
+   "reference": [
+    "rejected/tracking_without_comments/205503ead9/reference/page_001.webp",
+    "rejected/tracking_without_comments/205503ead9/reference/page_002.webp",
+    "rejected/tracking_without_comments/205503ead9/reference/page_003.webp"
+   ],
+   "jubarte-rust": [
+    "rejected/tracking_without_comments/205503ead9/jubarte-rust/page_001.webp",
+    "rejected/tracking_without_comments/205503ead9/jubarte-rust/page_002.webp",
+    "rejected/tracking_without_comments/205503ead9/jubarte-rust/page_003.webp"
+   ],
+   "docxodus": [
+    "rejected/tracking_without_comments/205503ead9/docxodus/page_001.webp",
+    "rejected/tracking_without_comments/205503ead9/docxodus/page_002.webp",
+    "rejected/tracking_without_comments/205503ead9/docxodus/page_003.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 3,
+   "jubarte-rust": 3,
+   "docxodus": 4
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 3.4,
+    "ssim": 13.9,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 3.9,
+    "ssim": 19.4
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "rejected/tracking_without_comments",
+  "case": "a2fa2445c6",
+  "pages": {
+   "reference": [
+    "rejected/tracking_without_comments/a2fa2445c6/reference/page_001.webp",
+    "rejected/tracking_without_comments/a2fa2445c6/reference/page_002.webp",
+    "rejected/tracking_without_comments/a2fa2445c6/reference/page_003.webp"
+   ],
+   "jubarte-rust": [
+    "rejected/tracking_without_comments/a2fa2445c6/jubarte-rust/page_001.webp",
+    "rejected/tracking_without_comments/a2fa2445c6/jubarte-rust/page_002.webp"
+   ],
+   "docxodus": [
+    "rejected/tracking_without_comments/a2fa2445c6/docxodus/page_001.webp",
+    "rejected/tracking_without_comments/a2fa2445c6/docxodus/page_002.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 3,
+   "jubarte-rust": 2,
+   "docxodus": 2
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 4.4,
+    "ssim": 14.7
+   },
+   "docxodus": {
+    "jaccard": 4.4,
+    "ssim": 14.7
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "rejected/tracking_without_comments",
+  "case": "a33b3d7ea2",
+  "pages": {
+   "reference": [
+    "rejected/tracking_without_comments/a33b3d7ea2/reference/page_001.webp",
+    "rejected/tracking_without_comments/a33b3d7ea2/reference/page_002.webp"
+   ],
+   "jubarte-rust": [
+    "rejected/tracking_without_comments/a33b3d7ea2/jubarte-rust/page_001.webp",
+    "rejected/tracking_without_comments/a33b3d7ea2/jubarte-rust/page_002.webp"
+   ],
+   "docxodus": [
+    "rejected/tracking_without_comments/a33b3d7ea2/docxodus/page_001.webp",
+    "rejected/tracking_without_comments/a33b3d7ea2/docxodus/page_002.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 2,
+   "jubarte-rust": 2,
+   "docxodus": 2
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 7.7,
+    "ssim": 19.8,
+    "text_boundary": 5.2
+   },
+   "docxodus": {
+    "jaccard": 9.5,
+    "ssim": 21.4,
+    "text_boundary": 5.2
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "rejected/tracking_without_comments",
+  "case": "c8bef3772a",
+  "pages": {
+   "reference": [
+    "rejected/tracking_without_comments/c8bef3772a/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "rejected/tracking_without_comments/c8bef3772a/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "rejected/tracking_without_comments/c8bef3772a/docxodus/page_001.webp"
+   ],
+   "superdoc": [
+    "rejected/tracking_without_comments/c8bef3772a/superdoc/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1,
+   "superdoc": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "superdoc": {
+    "jaccard": 98.3,
+    "ssim": 99.8,
+    "text_boundary": 100.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "rejected/tracking_without_comments",
+  "case": "c58edd95f2",
+  "pages": {
+   "reference": [
+    "rejected/tracking_without_comments/c58edd95f2/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "rejected/tracking_without_comments/c58edd95f2/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "rejected/tracking_without_comments/c58edd95f2/docxodus/page_001.webp"
+   ],
+   "superdoc": [
+    "rejected/tracking_without_comments/c58edd95f2/superdoc/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1,
+   "superdoc": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 45.1,
+    "ssim": 62.4
+   },
+   "docxodus": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "superdoc": {
+    "jaccard": 98.8,
+    "ssim": 99.9,
+    "text_boundary": 100.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "rejected/tracking_without_comments",
+  "case": "c964f553ef",
+  "pages": {
+   "reference": [
+    "rejected/tracking_without_comments/c964f553ef/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "rejected/tracking_without_comments/c964f553ef/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "rejected/tracking_without_comments/c964f553ef/docxodus/page_001.webp"
+   ],
+   "superdoc": [
+    "rejected/tracking_without_comments/c964f553ef/superdoc/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1,
+   "superdoc": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "superdoc": {
+    "jaccard": 98.3,
+    "ssim": 99.9,
+    "text_boundary": 100.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "rejected/tracking_without_comments",
+  "case": "e91e3ea7f6",
+  "pages": {
+   "reference": [
+    "rejected/tracking_without_comments/e91e3ea7f6/reference/page_001.webp"
+   ],
+   "jubarte-rust": [
+    "rejected/tracking_without_comments/e91e3ea7f6/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "rejected/tracking_without_comments/e91e3ea7f6/docxodus/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte-rust": 1,
+   "docxodus": 1
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ },
+ {
+  "group": "rejected/tracking_without_comments",
+  "case": "ede1920163",
+  "pages": {
+   "reference": [
+    "rejected/tracking_without_comments/ede1920163/reference/page_001.webp",
+    "rejected/tracking_without_comments/ede1920163/reference/page_002.webp"
+   ],
+   "jubarte-rust": [
+    "rejected/tracking_without_comments/ede1920163/jubarte-rust/page_001.webp",
+    "rejected/tracking_without_comments/ede1920163/jubarte-rust/page_002.webp",
+    "rejected/tracking_without_comments/ede1920163/jubarte-rust/page_003.webp"
+   ],
+   "docxodus": [
+    "rejected/tracking_without_comments/ede1920163/docxodus/page_001.webp",
+    "rejected/tracking_without_comments/ede1920163/docxodus/page_002.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 2,
+   "jubarte-rust": 4,
+   "docxodus": 2
+  },
+  "scores": {
+   "jubarte-rust": {
+    "jaccard": 3.2,
+    "ssim": 6.7
+   },
+   "docxodus": {
+    "jaccard": 99.6,
+    "ssim": 99.5,
+    "text_boundary": 100.0
+   }
+  },
+  "times": {},
+  "reference_app": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext"
+ }
+]

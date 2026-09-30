@@ -1,0 +1,5572 @@
+{
+ "jubarte_version": "0.9.3",
+ "jubarte_args": [
+  "--revisions",
+  "word",
+  "--compress"
+ ],
+ "mutool": "mutool version 1.28.5",
+ "cases": [
+  {
+   "group": "cases",
+   "case": "case1",
+   "jubarte_time": 0.05556079209782183,
+   "jubarte_scores": {
+    "jaccard": 61.1,
+    "ssim": 90.2,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "cases/case1/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.18605658295564353,
+   "docxide_scores": {
+    "jaccard": 59.1,
+    "ssim": 85.8,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case2",
+   "jubarte_time": 0.06554595800116658,
+   "jubarte_scores": {
+    "jaccard": 89.2,
+    "ssim": 94.9,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "cases/case2/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.18209625000599772,
+   "docxide_scores": {
+    "jaccard": 24.4,
+    "ssim": 57.8,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case3",
+   "jubarte_time": 0.05081829091068357,
+   "jubarte_scores": {
+    "jaccard": 93.4,
+    "ssim": 97.2,
+    "text_boundary": 60.0
+   },
+   "jubarte_pages": [
+    "cases/case3/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.17732420796528459,
+   "docxide_scores": {
+    "jaccard": 14.9,
+    "ssim": 55.8,
+    "text_boundary": 60.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case4",
+   "jubarte_time": 0.031114042038097978,
+   "jubarte_scores": {
+    "jaccard": 73.1,
+    "ssim": 90.5,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "cases/case4/jubarte/page_001.webp",
+    "cases/case4/jubarte/page_002.webp"
+   ],
+   "docxide_time": 0.014907749951817095,
+   "docxide_scores": {
+    "jaccard": 68.7,
+    "ssim": 85.7,
+    "text_boundary": 98.3
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case5",
+   "jubarte_time": 0.038503083982504904,
+   "jubarte_scores": {
+    "jaccard": 76.1,
+    "ssim": 90.3,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "cases/case5/jubarte/page_001.webp",
+    "cases/case5/jubarte/page_002.webp"
+   ],
+   "docxide_time": 0.020177041995339096,
+   "docxide_scores": {
+    "jaccard": 76.1,
+    "ssim": 90.3,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case6",
+   "jubarte_time": 0.035117957973852754,
+   "jubarte_scores": {
+    "jaccard": 70.1,
+    "ssim": 87.4,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "cases/case6/jubarte/page_001.webp",
+    "cases/case6/jubarte/page_002.webp",
+    "cases/case6/jubarte/page_003.webp"
+   ],
+   "docxide_time": 0.015516999992541969,
+   "docxide_scores": {
+    "jaccard": 45.1,
+    "ssim": 87.2,
+    "text_boundary": 98.2
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case7",
+   "jubarte_time": 0.04019058309495449,
+   "jubarte_scores": {
+    "jaccard": 72.9,
+    "ssim": 91.6,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "cases/case7/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.14695229195058346,
+   "docxide_scores": {
+    "jaccard": 74.0,
+    "ssim": 90.8,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case8",
+   "jubarte_time": 0.11677449999842793,
+   "jubarte_scores": {
+    "jaccard": 85.4,
+    "ssim": 93.8,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "cases/case8/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.0399865839863196,
+   "docxide_scores": {
+    "jaccard": 48.1,
+    "ssim": 94.1,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case9",
+   "jubarte_time": 0.03399412496946752,
+   "jubarte_scores": {
+    "jaccard": 73.2,
+    "ssim": 91.3,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "cases/case9/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.012384665897116065,
+   "docxide_scores": {
+    "jaccard": 70.6,
+    "ssim": 90.1,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case10",
+   "jubarte_time": 0.03102529200259596,
+   "jubarte_scores": {
+    "jaccard": 70.8,
+    "ssim": 83.6,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "cases/case10/jubarte/page_001.webp",
+    "cases/case10/jubarte/page_002.webp",
+    "cases/case10/jubarte/page_003.webp"
+   ],
+   "docxide_time": 0.013795584090985358,
+   "docxide_scores": {
+    "jaccard": 69.4,
+    "ssim": 83.1,
+    "text_boundary": 90.6
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case11",
+   "jubarte_time": 0.03363258298486471,
+   "jubarte_scores": {
+    "jaccard": 70.3,
+    "ssim": 91.8,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "cases/case11/jubarte/page_001.webp",
+    "cases/case11/jubarte/page_002.webp"
+   ],
+   "docxide_time": 0.01462683395948261,
+   "docxide_scores": {
+    "jaccard": 72.7,
+    "ssim": 92.0,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case12",
+   "jubarte_time": 0.029048416996374726,
+   "jubarte_scores": {
+    "jaccard": 99.0,
+    "ssim": 99.6,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "cases/case12/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.013697125017642975,
+   "docxide_scores": {
+    "jaccard": 98.7,
+    "ssim": 99.5,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case13",
+   "jubarte_time": 0.569347457960248,
+   "jubarte_scores": {
+    "jaccard": 25.1,
+    "ssim": 39.2,
+    "text_boundary": 23.2
+   },
+   "jubarte_pages": [
+    "cases/case13/jubarte/page_001.webp",
+    "cases/case13/jubarte/page_002.webp",
+    "cases/case13/jubarte/page_003.webp",
+    "cases/case13/jubarte/page_004.webp",
+    "cases/case13/jubarte/page_005.webp",
+    "cases/case13/jubarte/page_006.webp",
+    "cases/case13/jubarte/page_007.webp",
+    "cases/case13/jubarte/page_008.webp",
+    "cases/case13/jubarte/page_009.webp",
+    "cases/case13/jubarte/page_010.webp",
+    "cases/case13/jubarte/page_011.webp",
+    "cases/case13/jubarte/page_012.webp",
+    "cases/case13/jubarte/page_013.webp",
+    "cases/case13/jubarte/page_014.webp",
+    "cases/case13/jubarte/page_015.webp",
+    "cases/case13/jubarte/page_016.webp",
+    "cases/case13/jubarte/page_017.webp",
+    "cases/case13/jubarte/page_018.webp",
+    "cases/case13/jubarte/page_019.webp",
+    "cases/case13/jubarte/page_020.webp",
+    "cases/case13/jubarte/page_021.webp",
+    "cases/case13/jubarte/page_022.webp",
+    "cases/case13/jubarte/page_023.webp",
+    "cases/case13/jubarte/page_024.webp",
+    "cases/case13/jubarte/page_025.webp",
+    "cases/case13/jubarte/page_026.webp",
+    "cases/case13/jubarte/page_027.webp",
+    "cases/case13/jubarte/page_028.webp",
+    "cases/case13/jubarte/page_029.webp",
+    "cases/case13/jubarte/page_030.webp",
+    "cases/case13/jubarte/page_031.webp",
+    "cases/case13/jubarte/page_032.webp",
+    "cases/case13/jubarte/page_033.webp",
+    "cases/case13/jubarte/page_034.webp",
+    "cases/case13/jubarte/page_035.webp",
+    "cases/case13/jubarte/page_036.webp",
+    "cases/case13/jubarte/page_037.webp",
+    "cases/case13/jubarte/page_038.webp",
+    "cases/case13/jubarte/page_039.webp",
+    "cases/case13/jubarte/page_040.webp",
+    "cases/case13/jubarte/page_041.webp",
+    "cases/case13/jubarte/page_042.webp",
+    "cases/case13/jubarte/page_043.webp",
+    "cases/case13/jubarte/page_044.webp",
+    "cases/case13/jubarte/page_045.webp",
+    "cases/case13/jubarte/page_046.webp",
+    "cases/case13/jubarte/page_047.webp",
+    "cases/case13/jubarte/page_048.webp",
+    "cases/case13/jubarte/page_049.webp",
+    "cases/case13/jubarte/page_050.webp",
+    "cases/case13/jubarte/page_051.webp",
+    "cases/case13/jubarte/page_052.webp",
+    "cases/case13/jubarte/page_053.webp",
+    "cases/case13/jubarte/page_054.webp",
+    "cases/case13/jubarte/page_055.webp",
+    "cases/case13/jubarte/page_056.webp",
+    "cases/case13/jubarte/page_057.webp",
+    "cases/case13/jubarte/page_058.webp",
+    "cases/case13/jubarte/page_059.webp",
+    "cases/case13/jubarte/page_060.webp",
+    "cases/case13/jubarte/page_061.webp",
+    "cases/case13/jubarte/page_062.webp",
+    "cases/case13/jubarte/page_063.webp",
+    "cases/case13/jubarte/page_064.webp",
+    "cases/case13/jubarte/page_065.webp",
+    "cases/case13/jubarte/page_066.webp",
+    "cases/case13/jubarte/page_067.webp",
+    "cases/case13/jubarte/page_068.webp",
+    "cases/case13/jubarte/page_069.webp",
+    "cases/case13/jubarte/page_070.webp",
+    "cases/case13/jubarte/page_071.webp",
+    "cases/case13/jubarte/page_072.webp",
+    "cases/case13/jubarte/page_073.webp",
+    "cases/case13/jubarte/page_074.webp",
+    "cases/case13/jubarte/page_075.webp",
+    "cases/case13/jubarte/page_076.webp",
+    "cases/case13/jubarte/page_077.webp",
+    "cases/case13/jubarte/page_078.webp",
+    "cases/case13/jubarte/page_079.webp",
+    "cases/case13/jubarte/page_080.webp",
+    "cases/case13/jubarte/page_081.webp",
+    "cases/case13/jubarte/page_082.webp",
+    "cases/case13/jubarte/page_083.webp",
+    "cases/case13/jubarte/page_084.webp",
+    "cases/case13/jubarte/page_085.webp",
+    "cases/case13/jubarte/page_086.webp",
+    "cases/case13/jubarte/page_087.webp",
+    "cases/case13/jubarte/page_088.webp",
+    "cases/case13/jubarte/page_089.webp",
+    "cases/case13/jubarte/page_090.webp",
+    "cases/case13/jubarte/page_091.webp",
+    "cases/case13/jubarte/page_092.webp",
+    "cases/case13/jubarte/page_093.webp",
+    "cases/case13/jubarte/page_094.webp",
+    "cases/case13/jubarte/page_095.webp",
+    "cases/case13/jubarte/page_096.webp",
+    "cases/case13/jubarte/page_097.webp",
+    "cases/case13/jubarte/page_098.webp",
+    "cases/case13/jubarte/page_099.webp",
+    "cases/case13/jubarte/page_100.webp",
+    "cases/case13/jubarte/page_101.webp",
+    "cases/case13/jubarte/page_102.webp",
+    "cases/case13/jubarte/page_103.webp",
+    "cases/case13/jubarte/page_104.webp",
+    "cases/case13/jubarte/page_105.webp",
+    "cases/case13/jubarte/page_106.webp",
+    "cases/case13/jubarte/page_107.webp",
+    "cases/case13/jubarte/page_108.webp",
+    "cases/case13/jubarte/page_109.webp",
+    "cases/case13/jubarte/page_110.webp",
+    "cases/case13/jubarte/page_111.webp",
+    "cases/case13/jubarte/page_112.webp",
+    "cases/case13/jubarte/page_113.webp",
+    "cases/case13/jubarte/page_114.webp",
+    "cases/case13/jubarte/page_115.webp",
+    "cases/case13/jubarte/page_116.webp",
+    "cases/case13/jubarte/page_117.webp",
+    "cases/case13/jubarte/page_118.webp",
+    "cases/case13/jubarte/page_119.webp",
+    "cases/case13/jubarte/page_120.webp",
+    "cases/case13/jubarte/page_121.webp",
+    "cases/case13/jubarte/page_122.webp",
+    "cases/case13/jubarte/page_123.webp",
+    "cases/case13/jubarte/page_124.webp",
+    "cases/case13/jubarte/page_125.webp",
+    "cases/case13/jubarte/page_126.webp",
+    "cases/case13/jubarte/page_127.webp",
+    "cases/case13/jubarte/page_128.webp",
+    "cases/case13/jubarte/page_129.webp",
+    "cases/case13/jubarte/page_130.webp",
+    "cases/case13/jubarte/page_131.webp",
+    "cases/case13/jubarte/page_132.webp",
+    "cases/case13/jubarte/page_133.webp",
+    "cases/case13/jubarte/page_134.webp",
+    "cases/case13/jubarte/page_135.webp",
+    "cases/case13/jubarte/page_136.webp",
+    "cases/case13/jubarte/page_137.webp",
+    "cases/case13/jubarte/page_138.webp",
+    "cases/case13/jubarte/page_139.webp",
+    "cases/case13/jubarte/page_140.webp",
+    "cases/case13/jubarte/page_141.webp",
+    "cases/case13/jubarte/page_142.webp",
+    "cases/case13/jubarte/page_143.webp",
+    "cases/case13/jubarte/page_144.webp",
+    "cases/case13/jubarte/page_145.webp",
+    "cases/case13/jubarte/page_146.webp",
+    "cases/case13/jubarte/page_147.webp",
+    "cases/case13/jubarte/page_148.webp",
+    "cases/case13/jubarte/page_149.webp",
+    "cases/case13/jubarte/page_150.webp",
+    "cases/case13/jubarte/page_151.webp",
+    "cases/case13/jubarte/page_152.webp",
+    "cases/case13/jubarte/page_153.webp",
+    "cases/case13/jubarte/page_154.webp",
+    "cases/case13/jubarte/page_155.webp",
+    "cases/case13/jubarte/page_156.webp",
+    "cases/case13/jubarte/page_157.webp",
+    "cases/case13/jubarte/page_158.webp",
+    "cases/case13/jubarte/page_159.webp",
+    "cases/case13/jubarte/page_160.webp",
+    "cases/case13/jubarte/page_161.webp",
+    "cases/case13/jubarte/page_162.webp",
+    "cases/case13/jubarte/page_163.webp",
+    "cases/case13/jubarte/page_164.webp",
+    "cases/case13/jubarte/page_165.webp",
+    "cases/case13/jubarte/page_166.webp",
+    "cases/case13/jubarte/page_167.webp",
+    "cases/case13/jubarte/page_168.webp",
+    "cases/case13/jubarte/page_169.webp",
+    "cases/case13/jubarte/page_170.webp",
+    "cases/case13/jubarte/page_171.webp",
+    "cases/case13/jubarte/page_172.webp",
+    "cases/case13/jubarte/page_173.webp",
+    "cases/case13/jubarte/page_174.webp",
+    "cases/case13/jubarte/page_175.webp",
+    "cases/case13/jubarte/page_176.webp",
+    "cases/case13/jubarte/page_177.webp",
+    "cases/case13/jubarte/page_178.webp",
+    "cases/case13/jubarte/page_179.webp",
+    "cases/case13/jubarte/page_180.webp",
+    "cases/case13/jubarte/page_181.webp",
+    "cases/case13/jubarte/page_182.webp",
+    "cases/case13/jubarte/page_183.webp",
+    "cases/case13/jubarte/page_184.webp",
+    "cases/case13/jubarte/page_185.webp",
+    "cases/case13/jubarte/page_186.webp",
+    "cases/case13/jubarte/page_187.webp",
+    "cases/case13/jubarte/page_188.webp",
+    "cases/case13/jubarte/page_189.webp",
+    "cases/case13/jubarte/page_190.webp",
+    "cases/case13/jubarte/page_191.webp",
+    "cases/case13/jubarte/page_192.webp",
+    "cases/case13/jubarte/page_193.webp",
+    "cases/case13/jubarte/page_194.webp",
+    "cases/case13/jubarte/page_195.webp",
+    "cases/case13/jubarte/page_196.webp",
+    "cases/case13/jubarte/page_197.webp",
+    "cases/case13/jubarte/page_198.webp",
+    "cases/case13/jubarte/page_199.webp",
+    "cases/case13/jubarte/page_200.webp",
+    "cases/case13/jubarte/page_201.webp",
+    "cases/case13/jubarte/page_202.webp",
+    "cases/case13/jubarte/page_203.webp",
+    "cases/case13/jubarte/page_204.webp",
+    "cases/case13/jubarte/page_205.webp"
+   ],
+   "docxide_time": 0.1501137079903856,
+   "docxide_scores": {
+    "jaccard": 71.1,
+    "ssim": 91.7,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case14",
+   "jubarte_time": 0.025756165967322886,
+   "jubarte_scores": {
+    "jaccard": 64.0,
+    "ssim": 88.4,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "cases/case14/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.012279583956114948,
+   "docxide_scores": {
+    "jaccard": 63.5,
+    "ssim": 88.2,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case15",
+   "jubarte_time": 0.029355500009842217,
+   "jubarte_scores": {
+    "jaccard": 59.3,
+    "ssim": 92.4,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "cases/case15/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.02039241697639227,
+   "docxide_scores": {
+    "jaccard": 23.4,
+    "ssim": 87.3,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case16",
+   "jubarte_time": 0.03065070800948888,
+   "jubarte_scores": {
+    "jaccard": 91.4,
+    "ssim": 81.4,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "cases/case16/jubarte/page_001.webp",
+    "cases/case16/jubarte/page_002.webp"
+   ],
+   "docxide_time": 0.02311599999666214,
+   "docxide_scores": {
+    "jaccard": 93.2,
+    "ssim": 82.2,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case17",
+   "jubarte_time": 0.009361541946418583,
+   "jubarte_scores": {
+    "jaccard": 86.3,
+    "ssim": 98.0,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "cases/case17/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.009992667008191347,
+   "docxide_scores": {
+    "jaccard": 47.3,
+    "ssim": 96.8,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case18",
+   "jubarte_time": 0.03457454196177423,
+   "jubarte_scores": {
+    "jaccard": 75.2,
+    "ssim": 91.7,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "cases/case18/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.010528999962843955,
+   "docxide_scores": {
+    "jaccard": 64.7,
+    "ssim": 80.6,
+    "text_boundary": 95.5
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case19",
+   "jubarte_time": 0.02695800003129989,
+   "jubarte_scores": {
+    "jaccard": 75.9,
+    "ssim": 99.8,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "cases/case19/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.018488000030629337,
+   "docxide_scores": {
+    "jaccard": 81.5,
+    "ssim": 99.9,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case20",
+   "jubarte_time": 0.02745233301538974,
+   "jubarte_scores": {
+    "jaccard": 79.2,
+    "ssim": 99.9,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "cases/case20/jubarte/page_001.webp",
+    "cases/case20/jubarte/page_002.webp"
+   ],
+   "docxide_time": 0.013008250040002167,
+   "docxide_scores": {
+    "jaccard": 80.6,
+    "ssim": 99.8,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case21",
+   "jubarte_time": 0.028555957949720323,
+   "jubarte_scores": {
+    "jaccard": 71.8,
+    "ssim": 94.0,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "cases/case21/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.013650542008690536,
+   "docxide_scores": {
+    "jaccard": 77.1,
+    "ssim": 93.9,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case22",
+   "jubarte_time": 0.034045916981995106,
+   "jubarte_scores": {
+    "jaccard": 71.3,
+    "ssim": 92.2,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "cases/case22/jubarte/page_001.webp",
+    "cases/case22/jubarte/page_002.webp"
+   ],
+   "docxide_time": 0.015178874949924648,
+   "docxide_scores": {
+    "jaccard": 68.3,
+    "ssim": 93.3,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case23",
+   "jubarte_time": 0.030309417052194476,
+   "jubarte_scores": {
+    "jaccard": 63.2,
+    "ssim": 81.7,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "cases/case23/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.013050207984633744,
+   "docxide_scores": {
+    "jaccard": 68.2,
+    "ssim": 89.4,
+    "text_boundary": 68.8
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case24",
+   "jubarte_time": 0.03238575009163469,
+   "jubarte_scores": {
+    "jaccard": 73.2,
+    "ssim": 93.1,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "cases/case24/jubarte/page_001.webp",
+    "cases/case24/jubarte/page_002.webp",
+    "cases/case24/jubarte/page_003.webp"
+   ],
+   "docxide_time": 0.01628837501630187,
+   "docxide_scores": {
+    "jaccard": 74.0,
+    "ssim": 93.1,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case25",
+   "jubarte_time": 0.030492290970869362,
+   "jubarte_scores": {
+    "jaccard": 74.4,
+    "ssim": 89.0,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "cases/case25/jubarte/page_001.webp",
+    "cases/case25/jubarte/page_002.webp",
+    "cases/case25/jubarte/page_003.webp",
+    "cases/case25/jubarte/page_004.webp"
+   ],
+   "docxide_time": 0.01789945806376636,
+   "docxide_scores": {
+    "jaccard": 73.1,
+    "ssim": 89.2,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case26",
+   "jubarte_time": 0.028530583018437028,
+   "jubarte_scores": {
+    "jaccard": 78.1,
+    "ssim": 91.1,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "cases/case26/jubarte/page_001.webp",
+    "cases/case26/jubarte/page_002.webp",
+    "cases/case26/jubarte/page_003.webp",
+    "cases/case26/jubarte/page_004.webp"
+   ],
+   "docxide_time": 0.013225958915427327,
+   "docxide_scores": {
+    "jaccard": 74.5,
+    "ssim": 88.5,
+    "text_boundary": 90.5
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case27",
+   "jubarte_time": 0.03456479194574058,
+   "jubarte_scores": {
+    "jaccard": 98.4,
+    "ssim": 92.3,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "cases/case27/jubarte/page_001.webp",
+    "cases/case27/jubarte/page_002.webp"
+   ],
+   "docxide_time": 0.043256083969026804,
+   "docxide_scores": {
+    "jaccard": 96.9,
+    "ssim": 99.4,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case28",
+   "jubarte_time": 0.036328791989944875,
+   "jubarte_scores": {
+    "jaccard": 77.4,
+    "ssim": 91.0,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "cases/case28/jubarte/page_001.webp",
+    "cases/case28/jubarte/page_002.webp",
+    "cases/case28/jubarte/page_003.webp"
+   ],
+   "docxide_time": 0.014376332983374596,
+   "docxide_scores": {
+    "jaccard": 74.9,
+    "ssim": 91.2,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case29",
+   "jubarte_time": 0.0330162919126451,
+   "jubarte_scores": {
+    "jaccard": 33.2,
+    "ssim": 46.2
+   },
+   "jubarte_pages": [
+    "cases/case29/jubarte/page_001.webp",
+    "cases/case29/jubarte/page_002.webp"
+   ],
+   "docxide_time": 0.015408333041705191,
+   "docxide_scores": {
+    "jaccard": 75.7,
+    "ssim": 79.2,
+    "text_boundary": 94.7
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case30",
+   "jubarte_time": 0.03399562498088926,
+   "jubarte_scores": {
+    "jaccard": 66.3,
+    "ssim": 68.9
+   },
+   "jubarte_pages": [
+    "cases/case30/jubarte/page_001.webp",
+    "cases/case30/jubarte/page_002.webp"
+   ],
+   "docxide_time": 0.015439791954122484,
+   "docxide_scores": {
+    "jaccard": 84.6,
+    "ssim": 85.1,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case31",
+   "jubarte_time": 0.028680750052444637,
+   "jubarte_scores": {
+    "jaccard": 21.1,
+    "ssim": 39.2
+   },
+   "jubarte_pages": [
+    "cases/case31/jubarte/page_001.webp",
+    "cases/case31/jubarte/page_002.webp"
+   ],
+   "docxide_time": 0.01127795793581754,
+   "docxide_scores": {
+    "jaccard": 60.2,
+    "ssim": 79.2,
+    "text_boundary": 87.5
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case32",
+   "jubarte_time": 0.02997675002552569,
+   "jubarte_scores": {
+    "jaccard": 78.6,
+    "ssim": 92.8,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "cases/case32/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.013906207983382046,
+   "docxide_scores": {
+    "jaccard": 56.7,
+    "ssim": 92.4,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case33",
+   "jubarte_time": 0.0359695830848068,
+   "jubarte_scores": {
+    "jaccard": 83.0,
+    "ssim": 95.3,
+    "text_boundary": 72.7
+   },
+   "jubarte_pages": [
+    "cases/case33/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.014552959008142352,
+   "docxide_scores": {
+    "jaccard": 57.4,
+    "ssim": 95.4,
+    "text_boundary": 72.7
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case34",
+   "jubarte_time": 0.031430874951183796,
+   "jubarte_scores": {
+    "jaccard": 98.2,
+    "ssim": 97.4,
+    "text_boundary": 75.0
+   },
+   "jubarte_pages": [
+    "cases/case34/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.017498083063401282,
+   "docxide_scores": {
+    "jaccard": 99.0,
+    "ssim": 98.5,
+    "text_boundary": 75.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case35",
+   "jubarte_time": 0.036854166886769235,
+   "jubarte_scores": {
+    "jaccard": 90.2,
+    "ssim": 92.8,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "cases/case35/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.014101707958616316,
+   "docxide_scores": {
+    "jaccard": 99.5,
+    "ssim": 99.2,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case36",
+   "jubarte_time": 0.029381750035099685,
+   "jubarte_scores": {
+    "jaccard": 99.4,
+    "ssim": 99.3
+   },
+   "jubarte_pages": [
+    "cases/case36/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.015057333977892995,
+   "docxide_scores": {
+    "jaccard": 99.6,
+    "ssim": 99.5
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case37",
+   "jubarte_time": 0.02387899998575449,
+   "jubarte_scores": {
+    "jaccard": 31.6,
+    "ssim": 0.9
+   },
+   "jubarte_pages": [
+    "cases/case37/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.016939916997216642,
+   "docxide_scores": {
+    "jaccard": 23.2,
+    "ssim": 0.3
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case38",
+   "jubarte_time": 0.037496167002245784,
+   "jubarte_scores": {
+    "jaccard": 89.0,
+    "ssim": 66.5,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "cases/case38/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.013985375058837235,
+   "docxide_scores": {
+    "jaccard": 99.3,
+    "ssim": 95.6,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case39",
+   "jubarte_time": 0.03243620798457414,
+   "jubarte_scores": {
+    "jaccard": 75.3,
+    "ssim": 93.9,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "cases/case39/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.014417625032365322,
+   "docxide_scores": {
+    "jaccard": 84.3,
+    "ssim": 94.2,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case40",
+   "jubarte_time": 0.03117974998895079,
+   "jubarte_scores": {
+    "jaccard": 49.1,
+    "ssim": 67.0,
+    "text_boundary": 66.7
+   },
+   "jubarte_pages": [
+    "cases/case40/jubarte/page_001.webp",
+    "cases/case40/jubarte/page_002.webp"
+   ],
+   "docxide_time": 0.033977708080783486,
+   "docxide_scores": {
+    "jaccard": 35.4,
+    "ssim": 51.6,
+    "text_boundary": 50.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case41",
+   "jubarte_time": 0.04068004200235009,
+   "jubarte_scores": {
+    "jaccard": 83.3,
+    "ssim": 82.2,
+    "text_boundary": 55.3
+   },
+   "jubarte_pages": [
+    "cases/case41/jubarte/page_001.webp",
+    "cases/case41/jubarte/page_002.webp",
+    "cases/case41/jubarte/page_003.webp",
+    "cases/case41/jubarte/page_004.webp",
+    "cases/case41/jubarte/page_005.webp",
+    "cases/case41/jubarte/page_006.webp",
+    "cases/case41/jubarte/page_007.webp"
+   ],
+   "docxide_time": 0.018257666961289942,
+   "docxide_scores": {
+    "jaccard": 86.4,
+    "ssim": 86.3,
+    "text_boundary": 67.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case42",
+   "jubarte_time": 5.083078332943842,
+   "jubarte_scores": {
+    "jaccard": 73.7,
+    "ssim": 75.9,
+    "text_boundary": 47.6
+   },
+   "jubarte_pages": [
+    "cases/case42/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.08191329194232821,
+   "docxide_scores": {
+    "jaccard": 46.4,
+    "ssim": 49.8,
+    "text_boundary": 17.1
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case43",
+   "jubarte_time": 0.034466000040993094,
+   "jubarte_scores": {
+    "jaccard": 25.9,
+    "ssim": 32.8,
+    "text_boundary": 66.7
+   },
+   "jubarte_pages": [
+    "cases/case43/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.01884062506724149,
+   "docxide_scores": {
+    "jaccard": 50.3,
+    "ssim": 53.4
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case44",
+   "jubarte_time": 0.039568666950799525,
+   "jubarte_scores": {
+    "jaccard": 26.5,
+    "ssim": 34.8,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "cases/case44/jubarte/page_001.webp",
+    "cases/case44/jubarte/page_002.webp",
+    "cases/case44/jubarte/page_003.webp"
+   ],
+   "docxide_time": 0.023166499915532768,
+   "docxide_scores": {
+    "jaccard": 50.6,
+    "ssim": 54.5
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case45",
+   "jubarte_time": 0.03847116697579622,
+   "jubarte_scores": {
+    "jaccard": 35.3,
+    "ssim": 55.9,
+    "text_boundary": 14.5
+   },
+   "jubarte_pages": [
+    "cases/case45/jubarte/page_001.webp",
+    "cases/case45/jubarte/page_002.webp"
+   ],
+   "docxide_time": 0.013009750051423907,
+   "docxide_scores": {
+    "jaccard": 38.2,
+    "ssim": 55.2,
+    "text_boundary": 59.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case46",
+   "jubarte_time": 0.06598874996416271,
+   "jubarte_scores": {
+    "jaccard": 67.2,
+    "ssim": 86.7,
+    "text_boundary": 93.9
+   },
+   "jubarte_pages": [
+    "cases/case46/jubarte/page_001.webp",
+    "cases/case46/jubarte/page_002.webp",
+    "cases/case46/jubarte/page_003.webp",
+    "cases/case46/jubarte/page_004.webp",
+    "cases/case46/jubarte/page_005.webp",
+    "cases/case46/jubarte/page_006.webp",
+    "cases/case46/jubarte/page_007.webp",
+    "cases/case46/jubarte/page_008.webp",
+    "cases/case46/jubarte/page_009.webp",
+    "cases/case46/jubarte/page_010.webp",
+    "cases/case46/jubarte/page_011.webp",
+    "cases/case46/jubarte/page_012.webp",
+    "cases/case46/jubarte/page_013.webp",
+    "cases/case46/jubarte/page_014.webp"
+   ],
+   "docxide_time": 0.013797290972433984,
+   "docxide_scores": {
+    "jaccard": 51.6,
+    "ssim": 66.1,
+    "text_boundary": 75.2
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case47",
+   "jubarte_time": 0.06399991596117616,
+   "jubarte_scores": {
+    "jaccard": 73.2,
+    "ssim": 78.4,
+    "text_boundary": 79.8
+   },
+   "jubarte_pages": [
+    "cases/case47/jubarte/page_001.webp",
+    "cases/case47/jubarte/page_002.webp",
+    "cases/case47/jubarte/page_003.webp",
+    "cases/case47/jubarte/page_004.webp",
+    "cases/case47/jubarte/page_005.webp",
+    "cases/case47/jubarte/page_006.webp",
+    "cases/case47/jubarte/page_007.webp",
+    "cases/case47/jubarte/page_008.webp",
+    "cases/case47/jubarte/page_009.webp",
+    "cases/case47/jubarte/page_010.webp",
+    "cases/case47/jubarte/page_011.webp",
+    "cases/case47/jubarte/page_012.webp",
+    "cases/case47/jubarte/page_013.webp",
+    "cases/case47/jubarte/page_014.webp",
+    "cases/case47/jubarte/page_015.webp",
+    "cases/case47/jubarte/page_016.webp"
+   ],
+   "docxide_time": 0.03807341703213751,
+   "docxide_scores": {
+    "jaccard": 82.1,
+    "ssim": 89.8,
+    "text_boundary": 93.8
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case48",
+   "jubarte_time": 0.028206750052049756,
+   "jubarte_scores": {
+    "jaccard": 66.2,
+    "ssim": 87.6,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "cases/case48/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.019533707993105054,
+   "docxide_scores": {
+    "jaccard": 62.7,
+    "ssim": 83.2,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case49",
+   "jubarte_time": 0.0308907920261845,
+   "jubarte_scores": {
+    "jaccard": 60.0,
+    "ssim": 80.8,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "cases/case49/jubarte/page_001.webp",
+    "cases/case49/jubarte/page_002.webp",
+    "cases/case49/jubarte/page_003.webp"
+   ],
+   "docxide_time": 0.013595374999567866,
+   "docxide_scores": {
+    "jaccard": 59.2,
+    "ssim": 79.3,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case50",
+   "jubarte_time": 0.042508166981860995,
+   "jubarte_scores": {
+    "jaccard": 74.6,
+    "ssim": 92.7,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "cases/case50/jubarte/page_001.webp",
+    "cases/case50/jubarte/page_002.webp"
+   ],
+   "docxide_time": 0.020074040978215635,
+   "docxide_scores": {
+    "jaccard": 58.3,
+    "ssim": 80.5,
+    "text_boundary": 89.2
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case51",
+   "jubarte_time": 0.03537933295592666,
+   "jubarte_scores": {
+    "jaccard": 10.8,
+    "ssim": 28.5
+   },
+   "jubarte_pages": [
+    "cases/case51/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.011621625046245754,
+   "docxide_scores": {
+    "jaccard": 15.7,
+    "ssim": 48.1,
+    "text_boundary": 82.9
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case52",
+   "jubarte_time": 0.027802249998785555,
+   "jubarte_scores": {
+    "jaccard": 22.6,
+    "ssim": 45.9
+   },
+   "jubarte_pages": [
+    "cases/case52/jubarte/page_001.webp",
+    "cases/case52/jubarte/page_002.webp"
+   ],
+   "docxide_time": 0.01229033397976309,
+   "docxide_scores": {
+    "jaccard": 70.6,
+    "ssim": 78.0,
+    "text_boundary": 81.4
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case53",
+   "jubarte_time": 0.02793174993712455,
+   "jubarte_scores": {
+    "jaccard": 23.3,
+    "ssim": 24.2
+   },
+   "jubarte_pages": [
+    "cases/case53/jubarte/page_001.webp",
+    "cases/case53/jubarte/page_002.webp"
+   ],
+   "docxide_time": 0.013359333970583975,
+   "docxide_scores": {
+    "jaccard": 56.1,
+    "ssim": 54.9,
+    "text_boundary": 75.6
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case54",
+   "jubarte_time": 0.03053283307235688,
+   "jubarte_scores": {
+    "jaccard": 66.8,
+    "ssim": 86.9,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "cases/case54/jubarte/page_001.webp",
+    "cases/case54/jubarte/page_002.webp"
+   ],
+   "docxide_time": 0.015057791024446487,
+   "docxide_scores": {
+    "jaccard": 69.5,
+    "ssim": 87.1,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case55",
+   "jubarte_time": 0.0321857500821352,
+   "jubarte_scores": {
+    "jaccard": 46.4,
+    "ssim": 39.0,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "cases/case55/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.01260195893701166,
+   "docxide_scores": {
+    "jaccard": 44.0,
+    "ssim": 57.7,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case56",
+   "jubarte_time": 0.026187165989540517,
+   "jubarte_scores": {
+    "jaccard": 95.1,
+    "ssim": 96.3,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "cases/case56/jubarte/page_001.webp",
+    "cases/case56/jubarte/page_002.webp",
+    "cases/case56/jubarte/page_003.webp"
+   ],
+   "docxide_time": 0.012120457948185503,
+   "docxide_scores": {
+    "jaccard": 92.7,
+    "ssim": 96.5,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case57",
+   "jubarte_time": 0.04695458395872265,
+   "jubarte_scores": {
+    "jaccard": 90.8,
+    "ssim": 92.7,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "cases/case57/jubarte/page_001.webp",
+    "cases/case57/jubarte/page_002.webp",
+    "cases/case57/jubarte/page_003.webp",
+    "cases/case57/jubarte/page_004.webp",
+    "cases/case57/jubarte/page_005.webp"
+   ],
+   "docxide_time": 0.012397042009979486,
+   "docxide_scores": {
+    "jaccard": 84.2,
+    "ssim": 80.8,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case59",
+   "jubarte_time": 0.04720337502658367,
+   "jubarte_scores": {
+    "jaccard": 61.9,
+    "ssim": 69.5,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "cases/case59/jubarte/page_001.webp",
+    "cases/case59/jubarte/page_002.webp"
+   ],
+   "docxide_time": 0.7639812499983236,
+   "docxide_scores": {
+    "jaccard": 93.1,
+    "ssim": 92.4,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case60",
+   "jubarte_time": 0.03279004094656557,
+   "jubarte_scores": {
+    "jaccard": 28.3,
+    "ssim": 46.3
+   },
+   "jubarte_pages": [
+    "cases/case60/jubarte/page_001.webp",
+    "cases/case60/jubarte/page_002.webp"
+   ],
+   "docxide_time": 0.011323750019073486,
+   "docxide_scores": {
+    "jaccard": 75.2,
+    "ssim": 91.5,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case61",
+   "jubarte_time": 0.026964290998876095,
+   "jubarte_scores": {
+    "jaccard": 21.2,
+    "ssim": 48.9
+   },
+   "jubarte_pages": [
+    "cases/case61/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.016299915965646505,
+   "docxide_scores": {
+    "jaccard": 30.0,
+    "ssim": 84.5,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case62",
+   "jubarte_time": 0.03666275006253272,
+   "jubarte_scores": {
+    "jaccard": 76.7,
+    "ssim": 92.8,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "cases/case62/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.01406779105309397,
+   "docxide_scores": {
+    "jaccard": 81.2,
+    "ssim": 93.4,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case63",
+   "jubarte_time": 0.024498334038071334,
+   "jubarte_scores": {
+    "jaccard": 30.5,
+    "ssim": 47.1
+   },
+   "jubarte_pages": [
+    "cases/case63/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.012150875059887767,
+   "docxide_scores": {
+    "jaccard": 35.6,
+    "ssim": 65.6,
+    "text_boundary": 55.6
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case64",
+   "jubarte_time": 0.027245957986451685,
+   "jubarte_scores": {
+    "jaccard": 48.2,
+    "ssim": 85.4,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "cases/case64/jubarte/page_001.webp",
+    "cases/case64/jubarte/page_002.webp",
+    "cases/case64/jubarte/page_003.webp"
+   ],
+   "docxide_time": 0.01273079204838723,
+   "docxide_scores": {
+    "jaccard": 75.4,
+    "ssim": 89.2,
+    "text_boundary": 56.2
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case66",
+   "jubarte_time": 0.024727749987505376,
+   "jubarte_scores": {
+    "jaccard": 62.0,
+    "ssim": 61.4
+   },
+   "jubarte_pages": [
+    "cases/case66/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.011748332995921373,
+   "docxide_scores": {
+    "jaccard": 74.9,
+    "ssim": 71.1
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case67",
+   "jubarte_time": 0.03015662496909499,
+   "jubarte_scores": {
+    "jaccard": 69.5,
+    "ssim": 92.0,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "cases/case67/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.011467125033959746,
+   "docxide_scores": {
+    "jaccard": 71.8,
+    "ssim": 91.3,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case68",
+   "jubarte_time": 0.027045374969020486,
+   "jubarte_scores": {
+    "jaccard": 91.9,
+    "ssim": 94.6,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "cases/case68/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.015430958941578865,
+   "docxide_scores": {
+    "jaccard": 91.9,
+    "ssim": 94.6,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case69",
+   "jubarte_time": 0.06305324996355921,
+   "jubarte_scores": {
+    "jaccard": 92.5,
+    "ssim": 96.1,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "cases/case69/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.010142082930542529,
+   "docxide_scores": {
+    "jaccard": 88.1,
+    "ssim": 96.2,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case70",
+   "jubarte_time": 0.05407099996227771,
+   "jubarte_scores": {
+    "jaccard": 77.0,
+    "ssim": 92.5,
+    "text_boundary": 0.0
+   },
+   "jubarte_pages": [
+    "cases/case70/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.012094915960915387,
+   "docxide_scores": {
+    "jaccard": 76.3,
+    "ssim": 94.1,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case71",
+   "jubarte_time": 0.02411312493495643,
+   "jubarte_scores": {
+    "jaccard": 87.7,
+    "ssim": 96.9,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "cases/case71/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.012106499983929098,
+   "docxide_scores": {
+    "jaccard": 87.4,
+    "ssim": 96.6,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case72",
+   "jubarte_time": 0.023868083022534847,
+   "jubarte_scores": {
+    "jaccard": 84.4,
+    "ssim": 96.1,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "cases/case72/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.011357541079632938,
+   "docxide_scores": {
+    "jaccard": 84.2,
+    "ssim": 96.0,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case73",
+   "jubarte_time": 0.024729750002734363,
+   "jubarte_scores": {
+    "jaccard": 90.4,
+    "ssim": 95.6,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "cases/case73/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.011138292029500008,
+   "docxide_scores": {
+    "jaccard": 90.3,
+    "ssim": 95.6,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case74",
+   "jubarte_time": 0.006912415963597596,
+   "jubarte_scores": {
+    "jaccard": 64.6,
+    "ssim": 78.6,
+    "text_boundary": 55.6
+   },
+   "jubarte_pages": [
+    "cases/case74/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.012465083971619606,
+   "docxide_scores": {
+    "jaccard": 66.4,
+    "ssim": 85.8,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case75",
+   "jubarte_time": 0.005542083061300218,
+   "jubarte_scores": {
+    "jaccard": 51.9,
+    "ssim": 64.7,
+    "text_boundary": 11.1
+   },
+   "jubarte_pages": [
+    "cases/case75/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.013581875013187528,
+   "docxide_scores": {
+    "jaccard": 66.2,
+    "ssim": 85.6,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case76",
+   "jubarte_time": 0.005424833041615784,
+   "jubarte_scores": {
+    "jaccard": 71.4,
+    "ssim": 85.6,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "cases/case76/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.009587707929313183,
+   "docxide_scores": {
+    "jaccard": 77.7,
+    "ssim": 94.3,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case77",
+   "jubarte_time": 0.08043604204431176,
+   "jubarte_scores": {
+    "jaccard": 54.7,
+    "ssim": 71.6,
+    "text_boundary": 68.4
+   },
+   "jubarte_pages": [
+    "cases/case77/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.014153458992950618,
+   "docxide_scores": {
+    "jaccard": 51.8,
+    "ssim": 70.5,
+    "text_boundary": 84.2
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case78",
+   "jubarte_time": 0.027854957967065275,
+   "jubarte_scores": {
+    "jaccard": 99.5,
+    "ssim": 99.3,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "cases/case78/jubarte/page_001.webp",
+    "cases/case78/jubarte/page_002.webp"
+   ],
+   "docxide_time": 0.021625749999657273,
+   "docxide_scores": {
+    "jaccard": 99.6,
+    "ssim": 99.4,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "air_pollution_permit_form",
+   "jubarte_time": 0.15951904200483114,
+   "jubarte_scores": {
+    "jaccard": 6.6,
+    "ssim": 15.7
+   },
+   "jubarte_pages": [
+    "scraped/air_pollution_permit_form/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.015160750015638769,
+   "docxide_scores": {
+    "jaccard": 11.0,
+    "ssim": 30.4,
+    "text_boundary": 97.1
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "brazilian_logistics_study",
+   "jubarte_time": 0.13406112510710955,
+   "jubarte_scores": {
+    "jaccard": 36.6,
+    "ssim": 50.5,
+    "text_boundary": 62.1
+   },
+   "jubarte_pages": [
+    "scraped/brazilian_logistics_study/jubarte/page_001.webp",
+    "scraped/brazilian_logistics_study/jubarte/page_002.webp",
+    "scraped/brazilian_logistics_study/jubarte/page_003.webp",
+    "scraped/brazilian_logistics_study/jubarte/page_004.webp",
+    "scraped/brazilian_logistics_study/jubarte/page_005.webp",
+    "scraped/brazilian_logistics_study/jubarte/page_006.webp",
+    "scraped/brazilian_logistics_study/jubarte/page_007.webp",
+    "scraped/brazilian_logistics_study/jubarte/page_008.webp",
+    "scraped/brazilian_logistics_study/jubarte/page_009.webp",
+    "scraped/brazilian_logistics_study/jubarte/page_010.webp",
+    "scraped/brazilian_logistics_study/jubarte/page_011.webp",
+    "scraped/brazilian_logistics_study/jubarte/page_012.webp",
+    "scraped/brazilian_logistics_study/jubarte/page_013.webp",
+    "scraped/brazilian_logistics_study/jubarte/page_014.webp",
+    "scraped/brazilian_logistics_study/jubarte/page_015.webp",
+    "scraped/brazilian_logistics_study/jubarte/page_016.webp",
+    "scraped/brazilian_logistics_study/jubarte/page_017.webp",
+    "scraped/brazilian_logistics_study/jubarte/page_018.webp",
+    "scraped/brazilian_logistics_study/jubarte/page_019.webp",
+    "scraped/brazilian_logistics_study/jubarte/page_020.webp"
+   ],
+   "docxide_time": 0.21014945791102946,
+   "docxide_scores": {
+    "jaccard": 17.2,
+    "ssim": 29.9,
+    "text_boundary": 16.2
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "bush_fires_act_comparison",
+   "jubarte_time": 0.20846137509215623,
+   "jubarte_scores": {
+    "jaccard": 14.3,
+    "ssim": 28.2,
+    "text_boundary": 4.3
+   },
+   "jubarte_pages": [
+    "scraped/bush_fires_act_comparison/jubarte/page_001.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_002.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_003.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_004.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_005.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_006.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_007.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_008.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_009.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_010.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_011.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_012.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_013.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_014.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_015.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_016.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_017.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_018.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_019.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_020.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_021.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_022.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_023.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_024.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_025.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_026.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_027.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_028.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_029.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_030.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_031.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_032.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_033.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_034.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_035.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_036.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_037.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_038.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_039.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_040.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_041.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_042.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_043.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_044.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_045.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_046.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_047.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_048.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_049.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_050.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_051.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_052.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_053.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_054.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_055.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_056.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_057.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_058.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_059.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_060.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_061.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_062.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_063.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_064.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_065.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_066.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_067.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_068.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_069.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_070.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_071.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_072.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_073.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_074.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_075.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_076.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_077.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_078.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_079.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_080.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_081.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_082.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_083.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_084.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_085.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_086.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_087.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_088.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_089.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_090.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_091.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_092.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_093.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_094.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_095.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_096.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_097.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_098.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_099.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_100.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_101.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_102.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_103.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_104.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_105.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_106.webp",
+    "scraped/bush_fires_act_comparison/jubarte/page_107.webp"
+   ],
+   "docxide_time": 0.06568020791746676,
+   "docxide_scores": {
+    "jaccard": 61.0,
+    "ssim": 83.3,
+    "text_boundary": 87.3
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "centrifugal_water_chillers",
+   "jubarte_time": 0.09768645896110684,
+   "jubarte_scores": {
+    "jaccard": 78.4,
+    "ssim": 94.2,
+    "text_boundary": 99.3
+   },
+   "jubarte_pages": [
+    "scraped/centrifugal_water_chillers/jubarte/page_001.webp",
+    "scraped/centrifugal_water_chillers/jubarte/page_002.webp",
+    "scraped/centrifugal_water_chillers/jubarte/page_003.webp",
+    "scraped/centrifugal_water_chillers/jubarte/page_004.webp",
+    "scraped/centrifugal_water_chillers/jubarte/page_005.webp",
+    "scraped/centrifugal_water_chillers/jubarte/page_006.webp",
+    "scraped/centrifugal_water_chillers/jubarte/page_007.webp",
+    "scraped/centrifugal_water_chillers/jubarte/page_008.webp",
+    "scraped/centrifugal_water_chillers/jubarte/page_009.webp"
+   ],
+   "docxide_time": 0.021426500054076314,
+   "docxide_scores": {
+    "jaccard": 81.5,
+    "ssim": 95.2,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "classroom_weekly_newsletter",
+   "jubarte_time": 0.024511834024451673,
+   "jubarte_scores": {
+    "jaccard": 98.6,
+    "ssim": 97.9,
+    "text_boundary": 69.2
+   },
+   "jubarte_pages": [
+    "scraped/classroom_weekly_newsletter/jubarte/page_001.webp",
+    "scraped/classroom_weekly_newsletter/jubarte/page_002.webp"
+   ],
+   "docxide_time": 0.017376041039824486,
+   "docxide_scores": {
+    "jaccard": 94.1,
+    "ssim": 96.3,
+    "text_boundary": 26.1
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "croatian_grant_guidelines",
+   "jubarte_time": 0.38187612500041723,
+   "jubarte_scores": {
+    "jaccard": 10.2,
+    "ssim": 23.7,
+    "text_boundary": 4.4
+   },
+   "jubarte_pages": [
+    "scraped/croatian_grant_guidelines/jubarte/page_001.webp",
+    "scraped/croatian_grant_guidelines/jubarte/page_002.webp",
+    "scraped/croatian_grant_guidelines/jubarte/page_003.webp",
+    "scraped/croatian_grant_guidelines/jubarte/page_004.webp",
+    "scraped/croatian_grant_guidelines/jubarte/page_005.webp",
+    "scraped/croatian_grant_guidelines/jubarte/page_006.webp",
+    "scraped/croatian_grant_guidelines/jubarte/page_007.webp",
+    "scraped/croatian_grant_guidelines/jubarte/page_008.webp",
+    "scraped/croatian_grant_guidelines/jubarte/page_009.webp",
+    "scraped/croatian_grant_guidelines/jubarte/page_010.webp",
+    "scraped/croatian_grant_guidelines/jubarte/page_011.webp",
+    "scraped/croatian_grant_guidelines/jubarte/page_012.webp",
+    "scraped/croatian_grant_guidelines/jubarte/page_013.webp",
+    "scraped/croatian_grant_guidelines/jubarte/page_014.webp",
+    "scraped/croatian_grant_guidelines/jubarte/page_015.webp",
+    "scraped/croatian_grant_guidelines/jubarte/page_016.webp",
+    "scraped/croatian_grant_guidelines/jubarte/page_017.webp",
+    "scraped/croatian_grant_guidelines/jubarte/page_018.webp",
+    "scraped/croatian_grant_guidelines/jubarte/page_019.webp",
+    "scraped/croatian_grant_guidelines/jubarte/page_020.webp",
+    "scraped/croatian_grant_guidelines/jubarte/page_021.webp",
+    "scraped/croatian_grant_guidelines/jubarte/page_022.webp",
+    "scraped/croatian_grant_guidelines/jubarte/page_023.webp",
+    "scraped/croatian_grant_guidelines/jubarte/page_024.webp",
+    "scraped/croatian_grant_guidelines/jubarte/page_025.webp",
+    "scraped/croatian_grant_guidelines/jubarte/page_026.webp",
+    "scraped/croatian_grant_guidelines/jubarte/page_027.webp",
+    "scraped/croatian_grant_guidelines/jubarte/page_028.webp",
+    "scraped/croatian_grant_guidelines/jubarte/page_029.webp",
+    "scraped/croatian_grant_guidelines/jubarte/page_030.webp",
+    "scraped/croatian_grant_guidelines/jubarte/page_031.webp",
+    "scraped/croatian_grant_guidelines/jubarte/page_032.webp",
+    "scraped/croatian_grant_guidelines/jubarte/page_033.webp",
+    "scraped/croatian_grant_guidelines/jubarte/page_034.webp",
+    "scraped/croatian_grant_guidelines/jubarte/page_035.webp",
+    "scraped/croatian_grant_guidelines/jubarte/page_036.webp",
+    "scraped/croatian_grant_guidelines/jubarte/page_037.webp",
+    "scraped/croatian_grant_guidelines/jubarte/page_038.webp",
+    "scraped/croatian_grant_guidelines/jubarte/page_039.webp",
+    "scraped/croatian_grant_guidelines/jubarte/page_040.webp",
+    "scraped/croatian_grant_guidelines/jubarte/page_041.webp",
+    "scraped/croatian_grant_guidelines/jubarte/page_042.webp",
+    "scraped/croatian_grant_guidelines/jubarte/page_043.webp",
+    "scraped/croatian_grant_guidelines/jubarte/page_044.webp",
+    "scraped/croatian_grant_guidelines/jubarte/page_045.webp",
+    "scraped/croatian_grant_guidelines/jubarte/page_046.webp",
+    "scraped/croatian_grant_guidelines/jubarte/page_047.webp",
+    "scraped/croatian_grant_guidelines/jubarte/page_048.webp",
+    "scraped/croatian_grant_guidelines/jubarte/page_049.webp",
+    "scraped/croatian_grant_guidelines/jubarte/page_050.webp",
+    "scraped/croatian_grant_guidelines/jubarte/page_051.webp",
+    "scraped/croatian_grant_guidelines/jubarte/page_052.webp",
+    "scraped/croatian_grant_guidelines/jubarte/page_053.webp",
+    "scraped/croatian_grant_guidelines/jubarte/page_054.webp",
+    "scraped/croatian_grant_guidelines/jubarte/page_055.webp",
+    "scraped/croatian_grant_guidelines/jubarte/page_056.webp",
+    "scraped/croatian_grant_guidelines/jubarte/page_057.webp",
+    "scraped/croatian_grant_guidelines/jubarte/page_058.webp",
+    "scraped/croatian_grant_guidelines/jubarte/page_059.webp",
+    "scraped/croatian_grant_guidelines/jubarte/page_060.webp",
+    "scraped/croatian_grant_guidelines/jubarte/page_061.webp",
+    "scraped/croatian_grant_guidelines/jubarte/page_062.webp",
+    "scraped/croatian_grant_guidelines/jubarte/page_063.webp",
+    "scraped/croatian_grant_guidelines/jubarte/page_064.webp",
+    "scraped/croatian_grant_guidelines/jubarte/page_065.webp"
+   ],
+   "docxide_time": 0.24383549997583032,
+   "docxide_scores": {
+    "jaccard": 7.5,
+    "ssim": 18.7,
+    "text_boundary": 1.1
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "croatian_regulations_altchunk",
+   "jubarte_time": 0.030359625001437962,
+   "jubarte_scores": {
+    "jaccard": 6.6,
+    "ssim": 20.3,
+    "text_boundary": 14.0
+   },
+   "jubarte_pages": [
+    "scraped/croatian_regulations_altchunk/jubarte/page_001.webp",
+    "scraped/croatian_regulations_altchunk/jubarte/page_002.webp",
+    "scraped/croatian_regulations_altchunk/jubarte/page_003.webp",
+    "scraped/croatian_regulations_altchunk/jubarte/page_004.webp",
+    "scraped/croatian_regulations_altchunk/jubarte/page_005.webp",
+    "scraped/croatian_regulations_altchunk/jubarte/page_006.webp",
+    "scraped/croatian_regulations_altchunk/jubarte/page_007.webp",
+    "scraped/croatian_regulations_altchunk/jubarte/page_008.webp"
+   ],
+   "docxide_time": 0.019617584068328142,
+   "docxide_scores": {
+    "jaccard": 7.8,
+    "ssim": 26.4,
+    "text_boundary": 47.4
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "czech_cafeteria_notice",
+   "jubarte_time": 0.039185708039440215,
+   "jubarte_scores": {
+    "jaccard": 64.2,
+    "ssim": 89.8,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "scraped/czech_cafeteria_notice/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.011797124985605478,
+   "docxide_scores": {
+    "jaccard": 73.7,
+    "ssim": 87.3,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "czech_expert_witness_law",
+   "jubarte_time": 0.06742566591128707,
+   "jubarte_scores": {
+    "jaccard": 66.5,
+    "ssim": 86.7,
+    "text_boundary": 87.5
+   },
+   "jubarte_pages": [
+    "scraped/czech_expert_witness_law/jubarte/page_001.webp",
+    "scraped/czech_expert_witness_law/jubarte/page_002.webp"
+   ],
+   "docxide_time": 0.018254791968502104,
+   "docxide_scores": {
+    "jaccard": 73.4,
+    "ssim": 92.3,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "czech_health_statement_form",
+   "jubarte_time": 0.012652333010919392,
+   "jubarte_scores": {
+    "jaccard": 24.6,
+    "ssim": 38.5,
+    "text_boundary": 89.7
+   },
+   "jubarte_pages": [
+    "scraped/czech_health_statement_form/jubarte/page_001.webp",
+    "scraped/czech_health_statement_form/jubarte/page_002.webp"
+   ],
+   "docxide_time": 0.012446291977539659,
+   "docxide_scores": {
+    "jaccard": 54.5,
+    "ssim": 75.4,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "czech_municipal_grant_form",
+   "jubarte_time": 0.019075624994002283,
+   "jubarte_scores": {
+    "jaccard": 11.7,
+    "ssim": 28.2,
+    "text_boundary": 38.8
+   },
+   "jubarte_pages": [
+    "scraped/czech_municipal_grant_form/jubarte/page_001.webp",
+    "scraped/czech_municipal_grant_form/jubarte/page_002.webp"
+   ],
+   "docxide_time": 0.01904716598801315,
+   "docxide_scores": {
+    "jaccard": 11.8,
+    "ssim": 42.3,
+    "text_boundary": 41.2
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "czech_tree_cutting_permit",
+   "jubarte_time": 0.03363012499175966,
+   "jubarte_scores": {
+    "jaccard": 57.4,
+    "ssim": 76.7,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "scraped/czech_tree_cutting_permit/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.029534040950238705,
+   "docxide_scores": {
+    "jaccard": 77.7,
+    "ssim": 92.5,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "destination_loyalty_tourism_study",
+   "jubarte_time": 0.04781770892441273,
+   "jubarte_scores": {
+    "jaccard": 71.2,
+    "ssim": 91.6,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "scraped/destination_loyalty_tourism_study/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.014887499972246587,
+   "docxide_scores": {
+    "jaccard": 71.4,
+    "ssim": 91.3,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "dutch_school_evaluation_form",
+   "jubarte_time": 0.015030582901090384,
+   "jubarte_scores": {
+    "jaccard": 73.7,
+    "ssim": 93.0,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "scraped/dutch_school_evaluation_form/jubarte/page_001.webp",
+    "scraped/dutch_school_evaluation_form/jubarte/page_002.webp"
+   ],
+   "docxide_time": 0.015396583010442555,
+   "docxide_scores": {
+    "jaccard": 50.2,
+    "ssim": 91.3,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "east_asia_conference_form",
+   "jubarte_time": 0.19094395893625915,
+   "jubarte_scores": {
+    "jaccard": 8.0,
+    "ssim": 20.6,
+    "text_boundary": 0.0
+   },
+   "jubarte_pages": [
+    "scraped/east_asia_conference_form/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.026972249965183437,
+   "docxide_scores": {
+    "jaccard": 12.0,
+    "ssim": 32.9,
+    "text_boundary": 52.4
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "education_consultant_posting",
+   "jubarte_time": 0.07834833301603794,
+   "jubarte_scores": {
+    "jaccard": 8.3,
+    "ssim": 19.0,
+    "text_boundary": 7.7
+   },
+   "jubarte_pages": [
+    "scraped/education_consultant_posting/jubarte/page_001.webp",
+    "scraped/education_consultant_posting/jubarte/page_002.webp",
+    "scraped/education_consultant_posting/jubarte/page_003.webp",
+    "scraped/education_consultant_posting/jubarte/page_004.webp",
+    "scraped/education_consultant_posting/jubarte/page_005.webp",
+    "scraped/education_consultant_posting/jubarte/page_006.webp"
+   ],
+   "docxide_time": 0.02149808290414512,
+   "docxide_scores": {
+    "jaccard": 11.7,
+    "ssim": 30.0,
+    "text_boundary": 29.0
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "federal_procurement_terms",
+   "jubarte_time": 0.06160491600167006,
+   "jubarte_scores": {
+    "jaccard": 69.2,
+    "ssim": 89.4,
+    "text_boundary": 91.3
+   },
+   "jubarte_pages": [
+    "scraped/federal_procurement_terms/jubarte/page_001.webp",
+    "scraped/federal_procurement_terms/jubarte/page_002.webp",
+    "scraped/federal_procurement_terms/jubarte/page_003.webp",
+    "scraped/federal_procurement_terms/jubarte/page_004.webp",
+    "scraped/federal_procurement_terms/jubarte/page_005.webp",
+    "scraped/federal_procurement_terms/jubarte/page_006.webp",
+    "scraped/federal_procurement_terms/jubarte/page_007.webp",
+    "scraped/federal_procurement_terms/jubarte/page_008.webp",
+    "scraped/federal_procurement_terms/jubarte/page_009.webp",
+    "scraped/federal_procurement_terms/jubarte/page_010.webp",
+    "scraped/federal_procurement_terms/jubarte/page_011.webp",
+    "scraped/federal_procurement_terms/jubarte/page_012.webp"
+   ],
+   "docxide_time": 0.04189045797102153,
+   "docxide_scores": {
+    "jaccard": 55.1,
+    "ssim": 78.4,
+    "text_boundary": 88.3
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "feminist_voice_dissertation",
+   "jubarte_time": 0.3482403749367222,
+   "jubarte_scores": {
+    "jaccard": 79.0,
+    "ssim": 98.8,
+    "text_boundary": 99.7
+   },
+   "jubarte_pages": [
+    "scraped/feminist_voice_dissertation/jubarte/page_001.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_002.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_003.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_004.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_005.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_006.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_007.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_008.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_009.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_010.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_011.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_012.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_013.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_014.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_015.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_016.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_017.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_018.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_019.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_020.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_021.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_022.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_023.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_024.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_025.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_026.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_027.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_028.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_029.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_030.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_031.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_032.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_033.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_034.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_035.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_036.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_037.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_038.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_039.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_040.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_041.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_042.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_043.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_044.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_045.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_046.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_047.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_048.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_049.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_050.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_051.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_052.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_053.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_054.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_055.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_056.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_057.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_058.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_059.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_060.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_061.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_062.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_063.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_064.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_065.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_066.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_067.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_068.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_069.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_070.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_071.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_072.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_073.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_074.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_075.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_076.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_077.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_078.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_079.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_080.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_081.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_082.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_083.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_084.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_085.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_086.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_087.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_088.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_089.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_090.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_091.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_092.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_093.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_094.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_095.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_096.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_097.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_098.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_099.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_100.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_101.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_102.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_103.webp",
+    "scraped/feminist_voice_dissertation/jubarte/page_104.webp"
+   ],
+   "docxide_time": 0.10728304099757224,
+   "docxide_scores": {
+    "jaccard": 66.6,
+    "ssim": 86.0,
+    "text_boundary": 85.7
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "german_mezzo_soprano_bio",
+   "jubarte_time": 0.08642129192594439,
+   "jubarte_scores": {
+    "jaccard": 87.6,
+    "ssim": 90.4,
+    "text_boundary": 86.2
+   },
+   "jubarte_pages": [
+    "scraped/german_mezzo_soprano_bio/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.029476416064426303,
+   "docxide_scores": {
+    "jaccard": 55.8,
+    "ssim": 76.0,
+    "text_boundary": 82.8
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "go_math_grade4_guide",
+   "jubarte_time": 0.1410001670010388,
+   "jubarte_scores": {
+    "jaccard": 70.4,
+    "ssim": 87.1,
+    "text_boundary": 80.4
+   },
+   "jubarte_pages": [
+    "scraped/go_math_grade4_guide/jubarte/page_001.webp",
+    "scraped/go_math_grade4_guide/jubarte/page_002.webp",
+    "scraped/go_math_grade4_guide/jubarte/page_003.webp",
+    "scraped/go_math_grade4_guide/jubarte/page_004.webp",
+    "scraped/go_math_grade4_guide/jubarte/page_005.webp",
+    "scraped/go_math_grade4_guide/jubarte/page_006.webp",
+    "scraped/go_math_grade4_guide/jubarte/page_007.webp",
+    "scraped/go_math_grade4_guide/jubarte/page_008.webp",
+    "scraped/go_math_grade4_guide/jubarte/page_009.webp",
+    "scraped/go_math_grade4_guide/jubarte/page_010.webp",
+    "scraped/go_math_grade4_guide/jubarte/page_011.webp",
+    "scraped/go_math_grade4_guide/jubarte/page_012.webp",
+    "scraped/go_math_grade4_guide/jubarte/page_013.webp",
+    "scraped/go_math_grade4_guide/jubarte/page_014.webp",
+    "scraped/go_math_grade4_guide/jubarte/page_015.webp",
+    "scraped/go_math_grade4_guide/jubarte/page_016.webp",
+    "scraped/go_math_grade4_guide/jubarte/page_017.webp",
+    "scraped/go_math_grade4_guide/jubarte/page_018.webp",
+    "scraped/go_math_grade4_guide/jubarte/page_019.webp",
+    "scraped/go_math_grade4_guide/jubarte/page_020.webp",
+    "scraped/go_math_grade4_guide/jubarte/page_021.webp",
+    "scraped/go_math_grade4_guide/jubarte/page_022.webp",
+    "scraped/go_math_grade4_guide/jubarte/page_023.webp",
+    "scraped/go_math_grade4_guide/jubarte/page_024.webp",
+    "scraped/go_math_grade4_guide/jubarte/page_025.webp",
+    "scraped/go_math_grade4_guide/jubarte/page_026.webp"
+   ],
+   "docxide_time": 0.031832790933549404,
+   "docxide_scores": {
+    "jaccard": 31.5,
+    "ssim": 54.9,
+    "text_boundary": 64.9
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "indonesian_benchmarking_guide",
+   "jubarte_time": 0.0557785410201177,
+   "jubarte_scores": {
+    "jaccard": 41.9,
+    "ssim": 53.2,
+    "text_boundary": 42.2
+   },
+   "jubarte_pages": [
+    "scraped/indonesian_benchmarking_guide/jubarte/page_001.webp",
+    "scraped/indonesian_benchmarking_guide/jubarte/page_002.webp",
+    "scraped/indonesian_benchmarking_guide/jubarte/page_003.webp",
+    "scraped/indonesian_benchmarking_guide/jubarte/page_004.webp",
+    "scraped/indonesian_benchmarking_guide/jubarte/page_005.webp",
+    "scraped/indonesian_benchmarking_guide/jubarte/page_006.webp",
+    "scraped/indonesian_benchmarking_guide/jubarte/page_007.webp",
+    "scraped/indonesian_benchmarking_guide/jubarte/page_008.webp",
+    "scraped/indonesian_benchmarking_guide/jubarte/page_009.webp",
+    "scraped/indonesian_benchmarking_guide/jubarte/page_010.webp",
+    "scraped/indonesian_benchmarking_guide/jubarte/page_011.webp",
+    "scraped/indonesian_benchmarking_guide/jubarte/page_012.webp",
+    "scraped/indonesian_benchmarking_guide/jubarte/page_013.webp",
+    "scraped/indonesian_benchmarking_guide/jubarte/page_014.webp"
+   ],
+   "docxide_time": 0.042919332976453006,
+   "docxide_scores": {
+    "jaccard": 41.7,
+    "ssim": 56.1,
+    "text_boundary": 43.5
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "italian_evaluation_minutes",
+   "jubarte_time": 0.07771262503229082,
+   "jubarte_scores": {
+    "jaccard": 89.3,
+    "ssim": 91.0,
+    "text_boundary": 96.9
+   },
+   "jubarte_pages": [
+    "scraped/italian_evaluation_minutes/jubarte/page_001.webp",
+    "scraped/italian_evaluation_minutes/jubarte/page_002.webp",
+    "scraped/italian_evaluation_minutes/jubarte/page_003.webp",
+    "scraped/italian_evaluation_minutes/jubarte/page_004.webp",
+    "scraped/italian_evaluation_minutes/jubarte/page_005.webp",
+    "scraped/italian_evaluation_minutes/jubarte/page_006.webp",
+    "scraped/italian_evaluation_minutes/jubarte/page_007.webp"
+   ],
+   "docxide_time": 0.04784170794300735,
+   "docxide_scores": {
+    "jaccard": 34.0,
+    "ssim": 43.8,
+    "text_boundary": 57.7
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "italian_project_proposal",
+   "jubarte_time": 0.010980291990563273,
+   "jubarte_scores": {
+    "jaccard": 27.9,
+    "ssim": 65.4,
+    "text_boundary": 25.0
+   },
+   "jubarte_pages": [
+    "scraped/italian_project_proposal/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.012203124933876097,
+   "docxide_scores": {
+    "jaccard": 25.9,
+    "ssim": 57.5,
+    "text_boundary": 75.0
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "japanese_interlibrary_loan",
+   "jubarte_time": 0.05549958301708102,
+   "jubarte_scores": {
+    "jaccard": 25.4,
+    "ssim": 64.1,
+    "text_boundary": 31.6
+   },
+   "jubarte_pages": [
+    "scraped/japanese_interlibrary_loan/jubarte/page_001.webp",
+    "scraped/japanese_interlibrary_loan/jubarte/page_002.webp"
+   ],
+   "docxide_time": 0.01673658296931535,
+   "docxide_scores": {
+    "jaccard": 16.3,
+    "ssim": 55.6,
+    "text_boundary": 42.9
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "korean_japanese_conference_form",
+   "jubarte_time": 0.08816649997606874,
+   "jubarte_scores": {
+    "jaccard": 6.6,
+    "ssim": 16.5,
+    "text_boundary": 0.0
+   },
+   "jubarte_pages": [
+    "scraped/korean_japanese_conference_form/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.030479582957923412,
+   "docxide_scores": {
+    "jaccard": 12.3,
+    "ssim": 24.8,
+    "text_boundary": 61.9
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "learning_cultures_dissertation",
+   "jubarte_time": 0.36970774992369115,
+   "jubarte_scores": {
+    "jaccard": 19.2,
+    "ssim": 30.0,
+    "text_boundary": 15.7
+   },
+   "jubarte_pages": [
+    "scraped/learning_cultures_dissertation/jubarte/page_001.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_002.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_003.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_004.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_005.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_006.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_007.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_008.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_009.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_010.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_011.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_012.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_013.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_014.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_015.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_016.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_017.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_018.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_019.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_020.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_021.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_022.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_023.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_024.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_025.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_026.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_027.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_028.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_029.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_030.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_031.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_032.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_033.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_034.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_035.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_036.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_037.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_038.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_039.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_040.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_041.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_042.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_043.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_044.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_045.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_046.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_047.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_048.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_049.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_050.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_051.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_052.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_053.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_054.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_055.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_056.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_057.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_058.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_059.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_060.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_061.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_062.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_063.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_064.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_065.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_066.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_067.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_068.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_069.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_070.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_071.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_072.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_073.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_074.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_075.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_076.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_077.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_078.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_079.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_080.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_081.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_082.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_083.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_084.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_085.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_086.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_087.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_088.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_089.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_090.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_091.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_092.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_093.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_094.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_095.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_096.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_097.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_098.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_099.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_100.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_101.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_102.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_103.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_104.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_105.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_106.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_107.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_108.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_109.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_110.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_111.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_112.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_113.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_114.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_115.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_116.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_117.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_118.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_119.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_120.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_121.webp",
+    "scraped/learning_cultures_dissertation/jubarte/page_122.webp"
+   ],
+   "docxide_time": 0.17354845895897597,
+   "docxide_scores": {
+    "jaccard": 33.7,
+    "ssim": 46.2,
+    "text_boundary": 40.7
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "lithuanian_ethics_law",
+   "jubarte_time": 0.14214620902203023,
+   "jubarte_scores": {
+    "jaccard": 77.2,
+    "ssim": 98.5,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "scraped/lithuanian_ethics_law/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.013235667021945119,
+   "docxide_scores": {
+    "jaccard": 44.6,
+    "ssim": 65.7,
+    "text_boundary": 65.0
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "lithuanian_food_quality_order",
+   "jubarte_time": 0.010410624905489385,
+   "jubarte_scores": {
+    "jaccard": 79.0,
+    "ssim": 89.0,
+    "text_boundary": 92.6
+   },
+   "jubarte_pages": [
+    "scraped/lithuanian_food_quality_order/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.011732209008187056,
+   "docxide_scores": {
+    "jaccard": 44.4,
+    "ssim": 59.2,
+    "text_boundary": 48.1
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "mandated_reporter_child_abuse",
+   "jubarte_time": 0.02928354195319116,
+   "jubarte_scores": {
+    "jaccard": 84.3,
+    "ssim": 99.0,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "scraped/mandated_reporter_child_abuse/jubarte/page_001.webp",
+    "scraped/mandated_reporter_child_abuse/jubarte/page_002.webp",
+    "scraped/mandated_reporter_child_abuse/jubarte/page_003.webp",
+    "scraped/mandated_reporter_child_abuse/jubarte/page_004.webp",
+    "scraped/mandated_reporter_child_abuse/jubarte/page_005.webp"
+   ],
+   "docxide_time": 0.019630041904747486,
+   "docxide_scores": {
+    "jaccard": 46.9,
+    "ssim": 67.2,
+    "text_boundary": 73.7
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "mongolian_human_rights_law",
+   "jubarte_time": 0.10505141702014953,
+   "jubarte_scores": {
+    "jaccard": 73.9,
+    "ssim": 89.7,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "scraped/mongolian_human_rights_law/jubarte/page_001.webp",
+    "scraped/mongolian_human_rights_law/jubarte/page_002.webp",
+    "scraped/mongolian_human_rights_law/jubarte/page_003.webp",
+    "scraped/mongolian_human_rights_law/jubarte/page_004.webp",
+    "scraped/mongolian_human_rights_law/jubarte/page_005.webp",
+    "scraped/mongolian_human_rights_law/jubarte/page_006.webp",
+    "scraped/mongolian_human_rights_law/jubarte/page_007.webp",
+    "scraped/mongolian_human_rights_law/jubarte/page_008.webp"
+   ],
+   "docxide_time": 0.01870487502310425,
+   "docxide_scores": {
+    "jaccard": 14.1,
+    "ssim": 21.6,
+    "text_boundary": 13.6
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "parish_housing_data_profile",
+   "jubarte_time": 0.056661332957446575,
+   "jubarte_scores": {
+    "jaccard": 58.1,
+    "ssim": 74.8,
+    "text_boundary": 69.4
+   },
+   "jubarte_pages": [
+    "scraped/parish_housing_data_profile/jubarte/page_001.webp",
+    "scraped/parish_housing_data_profile/jubarte/page_002.webp",
+    "scraped/parish_housing_data_profile/jubarte/page_003.webp",
+    "scraped/parish_housing_data_profile/jubarte/page_004.webp"
+   ],
+   "docxide_time": 0.05270008300431073,
+   "docxide_scores": {
+    "jaccard": 35.6,
+    "ssim": 65.6,
+    "text_boundary": 90.6
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "polish_archery_range_plan",
+   "jubarte_time": 0.024547291919589043,
+   "jubarte_scores": {
+    "jaccard": 61.6,
+    "ssim": 88.5,
+    "text_boundary": 54.2
+   },
+   "jubarte_pages": [
+    "scraped/polish_archery_range_plan/jubarte/page_001.webp",
+    "scraped/polish_archery_range_plan/jubarte/page_002.webp",
+    "scraped/polish_archery_range_plan/jubarte/page_003.webp",
+    "scraped/polish_archery_range_plan/jubarte/page_004.webp"
+   ],
+   "docxide_time": 0.018842417048290372,
+   "docxide_scores": {
+    "jaccard": 37.9,
+    "ssim": 76.9,
+    "text_boundary": 62.9
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "polish_building_procurement_spec",
+   "jubarte_time": 0.11340995808131993,
+   "jubarte_scores": {
+    "jaccard": 26.1,
+    "ssim": 42.3,
+    "text_boundary": 30.9
+   },
+   "jubarte_pages": [
+    "scraped/polish_building_procurement_spec/jubarte/page_001.webp",
+    "scraped/polish_building_procurement_spec/jubarte/page_002.webp",
+    "scraped/polish_building_procurement_spec/jubarte/page_003.webp",
+    "scraped/polish_building_procurement_spec/jubarte/page_004.webp",
+    "scraped/polish_building_procurement_spec/jubarte/page_005.webp",
+    "scraped/polish_building_procurement_spec/jubarte/page_006.webp",
+    "scraped/polish_building_procurement_spec/jubarte/page_007.webp",
+    "scraped/polish_building_procurement_spec/jubarte/page_008.webp",
+    "scraped/polish_building_procurement_spec/jubarte/page_009.webp",
+    "scraped/polish_building_procurement_spec/jubarte/page_010.webp",
+    "scraped/polish_building_procurement_spec/jubarte/page_011.webp",
+    "scraped/polish_building_procurement_spec/jubarte/page_012.webp",
+    "scraped/polish_building_procurement_spec/jubarte/page_013.webp",
+    "scraped/polish_building_procurement_spec/jubarte/page_014.webp"
+   ],
+   "docxide_time": 0.027717457967810333,
+   "docxide_scores": {
+    "jaccard": 16.3,
+    "ssim": 31.3,
+    "text_boundary": 25.7
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "polish_council_resolution",
+   "jubarte_time": 10.29660945897922,
+   "jubarte_scores": {
+    "jaccard": 64.9,
+    "ssim": 84.8,
+    "text_boundary": 95.1
+   },
+   "jubarte_pages": [
+    "scraped/polish_council_resolution/jubarte/page_001.webp",
+    "scraped/polish_council_resolution/jubarte/page_002.webp"
+   ],
+   "docxide_time": 0.013017583056353033,
+   "docxide_scores": {
+    "jaccard": 31.2,
+    "ssim": 46.8,
+    "text_boundary": 39.0
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "polish_municipal_letter",
+   "jubarte_time": 0.016211917041800916,
+   "jubarte_scores": {
+    "jaccard": 38.3,
+    "ssim": 83.1,
+    "text_boundary": 92.6
+   },
+   "jubarte_pages": [
+    "scraped/polish_municipal_letter/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.018742374959401786,
+   "docxide_scores": {
+    "jaccard": 39.6,
+    "ssim": 76.0,
+    "text_boundary": 92.6
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "polish_tender_declaration",
+   "jubarte_time": 0.044110999908298254,
+   "jubarte_scores": {
+    "jaccard": 73.0,
+    "ssim": 88.0,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "scraped/polish_tender_declaration/jubarte/page_001.webp",
+    "scraped/polish_tender_declaration/jubarte/page_002.webp",
+    "scraped/polish_tender_declaration/jubarte/page_003.webp"
+   ],
+   "docxide_time": 0.020218875026330352,
+   "docxide_scores": {
+    "jaccard": 32.4,
+    "ssim": 42.0,
+    "text_boundary": 43.7
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "rehab_centre_physio_posting",
+   "jubarte_time": 0.05831016704905778,
+   "jubarte_scores": {
+    "jaccard": 77.6,
+    "ssim": 91.2,
+    "text_boundary": 70.7
+   },
+   "jubarte_pages": [
+    "scraped/rehab_centre_physio_posting/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.011924333986826241,
+   "docxide_scores": {
+    "jaccard": 9.9,
+    "ssim": 31.3,
+    "text_boundary": 63.4
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "russian_sports_ranking_decree",
+   "jubarte_time": 0.12870854197535664,
+   "jubarte_scores": {
+    "jaccard": 77.5,
+    "ssim": 91.2,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "scraped/russian_sports_ranking_decree/jubarte/page_001.webp",
+    "scraped/russian_sports_ranking_decree/jubarte/page_002.webp"
+   ],
+   "docxide_time": 0.013913040980696678,
+   "docxide_scores": {
+    "jaccard": 10.0,
+    "ssim": 20.2,
+    "text_boundary": 42.1
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "russian_student_researcher_competition",
+   "jubarte_time": 0.014599874964915216,
+   "jubarte_scores": {
+    "jaccard": 75.2,
+    "ssim": 90.2,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "scraped/russian_student_researcher_competition/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.014744624961167574,
+   "docxide_scores": {
+    "jaccard": 22.9,
+    "ssim": 82.3,
+    "text_boundary": 95.7
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "russian_university_proceedings",
+   "jubarte_time": 0.042160999961197376,
+   "jubarte_scores": {
+    "jaccard": 80.1,
+    "ssim": 92.5,
+    "text_boundary": 87.1
+   },
+   "jubarte_pages": [
+    "scraped/russian_university_proceedings/jubarte/page_001.webp",
+    "scraped/russian_university_proceedings/jubarte/page_002.webp",
+    "scraped/russian_university_proceedings/jubarte/page_003.webp"
+   ],
+   "docxide_time": 0.01663470803759992,
+   "docxide_scores": {
+    "jaccard": 44.6,
+    "ssim": 74.0,
+    "text_boundary": 89.2
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "seminary_hill_board_meeting",
+   "jubarte_time": 0.0641724580200389,
+   "jubarte_scores": {
+    "jaccard": 83.6,
+    "ssim": 99.8,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "scraped/seminary_hill_board_meeting/jubarte/page_001.webp",
+    "scraped/seminary_hill_board_meeting/jubarte/page_002.webp"
+   ],
+   "docxide_time": 0.01423270907253027,
+   "docxide_scores": {
+    "jaccard": 81.7,
+    "ssim": 99.7,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "slovak_misdemeanor_amendment",
+   "jubarte_time": 0.13333670794963837,
+   "jubarte_scores": {
+    "jaccard": 13.4,
+    "ssim": 20.8,
+    "text_boundary": 9.5
+   },
+   "jubarte_pages": [
+    "scraped/slovak_misdemeanor_amendment/jubarte/page_001.webp",
+    "scraped/slovak_misdemeanor_amendment/jubarte/page_002.webp",
+    "scraped/slovak_misdemeanor_amendment/jubarte/page_003.webp"
+   ],
+   "docxide_time": 0.014318375033326447,
+   "docxide_scores": {
+    "jaccard": 71.3,
+    "ssim": 83.1,
+    "text_boundary": 73.8
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "spanish_constitutional_ruling",
+   "jubarte_time": 0.08232475002296269,
+   "jubarte_scores": {
+    "jaccard": 60.7,
+    "ssim": 82.0,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "scraped/spanish_constitutional_ruling/jubarte/page_001.webp",
+    "scraped/spanish_constitutional_ruling/jubarte/page_002.webp",
+    "scraped/spanish_constitutional_ruling/jubarte/page_003.webp",
+    "scraped/spanish_constitutional_ruling/jubarte/page_004.webp",
+    "scraped/spanish_constitutional_ruling/jubarte/page_005.webp",
+    "scraped/spanish_constitutional_ruling/jubarte/page_006.webp",
+    "scraped/spanish_constitutional_ruling/jubarte/page_007.webp",
+    "scraped/spanish_constitutional_ruling/jubarte/page_008.webp",
+    "scraped/spanish_constitutional_ruling/jubarte/page_009.webp"
+   ],
+   "docxide_time": 0.016389250056818128,
+   "docxide_scores": {
+    "jaccard": 59.3,
+    "ssim": 81.2,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "stem_partnerships_guide",
+   "jubarte_time": 0.050498042022809386,
+   "jubarte_scores": {
+    "jaccard": 49.0,
+    "ssim": 56.1,
+    "text_boundary": 14.4
+   },
+   "jubarte_pages": [
+    "scraped/stem_partnerships_guide/jubarte/page_001.webp",
+    "scraped/stem_partnerships_guide/jubarte/page_002.webp",
+    "scraped/stem_partnerships_guide/jubarte/page_003.webp",
+    "scraped/stem_partnerships_guide/jubarte/page_004.webp",
+    "scraped/stem_partnerships_guide/jubarte/page_005.webp",
+    "scraped/stem_partnerships_guide/jubarte/page_006.webp",
+    "scraped/stem_partnerships_guide/jubarte/page_007.webp"
+   ],
+   "docxide_time": 0.02733629196882248,
+   "docxide_scores": {
+    "jaccard": 25.8,
+    "ssim": 30.9,
+    "text_boundary": 31.0
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "traditional_skills_job_form",
+   "jubarte_time": 0.03531029203440994,
+   "jubarte_scores": {
+    "jaccard": 5.7,
+    "ssim": 23.4,
+    "text_boundary": 62.5
+   },
+   "jubarte_pages": [
+    "scraped/traditional_skills_job_form/jubarte/page_001.webp",
+    "scraped/traditional_skills_job_form/jubarte/page_002.webp",
+    "scraped/traditional_skills_job_form/jubarte/page_003.webp",
+    "scraped/traditional_skills_job_form/jubarte/page_004.webp"
+   ],
+   "docxide_time": 0.022130458033643663,
+   "docxide_scores": {
+    "jaccard": 15.9,
+    "ssim": 48.9,
+    "text_boundary": 76.1
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "transition_to_work_deed",
+   "jubarte_time": 0.4699342909734696,
+   "jubarte_scores": {
+    "jaccard": 29.0,
+    "ssim": 40.0,
+    "text_boundary": 27.5
+   },
+   "jubarte_pages": [
+    "scraped/transition_to_work_deed/jubarte/page_001.webp",
+    "scraped/transition_to_work_deed/jubarte/page_002.webp",
+    "scraped/transition_to_work_deed/jubarte/page_003.webp",
+    "scraped/transition_to_work_deed/jubarte/page_004.webp",
+    "scraped/transition_to_work_deed/jubarte/page_005.webp",
+    "scraped/transition_to_work_deed/jubarte/page_006.webp",
+    "scraped/transition_to_work_deed/jubarte/page_007.webp",
+    "scraped/transition_to_work_deed/jubarte/page_008.webp",
+    "scraped/transition_to_work_deed/jubarte/page_009.webp",
+    "scraped/transition_to_work_deed/jubarte/page_010.webp",
+    "scraped/transition_to_work_deed/jubarte/page_011.webp",
+    "scraped/transition_to_work_deed/jubarte/page_012.webp",
+    "scraped/transition_to_work_deed/jubarte/page_013.webp",
+    "scraped/transition_to_work_deed/jubarte/page_014.webp",
+    "scraped/transition_to_work_deed/jubarte/page_015.webp",
+    "scraped/transition_to_work_deed/jubarte/page_016.webp",
+    "scraped/transition_to_work_deed/jubarte/page_017.webp",
+    "scraped/transition_to_work_deed/jubarte/page_018.webp",
+    "scraped/transition_to_work_deed/jubarte/page_019.webp",
+    "scraped/transition_to_work_deed/jubarte/page_020.webp",
+    "scraped/transition_to_work_deed/jubarte/page_021.webp",
+    "scraped/transition_to_work_deed/jubarte/page_022.webp",
+    "scraped/transition_to_work_deed/jubarte/page_023.webp",
+    "scraped/transition_to_work_deed/jubarte/page_024.webp",
+    "scraped/transition_to_work_deed/jubarte/page_025.webp",
+    "scraped/transition_to_work_deed/jubarte/page_026.webp",
+    "scraped/transition_to_work_deed/jubarte/page_027.webp",
+    "scraped/transition_to_work_deed/jubarte/page_028.webp",
+    "scraped/transition_to_work_deed/jubarte/page_029.webp",
+    "scraped/transition_to_work_deed/jubarte/page_030.webp",
+    "scraped/transition_to_work_deed/jubarte/page_031.webp",
+    "scraped/transition_to_work_deed/jubarte/page_032.webp",
+    "scraped/transition_to_work_deed/jubarte/page_033.webp",
+    "scraped/transition_to_work_deed/jubarte/page_034.webp",
+    "scraped/transition_to_work_deed/jubarte/page_035.webp",
+    "scraped/transition_to_work_deed/jubarte/page_036.webp",
+    "scraped/transition_to_work_deed/jubarte/page_037.webp",
+    "scraped/transition_to_work_deed/jubarte/page_038.webp",
+    "scraped/transition_to_work_deed/jubarte/page_039.webp",
+    "scraped/transition_to_work_deed/jubarte/page_040.webp",
+    "scraped/transition_to_work_deed/jubarte/page_041.webp",
+    "scraped/transition_to_work_deed/jubarte/page_042.webp",
+    "scraped/transition_to_work_deed/jubarte/page_043.webp",
+    "scraped/transition_to_work_deed/jubarte/page_044.webp",
+    "scraped/transition_to_work_deed/jubarte/page_045.webp",
+    "scraped/transition_to_work_deed/jubarte/page_046.webp",
+    "scraped/transition_to_work_deed/jubarte/page_047.webp",
+    "scraped/transition_to_work_deed/jubarte/page_048.webp",
+    "scraped/transition_to_work_deed/jubarte/page_049.webp",
+    "scraped/transition_to_work_deed/jubarte/page_050.webp",
+    "scraped/transition_to_work_deed/jubarte/page_051.webp",
+    "scraped/transition_to_work_deed/jubarte/page_052.webp",
+    "scraped/transition_to_work_deed/jubarte/page_053.webp",
+    "scraped/transition_to_work_deed/jubarte/page_054.webp",
+    "scraped/transition_to_work_deed/jubarte/page_055.webp",
+    "scraped/transition_to_work_deed/jubarte/page_056.webp",
+    "scraped/transition_to_work_deed/jubarte/page_057.webp",
+    "scraped/transition_to_work_deed/jubarte/page_058.webp",
+    "scraped/transition_to_work_deed/jubarte/page_059.webp",
+    "scraped/transition_to_work_deed/jubarte/page_060.webp",
+    "scraped/transition_to_work_deed/jubarte/page_061.webp",
+    "scraped/transition_to_work_deed/jubarte/page_062.webp",
+    "scraped/transition_to_work_deed/jubarte/page_063.webp",
+    "scraped/transition_to_work_deed/jubarte/page_064.webp",
+    "scraped/transition_to_work_deed/jubarte/page_065.webp",
+    "scraped/transition_to_work_deed/jubarte/page_066.webp",
+    "scraped/transition_to_work_deed/jubarte/page_067.webp",
+    "scraped/transition_to_work_deed/jubarte/page_068.webp",
+    "scraped/transition_to_work_deed/jubarte/page_069.webp",
+    "scraped/transition_to_work_deed/jubarte/page_070.webp",
+    "scraped/transition_to_work_deed/jubarte/page_071.webp",
+    "scraped/transition_to_work_deed/jubarte/page_072.webp",
+    "scraped/transition_to_work_deed/jubarte/page_073.webp",
+    "scraped/transition_to_work_deed/jubarte/page_074.webp",
+    "scraped/transition_to_work_deed/jubarte/page_075.webp",
+    "scraped/transition_to_work_deed/jubarte/page_076.webp",
+    "scraped/transition_to_work_deed/jubarte/page_077.webp",
+    "scraped/transition_to_work_deed/jubarte/page_078.webp",
+    "scraped/transition_to_work_deed/jubarte/page_079.webp",
+    "scraped/transition_to_work_deed/jubarte/page_080.webp",
+    "scraped/transition_to_work_deed/jubarte/page_081.webp",
+    "scraped/transition_to_work_deed/jubarte/page_082.webp",
+    "scraped/transition_to_work_deed/jubarte/page_083.webp",
+    "scraped/transition_to_work_deed/jubarte/page_084.webp",
+    "scraped/transition_to_work_deed/jubarte/page_085.webp",
+    "scraped/transition_to_work_deed/jubarte/page_086.webp",
+    "scraped/transition_to_work_deed/jubarte/page_087.webp",
+    "scraped/transition_to_work_deed/jubarte/page_088.webp",
+    "scraped/transition_to_work_deed/jubarte/page_089.webp",
+    "scraped/transition_to_work_deed/jubarte/page_090.webp",
+    "scraped/transition_to_work_deed/jubarte/page_091.webp",
+    "scraped/transition_to_work_deed/jubarte/page_092.webp",
+    "scraped/transition_to_work_deed/jubarte/page_093.webp",
+    "scraped/transition_to_work_deed/jubarte/page_094.webp",
+    "scraped/transition_to_work_deed/jubarte/page_095.webp",
+    "scraped/transition_to_work_deed/jubarte/page_096.webp",
+    "scraped/transition_to_work_deed/jubarte/page_097.webp",
+    "scraped/transition_to_work_deed/jubarte/page_098.webp",
+    "scraped/transition_to_work_deed/jubarte/page_099.webp",
+    "scraped/transition_to_work_deed/jubarte/page_100.webp",
+    "scraped/transition_to_work_deed/jubarte/page_101.webp",
+    "scraped/transition_to_work_deed/jubarte/page_102.webp",
+    "scraped/transition_to_work_deed/jubarte/page_103.webp",
+    "scraped/transition_to_work_deed/jubarte/page_104.webp",
+    "scraped/transition_to_work_deed/jubarte/page_105.webp",
+    "scraped/transition_to_work_deed/jubarte/page_106.webp",
+    "scraped/transition_to_work_deed/jubarte/page_107.webp",
+    "scraped/transition_to_work_deed/jubarte/page_108.webp",
+    "scraped/transition_to_work_deed/jubarte/page_109.webp",
+    "scraped/transition_to_work_deed/jubarte/page_110.webp",
+    "scraped/transition_to_work_deed/jubarte/page_111.webp",
+    "scraped/transition_to_work_deed/jubarte/page_112.webp",
+    "scraped/transition_to_work_deed/jubarte/page_113.webp",
+    "scraped/transition_to_work_deed/jubarte/page_114.webp",
+    "scraped/transition_to_work_deed/jubarte/page_115.webp",
+    "scraped/transition_to_work_deed/jubarte/page_116.webp",
+    "scraped/transition_to_work_deed/jubarte/page_117.webp",
+    "scraped/transition_to_work_deed/jubarte/page_118.webp",
+    "scraped/transition_to_work_deed/jubarte/page_119.webp",
+    "scraped/transition_to_work_deed/jubarte/page_120.webp",
+    "scraped/transition_to_work_deed/jubarte/page_121.webp",
+    "scraped/transition_to_work_deed/jubarte/page_122.webp",
+    "scraped/transition_to_work_deed/jubarte/page_123.webp",
+    "scraped/transition_to_work_deed/jubarte/page_124.webp",
+    "scraped/transition_to_work_deed/jubarte/page_125.webp",
+    "scraped/transition_to_work_deed/jubarte/page_126.webp",
+    "scraped/transition_to_work_deed/jubarte/page_127.webp",
+    "scraped/transition_to_work_deed/jubarte/page_128.webp",
+    "scraped/transition_to_work_deed/jubarte/page_129.webp",
+    "scraped/transition_to_work_deed/jubarte/page_130.webp",
+    "scraped/transition_to_work_deed/jubarte/page_131.webp",
+    "scraped/transition_to_work_deed/jubarte/page_132.webp",
+    "scraped/transition_to_work_deed/jubarte/page_133.webp",
+    "scraped/transition_to_work_deed/jubarte/page_134.webp",
+    "scraped/transition_to_work_deed/jubarte/page_135.webp",
+    "scraped/transition_to_work_deed/jubarte/page_136.webp",
+    "scraped/transition_to_work_deed/jubarte/page_137.webp",
+    "scraped/transition_to_work_deed/jubarte/page_138.webp",
+    "scraped/transition_to_work_deed/jubarte/page_139.webp",
+    "scraped/transition_to_work_deed/jubarte/page_140.webp",
+    "scraped/transition_to_work_deed/jubarte/page_141.webp",
+    "scraped/transition_to_work_deed/jubarte/page_142.webp",
+    "scraped/transition_to_work_deed/jubarte/page_143.webp",
+    "scraped/transition_to_work_deed/jubarte/page_144.webp",
+    "scraped/transition_to_work_deed/jubarte/page_145.webp",
+    "scraped/transition_to_work_deed/jubarte/page_146.webp",
+    "scraped/transition_to_work_deed/jubarte/page_147.webp",
+    "scraped/transition_to_work_deed/jubarte/page_148.webp",
+    "scraped/transition_to_work_deed/jubarte/page_149.webp",
+    "scraped/transition_to_work_deed/jubarte/page_150.webp",
+    "scraped/transition_to_work_deed/jubarte/page_151.webp"
+   ],
+   "docxide_time": 0.140940707991831,
+   "docxide_scores": {
+    "jaccard": 40.2,
+    "ssim": 51.2,
+    "text_boundary": 39.7
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "turkish_ancient_religions_plan",
+   "jubarte_time": 0.01388758304528892,
+   "jubarte_scores": {
+    "jaccard": 11.0,
+    "ssim": 36.4,
+    "text_boundary": 60.4
+   },
+   "jubarte_pages": [
+    "scraped/turkish_ancient_religions_plan/jubarte/page_001.webp",
+    "scraped/turkish_ancient_religions_plan/jubarte/page_002.webp"
+   ],
+   "docxide_time": 0.011597750009968877,
+   "docxide_scores": {
+    "jaccard": 22.5,
+    "ssim": 62.0,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "turkish_prostate_cancer_course",
+   "jubarte_time": 0.008911916986107826,
+   "jubarte_scores": {
+    "jaccard": 82.8,
+    "ssim": 90.4,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "scraped/turkish_prostate_cancer_course/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.011037542019039392,
+   "docxide_scores": {
+    "jaccard": 37.9,
+    "ssim": 75.7,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "uk_commercial_lease_template",
+   "jubarte_time": 0.27879150002263486,
+   "jubarte_scores": {
+    "jaccard": 26.2,
+    "ssim": 41.8,
+    "text_boundary": 28.3
+   },
+   "jubarte_pages": [
+    "scraped/uk_commercial_lease_template/jubarte/page_001.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_002.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_003.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_004.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_005.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_006.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_007.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_008.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_009.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_010.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_011.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_012.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_013.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_014.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_015.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_016.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_017.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_018.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_019.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_020.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_021.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_022.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_023.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_024.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_025.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_026.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_027.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_028.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_029.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_030.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_031.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_032.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_033.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_034.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_035.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_036.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_037.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_038.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_039.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_040.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_041.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_042.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_043.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_044.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_045.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_046.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_047.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_048.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_049.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_050.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_051.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_052.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_053.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_054.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_055.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_056.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_057.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_058.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_059.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_060.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_061.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_062.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_063.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_064.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_065.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_066.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_067.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_068.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_069.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_070.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_071.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_072.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_073.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_074.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_075.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_076.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_077.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_078.webp",
+    "scraped/uk_commercial_lease_template/jubarte/page_079.webp"
+   ],
+   "docxide_time": 0.09111470798961818,
+   "docxide_scores": {
+    "jaccard": 9.7,
+    "ssim": 23.7,
+    "text_boundary": 9.7
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "ukraine_humanitarian_aid",
+   "jubarte_time": 0.017085750005207956,
+   "jubarte_scores": {
+    "jaccard": 72.4,
+    "ssim": 91.5,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "scraped/ukraine_humanitarian_aid/jubarte/page_001.webp",
+    "scraped/ukraine_humanitarian_aid/jubarte/page_002.webp"
+   ],
+   "docxide_time": 0.014709334005601704,
+   "docxide_scores": {
+    "jaccard": 38.2,
+    "ssim": 50.5,
+    "text_boundary": 24.1
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "usep_handbook",
+   "jubarte_time": 0.03805245796684176,
+   "jubarte_scores": {
+    "jaccard": 40.8,
+    "ssim": 47.6,
+    "text_boundary": 0.0
+   },
+   "jubarte_pages": [
+    "scraped/usep_handbook/jubarte/page_001.webp",
+    "scraped/usep_handbook/jubarte/page_002.webp",
+    "scraped/usep_handbook/jubarte/page_003.webp",
+    "scraped/usep_handbook/jubarte/page_004.webp",
+    "scraped/usep_handbook/jubarte/page_005.webp",
+    "scraped/usep_handbook/jubarte/page_006.webp",
+    "scraped/usep_handbook/jubarte/page_007.webp",
+    "scraped/usep_handbook/jubarte/page_008.webp"
+   ],
+   "docxide_time": 0.024006083025597036,
+   "docxide_scores": {
+    "jaccard": 54.9,
+    "ssim": 77.1,
+    "text_boundary": 62.2
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "vaccines_history_chapter",
+   "jubarte_time": 0.03160224994644523,
+   "jubarte_scores": {
+    "jaccard": 24.8,
+    "ssim": 49.5,
+    "text_boundary": 20.8
+   },
+   "jubarte_pages": [
+    "scraped/vaccines_history_chapter/jubarte/page_001.webp",
+    "scraped/vaccines_history_chapter/jubarte/page_002.webp",
+    "scraped/vaccines_history_chapter/jubarte/page_003.webp",
+    "scraped/vaccines_history_chapter/jubarte/page_004.webp",
+    "scraped/vaccines_history_chapter/jubarte/page_005.webp"
+   ],
+   "docxide_time": 0.025496792048215866,
+   "docxide_scores": {
+    "jaccard": 42.8,
+    "ssim": 55.5,
+    "text_boundary": 13.8
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "waste_management_request",
+   "jubarte_time": 0.015566249960102141,
+   "jubarte_scores": {
+    "jaccard": 78.9,
+    "ssim": 99.6,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "scraped/waste_management_request/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.010843875003047287,
+   "docxide_scores": {
+    "jaccard": 73.3,
+    "ssim": 96.1,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "new",
+   "case": "alfies_arc_adult_safeguarding_policy",
+   "jubarte_time": 0.033304749988019466,
+   "jubarte_scores": {
+    "jaccard": 50.0,
+    "ssim": 62.3,
+    "text_boundary": 95.8
+   },
+   "jubarte_pages": [
+    "new/alfies_arc_adult_safeguarding_policy/jubarte/page_001.webp",
+    "new/alfies_arc_adult_safeguarding_policy/jubarte/page_002.webp",
+    "new/alfies_arc_adult_safeguarding_policy/jubarte/page_003.webp",
+    "new/alfies_arc_adult_safeguarding_policy/jubarte/page_004.webp",
+    "new/alfies_arc_adult_safeguarding_policy/jubarte/page_005.webp"
+   ],
+   "docxide_time": 0.018763208063319325,
+   "docxide_scores": {
+    "jaccard": 51.2,
+    "ssim": 72.8,
+    "text_boundary": 94.0
+   }
+  },
+  {
+   "group": "new",
+   "case": "alpharetta_school_governance_council",
+   "jubarte_time": 0.024450624943710864,
+   "jubarte_scores": {
+    "jaccard": 86.3,
+    "ssim": 94.1,
+    "text_boundary": 0.0
+   },
+   "jubarte_pages": [
+    "new/alpharetta_school_governance_council/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.019688750035129488,
+   "docxide_scores": {
+    "jaccard": 21.1,
+    "ssim": 71.2,
+    "text_boundary": 0.0
+   }
+  },
+  {
+   "group": "new",
+   "case": "americas_counter_terrorism_agenda",
+   "jubarte_time": 0.025922124972566962,
+   "jubarte_scores": {
+    "jaccard": 86.7,
+    "ssim": 99.0,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "new/americas_counter_terrorism_agenda/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.019265125039964914,
+   "docxide_scores": {
+    "jaccard": 8.0,
+    "ssim": 20.9,
+    "text_boundary": 92.6
+   }
+  },
+  {
+   "group": "new",
+   "case": "arizona_physical_education_standards",
+   "jubarte_time": 0.05331633298192173,
+   "jubarte_scores": {
+    "jaccard": 79.5,
+    "ssim": 94.1,
+    "text_boundary": 95.2
+   },
+   "jubarte_pages": [
+    "new/arizona_physical_education_standards/jubarte/page_001.webp",
+    "new/arizona_physical_education_standards/jubarte/page_002.webp",
+    "new/arizona_physical_education_standards/jubarte/page_003.webp",
+    "new/arizona_physical_education_standards/jubarte/page_004.webp",
+    "new/arizona_physical_education_standards/jubarte/page_005.webp",
+    "new/arizona_physical_education_standards/jubarte/page_006.webp",
+    "new/arizona_physical_education_standards/jubarte/page_007.webp",
+    "new/arizona_physical_education_standards/jubarte/page_008.webp",
+    "new/arizona_physical_education_standards/jubarte/page_009.webp",
+    "new/arizona_physical_education_standards/jubarte/page_010.webp",
+    "new/arizona_physical_education_standards/jubarte/page_011.webp",
+    "new/arizona_physical_education_standards/jubarte/page_012.webp"
+   ],
+   "docxide_time": 0.021193374996073544,
+   "docxide_scores": {
+    "jaccard": 71.6,
+    "ssim": 88.9,
+    "text_boundary": 90.6
+   }
+  },
+  {
+   "group": "new",
+   "case": "auditor_regulatory_report_template",
+   "jubarte_time": 0.04737529100384563,
+   "jubarte_scores": {
+    "jaccard": 57.6,
+    "ssim": 77.8,
+    "text_boundary": 83.8
+   },
+   "jubarte_pages": [
+    "new/auditor_regulatory_report_template/jubarte/page_001.webp",
+    "new/auditor_regulatory_report_template/jubarte/page_002.webp"
+   ],
+   "docxide_time": 0.016735375043936074,
+   "docxide_scores": {
+    "jaccard": 42.2,
+    "ssim": 57.9,
+    "text_boundary": 59.4
+   }
+  },
+  {
+   "group": "new",
+   "case": "bahamas_sustainable_development_hosting",
+   "jubarte_time": 0.07697033404838294,
+   "jubarte_scores": {
+    "jaccard": 67.0,
+    "ssim": 87.0,
+    "text_boundary": 94.3
+   },
+   "jubarte_pages": [
+    "new/bahamas_sustainable_development_hosting/jubarte/page_001.webp",
+    "new/bahamas_sustainable_development_hosting/jubarte/page_002.webp"
+   ],
+   "docxide_time": 0.018496665987186134,
+   "docxide_scores": {
+    "jaccard": 60.2,
+    "ssim": 78.8,
+    "text_boundary": 68.6
+   }
+  },
+  {
+   "group": "new",
+   "case": "belgian_youth_program_certificate",
+   "jubarte_time": 0.044974083080887794,
+   "jubarte_scores": {
+    "jaccard": 54.5,
+    "ssim": 81.6,
+    "text_boundary": 90.6
+   },
+   "jubarte_pages": [
+    "new/belgian_youth_program_certificate/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.0342187499627471,
+   "docxide_scores": {
+    "jaccard": 21.2,
+    "ssim": 51.9,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "new",
+   "case": "biochemistry_pentose_pathway_lecture",
+   "jubarte_time": 0.016591958003118634,
+   "jubarte_scores": {
+    "jaccard": 63.4,
+    "ssim": 85.2,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "new/biochemistry_pentose_pathway_lecture/jubarte/page_001.webp",
+    "new/biochemistry_pentose_pathway_lecture/jubarte/page_002.webp",
+    "new/biochemistry_pentose_pathway_lecture/jubarte/page_003.webp"
+   ],
+   "docxide_time": 0.01852320902980864,
+   "docxide_scores": {
+    "jaccard": 59.4,
+    "ssim": 80.7,
+    "text_boundary": 98.5
+   }
+  },
+  {
+   "group": "new",
+   "case": "bosch_software_ai_announcement",
+   "jubarte_time": 0.0941107920370996,
+   "jubarte_scores": {
+    "jaccard": 15.3,
+    "ssim": 27.5,
+    "text_boundary": 3.2
+   },
+   "jubarte_pages": [
+    "new/bosch_software_ai_announcement/jubarte/page_001.webp",
+    "new/bosch_software_ai_announcement/jubarte/page_002.webp",
+    "new/bosch_software_ai_announcement/jubarte/page_003.webp",
+    "new/bosch_software_ai_announcement/jubarte/page_004.webp",
+    "new/bosch_software_ai_announcement/jubarte/page_005.webp",
+    "new/bosch_software_ai_announcement/jubarte/page_006.webp",
+    "new/bosch_software_ai_announcement/jubarte/page_007.webp"
+   ],
+   "docxide_time": 0.024801208055578172,
+   "docxide_scores": {
+    "jaccard": 5.2,
+    "ssim": 18.4,
+    "text_boundary": 2.0
+   }
+  },
+  {
+   "group": "new",
+   "case": "candidate_reference_check_form",
+   "jubarte_time": 0.06113095791079104,
+   "jubarte_scores": {
+    "jaccard": 42.6,
+    "ssim": 63.2,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "new/candidate_reference_check_form/jubarte/page_001.webp",
+    "new/candidate_reference_check_form/jubarte/page_002.webp"
+   ],
+   "docxide_time": 0.015593750053085387,
+   "docxide_scores": {
+    "jaccard": 21.3,
+    "ssim": 48.0,
+    "text_boundary": 22.7
+   }
+  },
+  {
+   "group": "new",
+   "case": "carbon_farming_initiative_rule",
+   "jubarte_time": 0.35567675007041544,
+   "jubarte_scores": {
+    "jaccard": 12.6,
+    "ssim": 25.4,
+    "text_boundary": 8.9
+   },
+   "jubarte_pages": [
+    "new/carbon_farming_initiative_rule/jubarte/page_001.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_002.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_003.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_004.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_005.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_006.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_007.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_008.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_009.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_010.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_011.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_012.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_013.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_014.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_015.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_016.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_017.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_018.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_019.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_020.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_021.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_022.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_023.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_024.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_025.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_026.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_027.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_028.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_029.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_030.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_031.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_032.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_033.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_034.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_035.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_036.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_037.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_038.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_039.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_040.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_041.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_042.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_043.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_044.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_045.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_046.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_047.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_048.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_049.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_050.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_051.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_052.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_053.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_054.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_055.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_056.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_057.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_058.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_059.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_060.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_061.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_062.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_063.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_064.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_065.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_066.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_067.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_068.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_069.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_070.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_071.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_072.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_073.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_074.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_075.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_076.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_077.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_078.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_079.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_080.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_081.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_082.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_083.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_084.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_085.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_086.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_087.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_088.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_089.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_090.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_091.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_092.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_093.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_094.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_095.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_096.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_097.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_098.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_099.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_100.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_101.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_102.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_103.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_104.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_105.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_106.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_107.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_108.webp",
+    "new/carbon_farming_initiative_rule/jubarte/page_109.webp"
+   ],
+   "docxide_time": 0.08666595804970711,
+   "docxide_scores": {
+    "jaccard": 27.0,
+    "ssim": 48.6,
+    "text_boundary": 44.6
+   }
+  },
+  {
+   "group": "new",
+   "case": "chinese_student_union_nomination_form",
+   "jubarte_time": 0.1436797920614481,
+   "jubarte_scores": {
+    "jaccard": 21.9,
+    "ssim": 39.8,
+    "text_boundary": 64.4
+   },
+   "jubarte_pages": [
+    "new/chinese_student_union_nomination_form/jubarte/page_001.webp",
+    "new/chinese_student_union_nomination_form/jubarte/page_002.webp",
+    "new/chinese_student_union_nomination_form/jubarte/page_003.webp",
+    "new/chinese_student_union_nomination_form/jubarte/page_004.webp",
+    "new/chinese_student_union_nomination_form/jubarte/page_005.webp"
+   ],
+   "docxide_time": 0.020885417005047202,
+   "docxide_scores": {
+    "jaccard": 13.5,
+    "ssim": 43.7,
+    "text_boundary": 80.3
+   }
+  },
+  {
+   "group": "new",
+   "case": "construction_bathroom_accessories_spec",
+   "jubarte_time": 0.011212415993213654,
+   "jubarte_scores": {
+    "jaccard": 65.1,
+    "ssim": 85.7,
+    "text_boundary": 93.5
+   },
+   "jubarte_pages": [
+    "new/construction_bathroom_accessories_spec/jubarte/page_001.webp",
+    "new/construction_bathroom_accessories_spec/jubarte/page_002.webp"
+   ],
+   "docxide_time": 0.01439858297817409,
+   "docxide_scores": {
+    "jaccard": 66.1,
+    "ssim": 86.2,
+    "text_boundary": 93.5
+   }
+  },
+  {
+   "group": "new",
+   "case": "covid_insomnia_mental_health",
+   "jubarte_time": 0.051842208951711655,
+   "jubarte_scores": {
+    "jaccard": 31.9,
+    "ssim": 52.8,
+    "text_boundary": 15.0
+   },
+   "jubarte_pages": [
+    "new/covid_insomnia_mental_health/jubarte/page_001.webp",
+    "new/covid_insomnia_mental_health/jubarte/page_002.webp",
+    "new/covid_insomnia_mental_health/jubarte/page_003.webp",
+    "new/covid_insomnia_mental_health/jubarte/page_004.webp",
+    "new/covid_insomnia_mental_health/jubarte/page_005.webp"
+   ],
+   "docxide_time": 0.03028495900798589,
+   "docxide_scores": {
+    "jaccard": 21.5,
+    "ssim": 43.5,
+    "text_boundary": 13.3
+   }
+  },
+  {
+   "group": "new",
+   "case": "croatian_military_burial_request",
+   "jubarte_time": 0.01736654108390212,
+   "jubarte_scores": {
+    "jaccard": 37.6,
+    "ssim": 60.7,
+    "text_boundary": 77.2
+   },
+   "jubarte_pages": [
+    "new/croatian_military_burial_request/jubarte/page_001.webp",
+    "new/croatian_military_burial_request/jubarte/page_002.webp"
+   ],
+   "docxide_time": 0.016794541967101395,
+   "docxide_scores": {
+    "jaccard": 35.8,
+    "ssim": 85.5,
+    "text_boundary": 94.9
+   }
+  },
+  {
+   "group": "new",
+   "case": "croatian_thesis_topic_approval_form",
+   "jubarte_time": 0.08371429110411555,
+   "jubarte_scores": {
+    "jaccard": 21.8,
+    "ssim": 51.8,
+    "text_boundary": 46.2
+   },
+   "jubarte_pages": [
+    "new/croatian_thesis_topic_approval_form/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.02714308293070644,
+   "docxide_scores": {
+    "jaccard": 18.7,
+    "ssim": 41.8,
+    "text_boundary": 53.8
+   }
+  },
+  {
+   "group": "new",
+   "case": "czech_census_2021_instructions",
+   "jubarte_time": 0.04149987502023578,
+   "jubarte_scores": {
+    "jaccard": 71.8,
+    "ssim": 87.6,
+    "text_boundary": 85.7
+   },
+   "jubarte_pages": [
+    "new/czech_census_2021_instructions/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.014887999976053834,
+   "docxide_scores": {
+    "jaccard": 59.5,
+    "ssim": 77.0,
+    "text_boundary": 66.7
+   }
+  },
+  {
+   "group": "new",
+   "case": "czech_crisis_measure_notice",
+   "jubarte_time": 0.07819729193579406,
+   "jubarte_scores": {
+    "jaccard": 61.3,
+    "ssim": 83.5,
+    "text_boundary": 73.5
+   },
+   "jubarte_pages": [
+    "new/czech_crisis_measure_notice/jubarte/page_001.webp",
+    "new/czech_crisis_measure_notice/jubarte/page_002.webp",
+    "new/czech_crisis_measure_notice/jubarte/page_003.webp",
+    "new/czech_crisis_measure_notice/jubarte/page_004.webp",
+    "new/czech_crisis_measure_notice/jubarte/page_005.webp",
+    "new/czech_crisis_measure_notice/jubarte/page_006.webp",
+    "new/czech_crisis_measure_notice/jubarte/page_007.webp"
+   ],
+   "docxide_time": 0.023578166961669922,
+   "docxide_scores": {
+    "jaccard": 41.9,
+    "ssim": 67.7,
+    "text_boundary": 55.6
+   }
+  },
+  {
+   "group": "new",
+   "case": "czech_works_contract_proposal",
+   "jubarte_time": 0.04594533296767622,
+   "jubarte_scores": {
+    "jaccard": 53.7,
+    "ssim": 73.5,
+    "text_boundary": 85.0
+   },
+   "jubarte_pages": [
+    "new/czech_works_contract_proposal/jubarte/page_001.webp",
+    "new/czech_works_contract_proposal/jubarte/page_002.webp",
+    "new/czech_works_contract_proposal/jubarte/page_003.webp",
+    "new/czech_works_contract_proposal/jubarte/page_004.webp",
+    "new/czech_works_contract_proposal/jubarte/page_005.webp",
+    "new/czech_works_contract_proposal/jubarte/page_006.webp"
+   ],
+   "docxide_time": 0.02600566705223173,
+   "docxide_scores": {
+    "jaccard": 46.6,
+    "ssim": 63.2,
+    "text_boundary": 65.1
+   }
+  },
+  {
+   "group": "new",
+   "case": "dental_amalgam_restoration_care",
+   "jubarte_time": 0.01450420799665153,
+   "jubarte_scores": {
+    "jaccard": 77.9,
+    "ssim": 88.8,
+    "text_boundary": 80.6
+   },
+   "jubarte_pages": [
+    "new/dental_amalgam_restoration_care/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.01607958402018994,
+   "docxide_scores": {
+    "jaccard": 20.2,
+    "ssim": 78.0,
+    "text_boundary": 80.6
+   }
+  },
+  {
+   "group": "new",
+   "case": "dialysis_treatment_transition_guide",
+   "jubarte_time": 0.012481875019147992,
+   "jubarte_scores": {
+    "jaccard": 75.9,
+    "ssim": 89.2,
+    "text_boundary": 66.7
+   },
+   "jubarte_pages": [
+    "new/dialysis_treatment_transition_guide/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.013278166996315122,
+   "docxide_scores": {
+    "jaccard": 56.8,
+    "ssim": 80.3,
+    "text_boundary": 55.6
+   }
+  },
+  {
+   "group": "new",
+   "case": "dutch_council_member_resignation",
+   "jubarte_time": 0.010953790973871946,
+   "jubarte_scores": {
+    "jaccard": 98.2,
+    "ssim": 99.7,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "new/dutch_council_member_resignation/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.014280707924626768,
+   "docxide_scores": {
+    "jaccard": 94.7,
+    "ssim": 98.8,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "new",
+   "case": "dutch_government_budget_letter",
+   "jubarte_time": 0.09815212502144277,
+   "jubarte_scores": {
+    "jaccard": 33.5,
+    "ssim": 91.3,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "new/dutch_government_budget_letter/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.09565812500659376,
+   "docxide_scores": {
+    "jaccard": 19.4,
+    "ssim": 92.7,
+    "text_boundary": 90.9
+   }
+  },
+  {
+   "group": "new",
+   "case": "eco_int_agriculture_registration",
+   "jubarte_time": 0.067645457922481,
+   "jubarte_scores": {
+    "jaccard": 75.7,
+    "ssim": 90.9,
+    "text_boundary": 97.1
+   },
+   "jubarte_pages": [
+    "new/eco_int_agriculture_registration/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.017774833017028868,
+   "docxide_scores": {
+    "jaccard": 23.2,
+    "ssim": 33.2,
+    "text_boundary": 80.0
+   }
+  },
+  {
+   "group": "new",
+   "case": "english_town_council_report",
+   "jubarte_time": 0.15270241699181497,
+   "jubarte_scores": {
+    "jaccard": 43.5,
+    "ssim": 57.5,
+    "text_boundary": 76.5
+   },
+   "jubarte_pages": [
+    "new/english_town_council_report/jubarte/page_001.webp",
+    "new/english_town_council_report/jubarte/page_002.webp",
+    "new/english_town_council_report/jubarte/page_003.webp",
+    "new/english_town_council_report/jubarte/page_004.webp",
+    "new/english_town_council_report/jubarte/page_005.webp",
+    "new/english_town_council_report/jubarte/page_006.webp",
+    "new/english_town_council_report/jubarte/page_007.webp",
+    "new/english_town_council_report/jubarte/page_008.webp"
+   ],
+   "docxide_time": 0.025609750067815185,
+   "docxide_scores": {
+    "jaccard": 27.2,
+    "ssim": 41.3,
+    "text_boundary": 76.3
+   }
+  },
+  {
+   "group": "new",
+   "case": "environmental_law_clinic_china",
+   "jubarte_time": 0.10257687501143664,
+   "jubarte_scores": {
+    "jaccard": 14.5,
+    "ssim": 26.3,
+    "text_boundary": 12.3
+   },
+   "jubarte_pages": [
+    "new/environmental_law_clinic_china/jubarte/page_001.webp",
+    "new/environmental_law_clinic_china/jubarte/page_002.webp",
+    "new/environmental_law_clinic_china/jubarte/page_003.webp",
+    "new/environmental_law_clinic_china/jubarte/page_004.webp",
+    "new/environmental_law_clinic_china/jubarte/page_005.webp",
+    "new/environmental_law_clinic_china/jubarte/page_006.webp",
+    "new/environmental_law_clinic_china/jubarte/page_007.webp",
+    "new/environmental_law_clinic_china/jubarte/page_008.webp",
+    "new/environmental_law_clinic_china/jubarte/page_009.webp",
+    "new/environmental_law_clinic_china/jubarte/page_010.webp",
+    "new/environmental_law_clinic_china/jubarte/page_011.webp",
+    "new/environmental_law_clinic_china/jubarte/page_012.webp",
+    "new/environmental_law_clinic_china/jubarte/page_013.webp",
+    "new/environmental_law_clinic_china/jubarte/page_014.webp",
+    "new/environmental_law_clinic_china/jubarte/page_015.webp",
+    "new/environmental_law_clinic_china/jubarte/page_016.webp",
+    "new/environmental_law_clinic_china/jubarte/page_017.webp",
+    "new/environmental_law_clinic_china/jubarte/page_018.webp",
+    "new/environmental_law_clinic_china/jubarte/page_019.webp",
+    "new/environmental_law_clinic_china/jubarte/page_020.webp",
+    "new/environmental_law_clinic_china/jubarte/page_021.webp",
+    "new/environmental_law_clinic_china/jubarte/page_022.webp",
+    "new/environmental_law_clinic_china/jubarte/page_023.webp",
+    "new/environmental_law_clinic_china/jubarte/page_024.webp",
+    "new/environmental_law_clinic_china/jubarte/page_025.webp",
+    "new/environmental_law_clinic_china/jubarte/page_026.webp",
+    "new/environmental_law_clinic_china/jubarte/page_027.webp",
+    "new/environmental_law_clinic_china/jubarte/page_028.webp",
+    "new/environmental_law_clinic_china/jubarte/page_029.webp",
+    "new/environmental_law_clinic_china/jubarte/page_030.webp",
+    "new/environmental_law_clinic_china/jubarte/page_031.webp",
+    "new/environmental_law_clinic_china/jubarte/page_032.webp",
+    "new/environmental_law_clinic_china/jubarte/page_033.webp",
+    "new/environmental_law_clinic_china/jubarte/page_034.webp",
+    "new/environmental_law_clinic_china/jubarte/page_035.webp",
+    "new/environmental_law_clinic_china/jubarte/page_036.webp"
+   ],
+   "docxide_time": 0.041018082993105054,
+   "docxide_scores": {
+    "jaccard": 21.3,
+    "ssim": 37.8,
+    "text_boundary": 22.4
+   }
+  },
+  {
+   "group": "new",
+   "case": "erasmus_plus_staff_mobility_agreement",
+   "jubarte_time": 0.05783687508665025,
+   "jubarte_scores": {
+    "jaccard": 24.1,
+    "ssim": 33.8,
+    "text_boundary": 45.7
+   },
+   "jubarte_pages": [
+    "new/erasmus_plus_staff_mobility_agreement/jubarte/page_001.webp",
+    "new/erasmus_plus_staff_mobility_agreement/jubarte/page_002.webp",
+    "new/erasmus_plus_staff_mobility_agreement/jubarte/page_003.webp",
+    "new/erasmus_plus_staff_mobility_agreement/jubarte/page_004.webp",
+    "new/erasmus_plus_staff_mobility_agreement/jubarte/page_005.webp"
+   ],
+   "docxide_time": 0.025582707952708006,
+   "docxide_scores": {
+    "jaccard": 19.9,
+    "ssim": 53.5,
+    "text_boundary": 30.4
+   }
+  },
+  {
+   "group": "new",
+   "case": "family_kinship_lesson_plan",
+   "jubarte_time": 0.02340816706418991,
+   "jubarte_scores": {
+    "jaccard": 73.7,
+    "ssim": 81.8,
+    "text_boundary": 78.9
+   },
+   "jubarte_pages": [
+    "new/family_kinship_lesson_plan/jubarte/page_001.webp",
+    "new/family_kinship_lesson_plan/jubarte/page_002.webp",
+    "new/family_kinship_lesson_plan/jubarte/page_003.webp",
+    "new/family_kinship_lesson_plan/jubarte/page_004.webp",
+    "new/family_kinship_lesson_plan/jubarte/page_005.webp"
+   ],
+   "docxide_time": 0.022258292068727314,
+   "docxide_scores": {
+    "jaccard": 22.9,
+    "ssim": 39.0,
+    "text_boundary": 31.9
+   }
+  },
+  {
+   "group": "new",
+   "case": "french_lease_early_termination_form",
+   "jubarte_time": 0.04913904203567654,
+   "jubarte_scores": {
+    "jaccard": 21.3,
+    "ssim": 38.4,
+    "text_boundary": 61.2
+   },
+   "jubarte_pages": [
+    "new/french_lease_early_termination_form/jubarte/page_001.webp",
+    "new/french_lease_early_termination_form/jubarte/page_002.webp"
+   ],
+   "docxide_time": 0.015374250011518598,
+   "docxide_scores": {
+    "jaccard": 40.0,
+    "ssim": 67.3,
+    "text_boundary": 82.0
+   }
+  },
+  {
+   "group": "new",
+   "case": "french_sexual_health_youth_strategy",
+   "jubarte_time": 0.01972820796072483,
+   "jubarte_scores": {
+    "jaccard": 40.5,
+    "ssim": 55.2,
+    "text_boundary": 97.1
+   },
+   "jubarte_pages": [
+    "new/french_sexual_health_youth_strategy/jubarte/page_001.webp",
+    "new/french_sexual_health_youth_strategy/jubarte/page_002.webp"
+   ],
+   "docxide_time": 0.01842554099857807,
+   "docxide_scores": {
+    "jaccard": 19.9,
+    "ssim": 26.5,
+    "text_boundary": 82.7
+   }
+  },
+  {
+   "group": "new",
+   "case": "handels_messiah_biblical_analysis",
+   "jubarte_time": 0.09358924999833107,
+   "jubarte_scores": {
+    "jaccard": 7.2,
+    "ssim": 14.5,
+    "text_boundary": 2.3
+   },
+   "jubarte_pages": [
+    "new/handels_messiah_biblical_analysis/jubarte/page_001.webp",
+    "new/handels_messiah_biblical_analysis/jubarte/page_002.webp",
+    "new/handels_messiah_biblical_analysis/jubarte/page_003.webp",
+    "new/handels_messiah_biblical_analysis/jubarte/page_004.webp",
+    "new/handels_messiah_biblical_analysis/jubarte/page_005.webp",
+    "new/handels_messiah_biblical_analysis/jubarte/page_006.webp",
+    "new/handels_messiah_biblical_analysis/jubarte/page_007.webp",
+    "new/handels_messiah_biblical_analysis/jubarte/page_008.webp",
+    "new/handels_messiah_biblical_analysis/jubarte/page_009.webp"
+   ],
+   "docxide_time": 0.10884370806161314,
+   "docxide_scores": {
+    "jaccard": 67.3,
+    "ssim": 84.6,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "new",
+   "case": "indigenous_innovation_sandbox_agreement",
+   "jubarte_time": 0.09130429197102785,
+   "jubarte_scores": {
+    "jaccard": 14.7,
+    "ssim": 29.2,
+    "text_boundary": 17.9
+   },
+   "jubarte_pages": [
+    "new/indigenous_innovation_sandbox_agreement/jubarte/page_001.webp",
+    "new/indigenous_innovation_sandbox_agreement/jubarte/page_002.webp",
+    "new/indigenous_innovation_sandbox_agreement/jubarte/page_003.webp",
+    "new/indigenous_innovation_sandbox_agreement/jubarte/page_004.webp",
+    "new/indigenous_innovation_sandbox_agreement/jubarte/page_005.webp",
+    "new/indigenous_innovation_sandbox_agreement/jubarte/page_006.webp",
+    "new/indigenous_innovation_sandbox_agreement/jubarte/page_007.webp",
+    "new/indigenous_innovation_sandbox_agreement/jubarte/page_008.webp",
+    "new/indigenous_innovation_sandbox_agreement/jubarte/page_009.webp",
+    "new/indigenous_innovation_sandbox_agreement/jubarte/page_010.webp",
+    "new/indigenous_innovation_sandbox_agreement/jubarte/page_011.webp",
+    "new/indigenous_innovation_sandbox_agreement/jubarte/page_012.webp",
+    "new/indigenous_innovation_sandbox_agreement/jubarte/page_013.webp",
+    "new/indigenous_innovation_sandbox_agreement/jubarte/page_014.webp",
+    "new/indigenous_innovation_sandbox_agreement/jubarte/page_015.webp",
+    "new/indigenous_innovation_sandbox_agreement/jubarte/page_016.webp",
+    "new/indigenous_innovation_sandbox_agreement/jubarte/page_017.webp",
+    "new/indigenous_innovation_sandbox_agreement/jubarte/page_018.webp",
+    "new/indigenous_innovation_sandbox_agreement/jubarte/page_019.webp",
+    "new/indigenous_innovation_sandbox_agreement/jubarte/page_020.webp",
+    "new/indigenous_innovation_sandbox_agreement/jubarte/page_021.webp"
+   ],
+   "docxide_time": 0.03484462492633611,
+   "docxide_scores": {
+    "jaccard": 12.1,
+    "ssim": 22.6,
+    "text_boundary": 0.6
+   }
+  },
+  {
+   "group": "new",
+   "case": "international_terrorism_thesis",
+   "jubarte_time": 0.06894654093775898,
+   "jubarte_scores": {
+    "jaccard": 32.7,
+    "ssim": 48.4,
+    "text_boundary": 36.4
+   },
+   "jubarte_pages": [
+    "new/international_terrorism_thesis/jubarte/page_001.webp",
+    "new/international_terrorism_thesis/jubarte/page_002.webp",
+    "new/international_terrorism_thesis/jubarte/page_003.webp",
+    "new/international_terrorism_thesis/jubarte/page_004.webp",
+    "new/international_terrorism_thesis/jubarte/page_005.webp",
+    "new/international_terrorism_thesis/jubarte/page_006.webp",
+    "new/international_terrorism_thesis/jubarte/page_007.webp",
+    "new/international_terrorism_thesis/jubarte/page_008.webp",
+    "new/international_terrorism_thesis/jubarte/page_009.webp",
+    "new/international_terrorism_thesis/jubarte/page_010.webp",
+    "new/international_terrorism_thesis/jubarte/page_011.webp",
+    "new/international_terrorism_thesis/jubarte/page_012.webp",
+    "new/international_terrorism_thesis/jubarte/page_013.webp",
+    "new/international_terrorism_thesis/jubarte/page_014.webp",
+    "new/international_terrorism_thesis/jubarte/page_015.webp",
+    "new/international_terrorism_thesis/jubarte/page_016.webp",
+    "new/international_terrorism_thesis/jubarte/page_017.webp",
+    "new/international_terrorism_thesis/jubarte/page_018.webp",
+    "new/international_terrorism_thesis/jubarte/page_019.webp",
+    "new/international_terrorism_thesis/jubarte/page_020.webp",
+    "new/international_terrorism_thesis/jubarte/page_021.webp",
+    "new/international_terrorism_thesis/jubarte/page_022.webp",
+    "new/international_terrorism_thesis/jubarte/page_023.webp",
+    "new/international_terrorism_thesis/jubarte/page_024.webp"
+   ],
+   "docxide_time": 0.03003183309920132,
+   "docxide_scores": {
+    "jaccard": 26.9,
+    "ssim": 45.4,
+    "text_boundary": 33.6
+   }
+  },
+  {
+   "group": "new",
+   "case": "irish_school_enrollment_form",
+   "jubarte_time": 0.07539254100993276,
+   "jubarte_scores": {
+    "jaccard": 45.2,
+    "ssim": 63.2,
+    "text_boundary": 79.5
+   },
+   "jubarte_pages": [
+    "new/irish_school_enrollment_form/jubarte/page_001.webp",
+    "new/irish_school_enrollment_form/jubarte/page_002.webp",
+    "new/irish_school_enrollment_form/jubarte/page_003.webp"
+   ],
+   "docxide_time": 0.021584957954473794,
+   "docxide_scores": {
+    "jaccard": 33.7,
+    "ssim": 52.2,
+    "text_boundary": 71.4
+   }
+  },
+  {
+   "group": "new",
+   "case": "isla_language_lesson_plan",
+   "jubarte_time": 0.07274850003886968,
+   "jubarte_scores": {
+    "jaccard": 61.9,
+    "ssim": 80.2,
+    "text_boundary": 79.5
+   },
+   "jubarte_pages": [
+    "new/isla_language_lesson_plan/jubarte/page_001.webp",
+    "new/isla_language_lesson_plan/jubarte/page_002.webp",
+    "new/isla_language_lesson_plan/jubarte/page_003.webp",
+    "new/isla_language_lesson_plan/jubarte/page_004.webp",
+    "new/isla_language_lesson_plan/jubarte/page_005.webp",
+    "new/isla_language_lesson_plan/jubarte/page_006.webp",
+    "new/isla_language_lesson_plan/jubarte/page_007.webp",
+    "new/isla_language_lesson_plan/jubarte/page_008.webp"
+   ],
+   "docxide_time": 0.031651917030103505,
+   "docxide_scores": {
+    "jaccard": 42.4,
+    "ssim": 63.5,
+    "text_boundary": 77.4
+   }
+  },
+  {
+   "group": "new",
+   "case": "japanese_land_development_sign_form",
+   "jubarte_time": 0.203811916988343,
+   "jubarte_scores": {
+    "jaccard": 14.9,
+    "ssim": 61.9,
+    "text_boundary": 22.2
+   },
+   "jubarte_pages": [
+    "new/japanese_land_development_sign_form/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.020213959040120244,
+   "docxide_scores": {
+    "jaccard": 12.9,
+    "ssim": 46.8,
+    "text_boundary": 25.9
+   }
+  },
+  {
+   "group": "new",
+   "case": "japanese_medical_consultation_form",
+   "jubarte_time": 0.07077670900616795,
+   "jubarte_scores": {
+    "jaccard": 7.1,
+    "ssim": 24.1,
+    "text_boundary": 17.6
+   },
+   "jubarte_pages": [
+    "new/japanese_medical_consultation_form/jubarte/page_001.webp",
+    "new/japanese_medical_consultation_form/jubarte/page_002.webp"
+   ],
+   "docxide_time": 0.02144275000318885,
+   "docxide_scores": {
+    "jaccard": 6.1,
+    "ssim": 23.0,
+    "text_boundary": 68.3
+   }
+  },
+  {
+   "group": "new",
+   "case": "k4_regulations_synthesis_document",
+   "jubarte_time": 0.02041116706095636,
+   "jubarte_scores": {
+    "jaccard": 63.2,
+    "ssim": 90.8,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "new/k4_regulations_synthesis_document/jubarte/page_001.webp",
+    "new/k4_regulations_synthesis_document/jubarte/page_002.webp"
+   ],
+   "docxide_time": 0.014568083919584751,
+   "docxide_scores": {
+    "jaccard": 43.9,
+    "ssim": 73.6,
+    "text_boundary": 98.9
+   }
+  },
+  {
+   "group": "new",
+   "case": "lenten_prayer_unity",
+   "jubarte_time": 0.039574709022417665,
+   "jubarte_scores": {
+    "jaccard": 69.5,
+    "ssim": 63.1,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "new/lenten_prayer_unity/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.020025708945468068,
+   "docxide_scores": {
+    "jaccard": 71.4,
+    "ssim": 95.7,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "new",
+   "case": "lithuanian_excise_tax_amendment",
+   "jubarte_time": 0.01818716700654477,
+   "jubarte_scores": {
+    "jaccard": 33.3,
+    "ssim": 54.3,
+    "text_boundary": 92.9
+   },
+   "jubarte_pages": [
+    "new/lithuanian_excise_tax_amendment/jubarte/page_001.webp",
+    "new/lithuanian_excise_tax_amendment/jubarte/page_002.webp"
+   ],
+   "docxide_time": 0.014881999930366874,
+   "docxide_scores": {
+    "jaccard": 59.5,
+    "ssim": 78.4,
+    "text_boundary": 91.1
+   }
+  },
+  {
+   "group": "new",
+   "case": "lithuanian_public_information_law",
+   "jubarte_time": 0.21511874999850988,
+   "jubarte_scores": {
+    "jaccard": 71.7,
+    "ssim": 91.6,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "new/lithuanian_public_information_law/jubarte/page_001.webp",
+    "new/lithuanian_public_information_law/jubarte/page_002.webp",
+    "new/lithuanian_public_information_law/jubarte/page_003.webp",
+    "new/lithuanian_public_information_law/jubarte/page_004.webp",
+    "new/lithuanian_public_information_law/jubarte/page_005.webp",
+    "new/lithuanian_public_information_law/jubarte/page_006.webp",
+    "new/lithuanian_public_information_law/jubarte/page_007.webp",
+    "new/lithuanian_public_information_law/jubarte/page_008.webp",
+    "new/lithuanian_public_information_law/jubarte/page_009.webp",
+    "new/lithuanian_public_information_law/jubarte/page_010.webp",
+    "new/lithuanian_public_information_law/jubarte/page_011.webp",
+    "new/lithuanian_public_information_law/jubarte/page_012.webp",
+    "new/lithuanian_public_information_law/jubarte/page_013.webp",
+    "new/lithuanian_public_information_law/jubarte/page_014.webp",
+    "new/lithuanian_public_information_law/jubarte/page_015.webp",
+    "new/lithuanian_public_information_law/jubarte/page_016.webp",
+    "new/lithuanian_public_information_law/jubarte/page_017.webp",
+    "new/lithuanian_public_information_law/jubarte/page_018.webp",
+    "new/lithuanian_public_information_law/jubarte/page_019.webp",
+    "new/lithuanian_public_information_law/jubarte/page_020.webp",
+    "new/lithuanian_public_information_law/jubarte/page_021.webp",
+    "new/lithuanian_public_information_law/jubarte/page_022.webp",
+    "new/lithuanian_public_information_law/jubarte/page_023.webp",
+    "new/lithuanian_public_information_law/jubarte/page_024.webp",
+    "new/lithuanian_public_information_law/jubarte/page_025.webp"
+   ],
+   "docxide_time": 0.03774758300278336,
+   "docxide_scores": {
+    "jaccard": 32.0,
+    "ssim": 44.2,
+    "text_boundary": 29.9
+   }
+  },
+  {
+   "group": "new",
+   "case": "lithuanian_railway_transport_code",
+   "jubarte_time": 0.02831858303397894,
+   "jubarte_scores": {
+    "jaccard": 66.1,
+    "ssim": 92.7,
+    "text_boundary": 98.6
+   },
+   "jubarte_pages": [
+    "new/lithuanian_railway_transport_code/jubarte/page_001.webp",
+    "new/lithuanian_railway_transport_code/jubarte/page_002.webp",
+    "new/lithuanian_railway_transport_code/jubarte/page_003.webp",
+    "new/lithuanian_railway_transport_code/jubarte/page_004.webp",
+    "new/lithuanian_railway_transport_code/jubarte/page_005.webp"
+   ],
+   "docxide_time": 0.06112620898056775,
+   "docxide_scores": {
+    "jaccard": 66.0,
+    "ssim": 94.4,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "new",
+   "case": "master_thesis_learning_agreement",
+   "jubarte_time": 0.03798495896626264,
+   "jubarte_scores": {
+    "jaccard": 20.5,
+    "ssim": 36.9,
+    "text_boundary": 61.8
+   },
+   "jubarte_pages": [
+    "new/master_thesis_learning_agreement/jubarte/page_001.webp",
+    "new/master_thesis_learning_agreement/jubarte/page_002.webp",
+    "new/master_thesis_learning_agreement/jubarte/page_003.webp",
+    "new/master_thesis_learning_agreement/jubarte/page_004.webp",
+    "new/master_thesis_learning_agreement/jubarte/page_005.webp",
+    "new/master_thesis_learning_agreement/jubarte/page_006.webp"
+   ],
+   "docxide_time": 0.019394125090911984,
+   "docxide_scores": {
+    "jaccard": 16.2,
+    "ssim": 31.9,
+    "text_boundary": 83.4
+   }
+  },
+  {
+   "group": "new",
+   "case": "old_blue_truck_guitar_tabs",
+   "jubarte_time": 0.035084125003777444,
+   "jubarte_scores": {
+    "jaccard": 61.0,
+    "ssim": 95.0,
+    "text_boundary": 98.6
+   },
+   "jubarte_pages": [
+    "new/old_blue_truck_guitar_tabs/jubarte/page_001.webp",
+    "new/old_blue_truck_guitar_tabs/jubarte/page_002.webp"
+   ],
+   "docxide_time": 0.017326666973531246,
+   "docxide_scores": {
+    "jaccard": 74.7,
+    "ssim": 93.8,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "new",
+   "case": "pendulum_mechanics_oscillation_lab",
+   "jubarte_time": 0.09202045807614923,
+   "jubarte_scores": {
+    "jaccard": 14.2,
+    "ssim": 31.9,
+    "text_boundary": 13.0
+   },
+   "jubarte_pages": [
+    "new/pendulum_mechanics_oscillation_lab/jubarte/page_001.webp",
+    "new/pendulum_mechanics_oscillation_lab/jubarte/page_002.webp"
+   ],
+   "docxide_time": 0.02105424995534122,
+   "docxide_scores": {
+    "jaccard": 15.5,
+    "ssim": 34.8,
+    "text_boundary": 30.4
+   }
+  },
+  {
+   "group": "new",
+   "case": "physical_therapy_comparison_table",
+   "jubarte_time": 0.013705624965950847,
+   "jubarte_scores": {
+    "jaccard": 69.7,
+    "ssim": 92.7,
+    "text_boundary": 91.7
+   },
+   "jubarte_pages": [
+    "new/physical_therapy_comparison_table/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.015648833010345697,
+   "docxide_scores": {
+    "jaccard": 12.6,
+    "ssim": 34.7,
+    "text_boundary": 91.7
+   }
+  },
+  {
+   "group": "new",
+   "case": "polish_municipal_notification",
+   "jubarte_time": 5.0697165839374065,
+   "jubarte_scores": {
+    "jaccard": 56.4,
+    "ssim": 75.2,
+    "text_boundary": 82.4
+   },
+   "jubarte_pages": [
+    "new/polish_municipal_notification/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.01211799995508045,
+   "docxide_scores": {
+    "jaccard": 67.0,
+    "ssim": 85.3,
+    "text_boundary": 94.1
+   }
+  },
+  {
+   "group": "new",
+   "case": "polish_procurement_statement",
+   "jubarte_time": 5.6494865419808775,
+   "jubarte_scores": {
+    "jaccard": 39.2,
+    "ssim": 61.5,
+    "text_boundary": 57.6
+   },
+   "jubarte_pages": [
+    "new/polish_procurement_statement/jubarte/page_001.webp",
+    "new/polish_procurement_statement/jubarte/page_002.webp",
+    "new/polish_procurement_statement/jubarte/page_003.webp",
+    "new/polish_procurement_statement/jubarte/page_004.webp"
+   ],
+   "docxide_time": 0.014031667029485106,
+   "docxide_scores": {
+    "jaccard": 27.5,
+    "ssim": 56.3,
+    "text_boundary": 48.0
+   }
+  },
+  {
+   "group": "new",
+   "case": "romanian_quality_evaluation_strategy",
+   "jubarte_time": 0.07357604103162885,
+   "jubarte_scores": {
+    "jaccard": 76.7,
+    "ssim": 92.4,
+    "text_boundary": 73.3
+   },
+   "jubarte_pages": [
+    "new/romanian_quality_evaluation_strategy/jubarte/page_001.webp",
+    "new/romanian_quality_evaluation_strategy/jubarte/page_002.webp",
+    "new/romanian_quality_evaluation_strategy/jubarte/page_003.webp",
+    "new/romanian_quality_evaluation_strategy/jubarte/page_004.webp",
+    "new/romanian_quality_evaluation_strategy/jubarte/page_005.webp",
+    "new/romanian_quality_evaluation_strategy/jubarte/page_006.webp",
+    "new/romanian_quality_evaluation_strategy/jubarte/page_007.webp",
+    "new/romanian_quality_evaluation_strategy/jubarte/page_008.webp",
+    "new/romanian_quality_evaluation_strategy/jubarte/page_009.webp",
+    "new/romanian_quality_evaluation_strategy/jubarte/page_010.webp",
+    "new/romanian_quality_evaluation_strategy/jubarte/page_011.webp",
+    "new/romanian_quality_evaluation_strategy/jubarte/page_012.webp",
+    "new/romanian_quality_evaluation_strategy/jubarte/page_013.webp",
+    "new/romanian_quality_evaluation_strategy/jubarte/page_014.webp",
+    "new/romanian_quality_evaluation_strategy/jubarte/page_015.webp",
+    "new/romanian_quality_evaluation_strategy/jubarte/page_016.webp",
+    "new/romanian_quality_evaluation_strategy/jubarte/page_017.webp",
+    "new/romanian_quality_evaluation_strategy/jubarte/page_018.webp",
+    "new/romanian_quality_evaluation_strategy/jubarte/page_019.webp",
+    "new/romanian_quality_evaluation_strategy/jubarte/page_020.webp"
+   ],
+   "docxide_time": 0.02414087508805096,
+   "docxide_scores": {
+    "jaccard": 31.9,
+    "ssim": 50.6,
+    "text_boundary": 48.6
+   }
+  },
+  {
+   "group": "new",
+   "case": "russian_chess_pawn_lesson",
+   "jubarte_time": 0.01582308392971754,
+   "jubarte_scores": {
+    "jaccard": 96.7,
+    "ssim": 97.1,
+    "text_boundary": 91.7
+   },
+   "jubarte_pages": [
+    "new/russian_chess_pawn_lesson/jubarte/page_001.webp",
+    "new/russian_chess_pawn_lesson/jubarte/page_002.webp",
+    "new/russian_chess_pawn_lesson/jubarte/page_003.webp"
+   ],
+   "docxide_time": 0.01263266708701849,
+   "docxide_scores": {
+    "jaccard": 58.1,
+    "ssim": 63.8,
+    "text_boundary": 89.6
+   }
+  },
+  {
+   "group": "new",
+   "case": "russian_construction_org_council_minutes",
+   "jubarte_time": 0.01289004203863442,
+   "jubarte_scores": {
+    "jaccard": 72.6,
+    "ssim": 88.0,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "new/russian_construction_org_council_minutes/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.012675833073444664,
+   "docxide_scores": {
+    "jaccard": 42.0,
+    "ssim": 77.6,
+    "text_boundary": 95.0
+   }
+  },
+  {
+   "group": "new",
+   "case": "russian_municipal_council_draft",
+   "jubarte_time": 0.017070750007405877,
+   "jubarte_scores": {
+    "jaccard": 73.6,
+    "ssim": 89.7,
+    "text_boundary": 97.8
+   },
+   "jubarte_pages": [
+    "new/russian_municipal_council_draft/jubarte/page_001.webp",
+    "new/russian_municipal_council_draft/jubarte/page_002.webp",
+    "new/russian_municipal_council_draft/jubarte/page_003.webp"
+   ],
+   "docxide_time": 0.013437959016300738,
+   "docxide_scores": {
+    "jaccard": 48.4,
+    "ssim": 80.4,
+    "text_boundary": 80.4
+   }
+  },
+  {
+   "group": "new",
+   "case": "russian_regional_spatial_development",
+   "jubarte_time": 0.027301582973450422,
+   "jubarte_scores": {
+    "jaccard": 75.4,
+    "ssim": 97.6,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "new/russian_regional_spatial_development/jubarte/page_001.webp",
+    "new/russian_regional_spatial_development/jubarte/page_002.webp",
+    "new/russian_regional_spatial_development/jubarte/page_003.webp",
+    "new/russian_regional_spatial_development/jubarte/page_004.webp"
+   ],
+   "docxide_time": 0.017344666994176805,
+   "docxide_scores": {
+    "jaccard": 65.5,
+    "ssim": 89.1,
+    "text_boundary": 94.0
+   }
+  },
+  {
+   "group": "new",
+   "case": "russian_volunteerism_essay",
+   "jubarte_time": 0.19636187492869794,
+   "jubarte_scores": {
+    "jaccard": 72.4,
+    "ssim": 87.1,
+    "text_boundary": 87.7
+   },
+   "jubarte_pages": [
+    "new/russian_volunteerism_essay/jubarte/page_001.webp",
+    "new/russian_volunteerism_essay/jubarte/page_002.webp",
+    "new/russian_volunteerism_essay/jubarte/page_003.webp",
+    "new/russian_volunteerism_essay/jubarte/page_004.webp",
+    "new/russian_volunteerism_essay/jubarte/page_005.webp",
+    "new/russian_volunteerism_essay/jubarte/page_006.webp",
+    "new/russian_volunteerism_essay/jubarte/page_007.webp",
+    "new/russian_volunteerism_essay/jubarte/page_008.webp",
+    "new/russian_volunteerism_essay/jubarte/page_009.webp",
+    "new/russian_volunteerism_essay/jubarte/page_010.webp",
+    "new/russian_volunteerism_essay/jubarte/page_011.webp",
+    "new/russian_volunteerism_essay/jubarte/page_012.webp",
+    "new/russian_volunteerism_essay/jubarte/page_013.webp",
+    "new/russian_volunteerism_essay/jubarte/page_014.webp",
+    "new/russian_volunteerism_essay/jubarte/page_015.webp",
+    "new/russian_volunteerism_essay/jubarte/page_016.webp",
+    "new/russian_volunteerism_essay/jubarte/page_017.webp",
+    "new/russian_volunteerism_essay/jubarte/page_018.webp",
+    "new/russian_volunteerism_essay/jubarte/page_019.webp",
+    "new/russian_volunteerism_essay/jubarte/page_020.webp",
+    "new/russian_volunteerism_essay/jubarte/page_021.webp",
+    "new/russian_volunteerism_essay/jubarte/page_022.webp",
+    "new/russian_volunteerism_essay/jubarte/page_023.webp",
+    "new/russian_volunteerism_essay/jubarte/page_024.webp",
+    "new/russian_volunteerism_essay/jubarte/page_025.webp",
+    "new/russian_volunteerism_essay/jubarte/page_026.webp",
+    "new/russian_volunteerism_essay/jubarte/page_027.webp",
+    "new/russian_volunteerism_essay/jubarte/page_028.webp",
+    "new/russian_volunteerism_essay/jubarte/page_029.webp",
+    "new/russian_volunteerism_essay/jubarte/page_030.webp",
+    "new/russian_volunteerism_essay/jubarte/page_031.webp",
+    "new/russian_volunteerism_essay/jubarte/page_032.webp",
+    "new/russian_volunteerism_essay/jubarte/page_033.webp",
+    "new/russian_volunteerism_essay/jubarte/page_034.webp",
+    "new/russian_volunteerism_essay/jubarte/page_035.webp",
+    "new/russian_volunteerism_essay/jubarte/page_036.webp",
+    "new/russian_volunteerism_essay/jubarte/page_037.webp",
+    "new/russian_volunteerism_essay/jubarte/page_038.webp",
+    "new/russian_volunteerism_essay/jubarte/page_039.webp",
+    "new/russian_volunteerism_essay/jubarte/page_040.webp",
+    "new/russian_volunteerism_essay/jubarte/page_041.webp",
+    "new/russian_volunteerism_essay/jubarte/page_042.webp",
+    "new/russian_volunteerism_essay/jubarte/page_043.webp",
+    "new/russian_volunteerism_essay/jubarte/page_044.webp",
+    "new/russian_volunteerism_essay/jubarte/page_045.webp",
+    "new/russian_volunteerism_essay/jubarte/page_046.webp",
+    "new/russian_volunteerism_essay/jubarte/page_047.webp",
+    "new/russian_volunteerism_essay/jubarte/page_048.webp"
+   ],
+   "docxide_time": 0.047768124961294234,
+   "docxide_scores": {
+    "jaccard": 67.0,
+    "ssim": 84.5,
+    "text_boundary": 91.6
+   }
+  },
+  {
+   "group": "new",
+   "case": "school_meal_assistance_faq",
+   "jubarte_time": 0.024034958914853632,
+   "jubarte_scores": {
+    "jaccard": 70.6,
+    "ssim": 89.7,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "new/school_meal_assistance_faq/jubarte/page_001.webp",
+    "new/school_meal_assistance_faq/jubarte/page_002.webp",
+    "new/school_meal_assistance_faq/jubarte/page_003.webp"
+   ],
+   "docxide_time": 0.01470950001385063,
+   "docxide_scores": {
+    "jaccard": 6.4,
+    "ssim": 17.2,
+    "text_boundary": 34.7
+   }
+  },
+  {
+   "group": "new",
+   "case": "scottish_fundraising_awards_campaign",
+   "jubarte_time": 0.020898459013551474,
+   "jubarte_scores": {
+    "jaccard": 16.5,
+    "ssim": 23.5,
+    "text_boundary": 80.6
+   },
+   "jubarte_pages": [
+    "new/scottish_fundraising_awards_campaign/jubarte/page_001.webp",
+    "new/scottish_fundraising_awards_campaign/jubarte/page_002.webp",
+    "new/scottish_fundraising_awards_campaign/jubarte/page_003.webp"
+   ],
+   "docxide_time": 0.02473116701003164,
+   "docxide_scores": {
+    "jaccard": 25.3,
+    "ssim": 53.0,
+    "text_boundary": 76.1
+   }
+  },
+  {
+   "group": "new",
+   "case": "slovak_constitution_amendment_check",
+   "jubarte_time": 0.07594050001353025,
+   "jubarte_scores": {
+    "jaccard": 18.9,
+    "ssim": 78.4,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "new/slovak_constitution_amendment_check/jubarte/page_001.webp",
+    "new/slovak_constitution_amendment_check/jubarte/page_002.webp"
+   ],
+   "docxide_time": 0.014474041992798448,
+   "docxide_scores": {
+    "jaccard": 44.1,
+    "ssim": 85.3,
+    "text_boundary": 97.6
+   }
+  },
+  {
+   "group": "new",
+   "case": "slovak_electoral_campaign_amendment",
+   "jubarte_time": 0.028597750002518296,
+   "jubarte_scores": {
+    "jaccard": 59.6,
+    "ssim": 79.3,
+    "text_boundary": 79.2
+   },
+   "jubarte_pages": [
+    "new/slovak_electoral_campaign_amendment/jubarte/page_001.webp",
+    "new/slovak_electoral_campaign_amendment/jubarte/page_002.webp",
+    "new/slovak_electoral_campaign_amendment/jubarte/page_003.webp"
+   ],
+   "docxide_time": 0.016040625050663948,
+   "docxide_scores": {
+    "jaccard": 36.6,
+    "ssim": 52.7,
+    "text_boundary": 38.6
+   }
+  },
+  {
+   "group": "new",
+   "case": "slovak_eu_directive_compliance_table",
+   "jubarte_time": 0.04543554096017033,
+   "jubarte_scores": {
+    "jaccard": 43.1,
+    "ssim": 64.1,
+    "text_boundary": 36.4
+   },
+   "jubarte_pages": [
+    "new/slovak_eu_directive_compliance_table/jubarte/page_001.webp",
+    "new/slovak_eu_directive_compliance_table/jubarte/page_002.webp",
+    "new/slovak_eu_directive_compliance_table/jubarte/page_003.webp",
+    "new/slovak_eu_directive_compliance_table/jubarte/page_004.webp",
+    "new/slovak_eu_directive_compliance_table/jubarte/page_005.webp",
+    "new/slovak_eu_directive_compliance_table/jubarte/page_006.webp"
+   ],
+   "docxide_time": 0.020487625035457313,
+   "docxide_scores": {
+    "jaccard": 13.0,
+    "ssim": 21.4,
+    "text_boundary": 16.3
+   }
+  },
+  {
+   "group": "new",
+   "case": "slovak_fuel_pricing_report",
+   "jubarte_time": 0.034103999962098897,
+   "jubarte_scores": {
+    "jaccard": 62.7,
+    "ssim": 78.0,
+    "text_boundary": 55.4
+   },
+   "jubarte_pages": [
+    "new/slovak_fuel_pricing_report/jubarte/page_001.webp",
+    "new/slovak_fuel_pricing_report/jubarte/page_002.webp"
+   ],
+   "docxide_time": 0.016414958983659744,
+   "docxide_scores": {
+    "jaccard": 59.3,
+    "ssim": 88.8,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "new",
+   "case": "slovak_pedagogical_practice_agreement",
+   "jubarte_time": 0.07992308307439089,
+   "jubarte_scores": {
+    "jaccard": 68.8,
+    "ssim": 87.1,
+    "text_boundary": 93.8
+   },
+   "jubarte_pages": [
+    "new/slovak_pedagogical_practice_agreement/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.022923750104382634,
+   "docxide_scores": {
+    "jaccard": 13.6,
+    "ssim": 37.8,
+    "text_boundary": 13.8
+   }
+  },
+  {
+   "group": "new",
+   "case": "stiavnicke_bane_assembly_minutes",
+   "jubarte_time": 0.05389429198112339,
+   "jubarte_scores": {
+    "jaccard": 48.2,
+    "ssim": 65.5,
+    "text_boundary": 48.0
+   },
+   "jubarte_pages": [
+    "new/stiavnicke_bane_assembly_minutes/jubarte/page_001.webp",
+    "new/stiavnicke_bane_assembly_minutes/jubarte/page_002.webp",
+    "new/stiavnicke_bane_assembly_minutes/jubarte/page_003.webp",
+    "new/stiavnicke_bane_assembly_minutes/jubarte/page_004.webp"
+   ],
+   "docxide_time": 0.015256708022207022,
+   "docxide_scores": {
+    "jaccard": 76.3,
+    "ssim": 93.0,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "new",
+   "case": "streamnet_steering_committee_meeting",
+   "jubarte_time": 0.07686954201199114,
+   "jubarte_scores": {
+    "jaccard": 72.0,
+    "ssim": 91.5,
+    "text_boundary": 92.3
+   },
+   "jubarte_pages": [
+    "new/streamnet_steering_committee_meeting/jubarte/page_001.webp",
+    "new/streamnet_steering_committee_meeting/jubarte/page_002.webp",
+    "new/streamnet_steering_committee_meeting/jubarte/page_003.webp",
+    "new/streamnet_steering_committee_meeting/jubarte/page_004.webp",
+    "new/streamnet_steering_committee_meeting/jubarte/page_005.webp",
+    "new/streamnet_steering_committee_meeting/jubarte/page_006.webp",
+    "new/streamnet_steering_committee_meeting/jubarte/page_007.webp"
+   ],
+   "docxide_time": 0.020138125051744282,
+   "docxide_scores": {
+    "jaccard": 53.6,
+    "ssim": 88.6,
+    "text_boundary": 92.6
+   }
+  },
+  {
+   "group": "new",
+   "case": "taiwanese_education_fraud_ruling",
+   "jubarte_time": 0.051170374965295196,
+   "jubarte_scores": {
+    "jaccard": 31.0,
+    "ssim": 39.9,
+    "text_boundary": 12.5
+   },
+   "jubarte_pages": [
+    "new/taiwanese_education_fraud_ruling/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.017740209004841745,
+   "docxide_scores": {
+    "jaccard": 12.5,
+    "ssim": 21.6,
+    "text_boundary": 6.2
+   }
+  },
+  {
+   "group": "new",
+   "case": "tokyo_welfare_infrastructure_briefing",
+   "jubarte_time": 0.12731699994765222,
+   "jubarte_scores": {
+    "jaccard": 14.6,
+    "ssim": 25.3,
+    "text_boundary": 95.5
+   },
+   "jubarte_pages": [
+    "new/tokyo_welfare_infrastructure_briefing/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.01571616600267589,
+   "docxide_scores": {
+    "jaccard": 14.1,
+    "ssim": 40.8,
+    "text_boundary": 54.5
+   }
+  },
+  {
+   "group": "new",
+   "case": "turkish_chemistry_course_plan",
+   "jubarte_time": 0.015088291955180466,
+   "jubarte_scores": {
+    "jaccard": 16.7,
+    "ssim": 89.3,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "new/turkish_chemistry_course_plan/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.011127332923933864,
+   "docxide_scores": {
+    "jaccard": 18.9,
+    "ssim": 86.3,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "new",
+   "case": "turkish_journal_article_template",
+   "jubarte_time": 0.015355709008872509,
+   "jubarte_scores": {
+    "jaccard": 68.1,
+    "ssim": 82.1,
+    "text_boundary": 97.4
+   },
+   "jubarte_pages": [
+    "new/turkish_journal_article_template/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.012979499995708466,
+   "docxide_scores": {
+    "jaccard": 60.4,
+    "ssim": 83.0,
+    "text_boundary": 92.3
+   }
+  },
+  {
+   "group": "new",
+   "case": "ut_koer_annual_meeting_minutes",
+   "jubarte_time": 0.031646625022403896,
+   "jubarte_scores": {
+    "jaccard": 35.3,
+    "ssim": 61.5,
+    "text_boundary": 44.7
+   },
+   "jubarte_pages": [
+    "new/ut_koer_annual_meeting_minutes/jubarte/page_001.webp",
+    "new/ut_koer_annual_meeting_minutes/jubarte/page_002.webp",
+    "new/ut_koer_annual_meeting_minutes/jubarte/page_003.webp"
+   ],
+   "docxide_time": 0.029869291931390762,
+   "docxide_scores": {
+    "jaccard": 13.7,
+    "ssim": 37.4,
+    "text_boundary": 34.5
+   }
+  },
+  {
+   "group": "new",
+   "case": "victorian_universal_design_policy",
+   "jubarte_time": 0.11908291699364781,
+   "jubarte_scores": {
+    "jaccard": 17.6,
+    "ssim": 37.8,
+    "text_boundary": 7.1
+   },
+   "jubarte_pages": [
+    "new/victorian_universal_design_policy/jubarte/page_001.webp",
+    "new/victorian_universal_design_policy/jubarte/page_002.webp",
+    "new/victorian_universal_design_policy/jubarte/page_003.webp",
+    "new/victorian_universal_design_policy/jubarte/page_004.webp",
+    "new/victorian_universal_design_policy/jubarte/page_005.webp",
+    "new/victorian_universal_design_policy/jubarte/page_006.webp",
+    "new/victorian_universal_design_policy/jubarte/page_007.webp",
+    "new/victorian_universal_design_policy/jubarte/page_008.webp",
+    "new/victorian_universal_design_policy/jubarte/page_009.webp",
+    "new/victorian_universal_design_policy/jubarte/page_010.webp",
+    "new/victorian_universal_design_policy/jubarte/page_011.webp"
+   ],
+   "docxide_time": 0.1444659170228988,
+   "docxide_scores": {
+    "jaccard": 39.0,
+    "ssim": 71.4,
+    "text_boundary": 76.5
+   }
+  },
+  {
+   "group": "new",
+   "case": "western_australia_owner_drivers_act",
+   "jubarte_time": 0.11891499999910593,
+   "jubarte_scores": {
+    "jaccard": 34.3,
+    "ssim": 48.4,
+    "text_boundary": 29.1
+   },
+   "jubarte_pages": [
+    "new/western_australia_owner_drivers_act/jubarte/page_001.webp",
+    "new/western_australia_owner_drivers_act/jubarte/page_002.webp",
+    "new/western_australia_owner_drivers_act/jubarte/page_003.webp",
+    "new/western_australia_owner_drivers_act/jubarte/page_004.webp",
+    "new/western_australia_owner_drivers_act/jubarte/page_005.webp",
+    "new/western_australia_owner_drivers_act/jubarte/page_006.webp",
+    "new/western_australia_owner_drivers_act/jubarte/page_007.webp",
+    "new/western_australia_owner_drivers_act/jubarte/page_008.webp",
+    "new/western_australia_owner_drivers_act/jubarte/page_009.webp",
+    "new/western_australia_owner_drivers_act/jubarte/page_010.webp",
+    "new/western_australia_owner_drivers_act/jubarte/page_011.webp",
+    "new/western_australia_owner_drivers_act/jubarte/page_012.webp",
+    "new/western_australia_owner_drivers_act/jubarte/page_013.webp",
+    "new/western_australia_owner_drivers_act/jubarte/page_014.webp",
+    "new/western_australia_owner_drivers_act/jubarte/page_015.webp",
+    "new/western_australia_owner_drivers_act/jubarte/page_016.webp",
+    "new/western_australia_owner_drivers_act/jubarte/page_017.webp",
+    "new/western_australia_owner_drivers_act/jubarte/page_018.webp",
+    "new/western_australia_owner_drivers_act/jubarte/page_019.webp",
+    "new/western_australia_owner_drivers_act/jubarte/page_020.webp",
+    "new/western_australia_owner_drivers_act/jubarte/page_021.webp",
+    "new/western_australia_owner_drivers_act/jubarte/page_022.webp",
+    "new/western_australia_owner_drivers_act/jubarte/page_023.webp",
+    "new/western_australia_owner_drivers_act/jubarte/page_024.webp",
+    "new/western_australia_owner_drivers_act/jubarte/page_025.webp",
+    "new/western_australia_owner_drivers_act/jubarte/page_026.webp",
+    "new/western_australia_owner_drivers_act/jubarte/page_027.webp",
+    "new/western_australia_owner_drivers_act/jubarte/page_028.webp",
+    "new/western_australia_owner_drivers_act/jubarte/page_029.webp",
+    "new/western_australia_owner_drivers_act/jubarte/page_030.webp",
+    "new/western_australia_owner_drivers_act/jubarte/page_031.webp",
+    "new/western_australia_owner_drivers_act/jubarte/page_032.webp",
+    "new/western_australia_owner_drivers_act/jubarte/page_033.webp",
+    "new/western_australia_owner_drivers_act/jubarte/page_034.webp",
+    "new/western_australia_owner_drivers_act/jubarte/page_035.webp",
+    "new/western_australia_owner_drivers_act/jubarte/page_036.webp",
+    "new/western_australia_owner_drivers_act/jubarte/page_037.webp",
+    "new/western_australia_owner_drivers_act/jubarte/page_038.webp",
+    "new/western_australia_owner_drivers_act/jubarte/page_039.webp",
+    "new/western_australia_owner_drivers_act/jubarte/page_040.webp",
+    "new/western_australia_owner_drivers_act/jubarte/page_041.webp",
+    "new/western_australia_owner_drivers_act/jubarte/page_042.webp",
+    "new/western_australia_owner_drivers_act/jubarte/page_043.webp",
+    "new/western_australia_owner_drivers_act/jubarte/page_044.webp",
+    "new/western_australia_owner_drivers_act/jubarte/page_045.webp",
+    "new/western_australia_owner_drivers_act/jubarte/page_046.webp",
+    "new/western_australia_owner_drivers_act/jubarte/page_047.webp",
+    "new/western_australia_owner_drivers_act/jubarte/page_048.webp",
+    "new/western_australia_owner_drivers_act/jubarte/page_049.webp",
+    "new/western_australia_owner_drivers_act/jubarte/page_050.webp",
+    "new/western_australia_owner_drivers_act/jubarte/page_051.webp",
+    "new/western_australia_owner_drivers_act/jubarte/page_052.webp",
+    "new/western_australia_owner_drivers_act/jubarte/page_053.webp",
+    "new/western_australia_owner_drivers_act/jubarte/page_054.webp",
+    "new/western_australia_owner_drivers_act/jubarte/page_055.webp",
+    "new/western_australia_owner_drivers_act/jubarte/page_056.webp",
+    "new/western_australia_owner_drivers_act/jubarte/page_057.webp"
+   ],
+   "docxide_time": 0.04383620910812169,
+   "docxide_scores": {
+    "jaccard": 36.0,
+    "ssim": 59.9,
+    "text_boundary": 52.4
+   }
+  },
+  {
+   "group": "new",
+   "case": "who_prescribing_patterns_table",
+   "jubarte_time": 0.03720195800997317,
+   "jubarte_scores": {
+    "jaccard": 57.3,
+    "ssim": 84.3,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "new/who_prescribing_patterns_table/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.012233957997523248,
+   "docxide_scores": {
+    "jaccard": 12.3,
+    "ssim": 52.5,
+    "text_boundary": 96.7
+   }
+  },
+  {
+   "group": "new",
+   "case": "youtube_channel_link",
+   "jubarte_time": 0.05291083292104304,
+   "jubarte_scores": {
+    "jaccard": 78.7,
+    "ssim": 91.4,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "new/youtube_channel_link/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.013106083031743765,
+   "docxide_scores": {
+    "jaccard": 78.9,
+    "ssim": 91.4,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "new",
+   "case": "zimbabwe_broadcasting_corporation_judgment",
+   "jubarte_time": 0.04538679192773998,
+   "jubarte_scores": {
+    "jaccard": 66.6,
+    "ssim": 85.7,
+    "text_boundary": 98.5
+   },
+   "jubarte_pages": [
+    "new/zimbabwe_broadcasting_corporation_judgment/jubarte/page_001.webp",
+    "new/zimbabwe_broadcasting_corporation_judgment/jubarte/page_002.webp",
+    "new/zimbabwe_broadcasting_corporation_judgment/jubarte/page_003.webp",
+    "new/zimbabwe_broadcasting_corporation_judgment/jubarte/page_004.webp",
+    "new/zimbabwe_broadcasting_corporation_judgment/jubarte/page_005.webp",
+    "new/zimbabwe_broadcasting_corporation_judgment/jubarte/page_006.webp",
+    "new/zimbabwe_broadcasting_corporation_judgment/jubarte/page_007.webp",
+    "new/zimbabwe_broadcasting_corporation_judgment/jubarte/page_008.webp",
+    "new/zimbabwe_broadcasting_corporation_judgment/jubarte/page_009.webp",
+    "new/zimbabwe_broadcasting_corporation_judgment/jubarte/page_010.webp",
+    "new/zimbabwe_broadcasting_corporation_judgment/jubarte/page_011.webp",
+    "new/zimbabwe_broadcasting_corporation_judgment/jubarte/page_012.webp",
+    "new/zimbabwe_broadcasting_corporation_judgment/jubarte/page_013.webp",
+    "new/zimbabwe_broadcasting_corporation_judgment/jubarte/page_014.webp",
+    "new/zimbabwe_broadcasting_corporation_judgment/jubarte/page_015.webp"
+   ],
+   "docxide_time": 0.022706166957505047,
+   "docxide_scores": {
+    "jaccard": 52.9,
+    "ssim": 80.3,
+    "text_boundary": 96.7
+   }
+  },
+  {
+   "group": "new",
+   "case": "zimbabwe_gold_mining_judgment",
+   "jubarte_time": 0.03659787506330758,
+   "jubarte_scores": {
+    "jaccard": 27.1,
+    "ssim": 43.0,
+    "text_boundary": 43.3
+   },
+   "jubarte_pages": [
+    "new/zimbabwe_gold_mining_judgment/jubarte/page_001.webp",
+    "new/zimbabwe_gold_mining_judgment/jubarte/page_002.webp",
+    "new/zimbabwe_gold_mining_judgment/jubarte/page_003.webp",
+    "new/zimbabwe_gold_mining_judgment/jubarte/page_004.webp",
+    "new/zimbabwe_gold_mining_judgment/jubarte/page_005.webp",
+    "new/zimbabwe_gold_mining_judgment/jubarte/page_006.webp",
+    "new/zimbabwe_gold_mining_judgment/jubarte/page_007.webp",
+    "new/zimbabwe_gold_mining_judgment/jubarte/page_008.webp",
+    "new/zimbabwe_gold_mining_judgment/jubarte/page_009.webp"
+   ],
+   "docxide_time": 0.02026833302807063,
+   "docxide_scores": {
+    "jaccard": 24.5,
+    "ssim": 42.3,
+    "text_boundary": 36.6
+   }
+  },
+  {
+   "group": "samples",
+   "case": "CV",
+   "jubarte_time": 0.07157216698396951,
+   "jubarte_scores": {
+    "jaccard": 84.1,
+    "ssim": 94.0,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "samples/CV/jubarte/page_001.webp",
+    "samples/CV/jubarte/page_002.webp"
+   ],
+   "docxide_time": 0.01329825003631413,
+   "docxide_scores": {
+    "jaccard": 11.4,
+    "ssim": 43.1,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "samples",
+   "case": "double-underline",
+   "jubarte_time": 0.062302000005729496,
+   "jubarte_scores": {
+    "jaccard": 78.7,
+    "ssim": 90.5,
+    "text_boundary": 100.0
+   },
+   "jubarte_pages": [
+    "samples/double-underline/jubarte/page_001.webp"
+   ],
+   "docxide_time": 0.01198829198256135,
+   "docxide_scores": {
+    "jaccard": 58.8,
+    "ssim": 77.0,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "samples",
+   "case": "run-borders",
+   "jubarte_time": 0.4059376660734415,
+   "jubarte_scores": {
+    "jaccard": 13.7,
+    "ssim": 25.5,
+    "text_boundary": 1.0
+   },
+   "jubarte_pages": [
+    "samples/run-borders/jubarte/page_001.webp",
+    "samples/run-borders/jubarte/page_002.webp",
+    "samples/run-borders/jubarte/page_003.webp",
+    "samples/run-borders/jubarte/page_004.webp",
+    "samples/run-borders/jubarte/page_005.webp",
+    "samples/run-borders/jubarte/page_006.webp",
+    "samples/run-borders/jubarte/page_007.webp",
+    "samples/run-borders/jubarte/page_008.webp",
+    "samples/run-borders/jubarte/page_009.webp",
+    "samples/run-borders/jubarte/page_010.webp",
+    "samples/run-borders/jubarte/page_011.webp",
+    "samples/run-borders/jubarte/page_012.webp",
+    "samples/run-borders/jubarte/page_013.webp",
+    "samples/run-borders/jubarte/page_014.webp",
+    "samples/run-borders/jubarte/page_015.webp",
+    "samples/run-borders/jubarte/page_016.webp",
+    "samples/run-borders/jubarte/page_017.webp",
+    "samples/run-borders/jubarte/page_018.webp",
+    "samples/run-borders/jubarte/page_019.webp",
+    "samples/run-borders/jubarte/page_020.webp",
+    "samples/run-borders/jubarte/page_021.webp",
+    "samples/run-borders/jubarte/page_022.webp",
+    "samples/run-borders/jubarte/page_023.webp",
+    "samples/run-borders/jubarte/page_024.webp",
+    "samples/run-borders/jubarte/page_025.webp",
+    "samples/run-borders/jubarte/page_026.webp",
+    "samples/run-borders/jubarte/page_027.webp",
+    "samples/run-borders/jubarte/page_028.webp",
+    "samples/run-borders/jubarte/page_029.webp",
+    "samples/run-borders/jubarte/page_030.webp",
+    "samples/run-borders/jubarte/page_031.webp",
+    "samples/run-borders/jubarte/page_032.webp",
+    "samples/run-borders/jubarte/page_033.webp",
+    "samples/run-borders/jubarte/page_034.webp",
+    "samples/run-borders/jubarte/page_035.webp",
+    "samples/run-borders/jubarte/page_036.webp",
+    "samples/run-borders/jubarte/page_037.webp",
+    "samples/run-borders/jubarte/page_038.webp",
+    "samples/run-borders/jubarte/page_039.webp",
+    "samples/run-borders/jubarte/page_040.webp",
+    "samples/run-borders/jubarte/page_041.webp",
+    "samples/run-borders/jubarte/page_042.webp",
+    "samples/run-borders/jubarte/page_043.webp",
+    "samples/run-borders/jubarte/page_044.webp",
+    "samples/run-borders/jubarte/page_045.webp",
+    "samples/run-borders/jubarte/page_046.webp",
+    "samples/run-borders/jubarte/page_047.webp",
+    "samples/run-borders/jubarte/page_048.webp",
+    "samples/run-borders/jubarte/page_049.webp",
+    "samples/run-borders/jubarte/page_050.webp",
+    "samples/run-borders/jubarte/page_051.webp",
+    "samples/run-borders/jubarte/page_052.webp",
+    "samples/run-borders/jubarte/page_053.webp",
+    "samples/run-borders/jubarte/page_054.webp",
+    "samples/run-borders/jubarte/page_055.webp",
+    "samples/run-borders/jubarte/page_056.webp"
+   ],
+   "docxide_time": 0.08861962496303022,
+   "docxide_scores": {
+    "jaccard": 36.3,
+    "ssim": 50.4,
+    "text_boundary": 17.5
+   }
+  },
+  {
+   "group": "samples",
+   "case": "sample500kB",
+   "jubarte_time": 0.10517941601574421,
+   "jubarte_scores": {
+    "jaccard": 9.6,
+    "ssim": 25.2,
+    "text_boundary": 5.8
+   },
+   "jubarte_pages": [
+    "samples/sample500kB/jubarte/page_001.webp",
+    "samples/sample500kB/jubarte/page_002.webp",
+    "samples/sample500kB/jubarte/page_003.webp",
+    "samples/sample500kB/jubarte/page_004.webp"
+   ],
+   "docxide_time": 0.0956991669954732,
+   "docxide_scores": {
+    "jaccard": 12.5,
+    "ssim": 21.5,
+    "text_boundary": 3.6
+   }
+  },
+  {
+   "group": "samples",
+   "case": "samtale",
+   "jubarte_time": 0.03839358396362513,
+   "jubarte_scores": {
+    "jaccard": 28.8,
+    "ssim": 80.3,
+    "text_boundary": 68.6
+   },
+   "jubarte_pages": [
+    "samples/samtale/jubarte/page_001.webp",
+    "samples/samtale/jubarte/page_002.webp"
+   ],
+   "docxide_time": 0.013018082943744957,
+   "docxide_scores": {
+    "jaccard": 32.5,
+    "ssim": 55.1,
+    "text_boundary": 86.3
+   }
+  }
+ ]
+}

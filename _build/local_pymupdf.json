@@ -1,0 +1,2053 @@
+{
+ "version": "pymupdf-pro 1.28.2 (unlicensed, first 3 pages)",
+ "cases": [
+  {
+   "group": "cases",
+   "case": "case1",
+   "ref_pages": 1,
+   "time": 0.37211945897433907,
+   "pages": 1,
+   "scores": {
+    "jaccard": 33.0,
+    "ssim": 47.6,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case2",
+   "ref_pages": 1,
+   "time": 0.31791820900980383,
+   "pages": 1,
+   "scores": {
+    "jaccard": 19.4,
+    "ssim": 34.9,
+    "text_boundary": 100.0
+   },
+   "retried_after": "RuntimeError: office_export() failed: SmartOfficeDoc_exportAsPDF() failed, err=795. | PyMuPDFPro: Restricted Mode. Please visit https://pymupdf.io/try-pro to request your trial key."
+  },
+  {
+   "group": "cases",
+   "case": "case3",
+   "ref_pages": 1,
+   "time": 0.3998716250061989,
+   "pages": 1,
+   "scores": {
+    "jaccard": 8.0,
+    "ssim": 35.1,
+    "text_boundary": 60.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case4",
+   "ref_pages": 2,
+   "time": 0.4126360830850899,
+   "pages": 2,
+   "scores": {
+    "jaccard": 30.1,
+    "ssim": 56.7,
+    "text_boundary": 81.7
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case5",
+   "ref_pages": 2,
+   "time": 0.3726107080001384,
+   "pages": 2,
+   "scores": {
+    "jaccard": 6.5,
+    "ssim": 17.7,
+    "text_boundary": 64.5
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case6",
+   "ref_pages": 3,
+   "time": 0.38570716709364206,
+   "pages": 3,
+   "scores": {
+    "jaccard": 8.6,
+    "ssim": 26.8,
+    "text_boundary": 0.9
+   },
+   "retried_after": "RuntimeError: office_export() failed: SmartOfficeDoc_exportAsPDF() failed, err=795. | PyMuPDFPro: Restricted Mode. Please visit https://pymupdf.io/try-pro to request your trial key."
+  },
+  {
+   "group": "cases",
+   "case": "case7",
+   "ref_pages": 1,
+   "time": 0.46590320800896734,
+   "pages": 1,
+   "scores": {
+    "jaccard": 57.0,
+    "ssim": 74.3,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case8",
+   "ref_pages": 1,
+   "time": 0.33529491699300706,
+   "pages": 1,
+   "scores": {
+    "jaccard": 7.4,
+    "ssim": 12.6
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case9",
+   "ref_pages": 1,
+   "time": 0.3186738749500364,
+   "pages": 1,
+   "scores": {
+    "jaccard": 49.8,
+    "ssim": 61.9,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case10",
+   "ref_pages": 3,
+   "time": 0.36362737498711795,
+   "pages": 3,
+   "scores": {
+    "jaccard": 4.8,
+    "ssim": 13.6,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case11",
+   "ref_pages": 2,
+   "time": 0.3311386660207063,
+   "pages": 2,
+   "scores": {
+    "jaccard": 17.0,
+    "ssim": 28.4,
+    "text_boundary": 74.3
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case12",
+   "ref_pages": 1,
+   "time": 0.31697287503629923,
+   "pages": 1,
+   "scores": {
+    "jaccard": 98.5,
+    "ssim": 97.7,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case13",
+   "ref_pages": 205
+  },
+  {
+   "group": "cases",
+   "case": "case14",
+   "ref_pages": 1,
+   "time": 0.35474845895078033,
+   "pages": 1,
+   "scores": {
+    "jaccard": 17.0,
+    "ssim": 30.2,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case15",
+   "ref_pages": 1,
+   "time": 0.4209301669616252,
+   "pages": 1,
+   "scores": {
+    "jaccard": 14.4,
+    "ssim": 77.8,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case16",
+   "ref_pages": 2,
+   "time": 0.373849333031103,
+   "pages": 2,
+   "scores": {
+    "jaccard": 86.5,
+    "ssim": 74.7,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case17",
+   "ref_pages": 1,
+   "time": 0.2964627909241244,
+   "error": "RuntimeError: office_export() failed: SmartOffice document load failed for markdown export, doc_error=4. | PyMuPDFPro: Restricted Mode. Please visit https://pymupdf.io/try-pro to request your trial key.",
+   "retried_after": "RuntimeError: office_export() failed: SmartOffice document load failed for markdown export, doc_error=4. | PyMuPDFPro: Restricted Mode. Please visit https://pymupdf.io/try-pro to request your trial key."
+  },
+  {
+   "group": "cases",
+   "case": "case18",
+   "ref_pages": 1,
+   "time": 0.40116029197815806,
+   "pages": 1,
+   "scores": {
+    "jaccard": 8.4,
+    "ssim": 24.8,
+    "text_boundary": 13.6
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case19",
+   "ref_pages": 1,
+   "time": 0.3419308749726042,
+   "pages": 1,
+   "scores": {
+    "jaccard": 67.6,
+    "ssim": 89.8,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case20",
+   "ref_pages": 2,
+   "time": 0.35998075001407415,
+   "pages": 2,
+   "scores": {
+    "jaccard": 65.9,
+    "ssim": 89.4,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case21",
+   "ref_pages": 1,
+   "time": 0.3707583339419216,
+   "pages": 1,
+   "scores": {
+    "jaccard": 33.4,
+    "ssim": 48.4,
+    "text_boundary": 10.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case22",
+   "ref_pages": 2,
+   "time": 0.3607906250981614,
+   "pages": 2,
+   "scores": {
+    "jaccard": 30.5,
+    "ssim": 44.2,
+    "text_boundary": 1.3
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case23",
+   "ref_pages": 1,
+   "time": 0.36055783298797905,
+   "pages": 1,
+   "scores": {
+    "jaccard": 53.9,
+    "ssim": 71.1,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case24",
+   "ref_pages": 3,
+   "time": 0.3496932910056785,
+   "pages": 3,
+   "scores": {
+    "jaccard": 20.6,
+    "ssim": 30.2,
+    "text_boundary": 51.4
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case25",
+   "ref_pages": 4
+  },
+  {
+   "group": "cases",
+   "case": "case26",
+   "ref_pages": 4
+  },
+  {
+   "group": "cases",
+   "case": "case27",
+   "ref_pages": 2,
+   "time": 0.34838379197753966,
+   "pages": 2,
+   "scores": {
+    "jaccard": 97.9,
+    "ssim": 91.4,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case28",
+   "ref_pages": 3,
+   "time": 0.4942455419804901,
+   "pages": 3,
+   "scores": {
+    "jaccard": 10.1,
+    "ssim": 21.1,
+    "text_boundary": 68.8
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case29",
+   "ref_pages": 2,
+   "time": 0.5118327079107985,
+   "pages": 2,
+   "scores": {
+    "jaccard": 36.1,
+    "ssim": 47.9,
+    "text_boundary": 50.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case30",
+   "ref_pages": 2,
+   "time": 0.37406041705980897,
+   "pages": 2,
+   "scores": {
+    "jaccard": 72.3,
+    "ssim": 70.0,
+    "text_boundary": 60.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case31",
+   "ref_pages": 2,
+   "time": 0.3879760829731822,
+   "pages": 2,
+   "scores": {
+    "jaccard": 28.9,
+    "ssim": 49.3,
+    "text_boundary": 22.5
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case32",
+   "ref_pages": 1,
+   "time": 0.36186099995393306,
+   "pages": 1,
+   "scores": {
+    "jaccard": 9.6,
+    "ssim": 20.6,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case33",
+   "ref_pages": 1,
+   "time": 0.37491704209242016,
+   "pages": 1,
+   "scores": {
+    "jaccard": 52.2,
+    "ssim": 63.1,
+    "text_boundary": 72.7
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case34",
+   "ref_pages": 1,
+   "time": 0.33666591707151383,
+   "pages": 1,
+   "scores": {
+    "jaccard": 98.6,
+    "ssim": 96.4,
+    "text_boundary": 37.5
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case35",
+   "ref_pages": 1,
+   "time": 0.35696475009899586,
+   "pages": 1,
+   "scores": {
+    "jaccard": 98.9,
+    "ssim": 98.3,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case36",
+   "ref_pages": 1,
+   "time": 0.328078499995172,
+   "pages": 1,
+   "scores": {
+    "jaccard": 32.0,
+    "ssim": 70.7
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case37",
+   "ref_pages": 1,
+   "time": 0.3378564170561731,
+   "pages": 1,
+   "scores": {
+    "jaccard": 0.0,
+    "ssim": 0.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case38",
+   "ref_pages": 1,
+   "time": 0.4102926249615848,
+   "pages": 1,
+   "scores": {
+    "jaccard": 92.5,
+    "ssim": 95.6,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case39",
+   "ref_pages": 1,
+   "time": 0.37092491693329066,
+   "pages": 1,
+   "scores": {
+    "jaccard": 9.5,
+    "ssim": 21.4,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case40",
+   "ref_pages": 2,
+   "time": 0.31930166704114527,
+   "pages": 2,
+   "scores": {
+    "jaccard": 15.7,
+    "ssim": 26.6,
+    "text_boundary": 14.3
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case41",
+   "ref_pages": 7
+  },
+  {
+   "group": "cases",
+   "case": "case42",
+   "ref_pages": 1,
+   "time": 0.42462458403315395,
+   "pages": 2,
+   "scores": {
+    "jaccard": 44.0,
+    "ssim": 34.2,
+    "text_boundary": 16.7
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case43",
+   "ref_pages": 1,
+   "time": 0.3335044590057805,
+   "pages": 1,
+   "scores": {
+    "jaccard": 26.1,
+    "ssim": 30.2
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case44",
+   "ref_pages": 3,
+   "time": 0.33376504201442003,
+   "pages": 3,
+   "scores": {
+    "jaccard": 33.7,
+    "ssim": 36.6,
+    "text_boundary": 33.3
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case45",
+   "ref_pages": 2,
+   "time": 0.31110533396713436,
+   "pages": 2,
+   "scores": {
+    "jaccard": 12.6,
+    "ssim": 22.9,
+    "text_boundary": 3.5
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case46",
+   "ref_pages": 14
+  },
+  {
+   "group": "cases",
+   "case": "case47",
+   "ref_pages": 16
+  },
+  {
+   "group": "cases",
+   "case": "case48",
+   "ref_pages": 1,
+   "time": 0.4089454170316458,
+   "pages": 1,
+   "scores": {
+    "jaccard": 57.6,
+    "ssim": 81.6,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case49",
+   "ref_pages": 3,
+   "time": 0.44617650005966425,
+   "pages": 3,
+   "scores": {
+    "jaccard": 43.6,
+    "ssim": 62.2,
+    "text_boundary": 60.6
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case50",
+   "ref_pages": 2,
+   "time": 0.4133350000483915,
+   "pages": 2,
+   "scores": {
+    "jaccard": 24.7,
+    "ssim": 39.2,
+    "text_boundary": 62.9
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case51",
+   "ref_pages": 2,
+   "time": 0.3404405830660835,
+   "pages": 1,
+   "scores": {
+    "jaccard": 9.9,
+    "ssim": 25.6
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case52",
+   "ref_pages": 2,
+   "time": 0.3621089169755578,
+   "pages": 2,
+   "scores": {
+    "jaccard": 32.5,
+    "ssim": 50.4,
+    "text_boundary": 12.8
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case53",
+   "ref_pages": 2,
+   "time": 0.3543602910358459,
+   "pages": 2,
+   "scores": {
+    "jaccard": 22.0,
+    "ssim": 18.2,
+    "text_boundary": 22.2
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case54",
+   "ref_pages": 2,
+   "time": 0.35619616601616144,
+   "pages": 2,
+   "scores": {
+    "jaccard": 48.7,
+    "ssim": 66.0,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case55",
+   "ref_pages": 1,
+   "time": 0.40978566696867347,
+   "pages": 1,
+   "scores": {
+    "jaccard": 18.4,
+    "ssim": 68.9,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case56",
+   "ref_pages": 3,
+   "time": 0.3499957079766318,
+   "pages": 3,
+   "scores": {
+    "jaccard": 93.5,
+    "ssim": 93.0,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case57",
+   "ref_pages": 5
+  },
+  {
+   "group": "cases",
+   "case": "case59",
+   "ref_pages": 2,
+   "time": 1.024354916997254,
+   "pages": 2,
+   "scores": {
+    "jaccard": 55.2,
+    "ssim": 80.2,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case60",
+   "ref_pages": 1,
+   "time": 0.4204710409976542,
+   "pages": 2,
+   "scores": {
+    "jaccard": 36.2,
+    "ssim": 69.3
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case61",
+   "ref_pages": 1,
+   "time": 0.38205858296714723,
+   "pages": 2,
+   "scores": {
+    "jaccard": 11.5,
+    "ssim": 28.6
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case62",
+   "ref_pages": 1,
+   "time": 0.37264108296949416,
+   "pages": 1,
+   "scores": {
+    "jaccard": 51.0,
+    "ssim": 82.1,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case63",
+   "ref_pages": 1,
+   "time": 0.3401197500061244,
+   "pages": 1,
+   "scores": {
+    "jaccard": 0.2,
+    "ssim": 8.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case64",
+   "ref_pages": 3,
+   "time": 0.35882712493184954,
+   "pages": 3,
+   "scores": {
+    "jaccard": 4.7,
+    "ssim": 13.7,
+    "text_boundary": 37.5
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case66",
+   "ref_pages": 1,
+   "time": 0.3434838750399649,
+   "pages": 1,
+   "scores": {
+    "jaccard": 62.9,
+    "ssim": 58.6
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case67",
+   "ref_pages": 1,
+   "time": 0.31673283397685736,
+   "pages": 1,
+   "scores": {
+    "jaccard": 18.7,
+    "ssim": 18.9
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case68",
+   "ref_pages": 1,
+   "time": 0.2928647920489311,
+   "pages": 1,
+   "scores": {
+    "jaccard": 12.6,
+    "ssim": 19.8,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case69",
+   "ref_pages": 1,
+   "time": 0.36908974999096245,
+   "pages": 1,
+   "scores": {
+    "jaccard": 0.0,
+    "ssim": 1.7,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case70",
+   "ref_pages": 1,
+   "time": 0.33935004204977304,
+   "pages": 1,
+   "scores": {
+    "jaccard": 56.2,
+    "ssim": 71.9,
+    "text_boundary": 0.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case71",
+   "ref_pages": 1,
+   "time": 0.3633967919740826,
+   "pages": 1,
+   "scores": {
+    "jaccard": 78.5,
+    "ssim": 91.1,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case72",
+   "ref_pages": 1,
+   "time": 0.31683187501039356,
+   "pages": 1,
+   "scores": {
+    "jaccard": 65.2,
+    "ssim": 79.4,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case73",
+   "ref_pages": 1,
+   "time": 0.3544737920165062,
+   "pages": 1,
+   "scores": {
+    "jaccard": 77.9,
+    "ssim": 91.1,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case74",
+   "ref_pages": 1,
+   "time": 0.3536897919839248,
+   "pages": 1,
+   "scores": {
+    "jaccard": 20.7,
+    "ssim": 40.8,
+    "text_boundary": 11.1
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case75",
+   "ref_pages": 1,
+   "time": 0.38763745909091085,
+   "pages": 1,
+   "scores": {
+    "jaccard": 19.8,
+    "ssim": 37.5,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case76",
+   "ref_pages": 1,
+   "time": 0.34312670794315636,
+   "pages": 1,
+   "scores": {
+    "jaccard": 16.3,
+    "ssim": 23.0,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case77",
+   "ref_pages": 1,
+   "time": 1.2364252920961007,
+   "pages": 1,
+   "scores": {
+    "jaccard": 44.2,
+    "ssim": 61.5,
+    "text_boundary": 68.4
+   }
+  },
+  {
+   "group": "cases",
+   "case": "case78",
+   "ref_pages": 2,
+   "time": 0.40320220903959125,
+   "pages": 2,
+   "scores": {
+    "jaccard": 97.8,
+    "ssim": 97.0,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "air_pollution_permit_form",
+   "ref_pages": 1,
+   "time": 0.5384055839385837,
+   "pages": 1,
+   "scores": {
+    "jaccard": 7.4,
+    "ssim": 15.1,
+    "text_boundary": 11.8
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "brazilian_logistics_study",
+   "ref_pages": 20
+  },
+  {
+   "group": "scraped",
+   "case": "bush_fires_act_comparison",
+   "ref_pages": 105
+  },
+  {
+   "group": "scraped",
+   "case": "centrifugal_water_chillers",
+   "ref_pages": 9
+  },
+  {
+   "group": "scraped",
+   "case": "classroom_weekly_newsletter",
+   "ref_pages": 2,
+   "time": 0.4507579590426758,
+   "pages": 2,
+   "scores": {
+    "jaccard": 91.7,
+    "ssim": 86.0,
+    "text_boundary": 21.7
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "croatian_grant_guidelines",
+   "ref_pages": 65
+  },
+  {
+   "group": "scraped",
+   "case": "croatian_regulations_altchunk",
+   "ref_pages": 8
+  },
+  {
+   "group": "scraped",
+   "case": "czech_cafeteria_notice",
+   "ref_pages": 1,
+   "time": 0.39335545897483826,
+   "pages": 1,
+   "scores": {
+    "jaccard": 38.9,
+    "ssim": 49.1,
+    "text_boundary": 88.9
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "czech_expert_witness_law",
+   "ref_pages": 2,
+   "time": 0.40399820904713124,
+   "pages": 3,
+   "scores": {
+    "jaccard": 55.9,
+    "ssim": 73.3,
+    "text_boundary": 92.7
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "czech_health_statement_form",
+   "ref_pages": 2,
+   "time": 0.3832216670271009,
+   "pages": 2,
+   "scores": {
+    "jaccard": 23.8,
+    "ssim": 37.2,
+    "text_boundary": 89.7
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "czech_municipal_grant_form",
+   "ref_pages": 2,
+   "time": 0.36691262503154576,
+   "pages": 2,
+   "scores": {
+    "jaccard": 12.6,
+    "ssim": 38.8,
+    "text_boundary": 42.0
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "czech_tree_cutting_permit",
+   "ref_pages": 1,
+   "time": 0.4684965000487864,
+   "pages": 1,
+   "scores": {
+    "jaccard": 69.8,
+    "ssim": 87.3,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "destination_loyalty_tourism_study",
+   "ref_pages": 1,
+   "time": 0.33477883297018707,
+   "pages": 1,
+   "scores": {
+    "jaccard": 49.7,
+    "ssim": 67.6,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "dutch_school_evaluation_form",
+   "ref_pages": 2,
+   "time": 0.468859083019197,
+   "pages": 2,
+   "scores": {
+    "jaccard": 46.7,
+    "ssim": 74.6,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "east_asia_conference_form",
+   "ref_pages": 2,
+   "time": 2.812911416986026,
+   "pages": 1,
+   "scores": {
+    "jaccard": 5.1,
+    "ssim": 12.3,
+    "text_boundary": 0.0
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "education_consultant_posting",
+   "ref_pages": 7
+  },
+  {
+   "group": "scraped",
+   "case": "federal_procurement_terms",
+   "ref_pages": 12
+  },
+  {
+   "group": "scraped",
+   "case": "feminist_voice_dissertation",
+   "ref_pages": 104
+  },
+  {
+   "group": "scraped",
+   "case": "german_mezzo_soprano_bio",
+   "ref_pages": 1,
+   "time": 0.4348677910165861,
+   "pages": 2,
+   "scores": {
+    "jaccard": 50.1,
+    "ssim": 45.3,
+    "text_boundary": 81.5
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "go_math_grade4_guide",
+   "ref_pages": 26
+  },
+  {
+   "group": "scraped",
+   "case": "indonesian_benchmarking_guide",
+   "ref_pages": 15
+  },
+  {
+   "group": "scraped",
+   "case": "italian_evaluation_minutes",
+   "ref_pages": 7
+  },
+  {
+   "group": "scraped",
+   "case": "italian_project_proposal",
+   "ref_pages": 1,
+   "time": 0.32444520806893706,
+   "pages": 1,
+   "scores": {
+    "jaccard": 6.3,
+    "ssim": 38.2,
+    "text_boundary": 0.0
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "japanese_interlibrary_loan",
+   "ref_pages": 1,
+   "time": 1.2401313750306144,
+   "pages": 1,
+   "scores": {
+    "jaccard": 29.3,
+    "ssim": 70.0,
+    "text_boundary": 10.0
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "korean_japanese_conference_form",
+   "ref_pages": 2,
+   "time": 2.730830500018783,
+   "pages": 1,
+   "scores": {
+    "jaccard": 7.7,
+    "ssim": 12.9,
+    "text_boundary": 0.0
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "learning_cultures_dissertation",
+   "ref_pages": 122
+  },
+  {
+   "group": "scraped",
+   "case": "lithuanian_ethics_law",
+   "ref_pages": 1,
+   "time": 0.39917333400808275,
+   "pages": 1,
+   "scores": {
+    "jaccard": 38.9,
+    "ssim": 56.0,
+    "text_boundary": 65.0
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "lithuanian_food_quality_order",
+   "ref_pages": 1,
+   "time": 0.40815445908810943,
+   "pages": 1,
+   "scores": {
+    "jaccard": 36.9,
+    "ssim": 50.6,
+    "text_boundary": 48.1
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "mandated_reporter_child_abuse",
+   "ref_pages": 5
+  },
+  {
+   "group": "scraped",
+   "case": "mongolian_human_rights_law",
+   "ref_pages": 8
+  },
+  {
+   "group": "scraped",
+   "case": "parish_housing_data_profile",
+   "ref_pages": 4
+  },
+  {
+   "group": "scraped",
+   "case": "polish_archery_range_plan",
+   "ref_pages": 4
+  },
+  {
+   "group": "scraped",
+   "case": "polish_building_procurement_spec",
+   "ref_pages": 14
+  },
+  {
+   "group": "scraped",
+   "case": "polish_council_resolution",
+   "ref_pages": 2,
+   "time": 0.3402671670773998,
+   "pages": 2,
+   "scores": {
+    "jaccard": 40.8,
+    "ssim": 58.5,
+    "text_boundary": 70.7
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "polish_municipal_letter",
+   "ref_pages": 1,
+   "time": 0.39786054205615073,
+   "pages": 1,
+   "scores": {
+    "jaccard": 7.3,
+    "ssim": 17.0,
+    "text_boundary": 92.6
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "polish_tender_declaration",
+   "ref_pages": 3,
+   "time": 0.4072475830325857,
+   "pages": 3,
+   "scores": {
+    "jaccard": 49.0,
+    "ssim": 61.4,
+    "text_boundary": 84.7
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "rehab_centre_physio_posting",
+   "ref_pages": 1,
+   "time": 0.47091770893894136,
+   "pages": 1,
+   "scores": {
+    "jaccard": 20.5,
+    "ssim": 60.7,
+    "text_boundary": 63.4
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "russian_sports_ranking_decree",
+   "ref_pages": 2,
+   "time": 0.3618457920383662,
+   "pages": 2,
+   "scores": {
+    "jaccard": 37.6,
+    "ssim": 53.9,
+    "text_boundary": 82.1
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "russian_student_researcher_competition",
+   "ref_pages": 1,
+   "time": 0.4028110000072047,
+   "pages": 1,
+   "scores": {
+    "jaccard": 10.5,
+    "ssim": 32.3,
+    "text_boundary": 6.5
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "russian_university_proceedings",
+   "ref_pages": 3,
+   "time": 0.45560854207724333,
+   "pages": 3,
+   "scores": {
+    "jaccard": 22.1,
+    "ssim": 40.8,
+    "text_boundary": 57.6
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "seminary_hill_board_meeting",
+   "ref_pages": 2,
+   "time": 0.40052108303643763,
+   "pages": 2,
+   "scores": {
+    "jaccard": 38.9,
+    "ssim": 57.0,
+    "text_boundary": 85.7
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "slovak_misdemeanor_amendment",
+   "ref_pages": 3,
+   "time": 0.3320865830173716,
+   "pages": 3,
+   "scores": {
+    "jaccard": 53.7,
+    "ssim": 70.4,
+    "text_boundary": 73.8
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "spanish_constitutional_ruling",
+   "ref_pages": 9
+  },
+  {
+   "group": "scraped",
+   "case": "stem_partnerships_guide",
+   "ref_pages": 7
+  },
+  {
+   "group": "scraped",
+   "case": "traditional_skills_job_form",
+   "ref_pages": 4
+  },
+  {
+   "group": "scraped",
+   "case": "transition_to_work_deed",
+   "ref_pages": 153
+  },
+  {
+   "group": "scraped",
+   "case": "turkish_ancient_religions_plan",
+   "ref_pages": 2,
+   "time": 0.34690091595984995,
+   "pages": 2,
+   "scores": {
+    "jaccard": 7.6,
+    "ssim": 31.5,
+    "text_boundary": 70.2
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "turkish_prostate_cancer_course",
+   "ref_pages": 1,
+   "time": 0.3334639170207083,
+   "pages": 1,
+   "scores": {
+    "jaccard": 11.3,
+    "ssim": 34.2,
+    "text_boundary": 94.4
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "uk_commercial_lease_template",
+   "ref_pages": 79
+  },
+  {
+   "group": "scraped",
+   "case": "ukraine_humanitarian_aid",
+   "ref_pages": 2,
+   "time": 0.36466129194013774,
+   "pages": 2,
+   "scores": {
+    "jaccard": 34.2,
+    "ssim": 44.3,
+    "text_boundary": 24.1
+   }
+  },
+  {
+   "group": "scraped",
+   "case": "usep_handbook",
+   "ref_pages": 9
+  },
+  {
+   "group": "scraped",
+   "case": "vaccines_history_chapter",
+   "ref_pages": 5
+  },
+  {
+   "group": "scraped",
+   "case": "waste_management_request",
+   "ref_pages": 1,
+   "time": 0.34464116604067385,
+   "pages": 1,
+   "scores": {
+    "jaccard": 46.5,
+    "ssim": 73.4,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "new",
+   "case": "alfies_arc_adult_safeguarding_policy",
+   "ref_pages": 5
+  },
+  {
+   "group": "new",
+   "case": "alpharetta_school_governance_council",
+   "ref_pages": 1,
+   "time": 0.4126116670668125,
+   "pages": 1,
+   "scores": {
+    "jaccard": 6.6,
+    "ssim": 27.3,
+    "text_boundary": 7.4
+   }
+  },
+  {
+   "group": "new",
+   "case": "americas_counter_terrorism_agenda",
+   "ref_pages": 1,
+   "time": 0.35286641702987254,
+   "pages": 1,
+   "scores": {
+    "jaccard": 4.2,
+    "ssim": 15.4,
+    "text_boundary": 92.6
+   }
+  },
+  {
+   "group": "new",
+   "case": "arizona_physical_education_standards",
+   "ref_pages": 12
+  },
+  {
+   "group": "new",
+   "case": "auditor_regulatory_report_template",
+   "ref_pages": 2,
+   "time": 0.40071287495084107,
+   "pages": 2,
+   "scores": {
+    "jaccard": 44.0,
+    "ssim": 57.6,
+    "text_boundary": 58.0
+   }
+  },
+  {
+   "group": "new",
+   "case": "bahamas_sustainable_development_hosting",
+   "ref_pages": 2,
+   "time": 0.3771122919861227,
+   "pages": 2,
+   "scores": {
+    "jaccard": 34.8,
+    "ssim": 52.6,
+    "text_boundary": 48.6
+   }
+  },
+  {
+   "group": "new",
+   "case": "belgian_youth_program_certificate",
+   "ref_pages": 1,
+   "time": 0.6148327089613304,
+   "pages": 1,
+   "scores": {
+    "jaccard": 19.6,
+    "ssim": 52.0,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "new",
+   "case": "biochemistry_pentose_pathway_lecture",
+   "ref_pages": 3,
+   "time": 0.368974290904589,
+   "pages": 3,
+   "scores": {
+    "jaccard": 16.2,
+    "ssim": 26.5,
+    "text_boundary": 36.5
+   }
+  },
+  {
+   "group": "new",
+   "case": "bosch_software_ai_announcement",
+   "ref_pages": 7
+  },
+  {
+   "group": "new",
+   "case": "candidate_reference_check_form",
+   "ref_pages": 2,
+   "time": 0.42383112490642816,
+   "pages": 2,
+   "scores": {
+    "jaccard": 37.9,
+    "ssim": 63.2,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "new",
+   "case": "carbon_farming_initiative_rule",
+   "ref_pages": 110
+  },
+  {
+   "group": "new",
+   "case": "chinese_student_union_nomination_form",
+   "ref_pages": 6
+  },
+  {
+   "group": "new",
+   "case": "construction_bathroom_accessories_spec",
+   "ref_pages": 2,
+   "time": 0.3594884170452133,
+   "pages": 2,
+   "scores": {
+    "jaccard": 31.6,
+    "ssim": 45.6,
+    "text_boundary": 89.1
+   }
+  },
+  {
+   "group": "new",
+   "case": "covid_insomnia_mental_health",
+   "ref_pages": 5
+  },
+  {
+   "group": "new",
+   "case": "croatian_military_burial_request",
+   "ref_pages": 2,
+   "time": 0.3537301250034943,
+   "pages": 2,
+   "scores": {
+    "jaccard": 11.3,
+    "ssim": 43.3,
+    "text_boundary": 37.8
+   }
+  },
+  {
+   "group": "new",
+   "case": "croatian_thesis_topic_approval_form",
+   "ref_pages": 2,
+   "time": 0.36342054209671915,
+   "pages": 1,
+   "scores": {
+    "jaccard": 22.3,
+    "ssim": 43.2,
+    "text_boundary": 53.8
+   }
+  },
+  {
+   "group": "new",
+   "case": "czech_census_2021_instructions",
+   "ref_pages": 1,
+   "time": 0.32350254198536277,
+   "pages": 1,
+   "scores": {
+    "jaccard": 54.4,
+    "ssim": 69.3,
+    "text_boundary": 69.0
+   }
+  },
+  {
+   "group": "new",
+   "case": "czech_crisis_measure_notice",
+   "ref_pages": 7
+  },
+  {
+   "group": "new",
+   "case": "czech_works_contract_proposal",
+   "ref_pages": 6
+  },
+  {
+   "group": "new",
+   "case": "dental_amalgam_restoration_care",
+   "ref_pages": 1,
+   "time": 0.3877181669231504,
+   "pages": 1,
+   "scores": {
+    "jaccard": 32.2,
+    "ssim": 48.0,
+    "text_boundary": 72.2
+   }
+  },
+  {
+   "group": "new",
+   "case": "dialysis_treatment_transition_guide",
+   "ref_pages": 1,
+   "time": 0.3922596250195056,
+   "pages": 1,
+   "scores": {
+    "jaccard": 54.3,
+    "ssim": 77.5,
+    "text_boundary": 63.0
+   }
+  },
+  {
+   "group": "new",
+   "case": "dutch_council_member_resignation",
+   "ref_pages": 1,
+   "time": 0.4166216671001166,
+   "pages": 1,
+   "scores": {
+    "jaccard": 11.2,
+    "ssim": 32.8,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "new",
+   "case": "dutch_government_budget_letter",
+   "ref_pages": 1,
+   "time": 0.6151812500320375,
+   "pages": 2,
+   "scores": {
+    "jaccard": 2.2,
+    "ssim": 8.2
+   }
+  },
+  {
+   "group": "new",
+   "case": "eco_int_agriculture_registration",
+   "ref_pages": 1,
+   "time": 0.5665784579468891,
+   "pages": 1,
+   "scores": {
+    "jaccard": 35.3,
+    "ssim": 60.8,
+    "text_boundary": 88.6
+   }
+  },
+  {
+   "group": "new",
+   "case": "english_town_council_report",
+   "ref_pages": 8
+  },
+  {
+   "group": "new",
+   "case": "environmental_law_clinic_china",
+   "ref_pages": 38
+  },
+  {
+   "group": "new",
+   "case": "erasmus_plus_staff_mobility_agreement",
+   "ref_pages": 3,
+   "time": 0.9959829580038786,
+   "pages": 3,
+   "scores": {
+    "jaccard": 15.6,
+    "ssim": 34.4,
+    "text_boundary": 55.4
+   }
+  },
+  {
+   "group": "new",
+   "case": "family_kinship_lesson_plan",
+   "ref_pages": 4
+  },
+  {
+   "group": "new",
+   "case": "french_lease_early_termination_form",
+   "ref_pages": 2,
+   "time": 0.34190954198129475,
+   "pages": 2,
+   "scores": {
+    "jaccard": 22.8,
+    "ssim": 39.8,
+    "text_boundary": 49.0
+   }
+  },
+  {
+   "group": "new",
+   "case": "french_sexual_health_youth_strategy",
+   "ref_pages": 2,
+   "time": 0.4447347919922322,
+   "pages": 2,
+   "scores": {
+    "jaccard": 16.8,
+    "ssim": 27.8,
+    "text_boundary": 97.1
+   }
+  },
+  {
+   "group": "new",
+   "case": "handels_messiah_biblical_analysis",
+   "ref_pages": 8
+  },
+  {
+   "group": "new",
+   "case": "indigenous_innovation_sandbox_agreement",
+   "ref_pages": 20
+  },
+  {
+   "group": "new",
+   "case": "international_terrorism_thesis",
+   "ref_pages": 24
+  },
+  {
+   "group": "new",
+   "case": "irish_school_enrollment_form",
+   "ref_pages": 3,
+   "time": 0.5236465829657391,
+   "pages": 3,
+   "scores": {
+    "jaccard": 42.4,
+    "ssim": 62.5,
+    "text_boundary": 89.3
+   }
+  },
+  {
+   "group": "new",
+   "case": "isla_language_lesson_plan",
+   "ref_pages": 8
+  },
+  {
+   "group": "new",
+   "case": "japanese_land_development_sign_form",
+   "ref_pages": 1,
+   "time": 1.1088607920100912,
+   "pages": 2,
+   "scores": {
+    "jaccard": 4.3,
+    "ssim": 13.0,
+    "text_boundary": 16.0
+   }
+  },
+  {
+   "group": "new",
+   "case": "japanese_medical_consultation_form",
+   "ref_pages": 2,
+   "time": 2.474092375021428,
+   "pages": 3,
+   "scores": {
+    "jaccard": 3.3,
+    "ssim": 11.6,
+    "text_boundary": 14.3
+   }
+  },
+  {
+   "group": "new",
+   "case": "k4_regulations_synthesis_document",
+   "ref_pages": 2,
+   "time": 0.34773237502668053,
+   "pages": 2,
+   "scores": {
+    "jaccard": 50.7,
+    "ssim": 81.7,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "new",
+   "case": "lenten_prayer_unity",
+   "ref_pages": 1,
+   "time": 0.3968177920905873,
+   "pages": 1,
+   "scores": {
+    "jaccard": 71.1,
+    "ssim": 95.1,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "new",
+   "case": "lithuanian_excise_tax_amendment",
+   "ref_pages": 2,
+   "time": 0.3956646251026541,
+   "pages": 2,
+   "scores": {
+    "jaccard": 25.6,
+    "ssim": 48.7,
+    "text_boundary": 91.1
+   }
+  },
+  {
+   "group": "new",
+   "case": "lithuanian_public_information_law",
+   "ref_pages": 25
+  },
+  {
+   "group": "new",
+   "case": "lithuanian_railway_transport_code",
+   "ref_pages": 5
+  },
+  {
+   "group": "new",
+   "case": "master_thesis_learning_agreement",
+   "ref_pages": 6
+  },
+  {
+   "group": "new",
+   "case": "old_blue_truck_guitar_tabs",
+   "ref_pages": 2,
+   "time": 0.3475420830072835,
+   "pages": 2,
+   "scores": {
+    "jaccard": 59.6,
+    "ssim": 72.2,
+    "text_boundary": 98.6
+   }
+  },
+  {
+   "group": "new",
+   "case": "pendulum_mechanics_oscillation_lab",
+   "ref_pages": 2,
+   "time": 0.4372899580048397,
+   "pages": 2,
+   "scores": {
+    "jaccard": 9.7,
+    "ssim": 22.1,
+    "text_boundary": 13.0
+   }
+  },
+  {
+   "group": "new",
+   "case": "physical_therapy_comparison_table",
+   "ref_pages": 1,
+   "time": 0.3809599159285426,
+   "pages": 1,
+   "scores": {
+    "jaccard": 45.8,
+    "ssim": 68.1,
+    "text_boundary": 75.0
+   }
+  },
+  {
+   "group": "new",
+   "case": "polish_municipal_notification",
+   "ref_pages": 1,
+   "time": 0.3351931249490008,
+   "pages": 1,
+   "scores": {
+    "jaccard": 49.3,
+    "ssim": 69.3,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "new",
+   "case": "polish_procurement_statement",
+   "ref_pages": 4
+  },
+  {
+   "group": "new",
+   "case": "romanian_quality_evaluation_strategy",
+   "ref_pages": 20
+  },
+  {
+   "group": "new",
+   "case": "russian_chess_pawn_lesson",
+   "ref_pages": 3,
+   "time": 0.3654053750215098,
+   "pages": 3,
+   "scores": {
+    "jaccard": 65.6,
+    "ssim": 70.4,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "new",
+   "case": "russian_construction_org_council_minutes",
+   "ref_pages": 1,
+   "time": 0.3302095830440521,
+   "pages": 1,
+   "scores": {
+    "jaccard": 51.9,
+    "ssim": 69.0,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "new",
+   "case": "russian_municipal_council_draft",
+   "ref_pages": 3,
+   "time": 0.4344452499644831,
+   "pages": 3,
+   "scores": {
+    "jaccard": 19.6,
+    "ssim": 38.6,
+    "text_boundary": 29.7
+   }
+  },
+  {
+   "group": "new",
+   "case": "russian_regional_spatial_development",
+   "ref_pages": 4
+  },
+  {
+   "group": "new",
+   "case": "russian_volunteerism_essay",
+   "ref_pages": 48
+  },
+  {
+   "group": "new",
+   "case": "school_meal_assistance_faq",
+   "ref_pages": 3,
+   "time": 0.4607497079996392,
+   "pages": 3,
+   "scores": {
+    "jaccard": 30.8,
+    "ssim": 45.0,
+    "text_boundary": 93.4
+   }
+  },
+  {
+   "group": "new",
+   "case": "scottish_fundraising_awards_campaign",
+   "ref_pages": 3,
+   "time": 0.4026897499570623,
+   "pages": 3,
+   "scores": {
+    "jaccard": 44.6,
+    "ssim": 81.4,
+    "text_boundary": 76.1
+   }
+  },
+  {
+   "group": "new",
+   "case": "slovak_constitution_amendment_check",
+   "ref_pages": 2,
+   "time": 0.35233000002335757,
+   "pages": 2,
+   "scores": {
+    "jaccard": 7.9,
+    "ssim": 25.6,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "new",
+   "case": "slovak_electoral_campaign_amendment",
+   "ref_pages": 3,
+   "time": 0.42390145896933973,
+   "pages": 3,
+   "scores": {
+    "jaccard": 32.9,
+    "ssim": 49.5,
+    "text_boundary": 38.6
+   }
+  },
+  {
+   "group": "new",
+   "case": "slovak_eu_directive_compliance_table",
+   "ref_pages": 6
+  },
+  {
+   "group": "new",
+   "case": "slovak_fuel_pricing_report",
+   "ref_pages": 2,
+   "time": 0.49806862499099225,
+   "pages": 2,
+   "scores": {
+    "jaccard": 48.8,
+    "ssim": 84.4,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "new",
+   "case": "slovak_pedagogical_practice_agreement",
+   "ref_pages": 1,
+   "time": 0.47945791692472994,
+   "pages": 1,
+   "scores": {
+    "jaccard": 10.3,
+    "ssim": 37.2,
+    "text_boundary": 22.6
+   }
+  },
+  {
+   "group": "new",
+   "case": "stiavnicke_bane_assembly_minutes",
+   "ref_pages": 4
+  },
+  {
+   "group": "new",
+   "case": "streamnet_steering_committee_meeting",
+   "ref_pages": 7
+  },
+  {
+   "group": "new",
+   "case": "taiwanese_education_fraud_ruling",
+   "ref_pages": 1,
+   "time": 1.8560153329744935,
+   "pages": 1,
+   "scores": {
+    "jaccard": 23.5,
+    "ssim": 34.5,
+    "text_boundary": 0.0
+   }
+  },
+  {
+   "group": "new",
+   "case": "tokyo_welfare_infrastructure_briefing",
+   "ref_pages": 1,
+   "time": 1.7771889170398936,
+   "pages": 1,
+   "scores": {
+    "jaccard": 11.2,
+    "ssim": 20.4,
+    "text_boundary": 50.0
+   }
+  },
+  {
+   "group": "new",
+   "case": "turkish_chemistry_course_plan",
+   "ref_pages": 1,
+   "time": 0.3381702919723466,
+   "pages": 1,
+   "scores": {
+    "jaccard": 9.3,
+    "ssim": 33.8,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "new",
+   "case": "turkish_journal_article_template",
+   "ref_pages": 1,
+   "time": 0.3476037080399692,
+   "pages": 1,
+   "scores": {
+    "jaccard": 23.1,
+    "ssim": 38.8,
+    "text_boundary": 97.1
+   }
+  },
+  {
+   "group": "new",
+   "case": "ut_koer_annual_meeting_minutes",
+   "ref_pages": 3,
+   "time": 0.5479099999647588,
+   "pages": 3,
+   "scores": {
+    "jaccard": 18.6,
+    "ssim": 42.1,
+    "text_boundary": 1.2
+   }
+  },
+  {
+   "group": "new",
+   "case": "victorian_universal_design_policy",
+   "ref_pages": 12
+  },
+  {
+   "group": "new",
+   "case": "western_australia_owner_drivers_act",
+   "ref_pages": 57
+  },
+  {
+   "group": "new",
+   "case": "who_prescribing_patterns_table",
+   "ref_pages": 1,
+   "time": 0.37257749994751066,
+   "pages": 1,
+   "scores": {
+    "jaccard": 19.7,
+    "ssim": 36.0,
+    "text_boundary": 93.3
+   }
+  },
+  {
+   "group": "new",
+   "case": "youtube_channel_link",
+   "ref_pages": 1,
+   "time": 0.3480585420038551,
+   "pages": 1,
+   "scores": {
+    "jaccard": 20.8,
+    "ssim": 41.1,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "new",
+   "case": "zimbabwe_broadcasting_corporation_judgment",
+   "ref_pages": 15
+  },
+  {
+   "group": "new",
+   "case": "zimbabwe_gold_mining_judgment",
+   "ref_pages": 8
+  },
+  {
+   "group": "samples",
+   "case": "CV",
+   "ref_pages": 2,
+   "time": 0.3305288340197876,
+   "pages": 2,
+   "scores": {
+    "jaccard": 16.9,
+    "ssim": 93.7,
+    "text_boundary": 100.0
+   }
+  },
+  {
+   "group": "samples",
+   "case": "double-underline",
+   "ref_pages": 1,
+   "time": 0.296352457953617,
+   "pages": 1,
+   "scores": {
+    "jaccard": 20.7,
+    "ssim": 47.3
+   }
+  },
+  {
+   "group": "samples",
+   "case": "run-borders",
+   "ref_pages": 58
+  },
+  {
+   "group": "samples",
+   "case": "sample500kB",
+   "ref_pages": 5
+  },
+  {
+   "group": "samples",
+   "case": "samtale",
+   "ref_pages": 2,
+   "time": 0.4603007920086384,
+   "pages": 3,
+   "scores": {
+    "jaccard": 10.1,
+    "ssim": 28.3,
+    "text_boundary": 29.8
+   }
+  }
+ ]
+}
