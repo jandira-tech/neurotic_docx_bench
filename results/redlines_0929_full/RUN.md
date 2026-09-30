@@ -114,6 +114,33 @@ SuperDoc 2.16.0: 380/3502 compares scored (its 192 redlines), mean 61.40, median
 `scores_<tool>.json`: `rows` per compare, `summary` by oracle and state, `missing`. Rasters
 are deleted per chunk.
 
+## jubarte 0.9.3, the release (`jubarte-093`)
+
+The goal named jubarte 0.9.3, so the tagged release ran the same 2611 pairs as a fourth tool:
+the `v0.9.3` GitHub release asset (`jubarte-0.9.3-macos-aarch64`, sha256 checked against the
+release's `SHA256SUMS.txt` by `jubarte_release.github_download`, binary sha256 15efac59...), through
+`generate-native-redlines.ts --method jubarte-rust --tool jubarte-093` (the native CLI, one
+process per pair). `../redlines_0928` ran `673aff74`, five commits before the tag. 2611 redlines,
+0 failures (`jubarte-093.generate.log`).
+
+Word export: `scripts/word_pdf.py` made 1790 PDFs and ended its three stalled passes with 817 never
+reached (Word hung on files it cannot read, `jubarte-093.word_pdf.log`); `scripts/word_pdf_focus.py`
+on the same folder took the rest (`jubarte-093.word_pdf.focus.log`), and a retry of the 4 with a
+transient error got one (`jubarte-093.word_pdf.retry.log`): **2497 of 2611**. Of the 114 without a
+PDF, 111 never opened ("every document doesn't understand close"), 3 failed twice
+(`jubarte-093/word_missing.txt` lists the 115 before the retry).
+
+| | jubarte 0.9.3 | jubarte 0.10.0 |
+|---|---|---|
+| all scored | 3338/3502, mean 71.99, median 81.34 | 3499/3502, mean 72.29, median 81.79 |
+| same 3338 compares: mean / median | 71.99 / 81.34 | 71.99 / 81.36 |
+| =100 / >=90 / <50 | **309 / 634** / 780 | 297 / 618 / **773** |
+| better by > 0.5 | 83 | **114** (3141 within 0.5) |
+
+On the 2584 compares jubarte 0.9.3, 0.10.0 and docxodus all scored: 73.23 / 82.81, 73.21 / 82.86
+and 72.27 / 81.71; 0.9.3 is better than docxodus on 993, worse on 719. Between 0.9.3 and 0.10.0 the
+redline scores are a wash; 0.10.0's gain in the 0928 comparison was against `673aff74`.
+
 ## Accepted and rejected tracks (`measure_tracks.py`)
 
 The 100 compares of `accept_selection.csv` and the 100 of `reject_selection.csv` (copies of the
@@ -127,14 +154,17 @@ the same way (corpus sets `accepted_tracking_0928`, `rejected_tracking_0928`) by
 scorer (`../redlines_0928/measure.py`, `HERE` pointed here). No compare failed for all
 three tools, so none was replaced.
 
-| track | jubarte 0.10.0 | docxodus 12.6.5 | SuperDoc 2.16.0 |
-|---|---|---|---|
-| accepted: scored | 99/100 | 91/100 | 5/5 |
-| accepted: mean / median | 79.38 / 90.85 | 83.84 / 98.70 | 96.29 / 97.61 |
-| accepted: =100 / >=90 / <50 | 20 / 51 / 21 | 22 / 55 / 15 | 0 / 4 / 0 |
-| rejected: scored | 100/100 | 96/100 | 8/8 |
-| rejected: mean / median | 64.17 / 58.29 | 72.52 / 77.18 | 97.77 / 98.57 |
-| rejected: =100 / >=90 / <50 | 19 / 36 / 41 | 17 / 40 / 31 | 0 / 8 / 0 |
+| track | jubarte 0.10.0 | jubarte 0.9.3 | docxodus 12.6.5 | SuperDoc 2.16.0 |
+|---|---|---|---|---|
+| accepted: scored | 99/100 | 99/100 | 91/100 | 5/5 |
+| accepted: mean / median | 79.38 / 90.85 | 78.61 / 88.78 | 83.84 / 98.70 | 96.29 / 97.61 |
+| accepted: =100 / >=90 / <50 | 20 / 51 / 21 | 19 / 49 / 22 | 22 / 55 / 15 | 0 / 4 / 0 |
+| rejected: scored | 100/100 | 100/100 | 96/100 | 8/8 |
+| rejected: mean / median | 64.17 / 58.29 | 64.18 / 58.29 | 72.52 / 77.18 | 97.77 / 98.57 |
+| rejected: =100 / >=90 / <50 | 19 / 36 / 41 | 19 / 36 / 41 | 17 / 40 / 31 | 0 / 8 / 0 |
+
+jubarte 0.9.3's tracks were staged by `stage_tracks.py jubarte-093` and run through the same
+`word_pdf_focus.py` accept / reject commands; its accept failure is the same `1855b51281`.
 
 Against 0928 (jubarte 0.9.3, docxodus 12.6.4, SuperDoc 2.15.0, same compares and Word oracles):
 accepted jubarte 78.01 / 88.18 -> 79.38 / 90.85, docxodus 84.13 / 99.65 -> 83.84 / 98.70,
@@ -157,7 +187,11 @@ folder's CSVs, JSONs, scripts, `MANIFEST.sha256.json`). 12387 files, 2.61 GB, ev
 against the hub (`hub_upload.log`, `hub_prune.log`) and then deleted here, together with
 `docxodus/{docx_rest,docx_sample500}` (symlinks) and `docxodus/pdf_staged` (a byte-identical
 subset of `pdf_by_word`). Word's own files (`corpus/word`, `compare_regen`) stay local.
-Page-by-page site: https://jandira-tech.github.io/neurotic_docx_bench/redlines/ (gh-pages d4fbafc9).
+jubarte-093 went up the same way later: 5706 files of its own (docx 2611, pdf_by_word 2497,
+accepted 100 + 198, rejected 100 + 200), 6785 staged with `fresh_compares`, meta and `run`
+refreshed, all verified, then deleted here (`hub_upload_093.log`).
+Page-by-page site: https://jandira-tech.github.io/neurotic_docx_bench/redlines/ (gh-pages a58adc22,
+with the jubarte 0.9.3 column; the builder fetches pruned tool PDFs from the hub).
 
 ## Corpus checks (2026-09-30)
 

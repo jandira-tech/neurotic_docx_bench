@@ -32,7 +32,7 @@ from neurotic_docx_bench import hub
 HERE = Path(__file__).parent
 REPO_PREFIX = 'outputs/redlines_0929_full'
 FRESH = Path.home() / 'temp/T/compare_regen/out'
-TOOLS = ('jubarte-rust', 'docxodus', 'superdoc')
+TOOLS = ('jubarte-rust', 'jubarte-093', 'docxodus', 'superdoc')
 TOOL_DIRS = ('docx', 'pdf_by_word', 'accepted/src', 'accepted/by_word', 'rejected/src', 'rejected/by_word')
 TOP_SUFFIXES = {'.csv', '.json', '.py', '.sh', '.md'}
 # docx_rest and docx_sample500 hold symlinks into docxodus/docx; pdf_staged is a byte-identical

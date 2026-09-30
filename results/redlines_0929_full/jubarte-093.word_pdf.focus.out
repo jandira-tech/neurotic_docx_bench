@@ -1,0 +1,2300 @@
+2026-09-30 06:21:12.592 | INFO     | word_pdf:preflight:1812 -  preflight: 
+open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-09-30 06:21:12.860 | INFO     | word_pdf:convert_folder:1486 -  export: 
+one_osascript=True documents=2611 accept_all=False reject_all=False
+2026-09-30 06:21:29.706 | INFO     | word_pdf:_convert_batched:1685 -  one 
+osascript for 821 document(s)
+2026-09-30 06:21:34.725 | INFO     | __main__:_loop:231 -  1/821
+2026-09-30 06:21:39.732 | INFO     | __main__:_loop:246 -  item 2/821 not saved 
+after 5 s; checking Word
+2026-09-30 06:22:07.788 | INFO     | __main__:_loop:246 -  item 2/821 not saved 
+after 33 s; checking Word
+2026-09-30 06:22:31.326 | WARNING  | __main__:_report:208 -  item 2/821 open for
+more than 30 s:
+-- Word windows {name, subrole}: ,
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-1.log:
+        0
+-- newest diagnostic reports: jub_b19-2026-09-30-052944.0006.ips, 
+jub_b19-2026-09-30-052944.0005.ips, jub_b19-2026-09-30-052944.0004.ips, 
+jub_b19-2026-09-30-052944.0003.ips, jub_b19-2026-09-30-052944.0002.ips
+2026-09-30 06:22:35.808 | INFO     | __main__:_loop:246 -  item 2/821 not saved 
+after 61 s; checking Word
+2026-09-30 06:23:03.840 | INFO     | __main__:_loop:246 -  item 2/821 not saved 
+after 89 s; checking Word
+2026-09-30 06:23:31.871 | INFO     | __main__:_loop:246 -  item 2/821 not saved 
+after 117 s; checking Word
+2026-09-30 06:23:59.907 | INFO     | __main__:_loop:246 -  item 2/821 not saved 
+after 145 s; checking Word
+2026-09-30 06:24:27.920 | INFO     | __main__:_loop:246 -  item 2/821 not saved 
+after 173 s; checking Word
+2026-09-30 06:24:55.947 | INFO     | __main__:_loop:246 -  item 2/821 not saved 
+after 201 s; checking Word
+2026-09-30 06:25:23.969 | INFO     | __main__:_loop:246 -  item 2/821 not saved 
+after 229 s; checking Word
+2026-09-30 06:25:51.985 | INFO     | __main__:_loop:246 -  item 2/821 not saved 
+after 257 s; checking Word
+2026-09-30 06:26:20.012 | INFO     | __main__:_loop:246 -  item 2/821 not saved 
+after 285 s; checking Word
+2026-09-30 06:26:34.566 | WARNING  | word_pdf:run_batch_with_resume:1206 -  819 
+item(s) never reached (ended without reaching them); recycling Word and retrying
+the rest first, retried items last (pass 2, 1 of 3 stalled passes used)
+2026-09-30 06:26:34.567 | WARNING  | word_pdf♻725 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-09-30 06:26:34.568 | WARNING  | word_pdf♻731 -  recycling (restart 1)
+2026-09-30 06:26:42.895 | INFO     | __main__:_loop:231 -  1/819
+2026-09-30 06:26:47.901 | INFO     | __main__:_loop:246 -  item 2/819 not saved 
+after 5 s; checking Word
+2026-09-30 06:27:15.932 | INFO     | __main__:_loop:246 -  item 2/819 not saved 
+after 33 s; checking Word
+2026-09-30 06:27:39.634 | WARNING  | __main__:_report:208 -  item 2/819 open for
+more than 30 s:
+-- Word windows {name, subrole}: ,
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-2.log:
+        2       Microsoft Word got an error: document 
+"00002__7e4c9416aa_00803e70c3646e42abab322238df606c847686168795a703__vs__1424386
+e9b_017447de83753a0e3b7afc659df038ef56972925336c6a5b_redline_c8545d372b_jubarte-
+093.docx" doesn’t understand the “save as” message.
+-- newest diagnostic reports: jub_b19-2026-09-30-052944.0006.ips, 
+jub_b19-2026-09-30-052944.0005.ips, jub_b19-2026-09-30-052944.0004.ips, 
+jub_b19-2026-09-30-052944.0003.ips, jub_b19-2026-09-30-052944.0002.ips
+2026-09-30 06:27:43.963 | INFO     | __main__:_loop:246 -  item 2/819 not saved 
+after 61 s; checking Word
+2026-09-30 06:28:11.974 | INFO     | __main__:_loop:246 -  item 2/819 not saved 
+after 89 s; checking Word
+2026-09-30 06:28:40.003 | INFO     | __main__:_loop:246 -  item 2/819 not saved 
+after 117 s; checking Word
+2026-09-30 06:29:08.037 | INFO     | __main__:_loop:246 -  item 2/819 not saved 
+after 145 s; checking Word
+2026-09-30 06:29:36.156 | INFO     | __main__:_loop:246 -  item 2/819 not saved 
+after 173 s; checking Word
+2026-09-30 06:30:04.187 | INFO     | __main__:_loop:246 -  item 2/819 not saved 
+after 201 s; checking Word
+2026-09-30 06:30:32.222 | INFO     | __main__:_loop:246 -  item 2/819 not saved 
+after 229 s; checking Word
+2026-09-30 06:31:00.246 | INFO     | __main__:_loop:246 -  item 2/819 not saved 
+after 257 s; checking Word
+2026-09-30 06:31:28.279 | INFO     | __main__:_loop:246 -  item 2/819 not saved 
+after 285 s; checking Word
+2026-09-30 06:31:56.309 | INFO     | __main__:_loop:246 -  item 2/819 not saved 
+after 313 s; checking Word
+2026-09-30 06:32:24.355 | INFO     | __main__:_loop:246 -  item 2/819 not saved 
+after 341 s; checking Word
+2026-09-30 06:32:44.089 | WARNING  | word_pdf:run_batch_with_resume:1206 -  817 
+item(s) never reached (ended without reaching them); recycling Word and retrying
+the rest first, retried items last (pass 3, 2 of 3 stalled passes used)
+2026-09-30 06:32:44.089 | WARNING  | word_pdf♻725 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-09-30 06:32:44.090 | WARNING  | word_pdf♻731 -  recycling (restart 2)
+2026-09-30 06:33:10.954 | INFO     | __main__:_loop:231 -  6/817
+2026-09-30 06:33:15.980 | INFO     | __main__:_loop:231 -  13/817
+2026-09-30 06:33:21.002 | INFO     | __main__:_loop:231 -  19/817
+2026-09-30 06:33:26.026 | INFO     | __main__:_loop:231 -  25/817
+2026-09-30 06:33:31.044 | INFO     | __main__:_loop:231 -  29/817
+2026-09-30 06:33:36.071 | INFO     | __main__:_loop:246 -  item 30/817 not saved
+after 5 s; checking Word
+2026-09-30 06:33:53.809 | INFO     | __main__:_loop:231 -  41/817
+2026-09-30 06:33:58.838 | INFO     | __main__:_loop:231 -  47/817
+2026-09-30 06:34:03.863 | INFO     | __main__:_loop:231 -  54/817
+2026-09-30 06:34:08.889 | INFO     | __main__:_loop:231 -  58/817
+2026-09-30 06:34:13.908 | INFO     | __main__:_loop:231 -  64/817
+2026-09-30 06:34:18.926 | INFO     | __main__:_loop:231 -  70/817
+2026-09-30 06:34:23.949 | INFO     | __main__:_loop:231 -  73/817
+2026-09-30 06:34:28.967 | INFO     | __main__:_loop:231 -  80/817
+2026-09-30 06:34:33.992 | INFO     | __main__:_loop:231 -  87/817
+2026-09-30 06:34:39.013 | INFO     | __main__:_loop:231 -  91/817
+2026-09-30 06:34:44.032 | INFO     | __main__:_loop:231 -  97/817
+2026-09-30 06:34:49.057 | INFO     | __main__:_loop:231 -  100/817
+2026-09-30 06:34:54.109 | INFO     | __main__:_loop:231 -  102/817
+2026-09-30 06:34:59.139 | INFO     | __main__:_loop:231 -  105/817
+2026-09-30 06:35:04.162 | INFO     | __main__:_loop:231 -  107/817
+2026-09-30 06:35:09.183 | INFO     | __main__:_loop:231 -  111/817
+2026-09-30 06:35:14.203 | INFO     | __main__:_loop:231 -  116/817
+2026-09-30 06:35:19.219 | INFO     | __main__:_loop:231 -  121/817
+2026-09-30 06:35:24.244 | INFO     | __main__:_loop:231 -  125/817
+2026-09-30 06:35:29.264 | INFO     | __main__:_loop:231 -  129/817
+2026-09-30 06:35:34.285 | INFO     | __main__:_loop:231 -  133/817
+2026-09-30 06:35:39.301 | INFO     | __main__:_loop:231 -  138/817
+2026-09-30 06:35:44.320 | INFO     | __main__:_loop:231 -  144/817
+2026-09-30 06:35:49.351 | INFO     | __main__:_loop:231 -  148/817
+2026-09-30 06:35:54.368 | INFO     | __main__:_loop:231 -  153/817
+2026-09-30 06:35:59.384 | INFO     | __main__:_loop:231 -  158/817
+2026-09-30 06:36:04.408 | INFO     | __main__:_loop:231 -  162/817
+2026-09-30 06:36:09.430 | INFO     | __main__:_loop:231 -  166/817
+2026-09-30 06:36:14.455 | INFO     | __main__:_loop:231 -  169/817
+2026-09-30 06:36:19.489 | INFO     | __main__:_loop:231 -  174/817
+2026-09-30 06:36:24.509 | INFO     | __main__:_loop:231 -  178/817
+2026-09-30 06:36:29.525 | INFO     | __main__:_loop:231 -  183/817
+2026-09-30 06:36:34.542 | INFO     | __main__:_loop:231 -  186/817
+2026-09-30 06:36:39.558 | INFO     | __main__:_loop:231 -  191/817
+2026-09-30 06:36:44.578 | INFO     | __main__:_loop:231 -  196/817
+2026-09-30 06:36:49.602 | INFO     | __main__:_loop:231 -  200/817
+2026-09-30 06:36:54.626 | INFO     | __main__:_loop:231 -  205/817
+2026-09-30 06:36:59.649 | INFO     | __main__:_loop:231 -  206/817
+2026-09-30 06:37:04.674 | INFO     | __main__:_loop:231 -  210/817
+2026-09-30 06:37:09.694 | INFO     | __main__:_loop:231 -  213/817
+2026-09-30 06:37:14.719 | INFO     | __main__:_loop:231 -  214/817
+2026-09-30 06:37:19.745 | INFO     | __main__:_loop:231 -  217/817
+2026-09-30 06:37:24.771 | INFO     | __main__:_loop:231 -  219/817
+2026-09-30 06:37:29.795 | INFO     | __main__:_loop:231 -  225/817
+2026-09-30 06:37:34.817 | INFO     | __main__:_loop:231 -  230/817
+2026-09-30 06:37:39.838 | INFO     | __main__:_loop:231 -  234/817
+2026-09-30 06:37:44.866 | INFO     | __main__:_loop:231 -  239/817
+2026-09-30 06:37:49.894 | INFO     | __main__:_loop:231 -  243/817
+2026-09-30 06:37:54.917 | INFO     | __main__:_loop:231 -  249/817
+2026-09-30 06:37:59.943 | INFO     | __main__:_loop:231 -  255/817
+2026-09-30 06:38:04.969 | INFO     | __main__:_loop:231 -  259/817
+2026-09-30 06:38:09.992 | INFO     | __main__:_loop:231 -  263/817
+2026-09-30 06:38:15.018 | INFO     | __main__:_loop:231 -  266/817
+2026-09-30 06:38:20.045 | INFO     | __main__:_loop:231 -  273/817
+2026-09-30 06:38:25.063 | INFO     | __main__:_loop:231 -  277/817
+2026-09-30 06:38:30.091 | INFO     | __main__:_loop:231 -  282/817
+2026-09-30 06:38:35.121 | INFO     | __main__:_loop:231 -  287/817
+2026-09-30 06:38:40.139 | INFO     | __main__:_loop:231 -  293/817
+2026-09-30 06:38:45.159 | INFO     | __main__:_loop:231 -  298/817
+2026-09-30 06:38:50.185 | INFO     | __main__:_loop:231 -  304/817
+2026-09-30 06:38:55.210 | INFO     | __main__:_loop:231 -  310/817
+2026-09-30 06:39:00.242 | INFO     | __main__:_loop:231 -  315/817
+2026-09-30 06:39:05.269 | INFO     | __main__:_loop:231 -  320/817
+2026-09-30 06:39:10.287 | INFO     | __main__:_loop:231 -  325/817
+2026-09-30 06:39:15.309 | INFO     | __main__:_loop:231 -  330/817
+2026-09-30 06:39:20.328 | INFO     | __main__:_loop:231 -  335/817
+2026-09-30 06:39:25.359 | INFO     | __main__:_loop:231 -  339/817
+2026-09-30 06:39:30.383 | INFO     | __main__:_loop:231 -  345/817
+2026-09-30 06:39:35.409 | INFO     | __main__:_loop:231 -  350/817
+2026-09-30 06:39:40.435 | INFO     | __main__:_loop:231 -  353/817
+2026-09-30 06:39:45.459 | INFO     | __main__:_loop:231 -  354/817
+2026-09-30 06:39:50.484 | INFO     | __main__:_loop:231 -  356/817
+2026-09-30 06:39:55.511 | INFO     | __main__:_loop:231 -  358/817
+2026-09-30 06:40:00.544 | INFO     | __main__:_loop:231 -  360/817
+2026-09-30 06:40:05.571 | INFO     | __main__:_loop:231 -  361/817
+2026-09-30 06:40:10.590 | INFO     | __main__:_loop:231 -  365/817
+2026-09-30 06:40:15.606 | INFO     | __main__:_loop:231 -  369/817
+2026-09-30 06:40:20.628 | INFO     | __main__:_loop:231 -  373/817
+2026-09-30 06:40:25.648 | INFO     | __main__:_loop:231 -  378/817
+2026-09-30 06:40:30.679 | INFO     | __main__:_loop:231 -  381/817
+2026-09-30 06:40:35.685 | INFO     | __main__:_loop:246 -  item 382/817 not 
+saved after 5 s; checking Word
+2026-09-30 06:41:03.716 | INFO     | __main__:_loop:246 -  item 382/817 not 
+saved after 33 s; checking Word
+2026-09-30 06:41:25.802 | WARNING  | __main__:_report:208 -  item 382/817 open 
+for more than 30 s:
+-- Word windows {name, subrole}: ,
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-3.log:
+        4
+        5
+        6
+        7
+        8
+        9
+        10
+        11
+        12
+        13
+        14
+        15
+        16
+        17
+        18
+        19
+        20
+        21
+        22
+        23
+        24
+        25
+        26
+        27
+        28
+        29
+        30
+        31
+        32
+        33
+        34
+        35
+        36
+        37
+        38
+        39
+        40
+        41
+        42
+        43
+        44
+        45
+        46
+        47
+        48
+        49
+        50
+        51
+        52
+        53
+        54
+        55
+        56
+        57
+        58
+        59
+        60
+        61
+        62
+        63
+        64
+        65
+        66
+        67
+        68
+        69
+        70
+        71
+        72
+        73
+        74
+        75
+        76
+        77
+        78
+        79
+        80
+        81
+        82
+        83
+        84
+        85
+        86
+        87
+        88
+        89
+        90
+        91
+        92
+        93
+        94
+        95
+        96
+        97
+        98
+        99
+        100
+        101
+        102
+        103
+        104
+        105
+        106
+        107
+        108
+        109
+        110
+        111
+        112
+        113
+        114
+        115
+        116
+        117
+        118
+        119
+        120
+        121
+        122
+        123
+        124
+        125
+        126
+        127
+        128
+        129
+        130
+        131
+        132
+        133
+        134
+        135
+        136
+        137
+        138
+        139
+        140
+        141
+        142
+        143
+        144
+        145
+        146
+        147
+        148
+        149
+        150
+        151
+        152
+        153
+        154
+        155
+        156
+        157
+        158
+        159
+        160
+        161
+        162
+        163
+        164
+        165
+        166
+        167
+        168
+        169
+        170
+        171
+        172
+        173
+        174
+        175
+        176
+        177
+        178
+        179
+        180
+        181
+        182
+        183
+        184
+        185
+        186
+        187
+        188
+        189
+        190
+        191
+        192
+        193
+        194
+        195
+        196
+        197
+        198
+        199
+        200
+        201
+        202
+        203
+        204
+        205
+        206
+        207
+        208
+        209
+        210
+        211
+        212
+        213
+        214
+        215
+        216
+        217
+        218
+        219
+        220
+        221
+        222
+        223
+        224
+        225
+        226
+        227
+        228
+        229
+        230
+        231
+        232
+        233
+        234
+        235
+        236
+        237
+        238
+        239
+        240
+        241
+        242
+        243
+        244
+        245
+        246
+        247
+        248
+        249
+        250
+        251
+        252
+        253
+        254
+        255
+        256
+        257
+        258
+        259
+        260
+        261
+        262
+        263
+        264
+        265
+        266
+        267
+        268
+        269
+        270
+        271
+        272
+        273
+        274
+        275
+        276
+        277
+        278
+        279
+        280
+        281
+        282
+        283
+        284
+        285
+        286
+        287
+        288
+        289
+        290
+        291
+        292
+        293
+        294
+        295
+        296
+        297
+        298
+        299
+        300
+        301
+        302
+        303
+        304
+        305
+        306
+        307
+        308
+        309
+        310
+        311
+        312
+        313
+        314
+        315
+        316
+        317
+        318
+        319
+        320
+        321
+        322
+        323
+        324
+        325
+        326
+        327
+        328
+        329
+        330
+        331
+        332
+        333
+        334
+        335
+        336
+        337
+        338
+        339
+        340
+        341
+        342
+        343
+        344
+        345
+        346
+        347
+        348
+        349
+        350
+        351
+        352
+        353
+        354
+        355
+        356
+        357
+        358
+        359
+        360
+        361
+        362
+        363
+        364
+        365
+        366
+        367
+        368
+        369
+        370
+        371
+        372
+        373
+        374
+        375
+        376
+        377
+        378
+        379
+        380
+        381
+        382
+        383
+        384
+-- newest diagnostic reports: jub_b19-2026-09-30-052944.0006.ips, 
+jub_b19-2026-09-30-052944.0005.ips, jub_b19-2026-09-30-052944.0004.ips, 
+jub_b19-2026-09-30-052944.0003.ips, jub_b19-2026-09-30-052944.0002.ips
+2026-09-30 06:41:31.731 | INFO     | __main__:_loop:246 -  item 382/817 not 
+saved after 61 s; checking Word
+2026-09-30 06:41:59.793 | INFO     | __main__:_loop:246 -  item 382/817 not 
+saved after 89 s; checking Word
+2026-09-30 06:42:27.853 | INFO     | __main__:_loop:231 -  396/817
+2026-09-30 06:42:32.880 | INFO     | __main__:_loop:231 -  400/817
+2026-09-30 06:42:37.907 | INFO     | __main__:_loop:231 -  405/817
+2026-09-30 06:42:42.924 | INFO     | __main__:_loop:231 -  410/817
+2026-09-30 06:42:47.952 | INFO     | __main__:_loop:231 -  414/817
+2026-09-30 06:42:52.972 | INFO     | __main__:_loop:231 -  418/817
+2026-09-30 06:42:57.997 | INFO     | __main__:_loop:231 -  422/817
+2026-09-30 06:43:03.022 | INFO     | __main__:_loop:231 -  426/817
+2026-09-30 06:43:08.040 | INFO     | __main__:_loop:231 -  429/817
+2026-09-30 06:43:13.063 | INFO     | __main__:_loop:231 -  432/817
+2026-09-30 06:43:18.093 | INFO     | __main__:_loop:231 -  435/817
+2026-09-30 06:43:23.116 | INFO     | __main__:_loop:231 -  438/817
+2026-09-30 06:43:28.140 | INFO     | __main__:_loop:231 -  441/817
+2026-09-30 06:43:33.163 | INFO     | __main__:_loop:231 -  444/817
+2026-09-30 06:43:38.184 | INFO     | __main__:_loop:231 -  447/817
+2026-09-30 06:43:43.204 | INFO     | __main__:_loop:231 -  450/817
+2026-09-30 06:43:48.231 | INFO     | __main__:_loop:231 -  453/817
+2026-09-30 06:43:53.256 | INFO     | __main__:_loop:231 -  456/817
+2026-09-30 06:43:58.290 | INFO     | __main__:_loop:231 -  459/817
+2026-09-30 06:44:03.314 | INFO     | __main__:_loop:231 -  460/817
+2026-09-30 06:44:08.320 | INFO     | __main__:_loop:246 -  item 461/817 not 
+saved after 5 s; checking Word
+2026-09-30 06:44:36.395 | INFO     | __main__:_loop:231 -  475/817
+2026-09-30 06:44:41.427 | INFO     | __main__:_loop:231 -  478/817
+2026-09-30 06:44:46.453 | INFO     | __main__:_loop:231 -  482/817
+2026-09-30 06:44:51.481 | INFO     | __main__:_loop:231 -  485/817
+2026-09-30 06:44:56.513 | INFO     | __main__:_loop:231 -  488/817
+2026-09-30 06:45:01.534 | INFO     | __main__:_loop:231 -  492/817
+2026-09-30 06:45:06.571 | INFO     | __main__:_loop:231 -  494/817
+2026-09-30 06:45:11.602 | INFO     | __main__:_loop:231 -  497/817
+2026-09-30 06:45:16.627 | INFO     | __main__:_loop:231 -  499/817
+2026-09-30 06:45:21.651 | INFO     | __main__:_loop:231 -  503/817
+2026-09-30 06:45:26.676 | INFO     | __main__:_loop:231 -  505/817
+2026-09-30 06:45:31.702 | INFO     | __main__:_loop:231 -  507/817
+2026-09-30 06:45:36.729 | INFO     | __main__:_loop:231 -  510/817
+2026-09-30 06:45:41.756 | INFO     | __main__:_loop:231 -  513/817
+2026-09-30 06:45:46.786 | INFO     | __main__:_loop:231 -  515/817
+2026-09-30 06:45:51.823 | INFO     | __main__:_loop:231 -  518/817
+2026-09-30 06:45:56.845 | INFO     | __main__:_loop:231 -  520/817
+2026-09-30 06:46:01.869 | INFO     | __main__:_loop:231 -  522/817
+2026-09-30 06:46:06.900 | INFO     | __main__:_loop:231 -  525/817
+2026-09-30 06:46:11.945 | INFO     | __main__:_loop:231 -  528/817
+2026-09-30 06:46:16.979 | INFO     | __main__:_loop:231 -  531/817
+2026-09-30 06:46:22.002 | INFO     | __main__:_loop:231 -  534/817
+2026-09-30 06:46:27.021 | INFO     | __main__:_loop:231 -  537/817
+2026-09-30 06:46:32.046 | INFO     | __main__:_loop:231 -  539/817
+2026-09-30 06:46:37.121 | INFO     | __main__:_loop:231 -  541/817
+2026-09-30 06:46:42.163 | INFO     | __main__:_loop:246 -  item 542/817 not 
+saved after 5 s; checking Word
+2026-09-30 06:47:10.214 | INFO     | __main__:_loop:246 -  item 542/817 not 
+saved after 33 s; checking Word
+2026-09-30 06:47:34.061 | WARNING  | __main__:_report:208 -  item 542/817 open 
+for more than 30 s:
+-- Word windows {name, subrole}: ,
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-3.log:
+        4
+        5
+        6
+        7
+        8
+        9
+        10
+        11
+        12
+        13
+        14
+        15
+        16
+        17
+        18
+        19
+        20
+        21
+        22
+        23
+        24
+        25
+        26
+        27
+        28
+        29
+        30
+        31
+        32
+        33
+        34
+        35
+        36
+        37
+        38
+        39
+        40
+        41
+        42
+        43
+        44
+        45
+        46
+        47
+        48
+        49
+        50
+        51
+        52
+        53
+        54
+        55
+        56
+        57
+        58
+        59
+        60
+        61
+        62
+        63
+        64
+        65
+        66
+        67
+        68
+        69
+        70
+        71
+        72
+        73
+        74
+        75
+        76
+        77
+        78
+        79
+        80
+        81
+        82
+        83
+        84
+        85
+        86
+        87
+        88
+        89
+        90
+        91
+        92
+        93
+        94
+        95
+        96
+        97
+        98
+        99
+        100
+        101
+        102
+        103
+        104
+        105
+        106
+        107
+        108
+        109
+        110
+        111
+        112
+        113
+        114
+        115
+        116
+        117
+        118
+        119
+        120
+        121
+        122
+        123
+        124
+        125
+        126
+        127
+        128
+        129
+        130
+        131
+        132
+        133
+        134
+        135
+        136
+        137
+        138
+        139
+        140
+        141
+        142
+        143
+        144
+        145
+        146
+        147
+        148
+        149
+        150
+        151
+        152
+        153
+        154
+        155
+        156
+        157
+        158
+        159
+        160
+        161
+        162
+        163
+        164
+        165
+        166
+        167
+        168
+        169
+        170
+        171
+        172
+        173
+        174
+        175
+        176
+        177
+        178
+        179
+        180
+        181
+        182
+        183
+        184
+        185
+        186
+        187
+        188
+        189
+        190
+        191
+        192
+        193
+        194
+        195
+        196
+        197
+        198
+        199
+        200
+        201
+        202
+        203
+        204
+        205
+        206
+        207
+        208
+        209
+        210
+        211
+        212
+        213
+        214
+        215
+        216
+        217
+        218
+        219
+        220
+        221
+        222
+        223
+        224
+        225
+        226
+        227
+        228
+        229
+        230
+        231
+        232
+        233
+        234
+        235
+        236
+        237
+        238
+        239
+        240
+        241
+        242
+        243
+        244
+        245
+        246
+        247
+        248
+        249
+        250
+        251
+        252
+        253
+        254
+        255
+        256
+        257
+        258
+        259
+        260
+        261
+        262
+        263
+        264
+        265
+        266
+        267
+        268
+        269
+        270
+        271
+        272
+        273
+        274
+        275
+        276
+        277
+        278
+        279
+        280
+        281
+        282
+        283
+        284
+        285
+        286
+        287
+        288
+        289
+        290
+        291
+        292
+        293
+        294
+        295
+        296
+        297
+        298
+        299
+        300
+        301
+        302
+        303
+        304
+        305
+        306
+        307
+        308
+        309
+        310
+        311
+        312
+        313
+        314
+        315
+        316
+        317
+        318
+        319
+        320
+        321
+        322
+        323
+        324
+        325
+        326
+        327
+        328
+        329
+        330
+        331
+        332
+        333
+        334
+        335
+        336
+        337
+        338
+        339
+        340
+        341
+        342
+        343
+        344
+        345
+        346
+        347
+        348
+        349
+        350
+        351
+        352
+        353
+        354
+        355
+        356
+        357
+        358
+        359
+        360
+        361
+        362
+        363
+        364
+        365
+        366
+        367
+        368
+        369
+        370
+        371
+        372
+        373
+        374
+        375
+        376
+        377
+        378
+        379
+        380
+        381
+        382
+        383
+        384
+        385
+        386
+        387
+        388
+        389
+        390
+        391
+        392
+        393
+        394
+        395
+        396
+        397
+        398
+        399
+        400
+        401
+        402
+        403
+        404
+        405
+        406
+        407
+        408
+        409
+        410
+        411
+        412
+        413
+        414
+        415
+        416
+        417
+        418
+        419
+        420
+        421
+        422
+        423
+        424
+        425
+        426
+        427
+        428
+        429
+        430
+        431
+        432
+        433
+        434
+        435
+        436
+        437
+        438
+        439
+        440
+        441
+        442
+        443
+        444
+        445
+        446
+        447
+        448
+        449
+        450
+        451
+        452
+        453
+        454
+        455
+        456
+        457
+        458
+        459
+        460
+        461
+        462
+        463
+        464
+        465
+        466
+        467
+        468
+        469
+        470
+        471
+        472
+        473
+        474
+        475
+        476
+        477
+        478
+        479
+        480
+        481
+        482
+        483
+        484
+        485
+        486
+        487
+        488
+        489
+        490
+        491
+        492
+        493
+        494
+        495
+        496
+        497
+        498
+        499
+        500
+        501
+        502
+        503
+        504
+        505
+        506
+        507
+        508
+        509
+        510
+        511
+        512
+        513
+        514
+        515
+        516
+        517
+        518
+        519
+        520
+        521
+        522
+        523
+        524
+        525
+        526
+        527
+        528
+        529
+        530
+        531
+        532
+        533
+        534
+        535
+        536
+        537
+        538
+        539
+        540
+        541
+        542
+        543
+        544
+-- newest diagnostic reports: jub_b19-2026-09-30-052944.0006.ips, 
+jub_b19-2026-09-30-052944.0005.ips, jub_b19-2026-09-30-052944.0004.ips, 
+jub_b19-2026-09-30-052944.0003.ips, jub_b19-2026-09-30-052944.0002.ips
+2026-09-30 06:47:38.246 | INFO     | __main__:_loop:246 -  item 542/817 not 
+saved after 61 s; checking Word
+2026-09-30 06:48:06.318 | INFO     | __main__:_loop:231 -  548/817
+2026-09-30 06:48:11.340 | INFO     | __main__:_loop:231 -  551/817
+2026-09-30 06:48:16.372 | INFO     | __main__:_loop:231 -  553/817
+2026-09-30 06:48:21.410 | INFO     | __main__:_loop:231 -  556/817
+2026-09-30 06:48:26.445 | INFO     | __main__:_loop:231 -  559/817
+2026-09-30 06:48:31.480 | INFO     | __main__:_loop:231 -  562/817
+2026-09-30 06:48:36.507 | INFO     | __main__:_loop:231 -  564/817
+2026-09-30 06:48:41.536 | INFO     | __main__:_loop:231 -  567/817
+2026-09-30 06:48:46.560 | INFO     | __main__:_loop:231 -  569/817
+2026-09-30 06:48:51.590 | INFO     | __main__:_loop:231 -  571/817
+2026-09-30 06:48:56.622 | INFO     | __main__:_loop:246 -  item 572/817 not 
+saved after 5 s; checking Word
+2026-09-30 06:49:24.686 | INFO     | __main__:_loop:231 -  586/817
+2026-09-30 06:49:29.716 | INFO     | __main__:_loop:231 -  588/817
+2026-09-30 06:49:34.742 | INFO     | __main__:_loop:231 -  591/817
+2026-09-30 06:49:39.768 | INFO     | __main__:_loop:231 -  593/817
+2026-09-30 06:49:44.794 | INFO     | __main__:_loop:231 -  595/817
+2026-09-30 06:49:49.819 | INFO     | __main__:_loop:231 -  597/817
+2026-09-30 06:49:54.862 | INFO     | __main__:_loop:231 -  599/817
+2026-09-30 06:49:59.888 | INFO     | __main__:_loop:231 -  602/817
+2026-09-30 06:50:04.912 | INFO     | __main__:_loop:231 -  604/817
+2026-09-30 06:50:09.947 | INFO     | __main__:_loop:231 -  606/817
+2026-09-30 06:50:14.975 | INFO     | __main__:_loop:231 -  609/817
+2026-09-30 06:50:19.991 | INFO     | __main__:_loop:231 -  613/817
+2026-09-30 06:50:25.011 | INFO     | __main__:_loop:231 -  616/817
+2026-09-30 06:50:30.037 | INFO     | __main__:_loop:231 -  619/817
+2026-09-30 06:50:35.057 | INFO     | __main__:_loop:231 -  623/817
+2026-09-30 06:50:40.084 | INFO     | __main__:_loop:231 -  626/817
+2026-09-30 06:50:45.111 | INFO     | __main__:_loop:231 -  629/817
+2026-09-30 06:50:50.135 | INFO     | __main__:_loop:231 -  633/817
+2026-09-30 06:50:55.164 | INFO     | __main__:_loop:231 -  636/817
+2026-09-30 06:51:00.192 | INFO     | __main__:_loop:231 -  640/817
+2026-09-30 06:51:05.218 | INFO     | __main__:_loop:231 -  644/817
+2026-09-30 06:51:10.248 | INFO     | __main__:_loop:231 -  648/817
+2026-09-30 06:51:15.261 | INFO     | __main__:_loop:231 -  652/817
+2026-09-30 06:51:20.281 | INFO     | __main__:_loop:231 -  655/817
+2026-09-30 06:51:25.300 | INFO     | __main__:_loop:231 -  659/817
+2026-09-30 06:51:30.327 | INFO     | __main__:_loop:231 -  661/817
+2026-09-30 06:51:35.350 | INFO     | __main__:_loop:231 -  664/817
+2026-09-30 06:51:40.383 | INFO     | __main__:_loop:231 -  740/817
+2026-09-30 06:51:40.549 | INFO     | word_pdf:_note_buttons:510 -  Microsoft 
+Word shows button 'OK'
+2026-09-30 06:51:40.549 | INFO     | word_pdf:_note_buttons:510 -  Microsoft 
+Word shows button 'missing value'
+2026-09-30 06:51:41.721 | WARNING  | __main__:_loop_word:188 -  Word dialog 
+dismissed via 'OK'
+2026-09-30 06:51:45.410 | INFO     | __main__:_loop:231 -  778/817
+2026-09-30 06:51:50.430 | INFO     | __main__:_loop:231 -  781/817
+2026-09-30 06:51:55.450 | INFO     | __main__:_loop:231 -  784/817
+2026-09-30 06:52:00.465 | INFO     | __main__:_loop:231 -  787/817
+2026-09-30 06:52:05.470 | INFO     | __main__:_loop:246 -  item 788/817 not 
+saved after 5 s; checking Word
+2026-09-30 06:52:19.362 | INFO     | __main__:_loop:231 -  796/817
+2026-09-30 06:52:24.385 | INFO     | __main__:_loop:231 -  799/817
+2026-09-30 06:52:29.405 | INFO     | __main__:_loop:231 -  802/817
+2026-09-30 06:52:34.422 | INFO     | __main__:_loop:231 -  805/817
+2026-09-30 06:52:39.441 | INFO     | __main__:_loop:231 -  808/817
+2026-09-30 06:52:44.460 | INFO     | __main__:_loop:231 -  810/817
+2026-09-30 06:52:49.487 | INFO     | __main__:_loop:231 -  811/817
+2026-09-30 06:52:54.506 | INFO     | __main__:_loop:231 -  814/817
+2026-09-30 06:52:59.527 | INFO     | __main__:_loop:231 -  816/817
+2026-09-30 06:52:59.672 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+19eb128df9_98bf5f3d218a1485f5eb284693b4f98725eadd3660097efd__vs__9666fa13fb_a370
+1d3600ed5bf6c9bf13e12e4c2a59542eba10f87fad69_redline_5b269ade28_jubarte-093.docx
+ — 
+2026-09-30 06:52:59.675 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+7e4c9416aa_00803e70c3646e42abab322238df606c847686168795a703__vs__1424386e9b_0174
+47de83753a0e3b7afc659df038ef56972925336c6a5b_redline_c8545d372b_jubarte-093.docx
+ — Microsoft Word got an error: document 
+"00002__7e4c9416aa_00803e70c3646e42abab322238df606c847686168795a703__vs__1424386
+e9b_017447de83753a0e3b7afc659df038ef56972925336c6a5b_redline_c8545d372b_jubarte-
+09
+2026-09-30 06:52:59.677 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+acce1b593c_4bb73d9addf1f02e3a2132dcd33a8feb4dfcbe076d43bb0f__vs__4e2d5a0b0c_4887
+566b3c4aad8c7f07b4ba2637c0244a1ee0d66c8d0c29_redline_63ea4d3f8d_jubarte-093.docx
+ — Microsoft Word got an error: AppleEvent timed out.
+2026-09-30 06:53:55.315 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f43f6ef305_002042b8a23533ba746bf4eaf56b5e62642cc111f5f5fcff__vs__bd3824dd1e_000e
+e64ef7226d353297888f59a251e24ce5d776fea000fa_redline_fd2201fe85_jubarte-093.docx
+ — 
+2026-09-30 06:53:55.316 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f43f6ef305_002042b8a23533ba746bf4eaf56b5e62642cc111f5f5fcff__vs__deff0e697a_00b5
+defcad6e58038eac35472a2d48c89905068e5ece0cc3_redline_621d6afaf0_jubarte-093.docx
+ — Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.317 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f49b3b0ec2_super_editor__sd_1919_word_table_74726d6c__vs__18d1a4ad46_super_edito
+r__sd_2534_collab_export_f3c7fdf7_redline_6ef257d033_jubarte-093.docx — 
+Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.318 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f49b3b0ec2_super_editor__sd_1919_word_table_74726d6c__vs__a0738533be_gdocs_comme
+nts_export_redline_515c0aa8ab_jubarte-093.docx — Microsoft Word got an error: 
+every document doesn’t understand the “close” message.
+2026-09-30 06:53:55.319 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f49b3b0ec2_super_editor__sd_1919_word_table_74726d6c__vs__e663016796_behavior__s
+d_2672_multipara_cell_4d1f068e_redline_6adcb54944_jubarte-093.docx — Microsoft 
+Word got an error: every document doesn’t understand the “close” message.
+2026-09-30 06:53:55.319 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f4e1903ff3_super_editor__sd_1707_list_enter_track_changes_w__vs__25f07e0823_supe
+r_editor__sd_1919_word_mixed_33e049ca_redline_4d4841f48c_jubarte-093.docx — 
+Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.320 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f4fa801783_sample_document_really_repaired_word_repaired__vs__451b3b3460_sample_
+document_word_repair_of_our_output_iter2_redline_72fecbe1f5_jubarte-093.docx — 
+Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.321 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f4faa3ad63_file_129__vs__1547c5df73_file_130_redline_206e9d2d17_jubarte-093.docx
+— Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.321 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f529133cd5_super_editor__basic_comment_d3ba5f1e__vs__199cb211b5_super_editor__ba
+sic_footnotes_5be96945_redline_b547e31a0d_jubarte-093.docx — Microsoft Word got 
+an error: every document doesn’t understand the “close” message.
+2026-09-30 06:53:55.322 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f529133cd5_super_editor__basic_comment_d3ba5f1e__vs__2dc3e97d2a_super_editor__hy
+perlink_node_52b7695b_redline_4ce07ffaec_jubarte-093.docx — Microsoft Word got 
+an error: every document doesn’t understand the “close” message.
+2026-09-30 06:53:55.323 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f529133cd5_super_editor__basic_comment_d3ba5f1e__vs__3539cf2404_cli_legacy__repl
+ace_test_0a793f01_redline_a15dd224a7_jubarte-093.docx — Microsoft Word got an 
+error: every document doesn’t understand the “close” message.
+2026-09-30 06:53:55.323 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f529133cd5_super_editor__basic_comment_d3ba5f1e__vs__3b639ef236_super_editor__sd
+pr_8cc15994_redline_62f0f8ee91_jubarte-093.docx — Microsoft Word got an error: 
+every document doesn’t understand the “close” message.
+2026-09-30 06:53:55.324 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f529133cd5_super_editor__basic_comment_d3ba5f1e__vs__5fa01813d3_super_editor__ba
+sic_table_shading_d3212ffd_redline_b2704631d9_jubarte-093.docx — Microsoft Word 
+got an error: every document doesn’t understand the “close” message.
+2026-09-30 06:53:55.325 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f529133cd5_super_editor__basic_comment_d3ba5f1e__vs__75aeff4f58_super_editor__di
+ff_after9_a9d4b4b0_redline_2eb4edf103_jubarte-093.docx — Microsoft Word got an 
+error: every document doesn’t understand the “close” message.
+2026-09-30 06:53:55.325 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f529133cd5_super_editor__basic_comment_d3ba5f1e__vs__8df6dfa8d7_alternate_conten
+t_redline_e8fafc3cba_jubarte-093.docx — Microsoft Word got an error: every 
+document doesn’t understand the “close” message.
+2026-09-30 06:53:55.326 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f584285fed_behavior__sd_2672_gridbefore_vmerge_7c895dff__vs__ae9360e096_behavior
+__sd_2672_merged_table_821b922c_redline_6f547c7a01_jubarte-093.docx — Microsoft 
+Word got an error: every document doesn’t understand the “close” message.
+2026-09-30 06:53:55.326 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f5bac425cd_word_tolerated_broken_media_rel__vs__d616476e12_word_tolerated_duplic
+ate_ppr_redline_fd9df69e75_jubarte-093.docx — Microsoft Word got an error: every
+document doesn’t understand the “close” message.
+2026-09-30 06:53:55.327 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f5e7ce8d94_italic_subscript_demo_style_default_missing__vs__bc1dd323f3_italic_te
+xt_formatting_demo_id_paraid_overflow_2_redline_ebb82f0e9b_jubarte-093.docx — 
+Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.328 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f601de1855_file_152__vs__746ad2b7f6_file_153_redline_49ed3281ea_jubarte-093.docx
+— Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.328 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f62e209c7c_super_editor__paragraph_ppr_variations_a7653eb1__vs__bcc7379f64_super
+_editor__paragraph_spacing_missing_de418c38_redline_ae1647267d_jubarte-093.docx 
+— Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.329 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f644da9aeb_employee_directory_table_2__vs__7888085856_employee_directory_table_r
+edline_81f83d335f_jubarte-093.docx — Microsoft Word got an error: every document
+doesn’t understand the “close” message.
+2026-09-30 06:53:55.329 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f6bf50a9ee_heading_1_style_demo_id_paraid_overflow__vs__361c330b8d_heading_2_cen
+ter_demo_id_paraid_overflow_redline_08c7668aa0_jubarte-093.docx — Microsoft Word
+got an error: every document doesn’t understand the “close” message.
+2026-09-30 06:53:55.330 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f6de76cc94_numbered_list_italic_demo_id_paraid_overflow__vs__053c86de5f_open_san
+s_bold_underline_id_paraid_overflow_redline_0bde72da10_jubarte-093.docx — 
+Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.331 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f6de76cc94_numbered_list_italic_demo_id_paraid_overflow__vs__18eb110b3b_numwords
+_fldsimple_redline_452c8f76a5_jubarte-093.docx — Microsoft Word got an error: 
+every document doesn’t understand the “close” message.
+2026-09-30 06:53:55.332 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f6e1c253ff_super_editor__diff_before9_9818a85f__vs__0b1d0278ce_behavior__math_ra
+dical_tests_4c1ce187_redline_1445e94e75_jubarte-093.docx — Microsoft Word got an
+error: every document doesn’t understand the “close” message.
+2026-09-30 06:53:55.332 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f6e1c253ff_super_editor__diff_before9_9818a85f__vs__0e1d01ec7d_super_editor__doc
+_with_graphs_diagrams_rotated_e_redline_108d3b4e97_jubarte-093.docx — Microsoft 
+Word got an error: every document doesn’t understand the “close” message.
+2026-09-30 06:53:55.333 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f6f35375dd_4b86cf0feb7f5bded449753bfe2950d19263d9c33580247d__vs__153475ecc3_630e
+2755d490dfd200220fd7138cb75964ae99d9fa116455_redline_c2d6b7dbc8_jubarte-093.docx
+ — Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.334 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f701e327ed_6a38e10504967e4c8d114e98a1ec4394a6ad0758771b60b3__vs__00163e55a0_7d35
+102e1569471281c726baa1f9e9cc31e56e839f337972_redline_bd704500fb_jubarte-093.docx
+ — Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.334 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f71a12ee23_super_editor__fields_attrs1_83837249__vs__3539cf2404_cli_legacy__repl
+ace_test_0a793f01_redline_7a1d3fbeba_jubarte-093.docx — Microsoft Word got an 
+error: every document doesn’t understand the “close” message.
+2026-09-30 06:53:55.335 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f71a12ee23_super_editor__fields_attrs1_83837249__vs__7b076416b0_sectpr_headerref
+_redline_0d3b1ce858_jubarte-093.docx — Microsoft Word got an error: every 
+document doesn’t understand the “close” message.
+2026-09-30 06:53:55.336 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f71a12ee23_super_editor__fields_attrs1_83837249__vs__8db63962d9_super_editor__fi
+elds_attrs2_fonts_ebd792fb_redline_1824b1df94_jubarte-093.docx — Microsoft Word 
+got an error: every document doesn’t understand the “close” message.
+2026-09-30 06:53:55.336 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f71a12ee23_super_editor__fields_attrs1_83837249__vs__f102bb2f46_super_editor__di
+ff_before5_a5f60578_redline_306edcd34e_jubarte-093.docx — Microsoft Word got an 
+error: every document doesn’t understand the “close” message.
+2026-09-30 06:53:55.337 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f782ae23ec_super_editor__wordoriginatedcomments_c146be65__vs__3539cf2404_cli_leg
+acy__replace_test_0a793f01_redline_3303e707c8_jubarte-093.docx — Microsoft Word 
+got an error: every document doesn’t understand the “close” message.
+2026-09-30 06:53:55.338 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f786f1da65_001921017566904561ee8ce26ec591c5fb4cd1655b295518__vs__1424386e9b_0174
+47de83753a0e3b7afc659df038ef56972925336c6a5b_redline_4364428e37_jubarte-093.docx
+ — Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.339 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f786f1da65_001921017566904561ee8ce26ec591c5fb4cd1655b295518__vs__2773adf157_0004
+c94ca2a8684d47449bb0e7abf87de1df71a7e6543252_redline_bdea97dde1_jubarte-093.docx
+ — Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.339 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f786f1da65_001921017566904561ee8ce26ec591c5fb4cd1655b295518__vs__2e04202552_000e
+3e7bd2d6215fc7b469cc3e296c1b2a510bc1abc7e0fd_redline_0a0cd852ed_jubarte-093.docx
+ — Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.340 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f786f1da65_001921017566904561ee8ce26ec591c5fb4cd1655b295518__vs__333bfe069a_0034
+16d620331122b93b434dad901db5836f60d2cad4b533_redline_3794c2d672_jubarte-093.docx
+ — Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.341 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f786f1da65_001921017566904561ee8ce26ec591c5fb4cd1655b295518__vs__342f364d46_0013
+42333d45627868f4dc5282abbba4598a91b4a7584b08_redline_be486e3b25_jubarte-093.docx
+ — Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.342 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f786f1da65_001921017566904561ee8ce26ec591c5fb4cd1655b295518__vs__5203829c7a_001c
+c92b88566d5f930fe57f25813c0bf52a7bdc72c217d0_redline_cb330ddba7_jubarte-093.docx
+ — Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.343 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f786f1da65_001921017566904561ee8ce26ec591c5fb4cd1655b295518__vs__a5f2b9318d_002a
+a60c2ae1187417b4b157c5ec6450324cc056ec551a12_redline_f2f9d9b24a_jubarte-093.docx
+ — Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.343 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f786f1da65_001921017566904561ee8ce26ec591c5fb4cd1655b295518__vs__aa5340125d_00a4
+b0b91e9b5b072dc3771391c2d608518690eccf44eae8_redline_41c87b1359_jubarte-093.docx
+ — Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.344 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f786f1da65_001921017566904561ee8ce26ec591c5fb4cd1655b295518__vs__bd3824dd1e_000e
+e64ef7226d353297888f59a251e24ce5d776fea000fa_redline_dd1816c8cf_jubarte-093.docx
+ — Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.345 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f786f1da65_001921017566904561ee8ce26ec591c5fb4cd1655b295518__vs__deff0e697a_00b5
+defcad6e58038eac35472a2d48c89905068e5ece0cc3_redline_deab4d1fab_jubarte-093.docx
+ — Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.346 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f795b96ac4_behavior__math_delimiter_tests_c9d034dc__vs__22ccb1b200_super_editor_
+_diff_after19_79c6b379_redline_d47a965ac5_jubarte-093.docx — Microsoft Word got 
+an error: every document doesn’t understand the “close” message.
+2026-09-30 06:53:55.347 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f795b96ac4_behavior__math_delimiter_tests_c9d034dc__vs__75aeff4f58_super_editor_
+_diff_after9_a9d4b4b0_redline_898635595b_jubarte-093.docx — Microsoft Word got 
+an error: every document doesn’t understand the “close” message.
+2026-09-30 06:53:55.348 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f795b96ac4_behavior__math_delimiter_tests_c9d034dc__vs__79cb6b6c0f_behavior__wor
+d_native_bullet_disc_bfbeb2dd_redline_43b21d082c_jubarte-093.docx — Microsoft 
+Word got an error: every document doesn’t understand the “close” message.
+2026-09-30 06:53:55.348 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f795b96ac4_behavior__math_delimiter_tests_c9d034dc__vs__e3d152989b_behavior__mat
+h_eqarr_tests_40a1adb0_redline_5f586771fd_jubarte-093.docx — Microsoft Word got 
+an error: every document doesn’t understand the “close” message.
+2026-09-30 06:53:55.349 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f7d8cdf9a9_product_roadmap_2026_suggesting_insertions__vs__93db7f65b3_project_pl
+an_suggesting_insertions_redline_218c9d60d5_jubarte-093.docx — Microsoft Word 
+got an error: every document doesn’t understand the “close” message.
+2026-09-30 06:53:55.350 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f7ece685ff_behavior__math_limit_tests_6dc07867__vs__3ad13eed3d_evals__document_9
+bff7e1b_redline_76d159d4b3_jubarte-093.docx — Microsoft Word got an error: every
+document doesn’t understand the “close” message.
+2026-09-30 06:53:55.350 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f7ece685ff_behavior__math_limit_tests_6dc07867__vs__432a12b1a9_behavior__word_na
+tive_bullet_square_da8bb73c_redline_ca516d2f7f_jubarte-093.docx — Microsoft Word
+got an error: every document doesn’t understand the “close” message.
+2026-09-30 06:53:55.351 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f7ece685ff_behavior__math_limit_tests_6dc07867__vs__6c0ad6c8ef_behavior__math_ma
+trix_tests_a3b17e15_redline_4256a31075_jubarte-093.docx — Microsoft Word got an 
+error: every document doesn’t understand the “close” message.
+2026-09-30 06:53:55.352 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f809be38e3_526b9a2add7b99091cb17082b0173cf0494f0768c2a5d48d__vs__5ed92f798c_47f9
+e20139a5b07aae344e6f0fcbb842f9e3ca5f2746ac23_redline_cde0f6e857_jubarte-093.docx
+ — Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.353 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f83dd8794c_justify_alignment_demo_id_paraid_overflow_2__vs__56d80fab6a_justify_a
+lignment_demo_id_paraid_overflow_redline_cedd5af88a_jubarte-093.docx — Microsoft
+Word got an error: every document doesn’t understand the “close” message.
+2026-09-30 06:53:55.354 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f84571f3fc_bold_text_formatting_demo_id_paraid_overflow_2__vs__fdabb735ad_bold_t
+ext_formatting_demo_id_paraid_overflow_redline_031d0f0b06_jubarte-093.docx — 
+Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.356 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f884ff965b_subscript_demo_style_default_missing__vs__381ea58f00_subtitle_style_d
+emo_id_paraid_overflow_redline_0787c21ef1_jubarte-093.docx — Microsoft Word got 
+an error: every document doesn’t understand the “close” message.
+2026-09-30 06:53:55.356 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f89ff5989b_evals__nda_7f304918__vs__0a2898b58a_evals__report_with_formatting_03f
+385ed_redline_cd9b4144f9_jubarte-093.docx — Microsoft Word got an error: every 
+document doesn’t understand the “close” message.
+2026-09-30 06:53:55.361 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f89ff5989b_evals__nda_7f304918__vs__18eb110b3b_numwords_fldsimple_redline_198811
+7669_jubarte-093.docx — Microsoft Word got an error: every document doesn’t 
+understand the “close” message.
+2026-09-30 06:53:55.362 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f8cb67d689_file_3__vs__f8f7ed1dc0_file_4_redline_6fb703911b_jubarte-093.docx — 
+Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.363 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f8ecf81d8b_font_size_demo_id_paraid_overflow__vs__2a69e1ce5c_green_bold_text_dem
+o_id_paraid_overflow_redline_1197c62419_jubarte-093.docx — Microsoft Word got an
+error: every document doesn’t understand the “close” message.
+2026-09-30 06:53:55.363 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f8ecf81d8b_font_size_demo_id_paraid_overflow__vs__64bdd3aded_footnotes_sample_re
+dline_50108f87c5_jubarte-093.docx — Microsoft Word got an error: every document 
+doesn’t understand the “close” message.
+2026-09-30 06:53:55.364 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f8f7ed1dc0_file_4__vs__82ee7342fd_file_5_redline_1ca22e16ca_jubarte-093.docx — 
+Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.365 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f8f9857e80_title_style_demo_id_paraid_overflow__vs__39b73c977c_title_style_demo_
+style_default_missing_redline_2c6a62810a_jubarte-093.docx — Microsoft Word got 
+an error: every document doesn’t understand the “close” message.
+2026-09-30 06:53:55.366 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f901587291_docx_lots_of_comments_addition_redline_addition__vs__c9822f1008_docx_
+lots_of_comments_addition_redline_redline_82e22bbec6_jubarte-093.docx — 
+Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.366 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f94aeed5f5_001f4e98e9744f89b6f26b3741cb6439f8131bf89659230e__vs__1424386e9b_0174
+47de83753a0e3b7afc659df038ef56972925336c6a5b_redline_ece42865e7_jubarte-093.docx
+ — Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.367 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f94aeed5f5_001f4e98e9744f89b6f26b3741cb6439f8131bf89659230e__vs__2773adf157_0004
+c94ca2a8684d47449bb0e7abf87de1df71a7e6543252_redline_c1a7769ddd_jubarte-093.docx
+ — Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.368 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f94aeed5f5_001f4e98e9744f89b6f26b3741cb6439f8131bf89659230e__vs__2e04202552_000e
+3e7bd2d6215fc7b469cc3e296c1b2a510bc1abc7e0fd_redline_c213810aca_jubarte-093.docx
+ — Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.369 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f94aeed5f5_001f4e98e9744f89b6f26b3741cb6439f8131bf89659230e__vs__333bfe069a_0034
+16d620331122b93b434dad901db5836f60d2cad4b533_redline_3a7f98f21b_jubarte-093.docx
+ — Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.370 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f94aeed5f5_001f4e98e9744f89b6f26b3741cb6439f8131bf89659230e__vs__342f364d46_0013
+42333d45627868f4dc5282abbba4598a91b4a7584b08_redline_564d441d36_jubarte-093.docx
+ — Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.371 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f94aeed5f5_001f4e98e9744f89b6f26b3741cb6439f8131bf89659230e__vs__5203829c7a_001c
+c92b88566d5f930fe57f25813c0bf52a7bdc72c217d0_redline_bd86c75e52_jubarte-093.docx
+ — Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.371 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f94aeed5f5_001f4e98e9744f89b6f26b3741cb6439f8131bf89659230e__vs__a5f2b9318d_002a
+a60c2ae1187417b4b157c5ec6450324cc056ec551a12_redline_751b38201f_jubarte-093.docx
+ — Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.372 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f94aeed5f5_001f4e98e9744f89b6f26b3741cb6439f8131bf89659230e__vs__aa5340125d_00a4
+b0b91e9b5b072dc3771391c2d608518690eccf44eae8_redline_24d37f7b5e_jubarte-093.docx
+ — Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.373 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f94aeed5f5_001f4e98e9744f89b6f26b3741cb6439f8131bf89659230e__vs__bd3824dd1e_000e
+e64ef7226d353297888f59a251e24ce5d776fea000fa_redline_c85d7fadac_jubarte-093.docx
+ — Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.374 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f94aeed5f5_001f4e98e9744f89b6f26b3741cb6439f8131bf89659230e__vs__deff0e697a_00b5
+defcad6e58038eac35472a2d48c89905068e5ece0cc3_redline_bb7bb84780_jubarte-093.docx
+ — Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.375 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f950268631_file_70__vs__13ccf06a72_file_71_redline_06abf273b8_jubarte-093.docx —
+Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.375 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f96d955d1f_adc89f6f8c063857a4749aef826b32335f84f594f313784d__vs__2187372db5_7afc
+e1a5de46c972eb12aa38086fda8ca550f4c811ef5d7f_redline_580f8e2e8a_jubarte-093.docx
+ — Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.376 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f999eb0cd4_b8eb69d5da1651ac1d6f5b7266fd567672cda7a9e9eab37b__vs__d2ba5bddc4_b9f2
+793b14613aaf0fdf7f451fe3da702bcfd98b34105b2b_redline_b0c99c33c7_jubarte-093.docx
+ — Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.377 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f9b9dbd790_0017bce9abd08007241b106f0fcf1d64e45c05cd82a05a1d__vs__1424386e9b_0174
+47de83753a0e3b7afc659df038ef56972925336c6a5b_redline_2ea0a59b6a_jubarte-093.docx
+ — Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.378 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f9b9dbd790_0017bce9abd08007241b106f0fcf1d64e45c05cd82a05a1d__vs__2773adf157_0004
+c94ca2a8684d47449bb0e7abf87de1df71a7e6543252_redline_6bcf56a447_jubarte-093.docx
+ — Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.379 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f9b9dbd790_0017bce9abd08007241b106f0fcf1d64e45c05cd82a05a1d__vs__2e04202552_000e
+3e7bd2d6215fc7b469cc3e296c1b2a510bc1abc7e0fd_redline_b716c93528_jubarte-093.docx
+ — Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.380 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f9b9dbd790_0017bce9abd08007241b106f0fcf1d64e45c05cd82a05a1d__vs__333bfe069a_0034
+16d620331122b93b434dad901db5836f60d2cad4b533_redline_a8c44068c2_jubarte-093.docx
+ — Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.380 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f9b9dbd790_0017bce9abd08007241b106f0fcf1d64e45c05cd82a05a1d__vs__342f364d46_0013
+42333d45627868f4dc5282abbba4598a91b4a7584b08_redline_3a6aea7fd6_jubarte-093.docx
+ — Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.381 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f9b9dbd790_0017bce9abd08007241b106f0fcf1d64e45c05cd82a05a1d__vs__5203829c7a_001c
+c92b88566d5f930fe57f25813c0bf52a7bdc72c217d0_redline_415fa42f00_jubarte-093.docx
+ — Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.382 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f9b9dbd790_0017bce9abd08007241b106f0fcf1d64e45c05cd82a05a1d__vs__a5f2b9318d_002a
+a60c2ae1187417b4b157c5ec6450324cc056ec551a12_redline_51e52dbbaf_jubarte-093.docx
+ — Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.383 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f9b9dbd790_0017bce9abd08007241b106f0fcf1d64e45c05cd82a05a1d__vs__aa5340125d_00a4
+b0b91e9b5b072dc3771391c2d608518690eccf44eae8_redline_207461739c_jubarte-093.docx
+ — Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.384 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f9b9dbd790_0017bce9abd08007241b106f0fcf1d64e45c05cd82a05a1d__vs__bd3824dd1e_000e
+e64ef7226d353297888f59a251e24ce5d776fea000fa_redline_3eee1bceaf_jubarte-093.docx
+ — Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.384 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f9b9dbd790_0017bce9abd08007241b106f0fcf1d64e45c05cd82a05a1d__vs__deff0e697a_00b5
+defcad6e58038eac35472a2d48c89905068e5ece0cc3_redline_5e151b767c_jubarte-093.docx
+ — Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.385 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+f9ca1d3348_277e57f3da9c9b557af1abffa61255c6e8036e032a64a874__vs__65695b941a_71df
+1fd99914a3abfca2de1775ccb4b2400f12430110f55d_redline_feacbc347e_jubarte-093.docx
+ — Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.386 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+fa33fd104c_file_136__vs__e3e56d833b_file_137_redline_ed9f4b0a5b_jubarte-093.docx
+— Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.386 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+fa4d5010d8_layout_engine__basic_vector_shapes_e5f0ef49__vs__ad43500302_super_edi
+tor__list_numbering_reimport_d788d573_redline_9d682fe39d_jubarte-093.docx — 
+Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.387 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+fa5b142e31_quarterly_performance_report_table__vs__c6f9b1571d_red_bold_heading_d
+emo_style_default_missing_redline_7ef4149a19_jubarte-093.docx — Microsoft Word 
+got an error: every document doesn’t understand the “close” message.
+2026-09-30 06:53:55.388 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+fa5b1dd76a_file_66__vs__57f861e6c4_file_67_redline_0c3d53058e_jubarte-093.docx —
+Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.389 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+fa6006c2ee_file_62__vs__5a508830cf_file_63_redline_0161808db0_jubarte-093.docx —
+Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.389 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+fa962f4b9d_file_79__vs__9d2146095f_file_80_redline_6169b89c33_jubarte-093.docx —
+Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.390 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+faa7c6b110_file_88__vs__57ff9e1b30_file_89_redline_4319e3d7c7_jubarte-093.docx —
+Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.391 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+fad179ac0c_file_85__vs__16c15842ae_file_86_redline_049b6411ab_jubarte-093.docx —
+Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.391 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+fad186fbc9_file_185__vs__5674014cbb_file_186_redline_c09f50d3f1_jubarte-093.docx
+— Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.392 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+fb1c56c1e0_fdf7dbac083ccb4be9870dac580f685d72e9cb78a9e1e824__vs__a9cfeef3a5_e9db
+fb36238214117a1148b5b1ebb6ce93a718fcfc7357d4_redline_6ed1a241a2_jubarte-093.docx
+ — Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.393 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+fb7e0f5c32_a908db22eafe0ddc365cd09429341464706ffb6d315fe03a__vs__8adb5d2b90_a5de
+68536253cfefa979b7c78ccbfd2f4d1316632aedf7c9_redline_496b13e942_jubarte-093.docx
+ — Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.394 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+fb7e959776_blue_centered_title_demo_style_default_missing__vs__080a32894f_blue_i
+talic_text_demo_id_paraid_overflow_redline_7f5ab5eb89_jubarte-093.docx — 
+Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.394 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+fb85d194cb_23203fe6d92dfd722597a5820480664b6fa93fdf63d04cbe__vs__5d88ca2fc6_6134
+18ce0a9bb74e12692fcaaa305ebd1196a5e3a8f56a13_redline_d610d90c10_jubarte-093.docx
+ — Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.396 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+fbe14959b0_000f5278175aa01c2b9517b07e8a087014e4a05ab3e24f41__vs__1424386e9b_0174
+47de83753a0e3b7afc659df038ef56972925336c6a5b_redline_2bd37cf59a_jubarte-093.docx
+ — Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.399 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+fbe14959b0_000f5278175aa01c2b9517b07e8a087014e4a05ab3e24f41__vs__2773adf157_0004
+c94ca2a8684d47449bb0e7abf87de1df71a7e6543252_redline_1f36e9a00b_jubarte-093.docx
+ — Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.400 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+fbe14959b0_000f5278175aa01c2b9517b07e8a087014e4a05ab3e24f41__vs__2e04202552_000e
+3e7bd2d6215fc7b469cc3e296c1b2a510bc1abc7e0fd_redline_638842c111_jubarte-093.docx
+ — Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.401 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+fbe14959b0_000f5278175aa01c2b9517b07e8a087014e4a05ab3e24f41__vs__333bfe069a_0034
+16d620331122b93b434dad901db5836f60d2cad4b533_redline_85aa26adba_jubarte-093.docx
+ — Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.402 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+fbe14959b0_000f5278175aa01c2b9517b07e8a087014e4a05ab3e24f41__vs__342f364d46_0013
+42333d45627868f4dc5282abbba4598a91b4a7584b08_redline_d452d8446d_jubarte-093.docx
+ — Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.404 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+fbe14959b0_000f5278175aa01c2b9517b07e8a087014e4a05ab3e24f41__vs__5203829c7a_001c
+c92b88566d5f930fe57f25813c0bf52a7bdc72c217d0_redline_1b40a04f6e_jubarte-093.docx
+ — Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.405 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+fbe14959b0_000f5278175aa01c2b9517b07e8a087014e4a05ab3e24f41__vs__a5f2b9318d_002a
+a60c2ae1187417b4b157c5ec6450324cc056ec551a12_redline_6fb9bbdb49_jubarte-093.docx
+ — Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.406 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+fbe14959b0_000f5278175aa01c2b9517b07e8a087014e4a05ab3e24f41__vs__aa5340125d_00a4
+b0b91e9b5b072dc3771391c2d608518690eccf44eae8_redline_d6580e6209_jubarte-093.docx
+ — Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.408 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+fbe14959b0_000f5278175aa01c2b9517b07e8a087014e4a05ab3e24f41__vs__bd3824dd1e_000e
+e64ef7226d353297888f59a251e24ce5d776fea000fa_redline_094759eca1_jubarte-093.docx
+ — Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.409 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+fbe14959b0_000f5278175aa01c2b9517b07e8a087014e4a05ab3e24f41__vs__deff0e697a_00b5
+defcad6e58038eac35472a2d48c89905068e5ece0cc3_redline_dde913904e_jubarte-093.docx
+ — Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.409 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+fc29454fff_89f617729d6e13b02ee455a6293f3bb99a733691efb9311a__vs__e3d461d691_e8b9
+38f25b7a363d4ef544485a3e17717ee5369f4a8b637a_redline_8644055513_jubarte-093.docx
+ — Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+2026-09-30 06:53:55.410 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+fc5d9fecb7_00028d824d5d2262bc6e30692308cd1b577ac1dff228970d__vs__1424386e9b_0174
+47de83753a0e3b7afc659df038ef56972925336c6a5b_redline_854b04698b_jubarte-093.docx
+ — Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+                DOCX → PDF:                 
+results/redlines_0929_full/jubarte-093/docx 
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━┓
+┃ outcome                          ┃ count ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━┩
+│ converted                        │   706 │
+│ skipped (exists)                 │  1790 │
+│ failed                           │   115 │
+│ seconds per document (batch avg) │   2.3 │
+└──────────────────────────────────┴───────┘
+  FAIL 
+19eb128df9_98bf5f3d218a1485f5eb284693b4f98725eadd3660097efd__vs__9666fa13fb_a370
+1d3600ed5bf6c9bf13e12e4c2a59542eba10f87fad69_redline_5b269ade28_jubarte-093.docx
+: 
+  FAIL 
+7e4c9416aa_00803e70c3646e42abab322238df606c847686168795a703__vs__1424386e9b_0174
+47de83753a0e3b7afc659df038ef56972925336c6a5b_redline_c8545d372b_jubarte-093.docx
+: Microsoft Word got an error: document 
+"00002__7e4c9416aa_00803e70c3646e42abab322238df606c847686168795a703__vs__1424386
+e9b_017447de83753a0e3b7afc659df038ef56972925336c6a5b_redline_c8545d372b_jubarte-
+09
+  FAIL 
+acce1b593c_4bb73d9addf1f02e3a2132dcd33a8feb4dfcbe076d43bb0f__vs__4e2d5a0b0c_4887
+566b3c4aad8c7f07b4ba2637c0244a1ee0d66c8d0c29_redline_63ea4d3f8d_jubarte-093.docx
+: Microsoft Word got an error: AppleEvent timed out.
+  FAIL 
+f43f6ef305_002042b8a23533ba746bf4eaf56b5e62642cc111f5f5fcff__vs__bd3824dd1e_000e
+e64ef7226d353297888f59a251e24ce5d776fea000fa_redline_fd2201fe85_jubarte-093.docx
+: 
+  FAIL 
+f43f6ef305_002042b8a23533ba746bf4eaf56b5e62642cc111f5f5fcff__vs__deff0e697a_00b5
+defcad6e58038eac35472a2d48c89905068e5ece0cc3_redline_621d6afaf0_jubarte-093.docx
+: Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+f49b3b0ec2_super_editor__sd_1919_word_table_74726d6c__vs__18d1a4ad46_super_edito
+r__sd_2534_collab_export_f3c7fdf7_redline_6ef257d033_jubarte-093.docx: Microsoft
+Word got an error: every document doesn’t understand the “close” message.
+  FAIL 
+f49b3b0ec2_super_editor__sd_1919_word_table_74726d6c__vs__a0738533be_gdocs_comme
+nts_export_redline_515c0aa8ab_jubarte-093.docx: Microsoft Word got an error: 
+every document doesn’t understand the “close” message.
+  FAIL 
+f49b3b0ec2_super_editor__sd_1919_word_table_74726d6c__vs__e663016796_behavior__s
+d_2672_multipara_cell_4d1f068e_redline_6adcb54944_jubarte-093.docx: Microsoft 
+Word got an error: every document doesn’t understand the “close” message.
+  FAIL 
+f4e1903ff3_super_editor__sd_1707_list_enter_track_changes_w__vs__25f07e0823_supe
+r_editor__sd_1919_word_mixed_33e049ca_redline_4d4841f48c_jubarte-093.docx: 
+Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+f4fa801783_sample_document_really_repaired_word_repaired__vs__451b3b3460_sample_
+document_word_repair_of_our_output_iter2_redline_72fecbe1f5_jubarte-093.docx: 
+Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+f4faa3ad63_file_129__vs__1547c5df73_file_130_redline_206e9d2d17_jubarte-093.docx
+: Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+f529133cd5_super_editor__basic_comment_d3ba5f1e__vs__199cb211b5_super_editor__ba
+sic_footnotes_5be96945_redline_b547e31a0d_jubarte-093.docx: Microsoft Word got 
+an error: every document doesn’t understand the “close” message.
+  FAIL 
+f529133cd5_super_editor__basic_comment_d3ba5f1e__vs__2dc3e97d2a_super_editor__hy
+perlink_node_52b7695b_redline_4ce07ffaec_jubarte-093.docx: Microsoft Word got an
+error: every document doesn’t understand the “close” message.
+  FAIL 
+f529133cd5_super_editor__basic_comment_d3ba5f1e__vs__3539cf2404_cli_legacy__repl
+ace_test_0a793f01_redline_a15dd224a7_jubarte-093.docx: Microsoft Word got an 
+error: every document doesn’t understand the “close” message.
+  FAIL 
+f529133cd5_super_editor__basic_comment_d3ba5f1e__vs__3b639ef236_super_editor__sd
+pr_8cc15994_redline_62f0f8ee91_jubarte-093.docx: Microsoft Word got an error: 
+every document doesn’t understand the “close” message.
+  FAIL 
+f529133cd5_super_editor__basic_comment_d3ba5f1e__vs__5fa01813d3_super_editor__ba
+sic_table_shading_d3212ffd_redline_b2704631d9_jubarte-093.docx: Microsoft Word 
+got an error: every document doesn’t understand the “close” message.
+  FAIL 
+f529133cd5_super_editor__basic_comment_d3ba5f1e__vs__75aeff4f58_super_editor__di
+ff_after9_a9d4b4b0_redline_2eb4edf103_jubarte-093.docx: Microsoft Word got an 
+error: every document doesn’t understand the “close” message.
+  FAIL 
+f529133cd5_super_editor__basic_comment_d3ba5f1e__vs__8df6dfa8d7_alternate_conten
+t_redline_e8fafc3cba_jubarte-093.docx: Microsoft Word got an error: every 
+document doesn’t understand the “close” message.
+  FAIL 
+f584285fed_behavior__sd_2672_gridbefore_vmerge_7c895dff__vs__ae9360e096_behavior
+__sd_2672_merged_table_821b922c_redline_6f547c7a01_jubarte-093.docx: Microsoft 
+Word got an error: every document doesn’t understand the “close” message.
+  FAIL 
+f5bac425cd_word_tolerated_broken_media_rel__vs__d616476e12_word_tolerated_duplic
+ate_ppr_redline_fd9df69e75_jubarte-093.docx: Microsoft Word got an error: every 
+document doesn’t understand the “close” message.
+  FAIL 
+f5e7ce8d94_italic_subscript_demo_style_default_missing__vs__bc1dd323f3_italic_te
+xt_formatting_demo_id_paraid_overflow_2_redline_ebb82f0e9b_jubarte-093.docx: 
+Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+f601de1855_file_152__vs__746ad2b7f6_file_153_redline_49ed3281ea_jubarte-093.docx
+: Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+f62e209c7c_super_editor__paragraph_ppr_variations_a7653eb1__vs__bcc7379f64_super
+_editor__paragraph_spacing_missing_de418c38_redline_ae1647267d_jubarte-093.docx:
+ Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+f644da9aeb_employee_directory_table_2__vs__7888085856_employee_directory_table_r
+edline_81f83d335f_jubarte-093.docx: Microsoft Word got an error: every document 
+doesn’t understand the “close” message.
+  FAIL 
+f6bf50a9ee_heading_1_style_demo_id_paraid_overflow__vs__361c330b8d_heading_2_cen
+ter_demo_id_paraid_overflow_redline_08c7668aa0_jubarte-093.docx: Microsoft Word 
+got an error: every document doesn’t understand the “close” message.
+  FAIL 
+f6de76cc94_numbered_list_italic_demo_id_paraid_overflow__vs__053c86de5f_open_san
+s_bold_underline_id_paraid_overflow_redline_0bde72da10_jubarte-093.docx: 
+Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+f6de76cc94_numbered_list_italic_demo_id_paraid_overflow__vs__18eb110b3b_numwords
+_fldsimple_redline_452c8f76a5_jubarte-093.docx: Microsoft Word got an error: 
+every document doesn’t understand the “close” message.
+  FAIL 
+f6e1c253ff_super_editor__diff_before9_9818a85f__vs__0b1d0278ce_behavior__math_ra
+dical_tests_4c1ce187_redline_1445e94e75_jubarte-093.docx: Microsoft Word got an 
+error: every document doesn’t understand the “close” message.
+  FAIL 
+f6e1c253ff_super_editor__diff_before9_9818a85f__vs__0e1d01ec7d_super_editor__doc
+_with_graphs_diagrams_rotated_e_redline_108d3b4e97_jubarte-093.docx: Microsoft 
+Word got an error: every document doesn’t understand the “close” message.
+  FAIL 
+f6f35375dd_4b86cf0feb7f5bded449753bfe2950d19263d9c33580247d__vs__153475ecc3_630e
+2755d490dfd200220fd7138cb75964ae99d9fa116455_redline_c2d6b7dbc8_jubarte-093.docx
+: Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+f701e327ed_6a38e10504967e4c8d114e98a1ec4394a6ad0758771b60b3__vs__00163e55a0_7d35
+102e1569471281c726baa1f9e9cc31e56e839f337972_redline_bd704500fb_jubarte-093.docx
+: Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+f71a12ee23_super_editor__fields_attrs1_83837249__vs__3539cf2404_cli_legacy__repl
+ace_test_0a793f01_redline_7a1d3fbeba_jubarte-093.docx: Microsoft Word got an 
+error: every document doesn’t understand the “close” message.
+  FAIL 
+f71a12ee23_super_editor__fields_attrs1_83837249__vs__7b076416b0_sectpr_headerref
+_redline_0d3b1ce858_jubarte-093.docx: Microsoft Word got an error: every 
+document doesn’t understand the “close” message.
+  FAIL 
+f71a12ee23_super_editor__fields_attrs1_83837249__vs__8db63962d9_super_editor__fi
+elds_attrs2_fonts_ebd792fb_redline_1824b1df94_jubarte-093.docx: Microsoft Word 
+got an error: every document doesn’t understand the “close” message.
+  FAIL 
+f71a12ee23_super_editor__fields_attrs1_83837249__vs__f102bb2f46_super_editor__di
+ff_before5_a5f60578_redline_306edcd34e_jubarte-093.docx: Microsoft Word got an 
+error: every document doesn’t understand the “close” message.
+  FAIL 
+f782ae23ec_super_editor__wordoriginatedcomments_c146be65__vs__3539cf2404_cli_leg
+acy__replace_test_0a793f01_redline_3303e707c8_jubarte-093.docx: Microsoft Word 
+got an error: every document doesn’t understand the “close” message.
+  FAIL 
+f786f1da65_001921017566904561ee8ce26ec591c5fb4cd1655b295518__vs__1424386e9b_0174
+47de83753a0e3b7afc659df038ef56972925336c6a5b_redline_4364428e37_jubarte-093.docx
+: Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+f786f1da65_001921017566904561ee8ce26ec591c5fb4cd1655b295518__vs__2773adf157_0004
+c94ca2a8684d47449bb0e7abf87de1df71a7e6543252_redline_bdea97dde1_jubarte-093.docx
+: Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+f786f1da65_001921017566904561ee8ce26ec591c5fb4cd1655b295518__vs__2e04202552_000e
+3e7bd2d6215fc7b469cc3e296c1b2a510bc1abc7e0fd_redline_0a0cd852ed_jubarte-093.docx
+: Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+f786f1da65_001921017566904561ee8ce26ec591c5fb4cd1655b295518__vs__333bfe069a_0034
+16d620331122b93b434dad901db5836f60d2cad4b533_redline_3794c2d672_jubarte-093.docx
+: Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+f786f1da65_001921017566904561ee8ce26ec591c5fb4cd1655b295518__vs__342f364d46_0013
+42333d45627868f4dc5282abbba4598a91b4a7584b08_redline_be486e3b25_jubarte-093.docx
+: Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+f786f1da65_001921017566904561ee8ce26ec591c5fb4cd1655b295518__vs__5203829c7a_001c
+c92b88566d5f930fe57f25813c0bf52a7bdc72c217d0_redline_cb330ddba7_jubarte-093.docx
+: Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+f786f1da65_001921017566904561ee8ce26ec591c5fb4cd1655b295518__vs__a5f2b9318d_002a
+a60c2ae1187417b4b157c5ec6450324cc056ec551a12_redline_f2f9d9b24a_jubarte-093.docx
+: Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+f786f1da65_001921017566904561ee8ce26ec591c5fb4cd1655b295518__vs__aa5340125d_00a4
+b0b91e9b5b072dc3771391c2d608518690eccf44eae8_redline_41c87b1359_jubarte-093.docx
+: Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+f786f1da65_001921017566904561ee8ce26ec591c5fb4cd1655b295518__vs__bd3824dd1e_000e
+e64ef7226d353297888f59a251e24ce5d776fea000fa_redline_dd1816c8cf_jubarte-093.docx
+: Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+f786f1da65_001921017566904561ee8ce26ec591c5fb4cd1655b295518__vs__deff0e697a_00b5
+defcad6e58038eac35472a2d48c89905068e5ece0cc3_redline_deab4d1fab_jubarte-093.docx
+: Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+f795b96ac4_behavior__math_delimiter_tests_c9d034dc__vs__22ccb1b200_super_editor_
+_diff_after19_79c6b379_redline_d47a965ac5_jubarte-093.docx: Microsoft Word got 
+an error: every document doesn’t understand the “close” message.
+  FAIL 
+f795b96ac4_behavior__math_delimiter_tests_c9d034dc__vs__75aeff4f58_super_editor_
+_diff_after9_a9d4b4b0_redline_898635595b_jubarte-093.docx: Microsoft Word got an
+error: every document doesn’t understand the “close” message.
+  FAIL 
+f795b96ac4_behavior__math_delimiter_tests_c9d034dc__vs__79cb6b6c0f_behavior__wor
+d_native_bullet_disc_bfbeb2dd_redline_43b21d082c_jubarte-093.docx: Microsoft 
+Word got an error: every document doesn’t understand the “close” message.
+  FAIL 
+f795b96ac4_behavior__math_delimiter_tests_c9d034dc__vs__e3d152989b_behavior__mat
+h_eqarr_tests_40a1adb0_redline_5f586771fd_jubarte-093.docx: Microsoft Word got 
+an error: every document doesn’t understand the “close” message.
+  FAIL 
+f7d8cdf9a9_product_roadmap_2026_suggesting_insertions__vs__93db7f65b3_project_pl
+an_suggesting_insertions_redline_218c9d60d5_jubarte-093.docx: Microsoft Word got
+an error: every document doesn’t understand the “close” message.
+  FAIL 
+f7ece685ff_behavior__math_limit_tests_6dc07867__vs__3ad13eed3d_evals__document_9
+bff7e1b_redline_76d159d4b3_jubarte-093.docx: Microsoft Word got an error: every 
+document doesn’t understand the “close” message.
+  FAIL 
+f7ece685ff_behavior__math_limit_tests_6dc07867__vs__432a12b1a9_behavior__word_na
+tive_bullet_square_da8bb73c_redline_ca516d2f7f_jubarte-093.docx: Microsoft Word 
+got an error: every document doesn’t understand the “close” message.
+  FAIL 
+f7ece685ff_behavior__math_limit_tests_6dc07867__vs__6c0ad6c8ef_behavior__math_ma
+trix_tests_a3b17e15_redline_4256a31075_jubarte-093.docx: Microsoft Word got an 
+error: every document doesn’t understand the “close” message.
+  FAIL 
+f809be38e3_526b9a2add7b99091cb17082b0173cf0494f0768c2a5d48d__vs__5ed92f798c_47f9
+e20139a5b07aae344e6f0fcbb842f9e3ca5f2746ac23_redline_cde0f6e857_jubarte-093.docx
+: Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+f83dd8794c_justify_alignment_demo_id_paraid_overflow_2__vs__56d80fab6a_justify_a
+lignment_demo_id_paraid_overflow_redline_cedd5af88a_jubarte-093.docx: Microsoft 
+Word got an error: every document doesn’t understand the “close” message.
+  FAIL 
+f84571f3fc_bold_text_formatting_demo_id_paraid_overflow_2__vs__fdabb735ad_bold_t
+ext_formatting_demo_id_paraid_overflow_redline_031d0f0b06_jubarte-093.docx: 
+Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+f884ff965b_subscript_demo_style_default_missing__vs__381ea58f00_subtitle_style_d
+emo_id_paraid_overflow_redline_0787c21ef1_jubarte-093.docx: Microsoft Word got 
+an error: every document doesn’t understand the “close” message.
+  FAIL 
+f89ff5989b_evals__nda_7f304918__vs__0a2898b58a_evals__report_with_formatting_03f
+385ed_redline_cd9b4144f9_jubarte-093.docx: Microsoft Word got an error: every 
+document doesn’t understand the “close” message.
+  FAIL 
+f89ff5989b_evals__nda_7f304918__vs__18eb110b3b_numwords_fldsimple_redline_198811
+7669_jubarte-093.docx: Microsoft Word got an error: every document doesn’t 
+understand the “close” message.
+  FAIL 
+f8cb67d689_file_3__vs__f8f7ed1dc0_file_4_redline_6fb703911b_jubarte-093.docx: 
+Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+f8ecf81d8b_font_size_demo_id_paraid_overflow__vs__2a69e1ce5c_green_bold_text_dem
+o_id_paraid_overflow_redline_1197c62419_jubarte-093.docx: Microsoft Word got an 
+error: every document doesn’t understand the “close” message.
+  FAIL 
+f8ecf81d8b_font_size_demo_id_paraid_overflow__vs__64bdd3aded_footnotes_sample_re
+dline_50108f87c5_jubarte-093.docx: Microsoft Word got an error: every document 
+doesn’t understand the “close” message.
+  FAIL 
+f8f7ed1dc0_file_4__vs__82ee7342fd_file_5_redline_1ca22e16ca_jubarte-093.docx: 
+Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+f8f9857e80_title_style_demo_id_paraid_overflow__vs__39b73c977c_title_style_demo_
+style_default_missing_redline_2c6a62810a_jubarte-093.docx: Microsoft Word got an
+error: every document doesn’t understand the “close” message.
+  FAIL 
+f901587291_docx_lots_of_comments_addition_redline_addition__vs__c9822f1008_docx_
+lots_of_comments_addition_redline_redline_82e22bbec6_jubarte-093.docx: Microsoft
+Word got an error: every document doesn’t understand the “close” message.
+  FAIL 
+f94aeed5f5_001f4e98e9744f89b6f26b3741cb6439f8131bf89659230e__vs__1424386e9b_0174
+47de83753a0e3b7afc659df038ef56972925336c6a5b_redline_ece42865e7_jubarte-093.docx
+: Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+f94aeed5f5_001f4e98e9744f89b6f26b3741cb6439f8131bf89659230e__vs__2773adf157_0004
+c94ca2a8684d47449bb0e7abf87de1df71a7e6543252_redline_c1a7769ddd_jubarte-093.docx
+: Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+f94aeed5f5_001f4e98e9744f89b6f26b3741cb6439f8131bf89659230e__vs__2e04202552_000e
+3e7bd2d6215fc7b469cc3e296c1b2a510bc1abc7e0fd_redline_c213810aca_jubarte-093.docx
+: Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+f94aeed5f5_001f4e98e9744f89b6f26b3741cb6439f8131bf89659230e__vs__333bfe069a_0034
+16d620331122b93b434dad901db5836f60d2cad4b533_redline_3a7f98f21b_jubarte-093.docx
+: Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+f94aeed5f5_001f4e98e9744f89b6f26b3741cb6439f8131bf89659230e__vs__342f364d46_0013
+42333d45627868f4dc5282abbba4598a91b4a7584b08_redline_564d441d36_jubarte-093.docx
+: Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+f94aeed5f5_001f4e98e9744f89b6f26b3741cb6439f8131bf89659230e__vs__5203829c7a_001c
+c92b88566d5f930fe57f25813c0bf52a7bdc72c217d0_redline_bd86c75e52_jubarte-093.docx
+: Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+f94aeed5f5_001f4e98e9744f89b6f26b3741cb6439f8131bf89659230e__vs__a5f2b9318d_002a
+a60c2ae1187417b4b157c5ec6450324cc056ec551a12_redline_751b38201f_jubarte-093.docx
+: Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+f94aeed5f5_001f4e98e9744f89b6f26b3741cb6439f8131bf89659230e__vs__aa5340125d_00a4
+b0b91e9b5b072dc3771391c2d608518690eccf44eae8_redline_24d37f7b5e_jubarte-093.docx
+: Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+f94aeed5f5_001f4e98e9744f89b6f26b3741cb6439f8131bf89659230e__vs__bd3824dd1e_000e
+e64ef7226d353297888f59a251e24ce5d776fea000fa_redline_c85d7fadac_jubarte-093.docx
+: Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+f94aeed5f5_001f4e98e9744f89b6f26b3741cb6439f8131bf89659230e__vs__deff0e697a_00b5
+defcad6e58038eac35472a2d48c89905068e5ece0cc3_redline_bb7bb84780_jubarte-093.docx
+: Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+f950268631_file_70__vs__13ccf06a72_file_71_redline_06abf273b8_jubarte-093.docx: 
+Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+f96d955d1f_adc89f6f8c063857a4749aef826b32335f84f594f313784d__vs__2187372db5_7afc
+e1a5de46c972eb12aa38086fda8ca550f4c811ef5d7f_redline_580f8e2e8a_jubarte-093.docx
+: Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+f999eb0cd4_b8eb69d5da1651ac1d6f5b7266fd567672cda7a9e9eab37b__vs__d2ba5bddc4_b9f2
+793b14613aaf0fdf7f451fe3da702bcfd98b34105b2b_redline_b0c99c33c7_jubarte-093.docx
+: Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+f9b9dbd790_0017bce9abd08007241b106f0fcf1d64e45c05cd82a05a1d__vs__1424386e9b_0174
+47de83753a0e3b7afc659df038ef56972925336c6a5b_redline_2ea0a59b6a_jubarte-093.docx
+: Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+f9b9dbd790_0017bce9abd08007241b106f0fcf1d64e45c05cd82a05a1d__vs__2773adf157_0004
+c94ca2a8684d47449bb0e7abf87de1df71a7e6543252_redline_6bcf56a447_jubarte-093.docx
+: Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+f9b9dbd790_0017bce9abd08007241b106f0fcf1d64e45c05cd82a05a1d__vs__2e04202552_000e
+3e7bd2d6215fc7b469cc3e296c1b2a510bc1abc7e0fd_redline_b716c93528_jubarte-093.docx
+: Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+f9b9dbd790_0017bce9abd08007241b106f0fcf1d64e45c05cd82a05a1d__vs__333bfe069a_0034
+16d620331122b93b434dad901db5836f60d2cad4b533_redline_a8c44068c2_jubarte-093.docx
+: Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+f9b9dbd790_0017bce9abd08007241b106f0fcf1d64e45c05cd82a05a1d__vs__342f364d46_0013
+42333d45627868f4dc5282abbba4598a91b4a7584b08_redline_3a6aea7fd6_jubarte-093.docx
+: Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+f9b9dbd790_0017bce9abd08007241b106f0fcf1d64e45c05cd82a05a1d__vs__5203829c7a_001c
+c92b88566d5f930fe57f25813c0bf52a7bdc72c217d0_redline_415fa42f00_jubarte-093.docx
+: Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+f9b9dbd790_0017bce9abd08007241b106f0fcf1d64e45c05cd82a05a1d__vs__a5f2b9318d_002a
+a60c2ae1187417b4b157c5ec6450324cc056ec551a12_redline_51e52dbbaf_jubarte-093.docx
+: Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+f9b9dbd790_0017bce9abd08007241b106f0fcf1d64e45c05cd82a05a1d__vs__aa5340125d_00a4
+b0b91e9b5b072dc3771391c2d608518690eccf44eae8_redline_207461739c_jubarte-093.docx
+: Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+f9b9dbd790_0017bce9abd08007241b106f0fcf1d64e45c05cd82a05a1d__vs__bd3824dd1e_000e
+e64ef7226d353297888f59a251e24ce5d776fea000fa_redline_3eee1bceaf_jubarte-093.docx
+: Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+f9b9dbd790_0017bce9abd08007241b106f0fcf1d64e45c05cd82a05a1d__vs__deff0e697a_00b5
+defcad6e58038eac35472a2d48c89905068e5ece0cc3_redline_5e151b767c_jubarte-093.docx
+: Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+f9ca1d3348_277e57f3da9c9b557af1abffa61255c6e8036e032a64a874__vs__65695b941a_71df
+1fd99914a3abfca2de1775ccb4b2400f12430110f55d_redline_feacbc347e_jubarte-093.docx
+: Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+fa33fd104c_file_136__vs__e3e56d833b_file_137_redline_ed9f4b0a5b_jubarte-093.docx
+: Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+fa4d5010d8_layout_engine__basic_vector_shapes_e5f0ef49__vs__ad43500302_super_edi
+tor__list_numbering_reimport_d788d573_redline_9d682fe39d_jubarte-093.docx: 
+Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+fa5b142e31_quarterly_performance_report_table__vs__c6f9b1571d_red_bold_heading_d
+emo_style_default_missing_redline_7ef4149a19_jubarte-093.docx: Microsoft Word 
+got an error: every document doesn’t understand the “close” message.
+  FAIL 
+fa5b1dd76a_file_66__vs__57f861e6c4_file_67_redline_0c3d53058e_jubarte-093.docx: 
+Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+fa6006c2ee_file_62__vs__5a508830cf_file_63_redline_0161808db0_jubarte-093.docx: 
+Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+fa962f4b9d_file_79__vs__9d2146095f_file_80_redline_6169b89c33_jubarte-093.docx: 
+Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+faa7c6b110_file_88__vs__57ff9e1b30_file_89_redline_4319e3d7c7_jubarte-093.docx: 
+Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+fad179ac0c_file_85__vs__16c15842ae_file_86_redline_049b6411ab_jubarte-093.docx: 
+Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+fad186fbc9_file_185__vs__5674014cbb_file_186_redline_c09f50d3f1_jubarte-093.docx
+: Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+fb1c56c1e0_fdf7dbac083ccb4be9870dac580f685d72e9cb78a9e1e824__vs__a9cfeef3a5_e9db
+fb36238214117a1148b5b1ebb6ce93a718fcfc7357d4_redline_6ed1a241a2_jubarte-093.docx
+: Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+fb7e0f5c32_a908db22eafe0ddc365cd09429341464706ffb6d315fe03a__vs__8adb5d2b90_a5de
+68536253cfefa979b7c78ccbfd2f4d1316632aedf7c9_redline_496b13e942_jubarte-093.docx
+: Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+fb7e959776_blue_centered_title_demo_style_default_missing__vs__080a32894f_blue_i
+talic_text_demo_id_paraid_overflow_redline_7f5ab5eb89_jubarte-093.docx: 
+Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+fb85d194cb_23203fe6d92dfd722597a5820480664b6fa93fdf63d04cbe__vs__5d88ca2fc6_6134
+18ce0a9bb74e12692fcaaa305ebd1196a5e3a8f56a13_redline_d610d90c10_jubarte-093.docx
+: Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+fbe14959b0_000f5278175aa01c2b9517b07e8a087014e4a05ab3e24f41__vs__1424386e9b_0174
+47de83753a0e3b7afc659df038ef56972925336c6a5b_redline_2bd37cf59a_jubarte-093.docx
+: Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+fbe14959b0_000f5278175aa01c2b9517b07e8a087014e4a05ab3e24f41__vs__2773adf157_0004
+c94ca2a8684d47449bb0e7abf87de1df71a7e6543252_redline_1f36e9a00b_jubarte-093.docx
+: Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+fbe14959b0_000f5278175aa01c2b9517b07e8a087014e4a05ab3e24f41__vs__2e04202552_000e
+3e7bd2d6215fc7b469cc3e296c1b2a510bc1abc7e0fd_redline_638842c111_jubarte-093.docx
+: Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+fbe14959b0_000f5278175aa01c2b9517b07e8a087014e4a05ab3e24f41__vs__333bfe069a_0034
+16d620331122b93b434dad901db5836f60d2cad4b533_redline_85aa26adba_jubarte-093.docx
+: Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+fbe14959b0_000f5278175aa01c2b9517b07e8a087014e4a05ab3e24f41__vs__342f364d46_0013
+42333d45627868f4dc5282abbba4598a91b4a7584b08_redline_d452d8446d_jubarte-093.docx
+: Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+fbe14959b0_000f5278175aa01c2b9517b07e8a087014e4a05ab3e24f41__vs__5203829c7a_001c
+c92b88566d5f930fe57f25813c0bf52a7bdc72c217d0_redline_1b40a04f6e_jubarte-093.docx
+: Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+fbe14959b0_000f5278175aa01c2b9517b07e8a087014e4a05ab3e24f41__vs__a5f2b9318d_002a
+a60c2ae1187417b4b157c5ec6450324cc056ec551a12_redline_6fb9bbdb49_jubarte-093.docx
+: Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+fbe14959b0_000f5278175aa01c2b9517b07e8a087014e4a05ab3e24f41__vs__aa5340125d_00a4
+b0b91e9b5b072dc3771391c2d608518690eccf44eae8_redline_d6580e6209_jubarte-093.docx
+: Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+fbe14959b0_000f5278175aa01c2b9517b07e8a087014e4a05ab3e24f41__vs__bd3824dd1e_000e
+e64ef7226d353297888f59a251e24ce5d776fea000fa_redline_094759eca1_jubarte-093.docx
+: Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+fbe14959b0_000f5278175aa01c2b9517b07e8a087014e4a05ab3e24f41__vs__deff0e697a_00b5
+defcad6e58038eac35472a2d48c89905068e5ece0cc3_redline_dde913904e_jubarte-093.docx
+: Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+fc29454fff_89f617729d6e13b02ee455a6293f3bb99a733691efb9311a__vs__e3d461d691_e8b9
+38f25b7a363d4ef544485a3e17717ee5369f4a8b637a_redline_8644055513_jubarte-093.docx
+: Microsoft Word got an error: every document doesn’t understand the “close” 
+message.
+  FAIL 
+fc5d9fecb7_00028d824d5d2262bc6e30692308cd1b577ac1dff228970d__vs__1424386e9b_0174
+47de83753a0e3b7afc659df038ef56972925336c6a5b_redline_854b04698b_jubarte-093.docx
+: Microsoft Word got an error: every document doesn’t understand the “close” 
+message.

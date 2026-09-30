@@ -1,0 +1,46 @@
+2026-09-30 07:17:12.261 | INFO     | word_pdf:preflight:1812 -  preflight: 
+open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-09-30 07:17:12.318 | INFO     | word_pdf:convert_folder:1486 -  export: 
+one_osascript=True documents=100 accept_all=False reject_all=True
+2026-09-30 07:17:48.180 | INFO     | word_pdf:_convert_batched:1685 -  one 
+osascript for 100 document(s)
+2026-09-30 07:17:53.204 | INFO     | __main__:_loop:231 -  3/100
+2026-09-30 07:17:58.228 | INFO     | __main__:_loop:231 -  8/100
+2026-09-30 07:18:03.253 | INFO     | __main__:_loop:231 -  14/100
+2026-09-30 07:18:08.273 | INFO     | __main__:_loop:231 -  19/100
+2026-09-30 07:18:13.297 | INFO     | __main__:_loop:231 -  24/100
+2026-09-30 07:18:18.323 | INFO     | __main__:_loop:231 -  29/100
+2026-09-30 07:18:23.344 | INFO     | __main__:_loop:231 -  33/100
+2026-09-30 07:18:28.378 | INFO     | __main__:_loop:231 -  36/100
+2026-09-30 07:18:33.424 | INFO     | __main__:_loop:231 -  39/100
+2026-09-30 07:18:38.520 | INFO     | __main__:_loop:231 -  41/100
+2026-09-30 07:18:43.627 | INFO     | __main__:_loop:231 -  44/100
+2026-09-30 07:18:48.732 | INFO     | __main__:_loop:231 -  47/100
+2026-09-30 07:18:53.792 | INFO     | __main__:_loop:231 -  50/100
+2026-09-30 07:18:58.906 | INFO     | __main__:_loop:231 -  53/100
+2026-09-30 07:19:03.976 | INFO     | __main__:_loop:231 -  57/100
+2026-09-30 07:19:09.032 | INFO     | __main__:_loop:231 -  60/100
+2026-09-30 07:19:14.132 | INFO     | __main__:_loop:231 -  64/100
+2026-09-30 07:19:19.194 | INFO     | __main__:_loop:231 -  67/100
+2026-09-30 07:19:24.230 | INFO     | __main__:_loop:231 -  70/100
+2026-09-30 07:19:29.258 | INFO     | __main__:_loop:231 -  72/100
+2026-09-30 07:19:34.315 | INFO     | __main__:_loop:231 -  75/100
+2026-09-30 07:19:39.370 | INFO     | __main__:_loop:231 -  78/100
+2026-09-30 07:19:44.446 | INFO     | __main__:_loop:231 -  81/100
+2026-09-30 07:19:49.506 | INFO     | __main__:_loop:231 -  84/100
+2026-09-30 07:19:54.556 | INFO     | __main__:_loop:231 -  87/100
+2026-09-30 07:19:59.607 | INFO     | __main__:_loop:231 -  89/100
+2026-09-30 07:20:04.663 | INFO     | __main__:_loop:231 -  92/100
+2026-09-30 07:20:09.718 | INFO     | __main__:_loop:231 -  95/100
+2026-09-30 07:20:14.770 | INFO     | __main__:_loop:231 -  97/100
+          reject all → DOCX + PDF:          
+results/redlines_0929_full/jubarte-093/rejec
+                  ted/src                   
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━┓
+┃ outcome                          ┃ count ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━┩
+│ converted                        │   100 │
+│ skipped (exists)                 │     0 │
+│ failed                           │     0 │
+│ seconds per document (batch avg) │   1.5 │
+└──────────────────────────────────┴───────┘
