@@ -1,0 +1,25 @@
+staged 12387 files, 2.61 GB: {'jubarte-rust/docx': 2611, 'jubarte-rust/pdf_by_word': 2608, 'jubarte-rust/accepted/src': 100, 'jubarte-rust/accepted/by_word': 198, 'jubarte-rust/rejected/src': 100, 'jubarte-rust/rejected/by_word': 200, 'docxodus/docx': 2605, 'docxodus/pdf_by_word': 1895, 'docxodus/accepted/src': 100, 'docxodus/accepted/by_word': 182, 'docxodus/rejected/src': 100, 'docxodus/rejected/by_word': 192, 'superdoc/docx': 192, 'superdoc/pdf_by_word': 192, 'superdoc/accepted/src': 5, 'superdoc/accepted/by_word': 10, 'superdoc/rejected/src': 8, 'superdoc/rejected/by_word': 16, 'fresh_compares': 1032, 'jubarte-rust/meta': 2, 'docxodus/meta': 2, 'superdoc/meta': 11, 'run': 26}
+uploaded jubarte-rust/docx
+uploaded jubarte-rust/pdf_by_word
+uploaded jubarte-rust/accepted/src
+uploaded jubarte-rust/accepted/by_word
+uploaded jubarte-rust/rejected/src
+uploaded jubarte-rust/rejected/by_word
+uploaded docxodus/docx
+uploaded docxodus/pdf_by_word
+uploaded docxodus/accepted/src
+uploaded docxodus/accepted/by_word
+uploaded docxodus/rejected/src
+uploaded docxodus/rejected/by_word
+uploaded superdoc/docx
+uploaded superdoc/pdf_by_word
+uploaded superdoc/accepted/src
+uploaded superdoc/accepted/by_word
+uploaded superdoc/rejected/src
+uploaded superdoc/rejected/by_word
+uploaded fresh_compares
+uploaded jubarte-rust/meta
+uploaded docxodus/meta
+uploaded superdoc/meta
+uploaded run
+verified 12387 files on arthrod/neurotic_docx_bench/outputs/redlines_0929_full
