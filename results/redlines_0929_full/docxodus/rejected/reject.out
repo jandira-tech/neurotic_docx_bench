@@ -1,0 +1,153 @@
+2026-09-30 03:47:50.332 | INFO     | word_pdf:preflight:1812 -  preflight: 
+open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-09-30 03:47:50.360 | INFO     | word_pdf:convert_folder:1486 -  export: 
+one_osascript=True documents=100 accept_all=False reject_all=True
+2026-09-30 03:49:35.979 | INFO     | word_pdf:_convert_batched:1685 -  one 
+osascript for 100 document(s)
+2026-09-30 03:49:41.000 | INFO     | __main__:_loop:231 -  4/100
+2026-09-30 03:49:46.021 | INFO     | __main__:_loop:231 -  8/100
+2026-09-30 03:49:51.040 | INFO     | __main__:_loop:231 -  9/100
+2026-09-30 03:49:56.071 | INFO     | __main__:_loop:246 -  item 12/100 not saved
+after 5 s; checking Word
+2026-09-30 03:49:59.845 | WARNING  | word_pdf:run_batch_with_resume:1206 -  91 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 2, 0 of 3 stalled 
+passes used)
+2026-09-30 03:49:59.847 | WARNING  | word_pdf♻725 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-09-30 03:49:59.849 | WARNING  | word_pdf♻731 -  recycling (restart 1)
+2026-09-30 03:50:08.475 | INFO     | __main__:_loop:231 -  4/91
+2026-09-30 03:50:13.500 | INFO     | __main__:_loop:231 -  7/91
+2026-09-30 03:50:18.520 | INFO     | __main__:_loop:246 -  item 10/91 not saved 
+after 5 s; checking Word
+2026-09-30 03:50:21.476 | INFO     | word_pdf:_note_buttons:510 -  Microsoft 
+Word shows button 'No'
+2026-09-30 03:50:21.478 | INFO     | word_pdf:_note_buttons:510 -  Microsoft 
+Word shows button 'Yes'
+2026-09-30 03:50:21.825 | WARNING  | __main__:forward:135 -  brought Word 
+forward, pressed No then OK; focus handed back
+2026-09-30 03:50:26.847 | INFO     | __main__:_loop:231 -  12/91
+2026-09-30 03:50:29.136 | WARNING  | __main__:_loop_word:188 -  Word dialog 
+dismissed via 'No'
+2026-09-30 03:50:31.867 | INFO     | __main__:_loop:231 -  14/91
+2026-09-30 03:50:32.707 | INFO     | word_pdf:_note_buttons:510 -  Microsoft 
+Word shows button 'OK'
+2026-09-30 03:50:33.619 | WARNING  | __main__:_loop_word:188 -  Word dialog 
+dismissed via 'OK'
+2026-09-30 03:50:36.895 | INFO     | __main__:_loop:231 -  17/91
+2026-09-30 03:50:41.914 | INFO     | __main__:_loop:231 -  23/91
+2026-09-30 03:50:46.933 | INFO     | __main__:_loop:231 -  26/91
+2026-09-30 03:50:48.272 | WARNING  | __main__:forward:135 -  brought Word 
+forward, pressed No then OK; focus handed back
+2026-09-30 03:50:51.954 | INFO     | __main__:_loop:231 -  30/91
+2026-09-30 03:50:56.975 | INFO     | __main__:_loop:231 -  35/91
+2026-09-30 03:51:01.996 | INFO     | __main__:_loop:231 -  38/91
+2026-09-30 03:51:05.087 | WARNING  | __main__:forward:135 -  brought Word 
+forward, pressed No then OK; focus handed back
+2026-09-30 03:51:07.016 | INFO     | __main__:_loop:231 -  40/91
+2026-09-30 03:51:12.037 | INFO     | __main__:_loop:231 -  46/91
+2026-09-30 03:51:17.056 | INFO     | __main__:_loop:231 -  51/91
+2026-09-30 03:51:22.079 | INFO     | __main__:_loop:231 -  56/91
+2026-09-30 03:51:27.109 | INFO     | __main__:_loop:231 -  62/91
+2026-09-30 03:51:32.133 | INFO     | __main__:_loop:231 -  67/91
+2026-09-30 03:51:37.153 | INFO     | __main__:_loop:231 -  72/91
+2026-09-30 03:51:42.179 | INFO     | __main__:_loop:231 -  77/91
+2026-09-30 03:51:47.199 | INFO     | __main__:_loop:231 -  82/91
+2026-09-30 03:51:50.040 | WARNING  | word_pdf:run_batch_with_resume:1206 -  6 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 3, 0 of 3 stalled 
+passes used)
+2026-09-30 03:51:50.041 | WARNING  | word_pdf♻725 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-09-30 03:51:50.042 | WARNING  | word_pdf♻731 -  recycling (restart 2)
+2026-09-30 03:52:01.575 | INFO     | __main__:_loop:231 -  2/6
+2026-09-30 03:52:03.793 | WARNING  | __main__:_loop_word:188 -  Word dialog 
+dismissed via 'No'
+2026-09-30 03:52:06.583 | INFO     | __main__:_loop:246 -  item 3/6 not saved 
+after 5 s; checking Word
+2026-09-30 03:52:07.856 | WARNING  | __main__:forward:135 -  brought Word 
+forward, pressed OK; focus handed back
+2026-09-30 03:52:17.883 | INFO     | __main__:_loop:246 -  item 4/6 not saved 
+after 5 s; checking Word
+2026-09-30 03:52:45.915 | INFO     | __main__:_loop:246 -  item 4/6 not saved 
+after 33 s; checking Word
+2026-09-30 03:52:48.828 | WARNING  | __main__:_report:208 -  item 4/6 open for 
+more than 30 s:
+-- Word windows {name, subrole}: , AXDialog
+-- Word window text: Microsoft Word, Word found unreadable content in 
+00029__485599b4e9.docx. Do you want to recover the contents of this document? If
+you trust the source of this document, click Yes.
+-- crash reporters: 
+-- batch-pdf-3.log:
+        16
+        18
+        21      document loaded empty (Word could not read it)
+-- newest diagnostic reports: AppCleaner-2026-09-30-001317.ips, 
+biome-2026-09-29-094107.ips, soffice-2026-09-28-104720.ips, 
+soffice-2026-09-28-105517.ips, soffice-2026-09-28-105123.000.ips
+2026-09-30 03:52:49.247 | WARNING  | __main__:forward:135 -  brought Word 
+forward, pressed No then OK; focus handed back
+2026-09-30 03:52:49.910 | WARNING  | __main__:forward:135 -  brought Word 
+forward, pressed No then OK; focus handed back
+2026-09-30 03:52:50.013 | WARNING  | word_pdf:run_batch_with_resume:1206 -  1 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 4, 0 of 3 stalled 
+passes used)
+2026-09-30 03:52:50.014 | WARNING  | word_pdf♻725 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-09-30 03:52:50.014 | WARNING  | word_pdf♻731 -  recycling (restart 3)
+2026-09-30 03:52:57.644 | WARNING  | __main__:_loop_word:188 -  Word dialog 
+dismissed via 'No'
+2026-09-30 03:53:01.411 | INFO     | __main__:_loop:231 -  0/1
+2026-09-30 03:53:06.417 | INFO     | __main__:_loop:246 -  item 1/1 not saved 
+after 5 s; checking Word
+2026-09-30 03:53:06.935 | WARNING  | __main__:forward:135 -  brought Word 
+forward, pressed OK; focus handed back
+2026-09-30 03:53:07.016 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+159ce5c93c.docx — osascript exit 0, no output file
+2026-09-30 03:53:07.017 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+16833a9d55.docx — osascript exit 0, no output file
+2026-09-30 03:53:07.017 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+1ae50cba31.docx — Microsoft Word got an error: missing value doesn’t understand 
+the “save as” message.
+2026-09-30 03:53:07.030 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+237db14eba.docx — osascript exit 0, no output file
+2026-09-30 03:53:07.040 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+32d0abcfc9.docx — Word could not load it in 2 passes: document loaded empty 
+(Word could not read it)
+2026-09-30 03:53:07.055 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+485599b4e9.docx — Word could not load it in 2 passes: document loaded empty 
+(Word could not read it)
+2026-09-30 03:53:07.082 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+618a11caa3.docx — Word could not load it in 2 passes: document loaded empty 
+(Word could not read it)
+2026-09-30 03:53:07.109 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+7a60ec99bd.docx — Word could not load it in 2 passes: document loaded empty 
+(Word could not read it)
+          reject all → DOCX + PDF:          
+results/redlines_0929_full/docxodus/rejected
+                    /src                    
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━┓
+┃ outcome                          ┃ count ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━┩
+│ converted                        │    92 │
+│ skipped (exists)                 │     0 │
+│ failed                           │     8 │
+│ seconds per document (batch avg) │   2.1 │
+└──────────────────────────────────┴───────┘
+  FAIL 159ce5c93c.docx: osascript exit 0, no output file
+  FAIL 16833a9d55.docx: osascript exit 0, no output file
+  FAIL 1ae50cba31.docx: Microsoft Word got an error: missing value doesn’t 
+understand the “save as” message.
+  FAIL 237db14eba.docx: osascript exit 0, no output file
+  FAIL 32d0abcfc9.docx: Word could not load it in 2 passes: document loaded 
+empty (Word could not read it)
+  FAIL 485599b4e9.docx: Word could not load it in 2 passes: document loaded 
+empty (Word could not read it)
+  FAIL 618a11caa3.docx: Word could not load it in 2 passes: document loaded 
+empty (Word could not read it)
+  FAIL 7a60ec99bd.docx: Word could not load it in 2 passes: document loaded 
+empty (Word could not read it)

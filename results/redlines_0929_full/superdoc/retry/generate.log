@@ -1,0 +1,12 @@
+[superdoc] wrote 0 redline(s) → results/redlines_0929_full/superdoc/retry/docx
+[superdoc] 45 pair(s) skipped (SuperDoc engine couldn't handle them):
+  5fbd8a7228_39cd8347f53ac1b06a6eb59399aa12a9977b0233a38ddaff__vs__89d3a1c365_40d999f53c15fd5eb9e57ab8cf37f22f83d6823458897be1_redline_049d8405bc [generate]: Host watchdog timed out waiting for cli.invoke.
+  e355cec096_small_font_size_demo_id_paraid_overflow__vs__60697d46b7_strict01_redline_0cd32d67b2 [generate]: Failed to open document in the v2 runtime.
+  4f0a3847e3_verdana_italic_centered_demo_id_paraid_overflow__vs__60697d46b7_strict01_redline_0dfc906eb1 [generate]: Failed to open document in the v2 runtime.
+  e855894947_4256746e0764d53f71723c390ba077e50881806719029dd6__vs__a9d810a3ad_65a2d0c1ef78aaca9992ad2ace66032f5438435b43b338e9_redline_1a4f106bda [generate]: diff.apply: tracked header/footer slot or physical topology changes are not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation.
+  6a65e5219d_24_id_paraid_overflow__vs__8df6dfa8d7_alternate_content_redline_1e11e7a678 [generate]: Failed to open document in the v2 runtime.
+  08147dee09_file_195__vs__c09b14fcd7_file_196_redline_1edc0f56f4 [generate]: Failed to open document in the v2 runtime.
+  d7458be405_ac850c4ad0ef9f18aaf445fab4b43d7459ab021b787e9cad__vs__427d7a2d2d_7e8d9f20dd82c00a2859abf9b9376f0135d127718ca9891e_redline_224f62fecb [generate]: diff.apply: tracked header/footer slot or physical topology changes are not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation.
+  dab21ab21f_602f0dda46268a3316770fda51ab3a6649cc2d389000e3d9__vs__8c010ff2c5_3b89226c167b882562c5ad6dbe93dac0dcbeaf9ee9619f05_redline_2ceeca3948 [generate]: Host watchdog timed out waiting for cli.invoke.
+  14d3f7889a_24_id_paraid_overflow__vs__7dfa52fb98_alternate_content_redline_3236df7c1e [generate]: Failed to open document in the v2 runtime.
+  60697d46b7_strict01__vs__60697d46b7_strict01_redline_34ffddfe47 [generate]: Failed to open document in the v2 runtime.

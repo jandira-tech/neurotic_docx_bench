@@ -1,0 +1,3 @@
+superdoc: 250 scored, 130 to go -> scores_superdoc.partial.json
+superdoc: 380 scored, 0 to go -> scores_superdoc.partial.json
+superdoc: 380/3502 scored, mean 61.40, median 61.11, >=90: 7; fresh oracles 516, meant fresh but old 0; torch-mps -> /Users/arthrod/temp/T/neurotic_docx_bench/results/redlines_0929_full/scores_superdoc.json

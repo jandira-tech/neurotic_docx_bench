@@ -88,9 +88,9 @@ roundtrip_list: corpus/word/pools/word_based_accepted_word_renders.csv
 #   docxodus 9.8.0 · docx-redline-js = local TS migration (dist: sibling package)
 #   @stll/folio-core 0.17.1 (generator) · @stll/folio-react 0.13.4 (viewer)
 #   superdoc is THREE packages, pinned independently — never conflate them:
-#     superdoc-sdk (PyPI) 2.15.0       → run `superdoc`            (python_package:)
+#     superdoc-sdk (PyPI) 2.16.0       → run `superdoc`            (python_package:)
 #     @superdoc-dev/sdk (npm) 1.21.3   → run `superdoc-ts`         (package:)
-#     superdoc (npm, the editor) 2.3.0 → runs `superdoc-playwright-*` (package:)
+#     superdoc (npm, the editor) 2.18.0 → runs `superdoc-playwright-*` (package:)
 #   tests/test_superdoc_pins.py fails if any pin drifts from what is installed.
 #   jubarte builds are content-hashed under dist/
 # Do NOT bump to @latest without re-review — the pin keeps CI reproducible.
@@ -297,7 +297,7 @@ runs:
   # most pairs (header/footer topology, shared definitions, numbering replay):
   # 648 of 744 score zero.
   - name: superdoc
-    python_package: "superdoc-sdk==2.15.0" # installed version → tool_version
+    python_package: "superdoc-sdk==2.16.0" # installed version → tool_version
     generate: "uv run python -m neurotic_docx_bench.superdoc_gen --out=$RUN_DIR/docx --tool=superdoc"
     render: auto
     jobs: 12

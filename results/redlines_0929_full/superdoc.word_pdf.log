@@ -1,0 +1,40 @@
+2026-09-30 04:03:52.109 | INFO     | word_pdf:preflight:1812 - [word] preflight: open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-09-30 04:03:52.137 | INFO     | word_pdf:convert_folder:1486 - [word] export: one_osascript=True documents=192 accept_all=False reject_all=False
+2026-09-30 04:04:03.690 | INFO     | word_pdf:_convert_batched:1685 - [batch] one osascript for 192 document(s)
+2026-09-30 04:04:08.752 | INFO     | __main__:_loop:231 - [batch pdf 1] 0/192
+2026-09-30 04:04:13.801 | INFO     | __main__:_loop:231 - [batch pdf 1] 4/192
+2026-09-30 04:04:19.027 | INFO     | __main__:_loop:231 - [batch pdf 1] 10/192
+2026-09-30 04:04:24.209 | INFO     | __main__:_loop:231 - [batch pdf 1] 15/192
+2026-09-30 04:04:29.314 | INFO     | __main__:_loop:231 - [batch pdf 1] 21/192
+2026-09-30 04:04:34.348 | INFO     | __main__:_loop:231 - [batch pdf 1] 27/192
+2026-09-30 04:04:39.429 | INFO     | __main__:_loop:231 - [batch pdf 1] 32/192
+2026-09-30 04:04:44.502 | INFO     | __main__:_loop:231 - [batch pdf 1] 38/192
+2026-09-30 04:04:49.560 | INFO     | __main__:_loop:231 - [batch pdf 1] 43/192
+2026-09-30 04:04:54.630 | INFO     | __main__:_loop:231 - [batch pdf 1] 48/192
+2026-09-30 04:04:59.666 | INFO     | __main__:_loop:231 - [batch pdf 1] 53/192
+2026-09-30 04:05:04.727 | INFO     | __main__:_loop:231 - [batch pdf 1] 59/192
+2026-09-30 04:05:09.811 | INFO     | __main__:_loop:231 - [batch pdf 1] 64/192
+2026-09-30 04:05:14.894 | INFO     | __main__:_loop:231 - [batch pdf 1] 70/192
+2026-09-30 04:05:19.962 | INFO     | __main__:_loop:231 - [batch pdf 1] 76/192
+2026-09-30 04:05:24.993 | INFO     | __main__:_loop:231 - [batch pdf 1] 82/192
+2026-09-30 04:05:30.026 | INFO     | __main__:_loop:231 - [batch pdf 1] 90/192
+2026-09-30 04:05:35.057 | INFO     | __main__:_loop:231 - [batch pdf 1] 97/192
+2026-09-30 04:05:40.135 | INFO     | __main__:_loop:231 - [batch pdf 1] 102/192
+2026-09-30 04:05:45.207 | INFO     | __main__:_loop:231 - [batch pdf 1] 107/192
+2026-09-30 04:05:50.313 | INFO     | __main__:_loop:231 - [batch pdf 1] 112/192
+2026-09-30 04:05:55.422 | INFO     | __main__:_loop:231 - [batch pdf 1] 117/192
+2026-09-30 04:06:00.462 | INFO     | __main__:_loop:231 - [batch pdf 1] 122/192
+2026-09-30 04:06:05.533 | INFO     | __main__:_loop:231 - [batch pdf 1] 126/192
+2026-09-30 04:06:10.636 | INFO     | __main__:_loop:231 - [batch pdf 1] 131/192
+2026-09-30 04:06:15.865 | INFO     | __main__:_loop:231 - [batch pdf 1] 136/192
+2026-09-30 04:06:20.941 | INFO     | __main__:_loop:231 - [batch pdf 1] 141/192
+2026-09-30 04:06:26.073 | INFO     | __main__:_loop:231 - [batch pdf 1] 146/192
+2026-09-30 04:06:31.254 | INFO     | __main__:_loop:231 - [batch pdf 1] 151/192
+2026-09-30 04:06:36.296 | INFO     | __main__:_loop:231 - [batch pdf 1] 156/192
+2026-09-30 04:06:41.363 | INFO     | __main__:_loop:231 - [batch pdf 1] 161/192
+2026-09-30 04:06:46.501 | INFO     | __main__:_loop:231 - [batch pdf 1] 166/192
+2026-09-30 04:06:51.607 | INFO     | __main__:_loop:231 - [batch pdf 1] 171/192
+2026-09-30 04:06:56.704 | INFO     | __main__:_loop:231 - [batch pdf 1] 176/192
+2026-09-30 04:07:01.847 | INFO     | __main__:_loop:231 - [batch pdf 1] 180/192
+2026-09-30 04:07:06.965 | INFO     | __main__:_loop:231 - [batch pdf 1] 185/192
+2026-09-30 04:07:12.009 | INFO     | __main__:_loop:231 - [batch pdf 1] 189/192
