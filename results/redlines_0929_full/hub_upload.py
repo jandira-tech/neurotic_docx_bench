@@ -7,6 +7,9 @@
 Everything lands under ``outputs/redlines_0929_full/`` of ``hub.RESULTS_REPO``:
 
 - ``<tool>/docx``: each tool's redlines; ``<tool>/pdf_by_word``: those redlines rendered by Word.
+- ``<tool>/{accepted,rejected}/src``: the redlines of the track selections;
+  ``<tool>/{accepted,rejected}/by_word``: Word's accept-all / reject-all of them, docx + PDF.
+- ``<tool>/meta``: the tool folder's own JSON/CSV (generate failures and timings, shard lists).
 - ``fresh_compares``: the Word compares made again for this run (``compare_regen/out``, docx+pdf),
   the oracles of the ``fresh`` rows. The other oracles are ``corpus/word`` files, not uploaded here.
 - the run's CSVs, score JSONs, scripts and ``RUN.md``; ``MANIFEST.sha256.json`` over all of it.
@@ -29,10 +32,13 @@ from neurotic_docx_bench import hub
 HERE = Path(__file__).parent
 REPO_PREFIX = 'outputs/redlines_0929_full'
 FRESH = Path.home() / 'temp/T/compare_regen/out'
-TOOLS = ('jubarte-rust', 'docxodus')
+TOOLS = ('jubarte-rust', 'docxodus', 'superdoc')
+TOOL_DIRS = ('docx', 'pdf_by_word', 'accepted/src', 'accepted/by_word', 'rejected/src', 'rejected/by_word')
 TOP_SUFFIXES = {'.csv', '.json', '.py', '.sh', '.md'}
-PRUNE = tuple(HERE / t / d for t in TOOLS for d in ('docx', 'pdf_by_word')) + tuple(
-    HERE / 'docxodus' / d for d in ('docx_sample500', 'pdf_staged'))
+# docx_rest and docx_sample500 hold symlinks into docxodus/docx; pdf_staged is a byte-identical
+# subset of docxodus/pdf_by_word (checked 2026-09-30).
+PRUNE = tuple(HERE / t / d for t in TOOLS for d in TOOL_DIRS) + tuple(
+    HERE / 'docxodus' / d for d in ('docx_rest', 'docx_sample500', 'pdf_staged'))
 
 
 def stage(root: Path) -> list[str]:
@@ -41,10 +47,20 @@ def stage(root: Path) -> list[str]:
         shutil.rmtree(root)
     parts = []
     for t in TOOLS:
-        for d in ('docx', 'pdf_by_word'):
-            parts.append((HERE / t / d, f'{t}/{d}'))
+        for d in TOOL_DIRS:
+            if (HERE / t / d).is_dir():
+                parts.append((HERE / t / d, f'{t}/{d}'))
     parts.append((FRESH, 'fresh_compares'))
+    for t in TOOLS:
+        meta = root / t / 'meta'
+        meta.mkdir(parents=True)
+        for f in sorted((HERE / t).iterdir()):
+            if f.is_file() and f.suffix in TOP_SUFFIXES:
+                os.link(f, meta / f.name)
+        parts.append((None, f'{t}/meta'))
     for src, rel in parts:
+        if src is None:
+            continue
         dst = root / rel
         dst.mkdir(parents=True)
         for f in sorted(src.iterdir()):

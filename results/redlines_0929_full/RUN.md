@@ -137,6 +137,18 @@ closed unsaved); docxodus accepted 9 and rejected 4, all "document loaded empty"
 cannot read the redline). Transient failures were retried alone and succeeded: docxodus
 rejected 4, SuperDoc accepted 2 (`*/reject_retry.log`, `*/accept_retry.log`).
 
+## Where the files are (`hub_upload.py`)
+
+The tool outputs are on the Hugging Face dataset `arthrod/neurotic_docx_bench` under
+`outputs/redlines_0929_full/`: `<tool>/docx`, `<tool>/pdf_by_word`,
+`<tool>/{accepted,rejected}/{src,by_word}` and `<tool>/meta` for jubarte-rust, docxodus and
+superdoc, `fresh_compares` (the 516 Word compares made again, docx + PDF) and `run` (this
+folder's CSVs, JSONs, scripts, `MANIFEST.sha256.json`). 12387 files, 2.61 GB, every one checked
+against the hub (`hub_upload.log`, `hub_prune.log`) and then deleted here, together with
+`docxodus/{docx_rest,docx_sample500}` (symlinks) and `docxodus/pdf_staged` (a byte-identical
+subset of `pdf_by_word`). Word's own files (`corpus/word`, `compare_regen`) stay local.
+Page-by-page site: https://jandira-tech.github.io/neurotic_docx_bench/redlines/ (gh-pages d4fbafc9).
+
 ## Corpus checks (2026-09-30)
 
 - Every docx in `corpus/word` has its Word PDF except `b1b752d8e6` (tracking_without_comments,
