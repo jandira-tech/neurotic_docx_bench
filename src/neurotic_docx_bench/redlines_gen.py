@@ -14,8 +14,8 @@ toward Word's document-level tracked changes.
 
 Usage:
   uv run python -m neurotic_docx_bench.redlines_gen --out $RUN_DIR/docx --tool redlines \
-    [--manifest corpus/word_based/centralized_mapping.csv] \
-    [--source-dir corpus/word_based/docx_source] [--limit N]
+    [--manifest corpus/word/pools/word_based_pairs.csv] \
+    [--source-dir corpus/word] [--limit N]
 """
 
 from __future__ import annotations
@@ -44,10 +44,15 @@ _PROCESSOR = NupunktProcessor()
 class Pair:
     base: str
     next: str
+    key: str = ""  # the Word stem of a corpus/word pool; empty for a legacy manifest
 
 
 def output_name(pair: Pair, tool: str) -> str:
-    """Canonical candidate name: ``<base>_<next>_<tool>_redline.docx``."""
+    """Candidate name: the Word stem plus ``_<tool>`` when the pool carries a ``key``
+    (``<idA>_<a>__vs__<idB>_<b>_redline_<idC>_<tool>.docx``), else the legacy
+    ``<base>_<next>_<tool>_redline.docx``."""
+    if pair.key:
+        return f"{pair.key}_{tool}.docx"
     return f"{pair.base}_{pair.next}_{tool}_redline.docx"
 
 
@@ -63,7 +68,7 @@ def parse_manifest(csv_path: Path, statuses: set[str]) -> list[Pair]:
                 continue
             if statuses and status and status not in statuses:
                 continue
-            pairs.append(Pair(base=base, next=nxt))
+            pairs.append(Pair(base=base, next=nxt, key=(row.get("key") or "").strip()))
     return pairs
 
 
@@ -206,7 +211,7 @@ def run_batch(
     failed: list[dict] = []
     timings: dict[str, int] = {}
     for pair in pairs:
-        doc = f"{pair.base}_{pair.next}"
+        doc = pair.key or f"{pair.base}_{pair.next}"
         name = output_name(pair, tool)
         out_path = out / name
         if not force and out_path.exists():
@@ -235,8 +240,8 @@ def main(argv: list[str] | None = None) -> int:
         os.path.join(os.environ["RUN_DIR"], "docx") if os.environ.get("RUN_DIR") else "out/docx"
     )
     p.add_argument("--out", default=default_out)
-    p.add_argument("--manifest", default="corpus/word_based/centralized_mapping.csv")
-    p.add_argument("--source-dir", default="corpus/word_based/docx_source")
+    p.add_argument("--manifest", default="corpus/word/pools/word_based_pairs.csv")
+    p.add_argument("--source-dir", default="corpus/word")
     p.add_argument("--status", default="ok")
     p.add_argument("--limit", type=int, default=None)
     p.add_argument("--tool", default="redlines")

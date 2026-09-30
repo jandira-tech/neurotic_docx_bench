@@ -7,8 +7,8 @@ the Word oracle. Reference: https://docs.superdoc.dev (Compare documents).
 
 Usage:
   uv run python scripts/generate_superdoc_redlines.py --out $RUN_DIR/docx --tool superdoc \
-    [--manifest corpus/word_based/centralized_mapping.csv] \
-    [--source-dir corpus/word_based/docx_source] [--status ok] [--limit N]
+    [--manifest corpus/word/pools/word_based_pairs.csv] \
+    [--source-dir corpus/word] [--status ok] [--limit N]
 """
 
 from __future__ import annotations
@@ -17,6 +17,7 @@ import argparse
 import asyncio
 import csv
 import json
+import os
 import shutil
 import time
 from dataclasses import dataclass
@@ -37,6 +38,7 @@ class Pair:
     next: str
     redline_docx: str = ""
     redline_docx_word: str = ""
+    key: str = ""  # the Word stem of a corpus/word pool; empty for a legacy manifest
 
 
 def output_names(pair: Pair, tool: str) -> list[str]:
@@ -47,7 +49,12 @@ def output_names(pair: Pair, tool: str) -> list[str]:
     so deriving the candidate name from the oracle *DOCX* filename (which sometimes carries
     a ``_word`` infix) produced a candidate key that never matched the oracle PDF key —
     silently dropping ~43/207 pairs from every tool's score.
+
+    A corpus/word pool carries the Word stem as ``key``; the candidate is then
+    ``<key>_<tool>.docx``.
     """
+    if pair.key:
+        return [f"{pair.key}_{tool}.docx"]
     return [f"{pair.base}_{pair.next}_{tool}_redline.docx"]
 
 
@@ -70,8 +77,16 @@ def parse_manifest(csv_path: Path, statuses: set[str]) -> list[Pair]:
                 next=nxt,
                 redline_docx=(row.get("redline_docx") or "").strip(),
                 redline_docx_word=(row.get("redline_docx_word") or "").strip(),
+                key=(row.get("key") or "").strip(),
             ))
     return pairs
+
+
+def session_ids(idx: int) -> tuple[str, str]:
+    """(base, target) session ids for pair ``idx``. SuperDoc keeps session contexts in one
+    per-user store, so the ids carry the process id: parallel generator processes would
+    otherwise both open ``base0`` and one fails with 'Session "base0" is already open'."""
+    return f"base{os.getpid()}-{idx}", f"target{os.getpid()}-{idx}"
 
 
 async def generate_one(
@@ -98,9 +113,10 @@ async def generate_one(
             # the pair as failed. __aexit__ on the client reaps what it can.
             pass
 
-    base = await client.open({"sessionId": f"base{idx}", "doc": str(base_path)})
+    base_id, target_id = session_ids(idx)
+    base = await client.open({"sessionId": base_id, "doc": str(base_path)})
     try:
-        target = await client.open({"sessionId": f"target{idx}", "doc": str(next_path)})
+        target = await client.open({"sessionId": target_id, "doc": str(next_path)})
         try:
             snapshot = await target.diff.capture({})
         finally:
@@ -132,7 +148,7 @@ async def run_batch(
     timings: dict[str, int] = {}
     async with AsyncSuperDocClient(user={"name": author, "email": "bench@example.com"}) as client:
         for idx, pair in enumerate(pairs):
-            doc = f"{pair.base}_{pair.next}"
+            doc = pair.key or f"{pair.base}_{pair.next}"
             out_names = output_names(pair, tool)
             out_paths = [out / n for n in out_names]
             if not force and all(p.exists() for p in out_paths):
@@ -163,13 +179,11 @@ async def run_batch(
 
 
 def main(argv: list[str] | None = None) -> int:
-    import os
-
     p = argparse.ArgumentParser(description="SuperDoc native redline generator")
     default_out = os.path.join(os.environ["RUN_DIR"], "docx") if os.environ.get("RUN_DIR") else "out/docx"
     p.add_argument("--out", default=default_out)
-    p.add_argument("--manifest", default="corpus/word_based/centralized_mapping.csv")
-    p.add_argument("--source-dir", default="corpus/word_based/docx_source")
+    p.add_argument("--manifest", default="corpus/word/pools/word_based_pairs.csv")
+    p.add_argument("--source-dir", default="corpus/word")
     p.add_argument("--status", default="ok")
     p.add_argument("--limit", type=int, default=None)
     p.add_argument("--tool", default="superdoc")

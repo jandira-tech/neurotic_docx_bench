@@ -316,3 +316,94 @@ def test_extra_oracle_dirs_non_list_raises(tmp_path):
     )
     with pytest.raises(ValueError, match="must be a list"):
         load_config(cfg_path)
+
+
+_ROOTED = """
+renderer: {renderer}
+oracle_roots:
+  word: corpus/word
+  soffice: corpus/libreoffice
+source_of_truth: tracking_without_comments/pdf
+extra_oracle_dirs:
+  - with_comments_tracking/pdf
+runs:
+  - name: j
+    render: {render}
+    package: docxodus@6.4.0
+"""
+
+
+def _rooted(tmp_path, renderer="auto", render="auto"):
+    for root in ("corpus/word", "corpus/libreoffice"):
+        for state in ("tracking_without_comments", "with_comments_tracking"):
+            (tmp_path / root / state / "pdf").mkdir(parents=True, exist_ok=True)
+    p = tmp_path / "bench.yaml"
+    p.write_text(_ROOTED.format(renderer=renderer, render=render))
+    return p
+
+
+@pytest.mark.parametrize(("has_word", "backend"), [(True, "word"), (False, "soffice")])
+def test_auto_renders_with_word_where_the_machine_has_it(tmp_path, monkeypatch, has_word, backend):
+    from neurotic_docx_bench.render import word
+
+    monkeypatch.delenv("BENCH_RENDERER")
+    monkeypatch.setattr(word, "word_available", lambda: has_word)
+    cfg = load_config(_rooted(tmp_path))
+    assert cfg.renderer == backend
+    assert cfg.runs[0].render == backend
+
+
+@pytest.mark.parametrize(("has_word", "root"), [(True, "corpus/word"), (False, "corpus/libreoffice")])
+def test_oracle_dirs_follow_the_renderer(tmp_path, monkeypatch, has_word, root):
+    # a Word render is scored against Word PDFs, a LibreOffice render against LibreOffice PDFs
+    from neurotic_docx_bench.render import word
+
+    monkeypatch.delenv("BENCH_RENDERER")
+    monkeypatch.setattr(word, "word_available", lambda: has_word)
+    cfg = load_config(_rooted(tmp_path))
+    assert cfg.source_of_truth == tmp_path / root / "tracking_without_comments/pdf"
+    assert cfg.extra_oracle_dirs == (tmp_path / root / "with_comments_tracking/pdf",)
+    # a viewer is measured against what Word prints, whichever renderer the docx runs use
+    assert cfg.visual_oracles["visual_redlines"] == tmp_path / "corpus/word/tracking_without_comments/pdf"
+
+
+def test_an_explicit_renderer_overrides_the_machine(tmp_path, monkeypatch):
+    from neurotic_docx_bench.render import word
+
+    monkeypatch.delenv("BENCH_RENDERER")
+    monkeypatch.setattr(word, "word_available", lambda: True)
+    cfg = load_config(_rooted(tmp_path, renderer="soffice", render="soffice"))
+    assert cfg.renderer == "soffice"
+    assert cfg.source_of_truth == tmp_path / "corpus/libreoffice/tracking_without_comments/pdf"
+
+
+def test_a_docx_run_on_another_renderer_than_its_oracle_is_refused(tmp_path, monkeypatch):
+    from neurotic_docx_bench.render import word
+
+    monkeypatch.delenv("BENCH_RENDERER")
+    monkeypatch.setattr(word, "word_available", lambda: True)
+    with pytest.raises(ValueError, match="renders with soffice but the oracle is word"):
+        load_config(_rooted(tmp_path, renderer="auto", render="soffice"))
+
+
+def test_oracle_roots_must_cover_the_renderer(tmp_path, monkeypatch):
+    from neurotic_docx_bench.render import word
+
+    monkeypatch.delenv("BENCH_RENDERER")
+    monkeypatch.setattr(word, "word_available", lambda: False)
+    p = _rooted(tmp_path)
+    p.write_text(p.read_text().replace("  soffice: corpus/libreoffice\n", ""))
+    with pytest.raises(ValueError, match="oracle_roots has no 'soffice'"):
+        load_config(p)
+
+
+def test_config_hash_tells_a_word_run_from_a_soffice_run(tmp_path):
+    # render: auto makes one yaml mean two renderers; skip-already-ran must not confuse them
+    from neurotic_docx_bench import provenance
+
+    p = tmp_path / "bench.yaml"
+    p.write_text("source_of_truth: x\n")
+    legacy = provenance.config_hash(p)
+    assert provenance.config_hash(p, renderer="soffice") == legacy  # soffice rows keep their hash
+    assert provenance.config_hash(p, renderer="word") != legacy
+    assert len(provenance.config_hash(p, renderer="word")) == 12

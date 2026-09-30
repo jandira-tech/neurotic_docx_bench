@@ -80,10 +80,12 @@ def test_superdoc_python_pin_matches_pyproject_dependency():
     """The bench.yaml pin and the pyproject dependency must name the same version.
 
     ``uv sync`` installs what pyproject says; bench.yaml only *labels* the run. If they
-    disagree, the pin is decorative.
+    disagree, the pin is decorative. Since 0.6.0 the competitor SDKs live in the
+    ``competitors`` extra, not in the core dependencies.
     """
     spec = _runs()["superdoc"]["python_package"]
-    deps = tomllib.loads(PYPROJECT.read_text())["project"]["dependencies"]
+    project = tomllib.loads(PYPROJECT.read_text())["project"]
+    deps = [*project["dependencies"], *project["optional-dependencies"]["competitors"]]
     pyproject_pin = next(d for d in deps if re.match(r"^superdoc-sdk\b", d))
     assert pyproject_pin.replace(" ", "") == spec.replace(" ", "")
 

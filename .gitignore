@@ -57,6 +57,12 @@ __pycache__/
 # bench generated work folders (kept locally, cleaned in CI; see PLAN §4)
 /runs/
 /grok_run/
+/grok_run_attic/
+# the Word corpus (bench corpus build): documents travel with `bench fixtures upload`,
+# tables, pools, notices, provenance and the manifest are tracked
+/corpus/word/**/*.docx
+/corpus/word/**/*.pdf
+/corpus/libreoffice/**/*.pdf
 # local bench logs (RESULTS live in results/; these are tee captures)
 /logs/
 
@@ -127,6 +133,9 @@ results/redline_speed_bench/**/fixtures_bytes/
 results/wasm_perf/
 harness/folio-viewer-current/node_modules/
 
+# Converter scratch (candidate PDFs, page rasters): gigabytes per corpus/word run.
+results/*_work/
+
 # Run artifacts under results/ — keep only number/summary files in git
 # (summary.json, speed.jsonl, report.md, scores.*). Regenerable from benches.
 results/redline_speed_bench/**/pairs.json
@@ -168,3 +177,13 @@ results/docxide_metrics_run.log
 coverage.xml
 lcov.info
 htmlcov/
+# hub upload staging (bench results upload); rebuilt from results/ every time
+results/hub/
+
+# content-addressed render/raster/score cache (bench run; see content_cache.py)
+/.bench-cache/
+
+# local scratch: Claude session exports, editor swap files, a stray scorer patch
+Claude outputs/
+*.swp
+score_v2.patch

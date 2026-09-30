@@ -11,8 +11,8 @@ import JSZip from "../node_modules/jszip/lib/index.js";
 import { parseManifest, loadEngine, outputName, runBatch } from "./generate-native-redlines.ts";
 import { resolveDocxodusEntry } from "./docxodus-node-compat.mjs";
 
-const MANIFEST = "corpus/word_based/centralized_mapping.csv";
-const SOURCE = "corpus/word_based/docx_source";
+const MANIFEST = "corpus/word/pools/word_based_pairs.csv";
+const SOURCE = "corpus/word";
 const DIST = "dist/jubarte";
 const haveCorpus = existsSync(MANIFEST) && existsSync(SOURCE);
 const haveJubarte = existsSync(join(DIST, "node.cjs"));
@@ -26,7 +26,7 @@ const haveFolio = existsSync("src/neurotic_docx_bench/utils/folio/node_modules/@
 const DOCXODUS_ROOT_PKG = "node_modules/docxodus/package.json";
 const DOCXODUS_VENDOR_PKG =
   "src/neurotic_docx_bench/utils/docxodus/node_modules/docxodus/package.json";
-// Must mirror resolveVendorEntry() in the adapter: pin-tree (repo root) first,
+// Must mirror resolveDocxodusEntry() (docxodus-node-compat.mjs): pin-tree (repo root) first,
 // vendored sub-install as fallback. Mocking the wrong one silently lets the REAL
 // docxodus run and the assertion then reports "undefined" rather than a mismatch.
 const DOCXODUS_ENTRY = (() => {
@@ -88,6 +88,32 @@ describe("generate-native-redlines", () => {
     expect(outputName({ base: "a_x", next: "b_y", status: "ok" }, "jubarte")).toBe(
       "a_x_b_y_jubarte_redline.docx",
     );
+  });
+
+  it("outputName is the Word-corpus key plus the tool when the pool has a key", () => {
+    const keyed = {
+      base: "clean/docx/0123456789_a",
+      next: "clean/docx/abcdef0123_b",
+      status: "ok",
+      key: "0123456789_a__vs__abcdef0123_b_redline_fedcba9876",
+    };
+    expect(outputName(keyed, "jubarte")).toBe("0123456789_a__vs__abcdef0123_b_redline_fedcba9876_jubarte.docx");
+  });
+
+  it("parseManifest reads the key of a Word-corpus pool", () => {
+    const dir = mkdtempSync(join(tmpdir(), "ndb-pool-"));
+    const pool = join(dir, "sources_pairs.csv");
+    writeFileSync(
+      pool,
+      "key,base,next,base_name,next_name,docx,pdf,state\n" +
+        "0123456789_a__vs__abcdef0123_b_redline_fedcba9876,clean/docx/0123456789_a,clean/docx/abcdef0123_b,a,b," +
+        "clean/docx/0123456789_a__vs__abcdef0123_b_redline_fedcba9876.docx,clean/pdf/0123456789_a__vs__abcdef0123_b_redline_fedcba9876.pdf,clean\n",
+    );
+    const pairs = parseManifest(pool, ["ok"]);
+    expect(pairs).toHaveLength(1);
+    expect(pairs[0].base).toBe("clean/docx/0123456789_a");
+    expect(pairs[0].next).toBe("clean/docx/abcdef0123_b");
+    expect(pairs[0].key).toBe("0123456789_a__vs__abcdef0123_b_redline_fedcba9876");
   });
 
   it.runIf(haveCorpus)("parseManifest returns ok pairs with base+next", () => {
@@ -252,11 +278,46 @@ describe("generate-native-redlines", () => {
     );
 
     it.runIf(haveCorpus && haveDocxodus)(
+      "docxodus ≥12 (no ComparisonEngine enum, one engine) compares without an engine option",
+      async () => {
+        const seen: { calls: number; options?: unknown } = { calls: 0 };
+        vi.doMock(DOCXODUS_ENTRY, () => ({
+          initialize: async () => {},
+          compareDocuments: async (_a: Uint8Array, _b: Uint8Array, options?: unknown) => {
+            seen.calls += 1;
+            seen.options = options;
+            return new Uint8Array([1, 2, 3]);
+          },
+        }));
+        try {
+          vi.resetModules();
+          const { loadEngine: freshLoadEngine } = await import("./generate-native-redlines.ts");
+          const engine = await freshLoadEngine("docxodus", "");
+          const [base, next] = firstPair();
+          expect(await engine(base, next)).toEqual(new Uint8Array([1, 2, 3]));
+          expect(seen).toEqual({ calls: 1, options: undefined });
+        } finally {
+          vi.doUnmock(DOCXODUS_ENTRY);
+          vi.resetModules();
+        }
+      },
+      30_000,
+    );
+
+    it.runIf(haveCorpus && haveDocxodus)(
       "the engine the adapter names is still the one docxodus itself defaults to",
       async () => {
         const dox: any = await import(DOCXODUS_ENTRY);
         await dox.initialize();
         const [base, next] = firstPair();
+        if (!("ComparisonEngine" in dox)) {
+          // docxodus ≥12: one engine, no default to drift. The adapter must still drive it.
+          const engine = await loadEngine("docxodus", "");
+          expect(await redlineShape(await engine(base, next))).toEqual(
+            await redlineShape(await dox.compareDocuments(base, next)),
+          );
+          return;
+        }
 
         const shapeOf = async (options?: unknown) =>
           redlineShape(await dox.compareDocuments(base, next, options));
@@ -412,6 +473,158 @@ describe("generate-native-redlines", () => {
     },
     120_000,
   );
+
+  it.each(["jubarte-rust-inproc", "docxodus-csharp-inproc"])(
+    "runBatch stops the %s worker when the batch ends (or the CLI never exits)",
+    async (method) => {
+      const tmp = mkdtempSync(join(tmpdir(), "gen-inproc-"));
+      try {
+        const dist = join(tmp, "dist");
+        mkdirSync(dist);
+        const pidFile = join(tmp, "worker.pid");
+        const worker = [
+          "#!/bin/sh",
+          `echo $$ > '${pidFile}'`,
+          "echo READY",
+          "while read cmd a b c; do",
+          '  case "$cmd" in',
+          '    COMPARE) cp "$b" "$c"; echo "OK 1 1";;',
+          "    QUIT) echo BYE; exit 0;;",
+          "  esac",
+          "done",
+        ].join("\n");
+        for (const name of ["jubarte-worker", "docxodus-inproc"]) {
+          writeFileSync(join(dist, name), worker, { mode: 0o755 });
+        }
+        writeFileSync(join(tmp, "a.docx"), "base");
+        writeFileSync(join(tmp, "b.docx"), "next");
+        const manifest = join(tmp, "manifest.csv");
+        writeFileSync(manifest, "key,base,next\nk1,a,b\n");
+        const res = await runBatch({
+          method,
+          dist,
+          out: join(tmp, "out"),
+          runDir: join(tmp, "run"),
+          manifest,
+          sourceDir: tmp,
+          status: "",
+          tool: "t",
+          force: true,
+        });
+        expect(res.failed).toEqual([]);
+        expect(readFileSync(join(tmp, "out", "k1_t.docx"), "utf8")).toBe("next");
+        const pid = Number(readFileSync(pidFile, "utf8"));
+        const alive = () => {
+          try {
+            process.kill(pid, 0);
+            return true;
+          } catch {
+            return false;
+          }
+        };
+        const deadline = Date.now() + 3000;
+        while (alive() && Date.now() < deadline) await new Promise((r) => setTimeout(r, 50));
+        expect(alive()).toBe(false);
+      } finally {
+        rmSync(tmp, { recursive: true, force: true });
+      }
+    },
+    30_000,
+  );
+
+  it.each(["jubarte-rust-inproc", "docxodus-csharp-inproc"])(
+    "a %s pair that times out costs only that pair: the stuck worker is killed and the next pair gets a fresh one",
+    async (method) => {
+      const tmp = mkdtempSync(join(tmpdir(), "gen-inproc-timeout-"));
+      const before = process.env.WORKER_REPLY_TIMEOUT_MS;
+      process.env.WORKER_REPLY_TIMEOUT_MS = "1000";
+      try {
+        const dist = join(tmp, "dist");
+        mkdirSync(dist);
+        const pidFile = join(tmp, "worker.pids");
+        const worker = [
+          "#!/bin/sh",
+          `echo $$ >> '${pidFile}'`,
+          "echo READY",
+          "while read cmd a b c; do",
+          '  case "$cmd" in',
+          '    COMPARE) if grep -q slow "$a"; then while :; do :; done; fi; cp "$b" "$c"; echo "OK 1 1";;',
+          "    QUIT) echo BYE; exit 0;;",
+          "  esac",
+          "done",
+        ].join("\n");
+        for (const name of ["jubarte-worker", "docxodus-inproc"]) {
+          writeFileSync(join(dist, name), worker, { mode: 0o755 });
+        }
+        writeFileSync(join(tmp, "slow.docx"), "slow");
+        writeFileSync(join(tmp, "a.docx"), "base");
+        writeFileSync(join(tmp, "b.docx"), "next");
+        writeFileSync(join(tmp, "c.docx"), "next2");
+        const manifest = join(tmp, "manifest.csv");
+        writeFileSync(manifest, "key,base,next\nk1,slow,b\nk2,a,b\nk3,a,c\n");
+        const t0 = Date.now();
+        const res = await runBatch({
+          method,
+          dist,
+          out: join(tmp, "out"),
+          runDir: join(tmp, "run"),
+          manifest,
+          sourceDir: tmp,
+          status: "",
+          tool: "t",
+          force: true,
+        });
+        expect(Date.now() - t0).toBeLessThan(10_000);
+        expect(res.failed.map((f) => f.doc)).toEqual(["k1"]);
+        expect(res.failed[0].error).toMatch(/timeout/);
+        expect(readFileSync(join(tmp, "out", "k2_t.docx"), "utf8")).toBe("next");
+        expect(readFileSync(join(tmp, "out", "k3_t.docx"), "utf8")).toBe("next2");
+        const pids = readFileSync(pidFile, "utf8").trim().split("\n").map(Number);
+        expect(pids).toHaveLength(2);
+        const alive = (pid: number) => {
+          try {
+            process.kill(pid, 0);
+            return true;
+          } catch {
+            return false;
+          }
+        };
+        const deadline = Date.now() + 3000;
+        while (pids.some(alive) && Date.now() < deadline) await new Promise((r) => setTimeout(r, 50));
+        expect(pids.filter(alive)).toEqual([]);
+      } finally {
+        if (before === undefined) delete process.env.WORKER_REPLY_TIMEOUT_MS;
+        else process.env.WORKER_REPLY_TIMEOUT_MS = before;
+        rmSync(tmp, { recursive: true, force: true });
+      }
+    },
+    90_000,
+  );
+
+  it("runBatch creates the run dir the CLI writes generate_failures.json into", async () => {
+    const tmp = mkdtempSync(join(tmpdir(), "gen-rundir-"));
+    try {
+      const manifest = join(tmp, "manifest.csv");
+      writeFileSync(manifest, "pair_stem,base,next\n");
+      const runDir = join(tmp, "run", "nested");
+      const res = await runBatch({
+        method: "docxodus",
+        dist: "",
+        out: join(tmp, "out"),
+        runDir,
+        manifest,
+        sourceDir: tmp,
+        status: "ok",
+        limit: 0,
+        tool: "docxodus",
+        force: true,
+      });
+      expect(res).toEqual({ ok: 0, failed: [], timings: {} });
+      expect(existsSync(runDir)).toBe(true);
+    } finally {
+      rmSync(tmp, { recursive: true, force: true });
+    }
+  }, 60_000);
 
   it.runIf(haveCorpus && haveJubarte)(
     "runBatch writes a redline whose name normalizes to the pair key",

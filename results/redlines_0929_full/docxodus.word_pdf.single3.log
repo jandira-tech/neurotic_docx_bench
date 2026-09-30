@@ -1,0 +1,16 @@
+2026-09-30 01:20:59.657 | INFO     | __main__:preflight:1812 - [word] preflight: open_documents=0 started_clean=True launched_by_us=True close_documents=True
+2026-09-30 01:20:59.954 | INFO     | __main__:convert_folder:1486 - [word] export: one_osascript=True documents=1 accept_all=False reject_all=False
+2026-09-30 01:20:59.968 | INFO     | __main__:_convert_batched:1685 - [batch] one osascript for 1 document(s)
+2026-09-30 01:21:05.063 | INFO     | __main__:_loop:1067 - [batch pdf 1] 0/1
+2026-09-30 01:22:05.967 | WARNING  | __main__:_loop:1072 - [batch pdf 1] item 1/1 open for more than 30 s:
+-- Word windows {name, subrole}: osascript timed out
+-- Word window text: osascript timed out
+-- crash reporters: osascript timed out
+-- batch-pdf-1.log:
+
+-- newest diagnostic reports: AppCleaner-2026-09-30-001317.ips, biome-2026-09-29-094107.ips, soffice-2026-09-28-104720.ips, soffice-2026-09-28-105517.ips, soffice-2026-09-28-105123.000.ips
+2026-09-30 01:25:00.964 | ERROR    | __main__:_convert_batched:1730 - [batch] FAIL: 4640e71ddd_0062ef190840d69d26aa6ecec30a8cb25f8e1506cee20dac__vs__aa5340125d_00a4b0b91e9b5b072dc3771391c2d608518690eccf44eae8_redline_ea55c722de_docxodus.docx — Microsoft Word got an error: AppleEvent timed out.
+2026-09-30 01:25:08.087 | INFO     | __main__:_note_buttons:510 - [watchdog] Microsoft Word shows button 'Yes'
+2026-09-30 01:25:08.088 | INFO     | __main__:_note_buttons:510 - [watchdog] Microsoft Word shows button 'No'
+2026-09-30 01:25:08.089 | INFO     | __main__:_note_buttons:510 - [watchdog] Microsoft Word shows button 'Cancel'
+2026-09-30 01:25:14.926 | WARNING  | __main__:_loop_word:540 - [watchdog] Word dialog dismissed via 'No'

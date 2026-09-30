@@ -233,6 +233,26 @@ def test_build_coverage_prefers_word_redline(tmp_path: Path) -> None:
     assert "table" in coverage["pairs"]["p"]["features"]  # union across both sources
 
 
+def test_build_coverage_reads_a_word_corpus_pool_table(tmp_path: Path) -> None:
+    corpus = tmp_path / "word"
+    (corpus / "clean" / "docx").mkdir(parents=True)
+    (corpus / "tracking_without_comments" / "docx").mkdir(parents=True)
+    (corpus / "pools").mkdir()
+    make_docx(corpus / "clean" / "docx" / "1_a.docx")
+    make_docx(corpus / "clean" / "docx" / "2_b.docx", _TBL)
+    make_docx(corpus / "tracking_without_comments" / "docx" / "k.docx", _INS)
+    pool = corpus / "pools" / "p_pairs.csv"
+    pool.write_text(
+        "key,base,next,base_name,next_name,docx,pdf,state\n"
+        "k,clean/docx/1_a,clean/docx/2_b,a,b,tracking_without_comments/docx/k.docx,,tracking_without_comments\n"
+        "gone,clean/docx/1_a,clean/docx/2_b,a,b,,,tracking_without_comments\n"
+    )
+    coverage = build_coverage([pool], [corpus], [corpus])
+    assert coverage["errors"] == {"gone": "FileNotFoundError: no redline docx listed in mapping row"}
+    assert coverage["pairs"]["k"]["revisions"] == ["rev_ins"]
+    assert "table" in coverage["pairs"]["k"]["features"]
+
+
 def test_corrupt_word_redline_falls_back_to_valid_redline(tmp_path: Path) -> None:
     root, src, red = _corpus(tmp_path)
     (red / "p_word_redline.docx").write_bytes(b"this is not a zip archive")

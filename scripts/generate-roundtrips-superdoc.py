@@ -1,7 +1,7 @@
 #!/usr/bin/env -S uv run python
 """Generate genuinely re-serialized DOCX round-trips for the Python ``superdoc``
 tool (bench.yaml run ``superdoc``), over all files in
-``corpus/word_based/word_working_roundtrip``.
+``out/roundtrip_source/docx``.
 
 Route: ``client.open() → save()`` — genuinely re-serialized (word/document.xml
 differs from the input), per the re-serialization analysis.
@@ -18,7 +18,7 @@ For each input file the script:
 Usage:
   uv run python scripts/generate-roundtrips-superdoc.py
   uv run python scripts/generate-roundtrips-superdoc.py --limit 5 --force
-  uv run python scripts/generate-roundtrips-superdoc.py --source-dir corpus/word_based/word_working_roundtrip
+  uv run python scripts/generate-roundtrips-superdoc.py --source-dir out/roundtrip_source/docx
 """
 from __future__ import annotations
 
@@ -70,7 +70,7 @@ def main() -> int:
     )
     parser.add_argument(
         "--source-dir",
-        default="corpus/word_based/word_working_roundtrip",
+        default="out/roundtrip_source/docx",
         help="Directory containing .docx files to round-trip",
     )
     parser.add_argument(
