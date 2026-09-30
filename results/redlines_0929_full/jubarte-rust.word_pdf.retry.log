@@ -1,0 +1,27 @@
+2026-09-29 22:11:10.819 | INFO     | __main__:preflight:1812 - [word] preflight: open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-09-29 22:11:11.240 | INFO     | __main__:convert_folder:1486 - [word] export: one_osascript=True documents=2611 accept_all=False reject_all=False
+2026-09-29 22:11:11.337 | INFO     | __main__:_convert_batched:1685 - [batch] one osascript for 3 document(s)
+2026-09-29 22:11:16.446 | INFO     | __main__:_loop:1067 - [batch pdf 1] 0/3
+2026-09-29 22:12:07.757 | WARNING  | __main__:_loop:1072 - [batch pdf 1] item 1/3 open for more than 30 s:
+-- Word windows {name, subrole}: ,
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-1.log:
+
+-- newest diagnostic reports: biome-2026-09-29-094107.ips, soffice-2026-09-28-104720.ips, soffice-2026-09-28-105517.ips, soffice-2026-09-28-105123.000.ips, soffice-2026-09-28-105123.ips
+2026-09-29 22:17:19.654 | WARNING  | __main__:run_batch_with_resume:1206 - [batch pdf] 2 item(s) never reached (ended without reaching them); recycling Word and retrying the rest first, retried items last (pass 2, 1 of 3 stalled passes used)
+2026-09-29 22:17:19.702 | WARNING  | __main__:recycle:725 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-09-29 22:17:19.751 | WARNING  | __main__:recycle:731 - [word] recycling (restart 1)
+2026-09-29 22:17:51.918 | INFO     | __main__:_loop:1067 - [batch pdf 2] 0/2
+2026-09-29 22:17:57.010 | INFO     | __main__:_loop:1067 - [batch pdf 2] 1/2
+2026-09-29 22:18:52.432 | WARNING  | __main__:_loop:1072 - [batch pdf 2] item 2/2 open for more than 30 s:
+-- Word windows {name, subrole}: osascript timed out
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-2.log:
+[fail]	1	Microsoft Word got an error: document "00001__7e4c9416aa_00803e70c3646e42abab322238df606c847686168795a703__vs__1424386e9b_017447de83753a0e3b7afc659df038ef56972925336c6a5b_redline_c8545d372b_jubarte-rust.docx" doesn’t understand the “save as” message.
+-- newest diagnostic reports: biome-2026-09-29-094107.ips, soffice-2026-09-28-104720.ips, soffice-2026-09-28-105517.ips, soffice-2026-09-28-105123.000.ips, soffice-2026-09-28-105123.ips
+2026-09-29 22:23:55.240 | ERROR    | __main__:_convert_batched:1730 - [batch] FAIL: 19eb128df9_98bf5f3d218a1485f5eb284693b4f98725eadd3660097efd__vs__9666fa13fb_a3701d3600ed5bf6c9bf13e12e4c2a59542eba10f87fad69_redline_5b269ade28_jubarte-rust.docx — 
+2026-09-29 22:23:55.326 | ERROR    | __main__:_convert_batched:1730 - [batch] FAIL: 7e4c9416aa_00803e70c3646e42abab322238df606c847686168795a703__vs__1424386e9b_017447de83753a0e3b7afc659df038ef56972925336c6a5b_redline_c8545d372b_jubarte-rust.docx — Microsoft Word got an error: document "00001__7e4c9416aa_00803e70c3646e42abab322238df606c847686168795a703__vs__1424386e9b_017447de83753a0e3b7afc659df038ef56972925336c6a5b_redline_c8545d372b_jubarte-ru
+2026-09-29 22:23:55.333 | ERROR    | __main__:_convert_batched:1730 - [batch] FAIL: acce1b593c_4bb73d9addf1f02e3a2132dcd33a8feb4dfcbe076d43bb0f__vs__4e2d5a0b0c_4887566b3c4aad8c7f07b4ba2637c0244a1ee0d66c8d0c29_redline_63ea4d3f8d_jubarte-rust.docx — Microsoft Word got an error: AppleEvent timed out.
+2026-09-29 22:24:05.564 | WARNING  | __main__:quit_if_ours:765 - [word] leaving Word running: could not determine whether any documents are open
