@@ -1,0 +1,221 @@
+2026-09-26 15:00:30.547 | INFO     | word_pdf:preflight:1632 - [word] preflight: open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-09-26 15:00:35.588 | INFO     | __main__:redline_folders:708 - [redline] one_osascript=False pairs=196
+2026-09-26 15:00:43.787 | ERROR    | __main__:_redline_serial:788 - [1/196] FAIL: p0001.docx → p0001.docx — redline is missing revision 67% of that file; the two sides are not averaged
+2026-09-26 15:00:44.766 | DEBUG    | __main__:_redline_serial:764 - [2/196] skip (exists): p0002.docx → p0002.docx
+2026-09-26 15:00:44.766 | DEBUG    | __main__:_redline_serial:764 - [3/196] skip (exists): p0003.docx → p0003.docx
+2026-09-26 15:00:44.766 | DEBUG    | __main__:_redline_serial:764 - [4/196] skip (exists): p0004.docx → p0004.docx
+2026-09-26 15:00:44.767 | DEBUG    | __main__:_redline_serial:764 - [5/196] skip (exists): p0005.docx → p0005.docx
+2026-09-26 15:00:44.767 | DEBUG    | __main__:_redline_serial:764 - [6/196] skip (exists): p0006.docx → p0006.docx
+2026-09-26 15:00:44.767 | DEBUG    | __main__:_redline_serial:764 - [7/196] skip (exists): p0007.docx → p0007.docx
+2026-09-26 15:00:44.767 | DEBUG    | __main__:_redline_serial:764 - [8/196] skip (exists): p0008.docx → p0008.docx
+2026-09-26 15:00:44.767 | DEBUG    | __main__:_redline_serial:764 - [9/196] skip (exists): p0009.docx → p0009.docx
+2026-09-26 15:00:44.767 | DEBUG    | __main__:_redline_serial:764 - [10/196] skip (exists): p0010.docx → p0010.docx
+2026-09-26 15:00:44.767 | DEBUG    | __main__:_redline_serial:764 - [11/196] skip (exists): p0011.docx → p0011.docx
+2026-09-26 15:00:44.767 | DEBUG    | __main__:_redline_serial:764 - [12/196] skip (exists): p0012.docx → p0012.docx
+2026-09-26 15:00:44.768 | DEBUG    | __main__:_redline_serial:764 - [13/196] skip (exists): p0013.docx → p0013.docx
+2026-09-26 15:00:44.768 | DEBUG    | __main__:_redline_serial:764 - [14/196] skip (exists): p0014.docx → p0014.docx
+2026-09-26 15:00:44.768 | DEBUG    | __main__:_redline_serial:764 - [15/196] skip (exists): p0015.docx → p0015.docx
+2026-09-26 15:00:48.075 | ERROR    | __main__:_redline_serial:788 - [16/196] FAIL: p0016.docx → p0016.docx — redline is missing base 67% of that file; the two sides are not averaged
+2026-09-26 15:00:49.128 | DEBUG    | __main__:_redline_serial:764 - [17/196] skip (exists): p0017.docx → p0017.docx
+2026-09-26 15:00:49.129 | DEBUG    | __main__:_redline_serial:764 - [18/196] skip (exists): p0018.docx → p0018.docx
+2026-09-26 15:00:49.129 | DEBUG    | __main__:_redline_serial:764 - [19/196] skip (exists): p0019.docx → p0019.docx
+2026-09-26 15:00:49.129 | DEBUG    | __main__:_redline_serial:764 - [20/196] skip (exists): p0020.docx → p0020.docx
+2026-09-26 15:00:49.129 | DEBUG    | __main__:_redline_serial:764 - [21/196] skip (exists): p0021.docx → p0021.docx
+2026-09-26 15:00:49.129 | DEBUG    | __main__:_redline_serial:764 - [22/196] skip (exists): p0022.docx → p0022.docx
+2026-09-26 15:00:49.129 | DEBUG    | __main__:_redline_serial:764 - [23/196] skip (exists): p0023.docx → p0023.docx
+2026-09-26 15:00:49.129 | DEBUG    | __main__:_redline_serial:764 - [24/196] skip (exists): p0024.docx → p0024.docx
+2026-09-26 15:00:49.129 | DEBUG    | __main__:_redline_serial:764 - [25/196] skip (exists): p0025.docx → p0025.docx
+2026-09-26 15:00:49.129 | DEBUG    | __main__:_redline_serial:764 - [26/196] skip (exists): p0026.docx → p0026.docx
+2026-09-26 15:00:49.129 | DEBUG    | __main__:_redline_serial:764 - [27/196] skip (exists): p0027.docx → p0027.docx
+2026-09-26 15:00:49.129 | DEBUG    | __main__:_redline_serial:764 - [28/196] skip (exists): p0028.docx → p0028.docx
+2026-09-26 15:00:49.129 | DEBUG    | __main__:_redline_serial:764 - [29/196] skip (exists): p0029.docx → p0029.docx
+2026-09-26 15:00:49.129 | DEBUG    | __main__:_redline_serial:764 - [30/196] skip (exists): p0030.docx → p0030.docx
+2026-09-26 15:00:49.129 | DEBUG    | __main__:_redline_serial:764 - [31/196] skip (exists): p0031.docx → p0031.docx
+2026-09-26 15:00:49.129 | DEBUG    | __main__:_redline_serial:764 - [32/196] skip (exists): p0032.docx → p0032.docx
+2026-09-26 15:00:49.129 | DEBUG    | __main__:_redline_serial:764 - [33/196] skip (exists): p0033.docx → p0033.docx
+2026-09-26 15:00:49.129 | DEBUG    | __main__:_redline_serial:764 - [34/196] skip (exists): p0034.docx → p0034.docx
+2026-09-26 15:00:49.129 | DEBUG    | __main__:_redline_serial:764 - [35/196] skip (exists): p0035.docx → p0035.docx
+2026-09-26 15:00:49.129 | DEBUG    | __main__:_redline_serial:764 - [36/196] skip (exists): p0036.docx → p0036.docx
+2026-09-26 15:00:49.129 | DEBUG    | __main__:_redline_serial:764 - [37/196] skip (exists): p0037.docx → p0037.docx
+2026-09-26 15:00:49.129 | DEBUG    | __main__:_redline_serial:764 - [38/196] skip (exists): p0038.docx → p0038.docx
+2026-09-26 15:00:49.129 | DEBUG    | __main__:_redline_serial:764 - [39/196] skip (exists): p0039.docx → p0039.docx
+2026-09-26 15:00:49.129 | DEBUG    | __main__:_redline_serial:764 - [40/196] skip (exists): p0040.docx → p0040.docx
+2026-09-26 15:00:49.129 | DEBUG    | __main__:_redline_serial:764 - [41/196] skip (exists): p0041.docx → p0041.docx
+2026-09-26 15:00:49.129 | DEBUG    | __main__:_redline_serial:764 - [42/196] skip (exists): p0042.docx → p0042.docx
+2026-09-26 15:00:49.129 | DEBUG    | __main__:_redline_serial:764 - [43/196] skip (exists): p0043.docx → p0043.docx
+2026-09-26 15:00:49.129 | DEBUG    | __main__:_redline_serial:764 - [44/196] skip (exists): p0044.docx → p0044.docx
+2026-09-26 15:00:49.129 | DEBUG    | __main__:_redline_serial:764 - [45/196] skip (exists): p0045.docx → p0045.docx
+2026-09-26 15:00:49.129 | DEBUG    | __main__:_redline_serial:764 - [46/196] skip (exists): p0046.docx → p0046.docx
+2026-09-26 15:00:49.129 | DEBUG    | __main__:_redline_serial:764 - [47/196] skip (exists): p0047.docx → p0047.docx
+2026-09-26 15:00:49.129 | DEBUG    | __main__:_redline_serial:764 - [48/196] skip (exists): p0048.docx → p0048.docx
+2026-09-26 15:00:49.129 | DEBUG    | __main__:_redline_serial:764 - [49/196] skip (exists): p0049.docx → p0049.docx
+2026-09-26 15:00:49.130 | DEBUG    | __main__:_redline_serial:764 - [50/196] skip (exists): p0050.docx → p0050.docx
+2026-09-26 15:00:49.130 | DEBUG    | __main__:_redline_serial:764 - [51/196] skip (exists): p0051.docx → p0051.docx
+2026-09-26 15:00:49.130 | DEBUG    | __main__:_redline_serial:764 - [52/196] skip (exists): p0052.docx → p0052.docx
+2026-09-26 15:00:49.130 | DEBUG    | __main__:_redline_serial:764 - [53/196] skip (exists): p0053.docx → p0053.docx
+2026-09-26 15:00:49.130 | DEBUG    | __main__:_redline_serial:764 - [54/196] skip (exists): p0054.docx → p0054.docx
+2026-09-26 15:00:49.130 | DEBUG    | __main__:_redline_serial:764 - [55/196] skip (exists): p0055.docx → p0055.docx
+2026-09-26 15:00:49.130 | DEBUG    | __main__:_redline_serial:764 - [56/196] skip (exists): p0056.docx → p0056.docx
+2026-09-26 15:00:49.130 | DEBUG    | __main__:_redline_serial:764 - [57/196] skip (exists): p0057.docx → p0057.docx
+2026-09-26 15:00:49.130 | DEBUG    | __main__:_redline_serial:764 - [58/196] skip (exists): p0058.docx → p0058.docx
+2026-09-26 15:00:49.130 | DEBUG    | __main__:_redline_serial:764 - [59/196] skip (exists): p0059.docx → p0059.docx
+2026-09-26 15:00:49.130 | DEBUG    | __main__:_redline_serial:764 - [60/196] skip (exists): p0060.docx → p0060.docx
+2026-09-26 15:00:49.130 | DEBUG    | __main__:_redline_serial:764 - [61/196] skip (exists): p0061.docx → p0061.docx
+2026-09-26 15:00:49.130 | DEBUG    | __main__:_redline_serial:764 - [62/196] skip (exists): p0062.docx → p0062.docx
+2026-09-26 15:00:49.130 | DEBUG    | __main__:_redline_serial:764 - [63/196] skip (exists): p0063.docx → p0063.docx
+2026-09-26 15:00:49.130 | DEBUG    | __main__:_redline_serial:764 - [64/196] skip (exists): p0064.docx → p0064.docx
+2026-09-26 15:00:49.130 | DEBUG    | __main__:_redline_serial:764 - [65/196] skip (exists): p0065.docx → p0065.docx
+2026-09-26 15:00:49.130 | DEBUG    | __main__:_redline_serial:764 - [66/196] skip (exists): p0066.docx → p0066.docx
+2026-09-26 15:00:49.130 | DEBUG    | __main__:_redline_serial:764 - [67/196] skip (exists): p0067.docx → p0067.docx
+2026-09-26 15:00:49.130 | DEBUG    | __main__:_redline_serial:764 - [68/196] skip (exists): p0068.docx → p0068.docx
+2026-09-26 15:00:49.130 | DEBUG    | __main__:_redline_serial:764 - [69/196] skip (exists): p0069.docx → p0069.docx
+2026-09-26 15:00:49.130 | DEBUG    | __main__:_redline_serial:764 - [70/196] skip (exists): p0070.docx → p0070.docx
+2026-09-26 15:00:49.130 | DEBUG    | __main__:_redline_serial:764 - [71/196] skip (exists): p0071.docx → p0071.docx
+2026-09-26 15:00:49.130 | DEBUG    | __main__:_redline_serial:764 - [72/196] skip (exists): p0072.docx → p0072.docx
+2026-09-26 15:00:49.130 | DEBUG    | __main__:_redline_serial:764 - [73/196] skip (exists): p0073.docx → p0073.docx
+2026-09-26 15:00:49.130 | DEBUG    | __main__:_redline_serial:764 - [74/196] skip (exists): p0074.docx → p0074.docx
+2026-09-26 15:00:49.130 | DEBUG    | __main__:_redline_serial:764 - [75/196] skip (exists): p0075.docx → p0075.docx
+2026-09-26 15:00:49.130 | DEBUG    | __main__:_redline_serial:764 - [76/196] skip (exists): p0076.docx → p0076.docx
+2026-09-26 15:00:49.130 | DEBUG    | __main__:_redline_serial:764 - [77/196] skip (exists): p0077.docx → p0077.docx
+2026-09-26 15:00:49.130 | DEBUG    | __main__:_redline_serial:764 - [78/196] skip (exists): p0078.docx → p0078.docx
+2026-09-26 15:00:49.130 | DEBUG    | __main__:_redline_serial:764 - [79/196] skip (exists): p0079.docx → p0079.docx
+2026-09-26 15:00:49.130 | DEBUG    | __main__:_redline_serial:764 - [80/196] skip (exists): p0080.docx → p0080.docx
+2026-09-26 15:00:49.130 | DEBUG    | __main__:_redline_serial:764 - [81/196] skip (exists): p0081.docx → p0081.docx
+2026-09-26 15:00:49.130 | DEBUG    | __main__:_redline_serial:764 - [82/196] skip (exists): p0082.docx → p0082.docx
+2026-09-26 15:00:49.130 | DEBUG    | __main__:_redline_serial:764 - [83/196] skip (exists): p0083.docx → p0083.docx
+2026-09-26 15:00:49.130 | DEBUG    | __main__:_redline_serial:764 - [84/196] skip (exists): p0084.docx → p0084.docx
+2026-09-26 15:00:49.130 | DEBUG    | __main__:_redline_serial:764 - [85/196] skip (exists): p0085.docx → p0085.docx
+2026-09-26 15:00:49.130 | DEBUG    | __main__:_redline_serial:764 - [86/196] skip (exists): p0086.docx → p0086.docx
+2026-09-26 15:00:49.130 | DEBUG    | __main__:_redline_serial:764 - [87/196] skip (exists): p0087.docx → p0087.docx
+2026-09-26 15:00:49.131 | DEBUG    | __main__:_redline_serial:764 - [88/196] skip (exists): p0088.docx → p0088.docx
+2026-09-26 15:00:49.131 | DEBUG    | __main__:_redline_serial:764 - [89/196] skip (exists): p0089.docx → p0089.docx
+2026-09-26 15:00:49.131 | DEBUG    | __main__:_redline_serial:764 - [90/196] skip (exists): p0090.docx → p0090.docx
+2026-09-26 15:00:49.131 | DEBUG    | __main__:_redline_serial:764 - [91/196] skip (exists): p0091.docx → p0091.docx
+2026-09-26 15:00:49.131 | DEBUG    | __main__:_redline_serial:764 - [92/196] skip (exists): p0092.docx → p0092.docx
+2026-09-26 15:00:52.301 | ERROR    | __main__:_redline_serial:788 - [93/196] FAIL: p0093.docx → p0093.docx — redline is missing base 67% of that file; the two sides are not averaged
+2026-09-26 15:00:53.231 | WARNING  | __main__:_redline_serial:796 - [word] 3 failures in a row — recycling rather than trusting Word to still be reading documents
+2026-09-26 15:00:53.231 | WARNING  | word_pdf:recycle:717 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-09-26 15:00:53.232 | WARNING  | word_pdf:recycle:723 - [word] recycling (restart 1)
+2026-09-26 15:01:03.607 | INFO     | __main__:_replay_pairs:844 - [replay] still failing, so it is the pair: p0001.docx
+2026-09-26 15:01:05.757 | INFO     | word_pdf:_note_buttons:502 - [watchdog] Microsoft Word shows button 'missing value'
+2026-09-26 15:01:11.003 | INFO     | __main__:_replay_pairs:844 - [replay] still failing, so it is the pair: p0016.docx
+2026-09-26 15:01:13.010 | INFO     | __main__:_replay_pairs:844 - [replay] still failing, so it is the pair: p0093.docx
+2026-09-26 15:01:13.010 | DEBUG    | __main__:_redline_serial:764 - [94/196] skip (exists): p0094.docx → p0094.docx
+2026-09-26 15:01:13.010 | DEBUG    | __main__:_redline_serial:764 - [95/196] skip (exists): p0095.docx → p0095.docx
+2026-09-26 15:01:13.010 | DEBUG    | __main__:_redline_serial:764 - [96/196] skip (exists): p0096.docx → p0096.docx
+2026-09-26 15:01:13.010 | DEBUG    | __main__:_redline_serial:764 - [97/196] skip (exists): p0097.docx → p0097.docx
+2026-09-26 15:01:13.010 | DEBUG    | __main__:_redline_serial:764 - [98/196] skip (exists): p0098.docx → p0098.docx
+2026-09-26 15:01:13.011 | DEBUG    | __main__:_redline_serial:764 - [99/196] skip (exists): p0099.docx → p0099.docx
+2026-09-26 15:01:13.011 | DEBUG    | __main__:_redline_serial:764 - [100/196] skip (exists): p0100.docx → p0100.docx
+2026-09-26 15:01:13.011 | DEBUG    | __main__:_redline_serial:764 - [101/196] skip (exists): p0101.docx → p0101.docx
+2026-09-26 15:01:13.011 | DEBUG    | __main__:_redline_serial:764 - [102/196] skip (exists): p0102.docx → p0102.docx
+2026-09-26 15:01:13.011 | DEBUG    | __main__:_redline_serial:764 - [103/196] skip (exists): p0103.docx → p0103.docx
+2026-09-26 15:01:13.011 | DEBUG    | __main__:_redline_serial:764 - [104/196] skip (exists): p0104.docx → p0104.docx
+2026-09-26 15:01:15.584 | ERROR    | __main__:_redline_serial:788 - [105/196] FAIL: p0105.docx → p0105.docx — redline is missing base 67% of that file; the two sides are not averaged
+2026-09-26 15:01:16.636 | DEBUG    | __main__:_redline_serial:764 - [106/196] skip (exists): p0106.docx → p0106.docx
+2026-09-26 15:01:16.637 | DEBUG    | __main__:_redline_serial:764 - [107/196] skip (exists): p0107.docx → p0107.docx
+2026-09-26 15:01:16.637 | DEBUG    | __main__:_redline_serial:764 - [108/196] skip (exists): p0108.docx → p0108.docx
+2026-09-26 15:01:16.637 | DEBUG    | __main__:_redline_serial:764 - [109/196] skip (exists): p0109.docx → p0109.docx
+2026-09-26 15:01:16.637 | DEBUG    | __main__:_redline_serial:764 - [110/196] skip (exists): p0110.docx → p0110.docx
+2026-09-26 15:01:16.637 | DEBUG    | __main__:_redline_serial:764 - [111/196] skip (exists): p0111.docx → p0111.docx
+2026-09-26 15:01:16.637 | DEBUG    | __main__:_redline_serial:764 - [112/196] skip (exists): p0112.docx → p0112.docx
+2026-09-26 15:01:16.637 | DEBUG    | __main__:_redline_serial:764 - [113/196] skip (exists): p0113.docx → p0113.docx
+2026-09-26 15:01:16.637 | DEBUG    | __main__:_redline_serial:764 - [114/196] skip (exists): p0114.docx → p0114.docx
+2026-09-26 15:01:16.637 | DEBUG    | __main__:_redline_serial:764 - [115/196] skip (exists): p0115.docx → p0115.docx
+2026-09-26 15:01:16.637 | DEBUG    | __main__:_redline_serial:764 - [116/196] skip (exists): p0116.docx → p0116.docx
+2026-09-26 15:01:16.637 | DEBUG    | __main__:_redline_serial:764 - [117/196] skip (exists): p0117.docx → p0117.docx
+2026-09-26 15:01:16.637 | DEBUG    | __main__:_redline_serial:764 - [118/196] skip (exists): p0118.docx → p0118.docx
+2026-09-26 15:01:16.637 | DEBUG    | __main__:_redline_serial:764 - [119/196] skip (exists): p0119.docx → p0119.docx
+2026-09-26 15:01:16.637 | DEBUG    | __main__:_redline_serial:764 - [120/196] skip (exists): p0120.docx → p0120.docx
+2026-09-26 15:01:16.637 | DEBUG    | __main__:_redline_serial:764 - [121/196] skip (exists): p0121.docx → p0121.docx
+2026-09-26 15:01:16.637 | DEBUG    | __main__:_redline_serial:764 - [122/196] skip (exists): p0122.docx → p0122.docx
+2026-09-26 15:01:16.637 | DEBUG    | __main__:_redline_serial:764 - [123/196] skip (exists): p0123.docx → p0123.docx
+2026-09-26 15:01:16.637 | DEBUG    | __main__:_redline_serial:764 - [124/196] skip (exists): p0124.docx → p0124.docx
+2026-09-26 15:01:16.637 | DEBUG    | __main__:_redline_serial:764 - [125/196] skip (exists): p0125.docx → p0125.docx
+2026-09-26 15:01:16.637 | DEBUG    | __main__:_redline_serial:764 - [126/196] skip (exists): p0126.docx → p0126.docx
+2026-09-26 15:01:16.637 | DEBUG    | __main__:_redline_serial:764 - [127/196] skip (exists): p0127.docx → p0127.docx
+2026-09-26 15:01:16.637 | DEBUG    | __main__:_redline_serial:764 - [128/196] skip (exists): p0128.docx → p0128.docx
+2026-09-26 15:01:16.637 | DEBUG    | __main__:_redline_serial:764 - [129/196] skip (exists): p0129.docx → p0129.docx
+2026-09-26 15:01:16.637 | DEBUG    | __main__:_redline_serial:764 - [130/196] skip (exists): p0130.docx → p0130.docx
+2026-09-26 15:01:16.638 | DEBUG    | __main__:_redline_serial:764 - [131/196] skip (exists): p0131.docx → p0131.docx
+2026-09-26 15:01:16.639 | DEBUG    | __main__:_redline_serial:764 - [132/196] skip (exists): p0132.docx → p0132.docx
+2026-09-26 15:01:16.640 | DEBUG    | __main__:_redline_serial:764 - [133/196] skip (exists): p0133.docx → p0133.docx
+2026-09-26 15:01:16.640 | DEBUG    | __main__:_redline_serial:764 - [134/196] skip (exists): p0134.docx → p0134.docx
+2026-09-26 15:01:16.640 | DEBUG    | __main__:_redline_serial:764 - [135/196] skip (exists): p0135.docx → p0135.docx
+2026-09-26 15:01:18.823 | ERROR    | __main__:_redline_serial:788 - [136/196] FAIL: p0136.docx → p0136.docx — redline is missing revision 50% of that file; the two sides are not averaged
+2026-09-26 15:01:21.439 | ERROR    | __main__:_redline_serial:788 - [137/196] FAIL: p0137.docx → p0137.docx — redline is missing base 50% of that file; the two sides are not averaged
+2026-09-26 15:01:22.367 | WARNING  | __main__:_redline_serial:796 - [word] 3 failures in a row — recycling rather than trusting Word to still be reading documents
+2026-09-26 15:01:22.370 | WARNING  | word_pdf:recycle:717 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-09-26 15:01:22.370 | WARNING  | word_pdf:recycle:723 - [word] recycling (restart 2)
+2026-09-26 15:01:32.332 | INFO     | __main__:_replay_pairs:844 - [replay] still failing, so it is the pair: p0105.docx
+2026-09-26 15:01:33.247 | INFO     | __main__:_replay_pairs:844 - [replay] still failing, so it is the pair: p0136.docx
+2026-09-26 15:01:34.493 | INFO     | __main__:_replay_pairs:844 - [replay] still failing, so it is the pair: p0137.docx
+2026-09-26 15:01:34.493 | DEBUG    | __main__:_redline_serial:764 - [138/196] skip (exists): p0138.docx → p0138.docx
+2026-09-26 15:01:34.494 | DEBUG    | __main__:_redline_serial:764 - [139/196] skip (exists): p0139.docx → p0139.docx
+2026-09-26 15:01:34.494 | DEBUG    | __main__:_redline_serial:764 - [140/196] skip (exists): p0140.docx → p0140.docx
+2026-09-26 15:01:34.494 | DEBUG    | __main__:_redline_serial:764 - [141/196] skip (exists): p0141.docx → p0141.docx
+2026-09-26 15:01:34.494 | DEBUG    | __main__:_redline_serial:764 - [142/196] skip (exists): p0142.docx → p0142.docx
+2026-09-26 15:01:34.494 | DEBUG    | __main__:_redline_serial:764 - [143/196] skip (exists): p0143.docx → p0143.docx
+2026-09-26 15:01:34.494 | DEBUG    | __main__:_redline_serial:764 - [144/196] skip (exists): p0144.docx → p0144.docx
+2026-09-26 15:01:34.494 | DEBUG    | __main__:_redline_serial:764 - [145/196] skip (exists): p0145.docx → p0145.docx
+2026-09-26 15:01:34.494 | DEBUG    | __main__:_redline_serial:764 - [146/196] skip (exists): p0146.docx → p0146.docx
+2026-09-26 15:01:34.494 | DEBUG    | __main__:_redline_serial:764 - [147/196] skip (exists): p0147.docx → p0147.docx
+2026-09-26 15:01:34.494 | DEBUG    | __main__:_redline_serial:764 - [148/196] skip (exists): p0148.docx → p0148.docx
+2026-09-26 15:01:34.494 | DEBUG    | __main__:_redline_serial:764 - [149/196] skip (exists): p0149.docx → p0149.docx
+2026-09-26 15:01:34.494 | DEBUG    | __main__:_redline_serial:764 - [150/196] skip (exists): p0150.docx → p0150.docx
+2026-09-26 15:01:34.494 | DEBUG    | __main__:_redline_serial:764 - [151/196] skip (exists): p0151.docx → p0151.docx
+2026-09-26 15:01:34.495 | DEBUG    | __main__:_redline_serial:764 - [152/196] skip (exists): p0152.docx → p0152.docx
+2026-09-26 15:01:34.495 | DEBUG    | __main__:_redline_serial:764 - [153/196] skip (exists): p0153.docx → p0153.docx
+2026-09-26 15:01:34.495 | DEBUG    | __main__:_redline_serial:764 - [154/196] skip (exists): p0154.docx → p0154.docx
+2026-09-26 15:01:36.103 | ERROR    | __main__:_redline_serial:788 - [155/196] FAIL: p0155.docx → p0155.docx — 1732:1798: execution error: open produced 2 new documents; refusing to guess (-2700)
+2026-09-26 15:01:37.070 | WARNING  | word_pdf:recover_after_failure:910 - [word] did not come back clean after a failure; recycling
+2026-09-26 15:01:37.070 | WARNING  | word_pdf:recycle:717 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-09-26 15:01:37.071 | WARNING  | word_pdf:recycle:723 - [word] recycling (restart 3)
+2026-09-26 15:01:43.257 | ERROR    | __main__:_redline_serial:788 - [156/196] FAIL: p0156.docx → p0156.docx — redline is missing base 75% of that file; the two sides are not averaged
+2026-09-26 15:01:44.207 | DEBUG    | __main__:_redline_serial:764 - [157/196] skip (exists): p0157.docx → p0157.docx
+2026-09-26 15:01:44.207 | DEBUG    | __main__:_redline_serial:764 - [158/196] skip (exists): p0158.docx → p0158.docx
+2026-09-26 15:01:44.207 | DEBUG    | __main__:_redline_serial:764 - [159/196] skip (exists): p0159.docx → p0159.docx
+2026-09-26 15:01:44.207 | DEBUG    | __main__:_redline_serial:764 - [160/196] skip (exists): p0160.docx → p0160.docx
+2026-09-26 15:01:44.207 | DEBUG    | __main__:_redline_serial:764 - [161/196] skip (exists): p0161.docx → p0161.docx
+2026-09-26 15:01:44.207 | DEBUG    | __main__:_redline_serial:764 - [162/196] skip (exists): p0162.docx → p0162.docx
+2026-09-26 15:01:44.207 | DEBUG    | __main__:_redline_serial:764 - [163/196] skip (exists): p0163.docx → p0163.docx
+2026-09-26 15:01:44.207 | DEBUG    | __main__:_redline_serial:764 - [164/196] skip (exists): p0164.docx → p0164.docx
+2026-09-26 15:01:44.207 | DEBUG    | __main__:_redline_serial:764 - [165/196] skip (exists): p0165.docx → p0165.docx
+2026-09-26 15:01:44.207 | DEBUG    | __main__:_redline_serial:764 - [166/196] skip (exists): p0166.docx → p0166.docx
+2026-09-26 15:01:44.207 | DEBUG    | __main__:_redline_serial:764 - [167/196] skip (exists): p0167.docx → p0167.docx
+2026-09-26 15:01:44.207 | DEBUG    | __main__:_redline_serial:764 - [168/196] skip (exists): p0168.docx → p0168.docx
+2026-09-26 15:01:44.207 | DEBUG    | __main__:_redline_serial:764 - [169/196] skip (exists): p0169.docx → p0169.docx
+2026-09-26 15:01:44.207 | DEBUG    | __main__:_redline_serial:764 - [170/196] skip (exists): p0170.docx → p0170.docx
+2026-09-26 15:01:44.207 | DEBUG    | __main__:_redline_serial:764 - [171/196] skip (exists): p0171.docx → p0171.docx
+2026-09-26 15:01:44.207 | DEBUG    | __main__:_redline_serial:764 - [172/196] skip (exists): p0172.docx → p0172.docx
+2026-09-26 15:01:44.207 | DEBUG    | __main__:_redline_serial:764 - [173/196] skip (exists): p0173.docx → p0173.docx
+2026-09-26 15:01:44.207 | DEBUG    | __main__:_redline_serial:764 - [174/196] skip (exists): p0174.docx → p0174.docx
+2026-09-26 15:01:44.208 | DEBUG    | __main__:_redline_serial:764 - [175/196] skip (exists): p0175.docx → p0175.docx
+2026-09-26 15:01:44.208 | DEBUG    | __main__:_redline_serial:764 - [176/196] skip (exists): p0176.docx → p0176.docx
+2026-09-26 15:01:44.208 | DEBUG    | __main__:_redline_serial:764 - [177/196] skip (exists): p0177.docx → p0177.docx
+2026-09-26 15:01:44.208 | DEBUG    | __main__:_redline_serial:764 - [178/196] skip (exists): p0178.docx → p0178.docx
+2026-09-26 15:01:44.208 | DEBUG    | __main__:_redline_serial:764 - [179/196] skip (exists): p0179.docx → p0179.docx
+2026-09-26 15:01:44.208 | DEBUG    | __main__:_redline_serial:764 - [180/196] skip (exists): p0180.docx → p0180.docx
+2026-09-26 15:01:44.208 | DEBUG    | __main__:_redline_serial:764 - [181/196] skip (exists): p0181.docx → p0181.docx
+2026-09-26 15:01:44.208 | DEBUG    | __main__:_redline_serial:764 - [182/196] skip (exists): p0182.docx → p0182.docx
+2026-09-26 15:01:44.208 | DEBUG    | __main__:_redline_serial:764 - [183/196] skip (exists): p0183.docx → p0183.docx
+2026-09-26 15:01:45.877 | ERROR    | __main__:_redline_serial:788 - [184/196] FAIL: p0184.docx → p0184.docx — redline is missing revision 50% of that file; the two sides are not averaged
+2026-09-26 15:01:46.818 | WARNING  | __main__:_redline_serial:796 - [word] 3 failures in a row — recycling rather than trusting Word to still be reading documents
+2026-09-26 15:01:46.818 | WARNING  | word_pdf:recycle:717 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-09-26 15:01:46.818 | WARNING  | word_pdf:recycle:723 - [word] recycling (restart 4)
+2026-09-26 15:01:53.573 | INFO     | word_pdf:_note_buttons:502 - [watchdog] Microsoft Word shows button 'Cancel'
+2026-09-26 15:01:57.733 | INFO     | __main__:_replay_pairs:844 - [replay] still failing, so it is the pair: p0155.docx
+2026-09-26 15:01:59.452 | INFO     | __main__:_replay_pairs:844 - [replay] still failing, so it is the pair: p0156.docx
+2026-09-26 15:02:01.325 | INFO     | __main__:_replay_pairs:844 - [replay] still failing, so it is the pair: p0184.docx
+2026-09-26 15:02:01.325 | DEBUG    | __main__:_redline_serial:764 - [185/196] skip (exists): p0185.docx → p0185.docx
+2026-09-26 15:02:02.972 | ERROR    | __main__:_redline_serial:788 - [186/196] FAIL: p0186.docx → p0186.docx — redline is missing base 50% of that file; the two sides are not averaged
+2026-09-26 15:02:04.172 | DEBUG    | __main__:_redline_serial:764 - [187/196] skip (exists): p0187.docx → p0187.docx
+2026-09-26 15:02:04.172 | DEBUG    | __main__:_redline_serial:764 - [188/196] skip (exists): p0188.docx → p0188.docx
+2026-09-26 15:02:04.172 | DEBUG    | __main__:_redline_serial:764 - [189/196] skip (exists): p0189.docx → p0189.docx
+2026-09-26 15:02:04.172 | DEBUG    | __main__:_redline_serial:764 - [190/196] skip (exists): p0190.docx → p0190.docx
+2026-09-26 15:02:04.172 | DEBUG    | __main__:_redline_serial:764 - [191/196] skip (exists): p0191.docx → p0191.docx
+2026-09-26 15:02:04.172 | DEBUG    | __main__:_redline_serial:764 - [192/196] skip (exists): p0192.docx → p0192.docx
+2026-09-26 15:02:04.172 | DEBUG    | __main__:_redline_serial:764 - [193/196] skip (exists): p0193.docx → p0193.docx
+2026-09-26 15:02:04.172 | DEBUG    | __main__:_redline_serial:764 - [194/196] skip (exists): p0194.docx → p0194.docx
+2026-09-26 15:02:06.251 | ERROR    | __main__:_redline_serial:788 - [195/196] FAIL: p0195.docx → p0195.docx — redline is missing base 50% of that file; the two sides are not averaged
+2026-09-26 15:02:07.612 | DEBUG    | __main__:_redline_serial:764 - [196/196] skip (exists): p0196.docx → p0196.docx

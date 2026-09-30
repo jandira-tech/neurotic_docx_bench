@@ -25,19 +25,19 @@ ROOT = Path(__file__).resolve().parents[1]
 
 MAPS = [
     (
-        ROOT / "corpus/word_based/centralized_mapping.csv",
-        ROOT / "corpus/word_based/docx_source",
-        ROOT / "corpus/word_based/docx_redlines_word",
+        ROOT / "grok_run/word_based/centralized_mapping.csv",
+        ROOT / "grok_run/word_based/docx_source",
+        ROOT / "grok_run/word_based/docx_redlines_word",
     ),
     (
-        ROOT / "corpus/word_based/centralized_mapping_randomized.csv",
-        ROOT / "corpus/word_based/docx_source_randomized",
-        ROOT / "corpus/word_based/docx_redlines_randomized",
+        ROOT / "grok_run/word_based/centralized_mapping_randomized.csv",
+        ROOT / "grok_run/word_based/docx_source_randomized",
+        ROOT / "grok_run/word_based/docx_redlines_randomized",
     ),
     (
-        ROOT / "corpus/word_redlines_superdoc/centralized_mapping.csv",
-        ROOT / "corpus/word_redlines_superdoc/docx_source",
-        ROOT / "corpus/word_redlines_superdoc/docx_redlines_word",
+        ROOT / "grok_run/word_redlines_superdoc/centralized_mapping.csv",
+        ROOT / "grok_run/word_redlines_superdoc/docx_source",
+        ROOT / "grok_run/word_redlines_superdoc/docx_redlines_word",
     ),
 ]
 
@@ -135,7 +135,7 @@ def load_mapping() -> dict[str, dict]:
                 candidates = [
                     rdir / f"{stem}_redline.docx",
                     rdir / f"{stem}_word_redline.docx",
-                    ROOT / "corpus/word_based/docx_redlines_word" / f"{stem}_redline.docx",
+                    ROOT / "grok_run/word_based/docx_redlines_word" / f"{stem}_redline.docx",
                 ]
                 word = next((p for p in candidates if p.exists()), None)
                 by_key[stem] = {

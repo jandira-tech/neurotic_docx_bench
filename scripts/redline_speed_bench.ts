@@ -41,10 +41,16 @@ import { Session } from "node:inspector/promises";
 import { basename, dirname, join, resolve } from "node:path";
 import { performance } from "node:perf_hooks";
 import { fileURLToPath } from "node:url";
+import { hardwareInfo, toolVersionForMethod } from "./lib/provenance.ts";
 import {
 	loadEngine,
 	shutdownAllLongLivedWorkers,
 } from "./generate-native-redlines.ts";
+import {
+	type CallResult,
+	type EngineSpec,
+	TimedEngine,
+} from "./lib/timed_engine.ts";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(HERE, "..");
@@ -60,13 +66,12 @@ function has(flag: string): boolean {
 }
 
 const DEFAULT_FIXTURE_DIRS = [
-	"corpus/word_based/docx_source",
-	"corpus/word_based/docx_source_randomized",
-	"corpus/word_based/docx_accepted_word",
-	"corpus/no_comments_pdf_was_generated_by_word/docx_source",
-	"corpus/no_comments_pdf_was_generated_by_word/docx_accepted_word",
-	"corpus/word_based/docx_redlines_word",
-	"corpus/no_comments_pdf_was_generated_by_word/docx_redlines_word",
+	"corpus/word/clean/docx",
+	"corpus/word/accept_all/docx",
+	"corpus/word/reject_all/docx",
+	"corpus/word/with_comments_clean/docx",
+	"corpus/word/tracking_without_comments/docx",
+	"corpus/word/with_comments_tracking/docx",
 ];
 
 const fixtureCount = Number(arg("--fixture-count", "1000"));
@@ -105,10 +110,7 @@ const rustDist = resolve(
 				: "src/neurotic_docx_bench/utils/jubarte/jubarte-rust",
 	),
 );
-const csharpDist = resolve(
-	ROOT,
-	arg("--csharp-dist", defaultCsharpDist()),
-);
+const csharpDist = resolve(ROOT, arg("--csharp-dist", defaultCsharpDist()));
 const csharpInprocDist = resolve(
 	ROOT,
 	arg("--csharp-inproc-dist", defaultCsharpInprocDist()),
@@ -117,10 +119,15 @@ const rustInprocDist = resolve(
 	ROOT,
 	arg("--rust-inproc-dist", defaultRustInprocDist()),
 );
-const wasmDist = resolve(
-	ROOT,
-	arg("--wasm-dist", defaultJubarteWasmDist()),
-);
+const wasmDist = resolve(ROOT, arg("--wasm-dist", defaultJubarteWasmDist()));
+const pairsCsv = arg("--pairs-csv", "");
+// Per-pair timeout for the in-process engines (0 = the old unguarded in-process loop). With a
+// timeout each engine runs in its own child process (scripts/lib/timed_engine.ts), which is
+// killed and restarted when a call passes it; the call is a failure with ms = the timeout.
+// Native CLI lanes keep their own spawn path. Per-pair rows are written as each call ends.
+const pairTimeoutMs = Number(arg("--pair-timeout-ms", "120000"));
+// Resume a --pairs-csv run: start at this key and append to per_pair/<method>.jsonl.
+const startAt = arg("--start-at", "");
 const fixturesDirArg = arg("--fixtures", "");
 const fixturesDirs = fixturesDirArg
 	? [resolve(ROOT, fixturesDirArg)]
@@ -134,11 +141,9 @@ const fixturesDirs = fixturesDirArg
 export function defaultCsharpDist(root: string = ROOT): string {
 	const candidates = [
 		join(root, "src/neurotic_docx_bench/utils/docxodus/docxodus-csharp"),
+		join(root, "../ooxmlsdk/Docxodus/tools/redline/bin/Release/net10.0"),
 		join(root, "../ooxmlsdk/Docxodus/tools/redline/bin/Release/net8.0"),
-		join(
-			root,
-			"../ooxmlsdk/Docxodus/tools/redline/bin/Release/net9.0",
-		),
+		join(root, "../ooxmlsdk/Docxodus/tools/redline/bin/Release/net9.0"),
 	];
 	for (const c of candidates) {
 		if (existsSync(join(c, "redline"))) return c;
@@ -151,12 +156,13 @@ export function defaultCsharpInprocDist(root: string = ROOT): string {
 	const candidates = [
 		join(
 			root,
-			"src/neurotic_docx_bench/utils/docxodus/docxodus-csharp-inproc/bin/Release/net8.0",
+			"src/neurotic_docx_bench/utils/docxodus/docxodus-csharp-inproc/bin/Release/net10.0",
 		),
 		join(
 			root,
-			"src/neurotic_docx_bench/utils/docxodus/docxodus-csharp-inproc",
+			"src/neurotic_docx_bench/utils/docxodus/docxodus-csharp-inproc/bin/Release/net8.0",
 		),
+		join(root, "src/neurotic_docx_bench/utils/docxodus/docxodus-csharp-inproc"),
 	];
 	for (const c of candidates) {
 		if (existsSync(join(c, "docxodus-inproc"))) return c;
@@ -172,10 +178,7 @@ export function defaultRustInprocDist(root: string = ROOT): string {
 			root,
 			"src/neurotic_docx_bench/utils/jubarte/jubarte-rust-inproc/target/release",
 		),
-		join(
-			root,
-			"src/neurotic_docx_bench/utils/jubarte/jubarte-rust-inproc",
-		),
+		join(root, "src/neurotic_docx_bench/utils/jubarte/jubarte-rust-inproc"),
 	];
 	for (const c of candidates) {
 		if (
@@ -346,6 +349,70 @@ export function buildPairs(
 
 // ── engine resolution ────────────────────────────────────────────────────────
 
+/** One row of a `--pairs-csv` plan: header `key,base,next[,category]`, paths without commas. */
+export interface PlannedPair {
+	key: string;
+	base: string;
+	next: string;
+	category: string;
+}
+
+export function pairsFromCsv(text: string): PlannedPair[] {
+	const lines = text.split(/\r?\n/).filter((l) => l.trim() !== "");
+	const head = (lines.shift() ?? "").split(",");
+	const col = (name: string) => {
+		const i = head.indexOf(name);
+		if (i === -1)
+			throw new Error(
+				`pairs csv: no ${name} column (header: ${head.join(",")})`,
+			);
+		return i;
+	};
+	const [k, b, n] = [col("key"), col("base"), col("next")];
+	const c = head.indexOf("category");
+	const seen = new Set<string>();
+	return lines.map((line) => {
+		const f = line.split(",");
+		const key = f[k]!;
+		if (seen.has(key)) throw new Error(`pairs csv: duplicate key ${key}`);
+		seen.add(key);
+		return {
+			key,
+			base: f[b]!,
+			next: f[n]!,
+			category: c === -1 ? "" : (f[c] ?? ""),
+		};
+	});
+}
+
+/**
+ * Fixtures for a planned pair list: one per distinct content (SHA-1), named by basename
+ * (a hash suffix on a name clash). `nameOf` maps every given path to its fixture name.
+ */
+export function fixturesFromPaths(paths: string[]): {
+	fixtures: FixtureFile[];
+	nameOf: Map<string, string>;
+} {
+	const byHash = new Map<string, FixtureFile>();
+	const usedNames = new Set<string>();
+	const nameOf = new Map<string, string>();
+	for (const path of paths) {
+		if (nameOf.has(path)) continue;
+		const sha1 = createHash("sha1").update(readFileSync(path)).digest("hex");
+		let fx = byHash.get(sha1);
+		if (!fx) {
+			let name = basename(path);
+			if (usedNames.has(name))
+				name = `${name.replace(/\.docx$/i, "")}__${sha1.slice(0, 8)}.docx`;
+			usedNames.add(name);
+			fx = { name, path, sha1 };
+			byHash.set(sha1, fx);
+		}
+		nameOf.set(path, fx.name);
+	}
+	return { fixtures: [...byHash.values()], nameOf };
+}
+
 export function isNativeCliMethod(method: string): boolean {
 	const id = engineMethodId(method);
 	// True CLI-per-call engines (spawn per redline).
@@ -364,19 +431,13 @@ export function usesSamplyProfile(method: string): boolean {
 }
 
 export function engineMethodId(method: string): string {
-	if (
-		method === "docxodus-cs-inproc" ||
-		method === "docxodus-csharp-inproc"
-	) {
+	if (method === "docxodus-cs-inproc" || method === "docxodus-csharp-inproc") {
 		return "docxodus-csharp-inproc";
 	}
 	if (method === "docxodus-cs" || method === "docxodus-csharp") {
 		return "docxodus-csharp";
 	}
-	if (
-		method === "jubarte-rust-inproc" ||
-		method === "jubarte-rs-inproc"
-	) {
+	if (method === "jubarte-rust-inproc" || method === "jubarte-rs-inproc") {
 		return "jubarte-rust-inproc";
 	}
 	// Before generic "rust" match — jubarte-rust-wasm would otherwise collapse.
@@ -414,14 +475,10 @@ const JUBARTE_LANES = new Set([
 ]);
 {
 	const requested = new Set(
-		methods
-			.map((m) => engineMethodId(m))
-			.filter((id) => JUBARTE_LANES.has(id)),
+		methods.map((m) => engineMethodId(m)).filter((id) => JUBARTE_LANES.has(id)),
 	);
 	if (requested.size > 0 && requested.size < JUBARTE_LANES.size) {
-		const missing = [...JUBARTE_LANES].filter(
-			(id) => !requested.has(id),
-		);
+		const missing = [...JUBARTE_LANES].filter((id) => !requested.has(id));
 		console.error(
 			`error: --methods includes jubarte lanes ${[...requested].join(", ")} ` +
 				`but is missing ${missing.join(", ")}. The three jubarte lanes ` +
@@ -670,7 +727,8 @@ async function timedLoop(
 	warmupN: number,
 ): Promise<{
 	samples: number[];
-	failures: { key: string; error: string }[];
+	sampleKeys: string[];
+	failures: { key: string; error: string; ms?: number }[];
 	outSizes: number[];
 	wallMs: number;
 }> {
@@ -682,7 +740,8 @@ async function timedLoop(
 		}
 	}
 	const samples: number[] = [];
-	const failures: { key: string; error: string }[] = [];
+	const sampleKeys: string[] = [];
+	const failures: { key: string; error: string; ms?: number }[] = [];
 	const outSizes: number[] = [];
 	const wall0 = performance.now();
 	for (let r = 0; r < repsN; r++) {
@@ -691,21 +750,82 @@ async function timedLoop(
 			try {
 				const out = await engine(p.base, p.next);
 				samples.push(performance.now() - s);
+				sampleKeys.push(p.key);
 				outSizes.push(out.byteLength);
 			} catch (e) {
 				failures.push({
 					key: p.key,
 					error: (e as Error).message || String(e),
+					ms: performance.now() - s,
 				});
 			}
 		}
 	}
 	return {
 		samples,
+		sampleKeys,
 		failures,
 		outSizes,
 		wallMs: performance.now() - wall0,
 	};
+}
+
+/** The in-process loop, one engine child per call sequence, each call capped at `timeoutMs`. */
+export async function timedLoopIsolated(
+	spec: EngineSpec,
+	pairs: Pair[],
+	repsN: number,
+	warmPairs: Pair[],
+	timeoutMs: number,
+	onCall?: (p: Pair, r: CallResult) => void,
+): Promise<{
+	samples: number[];
+	sampleKeys: string[];
+	failures: { key: string; error: string; ms?: number }[];
+	outSizes: number[];
+	wallMs: number;
+	initMs: number;
+	restarts: number;
+	timeouts: number;
+}> {
+	const eng = new TimedEngine(spec, timeoutMs);
+	await eng.start();
+	const samples: number[] = [];
+	const sampleKeys: string[] = [];
+	const failures: { key: string; error: string; ms?: number }[] = [];
+	const outSizes: number[] = [];
+	let timeouts = 0;
+	try {
+		for (const w of warmPairs) await eng.call(w.base, w.next); // untimed
+		const warmRestarts = eng.restarts;
+		const wall0 = performance.now();
+		for (let r = 0; r < repsN; r++) {
+			for (const p of pairs) {
+				const res = await eng.call(p.base, p.next);
+				if (res.ok) {
+					samples.push(res.ms);
+					sampleKeys.push(p.key);
+					outSizes.push(res.outBytes ?? 0);
+				} else {
+					failures.push({ key: p.key, error: res.error ?? "", ms: res.ms });
+					timeouts += res.timedOut ? 1 : 0;
+				}
+				onCall?.(p, res);
+			}
+		}
+		return {
+			samples,
+			sampleKeys,
+			failures,
+			outSizes,
+			wallMs: performance.now() - wall0,
+			initMs: eng.initMs[0]!,
+			restarts: eng.restarts - warmRestarts,
+			timeouts,
+		};
+	} finally {
+		await eng.close();
+	}
 }
 
 // ── inner worker (spawned under samply) ──────────────────────────────────────
@@ -799,14 +919,32 @@ async function main() {
 	mkdirSync(join(outDir, "cpu"), { recursive: true });
 	mkdirSync(join(outDir, "fixtures_bytes"), { recursive: true });
 
-	console.log(`redline_speed_bench: collecting up to ${fixtureCount} fixtures`);
-	console.log(`  dirs:\n    ${fixturesDirs.join("\n    ")}`);
-	const fixtures = collectFixtures(fixturesDirs, fixtureCount);
+	const plan = pairsCsv
+		? pairsFromCsv(readFileSync(resolve(ROOT, pairsCsv), "utf8"))
+		: null;
+	const planned = plan
+		? fixturesFromPaths(
+				plan.flatMap((p) => [resolve(ROOT, p.base), resolve(ROOT, p.next)]),
+			)
+		: null;
+	if (plan) {
+		console.log(
+			`redline_speed_bench: ${plan.length} planned pairs from ${pairsCsv}`,
+		);
+	} else {
+		console.log(
+			`redline_speed_bench: collecting up to ${fixtureCount} fixtures`,
+		);
+		console.log(`  dirs:\n    ${fixturesDirs.join("\n    ")}`);
+	}
+	const fixtures = planned
+		? planned.fixtures
+		: collectFixtures(fixturesDirs, fixtureCount);
 	console.log(`  unique fixtures: ${fixtures.length} (target ${fixtureCount})`);
 	if (fixtures.length < 2) {
 		throw new Error("need ≥2 unique fixtures");
 	}
-	if (fixtures.length < fixtureCount) {
+	if (!plan && fixtures.length < fixtureCount) {
 		console.warn(
 			`  ⚠ only ${fixtures.length} unique fixtures available (asked ${fixtureCount})`,
 		);
@@ -829,7 +967,34 @@ async function main() {
 	);
 
 	const names = fixtures.map((f) => f.name);
-	const pairs = buildPairs(names, bytes, minPairs, seed);
+	const category = new Map<string, string>();
+	const pairs: Pair[] = plan
+		? plan.map((p) => {
+				const baseName = planned!.nameOf.get(resolve(ROOT, p.base))!;
+				const nextName = planned!.nameOf.get(resolve(ROOT, p.next))!;
+				category.set(p.key, p.category);
+				return {
+					key: p.key,
+					baseName,
+					nextName,
+					base: bytes.get(baseName)!,
+					next: bytes.get(nextName)!,
+					round: 0,
+				};
+			})
+		: buildPairs(names, bytes, minPairs, seed);
+	// Warm up on the plan's first pairs even when resuming, as the interrupted run did.
+	const warmPairs = pairs.slice(0, warmup);
+	if (startAt) {
+		const at = pairs.findIndex((p) => p.key === startAt);
+		if (!plan || at < 0) {
+			throw new Error(
+				`--start-at ${startAt}: not a key of the --pairs-csv plan`,
+			);
+		}
+		pairs.splice(0, at);
+		console.log(`  resuming at ${startAt}: ${pairs.length} pairs left`);
+	}
 	console.log(
 		`  pairs=${pairs.length} (min=${minPairs}, seed=${seed}, rounds≈${(pairs[pairs.length - 1]?.round ?? 0) + 1})`,
 	);
@@ -886,10 +1051,12 @@ async function main() {
 			`▶ ${method} (engine=${engId}, dist=${dist}, native=${native})\n`,
 		);
 
+		// With a per-pair timeout the engine lives in a child process, loaded there.
+		const isolated = pairTimeoutMs > 0 && !native;
 		const tInit0 = performance.now();
-		let engine: (base: Uint8Array, next: Uint8Array) => Promise<Uint8Array>;
+		let engine!: (base: Uint8Array, next: Uint8Array) => Promise<Uint8Array>;
 		try {
-			engine = await loadEngine(engId, dist);
+			if (!isolated) engine = await loadEngine(engId, dist);
 		} catch (e) {
 			console.error(`  INIT FAILED: ${(e as Error).message}`);
 			rows.push({
@@ -902,11 +1069,14 @@ async function main() {
 			});
 			continue;
 		}
-		const initMs = performance.now() - tInit0;
-		console.log(`  init ${round(initMs)}ms`);
+		let initMs = performance.now() - tInit0;
+		if (!isolated) console.log(`  init ${round(initMs)}ms`);
+		let timeouts = 0;
+		let restarts = 0;
 
 		let samples: number[] = [];
-		let failures: { key: string; error: string }[] = [];
+		let sampleKeys: string[] = [];
+		let failures: { key: string; error: string; ms?: number }[] = [];
 		let outSizes: number[] = [];
 		let wallMs = 0;
 		let profilePath: string | null = null;
@@ -916,7 +1086,71 @@ async function main() {
 		const useSamply = !skipProfile && usesSamplyProfile(method);
 		const useV8 = !skipProfile && !usesSamplyProfile(method);
 
-		if (useSamply) {
+		if (isolated) {
+			if (!skipProfile) {
+				console.warn(
+					"  profiling skipped: with --pair-timeout-ms the engine runs in a child process",
+				);
+			}
+			const perPairPath = join(outDir, "per_pair", `${method}.jsonl`);
+			mkdirSync(dirname(perPairPath), { recursive: true });
+			if (!startAt) writeFileSync(perPairPath, "");
+			let done = 0;
+			let failed = 0;
+			try {
+				const timed = await timedLoopIsolated(
+					{ engId, dist },
+					pairs,
+					reps,
+					warmPairs,
+					pairTimeoutMs,
+					(p, r) => {
+						appendFileSync(
+							perPairPath,
+							`${JSON.stringify({
+								key: p.key,
+								category: category.get(p.key),
+								ok: r.ok,
+								ms: round(r.ms),
+								...(r.ok
+									? { out_bytes: r.outBytes }
+									: { error: (r.error ?? "").slice(0, 300) }),
+								...(r.timedOut ? { timeout: true } : {}),
+							})}\n`,
+						);
+						done++;
+						failed += r.ok ? 0 : 1;
+						if (done % 250 === 0) {
+							console.log(
+								`  [${done}/${pairs.length * reps}] failed ${failed} (${new Date().toISOString()})`,
+							);
+						}
+					},
+				);
+				samples = timed.samples;
+				sampleKeys = timed.sampleKeys;
+				failures = timed.failures;
+				outSizes = timed.outSizes;
+				wallMs = timed.wallMs;
+				initMs = timed.initMs;
+				timeouts = timed.timeouts;
+				restarts = timed.restarts;
+				console.log(
+					`  init ${round(initMs)}ms (child process), timeout ${pairTimeoutMs}ms per pair`,
+				);
+			} catch (e) {
+				console.error(`  INIT FAILED: ${(e as Error).message}`);
+				rows.push({
+					schema: 1,
+					kind: "redline_speed_bench",
+					tool: method,
+					engine: engId,
+					error: (e as Error).message,
+					run_ts: runTs,
+				});
+				continue;
+			}
+		} else if (useSamply) {
 			const samplyOut = join(outDir, "cpu", `${method}.profile.json.gz`);
 			const samplesPath = join(outDir, "cpu", `${method}.samples.json`);
 			const profileKeys =
@@ -959,6 +1193,7 @@ async function main() {
 				);
 				const timed = await timedLoop(engine, pairs, reps, warmup);
 				samples = timed.samples;
+				sampleKeys = timed.sampleKeys;
 				failures = timed.failures;
 				outSizes = timed.outSizes;
 				wallMs = timed.wallMs;
@@ -969,6 +1204,7 @@ async function main() {
 				async () => timedLoop(engine, pairs, reps, warmup),
 			);
 			samples = timed.samples;
+			sampleKeys = timed.sampleKeys;
 			failures = timed.failures;
 			outSizes = timed.outSizes;
 			wallMs = timed.wallMs;
@@ -986,6 +1222,34 @@ async function main() {
 			}
 		}
 
+		if (plan && !isolated && sampleKeys.length === samples.length) {
+			// Per-pair timings (ok and failed), so a run can be read by variation category.
+			mkdirSync(join(outDir, "per_pair"), { recursive: true });
+			const lines = samples.map((ms, i) =>
+				JSON.stringify({
+					key: sampleKeys[i],
+					category: category.get(sampleKeys[i]!),
+					ok: true,
+					ms: round(ms),
+					out_bytes: outSizes[i],
+				}),
+			);
+			for (const f of failures) {
+				lines.push(
+					JSON.stringify({
+						key: f.key,
+						category: category.get(f.key),
+						ok: false,
+						ms: f.ms === undefined ? null : round(f.ms),
+						error: f.error.slice(0, 300),
+					}),
+				);
+			}
+			writeFileSync(
+				join(outDir, "per_pair", `${method}.jsonl`),
+				`${lines.join("\n")}\n`,
+			);
+		}
 		if (samples.length === 0) {
 			console.error(
 				`  ALL ${failures.length} calls failed — sample: ${failures[0]?.error}`,
@@ -1031,6 +1295,10 @@ async function main() {
 			init_ms: round(initMs),
 			wall_ms: round(wallMs),
 			failures: failures.length,
+			pair_timeout_ms: isolated ? pairTimeoutMs : null,
+			timeouts,
+			engine_restarts: restarts,
+			start_at: startAt || null,
 			unit: "ms_per_redline",
 			n: st.n,
 			mean: round(st.mean),
@@ -1043,6 +1311,10 @@ async function main() {
 			std: round(st.std),
 			total_ms: round(st.total),
 			throughput_per_s: round(st.throughput_per_s, 1),
+			// Provenance (consolidation): the pin and the machine, without which the
+			// number is not comparable to any other row.
+			tool_version: toolVersionForMethod(engId, dist, ROOT),
+			hardware: hardwareInfo(),
 			mean_out_bytes: outSizes.length
 				? Math.round(outSizes.reduce((a, b) => a + b, 0) / outSizes.length)
 				: null,
@@ -1107,12 +1379,19 @@ async function main() {
 	const md: string[] = [];
 	md.push("# redline_speed_bench (speed_redlines)");
 	md.push("");
-	md.push(
-		`- **fixtures:** ${fixtures.length} unique (target ${fixtureCount}) from ${fixturesDirs.length} dirs`,
-	);
-	md.push(
-		`- **pairs:** ${pairs.length} (every fixture × random partner, seed=${seed}, min=${minPairs})`,
-	);
+	if (plan) {
+		md.push(
+			`- **fixtures:** ${fixtures.length} unique documents named by the plan`,
+		);
+		md.push(`- **pairs:** ${pairs.length} planned in ${pairsCsv}`);
+	} else {
+		md.push(
+			`- **fixtures:** ${fixtures.length} unique (target ${fixtureCount}) from ${fixturesDirs.length} dirs`,
+		);
+		md.push(
+			`- **pairs:** ${pairs.length} (every fixture × random partner, seed=${seed}, min=${minPairs})`,
+		);
+	}
 	md.push(`- **warmup:** ${warmup}  **reps:** ${reps}`);
 	md.push(`- **run_ts:** ${runTs}`);
 	md.push("");
@@ -1130,7 +1409,9 @@ async function main() {
 	md.push("");
 	md.push("## Profiles");
 	md.push("");
-	md.push("Native engines use **samply** (open in Firefox Profiler / samply load):");
+	md.push(
+		"Native engines use **samply** (open in Firefox Profiler / samply load):",
+	);
 	md.push("");
 	md.push("```bash");
 	for (const m of methods) {

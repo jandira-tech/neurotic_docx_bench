@@ -31,8 +31,8 @@ import {
 } from "./redline_scoreboard.ts";
 import type { LensVerdict, ScoreboardRow } from "./redline_scoreboard.ts";
 
-const CORPUS_DIR = "corpus/word_based";
-const haveCorpus = existsSync(join(CORPUS_DIR, "centralized_mapping_randomized.csv"));
+const CORPUS_DIR = "corpus/word/pools";
+const haveCorpus = existsSync(join(CORPUS_DIR, "word_based_randomized_pairs.csv"));
 
 const provenance = {
 	engine: "jubarte-native",

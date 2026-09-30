@@ -13,8 +13,8 @@ import { join } from "node:path";
 import JSZip from "../node_modules/jszip/lib/index.js";
 import { parseManifest, loadEngine, runBatch } from "./generate-native-redlines.ts";
 
-const MANIFEST = "corpus/word_based/centralized_mapping.csv";
-const SOURCE = "corpus/word_based/docx_source";
+const MANIFEST = "corpus/word/pools/word_based_pairs.csv";
+const SOURCE = "corpus/word";
 const STEMMA_DIST = "src/neurotic_docx_bench/utils/stemma";
 const SAFE_DIST = "src/neurotic_docx_bench/utils/safe-docx-compare";
 const STEMMA_BIN = join(STEMMA_DIST, "stemma");

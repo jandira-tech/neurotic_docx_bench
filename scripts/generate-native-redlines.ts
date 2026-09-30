@@ -7,8 +7,8 @@
  * Usage:
  *   node --import tsx scripts/generate-native-redlines.ts \
  *     --method jubarte --dist dist/jubarte --out $RUN_DIR/docx --run-dir $RUN_DIR \
- *     [--manifest corpus/word_based/centralized_mapping.csv] \
- *     [--source-dir corpus/word_based/docx_source] [--status ok] [--limit N] [--tool NAME]
+ *     [--manifest corpus/word/pools/word_based_pairs.csv] \
+ *     [--source-dir corpus/word] [--status ok] [--limit N] [--tool NAME]
  */
 import {
 	readFileSync,
@@ -30,13 +30,12 @@ import { installDocxodusNodeCompat, resolveDocxodusEntry } from "./docxodus-node
 import { runSuperDocVitest } from "./prosemirror-headless-editor-server.ts";
 
 // Per-reply timeout for the long-lived inproc worker (READY handshake + each
-// COMPARE reply). The 15s default is ample for the normal corpus (median
-// ~17ms) but too short for pathological run-fragmented inputs like the 276k-run
-// dissertation, whose single compare takes ~35s natively (WASM_PERF_PLAN /
-// jubarte TODO §1). Override with WORKER_REPLY_TIMEOUT_MS for large-doc runs so
-// the inproc "fair algorithm" lane reports instead of spuriously timing out.
-const WORKER_REPLY_TIMEOUT_MS =
-	Number(process.env.WORKER_REPLY_TIMEOUT_MS) || 15_000;
+// COMPARE reply), read from WORKER_REPLY_TIMEOUT_MS when a worker loads. The 15s
+// default is ample for the normal corpus (median ~17ms) but too short for
+// pathological run-fragmented inputs like the 276k-run dissertation, whose single
+// compare takes ~35s natively (WASM_PERF_PLAN / jubarte TODO §1). Raise it for
+// large-doc runs so the inproc "fair algorithm" lane reports instead of spuriously
+// timing out.
 
 export interface Pair {
 	base: string;
@@ -44,6 +43,9 @@ export interface Pair {
 	status: string;
 	redlineDocx?: string;
 	redlineDocxWord?: string;
+	/** The Word stem of a corpus/word pool row (`<idA>_<a>__vs__<idB>_<b>_redline_<idC>`);
+	 *  absent for a legacy centralized_mapping.csv row. */
+	key?: string;
 }
 
 export interface GenOptions {
@@ -59,7 +61,8 @@ export interface GenOptions {
 	force: boolean;
 }
 
-/** Parse the committed centralized_mapping.csv into base→next pairs. */
+/** Parse a pairs CSV (a corpus/word pool or the legacy centralized_mapping.csv) into
+ *  base→next pairs. */
 export function parseManifest(csvPath: string, statuses: string[]): Pair[] {
 	const rows: Record<string, string>[] = parse(readFileSync(csvPath, "utf8"), {
 		columns: true,
@@ -73,11 +76,12 @@ export function parseManifest(csvPath: string, statuses: string[]): Pair[] {
 		const status = (r.batch_status || "").trim();
 		const redlineDocx = (r.redline_docx || "").trim();
 		const redlineDocxWord = (r.redline_docx_word || "").trim();
+		const key = (r.key || "").trim();
 		if (!base || !next) continue;
 		// Only filter when the manifest carries a status (older schema); the current manifest
 		// dropped batch_status, so an empty status means "include".
 		if (wanted.size && status && !wanted.has(status)) continue;
-		pairs.push({ base, next, status, redlineDocx, redlineDocxWord });
+		pairs.push({ base, next, status, redlineDocx, redlineDocxWord, ...(key ? { key } : {}) });
 	}
 	return pairs;
 }
@@ -162,31 +166,6 @@ export type RedlineEngine = ((
 	next: Uint8Array,
 ) => Promise<Uint8Array>) & { dispose?: () => Promise<void> };
 
-/** Load the redline engine for `method` and return compare(base,next)->docx bytes. */
-/**
- * Absolute path to a vendor package's entry, resolved PIN-TREE-FIRST.
- *
- * The bench.yaml `package:` pin installs into the repo-root `node_modules`, and
- * `resolve_tool_version` reads the recorded version back from THERE. An adapter
- * that imports a vendored sub-install instead will happily record one version
- * and execute another (plan Chapter 6 D5) — which is exactly how a docxodus run
- * was published as 9.0.0 while running 7.0.0. Root first, vendored as fallback.
- */
-function resolveVendorEntry(
-	pkgSubpath: string,
-	vendorRelRoot: string,
-): string {
-	const roots = [
-		resolve(import.meta.dirname, "../node_modules"),
-		resolve(import.meta.dirname, vendorRelRoot),
-	];
-	for (const root of roots) {
-		const candidate = join(root, pkgSubpath);
-		if (existsSync(candidate)) return candidate;
-	}
-	return join(roots[roots.length - 1]!, pkgSubpath);
-}
-
 /**
  * Directory to import `@stll/folio-core` from.
  *
@@ -206,6 +185,7 @@ function resolveFolioModuleRoot(): string {
 	);
 }
 
+/** Load the redline engine for `method` and return compare(base,next)->docx bytes. */
 export async function loadEngine(
 	method: string,
 	distPath: string,
@@ -288,6 +268,16 @@ export async function loadEngine(
 		// value off the shipped enum (never a hardcoded 0/1) keeps us on the package's
 		// wire contract, and generate-native-redlines.test.ts fails if a future release
 		// moves that default out from under this pin.
+		//
+		// docxodus ≥12 dropped the enum and `CompareOptions.engine`: compareDocuments()
+		// has one engine, so there is nothing left to pin. The enum's absence together
+		// with compareDocuments is that contract; call it plainly.
+		if (!("ComparisonEngine" in dox) && typeof dox.compareDocuments === "function") {
+			return async (base, next) => {
+				const out = await dox.compareDocuments(base, next);
+				return out instanceof Uint8Array ? out : new Uint8Array(out);
+			};
+		}
 		const engine = dox.ComparisonEngine?.DocxDiff;
 		if (typeof engine !== "number") {
 			throw new Error(
@@ -876,7 +866,7 @@ async function loadLongLivedCompareWorker(opts: {
 	binCandidates: string[];
 	tmpPrefix: string;
 	buildHint: string;
-}): Promise<(base: Uint8Array, next: Uint8Array) => Promise<Uint8Array>> {
+}): Promise<RedlineEngine> {
 	const { spawn } = await import("node:child_process");
 	const bin = opts.binCandidates.find((p) => existsSync(p));
 	if (!bin) {
@@ -885,115 +875,138 @@ async function loadLongLivedCompareWorker(opts: {
 				`(checked ${opts.binCandidates.join(", ")}). ${opts.buildHint}`,
 		);
 	}
-	const child = spawn(bin, [], { stdio: ["pipe", "pipe", "pipe"] });
-	let buf = "";
-	const waiters: Array<(line: string) => void> = [];
-	let spawnExit: { code: number | null; signal: NodeJS.Signals | null } | null =
-		null;
-	let stderrAcc = "";
-	const pushLine = (line: string) => {
-		const w = waiters.shift();
-		if (w) w(line);
-		else buf = buf ? `${buf}\n${line}` : line;
-	};
-	child.stdout!.setEncoding("utf8");
-	child.stderr!.setEncoding("utf8");
-	child.stderr!.on("data", (chunk: string) => {
-		stderrAcc += chunk;
-	});
-	let acc = "";
-	child.stdout!.on("data", (chunk: string) => {
-		acc += chunk;
-		let idx: number;
-		while ((idx = acc.indexOf("\n")) >= 0) {
-			const line = acc.slice(0, idx).replace(/\r$/, "");
-			acc = acc.slice(idx + 1);
-			pushLine(line);
-		}
-	});
-	child.on("exit", (code, signal) => {
-		spawnExit = { code, signal };
-		// Unblock any waiter so we fail fast instead of 120s hang.
-		const msg = `${opts.label}: worker exited before reply (code=${code} signal=${signal}) bin=${bin}`;
-		while (waiters.length) {
+	// Read per load, not at import, so a caller (or a test) can set it first.
+	const replyTimeoutMs = Number(process.env.WORKER_REPLY_TIMEOUT_MS) || 15_000;
+	type Worker = { readLine: () => Promise<string>; write: (s: string) => void; kill: () => void };
+	// One worker process. A compare that times out leaves the worker busy on it, and
+	// every later COMPARE would queue behind it and time out too, so the engine kills
+	// a worker on timeout (or when it dies) and starts a fresh one for the next pair.
+	const start = async (): Promise<Worker> => {
+		const child = spawn(bin, [], { stdio: ["pipe", "pipe", "pipe"] });
+		let buf = "";
+		const waiters: Array<(line: string) => void> = [];
+		let spawnExit: { code: number | null; signal: NodeJS.Signals | null } | null =
+			null;
+		let stderrAcc = "";
+		const pushLine = (line: string) => {
 			const w = waiters.shift();
-			// reject via throwing into the waiter channel as a special line
-			w?.(`__EXIT__ ${msg}`);
-		}
-	});
-	const readLine = (): Promise<string> =>
-		new Promise((resolveLine, reject) => {
-			if (buf) {
-				const lines = buf.split("\n");
-				const first = lines.shift()!;
-				buf = lines.join("\n");
-				resolveLine(first);
-				return;
+			if (w) w(line);
+			else buf = buf ? `${buf}\n${line}` : line;
+		};
+		child.stdout!.setEncoding("utf8");
+		child.stderr!.setEncoding("utf8");
+		child.stderr!.on("data", (chunk: string) => {
+			stderrAcc += chunk;
+		});
+		let acc = "";
+		child.stdout!.on("data", (chunk: string) => {
+			acc += chunk;
+			let idx: number;
+			while ((idx = acc.indexOf("\n")) >= 0) {
+				const line = acc.slice(0, idx).replace(/\r$/, "");
+				acc = acc.slice(idx + 1);
+				pushLine(line);
 			}
-			if (spawnExit) {
-				reject(
-					new Error(
-						`${opts.label}: worker already exited (code=${spawnExit.code} signal=${spawnExit.signal}) bin=${bin}` +
-							(stderrAcc ? ` stderr=${stderrAcc.trim()}` : ""),
-					),
-				);
-				return;
+		});
+		child.on("exit", (code, signal) => {
+			spawnExit = { code, signal };
+			// Unblock any waiter so we fail fast instead of 120s hang.
+			const msg = `${opts.label}: worker exited before reply (code=${code} signal=${signal}) bin=${bin}`;
+			while (waiters.length) {
+				const w = waiters.shift();
+				// reject via throwing into the waiter channel as a special line
+				w?.(`__EXIT__ ${msg}`);
 			}
-			const timer = setTimeout(
-				() =>
+		});
+		const readLine = (): Promise<string> =>
+			new Promise((resolveLine, reject) => {
+				if (buf) {
+					const lines = buf.split("\n");
+					const first = lines.shift()!;
+					buf = lines.join("\n");
+					resolveLine(first);
+					return;
+				}
+				if (spawnExit) {
 					reject(
 						new Error(
-							`${opts.label}: timeout waiting for worker reply bin=${bin}` +
-								(spawnExit
-									? ` exit=${spawnExit.code}/${spawnExit.signal}`
-									: "") +
+							`${opts.label}: worker already exited (code=${spawnExit.code} signal=${spawnExit.signal}) bin=${bin}` +
 								(stderrAcc ? ` stderr=${stderrAcc.trim()}` : ""),
 						),
-					),
-				WORKER_REPLY_TIMEOUT_MS,
-			);
-			waiters.push((line) => {
-				clearTimeout(timer);
-				if (line.startsWith("__EXIT__ ")) {
-					reject(new Error(line.slice("__EXIT__ ".length)));
-				} else {
-					resolveLine(line);
+					);
+					return;
 				}
+				const timer = setTimeout(
+					() =>
+						reject(
+							new Error(
+								`${opts.label}: timeout waiting for worker reply after ${replyTimeoutMs} ms bin=${bin}` +
+									(spawnExit
+										? ` exit=${spawnExit.code}/${spawnExit.signal}`
+										: "") +
+									(stderrAcc ? ` stderr=${stderrAcc.trim()}` : ""),
+							),
+						),
+					replyTimeoutMs,
+				);
+				waiters.push((line) => {
+					clearTimeout(timer);
+					if (line.startsWith("__EXIT__ ")) {
+						reject(new Error(line.slice("__EXIT__ ".length)));
+					} else {
+						resolveLine(line);
+					}
+				});
 			});
+		let killed = false;
+		const kill = () => {
+			if (killed) return;
+			killed = true;
+			try {
+				child.stdin!.write("QUIT\n");
+				child.stdin!.end();
+			} catch {
+				/* ignore */
+			}
+			try {
+				child.kill("SIGTERM");
+			} catch {
+				/* ignore */
+			}
+			// Hard kill if QUIT ignored (a worker stuck in a compare never reads it).
+			setTimeout(() => {
+				try {
+					child.kill("SIGKILL");
+				} catch {
+					/* ignore */
+				}
+			}, 500).unref?.();
+		};
+		const write = (s: string) => {
+			child.stdin!.write(s);
+		};
+		const ready = await readLine().catch((err) => {
+			kill();
+			throw err;
 		});
-	const ready = await readLine();
-	if (ready !== "READY") {
-		child.kill();
-		throw new Error(
-			`${opts.label}: expected READY, got ${ready} bin=${bin}` +
-				(stderrAcc ? ` stderr=${stderrAcc.trim()}` : ""),
-		);
-	}
+		if (ready !== "READY") {
+			kill();
+			throw new Error(
+				`${opts.label}: expected READY, got ${ready} bin=${bin}` +
+					(stderrAcc ? ` stderr=${stderrAcc.trim()}` : ""),
+			);
+		}
+		return { readLine, write, kill };
+	};
+	let worker: Worker | null = await start();
 	const workDir = mkdtempSync(join(tmpdir(), opts.tmpPrefix));
 	let ctr = 0;
 	let dead = false;
 	const shutdown = () => {
 		if (dead) return;
 		dead = true;
-		try {
-			child.stdin!.write("QUIT\n");
-			child.stdin!.end();
-		} catch {
-			/* ignore */
-		}
-		try {
-			child.kill("SIGTERM");
-		} catch {
-			/* ignore */
-		}
-		// Hard kill if QUIT ignored (should not happen).
-		setTimeout(() => {
-			try {
-				child.kill("SIGKILL");
-			} catch {
-				/* ignore */
-			}
-		}, 500).unref?.();
+		worker?.kill();
+		worker = null;
 		try {
 			rmSync(workDir, { recursive: true, force: true });
 		} catch {
@@ -1002,18 +1015,28 @@ async function loadLongLivedCompareWorker(opts: {
 	};
 	_longLivedShutdowns.push(shutdown);
 	process.on("exit", shutdown);
-	return async (base, next) => {
+	// runBatch ends with `engine.dispose?.()`; without it the worker's stdio
+	// keeps the CLI alive after the last redline is written.
+	const engine: RedlineEngine = async (base, next) => {
 		if (dead) {
 			throw new Error(`${opts.label}: worker already shut down`);
 		}
+		const w = worker ?? (worker = await start());
 		const i = ctr++;
 		const bp = join(workDir, `b${i}.docx`);
 		const np = join(workDir, `n${i}.docx`);
 		const op = join(workDir, `o${i}.docx`);
 		writeFileSync(bp, base);
 		writeFileSync(np, next);
-		child.stdin!.write(`COMPARE ${bp} ${np} ${op}\n`);
-		const reply = await readLine();
+		let reply: string;
+		try {
+			w.write(`COMPARE ${bp} ${np} ${op}\n`);
+			reply = await w.readLine();
+		} catch (err) {
+			w.kill();
+			if (worker === w) worker = null;
+			throw err;
+		}
 		if (reply.startsWith("ERR ")) {
 			throw new Error(`${opts.label}: ${reply.slice(4)}`);
 		}
@@ -1025,10 +1048,15 @@ async function loadLongLivedCompareWorker(opts: {
 		}
 		return new Uint8Array(readFileSync(op));
 	};
+	engine.dispose = async () => shutdown();
+	return engine;
 }
 
-/** The output filename for a pair — must normalize (via redline_key) back to `<base>_<next>`. */
+/** The output filename for a pair. A corpus/word pool row carries the Word stem as `key`,
+ *  and the candidate is `<key>_<tool>.docx` (the scorer's redline_key strips `_<tool>`);
+ *  a legacy row keeps `<base>_<next>_<tool>_redline.docx`. */
 export function outputName(pair: Pair, tool: string): string {
+	if (pair.key) return `${pair.key}_${tool}.docx`;
 	return `${pair.base}_${pair.next}_${tool}_redline.docx`;
 }
 
@@ -1072,7 +1100,7 @@ async function runSuperDocNativeBatch(
 	const plan: { fileA: string; fileB: string; output: string }[] = [];
 	const planDocs: string[] = [];
 	for (const pair of pairs) {
-		const doc = `${pair.base}_${pair.next}`;
+		const doc = pair.key || `${pair.base}_${pair.next}`;
 		const outPath = join(opts.out, outputName(pair, opts.tool));
 		if (!opts.force && existsSync(outPath)) {
 			ok += 1;
@@ -1126,6 +1154,8 @@ async function runSuperDocNativeBatch(
 export async function runBatch(
 	opts: GenOptions,
 ): Promise<{ ok: number; failed: Failure[]; timings: Record<string, number> }> {
+	// The superdoc-native plan and the CLI's generate_failures/timings JSON land here.
+	mkdirSync(opts.runDir, { recursive: true });
 	if (opts.method === "superdoc-native") return runSuperDocNativeBatch(opts);
 	mkdirSync(opts.out, { recursive: true });
 	const engine = await loadEngine(opts.method, opts.dist);
@@ -1140,7 +1170,7 @@ export async function runBatch(
 	const timings: Record<string, number> = {};
 	try {
 		for (const pair of pairs) {
-			const doc = `${pair.base}_${pair.next}`;
+			const doc = pair.key || `${pair.base}_${pair.next}`;
 			const outNames = outputNames(pair, opts.tool);
 			const outPaths = outNames.map((n) => join(opts.out, n));
 			if (!opts.force && outPaths.every((p) => existsSync(p))) {
@@ -1198,8 +1228,8 @@ function parseArgs(argv: string[]): GenOptions {
 			process.env.RUN_DIR ? join(process.env.RUN_DIR, "docx") : "out/docx",
 		),
 		runDir: get("--run-dir", process.env.RUN_DIR ?? "."),
-		manifest: get("--manifest", "corpus/word_based/centralized_mapping.csv"),
-		sourceDir: get("--source-dir", "corpus/word_based/docx_source"),
+		manifest: get("--manifest", "corpus/word/pools/word_based_pairs.csv"),
+		sourceDir: get("--source-dir", "corpus/word"),
 		status: get("--status", "ok"),
 		limit: limitRaw ? Number(limitRaw) : undefined,
 		tool: get("--tool", method),

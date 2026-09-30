@@ -1,0 +1,14 @@
+{
+  "source_run": "01a0e620-1acd-737e-b6f0-261fcb02e963",
+  "source_track": "corpus/word:all",
+  "source_tool": "jubarte",
+  "source_version": "jubarte 0.9.3",
+  "source_lens": "pixel",
+  "source_docset": "7a172fe59b04",
+  "source_itt_n": 3554,
+  "max_pages": null,
+  "pool_after_page_filter": 3554,
+  "n_worst": 200,
+  "n_spread": 50,
+  "rule": "ascending (score, key); worst = first n; spread = midpoint of each of n//4 equal strata of the rest"
+}

@@ -21,7 +21,7 @@ run-level lens counts. The per-document verdicts live in
 ``results/detail/<run>__script_redlines*.json.gz`` — but only for the 46 cluster
 documents the original run actually lensed. The lens stage resolves its source
 DOCX through ``cli._source_docx_map``, which looks only under
-``cfg.source_of_truth.parent`` (``corpus/word_based``), so the entire
+``cfg.source_of_truth.parent`` (``grok_run/word_based``), so the entire
 ``word_redlines_superdoc`` pool was never lensed. 120 of the 166 cluster
 documents are in that pool. Partitioning on the recorded 46 would be
 partitioning on a **biased 27% subsample drawn from one corpus** — so the

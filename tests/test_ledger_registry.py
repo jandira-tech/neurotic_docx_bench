@@ -150,7 +150,6 @@ def test_unknown_field_rejected(tmp_path: Path) -> None:
     with pytest.raises(ValueError):
         reg.load_registry(_write(tmp_path, _minimal(typo_field=1)))
 
-
 @pytest.mark.parametrize(
     "field, label",
     [
@@ -231,7 +230,6 @@ def test_registry_and_tool_entries_are_frozen(tmp_path: Path) -> None:
         r.tools = ()
     with pytest.raises(ValidationError, match="frozen_instance"):
         r.by_id("acme").role = "editor"
-
 
 # ---- the committed registry --------------------------------------------------
 

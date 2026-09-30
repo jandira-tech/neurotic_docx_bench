@@ -1346,6 +1346,80 @@ def test_a_redline_saved_from_the_wrong_document_is_not_delivered(
     assert not (out / "wrong__vs__wrong.docx").exists()
 
 
+@pytest.mark.parametrize("one_osascript", [False, True])
+def test_keep_unmatched_delivers_a_redline_the_identity_check_fails_and_flags_it(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, one_osascript: bool
+) -> None:
+    """`keep_unmatched` is for pairs whose real Word compare the loose check misjudges (a
+    two-window document, a source carrying its own revisions): the redline and its PDF are
+    delivered, and the reason is kept on the result for the caller to judge."""
+    monkeypatch.setattr(wr, "_reject_wrong_pair", _REAL_REJECT_WRONG_PAIR)
+    monkeypatch.setattr(wp, "CONTAINER_TMP", tmp_path / "container")
+    a, b = tmp_path / "a", tmp_path / "b"
+    for folder, text in ((a, _BASE_TEXT), (b, _REV_TEXT)):
+        _package(folder / "right.docx", text=text)
+        _package(folder / "wrong.docx", text=text)
+
+    def save(out: Path) -> None:
+        if out.suffix == ".pdf":
+            out.write_bytes(b"%PDF")
+        elif "wrong" in out.name:
+            _package(out, text=_FOREIGN)
+        else:
+            _package(out, deleted=_BASE_TEXT, inserted=_REV_TEXT)
+
+    def fake_compare(base, rev, out, *, timeout=300.0):
+        save(out)
+        return True, 2, ""
+
+    def fake_export(docx, pdf, *, timeout=180.0):
+        save(pdf)
+        return True, ""
+
+    def fake_osa(script, *args, timeout=60.0):
+        if "manifestPath" not in script:
+            return 0, "", ""
+        manifest, log = Path(args[0]), Path(args[1])
+        rows = [ln.split("\t") for ln in manifest.read_text().splitlines() if ln]
+        lines = []
+        for row in rows:
+            save(Path(row[-1]))
+            lines.append(f"[ok]\t{row[0]}" + ("\t2" if script is wr._COMPARE_BATCH else ""))
+        lines.append(f"[done]\t{len(rows)}\t0")
+        log.write_text("\n".join(lines) + "\n")
+        return 0, "", ""
+
+    monkeypatch.setattr(wr, "compare_pair", fake_compare)
+    monkeypatch.setattr(wr, "export_pdf", fake_export)
+    monkeypatch.setattr(wp, "osa", fake_osa)
+    session = _verified_session()
+    monkeypatch.setattr(session, "warm", lambda: True)
+    monkeypatch.setattr(session, "recycle", lambda *f: True)
+    monkeypatch.setattr(session, "open_document_count", lambda: 0)
+    monkeypatch.setattr(session, "quit_if_ours", lambda: None)
+    out = tmp_path / "out"
+
+    results = wr.redline_folders(
+        a, b, out, emit="both", session=session, one_osascript=one_osascript, keep_unmatched=True
+    )
+
+    verdicts = {r.base.name: r for r in results}
+    assert verdicts["right.docx"].ok and verdicts["right.docx"].unmatched == ""
+    assert verdicts["wrong.docx"].ok, verdicts["wrong.docx"].error
+    assert "missing" in verdicts["wrong.docx"].unmatched
+    for stem in ("right__vs__right", "wrong__vs__wrong"):
+        assert (out / f"{stem}.docx").exists() and (out / f"{stem}.pdf").exists()
+    assert wr.report_pairs(results) == 0
+
+
+def test_report_lists_unmatched_redlines(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
+    kept = wr.PairResult(base=tmp_path / "w.docx", revision=tmp_path / "w.docx", ok=True, revisions=2)
+    kept.unmatched = "redline is missing base 50% of that file"
+    assert wr.report_pairs([kept]) == 0
+    shown = capsys.readouterr().out
+    assert "UNMATCHED" in shown and "missing base 50%" in shown
+
+
 # ─── the AppleScript itself ──────────────────────────────────────────────────
 
 _WORD_APP = Path("/Applications/Microsoft Word.app")

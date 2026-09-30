@@ -29,7 +29,9 @@ def _load():
 cr = _load()
 
 
-def _line(vendor: str, version: str, run_id: str, *, mean: float = 80.0) -> dict:
+def _line(
+    vendor: str, version: str, run_id: str, *, mean: float = 80.0, docset: str = "rev1"
+) -> dict:
     return {
         "vendor": vendor,
         "benchmark": "script_redlines",
@@ -41,7 +43,10 @@ def _line(vendor: str, version: str, run_id: str, *, mean: float = 80.0) -> dict
         "itt_median": mean,
         "itt_n_docs": 2,
         "n_docs": 2,
-        "corpus_revision": "rev1",
+        "corpus_revision": docset,
+        "docset_id": docset,
+        # Word-rendered, so the row is eligible for the headline table (policy item 2).
+        "renderer_id": "word-16.0",
         "timestamp": f"2026-08-0{run_id[-1]}T00:00:00Z",
         "scores": {"a": mean, "b": mean},
         "per_doc": {"a": {"pages": [1, 2, 3]}, "b": {"pages": [4, 5, 6]}},
@@ -162,16 +167,55 @@ def test_holdout_lines_are_compacted_on_their_own_identity(tmp_path: Path) -> No
     assert out[0]["per_doc"], "the holdout line is the latest of its own identity"
 
 
+GATE_DOCSETS = {"rev1": {"n": 2}, "g1": {"n": 2, "gate_of": "rev1"}}
+
+
+def _gate_lines() -> list[dict]:
+    """A gate-set run per tool plus the null baseline, so the tools pass the gate
+    (policy item 4) and the headline table has rows for compaction to preserve."""
+    return [
+        _line("v", "1.0", "g1", mean=90.0, docset="g1"),
+        _line("w", "3.0", "g2", mean=90.0, docset="g1"),
+        _line("null-baseline", "0", "g3", mean=10.0, docset="g1"),
+    ]
+
+
+def _headline_markdown(path: Path) -> str:
+    """The script_redlines headline table the ledger would publish from ``path``."""
+    from neurotic_docx_bench.ledger import policy as ledger_policy
+    from neurotic_docx_bench.ledger import rows as ledger_rows
+    from neurotic_docx_bench.ledger import tables as ledger_tables
+    from neurotic_docx_bench.ledger.registry import Registry, ToolEntry
+
+    registry = Registry(
+        schema_version=1,
+        tools=tuple(
+            ToolEntry(
+                id=v,
+                vendor=v,
+                display=v,
+                role="calibration" if v == "null-baseline" else "generator",
+                engine=v,
+                bench_vendors=(v,),
+            )
+            for v in ("v", "w", "null-baseline")
+        ),
+    )
+    rows, unmapped = ledger_rows.load_bench_rows(path, registry)
+    assert unmapped == []
+    tables = ledger_policy.select_headline(
+        rows,
+        registry=registry,
+        retractions=[],
+        docsets=GATE_DOCSETS,
+        tie_fn=lambda a, b: False,
+    )
+    return ledger_tables.fidelity_table(tables["script_redlines"], row_ci={})
+
+
 def test_results_md_is_byte_identical_after_compaction(tmp_path: Path) -> None:
     """The acceptance test from the plan: compaction must not move a single character
     of the published tables."""
-    exp_path = Path(__file__).resolve().parents[1] / "scripts" / "export-results-md.py"
-    spec = importlib.util.spec_from_file_location("export_results_md_compact", exp_path)
-    assert spec and spec.loader
-    exp = importlib.util.module_from_spec(spec)
-    sys.modules["export_results_md_compact"] = exp
-    spec.loader.exec_module(exp)
-
     p = tmp_path / "bench.jsonl"
     _write(
         p,
@@ -179,15 +223,19 @@ def test_results_md_is_byte_identical_after_compaction(tmp_path: Path) -> None:
             _line("v", "1.0", "r1", mean=70.0),
             _line("v", "1.0", "r2", mean=80.0),
             _line("w", "3.0", "r3", mean=90.0),
+            *_gate_lines(),
         ],
     )
-    before = exp.to_fidelity_markdown(exp.rows_from_jsonl(p), p)
+    before = _headline_markdown(p)
+    assert "| v |" in before and "| w |" in before, before
     cr.compact(p, detail_dir=tmp_path / "results" / "detail", root=tmp_path)
-    after = exp.to_fidelity_markdown(exp.rows_from_jsonl(p), p)
+    after = _headline_markdown(p)
     assert before == after
 
 
-def test_stub_path_is_root_relative_and_matches_what_hydrate_reads(tmp_path: Path) -> None:
+def test_stub_path_is_root_relative_and_matches_what_hydrate_reads(
+    tmp_path: Path,
+) -> None:
     """The stub is written by compact() and resolved by hydrate(); if they disagree on
     the anchor directory the payload is unreachable. A test that threads its own root
     through BOTH sides passes either way, so this asserts the literal stored value —
@@ -202,7 +250,9 @@ def test_stub_path_is_root_relative_and_matches_what_hydrate_reads(tmp_path: Pat
     assert stub["detail"] == "results/detail/r1__script_redlines.json.gz"
     # and the anchor actually resolves
     assert (tmp_path / stub["detail"]).is_file()
-    assert cr.hydrate(stub, root=tmp_path)["per_doc"] == _line("v", "1.0", "r1")["per_doc"]
+    assert (
+        cr.hydrate(stub, root=tmp_path)["per_doc"] == _line("v", "1.0", "r1")["per_doc"]
+    )
 
 
 def test_detail_dir_outside_root_is_rejected(tmp_path: Path) -> None:
@@ -223,20 +273,27 @@ def test_all_lines_also_compacts_the_current_line(tmp_path: Path) -> None:
     p = tmp_path / "results" / "bench.jsonl"
     p.parent.mkdir(parents=True)
     _write(p, [_line("v", "1.0", "r1"), _line("v", "1.0", "r2")])
-    cr.compact(p, detail_dir=tmp_path / "results" / "detail", root=tmp_path, all_lines=True)
+    cr.compact(
+        p, detail_dir=tmp_path / "results" / "detail", root=tmp_path, all_lines=True
+    )
 
     out = [json.loads(x) for x in p.read_text().splitlines()]
     assert all("per_doc" not in line for line in out)
     assert all(line["detail"] for line in out)
     # Still fully recoverable — compaction never discards.
-    assert cr.hydrate(out[1], root=tmp_path)["per_doc"] == _line("v", "1.0", "r2")["per_doc"]
+    assert (
+        cr.hydrate(out[1], root=tmp_path)["per_doc"]
+        == _line("v", "1.0", "r2")["per_doc"]
+    )
 
 
 def test_all_lines_still_keeps_scores_inline(tmp_path: Path) -> None:
     p = tmp_path / "results" / "bench.jsonl"
     p.parent.mkdir(parents=True)
     _write(p, [_line("v", "1.0", "r1"), _line("v", "1.0", "r2")])
-    cr.compact(p, detail_dir=tmp_path / "results" / "detail", root=tmp_path, all_lines=True)
+    cr.compact(
+        p, detail_dir=tmp_path / "results" / "detail", root=tmp_path, all_lines=True
+    )
     out = [json.loads(x) for x in p.read_text().splitlines()]
     assert all(line["scores"] for line in out)
 
@@ -254,7 +311,7 @@ def test_lines_sharing_an_id_run_do_not_overwrite_each_other(tmp_path: Path) -> 
     for bench in ("script_redlines", "accepted_changes", "roundtrip"):
         old = _line("v", "1.0", "r1")
         old["benchmark"] = bench
-        old["per_doc"] = {"marker": bench}          # distinct payload per benchmark
+        old["per_doc"] = {"marker": bench}  # distinct payload per benchmark
         lines.append(old)
         new = _line("v", "1.0", "r2")
         new["benchmark"] = bench
@@ -268,4 +325,6 @@ def test_lines_sharing_an_id_run_do_not_overwrite_each_other(tmp_path: Path) -> 
     assert len(stubs) == 3
     assert len({s["detail"] for s in stubs}) == 3, "each line needs its OWN detail file"
     for stub in stubs:
-        assert cr.hydrate(stub, root=tmp_path)["per_doc"] == {"marker": stub["benchmark"]}
+        assert cr.hydrate(stub, root=tmp_path)["per_doc"] == {
+            "marker": stub["benchmark"]
+        }

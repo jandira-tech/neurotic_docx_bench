@@ -230,7 +230,7 @@ def run_batch(
 
     def _one(pair: Pair) -> None:
         nonlocal ok
-        doc = f"{pair.base}_{pair.next}"
+        doc = pair.key or f"{pair.base}_{pair.next}"
         name = output_name(pair, tool)
         out_path = out / name
         if not force and out_path.exists():
@@ -275,8 +275,8 @@ def main(argv: list[str] | None = None) -> int:
         os.path.join(os.environ["RUN_DIR"], "docx") if os.environ.get("RUN_DIR") else "out/docx"
     )
     p.add_argument("--out", default=default_out)
-    p.add_argument("--manifest", default="corpus/word_based/centralized_mapping.csv")
-    p.add_argument("--source-dir", default="corpus/word_based/docx_source")
+    p.add_argument("--manifest", default="corpus/word/pools/word_based_pairs.csv")
+    p.add_argument("--source-dir", default="corpus/word")
     p.add_argument("--status", default="ok")
     p.add_argument("--limit", type=int, default=None)
     p.add_argument("--tool", default="superdoc-redlines")

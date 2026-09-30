@@ -17,17 +17,15 @@ from neurotic_docx_bench.docx_to_pdf import (
     feature_coverage,
     load_fixtures,
     oracle_pdf_dirs,
-    render_docx_to_pdf_table,
     run_eval,
     score_folder_pair,
     select_word_oracle_fixtures,
-    update_readme_docx_to_pdf,
     verify_oracle_sha_manifest,
     write_oracle_sha_manifest,
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-LIBREOFFICE_PDF_SOURCE = REPO_ROOT / "corpus" / "word_based" / "pdf_source"
+LIBREOFFICE_PDF_SOURCE = REPO_ROOT / "grok_run" / "word_based" / "pdf_source"
 TRACK = NO_REDLINE_TRACK
 KINDS = {"source", "source_randomized"}
 
@@ -59,7 +57,10 @@ def test_oracles_are_only_source_and_source_randomized_word_exports():
 
 def test_pin_list_matches_deterministic_no_redline_selection():
     pinned = [(item.kind, item.original_stem) for item in load_fixtures(track=TRACK)]
-    expected = [(item.kind, item.original_stem) for item in select_word_oracle_fixtures(track=TRACK)]
+    expected = [
+        (item.kind, item.original_stem)
+        for item in select_word_oracle_fixtures(track=TRACK)
+    ]
     assert pinned == expected
     assert {kind for kind, _ in pinned} == KINDS
 
@@ -150,21 +151,30 @@ def test_run_eval_itt_zero_on_convert_fail_and_does_not_abort(tmp_path):
     assert saved["tools"]["rdocx"]["failures"] == 3
 
 
-def test_readme_no_redline_table_matches_committed_artifact():
+def test_committed_no_redline_artifact_is_in_the_converter_store():
     artifact = REPO_ROOT / "results" / "docx_to_pdf_no_redline.json"
-    if not artifact.is_file():
-        pytest.skip("no_redline eval artifact not written yet")
+    store = REPO_ROOT / "results" / "converters.jsonl"
+    if not artifact.is_file() or not store.is_file():
+        pytest.skip("no_redline eval artifact or converter store not written yet")
     report = json.loads(artifact.read_text(encoding="utf-8"))
     assert report["track"] == TRACK.name
     assert report["n"] == len(load_fixtures(track=TRACK))
-    expected = render_docx_to_pdf_table(report, track=TRACK).strip()
-    assert expected in (REPO_ROOT / "RESULTS.md").read_text(encoding="utf-8")
+    lines = [
+        json.loads(raw)
+        for raw in store.read_text(encoding="utf-8").splitlines()
+        if raw.strip()
+    ]
+    in_store = {ln["tool"] for ln in lines if ln.get("track") == TRACK.name}
+    assert set(report["tools"]) <= in_store
 
 
-def test_update_readme_replaces_no_redline_marked_block(tmp_path):
+def test_no_redline_report_lines_carry_the_track(tmp_path):
+    from neurotic_docx_bench.ledger import converters as conv
+
     report = {
         "track": TRACK.name,
         "n": 398,
+        "stems": ["a"],
         "tools": {
             "rdocx": {
                 "n_scored": 398,
@@ -176,14 +186,5 @@ def test_update_readme_replaces_no_redline_marked_block(tmp_path):
             },
         },
     }
-    readme = tmp_path / "README.md"
-    readme.write_text(
-        "head\n<!-- RANKING-END -->\n"
-        f"{TRACK.readme_start}\nold table\n{TRACK.readme_end}\ntail\n",
-    )
-    update_readme_docx_to_pdf(readme, report, track=TRACK)
-    text = readme.read_text()
-    assert "head" in text
-    assert "tail" in text
-    assert "old table" not in text
-    assert render_docx_to_pdf_table(report, track=TRACK).strip() in text
+    (line,) = conv.lines_from_report(report, hardware=None, report_path="r.json")
+    assert line["track"] == TRACK.name and line["itt_n"] == 398

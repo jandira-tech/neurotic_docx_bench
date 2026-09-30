@@ -27,7 +27,7 @@
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-CORPUS="$REPO_ROOT/corpus/word_redlines_superdoc"
+CORPUS="$REPO_ROOT/grok_run/word_redlines_superdoc"
 STAGE="$HOME/Library/Group Containers/UBF8T346G9.Office/bench-word-compare"
 LOG="$CORPUS/compare.log"
 

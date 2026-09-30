@@ -1,0 +1,47 @@
+2026-09-26 14:48:27.598 | INFO     | __main__:preflight:1632 - [word] preflight: open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-09-26 14:48:27.622 | INFO     | __main__:convert_folder:1324 - [word] export: one_osascript=True documents=200
+2026-09-26 14:48:33.015 | INFO     | __main__:_note_buttons:502 - [watchdog] Microsoft Word shows button 'Cancel'
+2026-09-26 14:48:33.016 | INFO     | __main__:_note_buttons:502 - [watchdog] Microsoft Word shows button 'missing value'
+2026-09-26 14:48:33.233 | INFO     | __main__:_convert_batched:1510 - [batch] one osascript for 200 document(s)
+2026-09-26 14:48:38.266 | INFO     | __main__:_loop:1005 - [batch pdf 1] 4/200
+2026-09-26 14:48:43.291 | INFO     | __main__:_loop:1005 - [batch pdf 1] 11/200
+2026-09-26 14:48:48.332 | INFO     | __main__:_loop:1005 - [batch pdf 1] 17/200
+2026-09-26 14:48:53.356 | INFO     | __main__:_loop:1005 - [batch pdf 1] 24/200
+2026-09-26 14:48:58.379 | INFO     | __main__:_loop:1005 - [batch pdf 1] 31/200
+2026-09-26 14:49:03.411 | INFO     | __main__:_loop:1005 - [batch pdf 1] 36/200
+2026-09-26 14:49:08.432 | INFO     | __main__:_loop:1005 - [batch pdf 1] 40/200
+2026-09-26 14:49:13.452 | INFO     | __main__:_loop:1005 - [batch pdf 1] 43/200
+2026-09-26 14:49:18.488 | INFO     | __main__:_loop:1005 - [batch pdf 1] 47/200
+2026-09-26 14:49:23.510 | INFO     | __main__:_loop:1005 - [batch pdf 1] 54/200
+2026-09-26 14:49:28.539 | INFO     | __main__:_loop:1005 - [batch pdf 1] 60/200
+2026-09-26 14:49:33.562 | INFO     | __main__:_loop:1005 - [batch pdf 1] 65/200
+2026-09-26 14:49:38.606 | INFO     | __main__:_loop:1005 - [batch pdf 1] 72/200
+2026-09-26 14:49:43.626 | INFO     | __main__:_loop:1005 - [batch pdf 1] 77/200
+2026-09-26 14:49:48.648 | INFO     | __main__:_loop:1005 - [batch pdf 1] 83/200
+2026-09-26 14:49:53.672 | INFO     | __main__:_loop:1005 - [batch pdf 1] 90/200
+2026-09-26 14:49:58.694 | INFO     | __main__:_loop:1005 - [batch pdf 1] 95/200
+2026-09-26 14:50:03.733 | INFO     | __main__:_loop:1005 - [batch pdf 1] 101/200
+2026-09-26 14:50:08.759 | INFO     | __main__:_loop:1005 - [batch pdf 1] 105/200
+2026-09-26 14:50:13.779 | INFO     | __main__:_loop:1005 - [batch pdf 1] 110/200
+2026-09-26 14:50:18.809 | INFO     | __main__:_loop:1005 - [batch pdf 1] 114/200
+2026-09-26 14:50:23.844 | INFO     | __main__:_loop:1005 - [batch pdf 1] 119/200
+2026-09-26 14:50:28.872 | INFO     | __main__:_loop:1005 - [batch pdf 1] 124/200
+2026-09-26 14:50:33.910 | INFO     | __main__:_loop:1005 - [batch pdf 1] 128/200
+2026-09-26 14:50:38.933 | INFO     | __main__:_loop:1005 - [batch pdf 1] 134/200
+2026-09-26 14:50:43.971 | INFO     | __main__:_loop:1005 - [batch pdf 1] 138/200
+2026-09-26 14:50:48.998 | INFO     | __main__:_loop:1005 - [batch pdf 1] 139/200
+2026-09-26 14:50:54.028 | INFO     | __main__:_loop:1005 - [batch pdf 1] 141/200
+2026-09-26 14:51:14.094 | INFO     | __main__:_loop:1005 - [batch pdf 1] 143/200
+2026-09-26 14:51:19.140 | INFO     | __main__:_loop:1005 - [batch pdf 1] 147/200
+2026-09-26 14:51:24.176 | INFO     | __main__:_loop:1005 - [batch pdf 1] 152/200
+2026-09-26 14:51:29.199 | INFO     | __main__:_loop:1005 - [batch pdf 1] 157/200
+2026-09-26 14:51:34.225 | INFO     | __main__:_loop:1005 - [batch pdf 1] 162/200
+2026-09-26 14:51:39.253 | INFO     | __main__:_loop:1005 - [batch pdf 1] 167/200
+2026-09-26 14:51:44.276 | INFO     | __main__:_loop:1005 - [batch pdf 1] 172/200
+2026-09-26 14:51:49.312 | INFO     | __main__:_loop:1005 - [batch pdf 1] 177/200
+2026-09-26 14:51:54.333 | INFO     | __main__:_loop:1005 - [batch pdf 1] 182/200
+2026-09-26 14:51:59.353 | INFO     | __main__:_loop:1005 - [batch pdf 1] 187/200
+2026-09-26 14:52:04.395 | INFO     | __main__:_loop:1005 - [batch pdf 1] 191/200
+2026-09-26 14:52:09.447 | INFO     | __main__:_loop:1005 - [batch pdf 1] 196/200
+2026-09-26 14:52:13.863 | ERROR    | __main__:_convert_batched:1550 - [batch] FAIL: I_am_sharing_Microsoft_Word_vs_Google_Docs_Comprehensive_Proof_with_you_increase_indent_demo_id_paraid_overflow_redline.docx — Microsoft Word got an error: document "00003__I_am_sharing_Microsoft_Word_vs_Google_Docs_Comprehensive_Proof_with_you_increase_indent_demo_id_paraid_overflow_redline.docx" doesn’t understand the “save
+2026-09-26 14:52:14.063 | ERROR    | __main__:_convert_batched:1550 - [batch] FAIL: multi_section_nested_table_rowspan_redline.docx — Microsoft Word got an error: document "00098__multi_section_nested_table_rowspan_redline.docx" doesn’t understand the “save as” message.

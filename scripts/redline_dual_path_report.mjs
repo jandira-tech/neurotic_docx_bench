@@ -31,7 +31,7 @@ const git = (cwd, ...args) => {
 const PROV = {
   jubarteFirst: git(JF, "rev-parse", "--short=7", "HEAD"),
   bench: git(ROOT, "rev-parse", "--short=7", "HEAD"),
-  corpus: git(ROOT, "log", "-1", "--format=%h", "--", "corpus/word_based"),
+  corpus: git(ROOT, "log", "-1", "--format=%h", "--", "grok_run/word_based"),
   node: process.version,
 };
 

@@ -17,8 +17,12 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
-from neurotic_docx_bench import lens_health
-from neurotic_docx_bench.aggregate import compute_aggregate, compute_aggregate_itt
+from neurotic_docx_bench import lens_health, version
+from neurotic_docx_bench.aggregate import (
+    compute_aggregate,
+    compute_aggregate_itt,
+    failed_doc_keys,
+)
 from neurotic_docx_bench.benchmarks import BenchmarkName
 from neurotic_docx_bench.config import BenchConfig
 from neurotic_docx_bench.score import ScoreConfig, ScoreWeights
@@ -112,6 +116,13 @@ class Results:
     skill_median: float | None = None
     v2_mean: float | None = None
     v2_median: float | None = None
+    # docxide-pdf's page metrics (0.7.0), aggregated over docs where computable:
+    # ink Jaccard over common pages and the share of text lines that start and end
+    # on the same words as the oracle. Informational columns, never a ranking input.
+    ink_jaccard_mean: float | None = None
+    ink_jaccard_median: float | None = None
+    text_boundary_mean: float | None = None
+    text_boundary_median: float | None = None
     # Functional accept/reject invariant (PR7): docs where the neutral
     # accept/reject machinery ran, and how many satisfied each invariant
     # (accept(candidate) ≡ next, reject(candidate) ≡ base, text-level).
@@ -139,6 +150,20 @@ class Results:
     # the holdout (`bench run --holdout`), None when no holdout is configured.
     # Informational only — it never feeds config_hash / skip identity hashing.
     holdout_mode: str | None = None
+    # Failure accounting (consolidation): ``n_failure_events`` counts records in
+    # ``failures``; ``n_failed_docs`` counts documents with no score, i.e. the docs
+    # zeroed by ITT. ``n_docs + n_failed_docs == itt_n_docs`` always holds.
+    n_failed_docs: int = 0
+    n_failure_events: int = 0
+    # Provenance (consolidation): registry tool id and configuration, the hash of
+    # the benchmark's document set, the renderer identity, and the machine.
+    tool_id: str | None = None
+    configuration: str | None = None
+    docset_id: str | None = None
+    renderer_id: str | None = None
+    hardware: dict[str, object] | None = None
+    # Bench version that produced the line; major.minor is part of the comparability group.
+    bench_version: str | None = None
     timestamp: datetime = field(default_factory=lambda: datetime.now(UTC))
 
     def __post_init__(self) -> None:
@@ -178,7 +203,11 @@ def aggregate_speed(samples_ms: list[float]) -> SpeedAggregate:
     values = [float(v) for v in samples_ms]
     if not values:
         return SpeedAggregate(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
-    q = statistics.quantiles(values, n=4, method="inclusive") if len(values) >= 2 else [values[0]] * 3
+    q = (
+        statistics.quantiles(values, n=4, method="inclusive")
+        if len(values) >= 2
+        else [values[0]] * 3
+    )
     return SpeedAggregate(
         overall_mean_speed=round(statistics.mean(values), 4),
         overall_median_speed=round(statistics.median(values), 4),
@@ -210,17 +239,25 @@ def build_results(
     scorer: str = "v1",
     corpus_revision: str | None = None,
     holdout_mode: str | None = None,
+    tool_id: str | None = None,
+    configuration: str | None = None,
+    docset_id: str | None = None,
+    renderer_id: str | None = None,
+    hardware: dict[str, object] | None = None,
+    bench_version: str | None = None,
 ) -> Results:
     rounded_scores = {k: round(float(v), 4) for k, v in scores.items()}
     aggregate = compute_aggregate(rounded_scores, per_doc=per_doc)
     skill_mean, skill_median = _optional_metric_stats(per_doc, "skill_score")
     v2_mean, v2_median = _optional_metric_stats(per_doc, "score_v2")
+    ink_jaccard_mean, ink_jaccard_median = _optional_metric_stats(per_doc, "ink_jaccard")
+    text_boundary_mean, text_boundary_median = _optional_metric_stats(per_doc, "text_boundary")
     n_functional_checked, n_accept_ok, n_reject_ok = _functional_counts(per_doc)
     n_lens_disagree, lens_disagree_rate = lens_health.summarize(per_doc)
     failure_list = failures or []
-    itt = compute_aggregate_itt(
-        rounded_scores, [str(f.get("doc", "")) for f in failure_list],
-    )
+    failure_docs = [str(f.get("doc", "")) for f in failure_list]
+    itt = compute_aggregate_itt(rounded_scores, failure_docs)
+    n_failed_docs = len(failed_doc_keys(rounded_scores, failure_docs))
     speed = aggregate_speed(speed_samples_ms)
     return Results(
         id_run=id_run,
@@ -255,6 +292,10 @@ def build_results(
         skill_median=skill_median,
         v2_mean=v2_mean,
         v2_median=v2_median,
+        ink_jaccard_mean=ink_jaccard_mean,
+        ink_jaccard_median=ink_jaccard_median,
+        text_boundary_mean=text_boundary_mean,
+        text_boundary_median=text_boundary_median,
         n_functional_checked=n_functional_checked,
         n_accept_ok=n_accept_ok,
         n_reject_ok=n_reject_ok,
@@ -266,6 +307,14 @@ def build_results(
         config_hash=config_hash,
         corpus_revision=corpus_revision,
         holdout_mode=holdout_mode,
+        n_failed_docs=n_failed_docs,
+        n_failure_events=len(failure_list),
+        tool_id=tool_id,
+        configuration=configuration,
+        docset_id=docset_id,
+        renderer_id=renderer_id,
+        hardware=hardware,
+        bench_version=bench_version or version.bench_version(),
         timestamp=timestamp,
     )
 
@@ -294,7 +343,8 @@ def _functional_counts(
 
 
 def _optional_metric_stats(
-    per_doc: dict[str, dict[str, object]] | None, field_name: str,
+    per_doc: dict[str, dict[str, object]] | None,
+    field_name: str,
 ) -> tuple[float | None, float | None]:
     """(mean, median) over docs where the optional metric is present, else (None, None)."""
     values = [

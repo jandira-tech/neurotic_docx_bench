@@ -16,6 +16,7 @@ _spec.loader.exec_module(_mod)
 matches_pair = _mod.matches_pair
 
 W = "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+STRICT_W = "http://purl.oclc.org/ooxml/wordprocessingml/main"
 
 
 def _docx(path: Path, paragraphs: list[str], *, deleted: str = "", inserted: str = "") -> None:
@@ -82,6 +83,32 @@ def test_foreign_document_saved_under_this_name_is_rejected(tmp_path: Path) -> N
     assert not verdict.ok
     assert verdict.sim_base < 0.5
     assert verdict.sim_revision < 0.5
+
+
+def test_a_strict_ooxml_source_is_read_not_skipped(tmp_path: Path) -> None:
+    """Strict OOXML names the same elements in another namespace. Read as empty, a Strict base
+    counted as fully covered, so a foreign file compared against it passed."""
+    base = tmp_path / "a.docx"
+    revision = tmp_path / "b.docx"
+    redline = tmp_path / "a__vs__b.docx"
+    _docx(base, ["Kolmastoista pykälä koskee vain kunnan talousarviota vuodelle 2024"])
+    xml = zipfile.ZipFile(base).read("word/document.xml").decode().replace(W, STRICT_W)
+    with zipfile.ZipFile(base, "w") as package:
+        package.writestr("word/document.xml", xml)
+    _docx(revision, ["Article fourteen covers the harbour dues payable at Lowestoft"])
+    _docx(redline, [], inserted="Article fourteen covers the harbour dues payable at Lowestoft")
+
+    verdict = matches_pair(redline, base, revision)
+    assert not verdict.ok
+    assert verdict.sim_base < 0.5
+
+    _docx(
+        redline,
+        [],
+        deleted="Kolmastoista pykälä koskee vain kunnan talousarviota vuodelle 2024",
+        inserted="Article fourteen covers the harbour dues payable at Lowestoft",
+    )
+    assert matches_pair(redline, base, revision).ok
 
 
 def test_a_redline_that_is_not_a_package_fails(tmp_path: Path) -> None:

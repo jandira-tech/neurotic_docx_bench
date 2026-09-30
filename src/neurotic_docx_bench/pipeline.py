@@ -7,23 +7,37 @@ pair is ``<base>_<next>_<tool>_redline.pdf``. The shared key is therefore ``<bas
 — obtained by stripping the trailing ``_redline`` (oracle) or ``_<tool>_redline``
 (candidate). The oracle dir ALSO contains non-redline base PDFs; those are excluded.
 Collisions (two files mapping to one key) are raised, never silently last-wins.
+
+The Word corpus (``corpus/word``, see :mod:`neurotic_docx_bench.word_corpus`) names a
+comparison ``<idA>_<a>__vs__<idB>_<b>_redline_<idC>``; that whole stem is the key, and a
+tool's candidate for it is the stem plus ``_<tool>``. A document render is keyed by its
+stem ``<idA>_<a>``, the candidate again with ``_<tool>`` appended.
 """
 
 from __future__ import annotations
 
+import re
 import shutil
 import time
 from collections.abc import Mapping, Sequence
 from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
-from typing import NotRequired, TypedDict
+from typing import NotRequired, TypedDict, cast
 
 from skimage import color
 
 # score.py is parity-locked (tests/test_parity.py); we import its helpers instead of
 # duplicating the ink model, and never modify it.
+from neurotic_docx_bench import content_cache as cc
+from neurotic_docx_bench import kernels
+from neurotic_docx_bench import page_metrics as pm
 from neurotic_docx_bench import raster
-from neurotic_docx_bench.score import ScoreConfig, _ink_mask, _load_image, score_document
+from neurotic_docx_bench.score import (
+    ScoreConfig,
+    _ink_mask,
+    _load_image,
+    score_document,
+)
 
 _REDLINE = "_redline"
 
@@ -58,8 +72,17 @@ class ScoreResult(TypedDict):
     null_score: float | None
     skill_score: float | None
     score_v2: float | None
-    raster_ns: int
-    score_ns: int
+    # Wall-clock cost of this pass; absent on a row restored from the content cache.
+    raster_ns: NotRequired[int]
+    score_ns: NotRequired[int]
+    # docxide-pdf's page metrics (page_metrics.py), computed in the same pass from the
+    # same rasters: ink Jaccard over the common pages (None when a page pair's sizes
+    # differ by more than 2px or there are no common pages), the share of text lines
+    # that start and end on the same words as the oracle (None when no lines were
+    # compared), and the signed largest page-break drift in words.
+    ink_jaccard: float | None
+    text_boundary: float | None
+    max_break_drift: int
     # Functional accept/reject invariant (merged in AFTER scoring by the CLI, only
     # for script_redlines docs whose base/next sources resolve — hence NotRequired).
     functional_accept_ok: NotRequired[bool | None]
@@ -68,18 +91,41 @@ class ScoreResult(TypedDict):
     functional_reject_strict: NotRequired[bool | None]
     functional_blind: NotRequired[bool]
     wv1_outcome: NotRequired[str]
+    # True when the row was restored from the content cache (content_cache.py) instead
+    # of scored in this pass; such a row carries no raster_ns/score_ns.
+    cached: NotRequired[bool]
 
 
-def is_redline(stem: str) -> bool:
-    """True for a redline filename (``…_redline``); base/source PDFs are not redlines."""
-    return stem.lower().endswith(_REDLINE)
+# A Word-corpus comparison stem ends in ``_redline_<id>`` where the id is the
+# comparison docx's own ten-hex id (word_corpus.py); a tool's candidate for it is
+# the same stem plus ``_<tool>``.
+_CORPUS_REDLINE = re.compile(r"_redline_[0-9a-f]{10}$")
+
+
+def _strip_tool(stem: str, tool: str | None) -> str:
+    """``stem`` (already lower-cased) without a trailing ``_<tool>``."""
+    if tool:
+        suffix = f"_{tool.lower()}"
+        if stem.endswith(suffix):
+            return stem[: -len(suffix)]
+    return stem
+
+
+def is_redline(stem: str, tool: str | None = None) -> bool:
+    """True for a comparison filename: a Word-corpus ``…_redline_<id>`` stem (or that
+    stem plus ``_<tool>`` when ``tool`` is given) or a legacy ``…_redline`` stem.
+    Document renders (``<id>_<name>``, ``<id>_<name>_<tool>``) are not comparisons."""
+    s = stem.lower()
+    return s.endswith(_REDLINE) or bool(_CORPUS_REDLINE.search(_strip_tool(s, tool)))
 
 
 def redline_key(stem: str, tool: str | None = None) -> str:
-    """Canonical ``<base>_<next>`` key for a redline filename.
+    """Canonical key for a comparison filename.
 
-    Oracle redline ``<base>_<next>_redline`` → ``<base>_<next>``.
-    Tool candidate ``<base>_<next>_<tool>_redline`` (pass ``tool``) → ``<base>_<next>``.
+    Word-corpus stem ``<idA>_<a>__vs__<idB>_<b>_redline_<idC>`` → itself; the tool
+    candidate ``<that>_<tool>`` (pass ``tool``) → the Word stem.
+    Legacy oracle ``<base>_<next>_redline`` → ``<base>_<next>``; legacy tool candidate
+    ``<base>_<next>_<tool>_redline`` (pass ``tool``) → ``<base>_<next>``.
     A non-redline stem is returned lower-cased unchanged.
     """
     s = stem.lower()
@@ -87,9 +133,18 @@ def redline_key(stem: str, tool: str | None = None) -> str:
         suffix = f"_{tool.lower()}{_REDLINE}"
         if s.endswith(suffix):
             return s[: -len(suffix)]
+    stripped = _strip_tool(s, tool)
+    if _CORPUS_REDLINE.search(stripped):
+        return stripped
     if s.endswith(_REDLINE):
         return s[: -len(_REDLINE)]
     return s
+
+
+def render_key(stem: str, tool: str | None) -> str:
+    """Key of a document render: the lower-cased stem without a trailing ``_<tool>``
+    (``<idA>_<a>_<tool>`` keys as the Word render ``<idA>_<a>``)."""
+    return _strip_tool(stem.lower(), tool)
 
 
 # Backwards-compatible alias for the previous public name.
@@ -125,7 +180,7 @@ def _index_redlines(directory: Path, tool: str | None) -> dict[str, Path]:
     ranks: dict[str, int] = {}
     collisions: dict[str, list[str]] = {}
     for pdf in sorted(directory.glob("*.pdf")):
-        if not is_redline(pdf.stem):
+        if not is_redline(pdf.stem, tool):
             continue
         key = redline_key(pdf.stem, tool)
         rank = 0
@@ -251,9 +306,16 @@ def score_pdf_pair(
     key: str | None = None,
     base_pdf: Path | None = None,
     cached_null: float | None = None,
+    cache: cc.ContentCache | None = None,
+    renderer_id: str = "",
 ) -> ScoreResult:
     """Rasterize both PDFs to PNGs under ``work_dir`` and return ``score_document``'s dict,
     augmented with page-count provenance.
+
+    With a ``cache`` the row is looked up by content (candidate, oracle and base
+    sha256, DPI, ``renderer_id``, scorer fingerprint) before any work; a hit still
+    materializes the page PNGs under ``work_dir`` (from the raster cache when it has
+    them) because the gallery reads them from there, and is marked ``cached``.
 
     The lifted ``score_document`` scores only ``min(oracle, candidate)`` pages, so a
     page-count mismatch (a tool dropping/adding pages) would otherwise be invisible. We do
@@ -267,12 +329,34 @@ def score_pdf_pair(
     # extra page would enter the pagefair aggregate at score 0.
     shutil.rmtree(oracle_pages_dir, ignore_errors=True)
     shutil.rmtree(cand_pages_dir, ignore_errors=True)
+    if cache is not None:
+        oracle_sha = cc.sha256_file(oracle_pdf)
+        cand_sha = cc.sha256_file(candidate_pdf)
+        score_key = cc.score_key(
+            candidate_sha=cand_sha,
+            oracle_sha=oracle_sha,
+            base_sha=cc.sha256_file(base_pdf) if base_pdf is not None else None,
+            dpi=dpi,
+            renderer_id=renderer_id,
+        )
+        hit = cache.get_score(score_key)
+        if hit is not None:
+            cache.rasterize(oracle_pdf, oracle_pages_dir, dpi=dpi, sha=oracle_sha)
+            cache.rasterize(candidate_pdf, cand_pages_dir, dpi=dpi, sha=cand_sha)
+            hit.pop("raster_ns", None)
+            hit.pop("score_ns", None)
+            hit["cached"] = True
+            return cast("ScoreResult", hit)
     t0 = time.perf_counter_ns()
-    raster.rasterize_pdf(oracle_pdf, oracle_pages_dir, dpi=dpi)
-    raster.rasterize_pdf(candidate_pdf, cand_pages_dir, dpi=dpi)
+    if cache is not None:
+        oracle_pages = cache.rasterize(oracle_pdf, oracle_pages_dir, dpi=dpi, sha=oracle_sha)
+        cand_pages = cache.rasterize(candidate_pdf, cand_pages_dir, dpi=dpi, sha=cand_sha)
+    else:
+        raster.rasterize_pdf(oracle_pdf, oracle_pages_dir, dpi=dpi)
+        raster.rasterize_pdf(candidate_pdf, cand_pages_dir, dpi=dpi)
+        oracle_pages = sorted(oracle_pages_dir.glob("page_*.png"))
+        cand_pages = sorted(cand_pages_dir.glob("page_*.png"))
     t_raster = time.perf_counter_ns()
-    oracle_pages = sorted(oracle_pages_dir.glob("page_*.png"))
-    cand_pages = sorted(cand_pages_dir.glob("page_*.png"))
     result = score_document(oracle_pages, cand_pages)
     result["page_count_oracle"] = len(oracle_pages)  # type: ignore[assignment]
     result["page_count_candidate"] = len(cand_pages)  # type: ignore[assignment]
@@ -288,10 +372,27 @@ def score_pdf_pair(
         pages_root=work_dir / subdir,
         dpi=dpi,
     )
+    _add_page_metrics(result, oracle_pdf, candidate_pdf, oracle_pages, cand_pages)
     t_score = time.perf_counter_ns()
     result["raster_ns"] = t_raster - t0  # type: ignore[assignment]
     result["score_ns"] = t_score - t_raster  # type: ignore[assignment]
+    if cache is not None:
+        cache.put_score(score_key, result)
     return result  # type: ignore[return-value]
+
+
+def _add_page_metrics(
+    result: dict,
+    oracle_pdf: Path,
+    candidate_pdf: Path,
+    oracle_pages: list[Path],
+    cand_pages: list[Path],
+) -> None:
+    """docxide's metrics as columns on the same row, from the rasters this pass made."""
+    result["ink_jaccard"] = pm.jaccard_from_rasters(oracle_pages, cand_pages)
+    boundary = pm.text_boundary_for_pdfs(oracle_pdf, candidate_pdf)
+    result["text_boundary"] = boundary.line_match_pct()
+    result["max_break_drift"] = boundary.max_break_drift
 
 
 def _unmatched_page_weight(png: Path) -> int:
@@ -387,14 +488,23 @@ def scorer_for_benchmark(benchmark: str) -> str:
 
 
 def _score_one(args: tuple) -> tuple[str, ScoreResult]:
-    """Worker entry. Accepts the legacy 5-tuple ``(key, oracle, cand, work, dpi)`` or
-    the extended 7-tuple with ``(..., base_pdf, cached_null)``."""
+    """Worker entry. Accepts the legacy 5-tuple ``(key, oracle, cand, work, dpi)``, the
+    7-tuple with ``(..., base_pdf, cached_null)`` or the 9-tuple that adds
+    ``(..., cache, renderer_id)``."""
     key, oracle_pdf, cand_pdf, work_dir, dpi, *extra = args
-    base_pdf, cached_null = (extra + [None, None])[:2] if extra else (None, None)
+    base_pdf, cached_null, cache, renderer_id = (extra + [None, None, None, ""])[:4]
     return key, score_pdf_pair(
         oracle_pdf, cand_pdf, work_dir, dpi=dpi, key=key,
         base_pdf=base_pdf, cached_null=cached_null,
+        cache=cache, renderer_id=renderer_id or "",
     )
+
+
+def _run_tasks(tasks: list[tuple], jobs: int) -> dict[str, ScoreResult]:
+    if jobs and jobs > 1 and len(tasks) > 1:
+        with ProcessPoolExecutor(max_workers=jobs, initializer=kernels.worker_init, initargs=(jobs,)) as pool:
+            return dict(pool.map(_score_one, tasks))
+    return dict(_score_one(t) for t in tasks)
 
 
 def score_folders_full(
@@ -410,8 +520,12 @@ def score_folders_full(
     exclude_keys: set[str] | None = None,
     only_keys: set[str] | None = None,
     strict_filter_keys: bool = True,
+    cache: cc.ContentCache | None = None,
+    renderer_id: str = "",
 ) -> dict[str, ScoreResult]:
     """Score every matched pair; return ``{key: score_document_result}``.
+
+    ``cache`` / ``renderer_id`` reach every worker: see :func:`score_pdf_pair`.
 
     CPU-bound rasterize+score is fanned out with a **process** pool (PyMuPDF and the
     skimage scoring are not safe/parallel under threads); ``jobs<=1`` runs serially.
@@ -467,13 +581,8 @@ def score_folders_full(
         if base_pdf is not None and null_cache_path is not None:
             cache_keys[key] = sv2.null_cache_key(o, base_pdf, dpi)
             cached = null_cache.get(cache_keys[key])
-        tasks.append((key, o, c, work_dir, dpi, base_pdf, cached))
-    if jobs and jobs > 1 and len(tasks) > 1:
-        with ProcessPoolExecutor(max_workers=jobs) as pool:
-            scored = list(pool.map(_score_one, tasks))
-    else:
-        scored = [_score_one(t) for t in tasks]
-    results = dict(scored)
+        tasks.append((key, o, c, work_dir, dpi, base_pdf, cached, cache, renderer_id))
+    results = _run_tasks(tasks, jobs)
     if null_cache_path is not None:
         fresh = {
             cache_keys[key]: float(res["null_score"])  # type: ignore[arg-type]
@@ -524,6 +633,8 @@ def score_folders_plain(
     *,
     dpi: int = 144,
     jobs: int = 12,
+    cache: cc.ContentCache | None = None,
+    renderer_id: str = "",
 ) -> dict[str, ScoreResult]:
     """Score every matched pair by plain filename stem (roundtrip identity test).
 
@@ -533,25 +644,20 @@ def score_folders_plain(
     pairs = match_by_plain_stem(oracle_dir, candidate_dir)
     if not pairs:
         return {}
-    tasks = [(key, o, c, work_dir, dpi) for key, o, c in pairs]
-    if jobs and jobs > 1 and len(tasks) > 1:
-        with ProcessPoolExecutor(max_workers=jobs) as pool:
-            scored = list(pool.map(_score_one, tasks))
-    else:
-        scored = [_score_one(t) for t in tasks]
-    return dict(scored)
+    tasks = [(key, o, c, work_dir, dpi, None, None, cache, renderer_id) for key, o, c in pairs]
+    return _run_tasks(tasks, jobs)
 
 
-def _index_plain(directory: Path) -> dict[str, Path]:
-    """Map lowercased stem → PDF for every PDF in ``directory`` (no redline filtering).
+def _index_plain(directory: Path, tool: str | None = None) -> dict[str, Path]:
+    """Map :func:`render_key` → PDF for every PDF in ``directory`` (no redline filtering).
 
-    Two files colliding on the case-insensitive key is a hard error, mirroring
+    Two files colliding on the key is a hard error, mirroring
     :func:`_index_redlines`'s collision guarantee.
     """
     index: dict[str, Path] = {}
     collisions: dict[str, list[str]] = {}
     for pdf in sorted(directory.glob("*.pdf")):
-        key = pdf.stem.lower()
+        key = render_key(pdf.stem, tool)
         if key in index:
             collisions.setdefault(key, [index[key].name]).append(pdf.name)
         index[key] = pdf
@@ -561,37 +667,43 @@ def _index_plain(directory: Path) -> dict[str, Path]:
     return index
 
 
-def match_base_to_candidate(oracle_dir: Path, candidate_dir: Path) -> list[tuple[str, Path, Path]]:
-    """Pair oracle and candidate PDFs by plain lowercased stem, for ``visual_rendering``
+def match_base_to_candidate(
+    oracle_dir: Path, candidate_dir: Path, candidate_tool: str | None = None
+) -> list[tuple[str, Path, Path]]:
+    """Pair oracle and candidate PDFs by :func:`render_key`, for ``visual_rendering``
     (base/source DOCX rendered through a viewer vs committed base PDFs).
 
     Unlike :func:`match_by_stem`, this does NOT require a ``_redline`` suffix —
-    both sides are plain ``<name>.pdf``. Returns pairs for keys in BOTH dirs.
+    both sides are ``<name>.pdf``, the candidate optionally ``<name>_<tool>.pdf``
+    (pass ``candidate_tool``). Returns pairs for keys in BOTH dirs.
     """
     oracle = _index_plain(oracle_dir)
-    candidate = _index_plain(candidate_dir)
+    candidate = _index_plain(candidate_dir, candidate_tool)
     shared = sorted(oracle.keys() & candidate.keys())
     return [(key, oracle[key], candidate[key]) for key in shared]
 
 
 def score_folders_base(
-    oracle_dir: Path, candidate_dir: Path, work_dir: Path, *, dpi: int = 144, jobs: int = 12,
+    oracle_dir: Path,
+    candidate_dir: Path,
+    work_dir: Path,
+    *,
+    dpi: int = 144,
+    jobs: int = 12,
+    cache: cc.ContentCache | None = None,
+    renderer_id: str = "",
+    candidate_tool: str | None = None,
 ) -> dict[str, ScoreResult]:
     """Score every matched base pair (visual_rendering).
 
-    See :func:`match_base_to_candidate` for the pairing rule (plain lowercased stem,
+    See :func:`match_base_to_candidate` for the pairing rule (render key,
     no redline-suffix logic — unlike :func:`score_folders_full`).
     """
-    pairs = match_base_to_candidate(oracle_dir, candidate_dir)
+    pairs = match_base_to_candidate(oracle_dir, candidate_dir, candidate_tool)
     if not pairs:
         return {}
-    tasks = [(key, o, c, work_dir, dpi) for key, o, c in pairs]
-    if jobs and jobs > 1 and len(tasks) > 1:
-        with ProcessPoolExecutor(max_workers=jobs) as pool:
-            scored = list(pool.map(_score_one, tasks))
-    else:
-        scored = [_score_one(t) for t in tasks]
-    return dict(scored)
+    tasks = [(key, o, c, work_dir, dpi, None, None, cache, renderer_id) for key, o, c in pairs]
+    return _run_tasks(tasks, jobs)
 
 
 # Suffixes used by the accepted-changes pairing (visual_accepted_changes).
@@ -674,6 +786,8 @@ def score_folders_accepted(
     jobs: int = 12,
     exclude_keys: set[str] | None = None,
     only_keys: set[str] | None = None,
+    cache: cc.ContentCache | None = None,
+    renderer_id: str = "",
 ) -> dict[str, ScoreResult]:
     """Score every matched accepted-changes pair (visual_accepted_changes).
 
@@ -695,10 +809,5 @@ def score_folders_accepted(
         pairs = [p for p in pairs if p[0] in only_keys]
     if not pairs:
         return {}
-    tasks = [(key, o, c, work_dir, dpi) for key, o, c in pairs]
-    if jobs and jobs > 1 and len(tasks) > 1:
-        with ProcessPoolExecutor(max_workers=jobs) as pool:
-            scored = list(pool.map(_score_one, tasks))
-    else:
-        scored = [_score_one(t) for t in tasks]
-    return dict(scored)
+    tasks = [(key, o, c, work_dir, dpi, None, None, cache, renderer_id) for key, o, c in pairs]
+    return _run_tasks(tasks, jobs)

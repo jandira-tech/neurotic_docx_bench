@@ -20,6 +20,9 @@ from xml.etree import ElementTree as ET
 
 W = "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}"
 MC = "{http://schemas.openxmlformats.org/markup-compatibility/2006}"
+# Strict OOXML names the same WordprocessingML elements here. Unread, a Strict source was empty
+# text, which `coverage` counts as fully covered, so any redline passed against it.
+STRICT_W = "{http://purl.oclc.org/ooxml/wordprocessingml/main}"
 
 # Each source is checked on its own. A window of file A must occur in the
 # redline's before-text, and a window of file B must occur in the after-text.
@@ -46,6 +49,8 @@ def _text(element: ET.Element, view: str) -> str:
 
     def walk(node: ET.Element, in_ins: bool, in_del: bool) -> None:
         tag = node.tag
+        if isinstance(tag, str) and tag.startswith(STRICT_W):
+            tag = W + tag[len(STRICT_W) :]
         if tag == f"{MC}AlternateContent":
             choice = node.find(f"{MC}Choice")
             target = choice if choice is not None else node.find(f"{MC}Fallback")

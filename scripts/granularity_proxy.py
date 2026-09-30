@@ -21,12 +21,12 @@ sys.path.insert(0, str(BENCH_ROOT / "scripts"))
 from pair_vs_replace_matrix import blocks  # noqa: E402
 
 CORPORA = [
-    ("corpus/word_based/centralized_mapping.csv", "corpus/word_based/docx_source",
-     "corpus/word_based/docx_redlines_word", "{stem}_word_redline.docx|{stem}_redline.docx"),
-    ("corpus/word_based/centralized_mapping_randomized.csv", "corpus/word_based/docx_source_randomized",
-     "corpus/word_based/docx_redlines_randomized", "{stem}_redline.docx"),
-    ("corpus/word_redlines_superdoc/centralized_mapping.csv", "corpus/word_redlines_superdoc/docx_source",
-     "corpus/word_redlines_superdoc/docx_redlines_word", "{stem}_redline.docx"),
+    ("grok_run/word_based/centralized_mapping.csv", "grok_run/word_based/docx_source",
+     "grok_run/word_based/docx_redlines_word", "{stem}_word_redline.docx|{stem}_redline.docx"),
+    ("grok_run/word_based/centralized_mapping_randomized.csv", "grok_run/word_based/docx_source_randomized",
+     "grok_run/word_based/docx_redlines_randomized", "{stem}_redline.docx"),
+    ("grok_run/word_redlines_superdoc/centralized_mapping.csv", "grok_run/word_redlines_superdoc/docx_source",
+     "grok_run/word_redlines_superdoc/docx_redlines_word", "{stem}_redline.docx"),
 ]
 
 

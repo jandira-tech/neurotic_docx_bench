@@ -10,13 +10,17 @@ dialogs. Run interactively, not from unattended automation.
 
 from __future__ import annotations
 
+import os
 import platform
+import re
 import shutil
 import subprocess
+import sys
 import time
+from collections.abc import Callable, Sequence
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Literal
+from typing import Literal, Protocol
 
 from neurotic_docx_bench.render.base import RenderReport, RenderResult
 
@@ -35,6 +39,37 @@ end run
 """.strip()
 
 _WORD_APP = Path("/Applications/Microsoft Word.app")
+WORD_VERSION_ARGV: tuple[str, ...] = (
+    "osascript",
+    "-e",
+    'version of application "Microsoft Word"',
+)
+
+
+class VersionProc(Protocol):
+    """What ``word_version`` reads off the process it ran: the shape of
+    ``subprocess.CompletedProcess[str]``, so any runner that returns one fits."""
+
+    returncode: int
+    stdout: str
+
+
+def word_version(
+    run: Callable[..., VersionProc] = subprocess.run,
+    *,
+    argv: Sequence[str] | None = None,
+) -> str | None:
+    """Word's version string as Word reports it (``16.101.1``), or None when Word or
+    osascript is absent. The renderer id of every Word-rendered row is ``word-<this>``."""
+    argv = list(argv if argv is not None else WORD_VERSION_ARGV)
+    try:
+        proc = run(argv, capture_output=True, text=True, timeout=30)
+    except FileNotFoundError, subprocess.TimeoutExpired:
+        return None
+    if proc.returncode != 0:
+        return None
+    out = (proc.stdout or "").strip()
+    return out or None
 
 
 def word_available() -> bool:
@@ -276,6 +311,21 @@ def validate_one(
             )
 
 
+# The batch driver: one osascript for the whole folder, preflight, retries, watchdog.
+WORD_PDF_SCRIPT = Path(__file__).resolve().parents[3] / "scripts" / "word_pdf.py"
+_FAIL_LINE = re.compile(r"^\s*FAIL (.+?\.docx): (.*)$")
+
+
+def _batch_failures(output: str) -> dict[str, str]:
+    """``{docx name: error}`` from word_pdf.py's closing ``FAIL <name>: <error>`` lines."""
+    out: dict[str, str] = {}
+    for line in output.splitlines():
+        m = _FAIL_LINE.match(line)
+        if m:
+            out[m.group(1)] = m.group(2).strip()
+    return out
+
+
 class WordRenderer:
     name: str = "word"
 
@@ -287,6 +337,12 @@ class WordRenderer:
         force: bool = False,
         jobs: int = 12,
     ) -> RenderReport:
+        """Export every docx in ``source_dir`` through ``scripts/word_pdf.py``, one batch.
+
+        Word is a single instance that takes one document at a time, so ``jobs`` is
+        ignored. The driver owns the per-document timeout and the watchdog; it is never
+        wrapped in a timeout of its own.
+        """
         if not word_available():
             raise RuntimeError(
                 "Word renderer requires macOS with Microsoft Word installed "
@@ -294,8 +350,25 @@ class WordRenderer:
             )
         out_dir = work_dir / "pdf"
         out_dir.mkdir(parents=True, exist_ok=True)
-        # Sequential: a single Word instance, one document at a time (Word is not
-        # safely concurrent via AppleScript).
-        docs = sorted(source_dir.glob("*.docx"))
-        results = [convert_one(docx, out_dir, force=force) for docx in docs]
+        docs = sorted(d for d in source_dir.glob("*.docx") if not d.name.startswith("~$"))
+        existed = {d.name for d in docs if (out_dir / f"{d.stem}.pdf").exists()}
+        argv = [
+            sys.executable, str(WORD_PDF_SCRIPT), "--src", str(source_dir),
+            "--out", str(out_dir), "--no-check-preset",
+        ]
+        if force:
+            argv.append("--force")
+        # a wide console keeps each closing FAIL line on one line
+        env = {**os.environ, "COLUMNS": "10000"}
+        proc = subprocess.run(argv, capture_output=True, text=True, env=env)
+        failures = _batch_failures(f"{proc.stdout}\n{proc.stderr}")
+        results = []
+        for docx in docs:
+            pdf = out_dir / f"{docx.stem}.pdf"
+            if docx.name not in failures and pdf.exists():
+                skipped = not force and docx.name in existed
+                results.append(RenderResult(source=docx, pdf=pdf, ok=True, skipped=skipped))
+                continue
+            error = failures.get(docx.name) or f"no PDF from word_pdf.py (exit {proc.returncode})"
+            results.append(RenderResult(source=docx, pdf=None, ok=False, error=error))
         return RenderReport(pdf_dir=out_dir, results=results)

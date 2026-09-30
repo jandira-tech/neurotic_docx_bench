@@ -48,3 +48,27 @@ def test_renderer_to_pdfs_folder(tmp_path, docx_dir):
     assert len(report.pdfs) == 2
     for pdf in report.pdfs:
         assert pdf.exists() and pdf.suffix == ".pdf"
+
+
+def test_failure_detail_names_the_crash_not_the_fontconfig_noise():
+    from neurotic_docx_bench.render.soffice import failure_detail
+
+    stderr = (
+        "Fontconfig warning: no <cachedir> elements found. Check configuration.\n"
+        "Fontconfig warning: adding <cachedir>/usr/local/var/cache/fontconfig</cachedir>\n"
+        "Unspecified Application Error\n\n\n"
+        "Fatal exception: Signal 6\n"
+        "Stack:\n"
+        "#0 0   libuno_sal.dylib.3 0x00000001044e231c _ZN3sal13backtrace_getEj\n"
+    )
+    assert failure_detail(134, stderr, "") == (
+        "soffice exit 134: Unspecified Application Error | Fatal exception: Signal 6"
+    )
+
+
+def test_failure_detail_falls_back_to_the_exit_status():
+    from neurotic_docx_bench.render.soffice import failure_detail
+
+    assert failure_detail(1, "Fontconfig warning: x\n", "") == "soffice exit 1"
+    assert failure_detail(-9, "", "") == "soffice killed by signal 9"
+    assert failure_detail(0, "", "") == "soffice exit 0 but wrote no PDF"

@@ -128,11 +128,11 @@ failures without re-scoring the full corpus every time.
 `{vendor}`, sort `scores` ascending, keep the first {n} keys.
 
 Score keys are pair stems (`<base>_<next>`). They match
-`corpus/word_based/centralized_mapping.csv` → `pair_stem`.
+`grok_run/word_based/centralized_mapping.csv` → `pair_stem`.
 
 The score is **pixel fidelity** of the tool's redline DOCX (rendered via LibreOffice
 **26.2.4.2**) against the committed Word oracle PDF
-(`corpus/word_based/pdf_redlines_word/<pair>_redline.pdf`). Higher = closer to Word.
+(`grok_run/word_based/pdf_redlines_word/<pair>_redline.pdf`). Higher = closer to Word.
 100 = pixel-identical to the oracle (on the shared pages).
 
 ### Reproduce the ranking (from neurotic-docx-bench)
@@ -176,7 +176,7 @@ batch_to_fix/
   rescore.sh                ← one-shot re-score after you drop candidates/
   pairs/
     01_<pair_stem>/
-      base.docx             ← source A (corpus/word_based/docx_source)
+      base.docx             ← source A (grok_run/word_based/docx_source)
       next.docx             ← source B
       word_redline.docx     ← Microsoft Word tracked-change redline (oracle DOCX)
       <original name>.docx  ← same file under the corpus filename
@@ -282,7 +282,7 @@ uv run bench accept-scores {vendor} --benchmark script_redlines
 1. **Renderer pin:** oracle PDFs were produced with LibreOffice **26.2.4.2**. Re-score
    candidates with the same LO, or scores drift for renderer reasons (not markup).
 2. **Word equivalent** = Microsoft Word tracked-change DOCX from
-   `corpus/word_based/docx_redlines_word/` plus its LO-rendered PDF oracle.
+   `grok_run/word_based/docx_redlines_word/` plus its LO-rendered PDF oracle.
 3. **jubarte-final** in the bench is vendor `jubarte` (this batch may live under
    `jubarte-first/batch_to_fix` because that tree builds `dist/jubarte-final`).
 4. This batch is the bottom of *scored* docs only (pairs the tool failed to generate

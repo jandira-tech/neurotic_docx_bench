@@ -89,6 +89,14 @@ jobs:
                  "(needs ../jubarte-redlines CLI, ../jubarte-first, a folio checkout with redline-lossless-verify)."
           fi
 
+      - name: Regenerate the published views from the stores
+        if: always()
+        run: uv run bench report
+
+      - name: Published views are current
+        if: always()
+        run: uv run bench report --check
+
       - name: Commit results on change
         if: always()
         run: |

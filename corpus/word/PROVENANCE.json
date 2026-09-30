@@ -1,0 +1,586 @@
+{
+ "counts": {
+  "comparisons": 3503,
+  "documents": 2925,
+  "pdf": 6427,
+  "pdf_prior": 36
+ },
+ "dataset": "superdoc-dev/docx-corpus",
+ "holdout": {
+  "list": "pools/holdout.txt",
+  "missing": {},
+  "n": 40
+ },
+ "id_scheme": "sha256[:10] of the docx bytes",
+ "license": "ODC-By-1.0",
+ "notes": [
+  "notices/LICENSE-ODC-BY-1.0.txt",
+  "notices/NOTICE",
+  "notices/MANIFEST.json",
+  "notices/manifest.jsonl",
+  "notices/split_a_100_b_10.json",
+  "notices/EXTRA_REFERENCES.md",
+  "notices/500_en_sources.jsonl",
+  "notices/500_en_pairs.tsv",
+  "notices/NOTE",
+  "notices/blacklist.tsv",
+  "notices/wr0926_word_based_map.tsv",
+  "notices/wr0926_word_based_identity.log",
+  "notices/wr0926_word_based_redline_pass1.log",
+  "notices/wr0926_word_based_redline_pass2.log",
+  "notices/wr0926_word_based_word_pdf.log",
+  "notices/wr0926_word_based_randomized_map.tsv",
+  "notices/wr0926_word_based_randomized_identity.log",
+  "notices/wr0926_word_based_randomized_redline_pass1.log",
+  "notices/wr0926_word_based_randomized_redline_pass2.log",
+  "notices/wr0926_word_based_randomized_word_pdf.log",
+  "notices/wr0926_word_redlines_superdoc_map.tsv",
+  "notices/wr0926_word_redlines_superdoc_identity.log",
+  "notices/wr0926_word_redlines_superdoc_redline_pass1.log",
+  "notices/wr0926_word_redlines_superdoc_redline_pass2.log",
+  "notices/wr0926_word_redlines_superdoc_word_pdf.log",
+  "notices/accepted_tracking_selection.csv",
+  "notices/rejected_tracking_selection.csv"
+ ],
+ "sets": {
+  "accepted_tracking_0928": {
+   "absent": [],
+   "description": "100 Word compares (40 with comments, 60 without; accepted_tracking_selection.csv) with every tracked change accepted by Word, named <compare id>_accepted_tracking, with their Word PDFs.",
+   "docset_id": "c9cfd04d45a4",
+   "excluded": {},
+   "filled": [],
+   "mapping": null,
+   "n_comparisons": 0,
+   "n_documents": 100,
+   "origins": [
+    "grok_run/wr0928/accepted_tracking/docx",
+    "grok_run/wr0928/accepted_tracking/pdf"
+   ],
+   "orphans": [],
+   "redundant": [],
+   "refused": {},
+   "sources": null,
+   "superseded": [],
+   "unresolved": {}
+  },
+  "comment_balloons_0929": {
+   "absent": [],
+   "description": "Synthetic A/B documents from the September 29 2026 investigation of when Word draws no comment balloon (a commentRangeEnd at body level or first in its paragraph), with their Word PDFs; the generators, truth tables and findings are in comment_balloons_0929.md. word_invalid holds variants with a dangling commentReference, which Word offers to repair.",
+   "docset_id": "eb94ee26a164",
+   "excluded": {},
+   "filled": [],
+   "mapping": null,
+   "n_comparisons": 0,
+   "n_documents": 59,
+   "origins": [
+    "grok_run/comment_balloons_0929/docx",
+    "grok_run/comment_balloons_0929/ab_docx",
+    "grok_run/comment_balloons_0929/pdf",
+    "grok_run/comment_balloons_0929/ab_pdf"
+   ],
+   "orphans": [],
+   "redundant": [
+    "Z00_file27_control"
+   ],
+   "refused": {},
+   "sources": null,
+   "superseded": [
+    "AB3_00_jubarte",
+    "R2_00_control",
+    "R3_00_control",
+    "R4_00_control",
+    "S12_sandwich_P_P_P",
+    "S13_all_landscape"
+   ],
+   "unresolved": {}
+  },
+  "en_pairs_500": {
+   "absent": [],
+   "description": "1000 English docx (500 base/next pairs, parts a and b) with the Word PDFs of the first Word pass; the second pass (run2) fills the stems the first pass lacks and otherwise stays behind.",
+   "docset_id": "fec675dffc49",
+   "excluded": {},
+   "filled": [
+    "57f96361b12bda78af9500fd6dafee31572e70a7333b47fdb7289261cb5534a8",
+    "60168e4d4fe36b23bee30244f89884e3a9b364b2b8270abc8440762ca189fbc5",
+    "ef31e540797c67a78c662cc2e5ecb21bf446e3d696ce26ad629a76b68f9cc25a",
+    "ff2e2e30f5373639653004df2706972b1367df58a10d0f1551b4cfc665a56126"
+   ],
+   "mapping": null,
+   "n_comparisons": 0,
+   "n_documents": 1000,
+   "origins": [
+    "grok_run/500_docx_part_a_original",
+    "grok_run/500_docx_part_b_original",
+    "grok_run/500_pdf_part_a_original",
+    "grok_run/500_pdf_part_b_original",
+    "grok_run/500_pdf_part_a_run2",
+    "grok_run/500_pdf_part_b_run2"
+   ],
+   "orphans": [],
+   "redundant": [],
+   "refused": {},
+   "sources": null,
+   "superseded": [],
+   "unresolved": {}
+  },
+  "fixtures_originals": {
+   "absent": [],
+   "description": "The original fixtures of jubarte-first (_fixtures/original_fixtures): the docx the word_based documents were made from, some under their original names; no Word PDF of them exists.",
+   "docset_id": "08fb9032341a",
+   "excluded": {
+    "word_invalid": [
+     "Sample Document",
+     "annotations-orphan-rel",
+     "drawing-scalar-whitespace",
+     "empty-filetime-customprops",
+     "jubarte_redline",
+     "math-body-level",
+     "redline_comments_test",
+     "redline_ts",
+     "sample-document.our-repaired-word-broken",
+     "sample1",
+     "unknown-element"
+    ]
+   },
+   "filled": [],
+   "mapping": null,
+   "n_comparisons": 0,
+   "n_documents": 196,
+   "origins": [
+    "_fixtures/original_fixtures"
+   ],
+   "orphans": [],
+   "redundant": [],
+   "refused": {},
+   "sources": null,
+   "superseded": [],
+   "unresolved": {}
+  },
+  "fixtures_word_compares": {
+   "absent": [],
+   "description": "Word compares of the original fixtures (_fixtures/word_redlined_fixtures) resolved through the word_based mapping; no Word PDF of them exists.",
+   "docset_id": "a251277596bd",
+   "excluded": {},
+   "filled": [],
+   "mapping": "grok_run/word_based/centralized_mapping.csv",
+   "n_comparisons": 164,
+   "n_documents": 0,
+   "origins": [
+    "_fixtures/word_redlined_fixtures"
+   ],
+   "orphans": [],
+   "redundant": [],
+   "refused": {},
+   "sources": "word_based",
+   "superseded": [],
+   "unresolved": {
+    "redline-cicerodo-v-plate-30_right-align-bold-demo-id-paraid-overflow_word_redline": "base redline_cicerodo_v_plate_30 is not a document of word_based",
+    "strict01_strikethrough-and-italic-combo-id-paraid-overflow_word_redline": "base strict01 is not a document of word_based"
+   }
+  },
+  "nocomments": {
+   "absent": [
+    "I_am_sharing_Microsoft_Word_vs_Google_Docs_Comprehensive_Proof_with_you_increase_indent_demo_id_paraid_overflow_redline",
+    "multi_section_nested_table_rowspan_word_redline"
+   ],
+   "description": "The July 2026 Word run over word_based with comments stripped: the documents with their Word PDFs and the compares (tracked changes, no comments) with theirs.",
+   "docset_id": "496a0782b581",
+   "excluded": {},
+   "filled": [],
+   "mapping": "grok_run/no_comments_pdf_was_generated_by_word/centralized_mapping.csv",
+   "n_comparisons": 228,
+   "n_documents": 194,
+   "origins": [
+    "grok_run/no_comments_pdf_was_generated_by_word/docx_source",
+    "grok_run/no_comments_pdf_was_generated_by_word/pdf_source",
+    "grok_run/no_comments_pdf_was_generated_by_word/docx_redlines_word",
+    "grok_run/no_comments_pdf_was_generated_by_word/pdf_redlines_word"
+   ],
+   "orphans": [],
+   "redundant": [
+    "strict01_sdt_controls",
+    "word_clean_strict01"
+   ],
+   "refused": {},
+   "sources": "nocomments",
+   "superseded": [
+    "ole_object",
+    "page_numbering_examples",
+    "word_tolerated_misplaced_link"
+   ],
+   "unresolved": {
+    "redline_cicerodo_v_plate_30_right_align_bold_demo_id_paraid_overflow_word_redline": "base redline_cicerodo_v_plate_30 is not a document of nocomments",
+    "strict01_strikethrough_and_italic_combo_id_paraid_overflow_word_redline": "base strict01 is not a document of nocomments"
+   }
+  },
+  "nocomments_randomized": {
+   "absent": [],
+   "description": "The July 2026 Word run over the randomized word_based pairs with comments stripped.",
+   "docset_id": "61778f5d5461",
+   "excluded": {},
+   "filled": [],
+   "mapping": "grok_run/no_comments_pdf_was_generated_by_word/centralized_mapping_randomized.csv",
+   "n_comparisons": 196,
+   "n_documents": 199,
+   "origins": [
+    "grok_run/no_comments_pdf_was_generated_by_word/docx_source_randomized",
+    "grok_run/no_comments_pdf_was_generated_by_word/pdf_source_randomized",
+    "grok_run/no_comments_pdf_was_generated_by_word/docx_redlines_randomized",
+    "grok_run/no_comments_pdf_was_generated_by_word/pdf_redlines_randomized"
+   ],
+   "orphans": [],
+   "redundant": [],
+   "refused": {},
+   "sources": "nocomments_randomized",
+   "superseded": [
+    "file_48"
+   ],
+   "unresolved": {}
+  },
+  "pdf_fill_0928": {
+   "absent": [
+    "82348eef4b_multi_section__vs__0b2a46481b_nested_table_rowspan_redline_b1b752d8e6"
+   ],
+   "description": "The September 28 2026 Word render of the documents and compares that had no Word PDF (notices/audit_2026-09-28_docx_without_word_pdf.csv); word_refused holds the documents Word would not open, left out through the word_invalid list.",
+   "docset_id": "df018bfc7332",
+   "excluded": {
+    "word_invalid": [
+     "0118d24b70_sample_document",
+     "06e5a8a2f0_unknown-element",
+     "223393e54b_redline_comments_test",
+     "476485f348_empty-filetime-customprops",
+     "53708ca8bc_sample-document_our-repaired-word-broken",
+     "9fc6eaf178_redline_ts",
+     "b0de73b5d9_math-body-level",
+     "beea031a9c_sample1",
+     "c7f7c9f640_jubarte_redline",
+     "cabea4b690_annotations-orphan-rel",
+     "d40a3f0bed_drawing-scalar-whitespace"
+    ]
+   },
+   "filled": [],
+   "mapping": "grok_run/wr0928/pdf_fill/mapping.csv",
+   "n_comparisons": 106,
+   "n_documents": 608,
+   "origins": [
+    "grok_run/wr0928/pdf_fill/documents_docx",
+    "grok_run/wr0928/pdf_fill/word_refused",
+    "grok_run/wr0928/pdf_fill/documents_pdf",
+    "grok_run/wr0928/pdf_fill/comparisons_docx",
+    "grok_run/wr0928/pdf_fill/comparisons_pdf"
+   ],
+   "orphans": [],
+   "redundant": [],
+   "refused": {},
+   "sources": "pdf_fill_0928",
+   "superseded": [
+    "18eb110b3b_numwords_fldsimple__vs__60697d46b7_strict01_redline_57dfcda882",
+    "36fbd8c734_sales_report_january_2026_suggesting_insertions__vs__81158d928d_sample_document_afterword_repaired_word_repaired_redline_8813a2b815",
+    "60697d46b7_strict01__vs__60697d46b7_strict01_redline_4720423c07",
+    "60697d46b7_strict01__vs__a04e2d2749_ooxml_style_link_redline_6b74ac1ae6",
+    "82348eef4b_multi_section__vs__756fb54224_potpourritest_redline_ea2b188e7f",
+    "8441c4ae21_sd_2517_localized_heading_styles__vs__7b076416b0_sectpr_headerref_redline_3182a1cb82",
+    "970fd9303f_sample_document_word_repair_of_our_output_word_r__vs__8441c4ae21_sd_2517_localized_heading_styles_redline_9c71031b8a",
+    "e355cec096_small_font_size_demo_id_paraid_overflow__vs__60697d46b7_strict01_redline_0cd32d67b2"
+   ],
+   "unresolved": {}
+  },
+  "redlines_a100_b10": {
+   "absent": [
+    "001a1c8e7a7ce5a802479fb58bf4affd239449ecb33b64ec00a8e93e2223fe3f__vs__0004c94ca2a8684d47449bb0e7abf87de1df71a7e654325270931607df696aec",
+    "001a1c8e7a7ce5a802479fb58bf4affd239449ecb33b64ec00a8e93e2223fe3f__vs__017447de83753a0e3b7afc659df038ef56972925336c6a5b1f9c03300e105ca1",
+    "00515f13495e5bf0867b319b035d4a83c7904b55056c38f86e8672ab0192e903__vs__000e3e7bd2d6215fc7b469cc3e296c1b2a510bc1abc7e0fd48c5d03c943c8fda",
+    "00803e70c3646e42abab322238df606c847686168795a7031edeb25975e8cc2a__vs__0004c94ca2a8684d47449bb0e7abf87de1df71a7e654325270931607df696aec"
+   ],
+   "description": "Word compares of 100 base documents against 10 next documents of sources_500 (a__vs__b) with the Word PDF of each compared document.",
+   "docset_id": "c507a7eef23d",
+   "excluded": {},
+   "filled": [],
+   "mapping": null,
+   "n_comparisons": 965,
+   "n_documents": 0,
+   "origins": [
+    "grok_run/compared_a_100_vs_b_10_docx",
+    "grok_run/compared_a_100_vs_b_10_pdf"
+   ],
+   "orphans": [
+    "grok_run/compared_a_100_vs_b_10_pdf/with_balloons_do_not_use.pdf",
+    "grok_run/compared_a_100_vs_b_10_pdf/without_balloons_do_not_use.pdf"
+   ],
+   "redundant": [],
+   "refused": {},
+   "sources": "sources_500",
+   "superseded": [],
+   "unresolved": {}
+  },
+  "redlines_en_500": {
+   "absent": [
+    "067da993ed04dc61572c9f589d0dc8af24e9c61daa6e9e0ea5535b6979f68307__vs__0220d390b233bb5fce23512533a30a14eeb1cf87c0e005c93383356782bda27f",
+    "23094ca2670099d2a5cdc379c98283701ca48c1132a20f9b8d3b85bfe113240f__vs__293c9eee58d371a8d4079c67f5a8dad469ede77038fdc18f5e91ae8b6959597f",
+    "23795bf02ea55ec6e3ef99495ba22e05a65b26f919e6c8062c0a002fabb7be18__vs__64c229a005667a35c63afae3c7d77480931a032c93ec14463051804965917bc0",
+    "4d532b406748022c9fc1a1646c2b5002ad11afe758ca82582762aebef596eaf9__vs__160c137c3afa67e96fb93361c0c1504f1ded9c527d1a6123da675b9cc509983f",
+    "4d924bef342148e103a8bd4cc7e318ca54c332845ae0d45f632ec1c1f6395c56__vs__80bc92324c5a3927327de9ce21e4af23236120d3c8f7aee4561bb6f27734339a",
+    "5ef2e4f53af5317c9cfc522c9692ecfe36e326dfe5d7d15d84fa9413793bdb0f__vs__aab9fc4fcd733ddb436224be622dd13075a210cef69d69f54a2c183cd479bac3",
+    "77a83563cfd223a53b4371f40d57ac46e1e7b0f1ced0a1a49917dd9b50b0c82f__vs__008f896473aec097e4bd8ff58f95b0930242cd2cae9c5146a9ef37c975f99dbe",
+    "8130ebf3e279cc2752198e46e0003239b9179f0cfc2b4f46d0f47b3bad59d83d__vs__068b2be61df1b92baef01bb3b66e4e1ff3c715f6c7f2c7c42317444090e98552",
+    "94a7caf34e3ac5700c7e3cf5f073a6fc8cfe1944a6ce8cf2f67b407599dd66d7__vs__667eb031689b872e9c8a9eee1f1930391b686cf88e4092624e5734fca820eb85",
+    "9d3fc36405a3bcc0229f94b29cd91574878336de0992543d0621f1a4c542d933__vs__105134a04b5566c6f74a90d0d267d3306d4b637be99fe9bafc4e3cf528f27792",
+    "9f7d5165fdf87669621c291d32df5afb39fd272777dad4cd8eadff4461032031__vs__832b471aa42d2d3f92accaba09e162bd10c978049fd44e8b6a8b93b90bc43b10",
+    "b5fa1037b202f01407579f793af7c3cf7f3236fe8f9224b1dba7cdbf69c46407__vs__25f256a05e7cfaa4a9ee76b080983b021ed8cf33bbf9d0f2cc970dc07af61ecb",
+    "ce03619714889f328892106da27e3f7e22adb05c5dc062016122434122c6fdc3__vs__c55fd9299546cd2d7eeed5b6cc9397fdad463cb37142be33db224131332597be",
+    "d19de73ceac0d3e47bc1bc1e2840ba0921e9472e199f8f6633fc64d68e5a60d4__vs__d8019f40a9e932f69c14ab4fe690cf36127e9ab0e7b38034beb8cc2c5e87c3e5",
+    "ded73da0608ca4f7bff0bceb7aab0b5a240462f1411406f5754cb423ba1d2e29__vs__e554db525b9692de4fa7bde50ad0d2a07929c7bff47df9d8e554238ba26feaa7",
+    "dfdd43321e3a098547d31b405a1bfbacb81f97abbf14f2f0462ad2146adcad0a__vs__9a6137b671f8d4911a02fefd76026625a8b4fa9670672247416436eb9d2d7d42",
+    "e59a877c57b72872a424199f13e7ef21436eaaacd1fd203ea4ea1d13bf6c5336__vs__1df4c6522aab36ac107f255b4601ec796fc8919754c84855ddca68346914fc3a",
+    "fd1392562a78d712e541310fcbd437bdc6f0deef9fbacf875022239ed7c96a6a__vs__eec6e5b32964c7f438e81e38a3348b32bbc037af503f1104c2d13eb485d7be0f"
+   ],
+   "description": "Word compares of the en_pairs_500 base/next pairs with the Word PDF of each compared document; the pairs of a blacklisted document and the rejected compares are left out.",
+   "docset_id": "947122b42898",
+   "excluded": {
+    "word_blacklist": [
+     "57f96361b12bda78af9500fd6dafee31572e70a7333b47fdb7289261cb5534a8__vs__3832d29088f92183b9a5fbe7e9783104996aef6817f3f10114aadc9f01047247"
+    ]
+   },
+   "filled": [],
+   "mapping": null,
+   "n_comparisons": 451,
+   "n_documents": 0,
+   "origins": [
+    "grok_run/500_extra_docx_redlines",
+    "grok_run/500_extra_pdf_redlines"
+   ],
+   "orphans": [],
+   "redundant": [],
+   "refused": {},
+   "sources": "en_pairs_500",
+   "superseded": [],
+   "unresolved": {}
+  },
+  "rejected_tracking_0928": {
+   "absent": [],
+   "description": "100 more Word compares (25 with comments, 75 without; rejected_tracking_selection.csv), none of them in accepted_tracking_0928, with every tracked change rejected by Word, named <compare id>_rejected_tracking, with their Word PDFs.",
+   "docset_id": "ec0859439dfc",
+   "excluded": {},
+   "filled": [],
+   "mapping": null,
+   "n_comparisons": 0,
+   "n_documents": 100,
+   "origins": [
+    "grok_run/wr0928/rejected_tracking/docx",
+    "grok_run/wr0928/rejected_tracking/pdf"
+   ],
+   "orphans": [],
+   "redundant": [],
+   "refused": {},
+   "sources": null,
+   "superseded": [],
+   "unresolved": {}
+  },
+  "sources_500": {
+   "absent": [],
+   "description": "500 docx sampled from the superdoc docx-corpus with their Word PDFs; the stems a later Word build re-rendered keep the earlier render under pdf_prior.",
+   "docset_id": "29e26304c8ad",
+   "excluded": {},
+   "filled": [],
+   "mapping": null,
+   "n_comparisons": 0,
+   "n_documents": 500,
+   "origins": [
+    "grok_run/fixtures_500",
+    "grok_run/fixtures_500_pdf"
+   ],
+   "orphans": [],
+   "redundant": [],
+   "refused": {},
+   "sources": null,
+   "superseded": [
+    "0003fc93d088dc4c17f3eabc859086df5cdac48fc1106b6ea00d9776ea1eb35c",
+    "0008eb8e63b7adff0d83f57644e9d7b3350ac05573e1d5e2dbb1bd1e2a799b24",
+    "000f3ee18b59fcb52f501b631315ae0d47489ee92f927b93469ce7266a2675b5",
+    "0012056ac9d4f46088b4ec6bb97b3a30a5f83e2a78a2de80fd82613ad8b021e2",
+    "001a86cd1e2a3ac48649f16db47fecd7576c530e0aa14d147a8133ad22057cae",
+    "001d945ab84c573a4f083849620e16c3fe9acd416914f6f32a4d9112226e7414",
+    "002adf0715eed4d213774c26c60c78624c2a3cbb3d0397d257cb13f4410eca16",
+    "003ce553462860bc9d46b3e45209f66841c599e18ba366273d983e49c77946d6",
+    "0043183a08c25bef0d272c66acb2e3af5aa09b206e4544570c3f01b52ade772a",
+    "004599833e81f0e72deb9f04ed6c29b659db22561f65fe35c38e91e32f7a430c",
+    "008469e72716471f0a90687366bac1bed5d63ae8b5022a5a56589e0a9ee89b49",
+    "008726f798d340e8a479f1f488a0aee583923c4aaf29b0391c272168c8fcac45",
+    "00ac06fef95cc36c8559ec486c7822d97e29002456b38066e32d2e3da185c6ac",
+    "00afb3e6b2bb1a5ab1e1770ba41f6f455f87472d24ab27678625f16ff15ef9af",
+    "014b42f2b871a56421fcacd3fab65aa3f69a6c5332eee715a5afa5396a851eff",
+    "015e4665fb2bcc025f24e7b451197933975b68ae37052ca7c9401294079c648d",
+    "01870f7ea5cec263713c811d8938a05f1730d362aad060f61017d519c91e938d",
+    "0199027cbf967c88ab833b77e5bc5d629bacecbd40a87c26bfc50b25de90c106"
+   ],
+   "unresolved": {}
+  },
+  "word_based": {
+   "absent": [
+    "I_am_sharing_Microsoft_Word_vs_Google_Docs_Comprehensive_Proof_with_you_increase_indent_demo_id_paraid_overflow_redline",
+    "multi_section_nested_table_rowspan_word_redline",
+    "word_clean_strict01_word_tolerated_broken_media_rel_redline"
+   ],
+   "description": "The word_based documents (docx_source) and Word's compares of their pairs (docx_redlines_word) with the September 2026 Word renders of those compares.",
+   "docset_id": "477c5f19f71b",
+   "excluded": {},
+   "filled": [],
+   "mapping": "grok_run/word_based/centralized_mapping.csv",
+   "n_comparisons": 227,
+   "n_documents": 194,
+   "origins": [
+    "grok_run/word_based/docx_source",
+    "grok_run/word_based/docx_redlines_word",
+    "grok_run/wordpdf_redline_oracles/word_based"
+   ],
+   "orphans": [],
+   "redundant": [],
+   "refused": {},
+   "sources": "word_based",
+   "superseded": [],
+   "unresolved": {
+    "redline_cicerodo_v_plate_30_right_align_bold_demo_id_paraid_overflow_word_redline": "base redline_cicerodo_v_plate_30 is not a document of word_based",
+    "strict01_strikethrough_and_italic_combo_id_paraid_overflow_word_redline": "base strict01 is not a document of word_based"
+   }
+  },
+  "word_based_0926": {
+   "absent": [
+    "I_am_sharing_Microsoft_Word_vs_Google_Docs_Comprehensive_Proof_with_you_increase_indent_demo_id_paraid_overflow_redline",
+    "multi_section_nested_table_rowspan_redline"
+   ],
+   "description": "The September 2026 compare run of the word_based pairs: fresh Word compares with their Word PDFs.",
+   "docset_id": "6c45909f0203",
+   "excluded": {},
+   "filled": [],
+   "mapping": "grok_run/word_based/centralized_mapping.csv",
+   "n_comparisons": 196,
+   "n_documents": 0,
+   "origins": [
+    "grok_run/wr0926/word_based/docx",
+    "grok_run/wr0926/word_based/pdf"
+   ],
+   "orphans": [],
+   "redundant": [],
+   "refused": {},
+   "sources": "word_based",
+   "superseded": [],
+   "unresolved": {
+    "redline_cicerodo_v_plate_30_right_align_bold_demo_id_paraid_overflow_redline": "base redline_cicerodo_v_plate_30 is not a document of word_based",
+    "strict01_strikethrough_and_italic_combo_id_paraid_overflow_redline": "base strict01 is not a document of word_based"
+   }
+  },
+  "word_based_accepted_word": {
+   "absent": [],
+   "description": "Word compares of the word_based pairs with every tracked change accepted in Word (word_working_roundtrip, named <pair>_word_redline_accepted), with the Word PDFs of the September 29 2026 render; the LibreOffice render of each was the visual_accepted_changes oracle.",
+   "docset_id": "1d111c4d275c",
+   "excluded": {},
+   "filled": [],
+   "mapping": null,
+   "n_comparisons": 0,
+   "n_documents": 166,
+   "origins": [
+    "grok_run/word_based/word_working_roundtrip",
+    "grok_run/wr0929/word_based_accepted_word_pdf"
+   ],
+   "orphans": [],
+   "redundant": [],
+   "refused": {},
+   "sources": null,
+   "superseded": [],
+   "unresolved": {}
+  },
+  "word_based_randomized": {
+   "absent": [],
+   "description": "The randomized word_based documents and Word's compares of their pairs with the September 2026 Word renders.",
+   "docset_id": "1892074cca61",
+   "excluded": {},
+   "filled": [],
+   "mapping": "grok_run/word_based/centralized_mapping_randomized.csv",
+   "n_comparisons": 196,
+   "n_documents": 199,
+   "origins": [
+    "grok_run/word_based/docx_source_randomized",
+    "grok_run/word_based/docx_redlines_randomized",
+    "grok_run/wordpdf_redline_oracles/word_based_randomized"
+   ],
+   "orphans": [],
+   "redundant": [],
+   "refused": {},
+   "sources": "word_based_randomized",
+   "superseded": [],
+   "unresolved": {}
+  },
+  "word_based_randomized_0926": {
+   "absent": [],
+   "description": "The September 2026 compare run of the randomized word_based pairs.",
+   "docset_id": "718e98c4452f",
+   "excluded": {},
+   "filled": [],
+   "mapping": "grok_run/word_based/centralized_mapping_randomized.csv",
+   "n_comparisons": 185,
+   "n_documents": 0,
+   "origins": [
+    "grok_run/wr0926/word_based_randomized/docx",
+    "grok_run/wr0926/word_based_randomized/pdf"
+   ],
+   "orphans": [],
+   "redundant": [],
+   "refused": {},
+   "sources": "word_based_randomized",
+   "superseded": [],
+   "unresolved": {}
+  },
+  "word_redlines_superdoc": {
+   "absent": [
+    "behavior__sd_2517_localized_heading_styles_39c2e4a1_behavior__sd_2750_borderbox_7cd3768d_redline"
+   ],
+   "description": "The superdoc documents and Word's compares of their pairs with the September 2026 Word renders.",
+   "docset_id": "5c286d4a4ad9",
+   "excluded": {},
+   "filled": [],
+   "mapping": "grok_run/word_redlines_superdoc/centralized_mapping.csv",
+   "n_comparisons": 399,
+   "n_documents": 210,
+   "origins": [
+    "grok_run/word_redlines_superdoc/docx_source",
+    "grok_run/word_redlines_superdoc/docx_redlines_word",
+    "grok_run/wordpdf_redline_oracles/word_redlines_superdoc"
+   ],
+   "orphans": [],
+   "redundant": [],
+   "refused": {},
+   "sources": "word_redlines_superdoc",
+   "superseded": [],
+   "unresolved": {}
+  },
+  "word_redlines_superdoc_0926": {
+   "absent": [
+    "behavior__sd_2517_localized_heading_styles_39c2e4a1_behavior__sd_2750_borderbox_7cd3768d_redline"
+   ],
+   "description": "The September 2026 compare run of the superdoc pairs.",
+   "docset_id": "e512e5f3427c",
+   "excluded": {},
+   "filled": [],
+   "mapping": "grok_run/word_redlines_superdoc/centralized_mapping.csv",
+   "n_comparisons": 361,
+   "n_documents": 0,
+   "origins": [
+    "grok_run/wr0926/word_redlines_superdoc/docx",
+    "grok_run/wr0926/word_redlines_superdoc/pdf"
+   ],
+   "orphans": [],
+   "redundant": [],
+   "refused": {},
+   "sources": "word_redlines_superdoc",
+   "superseded": [],
+   "unresolved": {}
+  }
+ },
+ "skipped": [],
+ "states": [
+  "clean",
+  "tracking_without_comments",
+  "with_comments_clean",
+  "with_comments_tracking"
+ ]
+}

@@ -26,7 +26,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 # Committed frozen copy of the original scoring core, so parity is verified EVEN in CI /
 # fresh clones (the source `.old/compare/` is git-ignored and absent there).
 OLD_SCORE_PATH = REPO_ROOT / "tests" / "reference" / "old_compare_score.py"
-ORACLE_PDF_DIR = REPO_ROOT / "corpus" / "word_based" / "pdf_redlines_word"
+ORACLE_PDF_DIR = REPO_ROOT / "grok_run" / "word_based" / "pdf_redlines_word"
 
 
 def _load_old_score():

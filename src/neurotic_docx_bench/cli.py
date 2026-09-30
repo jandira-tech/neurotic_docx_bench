@@ -17,11 +17,11 @@ import sys
 import tempfile
 import time
 import uuid
-from collections.abc import Callable, Iterable
+from collections.abc import Callable, Collection, Iterable
 from functools import lru_cache
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import TypedDict, cast
+from typing import Any, TypedDict, cast
 from urllib.error import URLError
 from urllib.request import urlopen
 
@@ -44,7 +44,19 @@ from rich.table import Table
 from rich.text import Text
 from rich.theme import Theme
 
-from neurotic_docx_bench import functional_lens, lens_health, noise_floor, pipeline, provenance, stages, tool_updater
+from neurotic_docx_bench import (
+    content_cache,
+    functional_lens,
+    hardware,
+    kernels,
+    lens_health,
+    noise_floor,
+    pipeline,
+    profile,
+    provenance,
+    stages,
+    tool_updater,
+)
 from neurotic_docx_bench.benchmarks import BenchmarkName, BenchmarkOutcome
 from neurotic_docx_bench.config import (
     BenchConfig,
@@ -55,6 +67,7 @@ from neurotic_docx_bench.config import (
     load_config,
 )
 from neurotic_docx_bench.emit import gallery as gallery_emit
+from neurotic_docx_bench.ledger import docset as docset_mod
 from neurotic_docx_bench.emit import jsonl as jsonl_emit
 from neurotic_docx_bench.emit import snapshot as snapshot_emit
 from neurotic_docx_bench.gate import gate as run_gate
@@ -86,11 +99,37 @@ def _get_overall_score(result: ScoreResult) -> float:
     return pipeline.overall_from_result(result)
 
 
+def _pool_rows(cfg: BenchConfig) -> list[dict[str, str]]:
+    """The ``key, base, next`` rows of every ``corpora:`` pool table (corpus/word/pools)."""
+    rows: list[dict[str, str]] = []
+    for entry in cfg.corpora:
+        manifest = Path(entry.manifest)
+        manifest = manifest if manifest.is_absolute() else cfg.config_dir / manifest
+        if not manifest.is_file():
+            continue
+        with manifest.open(encoding="utf-8", newline="") as fh:
+            rows.extend(r for r in csv.DictReader(fh) if r.get("key") and r.get("base") and r.get("next"))
+    return rows
+
+
 def _base_pdf_map(cfg: BenchConfig) -> dict[str, Path] | None:
-    """Base-PDF resolver for the v2/skill metrics, by corpus convention: the mapping
-    CSVs and ``pdf_source`` dir live next to the oracle dir (``<corpus>/pdf_source``,
-    ``<corpus>/centralized_mapping*.csv``). Returns None when the convention does not
-    hold (synthetic test corpora) — v2 fields then stay None."""
+    """Base-PDF resolver for the v2/skill metrics.
+
+    With ``oracle_roots``: the pool tables name each pair's base docx under the corpus
+    root, and its PDF sits at ``<state>/pdf/<stem>.pdf`` under the root of the renderer
+    in use, so the base is rendered like the oracle. Otherwise by the legacy corpus
+    convention: the mapping CSVs and ``pdf_source`` dir live next to the oracle dir
+    (``<corpus>/pdf_source``, ``<corpus>/centralized_mapping*.csv``). Returns None when
+    neither holds (synthetic test corpora); v2 fields then stay None."""
+    if cfg.oracle_roots:
+        root = cfg.oracle_roots[cfg.renderer]
+        found = {}
+        for row in _pool_rows(cfg):
+            state, _, stem = row["base"].rpartition("/docx/")
+            pdf = root / state / "pdf" / f"{stem}.pdf"
+            if pdf.is_file():
+                found[row["key"].lower()] = pdf
+        return found or None
     corpus_root = cfg.source_of_truth.parent
     base_dir = corpus_root / "pdf_source"
     csvs = sorted(corpus_root.glob("centralized_mapping*.csv"))
@@ -104,7 +143,16 @@ def _base_pdf_map(cfg: BenchConfig) -> dict[str, Path] | None:
 def _source_docx_map(cfg: BenchConfig) -> dict[str, tuple[Path, Path]] | None:
     """Base/next source-DOCX resolver for the functional lens, by the same corpus
     convention as :func:`_base_pdf_map` (``<corpus>/docx_source`` + mapping CSVs
-    next to the oracle dir). None when the convention does not hold."""
+    next to the oracle dir), or from the pool tables and the Word corpus when the config
+    has ``oracle_roots``. None when the convention does not hold."""
+    if "word" in cfg.oracle_roots:
+        word = cfg.oracle_roots["word"]
+        pairs = {}
+        for row in _pool_rows(cfg):
+            base, next_ = word / f"{row['base']}.docx", word / f"{row['next']}.docx"
+            if base.is_file() and next_.is_file():
+                pairs[row["key"].lower()] = (base, next_)
+        return pairs or None
     corpus_root = cfg.source_of_truth.parent
     src_dirs = [
         d
@@ -225,8 +273,49 @@ console = Console(
 )
 
 
+def _cached_renderer(renderer: Renderer, renderer_id: str) -> Renderer:
+    """``renderer`` behind the active content cache (content_cache.py), or as is."""
+    cache = content_cache.active()
+    if cache is None:
+        return renderer
+    return content_cache.CachedRenderer(renderer, cache, renderer_id=renderer_id)
+
+
+def _soffice_renderer_id() -> str:
+    return f"soffice-{hardware.soffice_version() or 'unknown'}"
+
+
+def _seed_word_pdfs(docx_dir: Path, work_dir: Path, backend: str) -> int:
+    """Clone the Word PDFs filed beside ``docx_dir`` (``../pdf/<stem>.pdf``) into the
+    renderer's ``work_dir/pdf`` when the renderer is Word, so it does not print them
+    again; returns how many. A LibreOffice cache is never seeded with Word PDFs."""
+    pdfs = docx_dir.parent / "pdf"
+    if backend != "word" or not pdfs.is_dir():
+        return 0
+    from neurotic_docx_bench.word_corpus import copy_file
+
+    seeded = 0
+    for docx in sorted(docx_dir.glob("*.docx")):
+        src, dst = pdfs / f"{docx.stem}.pdf", work_dir / "pdf" / f"{docx.stem}.pdf"
+        if src.is_file() and not dst.exists():
+            copy_file(src, dst)
+            seeded += 1
+    return seeded
+
+
+def _docx_renderer(backend: str) -> tuple[Renderer, str]:
+    """The renderer for the bench's own docx renders (accepted and roundtrip copies,
+    their ground truth) and its content-cache id: Word or LibreOffice, per ``backend``."""
+    if backend == "word":
+        return _renderer("word"), f"word-{hardware.word_version() or 'unknown'}"
+    return SofficeRenderer(), _soffice_renderer_id()
+
+
 def _renderer(backend: str, harness: HarnessConfig | None = None) -> Renderer:
-    """Factory for render backends."""
+    """Factory for render backends; ``auto`` is Word where this machine has it, else soffice."""
+    from neurotic_docx_bench.render import resolve_backend
+
+    backend = resolve_backend(backend)
     if backend == "soffice":
         return SofficeRenderer()
     if backend == "passthrough":
@@ -242,13 +331,45 @@ def _renderer(backend: str, harness: HarnessConfig | None = None) -> Renderer:
     raise typer.BadParameter(f"unknown render backend: {backend!r}")
 
 
-def _limited_source(source: Path, pattern: str, limit: int | None) -> tuple[Path, bool]:
-    """Return (source_dir, is_temp). If limit is set, copy the first N matching files into
-    a temp dir so only a subset is rendered/scored.
+def _device_option() -> Any:
+    return typer.Option(
+        None,
+        "--device",
+        help="run the scorer kernels (CIEDE2000, SSIM) on torch: auto|cpu|mps|cuda "
+        "(the gpu extra); default is the parity-locked numpy path. An unavailable "
+        "device warns and falls back to numpy",
+        callback=_validate_device,
+    )
+
+
+def _validate_device(value: str | None) -> str | None:
+    if value and value not in kernels.DEVICE_SPECS:
+        raise typer.BadParameter(f"expected one of: {', '.join(kernels.DEVICE_SPECS)}")
+    return value
+
+
+def _limited_source(
+    source: Path,
+    pattern: str,
+    limit: int | None,
+    *,
+    keys: Collection[str] | None = None,
+    tool: str | None = None,
+    seed: int | None = None,
+) -> tuple[Path, bool]:
+    """Return (source_dir, is_temp). With ``keys`` (document keys, matched through the
+    redline key of each file's stem for ``tool`` or its plain stem) or ``limit``, copy
+    the selected files into a temp dir so only that subset is rendered and scored.
+    ``limit`` takes the first files in name order; with ``seed`` it takes a
+    deterministic random sample instead (``bench profile``).
     """
-    if not limit:
+    if not limit and keys is None:
         return source, False
-    files = sorted(source.glob(pattern))[:limit]
+    files = sorted(source.glob(pattern))
+    if keys is not None:
+        files = [f for f in files if docset_mod.stem_in_keys(f.stem, keys, tool)]
+    if limit:
+        files = profile.sample_files(files, limit, seed) if seed is not None else files[:limit]
     tmp = Path(tempfile.mkdtemp(prefix="bench-subset."))
     for f in files:
         _ = shutil.copy(f, tmp / f.name)
@@ -409,9 +530,12 @@ def _print_accept_compare_table(data: ReportData) -> None:
 
 @app.command()
 def render(
-    source: Path = typer.Argument(..., help="folder of DOCX (soffice) or PDF (passthrough)"),
+    source: Path = typer.Argument(..., help="folder of DOCX (auto/word/soffice) or PDF (passthrough)"),
     work_dir: Path = typer.Argument(..., help="scratch dir; PDFs land in <work_dir>/pdf"),
-    backend: str = typer.Option("soffice", "--backend", "-b"),
+    backend: str = typer.Option(
+        "auto", "--backend", "-b",
+        help="auto = Word through scripts/word_pdf.py where this machine has it, else soffice",
+    ),
     jobs: int = typer.Option(12, "--jobs", "-j"),
     force: bool = typer.Option(False, "--force", "-f"),
 ) -> None:
@@ -540,11 +664,12 @@ def compare(
     jobs: int = typer.Option(12, "--jobs", "-j"),
     limit: int | None = typer.Option(None, "--limit"),
     json_out: Path | None = typer.Option(None, "--json", help="write scores as JSON"),
+    device: str | None = _device_option(),
 ) -> None:
     """Score a folder of candidate redline PDFs against the Word oracle redlines."""
     cand_dir, is_temp = _limited_source(candidate, "*.pdf", limit)
     try:
-        with tempfile.TemporaryDirectory(prefix="bench-work.") as work:
+        with tempfile.TemporaryDirectory(prefix="bench-work.") as work, kernels.device_env(device):
             per_doc = pipeline.score_folders_full(
                 oracle, cand_dir, Path(work), dpi=dpi, jobs=jobs, candidate_tool=tool,
             )
@@ -563,6 +688,103 @@ def compare(
         console.print(f"wrote {json_out}")
 
 
+def _stamp_tool_version(report: dict, json_out: Path, tool_version: str | None) -> None:
+    """Record ``tool_version`` on every tool row that has none, and rewrite ``json_out``.
+
+    A ``--score-only`` run never sees the binary that made the PDFs, so without
+    this its report and its converters.jsonl line carry ``version: null``.
+    """
+    if not tool_version:
+        return
+    for data in (report.get("tools") or {}).values():
+        if data.get("version") is None:
+            data["version"] = tool_version
+    json_out.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+
+def _ledger_report_path(json_out: Path) -> str:
+    """``json_out`` relative to the working directory when it lies inside it, so a
+    converters.jsonl line does not carry one machine's absolute path."""
+    try:
+        return Path(json_out).resolve().relative_to(Path.cwd().resolve()).as_posix()
+    except ValueError:
+        return str(json_out)
+
+
+def _append_converter_lines(report: dict, json_out: Path) -> None:
+    """Append one store line per tool of a converter report to results/converters.jsonl;
+    the published tables are built from that store by ``bench report``."""
+    from neurotic_docx_bench.ledger import converters as conv
+
+    n = conv.append_report(
+        conv.DEFAULT_CONVERTERS_PATH,
+        report,
+        hardware=hardware.hardware_info(),
+        report_path=_ledger_report_path(json_out),
+    )
+    console.print(f"appended {n} line(s) to {conv.DEFAULT_CONVERTERS_PATH}")
+
+
+@app.command(name="ingest-converter-reports")
+def ingest_converter_reports(
+    reports: list[Path] = typer.Argument(..., help="report JSON files from docx-to-pdf / docxide-metrics"),
+    store: Path = typer.Option(Path("results/converters.jsonl"), "--store"),
+) -> None:
+    """Backfill results/converters.jsonl from existing report JSON files (one line per tool)."""
+    from neurotic_docx_bench.ledger import converters as conv
+
+    total = 0
+    for p in reports:
+        report = json.loads(Path(p).read_text(encoding="utf-8"))
+        total += conv.append_report(store, report, hardware=None, report_path=str(p))
+    console.print(f"appended {total} line(s) to {store}")
+
+
+def _corpus_word_selection(
+    *,
+    origin: str | None,
+    files_list: list[Path],
+    score_only: bool,
+    locations: list[Path],
+    config: Path,
+    tool: str | None,
+):
+    """Resolve corpus/word pairs for the two DOCX→PDF commands. Warn, do not fail, on gaps."""
+    from neurotic_docx_bench.word_pdf_source import select_corpus_word_pdfs, word_pdf_from_config
+
+    root, states = word_pdf_from_config(config)
+    try:
+        selected = select_corpus_word_pdfs(
+            origin=origin or "all",
+            root=root,
+            states=states,
+            files_list=files_list,
+            score_only=score_only,
+            locations=locations,
+            tool=tool,
+        )
+    except ValueError as exc:
+        raise typer.BadParameter(str(exc)) from exc
+    for warning in selected.warnings:
+        console.print(f"warning: {warning}")
+    return selected
+
+
+def _write_empty_word_pdf_report(json_out: Path, track: str, warnings: list[str]) -> dict:
+    """A selection with nothing to measure is a warning, not a failed run."""
+    report = {
+        "track": track,
+        "oracle": "microsoft_word",
+        "n": 0,
+        "stems": [],
+        "warnings": warnings,
+        "tools": {},
+    }
+    json_out.parent.mkdir(parents=True, exist_ok=True)
+    json_out.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
+    return report
+
+
 @app.command(name="docx-to-pdf")
 def docx_to_pdf_eval(
     converter: Path = typer.Option(
@@ -573,7 +795,7 @@ def docx_to_pdf_eval(
     tool: list[str] = typer.Option(
         [],
         "--tool",
-        help="converter to run (repeatable): rdocx, office2pdf, pdfitdown, doxx, libreoffice_convert_rust, dxpdf, docxide-pdf.",
+        help="converter to run (repeatable): rdocx, office2pdf, pdfitdown, doxx, libreoffice_convert_rust, dxpdf, docxide-pdf, pymupdf-pro, genoffice.",
     ),
     json_out: Path = typer.Option(
         Path("results/docx_to_pdf.json"),
@@ -586,16 +808,60 @@ def docx_to_pdf_eval(
     limit: int | None = typer.Option(None, "--limit", help="score only the first N fixtures (tests)"),
     resume: bool = typer.Option(True, "--resume/--no-resume", help="reuse existing candidate PDFs"),
     convert_workers: int = typer.Option(8, "--convert-workers", help="parallel convert processes per tool"),
-    update_readme: bool = typer.Option(
-        False, "--update-readme", help="rewrite the medium RESULTS.md DOCX→PDF table from this report",
-    ),
-    track: str = typer.Option(
-        "docx_to_pdf",
+    track: str | None = typer.Option(
+        None,
         "--track",
-        help="docx_to_pdf (accepted+randomized redlines) or docx_to_pdf_no_redline_docs (source PDFs).",
+        help=(
+            "legacy pinned set: docx_to_pdf (accepted+randomized redlines) or "
+            "docx_to_pdf_no_redline_docs (source PDFs). Omit this to measure corpus/word."
+        ),
+    ),
+    origin: str | None = typer.Option(
+        None,
+        "--origin",
+        help=(
+            "corpus/word state to convert: clean, tracking_without_comments, "
+            "with_comments_clean, with_comments_tracking, all, or list. "
+            "Default when --track is omitted: all."
+        ),
+    ),
+    files_list: list[Path] = typer.Option(
+        [],
+        "--files-list",
+        help=(
+            "with --origin list: a corpus docx that has its Word PDF, or a Word PDF "
+            "under <state>/pdf. Repeat for each path."
+        ),
+    ),
+    score_only: bool = typer.Option(
+        False,
+        "--score-only",
+        help="skip conversion and score the PDFs given by --location-to-score.",
+    ),
+    location_to_score: list[Path] = typer.Option(
+        [],
+        "--location-to-score",
+        help="with --score-only: a folder of PDFs, or a PDF path. Repeatable.",
+    ),
+    config: Path = typer.Option(
+        Path("bench.yaml"),
+        "--config",
+        help="bench yaml whose word_pdf.root is the corpus (default corpus/word).",
+    ),
+    tool_version: str | None = typer.Option(
+        None,
+        "--tool-version",
+        help="with --score-only: version of the tool that made the PDFs (e.g. 'jubarte 0.9.3').",
     ),
 ) -> None:
-    """Score a pinned Word-oracle DOCX→PDF set.
+    """Score Word PDFs from corpus/word.
+
+    ``--origin`` is one of the four states, ``all``, or ``list``. Conversion
+    runs on every Word PDF that has a DOCX with the same stem. A DOCX with no
+    Word PDF is a warning and is not converted. ``--score-only`` skips
+    conversion and scores every Word PDF that also has a PDF under
+    ``--location-to-score``. ``--track`` is the older pinned set and does not
+    combine with ``--origin``.
 
     Each ``--tool`` is invoked on its own headless convert path. Convert crashes
     and non-PDF output are generate failures scored as 0 (intent-to-treat).
@@ -607,20 +873,64 @@ def docx_to_pdf_eval(
         unknown = [name for name in tools if name not in WORD_PDF_TOOLS and name != "jubarte"]
         if unknown:
             raise typer.BadParameter(f"unknown --tool: {', '.join(unknown)}")
-    if track not in TRACKS:
-        raise typer.BadParameter(f"unknown --track {track}; known: {sorted(TRACKS)}")
-    report = run_eval(
-        json_out,
-        converter=converter,
-        tools=tools,
-        jobs=jobs,
-        dpi=dpi,
-        work_dir=work_dir,
-        limit=limit,
-        resume=resume,
-        convert_workers=convert_workers,
-        track=track,
-    )
+    if track is not None:
+        if origin is not None or files_list or score_only or location_to_score:
+            raise typer.BadParameter(
+                "--track uses the pinned Word sets and does not take "
+                "--origin, --files-list, --score-only, or --location-to-score",
+            )
+        if track not in TRACKS:
+            raise typer.BadParameter(f"unknown --track {track}; known: {sorted(TRACKS)}")
+        report = run_eval(
+            json_out,
+            converter=converter,
+            tools=tools,
+            jobs=jobs,
+            dpi=dpi,
+            work_dir=work_dir,
+            limit=limit,
+            resume=resume,
+            convert_workers=convert_workers,
+            track=track,
+        )
+    else:
+        if score_only and len(tool) > 1:
+            raise typer.BadParameter("--score-only scores one PDF set; pass a single --tool")
+        label = tool[0] if score_only and len(tool) == 1 else None
+        run_tools = (label,) if score_only and label else (("candidates",) if score_only else tools)
+        selected = _corpus_word_selection(
+            origin=origin,
+            files_list=files_list,
+            score_only=score_only,
+            locations=location_to_score,
+            config=config,
+            tool=label,
+        )
+        if not selected.fixtures:
+            report = _write_empty_word_pdf_report(
+                json_out, f"corpus/word:{origin or 'all'}", selected.warnings,
+            )
+            console.print(f"docx-to-pdf  n=0  → {json_out}")
+            return
+        report = run_eval(
+            json_out,
+            converter=converter,
+            tools=run_tools,
+            jobs=jobs,
+            dpi=dpi,
+            work_dir=work_dir,
+            limit=limit,
+            resume=resume,
+            convert_workers=convert_workers,
+            track=f"corpus/word:{origin or 'all'}",
+            fixtures=selected.fixtures,
+            check_pins=False,
+            score_only=score_only,
+            candidates=selected.candidates,
+            warnings=selected.warnings,
+        )
+        if score_only:
+            _stamp_tool_version(report, json_out, tool_version)
     bits = [f"docx-to-pdf  n={report['n']}"]
     for name, data in (report.get("tools") or {}).items():
         bits.append(
@@ -630,11 +940,7 @@ def docx_to_pdf_eval(
         )
     bits.append(f"→ {json_out}")
     console.print("  ".join(bits))
-    if update_readme:
-        from neurotic_docx_bench.docx_to_pdf import update_readme_docx_to_pdf
-
-        update_readme_docx_to_pdf(Path("RESULTS.md"), report, track=track)
-        console.print("updated RESULTS.md DOCX→PDF table")
+    _append_converter_lines(report, json_out)
 
 
 @app.command(name="docxide-metrics")
@@ -650,31 +956,87 @@ def docxide_metrics_eval(
     json_out: Path = typer.Option(
         Path("results/docxide_metrics.json"),
         "--json",
-        help="write per-doc Jaccard/SSIM/text-boundary + ITT aggregates",
+        help="write per-doc Jaccard/text-boundary + ITT aggregates",
     ),
-    work_dir: Path | None = typer.Option(None, "--work-dir", help="scratch dir for PDFs and rasters"),
+    work_dir: Path | None = typer.Option(None, "--work-dir", help="scratch dir for candidate PDFs"),
     limit: int | None = typer.Option(None, "--limit", help="score only the first N fixtures (tests)"),
     resume: bool = typer.Option(True, "--resume/--no-resume", help="reuse existing candidate PDFs"),
     convert_workers: int = typer.Option(8, "--convert-workers", help="parallel convert processes per tool"),
-    score_workers: int = typer.Option(4, "--score-workers", help="parallel documents in the scorer"),
-    update_readme: bool = typer.Option(
-        False, "--update-readme", help="rewrite the medium RESULTS.md docxide_metrics table from this report",
+    score_workers: int = typer.Option(4, "--score-workers", help="parallel scoring processes"),
+    origin: str | None = typer.Option(
+        None,
+        "--origin",
+        help=(
+            "corpus/word state to convert: clean, tracking_without_comments, "
+            "with_comments_clean, with_comments_tracking, all, or list. Default: all."
+        ),
+    ),
+    files_list: list[Path] = typer.Option(
+        [],
+        "--files-list",
+        help=(
+            "with --origin list: a corpus docx that has its Word PDF, or a Word PDF "
+            "under <state>/pdf. Repeat for each path."
+        ),
+    ),
+    score_only: bool = typer.Option(
+        False,
+        "--score-only",
+        help="skip conversion and score the PDFs given by --location-to-score.",
+    ),
+    location_to_score: list[Path] = typer.Option(
+        [],
+        "--location-to-score",
+        help="with --score-only: a folder of PDFs, or a PDF path. Repeatable.",
+    ),
+    config: Path = typer.Option(
+        Path("bench.yaml"),
+        "--config",
+        help="bench yaml whose word_pdf.root is the corpus (default corpus/word).",
+    ),
+    tool_version: str | None = typer.Option(
+        None,
+        "--tool-version",
+        help="with --score-only: version of the tool that made the PDFs (e.g. 'jubarte 0.9.3').",
     ),
 ) -> None:
-    """Score the 398 no-redline fixtures with docxide-pdf's own metrics.
+    """Score corpus/word with docxide-pdf's Jaccard and text-boundary metrics.
 
-    Same fixtures and same pinned Word oracles as ``docx-to-pdf --track
-    docx_to_pdf_no_redline_docs``; the scorer is docxide-pdf's Jaccard / SSIM /
-    text-boundary suite at 150 DPI instead of the superdoc-visual-benchmarks core.
-    Convert failures score 0 on all three metrics (intent-to-treat).
+    ``--origin`` is one of the four states, ``all``, or ``list``. Conversion
+    runs on every Word PDF that has a DOCX with the same stem. A DOCX with no
+    Word PDF is a warning and is not converted. ``--score-only`` skips
+    conversion and scores every Word PDF that also has a PDF under
+    ``--location-to-score``. Metrics are page_metrics.py at 150 DPI. Convert
+    failures score 0 on both metrics (intent-to-treat).
     """
     from neurotic_docx_bench import docxide_metrics as dm
     from neurotic_docx_bench.docx_to_pdf import WORD_PDF_TOOLS
 
-    tools = tuple(tool) or dm.DEFAULT_TOOLS
-    unknown = [name for name in tools if name not in WORD_PDF_TOOLS and name != "jubarte"]
+    if score_only and len(tool) > 1:
+        raise typer.BadParameter("--score-only scores one PDF set; pass a single --tool")
+    if score_only:
+        tools = (tool[0],) if tool else ("candidates",)
+        label = tool[0] if tool else None
+    else:
+        tools = tuple(tool) or dm.DEFAULT_TOOLS
+        label = None
+    unknown = [name for name in tools if name not in WORD_PDF_TOOLS and name != "jubarte" and name != "candidates"]
     if unknown:
         raise typer.BadParameter(f"unknown --tool: {', '.join(unknown)}")
+    selected = _corpus_word_selection(
+        origin=origin,
+        files_list=files_list,
+        score_only=score_only,
+        locations=location_to_score,
+        config=config,
+        tool=label,
+    )
+    if not selected.fixtures:
+        _write_empty_word_pdf_report(
+            json_out, f"corpus/word:{origin or 'all'}", selected.warnings,
+        )
+        console.print(f"docxide-metrics  n=0  → {json_out}")
+        return
     report = dm.run_eval(
         json_out,
         tools=tools,
@@ -684,7 +1046,15 @@ def docxide_metrics_eval(
         resume=resume,
         convert_workers=convert_workers,
         score_workers=score_workers,
+        fixtures=selected.fixtures,
+        check_pins=False,
+        score_only=score_only,
+        candidates=selected.candidates,
+        warnings=selected.warnings,
+        fixture_track=f"corpus/word:{origin or 'all'}",
     )
+    if score_only:
+        _stamp_tool_version(report, json_out, tool_version)
     bits = [f"docxide-metrics  n={report['n']}"]
     for name, data in (report.get("tools") or {}).items():
         m = data.get("metrics") or {}
@@ -698,9 +1068,7 @@ def docxide_metrics_eval(
         )
     bits.append(f"→ {json_out}")
     console.print("  ".join(bits))
-    if update_readme:
-        dm.update_readme(Path("RESULTS.md"), report)
-        console.print("updated RESULTS.md docxide_metrics table")
+    _append_converter_lines(report, json_out)
 
 
 def _agg(values: Iterable[float | None]) -> dict[str, float | int]:
@@ -785,6 +1153,7 @@ def _accept_compare_stage(
     *,
     exclude_keys: set[str] | None = None,
     only_keys: set[str] | None = None,
+    backend: str = "soffice",
 ) -> BenchmarkOutcome:
     """Copy the freshly generated redlines, accept ALL tracked changes, render, and score
     the accepted copies against the accepted ground truth; write the diff report.
@@ -812,7 +1181,8 @@ def _accept_compare_stage(
     if accept_failures:
         console.print(f"[yellow]{len(accept_failures)} accept failure(s)[/yellow]")
 
-    report = SofficeRenderer().to_pdfs(accepted_dir, run_dir / "accepted", jobs=rc.jobs)
+    docx_renderer, soffice_id = _docx_renderer(backend)
+    report = _cached_renderer(docx_renderer, soffice_id).to_pdfs(accepted_dir, run_dir / "accepted", jobs=rc.jobs)
     if report.fail_count:
         console.print(f"[yellow]{report.fail_count} accepted-render failure(s)[/yellow]")
 
@@ -824,6 +1194,8 @@ def _accept_compare_stage(
         jobs=rc.jobs,
         candidate_tool=rc.name,
         exclude_keys=exclude_keys,
+        cache=content_cache.active(),
+        renderer_id=soffice_id,
         only_keys=only_keys,
         strict_filter_keys=False,
     )
@@ -873,6 +1245,7 @@ def _accept_compare_stage(
 
 def _roundtrip_stage(
     rc: RunConfig, run_dir: Path, roundtrip_oracle_pdf: Path, use_dpi: int, limit: int | None,
+    sample_seed: int | None = None, backend: str = "soffice",
 ) -> BenchmarkOutcome | None:
     """Score the tool's roundtrip output (``out/roundtrip/<tool>/``) against the original
     corpus rendered to PDF — an identity / re-serialization fidelity test. A perfect
@@ -886,13 +1259,15 @@ def _roundtrip_stage(
         return None
 
     console.print(f"[bold]roundtrip:[/bold] scoring {rc.name} roundtrip fidelity ({rt_dir})")
-    rt_source, is_temp = _limited_source(rt_dir, "*.docx", limit)
+    rt_source, is_temp = _limited_source(rt_dir, "*.docx", limit, seed=sample_seed)
     try:
-        report = SofficeRenderer().to_pdfs(rt_source, run_dir / "roundtrip", jobs=rc.jobs)
+        docx_renderer, soffice_id = _docx_renderer(backend)
+        report = _cached_renderer(docx_renderer, soffice_id).to_pdfs(rt_source, run_dir / "roundtrip", jobs=rc.jobs)
         if report.fail_count:
             console.print(f"[yellow]{report.fail_count} roundtrip-render failure(s)[/yellow]")
         per_doc = pipeline.score_folders_plain(
             roundtrip_oracle_pdf, report.pdf_dir, run_dir / "roundtrip_score", dpi=use_dpi, jobs=rc.jobs,
+            cache=content_cache.active(), renderer_id=soffice_id,
         )
     finally:
         if is_temp:
@@ -1095,6 +1470,70 @@ def _corpus_revision(cfg: BenchConfig) -> str | None:
     return hashlib.sha256(path.read_bytes()).hexdigest()[:12]
 
 
+def _registry_entry(rc: RunConfig):
+    """The registry entry for a run, or None when there is no registry file."""
+    from neurotic_docx_bench.ledger.registry import DEFAULT_REGISTRY_PATH, load_registry
+
+    if not DEFAULT_REGISTRY_PATH.is_file():
+        return None
+    return load_registry(DEFAULT_REGISTRY_PATH).resolve_bench(
+        vendor=rc.vendor or rc.name, run_name=rc.name, render=rc.render
+    )
+
+
+def _registry_tool_id(rc: RunConfig) -> str | None:
+    entry = _registry_entry(rc)
+    return entry.id if entry else None
+
+
+def _registry_configuration(rc: RunConfig) -> str | None:
+    entry = _registry_entry(rc)
+    return entry.configuration if entry else None
+
+
+def _docset_for(
+    cfg: BenchConfig,
+    benchmark: BenchmarkName,
+    holdout_mode: str | None,
+    *,
+    gate_set: bool = False,
+) -> docset_mod.DocSet | None:
+    """The benchmark's fixed document set for this run's holdout regime, or None when
+    the oracle directory is not configured (the line is then emitted without a docset).
+    With ``gate_set`` it is the benchmark's gate subset (its own docset id)."""
+    dirs = docset_mod.oracle_dirs_for(cfg, benchmark)
+    if not any(docset_mod.present(d) for d in dirs):
+        return None
+    holdout: set[str] = set()
+    if cfg.holdout_list and Path(cfg.holdout_list).is_file():
+        holdout = pipeline.load_holdout(cfg.holdout_list)
+    full = docset_mod.benchmark_docset(
+        benchmark, dirs, holdout=holdout, holdout_mode=holdout_mode
+    )
+    if not gate_set:
+        return full
+    strata = docset_mod.benchmark_strata(dirs, docset_mod.KEY_KIND[benchmark], full.keys)
+    return docset_mod.gate_docset(full, strata)
+
+
+def _gate_keys_for_run(
+    cfg: BenchConfig, rc: RunConfig, holdout_mode: str | None
+) -> set[str]:
+    """The union of the gate subsets of every source-keyed benchmark this run can
+    emit, so the renderer only sees the gate documents. Roundtrip is left out: its
+    documents come from the fixed roundtrip corpus, not from the run's source, and
+    the family is detailed-only, so it has no gate."""
+    benchmarks: list[str] = ["script_redlines", "accepted_changes"]
+    if cfg.visual_oracles:
+        benchmarks.extend(name for name, _ in visual_benchmarks_for_run(rc, cfg.visual_oracles))
+    keys: set[str] = set()
+    for b in benchmarks:
+        d = _docset_for(cfg, cast("BenchmarkName", b), holdout_mode, gate_set=True)
+        if d is not None:
+            keys |= set(d.keys)
+    return keys
+
+
 def _emit_and_gate_benchmark(
     *,
     benchmark: BenchmarkName,
@@ -1116,9 +1555,11 @@ def _emit_and_gate_benchmark(
     do_gate: bool,
     n_oracle_unmatched: int | None = None,
     holdout_mode: str | None = None,
+    gate_set: bool = False,
 ) -> int:
     """Emit one schema-v4 ``Results`` JSONL line for ``(vendor, benchmark)`` and gate it
-    vs the benchmark's snapshot.
+    vs the benchmark's snapshot. With ``gate_set`` the line is restricted to, and
+    stamped with, the benchmark's gate subset.
 
     Returns the gate's exit contribution (1 on FAIL, 0 otherwise). Each benchmark
     (``script_redlines``, ``accepted_changes``, ``roundtrip``, …) is its own
@@ -1135,6 +1576,25 @@ def _emit_and_gate_benchmark(
         return 0
     vendor = rc.vendor or rc.name
     speed_samples_ms = stages.speed_samples_from_timings(timings, speed_key)
+    docset = _docset_for(cfg, benchmark, holdout_mode, gate_set=gate_set)
+    failures = list(failures)
+    if docset is not None and gate_set:
+        full = _docset_for(cfg, benchmark, holdout_mode)
+        console.print(
+            f"{benchmark}: gate set: {docset.n} of {full.n if full else 0} documents "
+            f"(docset {docset.id}, gate of {docset.gate_of})"
+        )
+    if docset is not None:
+        restricted = docset_mod.restrict_to_docset(docset.keys, scores, per_doc, failures)
+        if restricted.dropped_scores or restricted.dropped_failures:
+            console.print(
+                f"[yellow]{benchmark}: {len(restricted.dropped_scores)} scored and "
+                f"{len(restricted.dropped_failures)} failed document(s) are outside the "
+                f"document set {docset.id}; kept out of the ITT pool[/yellow]"
+            )
+        scores = restricted.scores
+        per_doc = cast("PerDocScores | None", restricted.per_doc)
+        failures = cast("list[FailureRecord]", restricted.failures)
     line = jsonl_emit.build_results_line(
         id_run=id_run,
         vendor=vendor,
@@ -1152,6 +1612,11 @@ def _emit_and_gate_benchmark(
         scorer=pipeline.scorer_for_benchmark(benchmark),
         corpus_revision=_corpus_revision(cfg),
         holdout_mode=holdout_mode,
+        docset_id=docset.id if docset is not None else None,
+        tool_id=_registry_tool_id(rc),
+        configuration=_registry_configuration(rc),
+        renderer_id=hardware.renderer_id(rc),
+        hardware=hardware.hardware_info(),
     )
     appended = (
         jsonl_emit.append_if_changed(jsonl_path, line)
@@ -1209,9 +1674,15 @@ def _execute_run(
     stage_cb: Callable[[str, int | None], None] | None = None,
     holdout_keys: set[str] | None = None,
     holdout_mode: str | None = None,
+    gate_set: bool = False,
+    timings_sink: dict[str, dict[str, dict[str, float]]] | None = None,
+    sample_seed: int | None = None,
 ) -> int:
     """Run one tool: (update/resolve version) → generate/locate source → render → score →
     emit → gate. Returns this run's exit contribution (1 on gate FAIL).
+    ``gate_set`` renders and scores only the gate subset of each benchmark's set.
+    ``timings_sink`` (``bench profile``) receives each benchmark's per-document stage
+    timings; ``sample_seed`` turns ``limit`` into a seeded sample instead of the head.
 
     ``holdout_keys``/``holdout_mode`` (from the config's ``holdout_list``): mode
     "excluded" drops the sealed keys from the primary score, "only" scores just
@@ -1281,19 +1752,37 @@ def _execute_run(
     roundtrip_outcome: BenchmarkOutcome | None = None
     accept_outcome: BenchmarkOutcome | None = None
     visual_outcomes: list[BenchmarkOutcome] = []
-    src_dir, is_temp = _limited_source(Path(source), pattern, limit)
+    src_dir, is_temp = _limited_source(
+        Path(source),
+        pattern,
+        limit,
+        keys=_gate_keys_for_run(cfg, rc, holdout_mode) if gate_set else None,
+        tool=rc.name,
+        seed=sample_seed,
+    )
     try:
         _stage("render + score")
-        report = _renderer(rc.render, rc.harness).to_pdfs(src_dir, run_dir, jobs=rc.jobs, timeout=rc.timeout)
+        run_renderer_id = hardware.renderer_id(rc)
+        cache = content_cache.active()
+        report = _cached_renderer(_renderer(rc.render, rc.harness), run_renderer_id).to_pdfs(
+            src_dir, run_dir, jobs=rc.jobs, timeout=rc.timeout,
+        )
         if report.fail_count:
             console.print(f"[yellow]{report.fail_count} render failures[/yellow]")
+        restored = sum(1 for r in report.results if r.cached)
+        if restored:
+            console.print(f"content cache: {restored} render(s) restored")
         per_doc = pipeline.score_folders_full(
             [cfg.source_of_truth, *cfg.extra_oracle_dirs],
             report.pdf_dir, run_dir / "score", dpi=use_dpi, jobs=rc.jobs, candidate_tool=rc.name,
             base_map=_base_pdf_map(cfg), null_cache_path=jsonl_path.parent / "null_baseline.json",
             exclude_keys=holdout_exclude,
             only_keys=holdout_only,
+            cache=cache, renderer_id=run_renderer_id,
         )
+        hits = sum(1 for v in per_doc.values() if v.get("cached"))
+        if hits:
+            console.print(f"content cache: {hits}/{len(per_doc)} score(s) restored")
         gallery_path = gallery_emit.write_gallery(
             run_dir,
             {k: _get_overall_score(v) for k, v in per_doc.items()},
@@ -1309,18 +1798,21 @@ def _execute_run(
                 _stage("accept-compare")
                 accept_outcome = _accept_compare_stage(
                     rc, run_dir, src_dir, per_doc, accepted_oracle_pdf, use_dpi,
-                    exclude_keys=holdout_exclude, only_keys=holdout_only,
+                    exclude_keys=holdout_exclude, only_keys=holdout_only, backend=cfg.renderer,
                 )
             else:
                 console.print("[yellow]accept-compare skipped (no DOCX source for this run)[/yellow]")
         if roundtrip and roundtrip_oracle_pdf is not None:
             _stage("roundtrip")
-            roundtrip_outcome = _roundtrip_stage(rc, run_dir, roundtrip_oracle_pdf, use_dpi, limit)
+            roundtrip_outcome = _roundtrip_stage(
+                rc, run_dir, roundtrip_oracle_pdf, use_dpi, limit, sample_seed=sample_seed,
+                backend=cfg.renderer,
+            )
         # Visual benchmarks: re-score the SAME rendered candidate PDFs (already
         # produced by the renderer above) against each visual_* oracle declared on
         # the run. visual_rendering uses the plain-stem matcher (base PDFs); the
         # redlines/accepted variants use the redline-key matcher. Each emits its
-        # own JSONL line. This makes rc.benchmarks load-bearing for visual_*.
+        # own JSONL line. This is what makes rc.benchmarks decide the visual_* lines.
         # The three visual_* benchmarks share ONE render pass (the ``report``
         # above), so they share its render-speed distribution: build the per-doc
         # ``render_s`` timings once and attach to each outcome.
@@ -1350,20 +1842,21 @@ def _execute_run(
             if vis_name == "visual_rendering":
                 vis_per_doc = pipeline.score_folders_base(
                     Path(vis_oracle), report.pdf_dir, run_dir / f"score_{vis_name}",
-                    dpi=use_dpi, jobs=rc.jobs,
+                    dpi=use_dpi, jobs=rc.jobs, cache=cache, renderer_id=run_renderer_id, candidate_tool=rc.name,
                 )
             elif vis_name == "visual_accepted_changes":
                 vis_per_doc = pipeline.score_folders_accepted(
                     Path(vis_oracle), report.pdf_dir, run_dir / f"score_{vis_name}",
                     dpi=use_dpi, jobs=rc.jobs,
                     exclude_keys=holdout_exclude, only_keys=holdout_only,
+                    cache=cache, renderer_id=run_renderer_id,
                 )
             else:
                 vis_per_doc = pipeline.score_folders_full(
                     Path(vis_oracle), report.pdf_dir, run_dir / f"score_{vis_name}",
                     dpi=use_dpi, jobs=rc.jobs, candidate_tool=rc.name,
                     exclude_keys=holdout_exclude, only_keys=holdout_only,
-                    strict_filter_keys=False,
+                    strict_filter_keys=False, cache=cache, renderer_id=run_renderer_id,
                 )
             # visual_* stay on the RAW score: candidate and oracle come from DIFFERENT
             # engines, so repagination (page-count mismatch) is endemic and pagefair
@@ -1502,6 +1995,17 @@ def _execute_run(
             )
 
     timings = _collect_timings(rc, run_dir, report, per_doc)
+    if timings_sink is not None:
+        # ``bench profile``: hand every benchmark's per-document stage seconds back to
+        # the driver, whether or not the benchmark is emitted.
+        if scores or failures:
+            timings_sink["script_redlines"] = timings
+        if accept_outcome is not None:
+            timings_sink[accept_outcome.benchmark] = accept_outcome.timings
+        if roundtrip_outcome is not None:
+            timings_sink[roundtrip_outcome.benchmark] = roundtrip_outcome.timings
+        for vis_outcome in visual_outcomes:
+            timings_sink[vis_outcome.benchmark] = vis_outcome.timings
 
     # Schema v4: emit one self-contained Results line per benchmark. The primary
     # redline score is "script_redlines"; accept-compare and roundtrip are their
@@ -1518,6 +2022,7 @@ def _execute_run(
             cfg_hash=cfg_hash, id_run=id_run, timestamp=timestamp,
             emit=emit, only_on_change=only_on_change, do_gate=do_gate,
             n_oracle_unmatched=n_oracle_unmatched, holdout_mode=holdout_mode,
+            gate_set=gate_set,
         ))
 
     if accept_outcome is not None:
@@ -1530,7 +2035,7 @@ def _execute_run(
             jsonl_path=jsonl_path, snapshots_dir=snapshots_dir,
             cfg_hash=cfg_hash, id_run=id_run, timestamp=timestamp,
             emit=emit, only_on_change=only_on_change, do_gate=do_gate,
-            holdout_mode=holdout_mode,
+            holdout_mode=holdout_mode, gate_set=gate_set,
         ))
 
     if roundtrip_outcome is not None:
@@ -1547,7 +2052,9 @@ def _execute_run(
             # the pair-key seal cannot filter it, so stamping the run's mode
             # would be false provenance (and "only" would wrongly drop the line
             # from every headline table). None = truthfully unfiltered.
-            holdout_mode=None,
+            # The gate set does not reach roundtrip either (see _gate_keys_for_run),
+            # so the line keeps its full docset.
+            holdout_mode=None, gate_set=False,
         ))
 
     for vis_outcome in visual_outcomes:
@@ -1569,6 +2076,7 @@ def _execute_run(
                 holdout_mode=(
                     None if vis_outcome.benchmark == "visual_rendering" else holdout_mode
                 ),
+                gate_set=gate_set,
             ))
 
     # A run succeeds if ANY of its benchmarks produced scores — not just the
@@ -1733,13 +2241,20 @@ def _drive_runs(
     oracle_check: bool = True,
     canary_check: bool = True,
     holdout: bool = False,
+    gate_set: bool = False,
+    timings_sink: dict[str, dict[str, Any]] | None = None,
+    sample_seed: int | None = None,
 ) -> None:
-    """Shared driver for ``run`` / ``run-all``: execute the selected bench.yaml runs
-    sequentially. ``names=None`` runs everything; otherwise the runs execute in the
-    given order (deduplicated).
+    """Shared driver for ``run`` / ``run-all`` / ``profile``: execute the selected
+    bench.yaml runs sequentially. ``names=None`` runs everything; otherwise the runs
+    execute in the given order (deduplicated).
 
     With ``holdout_list`` configured, normal runs EXCLUDE the sealed keys from
     scoring; ``holdout=True`` (``bench run --holdout``) flips to scoring ONLY them.
+
+    ``timings_sink`` (``bench profile``) receives, per run name, ``{"renderer_id",
+    "wall_s", "benchmarks": {benchmark: {doc_key: {stage: seconds}}}}``;
+    ``sample_seed`` makes ``limit`` a seeded sample instead of the first files.
     """
     cfg = load_config(config)
     holdout_keys: set[str] | None = None
@@ -1777,7 +2292,7 @@ def _drive_runs(
         raise typer.BadParameter(f"no runs to execute (names={names!r})")
 
     rid = provenance.run_id()
-    cfg_hash = provenance.config_hash(config)
+    cfg_hash = provenance.config_hash(config, renderer=cfg.renderer)
     jsonl_path = results_dir / "bench.jsonl"
     snapshots_dir = results_dir / "score-snapshots"
     worst_exit = 0
@@ -1814,17 +2329,26 @@ def _drive_runs(
                 "existing folder (produce it with `bench accept … --out …` or `--generate`)",
             )
         console.rule("[bold]accepted ground truth → PDF (cached)[/bold]")
-        rep = SofficeRenderer().to_pdfs(agt, accepted_oracle_cache, jobs=12)
+        # one cache per renderer: the ground truth is rendered like the candidates
+        _seed_word_pdfs(agt, accepted_oracle_cache / cfg.renderer, cfg.renderer)
+        rep = _docx_renderer(cfg.renderer)[0].to_pdfs(agt, accepted_oracle_cache / cfg.renderer, jobs=12)
         if rep.fail_count:
             console.print(f"[yellow]{rep.fail_count} accepted-oracle render failure(s)[/yellow]")
         accepted_oracle_pdf = rep.pdf_dir
 
     roundtrip_oracle_pdf: Path | None = None
     if roundtrip:
-        rt_corpus = Path("corpus/word_based/word_working_roundtrip")
+        rt_corpus = Path("<no roundtrip_list in the config>")
+        if cfg.roundtrip_list is not None:
+            from neurotic_docx_bench.word_corpus import stage_list
+
+            staged = roundtrip_oracle_cache / "source"
+            stage_list(cfg.roundtrip_list, staged)
+            rt_corpus = staged / "docx"
+            _seed_word_pdfs(rt_corpus, roundtrip_oracle_cache / cfg.renderer, cfg.renderer)
         if rt_corpus.is_dir():
             console.rule("[bold]roundtrip oracle → PDF (cached)[/bold]")
-            rep = SofficeRenderer().to_pdfs(rt_corpus, roundtrip_oracle_cache, jobs=12)
+            rep = _docx_renderer(cfg.renderer)[0].to_pdfs(rt_corpus, roundtrip_oracle_cache / cfg.renderer, jobs=12)
             if rep.fail_count:
                 console.print(f"[yellow]{rep.fail_count} roundtrip-oracle render failure(s)[/yellow]")
             roundtrip_oracle_pdf = rep.pdf_dir
@@ -1937,6 +2461,10 @@ def _drive_runs(
                 if progress is not None and current_task is not None:
                     progress.remove_task(current_task)
                 continue
+        run_sink: dict[str, dict[str, dict[str, float]]] | None = (
+            {} if timings_sink is not None else None
+        )
+        wall_start = time.perf_counter()
         try:
             worst_exit = max(
                 worst_exit,
@@ -1962,6 +2490,9 @@ def _drive_runs(
                     stage_cb=_stage,
                     holdout_keys=holdout_keys,
                     holdout_mode=holdout_mode,
+                    gate_set=gate_set,
+                    timings_sink=run_sink,
+                    sample_seed=sample_seed,
                 ),
             )
         except Exception as exc:  # one run's failure must not stop the rest
@@ -1985,6 +2516,12 @@ def _drive_runs(
                 console.print(f"cleaned {run_dir}")
         finally:
             _stop_harness_server(server_proc)
+            if timings_sink is not None and run_sink is not None:
+                timings_sink[rc.name] = {
+                    "renderer_id": hardware.renderer_id(rc),
+                    "wall_s": time.perf_counter() - wall_start,
+                    "benchmarks": run_sink,
+                }
         # one run processed (ok or failed) → advance the overall bar and retire the
         # per-run bar (skips & harness failures do their own cleanup before `continue`).
         if progress is not None and overall_task is not None:
@@ -2071,6 +2608,20 @@ def run(
         help="score ONLY the sealed holdout keys (yaml: holdout_list) instead of "
         "excluding them — the on-demand overfitting check",
     ),
+    gate_set: bool = typer.Option(
+        False,
+        "--gate-set",
+        help="render and score only each benchmark's gate subset (50 documents per "
+        "family, stamped with the gate set's own docset id); the run a tool needs "
+        "before it enters the main page",
+    ),
+    use_cache: bool = typer.Option(
+        True,
+        "--cache/--no-cache",
+        help="reuse renders, rasters and scores by content hash from .bench-cache/ next "
+        "to the results dir (BENCH_CACHE_DIR moves it, BENCH_NO_CACHE=1 disables it)",
+    ),
+    device: str | None = _device_option(),
 ) -> None:
     """Drive bench.yaml runs **sequentially** (one per tool). Each run gets its own
     ``runs/{name}_{datetime}`` work folder (kept locally; ``--clean-runs`` deletes it only
@@ -2083,28 +2634,130 @@ def run(
     """
     if os.environ.get("BENCH_RERUN"):
         rerun = True
-    _drive_runs(
-        config=config,
-        names=[only] if only else None,
-        limit=limit,
-        dpi=dpi,
-        results_dir=results_dir,
-        runs_dir=runs_dir,
-        clean_runs=clean_runs,
-        no_update=no_update,
-        emit=emit,
-        only_on_change=only_on_change,
-        do_gate=do_gate,
-        generate=generate,
-        accept_compare=accept_compare,
-        accepted_oracle_cache=accepted_oracle_cache,
-        roundtrip=roundtrip,
-        roundtrip_oracle_cache=roundtrip_oracle_cache,
-        rerun=rerun,
-        oracle_check=oracle_check,
-        canary_check=canary_check,
-        holdout=holdout,
-    )
+    # The content cache is scoped to this command: the stages read it through
+    # ``content_cache.active()``, and nothing after the run (another command in the same
+    # process, a test) inherits it.
+    content_cache.configure(content_cache.from_env(Path(results_dir).resolve().parent, enabled=use_cache))
+    try:
+        with kernels.device_env(device):
+            _drive_runs(
+                config=config,
+                names=[only] if only else None,
+                limit=limit,
+                dpi=dpi,
+                results_dir=results_dir,
+                runs_dir=runs_dir,
+                clean_runs=clean_runs,
+                no_update=no_update,
+                emit=emit,
+                only_on_change=only_on_change,
+                do_gate=do_gate,
+                generate=generate,
+                accept_compare=accept_compare,
+                accepted_oracle_cache=accepted_oracle_cache,
+                roundtrip=roundtrip,
+                roundtrip_oracle_cache=roundtrip_oracle_cache,
+                rerun=rerun,
+                oracle_check=oracle_check,
+                canary_check=canary_check,
+                holdout=holdout,
+                gate_set=gate_set,
+            )
+    finally:
+        content_cache.configure(None)
+
+
+@app.command(name="cache")
+def cache_cmd(
+    results_dir: Path = typer.Option(Path("results"), "--results-dir", help="locates the default cache dir"),
+    clear: bool = typer.Option(False, "--clear", help="delete every cached render, raster and score"),
+) -> None:
+    """Show (or ``--clear``) the content-addressed render/raster/score cache."""
+    cache = content_cache.from_env(Path(results_dir).resolve().parent)
+    if cache is None:
+        console.print("content cache disabled (BENCH_NO_CACHE)")
+        return
+    if clear:
+        cache.clear()
+        console.print(f"cleared {cache.root}")
+    stats = cache.stats()
+    console.print(cache.root, soft_wrap=True)
+    console.print(f"render: {stats['render']}, raster: {stats['raster']}, score: {stats['score']}")
+    console.print(f"{stats['bytes'] / 2**20:.1f} MiB")
+    console.print(f"scorer fingerprint {content_cache.scorer_fingerprint()}, engine {content_cache.raster_engine()}")
+
+
+@app.command(name="profile")
+def profile_cmd(
+    config: Path = typer.Option(Path("bench.yaml"), "--config", "-c"),
+    run_names: list[str] | None = typer.Option(
+        None, "--run", help="profile only this run name (repeatable); default: every run",
+    ),
+    sample: int = typer.Option(10, "--sample", min=1, help="documents per benchmark, a seeded sample"),
+    seed: int = typer.Option(0, "--seed", help="sample seed; the same seed picks the same documents"),
+    dpi: int | None = typer.Option(None, "--dpi"),
+    results_dir: Path = typer.Option(Path("results"), "--results-dir", help="nothing is written under it"),
+    runs_dir: Path = typer.Option(Path("runs"), "--runs-dir", help="per-run work folders"),
+    clean_runs: bool = typer.Option(False, "--clean-runs", help="delete each run's work folder at its end"),
+    accept_compare: bool = typer.Option(
+        False, "--accept-compare/--no-accept-compare", help="also time the accept-compare stage",
+    ),
+    accepted_oracle_cache: Path = typer.Option(Path("out/accepted_oracle"), "--accepted-oracle-cache"),
+    roundtrip: bool = typer.Option(False, "--roundtrip/--no-roundtrip", help="also time the roundtrip stage"),
+    roundtrip_oracle_cache: Path = typer.Option(Path("out/roundtrip_oracle"), "--roundtrip-oracle-cache"),
+    json_out: Path | None = typer.Option(None, "--json", help="write the per-stage report here"),
+    device: str | None = _device_option(),
+) -> None:
+    """Time every pipeline stage (generate, render, raster, score) on a seeded sample of
+    documents and print per-benchmark statistics (n, total, mean, median, p95, max and
+    each stage's share of the run) plus each run's wall time.
+
+    Profiling is always one uncached pass (the content cache is neither read nor
+    written) and never a bench result: nothing is appended to ``results/bench.jsonl``,
+    no gate runs, and already-recorded runs are not skipped.
+    """
+    use_dpi = dpi if dpi is not None else load_config(config).scoring.dpi
+    sink: dict[str, dict[str, Any]] = {}
+    content_cache.configure(None)
+    try:
+        with kernels.device_env(device):
+            backend = kernels.backend_id()
+            _drive_runs(
+                config=config,
+                names=list(run_names) if run_names else None,
+                limit=sample,
+                dpi=use_dpi,
+                results_dir=results_dir,
+                runs_dir=runs_dir,
+                clean_runs=clean_runs,
+                no_update=True,
+                emit=False,
+                only_on_change=False,
+                do_gate=False,
+                generate=False,
+                accept_compare=accept_compare,
+                accepted_oracle_cache=accepted_oracle_cache,
+                roundtrip=roundtrip,
+                roundtrip_oracle_cache=roundtrip_oracle_cache,
+                rerun=True,
+                # A profile is never a result, so the comparability gates (oracle manifest,
+                # renderer canary) do not apply to it.
+                oracle_check=False,
+                canary_check=False,
+                timings_sink=sink,
+                sample_seed=seed,
+            )
+    finally:
+        content_cache.configure(None)
+    report = profile.build_report(sink, sample=sample, seed=seed, dpi=use_dpi, backend=backend)
+    for table in profile.render_tables(report):
+        console.print(table)
+    console.print(f"sample {sample} (seed {seed}), dpi {use_dpi}, cache off, stage columns in seconds")
+    console.print(f"scorer {report['scorer_fingerprint']}, engine {report['raster_engine']}, backend {backend}")
+    if json_out is not None:
+        json_out.parent.mkdir(parents=True, exist_ok=True)
+        json_out.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n")
+        console.print(f"wrote {json_out}")
 
 
 @app.command(name="canary")
@@ -2157,7 +2810,7 @@ def noise_floor_cmd(
     docs: int = typer.Option(10, "--docs", help="number of oracle DOCX to double-render"),
     dpi: int = typer.Option(144, "--dpi"),
     source: Path = typer.Option(
-        Path("corpus/word_based/docx_redlines_word"), "--source",
+        Path("corpus/word/tracking_without_comments/docx"), "--source",
         help="DOCX folder to sample from",
     ),
     out: Path = typer.Option(Path("results/noise_floor.json"), "--out"),
@@ -2242,29 +2895,199 @@ def oracle_manifest_cmd(
     raise typer.Exit(2)
 
 
+@app.command(name="docset")
+def docset_cmd(
+    config: Path = typer.Option(Path("bench.yaml"), "--config", "-c"),
+    write: bool = typer.Option(
+        False, "--write", help="record every benchmark's document set in results/docsets.json"
+    ),
+) -> None:
+    """Print (and with --write record) the fixed document set of every benchmark."""
+    from neurotic_docx_bench.benchmarks import BENCHMARKS
+
+    cfg = load_config(config)
+    holdout: set[str] = set()
+    if cfg.holdout_list and Path(cfg.holdout_list).is_file():
+        holdout = pipeline.load_holdout(cfg.holdout_list)
+    sets: list[docset_mod.DocSet] = []
+    dirs_by_id: dict[str, list[str]] = {}
+    for benchmark in BENCHMARKS:
+        dirs = docset_mod.oracle_dirs_for(cfg, benchmark)
+        if not any(docset_mod.present(d) for d in dirs):
+            console.print(f"{benchmark}: no oracle directory configured")
+            continue
+        d = docset_mod.benchmark_docset(benchmark, dirs, holdout=holdout, holdout_mode="excluded")
+        sets.append(d)
+        dirs_by_id[d.id] = [str(p) for p in dirs]
+        console.print(f"{benchmark}: {d.n} documents, docset {d.id}")
+        strata = docset_mod.benchmark_strata(dirs, docset_mod.KEY_KIND[benchmark], d.keys)
+        g = docset_mod.gate_docset(d, strata)
+        sets.append(g)
+        console.print(f"  gate: {g.n} documents, docset {g.id} (gate of {d.id})")
+    if write:
+        docset_mod.write_docsets(docset_mod.DEFAULT_DOCSETS_PATH, sets, source_dirs=dirs_by_id)
+        console.print(f"wrote {docset_mod.DEFAULT_DOCSETS_PATH}")
+
+
+@app.command(name="report")
+def report_cmd(
+    root: Path = typer.Option(Path("."), "--root", help="repository root"),
+    check: bool = typer.Option(False, "--check", help="exit 1 when the published views are stale"),
+) -> None:
+    """Regenerate RESULTS.md, RESULTS_DETAILED.md and the README vendor table from the stores."""
+    from neurotic_docx_bench.ledger import build as ledger_build
+
+    bundle = ledger_build.build(root)
+    if check:
+        stale = ledger_build.changed_files(root, bundle)
+        for p in stale:
+            console.print(f"stale: {p}")
+        if stale:
+            raise typer.Exit(code=1)
+        console.print("published views are current")
+        return
+    frozen = ledger_build.freeze(root, bundle)
+    if frozen is not None:
+        console.print(f"froze {frozen.name}")
+    for p in ledger_build.write(root, bundle):
+        console.print(f"wrote {p}")
+
+
+@app.command(name="archive")
+def archive_cmd(
+    dry_run: bool = typer.Option(False, "--dry-run", help="report what would move, change nothing"),
+) -> None:
+    """Move legacy, holdout-only and retracted rows from results/bench.jsonl to results/archive/."""
+    from neurotic_docx_bench.ledger import archive as ledger_archive
+    from neurotic_docx_bench.ledger import policy as ledger_policy
+    from neurotic_docx_bench.ledger.registry import DEFAULT_REGISTRY_PATH, load_registry
+
+    result = ledger_archive.split_store(
+        Path("results/bench.jsonl"),
+        ledger_archive.DEFAULT_ARCHIVE_DIR,
+        registry=load_registry(DEFAULT_REGISTRY_PATH),
+        retractions=ledger_policy.load_retractions(ledger_policy.DEFAULT_RETRACTIONS_PATH),
+        now=datetime.now(UTC),
+        dry_run=dry_run,
+    )
+    verb = "would archive" if dry_run else "archived"
+    console.print(f"kept {result.kept}, {verb} {result.archived}")
+    if result.archive_path:
+        console.print(f"archive: {result.archive_path}; manifest: {result.manifest_path}")
+
+
+@app.command(name="retract")
+def retract_cmd(
+    id_run: str = typer.Argument(..., help="the id_run of the line to retract"),
+    reason: str = typer.Option(..., "--reason", help="why the run is not a measurement of the tool"),
+    by: str = typer.Option(os.environ.get("USER", "unknown"), "--by"),
+    benchmark: str | None = typer.Option(
+        None, "--benchmark", help="limit the retraction to one benchmark of that run"
+    ),
+) -> None:
+    """Record that a run must never be ranked, with the reason stated. Never deletes data."""
+    from neurotic_docx_bench.ledger import policy as ledger_policy
+
+    if not reason.strip():
+        raise typer.BadParameter("--reason must state why")
+    ledger_policy.append_retraction(
+        ledger_policy.DEFAULT_RETRACTIONS_PATH,
+        ledger_policy.Retraction(
+            id_run=id_run,
+            benchmark=benchmark,
+            reason=reason.strip(),
+            retracted_at=datetime.now(UTC),
+            by=by,
+        ),
+    )
+    console.print(f"retracted {id_run}: {reason.strip()}")
+
+
+@app.command(name="calibrate")
+def calibrate_cmd(
+    config: Path = typer.Option(Path("bench.yaml"), "--config", "-c"),
+    out: Path = typer.Option(Path("runs/calibration"), "--out", help="work folder for the candidate DOCX"),
+    limit: int | None = typer.Option(None, "--limit", help="cap docs per run (smoke)"),
+    results_dir: Path = typer.Option(Path("results"), "--results-dir"),
+) -> None:
+    """Emit the oracle-identity and null-baseline rows for script_redlines on the current
+    corpus, through the same driver as every vendor run."""
+    import yaml
+
+    from neurotic_docx_bench import calibration as cal
+
+    base = yaml.safe_load(Path(config).read_text(encoding="utf-8"))
+    if not isinstance(base, dict):
+        raise typer.BadParameter(f"{config}: not a mapping")
+    dirs: dict[str, Path] = {}
+    for kind in cal.KINDS:
+        out_dir = out / kind / "docx"
+        total = 0
+        for corpus in base.get("corpora") or []:
+            manifest = Path(corpus["manifest"])
+            root = manifest.parent
+            report = cal.build_candidates(
+                kind,
+                manifest=manifest,
+                source_dir=Path(corpus["source_dir"]),
+                redline_dirs=[root / "docx_redlines_word", root / "docx_redlines_randomized"],
+                out_dir=out_dir,
+            )
+            total += report.written
+        console.print(f"{kind}: {total} candidate DOCX in {out_dir}")
+        dirs[kind] = out_dir
+    derived = out / "bench.calibration.yaml"
+    derived.parent.mkdir(parents=True, exist_ok=True)
+    derived.write_text(
+        yaml.safe_dump(
+            cal.calibration_config(
+                base, oracle_dir=dirs["oracle-identity"], null_dir=dirs["null-baseline"]
+            ),
+            sort_keys=False,
+        ),
+        encoding="utf-8",
+    )
+    _drive_runs(
+        config=derived,
+        names=None,
+        limit=limit,
+        dpi=None,
+        results_dir=results_dir,
+        runs_dir=out / "runs",
+        clean_runs=False,
+        no_update=True,
+        emit=True,
+        only_on_change=False,
+        do_gate=False,
+        generate=False,
+        accept_compare=False,
+        accepted_oracle_cache=Path("out/accepted_oracle"),
+        roundtrip=False,
+        roundtrip_oracle_cache=Path("out/roundtrip_oracle"),
+        rerun=True,
+        oracle_check=True,
+        canary_check=True,
+        holdout=False,
+    )
+
+
 @app.command(name="coverage-matrix")
 def coverage_matrix_cmd(
     mapping: list[Path] = typer.Option(
         [
-            Path("corpus/word_based/centralized_mapping.csv"),
-            Path("corpus/word_based/centralized_mapping_randomized.csv"),
+            Path("corpus/word/pools/word_based_pairs.csv"),
+            Path("corpus/word/pools/word_based_randomized_pairs.csv"),
         ],
         "--mapping",
         help="pair mapping CSV(s)",
     ),
     source_dir: list[Path] = typer.Option(
-        [
-            Path("corpus/word_based/docx_source"),
-            Path("corpus/word_based/docx_source_randomized"),
-        ],
+        [Path("corpus/word")],
         "--source-dir",
         help="folder(s) searched for source DOCX",
     ),
     redline_dir: list[Path] = typer.Option(
-        [
-            Path("corpus/word_based/docx_redlines_word"),
-            Path("corpus/word_based/docx_redlines_randomized"),
-        ],
+        [Path("corpus/word")],
         "--redline-dir",
         help="folder(s) searched for oracle redline DOCX",
     ),
@@ -2273,7 +3096,7 @@ def coverage_matrix_cmd(
         help="bench JSONL; adds a per-tag per-vendor median score table "
         "(each vendor's latest script_redlines line)",
     ),
-    out_json: Path = typer.Option(Path("corpus/word_based/coverage_tags.json"), "--out-json"),
+    out_json: Path = typer.Option(Path("corpus/word/pools/coverage_tags.json"), "--out-json"),
     out_md: Path = typer.Option(Path("docs/COVERAGE.md"), "--out-md"),
 ) -> None:
     """Tag every corpus pair with OOXML feature + revision coverage → JSON + markdown.
@@ -2558,6 +3381,552 @@ def serve(
         subprocess.run(cmd, shell=True, cwd=str(Path.cwd()))
     except KeyboardInterrupt:
         console.print("\n[yellow]stopped[/yellow]")
+
+
+# --- Hugging Face hub: fixtures and results datasets ------------------------
+
+fixtures_app = typer.Typer(
+    name="fixtures",
+    help="Source fixtures dataset on the Hugging Face hub (sha256-verified).",
+    no_args_is_help=True,
+)
+results_app = typer.Typer(
+    name="results",
+    help="Results dataset on the Hugging Face hub (stores, pages, fixtures used, run outputs).",
+    no_args_is_help=True,
+)
+app.add_typer(fixtures_app)
+app.add_typer(results_app)
+
+
+@fixtures_app.command(name="download")
+def fixtures_download_cmd(
+    dest: Path = typer.Option(Path("corpus"), "--dest", help="where the fixtures land"),
+    revision: str | None = typer.Option(None, "--revision", help="tag, branch or commit of the dataset (default main)"),
+    repo: str = typer.Option(None, "--repo", help="dataset repo id", show_default=False),
+) -> None:
+    """Download the source fixtures and verify every file against MANIFEST.sha256.json."""
+    from neurotic_docx_bench import hub
+
+    repo_id = repo or hub.FIXTURES_REPO
+    try:
+        report = hub.download_fixtures(dest, api=hub.default_api(), repo_id=repo_id, revision=revision)
+    except hub.ManifestError as exc:
+        console.print(f"[red]refused[/red] {exc}")
+        raise typer.Exit(code=1) from exc
+    console.print(f"{repo_id}@{revision or 'main'} → {dest}: {report.describe()}")
+
+
+@fixtures_app.command(name="upload")
+def fixtures_upload_cmd(
+    root: Path = typer.Option(Path("corpus"), "--root", help="fixture tree to upload"),
+    repo: str = typer.Option(None, "--repo", help="dataset repo id", show_default=False),
+    dry_run: bool = typer.Option(False, "--dry-run", help="count the files, touch nothing, call nothing"),
+) -> None:
+    """Write MANIFEST.sha256.json and the dataset card, then upload the whole fixture tree."""
+    from neurotic_docx_bench import hub
+
+    repo_id = repo or hub.FIXTURES_REPO
+    report = hub.upload_fixtures(root, api=hub.default_api(), repo_id=repo_id, dry_run=dry_run)
+    if report.dry_run:
+        console.print(f"dry run: {report.n_files} files would go to {repo_id}")
+        return
+    if not report.verified:
+        console.print(f"[red]hub copy differs[/red] for: {', '.join(report.mismatched)}")
+        raise typer.Exit(code=1)
+    console.print(f"uploaded {report.n_files} files to {repo_id}; hashes verified")
+
+
+@results_app.command(name="upload")
+def results_upload_cmd(
+    root: Path = typer.Option(Path("."), "--root", help="repository root"),
+    bench_version_opt: str | None = typer.Option(
+        None, "--version", help="bench version folder (default: the installed package version)",
+    ),
+    with_outputs: bool = typer.Option(False, "--with-outputs", help="also upload the raw run outputs under runs/"),
+    run_dir: list[Path] = typer.Option(
+        [], "--run-dir", help="with --with-outputs: only these run folders (default: every folder under runs/)",
+    ),
+    prune_local: bool = typer.Option(
+        False,
+        "--prune-local",
+        help="delete the uploaded run folders, only after every uploaded hash was read back and matched",
+    ),
+    repo: str = typer.Option(None, "--repo", help="dataset repo id", show_default=False),
+    dry_run: bool = typer.Option(False, "--dry-run", help="stage under results/hub/ and stop"),
+) -> None:
+    """Stage results/, the pages, the fixtures each docset used and (optionally) run outputs; upload; verify."""
+    from neurotic_docx_bench import hub
+
+    repo_id = repo or hub.RESULTS_REPO
+    report = hub.upload_results(
+        root,
+        api=hub.default_api(),
+        repo_id=repo_id,
+        version=bench_version_opt,
+        with_outputs=with_outputs,
+        run_dirs=run_dir or None,
+        prune_local=prune_local,
+        dry_run=dry_run,
+    )
+    if report.dry_run:
+        console.print(f"dry run: {report.n_files} files staged under {report.root} for {repo_id} (v{report.version})")
+        return
+    if not report.verified:
+        console.print(f"[red]hub copy differs[/red] for: {', '.join(report.mismatched)}; nothing pruned")
+        raise typer.Exit(code=1)
+    console.print(f"uploaded {report.n_files} files to {repo_id} (v{report.version}); hashes verified")
+    if prune_local:
+        console.print(f"pruned {len(report.pruned)} run folders" + (": " + ", ".join(str(p) for p in report.pruned) if report.pruned else ""))
+
+
+# --- bench try: one fixture, any tool, against jubarte -----------------------
+
+try_app = typer.Typer(
+    name="try",
+    help="Pick one tryout fixture (random or by name), run your tool on it, score it against Word "
+    "next to jubarte's precomputed output. Nothing is written under results/.",
+    no_args_is_help=True,
+)
+app.add_typer(try_app)
+
+
+def _try_fail(message: str, code: int = 1) -> typer.Exit:
+    console.print(f"[red]refused[/red] {message}")
+    return typer.Exit(code=code)
+
+
+def _try_candidate(
+    template: str,
+    fixture: Any,
+    task: str,
+    out_dir: Path,
+    *,
+    root: Path,
+    renderer: str,
+    label: str,
+) -> tuple[Path, str, dict[str, float]]:
+    """Run ``template`` for ``fixture`` and render its output; the PDF to score."""
+    from neurotic_docx_bench import tryout
+
+    ext = "pdf" if renderer == "passthrough" else "docx"
+    run = tryout.run_tool(template, fixture, task, out_dir / label, root=root, ext=ext)
+    rendered = tryout.render(run.output, renderer, out_dir / f"{label}_render")
+    return rendered.pdf, rendered.renderer_id, {f"{label}_s": run.seconds, f"{label}_render_s": rendered.seconds}
+
+
+@try_app.command(name="list")
+def try_list_cmd(
+    root: Path = typer.Option(Path("."), "--root", help="repository root (or a `bench try fetch` dest)"),
+) -> None:
+    """Print every fixture of the tryout set."""
+    from neurotic_docx_bench import tryout
+
+    try:
+        tryout_set = tryout.load_set(root)
+    except tryout.TryoutError as exc:
+        raise _try_fail(str(exc)) from exc
+    for fixture in tryout_set.fixtures:
+        console.print(f"{fixture.pair_stem}  ({fixture.base} → {fixture.next})", highlight=False)
+    console.print(f"{len(tryout_set.fixtures)} fixtures in {tryout_set.csv_path} (sha256 {tryout_set.sha256[:12]})")
+
+
+@try_app.command(name="run")
+def try_run_cmd(
+    root: Path = typer.Option(Path("."), "--root", help="repository root (or a `bench try fetch` dest)"),
+    random_pick: bool = typer.Option(False, "--random", help="pick a fixture at random (see --seed)"),
+    seed: int | None = typer.Option(None, "--seed", help="with --random: the seed; default a fresh one, reported"),
+    fixture_stem: str | None = typer.Option(None, "--fixture", help="pick this pair_stem"),
+    task: str = typer.Option("redline", "--task", help="redline | convert"),
+    tool: str | None = typer.Option(
+        None,
+        "--tool",
+        help="command template: {base} {next} {out} for redline, {input} {out} for convert",
+    ),
+    against: str = typer.Option(
+        "jubarte", "--against", help="jubarte (precomputed), another command template, or a PDF path"
+    ),
+    renderer: str = typer.Option(
+        "passthrough", "--renderer", help="passthrough (the tool writes the PDF) | soffice | word"
+    ),
+    out: Path = typer.Option(Path("runs/try"), "--out", help="where the tool output and the pages go"),
+    json_out: Path | None = typer.Option(None, "--json", help="write the report here"),
+    dpi: int = typer.Option(144, "--dpi"),
+) -> None:
+    """Run one tool on one fixture and score it against Word next to jubarte."""
+    from neurotic_docx_bench import tryout
+
+    if random_pick == (fixture_stem is not None):
+        raise _try_fail("pass exactly one of --random or --fixture PAIR_STEM", code=2)
+    if not tool:
+        raise _try_fail("--tool is required: a command template with {out}", code=2)
+    if task not in tryout.TASKS:
+        raise _try_fail(f"--task must be one of {', '.join(tryout.TASKS)}", code=2)
+    if renderer not in tryout.RENDERERS:
+        raise _try_fail(f"--renderer must be one of {', '.join(tryout.RENDERERS)}", code=2)
+    try:
+        tryout_set = tryout.load_set(root)
+        picked = tryout.pick(tryout_set, stem=fixture_stem, seed=seed if random_pick else None)
+        fixture = picked.fixture
+        out_dir = out / fixture.pair_stem
+        candidate, renderer_id, timings = _try_candidate(
+            tool, fixture, task, out_dir, root=root, renderer=renderer, label="tool"
+        )
+        against_pdf: Path | None = None
+        against_label: str | None = None
+        if against != "jubarte":
+            if "{out}" in against:
+                against_pdf, _, more = _try_candidate(
+                    against, fixture, task, out_dir, root=root, renderer=renderer, label="against"
+                )
+                timings.update(more)
+                against_label = against
+            else:
+                against_pdf = Path(against)
+                if not against_pdf.is_file():
+                    raise tryout.TryoutError(
+                        f"--against is neither jubarte, a template with {{out}}, nor a PDF: {against}"
+                    )
+        report = tryout.compare(
+            tryout_set,
+            fixture,
+            task,
+            candidate,
+            out_dir / "pages",
+            dpi=dpi,
+            renderer_id=renderer_id,
+            against_pdf=against_pdf,
+            against_label=against_label,
+            timings=timings,
+            seed=picked.seed,
+        )
+    except tryout.TryoutError as exc:
+        raise _try_fail(str(exc)) from exc
+
+    table = Table(title=f"{fixture.pair_stem} · {task} · oracle {report.oracle.name}", box=box.SIMPLE)
+    for column in ("candidate", "overall", "raw", "score_v2", "pages", "sha256"):
+        table.add_column(column)
+    for label, scores, sha in (
+        ("your tool", report.tool, report.sha256["candidate"]),
+        (report.against_label, report.against, report.sha256["against"]),
+    ):
+        v2 = scores["score_v2"]
+        table.add_row(
+            label,
+            f"{scores['overall']:.2f}",
+            f"{scores['overall_raw']:.2f}",
+            "" if v2 is None else f"{float(v2):.2f}",
+            f"{scores['page_count_candidate']}/{scores['page_count_oracle']}",
+            sha[:12],
+        )
+    console.print(table)
+    sign = "+" if report.delta >= 0 else ""
+    console.print(
+        f"delta {sign}{report.delta:.2f} points (your tool minus {report.against_label}); "
+        f"renderer {report.renderer_id}, scorer {report.scorer_fingerprint}, engine {report.raster_engine}, dpi {dpi}"
+    )
+    if picked.seed is not None:
+        console.print(f"seed {picked.seed} (pass --seed {picked.seed} to pick {fixture.pair_stem} again)")
+    console.print(f"pages under {out_dir / 'pages'}")
+    if json_out is not None:
+        json_out.parent.mkdir(parents=True, exist_ok=True)
+        json_out.write_text(json.dumps(report.to_dict(), indent=1))
+        console.print(f"report {json_out}")
+
+
+@try_app.command(name="build-set")
+def try_build_set_cmd(
+    root: Path = typer.Option(Path("."), "--root", help="repository root"),
+    size: int = typer.Option(None, "--size", help="fixtures in the set", show_default="100"),
+    seed: int = typer.Option(None, "--seed", help="sampling seed", show_default="20260927"),
+    force: bool = typer.Option(False, "--force", help="rewrite an existing set"),
+) -> None:
+    """Draw the tryout set from the Word corpus and write corpus/tryout/tryout_100.csv."""
+    from neurotic_docx_bench import tryout
+
+    target = root / tryout.TRYOUT_DIR / tryout.SET_NAME
+    if target.is_file() and not force:
+        raise _try_fail(
+            f"{target} exists; pass --force to rewrite it (jubarte's outputs then need regenerating)", code=2
+        )
+    try:
+        fixtures = tryout.build_set(
+            root, size=size if size is not None else tryout.SET_SIZE, seed=seed if seed is not None else tryout.SET_SEED
+        )
+    except tryout.TryoutError as exc:
+        raise _try_fail(str(exc)) from exc
+    path = tryout.write_set(root, fixtures)
+    console.print(f"wrote {path}: {len(fixtures)} pairs from {tryout.CORPUS}")
+
+
+@try_app.command(name="fetch")
+def try_fetch_cmd(
+    stem: str = typer.Argument(..., help="pair_stem of the fixture to download"),
+    dest: Path = typer.Option(
+        Path("tryout_dl"), "--dest", help="root to download under (then `bench try run --root DEST`)"
+    ),
+    repo: str = typer.Option(None, "--repo", help="dataset repo id", show_default=False),
+    revision: str | None = typer.Option(None, "--revision", help="tag, branch or commit (default main)"),
+) -> None:
+    """Download one fixture of the tryout set (and jubarte's outputs for it), sha256-verified."""
+    from neurotic_docx_bench import hub, tryout
+
+    repo_id = repo or hub.FIXTURES_REPO
+    try:
+        tryout_set, fixture = tryout.fetch(repo_id, revision, stem, dest, api=hub.default_api())
+    except tryout.TryoutError as exc:
+        raise _try_fail(str(exc)) from exc
+    console.print(
+        f"{repo_id}@{revision or 'main'}: {fixture.pair_stem} → {dest} "
+        f"({len(fixture.files)} files, jubarte outputs verified); {len(tryout_set.fixtures)} fixtures in the set"
+    )
+
+
+@try_app.command(name="remote")
+def try_remote_cmd(
+    tool: str = typer.Option(
+        ...,
+        "--tool",
+        help="a known tool (jubarte, docxodus, soffice, pdftoppm, mutool, pymupdf) or a command template: "
+        "{base} {next} {out} redline, {input} {out} convert, {pdf}|{input} {outdir} [{dpi}] png",
+    ),
+    version: str | None = typer.Option(
+        None, "--version", help="jubarte only: exact version (local, else GitHub release, else crates.io); default latest"
+    ),
+    tasks: list[str] | None = typer.Option(None, "--task", help="redline | convert | png; default every task the tool runs"),
+    seed: int | None = typer.Option(None, "--seed", help="pick seed; default a fresh one, reported"),
+    language: str | None = typer.Option("en", "--language", help="docx-corpus language filter ('' for any)"),
+    doc_type: str | None = typer.Option(None, "--type", help="docx-corpus document type filter (legal, forms, ...)"),
+    with_sot: bool = typer.Option(False, "--with-sot", help="pick only documents (pairs) we hold Word SOT for"),
+    renderer: str = typer.Option("soffice", "--renderer", help="renders both redlines: soffice | word"),
+    corpus_root: Path = typer.Option(Path("corpus/word"), "--corpus-root", help="where the Word SOT lives"),
+    root: Path = typer.Option(Path("."), "--root", help="repository root (docxodus runs from here)"),
+    dpi: int = typer.Option(144, "--dpi"),
+    json_out: Path | None = typer.Option(None, "--json", help="write the report here"),
+    jsonl_out: Path | None = typer.Option(None, "--jsonl", help="append one line per task here"),
+    revision: str | None = typer.Option(None, "--revision", help="docx-corpus dataset revision (default main)"),
+) -> None:
+    """Score a tool on random superdoc docx-corpus documents: against Word when we hold its
+    output for them, else against docxodus (redline), soffice (DOCX->PDF), pdftoppm (PDF->PNG)."""
+    import random as _random
+    import tempfile as _tempfile
+
+    from neurotic_docx_bench import jubarte_release, tryout_remote as tr
+
+    if renderer not in ("soffice", "word"):
+        raise _try_fail("--renderer must be soffice or word", code=2)
+    try:
+        the_tool = tr.make_tool(tool, root=root, version=version)
+        chosen = tr.select_tasks(the_tool, tasks)
+        seed = seed if seed is not None else _random.SystemRandom().randrange(1, 2**31)
+        sot = tr.load_sot(corpus_root)
+        need = max(tr.DOCS_NEEDED[t] for t in chosen)
+        rows = tr.pick_rows(tr.load_index(revision=revision), need, seed=seed, language=language or None,
+                            doc_type=doc_type, sot=sot if with_sot else None)
+        with _tempfile.TemporaryDirectory(prefix="bench-try-docs.") as tmp:
+            docs = [tr.download_doc(r, Path(tmp), fetch=jubarte_release.http_get) for r in rows]
+            results = tr.run(the_tool, docs, sot, chosen, fallback=tr.fallback_tools(root), renderer=renderer, dpi=dpi)
+    except tr.RemoteError as exc:
+        raise _try_fail(str(exc)) from exc
+
+    table = Table(title=f"{the_tool.version} · seed {seed}", box=box.SIMPLE)
+    for column in ("task", "SOT", "score", "jaccard", "pages", "tool s", "note"):
+        table.add_column(column)
+    for r in results:
+        s = r["scores"] or {}
+        score = s.get("overall", s.get("pixel"))
+        jac = s.get("jaccard", s.get("ink_jaccard"))
+        if jac is not None and "ink_jaccard" in s:
+            jac = 100.0 * float(jac)
+        sot_label = f"{r['sot']['source']}" if r["sot"] else "-"
+        table.add_row(
+            r["task"],
+            sot_label,
+            "" if score is None else f"{score:.2f}",
+            "" if jac is None else f"{jac:.2f}",
+            f"{s['page_count_candidate']}/{s['page_count_oracle']}" if s else "",
+            f"{r['seconds'].get('tool', 0):.2f}" if "tool" in r["seconds"] else "",
+            r["skipped"] or r["error"] or "",
+        )
+    console.print(table)
+    for doc in docs:
+        console.print(f"{doc.id[:16]}  {doc.language}/{doc.type}  {doc.url}", highlight=False)
+    console.print(f"seed {seed} (pass --seed {seed} to pick these documents again)")
+    stamp = {"timestamp": datetime.now(UTC).isoformat(timespec="seconds"), "seed": seed, "renderer": renderer,
+             "language": language or None, "type": doc_type, "with_sot": with_sot}
+    lines = [{**stamp, **r} for r in results]
+    if json_out is not None:
+        json_out.parent.mkdir(parents=True, exist_ok=True)
+        json_out.write_text(json.dumps(lines, indent=1))
+        console.print(f"report {json_out}")
+    if jsonl_out is not None:
+        jsonl_out.parent.mkdir(parents=True, exist_ok=True)
+        with jsonl_out.open("a") as fh:
+            for line in lines:
+                fh.write(json.dumps(line) + "\n")
+        console.print(f"appended {len(lines)} lines to {jsonl_out}")
+    if any(r["error"] for r in results):  # a skip (the tool is the SOT) is not a failure
+        raise typer.Exit(code=1)
+
+
+# --- bench corpus: the Word corpus under corpus/word ---------------------------
+
+corpus_app = typer.Typer(
+    name="corpus",
+    help="Gather what Word produced (grok_run/, the Word oracle renders, grok_run/word_based and its siblings, "
+    "optionally the jubarte-first fixtures) into corpus/word: one state folder per kind of document, one "
+    "naming scheme, a rename record, tables, pools, provenance and a sha256 manifest. Copies only: the "
+    "origins are never moved or deleted.",
+    no_args_is_help=True,
+)
+app.add_typer(corpus_app)
+
+
+def _corpus_fail(message: str, code: int = 1) -> typer.Exit:
+    console.print(f"[red]refused[/red] {message}")
+    return typer.Exit(code=code)
+
+
+@corpus_app.command(name="build")
+def corpus_build_cmd(
+    root: Path = typer.Option(Path("."), "--root", help="repository root (grok_run/ and corpus/ live under it)"),
+    dest: Path | None = typer.Option(None, "--dest", help="where the corpus goes", show_default="corpus/word"),
+    fixtures: Path | None = typer.Option(
+        None, "--fixtures", help="the jubarte-first _fixtures folder; without it the fixtures sets are skipped"
+    ),
+    only: list[str] = typer.Option([], "--only", help="build these sets only (repeatable)"),
+    force: bool = typer.Option(False, "--force", help="replace a destination file whose bytes differ"),
+    dry_run: bool = typer.Option(False, "--dry-run", help="plan and report; copy nothing"),
+) -> None:
+    """Copy the Word sets into --dest and write their tables, pools, notices, provenance and manifest."""
+    from neurotic_docx_bench import word_corpus
+
+    target = dest if dest is not None else root / word_corpus.DEFAULT_DEST
+    try:
+        report = word_corpus.build(
+            root, target, fixtures=fixtures, only=tuple(only) or None, force=force, dry_run=dry_run
+        )
+    except word_corpus.CorpusError as exc:
+        raise _corpus_fail(str(exc)) from exc
+    for name, s in report.plan.sets.items():
+        line = f"{name}: {len(s.documents)} documents, {len(s.comparisons)} comparisons"
+        if s.absent:
+            line += f"; {len(s.absent)} without a Word PDF (left out)"
+        if s.superseded:
+            line += f"; {len(s.superseded)} whose render of this set went to pdf_prior"
+        if s.redundant:
+            line += f"; {len(s.redundant)} further renders of bytes that already had two (not copied)"
+        if s.filled:
+            line += f"; {len(s.filled)} filled from a fallback folder"
+        if s.orphans:
+            line += f"; {len(s.orphans)} PDFs whose docx is gone (not copied)"
+        if s.unresolved:
+            line += f"; {len(s.unresolved)} compares whose base/next are unknown (left out)"
+        if s.refused:
+            line += f"; {len(s.refused)} PDFs not produced by Word (left out)"
+        if s.excluded:
+            line += "; excluded " + ", ".join(f"{k} {len(v)}" for k, v in s.excluded.items())
+        console.print(line, highlight=False)
+    if report.plan.skipped:
+        console.print(
+            f"skipped for want of --fixtures: {', '.join(report.plan.skipped)}", highlight=False
+        )
+    prefix = "would have " if dry_run else ""
+    console.print(f"{prefix}{report.describe()} under {target}", highlight=False)
+
+
+@corpus_app.command(name="libreoffice")
+def corpus_libreoffice_cmd(
+    root: Path = typer.Option(Path("."), "--root", help="repository root (grok_run/ and corpus/ live under it)"),
+    dest: Path = typer.Option(Path("corpus/libreoffice"), "--dest", help="where the LibreOffice corpus goes"),
+    word: Path = typer.Option(Path("corpus/word"), "--word", help="the built Word corpus"),
+    dry_run: bool = typer.Option(False, "--dry-run", help="plan and report; copy nothing"),
+) -> None:
+    """File the LibreOffice renders the bench used as oracles under their Word stems, with word_map.csv."""
+    from neurotic_docx_bench import libreoffice_corpus
+
+    try:
+        plan_ = libreoffice_corpus.build(root, dest, word=word, dry_run=dry_run)
+    except libreoffice_corpus.LibreofficeCorpusError as exc:
+        raise _corpus_fail(str(exc)) from exc
+    for name, s in plan_.sets.items():
+        with_pdf = sum(1 for e in s.entries if e.word_pdf)
+        console.print(
+            f"{name}: {len(s.entries)} renders, {with_pdf} with a Word PDF; unmatched {len(s.unmatched)}, "
+            f"refused {len(s.refused)}, redundant {len(s.redundant)}",
+            highlight=False,
+        )
+
+
+@corpus_app.command(name="actions")
+def corpus_actions_cmd(
+    root: Path = typer.Option(Path("."), "--root", help="repository root"),
+    dest: Path = typer.Option(Path("corpus/word"), "--dest", help="the built Word corpus"),
+    accept_out: Path = typer.Option(
+        Path("grok_run/wr0929/pool_compares_accepted"), "--accept-out",
+        help="word_pdf.py --accept-all output folder",
+    ),
+    reject_out: Path = typer.Option(
+        Path("grok_run/wr0929/pool_compares_rejected"), "--reject-out",
+        help="word_pdf.py --reject-all output folder",
+    ),
+) -> None:
+    """File Word's Accept All / Reject All of the split comparisons under their pair keys."""
+    from neurotic_docx_bench import word_actions
+
+    try:
+        counts = word_actions.build(root, dest, {"accept_all": accept_out, "reject_all": reject_out})
+    except word_actions.WordActionsError as exc:
+        raise _corpus_fail(str(exc)) from exc
+    for action, c in counts.items():
+        console.print(f"{action}: " + ", ".join(f"{k} {v}" for k, v in sorted(c.items())), highlight=False)
+
+
+@corpus_app.command(name="stage")
+def corpus_stage_cmd(
+    list_csv: Path = typer.Argument(..., help="a pool table with docx/pdf columns (corpus/word/pools/*.csv)"),
+    out: Path = typer.Argument(..., help="working folder; files land in <out>/docx and <out>/pdf"),
+) -> None:
+    """Clone the documents a pool table names into a working folder (a list made a folder, when needed)."""
+    from neurotic_docx_bench.word_corpus import stage_list
+
+    console.print(f"staged {stage_list(list_csv, out)} docx into {out}", highlight=False)
+
+
+@corpus_app.command(name="check")
+def corpus_check_cmd(
+    dest: Path = typer.Option(Path("corpus/word"), "--dest", help="the built Word corpus"),
+) -> None:
+    """Verify every file of the Word corpus against its manifest (exit 1 on drift)."""
+    from neurotic_docx_bench import word_corpus
+
+    try:
+        report = word_corpus.check(dest)
+    except word_corpus.CorpusError as exc:
+        raise _corpus_fail(str(exc)) from exc
+    console.print(report.describe(), highlight=False)
+    if not report.ok:
+        raise typer.Exit(code=1)
+
+
+@corpus_app.command(name="list")
+def corpus_list_cmd(
+    dest: Path = typer.Option(Path("corpus/word"), "--dest", help="the built Word corpus"),
+) -> None:
+    """Print the sets of the Word corpus with their counts and docset ids."""
+    from neurotic_docx_bench import word_corpus
+
+    rows = word_corpus.summary(dest)
+    if not rows:
+        raise _corpus_fail(f"no corpus under {dest}; run `bench corpus build` first")
+    for row in rows:
+        console.print(
+            f"{row['name']}  {row['documents']} documents, {row['comparisons']} comparisons  "
+            f"id {row['docset_id']}; absent {row['absent']}, superseded {row['superseded']}, "
+            f"filled {row['filled']}, orphans {row['orphans']}, unresolved {row['unresolved']}, "
+            f"excluded {row['excluded']}, refused {row['refused']}",
+            highlight=False,
+        )
 
 
 if __name__ == "__main__":

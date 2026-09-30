@@ -23,6 +23,8 @@ class RenderResult:
     skipped: bool = False
     error: str | None = None
     duration_ns: int | None = None
+    # True when the PDF was restored from the content cache instead of rendered.
+    cached: bool = False
 
 
 @dataclass(frozen=True)

@@ -47,13 +47,14 @@ Key modules (`src/neurotic_docx_bench/`):
 - `score.py` `diff.py` `raster.py` `report.py` `html_report.py` `utils.py` — the scoring
   core, **lifted verbatim** from superdoc-visual-benchmarks. **Do not edit their logic** —
   `tests/test_parity.py` guards byte-identical scoring against `tests/reference/`.
-- `docxide_metrics.py` + `utils/docxide-metrics/` — the **second scorer**, Jaccard / SSIM /
-  text-boundary at 150 DPI, **lifted verbatim** from sverrejb/docxide-pdf `tests/common/`
-  (Apache-2.0). Same rule: **do not edit the metric logic** — upstream is the authority and
-  `tests/test_docxide_metrics_parity.py` requires the same numbers as upstream's own
-  `page-metrics` binary, against frozen values in `tests/reference/docxide_page_metrics.json`.
-  Only `src/main.rs` (the batch driver) is ours; it rasterizes, scores and then deletes each
-  document's rasters before the next, so a 398-document sweep cannot fill the disk.
+- `page_metrics.py` + `docxide_metrics.py`: the **second scorer**, Jaccard and text-boundary
+  at 150 DPI, a Python port of sverrejb/docxide-pdf `tests/common/` (Apache-2.0) driven
+  through PyMuPDF. Same rule: **do not edit the metric logic**; upstream is the authority
+  and `tests/test_page_metrics.py` holds the port to the values frozen in
+  `tests/reference/docxide_page_metrics.json` (recorded by upstream's own `page-metrics`
+  binary, re-frozen on the MuPDF build named in that file's `_engine` block; the test
+  refuses to run on another build). Since 0.7.0 `pipeline.score_pdf_pair` carries the
+  same columns (`ink_jaccard`, `text_boundary`, `max_break_drift`) on every scored row.
 - `pipeline.py` — match candidate↔oracle redlines by `<base>_<next>` key, rasterise, score.
 - `render/` — `soffice` (LibreOffice, default), `passthrough` (score existing PDFs),
   `playwright` (selector-driven web-editor render), `word` (local-only AppleScript).
@@ -66,18 +67,24 @@ Key modules (`src/neurotic_docx_bench/`):
 
 ## The oracle — READ THIS
 
-- Ground truth: `corpus/word_based/pdf_redlines_word/*.pdf`, named `<base>_<next>_redline.pdf`.
-  The tracked-change **markup** is Microsoft Word's; the PDF **rendering** is
-  **LibreOffice 26.2.4.2** (`Producer` metadata). Candidates are rendered the same way, so a
-  score isolates *redline-markup fidelity vs Word*, not renderer drift.
-- Rendering the oracle's own source DOCX via LibreOffice 26.2.4.2 reproduces it
-  **pixel-for-pixel → 100** (the `word-redlines-soffice` sanity run). The bench is therefore
-  **pinned to LibreOffice 26.2.4.2**; CI regenerates the oracle in-image so any LO version
-  works there (see `.github/workflows/bench.yml`).
-- `pdf_redlines_word/` also holds ~163 **non-redline base PDFs**; matching excludes them
-  (`pipeline.is_redline`) and **raises on any key collision** — never silent last-wins.
-- The authoritative pairing is `corpus/word_based/centralized_mapping.csv`
-  (`base`, `next`, `pdf_redline = <base>_<next>_redline.pdf`, …).
+- Everything Word produced lives in **`corpus/word/<state>/{docx,pdf}`** (states: `clean`,
+  `tracking_without_comments`, `with_comments_tracking`, `with_comments_clean`,
+  `accept_all`, `reject_all`), one naming scheme (`<idA>_<a>__vs__<idB>_<b>_redline_<idC>`
+  for comparisons), built by `bench corpus build` from the `grok_run/` origins. Lists live in
+  `corpus/word/pools/` (`<set>_pairs.csv`: key, base, next, docx, pdf, state; base/next are
+  paths under `corpus/word` without the suffix). docx/pdf are git-ignored; tables are tracked.
+- The oracle's **markup** is Word's; its **rendering** must match the candidates' renderer.
+  `bench.yaml` has `renderer: auto` and `oracle_roots: {word: corpus/word, soffice:
+  corpus/libreoffice}`: with Word on the machine (`render/auto.py`, `BENCH_RENDERER=word|soffice`
+  pins it) candidates render through `scripts/word_pdf.py` and score against Word's PDFs;
+  otherwise through LibreOffice against `corpus/libreoffice/<state>/pdf`, the LibreOffice
+  26.2.4.2 renders filed under the same Word stems (`word_map.csv` maps each to its Word PDF).
+  A docx run whose renderer differs from the oracle's is refused at config load.
+- Candidates are `<key>_<tool>`; matching (`pipeline.redline_key`) **raises on any key
+  collision** — never silent last-wins. `corpus/word_based` and friends are gone: code reads
+  `corpus/word` and its pools; one-off research scripts read the `grok_run/` origins.
+- CI has neither Word nor the git-ignored corpus files, so `.github/workflows/bench.yml` cannot
+  run the bench as written; it still names the old `corpus/word_based` paths.
 
 ## Tools benchmarked
 
@@ -159,7 +166,7 @@ per-doc `timings` map with `render_s` derived from the `PlaywrightRenderer`'s `d
 they share its render-speed distribution); (2) standalone with reps/warmup/full percentiles:
 
 ```bash
-uv run python -m neurotic_docx_bench.playwright_speed --docx-dir corpus/word_based/docx_redlines_word \
+uv run python -m neurotic_docx_bench.playwright_speed --docx-dir corpus/word/tracking_without_comments/docx \
   --pairs 30 --reps 3 --warmup 3 --out results/speed.jsonl --tool folio-playwright \
   --url http://127.0.0.1:5175/harness.html --file-input "#fileInput" --page-selector ".layout-page" \
   --readiness-js "window.__folioReady === true" --server "cd harness/folio-viewer && npx vite --port 5175 --host 127.0.0.1"
@@ -173,9 +180,77 @@ samples include the full open/save disk cycle. Render-speed uses a fresh browser
 per call (mirroring `PlaywrightRenderer.to_pdfs`) so a stale readiness flag can't leak
 between docs. CI runs a smaller 20×2 sample and appends.
 
+The content cache (below) changes what these per-run numbers cover: a render or scored
+row restored from `.bench-cache/` carries `cached: true` and no `duration_ns` /
+`raster_ns` / `score_ns`, so `render_s`, `raster_s`, `score_s` and the `overall_*_speed`
+stats describe only the documents actually rendered and scored in that run. A run meant
+to measure speed passes `--no-cache`.
+
+## Content cache (`src/neurotic_docx_bench/content_cache.py`)
+
+`bench run` reuses renders, page rasters and scored rows by content hash from
+`.bench-cache/` next to `results/` (git-ignored; `BENCH_CACHE_DIR` moves it,
+`BENCH_NO_CACHE=1` or `--no-cache` disables it; `bench cache [--clear]` inspects it).
+Keys: candidate sha256, oracle sha256, base sha256 when present, DPI, renderer id
+(`hardware.renderer_id`, e.g. `soffice-26.2.4.2`, `word-16.x`) and the scorer fingerprint,
+16 hex chars over `score.py`, `score_v2.py`, `page_metrics.py`, `pipeline.py`, `raster.py`,
+the MuPDF build (`mupdf-<version>`) and `content_cache.SCHEMA`. Touching any of those
+sources changes the fingerprint, so a scorer edit never reads stale rows; bump `SCHEMA`
+when the on-disk layout changes. `score_pdf_pair` takes `cache=` and `renderer_id=`; the
+run path passes the active cache (`content_cache.active()`) to every `score_folders_*`
+call and wraps the renderer in `CachedRenderer`, which restores PDFs by source sha256 and
+only invokes the inner renderer for misses. Process-pool workers receive the cache through
+the task tuple. A hit still writes the page PNGs under the run's work dir, so galleries and
+the residual-ink diagnostics read the same paths as an uncached run. `bench compare` does
+not use the cache.
+
+## Profiling (`src/neurotic_docx_bench/profile.py`, `bench profile`)
+
+`bench profile [--run NAME]... [--sample N] [--seed S] [--dpi D] [--json OUT]
+[--roundtrip] [--accept-compare]` drives `_drive_runs` with `emit=False`,
+`do_gate=False`, `rerun=True`, `no_update=True`, `oracle_check=False`, `canary_check=False`
+and the content cache configured off, so
+a profile is always one fresh pass and never lands in `results/`. `limit=N` with
+`sample_seed=S` makes `_limited_source` take `profile.sample_files` (a
+`random.Random(seed)` sample of the sorted file list, returned sorted) instead of the
+first N files; the roundtrip stage samples the same way. `_execute_run` fills a
+`timings_sink` with each benchmark's per-document stage seconds (the same
+`_collect_timings` / `BenchmarkOutcome.timings` dicts that feed the emitted speed
+stats), and `_drive_runs` wraps them with the run's wall time and `hardware.renderer_id`.
+`profile.summarize` aggregates a benchmark's timings into per-stage `n`, `total_s`,
+`mean_s`, `median_s`, `p95_s` (nearest rank), `max_s` and `share` (stage total over the
+sum of stage totals); `build_report` adds `sample`, `seed`, `dpi`, the scorer fingerprint
+and raster engine; `render_tables` prints one 80-column table per run. Passthrough runs
+time raster and score only (no render duration), generated runs add `generate`.
+
+## Scorer kernels (`src/neurotic_docx_bench/kernels.py`, `--device`)
+
+`score.py` calls `kernels.delta_e_mean` (mean CIEDE2000 over the ink mask) and
+`kernels.ssim` instead of skimage directly. Each has two implementations: the
+skimage/scipy path (`*_numpy`, the parity-locked default, byte-identical to the old
+scorer) and a torch port (`rgb2lab_torch`, `ciede2000_torch`, `delta_e_mean_torch`,
+`ssim_torch`; skimage's constants, float32, `avg_pool2d` for SSIM's 7x7 uniform window
+with sample covariance over the valid interior). Dispatch reads `BENCH_DEVICE`:
+`resolve_device` maps `auto` to cuda, then mps, else `None` (silent), and `cpu|mps|cuda`
+to that device or `None` with one `RuntimeWarning` when torch or the device is missing;
+the result is cached per spec (`kernels.reset()` clears it). `kernels.device_env(spec)`
+is the CLI wrapper: it validates the spec, exports `BENCH_DEVICE` around `_drive_runs`
+(or `score_folders_full` for `compare`) so pool workers inherit it, and restores the
+previous value; `pipeline._run_tasks` installs `kernels.worker_init(jobs)` as the pool
+initializer, which on a torch device gives each worker `cpu_count // jobs` intra-op
+threads so `jobs` workers do not oversubscribe the cores (torch's default is one thread
+pool per process; `BENCH_TORCH_THREADS` overrides the count). The device is deliberately
+not part of `ScoreConfig` or
+`result["config"]`; `kernels.backend_id()` (`numpy`, `torch-<device>`) goes into the
+content-cache score key, `hardware_info()["scorer_backend"]` and the profile report's
+`scorer_backend`. `kernels.py` is in the scorer fingerprint. `tests/test_kernels.py`
+checks the torch port against skimage (elementwise Lab and deltaE at 2e-3, page deltaE at
+1e-3, SSIM at 1e-4, `score_document` at 1e-3 on synthetic pages and 1e-2 overall on
+two real oracle pages) and skips when torch is not installed.
+
 ## Regenerating the Word oracle PDFs (macOS + Word, local-only)
 
-The committed oracle PDFs (`corpus/word_based/pdf_redlines_word/*.pdf`) are Word redline
+The committed oracle PDFs (`grok_run/word_based/pdf_redlines_word/*.pdf`) are Word redline
 markup rendered to PDF. To regenerate them (or render a new set into a sanity directory),
 use the `WordRenderer` (`src/neurotic_docx_bench/render/word.py`) or the batch script.
 
@@ -196,14 +271,14 @@ All subsequent `save as ... file format format PDF` calls inherit that choice.
 
 ```bash
 # 1. Clean Word temp/lock files (~$ prefix) from the source dir — they cause failures:
-rm -f corpus/word_based/docx_redlines_word/~\$*.docx
+rm -f grok_run/word_based/docx_redlines_word/~\$*.docx
 
 # 2. Manually export one PDF in Word GUI choosing "Best for printing" (sets sticky pref).
 
 # 3. Generate a single monolithic AppleScript for all DOCX files:
 python3 -c "
 from pathlib import Path
-src = Path('corpus/word_based/docx_redlines_word').resolve()
+src = Path('grok_run/word_based/docx_redlines_word').resolve()
 out = Path('sanity_word/sanity_pdf_redlines_word').resolve()
 out.mkdir(parents=True, exist_ok=True)
 docs = sorted(src.glob('*.docx'))
@@ -227,7 +302,7 @@ print(chr(10).join(lines))
 # 4. Check for any missing PDFs and retry just those:
 python3 -c "
 from pathlib import Path
-src = Path('corpus/word_based/docx_redlines_word').resolve()
+src = Path('grok_run/word_based/docx_redlines_word').resolve()
 out = Path('sanity_word/sanity_pdf_redlines_word').resolve()
 missing = [d for d in sorted(src.glob('*.docx')) if not (out / (d.stem + '.pdf')).exists()]
 print(f'Missing: {len(missing)}')
@@ -240,11 +315,44 @@ for m in missing: print(f'  {m.name}')
 2. **Run in foreground** (`osascript ...` directly, not backgrounded). Background mode
    buries the permission dialog where you can't see/click it.
 3. **Use inline/heredoc AppleScript**, not `.scpt` files. Compiled `.scpt` triggers
-   `-1708` errors on `save as` (see `corpus/word_based/docx_redlines_word/README.md`).
+   `-1708` errors on `save as` (see `grok_run/word_based/docx_redlines_word/README.md`).
 4. **Delete `~$` temp files first** — Word lock files cause spurious failures.
 5. Some files intermittently fail `save as` with `-1708` ("active document doesn't
    understand the 'save as' message"). Retry just those individually with a `delay 2`
    after `open`.
+
+## Remote tryout (`bench try remote`, `tryout_remote.py`, `jubarte_release.py`)
+
+Scores one tool on random documents from the Hugging Face dataset `superdoc-dev/docx-corpus`
+(one parquet index; every row a `url` to the docx). The docx-corpus bytes are the bytes
+`corpus/word` holds, so the SOT is looked up by sha256: Word's PDF (`documents.csv`) for
+`convert`, Word's compare (`comparisons.csv`) for `redline`. Without it the fallback SOT is
+docxodus (redline), soffice (DOCX->PDF) and pdftoppm (PDF->PNG, of the `convert` SOT PDF).
+`--with-sot` picks only documents or pairs we hold Word SOT for (about 1.5k documents,
+1.4k pairs); a plain random pick almost never has it.
+
+```bash
+uv run bench try remote --tool jubarte --version 0.10.0 --seed 5 --with-sot --jsonl runs/try_remote.jsonl
+uv run bench try remote --tool pymupdf                     # png only: a tool runs the tasks it can
+uv run bench try remote --tool "mytool {input} {out}"      # a template; its placeholders name its task
+```
+
+- `--tool` is a known name (`KNOWN_TASKS`: jubarte, docxodus, soffice, pdftoppm, mutool,
+  pymupdf) or a template: `{base} {next} {out}` redline, `{input} {out}` convert,
+  `{pdf}`/`{input}` + `{outdir}` (+ `{dpi}`) png. `--task` narrows; asking for a task the
+  tool cannot run is refused. A tool that is a task's fallback SOT is skipped, not scored
+  against itself (a skip exits 0, an error exits 1).
+- `--version` is jubarte only: local first (`BENCH_JUBARTE`, `PATH`, `~/.cargo/bin`, the
+  cache, the vendored copy, `../speed_bins/jubarte-*`; never a `target/` dev build), else
+  the GitHub release asset of `jandira-tech/jubarte-redlines` checked against its
+  `SHA256SUMS.txt`, else `cargo install jubarte-redlines --version X`, else it fails. No
+  version = the latest GitHub release. Downloads go to `BENCH_JUBARTE_CACHE`
+  (`~/.cache/neurotic-docx-bench/jubarte`).
+- Both redlines go through `--renderer` (soffice by default). A stored `corpus/libreoffice`
+  render of Word's compare stands in only when `word_map.csv` says the installed soffice
+  build made it; otherwise Word's compare is rendered again.
+- Nothing is written under `results/` unless `--jsonl`/`--json` says so; rasters and
+  downloads live in temporary folders deleted on return.
 
 ## Gate (CI)
 
@@ -263,6 +371,22 @@ the latest line to the baseline.
   penalised — the verbatim scorer only compares `min(pages)`. Changing that is a policy call.
 - **Scoring uses a process pool** (PyMuPDF/skimage aren't thread-safe).
 - EXCEPT IF REQUESTED BY THE PERSON OR REQUIRED BY A SPECIFIC BENCHMARK OR TO DEVELOP A TOOL, YOU MUST RECORD THE RESULTS WITH RASTERS DELETED AFTER EACH TOOL SO SCORING DOESN'T FILL THE DISK.
+- **The agent shell is zsh: it does not word-split unquoted variables.** `M="--manifest x --source-dir y"; node gen.ts $M`
+  passes ONE argument; `generate-native-redlines.ts` then ignores it and runs its default manifest (207
+  word_based pairs) with exit 0, while `superdoc_gen` rejects it. Write the flags out, use an array
+  (`M=(--manifest x --source-dir y)`) or `${=M}`, and check the output count against the manifest.
+- **grok_run/ holds symlinks for its duplicate copies.** `scripts/grok_run_dedupe.py` (report by
+  default, `--apply` to fold) keeps one copy of each byte-identical group and replaces the others
+  with relative symlinks, moving their bytes to `grok_run_attic/dedupe/` (git-ignored, ledger in
+  `moved.csv`). Copies inside a corpus origin (`word_corpus.origins()`, the `_fixtures` ones
+  included) are never folded: `bench corpus build` reads same bytes under different names as
+  aliases and renders. Code that walks grok_run must follow symlinks.
+- **Every retried file goes to the back of the next batch pass** in `scripts/word_pdf.py`: one
+  that crashes Word ("Connection is invalid"), one that loads empty (a declined repair prompt), and
+  the one a wedged pass stopped on. A `[retry]` file fails for good after two such passes, and a
+  pass that logged a `[retry]` does not spend the 3-pass stall budget. Before this, one bad file (or
+  three Word-invalid files in a row) led every pass and the rest of the folder was reported "never
+  reached". Word's AppleEvent timeout is `APPLE_EVENT_TIMEOUT` = 240 s (was 600).
 - **soffice render** requires exit 0 **and** the output file, and deletes a stale PDF before
   a forced re-render (parity with the original shell script).
 
