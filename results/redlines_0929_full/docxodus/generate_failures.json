@@ -1,0 +1,32 @@
+[
+  {
+    "doc": "19eb128df9_98bf5f3d218a1485f5eb284693b4f98725eadd3660097efd__vs__9666fa13fb_a3701d3600ed5bf6c9bf13e12e4c2a59542eba10f87fad69_redline_5b269ade28",
+    "stage": "generate",
+    "error": "docxodus-csharp-inproc: timeout waiting for worker reply after 120000 ms bin=/Users/arthrod/temp/T/neurotic_docx_bench/src/neurotic_docx_bench/utils/docxodus/docxodus-csharp-inproc/bin/Release/net10.0/docxodus-inproc"
+  },
+  {
+    "doc": "af2ea13761_6a0524deb86b08f0fb55dcbb7d469deacb25532f08824945__vs__1068eb5017_793c14bc1529c16f30ac69b82ca152f39f534a1a3f3f90e4_redline_5d8e97b0c5",
+    "stage": "generate",
+    "error": "docxodus-csharp-inproc: timeout waiting for worker reply after 120000 ms bin=/Users/arthrod/temp/T/neurotic_docx_bench/src/neurotic_docx_bench/utils/docxodus/docxodus-csharp-inproc/bin/Release/net10.0/docxodus-inproc"
+  },
+  {
+    "doc": "acce1b593c_4bb73d9addf1f02e3a2132dcd33a8feb4dfcbe076d43bb0f__vs__4e2d5a0b0c_4887566b3c4aad8c7f07b4ba2637c0244a1ee0d66c8d0c29_redline_63ea4d3f8d",
+    "stage": "generate",
+    "error": "docxodus-csharp-inproc: timeout waiting for worker reply after 120000 ms bin=/Users/arthrod/temp/T/neurotic_docx_bench/src/neurotic_docx_bench/utils/docxodus/docxodus-csharp-inproc/bin/Release/net10.0/docxodus-inproc"
+  },
+  {
+    "doc": "d5049aaec2_c73c128db4c8f0b0683396b603a070256a36b398f91585f0__vs__3bea84268c_6cbf6dfdf4b28397138c88c0353584658ccd144a913ce03b_redline_b567087abf",
+    "stage": "generate",
+    "error": "docxodus-csharp-inproc: timeout waiting for worker reply after 120000 ms bin=/Users/arthrod/temp/T/neurotic_docx_bench/src/neurotic_docx_bench/utils/docxodus/docxodus-csharp-inproc/bin/Release/net10.0/docxodus-inproc"
+  },
+  {
+    "doc": "dc5d0f4350_f569a8b7a88800ca28451782130c35f897ec727ca8750a85__vs__ba6721eed7_1a61978f0ea0ee2ec6a626de46a977c15f84fe45e8c06d43_redline_cbf65aa629",
+    "stage": "generate",
+    "error": "docxodus-csharp-inproc: timeout waiting for worker reply after 120000 ms bin=/Users/arthrod/temp/T/neurotic_docx_bench/src/neurotic_docx_bench/utils/docxodus/docxodus-csharp-inproc/bin/Release/net10.0/docxodus-inproc"
+  },
+  {
+    "doc": "9f6f60f1db_d0a7c31f8535690716639fce8eb4081cb831a0b1c893af9f__vs__8116a767f0_723ae78054da0840fa9f450784fd17e0564865cb53a6bdd5_redline_e633129040",
+    "stage": "generate",
+    "error": "docxodus-csharp-inproc: timeout waiting for worker reply after 120000 ms bin=/Users/arthrod/temp/T/neurotic_docx_bench/src/neurotic_docx_bench/utils/docxodus/docxodus-csharp-inproc/bin/Release/net10.0/docxodus-inproc"
+  }
+]

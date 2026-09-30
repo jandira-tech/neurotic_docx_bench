@@ -121,6 +121,11 @@ def build_results_line(
     scorer: str = "v1",
     corpus_revision: str | None = None,
     holdout_mode: str | None = None,
+    tool_id: str | None = None,
+    configuration: str | None = None,
+    docset_id: str | None = None,
+    renderer_id: str | None = None,
+    hardware: dict[str, object] | None = None,
 ) -> dict[str, object]:
     """Build a schema-v4 ``Results`` JSONL dict from a vendor×benchmark outcome.
 
@@ -152,6 +157,11 @@ def build_results_line(
         scorer=scorer,
         corpus_revision=corpus_revision,
         holdout_mode=holdout_mode,
+        tool_id=tool_id,
+        configuration=configuration,
+        docset_id=docset_id,
+        renderer_id=renderer_id,
+        hardware=hardware,
     ).to_json_dict()
 
 

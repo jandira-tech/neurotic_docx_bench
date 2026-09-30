@@ -284,7 +284,13 @@ def test_expansion_matches_the_hand_written_chain_it_replaced(run_name):
     run = next(r for r in cfg.runs if r.name == run_name)
     before = [_invocation_shape(seg) for seg in _HISTORICAL_CHAINS[run_name].split("&&")]
     after = [_invocation_shape(c) for c in expand_generate_commands(cfg, run)]
-    assert after == before
+    # the same command per pool, in the same pool order; the pools are now the Word
+    # corpus tables of those three pools (corpus/word/pools, sources under corpus/word)
+    assert [a[0] for a in after] == [b[0] for b in before]
+    assert [(a[1], a[2]) for a in after] == [
+        (f"corpus/word/pools/{pool}_pairs.csv", "corpus/word")
+        for pool in ("word_based", "word_based_randomized", "word_redlines_superdoc")
+    ]
 
 
 # --------------------------------------------------------------------------

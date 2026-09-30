@@ -10,7 +10,7 @@
 #   - stamp file_i.docx body with "file_i.docx"
 #   - redline file_i vs file_{i+1} → file_i_file_{i+1}_redline.docx
 #
-# Key learnings (from corpus/word_based/docx_redlines_word/README.md):
+# Key learnings (from grok_run/word_based/docx_redlines_word/README.md):
 #   - inline osascript heredoc, NOT compiled .scpt (save as fails with -1708)
 #   - files must live inside Word's container to avoid Grant File Access dialogs
 #   - always pass "ignore all comparison warnings true"
@@ -24,8 +24,8 @@ set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 
-SOURCE_DIR="${SOURCE_DIR:-$REPO_ROOT/corpus/word_based/docx_source_randomized}"
-FINAL_OUT="${FINAL_OUT:-$REPO_ROOT/corpus/word_based/docx_redlines_randomized}"
+SOURCE_DIR="${SOURCE_DIR:-$REPO_ROOT/grok_run/word_based/docx_source_randomized}"
+FINAL_OUT="${FINAL_OUT:-$REPO_ROOT/grok_run/word_based/docx_redlines_randomized}"
 WORD_TMP="${WORD_TMP:-$HOME/Library/Containers/com.microsoft.Word/Data/tmp/fresh_batch_rand}"
 SRC="$WORD_TMP/src"
 OUT="$WORD_TMP/out"

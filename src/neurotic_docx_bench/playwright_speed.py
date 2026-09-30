@@ -13,7 +13,7 @@ never get conflated.
 
 Usage:
   uv run python -m neurotic_docx_bench.playwright_speed \
-    --docx-dir corpus/word_based/docx_redlines_word \
+    --docx-dir corpus/word/tracking_without_comments/docx \
     --pairs 30 --reps 3 --warmup 3 --out results/speed.jsonl \
     --tool folio-playwright --url http://127.0.0.1:5175/harness.html \
     --file-input "#fileInput" --page-selector ".layout-page" \

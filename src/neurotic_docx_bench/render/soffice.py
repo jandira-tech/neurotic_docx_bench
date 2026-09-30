@@ -47,6 +47,26 @@ def find_soffice() -> Path:
     raise RuntimeError("soffice / LibreOffice not found (set $SOFFICE to override)")
 
 
+def failure_detail(returncode: int, stderr: str, stdout: str) -> str:
+    """A one-line reason for a failed convert: the exit status, then soffice's own
+    message. Fontconfig warnings are dropped and the crash backtrace is cut at
+    ``Stack:``, so a crash no longer reads as a font warning."""
+    if returncode < 0:
+        status = f"soffice killed by signal {-returncode}"
+    elif returncode == 0:
+        status = "soffice exit 0 but wrote no PDF"
+    else:
+        status = f"soffice exit {returncode}"
+    lines: list[str] = []
+    for raw in (stderr or stdout or "").splitlines():
+        line = raw.strip()
+        if line.startswith("Stack:"):
+            break
+        if line and not line.startswith("Fontconfig warning"):
+            lines.append(line)
+    return f"{status}: {' | '.join(lines)[:300]}" if lines else status
+
+
 def convert_one(
     soffice: Path,
     docx: Path,
@@ -104,7 +124,7 @@ def convert_one(
         # writing, or exit non-zero after leaving a partial/old file).
         if proc.returncode == 0 and pdf.exists():
             return RenderResult(source=docx, pdf=pdf, ok=True, duration_ns=time.perf_counter_ns() - t0)
-        err = (proc.stderr or proc.stdout or "").strip() or f"exit {proc.returncode}"
+        err = failure_detail(proc.returncode, proc.stderr, proc.stdout)
         pdf.unlink(missing_ok=True)  # never leave a partial file for the next attempt
     return RenderResult(source=docx, pdf=None, ok=False, error=err, duration_ns=time.perf_counter_ns() - t0)
 

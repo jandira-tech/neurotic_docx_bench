@@ -3,7 +3,7 @@
 
 `bench accept <in_folder> --out <out_folder>` walks a folder of tracked-change DOCX and
 writes an accepted (or rejected) copy of each, e.g. to turn the Word redline corpus into
-its accepted form (comparable to corpus/word_based/docx_accepted_word).
+its accepted form (comparable to corpus/word/accept_all/docx).
 """
 
 from __future__ import annotations

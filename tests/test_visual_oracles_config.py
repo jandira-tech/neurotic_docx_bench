@@ -7,12 +7,12 @@ import pytest
 from neurotic_docx_bench.config import load_config
 
 
-def test_visual_oracles_parsed_and_visual_redlines_defaults_to_source_of_truth():
+def test_visual_oracles_parsed_and_visual_redlines_is_what_word_prints():
     cfg = load_config("bench.yaml")
     assert "visual_rendering" in cfg.visual_oracles
     assert "visual_accepted_changes" in cfg.visual_oracles
-    # visual_redlines always present, defaults to source_of_truth when omitted
-    assert cfg.visual_oracles["visual_redlines"] == cfg.source_of_truth
+    # a viewer is measured against Word's PDFs of the redlines the oracle holds
+    assert cfg.visual_oracles["visual_redlines"] == cfg.oracle_roots["word"] / "tracking_without_comments/pdf"
     for name, p in cfg.visual_oracles.items():
         assert isinstance(p, Path), f"{name} oracle is not a Path"
 

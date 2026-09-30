@@ -91,7 +91,7 @@ function parseArgs(): {
 		tool: get("--tool") || "folio",
 		mode,
 		runDir: get("--run-dir") || "",
-		sourceDir: get("--source") || "corpus/word_based/docx_source",
+		sourceDir: get("--source") || "corpus/word",
 	};
 }
 

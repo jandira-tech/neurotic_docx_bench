@@ -22,7 +22,11 @@
 import { readFileSync, appendFileSync, mkdirSync, existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { performance } from "node:perf_hooks";
+import { fileURLToPath } from "node:url";
 import { parseManifest, loadEngine } from "./generate-native-redlines.ts";
+import { hardwareInfo, toolVersionForMethod } from "./lib/provenance.ts";
+
+const SPEED_ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
 interface Stats {
 	n: number;
@@ -72,9 +76,30 @@ const METHODS: MethodConfig[] = [
 	{ method: "docxodus", dist: "" },
 	{ method: "docx-redline-js", dist: "" },
 	{ method: "superdoc-ts", dist: "" },
+	// Canonical Rust engine: the native CLI (spawn per pair) and the WASM build in V8.
+	{
+		method: "jubarte-rust",
+		dist: process.env.JUBARTE_RUST_DIST ?? "src/neurotic_docx_bench/utils/jubarte/jubarte-rust",
+	},
+	{
+		method: "jubarte-wasm",
+		dist: process.env.JUBARTE_WASM_DIST ?? "src/neurotic_docx_bench/utils/jubarte/jubarte-wasm",
+	},
 ];
+function isJubarte(method: string): boolean {
+	return method === "jubarte-rust" || method === "jubarte-wasm";
+}
+// The jubarte dists are local builds (git-ignored), made from the canonical
+// jubarte-redlines checkout. A missing one is a setup error, not a skipped row:
+// a speed table without jubarte measures nothing.
+function missingJubarteDists(methods: MethodConfig[]): string[] {
+	return methods
+		.filter((m) => isJubarte(m.method) && !existsSync(m.dist))
+		.map((m) => `${m.method}: ${m.dist}`);
+}
 // method label → the loadEngine method id (jubarte-final-native still loads via "jubarte-native")
 function engineMethod(label: string): string {
+	if (isJubarte(label)) return label;
 	if (label.includes("native")) return "jubarte-native";
 	if (label.includes("jubarte")) return "jubarte-lossless";
 	return label;
@@ -92,9 +117,9 @@ async function main() {
 	const outPath = arg("--out", "results/speed.jsonl");
 	const manifest = arg(
 		"--manifest",
-		"corpus/word_based/centralized_mapping.csv",
+		"corpus/word/pools/word_based_pairs.csv",
 	);
-	const sourceDir = arg("--source-dir", "corpus/word_based/docx_source");
+	const sourceDir = arg("--source-dir", "corpus/word");
 	const only = arg("--methods", "");
 	const wanted = only ? new Set(only.split(",")) : null;
 	const runTs = arg("--run-ts", "");
@@ -118,6 +143,15 @@ async function main() {
 	);
 	mkdirSync(dirname(outPath), { recursive: true });
 
+	const missing = missingJubarteDists(METHODS.filter((m) => !wanted || wanted.has(m.method)));
+	if (missing.length) {
+		console.error(
+			`speed-bench: missing jubarte build (${missing.join("; ")}); build it from jubarte-redlines ` +
+				"or point JUBARTE_RUST_DIST / JUBARTE_WASM_DIST at it",
+		);
+		process.exit(1);
+	}
+
 	const rows: any[] = [];
 	for (const mc of METHODS) {
 		if (wanted && !wanted.has(mc.method)) continue;
@@ -127,6 +161,9 @@ async function main() {
 			engine = await loadEngine(engineMethod(mc.method), mc.dist);
 		} catch (e) {
 			console.error(`  ${mc.method}: init failed: ${(e as Error).message}`);
+			// A jubarte method, or any method named in --methods, is the point of
+			// the run: an incomplete build must not end it with a missing row.
+			if (isJubarte(mc.method) || wanted?.has(mc.method)) process.exit(1);
 			continue;
 		}
 		const initMs = performance.now() - t0;
@@ -168,6 +205,9 @@ async function main() {
 			failures,
 			unit: "ms_per_redline",
 			...roundStats(st),
+			// Provenance (consolidation): the pin and the machine.
+			tool_version: toolVersionForMethod(engineMethod(mc.method), mc.dist ?? "", SPEED_ROOT),
+			hardware: hardwareInfo(),
 		};
 		rows.push(row);
 		appendFileSync(outPath, JSON.stringify(row) + "\n");

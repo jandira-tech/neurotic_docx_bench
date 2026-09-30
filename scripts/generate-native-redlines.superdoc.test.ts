@@ -23,8 +23,8 @@ import {
 	resolveSuperDocSdkDir,
 } from "./generate-native-redlines.ts";
 
-const MANIFEST = "corpus/word_based/centralized_mapping.csv";
-const SOURCE = "corpus/word_based/docx_source";
+const MANIFEST = "corpus/word/pools/word_based_pairs.csv";
+const SOURCE = "corpus/word";
 const haveCorpus = existsSync(MANIFEST) && existsSync(SOURCE);
 
 async function documentXml(bytes: Uint8Array): Promise<string> {
