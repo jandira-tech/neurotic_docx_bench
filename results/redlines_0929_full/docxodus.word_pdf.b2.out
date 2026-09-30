@@ -1,0 +1,117 @@
+2026-09-30 01:44:15.902 | INFO     | __main__:preflight:1812 -  preflight: 
+open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-09-30 01:44:15.932 | INFO     | __main__:convert_folder:1486 -  export: 
+one_osascript=True documents=15 accept_all=False reject_all=False
+2026-09-30 01:44:15.951 | INFO     | __main__:_convert_batched:1685 -  one 
+osascript for 15 document(s)
+2026-09-30 01:44:20.755 | WARNING  | __main__:run_batch_with_resume:1206 -  15 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 2, 0 of 3 stalled 
+passes used)
+2026-09-30 01:44:20.756 | WARNING  | __main__♻725 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-09-30 01:44:20.757 | WARNING  | __main__♻731 -  recycling (restart 1)
+2026-09-30 01:44:25.447 | INFO     | __main__:_note_buttons:510 -  Microsoft 
+Error Reporting shows button 'OK'
+2026-09-30 01:44:25.448 | INFO     | __main__:_note_buttons:510 -  Microsoft 
+Error Reporting shows button 'More Information'
+2026-09-30 01:44:25.448 | INFO     | __main__:_note_buttons:510 -  Microsoft 
+Error Reporting shows button 'missing value'
+2026-09-30 01:44:25.673 | INFO     | __main__:_note_buttons:510 -  Microsoft 
+Word shows button 'No'
+2026-09-30 01:44:25.674 | INFO     | __main__:_note_buttons:510 -  Microsoft 
+Word shows button 'Yes'
+2026-09-30 01:44:26.001 | WARNING  | __main__:_loop_merp:551 -  error report 
+declined via 'OK'
+2026-09-30 01:44:26.881 | WARNING  | __main__:_loop_word:540 -  Word dialog 
+dismissed via 'No'
+2026-09-30 01:44:29.016 | INFO     | __main__:_loop:1067 -  0/15
+2026-09-30 01:45:03.595 | WARNING  | __main__:_loop:1072 -  item 1/15 open for 
+more than 30 s:
+-- Word windows {name, subrole}: ,
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-2.log:
+
+-- newest diagnostic reports: AppCleaner-2026-09-30-001317.ips, 
+biome-2026-09-29-094107.ips, soffice-2026-09-28-104720.ips, 
+soffice-2026-09-28-105517.ips, soffice-2026-09-28-105123.000.ips
+2026-09-30 01:48:24.440 | INFO     | __main__:_loop:1067 -  1/15
+2026-09-30 01:48:24.572 | WARNING  | __main__:run_batch_with_resume:1206 -  14 
+item(s) never reached (ended without reaching them); recycling Word and retrying
+the rest first, retried items last (pass 3, 1 of 3 stalled passes used)
+2026-09-30 01:48:24.577 | WARNING  | __main__♻725 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-09-30 01:48:24.581 | WARNING  | __main__♻731 -  recycling (restart 2)
+2026-09-30 01:48:36.825 | INFO     | __main__:_loop:1067 -  0/14
+2026-09-30 01:48:41.327 | WARNING  | __main__:_loop_word:540 -  Word dialog 
+dismissed via 'No'
+2026-09-30 01:49:11.401 | WARNING  | __main__:_loop:1072 -  item 1/14 open for 
+more than 30 s:
+-- Word windows {name, subrole}: ,
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-3.log:
+
+-- newest diagnostic reports: AppCleaner-2026-09-30-001317.ips, 
+biome-2026-09-29-094107.ips, soffice-2026-09-28-104720.ips, 
+soffice-2026-09-28-105517.ips, soffice-2026-09-28-105123.000.ips
+2026-09-30 01:52:32.524 | WARNING  | __main__:run_batch_with_resume:1206 -  13 
+item(s) never reached (ended without reaching them); recycling Word and retrying
+the rest first, retried items last (pass 4, 2 of 3 stalled passes used)
+2026-09-30 01:52:32.534 | WARNING  | __main__♻725 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-09-30 01:52:32.534 | WARNING  | __main__♻731 -  recycling (restart 3)
+2026-09-30 01:52:43.989 | INFO     | __main__:_loop:1067 -  0/13
+2026-09-30 01:52:49.152 | WARNING  | __main__:_loop_word:540 -  Word dialog 
+dismissed via 'No'
+2026-09-30 01:53:10.736 | INFO     | __main__:_note_buttons:510 -  Microsoft 
+Word shows button 'OK'
+2026-09-30 01:53:20.802 | WARNING  | __main__:_loop_word:540 -  Word dialog 
+dismissed via 'OK'
+2026-09-30 01:53:21.144 | WARNING  | __main__:_loop:1072 -  item 1/13 open for 
+more than 30 s:
+-- Word windows {name, subrole}: , AXDialog
+-- Word window text: Microsoft Word, Word experienced an error trying to open 
+the file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00003__16ad37e660_87160078dd3ce277868...)
+-- crash reporters: 
+-- batch-pdf-4.log:
+        3       document loaded empty (Word could not read it)
+-- newest diagnostic reports: AppCleaner-2026-09-30-001317.ips, 
+biome-2026-09-29-094107.ips, soffice-2026-09-28-104720.ips, 
+soffice-2026-09-28-105517.ips, soffice-2026-09-28-105123.000.ips
+2026-09-30 01:53:32.027 | WARNING  | __main__:_loop_word:540 -  Word dialog 
+dismissed via 'No'
+2026-09-30 01:53:47.138 | WARNING  | __main__:_loop_word:540 -  Word dialog 
+dismissed via 'OK'
+2026-09-30 01:54:02.694 | WARNING  | __main__:_loop_word:540 -  Word dialog 
+dismissed via 'No'
+2026-09-30 01:57:47.616 | WARNING  | __main__:run_batch_with_resume:1206 -  12 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 5, 2 of 3 stalled 
+passes used)
+2026-09-30 01:57:47.645 | WARNING  | __main__♻725 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-09-30 01:57:47.648 | WARNING  | __main__♻731 -  recycling (restart 4)
+2026-09-30 01:57:59.381 | INFO     | __main__:_loop:1067 -  0/12
+2026-09-30 01:58:04.423 | WARNING  | __main__:_loop_word:540 -  Word dialog 
+dismissed via 'No'
+2026-09-30 01:58:36.499 | WARNING  | __main__:_loop:1072 -  item 1/12 open for 
+more than 30 s:
+-- Word windows {name, subrole}: ,
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-5.log:
+
+-- newest diagnostic reports: AppCleaner-2026-09-30-001317.ips, 
+biome-2026-09-29-094107.ips, soffice-2026-09-28-104720.ips, 
+soffice-2026-09-28-105517.ips, soffice-2026-09-28-105123.000.ips

@@ -1,0 +1,62 @@
+2026-09-30 01:31:20.307 | INFO     | __main__:preflight:1812 - [word] preflight: open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-09-30 01:31:20.491 | INFO     | __main__:convert_folder:1486 - [word] export: one_osascript=True documents=15 accept_all=False reject_all=False
+2026-09-30 01:31:20.624 | INFO     | __main__:_convert_batched:1685 - [batch] one osascript for 15 document(s)
+2026-09-30 01:31:22.560 | WARNING  | __main__:run_batch_with_resume:1206 - [batch pdf] 15 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 2, 0 of 3 stalled passes used)
+2026-09-30 01:31:22.567 | WARNING  | __main__:recycle:725 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-09-30 01:31:22.571 | WARNING  | __main__:recycle:731 - [word] recycling (restart 1)
+2026-09-30 01:31:33.786 | INFO     | __main__:_note_buttons:510 - [watchdog] Microsoft Word shows button 'Cancel'
+2026-09-30 01:31:33.841 | INFO     | __main__:_note_buttons:510 - [watchdog] Microsoft Word shows button 'missing value'
+2026-09-30 01:31:37.831 | INFO     | __main__:_loop:1067 - [batch pdf 2] 0/15
+2026-09-30 01:31:37.867 | WARNING  | __main__:_loop_word:540 - [watchdog] Word dialog dismissed via 'No'
+2026-09-30 01:32:38.599 | WARNING  | __main__:_loop:1072 - [batch pdf 2] item 1/15 open for more than 30 s:
+-- Word windows {name, subrole}: osascript timed out
+-- Word window text: osascript timed out
+-- crash reporters: osascript timed out
+-- batch-pdf-2.log:
+
+-- newest diagnostic reports: AppCleaner-2026-09-30-001317.ips, biome-2026-09-29-094107.ips, soffice-2026-09-28-104720.ips, soffice-2026-09-28-105517.ips, soffice-2026-09-28-105123.000.ips
+2026-09-30 01:35:34.002 | WARNING  | __main__:run_batch_with_resume:1206 - [batch pdf] 14 item(s) never reached (ended without reaching them); recycling Word and retrying the rest first, retried items last (pass 3, 1 of 3 stalled passes used)
+2026-09-30 01:35:34.029 | WARNING  | __main__:recycle:725 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-09-30 01:35:34.032 | WARNING  | __main__:recycle:731 - [word] recycling (restart 2)
+2026-09-30 01:35:45.632 | INFO     | __main__:_loop:1067 - [batch pdf 3] 0/14
+2026-09-30 01:35:46.538 | INFO     | __main__:_note_buttons:510 - [watchdog] Microsoft Word shows button 'No'
+2026-09-30 01:35:46.545 | INFO     | __main__:_note_buttons:510 - [watchdog] Microsoft Word shows button 'Yes'
+2026-09-30 01:35:53.072 | WARNING  | __main__:_loop_word:540 - [watchdog] Word dialog dismissed via 'No'
+2026-09-30 01:36:19.884 | WARNING  | __main__:_loop:1072 - [batch pdf 3] item 1/14 open for more than 30 s:
+-- Word windows {name, subrole}: ,
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-3.log:
+
+-- newest diagnostic reports: AppCleaner-2026-09-30-001317.ips, biome-2026-09-29-094107.ips, soffice-2026-09-28-104720.ips, soffice-2026-09-28-105517.ips, soffice-2026-09-28-105123.000.ips
+2026-09-30 01:39:41.456 | WARNING  | __main__:run_batch_with_resume:1206 - [batch pdf] 13 item(s) never reached (ended without reaching them); recycling Word and retrying the rest first, retried items last (pass 4, 2 of 3 stalled passes used)
+2026-09-30 01:39:41.481 | WARNING  | __main__:recycle:725 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-09-30 01:39:41.486 | WARNING  | __main__:recycle:731 - [word] recycling (restart 3)
+2026-09-30 01:39:53.902 | INFO     | __main__:_loop:1067 - [batch pdf 4] 0/13
+2026-09-30 01:39:59.263 | WARNING  | __main__:_loop_word:540 - [watchdog] Word dialog dismissed via 'No'
+2026-09-30 01:40:29.036 | WARNING  | __main__:_loop:1072 - [batch pdf 4] item 1/13 open for more than 30 s:
+-- Word windows {name, subrole}: ,
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-4.log:
+
+-- newest diagnostic reports: AppCleaner-2026-09-30-001317.ips, biome-2026-09-29-094107.ips, soffice-2026-09-28-104720.ips, soffice-2026-09-28-105517.ips, soffice-2026-09-28-105123.000.ips
+2026-09-30 01:43:49.416 | WARNING  | __main__:run_batch_with_resume:1206 - [batch pdf] 12 item(s) never reached (ended without reaching them); recycling Word and retrying the rest first, retried items last (pass 5, 3 of 3 stalled passes used)
+2026-09-30 01:43:49.419 | WARNING  | __main__:recycle:725 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-09-30 01:43:49.419 | WARNING  | __main__:recycle:731 - [word] recycling (restart 4)
+2026-09-30 01:43:53.587 | ERROR    | __main__:_convert_batched:1730 - [batch] FAIL: 03aa687c07_0fef17a42714273fc90f69ea4dc8d6b2028449267539750a__vs__7772e684bb_056aa42f3314a8a17098cba6c7afb8c21d27fc3bf274f137_redline_0d33c3afef_docxodus.docx — never reached in 3 batch pass(es)
+2026-09-30 01:43:53.589 | ERROR    | __main__:_convert_batched:1730 - [batch] FAIL: 08f3411449_file_175__vs__7ac6653045_file_176_redline_0a3b2b314a_docxodus.docx — never reached in 3 batch pass(es)
+2026-09-30 01:43:53.590 | ERROR    | __main__:_convert_batched:1730 - [batch] FAIL: 0bbf11cf21_5a6c9a5cc654191fa574f474976ebfbfd60a2299dfb96ebe__vs__d825254fce_048c597c1da833b932c73e97755f2f8e8113d83aecd1f13e_redline_ef51261c54_docxodus.docx — never reached in 3 batch pass(es)
+2026-09-30 01:43:53.591 | ERROR    | __main__:_convert_batched:1730 - [batch] FAIL: 109f20a2b3_5aff5b9fa9df9f4c52007fb46cc9d8ce262e481d4cd42cde__vs__9e0fe37bd3_c5ddb65c304e51ee1968486ee5967cce78db93eece4177fe_redline_7b1b3baaba_docxodus.docx — Microsoft Word got an error: AppleEvent timed out.
+2026-09-30 01:43:53.592 | ERROR    | __main__:_convert_batched:1730 - [batch] FAIL: 11856e25f6_small_font_size_demo_id_paraid_overflow__vs__1e0254763b_strict01_redline_831ee4fcc2_docxodus.docx — Microsoft Word got an error: AppleEvent timed out.
+2026-09-30 01:43:53.593 | ERROR    | __main__:_convert_batched:1730 - [batch] FAIL: 12033d2ca5_bc404781cb7c84f7c76061d998daff4b9224a2de0cdcceb4__vs__334eb73a7c_df8c4f9c7d2c85b4042854f488e93a8d7d3404c404a512f5_redline_e48e5fec25_docxodus.docx — Microsoft Word got an error: AppleEvent timed out.
+2026-09-30 01:43:53.593 | ERROR    | __main__:_convert_batched:1730 - [batch] FAIL: 16ad37e660_87160078dd3ce2778683d3a74ce659126834ee6b8d767dcc__vs__7e2920b1a9_950faedd1066df99d1eac4ab70f5b91f6988516145dc8854_redline_e1981b6e58_docxodus.docx — never reached in 3 batch pass(es)
+2026-09-30 01:43:53.594 | ERROR    | __main__:_convert_batched:1730 - [batch] FAIL: 1cdaa2bca0_0ccc6413a5d5d36f8f9e5fd3632396e00927c9196f9566ee__vs__c7f546e99c_bf85e13edbd4d5f562657afb037269ac3addef9c430a8e77_redline_967fdd5659_docxodus.docx — never reached in 3 batch pass(es)
+2026-09-30 01:43:53.595 | ERROR    | __main__:_convert_batched:1730 - [batch] FAIL: 1d2b8dc6ee_92170677438db54aa8a8f98174fe909b1098525f5f7e0bf8__vs__4f9dff0369_f827f1ca71b26a05479d43827a69fdb35f5acd1185196bdb_redline_4c39e7ce4f_docxodus.docx — never reached in 3 batch pass(es)
+2026-09-30 01:43:53.596 | ERROR    | __main__:_convert_batched:1730 - [batch] FAIL: 1e0254763b_strict01__vs__f5bac425cd_word_tolerated_broken_media_rel_redline_46d171fe5b_docxodus.docx — never reached in 3 batch pass(es)
+2026-09-30 01:43:53.597 | ERROR    | __main__:_convert_batched:1730 - [batch] FAIL: 203c24d1e7_00cb988053156ab17763897a184a6655864f9c50f7ef2e53__vs__1424386e9b_017447de83753a0e3b7afc659df038ef56972925336c6a5b_redline_e682703ae3_docxodus.docx — never reached in 3 batch pass(es)
+2026-09-30 01:43:53.599 | ERROR    | __main__:_convert_batched:1730 - [batch] FAIL: 203c24d1e7_00cb988053156ab17763897a184a6655864f9c50f7ef2e53__vs__2773adf157_0004c94ca2a8684d47449bb0e7abf87de1df71a7e6543252_redline_6d53941908_docxodus.docx — never reached in 3 batch pass(es)
+2026-09-30 01:43:53.600 | ERROR    | __main__:_convert_batched:1730 - [batch] FAIL: 203c24d1e7_00cb988053156ab17763897a184a6655864f9c50f7ef2e53__vs__2e04202552_000e3e7bd2d6215fc7b469cc3e296c1b2a510bc1abc7e0fd_redline_787c63ea48_docxodus.docx — never reached in 3 batch pass(es)
+2026-09-30 01:43:53.601 | ERROR    | __main__:_convert_batched:1730 - [batch] FAIL: 203c24d1e7_00cb988053156ab17763897a184a6655864f9c50f7ef2e53__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_13a3fc553d_docxodus.docx — never reached in 3 batch pass(es)
+2026-09-30 01:43:53.603 | ERROR    | __main__:_convert_batched:1730 - [batch] FAIL: 203c24d1e7_00cb988053156ab17763897a184a6655864f9c50f7ef2e53__vs__342f364d46_001342333d45627868f4dc5282abbba4598a91b4a7584b08_redline_9e54d502f6_docxodus.docx — never reached in 3 batch pass(es)
+2026-09-30 01:43:55.182 | WARNING  | __main__:_loop_word:540 - [watchdog] Word dialog dismissed via 'Cancel'

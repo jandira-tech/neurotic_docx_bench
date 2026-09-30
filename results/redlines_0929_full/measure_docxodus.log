@@ -1,0 +1,12 @@
+docxodus: 250 scored, 2359 to go -> scores_docxodus.partial.json
+docxodus: 500 scored, 2109 to go -> scores_docxodus.partial.json
+docxodus: 750 scored, 1859 to go -> scores_docxodus.partial.json
+docxodus: 1000 scored, 1609 to go -> scores_docxodus.partial.json
+docxodus: 1250 scored, 1359 to go -> scores_docxodus.partial.json
+docxodus: 1500 scored, 1109 to go -> scores_docxodus.partial.json
+docxodus: 1750 scored, 859 to go -> scores_docxodus.partial.json
+docxodus: 2000 scored, 609 to go -> scores_docxodus.partial.json
+docxodus: 2250 scored, 359 to go -> scores_docxodus.partial.json
+docxodus: 2500 scored, 109 to go -> scores_docxodus.partial.json
+docxodus: 2609 scored, 0 to go -> scores_docxodus.partial.json
+docxodus: 2609/3502 scored, mean 72.33, median 81.75, >=90: 482; fresh oracles 516, meant fresh but old 0; torch-mps -> /Users/arthrod/temp/T/neurotic_docx_bench/results/redlines_0929_full/scores_docxodus.json
