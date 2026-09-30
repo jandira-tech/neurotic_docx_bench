@@ -26,7 +26,15 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 # Committed frozen copy of the original scoring core, so parity is verified EVEN in CI /
 # fresh clones (the source `.old/compare/` is git-ignored and absent there).
 OLD_SCORE_PATH = REPO_ROOT / "tests" / "reference" / "old_compare_score.py"
-ORACLE_PDF_DIR = REPO_ROOT / "grok_run" / "word_based" / "pdf_redlines_word"
+
+
+def _oracle_pdfs() -> list[Path]:
+    """LibreOffice's renders of the word_based Word redlines, as filed in corpus/libreoffice."""
+    from helpers import MANIFEST, word_based_pairs
+
+    if not MANIFEST.is_file():
+        return []
+    return sorted(p.libreoffice_pdf for p in word_based_pairs() if p.libreoffice_pdf and p.libreoffice_pdf.is_file())
 
 
 def _load_old_score():
@@ -71,9 +79,7 @@ def two_pdf_page_sets(tmp_path_factory) -> tuple[list[Path], list[Path]]:
     """Rasterize the first page of two different oracle PDFs so the full metric pipeline
     (alignment / ink / edge / colour / blob) actually runs, not the identical-image path.
     """
-    if not ORACLE_PDF_DIR.is_dir():
-        pytest.skip(f"oracle corpus not present at {ORACLE_PDF_DIR}")
-    pdfs = sorted(ORACLE_PDF_DIR.glob("*.pdf"))
+    pdfs = _oracle_pdfs()
     if len(pdfs) < 2:
         pytest.skip("need at least two oracle PDFs for a parity comparison")
 
@@ -122,9 +128,7 @@ def test_score_document_shape_and_range(two_pdf_page_sets):
 
 def test_identical_pages_score_100(tmp_path):
     """Scoring a page against itself yields a perfect score (sanity of the pipeline)."""
-    if not ORACLE_PDF_DIR.is_dir():
-        pytest.skip(f"oracle corpus not present at {ORACLE_PDF_DIR}")
-    pdfs = sorted(ORACLE_PDF_DIR.glob("*.pdf"))
+    pdfs = _oracle_pdfs()
     if not pdfs:
         pytest.skip("no oracle PDFs")
     d = tmp_path / "p"

@@ -1,0 +1,69 @@
+staged 12387 files, 2.61 GB: {'jubarte-rust/docx': 2611, 'jubarte-rust/pdf_by_word': 2608, 'jubarte-rust/accepted/src': 100, 'jubarte-rust/accepted/by_word': 198, 'jubarte-rust/rejected/src': 100, 'jubarte-rust/rejected/by_word': 200, 'docxodus/docx': 2605, 'docxodus/pdf_by_word': 1895, 'docxodus/accepted/src': 100, 'docxodus/accepted/by_word': 182, 'docxodus/rejected/src': 100, 'docxodus/rejected/by_word': 192, 'superdoc/docx': 192, 'superdoc/pdf_by_word': 192, 'superdoc/accepted/src': 5, 'superdoc/accepted/by_word': 10, 'superdoc/rejected/src': 8, 'superdoc/rejected/by_word': 16, 'fresh_compares': 1032, 'jubarte-rust/meta': 2, 'docxodus/meta': 2, 'superdoc/meta': 11, 'run': 26}
+No files have been modified since last commit. Skipping to prevent empty commit.
+uploaded jubarte-rust/docx
+No files have been modified since last commit. Skipping to prevent empty commit.
+uploaded jubarte-rust/pdf_by_word
+No files have been modified since last commit. Skipping to prevent empty commit.
+uploaded jubarte-rust/accepted/src
+No files have been modified since last commit. Skipping to prevent empty commit.
+uploaded jubarte-rust/accepted/by_word
+No files have been modified since last commit. Skipping to prevent empty commit.
+uploaded jubarte-rust/rejected/src
+No files have been modified since last commit. Skipping to prevent empty commit.
+uploaded jubarte-rust/rejected/by_word
+No files have been modified since last commit. Skipping to prevent empty commit.
+uploaded docxodus/docx
+No files have been modified since last commit. Skipping to prevent empty commit.
+uploaded docxodus/pdf_by_word
+No files have been modified since last commit. Skipping to prevent empty commit.
+uploaded docxodus/accepted/src
+No files have been modified since last commit. Skipping to prevent empty commit.
+uploaded docxodus/accepted/by_word
+No files have been modified since last commit. Skipping to prevent empty commit.
+uploaded docxodus/rejected/src
+No files have been modified since last commit. Skipping to prevent empty commit.
+uploaded docxodus/rejected/by_word
+No files have been modified since last commit. Skipping to prevent empty commit.
+uploaded superdoc/docx
+No files have been modified since last commit. Skipping to prevent empty commit.
+uploaded superdoc/pdf_by_word
+No files have been modified since last commit. Skipping to prevent empty commit.
+uploaded superdoc/accepted/src
+No files have been modified since last commit. Skipping to prevent empty commit.
+uploaded superdoc/accepted/by_word
+No files have been modified since last commit. Skipping to prevent empty commit.
+uploaded superdoc/rejected/src
+No files have been modified since last commit. Skipping to prevent empty commit.
+uploaded superdoc/rejected/by_word
+No files have been modified since last commit. Skipping to prevent empty commit.
+uploaded fresh_compares
+No files have been modified since last commit. Skipping to prevent empty commit.
+uploaded jubarte-rust/meta
+No files have been modified since last commit. Skipping to prevent empty commit.
+uploaded docxodus/meta
+No files have been modified since last commit. Skipping to prevent empty commit.
+uploaded superdoc/meta
+No files have been modified since last commit. Skipping to prevent empty commit.
+uploaded run
+verified 12387 files on arthrod/neurotic_docx_bench/outputs/redlines_0929_full
+deleted /Users/arthrod/temp/T/neurotic_docx_bench/results/redlines_0929_full/jubarte-rust/docx
+deleted /Users/arthrod/temp/T/neurotic_docx_bench/results/redlines_0929_full/jubarte-rust/pdf_by_word
+deleted /Users/arthrod/temp/T/neurotic_docx_bench/results/redlines_0929_full/jubarte-rust/accepted/src
+deleted /Users/arthrod/temp/T/neurotic_docx_bench/results/redlines_0929_full/jubarte-rust/accepted/by_word
+deleted /Users/arthrod/temp/T/neurotic_docx_bench/results/redlines_0929_full/jubarte-rust/rejected/src
+deleted /Users/arthrod/temp/T/neurotic_docx_bench/results/redlines_0929_full/jubarte-rust/rejected/by_word
+deleted /Users/arthrod/temp/T/neurotic_docx_bench/results/redlines_0929_full/docxodus/docx
+deleted /Users/arthrod/temp/T/neurotic_docx_bench/results/redlines_0929_full/docxodus/pdf_by_word
+deleted /Users/arthrod/temp/T/neurotic_docx_bench/results/redlines_0929_full/docxodus/accepted/src
+deleted /Users/arthrod/temp/T/neurotic_docx_bench/results/redlines_0929_full/docxodus/accepted/by_word
+deleted /Users/arthrod/temp/T/neurotic_docx_bench/results/redlines_0929_full/docxodus/rejected/src
+deleted /Users/arthrod/temp/T/neurotic_docx_bench/results/redlines_0929_full/docxodus/rejected/by_word
+deleted /Users/arthrod/temp/T/neurotic_docx_bench/results/redlines_0929_full/superdoc/docx
+deleted /Users/arthrod/temp/T/neurotic_docx_bench/results/redlines_0929_full/superdoc/pdf_by_word
+deleted /Users/arthrod/temp/T/neurotic_docx_bench/results/redlines_0929_full/superdoc/accepted/src
+deleted /Users/arthrod/temp/T/neurotic_docx_bench/results/redlines_0929_full/superdoc/accepted/by_word
+deleted /Users/arthrod/temp/T/neurotic_docx_bench/results/redlines_0929_full/superdoc/rejected/src
+deleted /Users/arthrod/temp/T/neurotic_docx_bench/results/redlines_0929_full/superdoc/rejected/by_word
+deleted /Users/arthrod/temp/T/neurotic_docx_bench/results/redlines_0929_full/docxodus/docx_rest
+deleted /Users/arthrod/temp/T/neurotic_docx_bench/results/redlines_0929_full/docxodus/docx_sample500
+deleted /Users/arthrod/temp/T/neurotic_docx_bench/results/redlines_0929_full/docxodus/pdf_staged
