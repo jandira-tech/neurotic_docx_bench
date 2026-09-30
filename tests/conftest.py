@@ -6,28 +6,29 @@ import shutil
 from pathlib import Path
 
 import pytest
-from helpers import DOCX_SOURCE, PDF_REDLINES
+from helpers import MANIFEST, word_based_pairs
 
 
 @pytest.fixture(scope="session")
 def sample_docx() -> list[Path]:
-    if not DOCX_SOURCE.is_dir():
-        pytest.skip("docx_source corpus absent")
-    docs = sorted(DOCX_SOURCE.glob("*.docx"))[:2]
-    if not docs:
+    """The base documents of the first two word_based Word compares (corpus/word)."""
+    if not MANIFEST.is_file():
+        pytest.skip("corpus/word absent")
+    docs = [p.base for p in word_based_pairs()[:2]]
+    if not all(d.is_file() for d in docs):
         pytest.skip("no source docx")
     return docs
 
 
 @pytest.fixture(scope="session")
 def sample_oracle_pdfs() -> list[Path]:
-    """Two real *redline* oracle PDFs (``…_redline.pdf``), excluding the base PDFs that
-    also live in the redline dir.
+    """Two real redline oracle PDFs: LibreOffice's renders of two Word compares
+    (corpus/libreoffice), named by their corpus key.
     """
-    if not PDF_REDLINES.is_dir():
-        pytest.skip("pdf_redlines_word corpus absent")
-    pdfs = [p for p in sorted(PDF_REDLINES.glob("*.pdf")) if p.stem.endswith("_redline")][:2]
-    if len(pdfs) < 2:
+    if not MANIFEST.is_file():
+        pytest.skip("corpus/word absent")
+    pdfs = [p.libreoffice_pdf for p in word_based_pairs() if p.libreoffice_pdf is not None][:2]
+    if len(pdfs) < 2 or not all(p.is_file() for p in pdfs):
         pytest.skip("need two redline oracle pdfs")
     return pdfs
 

@@ -3773,10 +3773,11 @@ def try_remote_cmd(
 
 corpus_app = typer.Typer(
     name="corpus",
-    help="Gather what Word produced (grok_run/, the Word oracle renders, grok_run/word_based and its siblings, "
-    "optionally the jubarte-first fixtures) into corpus/word: one state folder per kind of document, one "
-    "naming scheme, a rename record, tables, pools, provenance and a sha256 manifest. Copies only: the "
-    "origins are never moved or deleted.",
+    help="corpus/word is the tracked source of truth. build gathers what Word produced (its working "
+    "folders under --origins: word_based and its siblings, the wr09xx runs, the Word oracle renders; "
+    "optionally the jubarte-first fixtures) into it: one state folder per kind of document, one naming "
+    "scheme, a rename record, tables, pools, provenance and a sha256 manifest. Copies only: the origins "
+    "are never moved or deleted.",
     no_args_is_help=True,
 )
 app.add_typer(corpus_app)
@@ -3789,8 +3790,8 @@ def _corpus_fail(message: str, code: int = 1) -> typer.Exit:
 
 @corpus_app.command(name="build")
 def corpus_build_cmd(
-    root: Path = typer.Option(Path("."), "--root", help="repository root (grok_run/ and corpus/ live under it)"),
-    dest: Path | None = typer.Option(None, "--dest", help="where the corpus goes", show_default="corpus/word"),
+    origins: Path = typer.Option(..., "--origins", help="the folder holding Word's working folders (word_based, wr0926, ...)"),
+    dest: Path = typer.Option(Path("corpus/word"), "--dest", help="where the corpus goes"),
     fixtures: Path | None = typer.Option(
         None, "--fixtures", help="the jubarte-first _fixtures folder; without it the fixtures sets are skipped"
     ),
@@ -3801,10 +3802,10 @@ def corpus_build_cmd(
     """Copy the Word sets into --dest and write their tables, pools, notices, provenance and manifest."""
     from neurotic_docx_bench import word_corpus
 
-    target = dest if dest is not None else root / word_corpus.DEFAULT_DEST
+    target = dest
     try:
         report = word_corpus.build(
-            root, target, fixtures=fixtures, only=tuple(only) or None, force=force, dry_run=dry_run
+            origins, target, fixtures=fixtures, only=tuple(only) or None, force=force, dry_run=dry_run
         )
     except word_corpus.CorpusError as exc:
         raise _corpus_fail(str(exc)) from exc
@@ -3837,7 +3838,7 @@ def corpus_build_cmd(
 
 @corpus_app.command(name="libreoffice")
 def corpus_libreoffice_cmd(
-    root: Path = typer.Option(Path("."), "--root", help="repository root (grok_run/ and corpus/ live under it)"),
+    origins: Path = typer.Option(..., "--origins", help="the folder holding Word's working folders and their LibreOffice renders"),
     dest: Path = typer.Option(Path("corpus/libreoffice"), "--dest", help="where the LibreOffice corpus goes"),
     word: Path = typer.Option(Path("corpus/word"), "--word", help="the built Word corpus"),
     dry_run: bool = typer.Option(False, "--dry-run", help="plan and report; copy nothing"),
@@ -3846,7 +3847,7 @@ def corpus_libreoffice_cmd(
     from neurotic_docx_bench import libreoffice_corpus
 
     try:
-        plan_ = libreoffice_corpus.build(root, dest, word=word, dry_run=dry_run)
+        plan_ = libreoffice_corpus.build(origins, dest, word=word, dry_run=dry_run)
     except libreoffice_corpus.LibreofficeCorpusError as exc:
         raise _corpus_fail(str(exc)) from exc
     for name, s in plan_.sets.items():
@@ -3860,16 +3861,10 @@ def corpus_libreoffice_cmd(
 
 @corpus_app.command(name="actions")
 def corpus_actions_cmd(
-    root: Path = typer.Option(Path("."), "--root", help="repository root"),
+    root: Path = typer.Option(Path("."), "--root", help="origin paths in accept_all.csv / reject_all.csv are recorded relative to it"),
     dest: Path = typer.Option(Path("corpus/word"), "--dest", help="the built Word corpus"),
-    accept_out: Path = typer.Option(
-        Path("grok_run/wr0929/pool_compares_accepted"), "--accept-out",
-        help="word_pdf.py --accept-all output folder",
-    ),
-    reject_out: Path = typer.Option(
-        Path("grok_run/wr0929/pool_compares_rejected"), "--reject-out",
-        help="word_pdf.py --reject-all output folder",
-    ),
+    accept_out: Path = typer.Option(..., "--accept-out", help="word_pdf.py --accept-all output folder"),
+    reject_out: Path = typer.Option(..., "--reject-out", help="word_pdf.py --reject-all output folder"),
 ) -> None:
     """File Word's Accept All / Reject All of the split comparisons under their pair keys."""
     from neurotic_docx_bench import word_actions

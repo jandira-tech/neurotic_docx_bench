@@ -4,13 +4,12 @@
   "fixtureCount": 2565,
   "fixtureTarget": 1000,
   "fixturesDirs": [
-    "/Users/arthrod/temp/T/neurotic_docx_bench/corpus/word_based/docx_source",
-    "/Users/arthrod/temp/T/neurotic_docx_bench/corpus/word_based/docx_source_randomized",
-    "/Users/arthrod/temp/T/neurotic_docx_bench/corpus/word_based/docx_accepted_word",
-    "/Users/arthrod/temp/T/neurotic_docx_bench/corpus/no_comments_pdf_was_generated_by_word/docx_source",
-    "/Users/arthrod/temp/T/neurotic_docx_bench/corpus/no_comments_pdf_was_generated_by_word/docx_accepted_word",
-    "/Users/arthrod/temp/T/neurotic_docx_bench/corpus/word_based/docx_redlines_word",
-    "/Users/arthrod/temp/T/neurotic_docx_bench/corpus/no_comments_pdf_was_generated_by_word/docx_redlines_word"
+    "/Users/arthrod/temp/T/neurotic_docx_bench/corpus/word/clean/docx",
+    "/Users/arthrod/temp/T/neurotic_docx_bench/corpus/word/accept_all/docx",
+    "/Users/arthrod/temp/T/neurotic_docx_bench/corpus/word/reject_all/docx",
+    "/Users/arthrod/temp/T/neurotic_docx_bench/corpus/word/with_comments_clean/docx",
+    "/Users/arthrod/temp/T/neurotic_docx_bench/corpus/word/tracking_without_comments/docx",
+    "/Users/arthrod/temp/T/neurotic_docx_bench/corpus/word/with_comments_tracking/docx"
   ],
   "pairCount": 10000,
   "pairs": [

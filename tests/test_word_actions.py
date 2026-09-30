@@ -34,7 +34,7 @@ def _tree(tmp_path: Path) -> tuple[Path, Path]:
         w.writerow(("key", "docx"))
         w.writerow((K1, f"tracking_without_comments/docx/{K1}.docx"))
         w.writerow((K2, f"with_comments_tracking/docx/{K2}.docx"))
-    acc, rej = root / "grok_run/acc", root / "grok_run/rej"
+    acc, rej = root / "work/acc", root / "work/rej"
     acc.mkdir(parents=True)
     rej.mkdir(parents=True)
     (acc / f"{K1}_accepted_tracking.docx").write_bytes(b"PK acc 1")
@@ -53,7 +53,7 @@ def _rows(path: Path) -> dict[str, dict[str, str]]:
 def test_files_each_output_under_its_pair_key(tmp_path: Path) -> None:
     root, dest = _tree(tmp_path)
     counts = word_actions.build(
-        root, dest, {"accept_all": root / "grok_run/acc", "reject_all": root / "grok_run/rej"},
+        root, dest, {"accept_all": root / "work/acc", "reject_all": root / "work/rej"},
     )
     assert counts == {"accept_all": {"ok": 1, "no_pdf": 1}, "reject_all": {"ok": 1}}
     assert (dest / f"accept_all/docx/{K1}.docx").read_bytes() == b"PK acc 1"
@@ -63,19 +63,19 @@ def test_files_each_output_under_its_pair_key(tmp_path: Path) -> None:
     acc = _rows(dest / "pools/accept_all.csv")
     assert acc[K1]["docx"] == f"accept_all/docx/{K1}.docx" and acc[K1]["pdf"] == f"accept_all/pdf/{K1}.pdf"
     assert acc[K1]["source_docx"] == f"tracking_without_comments/docx/{K1}.docx"
-    assert acc[K1]["origin_docx"] == f"grok_run/acc/{K1}_accepted_tracking.docx"
+    assert acc[K1]["origin_docx"] == f"work/acc/{K1}_accepted_tracking.docx"
     assert (acc[K3]["status"], acc[K3]["pdf"], acc[K3]["source_docx"]) == ("no_pdf", "", "")
     assert set(_rows(dest / "pools/reject_all.csv")) == {K2}
     assert hub.verify_manifest(dest).ok
     # idempotent
-    word_actions.build(root, dest, {"accept_all": root / "grok_run/acc", "reject_all": root / "grok_run/rej"})
+    word_actions.build(root, dest, {"accept_all": root / "work/acc", "reject_all": root / "work/rej"})
     assert (dest / f"accept_all/docx/{K1}.docx").read_bytes() == b"PK acc 1"
 
 
 def test_a_missing_output_folder_is_an_error(tmp_path: Path) -> None:
     root, dest = _tree(tmp_path)
     with pytest.raises(word_actions.WordActionsError, match="no output folder"):
-        word_actions.build(root, dest, {"accept_all": root / "nope", "reject_all": root / "grok_run/rej"})
+        word_actions.build(root, dest, {"accept_all": root / "nope", "reject_all": root / "work/rej"})
 
 
 def test_stage_clones_what_a_list_names(tmp_path: Path) -> None:

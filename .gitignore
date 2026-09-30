@@ -185,3 +185,7 @@ results/hub/
 Claude outputs/
 *.swp
 score_v2.patch
+
+# .NET build outputs of the in-process docxodus driver (the net8.0 build is tracked; newer builds are local)
+/src/neurotic_docx_bench/utils/docxodus/docxodus-csharp-inproc/bin/
+/src/neurotic_docx_bench/utils/docxodus/docxodus-csharp-inproc/obj/

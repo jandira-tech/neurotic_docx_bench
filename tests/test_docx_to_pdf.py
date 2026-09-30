@@ -31,7 +31,7 @@ from neurotic_docx_bench.docx_to_pdf import (
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-LIBREOFFICE_PDF_SOURCE = REPO_ROOT / "grok_run" / "word_based" / "pdf_source"
+LIBREOFFICE_PDF_SOURCE = REPO_ROOT / "corpus" / "libreoffice"  # every LibreOffice render the bench files
 
 
 def test_oracles_are_only_the_two_pinned_word_export_folders():

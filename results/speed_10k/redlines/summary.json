@@ -1,0 +1,86 @@
+{
+  "runTs": "2026-09-29T18:02:53.346Z",
+  "rows": [
+    {
+      "schema": 1,
+      "kind": "redline_speed_bench",
+      "tool": "docxodus",
+      "engine": "docxodus",
+      "dist": "/Users/arthrod/temp/T/neurotic_docx_bench/dist/jubarte-final",
+      "runtime": "dotnet-wasm",
+      "run_ts": "2026-09-29T18:02:53.346Z",
+      "seed": 42,
+      "fixture_count": 2565,
+      "fixture_target": 1000,
+      "pair_count": 8665,
+      "reps": 1,
+      "warmup": 20,
+      "init_ms": 1777.637,
+      "wall_ms": 19820018.035,
+      "failures": 46,
+      "pair_timeout_ms": 120000,
+      "timeouts": 46,
+      "engine_restarts": 46,
+      "start_at": "p01335_word_compare",
+      "unit": "ms_per_redline",
+      "n": 8619,
+      "mean": 1639.344,
+      "median": 76.619,
+      "p90": 1864.885,
+      "p95": 6362.051,
+      "p99": 38504.146,
+      "min": 0.018,
+      "max": 116815.276,
+      "std": 7844.62,
+      "total_ms": 14129504.326,
+      "throughput_per_s": 0.6,
+      "tool_version": "12.6.4",
+      "hardware": {
+        "system": "darwin",
+        "release": "25.6.0",
+        "machine": "arm64",
+        "cpu": "Apple M4 Pro",
+        "cores": 12,
+        "ram_gb": 24,
+        "node": "v26.7.0"
+      },
+      "mean_out_bytes": 171227,
+      "profile": null,
+      "profile_tool": null,
+      "top_cpu": null,
+      "failure_samples": [
+        {
+          "key": "p01335_word_compare",
+          "error": "timeout after 120000 ms",
+          "ms": 120000
+        },
+        {
+          "key": "p01336_word_compare",
+          "error": "timeout after 120000 ms",
+          "ms": 120000
+        },
+        {
+          "key": "p01397_word_compare",
+          "error": "timeout after 120000 ms",
+          "ms": 120000
+        },
+        {
+          "key": "p02857_reverse",
+          "error": "timeout after 120000 ms",
+          "ms": 120000
+        },
+        {
+          "key": "p02882_reverse",
+          "error": "timeout after 120000 ms",
+          "ms": 120000
+        }
+      ]
+    }
+  ],
+  "fixtures": 2565,
+  "pairs": 8665,
+  "seed": 42,
+  "methods": [
+    "docxodus"
+  ]
+}

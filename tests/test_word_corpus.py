@@ -1,6 +1,6 @@
 """The Word corpus (PR 12): ``corpus/word/<state>/docx|pdf|pdf_prior`` for what Word produced.
 
-The fake tree below mirrors the shape of ``grok_run/``, the corpus folders and the
+The fake tree below mirrors the shape of Word's working folders (the ``--origins`` root) and the
 ``_fixtures`` folder the sets draw from. docx files are real zips (the plan reads
 their XML for the document state); PDFs carry a producer string (the plan reads it
 to refuse what Word did not render); every file has its own bytes unless a test
@@ -29,9 +29,9 @@ E = "e" * 8
 F = "f" * 8
 G = "g" * 8
 H = "h" * 8
-NC = "grok_run/no_comments_pdf_was_generated_by_word"
-WB = "grok_run/word_based"
-SD = "grok_run/word_redlines_superdoc"
+NC = "no_comments_pdf_was_generated_by_word"
+WB = "word_based"
+SD = "word_redlines_superdoc"
 FIX = word_corpus.FIXTURES_PREFIX
 QUARTZ = rb"macOS Version 26.6.2 \(Build 25G83\) Quartz PDFContext"
 LIBREOFFICE_HEX = b"FEFF004C0069006200720065004F00660066006900630065"  # "LibreOffice" in UTF-16BE
@@ -91,7 +91,7 @@ def _mapping(path: Path, pairs: list[tuple[str, str, str]]) -> Path:
 
 def make_tree(root: Path) -> Path:
     """A miniature of the material the sets draw from."""
-    g = root / "grok_run"
+    g = root
     # sources_500: docx + tagged Word PDFs; B re-rendered by a later build; C has no PDF at all
     _docx(g / "fixtures_500" / f"{A}.docx", f"docx {A}", tracked=True)
     _docx(g / "fixtures_500" / f"{B}.docx", f"docx {B}", comments=True)
@@ -140,7 +140,7 @@ def make_tree(root: Path) -> Path:
     _docx(g / "500_extra_redlines_rejected" / "500_extra_docx_redlines" / f"{D}__vs__{H}.docx", "compare D H")
     _put(g / "word_blacklist" / "blacklist.tsv", f"{H}\tWord hangs/crashes\n")
     # word_based: x, y, z with the pairs x_y (tracked + comments) and y_z (a `_word_redline` name);
-    # the September Word renders live under grok_run/wordpdf_redline_oracles
+    # the September Word renders live under wordpdf_redline_oracles
     _docx(root / WB / "docx_source" / "x.docx", "docx x")
     _docx(root / WB / "docx_source" / "y.docx", "docx y")
     _docx(root / WB / "docx_source" / "z.docx", "docx z")
@@ -396,7 +396,7 @@ def test_pdf_meta_finds_an_info_dictionary_a_long_xref_table_pushed_out_of_the_t
 def test_plan_places_documents_by_state_and_names_them_by_id(tree: Path) -> None:
     plan_ = word_corpus.plan(tree, only=["sources_500"])
     a = _doc(plan_, A)
-    assert a.id == _id(tree / "grok_run" / "fixtures_500" / f"{A}.docx")
+    assert a.id == _id(tree / "fixtures_500" / f"{A}.docx")
     assert a.stem == f"{a.id}_{A}"
     assert a.state == "tracking_without_comments"
     assert a.docx == f"tracking_without_comments/docx/{a.stem}.docx"
@@ -413,11 +413,11 @@ def test_plan_places_documents_by_state_and_names_them_by_id(tree: Path) -> None
 def test_plan_tagged_pdfs_keep_the_prior_render(tree: Path) -> None:
     plan_ = word_corpus.plan(tree, only=["sources_500"])
     b = _doc(plan_, B)
-    assert b.pdf_src == f"grok_run/fixtures_500_pdf/{B}.w26092233.pdf"
-    assert b.pdf_prior_src == f"grok_run/fixtures_500_pdf/{B}.outdated.pdf"
+    assert b.pdf_src == f"fixtures_500_pdf/{B}.w26092233.pdf"
+    assert b.pdf_prior_src == f"fixtures_500_pdf/{B}.outdated.pdf"
     assert b.pdf_prior == f"with_comments_clean/pdf_prior/{b.stem}.pdf"
     assert plan_.sets["sources_500"].superseded == (B,)
-    assert plan_.sets["sources_500"].orphans == ("grok_run/fixtures_500_pdf/orphan.pdf",)
+    assert plan_.sets["sources_500"].orphans == ("fixtures_500_pdf/orphan.pdf",)
 
 
 def test_plan_require_pdf_leaves_out_what_word_did_not_render(tree: Path) -> None:
@@ -433,8 +433,8 @@ def test_plan_require_pdf_leaves_out_what_word_did_not_render(tree: Path) -> Non
 def test_plan_fallback_fills_gaps_only(tree: Path) -> None:
     plan_ = word_corpus.plan(tree, only=["en_pairs_500"])
     f, h = _doc(plan_, F), _doc(plan_, H)
-    assert f.pdf_src == f"grok_run/500_pdf_part_b_original/{F}.pdf" and f.pdf_prior == ""
-    assert h.pdf_src == f"grok_run/500_pdf_part_b_run2/{H}.pdf"
+    assert f.pdf_src == f"500_pdf_part_b_original/{F}.pdf" and f.pdf_prior == ""
+    assert h.pdf_src == f"500_pdf_part_b_run2/{H}.pdf"
     assert plan_.sets["en_pairs_500"].filled == (H,)
 
 
@@ -455,7 +455,7 @@ def test_plan_word_invalid_list_removes_documents_and_their_compares_from_every_
     """A docx Word will not open cleanly is out of the corpus by its id, whatever it is called in a
     set, and every compare built on it goes with it."""
     x_id = _id(tree / WB / "docx_source" / "x.docx")
-    ab_id = _id(tree / "grok_run" / "compared_a_100_vs_b_10_docx" / f"{A}__vs__{B}.docx")
+    ab_id = _id(tree / "compared_a_100_vs_b_10_docx" / f"{A}__vs__{B}.docx")
     _put(tree / word_corpus.WORD_INVALID, f"{x_id}\trecover-contents prompt\n{ab_id}\trepair prompt\n")
     plan_ = word_corpus.plan(tree, only=["sources_500", "redlines_a100_b10", "word_based", "nocomments"])
     assert "x" not in {n for d in plan_.documents for n in d.names}
@@ -470,7 +470,7 @@ def test_plan_word_invalid_list_removes_documents_and_their_compares_from_every_
 
 
 def test_plan_without_a_blacklist_excludes_nothing(tree: Path) -> None:
-    (tree / "grok_run" / "word_blacklist" / "blacklist.tsv").unlink()
+    (tree / "word_blacklist" / "blacklist.tsv").unlink()
     plan_ = word_corpus.plan(tree, only=["en_pairs_500", "redlines_en_500"])
     assert plan_.sets["redlines_en_500"].excluded == {"500_extra_redlines_rejected": (f"{D}__vs__{H}",)}
 
@@ -480,7 +480,7 @@ def test_plan_comparisons_carry_base_next_and_the_redline_id(tree: Path) -> None
     ab = _cmp(plan_, f"{A}__vs__{B}")
     a, b = _doc(plan_, A), _doc(plan_, B)
     assert (ab.base_id, ab.next_id) == (a.id, b.id)
-    assert ab.id == _id(tree / "grok_run" / "compared_a_100_vs_b_10_docx" / f"{A}__vs__{B}.docx")
+    assert ab.id == _id(tree / "compared_a_100_vs_b_10_docx" / f"{A}__vs__{B}.docx")
     assert ab.stem == f"{a.stem}__vs__{b.stem}_redline_{ab.id}"
     assert ab.state == "tracking_without_comments"
     assert ab.docx == f"tracking_without_comments/docx/{ab.stem}.docx"
@@ -489,7 +489,7 @@ def test_plan_comparisons_carry_base_next_and_the_redline_id(tree: Path) -> None
     xy = _cmp(plan_, "x_y_redline")
     x, y, z = _doc(plan_, "x"), _doc(plan_, "y"), _doc(plan_, "z")
     assert (xy.base_id, xy.next_id, xy.state) == (x.id, y.id, "with_comments_tracking")
-    assert xy.pdf_src == "grok_run/wordpdf_redline_oracles/word_based/x_y_redline.pdf"
+    assert xy.pdf_src == "wordpdf_redline_oracles/word_based/x_y_redline.pdf"
     yz = _cmp(plan_, "y_z_word_redline")
     assert (yz.base_id, yz.next_id) == (y.id, z.id)
     assert x.pdf == "" and x.docx == f"clean/docx/{x.stem}.docx"
@@ -504,7 +504,7 @@ def test_plan_resolves_mapping_keys_that_keep_double_underscores(tree: Path) -> 
         _docx(sd / "docx_source" / f"{name}.docx", f"docx {name}")
     pairs = [("p_q", "p", "q"), ("s__p_1_s__q_2", "s__p_1", "s__q_2"), ("Big_R_y_redline", "Big_R", "y_redline")]
     _mapping(sd / "centralized_mapping.csv", pairs)
-    oracles = tree / "grok_run" / "wordpdf_redline_oracles" / "word_redlines_superdoc"
+    oracles = tree / "wordpdf_redline_oracles" / "word_redlines_superdoc"
     for cmp_name in ("s__p_1_s__q_2_redline", "Big_R_y_redline_redline"):
         _docx(sd / "docx_redlines_word" / f"{cmp_name}.docx", f"redline {cmp_name}", tracked=True)
         _pdf(oracles / f"{cmp_name}.pdf", f"pdf {cmp_name}")
@@ -525,7 +525,7 @@ def test_plan_wr0926_sets_are_new_documents_of_the_same_pairs(tree: Path) -> Non
     xy = new[0]
     assert xy.names == ("x_y_redline",) and xy.sets == ("word_based_0926",)
     assert xy.id != old.id and (xy.base_id, xy.next_id) == (old.base_id, old.next_id)
-    assert xy.pdf_src == "grok_run/wr0926/word_based/pdf/x_y_redline.pdf"
+    assert xy.pdf_src == "wr0926/word_based/pdf/x_y_redline.pdf"
     assert plan_.sets["word_based_0926"].absent == ("y_z_redline",)  # Word did not render it
 
 
@@ -544,7 +544,7 @@ def test_plan_dedupes_identical_docx_across_sets_and_records_every_name(tree: Pa
     assert plan_.sets["fixtures_originals"].refused == {}  # the LibreOffice PDF is not an origin of that set
     # a compare of names the mapping does not know is recorded, not guessed
     assert plan_.sets["fixtures_word_compares"].unresolved == {
-        "Sample-Document_x_word_redline": "pair sample_document_x is not in grok_run/word_based/centralized_mapping.csv"
+        "Sample-Document_x_word_redline": "pair sample_document_x is not in word_based/centralized_mapping.csv"
     }
     xy = _cmp(plan_, "x_y_word_redline")
     assert xy.sets == ("fixtures_word_compares",) and xy.pdf == ""
@@ -570,20 +570,20 @@ def test_plan_refuses_an_id_collision(tree: Path, monkeypatch: pytest.MonkeyPatc
 
 def test_plan_refuses_a_second_prior_render(tree: Path) -> None:
     # B (already current + outdated in sources_500) reappears in en_pairs_500 with a third render
-    (tree / "grok_run" / "500_docx_part_a_original" / f"{B}.docx").write_bytes(
-        (tree / "grok_run" / "fixtures_500" / f"{B}.docx").read_bytes()
+    (tree / "500_docx_part_a_original" / f"{B}.docx").write_bytes(
+        (tree / "fixtures_500" / f"{B}.docx").read_bytes()
     )
-    _pdf(tree / "grok_run" / "500_pdf_part_a_original" / f"{B}.pdf", f"pdf {B} third")
+    _pdf(tree / "500_pdf_part_a_original" / f"{B}.pdf", f"pdf {B} third")
     with pytest.raises(word_corpus.CorpusError, match="second prior"):
         word_corpus.plan(tree, only=["sources_500", "en_pairs_500"])
 
 
 def test_plan_keeps_one_pdf_when_two_sets_carry_the_same_render(tree: Path) -> None:
-    (tree / "grok_run" / "500_docx_part_a_original" / f"{A}.docx").write_bytes(
-        (tree / "grok_run" / "fixtures_500" / f"{A}.docx").read_bytes()
+    (tree / "500_docx_part_a_original" / f"{A}.docx").write_bytes(
+        (tree / "fixtures_500" / f"{A}.docx").read_bytes()
     )
-    (tree / "grok_run" / "500_pdf_part_a_original" / f"{A}.pdf").write_bytes(
-        (tree / "grok_run" / "fixtures_500_pdf" / f"{A}.pdf").read_bytes()
+    (tree / "500_pdf_part_a_original" / f"{A}.pdf").write_bytes(
+        (tree / "fixtures_500_pdf" / f"{A}.pdf").read_bytes()
     )
     plan_ = word_corpus.plan(tree, only=["sources_500", "en_pairs_500"])
     a = _doc(plan_, A)
@@ -591,14 +591,14 @@ def test_plan_keeps_one_pdf_when_two_sets_carry_the_same_render(tree: Path) -> N
 
 
 def test_plan_prior_render_from_a_later_set(tree: Path) -> None:
-    (tree / "grok_run" / "500_docx_part_a_original" / f"{A}.docx").write_bytes(
-        (tree / "grok_run" / "fixtures_500" / f"{A}.docx").read_bytes()
+    (tree / "500_docx_part_a_original" / f"{A}.docx").write_bytes(
+        (tree / "fixtures_500" / f"{A}.docx").read_bytes()
     )
-    _pdf(tree / "grok_run" / "500_pdf_part_a_original" / f"{A}.pdf", f"pdf {A} other run")
+    _pdf(tree / "500_pdf_part_a_original" / f"{A}.pdf", f"pdf {A} other run")
     plan_ = word_corpus.plan(tree, only=["sources_500", "en_pairs_500"])
     a = _doc(plan_, A)
-    assert a.pdf_src == f"grok_run/fixtures_500_pdf/{A}.pdf"
-    assert a.pdf_prior_src == f"grok_run/500_pdf_part_a_original/{A}.pdf"
+    assert a.pdf_src == f"fixtures_500_pdf/{A}.pdf"
+    assert a.pdf_prior_src == f"500_pdf_part_a_original/{A}.pdf"
     assert plan_.sets["en_pairs_500"].superseded == (A,)
 
 
@@ -615,20 +615,20 @@ def test_plan_refuses_pdfs_word_did_not_produce(tree: Path) -> None:
 
 
 def test_plan_refuses_a_missing_origin(tree: Path) -> None:
-    (tree / "grok_run" / "fixtures_500_pdf" / f"{A}.pdf").unlink()
-    for p in (tree / "grok_run" / "fixtures_500_pdf").iterdir():
+    (tree / "fixtures_500_pdf" / f"{A}.pdf").unlink()
+    for p in (tree / "fixtures_500_pdf").iterdir():
         p.unlink()
-    (tree / "grok_run" / "fixtures_500_pdf").rmdir()
+    (tree / "fixtures_500_pdf").rmdir()
     with pytest.raises(word_corpus.CorpusError, match="missing origin"):
         word_corpus.plan(tree, only=["sources_500"])
 
 
 def test_plan_refuses_a_tagged_name_it_cannot_place(tree: Path) -> None:
-    _pdf(tree / "grok_run" / "fixtures_500_pdf" / f"{A}.weird.pdf", "?")
+    _pdf(tree / "fixtures_500_pdf" / f"{A}.weird.pdf", "?")
     with pytest.raises(word_corpus.CorpusError, match="unexpected name"):
         word_corpus.plan(tree, only=["sources_500"])
-    (tree / "grok_run" / "fixtures_500_pdf" / f"{A}.weird.pdf").unlink()
-    _pdf(tree / "grok_run" / "fixtures_500_pdf" / f"{A}.w1.pdf", "?")
+    (tree / "fixtures_500_pdf" / f"{A}.weird.pdf").unlink()
+    _pdf(tree / "fixtures_500_pdf" / f"{A}.w1.pdf", "?")
     with pytest.raises(word_corpus.CorpusError, match="two current"):
         word_corpus.plan(tree, only=["sources_500"])
 
@@ -665,7 +665,7 @@ def test_build_copies_and_leaves_the_origins_alone(tree: Path, fixtures: Path) -
         if entry.pdf_prior:
             assert (dest / entry.pdf_prior).exists()
     a = _doc(plan_, A)
-    assert (dest / a.docx).read_bytes() == (tree / "grok_run" / "fixtures_500" / f"{A}.docx").read_bytes()
+    assert (dest / a.docx).read_bytes() == (tree / "fixtures_500" / f"{A}.docx").read_bytes()
     sample = _doc(plan_, "Sample Document")
     assert (dest / sample.docx).read_bytes() == (fixtures / "original_fixtures" / "Sample Document.docx").read_bytes()
     assert report.copied == len(plan_.documents) + len(plan_.comparisons) + sum(
@@ -712,7 +712,7 @@ def test_build_writes_tables_notices_pools_and_provenance(tree: Path, fixtures: 
         "pdf_prior": "",
         "sets": "redlines_a100_b10",
         "names": f"{A}__vs__{B}",
-        "sha256": hub.sha256_file(tree / "grok_run" / "compared_a_100_vs_b_10_docx" / f"{A}__vs__{B}.docx"),
+        "sha256": hub.sha256_file(tree / "compared_a_100_vs_b_10_docx" / f"{A}__vs__{B}.docx"),
         "producer": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext",
     }
     # notices: the origins' own files, the license and the rename record
@@ -734,9 +734,9 @@ def test_build_writes_tables_notices_pools_and_provenance(tree: Path, fixtures: 
         "README.md",
     }
     renamed = {r["original"]: r for r in _rows(dest / "notices" / "RENAMED.csv")}
-    assert list(renamed[f"grok_run/fixtures_500/{A}.docx"]) == ["original", "new", "id", "sha256", "set"]
-    assert renamed[f"grok_run/fixtures_500/{A}.docx"]["new"] == _doc(plan_, A).docx
-    assert renamed[f"grok_run/fixtures_500_pdf/{B}.outdated.pdf"]["new"] == _doc(plan_, B).pdf_prior
+    assert list(renamed[f"fixtures_500/{A}.docx"]) == ["original", "new", "id", "sha256", "set"]
+    assert renamed[f"fixtures_500/{A}.docx"]["new"] == _doc(plan_, A).docx
+    assert renamed[f"fixtures_500_pdf/{B}.outdated.pdf"]["new"] == _doc(plan_, B).pdf_prior
     assert renamed[f"{FIX}/original_fixtures/Sample Document.docx"]["set"] == "fixtures_originals"
     # pools: base and next as corpus stems the generators can open under --source-dir corpus/word
     pairs = _rows(dest / "pools" / "redlines_a100_b10_pairs.csv")
@@ -793,7 +793,7 @@ def test_build_is_idempotent_and_refuses_to_overwrite_a_changed_file(tree: Path)
         word_corpus.build(tree, dest)
     forced = word_corpus.build(tree, dest, force=True)
     assert forced.overwritten == 1
-    assert (dest / a.pdf).read_bytes() == (tree / "grok_run" / "fixtures_500_pdf" / f"{A}.pdf").read_bytes()
+    assert (dest / a.pdf).read_bytes() == (tree / "fixtures_500_pdf" / f"{A}.pdf").read_bytes()
 
 
 def test_build_only_and_dry_run(tree: Path) -> None:
@@ -823,11 +823,11 @@ def test_check_reports_drift(tree: Path) -> None:
 def test_plan_pdf_fill_gives_documents_and_compares_the_word_pdf_they_lacked(tree: Path) -> None:
     plan = word_corpus.plan(tree)
     z = _doc(plan, "z")
-    assert z.pdf_src == "grok_run/wr0928/pdf_fill/documents_pdf/z_doc.pdf"
+    assert z.pdf_src == "wr0928/pdf_fill/documents_pdf/z_doc.pdf"
     assert z.stem.endswith("_z") and "z_doc" in z.names and "pdf_fill_0928" in z.sets
     gdoc, bdoc = _doc(plan, G), _doc(plan, B)
-    assert gdoc.pdf_src == f"grok_run/fixtures_500_pdf/{G}.pdf"
-    assert bdoc.pdf_src == f"grok_run/fixtures_500_pdf/{B}.w26092233.pdf"
+    assert gdoc.pdf_src == f"fixtures_500_pdf/{G}.pdf"
+    assert bdoc.pdf_src == f"fixtures_500_pdf/{B}.w26092233.pdf"
     assert not gdoc.pdf_prior_src and plan.sets["pdf_fill_0928"].superseded == ()
     (gb,) = [e for e in plan.comparisons if e.pdf_src.endswith("g_b_cmp.pdf")]
     assert (gb.base_id, gb.next_id) == (gdoc.id, bdoc.id)
@@ -838,8 +838,8 @@ def test_plan_pdf_fill_gives_documents_and_compares_the_word_pdf_they_lacked(tre
     assert rejected.stem.endswith("_cmp0000002_rejected_tracking") and rejected.pdf_src
     balloons = {d.stem.split("_", 1)[1]: d for d in plan.documents if "comment_balloons_0929" in d.sets}
     assert set(balloons) == {"r5_00_one_para", "ab4_0_base_control"}
-    assert balloons["r5_00_one_para"].pdf_src == "grok_run/comment_balloons_0929/pdf/R5_00_one_para.pdf"
-    assert balloons["ab4_0_base_control"].pdf_src == "grok_run/comment_balloons_0929/ab_pdf/AB4_0_base_control.pdf"
+    assert balloons["r5_00_one_para"].pdf_src == "comment_balloons_0929/pdf/R5_00_one_para.pdf"
+    assert balloons["ab4_0_base_control"].pdf_src == "comment_balloons_0929/ab_pdf/AB4_0_base_control.pdf"
     assert balloons["r5_00_one_para"].state == "with_comments_clean"
 
 
@@ -875,7 +875,7 @@ def test_summary_and_corpus_entries(tree: Path) -> None:
 def test_cli_build_check_list(tree: Path, fixtures: Path) -> None:
     runner = CliRunner()
     dest = tree / "corpus" / "word"
-    res = runner.invoke(app, ["corpus", "build", "--root", str(tree), "--dest", str(dest), "--fixtures", str(fixtures)])
+    res = runner.invoke(app, ["corpus", "build", "--origins", str(tree), "--dest", str(dest), "--fixtures", str(fixtures)])
     assert res.exit_code == 0, res.output
     assert "copied" in res.output and "left out" in res.output and "fixtures_originals" in res.output
     res = runner.invoke(app, ["corpus", "check", "--dest", str(dest)])
@@ -887,9 +887,9 @@ def test_cli_build_check_list(tree: Path, fixtures: Path) -> None:
     (dest / a.pdf).write_text("drifted")
     res = runner.invoke(app, ["corpus", "check", "--dest", str(dest)])
     assert res.exit_code == 1
-    res = runner.invoke(app, ["corpus", "build", "--root", str(tree), "--dest", str(dest)])
+    res = runner.invoke(app, ["corpus", "build", "--origins", str(tree), "--dest", str(dest)])
     assert res.exit_code == 1 and "differs" in res.output
-    res = runner.invoke(app, ["corpus", "build", "--root", str(tree / "nowhere"), "--dest", str(dest)])
+    res = runner.invoke(app, ["corpus", "build", "--origins", str(tree / "nowhere"), "--dest", str(dest)])
     assert res.exit_code == 1
     res = runner.invoke(app, ["corpus", "list", "--dest", str(tree / "nowhere")])
     assert res.exit_code == 1
@@ -901,11 +901,11 @@ def test_cli_build_check_list(tree: Path, fixtures: Path) -> None:
 def test_origins_lists_every_origin_once() -> None:
     origins = word_corpus.origins()
     assert len(origins) == len(set(origins)) and "" not in origins
-    assert "grok_run/fixtures_500" in origins
-    assert "grok_run/500_pdf_part_a_run2" in origins  # a fallback folder is an origin too
+    assert "fixtures_500" in origins
+    assert "500_pdf_part_a_run2" in origins  # a fallback folder is an origin too
     assert f"{WB}/centralized_mapping.csv" in origins
-    assert "grok_run/word_blacklist/blacklist.tsv" in origins
-    assert "grok_run/fixtures_500/NOTICE" in origins
+    assert "word_blacklist/blacklist.tsv" in origins
+    assert "fixtures_500/NOTICE" in origins
     assert f"{FIX}/original_fixtures" in origins
 
 
@@ -924,7 +924,7 @@ def test_plan_refuses_a_missing_mapping(tree: Path) -> None:
 
 
 def test_plan_reports_a_compare_whose_name_is_not_a_pair(tree: Path) -> None:
-    g = tree / "grok_run"
+    g = tree
     _docx(g / "compared_a_100_vs_b_10_docx" / "nopair.docx", "compare of nothing", tracked=True)
     _pdf(g / "compared_a_100_vs_b_10_pdf" / "nopair.pdf", "pdf compare of nothing")
     _docx(g / "compared_a_100_vs_b_10_docx" / f"__vs__{B}.docx", "compare with no base", tracked=True)
@@ -945,12 +945,12 @@ def test_plan_refuses_the_same_bytes_as_a_document_and_a_comparison(tree: Path) 
 
 
 def test_plan_refuses_a_prior_render_word_did_not_produce(tree: Path) -> None:
-    _pdf(tree / "grok_run" / "fixtures_500_pdf" / f"{B}.outdated.pdf", f"lo render of {B}", producer="libreoffice")
+    _pdf(tree / "fixtures_500_pdf" / f"{B}.outdated.pdf", f"lo render of {B}", producer="libreoffice")
     plan_ = word_corpus.plan(tree, only=["sources_500"])
     b = _doc(plan_, B)
-    assert b.pdf_src == f"grok_run/fixtures_500_pdf/{B}.w26092233.pdf" and b.pdf_prior == ""
+    assert b.pdf_src == f"fixtures_500_pdf/{B}.w26092233.pdf" and b.pdf_prior == ""
     report = plan_.sets["sources_500"]
-    assert report.refused == {f"grok_run/fixtures_500_pdf/{B}.outdated.pdf": "LibreOffice"}
+    assert report.refused == {f"fixtures_500_pdf/{B}.outdated.pdf": "LibreOffice"}
     assert report.superseded == () and b.id in report.documents
 
 
@@ -965,15 +965,15 @@ def test_plan_notes_sharing_a_destination(tree: Path, monkeypatch: pytest.Monkey
         monkeypatch.setattr(word_corpus, "DOCSETS", sets)
 
     # two origins, one destination, other bytes: refused
-    with_note("grok_run/compared_a_100_vs_b_10_pdf/NOTE", "NOTICE")
+    with_note("compared_a_100_vs_b_10_pdf/NOTE", "NOTICE")
     with pytest.raises(word_corpus.CorpusError, match="two notes want notices/NOTICE"):
         word_corpus.plan(tree, only=["sources_500", "redlines_a100_b10"])
     # the same bytes under another origin: the first origin is kept, nothing is refused
-    _put(tree / "grok_run" / "compared_a_100_vs_b_10_pdf" / "NOTICE-copy", "notice")
-    with_note("grok_run/compared_a_100_vs_b_10_pdf/NOTICE-copy", "NOTICE")
+    _put(tree / "compared_a_100_vs_b_10_pdf" / "NOTICE-copy", "notice")
+    with_note("compared_a_100_vs_b_10_pdf/NOTICE-copy", "NOTICE")
     plan_ = word_corpus.plan(tree, only=["sources_500", "redlines_a100_b10"])
     notices = [n for n in plan_.notes if n.dst == "notices/NOTICE"]
-    assert [n.src for n in notices] == ["grok_run/fixtures_500/NOTICE"]
+    assert [n.src for n in notices] == ["fixtures_500/NOTICE"]
 
 
 def test_build_removes_stale_pools(tree: Path, fixtures: Path) -> None:
@@ -1032,7 +1032,7 @@ def test_plan_word_accepted_documents_carry_their_word_pdf(tree: Path) -> None:
     acc = _doc(plan_, "x_y_word_redline_accepted")
     assert acc.sets == ("word_based_accepted_word",)
     assert acc.state == "with_comments_clean"
-    assert acc.pdf_src == "grok_run/wr0929/word_based_accepted_word_pdf/x_y_word_redline_accepted.pdf"
+    assert acc.pdf_src == "wr0929/word_based_accepted_word_pdf/x_y_word_redline_accepted.pdf"
     assert plan_.sets["word_based_accepted_word"].documents == (acc.id,)
 
 

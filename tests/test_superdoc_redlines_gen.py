@@ -8,12 +8,10 @@ import zipfile
 from pathlib import Path
 
 import pytest
-from helpers import CORPUS
+from helpers import MANIFEST, SOURCE
 
 from neurotic_docx_bench import superdoc_redlines_gen
 
-MANIFEST = CORPUS / "centralized_mapping.csv"
-SOURCE = CORPUS / "docx_source"
 REPO = Path(__file__).resolve().parents[1] / "superdoc-redlines"
 
 _HAVE_TOOL = (REPO / "superdoc-redline.mjs").is_file() and (REPO / "node_modules").is_dir()
@@ -126,7 +124,7 @@ def test_run_batch_produces_tracked_redline(tmp_path):
         jobs=2,
     )
     assert ok >= 1, failed
-    outs = list((tmp_path / "docx").glob("*_superdoc-redlines_redline.docx"))
+    outs = list((tmp_path / "docx").glob("*_superdoc-redlines.docx"))  # <pool key>_<tool>
     assert len(outs) == 1
     with zipfile.ZipFile(outs[0]) as z:
         xml = z.read("word/document.xml").decode("utf-8", "ignore")

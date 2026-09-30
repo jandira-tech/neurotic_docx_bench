@@ -21,9 +21,11 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
+from neurotic_docx_bench import corpus_paths
+
 BENCH_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_JSONL = BENCH_ROOT / "results" / "bench.jsonl"
-DEFAULT_CORPUS = BENCH_ROOT / "corpus" / "word_based"
+DEFAULT_SET = "word_based"
 
 VENDOR_LABELS = {
     "jubarte": "jubarte-final (vendor=jubarte, tool_version jubarte-final@…)",
@@ -48,40 +50,11 @@ def latest_script_redlines(jsonl: Path, vendor: str) -> dict:
     return best
 
 
-def load_mapping(mapping_csv: Path) -> dict[str, dict]:
-    """Index by lowercased pair_stem — bench score keys are case-folded."""
-    by_stem: dict[str, dict] = {}
-    with mapping_csv.open(newline="") as fh:
-        for row in csv.DictReader(fh):
-            stem = (row.get("pair_stem") or "").strip()
-            if stem:
-                by_stem[stem.lower()] = row
-    return by_stem
-
-
-def resolve_word_redline(row: dict, stem: str, word_redlines: Path) -> Path | None:
-    for col in ("redline_docx", "redline_docx_word"):
-        name = (row.get(col) or "").strip()
-        if name and name != "MISSING":
-            p = word_redlines / name
-            if p.is_file():
-                return p
-    for name in (f"{stem}_redline.docx", f"{stem}_word_redline.docx"):
-        p = word_redlines / name
-        if p.is_file():
-            return p
-    hits = sorted(word_redlines.glob(f"{stem}*redline*.docx"))
-    return hits[0] if hits else None
-
-
-def resolve_pdf(row: dict, stem: str, pdf_redlines: Path) -> Path | None:
-    name = (row.get("pdf_redline") or "").strip()
-    if name and name != "MISSING":
-        p = pdf_redlines / name
-        if p.is_file():
-            return p
-    p = pdf_redlines / f"{stem}_redline.pdf"
-    return p if p.is_file() else None
+def load_pairs(set_name: str, bench_root: Path) -> dict[str, corpus_paths.Pair]:
+    """Index by lowercased pair stem (and corpus key) — bench score keys are case-folded."""
+    roots = {"word": bench_root / corpus_paths.WORD, "libreoffice": bench_root / corpus_paths.LIBREOFFICE}
+    by_key = {p.key.lower(): p for p in corpus_paths.pairs(set_name, **roots)}
+    return by_key | {stem.lower(): p for stem, p in corpus_paths.by_stem(set_name, **roots).items()}
 
 
 def write_readme(
@@ -127,12 +100,13 @@ failures without re-scoring the full corpus every time.
 **Selection rule:** take the **latest** `script_redlines` JSONL line for vendor
 `{vendor}`, sort `scores` ascending, keep the first {n} keys.
 
-Score keys are pair stems (`<base>_<next>`). They match
-`grok_run/word_based/centralized_mapping.csv` → `pair_stem`.
+Score keys are pair stems (`<base>_<next>`). They match the `stem` of
+`corpus_paths.pairs(<set>)` (the legacy name of each `corpus/word/pools/<set>_pairs.csv`
+row, per `corpus/word/notices/RENAMED.csv`).
 
 The score is **pixel fidelity** of the tool's redline DOCX (rendered via LibreOffice
 **26.2.4.2**) against the committed Word oracle PDF
-(`grok_run/word_based/pdf_redlines_word/<pair>_redline.pdf`). Higher = closer to Word.
+(`corpus/libreoffice/`, LibreOffice's render of Word's redline). Higher = closer to Word.
 100 = pixel-identical to the oracle (on the shared pages).
 
 ### Reproduce the ranking (from neurotic-docx-bench)
@@ -176,7 +150,7 @@ batch_to_fix/
   rescore.sh                ← one-shot re-score after you drop candidates/
   pairs/
     01_<pair_stem>/
-      base.docx             ← source A (grok_run/word_based/docx_source)
+      base.docx             ← source A (corpus/word/clean/docx)
       next.docx             ← source B
       word_redline.docx     ← Microsoft Word tracked-change redline (oracle DOCX)
       <original name>.docx  ← same file under the corpus filename
@@ -282,7 +256,8 @@ uv run bench accept-scores {vendor} --benchmark script_redlines
 1. **Renderer pin:** oracle PDFs were produced with LibreOffice **26.2.4.2**. Re-score
    candidates with the same LO, or scores drift for renderer reasons (not markup).
 2. **Word equivalent** = Microsoft Word tracked-change DOCX from
-   `grok_run/word_based/docx_redlines_word/` plus its LO-rendered PDF oracle.
+   `corpus/word/tracking_without_comments/docx/` (or `with_comments_tracking/`) plus its
+   LO-rendered PDF oracle from `corpus/libreoffice/`.
 3. **jubarte-final** in the bench is vendor `jubarte` (this batch may live under
    `jubarte-first/batch_to_fix` because that tree builds `dist/jubarte-final`).
 4. This batch is the bottom of *scored* docs only (pairs the tool failed to generate
@@ -326,13 +301,10 @@ def extract_batch(
     out_root: Path,
     n: int,
     jsonl: Path,
-    corpus: Path,
+    set_name: str,
     dry_run: bool = False,
 ) -> list[tuple[str, float]]:
-    source = corpus / "docx_source"
-    word_redlines = corpus / "docx_redlines_word"
-    pdf_redlines = corpus / "pdf_redlines_word"
-    mapping = load_mapping(corpus / "centralized_mapping.csv")
+    mapping = load_pairs(set_name, BENCH_ROOT)
     run = latest_script_redlines(jsonl, vendor)
     scores = {k: float(v) for k, v in (run.get("scores") or {}).items()}
     bottom = sorted(scores.items(), key=lambda kv: (kv[1], kv[0]))[:n]
@@ -354,21 +326,13 @@ def extract_batch(
 
     manifest_rows: list[dict] = []
     for rank, (stem, score) in enumerate(bottom, start=1):
-        row = mapping.get(stem.lower(), {})
-        base = (row.get("base") or "").strip()
-        nxt = (row.get("next") or "").strip()
-        # Source filenames keep mapping casing; score keys are lowercased.
-        base_docx = source / f"{base}.docx" if base else None
-        next_docx = source / f"{nxt}.docx" if nxt else None
-        # Prefer mapping pair_stem (original case) for Word file name resolution.
-        map_stem = (row.get("pair_stem") or stem).strip()
-        word_rl = resolve_word_redline(row, map_stem, word_redlines)
-        word_pdf = resolve_pdf(row, map_stem, pdf_redlines)
-        if word_pdf is None:
-            # Oracle PDFs are often lowercased / pair_stem from scores
-            word_pdf = resolve_pdf(row, stem, pdf_redlines)
-        if word_rl is None:
-            word_rl = resolve_word_redline(row, stem, word_redlines)
+        pair = mapping.get(stem.lower())
+        base = pair.base_name if pair else ""
+        nxt = pair.next_name if pair else ""
+        base_docx = pair.base if pair else None
+        next_docx = pair.next if pair else None
+        word_rl = pair.redline if pair else None
+        word_pdf = pair.libreoffice_pdf if pair else None
 
         pair_dir = pairs_dir / f"{rank:02d}_{stem}"
         pair_dir.mkdir()
@@ -486,7 +450,7 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--out", type=Path, required=True, help="destination batch_to_fix directory")
     p.add_argument("--n", type=int, default=50)
     p.add_argument("--jsonl", type=Path, default=DEFAULT_JSONL)
-    p.add_argument("--corpus", type=Path, default=DEFAULT_CORPUS)
+    p.add_argument("--set", dest="set_name", default=DEFAULT_SET, help="corpus/word pool set of the pairs")
     p.add_argument("--dry-run", action="store_true", help="print ranking only, do not copy")
     args = p.parse_args(argv)
 
@@ -495,7 +459,7 @@ def main(argv: list[str] | None = None) -> int:
         out_root=args.out.resolve() if not args.dry_run else args.out,
         n=args.n,
         jsonl=args.jsonl,
-        corpus=args.corpus,
+        set_name=args.set_name,
         dry_run=args.dry_run,
     )
     return 0

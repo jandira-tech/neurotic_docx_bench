@@ -5,12 +5,10 @@ from __future__ import annotations
 import zipfile
 
 import pytest
-from helpers import CORPUS
+from helpers import MANIFEST, SOURCE
 
 from neurotic_docx_bench import redlines_gen
 
-MANIFEST = CORPUS / "centralized_mapping.csv"
-SOURCE = CORPUS / "docx_source"
 
 try:
     import redlines  # noqa: F401
@@ -77,7 +75,7 @@ def test_run_batch_produces_tracked_redline(tmp_path):
         force=True,
     )
     assert ok >= 1, failed
-    outs = list(tmp_path.glob("*_redlines_redline.docx"))
+    outs = list(tmp_path.glob("*_redlines.docx"))  # <pool key>_<tool>
     assert len(outs) == 1
     with zipfile.ZipFile(outs[0]) as z:
         xml = z.read("word/document.xml").decode("utf-8", "ignore")

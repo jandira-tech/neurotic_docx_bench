@@ -9,9 +9,13 @@ import {
 	writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
 import JSZip from "../node_modules/jszip/lib/index.js";
-import { parseManifest, loadEngine, runBatch } from "./generate-native-redlines.ts";
+import {
+	parseManifest,
+	loadEngine,
+	runBatch,
+} from "./generate-native-redlines.ts";
 
 const MANIFEST = "corpus/word/pools/word_based_pairs.csv";
 const SOURCE = "corpus/word";
@@ -31,6 +35,13 @@ async function documentXml(bytes: Uint8Array): Promise<string> {
 	const doc = zip.file("word/document.xml");
 	if (!doc) throw new Error("missing word/document.xml");
 	return doc.async("string");
+}
+
+/** Copy a corpus document (a path under corpus/word, e.g. clean/docx/<name>) into dir. */
+function copyFromCorpus(dir: string, rel: string) {
+	const dest = join(dir, `${rel}.docx`);
+	mkdirSync(dirname(dest), { recursive: true });
+	writeFileSync(dest, readFileSync(join(SOURCE, `${rel}.docx`)));
 }
 
 /** First corpus pair whose base and next DOCX both exist and differ. */
@@ -54,12 +65,13 @@ function firstDifferingPair() {
 
 function writeTinyManifest(
 	dir: string,
-	rows: Array<{ base: string; next: string }>,
+	rows: Array<{ base: string; next: string; key?: string }>,
 ): string {
 	const path = join(dir, "manifest.csv");
-	const body = ["base,next", ...rows.map((r) => `${r.base},${r.next}`)].join(
-		"\n",
-	);
+	const body = [
+		"key,base,next",
+		...rows.map((r) => `${r.key ?? ""},${r.base},${r.next}`),
+	].join("\n");
 	writeFileSync(path, body);
 	return path;
 }
@@ -101,16 +113,10 @@ describe("stemma + safe-docx shipped compare", () => {
 			try {
 				const sourceDir = join(work, "src");
 				mkdirSync(sourceDir);
-				writeFileSync(
-					join(sourceDir, `${pair.base}.docx`),
-					readFileSync(join(SOURCE, `${pair.base}.docx`)),
-				);
-				writeFileSync(
-					join(sourceDir, `${pair.next}.docx`),
-					readFileSync(join(SOURCE, `${pair.next}.docx`)),
-				);
+				copyFromCorpus(sourceDir, pair.base);
+				copyFromCorpus(sourceDir, pair.next);
 				const manifest = writeTinyManifest(work, [
-					{ base: pair.base, next: pair.next },
+					{ key: pair.key, base: pair.base, next: pair.next },
 					{ base: "missing_base_zzz", next: "missing_next_zzz" },
 				]);
 				const out = join(work, "docx");
@@ -126,14 +132,12 @@ describe("stemma + safe-docx shipped compare", () => {
 					force: true,
 				});
 				expect(res.ok).toBeGreaterThanOrEqual(1);
-				expect(res.failed.some((f) => f.stage === "missing_source")).toBe(
-					true,
-				);
+				expect(res.failed.some((f) => f.stage === "missing_source")).toBe(true);
 				expect(
 					res.failed.some((f) => f.doc === "missing_base_zzz_missing_next_zzz"),
 				).toBe(true);
 				const files = readdirSync(out).filter((f) =>
-					f.endsWith("_stemma_redline.docx"),
+					f.endsWith("_stemma.docx"),
 				);
 				expect(files.length).toBe(res.ok);
 			} finally {
@@ -151,17 +155,11 @@ describe("stemma + safe-docx shipped compare", () => {
 			try {
 				const sourceDir = join(work, "src");
 				mkdirSync(sourceDir);
-				writeFileSync(
-					join(sourceDir, `${pair.base}.docx`),
-					readFileSync(join(SOURCE, `${pair.base}.docx`)),
-				);
-				writeFileSync(
-					join(sourceDir, `${pair.next}.docx`),
-					readFileSync(join(SOURCE, `${pair.next}.docx`)),
-				);
+				copyFromCorpus(sourceDir, pair.base);
+				copyFromCorpus(sourceDir, pair.next);
 				const manifest = writeTinyManifest(work, [
 					{ base: "missing_base_zzz", next: "missing_next_zzz" },
-					{ base: pair.base, next: pair.next },
+					{ key: pair.key, base: pair.base, next: pair.next },
 				]);
 				const out = join(work, "docx");
 				const res = await runBatch({
@@ -176,11 +174,9 @@ describe("stemma + safe-docx shipped compare", () => {
 					force: true,
 				});
 				expect(res.ok).toBeGreaterThanOrEqual(1);
-				expect(res.failed.some((f) => f.stage === "missing_source")).toBe(
-					true,
-				);
+				expect(res.failed.some((f) => f.stage === "missing_source")).toBe(true);
 				const files = readdirSync(out).filter((f) =>
-					f.endsWith("_safe-docx-compare_redline.docx"),
+					f.endsWith("_safe-docx-compare.docx"),
 				);
 				expect(files.length).toBe(res.ok);
 			} finally {

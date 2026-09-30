@@ -5,14 +5,13 @@ from __future__ import annotations
 import zipfile
 
 import pytest
-from helpers import CORPUS
+from helpers import MANIFEST, word_based_pairs
 from typer.testing import CliRunner
 
 from neurotic_docx_bench import accept_changes
 from neurotic_docx_bench.cli import app
 
 runner = CliRunner()
-REDLINES = CORPUS / "docx_redlines_word"
 
 
 def _document_xml(docx_path) -> str:
@@ -22,9 +21,9 @@ def _document_xml(docx_path) -> str:
 
 def _a_tracked_redline():
     """A corpus redline DOCX that actually contains tracked changes."""
-    if not REDLINES.is_dir():
+    if not MANIFEST.is_file():
         pytest.skip("redline corpus absent")
-    for docx in sorted(REDLINES.glob("*_redline.docx")):
+    for docx in (p.redline for p in word_based_pairs()):
         xml = _document_xml(docx)
         if "<w:ins" in xml or "<w:del" in xml:
             return docx

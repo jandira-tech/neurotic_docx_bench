@@ -2,8 +2,7 @@
 
 Every place where our harness touched a vendor's code, forked it, knows of an
 unfixed bug, or supplies behaviour the vendor does not, is written down here and
-published **beside** the numbers. Plan reference: `plans/agent-execution-plan.md`
-Chapter 6.4.
+published **beside** the numbers.
 
 The rule this file exists to enforce: *a benchmark run by one of the competitors
 is only worth reading if the competitor discloses its own thumbs on the scale.*
