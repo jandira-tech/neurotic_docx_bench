@@ -853,11 +853,42 @@ def _fmt_or_na(v: object) -> str:
     return fmt(float(v)) if isinstance(v, int | float) else "n/a"
 
 
+def _itt_rank(line: dict) -> tuple[float, float]:
+    med, mean = line.get("itt_median"), line.get("itt_mean")
+    return (
+        -float(med) if isinstance(med, int | float) else float("inf"),
+        -float(mean) if isinstance(mean, int | float) else float("inf"),
+    )
+
+
+def _action_cells(line: dict) -> list[str]:
+    """Scored, ITT mean/median, the = 100 / >= 90 / < 50 counts and the two docxide means."""
+    ov = line.get("overall") or {}
+    return [
+        f"{line.get('scored', 0)}/{line.get('pairs', 0)}",
+        _fmt_or_na(line.get("itt_mean")),
+        _fmt_or_na(line.get("itt_median")),
+        str(ov.get("exact_100", 0)),
+        str(ov.get("at_least_90", 0)),
+        str(ov.get("below_50", 0)),
+        _fmt_or_na((line.get("ink_jaccard") or {}).get("mean")),
+        _fmt_or_na((line.get("text_boundary") or {}).get("mean")),
+    ]
+
+
+_ACTION_STATS = ["Scored", "ITT Mean", "ITT Median", "= 100", ">= 90", "< 50", "Ink Jaccard mean",
+                 "Text boundary mean"]
+_SORTED = "Sorted by ITT median, then ITT mean."
+
+
 def redline_action_section(run_dir: Path) -> str:
-    """Tool redlines accepted or rejected by Word, scored against Word's own compare
-    accepted or rejected the same way (``results/redlines_*/scores.jsonl``, written by the
-    run's ``measure.py``). The latest line per (tool, action) wins; versions come from the
-    run's ``versions.json``."""
+    """Tool redlines scored against Word (``results/redlines_*/scores.jsonl``, written by the
+    run's scripts). ``action`` ``redline`` is the tool's redline against Word's compare;
+    ``accept_all`` / ``reject_all`` are that redline accepted or rejected by Word against
+    Word's compare accepted or rejected the same way. The latest line per (tool, action)
+    wins and each action's rows are ranked by ITT median, then ITT mean; versions come from
+    the run's ``versions.json``. A redline line may carry ``subset``, the same statistics
+    over the compares one tool (``subset.of``) scored, shown in parentheses."""
     path = Path(run_dir) / "scores.jsonl"
     if not path.is_file():
         return ""
@@ -865,49 +896,60 @@ def redline_action_section(run_dir: Path) -> str:
     for ln in path.read_text().splitlines():
         if ln.strip():
             line = json.loads(ln)
-            latest[(str(line["tool"]), str(line["action"]))] = line
+            latest[str(line["tool"]), str(line["action"])] = line
     vpath = Path(run_dir) / "versions.json"
     versions = json.loads(vpath.read_text()) if vpath.is_file() else {}
-    tools = list(dict.fromkeys(t for t, _ in latest))
-    body = []
-    for action in ("accept_all", "reject_all"):
-        for tool in tools:
-            line = latest.get((tool, action))
-            if line is None:
-                continue
-            ov = line.get("overall") or {}
-            body.append(
-                [
-                    tool,
-                    str(versions.get(tool, "unknown")),
-                    action,
-                    f"{line.get('scored', 0)}/{line.get('pairs', 0)}",
-                    _fmt_or_na(line.get("itt_mean")),
-                    _fmt_or_na(line.get("itt_median")),
-                    str(ov.get("exact_100", 0)),
-                    str(ov.get("at_least_90", 0)),
-                    str(ov.get("below_50", 0)),
-                    _fmt_or_na((line.get("ink_jaccard") or {}).get("mean")),
-                    _fmt_or_na((line.get("text_boundary") or {}).get("mean")),
-                ]
-            )
     name = Path(run_dir).name
-    return "\n".join(
-        [
+
+    def ranked(action: str) -> list[tuple[str, dict]]:
+        return sorted(((t, ln) for (t, a), ln in latest.items() if a == action), key=lambda x: _itt_rank(x[1]))
+
+    parts: list[str] = []
+    redlines = ranked("redline")
+    if redlines:
+        subset_of = next((ln["subset"].get("of") for _, ln in redlines if ln.get("subset")), None)
+        body = []
+        for tool, line in redlines:
+            cells = _action_cells(line)
+            if line.get("subset"):
+                cells = [f"{c} ({s})" for c, s in zip(cells, _action_cells(line["subset"]), strict=True)]
+            body.append([tool, str(versions.get(tool, "unknown")), *cells])
+        subset_note = (
+            f" In parentheses: the same statistic over only the compares {subset_of} scored, as if the "
+            f"bench held only the pairs {subset_of} redlined and Word exported; a tool with no PDF for "
+            "one of them still counts 0 there."
+            if subset_of
+            else ""
+        )
+        parts += [
+            "### redlines vs Word's compare",
+            "",
+            "Each tool redlines the pair; Word opens that redline and exports it to PDF, scored with "
+            "the pixel scorer against Word's own compare of the same pair. A compare with no scored "
+            "PDF (no redline, or Word could not open it) counts 0 in the ITT columns. The = 100, "
+            ">= 90 and < 50 counts and the docxide-pdf Ink Jaccard and Text boundary means (0 to 1) "
+            f"are over the scored PDFs only. {_SORTED}{subset_note} Run notes: `{name}/RUN.md`.",
+            "",
+            md_table(["Tool", "Version", *_ACTION_STATS], body),
+            "",
+        ]
+    body = [
+        [tool, str(versions.get(tool, "unknown")), action, *_action_cells(line)]
+        for action in ("accept_all", "reject_all")
+        for tool, line in ranked(action)
+    ]
+    if body:
+        parts += [
             "### redlines accepted or rejected by Word",
             "",
             "Each tool redlines the pair; Word accepts or rejects every change in that redline "
             "and exports it to PDF, scored with the pixel scorer against Word's own compare "
             "accepted or rejected the same way. A pair with no scored PDF counts 0 in the ITT "
             "columns. The = 100, >= 90 and < 50 counts and the docxide-pdf Ink Jaccard and Text "
-            "boundary means (0 to 1) are over the scored PDFs only. Why pairs are missing: "
-            f"`{name}/SUMMARY.md`.",
+            f"boundary means (0 to 1) are over the scored PDFs only. {_SORTED} Why pairs are "
+            f"missing: `{name}/SUMMARY.md`.",
             "",
-            md_table(
-                ["Tool", "Version", "Action", "Scored", "ITT Mean", "ITT Median", "= 100", ">= 90",
-                 "< 50", "Ink Jaccard mean", "Text boundary mean"],
-                body,
-            ),
+            md_table(["Tool", "Version", "Action", *_ACTION_STATS], body),
             "",
         ]
-    )
+    return "\n".join(parts)

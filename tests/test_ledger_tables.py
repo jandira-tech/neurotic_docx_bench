@@ -365,5 +365,56 @@ def test_redline_action_section_lists_each_tool_per_action(tmp_path) -> None:
     assert "`redlines_x/SUMMARY.md`" in md
 
 
+def _action_line(tool: str, action: str, itt_mean: float, itt_median: float, **extra) -> dict:
+    return {"tool": tool, "action": action, "pairs": 4, "scored": 4, "itt_mean": itt_mean,
+            "itt_median": itt_median,
+            "overall": {"exact_100": 0, "at_least_90": 0, "below_50": 0, "mean": itt_mean,
+                        "median": itt_median, "n": 4},
+            "ink_jaccard": {"mean": 0.5}, "text_boundary": {"mean": 0.5}} | extra
+
+
+def test_redline_action_section_ranks_tools_by_itt_median_then_mean(tmp_path) -> None:
+    import json
+
+    run = tmp_path / "redlines_x"
+    run.mkdir()
+    lines = [
+        _action_line("first-seen", "accept_all", 87.56, 99.70),
+        _action_line("higher", "accept_all", 90.07, 99.87),
+        _action_line("tie-low-mean", "accept_all", 80.00, 99.70),
+        _action_line("first-seen", "reject_all", 86.22, 99.85),
+        _action_line("higher", "reject_all", 85.38, 99.80),
+    ]
+    (run / "scores.jsonl").write_text("".join(json.dumps(x) + "\n" for x in lines))
+    md = tb.redline_action_section(run)
+    accept = md.index("| higher | unknown | accept_all"), md.index("| first-seen | unknown | accept_all"), \
+        md.index("| tie-low-mean | unknown | accept_all")
+    assert accept[0] < accept[1] < accept[2]
+    assert md.index("| first-seen | unknown | reject_all") < md.index("| higher | unknown | reject_all")
+    assert "Sorted by ITT median, then ITT mean" in md
+
+
+def test_redline_action_section_renders_redlines_with_a_subset_in_parentheses(tmp_path) -> None:
+    import json
+
+    run = tmp_path / "redlines_full"
+    run.mkdir()
+    subset = {"of": "rival", "pairs": 2, "scored": 2, "itt_mean": 95.0, "itt_median": 96.0,
+              "overall": {"exact_100": 1, "at_least_90": 2, "below_50": 0, "mean": 95.0, "median": 96.0, "n": 2},
+              "ink_jaccard": {"mean": 0.9}, "text_boundary": {"mean": 0.8}}
+    lines = [
+        _action_line("rival", "redline", 50.0, 60.0, scored=2,
+                     subset=subset | {"itt_mean": 90.0, "itt_median": 91.0}),
+        _action_line("ours", "redline", 70.0, 80.0, subset=subset),
+    ]
+    (run / "scores.jsonl").write_text("".join(json.dumps(x) + "\n" for x in lines))
+    md = tb.redline_action_section(run)
+    assert md.startswith("### redlines vs Word's compare")
+    assert "accepted or rejected" not in md
+    assert "| ours | unknown | 4/4 (2/2) | 70.00 (95.00) | 80.00 (96.00) |" in md
+    assert md.index("| ours |") < md.index("| rival |")
+    assert "rival" in md.split("|")[0] and "`redlines_full/RUN.md`" in md
+
+
 def test_redline_action_section_is_empty_without_scores(tmp_path) -> None:
     assert tb.redline_action_section(tmp_path / "missing") == ""
