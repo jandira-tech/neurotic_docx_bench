@@ -81,8 +81,19 @@ const METHODS: MethodConfig[] = [
 		method: "jubarte-rust",
 		dist: process.env.JUBARTE_RUST_DIST ?? "src/neurotic_docx_bench/utils/jubarte/jubarte-rust",
 	},
-	{ method: "jubarte-wasm", dist: "src/neurotic_docx_bench/utils/jubarte/jubarte-wasm" },
+	{
+		method: "jubarte-wasm",
+		dist: process.env.JUBARTE_WASM_DIST ?? "src/neurotic_docx_bench/utils/jubarte/jubarte-wasm",
+	},
 ];
+// The jubarte dists are local builds (git-ignored), made from the canonical
+// jubarte-redlines checkout. A missing one is a setup error, not a skipped row:
+// a speed table without jubarte measures nothing.
+function missingJubarteDists(methods: MethodConfig[]): string[] {
+	return methods
+		.filter((m) => (m.method === "jubarte-rust" || m.method === "jubarte-wasm") && !existsSync(m.dist))
+		.map((m) => `${m.method}: ${m.dist}`);
+}
 // method label → the loadEngine method id (jubarte-final-native still loads via "jubarte-native")
 function engineMethod(label: string): string {
 	if (label === "jubarte-rust" || label === "jubarte-wasm") return label;
@@ -128,6 +139,15 @@ async function main() {
 		`speed-bench: ${pairs.length} pairs in memory, reps=${reps}, warmup=${warmup}\n`,
 	);
 	mkdirSync(dirname(outPath), { recursive: true });
+
+	const missing = missingJubarteDists(METHODS.filter((m) => !wanted || wanted.has(m.method)));
+	if (missing.length) {
+		console.error(
+			`speed-bench: missing jubarte build (${missing.join("; ")}); build it from jubarte-redlines ` +
+				"or point JUBARTE_RUST_DIST / JUBARTE_WASM_DIST at it",
+		);
+		process.exit(1);
+	}
 
 	const rows: any[] = [];
 	for (const mc of METHODS) {
