@@ -35,7 +35,17 @@ jubarte and docxodus run through `scripts/generate-native-redlines.ts` with the
   definition replacement is not supported" 612, "numbering replay is unsafe" 304, ...) plus
   45 host failures (watchdog timeout, "Failed to open document in the v2 runtime") that failed
   again when retried one at a time (`superdoc/retry/`). 1100 SuperDoc redlines are not
-  reachable with this engine: 2.15.0 made 94 of the 1164 0928 pairs.
+  reachable with this engine: 2.15.0 made 94 of the 1164 0928 pairs. Checked on 2026-09-30:
+  `diff.apply` with `force: true` fails the same way on one pair per blocker (shared
+  definition, numbering, comment, settings, header/footer, unsupported-context); the
+  `applyTarget` "versioned document review session" the error suggests is only named in the
+  error text of the SDK's CLI and of `@superdoc/cli` 0.39.0, not implemented; npm `superdoc`
+  2.19.0 (released that day) has the same `DiffApplyOptions` (`changeMode` only) and the same
+  blocker codes. PyPI has no SDK newer than 2.16.0.
+
+jubarte 0.9.3 on at least 1100 pairs is `../redlines_0928`: 0.9.3 @673aff74 on 1163 Word
+compares, with docxodus 12.6.4 and SuperDoc 2.15.0 on the same pairs and the same accepted /
+rejected selections. This run is 0.10.0, released 2026-09-29, over every compare.
 
 Before 2814e016 the inproc methods never stopped their worker at the end of `runBatch`,
 so a generate run wrote every redline and then hung; only the speed bench, which shuts its
