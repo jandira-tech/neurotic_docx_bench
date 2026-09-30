@@ -43,9 +43,9 @@ from xml.etree import ElementTree as ET
 _REPO = Path(__file__).resolve().parents[1]
 
 ORACLE_DIRS = (
-    "corpus/word_based/docx_redlines_word",
-    "corpus/word_based/docx_redlines_randomized",
-    "corpus/word_redlines_superdoc/docx_redlines_word",
+    "grok_run/word_based/docx_redlines_word",
+    "grok_run/word_based/docx_redlines_randomized",
+    "grok_run/word_redlines_superdoc/docx_redlines_word",
 )
 ORACLE_SUFFIXES = ("_redline.docx", "_word_redline.docx")
 """Both capture-variant spellings; ``oracle_pair_key`` normalises ``_word`` away."""

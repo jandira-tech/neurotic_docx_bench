@@ -1,0 +1,14 @@
+2026-09-30 01:25:38.194 | INFO     | __main__:preflight:1812 - [word] preflight: open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-09-30 01:25:38.212 | INFO     | __main__:convert_folder:1486 - [word] export: one_osascript=True documents=1 accept_all=False reject_all=False
+2026-09-30 01:25:38.214 | INFO     | __main__:_convert_batched:1685 - [batch] one osascript for 1 document(s)
+2026-09-30 01:25:43.236 | INFO     | __main__:_loop:1067 - [batch pdf 1] 0/1
+2026-09-30 01:25:56.596 | INFO     | __main__:_note_buttons:510 - [watchdog] Microsoft Word shows button 'No'
+2026-09-30 01:25:56.635 | INFO     | __main__:_note_buttons:510 - [watchdog] Microsoft Word shows button 'Yes'
+2026-09-30 01:26:39.344 | WARNING  | __main__:_loop:1072 - [batch pdf 1] item 1/1 open for more than 30 s:
+-- Word windows {name, subrole}: osascript timed out
+-- Word window text: Microsoft Word, Word found unreadable content in 00000__6797b1450f_fce350bbf4f75c5cee5eaea4b202d624e159bd749e.... Do you want to recover the contents of this document? If you trust the source of this document, click Yes.
+-- crash reporters: osascript timed out
+-- batch-pdf-1.log:
+
+-- newest diagnostic reports: AppCleaner-2026-09-30-001317.ips, biome-2026-09-29-094107.ips, soffice-2026-09-28-104720.ips, soffice-2026-09-28-105517.ips, soffice-2026-09-28-105123.000.ips
+2026-09-30 01:29:38.861 | ERROR    | __main__:_convert_batched:1730 - [batch] FAIL: 6797b1450f_fce350bbf4f75c5cee5eaea4b202d624e159bd749e2bfab1__vs__8ae10bb4b2_f0febfac48c369580c3eebb7c5dcec09b8f1c28ae489ce48_redline_00288995f0_docxodus.docx — Microsoft Word got an error: AppleEvent timed out.

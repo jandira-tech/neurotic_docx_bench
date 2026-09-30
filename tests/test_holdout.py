@@ -3,10 +3,8 @@ mode stamp, and the RESULTS.md "Holdout gap" section."""
 
 from __future__ import annotations
 
-import importlib.util
 import json
 import shutil
-import sys
 from pathlib import Path
 
 import pytest
@@ -23,14 +21,58 @@ from neurotic_docx_bench.gate import gate as run_gate
 HOLDOUT_TXT = CORPUS / "holdout.txt"
 RANDOMIZED_PDF = CORPUS / "pdf_redlines_randomized" / "pdf"
 
-# Same importlib pattern as test_export_results_md.py (the script name has dashes),
-# under a distinct module name so the two test modules never clobber each other.
-_MOD_PATH = REPO_ROOT / "scripts" / "export-results-md.py"
-_spec = importlib.util.spec_from_file_location("export_results_md_holdout", _MOD_PATH)
-assert _spec and _spec.loader
-exp = importlib.util.module_from_spec(_spec)
-sys.modules["export_results_md_holdout"] = exp
-_spec.loader.exec_module(exp)
+from neurotic_docx_bench.ledger import policy as ledger_policy
+from neurotic_docx_bench.ledger import rows as ledger_rows
+from neurotic_docx_bench.ledger import tables as ledger_tables
+from neurotic_docx_bench.ledger.registry import Registry, ToolEntry
+
+
+def _ledger_registry(*vendors: str) -> Registry:
+    return Registry(
+        schema_version=1,
+        tools=tuple(
+            ToolEntry(
+                id=v,
+                vendor=v,
+                display=v,
+                role="generator",
+                engine=v,
+                bench_vendors=(v,),
+                run_names=(v,),
+            )
+            for v in vendors
+        )
+        + (
+            ToolEntry(
+                id=ledger_policy.NULL_BASELINE_ID,
+                vendor=ledger_policy.NULL_BASELINE_ID,
+                display="null",
+                role="calibration",
+                engine="null",
+                bench_vendors=(ledger_policy.NULL_BASELINE_ID,),
+                run_names=(ledger_policy.NULL_BASELINE_ID,),
+            ),
+        ),
+    )
+
+
+# The docsets the ranking tests stamp: "dset" is the full corpus, "gate" its gate set.
+DOCSETS = {"dset": {"n": 3}, "gate": {"n": 1, "gate_of": "dset"}}
+
+
+def _ranked_rows(path: Path, *vendors: str) -> list[ledger_rows.ResultRow]:
+    """The rows the headline would rank for script_redlines, under the ledger policy."""
+    rows, _ = ledger_rows.load_bench_rows(path, _ledger_registry(*vendors))
+    tables = ledger_policy.select_headline(
+        rows,
+        registry=_ledger_registry(*vendors),
+        retractions=[],
+        docsets=DOCSETS,
+        tie_fn=lambda a, b: False,
+    )
+    table = tables.get("script_redlines")
+    return [r.row for r in table.rows] if table else []
+
 
 runner = CliRunner()
 
@@ -73,7 +115,11 @@ def _mirrored_pair_dirs(tmp_path, sample_oracle_pdfs):
 def test_score_folders_full_exclude_keys_drops_exactly(tmp_path, sample_oracle_pdfs):
     oracle, cand, keys = _mirrored_pair_dirs(tmp_path, sample_oracle_pdfs)
     full = pipeline.score_folders_full(
-        oracle, cand, tmp_path / "work", jobs=1, candidate_tool="t",
+        oracle,
+        cand,
+        tmp_path / "work",
+        jobs=1,
+        candidate_tool="t",
         exclude_keys={keys[0]},
     )
     assert set(full) == set(keys) - {keys[0]}
@@ -84,7 +130,11 @@ def test_score_folders_full_exclude_keys_drops_exactly(tmp_path, sample_oracle_p
 def test_score_folders_full_only_keys_keeps_exactly(tmp_path, sample_oracle_pdfs):
     oracle, cand, keys = _mirrored_pair_dirs(tmp_path, sample_oracle_pdfs)
     full = pipeline.score_folders_full(
-        oracle, cand, tmp_path / "work", jobs=1, candidate_tool="t",
+        oracle,
+        cand,
+        tmp_path / "work",
+        jobs=1,
+        candidate_tool="t",
         only_keys={keys[0]},
     )
     assert set(full) == {keys[0]}
@@ -97,7 +147,12 @@ def test_score_folders_full_both_filters_raise(tmp_path):
     c.mkdir()
     with pytest.raises(ValueError, match="exclude_keys and only_keys"):
         pipeline.score_folders_full(
-            o, c, tmp_path / "w", jobs=1, exclude_keys={"a"}, only_keys={"b"},
+            o,
+            c,
+            tmp_path / "w",
+            jobs=1,
+            exclude_keys={"a"},
+            only_keys={"b"},
         )
 
 
@@ -173,9 +228,10 @@ def test_config_holdout_list_missing_file_raises(tmp_path):
 @requires_corpus
 def test_real_bench_yaml_wires_holdout():
     """bench.yaml points at the COMBINED seal — `holdout_list` takes one path and
-    there are now two sealed corpora (word_based + word_redlines_superdoc)."""
+    there are two sealed corpora (word_based + word_redlines_superdoc), written as
+    Word corpus keys by `bench corpus build`."""
     cfg = load_config(REPO_ROOT / "bench.yaml")
-    assert cfg.holdout_list == REPO_ROOT / "corpus" / "holdout_combined.txt"
+    assert cfg.holdout_list == REPO_ROOT / "corpus" / "word" / "pools" / "holdout.txt"
     assert len(pipeline.load_holdout(cfg.holdout_list)) == 40
 
 
@@ -183,9 +239,11 @@ def test_real_bench_yaml_wires_holdout():
 def test_combined_holdout_is_exactly_the_union_of_the_sealed_lists():
     """The combined file is DERIVED. If it ever drifts from its two sources, keys
     silently stop being held out — so assert the union property, not a count."""
-    superdoc_txt = REPO_ROOT / "corpus" / "word_redlines_superdoc" / "holdout.txt"
-    combined = pipeline.load_holdout(REPO_ROOT / "corpus" / "holdout_combined.txt")
-    assert combined == pipeline.load_holdout(HOLDOUT_TXT) | pipeline.load_holdout(superdoc_txt)
+    superdoc_txt = REPO_ROOT / "grok_run" / "word_redlines_superdoc" / "holdout.txt"
+    combined = pipeline.load_holdout(REPO_ROOT / "grok_run" / "holdout_combined.txt")
+    assert combined == pipeline.load_holdout(HOLDOUT_TXT) | pipeline.load_holdout(
+        superdoc_txt
+    )
 
 
 @requires_corpus
@@ -194,7 +252,7 @@ def test_sealed_keys_are_lowercase_so_they_match_the_scorer():
     capitals matches nothing, so its pair stays in the headline score while
     appearing held out. Four superdoc keys contain capitals — caught in review,
     and this is the regression guard."""
-    keys = pipeline.load_holdout(REPO_ROOT / "corpus" / "holdout_combined.txt")
+    keys = pipeline.load_holdout(REPO_ROOT / "grok_run" / "holdout_combined.txt")
     assert all(k == k.lower() for k in keys), sorted(k for k in keys if k != k.lower())
 
 
@@ -203,7 +261,7 @@ def test_every_sealed_superdoc_key_exists_in_that_corpus():
     """A sealed key that matches no pair holds nothing out."""
     import csv
 
-    corpus = REPO_ROOT / "corpus" / "word_redlines_superdoc"
+    corpus = REPO_ROOT / "grok_run" / "word_redlines_superdoc"
     with (corpus / "centralized_mapping.csv").open(newline="") as handle:
         stems = {row["pair_stem"].lower() for row in csv.DictReader(handle)}
     sealed = pipeline.load_holdout(corpus / "holdout.txt")
@@ -221,9 +279,12 @@ def test_skip_identity_distinguishes_holdout_lines(tmp_path):
         "tool_version": "1.0",
         "config_hash": "abc",
     }
-    kwargs = dict(
-        vendor="v", benchmark="script_redlines", tool_version="1.0", config_hash="abc",
-    )
+    kwargs = {
+        "vendor": "v",
+        "benchmark": "script_redlines",
+        "tool_version": "1.0",
+        "config_hash": "abc",
+    }
     # A pre-holdout line (no holdout_mode field) satisfies a normal run…
     p.write_text(json.dumps(ident) + "\n")
     assert jsonl.has_already_ran_benchmark(p, **kwargs, holdout_only=False) is not None
@@ -279,7 +340,16 @@ def test_cli_run_holdout_modes(tmp_path, sample_oracle_pdfs):
 
     # Normal run: holdout keys are excluded from scoring, mode stamped "excluded".
     result = runner.invoke(
-        app, ["run", "--config", str(cfg), "--results-dir", str(results_dir), "--runs-dir", str(tmp_path / "runs")],
+        app,
+        [
+            "run",
+            "--config",
+            str(cfg),
+            "--results-dir",
+            str(results_dir),
+            "--runs-dir",
+            str(tmp_path / "runs"),
+        ],
     )
     assert result.exit_code == 0, result.output
     line = _script_lines()[-1]
@@ -289,7 +359,16 @@ def test_cli_run_holdout_modes(tmp_path, sample_oracle_pdfs):
     # --holdout run: ONLY the holdout keys are scored, mode stamped "only".
     result = runner.invoke(
         app,
-        ["run", "--config", str(cfg), "--results-dir", str(results_dir), "--runs-dir", str(tmp_path / "runs"), "--holdout"],
+        [
+            "run",
+            "--config",
+            str(cfg),
+            "--results-dir",
+            str(results_dir),
+            "--runs-dir",
+            str(tmp_path / "runs"),
+            "--holdout",
+        ],
     )
     assert result.exit_code == 0, result.output
     line = _script_lines()[-1]
@@ -308,9 +387,14 @@ def test_cli_holdout_flag_without_config_key_fails(tmp_path):
     result = runner.invoke(
         app,
         [
-            "run", "--config", str(cfg),
-            "--results-dir", str(tmp_path / "results"),
-            "--runs-dir", str(tmp_path / "runs"), "--holdout",
+            "run",
+            "--config",
+            str(cfg),
+            "--results-dir",
+            str(tmp_path / "results"),
+            "--runs-dir",
+            str(tmp_path / "runs"),
+            "--holdout",
         ],
     )
     assert result.exit_code != 0
@@ -325,18 +409,44 @@ def _write_jsonl(path: Path, lines: list[dict]) -> None:
 
 def test_export_holdout_gap_with_data(tmp_path):
     p = tmp_path / "bench.jsonl"
-    _write_jsonl(p, [
-        # older lines first (append-only log): both sides must pick the LATEST
-        {"vendor": "jubarte", "benchmark": "script_redlines", "tool_version": "1",
-         "overall_mean": 95.0, "n_docs": 383},
-        {"vendor": "jubarte", "benchmark": "script_redlines", "tool_version": "1",
-         "overall_mean": 70.0, "n_docs": 20, "holdout_mode": "only"},
-        {"vendor": "jubarte", "benchmark": "script_redlines", "tool_version": "1",
-         "overall_mean": 90.0, "n_docs": 383, "holdout_mode": "excluded"},
-        {"vendor": "jubarte", "benchmark": "script_redlines", "tool_version": "1",
-         "overall_mean": 85.5, "n_docs": 20, "holdout_mode": "only"},
-    ])
-    text = "\n".join(exp.holdout_gap_section(p))
+    _write_jsonl(
+        p,
+        [
+            # older lines first (append-only log): both sides must pick the LATEST
+            {
+                "vendor": "jubarte",
+                "benchmark": "script_redlines",
+                "tool_version": "1",
+                "overall_mean": 95.0,
+                "n_docs": 383,
+            },
+            {
+                "vendor": "jubarte",
+                "benchmark": "script_redlines",
+                "tool_version": "1",
+                "overall_mean": 70.0,
+                "n_docs": 20,
+                "holdout_mode": "only",
+            },
+            {
+                "vendor": "jubarte",
+                "benchmark": "script_redlines",
+                "tool_version": "1",
+                "overall_mean": 90.0,
+                "n_docs": 383,
+                "holdout_mode": "excluded",
+            },
+            {
+                "vendor": "jubarte",
+                "benchmark": "script_redlines",
+                "tool_version": "1",
+                "overall_mean": 85.5,
+                "n_docs": 20,
+                "holdout_mode": "only",
+            },
+        ],
+    )
+    text = "\n".join(ledger_tables.holdout_gap_section(p))
     assert "## Holdout gap" in text
     assert "jubarte" in text
     assert "85.5" in text  # latest holdout mean
@@ -346,11 +456,19 @@ def test_export_holdout_gap_with_data(tmp_path):
 
 def test_export_holdout_gap_no_data(tmp_path):
     p = tmp_path / "bench.jsonl"
-    _write_jsonl(p, [
-        {"vendor": "jubarte", "benchmark": "script_redlines", "tool_version": "1",
-         "overall_mean": 90.0, "n_docs": 383},
-    ])
-    text = "\n".join(exp.holdout_gap_section(p))
+    _write_jsonl(
+        p,
+        [
+            {
+                "vendor": "jubarte",
+                "benchmark": "script_redlines",
+                "tool_version": "1",
+                "overall_mean": 90.0,
+                "n_docs": 383,
+            },
+        ],
+    )
+    text = "\n".join(ledger_tables.holdout_gap_section(p))
     assert "## Holdout gap" in text
     assert "no holdout runs recorded" in text
 
@@ -358,11 +476,20 @@ def test_export_holdout_gap_no_data(tmp_path):
 def test_export_main_tables_drop_holdout_only_lines(tmp_path):
     # A holdout-only line must never enter the headline ranking tables.
     p = tmp_path / "bench.jsonl"
-    _write_jsonl(p, [
-        {"vendor": "x", "benchmark": "script_redlines", "tool_version": "1",
-         "overall_mean": 99.0, "n_docs": 20, "holdout_mode": "only"},
-    ])
-    assert exp.rows_from_jsonl(p) == []
+    _write_jsonl(
+        p,
+        [
+            {
+                "vendor": "x",
+                "benchmark": "script_redlines",
+                "tool_version": "1",
+                "overall_mean": 99.0,
+                "n_docs": 20,
+                "holdout_mode": "only",
+            },
+        ],
+    )
+    assert _ranked_rows(p, "x") == []
 
 
 # ── finding 1: gate must never mix corpus regimes ────────────────────────────
@@ -447,7 +574,10 @@ def test_cli_holdout_run_is_never_gated(tmp_path, sample_oracle_pdfs):
     cfg, _key_hold, key_vis = _degraded_holdout_setup(tmp_path, sample_oracle_pdfs)
     results_dir = tmp_path / "results"
     snapshot_emit.write_snapshot_for_benchmark(
-        results_dir / "score-snapshots", "t", "script_redlines", {key_vis: 100.0},
+        results_dir / "score-snapshots",
+        "t",
+        "script_redlines",
+        {key_vis: 100.0},
     )
     result = runner.invoke(
         app,
@@ -464,27 +594,40 @@ def test_last_line_for_benchmark_skips_holdout_only_by_default(tmp_path):
     p = tmp_path / "bench.jsonl"
     full = {"vendor": "v", "benchmark": "script_redlines", "scores": {"a": 90.0}}
     hold = {
-        "vendor": "v", "benchmark": "script_redlines",
-        "scores": {"h": 50.0}, "holdout_mode": "only",
+        "vendor": "v",
+        "benchmark": "script_redlines",
+        "scores": {"h": 50.0},
+        "holdout_mode": "only",
     }
     _write_jsonl(p, [full, hold])
     picked = jsonl.last_line_for_benchmark(p, "v", "script_redlines")
     assert picked is not None and picked["scores"] == {"a": 90.0}
     only = jsonl.last_line_for_benchmark(p, "v", "script_redlines", holdout_only=True)
     assert only is not None and only["scores"] == {"h": 50.0}
-    any_line = jsonl.last_line_for_benchmark(p, "v", "script_redlines", holdout_only=None)
+    any_line = jsonl.last_line_for_benchmark(
+        p, "v", "script_redlines", holdout_only=None
+    )
     assert any_line is not None and any_line["scores"] == {"h": 50.0}
 
 
 def test_accept_scores_promotes_full_line_not_holdout(tmp_path):
     results_dir = tmp_path / "results"
     results_dir.mkdir()
-    _write_jsonl(results_dir / "bench.jsonl", [
-        {"vendor": "v", "benchmark": "script_redlines", "scores": {"a": 90.0}},
-        {"vendor": "v", "benchmark": "script_redlines",
-         "scores": {"h": 50.0}, "holdout_mode": "only"},
-    ])
-    result = runner.invoke(app, ["accept-scores", "v", "--results-dir", str(results_dir)])
+    _write_jsonl(
+        results_dir / "bench.jsonl",
+        [
+            {"vendor": "v", "benchmark": "script_redlines", "scores": {"a": 90.0}},
+            {
+                "vendor": "v",
+                "benchmark": "script_redlines",
+                "scores": {"h": 50.0},
+                "holdout_mode": "only",
+            },
+        ],
+    )
+    result = runner.invoke(
+        app, ["accept-scores", "v", "--results-dir", str(results_dir)]
+    )
     assert result.exit_code == 0, result.output
     snap = json.loads(
         (results_dir / "score-snapshots" / "v__script_redlines.json").read_text(),
@@ -538,9 +681,11 @@ def _generate_run_setup(tmp_path, sample_oracle_pdfs, *, cand_key_idx, fail_key_
     cand_key = keys[cand_key_idx]
     fail_key = keys[fail_key_idx]
     fail_json = tmp_path / "generate_failures.json"
-    fail_json.write_text(json.dumps(
-        [{"doc": fail_key, "stage": "generate", "error": "boom"}],
-    ))
+    fail_json.write_text(
+        json.dumps(
+            [{"doc": fail_key, "stage": "generate", "error": "boom"}],
+        )
+    )
     gen_cmd = (
         f"cp {pdfs[cand_key]} $RUN_DIR/docx/{cand_key}_t_redline.pdf"
         f" && cp {fail_json} $RUN_DIR/generate_failures.json"
@@ -573,13 +718,23 @@ def test_cli_itt_excludes_sealed_failures_on_normal_run(tmp_path, sample_oracle_
     # Sealed doc fails generation; visible doc scores. The excluded-mode line
     # must not carry the sealed failure — ITT is over the visible universe.
     cfg, _holdout_key, keys = _generate_run_setup(
-        tmp_path, sample_oracle_pdfs, cand_key_idx=1, fail_key_idx=0,
+        tmp_path,
+        sample_oracle_pdfs,
+        cand_key_idx=1,
+        fail_key_idx=0,
     )
     results_dir = tmp_path / "results"
     result = runner.invoke(
         app,
-        ["run", "--config", str(cfg), "--results-dir", str(results_dir),
-         "--runs-dir", str(tmp_path / "runs")],
+        [
+            "run",
+            "--config",
+            str(cfg),
+            "--results-dir",
+            str(results_dir),
+            "--runs-dir",
+            str(tmp_path / "runs"),
+        ],
     )
     assert result.exit_code == 0, result.output
     line = _last_script_line(results_dir)
@@ -595,13 +750,24 @@ def test_cli_holdout_itt_excludes_visible_failures(tmp_path, sample_oracle_pdfs)
     # Visible doc fails generation; sealed doc scores. The holdout-only line
     # must not absorb the visible failure into its ITT stats.
     cfg, holdout_key, _keys = _generate_run_setup(
-        tmp_path, sample_oracle_pdfs, cand_key_idx=0, fail_key_idx=1,
+        tmp_path,
+        sample_oracle_pdfs,
+        cand_key_idx=0,
+        fail_key_idx=1,
     )
     results_dir = tmp_path / "results"
     result = runner.invoke(
         app,
-        ["run", "--config", str(cfg), "--results-dir", str(results_dir),
-         "--runs-dir", str(tmp_path / "runs"), "--holdout"],
+        [
+            "run",
+            "--config",
+            str(cfg),
+            "--results-dir",
+            str(results_dir),
+            "--runs-dir",
+            str(tmp_path / "runs"),
+            "--holdout",
+        ],
     )
     assert result.exit_code == 0, result.output
     line = _last_script_line(results_dir)
@@ -615,36 +781,74 @@ def test_cli_holdout_itt_excludes_visible_failures(tmp_path, sample_oracle_pdfs)
 # ── finding 4: export ranking — recency wins within the full-corpus bucket ───
 
 
-def test_export_rank_newest_full_line_wins_over_bigger_stale_line(tmp_path):
-    p = tmp_path / "bench.jsonl"
-    _write_jsonl(p, [
-        {"vendor": "v", "benchmark": "script_redlines", "tool_version": "1",
-         "overall_mean": 95.0, "n_docs": 403, "scores": {"a": 95.0},
-         "timestamp": "2026-01-01T00:00:00+00:00"},
-        {"vendor": "v", "benchmark": "script_redlines", "tool_version": "1",
-         "overall_mean": 90.0, "n_docs": 383, "scores": {"a": 90.0},
-         "timestamp": "2026-06-01T00:00:00+00:00"},
-    ])
-    rows = exp.rows_from_jsonl(p)
-    assert len(rows) == 1
-    assert rows[0]["mean"] == 90.0
-    assert rows[0]["n_docs"] == 383
+def _stamped(
+    mean: float,
+    n: int,
+    ts: str,
+    *,
+    holdout: str = "excluded",
+    vendor: str = "v",
+    docset: str = "dset",
+) -> dict:
+    scores = {f"d{i}": mean for i in range(n)}
+    return {
+        "vendor": vendor,
+        "benchmark": "script_redlines",
+        "tool_version": "1",
+        "id_run": f"run-{vendor}-{docset}-{ts}",
+        "overall_mean": mean,
+        "overall_median": mean,
+        "n_docs": n,
+        "scores": scores,
+        "itt_n_docs": n,
+        "itt_mean": mean,
+        "itt_median": mean,
+        "corpus_revision": "rev1",
+        "docset_id": docset,
+        "holdout_mode": holdout,
+        "timestamp": ts,
+        "renderer_id": "word-16.1",
+    }
 
 
-def test_export_rank_full_line_still_beats_newer_smoke(tmp_path):
+def _gate_lines(vendor: str = "v", ts: str = "2025-12-01T00:00:00+00:00") -> list[dict]:
+    """The gate-set run and null-baseline row a tool needs before it can rank."""
+    return [
+        _stamped(90.0, 1, ts, vendor=vendor, docset="gate"),
+        _stamped(10.0, 1, ts, vendor=ledger_policy.NULL_BASELINE_ID, docset="gate"),
+    ]
+
+
+def test_export_rank_newest_eligible_run_wins_over_older_better_run(tmp_path):
     p = tmp_path / "bench.jsonl"
-    _write_jsonl(p, [
-        {"vendor": "v", "benchmark": "script_redlines", "tool_version": "1",
-         "overall_mean": 90.0, "n_docs": 383,
-         "timestamp": "2026-01-01T00:00:00+00:00"},
-        {"vendor": "v", "benchmark": "script_redlines", "tool_version": "1",
-         "overall_mean": 99.0, "n_docs": 20,
-         "timestamp": "2026-06-01T00:00:00+00:00"},
-    ])
-    rows = exp.rows_from_jsonl(p)
+    _write_jsonl(
+        p,
+        [
+            *_gate_lines(),
+            _stamped(95.0, 3, "2026-01-01T00:00:00+00:00"),
+            _stamped(90.0, 3, "2026-06-01T00:00:00+00:00"),
+        ],
+    )
+    rows = _ranked_rows(p, "v")
     assert len(rows) == 1
-    assert rows[0]["mean"] == 90.0
-    assert rows[0]["n_docs"] == 383
+    assert rows[0].itt_mean == 90.0 and rows[0].itt_n == 3
+
+
+def test_export_rank_complete_run_still_beats_newer_smoke(tmp_path):
+    p = tmp_path / "bench.jsonl"
+    _write_jsonl(
+        p,
+        [
+            *_gate_lines(),
+            _stamped(90.0, 3, "2026-01-01T00:00:00+00:00"),
+            _stamped(
+                99.0, 1, "2026-06-01T00:00:00+00:00"
+            ),  # incomplete: 1 of 3 documents
+        ],
+    )
+    rows = _ranked_rows(p, "v")
+    assert len(rows) == 1
+    assert rows[0].itt_mean == 90.0 and rows[0].itt_n == 3
 
 
 # ── findings 5+6: holdout-gap main selection + uncertainty ───────────────────
@@ -652,24 +856,56 @@ def test_export_rank_full_line_still_beats_newer_smoke(tmp_path):
 
 def test_export_holdout_gap_main_same_version_excluded_full_only(tmp_path):
     p = tmp_path / "bench.jsonl"
-    _write_jsonl(p, [
-        # pre-holdout 403-doc line for the SAME version — contains the sealed
-        # docs, must never be "main"
-        {"vendor": "v", "benchmark": "script_redlines", "tool_version": "2",
-         "overall_mean": 99.0, "n_docs": 403},
-        # excluded line for a DIFFERENT version — must not be "main" either
-        {"vendor": "v", "benchmark": "script_redlines", "tool_version": "1",
-         "overall_mean": 80.0, "n_docs": 383, "holdout_mode": "excluded"},
-        # the genuine main: same version, excluded, full corpus
-        {"vendor": "v", "benchmark": "script_redlines", "tool_version": "2",
-         "overall_mean": 90.0, "n_docs": 383, "holdout_mode": "excluded"},
-        # a smoke excluded line for the same version (n ≤ 100) — not "main"
-        {"vendor": "v", "benchmark": "script_redlines", "tool_version": "2",
-         "overall_mean": 70.0, "n_docs": 5, "holdout_mode": "excluded"},
-        {"vendor": "v", "benchmark": "script_redlines", "tool_version": "2",
-         "overall_mean": 85.0, "n_docs": 20, "holdout_mode": "only"},
-    ])
-    text = "\n".join(exp.holdout_gap_section(p))
+    _write_jsonl(
+        p,
+        [
+            # pre-holdout 403-doc line for the SAME version — contains the sealed
+            # docs, must never be "main"
+            {
+                "vendor": "v",
+                "benchmark": "script_redlines",
+                "tool_version": "2",
+                "overall_mean": 99.0,
+                "n_docs": 403,
+            },
+            # excluded line for a DIFFERENT version — must not be "main" either
+            {
+                "vendor": "v",
+                "benchmark": "script_redlines",
+                "tool_version": "1",
+                "overall_mean": 80.0,
+                "n_docs": 383,
+                "holdout_mode": "excluded",
+            },
+            # the genuine main: same version, excluded, full corpus
+            {
+                "vendor": "v",
+                "benchmark": "script_redlines",
+                "tool_version": "2",
+                "overall_mean": 90.0,
+                "n_docs": 383,
+                "holdout_mode": "excluded",
+            },
+            # a smoke excluded line for the same version (n ≤ 100) — not "main"
+            {
+                "vendor": "v",
+                "benchmark": "script_redlines",
+                "tool_version": "2",
+                "overall_mean": 70.0,
+                "n_docs": 5,
+                "holdout_mode": "excluded",
+            },
+            {
+                "vendor": "v",
+                "benchmark": "script_redlines",
+                "tool_version": "2",
+                "overall_mean": 85.0,
+                "n_docs": 20,
+                "holdout_mode": "only",
+            },
+        ],
+    )
+    text = "\n".join(ledger_tables.holdout_gap_section(p))
     assert "-5.00" in text  # 85 − 90, not 85 − 99 / 85 − 80 / 85 − 70
     assert "no comparable main run" not in text
 
@@ -679,45 +915,102 @@ def test_export_holdout_gap_smoke_holdout_line_does_not_displace_full(tmp_path):
     # holdout line (n=20) as the vendor's holdout number; recency applies only
     # among equally-full holdout lines.
     p = tmp_path / "bench.jsonl"
-    _write_jsonl(p, [
-        {"vendor": "v", "benchmark": "script_redlines", "tool_version": "2",
-         "overall_mean": 90.0, "n_docs": 383, "holdout_mode": "excluded"},
-        {"vendor": "v", "benchmark": "script_redlines", "tool_version": "2",
-         "overall_mean": 85.0, "n_docs": 20, "holdout_mode": "only"},
-        {"vendor": "v", "benchmark": "script_redlines", "tool_version": "2",
-         "overall_mean": 40.0, "n_docs": 3, "holdout_mode": "only"},
-    ])
-    text = "\n".join(exp.holdout_gap_section(p))
+    _write_jsonl(
+        p,
+        [
+            {
+                "vendor": "v",
+                "benchmark": "script_redlines",
+                "tool_version": "2",
+                "overall_mean": 90.0,
+                "n_docs": 383,
+                "holdout_mode": "excluded",
+            },
+            {
+                "vendor": "v",
+                "benchmark": "script_redlines",
+                "tool_version": "2",
+                "overall_mean": 85.0,
+                "n_docs": 20,
+                "holdout_mode": "only",
+            },
+            {
+                "vendor": "v",
+                "benchmark": "script_redlines",
+                "tool_version": "2",
+                "overall_mean": 40.0,
+                "n_docs": 3,
+                "holdout_mode": "only",
+            },
+        ],
+    )
+    text = "\n".join(ledger_tables.holdout_gap_section(p))
     assert "-5.00" in text  # 85 − 90 from the n=20 line, not 40 − 90
     assert "-50.00" not in text
 
 
 def test_export_holdout_gap_no_comparable_main(tmp_path):
     p = tmp_path / "bench.jsonl"
-    _write_jsonl(p, [
-        # only a different-version full line and a same-version smoke line exist
-        {"vendor": "v", "benchmark": "script_redlines", "tool_version": "1",
-         "overall_mean": 90.0, "n_docs": 383, "holdout_mode": "excluded"},
-        {"vendor": "v", "benchmark": "script_redlines", "tool_version": "2",
-         "overall_mean": 88.0, "n_docs": 2, "holdout_mode": "excluded"},
-        {"vendor": "v", "benchmark": "script_redlines", "tool_version": "2",
-         "overall_mean": 85.0, "n_docs": 20, "holdout_mode": "only"},
-    ])
-    text = "\n".join(exp.holdout_gap_section(p))
+    _write_jsonl(
+        p,
+        [
+            # only a different-version full line and a same-version smoke line exist
+            {
+                "vendor": "v",
+                "benchmark": "script_redlines",
+                "tool_version": "1",
+                "overall_mean": 90.0,
+                "n_docs": 383,
+                "holdout_mode": "excluded",
+            },
+            {
+                "vendor": "v",
+                "benchmark": "script_redlines",
+                "tool_version": "2",
+                "overall_mean": 88.0,
+                "n_docs": 2,
+                "holdout_mode": "excluded",
+            },
+            {
+                "vendor": "v",
+                "benchmark": "script_redlines",
+                "tool_version": "2",
+                "overall_mean": 85.0,
+                "n_docs": 20,
+                "holdout_mode": "only",
+            },
+        ],
+    )
+    text = "\n".join(ledger_tables.holdout_gap_section(p))
     assert "no comparable main run" in text
 
 
 def test_export_holdout_gap_shows_n_and_uncertainty(tmp_path):
     p = tmp_path / "bench.jsonl"
     hold_scores = {f"d{i}": 80.0 + i for i in range(4)}
-    _write_jsonl(p, [
-        {"vendor": "v", "benchmark": "script_redlines", "tool_version": "1",
-         "overall_mean": 90.0, "n_docs": 383, "holdout_mode": "excluded"},
-        {"vendor": "v", "benchmark": "script_redlines", "tool_version": "1",
-         "overall_mean": 81.5, "n_docs": 4, "holdout_mode": "only",
-         "scores": hold_scores},
-    ])
-    text = "\n".join(exp.holdout_gap_section(p))
+    _write_jsonl(
+        p,
+        [
+            {
+                "vendor": "v",
+                "benchmark": "script_redlines",
+                "tool_version": "1",
+                "overall_mean": 90.0,
+                "n_docs": 383,
+                "holdout_mode": "excluded",
+            },
+            {
+                "vendor": "v",
+                "benchmark": "script_redlines",
+                "tool_version": "1",
+                "overall_mean": 81.5,
+                "n_docs": 4,
+                "holdout_mode": "only",
+                "scores": hold_scores,
+            },
+        ],
+    )
+    text = "\n".join(ledger_tables.holdout_gap_section(p))
     assert "n_main" in text
     assert "n_holdout" in text
     assert "383" in text
@@ -732,7 +1025,11 @@ def test_score_folders_full_unknown_exclude_key_raises(tmp_path, sample_oracle_p
     oracle, cand, keys = _mirrored_pair_dirs(tmp_path, sample_oracle_pdfs)
     with pytest.raises(ValueError, match="nope_key"):
         pipeline.score_folders_full(
-            oracle, cand, tmp_path / "work", jobs=1, candidate_tool="t",
+            oracle,
+            cand,
+            tmp_path / "work",
+            jobs=1,
+            candidate_tool="t",
             exclude_keys={keys[0], "nope_key"},
         )
 
@@ -741,19 +1038,30 @@ def test_score_folders_full_unknown_only_key_raises(tmp_path, sample_oracle_pdfs
     oracle, cand, keys = _mirrored_pair_dirs(tmp_path, sample_oracle_pdfs)
     with pytest.raises(ValueError, match="nope_key"):
         pipeline.score_folders_full(
-            oracle, cand, tmp_path / "work", jobs=1, candidate_tool="t",
+            oracle,
+            cand,
+            tmp_path / "work",
+            jobs=1,
+            candidate_tool="t",
             only_keys={keys[0], "nope_key"},
         )
 
 
-def test_score_folders_full_lenient_keys_for_subset_oracles(tmp_path, sample_oracle_pdfs):
+def test_score_folders_full_lenient_keys_for_subset_oracles(
+    tmp_path, sample_oracle_pdfs
+):
     # Secondary benchmarks (accepted/visual corpora) legitimately cover a
     # subset of the holdout sampling universe — strict_filter_keys=False
     # tolerates keys absent from THIS oracle while still filtering the rest.
     oracle, cand, keys = _mirrored_pair_dirs(tmp_path, sample_oracle_pdfs)
     full = pipeline.score_folders_full(
-        oracle, cand, tmp_path / "work", jobs=1, candidate_tool="t",
-        exclude_keys={keys[0], "not_in_this_universe"}, strict_filter_keys=False,
+        oracle,
+        cand,
+        tmp_path / "work",
+        jobs=1,
+        candidate_tool="t",
+        exclude_keys={keys[0], "not_in_this_universe"},
+        strict_filter_keys=False,
     )
     assert set(full) == set(keys) - {keys[0]}
 
@@ -780,16 +1088,26 @@ def _mirrored_accepted_dirs(tmp_path, sample_oracle_pdfs):
 def test_score_folders_accepted_exclude_and_only(tmp_path, sample_oracle_pdfs):
     oracle, cand, keys = _mirrored_accepted_dirs(tmp_path, sample_oracle_pdfs)
     excluded = pipeline.score_folders_accepted(
-        oracle, cand, tmp_path / "w1", jobs=1, exclude_keys={keys[0]},
+        oracle,
+        cand,
+        tmp_path / "w1",
+        jobs=1,
+        exclude_keys={keys[0]},
     )
     assert set(excluded) == set(keys) - {keys[0]}
     only = pipeline.score_folders_accepted(
-        oracle, cand, tmp_path / "w2", jobs=1, only_keys={keys[0]},
+        oracle,
+        cand,
+        tmp_path / "w2",
+        jobs=1,
+        only_keys={keys[0]},
     )
     assert set(only) == {keys[0]}
 
 
-def test_accept_compare_stage_filters_sealed_keys(tmp_path, sample_oracle_pdfs, monkeypatch):
+def test_accept_compare_stage_filters_sealed_keys(
+    tmp_path, sample_oracle_pdfs, monkeypatch
+):
     from neurotic_docx_bench import accept_changes
     from neurotic_docx_bench import cli as cli_mod
     from neurotic_docx_bench.config import RunConfig
@@ -809,16 +1127,28 @@ def test_accept_compare_stage_filters_sealed_keys(tmp_path, sample_oracle_pdfs, 
     run1 = tmp_path / "run1"
     run1.mkdir()
     outcome = cli_mod._accept_compare_stage(
-        rc, run1, cand, {}, oracle, 72,
-        exclude_keys={sealed}, only_keys=None,
+        rc,
+        run1,
+        cand,
+        {},
+        oracle,
+        72,
+        exclude_keys={sealed},
+        only_keys=None,
     )
     assert set(outcome.scores) == set(keys) - {sealed}
 
     run2 = tmp_path / "run2"
     run2.mkdir()
     outcome_only = cli_mod._accept_compare_stage(
-        rc, run2, cand, {}, oracle, 72,
-        exclude_keys=None, only_keys={sealed},
+        rc,
+        run2,
+        cand,
+        {},
+        oracle,
+        72,
+        exclude_keys=None,
+        only_keys={sealed},
     )
     assert set(outcome_only.scores) == {sealed}
 
@@ -873,13 +1203,22 @@ def _lines_for_benchmark(results_dir: Path, benchmark: str) -> list[dict]:
 
 def test_cli_visual_redlines_lines_respect_the_seal(tmp_path, sample_oracle_pdfs):
     cfg, keys = _visual_run_cfg(
-        tmp_path, sample_oracle_pdfs, visual_benchmark="visual_redlines",
+        tmp_path,
+        sample_oracle_pdfs,
+        visual_benchmark="visual_redlines",
     )
     results_dir = tmp_path / "results"
     result = runner.invoke(
         app,
-        ["run", "--config", str(cfg), "--results-dir", str(results_dir),
-         "--runs-dir", str(tmp_path / "runs")],
+        [
+            "run",
+            "--config",
+            str(cfg),
+            "--results-dir",
+            str(results_dir),
+            "--runs-dir",
+            str(tmp_path / "runs"),
+        ],
     )
     assert result.exit_code == 0, result.output
     line = _lines_for_benchmark(results_dir, "visual_redlines")[-1]
@@ -888,8 +1227,16 @@ def test_cli_visual_redlines_lines_respect_the_seal(tmp_path, sample_oracle_pdfs
 
     result = runner.invoke(
         app,
-        ["run", "--config", str(cfg), "--results-dir", str(results_dir),
-         "--runs-dir", str(tmp_path / "runs"), "--holdout"],
+        [
+            "run",
+            "--config",
+            str(cfg),
+            "--results-dir",
+            str(results_dir),
+            "--runs-dir",
+            str(tmp_path / "runs"),
+            "--holdout",
+        ],
     )
     assert result.exit_code == 0, result.output
     line = _lines_for_benchmark(results_dir, "visual_redlines")[-1]
@@ -902,18 +1249,30 @@ def test_cli_visual_rendering_unfilterable_stamps_none(tmp_path, sample_oracle_p
     # cannot filter it, so its stamp must be None (truthful) and the line must
     # survive the headline-table filter even on a --holdout run.
     cfg, keys = _visual_run_cfg(
-        tmp_path, sample_oracle_pdfs, visual_benchmark="visual_rendering",
+        tmp_path,
+        sample_oracle_pdfs,
+        visual_benchmark="visual_rendering",
     )
     results_dir = tmp_path / "results"
     for extra_args in ([], ["--holdout"]):
         result = runner.invoke(
             app,
-            ["run", "--config", str(cfg), "--results-dir", str(results_dir),
-             "--runs-dir", str(tmp_path / "runs"), *extra_args],
+            [
+                "run",
+                "--config",
+                str(cfg),
+                "--results-dir",
+                str(results_dir),
+                "--runs-dir",
+                str(tmp_path / "runs"),
+                *extra_args,
+            ],
         )
         assert result.exit_code == 0, result.output
         line = _lines_for_benchmark(results_dir, "visual_rendering")[-1]
         assert line["holdout_mode"] is None
         assert len(line["scores"]) == len(keys)
-    rows = exp.rows_from_jsonl(results_dir / "bench.jsonl")
-    assert any(r["benchmark"] == "visual_rendering" for r in rows)
+    rows, _ = ledger_rows.load_bench_rows(
+        results_dir / "bench.jsonl", _ledger_registry("t")
+    )
+    assert any(r.benchmark == "visual_rendering" for r in rows)

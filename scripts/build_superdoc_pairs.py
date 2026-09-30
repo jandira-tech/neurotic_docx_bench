@@ -13,7 +13,7 @@ Two CSVs come out of this, deliberately:
 * ``centralized_mapping.csv`` — the 12-column schema the bench already consumes
   (``scripts/generate-native-redlines.ts`` reads ``base``/``next``; the scorer
   keys oracle PDFs on ``<base>_<next>_redline.pdf``). Same shape as
-  ``corpus/word_based/centralized_mapping*.csv`` so no bench code changes.
+  ``grok_run/word_based/centralized_mapping*.csv`` so no bench code changes.
 * ``pair_provenance.csv`` — the map of where each pair came from in the source
   pool, carrying SHA-256 of base, next and (after Word runs) the redline.
 

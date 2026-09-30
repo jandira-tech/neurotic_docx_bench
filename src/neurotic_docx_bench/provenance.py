@@ -43,9 +43,13 @@ def run_uuid7(now: datetime | None = None) -> uuid.UUID:
     return uuid.uuid7()
 
 
-def config_hash(path: Path) -> str:
-    """Short stable hash of a config file's bytes."""
-    return hashlib.sha256(Path(path).read_bytes()).hexdigest()[:12]
+def config_hash(path: Path, renderer: str = "soffice") -> str:
+    """Short stable hash of a config file's bytes and, unless it is ``soffice`` (every row
+    before ``render: auto``), the renderer the docx went through."""
+    data = Path(path).read_bytes()
+    if renderer != "soffice":
+        data += f"\0renderer={renderer}".encode()
+    return hashlib.sha256(data).hexdigest()[:12]
 
 
 def baseline_ref(source_of_truth: Path, sha: str | None = None) -> str:
