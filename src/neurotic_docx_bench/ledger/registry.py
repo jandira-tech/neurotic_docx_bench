@@ -43,6 +43,7 @@ class ToolEntry(BaseModel):
     note: str | None = None
 
     def applies_to(self, benchmark: str) -> bool:
+        """Whether ``benchmark`` is absent from this tool's ``not_applicable`` list."""
         return benchmark not in self.not_applicable
 
 
@@ -54,6 +55,11 @@ class Registry(BaseModel):
 
     @model_validator(mode="after")
     def _unique_claims(self) -> Registry:
+        """Raise ValueError for a duplicate tool id or an alias claimed twice in one namespace.
+
+        Run names, speed tools and converter tools are separate namespaces; one alias may
+        appear in two of them, and several tools may share a bench vendor.
+        """
         ids: set[str] = set()
         claims: dict[str, dict[str, str]] = {
             "run name": {},
@@ -79,6 +85,7 @@ class Registry(BaseModel):
         return self
 
     def by_id(self, tool_id: str) -> ToolEntry:
+        """The entry with exactly this id; KeyError when there is none."""
         for t in self.tools:
             if t.id == tool_id:
                 return t
@@ -88,7 +95,11 @@ class Registry(BaseModel):
         self, *, vendor: str, run_name: str, render: str
     ) -> ToolEntry | None:
         """Run name first (most specific), then bench vendor. A playwright render
-        prefers an editor entry for that vendor, any other render a non-editor one."""
+        prefers an editor entry for that vendor, any other render a non-editor one.
+
+        The first preferred vendor match in registry order wins, else the first vendor
+        match; None when neither the run name nor the vendor is known.
+        """
         for t in self.tools:
             if run_name in t.run_names:
                 return t
@@ -100,6 +111,9 @@ class Registry(BaseModel):
         return candidates[0] if candidates else None
 
     def resolve_speed(self, tool: str) -> tuple[ToolEntry | None, bool]:
+        """The first entry whose speed tools name ``tool`` or ``tool`` without one trailing
+        ``-inproc``, and whether ``tool`` ends in ``-inproc``. An unknown tool is
+        ``(None, False)``, suffix or not."""
         inproc = tool.endswith(_INPROC_SUFFIX)
         base = tool[: -len(_INPROC_SUFFIX)] if inproc else tool
         for t in self.tools:
@@ -108,6 +122,7 @@ class Registry(BaseModel):
         return None, False
 
     def resolve_converter(self, tool: str) -> ToolEntry | None:
+        """The entry whose converter tools name exactly ``tool``, else None."""
         for t in self.tools:
             if tool in t.converter_tools:
                 return t
@@ -115,6 +130,11 @@ class Registry(BaseModel):
 
 
 def load_registry(path: Path = DEFAULT_REGISTRY_PATH) -> Registry:
+    """Read and validate a YAML registry; a relative ``path`` is read from the working directory.
+
+    TypeError when the document is not a mapping. Read, decode and YAML errors and
+    pydantic's ValidationError reach the caller unchanged.
+    """
     raw = yaml.safe_load(Path(path).read_text())
     if not isinstance(raw, dict):
         raise TypeError(f"{path}: registry must be a mapping")

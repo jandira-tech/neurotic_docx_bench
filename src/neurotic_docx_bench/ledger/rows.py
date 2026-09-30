@@ -71,6 +71,9 @@ class ResultRow(BaseModel):
 
     @property
     def provenance(self) -> Provenance:
+        """"stamped" or "legacy". Approximate ITT is always legacy; a converter row is
+        stamped when it names its docset, a bench row when it carries a corpus revision
+        and per-document scores."""
         if self.itt_approx:
             return "legacy"
         if self.source == "converter":
@@ -90,6 +93,8 @@ class ResultRow(BaseModel):
 
 
 def _num(value: object, default: float = 0.0) -> float:
+    """A number or numeric text as float; ``default`` for booleans, None and text that is
+    not a number. An int too large for a float raises OverflowError."""
     if isinstance(value, bool):
         return default
     if isinstance(value, int | float):
@@ -101,6 +106,8 @@ def _num(value: object, default: float = 0.0) -> float:
 
 
 def _run_meta(data: dict) -> tuple[str, str]:
+    """(run name, render) of the first ``environment_config`` run, else the line's own
+    ``tool`` / ``render``, else empty strings."""
     env = data.get("environment_config") or {}
     runs = env.get("runs") if isinstance(env, dict) else None
     first = (
@@ -112,6 +119,8 @@ def _run_meta(data: dict) -> tuple[str, str]:
 
 
 def _benchmark_name(data: dict) -> str | None:
+    """A known benchmark name or None; the legacy ``stage`` is read only when
+    ``benchmark`` is empty."""
     name = data.get("benchmark")
     if not name and isinstance(data.get("stage"), str):
         name = LEGACY_STAGE_TO_BENCHMARK.get(data["stage"])
@@ -119,6 +128,8 @@ def _benchmark_name(data: dict) -> str | None:
 
 
 def _timestamp(data: dict) -> datetime:
+    """``timestamp``, else ``run_ts``, as an aware datetime: a naive value is UTC, an
+    offset is kept, and missing or unparsable text is the UTC epoch."""
     raw = data.get("timestamp") or data.get("run_ts") or ""
     try:
         ts = datetime.fromisoformat(str(raw))
@@ -128,6 +139,7 @@ def _timestamp(data: dict) -> datetime:
 
 
 def _failed_docs(data: dict) -> list[str]:
+    """The non-empty ``doc`` of every failure record, as strings, duplicates kept."""
     out: list[str] = []
     for f in data.get("failures") or []:
         if isinstance(f, dict) and f.get("doc"):
@@ -136,6 +148,19 @@ def _failed_docs(data: dict) -> list[str]:
 
 
 def row_from_bench_line(data: dict, registry: Registry) -> ResultRow | None:
+    """One bench line as a ResultRow; None for an unknown benchmark or a tool the registry
+    cannot resolve.
+
+    ITT comes from the line when both ``itt_median`` and ``itt_n_docs`` are set. Else,
+    with per-document scores, the pool is the scores plus one 0 per distinct failed
+    document without a score. Without scores it is approximated: ``n_docs`` copies of
+    ``overall_median`` plus one 0 per failure event (``itt_approx``). Recomputed means
+    and medians are rounded to 4 places.
+
+    A malformed line (a non-mapping, a count that does not convert) raises
+    AttributeError, TypeError, ValueError or OverflowError, and pydantic validation
+    errors propagate; none of them become None.
+    """
     benchmark = _benchmark_name(data)
     if benchmark is None:
         return None
@@ -238,8 +263,13 @@ def row_from_bench_line(data: dict, registry: Registry) -> ResultRow | None:
 def load_bench_rows(
     path: Path, registry: Registry, *, archived: bool = False
 ) -> tuple[list[ResultRow], list[dict]]:
-    """All rows in ``path`` plus the raw lines the registry could not map. ``archived``
-    marks every row as history-only."""
+    """All rows in the UTF-8 JSONL ``path``, plus a summary (vendor, run_name, benchmark,
+    id_run) of each line the registry could not map, both in file order. ``archived``
+    marks every row as history-only.
+
+    Blank lines and invalid JSON are skipped. Read and decode errors propagate, as do
+    ``row_from_bench_line`` errors: valid JSON that is not a mapping is not skipped.
+    """
     rows: list[ResultRow] = []
     unmapped: list[dict] = []
     with Path(path).open(encoding="utf-8") as fh:
