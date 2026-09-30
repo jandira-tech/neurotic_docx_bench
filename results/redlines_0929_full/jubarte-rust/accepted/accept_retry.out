@@ -1,0 +1,140 @@
+2026-09-30 04:13:27.343 | INFO     | word_pdf:preflight:1812 -  preflight: 
+open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-09-30 04:13:27.369 | INFO     | word_pdf:convert_folder:1486 -  export: 
+one_osascript=True documents=1 accept_all=True reject_all=False
+2026-09-30 04:13:27.372 | INFO     | word_pdf:_convert_batched:1685 -  one 
+osascript for 1 document(s)
+2026-09-30 04:13:32.391 | INFO     | __main__:_loop:231 -  0/1
+2026-09-30 04:13:37.398 | INFO     | __main__:_loop:246 -  item 1/1 not saved 
+after 5 s; checking Word
+2026-09-30 04:14:05.432 | INFO     | __main__:_loop:246 -  item 1/1 not saved 
+after 33 s; checking Word
+2026-09-30 04:14:29.673 | WARNING  | __main__:_report:208 -  item 1/1 open for 
+more than 30 s:
+-- Word windows {name, subrole}: osascript timed out
+-- Word window text: 
+-- crash reporters: osascript timed out
+-- batch-pdf-1.log:
+
+-- newest diagnostic reports: AppCleaner-2026-09-30-001317.ips, 
+biome-2026-09-29-094107.ips, soffice-2026-09-28-104720.ips, 
+soffice-2026-09-28-105517.ips, soffice-2026-09-28-105123.000.ips
+2026-09-30 04:14:33.479 | INFO     | __main__:_loop:246 -  item 1/1 not saved 
+after 61 s; checking Word
+2026-09-30 04:15:01.540 | INFO     | __main__:_loop:246 -  item 1/1 not saved 
+after 89 s; checking Word
+2026-09-30 04:15:29.571 | INFO     | __main__:_loop:246 -  item 1/1 not saved 
+after 117 s; checking Word
+2026-09-30 04:15:57.607 | INFO     | __main__:_loop:246 -  item 1/1 not saved 
+after 145 s; checking Word
+2026-09-30 04:16:25.637 | INFO     | __main__:_loop:246 -  item 1/1 not saved 
+after 173 s; checking Word
+2026-09-30 04:16:53.666 | INFO     | __main__:_loop:246 -  item 1/1 not saved 
+after 201 s; checking Word
+2026-09-30 04:17:21.704 | INFO     | __main__:_loop:246 -  item 1/1 not saved 
+after 229 s; checking Word
+2026-09-30 04:17:49.734 | INFO     | __main__:_loop:246 -  item 1/1 not saved 
+after 257 s; checking Word
+2026-09-30 04:18:17.764 | INFO     | __main__:_loop:246 -  item 1/1 not saved 
+after 285 s; checking Word
+2026-09-30 04:18:30.416 | WARNING  | word_pdf:run_batch_with_resume:1206 -  1 
+item(s) never reached (wedged before ); recycling Word and retrying the rest 
+first, retried items last (pass 2, 1 of 3 stalled passes used)
+2026-09-30 04:18:30.417 | WARNING  | word_pdf♻725 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-09-30 04:18:30.418 | WARNING  | word_pdf♻731 -  recycling (restart 1)
+2026-09-30 04:18:56.885 | INFO     | __main__:_loop:231 -  0/1
+2026-09-30 04:19:01.892 | INFO     | __main__:_loop:246 -  item 1/1 not saved 
+after 5 s; checking Word
+2026-09-30 04:19:29.939 | INFO     | __main__:_loop:246 -  item 1/1 not saved 
+after 33 s; checking Word
+2026-09-30 04:19:54.391 | WARNING  | __main__:_report:208 -  item 1/1 open for 
+more than 30 s:
+-- Word windows {name, subrole}: ,
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-2.log:
+
+-- newest diagnostic reports: AppCleaner-2026-09-30-001317.ips, 
+biome-2026-09-29-094107.ips, soffice-2026-09-28-104720.ips, 
+soffice-2026-09-28-105517.ips, soffice-2026-09-28-105123.000.ips
+2026-09-30 04:19:57.994 | INFO     | __main__:_loop:246 -  item 1/1 not saved 
+after 61 s; checking Word
+2026-09-30 04:20:26.027 | INFO     | __main__:_loop:246 -  item 1/1 not saved 
+after 89 s; checking Word
+2026-09-30 04:20:54.062 | INFO     | __main__:_loop:246 -  item 1/1 not saved 
+after 117 s; checking Word
+2026-09-30 04:21:22.116 | INFO     | __main__:_loop:246 -  item 1/1 not saved 
+after 145 s; checking Word
+2026-09-30 04:21:50.152 | INFO     | __main__:_loop:246 -  item 1/1 not saved 
+after 173 s; checking Word
+2026-09-30 04:22:18.200 | INFO     | __main__:_loop:246 -  item 1/1 not saved 
+after 201 s; checking Word
+2026-09-30 04:22:46.233 | INFO     | __main__:_loop:246 -  item 1/1 not saved 
+after 229 s; checking Word
+2026-09-30 04:23:14.276 | INFO     | __main__:_loop:246 -  item 1/1 not saved 
+after 257 s; checking Word
+2026-09-30 04:23:42.339 | INFO     | __main__:_loop:246 -  item 1/1 not saved 
+after 285 s; checking Word
+2026-09-30 04:23:54.877 | WARNING  | word_pdf:run_batch_with_resume:1206 -  1 
+item(s) never reached (wedged before ); recycling Word and retrying the rest 
+first, retried items last (pass 3, 2 of 3 stalled passes used)
+2026-09-30 04:23:54.880 | WARNING  | word_pdf♻725 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-09-30 04:23:54.880 | WARNING  | word_pdf♻731 -  recycling (restart 2)
+2026-09-30 04:24:22.192 | INFO     | __main__:_loop:231 -  0/1
+2026-09-30 04:24:27.195 | INFO     | __main__:_loop:246 -  item 1/1 not saved 
+after 5 s; checking Word
+2026-09-30 04:24:55.264 | INFO     | __main__:_loop:246 -  item 1/1 not saved 
+after 33 s; checking Word
+2026-09-30 04:25:17.807 | WARNING  | __main__:_report:208 -  item 1/1 open for 
+more than 30 s:
+-- Word windows {name, subrole}: ,
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-3.log:
+
+-- newest diagnostic reports: AppCleaner-2026-09-30-001317.ips, 
+biome-2026-09-29-094107.ips, soffice-2026-09-28-104720.ips, 
+soffice-2026-09-28-105517.ips, soffice-2026-09-28-105123.000.ips
+2026-09-30 04:25:23.277 | INFO     | __main__:_loop:246 -  item 1/1 not saved 
+after 61 s; checking Word
+2026-09-30 04:25:51.304 | INFO     | __main__:_loop:246 -  item 1/1 not saved 
+after 89 s; checking Word
+2026-09-30 04:26:19.338 | INFO     | __main__:_loop:246 -  item 1/1 not saved 
+after 117 s; checking Word
+2026-09-30 04:26:47.367 | INFO     | __main__:_loop:246 -  item 1/1 not saved 
+after 145 s; checking Word
+2026-09-30 04:27:15.378 | INFO     | __main__:_loop:246 -  item 1/1 not saved 
+after 173 s; checking Word
+2026-09-30 04:27:43.410 | INFO     | __main__:_loop:246 -  item 1/1 not saved 
+after 201 s; checking Word
+2026-09-30 04:28:11.454 | INFO     | __main__:_loop:246 -  item 1/1 not saved 
+after 229 s; checking Word
+2026-09-30 04:28:39.503 | INFO     | __main__:_loop:246 -  item 1/1 not saved 
+after 257 s; checking Word
+2026-09-30 04:29:07.549 | INFO     | __main__:_loop:246 -  item 1/1 not saved 
+after 285 s; checking Word
+2026-09-30 04:29:20.236 | WARNING  | word_pdf:run_batch_with_resume:1206 -  1 
+item(s) never reached (wedged before ); recycling Word and retrying the rest 
+first, retried items last (pass 4, 3 of 3 stalled passes used)
+2026-09-30 04:29:20.238 | WARNING  | word_pdf♻725 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-09-30 04:29:20.239 | WARNING  | word_pdf♻731 -  recycling (restart 3)
+2026-09-30 04:29:42.472 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+1855b51281.docx — never reached in 3 batch pass(es)
+  accept all → DOCX + PDF:  
+results/redlines_0929_full/j
+ubarte-rust/accepted/retry_s
+             rc             
+┏━━━━━━━━━━━━━━━━━━┳━━━━━━━┓
+┃ outcome          ┃ count ┃
+┡━━━━━━━━━━━━━━━━━━╇━━━━━━━┩
+│ converted        │     0 │
+│ skipped (exists) │     0 │
+│ failed           │     1 │
+└──────────────────┴───────┘
+  FAIL 1855b51281.docx: never reached in 3 batch pass(es)
