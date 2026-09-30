@@ -58,11 +58,9 @@ __pycache__/
 /runs/
 /grok_run/
 /grok_run_attic/
-# the Word corpus (bench corpus build): documents travel with `bench fixtures upload`,
-# tables, pools, notices, provenance and the manifest are tracked
-/corpus/word/**/*.docx
-/corpus/word/**/*.pdf
-/corpus/libreoffice/**/*.pdf
+# the Word corpus (corpus/word) and its LibreOffice renders (corpus/libreoffice) are tracked in
+# full: documents, PDFs, tables, pools, notices, provenance and the manifest. corpus/ is the one
+# source of truth; nothing reads the old working folders.
 # local bench logs (RESULTS live in results/; these are tee captures)
 /logs/
 
