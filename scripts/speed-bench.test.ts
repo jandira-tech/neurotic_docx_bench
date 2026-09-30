@@ -80,4 +80,39 @@ describe("Jubarte speed benchmark selection", () => {
 		const engine = await vi.mocked(loadEngine).mock.results[0].value;
 		expect(engine).toHaveBeenCalledExactlyOnceWith(new Uint8Array([1]), new Uint8Array([2]));
 	});
+
+	it.each(["jubarte-rust", "jubarte-wasm", "docxodus"])("fails instead of silently omitting requested %s on initialization failure", async (method) => {
+		mkdirSync(rust);
+		mkdirSync(wasm);
+		vi.mocked(loadEngine).mockRejectedValue(new Error("incomplete build"));
+		await expect(run(method)).rejects.toThrow("exit 1");
+		expect(console.error).toHaveBeenCalledWith(`  ${method}: init failed: incomplete build`);
+		expect(existsSync(out)).toBe(false);
+	});
+
+	it.each(["jubarte-rust", "jubarte-wasm"])("also fails on %s initialization failure in a default run", async (method) => {
+		mkdirSync(rust);
+		mkdirSync(wasm);
+		vi.mocked(loadEngine).mockImplementation(async (label) => {
+			if (label === method) throw new Error("incomplete build");
+			return vi.fn().mockResolvedValue(new Uint8Array([3]));
+		});
+		await expect(run()).rejects.toThrow("exit 1");
+		expect(console.error).toHaveBeenCalledWith(`  ${method}: init failed: incomplete build`);
+		expect(rows().some((row) => row.tool === method)).toBe(false);
+	});
+
+	it("retains optional-tool skipping in a default run and measures both Jubarte builds", async () => {
+		mkdirSync(rust);
+		mkdirSync(wasm);
+		vi.mocked(loadEngine).mockImplementation(async (method) => {
+			if (!method.startsWith("jubarte-rust") && !method.startsWith("jubarte-wasm")) {
+				throw new Error("optional tool unavailable");
+			}
+			return vi.fn().mockResolvedValue(new Uint8Array([3]));
+		});
+		await run();
+		expect(rows().map((row) => row.tool)).toEqual(["jubarte-rust", "jubarte-wasm"]);
+		expect(process.exit).not.toHaveBeenCalled();
+	});
 });
