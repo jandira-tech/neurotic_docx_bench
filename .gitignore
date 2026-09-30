@@ -182,3 +182,8 @@ results/hub/
 
 # content-addressed render/raster/score cache (bench run; see content_cache.py)
 /.bench-cache/
+
+# local scratch: Claude session exports, editor swap files, a stray scorer patch
+Claude outputs/
+*.swp
+score_v2.patch
