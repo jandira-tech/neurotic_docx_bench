@@ -1,0 +1,181 @@
+2026-09-30 03:12:53.859 | INFO     | word_pdf:preflight:1812 -  preflight: 
+open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-09-30 03:12:53.887 | INFO     | word_pdf:convert_folder:1486 -  export: 
+one_osascript=True documents=50 accept_all=False reject_all=False
+2026-09-30 03:12:53.940 | INFO     | word_pdf:_convert_batched:1685 -  one 
+osascript for 50 document(s)
+2026-09-30 03:12:58.968 | INFO     | __main__:_loop:231 -  0/50
+2026-09-30 03:13:03.974 | INFO     | __main__:_loop:246 -  item 1/50 not saved 
+after 5 s; checking Word
+2026-09-30 03:13:05.391 | WARNING  | __main__:forward:135 -  brought Word 
+forward, pressed No then OK; focus handed back
+2026-09-30 03:13:15.423 | INFO     | __main__:_loop:246 -  item 2/50 not saved 
+after 5 s; checking Word
+2026-09-30 03:13:43.457 | INFO     | __main__:_loop:246 -  item 2/50 not saved 
+after 33 s; checking Word
+2026-09-30 03:13:58.769 | WARNING  | __main__:_report:208 -  item 2/50 open for 
+more than 30 s:
+-- Word windows {name, subrole}: osascript timed out
+-- Word window text: Microsoft Word, Word found unreadable content in 
+00001__98c8b73841_0041d3944715c2fffc5929695f968e5f399e85b139.... Do you want to 
+recover the contents of this document? If you trust the source of this document,
+click Yes.
+-- crash reporters: 
+-- batch-pdf-1.log:
+        0       document loaded empty (Word could not read it)
+-- newest diagnostic reports: AppCleaner-2026-09-30-001317.ips, 
+biome-2026-09-29-094107.ips, soffice-2026-09-28-104720.ips, 
+soffice-2026-09-28-105517.ips, soffice-2026-09-28-105123.000.ips
+2026-09-30 03:13:59.060 | INFO     | word_pdf:_note_buttons:510 -  Microsoft 
+Word shows button 'OK'
+2026-09-30 03:13:59.145 | WARNING  | __main__:forward:135 -  brought Word 
+forward, pressed No then OK; focus handed back
+2026-09-30 03:13:59.978 | WARNING  | __main__:_loop_word:188 -  Word dialog 
+dismissed via 'No'
+2026-09-30 03:14:04.478 | WARNING  | __main__:_loop_word:188 -  Word dialog 
+dismissed via 'OK'
+2026-09-30 03:14:04.573 | WARNING  | word_pdf:run_batch_with_resume:1206 -  50 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 2, 0 of 3 stalled 
+passes used)
+2026-09-30 03:14:04.573 | WARNING  | word_pdf♻725 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-09-30 03:14:04.574 | WARNING  | word_pdf♻731 -  recycling (restart 1)
+2026-09-30 03:14:11.376 | INFO     | word_pdf:_note_buttons:510 -  Microsoft 
+Word shows button 'No'
+2026-09-30 03:14:11.376 | INFO     | word_pdf:_note_buttons:510 -  Microsoft 
+Word shows button 'Yes'
+2026-09-30 03:14:12.175 | WARNING  | __main__:forward:135 -  brought Word 
+forward, pressed No then OK; focus handed back
+2026-09-30 03:14:12.772 | INFO     | __main__:_loop:231 -  0/50
+2026-09-30 03:14:17.778 | INFO     | __main__:_loop:246 -  item 2/50 not saved 
+after 5 s; checking Word
+2026-09-30 03:14:45.808 | INFO     | __main__:_loop:246 -  item 2/50 not saved 
+after 33 s; checking Word
+2026-09-30 03:14:54.748 | WARNING  | __main__:_report:208 -  item 2/50 open for 
+more than 30 s:
+-- Word windows {name, subrole}: , AXDialog
+-- Word window text: Microsoft Word, Word found unreadable content in 
+00004__98c8b73841_0041d3944715c2fffc5929695f968e5f399e85b139.... Do you want to 
+recover the contents of this document? If you trust the source of this document,
+click Yes.
+-- crash reporters: 
+-- batch-pdf-2.log:
+        3       document loaded empty (Word could not read it)
+-- newest diagnostic reports: AppCleaner-2026-09-30-001317.ips, 
+biome-2026-09-29-094107.ips, soffice-2026-09-28-104720.ips, 
+soffice-2026-09-28-105517.ips, soffice-2026-09-28-105123.000.ips
+2026-09-30 03:14:55.179 | WARNING  | __main__:forward:135 -  brought Word 
+forward, pressed No then OK; focus handed back
+2026-09-30 03:14:55.830 | WARNING  | __main__:forward:135 -  brought Word 
+forward, pressed No then OK; focus handed back
+2026-09-30 03:14:55.936 | WARNING  | word_pdf:run_batch_with_resume:1206 -  50 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 3, 0 of 3 stalled 
+passes used)
+2026-09-30 03:14:55.936 | WARNING  | word_pdf♻725 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-09-30 03:14:55.937 | WARNING  | word_pdf♻731 -  recycling (restart 2)
+2026-09-30 03:15:01.890 | WARNING  | __main__:forward:135 -  brought Word 
+forward, pressed No then OK; focus handed back
+2026-09-30 03:15:04.149 | INFO     | __main__:_loop:231 -  0/50
+2026-09-30 03:15:09.155 | INFO     | __main__:_loop:246 -  item 2/50 not saved 
+after 5 s; checking Word
+2026-09-30 03:15:37.183 | INFO     | __main__:_loop:246 -  item 2/50 not saved 
+after 33 s; checking Word
+2026-09-30 03:15:41.431 | WARNING  | __main__:_report:208 -  item 2/50 open for 
+more than 30 s:
+-- Word windows {name, subrole}: , AXDialog
+-- Word window text: Microsoft Word, Word found unreadable content in 
+00007__98f10d216a_78fb2518812ee75abb3e28605e76a2adcbab31e836.... Do you want to 
+recover the contents of this document? If you trust the source of this document,
+click Yes.
+-- crash reporters: 
+-- batch-pdf-3.log:
+        6       document loaded empty (Word could not read it)
+-- newest diagnostic reports: AppCleaner-2026-09-30-001317.ips, 
+biome-2026-09-29-094107.ips, soffice-2026-09-28-104720.ips, 
+soffice-2026-09-28-105517.ips, soffice-2026-09-28-105123.000.ips
+2026-09-30 03:15:41.895 | WARNING  | __main__:forward:135 -  brought Word 
+forward, pressed No then OK; focus handed back
+2026-09-30 03:15:42.551 | WARNING  | __main__:forward:135 -  brought Word 
+forward, pressed No then OK; focus handed back
+2026-09-30 03:15:42.638 | WARNING  | word_pdf:run_batch_with_resume:1206 -  50 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 4, 0 of 3 stalled 
+passes used)
+2026-09-30 03:15:42.638 | WARNING  | word_pdf♻725 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-09-30 03:15:42.638 | WARNING  | word_pdf♻731 -  recycling (restart 3)
+2026-09-30 03:15:48.591 | WARNING  | __main__:forward:135 -  brought Word 
+forward, pressed No then OK; focus handed back
+2026-09-30 03:15:50.879 | INFO     | __main__:_loop:231 -  0/50
+2026-09-30 03:15:55.885 | INFO     | __main__:_loop:246 -  item 2/50 not saved 
+after 5 s; checking Word
+2026-09-30 03:16:23.916 | INFO     | __main__:_loop:246 -  item 2/50 not saved 
+after 33 s; checking Word
+2026-09-30 03:16:27.759 | WARNING  | __main__:_report:208 -  item 2/50 open for 
+more than 30 s:
+-- Word windows {name, subrole}: , AXDialog
+-- Word window text: Microsoft Word, Word found unreadable content in 
+00010__9c6ebd430d_file_185__vs__154fce3ec8_file_186_redline_.... Do you want to 
+recover the contents of this document? If you trust the source of this document,
+click Yes.
+-- crash reporters: 
+-- batch-pdf-4.log:
+        9       document loaded empty (Word could not read it)
+-- newest diagnostic reports: AppCleaner-2026-09-30-001317.ips, 
+biome-2026-09-29-094107.ips, soffice-2026-09-28-104720.ips, 
+soffice-2026-09-28-105517.ips, soffice-2026-09-28-105123.000.ips
+2026-09-30 03:16:28.203 | WARNING  | __main__:forward:135 -  brought Word 
+forward, pressed No then OK; focus handed back
+2026-09-30 03:16:28.862 | WARNING  | __main__:forward:135 -  brought Word 
+forward, pressed No then OK; focus handed back
+2026-09-30 03:16:28.955 | WARNING  | word_pdf:run_batch_with_resume:1206 -  50 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 5, 0 of 3 stalled 
+passes used)
+2026-09-30 03:16:28.956 | WARNING  | word_pdf♻725 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-09-30 03:16:28.956 | WARNING  | word_pdf♻731 -  recycling (restart 4)
+2026-09-30 03:16:36.423 | WARNING  | __main__:forward:135 -  brought Word 
+forward, pressed No then OK; focus handed back
+2026-09-30 03:16:37.138 | INFO     | __main__:_loop:231 -  0/50
+2026-09-30 03:16:42.145 | INFO     | __main__:_loop:246 -  item 2/50 not saved 
+after 5 s; checking Word
+2026-09-30 03:17:10.182 | INFO     | __main__:_loop:246 -  item 2/50 not saved 
+after 33 s; checking Word
+2026-09-30 03:17:18.960 | WARNING  | __main__:_report:208 -  item 2/50 open for 
+more than 30 s:
+-- Word windows {name, subrole}: , AXDialog
+-- Word window text: Microsoft Word, Word found unreadable content in 
+00013__a3df367231_001a6655d72fbecf6a1d10e479eee052a779d6ba1d.... Do you want to 
+recover the contents of this document? If you trust the source of this document,
+click Yes.
+-- crash reporters: 
+-- batch-pdf-5.log:
+        12      document loaded empty (Word could not read it)
+-- newest diagnostic reports: AppCleaner-2026-09-30-001317.ips, 
+biome-2026-09-29-094107.ips, soffice-2026-09-28-104720.ips, 
+soffice-2026-09-28-105517.ips, soffice-2026-09-28-105123.000.ips
+2026-09-30 03:17:19.395 | WARNING  | __main__:forward:135 -  brought Word 
+forward, pressed No then OK; focus handed back
+2026-09-30 03:17:20.081 | WARNING  | __main__:forward:135 -  brought Word 
+forward, pressed No then OK; focus handed back
+2026-09-30 03:17:20.171 | WARNING  | word_pdf:run_batch_with_resume:1206 -  50 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 6, 0 of 3 stalled 
+passes used)
+2026-09-30 03:17:20.172 | WARNING  | word_pdf♻725 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-09-30 03:17:20.172 | WARNING  | word_pdf♻731 -  recycling (restart 5)
+2026-09-30 03:17:26.042 | WARNING  | __main__:forward:135 -  brought Word 
+forward, pressed No then OK; focus handed back
+2026-09-30 03:17:28.371 | INFO     | __main__:_loop:231 -  0/50
+2026-09-30 03:17:33.398 | INFO     | __main__:_loop:246 -  item 2/50 not saved 
+after 5 s; checking Word
