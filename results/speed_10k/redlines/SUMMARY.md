@@ -6,7 +6,7 @@ A call past the per-pair timeout (120 s) is a failure; its row keeps the timeout
 
 ## Coverage
 
-- docxodus: 1335 of 10000 planned pairs
+- docxodus: 10000 of 10000 planned pairs
 - jubarte-rust: 10000 of 10000 planned pairs
 - jubarte-rust-inproc: 10000 of 10000 planned pairs
 - jubarte-wasm: 10000 of 10000 planned pairs
@@ -16,18 +16,21 @@ A call past the per-pair timeout (120 s) is a failure; its row keeps the timeout
 
 | tool | pairs | n | ok | failed | median ms | mean ms | p95 ms | p99 ms | max ms | ok total s |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| docxodus | 1335 common | 1335 | 1314 | 21 | 91.6 | 2337.2 | 11683.2 | 55691.3 | 109684.8 | 3071.1 |
-| jubarte-rust | 1335 common | 1335 | 1335 | 0 | 56.0 | 88.2 | 203.0 | 548.1 | 3818.1 | 117.8 |
-| jubarte-rust-inproc | 1335 common | 1335 | 1335 | 0 | 49.8 | 81.7 | 195.9 | 510.2 | 3818.8 | 109.1 |
-| jubarte-wasm | 1335 common | 1335 | 1335 | 0 | 90.4 | 149.7 | 383.5 | 928.8 | 5859.9 | 199.9 |
-| superdoc | 1335 common | 1335 | 0 | 1335 | - | - | - | - | - | - |
+| docxodus | 10000 common | 10000 | 9933 | 67 | 79.1 | 1731.7 | 7197.7 | 40675.7 | 116815.3 | 17200.6 |
+| jubarte-rust | 10000 common | 10000 | 10000 | 0 | 45.0 | 83.0 | 246.8 | 671.7 | 3818.1 | 830.1 |
+| jubarte-rust-inproc | 10000 common | 10000 | 10000 | 0 | 38.9 | 74.3 | 234.6 | 621.0 | 3818.8 | 743.3 |
+| jubarte-wasm | 10000 common | 10000 | 10000 | 0 | 70.9 | 140.6 | 461.3 | 1202.8 | 5859.9 | 1406.1 |
+| superdoc | 10000 common | 10000 | 798 | 9202 | 75.7 | 418.9 | 1623.1 | 6350.0 | 31746.8 | 334.3 |
 
 ## By pair category
 
 | tool | category | n | ok | failed | median ms | mean ms | p95 ms | p99 ms | max ms | ok total s |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| docxodus | all | 1335 | 1314 | 21 | 91.6 | 2337.2 | 11683.2 | 55691.3 | 109684.8 | 3071.1 |
-| docxodus | word_compare | 1335 | 1314 | 21 | 91.6 | 2337.2 | 11683.2 | 55691.3 | 109684.8 | 3071.1 |
+| docxodus | all | 10000 | 9933 | 67 | 79.1 | 1731.7 | 7197.7 | 40675.7 | 116815.3 | 17200.6 |
+| docxodus | grid | 5961 | 5928 | 33 | 116.1 | 2064.5 | 8934.3 | 45458.4 | 116815.3 | 12238.5 |
+| docxodus | identity | 300 | 300 | 0 | 0.1 | 0.3 | 1.0 | 5.9 | 7.5 | 0.1 |
+| docxodus | reverse | 1000 | 990 | 10 | 52.4 | 1317.8 | 4990.0 | 45081.4 | 81329.7 | 1304.6 |
+| docxodus | word_compare | 2739 | 2715 | 24 | 45.7 | 1347.1 | 4643.2 | 35400.5 | 109684.8 | 3657.4 |
 | jubarte-rust | all | 10000 | 10000 | 0 | 45.0 | 83.0 | 246.8 | 671.7 | 3818.1 | 830.1 |
 | jubarte-rust | grid | 5961 | 5961 | 0 | 55.7 | 101.3 | 313.5 | 783.3 | 3028.3 | 604.0 |
 | jubarte-rust | identity | 300 | 300 | 0 | 5.2 | 9.0 | 27.2 | 59.8 | 97.7 | 2.7 |
@@ -53,10 +56,10 @@ A call past the per-pair timeout (120 s) is a failure; its row keeps the timeout
 
 | tool | quartile | n | ok | failed | median ms | mean ms | p95 ms | p99 ms | max ms | ok total s |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| docxodus | Q1 | 51 | 51 | 0 | 41.8 | 99.5 | 419.6 | 1563.3 | 1563.3 | 5.1 |
-| docxodus | Q2 | 376 | 375 | 1 | 53.5 | 856.9 | 3081.9 | 16496.4 | 77293.0 | 321.3 |
-| docxodus | Q3 | 427 | 422 | 5 | 99.2 | 2892.5 | 14885.5 | 65597.5 | 109684.8 | 1220.7 |
-| docxodus | Q4 | 481 | 466 | 15 | 146.7 | 3270.4 | 16242.0 | 61855.7 | 86422.2 | 1524.0 |
+| docxodus | Q1 | 2499 | 2499 | 0 | 21.4 | 216.5 | 435.9 | 4267.3 | 38258.4 | 541.1 |
+| docxodus | Q2 | 2497 | 2495 | 2 | 45.5 | 471.0 | 1168.3 | 11683.2 | 77293.0 | 1175.0 |
+| docxodus | Q3 | 2502 | 2485 | 17 | 117.9 | 2842.6 | 13489.2 | 65597.5 | 116815.3 | 7063.9 |
+| docxodus | Q4 | 2502 | 2454 | 48 | 230.7 | 3431.4 | 19517.9 | 64970.6 | 115067.5 | 8420.6 |
 | jubarte-rust | Q1 | 2499 | 2499 | 0 | 11.2 | 36.8 | 121.1 | 342.3 | 3028.3 | 92.0 |
 | jubarte-rust | Q2 | 2497 | 2497 | 0 | 26.5 | 48.2 | 136.9 | 467.1 | 2176.4 | 120.3 |
 | jubarte-rust | Q3 | 2502 | 2502 | 0 | 59.4 | 87.6 | 208.2 | 599.4 | 2407.2 | 219.2 |

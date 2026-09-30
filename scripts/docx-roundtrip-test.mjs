@@ -7,7 +7,7 @@
  * document. If that fails, we fall back to DOCX→HTML→DOCX (using the tool's
  * own html export when available, plus soffice for the html→docx leg).
  *
- * The Python `superdoc` tool is tested separately by docx-roundtrip-superdoc.py.
+ * The Python `superdoc` tool is covered by the bench's `roundtrip` benchmark.
  *
  * Usage:
  *   node scripts/docx-roundtrip-test.mjs [path/to/sample.docx]
@@ -31,7 +31,7 @@ import {
 
 const SAMPLE =
 	process.argv[2] ??
-	"grok_run/word_based/docx_source/1_5_line_spacing_id_paraid_overflow.docx";
+	"corpus/word/clean/docx/70bed70fac_1_5_line_spacing_id_paraid_overflow.docx";
 const OUT_DIR = "out/roundtrip-test";
 const JUBARTE_DIST = "dist/jubarte-final";
 

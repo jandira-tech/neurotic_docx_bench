@@ -35,7 +35,17 @@ jubarte and docxodus run through `scripts/generate-native-redlines.ts` with the
   definition replacement is not supported" 612, "numbering replay is unsafe" 304, ...) plus
   45 host failures (watchdog timeout, "Failed to open document in the v2 runtime") that failed
   again when retried one at a time (`superdoc/retry/`). 1100 SuperDoc redlines are not
-  reachable with this engine: 2.15.0 made 94 of the 1164 0928 pairs.
+  reachable with this engine: 2.15.0 made 94 of the 1164 0928 pairs. Checked on 2026-09-30:
+  `diff.apply` with `force: true` fails the same way on one pair per blocker (shared
+  definition, numbering, comment, settings, header/footer, unsupported-context); the
+  `applyTarget` "versioned document review session" the error suggests is only named in the
+  error text of the SDK's CLI and of `@superdoc/cli` 0.39.0, not implemented; npm `superdoc`
+  2.19.0 (released that day) has the same `DiffApplyOptions` (`changeMode` only) and the same
+  blocker codes. PyPI has no SDK newer than 2.16.0.
+
+jubarte 0.9.3 on at least 1100 pairs is `../redlines_0928`: 0.9.3 @673aff74 on 1163 Word
+compares, with docxodus 12.6.4 and SuperDoc 2.15.0 on the same pairs and the same accepted /
+rejected selections. This run is 0.10.0, released 2026-09-29, over every compare.
 
 Before 2814e016 the inproc methods never stopped their worker at the end of `runBatch`,
 so a generate run wrote every redline and then hung; only the speed bench, which shuts its
@@ -104,6 +114,33 @@ SuperDoc 2.16.0: 380/3502 compares scored (its 192 redlines), mean 61.40, median
 `scores_<tool>.json`: `rows` per compare, `summary` by oracle and state, `missing`. Rasters
 are deleted per chunk.
 
+## jubarte 0.9.3, the release (`jubarte-093`)
+
+The goal named jubarte 0.9.3, so the tagged release ran the same 2611 pairs as a fourth tool:
+the `v0.9.3` GitHub release asset (`jubarte-0.9.3-macos-aarch64`, sha256 checked against the
+release's `SHA256SUMS.txt` by `jubarte_release.github_download`, binary sha256 15efac59...), through
+`generate-native-redlines.ts --method jubarte-rust --tool jubarte-093` (the native CLI, one
+process per pair). `../redlines_0928` ran `673aff74`, five commits before the tag. 2611 redlines,
+0 failures (`jubarte-093.generate.log`).
+
+Word export: `scripts/word_pdf.py` made 1790 PDFs and ended its three stalled passes with 817 never
+reached (Word hung on files it cannot read, `jubarte-093.word_pdf.log`); `scripts/word_pdf_focus.py`
+on the same folder took the rest (`jubarte-093.word_pdf.focus.log`), and a retry of the 4 with a
+transient error got one (`jubarte-093.word_pdf.retry.log`): **2497 of 2611**. Of the 114 without a
+PDF, 111 never opened ("every document doesn't understand close"), 3 failed twice
+(`jubarte-093/word_missing.txt` lists the 115 before the retry).
+
+| | jubarte 0.9.3 | jubarte 0.10.0 |
+|---|---|---|
+| all scored | 3338/3502, mean 71.99, median 81.34 | 3499/3502, mean 72.29, median 81.79 |
+| same 3338 compares: mean / median | 71.99 / 81.34 | 71.99 / 81.36 |
+| =100 / >=90 / <50 | **309 / 634** / 780 | 297 / 618 / **773** |
+| better by > 0.5 | 83 | **114** (3141 within 0.5) |
+
+On the 2584 compares jubarte 0.9.3, 0.10.0 and docxodus all scored: 73.23 / 82.81, 73.21 / 82.86
+and 72.27 / 81.71; 0.9.3 is better than docxodus on 993, worse on 719. Between 0.9.3 and 0.10.0 the
+redline scores are a wash; 0.10.0's gain in the 0928 comparison was against `673aff74`.
+
 ## Accepted and rejected tracks (`measure_tracks.py`)
 
 The 100 compares of `accept_selection.csv` and the 100 of `reject_selection.csv` (copies of the
@@ -117,14 +154,17 @@ the same way (corpus sets `accepted_tracking_0928`, `rejected_tracking_0928`) by
 scorer (`../redlines_0928/measure.py`, `HERE` pointed here). No compare failed for all
 three tools, so none was replaced.
 
-| track | jubarte 0.10.0 | docxodus 12.6.5 | SuperDoc 2.16.0 |
-|---|---|---|---|
-| accepted: scored | 99/100 | 91/100 | 5/5 |
-| accepted: mean / median | 79.38 / 90.85 | 83.84 / 98.70 | 96.29 / 97.61 |
-| accepted: =100 / >=90 / <50 | 20 / 51 / 21 | 22 / 55 / 15 | 0 / 4 / 0 |
-| rejected: scored | 100/100 | 96/100 | 8/8 |
-| rejected: mean / median | 64.17 / 58.29 | 72.52 / 77.18 | 97.77 / 98.57 |
-| rejected: =100 / >=90 / <50 | 19 / 36 / 41 | 17 / 40 / 31 | 0 / 8 / 0 |
+| track | jubarte 0.10.0 | jubarte 0.9.3 | docxodus 12.6.5 | SuperDoc 2.16.0 |
+|---|---|---|---|---|
+| accepted: scored | 99/100 | 99/100 | 91/100 | 5/5 |
+| accepted: mean / median | 79.38 / 90.85 | 78.61 / 88.78 | 83.84 / 98.70 | 96.29 / 97.61 |
+| accepted: =100 / >=90 / <50 | 20 / 51 / 21 | 19 / 49 / 22 | 22 / 55 / 15 | 0 / 4 / 0 |
+| rejected: scored | 100/100 | 100/100 | 96/100 | 8/8 |
+| rejected: mean / median | 64.17 / 58.29 | 64.18 / 58.29 | 72.52 / 77.18 | 97.77 / 98.57 |
+| rejected: =100 / >=90 / <50 | 19 / 36 / 41 | 19 / 36 / 41 | 17 / 40 / 31 | 0 / 8 / 0 |
+
+jubarte 0.9.3's tracks were staged by `stage_tracks.py jubarte-093` and run through the same
+`word_pdf_focus.py` accept / reject commands; its accept failure is the same `1855b51281`.
 
 Against 0928 (jubarte 0.9.3, docxodus 12.6.4, SuperDoc 2.15.0, same compares and Word oracles):
 accepted jubarte 78.01 / 88.18 -> 79.38 / 90.85, docxodus 84.13 / 99.65 -> 83.84 / 98.70,
@@ -136,6 +176,22 @@ in the batch and alone; Word opened it after the driver gave up and was left hol
 closed unsaved); docxodus accepted 9 and rejected 4, all "document loaded empty" (Word
 cannot read the redline). Transient failures were retried alone and succeeded: docxodus
 rejected 4, SuperDoc accepted 2 (`*/reject_retry.log`, `*/accept_retry.log`).
+
+## Where the files are (`hub_upload.py`)
+
+The tool outputs are on the Hugging Face dataset `arthrod/neurotic_docx_bench` under
+`outputs/redlines_0929_full/`: `<tool>/docx`, `<tool>/pdf_by_word`,
+`<tool>/{accepted,rejected}/{src,by_word}` and `<tool>/meta` for jubarte-rust, docxodus and
+superdoc, `fresh_compares` (the 516 Word compares made again, docx + PDF) and `run` (this
+folder's CSVs, JSONs, scripts, `MANIFEST.sha256.json`). 12387 files, 2.61 GB, every one checked
+against the hub (`hub_upload.log`, `hub_prune.log`) and then deleted here, together with
+`docxodus/{docx_rest,docx_sample500}` (symlinks) and `docxodus/pdf_staged` (a byte-identical
+subset of `pdf_by_word`). Word's own files (`corpus/word`, `compare_regen`) stay local.
+jubarte-093 went up the same way later: 5706 files of its own (docx 2611, pdf_by_word 2497,
+accepted 100 + 198, rejected 100 + 200), 6785 staged with `fresh_compares`, meta and `run`
+refreshed, all verified, then deleted here (`hub_upload_093.log`).
+Page-by-page site: https://jandira-tech.github.io/neurotic_docx_bench/redlines/ (gh-pages a58adc22,
+with the jubarte 0.9.3 column; the builder fetches pruned tool PDFs from the hub).
 
 ## Corpus checks (2026-09-30)
 

@@ -11,9 +11,12 @@ What this refuses is a file whose before-text is not the base and whose
 after-text is not the revision — the symptom of Word saving a leftover
 document under the next pair's name.
 
-    ./check_redline_identity.py --a grok_run/folder_a_100 --b grok_run/folder_b_10 \\
-        --redlines grok_run/compared_a_100_vs_b_10_docx \\
-        --pdf-dir grok_run/compared_a_100_vs_b_10_pdf --delete
+    ./check_redline_identity.py --a <folder_a_100> --b <folder_b_10> \\
+        --redlines <compared_a_100_vs_b_10_docx> \\
+        --pdf-dir <compared_a_100_vs_b_10_pdf> --delete
+
+The folders are a Word compare batch's working folders, before the corpus files it
+under id-prefixed names; ``corpus/word`` names do not split into the source names.
 """
 
 from __future__ import annotations

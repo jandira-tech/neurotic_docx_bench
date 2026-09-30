@@ -1,0 +1,97 @@
+2026-09-30 07:07:08.165 | INFO     | word_pdf:preflight:1812 -  preflight: 
+open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-09-30 07:07:08.258 | INFO     | word_pdf:convert_folder:1486 -  export: 
+one_osascript=True documents=100 accept_all=True reject_all=False
+2026-09-30 07:07:14.234 | INFO     | word_pdf:_convert_batched:1685 -  one 
+osascript for 100 document(s)
+2026-09-30 07:07:14.661 | INFO     | word_pdf:_note_buttons:510 -  Microsoft 
+Word shows button 'Cancel'
+2026-09-30 07:07:14.669 | INFO     | word_pdf:_note_buttons:510 -  Microsoft 
+Word shows button 'missing value'
+2026-09-30 07:07:19.299 | INFO     | __main__:_loop:231 -  1/100
+2026-09-30 07:07:24.345 | INFO     | __main__:_loop:231 -  4/100
+2026-09-30 07:07:29.378 | INFO     | __main__:_loop:246 -  item 5/100 not saved 
+after 5 s; checking Word
+2026-09-30 07:07:57.515 | INFO     | __main__:_loop:246 -  item 5/100 not saved 
+after 33 s; checking Word
+2026-09-30 07:08:19.744 | WARNING  | __main__:_report:208 -  item 5/100 open for
+more than 30 s:
+-- Word windows {name, subrole}: ,
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-1.log:
+        0
+        1
+        2
+        3
+-- newest diagnostic reports: jub_b19-2026-09-30-052944.0006.ips, 
+jub_b19-2026-09-30-052944.0005.ips, jub_b19-2026-09-30-052944.0004.ips, 
+jub_b19-2026-09-30-052944.0003.ips, jub_b19-2026-09-30-052944.0002.ips
+2026-09-30 07:08:25.586 | INFO     | __main__:_loop:246 -  item 5/100 not saved 
+after 61 s; checking Word
+2026-09-30 07:08:53.703 | INFO     | __main__:_loop:246 -  item 5/100 not saved 
+after 89 s; checking Word
+2026-09-30 07:09:21.810 | INFO     | __main__:_loop:246 -  item 5/100 not saved 
+after 117 s; checking Word
+2026-09-30 07:09:49.871 | INFO     | __main__:_loop:246 -  item 5/100 not saved 
+after 146 s; checking Word
+2026-09-30 07:10:17.905 | INFO     | __main__:_loop:246 -  item 5/100 not saved 
+after 174 s; checking Word
+2026-09-30 07:10:45.944 | INFO     | __main__:_loop:246 -  item 5/100 not saved 
+after 202 s; checking Word
+2026-09-30 07:11:13.972 | INFO     | __main__:_loop:246 -  item 5/100 not saved 
+after 230 s; checking Word
+2026-09-30 07:11:41.999 | INFO     | __main__:_loop:246 -  item 5/100 not saved 
+after 258 s; checking Word
+2026-09-30 07:12:10.083 | INFO     | __main__:_loop:246 -  item 5/100 not saved 
+after 286 s; checking Word
+2026-09-30 07:12:38.265 | INFO     | __main__:_loop:246 -  item 5/100 not saved 
+after 314 s; checking Word
+2026-09-30 07:13:06.327 | INFO     | __main__:_loop:246 -  item 5/100 not saved 
+after 342 s; checking Word
+2026-09-30 07:13:27.609 | WARNING  | word_pdf:run_batch_with_resume:1206 -  95 
+item(s) never reached (ended without reaching them); recycling Word and retrying
+the rest first, retried items last (pass 2, 1 of 3 stalled passes used)
+2026-09-30 07:13:27.640 | WARNING  | word_pdf♻725 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-09-30 07:13:27.674 | WARNING  | word_pdf♻731 -  recycling (restart 1)
+2026-09-30 07:13:58.589 | INFO     | __main__:_loop:231 -  2/95
+2026-09-30 07:14:03.641 | INFO     | __main__:_loop:231 -  7/95
+2026-09-30 07:14:08.677 | INFO     | __main__:_loop:246 -  item 8/95 not saved 
+after 5 s; checking Word
+2026-09-30 07:14:36.572 | INFO     | __main__:_loop:231 -  19/95
+2026-09-30 07:14:41.620 | INFO     | __main__:_loop:231 -  23/95
+2026-09-30 07:14:46.675 | INFO     | __main__:_loop:231 -  27/95
+2026-09-30 07:14:51.784 | INFO     | __main__:_loop:231 -  30/95
+2026-09-30 07:14:56.889 | INFO     | __main__:_loop:231 -  34/95
+2026-09-30 07:15:01.997 | INFO     | __main__:_loop:231 -  37/95
+2026-09-30 07:15:07.069 | INFO     | __main__:_loop:231 -  41/95
+2026-09-30 07:15:12.183 | INFO     | __main__:_loop:231 -  45/95
+2026-09-30 07:15:17.268 | INFO     | __main__:_loop:231 -  48/95
+2026-09-30 07:15:22.302 | INFO     | __main__:_loop:231 -  52/95
+2026-09-30 07:15:27.333 | INFO     | __main__:_loop:231 -  56/95
+2026-09-30 07:15:32.385 | INFO     | __main__:_loop:231 -  60/95
+2026-09-30 07:15:37.426 | INFO     | __main__:_loop:231 -  64/95
+2026-09-30 07:15:42.477 | INFO     | __main__:_loop:231 -  67/95
+2026-09-30 07:15:47.508 | INFO     | __main__:_loop:231 -  71/95
+2026-09-30 07:15:52.541 | INFO     | __main__:_loop:231 -  74/95
+2026-09-30 07:15:57.567 | INFO     | __main__:_loop:231 -  78/95
+2026-09-30 07:16:02.592 | INFO     | __main__:_loop:231 -  81/95
+2026-09-30 07:16:07.618 | INFO     | __main__:_loop:231 -  84/95
+2026-09-30 07:16:12.682 | INFO     | __main__:_loop:231 -  88/95
+2026-09-30 07:16:17.717 | INFO     | __main__:_loop:231 -  92/95
+2026-09-30 07:16:20.789 | ERROR    | word_pdf:_convert_batched:1730 -  FAIL: 
+1855b51281.docx — Microsoft Word got an error: AppleEvent timed out.
+          accept all → DOCX + PDF:          
+results/redlines_0929_full/jubarte-093/accep
+                  ted/src                   
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━┓
+┃ outcome                          ┃ count ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━┩
+│ converted                        │    99 │
+│ skipped (exists)                 │     0 │
+│ failed                           │     1 │
+│ seconds per document (batch avg) │   5.5 │
+└──────────────────────────────────┴───────┘
+  FAIL 1855b51281.docx: Microsoft Word got an error: AppleEvent timed out.

@@ -23,6 +23,7 @@
 import { existsSync, mkdirSync, readFileSync, appendFileSync, writeFileSync } from "node:fs";
 import { join, resolve, dirname } from "node:path";
 import { pathToFileURL } from "node:url";
+import { execFileSync } from "node:child_process";
 import JSZip from "jszip";
 
 const ROOT = resolve(dirname(new URL(import.meta.url).pathname), "..");
@@ -36,36 +37,20 @@ const arg = (name, fallback) => {
 
 // ─── pairs ──────────────────────────────────────────────────────────────────
 
-/** Minimal CSV row reader (the manifests are plain, unquoted-comma-free). */
-const readManifest = (csvPath, sourceDir) => {
-  const lines = readFileSync(csvPath, "utf8").split("\n").filter((l) => l.trim());
-  const header = lines[0].split(",");
-  const iBase = header.indexOf("base");
-  const iNext = header.indexOf("next");
-  const out = [];
-  for (const line of lines.slice(1)) {
-    const cells = line.split(",");
-    const base = (cells[iBase] || "").trim();
-    const next = (cells[iNext] || "").trim();
-    if (!base || !next) continue;
-    const basePath = join(sourceDir, `${base}.docx`);
-    const nextPath = join(sourceDir, `${next}.docx`);
-    if (!existsSync(basePath) || !existsSync(nextPath)) continue;
-    out.push({ name: `${base}__${next}`, basePath, nextPath, set: sourceDir.endsWith("randomized") ? "randomized" : "chain" });
-  }
-  return out;
-};
+/** One pair per legacy stem of each word_based pool, from `corpus_paths.by_stem` (the pools
+ *  hold some stems twice, `_redline` and `_word_redline`; the Word capture wins). */
+const PAIRS_PY = `
+import json
+from neurotic_docx_bench import corpus_paths
+print(json.dumps([{"name": stem, "basePath": str(p.base), "nextPath": str(p.next), "set": label}
+    for name, label in (("word_based", "chain"), ("word_based_randomized", "randomized"))
+    for stem, p in corpus_paths.by_stem(name).items()]))
+`;
 
-const collectPairs = () => [
-  ...readManifest(
-    join(ROOT, "grok_run/word_based/centralized_mapping.csv"),
-    join(ROOT, "grok_run/word_based/docx_source"),
-  ),
-  ...readManifest(
-    join(ROOT, "grok_run/word_based/centralized_mapping_randomized.csv"),
-    join(ROOT, "grok_run/word_based/docx_source_randomized"),
-  ),
-];
+const collectPairs = () =>
+  JSON.parse(execFileSync("uv", ["run", "python", "-c", PAIRS_PY], { cwd: ROOT, encoding: "utf8" }))
+    .map((r) => ({ ...r, basePath: join(ROOT, r.basePath), nextPath: join(ROOT, r.nextPath) }))
+    .filter((r) => existsSync(r.basePath) && existsSync(r.nextPath));
 
 // ─── judge ──────────────────────────────────────────────────────────────────
 

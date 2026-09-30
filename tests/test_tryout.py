@@ -49,48 +49,59 @@ def _write(path: Path, data: bytes) -> Path:
     return path
 
 
-def make_corpus(
-    root: Path, pairs: list[tuple[str, str]], *, holdout: Sequence[str] = (), word_variant: Collection[str] = ()
-) -> None:
-    """Lay out a Word corpus with one row per (base, next) pair.
+def key(base: str, nxt: str) -> str:
+    return f"{base}__vs__{nxt}_redline_{base}{nxt}"
 
-    Pair stems are ``f"{base}_{next}"``. Redline and accepted files use the
-    ``<pair>_redline`` name unless the pair is in ``word_variant``, which gets
-    ``<pair>_word_redline`` as well (the preferred one).
-    """
-    corpus = root / CORPUS
-    rows = []
-    for base, nxt in pairs:
-        stem = f"{base}_{nxt}"
-        rows.append({"pair_stem": stem, "base": base, "next": nxt, "origin": "redline_only"})
-        for doc in (base, nxt):
-            _write(corpus / "docx_source" / f"{doc}.docx", f"docx {doc}".encode())
-            _make_pdf(corpus / "pdf_source" / f"{doc}.pdf", [PAGE_A if doc == base else PAGE_B])
-        _write(corpus / "docx_redlines_word" / f"{stem}_redline.docx", f"redline {stem}".encode())
-        _make_pdf(corpus / "pdf_redlines_word" / f"{stem}_redline.pdf", [PAGE_B])
-        _write(corpus / "docx_accepted_word" / f"{stem}_redline.docx", f"accepted {stem}".encode())
-        _make_pdf(corpus / "pdf_accepted_word" / f"{stem}_redline.pdf", [PAGE_B])
-        if stem in word_variant:
-            _write(corpus / "docx_redlines_word" / f"{stem}_word_redline.docx", f"word redline {stem}".encode())
-            _make_pdf(corpus / "pdf_redlines_word" / f"{stem}_word_redline.pdf", [PAGE_A, PAGE_B])
-    corpus.mkdir(parents=True, exist_ok=True)
-    with (corpus / "centralized_mapping.csv").open("w", newline="") as fh:
-        writer = csv.DictWriter(fh, fieldnames=["pair_stem", "base", "next", "origin"])
+
+def _table(path: Path, rows: list[dict[str, str]]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", newline="") as fh:
+        writer = csv.DictWriter(fh, fieldnames=list(rows[0]))
         writer.writeheader()
         writer.writerows(rows)
-    combined, word_based = tryout.HOLDOUTS
-    (root / word_based).parent.mkdir(parents=True, exist_ok=True)
-    (root / combined).write_text("# comment\n\n" + "\n".join(holdout[:1]) + "\n")
-    (root / word_based).write_text("\n".join(holdout[1:]) + "\n")
+
+
+def make_corpus(
+    root: Path, pairs: list[tuple[str, str]], *, holdout: Sequence[str] = (), not_accepted: Collection[str] = ()
+) -> None:
+    """Lay out a corpus/word with one Word compare per (base, next) pair in set ``word_based``.
+
+    Every compare has Word's Accept All in ``accept_all`` (status ``ok``) unless its key is in
+    ``not_accepted``; ``holdout`` keys go to ``pools/holdout.txt``.
+    """
+    word = root / CORPUS
+    pair_rows, render_rows, accept_rows = [], [], []
+    for base, nxt in pairs:
+        k = key(base, nxt)
+        for doc in (base, nxt):
+            _write(word / "clean/docx" / f"{doc}.docx", f"docx {doc}".encode())
+            _make_pdf(word / "clean/pdf" / f"{doc}.pdf", [PAGE_A if doc == base else PAGE_B])
+            render_rows.append({"key": doc, "kind": "document", "docx": f"clean/docx/{doc}.docx",
+                                "pdf": f"clean/pdf/{doc}.pdf", "state": "clean"})
+        red, red_pdf = f"tracking_without_comments/docx/{k}.docx", f"tracking_without_comments/pdf/{k}.pdf"
+        _write(word / red, f"redline {k}".encode())
+        _make_pdf(word / red_pdf, [PAGE_B])
+        pair_rows.append({"key": k, "base": f"clean/docx/{base}", "next": f"clean/docx/{nxt}", "base_name": base,
+                          "next_name": nxt, "docx": red, "pdf": red_pdf, "state": "tracking_without_comments"})
+        _write(word / "accept_all/docx" / f"{k}.docx", f"accepted {k}".encode())
+        _make_pdf(word / "accept_all/pdf" / f"{k}.pdf", [PAGE_B])
+        accept_rows.append({"key": k, "pool": "word_based", "state": "tracking_without_comments",
+                            "status": "failed" if k in not_accepted else "ok",
+                            "docx": f"accept_all/docx/{k}.docx", "pdf": f"accept_all/pdf/{k}.pdf"})
+    _table(word / "pools/word_based_pairs.csv", pair_rows)
+    _table(word / "pools/word_based_renders.csv", render_rows)
+    _table(word / "pools/accept_all.csv", accept_rows)
+    (root / tryout.HOLDOUT).write_text("# comment\n\n" + "\n".join(holdout) + "\n")
 
 
 PAIRS = [(f"doc{i:02d}", f"doc{i + 1:02d}") for i in range(0, 12, 2)]  # 6 pairs
 
 
 @pytest.fixture
-def repo(tmp_path: Path) -> Path:
+def repo(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
     root = tmp_path / "repo"
-    make_corpus(root, PAIRS, holdout=["doc00_doc01", "doc02_doc03"], word_variant={"doc04_doc05"})
+    make_corpus(root, PAIRS, holdout=[key("doc00", "doc01"), key("doc02", "doc03")])
+    monkeypatch.setattr(tryout, "SETS", ("word_based",))
     return root
 
 
@@ -119,19 +130,36 @@ def _template(script: Path, *placeholders: str) -> str:
 # --- set building -------------------------------------------------------------
 
 
-def test_eligible_pairs_excludes_holdouts_and_prefers_word_variant(repo: Path) -> None:
+def test_eligible_pairs_excludes_holdouts_and_reads_every_file_from_the_corpus(repo: Path) -> None:
     pairs = tryout.eligible_pairs(repo)
-    assert [p.pair_stem for p in pairs] == ["doc04_doc05", "doc06_doc07", "doc08_doc09", "doc10_doc11"]
-    word = pairs[0]
-    assert word.files["pdf_redline_word"] == CORPUS / "pdf_redlines_word" / "doc04_doc05_word_redline.pdf"
-    assert word.files["docx_redline_word"] == CORPUS / "docx_redlines_word" / "doc04_doc05_word_redline.docx"
-    assert pairs[1].files["pdf_redline_word"] == CORPUS / "pdf_redlines_word" / "doc06_doc07_redline.pdf"
-    assert pairs[1].files["pdf_accepted_word"] == CORPUS / "pdf_accepted_word" / "doc06_doc07_redline.pdf"
+    assert [p.pair_stem for p in pairs] == [key("doc04", "doc05"), key("doc06", "doc07"),
+                                            key("doc08", "doc09"), key("doc10", "doc11")]
+    k = key("doc04", "doc05")
+    assert (pairs[0].base, pairs[0].next) == ("doc04", "doc05")
+    assert pairs[0].files == {
+        "docx_base": CORPUS / "clean/docx/doc04.docx",
+        "docx_next": CORPUS / "clean/docx/doc05.docx",
+        "pdf_base_word": CORPUS / "clean/pdf/doc04.pdf",
+        "pdf_next_word": CORPUS / "clean/pdf/doc05.pdf",
+        "docx_redline_word": CORPUS / f"tracking_without_comments/docx/{k}.docx",
+        "pdf_redline_word": CORPUS / f"tracking_without_comments/pdf/{k}.pdf",
+        "docx_accepted_word": CORPUS / f"accept_all/docx/{k}.docx",
+        "pdf_accepted_word": CORPUS / f"accept_all/pdf/{k}.pdf",
+    }
 
 
 def test_eligible_pairs_skips_a_pair_with_a_missing_file(repo: Path) -> None:
-    (repo / CORPUS / "pdf_accepted_word" / "doc08_doc09_redline.pdf").unlink()
-    assert [p.pair_stem for p in tryout.eligible_pairs(repo)] == ["doc04_doc05", "doc06_doc07", "doc10_doc11"]
+    (repo / CORPUS / f"accept_all/pdf/{key('doc08', 'doc09')}.pdf").unlink()
+    assert [p.pair_stem for p in tryout.eligible_pairs(repo)] == [
+        key("doc04", "doc05"), key("doc06", "doc07"), key("doc10", "doc11")]
+
+
+def test_eligible_pairs_needs_a_clean_word_accept_all(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    root = tmp_path / "repo"
+    make_corpus(root, PAIRS, not_accepted={key("doc00", "doc01")})
+    monkeypatch.setattr(tryout, "SETS", ("word_based",))
+    assert key("doc00", "doc01") not in [p.pair_stem for p in tryout.eligible_pairs(root)]
+    assert len(tryout.eligible_pairs(root)) == 5
 
 
 def test_build_set_is_deterministic_and_records_sha256(repo: Path) -> None:
@@ -835,8 +863,8 @@ def test_read_holdout_of_a_missing_file_is_empty(tmp_path: Path) -> None:
     assert tryout.read_holdout(tmp_path / "nope.txt") == set()
 
 
-def test_eligible_pairs_needs_the_mapping(tmp_path: Path) -> None:
-    with pytest.raises(tryout.TryoutError, match="centralized_mapping.csv"):
+def test_eligible_pairs_needs_the_accept_all_table(tmp_path: Path) -> None:
+    with pytest.raises(tryout.TryoutError, match="accept_all.csv"):
         tryout.eligible_pairs(tmp_path)
 
 
