@@ -71,6 +71,7 @@ dev = [
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+pythonpath = ["."]
 addopts = "-ra -n 12"
 markers = ["slow: builds the wheel or runs a long external process"]
 
