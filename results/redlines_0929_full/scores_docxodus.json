@@ -257,7 +257,6 @@
   "c417943be1_002b4f4d8976804c283e6f90cc51f02c7fa5ca9027ffe491__vs__2e04202552_000e3e7bd2d6215fc7b469cc3e296c1b2a510bc1abc7e0fd_redline_6d7b361292",
   "c417943be1_002b4f4d8976804c283e6f90cc51f02c7fa5ca9027ffe491__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_bacb8103b9",
   "c417943be1_002b4f4d8976804c283e6f90cc51f02c7fa5ca9027ffe491__vs__342f364d46_001342333d45627868f4dc5282abbba4598a91b4a7584b08_redline_24016b28c2",
-  "c417943be1_002b4f4d8976804c283e6f90cc51f02c7fa5ca9027ffe491__vs__5203829c7a_001cc92b88566d5f930fe57f25813c0bf52a7bdc72c217d0_redline_5f69158474",
   "c417943be1_002b4f4d8976804c283e6f90cc51f02c7fa5ca9027ffe491__vs__a5f2b9318d_002aa60c2ae1187417b4b157c5ec6450324cc056ec551a12_redline_40890b46b0",
   "c417943be1_002b4f4d8976804c283e6f90cc51f02c7fa5ca9027ffe491__vs__aa5340125d_00a4b0b91e9b5b072dc3771391c2d608518690eccf44eae8_redline_9ff99dbbe2",
   "c417943be1_002b4f4d8976804c283e6f90cc51f02c7fa5ca9027ffe491__vs__bd3824dd1e_000ee64ef7226d353297888f59a251e24ce5d776fea000fa_redline_4f13371312",
@@ -482,7 +481,6 @@
   "db6a0b6f7a_7a2b4cfb614044966a2ecec65892fac70d6edfab784e7138__vs__b6ba6a6fcf_7eb842c8b5bd1e2a6a3f0cf79b76c74f77da2897a7cb7add_redline_64fdc8895b",
   "dc0cc27640_00749d7a966661b332df84521285ab93426ed3a255523f39__vs__2773adf157_0004c94ca2a8684d47449bb0e7abf87de1df71a7e6543252_redline_4591e9753b",
   "dc0cc27640_00749d7a966661b332df84521285ab93426ed3a255523f39__vs__2e04202552_000e3e7bd2d6215fc7b469cc3e296c1b2a510bc1abc7e0fd_redline_e61238bd61",
-  "dc0cc27640_00749d7a966661b332df84521285ab93426ed3a255523f39__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_9927a758f4",
   "dc0cc27640_00749d7a966661b332df84521285ab93426ed3a255523f39__vs__342f364d46_001342333d45627868f4dc5282abbba4598a91b4a7584b08_redline_de3fd1e089",
   "dc0cc27640_00749d7a966661b332df84521285ab93426ed3a255523f39__vs__5203829c7a_001cc92b88566d5f930fe57f25813c0bf52a7bdc72c217d0_redline_e8b19581fa",
   "dc0cc27640_00749d7a966661b332df84521285ab93426ed3a255523f39__vs__a5f2b9318d_002aa60c2ae1187417b4b157c5ec6450324cc056ec551a12_redline_d5bbbf45e3",
@@ -584,7 +582,6 @@
   "e57ad0eaa4_docx_lots_of_comments_addition__vs__6e2576a091_docx_lots_of_comments_redline_92075b7449",
   "e57ad0eaa4_docx_lots_of_comments_addition__vs__6e2576a091_docx_lots_of_comments_redline_b164655b2a",
   "e5f1784e51_13c06fd234679a761a3e6ed95578521ca4885d006cbb9585__vs__ff414aab54_19347b1070dc340b9b529b1d2c25367e8dfcee88e0b4d66f_redline_291f103d70",
-  "e60fdf3850_cc8d2643e287d327c1ec8acfc1add257d40ab32416908b4a__vs__11df314724_6ade0e18e232d9ba178d04b99e4329f0375e1d97d66199ea_redline_736986d5e4",
   "e616ed8a32_file_180__vs__194f96511f_file_181_redline_c2e1ec13df",
   "e663016796_behavior__sd_2672_multipara_cell_4d1f068e__vs__2ba392cdd2_super_editor__broken_list_missing_items_36b4199e_redline_3b56113728",
   "e663016796_behavior__sd_2672_multipara_cell_4d1f068e__vs__2ba392cdd2_super_editor__broken_list_missing_items_36b4199e_redline_ed8a06e4ff",
@@ -66803,6 +66800,33 @@
    "skill_score": null,
    "text_boundary": 0.75
   },
+  "c417943be1_002b4f4d8976804c283e6f90cc51f02c7fa5ca9027ffe491__vs__5203829c7a_001cc92b88566d5f930fe57f25813c0bf52a7bdc72c217d0_redline_5f69158474": {
+   "average_score": 84.9848832147091,
+   "average_score_drift": 83.79252720378248,
+   "average_score_pagefair": 84.9848832147091,
+   "average_score_strict": 84.9848832147091,
+   "ink_jaccard": 0.9612012065872433,
+   "max_break_drift": 0,
+   "min_score": 84.97653771301576,
+   "min_score_drift": 81.96667343978383,
+   "min_score_pagefair": 84.97653771301576,
+   "min_score_strict": 84.97653771301576,
+   "null_score": null,
+   "oracle": "corpus",
+   "overall_score": 84.9823795642011,
+   "overall_score_drift": 83.24477107458289,
+   "overall_score_pagefair": 84.9823795642011,
+   "overall_score_strict": 84.9823795642011,
+   "page_count": 5,
+   "page_count_candidate": 5,
+   "page_count_mismatch": false,
+   "page_count_oracle": 5,
+   "raster_ns": 365120708,
+   "score_ns": 5052730625,
+   "score_v2": null,
+   "skill_score": null,
+   "text_boundary": 1.0
+  },
   "c4ee483519_tiff_image__vs__776a437291_behavior__two_column_simple_e77be963_redline_5e067b0987": {
    "average_score": 84.7945961661455,
    "average_score_drift": 83.65222215258528,
@@ -68693,6 +68717,33 @@
    "skill_score": null,
    "text_boundary": 1.0
   },
+  "dc0cc27640_00749d7a966661b332df84521285ab93426ed3a255523f39__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_9927a758f4": {
+   "average_score": 74.39908147881009,
+   "average_score_drift": 79.26742725534628,
+   "average_score_pagefair": 74.39908147881009,
+   "average_score_strict": 74.39908147881009,
+   "ink_jaccard": 0.5876601568143889,
+   "max_break_drift": 0,
+   "min_score": 63.622608239791134,
+   "min_score_drift": 60.21623044479909,
+   "min_score_pagefair": 63.622608239791134,
+   "min_score_strict": 63.622608239791134,
+   "null_score": null,
+   "oracle": "corpus",
+   "overall_score": 71.16613950710439,
+   "overall_score_drift": 73.55206821218212,
+   "overall_score_pagefair": 71.16613950710439,
+   "overall_score_strict": 71.16613950710439,
+   "page_count": 4,
+   "page_count_candidate": 4,
+   "page_count_mismatch": false,
+   "page_count_oracle": 4,
+   "raster_ns": 304463166,
+   "score_ns": 4364859584,
+   "score_v2": null,
+   "skill_score": null,
+   "text_boundary": 0.26506024096385544
+  },
   "dc2d9eeccb_file_40__vs__42df4a13aa_file_41_redline_cb0c07e105": {
    "average_score": 82.54541532732604,
    "average_score_drift": 63.50888599612098,
@@ -69637,6 +69688,33 @@
    "score_v2": null,
    "skill_score": null,
    "text_boundary": 0.038461538461538464
+  },
+  "e60fdf3850_cc8d2643e287d327c1ec8acfc1add257d40ab32416908b4a__vs__11df314724_6ade0e18e232d9ba178d04b99e4329f0375e1d97d66199ea_redline_736986d5e4": {
+   "average_score": 50.644105777799034,
+   "average_score_drift": 49.91783086223811,
+   "average_score_pagefair": 50.644105777799034,
+   "average_score_strict": 50.644105777799034,
+   "ink_jaccard": 0.20550209839109856,
+   "max_break_drift": 38,
+   "min_score": 46.026158210121956,
+   "min_score_drift": 42.84467059566076,
+   "min_score_pagefair": 46.026158210121956,
+   "min_score_strict": 46.026158210121956,
+   "null_score": null,
+   "oracle": "corpus",
+   "overall_score": 49.258721507495906,
+   "overall_score_drift": 47.795882782264904,
+   "overall_score_pagefair": 49.258721507495906,
+   "overall_score_strict": 49.258721507495906,
+   "page_count": 13,
+   "page_count_candidate": 13,
+   "page_count_mismatch": false,
+   "page_count_oracle": 13,
+   "raster_ns": 750079291,
+   "score_ns": 11989730875,
+   "score_v2": null,
+   "skill_score": null,
+   "text_boundary": 0.45321637426900585
   },
   "e615c89269_inventory_list_suggesting_deletions__vs__8e5efb0d0b_inventory_list_suggesting_mixed_edits_redline_137d46157c": {
    "average_score": 86.17289899990202,
@@ -71344,21 +71422,21 @@
   "by_oracle": {
    "corpus": {
     "ink_jaccard": {
-     "mean": 0.6394801696639517,
-     "median": 0.8216040975840834,
-     "n": 2181
+     "mean": 0.6394050428108385,
+     "median": 0.8203032585445077,
+     "n": 2184
     },
-    "missing": 783,
+    "missing": 780,
     "overall": {
      "at_least_90": 431,
-     "below_50": 556,
+     "below_50": 557,
      "exact_100": 203,
-     "mean": 71.74543920699313,
-     "median": 80.92381151872473,
-     "n": 2203
+     "mean": 71.74098359636659,
+     "median": 80.91216723939198,
+     "n": 2206
     },
     "pairs": 2986,
-    "scored": 2203
+    "scored": 2206
    },
    "fresh": {
     "ink_jaccard": {
@@ -71400,21 +71478,21 @@
    },
    "tracking_without_comments": {
     "ink_jaccard": {
-     "mean": 0.6515171726633754,
-     "median": 0.8496447526417432,
-     "n": 2331
+     "mean": 0.6514314022879695,
+     "median": 0.8494922114184422,
+     "n": 2334
     },
-    "missing": 820,
+    "missing": 817,
     "overall": {
      "at_least_90": 440,
-     "below_50": 564,
+     "below_50": 565,
      "exact_100": 204,
-     "mean": 72.33179641833395,
-     "median": 82.10264083834608,
-     "n": 2353
+     "mean": 72.32687784928632,
+     "median": 82.10023815581731,
+     "n": 2356
     },
     "pairs": 3173,
-    "scored": 2353
+    "scored": 2356
    },
    "with_comments_clean": {
     "ink_jaccard": {
@@ -71455,22 +71533,22 @@
   },
   "fresh_dir": "/Users/arthrod/temp/T/compare_regen/out",
   "ink_jaccard": {
-   "mean": 0.6536326790123238,
+   "mean": 0.6535526888592471,
    "median": 0.8479411989537314,
-   "n": 2579
+   "n": 2582
   },
-  "missing": 893,
+  "missing": 890,
   "overall": {
    "at_least_90": 482,
-   "below_50": 613,
+   "below_50": 614,
    "exact_100": 204,
-   "mean": 72.329548637776,
+   "mean": 72.32511471536617,
    "median": 81.74728424426758,
-   "n": 2609
+   "n": 2612
   },
   "pairs": 3502,
   "sample": null,
-  "scored": 2609,
+  "scored": 2612,
   "scorer_backend": "torch-mps"
  }
 }
