@@ -1,0 +1,3 @@
+2026-09-30 03:53:21.031 | INFO     | word_pdf:preflight:1812 - [word] preflight: open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-09-30 03:53:21.061 | INFO     | word_pdf:convert_folder:1486 - [word] export: one_osascript=True documents=4 accept_all=False reject_all=True
+2026-09-30 03:53:21.066 | INFO     | word_pdf:_convert_batched:1685 - [batch] one osascript for 4 document(s)

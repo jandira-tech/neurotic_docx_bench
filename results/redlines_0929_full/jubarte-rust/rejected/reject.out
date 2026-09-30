@@ -1,0 +1,39 @@
+2026-09-30 03:44:52.758 | INFO     | word_pdf:preflight:1812 -  preflight: 
+open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-09-30 03:44:52.782 | INFO     | word_pdf:convert_folder:1486 -  export: 
+one_osascript=True documents=100 accept_all=False reject_all=True
+2026-09-30 03:45:33.033 | INFO     | word_pdf:_convert_batched:1685 -  one 
+osascript for 100 document(s)
+2026-09-30 03:45:38.066 | INFO     | __main__:_loop:231 -  3/100
+2026-09-30 03:45:43.087 | INFO     | __main__:_loop:231 -  7/100
+2026-09-30 03:45:48.107 | INFO     | __main__:_loop:231 -  13/100
+2026-09-30 03:45:49.150 | INFO     | word_pdf:_note_buttons:510 -  Microsoft 
+Word shows button 'missing value'
+2026-09-30 03:45:53.123 | INFO     | __main__:_loop:231 -  18/100
+2026-09-30 03:45:58.145 | INFO     | __main__:_loop:231 -  23/100
+2026-09-30 03:46:03.170 | INFO     | __main__:_loop:231 -  28/100
+2026-09-30 03:46:08.194 | INFO     | __main__:_loop:231 -  32/100
+2026-09-30 03:46:13.215 | INFO     | __main__:_loop:231 -  38/100
+2026-09-30 03:46:18.237 | INFO     | __main__:_loop:231 -  42/100
+2026-09-30 03:46:23.258 | INFO     | __main__:_loop:231 -  47/100
+2026-09-30 03:46:28.281 | INFO     | __main__:_loop:231 -  52/100
+2026-09-30 03:46:33.307 | INFO     | __main__:_loop:231 -  58/100
+2026-09-30 03:46:38.326 | INFO     | __main__:_loop:231 -  64/100
+2026-09-30 03:46:43.346 | INFO     | __main__:_loop:231 -  69/100
+2026-09-30 03:46:48.367 | INFO     | __main__:_loop:231 -  74/100
+2026-09-30 03:46:53.384 | INFO     | __main__:_loop:231 -  80/100
+2026-09-30 03:46:58.411 | INFO     | __main__:_loop:231 -  85/100
+2026-09-30 03:47:03.440 | INFO     | __main__:_loop:231 -  90/100
+2026-09-30 03:47:08.459 | INFO     | __main__:_loop:231 -  94/100
+2026-09-30 03:47:13.481 | INFO     | __main__:_loop:231 -  99/100
+          reject all → DOCX + PDF:          
+results/redlines_0929_full/jubarte-rust/reje
+                  cted/src                  
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━┓
+┃ outcome                          ┃ count ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━┩
+│ converted                        │   100 │
+│ skipped (exists)                 │     0 │
+│ failed                           │     0 │
+│ seconds per document (batch avg) │   1.0 │
+└──────────────────────────────────┴───────┘
