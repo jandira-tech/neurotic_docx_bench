@@ -23,13 +23,16 @@ per line (kept in its order). ``jubarte-compress`` is the jubarte call plus ``--
 Every PDF is written to one temp file per tool, overwritten by the next sample and removed
 at the end: nothing converted is kept.
 Writes <out>/<run_ts>/files.jsonl (one row per sample) and appends one row per tool and
-corpus (plus a pooled row, corpus "all") to <out>/speed.jsonl (unit ms_per_docx).
+corpus (plus a pooled row, corpus "all") to <out>/speed.jsonl (unit ms_per_docx); a tool
+with no successful conversion still gets its rows, with n 0 and null timings. An empty
+corpus stops the run before any version probe, worker or output.
 """
 
 from __future__ import annotations
 
 import argparse
 import json
+import math
 import os
 import selectors
 import shutil
@@ -42,6 +45,9 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 
+PROBE_TIMEOUT = 30  # seconds per version probe; a hung probe must not stop the timed run
+
+
 def version_of(tool: str, jubarte: str) -> str:
     if tool == 'jubarte-compress':
         return version_of('jubarte', jubarte) + ' --compress'
@@ -51,12 +57,17 @@ def version_of(tool: str, jubarte: str) -> str:
         'rdocx': ['rdocx', '--version'],
         'office2pdf': ['office2pdf', '--version'],
     }
-    if tool == 'docxide':
-        out = subprocess.run(['cargo', 'install', '--list'], capture_output=True, text=True).stdout
-        line = next((ln for ln in out.splitlines() if ln.startswith('docxide-pdf ')), '')
-        return line.rstrip(':').strip() or 'docxide-pdf'
-    out = subprocess.run(probes[tool], capture_output=True, text=True)
-    version = (out.stdout or out.stderr).strip().splitlines()[0]
+    try:
+        if tool == 'docxide':
+            out = subprocess.run(
+                ['cargo', 'install', '--list'], capture_output=True, text=True, timeout=PROBE_TIMEOUT
+            ).stdout
+            line = next((ln for ln in out.splitlines() if ln.startswith('docxide-pdf ')), '')
+            return line.rstrip(':').strip() or 'docxide-pdf'
+        out = subprocess.run(probes[tool], capture_output=True, text=True, timeout=PROBE_TIMEOUT)
+    except subprocess.TimeoutExpired:
+        return f'{tool} (version probe timed out)'
+    version = next(iter((out.stdout or out.stderr).strip().splitlines()), tool)
     # A jubarte binary named jubarte-<sha> records the source commit it was built from.
     if tool == 'jubarte' and '-' in Path(jubarte).name:
         version += '@' + Path(jubarte).name.rsplit('-', 1)[1]
@@ -109,6 +120,58 @@ def load_corpus(spec: str) -> tuple[str, list[Path]]:
             raise SystemExit(f'{spec}: {len(missing)} listed file(s) missing, first {missing[0]}')
         return name, docs
     return name, sorted(p for p in Path(where).glob('*.docx') if not p.name.startswith('~$'))
+
+
+def load_corpora(specs: list[str], limit: int) -> list[tuple[str, list[Path]]]:
+    """Every ``--corpus`` spec through ``load_corpus``, cut to ``limit``; an empty corpus stops the run."""
+    corpora = []
+    for spec in specs:
+        name, docs = load_corpus(spec)
+        corpora.append((name, docs[:limit] if limit else docs))
+    empty = [spec for spec, (_, docs) in zip(specs, corpora) if not docs]
+    if empty:
+        raise SystemExit(f'empty corpus (no .docx): {", ".join(empty)}')
+    return corpora
+
+
+def summary_rows(
+    tools: list[str],
+    names: list[str],
+    samples: dict[tuple[str, str], list[float]],
+    failed: dict[tuple[str, str], int],
+    versions: dict[str, str],
+    run_ts: str,
+    warm: bool,
+) -> list[dict]:
+    """One row per tool and corpus (plus the pooled "all"), a tool that never succeeded
+    included with n 0 and null timings. p95 is the nearest-rank sample, ceil(0.95 n) - 1,
+    as neurotic_docx_bench.speed_stats and scripts/speed-bench.ts define it."""
+    rows = []
+    for t in sorted(tools):
+        for name in sorted([*names, 'all']):
+            xs = sorted(samples.get((t, name), []))
+            n = len(xs)
+            rows.append({
+                'unit': 'ms_per_docx',
+                'tool': t,
+                'version': versions[t],
+                'corpus': name,
+                'run_ts': run_ts,
+                'n': n,
+                'failed': failed.get((t, name), 0),
+                'total_s': round(sum(xs) / 1000, 3) if n else None,
+                'mean': round(statistics.fmean(xs), 3) if n else None,
+                'median': round(statistics.median(xs), 3) if n else None,
+                'p95': round(xs[min(n - 1, max(0, math.ceil(0.95 * n) - 1))], 3) if n else None,
+                'note': (
+                    'warm: sequential round-robin, one long-lived worker per tool (library calls as the CLI, '
+                    'read + convert + write timed in-process)'
+                    if warm
+                    else 'sequential round-robin, one CLI call per sample (process start included)'
+                ),
+                'mode': 'warm' if warm else 'cold',
+            })
+    return rows
 
 
 WARM_BIN = Path(__file__).resolve().parent.parent / 'tools' / 'd2p-warm' / 'bin'
@@ -167,6 +230,7 @@ def main() -> None:
     args = ap.parse_args()
 
     tools = args.tools.split(',')
+    corpora = load_corpora(args.corpus, args.limit)  # before any probe, worker or output
     if args.warm and 'soffice' in tools:
         tools.remove('soffice')
         print('--warm: soffice skipped (no warm worker; see the module docstring)', flush=True)
@@ -201,10 +265,6 @@ def main() -> None:
                 shutil.move(str(lo), str(dst))
         return ms, rc == 0 and dst.exists() and dst.stat().st_size > 0, timed_out
 
-    corpora = []
-    for spec in args.corpus:
-        name, docs = load_corpus(spec)
-        corpora.append((name, docs[: args.limit] if args.limit else docs))
     # Warm every tool once (soffice profile creation, page cache) — untimed.
     first = corpora[0][1][0]
     for t in tools:
@@ -241,28 +301,7 @@ def main() -> None:
             print(f'{name}: {len(docs)} docs done', flush=True)
 
     with open(Path(args.out) / 'speed.jsonl', 'a') as out:
-        for (t, name), xs in sorted(samples.items()):
-            xs.sort()
-            row = {
-                'unit': 'ms_per_docx',
-                'tool': t,
-                'version': versions[t],
-                'corpus': name,
-                'run_ts': run_ts,
-                'n': len(xs),
-                'failed': failed.get((t, name), 0),
-                'total_s': round(sum(xs) / 1000, 3),
-                'mean': round(statistics.fmean(xs), 3),
-                'median': round(statistics.median(xs), 3),
-                'p95': round(xs[min(len(xs) - 1, int(0.95 * len(xs)))], 3),
-                'note': (
-                    'warm: sequential round-robin, one long-lived worker per tool (library calls as the CLI, '
-                    'read + convert + write timed in-process)'
-                    if args.warm
-                    else 'sequential round-robin, one CLI call per sample (process start included)'
-                ),
-                'mode': 'warm' if args.warm else 'cold',
-            }
+        for row in summary_rows(tools, [n for n, _ in corpora], samples, failed, versions, run_ts, args.warm):
             out.write(json.dumps(row) + '\n')
             print(json.dumps(row), flush=True)
     for w in workers.values():
