@@ -29,3 +29,568 @@
 2026-09-30 02:44:43.303 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
 2026-09-30 02:44:44.022 | INFO     | __main__:_loop:231 - [batch pdf 3] 0/50
 2026-09-30 02:44:49.027 | INFO     | __main__:_loop:246 - [focus] item 2/50 not saved after 5 s; checking Word
+2026-09-30 02:45:17.058 | INFO     | __main__:_loop:246 - [focus] item 2/50 not saved after 33 s; checking Word
+2026-09-30 02:45:26.416 | WARNING  | __main__:_report:208 - [batch pdf 3] item 2/50 open for more than 30 s:
+-- Word windows {name, subrole}: , AXDialog
+-- Word window text: Microsoft Word, Word found unreadable content in 00007__617c1284c9_00feb732c2ef2b643a132e4305e16833fd047b46ca.... Do you want to recover the contents of this document? If you trust the source of this document, click Yes.
+-- crash reporters: 
+-- batch-pdf-3.log:
+[retry]	6	document loaded empty (Word could not read it)
+-- newest diagnostic reports: AppCleaner-2026-09-30-001317.ips, biome-2026-09-29-094107.ips, soffice-2026-09-28-104720.ips, soffice-2026-09-28-105517.ips, soffice-2026-09-28-105123.000.ips
+2026-09-30 02:45:26.766 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 02:45:32.028 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 02:45:32.126 | WARNING  | word_pdf:run_batch_with_resume:1206 - [batch pdf] 50 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 4, 0 of 3 stalled passes used)
+2026-09-30 02:45:32.126 | WARNING  | word_pdf:recycle:725 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-09-30 02:45:32.127 | WARNING  | word_pdf:recycle:731 - [word] recycling (restart 3)
+2026-09-30 02:45:40.520 | INFO     | __main__:_loop:231 - [batch pdf 4] 0/50
+2026-09-30 02:45:41.411 | WARNING  | __main__:_loop_word:188 - [watchdog] Word dialog dismissed via 'No'
+2026-09-30 02:45:45.525 | INFO     | __main__:_loop:246 - [focus] item 1/50 not saved after 5 s; checking Word
+2026-09-30 02:45:46.342 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed OK; focus handed back
+2026-09-30 02:45:56.379 | INFO     | __main__:_loop:246 - [focus] item 2/50 not saved after 5 s; checking Word
+2026-09-30 02:46:24.443 | INFO     | __main__:_loop:246 - [focus] item 2/50 not saved after 33 s; checking Word
+2026-09-30 02:46:28.571 | WARNING  | __main__:_report:208 - [batch pdf 4] item 2/50 open for more than 30 s:
+-- Word windows {name, subrole}: , AXDialog
+-- Word window text: Microsoft Word, Word found unreadable content in 00010__66cfa52b0c_fe09ce606b20a9bbd10d61a87218cb0a70e980d2bb.... Do you want to recover the contents of this document? If you trust the source of this document, click Yes.
+-- crash reporters: 
+-- batch-pdf-4.log:
+[retry]	9	document loaded empty (Word could not read it)
+-- newest diagnostic reports: AppCleaner-2026-09-30-001317.ips, biome-2026-09-29-094107.ips, soffice-2026-09-28-104720.ips, soffice-2026-09-28-105517.ips, soffice-2026-09-28-105123.000.ips
+2026-09-30 02:46:28.914 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 02:46:29.594 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 02:46:29.736 | WARNING  | word_pdf:run_batch_with_resume:1206 - [batch pdf] 50 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 5, 0 of 3 stalled passes used)
+2026-09-30 02:46:29.737 | WARNING  | word_pdf:recycle:725 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-09-30 02:46:29.738 | WARNING  | word_pdf:recycle:731 - [word] recycling (restart 4)
+2026-09-30 02:46:36.043 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 02:46:38.381 | INFO     | __main__:_loop:231 - [batch pdf 5] 0/50
+2026-09-30 02:46:43.405 | INFO     | __main__:_loop:246 - [focus] item 2/50 not saved after 5 s; checking Word
+2026-09-30 02:47:11.417 | INFO     | __main__:_loop:246 - [focus] item 2/50 not saved after 33 s; checking Word
+2026-09-30 02:47:15.160 | WARNING  | __main__:_report:208 - [batch pdf 5] item 2/50 open for more than 30 s:
+-- Word windows {name, subrole}: , AXDialog
+-- Word window text: Microsoft Word, Word found unreadable content in 00013__689a94ab75_1e931250b22dd86d72205c8a17e760be2df32181eb.... Do you want to recover the contents of this document? If you trust the source of this document, click Yes.
+-- crash reporters: 
+-- batch-pdf-5.log:
+[retry]	12	document loaded empty (Word could not read it)
+-- newest diagnostic reports: AppCleaner-2026-09-30-001317.ips, biome-2026-09-29-094107.ips, soffice-2026-09-28-104720.ips, soffice-2026-09-28-105517.ips, soffice-2026-09-28-105123.000.ips
+2026-09-30 02:47:15.583 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 02:47:21.046 | WARNING  | __main__:_loop_word:188 - [watchdog] Word dialog dismissed via 'No'
+2026-09-30 02:47:25.618 | INFO     | __main__:_loop:246 - [focus] item 3/50 not saved after 5 s; checking Word
+2026-09-30 02:47:25.845 | INFO     | word_pdf:_note_buttons:510 - [watchdog] Microsoft Word shows button 'OK'
+2026-09-30 02:47:26.061 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed OK; focus handed back
+2026-09-30 02:47:26.158 | WARNING  | word_pdf:run_batch_with_resume:1206 - [batch pdf] 50 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 6, 0 of 3 stalled passes used)
+2026-09-30 02:47:26.159 | WARNING  | word_pdf:recycle:725 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-09-30 02:47:26.159 | WARNING  | word_pdf:recycle:731 - [word] recycling (restart 5)
+2026-09-30 02:47:29.642 | WARNING  | __main__:_loop_word:188 - [watchdog] Word dialog dismissed via 'No'
+2026-09-30 02:47:34.366 | INFO     | __main__:_loop:231 - [batch pdf 6] 0/50
+2026-09-30 02:47:35.180 | WARNING  | __main__:_loop_word:188 - [watchdog] Word dialog dismissed via 'OK'
+2026-09-30 02:47:44.404 | INFO     | __main__:_loop:246 - [focus] item 2/50 not saved after 5 s; checking Word
+2026-09-30 02:47:49.559 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 02:47:59.585 | INFO     | __main__:_loop:246 - [focus] item 3/50 not saved after 5 s; checking Word
+2026-09-30 02:48:23.809 | WARNING  | __main__:_loop_word:188 - [watchdog] Word dialog dismissed via 'OK'
+2026-09-30 02:48:23.953 | WARNING  | word_pdf:run_batch_with_resume:1206 - [batch pdf] 50 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 7, 0 of 3 stalled passes used)
+2026-09-30 02:48:23.954 | WARNING  | word_pdf:recycle:725 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-09-30 02:48:23.955 | WARNING  | word_pdf:recycle:731 - [word] recycling (restart 6)
+2026-09-30 02:48:29.858 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 02:48:32.281 | INFO     | __main__:_loop:231 - [batch pdf 7] 0/50
+2026-09-30 02:48:37.295 | INFO     | __main__:_loop:246 - [focus] item 2/50 not saved after 5 s; checking Word
+2026-09-30 02:49:05.333 | INFO     | __main__:_loop:246 - [focus] item 2/50 not saved after 33 s; checking Word
+2026-09-30 02:49:14.423 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 02:49:15.154 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 02:49:15.278 | WARNING  | word_pdf:run_batch_with_resume:1206 - [batch pdf] 50 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 8, 0 of 3 stalled passes used)
+2026-09-30 02:49:15.279 | WARNING  | word_pdf:recycle:725 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-09-30 02:49:15.279 | WARNING  | word_pdf:recycle:731 - [word] recycling (restart 7)
+2026-09-30 02:49:19.179 | WARNING  | __main__:_report:208 - [batch pdf 7] item 2/50 open for more than 30 s:
+-- Word windows {name, subrole}: , AXDialog
+-- Word window text: Microsoft Word, Word found unreadable content in 00019__7e1d0dc896_db433183ef464aaaa01d37307a1b7476eb855adb2a.... Do you want to recover the contents of this document? If you trust the source of this document, click Yes.
+-- crash reporters: 
+-- batch-pdf-7.log:
+[retry]	18	document loaded empty (Word could not read it)
+[retry]	19	document loaded empty (Word could not read it)
+[retry]	20	document loaded empty (Word could not read it)
+[done]	0	0
+-- newest diagnostic reports: AppCleaner-2026-09-30-001317.ips, biome-2026-09-29-094107.ips, soffice-2026-09-28-104720.ips, soffice-2026-09-28-105517.ips, soffice-2026-09-28-105123.000.ips
+2026-09-30 02:49:21.393 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 02:49:23.696 | INFO     | __main__:_loop:231 - [batch pdf 8] 0/50
+2026-09-30 02:49:28.701 | INFO     | __main__:_loop:246 - [focus] item 2/50 not saved after 5 s; checking Word
+2026-09-30 02:49:56.726 | INFO     | __main__:_loop:246 - [focus] item 2/50 not saved after 33 s; checking Word
+2026-09-30 02:50:01.703 | WARNING  | __main__:_report:208 - [batch pdf 8] item 2/50 open for more than 30 s:
+-- Word windows {name, subrole}: , AXDialog
+-- Word window text: Microsoft Word, Word found unreadable content in 00022__80aa142151_file_8__vs__7a0bdaf60f_file_9_redline_4618.... Do you want to recover the contents of this document? If you trust the source of this document, click Yes.
+-- crash reporters: 
+-- batch-pdf-8.log:
+[retry]	21	document loaded empty (Word could not read it)
+-- newest diagnostic reports: AppCleaner-2026-09-30-001317.ips, biome-2026-09-29-094107.ips, soffice-2026-09-28-104720.ips, soffice-2026-09-28-105517.ips, soffice-2026-09-28-105123.000.ips
+2026-09-30 02:50:01.927 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 02:50:02.695 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 02:50:02.853 | WARNING  | word_pdf:run_batch_with_resume:1206 - [batch pdf] 50 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 9, 0 of 3 stalled passes used)
+2026-09-30 02:50:02.855 | WARNING  | word_pdf:recycle:725 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-09-30 02:50:02.856 | WARNING  | word_pdf:recycle:731 - [word] recycling (restart 8)
+2026-09-30 02:50:11.064 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 02:50:11.594 | INFO     | __main__:_loop:231 - [batch pdf 9] 0/50
+2026-09-30 02:50:16.599 | INFO     | __main__:_loop:246 - [focus] item 2/50 not saved after 5 s; checking Word
+2026-09-30 02:50:44.636 | INFO     | __main__:_loop:246 - [focus] item 2/50 not saved after 33 s; checking Word
+2026-09-30 02:50:53.824 | WARNING  | __main__:_report:208 - [batch pdf 9] item 2/50 open for more than 30 s:
+-- Word windows {name, subrole}: , AXDialog
+-- Word window text: Microsoft Word, Word found unreadable content in 00025__87dc2ebfec_00ee07057c69b24e2be4bf1a2684792bf6141fdccc.... Do you want to recover the contents of this document? If you trust the source of this document, click Yes.
+-- crash reporters: 
+-- batch-pdf-9.log:
+[retry]	24	document loaded empty (Word could not read it)
+-- newest diagnostic reports: AppCleaner-2026-09-30-001317.ips, biome-2026-09-29-094107.ips, soffice-2026-09-28-104720.ips, soffice-2026-09-28-105517.ips, soffice-2026-09-28-105123.000.ips
+2026-09-30 02:50:54.079 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 02:50:54.704 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 02:50:54.858 | WARNING  | word_pdf:run_batch_with_resume:1206 - [batch pdf] 50 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 10, 0 of 3 stalled passes used)
+2026-09-30 02:50:54.860 | WARNING  | word_pdf:recycle:725 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-09-30 02:50:54.860 | WARNING  | word_pdf:recycle:731 - [word] recycling (restart 9)
+2026-09-30 02:51:02.928 | WARNING  | __main__:_loop_word:188 - [watchdog] Word dialog dismissed via 'No'
+2026-09-30 02:51:03.532 | INFO     | __main__:_loop:231 - [batch pdf 10] 0/50
+2026-09-30 02:51:08.536 | INFO     | __main__:_loop:246 - [focus] item 1/50 not saved after 5 s; checking Word
+2026-09-30 02:51:09.112 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed OK; focus handed back
+2026-09-30 02:51:19.143 | INFO     | __main__:_loop:246 - [focus] item 2/50 not saved after 5 s; checking Word
+2026-09-30 02:51:47.177 | INFO     | __main__:_loop:246 - [focus] item 2/50 not saved after 33 s; checking Word
+2026-09-30 02:51:56.476 | WARNING  | __main__:_report:208 - [batch pdf 10] item 2/50 open for more than 30 s:
+-- Word windows {name, subrole}: , AXDialog
+-- Word window text: Microsoft Word, Word found unreadable content in 00028__87dc2ebfec_00ee07057c69b24e2be4bf1a2684792bf6141fdccc.... Do you want to recover the contents of this document? If you trust the source of this document, click Yes.
+-- crash reporters: 
+-- batch-pdf-10.log:
+[retry]	27	document loaded empty (Word could not read it)
+-- newest diagnostic reports: AppCleaner-2026-09-30-001317.ips, biome-2026-09-29-094107.ips, soffice-2026-09-28-104720.ips, soffice-2026-09-28-105517.ips, soffice-2026-09-28-105123.000.ips
+2026-09-30 02:51:56.745 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 02:51:57.410 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 02:51:57.555 | WARNING  | word_pdf:run_batch_with_resume:1206 - [batch pdf] 50 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 11, 0 of 3 stalled passes used)
+2026-09-30 02:51:57.557 | WARNING  | word_pdf:recycle:725 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-09-30 02:51:57.558 | WARNING  | word_pdf:recycle:731 - [word] recycling (restart 10)
+2026-09-30 02:52:03.943 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 02:52:06.252 | INFO     | __main__:_loop:231 - [batch pdf 11] 0/50
+2026-09-30 02:52:11.255 | INFO     | __main__:_loop:246 - [focus] item 2/50 not saved after 5 s; checking Word
+2026-09-30 02:52:39.293 | INFO     | __main__:_loop:246 - [focus] item 2/50 not saved after 33 s; checking Word
+2026-09-30 02:52:48.462 | WARNING  | __main__:_report:208 - [batch pdf 11] item 2/50 open for more than 30 s:
+-- Word windows {name, subrole}: , AXDialog
+-- Word window text: Microsoft Word, Word found unreadable content in 00031__87dc2ebfec_00ee07057c69b24e2be4bf1a2684792bf6141fdccc.... Do you want to recover the contents of this document? If you trust the source of this document, click Yes.
+-- crash reporters: 
+-- batch-pdf-11.log:
+[retry]	30	document loaded empty (Word could not read it)
+-- newest diagnostic reports: AppCleaner-2026-09-30-001317.ips, biome-2026-09-29-094107.ips, soffice-2026-09-28-104720.ips, soffice-2026-09-28-105517.ips, soffice-2026-09-28-105123.000.ips
+2026-09-30 02:52:48.661 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 02:52:49.364 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 02:52:49.526 | WARNING  | word_pdf:run_batch_with_resume:1206 - [batch pdf] 50 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 12, 0 of 3 stalled passes used)
+2026-09-30 02:52:49.528 | WARNING  | word_pdf:recycle:725 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-09-30 02:52:49.529 | WARNING  | word_pdf:recycle:731 - [word] recycling (restart 11)
+2026-09-30 02:52:55.877 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 02:52:58.233 | INFO     | __main__:_loop:231 - [batch pdf 12] 0/50
+2026-09-30 02:53:03.240 | INFO     | __main__:_loop:246 - [focus] item 2/50 not saved after 5 s; checking Word
+2026-09-30 02:53:31.265 | INFO     | __main__:_loop:246 - [focus] item 2/50 not saved after 33 s; checking Word
+2026-09-30 02:53:35.677 | WARNING  | __main__:_report:208 - [batch pdf 12] item 2/50 open for more than 30 s:
+-- Word windows {name, subrole}: , AXDialog
+-- Word window text: Microsoft Word, Word found unreadable content in 00034__8e534b49f0_00a9b37342f07e6b9bd5b8fffbe4dd777d31053171.... Do you want to recover the contents of this document? If you trust the source of this document, click Yes.
+-- crash reporters: 
+-- batch-pdf-12.log:
+[retry]	33	document loaded empty (Word could not read it)
+-- newest diagnostic reports: AppCleaner-2026-09-30-001317.ips, biome-2026-09-29-094107.ips, soffice-2026-09-28-104720.ips, soffice-2026-09-28-105517.ips, soffice-2026-09-28-105123.000.ips
+2026-09-30 02:53:35.872 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 02:53:36.537 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 02:53:36.685 | WARNING  | word_pdf:run_batch_with_resume:1206 - [batch pdf] 50 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 13, 0 of 3 stalled passes used)
+2026-09-30 02:53:36.687 | WARNING  | word_pdf:recycle:725 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-09-30 02:53:36.688 | WARNING  | word_pdf:recycle:731 - [word] recycling (restart 12)
+2026-09-30 02:53:43.242 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 02:53:45.527 | INFO     | __main__:_loop:231 - [batch pdf 13] 0/50
+2026-09-30 02:53:50.532 | INFO     | __main__:_loop:246 - [focus] item 2/50 not saved after 5 s; checking Word
+2026-09-30 02:54:18.557 | INFO     | __main__:_loop:246 - [focus] item 2/50 not saved after 33 s; checking Word
+2026-09-30 02:54:23.395 | WARNING  | __main__:_report:208 - [batch pdf 13] item 2/50 open for more than 30 s:
+-- Word windows {name, subrole}: , AXDialog
+-- Word window text: Microsoft Word, Word found unreadable content in 00037__8e534b49f0_00a9b37342f07e6b9bd5b8fffbe4dd777d31053171.... Do you want to recover the contents of this document? If you trust the source of this document, click Yes.
+-- crash reporters: 
+-- batch-pdf-13.log:
+[retry]	36	document loaded empty (Word could not read it)
+-- newest diagnostic reports: AppCleaner-2026-09-30-001317.ips, biome-2026-09-29-094107.ips, soffice-2026-09-28-104720.ips, soffice-2026-09-28-105517.ips, soffice-2026-09-28-105123.000.ips
+2026-09-30 02:54:23.652 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 02:54:24.339 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 02:54:24.490 | WARNING  | word_pdf:run_batch_with_resume:1206 - [batch pdf] 50 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 14, 0 of 3 stalled passes used)
+2026-09-30 02:54:24.491 | WARNING  | word_pdf:recycle:725 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-09-30 02:54:24.492 | WARNING  | word_pdf:recycle:731 - [word] recycling (restart 13)
+2026-09-30 02:54:33.338 | INFO     | __main__:_loop:231 - [batch pdf 14] 0/50
+2026-09-30 02:54:34.316 | WARNING  | __main__:_loop_word:188 - [watchdog] Word dialog dismissed via 'No'
+2026-09-30 02:54:38.345 | INFO     | __main__:_loop:246 - [focus] item 1/50 not saved after 5 s; checking Word
+2026-09-30 02:54:39.409 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed OK; focus handed back
+2026-09-30 02:54:49.450 | INFO     | __main__:_loop:246 - [focus] item 2/50 not saved after 5 s; checking Word
+2026-09-30 02:55:17.471 | INFO     | __main__:_loop:246 - [focus] item 2/50 not saved after 33 s; checking Word
+2026-09-30 02:55:20.765 | WARNING  | __main__:_report:208 - [batch pdf 14] item 2/50 open for more than 30 s:
+-- Word windows {name, subrole}: , AXDialog
+-- Word window text: Microsoft Word, Word found unreadable content in 00040__8e534b49f0_00a9b37342f07e6b9bd5b8fffbe4dd777d31053171.... Do you want to recover the contents of this document? If you trust the source of this document, click Yes.
+-- crash reporters: 
+-- batch-pdf-14.log:
+[retry]	39	document loaded empty (Word could not read it)
+-- newest diagnostic reports: AppCleaner-2026-09-30-001317.ips, biome-2026-09-29-094107.ips, soffice-2026-09-28-104720.ips, soffice-2026-09-28-105517.ips, soffice-2026-09-28-105123.000.ips
+2026-09-30 02:55:20.984 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 02:55:21.655 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 02:55:21.824 | WARNING  | word_pdf:run_batch_with_resume:1206 - [batch pdf] 50 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 15, 0 of 3 stalled passes used)
+2026-09-30 02:55:21.825 | WARNING  | word_pdf:recycle:725 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-09-30 02:55:21.825 | WARNING  | word_pdf:recycle:731 - [word] recycling (restart 14)
+2026-09-30 02:55:28.432 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 02:55:30.736 | INFO     | __main__:_loop:231 - [batch pdf 15] 0/50
+2026-09-30 02:55:35.739 | INFO     | __main__:_loop:246 - [focus] item 2/50 not saved after 5 s; checking Word
+2026-09-30 02:56:03.777 | INFO     | __main__:_loop:246 - [focus] item 2/50 not saved after 33 s; checking Word
+2026-09-30 02:56:07.748 | WARNING  | __main__:_report:208 - [batch pdf 15] item 2/50 open for more than 30 s:
+-- Word windows {name, subrole}: , AXDialog
+-- Word window text: Microsoft Word, Word found unreadable content in 00043__91440900a0_00189e19139f6e3031303e4152566a7bc08fab71a5.... Do you want to recover the contents of this document? If you trust the source of this document, click Yes.
+-- crash reporters: 
+-- batch-pdf-15.log:
+[retry]	42	document loaded empty (Word could not read it)
+-- newest diagnostic reports: AppCleaner-2026-09-30-001317.ips, biome-2026-09-29-094107.ips, soffice-2026-09-28-104720.ips, soffice-2026-09-28-105517.ips, soffice-2026-09-28-105123.000.ips
+2026-09-30 02:56:08.165 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 02:56:08.812 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 02:56:08.922 | WARNING  | word_pdf:run_batch_with_resume:1206 - [batch pdf] 50 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 16, 0 of 3 stalled passes used)
+2026-09-30 02:56:08.922 | WARNING  | word_pdf:recycle:725 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-09-30 02:56:08.923 | WARNING  | word_pdf:recycle:731 - [word] recycling (restart 15)
+2026-09-30 02:56:15.113 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 02:56:17.291 | INFO     | __main__:_loop:231 - [batch pdf 16] 0/50
+2026-09-30 02:56:22.297 | INFO     | __main__:_loop:246 - [focus] item 2/50 not saved after 5 s; checking Word
+2026-09-30 02:56:50.324 | INFO     | __main__:_loop:246 - [focus] item 2/50 not saved after 33 s; checking Word
+2026-09-30 02:57:05.143 | WARNING  | __main__:_report:208 - [batch pdf 16] item 2/50 open for more than 30 s:
+-- Word windows {name, subrole}: osascript timed out
+-- Word window text: Microsoft Word, Word found unreadable content in 00046__937c2d593d_70bf1fc955d47b9c53240cfb85bb6783a5809a7dfb.... Do you want to recover the contents of this document? If you trust the source of this document, click Yes.
+-- crash reporters: 
+-- batch-pdf-16.log:
+[retry]	45	document loaded empty (Word could not read it)
+-- newest diagnostic reports: AppCleaner-2026-09-30-001317.ips, biome-2026-09-29-094107.ips, soffice-2026-09-28-104720.ips, soffice-2026-09-28-105517.ips, soffice-2026-09-28-105123.000.ips
+2026-09-30 02:57:05.513 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 02:57:06.365 | WARNING  | __main__:_loop_word:188 - [watchdog] Word dialog dismissed via 'No'
+2026-09-30 02:57:10.832 | WARNING  | __main__:_loop_word:188 - [watchdog] Word dialog dismissed via 'OK'
+2026-09-30 02:57:10.937 | WARNING  | word_pdf:run_batch_with_resume:1206 - [batch pdf] 50 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 17, 0 of 3 stalled passes used)
+2026-09-30 02:57:10.938 | WARNING  | word_pdf:recycle:725 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-09-30 02:57:10.938 | WARNING  | word_pdf:recycle:731 - [word] recycling (restart 16)
+2026-09-30 02:57:18.541 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 02:57:19.107 | INFO     | __main__:_loop:231 - [batch pdf 17] 0/50
+2026-09-30 02:57:24.113 | INFO     | __main__:_loop:246 - [focus] item 2/50 not saved after 5 s; checking Word
+2026-09-30 02:57:52.139 | INFO     | __main__:_loop:246 - [focus] item 2/50 not saved after 33 s; checking Word
+2026-09-30 02:58:00.697 | WARNING  | __main__:_report:208 - [batch pdf 17] item 2/50 open for more than 30 s:
+-- Word windows {name, subrole}: , AXDialog
+-- Word window text: Microsoft Word, Word found unreadable content in 00049__98c8b73841_0041d3944715c2fffc5929695f968e5f399e85b139.... Do you want to recover the contents of this document? If you trust the source of this document, click Yes.
+-- crash reporters: 
+-- batch-pdf-17.log:
+[retry]	48	document loaded empty (Word could not read it)
+-- newest diagnostic reports: AppCleaner-2026-09-30-001317.ips, biome-2026-09-29-094107.ips, soffice-2026-09-28-104720.ips, soffice-2026-09-28-105517.ips, soffice-2026-09-28-105123.000.ips
+2026-09-30 02:58:01.111 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 02:58:01.771 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 02:58:01.868 | WARNING  | word_pdf:run_batch_with_resume:1206 - [batch pdf] 49 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 18, 0 of 3 stalled passes used)
+2026-09-30 02:58:01.869 | WARNING  | word_pdf:recycle:725 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-09-30 02:58:01.869 | WARNING  | word_pdf:recycle:731 - [word] recycling (restart 17)
+2026-09-30 02:58:07.775 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 02:58:10.088 | INFO     | __main__:_loop:231 - [batch pdf 18] 0/49
+2026-09-30 02:58:15.094 | INFO     | __main__:_loop:246 - [focus] item 2/49 not saved after 5 s; checking Word
+2026-09-30 02:58:43.116 | INFO     | __main__:_loop:246 - [focus] item 2/49 not saved after 33 s; checking Word
+2026-09-30 02:58:47.067 | WARNING  | __main__:_report:208 - [batch pdf 18] item 2/49 open for more than 30 s:
+-- Word windows {name, subrole}: , AXDialog
+-- Word window text: Microsoft Word, Word found unreadable content in 00049__98c8b73841_0041d3944715c2fffc5929695f968e5f399e85b139.... Do you want to recover the contents of this document? If you trust the source of this document, click Yes.
+-- crash reporters: 
+-- batch-pdf-18.log:
+[retry]	48	document loaded empty (Word could not read it)
+-- newest diagnostic reports: AppCleaner-2026-09-30-001317.ips, biome-2026-09-29-094107.ips, soffice-2026-09-28-104720.ips, soffice-2026-09-28-105517.ips, soffice-2026-09-28-105123.000.ips
+2026-09-30 02:58:47.510 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 02:58:48.169 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 02:58:48.271 | WARNING  | word_pdf:run_batch_with_resume:1206 - [batch pdf] 46 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 19, 0 of 3 stalled passes used)
+2026-09-30 02:58:48.272 | WARNING  | word_pdf:recycle:725 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-09-30 02:58:48.272 | WARNING  | word_pdf:recycle:731 - [word] recycling (restart 18)
+2026-09-30 02:58:54.175 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 02:58:56.489 | INFO     | __main__:_loop:231 - [batch pdf 19] 0/46
+2026-09-30 02:59:01.495 | INFO     | __main__:_loop:246 - [focus] item 2/46 not saved after 5 s; checking Word
+2026-09-30 02:59:29.530 | INFO     | __main__:_loop:246 - [focus] item 2/46 not saved after 33 s; checking Word
+2026-09-30 02:59:38.300 | WARNING  | __main__:_report:208 - [batch pdf 19] item 2/46 open for more than 30 s:
+-- Word windows {name, subrole}: , AXDialog
+-- Word window text: Microsoft Word, Word found unreadable content in 00042__8e694101b9_469e571050275b57ed1836b4cc17f4d29e43eec925.... Do you want to recover the contents of this document? If you trust the source of this document, click Yes.
+-- crash reporters: 
+-- batch-pdf-19.log:
+[retry]	47	document loaded empty (Word could not read it)
+-- newest diagnostic reports: AppCleaner-2026-09-30-001317.ips, biome-2026-09-29-094107.ips, soffice-2026-09-28-104720.ips, soffice-2026-09-28-105517.ips, soffice-2026-09-28-105123.000.ips
+2026-09-30 02:59:38.712 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 02:59:39.361 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 02:59:39.452 | WARNING  | word_pdf:run_batch_with_resume:1206 - [batch pdf] 43 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 20, 0 of 3 stalled passes used)
+2026-09-30 02:59:39.452 | WARNING  | word_pdf:recycle:725 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-09-30 02:59:39.453 | WARNING  | word_pdf:recycle:731 - [word] recycling (restart 19)
+2026-09-30 02:59:46.925 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 02:59:47.645 | INFO     | __main__:_loop:231 - [batch pdf 20] 0/43
+2026-09-30 02:59:52.651 | INFO     | __main__:_loop:246 - [focus] item 2/43 not saved after 5 s; checking Word
+2026-09-30 03:00:20.682 | INFO     | __main__:_loop:246 - [focus] item 2/43 not saved after 33 s; checking Word
+2026-09-30 03:00:29.434 | WARNING  | __main__:_report:208 - [batch pdf 20] item 2/43 open for more than 30 s:
+-- Word windows {name, subrole}: , AXDialog
+-- Word window text: Microsoft Word, Word found unreadable content in 00039__8e534b49f0_00a9b37342f07e6b9bd5b8fffbe4dd777d31053171.... Do you want to recover the contents of this document? If you trust the source of this document, click Yes.
+-- crash reporters: 
+-- batch-pdf-20.log:
+[retry]	44	document loaded empty (Word could not read it)
+-- newest diagnostic reports: AppCleaner-2026-09-30-001317.ips, biome-2026-09-29-094107.ips, soffice-2026-09-28-104720.ips, soffice-2026-09-28-105517.ips, soffice-2026-09-28-105123.000.ips
+2026-09-30 03:00:29.878 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 03:00:30.527 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 03:00:30.621 | WARNING  | word_pdf:run_batch_with_resume:1206 - [batch pdf] 40 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 21, 0 of 3 stalled passes used)
+2026-09-30 03:00:30.621 | WARNING  | word_pdf:recycle:725 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-09-30 03:00:30.622 | WARNING  | word_pdf:recycle:731 - [word] recycling (restart 20)
+2026-09-30 03:00:36.586 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 03:00:38.847 | INFO     | __main__:_loop:231 - [batch pdf 21] 0/40
+2026-09-30 03:00:43.871 | INFO     | __main__:_loop:246 - [focus] item 2/40 not saved after 5 s; checking Word
+2026-09-30 03:01:11.895 | INFO     | __main__:_loop:246 - [focus] item 2/40 not saved after 33 s; checking Word
+2026-09-30 03:01:16.282 | WARNING  | __main__:_report:208 - [batch pdf 21] item 2/40 open for more than 30 s:
+-- Word windows {name, subrole}: , AXDialog
+-- Word window text: Microsoft Word, Word found unreadable content in 00036__8e534b49f0_00a9b37342f07e6b9bd5b8fffbe4dd777d31053171.... Do you want to recover the contents of this document? If you trust the source of this document, click Yes.
+-- crash reporters: 
+-- batch-pdf-21.log:
+[retry]	41	document loaded empty (Word could not read it)
+-- newest diagnostic reports: AppCleaner-2026-09-30-001317.ips, biome-2026-09-29-094107.ips, soffice-2026-09-28-104720.ips, soffice-2026-09-28-105517.ips, soffice-2026-09-28-105123.000.ips
+2026-09-30 03:01:16.781 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 03:01:17.486 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 03:01:17.607 | WARNING  | word_pdf:run_batch_with_resume:1206 - [batch pdf] 37 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 22, 0 of 3 stalled passes used)
+2026-09-30 03:01:17.609 | WARNING  | word_pdf:recycle:725 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-09-30 03:01:17.609 | WARNING  | word_pdf:recycle:731 - [word] recycling (restart 21)
+2026-09-30 03:01:25.325 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 03:01:25.909 | INFO     | __main__:_loop:231 - [batch pdf 22] 0/37
+2026-09-30 03:01:30.914 | INFO     | __main__:_loop:246 - [focus] item 2/37 not saved after 5 s; checking Word
+2026-09-30 03:01:58.953 | INFO     | __main__:_loop:246 - [focus] item 2/37 not saved after 33 s; checking Word
+2026-09-30 03:02:08.916 | WARNING  | __main__:_report:208 - [batch pdf 22] item 2/37 open for more than 30 s:
+-- Word windows {name, subrole}: , AXDialog
+-- Word window text: Microsoft Word, Word found unreadable content in 00033__8e534b49f0_00a9b37342f07e6b9bd5b8fffbe4dd777d31053171.... Do you want to recover the contents of this document? If you trust the source of this document, click Yes.
+-- crash reporters: 
+-- batch-pdf-22.log:
+[retry]	38	document loaded empty (Word could not read it)
+-- newest diagnostic reports: AppCleaner-2026-09-30-001317.ips, biome-2026-09-29-094107.ips, soffice-2026-09-28-104720.ips, soffice-2026-09-28-105517.ips, soffice-2026-09-28-105123.000.ips
+2026-09-30 03:02:09.195 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 03:02:09.811 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 03:02:09.945 | WARNING  | word_pdf:run_batch_with_resume:1206 - [batch pdf] 34 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 23, 0 of 3 stalled passes used)
+2026-09-30 03:02:09.946 | WARNING  | word_pdf:recycle:725 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-09-30 03:02:09.947 | WARNING  | word_pdf:recycle:731 - [word] recycling (restart 22)
+2026-09-30 03:02:18.608 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 03:02:18.649 | INFO     | __main__:_loop:231 - [batch pdf 23] 0/34
+2026-09-30 03:02:28.670 | INFO     | __main__:_loop:246 - [focus] item 2/34 not saved after 5 s; checking Word
+2026-09-30 03:02:56.719 | INFO     | __main__:_loop:246 - [focus] item 2/34 not saved after 33 s; checking Word
+2026-09-30 03:03:06.374 | WARNING  | __main__:_report:208 - [batch pdf 23] item 2/34 open for more than 30 s:
+-- Word windows {name, subrole}: ,
+-- Word window text: Microsoft Word, Word found unreadable content in 00030__87dc2ebfec_00ee07057c69b24e2be4bf1a2684792bf6141fdccc.... Do you want to recover the contents of this document? If you trust the source of this document, click Yes.
+-- crash reporters: 
+-- batch-pdf-23.log:
+[retry]	35	document loaded empty (Word could not read it)
+-- newest diagnostic reports: AppCleaner-2026-09-30-001317.ips, biome-2026-09-29-094107.ips, soffice-2026-09-28-104720.ips, soffice-2026-09-28-105517.ips, soffice-2026-09-28-105123.000.ips
+2026-09-30 03:03:06.899 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 03:03:16.937 | INFO     | __main__:_loop:246 - [focus] item 3/34 not saved after 5 s; checking Word
+2026-09-30 03:03:20.090 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed OK; focus handed back
+2026-09-30 03:03:20.203 | WARNING  | word_pdf:run_batch_with_resume:1206 - [batch pdf] 31 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 24, 0 of 3 stalled passes used)
+2026-09-30 03:03:20.204 | WARNING  | word_pdf:recycle:725 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-09-30 03:03:20.204 | WARNING  | word_pdf:recycle:731 - [word] recycling (restart 23)
+2026-09-30 03:03:29.214 | INFO     | __main__:_loop:231 - [batch pdf 24] 0/31
+2026-09-30 03:03:30.066 | WARNING  | __main__:_loop_word:188 - [watchdog] Word dialog dismissed via 'No'
+2026-09-30 03:03:34.235 | INFO     | __main__:_loop:246 - [focus] item 1/31 not saved after 5 s; checking Word
+2026-09-30 03:03:34.790 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed OK; focus handed back
+2026-09-30 03:03:44.815 | INFO     | __main__:_loop:246 - [focus] item 2/31 not saved after 5 s; checking Word
+2026-09-30 03:04:12.868 | INFO     | __main__:_loop:246 - [focus] item 2/31 not saved after 33 s; checking Word
+2026-09-30 03:04:24.859 | WARNING  | __main__:_report:208 - [batch pdf 24] item 2/31 open for more than 30 s:
+-- Word windows {name, subrole}: osascript timed out
+-- Word window text: Microsoft Word, Word found unreadable content in 00027__87dc2ebfec_00ee07057c69b24e2be4bf1a2684792bf6141fdccc.... Do you want to recover the contents of this document? If you trust the source of this document, click Yes.
+-- crash reporters: 
+-- batch-pdf-24.log:
+[retry]	32	document loaded empty (Word could not read it)
+-- newest diagnostic reports: AppCleaner-2026-09-30-001317.ips, biome-2026-09-29-094107.ips, soffice-2026-09-28-104720.ips, soffice-2026-09-28-105517.ips, soffice-2026-09-28-105123.000.ips
+2026-09-30 03:04:25.296 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 03:04:30.618 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 03:04:30.757 | WARNING  | word_pdf:run_batch_with_resume:1206 - [batch pdf] 28 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 25, 0 of 3 stalled passes used)
+2026-09-30 03:04:30.759 | WARNING  | word_pdf:recycle:725 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-09-30 03:04:30.759 | WARNING  | word_pdf:recycle:731 - [word] recycling (restart 24)
+2026-09-30 03:04:37.310 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 03:04:39.571 | INFO     | __main__:_loop:231 - [batch pdf 25] 0/28
+2026-09-30 03:04:44.579 | INFO     | __main__:_loop:246 - [focus] item 2/28 not saved after 5 s; checking Word
+2026-09-30 03:05:12.643 | INFO     | __main__:_loop:246 - [focus] item 2/28 not saved after 33 s; checking Word
+2026-09-30 03:05:22.194 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 03:05:22.873 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 03:05:23.017 | WARNING  | word_pdf:run_batch_with_resume:1206 - [batch pdf] 25 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 26, 0 of 3 stalled passes used)
+2026-09-30 03:05:23.018 | WARNING  | word_pdf:recycle:725 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-09-30 03:05:23.019 | WARNING  | word_pdf:recycle:731 - [word] recycling (restart 25)
+2026-09-30 03:05:26.965 | WARNING  | __main__:_report:208 - [batch pdf 25] item 2/28 open for more than 30 s:
+-- Word windows {name, subrole}: , AXDialog
+-- Word window text: Microsoft Word, Word found unreadable content in 00024__83a0cec5ca_cc594ee0903acbfa9207a40e3f40a94e75a31b6cde.... Do you want to recover the contents of this document? If you trust the source of this document, click Yes.
+-- crash reporters: 
+-- batch-pdf-25.log:
+[retry]	29	document loaded empty (Word could not read it)
+[retry]	24	document loaded empty (Word could not read it)
+[retry]	25	document loaded empty (Word could not read it)
+[done]	0	0
+-- newest diagnostic reports: AppCleaner-2026-09-30-001317.ips, biome-2026-09-29-094107.ips, soffice-2026-09-28-104720.ips, soffice-2026-09-28-105517.ips, soffice-2026-09-28-105123.000.ips
+2026-09-30 03:05:29.475 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 03:05:31.742 | INFO     | __main__:_loop:231 - [batch pdf 26] 0/25
+2026-09-30 03:05:36.745 | INFO     | __main__:_loop:246 - [focus] item 2/25 not saved after 5 s; checking Word
+2026-09-30 03:06:04.779 | INFO     | __main__:_loop:246 - [focus] item 2/25 not saved after 33 s; checking Word
+2026-09-30 03:06:09.619 | WARNING  | __main__:_report:208 - [batch pdf 26] item 2/25 open for more than 30 s:
+-- Word windows {name, subrole}: , AXDialog
+-- Word window text: Microsoft Word, Word found unreadable content in 00021__7fda30a6f2_9cb6df893fcd1a1597981f9b2f2919474ca3125776.... Do you want to recover the contents of this document? If you trust the source of this document, click Yes.
+-- crash reporters: 
+-- batch-pdf-26.log:
+[retry]	26	document loaded empty (Word could not read it)
+-- newest diagnostic reports: AppCleaner-2026-09-30-001317.ips, biome-2026-09-29-094107.ips, soffice-2026-09-28-104720.ips, soffice-2026-09-28-105517.ips, soffice-2026-09-28-105123.000.ips
+2026-09-30 03:06:09.843 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 03:06:10.547 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 03:06:10.700 | WARNING  | word_pdf:run_batch_with_resume:1206 - [batch pdf] 22 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 27, 0 of 3 stalled passes used)
+2026-09-30 03:06:10.701 | WARNING  | word_pdf:recycle:725 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-09-30 03:06:10.702 | WARNING  | word_pdf:recycle:731 - [word] recycling (restart 26)
+2026-09-30 03:06:17.350 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 03:06:19.583 | INFO     | __main__:_loop:231 - [batch pdf 27] 0/22
+2026-09-30 03:06:24.591 | INFO     | __main__:_loop:246 - [focus] item 2/22 not saved after 5 s; checking Word
+2026-09-30 03:06:52.625 | INFO     | __main__:_loop:246 - [focus] item 2/22 not saved after 33 s; checking Word
+2026-09-30 03:07:02.211 | WARNING  | __main__:_report:208 - [batch pdf 27] item 2/22 open for more than 30 s:
+-- Word windows {name, subrole}: , AXDialog
+-- Word window text: Microsoft Word, Word found unreadable content in 00018__77dcdfd6dc_20c18b4b5db86ef701aef966f4d5a28da7dd6acd0d.... Do you want to recover the contents of this document? If you trust the source of this document, click Yes.
+-- crash reporters: 
+-- batch-pdf-27.log:
+[retry]	23	document loaded empty (Word could not read it)
+-- newest diagnostic reports: AppCleaner-2026-09-30-001317.ips, biome-2026-09-29-094107.ips, soffice-2026-09-28-104720.ips, soffice-2026-09-28-105517.ips, soffice-2026-09-28-105123.000.ips
+2026-09-30 03:07:02.582 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 03:07:03.306 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 03:07:03.439 | WARNING  | word_pdf:run_batch_with_resume:1206 - [batch pdf] 19 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 28, 0 of 3 stalled passes used)
+2026-09-30 03:07:03.440 | WARNING  | word_pdf:recycle:725 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-09-30 03:07:03.440 | WARNING  | word_pdf:recycle:731 - [word] recycling (restart 27)
+2026-09-30 03:07:09.391 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 03:07:12.192 | INFO     | __main__:_loop:231 - [batch pdf 28] 0/19
+2026-09-30 03:07:17.199 | INFO     | __main__:_loop:246 - [focus] item 2/19 not saved after 5 s; checking Word
+2026-09-30 03:07:45.238 | INFO     | __main__:_loop:246 - [focus] item 2/19 not saved after 33 s; checking Word
+2026-09-30 03:07:55.280 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 03:07:55.972 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 03:07:56.123 | WARNING  | word_pdf:run_batch_with_resume:1206 - [batch pdf] 16 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 29, 0 of 3 stalled passes used)
+2026-09-30 03:07:56.125 | WARNING  | word_pdf:recycle:725 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-09-30 03:07:56.125 | WARNING  | word_pdf:recycle:731 - [word] recycling (restart 28)
+2026-09-30 03:07:59.890 | WARNING  | __main__:_report:208 - [batch pdf 28] item 2/19 open for more than 30 s:
+-- Word windows {name, subrole}: , AXDialog
+-- Word window text: Microsoft Word, Word found unreadable content in 00015__6c6d37a60e_713b96f7449018c37b77c60a972e1ce0771ee8001a.... Do you want to recover the contents of this document? If you trust the source of this document, click Yes.
+-- crash reporters: 
+-- batch-pdf-28.log:
+[retry]	20	document loaded empty (Word could not read it)
+[retry]	15	document loaded empty (Word could not read it)
+[retry]	16	document loaded empty (Word could not read it)
+[done]	0	0
+-- newest diagnostic reports: AppCleaner-2026-09-30-001317.ips, biome-2026-09-29-094107.ips, soffice-2026-09-28-104720.ips, soffice-2026-09-28-105517.ips, soffice-2026-09-28-105123.000.ips
+2026-09-30 03:08:04.775 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 03:08:05.111 | INFO     | __main__:_loop:231 - [batch pdf 29] 0/16
+2026-09-30 03:08:10.117 | INFO     | __main__:_loop:246 - [focus] item 2/16 not saved after 5 s; checking Word
+2026-09-30 03:08:38.161 | INFO     | __main__:_loop:246 - [focus] item 2/16 not saved after 33 s; checking Word
+2026-09-30 03:08:48.017 | WARNING  | __main__:_report:208 - [batch pdf 29] item 2/16 open for more than 30 s:
+-- Word windows {name, subrole}: , AXDialog
+-- Word window text: Microsoft Word, Word found unreadable content in 00012__689072d58f_590e77a9f5c0a2a019cfa2e1b21d0197fb139d0f98.... Do you want to recover the contents of this document? If you trust the source of this document, click Yes.
+-- crash reporters: 
+-- batch-pdf-29.log:
+[retry]	17	document loaded empty (Word could not read it)
+-- newest diagnostic reports: AppCleaner-2026-09-30-001317.ips, biome-2026-09-29-094107.ips, soffice-2026-09-28-104720.ips, soffice-2026-09-28-105517.ips, soffice-2026-09-28-105123.000.ips
+2026-09-30 03:08:48.422 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 03:08:49.097 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 03:08:49.242 | WARNING  | word_pdf:run_batch_with_resume:1206 - [batch pdf] 13 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 30, 0 of 3 stalled passes used)
+2026-09-30 03:08:49.244 | WARNING  | word_pdf:recycle:725 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-09-30 03:08:49.244 | WARNING  | word_pdf:recycle:731 - [word] recycling (restart 29)
+2026-09-30 03:08:57.713 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 03:08:58.126 | INFO     | __main__:_loop:231 - [batch pdf 30] 0/13
+2026-09-30 03:09:03.132 | INFO     | __main__:_loop:246 - [focus] item 2/13 not saved after 5 s; checking Word
+2026-09-30 03:09:31.167 | INFO     | __main__:_loop:246 - [focus] item 2/13 not saved after 33 s; checking Word
+2026-09-30 03:09:41.999 | WARNING  | __main__:_report:208 - [batch pdf 30] item 2/13 open for more than 30 s:
+-- Word windows {name, subrole}: ,
+-- Word window text: Microsoft Word, Word found unreadable content in 00009__63114916a7_eb682f7a779a99b02ece6fae975de27ce6cd511531.... Do you want to recover the contents of this document? If you trust the source of this document, click Yes.
+-- crash reporters: 
+-- batch-pdf-30.log:
+[retry]	14	document loaded empty (Word could not read it)
+-- newest diagnostic reports: AppCleaner-2026-09-30-001317.ips, biome-2026-09-29-094107.ips, soffice-2026-09-28-104720.ips, soffice-2026-09-28-105517.ips, soffice-2026-09-28-105123.000.ips
+2026-09-30 03:09:42.447 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 03:09:43.007 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 03:09:43.122 | WARNING  | word_pdf:run_batch_with_resume:1206 - [batch pdf] 10 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 31, 0 of 3 stalled passes used)
+2026-09-30 03:09:43.123 | WARNING  | word_pdf:recycle:725 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-09-30 03:09:43.123 | WARNING  | word_pdf:recycle:731 - [word] recycling (restart 30)
+2026-09-30 03:09:49.377 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 03:09:51.806 | INFO     | __main__:_loop:231 - [batch pdf 31] 0/10
+2026-09-30 03:09:56.833 | INFO     | __main__:_loop:246 - [focus] item 2/10 not saved after 5 s; checking Word
+2026-09-30 03:10:24.887 | INFO     | __main__:_loop:246 - [focus] item 2/10 not saved after 33 s; checking Word
+2026-09-30 03:10:40.048 | WARNING  | __main__:_report:208 - [batch pdf 31] item 2/10 open for more than 30 s:
+-- Word windows {name, subrole}: osascript timed out
+-- Word window text: Microsoft Word, Word found unreadable content in 00006__617c1284c9_00feb732c2ef2b643a132e4305e16833fd047b46ca.... Do you want to recover the contents of this document? If you trust the source of this document, click Yes.
+-- crash reporters: 
+-- batch-pdf-31.log:
+[retry]	11	document loaded empty (Word could not read it)
+-- newest diagnostic reports: AppCleaner-2026-09-30-001317.ips, biome-2026-09-29-094107.ips, soffice-2026-09-28-104720.ips, soffice-2026-09-28-105517.ips, soffice-2026-09-28-105123.000.ips
+2026-09-30 03:10:40.413 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 03:10:41.245 | WARNING  | __main__:_loop_word:188 - [watchdog] Word dialog dismissed via 'No'
+2026-09-30 03:10:45.750 | WARNING  | __main__:_loop_word:188 - [watchdog] Word dialog dismissed via 'OK'
+2026-09-30 03:10:45.839 | WARNING  | word_pdf:run_batch_with_resume:1206 - [batch pdf] 7 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 32, 0 of 3 stalled passes used)
+2026-09-30 03:10:45.840 | WARNING  | word_pdf:recycle:725 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-09-30 03:10:45.840 | WARNING  | word_pdf:recycle:731 - [word] recycling (restart 31)
+2026-09-30 03:10:53.472 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 03:10:54.125 | INFO     | __main__:_loop:231 - [batch pdf 32] 0/7
+2026-09-30 03:10:59.149 | INFO     | __main__:_loop:246 - [focus] item 2/7 not saved after 5 s; checking Word
+2026-09-30 03:11:27.160 | INFO     | __main__:_loop:246 - [focus] item 2/7 not saved after 33 s; checking Word
+2026-09-30 03:11:36.052 | WARNING  | __main__:_report:208 - [batch pdf 32] item 2/7 open for more than 30 s:
+-- Word windows {name, subrole}: , AXDialog
+-- Word window text: Microsoft Word, Word found unreadable content in 00003__617c1284c9_00feb732c2ef2b643a132e4305e16833fd047b46ca.... Do you want to recover the contents of this document? If you trust the source of this document, click Yes.
+-- crash reporters: 
+-- batch-pdf-32.log:
+[retry]	8	document loaded empty (Word could not read it)
+-- newest diagnostic reports: AppCleaner-2026-09-30-001317.ips, biome-2026-09-29-094107.ips, soffice-2026-09-28-104720.ips, soffice-2026-09-28-105517.ips, soffice-2026-09-28-105123.000.ips
+2026-09-30 03:11:36.444 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 03:11:37.128 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 03:11:37.218 | WARNING  | word_pdf:run_batch_with_resume:1206 - [batch pdf] 4 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 33, 0 of 3 stalled passes used)
+2026-09-30 03:11:37.219 | WARNING  | word_pdf:recycle:725 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-09-30 03:11:37.219 | WARNING  | word_pdf:recycle:731 - [word] recycling (restart 32)
+2026-09-30 03:11:43.070 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 03:11:45.412 | INFO     | __main__:_loop:231 - [batch pdf 33] 0/4
+2026-09-30 03:11:50.418 | INFO     | __main__:_loop:246 - [focus] item 2/4 not saved after 5 s; checking Word
+2026-09-30 03:12:18.456 | INFO     | __main__:_loop:246 - [focus] item 2/4 not saved after 33 s; checking Word
+2026-09-30 03:12:22.287 | WARNING  | __main__:_report:208 - [batch pdf 33] item 2/4 open for more than 30 s:
+-- Word windows {name, subrole}: , AXDialog
+-- Word window text: Microsoft Word, Word found unreadable content in 00000__617c1284c9_00feb732c2ef2b643a132e4305e16833fd047b46ca.... Do you want to recover the contents of this document? If you trust the source of this document, click Yes.
+-- crash reporters: 
+-- batch-pdf-33.log:
+[retry]	5	document loaded empty (Word could not read it)
+-- newest diagnostic reports: AppCleaner-2026-09-30-001317.ips, biome-2026-09-29-094107.ips, soffice-2026-09-28-104720.ips, soffice-2026-09-28-105517.ips, soffice-2026-09-28-105123.000.ips
+2026-09-30 03:12:22.728 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed No then OK; focus handed back
+2026-09-30 03:12:28.196 | WARNING  | __main__:_loop_word:188 - [watchdog] Word dialog dismissed via 'No'
+2026-09-30 03:12:32.758 | INFO     | __main__:_loop:246 - [focus] item 3/4 not saved after 5 s; checking Word
+2026-09-30 03:12:33.228 | WARNING  | __main__:forward:135 - [focus] brought Word forward, pressed OK; focus handed back
+2026-09-30 03:12:33.339 | WARNING  | word_pdf:run_batch_with_resume:1206 - [batch pdf] 1 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 34, 0 of 3 stalled passes used)
+2026-09-30 03:12:33.340 | WARNING  | word_pdf:recycle:725 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-09-30 03:12:33.340 | WARNING  | word_pdf:recycle:731 - [word] recycling (restart 33)
+2026-09-30 03:12:36.849 | WARNING  | __main__:_loop_word:188 - [watchdog] Word dialog dismissed via 'No'
+2026-09-30 03:12:41.543 | INFO     | __main__:_loop:231 - [batch pdf 34] 0/1
+2026-09-30 03:12:42.382 | WARNING  | __main__:_loop_word:188 - [watchdog] Word dialog dismissed via 'OK'
+2026-09-30 03:12:42.488 | ERROR    | word_pdf:_convert_batched:1730 - [batch] FAIL: 617c1284c9_00feb732c2ef2b643a132e4305e16833fd047b46ca44b65b__vs__2773adf157_0004c94ca2a8684d47449bb0e7abf87de1df71a7e6543252_redline_2ef6ed00b9_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-09-30 03:12:42.490 | ERROR    | word_pdf:_convert_batched:1730 - [batch] FAIL: 617c1284c9_00feb732c2ef2b643a132e4305e16833fd047b46ca44b65b__vs__2e04202552_000e3e7bd2d6215fc7b469cc3e296c1b2a510bc1abc7e0fd_redline_9812be01c0_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-09-30 03:12:42.491 | ERROR    | word_pdf:_convert_batched:1730 - [batch] FAIL: 617c1284c9_00feb732c2ef2b643a132e4305e16833fd047b46ca44b65b__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_4cb34c212d_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-09-30 03:12:42.492 | ERROR    | word_pdf:_convert_batched:1730 - [batch] FAIL: 617c1284c9_00feb732c2ef2b643a132e4305e16833fd047b46ca44b65b__vs__342f364d46_001342333d45627868f4dc5282abbba4598a91b4a7584b08_redline_34e4211b58_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-09-30 03:12:42.493 | ERROR    | word_pdf:_convert_batched:1730 - [batch] FAIL: 617c1284c9_00feb732c2ef2b643a132e4305e16833fd047b46ca44b65b__vs__5203829c7a_001cc92b88566d5f930fe57f25813c0bf52a7bdc72c217d0_redline_044ff3ce7e_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-09-30 03:12:42.495 | ERROR    | word_pdf:_convert_batched:1730 - [batch] FAIL: 617c1284c9_00feb732c2ef2b643a132e4305e16833fd047b46ca44b65b__vs__a5f2b9318d_002aa60c2ae1187417b4b157c5ec6450324cc056ec551a12_redline_428fe8b1c0_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-09-30 03:12:42.497 | ERROR    | word_pdf:_convert_batched:1730 - [batch] FAIL: 617c1284c9_00feb732c2ef2b643a132e4305e16833fd047b46ca44b65b__vs__aa5340125d_00a4b0b91e9b5b072dc3771391c2d608518690eccf44eae8_redline_4b0ea98e79_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-09-30 03:12:42.499 | ERROR    | word_pdf:_convert_batched:1730 - [batch] FAIL: 617c1284c9_00feb732c2ef2b643a132e4305e16833fd047b46ca44b65b__vs__bd3824dd1e_000ee64ef7226d353297888f59a251e24ce5d776fea000fa_redline_c7d135bac5_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-09-30 03:12:42.500 | ERROR    | word_pdf:_convert_batched:1730 - [batch] FAIL: 617c1284c9_00feb732c2ef2b643a132e4305e16833fd047b46ca44b65b__vs__deff0e697a_00b5defcad6e58038eac35472a2d48c89905068e5ece0cc3_redline_31b2203d8c_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-09-30 03:12:42.500 | ERROR    | word_pdf:_convert_batched:1730 - [batch] FAIL: 63114916a7_eb682f7a779a99b02ece6fae975de27ce6cd511531e1295d__vs__14882c6359_f29e853d64aef3f69e88e2d31de7d38104611290896c26f7_redline_ef5c04859b_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-09-30 03:12:42.501 | ERROR    | word_pdf:_convert_batched:1730 - [batch] FAIL: 66cfa52b0c_fe09ce606b20a9bbd10d61a87218cb0a70e980d2bb3639e7__vs__c28aafcf60_4e3bc5acd19c432f43ad0adb3fb56f5739bcbe6cd8e9bcb4_redline_ee3c219df7_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-09-30 03:12:42.502 | ERROR    | word_pdf:_convert_batched:1730 - [batch] FAIL: 66dcec3e49_file_175__vs__8f47b1dc90_file_176_redline_485599b4e9_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-09-30 03:12:42.505 | ERROR    | word_pdf:_convert_batched:1730 - [batch] FAIL: 689072d58f_590e77a9f5c0a2a019cfa2e1b21d0197fb139d0f9883f948__vs__b50d7a1bf1_af0035cc41059d71015cf5d0c46a8883f32b1118fdc695f1_redline_c8250e8905_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-09-30 03:12:42.506 | ERROR    | word_pdf:_convert_batched:1730 - [batch] FAIL: 689a94ab75_1e931250b22dd86d72205c8a17e760be2df32181eb95631e__vs__652aef6635_a719122080a418927a7056741f57b5e84ee1879adb4d9dda_redline_f90c5ec9b7_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-09-30 03:12:42.507 | ERROR    | word_pdf:_convert_batched:1730 - [batch] FAIL: 6c2c8f1b79_4746195c006945f534b2c9ac444f038d071c9f4009b49e4a__vs__9696c5a86b_849ee788c6d02e66e3d5d037056f33907af76c092dbb5494_redline_acafcbe293_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-09-30 03:12:42.507 | ERROR    | word_pdf:_convert_batched:1730 - [batch] FAIL: 6c6d37a60e_713b96f7449018c37b77c60a972e1ce0771ee8001afee1c5__vs__396a7ea617_570affbac9e332f4aa71a5f76d1e4cf740bc5b529193b9f8_redline_a07535b014_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-09-30 03:12:42.508 | ERROR    | word_pdf:_convert_batched:1730 - [batch] FAIL: 70e0b71385_verdana_italic_centered_demo_id_paraid_overflow__vs__1e0254763b_strict01_redline_f532c5754a_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-09-30 03:12:42.509 | ERROR    | word_pdf:_convert_batched:1730 - [batch] FAIL: 75b13139d1_01424129e67ac16566c504bbb091d985cb6316a08abf5730__vs__aa5340125d_00a4b0b91e9b5b072dc3771391c2d608518690eccf44eae8_redline_292dea4ba5_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-09-30 03:12:42.510 | ERROR    | word_pdf:_convert_batched:1730 - [batch] FAIL: 77dcdfd6dc_20c18b4b5db86ef701aef966f4d5a28da7dd6acd0d3add9c__vs__1d6aaded23_96817b4d3631f78007ec8404ade5ef288b61af0d66770002_redline_fc14feb77d_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-09-30 03:12:42.511 | ERROR    | word_pdf:_convert_batched:1730 - [batch] FAIL: 7e1d0dc896_db433183ef464aaaa01d37307a1b7476eb855adb2ab2e09c__vs__26eb0ecec7_9377099d26f30a542b1c1db6c87e2a15ce0c0e3fd1e8dc01_redline_0bc720e5fa_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-09-30 03:12:42.511 | ERROR    | word_pdf:_convert_batched:1730 - [batch] FAIL: 7f93204c6c_57c181dae3117b73355f3838635376a547f0b3bf8f865cdd__vs__cfc9a10332_2f8b89ca507b8d91b7124338900088b00fb1faa6bd8b32f7_redline_9592aa7edd_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-09-30 03:12:42.512 | ERROR    | word_pdf:_convert_batched:1730 - [batch] FAIL: 7fda30a6f2_9cb6df893fcd1a1597981f9b2f2919474ca3125776ed96f8__vs__854e54d0d4_b5a14ebdbbd67607b97eb464dd41ab98caafcc07fbf9b705_redline_9dfd9790c9_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-09-30 03:12:42.513 | ERROR    | word_pdf:_convert_batched:1730 - [batch] FAIL: 80aa142151_file_8__vs__7a0bdaf60f_file_9_redline_4618d6926f_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-09-30 03:12:42.514 | ERROR    | word_pdf:_convert_batched:1730 - [batch] FAIL: 80efad84d3_3691648ca828914f876d636bc9681b6ec9447969ab5ca800__vs__74376f2ca4_39e1a78b406c0f1a22b6a4f2dedd3ee8843fd5d5811dac5e_redline_b0c8fcde0b_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-09-30 03:12:42.515 | ERROR    | word_pdf:_convert_batched:1730 - [batch] FAIL: 83a0cec5ca_cc594ee0903acbfa9207a40e3f40a94e75a31b6cdedde4a2__vs__e3d87c5d40_57d3e8f2af09e8376ceb1fb6068ba542964c0cdc936c7995_redline_15a27d9c50_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-09-30 03:12:42.515 | ERROR    | word_pdf:_convert_batched:1730 - [batch] FAIL: 87dc2ebfec_00ee07057c69b24e2be4bf1a2684792bf6141fdccc35d075__vs__1424386e9b_017447de83753a0e3b7afc659df038ef56972925336c6a5b_redline_fa616b4b60_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-09-30 03:12:42.516 | ERROR    | word_pdf:_convert_batched:1730 - [batch] FAIL: 87dc2ebfec_00ee07057c69b24e2be4bf1a2684792bf6141fdccc35d075__vs__2e04202552_000e3e7bd2d6215fc7b469cc3e296c1b2a510bc1abc7e0fd_redline_08050ab981_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-09-30 03:12:42.517 | ERROR    | word_pdf:_convert_batched:1730 - [batch] FAIL: 87dc2ebfec_00ee07057c69b24e2be4bf1a2684792bf6141fdccc35d075__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_7252aa05ca_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-09-30 03:12:42.518 | ERROR    | word_pdf:_convert_batched:1730 - [batch] FAIL: 87dc2ebfec_00ee07057c69b24e2be4bf1a2684792bf6141fdccc35d075__vs__5203829c7a_001cc92b88566d5f930fe57f25813c0bf52a7bdc72c217d0_redline_143e7a6dc4_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-09-30 03:12:42.520 | ERROR    | word_pdf:_convert_batched:1730 - [batch] FAIL: 87dc2ebfec_00ee07057c69b24e2be4bf1a2684792bf6141fdccc35d075__vs__aa5340125d_00a4b0b91e9b5b072dc3771391c2d608518690eccf44eae8_redline_f5d550349e_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-09-30 03:12:42.521 | ERROR    | word_pdf:_convert_batched:1730 - [batch] FAIL: 87dc2ebfec_00ee07057c69b24e2be4bf1a2684792bf6141fdccc35d075__vs__bd3824dd1e_000ee64ef7226d353297888f59a251e24ce5d776fea000fa_redline_1abb37f12a_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-09-30 03:12:42.522 | ERROR    | word_pdf:_convert_batched:1730 - [batch] FAIL: 87dc2ebfec_00ee07057c69b24e2be4bf1a2684792bf6141fdccc35d075__vs__deff0e697a_00b5defcad6e58038eac35472a2d48c89905068e5ece0cc3_redline_37f5506f86_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-09-30 03:12:42.522 | ERROR    | word_pdf:_convert_batched:1730 - [batch] FAIL: 8dcd453923_numwords_fldsimple__vs__1e0254763b_strict01_redline_9ec1e7ed5d_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-09-30 03:12:42.523 | ERROR    | word_pdf:_convert_batched:1730 - [batch] FAIL: 8e534b49f0_00a9b37342f07e6b9bd5b8fffbe4dd777d31053171e69da2__vs__1424386e9b_017447de83753a0e3b7afc659df038ef56972925336c6a5b_redline_4e3d14b3d3_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-09-30 03:12:42.524 | ERROR    | word_pdf:_convert_batched:1730 - [batch] FAIL: 8e534b49f0_00a9b37342f07e6b9bd5b8fffbe4dd777d31053171e69da2__vs__2773adf157_0004c94ca2a8684d47449bb0e7abf87de1df71a7e6543252_redline_83de2974df_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-09-30 03:12:42.525 | ERROR    | word_pdf:_convert_batched:1730 - [batch] FAIL: 8e534b49f0_00a9b37342f07e6b9bd5b8fffbe4dd777d31053171e69da2__vs__2e04202552_000e3e7bd2d6215fc7b469cc3e296c1b2a510bc1abc7e0fd_redline_aeff6a9631_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-09-30 03:12:42.526 | ERROR    | word_pdf:_convert_batched:1730 - [batch] FAIL: 8e534b49f0_00a9b37342f07e6b9bd5b8fffbe4dd777d31053171e69da2__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_2b0b9989fe_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-09-30 03:12:42.527 | ERROR    | word_pdf:_convert_batched:1730 - [batch] FAIL: 8e534b49f0_00a9b37342f07e6b9bd5b8fffbe4dd777d31053171e69da2__vs__342f364d46_001342333d45627868f4dc5282abbba4598a91b4a7584b08_redline_510bcf9432_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-09-30 03:12:42.527 | ERROR    | word_pdf:_convert_batched:1730 - [batch] FAIL: 8e534b49f0_00a9b37342f07e6b9bd5b8fffbe4dd777d31053171e69da2__vs__5203829c7a_001cc92b88566d5f930fe57f25813c0bf52a7bdc72c217d0_redline_99aed3b8e2_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-09-30 03:12:42.528 | ERROR    | word_pdf:_convert_batched:1730 - [batch] FAIL: 8e534b49f0_00a9b37342f07e6b9bd5b8fffbe4dd777d31053171e69da2__vs__a5f2b9318d_002aa60c2ae1187417b4b157c5ec6450324cc056ec551a12_redline_2e5338a837_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-09-30 03:12:42.529 | ERROR    | word_pdf:_convert_batched:1730 - [batch] FAIL: 8e534b49f0_00a9b37342f07e6b9bd5b8fffbe4dd777d31053171e69da2__vs__aa5340125d_00a4b0b91e9b5b072dc3771391c2d608518690eccf44eae8_redline_d48277585f_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-09-30 03:12:42.530 | ERROR    | word_pdf:_convert_batched:1730 - [batch] FAIL: 8e534b49f0_00a9b37342f07e6b9bd5b8fffbe4dd777d31053171e69da2__vs__deff0e697a_00b5defcad6e58038eac35472a2d48c89905068e5ece0cc3_redline_0c27542f55_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-09-30 03:12:42.531 | ERROR    | word_pdf:_convert_batched:1730 - [batch] FAIL: 8e694101b9_469e571050275b57ed1836b4cc17f4d29e43eec925bdfad9__vs__37c6c62345_3f296ffac9c17a92962156ff41f2b079eb687cd440513fe3_redline_9a2af58d99_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-09-30 03:12:42.531 | ERROR    | word_pdf:_convert_batched:1730 - [batch] FAIL: 91440900a0_00189e19139f6e3031303e4152566a7bc08fab71a5c95895__vs__2773adf157_0004c94ca2a8684d47449bb0e7abf87de1df71a7e6543252_redline_544952d399_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-09-30 03:12:42.532 | ERROR    | word_pdf:_convert_batched:1730 - [batch] FAIL: 9157a277e6_b2f18058eb208aedb4ae71061c4b8fee327620e1a9391735__vs__e0086a5a74_9b7d937ec2a6b1fdaa04bdd3be51d145d35245d86b074053_redline_600b6a365e_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-09-30 03:12:42.533 | ERROR    | word_pdf:_convert_batched:1730 - [batch] FAIL: 927ac9aa34_08c4a91af911ba28211b34993f02e105aa8e3bcca2f14a62__vs__510fc04622_2e1b3238f72dd915c2fe92d6a01c213169f0992205e89bef_redline_4f6ee65d41_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-09-30 03:12:42.534 | ERROR    | word_pdf:_convert_batched:1730 - [batch] FAIL: 937c2d593d_70bf1fc955d47b9c53240cfb85bb6783a5809a7dfbb31928__vs__950d333339_6a0d50215e5c7f9eb3a50dac6315d8cbb6873aea3d8aa1e4_redline_77800d60fe_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-09-30 03:12:42.535 | ERROR    | word_pdf:_convert_batched:1730 - [batch] FAIL: 95e967cf7b_4a45c8279800a59fdb128a3e00cc935fe8475769102fcc42__vs__671b3660c2_3f671017f7272d30d5560706ed497e9fb0324587007c9d2f_redline_e8aedc3a02_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-09-30 03:12:42.536 | ERROR    | word_pdf:_convert_batched:1730 - [batch] FAIL: 970fd9303f_sample_document_word_repair_of_our_output_word_r__vs__8441c4ae21_sd_2517_localized_heading_styles_redline_9c71031b8a_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-09-30 03:12:42.536 | ERROR    | word_pdf:_convert_batched:1730 - [batch] FAIL: 98c8b73841_0041d3944715c2fffc5929695f968e5f399e85b139fba063__vs__1424386e9b_017447de83753a0e3b7afc659df038ef56972925336c6a5b_redline_c83c7e02ae_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)

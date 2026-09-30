@@ -1,0 +1,3 @@
+docxodus: resuming: 2609 already scored, 3 to go
+docxodus: 2612 scored, 0 to go -> scores_docxodus.partial.json
+docxodus: 2612/3502 scored, mean 72.33, median 81.75, >=90: 482; fresh oracles 516, meant fresh but old 0; torch-mps -> /Users/arthrod/temp/T/neurotic_docx_bench/results/redlines_0929_full/scores_docxodus.json

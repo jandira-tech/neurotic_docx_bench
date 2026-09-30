@@ -48,7 +48,7 @@ and `<tool>/generate_timings.json` record each run.
 | tool | redlines | PDFs by Word | Word failed |
 |---|---|---|---|
 | jubarte-rust | 2611 | 2608 | 3 |
-| docxodus | 2605 (6 generate failures) | 1895 on 2026-09-30 07:00Z, retry running | see below |
+| docxodus | 2605 (6 generate failures) | 1895 | 100 of the 100 retried; 551 never retried |
 
 docxodus redlines stall Word far more often. On "Word found unreadable content", the watchdog
 answers No and Word then raises "Word experienced an error trying to open the file" (OK), but
@@ -56,8 +56,11 @@ only once Word is frontmost; in the background that alert does not exist, and th
 hangs until the 240 s AppleEvent timeout, which ends the pass and poisons later opens.
 `scripts/word_pdf_focus.py` (`word_pdf.py` with a watchdog and progress tracker swapped in)
 brings Word forward when an item is not saved within 5 s, presses No then OK, hides Word and
-hands focus back. On the first 50 owed files it pressed "No then OK" 81 times with no
-timeout; 49 loaded empty twice and one crashed Word twice, so those are not Word valid.
+hands focus back. 651 redlines were owed when it started. It ran two batches of 50
+(`docxodus.word_pdf.f{1,2}.log`, 30 min each, 184 forwards, no timeout) and got 0 PDFs: 99
+loaded empty twice and one crashed Word twice, so those are not Word valid. At that yield the
+remaining 551 (about 6 h of Word) were not retried; the run was stopped during batch 3, before
+it logged a result.
 `rest_list.py` links the owed files, `stage_word_pdf.py` collects PDFs from a live export,
 `docxodus.word_pdf.{rest,b,f,single}*.log` record the passes.
 
@@ -68,13 +71,14 @@ Oracles: Word's compare PDFs, the 516 compares made again for this run (`compare
 
 | | jubarte 0.10.0 | docxodus 12.6.5 |
 |---|---|---|
-| all scored | 3499/3502, mean 72.29, median 81.79 | 2609/3502 (1895 PDFs) |
-| same 2608 compares: mean / median | **73.32 / 83.01** | 72.34 / 81.78 |
-| =100 / >=90 / <50 | **246 / 516 / 557** | 206 / 482 / 612 |
-| ink Jaccard mean / median (2551) | **0.688 / 0.899** | 0.657 / 0.851 |
-| better by > 0.5 | 1007 | 738 (863 within 0.5) |
+| all scored | 3499/3502, mean 72.29, median 81.79 | 2612/3502 (1895 PDFs), mean 72.33, median 81.75 |
+| same 2611 compares: mean / median | **73.32 / 83.01** | 72.34 / 81.75 |
+| =100 / >=90 / <50 | **244 / 517 / 558** | 204 / 482 / 613 |
+| ink Jaccard mean / median (2554) | **0.688 / 0.899** | 0.657 / 0.851 |
+| better by > 0.5 | 1008 | 738 (865 within 0.5) |
 
-jubarte scores 69.28 mean on the 891 compares docxodus has no PDF for, so docxodus's gap is
+Final docxodus score after the focus retry (`measure_docxodus_focus.log`, 2026-09-30).
+jubarte scores 69.25 mean on the 888 compares docxodus has no PDF for, so docxodus's gap is
 biased toward the hard pairs. jubarte 0.10.0 vs 0.9.3 (`../redlines_0928`), same 1090 oracles:
 68.03 / 70.07 -> 68.63 / 72.44 (96 better, 34 worse, 960 within 0.5); the regressions cluster in
 the `*_id_paraid_overflow` fixtures (8 went from 100 to about 85).
