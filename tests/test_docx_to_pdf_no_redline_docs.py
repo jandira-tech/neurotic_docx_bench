@@ -25,7 +25,7 @@ from neurotic_docx_bench.docx_to_pdf import (
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-LIBREOFFICE_PDF_SOURCE = REPO_ROOT / "grok_run" / "word_based" / "pdf_source"
+LIBREOFFICE_PDF_SOURCE = REPO_ROOT / "corpus" / "libreoffice"  # every LibreOffice render the bench files
 TRACK = NO_REDLINE_TRACK
 KINDS = {"source", "source_randomized"}
 
