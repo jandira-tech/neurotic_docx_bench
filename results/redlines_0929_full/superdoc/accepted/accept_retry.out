@@ -1,0 +1,17 @@
+2026-09-30 04:32:43.557 | INFO     | word_pdf:preflight:1812 -  preflight: 
+open_documents=0 started_clean=True launched_by_us=True close_documents=True
+2026-09-30 04:32:43.584 | INFO     | word_pdf:convert_folder:1486 -  export: 
+one_osascript=True documents=2 accept_all=True reject_all=False
+2026-09-30 04:32:43.590 | INFO     | word_pdf:_convert_batched:1685 -  one 
+osascript for 2 document(s)
+          accept all → DOCX + PDF:          
+results/redlines_0929_full/superdoc/accepted
+                 /retry_src                 
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━┓
+┃ outcome                          ┃ count ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━┩
+│ converted                        │     2 │
+│ skipped (exists)                 │     0 │
+│ failed                           │     0 │
+│ seconds per document (batch avg) │   1.1 │
+└──────────────────────────────────┴───────┘

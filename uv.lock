@@ -655,7 +655,7 @@ requires-dist = [
     { name = "rich", specifier = ">=13.0" },
     { name = "scikit-image", specifier = ">=0.24,<0.28" },
     { name = "scipy", specifier = ">=1.13" },
-    { name = "superdoc-sdk", marker = "extra == 'competitors'", specifier = "==2.15.0" },
+    { name = "superdoc-sdk", marker = "extra == 'competitors'", specifier = "==2.16.0" },
     { name = "torch", marker = "extra == 'gpu'", specifier = ">=2.5" },
     { name = "typer", specifier = ">=0.12" },
 ]
@@ -1316,7 +1316,7 @@ wheels = [
 
 [[package]]
 name = "superdoc-sdk"
-version = "2.15.0"
+version = "2.16.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "superdoc-sdk-cli-darwin-arm64", marker = "(platform_machine == 'ARM64' and sys_platform == 'darwin') or (platform_machine == 'aarch64' and sys_platform == 'darwin') or (platform_machine == 'arm64' and sys_platform == 'darwin')" },
@@ -1325,49 +1325,49 @@ dependencies = [
     { name = "superdoc-sdk-cli-linux-x64", marker = "(platform_machine == 'AMD64' and sys_platform == 'linux') or (platform_machine == 'amd64' and sys_platform == 'linux') or (platform_machine == 'x86_64' and sys_platform == 'linux')" },
     { name = "superdoc-sdk-cli-windows-x64", marker = "(platform_machine == 'AMD64' and sys_platform == 'win32') or (platform_machine == 'amd64' and sys_platform == 'win32') or (platform_machine == 'x86_64' and sys_platform == 'win32')" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/82/a0/2b66b19b44a118a297546cd724c5298dedd6fc43d2a5d54736a4cd59f90e/superdoc_sdk-2.15.0.tar.gz", hash = "sha256:9e308d687c1c45b9c5907dcab7cbccdbe6582dca94aa9cf7dba110cd2ebab11d", size = 1106202, upload-time = "2026-09-25T12:36:47.87Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/c6/8d/eeeda2e63c53c2758711f1da1306d9cfe3036f69f470f3ffc77087a68741/superdoc_sdk-2.16.0.tar.gz", hash = "sha256:c91900932607c9c316e99b6dd58753e7ac86a3636126d9ef282dc0989de80f42", size = 1113700, upload-time = "2026-09-29T14:32:25.997Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/44/ba/b69ccca6c021f7ffe9deeac8232e87c72ed8d4248f11485f047026f6db0a/superdoc_sdk-2.15.0-py3-none-any.whl", hash = "sha256:87ef559769f4ba1fd0adfe543284229420714d62673401aa033e2aac29db1354", size = 1131526, upload-time = "2026-09-25T12:36:46.131Z" },
+    { url = "https://files.pythonhosted.org/packages/72/8f/fd634df28b8f68ab25c8e8a81e321750b1f172f25110f0c9d0dbd5b9dd24/superdoc_sdk-2.16.0-py3-none-any.whl", hash = "sha256:496e29b1322e652c749f8163c6607fb0a56c01b4f2b7f16345481edb5b7df18c", size = 1139574, upload-time = "2026-09-29T14:32:24.581Z" },
 ]
 
 [[package]]
 name = "superdoc-sdk-cli-darwin-arm64"
-version = "2.15.0"
+version = "2.16.0"
 source = { registry = "https://pypi.org/simple" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/10/c1/3b21aee99e5f983b17b7ad73adbd8ac9e575f5824c12c917f31aa6e6043b/superdoc_sdk_cli_darwin_arm64-2.15.0-py3-none-any.whl", hash = "sha256:3fea03254343344cc19097884cf1a2578354bee485ed97f5a82b162ff3353fe3", size = 50056785, upload-time = "2026-09-25T12:36:15.139Z" },
+    { url = "https://files.pythonhosted.org/packages/f5/a5/6e225b60ea3b6355e1542e620e45739f53c25eae4d46b7b0ca8cff3896a6/superdoc_sdk_cli_darwin_arm64-2.16.0-py3-none-any.whl", hash = "sha256:5ab731b375f9bda6299b7dfcb0f00c8f24e6307023ca2bf0a0c8f1ca45fe67c4", size = 50192778, upload-time = "2026-09-29T14:31:52.032Z" },
 ]
 
 [[package]]
 name = "superdoc-sdk-cli-darwin-x64"
-version = "2.15.0"
+version = "2.16.0"
 source = { registry = "https://pypi.org/simple" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/25/28/abe04bfcaa223417d0e037d97ea09604e40f27179ff49722af277e212c6a/superdoc_sdk_cli_darwin_x64-2.15.0-py3-none-any.whl", hash = "sha256:c7fb681ef36729739427957c8835df78b794cad5b1b1a0575ce418496e39d036", size = 54715595, upload-time = "2026-09-25T12:36:20.637Z" },
+    { url = "https://files.pythonhosted.org/packages/89/4e/e9dabff857088da4b9bdd5aaed44135b58469330745566068d59e3b33cb9/superdoc_sdk_cli_darwin_x64-2.16.0-py3-none-any.whl", hash = "sha256:6e7f4995b63091635e7b5a34a7fac786ab120772a8313f80cb7eb937c80f6c3e", size = 54852958, upload-time = "2026-09-29T14:31:57.815Z" },
 ]
 
 [[package]]
 name = "superdoc-sdk-cli-linux-arm64"
-version = "2.15.0"
+version = "2.16.0"
 source = { registry = "https://pypi.org/simple" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/19/98/63527f898ba27895d338e788b6993ec61f70384319bd8f652dc7c5c94ae1/superdoc_sdk_cli_linux_arm64-2.15.0-py3-none-any.whl", hash = "sha256:a8660337ab2bf3146236b3192fe659593ac36b1bc0659182e0707a0cee4bd428", size = 81119049, upload-time = "2026-09-25T12:36:27.089Z" },
+    { url = "https://files.pythonhosted.org/packages/89/c4/ba5ec98e669d3efbfeb42e0c088c767f25bdab548dba7fd4b674fb7153a0/superdoc_sdk_cli_linux_arm64-2.16.0-py3-none-any.whl", hash = "sha256:97f9ecfa94c518ee92f79081fe4fd9dc494de2d21fc24973e77f37913de1e5d1", size = 81250425, upload-time = "2026-09-29T14:32:04.724Z" },
 ]
 
 [[package]]
 name = "superdoc-sdk-cli-linux-x64"
-version = "2.15.0"
+version = "2.16.0"
 source = { registry = "https://pypi.org/simple" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/60/16/3b1c1973a45386cf953abe968a04a23adee09532e6b5e8e9fcc34452c687/superdoc_sdk_cli_linux_x64-2.15.0-py3-none-any.whl", hash = "sha256:a9ef2ad807ecd8c1e9063c6b3d2fd630f8800668e260140d473028485eef9263", size = 81710805, upload-time = "2026-09-25T12:36:34.8Z" },
+    { url = "https://files.pythonhosted.org/packages/2d/86/340b056fc41a8671efebc72737d7c70890ac0f673d905468572c63e5e504/superdoc_sdk_cli_linux_x64-2.16.0-py3-none-any.whl", hash = "sha256:2a19e50ead220842b297c86d35aa507ad48e911a84e91118313a3c8dea6372dc", size = 81842296, upload-time = "2026-09-29T14:32:12.056Z" },
 ]
 
 [[package]]
 name = "superdoc-sdk-cli-windows-x64"
-version = "2.15.0"
+version = "2.16.0"
 source = { registry = "https://pypi.org/simple" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/2c/47/5d0d75919c7842d5035ee31ad43076821a7c23ae787d2b9b1f062f920335/superdoc_sdk_cli_windows_x64-2.15.0-py3-none-any.whl", hash = "sha256:832748f38c0653418119ef7eae46ff00795d533e9ba439e9bacf0a9fd9d691eb", size = 87768172, upload-time = "2026-09-25T12:36:42.53Z" },
+    { url = "https://files.pythonhosted.org/packages/51/76/0922795a74ab94bfad50f709458e7b5015db851198756ea1785b2df625f6/superdoc_sdk_cli_windows_x64-2.16.0-py3-none-any.whl", hash = "sha256:ac2292679388cd1c8af100366fe7a762fe73e3b8ec24175b65f265e9a43a60d8", size = 87899475, upload-time = "2026-09-29T14:32:21.304Z" },
 ]
 
 [[package]]
