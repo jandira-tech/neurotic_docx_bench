@@ -1,0 +1,56 @@
+2026-09-30 06:54:18.483 | INFO     | word_pdf:preflight:1812 - [word] preflight: open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-09-30 06:54:18.512 | INFO     | word_pdf:convert_folder:1486 - [word] export: one_osascript=True documents=4 accept_all=False reject_all=False
+2026-09-30 06:54:18.519 | INFO     | word_pdf:_convert_batched:1685 - [batch] one osascript for 4 document(s)
+2026-09-30 06:54:23.542 | INFO     | __main__:_loop:231 - [batch pdf 1] 0/4
+2026-09-30 06:54:28.548 | INFO     | __main__:_loop:246 - [focus] item 1/4 not saved after 5 s; checking Word
+2026-09-30 06:54:56.577 | INFO     | __main__:_loop:246 - [focus] item 1/4 not saved after 33 s; checking Word
+2026-09-30 06:55:16.753 | WARNING  | __main__:_report:208 - [batch pdf 1] item 1/4 open for more than 30 s:
+-- Word windows {name, subrole}: osascript timed out
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-1.log:
+
+-- newest diagnostic reports: jub_b19-2026-09-30-052944.0006.ips, jub_b19-2026-09-30-052944.0005.ips, jub_b19-2026-09-30-052944.0004.ips, jub_b19-2026-09-30-052944.0003.ips, jub_b19-2026-09-30-052944.0002.ips
+2026-09-30 06:55:24.605 | INFO     | __main__:_loop:246 - [focus] item 1/4 not saved after 61 s; checking Word
+2026-09-30 06:55:52.640 | INFO     | __main__:_loop:246 - [focus] item 1/4 not saved after 89 s; checking Word
+2026-09-30 06:56:20.671 | INFO     | __main__:_loop:246 - [focus] item 1/4 not saved after 117 s; checking Word
+2026-09-30 06:56:48.702 | INFO     | __main__:_loop:246 - [focus] item 1/4 not saved after 145 s; checking Word
+2026-09-30 06:57:16.735 | INFO     | __main__:_loop:246 - [focus] item 1/4 not saved after 173 s; checking Word
+2026-09-30 06:57:44.799 | INFO     | __main__:_loop:246 - [focus] item 1/4 not saved after 201 s; checking Word
+2026-09-30 06:58:12.838 | INFO     | __main__:_loop:246 - [focus] item 1/4 not saved after 229 s; checking Word
+2026-09-30 06:58:40.862 | INFO     | __main__:_loop:246 - [focus] item 1/4 not saved after 257 s; checking Word
+2026-09-30 06:59:08.905 | INFO     | __main__:_loop:246 - [focus] item 1/4 not saved after 285 s; checking Word
+2026-09-30 06:59:31.974 | WARNING  | word_pdf:run_batch_with_resume:1206 - [batch pdf] 3 item(s) never reached (ended without reaching them); recycling Word and retrying the rest first, retried items last (pass 2, 1 of 3 stalled passes used)
+2026-09-30 06:59:31.979 | WARNING  | word_pdf:recycle:725 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-09-30 06:59:31.982 | WARNING  | word_pdf:recycle:731 - [word] recycling (restart 1)
+2026-09-30 06:59:41.644 | INFO     | word_pdf:_note_buttons:510 - [watchdog] Microsoft Word shows button 'Cancel'
+2026-09-30 06:59:41.647 | INFO     | word_pdf:_note_buttons:510 - [watchdog] Microsoft Word shows button 'missing value'
+2026-09-30 06:59:42.836 | WARNING  | __main__:_loop_word:188 - [watchdog] Word dialog dismissed via 'Cancel'
+2026-09-30 06:59:49.050 | INFO     | __main__:_loop:231 - [batch pdf 2] 1/3
+2026-09-30 06:59:54.059 | INFO     | __main__:_loop:246 - [focus] item 2/3 not saved after 5 s; checking Word
+2026-09-30 07:00:22.126 | INFO     | __main__:_loop:246 - [focus] item 2/3 not saved after 33 s; checking Word
+2026-09-30 07:00:46.704 | WARNING  | __main__:_report:208 - [batch pdf 2] item 2/3 open for more than 30 s:
+-- Word windows {name, subrole}: ,
+-- Word window text: osascript timed out
+-- crash reporters: 
+-- batch-pdf-2.log:
+[fail]	1	Microsoft Word got an error: document "00001__7e4c9416aa_00803e70c3646e42abab322238df606c847686168795a703__vs__1424386e9b_017447de83753a0e3b7afc659df038ef56972925336c6a5b_redline_c8545d372b_jubarte-093.docx" doesn’t understand the “save as” message.
+-- newest diagnostic reports: jub_b19-2026-09-30-052944.0006.ips, jub_b19-2026-09-30-052944.0005.ips, jub_b19-2026-09-30-052944.0004.ips, jub_b19-2026-09-30-052944.0003.ips, jub_b19-2026-09-30-052944.0002.ips
+2026-09-30 07:00:50.178 | INFO     | __main__:_loop:246 - [focus] item 2/3 not saved after 61 s; checking Word
+2026-09-30 07:01:18.229 | INFO     | __main__:_loop:246 - [focus] item 2/3 not saved after 89 s; checking Word
+2026-09-30 07:01:46.285 | INFO     | __main__:_loop:246 - [focus] item 2/3 not saved after 117 s; checking Word
+2026-09-30 07:02:14.332 | INFO     | __main__:_loop:246 - [focus] item 2/3 not saved after 145 s; checking Word
+2026-09-30 07:02:42.385 | INFO     | __main__:_loop:246 - [focus] item 2/3 not saved after 173 s; checking Word
+2026-09-30 07:03:10.417 | INFO     | __main__:_loop:246 - [focus] item 2/3 not saved after 201 s; checking Word
+2026-09-30 07:03:38.479 | INFO     | __main__:_loop:246 - [focus] item 2/3 not saved after 229 s; checking Word
+2026-09-30 07:04:06.535 | INFO     | __main__:_loop:246 - [focus] item 2/3 not saved after 257 s; checking Word
+2026-09-30 07:04:39.593 | INFO     | __main__:_loop:246 - [focus] item 2/3 not saved after 291 s; checking Word
+2026-09-30 07:05:07.650 | INFO     | __main__:_loop:246 - [focus] item 2/3 not saved after 319 s; checking Word
+2026-09-30 07:05:35.755 | INFO     | __main__:_loop:246 - [focus] item 2/3 not saved after 347 s; checking Word
+2026-09-30 07:05:51.698 | WARNING  | word_pdf:run_batch_with_resume:1206 - [batch pdf] 1 item(s) never reached (ended without reaching them); recycling Word and retrying the rest first, retried items last (pass 3, 2 of 3 stalled passes used)
+2026-09-30 07:05:51.708 | WARNING  | word_pdf:recycle:725 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-09-30 07:05:51.717 | WARNING  | word_pdf:recycle:731 - [word] recycling (restart 2)
+2026-09-30 07:06:33.037 | INFO     | __main__:_loop:231 - [batch pdf 3] 0/1
+2026-09-30 07:06:37.170 | ERROR    | word_pdf:_convert_batched:1730 - [batch] FAIL: 19eb128df9_98bf5f3d218a1485f5eb284693b4f98725eadd3660097efd__vs__9666fa13fb_a3701d3600ed5bf6c9bf13e12e4c2a59542eba10f87fad69_redline_5b269ade28_jubarte-093.docx — 
+2026-09-30 07:06:37.224 | ERROR    | word_pdf:_convert_batched:1730 - [batch] FAIL: 7e4c9416aa_00803e70c3646e42abab322238df606c847686168795a703__vs__1424386e9b_017447de83753a0e3b7afc659df038ef56972925336c6a5b_redline_c8545d372b_jubarte-093.docx — Microsoft Word got an error: document "00001__7e4c9416aa_00803e70c3646e42abab322238df606c847686168795a703__vs__1424386e9b_017447de83753a0e3b7afc659df038ef56972925336c6a5b_redline_c8545d372b_jubarte-09
+2026-09-30 07:06:37.232 | ERROR    | word_pdf:_convert_batched:1730 - [batch] FAIL: acce1b593c_4bb73d9addf1f02e3a2132dcd33a8feb4dfcbe076d43bb0f__vs__4e2d5a0b0c_4887566b3c4aad8c7f07b4ba2637c0244a1ee0d66c8d0c29_redline_63ea4d3f8d_jubarte-093.docx — Microsoft Word got an error: AppleEvent timed out.
