@@ -13,6 +13,11 @@
     "redlines/with_comments_tracking/0b033b1c23/jubarte-rust/page_002.webp",
     "redlines/with_comments_tracking/0b033b1c23/jubarte-rust/page_003.webp"
    ],
+   "jubarte-093": [
+    "redlines/with_comments_tracking/0b033b1c23/jubarte-093/page_001.webp",
+    "redlines/with_comments_tracking/0b033b1c23/jubarte-093/page_002.webp",
+    "redlines/with_comments_tracking/0b033b1c23/jubarte-093/page_003.webp"
+   ],
    "docxodus": [
     "redlines/with_comments_tracking/0b033b1c23/docxodus/page_001.webp",
     "redlines/with_comments_tracking/0b033b1c23/docxodus/page_002.webp",
@@ -22,12 +27,18 @@
   "page_counts": {
    "reference": 11,
    "jubarte-rust": 11,
+   "jubarte-093": 11,
    "docxodus": 11
   },
   "scores": {
    "jubarte-rust": {
     "jaccard": 6.0,
     "ssim": 15.0,
+    "text_boundary": 45.2
+   },
+   "jubarte-093": {
+    "jaccard": 6.0,
+    "ssim": 14.9,
     "text_boundary": 45.2
    },
    "docxodus": {
@@ -53,6 +64,11 @@
     "redlines/with_comments_tracking/0f031c23c3/jubarte-rust/page_002.webp",
     "redlines/with_comments_tracking/0f031c23c3/jubarte-rust/page_003.webp"
    ],
+   "jubarte-093": [
+    "redlines/with_comments_tracking/0f031c23c3/jubarte-093/page_001.webp",
+    "redlines/with_comments_tracking/0f031c23c3/jubarte-093/page_002.webp",
+    "redlines/with_comments_tracking/0f031c23c3/jubarte-093/page_003.webp"
+   ],
    "docxodus": [
     "redlines/with_comments_tracking/0f031c23c3/docxodus/page_001.webp",
     "redlines/with_comments_tracking/0f031c23c3/docxodus/page_002.webp",
@@ -62,12 +78,18 @@
   "page_counts": {
    "reference": 13,
    "jubarte-rust": 12,
+   "jubarte-093": 12,
    "docxodus": 13
   },
   "scores": {
    "jubarte-rust": {
     "jaccard": 5.3,
     "ssim": 13.7,
+    "text_boundary": 37.6
+   },
+   "jubarte-093": {
+    "jaccard": 5.2,
+    "ssim": 13.6,
     "text_boundary": 37.6
    },
    "docxodus": {
@@ -93,6 +115,11 @@
     "redlines/with_comments_tracking/01ffe97a5e/jubarte-rust/page_002.webp",
     "redlines/with_comments_tracking/01ffe97a5e/jubarte-rust/page_003.webp"
    ],
+   "jubarte-093": [
+    "redlines/with_comments_tracking/01ffe97a5e/jubarte-093/page_001.webp",
+    "redlines/with_comments_tracking/01ffe97a5e/jubarte-093/page_002.webp",
+    "redlines/with_comments_tracking/01ffe97a5e/jubarte-093/page_003.webp"
+   ],
    "docxodus": [
     "redlines/with_comments_tracking/01ffe97a5e/docxodus/page_001.webp",
     "redlines/with_comments_tracking/01ffe97a5e/docxodus/page_002.webp",
@@ -102,10 +129,16 @@
   "page_counts": {
    "reference": 5,
    "jubarte-rust": 5,
+   "jubarte-093": 5,
    "docxodus": 5
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 48.4,
+    "ssim": 65.8,
+    "text_boundary": 75.3
+   },
+   "jubarte-093": {
     "jaccard": 48.4,
     "ssim": 65.8,
     "text_boundary": 75.3
@@ -133,6 +166,11 @@
     "redlines/with_comments_tracking/2c123533f6/jubarte-rust/page_002.webp",
     "redlines/with_comments_tracking/2c123533f6/jubarte-rust/page_003.webp"
    ],
+   "jubarte-093": [
+    "redlines/with_comments_tracking/2c123533f6/jubarte-093/page_001.webp",
+    "redlines/with_comments_tracking/2c123533f6/jubarte-093/page_002.webp",
+    "redlines/with_comments_tracking/2c123533f6/jubarte-093/page_003.webp"
+   ],
    "docxodus": [
     "redlines/with_comments_tracking/2c123533f6/docxodus/page_001.webp",
     "redlines/with_comments_tracking/2c123533f6/docxodus/page_002.webp",
@@ -142,11 +180,17 @@
   "page_counts": {
    "reference": 3,
    "jubarte-rust": 3,
+   "jubarte-093": 3,
    "docxodus": 3
   },
   "scores": {
    "jubarte-rust": {
     "jaccard": 98.7,
+    "ssim": 99.0,
+    "text_boundary": 98.7
+   },
+   "jubarte-093": {
+    "jaccard": 98.6,
     "ssim": 99.0,
     "text_boundary": 98.7
    },
@@ -173,6 +217,11 @@
     "redlines/with_comments_tracking/3a7ca36d5f/jubarte-rust/page_002.webp",
     "redlines/with_comments_tracking/3a7ca36d5f/jubarte-rust/page_003.webp"
    ],
+   "jubarte-093": [
+    "redlines/with_comments_tracking/3a7ca36d5f/jubarte-093/page_001.webp",
+    "redlines/with_comments_tracking/3a7ca36d5f/jubarte-093/page_002.webp",
+    "redlines/with_comments_tracking/3a7ca36d5f/jubarte-093/page_003.webp"
+   ],
    "docxodus": [
     "redlines/with_comments_tracking/3a7ca36d5f/docxodus/page_001.webp",
     "redlines/with_comments_tracking/3a7ca36d5f/docxodus/page_002.webp",
@@ -182,10 +231,16 @@
   "page_counts": {
    "reference": 3,
    "jubarte-rust": 3,
+   "jubarte-093": 3,
    "docxodus": 3
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 64.2,
+    "ssim": 76.1,
+    "text_boundary": 68.8
+   },
+   "jubarte-093": {
     "jaccard": 64.2,
     "ssim": 76.1,
     "text_boundary": 68.8
@@ -209,6 +264,9 @@
    "jubarte-rust": [
     "redlines/with_comments_tracking/3d22ad3c37/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "redlines/with_comments_tracking/3d22ad3c37/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "redlines/with_comments_tracking/3d22ad3c37/docxodus/page_001.webp"
    ]
@@ -216,12 +274,18 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1
   },
   "scores": {
    "jubarte-rust": {
     "jaccard": 89.2,
     "ssim": 94.0,
+    "text_boundary": 60.0
+   },
+   "jubarte-093": {
+    "jaccard": 90.3,
+    "ssim": 94.6,
     "text_boundary": 60.0
    },
    "docxodus": {
@@ -247,6 +311,11 @@
     "redlines/with_comments_tracking/3d39f0120d/jubarte-rust/page_002.webp",
     "redlines/with_comments_tracking/3d39f0120d/jubarte-rust/page_003.webp"
    ],
+   "jubarte-093": [
+    "redlines/with_comments_tracking/3d39f0120d/jubarte-093/page_001.webp",
+    "redlines/with_comments_tracking/3d39f0120d/jubarte-093/page_002.webp",
+    "redlines/with_comments_tracking/3d39f0120d/jubarte-093/page_003.webp"
+   ],
    "docxodus": [
     "redlines/with_comments_tracking/3d39f0120d/docxodus/page_001.webp",
     "redlines/with_comments_tracking/3d39f0120d/docxodus/page_002.webp",
@@ -256,10 +325,16 @@
   "page_counts": {
    "reference": 11,
    "jubarte-rust": 11,
+   "jubarte-093": 11,
    "docxodus": 11
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 5.9,
+    "ssim": 15.0,
+    "text_boundary": 45.2
+   },
+   "jubarte-093": {
     "jaccard": 5.9,
     "ssim": 15.0,
     "text_boundary": 45.2
@@ -283,6 +358,9 @@
    "jubarte-rust": [
     "redlines/with_comments_tracking/4ca4e25a83/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "redlines/with_comments_tracking/4ca4e25a83/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "redlines/with_comments_tracking/4ca4e25a83/docxodus/page_001.webp"
    ]
@@ -290,10 +368,16 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 71.1,
+    "ssim": 85.6,
+    "text_boundary": 85.7
+   },
+   "jubarte-093": {
     "jaccard": 71.1,
     "ssim": 85.6,
     "text_boundary": 85.7
@@ -317,6 +401,9 @@
    "jubarte-rust": [
     "redlines/with_comments_tracking/5a72b1ad9e/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "redlines/with_comments_tracking/5a72b1ad9e/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "redlines/with_comments_tracking/5a72b1ad9e/docxodus/page_001.webp"
    ]
@@ -324,10 +411,16 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 83.7,
+    "ssim": 96.3,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
     "jaccard": 83.7,
     "ssim": 96.3,
     "text_boundary": 100.0
@@ -353,6 +446,10 @@
     "redlines/with_comments_tracking/5af67335fe/jubarte-rust/page_001.webp",
     "redlines/with_comments_tracking/5af67335fe/jubarte-rust/page_002.webp"
    ],
+   "jubarte-093": [
+    "redlines/with_comments_tracking/5af67335fe/jubarte-093/page_001.webp",
+    "redlines/with_comments_tracking/5af67335fe/jubarte-093/page_002.webp"
+   ],
    "docxodus": [
     "redlines/with_comments_tracking/5af67335fe/docxodus/page_001.webp",
     "redlines/with_comments_tracking/5af67335fe/docxodus/page_002.webp"
@@ -361,12 +458,18 @@
   "page_counts": {
    "reference": 2,
    "jubarte-rust": 2,
+   "jubarte-093": 2,
    "docxodus": 2
   },
   "scores": {
    "jubarte-rust": {
     "jaccard": 72.3,
     "ssim": 81.7,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
+    "jaccard": 64.5,
+    "ssim": 70.6,
     "text_boundary": 100.0
    },
    "docxodus": {
@@ -392,6 +495,11 @@
     "redlines/with_comments_tracking/5d3a04d9a6/jubarte-rust/page_002.webp",
     "redlines/with_comments_tracking/5d3a04d9a6/jubarte-rust/page_003.webp"
    ],
+   "jubarte-093": [
+    "redlines/with_comments_tracking/5d3a04d9a6/jubarte-093/page_001.webp",
+    "redlines/with_comments_tracking/5d3a04d9a6/jubarte-093/page_002.webp",
+    "redlines/with_comments_tracking/5d3a04d9a6/jubarte-093/page_003.webp"
+   ],
    "docxodus": [
     "redlines/with_comments_tracking/5d3a04d9a6/docxodus/page_001.webp",
     "redlines/with_comments_tracking/5d3a04d9a6/docxodus/page_002.webp",
@@ -401,10 +509,16 @@
   "page_counts": {
    "reference": 5,
    "jubarte-rust": 5,
+   "jubarte-093": 5,
    "docxodus": 5
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 66.4,
+    "ssim": 77.4,
+    "text_boundary": 98.8
+   },
+   "jubarte-093": {
     "jaccard": 66.4,
     "ssim": 77.4,
     "text_boundary": 98.8
@@ -428,6 +542,9 @@
    "jubarte-rust": [
     "redlines/with_comments_tracking/6b7f035223/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "redlines/with_comments_tracking/6b7f035223/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "redlines/with_comments_tracking/6b7f035223/docxodus/page_001.webp"
    ]
@@ -435,10 +552,16 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 48.2,
+    "ssim": 80.3,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
     "jaccard": 48.2,
     "ssim": 80.3,
     "text_boundary": 100.0
@@ -466,6 +589,11 @@
     "redlines/with_comments_tracking/6bf1e10a91/jubarte-rust/page_002.webp",
     "redlines/with_comments_tracking/6bf1e10a91/jubarte-rust/page_003.webp"
    ],
+   "jubarte-093": [
+    "redlines/with_comments_tracking/6bf1e10a91/jubarte-093/page_001.webp",
+    "redlines/with_comments_tracking/6bf1e10a91/jubarte-093/page_002.webp",
+    "redlines/with_comments_tracking/6bf1e10a91/jubarte-093/page_003.webp"
+   ],
    "docxodus": [
     "redlines/with_comments_tracking/6bf1e10a91/docxodus/page_001.webp",
     "redlines/with_comments_tracking/6bf1e10a91/docxodus/page_002.webp",
@@ -475,10 +603,16 @@
   "page_counts": {
    "reference": 3,
    "jubarte-rust": 3,
+   "jubarte-093": 3,
    "docxodus": 3
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 36.3,
+    "ssim": 54.7,
+    "text_boundary": 63.3
+   },
+   "jubarte-093": {
     "jaccard": 36.3,
     "ssim": 54.7,
     "text_boundary": 63.3
@@ -501,14 +635,23 @@
    ],
    "jubarte-rust": [
     "redlines/with_comments_tracking/7da45f822a/jubarte-rust/page_001.webp"
+   ],
+   "jubarte-093": [
+    "redlines/with_comments_tracking/7da45f822a/jubarte-093/page_001.webp"
    ]
   },
   "page_counts": {
    "reference": 1,
-   "jubarte-rust": 1
+   "jubarte-rust": 1,
+   "jubarte-093": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 95.2,
+    "ssim": 95.9,
+    "text_boundary": 66.7
+   },
+   "jubarte-093": {
     "jaccard": 95.2,
     "ssim": 95.9,
     "text_boundary": 66.7
@@ -531,6 +674,11 @@
     "redlines/with_comments_tracking/8d775d42d1/jubarte-rust/page_002.webp",
     "redlines/with_comments_tracking/8d775d42d1/jubarte-rust/page_003.webp"
    ],
+   "jubarte-093": [
+    "redlines/with_comments_tracking/8d775d42d1/jubarte-093/page_001.webp",
+    "redlines/with_comments_tracking/8d775d42d1/jubarte-093/page_002.webp",
+    "redlines/with_comments_tracking/8d775d42d1/jubarte-093/page_003.webp"
+   ],
    "docxodus": [
     "redlines/with_comments_tracking/8d775d42d1/docxodus/page_001.webp",
     "redlines/with_comments_tracking/8d775d42d1/docxodus/page_002.webp",
@@ -540,10 +688,16 @@
   "page_counts": {
    "reference": 3,
    "jubarte-rust": 3,
+   "jubarte-093": 3,
    "docxodus": 3
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 99.1,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
     "jaccard": 99.1,
     "ssim": 100.0,
     "text_boundary": 100.0
@@ -567,6 +721,9 @@
    "jubarte-rust": [
     "redlines/with_comments_tracking/08f3c75cf7/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "redlines/with_comments_tracking/08f3c75cf7/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "redlines/with_comments_tracking/08f3c75cf7/docxodus/page_001.webp"
    ]
@@ -574,10 +731,16 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 95.3,
+    "ssim": 99.4,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
     "jaccard": 95.3,
     "ssim": 99.4,
     "text_boundary": 100.0
@@ -604,14 +767,25 @@
     "redlines/with_comments_tracking/9a2af58d99/jubarte-rust/page_001.webp",
     "redlines/with_comments_tracking/9a2af58d99/jubarte-rust/page_002.webp",
     "redlines/with_comments_tracking/9a2af58d99/jubarte-rust/page_003.webp"
+   ],
+   "jubarte-093": [
+    "redlines/with_comments_tracking/9a2af58d99/jubarte-093/page_001.webp",
+    "redlines/with_comments_tracking/9a2af58d99/jubarte-093/page_002.webp",
+    "redlines/with_comments_tracking/9a2af58d99/jubarte-093/page_003.webp"
    ]
   },
   "page_counts": {
    "reference": 10,
-   "jubarte-rust": 9
+   "jubarte-rust": 9,
+   "jubarte-093": 9
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 6.0,
+    "ssim": 26.4,
+    "text_boundary": 3.5
+   },
+   "jubarte-093": {
     "jaccard": 6.0,
     "ssim": 26.4,
     "text_boundary": 3.5
@@ -630,6 +804,9 @@
    "jubarte-rust": [
     "redlines/with_comments_tracking/23e5ec96c0/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "redlines/with_comments_tracking/23e5ec96c0/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "redlines/with_comments_tracking/23e5ec96c0/docxodus/page_001.webp"
    ]
@@ -637,10 +814,16 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 93.2,
+    "ssim": 97.8,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
     "jaccard": 93.2,
     "ssim": 97.8,
     "text_boundary": 100.0
@@ -667,6 +850,11 @@
     "redlines/with_comments_tracking/34e52d37ea/jubarte-rust/page_002.webp",
     "redlines/with_comments_tracking/34e52d37ea/jubarte-rust/page_003.webp"
    ],
+   "jubarte-093": [
+    "redlines/with_comments_tracking/34e52d37ea/jubarte-093/page_001.webp",
+    "redlines/with_comments_tracking/34e52d37ea/jubarte-093/page_002.webp",
+    "redlines/with_comments_tracking/34e52d37ea/jubarte-093/page_003.webp"
+   ],
    "docxodus": [
     "redlines/with_comments_tracking/34e52d37ea/docxodus/page_001.webp",
     "redlines/with_comments_tracking/34e52d37ea/docxodus/page_002.webp",
@@ -676,10 +864,16 @@
   "page_counts": {
    "reference": 3,
    "jubarte-rust": 3,
+   "jubarte-093": 3,
    "docxodus": 3
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 95.6,
+    "ssim": 98.9,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
     "jaccard": 95.6,
     "ssim": 98.9,
     "text_boundary": 100.0
@@ -707,6 +901,11 @@
     "redlines/with_comments_tracking/92ec8417eb/jubarte-rust/page_002.webp",
     "redlines/with_comments_tracking/92ec8417eb/jubarte-rust/page_003.webp"
    ],
+   "jubarte-093": [
+    "redlines/with_comments_tracking/92ec8417eb/jubarte-093/page_001.webp",
+    "redlines/with_comments_tracking/92ec8417eb/jubarte-093/page_002.webp",
+    "redlines/with_comments_tracking/92ec8417eb/jubarte-093/page_003.webp"
+   ],
    "docxodus": [
     "redlines/with_comments_tracking/92ec8417eb/docxodus/page_001.webp",
     "redlines/with_comments_tracking/92ec8417eb/docxodus/page_002.webp",
@@ -716,10 +915,16 @@
   "page_counts": {
    "reference": 5,
    "jubarte-rust": 5,
+   "jubarte-093": 5,
    "docxodus": 5
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 48.6,
+    "ssim": 63.4,
+    "text_boundary": 38.2
+   },
+   "jubarte-093": {
     "jaccard": 48.6,
     "ssim": 63.4,
     "text_boundary": 38.2
@@ -747,6 +952,11 @@
     "redlines/with_comments_tracking/301e236134/jubarte-rust/page_002.webp",
     "redlines/with_comments_tracking/301e236134/jubarte-rust/page_003.webp"
    ],
+   "jubarte-093": [
+    "redlines/with_comments_tracking/301e236134/jubarte-093/page_001.webp",
+    "redlines/with_comments_tracking/301e236134/jubarte-093/page_002.webp",
+    "redlines/with_comments_tracking/301e236134/jubarte-093/page_003.webp"
+   ],
    "docxodus": [
     "redlines/with_comments_tracking/301e236134/docxodus/page_001.webp",
     "redlines/with_comments_tracking/301e236134/docxodus/page_002.webp",
@@ -756,12 +966,18 @@
   "page_counts": {
    "reference": 5,
    "jubarte-rust": 5,
+   "jubarte-093": 5,
    "docxodus": 5
   },
   "scores": {
    "jubarte-rust": {
     "jaccard": 97.3,
     "ssim": 96.5,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
+    "jaccard": 97.9,
+    "ssim": 95.8,
     "text_boundary": 100.0
    },
    "docxodus": {
@@ -783,6 +999,9 @@
    "jubarte-rust": [
     "redlines/with_comments_tracking/421d863d4e/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "redlines/with_comments_tracking/421d863d4e/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "redlines/with_comments_tracking/421d863d4e/docxodus/page_001.webp"
    ]
@@ -790,10 +1009,16 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 90.6,
+    "ssim": 94.5,
+    "text_boundary": 60.0
+   },
+   "jubarte-093": {
     "jaccard": 90.6,
     "ssim": 94.5,
     "text_boundary": 60.0
@@ -821,6 +1046,11 @@
     "redlines/with_comments_tracking/485b916ef9/jubarte-rust/page_002.webp",
     "redlines/with_comments_tracking/485b916ef9/jubarte-rust/page_003.webp"
    ],
+   "jubarte-093": [
+    "redlines/with_comments_tracking/485b916ef9/jubarte-093/page_001.webp",
+    "redlines/with_comments_tracking/485b916ef9/jubarte-093/page_002.webp",
+    "redlines/with_comments_tracking/485b916ef9/jubarte-093/page_003.webp"
+   ],
    "docxodus": [
     "redlines/with_comments_tracking/485b916ef9/docxodus/page_001.webp",
     "redlines/with_comments_tracking/485b916ef9/docxodus/page_002.webp",
@@ -830,10 +1060,16 @@
   "page_counts": {
    "reference": 3,
    "jubarte-rust": 3,
+   "jubarte-093": 3,
    "docxodus": 3
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 100.0,
+    "ssim": 99.3,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
     "jaccard": 100.0,
     "ssim": 99.3,
     "text_boundary": 100.0
@@ -861,6 +1097,11 @@
     "redlines/with_comments_tracking/03528d6f20/jubarte-rust/page_002.webp",
     "redlines/with_comments_tracking/03528d6f20/jubarte-rust/page_003.webp"
    ],
+   "jubarte-093": [
+    "redlines/with_comments_tracking/03528d6f20/jubarte-093/page_001.webp",
+    "redlines/with_comments_tracking/03528d6f20/jubarte-093/page_002.webp",
+    "redlines/with_comments_tracking/03528d6f20/jubarte-093/page_003.webp"
+   ],
    "docxodus": [
     "redlines/with_comments_tracking/03528d6f20/docxodus/page_001.webp",
     "redlines/with_comments_tracking/03528d6f20/docxodus/page_002.webp",
@@ -870,10 +1111,16 @@
   "page_counts": {
    "reference": 5,
    "jubarte-rust": 5,
+   "jubarte-093": 5,
    "docxodus": 5
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 35.5,
+    "ssim": 47.7,
+    "text_boundary": 81.1
+   },
+   "jubarte-093": {
     "jaccard": 35.5,
     "ssim": 47.7,
     "text_boundary": 81.1
@@ -962,6 +1209,9 @@
    "jubarte-rust": [
     "redlines/with_comments_tracking/aec80553e5/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "redlines/with_comments_tracking/aec80553e5/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "redlines/with_comments_tracking/aec80553e5/docxodus/page_001.webp"
    ],
@@ -972,11 +1222,17 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1,
    "superdoc": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 83.7,
+    "ssim": 89.9,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
     "jaccard": 83.7,
     "ssim": 89.9,
     "text_boundary": 100.0
@@ -1003,14 +1259,22 @@
    ],
    "jubarte-rust": [
     "redlines/with_comments_tracking/e4569d0756/jubarte-rust/page_001.webp"
+   ],
+   "jubarte-093": [
+    "redlines/with_comments_tracking/e4569d0756/jubarte-093/page_001.webp"
    ]
   },
   "page_counts": {
    "reference": 1,
-   "jubarte-rust": 1
+   "jubarte-rust": 1,
+   "jubarte-093": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 62.7,
+    "ssim": 91.1
+   },
+   "jubarte-093": {
     "jaccard": 62.7,
     "ssim": 91.1
    }
@@ -1028,6 +1292,9 @@
    "jubarte-rust": [
     "redlines/with_comments_tracking/f70e805c70/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "redlines/with_comments_tracking/f70e805c70/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "redlines/with_comments_tracking/f70e805c70/docxodus/page_001.webp"
    ]
@@ -1035,10 +1302,16 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 96.3,
+    "ssim": 99.6,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
     "jaccard": 96.3,
     "ssim": 99.6,
     "text_boundary": 100.0
@@ -1065,14 +1338,25 @@
     "redlines/with_comments_tracking/ff24600d87/jubarte-rust/page_001.webp",
     "redlines/with_comments_tracking/ff24600d87/jubarte-rust/page_002.webp",
     "redlines/with_comments_tracking/ff24600d87/jubarte-rust/page_003.webp"
+   ],
+   "jubarte-093": [
+    "redlines/with_comments_tracking/ff24600d87/jubarte-093/page_001.webp",
+    "redlines/with_comments_tracking/ff24600d87/jubarte-093/page_002.webp",
+    "redlines/with_comments_tracking/ff24600d87/jubarte-093/page_003.webp"
    ]
   },
   "page_counts": {
    "reference": 13,
-   "jubarte-rust": 13
+   "jubarte-rust": 13,
+   "jubarte-093": 13
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 75.3,
+    "ssim": 83.3,
+    "text_boundary": 85.2
+   },
+   "jubarte-093": {
     "jaccard": 75.3,
     "ssim": 83.3,
     "text_boundary": 85.2
@@ -1091,6 +1375,9 @@
    "jubarte-rust": [
     "redlines/tracking_without_comments/0dc102debc/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "redlines/tracking_without_comments/0dc102debc/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "redlines/tracking_without_comments/0dc102debc/docxodus/page_001.webp"
    ],
@@ -1101,11 +1388,17 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1,
    "superdoc": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 68.6,
+    "ssim": 81.5,
+    "text_boundary": 66.7
+   },
+   "jubarte-093": {
     "jaccard": 68.6,
     "ssim": 81.5,
     "text_boundary": 66.7
@@ -1133,6 +1426,9 @@
    "jubarte-rust": [
     "redlines/tracking_without_comments/0fc7096b1f/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "redlines/tracking_without_comments/0fc7096b1f/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "redlines/tracking_without_comments/0fc7096b1f/docxodus/page_001.webp"
    ],
@@ -1143,11 +1439,17 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1,
    "superdoc": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 99.1,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
     "jaccard": 99.1,
     "ssim": 100.0,
     "text_boundary": 100.0
@@ -1179,6 +1481,11 @@
     "redlines/tracking_without_comments/1b3a0d0494/jubarte-rust/page_002.webp",
     "redlines/tracking_without_comments/1b3a0d0494/jubarte-rust/page_003.webp"
    ],
+   "jubarte-093": [
+    "redlines/tracking_without_comments/1b3a0d0494/jubarte-093/page_001.webp",
+    "redlines/tracking_without_comments/1b3a0d0494/jubarte-093/page_002.webp",
+    "redlines/tracking_without_comments/1b3a0d0494/jubarte-093/page_003.webp"
+   ],
    "docxodus": [
     "redlines/tracking_without_comments/1b3a0d0494/docxodus/page_001.webp",
     "redlines/tracking_without_comments/1b3a0d0494/docxodus/page_002.webp",
@@ -1188,10 +1495,16 @@
   "page_counts": {
    "reference": 3,
    "jubarte-rust": 3,
+   "jubarte-093": 3,
    "docxodus": 3
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 97.9,
+    "ssim": 98.3,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
     "jaccard": 97.9,
     "ssim": 98.3,
     "text_boundary": 100.0
@@ -1218,14 +1531,25 @@
     "redlines/tracking_without_comments/1da254cb8d/jubarte-rust/page_001.webp",
     "redlines/tracking_without_comments/1da254cb8d/jubarte-rust/page_002.webp",
     "redlines/tracking_without_comments/1da254cb8d/jubarte-rust/page_003.webp"
+   ],
+   "jubarte-093": [
+    "redlines/tracking_without_comments/1da254cb8d/jubarte-093/page_001.webp",
+    "redlines/tracking_without_comments/1da254cb8d/jubarte-093/page_002.webp",
+    "redlines/tracking_without_comments/1da254cb8d/jubarte-093/page_003.webp"
    ]
   },
   "page_counts": {
    "reference": 3,
-   "jubarte-rust": 3
+   "jubarte-rust": 3,
+   "jubarte-093": 3
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 48.8,
+    "ssim": 67.5,
+    "text_boundary": 86.4
+   },
+   "jubarte-093": {
     "jaccard": 48.8,
     "ssim": 67.5,
     "text_boundary": 86.4
@@ -1244,6 +1568,9 @@
    "jubarte-rust": [
     "redlines/tracking_without_comments/2e50998dbb/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "redlines/tracking_without_comments/2e50998dbb/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "redlines/tracking_without_comments/2e50998dbb/docxodus/page_001.webp"
    ],
@@ -1254,6 +1581,7 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1,
    "superdoc": 1
   },
@@ -1261,6 +1589,11 @@
    "jubarte-rust": {
     "jaccard": 99.2,
     "ssim": 99.5,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
+    "jaccard": 99.8,
+    "ssim": 99.8,
     "text_boundary": 100.0
    },
    "docxodus": {
@@ -1289,14 +1622,25 @@
     "redlines/tracking_without_comments/4bf88ed826/jubarte-rust/page_001.webp",
     "redlines/tracking_without_comments/4bf88ed826/jubarte-rust/page_002.webp",
     "redlines/tracking_without_comments/4bf88ed826/jubarte-rust/page_003.webp"
+   ],
+   "jubarte-093": [
+    "redlines/tracking_without_comments/4bf88ed826/jubarte-093/page_001.webp",
+    "redlines/tracking_without_comments/4bf88ed826/jubarte-093/page_002.webp",
+    "redlines/tracking_without_comments/4bf88ed826/jubarte-093/page_003.webp"
    ]
   },
   "page_counts": {
    "reference": 9,
-   "jubarte-rust": 9
+   "jubarte-rust": 9,
+   "jubarte-093": 9
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 68.0,
+    "ssim": 75.4,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
     "jaccard": 68.0,
     "ssim": 75.4,
     "text_boundary": 100.0
@@ -1319,6 +1663,11 @@
     "redlines/tracking_without_comments/7c91c539fa/jubarte-rust/page_002.webp",
     "redlines/tracking_without_comments/7c91c539fa/jubarte-rust/page_003.webp"
    ],
+   "jubarte-093": [
+    "redlines/tracking_without_comments/7c91c539fa/jubarte-093/page_001.webp",
+    "redlines/tracking_without_comments/7c91c539fa/jubarte-093/page_002.webp",
+    "redlines/tracking_without_comments/7c91c539fa/jubarte-093/page_003.webp"
+   ],
    "docxodus": [
     "redlines/tracking_without_comments/7c91c539fa/docxodus/page_001.webp",
     "redlines/tracking_without_comments/7c91c539fa/docxodus/page_002.webp",
@@ -1328,10 +1677,16 @@
   "page_counts": {
    "reference": 12,
    "jubarte-rust": 12,
+   "jubarte-093": 12,
    "docxodus": 12
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 24.1,
+    "ssim": 50.8,
+    "text_boundary": 62.3
+   },
+   "jubarte-093": {
     "jaccard": 24.1,
     "ssim": 50.8,
     "text_boundary": 62.3
@@ -1355,6 +1710,9 @@
    "jubarte-rust": [
     "redlines/tracking_without_comments/7f178a1c3a/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "redlines/tracking_without_comments/7f178a1c3a/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "redlines/tracking_without_comments/7f178a1c3a/docxodus/page_001.webp"
    ],
@@ -1365,6 +1723,7 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1,
    "superdoc": 1
   },
@@ -1372,6 +1731,11 @@
    "jubarte-rust": {
     "jaccard": 99.2,
     "ssim": 99.6,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
+    "jaccard": 98.8,
+    "ssim": 100.0,
     "text_boundary": 100.0
    },
    "docxodus": {
@@ -1399,6 +1763,10 @@
     "redlines/tracking_without_comments/8f5c81c9f4/jubarte-rust/page_001.webp",
     "redlines/tracking_without_comments/8f5c81c9f4/jubarte-rust/page_002.webp"
    ],
+   "jubarte-093": [
+    "redlines/tracking_without_comments/8f5c81c9f4/jubarte-093/page_001.webp",
+    "redlines/tracking_without_comments/8f5c81c9f4/jubarte-093/page_002.webp"
+   ],
    "docxodus": [
     "redlines/tracking_without_comments/8f5c81c9f4/docxodus/page_001.webp",
     "redlines/tracking_without_comments/8f5c81c9f4/docxodus/page_002.webp"
@@ -1407,10 +1775,16 @@
   "page_counts": {
    "reference": 2,
    "jubarte-rust": 2,
+   "jubarte-093": 2,
    "docxodus": 2
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 20.5,
+    "ssim": 44.5,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
     "jaccard": 20.5,
     "ssim": 44.5,
     "text_boundary": 100.0
@@ -1434,6 +1808,9 @@
    "jubarte-rust": [
     "redlines/tracking_without_comments/27f897961f/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "redlines/tracking_without_comments/27f897961f/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "redlines/tracking_without_comments/27f897961f/docxodus/page_001.webp"
    ]
@@ -1441,12 +1818,18 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1
   },
   "scores": {
    "jubarte-rust": {
     "jaccard": 100.0,
     "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
+    "jaccard": 99.0,
+    "ssim": 99.4,
     "text_boundary": 100.0
    },
    "docxodus": {
@@ -1468,6 +1851,9 @@
    "jubarte-rust": [
     "redlines/tracking_without_comments/29a4c9cce0/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "redlines/tracking_without_comments/29a4c9cce0/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "redlines/tracking_without_comments/29a4c9cce0/docxodus/page_001.webp"
    ],
@@ -1478,6 +1864,7 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1,
    "superdoc": 1
   },
@@ -1485,6 +1872,11 @@
    "jubarte-rust": {
     "jaccard": 100.0,
     "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
+    "jaccard": 99.6,
+    "ssim": 99.7,
     "text_boundary": 100.0
    },
    "docxodus": {
@@ -1510,6 +1902,9 @@
    "jubarte-rust": [
     "redlines/tracking_without_comments/34fc0e1cec/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "redlines/tracking_without_comments/34fc0e1cec/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "redlines/tracking_without_comments/34fc0e1cec/docxodus/page_001.webp"
    ],
@@ -1520,11 +1915,17 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1,
    "superdoc": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 98.5,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
     "jaccard": 98.5,
     "ssim": 100.0,
     "text_boundary": 100.0
@@ -1552,6 +1953,9 @@
    "jubarte-rust": [
     "redlines/tracking_without_comments/047b4c0dba/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "redlines/tracking_without_comments/047b4c0dba/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "redlines/tracking_without_comments/047b4c0dba/docxodus/page_001.webp"
    ],
@@ -1562,11 +1966,17 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1,
    "superdoc": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 96.0,
+    "ssim": 99.0,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
     "jaccard": 96.0,
     "ssim": 99.0,
     "text_boundary": 100.0
@@ -1595,6 +2005,9 @@
    "jubarte-rust": [
     "redlines/tracking_without_comments/49b6a13a58/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "redlines/tracking_without_comments/49b6a13a58/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "redlines/tracking_without_comments/49b6a13a58/docxodus/page_001.webp"
    ]
@@ -1602,10 +2015,16 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 99.1,
+    "ssim": 99.7,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
     "jaccard": 99.1,
     "ssim": 99.7,
     "text_boundary": 100.0
@@ -1629,6 +2048,9 @@
    "jubarte-rust": [
     "redlines/tracking_without_comments/49ff615f6a/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "redlines/tracking_without_comments/49ff615f6a/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "redlines/tracking_without_comments/49ff615f6a/docxodus/page_001.webp"
    ],
@@ -1639,11 +2061,17 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1,
    "superdoc": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 98.1,
+    "ssim": 98.9,
+    "text_boundary": 80.0
+   },
+   "jubarte-093": {
     "jaccard": 98.1,
     "ssim": 98.9,
     "text_boundary": 80.0
@@ -1672,6 +2100,9 @@
    "jubarte-rust": [
     "redlines/tracking_without_comments/133d880cce/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "redlines/tracking_without_comments/133d880cce/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "redlines/tracking_without_comments/133d880cce/docxodus/page_001.webp"
    ],
@@ -1682,11 +2113,17 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1,
    "superdoc": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 97.2,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
     "jaccard": 97.2,
     "ssim": 100.0,
     "text_boundary": 100.0
@@ -1715,6 +2152,9 @@
    "jubarte-rust": [
     "redlines/tracking_without_comments/400db1d64b/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "redlines/tracking_without_comments/400db1d64b/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "redlines/tracking_without_comments/400db1d64b/docxodus/page_001.webp"
    ],
@@ -1725,11 +2165,17 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1,
    "superdoc": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 99.4,
+    "ssim": 99.7,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
     "jaccard": 99.4,
     "ssim": 99.7,
     "text_boundary": 100.0
@@ -1761,6 +2207,11 @@
     "redlines/tracking_without_comments/493ef36b4e/jubarte-rust/page_002.webp",
     "redlines/tracking_without_comments/493ef36b4e/jubarte-rust/page_003.webp"
    ],
+   "jubarte-093": [
+    "redlines/tracking_without_comments/493ef36b4e/jubarte-093/page_001.webp",
+    "redlines/tracking_without_comments/493ef36b4e/jubarte-093/page_002.webp",
+    "redlines/tracking_without_comments/493ef36b4e/jubarte-093/page_003.webp"
+   ],
    "docxodus": [
     "redlines/tracking_without_comments/493ef36b4e/docxodus/page_001.webp",
     "redlines/tracking_without_comments/493ef36b4e/docxodus/page_002.webp",
@@ -1770,10 +2221,15 @@
   "page_counts": {
    "reference": 4,
    "jubarte-rust": 3,
+   "jubarte-093": 3,
    "docxodus": 4
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 24.2,
+    "ssim": 32.2
+   },
+   "jubarte-093": {
     "jaccard": 24.2,
     "ssim": 32.2
    },
@@ -1796,6 +2252,9 @@
    "jubarte-rust": [
     "redlines/tracking_without_comments/550baacbbe/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "redlines/tracking_without_comments/550baacbbe/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "redlines/tracking_without_comments/550baacbbe/docxodus/page_001.webp"
    ],
@@ -1806,11 +2265,17 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1,
    "superdoc": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 99.1,
+    "ssim": 99.6,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
     "jaccard": 99.1,
     "ssim": 99.6,
     "text_boundary": 100.0
@@ -1839,6 +2304,9 @@
    "jubarte-rust": [
     "redlines/tracking_without_comments/3584203d14/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "redlines/tracking_without_comments/3584203d14/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "redlines/tracking_without_comments/3584203d14/docxodus/page_001.webp"
    ],
@@ -1849,11 +2317,17 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1,
    "superdoc": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 99.4,
+    "ssim": 99.5,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
     "jaccard": 99.4,
     "ssim": 99.5,
     "text_boundary": 100.0
@@ -1885,6 +2359,11 @@
     "redlines/tracking_without_comments/a3f932cd7b/jubarte-rust/page_002.webp",
     "redlines/tracking_without_comments/a3f932cd7b/jubarte-rust/page_003.webp"
    ],
+   "jubarte-093": [
+    "redlines/tracking_without_comments/a3f932cd7b/jubarte-093/page_001.webp",
+    "redlines/tracking_without_comments/a3f932cd7b/jubarte-093/page_002.webp",
+    "redlines/tracking_without_comments/a3f932cd7b/jubarte-093/page_003.webp"
+   ],
    "docxodus": [
     "redlines/tracking_without_comments/a3f932cd7b/docxodus/page_001.webp",
     "redlines/tracking_without_comments/a3f932cd7b/docxodus/page_002.webp",
@@ -1894,10 +2373,16 @@
   "page_counts": {
    "reference": 26,
    "jubarte-rust": 40,
+   "jubarte-093": 40,
    "docxodus": 40
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 5.8,
+    "ssim": 17.4,
+    "text_boundary": 24.2
+   },
+   "jubarte-093": {
     "jaccard": 5.8,
     "ssim": 17.4,
     "text_boundary": 24.2
@@ -1921,6 +2406,9 @@
    "jubarte-rust": [
     "redlines/tracking_without_comments/b512085c37/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "redlines/tracking_without_comments/b512085c37/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "redlines/tracking_without_comments/b512085c37/docxodus/page_001.webp"
    ],
@@ -1931,11 +2419,17 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1,
    "superdoc": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 99.3,
+    "ssim": 99.8,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
     "jaccard": 99.3,
     "ssim": 99.8,
     "text_boundary": 100.0
@@ -1967,6 +2461,11 @@
     "redlines/tracking_without_comments/c666af0e39/jubarte-rust/page_002.webp",
     "redlines/tracking_without_comments/c666af0e39/jubarte-rust/page_003.webp"
    ],
+   "jubarte-093": [
+    "redlines/tracking_without_comments/c666af0e39/jubarte-093/page_001.webp",
+    "redlines/tracking_without_comments/c666af0e39/jubarte-093/page_002.webp",
+    "redlines/tracking_without_comments/c666af0e39/jubarte-093/page_003.webp"
+   ],
    "docxodus": [
     "redlines/tracking_without_comments/c666af0e39/docxodus/page_001.webp",
     "redlines/tracking_without_comments/c666af0e39/docxodus/page_002.webp",
@@ -1976,12 +2475,18 @@
   "page_counts": {
    "reference": 3,
    "jubarte-rust": 3,
+   "jubarte-093": 3,
    "docxodus": 3
   },
   "scores": {
    "jubarte-rust": {
     "jaccard": 43.7,
     "ssim": 58.9,
+    "text_boundary": 97.0
+   },
+   "jubarte-093": {
+    "jaccard": 44.0,
+    "ssim": 58.8,
     "text_boundary": 97.0
    },
    "docxodus": {
@@ -2003,6 +2508,9 @@
    "jubarte-rust": [
     "redlines/tracking_without_comments/c88669a862/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "redlines/tracking_without_comments/c88669a862/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "redlines/tracking_without_comments/c88669a862/docxodus/page_001.webp"
    ],
@@ -2013,11 +2521,17 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1,
    "superdoc": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 99.5,
+    "ssim": 99.6,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
     "jaccard": 99.5,
     "ssim": 99.6,
     "text_boundary": 100.0
@@ -2050,6 +2564,11 @@
     "redlines/tracking_without_comments/c7562992ed/jubarte-rust/page_002.webp",
     "redlines/tracking_without_comments/c7562992ed/jubarte-rust/page_003.webp"
    ],
+   "jubarte-093": [
+    "redlines/tracking_without_comments/c7562992ed/jubarte-093/page_001.webp",
+    "redlines/tracking_without_comments/c7562992ed/jubarte-093/page_002.webp",
+    "redlines/tracking_without_comments/c7562992ed/jubarte-093/page_003.webp"
+   ],
    "docxodus": [
     "redlines/tracking_without_comments/c7562992ed/docxodus/page_001.webp",
     "redlines/tracking_without_comments/c7562992ed/docxodus/page_002.webp",
@@ -2059,10 +2578,16 @@
   "page_counts": {
    "reference": 5,
    "jubarte-rust": 5,
+   "jubarte-093": 5,
    "docxodus": 5
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 48.4,
+    "ssim": 57.4,
+    "text_boundary": 68.8
+   },
+   "jubarte-093": {
     "jaccard": 48.4,
     "ssim": 57.4,
     "text_boundary": 68.8
@@ -2087,6 +2612,9 @@
    "jubarte-rust": [
     "redlines/tracking_without_comments/cb14893905/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "redlines/tracking_without_comments/cb14893905/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "redlines/tracking_without_comments/cb14893905/docxodus/page_001.webp"
    ]
@@ -2094,10 +2622,16 @@
   "page_counts": {
    "reference": 2,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 13.6,
+    "ssim": 27.3,
+    "text_boundary": 58.8
+   },
+   "jubarte-093": {
     "jaccard": 13.6,
     "ssim": 27.3,
     "text_boundary": 58.8
@@ -2124,14 +2658,25 @@
     "redlines/tracking_without_comments/d27aec936f/jubarte-rust/page_001.webp",
     "redlines/tracking_without_comments/d27aec936f/jubarte-rust/page_002.webp",
     "redlines/tracking_without_comments/d27aec936f/jubarte-rust/page_003.webp"
+   ],
+   "jubarte-093": [
+    "redlines/tracking_without_comments/d27aec936f/jubarte-093/page_001.webp",
+    "redlines/tracking_without_comments/d27aec936f/jubarte-093/page_002.webp",
+    "redlines/tracking_without_comments/d27aec936f/jubarte-093/page_003.webp"
    ]
   },
   "page_counts": {
    "reference": 3,
-   "jubarte-rust": 3
+   "jubarte-rust": 3,
+   "jubarte-093": 3
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 35.4,
+    "ssim": 44.5,
+    "text_boundary": 8.4
+   },
+   "jubarte-093": {
     "jaccard": 35.4,
     "ssim": 44.5,
     "text_boundary": 8.4
@@ -2153,14 +2698,25 @@
     "redlines/tracking_without_comments/f007ed2234/jubarte-rust/page_001.webp",
     "redlines/tracking_without_comments/f007ed2234/jubarte-rust/page_002.webp",
     "redlines/tracking_without_comments/f007ed2234/jubarte-rust/page_003.webp"
+   ],
+   "jubarte-093": [
+    "redlines/tracking_without_comments/f007ed2234/jubarte-093/page_001.webp",
+    "redlines/tracking_without_comments/f007ed2234/jubarte-093/page_002.webp",
+    "redlines/tracking_without_comments/f007ed2234/jubarte-093/page_003.webp"
    ]
   },
   "page_counts": {
    "reference": 4,
-   "jubarte-rust": 4
+   "jubarte-rust": 4,
+   "jubarte-093": 4
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 55.6,
+    "ssim": 68.5,
+    "text_boundary": 96.8
+   },
+   "jubarte-093": {
     "jaccard": 55.6,
     "ssim": 68.5,
     "text_boundary": 96.8
@@ -2179,6 +2735,9 @@
    "jubarte-rust": [
     "redlines/tracking_without_comments/f670d03eff/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "redlines/tracking_without_comments/f670d03eff/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "redlines/tracking_without_comments/f670d03eff/docxodus/page_001.webp"
    ],
@@ -2189,11 +2748,16 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1,
    "superdoc": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 48.9,
+    "ssim": 69.4
+   },
+   "jubarte-093": {
     "jaccard": 48.9,
     "ssim": 69.4
    },
@@ -2223,14 +2787,25 @@
     "redlines/tracking_without_comments/f2221d321a/jubarte-rust/page_001.webp",
     "redlines/tracking_without_comments/f2221d321a/jubarte-rust/page_002.webp",
     "redlines/tracking_without_comments/f2221d321a/jubarte-rust/page_003.webp"
+   ],
+   "jubarte-093": [
+    "redlines/tracking_without_comments/f2221d321a/jubarte-093/page_001.webp",
+    "redlines/tracking_without_comments/f2221d321a/jubarte-093/page_002.webp",
+    "redlines/tracking_without_comments/f2221d321a/jubarte-093/page_003.webp"
    ]
   },
   "page_counts": {
    "reference": 4,
-   "jubarte-rust": 4
+   "jubarte-rust": 4,
+   "jubarte-093": 4
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 81.9,
+    "ssim": 87.3,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
     "jaccard": 81.9,
     "ssim": 87.3,
     "text_boundary": 100.0
@@ -2253,6 +2828,11 @@
     "accepted/with_comments_tracking/0aa74e0de4/jubarte-rust/page_002.webp",
     "accepted/with_comments_tracking/0aa74e0de4/jubarte-rust/page_003.webp"
    ],
+   "jubarte-093": [
+    "accepted/with_comments_tracking/0aa74e0de4/jubarte-093/page_001.webp",
+    "accepted/with_comments_tracking/0aa74e0de4/jubarte-093/page_002.webp",
+    "accepted/with_comments_tracking/0aa74e0de4/jubarte-093/page_003.webp"
+   ],
    "docxodus": [
     "accepted/with_comments_tracking/0aa74e0de4/docxodus/page_001.webp",
     "accepted/with_comments_tracking/0aa74e0de4/docxodus/page_002.webp",
@@ -2262,6 +2842,7 @@
   "page_counts": {
    "reference": 11,
    "jubarte-rust": 11,
+   "jubarte-093": 11,
    "docxodus": 11
   },
   "scores": {
@@ -2269,6 +2850,11 @@
     "jaccard": 5.8,
     "ssim": 12.0,
     "text_boundary": 98.3
+   },
+   "jubarte-093": {
+    "jaccard": 5.8,
+    "ssim": 12.0,
+    "text_boundary": 98.8
    },
    "docxodus": {
     "jaccard": 5.8,
@@ -2289,6 +2875,9 @@
    "jubarte-rust": [
     "accepted/with_comments_tracking/4eff11f045/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "accepted/with_comments_tracking/4eff11f045/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "accepted/with_comments_tracking/4eff11f045/docxodus/page_001.webp"
    ]
@@ -2296,10 +2885,16 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 56.1,
+    "ssim": 72.1,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
     "jaccard": 56.1,
     "ssim": 72.1,
     "text_boundary": 100.0
@@ -2323,6 +2918,9 @@
    "jubarte-rust": [
     "accepted/with_comments_tracking/5f0fed8e2a/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "accepted/with_comments_tracking/5f0fed8e2a/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "accepted/with_comments_tracking/5f0fed8e2a/docxodus/page_001.webp"
    ]
@@ -2330,10 +2928,16 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 44.6,
+    "ssim": 99.8,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
     "jaccard": 44.6,
     "ssim": 99.8,
     "text_boundary": 100.0
@@ -2357,6 +2961,9 @@
    "jubarte-rust": [
     "accepted/with_comments_tracking/9c8876c6d7/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "accepted/with_comments_tracking/9c8876c6d7/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "accepted/with_comments_tracking/9c8876c6d7/docxodus/page_001.webp"
    ]
@@ -2364,10 +2971,16 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 57.3,
+    "ssim": 98.8,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
     "jaccard": 57.3,
     "ssim": 98.8,
     "text_boundary": 100.0
@@ -2391,6 +3004,9 @@
    "jubarte-rust": [
     "accepted/with_comments_tracking/25f1d6ecc3/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "accepted/with_comments_tracking/25f1d6ecc3/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "accepted/with_comments_tracking/25f1d6ecc3/docxodus/page_001.webp"
    ]
@@ -2398,10 +3014,16 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 39.7,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
     "jaccard": 39.7,
     "ssim": 100.0,
     "text_boundary": 100.0
@@ -2425,6 +3047,9 @@
    "jubarte-rust": [
     "accepted/with_comments_tracking/29e3872eed/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "accepted/with_comments_tracking/29e3872eed/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "accepted/with_comments_tracking/29e3872eed/docxodus/page_001.webp"
    ]
@@ -2432,10 +3057,16 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 54.2,
+    "ssim": 71.8,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
     "jaccard": 54.2,
     "ssim": 71.8,
     "text_boundary": 100.0
@@ -2459,6 +3090,9 @@
    "jubarte-rust": [
     "accepted/with_comments_tracking/145b9e67e2/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "accepted/with_comments_tracking/145b9e67e2/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "accepted/with_comments_tracking/145b9e67e2/docxodus/page_001.webp"
    ]
@@ -2466,12 +3100,18 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1
   },
   "scores": {
    "jubarte-rust": {
     "jaccard": 100.0,
     "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
+    "jaccard": 99.3,
+    "ssim": 99.5,
     "text_boundary": 100.0
    },
    "docxodus": {
@@ -2497,6 +3137,11 @@
     "accepted/with_comments_tracking/2288f27be1/jubarte-rust/page_002.webp",
     "accepted/with_comments_tracking/2288f27be1/jubarte-rust/page_003.webp"
    ],
+   "jubarte-093": [
+    "accepted/with_comments_tracking/2288f27be1/jubarte-093/page_001.webp",
+    "accepted/with_comments_tracking/2288f27be1/jubarte-093/page_002.webp",
+    "accepted/with_comments_tracking/2288f27be1/jubarte-093/page_003.webp"
+   ],
    "docxodus": [
     "accepted/with_comments_tracking/2288f27be1/docxodus/page_001.webp",
     "accepted/with_comments_tracking/2288f27be1/docxodus/page_002.webp",
@@ -2506,10 +3151,16 @@
   "page_counts": {
    "reference": 11,
    "jubarte-rust": 11,
+   "jubarte-093": 11,
    "docxodus": 11
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 5.0,
+    "ssim": 10.7,
+    "text_boundary": 65.4
+   },
+   "jubarte-093": {
     "jaccard": 5.0,
     "ssim": 10.7,
     "text_boundary": 65.4
@@ -2537,6 +3188,11 @@
     "accepted/with_comments_tracking/3866f441cc/jubarte-rust/page_002.webp",
     "accepted/with_comments_tracking/3866f441cc/jubarte-rust/page_003.webp"
    ],
+   "jubarte-093": [
+    "accepted/with_comments_tracking/3866f441cc/jubarte-093/page_001.webp",
+    "accepted/with_comments_tracking/3866f441cc/jubarte-093/page_002.webp",
+    "accepted/with_comments_tracking/3866f441cc/jubarte-093/page_003.webp"
+   ],
    "docxodus": [
     "accepted/with_comments_tracking/3866f441cc/docxodus/page_001.webp",
     "accepted/with_comments_tracking/3866f441cc/docxodus/page_002.webp",
@@ -2546,10 +3202,16 @@
   "page_counts": {
    "reference": 4,
    "jubarte-rust": 4,
+   "jubarte-093": 4,
    "docxodus": 4
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 17.0,
+    "ssim": 25.9,
+    "text_boundary": 24.8
+   },
+   "jubarte-093": {
     "jaccard": 17.0,
     "ssim": 25.9,
     "text_boundary": 24.8
@@ -2577,6 +3239,11 @@
     "accepted/with_comments_tracking/92075b7449/jubarte-rust/page_002.webp",
     "accepted/with_comments_tracking/92075b7449/jubarte-rust/page_003.webp"
    ],
+   "jubarte-093": [
+    "accepted/with_comments_tracking/92075b7449/jubarte-093/page_001.webp",
+    "accepted/with_comments_tracking/92075b7449/jubarte-093/page_002.webp",
+    "accepted/with_comments_tracking/92075b7449/jubarte-093/page_003.webp"
+   ],
    "docxodus": [
     "accepted/with_comments_tracking/92075b7449/docxodus/page_001.webp",
     "accepted/with_comments_tracking/92075b7449/docxodus/page_002.webp",
@@ -2586,10 +3253,16 @@
   "page_counts": {
    "reference": 9,
    "jubarte-rust": 9,
+   "jubarte-093": 9,
    "docxodus": 9
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 5.4,
+    "ssim": 12.1,
+    "text_boundary": 98.4
+   },
+   "jubarte-093": {
     "jaccard": 5.4,
     "ssim": 12.1,
     "text_boundary": 98.4
@@ -2613,6 +3286,9 @@
    "jubarte-rust": [
     "accepted/with_comments_tracking/750426b989/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "accepted/with_comments_tracking/750426b989/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "accepted/with_comments_tracking/750426b989/docxodus/page_001.webp"
    ]
@@ -2620,10 +3296,16 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
     "jaccard": 100.0,
     "ssim": 100.0,
     "text_boundary": 100.0
@@ -2651,6 +3333,11 @@
     "accepted/with_comments_tracking/957168bc45/jubarte-rust/page_002.webp",
     "accepted/with_comments_tracking/957168bc45/jubarte-rust/page_003.webp"
    ],
+   "jubarte-093": [
+    "accepted/with_comments_tracking/957168bc45/jubarte-093/page_001.webp",
+    "accepted/with_comments_tracking/957168bc45/jubarte-093/page_002.webp",
+    "accepted/with_comments_tracking/957168bc45/jubarte-093/page_003.webp"
+   ],
    "docxodus": [
     "accepted/with_comments_tracking/957168bc45/docxodus/page_001.webp",
     "accepted/with_comments_tracking/957168bc45/docxodus/page_002.webp",
@@ -2660,10 +3347,16 @@
   "page_counts": {
    "reference": 3,
    "jubarte-rust": 3,
+   "jubarte-093": 3,
    "docxodus": 3
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 98.6,
+    "ssim": 99.0,
+    "text_boundary": 98.7
+   },
+   "jubarte-093": {
     "jaccard": 98.6,
     "ssim": 99.0,
     "text_boundary": 98.7
@@ -2689,6 +3382,10 @@
     "accepted/with_comments_tracking/a202881c62/jubarte-rust/page_001.webp",
     "accepted/with_comments_tracking/a202881c62/jubarte-rust/page_002.webp"
    ],
+   "jubarte-093": [
+    "accepted/with_comments_tracking/a202881c62/jubarte-093/page_001.webp",
+    "accepted/with_comments_tracking/a202881c62/jubarte-093/page_002.webp"
+   ],
    "docxodus": [
     "accepted/with_comments_tracking/a202881c62/docxodus/page_001.webp",
     "accepted/with_comments_tracking/a202881c62/docxodus/page_002.webp"
@@ -2697,12 +3394,18 @@
   "page_counts": {
    "reference": 2,
    "jubarte-rust": 2,
+   "jubarte-093": 2,
    "docxodus": 2
   },
   "scores": {
    "jubarte-rust": {
     "jaccard": 70.1,
     "ssim": 80.1,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
+    "jaccard": 61.9,
+    "ssim": 67.5,
     "text_boundary": 100.0
    },
    "docxodus": {
@@ -2724,6 +3427,9 @@
    "jubarte-rust": [
     "accepted/with_comments_tracking/ac6cd8d92f/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "accepted/with_comments_tracking/ac6cd8d92f/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "accepted/with_comments_tracking/ac6cd8d92f/docxodus/page_001.webp"
    ]
@@ -2731,10 +3437,16 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 25.9,
+    "ssim": 99.8,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
     "jaccard": 25.9,
     "ssim": 99.8,
     "text_boundary": 100.0
@@ -2762,6 +3474,11 @@
     "accepted/with_comments_tracking/af90d4e258/jubarte-rust/page_002.webp",
     "accepted/with_comments_tracking/af90d4e258/jubarte-rust/page_003.webp"
    ],
+   "jubarte-093": [
+    "accepted/with_comments_tracking/af90d4e258/jubarte-093/page_001.webp",
+    "accepted/with_comments_tracking/af90d4e258/jubarte-093/page_002.webp",
+    "accepted/with_comments_tracking/af90d4e258/jubarte-093/page_003.webp"
+   ],
    "docxodus": [
     "accepted/with_comments_tracking/af90d4e258/docxodus/page_001.webp",
     "accepted/with_comments_tracking/af90d4e258/docxodus/page_002.webp",
@@ -2771,10 +3488,16 @@
   "page_counts": {
    "reference": 5,
    "jubarte-rust": 5,
+   "jubarte-093": 5,
    "docxodus": 5
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 11.6,
+    "ssim": 32.9,
+    "text_boundary": 56.6
+   },
+   "jubarte-093": {
     "jaccard": 11.6,
     "ssim": 32.9,
     "text_boundary": 56.6
@@ -2802,6 +3525,11 @@
     "accepted/with_comments_tracking/af568343b6/jubarte-rust/page_002.webp",
     "accepted/with_comments_tracking/af568343b6/jubarte-rust/page_003.webp"
    ],
+   "jubarte-093": [
+    "accepted/with_comments_tracking/af568343b6/jubarte-093/page_001.webp",
+    "accepted/with_comments_tracking/af568343b6/jubarte-093/page_002.webp",
+    "accepted/with_comments_tracking/af568343b6/jubarte-093/page_003.webp"
+   ],
    "docxodus": [
     "accepted/with_comments_tracking/af568343b6/docxodus/page_001.webp",
     "accepted/with_comments_tracking/af568343b6/docxodus/page_002.webp",
@@ -2811,10 +3539,16 @@
   "page_counts": {
    "reference": 5,
    "jubarte-rust": 5,
+   "jubarte-093": 5,
    "docxodus": 5
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 99.9,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
     "jaccard": 99.9,
     "ssim": 100.0,
     "text_boundary": 100.0
@@ -2838,6 +3572,9 @@
    "jubarte-rust": [
     "accepted/with_comments_tracking/bfff2b1ab0/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "accepted/with_comments_tracking/bfff2b1ab0/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "accepted/with_comments_tracking/bfff2b1ab0/docxodus/page_001.webp"
    ]
@@ -2845,10 +3582,15 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 49.3,
+    "ssim": 70.3
+   },
+   "jubarte-093": {
     "jaccard": 49.3,
     "ssim": 70.3
    },
@@ -2870,6 +3612,9 @@
    "jubarte-rust": [
     "accepted/with_comments_tracking/d12806f3e8/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "accepted/with_comments_tracking/d12806f3e8/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "accepted/with_comments_tracking/d12806f3e8/docxodus/page_001.webp"
    ]
@@ -2877,10 +3622,15 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 71.3,
+    "ssim": 80.6
+   },
+   "jubarte-093": {
     "jaccard": 71.3,
     "ssim": 80.6
    },
@@ -2902,6 +3652,9 @@
    "jubarte-rust": [
     "accepted/with_comments_tracking/ddd1e0f952/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "accepted/with_comments_tracking/ddd1e0f952/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "accepted/with_comments_tracking/ddd1e0f952/docxodus/page_001.webp"
    ]
@@ -2909,10 +3662,16 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 87.7,
+    "ssim": 94.2,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
     "jaccard": 87.7,
     "ssim": 94.2,
     "text_boundary": 100.0
@@ -2940,6 +3699,11 @@
     "accepted/with_comments_tracking/ebeb91fe7f/jubarte-rust/page_002.webp",
     "accepted/with_comments_tracking/ebeb91fe7f/jubarte-rust/page_003.webp"
    ],
+   "jubarte-093": [
+    "accepted/with_comments_tracking/ebeb91fe7f/jubarte-093/page_001.webp",
+    "accepted/with_comments_tracking/ebeb91fe7f/jubarte-093/page_002.webp",
+    "accepted/with_comments_tracking/ebeb91fe7f/jubarte-093/page_003.webp"
+   ],
    "docxodus": [
     "accepted/with_comments_tracking/ebeb91fe7f/docxodus/page_001.webp",
     "accepted/with_comments_tracking/ebeb91fe7f/docxodus/page_002.webp",
@@ -2949,6 +3713,7 @@
   "page_counts": {
    "reference": 11,
    "jubarte-rust": 11,
+   "jubarte-093": 11,
    "docxodus": 11
   },
   "scores": {
@@ -2956,6 +3721,11 @@
     "jaccard": 6.0,
     "ssim": 12.2,
     "text_boundary": 98.3
+   },
+   "jubarte-093": {
+    "jaccard": 6.0,
+    "ssim": 12.1,
+    "text_boundary": 98.8
    },
    "docxodus": {
     "jaccard": 6.1,
@@ -2976,6 +3746,9 @@
    "jubarte-rust": [
     "accepted/tracking_without_comments/1b4dd65cb9/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "accepted/tracking_without_comments/1b4dd65cb9/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "accepted/tracking_without_comments/1b4dd65cb9/docxodus/page_001.webp"
    ]
@@ -2983,10 +3756,16 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 89.3,
+    "ssim": 95.0,
+    "text_boundary": 93.8
+   },
+   "jubarte-093": {
     "jaccard": 89.3,
     "ssim": 95.0,
     "text_boundary": 93.8
@@ -3010,6 +3789,9 @@
    "jubarte-rust": [
     "accepted/tracking_without_comments/1eb1aa2dac/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "accepted/tracking_without_comments/1eb1aa2dac/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "accepted/tracking_without_comments/1eb1aa2dac/docxodus/page_001.webp"
    ]
@@ -3017,10 +3799,16 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
     "jaccard": 100.0,
     "ssim": 100.0,
     "text_boundary": 100.0
@@ -3044,6 +3832,9 @@
    "jubarte-rust": [
     "accepted/tracking_without_comments/9e30446cea/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "accepted/tracking_without_comments/9e30446cea/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "accepted/tracking_without_comments/9e30446cea/docxodus/page_001.webp"
    ]
@@ -3051,10 +3842,16 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
     "jaccard": 100.0,
     "ssim": 100.0,
     "text_boundary": 100.0
@@ -3078,6 +3875,9 @@
    "jubarte-rust": [
     "accepted/tracking_without_comments/218c9d60d5/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "accepted/tracking_without_comments/218c9d60d5/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "accepted/tracking_without_comments/218c9d60d5/docxodus/page_001.webp"
    ],
@@ -3088,11 +3888,17 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1,
    "superdoc": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 70.0,
+    "ssim": 80.4,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
     "jaccard": 70.0,
     "ssim": 80.4,
     "text_boundary": 100.0
@@ -3121,6 +3927,9 @@
    "jubarte-rust": [
     "accepted/tracking_without_comments/774dc7a15f/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "accepted/tracking_without_comments/774dc7a15f/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "accepted/tracking_without_comments/774dc7a15f/docxodus/page_001.webp"
    ]
@@ -3128,10 +3937,16 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
     "jaccard": 100.0,
     "ssim": 100.0,
     "text_boundary": 100.0
@@ -3155,6 +3970,9 @@
    "jubarte-rust": [
     "accepted/tracking_without_comments/791ca61933/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "accepted/tracking_without_comments/791ca61933/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "accepted/tracking_without_comments/791ca61933/docxodus/page_001.webp"
    ]
@@ -3162,10 +3980,16 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 99.9,
+    "ssim": 99.9,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
     "jaccard": 99.9,
     "ssim": 99.9,
     "text_boundary": 100.0
@@ -3189,6 +4013,9 @@
    "jubarte-rust": [
     "accepted/tracking_without_comments/8836f9bbdb/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "accepted/tracking_without_comments/8836f9bbdb/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "accepted/tracking_without_comments/8836f9bbdb/docxodus/page_001.webp"
    ]
@@ -3196,10 +4023,16 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 98.5,
+    "ssim": 99.2,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
     "jaccard": 98.5,
     "ssim": 99.2,
     "text_boundary": 100.0
@@ -3223,6 +4056,9 @@
    "jubarte-rust": [
     "accepted/tracking_without_comments/b3e000423e/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "accepted/tracking_without_comments/b3e000423e/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "accepted/tracking_without_comments/b3e000423e/docxodus/page_001.webp"
    ],
@@ -3233,11 +4069,17 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1,
    "superdoc": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
     "jaccard": 100.0,
     "ssim": 100.0,
     "text_boundary": 100.0
@@ -3266,6 +4108,9 @@
    "jubarte-rust": [
     "accepted/tracking_without_comments/b14882f3e9/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "accepted/tracking_without_comments/b14882f3e9/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "accepted/tracking_without_comments/b14882f3e9/docxodus/page_001.webp"
    ]
@@ -3273,10 +4118,16 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 88.7,
+    "ssim": 97.4,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
     "jaccard": 88.7,
     "ssim": 97.4,
     "text_boundary": 100.0
@@ -3300,6 +4151,9 @@
    "jubarte-rust": [
     "accepted/tracking_without_comments/b39664d822/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "accepted/tracking_without_comments/b39664d822/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "accepted/tracking_without_comments/b39664d822/docxodus/page_001.webp"
    ]
@@ -3307,10 +4161,16 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 99.3,
+    "ssim": 99.8,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
     "jaccard": 99.3,
     "ssim": 99.8,
     "text_boundary": 100.0
@@ -3338,6 +4198,11 @@
     "accepted/tracking_without_comments/bc0135eaa1/jubarte-rust/page_002.webp",
     "accepted/tracking_without_comments/bc0135eaa1/jubarte-rust/page_003.webp"
    ],
+   "jubarte-093": [
+    "accepted/tracking_without_comments/bc0135eaa1/jubarte-093/page_001.webp",
+    "accepted/tracking_without_comments/bc0135eaa1/jubarte-093/page_002.webp",
+    "accepted/tracking_without_comments/bc0135eaa1/jubarte-093/page_003.webp"
+   ],
    "docxodus": [
     "accepted/tracking_without_comments/bc0135eaa1/docxodus/page_001.webp",
     "accepted/tracking_without_comments/bc0135eaa1/docxodus/page_002.webp",
@@ -3347,10 +4212,16 @@
   "page_counts": {
    "reference": 3,
    "jubarte-rust": 3,
+   "jubarte-093": 3,
    "docxodus": 3
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 9.8,
+    "ssim": 17.9,
+    "text_boundary": 46.5
+   },
+   "jubarte-093": {
     "jaccard": 9.8,
     "ssim": 17.9,
     "text_boundary": 46.5
@@ -3374,6 +4245,9 @@
    "jubarte-rust": [
     "accepted/tracking_without_comments/c41217de00/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "accepted/tracking_without_comments/c41217de00/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "accepted/tracking_without_comments/c41217de00/docxodus/page_001.webp"
    ]
@@ -3381,10 +4255,16 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
     "jaccard": 100.0,
     "ssim": 100.0,
     "text_boundary": 100.0
@@ -3408,6 +4288,9 @@
    "jubarte-rust": [
     "accepted/tracking_without_comments/ce433a28fb/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "accepted/tracking_without_comments/ce433a28fb/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "accepted/tracking_without_comments/ce433a28fb/docxodus/page_001.webp"
    ],
@@ -3418,11 +4301,17 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1,
    "superdoc": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
     "jaccard": 100.0,
     "ssim": 100.0,
     "text_boundary": 100.0
@@ -3452,14 +4341,24 @@
    "jubarte-rust": [
     "accepted/tracking_without_comments/e9e7b29b93/jubarte-rust/page_001.webp",
     "accepted/tracking_without_comments/e9e7b29b93/jubarte-rust/page_002.webp"
+   ],
+   "jubarte-093": [
+    "accepted/tracking_without_comments/e9e7b29b93/jubarte-093/page_001.webp",
+    "accepted/tracking_without_comments/e9e7b29b93/jubarte-093/page_002.webp"
    ]
   },
   "page_counts": {
    "reference": 2,
-   "jubarte-rust": 2
+   "jubarte-rust": 2,
+   "jubarte-093": 2
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 72.3,
+    "ssim": 72.2,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
     "jaccard": 72.3,
     "ssim": 72.2,
     "text_boundary": 100.0
@@ -3477,14 +4376,23 @@
    ],
    "jubarte-rust": [
     "accepted/tracking_without_comments/e97f1c7c8f/jubarte-rust/page_001.webp"
+   ],
+   "jubarte-093": [
+    "accepted/tracking_without_comments/e97f1c7c8f/jubarte-093/page_001.webp"
    ]
   },
   "page_counts": {
    "reference": 1,
-   "jubarte-rust": 1
+   "jubarte-rust": 1,
+   "jubarte-093": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 98.5,
+    "ssim": 99.2,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
     "jaccard": 98.5,
     "ssim": 99.2,
     "text_boundary": 100.0
@@ -3507,6 +4415,11 @@
     "accepted/tracking_without_comments/e271e070c2/jubarte-rust/page_002.webp",
     "accepted/tracking_without_comments/e271e070c2/jubarte-rust/page_003.webp"
    ],
+   "jubarte-093": [
+    "accepted/tracking_without_comments/e271e070c2/jubarte-093/page_001.webp",
+    "accepted/tracking_without_comments/e271e070c2/jubarte-093/page_002.webp",
+    "accepted/tracking_without_comments/e271e070c2/jubarte-093/page_003.webp"
+   ],
    "docxodus": [
     "accepted/tracking_without_comments/e271e070c2/docxodus/page_001.webp",
     "accepted/tracking_without_comments/e271e070c2/docxodus/page_002.webp",
@@ -3516,10 +4429,16 @@
   "page_counts": {
    "reference": 6,
    "jubarte-rust": 6,
+   "jubarte-093": 6,
    "docxodus": 6
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
     "jaccard": 100.0,
     "ssim": 100.0,
     "text_boundary": 100.0
@@ -3546,14 +4465,25 @@
     "accepted/tracking_without_comments/ebe3e5ca03/jubarte-rust/page_001.webp",
     "accepted/tracking_without_comments/ebe3e5ca03/jubarte-rust/page_002.webp",
     "accepted/tracking_without_comments/ebe3e5ca03/jubarte-rust/page_003.webp"
+   ],
+   "jubarte-093": [
+    "accepted/tracking_without_comments/ebe3e5ca03/jubarte-093/page_001.webp",
+    "accepted/tracking_without_comments/ebe3e5ca03/jubarte-093/page_002.webp",
+    "accepted/tracking_without_comments/ebe3e5ca03/jubarte-093/page_003.webp"
    ]
   },
   "page_counts": {
    "reference": 8,
-   "jubarte-rust": 8
+   "jubarte-rust": 8,
+   "jubarte-093": 8
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 99.9,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
     "jaccard": 99.9,
     "ssim": 100.0,
     "text_boundary": 100.0
@@ -3574,6 +4504,10 @@
     "accepted/tracking_without_comments/f1257ca7ea/jubarte-rust/page_001.webp",
     "accepted/tracking_without_comments/f1257ca7ea/jubarte-rust/page_002.webp"
    ],
+   "jubarte-093": [
+    "accepted/tracking_without_comments/f1257ca7ea/jubarte-093/page_001.webp",
+    "accepted/tracking_without_comments/f1257ca7ea/jubarte-093/page_002.webp"
+   ],
    "docxodus": [
     "accepted/tracking_without_comments/f1257ca7ea/docxodus/page_001.webp",
     "accepted/tracking_without_comments/f1257ca7ea/docxodus/page_002.webp"
@@ -3582,10 +4516,15 @@
   "page_counts": {
    "reference": 2,
    "jubarte-rust": 2,
+   "jubarte-093": 2,
    "docxodus": 2
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 1.7,
+    "ssim": 5.5
+   },
+   "jubarte-093": {
     "jaccard": 1.7,
     "ssim": 5.5
    },
@@ -3607,6 +4546,9 @@
    "jubarte-rust": [
     "accepted/tracking_without_comments/fe2fb2ad13/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "accepted/tracking_without_comments/fe2fb2ad13/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "accepted/tracking_without_comments/fe2fb2ad13/docxodus/page_001.webp"
    ],
@@ -3617,11 +4559,17 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1,
    "superdoc": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
     "jaccard": 100.0,
     "ssim": 100.0,
     "text_boundary": 100.0
@@ -3650,6 +4598,9 @@
    "jubarte-rust": [
     "accepted/tracking_without_comments/ff1a81cf73/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "accepted/tracking_without_comments/ff1a81cf73/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "accepted/tracking_without_comments/ff1a81cf73/docxodus/page_001.webp"
    ],
@@ -3660,11 +4611,17 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1,
    "superdoc": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
     "jaccard": 100.0,
     "ssim": 100.0,
     "text_boundary": 100.0
@@ -3697,6 +4654,11 @@
     "rejected/with_comments_tracking/0f031c23c3/jubarte-rust/page_002.webp",
     "rejected/with_comments_tracking/0f031c23c3/jubarte-rust/page_003.webp"
    ],
+   "jubarte-093": [
+    "rejected/with_comments_tracking/0f031c23c3/jubarte-093/page_001.webp",
+    "rejected/with_comments_tracking/0f031c23c3/jubarte-093/page_002.webp",
+    "rejected/with_comments_tracking/0f031c23c3/jubarte-093/page_003.webp"
+   ],
    "docxodus": [
     "rejected/with_comments_tracking/0f031c23c3/docxodus/page_001.webp",
     "rejected/with_comments_tracking/0f031c23c3/docxodus/page_002.webp",
@@ -3706,10 +4668,16 @@
   "page_counts": {
    "reference": 11,
    "jubarte-rust": 10,
+   "jubarte-093": 10,
    "docxodus": 11
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 4.5,
+    "ssim": 12.7,
+    "text_boundary": 53.0
+   },
+   "jubarte-093": {
     "jaccard": 4.5,
     "ssim": 12.7,
     "text_boundary": 53.0
@@ -3733,6 +4701,9 @@
    "jubarte-rust": [
     "rejected/with_comments_tracking/1dbbf3be63/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "rejected/with_comments_tracking/1dbbf3be63/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "rejected/with_comments_tracking/1dbbf3be63/docxodus/page_001.webp"
    ]
@@ -3740,10 +4711,16 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 99.5,
+    "ssim": 99.9,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
     "jaccard": 99.5,
     "ssim": 99.9,
     "text_boundary": 100.0
@@ -3771,6 +4748,11 @@
     "rejected/with_comments_tracking/2c123533f6/jubarte-rust/page_002.webp",
     "rejected/with_comments_tracking/2c123533f6/jubarte-rust/page_003.webp"
    ],
+   "jubarte-093": [
+    "rejected/with_comments_tracking/2c123533f6/jubarte-093/page_001.webp",
+    "rejected/with_comments_tracking/2c123533f6/jubarte-093/page_002.webp",
+    "rejected/with_comments_tracking/2c123533f6/jubarte-093/page_003.webp"
+   ],
    "docxodus": [
     "rejected/with_comments_tracking/2c123533f6/docxodus/page_001.webp",
     "rejected/with_comments_tracking/2c123533f6/docxodus/page_002.webp",
@@ -3780,12 +4762,18 @@
   "page_counts": {
    "reference": 3,
    "jubarte-rust": 3,
+   "jubarte-093": 3,
    "docxodus": 3
   },
   "scores": {
    "jubarte-rust": {
     "jaccard": 98.6,
     "ssim": 98.9,
+    "text_boundary": 98.7
+   },
+   "jubarte-093": {
+    "jaccard": 92.5,
+    "ssim": 95.1,
     "text_boundary": 98.7
    },
    "docxodus": {
@@ -3811,6 +4799,11 @@
     "rejected/with_comments_tracking/30f20e787b/jubarte-rust/page_002.webp",
     "rejected/with_comments_tracking/30f20e787b/jubarte-rust/page_003.webp"
    ],
+   "jubarte-093": [
+    "rejected/with_comments_tracking/30f20e787b/jubarte-093/page_001.webp",
+    "rejected/with_comments_tracking/30f20e787b/jubarte-093/page_002.webp",
+    "rejected/with_comments_tracking/30f20e787b/jubarte-093/page_003.webp"
+   ],
    "docxodus": [
     "rejected/with_comments_tracking/30f20e787b/docxodus/page_001.webp",
     "rejected/with_comments_tracking/30f20e787b/docxodus/page_002.webp",
@@ -3820,10 +4813,16 @@
   "page_counts": {
    "reference": 11,
    "jubarte-rust": 12,
+   "jubarte-093": 12,
    "docxodus": 11
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 3.8,
+    "ssim": 12.6,
+    "text_boundary": 21.5
+   },
+   "jubarte-093": {
     "jaccard": 3.8,
     "ssim": 12.6,
     "text_boundary": 21.5
@@ -3851,6 +4850,11 @@
     "rejected/with_comments_tracking/58c827e77a/jubarte-rust/page_002.webp",
     "rejected/with_comments_tracking/58c827e77a/jubarte-rust/page_003.webp"
    ],
+   "jubarte-093": [
+    "rejected/with_comments_tracking/58c827e77a/jubarte-093/page_001.webp",
+    "rejected/with_comments_tracking/58c827e77a/jubarte-093/page_002.webp",
+    "rejected/with_comments_tracking/58c827e77a/jubarte-093/page_003.webp"
+   ],
    "docxodus": [
     "rejected/with_comments_tracking/58c827e77a/docxodus/page_001.webp",
     "rejected/with_comments_tracking/58c827e77a/docxodus/page_002.webp",
@@ -3860,10 +4864,16 @@
   "page_counts": {
    "reference": 11,
    "jubarte-rust": 9,
+   "jubarte-093": 9,
    "docxodus": 10
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 4.7,
+    "ssim": 13.0,
+    "text_boundary": 23.1
+   },
+   "jubarte-093": {
     "jaccard": 4.7,
     "ssim": 13.0,
     "text_boundary": 23.1
@@ -3887,6 +4897,9 @@
    "jubarte-rust": [
     "rejected/with_comments_tracking/69a4d71d6f/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "rejected/with_comments_tracking/69a4d71d6f/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "rejected/with_comments_tracking/69a4d71d6f/docxodus/page_001.webp"
    ]
@@ -3894,10 +4907,16 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 99.3,
+    "ssim": 99.8,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
     "jaccard": 99.3,
     "ssim": 99.8,
     "text_boundary": 100.0
@@ -3921,6 +4940,9 @@
    "jubarte-rust": [
     "rejected/with_comments_tracking/79f93926e2/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "rejected/with_comments_tracking/79f93926e2/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "rejected/with_comments_tracking/79f93926e2/docxodus/page_001.webp"
    ]
@@ -3928,10 +4950,16 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
     "jaccard": 100.0,
     "ssim": 100.0,
     "text_boundary": 100.0
@@ -3955,6 +4983,9 @@
    "jubarte-rust": [
     "rejected/with_comments_tracking/820ab5e086/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "rejected/with_comments_tracking/820ab5e086/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "rejected/with_comments_tracking/820ab5e086/docxodus/page_001.webp"
    ]
@@ -3962,10 +4993,16 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
     "jaccard": 100.0,
     "ssim": 100.0,
     "text_boundary": 100.0
@@ -3989,6 +5026,9 @@
    "jubarte-rust": [
     "rejected/with_comments_tracking/849e0cb7c4/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "rejected/with_comments_tracking/849e0cb7c4/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "rejected/with_comments_tracking/849e0cb7c4/docxodus/page_001.webp"
    ]
@@ -3996,10 +5036,16 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 92.7,
+    "ssim": 98.7,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
     "jaccard": 92.7,
     "ssim": 98.7,
     "text_boundary": 100.0
@@ -4026,16 +5072,27 @@
     "rejected/with_comments_tracking/485599b4e9/jubarte-rust/page_001.webp",
     "rejected/with_comments_tracking/485599b4e9/jubarte-rust/page_002.webp",
     "rejected/with_comments_tracking/485599b4e9/jubarte-rust/page_003.webp"
+   ],
+   "jubarte-093": [
+    "rejected/with_comments_tracking/485599b4e9/jubarte-093/page_001.webp",
+    "rejected/with_comments_tracking/485599b4e9/jubarte-093/page_002.webp",
+    "rejected/with_comments_tracking/485599b4e9/jubarte-093/page_003.webp"
    ]
   },
   "page_counts": {
    "reference": 3,
-   "jubarte-rust": 3
+   "jubarte-rust": 3,
+   "jubarte-093": 3
   },
   "scores": {
    "jubarte-rust": {
     "jaccard": 53.3,
     "ssim": 95.4,
+    "text_boundary": 36.8
+   },
+   "jubarte-093": {
+    "jaccard": 51.9,
+    "ssim": 93.9,
     "text_boundary": 36.8
    }
   },
@@ -4052,6 +5109,9 @@
    "jubarte-rust": [
     "rejected/with_comments_tracking/7787357743/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "rejected/with_comments_tracking/7787357743/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "rejected/with_comments_tracking/7787357743/docxodus/page_001.webp"
    ]
@@ -4059,10 +5119,16 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 44.9,
+    "ssim": 60.3,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
     "jaccard": 44.9,
     "ssim": 60.3,
     "text_boundary": 100.0
@@ -4089,6 +5155,11 @@
     "rejected/with_comments_tracking/a6aab38897/jubarte-rust/page_002.webp",
     "rejected/with_comments_tracking/a6aab38897/jubarte-rust/page_003.webp"
    ],
+   "jubarte-093": [
+    "rejected/with_comments_tracking/a6aab38897/jubarte-093/page_001.webp",
+    "rejected/with_comments_tracking/a6aab38897/jubarte-093/page_002.webp",
+    "rejected/with_comments_tracking/a6aab38897/jubarte-093/page_003.webp"
+   ],
    "docxodus": [
     "rejected/with_comments_tracking/a6aab38897/docxodus/page_001.webp",
     "rejected/with_comments_tracking/a6aab38897/docxodus/page_002.webp",
@@ -4098,10 +5169,16 @@
   "page_counts": {
    "reference": 9,
    "jubarte-rust": 8,
+   "jubarte-093": 8,
    "docxodus": 8
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 4.6,
+    "ssim": 12.0,
+    "text_boundary": 39.3
+   },
+   "jubarte-093": {
     "jaccard": 4.6,
     "ssim": 12.0,
     "text_boundary": 39.3
@@ -4125,6 +5202,9 @@
    "jubarte-rust": [
     "rejected/with_comments_tracking/b3cc5c1abe/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "rejected/with_comments_tracking/b3cc5c1abe/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "rejected/with_comments_tracking/b3cc5c1abe/docxodus/page_001.webp"
    ]
@@ -4132,10 +5212,16 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 90.4,
+    "ssim": 95.6,
+    "text_boundary": 60.0
+   },
+   "jubarte-093": {
     "jaccard": 90.4,
     "ssim": 95.6,
     "text_boundary": 60.0
@@ -4163,6 +5249,11 @@
     "rejected/with_comments_tracking/c6d6371812/jubarte-rust/page_002.webp",
     "rejected/with_comments_tracking/c6d6371812/jubarte-rust/page_003.webp"
    ],
+   "jubarte-093": [
+    "rejected/with_comments_tracking/c6d6371812/jubarte-093/page_001.webp",
+    "rejected/with_comments_tracking/c6d6371812/jubarte-093/page_002.webp",
+    "rejected/with_comments_tracking/c6d6371812/jubarte-093/page_003.webp"
+   ],
    "docxodus": [
     "rejected/with_comments_tracking/c6d6371812/docxodus/page_001.webp",
     "rejected/with_comments_tracking/c6d6371812/docxodus/page_002.webp",
@@ -4172,6 +5263,7 @@
   "page_counts": {
    "reference": 4,
    "jubarte-rust": 4,
+   "jubarte-093": 4,
    "docxodus": 4
   },
   "scores": {
@@ -4179,6 +5271,11 @@
     "jaccard": 93.0,
     "ssim": 95.6,
     "text_boundary": 86.2
+   },
+   "jubarte-093": {
+    "jaccard": 99.6,
+    "ssim": 99.7,
+    "text_boundary": 97.9
    },
    "docxodus": {
     "jaccard": 93.1,
@@ -4199,6 +5296,9 @@
    "jubarte-rust": [
     "rejected/with_comments_tracking/c69908f44a/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "rejected/with_comments_tracking/c69908f44a/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "rejected/with_comments_tracking/c69908f44a/docxodus/page_001.webp"
    ]
@@ -4206,10 +5306,16 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
     "jaccard": 100.0,
     "ssim": 100.0,
     "text_boundary": 100.0
@@ -4237,6 +5343,11 @@
     "rejected/with_comments_tracking/cbd854cb68/jubarte-rust/page_002.webp",
     "rejected/with_comments_tracking/cbd854cb68/jubarte-rust/page_003.webp"
    ],
+   "jubarte-093": [
+    "rejected/with_comments_tracking/cbd854cb68/jubarte-093/page_001.webp",
+    "rejected/with_comments_tracking/cbd854cb68/jubarte-093/page_002.webp",
+    "rejected/with_comments_tracking/cbd854cb68/jubarte-093/page_003.webp"
+   ],
    "docxodus": [
     "rejected/with_comments_tracking/cbd854cb68/docxodus/page_001.webp",
     "rejected/with_comments_tracking/cbd854cb68/docxodus/page_002.webp",
@@ -4246,12 +5357,18 @@
   "page_counts": {
    "reference": 3,
    "jubarte-rust": 3,
+   "jubarte-093": 3,
    "docxodus": 3
   },
   "scores": {
    "jubarte-rust": {
     "jaccard": 93.3,
     "ssim": 96.1,
+    "text_boundary": 98.7
+   },
+   "jubarte-093": {
+    "jaccard": 87.5,
+    "ssim": 92.3,
     "text_boundary": 98.7
    },
    "docxodus": {
@@ -4277,6 +5394,11 @@
     "rejected/with_comments_tracking/cbf73c2d81/jubarte-rust/page_002.webp",
     "rejected/with_comments_tracking/cbf73c2d81/jubarte-rust/page_003.webp"
    ],
+   "jubarte-093": [
+    "rejected/with_comments_tracking/cbf73c2d81/jubarte-093/page_001.webp",
+    "rejected/with_comments_tracking/cbf73c2d81/jubarte-093/page_002.webp",
+    "rejected/with_comments_tracking/cbf73c2d81/jubarte-093/page_003.webp"
+   ],
    "docxodus": [
     "rejected/with_comments_tracking/cbf73c2d81/docxodus/page_001.webp",
     "rejected/with_comments_tracking/cbf73c2d81/docxodus/page_002.webp",
@@ -4286,10 +5408,16 @@
   "page_counts": {
    "reference": 11,
    "jubarte-rust": 9,
+   "jubarte-093": 9,
    "docxodus": 9
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 4.1,
+    "ssim": 12.4,
+    "text_boundary": 68.8
+   },
+   "jubarte-093": {
     "jaccard": 4.1,
     "ssim": 12.4,
     "text_boundary": 68.8
@@ -4313,6 +5441,9 @@
    "jubarte-rust": [
     "rejected/with_comments_tracking/d20ada3e0a/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "rejected/with_comments_tracking/d20ada3e0a/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "rejected/with_comments_tracking/d20ada3e0a/docxodus/page_001.webp"
    ]
@@ -4320,10 +5451,16 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 89.7,
+    "ssim": 94.8,
+    "text_boundary": 60.0
+   },
+   "jubarte-093": {
     "jaccard": 89.7,
     "ssim": 94.8,
     "text_boundary": 60.0
@@ -4350,6 +5487,11 @@
     "rejected/with_comments_tracking/db13a691da/jubarte-rust/page_002.webp",
     "rejected/with_comments_tracking/db13a691da/jubarte-rust/page_003.webp"
    ],
+   "jubarte-093": [
+    "rejected/with_comments_tracking/db13a691da/jubarte-093/page_001.webp",
+    "rejected/with_comments_tracking/db13a691da/jubarte-093/page_002.webp",
+    "rejected/with_comments_tracking/db13a691da/jubarte-093/page_003.webp"
+   ],
    "docxodus": [
     "rejected/with_comments_tracking/db13a691da/docxodus/page_001.webp",
     "rejected/with_comments_tracking/db13a691da/docxodus/page_002.webp",
@@ -4359,10 +5501,16 @@
   "page_counts": {
    "reference": 11,
    "jubarte-rust": 8,
+   "jubarte-093": 8,
    "docxodus": 9
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 3.7,
+    "ssim": 12.1,
+    "text_boundary": 68.8
+   },
+   "jubarte-093": {
     "jaccard": 3.7,
     "ssim": 12.1,
     "text_boundary": 68.8
@@ -4386,6 +5534,9 @@
    "jubarte-rust": [
     "rejected/with_comments_tracking/e212b559b2/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "rejected/with_comments_tracking/e212b559b2/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "rejected/with_comments_tracking/e212b559b2/docxodus/page_001.webp"
    ]
@@ -4393,10 +5544,16 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 86.8,
+    "ssim": 94.0,
+    "text_boundary": 33.3
+   },
+   "jubarte-093": {
     "jaccard": 86.8,
     "ssim": 94.0,
     "text_boundary": 33.3
@@ -4420,6 +5577,9 @@
    "jubarte-rust": [
     "rejected/tracking_without_comments/2a068b16e5/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "rejected/tracking_without_comments/2a068b16e5/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "rejected/tracking_without_comments/2a068b16e5/docxodus/page_001.webp"
    ]
@@ -4427,10 +5587,15 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 6.5,
+    "ssim": 15.8
+   },
+   "jubarte-093": {
     "jaccard": 6.5,
     "ssim": 15.8
    },
@@ -4455,6 +5620,10 @@
     "rejected/tracking_without_comments/3c920d5996/jubarte-rust/page_001.webp",
     "rejected/tracking_without_comments/3c920d5996/jubarte-rust/page_002.webp"
    ],
+   "jubarte-093": [
+    "rejected/tracking_without_comments/3c920d5996/jubarte-093/page_001.webp",
+    "rejected/tracking_without_comments/3c920d5996/jubarte-093/page_002.webp"
+   ],
    "docxodus": [
     "rejected/tracking_without_comments/3c920d5996/docxodus/page_001.webp",
     "rejected/tracking_without_comments/3c920d5996/docxodus/page_002.webp"
@@ -4463,10 +5632,16 @@
   "page_counts": {
    "reference": 2,
    "jubarte-rust": 2,
+   "jubarte-093": 2,
    "docxodus": 2
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 28.6,
+    "ssim": 39.6,
+    "text_boundary": 92.7
+   },
+   "jubarte-093": {
     "jaccard": 28.6,
     "ssim": 39.6,
     "text_boundary": 92.7
@@ -4494,6 +5669,11 @@
     "rejected/tracking_without_comments/3d4318d7e9/jubarte-rust/page_002.webp",
     "rejected/tracking_without_comments/3d4318d7e9/jubarte-rust/page_003.webp"
    ],
+   "jubarte-093": [
+    "rejected/tracking_without_comments/3d4318d7e9/jubarte-093/page_001.webp",
+    "rejected/tracking_without_comments/3d4318d7e9/jubarte-093/page_002.webp",
+    "rejected/tracking_without_comments/3d4318d7e9/jubarte-093/page_003.webp"
+   ],
    "docxodus": [
     "rejected/tracking_without_comments/3d4318d7e9/docxodus/page_001.webp",
     "rejected/tracking_without_comments/3d4318d7e9/docxodus/page_002.webp",
@@ -4503,10 +5683,16 @@
   "page_counts": {
    "reference": 9,
    "jubarte-rust": 6,
+   "jubarte-093": 6,
    "docxodus": 10
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 5.2,
+    "ssim": 12.3,
+    "text_boundary": 4.8
+   },
+   "jubarte-093": {
     "jaccard": 5.2,
     "ssim": 12.3,
     "text_boundary": 4.8
@@ -4530,6 +5716,9 @@
    "jubarte-rust": [
     "rejected/tracking_without_comments/7eeb92a3e0/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "rejected/tracking_without_comments/7eeb92a3e0/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "rejected/tracking_without_comments/7eeb92a3e0/docxodus/page_001.webp"
    ]
@@ -4537,10 +5726,16 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 15.2,
+    "ssim": 20.5,
+    "text_boundary": 11.8
+   },
+   "jubarte-093": {
     "jaccard": 15.2,
     "ssim": 20.5,
     "text_boundary": 11.8
@@ -4564,6 +5759,9 @@
    "jubarte-rust": [
     "rejected/tracking_without_comments/9abf4fa5b5/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "rejected/tracking_without_comments/9abf4fa5b5/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "rejected/tracking_without_comments/9abf4fa5b5/docxodus/page_001.webp"
    ],
@@ -4574,11 +5772,17 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1,
    "superdoc": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
     "jaccard": 100.0,
     "ssim": 100.0,
     "text_boundary": 100.0
@@ -4608,6 +5812,10 @@
     "rejected/tracking_without_comments/9f271c8e1d/jubarte-rust/page_001.webp",
     "rejected/tracking_without_comments/9f271c8e1d/jubarte-rust/page_002.webp"
    ],
+   "jubarte-093": [
+    "rejected/tracking_without_comments/9f271c8e1d/jubarte-093/page_001.webp",
+    "rejected/tracking_without_comments/9f271c8e1d/jubarte-093/page_002.webp"
+   ],
    "docxodus": [
     "rejected/tracking_without_comments/9f271c8e1d/docxodus/page_001.webp",
     "rejected/tracking_without_comments/9f271c8e1d/docxodus/page_002.webp"
@@ -4616,10 +5824,15 @@
   "page_counts": {
    "reference": 2,
    "jubarte-rust": 2,
+   "jubarte-093": 2,
    "docxodus": 2
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 7.6,
+    "ssim": 19.3
+   },
+   "jubarte-093": {
     "jaccard": 7.6,
     "ssim": 19.3
    },
@@ -4642,6 +5855,9 @@
    "jubarte-rust": [
     "rejected/tracking_without_comments/26fa719cba/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "rejected/tracking_without_comments/26fa719cba/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "rejected/tracking_without_comments/26fa719cba/docxodus/page_001.webp"
    ],
@@ -4652,11 +5868,17 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1,
    "superdoc": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
     "jaccard": 100.0,
     "ssim": 100.0,
     "text_boundary": 100.0
@@ -4687,6 +5909,10 @@
     "rejected/tracking_without_comments/72cc9f4ac6/jubarte-rust/page_001.webp",
     "rejected/tracking_without_comments/72cc9f4ac6/jubarte-rust/page_002.webp"
    ],
+   "jubarte-093": [
+    "rejected/tracking_without_comments/72cc9f4ac6/jubarte-093/page_001.webp",
+    "rejected/tracking_without_comments/72cc9f4ac6/jubarte-093/page_002.webp"
+   ],
    "docxodus": [
     "rejected/tracking_without_comments/72cc9f4ac6/docxodus/page_001.webp",
     "rejected/tracking_without_comments/72cc9f4ac6/docxodus/page_002.webp"
@@ -4695,10 +5921,15 @@
   "page_counts": {
    "reference": 2,
    "jubarte-rust": 2,
+   "jubarte-093": 2,
    "docxodus": 2
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 0.9,
+    "ssim": 14.0
+   },
+   "jubarte-093": {
     "jaccard": 0.9,
     "ssim": 14.0
    },
@@ -4720,6 +5951,9 @@
    "jubarte-rust": [
     "rejected/tracking_without_comments/75c971b32c/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "rejected/tracking_without_comments/75c971b32c/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "rejected/tracking_without_comments/75c971b32c/docxodus/page_001.webp"
    ],
@@ -4730,11 +5964,17 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1,
    "superdoc": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
     "jaccard": 100.0,
     "ssim": 100.0,
     "text_boundary": 100.0
@@ -4763,6 +6003,9 @@
    "jubarte-rust": [
     "rejected/tracking_without_comments/77fb9bd2e1/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "rejected/tracking_without_comments/77fb9bd2e1/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "rejected/tracking_without_comments/77fb9bd2e1/docxodus/page_001.webp"
    ],
@@ -4773,11 +6016,17 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1,
    "superdoc": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
     "jaccard": 100.0,
     "ssim": 100.0,
     "text_boundary": 100.0
@@ -4810,6 +6059,11 @@
     "rejected/tracking_without_comments/97fefb0aa2/jubarte-rust/page_002.webp",
     "rejected/tracking_without_comments/97fefb0aa2/jubarte-rust/page_003.webp"
    ],
+   "jubarte-093": [
+    "rejected/tracking_without_comments/97fefb0aa2/jubarte-093/page_001.webp",
+    "rejected/tracking_without_comments/97fefb0aa2/jubarte-093/page_002.webp",
+    "rejected/tracking_without_comments/97fefb0aa2/jubarte-093/page_003.webp"
+   ],
    "docxodus": [
     "rejected/tracking_without_comments/97fefb0aa2/docxodus/page_001.webp",
     "rejected/tracking_without_comments/97fefb0aa2/docxodus/page_002.webp",
@@ -4819,10 +6073,15 @@
   "page_counts": {
    "reference": 9,
    "jubarte-rust": 6,
+   "jubarte-093": 6,
    "docxodus": 7
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 4.9,
+    "ssim": 17.6
+   },
+   "jubarte-093": {
     "jaccard": 4.9,
     "ssim": 17.6
    },
@@ -4844,6 +6103,9 @@
    "jubarte-rust": [
     "rejected/tracking_without_comments/340dd11242/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "rejected/tracking_without_comments/340dd11242/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "rejected/tracking_without_comments/340dd11242/docxodus/page_001.webp"
    ],
@@ -4854,11 +6116,16 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1,
    "superdoc": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 70.6,
+    "ssim": 84.0
+   },
+   "jubarte-093": {
     "jaccard": 70.6,
     "ssim": 84.0
    },
@@ -4886,6 +6153,9 @@
    "jubarte-rust": [
     "rejected/tracking_without_comments/546a6e0c15/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "rejected/tracking_without_comments/546a6e0c15/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "rejected/tracking_without_comments/546a6e0c15/docxodus/page_001.webp"
    ]
@@ -4893,10 +6163,15 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 26.2,
+    "ssim": 41.8
+   },
+   "jubarte-093": {
     "jaccard": 26.2,
     "ssim": 41.8
    },
@@ -4917,14 +6192,23 @@
    ],
    "jubarte-rust": [
     "rejected/tracking_without_comments/618a11caa3/jubarte-rust/page_001.webp"
+   ],
+   "jubarte-093": [
+    "rejected/tracking_without_comments/618a11caa3/jubarte-093/page_001.webp"
    ]
   },
   "page_counts": {
    "reference": 1,
-   "jubarte-rust": 1
+   "jubarte-rust": 1,
+   "jubarte-093": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 95.8,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
     "jaccard": 95.8,
     "ssim": 100.0,
     "text_boundary": 100.0
@@ -4945,6 +6229,10 @@
     "rejected/tracking_without_comments/a33b3d7ea2/jubarte-rust/page_001.webp",
     "rejected/tracking_without_comments/a33b3d7ea2/jubarte-rust/page_002.webp"
    ],
+   "jubarte-093": [
+    "rejected/tracking_without_comments/a33b3d7ea2/jubarte-093/page_001.webp",
+    "rejected/tracking_without_comments/a33b3d7ea2/jubarte-093/page_002.webp"
+   ],
    "docxodus": [
     "rejected/tracking_without_comments/a33b3d7ea2/docxodus/page_001.webp",
     "rejected/tracking_without_comments/a33b3d7ea2/docxodus/page_002.webp"
@@ -4953,10 +6241,16 @@
   "page_counts": {
    "reference": 2,
    "jubarte-rust": 2,
+   "jubarte-093": 2,
    "docxodus": 2
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 7.7,
+    "ssim": 19.8,
+    "text_boundary": 5.2
+   },
+   "jubarte-093": {
     "jaccard": 7.7,
     "ssim": 19.8,
     "text_boundary": 5.2
@@ -4980,6 +6274,9 @@
    "jubarte-rust": [
     "rejected/tracking_without_comments/c8bef3772a/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "rejected/tracking_without_comments/c8bef3772a/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "rejected/tracking_without_comments/c8bef3772a/docxodus/page_001.webp"
    ],
@@ -4990,11 +6287,17 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1,
    "superdoc": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
     "jaccard": 100.0,
     "ssim": 100.0,
     "text_boundary": 100.0
@@ -5023,6 +6326,9 @@
    "jubarte-rust": [
     "rejected/tracking_without_comments/c58edd95f2/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "rejected/tracking_without_comments/c58edd95f2/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "rejected/tracking_without_comments/c58edd95f2/docxodus/page_001.webp"
    ],
@@ -5033,11 +6339,16 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1,
    "superdoc": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 45.1,
+    "ssim": 62.4
+   },
+   "jubarte-093": {
     "jaccard": 45.1,
     "ssim": 62.4
    },
@@ -5065,6 +6376,9 @@
    "jubarte-rust": [
     "rejected/tracking_without_comments/c964f553ef/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "rejected/tracking_without_comments/c964f553ef/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "rejected/tracking_without_comments/c964f553ef/docxodus/page_001.webp"
    ],
@@ -5075,11 +6389,17 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1,
    "superdoc": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
     "jaccard": 100.0,
     "ssim": 100.0,
     "text_boundary": 100.0
@@ -5108,6 +6428,9 @@
    "jubarte-rust": [
     "rejected/tracking_without_comments/e91e3ea7f6/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "rejected/tracking_without_comments/e91e3ea7f6/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "rejected/tracking_without_comments/e91e3ea7f6/docxodus/page_001.webp"
    ]
@@ -5115,10 +6438,16 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
     "jaccard": 100.0,
     "ssim": 100.0,
     "text_boundary": 100.0
@@ -5142,6 +6471,9 @@
    "jubarte-rust": [
     "rejected/tracking_without_comments/f51694bde0/jubarte-rust/page_001.webp"
    ],
+   "jubarte-093": [
+    "rejected/tracking_without_comments/f51694bde0/jubarte-093/page_001.webp"
+   ],
    "docxodus": [
     "rejected/tracking_without_comments/f51694bde0/docxodus/page_001.webp"
    ]
@@ -5149,10 +6481,16 @@
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
+   "jubarte-093": 1,
    "docxodus": 1
   },
   "scores": {
    "jubarte-rust": {
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   },
+   "jubarte-093": {
     "jaccard": 100.0,
     "ssim": 100.0,
     "text_boundary": 100.0

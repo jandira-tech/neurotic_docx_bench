@@ -3,7 +3,7 @@
 # /redlines/, with the bench scores and the scripts behind it in _build/redlines/.
 # Refuses to publish when the section would push the whole site past 500 MiB.
 cd ~/temp/T/docxide_compare || exit 1
-uv run --with pillow python build_redlines_site.py || exit 1
+uv run --with pillow --with huggingface_hub python build_redlines_site.py || exit 1
 
 size=$(du -sk redlines_site | cut -f1)
 rest=$(du -sk -I redlines ~/temp/T/ndb-gh-pages | cut -f1)

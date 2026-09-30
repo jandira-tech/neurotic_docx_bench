@@ -18,7 +18,11 @@ with docxide-pdf's page-metrics at 150 DPI over every page; the first 3 pages ar
 100 DPI 16-colour WebP. The bench's own scores for every pair (results/redlines_0928/
 measure.py) are summarised on the page and copied to _build/redlines/.
 
-    uv run --with pillow python build_redlines_site.py
+A run whose tool outputs were pruned after the upload to the results dataset
+(``hub_upload.py --prune``) reads them from ``outputs/<REDLINES_RUN>/`` of HUB_REPO: case
+selection checks the dataset's file list, and only the PDFs of the chosen cases are downloaded.
+
+    uv run --with pillow --with huggingface_hub python build_redlines_site.py
 """
 
 from __future__ import annotations
@@ -45,13 +49,17 @@ RUN = os.environ.get("REDLINES_RUN", "redlines_0929_full")
 R = BENCH / "results" / RUN
 CORPUS = BENCH / "corpus" / "word"
 FRESH = Path.home() / "temp" / "T" / "compare_regen" / "out"  # Word compares made again (0929 only)
-TOOLS = ["jubarte-rust", "docxodus", "superdoc"]
+HUB_REPO = "arthrod/neurotic_docx_bench"  # neurotic_docx_bench.hub.RESULTS_REPO (a dataset)
+TOOLS = {"redlines_0928": ["jubarte-rust", "docxodus", "superdoc"],
+         "redlines_0929_full": ["jubarte-rust", "jubarte-093", "docxodus", "superdoc"]}[RUN]
 STATES = ["with_comments_tracking", "tracking_without_comments"]
 SEED = 20260928
 REDLINE_N = 30  # per state
 ACCEPTED_N = 20  # per state
 JOBS = 8
-ENGINES = [["reference", "Word"], ["jubarte-rust", "jubarte"], ["docxodus", "docxodus"], ["superdoc", "SuperDoc"]]
+ENGINES = [["reference", "Word"], ["jubarte-rust", "jubarte"], ["jubarte-093", "jubarte 0.9.3"],
+           ["docxodus", "docxodus"], ["superdoc", "SuperDoc"]]
+ENGINES = [e for e in ENGINES if e[0] == "reference" or e[0] in TOOLS]
 VERSIONS = {
     "redlines_0928": {
         "reference": "Word 16.114 compare",
@@ -62,10 +70,43 @@ VERSIONS = {
     "redlines_0929_full": {
         "reference": "Word 16.114 compare",
         "jubarte-rust": "0.10.0 @86b6b5d3",
+        "jubarte-093": "0.9.3 (release)",
         "docxodus": "12.6.5",
         "superdoc": "superdoc-sdk 2.16.0",
     },
 }[RUN]
+
+
+_hub_files: set[str] | None = None
+
+
+def hub_files() -> set[str]:
+    """Paths under ``outputs/<RUN>/`` of HUB_REPO, relative to it (listed once)."""
+    global _hub_files
+    if _hub_files is None:
+        from huggingface_hub import HfApi
+        prefix = f"outputs/{RUN}/"
+        _hub_files = {f.removeprefix(prefix) for f in HfApi().list_repo_files(HUB_REPO, repo_type="dataset")
+                      if f.startswith(prefix)}
+    return _hub_files
+
+
+def available(p: Path) -> bool:
+    """A file of this run that exists here or in the run's upload to HUB_REPO."""
+    if p.is_file():
+        return True
+    try:
+        return str(p.relative_to(R)) in hub_files()
+    except ValueError:
+        return False
+
+
+def fetch(p: Path) -> Path:
+    """``p`` itself when it exists, else its copy from HUB_REPO (downloaded into the HF cache)."""
+    if p.is_file():
+        return p
+    from huggingface_hub import hf_hub_download
+    return Path(hf_hub_download(HUB_REPO, f"outputs/{RUN}/{p.relative_to(R)}", repo_type="dataset"))
 
 
 def redline_pdfs(row: dict) -> dict[str, Path]:
@@ -73,19 +114,19 @@ def redline_pdfs(row: dict) -> dict[str, Path]:
     fresh = FRESH / f'{row["id"]}__vs__{row["id"]}.pdf'
     out = {"reference": fresh if RUN != "redlines_0928" and fresh.is_file() else R / "oracle_pdf" / f"{key}.pdf"}
     out |= {t: R / t / "pdf_by_word" / f"{key}_{t}.pdf" for t in TOOLS}
-    return {k: p for k, p in out.items() if p.is_file()}
+    return {k: p for k, p in out.items() if available(p)}
 
 
 def accepted_pdfs(cmp_id: str, word: dict[str, Path]) -> dict[str, Path]:
     out = {"reference": word[cmp_id]}
     out |= {t: R / t / "accepted" / "by_word" / f"{cmp_id}_accepted_tracking_{t}.pdf" for t in TOOLS}
-    return {k: p for k, p in out.items() if p.is_file()}
+    return {k: p for k, p in out.items() if available(p)}
 
 
 def rejected_pdfs(cmp_id: str, word: dict[str, Path]) -> dict[str, Path]:
     out = {"reference": word[cmp_id]}
     out |= {t: R / t / "rejected" / "by_word" / f"{cmp_id}_rejected_tracking_{t}.pdf" for t in TOOLS}
-    return {k: p for k, p in out.items() if p.is_file()}
+    return {k: p for k, p in out.items() if available(p)}
 
 
 def pick(rows: list[dict], n: int, full, rng: random.Random) -> list[dict]:
@@ -108,6 +149,7 @@ def page_count(pdf: Path) -> int:
 
 
 def case(group: str, name: str, pdfs: dict[str, Path]) -> dict:
+    pdfs = {k: fetch(p) for k, p in pdfs.items()}
     base = OUT / group / name
     with tempfile.TemporaryDirectory(prefix="rl_", dir=HERE / "work") as tmp:
         ref_dir = Path(tmp) / "reference"
@@ -150,7 +192,7 @@ def main() -> None:
     jobs = []
     for state in STATES:
         rows = [r for r in pool if r["state"] == state]
-        for r in pick(rows, REDLINE_N, lambda r: len(redline_pdfs(r)) == 4, rng):
+        for r in pick(rows, REDLINE_N, lambda r: len(redline_pdfs(r)) == len(TOOLS) + 1, rng):
             jobs.append((f"redlines/{state}", r["id"], redline_pdfs(r)))
 
     word = {row["key"].split("_")[1]: CORPUS / row["pdf"]
@@ -158,7 +200,7 @@ def main() -> None:
     selection = list(csv.DictReader(open(R / "accept_selection.csv")))
     for state in STATES:
         rows = [r for r in selection if r["state"] == state]
-        for r in pick(rows, ACCEPTED_N, lambda r: len(accepted_pdfs(r["id"], word)) == 4, rng):
+        for r in pick(rows, ACCEPTED_N, lambda r: len(accepted_pdfs(r["id"], word)) == len(TOOLS) + 1, rng):
             jobs.append((f"accepted/{state}", r["id"], accepted_pdfs(r["id"], word)))
 
     rej_dir = BENCH / "grok_run" / "wr0928" / "rejected_tracking" / "pdf"
@@ -170,7 +212,7 @@ def main() -> None:
             rows = [r for r in rsel if r["state"] == state]
             if rows:
                 rej_groups.append(f"rejected/{state}")
-            for r in pick(rows, ACCEPTED_N, lambda r: len(rejected_pdfs(r["id"], rej_word)) == 4, rng):
+            for r in pick(rows, ACCEPTED_N, lambda r: len(rejected_pdfs(r["id"], rej_word)) == len(TOOLS) + 1, rng):
                 jobs.append((f"rejected/{state}", r["id"], rejected_pdfs(r["id"], rej_word)))
 
     shutil.rmtree(OUT, ignore_errors=True)
@@ -180,11 +222,11 @@ def main() -> None:
         cases = list(ex.map(lambda j: case(*j), jobs))
     print(f"{len(cases)} cases encoded ({time.time() - t0:.0f} s)", flush=True)
 
-    note = ("<span><b>What this is</b>: redlines by jubarte, docxodus and SuperDoc against Microsoft Word&#8217;s own "
+    note = ("<span><b>What this is</b>: redlines by jubarte" + (" (0.10.0 and the 0.9.3 release)" if "jubarte-093" in TOOLS else "") + ", docxodus and SuperDoc against Microsoft Word&#8217;s own "
             "compare, every PDF rendered by Word for Mac, scored with docxide-pdf&#8217;s page-metrics at 150 DPI over "
             "every page. <b>redlines</b>: the tool&#8217;s compare of a corpus pair vs Word&#8217;s compare of it. "
             "<b>accepted</b>: the same redlines with every tracked change accepted by Word, vs Word&#8217;s compare "
-            "accepted the same way. Shown: a seeded sample, half of it from pairs all three tools produced; first 3 "
+            "accepted the same way. Shown: a seeded sample, half of it from pairs every tool produced; first 3 "
             f"pages at 100 DPI. Bench scores over every pair ({len(pool)} redline pairs, 100 accepted, 100 rejected): redlines: "
             + summary_line("redlines") + ". accepted: " + summary_line("accepted") + (". rejected (every change rejected by Word, vs Word&#8217;s compare rejected "
             "the same way): " + summary_line("rejected") if rej_groups else "") + ". SuperDoc (latest SDK) "
@@ -193,7 +235,7 @@ def main() -> None:
     aj.ec.HTML_TEMPLATE = bs.patched_template(note).replace(
         "<title>jubarte DOCX to PDF vs Microsoft Word: engine comparison</title>",
         "<title>Redlines vs Microsoft Word: jubarte, docxodus, SuperDoc</title>").replace(
-        "<kbd>1</kbd>-<kbd>8</kbd> engines", "<kbd>1</kbd>-<kbd>4</kbd> engines")
+        "<kbd>1</kbd>-<kbd>8</kbd> engines", f"<kbd>1</kbd>-<kbd>{len(ENGINES)}</kbd> engines")
     aj.ec.ENGINES = ENGINES
     aj.ec.GROUPS = [f"redlines/{s}" for s in STATES] + [f"accepted/{s}" for s in STATES] + rej_groups
     aj.ec.write_html(cases, VERSIONS, OUT / "index.html")
