@@ -23,6 +23,7 @@ deletes the tool outputs (``PRUNE``) only when every file verified; Word's own f
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import shutil
 from pathlib import Path
@@ -32,7 +33,8 @@ from neurotic_docx_bench import hub
 HERE = Path(__file__).parent
 REPO_PREFIX = 'outputs/redlines_0929_full'
 FRESH = Path.home() / 'temp/T/compare_regen/out'
-TOOLS = ('jubarte-rust', 'jubarte-093', 'docxodus', 'superdoc')
+# Every tool of the run: the keys of versions.json (to_scores_jsonl.py reads the same).
+TOOLS = tuple(json.loads((HERE / 'versions.json').read_text()))
 TOOL_DIRS = ('docx', 'pdf_by_word', 'accepted/src', 'accepted/by_word', 'rejected/src', 'rejected/by_word')
 TOP_SUFFIXES = {'.csv', '.json', '.py', '.sh', '.md'}
 # docx_rest and docx_sample500 hold symlinks into docxodus/docx; pdf_staged is a byte-identical

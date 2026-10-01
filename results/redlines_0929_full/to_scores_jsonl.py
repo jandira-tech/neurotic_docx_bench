@@ -6,7 +6,8 @@ Reads ``scores_<tool>.json`` (``measure.py``) for every tool and writes one ``ac
 line per tool: the denominator is every Word compare of ``pool_pairs.csv`` (3502), a compare
 with no scored PDF counts 0 in ``itt_mean`` / ``itt_median``. ``subset`` holds the same
 statistics over only the compares docxodus scored, as if the bench held only the pairs
-docxodus redlined and Word exported. Rewrites ``scores.jsonl`` and ``versions.json``.
+docxodus redlined and Word exported. The tools are the keys of ``versions.json``. Rewrites
+``scores.jsonl``.
 """
 
 from __future__ import annotations
@@ -20,14 +21,11 @@ from pathlib import Path
 from neurotic_docx_bench import pipeline
 
 HERE = Path(__file__).parent
-TOOLS = ("jubarte-rust", "jubarte-093", "docxodus", "superdoc")
+# The run's tools and their labels, in report order. A new tool joins by a line here
+# (scripts/release_jubarte.py adds each jubarte release it scores).
+VERSIONS: dict[str, str] = json.loads((HERE / "versions.json").read_text())
+TOOLS = tuple(VERSIONS)
 SUBSET_OF = "docxodus"
-VERSIONS = {
-    "jubarte-rust": "jubarte 0.10.0 (86b6b5d3)",
-    "jubarte-093": "jubarte 0.9.3 (release)",
-    "docxodus": "Docxodus 12.6.5 (C#)",
-    "superdoc": "superdoc-sdk 2.16.0",
-}
 
 
 def _stats(xs: list[float]) -> dict:
@@ -75,7 +73,6 @@ def main() -> None:
             print(f"{tool}: ITT {line['itt_mean']:.2f}/{line['itt_median']:.2f} "
                   f"({line['subset']['itt_mean']:.2f}/{line['subset']['itt_median']:.2f}), "
                   f"scored {line['scored']}/{line['pairs']} ({line['subset']['scored']}/{line['subset']['pairs']})")
-    (HERE / "versions.json").write_text(json.dumps(VERSIONS, indent=2) + "\n")
 
 
 if __name__ == "__main__":
