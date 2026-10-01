@@ -8,6 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 
 ### Added
+- DOCX to PDF on the full 6427-document `corpus/word:all` set for jubarte 0.10.1
+  (`--revisions word --compress`), docxide-pdf 0.17.1 and LibreOffice 26.8.0.3, scored by
+  pixels and by docxide-pdf's metrics; `scripts/{convert_candidates,score_candidate_dirs,
+  docxide_metrics_dirs,build_converter_reports}.py` regenerate and score a candidate folder
+- Scorers default to the mps device with every core; scoring and docxide-metrics write a
+  resumable per-document JSONL checkpoint (aiofiles) and print a UTC-stamped progress line
+- GitHub Pages DOCX to PDF comparison on jubarte 0.10.1 with 800 sampled corpus fixtures and
+  their docxide-pdf and LibreOffice PDFs
 - Generating runs for `stemma` (`stemma-cli` 0.5.0 `stemma compare`) and
   `safe-docx-compare` (UseJunior/safe-docx `compareDocuments` at PR 854 merge
   `7bd35c8`, not published `@usejunior/docx-compare@0.19.1`)

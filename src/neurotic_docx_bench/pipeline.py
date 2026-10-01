@@ -16,14 +16,19 @@ stem ``<idA>_<a>``, the candidate again with ``_<tool>`` appended.
 
 from __future__ import annotations
 
+import asyncio
+import contextlib
+import json
 import re
 import shutil
 import time
 from collections.abc import Mapping, Sequence
 from concurrent.futures import ProcessPoolExecutor
+from datetime import UTC, datetime
 from pathlib import Path
-from typing import NotRequired, TypedDict, cast
+from typing import Any, NotRequired, TypedDict, cast
 
+import aiofiles
 from skimage import color
 
 # score.py is parity-locked (tests/test_parity.py); we import its helpers instead of
@@ -500,11 +505,82 @@ def _score_one(args: tuple) -> tuple[str, ScoreResult]:
     )
 
 
-def _run_tasks(tasks: list[tuple], jobs: int) -> dict[str, ScoreResult]:
-    if jobs and jobs > 1 and len(tasks) > 1:
-        with ProcessPoolExecutor(max_workers=jobs, initializer=kernels.worker_init, initargs=(jobs,)) as pool:
-            return dict(pool.map(_score_one, tasks))
-    return dict(_score_one(t) for t in tasks)
+def _progress(done: int, total: int, key: str, result: ScoreResult, started: float) -> None:
+    """One line per scored document: where the run is, which file, what it scored."""
+    elapsed = time.monotonic() - started
+    eta = elapsed / done * (total - done)
+    now = datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
+    print(
+        f"{now} [{done}/{total}] {done / total:6.1%} {result['overall_score']:6.2f}  {key}  "
+        f"(elapsed {elapsed:.0f}s, eta {eta:.0f}s)",
+        flush=True,
+    )
+
+
+def _task_signature(task: tuple) -> str:
+    """Identity of one scoring task: the two PDFs' sizes, the dpi and the scorer."""
+    _key, oracle_pdf, cand_pdf, _work, dpi = task[:5]
+    return f"{Path(oracle_pdf).stat().st_size}:{Path(cand_pdf).stat().st_size}:{dpi}:{cc.scorer_fingerprint()}"
+
+
+async def _load_checkpoint(path: Path | None) -> dict[str, dict]:
+    done: dict[str, dict] = {}
+    if path is None or not path.is_file():
+        return done
+    async with aiofiles.open(path, encoding="utf-8") as fh:
+        async for line in fh:
+            try:
+                row = json.loads(line)
+            except json.JSONDecodeError:
+                continue  # a line cut short by a kill
+            done[row["key"]] = row
+    return done
+
+
+async def _run_tasks_async(tasks: list[tuple], jobs: int, checkpoint: Path | None) -> dict[str, ScoreResult]:
+    total = len(tasks)
+    started = time.monotonic()
+    stamp = lambda: datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")  # noqa: E731
+    held = await _load_checkpoint(checkpoint)
+    sigs = {t[0]: _task_signature(t) for t in tasks} if checkpoint is not None else {}
+    results: dict[str, ScoreResult] = {
+        t[0]: held[t[0]]["result"] for t in tasks if t[0] in held and held[t[0]]["sig"] == sigs[t[0]]
+    }
+    todo = [t for t in tasks if t[0] not in results]
+    print(f"{stamp()} scoring started, {total} documents ({len(results)} from checkpoint, {len(todo)} to score)", flush=True)
+    done = len(results)
+
+    async def record(sink: Any, key: str, result: ScoreResult) -> None:
+        nonlocal done
+        done += 1
+        results[key] = result
+        if sink is not None:
+            row = json.dumps({"key": key, "sig": sigs[key], "scored_at": stamp(), "result": result})
+            await sink.write(row + "\n")
+            await sink.flush()
+        _progress(done, total, key, result, started)
+
+    if todo:
+        loop = asyncio.get_running_loop()
+        async with contextlib.AsyncExitStack() as stack:
+            sink = await stack.enter_async_context(aiofiles.open(checkpoint, "a", encoding="utf-8")) if checkpoint is not None else None
+            if jobs and jobs > 1 and len(todo) > 1:
+                pool = stack.enter_context(
+                    ProcessPoolExecutor(max_workers=jobs, initializer=kernels.worker_init, initargs=(jobs,)),
+                )
+                for fut in asyncio.as_completed([loop.run_in_executor(pool, _score_one, t) for t in todo]):
+                    await record(sink, *(await fut))
+            else:
+                for t in todo:
+                    await record(sink, *_score_one(t))
+    return {t[0]: results[t[0]] for t in tasks}  # task order, as pool.map gave
+
+
+def _run_tasks(tasks: list[tuple], jobs: int, checkpoint: Path | None = None) -> dict[str, ScoreResult]:
+    """Score every task. With ``checkpoint`` each finished document is appended to that
+    JSONL file at once (aiofiles), and a rerun scores only the tasks it does not hold
+    (same PDF sizes, dpi and scorer), so an interrupted pass continues, not restarts."""
+    return asyncio.run(_run_tasks_async(tasks, jobs, checkpoint))
 
 
 def score_folders_full(
@@ -635,6 +711,7 @@ def score_folders_plain(
     jobs: int = 12,
     cache: cc.ContentCache | None = None,
     renderer_id: str = "",
+    checkpoint: Path | None = None,
 ) -> dict[str, ScoreResult]:
     """Score every matched pair by plain filename stem (roundtrip identity test).
 
@@ -645,7 +722,7 @@ def score_folders_plain(
     if not pairs:
         return {}
     tasks = [(key, o, c, work_dir, dpi, None, None, cache, renderer_id) for key, o, c in pairs]
-    return _run_tasks(tasks, jobs)
+    return _run_tasks(tasks, jobs, checkpoint)
 
 
 def _index_plain(directory: Path, tool: str | None = None) -> dict[str, Path]:

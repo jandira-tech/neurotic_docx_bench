@@ -335,8 +335,8 @@ def _device_option() -> Any:
     return typer.Option(
         None,
         "--device",
-        help="run the scorer kernels (CIEDE2000, SSIM) on torch: auto|cpu|mps|cuda "
-        "(the gpu extra); default is the parity-locked numpy path. An unavailable "
+        help="run the scorer kernels (CIEDE2000, SSIM) on torch: auto|cpu|mps|cuda|numpy "
+        "(the gpu extra); default is mps where available, else the numpy path (numpy forces the parity-locked path). An unavailable "
         "device warns and falls back to numpy",
         callback=_validate_device,
     )
@@ -803,7 +803,7 @@ def docx_to_pdf_eval(
         help="write per-doc scores + ITT aggregates",
     ),
     work_dir: Path | None = typer.Option(None, "--work-dir", help="scratch dir for PDFs and rasters"),
-    jobs: int = typer.Option(8, "--jobs", "-j"),
+    jobs: int = typer.Option(os.cpu_count() or 8, "--jobs", "-j"),
     dpi: int = typer.Option(144, "--dpi"),
     limit: int | None = typer.Option(None, "--limit", help="score only the first N fixtures (tests)"),
     resume: bool = typer.Option(True, "--resume/--no-resume", help="reuse existing candidate PDFs"),
@@ -962,7 +962,7 @@ def docxide_metrics_eval(
     limit: int | None = typer.Option(None, "--limit", help="score only the first N fixtures (tests)"),
     resume: bool = typer.Option(True, "--resume/--no-resume", help="reuse existing candidate PDFs"),
     convert_workers: int = typer.Option(8, "--convert-workers", help="parallel convert processes per tool"),
-    score_workers: int = typer.Option(4, "--score-workers", help="parallel scoring processes"),
+    score_workers: int = typer.Option(os.cpu_count() or 4, "--score-workers", help="parallel scoring processes"),
     origin: str | None = typer.Option(
         None,
         "--origin",

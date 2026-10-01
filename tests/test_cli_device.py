@@ -26,7 +26,7 @@ def _spy(seen: dict[str, object]):
 
 
 def test_run_exports_the_device_only_while_it_runs(tmp_path: Path, monkeypatch) -> None:
-    monkeypatch.delenv(kernels.DEVICE_ENV, raising=False)
+    monkeypatch.setenv(kernels.DEVICE_ENV, "numpy")
     monkeypatch.delenv("BENCH_NO_CACHE", raising=False)
     kernels.reset()
     seen: dict[str, object] = {}
@@ -38,12 +38,12 @@ def test_run_exports_the_device_only_while_it_runs(tmp_path: Path, monkeypatch) 
     )
     assert result.exit_code == 0, result.output
     assert seen["device_env"] == "cpu"
-    assert kernels.DEVICE_ENV not in os.environ
+    assert os.environ[kernels.DEVICE_ENV] == "numpy"
     assert kernels.backend_id() == "numpy"
 
 
-def test_run_without_device_keeps_the_numpy_path(tmp_path: Path, monkeypatch) -> None:
-    monkeypatch.delenv(kernels.DEVICE_ENV, raising=False)
+def test_run_without_device_uses_the_default_backend(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.setenv(kernels.DEVICE_ENV, "numpy")
     kernels.reset()
     seen: dict[str, object] = {}
     monkeypatch.setattr(cli, "_drive_runs", _spy(seen))
@@ -51,7 +51,7 @@ def test_run_without_device_keeps_the_numpy_path(tmp_path: Path, monkeypatch) ->
         cli.app, ["run", "--config", str(tmp_path / "bench.yaml"), "--results-dir", str(tmp_path / "results"), "--no-cache"],
     )
     assert result.exit_code == 0, result.output
-    assert seen["device_env"] is None and seen["backend"] == "numpy"
+    assert seen["device_env"] is None and seen["backend"] in ("numpy", f"torch-{kernels._default_device()}")
 
 
 def test_unknown_device_is_a_usage_error(tmp_path: Path, monkeypatch) -> None:
@@ -62,7 +62,7 @@ def test_unknown_device_is_a_usage_error(tmp_path: Path, monkeypatch) -> None:
 
 
 def test_profile_reports_the_backend_it_timed(tmp_path: Path, monkeypatch) -> None:
-    monkeypatch.delenv(kernels.DEVICE_ENV, raising=False)
+    monkeypatch.setenv(kernels.DEVICE_ENV, "numpy")
     kernels.reset()
     seen: dict[str, object] = {}
     monkeypatch.setattr(cli, "_drive_runs", _spy(seen))
@@ -77,4 +77,27 @@ def test_profile_reports_the_backend_it_timed(tmp_path: Path, monkeypatch) -> No
     report = json.loads(out.read_text())
     assert report["scorer_backend"] == seen["backend"]
     assert f"backend {seen['backend']}" in result.output
-    assert kernels.DEVICE_ENV not in os.environ
+    assert os.environ[kernels.DEVICE_ENV] == "numpy"
+
+
+def test_run_accepts_numpy_override_and_restores_mps(tmp_path: Path, monkeypatch) -> None:
+    from unittest.mock import Mock
+
+    monkeypatch.setenv(kernels.DEVICE_ENV, "mps")
+    importer = Mock(side_effect=AssertionError("--device numpy must not import torch"))
+    monkeypatch.setattr(kernels, "_import_torch", importer)
+    seen: dict[str, object] = {}
+    monkeypatch.setattr(cli, "_drive_runs", _spy(seen))
+    kernels.reset()
+    try:
+        result = runner.invoke(
+            cli.app,
+            ["run", "--config", str(tmp_path / "bench.yaml"),
+             "--results-dir", str(tmp_path / "results"), "--device", "numpy", "--no-cache"],
+        )
+        assert result.exit_code == 0, result.output
+        assert seen == {"device_env": "numpy", "backend": "numpy"}
+        assert os.environ[kernels.DEVICE_ENV] == "mps"
+        importer.assert_not_called()
+    finally:
+        kernels.reset()
