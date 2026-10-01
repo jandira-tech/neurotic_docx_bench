@@ -388,8 +388,19 @@ def convert_command(tool: str, src: Path, dest: Path, *, binary: Path) -> list[s
         # is the honest convert attempt; a non-PDF result is a generate failure.
         return [str(binary), str(src), "--export", "pdf"]
     if tool == "jubarte":
-        # Paint tracked changes the way Microsoft Word's Save as PDF does.
-        return [str(binary), "convert", str(src), "-o", str(dest), "--force", "--revisions", "word"]
+        # Paint tracked changes the way Microsoft Word's Save as PDF does; deflate the
+        # streams so a full-corpus pass does not fill the disk (same pixels).
+        return [
+            str(binary),
+            "convert",
+            str(src),
+            "-o",
+            str(dest),
+            "--force",
+            "--revisions",
+            "word",
+            "--compress",
+        ]
     if tool == "libreoffice_convert_rust":
         return [str(binary), str(src), str(dest), "pdf"]
     if tool == "dxpdf":
