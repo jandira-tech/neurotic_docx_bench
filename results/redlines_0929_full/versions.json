@@ -2,5 +2,6 @@
   "jubarte-rust": "jubarte 0.10.0 (86b6b5d3)",
   "jubarte-093": "jubarte 0.9.3 (release)",
   "docxodus": "Docxodus 12.6.5 (C#)",
-  "superdoc": "superdoc-sdk 2.16.0"
+  "superdoc": "superdoc-sdk 2.16.0",
+  "jubarte-0.10.1": "jubarte 0.10.1 (release)"
 }
