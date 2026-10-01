@@ -27,7 +27,8 @@ import numpy as np
 from skimage import color, metrics
 
 DEVICE_ENV = "BENCH_DEVICE"
-DEVICE_SPECS: tuple[str, ...] = ("auto", "cpu", "mps", "cuda")
+DEVICE_SPECS: tuple[str, ...] = ("auto", "cpu", "mps", "cuda", "numpy")
+DEFAULT_DEVICE = "mps"  # used when BENCH_DEVICE is unset; silently numpy where mps is missing
 
 # skimage's sRGB (D65) matrices and white point, so the torch path shares its constants.
 _XYZ_FROM_RGB = (
@@ -74,7 +75,7 @@ def resolve_device(
     ``torch_module`` is the torch module to consult (``None`` means not installed); by
     default the real one is imported, and only when a device is asked for.
     """
-    if not spec:
+    if not spec or spec == "numpy":
         return None
     if spec not in DEVICE_SPECS:
         raise ValueError(f"unknown device {spec!r}; expected one of: {', '.join(DEVICE_SPECS)}")
@@ -109,12 +110,21 @@ def _resolved(spec: str) -> str | None:
 def active_device() -> str | None:
     """The torch device the kernels run on, from ``BENCH_DEVICE``; ``None`` is numpy."""
     spec = os.environ.get(DEVICE_ENV, "")
-    return _resolved(spec) if spec else None
+    if spec:
+        return _resolved(spec)
+    return _default_device()
+
+
+@functools.cache
+def _default_device() -> str | None:
+    """``DEFAULT_DEVICE`` when this machine has it, else numpy, without a warning."""
+    return resolve_device(DEFAULT_DEVICE, warn=lambda _msg: None)
 
 
 def reset() -> None:
     """Forget resolved devices (tests, or after the environment changed)."""
     _resolved.cache_clear()
+    _default_device.cache_clear()
 
 
 def backend_id() -> str:

@@ -192,3 +192,6 @@ score_v2.patch
 
 # separate Cloudflare worker project, kept locally, not part of the bench
 /docx-viewer/
+
+# generated comparison output (scripts write it; history keeps the old files)
+/results-compare/

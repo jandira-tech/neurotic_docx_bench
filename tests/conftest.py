@@ -2,11 +2,15 @@
 
 from __future__ import annotations
 
+import os
 import shutil
 from pathlib import Path
 
 import pytest
 from helpers import MANIFEST, word_based_pairs
+
+# The scorer defaults to mps; the parity tests are locked to the numpy path.
+os.environ.setdefault("BENCH_DEVICE", "numpy")
 
 
 @pytest.fixture(scope="session")
