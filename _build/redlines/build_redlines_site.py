@@ -49,6 +49,13 @@ RUN = os.environ.get("REDLINES_RUN", "redlines_0929_full")
 R = BENCH / "results" / RUN
 CORPUS = BENCH / "corpus" / "word"
 FRESH = Path.home() / "temp" / "T" / "compare_regen" / "out"  # Word compares made again (0929 only)
+# jubarte 0.10.1, the release, rerun on the pairs the published page shows (results/redlines_1001_j0101,
+# release CLI through generate-native-redlines.ts, PDFs and accept / reject by Word); its files keep
+# the jubarte column's key so saved viewer state carries over. Unset to show the run's own jubarte.
+J0101 = BENCH / "results" / "redlines_1001_j0101"
+JUBARTE_0101 = os.environ.get("JUBARTE_0101", "1") == "1" and (J0101 / "jubarte-0101").is_dir()
+# Rebuild the published selection (its redlines/cases.json) instead of drawing a new sample.
+KEEP_CASES = os.environ.get("KEEP_CASES")
 HUB_REPO = "arthrod/neurotic_docx_bench"  # neurotic_docx_bench.hub.RESULTS_REPO (a dataset)
 TOOLS = {"redlines_0928": ["jubarte-rust", "docxodus", "superdoc"],
          "redlines_0929_full": ["jubarte-rust", "jubarte-093", "docxodus", "superdoc"]}[RUN]
@@ -69,7 +76,7 @@ VERSIONS = {
     },
     "redlines_0929_full": {
         "reference": "Word 16.114 compare",
-        "jubarte-rust": "0.10.0 @86b6b5d3",
+        "jubarte-rust": "0.10.1 (release)" if JUBARTE_0101 else "0.10.0 @86b6b5d3",
         "jubarte-093": "0.9.3 (release)",
         "docxodus": "12.6.5",
         "superdoc": "superdoc-sdk 2.16.0",
@@ -78,6 +85,13 @@ VERSIONS = {
 
 
 _hub_files: set[str] | None = None
+
+
+def tool_file(t: str, *parts: str) -> Path:
+    """``<run>/<tool>/<parts…>`` with the tool's own file suffix; jubarte-rust may come from J0101."""
+    if t == "jubarte-rust" and JUBARTE_0101:
+        return J0101.joinpath("jubarte-0101", *parts[:-1], parts[-1].replace("{t}", "jubarte-0101"))
+    return R.joinpath(t, *parts[:-1], parts[-1].replace("{t}", t))
 
 
 def hub_files() -> set[str]:
@@ -113,19 +127,19 @@ def redline_pdfs(row: dict) -> dict[str, Path]:
     key = row["key"]
     fresh = FRESH / f'{row["id"]}__vs__{row["id"]}.pdf'
     out = {"reference": fresh if RUN != "redlines_0928" and fresh.is_file() else R / "oracle_pdf" / f"{key}.pdf"}
-    out |= {t: R / t / "pdf_by_word" / f"{key}_{t}.pdf" for t in TOOLS}
+    out |= {t: tool_file(t, "pdf_by_word", f"{key}_{{t}}.pdf") for t in TOOLS}
     return {k: p for k, p in out.items() if available(p)}
 
 
 def accepted_pdfs(cmp_id: str, word: dict[str, Path]) -> dict[str, Path]:
     out = {"reference": word[cmp_id]}
-    out |= {t: R / t / "accepted" / "by_word" / f"{cmp_id}_accepted_tracking_{t}.pdf" for t in TOOLS}
+    out |= {t: tool_file(t, "accepted", "by_word", f"{cmp_id}_accepted_tracking_{{t}}.pdf") for t in TOOLS}
     return {k: p for k, p in out.items() if available(p)}
 
 
 def rejected_pdfs(cmp_id: str, word: dict[str, Path]) -> dict[str, Path]:
     out = {"reference": word[cmp_id]}
-    out |= {t: R / t / "rejected" / "by_word" / f"{cmp_id}_rejected_tracking_{t}.pdf" for t in TOOLS}
+    out |= {t: tool_file(t, "rejected", "by_word", f"{cmp_id}_rejected_tracking_{{t}}.pdf") for t in TOOLS}
     return {k: p for k, p in out.items() if available(p)}
 
 
@@ -177,7 +191,8 @@ def summary_line(track: str) -> str:
             continue
         s = json.loads(f.read_text())["summary"]
         o = s["overall"]
-        parts.append(f"{dict(ENGINES)[t]} {s['scored']}/{s['pairs']}"
+        label = "jubarte 0.10.0 (bench run)" if t == "jubarte-rust" and JUBARTE_0101 else dict(ENGINES)[t]
+        parts.append(f"{label} {s['scored']}/{s['pairs']}"
                      + (f", mean {o['mean']:.1f}, median {o['median']:.1f}, {o['at_least_90']} at 90+" if o["n"] else ""))
     return "; ".join(parts)
 
@@ -203,8 +218,9 @@ def main() -> None:
         for r in pick(rows, ACCEPTED_N, lambda r: len(accepted_pdfs(r["id"], word)) == len(TOOLS) + 1, rng):
             jobs.append((f"accepted/{state}", r["id"], accepted_pdfs(r["id"], word)))
 
-    rej_dir = BENCH / "grok_run" / "wr0928" / "rejected_tracking" / "pdf"
-    rej_word = {p.stem.removesuffix("_rejected_tracking"): p for p in rej_dir.glob("*_rejected_tracking.pdf")}
+    # Word's compares rejected by Word: the corpus set rejected_tracking_0928 (it left grok_run/wr0928).
+    rej_word = {row["key"].split("_")[1]: CORPUS / row["pdf"]
+                for row in csv.DictReader(open(CORPUS / "pools" / "rejected_tracking_0928_renders.csv"))}
     rej_groups = []
     if rej_word and (R / "reject_selection.csv").exists():
         rsel = [r for r in csv.DictReader(open(R / "reject_selection.csv")) if r["id"] in rej_word]
@@ -215,6 +231,17 @@ def main() -> None:
             for r in pick(rows, ACCEPTED_N, lambda r: len(rejected_pdfs(r["id"], rej_word)) == len(TOOLS) + 1, rng):
                 jobs.append((f"rejected/{state}", r["id"], rejected_pdfs(r["id"], rej_word)))
 
+    if KEEP_CASES:
+        by_id = {r["id"]: r for r in pool}
+        jobs = []
+        for c in json.loads(Path(KEEP_CASES).read_text()):
+            track = c["group"].split("/")[0]
+            pdfs = (redline_pdfs(by_id[c["case"]]) if track == "redlines"
+                    else accepted_pdfs(c["case"], word) if track == "accepted"
+                    else rejected_pdfs(c["case"], rej_word))
+            jobs.append((c["group"], c["case"], pdfs))
+        print(f"kept the {len(jobs)} published cases ({KEEP_CASES})", flush=True)
+
     shutil.rmtree(OUT, ignore_errors=True)
     OUT.mkdir()
     (HERE / "work").mkdir(exist_ok=True)
@@ -222,7 +249,8 @@ def main() -> None:
         cases = list(ex.map(lambda j: case(*j), jobs))
     print(f"{len(cases)} cases encoded ({time.time() - t0:.0f} s)", flush=True)
 
-    note = ("<span><b>What this is</b>: redlines by jubarte" + (" (0.10.0 and the 0.9.3 release)" if "jubarte-093" in TOOLS else "") + ", docxodus and SuperDoc against Microsoft Word&#8217;s own "
+    jver = "0.10.1" if JUBARTE_0101 else "0.10.0"
+    note = ("<span><b>What this is</b>: redlines by jubarte" + (f" ({jver} and the 0.9.3 release)" if "jubarte-093" in TOOLS else "") + ", docxodus and SuperDoc against Microsoft Word&#8217;s own "
             "compare, every PDF rendered by Word for Mac, scored with docxide-pdf&#8217;s page-metrics at 150 DPI over "
             "every page. <b>redlines</b>: the tool&#8217;s compare of a corpus pair vs Word&#8217;s compare of it. "
             "<b>accepted</b>: the same redlines with every tracked change accepted by Word, vs Word&#8217;s compare "
@@ -230,7 +258,10 @@ def main() -> None:
             f"pages at 100 DPI. Bench scores over every pair ({len(pool)} redline pairs, 100 accepted, 100 rejected): redlines: "
             + summary_line("redlines") + ". accepted: " + summary_line("accepted") + (". rejected (every change rejected by Word, vs Word&#8217;s compare rejected "
             "the same way): " + summary_line("rejected") if rej_groups else "") + ". SuperDoc (latest SDK) "
-            "refuses most pairs, so its column is often empty. Scores: _build/redlines/.</span>")
+            "refuses most pairs, so its column is often empty. Scores: _build/redlines/.</span>"
+            + ("<span><b>jubarte 0.10.1</b>: the release CLI reran the pairs shown here (redlines, then "
+               "Word&#8217;s PDF, accept-all and reject-all of them, as for every tool); the bench-wide "
+               "scores above are its 0.10.0 run.</span>" if JUBARTE_0101 else ""))
     note = note.replace("'", "&#8217;")
     aj.ec.HTML_TEMPLATE = bs.patched_template(note).replace(
         "<title>jubarte DOCX to PDF vs Microsoft Word: engine comparison</title>",
