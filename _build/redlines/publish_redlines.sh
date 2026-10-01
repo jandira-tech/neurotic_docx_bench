@@ -1,7 +1,7 @@
 #!/bin/zsh
 # Build the redlines section and publish it to gh-pages of jandira-tech/neurotic_docx_bench as
 # /redlines/, with the bench scores and the scripts behind it in _build/redlines/.
-# Refuses to publish when the section would push the whole site past 500 MiB.
+# Refuses to publish when the section would push the whole site past 950 MiB (GitHub Pages: 1 GB).
 cd ~/temp/T/docxide_compare || exit 1
 # SKIP_BUILD=1 publishes the redlines_site/ already built; KEEP_CASES=<cases.json> reaches the build.
 [ -n "${SKIP_BUILD:-}" ] || uv run --with pillow --with huggingface_hub python build_redlines_site.py || exit 1
