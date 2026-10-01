@@ -368,10 +368,11 @@ def score_folder_pair(
     *,
     dpi: int = 144,
     jobs: int = 8,
+    checkpoint: Path | None = None,
 ) -> dict[str, pipeline.ScoreResult]:
     """Score two PDF folders with the shipped plain-stem visual path."""
     return pipeline.score_folders_plain(
-        oracle_dir, candidate_dir, work_dir, dpi=dpi, jobs=jobs,
+        oracle_dir, candidate_dir, work_dir, dpi=dpi, jobs=jobs, checkpoint=checkpoint,
     )
 
 
@@ -388,8 +389,19 @@ def convert_command(tool: str, src: Path, dest: Path, *, binary: Path) -> list[s
         # is the honest convert attempt; a non-PDF result is a generate failure.
         return [str(binary), str(src), "--export", "pdf"]
     if tool == "jubarte":
-        # Paint tracked changes the way Microsoft Word's Save as PDF does.
-        return [str(binary), "convert", str(src), "-o", str(dest), "--force", "--revisions", "word"]
+        # Paint tracked changes the way Microsoft Word's Save as PDF does; deflate the
+        # streams so a full-corpus pass does not fill the disk (same pixels).
+        return [
+            str(binary),
+            "convert",
+            str(src),
+            "-o",
+            str(dest),
+            "--force",
+            "--revisions",
+            "word",
+            "--compress",
+        ]
     if tool == "libreoffice_convert_rust":
         return [str(binary), str(src), str(dest), "pdf"]
     if tool == "dxpdf":
@@ -791,6 +803,7 @@ def run_eval(
             score_dir = root / tool / "score"
             cand_full = score_folder_pair(
                 oracle_dir, cand_dir, score_dir, dpi=dpi, jobs=jobs,
+                checkpoint=root / tool / "scores.checkpoint.jsonl",
             )
             cand_scores = _overall_map(cand_full)
             shutil.rmtree(score_dir, ignore_errors=True)
