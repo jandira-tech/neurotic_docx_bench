@@ -39,6 +39,7 @@ def main() -> None:
     ap.add_argument("--n", type=int, default=800)
     ap.add_argument("--seed", type=int, default=20261001)
     ap.add_argument("--out", type=Path, default=Path("results/site_fixtures_800.csv"))
+    ap.add_argument("--exclude", type=Path, action="append", default=[], help="a picked CSV whose stems are left out (repeatable)")
     a = ap.parse_args()
 
     others = [
@@ -53,6 +54,10 @@ def main() -> None:
             continue
         pool[row["key"]] = {"score": row["result"]["overall_score"], "pages": row["result"]["page_count"]}
     pool = {k: v for k, v in pool.items() if all(k in o for o in others)}
+    for path in a.exclude:
+        with path.open() as fh:
+            for row in csv.DictReader(fh):
+                pool.pop(row["stem"], None)
 
     cells: dict[tuple, list[str]] = collections.defaultdict(list)
     for key, v in pool.items():
