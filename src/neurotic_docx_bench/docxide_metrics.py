@@ -31,12 +31,16 @@ second pass; this track is the converter-only view over the 398 fixtures.
 
 from __future__ import annotations
 
+import asyncio
 import json
 import statistics
+import time
 from collections.abc import Sequence
 from concurrent.futures import ProcessPoolExecutor
 from datetime import UTC, datetime
 from pathlib import Path
+
+import aiofiles
 
 from neurotic_docx_bench import docx_to_pdf as d2p
 from neurotic_docx_bench import page_metrics as pm
@@ -72,6 +76,72 @@ def _score_job(job: tuple[str, str, str]) -> dict:
     return {"stem": stem, **row}
 
 
+def _now() -> str:
+    return datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def _signature(job: tuple[str, str, str]) -> str:
+    """Identity of one scoring job: the two PDFs' sizes and the scorer's DPI."""
+    _stem, oracle, candidate = job
+    size = lambda p: Path(p).stat().st_size if Path(p).is_file() else -1  # noqa: E731 (a missing PDF scores as failed)
+    return f"{size(oracle)}:{size(candidate)}:{DPI}"
+
+
+async def _load_checkpoint(path: Path) -> dict[str, dict]:
+    held: dict[str, dict] = {}
+    if not path.is_file():
+        return held
+    async with aiofiles.open(path, encoding="utf-8") as fh:
+        async for line in fh:
+            try:
+                held_row = json.loads(line)
+            except json.JSONDecodeError:
+                continue  # a line cut short by a kill
+            held[held_row["stem"]] = held_row
+    return held
+
+
+async def _score_async(jobs: list[tuple[str, str, str]], workers: int, checkpoint: Path) -> list[dict]:
+    total = len(jobs)
+    started = time.monotonic()
+    held = await _load_checkpoint(checkpoint)
+    sigs = {job[0]: _signature(job) for job in jobs}
+    rows: dict[str, dict] = {
+        stem: held[stem]["row"] for stem in sigs if stem in held and held[stem]["sig"] == sigs[stem]
+    }
+    todo = [job for job in jobs if job[0] not in rows]
+    print(f"{_now()} docxide metrics started, {total} documents ({len(rows)} from checkpoint, {len(todo)} to score)", flush=True)
+    done = len(rows)
+
+    async def record(sink, row: dict) -> None:
+        nonlocal done
+        done += 1
+        rows[row["stem"]] = row
+        await sink.write(json.dumps({"stem": row["stem"], "sig": sigs[row["stem"]], "scored_at": _now(), "row": row}) + "\n")
+        await sink.flush()
+        elapsed = time.monotonic() - started
+        jac = row.get("jaccard")
+        shown = "  n/a" if jac is None else f"{jac * 100:5.1f}"
+        print(
+            f"{_now()} [{done}/{total}] {done / total:6.1%} jaccard {shown}  {row['stem']}  "
+            f"(elapsed {elapsed:.0f}s, eta {elapsed / done * (total - done):.0f}s)",
+            flush=True,
+        )
+
+    if todo:
+        checkpoint.parent.mkdir(parents=True, exist_ok=True)
+        loop = asyncio.get_running_loop()
+        async with aiofiles.open(checkpoint, "a", encoding="utf-8") as sink:
+            if workers <= 1:
+                for job in todo:
+                    await record(sink, _score_job(job))
+            else:
+                with ProcessPoolExecutor(max_workers=workers) as pool:
+                    for fut in asyncio.as_completed([loop.run_in_executor(pool, _score_job, job) for job in todo]):
+                        await record(sink, await fut)
+    return [rows[job[0]] for job in jobs]  # input order
+
+
 def score_candidates(
     fixtures: Sequence[d2p.Fixture],
     candidate_dir: Path,
@@ -82,18 +152,16 @@ def score_candidates(
     """Score one converter's PDFs against the Word oracles. Returns per-stem rows.
 
     Each worker rasterizes one document in memory and drops the rasters before the
-    next, so peak memory is one document's pages per worker; nothing touches disk
-    but ``out_json``.
+    next, so peak memory is one document's pages per worker. Every scored document is
+    appended to ``<out_json stem>.docxide.checkpoint.jsonl`` as it finishes (aiofiles) and a
+    rerun scores only the documents that file does not hold; one progress line per
+    document carries a UTC stamp.
     """
     jobs = [
         (item.stem, str(item.oracle), str(candidate_dir / f"{item.stem}.pdf"))
         for item in fixtures
     ]
-    if workers <= 1:
-        rows = [_score_job(job) for job in jobs]
-    else:
-        with ProcessPoolExecutor(max_workers=workers) as pool:
-            rows = list(pool.map(_score_job, jobs, chunksize=4))
+    rows = asyncio.run(_score_async(jobs, workers, out_json.with_name(f"{out_json.stem}.docxide.checkpoint.jsonl")))
     out_json.parent.mkdir(parents=True, exist_ok=True)
     out_json.write_text(json.dumps(rows, indent=2) + "\n", encoding="utf-8")
     return {row["stem"]: row for row in rows}
