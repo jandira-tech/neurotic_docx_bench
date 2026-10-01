@@ -13,7 +13,39 @@ th { background:var(--panel); } td.n { text-align:right; }
 code { background:#333; padding:0 4px; border-radius:3px; }
 section { margin-bottom:40px; }
 nav { color:var(--muted); font-size:13px; }
+/* jubarte-theme v1 */
+@font-face { font-family:"Manrope"; font-style:normal; font-weight:200 800; font-display:swap; src:url("../_static/fonts/manrope-latin-wght-normal.woff2") format("woff2-variations"); }
+@font-face { font-family:"JetBrains Mono"; font-style:normal; font-weight:100 800; font-display:swap; src:url("../_static/fonts/jetbrains-mono-latin-wght-normal.woff2") format("woff2-variations"); }
+
+:root {
+  --ink:#0b1e2d; --muted:#5a7183; --line:#dce6ec; --paper:#f4f8fb; --white:#fff; --blue:#1e5580;
+  --blue-d:#123b5c; --navy:#061c30; --sky:#e9f3f7; --hover:#eef4f8; --steel:#b4c4cf; --off:#8fa6b6;
+  --forest:#1c5f46; --brick:#8a3b2e;
+  --sans:"Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --bg:var(--paper); --panel:var(--white); --fg:var(--ink); --accent:var(--blue); --border:var(--line);
+}
+body { font-family:var(--sans); -webkit-font-smoothing:antialiased; }
+a { color:var(--blue); }
+a:hover { color:var(--blue-d); }
+#brand { grid-column:1/3; display:flex; align-items:center; gap:14px; padding:10px 14px; background:var(--white); border-bottom:1px solid var(--line); flex-wrap:wrap; }
+#brand .logo { display:inline-flex; align-items:center; gap:10px; color:var(--ink); text-decoration:none; font-family:var(--mono); font-size:13px; font-weight:600; letter-spacing:.14em; }
+#brand .crumb { font-family:var(--mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
+#brand .links { margin-left:auto; display:flex; gap:16px; font-family:var(--mono); font-size:11px; letter-spacing:.06em; text-transform:uppercase; }
+#brand .links a { text-decoration:none; }
+
+body { background:var(--white); color:var(--ink); font-size:15px; padding:0 0 48px; max-width:none; }
+body > :not(#brand) { max-width:1180px; margin-left:auto; margin-right:auto; padding-left:24px; padding-right:24px; }
+#brand { margin-bottom:24px; }
+h1 { font-size:34px; letter-spacing:-.02em; line-height:1.1; }
+h2 { font-family:var(--mono); font-size:12px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; }
+table { background:var(--white); }
+th, td { border:1px solid var(--line); padding:5px 10px; }
+th { background:var(--paper); font-family:var(--mono); font-size:11px; letter-spacing:.06em; }
+code { background:var(--sky); border-radius:0; font-family:var(--mono); font-size:.9em; }
+nav { font-family:var(--mono); font-size:11px; letter-spacing:.06em; text-transform:uppercase; }
 </style>
+<header id="brand"><a class="logo" href="https://jubarte.pro/"><svg viewBox="0 0 560 360" width="34" height="22" aria-hidden="true"><g transform="rotate(-5 280 200)"><path d="M 76 192 C 82 172 112 156 150 146 C 196 132 258 112 310 110 C 356 108 402 118 448 148 C 458 152 464 150 470 144 C 478 128 494 106 520 92 C 512 112 508 126 502 134 C 514 140 526 148 540 160 C 520 164 498 160 480 162 C 470 164 460 166 452 166 C 420 190 382 228 328 252 C 270 278 194 286 148 268 C 114 254 88 230 81 208 C 76 198 74 194 76 192 Z" fill="#1E5580"/><path d="M 208 228 C 246 240 286 268 322 298 C 334 308 338 320 330 326 C 296 326 254 306 226 280 C 206 260 200 240 208 228 Z" fill="#8FB8CE"/><circle cx="122" cy="196" r="6" fill="#FFFFFF"/></g></svg>JUBARTE.DOCX</a><span class="crumb">/ Speed on 10,000 inputs</span><span class="links"><a href="https://jubarte.pro/">jubarte.pro ↗</a><a href="https://jubarte.pro/cases">Cases ↗</a><a href="https://github.com/jandira-tech/neurotic_docx_bench">Bench repo ↗</a></span></header>
 <nav><a href="../">DOCX to PDF engines</a> &middot; <a href="../redlines/">Redlines vs Microsoft Word</a> &middot; Speed</nav>
 <h1>Speed on 10,000 varied inputs</h1>
 <p>Every tool gets the same planned inputs, one tool at a time on one machine (Apple M4 Pro, 12 cores, 24 GB, macOS).

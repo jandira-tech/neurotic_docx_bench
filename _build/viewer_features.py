@@ -16,13 +16,16 @@ sits between the anchors, never inside them); it is idempotent. ``build_site.py`
 it through ``patched_template(note, mode)``; run this file to patch the published pages in
 place without rebuilding them:
 
-    python3 _build/viewer_features.py            # index.html and redlines/index.html
+    python3 _build/viewer_features.py            # index.html, redlines/index.html, speed/index.html
 """
 
 from __future__ import annotations
 
 import sys
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import viewer_theme  # noqa: E402  (beside this file, also when run as a script)
 
 MARKER = "/* viewer-features v2 */"
 MODES = {
@@ -244,21 +247,21 @@ def swaps(mode: str) -> list[tuple[str, str]]:
 
 
 def patch(html: str, mode: str) -> str:
-    if MARKER in html:
-        return html
-    for old, new in swaps(mode):
-        if html.count(old) != 1:
-            raise SystemExit(f"viewer anchor not found once ({html.count(old)}x): {old[:70]!r}")
-        html = html.replace(old, new)
-    return html
+    """The viewer features, then the jubarte.pro theme (viewer_theme); each step runs once."""
+    if MARKER not in html:
+        for old, new in swaps(mode):
+            if html.count(old) != 1:
+                raise SystemExit(f"viewer anchor not found once ({html.count(old)}x): {old[:70]!r}")
+            html = html.replace(old, new)
+    return viewer_theme.theme(html, mode)
 
 
 def main(argv: list[str]) -> int:
     site = Path(__file__).resolve().parent.parent
-    for rel, mode in (("index.html", "convert"), ("redlines/index.html", "redline")):
+    for rel, mode in (("index.html", "convert"), ("redlines/index.html", "redline"), ("speed/index.html", "speed")):
         path = site / rel
         before = path.read_text()
-        after = patch(before, mode)
+        after = viewer_theme.theme(before, mode) if mode == "speed" else patch(before, mode)
         if after != before:
             path.write_text(after)
         print(f"{rel}: {'patched' if after != before else 'already patched'}")
