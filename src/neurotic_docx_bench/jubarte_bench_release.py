@@ -32,7 +32,9 @@ executor are tested without Word, network or git.
 from __future__ import annotations
 
 import json
+import os
 import re
+import signal
 import subprocess
 from collections.abc import Callable, Sequence
 from dataclasses import dataclass, field
@@ -82,6 +84,8 @@ class Outcome:
 
 class Proc(Protocol):
     def terminate(self) -> None: ...
+
+    def kill(self) -> None: ...
 
     def wait(self, timeout: float | None = None) -> int: ...
 
@@ -354,8 +358,49 @@ def default_run(step: Step, root: Path) -> int:
         return subprocess.run(step.argv, cwd=root, stdout=fh, stderr=subprocess.STDOUT, check=False).returncode
 
 
-def default_spawn(argv: Sequence[str], root: Path) -> Proc:
-    return subprocess.Popen(list(argv), cwd=root, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+class ProcessGroup:
+    """A process started as the leader of its own group; stopping it stops what it started.
+
+    word_watchdog.sh waits in a ``sleep`` child: a signal to the shell alone leaves that
+    child behind.
+    """
+
+    def __init__(self, popen: subprocess.Popen[bytes]) -> None:
+        self.popen = popen
+        self.pid = popen.pid
+
+    def _signal(self, sig: int) -> None:
+        try:
+            os.killpg(self.pid, sig)
+        except ProcessLookupError:  # the whole group already exited
+            pass
+
+    def terminate(self) -> None:
+        self._signal(signal.SIGTERM)
+
+    def kill(self) -> None:
+        self._signal(signal.SIGKILL)
+
+    def wait(self, timeout: float | None = None) -> int:
+        return self.popen.wait(timeout)
+
+
+def default_spawn(argv: Sequence[str], root: Path) -> ProcessGroup:
+    return ProcessGroup(
+        subprocess.Popen(
+            list(argv), cwd=root, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True
+        )
+    )
+
+
+def stop(dog: Proc) -> None:
+    """Stop a watchdog without letting a slow exit replace its step's result."""
+    dog.terminate()
+    try:
+        dog.wait(timeout=10)
+    except subprocess.TimeoutExpired:
+        dog.kill()
+        dog.wait()
 
 
 def execute(
@@ -381,8 +426,7 @@ def execute(
                 code = run(step, root)
             finally:
                 if dog is not None:
-                    dog.terminate()
-                    dog.wait(timeout=10)
+                    stop(dog)
             out = Outcome(step, code == 0, step.shown() if code == 0 else f'{step.shown()}: exit {code}')
         done.append(out)
         echo(f'   {"ok" if out.ok else "may fail" if step.may_fail else "FAIL"}: {out.detail}')
