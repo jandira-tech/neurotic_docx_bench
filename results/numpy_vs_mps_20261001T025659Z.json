@@ -1,0 +1,113 @@
+{
+  "started_at": "2026-10-01T02:56:59Z",
+  "last_at": "2026-10-01T02:57:00Z",
+  "stage": "scoring:mps_j4",
+  "args": {
+    "work": "results/jubarte_0.10.1_docx_to_pdf_work",
+    "n": 20,
+    "jobs": 12,
+    "configs": "mps:4,mps:12",
+    "dpi": 144,
+    "max_load": 9999.0,
+    "quiet_samples": 1,
+    "interval": 10.0,
+    "give_up": 3600.0,
+    "out": "results"
+  },
+  "load": {
+    "load1": 4.08935546875,
+    "load5": 8.67578125,
+    "load15": 12.0927734375,
+    "cpus": 12
+  },
+  "quiet_samples": 1,
+  "fixtures": [
+    {
+      "stem": "tracking_without_comments__19eb128df9_98bf5f3d218a1485f5eb284693b4f98725eadd3660097efd__vs__9666fa13fb_a3701d3600ed5bf6c9bf13e12e4c2a59542eba10f87fad69_redline_5b269ade28",
+      "pages": 425
+    },
+    {
+      "stem": "clean__9666fa13fb_a3701d3600ed5bf6c9bf13e12e4c2a59542eba10f87fad69",
+      "pages": 343
+    },
+    {
+      "stem": "clean__e448c8d465_9d3fc36405a3bcc0229f94b29cd91574878336de0992543d",
+      "pages": 314
+    },
+    {
+      "stem": "tracking_without_comments__af2ea13761_6a0524deb86b08f0fb55dcbb7d469deacb25532f08824945__vs__1068eb5017_793c14bc1529c16f30ac69b82ca152f39f534a1a3f3f90e4_redline_5d8e97b0c5",
+      "pages": 311
+    },
+    {
+      "stem": "tracking_without_comments__acce1b593c_4bb73d9addf1f02e3a2132dcd33a8feb4dfcbe076d43bb0f__vs__4e2d5a0b0c_4887566b3c4aad8c7f07b4ba2637c0244a1ee0d66c8d0c29_redline_63ea4d3f8d",
+      "pages": 276
+    },
+    {
+      "stem": "tracking_without_comments__c04ae787d4_db9f753f675d3ca91a08032d07e7ec0c156fa152de3bafa7__vs__8f36ed144a_d47020aa359686bd7cbbe016e04872fb31c3995f576a2f1d_redline_be59d358de",
+      "pages": 255
+    },
+    {
+      "stem": "tracking_without_comments__d5049aaec2_c73c128db4c8f0b0683396b603a070256a36b398f91585f0__vs__3bea84268c_6cbf6dfdf4b28397138c88c0353584658ccd144a913ce03b_redline_b567087abf",
+      "pages": 239
+    },
+    {
+      "stem": "tracking_without_comments__9f6f60f1db_d0a7c31f8535690716639fce8eb4081cb831a0b1c893af9f__vs__8116a767f0_723ae78054da0840fa9f450784fd17e0564865cb53a6bdd5_redline_e633129040",
+      "pages": 228
+    },
+    {
+      "stem": "tracking_without_comments__4adc608648_2488d971f129d2ad9ee2746e23daeadffa071001e2686533__vs__279da0a289_a4168b8a3243b602dbbc156765888e0596f9d3e4dac17549_redline_bbfeb633fc",
+      "pages": 216
+    },
+    {
+      "stem": "clean__279da0a289_a4168b8a3243b602dbbc156765888e0596f9d3e4dac17549",
+      "pages": 199
+    },
+    {
+      "stem": "clean__19eb128df9_98bf5f3d218a1485f5eb284693b4f98725eadd3660097efd",
+      "pages": 167
+    },
+    {
+      "stem": "clean__8116a767f0_723ae78054da0840fa9f450784fd17e0564865cb53a6bdd5",
+      "pages": 164
+    },
+    {
+      "stem": "tracking_without_comments__1068eb5017_793c14bc1529c16f30ac69b82ca152f39f534a1a3f3f90e4",
+      "pages": 164
+    },
+    {
+      "stem": "clean__acce1b593c_4bb73d9addf1f02e3a2132dcd33a8feb4dfcbe076d43bb0f",
+      "pages": 163
+    },
+    {
+      "stem": "clean__640ee26d10_57f96361b12bda78af9500fd6dafee31572e70a7333b47fd",
+      "pages": 159
+    },
+    {
+      "stem": "tracking_without_comments__dc5d0f4350_f569a8b7a88800ca28451782130c35f897ec727ca8750a85__vs__ba6721eed7_1a61978f0ea0ee2ec6a626de46a977c15f84fe45e8c06d43_redline_cbf65aa629",
+      "pages": 154
+    },
+    {
+      "stem": "tracking_without_comments__7e1d0dc896_db433183ef464aaaa01d37307a1b7476eb855adb2ab2e09c__vs__26eb0ecec7_9377099d26f30a542b1c1db6c87e2a15ce0c0e3fd1e8dc01_redline_0bc720e5fa",
+      "pages": 153
+    },
+    {
+      "stem": "tracking_without_comments__af2ea13761_6a0524deb86b08f0fb55dcbb7d469deacb25532f08824945",
+      "pages": 152
+    },
+    {
+      "stem": "tracking_without_comments__5fbd8a7228_39cd8347f53ac1b06a6eb59399aa12a9977b0233a38ddaff__vs__89d3a1c365_40d999f53c15fd5eb9e57ab8cf37f22f83d6823458897be1_redline_049d8405bc",
+      "pages": 132
+    },
+    {
+      "stem": "clean__80e1256a8e_3832d29088f92183b9a5fbe7e9783104996aef6817f3f101",
+      "pages": 128
+    }
+  ],
+  "pages_total": 4342,
+  "load_before": {
+    "load1": 4.08935546875,
+    "load5": 8.67578125,
+    "load15": 12.0927734375,
+    "cpus": 12
+  }
+}

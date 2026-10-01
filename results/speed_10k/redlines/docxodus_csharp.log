@@ -1,0 +1,18 @@
+redline_speed_bench: 10000 planned pairs from results/speed_10k/pairs_10k.csv
+  unique fixtures: 2565 (target 1000)
+  loaded 266.1 MiB in 985.274ms
+  pairs=10000 (min=5000, seed=42, rounds≈1)
+  methods=docxodus-csharp-inproc warmup=20 reps=1 profile=false
+  jubarte-dist=/Users/arthrod/temp/T/neurotic_docx_bench/dist/jubarte-final
+  rust-dist=/Users/arthrod/temp/T/neurotic_docx_bench/src/neurotic_docx_bench/utils/jubarte/jubarte-rust
+  csharp-dist=/Users/arthrod/temp/T/ooxmlsdk/Docxodus/tools/redline/bin/Release/net10.0
+  csharp-inproc-dist=/Users/arthrod/temp/T/neurotic_docx_bench/src/neurotic_docx_bench/utils/docxodus/docxodus-csharp-inproc/bin/Release/net10.0
+  rust-inproc-dist=/Users/arthrod/temp/T/neurotic_docx_bench/src/neurotic_docx_bench/utils/jubarte/jubarte-rust
+  wasm-dist=/Users/arthrod/temp/T/neurotic_docx_bench/src/neurotic_docx_bench/utils/jubarte/jubarte-wasm
+  out=/Users/arthrod/temp/T/neurotic_docx_bench/results/speed_10k/redlines
+
+▶ docxodus-csharp-inproc (engine=docxodus-csharp-inproc, dist=/Users/arthrod/temp/T/neurotic_docx_bench/src/neurotic_docx_bench/utils/docxodus/docxodus-csharp-inproc/bin/Release/net10.0, native=false)
+  [250/10000] failed 0 (2026-09-29T23:34:22.288Z)
+  [500/10000] failed 0 (2026-09-29T23:34:39.808Z)
+  [750/10000] failed 0 (2026-09-29T23:35:01.145Z)
+  [1000/10000] failed 0 (2026-09-29T23:35:55.787Z)

@@ -1,0 +1,23 @@
+{
+  "started_at": "2026-10-01T00:30:12Z",
+  "last_at": "2026-10-01T00:33:42Z",
+  "stage": "waiting",
+  "args": {
+    "work": "results/jubarte_0.10.1_docx_to_pdf_work",
+    "n": 20,
+    "jobs": 12,
+    "dpi": 144,
+    "max_load": 3.0,
+    "quiet_samples": 3,
+    "interval": 10.0,
+    "give_up": 3600.0,
+    "out": "results"
+  },
+  "load": {
+    "load1": 2.83447265625,
+    "load5": 14.95263671875,
+    "load15": 24.0078125,
+    "cpus": 12
+  },
+  "quiet_samples": 1
+}

@@ -1,0 +1,18 @@
+2026-10-01T02:56:59Z load1 4.1 (need < 9999.0), quiet 1/1
+2026-10-01T02:57:00Z scoring 20 fixtures on mps with 4 workers
+2026-10-01T02:57:00Z scoring started, 20 documents (0 from checkpoint, 20 to score)
+2026-10-01T02:59:13Z [1/20]   5.0%  51.11  clean__80e1256a8e_3832d29088f92183b9a5fbe7e9783104996aef6817f3f101  (elapsed 133s, eta 2518s)
+2026-10-01T02:59:47Z [2/20]  10.0%  42.22  clean__19eb128df9_98bf5f3d218a1485f5eb284693b4f98725eadd3660097efd  (elapsed 167s, eta 1502s)
+2026-10-01T02:59:49Z [3/20]  15.0%  49.49  clean__640/Users/arthrod/.local/share/uv/python/cpython-3.14.2-macos-aarch64-none/lib/python3.14/multiprocessing/resource_tracker.py:396: UserWarning: resource_tracker: There appear to be 5 leaked semaphore objects to clean up at shutdown: {'/mp-zf60hi1w', '/mp-03d8ge2c', '/mp-hvnnehjq', '/mp-terssa02', '/mp-ixe83eev'}
+  warnings.warn(
+  (elapsed 300s, eta 900s)
+2026-10-01T03:02:34Z [6/20]  30.0%  50.49  clean__acce1b593c_4bb73d9addf1f02e3a2132dcd33a8feb4dfcbe076d43bb0f  (elapsed 334s, eta 780s)
+2026-10-01T03:04:46Z [7/20]  35.0%  51.67  tracking_without_comments__1068eb5017_793c14bc1529c16f30ac69b82ca152f39f534a1a3f3f90e4  (elapsed 466s, eta 866s)
+2026-10-01T03:05:22Z [8/20]  40.0%  48.98  clean__9666fa13fb_a3701d3600ed5bf6c9bf13e12e4c2a59542eba10f87fad69  (elapsed 502s, eta 753s)
+2026-10-01T03:05:31Z [9/20]  45.0%  47.48  clean__e448c8d465_9d3fc36405a3bcc0229f94b29cd91574878336de0992543d  (elapsed 511s, eta 624s)
+2026-10-01T03:07:05Z [10/20]  50.0%  45.54  tracking_without_comments__5fbd8a7228_39cd8347f53ac1b06a6eb59399aa12a9977b0233a38ddaff__vs__89d3a1c365_40d999f53c15fd5eb9e57ab8cf37f22f83d6823458897be1_redline_049d8405bc  (elapsed 605s, eta 605s)
+2026-10-01T03:08:05Z [11/20]  55.0%  49.57  tracking_without_comments__7e1d0dc896_db433183ef464aaaa01d37307a1b7476eb855adb2ab2e09c__vs__26eb0ecec7_9377099d26f30a542b1c1db6c87e2a15ce0c0e3fd1e8dc01_redline_0bc720e5fa  (elapsed 665s, eta 544s)
+2026-10-01T03:08:27Z [12/20]  60.0%  42.35  tracking_without_comments__4adc608648_2488d971f129d2ad9ee2746e23daeadffa071001e2686533__vs__279da0a289_a4168b8a3243b602dbbc156765888e0596f9d3e4dac17549_redline_bbfeb633fc  (elapsed 687s, eta 458s)
+2026-10-01T03:09:30Z [13/20]  65.0%  41.51  tracking_without_comments__19eb128df9_98bf5f3d218a1485f5eb284693b4f98725eadd3660097efd__vs__9666fa13fb_a3701d3600ed5bf6c9bf13e12e4c2a59542eba10f87fad69_redline_5b269ade28  (elapsed 750s, eta 404s)
+/Users/arthrod/.local/share/uv/python/cpython-3.14.2-macos-aarch64-none/lib/python3.14/multiprocessing/resource_tracker.py:396: UserWarning: resource_tracker: There appear to be 5 leaked semaphore objects to clean up at shutdown: {'/mp-noc4c_ge', '/mp-o49o1obk', '/mp-33uucaup', '/mp-7p46bdsh', '/mp-feqpb_6u'}
+  warnings.warn(
