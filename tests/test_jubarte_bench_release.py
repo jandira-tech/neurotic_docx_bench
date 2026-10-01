@@ -7,6 +7,9 @@ nothing here needs Word, the network or git.
 from __future__ import annotations
 
 import json
+import os
+import subprocess
+import time
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -30,6 +33,9 @@ class Dog:
     stopped: bool = False
 
     def terminate(self) -> None:
+        self.stopped = True
+
+    def kill(self) -> None:
         self.stopped = True
 
     def wait(self, timeout: float | None = None) -> int:
@@ -202,3 +208,54 @@ def test_plan_flag_prints_and_runs_nothing(tmp_path: Path) -> None:
     assert lines[-1] == 'report    uv run bench report --check'
     bad = CliRunner().invoke(jbr.app, ['0.10.2', '--plan', '--skip', 'word'])
     assert bad.exit_code != 0
+
+
+@dataclass
+class StuckDog(Dog):
+    """A watchdog that outlives its terminate: the first wait times out."""
+
+    killed: bool = False
+
+    def kill(self) -> None:
+        self.killed = True
+
+    def wait(self, timeout: float | None = None) -> int:
+        if timeout is not None and not self.killed:
+            raise subprocess.TimeoutExpired('zsh', timeout)
+        return -9
+
+
+def test_a_watchdog_that_will_not_stop_is_killed_and_the_step_keeps_its_result(tmp_path: Path) -> None:
+    dogs: list[StuckDog] = []
+
+    def spawn(argv, root: Path) -> StuckDog:
+        dogs.append(StuckDog(list(argv)))
+        return dogs[-1]
+
+    step = jbr.Step('redlines', 'export', ('true',), watch=('export.log',))
+    done = jbr.execute([step], tmp_path, run=lambda s, r: 0, spawn=spawn, echo=lambda _: None)
+    assert len(done) == 1 and done[0].ok
+    assert dogs[0].stopped and dogs[0].killed
+
+
+def test_stopping_the_watchdog_stops_what_it_started(tmp_path: Path) -> None:
+    # word_watchdog.sh sleeps in a child process: terminate reaches the whole group.
+    dog = jbr.default_spawn(['zsh', '-c', 'sleep 30 & wait'], tmp_path)
+    deadline = time.monotonic() + 5
+    children: list[int] = []
+    while not children and time.monotonic() < deadline:
+        out = subprocess.run(['pgrep', '-P', str(dog.pid)], capture_output=True, text=True).stdout
+        children = [int(pid) for pid in out.split()]
+        time.sleep(0.05)
+    assert children, 'the shell never started its child'
+    dog.terminate()
+    dog.wait(timeout=5)
+    deadline = time.monotonic() + 5
+    while time.monotonic() < deadline:
+        try:
+            os.kill(children[0], 0)
+        except ProcessLookupError:
+            break
+        time.sleep(0.05)
+    else:
+        pytest.fail(f'the watchdog child {children[0]} outlived terminate')
