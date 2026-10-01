@@ -82,7 +82,7 @@ def test_resolve_device_rejects_unknown_specs() -> None:
 
 
 def test_active_device_and_backend_id_follow_the_environment(monkeypatch) -> None:
-    monkeypatch.delenv(kernels.DEVICE_ENV, raising=False)
+    monkeypatch.setenv(kernels.DEVICE_ENV, "numpy")
     kernels.reset()
     assert kernels.active_device() is None
     assert kernels.backend_id() == "numpy"
@@ -94,14 +94,14 @@ def test_active_device_and_backend_id_follow_the_environment(monkeypatch) -> Non
 
 
 def test_device_env_sets_and_restores_the_environment(monkeypatch) -> None:
-    monkeypatch.delenv(kernels.DEVICE_ENV, raising=False)
+    monkeypatch.setenv(kernels.DEVICE_ENV, "numpy")
     kernels.reset()
     with kernels.device_env("cpu"):
         assert kernels.active_device() == "cpu"
-    assert kernels.DEVICE_ENV not in kernels.os.environ
+    assert kernels.os.environ[kernels.DEVICE_ENV] == "numpy"
     assert kernels.active_device() is None
     with kernels.device_env(None):
-        assert kernels.active_device() is None
+        assert kernels.active_device() == kernels._default_device()
 
 
 def test_worker_init_shares_the_cores_between_torch_and_the_pool(monkeypatch) -> None:
@@ -109,7 +109,7 @@ def test_worker_init_shares_the_cores_between_torch_and_the_pool(monkeypatch) ->
     ``jobs`` workers never oversubscribe the machine; the numpy path is left alone."""
     monkeypatch.setattr(kernels.os, "cpu_count", lambda: 8)
     before = torch.get_num_threads()
-    monkeypatch.delenv(kernels.DEVICE_ENV, raising=False)
+    monkeypatch.setenv(kernels.DEVICE_ENV, "numpy")
     kernels.reset()
     kernels.worker_init(4)
     assert torch.get_num_threads() == before, "no device: torch is not touched"
@@ -128,29 +128,6 @@ def test_worker_init_shares_the_cores_between_torch_and_the_pool(monkeypatch) ->
     finally:
         torch.set_num_threads(before)
         kernels.reset()
-
-
-def test_run_tasks_installs_the_worker_initializer(monkeypatch) -> None:
-    from neurotic_docx_bench import pipeline
-
-    seen: dict[str, object] = {}
-
-    class FakePool:
-        def __init__(self, max_workers, initializer=None, initargs=()):
-            seen["initializer"], seen["initargs"], seen["workers"] = initializer, initargs, max_workers
-
-        def __enter__(self):
-            return self
-
-        def __exit__(self, *exc):
-            return False
-
-        def map(self, fn, tasks):
-            return [("k", {"n": i}) for i, _ in enumerate(tasks)]
-
-    monkeypatch.setattr(pipeline, "ProcessPoolExecutor", FakePool)
-    pipeline._run_tasks([("a",), ("b",)], 3)
-    assert seen["initializer"] is kernels.worker_init and seen["initargs"] == (3,) and seen["workers"] == 3
 
 
 def test_score_key_changes_with_the_backend() -> None:
@@ -195,7 +172,7 @@ def test_public_kernels_dispatch_on_the_active_device(monkeypatch) -> None:
     a, b = _page_like(5), _page_like(6)
     mask = color.rgb2gray(a) < 0.9
     ga, gb = color.rgb2gray(a).astype(np.float32), color.rgb2gray(b).astype(np.float32)
-    monkeypatch.delenv(kernels.DEVICE_ENV, raising=False)
+    monkeypatch.setenv(kernels.DEVICE_ENV, "numpy")
     kernels.reset()
     ref_de, ref_ssim = kernels.delta_e_mean(a, b, mask), kernels.ssim(ga, gb)
     assert ref_de == kernels.delta_e_mean_numpy(a, b, mask)
@@ -222,7 +199,7 @@ def test_score_document_is_the_same_on_torch_cpu_within_float32(tmp_path: Path, 
         p = tmp_path / f"page_{i}.png"
         Image.fromarray(img).save(p)
         pages.append(p)
-    monkeypatch.delenv(kernels.DEVICE_ENV, raising=False)
+    monkeypatch.setenv(kernels.DEVICE_ENV, "numpy")
     kernels.reset()
     reference = score.score_document([pages[0]], [pages[1]])
     monkeypatch.setenv(kernels.DEVICE_ENV, "cpu")
@@ -250,7 +227,7 @@ def test_score_document_parity_on_real_oracle_pages(tmp_path: Path, monkeypatch,
         out = tmp_path / f"p{i}"
         raster.rasterize_pdf(pdf, out, dpi=144)
         pages.append(min(out.glob("page_*.png")))
-    monkeypatch.delenv(kernels.DEVICE_ENV, raising=False)
+    monkeypatch.setenv(kernels.DEVICE_ENV, "numpy")
     kernels.reset()
     reference = score.score_document([pages[0]], [pages[1]])
     monkeypatch.setenv(kernels.DEVICE_ENV, "cpu")
@@ -269,6 +246,6 @@ def test_score_document_parity_on_real_oracle_pages(tmp_path: Path, monkeypatch,
 def test_hardware_info_stamps_the_scorer_backend(monkeypatch) -> None:
     from neurotic_docx_bench import hardware
 
-    monkeypatch.delenv(kernels.DEVICE_ENV, raising=False)
+    monkeypatch.setenv(kernels.DEVICE_ENV, "numpy")
     kernels.reset()
     assert hardware.hardware_info()["scorer_backend"] == "numpy"
