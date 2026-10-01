@@ -20,7 +20,7 @@ import re
 import shutil
 import time
 from collections.abc import Mapping, Sequence
-from concurrent.futures import ProcessPoolExecutor
+from concurrent.futures import ProcessPoolExecutor, as_completed
 from pathlib import Path
 from typing import NotRequired, TypedDict, cast
 
@@ -500,11 +500,33 @@ def _score_one(args: tuple) -> tuple[str, ScoreResult]:
     )
 
 
+def _progress(done: int, total: int, key: str, result: ScoreResult, started: float) -> None:
+    """One line per scored document: where the run is, which file, what it scored."""
+    elapsed = time.monotonic() - started
+    eta = elapsed / done * (total - done)
+    print(
+        f"[{done}/{total}] {done / total:6.1%} {result['overall_score']:6.2f}  {key}  "
+        f"(elapsed {elapsed:.0f}s, eta {eta:.0f}s)",
+        flush=True,
+    )
+
+
 def _run_tasks(tasks: list[tuple], jobs: int) -> dict[str, ScoreResult]:
-    if jobs and jobs > 1 and len(tasks) > 1:
+    total = len(tasks)
+    started = time.monotonic()
+    out: dict[str, ScoreResult] = {}
+    if jobs and jobs > 1 and total > 1:
         with ProcessPoolExecutor(max_workers=jobs, initializer=kernels.worker_init, initargs=(jobs,)) as pool:
-            return dict(pool.map(_score_one, tasks))
-    return dict(_score_one(t) for t in tasks)
+            futures = [pool.submit(_score_one, t) for t in tasks]
+            for done, fut in enumerate(as_completed(futures), 1):
+                key, result = fut.result()
+                _progress(done, total, key, result, started)
+            return dict(f.result() for f in futures)  # task order, as pool.map gave
+    for done, t in enumerate(tasks, 1):
+        key, result = _score_one(t)
+        out[key] = result
+        _progress(done, total, key, result, started)
+    return out
 
 
 def score_folders_full(

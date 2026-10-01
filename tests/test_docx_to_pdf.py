@@ -202,6 +202,7 @@ def test_convert_command_jubarte_uses_native_convert():
         "--force",
         "--revisions",
         "word",
+        "--compress",
     ]
     assert "soffice" not in " ".join(cmd).lower()
 
