@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 
 ### Added
+- `scripts/release_jubarte.py <x.y.z>`: scores a jubarte release from its GitHub asset
+  (sha256 checked, never a local build): DOCX to PDF and docxide metrics on all of
+  `corpus/word`, a `jubarte-<x.y.z>` redline lane in `redlines_0929_full` (generate, Word
+  export under the watchdog, measure, Hub upload), `bench report`, then a results branch and
+  pull request; `--plan`, `--only`, `--skip`, `--no-hub`
 - DOCX to PDF on the full 6427-document `corpus/word:all` set for jubarte 0.10.1
   (`--revisions word --compress`), docxide-pdf 0.17.1 and LibreOffice 26.8.0.3, scored by
   pixels and by docxide-pdf's metrics; `scripts/{convert_candidates,score_candidate_dirs,
@@ -25,6 +30,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `NupunktProcessor` (no silent WholeDocumentProcessor fallback)
 
 ### Changed
+- `redlines_0929_full/{to_scores_jsonl,hub_upload}.py` take their tools from
+  `versions.json` (to_scores_jsonl.py no longer rewrites it); the scores are unchanged
 - Full-corpus `script_redlines` (plus accepted/roundtrip where declared) for
   stemma, safe-docx, and redlines-with-nupunkt; 803-pair generate universe
 - Large-N `speed_redlines` pack (2026-08-15): 1000 fixtures → 5000 pairs
