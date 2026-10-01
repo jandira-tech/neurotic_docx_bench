@@ -8,6 +8,8 @@ intent-to-treat rule (a failed convert scores 0, never NaN or missing).
 
 from __future__ import annotations
 
+import json
+
 from pathlib import Path
 
 import pymupdf as fitz
@@ -115,3 +117,28 @@ def test_render_table_has_no_ssim_columns() -> None:
     assert header.count("|") == 12  # 11 columns
     assert "| 1 | toy | 1.0 | 2 | 2 | 40.00 | 41.00 | 90.00 | 95.00 | 2 | 0 |" in md
     assert "—" not in md
+
+
+def test_score_candidates_checkpoints_each_document_and_resumes(tmp_path: Path, capsys) -> None:
+    class Fixture:
+        def __init__(self, stem: str, oracle: Path) -> None:
+            self.stem, self.oracle = stem, oracle
+
+    text = "Video provides a powerful way to help you prove your point. " * 10
+    oracle = _make_pdf(tmp_path / "oracle" / "doc.pdf", [text])
+    cand_dir = tmp_path / "cand"
+    _make_pdf(cand_dir / "doc.pdf", [text])
+    fixtures = [Fixture("doc", oracle), Fixture("missing", oracle)]
+    out = tmp_path / "scores.json"
+    dm.score_candidates(fixtures, cand_dir, out, workers=1)
+    lines = [json.loads(line) for line in (tmp_path / "scores.docxide.checkpoint.jsonl").read_text().splitlines()]
+    assert {row["stem"] for row in lines} == {"doc", "missing"}
+    assert all(row["scored_at"].endswith("Z") for row in lines)
+    first = capsys.readouterr().out
+    assert "[2/2] 100.0%" in first and "(0 from checkpoint, 2 to score)" in first
+
+    rows = dm.score_candidates(fixtures, cand_dir, out, workers=1)
+    again = capsys.readouterr().out
+    assert "(2 from checkpoint, 0 to score)" in again
+    assert rows["doc"]["jaccard"] == 1.0
+    assert len((tmp_path / "scores.docxide.checkpoint.jsonl").read_text().splitlines()) == 2  # nothing re-scored
