@@ -414,3 +414,38 @@ def test_append_report_writes_one_line_per_tool(tmp_path):
         and line["track"] == "docx_to_pdf"
         and line["median"] == 9.0
     )
+
+
+@pytest.mark.parametrize("returncode", [0, 2], ids=["success", "converter-error"])
+def test_jubarte_conversion_passes_compression_and_preserves_path_arguments(tmp_path, monkeypatch, returncode):
+    from types import SimpleNamespace
+    from unittest.mock import Mock
+
+    from neurotic_docx_bench import docx_to_pdf
+
+    source = tmp_path / "input docs" / "résumé; draft.docx"
+    destination = tmp_path / "output pdfs" / "résumé; draft.pdf"
+    binary = tmp_path / "tool bin" / "jubarte"
+    fixture = SimpleNamespace(docx=source, stem="résumé; draft")
+    expected = [
+        str(binary), "convert", str(source), "-o", str(destination),
+        "--force", "--revisions", "word", "--compress",
+    ]
+
+    def convert(cmd, **kwargs):
+        destination.write_bytes(b"%PDF-1.7\ncompressed candidate")
+        return SimpleNamespace(returncode=returncode, stderr="conversion failed" if returncode else "", stdout="")
+
+    run = Mock(side_effect=convert)
+    monkeypatch.setattr(docx_to_pdf.subprocess, "run", run)
+    failure = try_convert_fixture("jubarte", binary, fixture, destination)
+    run.assert_called_once_with(expected, check=False, capture_output=True, text=True, timeout=180.0)
+    if returncode:
+        assert failure is not None
+        assert failure["cmd"] == expected
+        assert failure["stage"] == "generate"
+        assert "conversion failed" in failure["error"]
+        assert not destination.exists()
+    else:
+        assert failure is None
+        assert destination.read_bytes().startswith(b"%PDF-")

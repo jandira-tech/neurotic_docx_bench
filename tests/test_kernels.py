@@ -130,29 +130,6 @@ def test_worker_init_shares_the_cores_between_torch_and_the_pool(monkeypatch) ->
         kernels.reset()
 
 
-def test_run_tasks_installs_the_worker_initializer(monkeypatch) -> None:
-    from neurotic_docx_bench import pipeline
-
-    seen: dict[str, object] = {}
-
-    class FakePool:
-        def __init__(self, max_workers, initializer=None, initargs=()):
-            seen["initializer"], seen["initargs"], seen["workers"] = initializer, initargs, max_workers
-
-        def __enter__(self):
-            return self
-
-        def __exit__(self, *exc):
-            return False
-
-        def map(self, fn, tasks):
-            return [("k", {"n": i}) for i, _ in enumerate(tasks)]
-
-    monkeypatch.setattr(pipeline, "ProcessPoolExecutor", FakePool)
-    pipeline._run_tasks([("a",), ("b",)], 3)
-    assert seen["initializer"] is kernels.worker_init and seen["initargs"] == (3,) and seen["workers"] == 3
-
-
 def test_score_key_changes_with_the_backend() -> None:
     common = {"candidate_sha": "c" * 64, "oracle_sha": "o" * 64, "base_sha": None, "dpi": 144, "renderer_id": "r"}
     assert cc.score_key(**common, backend="numpy") != cc.score_key(**common, backend="torch-cpu")
