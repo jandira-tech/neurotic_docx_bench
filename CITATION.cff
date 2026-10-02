@@ -1,0 +1,23 @@
+cff-version: 1.2.0
+message: "If you use neurotic_docx_bench or its results, please cite it as below."
+type: software
+title: "neurotic_docx_bench: DOCX conversion and redlining measured against Microsoft Word"
+abstract: >-
+  Six benchmarks that score DOCX converters and redline engines against Microsoft Word's own
+  output, with Word as the oracle and failures counted as zero.
+authors:
+  - family-names: "Souza Rodrigues"
+    given-names: "Arthur"
+    affiliation: "Jandira Technologies"
+version: "0.8.0"
+date-released: "2026-10-02"
+license: AGPL-3.0-only
+repository-code: "https://github.com/jandira-tech/neurotic_docx_bench"
+url: "https://github.com/jandira-tech/neurotic_docx_bench"
+keywords:
+  - docx
+  - ooxml
+  - benchmark
+  - redline
+  - tracked-changes
+  - document-rendering

@@ -7,7 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [0.8.0] - 2026-10-02
+
 ### Added
+- `CITATION.cff`
 - `scripts/release_jubarte.py <x.y.z>`: scores a jubarte release from its GitHub asset
   (sha256 checked, never a local build): DOCX to PDF and docxide metrics on all of
   `corpus/word`, a `jubarte-<x.y.z>` redline lane in `redlines_0929_full` (generate, Word
@@ -30,6 +33,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `NupunktProcessor` (no silent WholeDocumentProcessor fallback)
 
 ### Changed
+- README states the method as run, its limitations, who maintains the bench and how to
+  dispute a result; `docs/VENDOR_NOTES.md` records the houfu/redlines correction; `LICENSE` is the
+  canonical AGPL-3.0 text, so GitHub detects the licence
 - `redlines_0929_full/{to_scores_jsonl,hub_upload}.py` take their tools from
   `versions.json` (to_scores_jsonl.py no longer rewrites it); the scores are unchanged
 - Full-corpus `script_redlines` (plus accepted/roundtrip where declared) for
