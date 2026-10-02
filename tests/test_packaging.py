@@ -17,8 +17,8 @@ def _pyproject() -> dict:
     return tomllib.loads((ROOT / "pyproject.toml").read_text())
 
 
-def test_version_is_0_7_0() -> None:
-    assert _pyproject()["project"]["version"] == "0.7.0"
+def test_version_is_0_8_0() -> None:
+    assert _pyproject()["project"]["version"] == "0.8.0"
 
 
 def test_competitor_sdks_are_an_extra_not_core_dependencies() -> None:
@@ -45,7 +45,8 @@ def test_built_wheel_has_no_vendored_tools_and_is_small(tmp_path: Path) -> None:
         capture_output=True,
         text=True,
     )
-    wheels = list(tmp_path.glob("neurotic_docx_bench-0.7.0-*.whl"))
+    version = _pyproject()["project"]["version"]
+    wheels = list(tmp_path.glob(f"neurotic_docx_bench-{version}-*.whl"))
     assert len(wheels) == 1, list(tmp_path.iterdir())
     with zipfile.ZipFile(wheels[0]) as zf:
         names = zf.namelist()
