@@ -1,6 +1,7 @@
 [project]
 name = "neurotic-docx-bench"
 version = "0.7.0"
+license = "AGPL-3.0-only"
 description = "A benchmark for manipulating docx files and assessing their fidelity to Microsoft Word(R), the oracle."
 readme = "README.md"
 requires-python = ">=3.14"
