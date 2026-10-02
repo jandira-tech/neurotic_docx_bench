@@ -399,6 +399,21 @@ The previous 2026-08-04 row is numerically the same — nupunkt was already
 resolved via the `redlines[nupunkt]` extra; what changed is that a missing
 nupunkt can no longer silently fall back to `WholeDocumentProcessor`.
 
+**CORRECTION (2026-10-02):** the 18 generate failures in the 2026-08-15 row are
+ours, not the library's. houfu showed in
+[houfu/redlines#96](https://github.com/houfu/redlines/issues/96) that every one
+is raised by python-docx inside `extract_text()` in
+`src/neurotic_docx_bench/redlines_gen.py`, the first statement of
+`generate_one()`, before `Redlines()` is constructed: 15 are packages
+python-docx cannot open (OOXML Strict or OLE), 3 are a dangling
+`docProps/thumbnail.jpeg` relationship. Both jubarte builds read all 18
+documents. Under standing rule 1 these are `ADAPTER_GAP`, not vendor failures,
+and should not have been charged to redlines. His second point also stands: the
+adapter extracts paragraph text only, so tables, headers and footers are
+dropped by this harness, not by the library, and the pixel score measures that
+loss. The row is history-only since 0.7.0 (LibreOffice-rendered); it is not
+ranked. Thanks to houfu for the investigation.
+
 ### stemma
 
 | field | value |
