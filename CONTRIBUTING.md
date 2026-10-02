@@ -1,4 +1,4 @@
-# Contributing to neurotic-docx-bench
+# Contributing to neurotic_docx_bench
 
 Thank you for your interest in contributing to neurotic-docx-bench! This document provides guidelines for contributing to the project.
 
@@ -8,7 +8,9 @@ Thank you for your interest in contributing to neurotic-docx-bench! This documen
 
 - Python 3.14+
 - Node.js 18+
-- LibreOffice 26.2.4.2 (for rendering DOCX to PDF)
+- Microsoft Word for Mac, required to produce the ranked redline and DOCX to PDF
+  rows (Word is the oracle and renders both sides)
+- LibreOffice 26.2.4.2 (legacy history rows only)
 - uv (Python package manager)
 - bun (Node.js package manager)
 
@@ -16,8 +18,8 @@ Thank you for your interest in contributing to neurotic-docx-bench! This documen
 
 ```bash
 # Clone the repository
-git clone https://github.com/arthrod/neurotic-docx-bench.git
-cd neurotic-docx-bench
+git clone https://github.com/jandira-tech/neurotic_docx_bench.git
+cd neurotic_docx_bench
 
 # Install Python dependencies
 uv sync
@@ -25,6 +27,14 @@ uv sync
 # Install Node.js dependencies
 bun install --frozen-lockfile
 ```
+
+### Without Word
+
+Most contributions do not need Word. Without it you can still run the test
+suites below, `uv run bench try` and `uv run bench compare` on your own files,
+and `uv run bench report --check` to confirm the published views are current.
+Ranked rows are recorded on a Mac with Word; say so in your pull request and
+the maintainer will run them.
 
 ### Running Tests
 
