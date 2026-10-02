@@ -1,17 +1,25 @@
 > **See every page side by side: [jandira-tech.github.io/neurotic_docx_bench](https://jandira-tech.github.io/neurotic_docx_bench/)**  
 > DOCX to PDF across engines, and redlines against Word ([/redlines/](https://jandira-tech.github.io/neurotic_docx_bench/redlines/)), scored per page.  
 > Navigator: [DOCX to PDF](https://jandira-tech.github.io/neurotic_docx_bench/) ·
-> [redlines vs Word](https://jandira-tech.github.io/neurotic_docx_bench/redlines/) (jubarte 0.10.0 and 0.9.3, docxodus, SuperDoc; redlines, accepted, rejected) ·
+> [redlines vs Word](https://jandira-tech.github.io/neurotic_docx_bench/redlines/) (Jubarte, Docxodus, SuperDoc; redlines, accepted, rejected) ·
 > [speed](https://jandira-tech.github.io/neurotic_docx_bench/speed/)
 
-# neurotic-docx-bench
+# neurotic_docx_bench
 
-Pixel scores of DOCX tools against Microsoft Word oracles.
+Pixel scores of DOCX tools against Microsoft Word oracles. Neurotic: it refuses
+to round, to drop failures, or to trust a renderer it has not pinned.
+
+## Who maintains this
+
+Maintained by Arthur Souza Rodrigues (Jandira Technologies), who also writes
+Jubarte, one of the ranked tools. Jubarte rows are marked † and follow the same
+rules. Every place the harness touches another tool's code is listed in
+[`docs/VENDOR_NOTES.md`](docs/VENDOR_NOTES.md).
 
 | | |
 | --- | --- |
 | **Scores** | 0 to 100 per document |
-| **Redline oracle** | Word tracked-change DOCX, rendered by LibreOffice 26.2.4.2 for oracle and candidates alike |
+| **Redline oracle** | Word renders both sides: Word's render of the candidate DOCX against Word's render of Word's own compare. Only Word-rendered rows are ranked; LibreOffice-rendered rows are history |
 | **DOCX to PDF oracle** | SHA-pinned Word-export PDFs (`pdf_accepted_word`, `pdf_redlines_randomized`, `pdf_source`, `pdf_source_randomized`) |
 | **Second lens** | `docxide_metrics`: docxide-pdf's own Jaccard / text-boundary metrics on the same fixtures, and the same two columns on every redline row |
 | **Stores** | `results/bench.jsonl` (fidelity), `results/converters.jsonl` (DOCX to PDF), `results/speed.jsonl` + `results/redline_speed_bench/` (speed), `results/archive/` (history only) |
@@ -26,7 +34,40 @@ uv run bench report            # regenerates RESULTS.md, RESULTS_DETAILED.md and
 uv run bench report --check    # exit 1 when the published views are stale (CI)
 ```
 
-Candidate and oracle redline PDFs are both rendered with LibreOffice 26.2.4.2; re-rendering the same DOCX is byte-identical on one build (`results/noise_floor.json`). The `oracle-identity` calibration row (`bench calibrate`) is Word's own DOCX through the candidate pipeline and must score 100; the `null-baseline` row is the base document unchanged, the floor a redline tool must beat.
+For the ranked redline benchmarks Word renders both the candidate and the oracle DOCX, so the score compares like with like. Legacy rows rendered with LibreOffice 26.2.4.2 stay in the history; for those, re-rendering the same DOCX is byte-identical on one build (`results/noise_floor.json`). The `oracle-identity` calibration row (`bench calibrate`) is Word's own DOCX through the candidate pipeline and must score 100; the `null-baseline` row is the base document unchanged, the floor a redline tool must beat.
+
+Ranked rows today: DOCX to PDF, the docxide metrics, redlines vs Word's compare,
+and accepted/rejected changes. Every other benchmark is waiting for a
+Word-rendered run and shows history only.
+
+## Limitations
+
+- The score is pixel similarity to Microsoft Word's output. It has not been
+  validated against human judgment of redline quality. A redline can be correct
+  and still lay out differently from Word's compare. The Lens health table in
+  [`RESULTS_DETAILED.md`](RESULTS_DETAILED.md) shows the pixel and functional
+  lenses disagreeing on 1% to 29% of documents, depending on the tool.
+- The oracle is one build of Word for Mac. Word-rendered rows can only be
+  reproduced on a machine with Word; CI cannot regenerate them.
+- Adapters for other tools are written by the Jubarte author. A low score can be
+  the adapter's fault; [`docs/VENDOR_NOTES.md`](docs/VENDOR_NOTES.md) records
+  the known cases, including adapter failures first found by a tool's maintainer.
+- Failures count as zero. That mixes "the tool could not run on this file" with
+  "the tool ran badly"; both the ITT and scored-only columns are printed for
+  that reason.
+- Corpus: DOCX files from [superdoc-dev/docx-corpus](https://huggingface.co/datasets/superdoc-dev/docx-corpus),
+  collected from the public web and made available under ODC-By 1.0. ODC-By
+  covers the collection, not copyright in the individual files. A rights holder
+  who wants a document removed can write to contact@arthur.law; it is removed
+  from the fixtures and future runs.
+- The sealed holdout has never been run ("no holdout runs recorded yet" in
+  [`RESULTS_DETAILED.md`](RESULTS_DETAILED.md)).
+
+## Disputing a score
+
+Open an issue. A harness fix that raises a competitor's score ships with the
+same urgency as one that raises Jubarte's (standing rule 3 in
+[`docs/VENDOR_NOTES.md`](docs/VENDOR_NOTES.md)).
 
 ## Results visibility
 
