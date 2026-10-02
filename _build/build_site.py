@@ -219,7 +219,8 @@ def pdf_creator(pdf: Path) -> str:
 def patched_template(note: str, mode: str = "convert") -> str:
     t = aj.ec.HTML_TEMPLATE
     swaps = [
-        ("<title>Engine comparison</title>", "<title>jubarte DOCX to PDF vs Microsoft Word: engine comparison</title>"),
+        ("<title>Engine comparison</title>", '<title>neurotic_docx_bench: DOCX to PDF vs Microsoft Word</title><meta name="description" content="Side-by-side pages of DOCX to PDF engines against Microsoft Word\'s own export, scored per page by neurotic_docx_bench. Maintained by the author of Jubarte, one of the engines compared.">'),
+        ('<div id="bar">', '<div id="bar">\n  <span class="grp" style="font-size:12px">neurotic_docx_bench · maintained by the author of Jubarte, one of the engines compared · <a href="https://github.com/jandira-tech/neurotic_docx_bench/blob/main/RESULTS.md">results</a> · <a href="https://github.com/jandira-tech/neurotic_docx_bench#limitations">limitations</a></span>'),
         ("{ get: r => (r.c.pages.reference || []).length, show: r => (r.c.pages.reference || []).length, num: true },",
          "{ get: r => (r.c.page_counts || {}).reference ?? (r.c.pages.reference || []).length, "
          "show: r => (r.c.page_counts || {}).reference ?? (r.c.pages.reference || []).length, num: true },"),

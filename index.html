@@ -1,6 +1,6 @@
 <!doctype html>
 <meta charset="utf-8">
-<title>jubarte DOCX to PDF vs Microsoft Word: engine comparison</title>
+<title>neurotic_docx_bench: DOCX to PDF vs Microsoft Word</title><meta name="description" content="Side-by-side pages of DOCX to PDF engines against Microsoft Word's own export, scored per page by neurotic_docx_bench. Maintained by the author of Jubarte, one of the engines compared.">
 <style>
 :root { --bg:#1e1e1e; --panel:#252526; --fg:#ddd; --muted:#888; --accent:#4ea1ff; --border:#3a3a3a; }
 * { box-sizing:border-box; }
@@ -162,6 +162,7 @@ kbd { background:var(--white); border:1px solid var(--line); border-radius:0; co
 </style>
 <header id="brand"><a class="logo" href="https://jubarte.pro/"><svg viewBox="0 0 560 360" width="34" height="22" aria-hidden="true"><g transform="rotate(-5 280 200)"><path d="M 76 192 C 82 172 112 156 150 146 C 196 132 258 112 310 110 C 356 108 402 118 448 148 C 458 152 464 150 470 144 C 478 128 494 106 520 92 C 512 112 508 126 502 134 C 514 140 526 148 540 160 C 520 164 498 160 480 162 C 470 164 460 166 452 166 C 420 190 382 228 328 252 C 270 278 194 286 148 268 C 114 254 88 230 81 208 C 76 198 74 194 76 192 Z" fill="#1E5580"/><path d="M 208 228 C 246 240 286 268 322 298 C 334 308 338 320 330 326 C 296 326 254 306 226 280 C 206 260 200 240 208 228 Z" fill="#8FB8CE"/><circle cx="122" cy="196" r="6" fill="#FFFFFF"/></g></svg>JUBARTE.DOCX</a><span class="crumb">/ DOCX → PDF vs Microsoft Word</span><span class="links"><a href="https://jubarte.pro/">jubarte.pro ↗</a><a href="speed/">Speed</a><a href="https://jubarte.pro/cases">Cases ↗</a><a href="https://github.com/jandira-tech/neurotic_docx_bench">Bench repo ↗</a></span></header>
 <div id="bar">
+  <span class="grp" style="font-size:12px">neurotic_docx_bench · maintained by the author of Jubarte, one of the engines compared · <a href="https://github.com/jandira-tech/neurotic_docx_bench/blob/main/RESULTS.md">results</a> · <a href="https://github.com/jandira-tech/neurotic_docx_bench#limitations">limitations</a></span>
   <span class="grp"><select id="mode" autocomplete="off" title="what to compare"><option value="./" selected>Convert DOCX → PDF</option><option value="redlines/">Compare (redline) two documents</option></select></span>
   <span class="grp" id="nav"><button id="sideToggle" title="hide / show the case list (s)">&#9776;</button><button id="navPrev" title="previous case (&uarr;)">&lsaquo; prev</button><button id="navRand" title="random case (r)">random</button><button id="navNext" title="next case (&darr;)">next &rsaquo;</button><span id="navPos"></span></span>
   <span class="grp" id="engines"></span>
