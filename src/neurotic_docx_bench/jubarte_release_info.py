@@ -805,11 +805,12 @@ def website_records(version: str, generated: str, redline: dict, conversion: dic
              {'rank': '2', 'tool': 'soffice', 'pin': sof_c['version'], 'median': sof_c['median'],
               'mean': sof_c['mean'], 'docs': sof_c['n'], 'failed': sof_c['failures'],
               'note': _span(sof_c.get('median_ci95')), 'ours': False}]},
-        {'id': 'redlines-sample', 'title': f"Redlines vs Word's compare — {compares}-compare sample",
-         'meta': f'{compares} compares of {pairs} pairs · balanced by state · pixel scorer · opened in Word · {generated}',
-         'desc': f'A state-balanced sample of {compares} Word compares ({pairs} pairs) of redlines_0929_full (every path and sha256 in release_info/{redline_stem}.csv). '
+        {'id': 'redlines-sample', 'title': f"Redlines vs Word's compare — {pairs}-pair sample",
+         'meta': f'{pairs} pairs · one Word compare each · pixel scorer · opened in Word · {generated}',
+         'desc': f'A sample of {pairs} document pairs of redlines_0929_full, one Word compare each: every pair of the scarce states, '
+                 f'the rest spread over the document families (every path and sha256 in release_info/{redline_stem}.csv). '
                  "Each tool redlines the pair; Word opens that redline and exports it to PDF, scored against Word's own compare. "
-                 'A compare with no scored PDF counts 0.',
+                 'A pair with no scored PDF counts 0.',
          'rows': [
              {'rank': '1', 'tool': f'jubarte-{version} †', 'pin': jub_r['version'], 'median': jub_r['median'],
               'mean': jub_r['mean'], 'docs': jub_r['n'], 'failed': jub_r['failures'],
@@ -826,7 +827,7 @@ def website_records(version: str, generated: str, redline: dict, conversion: dic
         {'title': "DOCX → PDF vs Word's own export", 'meta': f'{docs}-doc sample · median · {generated}',
          'rows': [{'name': f'jubarte {version} †', 'v': jub_c['median'], 'ours': True},
                   {'name': sof_c['version'], 'v': sof_c['median']}]},
-        {'title': "Redlines vs Word's compare, opened in Word", 'meta': f'{compares}-compare sample · median · {generated}',
+        {'title': "Redlines vs Word's compare, opened in Word", 'meta': f'{pairs}-pair sample · median · {generated}',
          'rows': [{'name': f'jubarte {version} †', 'v': jub_r['median'], 'ours': True},
                   {'name': doc_r['version'], 'v': doc_r['median']}],
          'note': "Both groups are the release's samples, state-balanced; "
@@ -837,9 +838,9 @@ def website_records(version: str, generated: str, redline: dict, conversion: dic
          'vs': f"{sof_c['version']} {sof_c['median']}",
          'sub': f"{docs} documents, state-balanced; {jub_c['failures']} jubarte failures. "
                 f"Sample list and shas: release_info/{conversion_stem}.csv."},
-        {'label': f'Redline vs Word compare · median, {compares}-compare sample', 'value': f"{jub_r['median']:.2f}",
+        {'label': f'Redline vs Word compare · median, {pairs}-pair sample', 'value': f"{jub_r['median']:.2f}",
          'vs': f"Docxodus {doc_r['median']}",
-         'sub': f'{compares} compares of {pairs} pairs, state-balanced; paired 95% CI of the difference {r_ci}. '
+         'sub': f'{pairs} document pairs, one Word compare each; paired 95% CI of the difference {r_ci}. '
                 f'Sample list and shas: release_info/{redline_stem}.csv.'},
     ]
     method = [
