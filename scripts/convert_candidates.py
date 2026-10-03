@@ -25,10 +25,24 @@ def main() -> None:
     ap.add_argument("--engine", choices=("docxide", "soffice"), required=True)
     ap.add_argument("--out", type=Path, required=True)
     ap.add_argument("--jobs", type=int, default=8)
+    ap.add_argument("--files-list", type=Path,
+                    help="a text file of corpus docx paths (one per line): convert only the "
+                         "listed fixtures that lack a render, not every fixture")
     args = ap.parse_args()
     fixtures = cli._corpus_word_selection(
         origin="all", files_list=[], score_only=False, locations=[], config=Path("bench.yaml"), tool=None
     ).fixtures
+    if args.files_list:
+        wanted = set()
+        for line in args.files_list.read_text().splitlines():
+            rel = Path(line.strip())
+            parts = rel.parts[-3:]
+            if len(parts) == 3 and parts[1] == "docx":
+                wanted.add(f"{parts[0]}__{parts[2].removesuffix('.docx')}")
+        fixtures = [f for f in fixtures if f.stem in wanted]
+        unknown = wanted - {f.stem for f in fixtures}
+        if unknown:
+            print(f"WARNING: {len(unknown)} listed fixtures are not in the corpus selection", flush=True)
     cand = args.out / "candidate"
     cand.mkdir(parents=True, exist_ok=True)
     todo = [f for f in fixtures if not d2p._is_pdf(cand / f"{f.stem}.pdf")]
