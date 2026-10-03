@@ -22,9 +22,10 @@ and with no balloon on the page it draws no markup pane either (the page stays 6
 
 `scripts/survey5.py` applies the rule to the 151 corpus documents: the predicted balloon
 count matches Word's exactly for 149, and it predicts zero for all 37 zero-balloon
-documents. Two documents are unexplained: `1672057675_485599b4e9_rejected_tracking`
+documents. Two documents were unexplained by that reading, `1672057675_485599b4e9_rejected_tracking`
 (Word 4, predicted 2) and `6ef6726c28_comments_complex_style_attr_word_redline_accepte`
-(Word 1, predicted 0).
+(Word 1, predicted 0); round 6 and `survey6.py` (2026-10-03) close them: a range end with
+its own start before it in the paragraph is live, 151/151.
 
 ## Rounds
 
@@ -36,6 +37,7 @@ documents. Two documents are unexplained: `1672057675_485599b4e9_rejected_tracki
 | R4 | `R3_keep_4` (one comment) | table, tracked changes, page break, reference layout | balloon only when the range end moves into the paragraph (`R4_02`) or a simple paragraph holds the whole comment (`R4_07`, `R4_08`) |
 | R5 | plain paragraphs, one comment | where the range end and the reference sit | end after content: 1 balloon; end at body level or first in its paragraph: 0; the reference's place does not matter |
 | AB2-AB4 | jubarte's redline (4 balloons) with single parts from Word's compare, and the reverse | settings, content types, rels, comments parts, styles | not the cause (document.xml is) |
+| R6 (2026-10-03) | plain paragraphs, one comment, an EMPTY range | start and end adjacent or with an empty `w:t` run between; styled or plain reference; a stray start of another comment first; the paragraph first, last, only, with pPr, with text after the reference (13 shapes) | all 13 get a balloon; the end-first-in-paragraph control (R5_04) stays dead. So a range end with its own start before it in the paragraph is live: `survey6.py` predicts 151/151 (`6ef6726c28` and `1672057675` explained). The R5-era reading of the empty-`w:t` shape as dead was wrong. |
 
 `word_invalid/` holds five R3 variants as first generated: a comment deleted from
 `comments.xml` while a `w:commentReference` to it stayed in the body. Word answers
