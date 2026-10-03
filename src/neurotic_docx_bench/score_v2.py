@@ -37,6 +37,7 @@ from neurotic_docx_bench.score import (
     ScoreConfig,
     _f1_with_tolerance,
     _ink_mask,
+    _ink_threshold,
     _load_image,
     _resize_to_match,
 )
@@ -94,8 +95,9 @@ def change_region_score(
 
         if not mask.any():
             continue
-        ink_oracle = _ink_mask(oracle_gray, cfg.ink_min_size) & mask
-        ink_cand = _ink_mask(cand_gray, cfg.ink_min_size) & mask
+        thr = _ink_threshold(oracle_gray)
+        ink_oracle = _ink_mask(oracle_gray, cfg.ink_min_size, thr) & mask
+        ink_cand = _ink_mask(cand_gray, cfg.ink_min_size, thr) & mask
         weight = max(int(ink_oracle.sum()), 1)
         page_f1 = _f1_with_tolerance(ink_oracle, ink_cand, cfg.ink_tol_px)
         weighted_sum += page_f1 * weight
