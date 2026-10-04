@@ -1182,6 +1182,45 @@ def test_safe_stage_name_is_unique_across_same_named_sources() -> None:
     assert wp.safe_stage_name(0, "deal.docx") != wp.safe_stage_name(1, "deal.docx")
 
 
+def test_a_label_goes_in_front_of_the_staged_name() -> None:
+    """Word's dialogs quote the staged name; the label says whose file it is."""
+    assert wp.labelled("deal.docx") == "deal.docx"
+    token = wp._stage_label.set("docxodus")
+    try:
+        assert wp.labelled("deal.docx") == "docxodus__deal.docx"
+        assert wp.safe_stage_name(3, wp.labelled("deal.docx")) == "00003__docxodus__deal.docx"
+    finally:
+        wp._stage_label.reset(token)
+
+
+def test_cli_passes_the_label_and_refuses_one_unfit_for_a_file_name(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from typer.testing import CliRunner
+
+    seen: dict[str, object] = {}
+
+    def fake_convert(src, out, **kw):
+        seen.update(kw)
+        return []
+
+    (tmp_path / "src").mkdir()
+    monkeypatch.setattr(wp, "preflight", lambda *_a, **_k: "")
+    monkeypatch.setattr(wp, "convert_folder", fake_convert)
+    monkeypatch.setattr(wp.WordSession, "quit_if_ours", lambda self: None)
+    base = ["--src", str(tmp_path / "src"), "--no-check-preset"]
+    CliRunner().invoke(wp.app, [*base, "--label", "docxodus"])
+    assert seen["label"] == "docxodus"
+    seen.clear()
+    assert CliRunner().invoke(wp.app, [*base, "--label", "a/b"]).exit_code == 2
+    assert seen == {}
+
+
+def test_the_api_refuses_a_label_unfit_for_a_file_name(tmp_path: Path) -> None:
+    with pytest.raises(ValueError, match="file name"):
+        wp.convert_folder(tmp_path, None, label="a b")
+
+
 def test_write_manifest_round_trips_as_tsv(tmp_path: Path) -> None:
     rows = [("0", "/in/a.docx", "/out/a.pdf"), ("1", "/in/b.docx", "/out/b.pdf")]
     path = wp.write_manifest(rows, tmp_path / "deep" / "manifest.tsv")

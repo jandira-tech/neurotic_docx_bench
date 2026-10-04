@@ -1,0 +1,75 @@
+{
+ "stated": "a page break ending the last body paragraph makes no page in Word: jubarte \u2212 Word = +1 on the trailing class, far above the base rate",
+ "corpus": {
+  "none": 7131,
+  "inner": 4,
+  "trailing": 3
+ },
+ "trailing": {
+  "n": 3,
+  "other": 1,
+  "0": 1,
+  "+1": 1,
+  "plus_one_share": 0.333
+ },
+ "inner": {
+  "n": 4,
+  "0": 3,
+  "+1": 1,
+  "plus_one_share": 0.25
+ },
+ "none": {
+  "n": 300,
+  "0": 294,
+  "other": 6,
+  "plus_one_share": 0.0
+ },
+ "trailing_split": {
+  "text_before=True": {
+   "n": 0,
+   "plus_one_share": null
+  },
+  "text_before=False": {
+   "n": 3,
+   "other": 1,
+   "0": 1,
+   "+1": 1,
+   "plus_one_share": 0.333
+  },
+  "comment_ref=True": {
+   "n": 1,
+   "+1": 1,
+   "plus_one_share": 1.0
+  },
+  "comment_ref=False": {
+   "n": 2,
+   "other": 1,
+   "0": 1,
+   "plus_one_share": 0.0
+  },
+  "sect_in_para=True": {
+   "n": 0,
+   "plus_one_share": null
+  },
+  "sect_in_para=False": {
+   "n": 3,
+   "other": 1,
+   "0": 1,
+   "+1": 1,
+   "plus_one_share": 0.333
+  }
+ },
+ "trailing_by_state": {
+  "clean": {
+   "n": 2,
+   "other": 1,
+   "0": 1,
+   "plus_one_share": 0.0
+  },
+  "with_comments_clean": {
+   "n": 1,
+   "+1": 1,
+   "plus_one_share": 1.0
+  }
+ }
+}

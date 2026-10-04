@@ -12,6 +12,9 @@
 
 Stages: install, convert, metrics, redlines (Word), report, publish. See
 neurotic_docx_bench.jubarte_bench_release.
+
+The engine's release_info/ evidence comes from the sample-based flow instead:
+uv run python -m neurotic_docx_bench.jubarte_release_info x.y.z --engine-dir …
 """
 
 from neurotic_docx_bench.jubarte_bench_release import app
