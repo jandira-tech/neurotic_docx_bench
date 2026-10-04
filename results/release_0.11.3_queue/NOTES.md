@@ -48,3 +48,18 @@ Binary: the 0.11.2 candidate (`jubarte-pdf29`, sha256 07d95d28…, engine 14bf38
 
 Nothing above has been turned into engine code. Cargo was held by the 0.11.2
 release run while this was written.
+
+## Math increments (engine PR #351, branch feat/omml-display)
+
+Set: `hmath_rows.jsonl` (29 display-math documents + seeded 116-document control),
+scored by `math_bench.py` (docxide-metrics vs Word's PDFs), paired 95% bootstrap.
+
+- Increment 1 (7d2ec4b6) Cambria Math italics + centred oMathPara: vs 0.11.2 jaccard
+  +0.030 [+0.0005,+0.070], text_boundary +0.049 [+0.003,+0.105]; control byte-identical.
+- Increment 2 (c4ae51bb) m:d delimiters: vs math2 ssim +0.0010 [+0.0001,+0.0025],
+  text_boundary +0.0068 [0,+0.017]; control byte-identical.
+- Rejected: operator spacing. Word's PDF of math_all_objects writes a Cambria Math space
+  after operators (4/18 em after +, 5/18 em after =) and a narrower, letter-dependent gap
+  before them. Fitted (B) vs math3: jaccard +0.0003 [-0.0011,+0.0019], text_boundary
+  -0.0014 [-0.0042,0]; symmetric TeX (A): jaccard +0.0018 [-0.0007,+0.0053]. No interval
+  clears zero: not shipped (patch kept in jubarte-loop/release_0.11.3).
