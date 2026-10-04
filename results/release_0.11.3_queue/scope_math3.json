@@ -1,0 +1,50 @@
+{
+ "old": "/Users/arthrod/temp/T/jubarte-loop/release_0.11.2/bin/jubarte-pdf29",
+ "new": "/Users/arthrod/temp/T/jubarte-loop/release_0.11.3/bin/jubarte-math3",
+ "marker": "<m:oMath",
+ "documents": 2925,
+ "failed_old": 0,
+ "failed_new": 0,
+ "matrix": {
+  "predicted=True changed=True": 32,
+  "predicted=True changed=False": 0,
+  "predicted=False changed=True": 0,
+  "predicted=False changed=False": 2893
+ },
+ "surprises": [],
+ "changed_jaccard": {
+  "n": 32,
+  "old_mean": 0.42530242339947627,
+  "new_mean": 0.452703925889856,
+  "delta": 0.02740150249037971,
+  "ci95": [
+   -0.0005089305427557196,
+   0.06312560220984918
+  ],
+  "up": 6,
+  "down": 2,
+  "worst": [
+   [
+    -0.11613374580160007,
+    "671ff91b1d"
+   ],
+   [
+    -0.016732048357502624,
+    "4edcbf241a"
+   ],
+   [
+    -0.004196558173776177,
+    "7f609d4854"
+   ],
+   [
+    -0.002020671688569009,
+    "4e09d5f8f9"
+   ],
+   [
+    -0.0014892695995681882,
+    "6c0ad6c8ef"
+   ]
+  ]
+ },
+ "holds": true
+}

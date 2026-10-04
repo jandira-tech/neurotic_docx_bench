@@ -63,3 +63,9 @@ scored by `math_bench.py` (docxide-metrics vs Word's PDFs), paired 95% bootstrap
   before them. Fitted (B) vs math3: jaccard +0.0003 [-0.0011,+0.0019], text_boundary
   -0.0014 [-0.0042,0]; symmetric TeX (A): jaccard +0.0018 [-0.0007,+0.0053]. No interval
   clears zero: not shipped (patch kept in jubarte-loop/release_0.11.3).
+- Scope, corpus-wide (`predict_scope.py`, scope_math3.json): all 2925 corpus documents with a
+  Word PDF converted by pdf29 and math3. Prediction "only documents holding <m:oMath change"
+  holds with no surprise: 32 changed (29 display + 3 inline-only), 2893 byte-identical, 0
+  conversion failures. Jaccard on the 32: +0.027 [-0.0005,+0.063], 6 up / 2 down: on jaccard
+  alone the gain is not shown at 95% once the inline-only documents join. The one large
+  loss is sd_2750_borderbox (-0.116): Word frames each m:borderBox, jubarte does not yet.
