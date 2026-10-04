@@ -1,0 +1,31 @@
+{
+ "stated": "a document whose page count differs from Word's scores lower than one whose page count matches (median of matching minus median of differing is above zero, interval and all)",
+ "version": "0.11.2",
+ "seed": 20261003,
+ "queue": {
+  "n_a": 529,
+  "n_b": 22,
+  "median_a": 81.13,
+  "median_b": 44.16,
+  "gap": 36.97,
+  "ci95": [
+   28.29,
+   38.31
+  ],
+  "holds": true
+ },
+ "control": {
+  "n_a": 48,
+  "n_b": 1,
+  "too_few": true,
+  "holds": false
+ },
+ "page_mismatch": {
+  "queue": 22,
+  "control": 1
+ },
+ "soffice_ahead": {
+  "queue": 15,
+  "control": 1
+ }
+}
