@@ -41,7 +41,34 @@ count, and part of its mean, measure which colour Word's export session picked.
 
 Page count equal to Word's: 3197 -> 3204 of 3496.
 
+## Word's per-session font cache inflates the colour-free gain
+
+The largest loss, `b6bcd5d86d_file_198__vs__7f73d1af22_file_199` (ink 1.000 -> 0.145), is
+not jubarte's: both redlines carry `Liberation Serif` with altName `Hiragino Mincho ProN
+W3`. Word's compare and the 0.10.1 PDF embed HiraMinProN-W3; the 0.11.2 full-lane export
+embedded TimesNewRomanPSMT. Converted alone in a fresh Word session
+(`jubarte-loop/release_0.11.2/colour_probe/fresh_session.sh`), the same 0.11.2 docx embeds
+HiraMinProN-W3 + Cambria, as Word's compare does. Word caches the face it substitutes for
+a missing font name for the rest of a session.
+
+`font_session_split.py` lists every compare whose ink moved by more than 0.10 (177) and
+whether the fonts moved with it: gains 53 font-moved / 65 same fonts / 35 other; losses
+5 / 12 / 7. The session noise leaned toward 0.11.2. Without the 58 font-moved compares:
+
+| term | n | delta [95%] |
+|---|---|---|
+| ink_jaccard | 3373 | +0.0081 [+0.0057, +0.0106] |
+| text_boundary | 3348 | +0.0071 [+0.0046, +0.0095] |
+| overall_score | 3438 | -0.42 [-0.68, -0.19] (colour lottery still in it) |
+
+So 0.11.2 is better on marks and text, by about half the raw paired gain. Smaller font
+moves (|ink delta| <= 0.10) are still inside these numbers.
+
 ## Open
+
+- Export lanes so that no document inherits another's font substitution: one Word
+  session per document is exact but slow; a cheaper check is to re-export, alone, every
+  compare whose embedded fonts differ from Word's compare and keep the fresh PDF.
 
 - The scorer should map the candidate's author colours onto the reference's in order of
   first appearance (Word's own rule, see the author-colour notes) before the colour term,
