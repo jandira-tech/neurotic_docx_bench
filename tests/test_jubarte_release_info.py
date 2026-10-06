@@ -945,3 +945,22 @@ def test_stopping_the_watchdog_stops_what_it_started(tmp_path: Path) -> None:
         time.sleep(0.05)
     else:
         pytest.fail(f'the watchdog child {children[0]} outlived terminate')
+
+
+def test_headline_comparator_median_has_two_decimals():
+    """The site's check-bench reads the headline's comparator median as the
+    page prints ours: two decimals. A raw 4-decimal median fails the site step."""
+    def tool(version: str, median: float) -> dict:
+        return {'version': version, 'median': median, 'mean': 50.0, 'n': 2, 'failures': 0,
+                'exact_100': 0, 'at_least_90': 0, 'median_ci95': [1.0, 2.0],
+                'by_state': {'clean': {'n': 2, 'median': median}}}
+    redline = {'tools': {'jubarte': tool('jubarte 9.9.9', 83.1975),
+                         'docxodus': tool('Docxodus 12.6.5 (C#)', 70.2666)},
+               'sample': {'pairs': 2}, 'comparison': {'ci95': [0.461, 1.25]}}
+    conversion = {'tools': {'jubarte': tool('jubarte 9.9.9', 81.0971),
+                            'soffice': tool('LibreOffice 26.8.0.3', 47.8853)},
+                  'versions': {'scorer': 's'}}
+    recs = jri.website_records('9.9.9', 'g', redline, conversion, 'r', 'c')
+    heads = next(r['value'] for r in recs if r['key'] == 'bench.headlines')
+    assert [h['vs'] for h in heads] == ['LibreOffice 26.8.0.3 47.89', 'Docxodus 70.27']
+    assert [h['value'] for h in heads] == ['81.10', '83.20']
