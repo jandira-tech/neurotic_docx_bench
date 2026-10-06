@@ -835,11 +835,11 @@ def website_records(version: str, generated: str, redline: dict, conversion: dic
     ]
     headlines = [
         {'label': f'DOCX → PDF · median, {docs}-doc sample', 'value': f"{jub_c['median']:.2f}",
-         'vs': f"{sof_c['version']} {sof_c['median']}",
+         'vs': f"{sof_c['version']} {sof_c['median']:.2f}",
          'sub': f"{docs} documents, state-balanced; {jub_c['failures']} jubarte failures. "
                 f"Sample list and shas: release_info/{conversion_stem}.csv."},
         {'label': f'Redline vs Word compare · median, {pairs}-pair sample', 'value': f"{jub_r['median']:.2f}",
-         'vs': f"Docxodus {doc_r['median']}",
+         'vs': f"Docxodus {doc_r['median']:.2f}",
          'sub': f'{pairs} document pairs, one Word compare each; paired 95% CI of the difference {r_ci}. '
                 f'Sample list and shas: release_info/{redline_stem}.csv.'},
     ]
