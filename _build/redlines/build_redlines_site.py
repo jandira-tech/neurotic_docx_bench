@@ -49,11 +49,16 @@ RUN = os.environ.get("REDLINES_RUN", "redlines_0929_full")
 R = BENCH / "results" / RUN
 CORPUS = BENCH / "corpus" / "word"
 FRESH = Path.home() / "temp" / "T" / "compare_regen" / "out"  # Word compares made again (0929 only)
+# jubarte 0.11.2, the release, as this run's own full lane (jubarte-0.11.2-full: every pair, Word's
+# PDF of each, accept-all / reject-all of the selections); its files keep the jubarte column's key so
+# saved viewer state carries over. Unset to fall back to J0101 or the run's own jubarte.
+J0112 = R / "jubarte-0.11.2-full"
+JUBARTE_0112 = os.environ.get("JUBARTE_0112", "1") == "1" and (J0112 / "pdf_by_word").is_dir()
 # jubarte 0.10.1, the release, rerun on the pairs the published page shows (results/redlines_1001_j0101,
 # release CLI through generate-native-redlines.ts, PDFs and accept / reject by Word); its files keep
 # the jubarte column's key so saved viewer state carries over. Unset to show the run's own jubarte.
 J0101 = BENCH / "results" / "redlines_1001_j0101"
-JUBARTE_0101 = os.environ.get("JUBARTE_0101", "1") == "1" and (J0101 / "jubarte-0101").is_dir()
+JUBARTE_0101 = os.environ.get("JUBARTE_0101", "0") == "1" and (J0101 / "jubarte-0101").is_dir()
 # Rebuild the published selection (its redlines/cases.json) instead of drawing a new sample.
 KEEP_CASES = os.environ.get("KEEP_CASES")
 HUB_REPO = "arthrod/neurotic_docx_bench"  # neurotic_docx_bench.hub.RESULTS_REPO (a dataset)
@@ -76,7 +81,8 @@ VERSIONS = {
     },
     "redlines_0929_full": {
         "reference": "Word 16.114 compare",
-        "jubarte-rust": "0.10.1 (release)" if JUBARTE_0101 else "0.10.0 @86b6b5d3",
+        "jubarte-rust": ("0.11.2 (release)" if JUBARTE_0112
+                         else "0.10.1 (release)" if JUBARTE_0101 else "0.10.0 @86b6b5d3"),
         "jubarte-093": "0.9.3 (release)",
         "docxodus": "12.6.5",
         "superdoc": "superdoc-sdk 2.16.0",
@@ -88,7 +94,9 @@ _hub_files: set[str] | None = None
 
 
 def tool_file(t: str, *parts: str) -> Path:
-    """``<run>/<tool>/<parts…>`` with the tool's own file suffix; jubarte-rust may come from J0101."""
+    """``<run>/<tool>/<parts…>`` with the tool's own file suffix; jubarte-rust may come from J0112 or J0101."""
+    if t == "jubarte-rust" and JUBARTE_0112:
+        return J0112.joinpath(*parts[:-1], parts[-1].replace("{t}", "jubarte-0.11.2-full"))
     if t == "jubarte-rust" and JUBARTE_0101:
         return J0101.joinpath("jubarte-0101", *parts[:-1], parts[-1].replace("{t}", "jubarte-0101"))
     return R.joinpath(t, *parts[:-1], parts[-1].replace("{t}", t))
@@ -184,14 +192,22 @@ def case(group: str, name: str, pdfs: dict[str, Path]) -> dict:
 def summary_line(track: str) -> str:
     parts = []
     for t in TOOLS:
-        f = R / f"scores_{track}_{t}.json"
-        if track == "redlines" and not f.exists():
-            f = R / f"scores_{t}.json"  # the 0929 measure.py writes redline scores unprefixed
+        if t == "jubarte-rust" and JUBARTE_0112:
+            f = R / ("scores_jubarte-0.11.2-full.json" if track == "redlines"
+                     else f"scores_{track}_jubarte-0.11.2-full.json")
+        else:
+            f = R / f"scores_{track}_{t}.json"
+            if track == "redlines" and not f.exists():
+                f = R / f"scores_{t}.json"  # the 0929 measure.py writes redline scores unprefixed
         if not f.exists():
             continue
         s = json.loads(f.read_text())["summary"]
         o = s["overall"]
-        label = "jubarte 0.10.0 (bench run)" if t == "jubarte-rust" and JUBARTE_0101 else dict(ENGINES)[t]
+        if t == "jubarte-rust":
+            label = ("jubarte 0.11.2" if JUBARTE_0112
+                     else "jubarte 0.10.0 (bench run)" if JUBARTE_0101 else dict(ENGINES)[t])
+        else:
+            label = dict(ENGINES)[t]
         parts.append(f"{label} {s['scored']}/{s['pairs']}"
                      + (f", mean {o['mean']:.1f}, median {o['median']:.1f}, {o['at_least_90']} at 90+" if o["n"] else ""))
     return "; ".join(parts)
@@ -249,7 +265,7 @@ def main() -> None:
         cases = list(ex.map(lambda j: case(*j), jobs))
     print(f"{len(cases)} cases encoded ({time.time() - t0:.0f} s)", flush=True)
 
-    jver = "0.10.1" if JUBARTE_0101 else "0.10.0"
+    jver = "0.11.2" if JUBARTE_0112 else "0.10.1" if JUBARTE_0101 else "0.10.0"
     note = ("<span><b>What this is</b>: redlines by jubarte" + (f" ({jver} and the 0.9.3 release)" if "jubarte-093" in TOOLS else "") + ", docxodus and SuperDoc against Microsoft Word&#8217;s own "
             "compare, every PDF rendered by Word for Mac, scored with docxide-pdf&#8217;s page-metrics at 150 DPI over "
             "every page. <b>redlines</b>: the tool&#8217;s compare of a corpus pair vs Word&#8217;s compare of it. "
@@ -259,7 +275,13 @@ def main() -> None:
             + summary_line("redlines") + ". accepted: " + summary_line("accepted") + (". rejected (every change rejected by Word, vs Word&#8217;s compare rejected "
             "the same way): " + summary_line("rejected") if rej_groups else "") + ". SuperDoc (latest SDK) "
             "refuses most pairs, so its column is often empty. Scores: _build/redlines/.</span>"
-            + ("<span><b>jubarte 0.10.1</b>: the release CLI reran the pairs shown here (redlines, then "
+            + ("<span><b>jubarte 0.11.2</b>: the release lane over every pair of this run (redlines, "
+               "Word&#8217;s PDF of each, accept-all and reject-all of the shown pairs as for every "
+               "tool); the bench-wide scores above are this same lane. Word&#8217;s per-session author "
+               "colour moves the at-90+ count and part of the mean (NOTES_0112_full.md with the paired "
+               "0.10.1 comparison, in _build/redlines/); on the colour-free terms (ink Jaccard, text "
+               "boundary) 0.11.2 is the better of the two.</span>" if JUBARTE_0112 else
+               "<span><b>jubarte 0.10.1</b>: the release CLI reran the pairs shown here (redlines, then "
                "Word&#8217;s PDF, accept-all and reject-all of them, as for every tool); the bench-wide "
                "scores above are its 0.10.0 run.</span>" if JUBARTE_0101 else ""))
     note = note.replace("'", "&#8217;")

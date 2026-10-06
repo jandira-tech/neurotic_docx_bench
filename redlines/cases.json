@@ -32,9 +32,9 @@
   },
   "scores": {
    "jubarte-rust": {
-    "jaccard": 55.7,
-    "ssim": 64.3,
-    "text_boundary": 53.0
+    "jaccard": 99.5,
+    "ssim": 98.9,
+    "text_boundary": 100.0
    },
    "jubarte-093": {
     "jaccard": 6.0,
@@ -83,7 +83,7 @@
   },
   "scores": {
    "jubarte-rust": {
-    "jaccard": 39.7,
+    "jaccard": 39.9,
     "ssim": 55.7,
     "text_boundary": 38.6
    },
@@ -134,8 +134,8 @@
   },
   "scores": {
    "jubarte-rust": {
-    "jaccard": 48.2,
-    "ssim": 66.2,
+    "jaccard": 48.4,
+    "ssim": 65.8,
     "text_boundary": 75.3
    },
    "jubarte-093": {
@@ -236,8 +236,8 @@
   },
   "scores": {
    "jubarte-rust": {
-    "jaccard": 69.4,
-    "ssim": 81.1,
+    "jaccard": 69.8,
+    "ssim": 80.6,
     "text_boundary": 74.1
    },
    "jubarte-093": {
@@ -279,8 +279,8 @@
   },
   "scores": {
    "jubarte-rust": {
-    "jaccard": 95.5,
-    "ssim": 98.3,
+    "jaccard": 97.1,
+    "ssim": 99.1,
     "text_boundary": 100.0
    },
    "jubarte-093": {
@@ -330,9 +330,9 @@
   },
   "scores": {
    "jubarte-rust": {
-    "jaccard": 55.7,
-    "ssim": 64.3,
-    "text_boundary": 53.0
+    "jaccard": 99.5,
+    "ssim": 98.9,
+    "text_boundary": 100.0
    },
    "jubarte-093": {
     "jaccard": 5.9,
@@ -373,8 +373,8 @@
   },
   "scores": {
    "jubarte-rust": {
-    "jaccard": 25.4,
-    "ssim": 50.9,
+    "jaccard": 24.9,
+    "ssim": 51.8,
     "text_boundary": 85.7
    },
    "jubarte-093": {
@@ -416,8 +416,8 @@
   },
   "scores": {
    "jubarte-rust": {
-    "jaccard": 85.2,
-    "ssim": 93.5,
+    "jaccard": 83.2,
+    "ssim": 95.2,
     "text_boundary": 100.0
    },
    "jubarte-093": {
@@ -463,8 +463,8 @@
   },
   "scores": {
    "jubarte-rust": {
-    "jaccard": 99.6,
-    "ssim": 99.9,
+    "jaccard": 98.7,
+    "ssim": 98.9,
     "text_boundary": 100.0
    },
    "jubarte-093": {
@@ -514,8 +514,8 @@
   },
   "scores": {
    "jubarte-rust": {
-    "jaccard": 66.1,
-    "ssim": 78.0,
+    "jaccard": 66.3,
+    "ssim": 77.4,
     "text_boundary": 98.8
    },
    "jubarte-093": {
@@ -557,8 +557,8 @@
   },
   "scores": {
    "jubarte-rust": {
-    "jaccard": 44.8,
-    "ssim": 79.1,
+    "jaccard": 44.4,
+    "ssim": 79.2,
     "text_boundary": 100.0
    },
    "jubarte-093": {
@@ -608,8 +608,8 @@
   },
   "scores": {
    "jubarte-rust": {
-    "jaccard": 40.2,
-    "ssim": 57.8,
+    "jaccard": 40.4,
+    "ssim": 57.5,
     "text_boundary": 63.3
    },
    "jubarte-093": {
@@ -638,23 +638,31 @@
    ],
    "jubarte-093": [
     "redlines/with_comments_tracking/7da45f822a/jubarte-093/page_001.webp"
+   ],
+   "docxodus": [
+    "redlines/with_comments_tracking/7da45f822a/docxodus/page_001.webp"
    ]
   },
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
-   "jubarte-093": 1
+   "jubarte-093": 1,
+   "docxodus": 1
   },
   "scores": {
    "jubarte-rust": {
-    "jaccard": 93.7,
-    "ssim": 98.3,
+    "jaccard": 93.3,
+    "ssim": 97.3,
     "text_boundary": 100.0
    },
    "jubarte-093": {
     "jaccard": 95.2,
     "ssim": 95.9,
     "text_boundary": 66.7
+   },
+   "docxodus": {
+    "jaccard": 34.2,
+    "ssim": 46.9
    }
   },
   "times": {},
@@ -693,8 +701,8 @@
   },
   "scores": {
    "jubarte-rust": {
-    "jaccard": 98.5,
-    "ssim": 99.3,
+    "jaccard": 97.9,
+    "ssim": 99.4,
     "text_boundary": 100.0
    },
    "jubarte-093": {
@@ -736,8 +744,8 @@
   },
   "scores": {
    "jubarte-rust": {
-    "jaccard": 95.0,
-    "ssim": 97.2,
+    "jaccard": 94.0,
+    "ssim": 98.2,
     "text_boundary": 100.0
    },
    "jubarte-093": {
@@ -776,14 +784,14 @@
   },
   "page_counts": {
    "reference": 10,
-   "jubarte-rust": 9,
+   "jubarte-rust": 10,
    "jubarte-093": 9
   },
   "scores": {
    "jubarte-rust": {
-    "jaccard": 6.1,
-    "ssim": 26.4,
-    "text_boundary": 3.5
+    "jaccard": 8.6,
+    "ssim": 27.4,
+    "text_boundary": 0.0
    },
    "jubarte-093": {
     "jaccard": 6.0,
@@ -819,8 +827,8 @@
   },
   "scores": {
    "jubarte-rust": {
-    "jaccard": 90.5,
-    "ssim": 95.6,
+    "jaccard": 90.2,
+    "ssim": 96.7,
     "text_boundary": 100.0
    },
    "jubarte-093": {
@@ -869,8 +877,8 @@
   },
   "scores": {
    "jubarte-rust": {
-    "jaccard": 95.9,
-    "ssim": 99.0,
+    "jaccard": 95.4,
+    "ssim": 99.4,
     "text_boundary": 100.0
    },
    "jubarte-093": {
@@ -920,9 +928,9 @@
   },
   "scores": {
    "jubarte-rust": {
-    "jaccard": 47.7,
-    "ssim": 64.1,
-    "text_boundary": 54.5
+    "jaccard": 48.1,
+    "ssim": 60.5,
+    "text_boundary": 52.9
    },
    "jubarte-093": {
     "jaccard": 48.6,
@@ -971,8 +979,8 @@
   },
   "scores": {
    "jubarte-rust": {
-    "jaccard": 97.4,
-    "ssim": 96.6,
+    "jaccard": 98.0,
+    "ssim": 95.8,
     "text_boundary": 100.0
    },
    "jubarte-093": {
@@ -1014,8 +1022,8 @@
   },
   "scores": {
    "jubarte-rust": {
-    "jaccard": 91.0,
-    "ssim": 97.6,
+    "jaccard": 96.5,
+    "ssim": 99.3,
     "text_boundary": 100.0
    },
    "jubarte-093": {
@@ -1065,8 +1073,8 @@
   },
   "scores": {
    "jubarte-rust": {
-    "jaccard": 96.5,
-    "ssim": 99.5,
+    "jaccard": 97.5,
+    "ssim": 99.3,
     "text_boundary": 100.0
    },
    "jubarte-093": {
@@ -1116,8 +1124,8 @@
   },
   "scores": {
    "jubarte-rust": {
-    "jaccard": 79.3,
-    "ssim": 87.3,
+    "jaccard": 79.7,
+    "ssim": 87.0,
     "text_boundary": 100.0
    },
    "jubarte-093": {
@@ -1143,17 +1151,25 @@
    ],
    "jubarte-rust": [
     "redlines/with_comments_tracking/4319e3d7c7/jubarte-rust/page_001.webp"
+   ],
+   "docxodus": [
+    "redlines/with_comments_tracking/4319e3d7c7/docxodus/page_001.webp"
    ]
   },
   "page_counts": {
    "reference": 1,
-   "jubarte-rust": 1
+   "jubarte-rust": 1,
+   "docxodus": 1
   },
   "scores": {
    "jubarte-rust": {
-    "jaccard": 94.6,
-    "ssim": 98.3,
+    "jaccard": 94.1,
+    "ssim": 97.3,
     "text_boundary": 100.0
+   },
+   "docxodus": {
+    "jaccard": 18.7,
+    "ssim": 22.9
    }
   },
   "times": {},
@@ -1186,8 +1202,8 @@
   },
   "scores": {
    "jubarte-rust": {
-    "jaccard": 72.4,
-    "ssim": 95.5,
+    "jaccard": 73.0,
+    "ssim": 95.9,
     "text_boundary": 98.4
    },
    "docxodus": {
@@ -1228,8 +1244,8 @@
   },
   "scores": {
    "jubarte-rust": {
-    "jaccard": 84.0,
-    "ssim": 89.6,
+    "jaccard": 83.7,
+    "ssim": 89.9,
     "text_boundary": 100.0
    },
    "jubarte-093": {
@@ -1262,22 +1278,31 @@
    ],
    "jubarte-093": [
     "redlines/with_comments_tracking/e4569d0756/jubarte-093/page_001.webp"
+   ],
+   "docxodus": [
+    "redlines/with_comments_tracking/e4569d0756/docxodus/page_001.webp"
    ]
   },
   "page_counts": {
    "reference": 1,
    "jubarte-rust": 1,
-   "jubarte-093": 1
+   "jubarte-093": 1,
+   "docxodus": 1
   },
   "scores": {
    "jubarte-rust": {
-    "jaccard": 74.9,
-    "ssim": 91.5,
+    "jaccard": 76.9,
+    "ssim": 92.6,
     "text_boundary": 66.7
    },
    "jubarte-093": {
     "jaccard": 62.7,
     "ssim": 91.1
+   },
+   "docxodus": {
+    "jaccard": 13.8,
+    "ssim": 47.3,
+    "text_boundary": 0.0
    }
   },
   "times": {},
@@ -1308,8 +1333,8 @@
   },
   "scores": {
    "jubarte-rust": {
-    "jaccard": 98.0,
-    "ssim": 99.7,
+    "jaccard": 96.4,
+    "ssim": 99.8,
     "text_boundary": 100.0
    },
    "jubarte-093": {
@@ -1353,8 +1378,8 @@
   },
   "scores": {
    "jubarte-rust": {
-    "jaccard": 75.2,
-    "ssim": 83.9,
+    "jaccard": 75.4,
+    "ssim": 84.1,
     "text_boundary": 85.2
    },
    "jubarte-093": {
@@ -1396,7 +1421,7 @@
   "scores": {
    "jubarte-rust": {
     "jaccard": 68.9,
-    "ssim": 81.7,
+    "ssim": 81.8,
     "text_boundary": 66.7
    },
    "jubarte-093": {
@@ -1446,8 +1471,8 @@
   },
   "scores": {
    "jubarte-rust": {
-    "jaccard": 99.4,
-    "ssim": 99.7,
+    "jaccard": 99.1,
+    "ssim": 100.0,
     "text_boundary": 100.0
    },
    "jubarte-093": {
@@ -1501,8 +1526,8 @@
   },
   "scores": {
    "jubarte-rust": {
-    "jaccard": 97.7,
-    "ssim": 99.1,
+    "jaccard": 97.9,
+    "ssim": 98.3,
     "text_boundary": 100.0
    },
    "jubarte-093": {
@@ -1546,8 +1571,8 @@
   },
   "scores": {
    "jubarte-rust": {
-    "jaccard": 73.2,
-    "ssim": 82.7,
+    "jaccard": 73.5,
+    "ssim": 82.1,
     "text_boundary": 86.4
    },
    "jubarte-093": {
@@ -1588,8 +1613,8 @@
   },
   "scores": {
    "jubarte-rust": {
-    "jaccard": 99.2,
-    "ssim": 99.5,
+    "jaccard": 100.0,
+    "ssim": 100.0,
     "text_boundary": 100.0
    },
    "jubarte-093": {
@@ -1683,9 +1708,9 @@
   },
   "scores": {
    "jubarte-rust": {
-    "jaccard": 28.5,
-    "ssim": 45.8,
-    "text_boundary": 53.4
+    "jaccard": 88.5,
+    "ssim": 96.1,
+    "text_boundary": 100.0
    },
    "jubarte-093": {
     "jaccard": 24.1,
@@ -1730,8 +1755,8 @@
   },
   "scores": {
    "jubarte-rust": {
-    "jaccard": 99.2,
-    "ssim": 99.6,
+    "jaccard": 98.8,
+    "ssim": 99.1,
     "text_boundary": 100.0
    },
    "jubarte-093": {
@@ -1781,8 +1806,8 @@
   },
   "scores": {
    "jubarte-rust": {
-    "jaccard": 48.0,
-    "ssim": 66.0,
+    "jaccard": 47.8,
+    "ssim": 65.9,
     "text_boundary": 100.0
    },
    "jubarte-093": {
@@ -1824,8 +1849,8 @@
   },
   "scores": {
    "jubarte-rust": {
-    "jaccard": 100.0,
-    "ssim": 100.0,
+    "jaccard": 99.0,
+    "ssim": 99.9,
     "text_boundary": 100.0
    },
    "jubarte-093": {
@@ -1871,8 +1896,8 @@
   },
   "scores": {
    "jubarte-rust": {
-    "jaccard": 100.0,
-    "ssim": 100.0,
+    "jaccard": 99.6,
+    "ssim": 99.9,
     "text_boundary": 100.0
    },
    "jubarte-093": {
@@ -1922,8 +1947,8 @@
   },
   "scores": {
    "jubarte-rust": {
-    "jaccard": 99.2,
-    "ssim": 99.7,
+    "jaccard": 98.5,
+    "ssim": 99.3,
     "text_boundary": 100.0
    },
    "jubarte-093": {
@@ -1973,8 +1998,8 @@
   },
   "scores": {
    "jubarte-rust": {
-    "jaccard": 96.5,
-    "ssim": 97.6,
+    "jaccard": 96.0,
+    "ssim": 99.0,
     "text_boundary": 100.0
    },
    "jubarte-093": {
@@ -2021,8 +2046,8 @@
   },
   "scores": {
    "jubarte-rust": {
-    "jaccard": 99.2,
-    "ssim": 99.3,
+    "jaccard": 99.1,
+    "ssim": 99.0,
     "text_boundary": 100.0
    },
    "jubarte-093": {
@@ -2068,9 +2093,9 @@
   },
   "scores": {
    "jubarte-rust": {
-    "jaccard": 97.8,
-    "ssim": 98.7,
-    "text_boundary": 80.0
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
    },
    "jubarte-093": {
     "jaccard": 98.1,
@@ -2172,8 +2197,8 @@
   },
   "scores": {
    "jubarte-rust": {
-    "jaccard": 100.0,
-    "ssim": 100.0,
+    "jaccard": 99.4,
+    "ssim": 99.9,
     "text_boundary": 100.0
    },
    "jubarte-093": {
@@ -2227,8 +2252,8 @@
   },
   "scores": {
    "jubarte-rust": {
-    "jaccard": 97.5,
-    "ssim": 99.0,
+    "jaccard": 97.9,
+    "ssim": 99.2,
     "text_boundary": 100.0
    },
    "jubarte-093": {
@@ -2273,8 +2298,8 @@
   },
   "scores": {
    "jubarte-rust": {
-    "jaccard": 100.0,
-    "ssim": 100.0,
+    "jaccard": 99.1,
+    "ssim": 99.6,
     "text_boundary": 100.0
    },
    "jubarte-093": {
@@ -2325,7 +2350,7 @@
   },
   "scores": {
    "jubarte-rust": {
-    "jaccard": 100.0,
+    "jaccard": 99.4,
     "ssim": 100.0,
     "text_boundary": 100.0
    },
@@ -2427,8 +2452,8 @@
   },
   "scores": {
    "jubarte-rust": {
-    "jaccard": 100.0,
-    "ssim": 100.0,
+    "jaccard": 99.3,
+    "ssim": 99.8,
     "text_boundary": 100.0
    },
    "jubarte-093": {
@@ -2482,8 +2507,8 @@
   },
   "scores": {
    "jubarte-rust": {
-    "jaccard": 97.4,
-    "ssim": 99.7,
+    "jaccard": 98.3,
+    "ssim": 99.2,
     "text_boundary": 100.0
    },
    "jubarte-093": {
@@ -2529,8 +2554,8 @@
   },
   "scores": {
    "jubarte-rust": {
-    "jaccard": 100.0,
-    "ssim": 100.0,
+    "jaccard": 99.5,
+    "ssim": 99.6,
     "text_boundary": 100.0
    },
    "jubarte-093": {
@@ -2585,8 +2610,8 @@
   },
   "scores": {
    "jubarte-rust": {
-    "jaccard": 47.9,
-    "ssim": 57.7,
+    "jaccard": 48.3,
+    "ssim": 57.6,
     "text_boundary": 68.8
    },
    "jubarte-093": {
@@ -2675,7 +2700,7 @@
   "scores": {
    "jubarte-rust": {
     "jaccard": 35.4,
-    "ssim": 44.6,
+    "ssim": 44.7,
     "text_boundary": 8.4
    },
    "jubarte-093": {
@@ -2714,8 +2739,8 @@
   },
   "scores": {
    "jubarte-rust": {
-    "jaccard": 99.1,
-    "ssim": 99.8,
+    "jaccard": 99.2,
+    "ssim": 99.9,
     "text_boundary": 100.0
    },
    "jubarte-093": {
@@ -2756,8 +2781,8 @@
   },
   "scores": {
    "jubarte-rust": {
-    "jaccard": 49.0,
-    "ssim": 69.8
+    "jaccard": 48.7,
+    "ssim": 70.4
    },
    "jubarte-093": {
     "jaccard": 48.9,
@@ -2803,8 +2828,8 @@
   },
   "scores": {
    "jubarte-rust": {
-    "jaccard": 82.4,
-    "ssim": 86.3,
+    "jaccard": 91.4,
+    "ssim": 92.1,
     "text_boundary": 100.0
    },
    "jubarte-093": {
@@ -3107,8 +3132,8 @@
   },
   "scores": {
    "jubarte-rust": {
-    "jaccard": 99.9,
-    "ssim": 99.9,
+    "jaccard": 99.3,
+    "ssim": 99.5,
     "text_boundary": 100.0
    },
    "jubarte-093": {
@@ -3303,8 +3328,9 @@
   },
   "scores": {
    "jubarte-rust": {
-    "jaccard": 64.0,
-    "ssim": 100.0
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
    },
    "jubarte-093": {
     "jaccard": 100.0,
@@ -3353,7 +3379,7 @@
   },
   "scores": {
    "jubarte-rust": {
-    "jaccard": 98.7,
+    "jaccard": 98.6,
     "ssim": 99.0,
     "text_boundary": 98.7
    },
@@ -3400,8 +3426,8 @@
   },
   "scores": {
    "jubarte-rust": {
-    "jaccard": 99.5,
-    "ssim": 99.8,
+    "jaccard": 99.8,
+    "ssim": 99.9,
     "text_boundary": 100.0
    },
    "jubarte-093": {
@@ -3589,7 +3615,7 @@
   "scores": {
    "jubarte-rust": {
     "jaccard": 49.3,
-    "ssim": 69.9
+    "ssim": 70.3
    },
    "jubarte-093": {
     "jaccard": 49.3,
@@ -4435,9 +4461,9 @@
   },
   "scores": {
    "jubarte-rust": {
-    "jaccard": 19.5,
-    "ssim": 34.2,
-    "text_boundary": 51.4
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
    },
    "jubarte-093": {
     "jaccard": 100.0,
@@ -4480,9 +4506,9 @@
   },
   "scores": {
    "jubarte-rust": {
-    "jaccard": 31.2,
-    "ssim": 46.9,
-    "text_boundary": 81.4
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
    },
    "jubarte-093": {
     "jaccard": 99.9,
@@ -4864,15 +4890,15 @@
   },
   "page_counts": {
    "reference": 11,
-   "jubarte-rust": 10,
+   "jubarte-rust": 11,
    "jubarte-093": 9,
    "docxodus": 10
   },
   "scores": {
    "jubarte-rust": {
-    "jaccard": 48.9,
-    "ssim": 60.0,
-    "text_boundary": 48.7
+    "jaccard": 58.0,
+    "ssim": 73.9,
+    "text_boundary": 62.3
    },
    "jubarte-093": {
     "jaccard": 4.7,
@@ -4913,8 +4939,8 @@
   },
   "scores": {
    "jubarte-rust": {
-    "jaccard": 100.0,
-    "ssim": 100.0,
+    "jaccard": 99.3,
+    "ssim": 99.8,
     "text_boundary": 100.0
    },
    "jubarte-093": {
@@ -5312,8 +5338,8 @@
   },
   "scores": {
    "jubarte-rust": {
-    "jaccard": 88.5,
-    "ssim": 76.0,
+    "jaccard": 100.0,
+    "ssim": 100.0,
     "text_boundary": 100.0
    },
    "jubarte-093": {
@@ -5363,7 +5389,7 @@
   },
   "scores": {
    "jubarte-rust": {
-    "jaccard": 93.4,
+    "jaccard": 93.3,
     "ssim": 96.1,
     "text_boundary": 98.7
    },
@@ -5501,15 +5527,15 @@
   },
   "page_counts": {
    "reference": 11,
-   "jubarte-rust": 10,
+   "jubarte-rust": 11,
    "jubarte-093": 8,
    "docxodus": 9
   },
   "scores": {
    "jubarte-rust": {
-    "jaccard": 52.2,
-    "ssim": 60.0,
-    "text_boundary": 41.6
+    "jaccard": 60.9,
+    "ssim": 74.0,
+    "text_boundary": 57.4
    },
    "jubarte-093": {
     "jaccard": 3.7,
@@ -5690,8 +5716,8 @@
   },
   "scores": {
    "jubarte-rust": {
-    "jaccard": 4.2,
-    "ssim": 9.1,
+    "jaccard": 2.5,
+    "ssim": 6.7,
     "text_boundary": 3.4
    },
    "jubarte-093": {
@@ -6251,9 +6277,9 @@
   },
   "scores": {
    "jubarte-rust": {
-    "jaccard": 9.2,
-    "ssim": 20.5,
-    "text_boundary": 5.2
+    "jaccard": 14.9,
+    "ssim": 29.4,
+    "text_boundary": 5.1
    },
    "jubarte-093": {
     "jaccard": 7.7,
