@@ -34,74 +34,7 @@ on branch `feat/pdf-layout-content-controls` (2026-10-03 checkout).
 
 ## verdict_kept_span_015
 
-**Law:** Word's paragraph verdict: kept span ≥ 0.15 of the longer side — `src/comparer/mod.rs:1305-1321` (`WORD_LEVEL_KEPT_RATIO = 0.15`, `pub const` at :1321), `kept_span` at `src/comparer/lcs.rs:9483-9538`, applied at `src/comparer/lcs.rs:9699`. Commits: e71e2afc, 1fe45986, 0c913f24, b323ccd0, 6ded4930 (PR #345, merge 7b711549).
-
-| file | provenance | note |
-|---|---|---|
-| `affine.py` | /tmp/affine.py (wiped by reboot) — sessions 04b835d2, last 2026-10-03T04:14 |  |
-| `aligners.py` | /tmp/aligners.py (wiped by reboot) — sessions 04b835d2, last 2026-10-03T04:07 | LCS/Heckel/patience aligner zoo behind the measure sweeps |
-| `boundary.py` | /tmp/boundary.py (wiped by reboot) — sessions 04b835d2, last 2026-10-03T09:50 |  |
-| `charfit.py` | /tmp/charfit.py (wiped by reboot) — sessions 04b835d2, last 2026-10-03T04:21 |  |
-| `corpus_verdicts.py` | bench `scripts/corpus_verdicts.py` — committed 33470603e | jubarte verdicts vs Word on every corpus Word compare |
-| `dump_runs.py` | /tmp/dump_runs.py (wiped by reboot) — sessions 04b835d2, last 2026-10-03T08:29 |  |
-| `heckel_law.py` | /tmp/heckel_law.py (wiped by reboot) — sessions 04b835d2, last 2026-10-03T05:02 | one Heckel-aligned threshold across every wave |
-| `heckel_variants.py` | /tmp/heckel_variants.py (wiped by reboot) — sessions 04b835d2, last 2026-10-03T05:20 |  |
-| `inline-charfit-scipy-fit-20261003T0422.py` | inline python (never a file) in session 04b835d2 @ 2026-10-03 04:22 |  |
-| `inline-charfit-show-20261003T0421.py` | inline python (never a file) in session 04b835d2 @ 2026-10-03 04:21 |  |
-| `inline-denom1-agree-20261003T1033.py` | inline python (never a file) in session 04b835d2 @ 2026-10-03 10:33 |  |
-| `inline-measures-key-fit-20261003T1035.py` | inline python (never a file) in session 04b835d2 @ 2026-10-03 10:35 |  |
-| `inline-punct1-measures-20261003T1121.py` | inline python (never a file) in session 04b835d2 @ 2026-10-03 11:21 |  |
-| `inline-real-rule-pool-20261003T0949.py` | inline python (never a file) in session 04b835d2 @ 2026-10-03 09:49 |  |
-| `inline-threshold-errors-20261003T0508.py` | inline python (never a file) in session 04b835d2 @ 2026-10-03 05:08 |  |
-| `jub_eval.py` | /tmp/jub_eval.py (wiped by reboot) — sessions 04b835d2, last 2026-10-03T06:29 |  |
-| `leaps.py` | /tmp/leaps.py (wiped by reboot) — sessions 04b835d2, last 2026-10-03T05:57 |  |
-| `long_paragraph_probes.py` | bench `scripts/long_paragraph_probes.py` — on disk, **untracked** (never committed) | single-paragraph probe pairs at controlled kept-fraction; on disk in bench but **untracked** |
-| `measure_sweep.py` | /tmp/measure_sweep.py (wiped by reboot) — sessions 04b835d2, last 2026-10-03T05:14 |  |
-| `measures.py` | /tmp/measures.py (wiped by reboot) — sessions 04b835d2, last 2026-10-03T09:51 |  |
-| `measures2.py` | /tmp/measures2.py (wiped by reboot) — sessions 04b835d2, last 2026-10-03T10:34 |  |
-| `measures3.py` | /tmp/measures3.py (wiped by reboot) — sessions 04b835d2, last 2026-10-03T10:43 | the kept-span definition sweep (blanks beside kept runs included) |
-| `predict_paragraph_verdict.py` | bench `scripts/predict_paragraph_verdict.py` — on disk, **untracked** (never committed) | frozen-rule verdict predictor (newer wave-A era); bench **untracked** |
-| `probe_asym.py` | bench `scripts/probe_asym.py` — committed 33470603e | asym1 wave (asymmetric lengths, min vs max denominator) |
-| `probe_denom.py` | bench `scripts/probe_denom.py` — committed 33470603e | denom1 wave (denominator: longer vs shorter side) |
-| `probe_denominator.py` | /tmp/probe_denominator.py (wiped by reboot) — sessions 04b835d2, last 2026-10-03T09:04 |  |
-| `probe_edge.py` | bench `scripts/probe_edge.py` — committed 33470603e | edge1 wave (verdict boundaries) |
-| `probe_edits.py` | bench `scripts/probe_edits.py` — committed 51f6552a7 | edits1 wave (en_law 150 words, 5% intensity) |
-| `probe_fine.py` | bench `scripts/probe_fine.py` — committed 1cb68485a | fine-step probes around the boundary |
-| `probe_prose.py` | bench `scripts/probe_prose.py` — committed 51f6552a7 | prose1 wave |
-| `probe_short.py` | bench `scripts/probe_short.py` — committed 33470603e | short1 wave |
-| `probe_span_measures.py` | bench `scripts/probe_span_measures.py` — committed e3b7bae0e | kept-span measure candidates over the waves |
-| `probe_tokens.py` | bench `scripts/probe_tokens.py` — committed 51f6552a7 | tokens wave (token classes) |
-| `probe_variants.py` | bench `scripts/probe_variants.py` — committed 51f6552a7 | variants wave (kept-run placement) |
-| `probe_verdict_eval.py` | bench `scripts/probe_verdict_eval.py` — committed e3b7bae0e | eval of verdict predictions |
-| `probe_wave7.py` | bench `scripts/probe_wave7.py` — committed 51f6552a7 | wave7 — the 0.15 threshold's cleanest separation (1.000 agreement) |
-| `probe_wave_verdicts.py` | bench `scripts/probe_wave_verdicts.py` — committed e3b7bae0e | verdict extraction per wave dir |
-| `prose_summary.py` | /tmp/prose_summary.py (wiped by reboot) — sessions 04b835d2, last 2026-10-03T05:53 |  |
-| `real_rule_check.py` | /tmp/real_rule_check.py (wiped by reboot) — sessions 04b835d2, last 2026-10-03T08:34 |  |
-| `real_rule_check2.py` | /tmp/real_rule_check2.py (wiped by reboot) — sessions 04b835d2, last 2026-10-03T08:41 | per-region rule check on Word's own redlines |
-| `redline_anatomy.py` | bench `scripts/redline_anatomy.py` — on disk, **untracked** (never committed) | the verdict classifier + LAW/THRESHOLD constants (0.12 kept chars, later 0.15 kept span); on disk in bench but **untracked** |
-| `redline_paras.py` | /tmp/redline_paras.py (wiped by reboot) — sessions 04b835d2, last 2026-10-03T03:48 |  |
-| `redline_rebuilt_text.py` | bench `scripts/redline_rebuilt_text.py` — on disk, **untracked** (never committed) | rebuild both sides of a redline, exact-match identity; bench **untracked** |
-| `redline_shape.py` | /tmp/redline_shape.py (wiped by reboot) — sessions 04b835d2, last 2026-10-03T03:47 |  |
-| `redline_stats.py` | /tmp/redline_stats.py (wiped by reboot) — sessions 04b835d2, last 2026-10-03T03:46 |  |
-| `rule_check.py` | /tmp/rule_check.py (wiped by reboot) — sessions 04b835d2, last 2026-10-03T06:30 |  |
-| `rule_check2.py` | /tmp/rule_check2.py (wiped by reboot) — sessions 04b835d2, last 2026-10-03T08:01 |  |
-| `score_paragraph_verdicts.py` | bench `scripts/score_paragraph_verdicts.py` — on disk, **untracked** (never committed) | score a frozen prediction against a Word redline; bench **untracked** |
-| `simulate.py` | /tmp/simulate.py (wiped by reboot) — sessions 04b835d2, last 2026-10-03T04:15 |  |
-| `slice_docx.py` | /tmp/slice_docx.py (wiped by reboot) — sessions 04b835d2, last 2026-10-03T09:52 | reducer: cut a real docx to a body slice |
-| `slice_docx2.py` | /tmp/slice_docx2.py (wiped by reboot) — sessions 04b835d2, last 2026-10-03T09:56 |  |
-| `tokens_summary.py` | /tmp/tokens_summary.py (wiped by reboot) — sessions 04b835d2, last 2026-10-03T05:53 |  |
-| `variants_summary.py` | /tmp/variants_summary.py (wiped by reboot) — sessions 04b835d2, last 2026-10-03T04:33 |  |
-| `wave7_summary.py` | /tmp/wave7_summary.py (wiped by reboot) — sessions 04b835d2, last 2026-10-03T04:49 |  |
-| `wave8_summary.py` | /tmp/wave8_summary.py (wiped by reboot) — sessions 04b835d2, last 2026-10-03T05:10 |  |
-| `wave_a_shared_fraction.py` | bench `scripts/wave_a_shared_fraction.py` — on disk, **untracked** (never committed) | wave A: shared-fraction probes, prediction frozen first; bench **untracked** |
-| `wave_verdicts.py` | /tmp/wave_verdicts.py (wiped by reboot) — sessions 04b835d2, last 2026-10-03T08:46 |  |
-| `word_after_waves.sh` | /tmp/word_after_waves.sh (wiped by reboot) — sessions 04b835d2, last 2026-10-03T08:32 |  |
-| `word_chain2.sh` | /tmp/word_chain2.sh (wiped by reboot) — sessions 04b835d2, last 2026-10-03T08:33 |  |
-| `word_chain6.sh` | /tmp/word_chain6.sh (wiped by reboot) — sessions 04b835d2, last 2026-10-03T09:53 |  |
-| `word_wave_one.sh` | /tmp/word_wave_one.sh (wiped by reboot) — sessions 04b835d2, last 2026-10-03T08:32 |  |
-| `word_waves.sh` | /tmp/word_waves.sh (wiped by reboot) — sessions 04b835d2, last 2026-10-03T07:54 |  |
-| `xform.py` | /tmp/xform.py (wiped by reboot) — sessions 04b835d2, last 2026-10-03T10:01 | docx transformer used by the reducers (strip hyperlinks/lastRenderedPageBreak/cnfStyle) |
-
+Moved 2026-10-06 to `../../../predict_redline/archive/word-verdict-waves/scripts/formula_archive/verdict_kept_span_015/`, with the verdict-era scripts and its source table (`archive/word-verdict-waves/README.md`). The law it documents is `WORD_LEVEL_KEPT_RATIO = 0.15` in jubarte `src/comparer/mod.rs` (PR #345).
 
 ## justify_squeeze_0345
 
@@ -391,7 +324,7 @@ on branch `feat/pdf-layout-content-controls` (2026-10-03 checkout).
 |---|---|---|
 | `ab.sh` | jubarte-loop/ab.sh (on disk) |  |
 | `check_redline_identity.py` | bench `scripts/check_redline_identity.py` — committed b5c99a8ff |  |
-| `endpoint_word.py` | bench `scripts/endpoint_word.py` — on disk, **untracked** (never committed) |  |
+| `endpoint_word.py` | moved 2026-10-04 to `../../../predict_redline/methodology/endpoint_word.py` | compare and convert client. A copy may remain under `formula_archive/` as the older snapshot. |
 | `redline_word_measure.sh` | /tmp/redline_word_measure.sh (wiped by reboot) — sessions 33fff59e, last 2026-09-26T19:13 | measure driver, 4 revisions (0926 campaign) |
 | `run_pdf4_chain.sh` | /tmp/run_pdf4_chain.sh (wiped by reboot) — sessions 04b835d2, last 2026-10-03T12:50 |  |
 | `run_pdf5_chain.sh` | /tmp/run_pdf5_chain.sh (wiped by reboot) — sessions 04b835d2, last 2026-10-03T13:08 |  |
