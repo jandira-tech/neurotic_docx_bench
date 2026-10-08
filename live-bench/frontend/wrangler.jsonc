@@ -1,0 +1,71 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "jubarte-live-bench",
+  "account_id": "5651b2fe85f9bbb0fc1b8f4ad2cb4e64",
+  "main": "./src/worker.ts",
+  "compatibility_date": "2026-10-08",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "assets": {
+    "directory": "./dist/client",
+    "binding": "ASSETS"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "jubarte-live-bench",
+      "database_id": "efb01828-aca6-4f92-9a3c-7433931e8f0f",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "MEDIA",
+      "bucket_name": "jubarte-live-bench-artifacts"
+    }
+  ],
+  "observability": {
+    "enabled": true
+  },
+  "routes": [
+    {
+      "pattern": "www.jubarte.pro/live",
+      "zone_name": "jubarte.pro"
+    },
+    {
+      "pattern": "www.jubarte.pro/live/*",
+      "zone_name": "jubarte.pro"
+    },
+    {
+      "pattern": "jubarte.pro/live",
+      "zone_name": "jubarte.pro"
+    },
+    {
+      "pattern": "jubarte.pro/live/*",
+      "zone_name": "jubarte.pro"
+    },
+    {
+      "pattern": "redlines.free/live",
+      "zone_name": "redlines.free"
+    },
+    {
+      "pattern": "redlines.free/live/*",
+      "zone_name": "redlines.free"
+    },
+    {
+      "pattern": "arthur.law/docx-bench-live",
+      "zone_name": "arthur.law"
+    },
+    {
+      "pattern": "arthur.law/docx-bench-live/*",
+      "zone_name": "arthur.law"
+    }
+  ],
+  "kv_namespaces": [
+    {
+      "binding": "SESSION",
+      "id": "00aa308a807b41efa72dfa9e9e6e8fa7"
+    }
+  ]
+}

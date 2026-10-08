@@ -1,0 +1,41 @@
+{
+  "name": "jubarte-live-bench",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev --host 127.0.0.1",
+    "build": "astro build && node scripts/relative-css-assets.mjs",
+    "check": "astro check && tsc --noEmit",
+    "test": "vitest run --coverage && node scripts/coverage-summary.mjs",
+    "preview": "wrangler dev",
+    "db:migrate:local": "wrangler d1 migrations apply DB --local",
+    "types": "wrangler types --include-runtime=false",
+    "deploy:dry-run": "wrangler deploy --dry-run",
+    "predev": "node scripts/pdf-assets.mjs",
+    "prebuild": "node scripts/pdf-assets.mjs"
+  },
+  "dependencies": {
+    "@astrojs/cloudflare": "14.3.4",
+    "@astrojs/react": "7.0.1",
+    "@emdash-cms/cloudflare": "1.2.0",
+    "astro": "7.3.7",
+    "emdash": "1.2.0",
+    "pdfjs-dist": "6.4.299",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "zod": "4.3.6"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.10",
+    "@cloudflare/workers-types": "5.20261008.1",
+    "@vitest/coverage-v8": "5.0.3",
+    "typescript": "6.0.2",
+    "vite-plugin-console-pipe": "2.1.0",
+    "vitest": "5.0.3",
+    "wrangler": "4.148.0"
+  },
+  "overrides": {
+    "sharp": "0.35.5"
+  }
+}
