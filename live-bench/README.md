@@ -60,6 +60,12 @@ only acknowledged files are pruned. The latest predecessor stays on disk. The fr
 does not expose this grouping: it rotates measured outputs with a ten-second delay,
 supports pausing, and searches/paginates review history across every run.
 
+The header offers Light and Dark themes, retaining each visitor's choice in browser
+storage and restoring it before paint. Until a choice is made, the theme follows the
+browser preference. The credits section thanks SuperDoc for the public DOCX corpus and
+visual benchmark methodology, links the corpus's ODC-By attribution license, and links
+all benchmarked tools and Microsoft Word.
+
 ## Local startup with OrbStack
 
 Run from `live-bench/` in this checkout. Copy `.env.example` to `.env`, set the existing

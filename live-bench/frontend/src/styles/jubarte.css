@@ -63,9 +63,9 @@
 
 :root {
   /* Graphite (light) and Night (dark), from the design's palette tweaks, in
-     OKLCH. The page follows the browser's preference until the footer switch
+     OKLCH. The page follows the browser's preference until the header control
      pins one (html[data-theme], restored before paint by the inline script in
-     layout.ts). light-dark() resolves per element, so a subtree that sets
+     index.astro). light-dark() resolves per element, so a subtree that sets
      color-scheme: light (a document page) keeps the light values. */
   color-scheme: light dark;
   --bg: light-dark(oklch(97% 0.003 106.4), oklch(20% 0.023 249));

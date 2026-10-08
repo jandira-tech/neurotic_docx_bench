@@ -89,3 +89,23 @@ Secrets stay outside Git and frontend assets. Word credentials belong only to th
 backend. Font copyright notices are preserved. Subtree licensing metadata is included;
 whole-repository REUSE lint has pre-existing failures outside this task and is not
 claimed as passing.
+
+## Theme and attribution update — 2026-10-08
+
+Frontend version `8c9f3917-a274-40c7-b9f4-ee264e56e2ea` adds accessible Light/Dark
+buttons in the header. Browser checks on local development and production verified
+both choices, their selected state, and persistence across reloads. The initial
+theme follows the browser preference until the visitor makes a choice.
+
+SuperDoc's corpus is credited above the live telemetry and in a dedicated thank-you
+section. Its dataset, editor repository, visual benchmark repository and ODC-By
+license are linked, alongside Jubarte, Docxodus, SuperDoc Redlines, LibreOffice,
+docxide and Microsoft Word. Links were checked against upstream project pages.
+
+All 30 frontend tests passed with **100% lines / 99.04% branches** for the existing
+API/policy modules. The theme interaction was verified in the browser; it is not
+included in that unit coverage claim. Type checks, build and Wrangler dry run passed.
+The development health endpoint returned 200 and console output was captured by
+`vite-plugin-console-pipe`; the existing disabled-EmDash-typegen warning remains.
+HTTP checks verified the new controls/credits and health responses on the apex,
+www and arthur.law routes; the redlines.free route was verified in the browser.
