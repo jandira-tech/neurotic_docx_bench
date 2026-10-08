@@ -2,6 +2,7 @@
 // SPDX-FileCopyrightText: 2026 Jandira Technologies, LLC
 // SPDX-License-Identifier: AGPL-3.0-only
 import '../styles/jubarte.css';
+import Credits from '../components/Credits.astro';
 Astro.response.headers.set('Cache-Control', 'no-store');
 const prefix = Astro.request.headers.get('x-bench-prefix') ?? '';
 ---
@@ -19,11 +20,12 @@ const prefix = Astro.request.headers.get('x-bench-prefix') ?? '';
     <a class="skip" href="#main">Skip to measurements</a>
     <header class="masthead">
       <a class="brand" href={prefix || '/'} aria-label="Jubarte Live Bench home"><svg class="brand-mark" viewBox="0 0 560 360" width="34" height="22" aria-hidden="true"><g transform="rotate(-5 280 200)"><path class="mk-body" d="M 76 192 C 82 172 112 156 150 146 C 196 132 258 112 310 110 C 356 108 402 118 448 148 C 458 152 464 150 470 144 C 478 128 494 106 520 92 C 512 112 508 126 502 134 C 514 140 526 148 540 160 C 520 164 498 160 480 162 C 470 164 460 166 452 166 C 420 190 382 228 328 252 C 270 278 194 286 148 268 C 114 254 88 230 81 208 C 76 198 74 194 76 192 Z"/><path class="mk-fin" d="M 208 228 C 246 240 286 268 322 298 C 334 308 338 320 330 326 C 296 326 254 306 226 280 C 206 260 200 240 208 228 Z"/><circle class="mk-eye" cx="122" cy="196" r="6"/></g></svg><span><span class="brand-word">JUBARTE</span><span class="brand-sub">LIVE BENCH</span></span></a>
-      <nav aria-label="Primary"><a href="#comparison">PDF evidence</a><a href="#history">All reviews</a><a href="https://github.com/jandira-tech/neurotic_docx_bench/tree/c/jubarte-live-bench/live-bench">Source ↗</a></nav>
-      <span id="connection" class="connection waiting" role="status"><i></i><span>Connecting</span></span>
+      <nav aria-label="Primary"><a href="#comparison">PDF evidence</a><a href="#history">All reviews</a><a href="#credits">Credits</a><a href="https://github.com/jandira-tech/neurotic_docx_bench/tree/c/jubarte-live-bench/live-bench">Source ↗</a></nav>
+      <div class="masthead-actions"><div class="theme-choice" role="group" aria-label="Color theme"><button type="button" data-theme-choice="light" aria-pressed="false" aria-label="Light theme">Light</button><button type="button" data-theme-choice="dark" aria-pressed="false" aria-label="Dark theme">Dark</button></div><span id="connection" class="connection waiting" role="status"><i></i><span>Connecting</span></span></div>
     </header>
     <main id="main">
       <section class="intro"><div><p class="eyebrow">CONTINUOUS DOCUMENT ENGINE MEASUREMENTS</p><h1>Every document.<br/><span>Measured live.</span></h1><p class="lede">Real DOCX fixtures. Actual conversions and tracked changes.<br/>Every score comes with the files that produced it.</p></div><div class="intro-note"><span class="spec">01 / LIVE PIPELINE</span><p>Jubarte against Docxodus and SuperDoc Redlines.<br/>PDF conversion against LibreOffice and docxide.</p><p class="muted">Measured cohorts keep their reference tool and renderer together. Broken candidates count as zero. Unavailable tools and infrastructure errors are excluded.</p></div></section>
+      <p class="corpus-credit">Fixtures courtesy of the <a href="https://huggingface.co/datasets/superdoc-dev/docx-corpus" target="_blank" rel="noopener noreferrer">SuperDoc DOCX Corpus</a>. <a href="#credits">Thank you, SuperDoc ↗</a></p>
       <section class="telemetry" aria-label="Live worker state"><div><span class="label">NOW PROCESSING</span><strong id="current-fixture">Waiting for first fixture</strong><span id="phase" class="mono">No heartbeat received</span></div><div><span class="label">COMPLETED THIS RUN</span><strong id="completed">—</strong><span class="mono">Independent review occurrences</span></div><div><span class="label">QUEUE DEPTH</span><strong id="queue">—</strong><span class="mono">Fixtures pending</span></div><div><span class="label">LAST HEARTBEAT</span><strong id="heartbeat">—</strong><span id="run-id" class="mono">No active run</span></div></section>
       <section class="overview"><div class="section-heading"><h2>Measured cohorts</h2><span id="cohort-context" class="mono muted">Awaiting evidence</span></div><div id="cohorts" class="cohorts"><p class="empty">No scores yet. The worker’s first completed fixture will appear here.</p></div></section>
       <section id="comparison" class="evidence"><div class="section-heading"><div><p class="eyebrow">02 / INSPECT THE OUTPUT</p><h2>Candidate × reference</h2></div><div class="rotate-controls"><button id="previous-result" aria-label="Previous completed fixture">←</button><button id="rotation" aria-pressed="false">Pause rotation</button><button id="next-result" aria-label="Next completed fixture">→</button></div></div>
@@ -36,9 +38,11 @@ const prefix = Astro.request.headers.get('x-bench-prefix') ?? '';
       </section>
       <section id="history" class="history"><div class="section-heading"><div><p class="eyebrow">03 / EVERY REVIEW IS PRESERVED</p><h2>All reviewed fixtures</h2></div><span class="mono muted">Across every run · select a review to inspect</span></div><form id="history-search" class="search-form" role="search"><label for="history-query">Search fixtures, metadata or review ID</label><input id="history-query" name="q" type="search" maxlength="200" placeholder="Fixture ID, filename, topic, language…" /><button type="submit">Search history</button><button id="history-reset" type="button">Latest reviews</button></form><p id="history-status" class="mono muted" role="status">Loading reviewed fixtures…</p><div class="table-scroll"><table><thead><tr><th>Occurrence</th><th>Fixture</th><th>Completed</th><th>Conversion</th><th>Redline</th></tr></thead><tbody id="results"><tr><td colspan="5" class="empty">Nothing measured yet. No sample scores are shown.</td></tr></tbody></table></div><button id="history-more" hidden>Load older reviews</button></section>
       <details class="provenance"><summary>Runtime versions & measurement configuration</summary><pre id="versions">No run metadata received.</pre></details>
+      <Credits />
     </main>
     <footer><span class="brand-footer">jubarte<span> LIVE BENCH</span></span><p>Continuous measurements · Open methodology · Permanent evidence</p><span id="last-refresh" class="mono muted">Connecting to feed</span></footer>
     <script>import '../scripts/dashboard';</script>
+    <script>import '../scripts/theme';</script>
   </body>
 </html>
 <style is:global>
@@ -49,5 +53,6 @@ const prefix = Astro.request.headers.get('x-bench-prefix') ?? '';
 </style>
 
 <style is:global>
+.masthead{flex-wrap:wrap;gap:20px 24px}.masthead-actions{display:flex;align-items:center;gap:18px;margin-left:auto}.theme-choice{display:flex;gap:3px;border:1px solid var(--line-strong);border-radius:var(--radius);padding:3px;background:var(--surface)}.theme-choice button{font:11px var(--mono);padding:7px 10px;border:0;background:transparent;color:var(--ink)}.theme-choice button[aria-pressed="true"]{background:var(--primary);color:var(--on-cta)}.theme-choice button:hover:not([aria-pressed="true"]){background:var(--hover)}.corpus-credit{font-size:12px;line-height:1.8;margin:-20px 0 30px;color:var(--muted)}.corpus-credit>a:last-child{margin-left:8px;white-space:nowrap}@media(max-width:1000px){.masthead nav{order:3;width:100%;margin:0;justify-content:space-between}}@media(max-width:650px){.masthead-actions{gap:12px}.theme-choice button{padding:7px 8px}.corpus-credit{margin-top:-14px}}
 .pdf-slot{display:flex;flex-direction:column;justify-content:flex-start;align-items:stretch;overflow:hidden}.pdf-controls{display:flex;justify-content:space-between;align-items:center;padding:8px;gap:8px;font:10px var(--mono);border-bottom:1px solid var(--line);flex:none}.pdf-controls button{padding:4px 9px}.pdf-paper{overflow:auto;flex:1;padding:12px;text-align:center}.pdf-paper canvas{display:block;background:white;margin:0 auto;max-width:100%;box-shadow:0 2px 12px var(--shadow)}
 </style>
