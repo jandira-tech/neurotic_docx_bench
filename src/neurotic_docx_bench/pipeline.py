@@ -40,6 +40,7 @@ from neurotic_docx_bench import raster
 from neurotic_docx_bench.score import (
     ScoreConfig,
     _ink_mask,
+    _ink_threshold,
     _load_image,
     score_document,
 )
@@ -402,7 +403,7 @@ def _add_page_metrics(
 
 def _unmatched_page_weight(png: Path) -> int:
     gray = color.rgb2gray(_load_image(png))
-    ink = _ink_mask(gray, ScoreConfig().ink_min_size)
+    ink = _ink_mask(gray, ScoreConfig().ink_min_size, _ink_threshold(gray))
     return max(int(ink.sum()), 1)
 
 

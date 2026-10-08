@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.astro/
+.wrangler/
+.dev.vars*
+coverage/
+*.log
+worker-configuration.d.ts
+public/_astro/pdfjs/

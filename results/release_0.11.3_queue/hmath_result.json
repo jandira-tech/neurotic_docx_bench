@@ -1,0 +1,23 @@
+{
+ "binary": "/Users/arthrod/temp/T/jubarte-loop/release_0.11.2/bin/jubarte-pdf29",
+ "seed": 20261004,
+ "failed": 0,
+ "display": {
+  "n": 29,
+  "short": 3,
+  "long": 0,
+  "exact": 26
+ },
+ "control": {
+  "n": 116,
+  "short": 1,
+  "long": 0,
+  "exact": 115
+ },
+ "short_share_gap": 0.09482758620689655,
+ "ci95": [
+  -0.008620689655172414,
+  0.2327586206896552
+ ],
+ "holds": false
+}

@@ -27,6 +27,13 @@ Stages, in order (``--only`` / ``--skip`` pick among them, the order never chang
 
 Every subprocess goes through ``run`` and the watchdog through ``spawn`` so the plan and the
 executor are tested without Word, network or git.
+
+This scores the full corpus and publishes the bench's own pages. The six
+``release_info/`` evidence files the engine's release.sh requires are written
+by ``neurotic_docx_bench.jubarte_release_info``, the sample-based flow that
+runs on a release candidate (``--binary``) before the release exists and on
+the GitHub release binary afterwards; its full-corpus stages still come from
+here.
 """
 
 from __future__ import annotations
