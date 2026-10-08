@@ -1,0 +1,11 @@
+# SPDX-FileCopyrightText: 2026 Jandira Technologies, LLC
+# SPDX-License-Identifier: AGPL-3.0-only
+services:
+  backend:
+    restart: "no"
+    environment:
+      INGEST_URL: http://host.docker.internal:4321/live
+      INGEST_TOKEN: local-smoke-token-at-least-24-characters
+      BATCH_SIZE: 1
+      PREFETCH_AT: 1
+      MAX_BATCHES: 3

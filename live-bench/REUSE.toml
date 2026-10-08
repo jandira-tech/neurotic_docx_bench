@@ -1,0 +1,23 @@
+# SPDX-FileCopyrightText: 2026 Jandira Technologies, LLC
+# SPDX-License-Identifier: AGPL-3.0-only
+version = 1
+
+[[annotations]]
+path = [".env.example", ".gitignore", "Dockerfile.dockerignore", "backend/pyproject.toml", "backend/uv.lock", "frontend/.emdash/migrations.json", "frontend/.gitignore", "frontend/package.json", "frontend/package-lock.json", "frontend/tsconfig.json", "frontend/wrangler.jsonc"]
+SPDX-FileCopyrightText = "2026 Jandira Technologies, LLC"
+SPDX-License-Identifier = "AGPL-3.0-only"
+
+[[annotations]]
+path = ["frontend/src/styles/fonts/manrope*"]
+SPDX-FileCopyrightText = "2018 The Manrope Project Authors"
+SPDX-License-Identifier = "OFL-1.1"
+
+[[annotations]]
+path = ["frontend/src/styles/fonts/jetbrains*"]
+SPDX-FileCopyrightText = "2020 The JetBrains Mono Project Authors"
+SPDX-License-Identifier = "OFL-1.1"
+
+[[annotations]]
+path = ["frontend/src/styles/fonts/source*"]
+SPDX-FileCopyrightText = "2014 The Source Serif 4 Project Authors"
+SPDX-License-Identifier = "OFL-1.1"
