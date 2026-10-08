@@ -1,0 +1,35 @@
+# SPDX-FileCopyrightText: 2026 Jandira Technologies, LLC
+# SPDX-License-Identifier: AGPL-3.0-only
+services:
+  backend:
+    image: jubarte-live-bench:production
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options: {max-size: "20m", max-file: "3"}
+    init: true
+    environment:
+      WORD_API_TOKEN: ${WORD_API_TOKEN}
+      WORD_PUBLIC_URL: https://docx.rodrigues.ai
+      INGEST_TOKEN: ${INGEST_TOKEN}
+      INGEST_URL: https://jubarte.pro/live
+      BATCH_SIZE: 100
+      PREFETCH_AT: 90
+      MAX_BATCHES: 0
+      MAX_FIXTURE_BYTES: 20000000
+      TOOL_TIMEOUT: 240
+      DOWNLOAD_TIMEOUT: 45
+      SCORE_DPI: 144
+    volumes:
+      - bench-data-v2:/data
+    read_only: true
+    tmpfs:
+      - /tmp:size=2g,mode=1777
+    mem_limit: 4g
+    cpus: 2
+    pids_limit: 256
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    stop_grace_period: 30s
+volumes:
+  bench-data-v2:

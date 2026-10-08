@@ -1,0 +1,28 @@
+# SPDX-FileCopyrightText: 2026 Jandira Technologies, LLC
+# SPDX-License-Identifier: AGPL-3.0-only
+services:
+  backend:
+    build:
+      context: ..
+      dockerfile: live-bench/Dockerfile
+    image: jubarte-live-bench:local
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options: {max-size: "20m", max-file: "3"}
+    init: true
+    env_file: .env
+    volumes:
+      - bench-data:/data
+    read_only: true
+    tmpfs:
+      - /tmp:size=2g,mode=1777
+    mem_limit: 4g
+    cpus: 2
+    pids_limit: 256
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    stop_grace_period: 30s
+    # This worker initiates outbound requests only. No ports are exposed or published.
+volumes:
+  bench-data:

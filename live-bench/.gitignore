@@ -1,0 +1,22 @@
+# SPDX-FileCopyrightText: 2026 Jandira Technologies, LLC
+# SPDX-License-Identifier: AGPL-3.0-only
+.env
+.env.*
+!.env.example
+.dev.vars
+.dev.vars.*
+.DS_Store
+.local/
+.venv/
+node_modules/
+dist/
+.astro/
+.wrangler/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+.coverage*
+coverage/
+coverage.json
+coverage.xml
+*.log
