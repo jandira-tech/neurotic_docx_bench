@@ -1036,12 +1036,23 @@ def collect_results(root: Path, version: str, lane: str, *, jubarte: dict,
 
 
 def engine_commit(engine_dir: Path | None,
-                  run: Callable[..., release.ProcLike] | None = None) -> str | None:
-    """The engine checkout's HEAD, when --engine-dir is a git checkout."""
+                  run: Callable[..., release.ProcLike] | None = None,
+                  ref: str | None = None) -> str | None:
+    """The commit the scored binary was built from, resolved in --engine-dir.
+
+    ``ref`` (--engine-commit) names it; without one the checkout's HEAD is
+    taken, which is right only while the checkout has not moved since the
+    candidate was built. A ref that does not resolve is an error.
+    """
     if engine_dir is None:
         return None
-    proc = (run or release.default_runner())(['git', '-C', str(engine_dir), 'rev-parse', 'HEAD'])
-    return proc.stdout.strip() if proc.returncode == 0 else None
+    proc = (run or release.default_runner())(
+        ['git', '-C', str(engine_dir), 'rev-parse', '--verify', f'{ref or "HEAD"}^{{commit}}'])
+    if proc.returncode == 0:
+        return proc.stdout.strip()
+    if ref is not None:
+        raise RuntimeError(f'--engine-commit {ref} is not a commit of {engine_dir}')
+    return None
 
 
 def binary_reports(binary: Path, run: Callable[..., release.ProcLike] | None = None) -> str:
@@ -1065,7 +1076,7 @@ def scorer_backend() -> str:
 
 def plan(rel: Release, *, binary: Path | None = None, seed: int = DEFAULT_SEED,
          n: int = DEFAULT_N, device: str = 'mps', conversion: Sequence[str] | None = None,
-         engine_dir: Path | None = None,
+         engine_dir: Path | None = None, engine_ref: str | None = None,
          adopt_redline_csv: Path | None = None, adopt_conversion_list: Path | None = None,
          jobs: int = DEFAULT_JOBS, convert_workers: int = DEFAULT_CONVERT_WORKERS,
          hub: Hub | None = None, compare_regen: Path = COMPARE_REGEN,
@@ -1267,7 +1278,7 @@ def plan(rel: Release, *, binary: Path | None = None, seed: int = DEFAULT_SEED,
             raise RuntimeError('the write stage needs --engine-dir (the checkout whose release_info/ it fills)')
         exe = binary_path()
         identity = {'candidate_reports': binary_reports(exe, run), 'binary_sha256': _sha(exe),
-                    'commit': engine_commit(engine_dir, run)}
+                    'commit': engine_commit(engine_dir, run, engine_ref)}
         redline, conversion_doc = collect_results(
             root, v, lane, jubarte=identity, fresh=fresh,
             word_version=release.word_version(run or release.default_runner()))
@@ -1374,6 +1385,9 @@ def main(
     root: Path = typer.Option(Path('.'), '--root', help='bench repository root'),
     engine_dir: Path = typer.Option(None, '--engine-dir',
                                     help='the jubarte-redlines checkout whose release_info/ the six files go to'),
+    engine_ref: str = typer.Option(None, '--engine-commit',
+                                   help='the commit --binary was built from (default: the --engine-dir HEAD, '
+                                        'wrong once the checkout moves on)'),
     binary: Path = typer.Option(None, '--binary',
                                 help='a release candidate built from the release commit; any version it reports '
                                      'is accepted and recorded (default: the GitHub release binary)'),
@@ -1406,6 +1420,7 @@ def main(
             return select(plan(rel, binary=binary.expanduser().resolve() if binary else None, seed=seed, n=n,
                                device=device, conversion=conversion,
                                engine_dir=engine_dir.resolve() if engine_dir else None,
+                               engine_ref=engine_ref,
                                adopt_redline_csv=adopt_redline_csv, adopt_conversion_list=adopt_conversion_list,
                                jobs=jobs, convert_workers=convert_workers,
                                hub=default_hub(rel.root / ev / 'hub_tmp') if use_hub else None,
