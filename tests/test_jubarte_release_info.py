@@ -964,3 +964,22 @@ def test_headline_comparator_median_has_two_decimals():
     heads = next(r['value'] for r in recs if r['key'] == 'bench.headlines')
     assert [h['vs'] for h in heads] == ['LibreOffice 26.8.0.3 47.89', 'Docxodus 70.27']
     assert [h['value'] for h in heads] == ['81.10', '83.20']
+
+
+def test_the_engine_commit_names_the_binary_s_build_not_the_checkout_s_head(tmp_path: Path) -> None:
+    # 0.12.0: the write stage stamped the checkout's HEAD, which had moved past
+    # the commit the scored candidate was built from. --engine-commit names it.
+    seen: list[list[str]] = []
+
+    def run(argv: list[str], **_: object) -> Proc:
+        seen.append(argv)
+        return Proc(stdout='c551f287' + '0' * 32 + '\n') if 'c551f287^{commit}' in argv[-1] or argv[-1] == 'HEAD^{commit}' \
+            else Proc(returncode=128, stderr='fatal: Needed a single revision')
+
+    assert jri.engine_commit(tmp_path, run, 'c551f287') == 'c551f287' + '0' * 32
+    assert seen[-1] == ['git', '-C', str(tmp_path), 'rev-parse', '--verify', 'c551f287^{commit}']
+    assert jri.engine_commit(tmp_path, run) == 'c551f287' + '0' * 32
+    assert seen[-1][-1] == 'HEAD^{commit}'
+    with pytest.raises(RuntimeError, match='nope'):
+        jri.engine_commit(tmp_path, run, 'nope')
+    assert jri.engine_commit(None, run, 'c551f287') is None
