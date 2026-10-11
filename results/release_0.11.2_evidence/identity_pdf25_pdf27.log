@@ -1,0 +1,2 @@
+SUMMARY redline same=600 diff=0 | pdf same=600 diff=0 | both missing/timeout=0 | pairs=600 docs=600
+IDENTITY27 exit 0
