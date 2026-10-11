@@ -705,7 +705,8 @@ def test_measure_scores_the_sample_one_tool_at_a_time(tmp_path: Path) -> None:
     assert docx[-1] == 'docxodus'
     order = [s.name for s in steps if s.stage in ('measure', 'convert', 'score')]
     # one scoring job at a time: jubarte, docxodus, the convert-and-score, the score-only
-    assert order == ['measure jubarte', 'measure docxodus', 'convert jubarte (converts + scores)',
+    assert order == ['measure jubarte', 'measure docxodus', 'stale renders aside',
+                     'convert jubarte (converts + scores)',
                      'soffice missing list', 'convert soffice (missing only)',
                      'stage soffice renders', 'score soffice (score-only)']
 
@@ -729,6 +730,34 @@ def test_convert_takes_one_files_list_flag_per_fixture(tmp_path: Path) -> None:
     defaults = _cmd(jri.plan(_rel(tmp_path), conversion=files), 'convert jubarte (converts + scores)')
     assert defaults[defaults.index('--jobs') + 1] == '4'
     assert defaults[defaults.index('--convert-workers') + 1] == '3'
+
+
+def test_a_new_candidate_never_resumes_the_previous_binary_s_renders(tmp_path: Path) -> None:
+    # bench docx-to-pdf resumes: it keeps every PDF and checkpointed score in its work folder
+    root, regen = _tree(tmp_path)
+    old, new = _put(tmp_path / 'old' / 'jubarte', b'old binary'), _put(tmp_path / 'new' / 'jubarte', b'new binary')
+    work = root / jri.evidence_dir(V) / 'convert_work' / 'jubarte'
+    names = [s.name for s in _plan(root, regen, binary=new) if s.stage == 'convert']
+    assert names.index('stale renders aside') < names.index('convert jubarte (converts + scores)')
+    assert _act(_plan(root, regen, binary=old), 'stale renders aside') == 'no earlier renders'
+    _put(work / 'candidate' / 'fx00.pdf', b'%PDF old')
+    _put(work / 'scores.checkpoint.jsonl', b'{"key": "fx00"}\n')
+    assert _act(_plan(root, regen, binary=old), 'stale renders aside') == \
+        f'resuming the renders of this binary ({_sha(old)[:12]})'
+    assert (work / 'candidate' / 'fx00.pdf').is_file()
+    detail = _act(_plan(root, regen, binary=new), 'stale renders aside')
+    assert detail.startswith(f'renders of binary {_sha(old)[:12]} moved to convert_work_stale/')
+    assert sorted(p.name for p in work.iterdir()) == ['binary.sha256']
+    assert (work / 'binary.sha256').read_text() == _sha(new) + '\n'
+    kept = work.parent.with_name('convert_work_stale')
+    assert [p.read_bytes() for p in kept.rglob('fx00.pdf')] == [b'%PDF old']
+    assert len(list(kept.rglob('scores.checkpoint.jsonl'))) == 1
+    # renders nobody recorded belong to an unknown binary: they move aside too
+    (work / 'binary.sha256').unlink()
+    _put(work / 'candidate' / 'fx01.pdf', b'%PDF unknown')
+    assert _act(_plan(root, regen, binary=new), 'stale renders aside').startswith(
+        'renders of binary unrecorded moved to convert_work_stale/')
+    assert len(list(kept.rglob('*.pdf'))) == 2  # the earlier set-aside copy is still there
 
 
 def test_soffice_renders_are_staged_under_the_docx_stem_and_scored_from_there(tmp_path: Path) -> None:
@@ -795,7 +824,9 @@ def _scored(root: Path, steps: list[Step], binary: Path) -> dict:
     for tool, base in ((LANE, 80.0), ('docxodus', 60.0)):
         rows = {r['key']: {'overall_score': base + i % 5, 'overall_score_pagefair': base + i % 5}
                 for i, r in enumerate(sample) if r['key'] != 'twc1'}
-        (root / jri.scores_json(tool, V)).write_text(json.dumps({'rows': rows}))
+        # measure.py ran under --device mps: its own summary names the backend, not the writer's
+        (root / jri.scores_json(tool, V)).write_text(json.dumps({'rows': rows,
+                                                                 'summary': {'scorer_backend': 'torch-mps'}}))
     conv = jri.read_csv(root / jri.conversion_list(V))
     absent = conv[2]['stem']
     for i, r in enumerate(conv):
@@ -805,8 +836,16 @@ def _scored(root: Path, steps: list[Step], binary: Path) -> dict:
         per = {(r['stem'].upper() if i == 0 else r['stem']): base + i % 3
                for i, r in enumerate(conv) if r['stem'] != absent}  # one key in another case, one left out
         (root / jri.conversion_report(tool, V)).write_text(json.dumps(
-            {'tools': {tool: {'version': 'jubarte 0.11.0' if tool == 'jubarte' else None, 'per_doc': per}}}))
+            {'scorer_backend': 'torch-cpu',
+             'tools': {tool: {'version': 'jubarte 0.11.0' if tool == 'jubarte' else None, 'per_doc': per}}}))
     return {'sample': sample, 'conv': conv, 'absent': absent, 'binary_sha': _sha(binary)}
+
+
+def test_score_artifacts_of_two_backends_are_never_published_as_one() -> None:
+    assert jri.one_backend({'jubarte': 'torch-mps', 'docxodus': 'torch-mps'}) == 'torch-mps'
+    assert jri.one_backend({'jubarte': None, 'soffice': None}) == 'unrecorded'
+    with pytest.raises(RuntimeError, match='disagree on the scorer backend'):
+        jri.one_backend({'jubarte': 'torch-mps', 'docxodus': 'numpy'})
 
 
 def _six(folder: Path) -> dict[str, Path]:
@@ -845,6 +884,9 @@ def test_sample_then_write_passes_the_engine_checker(tmp_path: Path, mode: str) 
     assert len(six) == 6 and not stale.exists() and other.exists()
     assert f'six files of {V}' in detail and 'reports "jubarte 0.11.0"' in detail
     assert _checker().problems(V, folder, 24) == []
+    # each result names the backend its own score artifacts record
+    assert json.loads(six['results_redline'].read_text())['versions']['scorer'] == 'torch-mps'
+    assert json.loads(six['results_conversion'].read_text())['versions']['scorer'] == 'torch-cpu'
 
     # every path is relative to the bench root, each with the sha256 of the file on disk now
     for name in ('sample_redline', 'sample_conversion', 'results_redline', 'results_conversion'):
@@ -1077,6 +1119,22 @@ def test_headline_comparator_median_has_two_decimals():
     heads = next(r['value'] for r in recs if r['key'] == 'bench.headlines')
     assert [h['vs'] for h in heads] == ['LibreOffice 26.8.0.3 47.89', 'Docxodus 70.27']
     assert [h['value'] for h in heads] == ['81.10', '83.20']
+
+
+def test_table_ranks_follow_the_medians_and_tie_when_the_paired_interval_holds_zero():
+    def tool(version: str, median: float) -> dict:
+        return {'version': version, 'median': median, 'mean': 50.0, 'n': 2, 'failures': 0,
+                'exact_100': 0, 'at_least_90': 0, 'median_ci95': [1.0, 2.0],
+                'by_state': {'clean': {'n': 2, 'median': median}}}
+    # LibreOffice ahead on conversion, a tie on redlines: neither table may put jubarte first by name
+    redline = {'tools': {'jubarte': tool('jubarte 9.9.9', 71.0), 'docxodus': tool('Docxodus 12.6.5 (C#)', 72.0)},
+               'sample': {'pairs': 2}, 'comparison': {'ci95': [-1.5, 0.5]}}
+    conversion = {'tools': {'jubarte': tool('jubarte 9.9.9', 50.0), 'soffice': tool('LibreOffice 26.8.0.3', 60.0)},
+                  'versions': {'scorer': 's'}, 'comparison': {'ci95': [-12.0, -8.0]}}
+    recs = jri.website_records('9.9.9', 'g', redline, conversion, 'r', 'c')
+    tables = {t['id']: t['rows'] for t in next(r['value'] for r in recs if r['key'] == 'bench.tables')}
+    assert [(r['rank'], r['tool']) for r in tables['conversion-sample']] == [('1', 'soffice'), ('2', 'jubarte †')]
+    assert [(r['rank'], r['tool']) for r in tables['redlines-sample']] == [('1=', 'docxodus'), ('1=', 'jubarte-9.9.9 †')]
 
 
 def test_the_engine_commit_names_the_binary_s_build_not_the_checkout_s_head(tmp_path: Path) -> None:
