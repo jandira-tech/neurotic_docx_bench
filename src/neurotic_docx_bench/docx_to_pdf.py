@@ -23,7 +23,7 @@ from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
 
-from neurotic_docx_bench import pipeline
+from neurotic_docx_bench import kernels, pipeline
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 WORD_CORPUS = REPO_ROOT / "corpus" / "no_comments_pdf_was_generated_by_word"
@@ -754,6 +754,7 @@ def run_eval(
         "track": track_name,
         "oracle": "microsoft_word",
         "generated_at": datetime.now(UTC).isoformat(),
+        "scorer_backend": kernels.backend_id(),  # the process that scores, not a later reader
         "n": len(items),
         "stems": stems,
         "warnings": list(warnings or []),
