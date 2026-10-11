@@ -78,6 +78,7 @@ import random
 import re
 import shutil
 import statistics
+import time
 import uuid
 from collections.abc import Callable, Sequence
 from dataclasses import dataclass
@@ -1280,8 +1281,16 @@ def plan(rel: Release, *, binary: Path | None = None, seed: int = DEFAULT_SEED,
         rows = read_csv(root / ev / 'gen_pairs_docxodus_missing.csv')
         if not rows:
             return 'no pair lacks a docxodus Word PDF: nothing to redline'
+        failures = root / RUN_DIR / 'docxodus' / 'generate_failures.json'
+        started = time.time_ns()
         proc = (run or release.default_runner())(list(docxodus_generate), cwd=root)
         (root / ev / 'docxodus.generate.log').write_text((proc.stdout or '') + (proc.stderr or ''))
+        # it also exits 1 when Docxodus fails every pair: those score 0, like any Docxodus failure,
+        # once this run's own failures file (not an earlier run's) names each of them
+        if proc.returncode != 0 and failures.is_file() and failures.stat().st_mtime_ns >= started:
+            own = {f['doc'] for f in json.loads(failures.read_text()) if f.get('stage') == 'generate'}
+            if {r['key'] for r in rows} <= own:
+                return f'{len(rows)} pairs Docxodus itself fails to redline (they score 0); none redlined'
         if proc.returncode != 0:
             raise RuntimeError(f'{" ".join(docxodus_generate)}: exit {proc.returncode} '
                                f'(see {ev}/docxodus.generate.log)')
