@@ -34,12 +34,13 @@ def main() -> None:
     with open(HERE / "gen_pairs.csv", newline="") as f:
         for row in csv.DictReader(f):
             key = row["key"]
-            if verdict.get(key) == "same":
-                src = SAMPLE_PDF / f"{key}_jubarte-0.11.2.pdf"
+            src = SAMPLE_PDF / f"{key}_jubarte-0.11.2.pdf"
+            if verdict.get(key) == "same" and src.exists():
+                # byte-identical redline: reuse the sample's Word PDF; without one, export it
                 dst = pdf_dir / f"{key}_jubarte-0.11.2-full.pdf"
-                if src.exists() and not dst.exists():
+                if not dst.exists():
                     dst.symlink_to(src)
-                reused += src.exists()
+                reused += 1
                 continue
             sources = [ROOT / "corpus/word" / f"{row[k]}.docx" for k in ("base", "next")]
             if any(s.exists() and sha(s) in black for s in sources):
