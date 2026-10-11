@@ -35,6 +35,15 @@ def lines(text: str) -> int:
     return sum(1 for line in text.splitlines() if line.strip())
 
 
+def first_divergence(word: list[str], mine: list[str]) -> int | None:
+    """The first page whose opening words differ; past the shorter PDF's last
+    page, the first page only one PDF has."""
+    first = next((i for i, (a, b) in enumerate(zip(word, mine)) if words(a) != words(b)), None)
+    if first is None and len(word) != len(mine):
+        first = min(len(word), len(mine))
+    return first
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     ap.add_argument("engine_dir", type=Path)
@@ -54,7 +63,7 @@ def main() -> int:
             continue
         p = paths[row["stem"]]
         word, mine = page_texts(Path(p["word_pdf"])), page_texts(Path(p["jubarte_pdf"]))
-        first = next((i for i, (a, b) in enumerate(zip(word, mine)) if words(a) != words(b)), None)
+        first = first_divergence(word, mine)
         found = {"rank": int(row["rank"]), "stem": row["stem"][:70], "pages": f'{row["word_pages"]}/{row["jubarte_pages"]}',
                  "score": row["jubarte"]}
         if first is None:
@@ -62,10 +71,10 @@ def main() -> int:
         else:
             found.update({
                 "first_divergent_page": first + 1,
-                "word_opens": words(word[first]),
-                "jubarte_opens": words(mine[first]),
-                "prev_page_lines_word": lines(word[first - 1]) if first else None,
-                "prev_page_lines_jubarte": lines(mine[first - 1]) if first else None,
+                "word_opens": words(word[first]) if first < len(word) else None,
+                "jubarte_opens": words(mine[first]) if first < len(mine) else None,
+                "prev_page_lines_word": lines(word[first - 1]) if 0 < first <= len(word) else None,
+                "prev_page_lines_jubarte": lines(mine[first - 1]) if 0 < first <= len(mine) else None,
             })
         print(json.dumps(found, ensure_ascii=False))
     return 0
