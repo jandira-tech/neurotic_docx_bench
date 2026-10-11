@@ -58,6 +58,7 @@ ABSTRACTS = {
     3: lvl("decimal", "%1.", "Calibri", 40),         # a 20pt number in another face
     4: lvl("decimal", "%1.", "Cambria", None),       # a number in the text's face
     5: lvl("bullet", "", "Wingdings", None),   # a Wingdings square
+    6: lvl("bullet", "", "Symbol", None, link=True),  # the document's bullet, its level linked to ListBullet (round 2)
 }
 
 def parts(num_id=1, font="Cambria", sz=17, deleted=False, via_style=False):
