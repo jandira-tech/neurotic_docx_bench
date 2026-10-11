@@ -16,6 +16,7 @@ import json
 import subprocess
 import sys
 import time
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
@@ -553,6 +554,36 @@ def test_missing_docxodus_pdfs_come_from_the_hub_and_docxodus_redlines_the_rest(
     _act(failing, 'docxodus manifest')
     with pytest.raises(RuntimeError, match='exit 1'):
         _act(failing, 'docxodus redlines (missing only)')
+
+
+def _docxodus_fails(root: Path, stage: str) -> Callable[..., Proc]:
+    """A generator run that writes nothing: Docxodus fails every pair it is given."""
+    def run(cmd, **_):
+        manifest = Path(cmd[cmd.index('--manifest') + 1])
+        failed = [{'doc': r['key'], 'stage': stage, 'error': 'Document has no w:body element.'}
+                  for r in jri.read_csv(root / manifest)]
+        _put(root / jri.RUN_DIR / 'docxodus' / 'generate_failures.json', json.dumps(failed).encode())
+        return Proc(1, 'wrote 0 redline(s)\n', f'{len(failed)} pair(s) skipped:\n')
+    return run
+
+
+def test_pairs_docxodus_itself_cannot_redline_score_zero_instead_of_stopping(tmp_path: Path) -> None:
+    root, regen = _tree(tmp_path)
+    lane = root / jri.RUN_DIR / 'docxodus' / 'pdf_by_word'
+    for key in ('wct0', 'wct1'):
+        (lane / f'{key}_docxodus.pdf').unlink()
+    steps = _sample(root, regen, 9, run=_docxodus_fails(root, 'generate'))
+    _act(steps, 'docxodus manifest')
+    assert _act(steps, 'docxodus redlines (missing only)') == \
+        '3 pairs Docxodus itself fails to redline (they score 0); none redlined'
+    # the failures file that run left behind proves nothing about a run that crashed before writing one
+    stale = _sample(root, regen, 9, run=lambda cmd, **_: Proc(1, '', 'crash'))
+    with pytest.raises(RuntimeError, match='exit 1'):
+        _act(stale, 'docxodus redlines (missing only)')
+    # a source the generator could not find is the bench's fault, not Docxodus's: it stops the run
+    missing = _sample(root, regen, 9, run=_docxodus_fails(root, 'missing_source'))
+    with pytest.raises(RuntimeError, match='exit 1'):
+        _act(missing, 'docxodus redlines (missing only)')
 
 
 def test_a_docxodus_redline_word_refused_twice_is_recorded_and_never_opened_again(tmp_path: Path) -> None:
