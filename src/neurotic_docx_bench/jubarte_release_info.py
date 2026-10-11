@@ -80,7 +80,7 @@ import shutil
 import statistics
 import time
 import uuid
-from collections.abc import Callable, Sequence
+from collections.abc import Callable, Collection, Sequence
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
@@ -115,6 +115,10 @@ SOFFICE_VERSION = 'LibreOffice ' + SOFFICE_WORK.name.removeprefix('soffice_').re
 DOCXODUS_DIST = Path('src/neurotic_docx_bench/utils/docxodus/docxodus-csharp-inproc')
 HUB_REPO = 'arthrod/neurotic_docx_bench'
 HUB_DOCXODUS = f'outputs/{RUN_DIR.name}/docxodus/pdf_by_word'
+# generate-native-redlines.ts errors that are the bench's, not the document's: its worker
+# crashed or timed out ("worker exited before reply", "timeout waiting for worker reply"), or a
+# process could not start
+HARNESS_FAILURE = re.compile(r'worker exited|timeout waiting for worker|ENOENT|EPIPE|ECONNRESET|spawn', re.I)
 
 REDLINE_HEADER = [
     'key', 'base', 'base_sha256', 'next', 'next_sha256',
@@ -468,24 +472,57 @@ def snapshot_redlines(docx_dir: Path, ledger: Path) -> str:
     return f'{len(shas)} redlines on record before generating'
 
 
-def set_aside_stale_pdfs(docx_dir: Path, pdf_dir: Path, ledger: Path) -> str:
-    """Move the Word PDF of every redline whose bytes changed to ``<pdf_dir>_stale/``.
+def fresh_failures(failures: Path, since: Path | int) -> list[dict] | None:
+    """The generator's ``generate_failures.json`` when this run wrote it, else None.
+
+    ``since`` is the run's start (ns) or a file the run wrote first; an
+    older failures file belongs to an earlier run and proves nothing.
+    """
+    start = since.stat().st_mtime_ns if isinstance(since, Path) else since
+    if not failures.is_file() or failures.stat().st_mtime_ns < start:
+        return None
+    return json.loads(failures.read_text())
+
+
+def set_aside_stale_pdfs(docx_dir: Path, pdf_dir: Path, ledger: Path,
+                         failed: Collection[str] = ()) -> str:
+    """Move the Word PDF of every redline whose bytes changed to ``<pdf_dir>_stale/<stamp>/``.
 
     ``word_pdf.py`` keeps a PDF that already exists, so a redline the new
     candidate rewrote would otherwise be scored on the previous binary's
-    export. A PDF with no recorded source bytes counts as changed. Word
-    outputs are moved aside, never deleted.
+    export. A PDF with no recorded source bytes counts as changed. The
+    redlines named in ``failed`` (docx file names the candidate failed to
+    write) still hold the previous binary's bytes: they move to
+    ``<docx_dir>_failed/<stamp>/`` with their PDFs, so they score 0. Word
+    outputs and redlines are moved aside, never deleted or overwritten.
     """
     before = json.loads(ledger.read_text()) if ledger.is_file() else {}
-    stale = [pdf for docx in sorted(docx_dir.glob('*.docx'))
-             if (pdf := pdf_dir / f'{docx.stem}.pdf').is_file() and before.get(docx.name) != _sha(docx)]
-    if not stale:
-        return 'every exported redline is byte-identical to the one Word exported'
-    aside = pdf_dir.with_name(f'{pdf_dir.name}_stale')
-    aside.mkdir(parents=True, exist_ok=True)
-    for pdf in stale:
-        pdf.replace(aside / pdf.name)
-    return f'{len(stale)} Word PDFs of changed redlines moved to {aside.name}/ (export redoes them)'
+    stamp = datetime.fromtimestamp(ledger.stat().st_mtime, UTC).strftime('%Y%m%dT%H%M%S') \
+        if ledger.is_file() else 'unrecorded'
+    aside_root = pdf_dir.with_name(f'{pdf_dir.name}_stale')
+    gone = [docx for name in sorted(failed) if (docx := docx_dir / name).is_file()]
+    if gone:
+        dead = docx_dir.with_name(f'{docx_dir.name}_failed') / stamp
+        dead.mkdir(parents=True, exist_ok=True)
+        for docx in gone:
+            docx.replace(dead / docx.name)
+    stale = [pdf for docx in [*gone, *sorted(docx_dir.glob('*.docx'))]
+             if (pdf := pdf_dir / f'{docx.stem}.pdf').is_file()
+             and (docx in gone or before.get(docx.name) != _sha(docx))]
+    aside = aside_root / stamp
+    if stale:
+        aside.mkdir(parents=True, exist_ok=True)
+        for pdf in stale:
+            pdf.replace(aside / pdf.name)
+    waiting = sum(1 for docx in docx_dir.glob('*.docx') if not (pdf_dir / f'{docx.stem}.pdf').is_file())
+    parts = [f'{len(stale)} Word PDFs of changed redlines moved to {aside_root.name}/{stamp}/'
+             if stale else 'every exported redline is byte-identical to the one Word exported']
+    if gone:
+        parts.append(f'{len(gone)} redlines the candidate failed moved to {docx_dir.name}_failed/{stamp}/ '
+                     '(they score 0)')
+    if waiting:
+        parts.append(f'{waiting} redlines await a Word export')
+    return '; '.join(parts)
 
 
 def read_meta(ev: Path) -> dict:
@@ -1255,7 +1292,8 @@ def plan(rel: Release, *, binary: Path | None = None, seed: int = DEFAULT_SEED,
         link.symlink_to(target)
         return f'{ev}/dist/jubarte -> {target}'
 
-    def generate(tool: str, method: str, dist: Path, manifest: Path) -> tuple[str, ...]:
+    def generate(tool: str, method: str, dist: Path, manifest: Path,
+                 run_dir: Path | None = None) -> tuple[str, ...]:
         return ('node', '--import', 'tsx', 'scripts/generate-native-redlines.ts',
                 '--method', method,
                 '--dist', str(dist),
@@ -1263,7 +1301,7 @@ def plan(rel: Release, *, binary: Path | None = None, seed: int = DEFAULT_SEED,
                 '--manifest', str(manifest),
                 '--source-dir', 'corpus/word',
                 '--out', str(RUN_DIR / tool / 'docx'),
-                '--run-dir', str(RUN_DIR / tool))
+                '--run-dir', str(run_dir or RUN_DIR / tool))
 
     def docxodus_fetch() -> str:
         return fetch_docxodus(root / redline_csv, root, gen_rows(), root / ev, hub)
@@ -1273,28 +1311,39 @@ def plan(rel: Release, *, binary: Path | None = None, seed: int = DEFAULT_SEED,
         write_csv(root / ev / 'gen_pairs_docxodus_missing.csv', GEN_SHA_FIELDS, gen_with_shas(rows, root))
         return f'{ev}/gen_pairs_docxodus_missing.csv: {len(rows)} pairs without a docxodus Word PDF'
 
+    # its own run dir: the lane's generate_failures.json is the full corpus run's record
     docxodus_generate = generate('docxodus', 'docxodus-csharp-inproc', DOCXODUS_DIST,
-                                 ev / 'gen_pairs_docxodus_missing.csv')
+                                 ev / 'gen_pairs_docxodus_missing.csv', ev / 'docxodus_generate')
 
     def docxodus_redlines() -> str:
         # the generator exits 1 when it writes nothing, so an empty manifest must not reach it
         rows = read_csv(root / ev / 'gen_pairs_docxodus_missing.csv')
         if not rows:
             return 'no pair lacks a docxodus Word PDF: nothing to redline'
-        failures = root / RUN_DIR / 'docxodus' / 'generate_failures.json'
         started = time.time_ns()
         proc = (run or release.default_runner())(list(docxodus_generate), cwd=root)
         (root / ev / 'docxodus.generate.log').write_text((proc.stdout or '') + (proc.stderr or ''))
         # it also exits 1 when Docxodus fails every pair: those score 0, like any Docxodus failure,
-        # once this run's own failures file (not an earlier run's) names each of them
-        if proc.returncode != 0 and failures.is_file() and failures.stat().st_mtime_ns >= started:
-            own = {f['doc'] for f in json.loads(failures.read_text()) if f.get('stage') == 'generate'}
-            if {r['key'] for r in rows} <= own:
+        # once this run's own failures file names exactly these pairs, each with a document error
+        # (a worker crash or timeout is the bench's failure, not Docxodus's)
+        failed = fresh_failures(root / ev / 'docxodus_generate' / 'generate_failures.json', started)
+        if proc.returncode != 0 and failed is not None:
+            docs = {f['doc'] for f in failed}
+            own = {f['doc'] for f in failed if f.get('stage') == 'generate' and not HARNESS_FAILURE.search(f['error'])}
+            if docs == own == {r['key'] for r in rows}:
                 return f'{len(rows)} pairs Docxodus itself fails to redline (they score 0); none redlined'
         if proc.returncode != 0:
             raise RuntimeError(f'{" ".join(docxodus_generate)}: exit {proc.returncode} '
                                f'(see {ev}/docxodus.generate.log)')
         return f'{len(rows)} pairs redlined by Docxodus: {" ".join(docxodus_generate)}'
+
+    def stale_aside() -> str:
+        # with --force a pair the candidate failed keeps the previous binary's redline: by the
+        # failures file the generator wrote after the snapshot, it scores 0 instead
+        ledger = root / ev / 'redlines_before.json'
+        failed = fresh_failures(root / jub / 'generate_failures.json', ledger) if ledger.is_file() else None
+        names = [f'{f["doc"]}_{lane}.docx' for f in failed or ()]
+        return set_aside_stale_pdfs(root / jub / 'docx', root / jub / 'pdf_by_word', ledger, names)
 
     def soffice_list() -> str:
         missing = soffice_missing(root / conversion_csv, root)
@@ -1339,9 +1388,7 @@ def plan(rel: Release, *, binary: Path | None = None, seed: int = DEFAULT_SEED,
         Step('generate', 'jubarte redlines',
              (*generate(lane, 'jubarte-rust', ev / 'dist', ev / 'gen_pairs_sample.csv'), '--force'),
              log=ev / f'{lane}.generate.log'),
-        Step('generate', 'stale Word PDFs aside',
-             action=lambda: set_aside_stale_pdfs(root / jub / 'docx', root / jub / 'pdf_by_word',
-                                                 root / ev / 'redlines_before.json')),
+        Step('generate', 'stale Word PDFs aside', action=stale_aside),
         Step('generate', 'docxodus PDFs from the hub', action=docxodus_fetch),
         Step('generate', 'docxodus manifest', action=docxodus_manifest),
         Step('generate', 'docxodus redlines (missing only)', docxodus_generate, action=docxodus_redlines),
