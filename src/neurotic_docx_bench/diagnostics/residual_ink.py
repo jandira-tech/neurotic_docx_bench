@@ -68,6 +68,7 @@ from neurotic_docx_bench.score import (
     ScoreConfig,
     _align_images,
     _ink_mask,
+    _ink_threshold,
     _load_image,
     _resize_to_match,
 )
@@ -259,8 +260,10 @@ def largest_residual_region(
         cand_rgb = _align_images(oracle_gray, color.rgb2gray(cand_rgb), cand_rgb, config.score)
     cand_gray = color.rgb2gray(cand_rgb)
 
-    ink_cand = _ink_mask(cand_gray, config.score.ink_min_size)
-    ink_oracle = _ink_mask(oracle_gray, config.score.ink_min_size)
+    # One threshold for both sides, from the oracle page, as the scorer draws it.
+    thr = _ink_threshold(oracle_gray)
+    ink_cand = _ink_mask(cand_gray, config.score.ink_min_size, thr)
+    ink_oracle = _ink_mask(oracle_gray, config.score.ink_min_size, thr)
     if not (ink_cand.any() or ink_oracle.any()):
         return None
 

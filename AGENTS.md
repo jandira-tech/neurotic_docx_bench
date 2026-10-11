@@ -47,6 +47,10 @@ Key modules (`src/neurotic_docx_bench/`):
 - `score.py` `diff.py` `raster.py` `report.py` `html_report.py` `utils.py` — the scoring
   core, **lifted verbatim** from superdoc-visual-benchmarks. **Do not edit their logic** —
   `tests/test_parity.py` guards byte-identical scoring against `tests/reference/`.
+  `score.py` carries exactly two recorded deviations (0de6361bf, 2026-10-03): the ink
+  threshold comes from the reference page for both sides, capped at 0.9 below Word's
+  0.949 markup pane, and the alignment never lowers a score. The parity test applies
+  those two to the frozen reference and fails on any other drift.
 - `page_metrics.py` + `docxide_metrics.py`: the **second scorer**, Jaccard and text-boundary
   at 150 DPI, a Python port of sverrejb/docxide-pdf `tests/common/` (Apache-2.0) driven
   through PyMuPDF. Same rule: **do not edit the metric logic**; upstream is the authority
