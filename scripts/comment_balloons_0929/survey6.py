@@ -12,7 +12,8 @@ Round 6 (`round6.py`) puts the shape itself in front of Word.
 import json, re, sys, zipfile
 from pathlib import Path
 from lxml import etree
-C = Path.home() / "temp/T/neurotic_docx_bench/corpus/word"
+HERE = Path(__file__).resolve().parent
+C = HERE.parents[1] / "corpus" / "word"
 W = "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}"
 W14 = "{http://schemas.microsoft.com/office/word/2010/wordml}"
 W15 = "{http://schemas.microsoft.com/office/word/2012/wordml}"
@@ -51,7 +52,7 @@ def predict(z, threads: bool) -> int:
         if i in dead: return False
         return alive(up[i], seen + (i,)) if i in up and up[i] not in seen else True
     return sum(alive(i) for i in refs)
-rows = json.load(open("survey5.json"))
+rows = json.loads((HERE / "survey5.json").read_text())
 for threads in (False, True):
     exact, misses = 0, []
     for r in rows:
@@ -63,4 +64,4 @@ for threads in (False, True):
     zero = [r for r in rows if not r["balloons"]]
     print(f"threads={threads}: exact {exact}/{len(rows)}; zero predicted zero {sum(r[f'pred_threads_{threads}'] == 0 for r in zero)}/{len(zero)}")
     print("\n".join(misses[:12]))
-json.dump(rows, open("survey6.json", "w"), indent=1)
+(HERE / "survey6.json").write_text(json.dumps(rows, indent=1))
