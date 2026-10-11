@@ -525,6 +525,34 @@ def set_aside_stale_pdfs(docx_dir: Path, pdf_dir: Path, ledger: Path,
     return '; '.join(parts)
 
 
+def fresh_conversions(work: Path, binary_sha: str) -> str:
+    """Move ``work`` to ``<work's parent>_stale/<stamp>/`` unless ``binary_sha`` filled it.
+
+    ``bench docx-to-pdf`` resumes: it keeps every candidate PDF in its work
+    folder and every score its checkpoint holds, so a rebuilt candidate would
+    be scored on the previous binary's renders. ``binary.sha256`` records who
+    rendered the folder; a crashed run of the same binary still resumes.
+    """
+    record = work / 'binary.sha256'
+    held = record.read_text().strip() if record.is_file() else None
+    if held == binary_sha:
+        return f'resuming the renders of this binary ({binary_sha[:12]})'
+    detail = 'no earlier renders'
+    if work.is_dir() and any(work.iterdir()):
+        stale_root = work.parent.with_name(f'{work.parent.name}_stale')
+        now = datetime.now(UTC).strftime('%Y%m%dT%H%M%S')
+        # a set-aside copy is never overwritten: a second move within the second gets a suffix
+        stamp = next(s for s in (now, *(f'{now}-{i}' for i in range(2, 1000)))
+                     if not (stale_root / s).exists())
+        aside = stale_root / stamp / work.name
+        aside.parent.mkdir(parents=True)
+        work.replace(aside)
+        detail = f'renders of binary {(held or "unrecorded")[:12]} moved to {stale_root.name}/{stamp}/'
+    work.mkdir(parents=True, exist_ok=True)
+    record.write_text(binary_sha + '\n')
+    return detail
+
+
 def read_meta(ev: Path) -> dict:
     path = ev / 'sample_meta.json'
     if not path.is_file():
@@ -836,6 +864,19 @@ def _span(ci: Sequence[float] | None) -> str:
     return f'[{ci[0]}, {ci[1]}]' if ci else 'not computed'
 
 
+def _ranked(result: dict, rows: list[dict]) -> list[dict]:
+    """``rows`` (ours, then the comparator) sorted by ITT median and ranked.
+
+    The method note's rule: the two rank ``1=`` when the paired bootstrap
+    interval of the median difference includes 0.
+    """
+    rows = sorted(rows, key=lambda row: -row['median'])
+    ci = (result.get('comparison') or {}).get('ci95')
+    if ci and ci[0] <= 0 <= ci[1]:
+        return [{'rank': '1='} | row for row in rows]
+    return [{'rank': str(i)} | row for i, row in enumerate(rows, 1)]
+
+
 def website_records(version: str, generated: str, redline: dict, conversion: dict,
                     redline_stem: str, conversion_stem: str) -> list[dict]:
     """facts.jsonl-shaped records for every key the release moves.
@@ -864,26 +905,26 @@ def website_records(version: str, generated: str, redline: dict, conversion: dic
          'desc': f'A state-balanced {docs}-document sample of corpus/word (every path and sha256 in release_info/{conversion_stem}.csv), '
                  "each converter's PDF scored against Word's own export of the same file. Sorted by ITT median; a failed document "
                  'scores 0. 95% CI is a percentile bootstrap of the ITT median (2,000 resamples, seed 42).',
-         'rows': [
-             {'rank': '1', 'tool': 'jubarte †', 'pin': jub_c['version'], 'median': jub_c['median'],
+         'rows': _ranked(conversion, [
+             {'tool': 'jubarte †', 'pin': jub_c['version'], 'median': jub_c['median'],
               'mean': jub_c['mean'], 'docs': jub_c['n'], 'failed': jub_c['failures'],
               'note': _span(jub_c.get('median_ci95')), 'ours': True},
-             {'rank': '2', 'tool': 'soffice', 'pin': sof_c['version'], 'median': sof_c['median'],
+             {'tool': 'soffice', 'pin': sof_c['version'], 'median': sof_c['median'],
               'mean': sof_c['mean'], 'docs': sof_c['n'], 'failed': sof_c['failures'],
-              'note': _span(sof_c.get('median_ci95')), 'ours': False}]},
+              'note': _span(sof_c.get('median_ci95')), 'ours': False}])},
         {'id': 'redlines-sample', 'title': f"Redlines vs Word's compare — {pairs}-pair sample",
          'meta': f'{pairs} pairs · one Word compare each · pixel scorer · opened in Word · {generated}',
          'desc': f'A sample of {pairs} document pairs of redlines_0929_full, one Word compare each: every pair of the scarce states, '
                  f'the rest spread over the document families (every path and sha256 in release_info/{redline_stem}.csv). '
                  "Each tool redlines the pair; Word opens that redline and exports it to PDF, scored against Word's own compare. "
                  'A pair with no scored PDF counts 0.',
-         'rows': [
-             {'rank': '1', 'tool': f'jubarte-{version} †', 'pin': jub_r['version'], 'median': jub_r['median'],
+         'rows': _ranked(redline, [
+             {'tool': f'jubarte-{version} †', 'pin': jub_r['version'], 'median': jub_r['median'],
               'mean': jub_r['mean'], 'docs': jub_r['n'], 'failed': jub_r['failures'],
               'note': f"= 100: {jub_r['exact_100']} · ≥ 90: {jub_r['at_least_90']}", 'ours': True},
-             {'rank': '2', 'tool': 'docxodus', 'pin': doc_r['version'], 'median': doc_r['median'],
+             {'tool': 'docxodus', 'pin': doc_r['version'], 'median': doc_r['median'],
               'mean': doc_r['mean'], 'docs': doc_r['n'], 'failed': doc_r['failures'],
-              'note': f"= 100: {doc_r['exact_100']} · ≥ 90: {doc_r['at_least_90']}", 'ours': False}]},
+              'note': f"= 100: {doc_r['exact_100']} · ≥ 90: {doc_r['at_least_90']}", 'ours': False}])},
     ]
     states = [{'name': name, 'n': str(block['n']),
                'rows': [{'tool': 'jubarte †', 'median': jub_c['by_state'][name]['median'], 'ours': True},
@@ -1040,13 +1081,14 @@ def collect_results(root: Path, version: str, lane: str, *, jubarte: dict,
     sample_rows = read_csv(root / redline_list(version))
     keys = [r['key'] for r in sample_rows]
     key_state = {r['key']: r['state'] for r in sample_rows}
-    rows = {tool: json.loads((root / scores_json(tool, version)).read_text())['rows']
-            for tool in (lane, 'docxodus')}
+    measured = {tool: json.loads((root / scores_json(tool, version)).read_text()) for tool in (lane, 'docxodus')}
+    rows = {tool: doc['rows'] for tool, doc in measured.items()}
     a = itt_scores(rows[lane], keys)
     b = itt_scores(rows['docxodus'], keys)
     versions = json.loads((root / RUN_DIR / 'versions.json').read_text()) \
         if (root / RUN_DIR / 'versions.json').is_file() else {}
-    scorer = scorer_backend()
+    # measure.py ran in its own process (under --device): its summary names the backend
+    scorer = one_backend({tool: doc.get('summary', {}).get('scorer_backend') for tool, doc in measured.items()})
     generated = datetime.now(UTC).isoformat(timespec='seconds')
     redline = {
         'schema': 'jubarte-redlines/release_info/results_redline/1',
@@ -1089,8 +1131,9 @@ def collect_results(root: Path, version: str, lane: str, *, jubarte: dict,
                                   sa, conv_state, dict(sa)),
         },
         'comparison': {'comparator': 'soffice', **(paired_interval(ja, sa) or {})},
-        'versions': {'scorer': scorer, 'microsoft_word': word_version,
-                     'libreoffice': soffice_version, 'docxodus': None},
+        'versions': {'scorer': one_backend({'jubarte': jub_report.get('scorer_backend'),
+                                            'soffice': sof_report.get('scorer_backend')}),
+                     'microsoft_word': word_version, 'libreoffice': soffice_version, 'docxodus': None},
         'provenance': {
             'measure': 'bench docx-to-pdf --origin list (one --files-list per fixture); '
                        f'soffice --score-only --location-to-score {ev}/soffice_sample',
@@ -1132,10 +1175,16 @@ def binary_reports(binary: Path, run: Callable[..., release.ProcLike] | None = N
     return lines[0].strip()
 
 
-def scorer_backend() -> str:
-    from neurotic_docx_bench import kernels
+def one_backend(found: dict[str, str | None]) -> str:
+    """The scorer backend every score artifact records (``unrecorded`` when none does).
 
-    return kernels.backend_id()
+    Each artifact names the backend of the process that scored it; the
+    writer's own process never ran a scorer, so its backend proves nothing.
+    """
+    kinds = {backend or 'unrecorded' for backend in found.values()}
+    if len(kinds) != 1:
+        raise RuntimeError(f'score artifacts disagree on the scorer backend: {found}')
+    return kinds.pop()
 
 
 # ------------------------------------------------------------------ plan/execute
@@ -1414,6 +1463,8 @@ def plan(rel: Release, *, binary: Path | None = None, seed: int = DEFAULT_SEED,
         # one scoring job at a time: each measure finishes before the next starts
         Step('measure', 'measure jubarte', measure(lane), log=ev / f'measure_{lane}.log'),
         Step('measure', 'measure docxodus', measure('docxodus'), log=ev / 'measure_docxodus.log'),
+        Step('convert', 'stale renders aside',
+             action=lambda: fresh_conversions(root / ev / 'convert_work' / 'jubarte', _sha(binary_path()))),
         # converting with bench docx-to-pdf scores right after the last fixture
         Step('convert', 'convert jubarte (converts + scores)',
              (*bench, 'docx-to-pdf', '--converter', str(binary_path()), '--origin', 'list', *files,
