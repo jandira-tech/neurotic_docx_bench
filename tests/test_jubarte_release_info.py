@@ -13,6 +13,7 @@ import csv
 import hashlib
 import importlib.util
 import json
+import os
 import subprocess
 import sys
 import time
@@ -480,11 +481,47 @@ def test_a_rewritten_redline_loses_its_old_word_pdf(tmp_path: Path) -> None:
     (jub / 'docx' / 'changed.docx').write_bytes(b'new candidate bytes')
     detail = _act(steps, 'stale Word PDFs aside')
     assert detail.startswith('1 Word PDFs of changed redlines moved to pdf_by_word_stale/')
+    assert detail.endswith('; 2 redlines await a Word export')  # changed + unexported
     assert sorted(p.name for p in (jub / 'pdf_by_word').iterdir()) == ['same.pdf']
-    assert (jub / 'pdf_by_word_stale' / 'changed.pdf').read_bytes() == b'%PDF word'
-    assert _act(steps, 'stale Word PDFs aside').startswith('every exported redline is byte-identical')
+    assert [p.read_bytes() for p in (jub / 'pdf_by_word_stale').rglob('changed.pdf')] == [b'%PDF word']
+    assert _act(steps, 'stale Word PDFs aside') == \
+        'every exported redline is byte-identical to the one Word exported; 2 redlines await a Word export'
     names = [s.name for s in steps if s.stage == 'generate']
     assert names.index('redline snapshot') < names.index('jubarte redlines') < names.index('stale Word PDFs aside')
+
+
+def test_a_pair_the_candidate_fails_scores_zero_not_the_old_binary_s_redline(tmp_path: Path) -> None:
+    root, regen = _tree(tmp_path)
+    jub = root / jri.RUN_DIR / LANE
+    for key in ('kept', 'lost'):
+        _put(jub / 'docx' / f'{key}_{LANE}.docx', key.encode())
+        _put(jub / 'pdf_by_word' / f'{key}_{LANE}.pdf', b'%PDF old binary')
+    steps = _plan(root, regen)
+    _act(steps, 'redline snapshot')
+    # --force rewrote 'kept' byte-identically; 'lost' threw, so its old bytes are still there
+    _put(jub / 'generate_failures.json', json.dumps([{'doc': 'lost', 'stage': 'generate', 'error': 'x'}]).encode())
+    detail = _act(steps, 'stale Word PDFs aside')
+    assert '1 Word PDFs of changed redlines moved' in detail
+    assert '1 redlines the candidate failed moved to docx_failed/' in detail and '(they score 0)' in detail
+    assert sorted(p.name for p in (jub / 'docx').iterdir()) == [f'kept_{LANE}.docx']
+    assert sorted(p.name for p in (jub / 'pdf_by_word').iterdir()) == [f'kept_{LANE}.pdf']
+    assert [p.name for p in (jub / 'docx_failed').rglob('*.docx')] == [f'lost_{LANE}.docx']
+    # a failures file older than the snapshot is an earlier run's: it names nothing now
+    _put(jub / 'docx' / f'lost_{LANE}.docx', b'lost')
+    _act(steps, 'redline snapshot')
+    os.utime(jub / 'generate_failures.json', ns=(0, 0))
+    assert 'candidate failed' not in _act(steps, 'stale Word PDFs aside')
+
+
+def test_set_aside_copies_are_never_overwritten(tmp_path: Path) -> None:
+    docx, pdf, ledger = tmp_path / 'docx', tmp_path / 'pdf_by_word', tmp_path / 'before.json'
+    for n, stamp in enumerate((1_000_000_000, 1_000_000_100)):
+        _put(docx / 'a.docx', f'v{n}'.encode())
+        _put(pdf / 'a.pdf', f'%PDF {n}'.encode())
+        ledger.write_text('{}')
+        os.utime(ledger, (stamp, stamp))
+        jri.set_aside_stale_pdfs(docx, pdf, ledger)
+    assert sorted(p.read_bytes() for p in (tmp_path / 'pdf_by_word_stale').rglob('a.pdf')) == [b'%PDF 0', b'%PDF 1']
 
 
 def test_a_word_pdf_without_recorded_source_bytes_counts_as_stale(tmp_path: Path) -> None:
@@ -556,13 +593,14 @@ def test_missing_docxodus_pdfs_come_from_the_hub_and_docxodus_redlines_the_rest(
         _act(failing, 'docxodus redlines (missing only)')
 
 
-def _docxodus_fails(root: Path, stage: str) -> Callable[..., Proc]:
-    """A generator run that writes nothing: Docxodus fails every pair it is given."""
+def _docxodus_fails(root: Path, stage: str, error: str = 'Document has no w:body element.',
+                    extra: tuple[str, ...] = ()) -> Callable[..., Proc]:
+    """A generator run that writes nothing: Docxodus fails every pair it is given (and ``extra``)."""
     def run(cmd, **_):
         manifest = Path(cmd[cmd.index('--manifest') + 1])
-        failed = [{'doc': r['key'], 'stage': stage, 'error': 'Document has no w:body element.'}
-                  for r in jri.read_csv(root / manifest)]
-        _put(root / jri.RUN_DIR / 'docxodus' / 'generate_failures.json', json.dumps(failed).encode())
+        docs = [r['key'] for r in jri.read_csv(root / manifest)] + list(extra)
+        failed = [{'doc': doc, 'stage': stage, 'error': f'docxodus-csharp-inproc: {error}'} for doc in docs]
+        _put(root / cmd[cmd.index('--run-dir') + 1] / 'generate_failures.json', json.dumps(failed).encode())
         return Proc(1, 'wrote 0 redline(s)\n', f'{len(failed)} pair(s) skipped:\n')
     return run
 
@@ -584,6 +622,18 @@ def test_pairs_docxodus_itself_cannot_redline_score_zero_instead_of_stopping(tmp
     missing = _sample(root, regen, 9, run=_docxodus_fails(root, 'missing_source'))
     with pytest.raises(RuntimeError, match='exit 1'):
         _act(missing, 'docxodus redlines (missing only)')
+    # so is a worker that crashed or timed out on every pair
+    for error in ('timeout waiting for worker reply after 15000 ms bin=x', 'worker exited before reply (code=1)'):
+        harness = _sample(root, regen, 9, run=_docxodus_fails(root, 'generate', error))
+        with pytest.raises(RuntimeError, match='exit 1'):
+            _act(harness, 'docxodus redlines (missing only)')
+    # a failures file naming more than this manifest is another run's
+    other = _sample(root, regen, 9, run=_docxodus_fails(root, 'generate', extra=('not-in-the-sample',)))
+    with pytest.raises(RuntimeError, match='exit 1'):
+        _act(other, 'docxodus redlines (missing only)')
+    # the lane's full-run failures record is never the release run's scratch
+    cmd = _cmd(steps, 'docxodus redlines (missing only)')
+    assert cmd[cmd.index('--run-dir') + 1] == str(jri.evidence_dir(V) / 'docxodus_generate')
 
 
 def test_a_docxodus_redline_word_refused_twice_is_recorded_and_never_opened_again(tmp_path: Path) -> None:
