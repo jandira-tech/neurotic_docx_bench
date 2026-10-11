@@ -40,7 +40,7 @@ import statistics
 import tempfile
 from pathlib import Path
 
-from neurotic_docx_bench import kernels, pipeline
+from neurotic_docx_bench import content_cache, kernels, pipeline
 
 HERE = Path(__file__).parent
 
@@ -70,15 +70,19 @@ def _stats(rows: list[dict], expected: int) -> dict:
     return out
 
 
-def _still_current(row: dict, orc_pdf: Path, cand_pdf: Path) -> bool:
-    """A resumed row stands only for the two files it was scored from.
+def _scorer_id() -> str:
+    """The backend this process scores with and the fingerprint of the scoring sources."""
+    return f'{kernels.backend_id()}:{content_cache.scorer_fingerprint()}'
 
-    A row from before the hashes were recorded cannot be checked and is kept.
+
+def _still_current(row: dict, orc_pdf: Path, cand_pdf: Path, scorer: str) -> bool:
+    """A resumed row stands only for the two files and the scorer it was scored with.
+
+    A row that did not record them cannot be checked: it is scored again.
     """
     want = (row.get('oracle_sha256'), row.get('candidate_sha256'))
-    if want == (None, None):
-        return True
-    return cand_pdf.is_file() and want == (_sha(orc_pdf), _sha(cand_pdf))
+    return (row.get('scorer') == scorer and None not in want and cand_pdf.is_file()
+            and want == (_sha(orc_pdf), _sha(cand_pdf)))
 
 
 def oracles(pool: list[dict], fresh: Path | None) -> dict[str, tuple[Path, str]]:
@@ -172,7 +176,7 @@ def measure(tool: str, fresh: Path | None, regen: set[str], jobs: int, sample: i
     first = {(r['base'], r['next']): r['key'] for r in reversed(list(csv.DictReader(open(HERE / 'gen_pairs.csv'))))}
     oracle = oracles(pool, fresh)
     src = cand_dir or HERE / tool / 'pdf_by_word'
-    cands = {r['key']: src / f'{first[(r["base"], r["next"])]}_{tool}.pdf' for r in pool}
+    cands = {r['key']: src / f'{first[r["base"], r["next"]]}_{tool}.pdf' for r in pool}
     suffix = ''
     if sample_csv:
         keys = {r['key'] for r in csv.DictReader(open(sample_csv))}
@@ -194,15 +198,15 @@ def measure(tool: str, fresh: Path | None, regen: set[str], jobs: int, sample: i
     except BlockingIOError:
         print(f'{tool}: another run holds {out.name}; waiting', flush=True)
         fcntl.flock(lock, fcntl.LOCK_EX)
+    scorer = _scorer_id()
     rows = {k: v for k, v in _resume(partial, out, fresh).items() if k in {r['key'] for r in pool}}
-    stale = sorted(k for k, v in rows.items() if not _still_current(v, oracle[k][0], cands[k]))
+    stale = sorted(k for k, v in rows.items() if not _still_current(v, oracle[k][0], cands[k], scorer))
     for k in stale:
         del rows[k]
     todo = [r for r in pool if r['key'] not in rows and cands[r['key']].is_file()]
     if rows or stale:
-        unhashed = sum('oracle_sha256' not in v for v in rows.values())
-        print(f'{tool}: resuming: {len(rows)} already scored ({unhashed} without recorded file hashes), '
-              f'{len(stale)} dropped because their oracle or candidate PDF changed, {len(todo)} to go', flush=True)
+        print(f'{tool}: resuming: {len(rows)} already scored, {len(stale)} dropped because their oracle, '
+              f'candidate PDF or scorer changed or was never recorded, {len(todo)} to go', flush=True)
     for i in range(0, len(todo), chunk):
         part = todo[i:i + chunk]
         with tempfile.TemporaryDirectory(prefix=f'measure-{tool}.') as tmp:
@@ -214,7 +218,7 @@ def measure(tool: str, fresh: Path | None, regen: set[str], jobs: int, sample: i
                 (cand / f'{r["key"]}_{tool}.pdf').symlink_to(cands[r['key']].resolve())
             got = pipeline.score_folders_full(orc, cand, work, candidate_tool=tool, jobs=jobs)
         rows |= {k: _scalars(v) | {'oracle': oracle[k][1], 'oracle_sha256': _sha(oracle[k][0]),
-                                   'candidate_sha256': _sha(cands[k])} for k, v in got.items()}
+                                   'candidate_sha256': _sha(cands[k]), 'scorer': scorer} for k, v in got.items()}
         partial.write_text(json.dumps({'fresh_dir': str(fresh) if fresh else None, 'rows': rows}, sort_keys=True))
         print(f'{tool}: {len(rows)} scored, {len(todo) - i - len(part)} to go -> {partial.name}', flush=True)
     state = {r['key']: r['state'] for r in pool}
