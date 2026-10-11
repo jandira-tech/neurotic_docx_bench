@@ -14,12 +14,14 @@ corpus has it, else Word's redline rendered by soffice here (the same
 backend). Writes ``<work>/scores.json`` ({id: {set, bins…}}) and prints per
 bin mean/median, the paired difference between the first bin and each other
 with a bootstrap 95 % interval, wins and losses beyond 0.5, and the same by
-set. Re-running with the same work dir reuses generated docx and PDFs.
+set. Re-running with the same work dir reuses generated docx and PDFs of the
+same binary; another binary's are moved to ``cand_<name>_stale/``.
 """
 from __future__ import annotations
 
 import argparse
 import csv
+import hashlib
 import json
 import random
 import shutil
@@ -41,13 +43,51 @@ def pairs(sets):
     for r in csv.DictReader((WORD / "comparisons.csv").open()):
         if r["state"] != "tracking_without_comments":
             continue
-        s = r["sets"].split(";")[0] if r["sets"] else "?"
-        if sets and not (set(r["sets"].split(";")) & sets):
+        s = pick_set(r["sets"], sets)
+        if s is None:
             continue
         base, nxt = docs.get(r["base_id"]), docs.get(r["next_id"])
         if base is None or nxt is None or not base.exists() or not nxt.exists():
             continue
         out.append({"id": r["id"], "set": s, "base": base, "next": nxt, "redline": WORD / r["docx"]})
+    return out
+
+
+def pick_set(field, wanted):
+    """The stratum of a comparison: its first set, or with ``--sets`` its first
+    selected set (a pair is never counted under a set the run left out); None
+    when it holds none of the selected sets."""
+    held = field.split(";") if field else ["?"]
+    if not wanted:
+        return held[0]
+    return next((s for s in held if s in wanted), None)
+
+
+def fresh_candidates(cdir, binary):
+    """Keep ``cdir``'s redlines and renders only when ``binary`` made them; move
+    another binary's aside (never deleted), so a rerun never scores them."""
+    sha = hashlib.sha256(Path(binary).read_bytes()).hexdigest()
+    record = cdir / "binary.sha256"
+    if record.is_file() and record.read_text().strip() == sha:
+        return
+    if cdir.is_dir() and any(cdir.iterdir()):
+        stale = cdir.with_name(f"{cdir.name}_stale")
+        stale.mkdir(exist_ok=True)
+        aside = next(stale / f"{i:03d}" for i in range(1, 10_000) if not (stale / f"{i:03d}").exists())
+        cdir.replace(aside)
+        print(f"{cdir.name}: another binary's outputs moved to {aside}")
+    cdir.mkdir(parents=True, exist_ok=True)
+    record.write_text(sha + "\n")
+
+
+def collect(chosen, fails, got, pdf_dir, name):
+    """One bin's score per pair: 0 when the candidate failed to redline or to
+    render (the binary's fault), the compare score otherwise, None when the
+    compare has no row although the candidate rendered (no oracle: not scored)."""
+    out = {}
+    for p in chosen:
+        rendered = (pdf_dir / f"{p['id']}_{name}_redline.pdf").is_file()
+        out[p["id"]] = 0.0 if p["id"] in fails or not rendered else got.get(p["id"])
     return out
 
 
@@ -67,10 +107,13 @@ def sample(ps, n, seed):
     return chosen
 
 
-def sh(cmd, **kw):
-    r = subprocess.run(cmd, cwd=ROOT, text=True, capture_output=True, **kw)
-    if r.returncode:
-        print(f"command failed ({r.returncode}): {' '.join(map(str, cmd))}\n{r.stderr[-800:]}", file=sys.stderr)
+def sh(cmd, ok=(0,)):
+    """Run a bench command from the bench root; stop the run on any exit code
+    outside ``ok`` (``bench render`` exits 1 when some documents fail, which the
+    scores count as 0; anything else is a broken run, not a score)."""
+    r = subprocess.run(cmd, cwd=ROOT, text=True, capture_output=True)
+    if r.returncode not in ok:
+        sys.exit(f"command failed ({r.returncode}): {' '.join(map(str, cmd))}\n{r.stderr[-800:]}")
     return r.returncode
 
 
@@ -85,7 +128,7 @@ def main():
     ap.add_argument("--jobs", type=int, default=6)
     args = ap.parse_args()
     bins = [b.split("=", 1) for b in args.bin]
-    work = Path(args.work)
+    work = Path(args.work).resolve()
     work.mkdir(parents=True, exist_ok=True)
     ps = pairs(set(args.sets.split(",")) if args.sets else None)
     if args.ids:
@@ -114,13 +157,14 @@ def main():
             missing += 1
     if missing:
         print(f"rendering {missing} oracle redlines with soffice")
-        sh(["uv", "run", "bench", "render", str(to_render), str(work / "oracle_render"), "--backend", "soffice", "--jobs", str(args.jobs)])
+        sh(["uv", "run", "bench", "render", str(to_render), str(work / "oracle_render"), "--backend", "soffice", "--jobs", str(args.jobs)], ok=(0, 1))
         for f in (work / "oracle_render" / "pdf").glob("*.pdf"):
             shutil.copy2(f, oracle / f.name)
 
     scores = {p["id"]: {"set": p["set"]} for p in chosen}
     for name, path in bins:
         cdir = work / f"cand_{name}"
+        fresh_candidates(cdir, path)
         ddir = cdir / "docx"
         ddir.mkdir(parents=True, exist_ok=True)
         fails = {}
@@ -137,12 +181,13 @@ def main():
         with ThreadPoolExecutor(args.jobs) as ex:
             list(ex.map(gen, chosen))
         print(f"{name}: {len(fails)} generation failures")
-        sh(["uv", "run", "bench", "render", str(ddir), str(cdir), "--backend", "soffice", "--jobs", str(args.jobs)])
+        sh(["uv", "run", "bench", "render", str(ddir), str(cdir), "--backend", "soffice", "--jobs", str(args.jobs)], ok=(0, 1))
         sj = cdir / "scores.json"
+        sj.unlink(missing_ok=True)
         sh(["uv", "run", "bench", "compare", str(cdir / "pdf"), str(oracle), "--tool", name, "--jobs", str(args.jobs), "--json", str(sj)])
         got = json.loads(sj.read_text()) if sj.exists() else {}
-        for p in chosen:
-            scores[p["id"]][name] = 0.0 if p["id"] in fails else got.get(p["id"])
+        for key, value in collect(chosen, fails, got, cdir / "pdf", name).items():
+            scores[key][name] = value
     (work / "scores.json").write_text(json.dumps(scores, indent=1))
     report(scores, [b[0] for b in bins])
 
@@ -151,6 +196,9 @@ def report(scores, names):
     ref = names[0]
     rows = {k: v for k, v in scores.items() if all(v.get(n) is not None for n in names)}
     print(f"\nscored {len(rows)} of {len(scores)} pairs")
+    if not rows:
+        print("no pair has a score for every bin; nothing to compare")
+        return
     print(f"{'bin':>10} {'mean':>7} {'median':>7} {'<50':>5} {'>=90':>5}")
     for n in names:
         xs = [v[n] for v in rows.values()]
@@ -161,7 +209,7 @@ def report(scores, names):
         boots = sorted(statistics.mean(rng.choices(d, k=len(d))) for _ in range(2000))
         wins = sum(x > 0.5 for x in d)
         losses = sum(x < -0.5 for x in d)
-        print(f"\n{n} − {ref}: mean {statistics.mean(d):+.3f} [95 % {boots[50]:+.3f}, {boots[1949]:+.3f}]  wins {wins}  losses {losses}  unchanged {len(d) - wins - losses}")
+        print(f"\n{n} - {ref}: mean {statistics.mean(d):+.3f} [95 % {boots[50]:+.3f}, {boots[1949]:+.3f}]  wins {wins}  losses {losses}  unchanged {len(d) - wins - losses}")
         by = defaultdict(list)
         for v in rows.values():
             by[v["set"]].append(v[n] - v[ref])
