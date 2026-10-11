@@ -459,6 +459,34 @@ def write_meta(ev: Path, name: str, block: dict) -> None:
     path.write_text(json.dumps(meta, indent=1, sort_keys=True) + '\n')
 
 
+def snapshot_redlines(docx_dir: Path, ledger: Path) -> str:
+    """Record each redline's sha256 before the generator rewrites them."""
+    shas = {p.name: _sha(p) for p in sorted(docx_dir.glob('*.docx'))}
+    ledger.parent.mkdir(parents=True, exist_ok=True)
+    ledger.write_text(json.dumps(shas, indent=1, sort_keys=True) + '\n')
+    return f'{len(shas)} redlines on record before generating'
+
+
+def set_aside_stale_pdfs(docx_dir: Path, pdf_dir: Path, ledger: Path) -> str:
+    """Move the Word PDF of every redline whose bytes changed to ``<pdf_dir>_stale/``.
+
+    ``word_pdf.py`` keeps a PDF that already exists, so a redline the new
+    candidate rewrote would otherwise be scored on the previous binary's
+    export. A PDF with no recorded source bytes counts as changed. Word
+    outputs are moved aside, never deleted.
+    """
+    before = json.loads(ledger.read_text()) if ledger.is_file() else {}
+    stale = [pdf for docx in sorted(docx_dir.glob('*.docx'))
+             if (pdf := pdf_dir / f'{docx.stem}.pdf').is_file() and before.get(docx.name) != _sha(docx)]
+    if not stale:
+        return 'every exported redline is byte-identical to the one Word exported'
+    aside = pdf_dir.with_name(f'{pdf_dir.name}_stale')
+    aside.mkdir(parents=True, exist_ok=True)
+    for pdf in stale:
+        pdf.replace(aside / pdf.name)
+    return f'{len(stale)} Word PDFs of changed redlines moved to {aside.name}/ (export redoes them)'
+
+
 def read_meta(ev: Path) -> dict:
     path = ev / 'sample_meta.json'
     if not path.is_file():
@@ -1296,9 +1324,15 @@ def plan(rel: Release, *, binary: Path | None = None, seed: int = DEFAULT_SEED,
         Step('sample', f'{adopting[0]} redline sample', action=redline_sample),
         Step('sample', f'{adopting[1]} conversion sample', action=conversion_sample),
         Step('generate', 'generator dist', action=generator_dist),
+        Step('generate', 'redline snapshot',
+             action=lambda: snapshot_redlines(root / jub / 'docx', root / ev / 'redlines_before.json')),
+        # --force: a rerun with a new candidate must not keep the previous binary's redlines
         Step('generate', 'jubarte redlines',
-             generate(lane, 'jubarte-rust', ev / 'dist', ev / 'gen_pairs_sample.csv'),
+             (*generate(lane, 'jubarte-rust', ev / 'dist', ev / 'gen_pairs_sample.csv'), '--force'),
              log=ev / f'{lane}.generate.log'),
+        Step('generate', 'stale Word PDFs aside',
+             action=lambda: set_aside_stale_pdfs(root / jub / 'docx', root / jub / 'pdf_by_word',
+                                                 root / ev / 'redlines_before.json')),
         Step('generate', 'docxodus PDFs from the hub', action=docxodus_fetch),
         Step('generate', 'docxodus manifest', action=docxodus_manifest),
         Step('generate', 'docxodus redlines (missing only)', docxodus_generate, action=docxodus_redlines),
