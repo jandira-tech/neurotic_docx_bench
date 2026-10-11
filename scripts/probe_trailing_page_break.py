@@ -14,7 +14,7 @@ Every corpus DOCX is classified by how its last body paragraph ends:
   none       no page break in the last paragraph (the base rate)
 
 and each class's documents are converted with the given jubarte binary
-(--revisions word). The hypothesis predicts jubarte − Word = +1 page on the
+(--revisions word). The hypothesis predicts jubarte - Word = +1 page on the
 trailing class far above the base rate of the other two. If the trailing
 class splits, the split is reported by what else the paragraph holds, so a
 narrower rule can be read off instead of guessed.
@@ -26,6 +26,7 @@ from __future__ import annotations
 
 import argparse
 import collections
+import hashlib
 import json
 import random
 import re
@@ -41,6 +42,51 @@ PAGE_BREAK = re.compile(r'<w:br\b[^>]*w:type="page"[^>]*/>')
 PAINTED = re.compile(r"<w:t[ >][^<]|<w:tab/>|<w:drawing|<w:pict|<w:object|<w:sym |<w:br\b|<w:noBreakHyphen|<w:fldSimple")
 
 
+TABLE_TAG = re.compile(r"<w:tbl[ >]|</w:tbl>")
+
+
+def cut_tables(body: str) -> str:
+    """Each outermost table becomes ``<w:TBL/>``, one at a time (nested tables go
+    with their outer one); the paragraphs between two tables stay."""
+    out, depth, start, last = [], 0, 0, 0
+    for m in TABLE_TAG.finditer(body):
+        if m.group().startswith("</"):
+            if depth == 0:
+                continue
+            depth -= 1
+            if depth == 0:
+                out.append("<w:TBL/>")
+                last = m.end()
+        else:
+            if depth == 0:
+                start = m.start()
+                out.append(body[last:start])
+            depth += 1
+    if depth:  # an unclosed table: keep the rest as it is
+        out.append(body[start:])
+    else:
+        out.append(body[last:])
+    return "".join(out)
+
+
+def fresh_renders(pdf_dir: Path, binary: Path) -> None:
+    """Reuse ``pdf_dir``'s renders only when ``binary`` made them; another
+    binary's renders move to ``pdf_stale/NNN`` (never deleted)."""
+    sha = hashlib.sha256(binary.read_bytes()).hexdigest()
+    record = pdf_dir.parent / "binary.sha256"
+    if record.is_file() and record.read_text().strip() == sha:
+        pdf_dir.mkdir(parents=True, exist_ok=True)
+        return
+    if pdf_dir.is_dir() and any(pdf_dir.iterdir()):
+        stale = pdf_dir.parent / "pdf_stale"
+        stale.mkdir(exist_ok=True)
+        aside = next(stale / f"{i:03d}" for i in range(1, 10_000) if not (stale / f"{i:03d}").exists())
+        pdf_dir.replace(aside)
+        print(f"renders of another binary moved to {aside}", file=sys.stderr)
+    pdf_dir.mkdir(parents=True, exist_ok=True)
+    record.write_text(sha + "\n")
+
+
 def classify(docx: Path) -> dict | None:
     try:
         with zipfile.ZipFile(docx) as z:
@@ -53,7 +99,7 @@ def classify(docx: Path) -> dict | None:
     body = xml[start:]
     # The last paragraph that is a child of the body: cut tables and text
     # boxes out first, so a cell's or a shape's paragraph is not taken.
-    flat = re.sub(r"<w:tbl>.*</w:tbl>", "<w:TBL/>", body, flags=re.S)
+    flat = cut_tables(body)
     flat = re.sub(r"<w:txbxContent>.*?</w:txbxContent>", "", flat, flags=re.S)
     paras = PARA.findall(flat)
     if not paras:
@@ -105,7 +151,7 @@ def main() -> int:
     chosen = by_class["trailing"] + by_class["inner"] + rng.sample(by_class["none"], min(args.base, len(by_class["none"])))
 
     pdf_dir = args.out_dir / "pdf"
-    pdf_dir.mkdir(parents=True, exist_ok=True)
+    fresh_renders(pdf_dir, args.binary)
 
     def convert(item: tuple[Path, dict]) -> dict:
         docx, kind = item
@@ -128,7 +174,7 @@ def main() -> int:
         return {"n": n, **deltas, "plus_one_share": round(deltas["+1"] / n, 3) if n else None}
 
     report = {
-        "stated": "a page break ending the last body paragraph makes no page in Word: jubarte − Word = +1 on the trailing class, far above the base rate",
+        "stated": "a page break ending the last body paragraph makes no page in Word: jubarte - Word = +1 on the trailing class, far above the base rate",
         "corpus": {k: len(v) for k, v in by_class.items()},
         "trailing": tally([r for r in rows if r["class"] == "trailing"]),
         "inner": tally([r for r in rows if r["class"] == "inner"]),
