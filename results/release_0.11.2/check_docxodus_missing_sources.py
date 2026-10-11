@@ -19,7 +19,8 @@ def errors(path: Path) -> tuple[int | str, collections.Counter]:
         return 'absent', collections.Counter()
     out = subprocess.run([str(V), str(path)], capture_output=True, text=True)
     kinds = collections.Counter(line.split('\t')[1] for line in out.stdout.splitlines() if '\t' in line)
-    return (sum(kinds.values()) if out.returncode == 0 else f'exit {out.returncode}'), kinds
+    # the validator exits 1 when it parsed the file and has findings; other codes are failures
+    return (sum(kinds.values()) if out.returncode in (0, 1) else f'exit {out.returncode}'), kinds
 
 
 rows = list(csv.DictReader(open('results/release_0.11.2_evidence/gen_pairs_docxodus_missing.csv')))
