@@ -53,8 +53,17 @@ def page_rows(doc_id, state, pdf):
             pitch = statistics.median([b - a for a, b in zip(lines, lines[1:])]) if len(lines) > 1 else None
             # connector: dashed strokes in the author colour ending at the box's left edge
             conn = [x for x in strokes if x.get("dashes") and stroke and near(x["color"], stroke, 0.03) and abs(x["rect"].x1 - r.x0) < 1.5 and r.y0 - 2 <= x["rect"].y1 <= r.y1 + 2]
-            horiz = [x for x in strokes if x.get("dashes") and stroke and near(x["color"], stroke, 0.03) and x["rect"].x1 < pane.x0 + 1 and abs(x["rect"].height) < 0.5]
-            tints = [x["rect"] for x in drs if x.get("fill") and bx.get("fill") and near(x["fill"], bx["fill"], 0.01) and x["rect"].x1 < pane.x0 and x["rect"].height < 40]
+            # this balloon's horizontal run: the dashed level line ending where its own
+            # connector starts, nearest in y (an author's other balloons share the
+            # colour; balloons anchored on one line share one level line)
+            c0 = conn[0]["rect"] if conn else None
+            level = [x for x in strokes if c0 is not None and x.get("dashes") and near(x["color"], stroke, 0.03)
+                     and x["rect"].x1 < pane.x0 + 1 and abs(x["rect"].height) < 0.5 and abs(x["rect"].x1 - c0.x0) < 1.5]
+            horiz = sorted(level, key=lambda x: max(c0.y0 - x["rect"].y0, x["rect"].y0 - c0.y1, 0))[:1]
+            # its tinted range: same-fill rects on the line the level line leaves from
+            hy = horiz[0]["rect"].y0 if horiz else None
+            tints = [x["rect"] for x in drs if hy is not None and x.get("fill") and bx.get("fill") and near(x["fill"], bx["fill"], 0.01)
+                     and x["rect"].x1 < pane.x0 and x["rect"].height < 40 and x["rect"].y0 - 2 <= hy <= x["rect"].y1 + 2]
             rows.append(dict(doc=doc_id, state=state, page=pno + 1, page_w=W_, page_h=H_,
                 pane=[pane.x0, pane.y0, pane.x1, pane.y1], box=[r.x0, r.y0, r.x1, r.y1],
                 fill=bx.get("fill"), stroke=stroke, stroke_w=width,
@@ -70,7 +79,8 @@ def page_rows(doc_id, state, pdf):
                 tints=[[t.x0, t.y0, t.x1, t.y1] for t in tints][:6],
                 gap_above=(r.y0 - boxes[i - 1]["rect"].y1) if i else None,
                 bx=r.x0 - pane.x0, bx1=pane.x1 - r.x1, sc=pane.x0 / W_,
-                tx=(min((s["bbox"][0] for s in inside), default=r.x0) - r.x0), 
+                tx=(min((s["bbox"][0] for s in inside), default=r.x0) - r.x0),
+                tx1=(r.x1 - max(s["bbox"][2] for s in inside)) if inside else None,
                 ty=(lines[0] - r.y0) if lines else None, hl=(r.y1 - r.y0) / max(len(lines), 1),
                 ls=(lab["size"] / (pane.x0 / W_)) if lab else None))
     return rows
