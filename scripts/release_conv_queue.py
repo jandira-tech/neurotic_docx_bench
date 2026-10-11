@@ -67,6 +67,17 @@ def median_gap(a: list[float], b: list[float], rng: random.Random) -> dict:
     }
 
 
+def allocate(total: int, sizes: dict[str, int]) -> dict[str, int]:
+    """Split ``total`` over the states in proportion to their sizes, exactly:
+    largest remainder (ties by state name), so the control holds ``total``."""
+    whole = sum(sizes.values())
+    quota = {s: total * n / whole for s, n in sizes.items()}
+    shares = {s: int(q) for s, q in quota.items()}
+    for s in sorted(quota, key=lambda s: (shares[s] - quota[s], s))[: total - sum(shares.values())]:
+        shares[s] += 1
+    return shares
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     ap.add_argument("engine_dir", type=Path)
@@ -114,9 +125,9 @@ def main() -> int:
     for d in sorted(docs, key=lambda d: d["stem"]):
         by_state.setdefault(d["state"], []).append(d)
     control: list[dict] = []
+    shares = allocate(args.control, {state: len(group) for state, group in by_state.items()})
     for state in sorted(by_state):
-        share = round(args.control * len(by_state[state]) / len(docs))
-        control += rng.sample(by_state[state], share)
+        control += rng.sample(by_state[state], shares[state])
     held = {d["stem"] for d in control}
     queue = [d for d in docs if d["stem"] not in held]
 
