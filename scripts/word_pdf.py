@@ -314,6 +314,10 @@ end run
 # that is about to run. A context var so callers that replace `export_pdf`
 # in tests are not forced to grow a parameter.
 _close_documents: ContextVar[bool] = ContextVar("word_close_documents", default=True)
+# Word names the staged file in its dialogs ("Word found unreadable content in …").
+# A label in front of that name says whose file it is while a run is watched.
+_stage_label: ContextVar[str] = ContextVar("word_stage_label", default="")
+_LABEL = re.compile(r"[A-Za-z0-9._-]+")
 
 _EXPORT_PDF = _EXPORT_PDF.replace("__AE_TIMEOUT__", str(APPLE_EVENT_TIMEOUT))
 
@@ -919,6 +923,12 @@ def recover_after_failure(
     return session.recycle(*folders)
 
 
+def labelled(name: str) -> str:
+    """`name` with the run's label in front, when the run has one."""
+    label = _stage_label.get()
+    return f"{label}__{name}" if label else name
+
+
 # ─── one-osascript batch mode ────────────────────────────────────────────────
 
 
@@ -1415,6 +1425,7 @@ def convert_folder(
     poison_streak: int = 3,
     accept_suffix: str = "",
     reject: bool = False,
+    label: str = "",
 ) -> list[Result]:
     """Export every real .docx in `src` to PDF. Serial, by necessity.
 
@@ -1442,6 +1453,8 @@ def convert_folder(
         raise ValueError("reject-all needs an output suffix (accept_suffix)")
     if accept_suffix and not one_osascript:
         raise ValueError("accept-all runs only in the batch path (one_osascript=True)")
+    if label and not _LABEL.fullmatch(label):
+        raise ValueError("label takes letters, digits, '.', '_' and '-' only: it goes into a file name")
     docs = iter_docx(src)
     if not docs:
         logger.warning(f"no .docx in {src} (lock files excluded)")
@@ -1477,6 +1490,7 @@ def convert_folder(
     ctx = Stage(prefix="wordpdf") if owns_stage else None
     stage = stage or (ctx.__enter__() if ctx else None)
     assert stage is not None
+    labelling = _stage_label.set(label)
     try:
         run = (
             partial(_convert_batched, accept_suffix=accept_suffix, reject=reject)
@@ -1500,6 +1514,7 @@ def convert_folder(
             close_documents=close_documents,
         )
     finally:
+        _stage_label.reset(labelling)
         if ctx:
             ctx.__exit__(None, None, None)
         if owns_session:
@@ -1530,7 +1545,7 @@ def _convert_serial(
             continue
 
         started = time.monotonic()
-        staged_in = stage.place(docx)
+        staged_in = stage.place_as(docx, labelled(docx.name))
         staged_out = stage.outbox / final_pdf.name
         token = _close_documents.set(close_documents)
         try:
@@ -1607,7 +1622,7 @@ def _replay(
     """
     for docx in docs:
         final_pdf = pdf_path_for(docx, out_dir)
-        staged_in = stage.place(docx)
+        staged_in = stage.place_as(docx, labelled(docx.name))
         staged_out = stage.outbox / final_pdf.name
         started = time.monotonic()
         token = _close_documents.set(close_documents)
@@ -1676,7 +1691,7 @@ def _convert_batched(
     staged: dict[str, tuple[Path, Path, Path, Path | None]] = {}
     for i, doc in enumerate(todo):
         item = str(i)
-        staged_in = stage.place_as(doc, safe_stage_name(i, doc.name))
+        staged_in = stage.place_as(doc, safe_stage_name(i, labelled(doc.name)))
         staged_out = stage.outbox / f"{safe_stage_name(i, doc.stem)}.pdf"
         staged_docx = stage.outbox / f"{safe_stage_name(i, doc.stem)}.docx" if accept_suffix else None
         rows.append((item, str(staged_in), str(staged_out), *([str(staged_docx)] if staged_docx else [])))
@@ -1918,6 +1933,14 @@ def main(
     log_file: Annotated[
         Path | None, typer.Option("--log", help="Also write a log file.")
     ] = None,
+    label: Annotated[
+        str,
+        typer.Option(
+            "--label",
+            help="A word put in front of every staged file name, so a Word dialog "
+            "says whose file it is (a tool's name, say).",
+        ),
+    ] = "",
 ) -> None:
     """Export every .docx in a folder to PDF using Microsoft Word.
 
@@ -1933,6 +1956,9 @@ def main(
 
     if not src.is_dir():
         console.print(f"[red]not a folder:[/] {src}")
+        raise typer.Exit(2)
+    if label and not _LABEL.fullmatch(label):
+        console.print("[red]--label takes letters, digits, '.', '_' and '-' only[/]")
         raise typer.Exit(2)
     if accept_all and reject_all:
         console.print("[red]--accept-all and --reject-all are mutually exclusive[/]")
@@ -1967,6 +1993,7 @@ def main(
             close_documents=not do_not_close,
             accept_suffix=accept_suffix if accept_all else reject_suffix if reject_all else "",
             reject=reject_all,
+            label=label,
         )
         session.quit_if_ours()
     title = (
