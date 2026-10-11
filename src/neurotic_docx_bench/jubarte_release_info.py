@@ -78,6 +78,7 @@ import random
 import re
 import shutil
 import statistics
+import tempfile
 import time
 import uuid
 from collections.abc import Callable, Collection, Sequence
@@ -565,10 +566,34 @@ def conversion_files(sample_csv: Path) -> list[str]:
     return [r['docx'] for r in read_csv(sample_csv)]
 
 
+def _is_pdf(path: Path) -> bool:
+    """A file that starts like a PDF: an empty or crashed render is not one."""
+    with path.open('rb') as fh:
+        return fh.read(5) == b'%PDF-'
+
+
+def _renders(folder: Path) -> dict[str, Path]:
+    """The folder's PDFs by lower-cased name, broken renders left out."""
+    return {name: path for name, path in _by_lower(folder).items() if _is_pdf(path)}
+
+
 def soffice_missing(sample_csv: Path, root: Path) -> list[str]:
-    """Sampled fixtures with no LibreOffice render in the soffice work folder."""
-    have = _by_lower(root / SOFFICE_WORK / 'candidate')
+    """Sampled fixtures with no LibreOffice render (or a broken one) in the soffice work folder."""
+    have = _renders(root / SOFFICE_WORK / 'candidate')
     return [r['docx'] for r in read_csv(sample_csv) if f'{r["stem"]}.pdf'.lower() not in have]
+
+
+def soffice_version(run: release.Runner) -> str | None:
+    """``LibreOffice x.y.z.w`` of the soffice ``convert_candidates.py`` renders with."""
+    from neurotic_docx_bench.render import soffice as so
+
+    try:
+        exe = so.find_soffice()
+    except RuntimeError:
+        return None
+    proc = run([str(exe), '--version'])
+    words = (proc.stdout or '').split() if proc.returncode == 0 else []
+    return ' '.join(words[:2]) if len(words) >= 2 else None
 
 
 def stage_soffice(sample_csv: Path, root: Path, dest: Path) -> tuple[int, int]:
@@ -588,7 +613,7 @@ def stage_soffice(sample_csv: Path, root: Path, dest: Path) -> tuple[int, int]:
                                'score-only could not tell their renders apart')
         owner[stem] = r['stem']
     dest.mkdir(parents=True, exist_ok=True)
-    have = _by_lower(root / SOFFICE_WORK / 'candidate')
+    have = _renders(root / SOFFICE_WORK / 'candidate')  # a broken render scores 0, never as a PDF
     staged = 0
     for r in rows:
         src, copy = have.get(f'{r["stem"]}.pdf'.lower()), dest / f'{Path(r["docx"]).stem}.pdf'
@@ -691,18 +716,37 @@ def word_refused(root: Path) -> set[str]:
     return {r['key'] for r in read_csv(ledger) if r['tool_version'] == version}
 
 
-def record_refusals(root: Path, today: str) -> str:
-    """After both export passes, a Docxodus redline still without a Word PDF is one
-    Word refused twice. It is written to the ledger and moved out of the export
-    folder, so no later run redlines the pair or opens the file again."""
+WORD_FAILED = re.compile(r'(?:FAIL|still failing, so it is the file): (.+?\.docx) — ')
+
+
+def word_failures(*logs: Path) -> Counter[str]:
+    """How often ``word_pdf.py`` logged each document as failed: a pass's own
+    FAIL line and its replay's "still failing" line each count once."""
+    seen: Counter[str] = Counter()
+    for log in logs:
+        if log.is_file():
+            seen.update(WORD_FAILED.findall(log.read_text(errors='replace')))
+    return seen
+
+
+def record_refusals(root: Path, today: str, logs: Sequence[Path] = ()) -> str:
+    """A Docxodus redline Word failed twice by the export ``logs`` (and still
+    without a Word PDF) is one Word refused. It is written to the ledger and
+    moved out of the export folder, so no later run redlines the pair or opens
+    the file again. One without two recorded failures (a pass that died before
+    opening it) stays for the next export."""
     lane = root / RUN_DIR / 'docxodus'
     ledger = refused_ledger(root)
     rows = read_csv(ledger) if ledger.is_file() else []
     version = docxodus_version(root)
-    new = 0
+    failed = word_failures(*logs)
+    new = waiting = 0
     for docx in sorted((lane / 'docx').glob('*_docxodus.docx')):
         key = docx.stem.removesuffix('_docxodus')
         if docxodus_pdf(root, key).is_file():
+            continue
+        if failed[docx.name] < 2:
+            waiting += 1
             continue
         rows.append({'key': key, 'tool_version': version, 'docx_sha256': _sha(docx), 'recorded': today})
         dest = lane / 'docx_refused' / docx.name
@@ -712,8 +756,10 @@ def record_refusals(root: Path, today: str) -> str:
     if new:
         write_csv(ledger, REFUSED_FIELDS, rows)
     known = len({r['key'] for r in rows if r['tool_version'] == version})
-    return (f'{new} Docxodus redlines Word refused twice, moved to {RUN_DIR}/docxodus/docx_refused; '
+    said = (f'{new} Docxodus redlines Word refused twice, moved to {RUN_DIR}/docxodus/docx_refused; '
             f'{known} on record for {version or "this Docxodus"} (they score 0 and are not opened again)')
+    return said + (f'; {waiting} without a Word PDF and no failure on record stay for the next export'
+                   if waiting else '')
 
 
 def fetch_docxodus(sample_csv: Path, root: Path, gen_pairs: Sequence[dict], ev: Path, hub: Hub | None) -> str:
@@ -1034,36 +1080,47 @@ def write_six(engine_dir: Path, version: str, *, redline: dict, conversion: dict
               redline_data: Sequence[Sequence[str]], conversion_data: Sequence[Sequence[str]],
               now: datetime | None = None) -> str:
     """Write the six files for ``version`` into engine_dir/release_info/ under one
-    stamp, deleting that version's older stamps first. Returns the detail line."""
+    stamp, then delete that version's older stamps. Returns the detail line.
+
+    The six are written to a staging folder first and moved in only when all
+    six exist: a write that fails halfway (a full disk, an interrupt) leaves
+    the previous complete set untouched.
+    """
     stamp = stamp_now(now)
     folder = engine_dir / 'release_info'
     folder.mkdir(parents=True, exist_ok=True)
     names = {name: f'{name}_{version}_{stamp}.{ext}' for name, ext in SIX}
+    staging = Path(tempfile.mkdtemp(prefix=f'.six_{version}_', dir=folder))
+    try:
+        for name, header, data in (('sample_redline', REDLINE_HEADER, redline_data),
+                                   ('sample_conversion', CONVERSION_HEADER, conversion_data)):
+            with (staging / names[name]).open('w', newline='') as fh:
+                writer = csv.writer(fh)
+                writer.writerow(header)
+                writer.writerows(data)
+        for name, doc, csv_name in (('results_redline', redline, names['sample_redline']),
+                                    ('results_conversion', conversion, names['sample_conversion'])):
+            doc = dict(doc)
+            doc['stamp'] = stamp
+            doc['sample'] = doc['sample'] | {'csv': csv_name, 'sha256': _sha(staging / csv_name)}
+            (staging / names[name]).write_text(json.dumps(doc, indent=1, sort_keys=True) + '\n')
+        generated = datetime.now(UTC).date().isoformat()
+        with (staging / names['website_data']).open('w') as fh:
+            for record in website_records(version, generated, redline, conversion,
+                                          Path(names['sample_redline']).stem, Path(names['sample_conversion']).stem):
+                fh.write(json.dumps(record, ensure_ascii=False) + '\n')
+        with (staging / names['app_data']).open('w') as fh:
+            for record in app_records(version):
+                fh.write(json.dumps(record, ensure_ascii=False) + '\n')
+        for name in names.values():
+            (staging / name).replace(folder / name)
+    finally:
+        shutil.rmtree(staging, ignore_errors=True)
     ours = '|'.join(name for name, _ in SIX)
     pattern = re.compile(rf'({ours})_{re.escape(version)}_\d{{2}}-\d{{2}}-\d{{2}}_\d{{2}}-\d{{2}}\.(csv|json|jsonl)')
     for old in folder.iterdir():
         if pattern.fullmatch(old.name) and old.name not in names.values():
             old.unlink()
-    for name, header, data in (('sample_redline', REDLINE_HEADER, redline_data),
-                               ('sample_conversion', CONVERSION_HEADER, conversion_data)):
-        with (folder / names[name]).open('w', newline='') as fh:
-            writer = csv.writer(fh)
-            writer.writerow(header)
-            writer.writerows(data)
-    for name, doc, csv_name in (('results_redline', redline, names['sample_redline']),
-                                ('results_conversion', conversion, names['sample_conversion'])):
-        doc = dict(doc)
-        doc['stamp'] = stamp
-        doc['sample'] = doc['sample'] | {'csv': csv_name, 'sha256': _sha(folder / csv_name)}
-        (folder / names[name]).write_text(json.dumps(doc, indent=1, sort_keys=True) + '\n')
-    generated = datetime.now(UTC).date().isoformat()
-    with (folder / names['website_data']).open('w') as fh:
-        for record in website_records(version, generated, redline, conversion,
-                                      Path(names['sample_redline']).stem, Path(names['sample_conversion']).stem):
-            fh.write(json.dumps(record, ensure_ascii=False) + '\n')
-    with (folder / names['app_data']).open('w') as fh:
-        for record in app_records(version):
-            fh.write(json.dumps(record, ensure_ascii=False) + '\n')
     return f'{folder}: six files of {version} ({stamp})'
 
 
@@ -1257,8 +1314,8 @@ def plan(rel: Release, *, binary: Path | None = None, seed: int = DEFAULT_SEED,
         return f'Microsoft Word {found}'
 
     def check_inputs() -> str:
-        for need in (RUN_DIR / 'pool_pairs.csv', RUN_DIR / 'gen_pairs.csv', Path('corpus/word'),
-                     SOFFICE_WORK / 'candidate'):
+        # no SOFFICE_WORK: it is git-ignored, and the convert stage renders what it lacks
+        for need in (RUN_DIR / 'pool_pairs.csv', RUN_DIR / 'gen_pairs.csv', Path('corpus/word')):
             if not (root / need).exists():
                 raise RuntimeError(f'missing {need}')
         if not fresh.is_dir():
@@ -1266,7 +1323,7 @@ def plan(rel: Release, *, binary: Path | None = None, seed: int = DEFAULT_SEED,
         for adopted in (adopt_r, adopt_c):
             if adopted is not None and not adopted.is_file():
                 raise RuntimeError(f'no such list to adopt: {adopted}')
-        return f'{RUN_DIR} + corpus/word + {SOFFICE_WORK} present'
+        return f'{RUN_DIR} + corpus/word + {rel_path(fresh, root)} present'
 
     def gen_rows() -> list[dict]:
         return read_csv(root / RUN_DIR / 'gen_pairs.csv')
@@ -1397,7 +1454,15 @@ def plan(rel: Release, *, binary: Path | None = None, seed: int = DEFAULT_SEED,
     def soffice_list() -> str:
         missing = soffice_missing(root / conversion_csv, root)
         (root / ev / 'soffice_missing.txt').write_text(''.join(f'{docx}\n' for docx in missing))
-        return f'{ev}/soffice_missing.txt: {len(missing)} fixtures without a LibreOffice render'
+        said = f'{ev}/soffice_missing.txt: {len(missing)} fixtures without a LibreOffice render'
+        if not missing:
+            return said
+        # the set is scored as SOFFICE_VERSION: a render of another build must not join it
+        found = soffice_version(run or release.default_runner())
+        if found != SOFFICE_VERSION:
+            raise RuntimeError(f'{len(missing)} fixtures need a render, but soffice is {found or "absent"}, '
+                               f'not {SOFFICE_VERSION}')
+        return f'{said} ({found} renders them)'
 
     def soffice_stage() -> str:
         staged, missing = stage_soffice(root / conversion_csv, root, root / ev / 'soffice_sample')
@@ -1459,7 +1524,9 @@ def plan(rel: Release, *, binary: Path | None = None, seed: int = DEFAULT_SEED,
               '--log', str(dx / f'word_pdf.sample_{v}.retry.log')),
              log=dx / f'word_pdf.sample_{v}.retry.out',
              watch=(dx / f'word_pdf.sample_{v}.retry.log', dx / 'pdf_by_word'), may_fail=True),
-        Step('export', 'word refusals docxodus', action=lambda: record_refusals(root, today)),
+        Step('export', 'word refusals docxodus',
+             action=lambda: record_refusals(root, today, (root / dx / f'word_pdf.sample_{v}.log',
+                                                          root / dx / f'word_pdf.sample_{v}.retry.log'))),
         # one scoring job at a time: each measure finishes before the next starts
         Step('measure', 'measure jubarte', measure(lane), log=ev / f'measure_{lane}.log'),
         Step('measure', 'measure docxodus', measure('docxodus'), log=ev / 'measure_docxodus.log'),
@@ -1549,6 +1616,8 @@ def main(
     only: str = typer.Option('', '--only', help=f'comma list of stages to run ({", ".join(STAGES)})'),
     skip: str = typer.Option('', '--skip', help='comma list of stages to leave out'),
     show_plan: bool = typer.Option(False, '--plan', help='print the steps and run nothing'),
+    compare_regen: Path = typer.Option(COMPARE_REGEN, '--compare-regen',
+                                       help="the folder of Word's fresh compares (out/) and their regen_list.csv"),
 ) -> None:
     try:
         rel = Release(version, root.resolve())
@@ -1564,6 +1633,7 @@ def main(
                                engine_ref=engine_ref,
                                adopt_redline_csv=adopt_redline_csv, adopt_conversion_list=adopt_conversion_list,
                                jobs=jobs, convert_workers=convert_workers,
+                               compare_regen=compare_regen.expanduser().resolve(),
                                hub=default_hub(rel.root / ev / 'hub_tmp') if use_hub else None,
                                run=release.default_runner()), _stages(only), _stages(skip))
         except ValueError as exc:
@@ -1585,11 +1655,13 @@ def main(
         typer.echo(f'stopped at {done[-1].step.stage}: {done[-1].step.name}')
         raise typer.Exit(code=1)
     if rest:
+        # only the convert and score commands carry the fixtures: a redline stage resumes without them
         on_disk = rel.root / conversion_list(version)
-        if not on_disk.is_file():
-            typer.echo(f'no {on_disk}: run the sample stage first (--only install,sample)')
-            raise typer.Exit(code=1)
-        rest = [s for s in steps_of(conversion_files(on_disk)) if s.stage not in light]
+        if any(s.stage in ('convert', 'score') for s in rest):
+            if not on_disk.is_file():
+                typer.echo(f'no {on_disk}: run the sample stage first (--only install,sample)')
+                raise typer.Exit(code=1)
+            rest = [s for s in steps_of(conversion_files(on_disk)) if s.stage not in light]
         done = execute(rest, rel.root, echo=typer.echo)
         if len(done) < len(rest) or not all(o.ok or o.step.may_fail for o in done):
             typer.echo(f'stopped at {done[-1].step.stage}: {done[-1].step.name}')

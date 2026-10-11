@@ -14,6 +14,7 @@ import hashlib
 import importlib.util
 import json
 import os
+import re
 import subprocess
 import sys
 import time
@@ -26,7 +27,7 @@ import pytest
 from typer.testing import CliRunner
 
 from neurotic_docx_bench import jubarte_release_info as jri
-from neurotic_docx_bench.jubarte_bench_release import Release, Step, execute
+from neurotic_docx_bench.jubarte_bench_release import Outcome, Release, Step, execute
 
 V = '0.11.3'
 LANE = f'jubarte-{V}'
@@ -173,7 +174,8 @@ def _tree(tmp_path: Path, fill: int = 6, fixtures: int = 3) -> tuple[Path, Path]
             _put(word / state / 'pdf' / f'fx{s}{i}.pdf')
     for pdf in word.glob('*/pdf/*.pdf'):
         if pdf.stem != 'fx00':
-            _put(root / jri.SOFFICE_WORK / 'candidate' / f'{pdf.parent.parent.name}__{pdf.stem}.pdf')
+            _put(root / jri.SOFFICE_WORK / 'candidate' / f'{pdf.parent.parent.name}__{pdf.stem}.pdf',
+                 f'%PDF-1.7 {pdf.stem}'.encode())
     (run / 'versions.json').write_text(json.dumps({'docxodus': 'Docxodus 12.6.5 (C#)'}))
     return root, regen
 
@@ -641,23 +643,40 @@ def test_a_docxodus_redline_word_refused_twice_is_recorded_and_never_opened_agai
     lane = root / jri.RUN_DIR / 'docxodus'
     (lane / 'pdf_by_word' / 'wct1_docxodus.pdf').unlink()
     steps = _sample(root, regen, 9)
-    for key in ('twc0', 'wct1', 'wct0'):  # Docxodus redlined three pairs; Word exported wct0 and wct1 only
+    # Docxodus redlined five pairs; Word exported wct0 and wct1 only
+    for key in ('twc0', 'twc1', 'twc2', 'wct1', 'wct0'):
         _put(lane / 'docx' / f'{key}_docxodus.docx')
+    for key in ('twc1', 'twc2'):
+        (lane / 'pdf_by_word' / f'{key}_docxodus.pdf').unlink()
     _put(lane / 'pdf_by_word' / 'wct1_docxodus.pdf')
+    # twc0 failed in both passes; twc1 failed, then failed its replay in the retry pass; twc2 has
+    # no per-file failure at all (a pass that died at its preflight never opened it): not a refusal
+    _put(lane / f'word_pdf.sample_{V}.log',
+         b'| ERROR    | __main__:_finish:1745 - [batch] FAIL: twc0_docxodus.docx \xe2\x80\x94 document loaded empty\n')
+    _put(lane / f'word_pdf.sample_{V}.retry.log',
+         b'| ERROR    | __main__:_convert_serial:1574 - [1/3] FAIL: twc0_docxodus.docx \xe2\x80\x94 AppleEvent timed out\n'
+         b'| ERROR    | __main__:_convert_serial:1574 - [2/3] FAIL: twc1_docxodus.docx \xe2\x80\x94 x (-2700)\n'
+         b'| INFO     | __main__:_replay:1637 - [replay] still failing, so it is the file: '
+         b'twc1_docxodus.docx \xe2\x80\x94 x (-2700)\n')
     said = _act(steps, 'word refusals docxodus')
-    assert said.startswith('1 Docxodus redlines Word refused twice') and '1 on record for Docxodus 12.6.5 (C#)' in said
-    assert sorted(p.name for p in (lane / 'docx').iterdir()) == ['wct0_docxodus.docx', 'wct1_docxodus.docx']
+    assert said.startswith('2 Docxodus redlines Word refused twice') and '2 on record for Docxodus 12.6.5 (C#)' in said
+    assert said.endswith('; 1 without a Word PDF and no failure on record stay for the next export')
+    assert sorted(p.name for p in (lane / 'docx').iterdir()) == \
+        ['twc2_docxodus.docx', 'wct0_docxodus.docx', 'wct1_docxodus.docx']
+    (lane / 'docx' / 'twc2_docxodus.docx').unlink()  # the next export got it
+    _put(lane / 'pdf_by_word' / 'twc2_docxodus.pdf')
+    (lane / 'docx_refused' / 'twc1_docxodus.docx').replace(tmp_path / 'twc1_docxodus.docx')
     refused = lane / 'docx_refused' / 'twc0_docxodus.docx'
-    assert jri.read_csv(jri.refused_ledger(root)) == [
-        {'key': 'twc0', 'tool_version': 'Docxodus 12.6.5 (C#)', 'docx_sha256': _sha(refused),
-         'recorded': jri.read_csv(jri.refused_ledger(root))[0]['recorded']}]
+    assert [{k: r[k] for k in ('key', 'tool_version', 'docx_sha256')} for r in jri.read_csv(jri.refused_ledger(root))] == [
+        {'key': 'twc0', 'tool_version': 'Docxodus 12.6.5 (C#)', 'docx_sha256': _sha(refused)},
+        {'key': 'twc1', 'tool_version': 'Docxodus 12.6.5 (C#)', 'docx_sha256': _sha(tmp_path / 'twc1_docxodus.docx')}]
     # the pair is not handed to Docxodus again, and a second pass records nothing new
     assert '0 pairs without a docxodus Word PDF' in _act(steps, 'docxodus manifest')
     assert _act(steps, 'word refusals docxodus').startswith('0 Docxodus redlines')
     # another Docxodus version starts with a clean record
     (root / jri.RUN_DIR / 'versions.json').write_text(json.dumps({'docxodus': 'Docxodus 13.0.0 (C#)'}))
     assert jri.word_refused(root) == set()
-    assert '1 pairs without a docxodus Word PDF' in _act(steps, 'docxodus manifest')
+    assert '2 pairs without a docxodus Word PDF' in _act(steps, 'docxodus manifest')  # twc0, twc1
 
 
 # ------------------------------------------------------------------ export, measure, convert, score
@@ -780,7 +799,7 @@ def test_soffice_renders_are_staged_under_the_docx_stem_and_scored_from_there(tm
     _put(root / ev / 'soffice_sample' / 'fx10.pdf', b'an older render')
     _act(steps, 'stage soffice renders')  # a rerun rewrites only what differs
     assert kept.stat().st_mtime_ns == before
-    assert (root / ev / 'soffice_sample' / 'fx10.pdf').read_bytes() == b'tracking_without_comments__fx10.pdf'
+    assert (root / ev / 'soffice_sample' / 'fx10.pdf').read_bytes() == b'%PDF-1.7 fx10'
     score = _cmd(_plan(root, regen, n=8, jobs=5), 'score soffice (score-only)')
     assert '--score-only' in score
     assert '--tool' not in score  # --tool takes runnable converters; the report key is then 'candidates'
@@ -797,6 +816,42 @@ def test_soffice_renders_are_staged_under_the_docx_stem_and_scored_from_there(tm
                     'docx': 'corpus/word/with_comments_clean/docx/same.docx'}])
     with pytest.raises(RuntimeError, match='share the docx stem same'):
         _act(steps, 'stage soffice renders')
+
+
+def test_a_broken_soffice_render_is_rendered_again_not_published(tmp_path: Path) -> None:
+    root, regen = _tree(tmp_path)
+    _sample(root, regen, 9)
+    cand = root / jri.SOFFICE_WORK / 'candidate'
+    sample = jri.read_csv(root / jri.conversion_list(V))
+    empty, truncated = [cand / f'{r["stem"]}.pdf' for r in sample if r['stem'] != 'clean__fx00'][:2]
+    empty.write_bytes(b'')
+    truncated.write_bytes(b'<html>a crash page</html>')
+    missing = jri.soffice_missing(root / jri.conversion_list(V), root)
+    assert sorted(missing) == sorted(r['docx'] for r in sample
+                                     if r['stem'] in ('clean__fx00', empty.stem, truncated.stem))
+    assert jri.stage_soffice(root / jri.conversion_list(V), root, tmp_path / 'staged')[1] == 3
+
+
+def test_renders_of_another_libreoffice_never_join_the_set(tmp_path: Path, monkeypatch) -> None:
+    root, regen = _tree(tmp_path)
+    monkeypatch.setenv('SOFFICE', '/opt/lo/soffice')
+    asked: list[list[str]] = []
+
+    def lo(version: str):
+        def run(cmd, **_):
+            asked.append(list(cmd))
+            return Proc(0, f'{version} bce0998afefdbc355585ca324285661a2170ba77\n') if cmd[-1] == '--version' else Proc(1)
+        return run
+
+    with pytest.raises(RuntimeError, match=re.escape('soffice is LibreOffice 25.2.1.1, not LibreOffice 26.8.0.3')):
+        _act(_sample(root, regen, 9, run=lo('LibreOffice 25.2.1.1')), 'soffice missing list')
+    assert asked[-1] == ['/opt/lo/soffice', '--version']
+    said = _act(_sample(root, regen, 9, run=lo('LibreOffice 26.8.0.3')), 'soffice missing list')
+    assert said.endswith('1 fixtures without a LibreOffice render (LibreOffice 26.8.0.3 renders them)')
+    _put(root / jri.SOFFICE_WORK / 'candidate' / 'clean__fx00.pdf', b'%PDF-1.7')
+    asked.clear()
+    said = _act(_sample(root, regen, 9, run=lo('LibreOffice 25.2.1.1')), 'soffice missing list')
+    assert said.endswith('0 fixtures without a LibreOffice render') and asked == []  # nothing to render
 
 
 def test_conversion_scores_are_intent_to_treat_and_ignore_letter_case() -> None:
@@ -1004,6 +1059,44 @@ def test_plan_flag_prints_and_runs_nothing(tmp_path: Path) -> None:
     assert bad.exit_code != 0
 
 
+def test_a_redline_stage_resumes_without_the_conversion_list(tmp_path: Path, monkeypatch) -> None:
+    ran: list[str] = []
+
+    def fake(steps, root, **_):
+        ran.extend(s.name for s in steps)
+        return [Outcome(s, True, 'ok') for s in steps]
+
+    monkeypatch.setattr(jri, 'execute', fake)
+    args = [V, '--root', str(tmp_path), '--binary', str(_put(tmp_path / 'jubarte-rc'))]
+    for stage, step in (('generate', 'jubarte redlines'), ('export', 'word refusals docxodus'),
+                        ('measure', 'measure jubarte')):
+        out = CliRunner().invoke(jri.app, [*args, '--only', stage])
+        assert out.exit_code == 0, out.output
+        assert step in ran
+    # converting and scoring read the conversion list: without it the run stops and says why
+    out = CliRunner().invoke(jri.app, [*args, '--only', 'convert'])
+    assert out.exit_code == 1 and 'run the sample stage first' in out.output
+
+
+def test_the_sample_preflight_bootstraps_without_soffice_renders(tmp_path: Path) -> None:
+    root, regen = _tree(tmp_path)
+    for pdf in (root / jri.SOFFICE_WORK / 'candidate').iterdir():
+        pdf.unlink()
+    (root / jri.SOFFICE_WORK / 'candidate').rmdir()  # git-ignored: a clean checkout has none
+    assert _act(_plan(root, regen), 'bench inputs').endswith('present')
+    (regen / 'out' / 'idwct1__vs__idwct1.pdf').unlink()
+    (regen / 'out').rmdir()
+    with pytest.raises(RuntimeError, match='the fresh-compare oracle rule reads it'):
+        _act(_plan(root, regen), 'bench inputs')
+
+
+def test_compare_regen_is_a_cli_option(tmp_path: Path) -> None:
+    out = CliRunner().invoke(jri.app, [V, '--root', str(tmp_path), '--plan', '--only', 'measure',
+                                       '--compare-regen', str(tmp_path / 'regen')])
+    assert out.exit_code == 0, out.output
+    assert f"--fresh {tmp_path / 'regen' / 'out'} --regen-list {tmp_path / 'regen' / 'regen_list.csv'}" in out.output
+
+
 def test_the_plan_reads_the_fixtures_of_the_list_being_adopted_and_folds_them(tmp_path: Path) -> None:
     lines = [f'corpus/word/clean/docx/d{i}.docx' for i in range(5)]
     _put(tmp_path / 'convert.txt', '\n'.join(lines).encode())
@@ -1135,6 +1228,31 @@ def test_table_ranks_follow_the_medians_and_tie_when_the_paired_interval_holds_z
     tables = {t['id']: t['rows'] for t in next(r['value'] for r in recs if r['key'] == 'bench.tables')}
     assert [(r['rank'], r['tool']) for r in tables['conversion-sample']] == [('1', 'soffice'), ('2', 'jubarte †')]
     assert [(r['rank'], r['tool']) for r in tables['redlines-sample']] == [('1=', 'docxodus'), ('1=', 'jubarte-9.9.9 †')]
+
+
+def test_a_write_that_fails_halfway_keeps_the_previous_complete_set(tmp_path: Path, monkeypatch) -> None:
+    def tool(version: str, median: float) -> dict:
+        return {'version': version, 'median': median, 'mean': 50.0, 'n': 2, 'failures': 0,
+                'exact_100': 0, 'at_least_90': 0, 'median_ci95': [1.0, 2.0],
+                'by_state': {'clean': {'n': 2, 'median': median}}}
+    redline = {'tools': {'jubarte': tool('jubarte 9.9.9', 71.0), 'docxodus': tool('Docxodus', 65.0)},
+               'sample': {'pairs': 2}, 'comparison': {'ci95': [1.0, 9.0]}}
+    conversion = {'tools': {'jubarte': tool('jubarte 9.9.9', 79.0), 'soffice': tool('LibreOffice', 55.0)},
+                  'sample': {}, 'versions': {'scorer': 's'}, 'comparison': {'ci95': [1.0, 9.0]}}
+    args = dict(redline=redline, conversion=conversion, redline_data=[['a']], conversion_data=[['b']])
+    folder = tmp_path / 'release_info'
+    jri.write_six(tmp_path, '9.9.9', now=datetime(2026, 10, 1, 9, 0), **args)
+    before = {p.name: p.read_bytes() for p in folder.iterdir()}
+    assert len(before) == 6
+
+    def broken(version: str):
+        raise OSError('No space left on device')
+
+    monkeypatch.setattr(jri, 'app_records', broken)
+    for now in (datetime(2026, 10, 2, 9, 0), datetime(2026, 10, 1, 9, 0)):  # a new stamp, then the same one
+        with pytest.raises(OSError, match='No space left'):
+            jri.write_six(tmp_path, '9.9.9', now=now, **args)
+        assert {p.name: p.read_bytes() for p in folder.iterdir()} == before
 
 
 def test_the_engine_commit_names_the_binary_s_build_not_the_checkout_s_head(tmp_path: Path) -> None:

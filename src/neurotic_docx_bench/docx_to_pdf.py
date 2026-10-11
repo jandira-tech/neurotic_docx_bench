@@ -298,8 +298,7 @@ def write_fixture_list(
         f"# Pools: {', '.join(spec.oracle_pdf_dir_names)} (SHA-256 pinned).",
         "# Staging key is {kind}__{original_stem}. Columns: kind<TAB>original_stem",
     ]
-    for item in items:
-        lines.append(f"{item.kind}\t{item.original_stem}")
+    lines.extend(f"{item.kind}\t{item.original_stem}" for item in items)
     dest = path or spec.fixture_list
     dest.parent.mkdir(parents=True, exist_ok=True)
     dest.write_text("\n".join(lines) + "\n", encoding="utf-8")
