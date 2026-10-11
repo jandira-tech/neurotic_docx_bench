@@ -1,0 +1,43 @@
+---
+// SPDX-FileCopyrightText: 2026 Jandira Technologies, LLC
+// SPDX-License-Identifier: AGPL-3.0-only
+const tools = [
+  { name: 'Jubarte', href: 'https://github.com/jandira-tech/jubarte-redlines', role: 'Tracked changes · PDF conversion' },
+  { name: 'Docxodus', href: 'https://github.com/JSv4/Docxodus', role: 'Tracked changes · fallback redline reference' },
+  { name: 'SuperDoc Redlines', href: 'https://github.com/yuch85/superdoc-redlines', role: 'Tracked changes with SuperDoc headless' },
+  { name: 'LibreOffice / soffice', href: 'https://www.libreoffice.org/', role: 'PDF conversion · fallback renderer' },
+  { name: 'docxide', href: 'https://github.com/sverrejb/docxide-pdf', role: 'PDF conversion · page metrics methodology' },
+  { name: 'Microsoft Word', href: 'https://www.microsoft.com/en-us/microsoft-365/word', role: 'Primary conversion & redline reference' },
+];
+---
+<section id="credits" class="credits" aria-labelledby="credits-title">
+  <div class="credits-thanks">
+    <p class="eyebrow">04 / BUILT ON SHARED WORK</p>
+    <h2 id="credits-title">Thank you, SuperDoc.</h2>
+    <p>This live benchmark is possible thanks to the <a href="https://huggingface.co/datasets/superdoc-dev/docx-corpus" target="_blank" rel="noopener noreferrer">SuperDoc DOCX Corpus</a>. Thank you to the SuperDoc team and every contributor for collecting, describing, and sharing such a rich collection of real documents with the community.</p>
+    <p>We also thank SuperDoc for publishing the <a href="https://github.com/superdoc-dev/superdoc-visual-benchmarks" target="_blank" rel="noopener noreferrer">visual benchmarks repository</a> that our visual scoring is derived from. Your open work makes these measurements possible and gives document tools a shared foundation to improve.</p>
+    <div class="credits-links"><a href="https://github.com/superdoc/docx-editor" target="_blank" rel="noopener noreferrer">SuperDoc repository ↗</a><a href="https://huggingface.co/datasets/superdoc-dev/docx-corpus" target="_blank" rel="noopener noreferrer">Explore the corpus ↗</a></div>
+    <p class="mono credits-attribution">Corpus index by SuperDoc · <a href="https://opendatacommons.org/licenses/by/1-0/" target="_blank" rel="noopener noreferrer">ODC-By 1.0</a>. Documents are downloaded from the corpus’s linked sources; original document rights remain with their respective owners.</p>
+  </div>
+  <div class="credits-tools">
+    <h3>Meet the tools</h3>
+    <p class="muted">Thank you to the maintainers and contributors behind every tool measured here.</p>
+    <ul>{tools.map((tool) => <li><a href={tool.href} target="_blank" rel="noopener noreferrer">{tool.name}<span aria-hidden="true">↗</span></a><span class="mono muted">{tool.role}</span></li>)}</ul>
+  </div>
+</section>
+<style>
+  .credits{border-top:1px solid var(--line);padding-top:34px;display:grid;grid-template-columns:1.3fr 1fr;gap:60px;scroll-margin-top:24px}
+  .credits h2{font-size:36px;letter-spacing:-1px;color:var(--primary);margin-bottom:20px}
+  .credits-thanks>p:not(.eyebrow){font-size:14px;line-height:1.85;margin:0 0 16px}
+  .credits-thanks .credits-attribution{font:11px var(--mono);line-height:1.75;margin-top:22px}
+  .credits-links{display:flex;flex-wrap:wrap;gap:12px 24px;font:12px var(--mono);margin:22px 0}
+  .credits-tools h3{font-size:18px;margin:0 0 10px}
+  .credits-tools>p{font-size:13px;line-height:1.75;margin:0 0 18px}
+  ul{list-style:none;padding:0;margin:0}
+  li{padding:14px 0;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:7px}
+  li>a{display:flex;justify-content:space-between;align-items:center;font-size:14px;text-decoration:none}
+  li>a:hover{text-decoration:underline}
+  li>a>span{color:var(--primary)}
+  @media(max-width:1000px){.credits{gap:30px}}
+  @media(max-width:650px){.credits{grid-template-columns:1fr;gap:28px}.credits h2{font-size:32px}}
+</style>
