@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "astro dev --host 127.0.0.1",
     "build": "astro build && node scripts/relative-css-assets.mjs",
-    "check": "astro check && tsc --noEmit",
+    "check": "wrangler types --include-runtime=false && astro check && tsc --noEmit",
     "test": "vitest run --coverage && node scripts/coverage-summary.mjs",
     "preview": "wrangler dev",
     "db:migrate:local": "wrangler d1 migrations apply DB --local",
