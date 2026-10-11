@@ -1,0 +1,12 @@
+results_redline:
+  jubarte binary sha256 9626a555364d6251efc1260a2d90588f4fa21c2a4ebb87e1778826a78178cf21, commit 4bc102c66c49e33bdd79004eb1ff2e5611cef39b, reports 'jubarte 0.11.0'
+  docxodus: n=600 failures=23 mean=69.2382 median=78.8939 =100:41 >=90:99
+  jubarte: n=600 failures=0 mean=76.7059 median=84.2774 =100:61 >=90:131
+  jubarte - docxodus: median delta 0.6316, 95% CI [0.0778, 1.1186] (2000 resamples, seed 42)
+results_conversion:
+  jubarte binary sha256 9626a555364d6251efc1260a2d90588f4fa21c2a4ebb87e1778826a78178cf21, commit 4bc102c66c49e33bdd79004eb1ff2e5611cef39b, reports 'jubarte 0.11.0'
+  jubarte: n=600 failures=0 mean=78.7687 median=80.8474 =100:1 >=90:113
+  soffice: n=600 failures=4 mean=54.0623 median=47.7343 =100:0 >=90:1
+  jubarte - soffice: median delta 25.6948, 95% CI [24.0814, 27.2524] (2000 resamples, seed 42)
+release_info/ carries 0.11.2's six files
+  every non-empty sample path was verified against /Users/arthrod/temp/T/neurotic_docx_bench

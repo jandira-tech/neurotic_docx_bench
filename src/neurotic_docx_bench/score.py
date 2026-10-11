@@ -149,12 +149,25 @@ def _align_images(ref_gray: np.ndarray, mov_gray: np.ndarray, mov_rgb: np.ndarra
     return aligned.astype(np.float32)
 
 
-def _ink_mask(gray: np.ndarray, min_size: int) -> np.ndarray:
+# Word's All Markup pane is 0.949 gray; ink must stop short of it.
+INK_THRESHOLD_CAP = 0.9
+
+
+def _ink_threshold(gray: np.ndarray) -> float:
+    """The ink threshold of a page, taken from the REFERENCE page for both
+    sides: Otsu on the candidate after the sub-pixel alignment warp drifts
+    to 0.96 on markup pages (the resampled edges shift the histogram), the
+    old 0.95 cap let the 0.949 pane through as ink, and ink F1 fell to 0.04
+    with the blob penalty at 0.99 on 21 of 300 sample documents (2026-10-03,
+    bb35ae41ba: 66.5 with the pane as ink, 76.2 without)."""
     try:
         thr = filters.threshold_otsu(gray)
     except ValueError:
-        thr = 0.95
-    thr = min(thr, 0.95)
+        thr = INK_THRESHOLD_CAP
+    return float(min(thr, INK_THRESHOLD_CAP))
+
+
+def _ink_mask(gray: np.ndarray, min_size: int, thr: float) -> np.ndarray:
     ink = gray < thr
     ink = morphology.remove_small_objects(ink, max_size=min_size)
     return ink
@@ -260,8 +273,9 @@ def _compute_metrics(word_rgb: np.ndarray, sd_rgb: np.ndarray, config: ScoreConf
     word_gray = color.rgb2gray(word_rgb)
     sd_gray = color.rgb2gray(sd_rgb)
 
-    ink_word = _ink_mask(word_gray, config.ink_min_size)
-    ink_sd = _ink_mask(sd_gray, config.ink_min_size)
+    thr = _ink_threshold(word_gray)
+    ink_word = _ink_mask(word_gray, config.ink_min_size, thr)
+    ink_sd = _ink_mask(sd_gray, config.ink_min_size, thr)
     ink_union = np.logical_or(ink_word, ink_sd)
 
     ssim_full = kernels.ssim(word_gray, sd_gray)
@@ -324,12 +338,22 @@ def _score_page(word_rgb: np.ndarray, sd_rgb: np.ndarray, config: ScoreConfig) -
     word_gray = color.rgb2gray(word_rgb)
     sd_gray = color.rgb2gray(sd_rgb)
 
+    # The alignment forgives a global offset; it must never cost an exact
+    # render. Phase correlation read a 0.6px shift on a page that sat
+    # exactly where Word's did (bb35ae41ba, 2026-10-03) and the resampled
+    # candidate's edge IoU fell from 0.86 to 0.45, so the unshifted
+    # candidate is scored too and the better of the two stands.
     sd_aligned = _align_images(word_gray, sd_gray, sd_rgb, config)
     strict_metrics = _compute_metrics(word_rgb, sd_aligned, config)
+    unshifted = _compute_metrics(word_rgb, sd_rgb, config)
+    if unshifted["score"] > strict_metrics["score"]:
+        strict_metrics = unshifted
+        sd_aligned = sd_rgb
 
     sd_aligned_gray = color.rgb2gray(sd_aligned)
-    ink_word = _ink_mask(word_gray, config.ink_min_size)
-    ink_sd = _ink_mask(sd_aligned_gray, config.ink_min_size)
+    thr = _ink_threshold(word_gray)
+    ink_word = _ink_mask(word_gray, config.ink_min_size, thr)
+    ink_sd = _ink_mask(sd_aligned_gray, config.ink_min_size, thr)
     map_y, drift_strength = _vertical_map_from_ink(ink_word, ink_sd, config)
 
     if map_y is not None:

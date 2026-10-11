@@ -1,0 +1,31 @@
+{
+ "conversion": {
+  "adopted_sha256": "ccce29b2a38c87ca73dbda5563ffb7f424d9db9de0262da78bc93659ccb624cb",
+  "by_state": {
+   "clean": 150,
+   "tracking_without_comments": 150,
+   "with_comments_clean": 117,
+   "with_comments_tracking": 183
+  },
+  "date": "2026-10-03",
+  "n": 600,
+  "rule": "adopted from results/release_0.11.2/convert600.txt, not drawn",
+  "seed": 20261003
+ },
+ "redline": {
+  "adopted_sha256": "e5715238620b8a2ff41fe971dbadc9a557a146b3ef269902d6e1f839d94a0d4c",
+  "by_state": {
+   "clean": 2,
+   "tracking_without_comments": 422,
+   "with_comments_clean": 2,
+   "with_comments_tracking": 174
+  },
+  "date": "2026-10-03",
+  "docxodus_coverage": "local PDFs",
+  "docxodus_covered_pairs": 547,
+  "n": 600,
+  "pairs": 600,
+  "rule": "adopted from results/redlines_0929_full/sample600_pairs.csv, not drawn",
+  "seed": 20261003
+ }
+}

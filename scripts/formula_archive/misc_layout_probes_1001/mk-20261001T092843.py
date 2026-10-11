@@ -1,0 +1,6 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# SPDX-FileCopyrightText: 2026 Jandira Technologies, LLC
+import sys; sys.path.insert(0,'/tmp/conejo'); from mkp import mk
+st='''<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:docDefaults><w:rPrDefault><w:rPr><w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman"/></w:rPr></w:rPrDefault></w:docDefaults><w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/></w:style><w:style w:type="paragraph" w:customStyle="1" w:styleId="Defpara"><w:name w:val="Defpara"/><w:pPr><w:tabs><w:tab w:val="right" w:pos="1332"/><w:tab w:val="left" w:pos="1616"/></w:tabs><w:ind w:left="1616" w:hanging="1616"/></w:pPr><w:rPr><w:sz w:val="24"/></w:rPr></w:style></w:styles>'''
+p='<w:p><w:pPr><w:pStyle w:val="Defpara"/></w:pPr><w:r><w:tab/><w:t>(a)</w:t></w:r><w:r><w:tab/><w:t>any business undertaking authorised by the Authority; or</w:t></w:r></w:p>'
+mk('src/rt.docx',p,st)
