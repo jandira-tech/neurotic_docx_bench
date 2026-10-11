@@ -26,7 +26,7 @@ V = {
     "R6_01_empty_range_ref": p(P1) + p(S, E, REF) + p(P2),            # 6ef6726c28's shape
     "R6_02_empty_t_between": p(P1) + p(S, r(""), E, REF) + p(P2),     # the 0929 probe (said dead)
     "R6_03_empty_range_plainref": p(P1) + p(S, E, PLAINREF) + p(P2),
-    "R6_04_sibling_start": p(P1) + p(S9, S, E, REF) + p(P2),          # a stray start of another comment first
+    "R6_04_sibling_start": p(P1) + p(S9, S, E, REF) + p(P2),          # an orphan start first (no comment 9 exists): an unmatched marker, not a live sibling
     "R6_05_ppr_empty_range": p(P1) + p(PPR, S, E, REF) + p(P2),
     "R6_06_empty_range_ref_text": p(P1) + p(S, E, REF, P2),
     "R6_07_empty_range_last": p(P1) + p(P2) + p(S, E, REF),           # last paragraph, as in 6ef6726c28
