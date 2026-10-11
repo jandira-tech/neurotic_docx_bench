@@ -1,0 +1,18 @@
+{
+  "extends": "astro/tsconfigs/strict",
+  "include": [
+    ".astro/types.d.ts",
+    "**/*"
+  ],
+  "exclude": [
+    "dist",
+    "node_modules",
+    "coverage",
+    "public/_astro/pdfjs"
+  ],
+  "compilerOptions": {
+    "types": [
+      "./worker-configuration.d.ts"
+    ]
+  }
+}
