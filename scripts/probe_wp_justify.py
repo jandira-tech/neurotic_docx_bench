@@ -9,7 +9,8 @@ are compressed.
 characters on 468pt, every glyph advanced 7.0908 (468/66) instead of
 7.2; jubarte wraps at 65 and runs 37 pages to Word's 35. Each probe is
 one justified paragraph whose first line naturally holds N characters
-(ten five-letter words, then a word of N−60 letters, then more words);
+(ten five-letter words, then a word of N−60 letters, then more words;
+under N=61 the last five-letter words drop so the long word keeps a letter);
 Word keeps the long word on the line, compressed, or wraps it.
 
 Usage: uv run python scripts/probe_wp_justify.py OUTDIR
@@ -22,17 +23,22 @@ WP_COMPAT = ('<w:wpJustification/><w:noTabHangInd/><w:subFontBySize/><w:suppress
 
 def text_for(n, shape="ten"):
     tail = ["north", "south", "east", "west", "upper", "lower", "inner", "outer", "first", "last", "wide", "tall"] * 3
-    if shape == "ten":
+    if shape == "ten":  # ten five-letter words (60 chars with spaces), fewer when N is under 61
         words = ["alpha", "bravo", "delta", "gamma", "kappa", "omega", "sigma", "theta", "zetas", "yotta"]
-        long = "m" * (n - 60)
-        return " ".join(words + [long] + tail)
-    if shape == "few":  # three 15-letter words, then a word of n-48 letters: 3 spaces on the line
+        while len(" ".join(words)) + 2 > n:
+            words.pop()
+        prefix = len(" ".join(words)) + 1
+    elif shape == "few":  # three 15-letter words, then a word of n-48 letters: 3 spaces on the line
         words = ["abcdefghijklmno", "pqrstuvwxyzabcd", "efghijklmnopqrs"]
-        return " ".join(words + ["m" * (n - 48)] + tail)
-    if shape == "many":  # 21 two-letter words (62 chars), then a word of n-63 letters: 21 spaces on the line
+        prefix = 48
+    elif shape == "many":  # 21 two-letter words (62 chars), then a word of n-63 letters: 21 spaces on the line
         words = ["ab", "cd", "ef", "gh", "ij", "kl", "mn", "op", "qr", "st", "uv", "wx", "yz", "ba", "dc", "fe", "hg", "ji", "lk", "nm", "po"]
-        return " ".join(words + ["m" * (n - 63)] + tail)
-    raise ValueError(shape)
+        prefix = 63
+    else:
+        raise ValueError(shape)
+    if n <= prefix:
+        raise ValueError(f"{shape} needs N above {prefix} for its long word, got {n}")
+    return " ".join(words + ["m" * (n - prefix)] + tail)
 
 def parts(n, jc="both", compat=WP_COMPAT, mode="14", size=24, font="Courier New", shape="ten", right=1440):
     doc = (f'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document xmlns:w="{W}"><w:body>'
