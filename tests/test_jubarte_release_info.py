@@ -28,8 +28,10 @@ from neurotic_docx_bench.jubarte_bench_release import Release, Step, execute
 
 V = '0.11.3'
 LANE = f'jubarte-{V}'
+COMMIT = 'c0ffee' + '0' * 34
 REPO = Path(__file__).resolve().parents[1]
-CHECKER = Path.home() / 'temp/T/jubarte-loop/release_0.11.2/agents/release_info/B_release_sh/check_release_info.py'
+# the engine's own release gate (scripts/release.sh step 3), from the canonical checkout
+CHECKER = Path.home() / 'temp/T/jubarte-redlines/scripts/check_release_info.py'
 
 
 @dataclass
@@ -100,8 +102,8 @@ def _answers(cmd, **_) -> Proc:
     """The runner of a candidate that still reports the previous version."""
     if cmd[-1] == '--version':
         return Proc(0, 'jubarte 0.11.0\n')
-    if cmd[0] == 'git':
-        return Proc(0, 'c0ffee\n')
+    if cmd[0] == 'git':  # rev-parse --verify always answers the full 40-hex id
+        return Proc(0, COMMIT + '\n')
     return Proc(1)
 
 
@@ -449,6 +451,8 @@ def test_generate_runs_the_given_binary_and_a_manifest_per_tool(tmp_path: Path) 
     assert generate[generate.index('--dist') + 1] == str(ev / 'dist')
     assert generate[generate.index('--tool') + 1] == LANE
     assert generate[generate.index('--manifest') + 1] == str(ev / 'gen_pairs_sample.csv')
+    # a rerun with a new candidate must not keep the previous binary's redlines
+    assert '--force' in generate
     _act(steps, 'generator dist')
     assert [p.name for p in (root / ev / 'dist').iterdir()] == ['jubarte']
     assert (root / ev / 'dist' / 'jubarte').resolve() == binary.resolve()
@@ -457,9 +461,37 @@ def test_generate_runs_the_given_binary_and_a_manifest_per_tool(tmp_path: Path) 
     assert docxodus[docxodus.index('--dist') + 1] == str(jri.DOCXODUS_DIST)
     assert docxodus[docxodus.index('--tool') + 1] == 'docxodus'
     assert docxodus[docxodus.index('--manifest') + 1] == str(ev / 'gen_pairs_docxodus_missing.csv')
+    assert '--force' not in docxodus
     names = [s.name for s in steps if s.stage == 'generate']
     assert names.index('docxodus PDFs from the hub') < names.index('docxodus manifest') \
         < names.index('docxodus redlines (missing only)')
+
+
+def test_a_rewritten_redline_loses_its_old_word_pdf(tmp_path: Path) -> None:
+    root, regen = _tree(tmp_path)
+    jub = root / jri.RUN_DIR / LANE
+    for stem in ('same', 'changed', 'unexported'):
+        _put(jub / 'docx' / f'{stem}.docx', stem.encode())
+    for stem in ('same', 'changed'):
+        _put(jub / 'pdf_by_word' / f'{stem}.pdf', b'%PDF word')
+    steps = _plan(root, regen)
+    assert _act(steps, 'redline snapshot') == '3 redlines on record before generating'
+    (jub / 'docx' / 'changed.docx').write_bytes(b'new candidate bytes')
+    detail = _act(steps, 'stale Word PDFs aside')
+    assert detail.startswith('1 Word PDFs of changed redlines moved to pdf_by_word_stale/')
+    assert sorted(p.name for p in (jub / 'pdf_by_word').iterdir()) == ['same.pdf']
+    assert (jub / 'pdf_by_word_stale' / 'changed.pdf').read_bytes() == b'%PDF word'
+    assert _act(steps, 'stale Word PDFs aside').startswith('every exported redline is byte-identical')
+    names = [s.name for s in steps if s.stage == 'generate']
+    assert names.index('redline snapshot') < names.index('jubarte redlines') < names.index('stale Word PDFs aside')
+
+
+def test_a_word_pdf_without_recorded_source_bytes_counts_as_stale(tmp_path: Path) -> None:
+    docx, pdf = tmp_path / 'docx', tmp_path / 'pdf_by_word'
+    _put(docx / 'a.docx', b'a')
+    _put(pdf / 'a.pdf', b'%PDF')
+    assert jri.set_aside_stale_pdfs(docx, pdf, tmp_path / 'no-ledger.json').startswith('1 Word PDFs')
+    assert not (pdf / 'a.pdf').exists()
 
 
 def test_the_draw_counts_the_hub_listing_as_coverage_and_caches_it(tmp_path: Path) -> None:
@@ -767,7 +799,7 @@ def test_sample_then_write_passes_the_engine_checker(tmp_path: Path, mode: str) 
     for doc in (redline, conversion):
         jub = doc['tools']['jubarte']
         assert jub['version'] == f'jubarte {V}' and jub['candidate_reports'] == 'jubarte 0.11.0'
-        assert jub['binary_sha256'] == made['binary_sha'] and jub['commit'] == 'c0ffee'
+        assert jub['binary_sha256'] == made['binary_sha'] and jub['commit'] == COMMIT
         assert doc['sample']['csv'] == six[f'sample_{doc["schema"].split("_")[-1].split("/")[0]}'].name
     meta = json.loads((root / jri.evidence_dir(V) / 'sample_meta.json').read_text())
     assert redline['sample']['drawn'] == meta['redline'] and conversion['sample']['drawn'] == meta['conversion']
