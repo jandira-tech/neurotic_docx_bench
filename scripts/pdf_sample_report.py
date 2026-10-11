@@ -2,9 +2,10 @@
 """Report `bench docx-to-pdf` JSON results per corpus set and state, and the
 paired difference between two or more results on the documents they share.
 
-    pdf_sample_report.py NAME=results.json [NAME=other.json ...] [--sets a,b] [--worst N]
+    pdf_sample_report.py NAME=results.json[#TOOL] [NAME=other.json[#TOOL] ...] [--sets a,b] [--worst N]
 
-The first result is the reference. Per-doc scores are keyed by the bench's
+The first result is the reference. A report holding several converters needs
+``#TOOL`` to say which one the bin is; a failed document scores 0. Per-doc scores are keyed by the bench's
 stem `<state>__<id>_<stem>`; the id joins ``corpus/word/documents.csv`` for
 the document's state and first set. Prints per bin: n, mean, median, <50,
 >=90, generate failures; then per (state) and per (set) means; then for each
@@ -27,19 +28,27 @@ WORD = ROOT / "corpus" / "word"
 
 def docs():
     out = {}
-    for r in csv.DictReader((WORD / "documents.csv").open()):
+    for r in csv.DictReader((WORD / "documents.csv").open(encoding="utf-8", newline="")):
         out[r["id"]] = (r["state"], r["sets"].split(";")[0] if r["sets"] else "?")
     return out
 
 
-def load(path):
-    d = json.loads(Path(path).read_text())
-    tools = d["tools"]
-    tool = next(iter(tools.values()))
+def load(spec):
+    """``PATH[#TOOL]``: one converter's per-doc scores and failures; a failed
+    document scores 0 even when a merged report kept a score for it."""
+    path, _, name = spec.partition("#")
+    tools = json.loads(Path(path).read_text(encoding="utf-8"))["tools"]
+    if name:
+        if name not in tools:
+            sys.exit(f"{path}: no tool {name!r} (holds {', '.join(tools)})")
+        tool = tools[name]
+    elif len(tools) == 1:
+        tool = next(iter(tools.values()))
+    else:
+        sys.exit(f"{path} holds {len(tools)} tools ({', '.join(tools)}): pick one with {path}#TOOL")
     fails = {f["doc"] for f in tool.get("generate_failures", [])}
     scores = dict(tool["per_doc"])
-    for f in fails:
-        scores.setdefault(f, 0.0)
+    scores.update(dict.fromkeys(fails, 0.0))
     return scores, fails
 
 
@@ -51,12 +60,15 @@ def main(argv):
     while i < len(argv):
         a = argv[i]
         if a == "--sets":
-            sets = set(argv[i + 1].split(",")); i += 2; continue
-        if a == "--worst":
-            worst = int(argv[i + 1]); i += 2; continue
-        name, path = a.split("=", 1)
-        bins.append((name, *load(path)))
-        i += 1
+            sets = set(argv[i + 1].split(","))
+        elif a == "--worst":
+            worst = int(argv[i + 1])
+        else:
+            name, path = a.split("=", 1)
+            bins.append((name, *load(path)))
+            i += 1
+            continue
+        i += 2
     meta = docs()
 
     def info(stem):
@@ -69,6 +81,9 @@ def main(argv):
         common = {s for s in common if info(s)[1] in sets}
     common = sorted(common)
     print(f"{len(common)} documents shared by {len(bins)} result(s)")
+    if not common:
+        print("no document is shared by every result (after --sets); nothing to report")
+        return
     print(f"{'bin':>10} {'mean':>7} {'median':>7} {'<50':>5} {'>=90':>5} {'=100':>5} {'fails':>6}")
     for name, sc, fails in bins:
         xs = [sc[s] for s in common]
@@ -87,7 +102,7 @@ def main(argv):
         boots = sorted(statistics.mean(rng.choices(d, k=len(d))) for _ in range(2000))
         wins = sum(x > 0.5 for x in d)
         losses = sum(x < -0.5 for x in d)
-        print(f"\n{name} − {ref_name}: mean {statistics.mean(d):+.3f} [95 % {boots[50]:+.3f}, {boots[1949]:+.3f}]  wins {wins}  losses {losses}  unchanged {len(d) - wins - losses}")
+        print(f"\n{name} - {ref_name}: mean {statistics.mean(d):+.3f} [95 % {boots[50]:+.3f}, {boots[1949]:+.3f}]  wins {wins}  losses {losses}  unchanged {len(d) - wins - losses}")
         by = defaultdict(list)
         for s in common:
             by[info(s)[1]].append(sc[s] - ref[s])
