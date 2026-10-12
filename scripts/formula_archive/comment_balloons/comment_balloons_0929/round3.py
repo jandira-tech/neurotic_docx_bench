@@ -1,11 +1,11 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 # SPDX-FileCopyrightText: 2026 Jandira Technologies, LLC
 import re, sys, zipfile; from pathlib import Path
-sys.path.insert(0, str(Path.home() / "temp/T/comment_balloons"))
+sys.path.insert(0, str(Path(__file__).resolve().parent))  # blocklib.py
 from ab import read, write
 from blocklib import blocks, drop
-M = Path.home() / "temp/T/comment_balloons/r2/docx/R2_99_drop_all_unmarked.docx"
-OUT = Path.home() / "temp/T/comment_balloons/" / (sys.argv[1] if len(sys.argv) > 1 else "r3") / "docx"
+M = Path("results/comment_balloons/r2/docx/R2_99_drop_all_unmarked.docx")
+OUT = Path("results/comment_balloons/") / (sys.argv[1] if len(sys.argv) > 1 else "r3") / "docx"
 b = read(M); cx = read(M, "word/comments.xml")
 print("comment ids:", re.findall(r'<w:comment\b[^>]*w:id="(\d+)"', cx))
 def rm_comments(ids):

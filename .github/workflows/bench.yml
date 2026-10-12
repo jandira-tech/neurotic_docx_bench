@@ -62,13 +62,13 @@ jobs:
         if: always()
         run: |
           npx vitest run scripts/redline_scoreboard.test.ts
-          if [ -x ../jubarte-redlines/target/release/jubarte ] \
-             && [ -d ../jubarte-first/src/lossless ] \
-             && [ -f ../reconciliation_plan/folio/packages/core/src/redline-lossless-verify.ts ]; then
+          if [ -x src/neurotic_docx_bench/utils/jubarte/jubarte-redlines/target/release/jubarte ] \
+             && [ -d src/neurotic_docx_bench/utils/jubarte/jubarte-first/src/lossless ] \
+             && [ -f src/neurotic_docx_bench/utils/folio-checkout/packages/core/src/redline-lossless-verify.ts ]; then
             node --import tsx scripts/redline_scoreboard.ts --update-results
           else
             echo "D-2 sweep SKIPPED: engine/folio checkouts absent on this runner" \
-                 "(needs ../jubarte-redlines CLI, ../jubarte-first, a folio checkout with redline-lossless-verify)."
+                 "(needs the engine links under src/neurotic_docx_bench/utils: scripts/link_engines.sh)."
           fi
 
       - name: Regenerate the published views from the stores

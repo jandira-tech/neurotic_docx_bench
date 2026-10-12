@@ -2,9 +2,9 @@
 
     uv run python -m neurotic_docx_bench.jubarte_release_info 0.11.3 --plan
     uv run python -m neurotic_docx_bench.jubarte_release_info 0.11.3 \
-        --engine-dir ../jubarte-redlines --binary target/release/jubarte
+        --engine-dir src/neurotic_docx_bench/utils/jubarte/jubarte-redlines --binary target/release/jubarte
     uv run python -m neurotic_docx_bench.jubarte_release_info 0.11.3 \
-        --engine-dir ../jubarte-redlines            # the GitHub release binary
+        --engine-dir src/neurotic_docx_bench/utils/jubarte/jubarte-redlines            # the GitHub release binary
     scripts/jubarte_release_info.py 0.11.3 --plan   # the same app
 
 The owner's flow, one scoring job at a time (``--only`` / ``--skip`` pick

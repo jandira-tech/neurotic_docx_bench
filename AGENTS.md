@@ -4,8 +4,9 @@ Guidance for AI agents and contributors working on this repo. Read this before c
 anything; the invariants below are load-bearing.
 
 Before changing, rebuilding, or benchmarking the Rust redline engine, also read
-`../reconciliation_plan/GET_JUBARTE_RUST.md`. The only canonical local Rust source
-checkout is `../jubarte-redlines` (`~/T/jubarte-redlines`). Everything under this
+`docs/GET_JUBARTE_RUST.md`. The only canonical local Rust source
+checkout is `~/T/jubarte-redlines`, reached from this repo through the link
+`src/neurotic_docx_bench/utils/jubarte/jubarte-redlines` (`scripts/link_engines.sh`). Everything under this
 repository's `src/neurotic_docx_bench/utils/jubarte/jubarte-rust` and
 `src/neurotic_docx_bench/utils/jubarte/jubarte-wasm/pkg` is a consumer artifact;
 never implement an engine fix in those copies.

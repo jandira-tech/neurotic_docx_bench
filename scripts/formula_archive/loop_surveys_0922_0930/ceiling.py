@@ -8,7 +8,7 @@ color_sim taken as 1) and the rest (layout/glyph ink). Writes runs/tip_RUN/ceili
 Run with the bench venv: ../neurotic_docx_bench/.venv/bin/python ceiling.py w12"""
 import json, pathlib, shutil, statistics as st, sys
 
-sys.path.insert(0, "/Users/arthrod/temp/T/neurotic_docx_bench/src")
+sys.path.insert(0, "src")
 from neurotic_docx_bench import docx_to_pdf as d2p  # noqa: E402
 
 L = pathlib.Path(__file__).parent

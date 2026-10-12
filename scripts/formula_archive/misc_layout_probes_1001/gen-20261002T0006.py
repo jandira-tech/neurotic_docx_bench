@@ -15,4 +15,4 @@ V={
 }
 for k,v in V.items():
     body = fill + v + p('After', 20)
-    subprocess.run([sys.executable, '/Users/arthrod/temp/T/jubarte-loop/mkdocx.py', f'src/{k}.docx', body, '--compat', '15'], check=True)
+    subprocess.run([sys.executable, 'results/jubarte-loop/mkdocx.py', f'src/{k}.docx', body, '--compat', '15'], check=True)

@@ -27,7 +27,7 @@ import { execFileSync } from "node:child_process";
 import JSZip from "jszip";
 
 const ROOT = resolve(dirname(new URL(import.meta.url).pathname), "..");
-const JF = process.env.JUBARTE_FIRST_DIR || resolve(ROOT, "../jubarte-first");
+const JF = process.env.JUBARTE_FIRST_DIR || resolve(ROOT, "src/neurotic_docx_bench/utils/jubarte/jubarte-first");
 const imp = (rel) => import(pathToFileURL(join(JF, rel)).href);
 
 const arg = (name, fallback) => {

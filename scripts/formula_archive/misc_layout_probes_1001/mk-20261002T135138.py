@@ -22,4 +22,4 @@ def body(fake):
 ST=('<w:settings xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">')
 for name,fake,compat,flag in [('v1_flag15','PrbKaiQ1',15,True),('v2_noflag15','PrbKaiQ2',15,False),('v3_flag12','PrbKaiQ3',12,True)]:
     settings='<w:compat>'+('<w:balanceSingleByteDoubleByteWidth/>' if flag else '')+f'<w:compatSetting w:name="compatibilityMode" w:uri="http://schemas.microsoft.com/office/word" w:val="{compat}"/></w:compat>'
-    subprocess.run(['python3','/Users/arthrod/temp/T/jubarte-loop/mkdocx.py',f'src/{name}.docx',body(fake),'--compat',str(compat),'--settings',settings],check=True)
+    subprocess.run(['python3','results/jubarte-loop/mkdocx.py',f'src/{name}.docx',body(fake),'--compat',str(compat),'--settings',settings],check=True)

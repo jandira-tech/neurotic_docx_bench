@@ -3,10 +3,10 @@
 """Round 4: single comment (R3_keep_4, 0 balloons). Table / reference layout vs tracked changes."""
 import re, sys
 from pathlib import Path
-sys.path.insert(0, str(Path.home() / "temp/T/comment_balloons"))
+sys.path.insert(0, str(Path(__file__).resolve().parent))  # blocklib.py
 from ab import read, write
-M = Path.home() / "temp/T/comment_balloons/r3b/docx/R3_keep_4.docx"
-OUT = Path.home() / "temp/T/comment_balloons/r4/docx"
+M = Path("results/comment_balloons/r3b/docx/R3_keep_4.docx")
+OUT = Path("results/comment_balloons/r4/docx")
 b = read(M)
 head, body = b.split("<w:body>", 1)
 body, tail = body.rsplit("<w:sectPr", 1)

@@ -3,7 +3,7 @@
 """lineagree.py BIN K stems... : share of Word text lines found verbatim in ours (Latin docs only)."""
 import sys,subprocess,os,re
 binp,k,*stems=sys.argv[1:]
-G='/Users/arthrod/temp/T/neurotic_docx_bench/grok_run'
+G='results/grok_run_view/grok_run'
 tot=hit=0
 def lines(pdf):
     t=subprocess.run(['pdftotext',pdf,'-'],capture_output=True,text=True).stdout

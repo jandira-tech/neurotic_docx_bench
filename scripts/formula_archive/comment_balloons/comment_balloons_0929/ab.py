@@ -7,7 +7,7 @@ import re, subprocess, sys, zipfile, json
 from pathlib import Path
 import fitz
 
-BENCH = Path.home() / "temp/T/neurotic_docx_bench"
+BENCH = Path(".")
 
 def read(docx: Path, part="word/document.xml") -> str:
     return zipfile.ZipFile(docx).read(part).decode("utf8")

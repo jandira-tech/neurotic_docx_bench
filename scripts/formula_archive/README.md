@@ -3,6 +3,23 @@
 Archived as recovered, not maintained: run nothing here without reading it.
 The topic folders sit beside this file.
 
+**Paths (2026-10-11).** The scripts no longer point outside this repo; run them from the repo root.
+
+| the scripts read | now | set up with |
+|---|---|---|
+| `grok_run/…`, `~/temp/T/grok_run_archive/…` | `results/grok_run_view/{grok_run,grok_run_archive}/…`: links into `corpus/` under the original names | `uv run bench fixtures download`, then `uv run python scripts/formula_archive/grok_run_view.py` |
+| `~/temp/T/jubarte-loop/…` | `results/jubarte-loop/…` (a link) | `zsh scripts/link_engines.sh` |
+| `~/temp/T/jubarte-redlines/…` | `src/neurotic_docx_bench/utils/jubarte/jubarte-redlines/…` (a link) | `zsh scripts/link_engines.sh` |
+| `~/temp/T/jubarte-redlines/_to_improve_docx_to_pdf*` | `from_jubarte-redlines/_to_improve_docx_to_pdf*` | — |
+| `~/temp/T/comment_balloons/…` | `results/comment_balloons/…` (moved there) | — |
+
+Gone for good, so the scripts that read them will not run: the tool outputs that sat beside Word's
+files (`grok_run/wr0926/{A,B,C,D}_*`, `grok_run/en_jubarte_*`, `grok_run/en_{A,B,C,D}_*`: jubarte,
+LibreOffice and docxide-pdf renders, never in git, deleted as not Word's), `jubarte-loop/{pdf_by_word,
+OG,docx,bin,wordab,jubarte-cur2}`, `grok_run_archive/justify{3,4}_1003/docx/manifest.json` and the
+`~/.claude/jobs/…/all_cur` temp folder `loop_surveys_0922_0930/pitch.py` used. The `mk*.py`/`gen*.py`
+paths in the tables below record where a script was recovered from; the copies here are what survives.
+
 These are the scripts that derived the engine's Word-layout and Word-compare
 laws for the 0.11.2 release: probe generators (small docx files varying one
 thing), measurers (PyMuPDF/fitz readers of Word's PDFs), reducers (cut a real

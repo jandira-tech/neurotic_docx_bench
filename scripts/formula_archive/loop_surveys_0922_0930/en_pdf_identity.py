@@ -8,7 +8,7 @@ A markup PDF shows deletions and insertions together, so A and B are each looked
 and so is the redline's own plain view (its deletions plus insertions in document order). Each side is
 judged on its own; nothing is averaged. Exit 1 when any PDF fails."""
 import sys, pathlib, statistics
-sys.path.insert(0, "/Users/arthrod/temp/T/neurotic_docx_bench/scripts")
+sys.path.insert(0, "scripts")
 from redline_identity import body_text, coverage, MIN_COVERAGE, _norm
 import pymupdf
 

@@ -8,13 +8,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Docxodus">
-      <HintPath>/Users/arthrod/temp/T/ooxmlsdk/Docxodus/tools/redline/bin/Release/net10.0/Docxodus.dll</HintPath>
+      <HintPath>../ooxmlsdk/Docxodus/tools/redline/bin/Release/net10.0/Docxodus.dll</HintPath>
     </Reference>
     <Reference Include="DocumentFormat.OpenXml">
-      <HintPath>/Users/arthrod/temp/T/ooxmlsdk/Docxodus/tools/redline/bin/Release/net10.0/DocumentFormat.OpenXml.dll</HintPath>
+      <HintPath>../ooxmlsdk/Docxodus/tools/redline/bin/Release/net10.0/DocumentFormat.OpenXml.dll</HintPath>
     </Reference>
     <Reference Include="DocumentFormat.OpenXml.Framework">
-      <HintPath>/Users/arthrod/temp/T/ooxmlsdk/Docxodus/tools/redline/bin/Release/net10.0/DocumentFormat.OpenXml.Framework.dll</HintPath>
+      <HintPath>../ooxmlsdk/Docxodus/tools/redline/bin/Release/net10.0/DocumentFormat.OpenXml.Framework.dll</HintPath>
     </Reference>
   </ItemGroup>
 </Project>
