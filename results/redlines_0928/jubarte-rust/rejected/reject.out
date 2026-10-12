@@ -1,0 +1,54 @@
+2026-09-29 00:12:28.813 | INFO     | __main__:preflight:1762 -  preflight: 
+open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-09-29 00:12:28.859 | INFO     | __main__:convert_folder:1436 -  export: 
+one_osascript=True documents=100 accept_all=False reject_all=True
+2026-09-29 00:12:45.003 | INFO     | __main__:_note_buttons:509 -  Microsoft 
+Word shows button 'Cancel'
+2026-09-29 00:12:45.004 | INFO     | __main__:_note_buttons:509 -  Microsoft 
+Word shows button 'Create'
+2026-09-29 00:12:45.005 | INFO     | __main__:_note_buttons:509 -  Microsoft 
+Word shows button 'missing value'
+2026-09-29 00:12:50.114 | WARNING  | __main__:_loop_word:539 -  Word dialog 
+dismissed via 'Cancel'
+2026-09-29 00:13:04.474 | INFO     | __main__:_convert_batched:1635 -  one 
+osascript for 100 document(s)
+2026-09-29 00:13:09.524 | INFO     | __main__:_loop:1025 -  3/100
+2026-09-29 00:13:14.561 | INFO     | __main__:_loop:1025 -  7/100
+2026-09-29 00:13:19.594 | INFO     | __main__:_loop:1025 -  11/100
+2026-09-29 00:13:24.627 | INFO     | __main__:_loop:1025 -  14/100
+2026-09-29 00:13:29.662 | INFO     | __main__:_loop:1025 -  17/100
+2026-09-29 00:13:34.694 | INFO     | __main__:_loop:1025 -  20/100
+2026-09-29 00:13:39.730 | INFO     | __main__:_loop:1025 -  24/100
+2026-09-29 00:13:44.767 | INFO     | __main__:_loop:1025 -  28/100
+2026-09-29 00:13:49.799 | INFO     | __main__:_loop:1025 -  30/100
+2026-09-29 00:13:54.835 | INFO     | __main__:_loop:1025 -  34/100
+2026-09-29 00:13:59.869 | INFO     | __main__:_loop:1025 -  38/100
+2026-09-29 00:14:04.913 | INFO     | __main__:_loop:1025 -  40/100
+2026-09-29 00:14:09.950 | INFO     | __main__:_loop:1025 -  44/100
+2026-09-29 00:14:14.986 | INFO     | __main__:_loop:1025 -  47/100
+2026-09-29 00:14:20.038 | INFO     | __main__:_loop:1025 -  51/100
+2026-09-29 00:14:25.097 | INFO     | __main__:_loop:1025 -  55/100
+2026-09-29 00:14:30.125 | INFO     | __main__:_loop:1025 -  58/100
+2026-09-29 00:14:35.170 | INFO     | __main__:_loop:1025 -  62/100
+2026-09-29 00:14:40.203 | INFO     | __main__:_loop:1025 -  65/100
+2026-09-29 00:14:45.244 | INFO     | __main__:_loop:1025 -  69/100
+2026-09-29 00:14:50.273 | INFO     | __main__:_loop:1025 -  72/100
+2026-09-29 00:14:55.310 | INFO     | __main__:_loop:1025 -  75/100
+2026-09-29 00:15:00.342 | INFO     | __main__:_loop:1025 -  79/100
+2026-09-29 00:15:05.367 | INFO     | __main__:_loop:1025 -  82/100
+2026-09-29 00:15:10.388 | INFO     | __main__:_loop:1025 -  86/100
+2026-09-29 00:15:15.421 | INFO     | __main__:_loop:1025 -  88/100
+2026-09-29 00:15:20.461 | INFO     | __main__:_loop:1025 -  92/100
+2026-09-29 00:15:25.497 | INFO     | __main__:_loop:1025 -  94/100
+2026-09-29 00:15:30.522 | INFO     | __main__:_loop:1025 -  97/100
+          reject all → DOCX + PDF:          
+results/redlines_0928/jubarte-rust/rejected/
+                    src                     
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━┓
+┃ outcome                          ┃ count ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━┩
+│ converted                        │   100 │
+│ skipped (exists)                 │     0 │
+│ failed                           │     0 │
+│ seconds per document (batch avg) │   1.5 │
+└──────────────────────────────────┴───────┘

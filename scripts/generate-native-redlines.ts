@@ -19,8 +19,8 @@ import {
 	rmSync,
 } from "node:fs";
 import { createRequire } from "node:module";
-import { join, resolve } from "node:path";
-import { pathToFileURL } from "node:url";
+import { dirname, join, resolve } from "node:path";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { tmpdir } from "node:os";
 import { spawnSync } from "node:child_process";
 import { parse } from "csv-parse/sync";
@@ -834,6 +834,22 @@ export async function loadEngine(
 				"utils/jubarte/jubarte-rust/jubarte-worker.",
 		});
 	}
+	// jubarte-redlines *Python binding* in-process: the same long-lived worker
+	// protocol as jubarte-rust-inproc, served by scripts/jubarte_py_worker.py under
+	// the interpreter of the environment (distPath) the wheel is installed in.
+	if (method === "jubarte-python") {
+		return loadLongLivedCompareWorker({
+			label: "jubarte-python",
+			binCandidates: [resolve(distPath, "bin/python")],
+			args: [
+				join(dirname(fileURLToPath(import.meta.url)), "jubarte_py_worker.py"),
+			],
+			tmpPrefix: "jpyw-",
+			buildHint:
+				"uv venv DIR && uv pip install --python DIR/bin/python <jubarte-redlines wheel>, " +
+				"then pass --python-dist DIR.",
+		});
+	}
 	throw new Error(`unknown method: ${method}`);
 }
 
@@ -864,6 +880,8 @@ export function shutdownAllLongLivedWorkers(): void {
 async function loadLongLivedCompareWorker(opts: {
 	label: string;
 	binCandidates: string[];
+	/** Arguments for the worker binary (an interpreter's script). */
+	args?: string[];
 	tmpPrefix: string;
 	buildHint: string;
 }): Promise<RedlineEngine> {
@@ -882,7 +900,7 @@ async function loadLongLivedCompareWorker(opts: {
 	// every later COMPARE would queue behind it and time out too, so the engine kills
 	// a worker on timeout (or when it dies) and starts a fresh one for the next pair.
 	const start = async (): Promise<Worker> => {
-		const child = spawn(bin, [], { stdio: ["pipe", "pipe", "pipe"] });
+		const child = spawn(bin, opts.args ?? [], { stdio: ["pipe", "pipe", "pipe"] });
 		let buf = "";
 		const waiters: Array<(line: string) => void> = [];
 		let spawnExit: { code: number | null; signal: NodeJS.Signals | null } | null =

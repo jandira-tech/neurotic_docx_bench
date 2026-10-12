@@ -1,0 +1,166 @@
+2026-10-03 16:51:01.304 | INFO     | __main__:preflight:1812 - [word] preflight: open_documents=0 started_clean=True launched_by_us=False close_documents=False
+2026-10-03 16:51:01.481 | INFO     | __main__:convert_folder:1486 - [word] export: one_osascript=True documents=421 accept_all=False reject_all=False
+2026-10-03 16:51:50.183 | INFO     | __main__:_convert_batched:1685 - [batch] one osascript for 421 document(s)
+2026-10-03 16:51:55.382 | INFO     | __main__:_loop:1067 - [batch pdf 1] 0/421
+2026-10-03 16:52:05.479 | INFO     | __main__:_loop:1067 - [batch pdf 1] 3/421
+2026-10-03 16:52:10.548 | INFO     | __main__:_loop:1067 - [batch pdf 1] 5/421
+2026-10-03 16:52:15.719 | INFO     | __main__:_loop:1067 - [batch pdf 1] 7/421
+2026-10-03 16:52:20.835 | INFO     | __main__:_loop:1067 - [batch pdf 1] 8/421
+2026-10-03 16:52:25.942 | INFO     | __main__:_loop:1067 - [batch pdf 1] 10/421
+2026-10-03 16:52:31.018 | INFO     | __main__:_loop:1067 - [batch pdf 1] 12/421
+2026-10-03 16:52:37.849 | WARNING  | __main__:run_batch_with_resume:1206 - [batch pdf] 409 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 2, 0 of 3 stalled passes used)
+2026-10-03 16:52:37.884 | WARNING  | __main__:recycle:725 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-03 16:52:37.889 | WARNING  | __main__:recycle:731 - [word] recycling (restart 1)
+2026-10-03 16:52:52.634 | INFO     | __main__:_loop:1067 - [batch pdf 2] 2/409
+2026-10-03 16:52:57.756 | INFO     | __main__:_loop:1067 - [batch pdf 2] 5/409
+2026-10-03 16:53:52.439 | WARNING  | __main__:run_batch_with_resume:1206 - [batch pdf] 404 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 3, 0 of 3 stalled passes used)
+2026-10-03 16:53:52.531 | WARNING  | __main__:recycle:725 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-03 16:53:52.545 | WARNING  | __main__:recycle:731 - [word] recycling (restart 2)
+2026-10-03 16:53:58.366 | WARNING  | __main__:_loop:1072 - [batch pdf 2] item 6/409 open for more than 30 s:
+-- Word windows {name, subrole}: osascript timed out
+-- Word window text: osascript timed out
+-- crash reporters: osascript timed out
+-- batch-pdf-2.log:
+[ok]	13
+[ok]	14
+[ok]	15
+[ok]	16
+[ok]	17
+[retry]	18	Microsoft Word got an error: Connection is invalid.
+[done]	5	0
+-- newest diagnostic reports: WhatsApp-2026-10-03-091000.ips, soffice-2026-10-03-084548.ips, soffice-2026-10-01-013728.ips, soffice-2026-10-03-074631.ips, soffice-2026-09-28-104949.ips
+2026-10-03 16:54:07.177 | INFO     | __main__:_loop:1067 - [batch pdf 3] 0/404
+2026-10-03 16:54:12.232 | INFO     | __main__:_loop:1067 - [batch pdf 3] 2/404
+2026-10-03 16:54:17.388 | INFO     | __main__:_loop:1067 - [batch pdf 3] 4/404
+2026-10-03 16:54:22.534 | INFO     | __main__:_loop:1067 - [batch pdf 3] 7/404
+2026-10-03 16:54:27.707 | INFO     | __main__:_loop:1067 - [batch pdf 3] 11/404
+2026-10-03 16:54:32.893 | INFO     | __main__:_loop:1067 - [batch pdf 3] 13/404
+2026-10-03 16:54:38.039 | INFO     | __main__:_loop:1067 - [batch pdf 3] 14/404
+2026-10-03 16:54:49.136 | WARNING  | __main__:run_batch_with_resume:1206 - [batch pdf] 390 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 4, 0 of 3 stalled passes used)
+2026-10-03 16:54:49.270 | WARNING  | __main__:recycle:725 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-03 16:54:49.278 | WARNING  | __main__:recycle:731 - [word] recycling (restart 3)
+2026-10-03 16:55:11.042 | INFO     | __main__:_loop:1067 - [batch pdf 4] 0/390
+2026-10-03 16:55:16.377 | INFO     | __main__:_loop:1067 - [batch pdf 4] 2/390
+2026-10-03 16:55:31.681 | INFO     | __main__:_loop:1067 - [batch pdf 4] 5/390
+2026-10-03 16:55:44.146 | WARNING  | __main__:run_batch_with_resume:1206 - [batch pdf] 385 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 5, 0 of 3 stalled passes used)
+2026-10-03 16:55:44.193 | WARNING  | __main__:recycle:731 - [word] recycling (restart 4)
+2026-10-03 16:56:05.315 | INFO     | __main__:_loop:1067 - [batch pdf 5] 0/385
+2026-10-03 16:56:26.238 | INFO     | __main__:_loop:1067 - [batch pdf 5] 2/385
+2026-10-03 16:56:31.426 | INFO     | __main__:_loop:1067 - [batch pdf 5] 3/385
+2026-10-03 16:56:47.326 | WARNING  | __main__:run_batch_with_resume:1206 - [batch pdf] 382 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 6, 0 of 3 stalled passes used)
+2026-10-03 16:56:47.406 | WARNING  | __main__:recycle:731 - [word] recycling (restart 5)
+2026-10-03 16:58:15.379 | INFO     | __main__:_loop:1067 - [batch pdf 6] 0/382
+2026-10-03 16:58:53.525 | WARNING  | __main__:run_batch_with_resume:1206 - [batch pdf] 382 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 7, 0 of 3 stalled passes used)
+2026-10-03 16:58:53.581 | WARNING  | __main__:recycle:731 - [word] recycling (restart 6)
+2026-10-03 16:59:10.005 | WARNING  | __main__:_loop:1072 - [batch pdf 6] item 1/382 open for more than 30 s:
+-- Word windows {name, subrole}: osascript timed out
+-- Word window text: osascript timed out
+-- crash reporters: 
+-- batch-pdf-6.log:
+[retry]	44	Microsoft Word got an error: Connection is invalid.
+[done]	0	0
+-- newest diagnostic reports: WhatsApp-2026-10-03-091000.ips, soffice-2026-10-03-084548.ips, soffice-2026-10-01-013728.ips, soffice-2026-10-03-074631.ips, soffice-2026-09-28-104949.ips
+2026-10-03 17:00:06.220 | INFO     | __main__:_loop:1067 - [batch pdf 7] 1/382
+2026-10-03 17:00:11.297 | INFO     | __main__:_loop:1067 - [batch pdf 7] 2/382
+2026-10-03 17:00:16.374 | INFO     | __main__:_loop:1067 - [batch pdf 7] 4/382
+2026-10-03 17:00:21.462 | INFO     | __main__:_loop:1067 - [batch pdf 7] 6/382
+2026-10-03 17:00:26.703 | INFO     | __main__:_loop:1067 - [batch pdf 7] 7/382
+2026-10-03 17:01:28.831 | WARNING  | __main__:_loop:1072 - [batch pdf 7] item 8/382 open for more than 30 s:
+-- Word windows {name, subrole}: osascript timed out
+-- Word window text: osascript timed out
+-- crash reporters: osascript timed out
+-- batch-pdf-7.log:
+[ok]	45
+[ok]	46
+[ok]	47
+[ok]	48
+[ok]	49
+[ok]	50
+[ok]	51
+-- newest diagnostic reports: WhatsApp-2026-10-03-091000.ips, soffice-2026-10-03-084548.ips, soffice-2026-10-01-013728.ips, soffice-2026-10-03-074631.ips, soffice-2026-09-28-104949.ips
+2026-10-03 17:02:55.918 | WARNING  | __main__:run_batch_with_resume:1206 - [batch pdf] 375 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 8, 0 of 3 stalled passes used)
+2026-10-03 17:02:55.948 | WARNING  | __main__:recycle:731 - [word] recycling (restart 7)
+2026-10-03 17:03:34.296 | INFO     | __main__:_loop:1067 - [batch pdf 8] 0/375
+2026-10-03 17:04:21.413 | WARNING  | __main__:run_batch_with_resume:1206 - [batch pdf] 375 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 9, 0 of 3 stalled passes used)
+2026-10-03 17:04:21.444 | WARNING  | __main__:recycle:731 - [word] recycling (restart 8)
+2026-10-03 17:04:35.703 | WARNING  | __main__:_loop:1072 - [batch pdf 8] item 1/375 open for more than 30 s:
+-- Word windows {name, subrole}: osascript timed out
+-- Word window text: osascript timed out
+-- crash reporters: osascript timed out
+-- batch-pdf-8.log:
+[retry]	53	Microsoft Word got an error: Connection is invalid.
+[done]	0	0
+-- newest diagnostic reports: WhatsApp-2026-10-03-091000.ips, soffice-2026-10-03-084548.ips, soffice-2026-10-01-013728.ips, soffice-2026-10-03-074631.ips, soffice-2026-09-28-104949.ips
+2026-10-03 17:14:50.207 | INFO     | __main__:preflight:1812 - [word] preflight: open_documents=0 started_clean=True launched_by_us=False close_documents=False
+2026-10-03 17:14:50.248 | INFO     | __main__:convert_folder:1486 - [word] export: one_osascript=True documents=421 accept_all=False reject_all=False
+2026-10-03 17:15:08.084 | INFO     | __main__:_convert_batched:1685 - [batch] one osascript for 374 document(s)
+2026-10-03 17:15:13.119 | INFO     | __main__:_loop:1067 - [batch pdf 1] 3/374
+2026-10-03 17:15:18.159 | INFO     | __main__:_loop:1067 - [batch pdf 1] 8/374
+2026-10-03 17:15:23.200 | INFO     | __main__:_loop:1067 - [batch pdf 1] 14/374
+2026-10-03 17:15:28.234 | INFO     | __main__:_loop:1067 - [batch pdf 1] 19/374
+2026-10-03 17:15:33.272 | INFO     | __main__:_loop:1067 - [batch pdf 1] 24/374
+2026-10-03 17:15:38.318 | INFO     | __main__:_loop:1067 - [batch pdf 1] 29/374
+2026-10-03 17:15:43.357 | INFO     | __main__:_loop:1067 - [batch pdf 1] 35/374
+2026-10-03 17:15:48.377 | INFO     | __main__:_loop:1067 - [batch pdf 1] 41/374
+2026-10-03 17:15:53.411 | INFO     | __main__:_loop:1067 - [batch pdf 1] 47/374
+2026-10-03 17:15:58.449 | INFO     | __main__:_loop:1067 - [batch pdf 1] 54/374
+2026-10-03 17:16:03.484 | INFO     | __main__:_loop:1067 - [batch pdf 1] 60/374
+2026-10-03 17:16:08.523 | INFO     | __main__:_loop:1067 - [batch pdf 1] 67/374
+2026-10-03 17:16:13.560 | INFO     | __main__:_loop:1067 - [batch pdf 1] 74/374
+2026-10-03 17:16:18.597 | INFO     | __main__:_loop:1067 - [batch pdf 1] 80/374
+2026-10-03 17:16:23.632 | INFO     | __main__:_loop:1067 - [batch pdf 1] 84/374
+2026-10-03 17:16:33.699 | INFO     | __main__:_loop:1067 - [batch pdf 1] 90/374
+2026-10-03 17:16:38.727 | INFO     | __main__:_loop:1067 - [batch pdf 1] 96/374
+2026-10-03 17:16:43.756 | INFO     | __main__:_loop:1067 - [batch pdf 1] 101/374
+2026-10-03 17:16:48.786 | INFO     | __main__:_loop:1067 - [batch pdf 1] 107/374
+2026-10-03 17:16:53.816 | INFO     | __main__:_loop:1067 - [batch pdf 1] 113/374
+2026-10-03 17:16:58.844 | INFO     | __main__:_loop:1067 - [batch pdf 1] 118/374
+2026-10-03 17:17:03.881 | INFO     | __main__:_loop:1067 - [batch pdf 1] 125/374
+2026-10-03 17:17:08.914 | INFO     | __main__:_loop:1067 - [batch pdf 1] 131/374
+2026-10-03 17:17:13.956 | INFO     | __main__:_loop:1067 - [batch pdf 1] 137/374
+2026-10-03 17:17:18.995 | INFO     | __main__:_loop:1067 - [batch pdf 1] 143/374
+2026-10-03 17:17:24.031 | INFO     | __main__:_loop:1067 - [batch pdf 1] 148/374
+2026-10-03 17:17:29.051 | INFO     | __main__:_loop:1067 - [batch pdf 1] 151/374
+2026-10-03 17:17:34.087 | INFO     | __main__:_loop:1067 - [batch pdf 1] 154/374
+2026-10-03 17:17:39.118 | INFO     | __main__:_loop:1067 - [batch pdf 1] 161/374
+2026-10-03 17:17:44.158 | INFO     | __main__:_loop:1067 - [batch pdf 1] 167/374
+2026-10-03 17:17:49.194 | INFO     | __main__:_loop:1067 - [batch pdf 1] 173/374
+2026-10-03 17:17:54.224 | INFO     | __main__:_loop:1067 - [batch pdf 1] 179/374
+2026-10-03 17:17:59.254 | INFO     | __main__:_loop:1067 - [batch pdf 1] 185/374
+2026-10-03 17:18:04.288 | INFO     | __main__:_loop:1067 - [batch pdf 1] 190/374
+2026-10-03 17:18:09.327 | INFO     | __main__:_loop:1067 - [batch pdf 1] 195/374
+2026-10-03 17:18:14.362 | INFO     | __main__:_loop:1067 - [batch pdf 1] 199/374
+2026-10-03 17:18:34.413 | INFO     | __main__:_loop:1067 - [batch pdf 1] 200/374
+2026-10-03 17:18:49.468 | INFO     | __main__:_loop:1067 - [batch pdf 1] 203/374
+2026-10-03 17:18:54.502 | INFO     | __main__:_loop:1067 - [batch pdf 1] 208/374
+2026-10-03 17:18:59.542 | INFO     | __main__:_loop:1067 - [batch pdf 1] 214/374
+2026-10-03 17:19:04.570 | INFO     | __main__:_loop:1067 - [batch pdf 1] 220/374
+2026-10-03 17:19:09.609 | INFO     | __main__:_loop:1067 - [batch pdf 1] 225/374
+2026-10-03 17:19:14.648 | INFO     | __main__:_loop:1067 - [batch pdf 1] 231/374
+2026-10-03 17:19:19.686 | INFO     | __main__:_loop:1067 - [batch pdf 1] 237/374
+2026-10-03 17:19:24.722 | INFO     | __main__:_loop:1067 - [batch pdf 1] 243/374
+2026-10-03 17:19:29.750 | INFO     | __main__:_loop:1067 - [batch pdf 1] 249/374
+2026-10-03 17:19:34.782 | INFO     | __main__:_loop:1067 - [batch pdf 1] 254/374
+2026-10-03 17:19:39.816 | INFO     | __main__:_loop:1067 - [batch pdf 1] 258/374
+2026-10-03 17:19:44.834 | INFO     | __main__:_loop:1067 - [batch pdf 1] 264/374
+2026-10-03 17:19:49.869 | INFO     | __main__:_loop:1067 - [batch pdf 1] 269/374
+2026-10-03 17:19:54.910 | INFO     | __main__:_loop:1067 - [batch pdf 1] 275/374
+2026-10-03 17:19:59.944 | INFO     | __main__:_loop:1067 - [batch pdf 1] 280/374
+2026-10-03 17:20:04.981 | INFO     | __main__:_loop:1067 - [batch pdf 1] 286/374
+2026-10-03 17:20:10.018 | INFO     | __main__:_loop:1067 - [batch pdf 1] 291/374
+2026-10-03 17:20:15.056 | INFO     | __main__:_loop:1067 - [batch pdf 1] 297/374
+2026-10-03 17:20:20.088 | INFO     | __main__:_loop:1067 - [batch pdf 1] 302/374
+2026-10-03 17:20:25.128 | INFO     | __main__:_loop:1067 - [batch pdf 1] 307/374
+2026-10-03 17:20:30.164 | INFO     | __main__:_loop:1067 - [batch pdf 1] 311/374
+2026-10-03 17:20:35.200 | INFO     | __main__:_loop:1067 - [batch pdf 1] 315/374
+2026-10-03 17:20:40.234 | INFO     | __main__:_loop:1067 - [batch pdf 1] 321/374
+2026-10-03 17:20:45.272 | INFO     | __main__:_loop:1067 - [batch pdf 1] 327/374
+2026-10-03 17:20:50.314 | INFO     | __main__:_loop:1067 - [batch pdf 1] 332/374
+2026-10-03 17:20:55.348 | INFO     | __main__:_loop:1067 - [batch pdf 1] 336/374
+2026-10-03 17:21:00.383 | INFO     | __main__:_loop:1067 - [batch pdf 1] 342/374
+2026-10-03 17:21:05.419 | INFO     | __main__:_loop:1067 - [batch pdf 1] 347/374
+2026-10-03 17:21:10.456 | INFO     | __main__:_loop:1067 - [batch pdf 1] 352/374
+2026-10-03 17:21:15.497 | INFO     | __main__:_loop:1067 - [batch pdf 1] 357/374
+2026-10-03 17:21:20.538 | INFO     | __main__:_loop:1067 - [batch pdf 1] 362/374
+2026-10-03 17:21:25.577 | INFO     | __main__:_loop:1067 - [batch pdf 1] 366/374
+2026-10-03 17:21:30.604 | INFO     | __main__:_loop:1067 - [batch pdf 1] 371/374

@@ -1,0 +1,136 @@
+▸ PDF quality is sticky: `save as … file format format PDF` inherits whatever 
+'Optimize for' you last chose in Word's own Save As dialog.
+  Open any document in Word once, File > Save As > PDF, and pick the SECOND 
+option, Best for printing.
+  That choice persists; this script cannot set it. Pass --no-check-preset to 
+stop seeing this.
+2026-10-01 14:53:33.548 | INFO     | __main__:preflight:1812 -  preflight: 
+open_documents=0 started_clean=True launched_by_us=False close_documents=False
+2026-10-01 14:53:33.622 | INFO     | __main__:convert_folder:1486 -  export: 
+one_osascript=False documents=2611 accept_all=False reject_all=False
+2026-10-01 14:53:40.029 | INFO     | __main__:_note_buttons:510 -  Microsoft 
+Word shows button 'No'
+2026-10-01 14:53:40.031 | INFO     | __main__:_note_buttons:510 -  Microsoft 
+Word shows button 'Yes'
+2026-10-01 14:53:41.214 | WARNING  | __main__:_loop_word:540 -  Word dialog 
+dismissed via 'No'
+2026-10-01 14:56:33.661 | ERROR    | __main__:_convert_serial:1559 - [274/2611] 
+FAIL: 
+19eb128df9_98bf5f3d218a1485f5eb284693b4f98725eadd3660097efd__vs__9666fa13fb_a370
+1d3600ed5bf6c9bf13e12e4c2a59542eba10f87fad69_redline_5b269ade28_jubarte-0.10.1.d
+ocx — timed out (Word may be holding a modal)
+2026-10-01 14:56:34.060 | ERROR    | __main__:_convert_serial:1559 - [974/2611] 
+FAIL: 
+5fbd8a7228_39cd8347f53ac1b06a6eb59399aa12a9977b0233a38ddaff__vs__89d3a1c365_40d9
+99f53c15fd5eb9e57ab8cf37f22f83d6823458897be1_redline_049d8405bc_jubarte-0.10.1.d
+ocx — 519:567: execution error: document loaded empty (Word could not read it) 
+(-2700)
+2026-10-01 14:56:34.441 | ERROR    | __main__:_convert_serial:1559 - [1289/2611]
+FAIL: 
+7e4c9416aa_00803e70c3646e42abab322238df606c847686168795a703__vs__1424386e9b_0174
+47de83753a0e3b7afc659df038ef56972925336c6a5b_redline_c8545d372b_jubarte-0.10.1.d
+ocx — 519:567: execution error: document loaded empty (Word could not read it) 
+(-2700)
+2026-10-01 14:56:34.688 | WARNING  | __main__:_convert_serial:1568 -  3 failures
+in a row — recycling rather than trusting Word to still be reading documents
+2026-10-01 14:56:34.689 | WARNING  | __main__♻725 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-01 14:56:34.690 | WARNING  | __main__♻731 -  recycling (restart 1)
+2026-10-01 14:56:40.944 | WARNING  | __main__:_loop_word:540 -  Word dialog 
+dismissed via 'No'
+2026-10-01 14:59:38.162 | INFO     | __main__:_replay:1622 -  still failing, so 
+it is the file: 
+19eb128df9_98bf5f3d218a1485f5eb284693b4f98725eadd3660097efd__vs__9666fa13fb_a370
+1d3600ed5bf6c9bf13e12e4c2a59542eba10f87fad69_redline_5b269ade28_jubarte-0.10.1.d
+ocx — timed out (Word may be holding a modal)
+2026-10-01 14:59:38.409 | INFO     | __main__:_replay:1622 -  still failing, so 
+it is the file: 
+5fbd8a7228_39cd8347f53ac1b06a6eb59399aa12a9977b0233a38ddaff__vs__89d3a1c365_40d9
+99f53c15fd5eb9e57ab8cf37f22f83d6823458897be1_redline_049d8405bc_jubarte-0.10.1.d
+ocx — 519:567: execution error: document loaded empty (Word could not read it) 
+(-2700)
+2026-10-01 14:59:38.766 | INFO     | __main__:_replay:1622 -  still failing, so 
+it is the file: 
+7e4c9416aa_00803e70c3646e42abab322238df606c847686168795a703__vs__1424386e9b_0174
+47de83753a0e3b7afc659df038ef56972925336c6a5b_redline_c8545d372b_jubarte-0.10.1.d
+ocx — 519:567: execution error: document loaded empty (Word could not read it) 
+(-2700)
+2026-10-01 14:59:39.053 | ERROR    | __main__:_convert_serial:1559 - [1794/2611]
+FAIL: 
+acce1b593c_4bb73d9addf1f02e3a2132dcd33a8feb4dfcbe076d43bb0f__vs__4e2d5a0b0c_4887
+566b3c4aad8c7f07b4ba2637c0244a1ee0d66c8d0c29_redline_63ea4d3f8d_jubarte-0.10.1.d
+ocx — 519:567: execution error: document loaded empty (Word could not read it) 
+(-2700)
+2026-10-01 14:59:39.852 | ERROR    | __main__:_convert_serial:1559 - [1824/2611]
+FAIL: 
+af2ea13761_6a0524deb86b08f0fb55dcbb7d469deacb25532f08824945__vs__1068eb5017_793c
+14bc1529c16f30ac69b82ca152f39f534a1a3f3f90e4_redline_5d8e97b0c5_jubarte-0.10.1.d
+ocx — 519:567: execution error: document loaded empty (Word could not read it) 
+(-2700)
+2026-10-01 14:59:40.970 | ERROR    | __main__:_convert_serial:1559 - [1943/2611]
+FAIL: 
+baf3657261_85df42a54afc9c20d3aff53d0e41164f2e0fdd5854667471__vs__8e835e4a58_fe18
+26d38f794c954d601ed7dcb202a347ae8ceb560fdf2e_redline_f787d881e3_jubarte-0.10.1.d
+ocx — 519:567: execution error: document loaded empty (Word could not read it) 
+(-2700)
+2026-10-01 14:59:42.381 | WARNING  | __main__:_convert_serial:1568 -  3 failures
+in a row — recycling rather than trusting Word to still be reading documents
+2026-10-01 14:59:42.382 | WARNING  | __main__♻725 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-01 14:59:42.383 | WARNING  | __main__♻731 -  recycling (restart 2)
+2026-10-01 15:02:51.587 | INFO     | __main__:_replay:1622 -  still failing, so 
+it is the file: 
+acce1b593c_4bb73d9addf1f02e3a2132dcd33a8feb4dfcbe076d43bb0f__vs__4e2d5a0b0c_4887
+566b3c4aad8c7f07b4ba2637c0244a1ee0d66c8d0c29_redline_63ea4d3f8d_jubarte-0.10.1.d
+ocx — timed out (Word may be holding a modal)
+2026-10-01 15:05:51.623 | INFO     | __main__:_replay:1622 -  still failing, so 
+it is the file: 
+af2ea13761_6a0524deb86b08f0fb55dcbb7d469deacb25532f08824945__vs__1068eb5017_793c
+14bc1529c16f30ac69b82ca152f39f534a1a3f3f90e4_redline_5d8e97b0c5_jubarte-0.10.1.d
+ocx — timed out (Word may be holding a modal)
+2026-10-01 15:08:51.662 | INFO     | __main__:_replay:1622 -  still failing, so 
+it is the file: 
+baf3657261_85df42a54afc9c20d3aff53d0e41164f2e0fdd5854667471__vs__8e835e4a58_fe18
+26d38f794c954d601ed7dcb202a347ae8ceb560fdf2e_redline_f787d881e3_jubarte-0.10.1.d
+ocx — timed out (Word may be holding a modal)
+        DOCX → PDF:         
+results/redlines_0929_full/j
+     ubarte-0.10.1/docx     
+┏━━━━━━━━━━━━━━━━━━┳━━━━━━━┓
+┃ outcome          ┃ count ┃
+┡━━━━━━━━━━━━━━━━━━╇━━━━━━━┩
+│ converted        │     0 │
+│ skipped (exists) │  2605 │
+│ failed           │     6 │
+└──────────────────┴───────┘
+  FAIL 
+19eb128df9_98bf5f3d218a1485f5eb284693b4f98725eadd3660097efd__vs__9666fa13fb_a370
+1d3600ed5bf6c9bf13e12e4c2a59542eba10f87fad69_redline_5b269ade28_jubarte-0.10.1.d
+ocx: timed out (Word may be holding a modal)
+  FAIL 
+5fbd8a7228_39cd8347f53ac1b06a6eb59399aa12a9977b0233a38ddaff__vs__89d3a1c365_40d9
+99f53c15fd5eb9e57ab8cf37f22f83d6823458897be1_redline_049d8405bc_jubarte-0.10.1.d
+ocx: 519:567: execution error: document loaded empty (Word could not read it) 
+(-2700)
+  FAIL 
+7e4c9416aa_00803e70c3646e42abab322238df606c847686168795a703__vs__1424386e9b_0174
+47de83753a0e3b7afc659df038ef56972925336c6a5b_redline_c8545d372b_jubarte-0.10.1.d
+ocx: 519:567: execution error: document loaded empty (Word could not read it) 
+(-2700)
+  FAIL 
+acce1b593c_4bb73d9addf1f02e3a2132dcd33a8feb4dfcbe076d43bb0f__vs__4e2d5a0b0c_4887
+566b3c4aad8c7f07b4ba2637c0244a1ee0d66c8d0c29_redline_63ea4d3f8d_jubarte-0.10.1.d
+ocx: 519:567: execution error: document loaded empty (Word could not read it) 
+(-2700)
+  FAIL 
+af2ea13761_6a0524deb86b08f0fb55dcbb7d469deacb25532f08824945__vs__1068eb5017_793c
+14bc1529c16f30ac69b82ca152f39f534a1a3f3f90e4_redline_5d8e97b0c5_jubarte-0.10.1.d
+ocx: 519:567: execution error: document loaded empty (Word could not read it) 
+(-2700)
+  FAIL 
+baf3657261_85df42a54afc9c20d3aff53d0e41164f2e0fdd5854667471__vs__8e835e4a58_fe18
+26d38f794c954d601ed7dcb202a347ae8ceb560fdf2e_redline_f787d881e3_jubarte-0.10.1.d
+ocx: 519:567: execution error: document loaded empty (Word could not read it) 
+(-2700)

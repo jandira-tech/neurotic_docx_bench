@@ -1,0 +1,49 @@
+2026-10-11 20:14:05.640 | INFO     | __main__:preflight:1827 - [word] preflight: open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-10-11 20:14:05.668 | INFO     | __main__:convert_folder:1500 - [word] export: one_osascript=True documents=1000 accept_all=False reject_all=False
+2026-10-11 20:14:05.698 | INFO     | __main__:_convert_batched:1700 - [batch] one osascript for 29 document(s)
+2026-10-11 20:14:10.528 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 29 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 2, 0 of 3 stalled passes used)
+2026-10-11 20:14:10.528 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 20:14:10.529 | WARNING  | __main__:recycle:735 - [word] recycling (restart 1)
+2026-10-11 20:14:11.368 | INFO     | __main__:_note_buttons:514 - [watchdog] Microsoft Error Reporting shows button 'OK'
+2026-10-11 20:14:11.368 | INFO     | __main__:_note_buttons:514 - [watchdog] Microsoft Error Reporting shows button 'More Information'
+2026-10-11 20:14:11.368 | INFO     | __main__:_note_buttons:514 - [watchdog] Microsoft Error Reporting shows button 'missing value'
+2026-10-11 20:14:13.279 | WARNING  | __main__:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 20:14:19.915 | INFO     | __main__:_loop:1077 - [batch pdf 2] 0/29
+2026-10-11 20:14:27.879 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 29 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 3, 0 of 3 stalled passes used)
+2026-10-11 20:14:27.879 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 20:14:27.879 | WARNING  | __main__:recycle:735 - [word] recycling (restart 2)
+2026-10-11 20:14:37.338 | INFO     | __main__:_loop:1077 - [batch pdf 3] 0/29
+2026-10-11 20:14:37.542 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 29 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 4, 0 of 3 stalled passes used)
+2026-10-11 20:14:37.542 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 20:14:37.542 | WARNING  | __main__:recycle:735 - [word] recycling (restart 3)
+2026-10-11 20:14:39.329 | WARNING  | __main__:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 20:14:46.982 | INFO     | __main__:_loop:1077 - [batch pdf 4] 0/29
+2026-10-11 20:14:56.521 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 29 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 5, 0 of 3 stalled passes used)
+2026-10-11 20:14:56.522 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 20:14:56.522 | WARNING  | __main__:recycle:735 - [word] recycling (restart 4)
+2026-10-11 20:15:06.139 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 29 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 6, 0 of 3 stalled passes used)
+2026-10-11 20:15:06.139 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 20:15:06.139 | WARNING  | __main__:recycle:735 - [word] recycling (restart 5)
+2026-10-11 20:15:07.966 | WARNING  | __main__:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 20:15:17.546 | INFO     | __main__:_loop:1077 - [batch pdf 6] 0/29
+2026-10-11 20:15:25.320 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 29 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 7, 0 of 3 stalled passes used)
+2026-10-11 20:15:25.320 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 20:15:25.320 | WARNING  | __main__:recycle:735 - [word] recycling (restart 6)
+2026-10-11 20:15:34.412 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 29 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 8, 0 of 3 stalled passes used)
+2026-10-11 20:15:34.412 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 20:15:34.412 | WARNING  | __main__:recycle:735 - [word] recycling (restart 7)
+2026-10-11 20:15:36.567 | WARNING  | __main__:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 20:15:43.823 | INFO     | __main__:_loop:1077 - [batch pdf 8] 0/29
+2026-10-11 20:15:50.509 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 29 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 9, 0 of 3 stalled passes used)
+2026-10-11 20:15:50.509 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 20:15:50.509 | WARNING  | __main__:recycle:735 - [word] recycling (restart 8)
+2026-10-11 20:15:59.956 | INFO     | __main__:_loop:1077 - [batch pdf 9] 0/29
+2026-10-11 20:16:03.488 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 29 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 10, 0 of 3 stalled passes used)
+2026-10-11 20:16:03.488 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 20:16:03.488 | WARNING  | __main__:recycle:735 - [word] recycling (restart 9)
+2026-10-11 20:16:10.035 | ERROR    | __main__:_loop_merp:557 - [watchdog] Microsoft Error Reporting is showing a dialog whose buttons match none of ("Don't Send", 'Don’t Send', 'Cancel', 'Close', 'Quit', 'No', 'OK', 'Ok'). Labels seen are logged above — add the real one to MERP_DECLINE.
+2026-10-11 20:16:13.036 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 29 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 11, 0 of 3 stalled passes used)
+2026-10-11 20:16:13.036 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 20:16:13.036 | WARNING  | __main__:recycle:735 - [word] recycling (restart 10)
+2026-10-11 20:16:14.476 | WARNING  | __main__:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 20:16:23.058 | INFO     | __main__:_loop:1077 - [batch pdf 11] 0/29

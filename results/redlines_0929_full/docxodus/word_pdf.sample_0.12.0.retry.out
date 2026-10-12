@@ -1,0 +1,398 @@
+▸ PDF quality is sticky: `save as … file format format PDF` inherits whatever 
+'Optimize for' you last chose in Word's own Save As dialog.
+  Open any document in Word once, File > Save As > PDF, and pick the SECOND 
+option, Best for printing.
+  That choice persists; this script cannot set it. Pass --no-check-preset to 
+stop seeing this.
+2026-10-10 05:36:04.611 | INFO     | __main__:preflight:1827 -  preflight: 
+open_documents=0 started_clean=True launched_by_us=False close_documents=False
+2026-10-10 05:36:04.613 | INFO     | __main__:convert_folder:1500 -  export: 
+one_osascript=False documents=38 accept_all=False reject_all=False
+2026-10-10 05:40:04.754 | ERROR    | __main__:_convert_serial:1574 - [1/38] 
+FAIL: 
+45c1c5abec_table_vmerge_colspan__vs__a94f4c516b_text_box_redline_54dd9bf0c3_docx
+odus.docx — 248:324: execution error: Microsoft Word got an error: AppleEvent 
+timed out. (-1712)
+2026-10-10 05:40:05.316 | ERROR    | __main__:_convert_serial:1574 - [2/38] 
+FAIL: 
+6758689ba7_text_box__vs__9f27b9f0d4_text_highlight_demo_style_default_missing_re
+dline_6615bbe1a9_docxodus.docx — 519:567: execution error: document loaded empty
+(Word could not read it) (-2700)
+2026-10-10 05:40:05.887 | ERROR    | __main__:_convert_serial:1574 - [3/38] 
+FAIL: 
+970fd9303f_sample_document_word_repair_of_our_output_word_r__vs__8441c4ae21_sd_2
+517_localized_heading_styles_redline_9c71031b8a_docxodus.docx — 519:567: 
+execution error: document loaded empty (Word could not read it) (-2700)
+2026-10-10 05:40:06.276 | WARNING  | __main__:_convert_serial:1583 -  3 failures
+in a row — recycling rather than trusting Word to still be reading documents
+2026-10-10 05:40:06.277 | WARNING  | __main__♻729 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-10 05:40:06.277 | WARNING  | __main__♻735 -  recycling (restart 1)
+2026-10-10 05:40:11.333 | INFO     | __main__:_note_buttons:514 -  Microsoft 
+Word shows button 'Yes'
+2026-10-10 05:40:11.334 | INFO     | __main__:_note_buttons:514 -  Microsoft 
+Word shows button 'No'
+2026-10-10 05:40:11.334 | INFO     | __main__:_note_buttons:514 -  Microsoft 
+Word shows button 'Cancel'
+2026-10-10 05:40:12.485 | WARNING  | __main__:_loop_word:544 -  Word dialog 
+dismissed via 'No'
+2026-10-10 05:40:19.367 | WARNING  | __main__:_loop_word:544 -  Word dialog 
+dismissed via 'No'
+2026-10-10 05:44:16.556 | INFO     | __main__:_replay:1637 -  still failing, so 
+it is the file: 
+45c1c5abec_table_vmerge_colspan__vs__a94f4c516b_text_box_redline_54dd9bf0c3_docx
+odus.docx — 248:324: execution error: Microsoft Word got an error: AppleEvent 
+timed out. (-1712)
+2026-10-10 05:44:16.736 | INFO     | __main__:_replay:1637 -  still failing, so 
+it is the file: 
+6758689ba7_text_box__vs__9f27b9f0d4_text_highlight_demo_style_default_missing_re
+dline_6615bbe1a9_docxodus.docx — 519:567: execution error: document loaded empty
+(Word could not read it) (-2700)
+2026-10-10 05:44:16.909 | INFO     | __main__:_replay:1637 -  still failing, so 
+it is the file: 
+970fd9303f_sample_document_word_repair_of_our_output_word_r__vs__8441c4ae21_sd_2
+517_localized_heading_styles_redline_9c71031b8a_docxodus.docx — 519:567: 
+execution error: document loaded empty (Word could not read it) (-2700)
+2026-10-10 05:44:17.082 | ERROR    | __main__:_convert_serial:1574 - [4/38] 
+FAIL: 
+a4642f7f90_mcdoc__vs__90e2c33814_meeting_agenda_table_2_redline_26c3aa16a6_docxo
+dus.docx — 519:567: execution error: document loaded empty (Word could not read 
+it) (-2700)
+2026-10-10 05:44:17.595 | ERROR    | __main__:_convert_serial:1574 - [5/38] 
+FAIL: 
+a4c38b1bf5_4c17189eb7a543ae96f42443a9f4001a3be8fec6e47f7481__vs__cd63d2dccf_3f27
+52287dacf8e3e52d649dc467cbab2214df665039ab15_redline_e9ef73a8e4_docxodus.docx — 
+519:567: execution error: document loaded empty (Word could not read it) (-2700)
+2026-10-10 05:44:18.008 | ERROR    | __main__:_convert_serial:1574 - [6/38] 
+FAIL: 
+c2d49e9ede_super_editor__sd_978_remove_table_borders_47f7ed__vs__f782ae23ec_supe
+r_editor__wordoriginatedcomments_c146be65_redline_18380da4e0_docxodus.docx — 
+519:567: execution error: document loaded empty (Word could not read it) (-2700)
+2026-10-10 05:44:18.321 | WARNING  | __main__:_convert_serial:1583 -  3 failures
+in a row — recycling rather than trusting Word to still be reading documents
+2026-10-10 05:44:18.322 | WARNING  | __main__♻729 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-10 05:44:18.322 | WARNING  | __main__♻735 -  recycling (restart 2)
+2026-10-10 05:44:24.614 | WARNING  | __main__:_loop_word:544 -  Word dialog 
+dismissed via 'No'
+2026-10-10 05:48:21.981 | INFO     | __main__:_replay:1637 -  still failing, so 
+it is the file: 
+a4642f7f90_mcdoc__vs__90e2c33814_meeting_agenda_table_2_redline_26c3aa16a6_docxo
+dus.docx — 248:324: execution error: Microsoft Word got an error: AppleEvent 
+timed out. (-1712)
+2026-10-10 05:48:22.151 | INFO     | __main__:_replay:1637 -  still failing, so 
+it is the file: 
+a4c38b1bf5_4c17189eb7a543ae96f42443a9f4001a3be8fec6e47f7481__vs__cd63d2dccf_3f27
+52287dacf8e3e52d649dc467cbab2214df665039ab15_redline_e9ef73a8e4_docxodus.docx — 
+519:567: execution error: document loaded empty (Word could not read it) (-2700)
+2026-10-10 05:48:22.322 | INFO     | __main__:_replay:1637 -  still failing, so 
+it is the file: 
+c2d49e9ede_super_editor__sd_978_remove_table_borders_47f7ed__vs__f782ae23ec_supe
+r_editor__wordoriginatedcomments_c146be65_redline_18380da4e0_docxodus.docx — 
+519:567: execution error: document loaded empty (Word could not read it) (-2700)
+2026-10-10 05:48:22.494 | ERROR    | __main__:_convert_serial:1574 - [7/38] 
+FAIL: 
+c5763a90ce_header_no_rels__vs__4dff3f0ab2_heading_1_bold_demo_id_paraid_overflow
+_redline_2e5b08815c_docxodus.docx — 519:567: execution error: document loaded 
+empty (Word could not read it) (-2700)
+2026-10-10 05:48:23.056 | ERROR    | __main__:_convert_serial:1574 - [8/38] 
+FAIL: 
+cbb3bab843_word_tolerated_orphan_comment__vs__cefef4e4f5_yellow_highlight_demo_i
+d_paraid_overflow_redline_3796807136_docxodus.docx — 519:567: execution error: 
+document loaded empty (Word could not read it) (-2700)
+2026-10-10 05:48:23.619 | ERROR    | __main__:_convert_serial:1574 - [9/38] 
+FAIL: 
+cf02e0407e_file_26__vs__b175a00954_file_27_redline_cee8601521_docxodus.docx — 
+519:567: execution error: document loaded empty (Word could not read it) (-2700)
+2026-10-10 05:48:24.012 | WARNING  | __main__:_convert_serial:1583 -  3 failures
+in a row — recycling rather than trusting Word to still be reading documents
+2026-10-10 05:48:24.013 | WARNING  | __main__♻729 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-10 05:48:24.014 | WARNING  | __main__♻735 -  recycling (restart 3)
+2026-10-10 05:48:29.511 | INFO     | __main__:_replay:1644 -  ok after restart 
+(1.5s): 
+c5763a90ce_header_no_rels__vs__4dff3f0ab2_heading_1_bold_demo_id_paraid_overflow
+_redline_2e5b08815c_docxodus.docx
+2026-10-10 05:48:30.337 | INFO     | __main__:_replay:1644 -  ok after restart 
+(0.8s): 
+cbb3bab843_word_tolerated_orphan_comment__vs__cefef4e4f5_yellow_highlight_demo_i
+d_paraid_overflow_redline_3796807136_docxodus.docx
+2026-10-10 05:48:32.487 | WARNING  | __main__:_loop_word:544 -  Word dialog 
+dismissed via 'No'
+2026-10-10 05:52:30.478 | INFO     | __main__:_replay:1637 -  still failing, so 
+it is the file: 
+cf02e0407e_file_26__vs__b175a00954_file_27_redline_cee8601521_docxodus.docx — 
+248:324: execution error: Microsoft Word got an error: AppleEvent timed out. 
+(-1712)
+2026-10-10 05:52:30.650 | ERROR    | __main__:_convert_serial:1574 - [10/38] 
+FAIL: 
+d03da97287_super_editor__nested_comments_gdocs_0c8668e1__vs__2b6c7be6bd_super_ed
+itor__nested_comments_84f214bb_redline_ba3b77bee3_docxodus.docx — 519:567: 
+execution error: document loaded empty (Word could not read it) (-2700)
+2026-10-10 05:52:31.230 | ERROR    | __main__:_convert_serial:1574 - [11/38] 
+FAIL: 
+d16179a60b_c3cb50c9620520f54d70a4f079a12e94bf94f54f507eff8d__vs__1aaca1d5af_ef31
+e540797c67a78c662cc2e5ecb21bf446e3d696ce26ad_redline_f72cd71154_docxodus.docx — 
+519:567: execution error: document loaded empty (Word could not read it) (-2700)
+2026-10-10 05:52:31.810 | ERROR    | __main__:_convert_serial:1574 - [12/38] 
+FAIL: 
+d48e02b548_super_editor__google_docs_originated_comments__vs__d0281643d2_super_e
+ditor__hello_docx_world_12f11074_redline_37c978d405_docxodus.docx — 519:567: 
+execution error: document loaded empty (Word could not read it) (-2700)
+2026-10-10 05:52:32.198 | WARNING  | __main__:_convert_serial:1583 -  3 failures
+in a row — recycling rather than trusting Word to still be reading documents
+2026-10-10 05:52:32.199 | WARNING  | __main__♻729 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-10 05:52:32.200 | WARNING  | __main__♻735 -  recycling (restart 4)
+2026-10-10 05:52:37.609 | INFO     | __main__:_replay:1644 -  ok after restart 
+(1.4s): 
+d03da97287_super_editor__nested_comments_gdocs_0c8668e1__vs__2b6c7be6bd_super_ed
+itor__nested_comments_84f214bb_redline_ba3b77bee3_docxodus.docx
+2026-10-10 05:52:38.959 | INFO     | __main__:_replay:1644 -  ok after restart 
+(1.3s): 
+d16179a60b_c3cb50c9620520f54d70a4f079a12e94bf94f54f507eff8d__vs__1aaca1d5af_ef31
+e540797c67a78c662cc2e5ecb21bf446e3d696ce26ad_redline_f72cd71154_docxodus.docx
+2026-10-10 05:52:39.719 | INFO     | __main__:_replay:1644 -  ok after restart 
+(0.8s): 
+d48e02b548_super_editor__google_docs_originated_comments__vs__d0281643d2_super_e
+ditor__hello_docx_world_12f11074_redline_37c978d405_docxodus.docx
+2026-10-10 05:52:40.492 | INFO     | __main__:_convert_serial:1570 - [13/38] ok 
+(0.8s): 
+d48e02b548_super_editor__google_docs_originated_comments__vs__e70f1134dd_super_e
+ditor__diff_before8_ba5faa9e_redline_e4569d0756_docxodus.docx
+2026-10-10 05:52:41.187 | INFO     | __main__:_convert_serial:1570 - [14/38] ok 
+(0.7s): 
+d5a56cdeb3_super_editor__gdocs_single_comment_ac5db87f__vs__bc78614a22_super_edi
+tor__gdocs_tracked_changes_3c1de315_redline_99740a096f_docxodus.docx
+2026-10-10 05:52:41.886 | INFO     | __main__:_convert_serial:1570 - [15/38] ok 
+(0.7s): 
+da68abdf72_blue_centered_title_demo_style_default_missing__vs__6a4d8ea70c_blue_i
+talic_text_demo_id_paraid_overflow_redline_15f013e680_docxodus.docx
+2026-10-10 05:52:43.060 | INFO     | __main__:_convert_serial:1570 - [16/38] ok 
+(1.2s): 
+dccd972179_file_142__vs__0483e899af_file_143_redline_0c5aa7e2b1_docxodus.docx
+2026-10-10 05:52:43.810 | INFO     | __main__:_convert_serial:1570 - [17/38] ok 
+(0.7s): 
+de2a4c9936_marketing_strategy_2026_suggesting_insertions__vs__90e2c33814_meeting
+_agenda_table_2_redline_cf4189e197_docxodus.docx
+2026-10-10 05:52:44.510 | INFO     | __main__:_convert_serial:1570 - [18/38] ok 
+(0.7s): 
+e1201c51d4_italic_subscript_demo_style_default_missing__vs__3fc14675e5_italic_te
+xt_formatting_demo_id_paraid_overflow_2_redline_80188ee236_docxodus.docx
+2026-10-10 05:52:45.394 | INFO     | __main__:_convert_serial:1570 - [19/38] ok 
+(0.9s): 
+e1771b0063_word_tolerated_misplaced_uipriority__vs__cbb3bab843_word_tolerated_or
+phan_comment_redline_6532beda4d_docxodus.docx
+2026-10-10 05:52:46.876 | INFO     | __main__:_convert_serial:1570 - [20/38] ok 
+(1.5s): 
+e57ad0eaa4_docx_lots_of_comments_addition__vs__6e2576a091_docx_lots_of_comments_
+redline_92075b7449_docxodus.docx
+2026-10-10 05:52:47.631 | INFO     | __main__:_convert_serial:1570 - [21/38] ok 
+(0.8s): 
+e70f1134dd_super_editor__diff_before8_ba5faa9e__vs__420a528aa0_super_editor__ins
+trtext_angled_brackets_bug_ed56_redline_2200a538c5_docxodus.docx
+2026-10-10 05:52:48.602 | INFO     | __main__:_convert_serial:1570 - [22/38] ok 
+(1.0s): 
+e70f1134dd_super_editor__diff_before8_ba5faa9e__vs__671ff91b1d_behavior__sd_2750
+_borderbox_7cd3768d_redline_0e6cc23727_docxodus.docx
+2026-10-10 05:52:49.329 | INFO     | __main__:_convert_serial:1570 - [23/38] ok 
+(0.7s): 
+e70f1134dd_super_editor__diff_before8_ba5faa9e__vs__f6e1c253ff_super_editor__dif
+f_before9_9818a85f_redline_a33b8e810a_docxodus.docx
+2026-10-10 05:52:50.126 | INFO     | __main__:_convert_serial:1570 - [24/38] ok 
+(0.8s): 
+e9d5410452_file_191__vs__bffb81f86c_file_192_redline_0cbac1d96f_docxodus.docx
+2026-10-10 05:52:50.926 | INFO     | __main__:_convert_serial:1570 - [25/38] ok 
+(0.8s): 
+eb714d5f76_evals__blank_bc294b57__vs__bb35ae41ba_evals__comments_doc_79800b37_re
+dline_04082a11bf_docxodus.docx
+2026-10-10 05:52:52.761 | ERROR    | __main__:_convert_serial:1574 - [26/38] 
+FAIL: 
+ec3dd0df69_file_53__vs__94ed0def64_file_54_redline_c2380a4677_docxodus.docx — 
+587:642: execution error: Microsoft Word got an error: Connection is invalid. 
+(-609)
+2026-10-10 05:52:53.855 | INFO     | __main__:_note_buttons:514 -  Microsoft 
+Error Reporting shows button 'OK'
+2026-10-10 05:52:53.856 | INFO     | __main__:_note_buttons:514 -  Microsoft 
+Error Reporting shows button 'More Information'
+2026-10-10 05:52:53.856 | INFO     | __main__:_note_buttons:514 -  Microsoft 
+Error Reporting shows button 'missing value'
+2026-10-10 05:52:54.452 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-10 05:52:56.356 | INFO     | __main__:_convert_serial:1570 - [27/38] ok 
+(0.8s): 
+ed6c82cead_word_tolerated_broken_media_rel__vs__8fb278cb36_word_tolerated_duplic
+ate_ppr_redline_2ebbfc18b4_docxodus.docx
+2026-10-10 05:52:59.371 | WARNING  | __main__:_loop_word:544 -  Word dialog 
+dismissed via 'No'
+2026-10-10 05:56:56.494 | ERROR    | __main__:_convert_serial:1574 - [28/38] 
+FAIL: 
+ee91b9e453_9385adbfd34ee40a4bd2429d7385293b31a127fc9e9208d1__vs__409867707c_61a1
+6c9bdc534801a19fcf808fdddd50a7cd74d1efd6113e_redline_9f2ce6d6bb_docxodus.docx — 
+248:324: execution error: Microsoft Word got an error: AppleEvent timed out. 
+(-1712)
+2026-10-10 05:56:57.049 | ERROR    | __main__:_convert_serial:1574 - [29/38] 
+FAIL: 
+ef1e1c68e9_super_editor__basic_paragraph_1774f4e4__vs__08286ffbfb_super_editor__
+basic_resolved_comment_cac5a1b0_redline_603ef0419b_docxodus.docx — 519:567: 
+execution error: document loaded empty (Word could not read it) (-2700)
+2026-10-10 05:56:57.609 | ERROR    | __main__:_convert_serial:1574 - [30/38] 
+FAIL: 
+f1ea4a51fd_hr_onboarding_checklist_table__vs__d0e7f278b8_i_am_sharing_microsoft_
+word_vs_google_docs_compr_redline_85b1c9235c_docxodus.docx — 519:567: execution 
+error: document loaded empty (Word could not read it) (-2700)
+2026-10-10 05:56:58.000 | WARNING  | __main__:_convert_serial:1583 -  3 failures
+in a row — recycling rather than trusting Word to still be reading documents
+2026-10-10 05:56:58.001 | WARNING  | __main__♻729 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-10 05:56:58.001 | WARNING  | __main__♻735 -  recycling (restart 5)
+2026-10-10 05:57:05.006 | WARNING  | __main__:_loop_word:544 -  Word dialog 
+dismissed via 'No'
+2026-10-10 06:01:02.201 | INFO     | __main__:_replay:1637 -  still failing, so 
+it is the file: 
+ee91b9e453_9385adbfd34ee40a4bd2429d7385293b31a127fc9e9208d1__vs__409867707c_61a1
+6c9bdc534801a19fcf808fdddd50a7cd74d1efd6113e_redline_9f2ce6d6bb_docxodus.docx — 
+248:324: execution error: Microsoft Word got an error: AppleEvent timed out. 
+(-1712)
+2026-10-10 06:01:02.379 | INFO     | __main__:_replay:1637 -  still failing, so 
+it is the file: 
+ef1e1c68e9_super_editor__basic_paragraph_1774f4e4__vs__08286ffbfb_super_editor__
+basic_resolved_comment_cac5a1b0_redline_603ef0419b_docxodus.docx — 519:567: 
+execution error: document loaded empty (Word could not read it) (-2700)
+2026-10-10 06:01:02.545 | INFO     | __main__:_replay:1637 -  still failing, so 
+it is the file: 
+f1ea4a51fd_hr_onboarding_checklist_table__vs__d0e7f278b8_i_am_sharing_microsoft_
+word_vs_google_docs_compr_redline_85b1c9235c_docxodus.docx — 519:567: execution 
+error: document loaded empty (Word could not read it) (-2700)
+2026-10-10 06:01:02.717 | ERROR    | __main__:_convert_serial:1574 - [31/38] 
+FAIL: 
+f43929f70c_verdana_bold_large_font_id_paraid_overflow__vs__3413da1703_verdana_fo
+nt_demo_id_paraid_overflow_2_redline_7da45f822a_docxodus.docx — 519:567: 
+execution error: document loaded empty (Word could not read it) (-2700)
+2026-10-10 06:01:03.280 | ERROR    | __main__:_convert_serial:1574 - [32/38] 
+FAIL: 
+f43929f70c_verdana_bold_large_font_id_paraid_overflow__vs__ac4b41aa8e_verdana_fo
+nt_demo_id_paraid_overflow_redline_814dac9051_docxodus.docx — 519:567: execution
+error: document loaded empty (Word could not read it) (-2700)
+2026-10-10 06:01:03.853 | ERROR    | __main__:_convert_serial:1574 - [33/38] 
+FAIL: 
+f49b3b0ec2_super_editor__sd_1919_word_table_74726d6c__vs__a0738533be_gdocs_comme
+nts_export_redline_515c0aa8ab_docxodus.docx — 519:567: execution error: document
+loaded empty (Word could not read it) (-2700)
+2026-10-10 06:01:04.239 | WARNING  | __main__:_convert_serial:1583 -  3 failures
+in a row — recycling rather than trusting Word to still be reading documents
+2026-10-10 06:01:04.240 | WARNING  | __main__♻729 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-10 06:01:04.240 | WARNING  | __main__♻735 -  recycling (restart 6)
+2026-10-10 06:01:11.111 | INFO     | __main__:_replay:1644 -  ok after restart 
+(2.9s): 
+f43929f70c_verdana_bold_large_font_id_paraid_overflow__vs__3413da1703_verdana_fo
+nt_demo_id_paraid_overflow_2_redline_7da45f822a_docxodus.docx
+2026-10-10 06:01:11.776 | INFO     | __main__:_replay:1644 -  ok after restart 
+(0.7s): 
+f43929f70c_verdana_bold_large_font_id_paraid_overflow__vs__ac4b41aa8e_verdana_fo
+nt_demo_id_paraid_overflow_redline_814dac9051_docxodus.docx
+2026-10-10 06:01:12.539 | INFO     | __main__:_replay:1644 -  ok after restart 
+(0.8s): 
+f49b3b0ec2_super_editor__sd_1919_word_table_74726d6c__vs__a0738533be_gdocs_comme
+nts_export_redline_515c0aa8ab_docxodus.docx
+2026-10-10 06:01:13.253 | INFO     | __main__:_convert_serial:1570 - [34/38] ok 
+(0.7s): 
+f529133cd5_super_editor__basic_comment_d3ba5f1e__vs__5fa01813d3_super_editor__ba
+sic_table_shading_d3212ffd_redline_b2704631d9_docxodus.docx
+2026-10-10 06:01:13.926 | INFO     | __main__:_convert_serial:1570 - [35/38] ok 
+(0.7s): 
+f529133cd5_super_editor__basic_comment_d3ba5f1e__vs__75aeff4f58_super_editor__di
+ff_after9_a9d4b4b0_redline_2eb4edf103_docxodus.docx
+2026-10-10 06:01:14.665 | INFO     | __main__:_convert_serial:1570 - [36/38] ok 
+(0.7s): 
+f529133cd5_super_editor__basic_comment_d3ba5f1e__vs__8df6dfa8d7_alternate_conten
+t_redline_e8fafc3cba_docxodus.docx
+2026-10-10 06:01:15.536 | INFO     | __main__:_convert_serial:1570 - [37/38] ok 
+(0.9s): 
+fa4d5010d8_layout_engine__basic_vector_shapes_e5f0ef49__vs__ad43500302_super_edi
+tor__list_numbering_reimport_d788d573_redline_9d682fe39d_docxodus.docx
+2026-10-10 06:01:16.258 | INFO     | __main__:_convert_serial:1570 - [38/38] ok 
+(0.7s): 
+faa7c6b110_file_88__vs__57ff9e1b30_file_89_redline_4319e3d7c7_docxodus.docx
+        DOCX → PDF:         
+results/redlines_0929_full/d
+        ocxodus/docx        
+┏━━━━━━━━━━━━━━━━━━┳━━━━━━━┓
+┃ outcome          ┃ count ┃
+┡━━━━━━━━━━━━━━━━━━╇━━━━━━━┩
+│ converted        │    27 │
+│ skipped (exists) │     0 │
+│ failed           │    11 │
+│ median seconds   │   0.8 │
+└──────────────────┴───────┘
+  FAIL 
+45c1c5abec_table_vmerge_colspan__vs__a94f4c516b_text_box_redline_54dd9bf0c3_docx
+odus.docx: 248:324: execution error: Microsoft Word got an error: AppleEvent 
+timed out. (-1712)
+  FAIL 
+6758689ba7_text_box__vs__9f27b9f0d4_text_highlight_demo_style_default_missing_re
+dline_6615bbe1a9_docxodus.docx: 519:567: execution error: document loaded empty 
+(Word could not read it) (-2700)
+  FAIL 
+970fd9303f_sample_document_word_repair_of_our_output_word_r__vs__8441c4ae21_sd_2
+517_localized_heading_styles_redline_9c71031b8a_docxodus.docx: 519:567: 
+execution error: document loaded empty (Word could not read it) (-2700)
+  FAIL 
+a4642f7f90_mcdoc__vs__90e2c33814_meeting_agenda_table_2_redline_26c3aa16a6_docxo
+dus.docx: 519:567: execution error: document loaded empty (Word could not read 
+it) (-2700)
+  FAIL 
+a4c38b1bf5_4c17189eb7a543ae96f42443a9f4001a3be8fec6e47f7481__vs__cd63d2dccf_3f27
+52287dacf8e3e52d649dc467cbab2214df665039ab15_redline_e9ef73a8e4_docxodus.docx: 
+519:567: execution error: document loaded empty (Word could not read it) (-2700)
+  FAIL 
+c2d49e9ede_super_editor__sd_978_remove_table_borders_47f7ed__vs__f782ae23ec_supe
+r_editor__wordoriginatedcomments_c146be65_redline_18380da4e0_docxodus.docx: 
+519:567: execution error: document loaded empty (Word could not read it) (-2700)
+  FAIL 
+cf02e0407e_file_26__vs__b175a00954_file_27_redline_cee8601521_docxodus.docx: 
+519:567: execution error: document loaded empty (Word could not read it) (-2700)
+  FAIL 
+ec3dd0df69_file_53__vs__94ed0def64_file_54_redline_c2380a4677_docxodus.docx: 
+587:642: execution error: Microsoft Word got an error: Connection is invalid. 
+(-609)
+  FAIL 
+ee91b9e453_9385adbfd34ee40a4bd2429d7385293b31a127fc9e9208d1__vs__409867707c_61a1
+6c9bdc534801a19fcf808fdddd50a7cd74d1efd6113e_redline_9f2ce6d6bb_docxodus.docx: 
+248:324: execution error: Microsoft Word got an error: AppleEvent timed out. 
+(-1712)
+  FAIL 
+ef1e1c68e9_super_editor__basic_paragraph_1774f4e4__vs__08286ffbfb_super_editor__
+basic_resolved_comment_cac5a1b0_redline_603ef0419b_docxodus.docx: 519:567: 
+execution error: document loaded empty (Word could not read it) (-2700)
+  FAIL 
+f1ea4a51fd_hr_onboarding_checklist_table__vs__d0e7f278b8_i_am_sharing_microsoft_
+word_vs_google_docs_compr_redline_85b1c9235c_docxodus.docx: 519:567: execution 
+error: document loaded empty (Word could not read it) (-2700)
+▸ PDF quality is sticky: `save as … file format format PDF` inherits whatever 
+'Optimize for' you last chose in Word's own Save As dialog.
+  Open any document in Word once, File > Save As > PDF, and pick the SECOND 
+option, Best for printing.
+  That choice persists; this script cannot set it. Pass --no-check-preset to 
+stop seeing this.
+2026-10-11 01:05:22.813 | INFO     | __main__:preflight:1827 -  preflight: 
+open_documents=0 started_clean=True launched_by_us=False close_documents=False
+2026-10-11 01:05:22.815 | INFO     | __main__:convert_folder:1500 -  export: 
+one_osascript=False documents=27 accept_all=False reject_all=False
+        DOCX → PDF:         
+results/redlines_0929_full/d
+        ocxodus/docx        
+┏━━━━━━━━━━━━━━━━━━┳━━━━━━━┓
+┃ outcome          ┃ count ┃
+┡━━━━━━━━━━━━━━━━━━╇━━━━━━━┩
+│ converted        │     0 │
+│ skipped (exists) │    27 │
+│ failed           │     0 │
+└──────────────────┴───────┘

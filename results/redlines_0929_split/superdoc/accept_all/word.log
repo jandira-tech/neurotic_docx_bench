@@ -1,0 +1,11 @@
+2026-09-29 14:53:45.798 | INFO     | __main__:preflight:1762 - [word] preflight: open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-09-29 14:53:45.824 | INFO     | __main__:convert_folder:1436 - [word] export: one_osascript=True documents=58 accept_all=True reject_all=False
+2026-09-29 14:53:45.865 | INFO     | __main__:_convert_batched:1635 - [batch] one osascript for 58 document(s)
+2026-09-29 14:53:50.883 | INFO     | __main__:_loop:1025 - [batch pdf 1] 7/58
+2026-09-29 14:53:55.903 | INFO     | __main__:_loop:1025 - [batch pdf 1] 15/58
+2026-09-29 14:54:00.919 | INFO     | __main__:_loop:1025 - [batch pdf 1] 23/58
+2026-09-29 14:54:02.922 | INFO     | __main__:_note_buttons:509 - [watchdog] Microsoft Word shows button 'missing value'
+2026-09-29 14:54:05.943 | INFO     | __main__:_loop:1025 - [batch pdf 1] 31/58
+2026-09-29 14:54:10.966 | INFO     | __main__:_loop:1025 - [batch pdf 1] 39/58
+2026-09-29 14:54:15.984 | INFO     | __main__:_loop:1025 - [batch pdf 1] 46/58
+2026-09-29 14:54:21.002 | INFO     | __main__:_loop:1025 - [batch pdf 1] 54/58

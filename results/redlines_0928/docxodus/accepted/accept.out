@@ -1,0 +1,153 @@
+2026-09-28 22:16:44.875 | INFO     | __main__:preflight:1690 -  preflight: 
+open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-09-28 22:16:44.900 | INFO     | __main__:convert_folder:1366 -  export: 
+one_osascript=True documents=100 accept_all=True
+2026-09-28 22:16:45.127 | INFO     | __main__:_convert_batched:1563 -  one 
+osascript for 100 document(s)
+2026-09-28 22:16:50.147 | INFO     | __main__:_loop:1006 -  4/100
+2026-09-28 22:16:55.168 | INFO     | __main__:_loop:1006 -  10/100
+2026-09-28 22:17:00.188 | INFO     | __main__:_loop:1006 -  15/100
+2026-09-28 22:17:05.203 | INFO     | __main__:_loop:1006 -  20/100
+2026-09-28 22:17:10.230 | INFO     | __main__:_loop:1006 -  22/100
+2026-09-28 22:17:25.279 | INFO     | __main__:_loop:1006 -  24/100
+2026-09-28 22:17:30.298 | INFO     | __main__:_loop:1006 -  29/100
+2026-09-28 22:17:35.318 | INFO     | __main__:_loop:1006 -  34/100
+2026-09-28 22:17:40.340 | INFO     | __main__:_loop:1006 -  39/100
+2026-09-28 22:22:45.289 | INFO     | __main__:_note_buttons:503 -  Microsoft 
+Word shows button 'No'
+2026-09-28 22:22:45.290 | INFO     | __main__:_note_buttons:503 -  Microsoft 
+Word shows button 'Cancel'
+2026-09-28 22:22:45.290 | INFO     | __main__:_note_buttons:503 -  Microsoft 
+Word shows button 'Create'
+2026-09-28 22:22:45.291 | INFO     | __main__:_note_buttons:503 -  Microsoft 
+Word shows button 'missing value'
+2026-09-28 22:22:50.855 | INFO     | __main__:_loop:1006 -  43/100
+2026-09-28 22:22:55.873 | INFO     | __main__:_loop:1006 -  45/100
+2026-09-28 22:23:00.891 | INFO     | __main__:_loop:1006 -  50/100
+2026-09-28 22:23:05.910 | INFO     | __main__:_loop:1006 -  54/100
+2026-09-28 22:23:09.506 | WARNING  | __main__:_loop_word:533 -  Word dialog 
+dismissed via 'No'
+2026-09-28 22:23:10.924 | INFO     | __main__:_loop:1006 -  57/100
+2026-09-28 22:23:15.952 | INFO     | __main__:_loop:1006 -  59/100
+2026-09-28 22:23:20.971 | INFO     | __main__:_loop:1006 -  64/100
+2026-09-28 22:23:25.988 | INFO     | __main__:_loop:1006 -  68/100
+2026-09-28 22:23:31.007 | INFO     | __main__:_loop:1006 -  72/100
+2026-09-28 22:23:36.027 | INFO     | __main__:_loop:1006 -  77/100
+2026-09-28 22:23:39.406 | INFO     | __main__:_note_buttons:503 -  Microsoft 
+Word shows button 'OK'
+2026-09-28 22:23:40.428 | WARNING  | __main__:_loop_word:533 -  Word dialog 
+dismissed via 'No'
+2026-09-28 22:23:43.655 | WARNING  | __main__:run_batch_with_resume:1105 -  23 
+item(s) never reached (ended without reaching them); recycling Word and retrying
+(pass 2 of 3)
+2026-09-28 22:23:43.656 | WARNING  | __main__♻718 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-09-28 22:23:43.658 | WARNING  | __main__♻724 -  recycling (restart 1)
+2026-09-28 22:23:52.277 | INFO     | __main__:_note_buttons:503 -  Microsoft 
+Word shows button 'Yes'
+2026-09-28 22:23:53.307 | WARNING  | __main__:_loop_word:533 -  Word dialog 
+dismissed via 'No'
+2026-09-28 22:23:55.461 | INFO     | __main__:_loop:1006 -  0/23
+2026-09-28 22:23:57.928 | WARNING  | __main__:_loop_word:533 -  Word dialog 
+dismissed via 'OK'
+2026-09-28 22:24:01.245 | WARNING  | __main__:run_batch_with_resume:1105 -  23 
+item(s) never reached (ended without reaching them); recycling Word and retrying
+(pass 3 of 3)
+2026-09-28 22:24:01.246 | WARNING  | __main__♻718 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-09-28 22:24:01.246 | WARNING  | __main__♻724 -  recycling (restart 2)
+2026-09-28 22:24:05.936 | WARNING  | __main__:_loop_word:533 -  Word dialog 
+dismissed via 'No'
+2026-09-28 22:24:09.386 | INFO     | __main__:_loop:1006 -  0/23
+2026-09-28 22:24:10.379 | WARNING  | __main__:_loop_word:533 -  Word dialog 
+dismissed via 'OK'
+2026-09-28 22:24:14.352 | WARNING  | __main__:run_batch_with_resume:1105 -  23 
+item(s) never reached (ended without reaching them); recycling Word and retrying
+(pass 4 of 3)
+2026-09-28 22:24:14.353 | WARNING  | __main__♻718 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-09-28 22:24:14.353 | WARNING  | __main__♻724 -  recycling (restart 3)
+2026-09-28 22:24:17.641 | ERROR    | __main__:_convert_batched:1608 -  FAIL: 
+4cb34c212d.docx — never reached in 3 batch pass(es)
+2026-09-28 22:24:17.702 | ERROR    | __main__:_convert_batched:1608 -  FAIL: 
+9494f2e92a.docx — never reached in 3 batch pass(es)
+2026-09-28 22:24:17.717 | ERROR    | __main__:_convert_batched:1608 -  FAIL: 
+a97bb9b57f.docx — never reached in 3 batch pass(es)
+2026-09-28 22:24:17.752 | ERROR    | __main__:_convert_batched:1608 -  FAIL: 
+bc6f8076f9.docx — never reached in 3 batch pass(es)
+2026-09-28 22:24:17.770 | ERROR    | __main__:_convert_batched:1608 -  FAIL: 
+c0cedbcb4c.docx — never reached in 3 batch pass(es)
+2026-09-28 22:24:17.771 | ERROR    | __main__:_convert_batched:1608 -  FAIL: 
+c323b1ce8e.docx — never reached in 3 batch pass(es)
+2026-09-28 22:24:17.830 | ERROR    | __main__:_convert_batched:1608 -  FAIL: 
+e97f1c7c8f.docx — never reached in 3 batch pass(es)
+2026-09-28 22:24:17.831 | ERROR    | __main__:_convert_batched:1608 -  FAIL: 
+e9e7b29b93.docx — never reached in 3 batch pass(es)
+2026-09-28 22:24:17.831 | ERROR    | __main__:_convert_batched:1608 -  FAIL: 
+ebe3e5ca03.docx — never reached in 3 batch pass(es)
+2026-09-28 22:24:17.832 | ERROR    | __main__:_convert_batched:1608 -  FAIL: 
+ebeb91fe7f.docx — never reached in 3 batch pass(es)
+2026-09-28 22:24:17.833 | ERROR    | __main__:_convert_batched:1608 -  FAIL: 
+ece42865e7.docx — never reached in 3 batch pass(es)
+2026-09-28 22:24:17.834 | ERROR    | __main__:_convert_batched:1608 -  FAIL: 
+ee4fe9eb15.docx — never reached in 3 batch pass(es)
+2026-09-28 22:24:17.834 | ERROR    | __main__:_convert_batched:1608 -  FAIL: 
+f00b7032aa.docx — never reached in 3 batch pass(es)
+2026-09-28 22:24:17.835 | ERROR    | __main__:_convert_batched:1608 -  FAIL: 
+f1257ca7ea.docx — never reached in 3 batch pass(es)
+2026-09-28 22:24:17.835 | ERROR    | __main__:_convert_batched:1608 -  FAIL: 
+f4228003d6.docx — never reached in 3 batch pass(es)
+2026-09-28 22:24:17.836 | ERROR    | __main__:_convert_batched:1608 -  FAIL: 
+f48c29c41f.docx — never reached in 3 batch pass(es)
+2026-09-28 22:24:17.837 | ERROR    | __main__:_convert_batched:1608 -  FAIL: 
+f64bfdeadc.docx — never reached in 3 batch pass(es)
+2026-09-28 22:24:17.837 | ERROR    | __main__:_convert_batched:1608 -  FAIL: 
+f88615e5c5.docx — never reached in 3 batch pass(es)
+2026-09-28 22:24:17.838 | ERROR    | __main__:_convert_batched:1608 -  FAIL: 
+f8c1ce3e92.docx — never reached in 3 batch pass(es)
+2026-09-28 22:24:17.838 | ERROR    | __main__:_convert_batched:1608 -  FAIL: 
+fe2fb2ad13.docx — never reached in 3 batch pass(es)
+2026-09-28 22:24:17.839 | ERROR    | __main__:_convert_batched:1608 -  FAIL: 
+ff1a81cf73.docx — never reached in 3 batch pass(es)
+2026-09-28 22:24:17.839 | ERROR    | __main__:_convert_batched:1608 -  FAIL: 
+ff27140d0a.docx — never reached in 3 batch pass(es)
+2026-09-28 22:24:17.840 | ERROR    | __main__:_convert_batched:1608 -  FAIL: 
+ff42b4a7a3.docx — never reached in 3 batch pass(es)
+2026-09-28 22:24:17.907 | WARNING  | __main__:_loop_word:533 -  Word dialog 
+dismissed via 'Cancel'
+          accept all → DOCX + PDF:          
+results/redlines_0928/docxodus/accepted/src 
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━┓
+┃ outcome                          ┃ count ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━┩
+│ converted                        │    77 │
+│ skipped (exists)                 │     0 │
+│ failed                           │    23 │
+│ seconds per document (batch avg) │   4.5 │
+└──────────────────────────────────┴───────┘
+  FAIL 4cb34c212d.docx: never reached in 3 batch pass(es)
+  FAIL 9494f2e92a.docx: never reached in 3 batch pass(es)
+  FAIL a97bb9b57f.docx: never reached in 3 batch pass(es)
+  FAIL bc6f8076f9.docx: never reached in 3 batch pass(es)
+  FAIL c0cedbcb4c.docx: never reached in 3 batch pass(es)
+  FAIL c323b1ce8e.docx: never reached in 3 batch pass(es)
+  FAIL e97f1c7c8f.docx: never reached in 3 batch pass(es)
+  FAIL e9e7b29b93.docx: never reached in 3 batch pass(es)
+  FAIL ebe3e5ca03.docx: never reached in 3 batch pass(es)
+  FAIL ebeb91fe7f.docx: never reached in 3 batch pass(es)
+  FAIL ece42865e7.docx: never reached in 3 batch pass(es)
+  FAIL ee4fe9eb15.docx: never reached in 3 batch pass(es)
+  FAIL f00b7032aa.docx: never reached in 3 batch pass(es)
+  FAIL f1257ca7ea.docx: never reached in 3 batch pass(es)
+  FAIL f4228003d6.docx: never reached in 3 batch pass(es)
+  FAIL f48c29c41f.docx: never reached in 3 batch pass(es)
+  FAIL f64bfdeadc.docx: never reached in 3 batch pass(es)
+  FAIL f88615e5c5.docx: never reached in 3 batch pass(es)
+  FAIL f8c1ce3e92.docx: never reached in 3 batch pass(es)
+  FAIL fe2fb2ad13.docx: never reached in 3 batch pass(es)
+  FAIL ff1a81cf73.docx: never reached in 3 batch pass(es)
+  FAIL ff27140d0a.docx: never reached in 3 batch pass(es)
+  FAIL ff42b4a7a3.docx: never reached in 3 batch pass(es)

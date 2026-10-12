@@ -57,6 +57,16 @@ export function installDocxodusNodeCompat(entry) {
 /** Pin-tree (repo-root node_modules) first, vendored utils/docxodus as fallback.
  *  Skips a tree whose package.json version is not the repo pin. */
 export function resolveDocxodusEntry(fromDir = dirname(fileURLToPath(import.meta.url))) {
+	// An explicit tree (a source build, an unreleased main) replaces the pin: the caller
+	// named the package to measure, and its own version is what the run records.
+	const override = process.env.DOCXODUS_NODE_MODULES;
+	if (override) {
+		const candidate = join(override, "docxodus/dist/index.js");
+		if (!existsSync(candidate)) {
+			throw new Error(`DOCXODUS_NODE_MODULES=${override} has no docxodus/dist/index.js`);
+		}
+		return candidate;
+	}
 	const pin = pinnedDocxodusVersion(fromDir);
 	const roots = [
 		resolve(fromDir, "../node_modules"),

@@ -1,0 +1,11 @@
+== measure (resume)
+== versions.json
+results/redlines_0929_full/versions.json: jubarte-0.10.1 = jubarte 0.10.1 (release)
+== scores.jsonl
+jubarte-rust: ITT 72.23/81.73 (73.30/83.01), scored 3499/3502 (2611/2612)
+jubarte-093: ITT 68.62/79.07 (72.44/82.61), scored 3338/3502 (2584/2612)
+docxodus: ITT 53.94/62.87 (72.33/81.75), scored 2612/3502 (2612/2612)
+superdoc: ITT 6.66/0.00 (7.60/0.00), scored 380/3502 (323/2612)
+jubarte-0.10.1: ITT 74.82/84.34 (75.48/84.61), scored 3496/3502 (2610/2612)
+== hub upload
+== lane done

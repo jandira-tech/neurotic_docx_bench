@@ -1,0 +1,33 @@
+redline_speed_bench: 5000 planned pairs from results/speed_en_500_p5000/pairs.csv
+  unique fixtures: 500 (target 1000)
+  loaded 69.8 MiB in 96.4ms
+  pairs=5000 (min=5000, seed=42, rounds≈1)
+  methods=jubarte-rust-inproc, docxodus-csharp-inproc, jubarte-rust, jubarte-wasm, docxodus, jubarte-python warmup=20 reps=1 profile=false
+  jubarte-dist=/Users/arthrod/temp/T/neurotic_docx_bench/dist/jubarte-final
+  rust-dist=/Users/arthrod/temp/T/speed_bins/jubarte-099510fac2
+  csharp-dist=/Users/arthrod/temp/T/neurotic_docx_bench/src/neurotic_docx_bench/utils/docxodus/docxodus-csharp
+  csharp-inproc-dist=/Users/arthrod/temp/T/speed_bins/docxodus-959b4741/inproc
+  rust-inproc-dist=/Users/arthrod/temp/T/speed_bins/jubarte-099510fac2
+  wasm-dist=/Users/arthrod/temp/T/speed_bins/jubarte-099510fac2
+  python-dist=/Users/arthrod/temp/T/speed_bins/jubarte-099510fac2/py
+  docxodus-wasm=/Users/arthrod/temp/T/speed_bins/docxodus-959b4741/npm-root/node_modules/docxodus/dist/index.js
+  out=/Users/arthrod/temp/T/neurotic_docx_bench/results/speed_en_500_p5000/run_5000
+
+  machine jubarte-rust-inproc: steady after 10.1s — cpu 10.7% (peak 13.1%), mem free 82–83%, swapouts +0, load 2.7
+▶ jubarte-rust-inproc (engine=jubarte-rust-inproc, dist=/Users/arthrod/temp/T/speed_bins/jubarte-099510fac2, native=false)
+  init 4.671ms
+  wall 857.11s  median 94.34ms  mean 171.17ms  p95 619.35ms  p99 1215.71ms  5.8/s  (n=5000, fail=0)
+
+  machine docxodus-csharp-inproc: steady after 10.1s — cpu 10.6% (peak 12.8%), mem free 83–83%, swapouts +0, load 3.5
+▶ docxodus-csharp-inproc (engine=docxodus-csharp-inproc, dist=/Users/arthrod/temp/T/speed_bins/docxodus-959b4741/inproc, native=false)
+  init 42.931ms
+  wall 3178.23s  median 77.57ms  mean 540.08ms  p95 1661.19ms  p99 8444.02ms  1.9/s  (n=4996, fail=4)
+
+  machine jubarte-rust: steady after 10.1s — cpu 13.9% (peak 17.1%), mem free 83–83%, swapouts +0, load 2.9
+▶ jubarte-rust (engine=jubarte-rust, dist=/Users/arthrod/temp/T/speed_bins/jubarte-099510fac2, native=true)
+  init 1.723ms
+  wall 912.1s  median 102.22ms  mean 182.42ms  p95 661.26ms  p99 1268.61ms  5.5/s  (n=5000, fail=0)
+
+  machine jubarte-wasm: steady after 10.1s — cpu 4.7% (peak 6%), mem free 83–83%, swapouts +0, load 1.8
+▶ jubarte-wasm (engine=jubarte-wasm, dist=/Users/arthrod/temp/T/speed_bins/jubarte-099510fac2, native=false)
+  init 23.877ms

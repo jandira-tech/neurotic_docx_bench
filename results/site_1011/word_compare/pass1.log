@@ -1,0 +1,1772 @@
+2026-10-11 14:47:06.976 | INFO     | word_pdf:preflight:1827 - [word] preflight: open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-10-11 14:47:06.996 | INFO     | __main__:redline_folders:727 - [redline] one_osascript=True pairs=1000
+2026-10-11 14:47:07.931 | INFO     | __main__:_redline_batched:1011 - [batch] one osascript for 1000 comparison(s)
+2026-10-11 14:47:12.937 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 3/1000
+2026-10-11 14:47:17.939 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 7/1000
+2026-10-11 14:47:22.945 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 9/1000
+2026-10-11 14:47:27.948 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 12/1000
+2026-10-11 14:47:32.954 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 16/1000
+2026-10-11 14:47:37.992 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 18/1000
+2026-10-11 14:47:43.022 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 21/1000
+2026-10-11 14:47:48.054 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 23/1000
+2026-10-11 14:47:53.055 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 25/1000
+2026-10-11 14:47:58.061 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 27/1000
+2026-10-11 14:48:03.071 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 29/1000
+2026-10-11 14:48:08.080 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 32/1000
+2026-10-11 14:48:13.086 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 34/1000
+2026-10-11 14:48:18.089 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 36/1000
+2026-10-11 14:48:23.095 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 38/1000
+2026-10-11 14:48:28.100 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 40/1000
+2026-10-11 14:48:33.104 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 41/1000
+2026-10-11 14:48:38.106 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 43/1000
+2026-10-11 14:48:43.107 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 46/1000
+2026-10-11 14:48:48.111 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 48/1000
+2026-10-11 14:48:53.117 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 51/1000
+2026-10-11 14:48:58.122 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 53/1000
+2026-10-11 14:49:03.126 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 56/1000
+2026-10-11 14:49:08.129 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 58/1000
+2026-10-11 14:49:13.135 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 61/1000
+2026-10-11 14:49:18.140 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 63/1000
+2026-10-11 14:49:28.145 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 66/1000
+2026-10-11 14:49:33.147 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 67/1000
+2026-10-11 14:49:38.149 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 70/1000
+2026-10-11 14:49:43.153 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 72/1000
+2026-10-11 14:49:48.159 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 74/1000
+2026-10-11 14:49:53.165 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 77/1000
+2026-10-11 14:49:58.171 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 79/1000
+2026-10-11 14:50:03.175 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 81/1000
+2026-10-11 14:50:08.181 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 83/1000
+2026-10-11 14:50:13.182 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 86/1000
+2026-10-11 14:50:18.188 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 88/1000
+2026-10-11 14:50:23.197 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 90/1000
+2026-10-11 14:50:28.202 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 92/1000
+2026-10-11 14:50:33.208 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 94/1000
+2026-10-11 14:50:38.214 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 97/1000
+2026-10-11 14:50:43.220 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 99/1000
+2026-10-11 14:50:48.224 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 101/1000
+2026-10-11 14:50:53.230 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 104/1000
+2026-10-11 14:50:58.231 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 106/1000
+2026-10-11 14:51:03.232 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 108/1000
+2026-10-11 14:51:08.237 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 110/1000
+2026-10-11 14:51:13.243 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 113/1000
+2026-10-11 14:51:18.246 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 117/1000
+2026-10-11 14:51:23.252 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 120/1000
+2026-10-11 14:51:25.221 | INFO     | word_pdf:_note_buttons:514 - [watchdog] Microsoft Word shows button 'missing value'
+2026-10-11 14:51:28.254 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 123/1000
+2026-10-11 14:51:33.255 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 126/1000
+2026-10-11 14:51:38.261 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 130/1000
+2026-10-11 14:51:43.267 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 133/1000
+2026-10-11 14:51:48.272 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 136/1000
+2026-10-11 14:51:53.275 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 139/1000
+2026-10-11 14:51:58.280 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 143/1000
+2026-10-11 14:52:03.285 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 146/1000
+2026-10-11 14:52:08.293 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 149/1000
+2026-10-11 14:52:13.298 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 152/1000
+2026-10-11 14:52:18.303 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 155/1000
+2026-10-11 14:52:23.309 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 158/1000
+2026-10-11 14:52:28.312 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 162/1000
+2026-10-11 14:52:33.317 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 164/1000
+2026-10-11 14:52:38.320 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 167/1000
+2026-10-11 14:52:43.326 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 170/1000
+2026-10-11 14:52:48.328 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 174/1000
+2026-10-11 14:52:53.334 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 176/1000
+2026-10-11 14:52:58.343 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 179/1000
+2026-10-11 14:53:03.348 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 182/1000
+2026-10-11 14:53:08.353 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 185/1000
+2026-10-11 14:53:13.359 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 188/1000
+2026-10-11 14:53:18.365 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 191/1000
+2026-10-11 14:53:23.371 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 194/1000
+2026-10-11 14:53:28.377 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 196/1000
+2026-10-11 14:53:33.383 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 199/1000
+2026-10-11 14:53:38.391 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 202/1000
+2026-10-11 14:53:43.400 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 205/1000
+2026-10-11 14:53:48.406 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 208/1000
+2026-10-11 14:53:53.413 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 211/1000
+2026-10-11 14:53:58.419 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 214/1000
+2026-10-11 14:54:03.425 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 217/1000
+2026-10-11 14:54:08.432 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 219/1000
+2026-10-11 14:54:13.440 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 222/1000
+2026-10-11 14:54:18.448 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 224/1000
+2026-10-11 14:54:23.455 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 227/1000
+2026-10-11 14:54:28.461 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 230/1000
+2026-10-11 14:54:33.469 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 233/1000
+2026-10-11 14:54:38.474 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 235/1000
+2026-10-11 14:54:43.480 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 238/1000
+2026-10-11 14:54:48.486 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 240/1000
+2026-10-11 14:54:53.493 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 243/1000
+2026-10-11 14:54:58.499 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 245/1000
+2026-10-11 14:55:03.502 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 247/1000
+2026-10-11 14:55:08.508 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 250/1000
+2026-10-11 14:55:13.520 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 253/1000
+2026-10-11 14:55:18.533 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 256/1000
+2026-10-11 14:55:23.539 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 258/1000
+2026-10-11 14:55:28.546 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 261/1000
+2026-10-11 14:55:33.552 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 264/1000
+2026-10-11 14:55:38.562 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 266/1000
+2026-10-11 14:55:43.573 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 268/1000
+2026-10-11 14:55:48.584 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 271/1000
+2026-10-11 14:55:53.594 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 274/1000
+2026-10-11 14:55:58.600 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 276/1000
+2026-10-11 14:56:03.607 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 279/1000
+2026-10-11 14:56:08.725 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 281/1000
+2026-10-11 14:56:13.733 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 283/1000
+2026-10-11 14:56:18.736 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 286/1000
+2026-10-11 14:56:23.738 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 288/1000
+2026-10-11 14:56:28.742 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 291/1000
+2026-10-11 14:56:33.745 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 293/1000
+2026-10-11 14:56:38.750 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 296/1000
+2026-10-11 14:56:43.752 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 298/1000
+2026-10-11 14:56:48.756 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 300/1000
+2026-10-11 14:56:53.761 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 303/1000
+2026-10-11 14:56:58.764 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 306/1000
+2026-10-11 14:57:03.772 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 307/1000
+2026-10-11 14:57:08.776 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 308/1000
+2026-10-11 14:57:13.780 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 309/1000
+2026-10-11 14:57:18.785 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 310/1000
+2026-10-11 14:57:23.788 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 311/1000
+2026-10-11 14:57:28.793 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 312/1000
+2026-10-11 14:57:33.799 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 313/1000
+2026-10-11 14:57:38.805 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 315/1000
+2026-10-11 14:57:43.807 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 316/1000
+2026-10-11 14:57:48.813 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 317/1000
+2026-10-11 14:57:53.833 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 318/1000
+2026-10-11 14:57:58.838 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 319/1000
+2026-10-11 14:58:03.841 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 320/1000
+2026-10-11 14:58:08.846 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 321/1000
+2026-10-11 14:58:13.852 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 322/1000
+2026-10-11 14:58:18.858 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 323/1000
+2026-10-11 14:58:23.862 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 325/1000
+2026-10-11 14:58:28.869 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 326/1000
+2026-10-11 14:58:33.876 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 327/1000
+2026-10-11 14:58:38.882 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 329/1000
+2026-10-11 14:58:43.887 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 330/1000
+2026-10-11 14:58:48.889 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 332/1000
+2026-10-11 14:58:53.895 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 334/1000
+2026-10-11 14:58:58.900 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 336/1000
+2026-10-11 14:59:03.906 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 337/1000
+2026-10-11 14:59:08.911 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 339/1000
+2026-10-11 14:59:13.917 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 340/1000
+2026-10-11 14:59:18.922 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 342/1000
+2026-10-11 14:59:23.927 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 344/1000
+2026-10-11 14:59:28.933 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 345/1000
+2026-10-11 14:59:33.940 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 347/1000
+2026-10-11 14:59:38.945 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 348/1000
+2026-10-11 14:59:43.951 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 350/1000
+2026-10-11 14:59:48.957 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 352/1000
+2026-10-11 14:59:53.962 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 354/1000
+2026-10-11 14:59:58.968 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 355/1000
+2026-10-11 15:00:03.973 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 357/1000
+2026-10-11 15:00:08.979 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 359/1000
+2026-10-11 15:00:13.986 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 360/1000
+2026-10-11 15:00:18.991 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 362/1000
+2026-10-11 15:00:23.997 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 364/1000
+2026-10-11 15:00:29.002 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 365/1000
+2026-10-11 15:00:34.008 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 367/1000
+2026-10-11 15:00:39.017 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 368/1000
+2026-10-11 15:00:44.032 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 369/1000
+2026-10-11 15:00:49.037 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 370/1000
+2026-10-11 15:00:54.047 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 371/1000
+2026-10-11 15:00:59.054 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 372/1000
+2026-10-11 15:01:04.065 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 373/1000
+2026-10-11 15:01:09.072 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 374/1000
+2026-10-11 15:01:14.078 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 375/1000
+2026-10-11 15:01:19.082 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 376/1000
+2026-10-11 15:01:24.088 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 377/1000
+2026-10-11 15:01:29.095 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 379/1000
+2026-10-11 15:01:34.096 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 380/1000
+2026-10-11 15:01:39.112 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 381/1000
+2026-10-11 15:01:44.116 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 382/1000
+2026-10-11 15:01:49.121 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 383/1000
+2026-10-11 15:01:54.127 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 384/1000
+2026-10-11 15:02:04.136 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 385/1000
+2026-10-11 15:02:09.142 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 386/1000
+2026-10-11 15:02:14.147 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 387/1000
+2026-10-11 15:02:19.156 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 388/1000
+2026-10-11 15:02:24.161 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 389/1000
+2026-10-11 15:02:29.162 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 390/1000
+2026-10-11 15:02:34.168 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 391/1000
+2026-10-11 15:02:39.173 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 392/1000
+2026-10-11 15:02:44.178 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 393/1000
+2026-10-11 15:02:49.184 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 394/1000
+2026-10-11 15:02:54.190 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 395/1000
+2026-10-11 15:02:59.192 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 396/1000
+2026-10-11 15:03:04.195 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 397/1000
+2026-10-11 15:03:09.202 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 398/1000
+2026-10-11 15:03:14.207 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 399/1000
+2026-10-11 15:03:19.211 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 400/1000
+2026-10-11 15:03:24.216 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 401/1000
+2026-10-11 15:03:29.220 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 402/1000
+2026-10-11 15:03:34.222 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 403/1000
+2026-10-11 15:03:39.223 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 404/1000
+2026-10-11 15:03:44.226 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 405/1000
+2026-10-11 15:03:49.227 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 406/1000
+2026-10-11 15:03:54.232 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 407/1000
+2026-10-11 15:03:59.234 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 408/1000
+2026-10-11 15:04:04.234 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 409/1000
+2026-10-11 15:04:09.236 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 410/1000
+2026-10-11 15:04:14.238 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 411/1000
+2026-10-11 15:04:19.244 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 412/1000
+2026-10-11 15:04:24.250 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 413/1000
+2026-10-11 15:04:29.254 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 414/1000
+2026-10-11 15:04:34.260 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 415/1000
+2026-10-11 15:04:39.265 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 416/1000
+2026-10-11 15:04:44.270 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 417/1000
+2026-10-11 15:04:49.279 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 419/1000
+2026-10-11 15:04:54.285 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 420/1000
+2026-10-11 15:04:59.291 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 422/1000
+2026-10-11 15:05:04.296 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 424/1000
+2026-10-11 15:05:09.300 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 425/1000
+2026-10-11 15:05:14.307 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 427/1000
+2026-10-11 15:05:19.313 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 429/1000
+2026-10-11 15:05:24.316 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 430/1000
+2026-10-11 15:05:29.323 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 432/1000
+2026-10-11 15:05:34.328 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 434/1000
+2026-10-11 15:05:39.339 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 436/1000
+2026-10-11 15:05:44.342 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 437/1000
+2026-10-11 15:05:49.345 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 439/1000
+2026-10-11 15:05:54.351 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 441/1000
+2026-10-11 15:05:59.352 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 442/1000
+2026-10-11 15:06:04.354 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 444/1000
+2026-10-11 15:06:09.359 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 445/1000
+2026-10-11 15:06:14.362 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 447/1000
+2026-10-11 15:06:19.369 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 449/1000
+2026-10-11 15:06:24.374 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 450/1000
+2026-10-11 15:06:29.379 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 452/1000
+2026-10-11 15:06:34.385 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 453/1000
+2026-10-11 15:06:39.390 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 454/1000
+2026-10-11 15:06:44.393 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 456/1000
+2026-10-11 15:06:49.395 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 458/1000
+2026-10-11 15:06:54.402 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 459/1000
+2026-10-11 15:06:59.408 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 461/1000
+2026-10-11 15:07:04.412 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 463/1000
+2026-10-11 15:07:09.414 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 464/1000
+2026-10-11 15:07:14.415 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 466/1000
+2026-10-11 15:07:19.420 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 468/1000
+2026-10-11 15:07:24.426 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 469/1000
+2026-10-11 15:07:29.432 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 471/1000
+2026-10-11 15:07:34.438 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 473/1000
+2026-10-11 15:07:39.444 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 475/1000
+2026-10-11 15:07:44.449 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 476/1000
+2026-10-11 15:07:49.451 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 478/1000
+2026-10-11 15:07:54.459 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 479/1000
+2026-10-11 15:07:59.471 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 481/1000
+2026-10-11 15:08:04.473 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 483/1000
+2026-10-11 15:08:09.475 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 484/1000
+2026-10-11 15:08:14.487 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 486/1000
+2026-10-11 15:08:19.492 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 488/1000
+2026-10-11 15:08:24.496 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 489/1000
+2026-10-11 15:08:29.497 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 491/1000
+2026-10-11 15:08:34.499 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 492/1000
+2026-10-11 15:08:39.504 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 494/1000
+2026-10-11 15:08:44.507 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 496/1000
+2026-10-11 15:08:49.513 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 497/1000
+2026-10-11 15:08:54.518 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 499/1000
+2026-10-11 15:08:59.525 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 500/1000
+2026-10-11 15:09:04.529 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 502/1000
+2026-10-11 15:09:09.531 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 503/1000
+2026-10-11 15:09:14.536 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 505/1000
+2026-10-11 15:09:19.542 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 506/1000
+2026-10-11 15:09:24.544 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 508/1000
+2026-10-11 15:09:29.548 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 510/1000
+2026-10-11 15:09:34.553 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 511/1000
+2026-10-11 15:09:39.554 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 512/1000
+2026-10-11 15:09:44.560 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 514/1000
+2026-10-11 15:09:49.563 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 515/1000
+2026-10-11 15:09:54.565 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 517/1000
+2026-10-11 15:09:59.570 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 519/1000
+2026-10-11 15:10:04.573 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 520/1000
+2026-10-11 15:10:09.581 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 521/1000
+2026-10-11 15:10:14.583 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 523/1000
+2026-10-11 15:10:19.588 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 524/1000
+2026-10-11 15:10:24.589 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 526/1000
+2026-10-11 15:10:29.594 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 527/1000
+2026-10-11 15:10:34.600 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 528/1000
+2026-10-11 15:10:39.604 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 530/1000
+2026-10-11 15:10:44.610 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 531/1000
+2026-10-11 15:10:49.615 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 532/1000
+2026-10-11 15:10:54.617 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 534/1000
+2026-10-11 15:10:59.619 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 535/1000
+2026-10-11 15:11:04.625 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 536/1000
+2026-10-11 15:11:09.632 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 537/1000
+2026-10-11 15:11:14.638 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 539/1000
+2026-10-11 15:11:19.644 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 540/1000
+2026-10-11 15:11:24.654 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 541/1000
+2026-10-11 15:11:29.660 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 543/1000
+2026-10-11 15:11:34.662 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 544/1000
+2026-10-11 15:11:39.674 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 545/1000
+2026-10-11 15:11:44.678 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 546/1000
+2026-10-11 15:11:49.683 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 548/1000
+2026-10-11 15:11:54.689 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 549/1000
+2026-10-11 15:11:59.694 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 550/1000
+2026-10-11 15:12:04.699 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 551/1000
+2026-10-11 15:12:09.702 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 553/1000
+2026-10-11 15:12:14.706 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 554/1000
+2026-10-11 15:12:19.712 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 555/1000
+2026-10-11 15:12:24.722 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 556/1000
+2026-10-11 15:12:29.724 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 558/1000
+2026-10-11 15:12:34.729 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 559/1000
+2026-10-11 15:12:39.730 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 560/1000
+2026-10-11 15:12:44.732 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 561/1000
+2026-10-11 15:12:49.735 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 563/1000
+2026-10-11 15:12:54.742 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 564/1000
+2026-10-11 15:12:59.745 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 565/1000
+2026-10-11 15:13:04.751 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 566/1000
+2026-10-11 15:13:09.757 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 568/1000
+2026-10-11 15:13:14.763 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 569/1000
+2026-10-11 15:13:19.767 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 570/1000
+2026-10-11 15:13:24.773 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 571/1000
+2026-10-11 15:13:29.774 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 573/1000
+2026-10-11 15:13:34.780 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 574/1000
+2026-10-11 15:13:39.791 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 575/1000
+2026-10-11 15:13:44.794 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 576/1000
+2026-10-11 15:13:49.800 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 578/1000
+2026-10-11 15:13:54.807 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 579/1000
+2026-10-11 15:13:59.810 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 580/1000
+2026-10-11 15:14:04.812 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 582/1000
+2026-10-11 15:14:09.817 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 583/1000
+2026-10-11 15:14:14.822 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 585/1000
+2026-10-11 15:14:19.824 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 586/1000
+2026-10-11 15:14:24.830 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 587/1000
+2026-10-11 15:14:29.836 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 589/1000
+2026-10-11 15:14:34.842 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 590/1000
+2026-10-11 15:14:39.848 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 591/1000
+2026-10-11 15:14:44.854 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 593/1000
+2026-10-11 15:14:49.857 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 594/1000
+2026-10-11 15:14:54.863 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 595/1000
+2026-10-11 15:14:59.865 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 597/1000
+2026-10-11 15:15:04.868 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 598/1000
+2026-10-11 15:15:09.872 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 600/1000
+2026-10-11 15:15:14.877 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 601/1000
+2026-10-11 15:15:19.880 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 602/1000
+2026-10-11 15:15:24.885 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 604/1000
+2026-10-11 15:15:29.889 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 605/1000
+2026-10-11 15:15:34.892 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 606/1000
+2026-10-11 15:15:39.897 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 608/1000
+2026-10-11 15:15:44.899 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 609/1000
+2026-10-11 15:15:49.906 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 610/1000
+2026-10-11 15:15:54.908 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 611/1000
+2026-10-11 15:15:59.916 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 613/1000
+2026-10-11 15:16:04.922 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 614/1000
+2026-10-11 15:16:09.927 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 615/1000
+2026-10-11 15:16:14.929 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 617/1000
+2026-10-11 15:16:19.934 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 618/1000
+2026-10-11 15:16:24.940 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 620/1000
+2026-10-11 15:16:29.943 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 621/1000
+2026-10-11 15:16:34.947 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 622/1000
+2026-10-11 15:16:39.953 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 624/1000
+2026-10-11 15:16:44.959 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 626/1000
+2026-10-11 15:16:49.965 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 627/1000
+2026-10-11 15:16:54.967 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 629/1000
+2026-10-11 15:16:59.973 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 630/1000
+2026-10-11 15:17:04.979 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 631/1000
+2026-10-11 15:17:09.986 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 633/1000
+2026-10-11 15:17:14.993 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 634/1000
+2026-10-11 15:17:19.995 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 635/1000
+2026-10-11 15:17:24.999 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 636/1000
+2026-10-11 15:17:30.005 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 637/1000
+2026-10-11 15:17:35.010 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 639/1000
+2026-10-11 15:17:40.016 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 640/1000
+2026-10-11 15:17:45.019 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 641/1000
+2026-10-11 15:17:50.024 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 642/1000
+2026-10-11 15:17:55.029 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 644/1000
+2026-10-11 15:18:00.033 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 645/1000
+2026-10-11 15:18:05.042 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 646/1000
+2026-10-11 15:18:10.048 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 648/1000
+2026-10-11 15:18:15.054 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 649/1000
+2026-10-11 15:18:20.065 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 650/1000
+2026-10-11 15:18:25.069 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 651/1000
+2026-10-11 15:18:30.076 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 652/1000
+2026-10-11 15:18:35.081 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 653/1000
+2026-10-11 15:18:40.087 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 654/1000
+2026-10-11 15:18:45.089 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 655/1000
+2026-10-11 15:18:50.095 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 656/1000
+2026-10-11 15:18:55.099 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 657/1000
+2026-10-11 15:19:00.100 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 658/1000
+2026-10-11 15:19:05.106 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 659/1000
+2026-10-11 15:19:10.108 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 660/1000
+2026-10-11 15:19:15.114 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 662/1000
+2026-10-11 15:19:20.118 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 663/1000
+2026-10-11 15:19:25.123 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 664/1000
+2026-10-11 15:19:30.129 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 665/1000
+2026-10-11 15:19:35.140 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 666/1000
+2026-10-11 15:19:40.146 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 667/1000
+2026-10-11 15:19:45.156 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 668/1000
+2026-10-11 15:19:50.162 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 669/1000
+2026-10-11 15:19:55.166 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 670/1000
+2026-10-11 15:20:00.169 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 671/1000
+2026-10-11 15:20:05.174 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 672/1000
+2026-10-11 15:20:10.179 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 674/1000
+2026-10-11 15:20:15.184 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 675/1000
+2026-10-11 15:20:20.191 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 677/1000
+2026-10-11 15:20:25.196 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 678/1000
+2026-10-11 15:20:30.202 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 679/1000
+2026-10-11 15:20:35.207 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 681/1000
+2026-10-11 15:20:40.213 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 682/1000
+2026-10-11 15:20:45.218 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 683/1000
+2026-10-11 15:20:50.224 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 685/1000
+2026-10-11 15:20:55.225 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 686/1000
+2026-10-11 15:21:00.231 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 688/1000
+2026-10-11 15:21:05.234 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 689/1000
+2026-10-11 15:21:10.239 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 691/1000
+2026-10-11 15:21:15.240 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 692/1000
+2026-10-11 15:21:20.244 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 694/1000
+2026-10-11 15:21:25.248 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 695/1000
+2026-10-11 15:21:30.252 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 697/1000
+2026-10-11 15:21:35.257 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 698/1000
+2026-10-11 15:21:40.259 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 700/1000
+2026-10-11 15:21:45.264 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 701/1000
+2026-10-11 15:21:50.270 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 702/1000
+2026-10-11 15:21:55.272 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 703/1000
+2026-10-11 15:22:00.276 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 704/1000
+2026-10-11 15:22:05.282 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 705/1000
+2026-10-11 15:22:10.284 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 706/1000
+2026-10-11 15:22:15.290 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 707/1000
+2026-10-11 15:22:20.293 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 708/1000
+2026-10-11 15:22:35.304 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 709/1000
+2026-10-11 15:22:40.308 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 710/1000
+2026-10-11 15:22:45.314 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 711/1000
+2026-10-11 15:22:50.320 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 712/1000
+2026-10-11 15:23:00.330 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 713/1000
+2026-10-11 15:23:05.336 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 714/1000
+2026-10-11 15:23:10.342 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 715/1000
+2026-10-11 15:23:15.349 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 716/1000
+2026-10-11 15:23:20.352 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 717/1000
+2026-10-11 15:23:25.358 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 718/1000
+2026-10-11 15:23:30.361 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 719/1000
+2026-10-11 15:23:40.370 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 720/1000
+2026-10-11 15:23:55.380 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 721/1000
+2026-10-11 15:24:00.381 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 722/1000
+2026-10-11 15:24:10.391 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 723/1000
+2026-10-11 15:24:15.392 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 724/1000
+2026-10-11 15:24:25.403 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 725/1000
+2026-10-11 15:24:30.409 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 726/1000
+2026-10-11 15:24:35.415 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 727/1000
+2026-10-11 15:24:40.419 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 728/1000
+2026-10-11 15:24:45.425 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 729/1000
+2026-10-11 15:24:55.432 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 730/1000
+2026-10-11 15:25:00.435 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 731/1000
+2026-10-11 15:25:05.437 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 732/1000
+2026-10-11 15:25:10.443 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 733/1000
+2026-10-11 15:25:20.450 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 734/1000
+2026-10-11 15:25:25.456 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 735/1000
+2026-10-11 15:25:30.461 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 736/1000
+2026-10-11 15:25:40.473 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 737/1000
+2026-10-11 15:25:45.477 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 738/1000
+2026-10-11 15:25:50.483 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 739/1000
+2026-10-11 15:26:00.490 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 740/1000
+2026-10-11 15:26:05.496 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 741/1000
+2026-10-11 15:26:15.504 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 742/1000
+2026-10-11 15:26:20.510 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 743/1000
+2026-10-11 15:26:25.516 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 744/1000
+2026-10-11 15:26:35.521 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 745/1000
+2026-10-11 15:26:40.523 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 746/1000
+2026-10-11 15:26:45.525 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 747/1000
+2026-10-11 15:26:55.536 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 748/1000
+2026-10-11 15:27:00.542 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 749/1000
+2026-10-11 15:27:05.547 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 750/1000
+2026-10-11 15:27:10.553 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 751/1000
+2026-10-11 15:27:15.558 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 752/1000
+2026-10-11 15:27:20.565 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 753/1000
+2026-10-11 15:27:30.573 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 754/1000
+2026-10-11 15:27:35.575 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 755/1000
+2026-10-11 15:27:40.580 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 756/1000
+2026-10-11 15:27:45.585 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 757/1000
+2026-10-11 15:27:50.591 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 758/1000
+2026-10-11 15:28:00.598 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 759/1000
+2026-10-11 15:28:05.601 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 760/1000
+2026-10-11 15:28:10.608 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 761/1000
+2026-10-11 15:28:15.611 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 762/1000
+2026-10-11 15:28:20.616 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 763/1000
+2026-10-11 15:28:25.622 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 764/1000
+2026-10-11 15:28:30.627 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 765/1000
+2026-10-11 15:28:40.636 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 766/1000
+2026-10-11 15:28:45.643 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 767/1000
+2026-10-11 15:28:50.647 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 768/1000
+2026-10-11 15:29:00.653 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 769/1000
+2026-10-11 15:29:10.661 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 770/1000
+2026-10-11 15:29:15.664 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 771/1000
+2026-10-11 15:29:25.676 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 772/1000
+2026-10-11 15:29:30.681 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 773/1000
+2026-10-11 15:29:40.693 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 774/1000
+2026-10-11 15:29:45.698 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 775/1000
+2026-10-11 15:29:50.703 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 776/1000
+2026-10-11 15:29:55.707 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 777/1000
+2026-10-11 15:30:10.722 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 778/1000
+2026-10-11 15:30:25.734 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 779/1000
+2026-10-11 15:30:30.740 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 780/1000
+2026-10-11 15:30:35.741 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 781/1000
+2026-10-11 15:30:40.747 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 782/1000
+2026-10-11 15:30:50.758 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 783/1000
+2026-10-11 15:30:55.764 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 784/1000
+2026-10-11 15:31:00.770 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 785/1000
+2026-10-11 15:31:05.773 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 786/1000
+2026-10-11 15:31:10.774 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 787/1000
+2026-10-11 15:31:15.780 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 788/1000
+2026-10-11 15:31:20.787 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 789/1000
+2026-10-11 15:31:30.794 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 790/1000
+2026-10-11 15:31:35.797 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 791/1000
+2026-10-11 15:31:40.801 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 792/1000
+2026-10-11 15:31:45.807 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 793/1000
+2026-10-11 15:31:50.813 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 794/1000
+2026-10-11 15:31:55.819 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 795/1000
+2026-10-11 15:32:00.823 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 796/1000
+2026-10-11 15:32:05.829 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 797/1000
+2026-10-11 15:32:15.835 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 798/1000
+2026-10-11 15:32:20.840 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 799/1000
+2026-10-11 15:32:25.846 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 800/1000
+2026-10-11 15:32:30.852 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 801/1000
+2026-10-11 15:32:40.864 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 802/1000
+2026-10-11 15:32:45.867 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 803/1000
+2026-10-11 15:32:50.873 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 804/1000
+2026-10-11 15:32:55.876 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 805/1000
+2026-10-11 15:33:05.888 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 806/1000
+2026-10-11 15:33:10.894 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 807/1000
+2026-10-11 15:33:15.898 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 809/1000
+2026-10-11 15:33:20.902 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 810/1000
+2026-10-11 15:33:25.904 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 811/1000
+2026-10-11 15:33:30.906 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 812/1000
+2026-10-11 15:33:35.907 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 813/1000
+2026-10-11 15:33:40.913 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 815/1000
+2026-10-11 15:33:45.915 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 816/1000
+2026-10-11 15:33:50.919 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 817/1000
+2026-10-11 15:33:55.922 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 818/1000
+2026-10-11 15:34:00.928 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 819/1000
+2026-10-11 15:34:05.931 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 820/1000
+2026-10-11 15:34:10.937 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 821/1000
+2026-10-11 15:34:15.944 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 822/1000
+2026-10-11 15:34:20.950 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 824/1000
+2026-10-11 15:34:25.951 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 825/1000
+2026-10-11 15:34:30.958 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 826/1000
+2026-10-11 15:34:35.962 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 827/1000
+2026-10-11 15:34:40.965 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 828/1000
+2026-10-11 15:34:45.967 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 829/1000
+2026-10-11 15:34:50.971 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 830/1000
+2026-10-11 15:34:55.976 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 831/1000
+2026-10-11 15:35:00.981 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 832/1000
+2026-10-11 15:35:05.986 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 833/1000
+2026-10-11 15:35:10.987 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 834/1000
+2026-10-11 15:35:15.991 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 835/1000
+2026-10-11 15:35:20.998 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 837/1000
+2026-10-11 15:35:26.002 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 838/1000
+2026-10-11 15:35:31.006 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 839/1000
+2026-10-11 15:35:36.013 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 840/1000
+2026-10-11 15:35:41.016 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 841/1000
+2026-10-11 15:35:51.027 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 842/1000
+2026-10-11 15:35:56.031 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 843/1000
+2026-10-11 15:36:01.037 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 844/1000
+2026-10-11 15:36:06.038 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 845/1000
+2026-10-11 15:36:11.044 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 846/1000
+2026-10-11 15:36:16.049 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 847/1000
+2026-10-11 15:36:21.053 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 848/1000
+2026-10-11 15:36:31.057 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 849/1000
+2026-10-11 15:36:36.058 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 850/1000
+2026-10-11 15:36:46.068 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 851/1000
+2026-10-11 15:36:51.073 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 852/1000
+2026-10-11 15:36:56.077 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 853/1000
+2026-10-11 15:37:01.083 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 854/1000
+2026-10-11 15:37:06.087 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 855/1000
+2026-10-11 15:37:16.099 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 856/1000
+2026-10-11 15:37:21.102 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 857/1000
+2026-10-11 15:37:26.104 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 858/1000
+2026-10-11 15:37:31.110 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 859/1000
+2026-10-11 15:37:41.121 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 860/1000
+2026-10-11 15:37:46.124 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 861/1000
+2026-10-11 15:37:51.128 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 862/1000
+2026-10-11 15:37:56.133 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 863/1000
+2026-10-11 15:38:01.138 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 864/1000
+2026-10-11 15:38:06.140 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 865/1000
+2026-10-11 15:38:16.148 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 866/1000
+2026-10-11 15:38:21.154 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 867/1000
+2026-10-11 15:38:26.159 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 868/1000
+2026-10-11 15:38:36.167 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 869/1000
+2026-10-11 15:38:41.173 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 870/1000
+2026-10-11 15:38:46.175 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 871/1000
+2026-10-11 15:38:56.186 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 872/1000
+2026-10-11 15:39:01.188 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 873/1000
+2026-10-11 15:39:06.190 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 874/1000
+2026-10-11 15:39:11.196 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 875/1000
+2026-10-11 15:39:21.205 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 876/1000
+2026-10-11 15:39:26.211 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 877/1000
+2026-10-11 15:39:36.220 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 878/1000
+2026-10-11 15:39:41.225 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 879/1000
+2026-10-11 15:39:46.231 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 880/1000
+2026-10-11 15:39:56.239 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 881/1000
+2026-10-11 15:40:01.243 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 882/1000
+2026-10-11 15:40:06.249 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 883/1000
+2026-10-11 15:40:16.261 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 884/1000
+2026-10-11 15:40:21.267 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 885/1000
+2026-10-11 15:40:26.270 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 886/1000
+2026-10-11 15:40:36.278 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 887/1000
+2026-10-11 15:40:41.285 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 888/1000
+2026-10-11 15:40:46.290 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 889/1000
+2026-10-11 15:40:56.300 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 890/1000
+2026-10-11 15:41:01.306 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 891/1000
+2026-10-11 15:41:11.316 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 892/1000
+2026-10-11 15:41:16.322 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 893/1000
+2026-10-11 15:41:26.333 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 894/1000
+2026-10-11 15:41:31.338 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 895/1000
+2026-10-11 15:41:36.344 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 896/1000
+2026-10-11 15:41:41.348 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 897/1000
+2026-10-11 15:41:51.358 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 898/1000
+2026-10-11 15:42:01.365 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 899/1000
+2026-10-11 15:42:06.371 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 900/1000
+2026-10-11 15:42:11.373 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 901/1000
+2026-10-11 15:42:21.383 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 902/1000
+2026-10-11 15:42:26.384 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 903/1000
+2026-10-11 15:42:36.393 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 904/1000
+2026-10-11 15:42:41.399 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 905/1000
+2026-10-11 15:42:51.407 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 906/1000
+2026-10-11 15:42:56.409 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 907/1000
+2026-10-11 15:43:06.419 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 908/1000
+2026-10-11 15:43:11.425 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 909/1000
+2026-10-11 15:43:21.432 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 910/1000
+2026-10-11 15:43:26.438 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 911/1000
+2026-10-11 15:43:36.445 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 912/1000
+2026-10-11 15:43:41.450 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 913/1000
+2026-10-11 15:43:51.461 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 914/1000
+2026-10-11 15:44:01.471 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 915/1000
+2026-10-11 15:44:06.477 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 916/1000
+2026-10-11 15:44:16.487 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 917/1000
+2026-10-11 15:44:26.496 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 918/1000
+2026-10-11 15:44:36.502 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 919/1000
+2026-10-11 15:44:41.506 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 920/1000
+2026-10-11 15:44:51.517 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 921/1000
+2026-10-11 15:44:56.522 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 922/1000
+2026-10-11 15:45:01.523 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 923/1000
+2026-10-11 15:45:11.535 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 924/1000
+2026-10-11 15:45:16.541 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 925/1000
+2026-10-11 15:45:26.547 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 926/1000
+2026-10-11 15:45:31.553 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 927/1000
+2026-10-11 15:45:41.564 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 928/1000
+2026-10-11 15:45:46.567 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 929/1000
+2026-10-11 15:45:51.569 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 930/1000
+2026-10-11 15:46:01.579 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 931/1000
+2026-10-11 15:46:06.583 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 932/1000
+2026-10-11 15:46:16.591 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 933/1000
+2026-10-11 15:46:21.597 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 934/1000
+2026-10-11 15:46:31.608 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 935/1000
+2026-10-11 15:46:36.615 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 936/1000
+2026-10-11 15:46:46.625 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 937/1000
+2026-10-11 15:46:56.631 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 938/1000
+2026-10-11 15:47:01.637 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 939/1000
+2026-10-11 15:47:11.647 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 940/1000
+2026-10-11 15:47:16.651 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 941/1000
+2026-10-11 15:47:26.655 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 942/1000
+2026-10-11 15:47:36.662 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 943/1000
+2026-10-11 15:47:41.668 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 944/1000
+2026-10-11 15:47:46.673 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 945/1000
+2026-10-11 15:47:56.683 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 946/1000
+2026-10-11 15:48:01.687 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 947/1000
+2026-10-11 15:48:11.699 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 948/1000
+2026-10-11 15:48:16.701 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 949/1000
+2026-10-11 15:48:21.707 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 950/1000
+2026-10-11 15:48:31.716 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 951/1000
+2026-10-11 15:48:36.718 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 952/1000
+2026-10-11 15:48:46.727 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 953/1000
+2026-10-11 15:48:51.733 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 954/1000
+2026-10-11 15:49:01.739 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 955/1000
+2026-10-11 15:49:06.745 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 956/1000
+2026-10-11 15:49:16.753 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 957/1000
+2026-10-11 15:49:21.759 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 958/1000
+2026-10-11 15:49:31.769 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 959/1000
+2026-10-11 15:49:36.774 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 960/1000
+2026-10-11 15:49:46.780 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 961/1000
+2026-10-11 15:49:51.784 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 962/1000
+2026-10-11 15:50:01.791 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 963/1000
+2026-10-11 15:50:06.795 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 964/1000
+2026-10-11 15:50:16.800 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 965/1000
+2026-10-11 15:50:21.802 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 966/1000
+2026-10-11 15:50:31.814 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 967/1000
+2026-10-11 15:50:36.819 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 968/1000
+2026-10-11 15:50:46.828 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 969/1000
+2026-10-11 15:50:51.834 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 970/1000
+2026-10-11 15:50:56.837 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 971/1000
+2026-10-11 15:51:01.843 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 972/1000
+2026-10-11 15:51:06.849 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 973/1000
+2026-10-11 15:51:11.854 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 974/1000
+2026-10-11 15:51:16.858 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 975/1000
+2026-10-11 15:51:21.860 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 976/1000
+2026-10-11 15:51:31.866 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 977/1000
+2026-10-11 15:51:36.871 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 978/1000
+2026-10-11 15:51:41.874 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 979/1000
+2026-10-11 15:51:46.879 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 980/1000
+2026-10-11 15:51:51.885 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 981/1000
+2026-10-11 15:51:56.891 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 982/1000
+2026-10-11 15:52:06.895 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 983/1000
+2026-10-11 15:52:11.902 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 984/1000
+2026-10-11 15:52:16.907 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 985/1000
+2026-10-11 15:52:26.918 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 986/1000
+2026-10-11 15:52:31.921 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 987/1000
+2026-10-11 15:52:41.933 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 988/1000
+2026-10-11 15:52:56.947 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 989/1000
+2026-10-11 15:53:11.962 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 990/1000
+2026-10-11 15:53:26.977 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 991/1000
+2026-10-11 15:53:41.991 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 992/1000
+2026-10-11 15:53:46.994 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 993/1000
+2026-10-11 15:53:56.999 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 994/1000
+2026-10-11 15:54:02.003 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 995/1000
+2026-10-11 15:54:07.005 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 996/1000
+2026-10-11 15:54:17.016 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 997/1000
+2026-10-11 15:54:22.022 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 998/1000
+2026-10-11 15:54:27.028 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 999/1000
+2026-10-11 15:54:33.625 | INFO     | __main__:_redline_batched:1040 - [batch] one osascript for 1000 redline PDF(s)
+2026-10-11 15:54:38.636 | INFO     | word_pdf:_loop:1077 - [batch pdf 1] 1/1000
+2026-10-11 15:54:43.638 | INFO     | word_pdf:_loop:1077 - [batch pdf 1] 3/1000
+2026-10-11 15:54:48.642 | INFO     | word_pdf:_loop:1077 - [batch pdf 1] 4/1000
+2026-10-11 15:54:53.644 | INFO     | word_pdf:_loop:1077 - [batch pdf 1] 6/1000
+2026-10-11 15:54:58.649 | INFO     | word_pdf:_loop:1077 - [batch pdf 1] 7/1000
+2026-10-11 15:55:01.639 | WARNING  | word_pdf:run_batch_with_resume:1216 - [batch pdf] 993 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 2, 0 of 3 stalled passes used)
+2026-10-11 15:55:01.641 | WARNING  | word_pdf:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 15:55:01.641 | WARNING  | word_pdf:recycle:735 - [word] recycling (restart 1)
+2026-10-11 15:55:07.721 | INFO     | word_pdf:_note_buttons:514 - [watchdog] Microsoft Error Reporting shows button 'OK'
+2026-10-11 15:55:07.721 | INFO     | word_pdf:_note_buttons:514 - [watchdog] Microsoft Error Reporting shows button 'More Information'
+2026-10-11 15:55:07.721 | INFO     | word_pdf:_note_buttons:514 - [watchdog] Microsoft Error Reporting shows button 'missing value'
+2026-10-11 15:55:08.355 | WARNING  | word_pdf:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 15:55:10.520 | INFO     | word_pdf:_loop:1077 - [batch pdf 2] 2/993
+2026-10-11 15:55:15.521 | INFO     | word_pdf:_loop:1077 - [batch pdf 2] 7/993
+2026-10-11 15:55:20.524 | INFO     | word_pdf:_loop:1077 - [batch pdf 2] 10/993
+2026-10-11 15:55:25.526 | INFO     | word_pdf:_loop:1077 - [batch pdf 2] 14/993
+2026-10-11 15:55:30.529 | INFO     | word_pdf:_loop:1077 - [batch pdf 2] 16/993
+2026-10-11 15:55:35.535 | INFO     | word_pdf:_loop:1077 - [batch pdf 2] 25/993
+2026-10-11 15:55:40.538 | INFO     | word_pdf:_loop:1077 - [batch pdf 2] 33/993
+2026-10-11 15:56:30.101 | WARNING  | word_pdf:_loop:1082 - [batch pdf 2] item 34/993 open for more than 30 s:
+-- Word windows {name, subrole}: ,
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-2.log:
+[ok]	8
+[ok]	9
+[ok]	10
+[ok]	11
+[ok]	12
+[ok]	13
+[ok]	14
+[ok]	15
+[ok]	16
+[ok]	17
+[ok]	18
+[ok]	19
+[ok]	20
+[ok]	21
+[ok]	22
+[ok]	23
+[ok]	24
+[ok]	25
+[ok]	26
+[ok]	27
+[ok]	28
+[ok]	29
+[ok]	30
+[ok]	31
+[ok]	32
+[ok]	33
+[ok]	34
+[ok]	35
+[ok]	36
+[ok]	37
+[ok]	38
+[ok]	39
+[ok]	40
+-- newest diagnostic reports: soffice-2026-10-11-073006.0003.ips, soffice-2026-10-11-073006.0002.ips, soffice-2026-10-11-073006.000.ips, soffice-2026-10-11-073006.ips, soffice-2026-10-11-055610.0003.ips
+2026-10-11 15:57:20.145 | INFO     | word_pdf:_loop:1077 - [batch pdf 2] 35/993
+2026-10-11 15:58:11.621 | WARNING  | word_pdf:_loop:1082 - [batch pdf 2] item 36/993 open for more than 30 s:
+-- Word windows {name, subrole}: ,
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-2.log:
+[ok]	8
+[ok]	9
+[ok]	10
+[ok]	11
+[ok]	12
+[ok]	13
+[ok]	14
+[ok]	15
+[ok]	16
+[ok]	17
+[ok]	18
+[ok]	19
+[ok]	20
+[ok]	21
+[ok]	22
+[ok]	23
+[ok]	24
+[ok]	25
+[ok]	26
+[ok]	27
+[ok]	28
+[ok]	29
+[ok]	30
+[ok]	31
+[ok]	32
+[ok]	33
+[ok]	34
+[ok]	35
+[ok]	36
+[ok]	37
+[ok]	38
+[ok]	39
+[ok]	40
+[ok]	41
+[ok]	42
+-- newest diagnostic reports: soffice-2026-10-11-073006.0003.ips, soffice-2026-10-11-073006.0002.ips, soffice-2026-10-11-073006.000.ips, soffice-2026-10-11-073006.ips, soffice-2026-10-11-055610.0003.ips
+2026-10-11 16:00:11.714 | INFO     | word_pdf:_loop:1077 - [batch pdf 2] 36/993
+2026-10-11 16:00:16.716 | INFO     | word_pdf:_loop:1077 - [batch pdf 2] 41/993
+2026-10-11 16:00:21.722 | INFO     | word_pdf:_loop:1077 - [batch pdf 2] 45/993
+2026-10-11 16:00:26.725 | INFO     | word_pdf:_loop:1077 - [batch pdf 2] 52/993
+2026-10-11 16:00:31.731 | INFO     | word_pdf:_loop:1077 - [batch pdf 2] 53/993
+2026-10-11 16:00:36.735 | INFO     | word_pdf:_loop:1077 - [batch pdf 2] 54/993
+2026-10-11 16:01:25.331 | WARNING  | word_pdf:_loop:1082 - [batch pdf 2] item 55/993 open for more than 30 s:
+-- Word windows {name, subrole}: ,
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-2.log:
+[ok]	8
+[ok]	9
+[ok]	10
+[ok]	11
+[ok]	12
+[ok]	13
+[ok]	14
+[ok]	15
+[ok]	16
+[ok]	17
+[ok]	18
+[ok]	19
+[ok]	20
+[ok]	21
+[ok]	22
+[ok]	23
+[ok]	24
+[ok]	25
+[ok]	26
+[ok]	27
+[ok]	28
+[ok]	29
+[ok]	30
+[ok]	31
+[ok]	32
+[ok]	33
+[ok]	34
+[ok]	35
+[ok]	36
+[ok]	37
+[ok]	38
+[ok]	39
+[ok]	40
+[ok]	41
+[ok]	42
+[ok]	43
+[ok]	44
+[ok]	45
+[ok]	46
+[ok]	47
+[ok]	48
+[ok]	49
+[ok]	50
+[ok]	51
+[ok]	52
+[ok]	53
+[ok]	54
+[ok]	55
+[ok]	56
+[ok]	57
+[ok]	58
+[ok]	59
+[ok]	60
+[ok]	61
+[ok]	62
+-- newest diagnostic reports: soffice-2026-10-11-073006.0003.ips, soffice-2026-10-11-073006.0002.ips, soffice-2026-10-11-073006.000.ips, soffice-2026-10-11-073006.ips, soffice-2026-10-11-055610.0003.ips
+2026-10-11 16:01:30.337 | INFO     | word_pdf:_loop:1077 - [batch pdf 2] 55/993
+2026-10-11 16:02:22.567 | WARNING  | word_pdf:_loop:1082 - [batch pdf 2] item 56/993 open for more than 30 s:
+-- Word windows {name, subrole}: ,
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-2.log:
+[ok]	8
+[ok]	9
+[ok]	10
+[ok]	11
+[ok]	12
+[ok]	13
+[ok]	14
+[ok]	15
+[ok]	16
+[ok]	17
+[ok]	18
+[ok]	19
+[ok]	20
+[ok]	21
+[ok]	22
+[ok]	23
+[ok]	24
+[ok]	25
+[ok]	26
+[ok]	27
+[ok]	28
+[ok]	29
+[ok]	30
+[ok]	31
+[ok]	32
+[ok]	33
+[ok]	34
+[ok]	35
+[ok]	36
+[ok]	37
+[ok]	38
+[ok]	39
+[ok]	40
+[ok]	41
+[ok]	42
+[ok]	43
+[ok]	44
+[ok]	45
+[ok]	46
+[ok]	47
+[ok]	48
+[ok]	49
+[ok]	50
+[ok]	51
+[ok]	52
+[ok]	53
+[ok]	54
+[ok]	55
+[ok]	56
+[ok]	57
+[ok]	58
+[ok]	59
+[ok]	60
+[ok]	61
+[ok]	62
+-- newest diagnostic reports: soffice-2026-10-11-073006.0003.ips, soffice-2026-10-11-073006.0002.ips, soffice-2026-10-11-073006.000.ips, soffice-2026-10-11-073006.ips, soffice-2026-10-11-055610.0003.ips
+2026-10-11 16:03:37.625 | INFO     | word_pdf:_loop:1077 - [batch pdf 2] 58/993
+2026-10-11 16:03:42.630 | INFO     | word_pdf:_loop:1077 - [batch pdf 2] 63/993
+2026-10-11 16:03:47.636 | INFO     | word_pdf:_loop:1077 - [batch pdf 2] 67/993
+2026-10-11 16:03:52.641 | INFO     | word_pdf:_loop:1077 - [batch pdf 2] 69/993
+2026-10-11 16:04:22.664 | INFO     | word_pdf:_loop:1077 - [batch pdf 2] 74/993
+2026-10-11 16:04:27.670 | INFO     | word_pdf:_loop:1077 - [batch pdf 2] 79/993
+2026-10-11 16:04:32.676 | INFO     | word_pdf:_loop:1077 - [batch pdf 2] 86/993
+2026-10-11 16:04:37.682 | INFO     | word_pdf:_loop:1077 - [batch pdf 2] 92/993
+2026-10-11 16:04:42.685 | INFO     | word_pdf:_loop:1077 - [batch pdf 2] 99/993
+2026-10-11 16:04:47.692 | INFO     | word_pdf:_loop:1077 - [batch pdf 2] 105/993
+2026-10-11 16:04:52.696 | INFO     | word_pdf:_loop:1077 - [batch pdf 2] 109/993
+2026-10-11 16:04:54.263 | WARNING  | word_pdf:run_batch_with_resume:1216 - [batch pdf] 884 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 3, 0 of 3 stalled passes used)
+2026-10-11 16:04:54.263 | WARNING  | word_pdf:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 16:04:54.263 | WARNING  | word_pdf:recycle:735 - [word] recycling (restart 2)
+2026-10-11 16:04:55.838 | WARNING  | word_pdf:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 16:05:03.525 | INFO     | word_pdf:_loop:1077 - [batch pdf 3] 2/884
+2026-10-11 16:05:08.531 | INFO     | word_pdf:_loop:1077 - [batch pdf 3] 6/884
+2026-10-11 16:05:13.534 | INFO     | word_pdf:_loop:1077 - [batch pdf 3] 14/884
+2026-10-11 16:05:18.537 | INFO     | word_pdf:_loop:1077 - [batch pdf 3] 22/884
+2026-10-11 16:05:23.542 | INFO     | word_pdf:_loop:1077 - [batch pdf 3] 28/884
+2026-10-11 16:05:28.544 | INFO     | word_pdf:_loop:1077 - [batch pdf 3] 34/884
+2026-10-11 16:05:33.546 | INFO     | word_pdf:_loop:1077 - [batch pdf 3] 40/884
+2026-10-11 16:05:38.550 | INFO     | word_pdf:_loop:1077 - [batch pdf 3] 44/884
+2026-10-11 16:06:27.808 | WARNING  | word_pdf:_loop:1082 - [batch pdf 3] item 45/884 open for more than 30 s:
+-- Word windows {name, subrole}: ,
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-3.log:
+[ok]	118
+[ok]	119
+[ok]	120
+[ok]	121
+[ok]	122
+[ok]	123
+[ok]	124
+[ok]	125
+[ok]	126
+[ok]	127
+[ok]	128
+[ok]	129
+[ok]	130
+[ok]	131
+[ok]	132
+[ok]	133
+[ok]	134
+[ok]	135
+[ok]	136
+[ok]	137
+[ok]	138
+[ok]	139
+[ok]	140
+[ok]	141
+[ok]	142
+[ok]	143
+[ok]	144
+[ok]	145
+[ok]	146
+[ok]	147
+[ok]	148
+[ok]	149
+[ok]	150
+[ok]	151
+[ok]	152
+[ok]	153
+[ok]	154
+[ok]	155
+[ok]	156
+[ok]	157
+[ok]	158
+[ok]	159
+[ok]	160
+[ok]	161
+-- newest diagnostic reports: soffice-2026-10-11-073006.0003.ips, soffice-2026-10-11-073006.0002.ips, soffice-2026-10-11-073006.000.ips, soffice-2026-10-11-073006.ips, soffice-2026-10-11-055610.0003.ips
+2026-10-11 16:06:37.818 | INFO     | word_pdf:_loop:1077 - [batch pdf 3] 48/884
+2026-10-11 16:06:42.823 | INFO     | word_pdf:_loop:1077 - [batch pdf 3] 55/884
+2026-10-11 16:06:47.829 | INFO     | word_pdf:_loop:1077 - [batch pdf 3] 61/884
+2026-10-11 16:06:52.835 | INFO     | word_pdf:_loop:1077 - [batch pdf 3] 65/884
+2026-10-11 16:06:57.846 | INFO     | word_pdf:_loop:1077 - [batch pdf 3] 71/884
+2026-10-11 16:07:02.850 | INFO     | word_pdf:_loop:1077 - [batch pdf 3] 78/884
+2026-10-11 16:07:07.856 | INFO     | word_pdf:_loop:1077 - [batch pdf 3] 80/884
+2026-10-11 16:07:12.859 | INFO     | word_pdf:_loop:1077 - [batch pdf 3] 88/884
+2026-10-11 16:07:17.862 | INFO     | word_pdf:_loop:1077 - [batch pdf 3] 94/884
+2026-10-11 16:07:22.865 | INFO     | word_pdf:_loop:1077 - [batch pdf 3] 100/884
+2026-10-11 16:07:27.528 | WARNING  | word_pdf:run_batch_with_resume:1216 - [batch pdf] 783 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 4, 0 of 3 stalled passes used)
+2026-10-11 16:07:27.529 | WARNING  | word_pdf:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 16:07:27.529 | WARNING  | word_pdf:recycle:735 - [word] recycling (restart 3)
+2026-10-11 16:07:29.126 | WARNING  | word_pdf:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 16:07:36.770 | INFO     | word_pdf:_loop:1077 - [batch pdf 4] 3/783
+2026-10-11 16:07:41.774 | INFO     | word_pdf:_loop:1077 - [batch pdf 4] 8/783
+2026-10-11 16:07:46.775 | INFO     | word_pdf:_loop:1077 - [batch pdf 4] 11/783
+2026-10-11 16:07:51.777 | INFO     | word_pdf:_loop:1077 - [batch pdf 4] 14/783
+2026-10-11 16:08:21.796 | INFO     | word_pdf:_loop:1077 - [batch pdf 4] 18/783
+2026-10-11 16:08:26.801 | INFO     | word_pdf:_loop:1077 - [batch pdf 4] 24/783
+2026-10-11 16:09:18.081 | WARNING  | word_pdf:_loop:1082 - [batch pdf 4] item 25/783 open for more than 30 s:
+-- Word windows {name, subrole}: ,
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-4.log:
+[ok]	220
+[ok]	221
+[ok]	222
+[ok]	223
+[ok]	224
+[ok]	225
+[ok]	226
+[ok]	227
+[ok]	228
+[ok]	229
+[ok]	230
+[ok]	231
+[ok]	232
+[ok]	233
+[ok]	234
+[ok]	235
+[ok]	236
+[ok]	237
+[ok]	238
+[ok]	239
+[ok]	240
+[ok]	241
+[ok]	242
+[ok]	243
+-- newest diagnostic reports: soffice-2026-10-11-073006.0003.ips, soffice-2026-10-11-073006.0002.ips, soffice-2026-10-11-073006.000.ips, soffice-2026-10-11-073006.ips, soffice-2026-10-11-055610.0003.ips
+2026-10-11 16:10:33.147 | INFO     | word_pdf:_loop:1077 - [batch pdf 4] 29/783
+2026-10-11 16:10:38.152 | INFO     | word_pdf:_loop:1077 - [batch pdf 4] 35/783
+2026-10-11 16:10:43.158 | INFO     | word_pdf:_loop:1077 - [batch pdf 4] 40/783
+2026-10-11 16:10:48.164 | INFO     | word_pdf:_loop:1077 - [batch pdf 4] 46/783
+2026-10-11 16:10:53.168 | INFO     | word_pdf:_loop:1077 - [batch pdf 4] 51/783
+2026-10-11 16:10:58.170 | INFO     | word_pdf:_loop:1077 - [batch pdf 4] 55/783
+2026-10-11 16:11:03.174 | INFO     | word_pdf:_loop:1077 - [batch pdf 4] 60/783
+2026-10-11 16:11:08.178 | INFO     | word_pdf:_loop:1077 - [batch pdf 4] 65/783
+2026-10-11 16:11:13.182 | INFO     | word_pdf:_loop:1077 - [batch pdf 4] 71/783
+2026-10-11 16:11:18.187 | INFO     | word_pdf:_loop:1077 - [batch pdf 4] 72/783
+2026-10-11 16:11:28.199 | INFO     | word_pdf:_loop:1077 - [batch pdf 4] 74/783
+2026-10-11 16:11:33.203 | INFO     | word_pdf:_loop:1077 - [batch pdf 4] 77/783
+2026-10-11 16:11:43.209 | INFO     | word_pdf:_loop:1077 - [batch pdf 4] 80/783
+2026-10-11 16:11:48.211 | INFO     | word_pdf:_loop:1077 - [batch pdf 4] 84/783
+2026-10-11 16:11:50.213 | WARNING  | word_pdf:run_batch_with_resume:1216 - [batch pdf] 699 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 5, 0 of 3 stalled passes used)
+2026-10-11 16:11:50.213 | WARNING  | word_pdf:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 16:11:50.213 | WARNING  | word_pdf:recycle:735 - [word] recycling (restart 4)
+2026-10-11 16:11:52.125 | WARNING  | word_pdf:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 16:11:59.426 | INFO     | word_pdf:_loop:1077 - [batch pdf 5] 3/699
+2026-10-11 16:12:04.207 | WARNING  | word_pdf:run_batch_with_resume:1216 - [batch pdf] 695 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 6, 0 of 3 stalled passes used)
+2026-10-11 16:12:04.207 | WARNING  | word_pdf:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 16:12:04.208 | WARNING  | word_pdf:recycle:735 - [word] recycling (restart 5)
+2026-10-11 16:12:05.011 | WARNING  | word_pdf:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 16:12:13.408 | INFO     | word_pdf:_loop:1077 - [batch pdf 6] 5/695
+2026-10-11 16:12:18.410 | INFO     | word_pdf:_loop:1077 - [batch pdf 6] 9/695
+2026-10-11 16:12:21.493 | WARNING  | word_pdf:run_batch_with_resume:1216 - [batch pdf] 686 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 7, 0 of 3 stalled passes used)
+2026-10-11 16:12:21.493 | WARNING  | word_pdf:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 16:12:21.494 | WARNING  | word_pdf:recycle:735 - [word] recycling (restart 6)
+2026-10-11 16:12:22.625 | WARNING  | word_pdf:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 16:12:30.186 | INFO     | word_pdf:_loop:1077 - [batch pdf 7] 5/686
+2026-10-11 16:12:31.663 | WARNING  | word_pdf:run_batch_with_resume:1216 - [batch pdf] 679 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 8, 0 of 3 stalled passes used)
+2026-10-11 16:12:31.663 | WARNING  | word_pdf:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 16:12:31.663 | WARNING  | word_pdf:recycle:735 - [word] recycling (restart 7)
+2026-10-11 16:12:34.340 | WARNING  | word_pdf:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 16:12:40.373 | INFO     | word_pdf:_loop:1077 - [batch pdf 8] 5/679
+2026-10-11 16:12:45.379 | INFO     | word_pdf:_loop:1077 - [batch pdf 8] 11/679
+2026-10-11 16:12:50.385 | INFO     | word_pdf:_loop:1077 - [batch pdf 8] 14/679
+2026-10-11 16:12:55.391 | INFO     | word_pdf:_loop:1077 - [batch pdf 8] 20/679
+2026-10-11 16:13:00.397 | INFO     | word_pdf:_loop:1077 - [batch pdf 8] 29/679
+2026-10-11 16:13:05.402 | INFO     | word_pdf:_loop:1077 - [batch pdf 8] 37/679
+2026-10-11 16:13:10.408 | INFO     | word_pdf:_loop:1077 - [batch pdf 8] 43/679
+2026-10-11 16:13:15.412 | INFO     | word_pdf:_loop:1077 - [batch pdf 8] 52/679
+2026-10-11 16:13:20.414 | INFO     | word_pdf:_loop:1077 - [batch pdf 8] 56/679
+2026-10-11 16:14:10.998 | WARNING  | word_pdf:_loop:1082 - [batch pdf 8] item 57/679 open for more than 30 s:
+-- Word windows {name, subrole}: osascript timed out
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-8.log:
+[ok]	328
+[ok]	329
+[ok]	330
+[ok]	331
+[ok]	332
+[ok]	333
+[ok]	334
+[ok]	335
+[ok]	336
+[ok]	337
+[ok]	338
+[ok]	339
+[ok]	340
+[ok]	341
+[ok]	342
+[ok]	343
+[ok]	344
+[ok]	345
+[ok]	346
+[ok]	347
+[ok]	348
+[ok]	349
+[ok]	350
+[ok]	351
+[ok]	352
+[ok]	353
+[ok]	354
+[ok]	355
+[ok]	356
+[ok]	357
+[ok]	358
+[ok]	359
+[ok]	360
+[ok]	361
+[ok]	362
+[ok]	363
+[ok]	364
+[ok]	365
+[ok]	366
+[ok]	367
+[ok]	368
+[ok]	369
+[ok]	370
+[ok]	371
+[ok]	372
+[ok]	373
+[ok]	374
+[ok]	375
+[ok]	376
+[ok]	377
+[ok]	378
+[ok]	379
+[ok]	380
+[ok]	381
+[ok]	382
+[ok]	383
+-- newest diagnostic reports: soffice-2026-10-11-073006.0003.ips, soffice-2026-10-11-073006.0002.ips, soffice-2026-10-11-073006.000.ips, soffice-2026-10-11-073006.ips, soffice-2026-10-11-055610.0003.ips
+2026-10-11 16:17:01.122 | INFO     | word_pdf:_loop:1077 - [batch pdf 8] 57/679
+2026-10-11 16:17:06.126 | INFO     | word_pdf:_loop:1077 - [batch pdf 8] 59/679
+2026-10-11 16:17:11.128 | INFO     | word_pdf:_loop:1077 - [batch pdf 8] 63/679
+2026-10-11 16:17:13.482 | WARNING  | word_pdf:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 16:17:16.458 | WARNING  | word_pdf:run_batch_with_resume:1216 - [batch pdf] 616 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 9, 0 of 3 stalled passes used)
+2026-10-11 16:17:16.458 | WARNING  | word_pdf:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 16:17:16.458 | WARNING  | word_pdf:recycle:735 - [word] recycling (restart 8)
+2026-10-11 16:17:25.712 | INFO     | word_pdf:_loop:1077 - [batch pdf 9] 3/616
+2026-10-11 16:17:35.723 | INFO     | word_pdf:_loop:1077 - [batch pdf 9] 9/616
+2026-10-11 16:17:40.729 | INFO     | word_pdf:_loop:1077 - [batch pdf 9] 14/616
+2026-10-11 16:17:42.517 | WARNING  | word_pdf:run_batch_with_resume:1216 - [batch pdf] 602 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 10, 0 of 3 stalled passes used)
+2026-10-11 16:17:42.518 | WARNING  | word_pdf:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 16:17:42.518 | WARNING  | word_pdf:recycle:735 - [word] recycling (restart 9)
+2026-10-11 16:17:43.886 | WARNING  | word_pdf:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 16:17:51.785 | INFO     | word_pdf:_loop:1077 - [batch pdf 10] 3/602
+2026-10-11 16:17:56.788 | INFO     | word_pdf:_loop:1077 - [batch pdf 10] 6/602
+2026-10-11 16:18:01.794 | INFO     | word_pdf:_loop:1077 - [batch pdf 10] 10/602
+2026-10-11 16:18:04.866 | WARNING  | word_pdf:run_batch_with_resume:1216 - [batch pdf] 592 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 11, 0 of 3 stalled passes used)
+2026-10-11 16:18:04.866 | WARNING  | word_pdf:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 16:18:04.866 | WARNING  | word_pdf:recycle:735 - [word] recycling (restart 10)
+2026-10-11 16:18:06.194 | WARNING  | word_pdf:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 16:18:14.130 | INFO     | word_pdf:_loop:1077 - [batch pdf 11] 5/592
+2026-10-11 16:18:19.135 | INFO     | word_pdf:_loop:1077 - [batch pdf 11] 9/592
+2026-10-11 16:18:24.141 | INFO     | word_pdf:_loop:1077 - [batch pdf 11] 14/592
+2026-10-11 16:18:29.144 | INFO     | word_pdf:_loop:1077 - [batch pdf 11] 21/592
+2026-10-11 16:18:34.150 | INFO     | word_pdf:_loop:1077 - [batch pdf 11] 26/592
+2026-10-11 16:18:39.155 | INFO     | word_pdf:_loop:1077 - [batch pdf 11] 27/592
+2026-10-11 16:18:40.685 | WARNING  | word_pdf:run_batch_with_resume:1216 - [batch pdf] 565 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 12, 0 of 3 stalled passes used)
+2026-10-11 16:18:40.685 | WARNING  | word_pdf:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 16:18:40.685 | WARNING  | word_pdf:recycle:735 - [word] recycling (restart 11)
+2026-10-11 16:18:40.944 | WARNING  | word_pdf:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 16:18:50.094 | INFO     | word_pdf:_loop:1077 - [batch pdf 12] 3/565
+2026-10-11 16:18:55.097 | INFO     | word_pdf:_loop:1077 - [batch pdf 12] 6/565
+2026-10-11 16:19:00.103 | INFO     | word_pdf:_loop:1077 - [batch pdf 12] 7/565
+2026-10-11 16:19:05.105 | INFO     | word_pdf:_loop:1077 - [batch pdf 12] 12/565
+2026-10-11 16:19:10.110 | INFO     | word_pdf:_loop:1077 - [batch pdf 12] 18/565
+2026-10-11 16:19:15.115 | INFO     | word_pdf:_loop:1077 - [batch pdf 12] 23/565
+2026-10-11 16:19:20.118 | INFO     | word_pdf:_loop:1077 - [batch pdf 12] 30/565
+2026-10-11 16:19:25.121 | INFO     | word_pdf:_loop:1077 - [batch pdf 12] 35/565
+2026-10-11 16:19:30.123 | INFO     | word_pdf:_loop:1077 - [batch pdf 12] 39/565
+2026-10-11 16:19:35.126 | INFO     | word_pdf:_loop:1077 - [batch pdf 12] 44/565
+2026-10-11 16:19:40.130 | INFO     | word_pdf:_loop:1077 - [batch pdf 12] 48/565
+2026-10-11 16:19:45.135 | INFO     | word_pdf:_loop:1077 - [batch pdf 12] 52/565
+2026-10-11 16:19:50.138 | INFO     | word_pdf:_loop:1077 - [batch pdf 12] 56/565
+2026-10-11 16:19:55.621 | WARNING  | word_pdf:run_batch_with_resume:1216 - [batch pdf] 509 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 13, 0 of 3 stalled passes used)
+2026-10-11 16:19:55.621 | WARNING  | word_pdf:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 16:19:55.622 | WARNING  | word_pdf:recycle:735 - [word] recycling (restart 12)
+2026-10-11 16:19:55.898 | WARNING  | word_pdf:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 16:20:04.867 | INFO     | word_pdf:_loop:1077 - [batch pdf 13] 2/509
+2026-10-11 16:20:09.868 | INFO     | word_pdf:_loop:1077 - [batch pdf 13] 9/509
+2026-10-11 16:20:14.873 | INFO     | word_pdf:_loop:1077 - [batch pdf 13] 13/509
+2026-10-11 16:20:19.049 | WARNING  | word_pdf:run_batch_with_resume:1216 - [batch pdf] 495 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 14, 0 of 3 stalled passes used)
+2026-10-11 16:20:19.049 | WARNING  | word_pdf:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 16:20:19.050 | WARNING  | word_pdf:recycle:735 - [word] recycling (restart 13)
+2026-10-11 16:20:22.365 | WARNING  | word_pdf:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 16:20:28.335 | INFO     | word_pdf:_loop:1077 - [batch pdf 14] 2/495
+2026-10-11 16:20:33.338 | INFO     | word_pdf:_loop:1077 - [batch pdf 14] 4/495
+2026-10-11 16:20:35.984 | WARNING  | word_pdf:run_batch_with_resume:1216 - [batch pdf] 491 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 15, 0 of 3 stalled passes used)
+2026-10-11 16:20:35.985 | WARNING  | word_pdf:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 16:20:35.985 | WARNING  | word_pdf:recycle:735 - [word] recycling (restart 14)
+2026-10-11 16:20:39.642 | WARNING  | word_pdf:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 16:20:45.280 | INFO     | word_pdf:_loop:1077 - [batch pdf 15] 2/491
+2026-10-11 16:20:50.282 | INFO     | word_pdf:_loop:1077 - [batch pdf 15] 7/491
+2026-10-11 16:21:00.291 | INFO     | word_pdf:_loop:1077 - [batch pdf 15] 10/491
+2026-10-11 16:21:05.296 | INFO     | word_pdf:_loop:1077 - [batch pdf 15] 15/491
+2026-10-11 16:21:10.297 | INFO     | word_pdf:_loop:1077 - [batch pdf 15] 19/491
+2026-10-11 16:21:15.299 | INFO     | word_pdf:_loop:1077 - [batch pdf 15] 25/491
+2026-10-11 16:21:20.304 | INFO     | word_pdf:_loop:1077 - [batch pdf 15] 30/491
+2026-10-11 16:21:25.310 | INFO     | word_pdf:_loop:1077 - [batch pdf 15] 36/491
+2026-10-11 16:21:30.314 | INFO     | word_pdf:_loop:1077 - [batch pdf 15] 44/491
+2026-10-11 16:21:35.319 | INFO     | word_pdf:_loop:1077 - [batch pdf 15] 48/491
+2026-10-11 16:21:40.325 | INFO     | word_pdf:_loop:1077 - [batch pdf 15] 52/491
+2026-10-11 16:21:45.329 | INFO     | word_pdf:_loop:1077 - [batch pdf 15] 58/491
+2026-10-11 16:21:50.334 | INFO     | word_pdf:_loop:1077 - [batch pdf 15] 62/491
+2026-10-11 16:21:55.339 | INFO     | word_pdf:_loop:1077 - [batch pdf 15] 66/491
+2026-10-11 16:22:00.636 | WARNING  | word_pdf:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 16:22:01.884 | WARNING  | word_pdf:run_batch_with_resume:1216 - [batch pdf] 425 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 16, 0 of 3 stalled passes used)
+2026-10-11 16:22:01.884 | WARNING  | word_pdf:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 16:22:01.884 | WARNING  | word_pdf:recycle:735 - [word] recycling (restart 15)
+2026-10-11 16:22:11.164 | INFO     | word_pdf:_loop:1077 - [batch pdf 16] 2/425
+2026-10-11 16:22:13.148 | WARNING  | word_pdf:run_batch_with_resume:1216 - [batch pdf] 423 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 17, 0 of 3 stalled passes used)
+2026-10-11 16:22:13.149 | WARNING  | word_pdf:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 16:22:13.149 | WARNING  | word_pdf:recycle:735 - [word] recycling (restart 16)
+2026-10-11 16:22:14.539 | WARNING  | word_pdf:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 16:22:23.469 | INFO     | word_pdf:_loop:1077 - [batch pdf 17] 2/423
+2026-10-11 16:22:28.474 | INFO     | word_pdf:_loop:1077 - [batch pdf 17] 4/423
+2026-10-11 16:22:33.478 | INFO     | word_pdf:_loop:1077 - [batch pdf 17] 8/423
+2026-10-11 16:22:38.484 | INFO     | word_pdf:_loop:1077 - [batch pdf 17] 11/423
+2026-10-11 16:22:43.487 | INFO     | word_pdf:_loop:1077 - [batch pdf 17] 14/423
+2026-10-11 16:22:48.494 | INFO     | word_pdf:_loop:1077 - [batch pdf 17] 17/423
+2026-10-11 16:22:53.500 | INFO     | word_pdf:_loop:1077 - [batch pdf 17] 18/423
+2026-10-11 16:22:58.503 | INFO     | word_pdf:_loop:1077 - [batch pdf 17] 22/423
+2026-10-11 16:23:03.505 | INFO     | word_pdf:_loop:1077 - [batch pdf 17] 23/423
+2026-10-11 16:23:57.874 | WARNING  | word_pdf:_loop:1082 - [batch pdf 17] item 24/423 open for more than 30 s:
+-- Word windows {name, subrole}: ,
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-17.log:
+[ok]	593
+[ok]	594
+[ok]	595
+[ok]	596
+[ok]	597
+[ok]	598
+[ok]	599
+[ok]	600
+[ok]	601
+[ok]	602
+[ok]	603
+[ok]	604
+[ok]	605
+[ok]	606
+[ok]	607
+[ok]	608
+[ok]	609
+[ok]	610
+[ok]	611
+[ok]	612
+[ok]	613
+[ok]	614
+[ok]	615
+-- newest diagnostic reports: soffice-2026-10-11-073006.0003.ips, soffice-2026-10-11-073006.0002.ips, soffice-2026-10-11-073006.000.ips, soffice-2026-10-11-073006.ips, soffice-2026-10-11-055610.0003.ips
+2026-10-11 16:27:56.733 | WARNING  | word_pdf:run_batch_with_resume:1216 - [batch pdf] 399 item(s) never reached (ended without reaching them); recycling Word and retrying the rest first, retried items last (pass 18, 1 of 3 stalled passes used)
+2026-10-11 16:27:56.733 | WARNING  | word_pdf:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 16:27:56.733 | WARNING  | word_pdf:recycle:735 - [word] recycling (restart 17)
+2026-10-11 16:28:06.282 | INFO     | word_pdf:_loop:1077 - [batch pdf 18] 5/399
+2026-10-11 16:28:11.288 | INFO     | word_pdf:_loop:1077 - [batch pdf 18] 13/399
+2026-10-11 16:28:16.291 | INFO     | word_pdf:_loop:1077 - [batch pdf 18] 16/399
+2026-10-11 16:28:25.526 | WARNING  | word_pdf:run_batch_with_resume:1216 - [batch pdf] 383 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 19, 1 of 3 stalled passes used)
+2026-10-11 16:28:25.527 | WARNING  | word_pdf:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 16:28:25.527 | WARNING  | word_pdf:recycle:735 - [word] recycling (restart 18)
+2026-10-11 16:28:26.638 | WARNING  | word_pdf:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 16:28:34.173 | INFO     | word_pdf:_loop:1077 - [batch pdf 19] 6/383
+2026-10-11 16:28:38.309 | WARNING  | word_pdf:run_batch_with_resume:1216 - [batch pdf] 375 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 20, 1 of 3 stalled passes used)
+2026-10-11 16:28:38.310 | WARNING  | word_pdf:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 16:28:38.310 | WARNING  | word_pdf:recycle:735 - [word] recycling (restart 19)
+2026-10-11 16:28:39.116 | WARNING  | word_pdf:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 16:28:47.008 | INFO     | word_pdf:_loop:1077 - [batch pdf 20] 5/375
+2026-10-11 16:28:52.010 | INFO     | word_pdf:_loop:1077 - [batch pdf 20] 14/375
+2026-10-11 16:28:57.016 | INFO     | word_pdf:_loop:1077 - [batch pdf 20] 15/375
+2026-10-11 16:29:07.022 | INFO     | word_pdf:_loop:1077 - [batch pdf 20] 16/375
+2026-10-11 16:29:12.028 | INFO     | word_pdf:_loop:1077 - [batch pdf 20] 22/375
+2026-10-11 16:29:17.033 | INFO     | word_pdf:_loop:1077 - [batch pdf 20] 26/375
+2026-10-11 16:30:08.511 | WARNING  | word_pdf:_loop:1082 - [batch pdf 20] item 27/375 open for more than 30 s:
+-- Word windows {name, subrole}: ,
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-20.log:
+[ok]	643
+[ok]	644
+[ok]	645
+[ok]	646
+[ok]	647
+[ok]	648
+[ok]	649
+[ok]	650
+[ok]	651
+[ok]	652
+[ok]	653
+[ok]	654
+[ok]	655
+[ok]	656
+[ok]	657
+[ok]	658
+[ok]	659
+[ok]	660
+[ok]	661
+[ok]	662
+[ok]	663
+[ok]	664
+[ok]	665
+[ok]	666
+[ok]	667
+[ok]	668
+-- newest diagnostic reports: soffice-2026-10-11-073006.0003.ips, soffice-2026-10-11-073006.0002.ips, soffice-2026-10-11-073006.000.ips, soffice-2026-10-11-073006.ips, soffice-2026-10-11-055610.0003.ips
+2026-10-11 16:31:24.586 | WARNING  | word_pdf:run_batch_with_resume:1216 - [batch pdf] 349 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 21, 1 of 3 stalled passes used)
+2026-10-11 16:31:24.587 | WARNING  | word_pdf:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 16:31:24.587 | WARNING  | word_pdf:recycle:735 - [word] recycling (restart 20)
+2026-10-11 16:31:25.912 | WARNING  | word_pdf:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 16:31:33.811 | INFO     | word_pdf:_loop:1077 - [batch pdf 21] 2/349
+2026-10-11 16:31:43.821 | INFO     | word_pdf:_loop:1077 - [batch pdf 21] 4/349
+2026-10-11 16:31:45.794 | WARNING  | word_pdf:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 16:31:46.291 | WARNING  | word_pdf:run_batch_with_resume:1216 - [batch pdf] 345 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 22, 1 of 3 stalled passes used)
+2026-10-11 16:31:46.292 | WARNING  | word_pdf:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 16:31:46.292 | WARNING  | word_pdf:recycle:735 - [word] recycling (restart 21)
+2026-10-11 16:31:55.529 | INFO     | word_pdf:_loop:1077 - [batch pdf 22] 2/345
+2026-10-11 16:32:00.534 | INFO     | word_pdf:_loop:1077 - [batch pdf 22] 4/345
+2026-10-11 16:32:05.539 | INFO     | word_pdf:_loop:1077 - [batch pdf 22] 8/345
+2026-10-11 16:32:10.545 | INFO     | word_pdf:_loop:1077 - [batch pdf 22] 14/345
+2026-10-11 16:32:15.548 | INFO     | word_pdf:_loop:1077 - [batch pdf 22] 22/345
+2026-10-11 16:32:20.554 | INFO     | word_pdf:_loop:1077 - [batch pdf 22] 28/345
+2026-10-11 16:32:25.556 | INFO     | word_pdf:_loop:1077 - [batch pdf 22] 29/345
+2026-10-11 16:32:30.558 | INFO     | word_pdf:_loop:1077 - [batch pdf 22] 30/345
+2026-10-11 16:32:35.561 | INFO     | word_pdf:_loop:1077 - [batch pdf 22] 36/345
+2026-10-11 16:32:40.566 | INFO     | word_pdf:_loop:1077 - [batch pdf 22] 42/345
+2026-10-11 16:32:45.568 | INFO     | word_pdf:_loop:1077 - [batch pdf 22] 45/345
+2026-10-11 16:32:46.963 | WARNING  | word_pdf:run_batch_with_resume:1216 - [batch pdf] 300 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 23, 1 of 3 stalled passes used)
+2026-10-11 16:32:46.963 | WARNING  | word_pdf:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 16:32:46.963 | WARNING  | word_pdf:recycle:735 - [word] recycling (restart 22)
+2026-10-11 16:32:47.792 | WARNING  | word_pdf:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 16:32:56.211 | INFO     | word_pdf:_loop:1077 - [batch pdf 23] 2/300
+2026-10-11 16:33:01.215 | INFO     | word_pdf:_loop:1077 - [batch pdf 23] 7/300
+2026-10-11 16:33:06.220 | INFO     | word_pdf:_loop:1077 - [batch pdf 23] 12/300
+2026-10-11 16:33:10.174 | WARNING  | word_pdf:run_batch_with_resume:1216 - [batch pdf] 288 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 24, 1 of 3 stalled passes used)
+2026-10-11 16:33:10.174 | WARNING  | word_pdf:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 16:33:10.174 | WARNING  | word_pdf:recycle:735 - [word] recycling (restart 23)
+2026-10-11 16:33:11.776 | WARNING  | word_pdf:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 16:33:19.445 | INFO     | word_pdf:_loop:1077 - [batch pdf 24] 2/288
+2026-10-11 16:33:24.451 | INFO     | word_pdf:_loop:1077 - [batch pdf 24] 5/288
+2026-10-11 16:33:29.455 | INFO     | word_pdf:_loop:1077 - [batch pdf 24] 6/288
+2026-10-11 16:33:59.483 | INFO     | word_pdf:_loop:1077 - [batch pdf 24] 9/288
+2026-10-11 16:34:04.488 | INFO     | word_pdf:_loop:1077 - [batch pdf 24] 12/288
+2026-10-11 16:34:09.490 | INFO     | word_pdf:_loop:1077 - [batch pdf 24] 19/288
+2026-10-11 16:34:29.508 | INFO     | word_pdf:_loop:1077 - [batch pdf 24] 24/288
+2026-10-11 16:34:34.510 | INFO     | word_pdf:_loop:1077 - [batch pdf 24] 29/288
+2026-10-11 16:34:39.514 | INFO     | word_pdf:_loop:1077 - [batch pdf 24] 36/288
+2026-10-11 16:34:44.518 | INFO     | word_pdf:_loop:1077 - [batch pdf 24] 39/288
+2026-10-11 16:35:33.711 | WARNING  | word_pdf:_loop:1082 - [batch pdf 24] item 40/288 open for more than 30 s:
+-- Word windows {name, subrole}: ,
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-24.log:
+[ok]	734
+[ok]	735
+[ok]	736
+[ok]	737
+[ok]	738
+[ok]	739
+[ok]	740
+[ok]	741
+[ok]	742
+[ok]	743
+[ok]	744
+[ok]	745
+[ok]	746
+[ok]	747
+[ok]	748
+[ok]	749
+[ok]	750
+[ok]	751
+[ok]	752
+[ok]	753
+[ok]	754
+[ok]	755
+[ok]	756
+[ok]	757
+[ok]	758
+[ok]	759
+[ok]	760
+[ok]	761
+[ok]	762
+[ok]	763
+[ok]	764
+[ok]	765
+[ok]	766
+[ok]	767
+[ok]	768
+[ok]	769
+[ok]	770
+[ok]	771
+[ok]	772
+-- newest diagnostic reports: soffice-2026-10-11-073006.0003.ips, soffice-2026-10-11-073006.0002.ips, soffice-2026-10-11-073006.000.ips, soffice-2026-10-11-073006.ips, soffice-2026-10-11-055610.0003.ips
+2026-10-11 16:38:28.863 | INFO     | word_pdf:_loop:1077 - [batch pdf 24] 40/288
+2026-10-11 16:38:33.864 | INFO     | word_pdf:_loop:1077 - [batch pdf 24] 43/288
+2026-10-11 16:39:23.461 | WARNING  | word_pdf:_loop:1082 - [batch pdf 24] item 44/288 open for more than 30 s:
+-- Word windows {name, subrole}: ,
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-24.log:
+[ok]	734
+[ok]	735
+[ok]	736
+[ok]	737
+[ok]	738
+[ok]	739
+[ok]	740
+[ok]	741
+[ok]	742
+[ok]	743
+[ok]	744
+[ok]	745
+[ok]	746
+[ok]	747
+[ok]	748
+[ok]	749
+[ok]	750
+[ok]	751
+[ok]	752
+[ok]	753
+[ok]	754
+[ok]	755
+[ok]	756
+[ok]	757
+[ok]	758
+[ok]	759
+[ok]	760
+[ok]	761
+[ok]	762
+[ok]	763
+[ok]	764
+[ok]	765
+[ok]	766
+[ok]	767
+[ok]	768
+[ok]	769
+[ok]	770
+[ok]	771
+[ok]	772
+[ok]	773
+[ok]	774
+[ok]	775
+[ok]	776
+-- newest diagnostic reports: soffice-2026-10-11-073006.0003.ips, soffice-2026-10-11-073006.0002.ips, soffice-2026-10-11-073006.000.ips, soffice-2026-10-11-073006.ips, soffice-2026-10-11-055610.0003.ips
+2026-10-11 16:39:48.479 | INFO     | word_pdf:_loop:1077 - [batch pdf 24] 44/288
+2026-10-11 16:40:39.231 | WARNING  | word_pdf:_loop:1082 - [batch pdf 24] item 45/288 open for more than 30 s:
+-- Word windows {name, subrole}: osascript timed out
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-24.log:
+[ok]	734
+[ok]	735
+[ok]	736
+[ok]	737
+[ok]	738
+[ok]	739
+[ok]	740
+[ok]	741
+[ok]	742
+[ok]	743
+[ok]	744
+[ok]	745
+[ok]	746
+[ok]	747
+[ok]	748
+[ok]	749
+[ok]	750
+[ok]	751
+[ok]	752
+[ok]	753
+[ok]	754
+[ok]	755
+[ok]	756
+[ok]	757
+[ok]	758
+[ok]	759
+[ok]	760
+[ok]	761
+[ok]	762
+[ok]	763
+[ok]	764
+[ok]	765
+[ok]	766
+[ok]	767
+[ok]	768
+[ok]	769
+[ok]	770
+[ok]	771
+[ok]	772
+[ok]	773
+[ok]	774
+[ok]	775
+[ok]	776
+[ok]	777
+-- newest diagnostic reports: soffice-2026-10-11-073006.0003.ips, soffice-2026-10-11-073006.0002.ips, soffice-2026-10-11-073006.000.ips, soffice-2026-10-11-073006.ips, soffice-2026-10-11-055610.0003.ips
+2026-10-11 16:41:34.272 | INFO     | word_pdf:_loop:1077 - [batch pdf 24] 45/288
+2026-10-11 16:41:39.273 | INFO     | word_pdf:_loop:1077 - [batch pdf 24] 50/288
+2026-10-11 16:41:44.280 | INFO     | word_pdf:_loop:1077 - [batch pdf 24] 53/288
+2026-10-11 16:41:49.286 | INFO     | word_pdf:_loop:1077 - [batch pdf 24] 54/288
+2026-10-11 16:41:59.296 | INFO     | word_pdf:_loop:1077 - [batch pdf 24] 55/288
+2026-10-11 16:42:04.302 | INFO     | word_pdf:_loop:1077 - [batch pdf 24] 62/288
+2026-10-11 16:42:09.303 | INFO     | word_pdf:_loop:1077 - [batch pdf 24] 64/288
+2026-10-11 16:42:09.677 | WARNING  | word_pdf:run_batch_with_resume:1216 - [batch pdf] 224 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 25, 1 of 3 stalled passes used)
+2026-10-11 16:42:09.677 | WARNING  | word_pdf:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 16:42:09.677 | WARNING  | word_pdf:recycle:735 - [word] recycling (restart 24)
+2026-10-11 16:42:10.482 | WARNING  | word_pdf:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 16:42:18.933 | INFO     | word_pdf:_loop:1077 - [batch pdf 25] 3/224
+2026-10-11 16:42:23.936 | INFO     | word_pdf:_loop:1077 - [batch pdf 25] 9/224
+2026-10-11 16:42:28.938 | INFO     | word_pdf:_loop:1077 - [batch pdf 25] 15/224
+2026-10-11 16:42:33.942 | INFO     | word_pdf:_loop:1077 - [batch pdf 25] 21/224
+2026-10-11 16:42:38.948 | INFO     | word_pdf:_loop:1077 - [batch pdf 25] 28/224
+2026-10-11 16:42:43.954 | INFO     | word_pdf:_loop:1077 - [batch pdf 25] 31/224
+2026-10-11 16:42:48.780 | WARNING  | word_pdf:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 16:42:49.061 | WARNING  | word_pdf:run_batch_with_resume:1216 - [batch pdf] 193 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 26, 1 of 3 stalled passes used)
+2026-10-11 16:42:49.061 | WARNING  | word_pdf:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 16:42:49.061 | WARNING  | word_pdf:recycle:735 - [word] recycling (restart 25)
+2026-10-11 16:42:58.306 | INFO     | word_pdf:_loop:1077 - [batch pdf 26] 2/193
+2026-10-11 16:43:03.309 | INFO     | word_pdf:_loop:1077 - [batch pdf 26] 3/193
+2026-10-11 16:43:08.310 | INFO     | word_pdf:_loop:1077 - [batch pdf 26] 7/193
+2026-10-11 16:43:13.315 | INFO     | word_pdf:_loop:1077 - [batch pdf 26] 11/193
+2026-10-11 16:43:18.320 | INFO     | word_pdf:_loop:1077 - [batch pdf 26] 15/193
+2026-10-11 16:43:23.325 | INFO     | word_pdf:_loop:1077 - [batch pdf 26] 18/193
+2026-10-11 16:43:24.358 | WARNING  | word_pdf:run_batch_with_resume:1216 - [batch pdf] 175 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 27, 1 of 3 stalled passes used)
+2026-10-11 16:43:24.358 | WARNING  | word_pdf:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 16:43:24.358 | WARNING  | word_pdf:recycle:735 - [word] recycling (restart 26)
+2026-10-11 16:43:25.892 | WARNING  | word_pdf:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 16:43:33.577 | INFO     | word_pdf:_loop:1077 - [batch pdf 27] 4/175
+2026-10-11 16:43:38.581 | INFO     | word_pdf:_loop:1077 - [batch pdf 27] 6/175
+2026-10-11 16:43:41.498 | WARNING  | word_pdf:run_batch_with_resume:1216 - [batch pdf] 169 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 28, 1 of 3 stalled passes used)
+2026-10-11 16:43:41.498 | WARNING  | word_pdf:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 16:43:41.498 | WARNING  | word_pdf:recycle:735 - [word] recycling (restart 27)
+2026-10-11 16:43:41.879 | WARNING  | word_pdf:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 16:43:50.694 | INFO     | word_pdf:_loop:1077 - [batch pdf 28] 2/169
+2026-10-11 16:43:55.699 | INFO     | word_pdf:_loop:1077 - [batch pdf 28] 7/169
+2026-10-11 16:44:00.703 | INFO     | word_pdf:_loop:1077 - [batch pdf 28] 13/169
+2026-10-11 16:44:04.888 | WARNING  | word_pdf:run_batch_with_resume:1216 - [batch pdf] 155 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 29, 1 of 3 stalled passes used)
+2026-10-11 16:44:04.888 | WARNING  | word_pdf:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 16:44:04.888 | WARNING  | word_pdf:recycle:735 - [word] recycling (restart 28)
+2026-10-11 16:44:06.173 | WARNING  | word_pdf:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 16:44:14.097 | INFO     | word_pdf:_loop:1077 - [batch pdf 29] 3/155
+2026-10-11 16:44:19.099 | INFO     | word_pdf:_loop:1077 - [batch pdf 29] 5/155
+2026-10-11 16:44:29.107 | INFO     | word_pdf:_loop:1077 - [batch pdf 29] 11/155
+2026-10-11 16:44:34.110 | INFO     | word_pdf:_loop:1077 - [batch pdf 29] 15/155
+2026-10-11 16:44:39.114 | INFO     | word_pdf:_loop:1077 - [batch pdf 29] 19/155
+2026-10-11 16:44:44.118 | INFO     | word_pdf:_loop:1077 - [batch pdf 29] 25/155
+2026-10-11 16:45:35.614 | WARNING  | word_pdf:_loop:1082 - [batch pdf 29] item 26/155 open for more than 30 s:
+-- Word windows {name, subrole}: ,
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-29.log:
+[ok]	872
+[ok]	873
+[ok]	874
+[ok]	875
+[ok]	876
+[ok]	877
+[ok]	878
+[ok]	879
+[ok]	880
+[ok]	881
+[ok]	882
+[ok]	883
+[ok]	884
+[ok]	885
+[ok]	886
+[ok]	887
+[ok]	888
+[ok]	889
+[ok]	890
+[ok]	891
+[ok]	892
+[ok]	893
+[ok]	894
+[ok]	895
+[ok]	896
+-- newest diagnostic reports: soffice-2026-10-11-073006.0003.ips, soffice-2026-10-11-073006.0002.ips, soffice-2026-10-11-073006.000.ips, soffice-2026-10-11-073006.ips, soffice-2026-10-11-055610.0003.ips
+2026-10-11 16:48:00.729 | INFO     | word_pdf:_loop:1077 - [batch pdf 29] 26/155
+2026-10-11 16:48:05.733 | INFO     | word_pdf:_loop:1077 - [batch pdf 29] 32/155
+2026-10-11 16:48:10.739 | INFO     | word_pdf:_loop:1077 - [batch pdf 29] 37/155
+2026-10-11 16:48:15.745 | INFO     | word_pdf:_loop:1077 - [batch pdf 29] 42/155
+2026-10-11 16:49:06.150 | WARNING  | word_pdf:_loop:1082 - [batch pdf 29] item 43/155 open for more than 30 s:
+-- Word windows {name, subrole}: osascript timed out
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-29.log:
+[ok]	872
+[ok]	873
+[ok]	874
+[ok]	875
+[ok]	876
+[ok]	877
+[ok]	878
+[ok]	879
+[ok]	880
+[ok]	881
+[ok]	882
+[ok]	883
+[ok]	884
+[ok]	885
+[ok]	886
+[ok]	887
+[ok]	888
+[ok]	889
+[ok]	890
+[ok]	891
+[ok]	892
+[ok]	893
+[ok]	894
+[ok]	895
+[ok]	896
+[ok]	897
+[ok]	898
+[ok]	899
+[ok]	900
+[ok]	901
+[ok]	902
+[ok]	903
+[ok]	904
+[ok]	905
+[ok]	906
+[ok]	907
+[ok]	908
+[ok]	909
+[ok]	910
+[ok]	911
+[ok]	912
+[ok]	913
+-- newest diagnostic reports: soffice-2026-10-11-073006.0003.ips, soffice-2026-10-11-073006.0002.ips, soffice-2026-10-11-073006.000.ips, soffice-2026-10-11-073006.ips, soffice-2026-10-11-055610.0003.ips
+2026-10-11 16:52:33.643 | WARNING  | word_pdf:run_batch_with_resume:1216 - [batch pdf] 112 item(s) never reached (ended without reaching them); recycling Word and retrying the rest first, retried items last (pass 30, 2 of 3 stalled passes used)
+2026-10-11 16:52:33.643 | WARNING  | word_pdf:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 16:52:33.643 | WARNING  | word_pdf:recycle:735 - [word] recycling (restart 29)
+2026-10-11 16:52:46.192 | INFO     | word_pdf:_loop:1077 - [batch pdf 30] 2/112
+2026-10-11 16:52:51.194 | INFO     | word_pdf:_loop:1077 - [batch pdf 30] 3/112
+2026-10-11 16:52:56.200 | INFO     | word_pdf:_loop:1077 - [batch pdf 30] 8/112
+2026-10-11 16:53:01.205 | INFO     | word_pdf:_loop:1077 - [batch pdf 30] 13/112
+2026-10-11 16:53:06.208 | INFO     | word_pdf:_loop:1077 - [batch pdf 30] 17/112
+2026-10-11 16:53:11.210 | INFO     | word_pdf:_loop:1077 - [batch pdf 30] 23/112
+2026-10-11 16:53:16.214 | INFO     | word_pdf:_loop:1077 - [batch pdf 30] 30/112
+2026-10-11 16:53:21.220 | INFO     | word_pdf:_loop:1077 - [batch pdf 30] 34/112
+2026-10-11 16:53:36.230 | INFO     | word_pdf:_loop:1077 - [batch pdf 30] 35/112
+2026-10-11 16:53:39.764 | WARNING  | word_pdf:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 16:53:40.083 | WARNING  | word_pdf:run_batch_with_resume:1216 - [batch pdf] 77 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 31, 2 of 3 stalled passes used)
+2026-10-11 16:53:40.083 | WARNING  | word_pdf:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 16:53:40.083 | WARNING  | word_pdf:recycle:735 - [word] recycling (restart 30)
+2026-10-11 16:53:49.292 | INFO     | word_pdf:_loop:1077 - [batch pdf 31] 1/77
+2026-10-11 16:53:49.731 | WARNING  | word_pdf:run_batch_with_resume:1216 - [batch pdf] 76 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 32, 2 of 3 stalled passes used)
+2026-10-11 16:53:49.732 | WARNING  | word_pdf:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 16:53:49.732 | WARNING  | word_pdf:recycle:735 - [word] recycling (restart 31)
+2026-10-11 16:53:59.035 | INFO     | word_pdf:_loop:1077 - [batch pdf 32] 4/76
+2026-10-11 16:53:59.212 | WARNING  | word_pdf:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 16:54:04.041 | INFO     | word_pdf:_loop:1077 - [batch pdf 32] 7/76
+2026-10-11 16:54:09.044 | INFO     | word_pdf:_loop:1077 - [batch pdf 32] 9/76
+2026-10-11 16:54:14.050 | INFO     | word_pdf:_loop:1077 - [batch pdf 32] 13/76
+2026-10-11 16:54:19.056 | INFO     | word_pdf:_loop:1077 - [batch pdf 32] 19/76
+2026-10-11 16:54:24.062 | INFO     | word_pdf:_loop:1077 - [batch pdf 32] 25/76
+2026-10-11 16:54:29.075 | INFO     | word_pdf:_loop:1077 - [batch pdf 32] 31/76
+2026-10-11 16:54:33.560 | WARNING  | word_pdf:run_batch_with_resume:1216 - [batch pdf] 44 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 33, 2 of 3 stalled passes used)
+2026-10-11 16:54:33.561 | WARNING  | word_pdf:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 16:54:33.561 | WARNING  | word_pdf:recycle:735 - [word] recycling (restart 32)
+2026-10-11 16:54:34.616 | WARNING  | word_pdf:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 16:54:42.818 | INFO     | word_pdf:_loop:1077 - [batch pdf 33] 3/44
+2026-10-11 16:54:44.672 | INFO     | word_pdf:_note_buttons:514 - [watchdog] Microsoft Word shows button 'OK'
+2026-10-11 16:54:45.463 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 01a43df57c.docx → 01a43df57c.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 16:54:45.528 | ERROR    | __main__:_redline_batched:1072 - [batch] FAIL: 0279cfe1a2.docx → 0279cfe1a2.docx — redline is missing base 75% of that file; the two sides are not averaged
+2026-10-11 16:54:45.804 | ERROR    | __main__:_redline_batched:1072 - [batch] FAIL: 0858ee25d5.docx → 0858ee25d5.docx — redline is missing base 0% of that file; the two sides are not averaged
+2026-10-11 16:54:46.176 | ERROR    | __main__:_redline_batched:1072 - [batch] FAIL: 0907085a84.docx → 0907085a84.docx — redline is missing revision 0% of that file; the two sides are not averaged
+2026-10-11 16:54:46.235 | ERROR    | __main__:_redline_batched:1072 - [batch] FAIL: 09a6e874c8.docx → 09a6e874c8.docx — redline is missing base 67% of that file; the two sides are not averaged
+2026-10-11 16:54:47.634 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 143e7a6dc4.docx → 143e7a6dc4.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 16:54:48.678 | ERROR    | __main__:_redline_batched:1072 - [batch] FAIL: 22c0cf3478.docx → 22c0cf3478.docx — redline is missing base 50% of that file; the two sides are not averaged
+2026-10-11 16:54:49.022 | ERROR    | __main__:_redline_batched:1072 - [batch] FAIL: 2b5cfb2225.docx → 2b5cfb2225.docx — redline is missing base 50% of that file; the two sides are not averaged
+2026-10-11 16:54:49.055 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 2c0433bdbc.docx → 2c0433bdbc.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 16:54:49.248 | WARNING  | word_pdf:_loop_word:544 - [watchdog] Word dialog dismissed via 'OK'
+2026-10-11 16:54:51.451 | ERROR    | __main__:_redline_batched:1072 - [batch] FAIL: 37c978d405.docx → 37c978d405.docx — redline is missing base 67% of that file; the two sides are not averaged
+2026-10-11 16:54:52.674 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 3e7067f872.docx → 3e7067f872.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 16:54:52.839 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 3f56b101d2.docx → 3f56b101d2.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 16:54:53.126 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 415fa42f00.docx → 415fa42f00.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 16:54:53.289 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 42d1acd8a6.docx → 42d1acd8a6.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 16:54:54.418 | ERROR    | __main__:_redline_batched:1072 - [batch] FAIL: 4a8b3c676a.docx → 4a8b3c676a.docx — redline is missing base 0% of that file; the two sides are not averaged
+2026-10-11 16:54:56.427 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 5287854336.docx → 5287854336.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 16:54:57.024 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 54dd9bf0c3.docx → 54dd9bf0c3.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 16:54:57.031 | ERROR    | __main__:_redline_batched:1072 - [batch] FAIL: 55b0f23e41.docx → 55b0f23e41.docx — redline is missing revision 50% of that file; the two sides are not averaged
+2026-10-11 16:54:57.440 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 581907f19c.docx → 581907f19c.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 16:54:57.457 | ERROR    | __main__:_redline_batched:1072 - [batch] FAIL: 58b3bd3cbc.docx → 58b3bd3cbc.docx — redline is missing revision 67% of that file; the two sides are not averaged
+2026-10-11 16:54:57.536 | WARNING  | __main__:_redline_batched:1106 -   compared clean (no revisions): 58cd08049b.docx → 58cd08049b.docx
+2026-10-11 16:54:57.681 | ERROR    | __main__:_redline_batched:1072 - [batch] FAIL: 59d7431859.docx → 59d7431859.docx — redline is missing base 0% of that file; the two sides are not averaged
+2026-10-11 16:54:58.251 | WARNING  | __main__:_redline_batched:1106 -   compared clean (no revisions): 60e784f2de.docx → 60e784f2de.docx
+2026-10-11 16:54:58.308 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 61283a9049.docx → 61283a9049.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 16:54:59.140 | ERROR    | __main__:_redline_batched:1072 - [batch] FAIL: 65aa483982.docx → 65aa483982.docx — redline is missing base 50% of that file; the two sides are not averaged
+2026-10-11 16:54:59.914 | ERROR    | __main__:_redline_batched:1072 - [batch] FAIL: 6bba73f309.docx → 6bba73f309.docx — redline is missing revision 33% of that file; the two sides are not averaged
+2026-10-11 16:55:00.119 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 6de20376e8.docx → 6de20376e8.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 16:55:00.320 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 7127dd0325.docx → 7127dd0325.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 16:55:00.446 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 7252aa05ca.docx → 7252aa05ca.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 16:55:01.076 | ERROR    | __main__:_redline_batched:1072 - [batch] FAIL: 7f412aa4b4.docx → 7f412aa4b4.docx — redline is missing base 67% of that file; the two sides are not averaged
+2026-10-11 16:55:01.113 | WARNING  | __main__:_redline_batched:1106 -   compared clean (no revisions): 804039550d.docx → 804039550d.docx
+2026-10-11 16:55:01.283 | ERROR    | __main__:_redline_batched:1072 - [batch] FAIL: 82bf64f742.docx → 82bf64f742.docx — redline is missing base 50% and revision 50% of that file; the two sides are not averaged
+2026-10-11 16:55:01.612 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 8568ca15a1.docx → 8568ca15a1.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 16:55:01.630 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 8644055513.docx → 8644055513.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 16:55:01.982 | ERROR    | __main__:_redline_batched:1072 - [batch] FAIL: 8b97fbb240.docx → 8b97fbb240.docx — redline is missing base 33% of that file; the two sides are not averaged
+2026-10-11 16:55:02.086 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 8c0d466e54.docx → 8c0d466e54.docx — redline saved but PDF export failed: 
+2026-10-11 16:55:02.610 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 91c1ece7c9.docx → 91c1ece7c9.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 16:55:02.737 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 9382e03243.docx → 9382e03243.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 16:55:03.310 | ERROR    | __main__:_redline_batched:1072 - [batch] FAIL: 99740a096f.docx → 99740a096f.docx — redline is missing revision 0% of that file; the two sides are not averaged
+2026-10-11 16:55:03.669 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 9bd3b882f8.docx → 9bd3b882f8.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 16:55:04.048 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 9d0b6ef8ad.docx → 9d0b6ef8ad.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 16:55:04.824 | ERROR    | __main__:_redline_batched:1072 - [batch] FAIL: a8eba11068.docx → a8eba11068.docx — redline is missing revision 0% of that file; the two sides are not averaged
+2026-10-11 16:55:04.891 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: a990caf95a.docx → a990caf95a.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 16:55:05.130 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: ad917ac52c.docx → ad917ac52c.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 16:55:08.123 | ERROR    | __main__:_redline_batched:1072 - [batch] FAIL: c12ee3e25e.docx → c12ee3e25e.docx — redline is missing revision 67% of that file; the two sides are not averaged
+2026-10-11 16:55:08.190 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: c2380a4677.docx → c2380a4677.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 16:55:08.215 | ERROR    | __main__:_redline_batched:1072 - [batch] FAIL: c277edafd3.docx → c277edafd3.docx — redline is missing revision 0% of that file; the two sides are not averaged
+2026-10-11 16:55:08.337 | ERROR    | __main__:_redline_batched:1072 - [batch] FAIL: c69f43f277.docx → c69f43f277.docx — redline is missing revision 50% of that file; the two sides are not averaged
+2026-10-11 16:55:08.651 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: cb9583377c.docx → cb9583377c.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 16:55:09.097 | ERROR    | __main__:_redline_batched:1072 - [batch] FAIL: d1d69a8352.docx → d1d69a8352.docx — redline is missing base 50% of that file; the two sides are not averaged
+2026-10-11 16:55:09.151 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: d36027aaa0.docx → d36027aaa0.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 16:55:09.292 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: d525625b0d.docx → d525625b0d.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 16:55:09.507 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: d9bb456306.docx → d9bb456306.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 16:55:09.740 | ERROR    | __main__:_redline_batched:1072 - [batch] FAIL: db9f3507a3.docx → db9f3507a3.docx — redline is missing base 0% of that file; the two sides are not averaged
+2026-10-11 16:55:10.612 | ERROR    | __main__:_redline_batched:1072 - [batch] FAIL: e5d359e783.docx → e5d359e783.docx — redline is missing base 67% of that file; the two sides are not averaged
+2026-10-11 16:55:11.243 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: e633129040.docx → e633129040.docx — redline saved but PDF export failed: 
+2026-10-11 16:55:12.006 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: ef51261c54.docx → ef51261c54.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 16:55:12.029 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: f033107e8f.docx → f033107e8f.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 16:55:12.057 | ERROR    | __main__:_redline_batched:1072 - [batch] FAIL: f194709881.docx → f194709881.docx — redline is missing revision 67% of that file; the two sides are not averaged
+2026-10-11 16:55:12.628 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: fa05623f53.docx → fa05623f53.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 16:55:12.704 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: fd2201fe85.docx → fd2201fe85.docx — redline saved but PDF export failed: 
+2026-10-11 16:55:12.712 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: fd7dc3247c.docx → fd7dc3247c.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 16:55:12.727 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: fd9d6be0de.docx → fd9d6be0de.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 16:55:12.749 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: fe0cad096f.docx → fe0cad096f.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 16:55:12.766 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: fe89171ce8.docx → fe89171ce8.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 16:55:12.832 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: fea87b305c.docx → fea87b305c.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 16:55:12.881 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: feacbc347e.docx → feacbc347e.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 16:55:12.958 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: fedf795758.docx → fedf795758.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 16:55:12.984 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: fee04c36ab.docx → fee04c36ab.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 16:55:13.002 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: ffd6b29609.docx → ffd6b29609.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 16:55:13.027 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: ffe81a1058.docx → ffe81a1058.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.

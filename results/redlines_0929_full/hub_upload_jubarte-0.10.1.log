@@ -1,0 +1,15 @@
+staged 6300 files, 1.45 GB: {'jubarte-0.10.1/docx': 2611, 'jubarte-0.10.1/pdf_by_word': 2605, 'fresh_compares': 1032, 'jubarte-rust/meta': 2, 'jubarte-093/meta': 2, 'docxodus/meta': 2, 'superdoc/meta': 11, 'jubarte-0.10.1/meta': 2, 'run': 33}
+uploaded jubarte-0.10.1/docx
+uploaded jubarte-0.10.1/pdf_by_word
+No files have been modified since last commit. Skipping to prevent empty commit.
+uploaded fresh_compares
+No files have been modified since last commit. Skipping to prevent empty commit.
+uploaded jubarte-rust/meta
+No files have been modified since last commit. Skipping to prevent empty commit.
+uploaded jubarte-093/meta
+No files have been modified since last commit. Skipping to prevent empty commit.
+uploaded docxodus/meta
+uploaded superdoc/meta
+uploaded jubarte-0.10.1/meta
+uploaded run
+verified 6300 files on arthrod/neurotic_docx_bench/outputs/redlines_0929_full

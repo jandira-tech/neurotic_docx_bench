@@ -1,0 +1,43 @@
+redline_speed_bench: 1000 planned pairs from results/speed_en_500_p1000/pairs.csv
+  unique fixtures: 500 (target 1000)
+  loaded 69.8 MiB in 52.394ms
+  pairs=1000 (min=5000, seed=42, rounds≈1)
+  methods=jubarte-rust-inproc, jubarte-rust, jubarte-wasm, docxodus, jubarte-python warmup=20 reps=1 profile=false
+  jubarte-dist=/Users/arthrod/temp/T/neurotic_docx_bench/dist/jubarte-final
+  rust-dist=/Users/arthrod/temp/T/speed_bins/jubarte-099510fac2
+  csharp-dist=/Users/arthrod/temp/T/neurotic_docx_bench/src/neurotic_docx_bench/utils/docxodus/docxodus-csharp
+  csharp-inproc-dist=/Users/arthrod/temp/T/neurotic_docx_bench/src/neurotic_docx_bench/utils/docxodus/docxodus-csharp-inproc/bin/Release/net10.0
+  rust-inproc-dist=/Users/arthrod/temp/T/speed_bins/jubarte-099510fac2
+  wasm-dist=/Users/arthrod/temp/T/speed_bins/jubarte-099510fac2
+  python-dist=/Users/arthrod/temp/T/speed_bins/jubarte-099510fac2/py
+  docxodus-wasm=/Users/arthrod/temp/T/speed_bins/docxodus-959b4741/npm-root/node_modules/docxodus/dist/index.js
+  out=/Users/arthrod/temp/T/neurotic_docx_bench/results/speed_en_500_p1000/run_1000
+
+  machine jubarte-rust-inproc: steady after 10.1s — cpu 6.3% (peak 12.6%), mem free 83–83%, swapouts +0, load 1.7
+▶ jubarte-rust-inproc (engine=jubarte-rust-inproc, dist=/Users/arthrod/temp/T/speed_bins/jubarte-099510fac2, native=false)
+  init 13.405ms
+  wall 159.95s  median 87.99ms  mean 159.69ms  p95 599.23ms  p99 1077.95ms  6.3/s  (n=1000, fail=0)
+
+  machine jubarte-rust: steady after 10.1s — cpu 5.1% (peak 9.2%), mem free 83–83%, swapouts +0, load 2
+▶ jubarte-rust (engine=jubarte-rust, dist=/Users/arthrod/temp/T/speed_bins/jubarte-099510fac2, native=true)
+  init 0.085ms
+  wall 179.42s  median 100.16ms  mean 179.42ms  p95 668.27ms  p99 1188.11ms  5.6/s  (n=1000, fail=0)
+
+  machine jubarte-wasm: steady after 10.1s — cpu 8.1% (peak 11.4%), mem free 84–84%, swapouts +0, load 2.6
+▶ jubarte-wasm (engine=jubarte-wasm, dist=/Users/arthrod/temp/T/speed_bins/jubarte-099510fac2, native=false)
+  init 22.758ms
+  wall 302.04s  median 167.69ms  mean 302.03ms  p95 1100.67ms  p99 2076.13ms  3.3/s  (n=1000, fail=0)
+
+  machine docxodus: steady after 10.1s — cpu 14.9% (peak 17.5%), mem free 83–84%, swapouts +0, load 5.2
+▶ docxodus (engine=docxodus, dist=/Users/arthrod/temp/T/speed_bins/docxodus-959b4741/npm-root/node_modules/docxodus, native=false)
+MONO_WASM: Jiterpreter table 3 is not yet initialized
+MONO_WASM: Jiterpreter table 12 is not yet initialized
+MONO_WASM: Jiterpreter table 13 is not yet initialized
+MONO_WASM: Jiterpreter table 31 is not yet initialized
+MONO_WASM: Jiterpreter table 31 is not yet initialized
+MONO_WASM: Jiterpreter table 4 is not yet initialized
+MONO_WASM: Jiterpreter table 3 is not yet initialized
+MONO_WASM: Jiterpreter table 2 is not yet initialized
+MONO_WASM: Jiterpreter table 3 is not yet initialized
+MONO_WASM: Jiterpreter table 30 is not yet initialized
+  init 1503.691ms

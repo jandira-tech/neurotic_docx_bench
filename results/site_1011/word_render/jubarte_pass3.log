@@ -1,0 +1,230 @@
+2026-10-11 18:18:06.073 | INFO     | __main__:preflight:1827 - [word] preflight: open_documents=1 started_clean=False launched_by_us=False close_documents=True
+2026-10-11 18:18:06.102 | INFO     | __main__:convert_folder:1500 - [word] export: one_osascript=True documents=1000 accept_all=False reject_all=False
+2026-10-11 18:18:06.132 | INFO     | __main__:_convert_batched:1700 - [batch] one osascript for 40 document(s)
+2026-10-11 18:18:10.857 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 40 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 2, 0 of 3 stalled passes used)
+2026-10-11 18:18:10.858 | ERROR    | __main__:recycle:717 - [word] refusing to restart Word: it held documents at startup (--allow-open-docs), and a restart would discard them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 18:18:11.522 | INFO     | __main__:_note_buttons:514 - [watchdog] Microsoft Error Reporting shows button 'OK'
+2026-10-11 18:18:11.522 | INFO     | __main__:_note_buttons:514 - [watchdog] Microsoft Error Reporting shows button 'More Information'
+2026-10-11 18:18:11.522 | INFO     | __main__:_note_buttons:514 - [watchdog] Microsoft Error Reporting shows button 'missing value'
+2026-10-11 18:18:12.225 | WARNING  | __main__:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 18:18:15.865 | INFO     | __main__:_loop:1077 - [batch pdf 2] 0/40
+2026-10-11 18:18:22.827 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 40 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 3, 0 of 3 stalled passes used)
+2026-10-11 18:18:22.827 | ERROR    | __main__:recycle:717 - [word] refusing to restart Word: it held documents at startup (--allow-open-docs), and a restart would discard them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 18:18:27.447 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 40 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 4, 0 of 3 stalled passes used)
+2026-10-11 18:18:27.447 | ERROR    | __main__:recycle:717 - [word] refusing to restart Word: it held documents at startup (--allow-open-docs), and a restart would discard them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 18:18:28.705 | WARNING  | __main__:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 18:18:32.454 | INFO     | __main__:_loop:1077 - [batch pdf 4] 0/40
+2026-10-11 18:18:33.507 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 40 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 5, 0 of 3 stalled passes used)
+2026-10-11 18:18:33.507 | ERROR    | __main__:recycle:717 - [word] refusing to restart Word: it held documents at startup (--allow-open-docs), and a restart would discard them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 18:18:34.903 | WARNING  | __main__:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 18:18:38.517 | INFO     | __main__:_loop:1077 - [batch pdf 5] 0/40
+2026-10-11 18:18:45.325 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 40 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 6, 0 of 3 stalled passes used)
+2026-10-11 18:18:45.326 | ERROR    | __main__:recycle:717 - [word] refusing to restart Word: it held documents at startup (--allow-open-docs), and a restart would discard them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 18:18:49.907 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 40 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 7, 0 of 3 stalled passes used)
+2026-10-11 18:18:49.907 | ERROR    | __main__:recycle:717 - [word] refusing to restart Word: it held documents at startup (--allow-open-docs), and a restart would discard them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 18:18:50.876 | WARNING  | __main__:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 18:18:54.910 | INFO     | __main__:_loop:1077 - [batch pdf 7] 0/40
+2026-10-11 18:19:01.641 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 40 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 8, 0 of 3 stalled passes used)
+2026-10-11 18:19:01.642 | ERROR    | __main__:recycle:717 - [word] refusing to restart Word: it held documents at startup (--allow-open-docs), and a restart would discard them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 18:19:06.652 | INFO     | __main__:_loop:1077 - [batch pdf 8] 0/40
+2026-10-11 18:19:20.873 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 39 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 9, 0 of 3 stalled passes used)
+2026-10-11 18:19:20.873 | ERROR    | __main__:recycle:717 - [word] refusing to restart Word: it held documents at startup (--allow-open-docs), and a restart would discard them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 18:19:24.113 | WARNING  | __main__:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 18:19:25.880 | INFO     | __main__:_loop:1077 - [batch pdf 9] 0/39
+2026-10-11 18:19:35.672 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 39 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 10, 0 of 3 stalled passes used)
+2026-10-11 18:19:35.674 | ERROR    | __main__:recycle:717 - [word] refusing to restart Word: it held documents at startup (--allow-open-docs), and a restart would discard them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 18:19:39.900 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 39 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 11, 0 of 3 stalled passes used)
+2026-10-11 18:19:39.903 | ERROR    | __main__:recycle:717 - [word] refusing to restart Word: it held documents at startup (--allow-open-docs), and a restart would discard them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 18:19:40.753 | WARNING  | __main__:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 18:19:44.698 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 39 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 12, 0 of 3 stalled passes used)
+2026-10-11 18:19:44.698 | ERROR    | __main__:recycle:717 - [word] refusing to restart Word: it held documents at startup (--allow-open-docs), and a restart would discard them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 18:19:45.080 | WARNING  | __main__:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 18:19:49.706 | INFO     | __main__:_loop:1077 - [batch pdf 12] 0/39
+2026-10-11 18:19:52.150 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 39 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 13, 0 of 3 stalled passes used)
+2026-10-11 18:19:52.150 | ERROR    | __main__:recycle:717 - [word] refusing to restart Word: it held documents at startup (--allow-open-docs), and a restart would discard them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 18:19:52.189 | WARNING  | __main__:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 18:19:57.163 | INFO     | __main__:_loop:1077 - [batch pdf 13] 0/39
+2026-10-11 18:19:57.959 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 39 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 14, 0 of 3 stalled passes used)
+2026-10-11 18:19:57.959 | ERROR    | __main__:recycle:717 - [word] refusing to restart Word: it held documents at startup (--allow-open-docs), and a restart would discard them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 18:19:58.575 | WARNING  | __main__:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 18:20:02.272 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 39 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 15, 0 of 3 stalled passes used)
+2026-10-11 18:20:02.272 | ERROR    | __main__:recycle:717 - [word] refusing to restart Word: it held documents at startup (--allow-open-docs), and a restart would discard them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 18:20:02.760 | WARNING  | __main__:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 18:20:06.683 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 39 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 16, 0 of 3 stalled passes used)
+2026-10-11 18:20:06.686 | ERROR    | __main__:recycle:717 - [word] refusing to restart Word: it held documents at startup (--allow-open-docs), and a restart would discard them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 18:20:08.364 | WARNING  | __main__:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 18:20:11.695 | INFO     | __main__:_loop:1077 - [batch pdf 16] 0/39
+2026-10-11 18:20:14.385 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 39 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 17, 0 of 3 stalled passes used)
+2026-10-11 18:20:14.385 | ERROR    | __main__:recycle:717 - [word] refusing to restart Word: it held documents at startup (--allow-open-docs), and a restart would discard them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 18:20:14.667 | WARNING  | __main__:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 18:20:17.639 | WARNING  | __main__:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 18:20:18.572 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 39 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 18, 0 of 3 stalled passes used)
+2026-10-11 18:20:18.574 | ERROR    | __main__:recycle:717 - [word] refusing to restart Word: it held documents at startup (--allow-open-docs), and a restart would discard them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 18:20:23.008 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 39 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 19, 0 of 3 stalled passes used)
+2026-10-11 18:20:23.008 | ERROR    | __main__:recycle:717 - [word] refusing to restart Word: it held documents at startup (--allow-open-docs), and a restart would discard them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 18:20:28.012 | INFO     | __main__:_loop:1077 - [batch pdf 19] 0/39
+2026-10-11 18:20:28.474 | WARNING  | __main__:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 18:20:34.739 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 39 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 20, 0 of 3 stalled passes used)
+2026-10-11 18:20:34.739 | ERROR    | __main__:recycle:717 - [word] refusing to restart Word: it held documents at startup (--allow-open-docs), and a restart would discard them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 18:20:39.746 | INFO     | __main__:_loop:1077 - [batch pdf 20] 0/39
+2026-10-11 18:20:44.749 | INFO     | __main__:_loop:1077 - [batch pdf 20] 1/39
+2026-10-11 18:20:46.955 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 38 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 21, 0 of 3 stalled passes used)
+2026-10-11 18:20:46.955 | ERROR    | __main__:recycle:717 - [word] refusing to restart Word: it held documents at startup (--allow-open-docs), and a restart would discard them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 18:20:48.913 | WARNING  | __main__:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 18:20:51.962 | INFO     | __main__:_loop:1077 - [batch pdf 21] 0/38
+2026-10-11 18:20:54.667 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 38 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 22, 0 of 3 stalled passes used)
+2026-10-11 18:20:54.667 | ERROR    | __main__:recycle:717 - [word] refusing to restart Word: it held documents at startup (--allow-open-docs), and a restart would discard them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 18:20:54.890 | WARNING  | __main__:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 18:20:59.257 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 38 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 23, 0 of 3 stalled passes used)
+2026-10-11 18:20:59.258 | ERROR    | __main__:recycle:717 - [word] refusing to restart Word: it held documents at startup (--allow-open-docs), and a restart would discard them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 18:21:00.561 | WARNING  | __main__:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 18:21:04.264 | INFO     | __main__:_loop:1077 - [batch pdf 23] 0/38
+2026-10-11 18:21:06.807 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 38 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 24, 0 of 3 stalled passes used)
+2026-10-11 18:21:06.807 | ERROR    | __main__:recycle:717 - [word] refusing to restart Word: it held documents at startup (--allow-open-docs), and a restart would discard them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 18:21:06.957 | WARNING  | __main__:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 18:21:11.642 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 38 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 25, 0 of 3 stalled passes used)
+2026-10-11 18:21:11.642 | ERROR    | __main__:recycle:717 - [word] refusing to restart Word: it held documents at startup (--allow-open-docs), and a restart would discard them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 18:21:13.024 | WARNING  | __main__:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 18:21:16.646 | INFO     | __main__:_loop:1077 - [batch pdf 25] 0/38
+2026-10-11 18:21:23.693 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 38 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 26, 0 of 3 stalled passes used)
+2026-10-11 18:21:23.696 | ERROR    | __main__:recycle:717 - [word] refusing to restart Word: it held documents at startup (--allow-open-docs), and a restart would discard them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 18:21:28.290 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 38 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 27, 0 of 3 stalled passes used)
+2026-10-11 18:21:28.290 | ERROR    | __main__:recycle:717 - [word] refusing to restart Word: it held documents at startup (--allow-open-docs), and a restart would discard them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 18:21:29.528 | WARNING  | __main__:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 18:21:33.160 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 38 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 28, 0 of 3 stalled passes used)
+2026-10-11 18:21:33.160 | ERROR    | __main__:recycle:717 - [word] refusing to restart Word: it held documents at startup (--allow-open-docs), and a restart would discard them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 18:21:33.714 | WARNING  | __main__:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 18:21:38.164 | INFO     | __main__:_loop:1077 - [batch pdf 28] 3/38
+2026-10-11 18:21:42.674 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 34 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 29, 0 of 3 stalled passes used)
+2026-10-11 18:21:42.676 | ERROR    | __main__:recycle:717 - [word] refusing to restart Word: it held documents at startup (--allow-open-docs), and a restart would discard them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 18:21:44.324 | WARNING  | __main__:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 18:21:47.681 | INFO     | __main__:_loop:1077 - [batch pdf 29] 1/34
+2026-10-11 18:21:51.469 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 33 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 30, 0 of 3 stalled passes used)
+2026-10-11 18:21:51.469 | ERROR    | __main__:recycle:717 - [word] refusing to restart Word: it held documents at startup (--allow-open-docs), and a restart would discard them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 18:21:52.679 | WARNING  | __main__:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 18:21:56.474 | INFO     | __main__:_loop:1077 - [batch pdf 30] 1/33
+2026-10-11 18:22:01.477 | INFO     | __main__:_loop:1077 - [batch pdf 30] 4/33
+2026-10-11 18:22:03.142 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 28 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 31, 0 of 3 stalled passes used)
+2026-10-11 18:22:03.142 | ERROR    | __main__:recycle:717 - [word] refusing to restart Word: it held documents at startup (--allow-open-docs), and a restart would discard them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 18:22:07.749 | WARNING  | __main__:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 18:22:08.152 | INFO     | __main__:_loop:1077 - [batch pdf 31] 0/28
+2026-10-11 18:22:14.482 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 27 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 32, 0 of 3 stalled passes used)
+2026-10-11 18:22:14.482 | ERROR    | __main__:recycle:717 - [word] refusing to restart Word: it held documents at startup (--allow-open-docs), and a restart would discard them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 18:22:19.121 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 26 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 33, 0 of 3 stalled passes used)
+2026-10-11 18:22:19.121 | ERROR    | __main__:recycle:717 - [word] refusing to restart Word: it held documents at startup (--allow-open-docs), and a restart would discard them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 18:22:20.886 | WARNING  | __main__:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 18:22:24.126 | INFO     | __main__:_loop:1077 - [batch pdf 33] 0/26
+2026-10-11 18:22:31.291 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 25 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 34, 0 of 3 stalled passes used)
+2026-10-11 18:22:31.293 | ERROR    | __main__:recycle:717 - [word] refusing to restart Word: it held documents at startup (--allow-open-docs), and a restart would discard them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 18:22:36.010 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 24 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 35, 0 of 3 stalled passes used)
+2026-10-11 18:22:36.010 | ERROR    | __main__:recycle:717 - [word] refusing to restart Word: it held documents at startup (--allow-open-docs), and a restart would discard them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 18:22:36.921 | WARNING  | __main__:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 18:22:41.023 | INFO     | __main__:_loop:1077 - [batch pdf 35] 0/24
+2026-10-11 18:22:41.281 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 23 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 36, 0 of 3 stalled passes used)
+2026-10-11 18:22:41.282 | ERROR    | __main__:recycle:717 - [word] refusing to restart Word: it held documents at startup (--allow-open-docs), and a restart would discard them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 18:22:41.538 | WARNING  | __main__:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 18:22:46.288 | INFO     | __main__:_loop:1077 - [batch pdf 36] 0/23
+2026-10-11 18:22:46.573 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 22 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 37, 0 of 3 stalled passes used)
+2026-10-11 18:22:46.573 | ERROR    | __main__:recycle:717 - [word] refusing to restart Word: it held documents at startup (--allow-open-docs), and a restart would discard them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 18:22:51.582 | INFO     | __main__:_loop:1077 - [batch pdf 37] 0/22
+2026-10-11 18:22:51.689 | WARNING  | __main__:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 18:23:02.184 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 21 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 38, 0 of 3 stalled passes used)
+2026-10-11 18:23:02.184 | ERROR    | __main__:recycle:717 - [word] refusing to restart Word: it held documents at startup (--allow-open-docs), and a restart would discard them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 18:23:02.548 | WARNING  | __main__:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 18:23:07.193 | INFO     | __main__:_loop:1077 - [batch pdf 38] 0/21
+2026-10-11 18:23:15.420 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 20 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 39, 0 of 3 stalled passes used)
+2026-10-11 18:23:15.421 | ERROR    | __main__:recycle:717 - [word] refusing to restart Word: it held documents at startup (--allow-open-docs), and a restart would discard them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 18:23:15.828 | WARNING  | __main__:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 18:23:20.430 | INFO     | __main__:_loop:1077 - [batch pdf 39] 0/20
+2026-10-11 18:23:23.356 | WARNING  | __main__:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 18:23:23.561 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 19 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 40, 0 of 3 stalled passes used)
+2026-10-11 18:23:23.561 | ERROR    | __main__:recycle:717 - [word] refusing to restart Word: it held documents at startup (--allow-open-docs), and a restart would discard them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 18:23:28.573 | INFO     | __main__:_loop:1077 - [batch pdf 40] 0/19
+2026-10-11 18:23:31.571 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 18 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 41, 0 of 3 stalled passes used)
+2026-10-11 18:23:31.572 | ERROR    | __main__:recycle:717 - [word] refusing to restart Word: it held documents at startup (--allow-open-docs), and a restart would discard them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 18:23:33.157 | WARNING  | __main__:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 18:23:36.580 | INFO     | __main__:_loop:1077 - [batch pdf 41] 0/18
+2026-10-11 18:23:38.919 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 17 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 42, 0 of 3 stalled passes used)
+2026-10-11 18:23:38.919 | ERROR    | __main__:recycle:717 - [word] refusing to restart Word: it held documents at startup (--allow-open-docs), and a restart would discard them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 18:23:39.461 | WARNING  | __main__:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 18:23:41.428 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 16 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 43, 0 of 3 stalled passes used)
+2026-10-11 18:23:41.428 | ERROR    | __main__:recycle:717 - [word] refusing to restart Word: it held documents at startup (--allow-open-docs), and a restart would discard them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 18:23:46.328 | WARNING  | __main__:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 18:23:46.432 | INFO     | __main__:_loop:1077 - [batch pdf 43] 0/16
+2026-10-11 18:23:58.406 | WARNING  | __main__:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 18:24:00.063 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 15 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 44, 0 of 3 stalled passes used)
+2026-10-11 18:24:00.064 | ERROR    | __main__:recycle:717 - [word] refusing to restart Word: it held documents at startup (--allow-open-docs), and a restart would discard them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 18:24:02.777 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 14 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 45, 0 of 3 stalled passes used)
+2026-10-11 18:24:02.779 | ERROR    | __main__:recycle:717 - [word] refusing to restart Word: it held documents at startup (--allow-open-docs), and a restart would discard them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 18:24:07.790 | INFO     | __main__:_loop:1077 - [batch pdf 45] 0/14
+2026-10-11 18:24:12.383 | WARNING  | __main__:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 18:24:19.196 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 13 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 46, 0 of 3 stalled passes used)
+2026-10-11 18:24:19.196 | ERROR    | __main__:recycle:717 - [word] refusing to restart Word: it held documents at startup (--allow-open-docs), and a restart would discard them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 18:24:24.113 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 12 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 47, 0 of 3 stalled passes used)
+2026-10-11 18:24:24.113 | ERROR    | __main__:recycle:717 - [word] refusing to restart Word: it held documents at startup (--allow-open-docs), and a restart would discard them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 18:24:29.116 | INFO     | __main__:_loop:1077 - [batch pdf 47] 0/12
+2026-10-11 18:24:34.751 | WARNING  | __main__:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 18:24:42.740 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 11 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 48, 0 of 3 stalled passes used)
+2026-10-11 18:24:42.740 | ERROR    | __main__:recycle:717 - [word] refusing to restart Word: it held documents at startup (--allow-open-docs), and a restart would discard them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 18:24:47.748 | INFO     | __main__:_loop:1077 - [batch pdf 48] 0/11
+2026-10-11 18:24:49.273 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 10 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 49, 0 of 3 stalled passes used)
+2026-10-11 18:24:49.273 | ERROR    | __main__:recycle:717 - [word] refusing to restart Word: it held documents at startup (--allow-open-docs), and a restart would discard them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 18:24:53.583 | WARNING  | __main__:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 18:24:54.280 | INFO     | __main__:_loop:1077 - [batch pdf 49] 0/10
+2026-10-11 18:25:00.757 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 9 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 50, 0 of 3 stalled passes used)
+2026-10-11 18:25:00.757 | ERROR    | __main__:recycle:717 - [word] refusing to restart Word: it held documents at startup (--allow-open-docs), and a restart would discard them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 18:25:05.309 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 8 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 51, 0 of 3 stalled passes used)
+2026-10-11 18:25:05.310 | ERROR    | __main__:recycle:717 - [word] refusing to restart Word: it held documents at startup (--allow-open-docs), and a restart would discard them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 18:25:10.314 | INFO     | __main__:_loop:1077 - [batch pdf 51] 0/8
+2026-10-11 18:25:13.271 | WARNING  | __main__:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 18:25:22.350 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 7 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 52, 0 of 3 stalled passes used)
+2026-10-11 18:25:22.353 | ERROR    | __main__:recycle:717 - [word] refusing to restart Word: it held documents at startup (--allow-open-docs), and a restart would discard them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 18:25:27.324 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 6 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 53, 0 of 3 stalled passes used)
+2026-10-11 18:25:27.325 | ERROR    | __main__:recycle:717 - [word] refusing to restart Word: it held documents at startup (--allow-open-docs), and a restart would discard them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 18:25:32.331 | INFO     | __main__:_loop:1077 - [batch pdf 53] 0/6
+2026-10-11 18:25:35.081 | WARNING  | __main__:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 18:25:36.558 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 5 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 54, 0 of 3 stalled passes used)
+2026-10-11 18:25:36.558 | ERROR    | __main__:recycle:717 - [word] refusing to restart Word: it held documents at startup (--allow-open-docs), and a restart would discard them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 18:25:41.564 | INFO     | __main__:_loop:1077 - [batch pdf 54] 0/5
+2026-10-11 18:25:41.896 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 4 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 55, 0 of 3 stalled passes used)
+2026-10-11 18:25:41.896 | ERROR    | __main__:recycle:717 - [word] refusing to restart Word: it held documents at startup (--allow-open-docs), and a restart would discard them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 18:25:46.902 | INFO     | __main__:_loop:1077 - [batch pdf 55] 0/4
+2026-10-11 18:25:49.444 | WARNING  | __main__:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 18:25:58.873 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 3 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 56, 0 of 3 stalled passes used)
+2026-10-11 18:25:58.873 | ERROR    | __main__:recycle:717 - [word] refusing to restart Word: it held documents at startup (--allow-open-docs), and a restart would discard them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 18:26:03.879 | INFO     | __main__:_loop:1077 - [batch pdf 56] 0/3
+2026-10-11 18:26:04.379 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 2 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 57, 0 of 3 stalled passes used)
+2026-10-11 18:26:04.380 | ERROR    | __main__:recycle:717 - [word] refusing to restart Word: it held documents at startup (--allow-open-docs), and a restart would discard them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 18:26:09.389 | INFO     | __main__:_loop:1077 - [batch pdf 57] 0/2
+2026-10-11 18:26:16.090 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 1 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 58, 0 of 3 stalled passes used)
+2026-10-11 18:26:16.090 | ERROR    | __main__:recycle:717 - [word] refusing to restart Word: it held documents at startup (--allow-open-docs), and a restart would discard them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 18:26:17.695 | WARNING  | __main__:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 18:26:18.710 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 01a43df57c.docx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 18:26:18.711 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 143e7a6dc4.docx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 18:26:18.713 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 2c0433bdbc.docx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 18:26:18.714 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 3b57d40fff.docx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 18:26:18.715 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 3e7067f872.docx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 18:26:18.717 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 415fa42f00.docx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 18:26:18.718 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 42d1acd8a6.docx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 18:26:18.728 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 5245c92a2c.docx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 18:26:18.730 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 5287854336.docx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 18:26:18.731 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 54dd9bf0c3.docx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 18:26:18.733 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 581907f19c.docx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 18:26:18.734 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 61283a9049.docx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 18:26:18.735 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 6de20376e8.docx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 18:26:18.736 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 7127dd0325.docx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 18:26:18.736 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 7252aa05ca.docx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 18:26:18.737 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 8568ca15a1.docx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 18:26:18.738 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 8644055513.docx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 18:26:18.739 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 9129d2ecd2.docx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 18:26:18.740 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 9382e03243.docx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 18:26:18.746 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 9d0b6ef8ad.docx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 18:26:18.747 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: ad917ac52c.docx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 18:26:18.748 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: c2380a4677.docx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 18:26:18.749 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: cb9583377c.docx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 18:26:18.749 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: d36027aaa0.docx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 18:26:18.750 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: d9bb456306.docx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 18:26:18.751 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: f033107e8f.docx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 18:26:18.751 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: fa05623f53.docx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 18:26:18.757 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: fe89171ce8.docx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 18:26:18.759 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: feacbc347e.docx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.

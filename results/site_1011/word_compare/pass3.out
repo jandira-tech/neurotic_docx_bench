@@ -1,0 +1,325 @@
+▸ PDF quality is sticky: `save as … file format format PDF` inherits whatever 
+'Optimize for' you last chose in Word's own Save As dialog.
+  Open any document in Word once, File > Save As > PDF, and pick the SECOND 
+option, Best for printing.
+  That choice persists; this script cannot set it. Pass --no-check-preset to 
+stop seeing this.
+▸ A redline PDF shows tracked changes the way Word is currently set to show them
+(Review ▸ Markup display, and Print Markup).
+  Open one redline in Word by hand and confirm it looks right before running the
+batch — this script cannot set that for you.
+2026-10-11 17:16:46.954 | ERROR    | __main__:_redline_batched:1094 -  FAIL: 
+01a43df57c.docx → 01a43df57c.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 17:16:46.955 | ERROR    | __main__:_redline_batched:1072 -  FAIL: 
+0279cfe1a2.docx → 0279cfe1a2.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-11 17:16:46.956 | ERROR    | __main__:_redline_batched:1072 -  FAIL: 
+0858ee25d5.docx → 0858ee25d5.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-11 17:16:46.956 | ERROR    | __main__:_redline_batched:1072 -  FAIL: 
+0907085a84.docx → 0907085a84.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-11 17:16:46.956 | ERROR    | __main__:_redline_batched:1072 -  FAIL: 
+09a6e874c8.docx → 09a6e874c8.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-11 17:16:46.957 | ERROR    | __main__:_redline_batched:1072 -  FAIL: 
+143e7a6dc4.docx → 143e7a6dc4.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-11 17:16:46.957 | ERROR    | __main__:_redline_batched:1072 -  FAIL: 
+22c0cf3478.docx → 22c0cf3478.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-11 17:16:46.958 | ERROR    | __main__:_redline_batched:1072 -  FAIL: 
+2b5cfb2225.docx → 2b5cfb2225.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-11 17:16:46.958 | ERROR    | __main__:_redline_batched:1072 -  FAIL: 
+2c0433bdbc.docx → 2c0433bdbc.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-11 17:16:46.959 | ERROR    | __main__:_redline_batched:1072 -  FAIL: 
+37c978d405.docx → 37c978d405.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-11 17:16:46.959 | ERROR    | __main__:_redline_batched:1072 -  FAIL: 
+3e7067f872.docx → 3e7067f872.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-11 17:16:46.960 | ERROR    | __main__:_redline_batched:1072 -  FAIL: 
+3f56b101d2.docx → 3f56b101d2.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-11 17:16:46.960 | ERROR    | __main__:_redline_batched:1072 -  FAIL: 
+415fa42f00.docx → 415fa42f00.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-11 17:16:46.961 | ERROR    | __main__:_redline_batched:1072 -  FAIL: 
+42d1acd8a6.docx → 42d1acd8a6.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-11 17:16:46.962 | ERROR    | __main__:_redline_batched:1072 -  FAIL: 
+4a8b3c676a.docx → 4a8b3c676a.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-11 17:16:46.962 | ERROR    | __main__:_redline_batched:1072 -  FAIL: 
+5287854336.docx → 5287854336.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-11 17:16:46.963 | ERROR    | __main__:_redline_batched:1072 -  FAIL: 
+54dd9bf0c3.docx → 54dd9bf0c3.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-11 17:16:46.964 | ERROR    | __main__:_redline_batched:1072 -  FAIL: 
+55b0f23e41.docx → 55b0f23e41.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-11 17:16:46.965 | ERROR    | __main__:_redline_batched:1072 -  FAIL: 
+581907f19c.docx → 581907f19c.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-11 17:16:46.965 | ERROR    | __main__:_redline_batched:1072 -  FAIL: 
+58b3bd3cbc.docx → 58b3bd3cbc.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-11 17:16:46.966 | ERROR    | __main__:_redline_batched:1072 -  FAIL: 
+59d7431859.docx → 59d7431859.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-11 17:16:46.966 | ERROR    | __main__:_redline_batched:1072 -  FAIL: 
+61283a9049.docx → 61283a9049.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-11 17:16:46.967 | ERROR    | __main__:_redline_batched:1072 -  FAIL: 
+65aa483982.docx → 65aa483982.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-11 17:16:46.968 | ERROR    | __main__:_redline_batched:1072 -  FAIL: 
+6bba73f309.docx → 6bba73f309.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-11 17:16:46.995 | ERROR    | __main__:_redline_batched:1094 -  FAIL: 
+6de20376e8.docx → 6de20376e8.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 17:16:47.004 | ERROR    | __main__:_redline_batched:1094 -  FAIL: 
+7127dd0325.docx → 7127dd0325.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 17:16:47.024 | ERROR    | __main__:_redline_batched:1094 -  FAIL: 
+7252aa05ca.docx → 7252aa05ca.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 17:16:47.043 | ERROR    | __main__:_redline_batched:1072 -  FAIL: 
+7f412aa4b4.docx → 7f412aa4b4.docx — redline is missing base 67% of that file; 
+the two sides are not averaged
+2026-10-11 17:16:47.048 | ERROR    | __main__:_redline_batched:1072 -  FAIL: 
+82bf64f742.docx → 82bf64f742.docx — redline is missing base 50% and revision 50%
+of that file; the two sides are not averaged
+2026-10-11 17:16:47.070 | ERROR    | __main__:_redline_batched:1094 -  FAIL: 
+8568ca15a1.docx → 8568ca15a1.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 17:16:47.081 | ERROR    | __main__:_redline_batched:1094 -  FAIL: 
+8644055513.docx → 8644055513.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 17:16:47.084 | ERROR    | __main__:_redline_batched:1072 -  FAIL: 
+8b97fbb240.docx → 8b97fbb240.docx — redline is missing base 33% of that file; 
+the two sides are not averaged
+2026-10-11 17:16:47.384 | ERROR    | __main__:_redline_batched:1094 -  FAIL: 
+91c1ece7c9.docx → 91c1ece7c9.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 17:16:47.403 | ERROR    | __main__:_redline_batched:1094 -  FAIL: 
+9382e03243.docx → 9382e03243.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 17:16:47.406 | ERROR    | __main__:_redline_batched:1072 -  FAIL: 
+99740a096f.docx → 99740a096f.docx — redline is missing revision 0% of that file;
+the two sides are not averaged
+2026-10-11 17:16:47.708 | ERROR    | __main__:_redline_batched:1094 -  FAIL: 
+9bd3b882f8.docx → 9bd3b882f8.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 17:16:47.732 | ERROR    | __main__:_redline_batched:1094 -  FAIL: 
+9d0b6ef8ad.docx → 9d0b6ef8ad.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 17:16:47.735 | ERROR    | __main__:_redline_batched:1072 -  FAIL: 
+a8eba11068.docx → a8eba11068.docx — redline is missing revision 0% of that file;
+the two sides are not averaged
+2026-10-11 17:16:47.752 | ERROR    | __main__:_redline_batched:1094 -  FAIL: 
+a990caf95a.docx → a990caf95a.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 17:16:47.774 | ERROR    | __main__:_redline_batched:1094 -  FAIL: 
+ad917ac52c.docx → ad917ac52c.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 17:16:47.777 | ERROR    | __main__:_redline_batched:1072 -  FAIL: 
+c12ee3e25e.docx → c12ee3e25e.docx — redline is missing revision 67% of that 
+file; the two sides are not averaged
+2026-10-11 17:16:47.801 | ERROR    | __main__:_redline_batched:1094 -  FAIL: 
+c2380a4677.docx → c2380a4677.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 17:16:47.805 | ERROR    | __main__:_redline_batched:1072 -  FAIL: 
+c277edafd3.docx → c277edafd3.docx — redline is missing revision 0% of that file;
+the two sides are not averaged
+2026-10-11 17:16:47.808 | ERROR    | __main__:_redline_batched:1072 -  FAIL: 
+c69f43f277.docx → c69f43f277.docx — redline is missing revision 50% of that 
+file; the two sides are not averaged
+2026-10-11 17:16:47.815 | ERROR    | __main__:_redline_batched:1094 -  FAIL: 
+cb9583377c.docx → cb9583377c.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 17:16:47.818 | ERROR    | __main__:_redline_batched:1072 -  FAIL: 
+d1d69a8352.docx → d1d69a8352.docx — redline is missing base 50% of that file; 
+the two sides are not averaged
+2026-10-11 17:16:47.842 | ERROR    | __main__:_redline_batched:1094 -  FAIL: 
+d36027aaa0.docx → d36027aaa0.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 17:16:47.865 | ERROR    | __main__:_redline_batched:1094 -  FAIL: 
+d525625b0d.docx → d525625b0d.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 17:16:47.887 | ERROR    | __main__:_redline_batched:1094 -  FAIL: 
+d9bb456306.docx → d9bb456306.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 17:16:47.889 | ERROR    | __main__:_redline_batched:1072 -  FAIL: 
+db9f3507a3.docx → db9f3507a3.docx — redline is missing base 0% of that file; the
+two sides are not averaged
+2026-10-11 17:16:47.908 | ERROR    | __main__:_redline_batched:1072 -  FAIL: 
+e5d359e783.docx → e5d359e783.docx — redline is missing base 67% of that file; 
+the two sides are not averaged
+2026-10-11 17:16:47.963 | ERROR    | __main__:_redline_batched:1094 -  FAIL: 
+ef51261c54.docx → ef51261c54.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 17:16:47.975 | ERROR    | __main__:_redline_batched:1094 -  FAIL: 
+f033107e8f.docx → f033107e8f.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 17:16:47.986 | ERROR    | __main__:_redline_batched:1072 -  FAIL: 
+f194709881.docx → f194709881.docx — redline is missing revision 67% of that 
+file; the two sides are not averaged
+2026-10-11 17:16:48.007 | ERROR    | __main__:_redline_batched:1094 -  FAIL: 
+fa05623f53.docx → fa05623f53.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 17:16:48.024 | ERROR    | __main__:_redline_batched:1094 -  FAIL: 
+fe89171ce8.docx → fe89171ce8.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 17:16:48.070 | ERROR    | __main__:_redline_batched:1094 -  FAIL: 
+feacbc347e.docx → feacbc347e.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+       redline: A → B       
+┏━━━━━━━━━━━━━━━━━━┳━━━━━━━┓
+┃ outcome          ┃ count ┃
+┡━━━━━━━━━━━━━━━━━━╇━━━━━━━┩
+│ redlined         │     0 │
+│ skipped (exists) │   943 │
+│ failed           │    57 │
+└──────────────────┴───────┘
+  FAIL 01a43df57c.docx → 01a43df57c.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL 0279cfe1a2.docx → 0279cfe1a2.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL 0858ee25d5.docx → 0858ee25d5.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL 0907085a84.docx → 0907085a84.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL 09a6e874c8.docx → 09a6e874c8.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL 143e7a6dc4.docx → 143e7a6dc4.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL 22c0cf3478.docx → 22c0cf3478.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL 2b5cfb2225.docx → 2b5cfb2225.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL 2c0433bdbc.docx → 2c0433bdbc.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL 37c978d405.docx → 37c978d405.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL 3e7067f872.docx → 3e7067f872.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL 3f56b101d2.docx → 3f56b101d2.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL 415fa42f00.docx → 415fa42f00.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL 42d1acd8a6.docx → 42d1acd8a6.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL 4a8b3c676a.docx → 4a8b3c676a.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL 5287854336.docx → 5287854336.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL 54dd9bf0c3.docx → 54dd9bf0c3.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL 55b0f23e41.docx → 55b0f23e41.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL 581907f19c.docx → 581907f19c.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL 58b3bd3cbc.docx → 58b3bd3cbc.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL 59d7431859.docx → 59d7431859.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL 61283a9049.docx → 61283a9049.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL 65aa483982.docx → 65aa483982.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL 6bba73f309.docx → 6bba73f309.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL 6de20376e8.docx → 6de20376e8.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL 7127dd0325.docx → 7127dd0325.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL 7252aa05ca.docx → 7252aa05ca.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL 7f412aa4b4.docx → 7f412aa4b4.docx: redline is missing base 67% of that 
+file; the two sides are not averaged
+  FAIL 82bf64f742.docx → 82bf64f742.docx: redline is missing base 50% and 
+revision 50% of that file; the two sides are not averaged
+  FAIL 8568ca15a1.docx → 8568ca15a1.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL 8644055513.docx → 8644055513.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL 8b97fbb240.docx → 8b97fbb240.docx: redline is missing base 33% of that 
+file; the two sides are not averaged
+  FAIL 91c1ece7c9.docx → 91c1ece7c9.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL 9382e03243.docx → 9382e03243.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL 99740a096f.docx → 99740a096f.docx: redline is missing revision 0% of that
+file; the two sides are not averaged
+  FAIL 9bd3b882f8.docx → 9bd3b882f8.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL 9d0b6ef8ad.docx → 9d0b6ef8ad.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL a8eba11068.docx → a8eba11068.docx: redline is missing revision 0% of that
+file; the two sides are not averaged
+  FAIL a990caf95a.docx → a990caf95a.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL ad917ac52c.docx → ad917ac52c.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL c12ee3e25e.docx → c12ee3e25e.docx: redline is missing revision 67% of 
+that file; the two sides are not averaged
+  FAIL c2380a4677.docx → c2380a4677.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL c277edafd3.docx → c277edafd3.docx: redline is missing revision 0% of that
+file; the two sides are not averaged
+  FAIL c69f43f277.docx → c69f43f277.docx: redline is missing revision 50% of 
+that file; the two sides are not averaged
+  FAIL cb9583377c.docx → cb9583377c.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL d1d69a8352.docx → d1d69a8352.docx: redline is missing base 50% of that 
+file; the two sides are not averaged
+  FAIL d36027aaa0.docx → d36027aaa0.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL d525625b0d.docx → d525625b0d.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL d9bb456306.docx → d9bb456306.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL db9f3507a3.docx → db9f3507a3.docx: redline is missing base 0% of that 
+file; the two sides are not averaged
+  FAIL e5d359e783.docx → e5d359e783.docx: redline is missing base 67% of that 
+file; the two sides are not averaged
+  FAIL ef51261c54.docx → ef51261c54.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL f033107e8f.docx → f033107e8f.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL f194709881.docx → f194709881.docx: redline is missing revision 67% of 
+that file; the two sides are not averaged
+  FAIL fa05623f53.docx → fa05623f53.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL fe89171ce8.docx → fe89171ce8.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL feacbc347e.docx → feacbc347e.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.

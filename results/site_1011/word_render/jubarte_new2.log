@@ -1,0 +1,2 @@
+2026-10-11 20:25:15.076 | INFO     | __main__:preflight:1827 - [word] preflight: open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-10-11 20:25:15.077 | INFO     | __main__:convert_folder:1500 - [word] export: one_osascript=True documents=57 accept_all=False reject_all=False

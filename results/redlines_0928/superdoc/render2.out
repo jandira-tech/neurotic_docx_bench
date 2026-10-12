@@ -1,0 +1,31 @@
+2026-09-29 00:02:05.566 | INFO     | __main__:preflight:1744 -  preflight: 
+open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-09-29 00:02:05.652 | INFO     | __main__:convert_folder:1420 -  export: 
+one_osascript=True documents=94 accept_all=False
+2026-09-29 00:02:31.715 | INFO     | __main__:_convert_batched:1617 -  one 
+osascript for 94 document(s)
+2026-09-29 00:02:36.768 | INFO     | __main__:_loop:1025 -  0/94
+2026-09-29 00:02:56.830 | INFO     | __main__:_loop:1025 -  1/94
+2026-09-29 00:03:01.865 | INFO     | __main__:_loop:1025 -  8/94
+2026-09-29 00:03:06.893 | INFO     | __main__:_loop:1025 -  16/94
+2026-09-29 00:03:11.929 | INFO     | __main__:_loop:1025 -  23/94
+2026-09-29 00:03:16.958 | INFO     | __main__:_loop:1025 -  30/94
+2026-09-29 00:03:21.995 | INFO     | __main__:_loop:1025 -  37/94
+2026-09-29 00:03:27.021 | INFO     | __main__:_loop:1025 -  44/94
+2026-09-29 00:03:32.049 | INFO     | __main__:_loop:1025 -  51/94
+2026-09-29 00:03:37.089 | INFO     | __main__:_loop:1025 -  57/94
+2026-09-29 00:03:42.131 | INFO     | __main__:_loop:1025 -  64/94
+2026-09-29 00:03:47.170 | INFO     | __main__:_loop:1025 -  70/94
+2026-09-29 00:03:52.208 | INFO     | __main__:_loop:1025 -  76/94
+2026-09-29 00:03:57.262 | INFO     | __main__:_loop:1025 -  82/94
+2026-09-29 00:04:02.309 | INFO     | __main__:_loop:1025 -  89/94
+                DOCX → PDF:                 
+    results/redlines_0928/superdoc/docx     
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━┓
+┃ outcome                          ┃ count ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━┩
+│ converted                        │    94 │
+│ skipped (exists)                 │     0 │
+│ failed                           │     0 │
+│ seconds per document (batch avg) │   1.0 │
+└──────────────────────────────────┴───────┘

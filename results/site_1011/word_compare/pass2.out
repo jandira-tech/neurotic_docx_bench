@@ -1,0 +1,529 @@
+Downloading pygments (1.2MiB)
+ Downloaded pygments
+Installed 8 packages in 9ms
+▸ PDF quality is sticky: `save as … file format format PDF` inherits whatever 
+'Optimize for' you last chose in Word's own Save As dialog.
+  Open any document in Word once, File > Save As > PDF, and pick the SECOND 
+option, Best for printing.
+  That choice persists; this script cannot set it. Pass --no-check-preset to 
+stop seeing this.
+▸ A redline PDF shows tracked changes the way Word is currently set to show them
+(Review ▸ Markup display, and Print Markup).
+  Open one redline in Word by hand and confirm it looks right before running the
+batch — this script cannot set that for you.
+2026-10-11 16:57:28.011 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 16:57:36.106 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 16:57:41.847 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 16:57:46.941 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 16:57:58.466 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 16:58:03.139 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 16:58:14.474 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 16:58:22.598 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 16:58:33.908 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 16:58:39.363 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 16:58:49.096 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 16:58:58.522 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 16:59:07.681 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 16:59:14.598 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 16:59:25.049 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 16:59:29.430 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 16:59:50.757 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 17:00:02.649 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 17:00:23.666 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 17:00:31.955 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 17:00:37.481 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 17:00:50.509 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 17:00:58.635 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 17:01:17.543 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 17:01:27.958 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 17:01:34.335 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 17:01:50.644 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 17:02:19.224 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 17:02:19.609 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 17:02:34.228 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 17:02:39.500 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 17:02:54.917 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 17:03:01.744 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 17:03:13.483 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 17:03:17.239 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 17:03:25.560 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 17:03:29.917 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 17:03:43.870 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 17:03:49.783 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 17:04:00.361 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 17:04:06.010 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 17:04:16.664 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 17:04:22.758 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 17:04:32.851 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 17:04:37.743 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 17:04:48.383 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 17:05:01.142 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 17:05:13.692 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 17:05:23.684 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 17:05:29.576 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 17:05:39.750 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 17:05:41.523 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 17:05:55.512 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 17:05:59.817 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 17:06:03.620 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 17:06:06.283 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 17:06:12.147 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 17:06:21.942 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 17:06:25.498 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 17:06:35.934 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 17:06:38.783 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 17:06:48.936 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 17:06:50.157 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 17:07:02.626 | ERROR    | __main__:_redline_batched:1094 -  FAIL: 
+01a43df57c.docx → 01a43df57c.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 17:07:02.629 | ERROR    | __main__:_redline_batched:1072 -  FAIL: 
+0279cfe1a2.docx → 0279cfe1a2.docx — redline is missing base 75% of that file; 
+the two sides are not averaged
+2026-10-11 17:07:02.634 | ERROR    | __main__:_redline_batched:1072 -  FAIL: 
+0858ee25d5.docx → 0858ee25d5.docx — redline is missing base 0% of that file; the
+two sides are not averaged
+2026-10-11 17:07:02.637 | ERROR    | __main__:_redline_batched:1072 -  FAIL: 
+0907085a84.docx → 0907085a84.docx — redline is missing revision 0% of that file;
+the two sides are not averaged
+2026-10-11 17:07:02.650 | ERROR    | __main__:_redline_batched:1072 -  FAIL: 
+09a6e874c8.docx → 09a6e874c8.docx — redline is missing base 67% of that file; 
+the two sides are not averaged
+2026-10-11 17:07:02.660 | ERROR    | __main__:_redline_batched:1094 -  FAIL: 
+143e7a6dc4.docx → 143e7a6dc4.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 17:07:02.663 | ERROR    | __main__:_redline_batched:1072 -  FAIL: 
+22c0cf3478.docx → 22c0cf3478.docx — redline is missing base 50% of that file; 
+the two sides are not averaged
+2026-10-11 17:07:02.665 | ERROR    | __main__:_redline_batched:1072 -  FAIL: 
+2b5cfb2225.docx → 2b5cfb2225.docx — redline is missing base 50% of that file; 
+the two sides are not averaged
+2026-10-11 17:07:02.672 | ERROR    | __main__:_redline_batched:1094 -  FAIL: 
+2c0433bdbc.docx → 2c0433bdbc.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 17:07:02.675 | ERROR    | __main__:_redline_batched:1072 -  FAIL: 
+37c978d405.docx → 37c978d405.docx — redline is missing base 67% of that file; 
+the two sides are not averaged
+2026-10-11 17:07:02.687 | ERROR    | __main__:_redline_batched:1094 -  FAIL: 
+3e7067f872.docx → 3e7067f872.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 17:07:02.708 | ERROR    | __main__:_redline_batched:1094 -  FAIL: 
+3f56b101d2.docx → 3f56b101d2.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 17:07:02.726 | ERROR    | __main__:_redline_batched:1094 -  FAIL: 
+415fa42f00.docx → 415fa42f00.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 17:07:02.730 | ERROR    | __main__:_redline_batched:1094 -  FAIL: 
+42d1acd8a6.docx → 42d1acd8a6.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 17:07:02.732 | ERROR    | __main__:_redline_batched:1072 -  FAIL: 
+4a8b3c676a.docx → 4a8b3c676a.docx — redline is missing base 0% of that file; the
+two sides are not averaged
+2026-10-11 17:07:02.752 | ERROR    | __main__:_redline_batched:1094 -  FAIL: 
+5287854336.docx → 5287854336.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 17:07:02.758 | ERROR    | __main__:_redline_batched:1094 -  FAIL: 
+54dd9bf0c3.docx → 54dd9bf0c3.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 17:07:02.762 | ERROR    | __main__:_redline_batched:1072 -  FAIL: 
+55b0f23e41.docx → 55b0f23e41.docx — redline is missing revision 50% of that 
+file; the two sides are not averaged
+2026-10-11 17:07:02.777 | ERROR    | __main__:_redline_batched:1094 -  FAIL: 
+581907f19c.docx → 581907f19c.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 17:07:02.779 | ERROR    | __main__:_redline_batched:1072 -  FAIL: 
+58b3bd3cbc.docx → 58b3bd3cbc.docx — redline is missing revision 67% of that 
+file; the two sides are not averaged
+2026-10-11 17:07:02.785 | ERROR    | __main__:_redline_batched:1072 -  FAIL: 
+59d7431859.docx → 59d7431859.docx — redline is missing base 0% of that file; the
+two sides are not averaged
+2026-10-11 17:07:02.804 | ERROR    | __main__:_redline_batched:1094 -  FAIL: 
+61283a9049.docx → 61283a9049.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 17:07:02.819 | ERROR    | __main__:_redline_batched:1072 -  FAIL: 
+65aa483982.docx → 65aa483982.docx — redline is missing base 50% of that file; 
+the two sides are not averaged
+2026-10-11 17:07:02.822 | ERROR    | __main__:_redline_batched:1072 -  FAIL: 
+6bba73f309.docx → 6bba73f309.docx — redline is missing revision 33% of that 
+file; the two sides are not averaged
+2026-10-11 17:07:02.837 | ERROR    | __main__:_redline_batched:1094 -  FAIL: 
+6de20376e8.docx → 6de20376e8.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 17:07:02.843 | ERROR    | __main__:_redline_batched:1094 -  FAIL: 
+7127dd0325.docx → 7127dd0325.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 17:07:02.853 | ERROR    | __main__:_redline_batched:1094 -  FAIL: 
+7252aa05ca.docx → 7252aa05ca.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 17:07:02.865 | ERROR    | __main__:_redline_batched:1072 -  FAIL: 
+7f412aa4b4.docx → 7f412aa4b4.docx — redline is missing base 67% of that file; 
+the two sides are not averaged
+2026-10-11 17:07:02.868 | ERROR    | __main__:_redline_batched:1072 -  FAIL: 
+82bf64f742.docx → 82bf64f742.docx — redline is missing base 50% and revision 50%
+of that file; the two sides are not averaged
+2026-10-11 17:07:02.883 | ERROR    | __main__:_redline_batched:1094 -  FAIL: 
+8568ca15a1.docx → 8568ca15a1.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 17:07:02.891 | ERROR    | __main__:_redline_batched:1094 -  FAIL: 
+8644055513.docx → 8644055513.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 17:07:02.892 | ERROR    | __main__:_redline_batched:1072 -  FAIL: 
+8b97fbb240.docx → 8b97fbb240.docx — redline is missing base 33% of that file; 
+the two sides are not averaged
+2026-10-11 17:07:03.127 | ERROR    | __main__:_redline_batched:1094 -  FAIL: 
+91c1ece7c9.docx → 91c1ece7c9.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 17:07:03.141 | ERROR    | __main__:_redline_batched:1094 -  FAIL: 
+9382e03243.docx → 9382e03243.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 17:07:03.144 | ERROR    | __main__:_redline_batched:1072 -  FAIL: 
+99740a096f.docx → 99740a096f.docx — redline is missing revision 0% of that file;
+the two sides are not averaged
+2026-10-11 17:07:03.353 | ERROR    | __main__:_redline_batched:1094 -  FAIL: 
+9bd3b882f8.docx → 9bd3b882f8.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 17:07:03.367 | ERROR    | __main__:_redline_batched:1094 -  FAIL: 
+9d0b6ef8ad.docx → 9d0b6ef8ad.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 17:07:03.370 | ERROR    | __main__:_redline_batched:1072 -  FAIL: 
+a8eba11068.docx → a8eba11068.docx — redline is missing revision 0% of that file;
+the two sides are not averaged
+2026-10-11 17:07:03.381 | ERROR    | __main__:_redline_batched:1094 -  FAIL: 
+a990caf95a.docx → a990caf95a.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 17:07:03.399 | ERROR    | __main__:_redline_batched:1094 -  FAIL: 
+ad917ac52c.docx → ad917ac52c.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 17:07:03.401 | ERROR    | __main__:_redline_batched:1072 -  FAIL: 
+c12ee3e25e.docx → c12ee3e25e.docx — redline is missing revision 67% of that 
+file; the two sides are not averaged
+2026-10-11 17:07:03.420 | ERROR    | __main__:_redline_batched:1094 -  FAIL: 
+c2380a4677.docx → c2380a4677.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 17:07:03.423 | ERROR    | __main__:_redline_batched:1072 -  FAIL: 
+c277edafd3.docx → c277edafd3.docx — redline is missing revision 0% of that file;
+the two sides are not averaged
+2026-10-11 17:07:03.425 | ERROR    | __main__:_redline_batched:1072 -  FAIL: 
+c69f43f277.docx → c69f43f277.docx — redline is missing revision 50% of that 
+file; the two sides are not averaged
+2026-10-11 17:07:03.431 | ERROR    | __main__:_redline_batched:1094 -  FAIL: 
+cb9583377c.docx → cb9583377c.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 17:07:03.433 | ERROR    | __main__:_redline_batched:1072 -  FAIL: 
+d1d69a8352.docx → d1d69a8352.docx — redline is missing base 50% of that file; 
+the two sides are not averaged
+2026-10-11 17:07:03.447 | ERROR    | __main__:_redline_batched:1094 -  FAIL: 
+d36027aaa0.docx → d36027aaa0.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 17:07:03.463 | ERROR    | __main__:_redline_batched:1094 -  FAIL: 
+d525625b0d.docx → d525625b0d.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 17:07:03.478 | ERROR    | __main__:_redline_batched:1094 -  FAIL: 
+d9bb456306.docx → d9bb456306.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 17:07:03.480 | ERROR    | __main__:_redline_batched:1072 -  FAIL: 
+db9f3507a3.docx → db9f3507a3.docx — redline is missing base 0% of that file; the
+two sides are not averaged
+2026-10-11 17:07:03.493 | ERROR    | __main__:_redline_batched:1072 -  FAIL: 
+e5d359e783.docx → e5d359e783.docx — redline is missing base 67% of that file; 
+the two sides are not averaged
+2026-10-11 17:07:04.009 | ERROR    | __main__:_redline_batched:1094 -  FAIL: 
+ef51261c54.docx → ef51261c54.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 17:07:04.017 | ERROR    | __main__:_redline_batched:1094 -  FAIL: 
+f033107e8f.docx → f033107e8f.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 17:07:04.028 | ERROR    | __main__:_redline_batched:1072 -  FAIL: 
+f194709881.docx → f194709881.docx — redline is missing revision 67% of that 
+file; the two sides are not averaged
+2026-10-11 17:07:04.040 | ERROR    | __main__:_redline_batched:1094 -  FAIL: 
+fa05623f53.docx → fa05623f53.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 17:07:04.114 | ERROR    | __main__:_redline_batched:1094 -  FAIL: 
+fe89171ce8.docx → fe89171ce8.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 17:07:04.197 | ERROR    | __main__:_redline_batched:1094 -  FAIL: 
+feacbc347e.docx → feacbc347e.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+             redline: A → B             
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━┓
+┃ outcome                      ┃ count ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━┩
+│ redlined                     │    11 │
+│ skipped (exists)             │   932 │
+│ failed                       │    57 │
+│ seconds per pair (batch avg) │   1.9 │
+│ total revisions              │   348 │
+└──────────────────────────────┴───────┘
+  FAIL 01a43df57c.docx → 01a43df57c.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL 0279cfe1a2.docx → 0279cfe1a2.docx: redline is missing base 75% of that 
+file; the two sides are not averaged
+  FAIL 0858ee25d5.docx → 0858ee25d5.docx: redline is missing base 0% of that 
+file; the two sides are not averaged
+  FAIL 0907085a84.docx → 0907085a84.docx: redline is missing revision 0% of that
+file; the two sides are not averaged
+  FAIL 09a6e874c8.docx → 09a6e874c8.docx: redline is missing base 67% of that 
+file; the two sides are not averaged
+  FAIL 143e7a6dc4.docx → 143e7a6dc4.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL 22c0cf3478.docx → 22c0cf3478.docx: redline is missing base 50% of that 
+file; the two sides are not averaged
+  FAIL 2b5cfb2225.docx → 2b5cfb2225.docx: redline is missing base 50% of that 
+file; the two sides are not averaged
+  FAIL 2c0433bdbc.docx → 2c0433bdbc.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL 37c978d405.docx → 37c978d405.docx: redline is missing base 67% of that 
+file; the two sides are not averaged
+  FAIL 3e7067f872.docx → 3e7067f872.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL 3f56b101d2.docx → 3f56b101d2.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL 415fa42f00.docx → 415fa42f00.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL 42d1acd8a6.docx → 42d1acd8a6.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL 4a8b3c676a.docx → 4a8b3c676a.docx: redline is missing base 0% of that 
+file; the two sides are not averaged
+  FAIL 5287854336.docx → 5287854336.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL 54dd9bf0c3.docx → 54dd9bf0c3.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL 55b0f23e41.docx → 55b0f23e41.docx: redline is missing revision 50% of 
+that file; the two sides are not averaged
+  FAIL 581907f19c.docx → 581907f19c.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL 58b3bd3cbc.docx → 58b3bd3cbc.docx: redline is missing revision 67% of 
+that file; the two sides are not averaged
+  FAIL 59d7431859.docx → 59d7431859.docx: redline is missing base 0% of that 
+file; the two sides are not averaged
+  FAIL 61283a9049.docx → 61283a9049.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL 65aa483982.docx → 65aa483982.docx: redline is missing base 50% of that 
+file; the two sides are not averaged
+  FAIL 6bba73f309.docx → 6bba73f309.docx: redline is missing revision 33% of 
+that file; the two sides are not averaged
+  FAIL 6de20376e8.docx → 6de20376e8.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL 7127dd0325.docx → 7127dd0325.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL 7252aa05ca.docx → 7252aa05ca.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL 7f412aa4b4.docx → 7f412aa4b4.docx: redline is missing base 67% of that 
+file; the two sides are not averaged
+  FAIL 82bf64f742.docx → 82bf64f742.docx: redline is missing base 50% and 
+revision 50% of that file; the two sides are not averaged
+  FAIL 8568ca15a1.docx → 8568ca15a1.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL 8644055513.docx → 8644055513.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL 8b97fbb240.docx → 8b97fbb240.docx: redline is missing base 33% of that 
+file; the two sides are not averaged
+  FAIL 91c1ece7c9.docx → 91c1ece7c9.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL 9382e03243.docx → 9382e03243.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL 99740a096f.docx → 99740a096f.docx: redline is missing revision 0% of that
+file; the two sides are not averaged
+  FAIL 9bd3b882f8.docx → 9bd3b882f8.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL 9d0b6ef8ad.docx → 9d0b6ef8ad.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL a8eba11068.docx → a8eba11068.docx: redline is missing revision 0% of that
+file; the two sides are not averaged
+  FAIL a990caf95a.docx → a990caf95a.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL ad917ac52c.docx → ad917ac52c.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL c12ee3e25e.docx → c12ee3e25e.docx: redline is missing revision 67% of 
+that file; the two sides are not averaged
+  FAIL c2380a4677.docx → c2380a4677.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL c277edafd3.docx → c277edafd3.docx: redline is missing revision 0% of that
+file; the two sides are not averaged
+  FAIL c69f43f277.docx → c69f43f277.docx: redline is missing revision 50% of 
+that file; the two sides are not averaged
+  FAIL cb9583377c.docx → cb9583377c.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL d1d69a8352.docx → d1d69a8352.docx: redline is missing base 50% of that 
+file; the two sides are not averaged
+  FAIL d36027aaa0.docx → d36027aaa0.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL d525625b0d.docx → d525625b0d.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL d9bb456306.docx → d9bb456306.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL db9f3507a3.docx → db9f3507a3.docx: redline is missing base 0% of that 
+file; the two sides are not averaged
+  FAIL e5d359e783.docx → e5d359e783.docx: redline is missing base 67% of that 
+file; the two sides are not averaged
+  FAIL ef51261c54.docx → ef51261c54.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL f033107e8f.docx → f033107e8f.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL f194709881.docx → f194709881.docx: redline is missing revision 67% of 
+that file; the two sides are not averaged
+  FAIL fa05623f53.docx → fa05623f53.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL fe89171ce8.docx → fe89171ce8.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL feacbc347e.docx → feacbc347e.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.

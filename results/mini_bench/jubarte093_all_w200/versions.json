@@ -1,0 +1,14 @@
+{
+  "jubarte": "jubarte 0.10.0@86b6b5d3",
+  "docxide-pdf": "docxide-pdf v0.17.1",
+  "soffice": "LibreOffice 26.8.0.3 bce0998afefdbc355585ca324285661a2170ba77",
+  "office2pdf": "office2pdf 0.8.0",
+  "office2pdf-lib": "office2pdf 0.8.0 (library, tools/d2p-warm)",
+  "genoffice": "genoffice 0.11.0",
+  "rdocx": "rdocx 0.14.0",
+  "dxpdf": "dxpdf 0.8.1",
+  "pdfitdown": "pdfitdown 4.0.0",
+  "libreoffice_convert_rust": "LibreOffice Convert Rust v0.1.0",
+  "doxx": "doxx 0.1.4",
+  "pymupdf-pro": "pymupdf-pro 1.28.2 (unlicensed, first 3 pages)"
+}
