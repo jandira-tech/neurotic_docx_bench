@@ -24,15 +24,11 @@ a committed **Word oracle** redline for that pair.
 
 ```bash
 uv sync                       # Python bench (Python 3.14; needs LibreOffice on PATH)
-bun install --frozen-lockfile # Node redline generators (jubarte, docxodus, docx-redline-js)
-cd src/neurotic_docx_bench/utils/docxodus && bun install --frozen-lockfile
-cd src/neurotic_docx_bench/utils/docx-redline-js && bun install --frozen-lockfile
-cd src/neurotic_docx_bench/utils/folio && bun install --frozen-lockfile
-cd src/neurotic_docx_bench/utils/superdoc && bun install --frozen-lockfile
+pnpm install --frozen-lockfile # Node 26 + pnpm workspace: root pin tree + utils/ engine fallbacks
 uv run bench run              # all tools sequentially → results/bench.jsonl
 uv run bench run --only jubarte-final-lossless --limit 5   # one tool, quick
 uv run pytest -q              # 68 tests
-bunx vitest run               # 7 TS-driver tests (scoped by vitest.config.ts)
+pnpm exec vitest run          # 7 TS-driver tests (scoped by vitest.config.ts)
 ```
 
 ## Architecture (data flow)
@@ -191,7 +187,7 @@ per run) measures **redline-generation time** (`unit: ms_per_redline`). Run it:
 node --import tsx scripts/speed-bench.ts --pairs 30 --reps 3 --warmup 3 --out results/speed.jsonl
 uv run python -m neurotic_docx_bench.superdoc_speed --pairs 30 --reps 3 --warmup 3 --out results/speed.jsonl
 # Large-N native CLI (C# Docxodus + jubarte-rust): 1000 fixtures → 5000 pairs, samply profiles
-bun run redline-speed-bench:native
+pnpm run redline-speed-bench:native
 ```
 
 **Render speed** (`unit: ms_per_render`) — how long a Playwright viewer takes to render a

@@ -128,16 +128,12 @@ Pins: [`bench.yaml`](bench.yaml). Tool identities: [`bench.registry.yaml`](bench
 
 ## Quick start
 
-Python 3.14 (`uv`), Bun or Node, LibreOffice 26.2.4.2 on `PATH`.
+Python 3.14 (`uv`), Node 26 + pnpm, LibreOffice 26.2.4.2 on `PATH`.
 
 ```bash
 uv sync
-bun install --frozen-lockfile
-cd src/neurotic_docx_bench/utils/docxodus && bun install --frozen-lockfile && cd -
-cd src/neurotic_docx_bench/utils/docx-redline-js && bun install --frozen-lockfile && cd -
-cd src/neurotic_docx_bench/utils/folio && bun install --frozen-lockfile && cd -
-cd src/neurotic_docx_bench/utils/superdoc && bun install --frozen-lockfile && cd -
-cd harness/folio-viewer && bun install --frozen-lockfile && cd -
+pnpm install --frozen-lockfile   # workspace: root pin tree + the utils/ engine fallbacks
+# (only for the visual_* playwright benchmarks:) cd harness/folio-viewer && bun install
 
 uv run bench run --only jubarte-final-lossless --limit 5
 uv run bench run
@@ -274,7 +270,7 @@ Large-N (`scripts/redline_speed_bench.ts`): up to 1000 unique `.docx` → 5000 p
 
 ```bash
 node --import tsx scripts/speed-bench.ts --pairs 30 --reps 3 --out results/speed.jsonl
-bun run redline-speed-bench:warm
+pnpm run redline-speed-bench:warm
 ```
 
 ---
