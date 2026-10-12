@@ -1,0 +1,11 @@
+2026-10-01 12:32:35.675 | INFO     | __main__:preflight:1812 - [word] preflight: open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-10-01 12:32:40.708 | INFO     | __main__:convert_folder:1486 - [word] export: one_osascript=True documents=40 accept_all=True reject_all=False
+2026-10-01 12:32:40.793 | INFO     | __main__:_convert_batched:1685 - [batch] one osascript for 40 document(s)
+2026-10-01 12:32:45.819 | INFO     | __main__:_loop:1067 - [batch pdf 1] 3/40
+2026-10-01 12:32:50.847 | INFO     | __main__:_loop:1067 - [batch pdf 1] 8/40
+2026-10-01 12:32:55.873 | INFO     | __main__:_loop:1067 - [batch pdf 1] 14/40
+2026-10-01 12:33:00.894 | INFO     | __main__:_loop:1067 - [batch pdf 1] 19/40
+2026-10-01 12:33:05.915 | INFO     | __main__:_loop:1067 - [batch pdf 1] 24/40
+2026-10-01 12:33:10.937 | INFO     | __main__:_loop:1067 - [batch pdf 1] 29/40
+2026-10-01 12:33:15.955 | INFO     | __main__:_loop:1067 - [batch pdf 1] 34/40
+2026-10-01 12:33:20.979 | INFO     | __main__:_loop:1067 - [batch pdf 1] 39/40

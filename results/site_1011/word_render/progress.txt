@@ -1,0 +1,59 @@
+jubarte pass 1:      239 pdfs
+jubarte pass 2:      960 pdfs
+jubarte pass 3:      971 pdfs
+docxodus pass 1:       28 pdfs
+docxodus pass 2:      872 pdfs
+docxodus pass 3:      872 pdfs
+compare_r pass 1:        7 pdfs
+compare_r pass 2:      159 pdfs
+replaced 57/57; still without Word: []; sample 1000 pairs
+Traceback (most recent call last):
+  File "/Users/arthrod/temp/T/site_1011/run_tools.py", line 54, in <module>
+    main()
+    ~~~~^^
+  File "/Users/arthrod/temp/T/site_1011/run_tools.py", line 50, in main
+    for i, (rid, code, err, s) in enumerate(ex.map(lambda r: fn(r, out), rows), 1):
+                                  ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.15/3.15.0/Frameworks/Python.framework/Versions/3.15/lib/python3.15/concurrent/futures/_base.py", line 672, in result_iterator
+    yield _result_or_cancel(fs.pop())
+          ~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.15/3.15.0/Frameworks/Python.framework/Versions/3.15/lib/python3.15/concurrent/futures/_base.py", line 312, in _result_or_cancel
+    return fut.result(timeout)
+           ~~~~~~~~~~^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.15/3.15.0/Frameworks/Python.framework/Versions/3.15/lib/python3.15/concurrent/futures/_base.py", line 447, in result
+    return self.__get_result()
+           ~~~~~~~~~~~~~~~~~^^
+  File "/opt/homebrew/Cellar/python@3.15/3.15.0/Frameworks/Python.framework/Versions/3.15/lib/python3.15/concurrent/futures/_base.py", line 396, in __get_result
+    raise self._exception
+  File "/opt/homebrew/Cellar/python@3.15/3.15.0/Frameworks/Python.framework/Versions/3.15/lib/python3.15/concurrent/futures/thread.py", line 86, in run
+    result = ctx.run(self.task)
+  File "/opt/homebrew/Cellar/python@3.15/3.15.0/Frameworks/Python.framework/Versions/3.15/lib/python3.15/concurrent/futures/thread.py", line 73, in run
+    return fn(*args, **kwargs)
+  File "/Users/arthrod/temp/T/site_1011/run_tools.py", line 50, in <lambda>
+    for i, (rid, code, err, s) in enumerate(ex.map(lambda r: fn(r, out), rows), 1):
+                                                             ~~^^^^^^^^
+  File "/Users/arthrod/temp/T/site_1011/run_tools.py", line 38, in jubarte_compare
+    code, err, s = run([str(J), 'compare', '-b', str(C / (r['base'] + '.docx')), '-m', str(C / (r['next'] + '.docx')),
+                   ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                        '-o', str(dst), '--force', '--quiet'])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/arthrod/temp/T/site_1011/run_tools.py", line 18, in run
+    p = subprocess.run(cmd, capture_output=True, text=True, timeout=TIMEOUT, **kw)
+  File "/opt/homebrew/Cellar/python@3.15/3.15.0/Frameworks/Python.framework/Versions/3.15/lib/python3.15/subprocess.py", line 669, in run
+    with Popen(*popenargs, **kwargs) as process:
+         ~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.15/3.15.0/Frameworks/Python.framework/Versions/3.15/lib/python3.15/subprocess.py", line 1213, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                        pass_fds, cwd, env,
+                        ^^^^^^^^^^^^^^^^^^^
+    ...<5 lines>...
+                        gid, gids, uid, umask,
+                        ^^^^^^^^^^^^^^^^^^^^^^
+                        start_new_session, process_group)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.15/3.15.0/Frameworks/Python.framework/Versions/3.15/lib/python3.15/subprocess.py", line 2156, in _execute_child
+    raise child_exception_type(errno_num, err_msg, err_filename)
+FileNotFoundError: [Errno 2] No such file or directory: '/Users/arthrod/temp/T/jubarte-redlines/target/release/jubarte'
+990 docxodus redlines
+jubarte_r pass 1:      971 pdfs

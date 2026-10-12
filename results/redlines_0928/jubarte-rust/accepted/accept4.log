@@ -1,0 +1,24 @@
+2026-09-28 22:53:24.135 | INFO     | __main__:preflight:1725 - [word] preflight: open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-09-28 22:53:24.163 | INFO     | __main__:convert_folder:1401 - [word] export: one_osascript=True documents=100 accept_all=True
+2026-09-28 22:53:24.237 | INFO     | __main__:_convert_batched:1598 - [batch] one osascript for 96 document(s)
+2026-09-28 22:53:29.257 | INFO     | __main__:_loop:1017 - [batch pdf 1] 0/96
+2026-09-28 22:54:00.219 | WARNING  | __main__:run_batch_with_resume:1139 - [batch pdf] 96 item(s) never reached (Word crashed on an item); recycling Word and retrying (pass 2, 0 of 3 non-crash passes used)
+2026-09-28 22:54:00.219 | WARNING  | __main__:recycle:718 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-09-28 22:54:00.220 | WARNING  | __main__:recycle:724 - [word] recycling (restart 1)
+2026-09-28 22:54:08.386 | INFO     | __main__:_loop:1017 - [batch pdf 2] 7/96
+2026-09-28 22:54:13.406 | INFO     | __main__:_loop:1017 - [batch pdf 2] 12/96
+2026-09-28 22:54:18.431 | INFO     | __main__:_loop:1017 - [batch pdf 2] 19/96
+2026-09-28 22:54:23.451 | INFO     | __main__:_loop:1017 - [batch pdf 2] 25/96
+2026-09-28 22:54:28.476 | INFO     | __main__:_loop:1017 - [batch pdf 2] 31/96
+2026-09-28 22:54:33.508 | INFO     | __main__:_loop:1017 - [batch pdf 2] 37/96
+2026-09-28 22:54:38.534 | INFO     | __main__:_loop:1017 - [batch pdf 2] 44/96
+2026-09-28 22:54:43.552 | INFO     | __main__:_loop:1017 - [batch pdf 2] 50/96
+2026-09-28 22:54:48.576 | INFO     | __main__:_loop:1017 - [batch pdf 2] 55/96
+2026-09-28 22:54:53.603 | INFO     | __main__:_loop:1017 - [batch pdf 2] 61/96
+2026-09-28 22:54:58.626 | INFO     | __main__:_loop:1017 - [batch pdf 2] 67/96
+2026-09-28 22:55:03.642 | INFO     | __main__:_loop:1017 - [batch pdf 2] 72/96
+2026-09-28 22:55:08.668 | INFO     | __main__:_loop:1017 - [batch pdf 2] 78/96
+2026-09-28 22:55:13.689 | INFO     | __main__:_loop:1017 - [batch pdf 2] 83/96
+2026-09-28 22:55:18.716 | INFO     | __main__:_loop:1017 - [batch pdf 2] 89/96
+2026-09-28 22:55:23.741 | INFO     | __main__:_loop:1017 - [batch pdf 2] 95/96
+2026-09-28 22:55:44.542 | ERROR    | __main__:_convert_batched:1643 - [batch] FAIL: 1855b51281.docx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.

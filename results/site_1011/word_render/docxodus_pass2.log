@@ -1,0 +1,1134 @@
+2026-10-11 18:39:10.383 | INFO     | __main__:preflight:1827 - [word] preflight: open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-10-11 18:39:10.395 | INFO     | __main__:convert_folder:1500 - [word] export: one_osascript=True documents=990 accept_all=False reject_all=False
+2026-10-11 18:39:11.117 | INFO     | __main__:_convert_batched:1700 - [batch] one osascript for 962 document(s)
+2026-10-11 18:39:16.124 | INFO     | __main__:_loop:1077 - [batch pdf 1] 0/962
+2026-10-11 18:39:47.090 | WARNING  | __main__:_loop:1082 - [batch pdf 1] item 1/962 open for more than 30 s:
+-- Word windows {name, subrole}: ,
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-1.log:
+
+-- newest diagnostic reports: soffice-2026-10-11-073006.0003.ips, soffice-2026-10-11-073006.0002.ips, soffice-2026-10-11-073006.000.ips, soffice-2026-10-11-073006.ips, soffice-2026-10-11-055610.0003.ips
+2026-10-11 18:41:26.772 | INFO     | __main__:_note_buttons:514 - [watchdog] Microsoft Word shows button 'Yes'
+2026-10-11 18:41:26.772 | INFO     | __main__:_note_buttons:514 - [watchdog] Microsoft Word shows button 'No'
+2026-10-11 18:41:26.773 | INFO     | __main__:_note_buttons:514 - [watchdog] Microsoft Word shows button 'Cancel'
+2026-10-11 18:41:26.773 | INFO     | __main__:_note_buttons:514 - [watchdog] Microsoft Word shows button 'Create'
+2026-10-11 18:41:26.773 | INFO     | __main__:_note_buttons:514 - [watchdog] Microsoft Word shows button 'missing value'
+2026-10-11 18:41:39.874 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 962 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 2, 0 of 3 stalled passes used)
+2026-10-11 18:41:39.874 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 18:41:39.874 | WARNING  | __main__:recycle:735 - [word] recycling (restart 1)
+2026-10-11 18:41:46.090 | INFO     | __main__:_note_buttons:514 - [watchdog] Microsoft Word shows button 'OK'
+2026-10-11 18:41:47.373 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'No'
+2026-10-11 18:41:49.201 | INFO     | __main__:_loop:1077 - [batch pdf 2] 0/962
+2026-10-11 18:41:54.203 | INFO     | __main__:_loop:1077 - [batch pdf 2] 4/962
+2026-10-11 18:41:59.205 | INFO     | __main__:_loop:1077 - [batch pdf 2] 8/962
+2026-10-11 18:42:04.209 | INFO     | __main__:_loop:1077 - [batch pdf 2] 11/962
+2026-10-11 18:42:37.357 | WARNING  | __main__:_loop:1082 - [batch pdf 2] item 12/962 open for more than 30 s:
+-- Word windows {name, subrole}: ,
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-2.log:
+[retry]	2	document loaded empty (Word could not read it)
+[retry]	3	document loaded empty (Word could not read it)
+[ok]	4
+[ok]	5
+[ok]	6
+[ok]	7
+[ok]	8
+[ok]	9
+[ok]	10
+[ok]	11
+[ok]	12
+[ok]	13
+[ok]	14
+[ok]	15
+[ok]	16
+[ok]	17
+[ok]	18
+-- newest diagnostic reports: soffice-2026-10-11-073006.0003.ips, soffice-2026-10-11-073006.0002.ips, soffice-2026-10-11-073006.000.ips, soffice-2026-10-11-073006.ips, soffice-2026-10-11-055610.0003.ips
+2026-10-11 18:42:42.359 | INFO     | __main__:_loop:1077 - [batch pdf 2] 15/962
+2026-10-11 18:42:42.747 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'OK'
+2026-10-11 18:42:47.364 | INFO     | __main__:_loop:1077 - [batch pdf 2] 20/962
+2026-10-11 18:42:52.366 | INFO     | __main__:_loop:1077 - [batch pdf 2] 27/962
+2026-10-11 18:42:57.372 | INFO     | __main__:_loop:1077 - [batch pdf 2] 29/962
+2026-10-11 18:43:02.377 | INFO     | __main__:_loop:1077 - [batch pdf 2] 31/962
+2026-10-11 18:43:07.381 | INFO     | __main__:_loop:1077 - [batch pdf 2] 34/962
+2026-10-11 18:43:12.383 | INFO     | __main__:_loop:1077 - [batch pdf 2] 40/962
+2026-10-11 18:43:17.389 | INFO     | __main__:_loop:1077 - [batch pdf 2] 44/962
+2026-10-11 18:43:22.392 | INFO     | __main__:_loop:1077 - [batch pdf 2] 50/962
+2026-10-11 18:43:24.774 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'No'
+2026-10-11 18:43:27.397 | INFO     | __main__:_loop:1077 - [batch pdf 2] 55/962
+2026-10-11 18:43:32.403 | INFO     | __main__:_loop:1077 - [batch pdf 2] 65/962
+2026-10-11 18:43:37.406 | INFO     | __main__:_loop:1077 - [batch pdf 2] 70/962
+2026-10-11 18:43:42.408 | INFO     | __main__:_loop:1077 - [batch pdf 2] 79/962
+2026-10-11 18:43:47.414 | INFO     | __main__:_loop:1077 - [batch pdf 2] 83/962
+2026-10-11 18:43:52.420 | INFO     | __main__:_loop:1077 - [batch pdf 2] 84/962
+2026-10-11 18:43:57.422 | INFO     | __main__:_loop:1077 - [batch pdf 2] 92/962
+2026-10-11 18:44:02.426 | INFO     | __main__:_loop:1077 - [batch pdf 2] 101/962
+2026-10-11 18:44:07.428 | INFO     | __main__:_loop:1077 - [batch pdf 2] 110/962
+2026-10-11 18:44:10.590 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'OK'
+2026-10-11 18:44:12.433 | INFO     | __main__:_loop:1077 - [batch pdf 2] 115/962
+2026-10-11 18:44:17.436 | INFO     | __main__:_loop:1077 - [batch pdf 2] 120/962
+2026-10-11 18:44:22.441 | INFO     | __main__:_loop:1077 - [batch pdf 2] 125/962
+2026-10-11 18:44:27.446 | INFO     | __main__:_loop:1077 - [batch pdf 2] 134/962
+2026-10-11 18:44:32.448 | INFO     | __main__:_loop:1077 - [batch pdf 2] 141/962
+2026-10-11 18:44:37.453 | INFO     | __main__:_loop:1077 - [batch pdf 2] 146/962
+2026-10-11 18:44:57.467 | INFO     | __main__:_loop:1077 - [batch pdf 2] 148/962
+2026-10-11 18:45:02.472 | INFO     | __main__:_loop:1077 - [batch pdf 2] 152/962
+2026-10-11 18:45:07.476 | INFO     | __main__:_loop:1077 - [batch pdf 2] 160/962
+2026-10-11 18:45:12.040 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'No'
+2026-10-11 18:45:12.482 | INFO     | __main__:_loop:1077 - [batch pdf 2] 163/962
+2026-10-11 18:45:16.718 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'OK'
+2026-10-11 18:45:17.488 | INFO     | __main__:_loop:1077 - [batch pdf 2] 164/962
+2026-10-11 18:45:22.494 | INFO     | __main__:_loop:1077 - [batch pdf 2] 166/962
+2026-10-11 18:45:27.496 | INFO     | __main__:_loop:1077 - [batch pdf 2] 172/962
+2026-10-11 18:45:27.788 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 790 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 3, 0 of 3 stalled passes used)
+2026-10-11 18:45:27.788 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 18:45:27.788 | WARNING  | __main__:recycle:735 - [word] recycling (restart 2)
+2026-10-11 18:45:31.614 | ERROR    | __main__:_loop_merp:557 - [watchdog] Microsoft Error Reporting is showing a dialog whose buttons match none of ("Don't Send", 'Don’t Send', 'Cancel', 'Close', 'Quit', 'No', 'OK', 'Ok'). Labels seen are logged above — add the real one to MERP_DECLINE.
+2026-10-11 18:45:37.377 | INFO     | __main__:_loop:1077 - [batch pdf 3] 1/790
+2026-10-11 18:45:42.381 | INFO     | __main__:_loop:1077 - [batch pdf 3] 5/790
+2026-10-11 18:45:47.384 | INFO     | __main__:_loop:1077 - [batch pdf 3] 8/790
+2026-10-11 18:45:52.387 | INFO     | __main__:_loop:1077 - [batch pdf 3] 10/790
+2026-10-11 18:46:07.395 | INFO     | __main__:_loop:1077 - [batch pdf 3] 12/790
+2026-10-11 18:46:12.399 | INFO     | __main__:_loop:1077 - [batch pdf 3] 16/790
+2026-10-11 18:46:17.405 | INFO     | __main__:_loop:1077 - [batch pdf 3] 19/790
+2026-10-11 18:46:37.423 | INFO     | __main__:_loop:1077 - [batch pdf 3] 21/790
+2026-10-11 18:46:39.140 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'OK'
+2026-10-11 18:46:42.428 | INFO     | __main__:_loop:1077 - [batch pdf 3] 27/790
+2026-10-11 18:46:47.434 | INFO     | __main__:_loop:1077 - [batch pdf 3] 34/790
+2026-10-11 18:46:52.435 | INFO     | __main__:_loop:1077 - [batch pdf 3] 38/790
+2026-10-11 18:46:57.440 | INFO     | __main__:_loop:1077 - [batch pdf 3] 47/790
+2026-10-11 18:47:02.446 | INFO     | __main__:_loop:1077 - [batch pdf 3] 54/790
+2026-10-11 18:47:07.450 | INFO     | __main__:_loop:1077 - [batch pdf 3] 56/790
+2026-10-11 18:47:12.455 | INFO     | __main__:_loop:1077 - [batch pdf 3] 62/790
+2026-10-11 18:47:17.459 | INFO     | __main__:_loop:1077 - [batch pdf 3] 68/790
+2026-10-11 18:47:21.438 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 716 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 4, 0 of 3 stalled passes used)
+2026-10-11 18:47:21.438 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 18:47:21.438 | WARNING  | __main__:recycle:735 - [word] recycling (restart 3)
+2026-10-11 18:47:30.349 | INFO     | __main__:_loop:1077 - [batch pdf 4] 4/716
+2026-10-11 18:47:30.480 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 712 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 5, 0 of 3 stalled passes used)
+2026-10-11 18:47:30.480 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 18:47:30.480 | WARNING  | __main__:recycle:735 - [word] recycling (restart 4)
+2026-10-11 18:47:39.355 | INFO     | __main__:_loop:1077 - [batch pdf 5] 4/712
+2026-10-11 18:47:44.358 | INFO     | __main__:_loop:1077 - [batch pdf 5] 8/712
+2026-10-11 18:47:45.971 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 704 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 6, 0 of 3 stalled passes used)
+2026-10-11 18:47:45.971 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 18:47:45.971 | WARNING  | __main__:recycle:735 - [word] recycling (restart 5)
+2026-10-11 18:47:54.691 | INFO     | __main__:_loop:1077 - [batch pdf 6] 5/704
+2026-10-11 18:47:59.041 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'No'
+2026-10-11 18:47:59.695 | INFO     | __main__:_loop:1077 - [batch pdf 6] 8/704
+2026-10-11 18:48:04.701 | INFO     | __main__:_loop:1077 - [batch pdf 6] 14/704
+2026-10-11 18:48:09.704 | INFO     | __main__:_loop:1077 - [batch pdf 6] 17/704
+2026-10-11 18:48:14.710 | INFO     | __main__:_loop:1077 - [batch pdf 6] 19/704
+2026-10-11 18:48:19.713 | INFO     | __main__:_loop:1077 - [batch pdf 6] 22/704
+2026-10-11 18:48:24.717 | INFO     | __main__:_loop:1077 - [batch pdf 6] 29/704
+2026-10-11 18:48:29.720 | INFO     | __main__:_loop:1077 - [batch pdf 6] 32/704
+2026-10-11 18:48:34.724 | INFO     | __main__:_loop:1077 - [batch pdf 6] 33/704
+2026-10-11 18:48:34.793 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 671 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 7, 0 of 3 stalled passes used)
+2026-10-11 18:48:34.793 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 18:48:34.793 | WARNING  | __main__:recycle:735 - [word] recycling (restart 6)
+2026-10-11 18:48:44.153 | INFO     | __main__:_loop:1077 - [batch pdf 7] 4/671
+2026-10-11 18:48:49.155 | INFO     | __main__:_loop:1077 - [batch pdf 7] 5/671
+2026-10-11 18:48:54.161 | INFO     | __main__:_loop:1077 - [batch pdf 7] 10/671
+2026-10-11 18:48:59.163 | INFO     | __main__:_loop:1077 - [batch pdf 7] 17/671
+2026-10-11 18:49:04.169 | INFO     | __main__:_loop:1077 - [batch pdf 7] 20/671
+2026-10-11 18:49:24.185 | INFO     | __main__:_loop:1077 - [batch pdf 7] 23/671
+2026-10-11 18:49:29.186 | INFO     | __main__:_loop:1077 - [batch pdf 7] 27/671
+2026-10-11 18:49:34.297 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 644 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 8, 0 of 3 stalled passes used)
+2026-10-11 18:49:34.297 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 18:49:34.297 | WARNING  | __main__:recycle:735 - [word] recycling (restart 7)
+2026-10-11 18:49:43.603 | INFO     | __main__:_loop:1077 - [batch pdf 8] 3/644
+2026-10-11 18:49:53.614 | INFO     | __main__:_loop:1077 - [batch pdf 8] 4/644
+2026-10-11 18:49:58.618 | INFO     | __main__:_loop:1077 - [batch pdf 8] 8/644
+2026-10-11 18:49:58.817 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'OK'
+2026-10-11 18:50:03.624 | INFO     | __main__:_loop:1077 - [batch pdf 8] 12/644
+2026-10-11 18:50:08.628 | INFO     | __main__:_loop:1077 - [batch pdf 8] 15/644
+2026-10-11 18:50:13.634 | INFO     | __main__:_loop:1077 - [batch pdf 8] 18/644
+2026-10-11 18:50:18.635 | INFO     | __main__:_loop:1077 - [batch pdf 8] 21/644
+2026-10-11 18:50:23.641 | INFO     | __main__:_loop:1077 - [batch pdf 8] 27/644
+2026-10-11 18:50:28.646 | INFO     | __main__:_loop:1077 - [batch pdf 8] 32/644
+2026-10-11 18:50:33.649 | INFO     | __main__:_loop:1077 - [batch pdf 8] 38/644
+2026-10-11 18:50:38.654 | INFO     | __main__:_loop:1077 - [batch pdf 8] 42/644
+2026-10-11 18:50:42.560 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'No'
+2026-10-11 18:50:43.660 | INFO     | __main__:_loop:1077 - [batch pdf 8] 45/644
+2026-10-11 18:50:48.665 | INFO     | __main__:_loop:1077 - [batch pdf 8] 47/644
+2026-10-11 18:50:52.810 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'No'
+2026-10-11 18:50:53.672 | INFO     | __main__:_loop:1077 - [batch pdf 8] 49/644
+2026-10-11 18:50:59.434 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 595 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 9, 0 of 3 stalled passes used)
+2026-10-11 18:50:59.434 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 18:50:59.434 | WARNING  | __main__:recycle:735 - [word] recycling (restart 8)
+2026-10-11 18:51:11.952 | INFO     | __main__:_loop:1077 - [batch pdf 9] 2/595
+2026-10-11 18:51:16.955 | INFO     | __main__:_loop:1077 - [batch pdf 9] 6/595
+2026-10-11 18:51:21.960 | INFO     | __main__:_loop:1077 - [batch pdf 9] 11/595
+2026-10-11 18:51:26.966 | INFO     | __main__:_loop:1077 - [batch pdf 9] 18/595
+2026-10-11 18:51:31.970 | INFO     | __main__:_loop:1077 - [batch pdf 9] 25/595
+2026-10-11 18:51:36.975 | INFO     | __main__:_loop:1077 - [batch pdf 9] 29/595
+2026-10-11 18:51:41.981 | INFO     | __main__:_loop:1077 - [batch pdf 9] 33/595
+2026-10-11 18:51:51.989 | INFO     | __main__:_loop:1077 - [batch pdf 9] 38/595
+2026-10-11 18:51:56.991 | INFO     | __main__:_loop:1077 - [batch pdf 9] 40/595
+2026-10-11 18:52:01.997 | INFO     | __main__:_loop:1077 - [batch pdf 9] 43/595
+2026-10-11 18:52:07.001 | INFO     | __main__:_loop:1077 - [batch pdf 9] 45/595
+2026-10-11 18:52:10.075 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'OK'
+2026-10-11 18:52:12.003 | INFO     | __main__:_loop:1077 - [batch pdf 9] 47/595
+2026-10-11 18:52:16.895 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 548 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 10, 0 of 3 stalled passes used)
+2026-10-11 18:52:16.895 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 18:52:16.895 | WARNING  | __main__:recycle:735 - [word] recycling (restart 9)
+2026-10-11 18:52:18.478 | ERROR    | __main__:_loop_merp:557 - [watchdog] Microsoft Error Reporting is showing a dialog whose buttons match none of ("Don't Send", 'Don’t Send', 'Cancel', 'Close', 'Quit', 'No', 'OK', 'Ok'). Labels seen are logged above — add the real one to MERP_DECLINE.
+2026-10-11 18:52:26.258 | INFO     | __main__:_loop:1077 - [batch pdf 10] 2/548
+2026-10-11 18:52:31.267 | INFO     | __main__:_loop:1077 - [batch pdf 10] 6/548
+2026-10-11 18:52:36.268 | INFO     | __main__:_loop:1077 - [batch pdf 10] 8/548
+2026-10-11 18:52:40.959 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'OK'
+2026-10-11 18:52:46.312 | INFO     | __main__:_loop:1077 - [batch pdf 10] 10/548
+2026-10-11 18:52:51.316 | INFO     | __main__:_loop:1077 - [batch pdf 10] 12/548
+2026-10-11 18:52:53.223 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 536 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 11, 0 of 3 stalled passes used)
+2026-10-11 18:52:53.224 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 18:52:53.224 | WARNING  | __main__:recycle:735 - [word] recycling (restart 10)
+2026-10-11 18:53:03.449 | INFO     | __main__:_loop:1077 - [batch pdf 11] 1/536
+2026-10-11 18:53:08.452 | INFO     | __main__:_loop:1077 - [batch pdf 11] 2/536
+2026-10-11 18:53:13.454 | INFO     | __main__:_loop:1077 - [batch pdf 11] 4/536
+2026-10-11 18:53:18.457 | INFO     | __main__:_loop:1077 - [batch pdf 11] 10/536
+2026-10-11 18:53:23.463 | INFO     | __main__:_loop:1077 - [batch pdf 11] 11/536
+2026-10-11 18:53:33.471 | INFO     | __main__:_loop:1077 - [batch pdf 11] 12/536
+2026-10-11 18:53:38.475 | INFO     | __main__:_loop:1077 - [batch pdf 11] 17/536
+2026-10-11 18:53:43.476 | INFO     | __main__:_loop:1077 - [batch pdf 11] 19/536
+2026-10-11 18:53:48.481 | INFO     | __main__:_loop:1077 - [batch pdf 11] 22/536
+2026-10-11 18:53:53.487 | INFO     | __main__:_loop:1077 - [batch pdf 11] 25/536
+2026-10-11 18:53:55.444 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'OK'
+2026-10-11 18:53:58.493 | INFO     | __main__:_loop:1077 - [batch pdf 11] 28/536
+2026-10-11 18:54:03.498 | INFO     | __main__:_loop:1077 - [batch pdf 11] 30/536
+2026-10-11 18:54:08.501 | INFO     | __main__:_loop:1077 - [batch pdf 11] 33/536
+2026-10-11 18:54:13.504 | INFO     | __main__:_loop:1077 - [batch pdf 11] 37/536
+2026-10-11 18:54:18.509 | INFO     | __main__:_loop:1077 - [batch pdf 11] 41/536
+2026-10-11 18:54:23.515 | INFO     | __main__:_loop:1077 - [batch pdf 11] 43/536
+2026-10-11 18:54:28.524 | INFO     | __main__:_loop:1077 - [batch pdf 11] 45/536
+2026-10-11 18:54:33.526 | INFO     | __main__:_loop:1077 - [batch pdf 11] 48/536
+2026-10-11 18:54:38.529 | INFO     | __main__:_loop:1077 - [batch pdf 11] 49/536
+2026-10-11 18:54:48.539 | INFO     | __main__:_loop:1077 - [batch pdf 11] 53/536
+2026-10-11 18:54:53.545 | INFO     | __main__:_loop:1077 - [batch pdf 11] 55/536
+2026-10-11 18:54:58.548 | INFO     | __main__:_loop:1077 - [batch pdf 11] 58/536
+2026-10-11 18:55:03.549 | INFO     | __main__:_loop:1077 - [batch pdf 11] 61/536
+2026-10-11 18:55:08.555 | INFO     | __main__:_loop:1077 - [batch pdf 11] 62/536
+2026-10-11 18:55:42.298 | WARNING  | __main__:_loop:1082 - [batch pdf 11] item 63/536 open for more than 30 s:
+-- Word windows {name, subrole}: ,
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-11.log:
+[ok]	487
+[ok]	488
+[ok]	489
+[ok]	490
+[retry]	491	document loaded empty (Word could not read it)
+[ok]	492
+[ok]	493
+[ok]	494
+[ok]	495
+[ok]	496
+[ok]	497
+[ok]	498
+[ok]	499
+[ok]	500
+[ok]	501
+[ok]	502
+[ok]	503
+[ok]	504
+[ok]	505
+[retry]	506	document loaded empty (Word could not read it)
+[ok]	507
+[ok]	508
+[ok]	509
+[ok]	510
+[ok]	511
+[retry]	512	document loaded empty (Word could not read it)
+[ok]	513
+[ok]	514
+[ok]	515
+[retry]	516	document loaded empty (Word could not read it)
+[ok]	517
+[ok]	518
+[retry]	519	document loaded empty (Word could not read it)
+[ok]	520
+[ok]	521
+[ok]	522
+[ok]	523
+[ok]	524
+[ok]	525
+[ok]	526
+[ok]	527
+[ok]	528
+[retry]	529	document loaded empty (Word could not read it)
+[ok]	530
+[ok]	531
+[ok]	532
+[ok]	533
+[ok]	534
+[retry]	535	document loaded empty (Word could not read it)
+[ok]	536
+[retry]	537	document loaded empty (Word could not read it)
+[ok]	538
+[ok]	539
+[ok]	540
+[ok]	541
+[ok]	542
+[ok]	543
+[retry]	544	document loaded empty (Word could not read it)
+[ok]	545
+[ok]	546
+[ok]	547
+[ok]	548
+[ok]	549
+[retry]	550	document loaded empty (Word could not read it)
+[ok]	551
+[ok]	552
+[ok]	553
+[ok]	554
+[ok]	555
+[ok]	556
+[ok]	557
+[ok]	558
+-- newest diagnostic reports: soffice-2026-10-11-073006.0003.ips, soffice-2026-10-11-073006.0002.ips, soffice-2026-10-11-073006.000.ips, soffice-2026-10-11-073006.ips, soffice-2026-10-11-055610.0003.ips
+2026-10-11 18:56:22.326 | INFO     | __main__:_loop:1077 - [batch pdf 11] 63/536
+2026-10-11 18:56:23.156 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 473 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 12, 0 of 3 stalled passes used)
+2026-10-11 18:56:23.156 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 18:56:23.156 | WARNING  | __main__:recycle:735 - [word] recycling (restart 11)
+2026-10-11 18:56:33.290 | INFO     | __main__:_loop:1077 - [batch pdf 12] 2/473
+2026-10-11 18:56:38.296 | INFO     | __main__:_loop:1077 - [batch pdf 12] 6/473
+2026-10-11 18:56:43.300 | INFO     | __main__:_loop:1077 - [batch pdf 12] 8/473
+2026-10-11 18:56:47.514 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'No'
+2026-10-11 18:56:53.309 | INFO     | __main__:_loop:1077 - [batch pdf 12] 9/473
+2026-10-11 18:56:58.315 | INFO     | __main__:_loop:1077 - [batch pdf 12] 12/473
+2026-10-11 18:57:03.319 | INFO     | __main__:_loop:1077 - [batch pdf 12] 15/473
+2026-10-11 18:57:08.321 | INFO     | __main__:_loop:1077 - [batch pdf 12] 17/473
+2026-10-11 18:57:13.327 | INFO     | __main__:_loop:1077 - [batch pdf 12] 22/473
+2026-10-11 18:57:18.333 | INFO     | __main__:_loop:1077 - [batch pdf 12] 26/473
+2026-10-11 18:57:23.338 | INFO     | __main__:_loop:1077 - [batch pdf 12] 29/473
+2026-10-11 18:57:28.344 | INFO     | __main__:_loop:1077 - [batch pdf 12] 33/473
+2026-10-11 18:57:33.346 | INFO     | __main__:_loop:1077 - [batch pdf 12] 38/473
+2026-10-11 18:57:38.347 | INFO     | __main__:_loop:1077 - [batch pdf 12] 39/473
+2026-10-11 18:57:58.361 | INFO     | __main__:_loop:1077 - [batch pdf 12] 42/473
+2026-10-11 18:58:03.364 | INFO     | __main__:_loop:1077 - [batch pdf 12] 44/473
+2026-10-11 18:58:32.902 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'OK'
+2026-10-11 18:58:37.531 | WARNING  | __main__:_loop:1082 - [batch pdf 12] item 45/473 open for more than 30 s:
+-- Word windows {name, subrole}: 00612__docxodus__944074982f_docxodus,
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-12.log:
+[ok]	562
+[ok]	563
+[ok]	564
+[ok]	565
+[ok]	566
+[ok]	567
+[ok]	568
+[ok]	569
+[retry]	570	document loaded empty (Word could not read it)
+[ok]	571
+[ok]	572
+[ok]	573
+[ok]	574
+[ok]	575
+[ok]	576
+[ok]	577
+[ok]	578
+[ok]	579
+[ok]	580
+[ok]	581
+[ok]	582
+[ok]	583
+[ok]	584
+[fail]	585	Microsoft Word got an error: document "00585__docxodus__8c0d466e54_docxodus.docx" doesn’t understand the “save as” message.
+[ok]	586
+[ok]	587
+[ok]	588
+[ok]	589
+[ok]	590
+[ok]	591
+[ok]	592
+[ok]	593
+[ok]	594
+[ok]	595
+[ok]	596
+[ok]	597
+[ok]	598
+[ok]	599
+[ok]	600
+[ok]	601
+[ok]	602
+[ok]	603
+[ok]	604
+[ok]	605
+[ok]	606
+[retry]	607	document loaded empty (Word could not read it)
+[ok]	608
+[ok]	609
+[ok]	610
+[ok]	611
+[ok]	612
+[ok]	613
+[ok]	614
+-- newest diagnostic reports: soffice-2026-10-11-073006.0003.ips, soffice-2026-10-11-073006.0002.ips, soffice-2026-10-11-073006.000.ips, soffice-2026-10-11-073006.ips, soffice-2026-10-11-055610.0003.ips
+2026-10-11 18:58:42.537 | INFO     | __main__:_loop:1077 - [batch pdf 12] 51/473
+2026-10-11 18:58:52.545 | INFO     | __main__:_loop:1077 - [batch pdf 12] 53/473
+2026-10-11 18:58:55.327 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'OK'
+2026-10-11 18:58:57.547 | INFO     | __main__:_loop:1077 - [batch pdf 12] 57/473
+2026-10-11 18:59:02.552 | INFO     | __main__:_loop:1077 - [batch pdf 12] 62/473
+2026-10-11 18:59:07.580 | INFO     | __main__:_loop:1077 - [batch pdf 12] 67/473
+2026-10-11 18:59:40.031 | WARNING  | __main__:_loop:1082 - [batch pdf 12] item 68/473 open for more than 30 s:
+-- Word windows {name, subrole}: ,
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-12.log:
+[ok]	562
+[ok]	563
+[ok]	564
+[ok]	565
+[ok]	566
+[ok]	567
+[ok]	568
+[ok]	569
+[retry]	570	document loaded empty (Word could not read it)
+[ok]	571
+[ok]	572
+[ok]	573
+[ok]	574
+[ok]	575
+[ok]	576
+[ok]	577
+[ok]	578
+[ok]	579
+[ok]	580
+[ok]	581
+[ok]	582
+[ok]	583
+[ok]	584
+[fail]	585	Microsoft Word got an error: document "00585__docxodus__8c0d466e54_docxodus.docx" doesn’t understand the “save as” message.
+[ok]	586
+[ok]	587
+[ok]	588
+[ok]	589
+[ok]	590
+[ok]	591
+[ok]	592
+[ok]	593
+[ok]	594
+[ok]	595
+[ok]	596
+[ok]	597
+[ok]	598
+[ok]	599
+[ok]	600
+[ok]	601
+[ok]	602
+[ok]	603
+[ok]	604
+[ok]	605
+[ok]	606
+[retry]	607	document loaded empty (Word could not read it)
+[ok]	608
+[ok]	609
+[ok]	610
+[ok]	611
+[ok]	612
+[ok]	613
+[ok]	614
+[retry]	615	document loaded empty (Word could not read it)
+[ok]	616
+[ok]	617
+[ok]	618
+[ok]	619
+[retry]	620	document loaded empty (Word could not read it)
+[ok]	621
+[ok]	622
+[ok]	623
+[ok]	624
+[ok]	625
+[ok]	626
+[ok]	627
+[ok]	628
+[ok]	629
+[ok]	630
+[ok]	631
+[ok]	632
+-- newest diagnostic reports: soffice-2026-10-11-073006.0003.ips, soffice-2026-10-11-073006.0002.ips, soffice-2026-10-11-073006.000.ips, soffice-2026-10-11-073006.ips, soffice-2026-10-11-055610.0003.ips
+2026-10-11 19:00:40.085 | INFO     | __main__:_loop:1077 - [batch pdf 12] 70/473
+2026-10-11 19:01:05.101 | INFO     | __main__:_loop:1077 - [batch pdf 12] 73/473
+2026-10-11 19:01:10.106 | INFO     | __main__:_loop:1077 - [batch pdf 12] 74/473
+2026-10-11 19:01:10.410 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 399 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 13, 0 of 3 stalled passes used)
+2026-10-11 19:01:10.410 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 19:01:10.411 | WARNING  | __main__:recycle:735 - [word] recycling (restart 12)
+2026-10-11 19:01:19.263 | INFO     | __main__:_loop:1077 - [batch pdf 13] 2/399
+2026-10-11 19:01:24.268 | INFO     | __main__:_loop:1077 - [batch pdf 13] 6/399
+2026-10-11 19:01:29.270 | INFO     | __main__:_loop:1077 - [batch pdf 13] 10/399
+2026-10-11 19:01:36.160 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'No'
+2026-10-11 19:01:39.279 | INFO     | __main__:_loop:1077 - [batch pdf 13] 14/399
+2026-10-11 19:01:44.283 | INFO     | __main__:_loop:1077 - [batch pdf 13] 23/399
+2026-10-11 19:01:49.289 | INFO     | __main__:_loop:1077 - [batch pdf 13] 24/399
+2026-10-11 19:01:54.315 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'No'
+2026-10-11 19:02:00.545 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'OK'
+2026-10-11 19:02:04.297 | INFO     | __main__:_loop:1077 - [batch pdf 13] 28/399
+2026-10-11 19:02:09.966 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'No'
+2026-10-11 19:02:14.783 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'OK'
+2026-10-11 19:02:19.312 | INFO     | __main__:_loop:1077 - [batch pdf 13] 34/399
+2026-10-11 19:02:24.317 | INFO     | __main__:_loop:1077 - [batch pdf 13] 39/399
+2026-10-11 19:02:25.231 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'OK'
+2026-10-11 19:02:29.321 | INFO     | __main__:_loop:1077 - [batch pdf 13] 40/399
+2026-10-11 19:02:34.325 | INFO     | __main__:_loop:1077 - [batch pdf 13] 45/399
+2026-10-11 19:02:37.996 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'No'
+2026-10-11 19:02:39.327 | INFO     | __main__:_loop:1077 - [batch pdf 13] 46/399
+2026-10-11 19:02:44.333 | INFO     | __main__:_loop:1077 - [batch pdf 13] 53/399
+2026-10-11 19:02:49.338 | INFO     | __main__:_loop:1077 - [batch pdf 13] 57/399
+2026-10-11 19:02:54.339 | INFO     | __main__:_loop:1077 - [batch pdf 13] 60/399
+2026-10-11 19:02:59.342 | INFO     | __main__:_loop:1077 - [batch pdf 13] 67/399
+2026-10-11 19:03:04.347 | INFO     | __main__:_loop:1077 - [batch pdf 13] 74/399
+2026-10-11 19:03:09.353 | INFO     | __main__:_loop:1077 - [batch pdf 13] 81/399
+2026-10-11 19:03:14.354 | INFO     | __main__:_loop:1077 - [batch pdf 13] 88/399
+2026-10-11 19:03:19.355 | INFO     | __main__:_loop:1077 - [batch pdf 13] 91/399
+2026-10-11 19:03:44.375 | INFO     | __main__:_loop:1077 - [batch pdf 13] 94/399
+2026-10-11 19:03:49.381 | INFO     | __main__:_loop:1077 - [batch pdf 13] 98/399
+2026-10-11 19:03:54.382 | INFO     | __main__:_loop:1077 - [batch pdf 13] 99/399
+2026-10-11 19:04:04.111 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'OK'
+2026-10-11 19:04:04.388 | INFO     | __main__:_loop:1077 - [batch pdf 13] 100/399
+2026-10-11 19:04:09.392 | INFO     | __main__:_loop:1077 - [batch pdf 13] 107/399
+2026-10-11 19:04:14.396 | INFO     | __main__:_loop:1077 - [batch pdf 13] 112/399
+2026-10-11 19:04:19.400 | INFO     | __main__:_loop:1077 - [batch pdf 13] 116/399
+2026-10-11 19:04:24.405 | INFO     | __main__:_loop:1077 - [batch pdf 13] 122/399
+2026-10-11 19:04:29.411 | INFO     | __main__:_loop:1077 - [batch pdf 13] 129/399
+2026-10-11 19:04:34.417 | INFO     | __main__:_loop:1077 - [batch pdf 13] 135/399
+2026-10-11 19:04:39.419 | INFO     | __main__:_loop:1077 - [batch pdf 13] 136/399
+2026-10-11 19:04:44.424 | INFO     | __main__:_loop:1077 - [batch pdf 13] 139/399
+2026-10-11 19:04:49.430 | INFO     | __main__:_loop:1077 - [batch pdf 13] 142/399
+2026-10-11 19:04:54.436 | INFO     | __main__:_loop:1077 - [batch pdf 13] 147/399
+2026-10-11 19:05:25.483 | WARNING  | __main__:_loop:1082 - [batch pdf 13] item 148/399 open for more than 30 s:
+-- Word windows {name, subrole}: ,
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-13.log:
+[ok]	643
+[ok]	644
+[ok]	645
+[ok]	646
+[ok]	647
+[ok]	648
+[ok]	649
+[ok]	650
+[ok]	651
+[ok]	652
+[retry]	653	document loaded empty (Word could not read it)
+[retry]	654	document loaded empty (Word could not read it)
+[ok]	655
+[ok]	656
+[ok]	657
+[ok]	658
+[ok]	659
+[ok]	660
+[ok]	661
+[ok]	662
+[ok]	663
+[ok]	664
+[ok]	665
+[ok]	666
+[ok]	667
+[ok]	668
+[retry]	669	document loaded empty (Word could not read it)
+[ok]	670
+[ok]	671
+[ok]	672
+[ok]	673
+[retry]	674	document loaded empty (Word could not read it)
+[ok]	675
+[ok]	676
+[ok]	677
+[ok]	678
+[ok]	679
+[ok]	680
+[ok]	681
+[ok]	682
+[ok]	683
+[ok]	684
+[ok]	685
+[retry]	686	document loaded empty (Word could not read it)
+[ok]	687
+[retry]	688	document loaded empty (Word could not read it)
+[ok]	689
+[ok]	690
+[ok]	691
+[ok]	692
+[ok]	693
+[ok]	694
+[retry]	695	document loaded empty (Word could not read it)
+[retry]	696	document loaded empty (Word could not read it)
+[ok]	697
+[ok]	698
+[ok]	699
+[ok]	700
+[ok]	701
+[ok]	702
+[ok]	703
+[ok]	704
+[ok]	705
+[ok]	706
+[ok]	707
+[ok]	708
+[ok]	709
+[retry]	710	document loaded empty (Word could not read it)
+[ok]	711
+[ok]	712
+[ok]	713
+[ok]	714
+[ok]	715
+[ok]	716
+[ok]	717
+[ok]	718
+[ok]	719
+[ok]	720
+[ok]	721
+[ok]	722
+[ok]	723
+[ok]	724
+[ok]	725
+[ok]	726
+[ok]	727
+[ok]	728
+[ok]	729
+[ok]	730
+[ok]	731
+[ok]	732
+[ok]	733
+[ok]	734
+[ok]	735
+[ok]	736
+[ok]	737
+[ok]	738
+[ok]	739
+[ok]	740
+[ok]	741
+[ok]	742
+[retry]	743	document loaded empty (Word could not read it)
+[ok]	744
+[ok]	745
+[ok]	746
+[ok]	747
+[ok]	748
+[ok]	749
+[ok]	750
+[ok]	751
+[retry]	752	document loaded empty (Word could not read it)
+[ok]	753
+[retry]	754	document loaded empty (Word could not read it)
+[ok]	755
+[ok]	756
+[ok]	757
+[ok]	758
+[ok]	759
+[ok]	760
+[ok]	761
+[ok]	762
+[ok]	763
+[ok]	764
+[ok]	765
+[ok]	766
+[retry]	767	document loaded empty (Word could not read it)
+[ok]	768
+[retry]	769	document loaded empty (Word could not read it)
+[ok]	770
+[ok]	771
+[ok]	772
+[ok]	773
+[ok]	774
+[ok]	775
+[ok]	776
+[ok]	777
+[ok]	778
+[ok]	779
+[ok]	780
+[ok]	781
+[ok]	782
+[ok]	783
+[ok]	784
+[ok]	785
+[ok]	786
+[ok]	787
+[ok]	788
+[ok]	789
+[ok]	790
+[ok]	791
+[ok]	792
+[retry]	793	document loaded empty (Word could not read it)
+[ok]	794
+[ok]	795
+[ok]	796
+[ok]	797
+[ok]	798
+[ok]	799
+[ok]	800
+[ok]	801
+[ok]	802
+[ok]	803
+[ok]	804
+-- newest diagnostic reports: soffice-2026-10-11-073006.0003.ips, soffice-2026-10-11-073006.0002.ips, soffice-2026-10-11-073006.000.ips, soffice-2026-10-11-073006.ips, soffice-2026-10-11-055610.0003.ips
+2026-10-11 19:08:54.360 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 251 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 14, 0 of 3 stalled passes used)
+2026-10-11 19:08:54.360 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 19:08:54.360 | WARNING  | __main__:recycle:735 - [word] recycling (restart 13)
+2026-10-11 19:08:57.446 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'No'
+2026-10-11 19:09:09.713 | INFO     | __main__:_loop:1077 - [batch pdf 14] 4/251
+2026-10-11 19:09:14.718 | INFO     | __main__:_loop:1077 - [batch pdf 14] 11/251
+2026-10-11 19:09:19.723 | INFO     | __main__:_loop:1077 - [batch pdf 14] 19/251
+2026-10-11 19:09:24.728 | INFO     | __main__:_loop:1077 - [batch pdf 14] 26/251
+2026-10-11 19:09:28.840 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 223 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 15, 0 of 3 stalled passes used)
+2026-10-11 19:09:28.840 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 19:09:28.840 | WARNING  | __main__:recycle:735 - [word] recycling (restart 14)
+2026-10-11 19:09:29.290 | INFO     | __main__:_note_buttons:514 - [watchdog] Microsoft Error Reporting shows button 'OK'
+2026-10-11 19:09:29.290 | INFO     | __main__:_note_buttons:514 - [watchdog] Microsoft Error Reporting shows button 'More Information'
+2026-10-11 19:09:29.290 | INFO     | __main__:_note_buttons:514 - [watchdog] Microsoft Error Reporting shows button 'missing value'
+2026-10-11 19:09:29.897 | WARNING  | __main__:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 19:09:37.541 | INFO     | __main__:_loop:1077 - [batch pdf 15] 3/223
+2026-10-11 19:09:48.324 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'No'
+2026-10-11 19:09:52.547 | INFO     | __main__:_loop:1077 - [batch pdf 15] 4/223
+2026-10-11 19:10:02.550 | INFO     | __main__:_loop:1077 - [batch pdf 15] 11/223
+2026-10-11 19:10:07.556 | INFO     | __main__:_loop:1077 - [batch pdf 15] 18/223
+2026-10-11 19:10:09.558 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 205 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 16, 0 of 3 stalled passes used)
+2026-10-11 19:10:09.559 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 19:10:09.559 | WARNING  | __main__:recycle:735 - [word] recycling (restart 15)
+2026-10-11 19:10:10.738 | WARNING  | __main__:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 19:10:18.216 | INFO     | __main__:_loop:1077 - [batch pdf 16] 1/205
+2026-10-11 19:10:23.221 | INFO     | __main__:_loop:1077 - [batch pdf 16] 4/205
+2026-10-11 19:10:43.238 | INFO     | __main__:_loop:1077 - [batch pdf 16] 10/205
+2026-10-11 19:10:48.244 | INFO     | __main__:_loop:1077 - [batch pdf 16] 11/205
+2026-10-11 19:11:19.080 | WARNING  | __main__:_loop:1082 - [batch pdf 16] item 12/205 open for more than 30 s:
+-- Word windows {name, subrole}: ,
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-16.log:
+[ok]	855
+[retry]	856	document loaded empty (Word could not read it)
+[ok]	857
+[ok]	858
+[ok]	859
+[ok]	860
+[ok]	861
+[ok]	862
+[ok]	863
+[ok]	864
+[ok]	865
+[ok]	866
+-- newest diagnostic reports: soffice-2026-10-11-073006.0003.ips, soffice-2026-10-11-073006.0002.ips, soffice-2026-10-11-073006.000.ips, soffice-2026-10-11-073006.ips, soffice-2026-10-11-055610.0003.ips
+2026-10-11 19:12:39.169 | INFO     | __main__:_loop:1077 - [batch pdf 16] 14/205
+2026-10-11 19:12:44.179 | INFO     | __main__:_loop:1077 - [batch pdf 16] 17/205
+2026-10-11 19:12:54.188 | INFO     | __main__:_loop:1077 - [batch pdf 16] 21/205
+2026-10-11 19:12:59.194 | INFO     | __main__:_loop:1077 - [batch pdf 16] 23/205
+2026-10-11 19:13:04.200 | INFO     | __main__:_loop:1077 - [batch pdf 16] 26/205
+2026-10-11 19:13:09.205 | INFO     | __main__:_loop:1077 - [batch pdf 16] 31/205
+2026-10-11 19:13:14.215 | INFO     | __main__:_loop:1077 - [batch pdf 16] 32/205
+2026-10-11 19:13:19.217 | INFO     | __main__:_loop:1077 - [batch pdf 16] 35/205
+2026-10-11 19:13:24.222 | INFO     | __main__:_loop:1077 - [batch pdf 16] 38/205
+2026-10-11 19:13:28.449 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'No'
+2026-10-11 19:13:29.226 | INFO     | __main__:_loop:1077 - [batch pdf 16] 41/205
+2026-10-11 19:13:39.236 | INFO     | __main__:_loop:1077 - [batch pdf 16] 45/205
+2026-10-11 19:13:42.432 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'OK'
+2026-10-11 19:13:44.241 | INFO     | __main__:_loop:1077 - [batch pdf 16] 47/205
+2026-10-11 19:13:49.256 | INFO     | __main__:_loop:1077 - [batch pdf 16] 50/205
+2026-10-11 19:14:09.651 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'No'
+2026-10-11 19:14:19.037 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'OK'
+2026-10-11 19:14:23.061 | WARNING  | __main__:_loop:1082 - [batch pdf 16] item 51/205 open for more than 30 s:
+-- Word windows {name, subrole}: , AXDialog
+-- Word window text: Microsoft Word, Word found unreadable content in 00912__docxodus__ef51261c54_docxodus.docx. Do you want to recover the contents of this document? If you trust the source of this document, click Yes.
+-- crash reporters: 
+-- batch-pdf-16.log:
+[ok]	855
+[retry]	856	document loaded empty (Word could not read it)
+[ok]	857
+[ok]	858
+[ok]	859
+[ok]	860
+[ok]	861
+[ok]	862
+[ok]	863
+[ok]	864
+[ok]	865
+[ok]	866
+[retry]	867	document loaded empty (Word could not read it)
+[ok]	868
+[ok]	869
+[ok]	870
+[ok]	871
+[ok]	872
+[ok]	873
+[retry]	874	document loaded empty (Word could not read it)
+[ok]	875
+[ok]	876
+[ok]	877
+[ok]	878
+[ok]	879
+[ok]	880
+[ok]	881
+[ok]	882
+[ok]	883
+[ok]	884
+[ok]	885
+[ok]	886
+[ok]	887
+[ok]	888
+[ok]	889
+[retry]	890	document loaded empty (Word could not read it)
+[ok]	891
+[ok]	892
+[ok]	893
+[ok]	894
+[ok]	895
+[ok]	896
+[ok]	897
+[ok]	898
+[ok]	899
+[retry]	900	document loaded empty (Word could not read it)
+[ok]	901
+[ok]	902
+[ok]	903
+[ok]	904
+[ok]	905
+[retry]	906	document loaded empty (Word could not read it)
+[ok]	907
+[ok]	908
+[ok]	909
+[ok]	910
+[retry]	911	document loaded empty (Word could not read it)
+-- newest diagnostic reports: soffice-2026-10-11-073006.0003.ips, soffice-2026-10-11-073006.0002.ips, soffice-2026-10-11-073006.000.ips, soffice-2026-10-11-073006.ips, soffice-2026-10-11-055610.0003.ips
+2026-10-11 19:14:30.605 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'No'
+2026-10-11 19:14:44.465 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'OK'
+2026-10-11 19:14:48.088 | INFO     | __main__:_loop:1077 - [batch pdf 16] 53/205
+2026-10-11 19:14:51.725 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'No'
+2026-10-11 19:14:53.093 | INFO     | __main__:_loop:1077 - [batch pdf 16] 55/205
+2026-10-11 19:15:01.165 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'OK'
+2026-10-11 19:15:03.104 | INFO     | __main__:_loop:1077 - [batch pdf 16] 56/205
+2026-10-11 19:15:08.109 | INFO     | __main__:_loop:1077 - [batch pdf 16] 58/205
+2026-10-11 19:15:13.113 | INFO     | __main__:_loop:1077 - [batch pdf 16] 60/205
+2026-10-11 19:15:18.121 | INFO     | __main__:_loop:1077 - [batch pdf 16] 63/205
+2026-10-11 19:15:23.127 | INFO     | __main__:_loop:1077 - [batch pdf 16] 66/205
+2026-10-11 19:15:28.136 | INFO     | __main__:_loop:1077 - [batch pdf 16] 71/205
+2026-10-11 19:15:33.142 | INFO     | __main__:_loop:1077 - [batch pdf 16] 73/205
+2026-10-11 19:15:36.898 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'No'
+2026-10-11 19:15:49.902 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'OK'
+2026-10-11 19:15:53.176 | INFO     | __main__:_loop:1077 - [batch pdf 16] 75/205
+2026-10-11 19:15:58.178 | INFO     | __main__:_loop:1077 - [batch pdf 16] 79/205
+2026-10-11 19:16:03.185 | INFO     | __main__:_loop:1077 - [batch pdf 16] 81/205
+2026-10-11 19:16:10.009 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'No'
+2026-10-11 19:16:21.774 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'OK'
+2026-10-11 19:16:30.955 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 124 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 17, 0 of 3 stalled passes used)
+2026-10-11 19:16:30.955 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 19:16:30.955 | WARNING  | __main__:recycle:735 - [word] recycling (restart 16)
+2026-10-11 19:16:31.492 | WARNING  | __main__:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 19:16:41.896 | INFO     | __main__:_loop:1077 - [batch pdf 17] 0/124
+2026-10-11 19:16:46.899 | INFO     | __main__:_loop:1077 - [batch pdf 17] 1/124
+2026-10-11 19:16:55.909 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'No'
+2026-10-11 19:17:21.402 | WARNING  | __main__:_loop:1082 - [batch pdf 17] item 2/124 open for more than 30 s:
+-- Word windows {name, subrole}: ,
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-17.log:
+[ok]	948
+-- newest diagnostic reports: soffice-2026-10-11-073006.0003.ips, soffice-2026-10-11-073006.0002.ips, soffice-2026-10-11-073006.000.ips, soffice-2026-10-11-073006.ips, soffice-2026-10-11-055610.0003.ips
+2026-10-11 19:20:46.369 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 122 item(s) never reached (ended without reaching them); recycling Word and retrying the rest first, retried items last (pass 18, 1 of 3 stalled passes used)
+2026-10-11 19:20:46.369 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 19:20:46.369 | WARNING  | __main__:recycle:735 - [word] recycling (restart 17)
+2026-10-11 19:20:55.670 | INFO     | __main__:_loop:1077 - [batch pdf 18] 3/122
+2026-10-11 19:21:00.675 | INFO     | __main__:_loop:1077 - [batch pdf 18] 4/122
+2026-10-11 19:21:05.679 | INFO     | __main__:_loop:1077 - [batch pdf 18] 5/122
+2026-10-11 19:21:09.997 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 117 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 19, 1 of 3 stalled passes used)
+2026-10-11 19:21:09.998 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 19:21:09.998 | WARNING  | __main__:recycle:735 - [word] recycling (restart 18)
+2026-10-11 19:21:18.699 | INFO     | __main__:_loop:1077 - [batch pdf 19] 1/117
+2026-10-11 19:21:19.905 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'No'
+2026-10-11 19:21:49.215 | WARNING  | __main__:_loop:1082 - [batch pdf 19] item 2/117 open for more than 30 s:
+-- Word windows {name, subrole}: ,
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-19.log:
+[ok]	956
+-- newest diagnostic reports: soffice-2026-10-11-073006.0003.ips, soffice-2026-10-11-073006.0002.ips, soffice-2026-10-11-073006.000.ips, soffice-2026-10-11-073006.ips, soffice-2026-10-11-055610.0003.ips
+2026-10-11 19:22:09.079 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 111 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 20, 1 of 3 stalled passes used)
+2026-10-11 19:22:09.080 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 19:22:09.080 | WARNING  | __main__:recycle:735 - [word] recycling (restart 19)
+2026-10-11 19:22:15.642 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'No'
+2026-10-11 19:22:17.697 | INFO     | __main__:_loop:1077 - [batch pdf 20] 0/111
+2026-10-11 19:22:20.388 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'OK'
+2026-10-11 19:22:23.948 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 108 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 21, 1 of 3 stalled passes used)
+2026-10-11 19:22:23.948 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 19:22:23.948 | WARNING  | __main__:recycle:735 - [word] recycling (restart 20)
+2026-10-11 19:22:27.800 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'Cancel'
+2026-10-11 19:22:32.640 | INFO     | __main__:_loop:1077 - [batch pdf 21] 0/108
+2026-10-11 19:22:33.388 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'OK'
+2026-10-11 19:22:38.132 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'OK'
+2026-10-11 19:22:38.222 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 105 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 22, 1 of 3 stalled passes used)
+2026-10-11 19:22:38.222 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 19:22:38.222 | WARNING  | __main__:recycle:735 - [word] recycling (restart 21)
+2026-10-11 19:22:44.971 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'No'
+2026-10-11 19:22:47.073 | INFO     | __main__:_loop:1077 - [batch pdf 22] 0/105
+2026-10-11 19:22:48.516 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 102 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 23, 1 of 3 stalled passes used)
+2026-10-11 19:22:48.516 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 19:22:48.516 | WARNING  | __main__:recycle:735 - [word] recycling (restart 22)
+2026-10-11 19:22:52.301 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'Cancel'
+2026-10-11 19:22:57.146 | INFO     | __main__:_loop:1077 - [batch pdf 23] 0/102
+2026-10-11 19:22:57.931 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'OK'
+2026-10-11 19:23:02.665 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'OK'
+2026-10-11 19:23:02.749 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 99 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 24, 1 of 3 stalled passes used)
+2026-10-11 19:23:02.749 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 19:23:02.749 | WARNING  | __main__:recycle:735 - [word] recycling (restart 23)
+2026-10-11 19:23:10.790 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 98 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 25, 1 of 3 stalled passes used)
+2026-10-11 19:23:10.790 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 19:23:10.790 | WARNING  | __main__:recycle:735 - [word] recycling (restart 24)
+2026-10-11 19:23:12.402 | ERROR    | __main__:_loop_merp:557 - [watchdog] Microsoft Error Reporting is showing a dialog whose buttons match none of ("Don't Send", 'Don’t Send', 'Cancel', 'Close', 'Quit', 'No', 'OK', 'Ok'). Labels seen are logged above — add the real one to MERP_DECLINE.
+2026-10-11 19:23:22.435 | INFO     | __main__:_loop:1077 - [batch pdf 25] 0/98
+2026-10-11 19:23:43.540 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 97 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 26, 1 of 3 stalled passes used)
+2026-10-11 19:23:43.540 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 19:23:43.540 | WARNING  | __main__:recycle:735 - [word] recycling (restart 25)
+2026-10-11 19:23:53.631 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 96 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 27, 1 of 3 stalled passes used)
+2026-10-11 19:23:53.631 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 19:23:53.631 | WARNING  | __main__:recycle:735 - [word] recycling (restart 26)
+2026-10-11 19:24:01.053 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 95 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 28, 1 of 3 stalled passes used)
+2026-10-11 19:24:01.053 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 19:24:01.053 | WARNING  | __main__:recycle:735 - [word] recycling (restart 27)
+2026-10-11 19:24:09.581 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'OK'
+2026-10-11 19:24:09.728 | INFO     | __main__:_loop:1077 - [batch pdf 28] 0/95
+2026-10-11 19:24:11.422 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 92 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 29, 1 of 3 stalled passes used)
+2026-10-11 19:24:11.422 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 19:24:11.422 | WARNING  | __main__:recycle:735 - [word] recycling (restart 28)
+2026-10-11 19:24:18.038 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'OK'
+2026-10-11 19:24:20.067 | INFO     | __main__:_loop:1077 - [batch pdf 29] 0/92
+2026-10-11 19:24:22.315 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 89 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 30, 1 of 3 stalled passes used)
+2026-10-11 19:24:22.315 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 19:24:22.315 | WARNING  | __main__:recycle:735 - [word] recycling (restart 29)
+2026-10-11 19:24:31.013 | INFO     | __main__:_loop:1077 - [batch pdf 30] 0/89
+2026-10-11 19:24:33.912 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 86 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 31, 1 of 3 stalled passes used)
+2026-10-11 19:24:33.912 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 19:24:33.912 | WARNING  | __main__:recycle:735 - [word] recycling (restart 30)
+2026-10-11 19:24:42.632 | INFO     | __main__:_loop:1077 - [batch pdf 31] 0/86
+2026-10-11 19:24:43.715 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'OK'
+2026-10-11 19:24:43.781 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 83 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 32, 1 of 3 stalled passes used)
+2026-10-11 19:24:43.781 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 19:24:43.781 | WARNING  | __main__:recycle:735 - [word] recycling (restart 31)
+2026-10-11 19:24:52.479 | INFO     | __main__:_loop:1077 - [batch pdf 32] 0/83
+2026-10-11 19:24:53.239 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'No'
+2026-10-11 19:24:54.381 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 80 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 33, 1 of 3 stalled passes used)
+2026-10-11 19:24:54.381 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 19:24:54.381 | WARNING  | __main__:recycle:735 - [word] recycling (restart 32)
+2026-10-11 19:25:01.216 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'No'
+2026-10-11 19:25:03.215 | INFO     | __main__:_loop:1077 - [batch pdf 33] 0/80
+2026-10-11 19:25:03.983 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 77 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 34, 1 of 3 stalled passes used)
+2026-10-11 19:25:03.983 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 19:25:03.983 | WARNING  | __main__:recycle:735 - [word] recycling (restart 33)
+2026-10-11 19:25:13.647 | INFO     | __main__:_loop:1077 - [batch pdf 34] 0/77
+2026-10-11 19:25:14.056 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'OK'
+2026-10-11 19:25:16.950 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 74 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 35, 1 of 3 stalled passes used)
+2026-10-11 19:25:16.950 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 19:25:16.950 | WARNING  | __main__:recycle:735 - [word] recycling (restart 34)
+2026-10-11 19:25:26.306 | INFO     | __main__:_loop:1077 - [batch pdf 35] 0/74
+2026-10-11 19:25:28.038 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 73 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 36, 1 of 3 stalled passes used)
+2026-10-11 19:25:28.038 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 19:25:28.038 | WARNING  | __main__:recycle:735 - [word] recycling (restart 35)
+2026-10-11 19:25:33.917 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'Cancel'
+2026-10-11 19:25:38.776 | INFO     | __main__:_loop:1077 - [batch pdf 36] 0/73
+2026-10-11 19:25:39.839 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'No'
+2026-10-11 19:25:42.737 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 70 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 37, 1 of 3 stalled passes used)
+2026-10-11 19:25:42.738 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 19:25:42.738 | WARNING  | __main__:recycle:735 - [word] recycling (restart 36)
+2026-10-11 19:25:51.873 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'No'
+2026-10-11 19:25:52.164 | INFO     | __main__:_loop:1077 - [batch pdf 37] 0/70
+2026-10-11 19:25:55.381 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 67 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 38, 1 of 3 stalled passes used)
+2026-10-11 19:25:55.381 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 19:25:55.381 | WARNING  | __main__:recycle:735 - [word] recycling (restart 37)
+2026-10-11 19:26:04.808 | INFO     | __main__:_loop:1077 - [batch pdf 38] 0/67
+2026-10-11 19:26:06.072 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'No'
+2026-10-11 19:26:09.070 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 64 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 39, 1 of 3 stalled passes used)
+2026-10-11 19:26:09.070 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 19:26:09.070 | WARNING  | __main__:recycle:735 - [word] recycling (restart 38)
+2026-10-11 19:26:18.813 | INFO     | __main__:_loop:1077 - [batch pdf 39] 0/64
+2026-10-11 19:26:28.655 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 61 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 40, 1 of 3 stalled passes used)
+2026-10-11 19:26:28.655 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 19:26:28.655 | WARNING  | __main__:recycle:735 - [word] recycling (restart 39)
+2026-10-11 19:26:31.828 | ERROR    | __main__:_loop_merp:557 - [watchdog] Microsoft Error Reporting is showing a dialog whose buttons match none of ("Don't Send", 'Don’t Send', 'Cancel', 'Close', 'Quit', 'No', 'OK', 'Ok'). Labels seen are logged above — add the real one to MERP_DECLINE.
+2026-10-11 19:26:37.546 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'No'
+2026-10-11 19:26:37.937 | INFO     | __main__:_loop:1077 - [batch pdf 40] 0/61
+2026-10-11 19:26:50.152 | ERROR    | __main__:_loop_merp:557 - [watchdog] Microsoft Error Reporting is showing a dialog whose buttons match none of ("Don't Send", 'Don’t Send', 'Cancel', 'Close', 'Quit', 'No', 'OK', 'Ok'). Labels seen are logged above — add the real one to MERP_DECLINE.
+2026-10-11 19:26:51.158 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 58 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 41, 1 of 3 stalled passes used)
+2026-10-11 19:26:51.158 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 19:26:51.158 | WARNING  | __main__:recycle:735 - [word] recycling (restart 40)
+2026-10-11 19:26:58.735 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'No'
+2026-10-11 19:27:00.549 | INFO     | __main__:_loop:1077 - [batch pdf 41] 0/58
+2026-10-11 19:27:03.356 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'OK'
+2026-10-11 19:27:05.633 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 55 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 42, 1 of 3 stalled passes used)
+2026-10-11 19:27:05.634 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 19:27:05.634 | WARNING  | __main__:recycle:735 - [word] recycling (restart 41)
+2026-10-11 19:27:15.136 | INFO     | __main__:_loop:1077 - [batch pdf 42] 0/55
+2026-10-11 19:27:18.837 | WARNING  | __main__:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 19:27:21.469 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 53 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 43, 1 of 3 stalled passes used)
+2026-10-11 19:27:21.469 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 19:27:21.469 | WARNING  | __main__:recycle:735 - [word] recycling (restart 42)
+2026-10-11 19:27:30.057 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'No'
+2026-10-11 19:27:32.872 | INFO     | __main__:_loop:1077 - [batch pdf 43] 0/53
+2026-10-11 19:27:34.831 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'No'
+2026-10-11 19:27:35.849 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 50 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 44, 1 of 3 stalled passes used)
+2026-10-11 19:27:35.849 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 19:27:35.849 | WARNING  | __main__:recycle:735 - [word] recycling (restart 43)
+2026-10-11 19:27:43.440 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'OK'
+2026-10-11 19:27:45.330 | INFO     | __main__:_loop:1077 - [batch pdf 44] 0/50
+2026-10-11 19:27:47.035 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 47 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 45, 1 of 3 stalled passes used)
+2026-10-11 19:27:47.035 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 19:27:47.035 | WARNING  | __main__:recycle:735 - [word] recycling (restart 44)
+2026-10-11 19:27:51.590 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'Cancel'
+2026-10-11 19:27:56.410 | INFO     | __main__:_loop:1077 - [batch pdf 45] 0/47
+2026-10-11 19:27:57.060 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'OK'
+2026-10-11 19:27:59.240 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 44 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 46, 1 of 3 stalled passes used)
+2026-10-11 19:27:59.240 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 19:27:59.240 | WARNING  | __main__:recycle:735 - [word] recycling (restart 45)
+2026-10-11 19:28:08.715 | INFO     | __main__:_loop:1077 - [batch pdf 46] 0/44
+2026-10-11 19:28:10.106 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'No'
+2026-10-11 19:28:16.736 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 41 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 47, 1 of 3 stalled passes used)
+2026-10-11 19:28:16.736 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 19:28:16.737 | WARNING  | __main__:recycle:735 - [word] recycling (restart 46)
+2026-10-11 19:28:24.140 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'No'
+2026-10-11 19:28:26.035 | INFO     | __main__:_loop:1077 - [batch pdf 47] 0/41
+2026-10-11 19:28:36.003 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 39 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 48, 1 of 3 stalled passes used)
+2026-10-11 19:28:36.003 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 19:28:36.003 | WARNING  | __main__:recycle:735 - [word] recycling (restart 47)
+2026-10-11 19:28:44.137 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'No'
+2026-10-11 19:28:46.012 | INFO     | __main__:_loop:1077 - [batch pdf 48] 0/39
+2026-10-11 19:29:19.126 | WARNING  | __main__:_loop:1082 - [batch pdf 48] item 1/39 open for more than 30 s:
+-- Word windows {name, subrole}: ,
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-48.log:
+
+-- newest diagnostic reports: soffice-2026-10-11-073006.0003.ips, soffice-2026-10-11-073006.0002.ips, soffice-2026-10-11-073006.000.ips, soffice-2026-10-11-073006.ips, soffice-2026-10-11-055610.0003.ips
+2026-10-11 19:32:41.456 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 38 item(s) never reached (ended without reaching them); recycling Word and retrying the rest first, retried items last (pass 49, 2 of 3 stalled passes used)
+2026-10-11 19:32:41.457 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 19:32:41.457 | WARNING  | __main__:recycle:735 - [word] recycling (restart 48)
+2026-10-11 19:32:51.033 | INFO     | __main__:_loop:1077 - [batch pdf 49] 0/38
+2026-10-11 19:32:52.357 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'No'
+2026-10-11 19:33:21.717 | WARNING  | __main__:_loop:1082 - [batch pdf 49] item 1/38 open for more than 30 s:
+-- Word windows {name, subrole}: ,
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-49.log:
+
+-- newest diagnostic reports: soffice-2026-10-11-073006.0003.ips, soffice-2026-10-11-073006.0002.ips, soffice-2026-10-11-073006.000.ips, soffice-2026-10-11-073006.ips, soffice-2026-10-11-055610.0003.ips
+2026-10-11 19:36:46.503 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 37 item(s) never reached (ended without reaching them); recycling Word and retrying the rest first, retried items last (pass 50, 3 of 3 stalled passes used)
+2026-10-11 19:36:46.504 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 19:36:46.504 | WARNING  | __main__:recycle:735 - [word] recycling (restart 49)
+2026-10-11 19:36:51.305 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 00288995f0_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:36:51.307 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 01a43df57c_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:36:51.308 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 030c72af8f_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:36:51.309 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 06abf273b8_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:36:51.392 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 09a6e874c8_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:36:51.442 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 0bdee164e5_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:36:51.474 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 0e053136eb_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:36:51.494 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 0f8eb45f51_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:36:51.529 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 12d5912031_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:36:51.545 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 143e7a6dc4_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:36:51.559 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 15a27d9c50_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:36:51.561 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 15c82f6344_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:36:51.606 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 1a6df64b8c_docxodus.docx — Microsoft Word got an error: document "00120__docxodus__1a6df64b8c_docxodus.docx" doesn’t understand the “save as” message.
+2026-10-11 19:36:51.612 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 1b651f2fc5_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:36:51.673 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 23c28907ad_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:36:51.678 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 251aa16cd3_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:36:51.707 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 29290a6120_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:36:51.708 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 292dea4ba5_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:36:51.710 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 297a67d458_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:36:51.729 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 2c0433bdbc_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:36:51.732 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 2ceeca3948_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:36:51.737 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 2e391c5378_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:36:51.746 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 2ef6ed00b9_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:36:51.763 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 30a5d2970b_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:36:51.784 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 31b2203d8c_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:36:51.786 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 31bbf97599_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:36:51.833 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 34e4211b58_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:36:51.898 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 3a4b48cd02_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:36:51.904 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 3b09d6afde_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:36:51.959 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 3e7067f872_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:36:51.969 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 3f56b101d2_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:36:51.970 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 3f74e8a0d4_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:36:51.990 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 415fa42f00_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:36:52.008 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 42d1acd8a6_docxodus.docx — Microsoft Word got an error: AppleEvent timed out.
+2026-10-11 19:36:52.011 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 4300f2f735_docxodus.docx — Microsoft Word got an error: AppleEvent timed out.
+2026-10-11 19:36:52.129 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 4618d6926f_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:36:52.131 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 46abf7643d_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:36:52.134 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 47c39c50c3_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:36:52.166 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 4b8e914996_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:36:52.250 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 4d10fec5fc_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:36:52.263 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 4da1ca3b20_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-11 19:36:52.266 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 4e3d14b3d3_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-11 19:36:52.282 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 4f54cef23c_docxodus.docx — Microsoft Word got an error: document "00342__docxodus__4f54cef23c_docxodus.docx" doesn’t understand the “save as” message.
+2026-10-11 19:36:52.308 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 50e71f1eff_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-11 19:36:52.361 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 5287854336_docxodus.docx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 19:36:52.368 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 52f93a00df_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-11 19:36:52.384 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 53b52b7b2d_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-11 19:36:52.394 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 54dd9bf0c3_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-11 19:36:52.422 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 580f8e2e8a_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-11 19:36:52.471 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 5d6ae5ad0c_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-11 19:36:52.488 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 600b6a365e_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-11 19:36:52.494 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 61283a9049_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-11 19:36:52.497 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 6167071c5d_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-11 19:36:52.498 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 617e392832_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-11 19:36:52.499 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 61959b1953_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-11 19:36:52.626 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 6b74ac1ae6_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-11 19:36:52.634 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 6bc323aa0d_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-11 19:36:52.640 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 6c9e1de72b_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-11 19:36:52.642 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 6d53941908_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-11 19:36:52.648 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 6de20376e8_docxodus.docx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 19:36:52.671 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 7070a9c7b0_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-11 19:36:52.672 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 70c30e926c_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-11 19:36:52.695 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 7127dd0325_docxodus.docx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 19:36:52.712 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 7252aa05ca_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-11 19:36:52.761 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 76b9eb4925_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-11 19:36:52.774 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 77e4a6bed0_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-11 19:36:52.784 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 7a60ec99bd_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-11 19:36:52.791 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 7d3cfc66f7_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-11 19:36:52.829 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 8029bc78c5_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-11 19:36:52.848 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 8194fae646_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-11 19:36:52.851 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 81ecf9d6d2_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-11 19:36:52.880 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 834a4b8d15_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-11 19:36:52.898 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 842ef93738_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-11 19:36:52.936 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 85b79dc2e9_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-11 19:36:52.940 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 8644055513_docxodus.docx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 19:36:52.973 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 885c507f6f_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-11 19:36:53.021 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 8c0d466e54_docxodus.docx — Microsoft Word got an error: document "00585__docxodus__8c0d466e54_docxodus.docx" doesn’t understand the “save as” message.
+2026-10-11 19:36:53.099 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 9240f816df_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-11 19:36:53.120 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 9494f2e92a_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-11 19:36:53.131 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 95f7a84264_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-11 19:36:53.159 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 9b22b88370_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-11 19:36:53.185 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 9c71031b8a_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-11 19:36:53.189 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 9d0b6ef8ad_docxodus.docx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 19:36:53.229 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: a07535b014_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-11 19:36:53.230 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: a09aa89f13_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-11 19:36:53.258 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: a5678bf47a_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-11 19:36:53.267 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: a78bc32904_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-11 19:36:53.297 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: a97bb9b57f_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-11 19:36:53.302 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: a9a1b530a9_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-11 19:36:53.324 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: acafcbe293_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-11 19:36:53.324 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: acccebf575_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-11 19:36:53.365 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: b13a27e36d_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-11 19:36:53.442 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: bc6f8076f9_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-11 19:36:53.469 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: c0af64b076_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-11 19:36:53.472 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: c0cedbcb4c_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-11 19:36:53.504 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: c40f3cc643_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-11 19:36:53.509 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: c486f3a829_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-11 19:36:53.578 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: cb9583377c_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-11 19:36:53.618 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: d0e7a08bbd_docxodus.docx — Microsoft Word got an error: AppleEvent timed out.
+2026-10-11 19:36:53.659 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: d9bb456306_docxodus.docx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 19:36:53.662 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: daa4804467_docxodus.docx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 19:36:53.679 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: df6a9b5113_docxodus.docx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 19:36:53.681 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: e0af18fb3d_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-11 19:36:53.693 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: e48e5fec25_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-11 19:36:53.699 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: e5d359e783_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-11 19:36:53.720 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: e9ef73a8e4_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-11 19:36:53.728 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: ecea12416c_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-11 19:36:53.732 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: ee62e16f5f_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-11 19:36:53.736 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: ef3bb4f5d4_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-11 19:36:53.739 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: ef51261c54_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-11 19:36:53.744 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: f19921855c_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-11 19:36:53.754 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: f30cea827b_docxodus.docx — Microsoft Word got an error: document "00925__docxodus__f30cea827b_docxodus.docx" doesn’t understand the “save as” message.
+2026-10-11 19:36:53.764 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: f787d881e3_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-11 19:36:53.772 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: f90c5ec9b7_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-11 19:36:53.773 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: fa05623f53_docxodus.docx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 19:36:53.774 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: fb97e850ce_docxodus.docx — Microsoft Word got an error: AppleEvent timed out.
+2026-10-11 19:36:53.778 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: fe89171ce8_docxodus.docx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 19:36:53.780 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: feacbc347e_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-11 19:36:54.441 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'Cancel'

@@ -136,6 +136,10 @@ results/*_work/
 
 # Run artifacts under results/ — keep only number/summary files in git
 # (summary.json, speed.jsonl, report.md, scores.*). Regenerable from benches.
+# Rasters, renders, and candidate documents anywhere under results/.
+results/**/*.png
+results/**/*.pdf
+results/**/*.docx
 results/redline_speed_bench/**/pairs.json
 results/redline_speed_bench/**/run.log
 results/redline_speed_bench/**/*.log
@@ -195,3 +199,5 @@ score_v2.patch
 
 # generated comparison output (scripts write it; history keeps the old files)
 /results-compare/
+.env
+from_jubarte-redlines/

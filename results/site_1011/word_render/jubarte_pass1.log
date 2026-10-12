@@ -1,0 +1,1033 @@
+2026-10-11 17:16:58.555 | INFO     | __main__:preflight:1827 - [word] preflight: open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-10-11 17:16:58.592 | INFO     | __main__:convert_folder:1500 - [word] export: one_osascript=True documents=1000 accept_all=False reject_all=False
+2026-10-11 17:16:59.157 | INFO     | __main__:_convert_batched:1700 - [batch] one osascript for 1000 document(s)
+2026-10-11 17:17:04.165 | INFO     | __main__:_loop:1077 - [batch pdf 1] 6/1000
+2026-10-11 17:17:08.624 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 993 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 2, 0 of 3 stalled passes used)
+2026-10-11 17:17:08.625 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 17:17:08.625 | WARNING  | __main__:recycle:735 - [word] recycling (restart 1)
+2026-10-11 17:17:08.935 | INFO     | __main__:_note_buttons:514 - [watchdog] Microsoft Error Reporting shows button 'OK'
+2026-10-11 17:17:08.936 | INFO     | __main__:_note_buttons:514 - [watchdog] Microsoft Error Reporting shows button 'More Information'
+2026-10-11 17:17:08.936 | INFO     | __main__:_note_buttons:514 - [watchdog] Microsoft Error Reporting shows button 'missing value'
+2026-10-11 17:17:09.606 | WARNING  | __main__:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 17:17:17.891 | INFO     | __main__:_loop:1077 - [batch pdf 2] 3/993
+2026-10-11 17:17:22.893 | INFO     | __main__:_loop:1077 - [batch pdf 2] 11/993
+2026-10-11 17:17:27.897 | INFO     | __main__:_loop:1077 - [batch pdf 2] 18/993
+2026-10-11 17:17:32.901 | INFO     | __main__:_loop:1077 - [batch pdf 2] 26/993
+2026-10-11 17:17:37.907 | INFO     | __main__:_loop:1077 - [batch pdf 2] 33/993
+2026-10-11 17:17:42.909 | INFO     | __main__:_loop:1077 - [batch pdf 2] 35/993
+2026-10-11 17:18:12.930 | INFO     | __main__:_loop:1077 - [batch pdf 2] 41/993
+2026-10-11 17:18:17.930 | INFO     | __main__:_loop:1077 - [batch pdf 2] 45/993
+2026-10-11 17:18:27.942 | INFO     | __main__:_loop:1077 - [batch pdf 2] 48/993
+2026-10-11 17:18:32.947 | INFO     | __main__:_loop:1077 - [batch pdf 2] 53/993
+2026-10-11 17:18:37.953 | INFO     | __main__:_loop:1077 - [batch pdf 2] 54/993
+2026-10-11 17:19:34.336 | WARNING  | __main__:_loop:1082 - [batch pdf 2] item 55/993 open for more than 30 s:
+-- Word windows {name, subrole}: ,
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-2.log:
+[ok]	8
+[ok]	9
+[ok]	10
+[ok]	11
+[ok]	12
+[ok]	13
+[ok]	14
+[ok]	15
+[ok]	16
+[ok]	17
+[ok]	18
+[ok]	19
+[ok]	20
+[ok]	21
+[ok]	22
+[ok]	23
+[ok]	24
+[ok]	25
+[ok]	26
+[ok]	27
+[ok]	28
+[ok]	29
+[ok]	30
+[ok]	31
+[ok]	32
+[ok]	33
+[ok]	34
+[ok]	35
+[ok]	36
+[ok]	37
+[ok]	38
+[ok]	39
+[ok]	40
+[ok]	41
+[ok]	42
+[ok]	43
+[ok]	44
+[ok]	45
+[ok]	46
+[ok]	47
+[ok]	48
+[ok]	49
+[ok]	50
+[ok]	51
+[ok]	52
+[ok]	53
+[ok]	54
+[ok]	55
+[ok]	56
+[ok]	57
+[ok]	58
+[ok]	59
+[ok]	60
+[ok]	61
+-- newest diagnostic reports: soffice-2026-10-11-073006.0003.ips, soffice-2026-10-11-073006.0002.ips, soffice-2026-10-11-073006.000.ips, soffice-2026-10-11-073006.ips, soffice-2026-10-11-055610.0003.ips
+2026-10-11 17:19:49.347 | INFO     | __main__:_loop:1077 - [batch pdf 2] 55/993
+2026-10-11 17:20:41.615 | WARNING  | __main__:_loop:1082 - [batch pdf 2] item 56/993 open for more than 30 s:
+-- Word windows {name, subrole}: ,
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-2.log:
+[ok]	8
+[ok]	9
+[ok]	10
+[ok]	11
+[ok]	12
+[ok]	13
+[ok]	14
+[ok]	15
+[ok]	16
+[ok]	17
+[ok]	18
+[ok]	19
+[ok]	20
+[ok]	21
+[ok]	22
+[ok]	23
+[ok]	24
+[ok]	25
+[ok]	26
+[ok]	27
+[ok]	28
+[ok]	29
+[ok]	30
+[ok]	31
+[ok]	32
+[ok]	33
+[ok]	34
+[ok]	35
+[ok]	36
+[ok]	37
+[ok]	38
+[ok]	39
+[ok]	40
+[ok]	41
+[ok]	42
+[ok]	43
+[ok]	44
+[ok]	45
+[ok]	46
+[ok]	47
+[ok]	48
+[ok]	49
+[ok]	50
+[ok]	51
+[ok]	52
+[ok]	53
+[ok]	54
+[ok]	55
+[ok]	56
+[ok]	57
+[ok]	58
+[ok]	59
+[ok]	60
+[ok]	61
+[ok]	62
+-- newest diagnostic reports: soffice-2026-10-11-073006.0003.ips, soffice-2026-10-11-073006.0002.ips, soffice-2026-10-11-073006.000.ips, soffice-2026-10-11-073006.ips, soffice-2026-10-11-055610.0003.ips
+2026-10-11 17:25:50.093 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 937 item(s) never reached (ended without reaching them); recycling Word and retrying the rest first, retried items last (pass 3, 1 of 3 stalled passes used)
+2026-10-11 17:25:50.093 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 17:25:50.093 | WARNING  | __main__:recycle:735 - [word] recycling (restart 2)
+2026-10-11 17:26:18.428 | INFO     | __main__:_loop:1077 - [batch pdf 3] 5/937
+2026-10-11 17:26:23.434 | INFO     | __main__:_loop:1077 - [batch pdf 3] 14/937
+2026-10-11 17:26:28.439 | INFO     | __main__:_loop:1077 - [batch pdf 3] 22/937
+2026-10-11 17:26:33.444 | INFO     | __main__:_loop:1077 - [batch pdf 3] 31/937
+2026-10-11 17:26:38.450 | INFO     | __main__:_loop:1077 - [batch pdf 3] 41/937
+2026-10-11 17:26:43.453 | INFO     | __main__:_loop:1077 - [batch pdf 3] 47/937
+2026-10-11 17:26:48.459 | INFO     | __main__:_loop:1077 - [batch pdf 3] 53/937
+2026-10-11 17:26:51.705 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 884 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 4, 1 of 3 stalled passes used)
+2026-10-11 17:26:51.705 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 17:26:51.705 | WARNING  | __main__:recycle:735 - [word] recycling (restart 3)
+2026-10-11 17:26:57.892 | WARNING  | __main__:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 17:27:01.003 | INFO     | __main__:_loop:1077 - [batch pdf 4] 2/884
+2026-10-11 17:27:06.007 | INFO     | __main__:_loop:1077 - [batch pdf 4] 8/884
+2026-10-11 17:27:11.012 | INFO     | __main__:_loop:1077 - [batch pdf 4] 15/884
+2026-10-11 17:27:16.017 | INFO     | __main__:_loop:1077 - [batch pdf 4] 22/884
+2026-10-11 17:27:21.022 | INFO     | __main__:_loop:1077 - [batch pdf 4] 29/884
+2026-10-11 17:27:26.024 | INFO     | __main__:_loop:1077 - [batch pdf 4] 35/884
+2026-10-11 17:27:31.028 | INFO     | __main__:_loop:1077 - [batch pdf 4] 40/884
+2026-10-11 17:27:36.034 | INFO     | __main__:_loop:1077 - [batch pdf 4] 44/884
+2026-10-11 17:28:24.674 | WARNING  | __main__:_loop:1082 - [batch pdf 4] item 45/884 open for more than 30 s:
+-- Word windows {name, subrole}: osascript timed out
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-4.log:
+[ok]	118
+[ok]	119
+[ok]	120
+[ok]	121
+[ok]	122
+[ok]	123
+[ok]	124
+[ok]	125
+[ok]	126
+[ok]	127
+[ok]	128
+[ok]	129
+[ok]	130
+[ok]	131
+[ok]	132
+[ok]	133
+[ok]	134
+[ok]	135
+[ok]	136
+[ok]	137
+[ok]	138
+[ok]	139
+[ok]	140
+[ok]	141
+[ok]	142
+[ok]	143
+[ok]	144
+[ok]	145
+[ok]	146
+[ok]	147
+[ok]	148
+[ok]	149
+[ok]	150
+[ok]	151
+[ok]	152
+[ok]	153
+[ok]	154
+[ok]	155
+[ok]	156
+[ok]	157
+[ok]	158
+[ok]	159
+[ok]	160
+[ok]	161
+-- newest diagnostic reports: soffice-2026-10-11-073006.0003.ips, soffice-2026-10-11-073006.0002.ips, soffice-2026-10-11-073006.000.ips, soffice-2026-10-11-073006.ips, soffice-2026-10-11-055610.0003.ips
+2026-10-11 17:33:36.245 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 839 item(s) never reached (ended without reaching them); recycling Word and retrying the rest first, retried items last (pass 5, 2 of 3 stalled passes used)
+2026-10-11 17:33:36.245 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 17:33:36.245 | WARNING  | __main__:recycle:735 - [word] recycling (restart 4)
+2026-10-11 17:34:01.420 | INFO     | __main__:_loop:1077 - [batch pdf 5] 2/839
+2026-10-11 17:34:06.425 | INFO     | __main__:_loop:1077 - [batch pdf 5] 8/839
+2026-10-11 17:34:11.427 | INFO     | __main__:_loop:1077 - [batch pdf 5] 13/839
+2026-10-11 17:34:16.433 | INFO     | __main__:_loop:1077 - [batch pdf 5] 19/839
+2026-10-11 17:34:21.437 | INFO     | __main__:_loop:1077 - [batch pdf 5] 25/839
+2026-10-11 17:34:26.440 | INFO     | __main__:_loop:1077 - [batch pdf 5] 33/839
+2026-10-11 17:34:31.446 | INFO     | __main__:_loop:1077 - [batch pdf 5] 38/839
+2026-10-11 17:34:36.447 | INFO     | __main__:_loop:1077 - [batch pdf 5] 45/839
+2026-10-11 17:34:41.451 | INFO     | __main__:_loop:1077 - [batch pdf 5] 54/839
+2026-10-11 17:34:46.457 | INFO     | __main__:_loop:1077 - [batch pdf 5] 56/839
+2026-10-11 17:34:48.063 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 783 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 6, 2 of 3 stalled passes used)
+2026-10-11 17:34:48.063 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 17:34:48.063 | WARNING  | __main__:recycle:735 - [word] recycling (restart 5)
+2026-10-11 17:34:49.353 | WARNING  | __main__:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 17:34:57.289 | INFO     | __main__:_loop:1077 - [batch pdf 6] 3/783
+2026-10-11 17:35:02.289 | INFO     | __main__:_loop:1077 - [batch pdf 6] 9/783
+2026-10-11 17:35:07.292 | INFO     | __main__:_loop:1077 - [batch pdf 6] 14/783
+2026-10-11 17:35:32.308 | INFO     | __main__:_loop:1077 - [batch pdf 6] 20/783
+2026-10-11 17:35:37.314 | INFO     | __main__:_loop:1077 - [batch pdf 6] 24/783
+2026-10-11 17:36:27.422 | WARNING  | __main__:_loop:1082 - [batch pdf 6] item 25/783 open for more than 30 s:
+-- Word windows {name, subrole}: ,
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-6.log:
+[ok]	220
+[ok]	221
+[ok]	222
+[ok]	223
+[ok]	224
+[ok]	225
+[ok]	226
+[ok]	227
+[ok]	228
+[ok]	229
+[ok]	230
+[ok]	231
+[ok]	232
+[ok]	233
+[ok]	234
+[ok]	235
+[ok]	236
+[ok]	237
+[ok]	238
+[ok]	239
+[ok]	240
+[ok]	241
+[ok]	242
+[ok]	243
+-- newest diagnostic reports: soffice-2026-10-11-073006.0003.ips, soffice-2026-10-11-073006.0002.ips, soffice-2026-10-11-073006.000.ips, soffice-2026-10-11-073006.ips, soffice-2026-10-11-055610.0003.ips
+2026-10-11 17:41:34.541 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 758 item(s) never reached (ended without reaching them); recycling Word and retrying the rest first, retried items last (pass 7, 3 of 3 stalled passes used)
+2026-10-11 17:41:34.541 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 17:41:34.541 | WARNING  | __main__:recycle:735 - [word] recycling (restart 6)
+2026-10-11 17:41:57.456 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 01a43df57c.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:57.614 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 0bc720e5fa.docx — Microsoft Word got an error: AppleEvent timed out.
+2026-10-11 17:41:57.767 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 143e7a6dc4.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:57.883 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 1cab097dbc.docx — 
+2026-10-11 17:41:57.988 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 2c0433bdbc.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.038 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 3182a1cb82.docx — Microsoft Word got an error: AppleEvent timed out.
+2026-10-11 17:41:58.039 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 31b13fd92e.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.040 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 31b2203d8c.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.040 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 31bbf97599.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.041 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 3215251135.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.041 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 3236df7c1e.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.042 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 323a1a1e2c.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.043 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 327ae4e5e4.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.043 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 327dbcdaa0.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.044 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 329808a1dc.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.044 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 331221556e.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.045 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 331ab44630.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.046 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 3343d6352b.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.046 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 335cc03b23.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.047 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 33b9490363.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.047 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 3443f468cd.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.048 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 3455009668.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.048 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 34cdc4aef6.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.048 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 34d8738ab3.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.050 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 34e4211b58.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.050 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 34ea4e4e07.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.052 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 34ffddfe47.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.052 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 357b04b245.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.052 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 358234e61c.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.053 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 35e6aad724.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.053 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 362913bbc7.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.054 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 3636f692a7.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.054 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 365debc124.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.055 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 3661b66884.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.055 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 37277c15a6.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.056 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 37c978d405.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.056 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 380aeec055.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.057 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 385d51f24e.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.057 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 3867fafc1b.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.058 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 393bcc39e4.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.058 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 394edcad89.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.059 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 3a1639ffb9.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.059 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 3a214edcc8.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.059 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 3a4b48cd02.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.060 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 3a7f98f21b.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.061 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 3b09d6afde.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.061 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 3b0aa9cb14.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.062 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 3b133e5659.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.062 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 3b38c427df.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.063 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 3b56113728.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.063 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 3b57d40fff.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.064 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 3b63fb2ef1.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.064 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 3b995e1708.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.064 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 3bc1b275af.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.065 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 3bc839e440.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.065 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 3be4fcdaf1.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.066 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 3c03f4033a.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.067 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 3c6ff98415.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.067 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 3d2c176562.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.068 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 3d7a870506.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.068 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 3dac82f40a.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.069 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 3e31f3c8b9.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.069 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 3e31f3e5ec.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.070 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 3e3a4c751f.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.070 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 3e4b94de41.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.071 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 3e7067f872.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.071 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 3ebf5e5557.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.072 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 3f1ba46ee7.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.072 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 3f21ae23dc.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.073 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 3f3f2b03b1.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.074 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 3f56b101d2.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.075 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 3f74e8a0d4.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.075 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 3f9670141d.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.076 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 3faf6e148e.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.076 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 3fb014942a.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.077 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 40173d334a.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.077 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 4019af2d56.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.078 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 408597db4d.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.079 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 409de8d456.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.079 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 4117d8340b.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.080 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 415fa42f00.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.080 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 41c348f99d.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.080 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 41c87b1359.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.081 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 4240c86ddb.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.081 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 4256a31075.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.082 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 4264f1fbe3.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.083 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 42878027b0.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.083 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 428f3f3022.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.084 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 42d1acd8a6.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.084 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 42e2b0605f.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.085 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 4300f2f735.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.085 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 434990bdb3.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.086 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 4364428e37.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.087 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 4428350d59.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.088 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 443c2cc494.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.089 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 44a0775d6b.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.089 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 44a468bfc6.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.090 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 450945a41c.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.090 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 452c8f76a5.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.091 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 4591e9753b.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.091 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 4593be0320.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.092 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 4618d6926f.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.093 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 46abf7643d.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.094 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 47af564670.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.094 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 47c39c50c3.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.095 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 4806d5125d.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.096 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 48b006f032.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.096 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 48e4b4f346.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.097 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 496b13e942.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.098 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 498f22a0ba.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.098 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 49ed3281ea.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.099 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 4a05dab534.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.099 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 4a8b3c676a.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.100 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 4a9a8d0b4a.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.100 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 4b140ffdfc.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.101 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 4b66d5f6e9.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.101 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 4b8e914996.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.102 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 4b964840ae.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.103 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 4c8efcc17b.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.103 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 4ca3f73206.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.104 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 4ce2d5cacc.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.104 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 4d10fec5fc.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.105 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 4d1c94901b.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.108 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 4d5de07b0e.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.109 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 4d6413f64d.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.109 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 4d7ccddfdc.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.110 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 4da1ca3b20.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.111 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 4da2a85f36.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.111 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 4e3d14b3d3.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.112 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 4e5492388f.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.112 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 4e71e60a5a.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.113 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 4ea3d6091d.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.113 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 4f2cc27f3b.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.114 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 4f5404b0fa.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.114 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 4f54cef23c.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.114 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 4fac1ecf86.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.115 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 4ff9420e2e.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.115 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 50108f87c5.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.116 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 504be025b7.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.116 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 5068b053d6.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.118 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 50deed1157.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.118 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 50e71f1eff.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.119 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 511cb2428e.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.119 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 512b24be1e.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.120 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 515c0aa8ab.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.121 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 5173498bab.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.121 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 518c606bf2.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.121 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 5197653693.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.122 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 51c9eab1af.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.123 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 5245c92a2c.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.123 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 527b7f9493.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.124 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 5280c55017.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.124 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 5287854336.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.125 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 52c55be055.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.125 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 52d9251560.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.125 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 52ee8bfbc7.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.126 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 52f93a00df.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.126 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 5316963640.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.127 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 5325dc70b4.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.127 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 53547c0ecb.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.128 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 537a8cea0d.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.128 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 5382cefb5d.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.129 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 53b52b7b2d.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.130 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 540ffd9ee6.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.130 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 5457f839e0.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.134 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 5477ba61c5.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.134 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 54a357b53a.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.135 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 54dd9bf0c3.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.135 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 55b0f23e41.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.136 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 55e7a12ff4.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.136 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 56915a8dc8.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.137 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 56c88d95bf.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.137 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 57bddc3300.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.138 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 57cfa10f33.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.139 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 57dfcda882.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.139 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 57f4eb65ff.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.140 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 580f51f15c.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.141 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 580f8e2e8a.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.141 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 581907f19c.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.142 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 585342dcd0.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.142 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 58b3bd3cbc.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.143 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 58cd08049b.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.144 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 58cea5fd68.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.144 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 59071be97f.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.145 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 599789f1d9.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.145 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 59d7431859.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.146 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 59dbbc9d85.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.146 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 5a100df35e.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.147 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 5aa9df719b.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.147 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 5b35efe2bb.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.149 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 5b44fd7ae2.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.149 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 5b7086a992.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.150 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 5baa576488.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.151 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 5c4b0424a1.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.152 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 5c9b55c96b.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.153 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 5d431c38ff.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.153 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 5d6ae5ad0c.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.154 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 5daae0d169.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.154 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 5e067b0987.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.155 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 5e52b54e3b.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.155 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 5eadd8381f.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.156 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 5f413430ed.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.156 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 5f90841fd1.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.157 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 600b6a365e.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.158 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 603384c725.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.159 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 60e784f2de.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.159 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 61283a9049.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.160 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 6130625780.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.160 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 613bd7fb63.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.161 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 6167071c5d.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.161 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 617e392832.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.162 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 61959b1953.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.163 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 6213202228.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.163 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 628c96c5fa.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.164 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 62992fde4e.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.164 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 62f0f8ee91.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.165 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 6327924547.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.165 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 632d907668.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.168 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 638842c111.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.169 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 63aab221fa.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.169 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 63b8eed530.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.170 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 6427e840c3.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.170 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 642d34f1f7.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.171 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 64a83cfbb0.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.172 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 64c527dde8.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.172 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 64e3ba9c22.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.173 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 64ee3d6f02.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.173 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 6514f51552.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.173 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 651e1bcc1c.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.174 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 6532beda4d.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.175 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 65aa483982.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.175 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 65d959fe82.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.176 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 660862c753.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.176 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 6634bb87c1.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.177 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 66508bbead.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.177 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 666d0bdeb7.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.178 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 66a74e821c.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.178 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 66c61636a6.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.179 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 67b4573b7d.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.179 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 6801d5a297.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.180 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 6810ed11e0.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.180 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 689f2c8333.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.181 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 699cc8bd70.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.181 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 69e44ac125.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.181 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 6a034c8279.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.182 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 6a1f8b9ee6.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.183 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 6a343424b7.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.183 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 6a3dcdab1e.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.184 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 6af7bc5540.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.184 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 6b5acce072.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.185 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 6b5e01e3a3.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.185 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 6b69ef5b77.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.186 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 6b74ac1ae6.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.186 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 6b78c8e0eb.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.187 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 6ba792365c.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.187 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 6bba73f309.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.189 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 6bc323aa0d.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.189 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 6be28b28eb.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.190 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 6bf27a32db.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.190 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 6c9e1de72b.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.191 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 6ce47d4bdd.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.191 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 6d53941908.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.192 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 6d7b361292.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.192 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 6de20376e8.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.193 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 6dee5896b8.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.193 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 6eb86c50f8.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.194 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 6ed1a241a2.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.194 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 6f18d91819.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.195 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 6f547c7a01.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.195 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 6f6e4ae3e8.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.196 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 6fe4ab13ba.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.196 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 705fe9b38b.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.197 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 7070a9c7b0.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.198 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 70c30e926c.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.199 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 70e5a6c7c8.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.199 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 70f229e446.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.200 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 70f8737437.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.200 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 710426a66c.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.201 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 7127dd0325.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.201 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 713774d8e1.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.202 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 717c57bbca.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.203 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 71c08fc63c.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.203 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 71e859d346.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.204 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 7252aa05ca.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.204 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 72d58e2d23.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.204 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 73105518ef.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.205 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 7321b254f7.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.205 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 733a842334.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.206 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 743b484b69.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.206 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 745218f254.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.207 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 7496d9e432.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.207 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 754a666443.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.208 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 75dfed19c8.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.208 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 75ff938b20.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.209 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 762bbc293b.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.209 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 766a042194.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.209 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 7688090a37.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.210 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 76a536e0f9.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.210 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 76b9eb4925.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.211 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 76bfb0dd55.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.211 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 76dc7b8823.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.212 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 76f4a58792.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.212 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 77551033aa.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.213 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 77a6193e3e.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.213 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 77e4a6bed0.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.214 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 7810afa11e.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.214 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 78cd8859b6.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.215 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 7a1d3fbeba.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.215 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 7a60ec99bd.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.216 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 7b886df4cf.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.216 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 7cc19c9376.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.216 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 7d3cfc66f7.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.217 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 7dd778e04f.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.217 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 7e598e6a80.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.218 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 7edc10162c.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.218 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 7ee9ae5c62.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.219 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 7f222bb103.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.220 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 7f412aa4b4.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.220 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 7f450b2b12.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.220 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 7f4a817c2a.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.221 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 80188ee236.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.221 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 8029bc78c5.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.222 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 804039550d.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.222 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 80572dd900.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.223 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 805b1d56a0.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.223 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 8124104fcc.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.223 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 814dac9051.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.224 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 8194fae646.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.225 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 81e9a63aac.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.225 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 81ecf9d6d2.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.225 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 81f83d335f.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.226 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 82630d00f7.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.226 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 82bf64f742.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.227 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 82c9c77361.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.227 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 82d548bdea.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.228 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 82e22bbec6.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.228 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 834a4b8d15.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.229 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 835297a585.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.229 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 83586affa8.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.230 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 8358846f3a.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.230 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 838cab60dc.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.231 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 83ec2122ff.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.231 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 842ef93738.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.232 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 8487cca767.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.232 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 84974ba395.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.233 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 84a4b991e5.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.234 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 84ab4181b4.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.234 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 84b1a5774e.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.235 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 854b04698b.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.235 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 855163e39c.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.236 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 8568ca15a1.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.236 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 85b79dc2e9.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.236 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 85cf240f69.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.237 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 8644055513.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.237 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 8671fb899e.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.238 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 8684b04242.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.239 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 8694636a78.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.239 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 86f2cf4fed.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.239 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 870274e32c.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.240 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 8771dc6990.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.240 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 87e1d30520.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.241 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 8859b473b1.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.241 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 885c507f6f.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.242 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 88f6793bd8.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.242 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 897500844c.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.243 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 8993b015d5.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.243 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 89a298695e.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.244 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 89a50b2cb9.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.244 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 89c1335efe.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.245 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 89c44edb8b.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.245 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 8a4d68d7e6.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.246 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 8a860250f5.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.246 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 8b52069e05.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.246 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 8b7be48c4e.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.247 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 8b97fbb240.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.247 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 8bdd3868dc.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.248 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 8be0329c00.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.248 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 8c0d466e54.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.249 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 8c49315d23.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.249 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 8cb8af8d7f.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.250 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 8d96e79b03.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.250 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 8de55978f2.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.251 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 8ebf34fee2.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.251 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 8ececb9d11.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.251 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 8f77b9462e.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.252 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 8f874f5725.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.252 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 90337df4a4.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.253 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 908bdf8e88.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.255 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 908c3218df.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.255 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 90fd5a464a.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.256 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 911ada0883.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.256 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 9129d2ecd2.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.256 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 913d076e79.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.257 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 91ad89c7fa.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.257 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 91c1ece7c9.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.258 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 91cd75730c.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.258 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 92007a337a.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.259 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 920a09cccc.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.259 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 921f798437.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.260 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 9240f816df.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.260 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 9271515406.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.261 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 931691a601.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.261 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 934b3e4467.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.262 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 9382e03243.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.262 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 944074982f.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.263 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 94446cff5f.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.263 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 945512cfa2.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.264 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 9494f2e92a.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.264 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 949f3e87b7.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.265 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 94e8c9f0f6.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.265 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 94f418b300.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.266 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 958c6f10c9.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.266 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 95f7a84264.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.266 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 96417ebe02.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.267 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 96442dbf47.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.268 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 968fd6cc01.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.268 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 97a198f0c8.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.269 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 98576c297a.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.269 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 986b2229a1.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.270 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 99002a2953.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.271 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 9927a758f4.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.271 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 992e41eac1.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.273 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 996048d1f6.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.273 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 99740a096f.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.274 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 99a7d5e4cb.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.274 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 9aaee10fdf.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.275 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 9b22b88370.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.275 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 9b49bbb009.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.276 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 9b9267a9c6.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.276 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 9b9c5719f3.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.277 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 9bd3b882f8.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.278 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 9c1f654ea9.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.279 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 9c2f40d561.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.279 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 9c71031b8a.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.280 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 9c8dfe806d.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.281 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 9d0b6ef8ad.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.281 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 9d403ce9bf.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.281 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 9d682fe39d.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.282 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 9dfaecf9a9.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.282 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 9e3417adee.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.283 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 9e90a372cd.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.283 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 9ea8efb431.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.284 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 9ecc441a38.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.284 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 9f06a0f82a.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.285 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 9f3f036b1a.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.286 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: a045479a81.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.286 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: a07535b014.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.286 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: a09aa89f13.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.287 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: a0aea3161b.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.287 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: a0b32ee481.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.288 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: a0d2331c56.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.288 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: a11586e37e.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.289 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: a151dfccc4.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.289 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: a17204b65b.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.290 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: a1d1d1f6df.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.290 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: a2204e4435.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.291 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: a28144f9d6.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.291 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: a33b8e810a.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.291 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: a360af5a6c.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.292 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: a3f0470a1d.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.292 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: a452f4053f.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.293 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: a4bff48090.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.293 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: a5678bf47a.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.294 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: a592f044b1.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.294 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: a702002b5b.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.295 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: a72825a276.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.296 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: a752aefea3.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.296 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: a78b94020d.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.296 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: a78bc32904.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.297 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: a7a2b67fe7.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.298 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: a7ee4976dd.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.298 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: a801cecdd1.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.298 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: a816fdc8d9.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.299 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: a836952933.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.299 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: a88693255c.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.300 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: a8c44068c2.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.300 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: a8eba11068.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.301 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: a92c070f3a.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.301 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: a9333255ca.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.301 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: a954a57308.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.302 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: a97bb9b57f.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.303 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: a990caf95a.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.303 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: a9a1b530a9.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.303 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: a9c36c66b8.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.304 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: a9ee2a2ea7.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.305 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: aa31228e52.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.305 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: aab02de072.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.306 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: ab4013404e.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.306 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: ab8d070a28.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.307 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: acafcbe293.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.307 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: acccebf575.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.308 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: acd5cf3bf2.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.308 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: ace788a217.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.309 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: ad45442559.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.309 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: ad917ac52c.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.310 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: ae728ba215.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.311 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: ae9547abd2.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.311 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: af11cf2e9f.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.312 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: af166d1821.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.313 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: afd68ec48d.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.313 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: b06a78c266.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.314 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: b0c99c33c7.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.314 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: b0d09c67a7.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.315 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: b0ddf08ac6.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.315 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: b11e674787.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.315 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: b13a27e36d.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.316 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: b164655b2a.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.316 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: b2334f8c1c.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.317 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: b26364fa4f.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.317 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: b2704631d9.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.318 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: b2e3450b98.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.318 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: b351836b34.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.319 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: b3b3e1d662.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.319 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: b4072979f7.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.320 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: b461d6f797.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.320 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: b4b93051b5.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.321 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: b4c606bf91.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.321 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: b527e80873.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.321 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: b534da972f.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.322 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: b547e31a0d.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.322 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: b553be7ee0.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.323 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: b624ac3167.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.323 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: b626364e3d.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.324 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: b71737269e.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.324 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: b72d78a5fb.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.325 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: b778cdcad3.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.325 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: b88ba7adc8.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.326 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: b90ed7b17f.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.326 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: b9c294a2e1.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.327 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: b9ff71bba4.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.327 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: b9ff832216.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.328 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: ba665aeaab.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.328 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: ba86b047dd.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.329 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: baef53386e.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.329 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: bb20890039.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.330 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: bb42b4d0bc.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.330 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: bb7bb84780.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.331 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: bbaad01a9e.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.332 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: bbc3223232.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.333 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: bbfeb633fc.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.334 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: bc29cd91ef.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.335 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: bc6f8076f9.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.335 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: bc992e6331.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.335 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: bd17d03043.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.336 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: bda144be42.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.336 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: bdea97dde1.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.337 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: be10e7059e.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.337 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: be1cdf6d38.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.338 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: be486e3b25.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.338 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: be59d358de.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.339 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: c0af64b076.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.340 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: c0ccf8398d.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.340 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: c0cedbcb4c.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.341 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: c1151a57e5.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.341 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: c11ed1b893.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.341 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: c12ee3e25e.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.342 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: c14d37ccdb.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.342 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: c1ab41fd94.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.343 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: c1ab70efd1.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.343 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: c2380a4677.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.344 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: c239738453.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.344 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: c277edafd3.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.345 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: c3641772d7.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.345 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: c3a0959483.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.346 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: c3e476cddb.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.346 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: c40f3cc643.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.347 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: c46dee2ac8.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.347 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: c486f3a829.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.348 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: c4a18d1d66.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.348 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: c4f4921c0a.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.349 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: c56e84eaea.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.349 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: c68bde126f.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.350 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: c69f43f277.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.350 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: c6e40e9907.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.351 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: c6e5577115.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.351 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: c719b900f0.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.352 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: c73f3b76a3.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.352 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: c85d3b6a37.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.353 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: c85d7fadac.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.353 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: c86b61b740.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.354 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: c87d6d7acc.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.355 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: c88672a4fd.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.355 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: c8ffe00add.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.355 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: c9b73cc74a.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.356 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: c9e5aa6529.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.357 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: ca002ef9ee.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.357 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: cad0c541fc.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.358 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: cad6a08350.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.358 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: cb0a7d2c98.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.359 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: cb164cf87a.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.359 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: cb330ddba7.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.360 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: cb9583377c.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.361 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: cba1b8223c.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.361 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: cc4c55c6f1.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.362 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: cc7edf29ba.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.362 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: cca74d99b4.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.363 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: ccc5f1207c.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.363 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: cd49552c60.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.363 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: cde0f6e857.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.364 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: ce8a4577c2.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.364 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: cf4189e197.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.365 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: cf59b4d751.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.366 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: d01999eb47.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.366 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: d0e7a08bbd.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.367 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: d18f000a30.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.367 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: d1b038c74f.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.368 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: d1d69a8352.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.368 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: d244fd1091.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.369 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: d2bbb79024.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.369 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: d32aa9b706.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.370 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: d36027aaa0.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.370 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: d3b5939138.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.370 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: d3c6552dae.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.371 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: d4210ba585.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.373 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: d452d8446d.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.373 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: d484b575c0.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.374 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: d4a0dd0a2f.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.374 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: d525625b0d.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.375 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: d5374ad215.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.375 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: d562e60f4a.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.376 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: d5d3c12881.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.376 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: d5ec340b25.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.377 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: d610d90c10.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.378 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: d652ae82a1.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.379 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: d6580e6209.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.380 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: d68996f643.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.380 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: d789ef173d.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.381 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: d7c9740ae5.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.381 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: d8000a64a2.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.382 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: d857dcf970.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.382 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: d8669ef4ce.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.383 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: d9990b9bad.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.383 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: d9bb456306.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.384 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: da2602b1c0.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.384 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: da64554015.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.385 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: da86d0513e.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.385 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: daa4804467.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.386 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: daaf1625f5.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.386 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: db0f90defc.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.386 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: db773ff332.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.387 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: db9f3507a3.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.387 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: dbdf0f687c.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.388 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: dc8cfb0974.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.388 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: dcbff66ff4.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.389 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: dd1816c8cf.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.389 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: dd1abd5b03.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.390 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: ddbe8d9885.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.390 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: ddcf9ff94e.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.392 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: dde913904e.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.393 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: deab4d1fab.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.393 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: debc1b191d.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.394 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: df497fd549.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.394 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: df6a9b5113.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.395 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: e012892af0.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.395 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: e0af18fb3d.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.396 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: e0dd866330.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.396 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: e10f3341b2.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.396 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: e11f5f1915.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.397 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: e1a794efce.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.397 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: e1df09500c.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.398 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: e22dd7a2c9.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.398 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: e355676ef2.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.399 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: e3e1e9411f.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.399 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: e41893335f.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.400 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: e43f190f6d.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.400 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: e48e5fec25.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.401 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: e4caa53829.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.401 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: e50d2db84c.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.401 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: e545a33fde.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.402 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: e54e43a5e5.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.403 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: e56ce4ec16.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.403 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: e5cff4e8d9.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.404 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: e5d359e783.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.404 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: e61238bd61.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.405 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: e629604db4.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.405 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: e633129040.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.406 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: e6c5808318.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.406 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: e6cd25aa6e.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.407 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: e7d9a076ba.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.407 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: e83dabcd41.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.408 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: e86d844120.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.408 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: e86eac55d3.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.409 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: e8b19581fa.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.410 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: e8bb80b455.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.410 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: e8fafc3cba.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.411 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: e947e54e5c.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.411 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: e981300405.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.411 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: e9cb6a04e1.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.412 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: e9de5be772.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.412 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: e9ef73a8e4.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.413 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: eabf2cede7.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.413 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: eb3d6ce130.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.414 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: ebb062d676.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.414 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: ec403c8c9c.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.415 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: ec7d978fc5.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.415 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: ecb53780cf.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.415 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: eccfe6bdf8.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.416 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: ecda810766.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.416 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: ece42865e7.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.417 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: ecea12416c.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.417 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: ed3701fb29.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.417 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: ed9f4b0a5b.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.418 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: ede1920163.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.418 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: ee00700829.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.419 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: ee4fe9eb15.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.419 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: ee62e16f5f.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.420 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: ee80941306.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.420 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: eec0e628c9.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.421 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: eeca464515.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.421 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: eee4f02ca3.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.422 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: ef3bb4f5d4.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.422 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: ef51261c54.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.423 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: efa9bdd06a.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.423 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: f033107e8f.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.424 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: f123c56b64.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.424 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: f14ce3f749.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.424 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: f194709881.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.425 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: f19921855c.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.425 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: f1e8654a15.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.426 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: f263af77b3.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.426 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: f26f0db15f.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.427 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: f28992f568.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.427 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: f2cd201c3a.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.428 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: f2f9d9b24a.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.428 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: f30cea827b.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.428 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: f41944e3ec.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.429 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: f4228003d6.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.429 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: f4c6150dbe.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.430 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: f51f0a9928.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.431 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: f521412f8a.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.431 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: f530e02882.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.432 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: f6aa53210c.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.432 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: f6c1cd47a3.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.432 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: f72cd71154.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.433 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: f72e40955d.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.433 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: f74e2a39d6.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.434 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: f787d881e3.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.434 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: f7d91771e6.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.435 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: f7ff3d75ec.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.435 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: f852ffac2f.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.436 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: f88098d013.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.436 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: f89b2e8365.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.437 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: f89e2f03ac.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.437 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: f8b4a6220f.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.438 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: f903446fa2.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.438 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: f90c5ec9b7.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.439 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: fa05623f53.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.439 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: fb356fdbcd.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.439 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: fb97e850ce.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.440 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: fce8ea8032.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.440 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: fd2201fe85.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.441 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: fd7dc3247c.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.441 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: fd9d6be0de.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.442 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: fe0cad096f.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.442 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: fe89171ce8.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.442 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: fea87b305c.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.443 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: feacbc347e.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.444 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: fedf795758.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.444 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: fee04c36ab.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.444 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: ffd6b29609.docx — never reached in 3 batch pass(es)
+2026-10-11 17:41:58.445 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: ffe81a1058.docx — never reached in 3 batch pass(es)
+2026-10-11 17:42:00.120 | INFO     | __main__:_note_buttons:514 - [watchdog] Microsoft Word shows button 'missing value'

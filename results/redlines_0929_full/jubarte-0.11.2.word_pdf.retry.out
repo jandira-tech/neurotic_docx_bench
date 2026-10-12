@@ -1,0 +1,14 @@
+2026-10-03 17:21:34.976 | INFO     | __main__:preflight:1812 -  preflight: 
+open_documents=0 started_clean=True launched_by_us=False close_documents=False
+2026-10-03 17:21:35.020 | INFO     | __main__:convert_folder:1486 -  export: 
+one_osascript=False documents=421 accept_all=False reject_all=False
+        DOCX → PDF:         
+results/redlines_0929_full/j
+     ubarte-0.11.2/docx     
+┏━━━━━━━━━━━━━━━━━━┳━━━━━━━┓
+┃ outcome          ┃ count ┃
+┡━━━━━━━━━━━━━━━━━━╇━━━━━━━┩
+│ converted        │     0 │
+│ skipped (exists) │   421 │
+│ failed           │     0 │
+└──────────────────┴───────┘

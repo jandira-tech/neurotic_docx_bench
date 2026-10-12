@@ -1,0 +1,92 @@
+2026-09-29 14:56:28.534 | INFO     | __main__:preflight:1762 -  preflight: 
+open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-09-29 14:56:28.614 | INFO     | __main__:convert_folder:1436 -  export: 
+one_osascript=True documents=400 accept_all=True reject_all=False
+2026-09-29 14:56:33.750 | INFO     | __main__:_convert_batched:1635 -  one 
+osascript for 6 document(s)
+2026-09-29 14:56:38.789 | INFO     | __main__:_loop:1025 -  0/6
+2026-09-29 15:00:34.133 | WARNING  | __main__:run_batch_with_resume:1156 -  5 
+item(s) never reached (ended without reaching them); recycling Word and retrying
+the rest first, retried items last (pass 2, 1 of 3 stalled passes used)
+2026-09-29 15:00:34.134 | WARNING  | __main__♻724 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-09-29 15:00:34.135 | WARNING  | __main__♻730 -  recycling (restart 1)
+2026-09-29 15:00:45.091 | INFO     | __main__:_note_buttons:509 -  Microsoft 
+Word shows button 'No'
+2026-09-29 15:00:45.092 | INFO     | __main__:_note_buttons:509 -  Microsoft 
+Word shows button 'Yes'
+2026-09-29 15:00:45.749 | INFO     | __main__:_loop:1025 -  0/5
+2026-09-29 15:00:50.909 | WARNING  | __main__:_loop_word:539 -  Word dialog 
+dismissed via 'No'
+2026-09-29 15:04:41.058 | WARNING  | __main__:run_batch_with_resume:1156 -  4 
+item(s) never reached (ended without reaching them); recycling Word and retrying
+the rest first, retried items last (pass 3, 2 of 3 stalled passes used)
+2026-09-29 15:04:41.061 | WARNING  | __main__♻724 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-09-29 15:04:41.062 | WARNING  | __main__♻730 -  recycling (restart 2)
+2026-09-29 15:04:50.386 | INFO     | __main__:_loop:1025 -  0/4
+2026-09-29 15:04:56.990 | WARNING  | __main__:_loop_word:539 -  Word dialog 
+dismissed via 'No'
+2026-09-29 15:08:45.681 | WARNING  | __main__:run_batch_with_resume:1156 -  3 
+item(s) never reached (ended without reaching them); recycling Word and retrying
+the rest first, retried items last (pass 4, 3 of 3 stalled passes used)
+2026-09-29 15:08:45.683 | WARNING  | __main__♻724 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-09-29 15:08:45.683 | WARNING  | __main__♻730 -  recycling (restart 3)
+2026-09-29 15:08:49.028 | ERROR    | __main__:_convert_batched:1680 -  FAIL: 
+7a48682ea5_super_editor__superdoc_hyperlink_cases_1dde9cd3__vs__7098537b0d_super
+_editor__base_custom_544164f9_redline_686a6405b2_docxodus.docx — Microsoft Word 
+got an error: AppleEvent timed out.
+2026-09-29 15:08:49.030 | ERROR    | __main__:_convert_batched:1680 -  FAIL: 
+a4642f7f90_mcdoc__vs__90e2c33814_meeting_agenda_table_2_redline_26c3aa16a6_docxo
+dus.docx — Microsoft Word got an error: AppleEvent timed out.
+2026-09-29 15:08:49.031 | ERROR    | __main__:_convert_batched:1680 -  FAIL: 
+a94f4c516b_text_box__vs__356b7a3629_text_highlight_demo_style_default_missing_re
+dline_4300f2f735_docxodus.docx — Microsoft Word got an error: AppleEvent timed 
+out.
+2026-09-29 15:08:49.032 | ERROR    | __main__:_convert_batched:1680 -  FAIL: 
+ab85c77154_file_115__vs__b7219494de_file_116_redline_61959b1953_docxodus.docx — 
+never reached in 3 batch pass(es)
+2026-09-29 15:08:49.033 | ERROR    | __main__:_convert_batched:1680 -  FAIL: 
+bd7b6b2bd0_super_editor__pagination_with_hard_break_8ce8c15__vs__8ab3f01cdd_supe
+r_editor__paragraph_indent_normal_styles_85f_redline_064fdf1a12_docxodus.docx — 
+never reached in 3 batch pass(es)
+2026-09-29 15:08:49.035 | ERROR    | __main__:_convert_batched:1680 -  FAIL: 
+c498e8c52c_super_editor__contract_acc_bbd983a0__vs__43dd6753e6_super_editor__dif
+f_before7_5bad2542_redline_ee45c5a315_docxodus.docx — never reached in 3 batch 
+pass(es)
+  accept all → DOCX + PDF:  
+results/redlines_0929_split/
+  docxodus/accept_all/src   
+┏━━━━━━━━━━━━━━━━━━┳━━━━━━━┓
+┃ outcome          ┃ count ┃
+┡━━━━━━━━━━━━━━━━━━╇━━━━━━━┩
+│ converted        │     0 │
+│ skipped (exists) │   394 │
+│ failed           │     6 │
+└──────────────────┴───────┘
+  FAIL 
+7a48682ea5_super_editor__superdoc_hyperlink_cases_1dde9cd3__vs__7098537b0d_super
+_editor__base_custom_544164f9_redline_686a6405b2_docxodus.docx: Microsoft Word 
+got an error: AppleEvent timed out.
+  FAIL 
+a4642f7f90_mcdoc__vs__90e2c33814_meeting_agenda_table_2_redline_26c3aa16a6_docxo
+dus.docx: Microsoft Word got an error: AppleEvent timed out.
+  FAIL 
+a94f4c516b_text_box__vs__356b7a3629_text_highlight_demo_style_default_missing_re
+dline_4300f2f735_docxodus.docx: Microsoft Word got an error: AppleEvent timed 
+out.
+  FAIL 
+ab85c77154_file_115__vs__b7219494de_file_116_redline_61959b1953_docxodus.docx: 
+never reached in 3 batch pass(es)
+  FAIL 
+bd7b6b2bd0_super_editor__pagination_with_hard_break_8ce8c15__vs__8ab3f01cdd_supe
+r_editor__paragraph_indent_normal_styles_85f_redline_064fdf1a12_docxodus.docx: 
+never reached in 3 batch pass(es)
+  FAIL 
+c498e8c52c_super_editor__contract_acc_bbd983a0__vs__43dd6753e6_super_editor__dif
+f_before7_5bad2542_redline_ee45c5a315_docxodus.docx: never reached in 3 batch 
+pass(es)

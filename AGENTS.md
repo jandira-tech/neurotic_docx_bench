@@ -76,8 +76,8 @@ Key modules (`src/neurotic_docx_bench/`):
   `accept_all`, `reject_all`), one naming scheme (`<idA>_<a>__vs__<idB>_<b>_redline_<idC>`
   for comparisons), built by `bench corpus build --origins <Word's working folders>`. Lists live in
   `corpus/word/pools/` (`<set>_pairs.csv`: key, base, next, docx, pdf, state; base/next are
-  paths under `corpus/word` without the suffix). Everything under `corpus/` is tracked, docx and
-  PDFs included: it is the one source of truth. Code finds files through
+  paths under `corpus/word` without the suffix). `corpus/` is the one source of truth; its
+  docx and PDFs live on the Hugging Face hub (below) and may be absent locally. Code finds files through
   `neurotic_docx_bench.corpus_paths` (`pairs(set)`, `documents(set)`, `comparisons(set)`).
 - The oracle's **markup** is Word's; its **rendering** must match the candidates' renderer.
   `bench.yaml` has `renderer: auto` and `oracle_roots: {word: corpus/word, soffice:
@@ -91,6 +91,35 @@ Key modules (`src/neurotic_docx_bench/`):
   gone: code and research scripts read `corpus/word` and its pools. A pair's `stem` in
   `corpus_paths` is its pre-corpus `<base>_<next>` name (from `notices/RENAMED.csv`), so older
   results keyed by it still line up.
+
+## Getting the corpus files back (they live on the hub)
+
+On 2026-10-11 the 16,768 DOCX/PDF files under `corpus/` were uploaded to the public dataset
+[`arthrod/neurotic_docx_bench-fixtures`](https://huggingface.co/datasets/arthrod/neurotic_docx_bench-fixtures)
+(16,853 files, 2.72 GB, every one verified against the hub by sha256) and deleted locally: `corpus/` went
+from 2.6 GB to 25 MB. The tables (`documents.csv`, `comparisons.csv`, `pools/`, `word_map.csv`,
+`sources.tsv`), READMEs, `PROVENANCE.json` and manifests stayed. **Before anything that opens a docx or
+PDF under `corpus/`** (a bench run, `bench corpus check`, `scripts/word_*.py` on corpus paths, a site
+rebuild that reads Word's PDFs), bring them back:
+
+```bash
+uv run bench fixtures download                     # into corpus/; refuses any file not matching MANIFEST.sha256.json
+uv run bench fixtures download --revision <sha>    # a pinned snapshot
+uv run bench corpus check                          # re-checks corpus/word against corpus/word/MANIFEST.sha256.json
+```
+
+- The hub repo mirrors `corpus/` path for path (`word/`, `libreoffice/`, `word_unindexed/`, plus
+  `mutation_probes/`, `canary_expected.json`, `holdout_combined.txt`, which the canary, holdout and
+  mutation-probe tests read from `corpus/`). Its `data/*.parquet` and `README.md` (the dataset card) are
+  derived; `*.log` files are not uploaded.
+- One file without the whole tree: the `documents` / `comparisons` configs carry `*_repo_path` columns
+  for `hf_hub_download("arthrod/neurotic_docx_bench-fixtures", path, repo_type="dataset")`.
+- The repo's older by-origin layout (`word_based/`, `no_comments_pdf_was_generated_by_word/`, …) is
+  the tag `layout-2026-10-10`.
+- Re-publishing after a corpus change: `uv run --with polars --with huggingface_hub python scripts/hf_fixtures/hf_fixtures.py build|upload|verify`
+  (rebuilds the card, the parquet configs and the root manifest; `upload` replaces the hub tree in
+  one commit and refuses while any manifest file is missing locally, so download first; `verify` re-hashes every local file against the hub). `bench fixtures upload` writes the
+  manifest but not this card and leaves stale remote files in place.
 
 ## Tools benchmarked
 

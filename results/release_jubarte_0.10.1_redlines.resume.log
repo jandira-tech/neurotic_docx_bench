@@ -1,0 +1,13 @@
+== redlines: word answers
+   ok: Microsoft Word 16.115
+== install: release binary
+   ok: /Users/arthrod/.cache/neurotic-docx-bench/jubarte/0.10.1/jubarte-0.10.1-macos-aarch64/jubarte (0.10.1, sha256 checked)
+== redlines: generate
+   ok: node --import tsx scripts/generate-native-redlines.ts --method jubarte-rust --dist /Users/arthrod/.cache/neurotic-docx-bench/jubarte/0.10.1/jubarte-0.10.1-macos-aarch64 --tool jubarte-0.10.1 --manifest results/redlines_0929_full/gen_pairs.csv --source-dir corpus/word --out results/redlines_0929_full/jubarte-0.10.1/docx --run-dir results/redlines_0929_full/jubarte-0.10.1 > results/redlines_0929_full/jubarte-0.10.1.generate.log
+== redlines: word export (batch)
+   may fail: uv run --script scripts/word_pdf.py --src results/redlines_0929_full/jubarte-0.10.1/docx --out results/redlines_0929_full/jubarte-0.10.1/pdf_by_word --do-not-close --log results/redlines_0929_full/jubarte-0.10.1.word_pdf.log > results/redlines_0929_full/jubarte-0.10.1.word_pdf.out: exit 1
+== redlines: word export (one osascript per document)
+   may fail: uv run --script scripts/word_pdf.py --src results/redlines_0929_full/jubarte-0.10.1/docx --out results/redlines_0929_full/jubarte-0.10.1/pdf_by_word --do-not-close --no-one-osascript --log results/redlines_0929_full/jubarte-0.10.1.word_pdf.retry.log > results/redlines_0929_full/jubarte-0.10.1.word_pdf.retry.out: exit 1
+== redlines: measure
+   FAIL: uv run python results/redlines_0929_full/measure.py --fresh /Users/arthrod/temp/T/compare_regen/out --regen-list /Users/arthrod/temp/T/compare_regen/regen_list.csv --device mps jubarte-0.10.1 > results/redlines_0929_full/measure_jubarte-0.10.1.log: exit 1
+stopped at redlines: measure

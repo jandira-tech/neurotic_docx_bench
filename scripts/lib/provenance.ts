@@ -8,7 +8,7 @@
 import { createHash } from "node:crypto";
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { arch, cpus, platform, release, totalmem } from "node:os";
-import { join, relative } from "node:path";
+import { dirname, join, relative } from "node:path";
 
 export interface HardwareInfo {
 	system: string;
@@ -74,7 +74,11 @@ export function npmVersion(pkg: string, root: string): string | null {
 
 /** Pin for a speed method: npm-installed engines by package version, local dists by content hash. */
 export function toolVersionForMethod(engineId: string, dist: string, root: string): string | null {
-	if (engineId === "docxodus") return npmVersion("docxodus", root);
+	if (engineId === "docxodus") {
+		// resolveDocxodusEntry measures this tree when it is set; record its version, not the pin's.
+		const override = process.env.DOCXODUS_NODE_MODULES;
+		return override ? npmVersion("docxodus", dirname(override)) : npmVersion("docxodus", root);
+	}
 	if (engineId.startsWith("superdoc")) return npmVersion("@superdoc-dev/sdk", root);
 	return toolVersionForDist(dist);
 }

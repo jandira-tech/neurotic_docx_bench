@@ -1,0 +1,35 @@
+{
+ "conversion": {
+  "by_state": {
+   "clean": 150,
+   "tracking_without_comments": 150,
+   "with_comments_clean": 117,
+   "with_comments_tracking": 183
+  },
+  "date": "2026-10-06",
+  "n": 600,
+  "quotas": {
+   "clean": 150,
+   "tracking_without_comments": 150,
+   "with_comments_clean": 117,
+   "with_comments_tracking": 183
+  },
+  "rule": "per-state quotas among the corpus/word DOCX that have a Word PDF; seeded shuffles",
+  "seed": 20261003
+ },
+ "redline": {
+  "by_state": {
+   "clean": 2,
+   "tracking_without_comments": 421,
+   "with_comments_clean": 3,
+   "with_comments_tracking": 174
+  },
+  "date": "2026-10-06",
+  "docxodus_coverage": "local PDFs + Hub listing",
+  "docxodus_covered_pairs": 578,
+  "n": 600,
+  "pairs": 600,
+  "rule": "pool compares that have their oracle, balanced by compare state: every scarce state whole (docxodus-covered pairs first), filled with tracking_without_comments compares of docxodus-covered pairs, then uncovered ones; seeded shuffles",
+  "seed": 20261003
+ }
+}

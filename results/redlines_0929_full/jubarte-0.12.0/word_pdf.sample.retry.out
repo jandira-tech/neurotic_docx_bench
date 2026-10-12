@@ -1,0 +1,475 @@
+▸ PDF quality is sticky: `save as … file format format PDF` inherits whatever 
+'Optimize for' you last chose in Word's own Save As dialog.
+  Open any document in Word once, File > Save As > PDF, and pick the SECOND 
+option, Best for printing.
+  That choice persists; this script cannot set it. Pass --no-check-preset to 
+stop seeing this.
+2026-10-11 00:59:52.490 | INFO     | __main__:preflight:1827 -  preflight: 
+open_documents=0 started_clean=True launched_by_us=False close_documents=False
+2026-10-11 00:59:52.504 | INFO     | __main__:convert_folder:1500 -  export: 
+one_osascript=False documents=600 accept_all=False reject_all=False
+2026-10-11 00:59:54.735 | ERROR    | __main__:_convert_serial:1574 - [48/600] 
+FAIL: 
+1072677c3a_file_6__vs__1b8ec2a8cd_file_7_redline_0b033b1c23_jubarte-0.12.0.docx 
+— 587:642: execution error: Microsoft Word got an error: Connection is invalid. 
+(-609)
+2026-10-11 00:59:58.147 | INFO     | __main__:_note_buttons:514 -  Microsoft 
+Error Reporting shows button 'OK'
+2026-10-11 00:59:58.148 | INFO     | __main__:_note_buttons:514 -  Microsoft 
+Error Reporting shows button 'More Information'
+2026-10-11 00:59:58.149 | INFO     | __main__:_note_buttons:514 -  Microsoft 
+Error Reporting shows button 'missing value'
+2026-10-11 00:59:58.790 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-11 01:00:06.477 | ERROR    | __main__:_convert_serial:1574 - [116/600] 
+FAIL: 
+2b4475cba6_0021f639e5dbf6c217c8d81a7ac3374624ff9901a5d4b200__vs__2773adf157_0004
+c94ca2a8684d47449bb0e7abf87de1df71a7e6543252_redline_3e7067f872_jubarte-0.12.0.d
+ocx — 587:642: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+2026-10-11 01:00:11.115 | ERROR    | __main__:_convert_serial:1574 - [117/600] 
+FAIL: 
+2b4475cba6_0021f639e5dbf6c217c8d81a7ac3374624ff9901a5d4b200__vs__2e04202552_000e
+3e7bd2d6215fc7b469cc3e296c1b2a510bc1abc7e0fd_redline_20f31d3886_jubarte-0.12.0.d
+ocx — 587:642: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+2026-10-11 01:00:13.877 | WARNING  | __main__:_convert_serial:1583 -  3 failures
+in a row — recycling rather than trusting Word to still be reading documents
+2026-10-11 01:00:13.878 | WARNING  | __main__♻729 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-11 01:00:13.878 | WARNING  | __main__♻735 -  recycling (restart 1)
+2026-10-11 01:00:15.449 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-11 01:00:20.768 | INFO     | __main__:_replay:1637 -  still failing, so 
+it is the file: 
+1072677c3a_file_6__vs__1b8ec2a8cd_file_7_redline_0b033b1c23_jubarte-0.12.0.docx 
+— 587:642: execution error: Microsoft Word got an error: Connection is invalid. 
+(-609)
+2026-10-11 01:00:26.891 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-11 01:00:31.468 | INFO     | __main__:_replay:1637 -  still failing, so 
+it is the file: 
+2b4475cba6_0021f639e5dbf6c217c8d81a7ac3374624ff9901a5d4b200__vs__2773adf157_0004
+c94ca2a8684d47449bb0e7abf87de1df71a7e6543252_redline_3e7067f872_jubarte-0.12.0.d
+ocx — 587:642: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+2026-10-11 01:00:35.566 | INFO     | __main__:_replay:1637 -  still failing, so 
+it is the file: 
+2b4475cba6_0021f639e5dbf6c217c8d81a7ac3374624ff9901a5d4b200__vs__2e04202552_000e
+3e7bd2d6215fc7b469cc3e296c1b2a510bc1abc7e0fd_redline_20f31d3886_jubarte-0.12.0.d
+ocx — 587:642: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+2026-10-11 01:00:39.539 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-11 01:00:46.207 | ERROR    | __main__:_convert_serial:1574 - [118/600] 
+FAIL: 
+2b4475cba6_0021f639e5dbf6c217c8d81a7ac3374624ff9901a5d4b200__vs__342f364d46_0013
+42333d45627868f4dc5282abbba4598a91b4a7584b08_redline_04b7d19a3a_jubarte-0.12.0.d
+ocx — 587:642: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+2026-10-11 01:00:51.031 | ERROR    | __main__:_convert_serial:1574 - [177/600] 
+FAIL: 
+3f91c8f0cd_file_9__vs__e3d833aef0_file_10_redline_581907f19c_jubarte-0.12.0.docx
+— 587:642: execution error: Microsoft Word got an error: Connection is invalid. 
+(-609)
+2026-10-11 01:00:54.580 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-11 01:00:55.577 | ERROR    | __main__:_convert_serial:1574 - [188/600] 
+FAIL: 
+45c1c5abec_table_vmerge_colspan__vs__a94f4c516b_text_box_redline_54dd9bf0c3_juba
+rte-0.12.0.docx — 587:642: execution error: Microsoft Word got an error: 
+Connection is invalid. (-609)
+2026-10-11 01:00:58.286 | WARNING  | __main__:_convert_serial:1583 -  3 failures
+in a row — recycling rather than trusting Word to still be reading documents
+2026-10-11 01:00:58.287 | WARNING  | __main__♻729 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-11 01:00:58.287 | WARNING  | __main__♻735 -  recycling (restart 2)
+2026-10-11 01:00:58.379 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-11 01:01:04.835 | INFO     | __main__:_replay:1637 -  still failing, so 
+it is the file: 
+2b4475cba6_0021f639e5dbf6c217c8d81a7ac3374624ff9901a5d4b200__vs__342f364d46_0013
+42333d45627868f4dc5282abbba4598a91b4a7584b08_redline_04b7d19a3a_jubarte-0.12.0.d
+ocx — 587:642: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+2026-10-11 01:01:11.892 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-11 01:01:16.052 | INFO     | __main__:_replay:1637 -  still failing, so 
+it is the file: 
+3f91c8f0cd_file_9__vs__e3d833aef0_file_10_redline_581907f19c_jubarte-0.12.0.docx
+— 587:642: execution error: Microsoft Word got an error: Connection is invalid. 
+(-609)
+2026-10-11 01:01:19.627 | INFO     | __main__:_replay:1637 -  still failing, so 
+it is the file: 
+45c1c5abec_table_vmerge_colspan__vs__a94f4c516b_text_box_redline_54dd9bf0c3_juba
+rte-0.12.0.docx — 587:642: execution error: Microsoft Word got an error: 
+Connection is invalid. (-609)
+2026-10-11 01:01:23.592 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-11 01:01:25.043 | ERROR    | __main__:_convert_serial:1574 - [211/600] 
+FAIL: 
+52220b20c3_00a54bff7e15af78fe7cfc20219c28cb208fde807bd28d44__vs__2773adf157_0004
+c94ca2a8684d47449bb0e7abf87de1df71a7e6543252_redline_b799eadbeb_jubarte-0.12.0.d
+ocx — 587:642: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+2026-10-11 01:01:29.274 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-11 01:01:31.162 | ERROR    | __main__:_convert_serial:1574 - [213/600] 
+FAIL: 
+52220b20c3_00a54bff7e15af78fe7cfc20219c28cb208fde807bd28d44__vs__5203829c7a_001c
+c92b88566d5f930fe57f25813c0bf52a7bdc72c217d0_redline_6de20376e8_jubarte-0.12.0.d
+ocx — 587:642: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+2026-10-11 01:01:35.504 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-11 01:01:37.436 | ERROR    | __main__:_convert_serial:1574 - [258/600] 
+FAIL: 
+628ec1cb76_00a9d81709806bc220522f9b062f226e19ba256e436493b1__vs__2e04202552_000e
+3e7bd2d6215fc7b469cc3e296c1b2a510bc1abc7e0fd_redline_2c0433bdbc_jubarte-0.12.0.d
+ocx — 587:642: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+2026-10-11 01:01:40.265 | WARNING  | __main__:_convert_serial:1583 -  3 failures
+in a row — recycling rather than trusting Word to still be reading documents
+2026-10-11 01:01:40.266 | WARNING  | __main__♻729 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-11 01:01:40.266 | WARNING  | __main__♻735 -  recycling (restart 3)
+2026-10-11 01:01:41.300 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-11 01:01:48.480 | INFO     | __main__:_replay:1637 -  still failing, so 
+it is the file: 
+52220b20c3_00a54bff7e15af78fe7cfc20219c28cb208fde807bd28d44__vs__2773adf157_0004
+c94ca2a8684d47449bb0e7abf87de1df71a7e6543252_redline_b799eadbeb_jubarte-0.12.0.d
+ocx — 587:642: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+2026-10-11 01:01:52.786 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-11 01:01:53.929 | INFO     | __main__:_replay:1637 -  still failing, so 
+it is the file: 
+52220b20c3_00a54bff7e15af78fe7cfc20219c28cb208fde807bd28d44__vs__5203829c7a_001c
+c92b88566d5f930fe57f25813c0bf52a7bdc72c217d0_redline_6de20376e8_jubarte-0.12.0.d
+ocx — 587:642: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+2026-10-11 01:01:55.652 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-11 01:01:57.770 | INFO     | __main__:_replay:1637 -  still failing, so 
+it is the file: 
+628ec1cb76_00a9d81709806bc220522f9b062f226e19ba256e436493b1__vs__2e04202552_000e
+3e7bd2d6215fc7b469cc3e296c1b2a510bc1abc7e0fd_redline_2c0433bdbc_jubarte-0.12.0.d
+ocx — 587:642: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+2026-10-11 01:02:04.459 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-11 01:02:07.852 | ERROR    | __main__:_convert_serial:1574 - [279/600] 
+FAIL: 
+6867e05e76_00b0d42bbea3b9bac7bc95466cf416f6c89a8cda62bbf3d7__vs__1424386e9b_0174
+47de83753a0e3b7afc659df038ef56972925336c6a5b_redline_a20d355157_jubarte-0.12.0.d
+ocx — 587:642: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+2026-10-11 01:02:12.440 | ERROR    | __main__:_convert_serial:1574 - [294/600] 
+FAIL: 
+6e2576a091_docx_lots_of_comments__vs__2c0a2ac35f_double_spacing_bold_demo_id_par
+aid_overflow_redline_9382e03243_jubarte-0.12.0.docx — 587:642: execution error: 
+Microsoft Word got an error: Connection is invalid. (-609)
+2026-10-11 01:02:16.783 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-11 01:02:23.629 | ERROR    | __main__:_convert_serial:1574 - [332/600] 
+FAIL: 
+7b8a36fc9d_6b022d77b530d0e93df9ee17f79f06423a54fa1788a95c5d__vs__f620bc5c6d_41ba
+e32dd2e76af1f00d37af7b3a353ca826cd6e8c20052c_redline_9129d2ecd2_jubarte-0.12.0.d
+ocx — 587:642: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+2026-10-11 01:02:26.765 | WARNING  | __main__:_convert_serial:1583 -  3 failures
+in a row — recycling rather than trusting Word to still be reading documents
+2026-10-11 01:02:26.765 | WARNING  | __main__♻729 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-11 01:02:26.766 | WARNING  | __main__♻735 -  recycling (restart 4)
+2026-10-11 01:02:33.033 | INFO     | __main__:_replay:1637 -  still failing, so 
+it is the file: 
+6867e05e76_00b0d42bbea3b9bac7bc95466cf416f6c89a8cda62bbf3d7__vs__1424386e9b_0174
+47de83753a0e3b7afc659df038ef56972925336c6a5b_redline_a20d355157_jubarte-0.12.0.d
+ocx — 587:642: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+2026-10-11 01:02:36.709 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-11 01:02:43.586 | INFO     | __main__:_replay:1637 -  still failing, so 
+it is the file: 
+6e2576a091_docx_lots_of_comments__vs__2c0a2ac35f_double_spacing_bold_demo_id_par
+aid_overflow_redline_9382e03243_jubarte-0.12.0.docx — 587:642: execution error: 
+Microsoft Word got an error: Connection is invalid. (-609)
+2026-10-11 01:02:47.297 | INFO     | __main__:_replay:1637 -  still failing, so 
+it is the file: 
+7b8a36fc9d_6b022d77b530d0e93df9ee17f79f06423a54fa1788a95c5d__vs__f620bc5c6d_41ba
+e32dd2e76af1f00d37af7b3a353ca826cd6e8c20052c_redline_9129d2ecd2_jubarte-0.12.0.d
+ocx — 587:642: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+2026-10-11 01:02:51.576 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-11 01:02:52.945 | ERROR    | __main__:_convert_serial:1574 - [376/600] 
+FAIL: 
+8f47b1dc90_file_176__vs__a3586d71f8_file_177_redline_5f0fed8e2a_jubarte-0.12.0.d
+ocx — 587:642: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+2026-10-11 01:02:54.432 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-11 01:02:59.119 | ERROR    | __main__:_convert_serial:1574 - [463/600] 
+FAIL: 
+acd3595c3a_0032221e68ad2a7986d1fe113eb1d46b5a7d1901b5aa9318__vs__1424386e9b_0174
+47de83753a0e3b7afc659df038ef56972925336c6a5b_redline_bc0135eaa1_jubarte-0.12.0.d
+ocx — 587:642: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+2026-10-11 01:03:01.873 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-11 01:03:03.896 | ERROR    | __main__:_convert_serial:1574 - [473/600] 
+FAIL: 
+b175a00954_file_27__vs__f32428a03a_file_28_redline_0f031c23c3_jubarte-0.12.0.doc
+x — 587:642: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+2026-10-11 01:03:06.897 | WARNING  | __main__:_convert_serial:1583 -  3 failures
+in a row — recycling rather than trusting Word to still be reading documents
+2026-10-11 01:03:06.898 | WARNING  | __main__♻729 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-11 01:03:06.898 | WARNING  | __main__♻735 -  recycling (restart 5)
+2026-10-11 01:03:07.958 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-11 01:03:15.051 | INFO     | __main__:_replay:1637 -  still failing, so 
+it is the file: 
+8f47b1dc90_file_176__vs__a3586d71f8_file_177_redline_5f0fed8e2a_jubarte-0.12.0.d
+ocx — 587:642: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+2026-10-11 01:03:22.046 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-11 01:03:25.339 | INFO     | __main__:_replay:1637 -  still failing, so 
+it is the file: 
+acd3595c3a_0032221e68ad2a7986d1fe113eb1d46b5a7d1901b5aa9318__vs__1424386e9b_0174
+47de83753a0e3b7afc659df038ef56972925336c6a5b_redline_bc0135eaa1_jubarte-0.12.0.d
+ocx — 587:642: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+2026-10-11 01:03:29.689 | INFO     | __main__:_replay:1637 -  still failing, so 
+it is the file: 
+b175a00954_file_27__vs__f32428a03a_file_28_redline_0f031c23c3_jubarte-0.12.0.doc
+x — 587:642: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+2026-10-11 01:03:36.608 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-11 01:03:39.863 | ERROR    | __main__:_convert_serial:1574 - [484/600] 
+FAIL: 
+b4294a7edd_ddff881efc732399286b36322055752e7287a255646f24a3__vs__c7dd32f288_e24a
+428cb81de32e27f3080d20695edc90f15423c4955e00_redline_d9bb456306_jubarte-0.12.0.d
+ocx — 587:642: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+2026-10-11 01:03:44.728 | ERROR    | __main__:_convert_serial:1574 - [488/600] 
+FAIL: 
+b6dd0b6ae8_015a4f5a16a110026418c0a7f5eefa69ce6d5f9bcfc2d955__vs__1424386e9b_0174
+47de83753a0e3b7afc659df038ef56972925336c6a5b_redline_01a43df57c_jubarte-0.12.0.d
+ocx — 587:642: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+2026-10-11 01:03:49.017 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-11 01:03:51.353 | ERROR    | __main__:_convert_serial:1574 - [512/600] 
+FAIL: 
+bd768e6c17_file_74__vs__8c79860f8d_file_75_redline_3d39f0120d_jubarte-0.12.0.doc
+x — 587:642: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+2026-10-11 01:03:55.541 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-11 01:03:55.945 | WARNING  | __main__:_convert_serial:1583 -  3 failures
+in a row — recycling rather than trusting Word to still be reading documents
+2026-10-11 01:03:55.946 | WARNING  | __main__♻729 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-11 01:03:55.946 | WARNING  | __main__♻735 -  recycling (restart 6)
+2026-10-11 01:04:02.686 | INFO     | __main__:_replay:1637 -  still failing, so 
+it is the file: 
+b4294a7edd_ddff881efc732399286b36322055752e7287a255646f24a3__vs__c7dd32f288_e24a
+428cb81de32e27f3080d20695edc90f15423c4955e00_redline_d9bb456306_jubarte-0.12.0.d
+ocx — 587:642: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+2026-10-11 01:04:09.612 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-11 01:04:12.997 | INFO     | __main__:_replay:1637 -  still failing, so 
+it is the file: 
+b6dd0b6ae8_015a4f5a16a110026418c0a7f5eefa69ce6d5f9bcfc2d955__vs__1424386e9b_0174
+47de83753a0e3b7afc659df038ef56972925336c6a5b_redline_01a43df57c_jubarte-0.12.0.d
+ocx — 587:642: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+2026-10-11 01:04:19.303 | INFO     | __main__:_replay:1637 -  still failing, so 
+it is the file: 
+bd768e6c17_file_74__vs__8c79860f8d_file_75_redline_3d39f0120d_jubarte-0.12.0.doc
+x — 587:642: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+2026-10-11 01:04:23.638 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-11 01:04:30.741 | ERROR    | __main__:_convert_serial:1574 - [515/600] 
+FAIL: 
+be5bf990cb_file_16__vs__d6ba4fabd2_file_17_redline_cbf73c2d81_jubarte-0.12.0.doc
+x — 587:642: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+2026-10-11 01:04:35.649 | ERROR    | __main__:_convert_serial:1574 - [547/600] 
+FAIL: 
+df097720f7_file_131__vs__3c60cce945_file_132_redline_4eff11f045_jubarte-0.12.0.d
+ocx — 587:642: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+2026-10-11 01:04:39.399 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-11 01:04:40.249 | ERROR    | __main__:_convert_serial:1574 - [549/600] 
+FAIL: 
+df9ffe9a8c_file_16__vs__ec900bd182_file_17_redline_f8286525f6_jubarte-0.12.0.doc
+x — 587:642: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+2026-10-11 01:04:42.952 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-11 01:04:43.361 | WARNING  | __main__:_convert_serial:1583 -  3 failures
+in a row — recycling rather than trusting Word to still be reading documents
+2026-10-11 01:04:43.362 | WARNING  | __main__♻729 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-11 01:04:43.363 | WARNING  | __main__♻735 -  recycling (restart 7)
+2026-10-11 01:04:49.867 | INFO     | __main__:_replay:1637 -  still failing, so 
+it is the file: 
+be5bf990cb_file_16__vs__d6ba4fabd2_file_17_redline_cbf73c2d81_jubarte-0.12.0.doc
+x — 587:642: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+2026-10-11 01:04:57.290 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-11 01:05:00.261 | INFO     | __main__:_replay:1637 -  still failing, so 
+it is the file: 
+df097720f7_file_131__vs__3c60cce945_file_132_redline_4eff11f045_jubarte-0.12.0.d
+ocx — 587:642: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+2026-10-11 01:05:03.996 | INFO     | __main__:_replay:1637 -  still failing, so 
+it is the file: 
+df9ffe9a8c_file_16__vs__ec900bd182_file_17_redline_f8286525f6_jubarte-0.12.0.doc
+x — 587:642: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+2026-10-11 01:05:08.237 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-11 01:05:14.494 | ERROR    | __main__:_convert_serial:1574 - [571/600] 
+FAIL: 
+ec3dd0df69_file_53__vs__94ed0def64_file_54_redline_c2380a4677_jubarte-0.12.0.doc
+x — 587:642: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+2026-10-11 01:05:19.114 | ERROR    | __main__:_convert_serial:1574 - [581/600] 
+FAIL: 
+f1ea4a51fd_hr_onboarding_checklist_table__vs__d0e7f278b8_i_am_sharing_microsoft_
+word_vs_google_docs_compr_redline_85b1c9235c_jubarte-0.12.0.docx — 587:642: 
+execution error: Microsoft Word got an error: Connection is invalid. (-609)
+2026-10-11 01:05:21.603 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+        DOCX → PDF:         
+results/redlines_0929_full/j
+     ubarte-0.12.0/docx     
+┏━━━━━━━━━━━━━━━━━━┳━━━━━━━┓
+┃ outcome          ┃ count ┃
+┡━━━━━━━━━━━━━━━━━━╇━━━━━━━┩
+│ converted        │     0 │
+│ skipped (exists) │   577 │
+│ failed           │    23 │
+└──────────────────┴───────┘
+  FAIL 
+1072677c3a_file_6__vs__1b8ec2a8cd_file_7_redline_0b033b1c23_jubarte-0.12.0.docx:
+587:642: execution error: Microsoft Word got an error: Connection is invalid. 
+(-609)
+  FAIL 
+2b4475cba6_0021f639e5dbf6c217c8d81a7ac3374624ff9901a5d4b200__vs__2773adf157_0004
+c94ca2a8684d47449bb0e7abf87de1df71a7e6543252_redline_3e7067f872_jubarte-0.12.0.d
+ocx: 587:642: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+  FAIL 
+2b4475cba6_0021f639e5dbf6c217c8d81a7ac3374624ff9901a5d4b200__vs__2e04202552_000e
+3e7bd2d6215fc7b469cc3e296c1b2a510bc1abc7e0fd_redline_20f31d3886_jubarte-0.12.0.d
+ocx: 587:642: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+  FAIL 
+2b4475cba6_0021f639e5dbf6c217c8d81a7ac3374624ff9901a5d4b200__vs__342f364d46_0013
+42333d45627868f4dc5282abbba4598a91b4a7584b08_redline_04b7d19a3a_jubarte-0.12.0.d
+ocx: 587:642: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+  FAIL 
+3f91c8f0cd_file_9__vs__e3d833aef0_file_10_redline_581907f19c_jubarte-0.12.0.docx
+: 587:642: execution error: Microsoft Word got an error: Connection is invalid. 
+(-609)
+  FAIL 
+45c1c5abec_table_vmerge_colspan__vs__a94f4c516b_text_box_redline_54dd9bf0c3_juba
+rte-0.12.0.docx: 587:642: execution error: Microsoft Word got an error: 
+Connection is invalid. (-609)
+  FAIL 
+52220b20c3_00a54bff7e15af78fe7cfc20219c28cb208fde807bd28d44__vs__2773adf157_0004
+c94ca2a8684d47449bb0e7abf87de1df71a7e6543252_redline_b799eadbeb_jubarte-0.12.0.d
+ocx: 587:642: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+  FAIL 
+52220b20c3_00a54bff7e15af78fe7cfc20219c28cb208fde807bd28d44__vs__5203829c7a_001c
+c92b88566d5f930fe57f25813c0bf52a7bdc72c217d0_redline_6de20376e8_jubarte-0.12.0.d
+ocx: 587:642: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+  FAIL 
+628ec1cb76_00a9d81709806bc220522f9b062f226e19ba256e436493b1__vs__2e04202552_000e
+3e7bd2d6215fc7b469cc3e296c1b2a510bc1abc7e0fd_redline_2c0433bdbc_jubarte-0.12.0.d
+ocx: 587:642: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+  FAIL 
+6867e05e76_00b0d42bbea3b9bac7bc95466cf416f6c89a8cda62bbf3d7__vs__1424386e9b_0174
+47de83753a0e3b7afc659df038ef56972925336c6a5b_redline_a20d355157_jubarte-0.12.0.d
+ocx: 587:642: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+  FAIL 
+6e2576a091_docx_lots_of_comments__vs__2c0a2ac35f_double_spacing_bold_demo_id_par
+aid_overflow_redline_9382e03243_jubarte-0.12.0.docx: 587:642: execution error: 
+Microsoft Word got an error: Connection is invalid. (-609)
+  FAIL 
+7b8a36fc9d_6b022d77b530d0e93df9ee17f79f06423a54fa1788a95c5d__vs__f620bc5c6d_41ba
+e32dd2e76af1f00d37af7b3a353ca826cd6e8c20052c_redline_9129d2ecd2_jubarte-0.12.0.d
+ocx: 587:642: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+  FAIL 
+8f47b1dc90_file_176__vs__a3586d71f8_file_177_redline_5f0fed8e2a_jubarte-0.12.0.d
+ocx: 587:642: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+  FAIL 
+acd3595c3a_0032221e68ad2a7986d1fe113eb1d46b5a7d1901b5aa9318__vs__1424386e9b_0174
+47de83753a0e3b7afc659df038ef56972925336c6a5b_redline_bc0135eaa1_jubarte-0.12.0.d
+ocx: 587:642: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+  FAIL 
+b175a00954_file_27__vs__f32428a03a_file_28_redline_0f031c23c3_jubarte-0.12.0.doc
+x: 587:642: execution error: Microsoft Word got an error: Connection is invalid.
+(-609)
+  FAIL 
+b4294a7edd_ddff881efc732399286b36322055752e7287a255646f24a3__vs__c7dd32f288_e24a
+428cb81de32e27f3080d20695edc90f15423c4955e00_redline_d9bb456306_jubarte-0.12.0.d
+ocx: 587:642: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+  FAIL 
+b6dd0b6ae8_015a4f5a16a110026418c0a7f5eefa69ce6d5f9bcfc2d955__vs__1424386e9b_0174
+47de83753a0e3b7afc659df038ef56972925336c6a5b_redline_01a43df57c_jubarte-0.12.0.d
+ocx: 587:642: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+  FAIL 
+bd768e6c17_file_74__vs__8c79860f8d_file_75_redline_3d39f0120d_jubarte-0.12.0.doc
+x: 587:642: execution error: Microsoft Word got an error: Connection is invalid.
+(-609)
+  FAIL 
+be5bf990cb_file_16__vs__d6ba4fabd2_file_17_redline_cbf73c2d81_jubarte-0.12.0.doc
+x: 587:642: execution error: Microsoft Word got an error: Connection is invalid.
+(-609)
+  FAIL 
+df097720f7_file_131__vs__3c60cce945_file_132_redline_4eff11f045_jubarte-0.12.0.d
+ocx: 587:642: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+  FAIL 
+df9ffe9a8c_file_16__vs__ec900bd182_file_17_redline_f8286525f6_jubarte-0.12.0.doc
+x: 587:642: execution error: Microsoft Word got an error: Connection is invalid.
+(-609)
+  FAIL 
+ec3dd0df69_file_53__vs__94ed0def64_file_54_redline_c2380a4677_jubarte-0.12.0.doc
+x: 587:642: execution error: Microsoft Word got an error: Connection is invalid.
+(-609)
+  FAIL 
+f1ea4a51fd_hr_onboarding_checklist_table__vs__d0e7f278b8_i_am_sharing_microsoft_
+word_vs_google_docs_compr_redline_85b1c9235c_jubarte-0.12.0.docx: 587:642: 
+execution error: Microsoft Word got an error: Connection is invalid. (-609)

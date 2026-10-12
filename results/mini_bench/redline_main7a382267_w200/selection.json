@@ -1,0 +1,1502 @@
+[
+ {
+  "key": "1072677c3a_file_6__vs__1b8ec2a8cd_file_7_redline_0b033b1c23",
+  "baseline": 0.0,
+  "rank": 1,
+  "bucket": "worst"
+ },
+ {
+  "key": "2b4475cba6_0021f639e5dbf6c217c8d81a7ac3374624ff9901a5d4b200__vs__2773adf157_0004c94ca2a8684d47449bb0e7abf87de1df71a7e6543252_redline_3e7067f872",
+  "baseline": 0.0,
+  "rank": 2,
+  "bucket": "worst"
+ },
+ {
+  "key": "2b4475cba6_0021f639e5dbf6c217c8d81a7ac3374624ff9901a5d4b200__vs__2e04202552_000e3e7bd2d6215fc7b469cc3e296c1b2a510bc1abc7e0fd_redline_20f31d3886",
+  "baseline": 0.0,
+  "rank": 3,
+  "bucket": "worst"
+ },
+ {
+  "key": "2b4475cba6_0021f639e5dbf6c217c8d81a7ac3374624ff9901a5d4b200__vs__342f364d46_001342333d45627868f4dc5282abbba4598a91b4a7584b08_redline_04b7d19a3a",
+  "baseline": 0.0,
+  "rank": 4,
+  "bucket": "worst"
+ },
+ {
+  "key": "3f91c8f0cd_file_9__vs__e3d833aef0_file_10_redline_581907f19c",
+  "baseline": 0.0,
+  "rank": 5,
+  "bucket": "worst"
+ },
+ {
+  "key": "45c1c5abec_table_vmerge_colspan__vs__a94f4c516b_text_box_redline_e0305725c1",
+  "baseline": 0.0,
+  "rank": 6,
+  "bucket": "worst"
+ },
+ {
+  "key": "52220b20c3_00a54bff7e15af78fe7cfc20219c28cb208fde807bd28d44__vs__2773adf157_0004c94ca2a8684d47449bb0e7abf87de1df71a7e6543252_redline_b799eadbeb",
+  "baseline": 0.0,
+  "rank": 7,
+  "bucket": "worst"
+ },
+ {
+  "key": "52220b20c3_00a54bff7e15af78fe7cfc20219c28cb208fde807bd28d44__vs__5203829c7a_001cc92b88566d5f930fe57f25813c0bf52a7bdc72c217d0_redline_6de20376e8",
+  "baseline": 0.0,
+  "rank": 8,
+  "bucket": "worst"
+ },
+ {
+  "key": "52220b20c3_00a54bff7e15af78fe7cfc20219c28cb208fde807bd28d44__vs__bd3824dd1e_000ee64ef7226d353297888f59a251e24ce5d776fea000fa_redline_8018df6bdf",
+  "baseline": 0.0,
+  "rank": 9,
+  "bucket": "worst"
+ },
+ {
+  "key": "628ec1cb76_00a9d81709806bc220522f9b062f226e19ba256e436493b1__vs__2e04202552_000e3e7bd2d6215fc7b469cc3e296c1b2a510bc1abc7e0fd_redline_2c0433bdbc",
+  "baseline": 0.0,
+  "rank": 10,
+  "bucket": "worst"
+ },
+ {
+  "key": "6867e05e76_00b0d42bbea3b9bac7bc95466cf416f6c89a8cda62bbf3d7__vs__1424386e9b_017447de83753a0e3b7afc659df038ef56972925336c6a5b_redline_a20d355157",
+  "baseline": 0.0,
+  "rank": 11,
+  "bucket": "worst"
+ },
+ {
+  "key": "6e2576a091_docx_lots_of_comments__vs__2c0a2ac35f_double_spacing_bold_demo_id_paraid_overflow_redline_9382e03243",
+  "baseline": 0.0,
+  "rank": 12,
+  "bucket": "worst"
+ },
+ {
+  "key": "7b8a36fc9d_6b022d77b530d0e93df9ee17f79f06423a54fa1788a95c5d__vs__f620bc5c6d_41bae32dd2e76af1f00d37af7b3a353ca826cd6e8c20052c_redline_9129d2ecd2",
+  "baseline": 0.0,
+  "rank": 13,
+  "bucket": "worst"
+ },
+ {
+  "key": "8f47b1dc90_file_176__vs__a3586d71f8_file_177_redline_5f0fed8e2a",
+  "baseline": 0.0,
+  "rank": 14,
+  "bucket": "worst"
+ },
+ {
+  "key": "97ec0fecd2_bdfddb39d04de4c189c85b353faf57d3bd637b8a74322c41__vs__52545bbf00_c6209bb293e3d902b2de2e9b20a2e0e29d2f82dd7dab17df_redline_ba86b047dd",
+  "baseline": 0.0,
+  "rank": 15,
+  "bucket": "worst"
+ },
+ {
+  "key": "acd3595c3a_0032221e68ad2a7986d1fe113eb1d46b5a7d1901b5aa9318__vs__1424386e9b_017447de83753a0e3b7afc659df038ef56972925336c6a5b_redline_bc0135eaa1",
+  "baseline": 0.0,
+  "rank": 16,
+  "bucket": "worst"
+ },
+ {
+  "key": "b175a00954_file_27__vs__f32428a03a_file_28_redline_0f031c23c3",
+  "baseline": 0.0,
+  "rank": 17,
+  "bucket": "worst"
+ },
+ {
+  "key": "b4294a7edd_ddff881efc732399286b36322055752e7287a255646f24a3__vs__c7dd32f288_e24a428cb81de32e27f3080d20695edc90f15423c4955e00_redline_d9bb456306",
+  "baseline": 0.0,
+  "rank": 18,
+  "bucket": "worst"
+ },
+ {
+  "key": "b6dd0b6ae8_015a4f5a16a110026418c0a7f5eefa69ce6d5f9bcfc2d955__vs__1424386e9b_017447de83753a0e3b7afc659df038ef56972925336c6a5b_redline_01a43df57c",
+  "baseline": 0.0,
+  "rank": 19,
+  "bucket": "worst"
+ },
+ {
+  "key": "bd768e6c17_file_74__vs__8c79860f8d_file_75_redline_3d39f0120d",
+  "baseline": 0.0,
+  "rank": 20,
+  "bucket": "worst"
+ },
+ {
+  "key": "be5bf990cb_file_16__vs__d6ba4fabd2_file_17_redline_cbf73c2d81",
+  "baseline": 0.0,
+  "rank": 21,
+  "bucket": "worst"
+ },
+ {
+  "key": "df097720f7_file_131__vs__3c60cce945_file_132_redline_4eff11f045",
+  "baseline": 0.0,
+  "rank": 22,
+  "bucket": "worst"
+ },
+ {
+  "key": "df9ffe9a8c_file_16__vs__ec900bd182_file_17_redline_f8286525f6",
+  "baseline": 0.0,
+  "rank": 23,
+  "bucket": "worst"
+ },
+ {
+  "key": "ec3dd0df69_file_53__vs__94ed0def64_file_54_redline_c2380a4677",
+  "baseline": 0.0,
+  "rank": 24,
+  "bucket": "worst"
+ },
+ {
+  "key": "f1ea4a51fd_hr_onboarding_checklist_table__vs__d0e7f278b8_i_am_sharing_microsoft_word_vs_google_docs_compr_redline_85b1c9235c",
+  "baseline": 0.0,
+  "rank": 25,
+  "bucket": "worst"
+ },
+ {
+  "key": "38694026fb_0003b3ae2b115676d918e72f694790ddb64563721bb4a48d__vs__bd3824dd1e_000ee64ef7226d353297888f59a251e24ce5d776fea000fa_redline_31186537d8",
+  "baseline": 27.973028979482663,
+  "rank": 26,
+  "bucket": "worst"
+ },
+ {
+  "key": "bc514b554e_00d979c97e42f03faff5f49e2a7dfa9afd30996214602e19__vs__2e04202552_000e3e7bd2d6215fc7b469cc3e296c1b2a510bc1abc7e0fd_redline_d5d3c12881",
+  "baseline": 32.61781550422438,
+  "rank": 27,
+  "bucket": "worst"
+ },
+ {
+  "key": "a62ef11355_af838c136dcd3b6c93a648911f7fe7bcba87be8a27c66ac3__vs__d706876939_96241b469231f21192669d60dd79dcdf1be49260da2e0a7d_redline_f8c1ce3e92",
+  "baseline": 32.871901748908506,
+  "rank": 28,
+  "bucket": "worst"
+ },
+ {
+  "key": "1edf67e1e5_8f213f720f5776de6384d10633123cb37b9d1f64abde5fe1__vs__8d793b3df9_8389849ea8c3fee8dacbb8135dd4ac68bf50809dba47953b_redline_ec0b7a80fd",
+  "baseline": 33.60636650804894,
+  "rank": 29,
+  "bucket": "worst"
+ },
+ {
+  "key": "25e6d4b508_e8dba015e1110e4266d9be9e2d3d0fe5fc700e6e8fc3a2c8__vs__385dba78fe_dab9001fa1a6592e746f2874f49bfb83036add21c90c2534_redline_5173498bab",
+  "baseline": 34.019053996384926,
+  "rank": 30,
+  "bucket": "worst"
+ },
+ {
+  "key": "3755bf5762_0000a3a991f56b6660c630eb426231a3b4ec31e40313aab9__vs__5203829c7a_001cc92b88566d5f930fe57f25813c0bf52a7bdc72c217d0_redline_30e7502764",
+  "baseline": 34.28621673613993,
+  "rank": 31,
+  "bucket": "worst"
+ },
+ {
+  "key": "8d074dbf32_9d9a8c7a44e6936f611d8ee060f98bbc01dbe0205235d507__vs__853563f59b_805fc2a77dc40868ccc7a00204e4c6a22e8ac36e1d746361_redline_6213202228",
+  "baseline": 34.68627353930326,
+  "rank": 32,
+  "bucket": "worst"
+ },
+ {
+  "key": "7ca240e30d_4768dab6c717b14ead11ffd66e79b78d4634db5933c80909__vs__a26d1d04ee_cb0d0e6f87f3222263b8376dac9a147350313b4d8ddf4ece_redline_50deed1157",
+  "baseline": 34.92536620090842,
+  "rank": 33,
+  "bucket": "worst"
+ },
+ {
+  "key": "04dafefc52_00048cb6667d721bdb2219ecbadb6eb369e439c130ac475e__vs__a5f2b9318d_002aa60c2ae1187417b4b157c5ec6450324cc056ec551a12_redline_c12a65b46b",
+  "baseline": 34.99330773878339,
+  "rank": 34,
+  "bucket": "worst"
+ },
+ {
+  "key": "0b5f1f7cad_003ca0a88e8358b347e771feb6970ff773753fad85416364__vs__5203829c7a_001cc92b88566d5f930fe57f25813c0bf52a7bdc72c217d0_redline_dcbff66ff4",
+  "baseline": 35.182210956236865,
+  "rank": 35,
+  "bucket": "worst"
+ },
+ {
+  "key": "04dafefc52_00048cb6667d721bdb2219ecbadb6eb369e439c130ac475e__vs__342f364d46_001342333d45627868f4dc5282abbba4598a91b4a7584b08_redline_7876988ef8",
+  "baseline": 35.75423349304045,
+  "rank": 36,
+  "bucket": "worst"
+ },
+ {
+  "key": "3755bf5762_0000a3a991f56b6660c630eb426231a3b4ec31e40313aab9__vs__2773adf157_0004c94ca2a8684d47449bb0e7abf87de1df71a7e6543252_redline_fec6305982",
+  "baseline": 35.76606210369975,
+  "rank": 37,
+  "bucket": "worst"
+ },
+ {
+  "key": "bc514b554e_00d979c97e42f03faff5f49e2a7dfa9afd30996214602e19__vs__a5f2b9318d_002aa60c2ae1187417b4b157c5ec6450324cc056ec551a12_redline_9cb8afca44",
+  "baseline": 35.858435883916826,
+  "rank": 38,
+  "bucket": "worst"
+ },
+ {
+  "key": "b9655eda15_97c8e10c724f734b332e40e6250bb36818f77e9503882733__vs__4084024f5f_7e1bd71c23f050e9e42acf3c80c580ebed4128af155febc0_redline_057d1f69a1",
+  "baseline": 36.19499080689809,
+  "rank": 39,
+  "bucket": "worst"
+ },
+ {
+  "key": "38a1ef5bb6_7a88868c1f29765358247c7848ee3a0c61fe71106fbea68b__vs__f82761a5e5_220ce310386931394e50f26e221c47d9126154a54847a9c4_redline_43e644b1ca",
+  "baseline": 36.66678766052209,
+  "rank": 40,
+  "bucket": "worst"
+ },
+ {
+  "key": "60f8044583_301293ef2a140a99a53b6c059b90aad9f7437c63551a0618__vs__355857f6ac_1b34db5bf944e7fd70cf87eb4b895571c586e8d6cd402ebb_redline_cca74d99b4",
+  "baseline": 36.95563942864757,
+  "rank": 41,
+  "bucket": "worst"
+ },
+ {
+  "key": "b535008087_a1c0c04747ae1fda785d5bd3748890f39c0bc43d28b1d463__vs__813771d860_9e288428882b21a59d50f62a44c24f3fa9c01f8c2be6eb24_redline_eaa985ccbd",
+  "baseline": 37.18346040392511,
+  "rank": 42,
+  "bucket": "worst"
+ },
+ {
+  "key": "b27bda87ed_0023f7c421a05af9c44fb4ff9ef1bce46c53a081779b1e72__vs__5203829c7a_001cc92b88566d5f930fe57f25813c0bf52a7bdc72c217d0_redline_09fd2fff5b",
+  "baseline": 37.34873529226799,
+  "rank": 43,
+  "bucket": "worst"
+ },
+ {
+  "key": "31665191de_a7444d0b8fef75bcdddc03eb540d379d9556f19492f0234b__vs__1a3573b864_bb917ba095edcd48f3cec46016b853f8906c245660277c45_redline_a8b96f68bd",
+  "baseline": 37.38899537971093,
+  "rank": 44,
+  "bucket": "worst"
+ },
+ {
+  "key": "74fd0e410c_d8dbb34782b336d6174cb6331aedb4df0c71c254528fa3af__vs__91b413669c_d648eeed49779dcbe5c513642114cc3711d7056bb1d186d1_redline_6be28b28eb",
+  "baseline": 38.17013652120875,
+  "rank": 45,
+  "bucket": "worst"
+ },
+ {
+  "key": "3c47f1b463_8dcbefa6e9bcf0c292392ca7fda1d9f2260ea724f9ad5f98__vs__f400cafcba_6565bfe1c9b7b19a2feedc7c358db69a32ed064149f2920f_redline_b00e0b4340",
+  "baseline": 38.24685198046324,
+  "rank": 46,
+  "bucket": "worst"
+ },
+ {
+  "key": "2ce3abf26a_82efe379b8e2b818c7b2a33e3295e432b10b2a7d50ede1ca__vs__bea42ffae5_5624d661e4bda36d9214ddeb372b10ad0011475f8136f54f_redline_61a4627b2c",
+  "baseline": 38.26017287624337,
+  "rank": 47,
+  "bucket": "worst"
+ },
+ {
+  "key": "c090b9f082_file_8__vs__3f91c8f0cd_file_9_redline_bc6f8076f9",
+  "baseline": 38.27360113535178,
+  "rank": 48,
+  "bucket": "worst"
+ },
+ {
+  "key": "83799a0610_00bced7d0ce7770362c5b667b5e92abefcbfcf5315a2bbf6__vs__a5f2b9318d_002aa60c2ae1187417b4b157c5ec6450324cc056ec551a12_redline_f6b05b226e",
+  "baseline": 38.30369463643989,
+  "rank": 49,
+  "bucket": "worst"
+ },
+ {
+  "key": "5fbd8a7228_39cd8347f53ac1b06a6eb59399aa12a9977b0233a38ddaff__vs__89d3a1c365_40d999f53c15fd5eb9e57ab8cf37f22f83d6823458897be1_redline_049d8405bc",
+  "baseline": 39.00706466671142,
+  "rank": 50,
+  "bucket": "worst"
+ },
+ {
+  "key": "2b4475cba6_0021f639e5dbf6c217c8d81a7ac3374624ff9901a5d4b200__vs__a5f2b9318d_002aa60c2ae1187417b4b157c5ec6450324cc056ec551a12_redline_3572ffed4a",
+  "baseline": 39.265232514410066,
+  "rank": 51,
+  "bucket": "worst"
+ },
+ {
+  "key": "b6f757462e_0006f7905281867ab0d0a45d88f88f72e2c15efbd9a8ed69__vs__342f364d46_001342333d45627868f4dc5282abbba4598a91b4a7584b08_redline_8a4d68d7e6",
+  "baseline": 39.373074640597764,
+  "rank": 52,
+  "bucket": "worst"
+ },
+ {
+  "key": "669a1422f3_2e2e1868ea36c66a1e1f96175c13b0d6e7aed0ac80262f7a__vs__c9939de03d_aab177188825fa8c9516d1ea438f65f5bf2743e02b29b60e_redline_030f2e2cf2",
+  "baseline": 39.412207060617874,
+  "rank": 53,
+  "bucket": "worst"
+ },
+ {
+  "key": "8c67bcfe65_d41a99929b13b393a913649f7b39e9df2a6aa4878230cf7e__vs__49fe5bd42a_f50f63dd4889ab0b190ef8a18dfa6b8eb308ab352f519bf4_redline_8287241b7c",
+  "baseline": 39.48677940154022,
+  "rank": 54,
+  "bucket": "worst"
+ },
+ {
+  "key": "0e6f813e69_00d2ca27359f3d1d5ee2c2904b48a3e4717faf7fdf6413f6__vs__a5f2b9318d_002aa60c2ae1187417b4b157c5ec6450324cc056ec551a12_redline_f5a297b6a7",
+  "baseline": 39.842031676325185,
+  "rank": 55,
+  "bucket": "worst"
+ },
+ {
+  "key": "83799a0610_00bced7d0ce7770362c5b667b5e92abefcbfcf5315a2bbf6__vs__5203829c7a_001cc92b88566d5f930fe57f25813c0bf52a7bdc72c217d0_redline_8124104fcc",
+  "baseline": 39.97170058961726,
+  "rank": 56,
+  "bucket": "worst"
+ },
+ {
+  "key": "12941c2a77_0023298b011b45232675215822f0f728678a238756d763c8__vs__a5f2b9318d_002aa60c2ae1187417b4b157c5ec6450324cc056ec551a12_redline_683f442a28",
+  "baseline": 40.03294060796556,
+  "rank": 57,
+  "bucket": "worst"
+ },
+ {
+  "key": "468d82c575_c690df8dcf29bb8af8646ae10768e3ca46e8a9ef5b586428__vs__3a5ed45f0d_3d76420524fd4852ab017e1d57f215e37281e965b3f38b31_redline_bbc3223232",
+  "baseline": 40.11758223269778,
+  "rank": 58,
+  "bucket": "worst"
+ },
+ {
+  "key": "5ad6e6d44f_0199027cbf967c88ab833b77e5bc5d629bacecbd40a87c26__vs__1424386e9b_017447de83753a0e3b7afc659df038ef56972925336c6a5b_redline_ede1920163",
+  "baseline": 40.311727662024964,
+  "rank": 59,
+  "bucket": "worst"
+ },
+ {
+  "key": "0c81cbfe45_b5755b377d1c36349380137dc51de3f4ac8e5aa43114c3f1__vs__6d3d7b292c_08cd966de5e2befa9e834d3c2b93201b6130e3bf438cb6f0_redline_2b70cf763e",
+  "baseline": 40.4139301813825,
+  "rank": 60,
+  "bucket": "worst"
+ },
+ {
+  "key": "a4ebc0e89c_0016d88a731db087feb2e28e8bfc163c1fe94df0ee048d55__vs__a5f2b9318d_002aa60c2ae1187417b4b157c5ec6450324cc056ec551a12_redline_279b1319b4",
+  "baseline": 40.51480633580692,
+  "rank": 61,
+  "bucket": "worst"
+ },
+ {
+  "key": "bc514b554e_00d979c97e42f03faff5f49e2a7dfa9afd30996214602e19__vs__1424386e9b_017447de83753a0e3b7afc659df038ef56972925336c6a5b_redline_ec403c8c9c",
+  "baseline": 40.53379068460943,
+  "rank": 62,
+  "bucket": "worst"
+ },
+ {
+  "key": "6b0acda259_file_73__vs__bd768e6c17_file_74_redline_0aa74e0de4",
+  "baseline": 40.60945812866783,
+  "rank": 63,
+  "bucket": "worst"
+ },
+ {
+  "key": "5bab7a3e37_ad3955b9d93250c7b4e6aa622571f3e99e7217b6c003e125__vs__b0ed09b052_d532ddc3b6aac0ca46ac281040e748483146aa2de29a0dff_redline_be8d98785e",
+  "baseline": 40.664244720867785,
+  "rank": 64,
+  "bucket": "worst"
+ },
+ {
+  "key": "58e8dbed99_c0a8a94f1fbd0a64b613f427aeaafeb44ef2a608460554cb__vs__c07f221713_eb9634eee0b2ef1acef7efc1e0f68f9956208e077be4e02e_redline_14b7e79ab0",
+  "baseline": 41.27515302088095,
+  "rank": 65,
+  "bucket": "worst"
+ },
+ {
+  "key": "3ee2d0ceda_00026ef6a227eca724d9cd35f12e3065557a9ef0dc7ee295__vs__5203829c7a_001cc92b88566d5f930fe57f25813c0bf52a7bdc72c217d0_redline_42a3eff631",
+  "baseline": 41.337330766959774,
+  "rank": 66,
+  "bucket": "worst"
+ },
+ {
+  "key": "a30c48b63b_9d38c2b8863775d616563eeb35795e024fb57a99f81ad372__vs__52524565af_815d7d240ddb63bfc8be69c00cf62f4b9d75b494de167de6_redline_ee63b6fa87",
+  "baseline": 41.40785885611519,
+  "rank": 67,
+  "bucket": "worst"
+ },
+ {
+  "key": "1dd45d8b34_23ce39136a9b77376bab4e00c99a86f53529c3f3f9eb8dbf__vs__715d3d2b67_414e913bdcab4ac6cefcf85507ca910beead4a550959a564_redline_ff6f1dab3b",
+  "baseline": 41.440185198983976,
+  "rank": 68,
+  "bucket": "worst"
+ },
+ {
+  "key": "6fffde4ae2_000bf66110e841e1d2c2e862fc7db869b8d410586ad12d0d__vs__2773adf157_0004c94ca2a8684d47449bb0e7abf87de1df71a7e6543252_redline_ef3ffabfc9",
+  "baseline": 41.68337500764765,
+  "rank": 69,
+  "bucket": "worst"
+ },
+ {
+  "key": "91440900a0_00189e19139f6e3031303e4152566a7bc08fab71a5c95895__vs__1424386e9b_017447de83753a0e3b7afc659df038ef56972925336c6a5b_redline_d35dccc87b",
+  "baseline": 41.68485758941611,
+  "rank": 70,
+  "bucket": "worst"
+ },
+ {
+  "key": "60bf327e86_45a1d21ecae23d1d474824ea35cb110e856491fe66c2db24__vs__681fc07078_792753394635a6a7528a7bdc7b517b987d76a7ac416c92b0_redline_9f06a0f82a",
+  "baseline": 41.756812216270006,
+  "rank": 71,
+  "bucket": "worst"
+ },
+ {
+  "key": "52a93475ba_782587f67411866f3365a7ca1732a2fde50189c876b6d9a4__vs__8977e1c922_7672b472b406ac51ddf3a68e14bb0255c9e0f7f732c999c7_redline_6d0d0954dd",
+  "baseline": 41.78858556623095,
+  "rank": 72,
+  "bucket": "worst"
+ },
+ {
+  "key": "b1b92bb304_4ca9d50a751705618a5ad0964108b8508ce4230448e30f4e__vs__172554060e_2e02042a66af69cac127f0cbcb6c6c2216a37d928d163008_redline_143a7466a9",
+  "baseline": 41.826585682179264,
+  "rank": 73,
+  "bucket": "worst"
+ },
+ {
+  "key": "96a0ee0e8f_004b3b3dd84014405562584f62d67267b9a7993e21b974e8__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_c4a18d1d66",
+  "baseline": 41.94749192637838,
+  "rank": 74,
+  "bucket": "worst"
+ },
+ {
+  "key": "b2b3095b48_file_52__vs__ec3dd0df69_file_53_redline_589b832f86",
+  "baseline": 41.97067611907167,
+  "rank": 75,
+  "bucket": "worst"
+ },
+ {
+  "key": "83799a0610_00bced7d0ce7770362c5b667b5e92abefcbfcf5315a2bbf6__vs__aa5340125d_00a4b0b91e9b5b072dc3771391c2d608518690eccf44eae8_redline_2a5c1ad2ad",
+  "baseline": 42.538903321331965,
+  "rank": 76,
+  "bucket": "worst"
+ },
+ {
+  "key": "a4ebc0e89c_0016d88a731db087feb2e28e8bfc163c1fe94df0ee048d55__vs__5203829c7a_001cc92b88566d5f930fe57f25813c0bf52a7bdc72c217d0_redline_44a0775d6b",
+  "baseline": 42.5672807411917,
+  "rank": 77,
+  "bucket": "worst"
+ },
+ {
+  "key": "d16179a60b_c3cb50c9620520f54d70a4f079a12e94bf94f54f507eff8d__vs__1aaca1d5af_ef31e540797c67a78c662cc2e5ecb21bf446e3d696ce26ad_redline_f72cd71154",
+  "baseline": 42.66406582689784,
+  "rank": 78,
+  "bucket": "worst"
+ },
+ {
+  "key": "05cadf8b81_b41061303601c5466eaae8808a8196ad9aa4e79040a716a9__vs__7e0db913e2_beeb804b22eaff60a3f67611690f5c9b42475c58bf23fd75_redline_e23c1442ca",
+  "baseline": 42.73469589493141,
+  "rank": 79,
+  "bucket": "worst"
+ },
+ {
+  "key": "af540c50e4_00edeec4b73ab68a9a4e2b0281464f067656d89fc9969ab4__vs__aa5340125d_00a4b0b91e9b5b072dc3771391c2d608518690eccf44eae8_redline_498f22a0ba",
+  "baseline": 42.92083572157741,
+  "rank": 80,
+  "bucket": "worst"
+ },
+ {
+  "key": "ee91b9e453_9385adbfd34ee40a4bd2429d7385293b31a127fc9e9208d1__vs__409867707c_61a16c9bdc534801a19fcf808fdddd50a7cd74d1efd6113e_redline_9f2ce6d6bb",
+  "baseline": 43.08860302877474,
+  "rank": 81,
+  "bucket": "worst"
+ },
+ {
+  "key": "4c3999a0d9_2f1e47b67f38e08aa66f8c6667e88dac17cc31f5e32ce219__vs__6a0425f294_35e46f6ecb40163d6866a0374791aa3680f314adcf860db0_redline_db0f90defc",
+  "baseline": 43.368477177282685,
+  "rank": 82,
+  "bucket": "worst"
+ },
+ {
+  "key": "91440900a0_00189e19139f6e3031303e4152566a7bc08fab71a5c95895__vs__5203829c7a_001cc92b88566d5f930fe57f25813c0bf52a7bdc72c217d0_redline_fadd1f9bed",
+  "baseline": 43.369838507074256,
+  "rank": 83,
+  "bucket": "worst"
+ },
+ {
+  "key": "73444f5e84_aff82827a78c80e2bde19746162cd1dab4219fc091c46c59__vs__27a876dee7_c6fa0e30be63352472b401261b38948abcec01c80f386b3a_redline_07fa3d80e5",
+  "baseline": 43.64368666665111,
+  "rank": 84,
+  "bucket": "worst"
+ },
+ {
+  "key": "a6bdad436b_00e1eabab4f0fdde08a033b7d3af988ce75f7e80207c9918__vs__1424386e9b_017447de83753a0e3b7afc659df038ef56972925336c6a5b_redline_48e4b4f346",
+  "baseline": 43.66389677696258,
+  "rank": 85,
+  "bucket": "worst"
+ },
+ {
+  "key": "8cd372b814_0193e5015be906eb45df5f7b3ceb682c7ff53cb52f15a0bf__vs__a5f2b9318d_002aa60c2ae1187417b4b157c5ec6450324cc056ec551a12_redline_86dd7a85be",
+  "baseline": 43.69248784516296,
+  "rank": 86,
+  "bucket": "worst"
+ },
+ {
+  "key": "2b4475cba6_0021f639e5dbf6c217c8d81a7ac3374624ff9901a5d4b200__vs__5203829c7a_001cc92b88566d5f930fe57f25813c0bf52a7bdc72c217d0_redline_f5c6518079",
+  "baseline": 43.827456397798656,
+  "rank": 87,
+  "bucket": "worst"
+ },
+ {
+  "key": "0800162a66_000799b53487acb327ccf0c0ab87fb14b9e8636346719296__vs__a5f2b9318d_002aa60c2ae1187417b4b157c5ec6450324cc056ec551a12_redline_02514c26c3",
+  "baseline": 43.87455803152699,
+  "rank": 88,
+  "bucket": "worst"
+ },
+ {
+  "key": "18d1a4ad46_super_editor__sd_2534_collab_export_f3c7fdf7__vs__52dab5bc1c_super_editor__sdt_node_comment_ec887683_redline_07ab69d450",
+  "baseline": 44.11709898129661,
+  "rank": 89,
+  "bucket": "worst"
+ },
+ {
+  "key": "23cdfeee74_0022d9b76a33e7bdcda8d38ec3c898364c578897fb55d462__vs__1424386e9b_017447de83753a0e3b7afc659df038ef56972925336c6a5b_redline_8fe039974c",
+  "baseline": 44.13887309240062,
+  "rank": 90,
+  "bucket": "worst"
+ },
+ {
+  "key": "29379c07bf_002adf0715eed4d213774c26c60c78624c2a3cbb3d0397d2__vs__aa5340125d_00a4b0b91e9b5b072dc3771391c2d608518690eccf44eae8_redline_40f5d8efba",
+  "baseline": 44.34642568114308,
+  "rank": 91,
+  "bucket": "worst"
+ },
+ {
+  "key": "bc514b554e_00d979c97e42f03faff5f49e2a7dfa9afd30996214602e19__vs__deff0e697a_00b5defcad6e58038eac35472a2d48c89905068e5ece0cc3_redline_eecdb1c507",
+  "baseline": 44.40024987306373,
+  "rank": 92,
+  "bucket": "worst"
+ },
+ {
+  "key": "01d1b3da75_table_bookmark_end__vs__906753e55b_super_editor__table_c70ca973_redline_f6531f6275",
+  "baseline": 44.612225118716985,
+  "rank": 93,
+  "bucket": "worst"
+ },
+ {
+  "key": "3ee2d0ceda_00026ef6a227eca724d9cd35f12e3065557a9ef0dc7ee295__vs__1424386e9b_017447de83753a0e3b7afc659df038ef56972925336c6a5b_redline_f7b4fe14e8",
+  "baseline": 44.767627467397375,
+  "rank": 94,
+  "bucket": "worst"
+ },
+ {
+  "key": "8e694101b9_469e571050275b57ed1836b4cc17f4d29e43eec925bdfad9__vs__37c6c62345_3f296ffac9c17a92962156ff41f2b079eb687cd440513fe3_redline_9a2af58d99",
+  "baseline": 45.49045819801193,
+  "rank": 95,
+  "bucket": "worst"
+ },
+ {
+  "key": "0018843794_889f4c3958e28978a0d96a95a8938d9eb0dc100e66f7c483__vs__943e62959d_88646e9284c944b7dd39810ba5832dbf955c2892c6161f87_redline_49aa6b8d2f",
+  "baseline": 45.520056948526246,
+  "rank": 96,
+  "bucket": "worst"
+ },
+ {
+  "key": "b742aca0d1_839f86bfde5b019768d7fa57ea25f61ff70e1642f87a90fc__vs__f89aaa5382_a6154e64eecf7e61bcc7412e4f00462d11abfb711484a9e8_redline_2405610dc2",
+  "baseline": 45.58041654713601,
+  "rank": 97,
+  "bucket": "worst"
+ },
+ {
+  "key": "08147dee09_file_195__vs__c09b14fcd7_file_196_redline_1edc0f56f4",
+  "baseline": 45.59662115932125,
+  "rank": 98,
+  "bucket": "worst"
+ },
+ {
+  "key": "2ad8d15e88_00e901c5aa86bd93002ce801375c57e44c2c78a0e5b308d3__vs__5203829c7a_001cc92b88566d5f930fe57f25813c0bf52a7bdc72c217d0_redline_f14ce3f749",
+  "baseline": 45.669749877796555,
+  "rank": 99,
+  "bucket": "worst"
+ },
+ {
+  "key": "abd0b75d88_file_184__vs__9c6ebd430d_file_185_redline_7f412aa4b4",
+  "baseline": 45.73813397708936,
+  "rank": 100,
+  "bucket": "worst"
+ },
+ {
+  "key": "b54f749123_369705862a264e4be962e05314dd3442d40d540e5bcee581__vs__6a583de2e9_2759ad7e33657fd3a492e78e8bce281c34f6ea85fdf822dc_redline_d6f5c7680b",
+  "baseline": 45.84564299567372,
+  "rank": 101,
+  "bucket": "worst"
+ },
+ {
+  "key": "6ba5bd3ed9_675bc160844acf63f96db9c42125e80653db32667cac018a__vs__40ac206d09_574391833ed2592c3c7602a1392772629c80f5d9b8c61bd3_redline_99002a2953",
+  "baseline": 45.89063036168253,
+  "rank": 102,
+  "bucket": "worst"
+ },
+ {
+  "key": "0b5f1f7cad_003ca0a88e8358b347e771feb6970ff773753fad85416364__vs__2773adf157_0004c94ca2a8684d47449bb0e7abf87de1df71a7e6543252_redline_05d5797055",
+  "baseline": 45.91895621749346,
+  "rank": 103,
+  "bucket": "worst"
+ },
+ {
+  "key": "a4ebc0e89c_0016d88a731db087feb2e28e8bfc163c1fe94df0ee048d55__vs__deff0e697a_00b5defcad6e58038eac35472a2d48c89905068e5ece0cc3_redline_46f67bb6e3",
+  "baseline": 45.94683970668434,
+  "rank": 104,
+  "bucket": "worst"
+ },
+ {
+  "key": "193054264a_127a38d92f96a2a732d0f22d6eaad012191ba6d7525d619a__vs__0a3a0c1a32_36c6d281d1ea6bbef531f8c4ac6f8a3089348db8d85da6c6_redline_ff806d3b39",
+  "baseline": 46.01246602615865,
+  "rank": 105,
+  "bucket": "worst"
+ },
+ {
+  "key": "7166fa4199_document_100_ultimate_demo_id_paraid_overflow__vs__97c3dd2e86_docx_lots_of_comments_addition_redline_addition_redline_2288f27be1",
+  "baseline": 46.10325237483375,
+  "rank": 106,
+  "bucket": "worst"
+ },
+ {
+  "key": "902a69f0e4_super_editor__line_space_table_9b1ee54b__vs__5e5fa9b5fb_super_editor__list_def_mix_d7cec092_redline_062340d04a",
+  "baseline": 46.244978085977024,
+  "rank": 107,
+  "bucket": "worst"
+ },
+ {
+  "key": "af4645ebd0_file_99__vs__b8115d0dab_file_100_redline_65aa483982",
+  "baseline": 46.38036280781147,
+  "rank": 108,
+  "bucket": "worst"
+ },
+ {
+  "key": "0800162a66_000799b53487acb327ccf0c0ab87fb14b9e8636346719296__vs__aa5340125d_00a4b0b91e9b5b072dc3771391c2d608518690eccf44eae8_redline_4aca112da9",
+  "baseline": 46.44761188338727,
+  "rank": 109,
+  "bucket": "worst"
+ },
+ {
+  "key": "0aa6426932_file_114__vs__ab85c77154_file_115_redline_f7bbf6e831",
+  "baseline": 46.905598653829195,
+  "rank": 110,
+  "bucket": "worst"
+ },
+ {
+  "key": "4ed1b6d133_0020e4099d611a050ed83fb7e0b16d6f48200018bbb1e757__vs__342f364d46_001342333d45627868f4dc5282abbba4598a91b4a7584b08_redline_6d0354470e",
+  "baseline": 47.03476156512647,
+  "rank": 111,
+  "bucket": "worst"
+ },
+ {
+  "key": "61e3967518_0011e415331e3b2d8031efcfcfecbb68df0f0b73b26350ce__vs__342f364d46_001342333d45627868f4dc5282abbba4598a91b4a7584b08_redline_22254771f0",
+  "baseline": 47.0560267237947,
+  "rank": 112,
+  "bucket": "worst"
+ },
+ {
+  "key": "b6dd0b6ae8_015a4f5a16a110026418c0a7f5eefa69ce6d5f9bcfc2d955__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_59dbbc9d85",
+  "baseline": 47.20452965413828,
+  "rank": 113,
+  "bucket": "worst"
+ },
+ {
+  "key": "ef7218d9e8_001893584bf94ff30c98db48cb8a0ea0ea5abc048f3e1a4d__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_b626364e3d",
+  "baseline": 47.29339512116616,
+  "rank": 114,
+  "bucket": "worst"
+ },
+ {
+  "key": "12941c2a77_0023298b011b45232675215822f0f728678a238756d763c8__vs__aa5340125d_00a4b0b91e9b5b072dc3771391c2d608518690eccf44eae8_redline_07d3c689cb",
+  "baseline": 47.49976866148047,
+  "rank": 115,
+  "bucket": "worst"
+ },
+ {
+  "key": "51a47b843a_c301012f331e342fbe85a9424e9c5d8881777f6974f06500__vs__26fee646c1_bb776817d0c64eb0273772e8691cec3a2d766ecbc717b801_redline_16b2500a7b",
+  "baseline": 47.53433761045466,
+  "rank": 116,
+  "bucket": "worst"
+ },
+ {
+  "key": "acd3595c3a_0032221e68ad2a7986d1fe113eb1d46b5a7d1901b5aa9318__vs__342f364d46_001342333d45627868f4dc5282abbba4598a91b4a7584b08_redline_0876a1f7de",
+  "baseline": 47.65734305051175,
+  "rank": 117,
+  "bucket": "worst"
+ },
+ {
+  "key": "a9323bf62e_8adc2fdfcbc6f852c44915fc1bc3f425a982b81d5465efd2__vs__a5b479dff2_85cf7a1544509ae358a73afdb5e09f42928f903908efcbbd_redline_e9487202ef",
+  "baseline": 47.756494610994025,
+  "rank": 118,
+  "bucket": "worst"
+ },
+ {
+  "key": "2b328caeee_0ddd11a4c4cfd99b77de17348a8ddc30ae5e5c80a101c84e__vs__882e251894_c41a01217b430717fbacf9cd114aed87b99db718803e1801_redline_3866f441cc",
+  "baseline": 47.77722540516069,
+  "rank": 119,
+  "bucket": "worst"
+ },
+ {
+  "key": "2e7f1e6637_0120556a0553eb1ba39978d5911b7ce62be10a9bdc7c9191__vs__1424386e9b_017447de83753a0e3b7afc659df038ef56972925336c6a5b_redline_397d177f69",
+  "baseline": 47.83856715305542,
+  "rank": 120,
+  "bucket": "worst"
+ },
+ {
+  "key": "531cf3d312_00ce789bc3226c2a68967cc29792927c80b7f55d9b5267ad__vs__2e04202552_000e3e7bd2d6215fc7b469cc3e296c1b2a510bc1abc7e0fd_redline_3c920d5996",
+  "baseline": 47.89699648831979,
+  "rank": 121,
+  "bucket": "worst"
+ },
+ {
+  "key": "e1c745d784_008243ee20adecbf2ae39c9e6809b022076aa166a4a4f9ec__vs__2773adf157_0004c94ca2a8684d47449bb0e7abf87de1df71a7e6543252_redline_bdd82eb64d",
+  "baseline": 48.111462539565466,
+  "rank": 122,
+  "bucket": "worst"
+ },
+ {
+  "key": "725cdbebe3_0013892c946c551d309fcec9bb3f3500fc08bc77121a3849__vs__342f364d46_001342333d45627868f4dc5282abbba4598a91b4a7584b08_redline_d6dcdfe5e4",
+  "baseline": 48.34184691087975,
+  "rank": 123,
+  "bucket": "worst"
+ },
+ {
+  "key": "2a7aebb7ce_1118d92e486cd8c59e3b10ec9f28ef9188ec989b1120da52__vs__196c44dfba_2663487136794495a0c6c3b7f67609c690cfe18469576cbb_redline_766a042194",
+  "baseline": 48.35237966607636,
+  "rank": 124,
+  "bucket": "worst"
+ },
+ {
+  "key": "22060e7141_40b72d8c37011f35d914c2f44868286d89717c9efd10ac04__vs__71c67c168f_37d74eebe6fd69b7f6041f8ecda8e9857d885b23dab561b0_redline_72341d8ac1",
+  "baseline": 48.377518580751,
+  "rank": 125,
+  "bucket": "worst"
+ },
+ {
+  "key": "b27bda87ed_0023f7c421a05af9c44fb4ff9ef1bce46c53a081779b1e72__vs__2e04202552_000e3e7bd2d6215fc7b469cc3e296c1b2a510bc1abc7e0fd_redline_bfd8504834",
+  "baseline": 48.8454515723177,
+  "rank": 126,
+  "bucket": "worst"
+ },
+ {
+  "key": "19891583af_000f23dc2592a0044f1da2e4f2166c6b41e8fde6a66a1988__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_556b3edd1a",
+  "baseline": 49.057070058117866,
+  "rank": 127,
+  "bucket": "worst"
+ },
+ {
+  "key": "a3df367231_001a6655d72fbecf6a1d10e479eee052a779d6ba1d0848d7__vs__aa5340125d_00a4b0b91e9b5b072dc3771391c2d608518690eccf44eae8_redline_76b093bc91",
+  "baseline": 49.520308188163,
+  "rank": 128,
+  "bucket": "worst"
+ },
+ {
+  "key": "b6f757462e_0006f7905281867ab0d0a45d88f88f72e2c15efbd9a8ed69__vs__aa5340125d_00a4b0b91e9b5b072dc3771391c2d608518690eccf44eae8_redline_e3e1e9411f",
+  "baseline": 49.60598321064975,
+  "rank": 129,
+  "bucket": "worst"
+ },
+ {
+  "key": "3539cf2404_cli_legacy__replace_test_0a793f01__vs__8df6dfa8d7_alternate_content_redline_5b35efe2bb",
+  "baseline": 49.64846040875963,
+  "rank": 130,
+  "bucket": "worst"
+ },
+ {
+  "key": "a4c38b1bf5_4c17189eb7a543ae96f42443a9f4001a3be8fec6e47f7481__vs__cd63d2dccf_3f2752287dacf8e3e52d649dc467cbab2214df665039ab15_redline_e9ef73a8e4",
+  "baseline": 50.07230937761968,
+  "rank": 131,
+  "bucket": "worst"
+ },
+ {
+  "key": "7e4c9416aa_00803e70c3646e42abab322238df606c847686168795a703__vs__342f364d46_001342333d45627868f4dc5282abbba4598a91b4a7584b08_redline_2b1b7595a9",
+  "baseline": 50.17494706674561,
+  "rank": 132,
+  "bucket": "worst"
+ },
+ {
+  "key": "3138fff3a6_a3023a2f84b5991c012aed0f0b05148b46c895a6909bc58b__vs__cfda171ad5_b6c5d22966c78c331541bedc08ce5c5a3e9d7cb713112201_redline_f46119e54c",
+  "baseline": 50.36020327321699,
+  "rank": 133,
+  "bucket": "worst"
+ },
+ {
+  "key": "159d00085d_super_editor__sd_1919_word_simple_e3a4a818__vs__f49b3b0ec2_super_editor__sd_1919_word_table_74726d6c_redline_4aec2edb0d",
+  "baseline": 50.493298458352015,
+  "rank": 134,
+  "bucket": "worst"
+ },
+ {
+  "key": "bc514b554e_00d979c97e42f03faff5f49e2a7dfa9afd30996214602e19__vs__aa5340125d_00a4b0b91e9b5b072dc3771391c2d608518690eccf44eae8_redline_ef5c07563d",
+  "baseline": 50.68931643735737,
+  "rank": 135,
+  "bucket": "worst"
+ },
+ {
+  "key": "33822e6e1c_381ca14cd2a65660af8edbab73edc6172c9b9a894e5a6074__vs__62780fc256_2dc03df21f0f42c5592971da4147d367e0dcd3b99e8b3f26_redline_a2fa2445c6",
+  "baseline": 50.885481633989365,
+  "rank": 136,
+  "bucket": "worst"
+ },
+ {
+  "key": "2ad8d15e88_00e901c5aa86bd93002ce801375c57e44c2c78a0e5b308d3__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_5666a8b6aa",
+  "baseline": 51.25251284971947,
+  "rank": 137,
+  "bucket": "worst"
+ },
+ {
+  "key": "0e6f813e69_00d2ca27359f3d1d5ee2c2904b48a3e4717faf7fdf6413f6__vs__1424386e9b_017447de83753a0e3b7afc659df038ef56972925336c6a5b_redline_862df17b60",
+  "baseline": 51.2942732036469,
+  "rank": 138,
+  "bucket": "worst"
+ },
+ {
+  "key": "5ad6e6d44f_0199027cbf967c88ab833b77e5bc5d629bacecbd40a87c26__vs__2773adf157_0004c94ca2a8684d47449bb0e7abf87de1df71a7e6543252_redline_99b69bb632",
+  "baseline": 51.439141295740335,
+  "rank": 139,
+  "bucket": "worst"
+ },
+ {
+  "key": "82348eef4b_multi_section__vs__756fb54224_potpourritest_redline_ae9547abd2",
+  "baseline": 51.89878997974059,
+  "rank": 140,
+  "bucket": "worst"
+ },
+ {
+  "key": "66dcec3e49_file_175__vs__8f47b1dc90_file_176_redline_485599b4e9",
+  "baseline": 51.91772833364662,
+  "rank": 141,
+  "bucket": "worst"
+ },
+ {
+  "key": "35ce9aa3cc_00515f13495e5bf0867b319b035d4a83c7904b55056c38f8__vs__aa5340125d_00a4b0b91e9b5b072dc3771391c2d608518690eccf44eae8_redline_25a7bc54c6",
+  "baseline": 51.95354510869665,
+  "rank": 142,
+  "bucket": "worst"
+ },
+ {
+  "key": "a291bf4a73_behavior__rtl_header_footer_e1ac81f6__vs__10415d5332_behavior__rtl_mixed_bidi_e955f185_redline_e94db515fd",
+  "baseline": 52.03222598344874,
+  "rank": 143,
+  "bucket": "worst"
+ },
+ {
+  "key": "00b4bca293_ba67b1a0b34e662dd68f08ac7dd30bf0db3b1e2054002207__vs__daadabf34a_d3a0981ed305b4a50bf3b4780a018be510b1f8012281f045_redline_1971c5ad89",
+  "baseline": 52.055871378783415,
+  "rank": 144,
+  "bucket": "worst"
+ },
+ {
+  "key": "e1771b0063_word_tolerated_misplaced_uipriority__vs__cbb3bab843_word_tolerated_orphan_comment_redline_6532beda4d",
+  "baseline": 52.37905188032367,
+  "rank": 145,
+  "bucket": "worst"
+ },
+ {
+  "key": "4ed1b6d133_0020e4099d611a050ed83fb7e0b16d6f48200018bbb1e757__vs__bd3824dd1e_000ee64ef7226d353297888f59a251e24ce5d776fea000fa_redline_e1f1792974",
+  "baseline": 52.90679192515287,
+  "rank": 146,
+  "bucket": "worst"
+ },
+ {
+  "key": "66e70631fb_file_188__vs__70584b4a0e_file_189_redline_6bf1e10a91",
+  "baseline": 53.25073551020689,
+  "rank": 147,
+  "bucket": "worst"
+ },
+ {
+  "key": "60dfd517a9_00f0e7f365a34acc5911a38c89776a4bdd2ba1685edcd0cc__vs__342f364d46_001342333d45627868f4dc5282abbba4598a91b4a7584b08_redline_72cc9f4ac6",
+  "baseline": 53.31909775702147,
+  "rank": 148,
+  "bucket": "worst"
+ },
+ {
+  "key": "5ad6e6d44f_0199027cbf967c88ab833b77e5bc5d629bacecbd40a87c26__vs__342f364d46_001342333d45627868f4dc5282abbba4598a91b4a7584b08_redline_3f9670141d",
+  "baseline": 53.340868945526644,
+  "rank": 149,
+  "bucket": "worst"
+ },
+ {
+  "key": "3539cf2404_cli_legacy__replace_test_0a793f01__vs__a21c45464c_super_editor__shape_group_ce60e1e6_redline_d6eb2a4115",
+  "baseline": 53.58992278369415,
+  "rank": 150,
+  "bucket": "worst"
+ },
+ {
+  "key": "5fca0ac668_ooxml_style_link__vs__12809de7d6_word_tolerated_misplaced_pgsz_redline_b06fe8236d",
+  "baseline": 53.902662508879985,
+  "rank": 151,
+  "bucket": "worst"
+ },
+ {
+  "key": "b27bda87ed_0023f7c421a05af9c44fb4ff9ef1bce46c53a081779b1e72__vs__aa5340125d_00a4b0b91e9b5b072dc3771391c2d608518690eccf44eae8_redline_205503ead9",
+  "baseline": 54.02736308171756,
+  "rank": 152,
+  "bucket": "worst"
+ },
+ {
+  "key": "59b0cdb4c5_f43d198617228aedfb40a784b13884e2d5d9f1169440af38__vs__e33a1cf779_6086d90a3677e518037b2da23736161a8ca4d2d1add1b8b3_redline_bef0012edd",
+  "baseline": 54.16361725310304,
+  "rank": 153,
+  "bucket": "worst"
+ },
+ {
+  "key": "1fda7fa6e2_file_187__vs__66e70631fb_file_188_redline_92ec8417eb",
+  "baseline": 54.589322942189185,
+  "rank": 154,
+  "bucket": "worst"
+ },
+ {
+  "key": "2cf170f973_a44ffa364d7ae415d97c79da1cf954a8435bedfa165cb118__vs__559bfa25a3_e7a86ed7598192cc42033d4bdcaedad4f0a384aabf61c811_redline_632d907668",
+  "baseline": 54.63796290097561,
+  "rank": 155,
+  "bucket": "worst"
+ },
+ {
+  "key": "2bd5ae6064_file_13__vs__836d7aa3c4_file_14_redline_01ffe97a5e",
+  "baseline": 54.87409658983302,
+  "rank": 156,
+  "bucket": "worst"
+ },
+ {
+  "key": "95c855b9a0_001671bbb68c5b9ebebebfc8be69252ccc195babb3129278__vs__1424386e9b_017447de83753a0e3b7afc659df038ef56972925336c6a5b_redline_911ada0883",
+  "baseline": 54.92068366384315,
+  "rank": 157,
+  "bucket": "worst"
+ },
+ {
+  "key": "4cd393a0f9_77461c84ebf97bbde7053138512db5b609f39184d8f6c0cd__vs__e730b72cd4_37d5635f2a02b51f5322e6fcae70a1b6b644796e9e50daf4_redline_8d96e79b03",
+  "baseline": 54.95551293195845,
+  "rank": 158,
+  "bucket": "worst"
+ },
+ {
+  "key": "29379c07bf_002adf0715eed4d213774c26c60c78624c2a3cbb3d0397d2__vs__5203829c7a_001cc92b88566d5f930fe57f25813c0bf52a7bdc72c217d0_redline_3f1f7e911f",
+  "baseline": 55.17619119342622,
+  "rank": 159,
+  "bucket": "worst"
+ },
+ {
+  "key": "2ad8d15e88_00e901c5aa86bd93002ce801375c57e44c2c78a0e5b308d3__vs__342f364d46_001342333d45627868f4dc5282abbba4598a91b4a7584b08_redline_f263af77b3",
+  "baseline": 55.366542508504196,
+  "rank": 160,
+  "bucket": "worst"
+ },
+ {
+  "key": "68526de79b_file_77__vs__7476f5fbb1_file_78_redline_7cc19c9376",
+  "baseline": 55.578037435286234,
+  "rank": 161,
+  "bucket": "worst"
+ },
+ {
+  "key": "a3df367231_001a6655d72fbecf6a1d10e479eee052a779d6ba1d0848d7__vs__2e04202552_000e3e7bd2d6215fc7b469cc3e296c1b2a510bc1abc7e0fd_redline_68d77dc8a2",
+  "baseline": 55.61726929179616,
+  "rank": 162,
+  "bucket": "worst"
+ },
+ {
+  "key": "38694026fb_0003b3ae2b115676d918e72f694790ddb64563721bb4a48d__vs__1424386e9b_017447de83753a0e3b7afc659df038ef56972925336c6a5b_redline_d2553ac48a",
+  "baseline": 55.6345766628136,
+  "rank": 163,
+  "bucket": "worst"
+ },
+ {
+  "key": "970e9bbbcc_behavior__math_all_objects_36ab389c__vs__f795b96ac4_behavior__math_delimiter_tests_c9d034dc_redline_1b55e27189",
+  "baseline": 55.8814946868568,
+  "rank": 164,
+  "bucket": "worst"
+ },
+ {
+  "key": "c4ee483519_tiff_image__vs__d0423646cd_times_new_roman_bold_id_paraid_overflow_redline_b543a8162b",
+  "baseline": 56.04903837714879,
+  "rank": 165,
+  "bucket": "worst"
+ },
+ {
+  "key": "3f9e7fe8a5_1909bbbfb6abdc12d641a5e88b1b98b8f68e11a3666816f9__vs__2604267933_77c0c55589e54ae1ef618a5d395870cdfa0db0500c90dc17_redline_172d60276a",
+  "baseline": 56.948300875203834,
+  "rank": 166,
+  "bucket": "worst"
+ },
+ {
+  "key": "3fcadf4761_docx_lots_of_comments_addition_removal_redline__vs__24ad1aa6e5_docx_lots_of_comments_addition_removal_redline_30f20e787b",
+  "baseline": 57.02092282153771,
+  "rank": 167,
+  "bucket": "worst"
+ },
+ {
+  "key": "83799a0610_00bced7d0ce7770362c5b667b5e92abefcbfcf5315a2bbf6__vs__bd3824dd1e_000ee64ef7226d353297888f59a251e24ce5d776fea000fa_redline_09b6cdca0b",
+  "baseline": 57.09685455562442,
+  "rank": 168,
+  "bucket": "worst"
+ },
+ {
+  "key": "6a8a9e859c_e38f976d3258562dfa09cecb9a34e94403098d5b8a0cd338__vs__1c96e575f8_f907e44f658eab72c9fec3635a6a64fb051c7fb2142a0d03_redline_327c9f02a2",
+  "baseline": 57.25568580619969,
+  "rank": 169,
+  "bucket": "worst"
+ },
+ {
+  "key": "96a0ee0e8f_004b3b3dd84014405562584f62d67267b9a7993e21b974e8__vs__342f364d46_001342333d45627868f4dc5282abbba4598a91b4a7584b08_redline_24835ef22b",
+  "baseline": 57.60572593626995,
+  "rank": 170,
+  "bucket": "worst"
+ },
+ {
+  "key": "8441c4ae21_sd_2517_localized_heading_styles__vs__7e685cbab1_super_editor__ooxml_underline_rstyle_linked_comb_redline_f0875f6d19",
+  "baseline": 58.141148826703564,
+  "rank": 171,
+  "bucket": "worst"
+ },
+ {
+  "key": "279abea8ce_super_editor__h_f_normal_odd_even_firstpg_9b210d__vs__76827c9f6c_super_editor__sd_1480_two_col_index_0138dccc_redline_9a93480040",
+  "baseline": 58.239959709791776,
+  "rank": 172,
+  "bucket": "worst"
+ },
+ {
+  "key": "10415d5332_behavior__rtl_mixed_bidi_e955f185__vs__96fa27757a_behavior__rtl_page_numpages_54739e26_redline_1942a590b4",
+  "baseline": 58.3076492944672,
+  "rank": 173,
+  "bucket": "worst"
+ },
+ {
+  "key": "570c8465f0_1b333fe80fef0fc98ba50b06be0ebd5f095833dfdaec7844__vs__7f567ada68_7c28073a381aa706215f6fd4196b4c66096249720665b8a7_redline_518c606bf2",
+  "baseline": 58.462740918387276,
+  "rank": 174,
+  "bucket": "worst"
+ },
+ {
+  "key": "0bf5192ed0_00afb3e6b2bb1a5ab1e1770ba41f6f455f87472d24ab2767__vs__deff0e697a_00b5defcad6e58038eac35472a2d48c89905068e5ece0cc3_redline_72de76d733",
+  "baseline": 58.84779897216719,
+  "rank": 175,
+  "bucket": "worst"
+ },
+ {
+  "key": "6fffde4ae2_000bf66110e841e1d2c2e862fc7db869b8d410586ad12d0d__vs__bd3824dd1e_000ee64ef7226d353297888f59a251e24ce5d776fea000fa_redline_d16e567fd2",
+  "baseline": 59.86099140507199,
+  "rank": 176,
+  "bucket": "worst"
+ },
+ {
+  "key": "3cf3093270_super_editor__diff_after7_b998213e__vs__735c372b41_super_editor__diff_after8_58e5c288_redline_3cddbcb812",
+  "baseline": 60.09963685406237,
+  "rank": 177,
+  "bucket": "worst"
+ },
+ {
+  "key": "8138a2180b_file_145__vs__ac0bcc10fe_file_146_redline_11e99a0b24",
+  "baseline": 60.877861637842805,
+  "rank": 178,
+  "bucket": "worst"
+ },
+ {
+  "key": "1d137d70ee_005bf179b17b3d109d473d5bb10a968731ba985c4bff3743__vs__342f364d46_001342333d45627868f4dc5282abbba4598a91b4a7584b08_redline_bf007373d6",
+  "baseline": 61.08915991070678,
+  "rank": 179,
+  "bucket": "worst"
+ },
+ {
+  "key": "830eb0f0a2_file_169__vs__bc85714262_file_170_redline_10358095a4",
+  "baseline": 61.35025412590716,
+  "rank": 180,
+  "bucket": "worst"
+ },
+ {
+  "key": "63f2ae8323_00d7e931786f09113a59daafeb4c51113fbd97f3f09d93c2__vs__342f364d46_001342333d45627868f4dc5282abbba4598a91b4a7584b08_redline_6f561090f4",
+  "baseline": 61.54250732947129,
+  "rank": 181,
+  "bucket": "worst"
+ },
+ {
+  "key": "970e9bbbcc_behavior__math_all_objects_36ab389c__vs__735c372b41_super_editor__diff_after8_58e5c288_redline_2a64722aad",
+  "baseline": 61.903923873805596,
+  "rank": 182,
+  "bucket": "worst"
+ },
+ {
+  "key": "70a28a8258_file_15__vs__be5bf990cb_file_16_redline_699cc8bd70",
+  "baseline": 61.95127724712298,
+  "rank": 183,
+  "bucket": "worst"
+ },
+ {
+  "key": "9d67577d29_d418019d56e0e8331a07403e7903d264f84e3d506ac68a92__vs__5e6a6796ab_cc0025260d3c0d8ef9778f39227d5ec1bf597041cedd43e3_redline_8f47bedea1",
+  "baseline": 62.031168510469485,
+  "rank": 184,
+  "bucket": "worst"
+ },
+ {
+  "key": "43dd6753e6_super_editor__diff_before7_5bad2542__vs__e70f1134dd_super_editor__diff_before8_ba5faa9e_redline_4ca4e25a83",
+  "baseline": 62.06408377778139,
+  "rank": 185,
+  "bucket": "worst"
+ },
+ {
+  "key": "2ba76dbb7e_48021810502ba519ff3bc10a88715f6e57e23a4d93a46ada__vs__e33fe5195e_39e6a7fc140be9556ffd3722005fce7d9d04970dee1dc785_redline_6af7bc5540",
+  "baseline": 62.1186185088687,
+  "rank": 186,
+  "bucket": "worst"
+ },
+ {
+  "key": "3755bf5762_0000a3a991f56b6660c630eb426231a3b4ec31e40313aab9__vs__1424386e9b_017447de83753a0e3b7afc659df038ef56972925336c6a5b_redline_16168f8350",
+  "baseline": 62.44535360905983,
+  "rank": 187,
+  "bucket": "worst"
+ },
+ {
+  "key": "96fa27757a_behavior__rtl_page_numpages_54739e26__vs__4cb1926093_behavior__sd_1960_word_replacement_no_comments_1_redline_a57fd27d47",
+  "baseline": 62.75223178729976,
+  "rank": 188,
+  "bucket": "worst"
+ },
+ {
+  "key": "491a257507_blue_bold_centered_demo_id_paraid_overflow__vs__da68abdf72_blue_centered_title_demo_style_default_missing_redline_3b9982e41f",
+  "baseline": 62.86651319423152,
+  "rank": 189,
+  "bucket": "worst"
+ },
+ {
+  "key": "7476f5fbb1_file_78__vs__fa962f4b9d_file_79_redline_3a7ca36d5f",
+  "baseline": 63.03329852915668,
+  "rank": 190,
+  "bucket": "worst"
+ },
+ {
+  "key": "4ade5f9207_009df71a7ecb41f9da0135915e2e4d68176e296ff69c9af0__vs__a5f2b9318d_002aa60c2ae1187417b4b157c5ec6450324cc056ec551a12_redline_4ca3f73206",
+  "baseline": 63.36716079106396,
+  "rank": 191,
+  "bucket": "worst"
+ },
+ {
+  "key": "75b13139d1_01424129e67ac16566c504bbb091d985cb6316a08abf5730__vs__5203829c7a_001cc92b88566d5f930fe57f25813c0bf52a7bdc72c217d0_redline_6eae0d41a0",
+  "baseline": 63.41104167513706,
+  "rank": 192,
+  "bucket": "worst"
+ },
+ {
+  "key": "52220b20c3_00a54bff7e15af78fe7cfc20219c28cb208fde807bd28d44__vs__342f364d46_001342333d45627868f4dc5282abbba4598a91b4a7584b08_redline_d525625b0d",
+  "baseline": 63.41271604999151,
+  "rank": 193,
+  "bucket": "worst"
+ },
+ {
+  "key": "3ee2d0ceda_00026ef6a227eca724d9cd35f12e3065557a9ef0dc7ee295__vs__aa5340125d_00a4b0b91e9b5b072dc3771391c2d608518690eccf44eae8_redline_bc780cbf7b",
+  "baseline": 63.504465630138064,
+  "rank": 194,
+  "bucket": "worst"
+ },
+ {
+  "key": "7e4c9416aa_00803e70c3646e42abab322238df606c847686168795a703__vs__1424386e9b_017447de83753a0e3b7afc659df038ef56972925336c6a5b_redline_c8545d372b",
+  "baseline": 63.999906966534354,
+  "rank": 195,
+  "bucket": "worst"
+ },
+ {
+  "key": "9ea920c636_710d9d68ef90cbd901510c07ae7fed61173f872e9dbea061__vs__0acde9d23e_50be95cde73c1d9b994d6c75c6d2f67f7b4c6cdf0e13ba30_redline_0e7956b306",
+  "baseline": 64.06306032585108,
+  "rank": 196,
+  "bucket": "worst"
+ },
+ {
+  "key": "53775e4d5a_24844d47346ff3b10f19b042180be76c4087d67e8ebcba8a__vs__030c864b67_2c913d23ee4b63d2320f1a131e2b9e2148951743abc5bc09_redline_e8bb80b455",
+  "baseline": 64.08180858879629,
+  "rank": 197,
+  "bucket": "worst"
+ },
+ {
+  "key": "4841fd31f0_q1_sales_summary_table__vs__28033140a2_quarterly_performance_report_table_2_redline_86aef9a34a",
+  "baseline": 64.106463445082,
+  "rank": 198,
+  "bucket": "worst"
+ },
+ {
+  "key": "79c90a72d7_file_179__vs__e616ed8a32_file_180_redline_0e9d1c7ff5",
+  "baseline": 64.38595068709319,
+  "rank": 199,
+  "bucket": "worst"
+ },
+ {
+  "key": "97b2e714de_super_editor__broken_list_7e9b9bf7__vs__b389f55091_super_editor__comment_23ee5ec1_redline_4a9a8d0b4a",
+  "baseline": 64.70747393187428,
+  "rank": 200,
+  "bucket": "worst"
+ },
+ {
+  "key": "aeba435bbd_file_133__vs__6f02029e99_file_134_redline_fc12ef6776",
+  "baseline": 66.11031962822705,
+  "rank": 205,
+  "bucket": "spread"
+ },
+ {
+  "key": "4f1b13334b_0002768ad2e3174d9c557d30d4a7a8d70ae4062e52383747__vs__2773adf157_0004c94ca2a8684d47449bb0e7abf87de1df71a7e6543252_redline_10aec41832",
+  "baseline": 67.65225411575787,
+  "rank": 213,
+  "bucket": "spread"
+ },
+ {
+  "key": "286955227d_0134fe85fb88da2accd6637e1c44bdd4f8b7fbb533bd47ba__vs__bd3824dd1e_000ee64ef7226d353297888f59a251e24ce5d776fea000fa_redline_3a6795d6e4",
+  "baseline": 70.35977001119787,
+  "rank": 221,
+  "bucket": "spread"
+ },
+ {
+  "key": "3e43d24c46_clear_formatting_demo_id_paraid_overflow__vs__adc9f524d1_comments_redline_d484b575c0",
+  "baseline": 71.61569224682482,
+  "rank": 229,
+  "bucket": "spread"
+ },
+ {
+  "key": "13da8d3a5b_times_new_roman_font_id_paraid_overflow__vs__4c4f8515c5_title_style_centered_demo_id_paraid_overflow_redline_1779634f9b",
+  "baseline": 73.97578601741579,
+  "rank": 237,
+  "bucket": "spread"
+ },
+ {
+  "key": "1aa7a03758_004c43cb816aed2ca4b0d0adf6e2bb8f115182135f2b4b42__vs__342f364d46_001342333d45627868f4dc5282abbba4598a91b4a7584b08_redline_766d6d6968",
+  "baseline": 75.12668544885558,
+  "rank": 245,
+  "bucket": "spread"
+ },
+ {
+  "key": "e9d5410452_file_191__vs__bffb81f86c_file_192_redline_0cbac1d96f",
+  "baseline": 77.43534128108757,
+  "rank": 253,
+  "bucket": "spread"
+ },
+ {
+  "key": "63f2ae8323_00d7e931786f09113a59daafeb4c51113fbd97f3f09d93c2__vs__bd3824dd1e_000ee64ef7226d353297888f59a251e24ce5d776fea000fa_redline_264768d7e2",
+  "baseline": 79.06931702645568,
+  "rank": 261,
+  "bucket": "spread"
+ },
+ {
+  "key": "d48e02b548_super_editor__google_docs_originated_comments__vs__e70f1134dd_super_editor__diff_before8_ba5faa9e_redline_e4569d0756",
+  "baseline": 79.91328327382485,
+  "rank": 269,
+  "bucket": "spread"
+ },
+ {
+  "key": "7c98e8f2b6_f90bb6acf7d2db96913dfdda92798a79e009931c95e5ecec__vs__a53dfa404c_efdf9d0e5a7bcc238f6d83345fe6ee3957610ab31a724db2_redline_7c8558f8ef",
+  "baseline": 81.0797378452342,
+  "rank": 277,
+  "bucket": "spread"
+ },
+ {
+  "key": "d48e02b548_super_editor__google_docs_originated_comments__vs__d0281643d2_super_editor__hello_docx_world_12f11074_redline_37c978d405",
+  "baseline": 81.90232548791504,
+  "rank": 285,
+  "bucket": "spread"
+ },
+ {
+  "key": "0a1badc333_super_editor__missing_sectpr_967a402d__vs__84f5fb598b_super_editor__diff_before11_1b953eaf_redline_a78b94020d",
+  "baseline": 82.6914181467148,
+  "rank": 293,
+  "bucket": "spread"
+ },
+ {
+  "key": "cbb3bab843_word_tolerated_orphan_comment__vs__cefef4e4f5_yellow_highlight_demo_id_paraid_overflow_redline_3796807136",
+  "baseline": 83.25163843072113,
+  "rank": 301,
+  "bucket": "spread"
+ },
+ {
+  "key": "8cd252fa94_product_roadmap_2026_suggesting_insertions__vs__3f4801c5c0_project_plan_suggesting_insertions_redline_6b7e8a63c3",
+  "baseline": 83.6726040565899,
+  "rank": 309,
+  "bucket": "spread"
+ },
+ {
+  "key": "5c207ef361_super_editor__font_formatting_runs_8be3565a__vs__a0738533be_gdocs_comments_export_redline_1d045a4304",
+  "baseline": 83.94558971437091,
+  "rank": 317,
+  "bucket": "spread"
+ },
+ {
+  "key": "54655f6dc4_bold_text_formatting_demo_id_paraid_overflow__vs__a621244f47_bold_underline_combined_demo_id_paraid_overflow_redline_5724329289",
+  "baseline": 84.24402876523249,
+  "rank": 325,
+  "bucket": "spread"
+ },
+ {
+  "key": "3c1e5d4d00_00b540ddc1a1fef3ab9acae5b93ca90e9fcef840e25d53cd__vs__2e04202552_000e3e7bd2d6215fc7b469cc3e296c1b2a510bc1abc7e0fd_redline_fed71ea308",
+  "baseline": 84.35053179001343,
+  "rank": 333,
+  "bucket": "spread"
+ },
+ {
+  "key": "f782ae23ec_super_editor__wordoriginatedcomments_c146be65__vs__3539cf2404_cli_legacy__replace_test_0a793f01_redline_3303e707c8",
+  "baseline": 84.4568645872547,
+  "rank": 341,
+  "bucket": "spread"
+ },
+ {
+  "key": "3539cf2404_cli_legacy__replace_test_0a793f01__vs__3b639ef236_super_editor__sdpr_8cc15994_redline_1b5dd9fc3f",
+  "baseline": 84.55437979391056,
+  "rank": 349,
+  "bucket": "spread"
+ },
+ {
+  "key": "7cf8462738_font_size_12_demo_id_paraid_overflow__vs__976e7588ea_font_size_18_demo_style_default_missing_redline_190d8596bf",
+  "baseline": 84.72113947856565,
+  "rank": 357,
+  "bucket": "spread"
+ },
+ {
+  "key": "f795b96ac4_behavior__math_delimiter_tests_c9d034dc__vs__75aeff4f58_super_editor__diff_after9_a9d4b4b0_redline_dca87a30ef",
+  "baseline": 84.76754392201627,
+  "rank": 365,
+  "bucket": "spread"
+ },
+ {
+  "key": "2f23773d63_super_editor__pagination_blank_2a98ed7a__vs__9586202517_super_editor__two_column_two_page_0b8a37c5_redline_4d7ccddfdc",
+  "baseline": 84.85648696883936,
+  "rank": 373,
+  "bucket": "spread"
+ },
+ {
+  "key": "c09b14fcd7_file_196__vs__4e6a261969_file_197_redline_cfb0498eef",
+  "baseline": 84.90464588473795,
+  "rank": 381,
+  "bucket": "spread"
+ },
+ {
+  "key": "36c5050fba_super_editor__list_with_indents_efc7d4f5__vs__d0281643d2_super_editor__hello_docx_world_12f11074_redline_f9ec352ab5",
+  "baseline": 84.92506022419258,
+  "rank": 389,
+  "bucket": "spread"
+ },
+ {
+  "key": "1ea717ddd6_file_126__vs__47400ffd33_file_127_redline_1bbdcbcf65",
+  "baseline": 84.95160721287274,
+  "rank": 397,
+  "bucket": "spread"
+ },
+ {
+  "key": "6758689ba7_text_box__vs__9f27b9f0d4_text_highlight_demo_style_default_missing_redline_6615bbe1a9",
+  "baseline": 84.97949531430669,
+  "rank": 405,
+  "bucket": "spread"
+ },
+ {
+  "key": "00da16e738_heading_4_style_demo_id_paraid_overflow_2__vs__82928b2e05_heading_4_style_demo_id_paraid_overflow_redline_98576c297a",
+  "baseline": 84.98779611084218,
+  "rank": 413,
+  "bucket": "spread"
+ },
+ {
+  "key": "9297fc746e_calibri_font_demo_id_paraid_overflow_2__vs__f3b2e74e02_calibri_font_demo_id_paraid_overflow_redline_34fc0e1cec",
+  "baseline": 84.9946821772179,
+  "rank": 421,
+  "bucket": "spread"
+ },
+ {
+  "key": "74afe04686_000416d5ee481974205314977bda4d0b297b97cf56f55f5a__vs__2e04202552_000e3e7bd2d6215fc7b469cc3e296c1b2a510bc1abc7e0fd_redline_90d4d9e661",
+  "baseline": 85.09188791944544,
+  "rank": 429,
+  "bucket": "spread"
+ },
+ {
+  "key": "a6bdad436b_00e1eabab4f0fdde08a033b7d3af988ce75f7e80207c9918__vs__2773adf157_0004c94ca2a8684d47449bb0e7abf87de1df71a7e6543252_redline_1533ea6dc3",
+  "baseline": 85.24919777407959,
+  "rank": 437,
+  "bucket": "spread"
+ },
+ {
+  "key": "08286ffbfb_super_editor__basic_resolved_comment_cac5a1b0__vs__5fa01813d3_super_editor__basic_table_shading_d3212ffd_redline_3fdab4ace6",
+  "baseline": 85.6115507669376,
+  "rank": 445,
+  "bucket": "spread"
+ },
+ {
+  "key": "e70f1134dd_super_editor__diff_before8_ba5faa9e__vs__671ff91b1d_behavior__sd_2750_borderbox_7cd3768d_redline_0e6cc23727",
+  "baseline": 85.98988840759176,
+  "rank": 453,
+  "bucket": "spread"
+ },
+ {
+  "key": "725cdbebe3_0013892c946c551d309fcec9bb3f3500fc08bc77121a3849__vs__5203829c7a_001cc92b88566d5f930fe57f25813c0bf52a7bdc72c217d0_redline_4957773781",
+  "baseline": 86.51784274801493,
+  "rank": 461,
+  "bucket": "spread"
+ },
+ {
+  "key": "8df6dfa8d7_alternate_content__vs__accec0538a_anchor_images_redline_fafad10028",
+  "baseline": 87.2908302421772,
+  "rank": 469,
+  "bucket": "spread"
+ },
+ {
+  "key": "725cdbebe3_0013892c946c551d309fcec9bb3f3500fc08bc77121a3849__vs__2e04202552_000e3e7bd2d6215fc7b469cc3e296c1b2a510bc1abc7e0fd_redline_9013a94f33",
+  "baseline": 87.85261164773023,
+  "rank": 477,
+  "bucket": "spread"
+ },
+ {
+  "key": "ab85c77154_file_115__vs__b7219494de_file_116_redline_61959b1953",
+  "baseline": 88.48162225294563,
+  "rank": 485,
+  "bucket": "spread"
+ },
+ {
+  "key": "e70f1134dd_super_editor__diff_before8_ba5faa9e__vs__a5903a7c15_super_editor__pci_table_dc840852_redline_8d775d42d1",
+  "baseline": 89.93276289301238,
+  "rank": 493,
+  "bucket": "spread"
+ },
+ {
+  "key": "79cb6b6c0f_behavior__word_native_bullet_disc_bfbeb2dd__vs__432a12b1a9_behavior__word_native_bullet_square_da8bb73c_redline_6514f51552",
+  "baseline": 91.5736379111967,
+  "rank": 501,
+  "bucket": "spread"
+ },
+ {
+  "key": "b389f55091_super_editor__comment_23ee5ec1__vs__6d773ca294_super_editor__annot2_03ae6b74_redline_b0d09c67a7",
+  "baseline": 93.13668979016536,
+  "rank": 509,
+  "bucket": "spread"
+ },
+ {
+  "key": "26ce1d6300_super_editor__diff_after5_9fb9d5b4__vs__b389f55091_super_editor__comment_23ee5ec1_redline_01fa32ec8b",
+  "baseline": 94.9841411429142,
+  "rank": 517,
+  "bucket": "spread"
+ },
+ {
+  "key": "1d137d70ee_005bf179b17b3d109d473d5bb10a968731ba985c4bff3743__vs__a5f2b9318d_002aa60c2ae1187417b4b157c5ec6450324cc056ec551a12_redline_f8beef8268",
+  "baseline": 95.96512869075724,
+  "rank": 525,
+  "bucket": "spread"
+ },
+ {
+  "key": "d93f1dafca_sample_document_word_repair_of_our_output_iter2__vs__970fd9303f_sample_document_word_repair_of_our_output_word_r_redline_ace788a217",
+  "baseline": 96.97831840451717,
+  "rank": 533,
+  "bucket": "spread"
+ },
+ {
+  "key": "9322444a3f_behavior__sd_2888_hyperlink_with_ampersand_aaaac__vs__c4ee483519_tiff_image_redline_5f137fe5fa",
+  "baseline": 98.36610628247907,
+  "rank": 541,
+  "bucket": "spread"
+ },
+ {
+  "key": "7ac6653045_file_176__vs__421479c1e2_file_177_redline_53014ff7b1",
+  "baseline": 99.98720917751155,
+  "rank": 549,
+  "bucket": "spread"
+ },
+ {
+  "key": "4dff3f0ab2_heading_1_bold_demo_id_paraid_overflow__vs__045a9b188d_heading_1_style_demo_id_paraid_overflow_redline_c31d6dc680",
+  "baseline": 100.0,
+  "rank": 557,
+  "bucket": "spread"
+ },
+ {
+  "key": "1cd4f9ee6c_roboto_font_demo_id_paraid_overflow__vs__6e08e456f6_roboto_underline_demo_id_paraid_overflow_redline_afad9d8d2c",
+  "baseline": 100.00000000000003,
+  "rank": 565,
+  "bucket": "spread"
+ },
+ {
+  "key": "5396ca3671_helvetica_font_demo_style_default_missing__vs__f1ea4a51fd_hr_onboarding_checklist_table_redline_6fc7ab173d",
+  "baseline": 100.00000000000003,
+  "rank": 573,
+  "bucket": "spread"
+ },
+ {
+  "key": "6446faad0e_budget_report_q1_2026_suggesting_insertions__vs__30e84496e2_bullet_list_bold_demo_id_paraid_overflow_redline_d1b9e58c2f",
+  "baseline": 100.00000000000003,
+  "rank": 581,
+  "bucket": "spread"
+ },
+ {
+  "key": "95bdaad1fe_support_tickets_table__vs__c917cc5055_support_tickets_summary_id_paraid_overflow_redline_ed6eb31ebe",
+  "baseline": 100.00000000000003,
+  "rank": 589,
+  "bucket": "spread"
+ },
+ {
+  "key": "c0576670e4_file_49__vs__4dcc0416b8_file_50_redline_8fd9499d71",
+  "baseline": 100.00000000000003,
+  "rank": 597,
+  "bucket": "spread"
+ }
+]

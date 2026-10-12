@@ -1,0 +1,1284 @@
+{
+  "dpi": 150,
+  "fixture_track": "mini_bench:jubarte093_all_w200",
+  "n": 250,
+  "oracle": "microsoft_word",
+  "stems": [
+    "tracking_without_comments__3bfcb371e2_00003fff80a444ad2f706c74f3c0d9fbef00d7a99ba0c105__vs__aa5340125d_00a4b0b91e9b5b072dc3771391c2d608518690eccf44eae8_redline_842ef93738",
+    "tracking_without_comments__617c1284c9_00feb732c2ef2b643a132e4305e16833fd047b46ca44b65b__vs__2773adf157_0004c94ca2a8684d47449bb0e7abf87de1df71a7e6543252_redline_2ef6ed00b9",
+    "tracking_without_comments__61e3967518_0011e415331e3b2d8031efcfcfecbb68df0f0b73b26350ce__vs__1424386e9b_017447de83753a0e3b7afc659df038ef56972925336c6a5b_redline_d110c99d97",
+    "tracking_without_comments__3bfcb371e2_00003fff80a444ad2f706c74f3c0d9fbef00d7a99ba0c105__vs__1424386e9b_017447de83753a0e3b7afc659df038ef56972925336c6a5b_redline_9b22b88370",
+    "tracking_without_comments__6c2c8f1b79_4746195c006945f534b2c9ac444f038d071c9f4009b49e4a__vs__9696c5a86b_849ee788c6d02e66e3d5d037056f33907af76c092dbb5494_redline_acafcbe293",
+    "clean__4910ce2060_8cca05f3991d33efca1a8fc83122be4940de0d3743e04244",
+    "tracking_without_comments__f94aeed5f5_001f4e98e9744f89b6f26b3741cb6439f8131bf89659230e__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_3a7f98f21b",
+    "tracking_without_comments__3bfcb371e2_00003fff80a444ad2f706c74f3c0d9fbef00d7a99ba0c105__vs__a5f2b9318d_002aa60c2ae1187417b4b157c5ec6450324cc056ec551a12_redline_52a3f84699",
+    "clean__2261da4dae_cda3ae3ebc9762a0f1f79fcc41fc2c5b21e21260d47f5b4a",
+    "tracking_without_comments__3bfcb371e2_00003fff80a444ad2f706c74f3c0d9fbef00d7a99ba0c105__vs__deff0e697a_00b5defcad6e58038eac35472a2d48c89905068e5ece0cc3_redline_30b6e87178",
+    "tracking_without_comments__2b479f55f8_ab1a60a25dd051171cff9456f1fdafa82d5d746f4a494cce__vs__63db0bebfc_98f3b26190a9ad2d0c27e5505ef29521d4faff960deea626_redline_e22069e294",
+    "clean__89e56b3180_bf0737f04c1281a1f1596841210b4676a5c87af074c34af3",
+    "tracking_without_comments__44b94a5161_167f0f7958593a10cdfcc151834f7e5836df2bfc866b93e3__vs__d2cec1018b_6781f0c4e2d2fbe62c8d5c8bf3fa3fa50bcf9d36a7d86b6e_redline_a33b3d7ea2",
+    "tracking_without_comments__a62ef11355_af838c136dcd3b6c93a648911f7fe7bcba87be8a27c66ac3__vs__d706876939_96241b469231f21192669d60dd79dcdf1be49260da2e0a7d_redline_f8c1ce3e92",
+    "tracking_without_comments__a9de4ed3f9_9c337ad7e3719f79f6cbf0deed6badf7a57a4c6482c0cf76__vs__ef7870f9f4_22be2b6e0c6f8f306d5e2a268d7164e59b90b72404e75678_redline_651e1bcc1c",
+    "tracking_without_comments__b535008087_a1c0c04747ae1fda785d5bd3748890f39c0bc43d28b1d463__vs__813771d860_9e288428882b21a59d50f62a44c24f3fa9c01f8c2be6eb24_redline_eaa985ccbd",
+    "tracking_without_comments__29379c07bf_002adf0715eed4d213774c26c60c78624c2a3cbb3d0397d2__vs__1424386e9b_017447de83753a0e3b7afc659df038ef56972925336c6a5b_redline_0ac7a5904b",
+    "clean__9f2c60b301_d20125ec6aa52579b2e53d11212ae5e77501983055c37aca",
+    "clean__0e65c38964_9617d33fa7e5b7872c02d159a597b41a437febd15fec7fca",
+    "with_comments_tracking__b2b3095b48_file_52__vs__ec3dd0df69_file_53_redline_e14d8c4c7d",
+    "with_comments_tracking__6b0acda259_file_73__vs__bd768e6c17_file_74_redline_d392f01661",
+    "with_comments_tracking__b2b3095b48_file_52__vs__ec3dd0df69_file_53_redline_589b832f86",
+    "with_comments_tracking__cf02e0407e_file_26__vs__b175a00954_file_27_redline_da516a455a",
+    "with_comments_tracking__6b0acda259_file_73__vs__bd768e6c17_file_74_redline_0aa74e0de4",
+    "with_comments_tracking__82ee7342fd_file_5__vs__1072677c3a_file_6_redline_d27b00aca7",
+    "with_comments_tracking__cf02e0407e_file_26__vs__b175a00954_file_27_redline_cee8601521",
+    "with_comments_tracking__82ee7342fd_file_5__vs__1072677c3a_file_6_redline_70a6883d16",
+    "clean__689964b1d8_fcb45876931e978ee2f9052da44fe1f763e4f0c1cb7b2279",
+    "with_comments_tracking__1547c5df73_file_130__vs__df097720f7_file_131_redline_e4df2c199d",
+    "tracking_without_comments__29379c07bf_002adf0715eed4d213774c26c60c78624c2a3cbb3d0397d2__vs__2e04202552_000e3e7bd2d6215fc7b469cc3e296c1b2a510bc1abc7e0fd_redline_329808a1dc",
+    "with_comments_tracking__1547c5df73_file_130__vs__df097720f7_file_131_redline_2e3f1e261d",
+    "tracking_without_comments__61e3967518_0011e415331e3b2d8031efcfcfecbb68df0f0b73b26350ce__vs__2e04202552_000e3e7bd2d6215fc7b469cc3e296c1b2a510bc1abc7e0fd_redline_335cc03b23",
+    "tracking_without_comments__5c9b05a33e_00587c7398e1a788e79e8da144019f60214b4ac572ea28a3__vs__342f364d46_001342333d45627868f4dc5282abbba4598a91b4a7584b08_redline_9ee589e21e",
+    "tracking_without_comments__1c29559690_38cbf57ee790ac446ec8c957189574570b7ea5b0dae2fd15__vs__689964b1d8_fcb45876931e978ee2f9052da44fe1f763e4f0c1cb7b2279_redline_ab51888caa",
+    "tracking_without_comments__b27a2ff1ad_a700d680776964b71b2d897597fb45bb3d9b22b973155bdc__vs__1ba087fe62_a72c54151dc0c8db3e88f7334094c49e60d7ab503f2b9fcb_redline_512b24be1e",
+    "with_comments_tracking__b175a00954_file_27__vs__f32428a03a_file_28_redline_0f031c23c3",
+    "with_comments_tracking__24ad1aa6e5_docx_lots_of_comments_addition_removal__vs__e57ad0eaa4_docx_lots_of_comments_addition_redline_ebeb91fe7f",
+    "with_comments_tracking__97c3dd2e86_docx_lots_of_comments_addition_redline_addition__vs__9f5481078e_docx_lots_of_comments_addition_redline_redline_d6b1d609c1",
+    "with_comments_tracking__24ad1aa6e5_docx_lots_of_comments_addition_removal__vs__e57ad0eaa4_docx_lots_of_comments_addition_redline_a836952933",
+    "with_comments_tracking__97c3dd2e86_docx_lots_of_comments_addition_redline_addition__vs__9f5481078e_docx_lots_of_comments_addition_redline_redline_2d65e392ab",
+    "with_comments_clean__9f5481078e_docx_lots_of_comments_addition_redline__vs__ee9bfc2650_docx_lots_of_comments_addition_removal_redline_r_redline_d4c19477cb",
+    "with_comments_clean__ee9bfc2650_docx_lots_of_comments_addition_removal_redline_r__vs__3fcadf4761_docx_lots_of_comments_addition_removal_redline_redline_58cd08049b",
+    "with_comments_clean__9f5481078e_docx_lots_of_comments_addition_redline__vs__ee9bfc2650_docx_lots_of_comments_addition_removal_redline_r_redline_60e784f2de",
+    "with_comments_clean__ee9bfc2650_docx_lots_of_comments_addition_removal_redline_r__vs__3fcadf4761_docx_lots_of_comments_addition_removal_redline_redline_d2e24e9733",
+    "tracking_without_comments__0800162a66_000799b53487acb327ccf0c0ab87fb14b9e8636346719296__vs__2e04202552_000e3e7bd2d6215fc7b469cc3e296c1b2a510bc1abc7e0fd_redline_f7ff3d75ec",
+    "with_comments_tracking__70a28a8258_file_15__vs__be5bf990cb_file_16_redline_699cc8bd70",
+    "with_comments_tracking__c090b9f082_file_8__vs__3f91c8f0cd_file_9_redline_cac2492b83",
+    "with_comments_tracking__7166fa4199_document_100_ultimate_demo_id_paraid_overflow__vs__97c3dd2e86_docx_lots_of_comments_addition_redline_addition_redline_8993b015d5",
+    "with_comments_tracking__7166fa4199_document_100_ultimate_demo_id_paraid_overflow__vs__97c3dd2e86_docx_lots_of_comments_addition_redline_addition_redline_2288f27be1",
+    "with_comments_tracking__70a28a8258_file_15__vs__be5bf990cb_file_16_redline_7787357743",
+    "with_comments_tracking__c090b9f082_file_8__vs__3f91c8f0cd_file_9_redline_bc6f8076f9",
+    "with_comments_tracking__b175a00954_file_27__vs__f32428a03a_file_28_redline_f8f8d224f2",
+    "tracking_without_comments__246c7fcf50_0eba5f06bc3ec2c3dcaf59bb2ddb3aea1629ebc6ab22fb21__vs__89e56b3180_bf0737f04c1281a1f1596841210b4676a5c87af074c34af3_redline_3a54118ac6",
+    "with_comments_tracking__e57ad0eaa4_docx_lots_of_comments_addition__vs__6e2576a091_docx_lots_of_comments_redline_92075b7449",
+    "with_comments_tracking__e57ad0eaa4_docx_lots_of_comments_addition__vs__6e2576a091_docx_lots_of_comments_redline_b164655b2a",
+    "with_comments_tracking__3fcadf4761_docx_lots_of_comments_addition_removal_redline__vs__24ad1aa6e5_docx_lots_of_comments_addition_removal_redline_48b006f032",
+    "with_comments_tracking__3fcadf4761_docx_lots_of_comments_addition_removal_redline__vs__24ad1aa6e5_docx_lots_of_comments_addition_removal_redline_30f20e787b",
+    "with_comments_tracking__bd768e6c17_file_74__vs__8c79860f8d_file_75_redline_58c827e77a",
+    "with_comments_tracking__1072677c3a_file_6__vs__1b8ec2a8cd_file_7_redline_29e3872eed",
+    "with_comments_tracking__bd768e6c17_file_74__vs__8c79860f8d_file_75_redline_3d39f0120d",
+    "with_comments_tracking__1072677c3a_file_6__vs__1b8ec2a8cd_file_7_redline_0b033b1c23",
+    "with_comments_tracking__ec3dd0df69_file_53__vs__94ed0def64_file_54_redline_d12806f3e8",
+    "with_comments_tracking__ec3dd0df69_file_53__vs__94ed0def64_file_54_redline_c2380a4677",
+    "clean__9cab09c08d_75bc7006ba70183c4543590a4131ca692719a521bcd85ad7",
+    "tracking_without_comments__203c24d1e7_00cb988053156ab17763897a184a6655864f9c50f7ef2e53__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_13a3fc553d",
+    "tracking_without_comments__725cdbebe3_0013892c946c551d309fcec9bb3f3500fc08bc77121a3849__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_52ee8bfbc7",
+    "clean__ee79137dd5_8b4e4edc6932664b8d995be412fb392fe48caf5b3d6e6ee9",
+    "tracking_without_comments__617c1284c9_00feb732c2ef2b643a132e4305e16833fd047b46ca44b65b__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_4cb34c212d",
+    "with_comments_tracking__df097720f7_file_131__vs__3c60cce945_file_132_redline_fa05623f53",
+    "with_comments_tracking__df097720f7_file_131__vs__3c60cce945_file_132_redline_4eff11f045",
+    "clean__0cb9291cb2_01904c0b9624e27188b4ca233ab7ca6268aa4e2563060c31",
+    "clean__214f17788e_019d9ee6b2fc3ec87ac9b742174d29787101464facdd6509",
+    "with_comments_tracking__6e2576a091_docx_lots_of_comments__vs__2c0a2ac35f_double_spacing_bold_demo_id_paraid_overflow_redline_9382e03243",
+    "with_comments_tracking__6e2576a091_docx_lots_of_comments__vs__2c0a2ac35f_double_spacing_bold_demo_id_paraid_overflow_redline_a6aab38897",
+    "tracking_without_comments__83799a0610_00bced7d0ce7770362c5b667b5e92abefcbfcf5315a2bbf6__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_2a068b16e5",
+    "clean__55fcbe9086_0003fc93d088dc4c17f3eabc859086df5cdac48fc1106b6e",
+    "tracking_without_comments__aeb0ace263_793bb9c35c342cd532221e60f7f70c0411de141b896a63b2__vs__1000537d17_8d9cfd6b8768cf88164c1b8c735e97b737193f3e92fd18ee_redline_3d4318d7e9",
+    "clean__1ba087fe62_a72c54151dc0c8db3e88f7334094c49e60d7ab503f2b9fcb",
+    "with_comments_tracking__3f91c8f0cd_file_9__vs__e3d833aef0_file_10_redline_db13a691da",
+    "with_comments_tracking__3f91c8f0cd_file_9__vs__e3d833aef0_file_10_redline_581907f19c",
+    "with_comments_tracking__be5bf990cb_file_16__vs__d6ba4fabd2_file_17_redline_cbf73c2d81",
+    "with_comments_tracking__be5bf990cb_file_16__vs__d6ba4fabd2_file_17_redline_d36027aaa0",
+    "tracking_without_comments__12941c2a77_0023298b011b45232675215822f0f728678a238756d763c8__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_c48daf68b8",
+    "clean__942c4e928e_0220d390b233bb5fce23512533a30a14eeb1cf87c0e005c9",
+    "tracking_without_comments__75252a6bb0_015e4665fb2bcc025f24e7b451197933975b68ae37052ca7",
+    "tracking_without_comments__e1047ee31c_97e599309df89c311961a7d44aeb414231354ebe786ba2a0__vs__0278e9298d_f3a3a94e08be4e5cce05139444d92dfbfc60bfe1ad839671_redline_8ebf34fee2",
+    "clean__d9b54326f3_b5fa1037b202f01407579f793af7c3cf7f3236fe8f9224b1",
+    "tracking_without_comments__74afe04686_000416d5ee481974205314977bda4d0b297b97cf56f55f5a__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_fd7dc3247c",
+    "clean__8363f472b5_c19dd67235accb6bea40c7dc9a79f86d7abdb92aa3b914b2",
+    "tracking_without_comments__266b027513_file_73__vs__f03f54c09d_file_74_redline_e4f8d7c4e5",
+    "tracking_without_comments__b6dd0b6ae8_015a4f5a16a110026418c0a7f5eefa69ce6d5f9bcfc2d955__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_59dbbc9d85",
+    "clean__3936a8fe56_45311d41d4a17fbedfe93a538b930e88fa0a63ff0d6ff9cc",
+    "tracking_without_comments__0800162a66_000799b53487acb327ccf0c0ab87fb14b9e8636346719296__vs__1424386e9b_017447de83753a0e3b7afc659df038ef56972925336c6a5b_redline_b11e674787",
+    "tracking_without_comments__f141395e21_file_5__vs__b8783e46c5_file_6_redline_baf1c31339",
+    "tracking_without_comments__5c9b05a33e_00587c7398e1a788e79e8da144019f60214b4ac572ea28a3__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_57ddc9f953",
+    "tracking_without_comments__3aa967944f_file_26__vs__3890d0a960_file_27_redline_5b1a59baee",
+    "tracking_without_comments__c87ab9bf12_file_52__vs__cf78e83cd4_file_53_redline_27427ee2bc",
+    "clean__03aa687c07_0fef17a42714273fc90f69ea4dc8d6b2028449267539750a",
+    "clean__e124592dd0_e8735707c6583763f32f7f53c7c73aaa1e555ea8afae61dc",
+    "clean__16e531d5a8_17a3cbea2f582b789a9fc35c9ab70b7126430c5acbb822d0",
+    "tracking_without_comments__98c8b73841_0041d3944715c2fffc5929695f968e5f399e85b139fba063__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_617e392832",
+    "tracking_without_comments__b6f757462e_0006f7905281867ab0d0a45d88f88f72e2c15efbd9a8ed69__vs__bd3824dd1e_000ee64ef7226d353297888f59a251e24ce5d776fea000fa_redline_3b133e5659",
+    "tracking_without_comments__0800162a66_000799b53487acb327ccf0c0ab87fb14b9e8636346719296__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_da2602b1c0",
+    "clean__b50b23cc7c_00177a6001ce3df28759049baecced2e1804b7b336f0551a",
+    "clean__950124ddf0_3f9ae7d602e5c367de2ba0871c4c481a51c57288483be484",
+    "tracking_without_comments__e12998d969_31a07e63d6c64e6c910dd78dd0cd0daf230c123da91e19fd__vs__c4fca65332_c3ea38d80a2751db02d15f6c9d06ee440d9265ab5cd44858_redline_f530e02882",
+    "tracking_without_comments__a88f2ae357_0095a6095a0f74201c196f4944b3d93f4cf5cc20e4982903__vs__2e04202552_000e3e7bd2d6215fc7b469cc3e296c1b2a510bc1abc7e0fd_redline_2e0922f49a",
+    "clean__f162fdb95f_b0347bad5793fe02b5d275a7d8e8620d44028811971b0f6d",
+    "clean__b6ba6a6fcf_7eb842c8b5bd1e2a6a3f0cf79b76c74f77da2897a7cb7add",
+    "clean__0bbf11cf21_5a6c9a5cc654191fa574f474976ebfbfd60a2299dfb96ebe",
+    "tracking_without_comments__a88f2ae357_0095a6095a0f74201c196f4944b3d93f4cf5cc20e4982903__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_a97bb9b57f",
+    "clean__a4a4ad540d_e296110b14b9efb410f9521e5d7725611d22585187015eee",
+    "clean__25e6d4b508_e8dba015e1110e4266d9be9e2d3d0fe5fc700e6e8fc3a2c8",
+    "clean__22e696b980_2c10ab9dc3990eb5bbfd3c9738e6ed0f2d9ed69c2d2b09a8",
+    "clean__e1cfa0591a_0217951c5f043355bd62c80e33cbc736f027cec6eb5920cc",
+    "tracking_without_comments__61e3967518_0011e415331e3b2d8031efcfcfecbb68df0f0b73b26350ce__vs__2773adf157_0004c94ca2a8684d47449bb0e7abf87de1df71a7e6543252_redline_cc4c55c6f1",
+    "tracking_without_comments__aa58aada65_00160046fb2516a560a9681d7ae3e6f4659af57d19555d4e__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_dd43ad9d3c",
+    "tracking_without_comments__61e3967518_0011e415331e3b2d8031efcfcfecbb68df0f0b73b26350ce__vs__bd3824dd1e_000ee64ef7226d353297888f59a251e24ce5d776fea000fa_redline_e3104ef6c2",
+    "tracking_without_comments__ec4df76243_9126d1f4d9b39a51172c343d2ede487c97445a4264e23cb8__vs__1587a40694_4991382416adefef66b97f0a3efacf2c2a793a067541ad27_redline_968fd6cc01",
+    "tracking_without_comments__29379c07bf_002adf0715eed4d213774c26c60c78624c2a3cbb3d0397d2__vs__2773adf157_0004c94ca2a8684d47449bb0e7abf87de1df71a7e6543252_redline_dfc890ebe7",
+    "clean__e1047ee31c_97e599309df89c311961a7d44aeb414231354ebe786ba2a0",
+    "clean__d5f6c20be1_714dc4ada82c218154bb078861a2edd138b65ff31504d8e4",
+    "clean__9a1c0cc482_00189bfa50665ef68d774f0fa46d3c42e2acc5de12083ae6",
+    "tracking_without_comments__84617b8b4d_file_7__vs__80aa142151_file_8_redline_1f648a602d",
+    "tracking_without_comments__e80f3a578d_file_130__vs__c54c269d79_file_131_redline_0e21c53a17",
+    "tracking_without_comments__1b8ec2a8cd_file_7__vs__c090b9f082_file_8_redline_b982beef9b",
+    "tracking_without_comments__1b8ec2a8cd_file_7__vs__c090b9f082_file_8_redline_ad34822be0",
+    "tracking_without_comments__4a70acf873_b5ef819b193e1a5ee7d3b9f242743d10c7690e27b1f334eb__vs__8363f472b5_c19dd67235accb6bea40c7dc9a79f86d7abdb92aa3b914b2_redline_63b8eed530",
+    "tracking_without_comments__6a8a9e859c_e38f976d3258562dfa09cecb9a34e94403098d5b8a0cd338__vs__1c96e575f8_f907e44f658eab72c9fec3635a6a64fb051c7fb2142a0d03_redline_327c9f02a2",
+    "tracking_without_comments__4f1b13334b_0002768ad2e3174d9c557d30d4a7a8d70ae4062e52383747__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_18481ea7f2",
+    "tracking_without_comments__3c1e5d4d00_00b540ddc1a1fef3ab9acae5b93ca90e9fcef840e25d53cd__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_8f2bd8788e",
+    "tracking_without_comments__5ad6e6d44f_0199027cbf967c88ab833b77e5bc5d629bacecbd40a87c26__vs__2773adf157_0004c94ca2a8684d47449bb0e7abf87de1df71a7e6543252_redline_99b69bb632",
+    "clean__c90997f73a_004599833e81f0e72deb9f04ed6c29b659db22561f65fe35",
+    "tracking_without_comments__cb4f8b4a43_a705aeb161204d5047c4d61ed25600bc39f07a24761c4b8c__vs__f162fdb95f_b0347bad5793fe02b5d275a7d8e8620d44028811971b0f6d_redline_f3f426dc89",
+    "clean__3cccdeb956_338ed100b8c726655e68862a5b4584feb59583a37fa3b69d",
+    "clean__010cd893de_003c49178daa9062e84e769e1d6ab945d773ead75ca6da68",
+    "tracking_without_comments__5d185fb0dd_006ab612b3ae2e0b1915746c660d9ea64842d89c434e0a09__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_282a41181b",
+    "tracking_without_comments__ed54f530fd_5ca225a29b58bc6c7c1f7319480272dd123c15ed8f6152dd__vs__562ab63668_c32d7d404d41ffad48b82d7fd645b0c880c31055a8e58510_redline_62992fde4e",
+    "tracking_without_comments__54f4bb74cd_109e410552189077d3cc1340a4f0af45587d7f86a0f93dc3__vs__16e531d5a8_17a3cbea2f582b789a9fc35c9ab70b7126430c5acbb822d0_redline_276adf43a6",
+    "clean__8f36ed144a_d47020aa359686bd7cbbe016e04872fb31c3995f576a2f1d",
+    "tracking_without_comments__81f7cad226_009fa3f6b717df4d0e9371d67f305110d5096bc9178134b0__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_0dadb2386e",
+    "tracking_without_comments__284df3bf07_740579c5f762ce4977e0febc5edec27d4df4d4059510a808__vs__9cab09c08d_75bc7006ba70183c4543590a4131ca692719a521bcd85ad7_redline_d3782b3407",
+    "clean__73aceaa568_003bc482963eb24aef77716da483b768529f35cf7e4b4354",
+    "tracking_without_comments__60dfd517a9_00f0e7f365a34acc5911a38c89776a4bdd2ba1685edcd0cc__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_a27125cb58",
+    "tracking_without_comments__29379c07bf_002adf0715eed4d213774c26c60c78624c2a3cbb3d0397d2__vs__342f364d46_001342333d45627868f4dc5282abbba4598a91b4a7584b08_redline_de2fd5b7b1",
+    "clean__c4fca65332_c3ea38d80a2751db02d15f6c9d06ee440d9265ab5cd44858",
+    "tracking_without_comments__0e6f813e69_00d2ca27359f3d1d5ee2c2904b48a3e4717faf7fdf6413f6__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_0c84d75d3f",
+    "clean__246c7fcf50_0eba5f06bc3ec2c3dcaf59bb2ddb3aea1629ebc6ab22fb21",
+    "tracking_without_comments__16b3bdf24f_1a9cd33781356357316c3cb0c6eed3bad72d886ad1d68dbf__vs__dbe46677da_15002e7727c63ec67c92d78a641d5d0d74911f1e64a806e8_redline_da83c9a20b",
+    "clean__49482a748b_44ed9426ac1847fd1d74df3e3982cb437c9658c49aead9c6",
+    "tracking_without_comments__0800162a66_000799b53487acb327ccf0c0ab87fb14b9e8636346719296__vs__a5f2b9318d_002aa60c2ae1187417b4b157c5ec6450324cc056ec551a12_redline_02514c26c3",
+    "tracking_without_comments__048870ce18_014178090497722649b8e7aedf646339a3189ee7fe69a596__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_77e4a6bed0",
+    "tracking_without_comments__a88f2ae357_0095a6095a0f74201c196f4944b3d93f4cf5cc20e4982903__vs__2773adf157_0004c94ca2a8684d47449bb0e7abf87de1df71a7e6543252_redline_b8435bf39c",
+    "tracking_without_comments__f43f6ef305_002042b8a23533ba746bf4eaf56b5e62642cc111f5f5fcff__vs__2773adf157_0004c94ca2a8684d47449bb0e7abf87de1df71a7e6543252_redline_ec101e09bf",
+    "tracking_without_comments__2e7f1e6637_0120556a0553eb1ba39978d5911b7ce62be10a9bdc7c9191__vs__aa5340125d_00a4b0b91e9b5b072dc3771391c2d608518690eccf44eae8_redline_8fe7181400",
+    "clean__5c1db01eb9_b83cb9816496b5e7d270d4f3f019d564d552ab006abb3305",
+    "tracking_without_comments__b51a7a465b_998e62501ae726f2b68ab460f7fad55f18c3bb110bfc07c4__vs__4910ce2060_8cca05f3991d33efca1a8fc83122be4940de0d3743e04244_redline_3b57d40fff",
+    "tracking_without_comments__4ed1b6d133_0020e4099d611a050ed83fb7e0b16d6f48200018bbb1e757__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_f569a8d64e",
+    "clean__f8342b8058_a06b592ce3073b4030b3f9617563ae9610159cc3f2213c80",
+    "clean__1587a40694_4991382416adefef66b97f0a3efacf2c2a793a067541ad27",
+    "tracking_without_comments__83799a0610_00bced7d0ce7770362c5b667b5e92abefcbfcf5315a2bbf6__vs__aa5340125d_00a4b0b91e9b5b072dc3771391c2d608518690eccf44eae8_redline_2a5c1ad2ad",
+    "tracking_without_comments__13ee1cb061_ee56b1c2f1e42b79dfa8700e709c224299c1f85b41eb490e__vs__1c1fc4a7d3_921a851075ff3eb89f6ca703f298e6504a0ab0c43507f650_redline_48fe34d6a4",
+    "tracking_without_comments__f9b9dbd790_0017bce9abd08007241b106f0fcf1d64e45c05cd82a05a1d__vs__1424386e9b_017447de83753a0e3b7afc659df038ef56972925336c6a5b_redline_2ea0a59b6a",
+    "clean__60dfd517a9_00f0e7f365a34acc5911a38c89776a4bdd2ba1685edcd0cc",
+    "tracking_without_comments__61e3967518_0011e415331e3b2d8031efcfcfecbb68df0f0b73b26350ce__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_be1cdf6d38",
+    "clean__a4dedaa05a_9009c4519d3cbd224cc4dfd7059a955d4dd4c8e4f88f7f56",
+    "clean__b7f325bd51_6f884742d51e530f70c1c0c3d3d5892bb5c8fd96c5ecfb1e",
+    "tracking_without_comments__00f467c010_0008753aa70a6a7b929aa1958001da41574c2d407e5b9863__vs__342f364d46_001342333d45627868f4dc5282abbba4598a91b4a7584b08_redline_9014a2c35a",
+    "clean__3fcd92b87b_30ff840c5280c4e754b1d6998d936bd6ae03c4cafe1dd5c9",
+    "clean__2da1da401d_3e30939b715361e07ea9407c76f254c9dfcc59a573f1356c",
+    "tracking_without_comments__c280ce0f40_019d92d986c5ba33a57df54db0056f3731e3254fcbe8ac65__vs__a5f2b9318d_002aa60c2ae1187417b4b157c5ec6450324cc056ec551a12_redline_4da1ca3b20",
+    "tracking_without_comments__b27bda87ed_0023f7c421a05af9c44fb4ff9ef1bce46c53a081779b1e72__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_4c587eace6",
+    "tracking_without_comments__432bf1c280_010684299d3c5523897eb69efb8c1c743c0a7623137d64fe__vs__a5f2b9318d_002aa60c2ae1187417b4b157c5ec6450324cc056ec551a12_redline_0e053136eb",
+    "clean__ee91b9e453_9385adbfd34ee40a4bd2429d7385293b31a127fc9e9208d1",
+    "tracking_without_comments__a7bce539e1_c01d8d723db353c3d44bc000eef8cb64cf05710ff39e6263__vs__c03ff52e4d_e022c44716b9213b4aa69931b79685a1f711443b13ea8945_redline_cd49552c60",
+    "clean__f9ca1d3348_277e57f3da9c9b557af1abffa61255c6e8036e032a64a874",
+    "tracking_without_comments__29379c07bf_002adf0715eed4d213774c26c60c78624c2a3cbb3d0397d2__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_2bb3a576ab",
+    "tracking_without_comments__fc5d9fecb7_00028d824d5d2262bc6e30692308cd1b577ac1dff228970d__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_7f450b2b12",
+    "clean__dc5d0f4350_f569a8b7a88800ca28451782130c35f897ec727ca8750a85",
+    "tracking_without_comments__a1899173ff_cb24cea07ba59800a7dfa80de9f384885bf6e1c1b0aa967d__vs__c934a90fba_ceb60fdd4393406b78e51cb3aae7fde107a93a9e5eb97197_redline_fedc2c0ba6",
+    "clean__12d245d664_9b100bdcf7bb34633c6e6f845b4ce3eae33d8a2096083e28",
+    "clean__b8eddffd09_010a2c9e894ae5cd795ff229cd191c78eec318c74c4ed15e",
+    "clean__2cf5d3545b_000f68169b4d165f0ae128cdbc6ace3a38d8d1fe1146bd8f",
+    "clean__d0526e27df_954534e6294cf67d9d64531e60871cdc380db5356d8d86ee",
+    "tracking_without_comments__3cccdeb956_338ed100b8c726655e68862a5b4584feb59583a37fa3b69d__vs__acfb188cbe_da70fe22e2b96c62d0310d4eb7760cbac4c452a88bd62929_redline_17a4d897ce",
+    "tracking_without_comments__98c8b73841_0041d3944715c2fffc5929695f968e5f399e85b139fba063__vs__1424386e9b_017447de83753a0e3b7afc659df038ef56972925336c6a5b_redline_c83c7e02ae",
+    "clean__9ce84b16b6_8130ebf3e279cc2752198e46e0003239b9179f0cfc2b4f46",
+    "tracking_without_comments__a6bdad436b_00e1eabab4f0fdde08a033b7d3af988ce75f7e80207c9918__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_189b6fe5e3",
+    "tracking_without_comments__27c9cbd809_b4b5463ef111d72dc319a5ccf52ae7b396c494e99b89c857__vs__7f90ff7f2c_d94124e867cf9e31389cfa780818a638161d676f6b79049f_redline_b14882f3e9",
+    "clean__ef7870f9f4_22be2b6e0c6f8f306d5e2a268d7164e59b90b72404e75678",
+    "tracking_without_comments__286955227d_0134fe85fb88da2accd6637e1c44bdd4f8b7fbb533bd47ba__vs__1424386e9b_017447de83753a0e3b7afc659df038ef56972925336c6a5b_redline_d95a06eed1",
+    "tracking_without_comments__19313bb0d2_013bfd9bed003f93622f5b45095bb7471499aea576b0e48e__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_efa9bdd06a",
+    "tracking_without_comments__3fe23ce412_a5b49e91304cf881ab4b07cd810e62ed6f68ac9c0d529815",
+    "tracking_without_comments__628ec1cb76_00a9d81709806bc220522f9b062f226e19ba256e436493b1__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_8eb0bcd9e2",
+    "tracking_without_comments__19891583af_000f23dc2592a0044f1da2e4f2166c6b41e8fde6a66a1988__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_556b3edd1a",
+    "clean__11860f2d78_c5c029926794053323667da4397833b447af8141ce9971f2",
+    "tracking_without_comments__6b2515b2e1_c0be5f1c808dfc28139ea2d7bbf34d3bf7e15237a63f7474__vs__3fe23ce412_a5b49e91304cf881ab4b07cd810e62ed6f68ac9c0d529815_redline_0e9c762eba",
+    "tracking_without_comments__c280ce0f40_019d92d986c5ba33a57df54db0056f3731e3254fcbe8ac65__vs__1424386e9b_017447de83753a0e3b7afc659df038ef56972925336c6a5b_redline_ef77d2a7c6",
+    "tracking_without_comments__a88f2ae357_0095a6095a0f74201c196f4944b3d93f4cf5cc20e4982903__vs__342f364d46_001342333d45627868f4dc5282abbba4598a91b4a7584b08_redline_4bf88ed826",
+    "clean__5d848a2e1c_011402710324274d71d6d135d7359a0a1fd5b6e21500a58c",
+    "clean__a235512ec1_52e271cce0b9c44c3e6ac4e2a9bc20c2df9584fe5aff46e5",
+    "tracking_without_comments__5ad6e6d44f_0199027cbf967c88ab833b77e5bc5d629bacecbd40a87c26__vs__2e04202552_000e3e7bd2d6215fc7b469cc3e296c1b2a510bc1abc7e0fd_redline_ba0ce6cf52",
+    "clean__f1372ad5b6_c8d1d38a8fcbfbeaae0f7f8cec424b65c5560a31b286edd6",
+    "clean__a9323bf62e_8adc2fdfcbc6f852c44915fc1bc3f425a982b81d5465efd2",
+    "clean__67f497f378_03a7fb6a57b0d73f9c73c2d5556fe93c751bbe991f3a84ec",
+    "tracking_without_comments__0fc80afa25_6c48d6e5a703fe986580f2da2dfb0a6b1147051c349357bb__vs__9b53454565_6bf87f4fc70178cc0dee818e7ce3142a6b6d9cd172785530_redline_0390281a8b",
+    "tracking_without_comments__8a5f60d75f_69a8faaa680238387ac0d4673db50c752141e49b8b18667a__vs__2602ef54e0_b114a5e556817e04d34ace58cdce41b2821c23676fc5b8ed_redline_9b360986f7",
+    "clean__9482ffdc82_060638586497752e8ed47e36862b219e50ada92f80b592db",
+    "tracking_without_comments__3890d0a960_file_27__vs__c3462f9630_file_28_redline_6bd2deb635",
+    "tracking_without_comments__60dfd517a9_00f0e7f365a34acc5911a38c89776a4bdd2ba1685edcd0cc__vs__1424386e9b_017447de83753a0e3b7afc659df038ef56972925336c6a5b_redline_8c15afe367",
+    "tracking_without_comments__286955227d_0134fe85fb88da2accd6637e1c44bdd4f8b7fbb533bd47ba__vs__a5f2b9318d_002aa60c2ae1187417b4b157c5ec6450324cc056ec551a12_redline_9c1cdbe3ad",
+    "tracking_without_comments__132172576b_75a451230827f240c9c4dab9e021188ec6973f5c681627ae__vs__a4ca6f4c68_e9717d82c1d6cb9bfb67ad47ebd8682c83991f2f0f0afcf5_redline_e12e4521c6",
+    "clean__7899fc3c96_667916088cfbd0c0454be0919ad1ffb1791a318cff1a1d09",
+    "tracking_without_comments__60dfd517a9_00f0e7f365a34acc5911a38c89776a4bdd2ba1685edcd0cc__vs__aa5340125d_00a4b0b91e9b5b072dc3771391c2d608518690eccf44eae8_redline_3f3f2b03b1",
+    "tracking_without_comments__4d1070e14c_strikethrough_text_formatting_demo_id_paraid_ove__vs__316da9cc94_subscript_demo_id_paraid_overflow_redline_67a452560c",
+    "tracking_without_comments__e3d833aef0_file_10__vs__26ccb443f6_file_11_redline_e698ff3bbe",
+    "clean__8977e1c922_7672b472b406ac51ddf3a68e14bb0255c9e0f7f732c999c7",
+    "tracking_without_comments__12941c2a77_0023298b011b45232675215822f0f728678a238756d763c8__vs__1424386e9b_017447de83753a0e3b7afc659df038ef56972925336c6a5b_redline_23127ea8e1",
+    "tracking_without_comments__9ea920c636_710d9d68ef90cbd901510c07ae7fed61173f872e9dbea061__vs__0acde9d23e_50be95cde73c1d9b994d6c75c6d2f67f7b4c6cdf0e13ba30_redline_0e7956b306",
+    "tracking_without_comments__8cd372b814_0193e5015be906eb45df5f7b3ceb682c7ff53cb52f15a0bf__vs__aa5340125d_00a4b0b91e9b5b072dc3771391c2d608518690eccf44eae8_redline_1cd051a46c",
+    "tracking_without_comments__4615c3c04e_support_tickets_summary_id_paraid_overflow__vs__9f27b9f0d4_text_highlight_demo_style_default_missing_redline_8575d7054c",
+    "tracking_without_comments__b6f757462e_0006f7905281867ab0d0a45d88f88f72e2c15efbd9a8ed69__vs__5203829c7a_001cc92b88566d5f930fe57f25813c0bf52a7bdc72c217d0_redline_9f142ac84a",
+    "tracking_without_comments__4f1b13334b_0002768ad2e3174d9c557d30d4a7a8d70ae4062e52383747__vs__2773adf157_0004c94ca2a8684d47449bb0e7abf87de1df71a7e6543252_redline_10aec41832",
+    "tracking_without_comments__578897b374_file_56__vs__834c9f9f35_file_57_redline_d109f1d68e",
+    "tracking_without_comments__22a2f86b88_7355234eced26f58daf9077059337af05aed9f0530d9774b__vs__44ca53d5d4_b0b59d4a8d62a7517b810cd8838a68e626cd804be28ef10b_redline_670c56bd07",
+    "tracking_without_comments__d426359dd9_file_111__vs__5bde480834_file_112_redline_07558141ca",
+    "tracking_without_comments__9be7e36de4_00c3fd2d23e8acf016f9b2fb44f4ee84789abc39c820e7ab__vs__a5f2b9318d_002aa60c2ae1187417b4b157c5ec6450324cc056ec551a12_redline_5068b053d6",
+    "tracking_without_comments__798e9f7226_file_150__vs__0935a8a24e_file_151_redline_f5def8948d",
+    "tracking_without_comments__9cec0a4e06_book_catalog_table__vs__d6ef87dca7_budget_report_q1_2026_suggesting_insertions_redline_79825c65ec",
+    "clean__c90bde92a4_file_35",
+    "tracking_without_comments__99ef9c7a7e_file_75__vs__c492c95bb9_file_76_redline_7810afa11e",
+    "clean__a1872de6f9_4ba11863826eb6a508ea7cf4b938acc078e24964b0ea83a4",
+    "clean__6c8fc15329_adec1f56bbf0e13c249c914129851ad18623e311ccbfde12",
+    "clean__5cf261e998_822643bd7db332f5d2172d944ee96ecfa4079dbba515a880",
+    "clean__d53c3f411e_c39de3199fc7d2e0eb44dd062bd7bd2c860354813aec5761",
+    "clean__272fd64000_3f7a021187109447b983236dc9847a42959ff4a9b610027b",
+    "clean__420868b8ad_file_140",
+    "tracking_without_comments__4dcc0416b8_file_50__vs__f0070fef24_file_51_redline_83b055133b",
+    "clean__dda66f2e20_13d11814aee9627b5817928625ff9990ebbcf1c7b664091f",
+    "clean__a9e2f2c9c6_03db4d3e4022d9613a4bbbb7f7b4bc98bed915d4491cb897",
+    "clean__6a583de2e9_2759ad7e33657fd3a492e78e8bce281c34f6ea85fdf822dc",
+    "tracking_without_comments__9610bc363d_track_changes_editing_strikethrough_id_paraid_ov__vs__bf23b1e436_track_changes_suggesting_bold_id_paraid_overflow_redline_2561ef98d9",
+    "clean__f99040e107_cd25271e4da94feba51015a01ead22c207c363c7e247b988",
+    "tracking_without_comments__0203b5fed7_strikethrough_bold_demo_id_paraid_overflow__vs__aa62a37db2_strikethrough_text_demo_id_paraid_overflow_redline_2e50998dbb",
+    "clean__d946568456_c56067ea48edaafbad1e288b50e970f32229209d91e0d338",
+    "clean__12809de7d6_word_tolerated_misplaced_pgsz",
+    "tracking_without_comments__87f3bff234_meeting_minutes_id_paraid_overflow__vs__af73bfcc05_meeting_minutes_suggesting_insertions_redline_eae3f5c09f",
+    "tracking_without_comments__3fc14675e5_italic_text_formatting_demo_id_paraid_overflow_2__vs__f26a5e4940_italic_text_formatting_demo_id_paraid_overflow_redline_7c3b405f35",
+    "clean__edebdd12f3_016496eac03b7c0ca311b325d8655553037bd65eba0a52bb",
+    "clean__c6ce4423f8_file_96"
+  ],
+  "tools": {
+    "docxide-pdf": {
+      "failures": 0,
+      "generate_failures": [],
+      "itt_n": 250,
+      "metrics": {
+        "jaccard": {
+          "mean": 11.816996,
+          "median": 7.3046
+        },
+        "text_boundary": {
+          "mean": 25.8162592,
+          "median": 19.0141
+        }
+      },
+      "n_scored": 250,
+      "per_doc": {
+        "clean__010cd893de_003c49178daa9062e84e769e1d6ab945d773ead75ca6da68": {
+          "jaccard": 7.5866,
+          "text_boundary": 6.4748
+        },
+        "clean__03aa687c07_0fef17a42714273fc90f69ea4dc8d6b2028449267539750a": {
+          "jaccard": 19.2246,
+          "text_boundary": 97.4026
+        },
+        "clean__0bbf11cf21_5a6c9a5cc654191fa574f474976ebfbfd60a2299dfb96ebe": {
+          "jaccard": 0.0,
+          "text_boundary": 0.0
+        },
+        "clean__0cb9291cb2_01904c0b9624e27188b4ca233ab7ca6268aa4e2563060c31": {
+          "jaccard": 23.5532,
+          "text_boundary": 63.4146
+        },
+        "clean__0e65c38964_9617d33fa7e5b7872c02d159a597b41a437febd15fec7fca": {
+          "jaccard": 17.1957,
+          "text_boundary": 0.0
+        },
+        "clean__11860f2d78_c5c029926794053323667da4397833b447af8141ce9971f2": {
+          "jaccard": 40.6892,
+          "text_boundary": 98.4615
+        },
+        "clean__12809de7d6_word_tolerated_misplaced_pgsz": {
+          "jaccard": 6.4945,
+          "text_boundary": 0.0
+        },
+        "clean__12d245d664_9b100bdcf7bb34633c6e6f845b4ce3eae33d8a2096083e28": {
+          "jaccard": 5.5916,
+          "text_boundary": 3.0999
+        },
+        "clean__1587a40694_4991382416adefef66b97f0a3efacf2c2a793a067541ad27": {
+          "jaccard": 9.0883,
+          "text_boundary": 14.4928
+        },
+        "clean__16e531d5a8_17a3cbea2f582b789a9fc35c9ab70b7126430c5acbb822d0": {
+          "jaccard": 3.3924,
+          "text_boundary": 5.3191
+        },
+        "clean__1ba087fe62_a72c54151dc0c8db3e88f7334094c49e60d7ab503f2b9fcb": {
+          "jaccard": 55.3794,
+          "text_boundary": 66.6667
+        },
+        "clean__214f17788e_019d9ee6b2fc3ec87ac9b742174d29787101464facdd6509": {
+          "jaccard": 22.0183,
+          "text_boundary": 65.8537
+        },
+        "clean__2261da4dae_cda3ae3ebc9762a0f1f79fcc41fc2c5b21e21260d47f5b4a": {
+          "jaccard": 7.2908,
+          "text_boundary": 16.6667
+        },
+        "clean__22e696b980_2c10ab9dc3990eb5bbfd3c9738e6ed0f2d9ed69c2d2b09a8": {
+          "jaccard": 6.0143,
+          "text_boundary": 3.2258
+        },
+        "clean__246c7fcf50_0eba5f06bc3ec2c3dcaf59bb2ddb3aea1629ebc6ab22fb21": {
+          "jaccard": 9.2688,
+          "text_boundary": 50.7937
+        },
+        "clean__25e6d4b508_e8dba015e1110e4266d9be9e2d3d0fe5fc700e6e8fc3a2c8": {
+          "jaccard": 30.1551,
+          "text_boundary": 80.4572
+        },
+        "clean__272fd64000_3f7a021187109447b983236dc9847a42959ff4a9b610027b": {
+          "jaccard": 5.9877,
+          "text_boundary": 1.4925
+        },
+        "clean__2cf5d3545b_000f68169b4d165f0ae128cdbc6ace3a38d8d1fe1146bd8f": {
+          "jaccard": 9.8473,
+          "text_boundary": 26.4706
+        },
+        "clean__2da1da401d_3e30939b715361e07ea9407c76f254c9dfcc59a573f1356c": {
+          "jaccard": 21.6299,
+          "text_boundary": 66.0377
+        },
+        "clean__3936a8fe56_45311d41d4a17fbedfe93a538b930e88fa0a63ff0d6ff9cc": {
+          "jaccard": 18.4911,
+          "text_boundary": 22.884
+        },
+        "clean__3cccdeb956_338ed100b8c726655e68862a5b4584feb59583a37fa3b69d": {
+          "jaccard": 9.7118,
+          "text_boundary": 23.8095
+        },
+        "clean__3fcd92b87b_30ff840c5280c4e754b1d6998d936bd6ae03c4cafe1dd5c9": {
+          "jaccard": 0.126,
+          "text_boundary": 0.0
+        },
+        "clean__420868b8ad_file_140": {
+          "jaccard": 12.7168,
+          "text_boundary": 100.0
+        },
+        "clean__4910ce2060_8cca05f3991d33efca1a8fc83122be4940de0d3743e04244": {
+          "jaccard": 9.1487,
+          "text_boundary": 95.0
+        },
+        "clean__49482a748b_44ed9426ac1847fd1d74df3e3982cb437c9658c49aead9c6": {
+          "jaccard": 9.8493,
+          "text_boundary": 80.5195
+        },
+        "clean__55fcbe9086_0003fc93d088dc4c17f3eabc859086df5cdac48fc1106b6e": {
+          "jaccard": 13.5075,
+          "text_boundary": 2.3256
+        },
+        "clean__5c1db01eb9_b83cb9816496b5e7d270d4f3f019d564d552ab006abb3305": {
+          "jaccard": 28.6975,
+          "text_boundary": 6.9182
+        },
+        "clean__5cf261e998_822643bd7db332f5d2172d944ee96ecfa4079dbba515a880": {
+          "jaccard": 8.6284,
+          "text_boundary": 10.3448
+        },
+        "clean__5d848a2e1c_011402710324274d71d6d135d7359a0a1fd5b6e21500a58c": {
+          "jaccard": 2.0223,
+          "text_boundary": 0.0
+        },
+        "clean__60dfd517a9_00f0e7f365a34acc5911a38c89776a4bdd2ba1685edcd0cc": {
+          "jaccard": 1.6419,
+          "text_boundary": 6.6667
+        },
+        "clean__67f497f378_03a7fb6a57b0d73f9c73c2d5556fe93c751bbe991f3a84ec": {
+          "jaccard": 6.0989,
+          "text_boundary": 0.0
+        },
+        "clean__689964b1d8_fcb45876931e978ee2f9052da44fe1f763e4f0c1cb7b2279": {
+          "jaccard": 21.2514,
+          "text_boundary": 0.0
+        },
+        "clean__6a583de2e9_2759ad7e33657fd3a492e78e8bce281c34f6ea85fdf822dc": {
+          "jaccard": 8.0623,
+          "text_boundary": 24.6154
+        },
+        "clean__6c8fc15329_adec1f56bbf0e13c249c914129851ad18623e311ccbfde12": {
+          "jaccard": 44.5771,
+          "text_boundary": 86.0465
+        },
+        "clean__73aceaa568_003bc482963eb24aef77716da483b768529f35cf7e4b4354": {
+          "jaccard": 1.3741,
+          "text_boundary": 0.0
+        },
+        "clean__7899fc3c96_667916088cfbd0c0454be0919ad1ffb1791a318cff1a1d09": {
+          "jaccard": 8.1588,
+          "text_boundary": 13.1579
+        },
+        "clean__8363f472b5_c19dd67235accb6bea40c7dc9a79f86d7abdb92aa3b914b2": {
+          "jaccard": 35.2101,
+          "text_boundary": 5.6818
+        },
+        "clean__8977e1c922_7672b472b406ac51ddf3a68e14bb0255c9e0f7f732c999c7": {
+          "jaccard": 26.5613,
+          "text_boundary": 100.0
+        },
+        "clean__89e56b3180_bf0737f04c1281a1f1596841210b4676a5c87af074c34af3": {
+          "jaccard": 0.0,
+          "text_boundary": 0.0
+        },
+        "clean__8f36ed144a_d47020aa359686bd7cbbe016e04872fb31c3995f576a2f1d": {
+          "jaccard": 47.1286,
+          "text_boundary": 10.5263
+        },
+        "clean__942c4e928e_0220d390b233bb5fce23512533a30a14eeb1cf87c0e005c9": {
+          "jaccard": 10.4493,
+          "text_boundary": 2.5641
+        },
+        "clean__9482ffdc82_060638586497752e8ed47e36862b219e50ada92f80b592db": {
+          "jaccard": 49.5087,
+          "text_boundary": 81.9905
+        },
+        "clean__950124ddf0_3f9ae7d602e5c367de2ba0871c4c481a51c57288483be484": {
+          "jaccard": 9.3415,
+          "text_boundary": 17.6955
+        },
+        "clean__9a1c0cc482_00189bfa50665ef68d774f0fa46d3c42e2acc5de12083ae6": {
+          "jaccard": 8.9659,
+          "text_boundary": 37.234
+        },
+        "clean__9cab09c08d_75bc7006ba70183c4543590a4131ca692719a521bcd85ad7": {
+          "jaccard": 10.5102,
+          "text_boundary": 26.5306
+        },
+        "clean__9ce84b16b6_8130ebf3e279cc2752198e46e0003239b9179f0cfc2b4f46": {
+          "jaccard": 14.9452,
+          "text_boundary": 0.0
+        },
+        "clean__9f2c60b301_d20125ec6aa52579b2e53d11212ae5e77501983055c37aca": {
+          "jaccard": 72.8677,
+          "text_boundary": 95.2381
+        },
+        "clean__a1872de6f9_4ba11863826eb6a508ea7cf4b938acc078e24964b0ea83a4": {
+          "jaccard": 75.2878,
+          "text_boundary": 100.0
+        },
+        "clean__a235512ec1_52e271cce0b9c44c3e6ac4e2a9bc20c2df9584fe5aff46e5": {
+          "jaccard": 5.382,
+          "text_boundary": 0.0
+        },
+        "clean__a4a4ad540d_e296110b14b9efb410f9521e5d7725611d22585187015eee": {
+          "jaccard": 41.8544,
+          "text_boundary": 44.0678
+        },
+        "clean__a4dedaa05a_9009c4519d3cbd224cc4dfd7059a955d4dd4c8e4f88f7f56": {
+          "jaccard": 11.8768,
+          "text_boundary": 24.3421
+        },
+        "clean__a9323bf62e_8adc2fdfcbc6f852c44915fc1bc3f425a982b81d5465efd2": {
+          "jaccard": 7.8105,
+          "text_boundary": 18.7097
+        },
+        "clean__a9e2f2c9c6_03db4d3e4022d9613a4bbbb7f7b4bc98bed915d4491cb897": {
+          "jaccard": 53.8046,
+          "text_boundary": 100.0
+        },
+        "clean__b50b23cc7c_00177a6001ce3df28759049baecced2e1804b7b336f0551a": {
+          "jaccard": 9.3472,
+          "text_boundary": 0.0
+        },
+        "clean__b6ba6a6fcf_7eb842c8b5bd1e2a6a3f0cf79b76c74f77da2897a7cb7add": {
+          "jaccard": 9.0874,
+          "text_boundary": 100.0
+        },
+        "clean__b7f325bd51_6f884742d51e530f70c1c0c3d3d5892bb5c8fd96c5ecfb1e": {
+          "jaccard": 24.334,
+          "text_boundary": 17.1875
+        },
+        "clean__b8eddffd09_010a2c9e894ae5cd795ff229cd191c78eec318c74c4ed15e": {
+          "jaccard": 3.6162,
+          "text_boundary": 0.0
+        },
+        "clean__c4fca65332_c3ea38d80a2751db02d15f6c9d06ee440d9265ab5cd44858": {
+          "jaccard": 7.2943,
+          "text_boundary": 8.3333
+        },
+        "clean__c6ce4423f8_file_96": {
+          "jaccard": 87.3873,
+          "text_boundary": 100.0
+        },
+        "clean__c90997f73a_004599833e81f0e72deb9f04ed6c29b659db22561f65fe35": {
+          "jaccard": 3.4174,
+          "text_boundary": 17.3913
+        },
+        "clean__c90bde92a4_file_35": {
+          "jaccard": 19.728,
+          "text_boundary": 100.0
+        },
+        "clean__d0526e27df_954534e6294cf67d9d64531e60871cdc380db5356d8d86ee": {
+          "jaccard": 7.1213,
+          "text_boundary": 0.0
+        },
+        "clean__d53c3f411e_c39de3199fc7d2e0eb44dd062bd7bd2c860354813aec5761": {
+          "jaccard": 30.5517,
+          "text_boundary": 65.5738
+        },
+        "clean__d5f6c20be1_714dc4ada82c218154bb078861a2edd138b65ff31504d8e4": {
+          "jaccard": 10.0376,
+          "text_boundary": 17.1975
+        },
+        "clean__d946568456_c56067ea48edaafbad1e288b50e970f32229209d91e0d338": {
+          "jaccard": 7.3526,
+          "text_boundary": 0.0
+        },
+        "clean__d9b54326f3_b5fa1037b202f01407579f793af7c3cf7f3236fe8f9224b1": {
+          "jaccard": 0.0,
+          "text_boundary": 0.0
+        },
+        "clean__dc5d0f4350_f569a8b7a88800ca28451782130c35f897ec727ca8750a85": {
+          "jaccard": 13.0699,
+          "text_boundary": 10.8772
+        },
+        "clean__dda66f2e20_13d11814aee9627b5817928625ff9990ebbcf1c7b664091f": {
+          "jaccard": 69.0083,
+          "text_boundary": 89.9254
+        },
+        "clean__e1047ee31c_97e599309df89c311961a7d44aeb414231354ebe786ba2a0": {
+          "jaccard": 16.223,
+          "text_boundary": 26.1538
+        },
+        "clean__e124592dd0_e8735707c6583763f32f7f53c7c73aaa1e555ea8afae61dc": {
+          "jaccard": 19.7277,
+          "text_boundary": 15.6863
+        },
+        "clean__e1cfa0591a_0217951c5f043355bd62c80e33cbc736f027cec6eb5920cc": {
+          "jaccard": 8.4667,
+          "text_boundary": 18.3673
+        },
+        "clean__edebdd12f3_016496eac03b7c0ca311b325d8655553037bd65eba0a52bb": {
+          "jaccard": 10.7649,
+          "text_boundary": 75.0
+        },
+        "clean__ee79137dd5_8b4e4edc6932664b8d995be412fb392fe48caf5b3d6e6ee9": {
+          "jaccard": 17.2039,
+          "text_boundary": 0.0
+        },
+        "clean__ee91b9e453_9385adbfd34ee40a4bd2429d7385293b31a127fc9e9208d1": {
+          "jaccard": 11.9838,
+          "text_boundary": 13.3858
+        },
+        "clean__ef7870f9f4_22be2b6e0c6f8f306d5e2a268d7164e59b90b72404e75678": {
+          "jaccard": 1.984,
+          "text_boundary": 9.0909
+        },
+        "clean__f1372ad5b6_c8d1d38a8fcbfbeaae0f7f8cec424b65c5560a31b286edd6": {
+          "jaccard": 3.0855,
+          "text_boundary": 0.0
+        },
+        "clean__f162fdb95f_b0347bad5793fe02b5d275a7d8e8620d44028811971b0f6d": {
+          "jaccard": 6.1717,
+          "text_boundary": 96.4286
+        },
+        "clean__f8342b8058_a06b592ce3073b4030b3f9617563ae9610159cc3f2213c80": {
+          "jaccard": 13.0595,
+          "text_boundary": 20.3704
+        },
+        "clean__f99040e107_cd25271e4da94feba51015a01ead22c207c363c7e247b988": {
+          "jaccard": 7.3888,
+          "text_boundary": 43.6893
+        },
+        "clean__f9ca1d3348_277e57f3da9c9b557af1abffa61255c6e8036e032a64a874": {
+          "jaccard": 17.5565,
+          "text_boundary": 44.2029
+        },
+        "tracking_without_comments__00f467c010_0008753aa70a6a7b929aa1958001da41574c2d407e5b9863__vs__342f364d46_001342333d45627868f4dc5282abbba4598a91b4a7584b08_redline_9014a2c35a": {
+          "jaccard": 15.4214,
+          "text_boundary": 0.0
+        },
+        "tracking_without_comments__0203b5fed7_strikethrough_bold_demo_id_paraid_overflow__vs__aa62a37db2_strikethrough_text_demo_id_paraid_overflow_redline_2e50998dbb": {
+          "jaccard": 12.8859,
+          "text_boundary": 33.3333
+        },
+        "tracking_without_comments__048870ce18_014178090497722649b8e7aedf646339a3189ee7fe69a596__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_77e4a6bed0": {
+          "jaccard": 4.7706,
+          "text_boundary": 27.0833
+        },
+        "tracking_without_comments__0800162a66_000799b53487acb327ccf0c0ab87fb14b9e8636346719296__vs__1424386e9b_017447de83753a0e3b7afc659df038ef56972925336c6a5b_redline_b11e674787": {
+          "jaccard": 4.0573,
+          "text_boundary": 0.0
+        },
+        "tracking_without_comments__0800162a66_000799b53487acb327ccf0c0ab87fb14b9e8636346719296__vs__2e04202552_000e3e7bd2d6215fc7b469cc3e296c1b2a510bc1abc7e0fd_redline_f7ff3d75ec": {
+          "jaccard": 2.6331,
+          "text_boundary": 0.0
+        },
+        "tracking_without_comments__0800162a66_000799b53487acb327ccf0c0ab87fb14b9e8636346719296__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_da2602b1c0": {
+          "jaccard": 5.5712,
+          "text_boundary": 50.9434
+        },
+        "tracking_without_comments__0800162a66_000799b53487acb327ccf0c0ab87fb14b9e8636346719296__vs__a5f2b9318d_002aa60c2ae1187417b4b157c5ec6450324cc056ec551a12_redline_02514c26c3": {
+          "jaccard": 3.3177,
+          "text_boundary": 0.0
+        },
+        "tracking_without_comments__0e6f813e69_00d2ca27359f3d1d5ee2c2904b48a3e4717faf7fdf6413f6__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_0c84d75d3f": {
+          "jaccard": 9.9627,
+          "text_boundary": 26.9231
+        },
+        "tracking_without_comments__0fc80afa25_6c48d6e5a703fe986580f2da2dfb0a6b1147051c349357bb__vs__9b53454565_6bf87f4fc70178cc0dee818e7ce3142a6b6d9cd172785530_redline_0390281a8b": {
+          "jaccard": 7.0499,
+          "text_boundary": 12.9032
+        },
+        "tracking_without_comments__12941c2a77_0023298b011b45232675215822f0f728678a238756d763c8__vs__1424386e9b_017447de83753a0e3b7afc659df038ef56972925336c6a5b_redline_23127ea8e1": {
+          "jaccard": 27.963,
+          "text_boundary": 68.0
+        },
+        "tracking_without_comments__12941c2a77_0023298b011b45232675215822f0f728678a238756d763c8__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_c48daf68b8": {
+          "jaccard": 9.5629,
+          "text_boundary": 26.4151
+        },
+        "tracking_without_comments__132172576b_75a451230827f240c9c4dab9e021188ec6973f5c681627ae__vs__a4ca6f4c68_e9717d82c1d6cb9bfb67ad47ebd8682c83991f2f0f0afcf5_redline_e12e4521c6": {
+          "jaccard": 7.2595,
+          "text_boundary": 0.0
+        },
+        "tracking_without_comments__13ee1cb061_ee56b1c2f1e42b79dfa8700e709c224299c1f85b41eb490e__vs__1c1fc4a7d3_921a851075ff3eb89f6ca703f298e6504a0ab0c43507f650_redline_48fe34d6a4": {
+          "jaccard": 13.4367,
+          "text_boundary": 50.0
+        },
+        "tracking_without_comments__16b3bdf24f_1a9cd33781356357316c3cb0c6eed3bad72d886ad1d68dbf__vs__dbe46677da_15002e7727c63ec67c92d78a641d5d0d74911f1e64a806e8_redline_da83c9a20b": {
+          "jaccard": 8.5279,
+          "text_boundary": 34.3284
+        },
+        "tracking_without_comments__19313bb0d2_013bfd9bed003f93622f5b45095bb7471499aea576b0e48e__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_efa9bdd06a": {
+          "jaccard": 6.6072,
+          "text_boundary": 26.9231
+        },
+        "tracking_without_comments__19891583af_000f23dc2592a0044f1da2e4f2166c6b41e8fde6a66a1988__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_556b3edd1a": {
+          "jaccard": 3.7064,
+          "text_boundary": 35.8491
+        },
+        "tracking_without_comments__1b8ec2a8cd_file_7__vs__c090b9f082_file_8_redline_ad34822be0": {
+          "jaccard": 14.8627,
+          "text_boundary": 30.4721
+        },
+        "tracking_without_comments__1b8ec2a8cd_file_7__vs__c090b9f082_file_8_redline_b982beef9b": {
+          "jaccard": 14.8627,
+          "text_boundary": 30.4721
+        },
+        "tracking_without_comments__1c29559690_38cbf57ee790ac446ec8c957189574570b7ea5b0dae2fd15__vs__689964b1d8_fcb45876931e978ee2f9052da44fe1f763e4f0c1cb7b2279_redline_ab51888caa": {
+          "jaccard": 18.2497,
+          "text_boundary": 0.0
+        },
+        "tracking_without_comments__203c24d1e7_00cb988053156ab17763897a184a6655864f9c50f7ef2e53__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_13a3fc553d": {
+          "jaccard": 8.9376,
+          "text_boundary": 26.9231
+        },
+        "tracking_without_comments__22a2f86b88_7355234eced26f58daf9077059337af05aed9f0530d9774b__vs__44ca53d5d4_b0b59d4a8d62a7517b810cd8838a68e626cd804be28ef10b_redline_670c56bd07": {
+          "jaccard": 22.6055,
+          "text_boundary": 0.0
+        },
+        "tracking_without_comments__246c7fcf50_0eba5f06bc3ec2c3dcaf59bb2ddb3aea1629ebc6ab22fb21__vs__89e56b3180_bf0737f04c1281a1f1596841210b4676a5c87af074c34af3_redline_3a54118ac6": {
+          "jaccard": 7.5228,
+          "text_boundary": 0.0
+        },
+        "tracking_without_comments__266b027513_file_73__vs__f03f54c09d_file_74_redline_e4f8d7c4e5": {
+          "jaccard": 13.9466,
+          "text_boundary": 22.9814
+        },
+        "tracking_without_comments__27c9cbd809_b4b5463ef111d72dc319a5ccf52ae7b396c494e99b89c857__vs__7f90ff7f2c_d94124e867cf9e31389cfa780818a638161d676f6b79049f_redline_b14882f3e9": {
+          "jaccard": 4.2658,
+          "text_boundary": 61.5385
+        },
+        "tracking_without_comments__284df3bf07_740579c5f762ce4977e0febc5edec27d4df4d4059510a808__vs__9cab09c08d_75bc7006ba70183c4543590a4131ca692719a521bcd85ad7_redline_d3782b3407": {
+          "jaccard": 10.1456,
+          "text_boundary": 26.5306
+        },
+        "tracking_without_comments__286955227d_0134fe85fb88da2accd6637e1c44bdd4f8b7fbb533bd47ba__vs__1424386e9b_017447de83753a0e3b7afc659df038ef56972925336c6a5b_redline_d95a06eed1": {
+          "jaccard": 2.8735,
+          "text_boundary": 38.6364
+        },
+        "tracking_without_comments__286955227d_0134fe85fb88da2accd6637e1c44bdd4f8b7fbb533bd47ba__vs__a5f2b9318d_002aa60c2ae1187417b4b157c5ec6450324cc056ec551a12_redline_9c1cdbe3ad": {
+          "jaccard": 10.6188,
+          "text_boundary": 30.8219
+        },
+        "tracking_without_comments__29379c07bf_002adf0715eed4d213774c26c60c78624c2a3cbb3d0397d2__vs__1424386e9b_017447de83753a0e3b7afc659df038ef56972925336c6a5b_redline_0ac7a5904b": {
+          "jaccard": 5.8662,
+          "text_boundary": 0.0
+        },
+        "tracking_without_comments__29379c07bf_002adf0715eed4d213774c26c60c78624c2a3cbb3d0397d2__vs__2773adf157_0004c94ca2a8684d47449bb0e7abf87de1df71a7e6543252_redline_dfc890ebe7": {
+          "jaccard": 12.0439,
+          "text_boundary": 0.0
+        },
+        "tracking_without_comments__29379c07bf_002adf0715eed4d213774c26c60c78624c2a3cbb3d0397d2__vs__2e04202552_000e3e7bd2d6215fc7b469cc3e296c1b2a510bc1abc7e0fd_redline_329808a1dc": {
+          "jaccard": 26.0884,
+          "text_boundary": 0.0
+        },
+        "tracking_without_comments__29379c07bf_002adf0715eed4d213774c26c60c78624c2a3cbb3d0397d2__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_2bb3a576ab": {
+          "jaccard": 4.6975,
+          "text_boundary": 2.381
+        },
+        "tracking_without_comments__29379c07bf_002adf0715eed4d213774c26c60c78624c2a3cbb3d0397d2__vs__342f364d46_001342333d45627868f4dc5282abbba4598a91b4a7584b08_redline_de2fd5b7b1": {
+          "jaccard": 6.9555,
+          "text_boundary": 0.0
+        },
+        "tracking_without_comments__2b479f55f8_ab1a60a25dd051171cff9456f1fdafa82d5d746f4a494cce__vs__63db0bebfc_98f3b26190a9ad2d0c27e5505ef29521d4faff960deea626_redline_e22069e294": {
+          "jaccard": 0.0,
+          "text_boundary": 0.0
+        },
+        "tracking_without_comments__2e7f1e6637_0120556a0553eb1ba39978d5911b7ce62be10a9bdc7c9191__vs__aa5340125d_00a4b0b91e9b5b072dc3771391c2d608518690eccf44eae8_redline_8fe7181400": {
+          "jaccard": 49.1413,
+          "text_boundary": 53.1915
+        },
+        "tracking_without_comments__3890d0a960_file_27__vs__c3462f9630_file_28_redline_6bd2deb635": {
+          "jaccard": 0.0,
+          "text_boundary": 0.0
+        },
+        "tracking_without_comments__3aa967944f_file_26__vs__3890d0a960_file_27_redline_5b1a59baee": {
+          "jaccard": 13.9359,
+          "text_boundary": 23.3645
+        },
+        "tracking_without_comments__3bfcb371e2_00003fff80a444ad2f706c74f3c0d9fbef00d7a99ba0c105__vs__1424386e9b_017447de83753a0e3b7afc659df038ef56972925336c6a5b_redline_9b22b88370": {
+          "jaccard": 7.4136,
+          "text_boundary": 7.2727
+        },
+        "tracking_without_comments__3bfcb371e2_00003fff80a444ad2f706c74f3c0d9fbef00d7a99ba0c105__vs__a5f2b9318d_002aa60c2ae1187417b4b157c5ec6450324cc056ec551a12_redline_52a3f84699": {
+          "jaccard": 3.7574,
+          "text_boundary": 0.0
+        },
+        "tracking_without_comments__3bfcb371e2_00003fff80a444ad2f706c74f3c0d9fbef00d7a99ba0c105__vs__aa5340125d_00a4b0b91e9b5b072dc3771391c2d608518690eccf44eae8_redline_842ef93738": {
+          "jaccard": 61.4013,
+          "text_boundary": 97.7778
+        },
+        "tracking_without_comments__3bfcb371e2_00003fff80a444ad2f706c74f3c0d9fbef00d7a99ba0c105__vs__deff0e697a_00b5defcad6e58038eac35472a2d48c89905068e5ece0cc3_redline_30b6e87178": {
+          "jaccard": 5.4433,
+          "text_boundary": 0.0
+        },
+        "tracking_without_comments__3c1e5d4d00_00b540ddc1a1fef3ab9acae5b93ca90e9fcef840e25d53cd__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_8f2bd8788e": {
+          "jaccard": 6.4376,
+          "text_boundary": 26.9231
+        },
+        "tracking_without_comments__3cccdeb956_338ed100b8c726655e68862a5b4584feb59583a37fa3b69d__vs__acfb188cbe_da70fe22e2b96c62d0310d4eb7760cbac4c452a88bd62929_redline_17a4d897ce": {
+          "jaccard": 6.4667,
+          "text_boundary": 0.0
+        },
+        "tracking_without_comments__3fc14675e5_italic_text_formatting_demo_id_paraid_overflow_2__vs__f26a5e4940_italic_text_formatting_demo_id_paraid_overflow_redline_7c3b405f35": {
+          "jaccard": 16.7805,
+          "text_boundary": 66.6667
+        },
+        "tracking_without_comments__3fe23ce412_a5b49e91304cf881ab4b07cd810e62ed6f68ac9c0d529815": {
+          "jaccard": 4.0096,
+          "text_boundary": 43.75
+        },
+        "tracking_without_comments__432bf1c280_010684299d3c5523897eb69efb8c1c743c0a7623137d64fe__vs__a5f2b9318d_002aa60c2ae1187417b4b157c5ec6450324cc056ec551a12_redline_0e053136eb": {
+          "jaccard": 11.398,
+          "text_boundary": 36.8098
+        },
+        "tracking_without_comments__44b94a5161_167f0f7958593a10cdfcc151834f7e5836df2bfc866b93e3__vs__d2cec1018b_6781f0c4e2d2fbe62c8d5c8bf3fa3fa50bcf9d36a7d86b6e_redline_a33b3d7ea2": {
+          "jaccard": 2.2872,
+          "text_boundary": 3.3333
+        },
+        "tracking_without_comments__4615c3c04e_support_tickets_summary_id_paraid_overflow__vs__9f27b9f0d4_text_highlight_demo_style_default_missing_redline_8575d7054c": {
+          "jaccard": 9.5276,
+          "text_boundary": 0.0
+        },
+        "tracking_without_comments__4a70acf873_b5ef819b193e1a5ee7d3b9f242743d10c7690e27b1f334eb__vs__8363f472b5_c19dd67235accb6bea40c7dc9a79f86d7abdb92aa3b914b2_redline_63b8eed530": {
+          "jaccard": 6.4455,
+          "text_boundary": 5.6818
+        },
+        "tracking_without_comments__4d1070e14c_strikethrough_text_formatting_demo_id_paraid_ove__vs__316da9cc94_subscript_demo_id_paraid_overflow_redline_67a452560c": {
+          "jaccard": 8.6081,
+          "text_boundary": 33.3333
+        },
+        "tracking_without_comments__4dcc0416b8_file_50__vs__f0070fef24_file_51_redline_83b055133b": {
+          "jaccard": 7.5088,
+          "text_boundary": 0.0
+        },
+        "tracking_without_comments__4ed1b6d133_0020e4099d611a050ed83fb7e0b16d6f48200018bbb1e757__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_f569a8d64e": {
+          "jaccard": 6.5172,
+          "text_boundary": 5.6604
+        },
+        "tracking_without_comments__4f1b13334b_0002768ad2e3174d9c557d30d4a7a8d70ae4062e52383747__vs__2773adf157_0004c94ca2a8684d47449bb0e7abf87de1df71a7e6543252_redline_10aec41832": {
+          "jaccard": 16.1562,
+          "text_boundary": 56.25
+        },
+        "tracking_without_comments__4f1b13334b_0002768ad2e3174d9c557d30d4a7a8d70ae4062e52383747__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_18481ea7f2": {
+          "jaccard": 9.7658,
+          "text_boundary": 26.9231
+        },
+        "tracking_without_comments__54f4bb74cd_109e410552189077d3cc1340a4f0af45587d7f86a0f93dc3__vs__16e531d5a8_17a3cbea2f582b789a9fc35c9ab70b7126430c5acbb822d0_redline_276adf43a6": {
+          "jaccard": 1.7365,
+          "text_boundary": 0.0
+        },
+        "tracking_without_comments__578897b374_file_56__vs__834c9f9f35_file_57_redline_d109f1d68e": {
+          "jaccard": 10.8735,
+          "text_boundary": 25.0
+        },
+        "tracking_without_comments__5ad6e6d44f_0199027cbf967c88ab833b77e5bc5d629bacecbd40a87c26__vs__2773adf157_0004c94ca2a8684d47449bb0e7abf87de1df71a7e6543252_redline_99b69bb632": {
+          "jaccard": 4.123,
+          "text_boundary": 54.8387
+        },
+        "tracking_without_comments__5ad6e6d44f_0199027cbf967c88ab833b77e5bc5d629bacecbd40a87c26__vs__2e04202552_000e3e7bd2d6215fc7b469cc3e296c1b2a510bc1abc7e0fd_redline_ba0ce6cf52": {
+          "jaccard": 20.6313,
+          "text_boundary": 0.0
+        },
+        "tracking_without_comments__5c9b05a33e_00587c7398e1a788e79e8da144019f60214b4ac572ea28a3__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_57ddc9f953": {
+          "jaccard": 5.3773,
+          "text_boundary": 7.1429
+        },
+        "tracking_without_comments__5c9b05a33e_00587c7398e1a788e79e8da144019f60214b4ac572ea28a3__vs__342f364d46_001342333d45627868f4dc5282abbba4598a91b4a7584b08_redline_9ee589e21e": {
+          "jaccard": 20.5752,
+          "text_boundary": 0.0
+        },
+        "tracking_without_comments__5d185fb0dd_006ab612b3ae2e0b1915746c660d9ea64842d89c434e0a09__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_282a41181b": {
+          "jaccard": 10.03,
+          "text_boundary": 26.9231
+        },
+        "tracking_without_comments__60dfd517a9_00f0e7f365a34acc5911a38c89776a4bdd2ba1685edcd0cc__vs__1424386e9b_017447de83753a0e3b7afc659df038ef56972925336c6a5b_redline_8c15afe367": {
+          "jaccard": 29.6885,
+          "text_boundary": 100.0
+        },
+        "tracking_without_comments__60dfd517a9_00f0e7f365a34acc5911a38c89776a4bdd2ba1685edcd0cc__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_a27125cb58": {
+          "jaccard": 4.773,
+          "text_boundary": 0.0
+        },
+        "tracking_without_comments__60dfd517a9_00f0e7f365a34acc5911a38c89776a4bdd2ba1685edcd0cc__vs__aa5340125d_00a4b0b91e9b5b072dc3771391c2d608518690eccf44eae8_redline_3f3f2b03b1": {
+          "jaccard": 46.1504,
+          "text_boundary": 100.0
+        },
+        "tracking_without_comments__617c1284c9_00feb732c2ef2b643a132e4305e16833fd047b46ca44b65b__vs__2773adf157_0004c94ca2a8684d47449bb0e7abf87de1df71a7e6543252_redline_2ef6ed00b9": {
+          "jaccard": 34.665,
+          "text_boundary": 65.625
+        },
+        "tracking_without_comments__617c1284c9_00feb732c2ef2b643a132e4305e16833fd047b46ca44b65b__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_4cb34c212d": {
+          "jaccard": 8.5266,
+          "text_boundary": 35.8491
+        },
+        "tracking_without_comments__61e3967518_0011e415331e3b2d8031efcfcfecbb68df0f0b73b26350ce__vs__1424386e9b_017447de83753a0e3b7afc659df038ef56972925336c6a5b_redline_d110c99d97": {
+          "jaccard": 4.86,
+          "text_boundary": 0.0
+        },
+        "tracking_without_comments__61e3967518_0011e415331e3b2d8031efcfcfecbb68df0f0b73b26350ce__vs__2773adf157_0004c94ca2a8684d47449bb0e7abf87de1df71a7e6543252_redline_cc4c55c6f1": {
+          "jaccard": 6.3275,
+          "text_boundary": 68.75
+        },
+        "tracking_without_comments__61e3967518_0011e415331e3b2d8031efcfcfecbb68df0f0b73b26350ce__vs__2e04202552_000e3e7bd2d6215fc7b469cc3e296c1b2a510bc1abc7e0fd_redline_335cc03b23": {
+          "jaccard": 18.956,
+          "text_boundary": 0.0
+        },
+        "tracking_without_comments__61e3967518_0011e415331e3b2d8031efcfcfecbb68df0f0b73b26350ce__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_be1cdf6d38": {
+          "jaccard": 7.6359,
+          "text_boundary": 6.25
+        },
+        "tracking_without_comments__61e3967518_0011e415331e3b2d8031efcfcfecbb68df0f0b73b26350ce__vs__bd3824dd1e_000ee64ef7226d353297888f59a251e24ce5d776fea000fa_redline_e3104ef6c2": {
+          "jaccard": 7.2856,
+          "text_boundary": 50.0
+        },
+        "tracking_without_comments__628ec1cb76_00a9d81709806bc220522f9b062f226e19ba256e436493b1__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_8eb0bcd9e2": {
+          "jaccard": 5.3506,
+          "text_boundary": 7.6923
+        },
+        "tracking_without_comments__6a8a9e859c_e38f976d3258562dfa09cecb9a34e94403098d5b8a0cd338__vs__1c96e575f8_f907e44f658eab72c9fec3635a6a64fb051c7fb2142a0d03_redline_327c9f02a2": {
+          "jaccard": 9.6568,
+          "text_boundary": 32.7869
+        },
+        "tracking_without_comments__6b2515b2e1_c0be5f1c808dfc28139ea2d7bbf34d3bf7e15237a63f7474__vs__3fe23ce412_a5b49e91304cf881ab4b07cd810e62ed6f68ac9c0d529815_redline_0e9c762eba": {
+          "jaccard": 0.8976,
+          "text_boundary": 0.0
+        },
+        "tracking_without_comments__6c2c8f1b79_4746195c006945f534b2c9ac444f038d071c9f4009b49e4a__vs__9696c5a86b_849ee788c6d02e66e3d5d037056f33907af76c092dbb5494_redline_acafcbe293": {
+          "jaccard": 0.3881,
+          "text_boundary": 0.0
+        },
+        "tracking_without_comments__725cdbebe3_0013892c946c551d309fcec9bb3f3500fc08bc77121a3849__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_52ee8bfbc7": {
+          "jaccard": 7.6341,
+          "text_boundary": 8.0
+        },
+        "tracking_without_comments__74afe04686_000416d5ee481974205314977bda4d0b297b97cf56f55f5a__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_fd7dc3247c": {
+          "jaccard": 9.448,
+          "text_boundary": 26.9231
+        },
+        "tracking_without_comments__75252a6bb0_015e4665fb2bcc025f24e7b451197933975b68ae37052ca7": {
+          "jaccard": 17.2915,
+          "text_boundary": 17.5
+        },
+        "tracking_without_comments__798e9f7226_file_150__vs__0935a8a24e_file_151_redline_f5def8948d": {
+          "jaccard": 6.3168,
+          "text_boundary": 0.0
+        },
+        "tracking_without_comments__81f7cad226_009fa3f6b717df4d0e9371d67f305110d5096bc9178134b0__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_0dadb2386e": {
+          "jaccard": 4.3815,
+          "text_boundary": 26.9231
+        },
+        "tracking_without_comments__83799a0610_00bced7d0ce7770362c5b667b5e92abefcbfcf5315a2bbf6__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_2a068b16e5": {
+          "jaccard": 9.5436,
+          "text_boundary": 26.9231
+        },
+        "tracking_without_comments__83799a0610_00bced7d0ce7770362c5b667b5e92abefcbfcf5315a2bbf6__vs__aa5340125d_00a4b0b91e9b5b072dc3771391c2d608518690eccf44eae8_redline_2a5c1ad2ad": {
+          "jaccard": 48.5854,
+          "text_boundary": 53.1915
+        },
+        "tracking_without_comments__84617b8b4d_file_7__vs__80aa142151_file_8_redline_1f648a602d": {
+          "jaccard": 14.8565,
+          "text_boundary": 30.4721
+        },
+        "tracking_without_comments__87f3bff234_meeting_minutes_id_paraid_overflow__vs__af73bfcc05_meeting_minutes_suggesting_insertions_redline_eae3f5c09f": {
+          "jaccard": 12.7405,
+          "text_boundary": 80.0
+        },
+        "tracking_without_comments__8a5f60d75f_69a8faaa680238387ac0d4673db50c752141e49b8b18667a__vs__2602ef54e0_b114a5e556817e04d34ace58cdce41b2821c23676fc5b8ed_redline_9b360986f7": {
+          "jaccard": 4.8023,
+          "text_boundary": 14.2857
+        },
+        "tracking_without_comments__8cd372b814_0193e5015be906eb45df5f7b3ceb682c7ff53cb52f15a0bf__vs__aa5340125d_00a4b0b91e9b5b072dc3771391c2d608518690eccf44eae8_redline_1cd051a46c": {
+          "jaccard": 36.3191,
+          "text_boundary": 65.9091
+        },
+        "tracking_without_comments__9610bc363d_track_changes_editing_strikethrough_id_paraid_ov__vs__bf23b1e436_track_changes_suggesting_bold_id_paraid_overflow_redline_2561ef98d9": {
+          "jaccard": 11.2506,
+          "text_boundary": 0.0
+        },
+        "tracking_without_comments__98c8b73841_0041d3944715c2fffc5929695f968e5f399e85b139fba063__vs__1424386e9b_017447de83753a0e3b7afc659df038ef56972925336c6a5b_redline_c83c7e02ae": {
+          "jaccard": 19.4155,
+          "text_boundary": 54.8387
+        },
+        "tracking_without_comments__98c8b73841_0041d3944715c2fffc5929695f968e5f399e85b139fba063__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_617e392832": {
+          "jaccard": 9.3904,
+          "text_boundary": 26.4151
+        },
+        "tracking_without_comments__99ef9c7a7e_file_75__vs__c492c95bb9_file_76_redline_7810afa11e": {
+          "jaccard": 8.7996,
+          "text_boundary": 0.0
+        },
+        "tracking_without_comments__9be7e36de4_00c3fd2d23e8acf016f9b2fb44f4ee84789abc39c820e7ab__vs__a5f2b9318d_002aa60c2ae1187417b4b157c5ec6450324cc056ec551a12_redline_5068b053d6": {
+          "jaccard": 50.6026,
+          "text_boundary": 100.0
+        },
+        "tracking_without_comments__9cec0a4e06_book_catalog_table__vs__d6ef87dca7_budget_report_q1_2026_suggesting_insertions_redline_79825c65ec": {
+          "jaccard": 7.3804,
+          "text_boundary": 0.0
+        },
+        "tracking_without_comments__9ea920c636_710d9d68ef90cbd901510c07ae7fed61173f872e9dbea061__vs__0acde9d23e_50be95cde73c1d9b994d6c75c6d2f67f7b4c6cdf0e13ba30_redline_0e7956b306": {
+          "jaccard": 4.7174,
+          "text_boundary": 36.6667
+        },
+        "tracking_without_comments__a1899173ff_cb24cea07ba59800a7dfa80de9f384885bf6e1c1b0aa967d__vs__c934a90fba_ceb60fdd4393406b78e51cb3aae7fde107a93a9e5eb97197_redline_fedc2c0ba6": {
+          "jaccard": 3.1041,
+          "text_boundary": 0.0
+        },
+        "tracking_without_comments__a62ef11355_af838c136dcd3b6c93a648911f7fe7bcba87be8a27c66ac3__vs__d706876939_96241b469231f21192669d60dd79dcdf1be49260da2e0a7d_redline_f8c1ce3e92": {
+          "jaccard": 8.8965,
+          "text_boundary": 61.5385
+        },
+        "tracking_without_comments__a6bdad436b_00e1eabab4f0fdde08a033b7d3af988ce75f7e80207c9918__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_189b6fe5e3": {
+          "jaccard": 9.6331,
+          "text_boundary": 26.9231
+        },
+        "tracking_without_comments__a7bce539e1_c01d8d723db353c3d44bc000eef8cb64cf05710ff39e6263__vs__c03ff52e4d_e022c44716b9213b4aa69931b79685a1f711443b13ea8945_redline_cd49552c60": {
+          "jaccard": 3.1827,
+          "text_boundary": 0.0
+        },
+        "tracking_without_comments__a88f2ae357_0095a6095a0f74201c196f4944b3d93f4cf5cc20e4982903__vs__2773adf157_0004c94ca2a8684d47449bb0e7abf87de1df71a7e6543252_redline_b8435bf39c": {
+          "jaccard": 7.3149,
+          "text_boundary": 64.5161
+        },
+        "tracking_without_comments__a88f2ae357_0095a6095a0f74201c196f4944b3d93f4cf5cc20e4982903__vs__2e04202552_000e3e7bd2d6215fc7b469cc3e296c1b2a510bc1abc7e0fd_redline_2e0922f49a": {
+          "jaccard": 24.684,
+          "text_boundary": 19.0476
+        },
+        "tracking_without_comments__a88f2ae357_0095a6095a0f74201c196f4944b3d93f4cf5cc20e4982903__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_a97bb9b57f": {
+          "jaccard": 3.9044,
+          "text_boundary": 35.8491
+        },
+        "tracking_without_comments__a88f2ae357_0095a6095a0f74201c196f4944b3d93f4cf5cc20e4982903__vs__342f364d46_001342333d45627868f4dc5282abbba4598a91b4a7584b08_redline_4bf88ed826": {
+          "jaccard": 10.2757,
+          "text_boundary": 69.2308
+        },
+        "tracking_without_comments__a9de4ed3f9_9c337ad7e3719f79f6cbf0deed6badf7a57a4c6482c0cf76__vs__ef7870f9f4_22be2b6e0c6f8f306d5e2a268d7164e59b90b72404e75678_redline_651e1bcc1c": {
+          "jaccard": 3.4391,
+          "text_boundary": 88.2353
+        },
+        "tracking_without_comments__aa58aada65_00160046fb2516a560a9681d7ae3e6f4659af57d19555d4e__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_dd43ad9d3c": {
+          "jaccard": 6.6877,
+          "text_boundary": 26.9231
+        },
+        "tracking_without_comments__aeb0ace263_793bb9c35c342cd532221e60f7f70c0411de141b896a63b2__vs__1000537d17_8d9cfd6b8768cf88164c1b8c735e97b737193f3e92fd18ee_redline_3d4318d7e9": {
+          "jaccard": 0.0,
+          "text_boundary": 0.0
+        },
+        "tracking_without_comments__b27a2ff1ad_a700d680776964b71b2d897597fb45bb3d9b22b973155bdc__vs__1ba087fe62_a72c54151dc0c8db3e88f7334094c49e60d7ab503f2b9fcb_redline_512b24be1e": {
+          "jaccard": 14.6973,
+          "text_boundary": 0.0
+        },
+        "tracking_without_comments__b27bda87ed_0023f7c421a05af9c44fb4ff9ef1bce46c53a081779b1e72__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_4c587eace6": {
+          "jaccard": 6.5377,
+          "text_boundary": 5.6604
+        },
+        "tracking_without_comments__b51a7a465b_998e62501ae726f2b68ab460f7fad55f18c3bb110bfc07c4__vs__4910ce2060_8cca05f3991d33efca1a8fc83122be4940de0d3743e04244_redline_3b57d40fff": {
+          "jaccard": 7.7666,
+          "text_boundary": 41.6667
+        },
+        "tracking_without_comments__b535008087_a1c0c04747ae1fda785d5bd3748890f39c0bc43d28b1d463__vs__813771d860_9e288428882b21a59d50f62a44c24f3fa9c01f8c2be6eb24_redline_eaa985ccbd": {
+          "jaccard": 10.2379,
+          "text_boundary": 5.4422
+        },
+        "tracking_without_comments__b6dd0b6ae8_015a4f5a16a110026418c0a7f5eefa69ce6d5f9bcfc2d955__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_59dbbc9d85": {
+          "jaccard": 4.1391,
+          "text_boundary": 8.3333
+        },
+        "tracking_without_comments__b6f757462e_0006f7905281867ab0d0a45d88f88f72e2c15efbd9a8ed69__vs__5203829c7a_001cc92b88566d5f930fe57f25813c0bf52a7bdc72c217d0_redline_9f142ac84a": {
+          "jaccard": 2.2808,
+          "text_boundary": 33.3333
+        },
+        "tracking_without_comments__b6f757462e_0006f7905281867ab0d0a45d88f88f72e2c15efbd9a8ed69__vs__bd3824dd1e_000ee64ef7226d353297888f59a251e24ce5d776fea000fa_redline_3b133e5659": {
+          "jaccard": 6.3311,
+          "text_boundary": 0.0
+        },
+        "tracking_without_comments__c280ce0f40_019d92d986c5ba33a57df54db0056f3731e3254fcbe8ac65__vs__1424386e9b_017447de83753a0e3b7afc659df038ef56972925336c6a5b_redline_ef77d2a7c6": {
+          "jaccard": 0.0,
+          "text_boundary": 0.0
+        },
+        "tracking_without_comments__c280ce0f40_019d92d986c5ba33a57df54db0056f3731e3254fcbe8ac65__vs__a5f2b9318d_002aa60c2ae1187417b4b157c5ec6450324cc056ec551a12_redline_4da1ca3b20": {
+          "jaccard": 17.8387,
+          "text_boundary": 50.3448
+        },
+        "tracking_without_comments__c87ab9bf12_file_52__vs__cf78e83cd4_file_53_redline_27427ee2bc": {
+          "jaccard": 13.735,
+          "text_boundary": 36.25
+        },
+        "tracking_without_comments__cb4f8b4a43_a705aeb161204d5047c4d61ed25600bc39f07a24761c4b8c__vs__f162fdb95f_b0347bad5793fe02b5d275a7d8e8620d44028811971b0f6d_redline_f3f426dc89": {
+          "jaccard": 4.9102,
+          "text_boundary": 96.4286
+        },
+        "tracking_without_comments__d426359dd9_file_111__vs__5bde480834_file_112_redline_07558141ca": {
+          "jaccard": 5.8558,
+          "text_boundary": 0.0
+        },
+        "tracking_without_comments__e1047ee31c_97e599309df89c311961a7d44aeb414231354ebe786ba2a0__vs__0278e9298d_f3a3a94e08be4e5cce05139444d92dfbfc60bfe1ad839671_redline_8ebf34fee2": {
+          "jaccard": 1.999,
+          "text_boundary": 0.0
+        },
+        "tracking_without_comments__e12998d969_31a07e63d6c64e6c910dd78dd0cd0daf230c123da91e19fd__vs__c4fca65332_c3ea38d80a2751db02d15f6c9d06ee440d9265ab5cd44858_redline_f530e02882": {
+          "jaccard": 5.4017,
+          "text_boundary": 0.0
+        },
+        "tracking_without_comments__e3d833aef0_file_10__vs__26ccb443f6_file_11_redline_e698ff3bbe": {
+          "jaccard": 3.2725,
+          "text_boundary": 25.0
+        },
+        "tracking_without_comments__e80f3a578d_file_130__vs__c54c269d79_file_131_redline_0e21c53a17": {
+          "jaccard": 14.7388,
+          "text_boundary": 30.4721
+        },
+        "tracking_without_comments__ec4df76243_9126d1f4d9b39a51172c343d2ede487c97445a4264e23cb8__vs__1587a40694_4991382416adefef66b97f0a3efacf2c2a793a067541ad27_redline_968fd6cc01": {
+          "jaccard": 3.1802,
+          "text_boundary": 2.5641
+        },
+        "tracking_without_comments__ed54f530fd_5ca225a29b58bc6c7c1f7319480272dd123c15ed8f6152dd__vs__562ab63668_c32d7d404d41ffad48b82d7fd645b0c880c31055a8e58510_redline_62992fde4e": {
+          "jaccard": 3.7392,
+          "text_boundary": 0.0
+        },
+        "tracking_without_comments__f141395e21_file_5__vs__b8783e46c5_file_6_redline_baf1c31339": {
+          "jaccard": 14.0095,
+          "text_boundary": 22.9814
+        },
+        "tracking_without_comments__f43f6ef305_002042b8a23533ba746bf4eaf56b5e62642cc111f5f5fcff__vs__2773adf157_0004c94ca2a8684d47449bb0e7abf87de1df71a7e6543252_redline_ec101e09bf": {
+          "jaccard": 10.634,
+          "text_boundary": 65.625
+        },
+        "tracking_without_comments__f94aeed5f5_001f4e98e9744f89b6f26b3741cb6439f8131bf89659230e__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_3a7f98f21b": {
+          "jaccard": 1.2793,
+          "text_boundary": 0.0
+        },
+        "tracking_without_comments__f9b9dbd790_0017bce9abd08007241b106f0fcf1d64e45c05cd82a05a1d__vs__1424386e9b_017447de83753a0e3b7afc659df038ef56972925336c6a5b_redline_2ea0a59b6a": {
+          "jaccard": 7.0129,
+          "text_boundary": 33.3333
+        },
+        "tracking_without_comments__fc5d9fecb7_00028d824d5d2262bc6e30692308cd1b577ac1dff228970d__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_7f450b2b12": {
+          "jaccard": 5.7142,
+          "text_boundary": 26.9231
+        },
+        "with_comments_clean__9f5481078e_docx_lots_of_comments_addition_redline__vs__ee9bfc2650_docx_lots_of_comments_addition_removal_redline_r_redline_60e784f2de": {
+          "jaccard": 6.8196,
+          "text_boundary": 23.0284
+        },
+        "with_comments_clean__9f5481078e_docx_lots_of_comments_addition_redline__vs__ee9bfc2650_docx_lots_of_comments_addition_removal_redline_r_redline_d4c19477cb": {
+          "jaccard": 6.8254,
+          "text_boundary": 23.0284
+        },
+        "with_comments_clean__ee9bfc2650_docx_lots_of_comments_addition_removal_redline_r__vs__3fcadf4761_docx_lots_of_comments_addition_removal_redline_redline_58cd08049b": {
+          "jaccard": 6.8254,
+          "text_boundary": 23.0284
+        },
+        "with_comments_clean__ee9bfc2650_docx_lots_of_comments_addition_removal_redline_r__vs__3fcadf4761_docx_lots_of_comments_addition_removal_redline_redline_d2e24e9733": {
+          "jaccard": 6.8196,
+          "text_boundary": 23.0284
+        },
+        "with_comments_tracking__1072677c3a_file_6__vs__1b8ec2a8cd_file_7_redline_0b033b1c23": {
+          "jaccard": 0.0,
+          "text_boundary": 0.0
+        },
+        "with_comments_tracking__1072677c3a_file_6__vs__1b8ec2a8cd_file_7_redline_29e3872eed": {
+          "jaccard": 0.0,
+          "text_boundary": 0.0
+        },
+        "with_comments_tracking__1547c5df73_file_130__vs__df097720f7_file_131_redline_2e3f1e261d": {
+          "jaccard": 7.1769,
+          "text_boundary": 30.0429
+        },
+        "with_comments_tracking__1547c5df73_file_130__vs__df097720f7_file_131_redline_e4df2c199d": {
+          "jaccard": 7.1563,
+          "text_boundary": 30.0429
+        },
+        "with_comments_tracking__24ad1aa6e5_docx_lots_of_comments_addition_removal__vs__e57ad0eaa4_docx_lots_of_comments_addition_redline_a836952933": {
+          "jaccard": 6.8405,
+          "text_boundary": 23.0284
+        },
+        "with_comments_tracking__24ad1aa6e5_docx_lots_of_comments_addition_removal__vs__e57ad0eaa4_docx_lots_of_comments_addition_redline_ebeb91fe7f": {
+          "jaccard": 6.8328,
+          "text_boundary": 23.0284
+        },
+        "with_comments_tracking__3f91c8f0cd_file_9__vs__e3d833aef0_file_10_redline_581907f19c": {
+          "jaccard": 0.0,
+          "text_boundary": 0.0
+        },
+        "with_comments_tracking__3f91c8f0cd_file_9__vs__e3d833aef0_file_10_redline_db13a691da": {
+          "jaccard": 0.0,
+          "text_boundary": 0.0
+        },
+        "with_comments_tracking__3fcadf4761_docx_lots_of_comments_addition_removal_redline__vs__24ad1aa6e5_docx_lots_of_comments_addition_removal_redline_30f20e787b": {
+          "jaccard": 0.0,
+          "text_boundary": 0.0
+        },
+        "with_comments_tracking__3fcadf4761_docx_lots_of_comments_addition_removal_redline__vs__24ad1aa6e5_docx_lots_of_comments_addition_removal_redline_48b006f032": {
+          "jaccard": 0.0,
+          "text_boundary": 0.0
+        },
+        "with_comments_tracking__6b0acda259_file_73__vs__bd768e6c17_file_74_redline_0aa74e0de4": {
+          "jaccard": 6.7187,
+          "text_boundary": 22.6708
+        },
+        "with_comments_tracking__6b0acda259_file_73__vs__bd768e6c17_file_74_redline_d392f01661": {
+          "jaccard": 6.6908,
+          "text_boundary": 22.6708
+        },
+        "with_comments_tracking__6e2576a091_docx_lots_of_comments__vs__2c0a2ac35f_double_spacing_bold_demo_id_paraid_overflow_redline_9382e03243": {
+          "jaccard": 0.0,
+          "text_boundary": 0.0
+        },
+        "with_comments_tracking__6e2576a091_docx_lots_of_comments__vs__2c0a2ac35f_double_spacing_bold_demo_id_paraid_overflow_redline_a6aab38897": {
+          "jaccard": 0.0,
+          "text_boundary": 0.0
+        },
+        "with_comments_tracking__70a28a8258_file_15__vs__be5bf990cb_file_16_redline_699cc8bd70": {
+          "jaccard": 6.9946,
+          "text_boundary": 19.0141
+        },
+        "with_comments_tracking__70a28a8258_file_15__vs__be5bf990cb_file_16_redline_7787357743": {
+          "jaccard": 7.0084,
+          "text_boundary": 19.0141
+        },
+        "with_comments_tracking__7166fa4199_document_100_ultimate_demo_id_paraid_overflow__vs__97c3dd2e86_docx_lots_of_comments_addition_redline_addition_redline_2288f27be1": {
+          "jaccard": 7.0137,
+          "text_boundary": 18.2796
+        },
+        "with_comments_tracking__7166fa4199_document_100_ultimate_demo_id_paraid_overflow__vs__97c3dd2e86_docx_lots_of_comments_addition_redline_addition_redline_8993b015d5": {
+          "jaccard": 7.0172,
+          "text_boundary": 18.2796
+        },
+        "with_comments_tracking__82ee7342fd_file_5__vs__1072677c3a_file_6_redline_70a6883d16": {
+          "jaccard": 6.7172,
+          "text_boundary": 22.6708
+        },
+        "with_comments_tracking__82ee7342fd_file_5__vs__1072677c3a_file_6_redline_d27b00aca7": {
+          "jaccard": 6.6893,
+          "text_boundary": 22.6708
+        },
+        "with_comments_tracking__97c3dd2e86_docx_lots_of_comments_addition_redline_addition__vs__9f5481078e_docx_lots_of_comments_addition_redline_redline_2d65e392ab": {
+          "jaccard": 6.8405,
+          "text_boundary": 23.0284
+        },
+        "with_comments_tracking__97c3dd2e86_docx_lots_of_comments_addition_redline_addition__vs__9f5481078e_docx_lots_of_comments_addition_redline_redline_d6b1d609c1": {
+          "jaccard": 6.8328,
+          "text_boundary": 23.0284
+        },
+        "with_comments_tracking__b175a00954_file_27__vs__f32428a03a_file_28_redline_0f031c23c3": {
+          "jaccard": 0.0,
+          "text_boundary": 0.0
+        },
+        "with_comments_tracking__b175a00954_file_27__vs__f32428a03a_file_28_redline_f8f8d224f2": {
+          "jaccard": 0.0,
+          "text_boundary": 0.0
+        },
+        "with_comments_tracking__b2b3095b48_file_52__vs__ec3dd0df69_file_53_redline_589b832f86": {
+          "jaccard": 6.6032,
+          "text_boundary": 35.9375
+        },
+        "with_comments_tracking__b2b3095b48_file_52__vs__ec3dd0df69_file_53_redline_e14d8c4c7d": {
+          "jaccard": 6.5806,
+          "text_boundary": 35.9375
+        },
+        "with_comments_tracking__bd768e6c17_file_74__vs__8c79860f8d_file_75_redline_3d39f0120d": {
+          "jaccard": 0.0,
+          "text_boundary": 0.0
+        },
+        "with_comments_tracking__bd768e6c17_file_74__vs__8c79860f8d_file_75_redline_58c827e77a": {
+          "jaccard": 0.0,
+          "text_boundary": 0.0
+        },
+        "with_comments_tracking__be5bf990cb_file_16__vs__d6ba4fabd2_file_17_redline_cbf73c2d81": {
+          "jaccard": 0.0,
+          "text_boundary": 0.0
+        },
+        "with_comments_tracking__be5bf990cb_file_16__vs__d6ba4fabd2_file_17_redline_d36027aaa0": {
+          "jaccard": 0.0,
+          "text_boundary": 0.0
+        },
+        "with_comments_tracking__c090b9f082_file_8__vs__3f91c8f0cd_file_9_redline_bc6f8076f9": {
+          "jaccard": 0.0,
+          "text_boundary": 0.0
+        },
+        "with_comments_tracking__c090b9f082_file_8__vs__3f91c8f0cd_file_9_redline_cac2492b83": {
+          "jaccard": 0.0,
+          "text_boundary": 0.0
+        },
+        "with_comments_tracking__cf02e0407e_file_26__vs__b175a00954_file_27_redline_cee8601521": {
+          "jaccard": 6.7236,
+          "text_boundary": 23.053
+        },
+        "with_comments_tracking__cf02e0407e_file_26__vs__b175a00954_file_27_redline_da516a455a": {
+          "jaccard": 6.7002,
+          "text_boundary": 23.053
+        },
+        "with_comments_tracking__df097720f7_file_131__vs__3c60cce945_file_132_redline_4eff11f045": {
+          "jaccard": 0.0,
+          "text_boundary": 0.0
+        },
+        "with_comments_tracking__df097720f7_file_131__vs__3c60cce945_file_132_redline_fa05623f53": {
+          "jaccard": 0.0,
+          "text_boundary": 0.0
+        },
+        "with_comments_tracking__e57ad0eaa4_docx_lots_of_comments_addition__vs__6e2576a091_docx_lots_of_comments_redline_92075b7449": {
+          "jaccard": 7.0865,
+          "text_boundary": 29.2576
+        },
+        "with_comments_tracking__e57ad0eaa4_docx_lots_of_comments_addition__vs__6e2576a091_docx_lots_of_comments_redline_b164655b2a": {
+          "jaccard": 7.0941,
+          "text_boundary": 29.2576
+        },
+        "with_comments_tracking__ec3dd0df69_file_53__vs__94ed0def64_file_54_redline_c2380a4677": {
+          "jaccard": 0.0,
+          "text_boundary": 0.0
+        },
+        "with_comments_tracking__ec3dd0df69_file_53__vs__94ed0def64_file_54_redline_d12806f3e8": {
+          "jaccard": 0.0,
+          "text_boundary": 0.0
+        }
+      },
+      "reused_from": {
+        "01a0e8ac-e120-762a-809b-2cd971925f2b (results/docxide_metrics_docxide_0.17.1.json)": 250
+      },
+      "tool": "docxide-pdf",
+      "version": "docxide-pdf v0.17.1"
+    }
+  },
+  "track": "docxide_metrics"
+}

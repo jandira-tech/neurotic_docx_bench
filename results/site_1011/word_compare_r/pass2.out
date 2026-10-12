@@ -1,0 +1,95 @@
+▸ PDF quality is sticky: `save as … file format format PDF` inherits whatever 
+'Optimize for' you last chose in Word's own Save As dialog.
+  Open any document in Word once, File > Save As > PDF, and pick the SECOND 
+option, Best for printing.
+  That choice persists; this script cannot set it. Pass --no-check-preset to 
+stop seeing this.
+▸ A redline PDF shows tracked changes the way Word is currently set to show them
+(Review ▸ Markup display, and Print Markup).
+  Open one redline in Word by hand and confirm it looks right before running the
+batch — this script cannot set that for you.
+2026-10-11 20:00:56.130 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 20:01:43.151 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 20:04:20.485 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 20:04:25.316 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 20:04:34.051 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 20:04:38.320 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 20:04:49.850 | ERROR    | word_pdf♻717 -  refusing to restart Word: 
+it held documents at startup (--allow-open-docs), and a restart would discard 
+them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 20:04:55.087 | ERROR    | __main__:_redline_batched:1072 -  FAIL: 
+137d46157c.docx → 137d46157c.docx — redline is missing base 0% and revision 50% 
+of that file; the two sides are not averaged
+2026-10-11 20:04:55.469 | ERROR    | __main__:_redline_batched:1094 -  FAIL: 
+1a4f106bda.docx → 1a4f106bda.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 20:04:55.521 | ERROR    | __main__:_redline_batched:1072 -  FAIL: 
+1edc0f56f4.docx → 1edc0f56f4.docx — redline is missing base 67% of that file; 
+the two sides are not averaged
+2026-10-11 20:04:55.984 | ERROR    | __main__:_redline_batched:1094 -  FAIL: 
+435d2c2474.docx → 435d2c2474.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 20:04:56.618 | ERROR    | __main__:_redline_batched:1072 -  FAIL: 
+8568a9817b.docx → 8568a9817b.docx — redline is missing revision 50% of that 
+file; the two sides are not averaged
+2026-10-11 20:04:56.920 | ERROR    | __main__:_redline_batched:1072 -  FAIL: 
+a9272f69c1.docx → a9272f69c1.docx — redline is missing base 0% of that file; the
+two sides are not averaged
+2026-10-11 20:04:57.850 | ERROR    | __main__:_redline_batched:1072 -  FAIL: 
+f7bbf6e831.docx → f7bbf6e831.docx — redline is missing base 67% of that file; 
+the two sides are not averaged
+2026-10-11 20:04:57.873 | ERROR    | __main__:_redline_batched:1094 -  FAIL: 
+f8286525f6.docx → f8286525f6.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 20:04:57.897 | ERROR    | __main__:_redline_batched:1094 -  FAIL: 
+f8f8d224f2.docx → f8f8d224f2.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 20:04:57.916 | ERROR    | __main__:_redline_batched:1072 -  FAIL: 
+f953aac51a.docx → f953aac51a.docx — redline is missing revision 67% of that 
+file; the two sides are not averaged
+             redline: A → B             
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━┓
+┃ outcome                      ┃ count ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━┩
+│ redlined                     │   152 │
+│ skipped (exists)             │     7 │
+│ failed                       │    10 │
+│ seconds per pair (batch avg) │   2.3 │
+│ total revisions              │  3088 │
+└──────────────────────────────┴───────┘
+  FAIL 137d46157c.docx → 137d46157c.docx: redline is missing base 0% and 
+revision 50% of that file; the two sides are not averaged
+  FAIL 1a4f106bda.docx → 1a4f106bda.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL 1edc0f56f4.docx → 1edc0f56f4.docx: redline is missing base 67% of that 
+file; the two sides are not averaged
+  FAIL 435d2c2474.docx → 435d2c2474.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL 8568a9817b.docx → 8568a9817b.docx: redline is missing revision 50% of 
+that file; the two sides are not averaged
+  FAIL a9272f69c1.docx → a9272f69c1.docx: redline is missing base 0% of that 
+file; the two sides are not averaged
+  FAIL f7bbf6e831.docx → f7bbf6e831.docx: redline is missing base 67% of that 
+file; the two sides are not averaged
+  FAIL f8286525f6.docx → f8286525f6.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL f8f8d224f2.docx → f8f8d224f2.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL f953aac51a.docx → f953aac51a.docx: redline is missing revision 67% of 
+that file; the two sides are not averaged

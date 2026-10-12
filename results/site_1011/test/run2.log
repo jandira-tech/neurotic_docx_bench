@@ -1,0 +1,4 @@
+2026-10-11 14:46:55.943 | INFO     | word_pdf:preflight:1827 - [word] preflight: open_documents=1 started_clean=False launched_by_us=False close_documents=True
+2026-10-11 14:46:55.945 | INFO     | __main__:redline_folders:727 - [redline] one_osascript=True pairs=3
+2026-10-11 14:46:55.947 | INFO     | __main__:_redline_batched:1011 - [batch] one osascript for 2 comparison(s)
+2026-10-11 14:46:59.003 | INFO     | __main__:_redline_batched:1040 - [batch] one osascript for 2 redline PDF(s)
