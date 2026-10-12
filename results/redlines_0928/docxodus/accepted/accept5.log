@@ -1,0 +1,56 @@
+2026-09-29 00:04:33.875 | INFO     | __main__:preflight:1762 - [word] preflight: open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-09-29 00:04:33.909 | INFO     | __main__:convert_folder:1436 - [word] export: one_osascript=True documents=100 accept_all=True reject_all=False
+2026-09-29 00:04:39.036 | INFO     | __main__:_convert_batched:1635 - [batch] one osascript for 23 document(s)
+2026-09-29 00:04:44.073 | INFO     | __main__:_loop:1025 - [batch pdf 1] 0/23
+2026-09-29 00:04:52.490 | WARNING  | __main__:run_batch_with_resume:1156 - [batch pdf] 23 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 2, 0 of 3 stalled passes used)
+2026-09-29 00:04:52.495 | WARNING  | __main__:recycle:724 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-09-29 00:04:52.498 | WARNING  | __main__:recycle:730 - [word] recycling (restart 1)
+2026-09-29 00:05:04.289 | INFO     | __main__:_loop:1025 - [batch pdf 2] 0/23
+2026-09-29 00:05:05.218 | WARNING  | __main__:run_batch_with_resume:1156 - [batch pdf] 23 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 3, 0 of 3 stalled passes used)
+2026-09-29 00:05:05.219 | WARNING  | __main__:recycle:724 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-09-29 00:05:05.220 | WARNING  | __main__:recycle:730 - [word] recycling (restart 2)
+2026-09-29 00:05:24.272 | INFO     | __main__:_loop:1025 - [batch pdf 3] 0/23
+2026-09-29 00:05:25.605 | WARNING  | __main__:run_batch_with_resume:1156 - [batch pdf] 23 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 4, 0 of 3 stalled passes used)
+2026-09-29 00:05:25.612 | WARNING  | __main__:recycle:730 - [word] recycling (restart 3)
+2026-09-29 00:05:31.238 | INFO     | __main__:_note_buttons:509 - [watchdog] Microsoft Error Reporting shows button 'OK'
+2026-09-29 00:05:31.241 | INFO     | __main__:_note_buttons:509 - [watchdog] Microsoft Error Reporting shows button 'More Information'
+2026-09-29 00:05:31.242 | INFO     | __main__:_note_buttons:509 - [watchdog] Microsoft Error Reporting shows button 'missing value'
+2026-09-29 00:05:32.007 | WARNING  | __main__:_loop_merp:550 - [watchdog] error report declined via 'OK'
+2026-09-29 00:05:50.753 | INFO     | __main__:_loop:1025 - [batch pdf 4] 0/23
+2026-09-29 00:05:53.303 | WARNING  | __main__:run_batch_with_resume:1156 - [batch pdf] 23 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 5, 0 of 3 stalled passes used)
+2026-09-29 00:05:53.308 | WARNING  | __main__:recycle:730 - [word] recycling (restart 4)
+2026-09-29 00:05:58.194 | WARNING  | __main__:_loop_merp:550 - [watchdog] error report declined via 'OK'
+2026-09-29 00:06:04.371 | WARNING  | __main__:run_batch_with_resume:1156 - [batch pdf] 23 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 6, 0 of 3 stalled passes used)
+2026-09-29 00:06:04.376 | WARNING  | __main__:recycle:730 - [word] recycling (restart 5)
+2026-09-29 00:06:15.791 | INFO     | __main__:_loop:1025 - [batch pdf 6] 0/23
+2026-09-29 00:06:18.817 | WARNING  | __main__:run_batch_with_resume:1156 - [batch pdf] 23 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 7, 0 of 3 stalled passes used)
+2026-09-29 00:06:18.822 | WARNING  | __main__:recycle:730 - [word] recycling (restart 6)
+2026-09-29 00:06:22.829 | WARNING  | __main__:_loop_merp:550 - [watchdog] error report declined via 'OK'
+2026-09-29 00:06:31.423 | INFO     | __main__:_loop:1025 - [batch pdf 7] 0/23
+2026-09-29 00:06:32.532 | WARNING  | __main__:run_batch_with_resume:1156 - [batch pdf] 23 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 8, 0 of 3 stalled passes used)
+2026-09-29 00:06:32.535 | WARNING  | __main__:recycle:730 - [word] recycling (restart 7)
+2026-09-29 00:06:43.206 | WARNING  | __main__:run_batch_with_resume:1156 - [batch pdf] 23 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 9, 0 of 3 stalled passes used)
+2026-09-29 00:06:43.274 | WARNING  | __main__:recycle:730 - [word] recycling (restart 8)
+2026-09-29 00:06:52.006 | INFO     | __main__:_note_buttons:509 - [watchdog] Microsoft Word shows button 'No'
+2026-09-29 00:06:52.013 | INFO     | __main__:_note_buttons:509 - [watchdog] Microsoft Word shows button 'Yes'
+2026-09-29 00:06:55.835 | INFO     | __main__:_loop:1025 - [batch pdf 9] 0/23
+2026-09-29 00:07:01.997 | WARNING  | __main__:_loop_word:539 - [watchdog] Word dialog dismissed via 'OK'
+2026-09-29 00:07:05.898 | INFO     | __main__:_loop:1025 - [batch pdf 9] 2/23
+2026-09-29 00:07:10.947 | INFO     | __main__:_loop:1025 - [batch pdf 9] 7/23
+2026-09-29 00:07:15.990 | INFO     | __main__:_loop:1025 - [batch pdf 9] 12/23
+2026-09-29 00:07:21.022 | INFO     | __main__:_loop:1025 - [batch pdf 9] 14/23
+2026-09-29 00:08:14.448 | WARNING  | __main__:run_batch_with_resume:1156 - [batch pdf] 6 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 10, 0 of 3 stalled passes used)
+2026-09-29 00:08:14.453 | WARNING  | __main__:recycle:730 - [word] recycling (restart 9)
+2026-09-29 00:08:26.850 | INFO     | __main__:_loop:1025 - [batch pdf 10] 0/6
+2026-09-29 00:08:33.422 | WARNING  | __main__:run_batch_with_resume:1156 - [batch pdf] 3 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 11, 0 of 3 stalled passes used)
+2026-09-29 00:08:33.429 | WARNING  | __main__:recycle:730 - [word] recycling (restart 10)
+2026-09-29 00:08:42.643 | INFO     | __main__:_loop:1025 - [batch pdf 11] 0/3
+2026-09-29 00:08:48.387 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: 4cb34c212d.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-09-29 00:08:48.396 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: 9494f2e92a.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-09-29 00:08:48.398 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: a97bb9b57f.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-09-29 00:08:48.400 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: bc6f8076f9.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-09-29 00:08:48.401 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: c0cedbcb4c.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-09-29 00:08:48.402 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: c323b1ce8e.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-09-29 00:08:48.404 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: e97f1c7c8f.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-09-29 00:08:48.406 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: e9e7b29b93.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-09-29 00:08:48.407 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: ebe3e5ca03.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)

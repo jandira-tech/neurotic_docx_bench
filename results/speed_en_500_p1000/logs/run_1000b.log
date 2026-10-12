@@ -1,0 +1,15 @@
+redline_speed_bench: 1000 planned pairs from results/speed_en_500_p1000/pairs.csv
+  unique fixtures: 500 (target 1000)
+  loaded 69.8 MiB in 105.081ms
+  pairs=1000 (min=5000, seed=42, rounds≈1)
+  methods=docxodus-csharp-inproc, jubarte-python warmup=20 reps=1 profile=false
+  jubarte-dist=/Users/arthrod/temp/T/neurotic_docx_bench/dist/jubarte-final
+  rust-dist=/Users/arthrod/temp/T/neurotic_docx_bench/src/neurotic_docx_bench/utils/jubarte/jubarte-rust
+  csharp-dist=/Users/arthrod/temp/T/neurotic_docx_bench/src/neurotic_docx_bench/utils/docxodus/docxodus-csharp
+  csharp-inproc-dist=/Users/arthrod/temp/T/speed_bins/docxodus-959b4741/inproc
+  rust-inproc-dist=/Users/arthrod/temp/T/speed_bins/jubarte-099510fac2
+  wasm-dist=/Users/arthrod/temp/T/speed_bins/jubarte-099510fac2
+  python-dist=/Users/arthrod/temp/T/speed_bins/jubarte-099510fac2/py
+  out=/Users/arthrod/temp/T/neurotic_docx_bench/results/speed_en_500_p1000/run_1000b
+
+  machine docxodus-csharp-inproc: waiting (cpu mean 32.6% > 25%); top: Microsoft Word 190.1% 1269M, duetexpertd 93.9% 168M, WindowServer 36.5% 401M, System Events 11.4% 48M

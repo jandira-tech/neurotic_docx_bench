@@ -1,0 +1,10 @@
+warning: no Word PDF for 
+corpus/word/tracking_without_comments/docx/82348eef4b_multi_section__vs__0b2a464
+81b_nested_table_rowspan_redline_b1b752d8e6.docx; skipped
+281 fixtures, 281 to convert with soffice
+FAILED tracking_without_comments__8e534b49f0_00a9b37342f07e6b9bd5b8fffbe4dd777d31053171e69da2__vs__2e04202552_000e3e7bd2d6215fc7b469cc3e296c1b2a510bc1abc7e0fd_redline_aeff6a9631: soffice killed by signal 6: Unspecified Application Error | Fatal exception: Signal 6
+FAILED tracking_without_comments__8e534b49f0_00a9b37342f07e6b9bd5b8fffbe4dd777d31053171e69da2__vs__342f364d46_001342333d45627868f4dc5282abbba4598a91b4a7584b08_redline_510bcf9432: soffice killed by signal 6: Unspecified Application Error | Fatal exception: Signal 6
+[100/281] failed 2 elapsed 39s eta 70s
+[200/281] failed 2 elapsed 75s eta 31s
+[281/281] failed 2 elapsed 105s eta 0s
+done: 5277 PDFs in results/soffice_26.8.0.3_work/candidate, 2 failed

@@ -1,0 +1,10 @@
+2026-09-28 22:51:41.055 | INFO     | __main__:preflight:1725 - [word] preflight: open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-09-28 22:51:41.089 | INFO     | __main__:convert_folder:1401 - [word] export: one_osascript=True documents=100 accept_all=True
+2026-09-28 22:51:41.344 | INFO     | __main__:_convert_batched:1598 - [batch] one osascript for 96 document(s)
+2026-09-28 22:51:46.367 | INFO     | __main__:_loop:1017 - [batch pdf 1] 0/96
+2026-09-28 22:52:00.245 | WARNING  | __main__:run_batch_with_resume:1139 - [batch pdf] 96 item(s) never reached (Word crashed on an item); recycling Word and retrying (pass 2, 0 of 3 non-crash passes used)
+2026-09-28 22:52:00.245 | WARNING  | __main__:recycle:718 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-09-28 22:52:00.246 | WARNING  | __main__:recycle:724 - [word] recycling (restart 1)
+2026-09-28 22:52:08.325 | INFO     | __main__:_loop:1017 - [batch pdf 2] 6/96
+2026-09-28 22:52:13.342 | INFO     | __main__:_loop:1017 - [batch pdf 2] 12/96
+2026-09-28 22:52:18.363 | INFO     | __main__:_loop:1017 - [batch pdf 2] 19/96

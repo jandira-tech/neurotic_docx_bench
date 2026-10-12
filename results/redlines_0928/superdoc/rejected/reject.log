@@ -1,0 +1,4 @@
+2026-09-29 00:36:11.315 | INFO     | __main__:preflight:1762 - [word] preflight: open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-09-29 00:36:11.341 | INFO     | __main__:convert_folder:1436 - [word] export: one_osascript=True documents=8 accept_all=False reject_all=True
+2026-09-29 00:36:11.350 | INFO     | __main__:_convert_batched:1635 - [batch] one osascript for 8 document(s)
+2026-09-29 00:36:16.371 | INFO     | __main__:_loop:1025 - [batch pdf 1] 6/8

@@ -42,7 +42,9 @@ RESULTS_FILES = ("bench.jsonl", "converters.jsonl", "docsets.json")
 RESULTS_DIRS = ("detail", "archive", "docx_to_pdf_speed")
 PAGE_FILES = ("RESULTS.md", "RESULTS_DETAILED.md", "bench.registry.yaml")
 _SKIP_SUFFIXES = {".lock", ".log"}
-_SKIP_NAMES = {".DS_Store"}
+_SKIP_NAMES = {".DS_Store", ".gitattributes"}  # the hub writes its own .gitattributes
+# snapshot_download(local_dir=...) keeps its bookkeeping under <local_dir>/.cache/huggingface/
+_SKIP_DIRS = {".cache"}
 _CHUNK = 1 << 20
 
 
@@ -138,6 +140,7 @@ def iter_files(root: Path, *, exclude: Iterable[str] = ()) -> list[Path]:
         for p in root.rglob("*")
         if p.is_file()
         and not _is_noise(p)
+        and p.relative_to(root).parts[0] not in _SKIP_DIRS
         and p.relative_to(root).as_posix() not in skip
     ]
     return sorted(out, key=lambda p: p.relative_to(root).as_posix())

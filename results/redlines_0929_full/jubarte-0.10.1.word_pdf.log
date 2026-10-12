@@ -1,0 +1,6091 @@
+2026-10-01 12:38:42.755 | INFO     | __main__:preflight:1812 - [word] preflight: open_documents=0 started_clean=True launched_by_us=False close_documents=False
+2026-10-01 12:38:42.798 | INFO     | __main__:convert_folder:1486 - [word] export: one_osascript=True documents=2611 accept_all=False reject_all=False
+2026-10-01 12:38:46.340 | INFO     | __main__:_convert_batched:1685 - [batch] one osascript for 2611 document(s)
+2026-10-01 12:38:51.368 | INFO     | __main__:_loop:1067 - [batch pdf 1] 5/2611
+2026-10-01 12:38:56.391 | INFO     | __main__:_loop:1067 - [batch pdf 1] 12/2611
+2026-10-01 12:39:01.420 | INFO     | __main__:_loop:1067 - [batch pdf 1] 18/2611
+2026-10-01 12:39:06.452 | INFO     | __main__:_loop:1067 - [batch pdf 1] 25/2611
+2026-10-01 12:39:11.471 | INFO     | __main__:_loop:1067 - [batch pdf 1] 29/2611
+2026-10-01 12:39:16.501 | INFO     | __main__:_loop:1067 - [batch pdf 1] 34/2611
+2026-10-01 12:39:21.522 | INFO     | __main__:_loop:1067 - [batch pdf 1] 36/2611
+2026-10-01 12:39:26.546 | INFO     | __main__:_loop:1067 - [batch pdf 1] 42/2611
+2026-10-01 12:39:31.578 | INFO     | __main__:_loop:1067 - [batch pdf 1] 47/2611
+2026-10-01 12:39:36.604 | INFO     | __main__:_loop:1067 - [batch pdf 1] 49/2611
+2026-10-01 12:39:41.629 | INFO     | __main__:_loop:1067 - [batch pdf 1] 52/2611
+2026-10-01 12:39:46.653 | INFO     | __main__:_loop:1067 - [batch pdf 1] 56/2611
+2026-10-01 12:39:51.674 | INFO     | __main__:_loop:1067 - [batch pdf 1] 61/2611
+2026-10-01 12:39:56.705 | INFO     | __main__:_loop:1067 - [batch pdf 1] 67/2611
+2026-10-01 12:40:01.726 | INFO     | __main__:_loop:1067 - [batch pdf 1] 74/2611
+2026-10-01 12:40:06.750 | INFO     | __main__:_loop:1067 - [batch pdf 1] 78/2611
+2026-10-01 12:40:11.776 | INFO     | __main__:_loop:1067 - [batch pdf 1] 84/2611
+2026-10-01 12:40:16.800 | INFO     | __main__:_loop:1067 - [batch pdf 1] 89/2611
+2026-10-01 12:40:21.829 | INFO     | __main__:_loop:1067 - [batch pdf 1] 90/2611
+2026-10-01 12:40:26.845 | INFO     | __main__:_loop:1067 - [batch pdf 1] 97/2611
+2026-10-01 12:40:31.865 | INFO     | __main__:_loop:1067 - [batch pdf 1] 102/2611
+2026-10-01 12:40:36.893 | INFO     | __main__:_loop:1067 - [batch pdf 1] 107/2611
+2026-10-01 12:40:41.917 | INFO     | __main__:_loop:1067 - [batch pdf 1] 113/2611
+2026-10-01 12:40:46.955 | INFO     | __main__:_loop:1067 - [batch pdf 1] 118/2611
+2026-10-01 12:40:51.977 | INFO     | __main__:_loop:1067 - [batch pdf 1] 123/2611
+2026-10-01 12:40:57.010 | INFO     | __main__:_loop:1067 - [batch pdf 1] 127/2611
+2026-10-01 12:41:02.030 | INFO     | __main__:_loop:1067 - [batch pdf 1] 131/2611
+2026-10-01 12:41:07.052 | INFO     | __main__:_loop:1067 - [batch pdf 1] 135/2611
+2026-10-01 12:41:12.071 | INFO     | __main__:_loop:1067 - [batch pdf 1] 139/2611
+2026-10-01 12:41:17.092 | INFO     | __main__:_loop:1067 - [batch pdf 1] 145/2611
+2026-10-01 12:41:22.116 | INFO     | __main__:_loop:1067 - [batch pdf 1] 151/2611
+2026-10-01 12:41:27.139 | INFO     | __main__:_loop:1067 - [batch pdf 1] 156/2611
+2026-10-01 12:41:32.166 | INFO     | __main__:_loop:1067 - [batch pdf 1] 162/2611
+2026-10-01 12:41:37.183 | INFO     | __main__:_loop:1067 - [batch pdf 1] 168/2611
+2026-10-01 12:41:42.217 | INFO     | __main__:_loop:1067 - [batch pdf 1] 172/2611
+2026-10-01 12:41:47.241 | INFO     | __main__:_loop:1067 - [batch pdf 1] 178/2611
+2026-10-01 12:41:52.265 | INFO     | __main__:_loop:1067 - [batch pdf 1] 182/2611
+2026-10-01 12:41:57.290 | INFO     | __main__:_loop:1067 - [batch pdf 1] 187/2611
+2026-10-01 12:42:02.311 | INFO     | __main__:_loop:1067 - [batch pdf 1] 193/2611
+2026-10-01 12:42:12.349 | INFO     | __main__:_loop:1067 - [batch pdf 1] 198/2611
+2026-10-01 12:42:17.385 | INFO     | __main__:_loop:1067 - [batch pdf 1] 203/2611
+2026-10-01 12:42:22.408 | INFO     | __main__:_loop:1067 - [batch pdf 1] 208/2611
+2026-10-01 12:42:27.430 | INFO     | __main__:_loop:1067 - [batch pdf 1] 213/2611
+2026-10-01 12:42:32.455 | INFO     | __main__:_loop:1067 - [batch pdf 1] 219/2611
+2026-10-01 12:42:37.489 | INFO     | __main__:_loop:1067 - [batch pdf 1] 224/2611
+2026-10-01 12:42:42.515 | INFO     | __main__:_loop:1067 - [batch pdf 1] 230/2611
+2026-10-01 12:42:47.532 | INFO     | __main__:_loop:1067 - [batch pdf 1] 235/2611
+2026-10-01 12:42:52.556 | INFO     | __main__:_loop:1067 - [batch pdf 1] 240/2611
+2026-10-01 12:42:57.577 | INFO     | __main__:_loop:1067 - [batch pdf 1] 244/2611
+2026-10-01 12:43:02.603 | INFO     | __main__:_loop:1067 - [batch pdf 1] 249/2611
+2026-10-01 12:43:07.626 | INFO     | __main__:_loop:1067 - [batch pdf 1] 253/2611
+2026-10-01 12:43:12.646 | INFO     | __main__:_loop:1067 - [batch pdf 1] 256/2611
+2026-10-01 12:43:17.671 | INFO     | __main__:_loop:1067 - [batch pdf 1] 259/2611
+2026-10-01 12:43:22.691 | INFO     | __main__:_loop:1067 - [batch pdf 1] 262/2611
+2026-10-01 12:43:27.709 | INFO     | __main__:_loop:1067 - [batch pdf 1] 266/2611
+2026-10-01 12:43:34.520 | INFO     | __main__:_note_buttons:510 - [watchdog] Microsoft Word shows button 'No'
+2026-10-01 12:43:34.522 | INFO     | __main__:_note_buttons:510 - [watchdog] Microsoft Word shows button 'Yes'
+2026-10-01 12:43:40.858 | WARNING  | __main__:_loop_word:540 - [watchdog] Word dialog dismissed via 'No'
+2026-10-01 12:43:45.586 | INFO     | __main__:_note_buttons:510 - [watchdog] Microsoft Word shows button 'OK'
+2026-10-01 12:43:46.520 | WARNING  | __main__:_loop_word:540 - [watchdog] Word dialog dismissed via 'OK'
+2026-10-01 12:43:47.754 | INFO     | __main__:_loop:1067 - [batch pdf 1] 267/2611
+2026-10-01 12:43:52.782 | INFO     | __main__:_loop:1067 - [batch pdf 1] 271/2611
+2026-10-01 12:43:57.804 | INFO     | __main__:_loop:1067 - [batch pdf 1] 275/2611
+2026-10-01 12:44:02.844 | INFO     | __main__:_loop:1067 - [batch pdf 1] 278/2611
+2026-10-01 12:44:07.864 | INFO     | __main__:_loop:1067 - [batch pdf 1] 282/2611
+2026-10-01 12:44:12.882 | INFO     | __main__:_loop:1067 - [batch pdf 1] 286/2611
+2026-10-01 12:44:17.906 | INFO     | __main__:_loop:1067 - [batch pdf 1] 289/2611
+2026-10-01 12:44:22.928 | INFO     | __main__:_loop:1067 - [batch pdf 1] 293/2611
+2026-10-01 12:44:27.949 | INFO     | __main__:_loop:1067 - [batch pdf 1] 297/2611
+2026-10-01 12:44:32.974 | INFO     | __main__:_loop:1067 - [batch pdf 1] 301/2611
+2026-10-01 12:44:38.007 | INFO     | __main__:_loop:1067 - [batch pdf 1] 305/2611
+2026-10-01 12:44:43.029 | INFO     | __main__:_loop:1067 - [batch pdf 1] 309/2611
+2026-10-01 12:45:03.097 | INFO     | __main__:_loop:1067 - [batch pdf 1] 311/2611
+2026-10-01 12:45:08.128 | INFO     | __main__:_loop:1067 - [batch pdf 1] 314/2611
+2026-10-01 12:45:13.151 | INFO     | __main__:_loop:1067 - [batch pdf 1] 317/2611
+2026-10-01 12:45:18.170 | INFO     | __main__:_loop:1067 - [batch pdf 1] 321/2611
+2026-10-01 12:45:23.188 | INFO     | __main__:_loop:1067 - [batch pdf 1] 325/2611
+2026-10-01 12:45:28.210 | INFO     | __main__:_loop:1067 - [batch pdf 1] 329/2611
+2026-10-01 12:45:33.229 | INFO     | __main__:_loop:1067 - [batch pdf 1] 330/2611
+2026-10-01 12:45:38.259 | INFO     | __main__:_loop:1067 - [batch pdf 1] 334/2611
+2026-10-01 12:45:43.279 | INFO     | __main__:_loop:1067 - [batch pdf 1] 337/2611
+2026-10-01 12:45:48.298 | INFO     | __main__:_loop:1067 - [batch pdf 1] 341/2611
+2026-10-01 12:45:53.326 | INFO     | __main__:_loop:1067 - [batch pdf 1] 344/2611
+2026-10-01 12:45:58.351 | INFO     | __main__:_loop:1067 - [batch pdf 1] 348/2611
+2026-10-01 12:46:03.375 | INFO     | __main__:_loop:1067 - [batch pdf 1] 352/2611
+2026-10-01 12:46:08.394 | INFO     | __main__:_loop:1067 - [batch pdf 1] 355/2611
+2026-10-01 12:46:13.418 | INFO     | __main__:_loop:1067 - [batch pdf 1] 359/2611
+2026-10-01 12:46:18.442 | INFO     | __main__:_loop:1067 - [batch pdf 1] 361/2611
+2026-10-01 12:46:23.463 | INFO     | __main__:_loop:1067 - [batch pdf 1] 365/2611
+2026-10-01 12:46:28.490 | INFO     | __main__:_loop:1067 - [batch pdf 1] 369/2611
+2026-10-01 12:46:33.513 | INFO     | __main__:_loop:1067 - [batch pdf 1] 374/2611
+2026-10-01 12:46:38.546 | INFO     | __main__:_loop:1067 - [batch pdf 1] 376/2611
+2026-10-01 12:46:58.614 | INFO     | __main__:_loop:1067 - [batch pdf 1] 378/2611
+2026-10-01 12:47:03.637 | INFO     | __main__:_loop:1067 - [batch pdf 1] 381/2611
+2026-10-01 12:47:08.656 | INFO     | __main__:_loop:1067 - [batch pdf 1] 384/2611
+2026-10-01 12:47:18.707 | INFO     | __main__:_loop:1067 - [batch pdf 1] 385/2611
+2026-10-01 12:47:23.725 | INFO     | __main__:_loop:1067 - [batch pdf 1] 389/2611
+2026-10-01 12:47:28.750 | INFO     | __main__:_loop:1067 - [batch pdf 1] 393/2611
+2026-10-01 12:47:33.770 | INFO     | __main__:_loop:1067 - [batch pdf 1] 398/2611
+2026-10-01 12:47:38.798 | INFO     | __main__:_loop:1067 - [batch pdf 1] 401/2611
+2026-10-01 12:47:43.822 | INFO     | __main__:_loop:1067 - [batch pdf 1] 405/2611
+2026-10-01 12:47:48.854 | INFO     | __main__:_loop:1067 - [batch pdf 1] 409/2611
+2026-10-01 12:47:53.877 | INFO     | __main__:_loop:1067 - [batch pdf 1] 413/2611
+2026-10-01 12:47:58.893 | INFO     | __main__:_loop:1067 - [batch pdf 1] 418/2611
+2026-10-01 12:48:03.916 | INFO     | __main__:_loop:1067 - [batch pdf 1] 422/2611
+2026-10-01 12:48:08.942 | INFO     | __main__:_loop:1067 - [batch pdf 1] 426/2611
+2026-10-01 12:48:13.970 | INFO     | __main__:_loop:1067 - [batch pdf 1] 430/2611
+2026-10-01 12:48:19.002 | INFO     | __main__:_loop:1067 - [batch pdf 1] 434/2611
+2026-10-01 12:48:24.024 | INFO     | __main__:_loop:1067 - [batch pdf 1] 438/2611
+2026-10-01 12:48:29.052 | INFO     | __main__:_loop:1067 - [batch pdf 1] 441/2611
+2026-10-01 12:48:34.089 | INFO     | __main__:_loop:1067 - [batch pdf 1] 445/2611
+2026-10-01 12:48:39.115 | INFO     | __main__:_loop:1067 - [batch pdf 1] 449/2611
+2026-10-01 12:48:44.141 | INFO     | __main__:_loop:1067 - [batch pdf 1] 453/2611
+2026-10-01 12:48:49.168 | INFO     | __main__:_loop:1067 - [batch pdf 1] 457/2611
+2026-10-01 12:48:54.188 | INFO     | __main__:_loop:1067 - [batch pdf 1] 461/2611
+2026-10-01 12:48:59.207 | INFO     | __main__:_loop:1067 - [batch pdf 1] 464/2611
+2026-10-01 12:49:04.226 | INFO     | __main__:_loop:1067 - [batch pdf 1] 468/2611
+2026-10-01 12:49:09.252 | INFO     | __main__:_loop:1067 - [batch pdf 1] 472/2611
+2026-10-01 12:49:14.276 | INFO     | __main__:_loop:1067 - [batch pdf 1] 476/2611
+2026-10-01 12:49:19.299 | INFO     | __main__:_loop:1067 - [batch pdf 1] 479/2611
+2026-10-01 12:49:24.320 | INFO     | __main__:_loop:1067 - [batch pdf 1] 483/2611
+2026-10-01 12:49:44.357 | INFO     | __main__:_loop:1067 - [batch pdf 1] 484/2611
+2026-10-01 12:49:49.384 | INFO     | __main__:_loop:1067 - [batch pdf 1] 488/2611
+2026-10-01 12:49:54.400 | INFO     | __main__:_loop:1067 - [batch pdf 1] 491/2611
+2026-10-01 12:49:59.425 | INFO     | __main__:_loop:1067 - [batch pdf 1] 495/2611
+2026-10-01 12:50:04.455 | INFO     | __main__:_loop:1067 - [batch pdf 1] 499/2611
+2026-10-01 12:50:09.476 | INFO     | __main__:_loop:1067 - [batch pdf 1] 503/2611
+2026-10-01 12:50:14.503 | INFO     | __main__:_loop:1067 - [batch pdf 1] 507/2611
+2026-10-01 12:50:19.525 | INFO     | __main__:_loop:1067 - [batch pdf 1] 510/2611
+2026-10-01 12:50:24.548 | INFO     | __main__:_loop:1067 - [batch pdf 1] 513/2611
+2026-10-01 12:50:29.580 | INFO     | __main__:_loop:1067 - [batch pdf 1] 517/2611
+2026-10-01 12:50:34.603 | INFO     | __main__:_loop:1067 - [batch pdf 1] 520/2611
+2026-10-01 12:50:39.635 | INFO     | __main__:_loop:1067 - [batch pdf 1] 524/2611
+2026-10-01 12:50:44.660 | INFO     | __main__:_loop:1067 - [batch pdf 1] 526/2611
+2026-10-01 12:50:49.683 | INFO     | __main__:_loop:1067 - [batch pdf 1] 529/2611
+2026-10-01 12:50:54.712 | INFO     | __main__:_loop:1067 - [batch pdf 1] 533/2611
+2026-10-01 12:50:59.743 | INFO     | __main__:_loop:1067 - [batch pdf 1] 536/2611
+2026-10-01 12:51:04.765 | INFO     | __main__:_loop:1067 - [batch pdf 1] 539/2611
+2026-10-01 12:51:09.795 | INFO     | __main__:_loop:1067 - [batch pdf 1] 542/2611
+2026-10-01 12:51:14.834 | INFO     | __main__:_loop:1067 - [batch pdf 1] 545/2611
+2026-10-01 12:51:19.860 | INFO     | __main__:_loop:1067 - [batch pdf 1] 549/2611
+2026-10-01 12:51:24.886 | INFO     | __main__:_loop:1067 - [batch pdf 1] 553/2611
+2026-10-01 12:51:29.907 | INFO     | __main__:_loop:1067 - [batch pdf 1] 557/2611
+2026-10-01 12:51:34.932 | INFO     | __main__:_loop:1067 - [batch pdf 1] 561/2611
+2026-10-01 12:51:39.954 | INFO     | __main__:_loop:1067 - [batch pdf 1] 565/2611
+2026-10-01 12:51:44.986 | INFO     | __main__:_loop:1067 - [batch pdf 1] 568/2611
+2026-10-01 12:51:50.011 | INFO     | __main__:_loop:1067 - [batch pdf 1] 572/2611
+2026-10-01 12:51:55.037 | INFO     | __main__:_loop:1067 - [batch pdf 1] 574/2611
+2026-10-01 12:52:00.091 | INFO     | __main__:_loop:1067 - [batch pdf 1] 577/2611
+2026-10-01 12:52:05.115 | INFO     | __main__:_loop:1067 - [batch pdf 1] 579/2611
+2026-10-01 12:52:10.137 | INFO     | __main__:_loop:1067 - [batch pdf 1] 582/2611
+2026-10-01 12:52:15.162 | INFO     | __main__:_loop:1067 - [batch pdf 1] 585/2611
+2026-10-01 12:52:20.191 | INFO     | __main__:_loop:1067 - [batch pdf 1] 587/2611
+2026-10-01 12:52:25.218 | INFO     | __main__:_loop:1067 - [batch pdf 1] 590/2611
+2026-10-01 12:52:30.241 | INFO     | __main__:_loop:1067 - [batch pdf 1] 592/2611
+2026-10-01 12:52:35.259 | INFO     | __main__:_loop:1067 - [batch pdf 1] 595/2611
+2026-10-01 12:52:40.286 | INFO     | __main__:_loop:1067 - [batch pdf 1] 598/2611
+2026-10-01 12:52:45.863 | INFO     | __main__:_loop:1067 - [batch pdf 1] 600/2611
+2026-10-01 12:52:56.789 | INFO     | __main__:_loop:1067 - [batch pdf 1] 602/2611
+2026-10-01 12:53:01.867 | INFO     | __main__:_loop:1067 - [batch pdf 1] 603/2611
+2026-10-01 12:53:07.010 | INFO     | __main__:_loop:1067 - [batch pdf 1] 604/2611
+2026-10-01 12:53:12.135 | INFO     | __main__:_loop:1067 - [batch pdf 1] 606/2611
+2026-10-01 12:53:17.255 | INFO     | __main__:_loop:1067 - [batch pdf 1] 607/2611
+2026-10-01 12:53:22.462 | INFO     | __main__:_loop:1067 - [batch pdf 1] 608/2611
+2026-10-01 12:53:27.768 | INFO     | __main__:_loop:1067 - [batch pdf 1] 609/2611
+2026-10-01 12:53:32.930 | INFO     | __main__:_loop:1067 - [batch pdf 1] 610/2611
+2026-10-01 12:53:38.056 | INFO     | __main__:_loop:1067 - [batch pdf 1] 611/2611
+2026-10-01 12:53:43.173 | INFO     | __main__:_loop:1067 - [batch pdf 1] 612/2611
+2026-10-01 12:53:48.377 | INFO     | __main__:_loop:1067 - [batch pdf 1] 613/2611
+2026-10-01 12:53:53.499 | INFO     | __main__:_loop:1067 - [batch pdf 1] 614/2611
+2026-10-01 12:53:58.602 | INFO     | __main__:_loop:1067 - [batch pdf 1] 615/2611
+2026-10-01 12:54:03.664 | INFO     | __main__:_loop:1067 - [batch pdf 1] 616/2611
+2026-10-01 12:54:08.779 | INFO     | __main__:_loop:1067 - [batch pdf 1] 617/2611
+2026-10-01 12:54:13.888 | INFO     | __main__:_loop:1067 - [batch pdf 1] 618/2611
+2026-10-01 12:54:18.976 | INFO     | __main__:_loop:1067 - [batch pdf 1] 620/2611
+2026-10-01 12:54:24.199 | INFO     | __main__:_loop:1067 - [batch pdf 1] 621/2611
+2026-10-01 12:54:29.295 | INFO     | __main__:_loop:1067 - [batch pdf 1] 622/2611
+2026-10-01 12:54:34.524 | INFO     | __main__:_loop:1067 - [batch pdf 1] 623/2611
+2026-10-01 12:54:39.633 | INFO     | __main__:_loop:1067 - [batch pdf 1] 625/2611
+2026-10-01 12:54:44.745 | INFO     | __main__:_loop:1067 - [batch pdf 1] 626/2611
+2026-10-01 12:54:49.787 | INFO     | __main__:_loop:1067 - [batch pdf 1] 627/2611
+2026-10-01 12:54:54.842 | INFO     | __main__:_loop:1067 - [batch pdf 1] 628/2611
+2026-10-01 12:54:59.944 | INFO     | __main__:_loop:1067 - [batch pdf 1] 629/2611
+2026-10-01 12:55:05.010 | INFO     | __main__:_loop:1067 - [batch pdf 1] 630/2611
+2026-10-01 12:55:10.161 | INFO     | __main__:_loop:1067 - [batch pdf 1] 631/2611
+2026-10-01 12:55:15.337 | INFO     | __main__:_loop:1067 - [batch pdf 1] 632/2611
+2026-10-01 12:55:20.429 | INFO     | __main__:_loop:1067 - [batch pdf 1] 633/2611
+2026-10-01 12:55:25.491 | INFO     | __main__:_loop:1067 - [batch pdf 1] 635/2611
+2026-10-01 12:55:30.539 | INFO     | __main__:_loop:1067 - [batch pdf 1] 637/2611
+2026-10-01 12:55:35.578 | INFO     | __main__:_loop:1067 - [batch pdf 1] 639/2611
+2026-10-01 12:55:40.601 | INFO     | __main__:_loop:1067 - [batch pdf 1] 641/2611
+2026-10-01 12:55:45.622 | INFO     | __main__:_loop:1067 - [batch pdf 1] 644/2611
+2026-10-01 12:55:50.643 | INFO     | __main__:_loop:1067 - [batch pdf 1] 647/2611
+2026-10-01 12:55:55.670 | INFO     | __main__:_loop:1067 - [batch pdf 1] 649/2611
+2026-10-01 12:56:00.695 | INFO     | __main__:_loop:1067 - [batch pdf 1] 652/2611
+2026-10-01 12:56:05.718 | INFO     | __main__:_loop:1067 - [batch pdf 1] 655/2611
+2026-10-01 12:56:10.741 | INFO     | __main__:_loop:1067 - [batch pdf 1] 658/2611
+2026-10-01 12:56:15.766 | INFO     | __main__:_loop:1067 - [batch pdf 1] 660/2611
+2026-10-01 12:56:20.793 | INFO     | __main__:_loop:1067 - [batch pdf 1] 663/2611
+2026-10-01 12:56:25.812 | INFO     | __main__:_loop:1067 - [batch pdf 1] 665/2611
+2026-10-01 12:56:30.833 | INFO     | __main__:_loop:1067 - [batch pdf 1] 668/2611
+2026-10-01 12:56:35.852 | INFO     | __main__:_loop:1067 - [batch pdf 1] 671/2611
+2026-10-01 12:56:40.872 | INFO     | __main__:_loop:1067 - [batch pdf 1] 673/2611
+2026-10-01 12:56:45.899 | INFO     | __main__:_loop:1067 - [batch pdf 1] 675/2611
+2026-10-01 12:56:50.930 | INFO     | __main__:_loop:1067 - [batch pdf 1] 677/2611
+2026-10-01 12:56:55.953 | INFO     | __main__:_loop:1067 - [batch pdf 1] 679/2611
+2026-10-01 12:57:00.979 | INFO     | __main__:_loop:1067 - [batch pdf 1] 682/2611
+2026-10-01 12:57:05.998 | INFO     | __main__:_loop:1067 - [batch pdf 1] 684/2611
+2026-10-01 12:57:11.016 | INFO     | __main__:_loop:1067 - [batch pdf 1] 686/2611
+2026-10-01 12:57:16.039 | INFO     | __main__:_loop:1067 - [batch pdf 1] 688/2611
+2026-10-01 12:57:21.060 | INFO     | __main__:_loop:1067 - [batch pdf 1] 690/2611
+2026-10-01 12:57:26.080 | INFO     | __main__:_loop:1067 - [batch pdf 1] 693/2611
+2026-10-01 12:57:31.099 | INFO     | __main__:_loop:1067 - [batch pdf 1] 695/2611
+2026-10-01 12:57:36.123 | INFO     | __main__:_loop:1067 - [batch pdf 1] 698/2611
+2026-10-01 12:57:41.145 | INFO     | __main__:_loop:1067 - [batch pdf 1] 701/2611
+2026-10-01 12:57:46.165 | INFO     | __main__:_loop:1067 - [batch pdf 1] 703/2611
+2026-10-01 12:57:51.185 | INFO     | __main__:_loop:1067 - [batch pdf 1] 706/2611
+2026-10-01 12:57:56.235 | INFO     | __main__:_loop:1067 - [batch pdf 1] 708/2611
+2026-10-01 12:58:01.264 | INFO     | __main__:_loop:1067 - [batch pdf 1] 710/2611
+2026-10-01 12:58:06.284 | INFO     | __main__:_loop:1067 - [batch pdf 1] 712/2611
+2026-10-01 12:58:11.512 | INFO     | __main__:_loop:1067 - [batch pdf 1] 714/2611
+2026-10-01 12:58:16.719 | INFO     | __main__:_loop:1067 - [batch pdf 1] 715/2611
+2026-10-01 12:58:21.744 | INFO     | __main__:_loop:1067 - [batch pdf 1] 716/2611
+2026-10-01 12:58:26.849 | INFO     | __main__:_loop:1067 - [batch pdf 1] 718/2611
+2026-10-01 12:58:31.977 | INFO     | __main__:_loop:1067 - [batch pdf 1] 719/2611
+2026-10-01 12:58:37.038 | INFO     | __main__:_loop:1067 - [batch pdf 1] 721/2611
+2026-10-01 12:58:42.145 | INFO     | __main__:_loop:1067 - [batch pdf 1] 722/2611
+2026-10-01 12:58:47.235 | INFO     | __main__:_loop:1067 - [batch pdf 1] 723/2611
+2026-10-01 12:58:52.271 | INFO     | __main__:_loop:1067 - [batch pdf 1] 725/2611
+2026-10-01 12:58:57.300 | INFO     | __main__:_loop:1067 - [batch pdf 1] 726/2611
+2026-10-01 12:59:02.349 | INFO     | __main__:_loop:1067 - [batch pdf 1] 727/2611
+2026-10-01 12:59:07.387 | INFO     | __main__:_loop:1067 - [batch pdf 1] 729/2611
+2026-10-01 12:59:12.542 | INFO     | __main__:_loop:1067 - [batch pdf 1] 730/2611
+2026-10-01 12:59:17.767 | INFO     | __main__:_loop:1067 - [batch pdf 1] 731/2611
+2026-10-01 12:59:27.993 | INFO     | __main__:_loop:1067 - [batch pdf 1] 732/2611
+2026-10-01 12:59:33.027 | INFO     | __main__:_loop:1067 - [batch pdf 1] 733/2611
+2026-10-01 12:59:38.077 | INFO     | __main__:_loop:1067 - [batch pdf 1] 734/2611
+2026-10-01 12:59:43.132 | INFO     | __main__:_loop:1067 - [batch pdf 1] 735/2611
+2026-10-01 13:00:08.745 | INFO     | __main__:_loop:1067 - [batch pdf 1] 736/2611
+2026-10-01 13:00:13.848 | INFO     | __main__:_loop:1067 - [batch pdf 1] 737/2611
+2026-10-01 13:00:18.909 | INFO     | __main__:_loop:1067 - [batch pdf 1] 738/2611
+2026-10-01 13:00:24.095 | INFO     | __main__:_loop:1067 - [batch pdf 1] 739/2611
+2026-10-01 13:00:29.232 | INFO     | __main__:_loop:1067 - [batch pdf 1] 740/2611
+2026-10-01 13:00:34.355 | INFO     | __main__:_loop:1067 - [batch pdf 1] 741/2611
+2026-10-01 13:00:59.797 | INFO     | __main__:_loop:1067 - [batch pdf 1] 743/2611
+2026-10-01 13:01:04.965 | INFO     | __main__:_loop:1067 - [batch pdf 1] 744/2611
+2026-10-01 13:01:10.149 | INFO     | __main__:_loop:1067 - [batch pdf 1] 745/2611
+2026-10-01 13:01:15.214 | INFO     | __main__:_loop:1067 - [batch pdf 1] 746/2611
+2026-10-01 13:01:20.268 | INFO     | __main__:_loop:1067 - [batch pdf 1] 748/2611
+2026-10-01 13:01:25.403 | INFO     | __main__:_loop:1067 - [batch pdf 1] 749/2611
+2026-10-01 13:01:30.492 | INFO     | __main__:_loop:1067 - [batch pdf 1] 750/2611
+2026-10-01 13:01:55.631 | INFO     | __main__:_loop:1067 - [batch pdf 1] 752/2611
+2026-10-01 13:02:00.820 | INFO     | __main__:_loop:1067 - [batch pdf 1] 753/2611
+2026-10-01 13:02:05.989 | INFO     | __main__:_loop:1067 - [batch pdf 1] 754/2611
+2026-10-01 13:02:11.073 | INFO     | __main__:_loop:1067 - [batch pdf 1] 755/2611
+2026-10-01 13:02:16.129 | INFO     | __main__:_loop:1067 - [batch pdf 1] 756/2611
+2026-10-01 13:02:21.313 | INFO     | __main__:_loop:1067 - [batch pdf 1] 757/2611
+2026-10-01 13:02:26.638 | INFO     | __main__:_loop:1067 - [batch pdf 1] 758/2611
+2026-10-01 13:02:31.704 | INFO     | __main__:_loop:1067 - [batch pdf 1] 759/2611
+2026-10-01 13:02:36.735 | INFO     | __main__:_loop:1067 - [batch pdf 1] 761/2611
+2026-10-01 13:02:41.813 | INFO     | __main__:_loop:1067 - [batch pdf 1] 762/2611
+2026-10-01 13:02:46.907 | INFO     | __main__:_loop:1067 - [batch pdf 1] 763/2611
+2026-10-01 13:02:52.028 | INFO     | __main__:_loop:1067 - [batch pdf 1] 764/2611
+2026-10-01 13:02:57.111 | INFO     | __main__:_loop:1067 - [batch pdf 1] 766/2611
+2026-10-01 13:03:02.574 | INFO     | __main__:_loop:1067 - [batch pdf 1] 767/2611
+2026-10-01 13:03:07.679 | INFO     | __main__:_loop:1067 - [batch pdf 1] 768/2611
+2026-10-01 13:03:12.785 | INFO     | __main__:_loop:1067 - [batch pdf 1] 770/2611
+2026-10-01 13:03:17.872 | INFO     | __main__:_loop:1067 - [batch pdf 1] 771/2611
+2026-10-01 13:03:23.051 | INFO     | __main__:_loop:1067 - [batch pdf 1] 772/2611
+2026-10-01 13:03:33.265 | INFO     | __main__:_loop:1067 - [batch pdf 1] 774/2611
+2026-10-01 13:03:38.361 | INFO     | __main__:_loop:1067 - [batch pdf 1] 775/2611
+2026-10-01 13:03:43.447 | INFO     | __main__:_loop:1067 - [batch pdf 1] 776/2611
+2026-10-01 13:03:48.527 | INFO     | __main__:_loop:1067 - [batch pdf 1] 777/2611
+2026-10-01 13:03:53.580 | INFO     | __main__:_loop:1067 - [batch pdf 1] 778/2611
+2026-10-01 13:03:58.733 | INFO     | __main__:_loop:1067 - [batch pdf 1] 779/2611
+2026-10-01 13:04:03.839 | INFO     | __main__:_loop:1067 - [batch pdf 1] 780/2611
+2026-10-01 13:04:09.018 | INFO     | __main__:_loop:1067 - [batch pdf 1] 781/2611
+2026-10-01 13:04:14.212 | INFO     | __main__:_loop:1067 - [batch pdf 1] 783/2611
+2026-10-01 13:04:19.265 | INFO     | __main__:_loop:1067 - [batch pdf 1] 784/2611
+2026-10-01 13:04:24.357 | INFO     | __main__:_loop:1067 - [batch pdf 1] 785/2611
+2026-10-01 13:04:29.630 | INFO     | __main__:_loop:1067 - [batch pdf 1] 786/2611
+2026-10-01 13:04:34.706 | INFO     | __main__:_loop:1067 - [batch pdf 1] 787/2611
+2026-10-01 13:04:39.765 | INFO     | __main__:_loop:1067 - [batch pdf 1] 789/2611
+2026-10-01 13:04:44.857 | INFO     | __main__:_loop:1067 - [batch pdf 1] 790/2611
+2026-10-01 13:04:50.048 | INFO     | __main__:_loop:1067 - [batch pdf 1] 792/2611
+2026-10-01 13:04:55.148 | INFO     | __main__:_loop:1067 - [batch pdf 1] 793/2611
+2026-10-01 13:05:00.318 | INFO     | __main__:_loop:1067 - [batch pdf 1] 794/2611
+2026-10-01 13:05:05.546 | INFO     | __main__:_loop:1067 - [batch pdf 1] 795/2611
+2026-10-01 13:05:15.849 | INFO     | __main__:_loop:1067 - [batch pdf 1] 796/2611
+2026-10-01 13:05:20.933 | INFO     | __main__:_loop:1067 - [batch pdf 1] 797/2611
+2026-10-01 13:05:25.986 | INFO     | __main__:_loop:1067 - [batch pdf 1] 799/2611
+2026-10-01 13:05:31.039 | INFO     | __main__:_loop:1067 - [batch pdf 1] 800/2611
+2026-10-01 13:05:36.134 | INFO     | __main__:_loop:1067 - [batch pdf 1] 801/2611
+2026-10-01 13:05:41.201 | INFO     | __main__:_loop:1067 - [batch pdf 1] 802/2611
+2026-10-01 13:05:46.385 | INFO     | __main__:_loop:1067 - [batch pdf 1] 803/2611
+2026-10-01 13:05:51.490 | INFO     | __main__:_loop:1067 - [batch pdf 1] 804/2611
+2026-10-01 13:05:56.594 | INFO     | __main__:_loop:1067 - [batch pdf 1] 805/2611
+2026-10-01 13:06:01.668 | INFO     | __main__:_loop:1067 - [batch pdf 1] 806/2611
+2026-10-01 13:06:06.791 | INFO     | __main__:_loop:1067 - [batch pdf 1] 807/2611
+2026-10-01 13:06:11.921 | INFO     | __main__:_loop:1067 - [batch pdf 1] 808/2611
+2026-10-01 13:06:16.999 | INFO     | __main__:_loop:1067 - [batch pdf 1] 809/2611
+2026-10-01 13:06:22.116 | INFO     | __main__:_loop:1067 - [batch pdf 1] 810/2611
+2026-10-01 13:06:27.161 | INFO     | __main__:_loop:1067 - [batch pdf 1] 811/2611
+2026-10-01 13:06:32.343 | INFO     | __main__:_loop:1067 - [batch pdf 1] 813/2611
+2026-10-01 13:06:37.445 | INFO     | __main__:_loop:1067 - [batch pdf 1] 814/2611
+2026-10-01 13:06:42.541 | INFO     | __main__:_loop:1067 - [batch pdf 1] 815/2611
+2026-10-01 13:06:47.909 | INFO     | __main__:_loop:1067 - [batch pdf 1] 816/2611
+2026-10-01 13:06:53.193 | INFO     | __main__:_loop:1067 - [batch pdf 1] 817/2611
+2026-10-01 13:06:58.355 | INFO     | __main__:_loop:1067 - [batch pdf 1] 818/2611
+2026-10-01 13:07:03.482 | INFO     | __main__:_loop:1067 - [batch pdf 1] 819/2611
+2026-10-01 13:07:08.666 | INFO     | __main__:_loop:1067 - [batch pdf 1] 820/2611
+2026-10-01 13:07:13.769 | INFO     | __main__:_loop:1067 - [batch pdf 1] 821/2611
+2026-10-01 13:07:18.824 | INFO     | __main__:_loop:1067 - [batch pdf 1] 822/2611
+2026-10-01 13:07:23.859 | INFO     | __main__:_loop:1067 - [batch pdf 1] 823/2611
+2026-10-01 13:07:33.964 | INFO     | __main__:_loop:1067 - [batch pdf 1] 825/2611
+2026-10-01 13:07:44.993 | INFO     | __main__:_loop:1067 - [batch pdf 1] 827/2611
+2026-10-01 13:07:50.128 | INFO     | __main__:_loop:1067 - [batch pdf 1] 828/2611
+2026-10-01 13:07:55.383 | INFO     | __main__:_loop:1067 - [batch pdf 1] 829/2611
+2026-10-01 13:08:00.451 | INFO     | __main__:_loop:1067 - [batch pdf 1] 830/2611
+2026-10-01 13:08:10.673 | INFO     | __main__:_loop:1067 - [batch pdf 1] 831/2611
+2026-10-01 13:08:15.810 | INFO     | __main__:_loop:1067 - [batch pdf 1] 832/2611
+2026-10-01 13:08:26.030 | INFO     | __main__:_loop:1067 - [batch pdf 1] 833/2611
+2026-10-01 13:08:31.105 | INFO     | __main__:_loop:1067 - [batch pdf 1] 834/2611
+2026-10-01 13:08:36.359 | INFO     | __main__:_loop:1067 - [batch pdf 1] 835/2611
+2026-10-01 13:08:41.511 | INFO     | __main__:_loop:1067 - [batch pdf 1] 836/2611
+2026-10-01 13:08:51.914 | INFO     | __main__:_loop:1067 - [batch pdf 1] 837/2611
+2026-10-01 13:08:57.041 | INFO     | __main__:_loop:1067 - [batch pdf 1] 838/2611
+2026-10-01 13:09:02.304 | INFO     | __main__:_loop:1067 - [batch pdf 1] 839/2611
+2026-10-01 13:09:07.465 | INFO     | __main__:_loop:1067 - [batch pdf 1] 840/2611
+2026-10-01 13:09:12.575 | INFO     | __main__:_loop:1067 - [batch pdf 1] 841/2611
+2026-10-01 13:09:17.667 | INFO     | __main__:_loop:1067 - [batch pdf 1] 842/2611
+2026-10-01 13:09:22.802 | INFO     | __main__:_loop:1067 - [batch pdf 1] 843/2611
+2026-10-01 13:09:27.964 | INFO     | __main__:_loop:1067 - [batch pdf 1] 844/2611
+2026-10-01 13:09:33.164 | INFO     | __main__:_loop:1067 - [batch pdf 1] 845/2611
+2026-10-01 13:09:43.391 | INFO     | __main__:_loop:1067 - [batch pdf 1] 846/2611
+2026-10-01 13:09:48.614 | INFO     | __main__:_loop:1067 - [batch pdf 1] 847/2611
+2026-10-01 13:09:53.895 | INFO     | __main__:_loop:1067 - [batch pdf 1] 848/2611
+2026-10-01 13:09:59.091 | INFO     | __main__:_loop:1067 - [batch pdf 1] 849/2611
+2026-10-01 13:10:04.235 | INFO     | __main__:_loop:1067 - [batch pdf 1] 850/2611
+2026-10-01 13:10:14.370 | INFO     | __main__:_loop:1067 - [batch pdf 1] 851/2611
+2026-10-01 13:10:19.432 | INFO     | __main__:_loop:1067 - [batch pdf 1] 853/2611
+2026-10-01 13:10:24.458 | INFO     | __main__:_loop:1067 - [batch pdf 1] 854/2611
+2026-10-01 13:10:29.490 | INFO     | __main__:_loop:1067 - [batch pdf 1] 856/2611
+2026-10-01 13:10:34.518 | INFO     | __main__:_loop:1067 - [batch pdf 1] 857/2611
+2026-10-01 13:10:39.555 | INFO     | __main__:_loop:1067 - [batch pdf 1] 859/2611
+2026-10-01 13:10:44.574 | INFO     | __main__:_loop:1067 - [batch pdf 1] 861/2611
+2026-10-01 13:10:49.601 | INFO     | __main__:_loop:1067 - [batch pdf 1] 862/2611
+2026-10-01 13:10:54.626 | INFO     | __main__:_loop:1067 - [batch pdf 1] 865/2611
+2026-10-01 13:10:59.652 | INFO     | __main__:_loop:1067 - [batch pdf 1] 867/2611
+2026-10-01 13:11:04.678 | INFO     | __main__:_loop:1067 - [batch pdf 1] 870/2611
+2026-10-01 13:11:09.697 | INFO     | __main__:_loop:1067 - [batch pdf 1] 872/2611
+2026-10-01 13:11:14.716 | INFO     | __main__:_loop:1067 - [batch pdf 1] 874/2611
+2026-10-01 13:11:19.751 | INFO     | __main__:_loop:1067 - [batch pdf 1] 876/2611
+2026-10-01 13:11:24.781 | INFO     | __main__:_loop:1067 - [batch pdf 1] 879/2611
+2026-10-01 13:11:29.808 | INFO     | __main__:_loop:1067 - [batch pdf 1] 881/2611
+2026-10-01 13:11:34.827 | INFO     | __main__:_loop:1067 - [batch pdf 1] 884/2611
+2026-10-01 13:11:39.852 | INFO     | __main__:_loop:1067 - [batch pdf 1] 888/2611
+2026-10-01 13:11:44.878 | INFO     | __main__:_loop:1067 - [batch pdf 1] 890/2611
+2026-10-01 13:11:49.902 | INFO     | __main__:_loop:1067 - [batch pdf 1] 892/2611
+2026-10-01 13:11:59.948 | INFO     | __main__:_loop:1067 - [batch pdf 1] 895/2611
+2026-10-01 13:12:04.971 | INFO     | __main__:_loop:1067 - [batch pdf 1] 898/2611
+2026-10-01 13:12:09.989 | INFO     | __main__:_loop:1067 - [batch pdf 1] 901/2611
+2026-10-01 13:12:15.011 | INFO     | __main__:_loop:1067 - [batch pdf 1] 903/2611
+2026-10-01 13:12:20.031 | INFO     | __main__:_loop:1067 - [batch pdf 1] 905/2611
+2026-10-01 13:12:25.061 | INFO     | __main__:_loop:1067 - [batch pdf 1] 907/2611
+2026-10-01 13:12:30.094 | INFO     | __main__:_loop:1067 - [batch pdf 1] 909/2611
+2026-10-01 13:12:35.112 | INFO     | __main__:_loop:1067 - [batch pdf 1] 911/2611
+2026-10-01 13:12:40.140 | INFO     | __main__:_loop:1067 - [batch pdf 1] 914/2611
+2026-10-01 13:12:45.162 | INFO     | __main__:_loop:1067 - [batch pdf 1] 916/2611
+2026-10-01 13:12:50.190 | INFO     | __main__:_loop:1067 - [batch pdf 1] 919/2611
+2026-10-01 13:12:55.212 | INFO     | __main__:_loop:1067 - [batch pdf 1] 922/2611
+2026-10-01 13:13:00.235 | INFO     | __main__:_loop:1067 - [batch pdf 1] 925/2611
+2026-10-01 13:13:05.259 | INFO     | __main__:_loop:1067 - [batch pdf 1] 927/2611
+2026-10-01 13:13:10.281 | INFO     | __main__:_loop:1067 - [batch pdf 1] 929/2611
+2026-10-01 13:13:15.305 | INFO     | __main__:_loop:1067 - [batch pdf 1] 931/2611
+2026-10-01 13:13:20.337 | INFO     | __main__:_loop:1067 - [batch pdf 1] 932/2611
+2026-10-01 13:13:25.387 | INFO     | __main__:_loop:1067 - [batch pdf 1] 934/2611
+2026-10-01 13:13:30.423 | INFO     | __main__:_loop:1067 - [batch pdf 1] 936/2611
+2026-10-01 13:13:35.465 | INFO     | __main__:_loop:1067 - [batch pdf 1] 937/2611
+2026-10-01 13:13:40.492 | INFO     | __main__:_loop:1067 - [batch pdf 1] 939/2611
+2026-10-01 13:13:45.520 | INFO     | __main__:_loop:1067 - [batch pdf 1] 941/2611
+2026-10-01 13:13:50.542 | INFO     | __main__:_loop:1067 - [batch pdf 1] 943/2611
+2026-10-01 13:13:55.566 | INFO     | __main__:_loop:1067 - [batch pdf 1] 944/2611
+2026-10-01 13:14:00.601 | INFO     | __main__:_loop:1067 - [batch pdf 1] 946/2611
+2026-10-01 13:14:05.624 | INFO     | __main__:_loop:1067 - [batch pdf 1] 948/2611
+2026-10-01 13:14:10.647 | INFO     | __main__:_loop:1067 - [batch pdf 1] 950/2611
+2026-10-01 13:14:15.679 | INFO     | __main__:_loop:1067 - [batch pdf 1] 953/2611
+2026-10-01 13:14:20.704 | INFO     | __main__:_loop:1067 - [batch pdf 1] 955/2611
+2026-10-01 13:14:25.736 | INFO     | __main__:_loop:1067 - [batch pdf 1] 959/2611
+2026-10-01 13:14:30.762 | INFO     | __main__:_loop:1067 - [batch pdf 1] 961/2611
+2026-10-01 13:14:35.789 | INFO     | __main__:_loop:1067 - [batch pdf 1] 964/2611
+2026-10-01 13:14:38.173 | WARNING  | __main__:_loop_word:540 - [watchdog] Word dialog dismissed via 'No'
+2026-10-01 13:14:40.815 | INFO     | __main__:_loop:1067 - [batch pdf 1] 965/2611
+2026-10-01 13:14:42.722 | WARNING  | __main__:_loop_word:540 - [watchdog] Word dialog dismissed via 'OK'
+2026-10-01 13:14:45.849 | INFO     | __main__:_loop:1067 - [batch pdf 1] 966/2611
+2026-10-01 13:14:50.874 | INFO     | __main__:_loop:1067 - [batch pdf 1] 968/2611
+2026-10-01 13:14:55.906 | INFO     | __main__:_loop:1067 - [batch pdf 1] 970/2611
+2026-10-01 13:15:00.936 | INFO     | __main__:_loop:1067 - [batch pdf 1] 972/2611
+2026-10-01 13:15:05.963 | INFO     | __main__:_loop:1067 - [batch pdf 1] 974/2611
+2026-10-01 13:15:10.987 | INFO     | __main__:_loop:1067 - [batch pdf 1] 976/2611
+2026-10-01 13:15:16.003 | INFO     | __main__:_loop:1067 - [batch pdf 1] 979/2611
+2026-10-01 13:15:21.031 | INFO     | __main__:_loop:1067 - [batch pdf 1] 981/2611
+2026-10-01 13:15:26.076 | INFO     | __main__:_loop:1067 - [batch pdf 1] 983/2611
+2026-10-01 13:15:31.100 | INFO     | __main__:_loop:1067 - [batch pdf 1] 984/2611
+2026-10-01 13:15:36.130 | INFO     | __main__:_loop:1067 - [batch pdf 1] 986/2611
+2026-10-01 13:15:41.149 | INFO     | __main__:_loop:1067 - [batch pdf 1] 988/2611
+2026-10-01 13:15:46.177 | INFO     | __main__:_loop:1067 - [batch pdf 1] 990/2611
+2026-10-01 13:15:51.199 | INFO     | __main__:_loop:1067 - [batch pdf 1] 993/2611
+2026-10-01 13:15:56.224 | INFO     | __main__:_loop:1067 - [batch pdf 1] 996/2611
+2026-10-01 13:16:01.246 | INFO     | __main__:_loop:1067 - [batch pdf 1] 998/2611
+2026-10-01 13:16:06.279 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1001/2611
+2026-10-01 13:16:11.302 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1003/2611
+2026-10-01 13:16:16.326 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1005/2611
+2026-10-01 13:16:21.352 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1007/2611
+2026-10-01 13:16:26.381 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1009/2611
+2026-10-01 13:16:31.401 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1011/2611
+2026-10-01 13:16:36.423 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1013/2611
+2026-10-01 13:16:41.447 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1015/2611
+2026-10-01 13:16:46.472 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1016/2611
+2026-10-01 13:16:51.518 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1018/2611
+2026-10-01 13:16:56.547 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1020/2611
+2026-10-01 13:17:01.588 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1022/2611
+2026-10-01 13:17:06.613 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1024/2611
+2026-10-01 13:17:11.643 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1026/2611
+2026-10-01 13:17:16.658 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1028/2611
+2026-10-01 13:17:21.686 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1030/2611
+2026-10-01 13:17:26.699 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1032/2611
+2026-10-01 13:17:31.722 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1035/2611
+2026-10-01 13:17:36.751 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1037/2611
+2026-10-01 13:17:41.778 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1040/2611
+2026-10-01 13:17:46.803 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1042/2611
+2026-10-01 13:17:51.830 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1045/2611
+2026-10-01 13:17:56.853 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1048/2611
+2026-10-01 13:18:01.876 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1050/2611
+2026-10-01 13:18:06.906 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1052/2611
+2026-10-01 13:18:11.928 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1054/2611
+2026-10-01 13:18:16.951 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1055/2611
+2026-10-01 13:18:21.983 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1057/2611
+2026-10-01 13:18:27.003 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1060/2611
+2026-10-01 13:18:32.020 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1062/2611
+2026-10-01 13:18:37.040 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1063/2611
+2026-10-01 13:18:42.064 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1065/2611
+2026-10-01 13:18:47.097 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1067/2611
+2026-10-01 13:18:52.128 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1069/2611
+2026-10-01 13:18:57.154 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1071/2611
+2026-10-01 13:19:02.181 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1073/2611
+2026-10-01 13:19:07.211 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1076/2611
+2026-10-01 13:19:12.238 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1079/2611
+2026-10-01 13:19:17.262 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1081/2611
+2026-10-01 13:19:22.283 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1084/2611
+2026-10-01 13:19:27.306 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1086/2611
+2026-10-01 13:19:32.331 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1089/2611
+2026-10-01 13:19:37.352 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1092/2611
+2026-10-01 13:19:42.376 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1094/2611
+2026-10-01 13:19:52.405 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1096/2611
+2026-10-01 13:19:57.428 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1098/2611
+2026-10-01 13:20:02.454 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1100/2611
+2026-10-01 13:20:07.479 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1103/2611
+2026-10-01 13:20:12.503 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1106/2611
+2026-10-01 13:20:17.524 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1109/2611
+2026-10-01 13:20:22.550 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1112/2611
+2026-10-01 13:20:27.575 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1115/2611
+2026-10-01 13:20:32.598 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1117/2611
+2026-10-01 13:20:37.616 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1120/2611
+2026-10-01 13:20:42.637 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1122/2611
+2026-10-01 13:20:47.662 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1125/2611
+2026-10-01 13:20:52.684 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1127/2611
+2026-10-01 13:20:57.705 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1129/2611
+2026-10-01 13:21:02.728 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1131/2611
+2026-10-01 13:21:07.749 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1132/2611
+2026-10-01 13:21:12.773 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1134/2611
+2026-10-01 13:21:17.794 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1136/2611
+2026-10-01 13:21:22.824 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1137/2611
+2026-10-01 13:21:27.843 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1139/2611
+2026-10-01 13:21:32.859 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1142/2611
+2026-10-01 13:21:37.881 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1144/2611
+2026-10-01 13:21:42.908 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1147/2611
+2026-10-01 13:21:47.934 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1149/2611
+2026-10-01 13:21:52.959 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1152/2611
+2026-10-01 13:21:57.987 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1154/2611
+2026-10-01 13:22:03.017 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1157/2611
+2026-10-01 13:22:08.040 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1160/2611
+2026-10-01 13:22:13.066 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1162/2611
+2026-10-01 13:22:18.093 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1165/2611
+2026-10-01 13:22:23.117 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1168/2611
+2026-10-01 13:22:28.144 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1171/2611
+2026-10-01 13:22:33.167 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1173/2611
+2026-10-01 13:22:38.199 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1175/2611
+2026-10-01 13:22:43.228 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1178/2611
+2026-10-01 13:22:48.253 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1180/2611
+2026-10-01 13:22:53.264 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1183/2611
+2026-10-01 13:22:58.289 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1186/2611
+2026-10-01 13:23:03.314 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1188/2611
+2026-10-01 13:23:08.332 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1191/2611
+2026-10-01 13:23:13.356 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1194/2611
+2026-10-01 13:23:18.388 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1196/2611
+2026-10-01 13:23:23.413 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1199/2611
+2026-10-01 13:23:28.439 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1201/2611
+2026-10-01 13:23:33.466 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1203/2611
+2026-10-01 13:23:38.493 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1205/2611
+2026-10-01 13:23:43.519 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1206/2611
+2026-10-01 13:23:48.542 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1208/2611
+2026-10-01 13:23:53.577 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1209/2611
+2026-10-01 13:23:58.599 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1211/2611
+2026-10-01 13:24:03.621 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1212/2611
+2026-10-01 13:24:08.640 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1213/2611
+2026-10-01 13:24:13.669 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1215/2611
+2026-10-01 13:24:18.691 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1216/2611
+2026-10-01 13:24:23.712 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1218/2611
+2026-10-01 13:24:28.734 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1220/2611
+2026-10-01 13:24:33.758 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1221/2611
+2026-10-01 13:24:38.786 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1222/2611
+2026-10-01 13:24:43.808 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1224/2611
+2026-10-01 13:24:48.830 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1225/2611
+2026-10-01 13:24:53.853 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1227/2611
+2026-10-01 13:24:58.877 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1228/2611
+2026-10-01 13:25:03.898 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1229/2611
+2026-10-01 13:25:08.918 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1231/2611
+2026-10-01 13:25:13.936 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1232/2611
+2026-10-01 13:25:18.959 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1234/2611
+2026-10-01 13:25:23.984 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1235/2611
+2026-10-01 13:25:29.008 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1237/2611
+2026-10-01 13:25:34.028 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1238/2611
+2026-10-01 13:25:39.051 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1239/2611
+2026-10-01 13:25:44.071 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1241/2611
+2026-10-01 13:25:49.091 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1242/2611
+2026-10-01 13:25:54.114 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1244/2611
+2026-10-01 13:25:59.136 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1245/2611
+2026-10-01 13:26:04.154 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1246/2611
+2026-10-01 13:26:09.178 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1247/2611
+2026-10-01 13:26:14.200 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1249/2611
+2026-10-01 13:26:19.228 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1250/2611
+2026-10-01 13:26:24.246 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1251/2611
+2026-10-01 13:26:29.269 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1253/2611
+2026-10-01 13:26:34.295 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1254/2611
+2026-10-01 13:26:39.317 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1255/2611
+2026-10-01 13:26:44.339 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1257/2611
+2026-10-01 13:26:49.358 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1258/2611
+2026-10-01 13:26:54.380 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1259/2611
+2026-10-01 13:26:59.408 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1262/2611
+2026-10-01 13:27:04.441 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1264/2611
+2026-10-01 13:27:09.465 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1266/2611
+2026-10-01 13:27:14.493 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1268/2611
+2026-10-01 13:27:19.517 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1271/2611
+2026-10-01 13:27:24.543 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1273/2611
+2026-10-01 13:27:29.569 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1276/2611
+2026-10-01 13:27:34.594 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1277/2611
+2026-10-01 13:28:25.887 | WARNING  | __main__:_loop:1072 - [batch pdf 1] item 1278/2611 open for more than 30 s:
+-- Word windows {name, subrole}: ,
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-1.log:
+[ok]	0
+[ok]	1
+[ok]	2
+[ok]	3
+[ok]	4
+[ok]	5
+[ok]	6
+[ok]	7
+[ok]	8
+[ok]	9
+[ok]	10
+[ok]	11
+[ok]	12
+[ok]	13
+[ok]	14
+[ok]	15
+[ok]	16
+[ok]	17
+[ok]	18
+[ok]	19
+[ok]	20
+[ok]	21
+[ok]	22
+[ok]	23
+[ok]	24
+[ok]	25
+[ok]	26
+[ok]	27
+[ok]	28
+[ok]	29
+[ok]	30
+[ok]	31
+[ok]	32
+[ok]	33
+[ok]	34
+[ok]	35
+[ok]	36
+[ok]	37
+[ok]	38
+[ok]	39
+[ok]	40
+[ok]	41
+[ok]	42
+[ok]	43
+[ok]	44
+[ok]	45
+[retry]	46	document loaded empty (Word could not read it)
+[ok]	47
+[retry]	48	document loaded empty (Word could not read it)
+[ok]	49
+[retry]	50	document loaded empty (Word could not read it)
+[ok]	51
+[retry]	52	document loaded empty (Word could not read it)
+[ok]	53
+[retry]	54	document loaded empty (Word could not read it)
+[ok]	55
+[retry]	56	document loaded empty (Word could not read it)
+[ok]	57
+[retry]	58	document loaded empty (Word could not read it)
+[ok]	59
+[ok]	60
+[ok]	61
+[ok]	62
+[ok]	63
+[ok]	64
+[ok]	65
+[ok]	66
+[ok]	67
+[ok]	68
+[ok]	69
+[ok]	70
+[ok]	71
+[ok]	72
+[ok]	73
+[ok]	74
+[ok]	75
+[ok]	76
+[ok]	77
+[ok]	78
+[ok]	79
+[ok]	80
+[ok]	81
+[ok]	82
+[ok]	83
+[ok]	84
+[ok]	85
+[ok]	86
+[ok]	87
+[ok]	88
+[ok]	89
+[ok]	90
+[ok]	91
+[ok]	92
+[ok]	93
+[ok]	94
+[ok]	95
+[ok]	96
+[ok]	97
+[ok]	98
+[ok]	99
+[ok]	100
+[ok]	101
+[ok]	102
+[ok]	103
+[ok]	104
+[ok]	105
+[ok]	106
+[ok]	107
+[ok]	108
+[ok]	109
+[ok]	110
+[ok]	111
+[ok]	112
+[ok]	113
+[ok]	114
+[ok]	115
+[ok]	116
+[ok]	117
+[ok]	118
+[ok]	119
+[ok]	120
+[ok]	121
+[ok]	122
+[ok]	123
+[ok]	124
+[ok]	125
+[ok]	126
+[ok]	127
+[ok]	128
+[ok]	129
+[ok]	130
+[ok]	131
+[ok]	132
+[ok]	133
+[ok]	134
+[ok]	135
+[ok]	136
+[ok]	137
+[ok]	138
+[ok]	139
+[ok]	140
+[ok]	141
+[ok]	142
+[ok]	143
+[ok]	144
+[ok]	145
+[ok]	146
+[ok]	147
+[ok]	148
+[ok]	149
+[ok]	150
+[ok]	151
+[ok]	152
+[ok]	153
+[ok]	154
+[ok]	155
+[ok]	156
+[ok]	157
+[ok]	158
+[ok]	159
+[ok]	160
+[ok]	161
+[ok]	162
+[ok]	163
+[ok]	164
+[ok]	165
+[ok]	166
+[ok]	167
+[ok]	168
+[ok]	169
+[ok]	170
+[ok]	171
+[ok]	172
+[ok]	173
+[ok]	174
+[ok]	175
+[ok]	176
+[ok]	177
+[ok]	178
+[ok]	179
+[ok]	180
+[ok]	181
+[ok]	182
+[ok]	183
+[ok]	184
+[ok]	185
+[ok]	186
+[ok]	187
+[ok]	188
+[ok]	189
+[ok]	190
+[ok]	191
+[ok]	192
+[ok]	193
+[ok]	194
+[ok]	195
+[ok]	196
+[ok]	197
+[ok]	198
+[ok]	199
+[ok]	200
+[ok]	201
+[ok]	202
+[ok]	203
+[ok]	204
+[ok]	205
+[ok]	206
+[ok]	207
+[ok]	208
+[ok]	209
+[ok]	210
+[ok]	211
+[ok]	212
+[ok]	213
+[ok]	214
+[ok]	215
+[ok]	216
+[ok]	217
+[ok]	218
+[ok]	219
+[ok]	220
+[ok]	221
+[ok]	222
+[ok]	223
+[ok]	224
+[ok]	225
+[ok]	226
+[ok]	227
+[ok]	228
+[ok]	229
+[ok]	230
+[ok]	231
+[ok]	232
+[ok]	233
+[ok]	234
+[ok]	235
+[ok]	236
+[ok]	237
+[ok]	238
+[ok]	239
+[ok]	240
+[ok]	241
+[ok]	242
+[ok]	243
+[ok]	244
+[ok]	245
+[ok]	246
+[ok]	247
+[ok]	248
+[ok]	249
+[ok]	250
+[ok]	251
+[ok]	252
+[ok]	253
+[ok]	254
+[ok]	255
+[ok]	256
+[ok]	257
+[ok]	258
+[ok]	259
+[ok]	260
+[ok]	261
+[ok]	262
+[ok]	263
+[ok]	264
+[ok]	265
+[ok]	266
+[ok]	267
+[ok]	268
+[ok]	269
+[ok]	270
+[ok]	271
+[ok]	272
+[retry]	273	document loaded empty (Word could not read it)
+[ok]	274
+[ok]	275
+[ok]	276
+[ok]	277
+[ok]	278
+[ok]	279
+[ok]	280
+[ok]	281
+[ok]	282
+[ok]	283
+[ok]	284
+[ok]	285
+[ok]	286
+[ok]	287
+[ok]	288
+[ok]	289
+[ok]	290
+[ok]	291
+[ok]	292
+[ok]	293
+[ok]	294
+[ok]	295
+[ok]	296
+[ok]	297
+[ok]	298
+[ok]	299
+[ok]	300
+[ok]	301
+[ok]	302
+[ok]	303
+[ok]	304
+[ok]	305
+[ok]	306
+[ok]	307
+[ok]	308
+[ok]	309
+[ok]	310
+[ok]	311
+[ok]	312
+[ok]	313
+[ok]	314
+[ok]	315
+[ok]	316
+[ok]	317
+[ok]	318
+[ok]	319
+[ok]	320
+[ok]	321
+[ok]	322
+[ok]	323
+[ok]	324
+[ok]	325
+[ok]	326
+[ok]	327
+[ok]	328
+[ok]	329
+[ok]	330
+[ok]	331
+[ok]	332
+[ok]	333
+[ok]	334
+[ok]	335
+[ok]	336
+[ok]	337
+[ok]	338
+[ok]	339
+[ok]	340
+[ok]	341
+[ok]	342
+[ok]	343
+[ok]	344
+[ok]	345
+[ok]	346
+[ok]	347
+[ok]	348
+[ok]	349
+[ok]	350
+[ok]	351
+[ok]	352
+[ok]	353
+[ok]	354
+[ok]	355
+[ok]	356
+[ok]	357
+[ok]	358
+[ok]	359
+[ok]	360
+[ok]	361
+[ok]	362
+[ok]	363
+[ok]	364
+[ok]	365
+[ok]	366
+[ok]	367
+[ok]	368
+[ok]	369
+[ok]	370
+[ok]	371
+[ok]	372
+[ok]	373
+[ok]	374
+[ok]	375
+[ok]	376
+[ok]	377
+[ok]	378
+[ok]	379
+[ok]	380
+[ok]	381
+[ok]	382
+[ok]	383
+[ok]	384
+[ok]	385
+[ok]	386
+[ok]	387
+[ok]	388
+[ok]	389
+[ok]	390
+[ok]	391
+[ok]	392
+[ok]	393
+[ok]	394
+[ok]	395
+[ok]	396
+[ok]	397
+[ok]	398
+[ok]	399
+[ok]	400
+[ok]	401
+[ok]	402
+[ok]	403
+[ok]	404
+[ok]	405
+[ok]	406
+[ok]	407
+[ok]	408
+[ok]	409
+[ok]	410
+[ok]	411
+[ok]	412
+[ok]	413
+[ok]	414
+[ok]	415
+[ok]	416
+[ok]	417
+[ok]	418
+[ok]	419
+[ok]	420
+[ok]	421
+[ok]	422
+[ok]	423
+[ok]	424
+[ok]	425
+[ok]	426
+[ok]	427
+[ok]	428
+[ok]	429
+[ok]	430
+[ok]	431
+[ok]	432
+[ok]	433
+[ok]	434
+[ok]	435
+[ok]	436
+[ok]	437
+[ok]	438
+[ok]	439
+[ok]	440
+[ok]	441
+[ok]	442
+[ok]	443
+[ok]	444
+[ok]	445
+[ok]	446
+[ok]	447
+[ok]	448
+[ok]	449
+[ok]	450
+[ok]	451
+[ok]	452
+[ok]	453
+[ok]	454
+[ok]	455
+[ok]	456
+[ok]	457
+[ok]	458
+[ok]	459
+[ok]	460
+[ok]	461
+[ok]	462
+[ok]	463
+[ok]	464
+[ok]	465
+[ok]	466
+[ok]	467
+[ok]	468
+[ok]	469
+[ok]	470
+[ok]	471
+[ok]	472
+[ok]	473
+[ok]	474
+[ok]	475
+[ok]	476
+[ok]	477
+[ok]	478
+[ok]	479
+[ok]	480
+[ok]	481
+[ok]	482
+[ok]	483
+[ok]	484
+[ok]	485
+[ok]	486
+[ok]	487
+[ok]	488
+[ok]	489
+[ok]	490
+[ok]	491
+[ok]	492
+[ok]	493
+[ok]	494
+[ok]	495
+[ok]	496
+[ok]	497
+[ok]	498
+[ok]	499
+[ok]	500
+[ok]	501
+[ok]	502
+[ok]	503
+[ok]	504
+[ok]	505
+[ok]	506
+[ok]	507
+[ok]	508
+[ok]	509
+[ok]	510
+[ok]	511
+[ok]	512
+[ok]	513
+[ok]	514
+[ok]	515
+[ok]	516
+[ok]	517
+[ok]	518
+[ok]	519
+[ok]	520
+[ok]	521
+[ok]	522
+[ok]	523
+[ok]	524
+[ok]	525
+[ok]	526
+[ok]	527
+[ok]	528
+[ok]	529
+[ok]	530
+[ok]	531
+[ok]	532
+[ok]	533
+[ok]	534
+[ok]	535
+[ok]	536
+[ok]	537
+[ok]	538
+[ok]	539
+[ok]	540
+[ok]	541
+[ok]	542
+[ok]	543
+[ok]	544
+[ok]	545
+[ok]	546
+[ok]	547
+[ok]	548
+[ok]	549
+[ok]	550
+[ok]	551
+[ok]	552
+[ok]	553
+[ok]	554
+[ok]	555
+[ok]	556
+[ok]	557
+[ok]	558
+[ok]	559
+[ok]	560
+[ok]	561
+[ok]	562
+[ok]	563
+[ok]	564
+[ok]	565
+[ok]	566
+[ok]	567
+[ok]	568
+[ok]	569
+[ok]	570
+[ok]	571
+[ok]	572
+[ok]	573
+[ok]	574
+[ok]	575
+[ok]	576
+[ok]	577
+[ok]	578
+[ok]	579
+[ok]	580
+[ok]	581
+[ok]	582
+[ok]	583
+[ok]	584
+[ok]	585
+[ok]	586
+[ok]	587
+[ok]	588
+[ok]	589
+[ok]	590
+[ok]	591
+[ok]	592
+[ok]	593
+[ok]	594
+[ok]	595
+[ok]	596
+[ok]	597
+[ok]	598
+[ok]	599
+[ok]	600
+[ok]	601
+[ok]	602
+[ok]	603
+[ok]	604
+[ok]	605
+[ok]	606
+[ok]	607
+[ok]	608
+[ok]	609
+[ok]	610
+[ok]	611
+[ok]	612
+[ok]	613
+[ok]	614
+[ok]	615
+[ok]	616
+[ok]	617
+[ok]	618
+[ok]	619
+[ok]	620
+[ok]	621
+[ok]	622
+[ok]	623
+[ok]	624
+[ok]	625
+[ok]	626
+[ok]	627
+[ok]	628
+[ok]	629
+[ok]	630
+[ok]	631
+[ok]	632
+[ok]	633
+[ok]	634
+[ok]	635
+[ok]	636
+[ok]	637
+[ok]	638
+[ok]	639
+[ok]	640
+[ok]	641
+[ok]	642
+[ok]	643
+[ok]	644
+[ok]	645
+[ok]	646
+[ok]	647
+[ok]	648
+[ok]	649
+[ok]	650
+[ok]	651
+[ok]	652
+[ok]	653
+[ok]	654
+[ok]	655
+[ok]	656
+[ok]	657
+[ok]	658
+[ok]	659
+[ok]	660
+[ok]	661
+[ok]	662
+[ok]	663
+[ok]	664
+[ok]	665
+[ok]	666
+[ok]	667
+[ok]	668
+[ok]	669
+[ok]	670
+[ok]	671
+[ok]	672
+[ok]	673
+[ok]	674
+[ok]	675
+[ok]	676
+[ok]	677
+[ok]	678
+[ok]	679
+[ok]	680
+[ok]	681
+[ok]	682
+[ok]	683
+[ok]	684
+[ok]	685
+[ok]	686
+[ok]	687
+[ok]	688
+[ok]	689
+[ok]	690
+[ok]	691
+[ok]	692
+[ok]	693
+[ok]	694
+[ok]	695
+[ok]	696
+[ok]	697
+[ok]	698
+[ok]	699
+[ok]	700
+[ok]	701
+[ok]	702
+[ok]	703
+[ok]	704
+[ok]	705
+[ok]	706
+[ok]	707
+[ok]	708
+[ok]	709
+[ok]	710
+[ok]	711
+[ok]	712
+[ok]	713
+[ok]	714
+[ok]	715
+[ok]	716
+[ok]	717
+[ok]	718
+[ok]	719
+[ok]	720
+[ok]	721
+[ok]	722
+[ok]	723
+[ok]	724
+[ok]	725
+[ok]	726
+[ok]	727
+[ok]	728
+[ok]	729
+[ok]	730
+[ok]	731
+[ok]	732
+[ok]	733
+[ok]	734
+[ok]	735
+[ok]	736
+[ok]	737
+[ok]	738
+[ok]	739
+[ok]	740
+[ok]	741
+[ok]	742
+[ok]	743
+[ok]	744
+[ok]	745
+[ok]	746
+[ok]	747
+[ok]	748
+[ok]	749
+[ok]	750
+[ok]	751
+[ok]	752
+[ok]	753
+[ok]	754
+[ok]	755
+[ok]	756
+[ok]	757
+[ok]	758
+[ok]	759
+[ok]	760
+[ok]	761
+[ok]	762
+[ok]	763
+[ok]	764
+[ok]	765
+[ok]	766
+[ok]	767
+[ok]	768
+[ok]	769
+[ok]	770
+[ok]	771
+[ok]	772
+[ok]	773
+[ok]	774
+[ok]	775
+[ok]	776
+[ok]	777
+[ok]	778
+[ok]	779
+[ok]	780
+[ok]	781
+[ok]	782
+[ok]	783
+[ok]	784
+[ok]	785
+[ok]	786
+[ok]	787
+[ok]	788
+[ok]	789
+[ok]	790
+[ok]	791
+[ok]	792
+[ok]	793
+[ok]	794
+[ok]	795
+[ok]	796
+[ok]	797
+[ok]	798
+[ok]	799
+[ok]	800
+[ok]	801
+[ok]	802
+[ok]	803
+[ok]	804
+[ok]	805
+[ok]	806
+[ok]	807
+[ok]	808
+[ok]	809
+[ok]	810
+[ok]	811
+[ok]	812
+[ok]	813
+[ok]	814
+[ok]	815
+[ok]	816
+[ok]	817
+[ok]	818
+[ok]	819
+[ok]	820
+[ok]	821
+[ok]	822
+[ok]	823
+[ok]	824
+[ok]	825
+[ok]	826
+[ok]	827
+[ok]	828
+[ok]	829
+[ok]	830
+[ok]	831
+[ok]	832
+[ok]	833
+[ok]	834
+[ok]	835
+[ok]	836
+[ok]	837
+[ok]	838
+[ok]	839
+[ok]	840
+[ok]	841
+[ok]	842
+[ok]	843
+[ok]	844
+[ok]	845
+[ok]	846
+[ok]	847
+[ok]	848
+[ok]	849
+[ok]	850
+[ok]	851
+[ok]	852
+[ok]	853
+[ok]	854
+[ok]	855
+[ok]	856
+[ok]	857
+[ok]	858
+[ok]	859
+[ok]	860
+[ok]	861
+[ok]	862
+[ok]	863
+[ok]	864
+[ok]	865
+[ok]	866
+[ok]	867
+[ok]	868
+[ok]	869
+[ok]	870
+[ok]	871
+[ok]	872
+[ok]	873
+[ok]	874
+[ok]	875
+[ok]	876
+[ok]	877
+[ok]	878
+[ok]	879
+[ok]	880
+[ok]	881
+[ok]	882
+[ok]	883
+[ok]	884
+[ok]	885
+[ok]	886
+[ok]	887
+[ok]	888
+[ok]	889
+[ok]	890
+[ok]	891
+[ok]	892
+[ok]	893
+[ok]	894
+[ok]	895
+[ok]	896
+[ok]	897
+[ok]	898
+[ok]	899
+[ok]	900
+[ok]	901
+[ok]	902
+[ok]	903
+[ok]	904
+[ok]	905
+[ok]	906
+[ok]	907
+[ok]	908
+[ok]	909
+[ok]	910
+[ok]	911
+[ok]	912
+[ok]	913
+[ok]	914
+[ok]	915
+[ok]	916
+[ok]	917
+[ok]	918
+[ok]	919
+[ok]	920
+[ok]	921
+[ok]	922
+[ok]	923
+[ok]	924
+[ok]	925
+[ok]	926
+[ok]	927
+[ok]	928
+[ok]	929
+[ok]	930
+[ok]	931
+[ok]	932
+[ok]	933
+[ok]	934
+[ok]	935
+[ok]	936
+[ok]	937
+[ok]	938
+[ok]	939
+[ok]	940
+[ok]	941
+[ok]	942
+[ok]	943
+[ok]	944
+[ok]	945
+[ok]	946
+[ok]	947
+[ok]	948
+[ok]	949
+[ok]	950
+[ok]	951
+[ok]	952
+[ok]	953
+[ok]	954
+[ok]	955
+[ok]	956
+[ok]	957
+[ok]	958
+[ok]	959
+[ok]	960
+[ok]	961
+[ok]	962
+[ok]	963
+[ok]	964
+[ok]	965
+[ok]	966
+[ok]	967
+[ok]	968
+[ok]	969
+[ok]	970
+[ok]	971
+[ok]	972
+[retry]	973	document loaded empty (Word could not read it)
+[ok]	974
+[ok]	975
+[ok]	976
+[ok]	977
+[ok]	978
+[ok]	979
+[ok]	980
+[ok]	981
+[ok]	982
+[ok]	983
+[ok]	984
+[ok]	985
+[ok]	986
+[ok]	987
+[ok]	988
+[ok]	989
+[ok]	990
+[ok]	991
+[ok]	992
+[ok]	993
+[ok]	994
+[ok]	995
+[ok]	996
+[ok]	997
+[ok]	998
+[ok]	999
+[ok]	1000
+[ok]	1001
+[ok]	1002
+[ok]	1003
+[ok]	1004
+[ok]	1005
+[ok]	1006
+[ok]	1007
+[ok]	1008
+[ok]	1009
+[ok]	1010
+[ok]	1011
+[ok]	1012
+[ok]	1013
+[ok]	1014
+[ok]	1015
+[ok]	1016
+[ok]	1017
+[ok]	1018
+[ok]	1019
+[ok]	1020
+[ok]	1021
+[ok]	1022
+[ok]	1023
+[ok]	1024
+[ok]	1025
+[ok]	1026
+[ok]	1027
+[ok]	1028
+[ok]	1029
+[ok]	1030
+[ok]	1031
+[ok]	1032
+[ok]	1033
+[ok]	1034
+[ok]	1035
+[ok]	1036
+[ok]	1037
+[ok]	1038
+[ok]	1039
+[ok]	1040
+[ok]	1041
+[ok]	1042
+[ok]	1043
+[ok]	1044
+[ok]	1045
+[ok]	1046
+[ok]	1047
+[ok]	1048
+[ok]	1049
+[ok]	1050
+[ok]	1051
+[ok]	1052
+[ok]	1053
+[ok]	1054
+[ok]	1055
+[ok]	1056
+[ok]	1057
+[ok]	1058
+[ok]	1059
+[ok]	1060
+[ok]	1061
+[ok]	1062
+[ok]	1063
+[ok]	1064
+[ok]	1065
+[ok]	1066
+[ok]	1067
+[ok]	1068
+[ok]	1069
+[ok]	1070
+[ok]	1071
+[ok]	1072
+[ok]	1073
+[ok]	1074
+[ok]	1075
+[ok]	1076
+[ok]	1077
+[ok]	1078
+[ok]	1079
+[ok]	1080
+[ok]	1081
+[ok]	1082
+[ok]	1083
+[ok]	1084
+[ok]	1085
+[ok]	1086
+[ok]	1087
+[ok]	1088
+[ok]	1089
+[ok]	1090
+[ok]	1091
+[ok]	1092
+[ok]	1093
+[ok]	1094
+[ok]	1095
+[ok]	1096
+[ok]	1097
+[ok]	1098
+[ok]	1099
+[ok]	1100
+[ok]	1101
+[ok]	1102
+[ok]	1103
+[ok]	1104
+[ok]	1105
+[ok]	1106
+[ok]	1107
+[ok]	1108
+[ok]	1109
+[ok]	1110
+[ok]	1111
+[ok]	1112
+[ok]	1113
+[ok]	1114
+[ok]	1115
+[ok]	1116
+[ok]	1117
+[ok]	1118
+[ok]	1119
+[ok]	1120
+[ok]	1121
+[ok]	1122
+[ok]	1123
+[ok]	1124
+[ok]	1125
+[ok]	1126
+[ok]	1127
+[ok]	1128
+[ok]	1129
+[ok]	1130
+[ok]	1131
+[ok]	1132
+[ok]	1133
+[ok]	1134
+[ok]	1135
+[ok]	1136
+[ok]	1137
+[ok]	1138
+[ok]	1139
+[ok]	1140
+[ok]	1141
+[ok]	1142
+[ok]	1143
+[ok]	1144
+[ok]	1145
+[ok]	1146
+[ok]	1147
+[ok]	1148
+[ok]	1149
+[ok]	1150
+[ok]	1151
+[ok]	1152
+[ok]	1153
+[ok]	1154
+[ok]	1155
+[ok]	1156
+[ok]	1157
+[ok]	1158
+[ok]	1159
+[ok]	1160
+[ok]	1161
+[ok]	1162
+[ok]	1163
+[ok]	1164
+[ok]	1165
+[ok]	1166
+[ok]	1167
+[ok]	1168
+[ok]	1169
+[ok]	1170
+[ok]	1171
+[ok]	1172
+[ok]	1173
+[ok]	1174
+[ok]	1175
+[ok]	1176
+[ok]	1177
+[ok]	1178
+[ok]	1179
+[ok]	1180
+[ok]	1181
+[ok]	1182
+[ok]	1183
+[ok]	1184
+[ok]	1185
+[ok]	1186
+[ok]	1187
+[ok]	1188
+[ok]	1189
+[ok]	1190
+[ok]	1191
+[ok]	1192
+[ok]	1193
+[ok]	1194
+[ok]	1195
+[ok]	1196
+[ok]	1197
+[ok]	1198
+[ok]	1199
+[ok]	1200
+[ok]	1201
+[ok]	1202
+[ok]	1203
+[ok]	1204
+[ok]	1205
+[ok]	1206
+[ok]	1207
+[ok]	1208
+[ok]	1209
+[ok]	1210
+[ok]	1211
+[ok]	1212
+[ok]	1213
+[ok]	1214
+[ok]	1215
+[ok]	1216
+[ok]	1217
+[ok]	1218
+[ok]	1219
+[ok]	1220
+[ok]	1221
+[ok]	1222
+[ok]	1223
+[ok]	1224
+[ok]	1225
+[ok]	1226
+[ok]	1227
+[ok]	1228
+[ok]	1229
+[ok]	1230
+[ok]	1231
+[ok]	1232
+[ok]	1233
+[ok]	1234
+[ok]	1235
+[ok]	1236
+[ok]	1237
+[ok]	1238
+[ok]	1239
+[ok]	1240
+[ok]	1241
+[ok]	1242
+[ok]	1243
+[ok]	1244
+[ok]	1245
+[ok]	1246
+[ok]	1247
+[ok]	1248
+[ok]	1249
+[ok]	1250
+[ok]	1251
+[ok]	1252
+[ok]	1253
+[ok]	1254
+[ok]	1255
+[ok]	1256
+[ok]	1257
+[ok]	1258
+[ok]	1259
+[ok]	1260
+[ok]	1261
+[ok]	1262
+[ok]	1263
+[ok]	1264
+[ok]	1265
+[ok]	1266
+[ok]	1267
+[ok]	1268
+[ok]	1269
+[ok]	1270
+[ok]	1271
+[ok]	1272
+[ok]	1273
+[ok]	1274
+[ok]	1275
+[ok]	1276
+[ok]	1277
+[ok]	1278
+[ok]	1279
+[ok]	1280
+[ok]	1281
+[ok]	1282
+[ok]	1283
+[ok]	1284
+[ok]	1285
+-- newest diagnostic reports: soffice-2026-10-01-013929.ips, soffice-2026-10-01-013928.ips, soffice-2026-10-01-013925.ips, soffice-2026-10-01-013924.ips, soffice-2026-10-01-013916.ips
+2026-10-01 13:28:45.805 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1278/2611
+2026-10-01 13:28:50.830 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1280/2611
+2026-10-01 13:28:55.850 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1282/2611
+2026-10-01 13:29:00.872 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1285/2611
+2026-10-01 13:29:05.889 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1286/2611
+2026-10-01 13:29:10.919 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1288/2611
+2026-10-01 13:29:15.943 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1289/2611
+2026-10-01 13:29:20.963 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1291/2611
+2026-10-01 13:29:25.989 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1292/2611
+2026-10-01 13:29:31.016 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1295/2611
+2026-10-01 13:29:36.044 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1297/2611
+2026-10-01 13:29:41.071 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1298/2611
+2026-10-01 13:29:46.097 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1300/2611
+2026-10-01 13:29:51.117 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1302/2611
+2026-10-01 13:29:56.151 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1304/2611
+2026-10-01 13:30:01.177 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1306/2611
+2026-10-01 13:30:06.201 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1308/2611
+2026-10-01 13:30:11.226 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1310/2611
+2026-10-01 13:30:16.251 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1312/2611
+2026-10-01 13:30:21.279 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1314/2611
+2026-10-01 13:30:26.307 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1316/2611
+2026-10-01 13:30:31.328 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1319/2611
+2026-10-01 13:30:36.361 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1321/2611
+2026-10-01 13:30:41.387 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1323/2611
+2026-10-01 13:30:46.411 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1325/2611
+2026-10-01 13:30:51.439 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1327/2611
+2026-10-01 13:30:56.467 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1329/2611
+2026-10-01 13:31:01.491 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1332/2611
+2026-10-01 13:31:06.522 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1333/2611
+2026-10-01 13:31:11.546 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1336/2611
+2026-10-01 13:31:16.581 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1338/2611
+2026-10-01 13:31:21.608 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1340/2611
+2026-10-01 13:31:26.639 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1342/2611
+2026-10-01 13:31:31.671 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1344/2611
+2026-10-01 13:31:51.703 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1345/2611
+2026-10-01 13:32:11.754 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1346/2611
+2026-10-01 13:32:31.812 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1348/2611
+2026-10-01 13:32:36.840 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1350/2611
+2026-10-01 13:32:41.866 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1352/2611
+2026-10-01 13:32:46.897 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1355/2611
+2026-10-01 13:32:51.920 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1357/2611
+2026-10-01 13:32:56.952 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1360/2611
+2026-10-01 13:33:01.979 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1361/2611
+2026-10-01 13:33:07.000 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1362/2611
+2026-10-01 13:33:12.020 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1363/2611
+2026-10-01 13:33:17.046 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1365/2611
+2026-10-01 13:33:22.067 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1367/2611
+2026-10-01 13:33:27.093 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1369/2611
+2026-10-01 13:33:32.116 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1371/2611
+2026-10-01 13:33:37.138 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1373/2611
+2026-10-01 13:33:42.162 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1375/2611
+2026-10-01 13:33:47.190 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1377/2611
+2026-10-01 13:33:52.233 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1378/2611
+2026-10-01 13:33:57.267 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1380/2611
+2026-10-01 13:34:02.289 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1381/2611
+2026-10-01 13:34:07.313 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1384/2611
+2026-10-01 13:34:12.339 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1386/2611
+2026-10-01 13:34:17.361 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1388/2611
+2026-10-01 13:34:22.390 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1390/2611
+2026-10-01 13:34:27.414 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1392/2611
+2026-10-01 13:34:32.440 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1393/2611
+2026-10-01 13:34:37.472 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1394/2611
+2026-10-01 13:34:42.489 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1395/2611
+2026-10-01 13:34:47.516 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1397/2611
+2026-10-01 13:34:52.542 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1399/2611
+2026-10-01 13:34:57.568 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1402/2611
+2026-10-01 13:35:02.592 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1404/2611
+2026-10-01 13:35:07.621 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1406/2611
+2026-10-01 13:35:12.642 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1407/2611
+2026-10-01 13:35:17.672 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1409/2611
+2026-10-01 13:35:22.702 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1410/2611
+2026-10-01 13:35:27.728 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1412/2611
+2026-10-01 13:35:32.754 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1414/2611
+2026-10-01 13:35:37.775 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1416/2611
+2026-10-01 13:35:42.793 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1419/2611
+2026-10-01 13:35:47.815 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1420/2611
+2026-10-01 13:35:52.836 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1421/2611
+2026-10-01 13:35:57.855 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1422/2611
+2026-10-01 13:36:02.872 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1423/2611
+2026-10-01 13:36:07.898 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1424/2611
+2026-10-01 13:36:12.923 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1425/2611
+2026-10-01 13:36:17.949 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1426/2611
+2026-10-01 13:36:22.974 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1427/2611
+2026-10-01 13:36:27.996 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1428/2611
+2026-10-01 13:36:33.020 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1429/2611
+2026-10-01 13:36:38.040 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1430/2611
+2026-10-01 13:36:43.063 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1431/2611
+2026-10-01 13:36:48.086 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1432/2611
+2026-10-01 13:36:53.110 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1433/2611
+2026-10-01 13:36:58.135 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1434/2611
+2026-10-01 13:37:03.155 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1435/2611
+2026-10-01 13:37:08.175 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1437/2611
+2026-10-01 13:37:13.202 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1438/2611
+2026-10-01 13:37:18.221 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1439/2611
+2026-10-01 13:37:23.237 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1440/2611
+2026-10-01 13:37:28.258 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1441/2611
+2026-10-01 13:37:38.294 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1442/2611
+2026-10-01 13:37:43.318 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1443/2611
+2026-10-01 13:37:48.382 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1444/2611
+2026-10-01 13:37:53.417 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1445/2611
+2026-10-01 13:37:58.435 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1446/2611
+2026-10-01 13:38:03.461 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1447/2611
+2026-10-01 13:38:08.485 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1448/2611
+2026-10-01 13:38:13.507 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1449/2611
+2026-10-01 13:38:18.528 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1450/2611
+2026-10-01 13:38:23.549 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1451/2611
+2026-10-01 13:38:28.575 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1452/2611
+2026-10-01 13:38:33.606 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1453/2611
+2026-10-01 13:38:43.634 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1454/2611
+2026-10-01 13:38:48.661 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1455/2611
+2026-10-01 13:38:53.682 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1456/2611
+2026-10-01 13:38:58.705 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1457/2611
+2026-10-01 13:39:03.730 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1458/2611
+2026-10-01 13:39:08.754 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1459/2611
+2026-10-01 13:39:18.790 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1460/2611
+2026-10-01 13:39:23.819 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1461/2611
+2026-10-01 13:39:28.843 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1462/2611
+2026-10-01 13:39:33.870 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1464/2611
+2026-10-01 13:39:38.902 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1466/2611
+2026-10-01 13:39:43.924 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1468/2611
+2026-10-01 13:39:48.953 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1470/2611
+2026-10-01 13:39:53.978 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1472/2611
+2026-10-01 13:39:59.003 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1473/2611
+2026-10-01 13:40:04.026 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1475/2611
+2026-10-01 13:40:14.081 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1476/2611
+2026-10-01 13:40:19.113 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1478/2611
+2026-10-01 13:40:24.140 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1480/2611
+2026-10-01 13:40:29.162 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1482/2611
+2026-10-01 13:40:34.192 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1484/2611
+2026-10-01 13:40:39.213 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1485/2611
+2026-10-01 13:40:44.232 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1487/2611
+2026-10-01 13:40:49.258 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1489/2611
+2026-10-01 13:40:54.287 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1491/2611
+2026-10-01 13:40:59.314 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1493/2611
+2026-10-01 13:41:04.347 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1495/2611
+2026-10-01 13:41:09.371 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1497/2611
+2026-10-01 13:41:14.396 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1500/2611
+2026-10-01 13:41:19.426 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1501/2611
+2026-10-01 13:41:24.452 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1503/2611
+2026-10-01 13:41:29.473 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1505/2611
+2026-10-01 13:41:34.496 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1506/2611
+2026-10-01 13:41:39.528 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1507/2611
+2026-10-01 13:41:44.556 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1508/2611
+2026-10-01 13:41:49.581 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1509/2611
+2026-10-01 13:41:54.603 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1511/2611
+2026-10-01 13:41:59.629 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1513/2611
+2026-10-01 13:42:04.655 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1515/2611
+2026-10-01 13:42:09.677 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1517/2611
+2026-10-01 13:42:14.703 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1519/2611
+2026-10-01 13:42:19.727 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1521/2611
+2026-10-01 13:42:24.755 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1522/2611
+2026-10-01 13:42:29.802 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1524/2611
+2026-10-01 13:42:34.832 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1525/2611
+2026-10-01 13:42:39.860 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1526/2611
+2026-10-01 13:42:44.888 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1527/2611
+2026-10-01 13:42:49.901 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1528/2611
+2026-10-01 13:42:54.925 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1530/2611
+2026-10-01 13:42:59.953 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1532/2611
+2026-10-01 13:43:04.979 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1534/2611
+2026-10-01 13:43:10.008 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1536/2611
+2026-10-01 13:43:15.032 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1537/2611
+2026-10-01 13:43:20.070 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1540/2611
+2026-10-01 13:43:25.095 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1541/2611
+2026-10-01 13:43:30.124 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1543/2611
+2026-10-01 13:43:35.145 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1545/2611
+2026-10-01 13:43:45.173 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1546/2611
+2026-10-01 13:43:50.194 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1547/2611
+2026-10-01 13:43:55.222 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1549/2611
+2026-10-01 13:44:00.242 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1551/2611
+2026-10-01 13:44:05.271 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1552/2611
+2026-10-01 13:44:10.293 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1553/2611
+2026-10-01 13:44:20.316 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1554/2611
+2026-10-01 13:44:30.349 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1555/2611
+2026-10-01 13:44:35.370 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1557/2611
+2026-10-01 13:44:45.401 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1558/2611
+2026-10-01 13:44:50.428 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1559/2611
+2026-10-01 13:44:55.456 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1560/2611
+2026-10-01 13:45:00.490 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1561/2611
+2026-10-01 13:45:10.535 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1562/2611
+2026-10-01 13:45:15.554 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1563/2611
+2026-10-01 13:45:20.575 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1564/2611
+2026-10-01 13:45:25.607 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1565/2611
+2026-10-01 13:45:30.629 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1566/2611
+2026-10-01 13:45:35.648 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1567/2611
+2026-10-01 13:45:40.674 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1568/2611
+2026-10-01 13:45:45.701 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1569/2611
+2026-10-01 13:45:50.719 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1570/2611
+2026-10-01 13:45:55.740 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1571/2611
+2026-10-01 13:46:05.768 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1572/2611
+2026-10-01 13:46:10.790 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1573/2611
+2026-10-01 13:46:15.812 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1574/2611
+2026-10-01 13:46:20.836 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1575/2611
+2026-10-01 13:46:30.863 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1576/2611
+2026-10-01 13:46:35.893 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1577/2611
+2026-10-01 13:46:40.914 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1578/2611
+2026-10-01 13:46:50.958 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1579/2611
+2026-10-01 13:46:55.987 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1580/2611
+2026-10-01 13:47:01.010 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1581/2611
+2026-10-01 13:47:06.035 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1582/2611
+2026-10-01 13:47:11.059 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1583/2611
+2026-10-01 13:47:16.082 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1584/2611
+2026-10-01 13:47:21.107 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1585/2611
+2026-10-01 13:47:26.214 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1586/2611
+2026-10-01 13:47:36.245 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1587/2611
+2026-10-01 13:47:41.269 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1588/2611
+2026-10-01 13:47:46.296 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1589/2611
+2026-10-01 13:47:51.321 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1591/2611
+2026-10-01 13:47:56.348 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1593/2611
+2026-10-01 13:48:01.365 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1595/2611
+2026-10-01 13:48:06.387 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1596/2611
+2026-10-01 13:48:11.409 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1598/2611
+2026-10-01 13:48:16.441 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1599/2611
+2026-10-01 13:48:21.462 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1600/2611
+2026-10-01 13:48:26.484 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1601/2611
+2026-10-01 13:48:31.505 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1602/2611
+2026-10-01 13:48:36.527 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1603/2611
+2026-10-01 13:48:46.549 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1604/2611
+2026-10-01 13:48:51.573 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1605/2611
+2026-10-01 13:48:56.593 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1606/2611
+2026-10-01 13:49:01.613 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1607/2611
+2026-10-01 13:49:06.634 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1608/2611
+2026-10-01 13:49:11.660 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1609/2611
+2026-10-01 13:49:16.681 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1610/2611
+2026-10-01 13:49:26.703 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1611/2611
+2026-10-01 13:49:31.745 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1612/2611
+2026-10-01 13:49:36.772 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1613/2611
+2026-10-01 13:49:41.798 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1614/2611
+2026-10-01 13:49:51.826 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1615/2611
+2026-10-01 13:49:56.849 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1616/2611
+2026-10-01 13:50:01.872 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1617/2611
+2026-10-01 13:50:06.901 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1618/2611
+2026-10-01 13:50:11.932 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1619/2611
+2026-10-01 13:50:16.957 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1620/2611
+2026-10-01 13:50:21.980 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1621/2611
+2026-10-01 13:50:32.022 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1622/2611
+2026-10-01 13:50:37.048 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1623/2611
+2026-10-01 13:50:42.071 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1624/2611
+2026-10-01 13:50:47.094 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1625/2611
+2026-10-01 13:50:52.111 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1626/2611
+2026-10-01 13:50:57.143 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1627/2611
+2026-10-01 13:51:02.171 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1629/2611
+2026-10-01 13:51:07.198 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1631/2611
+2026-10-01 13:51:12.226 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1632/2611
+2026-10-01 13:51:17.251 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1634/2611
+2026-10-01 13:51:22.284 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1635/2611
+2026-10-01 13:51:27.315 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1637/2611
+2026-10-01 13:51:32.340 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1638/2611
+2026-10-01 13:51:37.365 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1639/2611
+2026-10-01 13:51:57.448 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1641/2611
+2026-10-01 13:52:02.472 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1643/2611
+2026-10-01 13:52:07.499 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1644/2611
+2026-10-01 13:52:12.523 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1646/2611
+2026-10-01 13:52:17.544 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1648/2611
+2026-10-01 13:52:22.564 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1649/2611
+2026-10-01 13:52:27.583 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1651/2611
+2026-10-01 13:52:32.602 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1652/2611
+2026-10-01 13:52:37.632 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1654/2611
+2026-10-01 13:52:42.660 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1656/2611
+2026-10-01 13:52:47.691 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1658/2611
+2026-10-01 13:52:52.706 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1659/2611
+2026-10-01 13:52:57.732 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1661/2611
+2026-10-01 13:53:02.757 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1662/2611
+2026-10-01 13:53:07.784 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1664/2611
+2026-10-01 13:53:12.812 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1666/2611
+2026-10-01 13:53:17.838 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1668/2611
+2026-10-01 13:53:22.862 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1670/2611
+2026-10-01 13:53:27.889 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1671/2611
+2026-10-01 13:53:32.914 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1673/2611
+2026-10-01 13:53:37.946 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1675/2611
+2026-10-01 13:53:42.973 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1676/2611
+2026-10-01 13:53:47.999 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1677/2611
+2026-10-01 13:53:53.018 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1679/2611
+2026-10-01 13:53:58.043 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1681/2611
+2026-10-01 13:54:03.071 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1683/2611
+2026-10-01 13:54:08.099 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1684/2611
+2026-10-01 13:54:13.127 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1686/2611
+2026-10-01 13:54:18.162 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1688/2611
+2026-10-01 13:54:23.189 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1689/2611
+2026-10-01 13:54:28.216 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1691/2611
+2026-10-01 13:54:33.240 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1693/2611
+2026-10-01 13:54:38.265 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1694/2611
+2026-10-01 13:54:43.292 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1696/2611
+2026-10-01 13:54:48.318 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1698/2611
+2026-10-01 13:54:53.338 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1699/2611
+2026-10-01 13:54:58.361 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1700/2611
+2026-10-01 13:55:03.378 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1701/2611
+2026-10-01 13:55:08.405 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1702/2611
+2026-10-01 13:55:13.420 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1703/2611
+2026-10-01 13:55:18.439 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1705/2611
+2026-10-01 13:55:23.467 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1707/2611
+2026-10-01 13:55:28.494 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1708/2611
+2026-10-01 13:55:33.517 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1710/2611
+2026-10-01 13:55:38.545 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1712/2611
+2026-10-01 13:55:43.570 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1713/2611
+2026-10-01 13:55:48.594 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1715/2611
+2026-10-01 13:55:53.622 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1717/2611
+2026-10-01 13:55:58.654 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1718/2611
+2026-10-01 13:56:03.683 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1720/2611
+2026-10-01 13:56:08.713 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1722/2611
+2026-10-01 13:56:13.738 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1724/2611
+2026-10-01 13:56:18.765 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1726/2611
+2026-10-01 13:56:23.787 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1727/2611
+2026-10-01 13:56:28.815 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1729/2611
+2026-10-01 13:56:33.841 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1730/2611
+2026-10-01 13:56:38.873 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1732/2611
+2026-10-01 13:56:43.901 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1734/2611
+2026-10-01 13:56:48.925 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1735/2611
+2026-10-01 13:56:53.949 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1737/2611
+2026-10-01 13:56:58.975 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1739/2611
+2026-10-01 13:57:03.999 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1740/2611
+2026-10-01 13:57:09.017 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1742/2611
+2026-10-01 13:57:14.046 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1743/2611
+2026-10-01 13:57:19.072 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1745/2611
+2026-10-01 13:57:24.109 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1746/2611
+2026-10-01 13:57:29.136 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1747/2611
+2026-10-01 13:57:34.154 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1748/2611
+2026-10-01 13:57:39.179 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1750/2611
+2026-10-01 13:57:49.207 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1752/2611
+2026-10-01 13:57:54.234 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1753/2611
+2026-10-01 13:57:59.262 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1754/2611
+2026-10-01 13:58:04.283 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1755/2611
+2026-10-01 13:58:09.313 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1756/2611
+2026-10-01 13:58:14.343 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1757/2611
+2026-10-01 13:58:19.366 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1758/2611
+2026-10-01 13:58:24.394 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1759/2611
+2026-10-01 13:58:29.422 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1761/2611
+2026-10-01 13:58:34.437 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1763/2611
+2026-10-01 13:58:39.459 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1764/2611
+2026-10-01 13:58:44.484 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1766/2611
+2026-10-01 13:58:49.511 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1767/2611
+2026-10-01 13:58:54.535 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1769/2611
+2026-10-01 13:58:59.565 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1771/2611
+2026-10-01 13:59:04.585 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1773/2611
+2026-10-01 13:59:09.611 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1774/2611
+2026-10-01 13:59:14.637 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1775/2611
+2026-10-01 13:59:19.663 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1777/2611
+2026-10-01 13:59:24.685 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1778/2611
+2026-10-01 13:59:29.712 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1779/2611
+2026-10-01 13:59:34.742 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1780/2611
+2026-10-01 13:59:39.770 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1781/2611
+2026-10-01 13:59:44.799 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1782/2611
+2026-10-01 13:59:49.828 | INFO     | __main__:_loop:1067 - [batch pdf 1] 1784/2611
+2026-10-01 14:00:38.826 | WARNING  | __main__:_loop:1072 - [batch pdf 1] item 1785/2611 open for more than 30 s:
+-- Word windows {name, subrole}: ,
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-1.log:
+[ok]	0
+[ok]	1
+[ok]	2
+[ok]	3
+[ok]	4
+[ok]	5
+[ok]	6
+[ok]	7
+[ok]	8
+[ok]	9
+[ok]	10
+[ok]	11
+[ok]	12
+[ok]	13
+[ok]	14
+[ok]	15
+[ok]	16
+[ok]	17
+[ok]	18
+[ok]	19
+[ok]	20
+[ok]	21
+[ok]	22
+[ok]	23
+[ok]	24
+[ok]	25
+[ok]	26
+[ok]	27
+[ok]	28
+[ok]	29
+[ok]	30
+[ok]	31
+[ok]	32
+[ok]	33
+[ok]	34
+[ok]	35
+[ok]	36
+[ok]	37
+[ok]	38
+[ok]	39
+[ok]	40
+[ok]	41
+[ok]	42
+[ok]	43
+[ok]	44
+[ok]	45
+[retry]	46	document loaded empty (Word could not read it)
+[ok]	47
+[retry]	48	document loaded empty (Word could not read it)
+[ok]	49
+[retry]	50	document loaded empty (Word could not read it)
+[ok]	51
+[retry]	52	document loaded empty (Word could not read it)
+[ok]	53
+[retry]	54	document loaded empty (Word could not read it)
+[ok]	55
+[retry]	56	document loaded empty (Word could not read it)
+[ok]	57
+[retry]	58	document loaded empty (Word could not read it)
+[ok]	59
+[ok]	60
+[ok]	61
+[ok]	62
+[ok]	63
+[ok]	64
+[ok]	65
+[ok]	66
+[ok]	67
+[ok]	68
+[ok]	69
+[ok]	70
+[ok]	71
+[ok]	72
+[ok]	73
+[ok]	74
+[ok]	75
+[ok]	76
+[ok]	77
+[ok]	78
+[ok]	79
+[ok]	80
+[ok]	81
+[ok]	82
+[ok]	83
+[ok]	84
+[ok]	85
+[ok]	86
+[ok]	87
+[ok]	88
+[ok]	89
+[ok]	90
+[ok]	91
+[ok]	92
+[ok]	93
+[ok]	94
+[ok]	95
+[ok]	96
+[ok]	97
+[ok]	98
+[ok]	99
+[ok]	100
+[ok]	101
+[ok]	102
+[ok]	103
+[ok]	104
+[ok]	105
+[ok]	106
+[ok]	107
+[ok]	108
+[ok]	109
+[ok]	110
+[ok]	111
+[ok]	112
+[ok]	113
+[ok]	114
+[ok]	115
+[ok]	116
+[ok]	117
+[ok]	118
+[ok]	119
+[ok]	120
+[ok]	121
+[ok]	122
+[ok]	123
+[ok]	124
+[ok]	125
+[ok]	126
+[ok]	127
+[ok]	128
+[ok]	129
+[ok]	130
+[ok]	131
+[ok]	132
+[ok]	133
+[ok]	134
+[ok]	135
+[ok]	136
+[ok]	137
+[ok]	138
+[ok]	139
+[ok]	140
+[ok]	141
+[ok]	142
+[ok]	143
+[ok]	144
+[ok]	145
+[ok]	146
+[ok]	147
+[ok]	148
+[ok]	149
+[ok]	150
+[ok]	151
+[ok]	152
+[ok]	153
+[ok]	154
+[ok]	155
+[ok]	156
+[ok]	157
+[ok]	158
+[ok]	159
+[ok]	160
+[ok]	161
+[ok]	162
+[ok]	163
+[ok]	164
+[ok]	165
+[ok]	166
+[ok]	167
+[ok]	168
+[ok]	169
+[ok]	170
+[ok]	171
+[ok]	172
+[ok]	173
+[ok]	174
+[ok]	175
+[ok]	176
+[ok]	177
+[ok]	178
+[ok]	179
+[ok]	180
+[ok]	181
+[ok]	182
+[ok]	183
+[ok]	184
+[ok]	185
+[ok]	186
+[ok]	187
+[ok]	188
+[ok]	189
+[ok]	190
+[ok]	191
+[ok]	192
+[ok]	193
+[ok]	194
+[ok]	195
+[ok]	196
+[ok]	197
+[ok]	198
+[ok]	199
+[ok]	200
+[ok]	201
+[ok]	202
+[ok]	203
+[ok]	204
+[ok]	205
+[ok]	206
+[ok]	207
+[ok]	208
+[ok]	209
+[ok]	210
+[ok]	211
+[ok]	212
+[ok]	213
+[ok]	214
+[ok]	215
+[ok]	216
+[ok]	217
+[ok]	218
+[ok]	219
+[ok]	220
+[ok]	221
+[ok]	222
+[ok]	223
+[ok]	224
+[ok]	225
+[ok]	226
+[ok]	227
+[ok]	228
+[ok]	229
+[ok]	230
+[ok]	231
+[ok]	232
+[ok]	233
+[ok]	234
+[ok]	235
+[ok]	236
+[ok]	237
+[ok]	238
+[ok]	239
+[ok]	240
+[ok]	241
+[ok]	242
+[ok]	243
+[ok]	244
+[ok]	245
+[ok]	246
+[ok]	247
+[ok]	248
+[ok]	249
+[ok]	250
+[ok]	251
+[ok]	252
+[ok]	253
+[ok]	254
+[ok]	255
+[ok]	256
+[ok]	257
+[ok]	258
+[ok]	259
+[ok]	260
+[ok]	261
+[ok]	262
+[ok]	263
+[ok]	264
+[ok]	265
+[ok]	266
+[ok]	267
+[ok]	268
+[ok]	269
+[ok]	270
+[ok]	271
+[ok]	272
+[retry]	273	document loaded empty (Word could not read it)
+[ok]	274
+[ok]	275
+[ok]	276
+[ok]	277
+[ok]	278
+[ok]	279
+[ok]	280
+[ok]	281
+[ok]	282
+[ok]	283
+[ok]	284
+[ok]	285
+[ok]	286
+[ok]	287
+[ok]	288
+[ok]	289
+[ok]	290
+[ok]	291
+[ok]	292
+[ok]	293
+[ok]	294
+[ok]	295
+[ok]	296
+[ok]	297
+[ok]	298
+[ok]	299
+[ok]	300
+[ok]	301
+[ok]	302
+[ok]	303
+[ok]	304
+[ok]	305
+[ok]	306
+[ok]	307
+[ok]	308
+[ok]	309
+[ok]	310
+[ok]	311
+[ok]	312
+[ok]	313
+[ok]	314
+[ok]	315
+[ok]	316
+[ok]	317
+[ok]	318
+[ok]	319
+[ok]	320
+[ok]	321
+[ok]	322
+[ok]	323
+[ok]	324
+[ok]	325
+[ok]	326
+[ok]	327
+[ok]	328
+[ok]	329
+[ok]	330
+[ok]	331
+[ok]	332
+[ok]	333
+[ok]	334
+[ok]	335
+[ok]	336
+[ok]	337
+[ok]	338
+[ok]	339
+[ok]	340
+[ok]	341
+[ok]	342
+[ok]	343
+[ok]	344
+[ok]	345
+[ok]	346
+[ok]	347
+[ok]	348
+[ok]	349
+[ok]	350
+[ok]	351
+[ok]	352
+[ok]	353
+[ok]	354
+[ok]	355
+[ok]	356
+[ok]	357
+[ok]	358
+[ok]	359
+[ok]	360
+[ok]	361
+[ok]	362
+[ok]	363
+[ok]	364
+[ok]	365
+[ok]	366
+[ok]	367
+[ok]	368
+[ok]	369
+[ok]	370
+[ok]	371
+[ok]	372
+[ok]	373
+[ok]	374
+[ok]	375
+[ok]	376
+[ok]	377
+[ok]	378
+[ok]	379
+[ok]	380
+[ok]	381
+[ok]	382
+[ok]	383
+[ok]	384
+[ok]	385
+[ok]	386
+[ok]	387
+[ok]	388
+[ok]	389
+[ok]	390
+[ok]	391
+[ok]	392
+[ok]	393
+[ok]	394
+[ok]	395
+[ok]	396
+[ok]	397
+[ok]	398
+[ok]	399
+[ok]	400
+[ok]	401
+[ok]	402
+[ok]	403
+[ok]	404
+[ok]	405
+[ok]	406
+[ok]	407
+[ok]	408
+[ok]	409
+[ok]	410
+[ok]	411
+[ok]	412
+[ok]	413
+[ok]	414
+[ok]	415
+[ok]	416
+[ok]	417
+[ok]	418
+[ok]	419
+[ok]	420
+[ok]	421
+[ok]	422
+[ok]	423
+[ok]	424
+[ok]	425
+[ok]	426
+[ok]	427
+[ok]	428
+[ok]	429
+[ok]	430
+[ok]	431
+[ok]	432
+[ok]	433
+[ok]	434
+[ok]	435
+[ok]	436
+[ok]	437
+[ok]	438
+[ok]	439
+[ok]	440
+[ok]	441
+[ok]	442
+[ok]	443
+[ok]	444
+[ok]	445
+[ok]	446
+[ok]	447
+[ok]	448
+[ok]	449
+[ok]	450
+[ok]	451
+[ok]	452
+[ok]	453
+[ok]	454
+[ok]	455
+[ok]	456
+[ok]	457
+[ok]	458
+[ok]	459
+[ok]	460
+[ok]	461
+[ok]	462
+[ok]	463
+[ok]	464
+[ok]	465
+[ok]	466
+[ok]	467
+[ok]	468
+[ok]	469
+[ok]	470
+[ok]	471
+[ok]	472
+[ok]	473
+[ok]	474
+[ok]	475
+[ok]	476
+[ok]	477
+[ok]	478
+[ok]	479
+[ok]	480
+[ok]	481
+[ok]	482
+[ok]	483
+[ok]	484
+[ok]	485
+[ok]	486
+[ok]	487
+[ok]	488
+[ok]	489
+[ok]	490
+[ok]	491
+[ok]	492
+[ok]	493
+[ok]	494
+[ok]	495
+[ok]	496
+[ok]	497
+[ok]	498
+[ok]	499
+[ok]	500
+[ok]	501
+[ok]	502
+[ok]	503
+[ok]	504
+[ok]	505
+[ok]	506
+[ok]	507
+[ok]	508
+[ok]	509
+[ok]	510
+[ok]	511
+[ok]	512
+[ok]	513
+[ok]	514
+[ok]	515
+[ok]	516
+[ok]	517
+[ok]	518
+[ok]	519
+[ok]	520
+[ok]	521
+[ok]	522
+[ok]	523
+[ok]	524
+[ok]	525
+[ok]	526
+[ok]	527
+[ok]	528
+[ok]	529
+[ok]	530
+[ok]	531
+[ok]	532
+[ok]	533
+[ok]	534
+[ok]	535
+[ok]	536
+[ok]	537
+[ok]	538
+[ok]	539
+[ok]	540
+[ok]	541
+[ok]	542
+[ok]	543
+[ok]	544
+[ok]	545
+[ok]	546
+[ok]	547
+[ok]	548
+[ok]	549
+[ok]	550
+[ok]	551
+[ok]	552
+[ok]	553
+[ok]	554
+[ok]	555
+[ok]	556
+[ok]	557
+[ok]	558
+[ok]	559
+[ok]	560
+[ok]	561
+[ok]	562
+[ok]	563
+[ok]	564
+[ok]	565
+[ok]	566
+[ok]	567
+[ok]	568
+[ok]	569
+[ok]	570
+[ok]	571
+[ok]	572
+[ok]	573
+[ok]	574
+[ok]	575
+[ok]	576
+[ok]	577
+[ok]	578
+[ok]	579
+[ok]	580
+[ok]	581
+[ok]	582
+[ok]	583
+[ok]	584
+[ok]	585
+[ok]	586
+[ok]	587
+[ok]	588
+[ok]	589
+[ok]	590
+[ok]	591
+[ok]	592
+[ok]	593
+[ok]	594
+[ok]	595
+[ok]	596
+[ok]	597
+[ok]	598
+[ok]	599
+[ok]	600
+[ok]	601
+[ok]	602
+[ok]	603
+[ok]	604
+[ok]	605
+[ok]	606
+[ok]	607
+[ok]	608
+[ok]	609
+[ok]	610
+[ok]	611
+[ok]	612
+[ok]	613
+[ok]	614
+[ok]	615
+[ok]	616
+[ok]	617
+[ok]	618
+[ok]	619
+[ok]	620
+[ok]	621
+[ok]	622
+[ok]	623
+[ok]	624
+[ok]	625
+[ok]	626
+[ok]	627
+[ok]	628
+[ok]	629
+[ok]	630
+[ok]	631
+[ok]	632
+[ok]	633
+[ok]	634
+[ok]	635
+[ok]	636
+[ok]	637
+[ok]	638
+[ok]	639
+[ok]	640
+[ok]	641
+[ok]	642
+[ok]	643
+[ok]	644
+[ok]	645
+[ok]	646
+[ok]	647
+[ok]	648
+[ok]	649
+[ok]	650
+[ok]	651
+[ok]	652
+[ok]	653
+[ok]	654
+[ok]	655
+[ok]	656
+[ok]	657
+[ok]	658
+[ok]	659
+[ok]	660
+[ok]	661
+[ok]	662
+[ok]	663
+[ok]	664
+[ok]	665
+[ok]	666
+[ok]	667
+[ok]	668
+[ok]	669
+[ok]	670
+[ok]	671
+[ok]	672
+[ok]	673
+[ok]	674
+[ok]	675
+[ok]	676
+[ok]	677
+[ok]	678
+[ok]	679
+[ok]	680
+[ok]	681
+[ok]	682
+[ok]	683
+[ok]	684
+[ok]	685
+[ok]	686
+[ok]	687
+[ok]	688
+[ok]	689
+[ok]	690
+[ok]	691
+[ok]	692
+[ok]	693
+[ok]	694
+[ok]	695
+[ok]	696
+[ok]	697
+[ok]	698
+[ok]	699
+[ok]	700
+[ok]	701
+[ok]	702
+[ok]	703
+[ok]	704
+[ok]	705
+[ok]	706
+[ok]	707
+[ok]	708
+[ok]	709
+[ok]	710
+[ok]	711
+[ok]	712
+[ok]	713
+[ok]	714
+[ok]	715
+[ok]	716
+[ok]	717
+[ok]	718
+[ok]	719
+[ok]	720
+[ok]	721
+[ok]	722
+[ok]	723
+[ok]	724
+[ok]	725
+[ok]	726
+[ok]	727
+[ok]	728
+[ok]	729
+[ok]	730
+[ok]	731
+[ok]	732
+[ok]	733
+[ok]	734
+[ok]	735
+[ok]	736
+[ok]	737
+[ok]	738
+[ok]	739
+[ok]	740
+[ok]	741
+[ok]	742
+[ok]	743
+[ok]	744
+[ok]	745
+[ok]	746
+[ok]	747
+[ok]	748
+[ok]	749
+[ok]	750
+[ok]	751
+[ok]	752
+[ok]	753
+[ok]	754
+[ok]	755
+[ok]	756
+[ok]	757
+[ok]	758
+[ok]	759
+[ok]	760
+[ok]	761
+[ok]	762
+[ok]	763
+[ok]	764
+[ok]	765
+[ok]	766
+[ok]	767
+[ok]	768
+[ok]	769
+[ok]	770
+[ok]	771
+[ok]	772
+[ok]	773
+[ok]	774
+[ok]	775
+[ok]	776
+[ok]	777
+[ok]	778
+[ok]	779
+[ok]	780
+[ok]	781
+[ok]	782
+[ok]	783
+[ok]	784
+[ok]	785
+[ok]	786
+[ok]	787
+[ok]	788
+[ok]	789
+[ok]	790
+[ok]	791
+[ok]	792
+[ok]	793
+[ok]	794
+[ok]	795
+[ok]	796
+[ok]	797
+[ok]	798
+[ok]	799
+[ok]	800
+[ok]	801
+[ok]	802
+[ok]	803
+[ok]	804
+[ok]	805
+[ok]	806
+[ok]	807
+[ok]	808
+[ok]	809
+[ok]	810
+[ok]	811
+[ok]	812
+[ok]	813
+[ok]	814
+[ok]	815
+[ok]	816
+[ok]	817
+[ok]	818
+[ok]	819
+[ok]	820
+[ok]	821
+[ok]	822
+[ok]	823
+[ok]	824
+[ok]	825
+[ok]	826
+[ok]	827
+[ok]	828
+[ok]	829
+[ok]	830
+[ok]	831
+[ok]	832
+[ok]	833
+[ok]	834
+[ok]	835
+[ok]	836
+[ok]	837
+[ok]	838
+[ok]	839
+[ok]	840
+[ok]	841
+[ok]	842
+[ok]	843
+[ok]	844
+[ok]	845
+[ok]	846
+[ok]	847
+[ok]	848
+[ok]	849
+[ok]	850
+[ok]	851
+[ok]	852
+[ok]	853
+[ok]	854
+[ok]	855
+[ok]	856
+[ok]	857
+[ok]	858
+[ok]	859
+[ok]	860
+[ok]	861
+[ok]	862
+[ok]	863
+[ok]	864
+[ok]	865
+[ok]	866
+[ok]	867
+[ok]	868
+[ok]	869
+[ok]	870
+[ok]	871
+[ok]	872
+[ok]	873
+[ok]	874
+[ok]	875
+[ok]	876
+[ok]	877
+[ok]	878
+[ok]	879
+[ok]	880
+[ok]	881
+[ok]	882
+[ok]	883
+[ok]	884
+[ok]	885
+[ok]	886
+[ok]	887
+[ok]	888
+[ok]	889
+[ok]	890
+[ok]	891
+[ok]	892
+[ok]	893
+[ok]	894
+[ok]	895
+[ok]	896
+[ok]	897
+[ok]	898
+[ok]	899
+[ok]	900
+[ok]	901
+[ok]	902
+[ok]	903
+[ok]	904
+[ok]	905
+[ok]	906
+[ok]	907
+[ok]	908
+[ok]	909
+[ok]	910
+[ok]	911
+[ok]	912
+[ok]	913
+[ok]	914
+[ok]	915
+[ok]	916
+[ok]	917
+[ok]	918
+[ok]	919
+[ok]	920
+[ok]	921
+[ok]	922
+[ok]	923
+[ok]	924
+[ok]	925
+[ok]	926
+[ok]	927
+[ok]	928
+[ok]	929
+[ok]	930
+[ok]	931
+[ok]	932
+[ok]	933
+[ok]	934
+[ok]	935
+[ok]	936
+[ok]	937
+[ok]	938
+[ok]	939
+[ok]	940
+[ok]	941
+[ok]	942
+[ok]	943
+[ok]	944
+[ok]	945
+[ok]	946
+[ok]	947
+[ok]	948
+[ok]	949
+[ok]	950
+[ok]	951
+[ok]	952
+[ok]	953
+[ok]	954
+[ok]	955
+[ok]	956
+[ok]	957
+[ok]	958
+[ok]	959
+[ok]	960
+[ok]	961
+[ok]	962
+[ok]	963
+[ok]	964
+[ok]	965
+[ok]	966
+[ok]	967
+[ok]	968
+[ok]	969
+[ok]	970
+[ok]	971
+[ok]	972
+[retry]	973	document loaded empty (Word could not read it)
+[ok]	974
+[ok]	975
+[ok]	976
+[ok]	977
+[ok]	978
+[ok]	979
+[ok]	980
+[ok]	981
+[ok]	982
+[ok]	983
+[ok]	984
+[ok]	985
+[ok]	986
+[ok]	987
+[ok]	988
+[ok]	989
+[ok]	990
+[ok]	991
+[ok]	992
+[ok]	993
+[ok]	994
+[ok]	995
+[ok]	996
+[ok]	997
+[ok]	998
+[ok]	999
+[ok]	1000
+[ok]	1001
+[ok]	1002
+[ok]	1003
+[ok]	1004
+[ok]	1005
+[ok]	1006
+[ok]	1007
+[ok]	1008
+[ok]	1009
+[ok]	1010
+[ok]	1011
+[ok]	1012
+[ok]	1013
+[ok]	1014
+[ok]	1015
+[ok]	1016
+[ok]	1017
+[ok]	1018
+[ok]	1019
+[ok]	1020
+[ok]	1021
+[ok]	1022
+[ok]	1023
+[ok]	1024
+[ok]	1025
+[ok]	1026
+[ok]	1027
+[ok]	1028
+[ok]	1029
+[ok]	1030
+[ok]	1031
+[ok]	1032
+[ok]	1033
+[ok]	1034
+[ok]	1035
+[ok]	1036
+[ok]	1037
+[ok]	1038
+[ok]	1039
+[ok]	1040
+[ok]	1041
+[ok]	1042
+[ok]	1043
+[ok]	1044
+[ok]	1045
+[ok]	1046
+[ok]	1047
+[ok]	1048
+[ok]	1049
+[ok]	1050
+[ok]	1051
+[ok]	1052
+[ok]	1053
+[ok]	1054
+[ok]	1055
+[ok]	1056
+[ok]	1057
+[ok]	1058
+[ok]	1059
+[ok]	1060
+[ok]	1061
+[ok]	1062
+[ok]	1063
+[ok]	1064
+[ok]	1065
+[ok]	1066
+[ok]	1067
+[ok]	1068
+[ok]	1069
+[ok]	1070
+[ok]	1071
+[ok]	1072
+[ok]	1073
+[ok]	1074
+[ok]	1075
+[ok]	1076
+[ok]	1077
+[ok]	1078
+[ok]	1079
+[ok]	1080
+[ok]	1081
+[ok]	1082
+[ok]	1083
+[ok]	1084
+[ok]	1085
+[ok]	1086
+[ok]	1087
+[ok]	1088
+[ok]	1089
+[ok]	1090
+[ok]	1091
+[ok]	1092
+[ok]	1093
+[ok]	1094
+[ok]	1095
+[ok]	1096
+[ok]	1097
+[ok]	1098
+[ok]	1099
+[ok]	1100
+[ok]	1101
+[ok]	1102
+[ok]	1103
+[ok]	1104
+[ok]	1105
+[ok]	1106
+[ok]	1107
+[ok]	1108
+[ok]	1109
+[ok]	1110
+[ok]	1111
+[ok]	1112
+[ok]	1113
+[ok]	1114
+[ok]	1115
+[ok]	1116
+[ok]	1117
+[ok]	1118
+[ok]	1119
+[ok]	1120
+[ok]	1121
+[ok]	1122
+[ok]	1123
+[ok]	1124
+[ok]	1125
+[ok]	1126
+[ok]	1127
+[ok]	1128
+[ok]	1129
+[ok]	1130
+[ok]	1131
+[ok]	1132
+[ok]	1133
+[ok]	1134
+[ok]	1135
+[ok]	1136
+[ok]	1137
+[ok]	1138
+[ok]	1139
+[ok]	1140
+[ok]	1141
+[ok]	1142
+[ok]	1143
+[ok]	1144
+[ok]	1145
+[ok]	1146
+[ok]	1147
+[ok]	1148
+[ok]	1149
+[ok]	1150
+[ok]	1151
+[ok]	1152
+[ok]	1153
+[ok]	1154
+[ok]	1155
+[ok]	1156
+[ok]	1157
+[ok]	1158
+[ok]	1159
+[ok]	1160
+[ok]	1161
+[ok]	1162
+[ok]	1163
+[ok]	1164
+[ok]	1165
+[ok]	1166
+[ok]	1167
+[ok]	1168
+[ok]	1169
+[ok]	1170
+[ok]	1171
+[ok]	1172
+[ok]	1173
+[ok]	1174
+[ok]	1175
+[ok]	1176
+[ok]	1177
+[ok]	1178
+[ok]	1179
+[ok]	1180
+[ok]	1181
+[ok]	1182
+[ok]	1183
+[ok]	1184
+[ok]	1185
+[ok]	1186
+[ok]	1187
+[ok]	1188
+[ok]	1189
+[ok]	1190
+[ok]	1191
+[ok]	1192
+[ok]	1193
+[ok]	1194
+[ok]	1195
+[ok]	1196
+[ok]	1197
+[ok]	1198
+[ok]	1199
+[ok]	1200
+[ok]	1201
+[ok]	1202
+[ok]	1203
+[ok]	1204
+[ok]	1205
+[ok]	1206
+[ok]	1207
+[ok]	1208
+[ok]	1209
+[ok]	1210
+[ok]	1211
+[ok]	1212
+[ok]	1213
+[ok]	1214
+[ok]	1215
+[ok]	1216
+[ok]	1217
+[ok]	1218
+[ok]	1219
+[ok]	1220
+[ok]	1221
+[ok]	1222
+[ok]	1223
+[ok]	1224
+[ok]	1225
+[ok]	1226
+[ok]	1227
+[ok]	1228
+[ok]	1229
+[ok]	1230
+[ok]	1231
+[ok]	1232
+[ok]	1233
+[ok]	1234
+[ok]	1235
+[ok]	1236
+[ok]	1237
+[ok]	1238
+[ok]	1239
+[ok]	1240
+[ok]	1241
+[ok]	1242
+[ok]	1243
+[ok]	1244
+[ok]	1245
+[ok]	1246
+[ok]	1247
+[ok]	1248
+[ok]	1249
+[ok]	1250
+[ok]	1251
+[ok]	1252
+[ok]	1253
+[ok]	1254
+[ok]	1255
+[ok]	1256
+[ok]	1257
+[ok]	1258
+[ok]	1259
+[ok]	1260
+[ok]	1261
+[ok]	1262
+[ok]	1263
+[ok]	1264
+[ok]	1265
+[ok]	1266
+[ok]	1267
+[ok]	1268
+[ok]	1269
+[ok]	1270
+[ok]	1271
+[ok]	1272
+[ok]	1273
+[ok]	1274
+[ok]	1275
+[ok]	1276
+[ok]	1277
+[ok]	1278
+[ok]	1279
+[ok]	1280
+[ok]	1281
+[ok]	1282
+[ok]	1283
+[ok]	1284
+[ok]	1285
+[ok]	1286
+[ok]	1287
+[fail]	1288	Microsoft Word got an error: document "01288__7e4c9416aa_00803e70c3646e42abab322238df606c847686168795a703__vs__1424386e9b_017447de83753a0e3b7afc659df038ef56972925336c6a5b_redline_c8545d372b_jubarte-0.10.1.docx" doesn’t understand the “save as” message.
+[ok]	1289
+[ok]	1290
+[ok]	1291
+[ok]	1292
+[ok]	1293
+[ok]	1294
+[ok]	1295
+[ok]	1296
+[ok]	1297
+[ok]	1298
+[ok]	1299
+[ok]	1300
+[ok]	1301
+[ok]	1302
+[ok]	1303
+[ok]	1304
+[ok]	1305
+[ok]	1306
+[ok]	1307
+[ok]	1308
+[ok]	1309
+[ok]	1310
+[ok]	1311
+[ok]	1312
+[ok]	1313
+[ok]	1314
+[ok]	1315
+[ok]	1316
+[ok]	1317
+[ok]	1318
+[ok]	1319
+[ok]	1320
+[ok]	1321
+[ok]	1322
+[ok]	1323
+[ok]	1324
+[ok]	1325
+[ok]	1326
+[ok]	1327
+[ok]	1328
+[ok]	1329
+[ok]	1330
+[ok]	1331
+[ok]	1332
+[ok]	1333
+[ok]	1334
+[ok]	1335
+[ok]	1336
+[ok]	1337
+[ok]	1338
+[ok]	1339
+[ok]	1340
+[ok]	1341
+[ok]	1342
+[ok]	1343
+[ok]	1344
+[ok]	1345
+[ok]	1346
+[ok]	1347
+[ok]	1348
+[ok]	1349
+[ok]	1350
+[ok]	1351
+[ok]	1352
+[ok]	1353
+[ok]	1354
+[ok]	1355
+[ok]	1356
+[ok]	1357
+[ok]	1358
+[ok]	1359
+[ok]	1360
+[ok]	1361
+[ok]	1362
+[ok]	1363
+[ok]	1364
+[ok]	1365
+[ok]	1366
+[ok]	1367
+[ok]	1368
+[ok]	1369
+[ok]	1370
+[ok]	1371
+[ok]	1372
+[ok]	1373
+[ok]	1374
+[ok]	1375
+[ok]	1376
+[ok]	1377
+[ok]	1378
+[ok]	1379
+[ok]	1380
+[ok]	1381
+[ok]	1382
+[ok]	1383
+[ok]	1384
+[ok]	1385
+[ok]	1386
+[ok]	1387
+[ok]	1388
+[ok]	1389
+[ok]	1390
+[ok]	1391
+[ok]	1392
+[ok]	1393
+[ok]	1394
+[ok]	1395
+[ok]	1396
+[ok]	1397
+[ok]	1398
+[ok]	1399
+[ok]	1400
+[ok]	1401
+[ok]	1402
+[ok]	1403
+[ok]	1404
+[ok]	1405
+[ok]	1406
+[ok]	1407
+[ok]	1408
+[ok]	1409
+[ok]	1410
+[ok]	1411
+[ok]	1412
+[ok]	1413
+[ok]	1414
+[ok]	1415
+[ok]	1416
+[ok]	1417
+[ok]	1418
+[ok]	1419
+[ok]	1420
+[ok]	1421
+[ok]	1422
+[ok]	1423
+[ok]	1424
+[ok]	1425
+[ok]	1426
+[ok]	1427
+[ok]	1428
+[ok]	1429
+[ok]	1430
+[ok]	1431
+[ok]	1432
+[ok]	1433
+[ok]	1434
+[ok]	1435
+[ok]	1436
+[ok]	1437
+[ok]	1438
+[ok]	1439
+[ok]	1440
+[ok]	1441
+[ok]	1442
+[ok]	1443
+[ok]	1444
+[ok]	1445
+[ok]	1446
+[ok]	1447
+[ok]	1448
+[ok]	1449
+[ok]	1450
+[ok]	1451
+[ok]	1452
+[ok]	1453
+[ok]	1454
+[ok]	1455
+[ok]	1456
+[ok]	1457
+[ok]	1458
+[ok]	1459
+[ok]	1460
+[ok]	1461
+[ok]	1462
+[ok]	1463
+[ok]	1464
+[ok]	1465
+[ok]	1466
+[ok]	1467
+[ok]	1468
+[ok]	1469
+[ok]	1470
+[ok]	1471
+[ok]	1472
+[ok]	1473
+[ok]	1474
+[ok]	1475
+[ok]	1476
+[ok]	1477
+[ok]	1478
+[ok]	1479
+[ok]	1480
+[ok]	1481
+[ok]	1482
+[ok]	1483
+[ok]	1484
+[ok]	1485
+[ok]	1486
+[ok]	1487
+[ok]	1488
+[ok]	1489
+[ok]	1490
+[ok]	1491
+[ok]	1492
+[ok]	1493
+[ok]	1494
+[ok]	1495
+[ok]	1496
+[ok]	1497
+[ok]	1498
+[ok]	1499
+[ok]	1500
+[ok]	1501
+[ok]	1502
+[ok]	1503
+[ok]	1504
+[ok]	1505
+[ok]	1506
+[ok]	1507
+[ok]	1508
+[ok]	1509
+[ok]	1510
+[ok]	1511
+[ok]	1512
+[ok]	1513
+[ok]	1514
+[ok]	1515
+[ok]	1516
+[ok]	1517
+[ok]	1518
+[ok]	1519
+[ok]	1520
+[ok]	1521
+[ok]	1522
+[ok]	1523
+[ok]	1524
+[ok]	1525
+[ok]	1526
+[ok]	1527
+[ok]	1528
+[ok]	1529
+[ok]	1530
+[ok]	1531
+[ok]	1532
+[ok]	1533
+[ok]	1534
+[ok]	1535
+[ok]	1536
+[ok]	1537
+[ok]	1538
+[ok]	1539
+[ok]	1540
+[ok]	1541
+[ok]	1542
+[ok]	1543
+[ok]	1544
+[ok]	1545
+[ok]	1546
+[ok]	1547
+[ok]	1548
+[ok]	1549
+[ok]	1550
+[ok]	1551
+[ok]	1552
+[ok]	1553
+[ok]	1554
+[ok]	1555
+[ok]	1556
+[ok]	1557
+[ok]	1558
+[ok]	1559
+[ok]	1560
+[ok]	1561
+[ok]	1562
+[ok]	1563
+[ok]	1564
+[ok]	1565
+[ok]	1566
+[ok]	1567
+[ok]	1568
+[ok]	1569
+[ok]	1570
+[ok]	1571
+[ok]	1572
+[ok]	1573
+[ok]	1574
+[ok]	1575
+[ok]	1576
+[ok]	1577
+[ok]	1578
+[ok]	1579
+[ok]	1580
+[ok]	1581
+[ok]	1582
+[ok]	1583
+[ok]	1584
+[ok]	1585
+[ok]	1586
+[ok]	1587
+[ok]	1588
+[ok]	1589
+[ok]	1590
+[ok]	1591
+[ok]	1592
+[ok]	1593
+[ok]	1594
+[ok]	1595
+[ok]	1596
+[ok]	1597
+[ok]	1598
+[ok]	1599
+[ok]	1600
+[ok]	1601
+[ok]	1602
+[ok]	1603
+[ok]	1604
+[ok]	1605
+[ok]	1606
+[ok]	1607
+[ok]	1608
+[ok]	1609
+[ok]	1610
+[ok]	1611
+[ok]	1612
+[ok]	1613
+[ok]	1614
+[ok]	1615
+[ok]	1616
+[ok]	1617
+[ok]	1618
+[ok]	1619
+[ok]	1620
+[ok]	1621
+[ok]	1622
+[ok]	1623
+[ok]	1624
+[ok]	1625
+[ok]	1626
+[ok]	1627
+[ok]	1628
+[ok]	1629
+[ok]	1630
+[ok]	1631
+[ok]	1632
+[ok]	1633
+[ok]	1634
+[ok]	1635
+[ok]	1636
+[ok]	1637
+[ok]	1638
+[ok]	1639
+[ok]	1640
+[ok]	1641
+[ok]	1642
+[ok]	1643
+[ok]	1644
+[ok]	1645
+[ok]	1646
+[ok]	1647
+[ok]	1648
+[ok]	1649
+[ok]	1650
+[ok]	1651
+[ok]	1652
+[ok]	1653
+[ok]	1654
+[ok]	1655
+[ok]	1656
+[ok]	1657
+[ok]	1658
+[ok]	1659
+[ok]	1660
+[ok]	1661
+[ok]	1662
+[ok]	1663
+[ok]	1664
+[ok]	1665
+[ok]	1666
+[ok]	1667
+[ok]	1668
+[ok]	1669
+[ok]	1670
+[ok]	1671
+[ok]	1672
+[ok]	1673
+[ok]	1674
+[ok]	1675
+[ok]	1676
+[ok]	1677
+[ok]	1678
+[ok]	1679
+[ok]	1680
+[ok]	1681
+[ok]	1682
+[ok]	1683
+[ok]	1684
+[ok]	1685
+[ok]	1686
+[ok]	1687
+[ok]	1688
+[ok]	1689
+[ok]	1690
+[ok]	1691
+[ok]	1692
+[ok]	1693
+[ok]	1694
+[ok]	1695
+[ok]	1696
+[ok]	1697
+[ok]	1698
+[ok]	1699
+[ok]	1700
+[ok]	1701
+[ok]	1702
+[ok]	1703
+[ok]	1704
+[ok]	1705
+[ok]	1706
+[ok]	1707
+[ok]	1708
+[ok]	1709
+[ok]	1710
+[ok]	1711
+[ok]	1712
+[ok]	1713
+[ok]	1714
+[ok]	1715
+[ok]	1716
+[ok]	1717
+[ok]	1718
+[ok]	1719
+[ok]	1720
+[ok]	1721
+[ok]	1722
+[ok]	1723
+[ok]	1724
+[ok]	1725
+[ok]	1726
+[ok]	1727
+[ok]	1728
+[ok]	1729
+[ok]	1730
+[ok]	1731
+[ok]	1732
+[ok]	1733
+[ok]	1734
+[ok]	1735
+[ok]	1736
+[ok]	1737
+[ok]	1738
+[ok]	1739
+[ok]	1740
+[ok]	1741
+[ok]	1742
+[ok]	1743
+[ok]	1744
+[ok]	1745
+[ok]	1746
+[ok]	1747
+[ok]	1748
+[ok]	1749
+[ok]	1750
+[ok]	1751
+[ok]	1752
+[ok]	1753
+[ok]	1754
+[ok]	1755
+[ok]	1756
+[ok]	1757
+[ok]	1758
+[ok]	1759
+[ok]	1760
+[ok]	1761
+[ok]	1762
+[ok]	1763
+[ok]	1764
+[ok]	1765
+[ok]	1766
+[ok]	1767
+[ok]	1768
+[ok]	1769
+[ok]	1770
+[ok]	1771
+[ok]	1772
+[ok]	1773
+[ok]	1774
+[ok]	1775
+[ok]	1776
+[ok]	1777
+[ok]	1778
+[ok]	1779
+[ok]	1780
+[ok]	1781
+[ok]	1782
+[ok]	1783
+[ok]	1784
+[ok]	1785
+[ok]	1786
+[ok]	1787
+[ok]	1788
+[ok]	1789
+[ok]	1790
+[ok]	1791
+[ok]	1792
+-- newest diagnostic reports: soffice-2026-10-01-013929.ips, soffice-2026-10-01-013928.ips, soffice-2026-10-01-013925.ips, soffice-2026-10-01-013924.ips, soffice-2026-10-01-013916.ips
+2026-10-01 14:05:53.842 | WARNING  | __main__:run_batch_with_resume:1206 - [batch pdf] 826 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 2, 0 of 3 stalled passes used)
+2026-10-01 14:05:53.845 | WARNING  | __main__:recycle:725 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-01 14:05:53.846 | WARNING  | __main__:recycle:731 - [word] recycling (restart 1)
+2026-10-01 14:06:14.254 | INFO     | __main__:_note_buttons:510 - [watchdog] Microsoft Error Reporting shows button 'OK'
+2026-10-01 14:06:14.270 | INFO     | __main__:_note_buttons:510 - [watchdog] Microsoft Error Reporting shows button 'More Information'
+2026-10-01 14:06:14.270 | INFO     | __main__:_note_buttons:510 - [watchdog] Microsoft Error Reporting shows button 'missing value'
+2026-10-01 14:06:14.793 | WARNING  | __main__:_loop_merp:551 - [watchdog] error report declined via 'OK'
+2026-10-01 14:06:20.830 | INFO     | __main__:_loop:1067 - [batch pdf 2] 5/826
+2026-10-01 14:06:25.861 | INFO     | __main__:_loop:1067 - [batch pdf 2] 12/826
+2026-10-01 14:06:30.884 | INFO     | __main__:_loop:1067 - [batch pdf 2] 19/826
+2026-10-01 14:06:34.452 | INFO     | __main__:_note_buttons:510 - [watchdog] Microsoft Word shows button 'missing value'
+2026-10-01 14:06:35.907 | INFO     | __main__:_loop:1067 - [batch pdf 2] 26/826
+2026-10-01 14:06:39.190 | WARNING  | __main__:_loop_word:540 - [watchdog] Word dialog dismissed via 'No'
+2026-10-01 14:06:40.940 | INFO     | __main__:_loop:1067 - [batch pdf 2] 29/826
+2026-10-01 14:06:43.779 | WARNING  | __main__:_loop_word:540 - [watchdog] Word dialog dismissed via 'OK'
+2026-10-01 14:07:30.329 | WARNING  | __main__:_loop:1072 - [batch pdf 2] item 30/826 open for more than 30 s:
+-- Word windows {name, subrole}: ,
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-2.log:
+[ok]	1794
+[ok]	1795
+[ok]	1796
+[ok]	1797
+[ok]	1798
+[ok]	1799
+[ok]	1800
+[ok]	1801
+[ok]	1802
+[ok]	1803
+[ok]	1804
+[ok]	1805
+[ok]	1806
+[ok]	1807
+[ok]	1808
+[ok]	1809
+[ok]	1810
+[ok]	1811
+[ok]	1812
+[ok]	1813
+[ok]	1814
+[ok]	1815
+[ok]	1816
+[ok]	1817
+[ok]	1818
+[ok]	1819
+[ok]	1820
+[ok]	1821
+[ok]	1822
+-- newest diagnostic reports: soffice-2026-10-01-013929.ips, soffice-2026-10-01-013928.ips, soffice-2026-10-01-013925.ips, soffice-2026-10-01-013924.ips, soffice-2026-10-01-013916.ips
+2026-10-01 14:12:44.522 | WARNING  | __main__:run_batch_with_resume:1206 - [batch pdf] 796 item(s) never reached (ended without reaching them); recycling Word and retrying the rest first, retried items last (pass 3, 1 of 3 stalled passes used)
+2026-10-01 14:12:44.524 | WARNING  | __main__:recycle:725 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-01 14:12:44.525 | WARNING  | __main__:recycle:731 - [word] recycling (restart 2)
+2026-10-01 14:13:10.824 | INFO     | __main__:_loop:1067 - [batch pdf 3] 5/796
+2026-10-01 14:13:15.847 | INFO     | __main__:_loop:1067 - [batch pdf 3] 10/796
+2026-10-01 14:13:20.871 | INFO     | __main__:_loop:1067 - [batch pdf 3] 18/796
+2026-10-01 14:13:25.894 | INFO     | __main__:_loop:1067 - [batch pdf 3] 24/796
+2026-10-01 14:13:30.918 | INFO     | __main__:_loop:1067 - [batch pdf 3] 30/796
+2026-10-01 14:13:35.941 | INFO     | __main__:_loop:1067 - [batch pdf 3] 37/796
+2026-10-01 14:13:40.959 | INFO     | __main__:_loop:1067 - [batch pdf 3] 42/796
+2026-10-01 14:13:45.983 | INFO     | __main__:_loop:1067 - [batch pdf 3] 49/796
+2026-10-01 14:13:51.013 | INFO     | __main__:_loop:1067 - [batch pdf 3] 57/796
+2026-10-01 14:13:56.033 | INFO     | __main__:_loop:1067 - [batch pdf 3] 62/796
+2026-10-01 14:14:01.055 | INFO     | __main__:_loop:1067 - [batch pdf 3] 69/796
+2026-10-01 14:14:06.076 | INFO     | __main__:_loop:1067 - [batch pdf 3] 72/796
+2026-10-01 14:14:11.098 | INFO     | __main__:_loop:1067 - [batch pdf 3] 75/796
+2026-10-01 14:14:16.124 | INFO     | __main__:_loop:1067 - [batch pdf 3] 77/796
+2026-10-01 14:14:21.157 | INFO     | __main__:_loop:1067 - [batch pdf 3] 84/796
+2026-10-01 14:14:26.174 | INFO     | __main__:_loop:1067 - [batch pdf 3] 90/796
+2026-10-01 14:14:31.195 | INFO     | __main__:_loop:1067 - [batch pdf 3] 95/796
+2026-10-01 14:14:36.221 | INFO     | __main__:_loop:1067 - [batch pdf 3] 100/796
+2026-10-01 14:14:41.245 | INFO     | __main__:_loop:1067 - [batch pdf 3] 106/796
+2026-10-01 14:14:46.267 | INFO     | __main__:_loop:1067 - [batch pdf 3] 114/796
+2026-10-01 14:14:51.284 | INFO     | __main__:_loop:1067 - [batch pdf 3] 118/796
+2026-10-01 14:15:22.485 | WARNING  | __main__:_loop:1072 - [batch pdf 3] item 119/796 open for more than 30 s:
+-- Word windows {name, subrole}: ,
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-3.log:
+[ok]	1824
+[ok]	1825
+[ok]	1826
+[ok]	1827
+[ok]	1828
+[ok]	1829
+[ok]	1830
+[ok]	1831
+[ok]	1832
+[ok]	1833
+[ok]	1834
+[ok]	1835
+[ok]	1836
+[ok]	1837
+[ok]	1838
+[ok]	1839
+[ok]	1840
+[ok]	1841
+[ok]	1842
+[ok]	1843
+[ok]	1844
+[ok]	1845
+[ok]	1846
+[ok]	1847
+[ok]	1848
+[ok]	1849
+[ok]	1850
+[ok]	1851
+[ok]	1852
+[ok]	1853
+[ok]	1854
+[ok]	1855
+[ok]	1856
+[ok]	1857
+[ok]	1858
+[ok]	1859
+[ok]	1860
+[ok]	1861
+[ok]	1862
+[ok]	1863
+[ok]	1864
+[ok]	1865
+[ok]	1866
+[ok]	1867
+[ok]	1868
+[ok]	1869
+[ok]	1870
+[ok]	1871
+[ok]	1872
+[ok]	1873
+[ok]	1874
+[ok]	1875
+[ok]	1876
+[ok]	1877
+[ok]	1878
+[ok]	1879
+[ok]	1880
+[ok]	1881
+[ok]	1882
+[ok]	1883
+[ok]	1884
+[ok]	1885
+[ok]	1886
+[ok]	1887
+[ok]	1888
+[ok]	1889
+[ok]	1890
+[ok]	1891
+[ok]	1892
+[ok]	1893
+[ok]	1894
+[ok]	1895
+[ok]	1896
+[ok]	1897
+[ok]	1898
+[ok]	1899
+[ok]	1900
+[ok]	1901
+[ok]	1902
+[ok]	1903
+[ok]	1904
+[ok]	1905
+[ok]	1906
+[ok]	1907
+[ok]	1908
+[ok]	1909
+[ok]	1910
+[ok]	1911
+[ok]	1912
+[ok]	1913
+[ok]	1914
+[ok]	1915
+[ok]	1916
+[ok]	1917
+[ok]	1918
+[ok]	1919
+[ok]	1920
+[ok]	1921
+[ok]	1922
+[ok]	1923
+[ok]	1924
+[ok]	1925
+[ok]	1926
+[ok]	1927
+[ok]	1928
+[ok]	1929
+[ok]	1930
+[ok]	1931
+[ok]	1932
+[ok]	1933
+[ok]	1934
+[ok]	1935
+[ok]	1936
+[ok]	1937
+[ok]	1938
+[ok]	1939
+[ok]	1940
+[ok]	1941
+-- newest diagnostic reports: soffice-2026-10-01-013929.ips, soffice-2026-10-01-013928.ips, soffice-2026-10-01-013925.ips, soffice-2026-10-01-013924.ips, soffice-2026-10-01-013916.ips
+2026-10-01 14:15:33.976 | INFO     | __main__:_note_buttons:510 - [watchdog] Microsoft Word shows button 'Cancel'
+2026-10-01 14:15:33.977 | INFO     | __main__:_note_buttons:510 - [watchdog] Microsoft Word shows button 'Create'
+2026-10-01 14:15:42.598 | INFO     | __main__:_loop:1067 - [batch pdf 3] 121/796
+2026-10-01 14:15:47.631 | INFO     | __main__:_loop:1067 - [batch pdf 3] 126/796
+2026-10-01 14:15:52.672 | INFO     | __main__:_loop:1067 - [batch pdf 3] 130/796
+2026-10-01 14:15:57.702 | INFO     | __main__:_loop:1067 - [batch pdf 3] 134/796
+2026-10-01 14:16:02.718 | INFO     | __main__:_loop:1067 - [batch pdf 3] 139/796
+2026-10-01 14:16:07.741 | INFO     | __main__:_loop:1067 - [batch pdf 3] 144/796
+2026-10-01 14:16:12.765 | INFO     | __main__:_loop:1067 - [batch pdf 3] 149/796
+2026-10-01 14:16:17.790 | INFO     | __main__:_loop:1067 - [batch pdf 3] 154/796
+2026-10-01 14:16:22.817 | INFO     | __main__:_loop:1067 - [batch pdf 3] 158/796
+2026-10-01 14:16:27.830 | INFO     | __main__:_loop:1067 - [batch pdf 3] 164/796
+2026-10-01 14:16:32.843 | INFO     | __main__:_loop:1067 - [batch pdf 3] 169/796
+2026-10-01 14:16:42.863 | INFO     | __main__:_loop:1067 - [batch pdf 3] 170/796
+2026-10-01 14:16:47.882 | INFO     | __main__:_loop:1067 - [batch pdf 3] 173/796
+2026-10-01 14:16:52.901 | INFO     | __main__:_loop:1067 - [batch pdf 3] 174/796
+2026-10-01 14:16:57.932 | INFO     | __main__:_loop:1067 - [batch pdf 3] 179/796
+2026-10-01 14:17:02.955 | INFO     | __main__:_loop:1067 - [batch pdf 3] 180/796
+2026-10-01 14:17:07.979 | INFO     | __main__:_loop:1067 - [batch pdf 3] 182/796
+2026-10-01 14:17:13.003 | INFO     | __main__:_loop:1067 - [batch pdf 3] 184/796
+2026-10-01 14:17:18.023 | INFO     | __main__:_loop:1067 - [batch pdf 3] 186/796
+2026-10-01 14:17:23.042 | INFO     | __main__:_loop:1067 - [batch pdf 3] 187/796
+2026-10-01 14:17:28.064 | INFO     | __main__:_loop:1067 - [batch pdf 3] 193/796
+2026-10-01 14:17:33.084 | INFO     | __main__:_loop:1067 - [batch pdf 3] 197/796
+2026-10-01 14:17:38.110 | INFO     | __main__:_loop:1067 - [batch pdf 3] 201/796
+2026-10-01 14:17:43.136 | INFO     | __main__:_loop:1067 - [batch pdf 3] 206/796
+2026-10-01 14:17:48.154 | INFO     | __main__:_loop:1067 - [batch pdf 3] 209/796
+2026-10-01 14:17:53.178 | INFO     | __main__:_loop:1067 - [batch pdf 3] 214/796
+2026-10-01 14:17:58.201 | INFO     | __main__:_loop:1067 - [batch pdf 3] 220/796
+2026-10-01 14:18:03.222 | INFO     | __main__:_loop:1067 - [batch pdf 3] 225/796
+2026-10-01 14:18:08.259 | INFO     | __main__:_loop:1067 - [batch pdf 3] 229/796
+2026-10-01 14:18:13.282 | INFO     | __main__:_loop:1067 - [batch pdf 3] 233/796
+2026-10-01 14:18:18.346 | INFO     | __main__:_loop:1067 - [batch pdf 3] 238/796
+2026-10-01 14:18:23.372 | INFO     | __main__:_loop:1067 - [batch pdf 3] 244/796
+2026-10-01 14:18:28.404 | INFO     | __main__:_loop:1067 - [batch pdf 3] 249/796
+2026-10-01 14:18:33.430 | INFO     | __main__:_loop:1067 - [batch pdf 3] 255/796
+2026-10-01 14:18:38.453 | INFO     | __main__:_loop:1067 - [batch pdf 3] 261/796
+2026-10-01 14:18:43.473 | INFO     | __main__:_loop:1067 - [batch pdf 3] 267/796
+2026-10-01 14:18:48.508 | INFO     | __main__:_loop:1067 - [batch pdf 3] 273/796
+2026-10-01 14:18:53.538 | INFO     | __main__:_loop:1067 - [batch pdf 3] 279/796
+2026-10-01 14:18:58.568 | INFO     | __main__:_loop:1067 - [batch pdf 3] 285/796
+2026-10-01 14:19:03.599 | INFO     | __main__:_loop:1067 - [batch pdf 3] 291/796
+2026-10-01 14:19:08.633 | INFO     | __main__:_loop:1067 - [batch pdf 3] 297/796
+2026-10-01 14:19:13.660 | INFO     | __main__:_loop:1067 - [batch pdf 3] 303/796
+2026-10-01 14:19:18.680 | INFO     | __main__:_loop:1067 - [batch pdf 3] 308/796
+2026-10-01 14:19:23.707 | INFO     | __main__:_loop:1067 - [batch pdf 3] 314/796
+2026-10-01 14:19:28.730 | INFO     | __main__:_loop:1067 - [batch pdf 3] 319/796
+2026-10-01 14:19:33.764 | INFO     | __main__:_loop:1067 - [batch pdf 3] 323/796
+2026-10-01 14:19:38.787 | INFO     | __main__:_loop:1067 - [batch pdf 3] 324/796
+2026-10-01 14:19:43.810 | INFO     | __main__:_loop:1067 - [batch pdf 3] 326/796
+2026-10-01 14:19:48.834 | INFO     | __main__:_loop:1067 - [batch pdf 3] 328/796
+2026-10-01 14:19:53.860 | INFO     | __main__:_loop:1067 - [batch pdf 3] 329/796
+2026-10-01 14:19:58.887 | INFO     | __main__:_loop:1067 - [batch pdf 3] 332/796
+2026-10-01 14:20:03.911 | INFO     | __main__:_loop:1067 - [batch pdf 3] 337/796
+2026-10-01 14:20:08.943 | INFO     | __main__:_loop:1067 - [batch pdf 3] 343/796
+2026-10-01 14:20:13.969 | INFO     | __main__:_loop:1067 - [batch pdf 3] 349/796
+2026-10-01 14:20:18.993 | INFO     | __main__:_loop:1067 - [batch pdf 3] 350/796
+2026-10-01 14:21:16.736 | WARNING  | __main__:_loop:1072 - [batch pdf 3] item 351/796 open for more than 30 s:
+-- Word windows {name, subrole}: ,
+-- Word window text: osascript timed out
+-- crash reporters: 
+-- batch-pdf-3.log:
+[ok]	1824
+[ok]	1825
+[ok]	1826
+[ok]	1827
+[ok]	1828
+[ok]	1829
+[ok]	1830
+[ok]	1831
+[ok]	1832
+[ok]	1833
+[ok]	1834
+[ok]	1835
+[ok]	1836
+[ok]	1837
+[ok]	1838
+[ok]	1839
+[ok]	1840
+[ok]	1841
+[ok]	1842
+[ok]	1843
+[ok]	1844
+[ok]	1845
+[ok]	1846
+[ok]	1847
+[ok]	1848
+[ok]	1849
+[ok]	1850
+[ok]	1851
+[ok]	1852
+[ok]	1853
+[ok]	1854
+[ok]	1855
+[ok]	1856
+[ok]	1857
+[ok]	1858
+[ok]	1859
+[ok]	1860
+[ok]	1861
+[ok]	1862
+[ok]	1863
+[ok]	1864
+[ok]	1865
+[ok]	1866
+[ok]	1867
+[ok]	1868
+[ok]	1869
+[ok]	1870
+[ok]	1871
+[ok]	1872
+[ok]	1873
+[ok]	1874
+[ok]	1875
+[ok]	1876
+[ok]	1877
+[ok]	1878
+[ok]	1879
+[ok]	1880
+[ok]	1881
+[ok]	1882
+[ok]	1883
+[ok]	1884
+[ok]	1885
+[ok]	1886
+[ok]	1887
+[ok]	1888
+[ok]	1889
+[ok]	1890
+[ok]	1891
+[ok]	1892
+[ok]	1893
+[ok]	1894
+[ok]	1895
+[ok]	1896
+[ok]	1897
+[ok]	1898
+[ok]	1899
+[ok]	1900
+[ok]	1901
+[ok]	1902
+[ok]	1903
+[ok]	1904
+[ok]	1905
+[ok]	1906
+[ok]	1907
+[ok]	1908
+[ok]	1909
+[ok]	1910
+[ok]	1911
+[ok]	1912
+[ok]	1913
+[ok]	1914
+[ok]	1915
+[ok]	1916
+[ok]	1917
+[ok]	1918
+[ok]	1919
+[ok]	1920
+[ok]	1921
+[ok]	1922
+[ok]	1923
+[ok]	1924
+[ok]	1925
+[ok]	1926
+[ok]	1927
+[ok]	1928
+[ok]	1929
+[ok]	1930
+[ok]	1931
+[ok]	1932
+[ok]	1933
+[ok]	1934
+[ok]	1935
+[ok]	1936
+[ok]	1937
+[ok]	1938
+[ok]	1939
+[ok]	1940
+[ok]	1941
+[retry]	1942	document loaded empty (Word could not read it)
+[ok]	1943
+[ok]	1944
+[ok]	1945
+[ok]	1946
+[ok]	1947
+[ok]	1948
+[ok]	1949
+[ok]	1950
+[ok]	1951
+[ok]	1952
+[ok]	1953
+[ok]	1954
+[ok]	1955
+[ok]	1956
+[ok]	1957
+[ok]	1958
+[ok]	1959
+[ok]	1960
+[ok]	1961
+[ok]	1962
+[ok]	1963
+[ok]	1964
+[ok]	1965
+[ok]	1966
+[ok]	1967
+[ok]	1968
+[ok]	1969
+[ok]	1970
+[ok]	1971
+[ok]	1972
+[ok]	1973
+[ok]	1974
+[ok]	1975
+[ok]	1976
+[ok]	1977
+[ok]	1978
+[ok]	1979
+[ok]	1980
+[ok]	1981
+[ok]	1982
+[ok]	1983
+[ok]	1984
+[ok]	1985
+[ok]	1986
+[ok]	1987
+[ok]	1988
+[ok]	1989
+[ok]	1990
+[ok]	1991
+[ok]	1992
+[ok]	1993
+[ok]	1994
+[ok]	1995
+[ok]	1996
+[ok]	1997
+[ok]	1998
+[ok]	1999
+[ok]	2000
+[ok]	2001
+[ok]	2002
+[ok]	2003
+[ok]	2004
+[ok]	2005
+[ok]	2006
+[ok]	2007
+[ok]	2008
+[ok]	2009
+[ok]	2010
+[ok]	2011
+[ok]	2012
+[ok]	2013
+[ok]	2014
+[ok]	2015
+[ok]	2016
+[ok]	2017
+[ok]	2018
+[ok]	2019
+[ok]	2020
+[ok]	2021
+[ok]	2022
+[ok]	2023
+[ok]	2024
+[ok]	2025
+[ok]	2026
+[ok]	2027
+[ok]	2028
+[ok]	2029
+[ok]	2030
+[ok]	2031
+[ok]	2032
+[ok]	2033
+[ok]	2034
+[ok]	2035
+[ok]	2036
+[ok]	2037
+[ok]	2038
+[ok]	2039
+[ok]	2040
+[ok]	2041
+[ok]	2042
+[ok]	2043
+[ok]	2044
+[ok]	2045
+[ok]	2046
+[ok]	2047
+[ok]	2048
+[ok]	2049
+[ok]	2050
+[ok]	2051
+[ok]	2052
+[ok]	2053
+[ok]	2054
+[ok]	2055
+[ok]	2056
+[ok]	2057
+[ok]	2058
+[ok]	2059
+[ok]	2060
+[ok]	2061
+[ok]	2062
+[ok]	2063
+[ok]	2064
+[ok]	2065
+[ok]	2066
+[ok]	2067
+[ok]	2068
+[ok]	2069
+[ok]	2070
+[ok]	2071
+[ok]	2072
+[ok]	2073
+[ok]	2074
+[ok]	2075
+[ok]	2076
+[ok]	2077
+[ok]	2078
+[ok]	2079
+[ok]	2080
+[ok]	2081
+[ok]	2082
+[ok]	2083
+[ok]	2084
+[ok]	2085
+[ok]	2086
+[ok]	2087
+[ok]	2088
+[ok]	2089
+[ok]	2090
+[ok]	2091
+[ok]	2092
+[ok]	2093
+[ok]	2094
+[ok]	2095
+[ok]	2096
+[ok]	2097
+[ok]	2098
+[ok]	2099
+[ok]	2100
+[ok]	2101
+[ok]	2102
+[ok]	2103
+[ok]	2104
+[ok]	2105
+[ok]	2106
+[ok]	2107
+[ok]	2108
+[ok]	2109
+[ok]	2110
+[ok]	2111
+[ok]	2112
+[ok]	2113
+[ok]	2114
+[ok]	2115
+[ok]	2116
+[ok]	2117
+[ok]	2118
+[ok]	2119
+[ok]	2120
+[ok]	2121
+[ok]	2122
+[ok]	2123
+[ok]	2124
+[ok]	2125
+[ok]	2126
+[ok]	2127
+[ok]	2128
+[ok]	2129
+[ok]	2130
+[ok]	2131
+[ok]	2132
+[ok]	2133
+[ok]	2134
+[ok]	2135
+[ok]	2136
+[ok]	2137
+[ok]	2138
+[ok]	2139
+[ok]	2140
+[ok]	2141
+[ok]	2142
+[ok]	2143
+[ok]	2144
+[ok]	2145
+[ok]	2146
+[ok]	2147
+[ok]	2148
+[ok]	2149
+[ok]	2150
+[ok]	2151
+[ok]	2152
+[ok]	2153
+[ok]	2154
+[ok]	2155
+[ok]	2156
+[ok]	2157
+[ok]	2158
+[ok]	2159
+[ok]	2160
+[ok]	2161
+[ok]	2162
+[ok]	2163
+[ok]	2164
+[ok]	2165
+[ok]	2166
+[ok]	2167
+[ok]	2168
+[ok]	2169
+[ok]	2170
+[ok]	2171
+[ok]	2172
+[ok]	2173
+[ok]	2174
+-- newest diagnostic reports: soffice-2026-10-01-013929.ips, soffice-2026-10-01-013928.ips, soffice-2026-10-01-013925.ips, soffice-2026-10-01-013924.ips, soffice-2026-10-01-013916.ips
+2026-10-01 14:21:52.097 | INFO     | __main__:_loop:1067 - [batch pdf 3] 351/796
+2026-10-01 14:21:57.129 | INFO     | __main__:_loop:1067 - [batch pdf 3] 356/796
+2026-10-01 14:22:02.145 | INFO     | __main__:_loop:1067 - [batch pdf 3] 360/796
+2026-10-01 14:22:07.168 | INFO     | __main__:_loop:1067 - [batch pdf 3] 364/796
+2026-10-01 14:22:12.193 | INFO     | __main__:_loop:1067 - [batch pdf 3] 369/796
+2026-10-01 14:22:17.229 | INFO     | __main__:_loop:1067 - [batch pdf 3] 374/796
+2026-10-01 14:22:22.254 | INFO     | __main__:_loop:1067 - [batch pdf 3] 378/796
+2026-10-01 14:22:27.285 | INFO     | __main__:_loop:1067 - [batch pdf 3] 382/796
+2026-10-01 14:22:32.301 | INFO     | __main__:_loop:1067 - [batch pdf 3] 387/796
+2026-10-01 14:22:37.324 | INFO     | __main__:_loop:1067 - [batch pdf 3] 392/796
+2026-10-01 14:22:42.347 | INFO     | __main__:_loop:1067 - [batch pdf 3] 396/796
+2026-10-01 14:22:47.373 | INFO     | __main__:_loop:1067 - [batch pdf 3] 400/796
+2026-10-01 14:22:52.391 | INFO     | __main__:_loop:1067 - [batch pdf 3] 404/796
+2026-10-01 14:22:57.407 | INFO     | __main__:_loop:1067 - [batch pdf 3] 408/796
+2026-10-01 14:23:02.429 | INFO     | __main__:_loop:1067 - [batch pdf 3] 412/796
+2026-10-01 14:23:07.451 | INFO     | __main__:_loop:1067 - [batch pdf 3] 416/796
+2026-10-01 14:23:12.467 | INFO     | __main__:_loop:1067 - [batch pdf 3] 420/796
+2026-10-01 14:23:17.494 | INFO     | __main__:_loop:1067 - [batch pdf 3] 424/796
+2026-10-01 14:23:22.516 | INFO     | __main__:_loop:1067 - [batch pdf 3] 428/796
+2026-10-01 14:23:27.538 | INFO     | __main__:_loop:1067 - [batch pdf 3] 429/796
+2026-10-01 14:23:37.567 | INFO     | __main__:_loop:1067 - [batch pdf 3] 433/796
+2026-10-01 14:23:42.595 | INFO     | __main__:_loop:1067 - [batch pdf 3] 437/796
+2026-10-01 14:23:47.620 | INFO     | __main__:_loop:1067 - [batch pdf 3] 442/796
+2026-10-01 14:23:52.640 | INFO     | __main__:_loop:1067 - [batch pdf 3] 446/796
+2026-10-01 14:23:57.661 | INFO     | __main__:_loop:1067 - [batch pdf 3] 450/796
+2026-10-01 14:24:02.680 | INFO     | __main__:_loop:1067 - [batch pdf 3] 454/796
+2026-10-01 14:24:07.709 | INFO     | __main__:_loop:1067 - [batch pdf 3] 459/796
+2026-10-01 14:24:12.731 | INFO     | __main__:_loop:1067 - [batch pdf 3] 463/796
+2026-10-01 14:24:17.746 | INFO     | __main__:_loop:1067 - [batch pdf 3] 467/796
+2026-10-01 14:24:22.767 | INFO     | __main__:_loop:1067 - [batch pdf 3] 470/796
+2026-10-01 14:24:27.790 | INFO     | __main__:_loop:1067 - [batch pdf 3] 474/796
+2026-10-01 14:24:32.810 | INFO     | __main__:_loop:1067 - [batch pdf 3] 477/796
+2026-10-01 14:24:37.838 | INFO     | __main__:_loop:1067 - [batch pdf 3] 481/796
+2026-10-01 14:24:42.857 | INFO     | __main__:_loop:1067 - [batch pdf 3] 484/796
+2026-10-01 14:24:47.880 | INFO     | __main__:_loop:1067 - [batch pdf 3] 486/796
+2026-10-01 14:24:52.902 | INFO     | __main__:_loop:1067 - [batch pdf 3] 489/796
+2026-10-01 14:24:57.922 | INFO     | __main__:_loop:1067 - [batch pdf 3] 493/796
+2026-10-01 14:25:02.942 | INFO     | __main__:_loop:1067 - [batch pdf 3] 497/796
+2026-10-01 14:25:07.969 | INFO     | __main__:_loop:1067 - [batch pdf 3] 503/796
+2026-10-01 14:25:12.993 | INFO     | __main__:_loop:1067 - [batch pdf 3] 508/796
+2026-10-01 14:25:18.011 | INFO     | __main__:_loop:1067 - [batch pdf 3] 510/796
+2026-10-01 14:26:07.187 | WARNING  | __main__:_loop:1072 - [batch pdf 3] item 511/796 open for more than 30 s:
+-- Word windows {name, subrole}: ,
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-3.log:
+[ok]	1824
+[ok]	1825
+[ok]	1826
+[ok]	1827
+[ok]	1828
+[ok]	1829
+[ok]	1830
+[ok]	1831
+[ok]	1832
+[ok]	1833
+[ok]	1834
+[ok]	1835
+[ok]	1836
+[ok]	1837
+[ok]	1838
+[ok]	1839
+[ok]	1840
+[ok]	1841
+[ok]	1842
+[ok]	1843
+[ok]	1844
+[ok]	1845
+[ok]	1846
+[ok]	1847
+[ok]	1848
+[ok]	1849
+[ok]	1850
+[ok]	1851
+[ok]	1852
+[ok]	1853
+[ok]	1854
+[ok]	1855
+[ok]	1856
+[ok]	1857
+[ok]	1858
+[ok]	1859
+[ok]	1860
+[ok]	1861
+[ok]	1862
+[ok]	1863
+[ok]	1864
+[ok]	1865
+[ok]	1866
+[ok]	1867
+[ok]	1868
+[ok]	1869
+[ok]	1870
+[ok]	1871
+[ok]	1872
+[ok]	1873
+[ok]	1874
+[ok]	1875
+[ok]	1876
+[ok]	1877
+[ok]	1878
+[ok]	1879
+[ok]	1880
+[ok]	1881
+[ok]	1882
+[ok]	1883
+[ok]	1884
+[ok]	1885
+[ok]	1886
+[ok]	1887
+[ok]	1888
+[ok]	1889
+[ok]	1890
+[ok]	1891
+[ok]	1892
+[ok]	1893
+[ok]	1894
+[ok]	1895
+[ok]	1896
+[ok]	1897
+[ok]	1898
+[ok]	1899
+[ok]	1900
+[ok]	1901
+[ok]	1902
+[ok]	1903
+[ok]	1904
+[ok]	1905
+[ok]	1906
+[ok]	1907
+[ok]	1908
+[ok]	1909
+[ok]	1910
+[ok]	1911
+[ok]	1912
+[ok]	1913
+[ok]	1914
+[ok]	1915
+[ok]	1916
+[ok]	1917
+[ok]	1918
+[ok]	1919
+[ok]	1920
+[ok]	1921
+[ok]	1922
+[ok]	1923
+[ok]	1924
+[ok]	1925
+[ok]	1926
+[ok]	1927
+[ok]	1928
+[ok]	1929
+[ok]	1930
+[ok]	1931
+[ok]	1932
+[ok]	1933
+[ok]	1934
+[ok]	1935
+[ok]	1936
+[ok]	1937
+[ok]	1938
+[ok]	1939
+[ok]	1940
+[ok]	1941
+[retry]	1942	document loaded empty (Word could not read it)
+[ok]	1943
+[ok]	1944
+[ok]	1945
+[ok]	1946
+[ok]	1947
+[ok]	1948
+[ok]	1949
+[ok]	1950
+[ok]	1951
+[ok]	1952
+[ok]	1953
+[ok]	1954
+[ok]	1955
+[ok]	1956
+[ok]	1957
+[ok]	1958
+[ok]	1959
+[ok]	1960
+[ok]	1961
+[ok]	1962
+[ok]	1963
+[ok]	1964
+[ok]	1965
+[ok]	1966
+[ok]	1967
+[ok]	1968
+[ok]	1969
+[ok]	1970
+[ok]	1971
+[ok]	1972
+[ok]	1973
+[ok]	1974
+[ok]	1975
+[ok]	1976
+[ok]	1977
+[ok]	1978
+[ok]	1979
+[ok]	1980
+[ok]	1981
+[ok]	1982
+[ok]	1983
+[ok]	1984
+[ok]	1985
+[ok]	1986
+[ok]	1987
+[ok]	1988
+[ok]	1989
+[ok]	1990
+[ok]	1991
+[ok]	1992
+[ok]	1993
+[ok]	1994
+[ok]	1995
+[ok]	1996
+[ok]	1997
+[ok]	1998
+[ok]	1999
+[ok]	2000
+[ok]	2001
+[ok]	2002
+[ok]	2003
+[ok]	2004
+[ok]	2005
+[ok]	2006
+[ok]	2007
+[ok]	2008
+[ok]	2009
+[ok]	2010
+[ok]	2011
+[ok]	2012
+[ok]	2013
+[ok]	2014
+[ok]	2015
+[ok]	2016
+[ok]	2017
+[ok]	2018
+[ok]	2019
+[ok]	2020
+[ok]	2021
+[ok]	2022
+[ok]	2023
+[ok]	2024
+[ok]	2025
+[ok]	2026
+[ok]	2027
+[ok]	2028
+[ok]	2029
+[ok]	2030
+[ok]	2031
+[ok]	2032
+[ok]	2033
+[ok]	2034
+[ok]	2035
+[ok]	2036
+[ok]	2037
+[ok]	2038
+[ok]	2039
+[ok]	2040
+[ok]	2041
+[ok]	2042
+[ok]	2043
+[ok]	2044
+[ok]	2045
+[ok]	2046
+[ok]	2047
+[ok]	2048
+[ok]	2049
+[ok]	2050
+[ok]	2051
+[ok]	2052
+[ok]	2053
+[ok]	2054
+[ok]	2055
+[ok]	2056
+[ok]	2057
+[ok]	2058
+[ok]	2059
+[ok]	2060
+[ok]	2061
+[ok]	2062
+[ok]	2063
+[ok]	2064
+[ok]	2065
+[ok]	2066
+[ok]	2067
+[ok]	2068
+[ok]	2069
+[ok]	2070
+[ok]	2071
+[ok]	2072
+[ok]	2073
+[ok]	2074
+[ok]	2075
+[ok]	2076
+[ok]	2077
+[ok]	2078
+[ok]	2079
+[ok]	2080
+[ok]	2081
+[ok]	2082
+[ok]	2083
+[ok]	2084
+[ok]	2085
+[ok]	2086
+[ok]	2087
+[ok]	2088
+[ok]	2089
+[ok]	2090
+[ok]	2091
+[ok]	2092
+[ok]	2093
+[ok]	2094
+[ok]	2095
+[ok]	2096
+[ok]	2097
+[ok]	2098
+[ok]	2099
+[ok]	2100
+[ok]	2101
+[ok]	2102
+[ok]	2103
+[ok]	2104
+[ok]	2105
+[ok]	2106
+[ok]	2107
+[ok]	2108
+[ok]	2109
+[ok]	2110
+[ok]	2111
+[ok]	2112
+[ok]	2113
+[ok]	2114
+[ok]	2115
+[ok]	2116
+[ok]	2117
+[ok]	2118
+[ok]	2119
+[ok]	2120
+[ok]	2121
+[ok]	2122
+[ok]	2123
+[ok]	2124
+[ok]	2125
+[ok]	2126
+[ok]	2127
+[ok]	2128
+[ok]	2129
+[ok]	2130
+[ok]	2131
+[ok]	2132
+[ok]	2133
+[ok]	2134
+[ok]	2135
+[ok]	2136
+[ok]	2137
+[ok]	2138
+[ok]	2139
+[ok]	2140
+[ok]	2141
+[ok]	2142
+[ok]	2143
+[ok]	2144
+[ok]	2145
+[ok]	2146
+[ok]	2147
+[ok]	2148
+[ok]	2149
+[ok]	2150
+[ok]	2151
+[ok]	2152
+[ok]	2153
+[ok]	2154
+[ok]	2155
+[ok]	2156
+[ok]	2157
+[ok]	2158
+[ok]	2159
+[ok]	2160
+[ok]	2161
+[ok]	2162
+[ok]	2163
+[ok]	2164
+[ok]	2165
+[ok]	2166
+[ok]	2167
+[ok]	2168
+[ok]	2169
+[ok]	2170
+[ok]	2171
+[ok]	2172
+[ok]	2173
+[ok]	2174
+[ok]	2175
+[ok]	2176
+[ok]	2177
+[ok]	2178
+[ok]	2179
+[ok]	2180
+[ok]	2181
+[ok]	2182
+[ok]	2183
+[ok]	2184
+[ok]	2185
+[ok]	2186
+[ok]	2187
+[ok]	2188
+[ok]	2189
+[ok]	2190
+[ok]	2191
+[ok]	2192
+[ok]	2193
+[ok]	2194
+[ok]	2195
+[ok]	2196
+[ok]	2197
+[ok]	2198
+[ok]	2199
+[ok]	2200
+[ok]	2201
+[ok]	2202
+[ok]	2203
+[ok]	2204
+[ok]	2205
+[ok]	2206
+[ok]	2207
+[ok]	2208
+[ok]	2209
+[ok]	2210
+[ok]	2211
+[ok]	2212
+[ok]	2213
+[ok]	2214
+[ok]	2215
+[ok]	2216
+[ok]	2217
+[ok]	2218
+[ok]	2219
+[ok]	2220
+[ok]	2221
+[ok]	2222
+[ok]	2223
+[ok]	2224
+[ok]	2225
+[ok]	2226
+[ok]	2227
+[ok]	2228
+[ok]	2229
+[ok]	2230
+[ok]	2231
+[ok]	2232
+[ok]	2233
+[ok]	2234
+[ok]	2235
+[ok]	2236
+[ok]	2237
+[ok]	2238
+[ok]	2239
+[ok]	2240
+[ok]	2241
+[ok]	2242
+[ok]	2243
+[ok]	2244
+[ok]	2245
+[ok]	2246
+[ok]	2247
+[ok]	2248
+[ok]	2249
+[ok]	2250
+[ok]	2251
+[ok]	2252
+[ok]	2253
+[ok]	2254
+[ok]	2255
+[ok]	2256
+[ok]	2257
+[ok]	2258
+[ok]	2259
+[ok]	2260
+[ok]	2261
+[ok]	2262
+[ok]	2263
+[ok]	2264
+[ok]	2265
+[ok]	2266
+[ok]	2267
+[ok]	2268
+[ok]	2269
+[ok]	2270
+[ok]	2271
+[ok]	2272
+[ok]	2273
+[ok]	2274
+[ok]	2275
+[ok]	2276
+[ok]	2277
+[ok]	2278
+[ok]	2279
+[ok]	2280
+[ok]	2281
+[ok]	2282
+[ok]	2283
+[ok]	2284
+[ok]	2285
+[ok]	2286
+[ok]	2287
+[ok]	2288
+[ok]	2289
+[ok]	2290
+[ok]	2291
+[ok]	2292
+[ok]	2293
+[ok]	2294
+[ok]	2295
+[ok]	2296
+[ok]	2297
+[ok]	2298
+[ok]	2299
+[ok]	2300
+[ok]	2301
+[ok]	2302
+[ok]	2303
+[ok]	2304
+[ok]	2305
+[ok]	2306
+[ok]	2307
+[ok]	2308
+[ok]	2309
+[ok]	2310
+[ok]	2311
+[ok]	2312
+[ok]	2313
+[ok]	2314
+[ok]	2315
+[ok]	2316
+[ok]	2317
+[ok]	2318
+[ok]	2319
+[ok]	2320
+[ok]	2321
+[ok]	2322
+[ok]	2323
+[ok]	2324
+[ok]	2325
+[ok]	2326
+[ok]	2327
+[ok]	2328
+[ok]	2329
+[ok]	2330
+[ok]	2331
+[ok]	2332
+[ok]	2333
+[ok]	2334
+-- newest diagnostic reports: soffice-2026-10-01-013929.ips, soffice-2026-10-01-013928.ips, soffice-2026-10-01-013925.ips, soffice-2026-10-01-013924.ips, soffice-2026-10-01-013916.ips
+2026-10-01 14:26:27.885 | INFO     | __main__:_loop:1067 - [batch pdf 3] 512/796
+2026-10-01 14:26:32.910 | INFO     | __main__:_loop:1067 - [batch pdf 3] 516/796
+2026-10-01 14:26:37.936 | INFO     | __main__:_loop:1067 - [batch pdf 3] 522/796
+2026-10-01 14:26:42.966 | INFO     | __main__:_loop:1067 - [batch pdf 3] 527/796
+2026-10-01 14:26:47.985 | INFO     | __main__:_loop:1067 - [batch pdf 3] 530/796
+2026-10-01 14:26:53.010 | INFO     | __main__:_loop:1067 - [batch pdf 3] 534/796
+2026-10-01 14:26:58.033 | INFO     | __main__:_loop:1067 - [batch pdf 3] 538/796
+2026-10-01 14:27:03.067 | INFO     | __main__:_loop:1067 - [batch pdf 3] 539/796
+2026-10-01 14:27:08.092 | INFO     | __main__:_loop:1067 - [batch pdf 3] 540/796
+2026-10-01 14:27:13.119 | INFO     | __main__:_loop:1067 - [batch pdf 3] 544/796
+2026-10-01 14:27:18.150 | INFO     | __main__:_loop:1067 - [batch pdf 3] 548/796
+2026-10-01 14:27:23.177 | INFO     | __main__:_loop:1067 - [batch pdf 3] 552/796
+2026-10-01 14:27:28.196 | INFO     | __main__:_loop:1067 - [batch pdf 3] 556/796
+2026-10-01 14:27:33.219 | INFO     | __main__:_loop:1067 - [batch pdf 3] 558/796
+2026-10-01 14:27:38.239 | INFO     | __main__:_loop:1067 - [batch pdf 3] 562/796
+2026-10-01 14:27:43.269 | INFO     | __main__:_loop:1067 - [batch pdf 3] 564/796
+2026-10-01 14:27:48.290 | INFO     | __main__:_loop:1067 - [batch pdf 3] 567/796
+2026-10-01 14:27:53.324 | INFO     | __main__:_loop:1067 - [batch pdf 3] 571/796
+2026-10-01 14:27:58.353 | INFO     | __main__:_loop:1067 - [batch pdf 3] 575/796
+2026-10-01 14:28:03.379 | INFO     | __main__:_loop:1067 - [batch pdf 3] 579/796
+2026-10-01 14:28:08.405 | INFO     | __main__:_loop:1067 - [batch pdf 3] 583/796
+2026-10-01 14:28:13.427 | INFO     | __main__:_loop:1067 - [batch pdf 3] 587/796
+2026-10-01 14:28:18.458 | INFO     | __main__:_loop:1067 - [batch pdf 3] 590/796
+2026-10-01 14:28:23.483 | INFO     | __main__:_loop:1067 - [batch pdf 3] 594/796
+2026-10-01 14:28:28.506 | INFO     | __main__:_loop:1067 - [batch pdf 3] 597/796
+2026-10-01 14:28:33.540 | INFO     | __main__:_loop:1067 - [batch pdf 3] 601/796
+2026-10-01 14:28:38.576 | INFO     | __main__:_loop:1067 - [batch pdf 3] 604/796
+2026-10-01 14:28:43.606 | INFO     | __main__:_loop:1067 - [batch pdf 3] 606/796
+2026-10-01 14:28:48.660 | INFO     | __main__:_loop:1067 - [batch pdf 3] 609/796
+2026-10-01 14:28:53.682 | INFO     | __main__:_loop:1067 - [batch pdf 3] 613/796
+2026-10-01 14:28:58.708 | INFO     | __main__:_loop:1067 - [batch pdf 3] 617/796
+2026-10-01 14:29:03.729 | INFO     | __main__:_loop:1067 - [batch pdf 3] 621/796
+2026-10-01 14:29:08.752 | INFO     | __main__:_loop:1067 - [batch pdf 3] 624/796
+2026-10-01 14:29:13.771 | INFO     | __main__:_loop:1067 - [batch pdf 3] 628/796
+2026-10-01 14:29:18.799 | INFO     | __main__:_loop:1067 - [batch pdf 3] 631/796
+2026-10-01 14:29:23.826 | INFO     | __main__:_loop:1067 - [batch pdf 3] 633/796
+2026-10-01 14:29:28.857 | INFO     | __main__:_loop:1067 - [batch pdf 3] 637/796
+2026-10-01 14:29:33.878 | INFO     | __main__:_loop:1067 - [batch pdf 3] 641/796
+2026-10-01 14:29:38.902 | INFO     | __main__:_loop:1067 - [batch pdf 3] 646/796
+2026-10-01 14:29:43.930 | INFO     | __main__:_loop:1067 - [batch pdf 3] 651/796
+2026-10-01 14:29:48.952 | INFO     | __main__:_loop:1067 - [batch pdf 3] 656/796
+2026-10-01 14:29:53.980 | INFO     | __main__:_loop:1067 - [batch pdf 3] 661/796
+2026-10-01 14:29:59.006 | INFO     | __main__:_loop:1067 - [batch pdf 3] 666/796
+2026-10-01 14:30:04.029 | INFO     | __main__:_loop:1067 - [batch pdf 3] 669/796
+2026-10-01 14:30:09.059 | INFO     | __main__:_loop:1067 - [batch pdf 3] 671/796
+2026-10-01 14:30:14.084 | INFO     | __main__:_loop:1067 - [batch pdf 3] 674/796
+2026-10-01 14:30:19.109 | INFO     | __main__:_loop:1067 - [batch pdf 3] 677/796
+2026-10-01 14:30:24.134 | INFO     | __main__:_loop:1067 - [batch pdf 3] 681/796
+2026-10-01 14:30:29.164 | INFO     | __main__:_loop:1067 - [batch pdf 3] 685/796
+2026-10-01 14:30:34.185 | INFO     | __main__:_loop:1067 - [batch pdf 3] 689/796
+2026-10-01 14:30:39.201 | INFO     | __main__:_loop:1067 - [batch pdf 3] 692/796
+2026-10-01 14:30:44.222 | INFO     | __main__:_loop:1067 - [batch pdf 3] 696/796
+2026-10-01 14:30:49.247 | INFO     | __main__:_loop:1067 - [batch pdf 3] 699/796
+2026-10-01 14:30:54.278 | INFO     | __main__:_loop:1067 - [batch pdf 3] 702/796
+2026-10-01 14:30:59.298 | INFO     | __main__:_loop:1067 - [batch pdf 3] 705/796
+2026-10-01 14:31:04.331 | INFO     | __main__:_loop:1067 - [batch pdf 3] 709/796
+2026-10-01 14:31:14.362 | INFO     | __main__:_loop:1067 - [batch pdf 3] 710/796
+2026-10-01 14:31:19.385 | INFO     | __main__:_loop:1067 - [batch pdf 3] 713/796
+2026-10-01 14:31:24.412 | INFO     | __main__:_loop:1067 - [batch pdf 3] 716/796
+2026-10-01 14:31:29.427 | INFO     | __main__:_loop:1067 - [batch pdf 3] 720/796
+2026-10-01 14:31:34.452 | INFO     | __main__:_loop:1067 - [batch pdf 3] 724/796
+2026-10-01 14:31:39.483 | INFO     | __main__:_loop:1067 - [batch pdf 3] 729/796
+2026-10-01 14:31:44.505 | INFO     | __main__:_loop:1067 - [batch pdf 3] 732/796
+2026-10-01 14:31:49.532 | INFO     | __main__:_loop:1067 - [batch pdf 3] 735/796
+2026-10-01 14:31:54.558 | INFO     | __main__:_loop:1067 - [batch pdf 3] 738/796
+2026-10-01 14:31:59.571 | INFO     | __main__:_loop:1067 - [batch pdf 3] 742/796
+2026-10-01 14:32:04.598 | INFO     | __main__:_loop:1067 - [batch pdf 3] 745/796
+2026-10-01 14:32:09.623 | INFO     | __main__:_loop:1067 - [batch pdf 3] 749/796
+2026-10-01 14:32:14.655 | INFO     | __main__:_loop:1067 - [batch pdf 3] 753/796
+2026-10-01 14:32:19.682 | INFO     | __main__:_loop:1067 - [batch pdf 3] 756/796
+2026-10-01 14:32:24.702 | INFO     | __main__:_loop:1067 - [batch pdf 3] 758/796
+2026-10-01 14:32:29.729 | INFO     | __main__:_loop:1067 - [batch pdf 3] 761/796
+2026-10-01 14:32:34.749 | INFO     | __main__:_loop:1067 - [batch pdf 3] 764/796
+2026-10-01 14:32:39.778 | INFO     | __main__:_loop:1067 - [batch pdf 3] 768/796
+2026-10-01 14:32:44.797 | INFO     | __main__:_loop:1067 - [batch pdf 3] 771/796
+2026-10-01 14:32:49.820 | INFO     | __main__:_loop:1067 - [batch pdf 3] 775/796
+2026-10-01 14:32:54.843 | INFO     | __main__:_loop:1067 - [batch pdf 3] 777/796
+2026-10-01 14:32:59.862 | INFO     | __main__:_loop:1067 - [batch pdf 3] 779/796
+2026-10-01 14:33:04.881 | INFO     | __main__:_loop:1067 - [batch pdf 3] 780/796
+2026-10-01 14:33:09.932 | INFO     | __main__:_loop:1067 - [batch pdf 3] 783/796
+2026-10-01 14:33:14.973 | INFO     | __main__:_loop:1067 - [batch pdf 3] 785/796
+2026-10-01 14:33:19.988 | INFO     | __main__:_loop:1067 - [batch pdf 3] 787/796
+2026-10-01 14:33:25.043 | INFO     | __main__:_loop:1067 - [batch pdf 3] 790/796
+2026-10-01 14:33:30.108 | INFO     | __main__:_loop:1067 - [batch pdf 3] 792/796
+2026-10-01 14:33:35.155 | INFO     | __main__:_loop:1067 - [batch pdf 3] 793/796
+2026-10-01 14:34:06.036 | WARNING  | __main__:_loop:1072 - [batch pdf 3] item 794/796 open for more than 30 s:
+-- Word windows {name, subrole}: ,
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-3.log:
+[ok]	1824
+[ok]	1825
+[ok]	1826
+[ok]	1827
+[ok]	1828
+[ok]	1829
+[ok]	1830
+[ok]	1831
+[ok]	1832
+[ok]	1833
+[ok]	1834
+[ok]	1835
+[ok]	1836
+[ok]	1837
+[ok]	1838
+[ok]	1839
+[ok]	1840
+[ok]	1841
+[ok]	1842
+[ok]	1843
+[ok]	1844
+[ok]	1845
+[ok]	1846
+[ok]	1847
+[ok]	1848
+[ok]	1849
+[ok]	1850
+[ok]	1851
+[ok]	1852
+[ok]	1853
+[ok]	1854
+[ok]	1855
+[ok]	1856
+[ok]	1857
+[ok]	1858
+[ok]	1859
+[ok]	1860
+[ok]	1861
+[ok]	1862
+[ok]	1863
+[ok]	1864
+[ok]	1865
+[ok]	1866
+[ok]	1867
+[ok]	1868
+[ok]	1869
+[ok]	1870
+[ok]	1871
+[ok]	1872
+[ok]	1873
+[ok]	1874
+[ok]	1875
+[ok]	1876
+[ok]	1877
+[ok]	1878
+[ok]	1879
+[ok]	1880
+[ok]	1881
+[ok]	1882
+[ok]	1883
+[ok]	1884
+[ok]	1885
+[ok]	1886
+[ok]	1887
+[ok]	1888
+[ok]	1889
+[ok]	1890
+[ok]	1891
+[ok]	1892
+[ok]	1893
+[ok]	1894
+[ok]	1895
+[ok]	1896
+[ok]	1897
+[ok]	1898
+[ok]	1899
+[ok]	1900
+[ok]	1901
+[ok]	1902
+[ok]	1903
+[ok]	1904
+[ok]	1905
+[ok]	1906
+[ok]	1907
+[ok]	1908
+[ok]	1909
+[ok]	1910
+[ok]	1911
+[ok]	1912
+[ok]	1913
+[ok]	1914
+[ok]	1915
+[ok]	1916
+[ok]	1917
+[ok]	1918
+[ok]	1919
+[ok]	1920
+[ok]	1921
+[ok]	1922
+[ok]	1923
+[ok]	1924
+[ok]	1925
+[ok]	1926
+[ok]	1927
+[ok]	1928
+[ok]	1929
+[ok]	1930
+[ok]	1931
+[ok]	1932
+[ok]	1933
+[ok]	1934
+[ok]	1935
+[ok]	1936
+[ok]	1937
+[ok]	1938
+[ok]	1939
+[ok]	1940
+[ok]	1941
+[retry]	1942	document loaded empty (Word could not read it)
+[ok]	1943
+[ok]	1944
+[ok]	1945
+[ok]	1946
+[ok]	1947
+[ok]	1948
+[ok]	1949
+[ok]	1950
+[ok]	1951
+[ok]	1952
+[ok]	1953
+[ok]	1954
+[ok]	1955
+[ok]	1956
+[ok]	1957
+[ok]	1958
+[ok]	1959
+[ok]	1960
+[ok]	1961
+[ok]	1962
+[ok]	1963
+[ok]	1964
+[ok]	1965
+[ok]	1966
+[ok]	1967
+[ok]	1968
+[ok]	1969
+[ok]	1970
+[ok]	1971
+[ok]	1972
+[ok]	1973
+[ok]	1974
+[ok]	1975
+[ok]	1976
+[ok]	1977
+[ok]	1978
+[ok]	1979
+[ok]	1980
+[ok]	1981
+[ok]	1982
+[ok]	1983
+[ok]	1984
+[ok]	1985
+[ok]	1986
+[ok]	1987
+[ok]	1988
+[ok]	1989
+[ok]	1990
+[ok]	1991
+[ok]	1992
+[ok]	1993
+[ok]	1994
+[ok]	1995
+[ok]	1996
+[ok]	1997
+[ok]	1998
+[ok]	1999
+[ok]	2000
+[ok]	2001
+[ok]	2002
+[ok]	2003
+[ok]	2004
+[ok]	2005
+[ok]	2006
+[ok]	2007
+[ok]	2008
+[ok]	2009
+[ok]	2010
+[ok]	2011
+[ok]	2012
+[ok]	2013
+[ok]	2014
+[ok]	2015
+[ok]	2016
+[ok]	2017
+[ok]	2018
+[ok]	2019
+[ok]	2020
+[ok]	2021
+[ok]	2022
+[ok]	2023
+[ok]	2024
+[ok]	2025
+[ok]	2026
+[ok]	2027
+[ok]	2028
+[ok]	2029
+[ok]	2030
+[ok]	2031
+[ok]	2032
+[ok]	2033
+[ok]	2034
+[ok]	2035
+[ok]	2036
+[ok]	2037
+[ok]	2038
+[ok]	2039
+[ok]	2040
+[ok]	2041
+[ok]	2042
+[ok]	2043
+[ok]	2044
+[ok]	2045
+[ok]	2046
+[ok]	2047
+[ok]	2048
+[ok]	2049
+[ok]	2050
+[ok]	2051
+[ok]	2052
+[ok]	2053
+[ok]	2054
+[ok]	2055
+[ok]	2056
+[ok]	2057
+[ok]	2058
+[ok]	2059
+[ok]	2060
+[ok]	2061
+[ok]	2062
+[ok]	2063
+[ok]	2064
+[ok]	2065
+[ok]	2066
+[ok]	2067
+[ok]	2068
+[ok]	2069
+[ok]	2070
+[ok]	2071
+[ok]	2072
+[ok]	2073
+[ok]	2074
+[ok]	2075
+[ok]	2076
+[ok]	2077
+[ok]	2078
+[ok]	2079
+[ok]	2080
+[ok]	2081
+[ok]	2082
+[ok]	2083
+[ok]	2084
+[ok]	2085
+[ok]	2086
+[ok]	2087
+[ok]	2088
+[ok]	2089
+[ok]	2090
+[ok]	2091
+[ok]	2092
+[ok]	2093
+[ok]	2094
+[ok]	2095
+[ok]	2096
+[ok]	2097
+[ok]	2098
+[ok]	2099
+[ok]	2100
+[ok]	2101
+[ok]	2102
+[ok]	2103
+[ok]	2104
+[ok]	2105
+[ok]	2106
+[ok]	2107
+[ok]	2108
+[ok]	2109
+[ok]	2110
+[ok]	2111
+[ok]	2112
+[ok]	2113
+[ok]	2114
+[ok]	2115
+[ok]	2116
+[ok]	2117
+[ok]	2118
+[ok]	2119
+[ok]	2120
+[ok]	2121
+[ok]	2122
+[ok]	2123
+[ok]	2124
+[ok]	2125
+[ok]	2126
+[ok]	2127
+[ok]	2128
+[ok]	2129
+[ok]	2130
+[ok]	2131
+[ok]	2132
+[ok]	2133
+[ok]	2134
+[ok]	2135
+[ok]	2136
+[ok]	2137
+[ok]	2138
+[ok]	2139
+[ok]	2140
+[ok]	2141
+[ok]	2142
+[ok]	2143
+[ok]	2144
+[ok]	2145
+[ok]	2146
+[ok]	2147
+[ok]	2148
+[ok]	2149
+[ok]	2150
+[ok]	2151
+[ok]	2152
+[ok]	2153
+[ok]	2154
+[ok]	2155
+[ok]	2156
+[ok]	2157
+[ok]	2158
+[ok]	2159
+[ok]	2160
+[ok]	2161
+[ok]	2162
+[ok]	2163
+[ok]	2164
+[ok]	2165
+[ok]	2166
+[ok]	2167
+[ok]	2168
+[ok]	2169
+[ok]	2170
+[ok]	2171
+[ok]	2172
+[ok]	2173
+[ok]	2174
+[ok]	2175
+[ok]	2176
+[ok]	2177
+[ok]	2178
+[ok]	2179
+[ok]	2180
+[ok]	2181
+[ok]	2182
+[ok]	2183
+[ok]	2184
+[ok]	2185
+[ok]	2186
+[ok]	2187
+[ok]	2188
+[ok]	2189
+[ok]	2190
+[ok]	2191
+[ok]	2192
+[ok]	2193
+[ok]	2194
+[ok]	2195
+[ok]	2196
+[ok]	2197
+[ok]	2198
+[ok]	2199
+[ok]	2200
+[ok]	2201
+[ok]	2202
+[ok]	2203
+[ok]	2204
+[ok]	2205
+[ok]	2206
+[ok]	2207
+[ok]	2208
+[ok]	2209
+[ok]	2210
+[ok]	2211
+[ok]	2212
+[ok]	2213
+[ok]	2214
+[ok]	2215
+[ok]	2216
+[ok]	2217
+[ok]	2218
+[ok]	2219
+[ok]	2220
+[ok]	2221
+[ok]	2222
+[ok]	2223
+[ok]	2224
+[ok]	2225
+[ok]	2226
+[ok]	2227
+[ok]	2228
+[ok]	2229
+[ok]	2230
+[ok]	2231
+[ok]	2232
+[ok]	2233
+[ok]	2234
+[ok]	2235
+[ok]	2236
+[ok]	2237
+[ok]	2238
+[ok]	2239
+[ok]	2240
+[ok]	2241
+[ok]	2242
+[ok]	2243
+[ok]	2244
+[ok]	2245
+[ok]	2246
+[ok]	2247
+[ok]	2248
+[ok]	2249
+[ok]	2250
+[ok]	2251
+[ok]	2252
+[ok]	2253
+[ok]	2254
+[ok]	2255
+[ok]	2256
+[ok]	2257
+[ok]	2258
+[ok]	2259
+[ok]	2260
+[ok]	2261
+[ok]	2262
+[ok]	2263
+[ok]	2264
+[ok]	2265
+[ok]	2266
+[ok]	2267
+[ok]	2268
+[ok]	2269
+[ok]	2270
+[ok]	2271
+[ok]	2272
+[ok]	2273
+[ok]	2274
+[ok]	2275
+[ok]	2276
+[ok]	2277
+[ok]	2278
+[ok]	2279
+[ok]	2280
+[ok]	2281
+[ok]	2282
+[ok]	2283
+[ok]	2284
+[ok]	2285
+[ok]	2286
+[ok]	2287
+[ok]	2288
+[ok]	2289
+[ok]	2290
+[ok]	2291
+[ok]	2292
+[ok]	2293
+[ok]	2294
+[ok]	2295
+[ok]	2296
+[ok]	2297
+[ok]	2298
+[ok]	2299
+[ok]	2300
+[ok]	2301
+[ok]	2302
+[ok]	2303
+[ok]	2304
+[ok]	2305
+[ok]	2306
+[ok]	2307
+[ok]	2308
+[ok]	2309
+[ok]	2310
+[ok]	2311
+[ok]	2312
+[ok]	2313
+[ok]	2314
+[ok]	2315
+[ok]	2316
+[ok]	2317
+[ok]	2318
+[ok]	2319
+[ok]	2320
+[ok]	2321
+[ok]	2322
+[ok]	2323
+[ok]	2324
+[ok]	2325
+[ok]	2326
+[ok]	2327
+[ok]	2328
+[ok]	2329
+[ok]	2330
+[ok]	2331
+[ok]	2332
+[ok]	2333
+[ok]	2334
+[ok]	2335
+[ok]	2336
+[ok]	2337
+[ok]	2338
+[ok]	2339
+[ok]	2340
+[ok]	2341
+[ok]	2342
+[ok]	2343
+[ok]	2344
+[ok]	2345
+[ok]	2346
+[ok]	2347
+[ok]	2348
+[ok]	2349
+[ok]	2350
+[ok]	2351
+[ok]	2352
+[ok]	2353
+[ok]	2354
+[ok]	2355
+[ok]	2356
+[ok]	2357
+[ok]	2358
+[ok]	2359
+[ok]	2360
+[ok]	2361
+[ok]	2362
+[ok]	2363
+[ok]	2364
+[ok]	2365
+[ok]	2366
+[ok]	2367
+[ok]	2368
+[ok]	2369
+[ok]	2370
+[ok]	2371
+[ok]	2372
+[ok]	2373
+[ok]	2374
+[ok]	2375
+[ok]	2376
+[ok]	2377
+[ok]	2378
+[ok]	2379
+[ok]	2380
+[ok]	2381
+[ok]	2382
+[ok]	2383
+[ok]	2384
+[ok]	2385
+[ok]	2386
+[ok]	2387
+[ok]	2388
+[ok]	2389
+[ok]	2390
+[ok]	2391
+[ok]	2392
+[ok]	2393
+[ok]	2394
+[ok]	2395
+[ok]	2396
+[ok]	2397
+[ok]	2398
+[ok]	2399
+[ok]	2400
+[ok]	2401
+[ok]	2402
+[ok]	2403
+[ok]	2404
+[ok]	2405
+[ok]	2406
+[ok]	2407
+[ok]	2408
+[ok]	2409
+[ok]	2410
+[ok]	2411
+[ok]	2412
+[ok]	2413
+[ok]	2414
+[ok]	2415
+[ok]	2416
+[ok]	2417
+[ok]	2418
+[ok]	2419
+[ok]	2420
+[ok]	2421
+[ok]	2422
+[ok]	2423
+[ok]	2424
+[ok]	2425
+[ok]	2426
+[ok]	2427
+[ok]	2428
+[ok]	2429
+[ok]	2430
+[ok]	2431
+[ok]	2432
+[ok]	2433
+[ok]	2434
+[ok]	2435
+[ok]	2436
+[ok]	2437
+[ok]	2438
+[ok]	2439
+[ok]	2440
+[ok]	2441
+[ok]	2442
+[ok]	2443
+[ok]	2444
+[ok]	2445
+[ok]	2446
+[ok]	2447
+[ok]	2448
+[ok]	2449
+[ok]	2450
+[ok]	2451
+[ok]	2452
+[ok]	2453
+[ok]	2454
+[ok]	2455
+[ok]	2456
+[ok]	2457
+[ok]	2458
+[ok]	2459
+[ok]	2460
+[ok]	2461
+[ok]	2462
+[ok]	2463
+[ok]	2464
+[ok]	2465
+[ok]	2466
+[ok]	2467
+[ok]	2468
+[ok]	2469
+[ok]	2470
+[ok]	2471
+[ok]	2472
+[ok]	2473
+[ok]	2474
+[ok]	2475
+[ok]	2476
+[ok]	2477
+[ok]	2478
+[ok]	2479
+[ok]	2480
+[ok]	2481
+[ok]	2482
+[ok]	2483
+[ok]	2484
+[ok]	2485
+[ok]	2486
+[ok]	2487
+[ok]	2488
+[ok]	2489
+[ok]	2490
+[ok]	2491
+[ok]	2492
+[ok]	2493
+[ok]	2494
+[ok]	2495
+[ok]	2496
+[ok]	2497
+[ok]	2498
+[ok]	2499
+[ok]	2500
+[ok]	2501
+[ok]	2502
+[ok]	2503
+[ok]	2504
+[ok]	2505
+[ok]	2506
+[ok]	2507
+[ok]	2508
+[ok]	2509
+[ok]	2510
+[ok]	2511
+[ok]	2512
+[ok]	2513
+[ok]	2514
+[ok]	2515
+[ok]	2516
+[ok]	2517
+[ok]	2518
+[ok]	2519
+[ok]	2520
+[ok]	2521
+[ok]	2522
+[ok]	2523
+[ok]	2524
+[ok]	2525
+[ok]	2526
+[ok]	2527
+[ok]	2528
+[ok]	2529
+[ok]	2530
+[ok]	2531
+[ok]	2532
+[ok]	2533
+[ok]	2534
+[ok]	2535
+[ok]	2536
+[ok]	2537
+[ok]	2538
+[ok]	2539
+[ok]	2540
+[ok]	2541
+[ok]	2542
+[ok]	2543
+[ok]	2544
+[ok]	2545
+[ok]	2546
+[ok]	2547
+[ok]	2548
+[ok]	2549
+[ok]	2550
+[ok]	2551
+[ok]	2552
+[ok]	2553
+[ok]	2554
+[ok]	2555
+[ok]	2556
+[ok]	2557
+[ok]	2558
+[ok]	2559
+[ok]	2560
+[ok]	2561
+[ok]	2562
+[ok]	2563
+[ok]	2564
+[ok]	2565
+[ok]	2566
+[ok]	2567
+[ok]	2568
+[ok]	2569
+[ok]	2570
+[ok]	2571
+[ok]	2572
+[ok]	2573
+[ok]	2574
+[ok]	2575
+[ok]	2576
+[ok]	2577
+[ok]	2578
+[ok]	2579
+[ok]	2580
+[ok]	2581
+[ok]	2582
+[ok]	2583
+[ok]	2584
+[ok]	2585
+[ok]	2586
+[ok]	2587
+[ok]	2588
+[ok]	2589
+[ok]	2590
+[ok]	2591
+[ok]	2592
+[ok]	2593
+[ok]	2594
+[ok]	2595
+[ok]	2596
+[ok]	2597
+[ok]	2598
+[ok]	2599
+[ok]	2600
+[ok]	2601
+[ok]	2602
+[ok]	2603
+[ok]	2604
+[ok]	2605
+[ok]	2606
+[ok]	2607
+[ok]	2608
+[ok]	2609
+[ok]	2610
+[ok]	46
+[ok]	48
+[ok]	50
+[ok]	52
+[ok]	54
+[ok]	56
+[ok]	58
+-- newest diagnostic reports: soffice-2026-10-01-013929.ips, soffice-2026-10-01-013928.ips, soffice-2026-10-01-013925.ips, soffice-2026-10-01-013924.ips, soffice-2026-10-01-013916.ips
+2026-10-01 14:36:51.556 | INFO     | __main__:preflight:1812 - [word] preflight: open_documents=0 started_clean=True launched_by_us=False close_documents=False
+2026-10-01 14:36:51.599 | INFO     | __main__:convert_folder:1486 - [word] export: one_osascript=True documents=2611 accept_all=False reject_all=False
+2026-10-01 14:36:51.713 | INFO     | __main__:_convert_batched:1685 - [batch] one osascript for 6 document(s)
+2026-10-01 14:36:51.945 | WARNING  | __main__:run_batch_with_resume:1206 - [batch pdf] 6 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 2, 0 of 3 stalled passes used)
+2026-10-01 14:36:51.946 | WARNING  | __main__:recycle:725 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-01 14:36:51.946 | WARNING  | __main__:recycle:731 - [word] recycling (restart 1)
+2026-10-01 14:36:58.123 | INFO     | __main__:_note_buttons:510 - [watchdog] Microsoft Word shows button 'OK'
+2026-10-01 14:36:59.078 | WARNING  | __main__:_loop_word:540 - [watchdog] Word dialog dismissed via 'OK'
+2026-10-01 14:37:11.355 | INFO     | __main__:_loop:1067 - [batch pdf 2] 0/6
+2026-10-01 14:38:02.853 | WARNING  | __main__:_loop:1072 - [batch pdf 2] item 1/6 open for more than 30 s:
+-- Word windows {name, subrole}: ,
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-2.log:
+
+-- newest diagnostic reports: soffice-2026-10-01-013929.ips, soffice-2026-10-01-013928.ips, soffice-2026-10-01-013925.ips, soffice-2026-10-01-013924.ips, soffice-2026-10-01-013916.ips
+2026-10-01 14:43:07.512 | WARNING  | __main__:run_batch_with_resume:1206 - [batch pdf] 5 item(s) never reached (ended without reaching them); recycling Word and retrying the rest first, retried items last (pass 3, 1 of 3 stalled passes used)
+2026-10-01 14:43:07.514 | WARNING  | __main__:recycle:725 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-01 14:43:07.515 | WARNING  | __main__:recycle:731 - [word] recycling (restart 2)
+2026-10-01 14:43:13.789 | INFO     | __main__:_note_buttons:510 - [watchdog] Microsoft Word shows button 'No'
+2026-10-01 14:43:13.789 | INFO     | __main__:_note_buttons:510 - [watchdog] Microsoft Word shows button 'Yes'
+2026-10-01 14:43:13.790 | INFO     | __main__:_note_buttons:510 - [watchdog] Microsoft Word shows button 'missing value'
+2026-10-01 14:43:16.697 | INFO     | __main__:_loop:1067 - [batch pdf 3] 0/5
+2026-10-01 14:43:19.526 | WARNING  | __main__:_loop_word:540 - [watchdog] Word dialog dismissed via 'No'
+2026-10-01 14:43:25.524 | WARNING  | __main__:_loop_word:540 - [watchdog] Word dialog dismissed via 'OK'
+2026-10-01 14:44:07.805 | WARNING  | __main__:_loop:1072 - [batch pdf 3] item 1/5 open for more than 30 s:
+-- Word windows {name, subrole}: ,
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-3.log:
+
+-- newest diagnostic reports: soffice-2026-10-01-013929.ips, soffice-2026-10-01-013928.ips, soffice-2026-10-01-013925.ips, soffice-2026-10-01-013924.ips, soffice-2026-10-01-013916.ips
+2026-10-01 14:49:25.266 | WARNING  | __main__:run_batch_with_resume:1206 - [batch pdf] 4 item(s) never reached (ended without reaching them); recycling Word and retrying the rest first, retried items last (pass 4, 2 of 3 stalled passes used)
+2026-10-01 14:49:25.271 | WARNING  | __main__:recycle:725 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-01 14:49:25.271 | WARNING  | __main__:recycle:731 - [word] recycling (restart 3)
+2026-10-01 14:49:32.293 | WARNING  | __main__:_loop_word:540 - [watchdog] Word dialog dismissed via 'No'
+2026-10-01 14:49:34.186 | INFO     | __main__:_loop:1067 - [batch pdf 4] 0/4
+2026-10-01 14:50:09.358 | WARNING  | __main__:_loop:1072 - [batch pdf 4] item 1/4 open for more than 30 s:
+-- Word windows {name, subrole}: ,
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-4.log:
+
+-- newest diagnostic reports: soffice-2026-10-01-013929.ips, soffice-2026-10-01-013928.ips, soffice-2026-10-01-013925.ips, soffice-2026-10-01-013924.ips, soffice-2026-10-01-013916.ips
+2026-10-01 14:53:29.516 | WARNING  | __main__:run_batch_with_resume:1206 - [batch pdf] 3 item(s) never reached (ended without reaching them); recycling Word and retrying the rest first, retried items last (pass 5, 3 of 3 stalled passes used)
+2026-10-01 14:53:29.517 | WARNING  | __main__:recycle:725 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-01 14:53:29.518 | WARNING  | __main__:recycle:731 - [word] recycling (restart 4)
+2026-10-01 14:53:33.020 | ERROR    | __main__:_convert_batched:1730 - [batch] FAIL: 19eb128df9_98bf5f3d218a1485f5eb284693b4f98725eadd3660097efd__vs__9666fa13fb_a3701d3600ed5bf6c9bf13e12e4c2a59542eba10f87fad69_redline_5b269ade28_jubarte-0.10.1.docx — never reached in 3 batch pass(es)
+2026-10-01 14:53:33.033 | ERROR    | __main__:_convert_batched:1730 - [batch] FAIL: 5fbd8a7228_39cd8347f53ac1b06a6eb59399aa12a9977b0233a38ddaff__vs__89d3a1c365_40d999f53c15fd5eb9e57ab8cf37f22f83d6823458897be1_redline_049d8405bc_jubarte-0.10.1.docx — never reached in 3 batch pass(es)
+2026-10-01 14:53:33.042 | ERROR    | __main__:_convert_batched:1730 - [batch] FAIL: 7e4c9416aa_00803e70c3646e42abab322238df606c847686168795a703__vs__1424386e9b_017447de83753a0e3b7afc659df038ef56972925336c6a5b_redline_c8545d372b_jubarte-0.10.1.docx — never reached in 3 batch pass(es)
+2026-10-01 14:53:33.047 | ERROR    | __main__:_convert_batched:1730 - [batch] FAIL: acce1b593c_4bb73d9addf1f02e3a2132dcd33a8feb4dfcbe076d43bb0f__vs__4e2d5a0b0c_4887566b3c4aad8c7f07b4ba2637c0244a1ee0d66c8d0c29_redline_63ea4d3f8d_jubarte-0.10.1.docx — Microsoft Word got an error: AppleEvent timed out.
+2026-10-01 14:53:33.054 | ERROR    | __main__:_convert_batched:1730 - [batch] FAIL: af2ea13761_6a0524deb86b08f0fb55dcbb7d469deacb25532f08824945__vs__1068eb5017_793c14bc1529c16f30ac69b82ca152f39f534a1a3f3f90e4_redline_5d8e97b0c5_jubarte-0.10.1.docx — Microsoft Word got an error: AppleEvent timed out.
+2026-10-01 14:53:33.060 | ERROR    | __main__:_convert_batched:1730 - [batch] FAIL: baf3657261_85df42a54afc9c20d3aff53d0e41164f2e0fdd5854667471__vs__8e835e4a58_fe1826d38f794c954d601ed7dcb202a347ae8ceb560fdf2e_redline_f787d881e3_jubarte-0.10.1.docx — Microsoft Word got an error: AppleEvent timed out.

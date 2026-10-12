@@ -1,0 +1,28 @@
+2026-10-01 12:33:22.059 | INFO     | __main__:preflight:1812 -  preflight: 
+open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-10-01 12:33:22.096 | INFO     | __main__:convert_folder:1486 -  export: 
+one_osascript=True documents=40 accept_all=False reject_all=True
+2026-10-01 12:33:22.148 | INFO     | __main__:_convert_batched:1685 -  one 
+osascript for 40 document(s)
+2026-10-01 12:33:27.173 | INFO     | __main__:_loop:1067 -  5/40
+2026-10-01 12:33:32.194 | INFO     | __main__:_loop:1067 -  8/40
+2026-10-01 12:33:37.215 | INFO     | __main__:_loop:1067 -  12/40
+2026-10-01 12:33:42.238 | INFO     | __main__:_loop:1067 -  17/40
+2026-10-01 12:33:47.258 | INFO     | __main__:_loop:1067 -  22/40
+2026-10-01 12:33:52.283 | INFO     | __main__:_loop:1067 -  26/40
+2026-10-01 12:33:57.312 | INFO     | __main__:_loop:1067 -  30/40
+2026-10-01 12:34:02.340 | INFO     | __main__:_loop:1067 -  34/40
+2026-10-01 12:34:07.359 | INFO     | __main__:_loop:1067 -  38/40
+2026-10-01 12:34:09.291 | INFO     | __main__:_note_buttons:510 -  Microsoft 
+Word shows button 'missing value'
+          reject all → DOCX + PDF:          
+results/redlines_1001_j0101/jubarte-0101/rej
+                 ected/src                  
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━┓
+┃ outcome                          ┃ count ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━┩
+│ converted                        │    40 │
+│ skipped (exists)                 │     0 │
+│ failed                           │     0 │
+│ seconds per document (batch avg) │   1.2 │
+└──────────────────────────────────┴───────┘

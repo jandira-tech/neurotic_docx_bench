@@ -1,0 +1,148 @@
+2026-09-29 15:08:50.999 | INFO     | __main__:preflight:1762 -  preflight: 
+open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-09-29 15:08:51.029 | INFO     | __main__:convert_folder:1436 -  export: 
+one_osascript=True documents=400 accept_all=False reject_all=True
+2026-09-29 15:08:51.070 | INFO     | __main__:_convert_batched:1635 -  one 
+osascript for 15 document(s)
+2026-09-29 15:08:56.087 | INFO     | __main__:_loop:1025 -  0/15
+2026-09-29 15:08:57.453 | INFO     | __main__:_note_buttons:509 -  Microsoft 
+Word shows button 'No'
+2026-09-29 15:08:57.453 | INFO     | __main__:_note_buttons:509 -  Microsoft 
+Word shows button 'Yes'
+2026-09-29 15:08:58.471 | WARNING  | __main__:_loop_word:539 -  Word dialog 
+dismissed via 'No'
+2026-09-29 15:12:51.260 | WARNING  | __main__:run_batch_with_resume:1156 -  14 
+item(s) never reached (ended without reaching them); recycling Word and retrying
+the rest first, retried items last (pass 2, 1 of 3 stalled passes used)
+2026-09-29 15:12:51.260 | WARNING  | __main__♻724 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-09-29 15:12:51.262 | WARNING  | __main__♻730 -  recycling (restart 1)
+2026-09-29 15:12:57.557 | WARNING  | __main__:_loop_word:539 -  Word dialog 
+dismissed via 'No'
+2026-09-29 15:12:59.705 | INFO     | __main__:_loop:1025 -  0/14
+2026-09-29 15:16:54.893 | WARNING  | __main__:run_batch_with_resume:1156 -  13 
+item(s) never reached (ended without reaching them); recycling Word and retrying
+the rest first, retried items last (pass 3, 2 of 3 stalled passes used)
+2026-09-29 15:16:54.895 | WARNING  | __main__♻724 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-09-29 15:16:54.895 | WARNING  | __main__♻730 -  recycling (restart 2)
+2026-09-29 15:17:03.410 | INFO     | __main__:_loop:1025 -  0/13
+2026-09-29 15:17:03.645 | WARNING  | __main__:_loop_word:539 -  Word dialog 
+dismissed via 'No'
+2026-09-29 15:20:58.698 | WARNING  | __main__:run_batch_with_resume:1156 -  12 
+item(s) never reached (ended without reaching them); recycling Word and retrying
+the rest first, retried items last (pass 4, 3 of 3 stalled passes used)
+2026-09-29 15:20:58.699 | WARNING  | __main__♻724 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-09-29 15:20:58.699 | WARNING  | __main__♻730 -  recycling (restart 3)
+2026-09-29 15:21:02.138 | ERROR    | __main__:_convert_batched:1680 -  FAIL: 
+45c1c5abec_table_vmerge_colspan__vs__a94f4c516b_text_box_redline_e0305725c1_docx
+odus.docx — Microsoft Word got an error: AppleEvent timed out.
+2026-09-29 15:21:02.140 | ERROR    | __main__:_convert_batched:1680 -  FAIL: 
+60697d46b7_strict01__vs__a04e2d2749_ooxml_style_link_redline_6b74ac1ae6_docxodus
+.docx — Microsoft Word got an error: AppleEvent timed out.
+2026-09-29 15:21:02.141 | ERROR    | __main__:_convert_batched:1680 -  FAIL: 
+66dcec3e49_file_175__vs__8f47b1dc90_file_176_redline_acccebf575_docxodus.docx — 
+Microsoft Word got an error: AppleEvent timed out.
+2026-09-29 15:21:02.142 | ERROR    | __main__:_convert_batched:1680 -  FAIL: 
+970fd9303f_sample_document_word_repair_of_our_output_word_r__vs__8441c4ae21_sd_2
+517_localized_heading_styles_redline_9c71031b8a_docxodus.docx — never reached in
+3 batch pass(es)
+2026-09-29 15:21:02.143 | ERROR    | __main__:_convert_batched:1680 -  FAIL: 
+9c6ebd430d_file_185__vs__154fce3ec8_file_186_redline_b0af33e7d7_docxodus.docx — 
+never reached in 3 batch pass(es)
+2026-09-29 15:21:02.144 | ERROR    | __main__:_convert_batched:1680 -  FAIL: 
+a83d3922a8_file_104__vs__36223881e1_file_105_redline_3a4b48cd02_docxodus.docx — 
+never reached in 3 batch pass(es)
+2026-09-29 15:21:02.145 | ERROR    | __main__:_convert_batched:1680 -  FAIL: 
+ab064d6482_super_editor__table_width_issue_20b01504__vs__01d1b3da75_table_bookma
+rk_end_redline_9fff1c473d_docxodus.docx — never reached in 3 batch pass(es)
+2026-09-29 15:21:02.146 | ERROR    | __main__:_convert_batched:1680 -  FAIL: 
+ab064d6482_super_editor__table_width_issue_20b01504__vs__837d45926d_super_editor
+__header_alternating_odd_even_11e019_redline_a0964b6b7d_docxodus.docx — never 
+reached in 3 batch pass(es)
+2026-09-29 15:21:02.147 | ERROR    | __main__:_convert_batched:1680 -  FAIL: 
+ab064d6482_super_editor__table_width_issue_20b01504__vs__8df6dfa8d7_alternate_co
+ntent_redline_5b1a8f121b_docxodus.docx — never reached in 3 batch pass(es)
+2026-09-29 15:21:02.163 | ERROR    | __main__:_convert_batched:1680 -  FAIL: 
+af2bb3fa96_file_70__vs__91b2b8bb84_file_71_redline_dedbff52b1_docxodus.docx — 
+never reached in 3 batch pass(es)
+2026-09-29 15:21:02.165 | ERROR    | __main__:_convert_batched:1680 -  FAIL: 
+b8115d0dab_file_100__vs__c500e0081f_file_101_redline_ff24600d87_docxodus.docx — 
+never reached in 3 batch pass(es)
+2026-09-29 15:21:02.170 | ERROR    | __main__:_convert_batched:1680 -  FAIL: 
+ba54aaab82_super_editor__ooxml_italic_rstyle_combos_demo_90__vs__8ab3f01cdd_supe
+r_editor__paragraph_indent_normal_styles_85f_redline_85b79dc2e9_docxodus.docx — 
+never reached in 3 batch pass(es)
+2026-09-29 15:21:02.184 | ERROR    | __main__:_convert_batched:1680 -  FAIL: 
+c090b9f082_file_8__vs__3f91c8f0cd_file_9_redline_cac2492b83_docxodus.docx — 
+never reached in 3 batch pass(es)
+2026-09-29 15:21:02.185 | ERROR    | __main__:_convert_batched:1680 -  FAIL: 
+c09b14fcd7_file_196__vs__4e6a261969_file_197_redline_cfb0498eef_docxodus.docx — 
+never reached in 3 batch pass(es)
+2026-09-29 15:21:02.186 | ERROR    | __main__:_convert_batched:1680 -  FAIL: 
+c498e8c52c_super_editor__contract_acc_bbd983a0__vs__ab859711f4_super_editor__cus
+tom_list_numbering1_7eb9fda4_redline_3c2c9cda82_docxodus.docx — never reached in
+3 batch pass(es)
+  reject all → DOCX + PDF:  
+results/redlines_0929_split/
+  docxodus/reject_all/src   
+┏━━━━━━━━━━━━━━━━━━┳━━━━━━━┓
+┃ outcome          ┃ count ┃
+┡━━━━━━━━━━━━━━━━━━╇━━━━━━━┩
+│ converted        │     0 │
+│ skipped (exists) │   385 │
+│ failed           │    15 │
+└──────────────────┴───────┘
+  FAIL 
+45c1c5abec_table_vmerge_colspan__vs__a94f4c516b_text_box_redline_e0305725c1_docx
+odus.docx: Microsoft Word got an error: AppleEvent timed out.
+  FAIL 
+60697d46b7_strict01__vs__a04e2d2749_ooxml_style_link_redline_6b74ac1ae6_docxodus
+.docx: Microsoft Word got an error: AppleEvent timed out.
+  FAIL 
+66dcec3e49_file_175__vs__8f47b1dc90_file_176_redline_acccebf575_docxodus.docx: 
+Microsoft Word got an error: AppleEvent timed out.
+  FAIL 
+970fd9303f_sample_document_word_repair_of_our_output_word_r__vs__8441c4ae21_sd_2
+517_localized_heading_styles_redline_9c71031b8a_docxodus.docx: never reached in 
+3 batch pass(es)
+  FAIL 
+9c6ebd430d_file_185__vs__154fce3ec8_file_186_redline_b0af33e7d7_docxodus.docx: 
+never reached in 3 batch pass(es)
+  FAIL 
+a83d3922a8_file_104__vs__36223881e1_file_105_redline_3a4b48cd02_docxodus.docx: 
+never reached in 3 batch pass(es)
+  FAIL 
+ab064d6482_super_editor__table_width_issue_20b01504__vs__01d1b3da75_table_bookma
+rk_end_redline_9fff1c473d_docxodus.docx: never reached in 3 batch pass(es)
+  FAIL 
+ab064d6482_super_editor__table_width_issue_20b01504__vs__837d45926d_super_editor
+__header_alternating_odd_even_11e019_redline_a0964b6b7d_docxodus.docx: never 
+reached in 3 batch pass(es)
+  FAIL 
+ab064d6482_super_editor__table_width_issue_20b01504__vs__8df6dfa8d7_alternate_co
+ntent_redline_5b1a8f121b_docxodus.docx: never reached in 3 batch pass(es)
+  FAIL 
+af2bb3fa96_file_70__vs__91b2b8bb84_file_71_redline_dedbff52b1_docxodus.docx: 
+never reached in 3 batch pass(es)
+  FAIL 
+b8115d0dab_file_100__vs__c500e0081f_file_101_redline_ff24600d87_docxodus.docx: 
+never reached in 3 batch pass(es)
+  FAIL 
+ba54aaab82_super_editor__ooxml_italic_rstyle_combos_demo_90__vs__8ab3f01cdd_supe
+r_editor__paragraph_indent_normal_styles_85f_redline_85b79dc2e9_docxodus.docx: 
+never reached in 3 batch pass(es)
+  FAIL 
+c090b9f082_file_8__vs__3f91c8f0cd_file_9_redline_cac2492b83_docxodus.docx: never
+reached in 3 batch pass(es)
+  FAIL 
+c09b14fcd7_file_196__vs__4e6a261969_file_197_redline_cfb0498eef_docxodus.docx: 
+never reached in 3 batch pass(es)
+  FAIL 
+c498e8c52c_super_editor__contract_acc_bbd983a0__vs__ab859711f4_super_editor__cus
+tom_list_numbering1_7eb9fda4_redline_3c2c9cda82_docxodus.docx: never reached in 
+3 batch pass(es)

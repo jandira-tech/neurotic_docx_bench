@@ -1,0 +1,222 @@
+2026-10-11 19:49:41.607 | INFO     | word_pdf:preflight:1827 - [word] preflight: open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-10-11 19:49:41.618 | INFO     | __main__:redline_folders:727 - [redline] one_osascript=True pairs=169
+2026-10-11 19:49:41.819 | INFO     | __main__:_redline_batched:1011 - [batch] one osascript for 169 comparison(s)
+2026-10-11 19:49:46.824 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 1/169
+2026-10-11 19:49:51.828 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 5/169
+2026-10-11 19:49:56.830 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 7/169
+2026-10-11 19:50:01.833 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 9/169
+2026-10-11 19:50:06.838 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 12/169
+2026-10-11 19:50:08.286 | INFO     | word_pdf:_note_buttons:514 - [watchdog] Microsoft Word shows button 'missing value'
+2026-10-11 19:50:11.841 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 15/169
+2026-10-11 19:50:16.846 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 20/169
+2026-10-11 19:50:21.851 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 24/169
+2026-10-11 19:50:26.852 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 27/169
+2026-10-11 19:50:31.858 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 31/169
+2026-10-11 19:50:36.860 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 35/169
+2026-10-11 19:50:41.866 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 40/169
+2026-10-11 19:50:46.872 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 44/169
+2026-10-11 19:50:51.877 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 48/169
+2026-10-11 19:50:56.882 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 52/169
+2026-10-11 19:51:01.886 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 55/169
+2026-10-11 19:51:06.889 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 59/169
+2026-10-11 19:51:11.890 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 61/169
+2026-10-11 19:51:16.896 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 64/169
+2026-10-11 19:51:21.902 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 67/169
+2026-10-11 19:51:26.909 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 70/169
+2026-10-11 19:51:31.913 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 74/169
+2026-10-11 19:51:36.919 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 78/169
+2026-10-11 19:51:41.925 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 82/169
+2026-10-11 19:51:46.925 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 86/169
+2026-10-11 19:51:51.930 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 89/169
+2026-10-11 19:51:56.935 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 93/169
+2026-10-11 19:52:01.939 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 97/169
+2026-10-11 19:52:06.941 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 99/169
+2026-10-11 19:52:11.947 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 103/169
+2026-10-11 19:52:16.952 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 107/169
+2026-10-11 19:52:21.956 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 110/169
+2026-10-11 19:52:26.961 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 114/169
+2026-10-11 19:52:31.967 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 117/169
+2026-10-11 19:52:36.974 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 120/169
+2026-10-11 19:52:41.980 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 124/169
+2026-10-11 19:52:46.985 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 127/169
+2026-10-11 19:52:51.990 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 130/169
+2026-10-11 19:52:56.991 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 133/169
+2026-10-11 19:53:01.993 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 136/169
+2026-10-11 19:53:06.998 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 139/169
+2026-10-11 19:53:12.004 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 142/169
+2026-10-11 19:53:17.009 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 145/169
+2026-10-11 19:53:22.013 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 148/169
+2026-10-11 19:53:27.019 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 151/169
+2026-10-11 19:53:32.024 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 154/169
+2026-10-11 19:53:37.030 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 157/169
+2026-10-11 19:53:42.036 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 159/169
+2026-10-11 19:53:47.041 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 162/169
+2026-10-11 19:53:52.047 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 165/169
+2026-10-11 19:53:57.052 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 167/169
+2026-10-11 19:53:58.860 | INFO     | __main__:_redline_batched:1040 - [batch] one osascript for 169 redline PDF(s)
+2026-10-11 19:54:03.867 | INFO     | word_pdf:_loop:1077 - [batch pdf 1] 2/169
+2026-10-11 19:54:08.591 | INFO     | word_pdf:_note_buttons:514 - [watchdog] Microsoft Word shows button 'OK'
+2026-10-11 19:54:08.872 | INFO     | word_pdf:_loop:1077 - [batch pdf 1] 29/169
+2026-10-11 19:54:13.589 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 0fa9500a3a.docx → 0fa9500a3a.docx — redline saved but PDF export failed: 
+2026-10-11 19:54:13.592 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 1032d784bc.docx → 1032d784bc.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:13.600 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 10358095a4.docx → 10358095a4.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:13.606 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 108332354e.docx → 108332354e.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:13.608 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 1100ef5607.docx → 1100ef5607.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:13.611 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 1108cc4aae.docx → 1108cc4aae.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:13.624 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 11e99a0b24.docx → 11e99a0b24.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:13.626 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 1277d3c5cb.docx → 1277d3c5cb.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:13.627 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 12d29cabe0.docx → 12d29cabe0.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:13.630 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 12fca96084.docx → 12fca96084.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:13.632 | ERROR    | __main__:_redline_batched:1072 - [batch] FAIL: 137d46157c.docx → 137d46157c.docx — redline is missing base 0% and revision 50% of that file; the two sides are not averaged
+2026-10-11 19:54:13.637 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 142f9e34dc.docx → 142f9e34dc.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:13.641 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 15929d1b69.docx → 15929d1b69.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:13.646 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 16151012f9.docx → 16151012f9.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:13.647 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 1824b1df94.docx → 1824b1df94.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:13.650 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 18380da4e0.docx → 18380da4e0.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:13.660 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 189b6fe5e3.docx → 189b6fe5e3.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:13.673 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 1987911502.docx → 1987911502.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:13.675 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 1a0e553bcd.docx → 1a0e553bcd.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:13.884 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 1a4f106bda.docx → 1a4f106bda.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:13.895 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 1b40a04f6e.docx → 1b40a04f6e.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:13.903 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 1da384ebd8.docx → 1da384ebd8.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:13.919 | ERROR    | __main__:_redline_batched:1072 - [batch] FAIL: 1edc0f56f4.docx → 1edc0f56f4.docx — redline is missing base 67% of that file; the two sides are not averaged
+2026-10-11 19:54:13.922 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 1ff9bf561d.docx → 1ff9bf561d.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:13.930 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 20f4d8a3bb.docx → 20f4d8a3bb.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:13.938 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 259023733f.docx → 259023733f.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:13.954 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 27427ee2bc.docx → 27427ee2bc.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:13.966 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 2908bcc568.docx → 2908bcc568.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:13.983 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 2b03bf1e4a.docx → 2b03bf1e4a.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.008 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 2b0b9989fe.docx → 2b0b9989fe.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.011 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 2ca65f90f3.docx → 2ca65f90f3.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.043 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 2e5338a837.docx → 2e5338a837.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.048 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 2e7da780e1.docx → 2e7da780e1.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.054 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 2ed508b300.docx → 2ed508b300.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.062 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 3303e707c8.docx → 3303e707c8.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.065 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 333e41d238.docx → 333e41d238.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.103 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 3350b94022.docx → 3350b94022.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.111 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 350de6087f.docx → 350de6087f.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.124 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 357b5237e5.docx → 357b5237e5.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.127 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 371ef9feed.docx → 371ef9feed.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.129 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 3796807136.docx → 3796807136.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.135 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 397d177f69.docx → 397d177f69.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.143 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 3b429bb993.docx → 3b429bb993.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.145 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 3c8e1237e2.docx → 3c8e1237e2.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.147 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 3cc33aad1b.docx → 3cc33aad1b.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.150 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 3cddbcb812.docx → 3cddbcb812.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.179 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 3eae2fcfd5.docx → 3eae2fcfd5.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.181 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 3eb7eb9960.docx → 3eb7eb9960.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.183 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 3fdab4ace6.docx → 3fdab4ace6.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.187 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 3ff8edff81.docx → 3ff8edff81.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.207 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 40890b46b0.docx → 40890b46b0.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.209 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 41ff794e9c.docx → 41ff794e9c.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.218 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 429328c875.docx → 429328c875.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.238 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 435d2c2474.docx → 435d2c2474.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.240 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 43aedaf43e.docx → 43aedaf43e.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.242 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 46cccac5f4.docx → 46cccac5f4.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.254 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 46f67bb6e3.docx → 46f67bb6e3.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.256 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 48b8d1fb7b.docx → 48b8d1fb7b.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.257 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 4b296f85a3.docx → 4b296f85a3.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.259 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 4ce07ffaec.docx → 4ce07ffaec.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.271 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 4d40d1f136.docx → 4d40d1f136.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.279 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 4f6ee65d41.docx → 4f6ee65d41.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.280 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 4f992bb29a.docx → 4f992bb29a.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.281 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 4fcfb3e558.docx → 4fcfb3e558.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.283 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 504edf1ba1.docx → 504edf1ba1.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.302 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 518f2ebfcc.docx → 518f2ebfcc.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.304 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 541790cd56.docx → 541790cd56.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.313 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 5528a0da48.docx → 5528a0da48.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.326 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 579738cc2d.docx → 579738cc2d.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.328 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 5851377569.docx → 5851377569.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.330 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 585b8c8d12.docx → 585b8c8d12.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.341 | WARNING  | word_pdf:_loop_word:544 - [watchdog] Word dialog dismissed via 'OK'
+2026-10-11 19:54:14.346 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 589b832f86.docx → 589b832f86.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.350 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 5986623b2b.docx → 5986623b2b.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.352 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 59af96c28c.docx → 59af96c28c.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.353 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 5afeaaf377.docx → 5afeaaf377.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.371 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 5b1a59baee.docx → 5b1a59baee.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.373 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 602f6fbaca.docx → 602f6fbaca.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.375 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 603ef0419b.docx → 603ef0419b.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.376 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 60f03b7515.docx → 60f03b7515.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.380 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 61a3912d74.docx → 61a3912d74.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.382 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 61d6a6f326.docx → 61d6a6f326.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.384 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 621637d747.docx → 621637d747.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.390 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 6218266659.docx → 6218266659.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.392 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 639d40ef20.docx → 639d40ef20.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.394 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 63ec3a403e.docx → 63ec3a403e.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.410 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 64d05c8af4.docx → 64d05c8af4.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.412 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 6795141f5a.docx → 6795141f5a.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.414 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 67d0b6f3e8.docx → 67d0b6f3e8.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.416 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 688c583b45.docx → 688c583b45.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.426 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 6b2b4c4b00.docx → 6b2b4c4b00.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.441 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 70a6883d16.docx → 70a6883d16.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.448 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 7107f461ef.docx → 7107f461ef.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.588 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 77800d60fe.docx → 77800d60fe.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.590 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 7a2cc168c2.docx → 7a2cc168c2.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.608 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 7ab61e8c4f.docx → 7ab61e8c4f.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.611 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 7c3a177c6d.docx → 7c3a177c6d.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.612 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 7d0fcf1e23.docx → 7d0fcf1e23.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.616 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 80e8acff6a.docx → 80e8acff6a.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.618 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 81af8af777.docx → 81af8af777.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.623 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 8276bf6a07.docx → 8276bf6a07.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.626 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 83b966e72a.docx → 83b966e72a.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.628 | ERROR    | __main__:_redline_batched:1072 - [batch] FAIL: 8568a9817b.docx → 8568a9817b.docx — redline is missing revision 50% of that file; the two sides are not averaged
+2026-10-11 19:54:14.630 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 85f62f96ec.docx → 85f62f96ec.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.633 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 86b2558c9c.docx → 86b2558c9c.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.653 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 86dd7a85be.docx → 86dd7a85be.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.670 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 875b3fba58.docx → 875b3fba58.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.672 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 8d433adf87.docx → 8d433adf87.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.686 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 8e5b509eeb.docx → 8e5b509eeb.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.693 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 941f26af01.docx → 941f26af01.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.718 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 986a611d64.docx → 986a611d64.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.727 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 9a93480040.docx → 9a93480040.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.745 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 9c21af278f.docx → 9c21af278f.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.761 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 9c27cc7cb6.docx → 9c27cc7cb6.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.850 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 9f2ce6d6bb.docx → 9f2ce6d6bb.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.854 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 9fbeaabe7b.docx → 9fbeaabe7b.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.884 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: a6e9ec3f91.docx → a6e9ec3f91.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.892 | ERROR    | __main__:_redline_batched:1072 - [batch] FAIL: a9272f69c1.docx → a9272f69c1.docx — redline is missing base 0% of that file; the two sides are not averaged
+2026-10-11 19:54:14.929 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: ab51888caa.docx → ab51888caa.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.933 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: ab9446febf.docx → ab9446febf.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.962 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: b359531be7.docx → b359531be7.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.964 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: b7fcec8cf4.docx → b7fcec8cf4.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:14.973 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: b83c047cac.docx → b83c047cac.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:15.008 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: b9355f7ec3.docx → b9355f7ec3.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:15.013 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: ba0ce6cf52.docx → ba0ce6cf52.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:15.021 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: bb0bd4ac74.docx → bb0bd4ac74.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:15.026 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: bca2faa2fe.docx → bca2faa2fe.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:15.093 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: c1ee3ae6c5.docx → c1ee3ae6c5.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:15.110 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: c213810aca.docx → c213810aca.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:15.121 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: c2d6b7dbc8.docx → c2d6b7dbc8.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:15.130 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: c7154d9bbc.docx → c7154d9bbc.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:15.136 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: c75299fc1f.docx → c75299fc1f.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:15.200 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: ce0d116e9d.docx → ce0d116e9d.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:15.207 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: ce73379cca.docx → ce73379cca.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:15.224 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: cee8601521.docx → cee8601521.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:15.240 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: cfb0498eef.docx → cfb0498eef.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:15.246 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: d0caf04bf5.docx → d0caf04bf5.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:15.247 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: d2bede1df3.docx → d2bede1df3.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:15.275 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: d2e3a1346e.docx → d2e3a1346e.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:15.282 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: d35dccc87b.docx → d35dccc87b.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:15.297 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: d392f01661.docx → d392f01661.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:15.318 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: d48277585f.docx → d48277585f.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:15.322 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: d5a096356a.docx → d5a096356a.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:15.331 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: d6eb2a4115.docx → d6eb2a4115.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:15.332 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: d7c2cc04c6.docx → d7c2cc04c6.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:15.334 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: dad17d3be0.docx → dad17d3be0.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:15.343 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: dcd3bc76c9.docx → dcd3bc76c9.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:15.350 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: de3fd1e089.docx → de3fd1e089.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:15.352 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: ded976e5e2.docx → ded976e5e2.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:15.354 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: df62df06eb.docx → df62df06eb.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:15.374 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: e16b4e056d.docx → e16b4e056d.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:15.392 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: e1c52dc7f9.docx → e1c52dc7f9.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:15.397 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: e227d61add.docx → e227d61add.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:15.480 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: e8aedc3a02.docx → e8aedc3a02.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:15.499 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: ea3098283c.docx → ea3098283c.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:15.517 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: eed68538c8.docx → eed68538c8.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:15.526 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: f10b7e772e.docx → f10b7e772e.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:15.532 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: f195c279be.docx → f195c279be.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:15.545 | ERROR    | __main__:_redline_batched:1072 - [batch] FAIL: f7bbf6e831.docx → f7bbf6e831.docx — redline is missing base 67% of that file; the two sides are not averaged
+2026-10-11 19:54:15.558 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: f8286525f6.docx → f8286525f6.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:15.575 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: f8f8d224f2.docx → f8f8d224f2.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-11 19:54:15.591 | ERROR    | __main__:_redline_batched:1072 - [batch] FAIL: f953aac51a.docx → f953aac51a.docx — redline is missing revision 67% of that file; the two sides are not averaged
+2026-10-11 19:54:15.599 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: fde18c85bf.docx → fde18c85bf.docx — redline saved but PDF export failed: Microsoft Word got an error: every document doesn’t understand the “close” message.

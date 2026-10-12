@@ -1,0 +1,113 @@
+2026-09-29 00:16:03.783 | INFO     | __main__:preflight:1762 -  preflight: 
+open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-09-29 00:16:03.836 | INFO     | __main__:convert_folder:1436 -  export: 
+one_osascript=True documents=100 accept_all=False reject_all=True
+2026-09-29 00:16:57.674 | INFO     | __main__:_convert_batched:1635 -  one 
+osascript for 100 document(s)
+2026-09-29 00:17:02.704 | INFO     | __main__:_loop:1025 -  0/100
+2026-09-29 00:17:12.740 | INFO     | __main__:_loop:1025 -  3/100
+2026-09-29 00:17:17.772 | INFO     | __main__:_loop:1025 -  6/100
+2026-09-29 00:17:22.806 | INFO     | __main__:_loop:1025 -  10/100
+2026-09-29 00:17:27.833 | INFO     | __main__:_loop:1025 -  13/100
+2026-09-29 00:17:32.869 | INFO     | __main__:_loop:1025 -  16/100
+2026-09-29 00:17:37.906 | INFO     | __main__:_loop:1025 -  19/100
+2026-09-29 00:17:42.957 | INFO     | __main__:_loop:1025 -  21/100
+2026-09-29 00:20:44.318 | INFO     | __main__:_note_buttons:509 -  Microsoft 
+Word shows button 'OK'
+2026-09-29 00:20:48.499 | INFO     | __main__:_loop:1025 -  23/100
+2026-09-29 00:20:53.524 | INFO     | __main__:_loop:1025 -  27/100
+2026-09-29 00:20:58.581 | INFO     | __main__:_loop:1025 -  28/100
+2026-09-29 00:21:50.635 | INFO     | __main__:_note_buttons:509 -  Microsoft 
+Word shows button 'No'
+2026-09-29 00:21:50.641 | INFO     | __main__:_note_buttons:509 -  Microsoft 
+Word shows button 'Yes'
+2026-09-29 00:21:53.755 | INFO     | __main__:_loop:1025 -  29/100
+2026-09-29 00:21:58.789 | INFO     | __main__:_loop:1025 -  32/100
+2026-09-29 00:22:03.820 | INFO     | __main__:_loop:1025 -  36/100
+2026-09-29 00:22:08.854 | INFO     | __main__:_loop:1025 -  38/100
+2026-09-29 00:22:13.894 | INFO     | __main__:_loop:1025 -  40/100
+2026-09-29 00:22:18.923 | INFO     | __main__:_loop:1025 -  42/100
+2026-09-29 00:22:23.974 | INFO     | __main__:_loop:1025 -  45/100
+2026-09-29 00:22:29.006 | INFO     | __main__:_loop:1025 -  49/100
+2026-09-29 00:22:34.038 | INFO     | __main__:_loop:1025 -  52/100
+2026-09-29 00:22:35.740 | WARNING  | __main__:_loop_word:539 -  Word dialog 
+dismissed via 'No'
+2026-09-29 00:22:44.101 | INFO     | __main__:_loop:1025 -  55/100
+2026-09-29 00:22:49.142 | INFO     | __main__:_loop:1025 -  59/100
+2026-09-29 00:22:54.168 | INFO     | __main__:_loop:1025 -  62/100
+2026-09-29 00:22:59.250 | INFO     | __main__:_loop:1025 -  65/100
+2026-09-29 00:23:04.349 | INFO     | __main__:_loop:1025 -  68/100
+2026-09-29 00:23:09.427 | INFO     | __main__:_loop:1025 -  72/100
+2026-09-29 00:23:14.467 | INFO     | __main__:_loop:1025 -  75/100
+2026-09-29 00:23:19.495 | INFO     | __main__:_loop:1025 -  79/100
+2026-09-29 00:23:24.530 | INFO     | __main__:_loop:1025 -  82/100
+2026-09-29 00:23:29.596 | INFO     | __main__:_loop:1025 -  84/100
+2026-09-29 00:23:34.636 | INFO     | __main__:_loop:1025 -  87/100
+2026-09-29 00:23:39.665 | INFO     | __main__:_loop:1025 -  90/100
+2026-09-29 00:23:44.688 | INFO     | __main__:_loop:1025 -  94/100
+2026-09-29 00:23:47.449 | WARNING  | __main__:run_batch_with_resume:1156 -  4 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 2, 0 of 3 stalled 
+passes used)
+2026-09-29 00:23:47.453 | WARNING  | __main__♻724 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-09-29 00:23:47.462 | WARNING  | __main__♻730 -  recycling (restart 1)
+2026-09-29 00:23:59.677 | INFO     | __main__:_loop:1025 -  0/4
+2026-09-29 00:23:59.917 | WARNING  | __main__:_loop_word:539 -  Word dialog 
+dismissed via 'No'
+2026-09-29 00:27:55.077 | WARNING  | __main__:run_batch_with_resume:1156 -  3 
+item(s) never reached (ended without reaching them); recycling Word and retrying
+the rest first, retried items last (pass 3, 1 of 3 stalled passes used)
+2026-09-29 00:27:55.080 | WARNING  | __main__♻724 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-09-29 00:27:55.081 | WARNING  | __main__♻730 -  recycling (restart 2)
+2026-09-29 00:28:02.086 | WARNING  | __main__:_loop_word:539 -  Word dialog 
+dismissed via 'No'
+2026-09-29 00:28:04.532 | INFO     | __main__:_loop:1025 -  0/3
+2026-09-29 00:31:59.925 | WARNING  | __main__:run_batch_with_resume:1156 -  2 
+item(s) never reached (ended without reaching them); recycling Word and retrying
+the rest first, retried items last (pass 4, 2 of 3 stalled passes used)
+2026-09-29 00:31:59.937 | WARNING  | __main__♻724 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-09-29 00:31:59.941 | WARNING  | __main__♻730 -  recycling (restart 3)
+2026-09-29 00:32:09.382 | INFO     | __main__:_loop:1025 -  0/2
+2026-09-29 00:32:10.412 | WARNING  | __main__:_loop_word:539 -  Word dialog 
+dismissed via 'No'
+2026-09-29 00:36:04.688 | WARNING  | __main__:run_batch_with_resume:1156 -  1 
+item(s) never reached (ended without reaching them); recycling Word and retrying
+the rest first, retried items last (pass 5, 3 of 3 stalled passes used)
+2026-09-29 00:36:04.696 | WARNING  | __main__♻724 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-09-29 00:36:04.696 | WARNING  | __main__♻730 -  recycling (restart 4)
+2026-09-29 00:36:08.966 | ERROR    | __main__:_convert_batched:1680 -  FAIL: 
+32d0abcfc9.docx — Microsoft Word got an error: AppleEvent timed out.
+2026-09-29 00:36:08.995 | ERROR    | __main__:_convert_batched:1680 -  FAIL: 
+485599b4e9.docx — Microsoft Word got an error: AppleEvent timed out.
+2026-09-29 00:36:09.031 | ERROR    | __main__:_convert_batched:1680 -  FAIL: 
+618a11caa3.docx — Microsoft Word got an error: AppleEvent timed out.
+2026-09-29 00:36:09.082 | ERROR    | __main__:_convert_batched:1680 -  FAIL: 
+7a60ec99bd.docx — never reached in 3 batch pass(es)
+2026-09-29 00:36:09.778 | INFO     | __main__:_note_buttons:509 -  Microsoft 
+Word shows button 'Cancel'
+2026-09-29 00:36:09.779 | INFO     | __main__:_note_buttons:509 -  Microsoft 
+Word shows button 'missing value'
+2026-09-29 00:36:10.848 | WARNING  | __main__:_loop_word:539 -  Word dialog 
+dismissed via 'Cancel'
+          reject all → DOCX + PDF:          
+results/redlines_0928/docxodus/rejected/src 
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━┓
+┃ outcome                          ┃ count ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━┩
+│ converted                        │    96 │
+│ skipped (exists)                 │     0 │
+│ failed                           │     4 │
+│ seconds per document (batch avg) │  11.5 │
+└──────────────────────────────────┴───────┘
+  FAIL 32d0abcfc9.docx: Microsoft Word got an error: AppleEvent timed out.
+  FAIL 485599b4e9.docx: Microsoft Word got an error: AppleEvent timed out.
+  FAIL 618a11caa3.docx: Microsoft Word got an error: AppleEvent timed out.
+  FAIL 7a60ec99bd.docx: never reached in 3 batch pass(es)

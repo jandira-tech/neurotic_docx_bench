@@ -1,0 +1,150 @@
+2026-09-29 14:16:32.946 | INFO     | __main__:preflight:1762 - [word] preflight: open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-09-29 14:16:32.986 | INFO     | __main__:convert_folder:1436 - [word] export: one_osascript=True documents=400 accept_all=True reject_all=False
+2026-09-29 14:16:33.466 | INFO     | __main__:_convert_batched:1635 - [batch] one osascript for 400 document(s)
+2026-09-29 14:16:38.491 | INFO     | __main__:_loop:1025 - [batch pdf 1] 1/400
+2026-09-29 14:16:43.519 | INFO     | __main__:_loop:1025 - [batch pdf 1] 5/400
+2026-09-29 14:16:48.539 | INFO     | __main__:_loop:1025 - [batch pdf 1] 9/400
+2026-09-29 14:16:53.559 | INFO     | __main__:_loop:1025 - [batch pdf 1] 12/400
+2026-09-29 14:16:58.579 | INFO     | __main__:_loop:1025 - [batch pdf 1] 16/400
+2026-09-29 14:17:03.600 | INFO     | __main__:_loop:1025 - [batch pdf 1] 20/400
+2026-09-29 14:17:08.619 | INFO     | __main__:_loop:1025 - [batch pdf 1] 23/400
+2026-09-29 14:17:13.640 | INFO     | __main__:_loop:1025 - [batch pdf 1] 27/400
+2026-09-29 14:17:18.659 | INFO     | __main__:_loop:1025 - [batch pdf 1] 30/400
+2026-09-29 14:17:23.677 | INFO     | __main__:_loop:1025 - [batch pdf 1] 34/400
+2026-09-29 14:17:28.692 | INFO     | __main__:_loop:1025 - [batch pdf 1] 39/400
+2026-09-29 14:17:33.716 | INFO     | __main__:_loop:1025 - [batch pdf 1] 43/400
+2026-09-29 14:17:38.735 | INFO     | __main__:_loop:1025 - [batch pdf 1] 47/400
+2026-09-29 14:17:43.760 | INFO     | __main__:_loop:1025 - [batch pdf 1] 51/400
+2026-09-29 14:17:48.780 | INFO     | __main__:_loop:1025 - [batch pdf 1] 55/400
+2026-09-29 14:17:53.809 | INFO     | __main__:_loop:1025 - [batch pdf 1] 59/400
+2026-09-29 14:17:58.829 | INFO     | __main__:_loop:1025 - [batch pdf 1] 63/400
+2026-09-29 14:18:03.851 | INFO     | __main__:_loop:1025 - [batch pdf 1] 66/400
+2026-09-29 14:18:08.868 | INFO     | __main__:_loop:1025 - [batch pdf 1] 70/400
+2026-09-29 14:18:13.889 | INFO     | __main__:_loop:1025 - [batch pdf 1] 74/400
+2026-09-29 14:18:18.916 | INFO     | __main__:_loop:1025 - [batch pdf 1] 77/400
+2026-09-29 14:18:23.947 | INFO     | __main__:_loop:1025 - [batch pdf 1] 81/400
+2026-09-29 14:18:28.967 | INFO     | __main__:_loop:1025 - [batch pdf 1] 85/400
+2026-09-29 14:18:34.001 | INFO     | __main__:_loop:1025 - [batch pdf 1] 88/400
+2026-09-29 14:18:39.019 | INFO     | __main__:_loop:1025 - [batch pdf 1] 92/400
+2026-09-29 14:18:44.041 | INFO     | __main__:_loop:1025 - [batch pdf 1] 96/400
+2026-09-29 14:18:49.072 | INFO     | __main__:_loop:1025 - [batch pdf 1] 99/400
+2026-09-29 14:18:54.100 | INFO     | __main__:_loop:1025 - [batch pdf 1] 103/400
+2026-09-29 14:18:59.119 | INFO     | __main__:_loop:1025 - [batch pdf 1] 107/400
+2026-09-29 14:19:04.139 | INFO     | __main__:_loop:1025 - [batch pdf 1] 111/400
+2026-09-29 14:19:09.156 | INFO     | __main__:_loop:1025 - [batch pdf 1] 115/400
+2026-09-29 14:19:14.176 | INFO     | __main__:_loop:1025 - [batch pdf 1] 118/400
+2026-09-29 14:19:19.196 | INFO     | __main__:_loop:1025 - [batch pdf 1] 122/400
+2026-09-29 14:19:24.225 | INFO     | __main__:_loop:1025 - [batch pdf 1] 125/400
+2026-09-29 14:19:29.246 | INFO     | __main__:_loop:1025 - [batch pdf 1] 129/400
+2026-09-29 14:19:34.271 | INFO     | __main__:_loop:1025 - [batch pdf 1] 133/400
+2026-09-29 14:19:39.288 | INFO     | __main__:_loop:1025 - [batch pdf 1] 137/400
+2026-09-29 14:19:44.308 | INFO     | __main__:_loop:1025 - [batch pdf 1] 140/400
+2026-09-29 14:19:49.327 | INFO     | __main__:_loop:1025 - [batch pdf 1] 144/400
+2026-09-29 14:19:54.360 | INFO     | __main__:_loop:1025 - [batch pdf 1] 148/400
+2026-09-29 14:19:59.384 | INFO     | __main__:_loop:1025 - [batch pdf 1] 152/400
+2026-09-29 14:20:04.406 | INFO     | __main__:_loop:1025 - [batch pdf 1] 155/400
+2026-09-29 14:20:09.433 | INFO     | __main__:_loop:1025 - [batch pdf 1] 158/400
+2026-09-29 14:20:14.460 | INFO     | __main__:_loop:1025 - [batch pdf 1] 161/400
+2026-09-29 14:20:19.479 | INFO     | __main__:_loop:1025 - [batch pdf 1] 165/400
+2026-09-29 14:20:24.504 | INFO     | __main__:_loop:1025 - [batch pdf 1] 168/400
+2026-09-29 14:20:29.529 | INFO     | __main__:_loop:1025 - [batch pdf 1] 171/400
+2026-09-29 14:21:05.230 | INFO     | __main__:_note_buttons:509 - [watchdog] Microsoft Word shows button 'Cancel'
+2026-09-29 14:21:05.233 | INFO     | __main__:_note_buttons:509 - [watchdog] Microsoft Word shows button 'Create'
+2026-09-29 14:21:05.233 | INFO     | __main__:_note_buttons:509 - [watchdog] Microsoft Word shows button 'missing value'
+2026-09-29 14:21:09.598 | INFO     | __main__:_loop:1025 - [batch pdf 1] 174/400
+2026-09-29 14:21:14.623 | INFO     | __main__:_loop:1025 - [batch pdf 1] 178/400
+2026-09-29 14:21:19.652 | INFO     | __main__:_loop:1025 - [batch pdf 1] 181/400
+2026-09-29 14:21:24.673 | INFO     | __main__:_loop:1025 - [batch pdf 1] 185/400
+2026-09-29 14:21:29.693 | INFO     | __main__:_loop:1025 - [batch pdf 1] 187/400
+2026-09-29 14:21:34.711 | INFO     | __main__:_loop:1025 - [batch pdf 1] 190/400
+2026-09-29 14:21:39.727 | INFO     | __main__:_loop:1025 - [batch pdf 1] 194/400
+2026-09-29 14:21:44.745 | INFO     | __main__:_loop:1025 - [batch pdf 1] 198/400
+2026-09-29 14:21:49.770 | INFO     | __main__:_loop:1025 - [batch pdf 1] 201/400
+2026-09-29 14:21:54.795 | INFO     | __main__:_loop:1025 - [batch pdf 1] 205/400
+2026-09-29 14:21:59.815 | INFO     | __main__:_loop:1025 - [batch pdf 1] 208/400
+2026-09-29 14:22:04.831 | INFO     | __main__:_loop:1025 - [batch pdf 1] 211/400
+2026-09-29 14:22:09.853 | INFO     | __main__:_loop:1025 - [batch pdf 1] 215/400
+2026-09-29 14:22:14.873 | INFO     | __main__:_loop:1025 - [batch pdf 1] 218/400
+2026-09-29 14:22:19.898 | INFO     | __main__:_loop:1025 - [batch pdf 1] 222/400
+2026-09-29 14:22:24.916 | INFO     | __main__:_loop:1025 - [batch pdf 1] 225/400
+2026-09-29 14:22:29.936 | INFO     | __main__:_loop:1025 - [batch pdf 1] 228/400
+2026-09-29 14:22:34.955 | INFO     | __main__:_loop:1025 - [batch pdf 1] 232/400
+2026-09-29 14:22:39.975 | INFO     | __main__:_loop:1025 - [batch pdf 1] 235/400
+2026-09-29 14:22:44.994 | INFO     | __main__:_loop:1025 - [batch pdf 1] 238/400
+2026-09-29 14:22:50.017 | INFO     | __main__:_loop:1025 - [batch pdf 1] 242/400
+2026-09-29 14:22:55.044 | INFO     | __main__:_loop:1025 - [batch pdf 1] 245/400
+2026-09-29 14:23:00.063 | INFO     | __main__:_loop:1025 - [batch pdf 1] 248/400
+2026-09-29 14:23:05.084 | INFO     | __main__:_loop:1025 - [batch pdf 1] 251/400
+2026-09-29 14:23:10.101 | INFO     | __main__:_loop:1025 - [batch pdf 1] 253/400
+2026-09-29 14:23:20.122 | INFO     | __main__:_loop:1025 - [batch pdf 1] 254/400
+2026-09-29 14:23:25.138 | INFO     | __main__:_loop:1025 - [batch pdf 1] 255/400
+2026-09-29 14:23:30.166 | INFO     | __main__:_loop:1025 - [batch pdf 1] 257/400
+2026-09-29 14:23:35.185 | INFO     | __main__:_loop:1025 - [batch pdf 1] 260/400
+2026-09-29 14:23:40.205 | INFO     | __main__:_loop:1025 - [batch pdf 1] 263/400
+2026-09-29 14:23:45.223 | INFO     | __main__:_loop:1025 - [batch pdf 1] 266/400
+2026-09-29 14:23:50.244 | INFO     | __main__:_loop:1025 - [batch pdf 1] 268/400
+2026-09-29 14:23:55.264 | INFO     | __main__:_loop:1025 - [batch pdf 1] 271/400
+2026-09-29 14:24:00.287 | INFO     | __main__:_loop:1025 - [batch pdf 1] 274/400
+2026-09-29 14:24:05.316 | INFO     | __main__:_loop:1025 - [batch pdf 1] 277/400
+2026-09-29 14:24:10.331 | INFO     | __main__:_loop:1025 - [batch pdf 1] 280/400
+2026-09-29 14:24:15.355 | INFO     | __main__:_loop:1025 - [batch pdf 1] 283/400
+2026-09-29 14:24:20.375 | INFO     | __main__:_loop:1025 - [batch pdf 1] 284/400
+2026-09-29 14:24:28.011 | INFO     | __main__:_note_buttons:509 - [watchdog] Microsoft Word shows button 'No'
+2026-09-29 14:24:28.012 | INFO     | __main__:_note_buttons:509 - [watchdog] Microsoft Word shows button 'Yes'
+2026-09-29 14:24:29.029 | WARNING  | __main__:_loop_word:539 - [watchdog] Word dialog dismissed via 'OK'
+2026-09-29 14:24:30.396 | INFO     | __main__:_loop:1025 - [batch pdf 1] 285/400
+2026-09-29 14:24:35.420 | INFO     | __main__:_loop:1025 - [batch pdf 1] 288/400
+2026-09-29 14:24:45.446 | INFO     | __main__:_loop:1025 - [batch pdf 1] 290/400
+2026-09-29 14:24:50.471 | INFO     | __main__:_loop:1025 - [batch pdf 1] 293/400
+2026-09-29 14:24:52.969 | WARNING  | __main__:_loop_word:539 - [watchdog] Word dialog dismissed via 'OK'
+2026-09-29 14:24:55.492 | INFO     | __main__:_loop:1025 - [batch pdf 1] 295/400
+2026-09-29 14:25:00.511 | INFO     | __main__:_loop:1025 - [batch pdf 1] 298/400
+2026-09-29 14:25:05.535 | INFO     | __main__:_loop:1025 - [batch pdf 1] 301/400
+2026-09-29 14:25:10.556 | INFO     | __main__:_loop:1025 - [batch pdf 1] 304/400
+2026-09-29 14:25:15.574 | INFO     | __main__:_loop:1025 - [batch pdf 1] 307/400
+2026-09-29 14:25:20.593 | INFO     | __main__:_loop:1025 - [batch pdf 1] 310/400
+2026-09-29 14:25:25.611 | INFO     | __main__:_loop:1025 - [batch pdf 1] 313/400
+2026-09-29 14:25:30.629 | INFO     | __main__:_loop:1025 - [batch pdf 1] 316/400
+2026-09-29 14:25:35.654 | INFO     | __main__:_loop:1025 - [batch pdf 1] 319/400
+2026-09-29 14:25:40.674 | INFO     | __main__:_loop:1025 - [batch pdf 1] 322/400
+2026-09-29 14:25:45.690 | INFO     | __main__:_loop:1025 - [batch pdf 1] 325/400
+2026-09-29 14:25:50.705 | INFO     | __main__:_loop:1025 - [batch pdf 1] 328/400
+2026-09-29 14:25:55.725 | INFO     | __main__:_loop:1025 - [batch pdf 1] 331/400
+2026-09-29 14:26:00.745 | INFO     | __main__:_loop:1025 - [batch pdf 1] 335/400
+2026-09-29 14:26:05.767 | INFO     | __main__:_loop:1025 - [batch pdf 1] 337/400
+2026-09-29 14:26:10.795 | INFO     | __main__:_loop:1025 - [batch pdf 1] 340/400
+2026-09-29 14:26:15.821 | INFO     | __main__:_loop:1025 - [batch pdf 1] 344/400
+2026-09-29 14:26:20.836 | INFO     | __main__:_loop:1025 - [batch pdf 1] 347/400
+2026-09-29 14:26:25.854 | INFO     | __main__:_loop:1025 - [batch pdf 1] 349/400
+2026-09-29 14:26:30.873 | INFO     | __main__:_loop:1025 - [batch pdf 1] 353/400
+2026-09-29 14:26:35.897 | INFO     | __main__:_loop:1025 - [batch pdf 1] 356/400
+2026-09-29 14:26:40.922 | INFO     | __main__:_loop:1025 - [batch pdf 1] 359/400
+2026-09-29 14:26:45.942 | INFO     | __main__:_loop:1025 - [batch pdf 1] 361/400
+2026-09-29 14:26:50.962 | INFO     | __main__:_loop:1025 - [batch pdf 1] 364/400
+2026-09-29 14:26:55.981 | INFO     | __main__:_loop:1025 - [batch pdf 1] 367/400
+2026-09-29 14:27:00.999 | INFO     | __main__:_loop:1025 - [batch pdf 1] 370/400
+2026-09-29 14:27:06.018 | INFO     | __main__:_loop:1025 - [batch pdf 1] 373/400
+2026-09-29 14:27:11.036 | INFO     | __main__:_loop:1025 - [batch pdf 1] 376/400
+2026-09-29 14:27:16.052 | INFO     | __main__:_loop:1025 - [batch pdf 1] 378/400
+2026-09-29 14:27:21.080 | INFO     | __main__:_loop:1025 - [batch pdf 1] 381/400
+2026-09-29 14:27:26.103 | INFO     | __main__:_loop:1025 - [batch pdf 1] 384/400
+2026-09-29 14:27:31.120 | INFO     | __main__:_loop:1025 - [batch pdf 1] 387/400
+2026-09-29 14:27:36.140 | INFO     | __main__:_loop:1025 - [batch pdf 1] 390/400
+2026-09-29 14:27:41.159 | INFO     | __main__:_loop:1025 - [batch pdf 1] 392/400
+2026-09-29 14:27:43.689 | WARNING  | __main__:run_batch_with_resume:1156 - [batch pdf] 6 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 2, 0 of 3 stalled passes used)
+2026-09-29 14:27:43.689 | WARNING  | __main__:recycle:724 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-09-29 14:27:43.692 | WARNING  | __main__:recycle:730 - [word] recycling (restart 1)
+2026-09-29 14:27:55.127 | INFO     | __main__:_loop:1025 - [batch pdf 2] 0/6
+2026-09-29 14:27:55.912 | WARNING  | __main__:_loop_word:539 - [watchdog] Word dialog dismissed via 'OK'
+2026-09-29 14:28:29.577 | WARNING  | __main__:run_batch_with_resume:1156 - [batch pdf] 3 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 3, 0 of 3 stalled passes used)
+2026-09-29 14:28:29.578 | WARNING  | __main__:recycle:724 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-09-29 14:28:29.578 | WARNING  | __main__:recycle:730 - [word] recycling (restart 2)
+2026-09-29 14:28:34.295 | WARNING  | __main__:_loop_word:539 - [watchdog] Word dialog dismissed via 'No'
+2026-09-29 14:28:37.953 | INFO     | __main__:_loop:1025 - [batch pdf 3] 0/3
+2026-09-29 14:29:01.961 | WARNING  | __main__:_loop_word:539 - [watchdog] Word dialog dismissed via 'OK'
+2026-09-29 14:29:04.818 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: 7a48682ea5_super_editor__superdoc_hyperlink_cases_1dde9cd3__vs__7098537b0d_super_editor__base_custom_544164f9_redline_686a6405b2_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-09-29 14:29:05.003 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: a4642f7f90_mcdoc__vs__90e2c33814_meeting_agenda_table_2_redline_26c3aa16a6_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-09-29 14:29:05.006 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: a94f4c516b_text_box__vs__356b7a3629_text_highlight_demo_style_default_missing_redline_4300f2f735_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-09-29 14:29:05.009 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: ab85c77154_file_115__vs__b7219494de_file_116_redline_61959b1953_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-09-29 14:29:05.088 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: bd7b6b2bd0_super_editor__pagination_with_hard_break_8ce8c15__vs__8ab3f01cdd_super_editor__paragraph_indent_normal_styles_85f_redline_064fdf1a12_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-09-29 14:29:05.108 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: c498e8c52c_super_editor__contract_acc_bbd983a0__vs__43dd6753e6_super_editor__diff_before7_5bad2542_redline_ee45c5a315_docxodus.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)

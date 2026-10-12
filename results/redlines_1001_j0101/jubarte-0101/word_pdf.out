@@ -1,0 +1,26 @@
+2026-10-01 12:31:47.536 | INFO     | __main__:preflight:1812 -  preflight: 
+open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-10-01 12:31:47.570 | INFO     | __main__:convert_folder:1486 -  export: 
+one_osascript=True documents=60 accept_all=False reject_all=False
+2026-10-01 12:31:47.603 | INFO     | __main__:_convert_batched:1685 -  one 
+osascript for 60 document(s)
+2026-10-01 12:31:52.631 | INFO     | __main__:_loop:1067 -  6/60
+2026-10-01 12:31:57.656 | INFO     | __main__:_loop:1067 -  12/60
+2026-10-01 12:32:02.682 | INFO     | __main__:_loop:1067 -  20/60
+2026-10-01 12:32:07.716 | INFO     | __main__:_loop:1067 -  28/60
+2026-10-01 12:32:12.742 | INFO     | __main__:_loop:1067 -  33/60
+2026-10-01 12:32:17.772 | INFO     | __main__:_loop:1067 -  40/60
+2026-10-01 12:32:22.805 | INFO     | __main__:_loop:1067 -  44/60
+2026-10-01 12:32:27.834 | INFO     | __main__:_loop:1067 -  50/60
+2026-10-01 12:32:32.868 | INFO     | __main__:_loop:1067 -  57/60
+                DOCX → PDF:                 
+results/redlines_1001_j0101/jubarte-0101/red
+                 lines_src                  
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━┓
+┃ outcome                          ┃ count ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━┩
+│ converted                        │    60 │
+│ skipped (exists)                 │     0 │
+│ failed                           │     0 │
+│ seconds per document (batch avg) │   0.8 │
+└──────────────────────────────────┴───────┘

@@ -1,0 +1,7 @@
+== redlines: word answers
+   ok: Microsoft Word 16.115
+== install: release binary
+   ok: /Users/arthrod/.cache/neurotic-docx-bench/jubarte/0.10.1/jubarte-0.10.1-macos-aarch64/jubarte (0.10.1, sha256 checked)
+== redlines: generate
+   ok: node --import tsx scripts/generate-native-redlines.ts --method jubarte-rust --dist /Users/arthrod/.cache/neurotic-docx-bench/jubarte/0.10.1/jubarte-0.10.1-macos-aarch64 --tool jubarte-0.10.1 --manifest results/redlines_0929_full/gen_pairs.csv --source-dir corpus/word --out results/redlines_0929_full/jubarte-0.10.1/docx --run-dir results/redlines_0929_full/jubarte-0.10.1 > results/redlines_0929_full/jubarte-0.10.1.generate.log
+== redlines: word export (batch)

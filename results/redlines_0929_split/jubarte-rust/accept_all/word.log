@@ -1,0 +1,177 @@
+2026-09-29 13:53:29.628 | INFO     | __main__:preflight:1762 - [word] preflight: open_documents=0 started_clean=True launched_by_us=True close_documents=True
+2026-09-29 13:53:29.725 | INFO     | __main__:convert_folder:1436 - [word] export: one_osascript=True documents=400 accept_all=True reject_all=False
+2026-09-29 13:54:39.532 | INFO     | __main__:_convert_batched:1635 - [batch] one osascript for 400 document(s)
+2026-09-29 13:54:44.550 | INFO     | __main__:_loop:1025 - [batch pdf 1] 0/400
+2026-09-29 13:58:41.842 | WARNING  | __main__:run_batch_with_resume:1156 - [batch pdf] 399 item(s) never reached (ended without reaching them); recycling Word and retrying the rest first, retried items last (pass 2, 1 of 3 stalled passes used)
+2026-09-29 13:58:41.843 | WARNING  | __main__:recycle:730 - [word] recycling (restart 1)
+2026-09-29 13:58:51.401 | INFO     | __main__:_loop:1025 - [batch pdf 2] 3/399
+2026-09-29 13:58:56.436 | INFO     | __main__:_loop:1025 - [batch pdf 2] 9/399
+2026-09-29 13:59:01.471 | INFO     | __main__:_loop:1025 - [batch pdf 2] 13/399
+2026-09-29 13:59:06.516 | INFO     | __main__:_loop:1025 - [batch pdf 2] 17/399
+2026-09-29 13:59:11.556 | INFO     | __main__:_loop:1025 - [batch pdf 2] 23/399
+2026-09-29 13:59:16.602 | INFO     | __main__:_loop:1025 - [batch pdf 2] 27/399
+2026-09-29 13:59:21.661 | INFO     | __main__:_loop:1025 - [batch pdf 2] 32/399
+2026-09-29 13:59:26.690 | INFO     | __main__:_loop:1025 - [batch pdf 2] 37/399
+2026-09-29 13:59:31.728 | INFO     | __main__:_loop:1025 - [batch pdf 2] 42/399
+2026-09-29 13:59:36.771 | INFO     | __main__:_loop:1025 - [batch pdf 2] 45/399
+2026-09-29 13:59:46.800 | INFO     | __main__:_loop:1025 - [batch pdf 2] 49/399
+2026-09-29 13:59:51.827 | INFO     | __main__:_loop:1025 - [batch pdf 2] 55/399
+2026-09-29 13:59:56.845 | INFO     | __main__:_loop:1025 - [batch pdf 2] 59/399
+2026-09-29 13:59:57.984 | WARNING  | __main__:run_batch_with_resume:1156 - [batch pdf] 340 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 3, 1 of 3 stalled passes used)
+2026-09-29 13:59:57.985 | WARNING  | __main__:recycle:730 - [word] recycling (restart 2)
+2026-09-29 14:00:07.870 | WARNING  | __main__:run_batch_with_resume:1156 - [batch pdf] 340 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 4, 1 of 3 stalled passes used)
+2026-09-29 14:00:07.871 | WARNING  | __main__:recycle:730 - [word] recycling (restart 3)
+2026-09-29 14:00:18.611 | INFO     | __main__:_loop:1025 - [batch pdf 4] 2/340
+2026-09-29 14:00:23.630 | INFO     | __main__:_loop:1025 - [batch pdf 4] 6/340
+2026-09-29 14:00:28.648 | INFO     | __main__:_loop:1025 - [batch pdf 4] 9/340
+2026-09-29 14:00:33.664 | INFO     | __main__:_loop:1025 - [batch pdf 4] 11/340
+2026-09-29 14:00:37.164 | WARNING  | __main__:run_batch_with_resume:1156 - [batch pdf] 329 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 5, 1 of 3 stalled passes used)
+2026-09-29 14:00:37.166 | WARNING  | __main__:recycle:730 - [word] recycling (restart 4)
+2026-09-29 14:00:48.783 | INFO     | __main__:_loop:1025 - [batch pdf 5] 1/329
+2026-09-29 14:00:50.216 | WARNING  | __main__:run_batch_with_resume:1156 - [batch pdf] 328 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 6, 1 of 3 stalled passes used)
+2026-09-29 14:00:50.217 | WARNING  | __main__:recycle:730 - [word] recycling (restart 5)
+2026-09-29 14:01:01.559 | INFO     | __main__:_loop:1025 - [batch pdf 6] 2/328
+2026-09-29 14:01:03.310 | WARNING  | __main__:run_batch_with_resume:1156 - [batch pdf] 326 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 7, 1 of 3 stalled passes used)
+2026-09-29 14:01:03.311 | WARNING  | __main__:recycle:730 - [word] recycling (restart 6)
+2026-09-29 14:01:14.577 | INFO     | __main__:_loop:1025 - [batch pdf 7] 3/326
+2026-09-29 14:01:16.749 | WARNING  | __main__:run_batch_with_resume:1156 - [batch pdf] 323 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 8, 1 of 3 stalled passes used)
+2026-09-29 14:01:16.750 | WARNING  | __main__:recycle:730 - [word] recycling (restart 7)
+2026-09-29 14:01:28.499 | INFO     | __main__:_loop:1025 - [batch pdf 8] 3/323
+2026-09-29 14:01:33.516 | INFO     | __main__:_loop:1025 - [batch pdf 8] 8/323
+2026-09-29 14:01:37.266 | WARNING  | __main__:run_batch_with_resume:1156 - [batch pdf] 315 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 9, 1 of 3 stalled passes used)
+2026-09-29 14:01:37.268 | WARNING  | __main__:recycle:730 - [word] recycling (restart 8)
+2026-09-29 14:01:48.182 | INFO     | __main__:_loop:1025 - [batch pdf 9] 2/315
+2026-09-29 14:01:53.197 | INFO     | __main__:_loop:1025 - [batch pdf 9] 8/315
+2026-09-29 14:01:58.222 | INFO     | __main__:_loop:1025 - [batch pdf 9] 16/315
+2026-09-29 14:02:00.561 | WARNING  | __main__:run_batch_with_resume:1156 - [batch pdf] 299 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 10, 1 of 3 stalled passes used)
+2026-09-29 14:02:00.562 | WARNING  | __main__:recycle:730 - [word] recycling (restart 9)
+2026-09-29 14:02:11.322 | INFO     | __main__:_loop:1025 - [batch pdf 10] 2/299
+2026-09-29 14:02:16.346 | INFO     | __main__:_loop:1025 - [batch pdf 10] 4/299
+2026-09-29 14:02:18.096 | WARNING  | __main__:run_batch_with_resume:1156 - [batch pdf] 295 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 11, 1 of 3 stalled passes used)
+2026-09-29 14:02:18.097 | WARNING  | __main__:recycle:730 - [word] recycling (restart 10)
+2026-09-29 14:02:29.746 | INFO     | __main__:_loop:1025 - [batch pdf 11] 1/295
+2026-09-29 14:02:34.765 | INFO     | __main__:_loop:1025 - [batch pdf 11] 6/295
+2026-09-29 14:02:36.721 | WARNING  | __main__:run_batch_with_resume:1156 - [batch pdf] 289 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 12, 1 of 3 stalled passes used)
+2026-09-29 14:02:36.722 | WARNING  | __main__:recycle:730 - [word] recycling (restart 11)
+2026-09-29 14:02:48.088 | INFO     | __main__:_loop:1025 - [batch pdf 12] 3/289
+2026-09-29 14:02:53.113 | INFO     | __main__:_loop:1025 - [batch pdf 12] 6/289
+2026-09-29 14:02:58.132 | INFO     | __main__:_loop:1025 - [batch pdf 12] 9/289
+2026-09-29 14:03:00.557 | WARNING  | __main__:run_batch_with_resume:1156 - [batch pdf] 280 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 13, 1 of 3 stalled passes used)
+2026-09-29 14:03:00.557 | WARNING  | __main__:recycle:730 - [word] recycling (restart 12)
+2026-09-29 14:03:12.460 | INFO     | __main__:_loop:1025 - [batch pdf 13] 1/280
+2026-09-29 14:03:17.478 | INFO     | __main__:_loop:1025 - [batch pdf 13] 5/280
+2026-09-29 14:03:20.618 | WARNING  | __main__:run_batch_with_resume:1156 - [batch pdf] 274 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 14, 1 of 3 stalled passes used)
+2026-09-29 14:03:20.619 | WARNING  | __main__:recycle:730 - [word] recycling (restart 13)
+2026-09-29 14:03:31.991 | INFO     | __main__:_loop:1025 - [batch pdf 14] 1/274
+2026-09-29 14:03:47.047 | INFO     | __main__:_loop:1025 - [batch pdf 14] 2/274
+2026-09-29 14:03:52.065 | INFO     | __main__:_loop:1025 - [batch pdf 14] 5/274
+2026-09-29 14:03:57.092 | INFO     | __main__:_loop:1025 - [batch pdf 14] 12/274
+2026-09-29 14:04:02.111 | INFO     | __main__:_loop:1025 - [batch pdf 14] 17/274
+2026-09-29 14:04:07.134 | INFO     | __main__:_loop:1025 - [batch pdf 14] 24/274
+2026-09-29 14:04:12.155 | INFO     | __main__:_loop:1025 - [batch pdf 14] 30/274
+2026-09-29 14:04:17.179 | INFO     | __main__:_loop:1025 - [batch pdf 14] 36/274
+2026-09-29 14:04:22.200 | INFO     | __main__:_loop:1025 - [batch pdf 14] 42/274
+2026-09-29 14:04:27.228 | INFO     | __main__:_loop:1025 - [batch pdf 14] 48/274
+2026-09-29 14:04:32.249 | INFO     | __main__:_loop:1025 - [batch pdf 14] 54/274
+2026-09-29 14:04:37.271 | INFO     | __main__:_loop:1025 - [batch pdf 14] 60/274
+2026-09-29 14:04:42.301 | INFO     | __main__:_loop:1025 - [batch pdf 14] 63/274
+2026-09-29 14:04:47.328 | INFO     | __main__:_loop:1025 - [batch pdf 14] 66/274
+2026-09-29 14:04:52.347 | INFO     | __main__:_loop:1025 - [batch pdf 14] 69/274
+2026-09-29 14:04:57.374 | INFO     | __main__:_loop:1025 - [batch pdf 14] 74/274
+2026-09-29 14:05:02.394 | INFO     | __main__:_loop:1025 - [batch pdf 14] 78/274
+2026-09-29 14:05:07.415 | INFO     | __main__:_loop:1025 - [batch pdf 14] 83/274
+2026-09-29 14:05:17.473 | INFO     | __main__:_loop:1025 - [batch pdf 14] 86/274
+2026-09-29 14:05:22.491 | INFO     | __main__:_loop:1025 - [batch pdf 14] 91/274
+2026-09-29 14:05:27.508 | INFO     | __main__:_loop:1025 - [batch pdf 14] 96/274
+2026-09-29 14:05:32.532 | INFO     | __main__:_loop:1025 - [batch pdf 14] 102/274
+2026-09-29 14:05:37.551 | INFO     | __main__:_loop:1025 - [batch pdf 14] 104/274
+2026-09-29 14:05:57.605 | INFO     | __main__:_loop:1025 - [batch pdf 14] 105/274
+2026-09-29 14:06:02.623 | INFO     | __main__:_loop:1025 - [batch pdf 14] 111/274
+2026-09-29 14:06:07.638 | INFO     | __main__:_loop:1025 - [batch pdf 14] 116/274
+2026-09-29 14:06:12.663 | INFO     | __main__:_loop:1025 - [batch pdf 14] 122/274
+2026-09-29 14:06:17.682 | INFO     | __main__:_loop:1025 - [batch pdf 14] 128/274
+2026-09-29 14:06:22.701 | INFO     | __main__:_loop:1025 - [batch pdf 14] 134/274
+2026-09-29 14:06:27.716 | INFO     | __main__:_loop:1025 - [batch pdf 14] 140/274
+2026-09-29 14:06:32.733 | INFO     | __main__:_loop:1025 - [batch pdf 14] 146/274
+2026-09-29 14:06:37.759 | INFO     | __main__:_loop:1025 - [batch pdf 14] 151/274
+2026-09-29 14:06:42.778 | INFO     | __main__:_loop:1025 - [batch pdf 14] 157/274
+2026-09-29 14:06:47.798 | INFO     | __main__:_loop:1025 - [batch pdf 14] 162/274
+2026-09-29 14:06:52.827 | INFO     | __main__:_loop:1025 - [batch pdf 14] 168/274
+2026-09-29 14:06:57.846 | INFO     | __main__:_loop:1025 - [batch pdf 14] 173/274
+2026-09-29 14:07:02.873 | INFO     | __main__:_loop:1025 - [batch pdf 14] 178/274
+2026-09-29 14:07:07.893 | INFO     | __main__:_loop:1025 - [batch pdf 14] 181/274
+2026-09-29 14:07:12.910 | INFO     | __main__:_loop:1025 - [batch pdf 14] 186/274
+2026-09-29 14:07:17.930 | INFO     | __main__:_loop:1025 - [batch pdf 14] 191/274
+2026-09-29 14:07:22.951 | INFO     | __main__:_loop:1025 - [batch pdf 14] 196/274
+2026-09-29 14:07:27.971 | INFO     | __main__:_loop:1025 - [batch pdf 14] 201/274
+2026-09-29 14:07:32.996 | INFO     | __main__:_loop:1025 - [batch pdf 14] 207/274
+2026-09-29 14:07:38.013 | INFO     | __main__:_loop:1025 - [batch pdf 14] 212/274
+2026-09-29 14:07:43.032 | INFO     | __main__:_loop:1025 - [batch pdf 14] 218/274
+2026-09-29 14:07:48.052 | INFO     | __main__:_loop:1025 - [batch pdf 14] 223/274
+2026-09-29 14:07:53.072 | INFO     | __main__:_loop:1025 - [batch pdf 14] 228/274
+2026-09-29 14:07:58.094 | INFO     | __main__:_loop:1025 - [batch pdf 14] 234/274
+2026-09-29 14:08:03.113 | INFO     | __main__:_loop:1025 - [batch pdf 14] 239/274
+2026-09-29 14:08:08.132 | INFO     | __main__:_loop:1025 - [batch pdf 14] 245/274
+2026-09-29 14:08:13.152 | INFO     | __main__:_loop:1025 - [batch pdf 14] 250/274
+2026-09-29 14:08:18.172 | INFO     | __main__:_loop:1025 - [batch pdf 14] 255/274
+2026-09-29 14:08:23.197 | INFO     | __main__:_loop:1025 - [batch pdf 14] 261/274
+2026-09-29 14:08:28.215 | INFO     | __main__:_loop:1025 - [batch pdf 14] 266/274
+2026-09-29 14:08:33.232 | INFO     | __main__:_loop:1025 - [batch pdf 14] 271/274
+2026-09-29 14:08:33.698 | WARNING  | __main__:run_batch_with_resume:1156 - [batch pdf] 2 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 15, 1 of 3 stalled passes used)
+2026-09-29 14:08:33.699 | WARNING  | __main__:recycle:730 - [word] recycling (restart 14)
+2026-09-29 14:08:43.029 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: 00da16e738_heading_4_style_demo_id_paraid_overflow_2__vs__82928b2e05_heading_4_style_demo_id_paraid_overflow_redline_9ec4fe3616_jubarte-rust.docx — Microsoft Word got an error: AppleEvent timed out.
+2026-09-29 14:08:43.169 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: 2ba392cdd2_super_editor__broken_list_missing_items_36b4199e__vs__1c5bd81def_super_editor__multiple_nodes_in_list_79d915a2_redline_b88ba7adc8_jubarte-rust.docx — Microsoft Word got an error: missing value doesn’t understand the “save as” message.
+2026-09-29 14:08:43.170 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: 2ba392cdd2_super_editor__broken_list_missing_items_36b4199e__vs__97b2e714de_super_editor__broken_list_7e9b9bf7_redline_443c2cc494_jubarte-rust.docx — Microsoft Word got an error: missing value doesn’t understand the “save as” message.
+2026-09-29 14:08:43.171 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: 2bf4db734d_file_20__vs__080c4822ff_file_21_redline_98ebd05df6_jubarte-rust.docx — Microsoft Word got an error: missing value doesn’t understand the “save as” message.
+2026-09-29 14:08:43.172 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: 2c0a2ac35f_double_spacing_bold_demo_id_paraid_overflow__vs__90cef57bac_eigenpal_docx_editor_suggesting_mixed_edits_redline_af90d4e258_jubarte-rust.docx — The object you are trying to access does not exist
+2026-09-29 14:08:43.194 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: 30e84496e2_bullet_list_bold_demo_id_paraid_overflow__vs__9d3fa84f9f_bullet_list_demo_id_paraid_overflow_redline_ef28b8340d_jubarte-rust.docx — Microsoft Word got an error: missing value doesn’t understand the “save as” message.
+2026-09-29 14:08:43.196 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: 310c03f39c_super_editor__complexexport1_69441ab1__vs__c498e8c52c_super_editor__contract_acc_bbd983a0_redline_9df88ffcf2_jubarte-rust.docx — Microsoft Word got an error: missing value doesn’t understand the “save as” message.
+2026-09-29 14:08:43.200 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: 33e7d339be_font_color_demo_style_default_missing__vs__b4b7c76ecd_font_family_demo_id_paraid_overflow_redline_bda144be42_jubarte-rust.docx — osascript exit 0, no output file
+2026-09-29 14:08:43.201 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: 3539cf2404_cli_legacy__replace_test_0a793f01__vs__3b639ef236_super_editor__sdpr_8cc15994_redline_1b5dd9fc3f_jubarte-rust.docx — The object you are trying to access does not exist
+2026-09-29 14:08:43.207 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: 3539cf2404_cli_legacy__replace_test_0a793f01__vs__a21c45464c_super_editor__shape_group_ce60e1e6_redline_d6eb2a4115_jubarte-rust.docx — The object you are trying to access does not exist
+2026-09-29 14:08:43.225 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: 36fbd8c734_sales_report_january_2026_suggesting_insertions__vs__81158d928d_sample_document_afterword_repaired_word_repaired_redline_46247b70dc_jubarte-rust.docx — osascript exit 0, no output file
+2026-09-29 14:08:43.234 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: 382497a0a8_super_editor__python_docx_comment_test_501f21cb__vs__bcc7379f64_super_editor__paragraph_spacing_missing_de418c38_redline_b37d04ac06_jubarte-rust.docx — Microsoft Word got an error: missing value doesn’t understand the “save as” message.
+2026-09-29 14:08:43.261 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: 3e33de961a_red_bold_text_demo_id_paraid_overflow__vs__635dfded4d_red_heading_demo_id_paraid_overflow_redline_548986c33c_jubarte-rust.docx — osascript exit 0, no output file
+2026-09-29 14:08:43.275 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: 3faf9e000d_super_editor__text_color_highlight_36cb4c90__vs__9f6091a4ac_super_editor__threaded_comment_27bda0ba_redline_85d3cc0cfe_jubarte-rust.docx — Microsoft Word got an error: missing value doesn’t understand the “save as” message.
+2026-09-29 14:08:43.276 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: 3fc14675e5_italic_text_formatting_demo_id_paraid_overflow_2__vs__f26a5e4940_italic_text_formatting_demo_id_paraid_overflow_redline_7c3b405f35_jubarte-rust.docx — osascript exit 0, no output file
+2026-09-29 14:08:43.287 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: 43dd6753e6_super_editor__diff_before7_5bad2542__vs__e70f1134dd_super_editor__diff_before8_ba5faa9e_redline_ded976e5e2_jubarte-rust.docx — Microsoft Word got an error: missing value doesn’t understand the “save as” message.
+2026-09-29 14:08:43.289 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: 43e6fedf3f_file_148__vs__565f0a0e94_file_149_redline_f0e3ada4ca_jubarte-rust.docx — Microsoft Word got an error: missing value doesn’t understand the “save as” message.
+2026-09-29 14:08:43.290 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: 4492bbb1f8_file_172__vs__838af02d11_file_173_redline_ffcb9d33c5_jubarte-rust.docx — osascript exit 0, no output file
+2026-09-29 14:08:43.307 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: 4b0729d267_super_editor__h_f_normal_odd_even_unchecked_firs__vs__b992bfc6eb_super_editor__h_f_normal_odd_even_b572e46d_redline_be248670ce_jubarte-rust.docx — The object you are trying to access does not exist
+2026-09-29 14:08:43.308 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: 4b97a33168_risk_assessment_product_launch_suggesting_insert__vs__5d9783a7c4_roboto_font_demo_id_paraid_overflow_2_redline_3eeeeb23a1_jubarte-rust.docx — osascript exit 0, no output file
+2026-09-29 14:08:43.310 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: 4ba01802a7_super_editor__diff_after_10f1912e__vs__98bc895b4b_super_editor__listwithspacernodes_cf53e890_redline_0ace7bbff2_jubarte-rust.docx — The object you are trying to access does not exist
+2026-09-29 14:08:43.312 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: 4c4f8515c5_title_style_centered_demo_id_paraid_overflow__vs__f8f9857e80_title_style_demo_id_paraid_overflow_redline_9544277d9a_jubarte-rust.docx — osascript exit 0, no output file
+2026-09-29 14:08:43.313 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: 4dff3f0ab2_heading_1_bold_demo_id_paraid_overflow__vs__045a9b188d_heading_1_style_demo_id_paraid_overflow_redline_c31d6dc680_jubarte-rust.docx — The object you are trying to access does not exist
+2026-09-29 14:08:43.326 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: 4edcbf241a_behavior__math_groupchr_tests_4a4970fc__vs__f7ece685ff_behavior__math_limit_tests_6dc07867_redline_3e47bc2c89_jubarte-rust.docx — The object you are trying to access does not exist
+2026-09-29 14:08:43.338 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: 546864032e_evals__lease_agreement_7081191d__vs__3d9b31338f_evals__memorandum_258c774a_redline_4fbd0e01b4_jubarte-rust.docx — Microsoft Word got an error: missing value doesn’t understand the “save as” message.
+2026-09-29 14:08:43.338 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: 563331c6f3_super_editor__broken_complex_list_293fda86__vs__2ba392cdd2_super_editor__broken_list_missing_items_36b4199e_redline_de5c26892b_jubarte-rust.docx — The object you are trying to access does not exist
+2026-09-29 14:08:43.339 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: 563331c6f3_super_editor__broken_complex_list_293fda86__vs__cdf27ad0d3_behavior__sd_2672_nested_table_dfac08bb_redline_0d79b0b2ed_jubarte-rust.docx — The object you are trying to access does not exist
+2026-09-29 14:08:43.340 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: 56d68160f4_doc_api_stories__sd_2086_header_row_shading_api__vs__498a050671_super_editor__custom_list1_77f82bd7_redline_912a401589_jubarte-rust.docx — Microsoft Word got an error: missing value doesn’t understand the “save as” message.
+2026-09-29 14:08:43.341 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: 572990f05c_right_alignment_demo_id_paraid_overflow__vs__4b97a33168_risk_assessment_product_launch_suggesting_insert_redline_8c2a86d9f4_jubarte-rust.docx — Microsoft Word got an error: missing value doesn’t understand the “save as” message.
+2026-09-29 14:08:43.378 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: 60697d46b7_strict01__vs__60697d46b7_strict01_redline_4720423c07_jubarte-rust.docx — The object you are trying to access does not exist
+2026-09-29 14:08:43.381 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: 62d3dce03b_file_110__vs__d426359dd9_file_111_redline_9c7d0d77b2_jubarte-rust.docx — Microsoft Word got an error: missing value doesn’t understand the “save as” message.
+2026-09-29 14:08:43.392 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: 671ff91b1d_behavior__sd_2750_borderbox_7cd3768d__vs__7692b33045_super_editor__list_with_break_exported_broken_45_redline_d24225adbf_jubarte-rust.docx — Microsoft Word got an error: missing value doesn’t understand the “save as” message.
+2026-09-29 14:08:43.399 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: 689563dec1_calibri_heading_2_right_id_paraid_overflow__vs__24bd3ad29d_center_aligned_bold_text_id_paraid_overflow_redline_ef67c98065_jubarte-rust.docx — The object you are trying to access does not exist
+2026-09-29 14:08:43.400 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: 69bfcf9176_file_163__vs__9082a99ee8_file_164_redline_d1d56e8926_jubarte-rust.docx — Microsoft Word got an error: missing value doesn’t understand the “save as” message.
+2026-09-29 14:08:43.401 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: 6a65e5219d_24_id_paraid_overflow__vs__491a257507_blue_bold_centered_demo_id_paraid_overflow_redline_4b296f85a3_jubarte-rust.docx — The object you are trying to access does not exist
+2026-09-29 14:08:43.402 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: 6a65e5219d_24_id_paraid_overflow__vs__8df6dfa8d7_alternate_content_redline_52a957c23d_jubarte-rust.docx — Microsoft Word got an error: missing value doesn’t understand the “save as” message.
+2026-09-29 14:08:43.403 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: 6b0acda259_file_73__vs__bd768e6c17_file_74_redline_d392f01661_jubarte-rust.docx — Microsoft Word got an error: missing value doesn’t understand the “save as” message.
+2026-09-29 14:08:43.416 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: 6f510caeea_file_157__vs__8ef32902e8_file_158_redline_9d26556a7f_jubarte-rust.docx — Microsoft Word got an error: missing value doesn’t understand the “save as” message.
+2026-09-29 14:08:43.420 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: 7166fa4199_document_100_ultimate_demo_id_paraid_overflow__vs__97c3dd2e86_docx_lots_of_comments_addition_redline_addition_redline_8993b015d5_jubarte-rust.docx — Microsoft Word got an error: missing value doesn’t understand the “save as” message.
+2026-09-29 14:08:43.421 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: 7226967373_file_23__vs__2d9166078a_file_24_redline_30c1fd702b_jubarte-rust.docx — Microsoft Word got an error: missing value doesn’t understand the “save as” message.
+2026-09-29 14:08:43.422 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: 735c372b41_super_editor__diff_after8_58e5c288__vs__de3c6fded9_super_editor__doc_with_spacing_e3d47bd7_redline_12fca96084_jubarte-rust.docx — Microsoft Word got an error: missing value doesn’t understand the “save as” message.
+2026-09-29 14:08:43.422 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: 7367931dbf_super_editor__sdt_test_60079f08__vs__89b44c96a7_super_editor__sdts_basic_45263ca5_redline_308e9e47b6_jubarte-rust.docx — Microsoft Word got an error: missing value doesn’t understand the “save as” message.
+2026-09-29 14:08:43.425 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: 73e78ba640_strikethrough_and_italic_combo_id_paraid_overflo__vs__0203b5fed7_strikethrough_bold_demo_id_paraid_overflow_redline_8079512a5b_jubarte-rust.docx — Microsoft Word got an error: missing value doesn’t understand the “save as” message.
+2026-09-29 14:08:43.427 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: 7476f5fbb1_file_78__vs__fa962f4b9d_file_79_redline_3a7ca36d5f_jubarte-rust.docx — osascript exit 0, no output file
+2026-09-29 14:08:43.430 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: 776a437291_behavior__two_column_simple_e77be963__vs__9e80f22c51_behavior__word_native_bullet_circle_80d6f323_redline_3b5978446c_jubarte-rust.docx — osascript exit 0, no output file
+2026-09-29 14:08:43.432 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: 7962b06671_super_editor__bookmark_use_cases_d20f31f6__vs__7a48682ea5_super_editor__superdoc_hyperlink_cases_1dde9cd3_redline_f47143b5cb_jubarte-rust.docx — Microsoft Word got an error: missing value doesn’t understand the “save as” message.
+2026-09-29 14:08:43.450 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: 7c31a68295_behavior__pageref_standalone_h_7b3ab72e__vs__e81d1fa10c_behavior__pageref_standalone_uppercase_h_7701e07_redline_55b5c7ed99_jubarte-rust.docx — Microsoft Word got an error: missing value doesn’t understand the “save as” message.
+2026-09-29 14:08:43.455 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: 7e405bc8f2_font_size_12_demo_id_paraid_overflow__vs__93e2be10e6_font_size_18_demo_style_default_missing_redline_8c1b0cba92_jubarte-rust.docx — Microsoft Word got an error: missing value doesn’t understand the “save as” message.
+2026-09-29 14:08:43.456 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: 7e77c2f888_file_120__vs__525c779243_file_121_redline_0e99767f9f_jubarte-rust.docx — Microsoft Word got an error: missing value doesn’t understand the “save as” message.
+2026-09-29 14:08:43.459 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: 81158d928d_sample_document_afterword_repaired_word_repaired__vs__ba3f04f252_sample_document_really_repaired_word_repaired_redline_c1ab41fd94_jubarte-rust.docx — Microsoft Word got an error: missing value doesn’t understand the “save as” message.
+2026-09-29 14:08:43.460 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: 812c0181d7_file_68__vs__4304570867_file_69_redline_b83c047cac_jubarte-rust.docx — The object you are trying to access does not exist
+2026-09-29 14:08:43.461 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: 82348eef4b_multi_section__vs__2f23773d63_super_editor__pagination_blank_2a98ed7a_redline_7188b9787f_jubarte-rust.docx — Microsoft Word got an error: missing value doesn’t understand the “save as” message.
+2026-09-29 14:08:43.467 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: 837d45926d_super_editor__header_alternating_odd_even_11e019__vs__b27c7b34e9_super_editor__heading_font_46041620_redline_71e859d346_jubarte-rust.docx — Microsoft Word got an error: missing value doesn’t understand the “save as” message.
+2026-09-29 14:08:43.468 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: 8441c4ae21_sd_2517_localized_heading_styles__vs__7b076416b0_sectpr_headerref_redline_3182a1cb82_jubarte-rust.docx — Microsoft Word got an error: missing value doesn’t understand the “save as” message.
+2026-09-29 14:08:43.472 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: 852426b54e_file_194__vs__08147dee09_file_195_redline_077e0aba23_jubarte-rust.docx — The object you are trying to access does not exist
+2026-09-29 14:08:43.475 | ERROR    | __main__:_convert_batched:1680 - [batch] FAIL: 878549f8f2_file_193__vs__852426b54e_file_194_redline_809cf47e76_jubarte-rust.docx — The object you are trying to access does not exist

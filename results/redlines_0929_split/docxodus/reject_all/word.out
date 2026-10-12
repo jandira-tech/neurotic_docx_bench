@@ -1,0 +1,328 @@
+2026-09-29 14:29:05.890 | INFO     | __main__:preflight:1762 -  preflight: 
+open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-09-29 14:29:05.917 | INFO     | __main__:convert_folder:1436 -  export: 
+one_osascript=True documents=400 accept_all=False reject_all=True
+2026-09-29 14:29:06.337 | INFO     | __main__:_convert_batched:1635 -  one 
+osascript for 400 document(s)
+2026-09-29 14:29:11.356 | INFO     | __main__:_loop:1025 -  6/400
+2026-09-29 14:29:16.375 | INFO     | __main__:_loop:1025 -  13/400
+2026-09-29 14:29:21.394 | INFO     | __main__:_loop:1025 -  19/400
+2026-09-29 14:29:26.419 | INFO     | __main__:_loop:1025 -  26/400
+2026-09-29 14:29:31.439 | INFO     | __main__:_loop:1025 -  32/400
+2026-09-29 14:29:36.455 | INFO     | __main__:_loop:1025 -  39/400
+2026-09-29 14:29:41.474 | INFO     | __main__:_loop:1025 -  46/400
+2026-09-29 14:29:46.497 | INFO     | __main__:_loop:1025 -  53/400
+2026-09-29 14:29:51.515 | INFO     | __main__:_loop:1025 -  55/400
+2026-09-29 14:29:56.536 | INFO     | __main__:_loop:1025 -  60/400
+2026-09-29 14:30:01.520 | INFO     | __main__:_note_buttons:509 -  Microsoft 
+Word shows button 'missing value'
+2026-09-29 14:30:01.559 | INFO     | __main__:_loop:1025 -  67/400
+2026-09-29 14:30:06.578 | INFO     | __main__:_loop:1025 -  73/400
+2026-09-29 14:30:11.609 | INFO     | __main__:_loop:1025 -  80/400
+2026-09-29 14:30:16.631 | INFO     | __main__:_loop:1025 -  86/400
+2026-09-29 14:30:21.651 | INFO     | __main__:_loop:1025 -  93/400
+2026-09-29 14:30:26.670 | INFO     | __main__:_loop:1025 -  97/400
+2026-09-29 14:30:31.688 | INFO     | __main__:_loop:1025 -  103/400
+2026-09-29 14:30:34.145 | WARNING  | __main__:_loop_word:539 -  Word dialog 
+dismissed via 'No'
+2026-09-29 14:31:06.769 | INFO     | __main__:_loop:1025 -  106/400
+2026-09-29 14:31:11.793 | INFO     | __main__:_loop:1025 -  112/400
+2026-09-29 14:31:16.825 | INFO     | __main__:_loop:1025 -  118/400
+2026-09-29 14:31:21.843 | INFO     | __main__:_loop:1025 -  125/400
+2026-09-29 14:31:26.864 | INFO     | __main__:_loop:1025 -  131/400
+2026-09-29 14:31:31.883 | INFO     | __main__:_loop:1025 -  136/400
+2026-09-29 14:31:36.903 | INFO     | __main__:_loop:1025 -  142/400
+2026-09-29 14:31:41.927 | INFO     | __main__:_loop:1025 -  144/400
+2026-09-29 14:31:46.948 | INFO     | __main__:_loop:1025 -  149/400
+2026-09-29 14:31:50.425 | WARNING  | __main__:_loop_word:539 -  Word dialog 
+dismissed via 'No'
+2026-09-29 14:31:57.312 | INFO     | __main__:_note_buttons:509 -  Microsoft 
+Word shows button 'OK'
+2026-09-29 14:31:58.510 | WARNING  | __main__:_loop_word:539 -  Word dialog 
+dismissed via 'OK'
+2026-09-29 14:32:02.000 | INFO     | __main__:_loop:1025 -  151/400
+2026-09-29 14:32:07.024 | INFO     | __main__:_loop:1025 -  156/400
+2026-09-29 14:32:12.046 | INFO     | __main__:_loop:1025 -  160/400
+2026-09-29 14:32:17.067 | INFO     | __main__:_loop:1025 -  164/400
+2026-09-29 14:32:22.087 | INFO     | __main__:_loop:1025 -  168/400
+2026-09-29 14:32:27.107 | INFO     | __main__:_loop:1025 -  173/400
+2026-09-29 14:32:32.123 | INFO     | __main__:_loop:1025 -  177/400
+2026-09-29 14:32:37.151 | INFO     | __main__:_loop:1025 -  182/400
+2026-09-29 14:32:42.172 | INFO     | __main__:_loop:1025 -  186/400
+2026-09-29 14:32:47.190 | INFO     | __main__:_loop:1025 -  190/400
+2026-09-29 14:32:52.207 | INFO     | __main__:_loop:1025 -  191/400
+2026-09-29 14:32:57.229 | INFO     | __main__:_loop:1025 -  193/400
+2026-09-29 14:33:02.249 | INFO     | __main__:_loop:1025 -  198/400
+2026-09-29 14:33:07.266 | INFO     | __main__:_loop:1025 -  202/400
+2026-09-29 14:33:12.291 | INFO     | __main__:_loop:1025 -  207/400
+2026-09-29 14:33:17.320 | INFO     | __main__:_loop:1025 -  210/400
+2026-09-29 14:33:22.338 | INFO     | __main__:_loop:1025 -  215/400
+2026-09-29 14:33:27.363 | INFO     | __main__:_loop:1025 -  219/400
+2026-09-29 14:33:32.391 | INFO     | __main__:_loop:1025 -  223/400
+2026-09-29 14:33:36.685 | WARNING  | __main__:_loop_word:539 -  Word dialog 
+dismissed via 'No'
+2026-09-29 14:33:37.414 | INFO     | __main__:_loop:1025 -  224/400
+2026-09-29 14:33:46.618 | WARNING  | __main__:_loop_word:539 -  Word dialog 
+dismissed via 'OK'
+2026-09-29 14:33:52.469 | INFO     | __main__:_loop:1025 -  228/400
+2026-09-29 14:33:57.485 | INFO     | __main__:_loop:1025 -  231/400
+2026-09-29 14:34:28.834 | WARNING  | __main__:_loop_word:539 -  Word dialog 
+dismissed via 'No'
+2026-09-29 14:34:34.660 | WARNING  | __main__:_loop_word:539 -  Word dialog 
+dismissed via 'OK'
+2026-09-29 14:34:37.582 | INFO     | __main__:_loop:1025 -  233/400
+2026-09-29 14:34:42.599 | INFO     | __main__:_loop:1025 -  237/400
+2026-09-29 14:34:47.618 | INFO     | __main__:_loop:1025 -  242/400
+2026-09-29 14:34:52.632 | INFO     | __main__:_loop:1025 -  247/400
+2026-09-29 14:34:57.652 | INFO     | __main__:_loop:1025 -  251/400
+2026-09-29 14:35:01.819 | WARNING  | __main__:_loop_word:539 -  Word dialog 
+dismissed via 'No'
+2026-09-29 14:35:08.220 | WARNING  | __main__:_loop_word:539 -  Word dialog 
+dismissed via 'OK'
+2026-09-29 14:35:12.702 | INFO     | __main__:_loop:1025 -  254/400
+2026-09-29 14:35:14.404 | INFO     | __main__:_note_buttons:509 -  Microsoft 
+Word shows button 'No'
+2026-09-29 14:35:14.410 | INFO     | __main__:_note_buttons:509 -  Microsoft 
+Word shows button 'Yes'
+2026-09-29 14:35:17.721 | INFO     | __main__:_loop:1025 -  255/400
+2026-09-29 14:35:23.578 | WARNING  | __main__:_loop_word:539 -  Word dialog 
+dismissed via 'No'
+2026-09-29 14:35:35.484 | WARNING  | __main__:_loop_word:539 -  Word dialog 
+dismissed via 'OK'
+2026-09-29 14:35:45.217 | WARNING  | __main__:_loop_word:539 -  Word dialog 
+dismissed via 'No'
+2026-09-29 14:35:50.933 | WARNING  | __main__:_loop_word:539 -  Word dialog 
+dismissed via 'OK'
+2026-09-29 14:36:04.049 | WARNING  | __main__:_loop_word:539 -  Word dialog 
+dismissed via 'No'
+2026-09-29 14:37:02.052 | WARNING  | __main__:_loop_word:539 -  Word dialog 
+dismissed via 'OK'
+2026-09-29 14:37:02.227 | WARNING  | __main__:run_batch_with_resume:1156 -  145 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 2, 0 of 3 stalled 
+passes used)
+2026-09-29 14:37:02.228 | WARNING  | __main__♻724 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-09-29 14:37:02.231 | WARNING  | __main__♻730 -  recycling (restart 1)
+2026-09-29 14:37:14.360 | INFO     | __main__:_loop:1025 -  3/145
+2026-09-29 14:37:19.382 | INFO     | __main__:_loop:1025 -  6/145
+2026-09-29 14:37:24.398 | INFO     | __main__:_loop:1025 -  8/145
+2026-09-29 14:37:25.001 | WARNING  | __main__:_loop_word:539 -  Word dialog 
+dismissed via 'No'
+2026-09-29 14:37:58.386 | WARNING  | __main__:_loop_word:539 -  Word dialog 
+dismissed via 'OK'
+2026-09-29 14:37:59.463 | INFO     | __main__:_loop:1025 -  9/145
+2026-09-29 14:38:04.486 | INFO     | __main__:_loop:1025 -  16/145
+2026-09-29 14:38:09.501 | INFO     | __main__:_loop:1025 -  21/145
+2026-09-29 14:38:14.519 | INFO     | __main__:_loop:1025 -  23/145
+2026-09-29 14:38:25.552 | WARNING  | __main__:_loop_word:539 -  Word dialog 
+dismissed via 'No'
+2026-09-29 14:38:39.402 | WARNING  | __main__:_loop_word:539 -  Word dialog 
+dismissed via 'OK'
+2026-09-29 14:38:44.600 | INFO     | __main__:_loop:1025 -  24/145
+2026-09-29 14:38:50.056 | WARNING  | __main__:_loop_word:539 -  Word dialog 
+dismissed via 'No'
+2026-09-29 14:38:55.289 | WARNING  | __main__:_loop_word:539 -  Word dialog 
+dismissed via 'OK'
+2026-09-29 14:38:59.631 | INFO     | __main__:_loop:1025 -  28/145
+2026-09-29 14:39:04.649 | INFO     | __main__:_loop:1025 -  32/145
+2026-09-29 14:39:09.670 | INFO     | __main__:_loop:1025 -  36/145
+2026-09-29 14:39:10.308 | WARNING  | __main__:_loop_word:539 -  Word dialog 
+dismissed via 'No'
+2026-09-29 14:39:14.690 | INFO     | __main__:_loop:1025 -  37/145
+2026-09-29 14:39:17.151 | WARNING  | __main__:_loop_word:539 -  Word dialog 
+dismissed via 'OK'
+2026-09-29 14:39:21.867 | WARNING  | __main__:_loop_word:539 -  Word dialog 
+dismissed via 'No'
+2026-09-29 14:39:26.383 | WARNING  | __main__:_loop_word:539 -  Word dialog 
+dismissed via 'OK'
+2026-09-29 14:39:29.738 | INFO     | __main__:_loop:1025 -  38/145
+2026-09-29 14:39:31.256 | WARNING  | __main__:_loop_word:539 -  Word dialog 
+dismissed via 'No'
+2026-09-29 14:39:35.883 | WARNING  | __main__:_loop_word:539 -  Word dialog 
+dismissed via 'OK'
+2026-09-29 14:39:39.759 | INFO     | __main__:_loop:1025 -  43/145
+2026-09-29 14:39:44.776 | INFO     | __main__:_loop:1025 -  50/145
+2026-09-29 14:39:49.798 | INFO     | __main__:_loop:1025 -  57/145
+2026-09-29 14:39:54.817 | INFO     | __main__:_loop:1025 -  63/145
+2026-09-29 14:39:59.837 | INFO     | __main__:_loop:1025 -  70/145
+2026-09-29 14:40:04.866 | INFO     | __main__:_loop:1025 -  76/145
+2026-09-29 14:40:09.886 | INFO     | __main__:_loop:1025 -  82/145
+2026-09-29 14:40:14.912 | INFO     | __main__:_loop:1025 -  89/145
+2026-09-29 14:40:19.930 | INFO     | __main__:_loop:1025 -  95/145
+2026-09-29 14:40:24.951 | INFO     | __main__:_loop:1025 -  100/145
+2026-09-29 14:40:29.969 | INFO     | __main__:_loop:1025 -  107/145
+2026-09-29 14:40:35.005 | INFO     | __main__:_loop:1025 -  113/145
+2026-09-29 14:40:40.025 | INFO     | __main__:_loop:1025 -  119/145
+2026-09-29 14:40:45.043 | INFO     | __main__:_loop:1025 -  126/145
+2026-09-29 14:40:50.061 | INFO     | __main__:_loop:1025 -  130/145
+2026-09-29 14:40:51.023 | WARNING  | __main__:_loop_word:539 -  Word dialog 
+dismissed via 'No'
+2026-09-29 14:40:55.999 | WARNING  | __main__:_loop_word:539 -  Word dialog 
+dismissed via 'OK'
+2026-09-29 14:41:00.717 | WARNING  | __main__:_loop_word:539 -  Word dialog 
+dismissed via 'No'
+2026-09-29 14:41:05.250 | WARNING  | __main__:_loop_word:539 -  Word dialog 
+dismissed via 'OK'
+2026-09-29 14:41:09.983 | WARNING  | __main__:_loop_word:539 -  Word dialog 
+dismissed via 'No'
+2026-09-29 14:41:14.549 | WARNING  | __main__:_loop_word:539 -  Word dialog 
+dismissed via 'OK'
+2026-09-29 14:41:14.661 | WARNING  | __main__:run_batch_with_resume:1156 -  12 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 3, 0 of 3 stalled 
+passes used)
+2026-09-29 14:41:14.662 | WARNING  | __main__♻724 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-09-29 14:41:14.662 | WARNING  | __main__♻730 -  recycling (restart 2)
+2026-09-29 14:41:22.633 | WARNING  | __main__:_loop_word:539 -  Word dialog 
+dismissed via 'No'
+2026-09-29 14:41:26.318 | INFO     | __main__:_loop:1025 -  0/12
+2026-09-29 14:45:21.515 | WARNING  | __main__:run_batch_with_resume:1156 -  11 
+item(s) never reached (ended without reaching them); recycling Word and retrying
+the rest first, retried items last (pass 4, 1 of 3 stalled passes used)
+2026-09-29 14:45:21.516 | WARNING  | __main__♻724 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-09-29 14:45:21.516 | WARNING  | __main__♻730 -  recycling (restart 3)
+2026-09-29 14:45:29.566 | WARNING  | __main__:_loop_word:539 -  Word dialog 
+dismissed via 'No'
+2026-09-29 14:45:29.935 | INFO     | __main__:_loop:1025 -  0/11
+2026-09-29 14:49:25.159 | WARNING  | __main__:run_batch_with_resume:1156 -  10 
+item(s) never reached (ended without reaching them); recycling Word and retrying
+the rest first, retried items last (pass 5, 2 of 3 stalled passes used)
+2026-09-29 14:49:25.160 | WARNING  | __main__♻724 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-09-29 14:49:25.160 | WARNING  | __main__♻730 -  recycling (restart 4)
+2026-09-29 14:49:31.632 | WARNING  | __main__:_loop_word:539 -  Word dialog 
+dismissed via 'No'
+2026-09-29 14:49:33.785 | INFO     | __main__:_loop:1025 -  0/10
+2026-09-29 14:53:29.004 | WARNING  | __main__:run_batch_with_resume:1156 -  9 
+item(s) never reached (ended without reaching them); recycling Word and retrying
+the rest first, retried items last (pass 6, 3 of 3 stalled passes used)
+2026-09-29 14:53:29.005 | WARNING  | __main__♻724 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-09-29 14:53:29.005 | WARNING  | __main__♻730 -  recycling (restart 5)
+2026-09-29 14:53:32.860 | ERROR    | __main__:_convert_batched:1680 -  FAIL: 
+45c1c5abec_table_vmerge_colspan__vs__a94f4c516b_text_box_redline_e0305725c1_docx
+odus.docx — Word could not load it in 2 passes: document loaded empty (Word 
+could not read it)
+2026-09-29 14:53:33.064 | INFO     | __main__:_note_buttons:509 -  Microsoft 
+Word shows button 'Cancel'
+2026-09-29 14:53:34.165 | WARNING  | __main__:_loop_word:539 -  Word dialog 
+dismissed via 'Cancel'
+2026-09-29 14:53:37.968 | ERROR    | __main__:_convert_batched:1680 -  FAIL: 
+60697d46b7_strict01__vs__a04e2d2749_ooxml_style_link_redline_6b74ac1ae6_docxodus
+.docx — Word could not load it in 2 passes: document loaded empty (Word could 
+not read it)
+2026-09-29 14:53:37.982 | ERROR    | __main__:_convert_batched:1680 -  FAIL: 
+66dcec3e49_file_175__vs__8f47b1dc90_file_176_redline_acccebf575_docxodus.docx — 
+Word could not load it in 2 passes: document loaded empty (Word could not read 
+it)
+2026-09-29 14:53:38.226 | ERROR    | __main__:_convert_batched:1680 -  FAIL: 
+970fd9303f_sample_document_word_repair_of_our_output_word_r__vs__8441c4ae21_sd_2
+517_localized_heading_styles_redline_9c71031b8a_docxodus.docx — never reached in
+3 batch pass(es)
+2026-09-29 14:53:38.269 | ERROR    | __main__:_convert_batched:1680 -  FAIL: 
+9c6ebd430d_file_185__vs__154fce3ec8_file_186_redline_b0af33e7d7_docxodus.docx — 
+never reached in 3 batch pass(es)
+2026-09-29 14:53:38.316 | ERROR    | __main__:_convert_batched:1680 -  FAIL: 
+a83d3922a8_file_104__vs__36223881e1_file_105_redline_3a4b48cd02_docxodus.docx — 
+never reached in 3 batch pass(es)
+2026-09-29 14:53:38.327 | ERROR    | __main__:_convert_batched:1680 -  FAIL: 
+ab064d6482_super_editor__table_width_issue_20b01504__vs__01d1b3da75_table_bookma
+rk_end_redline_9fff1c473d_docxodus.docx — never reached in 3 batch pass(es)
+2026-09-29 14:53:38.328 | ERROR    | __main__:_convert_batched:1680 -  FAIL: 
+ab064d6482_super_editor__table_width_issue_20b01504__vs__837d45926d_super_editor
+__header_alternating_odd_even_11e019_redline_a0964b6b7d_docxodus.docx — never 
+reached in 3 batch pass(es)
+2026-09-29 14:53:38.328 | ERROR    | __main__:_convert_batched:1680 -  FAIL: 
+ab064d6482_super_editor__table_width_issue_20b01504__vs__8df6dfa8d7_alternate_co
+ntent_redline_5b1a8f121b_docxodus.docx — never reached in 3 batch pass(es)
+2026-09-29 14:53:38.348 | ERROR    | __main__:_convert_batched:1680 -  FAIL: 
+af2bb3fa96_file_70__vs__91b2b8bb84_file_71_redline_dedbff52b1_docxodus.docx — 
+Microsoft Word got an error: AppleEvent timed out.
+2026-09-29 14:53:38.382 | ERROR    | __main__:_convert_batched:1680 -  FAIL: 
+b8115d0dab_file_100__vs__c500e0081f_file_101_redline_ff24600d87_docxodus.docx — 
+Microsoft Word got an error: AppleEvent timed out.
+2026-09-29 14:53:38.387 | ERROR    | __main__:_convert_batched:1680 -  FAIL: 
+ba54aaab82_super_editor__ooxml_italic_rstyle_combos_demo_90__vs__8ab3f01cdd_supe
+r_editor__paragraph_indent_normal_styles_85f_redline_85b79dc2e9_docxodus.docx — 
+Microsoft Word got an error: AppleEvent timed out.
+2026-09-29 14:53:38.428 | ERROR    | __main__:_convert_batched:1680 -  FAIL: 
+c090b9f082_file_8__vs__3f91c8f0cd_file_9_redline_cac2492b83_docxodus.docx — 
+never reached in 3 batch pass(es)
+2026-09-29 14:53:38.430 | ERROR    | __main__:_convert_batched:1680 -  FAIL: 
+c09b14fcd7_file_196__vs__4e6a261969_file_197_redline_cfb0498eef_docxodus.docx — 
+never reached in 3 batch pass(es)
+2026-09-29 14:53:38.433 | ERROR    | __main__:_convert_batched:1680 -  FAIL: 
+c498e8c52c_super_editor__contract_acc_bbd983a0__vs__ab859711f4_super_editor__cus
+tom_list_numbering1_7eb9fda4_redline_3c2c9cda82_docxodus.docx — never reached in
+3 batch pass(es)
+          reject all → DOCX + PDF:          
+results/redlines_0929_split/docxodus/reject_
+                  all/src                   
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━┓
+┃ outcome                          ┃ count ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━┩
+│ converted                        │   385 │
+│ skipped (exists)                 │     0 │
+│ failed                           │    15 │
+│ seconds per document (batch avg) │   3.7 │
+└──────────────────────────────────┴───────┘
+  FAIL 
+45c1c5abec_table_vmerge_colspan__vs__a94f4c516b_text_box_redline_e0305725c1_docx
+odus.docx: Word could not load it in 2 passes: document loaded empty (Word could
+not read it)
+  FAIL 
+60697d46b7_strict01__vs__a04e2d2749_ooxml_style_link_redline_6b74ac1ae6_docxodus
+.docx: Word could not load it in 2 passes: document loaded empty (Word could not
+read it)
+  FAIL 
+66dcec3e49_file_175__vs__8f47b1dc90_file_176_redline_acccebf575_docxodus.docx: 
+Word could not load it in 2 passes: document loaded empty (Word could not read 
+it)
+  FAIL 
+970fd9303f_sample_document_word_repair_of_our_output_word_r__vs__8441c4ae21_sd_2
+517_localized_heading_styles_redline_9c71031b8a_docxodus.docx: never reached in 
+3 batch pass(es)
+  FAIL 
+9c6ebd430d_file_185__vs__154fce3ec8_file_186_redline_b0af33e7d7_docxodus.docx: 
+never reached in 3 batch pass(es)
+  FAIL 
+a83d3922a8_file_104__vs__36223881e1_file_105_redline_3a4b48cd02_docxodus.docx: 
+never reached in 3 batch pass(es)
+  FAIL 
+ab064d6482_super_editor__table_width_issue_20b01504__vs__01d1b3da75_table_bookma
+rk_end_redline_9fff1c473d_docxodus.docx: never reached in 3 batch pass(es)
+  FAIL 
+ab064d6482_super_editor__table_width_issue_20b01504__vs__837d45926d_super_editor
+__header_alternating_odd_even_11e019_redline_a0964b6b7d_docxodus.docx: never 
+reached in 3 batch pass(es)
+  FAIL 
+ab064d6482_super_editor__table_width_issue_20b01504__vs__8df6dfa8d7_alternate_co
+ntent_redline_5b1a8f121b_docxodus.docx: never reached in 3 batch pass(es)
+  FAIL 
+af2bb3fa96_file_70__vs__91b2b8bb84_file_71_redline_dedbff52b1_docxodus.docx: 
+Microsoft Word got an error: AppleEvent timed out.
+  FAIL 
+b8115d0dab_file_100__vs__c500e0081f_file_101_redline_ff24600d87_docxodus.docx: 
+Microsoft Word got an error: AppleEvent timed out.
+  FAIL 
+ba54aaab82_super_editor__ooxml_italic_rstyle_combos_demo_90__vs__8ab3f01cdd_supe
+r_editor__paragraph_indent_normal_styles_85f_redline_85b79dc2e9_docxodus.docx: 
+Microsoft Word got an error: AppleEvent timed out.
+  FAIL 
+c090b9f082_file_8__vs__3f91c8f0cd_file_9_redline_cac2492b83_docxodus.docx: never
+reached in 3 batch pass(es)
+  FAIL 
+c09b14fcd7_file_196__vs__4e6a261969_file_197_redline_cfb0498eef_docxodus.docx: 
+never reached in 3 batch pass(es)
+  FAIL 
+c498e8c52c_super_editor__contract_acc_bbd983a0__vs__ab859711f4_super_editor__cus
+tom_list_numbering1_7eb9fda4_redline_3c2c9cda82_docxodus.docx: never reached in 
+3 batch pass(es)

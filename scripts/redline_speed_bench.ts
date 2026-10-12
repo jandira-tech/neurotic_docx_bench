@@ -21,6 +21,21 @@
  *     --methods docxodus-csharp,jubarte-rust \
  *     --out results/redline_speed_bench
  *
+ *   - jubarte-python   (jubarte-redlines Python binding, warm worker: scripts/jubarte_py_worker.py)
+ *
+ * docx->PDF phase (--pdf-methods): the redlines one lane wrote (--keep-redlines DIR,
+ * --keep-method, default jubarte-rust-inproc; one <pair key>.docx each) are converted
+ * by every PDF lane in turn, timed per document with the same statistics:
+ *   - jubarte-rust-inproc  warm native worker (d2p-warm-jubarte in --rust-inproc-dist)
+ *   - jubarte-wasm         docxToPdf in this V8 process (--wasm-dist pkg)
+ *   - jubarte-python       the Python worker's PDF command
+ *   Each sample is read docx + convert + write PDF, in every lane; Word revision marks.
+ *   PDFs are kept under <out>/pdf/<lane>/<pair key>.pdf.
+ *   node --import tsx scripts/redline_speed_bench.ts --pairs-csv results/speed_en_500/pairs.csv \
+ *     --methods jubarte-rust-inproc,jubarte-rust,jubarte-wasm,jubarte-python --no-profile \
+ *     --pair-timeout-ms 0 --keep-redlines results/X/redlines \
+ *     --pdf-methods jubarte-rust-inproc,jubarte-wasm,jubarte-python --out results/X
+ *
  * Fairness notes:
  *   - Node engines: fixtures preloaded; timed loop is in-memory compare only.
  *   - docxodus-csharp / jubarte-rust: each sample = temp write + spawnSync +
@@ -33,14 +48,19 @@ import {
 	mkdirSync,
 	readdirSync,
 	readFileSync,
+	rmSync,
+	statSync,
 	writeFileSync,
 } from "node:fs";
+import { createRequire } from "node:module";
 import { createHash } from "node:crypto";
-import { spawnSync } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
 import { Session } from "node:inspector/promises";
 import { basename, dirname, join, resolve } from "node:path";
 import { performance } from "node:perf_hooks";
 import { fileURLToPath } from "node:url";
+import { resolveDocxodusEntry } from "./docxodus-node-compat.mjs";
+import { DEFAULT_LIMITS, type MachineState, waitForStableMachine } from "./lib/machine_state.ts";
 import { hardwareInfo, toolVersionForMethod } from "./lib/provenance.ts";
 import {
 	loadEngine,
@@ -120,6 +140,27 @@ const rustInprocDist = resolve(
 	arg("--rust-inproc-dist", defaultRustInprocDist()),
 );
 const wasmDist = resolve(ROOT, arg("--wasm-dist", defaultJubarteWasmDist()));
+// A virtual environment with the jubarte-redlines wheel under test installed.
+const pythonDist = resolve(ROOT, arg("--python-dist", ".venv"));
+// Before each leg, wait for a decently quiet, steady machine (see lib/machine_state.ts).
+const machineGate = !has("--no-machine-gate");
+const machineLimits = {
+	...DEFAULT_LIMITS,
+	timeoutS: Number(arg("--machine-timeout-s", String(DEFAULT_LIMITS.timeoutS))),
+};
+async function gateLeg(label: string): Promise<MachineState | null> {
+	return machineGate ? waitForStableMachine(label, machineLimits) : null;
+}
+// Keep one lane's redlines (<pair key>.docx, written after each sample is timed).
+const keepRedlinesArg = arg("--keep-redlines", "");
+const keepRedlines = keepRedlinesArg ? resolve(ROOT, keepRedlinesArg) : "";
+const keepMethod = arg("--keep-method", "jubarte-rust-inproc");
+const pdfMethods = arg("--pdf-methods", "")
+	.split(",")
+	.map((s) => s.trim())
+	.filter(Boolean);
+const pdfWarmup = Number(arg("--pdf-warmup", "10"));
+const pdfTimeoutMs = Number(arg("--pdf-timeout-ms", "120000"));
 const pairsCsv = arg("--pairs-csv", "");
 // Per-pair timeout for the in-process engines (0 = the old unguarded in-process loop). With a
 // timeout each engine runs in its own child process (scripts/lib/timed_engine.ts), which is
@@ -516,14 +557,18 @@ export function distFor(
 		csharpInprocDist: string;
 		rustInprocDist: string;
 		wasmDist?: string;
+		pythonDist?: string;
 	},
 ): string {
 	const id = engineMethodId(method);
+	if (id === "jubarte-python") return opts.pythonDist ?? join(ROOT, ".venv");
 	if (id === "jubarte-rust") return opts.rustDist;
 	if (id === "jubarte-rust-inproc") return opts.rustInprocDist;
 	if (id === "docxodus-csharp") return opts.csharpDist;
 	if (id === "docxodus-csharp-inproc") return opts.csharpInprocDist;
 	if (id === "jubarte-wasm") return opts.wasmDist ?? defaultJubarteWasmDist();
+	// The npm engine loads from resolveDocxodusEntry; record that package, not jubarte's dist.
+	if (id === "docxodus") return dirname(dirname(resolveDocxodusEntry()));
 	return opts.jubarteDist;
 }
 
@@ -725,6 +770,7 @@ async function timedLoop(
 	pairs: Pair[],
 	repsN: number,
 	warmupN: number,
+	keep?: (key: string, out: Uint8Array) => void,
 ): Promise<{
 	samples: number[];
 	sampleKeys: string[];
@@ -752,6 +798,8 @@ async function timedLoop(
 				samples.push(performance.now() - s);
 				sampleKeys.push(p.key);
 				outSizes.push(out.byteLength);
+				// After the clock: the kept redline costs the sample nothing.
+				if (keep && r === 0) keep(p.key, out);
 			} catch (e) {
 				failures.push({
 					key: p.key,
@@ -905,6 +953,249 @@ async function innerMain(): Promise<void> {
 	process.exit(0);
 }
 
+// ── docx→PDF phase ───────────────────────────────────────────────────────────
+
+/** A long-lived line-protocol worker: one request line, one reply line. */
+function lineWorker(
+	label: string,
+	bin: string,
+	args: string[],
+	readyLine: string | null,
+): { request: (line: string, timeoutMs: number) => Promise<string>; kill: () => void; ready: Promise<void> } {
+	if (!existsSync(bin)) throw new Error(`${label}: no worker at ${bin}`);
+	const child = spawn(bin, args, { stdio: ["pipe", "pipe", "pipe"] });
+	let acc = "";
+	let stderr = "";
+	const lines: string[] = [];
+	const waiters: Array<(line: string | null) => void> = [];
+	let exited = false;
+	child.stdout.setEncoding("utf8");
+	child.stderr.setEncoding("utf8");
+	child.stderr.on("data", (c: string) => {
+		stderr = (stderr + c).slice(-2000);
+	});
+	child.stdout.on("data", (c: string) => {
+		acc += c;
+		let i: number;
+		while ((i = acc.indexOf("\n")) >= 0) {
+			const line = acc.slice(0, i).replace(/\r$/, "");
+			acc = acc.slice(i + 1);
+			const w = waiters.shift();
+			if (w) w(line);
+			else lines.push(line);
+		}
+	});
+	child.on("exit", () => {
+		exited = true;
+		while (waiters.length) waiters.shift()!(null);
+	});
+	const next = (timeoutMs: number) =>
+		new Promise<string>((ok, fail) => {
+			if (lines.length) return ok(lines.shift()!);
+			if (exited) return fail(new Error(`${label}: worker exited ${stderr.trim()}`));
+			const t = setTimeout(() => fail(new Error(`${label}: timeout after ${timeoutMs} ms`)), timeoutMs);
+			waiters.push((line) => {
+				clearTimeout(t);
+				line === null ? fail(new Error(`${label}: worker exited ${stderr.trim()}`)) : ok(line);
+			});
+		});
+	const ready = readyLine
+		? next(60_000).then((l) => {
+				if (l !== readyLine) throw new Error(`${label}: expected ${readyLine}, got ${l}`);
+			})
+		: Promise.resolve();
+	return {
+		ready,
+		request: (line, timeoutMs) => {
+			child.stdin.write(`${line}\n`);
+			return next(timeoutMs);
+		},
+		kill: () => {
+			try {
+				child.kill("SIGKILL");
+			} catch {
+				/* already gone */
+			}
+		},
+	};
+}
+
+interface PdfLane {
+	/** Read `src`, convert, write `dst`; resolves to the PDF's size. */
+	convert: (src: string, dst: string) => Promise<number>;
+	close: () => void;
+}
+
+async function loadPdfLane(method: string): Promise<PdfLane> {
+	const id = engineMethodId(method);
+	if (id === "jubarte-wasm") {
+		const req = createRequire(import.meta.url);
+		const mod = req(join(wasmDist, "pkg", "jubarte_wasm.js")) as {
+			docxToPdf: (docx: Uint8Array, compress?: boolean, revisions?: string) => Uint8Array;
+		};
+		if (typeof mod.docxToPdf !== "function") {
+			throw new Error(`jubarte-wasm: no docxToPdf in ${wasmDist}/pkg (built without the pdf feature?)`);
+		}
+		return {
+			convert: async (src, dst) => {
+				const pdf = mod.docxToPdf(new Uint8Array(readFileSync(src)), false, "word");
+				writeFileSync(dst, pdf);
+				return pdf.byteLength;
+			},
+			close: () => {},
+		};
+	}
+	// Workers: the native one answers `ok <ms>` / `err <ms> <msg>` to `src\tdst`
+	// (tools/d2p-warm); the Python one `OK <bytes> <ms>` / `ERR <msg>` to `PDF src\tdst`.
+	const spec =
+		id === "jubarte-rust-inproc"
+			? { bin: join(rustInprocDist, "d2p-warm-jubarte"), args: ["jubarte"], ready: null, verb: "" }
+			: id === "jubarte-python"
+				? {
+						bin: join(pythonDist, "bin", "python"),
+						args: [join(HERE, "jubarte_py_worker.py")],
+						ready: "READY",
+						verb: "PDF ",
+					}
+				: null;
+	if (!spec) throw new Error(`no docx->pdf lane for ${method}`);
+	let w = lineWorker(method, spec.bin, spec.args, spec.ready);
+	await w.ready;
+	return {
+		convert: async (src, dst) => {
+			let reply: string;
+			try {
+				reply = await w.request(`${spec.verb}${src}\t${dst}`, pdfTimeoutMs);
+			} catch (e) {
+				// A hung or dead worker is replaced; this document counts as failed.
+				w.kill();
+				w = lineWorker(method, spec.bin, spec.args, spec.ready);
+				await w.ready;
+				throw e;
+			}
+			if (/^(ok|OK) /.test(reply)) return existsSync(dst) ? statSync(dst).size : 0;
+			throw new Error(reply.replace(/^(err|ERR) /, ""));
+		},
+		close: () => w.kill(),
+	};
+}
+
+async function runPdfPhase(runTs: string): Promise<Record<string, unknown>[]> {
+	const inputs = readdirSync(keepRedlines)
+		.filter((f) => f.endsWith(".docx"))
+		.sort();
+	const rows: Record<string, unknown>[] = [];
+	console.log(`docx→pdf: ${inputs.length} redlines from ${keepRedlines}\n`);
+	const scratch = join(outDir, "pdf", "_warmup");
+	mkdirSync(scratch, { recursive: true });
+	for (const method of pdfMethods) {
+		const engId = engineMethodId(method);
+		const dist = distFor(engId, {
+			jubarteDist,
+			rustDist,
+			csharpDist,
+			csharpInprocDist,
+			rustInprocDist,
+			wasmDist,
+			pythonDist,
+		});
+		const machine = await gateLeg(`pdf ${method}`);
+		process.stdout.write(`▶ pdf ${method} (dist=${dist})\n`);
+		const t0 = performance.now();
+		let lane: PdfLane;
+		try {
+			lane = await loadPdfLane(method);
+		} catch (e) {
+			console.error(`  INIT FAILED: ${(e as Error).message}`);
+			rows.push({ schema: 1, kind: "pdf_speed_bench", tool: method, error: (e as Error).message, run_ts: runTs });
+			continue;
+		}
+		const initMs = performance.now() - t0;
+		const dir = join(outDir, "pdf", method);
+		mkdirSync(dir, { recursive: true });
+		const perDoc = join(outDir, "per_pdf", `${method}.jsonl`);
+		mkdirSync(dirname(perDoc), { recursive: true });
+		writeFileSync(perDoc, "");
+		for (const f of inputs.slice(0, pdfWarmup)) {
+			await lane.convert(join(keepRedlines, f), join(scratch, `${method}.pdf`)).catch(() => 0);
+		}
+		const samples: number[] = [];
+		const sizes: number[] = [];
+		const failures: { key: string; error: string; ms: number }[] = [];
+		const wall0 = performance.now();
+		for (const [i, f] of inputs.entries()) {
+			const key = f.replace(/\.docx$/, "");
+			const dst = join(dir, `${key}.pdf`);
+			if (existsSync(dst)) throw new Error(`refusing to overwrite ${dst}`);
+			const s = performance.now();
+			try {
+				const n = await lane.convert(join(keepRedlines, f), dst);
+				const ms = performance.now() - s;
+				samples.push(ms);
+				sizes.push(n);
+				appendFileSync(perDoc, `${JSON.stringify({ key, ok: true, ms: round(ms), out_bytes: n })}\n`);
+			} catch (e) {
+				const ms = performance.now() - s;
+				const error = ((e as Error).message || String(e)).slice(0, 300);
+				failures.push({ key, error, ms });
+				appendFileSync(perDoc, `${JSON.stringify({ key, ok: false, ms: round(ms), error })}\n`);
+			}
+			if ((i + 1) % 250 === 0) console.log(`  [${i + 1}/${inputs.length}] failed ${failures.length}`);
+		}
+		const wallMs = performance.now() - wall0;
+		lane.close();
+		if (!samples.length) {
+			rows.push({ schema: 1, kind: "pdf_speed_bench", tool: method, failures: failures.length, error: "all conversions failed", sample_error: failures[0]?.error, run_ts: runTs });
+			continue;
+		}
+		const st = stats(samples);
+		const row = {
+			schema: 1,
+			kind: "pdf_speed_bench",
+			tool: method,
+			engine: engId,
+			dist,
+			runtime: engId === "jubarte-wasm" ? "rust-wasm" : engId === "jubarte-python" ? "python" : "rust",
+			run_ts: runTs,
+			input: keepRedlines,
+			input_count: inputs.length,
+			revisions: "word",
+			warmup: pdfWarmup,
+			init_ms: round(initMs),
+			wall_ms: round(wallMs),
+			failures: failures.length,
+			pdf_timeout_ms: pdfTimeoutMs,
+			unit: "ms_per_pdf",
+			n: st.n,
+			mean: round(st.mean),
+			median: round(st.median),
+			p90: round(st.p90),
+			p95: round(st.p95),
+			p99: round(st.p99),
+			min: round(st.min),
+			max: round(st.max),
+			std: round(st.std),
+			total_ms: round(st.total),
+			throughput_per_s: round(st.throughput_per_s, 1),
+			tool_version: toolVersionForMethod(engId, dist, ROOT),
+			hardware: hardwareInfo(),
+			machine_state: machine,
+			mean_out_bytes: Math.round(sizes.reduce((a, b) => a + b, 0) / sizes.length),
+			failure_samples: failures.slice(0, 5),
+		};
+		rows.push(row);
+		appendFileSync(join(outDir, "speed.jsonl"), `${JSON.stringify(row)}\n`);
+		appendFileSync(join(ROOT, "results", "speed.jsonl"), `${JSON.stringify({ ...row, kind: "speed_pdf" })}\n`);
+		console.log(
+			`  wall ${round(wallMs / 1000, 2)}s  median ${st.median.toFixed(2)}ms  mean ${st.mean.toFixed(2)}ms  ` +
+				`p95 ${st.p95.toFixed(2)}ms  p99 ${st.p99.toFixed(2)}ms  ${st.throughput_per_s.toFixed(1)}/s  ` +
+				`(n=${st.n}, fail=${failures.length})\n`,
+		);
+	}
+	rmSync(scratch, { recursive: true, force: true });
+	return rows;
+}
+
 // ── outer main ───────────────────────────────────────────────────────────────
 
 async function main() {
@@ -1007,6 +1298,10 @@ async function main() {
 	console.log(`  csharp-inproc-dist=${csharpInprocDist}`);
 	console.log(`  rust-inproc-dist=${rustInprocDist}`);
 	console.log(`  wasm-dist=${wasmDist}`);
+	console.log(`  python-dist=${pythonDist}`);
+	if (methods.includes("docxodus")) {
+		console.log(`  docxodus-wasm=${resolveDocxodusEntry()}`);
+	}
 	console.log(`  out=${outDir}\n`);
 
 	const pairsMeta = {
@@ -1041,12 +1336,28 @@ async function main() {
 		csharpInprocDist,
 		rustInprocDist,
 		wasmDist,
+		pythonDist,
 	};
+	if (keepRedlines) {
+		if (existsSync(keepRedlines) && readdirSync(keepRedlines).length > 0) {
+			throw new Error(`--keep-redlines ${keepRedlines} is not empty; nothing is overwritten`);
+		}
+		mkdirSync(keepRedlines, { recursive: true });
+		if (!methods.includes(keepMethod)) {
+			throw new Error(`--keep-method ${keepMethod} is not in --methods`);
+		}
+		if (pairTimeoutMs > 0 && !isNativeCliMethod(keepMethod)) {
+			throw new Error(
+				"--keep-redlines with an in-process lane needs --pair-timeout-ms 0 (the timeout child does not hand outputs back)",
+			);
+		}
+	}
 
 	for (const method of methods) {
 		const engId = engineMethodId(method);
 		const dist = distFor(engId, distOpts);
 		const native = isNativeCliMethod(method);
+		const machine = await gateLeg(method);
 		process.stdout.write(
 			`▶ ${method} (engine=${engId}, dist=${dist}, native=${native})\n`,
 		);
@@ -1199,9 +1510,17 @@ async function main() {
 				wallMs = timed.wallMs;
 			}
 		} else {
+			const keep =
+				keepRedlines && method === keepMethod
+					? (key: string, out: Uint8Array) => {
+							const dst = join(keepRedlines, `${key}.docx`);
+							if (existsSync(dst)) throw new Error(`refusing to overwrite ${dst}`);
+							writeFileSync(dst, out);
+						}
+					: undefined;
 			const { result: timed, profile } = await withV8CpuProfile(
 				useV8,
-				async () => timedLoop(engine, pairs, reps, warmup),
+				async () => timedLoop(engine, pairs, reps, warmup, keep),
 			);
 			samples = timed.samples;
 			sampleKeys = timed.sampleKeys;
@@ -1284,7 +1603,9 @@ async function main() {
 							? "dotnet-wasm"
 							: engId === "jubarte-wasm"
 								? "rust-wasm"
-								: "node",
+								: engId === "jubarte-python"
+									? "python"
+									: "node",
 			run_ts: runTs,
 			seed,
 			fixture_count: fixtures.length,
@@ -1315,6 +1636,7 @@ async function main() {
 			// number is not comparable to any other row.
 			tool_version: toolVersionForMethod(engId, dist, ROOT),
 			hardware: hardwareInfo(),
+			machine_state: machine,
 			mean_out_bytes: outSizes.length
 				? Math.round(outSizes.reduce((a, b) => a + b, 0) / outSizes.length)
 				: null,
@@ -1359,6 +1681,8 @@ async function main() {
 		// path) so they don't leak into the next method / keep the process alive.
 		shutdownAllLongLivedWorkers();
 	}
+
+	const pdfRows = pdfMethods.length && keepRedlines ? await runPdfPhase(runTs) : [];
 
 	const ok = rows.filter((r) => typeof r.median === "number") as Array<
 		Record<string, unknown> & {
@@ -1407,6 +1731,27 @@ async function main() {
 		);
 	});
 	md.push("");
+	const pdfOk = pdfRows.filter((r) => typeof r.median === "number") as Array<Record<string, number | string>>;
+	if (pdfRows.length) {
+		md.push("## docx→PDF (the kept redlines)");
+		md.push("");
+		md.push(`- **input:** ${keepRedlines} (redlines of ${keepMethod}), Word revision marks, warmup ${pdfWarmup}`);
+		md.push("- **sample:** read docx + convert + write PDF, one long-lived worker or the V8 module per lane");
+		md.push("");
+		md.push("| rank | lane | median ms | mean ms | p95 | p99 | /s | wall s | fail | n |");
+		md.push("| ---: | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |");
+		[...pdfOk]
+			.sort((a, b) => (a.median as number) - (b.median as number))
+			.forEach((r, i) => {
+				md.push(
+					`| ${i + 1} | ${r.tool} | ${r.median} | ${r.mean} | ${r.p95} | ${r.p99} | ${r.throughput_per_s} | ${round((r.wall_ms as number) / 1000, 2)} | ${r.failures} | ${r.n} |`,
+				);
+			});
+		for (const r of pdfRows.filter((r) => typeof r.median !== "number")) {
+			md.push(`| — | ${r.tool} | failed: ${String(r.error)} | | | | | | | |`);
+		}
+		md.push("");
+	}
 	md.push("## Profiles");
 	md.push("");
 	md.push(
@@ -1452,6 +1797,9 @@ async function main() {
 				pairs: pairs.length,
 				seed,
 				methods,
+				pdf_rows: pdfRows,
+				pdf_methods: pdfMethods,
+				kept_redlines: keepRedlines || null,
 			},
 			null,
 			2,

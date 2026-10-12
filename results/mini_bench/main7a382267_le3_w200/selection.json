@@ -1,0 +1,14 @@
+{
+  "source_run": "01a0e901-afd3-7244-8910-9b1e4bb85dd9",
+  "source_track": "corpus/word:le3pages",
+  "source_tool": "jubarte",
+  "source_version": "jubarte 0.9.3",
+  "source_lens": "pixel",
+  "source_docset": "27122f4d945e",
+  "source_itt_n": 2626,
+  "max_pages": 3,
+  "pool_after_page_filter": 2626,
+  "n_worst": 200,
+  "n_spread": 50,
+  "rule": "ascending (score, key); worst = first n; spread = midpoint of each of n//4 equal strata of the rest"
+}

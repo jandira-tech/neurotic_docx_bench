@@ -1,0 +1,150 @@
+2026-10-11 19:54:16.072 | INFO     | word_pdf:preflight:1827 - [word] preflight: open_documents=1 started_clean=False launched_by_us=False close_documents=True
+2026-10-11 19:54:16.075 | INFO     | __main__:redline_folders:727 - [redline] one_osascript=True pairs=169
+2026-10-11 19:54:16.168 | INFO     | __main__:_redline_batched:1011 - [batch] one osascript for 162 comparison(s)
+2026-10-11 19:54:21.174 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 2/162
+2026-10-11 19:54:26.179 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 5/162
+2026-10-11 19:54:31.180 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 9/162
+2026-10-11 19:54:36.186 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 12/162
+2026-10-11 19:54:41.191 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 15/162
+2026-10-11 19:54:46.197 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 17/162
+2026-10-11 19:54:51.200 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 20/162
+2026-10-11 19:54:56.204 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 22/162
+2026-10-11 19:55:01.211 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 25/162
+2026-10-11 19:55:06.215 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 28/162
+2026-10-11 19:55:11.220 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 31/162
+2026-10-11 19:55:16.226 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 34/162
+2026-10-11 19:55:21.232 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 37/162
+2026-10-11 19:55:26.238 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 40/162
+2026-10-11 19:55:31.239 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 42/162
+2026-10-11 19:55:36.244 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 45/162
+2026-10-11 19:55:41.249 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 48/162
+2026-10-11 19:55:46.253 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 51/162
+2026-10-11 19:55:51.256 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 54/162
+2026-10-11 19:55:56.257 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 57/162
+2026-10-11 19:56:01.259 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 60/162
+2026-10-11 19:56:06.265 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 63/162
+2026-10-11 19:56:11.270 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 66/162
+2026-10-11 19:56:16.273 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 69/162
+2026-10-11 19:56:21.276 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 71/162
+2026-10-11 19:56:26.279 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 74/162
+2026-10-11 19:56:31.284 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 77/162
+2026-10-11 19:56:36.287 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 80/162
+2026-10-11 19:56:41.291 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 83/162
+2026-10-11 19:56:46.297 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 86/162
+2026-10-11 19:56:51.303 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 88/162
+2026-10-11 19:56:56.307 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 91/162
+2026-10-11 19:57:01.313 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 93/162
+2026-10-11 19:57:06.317 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 96/162
+2026-10-11 19:57:11.320 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 99/162
+2026-10-11 19:57:16.323 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 101/162
+2026-10-11 19:57:21.325 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 103/162
+2026-10-11 19:57:26.329 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 105/162
+2026-10-11 19:57:31.335 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 107/162
+2026-10-11 19:57:36.338 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 109/162
+2026-10-11 19:57:41.341 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 111/162
+2026-10-11 19:57:46.345 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 113/162
+2026-10-11 19:57:51.349 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 114/162
+2026-10-11 19:57:56.353 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 116/162
+2026-10-11 19:58:01.358 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 118/162
+2026-10-11 19:58:06.365 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 120/162
+2026-10-11 19:58:11.366 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 121/162
+2026-10-11 19:58:16.367 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 123/162
+2026-10-11 19:58:21.373 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 125/162
+2026-10-11 19:58:26.375 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 126/162
+2026-10-11 19:58:31.380 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 127/162
+2026-10-11 19:58:36.382 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 128/162
+2026-10-11 19:58:41.388 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 130/162
+2026-10-11 19:58:46.389 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 131/162
+2026-10-11 19:58:51.391 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 133/162
+2026-10-11 19:58:56.396 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 134/162
+2026-10-11 19:59:01.400 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 136/162
+2026-10-11 19:59:06.405 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 138/162
+2026-10-11 19:59:11.409 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 139/162
+2026-10-11 19:59:16.415 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 141/162
+2026-10-11 19:59:21.420 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 143/162
+2026-10-11 19:59:26.424 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 145/162
+2026-10-11 19:59:31.427 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 146/162
+2026-10-11 19:59:36.431 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 148/162
+2026-10-11 19:59:41.434 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 150/162
+2026-10-11 19:59:46.436 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 151/162
+2026-10-11 19:59:51.441 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 152/162
+2026-10-11 19:59:56.443 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 154/162
+2026-10-11 20:00:01.448 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 155/162
+2026-10-11 20:00:06.455 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 157/162
+2026-10-11 20:00:11.458 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 158/162
+2026-10-11 20:00:16.461 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 160/162
+2026-10-11 20:00:21.467 | INFO     | word_pdf:_loop:1077 - [batch compare 1] 161/162
+2026-10-11 20:00:22.068 | INFO     | __main__:_redline_batched:1040 - [batch] one osascript for 162 redline PDF(s)
+2026-10-11 20:00:27.074 | INFO     | word_pdf:_loop:1077 - [batch pdf 1] 3/162
+2026-10-11 20:00:32.076 | INFO     | word_pdf:_loop:1077 - [batch pdf 1] 6/162
+2026-10-11 20:00:37.077 | INFO     | word_pdf:_loop:1077 - [batch pdf 1] 10/162
+2026-10-11 20:00:42.083 | INFO     | word_pdf:_loop:1077 - [batch pdf 1] 13/162
+2026-10-11 20:00:47.089 | INFO     | word_pdf:_loop:1077 - [batch pdf 1] 17/162
+2026-10-11 20:00:52.091 | INFO     | word_pdf:_loop:1077 - [batch pdf 1] 19/162
+2026-10-11 20:00:56.130 | WARNING  | word_pdf:run_batch_with_resume:1216 - [batch pdf] 143 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 2, 0 of 3 stalled passes used)
+2026-10-11 20:00:56.130 | ERROR    | word_pdf:recycle:717 - [word] refusing to restart Word: it held documents at startup (--allow-open-docs), and a restart would discard them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 20:00:56.768 | INFO     | word_pdf:_note_buttons:514 - [watchdog] Microsoft Error Reporting shows button 'OK'
+2026-10-11 20:00:56.768 | INFO     | word_pdf:_note_buttons:514 - [watchdog] Microsoft Error Reporting shows button 'More Information'
+2026-10-11 20:00:56.768 | INFO     | word_pdf:_note_buttons:514 - [watchdog] Microsoft Error Reporting shows button 'missing value'
+2026-10-11 20:00:57.398 | WARNING  | word_pdf:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 20:01:01.134 | INFO     | word_pdf:_loop:1077 - [batch pdf 2] 4/143
+2026-10-11 20:01:06.136 | INFO     | word_pdf:_loop:1077 - [batch pdf 2] 7/143
+2026-10-11 20:01:11.142 | INFO     | word_pdf:_loop:1077 - [batch pdf 2] 12/143
+2026-10-11 20:01:16.147 | INFO     | word_pdf:_loop:1077 - [batch pdf 2] 16/143
+2026-10-11 20:01:21.153 | INFO     | word_pdf:_loop:1077 - [batch pdf 2] 19/143
+2026-10-11 20:01:26.159 | INFO     | word_pdf:_loop:1077 - [batch pdf 2] 26/143
+2026-10-11 20:01:36.162 | INFO     | word_pdf:_loop:1077 - [batch pdf 2] 29/143
+2026-10-11 20:01:41.166 | INFO     | word_pdf:_loop:1077 - [batch pdf 2] 33/143
+2026-10-11 20:01:42.096 | WARNING  | word_pdf:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 20:01:43.150 | WARNING  | word_pdf:run_batch_with_resume:1216 - [batch pdf] 110 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 3, 0 of 3 stalled passes used)
+2026-10-11 20:01:43.151 | ERROR    | word_pdf:recycle:717 - [word] refusing to restart Word: it held documents at startup (--allow-open-docs), and a restart would discard them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 20:01:48.157 | INFO     | word_pdf:_loop:1077 - [batch pdf 3] 6/110
+2026-10-11 20:01:53.163 | INFO     | word_pdf:_loop:1077 - [batch pdf 3] 11/110
+2026-10-11 20:01:58.169 | INFO     | word_pdf:_loop:1077 - [batch pdf 3] 17/110
+2026-10-11 20:02:03.173 | INFO     | word_pdf:_loop:1077 - [batch pdf 3] 23/110
+2026-10-11 20:02:08.176 | INFO     | word_pdf:_loop:1077 - [batch pdf 3] 31/110
+2026-10-11 20:02:13.179 | INFO     | word_pdf:_loop:1077 - [batch pdf 3] 37/110
+2026-10-11 20:02:18.185 | INFO     | word_pdf:_loop:1077 - [batch pdf 3] 40/110
+2026-10-11 20:02:23.191 | INFO     | word_pdf:_loop:1077 - [batch pdf 3] 47/110
+2026-10-11 20:02:28.196 | INFO     | word_pdf:_loop:1077 - [batch pdf 3] 53/110
+2026-10-11 20:02:33.199 | INFO     | word_pdf:_loop:1077 - [batch pdf 3] 57/110
+2026-10-11 20:02:38.204 | INFO     | word_pdf:_loop:1077 - [batch pdf 3] 62/110
+2026-10-11 20:02:43.209 | INFO     | word_pdf:_loop:1077 - [batch pdf 3] 68/110
+2026-10-11 20:02:48.213 | INFO     | word_pdf:_loop:1077 - [batch pdf 3] 72/110
+2026-10-11 20:03:13.238 | INFO     | word_pdf:_loop:1077 - [batch pdf 3] 73/110
+2026-10-11 20:03:18.243 | INFO     | word_pdf:_loop:1077 - [batch pdf 3] 77/110
+2026-10-11 20:03:33.258 | INFO     | word_pdf:_loop:1077 - [batch pdf 3] 81/110
+2026-10-11 20:03:38.260 | INFO     | word_pdf:_loop:1077 - [batch pdf 3] 85/110
+2026-10-11 20:03:43.264 | INFO     | word_pdf:_loop:1077 - [batch pdf 3] 90/110
+2026-10-11 20:03:48.269 | INFO     | word_pdf:_loop:1077 - [batch pdf 3] 95/110
+2026-10-11 20:03:53.273 | INFO     | word_pdf:_loop:1077 - [batch pdf 3] 98/110
+2026-10-11 20:04:13.289 | INFO     | word_pdf:_loop:1077 - [batch pdf 3] 101/110
+2026-10-11 20:04:18.293 | INFO     | word_pdf:_loop:1077 - [batch pdf 3] 104/110
+2026-10-11 20:04:20.485 | WARNING  | word_pdf:run_batch_with_resume:1216 - [batch pdf] 6 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 4, 0 of 3 stalled passes used)
+2026-10-11 20:04:20.485 | ERROR    | word_pdf:recycle:717 - [word] refusing to restart Word: it held documents at startup (--allow-open-docs), and a restart would discard them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 20:04:21.416 | WARNING  | word_pdf:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 20:04:24.209 | WARNING  | word_pdf:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 20:04:25.316 | WARNING  | word_pdf:run_batch_with_resume:1216 - [batch pdf] 6 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 5, 0 of 3 stalled passes used)
+2026-10-11 20:04:25.316 | ERROR    | word_pdf:recycle:717 - [word] refusing to restart Word: it held documents at startup (--allow-open-docs), and a restart would discard them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 20:04:30.324 | INFO     | word_pdf:_loop:1077 - [batch pdf 5] 2/6
+2026-10-11 20:04:34.050 | WARNING  | word_pdf:run_batch_with_resume:1216 - [batch pdf] 3 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 6, 0 of 3 stalled passes used)
+2026-10-11 20:04:34.051 | ERROR    | word_pdf:recycle:717 - [word] refusing to restart Word: it held documents at startup (--allow-open-docs), and a restart would discard them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 20:04:34.596 | WARNING  | word_pdf:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 20:04:38.320 | WARNING  | word_pdf:run_batch_with_resume:1216 - [batch pdf] 2 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 7, 0 of 3 stalled passes used)
+2026-10-11 20:04:38.320 | ERROR    | word_pdf:recycle:717 - [word] refusing to restart Word: it held documents at startup (--allow-open-docs), and a restart would discard them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 20:04:40.079 | WARNING  | word_pdf:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 20:04:43.327 | INFO     | word_pdf:_loop:1077 - [batch pdf 7] 0/2
+2026-10-11 20:04:49.850 | WARNING  | word_pdf:run_batch_with_resume:1216 - [batch pdf] 1 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 8, 0 of 3 stalled passes used)
+2026-10-11 20:04:49.850 | ERROR    | word_pdf:recycle:717 - [word] refusing to restart Word: it held documents at startup (--allow-open-docs), and a restart would discard them unsaved. Close them and re-run without the flag to enable recovery.
+2026-10-11 20:04:54.858 | INFO     | word_pdf:_loop:1077 - [batch pdf 8] 0/1
+2026-10-11 20:04:55.087 | ERROR    | __main__:_redline_batched:1072 - [batch] FAIL: 137d46157c.docx → 137d46157c.docx — redline is missing base 0% and revision 50% of that file; the two sides are not averaged
+2026-10-11 20:04:55.469 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 1a4f106bda.docx → 1a4f106bda.docx — redline saved but PDF export failed: Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 20:04:55.515 | WARNING  | word_pdf:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 20:04:55.521 | ERROR    | __main__:_redline_batched:1072 - [batch] FAIL: 1edc0f56f4.docx → 1edc0f56f4.docx — redline is missing base 67% of that file; the two sides are not averaged
+2026-10-11 20:04:55.984 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: 435d2c2474.docx → 435d2c2474.docx — redline saved but PDF export failed: Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 20:04:56.618 | ERROR    | __main__:_redline_batched:1072 - [batch] FAIL: 8568a9817b.docx → 8568a9817b.docx — redline is missing revision 50% of that file; the two sides are not averaged
+2026-10-11 20:04:56.920 | ERROR    | __main__:_redline_batched:1072 - [batch] FAIL: a9272f69c1.docx → a9272f69c1.docx — redline is missing base 0% of that file; the two sides are not averaged
+2026-10-11 20:04:57.850 | ERROR    | __main__:_redline_batched:1072 - [batch] FAIL: f7bbf6e831.docx → f7bbf6e831.docx — redline is missing base 67% of that file; the two sides are not averaged
+2026-10-11 20:04:57.873 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: f8286525f6.docx → f8286525f6.docx — redline saved but PDF export failed: Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 20:04:57.897 | ERROR    | __main__:_redline_batched:1094 - [batch] FAIL: f8f8d224f2.docx → f8f8d224f2.docx — redline saved but PDF export failed: Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-11 20:04:57.916 | ERROR    | __main__:_redline_batched:1072 - [batch] FAIL: f953aac51a.docx → f953aac51a.docx — redline is missing revision 67% of that file; the two sides are not averaged

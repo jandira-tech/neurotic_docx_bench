@@ -1,0 +1,9 @@
+docxodus: resuming: 575 already scored (0 without recorded file hashes), 0 dropped because their oracle or candidate PDF changed, 0 to go
+/Users/arthrod/temp/T/neurotic_docx_bench/src/neurotic_docx_bench/kernels.py:107: RuntimeWarning: --device mps: torch is not installed (pip install 'neurotic-docx-bench[gpu]'); using the numpy path
+  return resolve_device(spec)
+docxodus: 575/600 scored, mean 67.77, median 72.77, >=90: 76 (with the 25 missing as 0: mean 64.95, median 70.33); fresh oracles 197, meant fresh but old 0; numpy -> /Users/arthrod/temp/T/neurotic_docx_bench/results/redlines_0929_full/scores_docxodus_sample_redline_0.12.0.json
+warning: `VIRTUAL_ENV=/Users/arthrod/.cache/uv/environments-v2/jubarte-release-info-23779bd876a13d80` does not match the project environment path `.venv` and will be ignored; use `--active` to target the active environment instead
+docxodus: resuming: 575 already scored (0 without recorded file hashes), 0 dropped because their oracle or candidate PDF changed, 0 to go
+/Users/arthrod/temp/T/neurotic_docx_bench/src/neurotic_docx_bench/kernels.py:107: RuntimeWarning: --device mps: torch is not installed (pip install 'neurotic-docx-bench[gpu]'); using the numpy path
+  return resolve_device(spec)
+docxodus: 575/600 scored, mean 67.77, median 72.77, >=90: 76 (with the 25 missing as 0: mean 64.95, median 70.33); fresh oracles 197, meant fresh but old 0; numpy -> /Users/arthrod/temp/T/neurotic_docx_bench/results/redlines_0929_full/scores_docxodus_sample_redline_0.12.0.json

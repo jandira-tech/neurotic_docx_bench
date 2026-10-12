@@ -69,6 +69,8 @@ dev = [
     # project dependencies; loguru is not.
     "loguru>=0.7",
     "pytest-cov>=6.0",
+    "aiohttp>=3.14.3",
+    "numpy>=2.5.1",
 ]
 
 [tool.pytest.ini_options]

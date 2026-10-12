@@ -239,6 +239,17 @@ def test_verify_manifest_reports_missing_mismatched_and_extra(corpus: Path) -> N
     assert report.extra == ("stray.txt",)
 
 
+def test_verify_manifest_ignores_what_snapshot_download_leaves(corpus: Path) -> None:
+    hub.write_manifest(corpus)
+    meta = corpus / ".cache" / "huggingface" / "download"
+    meta.mkdir(parents=True)
+    (meta / "holdout_combined.txt.metadata").write_text("sha\netag\n")
+    (corpus / ".cache" / "huggingface" / ".gitignore").write_text("*")
+    (corpus / ".gitattributes").write_text("*.pdf filter=lfs")
+    report = hub.verify_manifest(corpus)
+    assert report.ok, report.describe()
+
+
 def test_verify_manifest_without_a_manifest_raises(corpus: Path) -> None:
     with pytest.raises(hub.ManifestError, match="MANIFEST"):
         hub.verify_manifest(corpus)

@@ -1,0 +1,170 @@
+2026-10-11 19:36:54.933 | INFO     | __main__:preflight:1827 - [word] preflight: open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-10-11 19:36:55.000 | INFO     | __main__:convert_folder:1500 - [word] export: one_osascript=True documents=990 accept_all=False reject_all=False
+2026-10-11 19:36:55.083 | INFO     | __main__:_convert_batched:1700 - [batch] one osascript for 118 document(s)
+2026-10-11 19:37:00.089 | INFO     | __main__:_loop:1077 - [batch pdf 1] 0/118
+2026-10-11 19:37:39.401 | WARNING  | __main__:_loop:1082 - [batch pdf 1] item 1/118 open for more than 30 s:
+-- Word windows {name, subrole}: ,
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-1.log:
+
+-- newest diagnostic reports: soffice-2026-10-11-073006.0003.ips, soffice-2026-10-11-073006.0002.ips, soffice-2026-10-11-073006.000.ips, soffice-2026-10-11-073006.ips, soffice-2026-10-11-055610.0003.ips
+2026-10-11 19:40:55.285 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 117 item(s) never reached (ended without reaching them); recycling Word and retrying the rest first, retried items last (pass 2, 1 of 3 stalled passes used)
+2026-10-11 19:40:55.286 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 19:40:55.286 | WARNING  | __main__:recycle:735 - [word] recycling (restart 1)
+2026-10-11 19:40:58.743 | INFO     | __main__:_note_buttons:514 - [watchdog] Microsoft Word shows button 'Yes'
+2026-10-11 19:40:58.743 | INFO     | __main__:_note_buttons:514 - [watchdog] Microsoft Word shows button 'No'
+2026-10-11 19:40:58.743 | INFO     | __main__:_note_buttons:514 - [watchdog] Microsoft Word shows button 'Cancel'
+2026-10-11 19:41:07.376 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'No'
+2026-10-11 19:41:16.837 | INFO     | __main__:_loop:1077 - [batch pdf 2] 0/117
+2026-10-11 19:41:16.989 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 117 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 3, 1 of 3 stalled passes used)
+2026-10-11 19:41:16.989 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 19:41:16.989 | WARNING  | __main__:recycle:735 - [word] recycling (restart 2)
+2026-10-11 19:41:22.947 | INFO     | __main__:_note_buttons:514 - [watchdog] Microsoft Error Reporting shows button 'OK'
+2026-10-11 19:41:22.948 | INFO     | __main__:_note_buttons:514 - [watchdog] Microsoft Error Reporting shows button 'More Information'
+2026-10-11 19:41:22.948 | INFO     | __main__:_note_buttons:514 - [watchdog] Microsoft Error Reporting shows button 'missing value'
+2026-10-11 19:41:23.643 | WARNING  | __main__:_loop_merp:555 - [watchdog] error report declined via 'OK'
+2026-10-11 19:41:26.267 | INFO     | __main__:_loop:1077 - [batch pdf 3] 0/117
+2026-10-11 19:41:30.575 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'No'
+2026-10-11 19:41:58.639 | WARNING  | __main__:_loop:1082 - [batch pdf 3] item 1/117 open for more than 30 s:
+-- Word windows {name, subrole}: ,
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-3.log:
+
+-- newest diagnostic reports: soffice-2026-10-11-073006.0003.ips, soffice-2026-10-11-073006.0002.ips, soffice-2026-10-11-073006.000.ips, soffice-2026-10-11-073006.ips, soffice-2026-10-11-055610.0003.ips
+2026-10-11 19:45:21.575 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 116 item(s) never reached (ended without reaching them); recycling Word and retrying the rest first, retried items last (pass 4, 2 of 3 stalled passes used)
+2026-10-11 19:45:21.575 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 19:45:21.575 | WARNING  | __main__:recycle:735 - [word] recycling (restart 3)
+2026-10-11 19:45:29.170 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'No'
+2026-10-11 19:45:31.027 | INFO     | __main__:_loop:1077 - [batch pdf 4] 0/116
+2026-10-11 19:46:01.732 | WARNING  | __main__:_loop:1082 - [batch pdf 4] item 1/116 open for more than 30 s:
+-- Word windows {name, subrole}: ,
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-4.log:
+
+-- newest diagnostic reports: soffice-2026-10-11-073006.0003.ips, soffice-2026-10-11-073006.0002.ips, soffice-2026-10-11-073006.000.ips, soffice-2026-10-11-073006.ips, soffice-2026-10-11-055610.0003.ips
+2026-10-11 19:49:26.293 | WARNING  | __main__:run_batch_with_resume:1216 - [batch pdf] 115 item(s) never reached (ended without reaching them); recycling Word and retrying the rest first, retried items last (pass 5, 3 of 3 stalled passes used)
+2026-10-11 19:49:26.293 | WARNING  | __main__:recycle:729 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-11 19:49:26.293 | WARNING  | __main__:recycle:735 - [word] recycling (restart 4)
+2026-10-11 19:49:31.416 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 00288995f0_docxodus.docx — Microsoft Word got an error: AppleEvent timed out.
+2026-10-11 19:49:31.418 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 01a43df57c_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.419 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 030c72af8f_docxodus.docx — Microsoft Word got an error: AppleEvent timed out.
+2026-10-11 19:49:31.419 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 06abf273b8_docxodus.docx — Microsoft Word got an error: AppleEvent timed out.
+2026-10-11 19:49:31.420 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 09a6e874c8_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.421 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 0bdee164e5_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.422 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 0e053136eb_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.423 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 0f8eb45f51_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.424 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 12d5912031_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.424 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 143e7a6dc4_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.425 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 15a27d9c50_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.426 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 15c82f6344_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.426 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 1a6df64b8c_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.427 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 1b651f2fc5_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.428 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 23c28907ad_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.428 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 251aa16cd3_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.429 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 29290a6120_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.429 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 292dea4ba5_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.429 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 297a67d458_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.430 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 2c0433bdbc_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.433 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 2ceeca3948_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.434 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 2e391c5378_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.434 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 2ef6ed00b9_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.436 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 30a5d2970b_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.437 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 31b2203d8c_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.438 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 31bbf97599_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.439 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 34e4211b58_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.440 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 3a4b48cd02_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.440 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 3b09d6afde_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.441 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 3e7067f872_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.441 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 3f56b101d2_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.442 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 3f74e8a0d4_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.443 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 415fa42f00_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.444 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 42d1acd8a6_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.445 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 4300f2f735_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.446 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 4618d6926f_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.447 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 46abf7643d_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.448 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 47c39c50c3_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.450 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 4b8e914996_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.450 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 4d10fec5fc_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.451 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 4da1ca3b20_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.452 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 4e3d14b3d3_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.453 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 4f54cef23c_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.456 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 50e71f1eff_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.459 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 5287854336_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.461 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 52f93a00df_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.470 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 53b52b7b2d_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.472 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 54dd9bf0c3_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.474 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 580f8e2e8a_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.476 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 5d6ae5ad0c_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.478 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 600b6a365e_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.479 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 61283a9049_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.481 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 6167071c5d_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.483 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 617e392832_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.486 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 61959b1953_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.487 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 6b74ac1ae6_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.490 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 6bc323aa0d_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.491 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 6c9e1de72b_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.492 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 6d53941908_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.494 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 6de20376e8_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.495 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 7070a9c7b0_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.497 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 70c30e926c_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.498 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 7127dd0325_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.499 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 7252aa05ca_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.500 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 76b9eb4925_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.501 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 77e4a6bed0_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.502 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 7a60ec99bd_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.504 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 7d3cfc66f7_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.505 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 8029bc78c5_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.507 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 8194fae646_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.508 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 81ecf9d6d2_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.509 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 834a4b8d15_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.510 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 842ef93738_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.511 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 85b79dc2e9_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.511 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 8644055513_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.512 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 885c507f6f_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.513 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 8c0d466e54_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.514 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 9240f816df_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.515 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 9494f2e92a_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.516 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 95f7a84264_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.518 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 9b22b88370_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.518 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 9c71031b8a_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.519 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: 9d0b6ef8ad_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.520 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: a07535b014_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.521 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: a09aa89f13_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.522 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: a5678bf47a_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.523 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: a78bc32904_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.524 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: a97bb9b57f_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.524 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: a9a1b530a9_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.525 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: acafcbe293_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.525 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: acccebf575_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.526 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: b13a27e36d_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.527 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: bc6f8076f9_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.528 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: c0af64b076_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.529 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: c0cedbcb4c_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.529 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: c40f3cc643_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.530 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: c486f3a829_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.531 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: cb9583377c_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.531 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: d0e7a08bbd_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.532 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: d9bb456306_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.532 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: daa4804467_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.533 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: df6a9b5113_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.533 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: e0af18fb3d_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.534 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: e48e5fec25_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.535 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: e5d359e783_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.536 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: e9ef73a8e4_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.537 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: ecea12416c_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.537 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: ee62e16f5f_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.538 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: ef3bb4f5d4_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.539 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: ef51261c54_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.540 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: f19921855c_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.540 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: f30cea827b_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.541 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: f787d881e3_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.542 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: f90c5ec9b7_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.542 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: fa05623f53_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.543 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: fb97e850ce_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.543 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: fe89171ce8_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:31.544 | ERROR    | __main__:_convert_batched:1745 - [batch] FAIL: feacbc347e_docxodus.docx — never reached in 3 batch pass(es)
+2026-10-11 19:49:32.821 | INFO     | __main__:_note_buttons:514 - [watchdog] Microsoft Word shows button 'missing value'
+2026-10-11 19:49:34.288 | WARNING  | __main__:_loop_word:544 - [watchdog] Word dialog dismissed via 'Cancel'

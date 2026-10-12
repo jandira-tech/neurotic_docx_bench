@@ -1,0 +1,16 @@
+2026-09-28 22:32:02.019 | INFO     | __main__:preflight:1690 -  preflight: 
+open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-09-28 22:32:02.043 | INFO     | __main__:convert_folder:1366 -  export: 
+one_osascript=True documents=5 accept_all=True
+2026-09-28 22:32:02.049 | INFO     | __main__:_convert_batched:1563 -  one 
+osascript for 5 document(s)
+          accept all → DOCX + PDF:          
+results/redlines_0928/superdoc/accepted/src 
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━┓
+┃ outcome                          ┃ count ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━┩
+│ converted                        │     5 │
+│ skipped (exists)                 │     0 │
+│ failed                           │     0 │
+│ seconds per document (batch avg) │   0.8 │
+└──────────────────────────────────┴───────┘

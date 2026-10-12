@@ -1,0 +1,932 @@
+Installed 8 packages in 17ms
+▸ PDF quality is sticky: `save as … file format format PDF` inherits whatever 
+'Optimize for' you last chose in Word's own Save As dialog.
+  Open any document in Word once, File > Save As > PDF, and pick the SECOND 
+option, Best for printing.
+  That choice persists; this script cannot set it. Pass --no-check-preset to 
+stop seeing this.
+2026-10-10 05:00:57.226 | INFO     | __main__:preflight:1827 -  preflight: 
+open_documents=0 started_clean=True launched_by_us=False close_documents=False
+2026-10-10 05:00:57.266 | INFO     | __main__:convert_folder:1500 -  export: 
+one_osascript=True documents=600 accept_all=False reject_all=False
+2026-10-10 05:00:57.591 | INFO     | __main__:_convert_batched:1700 -  one 
+osascript for 600 document(s)
+2026-10-10 05:01:02.598 | INFO     | __main__:_loop:1077 -  4/600
+2026-10-10 05:01:07.604 | INFO     | __main__:_loop:1077 -  10/600
+2026-10-10 05:01:12.609 | INFO     | __main__:_loop:1077 -  17/600
+2026-10-10 05:01:17.615 | INFO     | __main__:_loop:1077 -  21/600
+2026-10-10 05:01:22.621 | INFO     | __main__:_loop:1077 -  25/600
+2026-10-10 05:01:27.627 | INFO     | __main__:_loop:1077 -  30/600
+2026-10-10 05:01:32.632 | INFO     | __main__:_loop:1077 -  36/600
+2026-10-10 05:01:37.633 | INFO     | __main__:_loop:1077 -  43/600
+2026-10-10 05:01:42.639 | INFO     | __main__:_loop:1077 -  47/600
+2026-10-10 05:01:42.861 | WARNING  | __main__:run_batch_with_resume:1216 -  553 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 2, 0 of 3 stalled 
+passes used)
+2026-10-10 05:01:42.861 | WARNING  | __main__♻729 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-10 05:01:42.862 | WARNING  | __main__♻735 -  recycling (restart 1)
+2026-10-10 05:01:44.988 | INFO     | __main__:_note_buttons:514 -  Microsoft 
+Error Reporting shows button 'OK'
+2026-10-10 05:01:44.989 | INFO     | __main__:_note_buttons:514 -  Microsoft 
+Error Reporting shows button 'More Information'
+2026-10-10 05:01:44.989 | INFO     | __main__:_note_buttons:514 -  Microsoft 
+Error Reporting shows button 'missing value'
+2026-10-10 05:01:45.584 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-10 05:01:53.475 | INFO     | __main__:_loop:1077 -  3/553
+2026-10-10 05:01:58.477 | INFO     | __main__:_loop:1077 -  9/553
+2026-10-10 05:02:03.483 | INFO     | __main__:_loop:1077 -  16/553
+2026-10-10 05:02:08.489 | INFO     | __main__:_loop:1077 -  21/553
+2026-10-10 05:02:13.495 | INFO     | __main__:_loop:1077 -  27/553
+2026-10-10 05:02:18.501 | INFO     | __main__:_loop:1077 -  34/553
+2026-10-10 05:02:23.504 | INFO     | __main__:_loop:1077 -  35/553
+2026-10-10 05:02:28.510 | INFO     | __main__:_loop:1077 -  41/553
+2026-10-10 05:02:33.514 | INFO     | __main__:_loop:1077 -  44/553
+2026-10-10 05:03:14.251 | WARNING  | __main__:_loop:1082 -  item 45/553 open for
+more than 30 s:
+-- Word windows {name, subrole}: , AXDialog
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-2.log:
+        48
+        49
+        50
+        51
+        52
+        53
+        54
+        55
+        56
+        57
+        58
+        59
+        60
+        61
+        62
+        63
+        64
+        65
+        66
+        67
+        68
+        69
+        70
+        71
+        72
+        73
+        74
+        75
+        76
+        77
+        78
+        79
+        80
+        81
+        82
+        83
+        84
+        85
+        86
+        87
+        88
+        89
+        90
+        91
+        92
+        93
+        94
+        95
+        96
+-- newest diagnostic reports: 
+ExcUserFault_nsattributedstringagent-2026-10-10-012529.ips, 
+ExcUserFault_nsattributedstringagent-2026-10-09-221302.ips, 
+ExcUserFault_nsattributedstringagent-2026-10-09-211157.ips, 
+ExcUserFault_nsattributedstringagent-2026-10-09-185952.ips, 
+ExcUserFault_nsattributedstringagent-2026-10-09-171238.ips
+2026-10-10 05:03:19.269 | INFO     | __main__:_loop:1077 -  54/553
+2026-10-10 05:03:24.275 | INFO     | __main__:_loop:1077 -  60/553
+2026-10-10 05:03:29.279 | INFO     | __main__:_loop:1077 -  66/553
+2026-10-10 05:03:32.324 | WARNING  | __main__:run_batch_with_resume:1216 -  486 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 3, 0 of 3 stalled 
+passes used)
+2026-10-10 05:03:32.324 | WARNING  | __main__♻729 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-10 05:03:32.325 | WARNING  | __main__♻735 -  recycling (restart 2)
+2026-10-10 05:03:35.961 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-10 05:03:39.440 | WARNING  | __main__:run_batch_with_resume:1216 -  486 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 4, 0 of 3 stalled 
+passes used)
+2026-10-10 05:03:39.441 | WARNING  | __main__♻729 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-10 05:03:39.441 | WARNING  | __main__♻735 -  recycling (restart 3)
+2026-10-10 05:03:40.490 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-10 05:03:46.601 | WARNING  | __main__:run_batch_with_resume:1216 -  486 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 5, 0 of 3 stalled 
+passes used)
+2026-10-10 05:03:46.601 | WARNING  | __main__♻729 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-10 05:03:46.602 | WARNING  | __main__♻735 -  recycling (restart 4)
+2026-10-10 05:03:47.359 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-10 05:03:55.102 | INFO     | __main__:_loop:1077 -  6/486
+2026-10-10 05:04:00.108 | INFO     | __main__:_loop:1077 -  16/486
+2026-10-10 05:04:05.114 | INFO     | __main__:_loop:1077 -  22/486
+2026-10-10 05:04:10.120 | INFO     | __main__:_loop:1077 -  29/486
+2026-10-10 05:04:15.122 | INFO     | __main__:_loop:1077 -  37/486
+2026-10-10 05:04:20.128 | INFO     | __main__:_loop:1077 -  45/486
+2026-10-10 05:04:25.134 | INFO     | __main__:_loop:1077 -  53/486
+2026-10-10 05:04:30.139 | INFO     | __main__:_loop:1077 -  58/486
+2026-10-10 05:04:31.139 | WARNING  | __main__:run_batch_with_resume:1216 -  428 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 6, 0 of 3 stalled 
+passes used)
+2026-10-10 05:04:31.139 | WARNING  | __main__♻729 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-10 05:04:31.140 | WARNING  | __main__♻735 -  recycling (restart 5)
+2026-10-10 05:04:32.142 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-10 05:04:39.661 | INFO     | __main__:_loop:1077 -  6/428
+2026-10-10 05:04:43.407 | WARNING  | __main__:run_batch_with_resume:1216 -  418 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 7, 0 of 3 stalled 
+passes used)
+2026-10-10 05:04:43.408 | WARNING  | __main__♻729 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-10 05:04:43.408 | WARNING  | __main__♻735 -  recycling (restart 6)
+2026-10-10 05:04:44.292 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-10 05:04:51.894 | INFO     | __main__:_loop:1077 -  0/418
+2026-10-10 05:04:56.900 | INFO     | __main__:_loop:1077 -  6/418
+2026-10-10 05:05:01.906 | INFO     | __main__:_loop:1077 -  8/418
+2026-10-10 05:05:06.913 | INFO     | __main__:_loop:1077 -  13/418
+2026-10-10 05:05:11.920 | INFO     | __main__:_loop:1077 -  22/418
+2026-10-10 05:05:15.572 | WARNING  | __main__:run_batch_with_resume:1216 -  396 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 8, 0 of 3 stalled 
+passes used)
+2026-10-10 05:05:15.573 | WARNING  | __main__♻729 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-10 05:05:15.573 | WARNING  | __main__♻735 -  recycling (restart 7)
+2026-10-10 05:05:21.277 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-10 05:05:24.044 | INFO     | __main__:_loop:1077 -  1/396
+2026-10-10 05:05:25.757 | WARNING  | __main__:run_batch_with_resume:1216 -  395 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 9, 0 of 3 stalled 
+passes used)
+2026-10-10 05:05:25.757 | WARNING  | __main__♻729 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-10 05:05:25.758 | WARNING  | __main__♻735 -  recycling (restart 8)
+2026-10-10 05:05:26.776 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-10 05:05:33.427 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-10 05:05:34.258 | INFO     | __main__:_loop:1077 -  0/395
+2026-10-10 05:05:34.973 | WARNING  | __main__:run_batch_with_resume:1216 -  395 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 10, 0 of 3 stalled 
+passes used)
+2026-10-10 05:05:34.974 | WARNING  | __main__♻729 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-10 05:05:34.974 | WARNING  | __main__♻735 -  recycling (restart 9)
+2026-10-10 05:05:43.468 | INFO     | __main__:_loop:1077 -  5/395
+2026-10-10 05:05:48.474 | INFO     | __main__:_loop:1077 -  13/395
+2026-10-10 05:05:53.480 | INFO     | __main__:_loop:1077 -  15/395
+2026-10-10 05:05:58.484 | INFO     | __main__:_loop:1077 -  20/395
+2026-10-10 05:06:03.488 | INFO     | __main__:_loop:1077 -  28/395
+2026-10-10 05:06:08.492 | INFO     | __main__:_loop:1077 -  33/395
+2026-10-10 05:06:38.520 | INFO     | __main__:_loop:1077 -  38/395
+2026-10-10 05:06:43.525 | INFO     | __main__:_loop:1077 -  40/395
+2026-10-10 05:06:48.531 | INFO     | __main__:_loop:1077 -  43/395
+2026-10-10 05:06:50.922 | WARNING  | __main__:run_batch_with_resume:1216 -  352 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 11, 0 of 3 stalled 
+passes used)
+2026-10-10 05:06:50.923 | WARNING  | __main__♻729 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-10 05:06:50.924 | WARNING  | __main__♻735 -  recycling (restart 10)
+2026-10-10 05:06:51.396 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-10 05:06:59.397 | INFO     | __main__:_loop:1077 -  7/352
+2026-10-10 05:07:04.401 | INFO     | __main__:_loop:1077 -  15/352
+2026-10-10 05:07:09.407 | INFO     | __main__:_loop:1077 -  20/352
+2026-10-10 05:07:09.490 | WARNING  | __main__:run_batch_with_resume:1216 -  332 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 12, 0 of 3 stalled 
+passes used)
+2026-10-10 05:07:09.491 | WARNING  | __main__♻729 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-10 05:07:09.491 | WARNING  | __main__♻735 -  recycling (restart 11)
+2026-10-10 05:07:09.540 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-10 05:07:18.077 | INFO     | __main__:_loop:1077 -  7/332
+2026-10-10 05:07:23.083 | INFO     | __main__:_loop:1077 -  9/332
+2026-10-10 05:07:27.086 | WARNING  | __main__:run_batch_with_resume:1216 -  318 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 13, 0 of 3 stalled 
+passes used)
+2026-10-10 05:07:27.087 | WARNING  | __main__♻729 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-10 05:07:27.087 | WARNING  | __main__♻735 -  recycling (restart 12)
+2026-10-10 05:07:36.258 | INFO     | __main__:_loop:1077 -  1/318
+2026-10-10 05:07:41.270 | INFO     | __main__:_loop:1077 -  4/318
+2026-10-10 05:07:46.276 | INFO     | __main__:_loop:1077 -  12/318
+2026-10-10 05:07:49.408 | INFO     | __main__:_note_buttons:514 -  Microsoft 
+Word shows button 'missing value'
+2026-10-10 05:07:49.689 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-10 05:07:51.282 | INFO     | __main__:_loop:1077 -  20/318
+2026-10-10 05:07:56.285 | INFO     | __main__:_loop:1077 -  29/318
+2026-10-10 05:08:01.181 | WARNING  | __main__:run_batch_with_resume:1216 -  281 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 14, 0 of 3 stalled 
+passes used)
+2026-10-10 05:08:01.182 | WARNING  | __main__♻729 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-10 05:08:01.182 | WARNING  | __main__♻735 -  recycling (restart 13)
+2026-10-10 05:08:09.821 | INFO     | __main__:_loop:1077 -  5/281
+2026-10-10 05:08:10.054 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-10 05:08:14.824 | INFO     | __main__:_loop:1077 -  9/281
+2026-10-10 05:08:19.825 | INFO     | __main__:_loop:1077 -  15/281
+2026-10-10 05:08:24.831 | INFO     | __main__:_loop:1077 -  24/281
+2026-10-10 05:08:44.855 | INFO     | __main__:_loop:1077 -  25/281
+2026-10-10 05:08:49.861 | INFO     | __main__:_loop:1077 -  32/281
+2026-10-10 05:08:54.867 | INFO     | __main__:_loop:1077 -  38/281
+2026-10-10 05:08:59.874 | INFO     | __main__:_loop:1077 -  43/281
+2026-10-10 05:09:05.205 | WARNING  | __main__:run_batch_with_resume:1216 -  238 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 15, 0 of 3 stalled 
+passes used)
+2026-10-10 05:09:05.207 | WARNING  | __main__♻729 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-10 05:09:05.207 | WARNING  | __main__♻735 -  recycling (restart 14)
+2026-10-10 05:09:05.813 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-10 05:09:14.354 | INFO     | __main__:_loop:1077 -  4/238
+2026-10-10 05:09:19.360 | INFO     | __main__:_loop:1077 -  11/238
+2026-10-10 05:09:24.367 | INFO     | __main__:_loop:1077 -  17/238
+2026-10-10 05:09:29.373 | INFO     | __main__:_loop:1077 -  24/238
+2026-10-10 05:09:34.379 | INFO     | __main__:_loop:1077 -  26/238
+2026-10-10 05:09:39.384 | INFO     | __main__:_loop:1077 -  29/238
+2026-10-10 05:09:44.390 | INFO     | __main__:_loop:1077 -  31/238
+2026-10-10 05:09:44.643 | WARNING  | __main__:run_batch_with_resume:1216 -  207 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 16, 0 of 3 stalled 
+passes used)
+2026-10-10 05:09:44.644 | WARNING  | __main__♻729 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-10 05:09:44.644 | WARNING  | __main__♻735 -  recycling (restart 15)
+2026-10-10 05:09:49.803 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-10 05:09:53.657 | INFO     | __main__:_loop:1077 -  3/207
+2026-10-10 05:09:58.664 | INFO     | __main__:_loop:1077 -  8/207
+2026-10-10 05:10:03.670 | INFO     | __main__:_loop:1077 -  15/207
+2026-10-10 05:10:08.676 | INFO     | __main__:_loop:1077 -  23/207
+2026-10-10 05:10:13.682 | INFO     | __main__:_loop:1077 -  28/207
+2026-10-10 05:10:18.689 | INFO     | __main__:_loop:1077 -  32/207
+2026-10-10 05:10:23.695 | INFO     | __main__:_loop:1077 -  37/207
+2026-10-10 05:10:28.701 | INFO     | __main__:_loop:1077 -  44/207
+2026-10-10 05:10:33.706 | INFO     | __main__:_loop:1077 -  49/207
+2026-10-10 05:10:38.712 | INFO     | __main__:_loop:1077 -  54/207
+2026-10-10 05:10:41.835 | WARNING  | __main__:run_batch_with_resume:1216 -  153 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 17, 0 of 3 stalled 
+passes used)
+2026-10-10 05:10:41.837 | WARNING  | __main__♻729 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-10 05:10:41.837 | WARNING  | __main__♻735 -  recycling (restart 16)
+2026-10-10 05:10:43.004 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-10 05:10:50.914 | INFO     | __main__:_loop:1077 -  2/153
+2026-10-10 05:10:55.915 | INFO     | __main__:_loop:1077 -  7/153
+2026-10-10 05:11:00.686 | WARNING  | __main__:run_batch_with_resume:1216 -  144 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 18, 0 of 3 stalled 
+passes used)
+2026-10-10 05:11:00.688 | WARNING  | __main__♻729 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-10 05:11:00.688 | WARNING  | __main__♻735 -  recycling (restart 17)
+2026-10-10 05:11:02.220 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-10 05:11:09.692 | INFO     | __main__:_loop:1077 -  2/144
+2026-10-10 05:11:14.699 | INFO     | __main__:_loop:1077 -  8/144
+2026-10-10 05:11:19.705 | INFO     | __main__:_loop:1077 -  10/144
+2026-10-10 05:11:19.793 | WARNING  | __main__:run_batch_with_resume:1216 -  134 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 19, 0 of 3 stalled 
+passes used)
+2026-10-10 05:11:19.795 | WARNING  | __main__♻729 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-10 05:11:19.795 | WARNING  | __main__♻735 -  recycling (restart 18)
+2026-10-10 05:11:20.325 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-10 05:11:28.846 | INFO     | __main__:_loop:1077 -  3/134
+2026-10-10 05:11:31.793 | WARNING  | __main__:run_batch_with_resume:1216 -  131 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 20, 0 of 3 stalled 
+passes used)
+2026-10-10 05:11:31.794 | WARNING  | __main__♻729 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-10 05:11:31.795 | WARNING  | __main__♻735 -  recycling (restart 19)
+2026-10-10 05:11:33.504 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-10 05:11:40.790 | INFO     | __main__:_loop:1077 -  1/131
+2026-10-10 05:11:45.796 | INFO     | __main__:_loop:1077 -  4/131
+2026-10-10 05:11:50.802 | INFO     | __main__:_loop:1077 -  7/131
+2026-10-10 05:11:55.808 | INFO     | __main__:_loop:1077 -  12/131
+2026-10-10 05:12:00.814 | INFO     | __main__:_loop:1077 -  18/131
+2026-10-10 05:12:05.820 | INFO     | __main__:_loop:1077 -  22/131
+2026-10-10 05:12:08.972 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-10 05:12:10.826 | INFO     | __main__:_loop:1077 -  23/131
+2026-10-10 05:12:11.525 | WARNING  | __main__:run_batch_with_resume:1216 -  108 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 21, 0 of 3 stalled 
+passes used)
+2026-10-10 05:12:11.526 | WARNING  | __main__♻729 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-10 05:12:11.527 | WARNING  | __main__♻735 -  recycling (restart 20)
+2026-10-10 05:12:20.552 | INFO     | __main__:_loop:1077 -  2/108
+2026-10-10 05:12:21.611 | WARNING  | __main__:run_batch_with_resume:1216 -  106 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 22, 0 of 3 stalled 
+passes used)
+2026-10-10 05:12:21.612 | WARNING  | __main__♻729 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-10 05:12:21.613 | WARNING  | __main__♻735 -  recycling (restart 21)
+2026-10-10 05:12:22.747 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-10 05:12:30.672 | INFO     | __main__:_loop:1077 -  3/106
+2026-10-10 05:12:45.689 | INFO     | __main__:_loop:1077 -  7/106
+2026-10-10 05:12:50.700 | INFO     | __main__:_loop:1077 -  14/106
+2026-10-10 05:12:55.706 | INFO     | __main__:_loop:1077 -  20/106
+2026-10-10 05:13:00.713 | INFO     | __main__:_loop:1077 -  27/106
+2026-10-10 05:13:05.719 | INFO     | __main__:_loop:1077 -  31/106
+2026-10-10 05:13:07.492 | WARNING  | __main__:run_batch_with_resume:1216 -  75 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 23, 0 of 3 stalled 
+passes used)
+2026-10-10 05:13:07.493 | WARNING  | __main__♻729 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-10 05:13:07.494 | WARNING  | __main__♻735 -  recycling (restart 22)
+2026-10-10 05:13:10.588 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-10 05:13:16.514 | INFO     | __main__:_loop:1077 -  1/75
+2026-10-10 05:13:16.895 | WARNING  | __main__:run_batch_with_resume:1216 -  74 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 24, 0 of 3 stalled 
+passes used)
+2026-10-10 05:13:16.896 | WARNING  | __main__♻729 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-10 05:13:16.897 | WARNING  | __main__♻735 -  recycling (restart 23)
+2026-10-10 05:13:22.892 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-10 05:13:25.936 | INFO     | __main__:_loop:1077 -  3/74
+2026-10-10 05:13:30.942 | INFO     | __main__:_loop:1077 -  7/74
+2026-10-10 05:13:35.948 | INFO     | __main__:_loop:1077 -  13/74
+2026-10-10 05:13:40.954 | INFO     | __main__:_loop:1077 -  20/74
+2026-10-10 05:13:45.279 | WARNING  | __main__:run_batch_with_resume:1216 -  53 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 25, 0 of 3 stalled 
+passes used)
+2026-10-10 05:13:45.280 | WARNING  | __main__♻729 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-10 05:13:45.280 | WARNING  | __main__♻735 -  recycling (restart 24)
+2026-10-10 05:13:46.398 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-10 05:13:54.335 | INFO     | __main__:_loop:1077 -  3/53
+2026-10-10 05:13:59.341 | INFO     | __main__:_loop:1077 -  8/53
+2026-10-10 05:14:03.114 | WARNING  | __main__:run_batch_with_resume:1216 -  44 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 26, 0 of 3 stalled 
+passes used)
+2026-10-10 05:14:03.115 | WARNING  | __main__♻729 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-10 05:14:03.116 | WARNING  | __main__♻735 -  recycling (restart 25)
+2026-10-10 05:14:04.955 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-10 05:14:12.138 | INFO     | __main__:_loop:1077 -  4/44
+2026-10-10 05:14:17.144 | INFO     | __main__:_loop:1077 -  12/44
+2026-10-10 05:14:22.151 | INFO     | __main__:_loop:1077 -  16/44
+2026-10-10 05:14:27.156 | INFO     | __main__:_loop:1077 -  19/44
+2026-10-10 05:14:28.043 | WARNING  | __main__:run_batch_with_resume:1216 -  24 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 27, 0 of 3 stalled 
+passes used)
+2026-10-10 05:14:28.044 | WARNING  | __main__♻729 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-10 05:14:28.044 | WARNING  | __main__♻735 -  recycling (restart 26)
+2026-10-10 05:14:29.121 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-10 05:14:37.151 | INFO     | __main__:_loop:1077 -  0/24
+2026-10-10 05:14:37.162 | WARNING  | __main__:run_batch_with_resume:1216 -  23 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 28, 0 of 3 stalled 
+passes used)
+2026-10-10 05:14:37.162 | WARNING  | __main__♻729 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-10 05:14:37.163 | WARNING  | __main__♻735 -  recycling (restart 27)
+2026-10-10 05:14:37.514 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-10 05:14:45.776 | WARNING  | __main__:run_batch_with_resume:1216 -  22 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 29, 0 of 3 stalled 
+passes used)
+2026-10-10 05:14:45.777 | WARNING  | __main__♻729 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-10 05:14:45.778 | WARNING  | __main__♻735 -  recycling (restart 28)
+2026-10-10 05:14:47.555 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-10 05:14:54.752 | WARNING  | __main__:run_batch_with_resume:1216 -  21 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 30, 0 of 3 stalled 
+passes used)
+2026-10-10 05:14:54.753 | WARNING  | __main__♻729 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-10 05:14:54.754 | WARNING  | __main__♻735 -  recycling (restart 29)
+2026-10-10 05:14:55.148 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-10 05:15:03.091 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-10 05:15:03.787 | INFO     | __main__:_loop:1077 -  0/21
+2026-10-10 05:15:03.827 | WARNING  | __main__:run_batch_with_resume:1216 -  20 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 31, 0 of 3 stalled 
+passes used)
+2026-10-10 05:15:03.828 | WARNING  | __main__♻729 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-10 05:15:03.828 | WARNING  | __main__♻735 -  recycling (restart 30)
+2026-10-10 05:15:12.875 | INFO     | __main__:_loop:1077 -  0/20
+2026-10-10 05:15:15.347 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-10 05:15:15.876 | WARNING  | __main__:run_batch_with_resume:1216 -  19 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 32, 0 of 3 stalled 
+passes used)
+2026-10-10 05:15:15.877 | WARNING  | __main__♻729 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-10 05:15:15.878 | WARNING  | __main__♻735 -  recycling (restart 31)
+2026-10-10 05:15:24.958 | INFO     | __main__:_loop:1077 -  0/19
+2026-10-10 05:15:25.044 | WARNING  | __main__:run_batch_with_resume:1216 -  18 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 33, 0 of 3 stalled 
+passes used)
+2026-10-10 05:15:25.045 | WARNING  | __main__♻729 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-10 05:15:25.046 | WARNING  | __main__♻735 -  recycling (restart 32)
+2026-10-10 05:15:29.826 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-10 05:15:33.760 | WARNING  | __main__:run_batch_with_resume:1216 -  17 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 34, 0 of 3 stalled 
+passes used)
+2026-10-10 05:15:33.761 | WARNING  | __main__♻729 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-10 05:15:33.761 | WARNING  | __main__♻735 -  recycling (restart 33)
+2026-10-10 05:15:34.882 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-10 05:15:42.826 | INFO     | __main__:_loop:1077 -  0/17
+2026-10-10 05:15:42.871 | WARNING  | __main__:run_batch_with_resume:1216 -  16 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 35, 0 of 3 stalled 
+passes used)
+2026-10-10 05:15:42.872 | WARNING  | __main__♻729 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-10 05:15:42.872 | WARNING  | __main__♻735 -  recycling (restart 34)
+2026-10-10 05:15:43.220 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-10 05:15:51.278 | WARNING  | __main__:run_batch_with_resume:1216 -  15 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 36, 0 of 3 stalled 
+passes used)
+2026-10-10 05:15:51.279 | WARNING  | __main__♻729 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-10 05:15:51.279 | WARNING  | __main__♻735 -  recycling (restart 35)
+2026-10-10 05:15:52.933 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-10 05:15:59.778 | WARNING  | __main__:run_batch_with_resume:1216 -  14 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 37, 0 of 3 stalled 
+passes used)
+2026-10-10 05:15:59.779 | WARNING  | __main__♻729 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-10 05:15:59.779 | WARNING  | __main__♻735 -  recycling (restart 36)
+2026-10-10 05:16:00.303 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-10 05:16:08.825 | INFO     | __main__:_loop:1077 -  0/14
+2026-10-10 05:16:08.873 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-10 05:16:11.577 | WARNING  | __main__:run_batch_with_resume:1216 -  13 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 38, 0 of 3 stalled 
+passes used)
+2026-10-10 05:16:11.578 | WARNING  | __main__♻729 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-10 05:16:11.578 | WARNING  | __main__♻735 -  recycling (restart 37)
+2026-10-10 05:16:20.153 | WARNING  | __main__:run_batch_with_resume:1216 -  12 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 39, 0 of 3 stalled 
+passes used)
+2026-10-10 05:16:20.154 | WARNING  | __main__♻729 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-10 05:16:20.154 | WARNING  | __main__♻735 -  recycling (restart 38)
+2026-10-10 05:16:20.683 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-10 05:16:28.962 | WARNING  | __main__:run_batch_with_resume:1216 -  11 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 40, 0 of 3 stalled 
+passes used)
+2026-10-10 05:16:28.963 | WARNING  | __main__♻729 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-10 05:16:28.963 | WARNING  | __main__♻735 -  recycling (restart 39)
+2026-10-10 05:16:30.489 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-10 05:16:37.198 | WARNING  | __main__:run_batch_with_resume:1216 -  10 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 41, 0 of 3 stalled 
+passes used)
+2026-10-10 05:16:37.199 | WARNING  | __main__♻729 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-10 05:16:37.200 | WARNING  | __main__♻735 -  recycling (restart 40)
+2026-10-10 05:16:38.000 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-10 05:16:46.027 | WARNING  | __main__:run_batch_with_resume:1216 -  9 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 42, 0 of 3 stalled 
+passes used)
+2026-10-10 05:16:46.028 | WARNING  | __main__♻729 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-10 05:16:46.029 | WARNING  | __main__♻735 -  recycling (restart 41)
+2026-10-10 05:16:46.563 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-10 05:16:55.040 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-10 05:16:55.052 | INFO     | __main__:_loop:1077 -  0/9
+2026-10-10 05:16:57.494 | WARNING  | __main__:run_batch_with_resume:1216 -  8 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 43, 0 of 3 stalled 
+passes used)
+2026-10-10 05:16:57.495 | WARNING  | __main__♻729 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-10 05:16:57.495 | WARNING  | __main__♻735 -  recycling (restart 42)
+2026-10-10 05:17:06.512 | INFO     | __main__:_loop:1077 -  0/8
+2026-10-10 05:17:08.848 | WARNING  | __main__:run_batch_with_resume:1216 -  7 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 44, 0 of 3 stalled 
+passes used)
+2026-10-10 05:17:08.849 | WARNING  | __main__♻729 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-10 05:17:08.849 | WARNING  | __main__♻735 -  recycling (restart 43)
+2026-10-10 05:17:09.422 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-10 05:17:17.825 | INFO     | __main__:_loop:1077 -  0/7
+2026-10-10 05:17:18.273 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-10 05:17:18.710 | WARNING  | __main__:run_batch_with_resume:1216 -  6 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 45, 0 of 3 stalled 
+passes used)
+2026-10-10 05:17:18.710 | WARNING  | __main__♻729 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-10 05:17:18.711 | WARNING  | __main__♻735 -  recycling (restart 44)
+2026-10-10 05:17:26.927 | WARNING  | __main__:run_batch_with_resume:1216 -  5 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 46, 0 of 3 stalled 
+passes used)
+2026-10-10 05:17:26.928 | WARNING  | __main__♻729 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-10 05:17:26.928 | WARNING  | __main__♻735 -  recycling (restart 45)
+2026-10-10 05:17:30.078 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-10 05:17:35.771 | WARNING  | __main__:run_batch_with_resume:1216 -  4 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 47, 0 of 3 stalled 
+passes used)
+2026-10-10 05:17:35.772 | WARNING  | __main__♻729 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-10 05:17:35.773 | WARNING  | __main__♻735 -  recycling (restart 46)
+2026-10-10 05:17:36.903 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-10 05:17:44.171 | WARNING  | __main__:run_batch_with_resume:1216 -  3 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 48, 0 of 3 stalled 
+passes used)
+2026-10-10 05:17:44.172 | WARNING  | __main__♻729 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-10 05:17:44.173 | WARNING  | __main__♻735 -  recycling (restart 47)
+2026-10-10 05:17:44.706 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-10 05:17:52.680 | WARNING  | __main__:run_batch_with_resume:1216 -  2 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 49, 0 of 3 stalled 
+passes used)
+2026-10-10 05:17:52.681 | WARNING  | __main__♻729 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-10 05:17:52.682 | WARNING  | __main__♻735 -  recycling (restart 48)
+2026-10-10 05:17:54.304 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-10 05:18:01.143 | WARNING  | __main__:run_batch_with_resume:1216 -  1 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 50, 0 of 3 stalled 
+passes used)
+2026-10-10 05:18:01.144 | WARNING  | __main__♻729 -  restarting a Word this run 
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-10 05:18:01.145 | WARNING  | __main__♻735 -  recycling (restart 49)
+2026-10-10 05:18:01.923 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+2026-10-10 05:18:10.049 | ERROR    | __main__:_convert_batched:1745 -  FAIL: 
+1072677c3a_file_6__vs__1b8ec2a8cd_file_7_redline_0b033b1c23_jubarte-0.12.0.docx 
+— Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+2026-10-10 05:18:10.099 | ERROR    | __main__:_convert_batched:1745 -  FAIL: 
+2b4475cba6_0021f639e5dbf6c217c8d81a7ac3374624ff9901a5d4b200__vs__2773adf157_0004
+c94ca2a8684d47449bb0e7abf87de1df71a7e6543252_redline_3e7067f872_jubarte-0.12.0.d
+ocx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is
+invalid.
+2026-10-10 05:18:10.100 | ERROR    | __main__:_convert_batched:1745 -  FAIL: 
+2b4475cba6_0021f639e5dbf6c217c8d81a7ac3374624ff9901a5d4b200__vs__2e04202552_000e
+3e7bd2d6215fc7b469cc3e296c1b2a510bc1abc7e0fd_redline_20f31d3886_jubarte-0.12.0.d
+ocx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is
+invalid.
+2026-10-10 05:18:10.101 | ERROR    | __main__:_convert_batched:1745 -  FAIL: 
+2b4475cba6_0021f639e5dbf6c217c8d81a7ac3374624ff9901a5d4b200__vs__342f364d46_0013
+42333d45627868f4dc5282abbba4598a91b4a7584b08_redline_04b7d19a3a_jubarte-0.12.0.d
+ocx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is
+invalid.
+2026-10-10 05:18:10.139 | ERROR    | __main__:_convert_batched:1745 -  FAIL: 
+3f91c8f0cd_file_9__vs__e3d833aef0_file_10_redline_581907f19c_jubarte-0.12.0.docx
+— Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+2026-10-10 05:18:10.146 | ERROR    | __main__:_convert_batched:1745 -  FAIL: 
+45c1c5abec_table_vmerge_colspan__vs__a94f4c516b_text_box_redline_54dd9bf0c3_juba
+rte-0.12.0.docx — Word crashed on it in 2 passes: Microsoft Word got an error: 
+Connection is invalid.
+2026-10-10 05:18:10.159 | ERROR    | __main__:_convert_batched:1745 -  FAIL: 
+52220b20c3_00a54bff7e15af78fe7cfc20219c28cb208fde807bd28d44__vs__2773adf157_0004
+c94ca2a8684d47449bb0e7abf87de1df71a7e6543252_redline_b799eadbeb_jubarte-0.12.0.d
+ocx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is
+invalid.
+2026-10-10 05:18:10.161 | ERROR    | __main__:_convert_batched:1745 -  FAIL: 
+52220b20c3_00a54bff7e15af78fe7cfc20219c28cb208fde807bd28d44__vs__5203829c7a_001c
+c92b88566d5f930fe57f25813c0bf52a7bdc72c217d0_redline_6de20376e8_jubarte-0.12.0.d
+ocx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is
+invalid.
+2026-10-10 05:18:10.162 | ERROR    | __main__:_convert_batched:1745 -  FAIL: 
+52220b20c3_00a54bff7e15af78fe7cfc20219c28cb208fde807bd28d44__vs__bd3824dd1e_000e
+e64ef7226d353297888f59a251e24ce5d776fea000fa_redline_8018df6bdf_jubarte-0.12.0.d
+ocx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is
+invalid.
+2026-10-10 05:18:10.205 | ERROR    | __main__:_convert_batched:1745 -  FAIL: 
+628ec1cb76_00a9d81709806bc220522f9b062f226e19ba256e436493b1__vs__2e04202552_000e
+3e7bd2d6215fc7b469cc3e296c1b2a510bc1abc7e0fd_redline_2c0433bdbc_jubarte-0.12.0.d
+ocx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is
+invalid.
+2026-10-10 05:18:10.219 | ERROR    | __main__:_convert_batched:1745 -  FAIL: 
+6867e05e76_00b0d42bbea3b9bac7bc95466cf416f6c89a8cda62bbf3d7__vs__1424386e9b_0174
+47de83753a0e3b7afc659df038ef56972925336c6a5b_redline_a20d355157_jubarte-0.12.0.d
+ocx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is
+invalid.
+2026-10-10 05:18:10.227 | ERROR    | __main__:_convert_batched:1745 -  FAIL: 
+6e2576a091_docx_lots_of_comments__vs__2c0a2ac35f_double_spacing_bold_demo_id_par
+aid_overflow_redline_9382e03243_jubarte-0.12.0.docx — Word crashed on it in 2 
+passes: Microsoft Word got an error: Connection is invalid.
+2026-10-10 05:18:10.252 | ERROR    | __main__:_convert_batched:1745 -  FAIL: 
+7b8a36fc9d_6b022d77b530d0e93df9ee17f79f06423a54fa1788a95c5d__vs__f620bc5c6d_41ba
+e32dd2e76af1f00d37af7b3a353ca826cd6e8c20052c_redline_9129d2ecd2_jubarte-0.12.0.d
+ocx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is
+invalid.
+2026-10-10 05:18:10.281 | ERROR    | __main__:_convert_batched:1745 -  FAIL: 
+8f47b1dc90_file_176__vs__a3586d71f8_file_177_redline_5f0fed8e2a_jubarte-0.12.0.d
+ocx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is
+invalid.
+2026-10-10 05:18:10.299 | ERROR    | __main__:_convert_batched:1745 -  FAIL: 
+97ec0fecd2_bdfddb39d04de4c189c85b353faf57d3bd637b8a74322c41__vs__52545bbf00_c620
+9bb293e3d902b2de2e9b20a2e0e29d2f82dd7dab17df_redline_ba86b047dd_jubarte-0.12.0.d
+ocx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is
+invalid.
+2026-10-10 05:18:10.331 | ERROR    | __main__:_convert_batched:1745 -  FAIL: 
+acd3595c3a_0032221e68ad2a7986d1fe113eb1d46b5a7d1901b5aa9318__vs__1424386e9b_0174
+47de83753a0e3b7afc659df038ef56972925336c6a5b_redline_bc0135eaa1_jubarte-0.12.0.d
+ocx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is
+invalid.
+2026-10-10 05:18:10.339 | ERROR    | __main__:_convert_batched:1745 -  FAIL: 
+b175a00954_file_27__vs__f32428a03a_file_28_redline_0f031c23c3_jubarte-0.12.0.doc
+x — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+2026-10-10 05:18:10.345 | ERROR    | __main__:_convert_batched:1745 -  FAIL: 
+b4294a7edd_ddff881efc732399286b36322055752e7287a255646f24a3__vs__c7dd32f288_e24a
+428cb81de32e27f3080d20695edc90f15423c4955e00_redline_d9bb456306_jubarte-0.12.0.d
+ocx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is
+invalid.
+2026-10-10 05:18:10.348 | ERROR    | __main__:_convert_batched:1745 -  FAIL: 
+b6dd0b6ae8_015a4f5a16a110026418c0a7f5eefa69ce6d5f9bcfc2d955__vs__1424386e9b_0174
+47de83753a0e3b7afc659df038ef56972925336c6a5b_redline_01a43df57c_jubarte-0.12.0.d
+ocx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is
+invalid.
+2026-10-10 05:18:10.363 | ERROR    | __main__:_convert_batched:1745 -  FAIL: 
+bd768e6c17_file_74__vs__8c79860f8d_file_75_redline_3d39f0120d_jubarte-0.12.0.doc
+x — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+2026-10-10 05:18:10.364 | ERROR    | __main__:_convert_batched:1745 -  FAIL: 
+be5bf990cb_file_16__vs__d6ba4fabd2_file_17_redline_cbf73c2d81_jubarte-0.12.0.doc
+x — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+2026-10-10 05:18:10.383 | ERROR    | __main__:_convert_batched:1745 -  FAIL: 
+df097720f7_file_131__vs__3c60cce945_file_132_redline_4eff11f045_jubarte-0.12.0.d
+ocx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is
+invalid.
+2026-10-10 05:18:10.385 | ERROR    | __main__:_convert_batched:1745 -  FAIL: 
+df9ffe9a8c_file_16__vs__ec900bd182_file_17_redline_f8286525f6_jubarte-0.12.0.doc
+x — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+2026-10-10 05:18:10.397 | ERROR    | __main__:_convert_batched:1745 -  FAIL: 
+ec3dd0df69_file_53__vs__94ed0def64_file_54_redline_c2380a4677_jubarte-0.12.0.doc
+x — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+2026-10-10 05:18:10.402 | ERROR    | __main__:_convert_batched:1745 -  FAIL: 
+f1ea4a51fd_hr_onboarding_checklist_table__vs__d0e7f278b8_i_am_sharing_microsoft_
+word_vs_google_docs_compr_redline_85b1c9235c_jubarte-0.12.0.docx — Word crashed 
+on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-10 05:18:10.475 | WARNING  | __main__:_loop_merp:555 -  error report 
+declined via 'OK'
+                DOCX → PDF:                 
+results/redlines_0929_full/jubarte-0.12.0/do
+                     cx                     
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━┓
+┃ outcome                          ┃ count ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━┩
+│ converted                        │   575 │
+│ skipped (exists)                 │     0 │
+│ failed                           │    25 │
+│ seconds per document (batch avg) │   1.7 │
+└──────────────────────────────────┴───────┘
+  FAIL 
+1072677c3a_file_6__vs__1b8ec2a8cd_file_7_redline_0b033b1c23_jubarte-0.12.0.docx:
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL 
+2b4475cba6_0021f639e5dbf6c217c8d81a7ac3374624ff9901a5d4b200__vs__2773adf157_0004
+c94ca2a8684d47449bb0e7abf87de1df71a7e6543252_redline_3e7067f872_jubarte-0.12.0.d
+ocx: Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL 
+2b4475cba6_0021f639e5dbf6c217c8d81a7ac3374624ff9901a5d4b200__vs__2e04202552_000e
+3e7bd2d6215fc7b469cc3e296c1b2a510bc1abc7e0fd_redline_20f31d3886_jubarte-0.12.0.d
+ocx: Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL 
+2b4475cba6_0021f639e5dbf6c217c8d81a7ac3374624ff9901a5d4b200__vs__342f364d46_0013
+42333d45627868f4dc5282abbba4598a91b4a7584b08_redline_04b7d19a3a_jubarte-0.12.0.d
+ocx: Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL 
+3f91c8f0cd_file_9__vs__e3d833aef0_file_10_redline_581907f19c_jubarte-0.12.0.docx
+: Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL 
+45c1c5abec_table_vmerge_colspan__vs__a94f4c516b_text_box_redline_54dd9bf0c3_juba
+rte-0.12.0.docx: Word crashed on it in 2 passes: Microsoft Word got an error: 
+Connection is invalid.
+  FAIL 
+52220b20c3_00a54bff7e15af78fe7cfc20219c28cb208fde807bd28d44__vs__2773adf157_0004
+c94ca2a8684d47449bb0e7abf87de1df71a7e6543252_redline_b799eadbeb_jubarte-0.12.0.d
+ocx: Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL 
+52220b20c3_00a54bff7e15af78fe7cfc20219c28cb208fde807bd28d44__vs__5203829c7a_001c
+c92b88566d5f930fe57f25813c0bf52a7bdc72c217d0_redline_6de20376e8_jubarte-0.12.0.d
+ocx: Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL 
+52220b20c3_00a54bff7e15af78fe7cfc20219c28cb208fde807bd28d44__vs__bd3824dd1e_000e
+e64ef7226d353297888f59a251e24ce5d776fea000fa_redline_8018df6bdf_jubarte-0.12.0.d
+ocx: Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL 
+628ec1cb76_00a9d81709806bc220522f9b062f226e19ba256e436493b1__vs__2e04202552_000e
+3e7bd2d6215fc7b469cc3e296c1b2a510bc1abc7e0fd_redline_2c0433bdbc_jubarte-0.12.0.d
+ocx: Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL 
+6867e05e76_00b0d42bbea3b9bac7bc95466cf416f6c89a8cda62bbf3d7__vs__1424386e9b_0174
+47de83753a0e3b7afc659df038ef56972925336c6a5b_redline_a20d355157_jubarte-0.12.0.d
+ocx: Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL 
+6e2576a091_docx_lots_of_comments__vs__2c0a2ac35f_double_spacing_bold_demo_id_par
+aid_overflow_redline_9382e03243_jubarte-0.12.0.docx: Word crashed on it in 2 
+passes: Microsoft Word got an error: Connection is invalid.
+  FAIL 
+7b8a36fc9d_6b022d77b530d0e93df9ee17f79f06423a54fa1788a95c5d__vs__f620bc5c6d_41ba
+e32dd2e76af1f00d37af7b3a353ca826cd6e8c20052c_redline_9129d2ecd2_jubarte-0.12.0.d
+ocx: Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL 
+8f47b1dc90_file_176__vs__a3586d71f8_file_177_redline_5f0fed8e2a_jubarte-0.12.0.d
+ocx: Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL 
+97ec0fecd2_bdfddb39d04de4c189c85b353faf57d3bd637b8a74322c41__vs__52545bbf00_c620
+9bb293e3d902b2de2e9b20a2e0e29d2f82dd7dab17df_redline_ba86b047dd_jubarte-0.12.0.d
+ocx: Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL 
+acd3595c3a_0032221e68ad2a7986d1fe113eb1d46b5a7d1901b5aa9318__vs__1424386e9b_0174
+47de83753a0e3b7afc659df038ef56972925336c6a5b_redline_bc0135eaa1_jubarte-0.12.0.d
+ocx: Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL 
+b175a00954_file_27__vs__f32428a03a_file_28_redline_0f031c23c3_jubarte-0.12.0.doc
+x: Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL 
+b4294a7edd_ddff881efc732399286b36322055752e7287a255646f24a3__vs__c7dd32f288_e24a
+428cb81de32e27f3080d20695edc90f15423c4955e00_redline_d9bb456306_jubarte-0.12.0.d
+ocx: Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL 
+b6dd0b6ae8_015a4f5a16a110026418c0a7f5eefa69ce6d5f9bcfc2d955__vs__1424386e9b_0174
+47de83753a0e3b7afc659df038ef56972925336c6a5b_redline_01a43df57c_jubarte-0.12.0.d
+ocx: Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL 
+bd768e6c17_file_74__vs__8c79860f8d_file_75_redline_3d39f0120d_jubarte-0.12.0.doc
+x: Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL 
+be5bf990cb_file_16__vs__d6ba4fabd2_file_17_redline_cbf73c2d81_jubarte-0.12.0.doc
+x: Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL 
+df097720f7_file_131__vs__3c60cce945_file_132_redline_4eff11f045_jubarte-0.12.0.d
+ocx: Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL 
+df9ffe9a8c_file_16__vs__ec900bd182_file_17_redline_f8286525f6_jubarte-0.12.0.doc
+x: Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL 
+ec3dd0df69_file_53__vs__94ed0def64_file_54_redline_c2380a4677_jubarte-0.12.0.doc
+x: Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL 
+f1ea4a51fd_hr_onboarding_checklist_table__vs__d0e7f278b8_i_am_sharing_microsoft_
+word_vs_google_docs_compr_redline_85b1c9235c_jubarte-0.12.0.docx: Word crashed 
+on it in 2 passes: Microsoft Word got an error: Connection is invalid.
