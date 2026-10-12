@@ -201,3 +201,4 @@ score_v2.patch
 /results-compare/
 .env
 from_jubarte-redlines/
+tmp/
