@@ -28,9 +28,17 @@ from neurotic_docx_bench import page_metrics as pm
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 REFERENCE = REPO_ROOT / "tests" / "reference" / "docxide_page_metrics.json"
-WORD_CORPUS = REPO_ROOT / "corpus" / "no_comments_pdf_was_generated_by_word"
-WORD_PDFS = WORD_CORPUS / "pdf_redlines_randomized"
-SOFFICE_PDFS = WORD_CORPUS / "except_this_pdf_soffice_redlines_randomized"
+# Word's PDF of each frozen pair, now under its corpus name (corpus/word/notices/RENAMED.csv).
+WORD_PDFS = {
+    "file_100_file_101_redline": "8b45820aa8_file_100__vs__0d6cc8a99c_file_101_redline_f953aac51a",
+    "file_101_file_102_redline": "0d6cc8a99c_file_101__vs__c39d1916e3_file_102_redline_77269bd39c",
+    "file_102_file_103_redline": "c39d1916e3_file_102__vs__f05b2b13ee_file_103_redline_9760c7c6b0",
+    "file_103_file_104_redline": "f05b2b13ee_file_103__vs__d435c8d66c_file_104_redline_ed3701fb29",
+    "file_104_file_105_redline": "d435c8d66c_file_104__vs__0f0620ff98_file_105_redline_0c90ac520a",
+}
+WORD_PDF_DIR = REPO_ROOT / "corpus" / "word" / "tracking_without_comments" / "pdf"
+# The LibreOffice 26.2.4.2 renders the numbers were frozen on (not Word files, so not in corpus/).
+SOFFICE_PDFS = REPO_ROOT / "tests" / "reference" / "docxide_page_metrics_soffice"
 
 METRIC_KEYS = ("jaccard", "text_boundary", "ref_pages", "pages", "scored_pages", "max_break_drift")
 
@@ -44,7 +52,7 @@ def _expected() -> dict[str, dict]:
 
 
 def _pairs() -> list[tuple[str, Path, Path]]:
-    return [(stem, WORD_PDFS / f"{stem}.pdf", SOFFICE_PDFS / f"{stem}.pdf") for stem in sorted(_expected())]
+    return [(stem, WORD_PDF_DIR / f"{WORD_PDFS[stem]}.pdf", SOFFICE_PDFS / f"{stem}.pdf") for stem in sorted(_expected())]
 
 
 def _make_pdf(path: Path, page_texts: list[str]) -> Path:
@@ -71,6 +79,10 @@ def test_reference_names_the_engine_it_was_frozen_on() -> None:
     assert "ssim" not in {k for row in _expected().values() for k in row}
 
 
+@pytest.mark.skipif(
+    not all((WORD_PDF_DIR / f"{n}.pdf").is_file() for n in WORD_PDFS.values()),
+    reason="needs corpus/word's PDFs: uv run bench fixtures download",
+)
 def test_port_matches_frozen_upstream_numbers() -> None:
     assert _reference()["_engine"]["mupdf"] == fitz.version[1], "engine mismatch, see the engine test"
     expected = _expected()

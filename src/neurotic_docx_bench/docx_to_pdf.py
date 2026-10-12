@@ -1,7 +1,7 @@
 """DOCX→PDF evaluation track: Word-exported oracles vs independent converters.
 
-Scores candidate PDFs against committed Microsoft Word oracles in
-``corpus/no_comments_pdf_was_generated_by_word`` using the shipped visual
+Scores candidate PDFs against Microsoft Word's own PDFs, pinned with their sha256 in
+``docx_to_pdf_pins/<track>.tsv`` (paths under ``corpus/``), using the shipped visual
 pipeline (``score_folders_plain`` / ``match_by_plain_stem``). Convert crashes
 and non-PDF output are generate failures scored as 0 (intent-to-treat). Does
 not wrap soffice as a converter-under-test and does not touch ``score.py`` /
@@ -10,6 +10,7 @@ not wrap soffice as a converter-under-test and does not touch ``score.py`` /
 
 from __future__ import annotations
 
+import csv
 import json
 import math
 import os
@@ -26,7 +27,9 @@ from pathlib import Path
 from neurotic_docx_bench import kernels, pipeline
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-WORD_CORPUS = REPO_ROOT / "corpus" / "no_comments_pdf_was_generated_by_word"
+CORPUS = REPO_ROOT / "corpus"
+# Pin files: one row per fixture, its DOCX and Word PDF under corpus/ and the PDF's sha256.
+PINS = Path(__file__).resolve().parent / "docx_to_pdf_pins"
 WORD_PDF_TOOLS = (
     "rdocx",
     "office2pdf",
@@ -43,7 +46,9 @@ REQUIRED_FEATURES = frozenset(
     {"body_text", "table", "numbering", "image", "header_or_footer"},
 )
 
-DEFAULT_CONVERTER = REPO_ROOT.parent / "jubarte-redlines" / "target" / "release" / "jubarte"
+DEFAULT_CONVERTER = (  # linked by scripts/link_engines.sh
+    Path(__file__).resolve().parent / "utils" / "jubarte" / "jubarte-redlines" / "target" / "release" / "jubarte"
+)
 # PyMuPDF Pro pins its own PyMuPDF, so it runs from an isolated venv (see its pyproject).
 PYMUPDF_PRO_CONVERTER = Path(__file__).resolve().parent / "utils" / "pymupdf-pro" / "pymupdf-pro-convert"
 
@@ -65,52 +70,35 @@ RANKING_END = "<!-- RANKING-END -->"
 
 @dataclass(frozen=True)
 class Track:
-    """One DOCX→PDF measurement set: oracle PDF folders + pin files."""
+    """One DOCX→PDF measurement set: its pin file (DOCX + Word PDF + sha256 per row)."""
 
     name: str
     title: str
-    pools: tuple[tuple[str, str, str], ...]
+    kinds: tuple[str, ...]
     fixture_list: Path
-    sha_manifest: Path
     readme_start: str
     readme_end: str
     caption: str
-
-    @property
-    def oracle_pdf_dir_names(self) -> tuple[str, ...]:
-        return tuple(pdf_dir for _, _, pdf_dir in self.pools)
-
-    @property
-    def kinds(self) -> frozenset[str]:
-        return frozenset(kind for kind, _, _ in self.pools)
 
 
 REDLINE_TRACK = Track(
     name="docx_to_pdf",
     title="docx_to_pdf — DOCX to PDF vs Word export",
-    pools=(
-        ("accepted", "docx_accepted_word", "pdf_accepted_word"),
-        ("redline_randomized", "docx_redlines_randomized", "pdf_redlines_randomized"),
-    ),
-    fixture_list=WORD_CORPUS / "docx_to_pdf_fixtures.txt",
-    sha_manifest=WORD_CORPUS / "docx_to_pdf_oracle_sha256.json",
+    kinds=("accepted", "redline_randomized"),
+    fixture_list=PINS / "docx_to_pdf.tsv",
     readme_start="<!-- DOCX-TO-PDF-START -->",
     readme_end="<!-- DOCX-TO-PDF-END -->",
-    caption="pinned Word-export PDFs (`pdf_accepted_word`, `pdf_redlines_randomized`)",
+    caption="pinned Word-export PDFs (Word's accept-all of the word_based compares and the randomized compares)",
 )
 
 NO_REDLINE_TRACK = Track(
     name="docx_to_pdf_no_redline_docs",
     title="docx_to_pdf_no_redline_docs — source DOCX to PDF vs Word export",
-    pools=(
-        ("source", "docx_source", "pdf_source"),
-        ("source_randomized", "docx_source_randomized", "pdf_source_randomized"),
-    ),
-    fixture_list=WORD_CORPUS / "docx_to_pdf_no_redline_fixtures.txt",
-    sha_manifest=WORD_CORPUS / "docx_to_pdf_no_redline_oracle_sha256.json",
+    kinds=("source", "source_randomized"),
+    fixture_list=PINS / "docx_to_pdf_no_redline_docs.tsv",
     readme_start="<!-- DOCX-TO-PDF-NO-REDLINE-START -->",
     readme_end="<!-- DOCX-TO-PDF-NO-REDLINE-END -->",
-    caption="pinned Word-export PDFs (`pdf_source`, `pdf_source_randomized`)",
+    caption="pinned Word-export PDFs (the word_based source documents and their randomized versions)",
 )
 
 TRACKS: dict[str, Track] = {
@@ -120,9 +108,6 @@ TRACKS: dict[str, Track] = {
 
 # Backward-compatible aliases for the redline/accepted track.
 FIXTURE_LIST = REDLINE_TRACK.fixture_list
-POOLS = REDLINE_TRACK.pools
-ORACLE_PDF_DIRS = REDLINE_TRACK.oracle_pdf_dir_names
-ORACLE_SHA_MANIFEST = REDLINE_TRACK.sha_manifest
 README_START = REDLINE_TRACK.readme_start
 README_END = REDLINE_TRACK.readme_end
 
@@ -146,163 +131,76 @@ class Fixture:
     original_stem: str
     docx: Path
     oracle: Path
+    oracle_sha256: str = ""
+    legacy_stem: str = ""  # the pool-era name, the one results/ written before 2026-10-11 use
+
+
+@dataclass(frozen=True)
+class PinRow:
+    kind: str
+    stem: str
+    docx: str  # relative to corpus/
+    pdf: str  # relative to corpus/
+    pdf_sha256: str
+    original_stem: str = ""
+
+
+def load_pin_rows(path: Path | None = None, *, track: Track | str | None = None) -> list[PinRow]:
+    """The pin file's rows (``#`` comment lines skipped)."""
+    path = path or resolve_track(track).fixture_list
+    lines = [ln for ln in path.read_text(encoding="utf-8").splitlines() if ln.strip() and not ln.startswith("#")]
+    return [
+        PinRow(r["kind"], r["stem"], r["docx"], r["pdf"], r["pdf_sha256"], r.get("original_stem", ""))
+        for r in csv.DictReader(lines, delimiter="\t")
+    ]
 
 
 def load_fixture_rows(path: Path | None = None, *, track: Track | str | None = None) -> list[tuple[str, str]]:
-    """Read ``kind<TAB>original_stem`` rows (comments and blanks ignored)."""
-    rows: list[tuple[str, str]] = []
-    path = path or resolve_track(track).fixture_list
-    for raw in path.read_text(encoding="utf-8").splitlines():
-        line = raw.strip()
-        if not line or line.startswith("#"):
-            continue
-        kind, original = line.split("\t", 1)
-        rows.append((kind.strip(), original.strip()))
-    return rows
+    """``(kind, stem)`` per pinned row."""
+    return [(r.kind, r.stem) for r in load_pin_rows(path, track=track)]
 
 
 def load_fixture_stems(path: Path | None = None, *, track: Track | str | None = None) -> list[str]:
-    """Unique staging stems (``{kind}__{original_stem}``) from the pin list."""
-    return [f"{kind}__{original}" for kind, original in load_fixture_rows(path, track=track)]
+    """Unique staging stems (``{kind}__{stem}``) from the pin file."""
+    return [f"{kind}__{stem}" for kind, stem in load_fixture_rows(path, track=track)]
 
 
-def _pool_dirs(kind: str, root: Path = WORD_CORPUS, *, track: Track | str | None = None) -> tuple[Path, Path]:
-    spec = resolve_track(track)
-    for name, docx_dir, pdf_dir in spec.pools:
-        if name == kind:
-            return root / docx_dir, root / pdf_dir
-    raise ValueError(f"unknown Word-oracle pool {kind!r} for track {spec.name}")
-
-
-def load_fixtures(path: Path | None = None, *, track: Track | str | None = None) -> list[Fixture]:
-    """Resolve each pinned row to its source DOCX and Word oracle PDF."""
-    spec = resolve_track(track)
-    fixtures: list[Fixture] = []
-    for kind, original in load_fixture_rows(path, track=spec):
-        docx_dir, pdf_dir = _pool_dirs(kind, track=spec)
-        fixtures.append(
-            Fixture(
-                stem=f"{kind}__{original}",
-                kind=kind,
-                original_stem=original,
-                docx=docx_dir / f"{original}.docx",
-                oracle=pdf_dir / f"{original}.pdf",
-            ),
+def load_fixtures(
+    path: Path | None = None, *, track: Track | str | None = None, root: Path = CORPUS,
+) -> list[Fixture]:
+    """Each pinned row as its DOCX and Word oracle PDF under ``root`` (corpus/)."""
+    return [
+        Fixture(
+            stem=f"{r.kind}__{r.stem}",
+            kind=r.kind,
+            original_stem=r.stem,
+            docx=root / r.docx,
+            oracle=root / r.pdf,
+            oracle_sha256=r.pdf_sha256,
+            legacy_stem=f"{r.kind}__{r.original_stem}" if r.original_stem else "",
         )
-    return fixtures
+        for r in load_pin_rows(path, track=track)
+    ]
 
 
-def oracle_pdf_dirs(root: Path = WORD_CORPUS, *, track: Track | str | None = None) -> list[Path]:
-    """The Word-export PDF folders used as this track's ground truth."""
-    return [root / name for name in resolve_track(track).oracle_pdf_dir_names]
-
-
-def _oracle_pdf_sha_map(root: Path = WORD_CORPUS, *, track: Track | str | None = None) -> dict[str, str]:
-    """SHA-256 of every ``*.pdf`` in the track's pinned folders. Read-only."""
-    from neurotic_docx_bench.oracle_manifest import _sha256
-
-    out: dict[str, str] = {}
-    for folder in oracle_pdf_dirs(root, track=track):
-        for pdf in sorted(folder.glob("*.pdf")):
-            rel = pdf.resolve().relative_to(root.resolve()).as_posix()
-            out[rel] = _sha256(pdf)
-    return out
-
-
-def write_oracle_sha_manifest(
-    path: Path | None = None, root: Path = WORD_CORPUS, *, track: Track | str | None = None,
-) -> dict[str, str]:
-    """SHA-256 every oracle PDF. Does not write inside the PDF folders."""
-    from neurotic_docx_bench.oracle_manifest import write_manifest
-
-    spec = resolve_track(track)
-    manifest = _oracle_pdf_sha_map(root, track=spec)
-    write_manifest(path or spec.sha_manifest, manifest)
-    return manifest
+def oracle_pdf_dirs(root: Path = CORPUS, *, track: Track | str | None = None) -> list[Path]:
+    """The folders the track's Word-export PDFs live in."""
+    return sorted({(root / r.pdf).parent for r in load_pin_rows(track=track)})
 
 
 def verify_oracle_sha_manifest(
-    path: Path | None = None, root: Path = WORD_CORPUS, *, track: Track | str | None = None,
+    path: Path | None = None, root: Path = CORPUS, *, track: Track | str | None = None,
 ) -> None:
-    """Abort if any pinned oracle PDF is missing, extra, or has a different hash."""
-    from neurotic_docx_bench.oracle_manifest import ManifestDrift, load_manifest
+    """Abort if any pinned oracle PDF is missing or has a different sha256 than its pin."""
+    from neurotic_docx_bench.oracle_manifest import ManifestDrift, _sha256
 
-    spec = resolve_track(track)
-    path = path or spec.sha_manifest
-    if not path.is_file():
-        raise RuntimeError(f"DOCX→PDF oracle SHA manifest missing: {path}")
-    expected = load_manifest(path) or {}
-    actual = _oracle_pdf_sha_map(root, track=spec)
-    changed = sorted(k for k in expected.keys() & actual.keys() if expected[k] != actual[k])
-    missing = sorted(expected.keys() - actual.keys())
-    extra = sorted(actual.keys() - expected.keys())
-    drift = ManifestDrift(changed=changed, missing=missing, extra=extra)
+    rows = load_pin_rows(path, track=track)
+    missing = sorted(r.pdf for r in rows if not (root / r.pdf).is_file())
+    changed = sorted(r.pdf for r in rows if (root / r.pdf).is_file() and _sha256(root / r.pdf) != r.pdf_sha256)
+    drift = ManifestDrift(changed=changed, missing=missing, extra=[])
     if not drift.clean:
-        raise RuntimeError(
-            f"DOCX→PDF oracle PDF drift (never regenerate those folders): {drift.summary()}",
-        )
-
-
-def discover_word_oracle_pairs(root: Path = WORD_CORPUS, *, track: Track | str | None = None) -> list[Fixture]:
-    """Every valid pair whose oracle PDF lives in this track's pinned folders."""
-    found: list[Fixture] = []
-    for kind, docx_dir, pdf_dir in resolve_track(track).pools:
-        ddir = root / docx_dir
-        pdir = root / pdf_dir
-        if not ddir.is_dir() or not pdir.is_dir():
-            continue
-        for docx in sorted(ddir.glob("*.docx")):
-            if docx.name.startswith("~$"):
-                continue
-            oracle = pdir / f"{docx.stem}.pdf"
-            if not oracle.is_file():
-                continue
-            found.append(
-                Fixture(
-                    stem=f"{kind}__{docx.stem}",
-                    kind=kind,
-                    original_stem=docx.stem,
-                    docx=docx,
-                    oracle=oracle,
-                ),
-            )
-    return found
-
-
-def select_word_oracle_fixtures(
-    n: int | None = None, root: Path = WORD_CORPUS, *, track: Track | str | None = None,
-) -> list[Fixture]:
-    """All Word-oracle pairs for the track, or the first ``n`` in pool order."""
-    spec = resolve_track(track)
-    by_kind: dict[str, list[Fixture]] = {kind: [] for kind, _, _ in spec.pools}
-    for item in discover_word_oracle_pairs(root, track=spec):
-        by_kind[item.kind].append(item)
-    selected: list[Fixture] = []
-    for kind, _, _ in spec.pools:
-        selected.extend(by_kind[kind])
-    if n is not None:
-        if len(selected) < n:
-            raise RuntimeError(f"only {len(selected)} Word-oracle pairs available, need {n}")
-        selected = selected[:n]
-    return selected
-
-
-def write_fixture_list(
-    path: Path | None = None, n: int | None = None, *, track: Track | str | None = None,
-) -> list[Fixture]:
-    """Write the checked-in pin list from :func:`select_word_oracle_fixtures`."""
-    spec = resolve_track(track)
-    items = select_word_oracle_fixtures(n=n, track=spec)
-    lines = [
-        f"# Word-oracle DOCX→PDF pin ({spec.name}).",
-        f"# Pools: {', '.join(spec.oracle_pdf_dir_names)} (SHA-256 pinned).",
-        "# Staging key is {kind}__{original_stem}. Columns: kind<TAB>original_stem",
-    ]
-    lines.extend(f"{item.kind}\t{item.original_stem}" for item in items)
-    dest = path or spec.fixture_list
-    dest.parent.mkdir(parents=True, exist_ok=True)
-    dest.write_text("\n".join(lines) + "\n", encoding="utf-8")
-    return items
+        hint = " (corpus files absent? uv run bench fixtures download)" if missing else ""
+        raise RuntimeError(f"DOCX→PDF oracle PDF drift{hint}: {drift.summary()}")
 
 
 def docx_features(docx: Path) -> set[str]:
