@@ -1,0 +1,3020 @@
+[
+ {
+  "group": "cases",
+  "case": "case1",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case1/jubarte/page_001.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case1/libreoffice/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte": 1,
+   "libreoffice": 1
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 61.1,
+    "ssim": 90.2,
+    "text_boundary": 100.0
+   },
+   "libreoffice": {
+    "jaccard": 30.2,
+    "ssim": 45.1,
+    "text_boundary": 100.0
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case1/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case1/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case10",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case10/jubarte/page_001.webp",
+    "d2p/cases/case10/jubarte/page_002.webp",
+    "d2p/cases/case10/jubarte/page_003.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case10/libreoffice/page_001.webp",
+    "d2p/cases/case10/libreoffice/page_002.webp",
+    "d2p/cases/case10/libreoffice/page_003.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 3,
+   "jubarte": 3,
+   "libreoffice": 3
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 70.7,
+    "ssim": 83.5,
+    "text_boundary": 100.0
+   },
+   "libreoffice": {
+    "jaccard": 12.3,
+    "ssim": 27.7,
+    "text_boundary": 87.5
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case10/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case10/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1,
+   2,
+   3
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case11",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case11/jubarte/page_001.webp",
+    "d2p/cases/case11/jubarte/page_002.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case11/libreoffice/page_001.webp",
+    "d2p/cases/case11/libreoffice/page_002.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 2,
+   "jubarte": 2,
+   "libreoffice": 2
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 70.3,
+    "ssim": 91.8,
+    "text_boundary": 100.0
+   },
+   "libreoffice": {
+    "jaccard": 45.5,
+    "ssim": 90.0,
+    "text_boundary": 100.0
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case11/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case11/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1,
+   2
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case12",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case12/jubarte/page_001.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case12/libreoffice/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte": 1,
+   "libreoffice": 1
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 99.0,
+    "ssim": 99.6,
+    "text_boundary": 100.0
+   },
+   "libreoffice": {
+    "jaccard": 90.3,
+    "ssim": 94.0,
+    "text_boundary": 100.0
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case12/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case12/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case13",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case13/jubarte/page_001.webp",
+    "d2p/cases/case13/jubarte/page_002.webp",
+    "d2p/cases/case13/jubarte/page_003.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case13/libreoffice/page_001.webp",
+    "d2p/cases/case13/libreoffice/page_002.webp",
+    "d2p/cases/case13/libreoffice/page_003.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 205,
+   "jubarte": 205,
+   "libreoffice": 205
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 67.5,
+    "ssim": 91.4,
+    "text_boundary": 100.0
+   },
+   "libreoffice": {
+    "jaccard": 46.2,
+    "ssim": 90.3,
+    "text_boundary": 100.0
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case13/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case13/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1,
+   2,
+   3
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case14",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case14/jubarte/page_001.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case14/libreoffice/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte": 1,
+   "libreoffice": 1
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 64.0,
+    "ssim": 88.4,
+    "text_boundary": 100.0
+   },
+   "libreoffice": {
+    "jaccard": 15.1,
+    "ssim": 33.2,
+    "text_boundary": 25.0
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case14/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case14/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case15",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case15/jubarte/page_001.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case15/libreoffice/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte": 1,
+   "libreoffice": 1
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 59.3,
+    "ssim": 92.4,
+    "text_boundary": 100.0
+   },
+   "libreoffice": {
+    "jaccard": 52.0,
+    "ssim": 90.0,
+    "text_boundary": 100.0
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case15/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case15/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case16",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case16/jubarte/page_001.webp",
+    "d2p/cases/case16/jubarte/page_002.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case16/libreoffice/page_001.webp",
+    "d2p/cases/case16/libreoffice/page_002.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 2,
+   "jubarte": 2,
+   "libreoffice": 2
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 91.4,
+    "ssim": 81.4,
+    "text_boundary": 100.0
+   },
+   "libreoffice": {
+    "jaccard": 95.0,
+    "ssim": 93.1,
+    "text_boundary": 100.0
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case16/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case16/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1,
+   2
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case17",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case17/jubarte/page_001.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case17/libreoffice/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte": 1,
+   "libreoffice": 1
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 86.3,
+    "ssim": 98.1,
+    "text_boundary": 100.0
+   },
+   "libreoffice": {
+    "jaccard": 15.2,
+    "ssim": 32.1,
+    "text_boundary": 50.0
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case17/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case17/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case18",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case18/jubarte/page_001.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case18/libreoffice/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte": 1,
+   "libreoffice": 1
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 76.2,
+    "ssim": 91.7,
+    "text_boundary": 100.0
+   },
+   "libreoffice": {
+    "jaccard": 9.1,
+    "ssim": 22.9,
+    "text_boundary": 63.6
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case18/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case18/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case19",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case19/jubarte/page_001.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case19/libreoffice/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte": 1,
+   "libreoffice": 1
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 75.9,
+    "ssim": 99.8,
+    "text_boundary": 100.0
+   },
+   "libreoffice": {
+    "jaccard": 46.9,
+    "ssim": 92.4,
+    "text_boundary": 100.0
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case19/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case19/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case2",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case2/jubarte/page_001.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case2/libreoffice/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte": 1,
+   "libreoffice": 1
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 89.2,
+    "ssim": 94.9,
+    "text_boundary": 100.0
+   },
+   "libreoffice": {
+    "jaccard": 21.4,
+    "ssim": 44.8,
+    "text_boundary": 66.7
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case2/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case2/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case20",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case20/jubarte/page_001.webp",
+    "d2p/cases/case20/jubarte/page_002.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case20/libreoffice/page_001.webp",
+    "d2p/cases/case20/libreoffice/page_002.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 2,
+   "jubarte": 2,
+   "libreoffice": 2
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 79.2,
+    "ssim": 99.9,
+    "text_boundary": 100.0
+   },
+   "libreoffice": {
+    "jaccard": 28.7,
+    "ssim": 61.2,
+    "text_boundary": 74.3
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case20/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case20/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1,
+   2
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case21",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case21/jubarte/page_001.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case21/libreoffice/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte": 1,
+   "libreoffice": 1
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 71.8,
+    "ssim": 94.0,
+    "text_boundary": 100.0
+   },
+   "libreoffice": {
+    "jaccard": 29.9,
+    "ssim": 58.3,
+    "text_boundary": 0.0
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case21/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case21/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case22",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case22/jubarte/page_001.webp",
+    "d2p/cases/case22/jubarte/page_002.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case22/libreoffice/page_001.webp",
+    "d2p/cases/case22/libreoffice/page_002.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 2,
+   "jubarte": 2,
+   "libreoffice": 2
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 71.3,
+    "ssim": 92.2,
+    "text_boundary": 100.0
+   },
+   "libreoffice": {
+    "jaccard": 13.9,
+    "ssim": 34.5,
+    "text_boundary": 0.0
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case22/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case22/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1,
+   2
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case23",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case23/jubarte/page_001.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case23/libreoffice/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte": 1,
+   "libreoffice": 1
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 63.2,
+    "ssim": 81.7,
+    "text_boundary": 100.0
+   },
+   "libreoffice": {
+    "jaccard": 44.3,
+    "ssim": 83.8,
+    "text_boundary": 100.0
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case23/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case23/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case24",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case24/jubarte/page_001.webp",
+    "d2p/cases/case24/jubarte/page_002.webp",
+    "d2p/cases/case24/jubarte/page_003.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case24/libreoffice/page_001.webp",
+    "d2p/cases/case24/libreoffice/page_002.webp",
+    "d2p/cases/case24/libreoffice/page_003.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 3,
+   "jubarte": 3,
+   "libreoffice": 3
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 73.2,
+    "ssim": 93.1,
+    "text_boundary": 100.0
+   },
+   "libreoffice": {
+    "jaccard": 51.4,
+    "ssim": 89.4,
+    "text_boundary": 100.0
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case24/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case24/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1,
+   2,
+   3
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case25",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case25/jubarte/page_001.webp",
+    "d2p/cases/case25/jubarte/page_002.webp",
+    "d2p/cases/case25/jubarte/page_003.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case25/libreoffice/page_001.webp",
+    "d2p/cases/case25/libreoffice/page_002.webp",
+    "d2p/cases/case25/libreoffice/page_003.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 4,
+   "jubarte": 4,
+   "libreoffice": 4
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 74.4,
+    "ssim": 89.0,
+    "text_boundary": 100.0
+   },
+   "libreoffice": {
+    "jaccard": 60.5,
+    "ssim": 87.8,
+    "text_boundary": 100.0
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case25/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case25/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1,
+   2,
+   3
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case26",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case26/jubarte/page_001.webp",
+    "d2p/cases/case26/jubarte/page_002.webp",
+    "d2p/cases/case26/jubarte/page_003.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case26/libreoffice/page_001.webp",
+    "d2p/cases/case26/libreoffice/page_002.webp",
+    "d2p/cases/case26/libreoffice/page_003.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 4,
+   "jubarte": 4,
+   "libreoffice": 4
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 78.1,
+    "ssim": 91.1,
+    "text_boundary": 100.0
+   },
+   "libreoffice": {
+    "jaccard": 61.5,
+    "ssim": 88.0,
+    "text_boundary": 100.0
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case26/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case26/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1,
+   2,
+   3
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case27",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case27/jubarte/page_001.webp",
+    "d2p/cases/case27/jubarte/page_002.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case27/libreoffice/page_001.webp",
+    "d2p/cases/case27/libreoffice/page_002.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 2,
+   "jubarte": 2,
+   "libreoffice": 2
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 98.4,
+    "ssim": 92.3,
+    "text_boundary": 100.0
+   },
+   "libreoffice": {
+    "jaccard": 97.2,
+    "ssim": 91.6,
+    "text_boundary": 100.0
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case27/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case27/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1,
+   2
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case28",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case28/jubarte/page_001.webp",
+    "d2p/cases/case28/jubarte/page_002.webp",
+    "d2p/cases/case28/jubarte/page_003.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case28/libreoffice/page_001.webp",
+    "d2p/cases/case28/libreoffice/page_002.webp",
+    "d2p/cases/case28/libreoffice/page_003.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 3,
+   "jubarte": 3,
+   "libreoffice": 3
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 77.4,
+    "ssim": 91.0,
+    "text_boundary": 100.0
+   },
+   "libreoffice": {
+    "jaccard": 60.1,
+    "ssim": 88.0,
+    "text_boundary": 93.9
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case28/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case28/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1,
+   2,
+   3
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case29",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case29/jubarte/page_001.webp",
+    "d2p/cases/case29/jubarte/page_002.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case29/libreoffice/page_001.webp",
+    "d2p/cases/case29/libreoffice/page_002.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 2,
+   "jubarte": 2,
+   "libreoffice": 2
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 33.2,
+    "ssim": 46.2
+   },
+   "libreoffice": {
+    "jaccard": 74.6,
+    "ssim": 73.5,
+    "text_boundary": 60.5
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case29/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case29/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1,
+   2
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case3",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case3/jubarte/page_001.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case3/libreoffice/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte": 1,
+   "libreoffice": 1
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 93.4,
+    "ssim": 97.2,
+    "text_boundary": 100.0
+   },
+   "libreoffice": {
+    "jaccard": 9.9,
+    "ssim": 38.4,
+    "text_boundary": 60.0
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case3/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case3/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case30",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case30/jubarte/page_001.webp",
+    "d2p/cases/case30/jubarte/page_002.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case30/libreoffice/page_001.webp",
+    "d2p/cases/case30/libreoffice/page_002.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 2,
+   "jubarte": 2,
+   "libreoffice": 2
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 66.3,
+    "ssim": 68.9
+   },
+   "libreoffice": {
+    "jaccard": 86.0,
+    "ssim": 86.3,
+    "text_boundary": 51.9
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case30/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case30/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1,
+   2
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case31",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case31/jubarte/page_001.webp",
+    "d2p/cases/case31/jubarte/page_002.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case31/libreoffice/page_001.webp",
+    "d2p/cases/case31/libreoffice/page_002.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 2,
+   "jubarte": 2,
+   "libreoffice": 2
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 21.1,
+    "ssim": 39.2
+   },
+   "libreoffice": {
+    "jaccard": 47.2,
+    "ssim": 65.8,
+    "text_boundary": 60.0
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case31/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case31/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1,
+   2
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case32",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case32/jubarte/page_001.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case32/libreoffice/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte": 1,
+   "libreoffice": 1
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 78.6,
+    "ssim": 92.8,
+    "text_boundary": 100.0
+   },
+   "libreoffice": {
+    "jaccard": 52.8,
+    "ssim": 89.8,
+    "text_boundary": 100.0
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case32/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case32/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case33",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case33/jubarte/page_001.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case33/libreoffice/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte": 1,
+   "libreoffice": 1
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 83.0,
+    "ssim": 95.3,
+    "text_boundary": 100.0
+   },
+   "libreoffice": {
+    "jaccard": 18.5,
+    "ssim": 83.6,
+    "text_boundary": 72.7
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case33/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case33/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case34",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case34/jubarte/page_001.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case34/libreoffice/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte": 1,
+   "libreoffice": 1
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 98.2,
+    "ssim": 97.4,
+    "text_boundary": 75.0
+   },
+   "libreoffice": {
+    "jaccard": 99.1,
+    "ssim": 96.1,
+    "text_boundary": 100.0
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case34/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case34/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case35",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case35/jubarte/page_001.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case35/libreoffice/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte": 1,
+   "libreoffice": 1
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 90.3,
+    "ssim": 92.9,
+    "text_boundary": 100.0
+   },
+   "libreoffice": {
+    "jaccard": 98.5,
+    "ssim": 95.5,
+    "text_boundary": 100.0
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case35/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case35/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case36",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case36/jubarte/page_001.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case36/libreoffice/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte": 1,
+   "libreoffice": 1
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 99.4,
+    "ssim": 99.3
+   },
+   "libreoffice": {
+    "jaccard": 81.6,
+    "ssim": 94.0
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case36/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case36/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case37",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case37/jubarte/page_001.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case37/libreoffice/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte": 1,
+   "libreoffice": 1
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 30.0,
+    "ssim": 0.2
+   },
+   "libreoffice": {
+    "jaccard": 0.0,
+    "ssim": 0.0
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case37/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case37/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case38",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case38/jubarte/page_001.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case38/libreoffice/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte": 1,
+   "libreoffice": 1
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 89.0,
+    "ssim": 66.4,
+    "text_boundary": 100.0
+   },
+   "libreoffice": {
+    "jaccard": 92.6,
+    "ssim": 96.2,
+    "text_boundary": 100.0
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case38/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case38/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case39",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case39/jubarte/page_001.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case39/libreoffice/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte": 1,
+   "libreoffice": 1
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 75.3,
+    "ssim": 93.9,
+    "text_boundary": 100.0
+   },
+   "libreoffice": {
+    "jaccard": 51.6,
+    "ssim": 88.6,
+    "text_boundary": 100.0
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case39/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case39/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case4",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case4/jubarte/page_001.webp",
+    "d2p/cases/case4/jubarte/page_002.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case4/libreoffice/page_001.webp",
+    "d2p/cases/case4/libreoffice/page_002.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 2,
+   "jubarte": 2,
+   "libreoffice": 2
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 73.1,
+    "ssim": 90.5,
+    "text_boundary": 100.0
+   },
+   "libreoffice": {
+    "jaccard": 16.9,
+    "ssim": 81.3,
+    "text_boundary": 100.0
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case4/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case4/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1,
+   2
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case40",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case40/jubarte/page_001.webp",
+    "d2p/cases/case40/jubarte/page_002.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case40/libreoffice/page_001.webp",
+    "d2p/cases/case40/libreoffice/page_002.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 2,
+   "jubarte": 2,
+   "libreoffice": 2
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 49.1,
+    "ssim": 67.0,
+    "text_boundary": 66.7
+   },
+   "libreoffice": {
+    "jaccard": 38.0,
+    "ssim": 59.3,
+    "text_boundary": 66.7
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case40/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case40/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1,
+   2
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case41",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case41/jubarte/page_001.webp",
+    "d2p/cases/case41/jubarte/page_002.webp",
+    "d2p/cases/case41/jubarte/page_003.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case41/libreoffice/page_001.webp",
+    "d2p/cases/case41/libreoffice/page_002.webp",
+    "d2p/cases/case41/libreoffice/page_003.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 7,
+   "jubarte": 7,
+   "libreoffice": 7
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 83.3,
+    "ssim": 82.2,
+    "text_boundary": 55.3
+   },
+   "libreoffice": {
+    "jaccard": 81.4,
+    "ssim": 80.7,
+    "text_boundary": 55.9
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case41/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case41/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1,
+   2,
+   3
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case42",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case42/jubarte/page_001.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case42/libreoffice/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte": 1,
+   "libreoffice": 1
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 73.7,
+    "ssim": 75.9,
+    "text_boundary": 47.6
+   },
+   "libreoffice": {
+    "jaccard": 68.3,
+    "ssim": 78.9,
+    "text_boundary": 57.1
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case42/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case42/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case43",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case43/jubarte/page_001.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case43/libreoffice/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte": 1,
+   "libreoffice": 1
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 25.9,
+    "ssim": 32.8,
+    "text_boundary": 66.7
+   },
+   "libreoffice": {
+    "jaccard": 2.7,
+    "ssim": 12.4
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case43/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case43/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case44",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case44/jubarte/page_001.webp",
+    "d2p/cases/case44/jubarte/page_002.webp",
+    "d2p/cases/case44/jubarte/page_003.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case44/libreoffice/page_001.webp",
+    "d2p/cases/case44/libreoffice/page_002.webp",
+    "d2p/cases/case44/libreoffice/page_003.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 3,
+   "jubarte": 3,
+   "libreoffice": 3
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 26.5,
+    "ssim": 34.8,
+    "text_boundary": 100.0
+   },
+   "libreoffice": {
+    "jaccard": 4.4,
+    "ssim": 17.6
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case44/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case44/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1,
+   2,
+   3
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case45",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case45/jubarte/page_001.webp",
+    "d2p/cases/case45/jubarte/page_002.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case45/libreoffice/page_001.webp",
+    "d2p/cases/case45/libreoffice/page_002.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 2,
+   "jubarte": 2,
+   "libreoffice": 2
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 35.3,
+    "ssim": 55.9,
+    "text_boundary": 14.5
+   },
+   "libreoffice": {
+    "jaccard": 40.8,
+    "ssim": 75.0,
+    "text_boundary": 87.1
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case45/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case45/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1,
+   2
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case46",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case46/jubarte/page_001.webp",
+    "d2p/cases/case46/jubarte/page_002.webp",
+    "d2p/cases/case46/jubarte/page_003.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case46/libreoffice/page_001.webp",
+    "d2p/cases/case46/libreoffice/page_002.webp",
+    "d2p/cases/case46/libreoffice/page_003.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 14,
+   "jubarte": 14,
+   "libreoffice": 14
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 67.2,
+    "ssim": 86.7,
+    "text_boundary": 93.9
+   },
+   "libreoffice": {
+    "jaccard": 48.1,
+    "ssim": 77.7,
+    "text_boundary": 89.7
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case46/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case46/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1,
+   2,
+   3
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case47",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case47/jubarte/page_001.webp",
+    "d2p/cases/case47/jubarte/page_002.webp",
+    "d2p/cases/case47/jubarte/page_003.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case47/libreoffice/page_001.webp",
+    "d2p/cases/case47/libreoffice/page_002.webp",
+    "d2p/cases/case47/libreoffice/page_003.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 16,
+   "jubarte": 16,
+   "libreoffice": 16
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 73.2,
+    "ssim": 78.4,
+    "text_boundary": 79.8
+   },
+   "libreoffice": {
+    "jaccard": 71.5,
+    "ssim": 92.2,
+    "text_boundary": 100.0
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case47/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case47/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1,
+   2,
+   3
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case48",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case48/jubarte/page_001.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case48/libreoffice/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte": 1,
+   "libreoffice": 1
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 66.2,
+    "ssim": 87.6,
+    "text_boundary": 100.0
+   },
+   "libreoffice": {
+    "jaccard": 15.8,
+    "ssim": 28.9,
+    "text_boundary": 4.3
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case48/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case48/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case49",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case49/jubarte/page_001.webp",
+    "d2p/cases/case49/jubarte/page_002.webp",
+    "d2p/cases/case49/jubarte/page_003.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case49/libreoffice/page_001.webp",
+    "d2p/cases/case49/libreoffice/page_002.webp",
+    "d2p/cases/case49/libreoffice/page_003.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 3,
+   "jubarte": 3,
+   "libreoffice": 3
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 62.1,
+    "ssim": 83.6,
+    "text_boundary": 100.0
+   },
+   "libreoffice": {
+    "jaccard": 22.2,
+    "ssim": 52.3,
+    "text_boundary": 55.7
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case49/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case49/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1,
+   2,
+   3
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case5",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case5/jubarte/page_001.webp",
+    "d2p/cases/case5/jubarte/page_002.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case5/libreoffice/page_001.webp",
+    "d2p/cases/case5/libreoffice/page_002.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 2,
+   "jubarte": 2,
+   "libreoffice": 2
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 76.1,
+    "ssim": 90.3,
+    "text_boundary": 100.0
+   },
+   "libreoffice": {
+    "jaccard": 5.7,
+    "ssim": 15.4,
+    "text_boundary": 3.2
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case5/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case5/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1,
+   2
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case50",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case50/jubarte/page_001.webp",
+    "d2p/cases/case50/jubarte/page_002.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case50/libreoffice/page_001.webp",
+    "d2p/cases/case50/libreoffice/page_002.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 2,
+   "jubarte": 2,
+   "libreoffice": 2
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 74.6,
+    "ssim": 92.7,
+    "text_boundary": 100.0
+   },
+   "libreoffice": {
+    "jaccard": 33.1,
+    "ssim": 71.8,
+    "text_boundary": 86.5
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case50/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case50/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1,
+   2
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case51",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case51/jubarte/page_001.webp",
+    null
+   ],
+   "libreoffice": [
+    "d2p/cases/case51/libreoffice/page_001.webp",
+    null
+   ]
+  },
+  "page_counts": {
+   "reference": 2,
+   "jubarte": 1,
+   "libreoffice": 1
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 10.8,
+    "ssim": 28.5
+   },
+   "libreoffice": {
+    "jaccard": 9.7,
+    "ssim": 28.4
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case51/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case51/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1,
+   2
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case52",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case52/jubarte/page_001.webp",
+    "d2p/cases/case52/jubarte/page_002.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case52/libreoffice/page_001.webp",
+    "d2p/cases/case52/libreoffice/page_002.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 2,
+   "jubarte": 2,
+   "libreoffice": 2
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 22.6,
+    "ssim": 45.9
+   },
+   "libreoffice": {
+    "jaccard": 69.0,
+    "ssim": 76.3,
+    "text_boundary": 55.8
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case52/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case52/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1,
+   2
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case53",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case53/jubarte/page_001.webp",
+    "d2p/cases/case53/jubarte/page_002.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case53/libreoffice/page_001.webp",
+    "d2p/cases/case53/libreoffice/page_002.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 2,
+   "jubarte": 2,
+   "libreoffice": 2
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 23.3,
+    "ssim": 24.2
+   },
+   "libreoffice": {
+    "jaccard": 48.7,
+    "ssim": 46.4,
+    "text_boundary": 63.4
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case53/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case53/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1,
+   2
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case54",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case54/jubarte/page_001.webp",
+    "d2p/cases/case54/jubarte/page_002.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case54/libreoffice/page_001.webp",
+    "d2p/cases/case54/libreoffice/page_002.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 2,
+   "jubarte": 2,
+   "libreoffice": 2
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 66.8,
+    "ssim": 86.9,
+    "text_boundary": 100.0
+   },
+   "libreoffice": {
+    "jaccard": 34.1,
+    "ssim": 87.8,
+    "text_boundary": 100.0
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case54/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case54/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1,
+   2
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case55",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case55/jubarte/page_001.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case55/libreoffice/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte": 1,
+   "libreoffice": 1
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 44.7,
+    "ssim": 41.8,
+    "text_boundary": 100.0
+   },
+   "libreoffice": {
+    "jaccard": 44.4,
+    "ssim": 49.1,
+    "text_boundary": 100.0
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case55/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case55/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case56",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case56/jubarte/page_001.webp",
+    "d2p/cases/case56/jubarte/page_002.webp",
+    "d2p/cases/case56/jubarte/page_003.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case56/libreoffice/page_001.webp",
+    "d2p/cases/case56/libreoffice/page_002.webp",
+    "d2p/cases/case56/libreoffice/page_003.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 3,
+   "jubarte": 3,
+   "libreoffice": 3
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 95.1,
+    "ssim": 96.3,
+    "text_boundary": 100.0
+   },
+   "libreoffice": {
+    "jaccard": 95.3,
+    "ssim": 96.1,
+    "text_boundary": 100.0
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case56/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case56/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1,
+   2,
+   3
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case57",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case57/jubarte/page_001.webp",
+    "d2p/cases/case57/jubarte/page_002.webp",
+    "d2p/cases/case57/jubarte/page_003.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case57/libreoffice/page_001.webp",
+    "d2p/cases/case57/libreoffice/page_002.webp",
+    "d2p/cases/case57/libreoffice/page_003.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 5,
+   "jubarte": 5,
+   "libreoffice": 5
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 90.8,
+    "ssim": 92.7,
+    "text_boundary": 100.0
+   },
+   "libreoffice": {
+    "jaccard": 83.8,
+    "ssim": 77.7,
+    "text_boundary": 100.0
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case57/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case57/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1,
+   2,
+   3
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case59",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case59/jubarte/page_001.webp",
+    "d2p/cases/case59/jubarte/page_002.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case59/libreoffice/page_001.webp",
+    "d2p/cases/case59/libreoffice/page_002.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 2,
+   "jubarte": 2,
+   "libreoffice": 2
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 68.3,
+    "ssim": 72.7,
+    "text_boundary": 100.0
+   },
+   "libreoffice": {
+    "jaccard": 92.2,
+    "ssim": 93.6,
+    "text_boundary": 100.0
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case59/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case59/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1,
+   2
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case6",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case6/jubarte/page_001.webp",
+    "d2p/cases/case6/jubarte/page_002.webp",
+    "d2p/cases/case6/jubarte/page_003.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case6/libreoffice/page_001.webp",
+    "d2p/cases/case6/libreoffice/page_002.webp",
+    "d2p/cases/case6/libreoffice/page_003.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 3,
+   "jubarte": 3,
+   "libreoffice": 3
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 70.1,
+    "ssim": 87.4,
+    "text_boundary": 100.0
+   },
+   "libreoffice": {
+    "jaccard": 6.8,
+    "ssim": 25.5,
+    "text_boundary": 5.7
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case6/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case6/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1,
+   2,
+   3
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case60",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case60/jubarte/page_001.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case60/libreoffice/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte": 1,
+   "libreoffice": 1
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 56.1,
+    "ssim": 71.1
+   },
+   "libreoffice": {
+    "jaccard": 81.6,
+    "ssim": 85.1,
+    "text_boundary": 72.7
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case60/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case60/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case61",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case61/jubarte/page_001.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case61/libreoffice/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte": 1,
+   "libreoffice": 1
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 36.0,
+    "ssim": 64.9,
+    "text_boundary": 64.7
+   },
+   "libreoffice": {
+    "jaccard": 24.3,
+    "ssim": 62.2,
+    "text_boundary": 61.1
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case61/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case61/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case62",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case62/jubarte/page_001.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case62/libreoffice/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte": 1,
+   "libreoffice": 1
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 76.7,
+    "ssim": 92.8,
+    "text_boundary": 100.0
+   },
+   "libreoffice": {
+    "jaccard": 32.3,
+    "ssim": 87.1,
+    "text_boundary": 100.0
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case62/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case62/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case63",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case63/jubarte/page_001.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case63/libreoffice/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte": 1,
+   "libreoffice": 1
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 60.9,
+    "ssim": 76.2,
+    "text_boundary": 66.7
+   },
+   "libreoffice": {
+    "jaccard": 0.2,
+    "ssim": 7.2
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case63/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case63/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case64",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case64/jubarte/page_001.webp",
+    "d2p/cases/case64/jubarte/page_002.webp",
+    "d2p/cases/case64/jubarte/page_003.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case64/libreoffice/page_001.webp",
+    "d2p/cases/case64/libreoffice/page_002.webp",
+    "d2p/cases/case64/libreoffice/page_003.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 3,
+   "jubarte": 3,
+   "libreoffice": 3
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 85.1,
+    "ssim": 93.6,
+    "text_boundary": 100.0
+   },
+   "libreoffice": {
+    "jaccard": 3.1,
+    "ssim": 11.7,
+    "text_boundary": 13.3
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case64/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case64/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1,
+   2,
+   3
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case66",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case66/jubarte/page_001.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case66/libreoffice/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte": 1,
+   "libreoffice": 1
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 62.0,
+    "ssim": 61.4
+   },
+   "libreoffice": {
+    "jaccard": 43.8,
+    "ssim": 58.2
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case66/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case66/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case67",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case67/jubarte/page_001.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case67/libreoffice/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte": 1,
+   "libreoffice": 1
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 69.5,
+    "ssim": 92.0,
+    "text_boundary": 100.0
+   },
+   "libreoffice": {
+    "jaccard": 36.8,
+    "ssim": 66.6,
+    "text_boundary": 100.0
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case67/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case67/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case68",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case68/jubarte/page_001.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case68/libreoffice/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte": 1,
+   "libreoffice": 1
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 91.9,
+    "ssim": 94.6,
+    "text_boundary": 100.0
+   },
+   "libreoffice": {
+    "jaccard": 85.2,
+    "ssim": 93.2,
+    "text_boundary": 100.0
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case68/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case68/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case69",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case69/jubarte/page_001.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case69/libreoffice/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte": 1,
+   "libreoffice": 1
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 92.5,
+    "ssim": 96.1,
+    "text_boundary": 100.0
+   },
+   "libreoffice": {
+    "jaccard": 0.0,
+    "ssim": 1.7,
+    "text_boundary": 100.0
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case69/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case69/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case7",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case7/jubarte/page_001.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case7/libreoffice/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte": 1,
+   "libreoffice": 1
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 72.9,
+    "ssim": 91.6,
+    "text_boundary": 100.0
+   },
+   "libreoffice": {
+    "jaccard": 17.0,
+    "ssim": 32.6,
+    "text_boundary": 25.0
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case7/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case7/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case70",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case70/jubarte/page_001.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case70/libreoffice/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte": 1,
+   "libreoffice": 1
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 77.0,
+    "ssim": 92.5,
+    "text_boundary": 0.0
+   },
+   "libreoffice": {
+    "jaccard": 59.1,
+    "ssim": 87.7,
+    "text_boundary": 100.0
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case70/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case70/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case71",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case71/jubarte/page_001.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case71/libreoffice/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte": 1,
+   "libreoffice": 1
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 87.7,
+    "ssim": 96.9,
+    "text_boundary": 100.0
+   },
+   "libreoffice": {
+    "jaccard": 81.5,
+    "ssim": 92.5,
+    "text_boundary": 100.0
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case71/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case71/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case72",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case72/jubarte/page_001.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case72/libreoffice/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte": 1,
+   "libreoffice": 1
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 84.4,
+    "ssim": 96.1,
+    "text_boundary": 100.0
+   },
+   "libreoffice": {
+    "jaccard": 74.3,
+    "ssim": 90.2,
+    "text_boundary": 71.4
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case72/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case72/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case73",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case73/jubarte/page_001.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case73/libreoffice/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte": 1,
+   "libreoffice": 1
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 90.4,
+    "ssim": 95.6,
+    "text_boundary": 100.0
+   },
+   "libreoffice": {
+    "jaccard": 47.6,
+    "ssim": 62.9,
+    "text_boundary": 28.6
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case73/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case73/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case74",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case74/jubarte/page_001.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case74/libreoffice/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte": 1,
+   "libreoffice": 1
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 70.7,
+    "ssim": 83.2,
+    "text_boundary": 55.6
+   },
+   "libreoffice": {
+    "jaccard": 24.3,
+    "ssim": 36.0,
+    "text_boundary": 100.0
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case74/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case74/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case75",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case75/jubarte/page_001.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case75/libreoffice/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte": 1,
+   "libreoffice": 1
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 60.0,
+    "ssim": 72.6,
+    "text_boundary": 55.6
+   },
+   "libreoffice": {
+    "jaccard": 23.6,
+    "ssim": 34.8,
+    "text_boundary": 100.0
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case75/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case75/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case76",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case76/jubarte/page_001.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case76/libreoffice/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte": 1,
+   "libreoffice": 1
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 74.9,
+    "ssim": 86.0,
+    "text_boundary": 100.0
+   },
+   "libreoffice": {
+    "jaccard": 28.9,
+    "ssim": 44.4,
+    "text_boundary": 100.0
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case76/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case76/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case77",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case77/jubarte/page_001.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case77/libreoffice/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte": 1,
+   "libreoffice": 1
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 55.0,
+    "ssim": 71.7,
+    "text_boundary": 68.4
+   },
+   "libreoffice": {
+    "jaccard": 46.3,
+    "ssim": 75.6,
+    "text_boundary": 88.9
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case77/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case77/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case78",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case78/jubarte/page_001.webp",
+    "d2p/cases/case78/jubarte/page_002.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case78/libreoffice/page_001.webp",
+    "d2p/cases/case78/libreoffice/page_002.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 2,
+   "jubarte": 2,
+   "libreoffice": 2
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 99.5,
+    "ssim": 99.3,
+    "text_boundary": 100.0
+   },
+   "libreoffice": {
+    "jaccard": 98.0,
+    "ssim": 98.8,
+    "text_boundary": 100.0
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case78/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case78/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1,
+   2
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case8",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case8/jubarte/page_001.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case8/libreoffice/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte": 1,
+   "libreoffice": 1
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 85.4,
+    "ssim": 93.8,
+    "text_boundary": 100.0
+   },
+   "libreoffice": {
+    "jaccard": 76.3,
+    "ssim": 92.0,
+    "text_boundary": 100.0
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case8/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case8/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1
+  ]
+ },
+ {
+  "group": "cases",
+  "case": "case9",
+  "pages": {
+   "jubarte": [
+    "d2p/cases/case9/jubarte/page_001.webp"
+   ],
+   "libreoffice": [
+    "d2p/cases/case9/libreoffice/page_001.webp"
+   ]
+  },
+  "page_counts": {
+   "reference": 1,
+   "jubarte": 1,
+   "libreoffice": 1
+  },
+  "scores": {
+   "jubarte": {
+    "jaccard": 73.2,
+    "ssim": 91.3,
+    "text_boundary": 100.0
+   },
+   "libreoffice": {
+    "jaccard": 64.6,
+    "ssim": 81.4,
+    "text_boundary": 100.0
+   }
+  },
+  "pdfs": {
+   "jubarte": "d2p/cases/case9/jubarte/pages.pdf",
+   "libreoffice": "d2p/cases/case9/libreoffice/pages.pdf"
+  },
+  "times": {},
+  "errors": {},
+  "shown": [
+   1
+  ]
+ }
+]
