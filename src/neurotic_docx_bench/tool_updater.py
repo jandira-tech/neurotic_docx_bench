@@ -140,7 +140,7 @@ def installed_npm_version(package: str, cwd: Path) -> str | None:
 
 
 def update_npm_package(spec: str, cwd: Path, *, no_update: bool | None = None) -> str | None:
-    """``bun add --exact <spec>`` (unless pinned) and return the resolved installed version.
+    """``pnpm add --exact <spec>`` (unless pinned) and return the resolved installed version.
 
     ``no_update=None`` consults ``BENCH_NO_UPDATE``. Returns None if resolution fails.
     """
@@ -148,22 +148,30 @@ def update_npm_package(spec: str, cwd: Path, *, no_update: bool | None = None) -
         no_update = os.environ.get("BENCH_NO_UPDATE") == "1"
     package = _package_name(spec)
     if not no_update:
+        cmd = ["pnpm", "add", "--exact"]
+        # The pin tree is the repo root, a pnpm workspace root since the Node 26
+        # migration: `pnpm add` refuses to write a workspace root without -w.
+        if (Path(cwd) / "pnpm-workspace.yaml").is_file():
+            cmd.append("--workspace-root")
+        cmd.append(spec)
         subprocess.run(
-            # bun, not npm: this repo's package manager (AGENTS.md, bun.lock), and
-            # npm's strict cross-vendor peer resolution actively breaks the bench.
-            # All vendors share ONE node_modules, so one vendor's peers can refuse
-            # another's install — after superdoc@2.3.0 landed (peer
-            # pdfjs-dist ^5.4.296), `npm install @stll/folio-core@0.15.13` exited 1
-            # with ERESOLVE and BOTH folio and superdoc-ts were recorded as failed
-            # runs. That is our dependency graph printed as their crash, the D3
-            # disease again. bun installs the same specs without the conflict.
+            # pnpm, not npm: this repo's package manager (AGENTS.md,
+            # pnpm-lock.yaml), and npm's strict cross-vendor peer resolution
+            # actively breaks the bench. All vendors share ONE pin tree, so one
+            # vendor's peers can refuse another's install — after superdoc@2.3.0
+            # landed (peer pdfjs-dist ^5.4.296), `npm install
+            # @stll/folio-core@0.15.13` exited 1 with ERESOLVE and BOTH folio and
+            # superdoc-ts were recorded as failed runs. That is our dependency
+            # graph printed as their crash, the D3 disease again. pnpm resolves
+            # peers per package in its isolated layout and installs the same
+            # specs without the conflict.
             #
             # --exact: bench.yaml pins are EXACT and a caret range silently widens
             # them. A run was observed rewriting ``"docxodus": "9.0.0"`` to
             # ``"^9.0.0"``, after which a later install could resolve 9.1.0 while
             # bench.yaml still claimed 9.0.0 — the recorded tool_version and the
             # measured code drifting apart, i.e. the D5 split-brain.
-            ["bun", "add", "--exact", spec],
+            cmd,
             cwd=str(cwd),
             check=True,
             capture_output=True,
@@ -222,7 +230,7 @@ def resolve_tool_version(
             raise RuntimeError(
                 f"tool_version unresolved for npm package {package!r}: no "
                 f"node_modules/{_package_name(package)}/package.json under "
-                f"{cwd or Path.cwd()}. Run `bun install` (the repo's package manager) "
+                f"{cwd or Path.cwd()}. Run `pnpm install` (the repo's package manager) "
                 f"before benchmarking, or drop the `package:` pin from this run.",
             )
         return version

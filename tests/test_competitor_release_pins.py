@@ -2,7 +2,7 @@
 
 tests/test_superdoc_pins.py holds bench.yaml's superdoc pins to the installed packages.
 This file covers what it does not: docxodus everywhere, bench.smoke1.yaml, and the
-lockfiles that ``bun install --frozen-lockfile`` / ``uv sync`` install from. Versions are
+lockfiles that ``pnpm install --frozen-lockfile`` / ``uv sync`` install from. Versions are
 read from package.json and pyproject.toml, never hardcoded, so a bump only has to be
 consistent to pass.
 """
@@ -20,6 +20,7 @@ from helpers import REPO_ROOT
 
 CONFIGS = ['bench.yaml', 'bench.smoke1.yaml']
 DOCXODUS_VENDOR = REPO_ROOT / 'src/neurotic_docx_bench/utils/docxodus'
+DOCXODUS_IMPORTER = 'src/neurotic_docx_bench/utils/docxodus'
 
 
 def _runs(config_name: str) -> dict[str, dict]:
@@ -31,16 +32,30 @@ def _declared(package_dir: Path, package: str) -> str:
     return json.loads((package_dir / 'package.json').read_text())['dependencies'][package]
 
 
-def _bun_locked(package_dir: Path, package: str) -> str | None:
-    """The version bun.lock resolves ``package`` to (its ``"<pkg>": ["<pkg>@<ver>", ...]`` entry)."""
-    text = (package_dir / 'bun.lock').read_text()
-    m = re.search(rf'^\s*"{re.escape(package)}": \["{re.escape(package)}@([^"]+)"', text, re.MULTILINE)
-    return m.group(1) if m else None
+def _pnpm_locked(importer: str, package: str) -> str | None:
+    """The version pnpm-lock.yaml resolves ``package`` to for the ``importer`` workspace package.
+
+    pnpm 12 writes the lockfile as several YAML documents (the package-manager
+    self-management section is its own document), so merge every document's
+    ``importers`` before looking the entry up. Locked versions carry a peer-suffix
+    (``12.6.5(react@19.3.0)``); the pin is the version before the first ``(``.
+    """
+    importers: dict[str, dict] = {}
+    for doc in yaml.safe_load_all((REPO_ROOT / 'pnpm-lock.yaml').read_text()):
+        if doc and isinstance(doc.get('importers'), dict):
+            importers.update(doc['importers'])
+    entry = importers.get(importer, {}).get('dependencies', {}).get(package)
+    if not entry:
+        return None
+    return str(entry['version']).split('(', 1)[0]
 
 
-@pytest.mark.parametrize('package_dir', [REPO_ROOT, DOCXODUS_VENDOR], ids=['root', 'utils-docxodus'])
-def test_docxodus_declaration_matches_its_bun_lock(package_dir):
-    assert _bun_locked(package_dir, 'docxodus') == _declared(package_dir, 'docxodus')
+def test_docxodus_declaration_matches_its_pnpm_lock():
+    assert _pnpm_locked('.', 'docxodus') == _declared(REPO_ROOT, 'docxodus')
+
+
+def test_docxodus_vendor_declaration_matches_its_pnpm_lock():
+    assert _pnpm_locked(DOCXODUS_IMPORTER, 'docxodus') == _declared(DOCXODUS_VENDOR, 'docxodus')
 
 
 def test_docxodus_vendor_package_declares_the_root_version():
@@ -57,8 +72,8 @@ def test_docxodus_runs_pin_the_declared_version(config_name):
         assert runs[name]['package'] == f'docxodus@{version}', name
 
 
-def test_superdoc_editor_declaration_matches_bun_lock():
-    assert _bun_locked(REPO_ROOT, 'superdoc') == _declared(REPO_ROOT, 'superdoc')
+def test_superdoc_editor_declaration_matches_pnpm_lock():
+    assert _pnpm_locked('.', 'superdoc') == _declared(REPO_ROOT, 'superdoc')
 
 
 def test_smoke_superdoc_playwright_runs_pin_the_declared_editor():

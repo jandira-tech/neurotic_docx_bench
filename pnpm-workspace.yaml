@@ -1,0 +1,13 @@
+# One `pnpm install` at the root covers every Node dependency the bench invokes:
+# the repo-root pin tree (bench.yaml `package:` versions resolve here) plus the
+# vendored engine fallbacks under utils/. Not workspace members: utils/folio/folio
+# (gitignored folio monorepo checkout), utils/folio-current and harness/* (staged
+# harness apps installed ad hoc), utils/stemma and utils/safe-docx-compare (no deps).
+packages:
+  - src/neurotic_docx_bench/utils/docxodus
+  - src/neurotic_docx_bench/utils/docx-redline-js
+  - src/neurotic_docx_bench/utils/folio
+  - src/neurotic_docx_bench/utils/superdoc
+
+allowBuilds:
+  esbuild: true
