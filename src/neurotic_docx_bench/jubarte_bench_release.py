@@ -54,8 +54,8 @@ from neurotic_docx_bench import jubarte_release, release
 
 STAGES = ('install', 'convert', 'metrics', 'redlines', 'report', 'publish')
 RUN_DIR = Path('results/redlines_0929_full')
-COMPARE_REGEN = Path.home() / 'temp/T/compare_regen'
-WATCHDOG = Path.home() / 'T/jubarte-loop/word_watchdog.sh'
+COMPARE_REGEN = Path('results/compare_regen')
+WATCHDOG = Path(__file__).resolve().parents[2] / 'scripts/word_watchdog.sh'
 _VERSION = re.compile(r'^\d+\.\d+\.\d+$')
 
 

@@ -11,8 +11,8 @@ Writes:
   <batch>/rescore/summary.json
 
 Usage:
-  uv run python scripts/rescore-batch.py --batch ../jubarte-first/batch_to_fix
-  uv run python scripts/rescore-batch.py --batch ../jubarte-rust/batch_to_fix --jobs 8
+  uv run python scripts/rescore-batch.py --batch results/batch_to_fix/jubarte
+  uv run python scripts/rescore-batch.py --batch results/batch_to_fix/jubarte-rust --jobs 8
 """
 
 from __future__ import annotations

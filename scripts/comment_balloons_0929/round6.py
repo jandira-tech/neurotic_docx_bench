@@ -8,7 +8,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from ab import read, write
 OUT = Path(sys.argv[1] if len(sys.argv) > 1 else "r6/docx")
-M = Path(sys.argv[2]) if len(sys.argv) > 2 else Path.home() / "temp/T/comment_balloons/r3b/docx/R3_keep_4.docx"
+M = Path(sys.argv[2]) if len(sys.argv) > 2 else Path("results/comment_balloons/r3b/docx/R3_keep_4.docx")
 b = read(M)
 head, body = b.split("<w:body>", 1)
 tail = "<w:sectPr" + body.rsplit("<w:sectPr", 1)[1]

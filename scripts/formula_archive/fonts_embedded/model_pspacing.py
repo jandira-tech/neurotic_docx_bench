@@ -2,7 +2,7 @@
 # SPDX-FileCopyrightText: 2026 Jandira Technologies, LLC
 import zipfile,re,os,collections,sys
 from lxml import etree
-WR=os.path.expanduser('~/temp/T/neurotic_docx_bench/grok_run/wr0926')
+WR=os.path.expanduser('results/grok_run_view/grok_run/wr0926')
 NS={'w':'http://schemas.openxmlformats.org/wordprocessingml/2006/main'}
 W='{%s}'%NS['w']
 def load(p,part):

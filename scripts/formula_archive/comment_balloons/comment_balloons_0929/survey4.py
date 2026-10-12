@@ -5,7 +5,7 @@ commentRangeEnd is dead (body level, or first in its paragraph before any w:t/w:
 import json, re, zipfile
 from pathlib import Path
 from lxml import etree
-C = Path.home() / "temp/T/neurotic_docx_bench/corpus/word"
+C = Path("corpus/word")
 W = "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}"
 TEXT = tuple(f"{W}{t}" for t in ("t", "delText", "drawing", "pict", "object", "sym", "tab", "commentReference"))
 def predict(xml: bytes) -> tuple[int, int, int]:

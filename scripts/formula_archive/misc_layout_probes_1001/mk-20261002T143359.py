@@ -16,7 +16,7 @@ V={
  'm6':styles('<w:rFonts w:eastAsia="MS Mincho"/><w:lang w:val="en-AU" w:eastAsia="en-AU" w:bidi="ar-SA"/>'),
 }
 for n,sx in V.items():
-    args=['python3','/Users/arthrod/temp/T/jubarte-loop/mkdocx.py',f'src/{n}.docx',body]
+    args=['python3','results/jubarte-loop/mkdocx.py',f'src/{n}.docx',body]
     if sx:
         open(f'{n}_styles.xml','w').write(sx); args.append(f'{n}_styles.xml')
     subprocess.run(args+['--compat','15','--settings',st],check=True)

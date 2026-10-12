@@ -19,7 +19,7 @@ set -uo pipefail
 
 DIR="${1:?usage: word_probe_all.sh <dir> <log>}"
 LOG="${2:?usage: word_probe_all.sh <dir> <log>}"
-PROBE="/Users/arthrod/temp/T/jubarte-redlines/scripts/word-open-probe.sh"
+PROBE="src/neurotic_docx_bench/utils/jubarte/jubarte-redlines/scripts/word-open-probe.sh"
 AUTOREC="$HOME/Library/Containers/com.microsoft.Word/Data/Library/Preferences/AutoRecovery"
 
 kill_word() {

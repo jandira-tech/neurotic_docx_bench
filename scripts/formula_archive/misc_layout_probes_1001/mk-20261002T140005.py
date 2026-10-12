@@ -11,4 +11,4 @@ for name,extra in [('a',[]),('b',[('LM',[r('x  y','MS Mincho',sz=28)])]),('c',[(
     fake='PrbS4'+name
     L=[p(f'L{i}',[r('a  b  c  d',fake,sz=sz)]) for i,sz in enumerate([20,24,28])]
     L+= [p(l,rs) for l,rs in extra]
-    subprocess.run(['python3','/Users/arthrod/temp/T/jubarte-loop/mkdocx.py',f'src/{name}.docx',''.join(L),'--compat','15','--settings',settings],check=True)
+    subprocess.run(['python3','results/jubarte-loop/mkdocx.py',f'src/{name}.docx',''.join(L),'--compat','15','--settings',settings],check=True)

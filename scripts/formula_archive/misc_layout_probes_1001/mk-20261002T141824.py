@@ -17,4 +17,4 @@ long='日本語の文章、「括弧」と（丸括弧）が、句読点。を�
 for name,ctl in [('nc','doNotCompress'),('cp','compressPunctuation'),('ck','compressPunctuationAndJapaneseKana')]:
     L=[p(a,t) for a,t in lines]+[p('J',long,'both'),p('K',long,'left')]
     settings=f'<w:characterSpacingControl w:val="{ctl}"/><w:compat><w:compatSetting w:name="compatibilityMode" w:uri="http://schemas.microsoft.com/office/word" w:val="15"/></w:compat>'
-    subprocess.run(['python3','/Users/arthrod/temp/T/jubarte-loop/mkdocx.py',f'src/{name}.docx',''.join(L),'--compat','15','--settings',settings],check=True)
+    subprocess.run(['python3','results/jubarte-loop/mkdocx.py',f'src/{name}.docx',''.join(L),'--compat','15','--settings',settings],check=True)

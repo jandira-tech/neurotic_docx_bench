@@ -8,7 +8,7 @@ text, a drawing/object/symbol/tab, or another comment's reference mark). A reply
 import json, re, sys, zipfile
 from pathlib import Path
 from lxml import etree
-C = Path.home() / "temp/T/neurotic_docx_bench/corpus/word"
+C = Path("corpus/word")
 W = "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}"
 W14 = "{http://schemas.microsoft.com/office/word/2010/wordml}"
 W15 = "{http://schemas.microsoft.com/office/word/2012/wordml}"
