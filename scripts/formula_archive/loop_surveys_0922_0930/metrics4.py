@@ -9,7 +9,7 @@ scored(pairs, cache) scores {key: (ref, pdf)} once per cache file (runs/m4_*.jso
 import json, pathlib, subprocess, sys, tempfile
 from concurrent.futures import ThreadPoolExecutor
 
-sys.path.insert(0, "/Users/arthrod/temp/T/jubarte-redlines/_to_improve_docx_to_pdf_priority/scripts")
+sys.path.insert(0, "from_jubarte-redlines/_to_improve_docx_to_pdf_priority/scripts")
 import priority as pr  # noqa: E402
 
 FAILED = {"jaccard": 0.0, "ssim": 0.0, "text_boundary": 0.0, "max_break_drift": None}

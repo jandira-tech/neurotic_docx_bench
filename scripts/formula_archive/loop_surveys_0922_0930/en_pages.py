@@ -21,8 +21,8 @@ import sys
 import time
 from concurrent.futures import ThreadPoolExecutor
 
-G = "/Users/arthrod/temp/T/neurotic_docx_bench/grok_run"
-L = "/Users/arthrod/temp/T/jubarte-loop"
+G = "results/grok_run_view/grok_run"
+L = "results/jubarte-loop"
 SETS = {
     "a": ("500_docx_part_a_original", "500_pdf_part_a_original"),
     "b": ("500_docx_part_b_original", "500_pdf_part_b_original"),

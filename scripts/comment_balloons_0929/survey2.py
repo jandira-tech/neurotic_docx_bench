@@ -2,7 +2,7 @@
 import json, re, zipfile
 from collections import Counter
 from pathlib import Path
-C = Path.home() / "temp/T/neurotic_docx_bench/corpus/word"
+C = Path("corpus/word")
 def cnt(p, b): return len(re.findall(p, b))
 FEATS = {
     "moveTo": lambda b: "<w:moveTo " in b,

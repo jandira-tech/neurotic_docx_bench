@@ -1,8 +1,8 @@
 #!/bin/zsh
 # SPDX-License-Identifier: AGPL-3.0-only
 # SPDX-FileCopyrightText: 2026 Jandira Technologies, LLC
-cd /Users/arthrod/temp/T/neurotic_docx_bench
-R=results/redlines_0929_full; L=$R/jubarte-0.11.2; WD=/Users/arthrod/temp/T/jubarte-loop/word_watchdog.sh
+cd .
+R=results/redlines_0929_full; L=$R/jubarte-0.11.2; WD=results/jubarte-loop/word_watchdog.sh
 mkdir -p $L/pdf_by_word
 $WD $R/jubarte-0.11.2.word_pdf.log > /tmp/wordlane.wd1.log 2>&1 &
 wd=$!

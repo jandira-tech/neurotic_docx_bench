@@ -6,9 +6,9 @@ into a target directory with README + manifests for incremental re-scoring.
 
 Usage (from neurotic-docx-bench root):
   uv run python scripts/extract-bottom50-batch.py \\
-    --vendor jubarte --out ../jubarte-first/batch_to_fix --n 50
+    --vendor jubarte --out results/batch_to_fix/jubarte --n 50
   uv run python scripts/extract-bottom50-batch.py \\
-    --vendor jubarte-rust --out ../jubarte-rust/batch_to_fix --n 50
+    --vendor jubarte-rust --out results/batch_to_fix/jubarte-rust --n 50
 """
 
 from __future__ import annotations

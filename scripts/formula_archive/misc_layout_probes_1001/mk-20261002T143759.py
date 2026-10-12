@@ -19,4 +19,4 @@ L=[
  p('M4',[r('x  y','MS Mincho','Times New Roman',40)]),
 ]
 settings='<w:compat><w:balanceSingleByteDoubleByteWidth/><w:compatSetting w:name="compatibilityMode" w:uri="http://schemas.microsoft.com/office/word" w:val="15"/></w:compat>'
-subprocess.run(['python3','/Users/arthrod/temp/T/jubarte-loop/mkdocx.py','src/pair.docx',''.join(L),'--compat','15','--settings',settings],check=True)
+subprocess.run(['python3','results/jubarte-loop/mkdocx.py','src/pair.docx',''.join(L),'--compat','15','--settings',settings],check=True)

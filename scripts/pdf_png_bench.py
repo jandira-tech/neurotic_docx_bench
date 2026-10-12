@@ -55,7 +55,7 @@ STORE = ROOT / "results" / "pdf_png_bench" / "scores.jsonl"
 SOT = "libreoffice"
 TOOLS = ("pymupdf", "pdftoppm", "mutool", "jubarte")
 SOURCE_INPUT = {SOT: "pdf", "pymupdf": "pdf", "pdftoppm": "pdf", "mutool": "pdf", "jubarte": "docx"}
-JUBARTE = Path(os.environ.get("PDF_PNG_JUBARTE", Path.home() / "temp" / "T" / "speed_bins" / "jubarte-86b6b5d3"))
+JUBARTE = Path(os.environ.get("PDF_PNG_JUBARTE", Path(__file__).resolve().parents[1] / "src/neurotic_docx_bench/utils/jubarte/speed_bins/jubarte-86b6b5d3"))
 
 
 def page_sizes(pdf: Path, dpi: int) -> list[tuple[int, int]]:

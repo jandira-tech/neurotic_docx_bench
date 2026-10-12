@@ -29,7 +29,7 @@ timings and failures.
 
 Run from the repository root::
 
-    uv run python scripts/tryout_jubarte.py --jubarte-bin /Users/arthrod/T/jubarte-redlines/target/release/jubarte
+    uv run python scripts/tryout_jubarte.py --jubarte-bin src/neurotic_docx_bench/utils/jubarte/jubarte-redlines/target/release/jubarte
     uv run python scripts/tryout_jubarte.py --task redline --dry-run     # selection only
 """
 
@@ -53,7 +53,7 @@ console = Console()
 app = typer.Typer(add_completion=False)
 
 TRYOUT = tryout.TRYOUT_DIR
-DEFAULT_BIN = Path("/Users/arthrod/T/jubarte-redlines/target/release/jubarte")
+DEFAULT_BIN = Path(__file__).resolve().parents[1] / "src/neurotic_docx_bench/utils/jubarte/jubarte-redlines/target/release/jubarte"
 TIMEOUT_S = 180.0
 
 

@@ -2,8 +2,8 @@
 # SPDX-FileCopyrightText: 2026 Jandira Technologies, LLC
 import json, collections
 import numpy as np
-m3={r['id']:r for r in json.load(open('/Users/arthrod/temp/T/grok_run_archive/justify3_1003/docx/manifest.json'))}
-m4={r['id']:r for r in json.load(open('/Users/arthrod/temp/T/grok_run_archive/justify4_1003/docx/manifest.json'))}
+m3={r['id']:r for r in json.load(open('results/grok_run_view/grok_run_archive/justify3_1003/docx/manifest.json'))}
+m4={r['id']:r for r in json.load(open('results/grok_run_view/grok_run_archive/justify4_1003/docx/manifest.json'))}
 rows=[]
 for r in json.load(open('/tmp/justify4_eval.json')): r['size']=m4[r['id']]['size']; rows.append(r)
 for r in json.load(open('/tmp/justify3_eval.json')): r['size']=m3[r['id']]['size']; r['face']=r['face']+'@3'; rows.append(r)

@@ -19,7 +19,7 @@ const dir = process.argv[2];
 if (!dir) throw new Error("usage: redline_dual_path_report.mjs <runDir> [--update-docs]");
 const UPDATE_DOCS = process.argv.includes("--update-docs");
 const ROOT = resolve(dirname(new URL(import.meta.url).pathname), "..");
-const JF = process.env.JUBARTE_FIRST_DIR || resolve(ROOT, "../jubarte-first");
+const JF = process.env.JUBARTE_FIRST_DIR || resolve(ROOT, "src/neurotic_docx_bench/utils/jubarte/jubarte-first");
 
 const git = (cwd, ...args) => {
   try {

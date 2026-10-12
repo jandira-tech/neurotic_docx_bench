@@ -16,4 +16,4 @@ for i,sz in enumerate([20,24,28,40]):
 for i,sz in enumerate([20,24,28,40]):
     L.append(p(f'LN{i}', [r('a  b  c  d', None, sz=sz)]))
 settings='<w:compat><w:balanceSingleByteDoubleByteWidth/><w:compatSetting w:name="compatibilityMode" w:uri="http://schemas.microsoft.com/office/word" w:val="15"/></w:compat>'
-subprocess.run(['python3','/Users/arthrod/temp/T/jubarte-loop/mkdocx.py','src/sz.docx',''.join(L),'--compat','15','--settings',settings],check=True)
+subprocess.run(['python3','results/jubarte-loop/mkdocx.py','src/sz.docx',''.join(L),'--compat','15','--settings',settings],check=True)

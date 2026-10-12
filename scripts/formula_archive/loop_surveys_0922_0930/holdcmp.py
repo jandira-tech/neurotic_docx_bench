@@ -35,7 +35,7 @@ for p in "abr":
 from pages import counts, gate  # noqa: E402
 from metrics4 import scored  # noqa: E402
 
-D = pathlib.Path("/Users/arthrod/temp/T/jubarte-redlines/_to_improve_docx_to_pdf")
+D = pathlib.Path("from_jubarte-redlines/_to_improve_docx_to_pdf")
 # en holdout: corpus/word's docx and Word PDFs (grok_run was removed 2026-09-30, neurotic d854977a4).
 EN = [l.rstrip("\n").split("\t") for l in open(L / "en_holdout_corpus.tsv") if not l.startswith("#")]
 sets = {"tip": ([k.strip() for k in open(L / "tip_holdout.txt") if k.strip()],

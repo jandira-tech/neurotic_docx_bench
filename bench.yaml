@@ -333,7 +333,7 @@ runs:
 
   # (4f) jubarte-rust — canonical ~/T/jubarte-redlines CLI (Rust Word-mode comparer).
   # Install target/release/jubarte as utils/jubarte/jubarte-rust/redline; see
-  # ../reconciliation_plan/GET_JUBARTE_RUST.md for the source-to-bench map.
+  # docs/GET_JUBARTE_RUST.md for the source-to-bench map.
   - name: jubarte-rust
     dist: src/neurotic_docx_bench/utils/jubarte/jubarte-rust
     generate: "node --import tsx scripts/generate-native-redlines.ts --method=jubarte-rust --dist=src/neurotic_docx_bench/utils/jubarte/jubarte-rust --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=jubarte-rust"
