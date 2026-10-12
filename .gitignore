@@ -87,10 +87,7 @@ harness/folio-viewer/
 corpus/word_based/superdoc_visual_benchmark/
 corpus/word_based/superdoc_word_benchmark_canary/reports/
 corpus/word_based/FIXTURES_TO_REMOVE.md
-src/neurotic_docx_bench/utils/superdoc/bun.lock
 src/neurotic_docx_bench/utils/folio/harness/folio-viewer/bun.lock
-src/neurotic_docx_bench/utils/folio/bun.lock
-src/neurotic_docx_bench/utils/docx-redline-js/bun.lock
 docs/superpowers/plans/
 src/neurotic_docx_bench/utils/docxodus/node_modules/
 src/neurotic_docx_bench/utils/superdoc/harness-viewer-generation/node_modules/

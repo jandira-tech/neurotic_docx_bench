@@ -98,7 +98,7 @@ describe("batch run directory creation", () => {
 		const manifest = join(root, "manifest.csv");
 		writeFileSync(manifest, "base,next\n");
 		return {
-			method, dist: "", manifest, sourceDir: root, tool: method,
+			method, dist: "", manifest, sourceDir: root, tool: method, status: "ok",
 			out: join(root, "outputs"), runDir: join(root, "nested", "run"), force: false,
 		};
 	}
