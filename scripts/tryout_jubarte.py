@@ -58,7 +58,8 @@ TIMEOUT_S = 180.0
 
 
 def redline_cmd(binary: Path, base: Path, next_: Path, out: Path) -> list[str]:
-    return [str(binary), str(base), str(next_), "-o", str(out), "--force", "--quiet"]
+    # jubarte dates revisions now unless -d pins it; the epoch keeps reruns byte-identical
+    return [str(binary), str(base), str(next_), "-o", str(out), "--force", "--quiet", "-d", "1970-01-01T00:00:00Z"]
 
 
 def convert_cmd(binary: Path, src: Path, out: Path) -> list[str]:
