@@ -60,6 +60,8 @@ TEMPLATE_TASKS = (
     ('convert', ('{input}', '{out}')),
 )
 OUTPUT_EXT = {'redline': '.docx', 'convert': '.pdf'}
+# jubarte dates revisions now unless -d pins it; the epoch keeps reruns byte-identical
+EPOCH = '1970-01-01T00:00:00Z'
 
 Runner = Callable[[dict[str, Path], Path, int], Path]
 RenderDocx = Callable[[Path, Path], Path]
@@ -312,7 +314,8 @@ def _jubarte_runners(binary: Path) -> dict[str, Runner]:
 
     def redline(inputs, out, dpi):
         out.mkdir(parents=True, exist_ok=True)
-        _run([b, str(inputs['base']), str(inputs['next']), '-o', str(out / 'redline.docx'), '--force', '--quiet'])
+        _run([b, str(inputs['base']), str(inputs['next']), '-o', str(out / 'redline.docx'), '--force', '--quiet',
+              '-d', EPOCH])
         return _written(out / 'redline.docx')
 
     def convert(inputs, out, dpi):
