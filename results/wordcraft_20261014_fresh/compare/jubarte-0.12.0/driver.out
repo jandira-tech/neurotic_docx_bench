@@ -1,0 +1,255 @@
+▸ PDF quality is sticky: `save as … file format format PDF` inherits whatever 
+'Optimize for' you last chose in Word's own Save As dialog.
+  Open any document in Word once, File > Save As > PDF, and pick the SECOND 
+option, Best for printing.
+  That choice persists; this script cannot set it. Pass --no-check-preset to 
+stop seeing this.
+2026-10-14 06:30:41.401 | INFO     | __main__:preflight:2235 -  preflight: 
+open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-10-14 06:30:41.407 | INFO     | __main__:convert_folder:1908 -  export: 
+one_osascript=True documents=149 accept_all=False reject_all=False
+2026-10-14 06:30:41.534 | INFO     | __main__:_convert_batched:2108 -  one 
+osascript for 149 document(s)
+2026-10-14 06:30:46.546 | INFO     | __main__:_loop:1479 -  0/149
+2026-10-14 06:30:56.637 | INFO     | __main__:_nudge:1450 -  item 1/149 not 
+finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 06:31:26.780 | INFO     | __main__:_nudge:1450 -  item 1/149 not 
+finished after 40 s; bringing Word forward to look for an alert
+2026-10-14 06:31:47.207 | WARNING  | __main__:_report:1439 -  item 1/149 open 
+for more than 30 s:
+-- Word windows {name, subrole}: osascript timed out
+-- Word window text: osascript timed out
+-- crash reporters: osascript timed out
+-- batch-pdf-1.log:
+
+-- newest diagnostic reports: jubarte-2026-10-14-055954.ips, 
+soffice-2026-10-14-041750.ips, soffice-2026-10-14-041543.ips, 
+ExcUserFault_nsattributedstringagent-2026-10-08-102340.ips, 
+math-probe-2026-10-14-023025.ips
+2026-10-14 06:31:56.852 | INFO     | __main__:_nudge:1450 -  item 1/149 not 
+finished after 70 s; bringing Word forward to look for an alert
+2026-10-14 06:32:26.973 | INFO     | __main__:_nudge:1450 -  item 1/149 not 
+finished after 100 s; bringing Word forward to look for an alert
+2026-10-14 06:32:57.092 | INFO     | __main__:_nudge:1450 -  item 1/149 not 
+finished after 130 s; bringing Word forward to look for an alert
+2026-10-14 06:33:27.267 | INFO     | __main__:_nudge:1450 -  item 1/149 not 
+finished after 161 s; bringing Word forward to look for an alert
+2026-10-14 06:33:57.342 | INFO     | __main__:_nudge:1450 -  item 1/149 not 
+finished after 191 s; bringing Word forward to look for an alert
+2026-10-14 06:34:27.477 | INFO     | __main__:_nudge:1450 -  item 1/149 not 
+finished after 221 s; bringing Word forward to look for an alert
+2026-10-14 06:34:57.637 | INFO     | __main__:_nudge:1450 -  item 1/149 not 
+finished after 251 s; bringing Word forward to look for an alert
+2026-10-14 06:35:27.764 | INFO     | __main__:_nudge:1450 -  item 1/149 not 
+finished after 281 s; bringing Word forward to look for an alert
+2026-10-14 06:35:57.860 | INFO     | __main__:_nudge:1450 -  item 1/149 not 
+finished after 311 s; bringing Word forward to look for an alert
+2026-10-14 06:36:27.932 | INFO     | __main__:_nudge:1450 -  item 1/149 not 
+finished after 341 s; bringing Word forward to look for an alert
+2026-10-14 06:36:54.713 | WARNING  | __main__:run_batch_with_resume:1624 -  148 
+item(s) never reached (ended without reaching them); recycling Word and retrying
+the rest first, retried items last (pass 2, 1 of 3 stalled passes used)
+2026-10-14 06:36:54.797 | WARNING  | __main__♻1068 -  restarting a Word this run
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-14 06:36:54.807 | WARNING  | __main__♻1074 -  recycling (restart 1)
+2026-10-14 06:37:38.718 | INFO     | __main__:_loop:1479 -  0/148
+2026-10-14 06:37:42.084 | WARNING  | __main__:run_batch_with_resume:1624 -  148 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 3, 1 of 3 stalled 
+passes used)
+2026-10-14 06:37:42.108 | WARNING  | __main__♻1074 -  recycling (restart 2)
+2026-10-14 06:37:57.709 | INFO     | __main__:_note_dialogs:774 -  Microsoft 
+Error Reporting shows button 'OK'
+2026-10-14 06:37:57.805 | INFO     | __main__:_note_dialogs:774 -  Microsoft 
+Error Reporting shows button 'More Information'
+2026-10-14 06:37:57.809 | INFO     | __main__:_note_dialogs:774 -  Microsoft 
+Error Reporting shows button 'missing value'
+2026-10-14 06:37:57.813 | INFO     | __main__:_note_dialogs:777 -  Microsoft 
+Error Reporting says: 'There was a problem with Microsoft Word and we apologize 
+for the inconvenience. | Microsoft Error Reporting'
+2026-10-14 06:38:01.352 | WARNING  | __main__:_loop_merp:888 -  error report 
+declined via 'OK'; Word said: "There was a problem with Microsoft Word and we 
+apologize for the inconvenience. | Microsoft Error Reporting"
+2026-10-14 06:38:05.838 | INFO     | __main__:_loop:1479 -  0/148
+2026-10-14 06:38:10.509 | WARNING  | __main__:run_batch_with_resume:1624 -  148 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 4, 1 of 3 stalled 
+passes used)
+2026-10-14 06:38:10.558 | WARNING  | __main__♻1074 -  recycling (restart 3)
+2026-10-14 06:38:26.221 | WARNING  | __main__:_loop_merp:888 -  error report 
+declined via 'OK'; Word said: "There was a problem with Microsoft Word and we 
+apologize for the inconvenience. | Microsoft Error Reporting"
+2026-10-14 06:38:34.132 | INFO     | __main__:_loop:1479 -  0/148
+2026-10-14 06:38:39.791 | WARNING  | __main__:run_batch_with_resume:1624 -  148 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 5, 1 of 3 stalled 
+passes used)
+2026-10-14 06:38:39.810 | WARNING  | __main__♻1074 -  recycling (restart 4)
+2026-10-14 06:38:59.052 | WARNING  | __main__:_loop_merp:888 -  error report 
+declined via 'OK'; Word said: "There was a problem with Microsoft Word and we 
+apologize for the inconvenience. | Microsoft Error Reporting"
+2026-10-14 06:39:03.452 | INFO     | __main__:_loop:1479 -  0/148
+2026-10-14 06:39:13.503 | INFO     | __main__:_nudge:1450 -  item 1/148 not 
+finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 06:39:43.635 | INFO     | __main__:_nudge:1450 -  item 1/148 not 
+finished after 40 s; bringing Word forward to look for an alert
+2026-10-14 06:40:04.168 | WARNING  | __main__:_report:1439 -  item 1/148 open 
+for more than 30 s:
+-- Word windows {name, subrole}: osascript timed out
+-- Word window text: osascript timed out
+-- crash reporters: osascript timed out
+-- batch-pdf-5.log:
+
+-- newest diagnostic reports: jubarte-2026-10-14-055954.ips, 
+soffice-2026-10-14-041750.ips, soffice-2026-10-14-041543.ips, 
+ExcUserFault_nsattributedstringagent-2026-10-08-102340.ips, 
+math-probe-2026-10-14-023025.ips
+2026-10-14 06:40:13.743 | INFO     | __main__:_nudge:1450 -  item 1/148 not 
+finished after 70 s; bringing Word forward to look for an alert
+2026-10-14 06:40:43.845 | INFO     | __main__:_nudge:1450 -  item 1/148 not 
+finished after 100 s; bringing Word forward to look for an alert
+2026-10-14 06:41:13.927 | INFO     | __main__:_nudge:1450 -  item 1/148 not 
+finished after 130 s; bringing Word forward to look for an alert
+2026-10-14 06:41:44.030 | INFO     | __main__:_loop:1479 -  1/148
+2026-10-14 06:41:49.065 | INFO     | __main__:_loop:1479 -  2/148
+2026-10-14 06:41:59.208 | INFO     | __main__:_nudge:1450 -  item 3/148 not 
+finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 06:42:29.368 | INFO     | __main__:_nudge:1450 -  item 3/148 not 
+finished after 40 s; bringing Word forward to look for an alert
+2026-10-14 06:42:49.839 | WARNING  | __main__:_report:1439 -  item 3/148 open 
+for more than 30 s:
+-- Word windows {name, subrole}: osascript timed out
+-- Word window text: osascript timed out
+-- crash reporters: osascript timed out
+-- batch-pdf-5.log:
+        4
+        5
+-- newest diagnostic reports: jubarte-2026-10-14-055954.ips, 
+soffice-2026-10-14-041750.ips, soffice-2026-10-14-041543.ips, 
+ExcUserFault_nsattributedstringagent-2026-10-08-102340.ips, 
+math-probe-2026-10-14-023025.ips
+2026-10-14 06:42:59.484 | INFO     | __main__:_nudge:1450 -  item 3/148 not 
+finished after 70 s; bringing Word forward to look for an alert
+2026-10-14 06:43:29.584 | INFO     | __main__:_nudge:1450 -  item 3/148 not 
+finished after 100 s; bringing Word forward to look for an alert
+2026-10-14 06:43:59.722 | INFO     | __main__:_nudge:1450 -  item 3/148 not 
+finished after 131 s; bringing Word forward to look for an alert
+2026-10-14 06:44:29.801 | INFO     | __main__:_nudge:1450 -  item 3/148 not 
+finished after 161 s; bringing Word forward to look for an alert
+2026-10-14 06:44:59.928 | INFO     | __main__:_nudge:1450 -  item 3/148 not 
+finished after 191 s; bringing Word forward to look for an alert
+2026-10-14 06:45:30.017 | INFO     | __main__:_nudge:1450 -  item 3/148 not 
+finished after 221 s; bringing Word forward to look for an alert
+2026-10-14 06:46:00.096 | INFO     | __main__:_nudge:1450 -  item 3/148 not 
+finished after 251 s; bringing Word forward to look for an alert
+2026-10-14 06:46:30.180 | INFO     | __main__:_nudge:1450 -  item 3/148 not 
+finished after 281 s; bringing Word forward to look for an alert
+2026-10-14 06:47:00.303 | INFO     | __main__:_nudge:1450 -  item 3/148 not 
+finished after 311 s; bringing Word forward to look for an alert
+2026-10-14 06:47:07.253 | WARNING  | __main__:run_batch_with_resume:1624 -  145 
+item(s) never reached (ended without reaching them); recycling Word and retrying
+the rest first, retried items last (pass 6, 2 of 3 stalled passes used)
+2026-10-14 06:47:07.257 | WARNING  | __main__♻1074 -  recycling (restart 5)
+2026-10-14 06:47:31.265 | INFO     | __main__:_loop:1479 -  0/145
+2026-10-14 06:47:36.305 | INFO     | __main__:_loop:1479 -  3/145
+2026-10-14 06:47:46.335 | INFO     | __main__:_loop:1479 -  7/145
+2026-10-14 06:47:51.357 | INFO     | __main__:_loop:1479 -  12/145
+2026-10-14 06:47:56.435 | INFO     | __main__:_loop:1479 -  13/145
+2026-10-14 06:48:06.477 | INFO     | __main__:_nudge:1450 -  item 14/145 not 
+finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 06:48:16.531 | INFO     | __main__:_loop:1479 -  14/145
+2026-10-14 06:48:21.586 | INFO     | __main__:_loop:1479 -  18/145
+2026-10-14 06:48:26.631 | INFO     | __main__:_loop:1479 -  20/145
+2026-10-14 06:48:31.654 | INFO     | __main__:_loop:1479 -  23/145
+2026-10-14 06:48:36.674 | INFO     | __main__:_loop:1479 -  26/145
+2026-10-14 06:48:46.706 | INFO     | __main__:_loop:1479 -  29/145
+2026-10-14 06:48:51.743 | INFO     | __main__:_loop:1479 -  32/145
+2026-10-14 06:48:56.766 | INFO     | __main__:_loop:1479 -  35/145
+2026-10-14 06:49:06.801 | INFO     | __main__:_nudge:1450 -  item 36/145 not 
+finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 06:49:16.819 | INFO     | __main__:_loop:1479 -  36/145
+2026-10-14 06:49:21.830 | INFO     | __main__:_loop:1479 -  37/145
+2026-10-14 06:49:31.858 | INFO     | __main__:_loop:1479 -  40/145
+2026-10-14 06:49:36.890 | INFO     | __main__:_loop:1479 -  44/145
+2026-10-14 06:49:41.898 | INFO     | __main__:_loop:1479 -  48/145
+2026-10-14 06:49:46.912 | INFO     | __main__:_loop:1479 -  53/145
+2026-10-14 06:49:51.927 | INFO     | __main__:_loop:1479 -  56/145
+2026-10-14 06:49:56.968 | INFO     | __main__:_loop:1479 -  61/145
+2026-10-14 06:50:02.012 | INFO     | __main__:_loop:1479 -  65/145
+2026-10-14 06:50:07.059 | INFO     | __main__:_loop:1479 -  69/145
+2026-10-14 06:50:17.124 | INFO     | __main__:_loop:1479 -  72/145
+2026-10-14 06:50:22.147 | INFO     | __main__:_loop:1479 -  75/145
+2026-10-14 06:50:27.178 | INFO     | __main__:_loop:1479 -  80/145
+2026-10-14 06:50:37.195 | INFO     | __main__:_loop:1479 -  82/145
+2026-10-14 06:50:42.205 | INFO     | __main__:_loop:1479 -  86/145
+2026-10-14 06:50:47.214 | INFO     | __main__:_loop:1479 -  90/145
+2026-10-14 06:50:52.219 | INFO     | __main__:_loop:1479 -  95/145
+2026-10-14 06:50:57.227 | INFO     | __main__:_loop:1479 -  97/145
+2026-10-14 06:51:07.235 | INFO     | __main__:_nudge:1450 -  item 98/145 not 
+finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 06:51:17.242 | INFO     | __main__:_loop:1479 -  100/145
+2026-10-14 06:51:22.244 | INFO     | __main__:_loop:1479 -  106/145
+2026-10-14 06:51:27.251 | INFO     | __main__:_loop:1479 -  110/145
+2026-10-14 06:51:32.258 | INFO     | __main__:_loop:1479 -  114/145
+2026-10-14 06:51:37.267 | INFO     | __main__:_loop:1479 -  118/145
+2026-10-14 06:51:42.271 | INFO     | __main__:_loop:1479 -  123/145
+2026-10-14 06:51:47.279 | INFO     | __main__:_loop:1479 -  128/145
+2026-10-14 06:51:52.284 | INFO     | __main__:_loop:1479 -  134/145
+2026-10-14 06:51:57.291 | INFO     | __main__:_loop:1479 -  139/145
+2026-10-14 06:52:02.299 | INFO     | __main__:_loop:1479 -  142/145
+2026-10-14 06:52:07.074 | WARNING  | __main__:run_batch_with_resume:1624 -  2 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 7, 2 of 3 stalled 
+passes used)
+2026-10-14 06:52:07.077 | WARNING  | __main__♻1074 -  recycling (restart 6)
+2026-10-14 06:52:08.316 | WARNING  | __main__:_loop_merp:888 -  error report 
+declined via 'OK'; Word said: "There was a problem with Microsoft Word and we 
+apologize for the inconvenience. | Microsoft Error Reporting"
+2026-10-14 06:52:17.496 | INFO     | __main__:_loop:1479 -  0/2
+2026-10-14 06:52:18.365 | WARNING  | __main__:run_batch_with_resume:1624 -  1 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 8, 2 of 3 stalled 
+passes used)
+2026-10-14 06:52:18.366 | WARNING  | __main__♻1074 -  recycling (restart 7)
+2026-10-14 06:52:19.782 | WARNING  | __main__:_loop_merp:888 -  error report 
+declined via 'OK'; Word said: "There was a problem with Microsoft Word and we 
+apologize for the inconvenience. | Microsoft Error Reporting"
+2026-10-14 06:52:29.864 | ERROR    | __main__:_convert_batched:2153 -  FAIL: 
+00baea9614.docx — Microsoft Word got an error: AppleEvent timed out.
+2026-10-14 06:52:29.866 | ERROR    | __main__:_convert_batched:2153 -  FAIL: 
+04b7d19a3a.docx — Word crashed on it in 2 passes: Microsoft Word got an error: 
+Connection is invalid.
+2026-10-14 06:52:29.867 | ERROR    | __main__:_convert_batched:2153 -  FAIL: 
+85b1c9235c.docx — Word crashed on it in 2 passes: Microsoft Word got an error: 
+Connection is invalid.
+2026-10-14 06:52:29.872 | ERROR    | __main__:_convert_batched:2153 -  FAIL: 
+9129d2ecd2.docx — Word crashed on it in 2 passes: Microsoft Word got an error: 
+Connection is invalid.
+2026-10-14 06:52:29.889 | ERROR    | __main__:_convert_batched:2153 -  FAIL: 
+9f142ac84a.docx — 
+2026-10-14 06:52:35.585 | WARNING  | __main__:_loop_merp:888 -  error report 
+declined via 'OK'; Word said: "There was a problem with Microsoft Word and we 
+apologize for the inconvenience. | Microsoft Error Reporting"
+2026-10-14 06:52:35.587 | INFO     | __main__:stop:907 -  tally: declined=0 
+dismissed=6 granted=0 forwarded=0 alerts_seen=1
+                DOCX → PDF:                 
+/Users/arthrod/temp/T/neurotic_docx_bench/re
+sults/wordcraft_20261014_fresh/compare/jubar
+              te-0.12.0/retry               
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━┓
+┃ outcome                          ┃ count ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━┩
+│ converted                        │   144 │
+│ skipped (exists)                 │     0 │
+│ failed                           │     5 │
+│ seconds per document (batch avg) │   8.8 │
+└──────────────────────────────────┴───────┘
+  FAIL 00baea9614.docx: Microsoft Word got an error: AppleEvent timed out.
+  FAIL 04b7d19a3a.docx: Word crashed on it in 2 passes: Microsoft Word got an 
+error: Connection is invalid.
+  FAIL 85b1c9235c.docx: Word crashed on it in 2 passes: Microsoft Word got an 
+error: Connection is invalid.
+  FAIL 9129d2ecd2.docx: Word crashed on it in 2 passes: Microsoft Word got an 
+error: Connection is invalid.
+  FAIL 9f142ac84a.docx: 
