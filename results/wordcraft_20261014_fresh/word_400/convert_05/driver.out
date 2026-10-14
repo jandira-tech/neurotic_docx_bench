@@ -1,0 +1,81 @@
+▸ PDF quality is sticky: `save as … file format format PDF` inherits whatever 
+'Optimize for' you last chose in Word's own Save As dialog.
+  Open any document in Word once, File > Save As > PDF, and pick the SECOND 
+option, Best for printing.
+  That choice persists; this script cannot set it. Pass --no-check-preset to 
+stop seeing this.
+2026-10-14 04:32:28.608 | INFO     | __main__:preflight:2235 -  preflight: 
+open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-10-14 04:32:28.614 | INFO     | __main__:convert_folder:1908 -  export: 
+one_osascript=True documents=89 accept_all=False reject_all=False
+2026-10-14 04:32:28.704 | INFO     | __main__:_convert_batched:2108 -  one 
+osascript for 89 document(s)
+2026-10-14 04:32:33.714 | INFO     | __main__:_loop:1479 -  3/89
+2026-10-14 04:32:38.722 | INFO     | __main__:_loop:1479 -  9/89
+2026-10-14 04:32:43.726 | INFO     | __main__:_loop:1479 -  16/89
+2026-10-14 04:32:48.760 | INFO     | __main__:_loop:1479 -  23/89
+2026-10-14 04:32:53.767 | INFO     | __main__:_loop:1479 -  31/89
+2026-10-14 04:32:58.774 | INFO     | __main__:_loop:1479 -  37/89
+2026-10-14 04:33:03.779 | INFO     | __main__:_loop:1479 -  45/89
+2026-10-14 04:33:08.785 | INFO     | __main__:_loop:1479 -  52/89
+2026-10-14 04:33:13.789 | INFO     | __main__:_loop:1479 -  59/89
+2026-10-14 04:33:18.764 | WARNING  | __main__:run_batch_with_resume:1624 -  28 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 2, 0 of 3 stalled 
+passes used)
+2026-10-14 04:33:18.765 | WARNING  | __main__♻1068 -  restarting a Word this run
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-14 04:33:18.765 | WARNING  | __main__♻1074 -  recycling (restart 1)
+2026-10-14 04:33:19.832 | INFO     | __main__:_note_dialogs:774 -  Microsoft 
+Error Reporting shows button 'OK'
+2026-10-14 04:33:19.833 | INFO     | __main__:_note_dialogs:774 -  Microsoft 
+Error Reporting shows button 'More Information'
+2026-10-14 04:33:19.833 | INFO     | __main__:_note_dialogs:774 -  Microsoft 
+Error Reporting shows button 'missing value'
+2026-10-14 04:33:19.834 | INFO     | __main__:_note_dialogs:777 -  Microsoft 
+Error Reporting says: 'There was a problem with Microsoft Word and we apologize 
+for the inconvenience. | Microsoft Error Reporting'
+2026-10-14 04:33:20.440 | WARNING  | __main__:_loop_merp:888 -  error report 
+declined via 'OK'; Word said: "There was a problem with Microsoft Word and we 
+apologize for the inconvenience. | Microsoft Error Reporting"
+2026-10-14 04:33:27.877 | INFO     | __main__:_loop:1479 -  4/28
+2026-10-14 04:33:32.880 | INFO     | __main__:_loop:1479 -  11/28
+2026-10-14 04:33:37.886 | INFO     | __main__:_loop:1479 -  19/28
+2026-10-14 04:33:42.892 | INFO     | __main__:_loop:1479 -  26/28
+2026-10-14 04:33:45.072 | ERROR    | __main__:_convert_batched:2153 -  FAIL: 
+with_comments_tracking__3f91c8f0cd_file_9__vs__e3d833aef0_file_10_redline_db13a6
+91da.docx — Word crashed on it in 2 passes: Microsoft Word got an error: 
+Connection is invalid.
+2026-10-14 04:33:45.089 | ERROR    | __main__:_convert_batched:2153 -  FAIL: 
+with_comments_tracking__ba3f04f252_sample_document_really_repaired_word_repaired
+__vs__d93f1dafca_sample_document_word_repair_of_our_output_iter2_redline_713774d
+8e1.docx — Microsoft Word got an error: document 
+"00078__with_comments_tracking__ba3f04f252_sample_document_really_repaired_word_
+repaired__vs__d93f1dafca_sample_document_word_repair_of_our_output_iter2_redline
+_7
+2026-10-14 04:33:48.102 | INFO     | __main__:stop:907 -  tally: declined=0 
+dismissed=1 granted=0 forwarded=0 alerts_seen=1
+                DOCX → PDF:                 
+/Users/arthrod/temp/T/neurotic_docx_bench/re
+sults/wordcraft_20261014_fresh/word_400/conv
+                ert_05/docx                 
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━┓
+┃ outcome                          ┃ count ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━┩
+│ converted                        │    87 │
+│ skipped (exists)                 │     0 │
+│ failed                           │     2 │
+│ seconds per document (batch avg) │   0.9 │
+└──────────────────────────────────┴───────┘
+  FAIL 
+with_comments_tracking__3f91c8f0cd_file_9__vs__e3d833aef0_file_10_redline_db13a6
+91da.docx: Word crashed on it in 2 passes: Microsoft Word got an error: 
+Connection is invalid.
+  FAIL 
+with_comments_tracking__ba3f04f252_sample_document_really_repaired_word_repaired
+__vs__d93f1dafca_sample_document_word_repair_of_our_output_iter2_redline_713774d
+8e1.docx: Microsoft Word got an error: document 
+"00078__with_comments_tracking__ba3f04f252_sample_document_really_repaired_word_
+repaired__vs__d93f1dafca_sample_document_word_repair_of_our_output_iter2_redline
+_7

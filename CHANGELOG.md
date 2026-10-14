@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+- `results/wordcraft_20261014_fresh/`: Wordcraft CLI 0.6.1 against jubarte 0.11.0 / 0.12.0 and
+  docxodus 12.6.5 (comparisons) and LibreOffice 26.8.1.1 (conversions) on a frozen 400 + 400
+  sample with fresh Word 16.115 oracles (`REPORT.md`). Pagefair means, failures as zero:
+  comparisons wordcraft 46.01, jubarte 0.11.0 76.75, jubarte 0.12.0 76.18, docxodus 66.99;
+  conversions wordcraft 55.18, jubarte 0.11.0 76.19, jubarte 0.12.0 79.89, soffice 54.70.
+  The run scripts (`build400.py`, `run_word400.py`, `generate_fresh.py`, `score_run.py`,
+  `finish400.py`, `finish_rest.py`, `report.py`, `speed_table.py`) and committed driver copies
+  (`drivers_ee49054d/`) are included. Registry entries for the four tools; a latency section
+  in `docs/SPEED.md`.
+
 ## [0.8.0] - 2026-10-02
 
 ### Added

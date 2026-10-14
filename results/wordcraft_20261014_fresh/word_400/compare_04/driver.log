@@ -1,0 +1,51 @@
+2026-10-14 04:54:54.098 | INFO     | word_pdf:preflight:2235 - [word] preflight: open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-10-14 04:54:54.142 | INFO     | __main__:redline_folders:728 - [redline] one_osascript=True pairs=76
+2026-10-14 04:54:54.205 | INFO     | __main__:_redline_batched:1012 - [batch] one osascript for 76 comparison(s)
+2026-10-14 04:54:59.211 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 1/76
+2026-10-14 04:55:00.575 | INFO     | word_pdf:_note_dialogs:774 - [watchdog] Microsoft Word shows button 'missing value'
+2026-10-14 04:55:04.215 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 5/76
+2026-10-14 04:55:09.222 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 9/76
+2026-10-14 04:55:14.228 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 12/76
+2026-10-14 04:55:19.231 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 16/76
+2026-10-14 04:55:24.233 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 19/76
+2026-10-14 04:55:29.239 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 23/76
+2026-10-14 04:55:34.241 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 26/76
+2026-10-14 04:55:39.248 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 30/76
+2026-10-14 04:55:44.254 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 33/76
+2026-10-14 04:55:49.257 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 36/76
+2026-10-14 04:55:54.260 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 40/76
+2026-10-14 04:55:59.266 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 43/76
+2026-10-14 04:56:04.272 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 46/76
+2026-10-14 04:56:09.279 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 49/76
+2026-10-14 04:56:14.281 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 53/76
+2026-10-14 04:56:19.288 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 55/76
+2026-10-14 04:56:24.295 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 58/76
+2026-10-14 04:56:29.301 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 61/76
+2026-10-14 04:56:34.306 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 63/76
+2026-10-14 04:56:39.311 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 67/76
+2026-10-14 04:56:44.313 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 69/76
+2026-10-14 04:56:49.319 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 73/76
+2026-10-14 04:56:54.326 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 76/76
+2026-10-14 04:56:54.359 | INFO     | __main__:_redline_batched:1041 - [batch] one osascript for 76 redline PDF(s)
+2026-10-14 04:56:59.404 | INFO     | word_pdf:_loop:1479 - [batch pdf 1] 5/76
+2026-10-14 04:57:04.405 | INFO     | word_pdf:_loop:1479 - [batch pdf 1] 11/76
+2026-10-14 04:57:09.408 | INFO     | word_pdf:_loop:1479 - [batch pdf 1] 16/76
+2026-10-14 04:57:14.414 | INFO     | word_pdf:_loop:1479 - [batch pdf 1] 22/76
+2026-10-14 04:57:19.452 | INFO     | word_pdf:_loop:1479 - [batch pdf 1] 25/76
+2026-10-14 04:57:24.458 | INFO     | word_pdf:_loop:1479 - [batch pdf 1] 30/76
+2026-10-14 04:57:29.494 | INFO     | word_pdf:_loop:1479 - [batch pdf 1] 35/76
+2026-10-14 04:57:34.499 | INFO     | word_pdf:_loop:1479 - [batch pdf 1] 41/76
+2026-10-14 04:57:39.506 | INFO     | word_pdf:_loop:1479 - [batch pdf 1] 47/76
+2026-10-14 04:57:44.513 | INFO     | word_pdf:_loop:1479 - [batch pdf 1] 54/76
+2026-10-14 04:57:49.556 | INFO     | word_pdf:_loop:1479 - [batch pdf 1] 57/76
+2026-10-14 04:57:54.557 | INFO     | word_pdf:_loop:1479 - [batch pdf 1] 61/76
+2026-10-14 04:57:59.560 | INFO     | word_pdf:_loop:1479 - [batch pdf 1] 63/76
+2026-10-14 04:58:04.566 | INFO     | word_pdf:_loop:1479 - [batch pdf 1] 69/76
+2026-10-14 04:58:09.572 | INFO     | word_pdf:_loop:1479 - [batch pdf 1] 75/76
+2026-10-14 04:58:10.267 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: 37c978d405.docx → 37c978d405.docx — redline is missing base 67% of that file; the two sides are not averaged
+2026-10-14 04:58:10.373 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: 58b3bd3cbc.docx → 58b3bd3cbc.docx — redline is missing revision 67% of that file; the two sides are not averaged
+2026-10-14 04:58:10.443 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: 7f412aa4b4.docx → 7f412aa4b4.docx — redline is missing base 67% of that file; the two sides are not averaged
+2026-10-14 04:58:10.484 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: 99740a096f.docx → 99740a096f.docx — redline is missing revision 0% of that file; the two sides are not averaged
+2026-10-14 04:58:10.617 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: ba3b77bee3.docx → ba3b77bee3.docx — redline is missing revision 0% of that file; the two sides are not averaged
+2026-10-14 04:58:10.924 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: f194709881.docx → f194709881.docx — redline is missing revision 67% of that file; the two sides are not averaged
+2026-10-14 04:58:11.687 | INFO     | word_pdf:stop:907 - [watchdog] tally: declined=0 dismissed=0 granted=0 forwarded=0 alerts_seen=0

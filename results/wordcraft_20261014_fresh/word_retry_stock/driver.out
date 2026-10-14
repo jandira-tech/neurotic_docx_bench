@@ -1,0 +1,421 @@
+▸ PDF quality is sticky: `save as … file format format PDF` inherits whatever 
+'Optimize for' you last chose in Word's own Save As dialog.
+  Open any document in Word once, File > Save As > PDF, and pick the SECOND 
+option, Best for printing.
+  That choice persists; this script cannot set it. Pass --no-check-preset to 
+stop seeing this.
+▸ A redline PDF shows tracked changes the way Word is currently set to show them
+(Review ▸ Markup display, and Print Markup).
+  Open one redline in Word by hand and confirm it looks right before running the
+batch — this script cannot set that for you.
+2026-10-14 02:19:10.695 | INFO     | word_pdf:preflight:2235 -  preflight: 
+open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-10-14 02:19:10.697 | INFO     | __main__:redline_folders:728 -  
+one_osascript=True pairs=44
+2026-10-14 02:19:10.736 | INFO     | __main__:_redline_batched:1012 -  one 
+osascript for 44 comparison(s)
+2026-10-14 02:19:15.739 | INFO     | word_pdf:_loop:1479 -  4/44
+2026-10-14 02:19:20.745 | INFO     | word_pdf:_loop:1479 -  9/44
+2026-10-14 02:19:25.271 | INFO     | word_pdf:_note_dialogs:774 -  Microsoft 
+Word shows button 'missing value'
+2026-10-14 02:19:25.750 | INFO     | word_pdf:_loop:1479 -  15/44
+2026-10-14 02:19:30.756 | INFO     | word_pdf:_loop:1479 -  21/44
+2026-10-14 02:19:35.762 | INFO     | word_pdf:_loop:1479 -  26/44
+2026-10-14 02:19:40.768 | INFO     | word_pdf:_loop:1479 -  31/44
+2026-10-14 02:19:45.774 | INFO     | word_pdf:_loop:1479 -  36/44
+2026-10-14 02:19:50.784 | INFO     | word_pdf:_loop:1479 -  41/44
+2026-10-14 02:19:53.751 | INFO     | __main__:_redline_batched:1041 -  one 
+osascript for 14 redline PDF(s)
+2026-10-14 02:19:58.757 | INFO     | word_pdf:_loop:1479 -  3/14
+2026-10-14 02:20:02.347 | WARNING  | word_pdf:run_batch_with_resume:1624 -  11 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 2, 0 of 3 stalled 
+passes used)
+2026-10-14 02:20:02.349 | WARNING  | word_pdf♻1068 -  restarting a Word this run
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-14 02:20:02.349 | WARNING  | word_pdf♻1074 -  recycling (restart 1)
+2026-10-14 02:20:11.448 | INFO     | word_pdf:_loop:1479 -  0/11
+2026-10-14 02:20:14.290 | WARNING  | word_pdf:run_batch_with_resume:1624 -  11 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 3, 0 of 3 stalled 
+passes used)
+2026-10-14 02:20:14.294 | WARNING  | word_pdf♻1068 -  restarting a Word this run
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-14 02:20:14.295 | WARNING  | word_pdf♻1074 -  recycling (restart 2)
+2026-10-14 02:20:18.585 | INFO     | word_pdf:_note_dialogs:774 -  Microsoft 
+Word shows button 'Cancel'
+2026-10-14 02:20:23.399 | INFO     | word_pdf:_loop:1479 -  4/11
+2026-10-14 02:20:24.968 | WARNING  | word_pdf:run_batch_with_resume:1624 -  7 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 4, 0 of 3 stalled 
+passes used)
+2026-10-14 02:20:24.968 | WARNING  | word_pdf♻1068 -  restarting a Word this run
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-14 02:20:24.969 | WARNING  | word_pdf♻1074 -  recycling (restart 3)
+2026-10-14 02:20:34.074 | INFO     | word_pdf:_loop:1479 -  1/7
+2026-10-14 02:20:34.209 | WARNING  | word_pdf:run_batch_with_resume:1624 -  6 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 5, 0 of 3 stalled 
+passes used)
+2026-10-14 02:20:34.210 | WARNING  | word_pdf♻1068 -  restarting a Word this run
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-14 02:20:34.210 | WARNING  | word_pdf♻1074 -  recycling (restart 4)
+2026-10-14 02:20:42.445 | WARNING  | word_pdf:run_batch_with_resume:1624 -  6 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 6, 0 of 3 stalled 
+passes used)
+2026-10-14 02:20:42.446 | WARNING  | word_pdf♻1068 -  restarting a Word this run
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-14 02:20:42.447 | WARNING  | word_pdf♻1074 -  recycling (restart 5)
+2026-10-14 02:20:51.648 | INFO     | word_pdf:_loop:1479 -  1/6
+2026-10-14 02:20:52.209 | WARNING  | word_pdf:run_batch_with_resume:1624 -  4 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 7, 0 of 3 stalled 
+passes used)
+2026-10-14 02:20:52.210 | WARNING  | word_pdf♻1068 -  restarting a Word this run
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-14 02:20:52.210 | WARNING  | word_pdf♻1074 -  recycling (restart 6)
+2026-10-14 02:21:00.971 | WARNING  | word_pdf:run_batch_with_resume:1624 -  3 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 8, 0 of 3 stalled 
+passes used)
+2026-10-14 02:21:00.972 | WARNING  | word_pdf♻1068 -  restarting a Word this run
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-14 02:21:00.972 | WARNING  | word_pdf♻1074 -  recycling (restart 7)
+2026-10-14 02:21:07.986 | INFO     | word_pdf:_note_dialogs:774 -  Microsoft 
+Error Reporting shows button 'OK'
+2026-10-14 02:21:07.988 | INFO     | word_pdf:_note_dialogs:774 -  Microsoft 
+Error Reporting shows button 'More Information'
+2026-10-14 02:21:07.988 | INFO     | word_pdf:_note_dialogs:774 -  Microsoft 
+Error Reporting shows button 'missing value'
+2026-10-14 02:21:07.988 | INFO     | word_pdf:_note_dialogs:777 -  Microsoft 
+Error Reporting says: 'There was a problem with Microsoft Word and we apologize 
+for the inconvenience. | Microsoft Error Reporting'
+2026-10-14 02:21:09.172 | WARNING  | word_pdf:run_batch_with_resume:1624 -  2 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 9, 0 of 3 stalled 
+passes used)
+2026-10-14 02:21:09.173 | WARNING  | word_pdf♻1068 -  restarting a Word this run
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-14 02:21:09.173 | WARNING  | word_pdf♻1074 -  recycling (restart 8)
+2026-10-14 02:21:09.706 | WARNING  | word_pdf:_loop_merp:888 -  error report 
+declined via 'OK'; Word said: "There was a problem with Microsoft Word and we 
+apologize for the inconvenience. | Microsoft Error Reporting"
+2026-10-14 02:21:18.238 | INFO     | word_pdf:_loop:1479 -  0/2
+2026-10-14 02:21:20.006 | WARNING  | word_pdf:_loop_merp:888 -  error report 
+declined via 'OK'; Word said: "There was a problem with Microsoft Word and we 
+apologize for the inconvenience. | Microsoft Error Reporting"
+2026-10-14 02:21:20.480 | WARNING  | word_pdf:run_batch_with_resume:1624 -  1 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 10, 0 of 3 stalled 
+passes used)
+2026-10-14 02:21:20.481 | WARNING  | word_pdf♻1068 -  restarting a Word this run
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-14 02:21:20.482 | WARNING  | word_pdf♻1074 -  recycling (restart 9)
+2026-10-14 02:21:28.708 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+062340d04a.docx → 062340d04a.docx — Microsoft Word got an error: document 
+"00000__base__062340d04a__vs__062340d04a.docx" doesn’t understand the “compare” 
+message.
+2026-10-14 02:21:28.718 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+0858ee25d5.docx → 0858ee25d5.docx — redline is missing base 0% of that file; the
+two sides are not averaged
+2026-10-14 02:21:28.719 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+0b033b1c23.docx → 0b033b1c23.docx — Microsoft Word got an error: document 
+"00002__base__0b033b1c23__vs__0b033b1c23.docx" doesn’t understand the “compare” 
+message.
+2026-10-14 02:21:28.720 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+0f031c23c3.docx → 0f031c23c3.docx — Microsoft Word got an error: document 
+"00003__base__0f031c23c3__vs__0f031c23c3.docx" doesn’t understand the “compare” 
+message.
+2026-10-14 02:21:28.731 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+1b55e27189.docx → 1b55e27189.docx — redline is missing base 86% of that file; 
+the two sides are not averaged
+2026-10-14 02:21:28.753 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+1edc0f56f4.docx → 1edc0f56f4.docx — redline is missing base 67% of that file; 
+the two sides are not averaged
+2026-10-14 02:21:28.753 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+2d65e392ab.docx → 2d65e392ab.docx — Microsoft Word got an error: document 
+"00006__base__2d65e392ab__vs__2d65e392ab.docx" doesn’t understand the “compare” 
+message.
+2026-10-14 02:21:28.754 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+34ffddfe47.docx → 34ffddfe47.docx — Microsoft Word got an error: document 
+"00007__base__34ffddfe47__vs__34ffddfe47.docx" doesn’t understand the “compare” 
+message.
+2026-10-14 02:21:28.754 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+3d39f0120d.docx → 3d39f0120d.docx — Microsoft Word got an error: document 
+"00008__base__3d39f0120d__vs__3d39f0120d.docx" doesn’t understand the “compare” 
+message.
+2026-10-14 02:21:28.765 | ERROR    | __main__:_redline_batched:1095 -  FAIL: 
+3e7067f872.docx → 3e7067f872.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-14 02:21:28.767 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+4d40d1f136.docx → 4d40d1f136.docx — Microsoft Word got an error: document 
+"00010__base__4d40d1f136__vs__4d40d1f136.docx" doesn’t understand the “compare” 
+message.
+2026-10-14 02:21:28.767 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+4eff11f045.docx → 4eff11f045.docx — Microsoft Word got an error: document 
+"00011__base__4eff11f045__vs__4eff11f045.docx" doesn’t understand the “compare” 
+message.
+2026-10-14 02:21:28.768 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+581907f19c.docx → 581907f19c.docx — Microsoft Word got an error: document 
+"00012__base__581907f19c__vs__581907f19c.docx" doesn’t understand the “compare” 
+message.
+2026-10-14 02:21:28.768 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+58cd08049b.docx → 58cd08049b.docx — Microsoft Word got an error: document 
+"00013__base__58cd08049b__vs__58cd08049b.docx" doesn’t understand the “compare” 
+message.
+2026-10-14 02:21:28.788 | ERROR    | __main__:_redline_batched:1095 -  FAIL: 
+5f0fed8e2a.docx → 5f0fed8e2a.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-14 02:21:28.788 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+60e784f2de.docx → 60e784f2de.docx — Microsoft Word got an error: document 
+"00015__base__60e784f2de__vs__60e784f2de.docx" doesn’t understand the “compare” 
+message.
+2026-10-14 02:21:28.789 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+60ef61f086.docx → 60ef61f086.docx — Microsoft Word got an error: document 
+"00016__base__60ef61f086__vs__60ef61f086.docx" doesn’t understand the “compare” 
+message.
+2026-10-14 02:21:28.789 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+61959b1953.docx → 61959b1953.docx — Microsoft Word got an error: document 
+"00017__base__61959b1953__vs__61959b1953.docx" doesn’t understand the “compare” 
+message.
+2026-10-14 02:21:28.790 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+64c527dde8.docx → 64c527dde8.docx — Microsoft Word got an error: document 
+"00018__base__64c527dde8__vs__64c527dde8.docx" doesn’t understand the “compare” 
+message.
+2026-10-14 02:21:28.790 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+6b74ac1ae6.docx → 6b74ac1ae6.docx — Microsoft Word got an error: document 
+"00019__base__6b74ac1ae6__vs__6b74ac1ae6.docx" doesn’t understand the “compare” 
+message.
+2026-10-14 02:21:28.790 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+6de20376e8.docx → 6de20376e8.docx — Microsoft Word got an error: document 
+"00020__base__6de20376e8__vs__6de20376e8.docx" doesn’t understand the “compare” 
+message.
+2026-10-14 02:21:28.793 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+849e0cb7c4.docx → 849e0cb7c4.docx — redline is missing revision 50% of that 
+file; the two sides are not averaged
+2026-10-14 02:21:28.796 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+84eec18240.docx → 84eec18240.docx — redline is missing base 0% and revision 50% 
+of that file; the two sides are not averaged
+2026-10-14 02:21:28.799 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+86aef9a34a.docx → 86aef9a34a.docx — redline is missing base 50% and revision 50%
+of that file; the two sides are not averaged
+2026-10-14 02:21:28.800 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+92075b7449.docx → 92075b7449.docx — Microsoft Word got an error: document 
+"00024__base__92075b7449__vs__92075b7449.docx" doesn’t understand the “compare” 
+message.
+2026-10-14 02:21:28.800 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+9382e03243.docx → 9382e03243.docx — Microsoft Word got an error: document 
+"00025__base__9382e03243__vs__9382e03243.docx" doesn’t understand the “compare” 
+message.
+2026-10-14 02:21:28.801 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+a836952933.docx → a836952933.docx — Microsoft Word got an error: document 
+"00026__base__a836952933__vs__a836952933.docx" doesn’t understand the “compare” 
+message.
+2026-10-14 02:21:28.804 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+a9272f69c1.docx → a9272f69c1.docx — redline is missing base 0% of that file; the
+two sides are not averaged
+2026-10-14 02:21:28.804 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+bbc3223232.docx → bbc3223232.docx — Microsoft Word got an error: document 
+"00028__base__bbc3223232__vs__bbc3223232.docx" doesn’t understand the “compare” 
+message.
+2026-10-14 02:21:28.822 | ERROR    | __main__:_redline_batched:1095 -  FAIL: 
+bc0135eaa1.docx → bc0135eaa1.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-14 02:21:28.823 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+bc6f8076f9.docx → bc6f8076f9.docx — Microsoft Word got an error: document 
+"00030__base__bc6f8076f9__vs__bc6f8076f9.docx" doesn’t understand the “compare” 
+message.
+2026-10-14 02:21:28.824 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+c2380a4677.docx → c2380a4677.docx — Microsoft Word got an error: document 
+"00031__base__c2380a4677__vs__c2380a4677.docx" doesn’t understand the “compare” 
+message.
+2026-10-14 02:21:28.827 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+c277edafd3.docx → c277edafd3.docx — redline is missing revision 0% of that file;
+the two sides are not averaged
+2026-10-14 02:21:28.828 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+cbf73c2d81.docx → cbf73c2d81.docx — Microsoft Word got an error: document 
+"00033__base__cbf73c2d81__vs__cbf73c2d81.docx" doesn’t understand the “compare” 
+message.
+2026-10-14 02:21:28.828 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+d23d9c8cc7.docx → d23d9c8cc7.docx — Microsoft Word got an error: document 
+"00034__base__d23d9c8cc7__vs__d23d9c8cc7.docx" doesn’t understand the “compare” 
+message.
+2026-10-14 02:21:28.845 | ERROR    | __main__:_redline_batched:1095 -  FAIL: 
+d9bb456306.docx → d9bb456306.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-14 02:21:28.846 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+db0f90defc.docx → db0f90defc.docx — Microsoft Word got an error: document 
+"00036__base__db0f90defc__vs__db0f90defc.docx" doesn’t understand the “compare” 
+message.
+2026-10-14 02:21:28.846 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+dde913904e.docx → dde913904e.docx — Microsoft Word got an error: document 
+"00037__base__dde913904e__vs__dde913904e.docx" doesn’t understand the “compare” 
+message.
+2026-10-14 02:21:28.850 | ERROR    | __main__:_redline_batched:1095 -  FAIL: 
+e0305725c1.docx → e0305725c1.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-14 02:21:28.850 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+e6e61fc33f.docx → e6e61fc33f.docx — Microsoft Word got an error: document 
+"00039__base__e6e61fc33f__vs__e6e61fc33f.docx" doesn’t understand the “compare” 
+message.
+2026-10-14 02:21:28.851 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+f0875f6d19.docx → f0875f6d19.docx — Microsoft Word got an error: document 
+"00040__base__f0875f6d19__vs__f0875f6d19.docx" doesn’t understand the “compare” 
+message.
+2026-10-14 02:21:28.864 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+f7bbf6e831.docx → f7bbf6e831.docx — redline is missing base 67% of that file; 
+the two sides are not averaged
+2026-10-14 02:21:28.865 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+f8286525f6.docx → f8286525f6.docx — Microsoft Word got an error: document 
+"00042__base__f8286525f6__vs__f8286525f6.docx" doesn’t understand the “compare” 
+message.
+2026-10-14 02:21:28.865 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+ff24600d87.docx → ff24600d87.docx — Microsoft Word got an error: document 
+"00043__base__ff24600d87__vs__ff24600d87.docx" doesn’t understand the “compare” 
+message.
+2026-10-14 02:21:29.630 | WARNING  | word_pdf:_loop_merp:888 -  error report 
+declined via 'OK'; Word said: "There was a problem with Microsoft Word and we 
+apologize for the inconvenience. | Microsoft Error Reporting"
+2026-10-14 02:21:29.633 | INFO     | word_pdf:stop:907 -  tally: declined=0 
+dismissed=3 granted=0 forwarded=0 alerts_seen=1
+       redline: A → B       
+┏━━━━━━━━━━━━━━━━━━┳━━━━━━━┓
+┃ outcome          ┃ count ┃
+┡━━━━━━━━━━━━━━━━━━╇━━━━━━━┩
+│ redlined         │     0 │
+│ skipped (exists) │     0 │
+│ failed           │    44 │
+└──────────────────┴───────┘
+  FAIL 062340d04a.docx → 062340d04a.docx: Microsoft Word got an error: document 
+"00000__base__062340d04a__vs__062340d04a.docx" doesn’t understand the “compare” 
+message.
+  FAIL 0858ee25d5.docx → 0858ee25d5.docx: redline is missing base 0% of that 
+file; the two sides are not averaged
+  FAIL 0b033b1c23.docx → 0b033b1c23.docx: Microsoft Word got an error: document 
+"00002__base__0b033b1c23__vs__0b033b1c23.docx" doesn’t understand the “compare” 
+message.
+  FAIL 0f031c23c3.docx → 0f031c23c3.docx: Microsoft Word got an error: document 
+"00003__base__0f031c23c3__vs__0f031c23c3.docx" doesn’t understand the “compare” 
+message.
+  FAIL 1b55e27189.docx → 1b55e27189.docx: redline is missing base 86% of that 
+file; the two sides are not averaged
+  FAIL 1edc0f56f4.docx → 1edc0f56f4.docx: redline is missing base 67% of that 
+file; the two sides are not averaged
+  FAIL 2d65e392ab.docx → 2d65e392ab.docx: Microsoft Word got an error: document 
+"00006__base__2d65e392ab__vs__2d65e392ab.docx" doesn’t understand the “compare” 
+message.
+  FAIL 34ffddfe47.docx → 34ffddfe47.docx: Microsoft Word got an error: document 
+"00007__base__34ffddfe47__vs__34ffddfe47.docx" doesn’t understand the “compare” 
+message.
+  FAIL 3d39f0120d.docx → 3d39f0120d.docx: Microsoft Word got an error: document 
+"00008__base__3d39f0120d__vs__3d39f0120d.docx" doesn’t understand the “compare” 
+message.
+  FAIL 3e7067f872.docx → 3e7067f872.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL 4d40d1f136.docx → 4d40d1f136.docx: Microsoft Word got an error: document 
+"00010__base__4d40d1f136__vs__4d40d1f136.docx" doesn’t understand the “compare” 
+message.
+  FAIL 4eff11f045.docx → 4eff11f045.docx: Microsoft Word got an error: document 
+"00011__base__4eff11f045__vs__4eff11f045.docx" doesn’t understand the “compare” 
+message.
+  FAIL 581907f19c.docx → 581907f19c.docx: Microsoft Word got an error: document 
+"00012__base__581907f19c__vs__581907f19c.docx" doesn’t understand the “compare” 
+message.
+  FAIL 58cd08049b.docx → 58cd08049b.docx: Microsoft Word got an error: document 
+"00013__base__58cd08049b__vs__58cd08049b.docx" doesn’t understand the “compare” 
+message.
+  FAIL 5f0fed8e2a.docx → 5f0fed8e2a.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL 60e784f2de.docx → 60e784f2de.docx: Microsoft Word got an error: document 
+"00015__base__60e784f2de__vs__60e784f2de.docx" doesn’t understand the “compare” 
+message.
+  FAIL 60ef61f086.docx → 60ef61f086.docx: Microsoft Word got an error: document 
+"00016__base__60ef61f086__vs__60ef61f086.docx" doesn’t understand the “compare” 
+message.
+  FAIL 61959b1953.docx → 61959b1953.docx: Microsoft Word got an error: document 
+"00017__base__61959b1953__vs__61959b1953.docx" doesn’t understand the “compare” 
+message.
+  FAIL 64c527dde8.docx → 64c527dde8.docx: Microsoft Word got an error: document 
+"00018__base__64c527dde8__vs__64c527dde8.docx" doesn’t understand the “compare” 
+message.
+  FAIL 6b74ac1ae6.docx → 6b74ac1ae6.docx: Microsoft Word got an error: document 
+"00019__base__6b74ac1ae6__vs__6b74ac1ae6.docx" doesn’t understand the “compare” 
+message.
+  FAIL 6de20376e8.docx → 6de20376e8.docx: Microsoft Word got an error: document 
+"00020__base__6de20376e8__vs__6de20376e8.docx" doesn’t understand the “compare” 
+message.
+  FAIL 849e0cb7c4.docx → 849e0cb7c4.docx: redline is missing revision 50% of 
+that file; the two sides are not averaged
+  FAIL 84eec18240.docx → 84eec18240.docx: redline is missing base 0% and 
+revision 50% of that file; the two sides are not averaged
+  FAIL 86aef9a34a.docx → 86aef9a34a.docx: redline is missing base 50% and 
+revision 50% of that file; the two sides are not averaged
+  FAIL 92075b7449.docx → 92075b7449.docx: Microsoft Word got an error: document 
+"00024__base__92075b7449__vs__92075b7449.docx" doesn’t understand the “compare” 
+message.
+  FAIL 9382e03243.docx → 9382e03243.docx: Microsoft Word got an error: document 
+"00025__base__9382e03243__vs__9382e03243.docx" doesn’t understand the “compare” 
+message.
+  FAIL a836952933.docx → a836952933.docx: Microsoft Word got an error: document 
+"00026__base__a836952933__vs__a836952933.docx" doesn’t understand the “compare” 
+message.
+  FAIL a9272f69c1.docx → a9272f69c1.docx: redline is missing base 0% of that 
+file; the two sides are not averaged
+  FAIL bbc3223232.docx → bbc3223232.docx: Microsoft Word got an error: document 
+"00028__base__bbc3223232__vs__bbc3223232.docx" doesn’t understand the “compare” 
+message.
+  FAIL bc0135eaa1.docx → bc0135eaa1.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL bc6f8076f9.docx → bc6f8076f9.docx: Microsoft Word got an error: document 
+"00030__base__bc6f8076f9__vs__bc6f8076f9.docx" doesn’t understand the “compare” 
+message.
+  FAIL c2380a4677.docx → c2380a4677.docx: Microsoft Word got an error: document 
+"00031__base__c2380a4677__vs__c2380a4677.docx" doesn’t understand the “compare” 
+message.
+  FAIL c277edafd3.docx → c277edafd3.docx: redline is missing revision 0% of that
+file; the two sides are not averaged
+  FAIL cbf73c2d81.docx → cbf73c2d81.docx: Microsoft Word got an error: document 
+"00033__base__cbf73c2d81__vs__cbf73c2d81.docx" doesn’t understand the “compare” 
+message.
+  FAIL d23d9c8cc7.docx → d23d9c8cc7.docx: Microsoft Word got an error: document 
+"00034__base__d23d9c8cc7__vs__d23d9c8cc7.docx" doesn’t understand the “compare” 
+message.
+  FAIL d9bb456306.docx → d9bb456306.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL db0f90defc.docx → db0f90defc.docx: Microsoft Word got an error: document 
+"00036__base__db0f90defc__vs__db0f90defc.docx" doesn’t understand the “compare” 
+message.
+  FAIL dde913904e.docx → dde913904e.docx: Microsoft Word got an error: document 
+"00037__base__dde913904e__vs__dde913904e.docx" doesn’t understand the “compare” 
+message.
+  FAIL e0305725c1.docx → e0305725c1.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL e6e61fc33f.docx → e6e61fc33f.docx: Microsoft Word got an error: document 
+"00039__base__e6e61fc33f__vs__e6e61fc33f.docx" doesn’t understand the “compare” 
+message.
+  FAIL f0875f6d19.docx → f0875f6d19.docx: Microsoft Word got an error: document 
+"00040__base__f0875f6d19__vs__f0875f6d19.docx" doesn’t understand the “compare” 
+message.
+  FAIL f7bbf6e831.docx → f7bbf6e831.docx: redline is missing base 67% of that 
+file; the two sides are not averaged
+  FAIL f8286525f6.docx → f8286525f6.docx: Microsoft Word got an error: document 
+"00042__base__f8286525f6__vs__f8286525f6.docx" doesn’t understand the “compare” 
+message.
+  FAIL ff24600d87.docx → ff24600d87.docx: Microsoft Word got an error: document 
+"00043__base__ff24600d87__vs__ff24600d87.docx" doesn’t understand the “compare” 
+message.

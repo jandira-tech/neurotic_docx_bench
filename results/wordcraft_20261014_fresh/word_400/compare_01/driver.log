@@ -1,0 +1,105 @@
+2026-10-14 04:34:28.892 | INFO     | word_pdf:preflight:2235 - [word] preflight: open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-10-14 04:34:28.908 | INFO     | __main__:redline_folders:728 - [redline] one_osascript=True pairs=76
+2026-10-14 04:34:29.175 | INFO     | __main__:_redline_batched:1012 - [batch] one osascript for 76 comparison(s)
+2026-10-14 04:34:34.178 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 1/76
+2026-10-14 04:34:39.184 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 3/76
+2026-10-14 04:34:49.196 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 6/76
+2026-10-14 04:34:54.204 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 8/76
+2026-10-14 04:34:59.210 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 11/76
+2026-10-14 04:35:02.837 | INFO     | word_pdf:_note_dialogs:774 - [watchdog] Microsoft Word shows button 'missing value'
+2026-10-14 04:35:04.221 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 15/76
+2026-10-14 04:35:09.228 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 18/76
+2026-10-14 04:35:14.253 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 22/76
+2026-10-14 04:35:19.301 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 26/76
+2026-10-14 04:35:24.306 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 30/76
+2026-10-14 04:35:29.311 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 34/76
+2026-10-14 04:35:34.317 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 37/76
+2026-10-14 04:35:39.319 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 40/76
+2026-10-14 04:35:44.324 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 44/76
+2026-10-14 04:35:49.358 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 47/76
+2026-10-14 04:35:54.361 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 51/76
+2026-10-14 04:35:59.367 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 55/76
+2026-10-14 04:36:04.372 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 59/76
+2026-10-14 04:36:09.379 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 62/76
+2026-10-14 04:36:14.384 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 65/76
+2026-10-14 04:36:19.387 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 69/76
+2026-10-14 04:36:24.393 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 72/76
+2026-10-14 04:36:29.399 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 75/76
+2026-10-14 04:36:29.793 | INFO     | __main__:_redline_batched:1041 - [batch] one osascript for 76 redline PDF(s)
+2026-10-14 04:36:34.799 | INFO     | word_pdf:_loop:1479 - [batch pdf 1] 1/76
+2026-10-14 04:36:35.495 | INFO     | word_pdf:_note_dialogs:774 - [watchdog] Microsoft Error Reporting shows button 'OK'
+2026-10-14 04:36:35.495 | INFO     | word_pdf:_note_dialogs:774 - [watchdog] Microsoft Error Reporting shows button 'More Information'
+2026-10-14 04:36:35.495 | INFO     | word_pdf:_note_dialogs:774 - [watchdog] Microsoft Error Reporting shows button 'missing value'
+2026-10-14 04:36:35.496 | INFO     | word_pdf:_note_dialogs:777 - [watchdog] Microsoft Error Reporting says: 'There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting'
+2026-10-14 04:36:36.132 | WARNING  | word_pdf:_loop_merp:888 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-10-14 04:36:37.867 | WARNING  | word_pdf:run_batch_with_resume:1624 - [batch pdf] 75 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 2, 0 of 3 stalled passes used)
+2026-10-14 04:36:37.868 | WARNING  | word_pdf:recycle:1068 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 04:36:37.868 | WARNING  | word_pdf:recycle:1074 - [word] recycling (restart 1)
+2026-10-14 04:36:47.044 | INFO     | word_pdf:_loop:1479 - [batch pdf 2] 1/75
+2026-10-14 04:36:57.056 | INFO     | word_pdf:_nudge:1450 - [focus] item 2/75 not finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 04:37:12.072 | INFO     | word_pdf:_loop:1479 - [batch pdf 2] 4/75
+2026-10-14 04:37:22.083 | INFO     | word_pdf:_nudge:1450 - [focus] item 5/75 not finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 04:37:52.108 | INFO     | word_pdf:_nudge:1450 - [focus] item 5/75 not finished after 40 s; bringing Word forward to look for an alert
+2026-10-14 04:38:07.883 | WARNING  | word_pdf:_report:1439 - [batch pdf 2] item 5/75 open for more than 30 s:
+-- Word windows {name, subrole}: osascript timed out
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-2.log:
+[ok]	2
+[ok]	3
+[ok]	4
+[ok]	5
+-- newest diagnostic reports: soffice-2026-10-14-041750.ips, soffice-2026-10-14-041543.ips, ExcUserFault_nsattributedstringagent-2026-10-08-102340.ips, math-probe-2026-10-14-023025.ips, soffice-2026-10-14-012000.ips
+2026-10-14 04:38:22.140 | INFO     | word_pdf:_nudge:1450 - [focus] item 5/75 not finished after 70 s; bringing Word forward to look for an alert
+2026-10-14 04:38:47.161 | INFO     | word_pdf:_loop:1479 - [batch pdf 2] 6/75
+2026-10-14 04:38:52.168 | INFO     | word_pdf:_loop:1479 - [batch pdf 2] 11/75
+2026-10-14 04:38:57.177 | INFO     | word_pdf:_loop:1479 - [batch pdf 2] 17/75
+2026-10-14 04:39:02.184 | INFO     | word_pdf:_loop:1479 - [batch pdf 2] 24/75
+2026-10-14 04:39:07.190 | INFO     | word_pdf:_loop:1479 - [batch pdf 2] 30/75
+2026-10-14 04:39:12.200 | INFO     | word_pdf:_loop:1479 - [batch pdf 2] 35/75
+2026-10-14 04:39:17.207 | INFO     | word_pdf:_loop:1479 - [batch pdf 2] 37/75
+2026-10-14 04:39:22.214 | INFO     | word_pdf:_loop:1479 - [batch pdf 2] 41/75
+2026-10-14 04:39:27.221 | INFO     | word_pdf:_loop:1479 - [batch pdf 2] 47/75
+2026-10-14 04:39:32.227 | INFO     | word_pdf:_loop:1479 - [batch pdf 2] 48/75
+2026-10-14 04:39:33.424 | WARNING  | word_pdf:run_batch_with_resume:1624 - [batch pdf] 27 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 3, 0 of 3 stalled passes used)
+2026-10-14 04:39:33.425 | WARNING  | word_pdf:recycle:1068 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 04:39:33.426 | WARNING  | word_pdf:recycle:1074 - [word] recycling (restart 2)
+2026-10-14 04:39:33.788 | WARNING  | word_pdf:_loop_merp:888 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-10-14 04:39:41.044 | INFO     | word_pdf:_note_dialogs:774 - [watchdog] Microsoft Word shows button 'Cancel'
+2026-10-14 04:39:45.893 | INFO     | word_pdf:_loop:1479 - [batch pdf 3] 1/27
+2026-10-14 04:39:50.902 | INFO     | word_pdf:_loop:1479 - [batch pdf 3] 6/27
+2026-10-14 04:39:55.928 | INFO     | word_pdf:_loop:1479 - [batch pdf 3] 9/27
+2026-10-14 04:40:06.011 | INFO     | word_pdf:_nudge:1450 - [focus] item 10/27 not finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 04:40:36.263 | INFO     | word_pdf:_nudge:1450 - [focus] item 10/27 not finished after 40 s; bringing Word forward to look for an alert
+2026-10-14 04:40:46.272 | INFO     | word_pdf:_loop:1479 - [batch pdf 3] 10/27
+2026-10-14 04:40:47.078 | WARNING  | word_pdf:_report:1439 - [batch pdf 3] item 10/27 open for more than 30 s:
+-- Word windows {name, subrole}: osascript timed out
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-3.log:
+[ok]	51
+[ok]	52
+[ok]	53
+[ok]	54
+[ok]	55
+[ok]	56
+[ok]	57
+[ok]	58
+[ok]	59
+[ok]	60
+[ok]	61
+-- newest diagnostic reports: soffice-2026-10-14-041750.ips, soffice-2026-10-14-041543.ips, ExcUserFault_nsattributedstringagent-2026-10-08-102340.ips, math-probe-2026-10-14-023025.ips, soffice-2026-10-14-012000.ips
+2026-10-14 04:40:51.278 | INFO     | word_pdf:_loop:1479 - [batch pdf 3] 15/27
+2026-10-14 04:40:56.283 | INFO     | word_pdf:_loop:1479 - [batch pdf 3] 19/27
+2026-10-14 04:41:01.295 | INFO     | word_pdf:_loop:1479 - [batch pdf 3] 24/27
+2026-10-14 04:41:06.302 | INFO     | word_pdf:_loop:1479 - [batch pdf 3] 25/27
+2026-10-14 04:41:07.627 | WARNING  | word_pdf:_loop_merp:888 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-10-14 04:41:08.188 | WARNING  | word_pdf:run_batch_with_resume:1624 - [batch pdf] 1 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 4, 0 of 3 stalled passes used)
+2026-10-14 04:41:08.189 | WARNING  | word_pdf:recycle:1068 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 04:41:08.190 | WARNING  | word_pdf:recycle:1074 - [word] recycling (restart 3)
+2026-10-14 04:41:18.752 | INFO     | word_pdf:_loop:1479 - [batch pdf 4] 0/1
+2026-10-14 04:41:23.980 | WARNING  | word_pdf:_loop_merp:888 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-10-14 04:41:25.644 | ERROR    | __main__:_redline_batched:1095 - [batch] FAIL: 03f6215960.docx → 03f6215960.docx — redline saved but PDF export failed: Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-14 04:41:26.875 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: 59d7431859.docx → 59d7431859.docx — redline is missing base 0% of that file; the two sides are not averaged
+2026-10-14 04:41:27.910 | ERROR    | __main__:_redline_batched:1095 - [batch] FAIL: 9d0b6ef8ad.docx → 9d0b6ef8ad.docx — redline saved but PDF export failed: Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-14 04:41:28.319 | INFO     | word_pdf:stop:907 - [watchdog] tally: declined=0 dismissed=4 granted=0 forwarded=0 alerts_seen=1

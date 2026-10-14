@@ -1,0 +1,5 @@
+2026-10-14 02:39:53.298 | INFO     | word_pdf:preflight:2235 - [word] preflight: open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-10-14 02:39:53.304 | INFO     | __main__:redline_folders:728 - [redline] one_osascript=False pairs=2
+2026-10-14 02:39:59.718 | ERROR    | __main__:_redline_serial:809 - [1/2] FAIL: 331ab44630.docx → 331ab44630.docx — 2402:2519: execution error: Microsoft Word got an error: document "base__331ab44630__vs__331ab44630.docx" doesn’t understand the “compare” message. (-1708)
+2026-10-14 02:40:57.221 | INFO     | __main__:_redline_serial:804 - [2/2] ok (35.1s, 2 revisions): cb0a7d2c98.docx → cb0a7d2c98.docx
+2026-10-14 02:40:57.227 | INFO     | word_pdf:stop:907 - [watchdog] tally: declined=0 dismissed=0 granted=0 forwarded=0 alerts_seen=0

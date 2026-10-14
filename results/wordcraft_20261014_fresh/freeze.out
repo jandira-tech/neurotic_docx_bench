@@ -1,0 +1,32 @@
+{
+ "compare": {
+  "n": 400,
+  "states": {
+   "tracking_without_comments": 245,
+   "with_comments_tracking": 150,
+   "with_comments_clean": 3,
+   "clean": 2
+  },
+  "by_cohort": {
+   "1": 174,
+   "2": 226
+  },
+  "excluded": 47,
+  "surplus_valid_unused": 60
+ },
+ "convert": {
+  "n": 400,
+  "states": {
+   "tracking_without_comments": 100,
+   "with_comments_clean": 100,
+   "with_comments_tracking": 100,
+   "clean": 100
+  },
+  "by_cohort": {
+   "1": 197,
+   "2": 203
+  },
+  "excluded": 8,
+  "surplus_valid_unused": 129
+ }
+}

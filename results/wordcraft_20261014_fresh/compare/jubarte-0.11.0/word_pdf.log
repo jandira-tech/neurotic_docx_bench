@@ -1,0 +1,192 @@
+2026-10-14 05:24:03.868 | INFO     | __main__:preflight:2235 - [word] preflight: open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-10-14 05:24:03.876 | INFO     | __main__:convert_folder:1908 - [word] export: one_osascript=True documents=400 accept_all=False reject_all=False
+2026-10-14 05:24:04.657 | INFO     | __main__:_convert_batched:2108 - [batch] one osascript for 400 document(s)
+2026-10-14 05:24:09.680 | INFO     | __main__:_loop:1479 - [batch pdf 1] 0/400
+2026-10-14 05:24:14.690 | INFO     | __main__:_loop:1479 - [batch pdf 1] 3/400
+2026-10-14 05:24:19.701 | INFO     | __main__:_loop:1479 - [batch pdf 1] 4/400
+2026-10-14 05:24:24.718 | INFO     | __main__:_loop:1479 - [batch pdf 1] 6/400
+2026-10-14 05:24:29.759 | INFO     | __main__:_loop:1479 - [batch pdf 1] 9/400
+2026-10-14 05:24:34.802 | INFO     | __main__:_loop:1479 - [batch pdf 1] 10/400
+2026-10-14 05:24:44.853 | INFO     | __main__:_nudge:1450 - [focus] item 11/400 not finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 05:25:14.989 | INFO     | __main__:_nudge:1450 - [focus] item 11/400 not finished after 40 s; bringing Word forward to look for an alert
+2026-10-14 05:25:34.122 | WARNING  | __main__:_report:1439 - [batch pdf 1] item 11/400 open for more than 30 s:
+-- Word windows {name, subrole}: ,
+-- Word window text: osascript timed out
+-- crash reporters: 
+-- batch-pdf-1.log:
+[ok]	0
+[ok]	1
+[ok]	2
+[ok]	3
+[ok]	4
+[ok]	5
+[ok]	6
+[ok]	7
+[ok]	8
+[ok]	9
+-- newest diagnostic reports: soffice-2026-10-14-041750.ips, soffice-2026-10-14-041543.ips, ExcUserFault_nsattributedstringagent-2026-10-08-102340.ips, math-probe-2026-10-14-023025.ips, soffice-2026-10-14-012000.ips
+2026-10-14 05:25:45.080 | INFO     | __main__:_loop:1479 - [batch pdf 1] 11/400
+2026-10-14 05:25:50.102 | INFO     | __main__:_loop:1479 - [batch pdf 1] 14/400
+2026-10-14 05:25:55.138 | INFO     | __main__:_loop:1479 - [batch pdf 1] 17/400
+2026-10-14 05:26:00.183 | INFO     | __main__:_loop:1479 - [batch pdf 1] 18/400
+2026-10-14 05:26:10.204 | INFO     | __main__:_nudge:1450 - [focus] item 19/400 not finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 05:26:40.298 | INFO     | __main__:_nudge:1450 - [focus] item 19/400 not finished after 40 s; bringing Word forward to look for an alert
+2026-10-14 05:27:00.476 | WARNING  | __main__:_report:1439 - [batch pdf 1] item 19/400 open for more than 30 s:
+-- Word windows {name, subrole}: osascript timed out
+-- Word window text: osascript timed out
+-- crash reporters: osascript timed out
+-- batch-pdf-1.log:
+[ok]	0
+[ok]	1
+[ok]	2
+[ok]	3
+[ok]	4
+[ok]	5
+[ok]	6
+[ok]	7
+[ok]	8
+[ok]	9
+[ok]	10
+[ok]	11
+[ok]	12
+[ok]	13
+[ok]	14
+[ok]	15
+[ok]	16
+[ok]	17
+-- newest diagnostic reports: soffice-2026-10-14-041750.ips, soffice-2026-10-14-041543.ips, ExcUserFault_nsattributedstringagent-2026-10-08-102340.ips, math-probe-2026-10-14-023025.ips, soffice-2026-10-14-012000.ips
+2026-10-14 05:27:10.346 | INFO     | __main__:_nudge:1450 - [focus] item 19/400 not finished after 70 s; bringing Word forward to look for an alert
+2026-10-14 05:27:40.392 | INFO     | __main__:_nudge:1450 - [focus] item 19/400 not finished after 100 s; bringing Word forward to look for an alert
+2026-10-14 05:27:55.418 | INFO     | __main__:_nudge:1450 - [focus] item 19/400 not finished after 115 s; bringing Word forward to look for an alert
+2026-10-14 05:28:10.470 | INFO     | __main__:_nudge:1450 - [focus] item 19/400 not finished after 130 s; bringing Word forward to look for an alert
+2026-10-14 05:28:25.479 | INFO     | __main__:_loop:1479 - [batch pdf 1] 21/400
+2026-10-14 05:28:30.489 | INFO     | __main__:_loop:1479 - [batch pdf 1] 25/400
+2026-10-14 05:28:35.501 | INFO     | __main__:_loop:1479 - [batch pdf 1] 31/400
+2026-10-14 05:28:40.518 | INFO     | __main__:_loop:1479 - [batch pdf 1] 35/400
+2026-10-14 05:28:45.535 | INFO     | __main__:_loop:1479 - [batch pdf 1] 40/400
+2026-10-14 05:28:50.548 | INFO     | __main__:_loop:1479 - [batch pdf 1] 46/400
+2026-10-14 05:28:55.558 | INFO     | __main__:_loop:1479 - [batch pdf 1] 51/400
+2026-10-14 05:29:00.569 | INFO     | __main__:_loop:1479 - [batch pdf 1] 57/400
+2026-10-14 05:29:05.575 | INFO     | __main__:_loop:1479 - [batch pdf 1] 63/400
+2026-10-14 05:29:10.586 | INFO     | __main__:_loop:1479 - [batch pdf 1] 69/400
+2026-10-14 05:29:15.599 | INFO     | __main__:_loop:1479 - [batch pdf 1] 75/400
+2026-10-14 05:29:20.607 | INFO     | __main__:_loop:1479 - [batch pdf 1] 78/400
+2026-10-14 05:29:25.624 | INFO     | __main__:_loop:1479 - [batch pdf 1] 82/400
+2026-10-14 05:29:30.632 | INFO     | __main__:_loop:1479 - [batch pdf 1] 86/400
+2026-10-14 05:29:35.638 | INFO     | __main__:_loop:1479 - [batch pdf 1] 91/400
+2026-10-14 05:29:40.646 | INFO     | __main__:_loop:1479 - [batch pdf 1] 95/400
+2026-10-14 05:29:45.652 | INFO     | __main__:_loop:1479 - [batch pdf 1] 99/400
+2026-10-14 05:29:50.669 | INFO     | __main__:_loop:1479 - [batch pdf 1] 103/400
+2026-10-14 05:29:55.678 | INFO     | __main__:_loop:1479 - [batch pdf 1] 107/400
+2026-10-14 05:30:00.691 | INFO     | __main__:_loop:1479 - [batch pdf 1] 112/400
+2026-10-14 05:30:05.702 | INFO     | __main__:_loop:1479 - [batch pdf 1] 115/400
+2026-10-14 05:30:10.717 | INFO     | __main__:_loop:1479 - [batch pdf 1] 119/400
+2026-10-14 05:30:15.730 | INFO     | __main__:_loop:1479 - [batch pdf 1] 124/400
+2026-10-14 05:30:20.749 | INFO     | __main__:_loop:1479 - [batch pdf 1] 129/400
+2026-10-14 05:30:25.754 | INFO     | __main__:_loop:1479 - [batch pdf 1] 133/400
+2026-10-14 05:30:30.778 | INFO     | __main__:_loop:1479 - [batch pdf 1] 135/400
+2026-10-14 05:30:35.814 | INFO     | __main__:_loop:1479 - [batch pdf 1] 139/400
+2026-10-14 05:30:40.839 | INFO     | __main__:_loop:1479 - [batch pdf 1] 143/400
+2026-10-14 05:30:45.857 | INFO     | __main__:_loop:1479 - [batch pdf 1] 145/400
+2026-10-14 05:30:50.887 | INFO     | __main__:_loop:1479 - [batch pdf 1] 148/400
+2026-10-14 05:30:55.907 | INFO     | __main__:_loop:1479 - [batch pdf 1] 151/400
+2026-10-14 05:31:00.959 | INFO     | __main__:_loop:1479 - [batch pdf 1] 154/400
+2026-10-14 05:31:05.996 | INFO     | __main__:_loop:1479 - [batch pdf 1] 158/400
+2026-10-14 05:31:11.036 | INFO     | __main__:_loop:1479 - [batch pdf 1] 161/400
+2026-10-14 05:31:16.043 | INFO     | __main__:_loop:1479 - [batch pdf 1] 164/400
+2026-10-14 05:31:21.067 | INFO     | __main__:_loop:1479 - [batch pdf 1] 168/400
+2026-10-14 05:31:26.083 | INFO     | __main__:_loop:1479 - [batch pdf 1] 171/400
+2026-10-14 05:31:31.098 | INFO     | __main__:_loop:1479 - [batch pdf 1] 174/400
+2026-10-14 05:31:36.111 | INFO     | __main__:_loop:1479 - [batch pdf 1] 178/400
+2026-10-14 05:31:41.118 | INFO     | __main__:_loop:1479 - [batch pdf 1] 180/400
+2026-10-14 05:31:46.126 | INFO     | __main__:_loop:1479 - [batch pdf 1] 183/400
+2026-10-14 05:31:51.142 | INFO     | __main__:_loop:1479 - [batch pdf 1] 187/400
+2026-10-14 05:31:56.162 | INFO     | __main__:_loop:1479 - [batch pdf 1] 190/400
+2026-10-14 05:32:01.190 | INFO     | __main__:_loop:1479 - [batch pdf 1] 193/400
+2026-10-14 05:32:06.231 | INFO     | __main__:_loop:1479 - [batch pdf 1] 196/400
+2026-10-14 05:32:11.299 | INFO     | __main__:_loop:1479 - [batch pdf 1] 199/400
+2026-10-14 05:32:16.311 | INFO     | __main__:_loop:1479 - [batch pdf 1] 202/400
+2026-10-14 05:32:21.340 | INFO     | __main__:_loop:1479 - [batch pdf 1] 205/400
+2026-10-14 05:32:31.368 | INFO     | __main__:_loop:1479 - [batch pdf 1] 207/400
+2026-10-14 05:32:36.395 | INFO     | __main__:_loop:1479 - [batch pdf 1] 209/400
+2026-10-14 05:32:41.444 | INFO     | __main__:_loop:1479 - [batch pdf 1] 211/400
+2026-10-14 05:32:46.487 | INFO     | __main__:_loop:1479 - [batch pdf 1] 214/400
+2026-10-14 05:32:51.500 | INFO     | __main__:_loop:1479 - [batch pdf 1] 217/400
+2026-10-14 05:32:56.511 | INFO     | __main__:_loop:1479 - [batch pdf 1] 219/400
+2026-10-14 05:33:01.532 | INFO     | __main__:_loop:1479 - [batch pdf 1] 221/400
+2026-10-14 05:33:06.544 | INFO     | __main__:_loop:1479 - [batch pdf 1] 224/400
+2026-10-14 05:33:11.559 | INFO     | __main__:_loop:1479 - [batch pdf 1] 227/400
+2026-10-14 05:33:16.591 | INFO     | __main__:_loop:1479 - [batch pdf 1] 230/400
+2026-10-14 05:33:21.776 | INFO     | __main__:_loop:1479 - [batch pdf 1] 233/400
+2026-10-14 05:33:26.804 | INFO     | __main__:_loop:1479 - [batch pdf 1] 236/400
+2026-10-14 05:33:31.838 | INFO     | __main__:_loop:1479 - [batch pdf 1] 237/400
+2026-10-14 05:33:37.465 | INFO     | __main__:_note_dialogs:774 - [watchdog] Microsoft Error Reporting shows button 'OK'
+2026-10-14 05:33:37.492 | INFO     | __main__:_note_dialogs:774 - [watchdog] Microsoft Error Reporting shows button 'More Information'
+2026-10-14 05:33:37.494 | INFO     | __main__:_note_dialogs:774 - [watchdog] Microsoft Error Reporting shows button 'missing value'
+2026-10-14 05:33:37.499 | INFO     | __main__:_note_dialogs:777 - [watchdog] Microsoft Error Reporting says: 'There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting'
+2026-10-14 05:33:38.940 | WARNING  | __main__:_loop_merp:888 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-10-14 05:33:40.445 | WARNING  | __main__:run_batch_with_resume:1624 - [batch pdf] 163 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 2, 0 of 3 stalled passes used)
+2026-10-14 05:33:40.449 | WARNING  | __main__:recycle:1068 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 05:33:40.451 | WARNING  | __main__:recycle:1074 - [word] recycling (restart 1)
+2026-10-14 05:33:47.189 | INFO     | __main__:_note_dialogs:774 - [watchdog] Microsoft Word shows button 'Cancel'
+2026-10-14 05:33:47.196 | INFO     | __main__:_note_dialogs:774 - [watchdog] Microsoft Word shows button 'missing value'
+2026-10-14 05:33:51.952 | INFO     | __main__:_loop:1479 - [batch pdf 2] 1/163
+2026-10-14 05:33:56.995 | INFO     | __main__:_loop:1479 - [batch pdf 2] 2/163
+2026-10-14 05:34:02.010 | INFO     | __main__:_loop:1479 - [batch pdf 2] 4/163
+2026-10-14 05:34:07.027 | INFO     | __main__:_loop:1479 - [batch pdf 2] 7/163
+2026-10-14 05:34:12.047 | INFO     | __main__:_loop:1479 - [batch pdf 2] 9/163
+2026-10-14 05:34:17.059 | INFO     | __main__:_loop:1479 - [batch pdf 2] 13/163
+2026-10-14 05:34:22.070 | INFO     | __main__:_loop:1479 - [batch pdf 2] 15/163
+2026-10-14 05:34:27.081 | INFO     | __main__:_loop:1479 - [batch pdf 2] 19/163
+2026-10-14 05:34:32.095 | INFO     | __main__:_loop:1479 - [batch pdf 2] 22/163
+2026-10-14 05:34:37.125 | INFO     | __main__:_loop:1479 - [batch pdf 2] 26/163
+2026-10-14 05:34:42.140 | INFO     | __main__:_loop:1479 - [batch pdf 2] 28/163
+2026-10-14 05:34:52.242 | INFO     | __main__:_nudge:1450 - [focus] item 29/163 not finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 05:34:57.271 | INFO     | __main__:_loop:1479 - [batch pdf 2] 29/163
+2026-10-14 05:35:02.289 | INFO     | __main__:_loop:1479 - [batch pdf 2] 34/163
+2026-10-14 05:35:07.311 | INFO     | __main__:_loop:1479 - [batch pdf 2] 38/163
+2026-10-14 05:35:12.322 | INFO     | __main__:_loop:1479 - [batch pdf 2] 42/163
+2026-10-14 05:35:17.332 | INFO     | __main__:_loop:1479 - [batch pdf 2] 46/163
+2026-10-14 05:35:22.352 | INFO     | __main__:_loop:1479 - [batch pdf 2] 49/163
+2026-10-14 05:35:27.377 | INFO     | __main__:_loop:1479 - [batch pdf 2] 53/163
+2026-10-14 05:35:32.389 | INFO     | __main__:_loop:1479 - [batch pdf 2] 55/163
+2026-10-14 05:35:42.420 | INFO     | __main__:_nudge:1450 - [focus] item 56/163 not finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 05:35:52.467 | INFO     | __main__:_loop:1479 - [batch pdf 2] 56/163
+2026-10-14 05:35:57.487 | INFO     | __main__:_loop:1479 - [batch pdf 2] 57/163
+2026-10-14 05:36:07.509 | INFO     | __main__:_loop:1479 - [batch pdf 2] 60/163
+2026-10-14 05:36:12.532 | INFO     | __main__:_loop:1479 - [batch pdf 2] 63/163
+2026-10-14 05:36:17.558 | INFO     | __main__:_loop:1479 - [batch pdf 2] 68/163
+2026-10-14 05:36:22.572 | INFO     | __main__:_loop:1479 - [batch pdf 2] 72/163
+2026-10-14 05:36:27.588 | INFO     | __main__:_loop:1479 - [batch pdf 2] 76/163
+2026-10-14 05:36:32.596 | INFO     | __main__:_loop:1479 - [batch pdf 2] 79/163
+2026-10-14 05:36:37.604 | INFO     | __main__:_loop:1479 - [batch pdf 2] 82/163
+2026-10-14 05:36:42.651 | INFO     | __main__:_loop:1479 - [batch pdf 2] 85/163
+2026-10-14 05:36:47.674 | INFO     | __main__:_loop:1479 - [batch pdf 2] 89/163
+2026-10-14 05:36:57.707 | INFO     | __main__:_loop:1479 - [batch pdf 2] 93/163
+2026-10-14 05:37:02.715 | INFO     | __main__:_loop:1479 - [batch pdf 2] 97/163
+2026-10-14 05:37:07.727 | INFO     | __main__:_loop:1479 - [batch pdf 2] 100/163
+2026-10-14 05:37:17.745 | INFO     | __main__:_loop:1479 - [batch pdf 2] 103/163
+2026-10-14 05:37:22.753 | INFO     | __main__:_loop:1479 - [batch pdf 2] 107/163
+2026-10-14 05:37:27.767 | INFO     | __main__:_loop:1479 - [batch pdf 2] 110/163
+2026-10-14 05:37:32.776 | INFO     | __main__:_loop:1479 - [batch pdf 2] 113/163
+2026-10-14 05:37:37.785 | INFO     | __main__:_loop:1479 - [batch pdf 2] 117/163
+2026-10-14 05:37:47.803 | INFO     | __main__:_nudge:1450 - [focus] item 118/163 not finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 05:38:02.859 | INFO     | __main__:_nudge:1450 - [focus] item 118/163 not finished after 25 s; bringing Word forward to look for an alert
+2026-10-14 05:38:07.887 | INFO     | __main__:_loop:1479 - [batch pdf 2] 119/163
+2026-10-14 05:38:12.967 | INFO     | __main__:_loop:1479 - [batch pdf 2] 122/163
+2026-10-14 05:38:17.987 | INFO     | __main__:_loop:1479 - [batch pdf 2] 126/163
+2026-10-14 05:38:23.010 | INFO     | __main__:_loop:1479 - [batch pdf 2] 127/163
+2026-10-14 05:38:28.024 | INFO     | __main__:_loop:1479 - [batch pdf 2] 130/163
+2026-10-14 05:38:33.038 | INFO     | __main__:_loop:1479 - [batch pdf 2] 132/163
+2026-10-14 05:38:38.052 | INFO     | __main__:_loop:1479 - [batch pdf 2] 135/163
+2026-10-14 05:38:43.065 | INFO     | __main__:_loop:1479 - [batch pdf 2] 138/163
+2026-10-14 05:38:48.092 | INFO     | __main__:_loop:1479 - [batch pdf 2] 141/163
+2026-10-14 05:38:53.115 | INFO     | __main__:_loop:1479 - [batch pdf 2] 143/163
+2026-10-14 05:38:58.131 | INFO     | __main__:_loop:1479 - [batch pdf 2] 147/163
+2026-10-14 05:39:03.144 | INFO     | __main__:_loop:1479 - [batch pdf 2] 150/163
+2026-10-14 05:39:08.168 | INFO     | __main__:_loop:1479 - [batch pdf 2] 153/163
+2026-10-14 05:39:13.234 | INFO     | __main__:_loop:1479 - [batch pdf 2] 156/163
+2026-10-14 05:39:18.250 | INFO     | __main__:_loop:1479 - [batch pdf 2] 158/163
+2026-10-14 05:39:23.290 | INFO     | __main__:_loop:1479 - [batch pdf 2] 162/163
+2026-10-14 05:39:26.774 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 9129d2ecd2.docx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-14 05:39:27.371 | INFO     | __main__:stop:907 - [watchdog] tally: declined=0 dismissed=1 granted=0 forwarded=0 alerts_seen=1
