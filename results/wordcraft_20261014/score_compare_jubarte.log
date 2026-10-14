@@ -1,0 +1,13 @@
+compare jubarte-0.11.0 scoring 184 remaining, 0 complete; 16 missing
+jubarte-0.11.0 10 / 184 scored 10 failures 16 61s
+jubarte-0.11.0 20 / 184 scored 20 failures 16 88s
+jubarte-0.11.0 30 / 184 scored 30 failures 16 113s
+jubarte-0.11.0 40 / 184 scored 40 failures 16 152s
+jubarte-0.11.0 50 / 184 scored 50 failures 16 189s
+jubarte-0.11.0 60 / 184 scored 60 failures 16 280s
+jubarte-0.11.0 70 / 184 scored 70 failures 16 363s
+jubarte-0.11.0 80 / 184 scored 80 failures 16 453s
+jubarte-0.11.0 90 / 184 scored 90 failures 16 543s
+jubarte-0.11.0 100 / 184 scored 100 failures 16 680s
+/Users/arthrod/.local/share/uv/python/cpython-3.14.2-macos-aarch64-none/lib/python3.14/multiprocessing/resource_tracker.py:396: UserWarning: resource_tracker: There appear to be 5 leaked semaphore objects to clean up at shutdown: {'/mp-w1_d9uds', '/mp-3vqfhzif', '/mp-0ui4m8fa', '/mp-d6364jjn', '/mp-7_8hmr9s'}
+  warnings.warn(

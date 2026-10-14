@@ -1,0 +1,62 @@
+[
+  {
+    "pid": 66459,
+    "command": "/Users/arthrod/temp/T/neurotic_docx_bench/.venv/bin/python -c from multiprocessing.spawn import spawn_main; spawn_main(tracker_fd=9, pipe_handle=23) --multiprocessing-fork",
+    "reason": "superseded by user-requested all-fresh run"
+  },
+  {
+    "pid": 66458,
+    "command": "/Users/arthrod/temp/T/neurotic_docx_bench/.venv/bin/python -c from multiprocessing.spawn import spawn_main; spawn_main(tracker_fd=9, pipe_handle=21) --multiprocessing-fork",
+    "reason": "superseded by user-requested all-fresh run"
+  },
+  {
+    "pid": 66457,
+    "command": "/Users/arthrod/temp/T/neurotic_docx_bench/.venv/bin/python -c from multiprocessing.spawn import spawn_main; spawn_main(tracker_fd=9, pipe_handle=19) --multiprocessing-fork",
+    "reason": "superseded by user-requested all-fresh run"
+  },
+  {
+    "pid": 66456,
+    "command": "/Users/arthrod/temp/T/neurotic_docx_bench/.venv/bin/python -c from multiprocessing.spawn import spawn_main; spawn_main(tracker_fd=9, pipe_handle=17) --multiprocessing-fork",
+    "reason": "superseded by user-requested all-fresh run"
+  },
+  {
+    "pid": 66455,
+    "command": "/Users/arthrod/temp/T/neurotic_docx_bench/.venv/bin/python -c from multiprocessing.resource_tracker import main;main(8)",
+    "reason": "superseded by user-requested all-fresh run"
+  },
+  {
+    "pid": 66447,
+    "command": ".venv/bin/python results/wordcraft_20261014/score_run.py compare jubarte-0.11.0",
+    "reason": "superseded by user-requested all-fresh run"
+  },
+  {
+    "pid": 65353,
+    "command": "/Users/arthrod/temp/T/neurotic_docx_bench/.venv/bin/python -c from multiprocessing.spawn import spawn_main; spawn_main(tracker_fd=9, pipe_handle=23) --multiprocessing-fork",
+    "reason": "superseded by user-requested all-fresh run"
+  },
+  {
+    "pid": 65352,
+    "command": "/Users/arthrod/temp/T/neurotic_docx_bench/.venv/bin/python -c from multiprocessing.spawn import spawn_main; spawn_main(tracker_fd=9, pipe_handle=21) --multiprocessing-fork",
+    "reason": "superseded by user-requested all-fresh run"
+  },
+  {
+    "pid": 65351,
+    "command": "/Users/arthrod/temp/T/neurotic_docx_bench/.venv/bin/python -c from multiprocessing.spawn import spawn_main; spawn_main(tracker_fd=9, pipe_handle=19) --multiprocessing-fork",
+    "reason": "superseded by user-requested all-fresh run"
+  },
+  {
+    "pid": 65349,
+    "command": "/Users/arthrod/temp/T/neurotic_docx_bench/.venv/bin/python -c from multiprocessing.spawn import spawn_main; spawn_main(tracker_fd=9, pipe_handle=17) --multiprocessing-fork",
+    "reason": "superseded by user-requested all-fresh run"
+  },
+  {
+    "pid": 65348,
+    "command": "/Users/arthrod/temp/T/neurotic_docx_bench/.venv/bin/python -c from multiprocessing.resource_tracker import main;main(8)",
+    "reason": "superseded by user-requested all-fresh run"
+  },
+  {
+    "pid": 65341,
+    "command": ".venv/bin/python results/wordcraft_20261014/score_run.py convert soffice",
+    "reason": "superseded by user-requested all-fresh run"
+  }
+]

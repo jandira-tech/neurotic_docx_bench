@@ -650,7 +650,7 @@ def test_watchdog_presses_grant_with_activation_not_cancel(
 
     def fake_osa(script, *args, timeout=60.0):
         scripts.append((script, args))
-        if script is wp._DUMP_BUTTONS:
+        if script is wp._DUMP_DIALOGS:
             return (0, "Select…\tCancel\t", "") if args[0] == wp.WORD_PROC else (0, "", "")
         if script is wp._PRESS_ACTIVATED:
             return 0, "Select…", ""
@@ -678,7 +678,7 @@ def test_watchdog_declines_error_reporting_as_its_own_process(
     pressed_on: list[str] = []
 
     def fake_osa(script, *args, timeout=60.0):
-        if script is wp._DUMP_BUTTONS:
+        if script is wp._DUMP_DIALOGS:
             return (0, "Don\u2019t Send\tSend\t", "") if args[0] == wp.MERP_PROC else (0, "", "")
         if script is wp._PRESS:
             pressed_on.append(args[0])
@@ -709,7 +709,7 @@ def test_watchdog_closes_error_report_ok_and_not_more_information(
     present = {"OK", "More Information"}
 
     def fake_osa(script, *args, timeout=60.0):
-        if script is wp._DUMP_BUTTONS:
+        if script is wp._DUMP_DIALOGS:
             shown = "OK\tMore Information\tmissing value\t" if args[0] == wp.MERP_PROC else ""
             return 0, shown, ""
         if script is wp._PRESS and args and args[0] == wp.MERP_PROC:
@@ -1016,7 +1016,7 @@ def test_watchdog_dismisses_an_ordinary_alert_without_activating(
     pressed: list[str] = []
 
     def fake_osa(script, *args, timeout=60.0):
-        if script is wp._DUMP_BUTTONS:
+        if script is wp._DUMP_DIALOGS:
             return (0, "OK\t", "") if args[0] == wp.WORD_PROC else (0, "", "")
         if script is wp._PRESS_ACTIVATED:
             return 0, "", ""  # no grant button present
@@ -1053,7 +1053,7 @@ def test_recover_after_failure_declines_closes_and_keeps_going(
     monkeypatch.setattr(session, "recycle", lambda *f: recycled.append(f) or True)
 
     assert wp.recover_after_failure(session) is True
-    assert wp._DECLINE_REPAIR in ran  # answer the repair prompt "No"
+    assert wp._ANSWER in ran  # answer the repair prompt "No", then its OK
     assert wp._CLOSE_ALL in ran  # close the file if one is open
     assert recycled == []  # and do NOT restart Word
 
@@ -1127,13 +1127,14 @@ def test_watchdog_answers_the_repair_prompt_no_before_anything_generic(
 ) -> None:
     """"Yes" would make Word rewrite the file and we would measure the repair."""
     order: list[str] = []
+    shown = iter(["Yes\tNo\t\x1fWord found unreadable content in x.docx\x1e"])
 
     def fake_osa(script, *args, timeout=60.0):
-        if script is wp._DUMP_BUTTONS:
-            return (0, "Yes\tNo\t", "") if args[0] == wp.WORD_PROC else (0, "", "")
+        if script is wp._DUMP_DIALOGS:
+            return (0, next(shown, ""), "") if args[0] == wp.WORD_PROC else (0, "", "")
         order.append(script)
-        if script is wp._DECLINE_REPAIR:
-            return 0, "No", ""
+        if script is wp._ANSWER:
+            return 0, "No\x1fWord found unreadable content in x.docx\x1e", ""
         return 0, "", ""
 
     monkeypatch.setattr(wp, "osa", fake_osa)
@@ -1145,20 +1146,16 @@ def test_watchdog_answers_the_repair_prompt_no_before_anything_generic(
     dogs.stop()
 
     assert dogs.declined >= 1
-    assert order[0] is wp._DECLINE_REPAIR
+    assert order[0] is wp._ANSWER
     # A match short-circuits: neither generic handler runs on a repair prompt.
     assert wp._PRESS_ACTIVATED not in order and wp._PRESS not in order
 
 
-def test_decline_repair_matches_on_window_text_not_a_button_name() -> None:
-    src = wp._DECLINE_REPAIR
-    assert "wText contains" in src
-    assert 'pressNamed(w, "No")' in src
-    assert "key code 53" in src  # Escape, when the button is unreachable
+def test_answer_script_presses_no_never_yes_and_reads_the_text_first() -> None:
+    src = wp._ANSWER
     assert '"Yes"' not in src  # never repair the document under test
-    for marker in wp.REPAIR_MARKERS:
-        assert marker  # markers are supplied via argv, never interpolated
-    assert "item 1 of argv" not in src or "items 1 thru -1 of argv" in src
+    assert "my textOf(target)" in src and src.index("my textOf(target)") < src.index('perform action "AXPress"')
+    assert "items 3 thru -1 of argv" in src  # steps are supplied via argv, never interpolated
 
 
 # ─── one-osascript batch mode ────────────────────────────────────────────────

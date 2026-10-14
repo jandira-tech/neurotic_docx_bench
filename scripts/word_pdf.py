@@ -53,6 +53,19 @@ which reviewed the 21 scripts this one replaces:
   out. That matters beyond tidiness — the two sticky settings below live in
   that instance, and losing them mid-batch would change every later PDF
   without anything failing.
+- **Word's alerts are read and answered in one round trip each, and everything
+  they say is logged.** One `osascript` per poll returns every alert's buttons
+  *and* its text; a repair prompt is recognised from that (its wording, or its
+  Yes/No pair when the wording is not readable) and answered by a second script
+  that brings Word forward, presses No, waits for the "Word experienced an error
+  trying to open the file" OK that follows, presses it, and hands focus back.
+  Until 2026-10-14 the text-matched handler never fired in any logged run (0 ×
+  "repair prompt declined" against 259 × "dismissed via 'No'" from the generic
+  fallback, ~6 s and three osascripts later), and the OK after it was never
+  pressed while Word sat in the background, where that alert does not exist for
+  System Events: each broken fixture then cost the full 240 s AppleEvent timeout
+  and one of the three batch passes. `--no-focus` keeps the old background-only
+  behaviour.
 
 PDF preset: `save as … file format format PDF` inherits whatever "Optimize for"
 was last chosen in Word's own Save As dialog. For print-fidelity output pick
@@ -139,8 +152,66 @@ REPAIR_MARKERS = (
     "Do you want to recover the contents of this document",
 )
 
+# The steps `answer_alert` runs for a repair prompt: No, then the OK Word raises after it.
+NO_STEP = "No"
+OK_STEP = "OK|Ok"
+
+# Field separators in what `_DUMP_DIALOGS` and `_ANSWER` return: one record per alert
+# (RS), its button names tab-joined, then US, then the alert's text. Neither byte can
+# occur in a button label or in Word's prose, so no quoting is needed on either side.
+_RS = "\x1e"
+_US = "\x1f"
+
 
 # ─── pure helpers (no Word, no macOS — unit-testable anywhere) ────────────────
+
+
+@dataclass(slots=True, frozen=True)
+class Dialog:
+    """One alert as System Events showed it: its buttons, and the text beside them."""
+
+    buttons: tuple[str, ...]
+    text: str = ""
+
+
+@dataclass(slots=True, frozen=True)
+class DialogEvent:
+    """One answer the watchdog gave: which buttons it pressed, and what the alert said."""
+
+    at: float
+    process: str
+    pressed: tuple[str, ...]
+    text: str
+
+
+def parse_dialogs(dump: str) -> list[Dialog]:
+    """Read `_DUMP_DIALOGS`'s output. A record with no US is a bare button list."""
+    dialogs: list[Dialog] = []
+    for record in dump.split(_RS):
+        if not record.strip():
+            continue
+        names, _, text = record.partition(_US)
+        buttons = tuple(n.strip() for n in names.split("\t") if n.strip())
+        text = text.strip(" |")
+        # The first static text of a Word alert is its title, the process name.
+        for title in (WORD_PROC, MERP_PROC):
+            text = text.removeprefix(f"{title} | ")
+        if buttons:
+            dialogs.append(Dialog(buttons, text))
+    return dialogs
+
+
+def is_repair_prompt(dialog: Dialog) -> bool:
+    """Word's "repair this document?" prompt, by its words, or by its Yes/No pair.
+
+    The words are the specific match. The Yes/No pair stands in for them because the
+    text is not always readable through System Events, and the generic fallback has
+    answered that pair "No" 259 times in the logged runs anyway: the only change is
+    that it is now answered first, with the OK that follows, and on the record.
+    """
+    if any(marker in dialog.text for marker in REPAIR_MARKERS):
+        return True
+    return {"Yes", "No"} <= set(dialog.buttons)
 
 
 def is_word_temp(name: str) -> bool:
@@ -318,6 +389,13 @@ _close_documents: ContextVar[bool] = ContextVar("word_close_documents", default=
 # A label in front of that name says whose file it is while a run is watched.
 _stage_label: ContextVar[str] = ContextVar("word_stage_label", default="")
 _LABEL = re.compile(r"[A-Za-z0-9._-]+")
+# `--focus/--no-focus`: whether the run may bring Word forward to answer an alert (and
+# hand focus straight back). Word's alert after "No" does not exist for System Events
+# while Word is in the background, so without this the open hangs to its timeout.
+_focus: ContextVar[bool] = ContextVar("word_focus", default=True)
+# Only one script drives Word's focus at a time: the watchdog's answer and the batch
+# progress nudge are separate threads and would otherwise fight over frontmost.
+_FOCUS_LOCK = threading.Lock()
 
 _EXPORT_PDF = _EXPORT_PDF.replace("__AE_TIMEOUT__", str(APPLE_EVENT_TIMEOUT))
 
@@ -353,6 +431,78 @@ on run argv
             end repeat
           end repeat
         end try
+      end repeat
+    end tell
+  end tell
+  return out
+end run
+""".strip()
+
+# One poll: every window and sheet of the process that carries buttons, as one record
+# each — the button names tab-joined, US, the static text beside them (direct children,
+# and one level of groups, which is where an alert keeps its sentences; never the whole
+# UI tree, which on a document window runs to thousands of elements). A window with no
+# buttons is not an alert and is skipped before its text is read, so a document window
+# costs one `buttons of` query. Every System Events term sits inside a `tell application
+# "System Events"` block, including the handlers: terms used outside one do not compile,
+# and a script that does not compile answers nothing and says nothing in the loop.
+_DUMP_DIALOGS = """
+on textOf(target)
+  set acc to ""
+  tell application "System Events"
+    try
+      repeat with stx in (static texts of target)
+        try
+          set v to (value of stx) as string
+          if v is not "" then set acc to acc & v & " | "
+        end try
+      end repeat
+    end try
+    try
+      repeat with g in (groups of target)
+        repeat with stx in (static texts of g)
+          try
+            set v to (value of stx) as string
+            if v is not "" then set acc to acc & v & " | "
+          end try
+        end repeat
+      end repeat
+    end try
+  end tell
+  return acc
+end textOf
+
+on buttonsOf(target)
+  set names to ""
+  tell application "System Events"
+    try
+      repeat with b in (buttons of target)
+        try
+          set names to names & ((name of b) as string) & tab
+        end try
+      end repeat
+    end try
+  end tell
+  return names
+end buttonsOf
+
+on run argv
+  set procName to item 1 of argv
+  set out to ""
+  tell application "System Events"
+    if not (exists process procName) then return ""
+    tell process procName
+      repeat with w in windows
+        set targets to {w}
+        try
+          set targets to {w} & (sheets of w)
+        end try
+        repeat with target in targets
+          set names to my buttonsOf(target)
+          if names is not "" then
+            set out to out & names & (character id 31) & (my textOf(target)) & (character id 30)
+          end if
+        end repeat
       end repeat
     end tell
   end tell
@@ -430,62 +580,146 @@ end run
 """.strip()
 
 
-# Walk a window's text, press "No" if it is the repair prompt, Escape if the
-# button is not reachable. `-1` as the marker count means "no repair dialog
-# found", which the watchdog uses to fall through to the generic handlers.
-_DECLINE_REPAIR = """
-on textOf(el)
+# Bring the process forward, press a sequence of buttons, hand focus back. argv: process
+# name, seconds each step may wait, then the steps; a step is button names joined by "|",
+# any one of which is pressed. Steps run in order and stop at the first that finds none
+# of its buttons, or after an OK, which is the last thing Word says. Returns one record
+# per press: the button, US, the text of the alert it was on (read before the press).
+#
+# This is what answers the repair prompt. "No" is the answer — "Yes" makes Word rewrite
+# the document and we would then be measuring Word's repair, not the file we were
+# handed — and it has to be followed by the OK on "Word experienced an error trying to
+# open the file", which Word raises after the No but, while it is in the background,
+# does not show to System Events at all (0 windows); the open then blocks until the
+# AppleEvent timeout. Frontmost, Word shows it at once (2026-09-30, `word_pdf_focus`).
+# The wait is bounded by the clock, not by a count of System Events calls: while Word
+# is busy each call can take a second, and the focus trial's 10 s check took 28 s.
+# Word goes back into hiding unless it was the app in front (someone working in it).
+_ANSWER = """
+on textOf(target)
   set acc to ""
-  try
-    set acc to acc & (name of el as string) & " "
-  end try
-  try
-    set acc to acc & (value of el as string) & " "
-  end try
-  try
-    set acc to acc & (title of el as string) & " "
-  end try
-  try
-    repeat with child in UI elements of el
-      set acc to acc & my textOf(child)
-    end repeat
-  end try
+  tell application "System Events"
+    try
+      repeat with stx in (static texts of target)
+        try
+          set v to (value of stx) as string
+          if v is not "" then set acc to acc & v & " | "
+        end try
+      end repeat
+    end try
+    try
+      repeat with g in (groups of target)
+        repeat with stx in (static texts of g)
+          try
+            set v to (value of stx) as string
+            if v is not "" then set acc to acc & v & " | "
+          end try
+        end repeat
+      end repeat
+    end try
+  end tell
   return acc
 end textOf
 
-on pressNamed(el, nm)
-  try
-    perform action "AXPress" of button nm of el
-    return true
-  end try
-  try
-    repeat with child in UI elements of el
-      if my pressNamed(child, nm) then return true
-    end repeat
-  end try
-  return false
-end pressNamed
-
-on run argv
-  set markers to items 1 thru -1 of argv
+on pressAny(procName, names)
   tell application "System Events"
-    if not (exists process "Microsoft Word") then return ""
-    tell process "Microsoft Word"
+    tell process procName
       repeat with w in windows
-        set wText to my textOf(w)
-        repeat with m in markers
-          if wText contains (m as string) then
-            if my pressNamed(w, "No") then return "No"
-            key code 53
-            return "escape"
-          end if
+        set targets to {w}
+        try
+          set targets to {w} & (sheets of w)
+        end try
+        repeat with target in targets
+          repeat with nm in names
+            try
+              if exists button (nm as string) of target then
+                set said to my textOf(target)
+                perform action "AXPress" of button (nm as string) of target
+                return {nm as string, said}
+              end if
+            end try
+          end repeat
         end repeat
       end repeat
     end tell
   end tell
-  return ""
+  return {"", ""}
+end pressAny
+
+on run argv
+  set procName to item 1 of argv
+  set waitFor to (item 2 of argv) as number
+  set steps to items 3 thru -1 of argv
+  set priorApp to ""
+  set done to ""
+  tell application "System Events"
+    try
+      set priorApp to name of first process whose frontmost is true
+    end try
+    if not (exists process procName) then return ""
+    tell process procName to set frontmost to true
+  end tell
+  set od to AppleScript's text item delimiters
+  repeat with stepText in steps
+    set AppleScript's text item delimiters to "|"
+    set names to text items of (stepText as string)
+    set AppleScript's text item delimiters to od
+    set pressed to ""
+    set said to ""
+    set t0 to current date
+    repeat
+      set hit to my pressAny(procName, names)
+      set pressed to item 1 of hit
+      set said to item 2 of hit
+      if pressed is not "" then exit repeat
+      if ((current date) - t0) ≥ waitFor then exit repeat
+      delay 0.25
+    end repeat
+    if pressed is "" then exit repeat
+    set done to done & pressed & (character id 31) & said & (character id 30)
+    if pressed is "OK" or pressed is "Ok" then exit repeat
+  end repeat
+  tell application "System Events"
+    if priorApp is not procName then
+      try
+        set visible of process procName to false
+      end try
+      if priorApp is not "" then
+        try
+          set frontmost of (first process whose name is priorApp) to true
+        end try
+      end if
+    end if
+  end tell
+  return done
 end run
 """.strip()
+
+
+def answer_alert(
+    *steps: str, wait: float, process: str = WORD_PROC, skip_if_busy: bool = False
+) -> list[tuple[str, str]]:
+    """Run `_ANSWER`: bring `process` forward, press `steps` in order, hand focus back.
+
+    Returns `(button, text)` per press, in order. Focus-taking is serialised through
+    `_FOCUS_LOCK`; with `skip_if_busy` a caller that merely wanted to look (the batch
+    progress nudge) returns empty instead of queueing behind an answer in progress.
+    """
+    if skip_if_busy:
+        if not _FOCUS_LOCK.acquire(blocking=False):
+            return []
+    else:
+        _FOCUS_LOCK.acquire()
+    try:
+        _, out, _ = osa(_ANSWER, process, str(wait), *steps, timeout=wait * len(steps) + 15)
+    finally:
+        _FOCUS_LOCK.release()
+    return [(d.buttons[0], d.text) for d in parse_dialogs(out)]
+
+
+def _said(text: str) -> str:
+    """How an alert's words appear in a log line."""
+    return f'Word said: "{text}"' if text else "Word showed no readable text"
 
 
 @dataclass
@@ -495,64 +729,163 @@ class Watchdogs:
     MERP runs as its own process, so a handler aimed at Word cannot see it — the
     single reason no script in the audited corpus could dismiss it (§12.1).
     Every button label encountered is logged the first time, so the real control
-    names are recorded from a live run instead of assumed.
+    names are recorded from a live run instead of assumed, and so is every
+    distinct thing an alert says; each answer given is kept in `events`.
+
+    One `osascript` per poll reads every alert's buttons and text. A repair
+    prompt is answered by `answer_alert`, which brings Word forward for the OK
+    that follows the No (`focus`); when that OK has not appeared within `wait`
+    seconds, Word still owes it, and for the next `owe_window` seconds a poll
+    that finds no alert brings Word forward again to look for it, at most once
+    per `owe_every`. With `focus` off the No is pressed where Word is and
+    nothing is activated, which is the pre-2026-10-14 behaviour.
+
+    Measured on 2026-10-14 (3 repair-prompt fixtures + 2 controls, one run):
+    the dump reads the prompt's wording; two prompts were answered No then OK
+    inside one activation within a second of being seen; for one file Word
+    raised its OK only ~35 s after the No (its own time, the screen log shows
+    nothing in between), which is why the window is 90 s and the batch
+    progress check also looks every 15 s. No AppleEvent timeout; the batch
+    finished in 3 m 41 s with the right verdict on all five.
     """
 
-    poll: float = 1.5
+    poll: float = 1.0
+    focus: bool = field(default_factory=lambda: _focus.get())
+    wait: float = 3.0  # seconds each press waits for its button while Word is frontmost
+    owe_window: float = 90.0  # seconds after a No during which Word may still owe its OK
+    owe_every: float = 5.0  # seconds between looks for that OK (each one is a focus flip)
     _stop: threading.Event = field(default_factory=threading.Event)
     _threads: list[threading.Thread] = field(default_factory=list)
     seen: set[str] = field(default_factory=set)
+    said: set[str] = field(default_factory=set)
+    events: list[DialogEvent] = field(default_factory=list)
     dismissed: int = 0
     granted: int = 0
     declined: int = 0
+    forwarded: int = 0
+    owed_until: float = 0.0
+    _owed_next: float = 0.0
+
+    def _note_dialogs(self, proc: str, dialogs: list[Dialog]) -> None:
+        for dialog in dialogs:
+            for name in dialog.buttons:
+                if (key := f"{proc}:{name}") not in self.seen:
+                    self.seen.add(key)
+                    logger.info(f"[watchdog] {proc} shows button {name!r}")
+            if dialog.text and dialog.text not in self.said:
+                self.said.add(dialog.text)
+                logger.info(f"[watchdog] {proc} says: {dialog.text!r}")
 
     def _note_buttons(self, proc: str) -> None:
-        _, out, _ = osa(_DUMP_BUTTONS, proc, timeout=8)
-        for name in (n.strip() for n in out.split("\t")):
-            if name and (key := f"{proc}:{name}") not in self.seen:
-                self.seen.add(key)
-                logger.info(f"[watchdog] {proc} shows button {name!r}")
+        """One extra dump, for a caller that has not already read the alerts."""
+        _, out, _ = osa(_DUMP_DIALOGS, proc, timeout=8)
+        self._note_dialogs(proc, parse_dialogs(out))
+
+    def _record(self, proc: str, pressed: tuple[str, ...], text: str) -> None:
+        self.events.append(DialogEvent(time.monotonic(), proc, pressed, text))
+
+    def _forward(self, *steps: str) -> list[tuple[str, str]]:
+        presses = answer_alert(*steps, wait=self.wait)
+        if presses:
+            self.forwarded += 1
+        return presses
+
+    def _decline_repair(self, dialog: Dialog) -> None:
+        """Answer the repair prompt: No, then the OK Word raises after it."""
+        if self.focus:
+            presses = self._forward(NO_STEP, OK_STEP)
+        else:
+            _, pressed, _ = osa(_PRESS, WORD_PROC, NO_STEP, timeout=10)
+            presses = [(pressed, dialog.text)] if pressed else []
+        if not presses:
+            logger.warning(f"[watchdog] repair prompt seen but no button could be pressed; {_said(dialog.text)}")
+            return
+        self.declined += 1
+        buttons = tuple(b for b, _ in presses)
+        text = next((t for _, t in presses if t), dialog.text)
+        self._record(WORD_PROC, buttons, text)
+        how = " then ".join(repr(b) for b in buttons)
+        where = " with Word brought forward" if self.focus else ""
+        logger.warning(f"[watchdog] repair prompt declined via {how}{where}; {_said(text)}")
+        for button, said in presses[1:]:
+            if said:
+                logger.warning(f"[watchdog] after the No, Word showed {button!r}; {_said(said)}")
+        # An OK pressed in the same activation settles the debt; otherwise Word still
+        # owes it and the next empty polls go looking, for `owe_window` seconds.
+        answered_ok = any(b in ("OK", "Ok") for b in buttons)
+        self.owed_until = 0.0 if answered_ok or not self.focus else time.monotonic() + self.owe_window
+        self._owed_next = 0.0
+
+    def _fetch_owed(self) -> None:
+        if not self.owed_until:
+            return
+        now = time.monotonic()
+        if now > self.owed_until:
+            self.owed_until = 0.0
+            logger.warning("[watchdog] no OK appeared after the last No; stopped bringing Word forward")
+            return
+        if now < self._owed_next:
+            return
+        self._owed_next = now + self.owe_every
+        presses = self._forward(OK_STEP)
+        if presses:
+            self.owed_until = 0.0
+            button, text = presses[0]
+            self._record(WORD_PROC, (button,), text)
+            logger.warning(f"[watchdog] the OK Word owed after the No was pressed with Word brought forward; {_said(text)}")
 
     def _loop_word(self) -> None:
         while not self._stop.wait(self.poll):
-            _, count, _ = osa(_DUMP_BUTTONS, WORD_PROC, timeout=8)
-            if not count:
+            _, dump, _ = osa(_DUMP_DIALOGS, WORD_PROC, timeout=8)
+            dialogs = parse_dialogs(dump)
+            if not dialogs:
+                self._fetch_owed()
                 continue
-            self._note_buttons(WORD_PROC)
-            # The repair prompt first, and answered "No". It is matched on window
-            # text, so this cannot fire on an unrelated alert — and it has to run
-            # before the generic handlers, which would otherwise press "OK" on it.
-            _, pressed, _ = osa(_DECLINE_REPAIR, *REPAIR_MARKERS, timeout=15)
-            if pressed:
-                self.declined += 1
-                logger.warning(f"[watchdog] repair prompt declined via {pressed!r}")
+            self._note_dialogs(WORD_PROC, dialogs)
+            # The repair prompt first, answered "No" and followed to its OK. It has
+            # to run before the generic handlers, which would otherwise press "OK"
+            # on it, and before any 240 s AppleEvent timeout does.
+            repair = next((d for d in dialogs if is_repair_prompt(d)), None)
+            if repair is not None:
+                self._decline_repair(repair)
                 continue
             # Accept a sandbox grant next. Never Cancel one: denying guarantees
             # a re-prompt on every later file (§14.3).
             # A grant must be pressed with Word frontmost or the panel never
-            # renders to accept it (§6.1). Focus is handed straight back.
-            _, pressed, _ = osa(_PRESS_ACTIVATED, WORD_PROC, *GRANT_BUTTONS, timeout=20)
-            if pressed:
-                self.granted += 1
-                logger.warning(f"[watchdog] sandbox grant completed via {pressed!r}")
-                continue
+            # renders to accept it (§6.1). Focus is handed straight back. The
+            # dump already names the buttons, so Word is only activated when
+            # one of them is a grant; an ordinary alert no longer costs a focus
+            # flip and a 20 s budget to find that out.
+            if any(name in GRANT_BUTTONS for d in dialogs for name in d.buttons):
+                _, pressed, _ = osa(_PRESS_ACTIVATED, WORD_PROC, *GRANT_BUTTONS, timeout=20)
+                if pressed:
+                    self.granted += 1
+                    self._record(WORD_PROC, (pressed,), dialogs[0].text)
+                    logger.warning(f"[watchdog] sandbox grant completed via {pressed!r}")
+                    continue
             # Everything else is an ordinary alert; no activation needed, and
             # Cancel here is safe because a grant would have matched above.
             _, pressed, _ = osa(_PRESS, WORD_PROC, *DISMISS_BUTTONS, timeout=10)
             if pressed:
                 self.dismissed += 1
-                logger.warning(f"[watchdog] Word dialog dismissed via {pressed!r}")
+                text = next((d.text for d in dialogs if pressed in d.buttons and d.text), dialogs[0].text)
+                self._record(WORD_PROC, (pressed,), text)
+                logger.warning(f"[watchdog] Word dialog dismissed via {pressed!r}; {_said(text)}")
+                if pressed in ("OK", "Ok"):
+                    self.owed_until = 0.0
 
     def _loop_merp(self) -> None:
         while not self._stop.wait(self.poll):
-            _, out, _ = osa(_DUMP_BUTTONS, MERP_PROC, timeout=8)
-            if not out:
+            _, out, _ = osa(_DUMP_DIALOGS, MERP_PROC, timeout=8)
+            dialogs = parse_dialogs(out)
+            if not dialogs:
                 continue
-            self._note_buttons(MERP_PROC)
+            self._note_dialogs(MERP_PROC, dialogs)
             _, pressed, _ = osa(_PRESS, MERP_PROC, *MERP_DECLINE, timeout=10)
             if pressed:
                 self.dismissed += 1
-                logger.warning(f"[watchdog] error report declined via {pressed!r}")
+                self._record(MERP_PROC, (pressed,), dialogs[0].text)
+                logger.warning(f"[watchdog] error report declined via {pressed!r}; {_said(dialogs[0].text)}")
             else:
                 logger.error(
                     f"[watchdog] {MERP_PROC} is showing a dialog whose buttons match "
@@ -570,6 +903,12 @@ class Watchdogs:
         self._stop.set()
         for t in self._threads:
             t.join(timeout=3)
+        if self._threads:
+            logger.info(
+                f"[watchdog] tally: declined={self.declined} dismissed={self.dismissed} "
+                f"granted={self.granted} forwarded={self.forwarded} alerts_seen={len(self.said)}"
+            )
+            self._threads.clear()
 
     def __enter__(self) -> Self:
         self.start()
@@ -874,6 +1213,24 @@ def export_pdf(
 # ─── malformed documents ─────────────────────────────────────────────────────
 
 
+def decline_repair_prompt() -> list[tuple[str, str]]:
+    """Answer a repair prompt that may be up after a failed export: No, then its OK.
+
+    The serial path's export has already returned (errored or timed out) when this
+    runs, so there is no watchdog race to lose: with focus allowed Word is brought
+    forward for the OK, as the watchdog does; without it the No is pressed in place.
+    Returns what was pressed, with the alert's words, and logs them.
+    """
+    if _focus.get():
+        presses = answer_alert(NO_STEP, OK_STEP, wait=3.0)
+    else:
+        _, pressed, _ = osa(_PRESS, WORD_PROC, NO_STEP, timeout=10)
+        presses = [(pressed, "")] if pressed else []
+    for button, text in presses:
+        logger.warning(f"[word] after the failure, pressed {button!r}; {_said(text)}")
+    return presses
+
+
 def recover_after_failure(
     session: WordSession, *folders: Path, only: str | None = None
 ) -> bool:
@@ -890,7 +1247,7 @@ def recover_after_failure(
     The paragraph-count check on every open is what catches that, and a Word that
     cannot be brought back to zero open documents is assumed to be in it.
     """
-    osa(_DECLINE_REPAIR, *REPAIR_MARKERS, timeout=15)
+    decline_repair_prompt()
     if session.started_clean and only:
         # `started_clean` is one observation, taken before the first file, and
         # this runs after every failure for the rest of the batch. A document
@@ -1049,6 +1406,17 @@ class _Progress:
     the only signal available while it runs. An item still open after
     `stall_after` seconds gets one `diagnose` report (logged, nothing pressed or
     killed); the next item that stalls gets its own.
+
+    It also checks on an item Word opened and has not finished. Word may not
+    draw its repair prompt, or the OK after it, until it is frontmost, so an
+    item with no `[ok]`/`[fail]`/`[retry]` line after `nudge_after` seconds
+    brings Word forward to press No (then its OK) or a lone OK, and again every
+    `nudge_every` seconds while that item stays open (`focus` only). A document
+    that is merely slow costs `nudge_wait` seconds of focus per check, which is
+    why the thresholds are above what a large document takes to open and save,
+    and nothing is pressed unless an alert is actually there. The check and the
+    stall report each run on their own thread: their osascript probes can take
+    tens of seconds while Word is busy, and the clock must not wait on them.
     """
 
     log_path: Path
@@ -1057,12 +1425,46 @@ class _Progress:
     poll: float = 5.0
     stall_after: float = 30.0
     diagnose: Callable[[Path], str] = stall_report
+    focus: bool = field(default_factory=lambda: _focus.get())
+    nudge_after: float = 10.0
+    nudge_every: float = 15.0
+    nudge_wait: float = 2.0
+    nudges: int = 0
     _stop: threading.Event = field(default_factory=threading.Event)
     _thread: threading.Thread | None = None
+    _busy: threading.Lock = field(default_factory=threading.Lock)
+
+    def _report(self, item: int) -> None:
+        report = self.diagnose(self.log_path)
+        logger.warning(
+            f"[batch{self.label}] item {item}/{self.total} open for more than "
+            f"{self.stall_after:.0f} s:\n{report}"
+        )
+
+    def _nudge(self, item: int, open_for: float) -> None:
+        # One check at a time; a check still running when the next is due is skipped.
+        if not self._busy.acquire(blocking=False):
+            return
+        try:
+            self.nudges += 1
+            logger.info(
+                f"[focus] item {item}/{self.total} not finished after {open_for:.0f} s; "
+                "bringing Word forward to look for an alert"
+            )
+            presses = answer_alert(f"{NO_STEP}|{OK_STEP}", OK_STEP, wait=self.nudge_wait, skip_if_busy=True)
+            if presses:
+                how = " then ".join(repr(b) for b, _ in presses)
+                text = next((t for _, t in presses if t), "")
+                logger.warning(f"[focus] item {item}/{self.total}: pressed {how} with Word brought forward; {_said(text)}")
+        finally:
+            self._busy.release()
 
     def _loop(self) -> None:
-        seen = -1
-        since = time.monotonic()
+        # One clock for both checks, restarted by any [ok]/[fail]/[retry] line
+        # (progress counts only [ok]/[fail]).
+        seen = ended = -1
+        item_since = time.monotonic()
+        nudge_at = item_since + self.nudge_after
         probed = False
         while not self._stop.wait(self.poll):
             try:
@@ -1070,19 +1472,25 @@ class _Progress:
             except OSError:
                 text = None
             if text is not None:
-                count = sum(1 for ln in text.splitlines() if ln.startswith(("[ok]", "[fail]")))
+                lines = text.splitlines()
+                count = sum(1 for ln in lines if ln.startswith(("[ok]", "[fail]")))
                 if count != seen:
                     seen = count
-                    since, probed = time.monotonic(), False
                     logger.info(f"[batch{self.label}] {count}/{self.total}")
-            if not probed and time.monotonic() - since > self.stall_after:
+                finished = sum(1 for ln in lines if ln.startswith(("[ok]", "[fail]", "[retry]")))
+                if finished != ended:
+                    ended = finished
+                    item_since = time.monotonic()
+                    nudge_at = item_since + self.nudge_after
+                    probed = False
+            item = max(ended, 0) + 1
+            now = time.monotonic()
+            if not probed and now - item_since > self.stall_after:
                 probed = True
-                item = max(seen, 0) + 1
-                report = self.diagnose(self.log_path)
-                logger.warning(
-                    f"[batch{self.label}] item {item}/{self.total} open for more than "
-                    f"{self.stall_after:.0f} s:\n{report}"
-                )
+                threading.Thread(target=self._report, args=(item,), daemon=True).start()
+            if self.focus and now >= nudge_at:
+                nudge_at = now + self.nudge_every
+                threading.Thread(target=self._nudge, args=(item, now - item_since), daemon=True).start()
 
     def __enter__(self) -> Self:
         self._thread = threading.Thread(target=self._loop, daemon=True)
@@ -1941,6 +2349,17 @@ def main(
             "says whose file it is (a tool's name, say).",
         ),
     ] = "",
+    focus: Annotated[
+        bool,
+        typer.Option(
+            "--focus/--no-focus",
+            help="Bring Word forward (and hand focus straight back) to answer the "
+            "repair prompt and the OK after it, and to check on an item that is "
+            "not finished after 10 s. --no-focus presses only what Word shows in "
+            "the background, where the OK after a No does not appear and the open "
+            "waits out its 240 s timeout.",
+        ),
+    ] = True,
 ) -> None:
     """Export every .docx in a folder to PDF using Microsoft Word.
 
@@ -1949,6 +2368,36 @@ def main(
     documents that were open before the run.
     """
     timeout = positive_seconds(timeout, "--timeout")
+    focus_token = _focus.set(focus)
+    try:
+        _main(
+            src, out, force=force, timeout=timeout, one_osascript=one_osascript,
+            check_preset=check_preset, allow_open_docs=allow_open_docs, do_not_close=do_not_close,
+            accept_all=accept_all, accept_suffix=accept_suffix, reject_all=reject_all,
+            reject_suffix=reject_suffix, quiet=quiet, log_file=log_file, label=label,
+        )
+    finally:
+        _focus.reset(focus_token)
+
+
+def _main(
+    src: Path,
+    out: Path | None,
+    *,
+    force: bool,
+    timeout: float,
+    one_osascript: bool,
+    check_preset: bool,
+    allow_open_docs: bool,
+    do_not_close: bool,
+    accept_all: bool,
+    accept_suffix: str,
+    reject_all: bool,
+    reject_suffix: str,
+    quiet: bool,
+    log_file: Path | None,
+    label: str,
+) -> None:
     logger.remove()
     logger.add(lambda m: console.print(m, end=""), level="ERROR" if quiet else "INFO")
     if log_file:
