@@ -183,3 +183,24 @@ docxodus-12.6.5 compare 290 / 481 ok 15209 ms
 docxodus-12.6.5 compare 300 / 481 ok 19301 ms
 docxodus-12.6.5 compare 310 / 481 ok 13157 ms
 docxodus-12.6.5 compare 320 / 481 ok 39707 ms
+docxodus-12.6.5 compare 330 / 481 ok 33640 ms
+docxodus-12.6.5 compare 337 / 481 FAILED 120095 ms
+docxodus-12.6.5 compare 340 / 481 ok 32458 ms
+docxodus-12.6.5 compare 345 / 481 FAILED 120083 ms
+docxodus-12.6.5 compare 348 / 481 FAILED 120089 ms
+docxodus-12.6.5 compare 350 / 481 ok 37829 ms
+docxodus-12.6.5 compare 360 / 481 ok 40403 ms
+docxodus-12.6.5 compare 370 / 481 ok 37010 ms
+docxodus-12.6.5 compare 380 / 481 ok 40606 ms
+docxodus-12.6.5 compare 385 / 481 FAILED 120115 ms
+docxodus-12.6.5 compare 390 / 481 ok 35322 ms
+docxodus-12.6.5 compare 400 / 481 ok 34142 ms
+docxodus-12.6.5 compare 410 / 481 ok 28593 ms
+docxodus-12.6.5 compare 420 / 481 ok 4328 ms
+docxodus-12.6.5 compare 430 / 481 ok 7146 ms
+docxodus-12.6.5 compare 440 / 481 ok 9552 ms
+docxodus-12.6.5 compare 450 / 481 ok 9068 ms
+docxodus-12.6.5 compare 460 / 481 ok 17962 ms
+docxodus-12.6.5 compare 470 / 481 ok 17538 ms
+docxodus-12.6.5 compare 480 / 481 ok 15587 ms
+docxodus-12.6.5 finished 470 / 481

@@ -1,30 +1,11 @@
 <frozen site>:101: RuntimeWarning: Unexpected value in sys.prefix, expected /Users/arthrod/temp/T/neurotic_docx_bench/.venv, got /Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/../../.venv
 <frozen site>:101: RuntimeWarning: Unexpected value in sys.exec_prefix, expected /Users/arthrod/temp/T/neurotic_docx_bench/.venv, got /Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/../../.venv
-Traceback (most recent call last):
-  File "/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/finish_rest.py", line 8, in <module>
-    render('jubarte-0.12.0',ids);score('jubarte-0.12.0')
-    ~~~~~~^^^^^^^^^^^^^^^^^^^^^^
-  File "/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/finish400.py", line 42, in render
-    wait_alone();assert settle()
-                        ~~~~~~^^
-  File "/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/run_word400.py", line 33, in settle
-    n=word_count()
-  File "/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/run_word400.py", line 18, in word_count
-    rc,out,err=osa('tell application "Microsoft Word" to count documents')
-               ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/run_word400.py", line 15, in osa
-    p=subprocess.run(['osascript','-e',script],capture_output=True,text=True,timeout=60);return p.returncode,p.stdout.strip(),p.stderr.strip()
-  File "/Users/arthrod/.local/share/uv/python/cpython-3.14.2-macos-aarch64-none/lib/python3.14/subprocess.py", line 556, in run
-    stdout, stderr = process.communicate(input, timeout=timeout)
-                     ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/Users/arthrod/.local/share/uv/python/cpython-3.14.2-macos-aarch64-none/lib/python3.14/subprocess.py", line 1220, in communicate
-    stdout, stderr = self._communicate(input, endtime, timeout)
-                     ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/Users/arthrod/.local/share/uv/python/cpython-3.14.2-macos-aarch64-none/lib/python3.14/subprocess.py", line 2153, in _communicate
-    self._check_timeout(endtime, orig_timeout, stdout, stderr)
-    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/Users/arthrod/.local/share/uv/python/cpython-3.14.2-macos-aarch64-none/lib/python3.14/subprocess.py", line 1267, in _check_timeout
-    raise TimeoutExpired(
-    ...<2 lines>...
-            stderr=b''.join(stderr_seq) if stderr_seq else None)
-subprocess.TimeoutExpired: Command '['osascript', '-e', 'tell application "Microsoft Word" to count documents']' timed out after 60 seconds
+05:55:45 RENDER jubarte-0.12.0 word_pdf 400
+06:30:38 RENDER jubarte-0.12.0 word_pdf_retry 149
+06:52:38 rendered jubarte-0.12.0 395 / 400 gen fail 0 render fail 5
+07:06:09 RENDER docxodus-12.6.5 word_pdf 391
+07:27:33 RENDER docxodus-12.6.5 word_pdf_retry 22
+07:50:41 rendered docxodus-12.6.5 369 / 400 gen fail 9 render fail 22
+08:06:41 RUN /Users/arthrod/temp/T/neurotic_docx_bench/.venv/bin/python /Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/report.py --final
+08:06:46 RUN /Users/arthrod/temp/T/neurotic_docx_bench/.venv/bin/python /Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/persist_fresh.py
+08:06:47 COMPLETE
