@@ -71,7 +71,7 @@ def test_no_and_its_ok_are_pressed_in_one_activation(monkeypatch: pytest.MonkeyP
     assert forwarded[0][0] == wp.WORD_PROC and forwarded[0][2:] == ("No", "OK|Ok")
     assert dogs._owed_until == 0.0  # the OK was taken in the same activation
     # the No was not pressed in the background first
-    assert wp._PRESS not in used and wp._DECLINE_REPAIR not in used
+    assert wp._PRESS not in used
 
 
 def test_ok_still_owed_after_the_no_is_fetched_by_a_later_activation(

@@ -1,0 +1,13 @@
+f529bc5bb45a32258b191c2a3ad7e70085d22b86492d9c2cdf36e082ab4e5c3a  jubarte-0.12.0-linux-aarch64.tar.gz
+1858b969f9e16065dfdab54cddf7ba6a78cb68867ab54eb96e101385fff67c20  jubarte-0.12.0-linux-x86_64.tar.gz
+daee0a0f30bef8edcf1bbec9905261416ca97ad79287d4af8fe2e9f4f3ad6f3a  jubarte-0.12.0-macos-aarch64.tar.gz
+346b8956d2d822d47f0950c10afc6f2ee0ab8ea5d9ba520cb016c4e6d02c0fa1  jubarte-0.12.0-macos-x86_64.tar.gz
+dc473c70d4cd4098faa816f24ae98a1ba0294e515b20a10e1ff234175dcdacaa  jubarte-0.12.0-windows-x86_64.zip
+f399672e5add221d96927ec8e320996f09094a9932c7d0ef79eec4b2f44c5c87  jubarte_redlines-0.12.0-cp310-abi3-macosx_10_12_x86_64.whl
+2075f935be25ad3567e6886a97ab93dbc1994fe474e315ccfa1e1081dd406213  jubarte_redlines-0.12.0-cp310-abi3-macosx_11_0_arm64.whl
+9c044fbbad4cd9104c3da72e564b6803b87fd5cb1660fca24b27d536ba2d591f  jubarte_redlines-0.12.0-cp310-abi3-manylinux_2_28_aarch64.whl
+f4a19e56a77e4d1309b65942fa4ef39a725e28b07da03c3f4fd4f1f68550d1c1  jubarte_redlines-0.12.0-cp310-abi3-manylinux_2_28_x86_64.whl
+b2a74a15705da790f0d6a446c4029597ebb88d20e05c38904c7b2ca8383569d3  jubarte_redlines-0.12.0-cp310-abi3-musllinux_1_2_aarch64.whl
+47bfdedb8c4e4427b1794b58f1948c12e95384906ae390d4542ca0013a2e5905  jubarte_redlines-0.12.0-cp310-abi3-musllinux_1_2_x86_64.whl
+e4978d3e5cb635a2e4b5b339eca259c424ecd1fcbd6067babd6d12aef99c670b  jubarte_redlines-0.12.0-cp310-abi3-win_amd64.whl
+a843f605e2e598aab8a0d113965d9a33c508237ce71ea368a015734a0aad5f1a  jubarte_redlines-0.12.0.tar.gz

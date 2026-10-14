@@ -3,7 +3,11 @@
 # requires-python = ">=3.14"
 # dependencies = ["typer>=0.12", "rich>=13.0", "loguru>=0.7"]
 # ///
-"""``word_pdf.py`` with one change: Word is brought forward to answer "No" and the OK after it.
+"""SUPERSEDED 2026-10-14: ``word_pdf.py`` now does this itself (``_DUMP_DIALOGS`` / ``_ANSWER``,
+``--focus``), reads the alert text and logs it, and was verified live. Do not use this module for
+new runs; it is kept as the record of the 2026-09-30 trial and its tests still pass.
+
+``word_pdf.py`` with one change: Word is brought forward to answer "No" and the OK after it.
 
     uv run python scripts/word_pdf_focus.py --src DOCX_DIR --out PDF_DIR --no-check-preset
 

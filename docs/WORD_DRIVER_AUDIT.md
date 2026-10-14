@@ -1659,14 +1659,20 @@ once.
 A file Word cannot read is an ordinary outcome in this corpus, not an incident. The contract
 is the same in both scripts and both modes:
 
-1. **Answer the repair prompt "No."** Matched on *window text* —
-   `Word found unreadable content`, `Do you want to recover the contents of this document` —
-   not on a button name, so it cannot fire on an unrelated alert. "Yes" would make Word
-   rewrite the document, and the benchmark would then be measuring Word's repair rather than
-   the file it was handed. If the button is unreachable, Escape. This is
-   `word-convert.sh`'s `decline_unreadable_dialog`, which is the one handler in the audited
-   corpus that gets this right; it now runs *before* the generic dismiss handlers, which
-   would otherwise press "OK" on a repair sheet.
+1. **Answer the repair prompt "No", then the OK Word raises after it.** Recognised from the
+   alert's *text* (`Word found unreadable content`, `Do you want to recover the contents of
+   this document`), which the poll reads together with the buttons, or from its Yes/No pair
+   when the text is not readable. "Yes" would make Word rewrite the document, and the
+   benchmark would then be measuring Word's repair rather than the file it was handed. The
+   answer brings Word forward: after the No, Word shows "Word experienced an error trying to
+   open the file" (OK), and while Word is in the background that alert does not exist for
+   System Events, so the open blocks to its AppleEvent timeout. Both presses and both alerts'
+   words are logged. *Correction (2026-10-14):* the earlier text-walk handler described here,
+   `word-convert.sh`'s `decline_unreadable_dialog` ported to `_DECLINE_REPAIR`, never compiled
+   (`UI elements of el` outside a `tell` block), so no logged run before that date ever
+   answered the prompt by text; the generic dismiss pressed No after ~6 s and the OK after it
+   was never pressed. The current scripts are `_DUMP_DIALOGS` and `_ANSWER` in
+   `scripts/word_pdf.py`, compiled with `osacompile` and run live before shipping.
 2. **Close whatever is open** — `close every document saving no`.
 3. **Record it and move to the next item.** No restart. A malformed document costs one
    failed open, not a ~30s Word relaunch.

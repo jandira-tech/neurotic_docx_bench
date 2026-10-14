@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Fixed
+- `scripts/word_pdf.py` (and `word_redline.py` through it): Word's repair prompt is now
+  recognised from the alert's text in the same osascript that reads its buttons, answered No,
+  and followed to the "Word experienced an error trying to open the file" OK with Word brought
+  forward; focus is handed straight back. The previous text-matched handler never compiled, so
+  the generic fallback pressed No after ~6 s and the OK was never pressed while Word sat in the
+  background, costing a 240 s AppleEvent timeout and a batch pass per broken file. Verified
+  live 2026-10-14 on `really_broken` fixtures: 5 prompts answered, no timeout.
+
+### Added
+- `--focus/--no-focus` on `word_pdf.py` and `word_redline.py`; every Word alert is logged with
+  its words and kept on `Watchdogs.events`; the batch progress tailer checks on an item not
+  finished after 10 s (`_Progress.nudge_after`); `tests/test_word_pdf_alerts.py`.
+
+### Deprecated
+- `scripts/word_pdf_focus.py`: superseded by the above; kept as the record of the 2026-09-30 trial.
+
 ## [0.8.0] - 2026-10-02
 
 ### Added

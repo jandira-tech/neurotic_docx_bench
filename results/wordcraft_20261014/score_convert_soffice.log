@@ -1,0 +1,17 @@
+convert soffice scoring 199 remaining, 0 complete; 1 missing
+soffice 10 / 199 scored 10 failures 1 26s
+soffice 20 / 199 scored 20 failures 1 48s
+soffice 30 / 199 scored 30 failures 1 78s
+soffice 40 / 199 scored 40 failures 1 157s
+soffice 50 / 199 scored 50 failures 1 186s
+soffice 60 / 199 scored 60 failures 1 219s
+soffice 70 / 199 scored 70 failures 1 240s
+soffice 80 / 199 scored 80 failures 1 255s
+soffice 90 / 199 scored 90 failures 1 307s
+soffice 100 / 199 scored 100 failures 1 384s
+soffice 110 / 199 scored 110 failures 1 417s
+soffice 120 / 199 scored 120 failures 1 529s
+soffice 130 / 199 scored 130 failures 1 674s
+soffice 140 / 199 scored 140 failures 1 824s
+/Users/arthrod/.local/share/uv/python/cpython-3.14.2-macos-aarch64-none/lib/python3.14/multiprocessing/resource_tracker.py:396: UserWarning: resource_tracker: There appear to be 5 leaked semaphore objects to clean up at shutdown: {'/mp-v6be74ve', '/mp-27jrf6j1', '/mp-5f86oq0b', '/mp-sn97w_t3', '/mp-z8r8ucl8'}
+  warnings.warn(

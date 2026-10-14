@@ -93,6 +93,7 @@ from word_pdf import (  # must follow the sys.path guard above
     _EXPORT_BATCH,
     _EXPORT_BATCH_KEEP_OPEN,
     _close_documents as pdf_close_documents,
+    _focus,
     Stage,
     Watchdogs,
     WordSession,
@@ -1247,6 +1248,16 @@ def main(
     log_file: Annotated[
         Path | None, typer.Option("--log", help="Also write a log file.")
     ] = None,
+    focus: Annotated[
+        bool,
+        typer.Option(
+            "--focus/--no-focus",
+            help="Bring Word forward (and hand focus straight back) to answer the "
+            "repair prompt and the OK after it, and to check on a pair that is not "
+            "finished after 10 s. --no-focus presses only what Word shows in the "
+            "background. Same switch as word_pdf.py's.",
+        ),
+    ] = True,
 ) -> None:
     """Redline folder A against folder B using Microsoft Word's Compare Documents.
 
@@ -1256,6 +1267,38 @@ def main(
     """
     timeout = positive_seconds(timeout, "--timeout")
     pdf_timeout = positive_seconds(pdf_timeout, "--pdf-timeout")
+    focus_token = _focus.set(focus)
+    try:
+        _main(
+            folder_a, folder_b, out, docx_out=docx_out, emit=emit, cross=cross, swap=swap,
+            force=force, timeout=timeout, pdf_timeout=pdf_timeout, one_osascript=one_osascript,
+            check_preset=check_preset, allow_open_docs=allow_open_docs, do_not_close=do_not_close,
+            keep_unmatched=keep_unmatched, quiet=quiet, log_file=log_file,
+        )
+    finally:
+        _focus.reset(focus_token)
+
+
+def _main(
+    folder_a: Path,
+    folder_b: Path,
+    out: Path,
+    *,
+    docx_out: Path | None,
+    emit: Emit,
+    cross: bool,
+    swap: bool,
+    force: bool,
+    timeout: float,
+    pdf_timeout: float,
+    one_osascript: bool,
+    check_preset: bool,
+    allow_open_docs: bool,
+    do_not_close: bool,
+    keep_unmatched: bool,
+    quiet: bool,
+    log_file: Path | None,
+) -> None:
     logger.remove()
     logger.add(lambda m: console.print(m, end=""), level="ERROR" if quiet else "INFO")
     if log_file:

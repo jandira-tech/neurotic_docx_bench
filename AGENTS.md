@@ -298,6 +298,27 @@ uv run scripts/word_pdf.py --src work/word_based/docx --out work/word_based/pdf_
 process. `WordRenderer.to_pdfs()` (`src/neurotic_docx_bench/render/word.py`) calls `osascript`
 **once per file**, so 232 DOCX files = 232 prompts. Never use it for a full batch.
 
+**Which driver (2026-10-14):** `scripts/word_pdf.py` is the one to run, and `scripts/word_redline.py`
+imports its machinery. Its watchdog reads every Word alert's buttons *and text* in one osascript
+per poll, recognises the repair prompt from the text (or its Yes/No pair), and answers it with a
+second script that brings Word forward, presses No, waits for the "Word experienced an error
+trying to open the file" OK, presses it and hands focus back. Every alert Word shows is logged
+with its words (`[watchdog] ... Word said: "..."`), and the batch progress tailer brings Word
+forward to check on an item not finished after 10 s. `--no-focus` turns the focus-taking off
+(background-only presses, the pre-2026-10-14 behaviour, where the OK after a No never appears
+and each broken file costs the 240 s AppleEvent timeout plus a batch pass). Verified live on
+2026-10-14 against `really_broken/tool_redlines/repair_prompt` fixtures: no timeouts, right
+verdicts (`out/smoke1014/driver.log` has the run). `scripts/word_pdf_focus.py` is superseded by
+this and must not be used for new runs; it stays only as the record of the 2026-09-30 trial.
+The spec is `tests/test_word_pdf_alerts.py` (plus `tests/test_word_pdf.py`).
+
+**Seeing what Word says, independently:** run `scripts/word_screen_log.py <log>` beside a batch.
+It reads CoreGraphics' window list every 0.25 s and logs each Word alert's text, which macOS
+Vision reads from a screenshot. It never polls System Events, because the driver's watchdog
+depends on it. Since 2026-10-14 the driver logs the alert text itself, so this is the second,
+independent record (it also sees alerts the driver missed, and macOS permission prompts).
+See the note in the script.
+
 **"Best for printing" export quality:** Word's AppleScript `save as` does not expose the
 "Optimize for: Best for printing / Best for online viewing" radio button. The setting is
 **sticky**: Word reuses whatever you last chose in the GUI Export dialog, so set it once by hand
@@ -374,6 +395,13 @@ the latest line to the baseline.
   pass that logged a `[retry]` does not spend the 3-pass stall budget. Before this, one bad file (or
   three Word-invalid files in a row) led every pass and the rest of the folder was reported "never
   reached". Word's AppleEvent timeout is `APPLE_EVENT_TIMEOUT` = 240 s (was 600).
+- **The repair prompt is answered No, then its OK, with Word brought forward** (`word_pdf.py`,
+  2026-10-14). Before that the text-matched handler never compiled (its `UI elements` sat outside a
+  `tell` block), the generic fallback pressed No after ~6 s and three osascripts, and the OK Word
+  raises after the No does not exist for System Events while Word is in the background, so every
+  broken file ran out the 240 s timeout and spent a pass. Every AppleScript term must sit inside a
+  `tell application "System Events"` block, handlers included, and `st` is a reserved word; compile
+  a new script with `osacompile` before trusting it.
 - **soffice render** requires exit 0 **and** the output file, and deletes a stale PDF before
   a forced re-render (parity with the original shell script).
 

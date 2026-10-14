@@ -1,0 +1,16 @@
+2026-10-14 01:14:13.631 | INFO     | word_pdf:preflight:2235 - [word] preflight: open_documents=0 started_clean=True launched_by_us=True close_documents=False
+2026-10-14 01:14:13.636 | INFO     | __main__:redline_folders:728 - [redline] one_osascript=True pairs=8
+2026-10-14 01:14:13.644 | INFO     | __main__:_redline_batched:1012 - [batch] one osascript for 8 comparison(s)
+2026-10-14 01:14:18.651 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 0/8
+2026-10-14 01:14:28.667 | INFO     | word_pdf:_nudge:1450 - [focus] item 1/8 not finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 01:14:43.686 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 2/8
+2026-10-14 01:14:48.697 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 5/8
+2026-10-14 01:14:53.703 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 6/8
+2026-10-14 01:14:57.356 | INFO     | __main__:_redline_batched:1041 - [batch] one osascript for 5 redline PDF(s)
+2026-10-14 01:15:02.364 | INFO     | word_pdf:_loop:1479 - [batch pdf 1] 2/5
+2026-10-14 01:15:04.960 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: 1edc0f56f4.docx → 1edc0f56f4.docx — redline is missing base 67% of that file; the two sides are not averaged
+2026-10-14 01:15:04.961 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: 60e784f2de.docx → 60e784f2de.docx — Microsoft Word got an error: document "00001__base__60e784f2de__vs__60e784f2de.docx" doesn’t understand the “compare” message.
+2026-10-14 01:15:04.992 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: d23d9c8cc7.docx → d23d9c8cc7.docx — Microsoft Word got an error: document "00004__base__d23d9c8cc7__vs__d23d9c8cc7.docx" doesn’t understand the “compare” message.
+2026-10-14 01:15:05.002 | WARNING  | __main__:_redline_batched:1107 -   compared clean (no revisions): d5efaa5b6d.docx → d5efaa5b6d.docx
+2026-10-14 01:15:05.014 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: e6e61fc33f.docx → e6e61fc33f.docx — Microsoft Word got an error: document "00007__base__e6e61fc33f__vs__e6e61fc33f.docx" doesn’t understand the “compare” message.
+2026-10-14 01:15:08.738 | INFO     | word_pdf:stop:907 - [watchdog] tally: declined=0 dismissed=0 granted=0 forwarded=0 alerts_seen=0

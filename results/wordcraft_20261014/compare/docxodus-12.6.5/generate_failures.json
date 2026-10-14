@@ -1,0 +1,14 @@
+[
+  {
+    "doc": "3866f441cc",
+    "stage": "generate",
+    "error": "Command '['node', '--import', 'tsx', 'scripts/_site1011_docxodus_one.ts', '/Users/arthrod/temp/T/neurotic_docx_bench/corpus/word/clean/docx/2b328caeee_0ddd11a4c4cfd99b77de17348a8ddc30ae5e5c80a101c84e.docx', '/Users/arthrod/temp/T/neurotic_docx_bench/corpus/word/with_comments_clean/docx/882e251894_c41a01217b430717fbacf9cd114aed87b99db718803e1801.docx', '/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014/compare/docxodus/docx/3866f441cc.docx']' timed out after 120 seconds",
+    "returncode": 124
+  },
+  {
+    "doc": "bbc3223232",
+    "stage": "generate",
+    "error": "Command '['node', '--import', 'tsx', 'scripts/_site1011_docxodus_one.ts', '/Users/arthrod/temp/T/neurotic_docx_bench/corpus/word/with_comments_tracking/docx/468d82c575_c690df8dcf29bb8af8646ae10768e3ca46e8a9ef5b586428.docx', '/Users/arthrod/temp/T/neurotic_docx_bench/corpus/word/clean/docx/3a5ed45f0d_3d76420524fd4852ab017e1d57f215e37281e965b3f38b31.docx', '/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014/compare/docxodus/docx/bbc3223232.docx']' timed out after 120 seconds",
+    "returncode": 124
+  }
+]

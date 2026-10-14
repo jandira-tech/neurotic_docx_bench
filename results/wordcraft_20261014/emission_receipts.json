@@ -1,0 +1,21 @@
+{
+  "convert|wordcraft": {
+    "id_run": "01a138e3-6d6d-750a-bec0-5444bb6064d5",
+    "score_file_sha256": "f67fab26aa1bcfa148beec3dbcbcaaf97d775a4cf7e204d01d94b0d3134048a3",
+    "timestamp": "2026-10-14T05:29:51.213659+00:00"
+  },
+  "speed|compare|wordcraft": {
+    "timestamp": "2026-10-14T05:29:51.230320+00:00"
+  },
+  "speed|convert|wordcraft": {
+    "timestamp": "2026-10-14T05:29:51.249311+00:00"
+  },
+  "speed|compare|jubarte-0.11.0": {
+    "timestamp": "2026-10-14T05:29:51.266947+00:00"
+  },
+  "compare|wordcraft": {
+    "id_run": "01a138eb-48fe-739c-9ff0-6be1d9d9a7e6",
+    "score_file_sha256": "c78a280ee195f9012977bb93d82b21214272f1d85c42b4df01b6b799fc1f0b1f",
+    "timestamp": "2026-10-14T05:38:26.174608+00:00"
+  }
+}

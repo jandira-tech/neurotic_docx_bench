@@ -1,0 +1,321 @@
+2026-10-14 01:31:09.423 | INFO     | __main__:preflight:2235 - [word] preflight: open_documents=0 started_clean=True launched_by_us=False close_documents=False
+2026-10-14 01:31:09.439 | INFO     | __main__:convert_folder:1908 - [word] export: one_osascript=True documents=198 accept_all=False reject_all=False
+2026-10-14 01:31:09.588 | INFO     | __main__:_convert_batched:2108 - [batch] one osascript for 198 document(s)
+2026-10-14 01:31:14.593 | INFO     | __main__:_loop:1479 - [batch pdf 1] 1/198
+2026-10-14 01:31:19.604 | INFO     | __main__:_loop:1479 - [batch pdf 1] 7/198
+2026-10-14 01:31:24.608 | INFO     | __main__:_loop:1479 - [batch pdf 1] 9/198
+2026-10-14 01:31:28.919 | WARNING  | __main__:run_batch_with_resume:1624 - [batch pdf] 189 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 2, 0 of 3 stalled passes used)
+2026-10-14 01:31:28.924 | WARNING  | __main__:recycle:1068 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 01:31:28.925 | WARNING  | __main__:recycle:1074 - [word] recycling (restart 1)
+2026-10-14 01:31:39.145 | INFO     | __main__:_loop:1479 - [batch pdf 2] 1/189
+2026-10-14 01:31:44.168 | INFO     | __main__:_loop:1479 - [batch pdf 2] 4/189
+2026-10-14 01:31:48.923 | WARNING  | __main__:run_batch_with_resume:1624 - [batch pdf] 185 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 3, 0 of 3 stalled passes used)
+2026-10-14 01:31:48.925 | WARNING  | __main__:recycle:1068 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 01:31:48.925 | WARNING  | __main__:recycle:1074 - [word] recycling (restart 2)
+2026-10-14 01:31:54.335 | INFO     | __main__:_note_dialogs:774 - [watchdog] Microsoft Error Reporting shows button 'OK'
+2026-10-14 01:31:54.336 | INFO     | __main__:_note_dialogs:774 - [watchdog] Microsoft Error Reporting shows button 'More Information'
+2026-10-14 01:31:54.337 | INFO     | __main__:_note_dialogs:774 - [watchdog] Microsoft Error Reporting shows button 'missing value'
+2026-10-14 01:31:54.337 | INFO     | __main__:_note_dialogs:777 - [watchdog] Microsoft Error Reporting says: 'There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting'
+2026-10-14 01:31:55.680 | WARNING  | __main__:_loop_merp:888 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-10-14 01:31:59.964 | INFO     | __main__:_loop:1479 - [batch pdf 3] 1/185
+2026-10-14 01:32:04.977 | INFO     | __main__:_loop:1479 - [batch pdf 3] 5/185
+2026-10-14 01:32:09.985 | INFO     | __main__:_loop:1479 - [batch pdf 3] 7/185
+2026-10-14 01:32:20.014 | INFO     | __main__:_loop:1479 - [batch pdf 3] 10/185
+2026-10-14 01:32:25.026 | INFO     | __main__:_loop:1479 - [batch pdf 3] 12/185
+2026-10-14 01:32:30.053 | INFO     | __main__:_loop:1479 - [batch pdf 3] 13/185
+2026-10-14 01:32:40.075 | INFO     | __main__:_loop:1479 - [batch pdf 3] 14/185
+2026-10-14 01:32:45.082 | INFO     | __main__:_loop:1479 - [batch pdf 3] 19/185
+2026-10-14 01:32:50.089 | INFO     | __main__:_loop:1479 - [batch pdf 3] 21/185
+2026-10-14 01:33:00.100 | INFO     | __main__:_nudge:1450 - [focus] item 22/185 not finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 01:33:10.107 | INFO     | __main__:_loop:1479 - [batch pdf 3] 22/185
+2026-10-14 01:33:15.142 | INFO     | __main__:_loop:1479 - [batch pdf 3] 29/185
+2026-10-14 01:33:20.154 | INFO     | __main__:_loop:1479 - [batch pdf 3] 33/185
+2026-10-14 01:33:25.856 | WARNING  | __main__:run_batch_with_resume:1624 - [batch pdf] 152 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 4, 0 of 3 stalled passes used)
+2026-10-14 01:33:25.857 | WARNING  | __main__:recycle:1068 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 01:33:25.861 | WARNING  | __main__:recycle:1074 - [word] recycling (restart 3)
+2026-10-14 01:33:35.844 | INFO     | __main__:_loop:1479 - [batch pdf 4] 1/152
+2026-10-14 01:33:36.834 | WARNING  | __main__:run_batch_with_resume:1624 - [batch pdf] 151 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 5, 0 of 3 stalled passes used)
+2026-10-14 01:33:36.837 | WARNING  | __main__:recycle:1068 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 01:33:36.839 | WARNING  | __main__:recycle:1074 - [word] recycling (restart 4)
+2026-10-14 01:33:47.117 | INFO     | __main__:_loop:1479 - [batch pdf 5] 2/151
+2026-10-14 01:33:51.332 | INFO     | __main__:_note_dialogs:774 - [watchdog] Microsoft Word shows button 'Yes'
+2026-10-14 01:33:51.334 | INFO     | __main__:_note_dialogs:774 - [watchdog] Microsoft Word shows button 'No'
+2026-10-14 01:33:51.334 | INFO     | __main__:_note_dialogs:777 - [watchdog] Microsoft Word says: 'Word found unreadable content in 00057__docxodus__485599b4e9.docx. Do you want to recover the contents of this document? If you trust the source of this document, click Yes.'
+2026-10-14 01:33:51.335 | INFO     | __main__:_note_dialogs:774 - [watchdog] Microsoft Word shows button 'missing value'
+2026-10-14 01:33:52.125 | INFO     | __main__:_loop:1479 - [batch pdf 5] 6/151
+2026-10-14 01:33:57.822 | WARNING  | __main__:run_batch_with_resume:1624 - [batch pdf] 145 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 6, 0 of 3 stalled passes used)
+2026-10-14 01:33:57.826 | WARNING  | __main__:recycle:1068 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 01:33:57.826 | WARNING  | __main__:recycle:1074 - [word] recycling (restart 5)
+2026-10-14 01:33:57.874 | WARNING  | __main__:_decline_repair:809 - [watchdog] repair prompt declined via 'No' with Word brought forward; Word said: "Word found unreadable content in 00057__docxodus__485599b4e9.docx. Do you want to recover the contents of this document? If you trust the source of this document, click Yes."
+2026-10-14 01:34:08.099 | INFO     | __main__:_loop:1479 - [batch pdf 6] 1/145
+2026-10-14 01:34:13.109 | INFO     | __main__:_loop:1479 - [batch pdf 6] 3/145
+2026-10-14 01:34:18.119 | INFO     | __main__:_loop:1479 - [batch pdf 6] 4/145
+2026-10-14 01:34:21.503 | WARNING  | __main__:run_batch_with_resume:1624 - [batch pdf] 141 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 7, 0 of 3 stalled passes used)
+2026-10-14 01:34:21.514 | WARNING  | __main__:recycle:1068 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 01:34:21.515 | WARNING  | __main__:recycle:1074 - [word] recycling (restart 6)
+2026-10-14 01:34:27.437 | INFO     | __main__:_note_dialogs:774 - [watchdog] Microsoft Word shows button 'Cancel'
+2026-10-14 01:34:32.232 | INFO     | __main__:_loop:1479 - [batch pdf 7] 1/141
+2026-10-14 01:34:37.244 | INFO     | __main__:_loop:1479 - [batch pdf 7] 5/141
+2026-10-14 01:34:42.253 | INFO     | __main__:_loop:1479 - [batch pdf 7] 10/141
+2026-10-14 01:34:47.261 | INFO     | __main__:_loop:1479 - [batch pdf 7] 15/141
+2026-10-14 01:34:52.272 | INFO     | __main__:_loop:1479 - [batch pdf 7] 21/141
+2026-10-14 01:34:57.277 | INFO     | __main__:_loop:1479 - [batch pdf 7] 22/141
+2026-10-14 01:35:07.295 | INFO     | __main__:_nudge:1450 - [focus] item 23/141 not finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 01:35:22.316 | INFO     | __main__:_nudge:1450 - [focus] item 23/141 not finished after 25 s; bringing Word forward to look for an alert
+2026-10-14 01:35:29.803 | WARNING  | __main__:_nudge:1458 - [focus] item 23/141: pressed 'No' then 'OK' with Word brought forward; Word said: "Word found unreadable content in 00086__docxodus__61959b1953.docx. Do you want to recover the contents of this document? If you trust the source of this document, click Yes."
+2026-10-14 01:35:30.897 | WARNING  | __main__:_report:1439 - [batch pdf 7] item 23/141 open for more than 30 s:
+-- Word windows {name, subrole}: , AXDialog
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-7.log:
+[ok]	64
+[ok]	65
+[ok]	66
+[ok]	67
+[ok]	68
+[ok]	69
+[ok]	70
+[ok]	71
+[ok]	72
+[ok]	73
+[ok]	74
+[ok]	75
+[ok]	76
+[ok]	77
+[ok]	78
+[ok]	79
+[ok]	80
+[ok]	81
+[ok]	82
+[ok]	83
+[ok]	84
+[ok]	85
+[retry]	86	document loaded empty (Word could not read it)
+-- newest diagnostic reports: soffice-2026-10-14-012000.ips, soffice-2026-10-14-011957.ips, soffice-2026-10-14-011229.ips, ExcUserFault_nsattributedstringagent-2026-10-08-102340.ips, forge-2026-10-14-003217.ips
+2026-10-14 01:35:32.332 | INFO     | __main__:_loop:1479 - [batch pdf 7] 24/141
+2026-10-14 01:35:37.336 | INFO     | __main__:_loop:1479 - [batch pdf 7] 30/141
+2026-10-14 01:35:42.345 | INFO     | __main__:_loop:1479 - [batch pdf 7] 31/141
+2026-10-14 01:35:47.012 | WARNING  | __main__:run_batch_with_resume:1624 - [batch pdf] 107 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 8, 0 of 3 stalled passes used)
+2026-10-14 01:35:47.024 | WARNING  | __main__:recycle:1068 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 01:35:47.024 | WARNING  | __main__:recycle:1074 - [word] recycling (restart 7)
+2026-10-14 01:35:56.879 | WARNING  | __main__:_fetch_owed:825 - [watchdog] no OK appeared after the last No; stopped bringing Word forward
+2026-10-14 01:35:59.754 | INFO     | __main__:_loop:1479 - [batch pdf 8] 3/107
+2026-10-14 01:36:04.765 | INFO     | __main__:_loop:1479 - [batch pdf 8] 7/107
+2026-10-14 01:36:09.781 | INFO     | __main__:_loop:1479 - [batch pdf 8] 13/107
+2026-10-14 01:36:14.788 | INFO     | __main__:_loop:1479 - [batch pdf 8] 18/107
+2026-10-14 01:36:19.795 | INFO     | __main__:_loop:1479 - [batch pdf 8] 22/107
+2026-10-14 01:36:24.799 | INFO     | __main__:_loop:1479 - [batch pdf 8] 24/107
+2026-10-14 01:36:29.806 | INFO     | __main__:_loop:1479 - [batch pdf 8] 25/107
+2026-10-14 01:36:34.814 | INFO     | __main__:_loop:1479 - [batch pdf 8] 28/107
+2026-10-14 01:36:39.421 | INFO     | __main__:_note_dialogs:777 - [watchdog] Microsoft Word says: 'Word found unreadable content in 00129__docxodus__9a2af58d99.docx. Do you want to recover the contents of this document? If you trust the source of this document, click Yes.'
+2026-10-14 01:36:40.376 | WARNING  | __main__:_decline_repair:809 - [watchdog] repair prompt declined via 'No' then 'OK' with Word brought forward; Word said: "Word found unreadable content in 00129__docxodus__9a2af58d99.docx. Do you want to recover the contents of this document? If you trust the source of this document, click Yes."
+2026-10-14 01:36:40.380 | WARNING  | __main__:_decline_repair:812 - [watchdog] after the No, Word showed 'OK'; Word said: "Word experienced an error trying to open the file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00129__docxodus__9a2af58d99.docx)"
+2026-10-14 01:36:43.198 | WARNING  | __main__:run_batch_with_resume:1624 - [batch pdf] 79 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 9, 0 of 3 stalled passes used)
+2026-10-14 01:36:43.201 | WARNING  | __main__:recycle:1068 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 01:36:43.205 | WARNING  | __main__:recycle:1074 - [word] recycling (restart 8)
+2026-10-14 01:36:53.018 | INFO     | __main__:_loop:1479 - [batch pdf 9] 2/79
+2026-10-14 01:36:58.027 | INFO     | __main__:_loop:1479 - [batch pdf 9] 3/79
+2026-10-14 01:36:58.045 | INFO     | __main__:_note_dialogs:777 - [watchdog] Microsoft Word says: 'Word found unreadable content in 00133__docxodus__9f2ce6d6bb.docx. Do you want to recover the contents of this document? If you trust the source of this document, click Yes.'
+2026-10-14 01:37:04.029 | WARNING  | __main__:_decline_repair:809 - [watchdog] repair prompt declined via 'No' then 'OK' with Word brought forward; Word said: "Word found unreadable content in 00133__docxodus__9f2ce6d6bb.docx. Do you want to recover the contents of this document? If you trust the source of this document, click Yes."
+2026-10-14 01:37:04.052 | WARNING  | __main__:_decline_repair:812 - [watchdog] after the No, Word showed 'OK'; Word said: "Word experienced an error trying to open the file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00133__docxodus__9f2ce6d6bb.docx)"
+2026-10-14 01:37:08.040 | INFO     | __main__:_loop:1479 - [batch pdf 9] 7/79
+2026-10-14 01:37:13.047 | INFO     | __main__:_loop:1479 - [batch pdf 9] 13/79
+2026-10-14 01:37:18.051 | INFO     | __main__:_loop:1479 - [batch pdf 9] 21/79
+2026-10-14 01:37:23.057 | INFO     | __main__:_loop:1479 - [batch pdf 9] 25/79
+2026-10-14 01:37:28.811 | WARNING  | __main__:run_batch_with_resume:1624 - [batch pdf] 54 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 10, 0 of 3 stalled passes used)
+2026-10-14 01:37:28.817 | WARNING  | __main__:recycle:1068 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 01:37:28.818 | WARNING  | __main__:recycle:1074 - [word] recycling (restart 9)
+2026-10-14 01:37:30.338 | ERROR    | __main__:_loop_merp:890 - [watchdog] Microsoft Error Reporting is showing a dialog whose buttons match none of ("Don't Send", 'Don’t Send', 'Cancel', 'Close', 'Quit', 'No', 'OK', 'Ok'). Labels seen are logged above — add the real one to MERP_DECLINE.
+2026-10-14 01:37:36.731 | WARNING  | __main__:_loop_word:873 - [watchdog] Word dialog dismissed via 'No'; Word showed no readable text
+2026-10-14 01:37:40.376 | INFO     | __main__:_note_dialogs:774 - [watchdog] Microsoft Word shows button 'OK'
+2026-10-14 01:37:40.384 | INFO     | __main__:_note_dialogs:777 - [watchdog] Microsoft Word says: 'Word experienced an error trying to open the file.\nTry these suggestions.\n* Check the file permissions for the document or drive.\n* Make sure there is sufficient free memory and disk space.\n* Open the file with the Text Recovery converter.\n(00157__docxodus__bc6f8076f9.docx)'
+2026-10-14 01:37:40.569 | INFO     | __main__:_loop:1479 - [batch pdf 10] 0/54
+2026-10-14 01:37:41.185 | WARNING  | __main__:_loop_word:873 - [watchdog] Word dialog dismissed via 'OK'; Word said: "Word experienced an error trying to open the file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00157__docxodus__bc6f8076f9.docx)"
+2026-10-14 01:37:45.579 | INFO     | __main__:_loop:1479 - [batch pdf 10] 1/54
+2026-10-14 01:37:50.589 | INFO     | __main__:_loop:1479 - [batch pdf 10] 4/54
+2026-10-14 01:37:55.623 | INFO     | __main__:_loop:1479 - [batch pdf 10] 5/54
+2026-10-14 01:38:00.636 | INFO     | __main__:_loop:1479 - [batch pdf 10] 7/54
+2026-10-14 01:38:05.646 | INFO     | __main__:_loop:1479 - [batch pdf 10] 10/54
+2026-10-14 01:38:10.668 | INFO     | __main__:_loop:1479 - [batch pdf 10] 13/54
+2026-10-14 01:38:10.712 | WARNING  | __main__:run_batch_with_resume:1624 - [batch pdf] 41 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 11, 0 of 3 stalled passes used)
+2026-10-14 01:38:10.713 | WARNING  | __main__:recycle:1068 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 01:38:10.717 | WARNING  | __main__:recycle:1074 - [word] recycling (restart 10)
+2026-10-14 01:38:23.206 | ERROR    | __main__:_loop_merp:890 - [watchdog] Microsoft Error Reporting is showing a dialog whose buttons match none of ("Don't Send", 'Don’t Send', 'Cancel', 'Close', 'Quit', 'No', 'OK', 'Ok'). Labels seen are logged above — add the real one to MERP_DECLINE.
+2026-10-14 01:38:23.258 | INFO     | __main__:_loop:1479 - [batch pdf 11] 1/41
+2026-10-14 01:38:33.280 | INFO     | __main__:_nudge:1450 - [focus] item 2/41 not finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 01:38:43.304 | INFO     | __main__:_loop:1479 - [batch pdf 11] 2/41
+2026-10-14 01:38:48.311 | INFO     | __main__:_loop:1479 - [batch pdf 11] 3/41
+2026-10-14 01:38:53.329 | INFO     | __main__:_loop:1479 - [batch pdf 11] 4/41
+2026-10-14 01:39:03.364 | INFO     | __main__:_nudge:1450 - [focus] item 5/41 not finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 01:39:06.674 | INFO     | __main__:_note_dialogs:777 - [watchdog] Microsoft Word says: 'Word found unreadable content in 00176__docxodus__e0305725c1.docx. Do you want to recover the contents of this document? If you trust the source of this document, click Yes.'
+2026-10-14 01:39:06.706 | WARNING  | __main__:_nudge:1458 - [focus] item 5/41: pressed 'No' then 'OK' with Word brought forward; Word said: "Word found unreadable content in 00176__docxodus__e0305725c1.docx. Do you want to recover the contents of this document? If you trust the source of this document, click Yes."
+2026-10-14 01:39:11.733 | WARNING  | __main__:run_batch_with_resume:1624 - [batch pdf] 37 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 12, 0 of 3 stalled passes used)
+2026-10-14 01:39:11.737 | WARNING  | __main__:recycle:1068 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 01:39:11.738 | WARNING  | __main__:recycle:1074 - [word] recycling (restart 11)
+2026-10-14 01:39:12.379 | WARNING  | __main__:_decline_repair:801 - [watchdog] repair prompt seen but no button could be pressed; Word said: "Word found unreadable content in 00176__docxodus__e0305725c1.docx. Do you want to recover the contents of this document? If you trust the source of this document, click Yes."
+2026-10-14 01:39:14.198 | WARNING  | __main__:_loop_merp:888 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-10-14 01:39:24.197 | INFO     | __main__:_loop:1479 - [batch pdf 12] 1/37
+2026-10-14 01:39:34.211 | INFO     | __main__:_loop:1479 - [batch pdf 12] 2/37
+2026-10-14 01:39:39.225 | INFO     | __main__:_loop:1479 - [batch pdf 12] 4/37
+2026-10-14 01:39:44.228 | INFO     | __main__:_loop:1479 - [batch pdf 12] 5/37
+2026-10-14 01:39:49.235 | INFO     | __main__:_loop:1479 - [batch pdf 12] 6/37
+2026-10-14 01:39:51.169 | INFO     | __main__:_note_dialogs:777 - [watchdog] Microsoft Word says: 'Word found unreadable content in 00183__docxodus__e9ef73a8e4.docx. Do you want to recover the contents of this document? If you trust the source of this document, click Yes.'
+2026-10-14 01:39:59.103 | WARNING  | __main__:_decline_repair:809 - [watchdog] repair prompt declined via 'No' then 'OK' with Word brought forward; Word said: "Word found unreadable content in 00183__docxodus__e9ef73a8e4.docx. Do you want to recover the contents of this document? If you trust the source of this document, click Yes."
+2026-10-14 01:39:59.108 | WARNING  | __main__:_decline_repair:812 - [watchdog] after the No, Word showed 'OK'; Word said: "Word experienced an error trying to open the file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00183__docxodus__e9ef73a8e4.docx)"
+2026-10-14 01:40:09.268 | INFO     | __main__:_loop:1479 - [batch pdf 12] 7/37
+2026-10-14 01:40:14.278 | INFO     | __main__:_loop:1479 - [batch pdf 12] 8/37
+2026-10-14 01:40:19.291 | INFO     | __main__:_loop:1479 - [batch pdf 12] 9/37
+2026-10-14 01:40:29.331 | INFO     | __main__:_nudge:1450 - [focus] item 11/37 not finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 01:40:44.456 | INFO     | __main__:_nudge:1450 - [focus] item 11/37 not finished after 25 s; bringing Word forward to look for an alert
+2026-10-14 01:40:59.546 | INFO     | __main__:_nudge:1450 - [focus] item 11/37 not finished after 40 s; bringing Word forward to look for an alert
+2026-10-14 01:41:14.628 | INFO     | __main__:_loop:1479 - [batch pdf 12] 11/37
+2026-10-14 01:41:16.608 | WARNING  | __main__:_report:1439 - [batch pdf 12] item 11/37 open for more than 30 s:
+-- Word windows {name, subrole}: osascript timed out
+-- Word window text: osascript timed out
+-- crash reporters: 
+-- batch-pdf-12.log:
+[ok]	177
+[ok]	178
+[ok]	179
+[ok]	180
+[ok]	181
+[ok]	182
+[retry]	183	document loaded empty (Word could not read it)
+[ok]	184
+[ok]	185
+[ok]	186
+[ok]	187
+[ok]	188
+[ok]	189
+[ok]	190
+-- newest diagnostic reports: soffice-2026-10-14-012000.ips, soffice-2026-10-14-011957.ips, soffice-2026-10-14-011229.ips, ExcUserFault_nsattributedstringagent-2026-10-08-102340.ips, forge-2026-10-14-003217.ips
+2026-10-14 01:41:19.635 | INFO     | __main__:_loop:1479 - [batch pdf 12] 14/37
+2026-10-14 01:41:24.644 | INFO     | __main__:_loop:1479 - [batch pdf 12] 17/37
+2026-10-14 01:41:28.836 | INFO     | __main__:_note_dialogs:777 - [watchdog] Microsoft Word says: 'Word found unreadable content in 00196__docxodus__ff24600d87.docx. Do you want to recover the contents of this document? If you trust the source of this document, click Yes.'
+2026-10-14 01:41:29.659 | INFO     | __main__:_loop:1479 - [batch pdf 12] 18/37
+2026-10-14 01:41:34.669 | INFO     | __main__:_loop:1479 - [batch pdf 12] 19/37
+2026-10-14 01:41:36.117 | WARNING  | __main__:_decline_repair:809 - [watchdog] repair prompt declined via 'No' then 'OK' with Word brought forward; Word said: "Word found unreadable content in 00157__docxodus__bc6f8076f9.docx. Do you want to recover the contents of this document? If you trust the source of this document, click Yes."
+2026-10-14 01:41:36.119 | WARNING  | __main__:_decline_repair:812 - [watchdog] after the No, Word showed 'OK'; Word said: "Word experienced an error trying to open the file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00157__docxodus__bc6f8076f9.docx)"
+2026-10-14 01:41:39.104 | WARNING  | __main__:run_batch_with_resume:1624 - [batch pdf] 15 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 13, 0 of 3 stalled passes used)
+2026-10-14 01:41:39.105 | WARNING  | __main__:recycle:1068 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 01:41:39.106 | WARNING  | __main__:recycle:1074 - [word] recycling (restart 12)
+2026-10-14 01:41:51.125 | INFO     | __main__:_loop:1479 - [batch pdf 13] 0/15
+2026-10-14 01:41:57.075 | WARNING  | __main__:_decline_repair:809 - [watchdog] repair prompt declined via 'No' then 'OK' with Word brought forward; Word said: "Word found unreadable content in 00183__docxodus__e9ef73a8e4.docx. Do you want to recover the contents of this document? If you trust the source of this document, click Yes."
+2026-10-14 01:41:57.077 | WARNING  | __main__:_decline_repair:812 - [watchdog] after the No, Word showed 'OK'; Word said: "Word experienced an error trying to open the file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00183__docxodus__e9ef73a8e4.docx)"
+2026-10-14 01:42:01.151 | INFO     | __main__:_nudge:1450 - [focus] item 1/15 not finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 01:42:01.624 | WARNING  | __main__:run_batch_with_resume:1624 - [batch pdf] 14 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 14, 0 of 3 stalled passes used)
+2026-10-14 01:42:01.637 | WARNING  | __main__:recycle:1068 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 01:42:01.637 | WARNING  | __main__:recycle:1074 - [word] recycling (restart 13)
+2026-10-14 01:42:09.003 | WARNING  | __main__:_loop_merp:888 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-10-14 01:42:09.027 | WARNING  | __main__:_loop_word:873 - [watchdog] Word dialog dismissed via 'Cancel'; Word showed no readable text
+2026-10-14 01:42:13.379 | INFO     | __main__:_loop:1479 - [batch pdf 14] 0/14
+2026-10-14 01:42:23.414 | INFO     | __main__:_nudge:1450 - [focus] item 1/14 not finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 01:42:33.340 | WARNING  | __main__:_decline_repair:801 - [watchdog] repair prompt seen but no button could be pressed; Word said: "Word found unreadable content in 00196__docxodus__ff24600d87.docx. Do you want to recover the contents of this document? If you trust the source of this document, click Yes."
+2026-10-14 01:42:33.453 | INFO     | __main__:_loop:1479 - [batch pdf 14] 1/14
+2026-10-14 01:42:43.496 | INFO     | __main__:_nudge:1450 - [focus] item 2/14 not finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 01:42:58.545 | INFO     | __main__:_nudge:1450 - [focus] item 2/14 not finished after 25 s; bringing Word forward to look for an alert
+2026-10-14 01:43:10.030 | WARNING  | __main__:run_batch_with_resume:1624 - [batch pdf] 11 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 15, 0 of 3 stalled passes used)
+2026-10-14 01:43:10.033 | WARNING  | __main__:recycle:1068 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 01:43:10.034 | WARNING  | __main__:recycle:1074 - [word] recycling (restart 14)
+2026-10-14 01:43:14.302 | WARNING  | __main__:_report:1439 - [batch pdf 14] item 2/14 open for more than 30 s:
+-- Word windows {name, subrole}: , AXDialog
+-- Word window text: Microsoft Word, Word experienced an error trying to open the file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00133__docxodus__9f2ce6d6bb.docx)
+-- crash reporters: 
+-- batch-pdf-14.log:
+[ok]	196
+[retry]	133	document loaded empty (Word could not read it)
+[retry]	156	Microsoft Word got an error: Connection is invalid.
+[done]	1	0
+-- newest diagnostic reports: soffice-2026-10-14-012000.ips, soffice-2026-10-14-011957.ips, soffice-2026-10-14-011229.ips, ExcUserFault_nsattributedstringagent-2026-10-08-102340.ips, forge-2026-10-14-003217.ips
+2026-10-14 01:43:19.672 | WARNING  | __main__:_decline_repair:809 - [watchdog] repair prompt declined via 'No' then 'OK' with Word brought forward; Word said: "Word found unreadable content in 00129__docxodus__9a2af58d99.docx. Do you want to recover the contents of this document? If you trust the source of this document, click Yes."
+2026-10-14 01:43:19.679 | WARNING  | __main__:_decline_repair:812 - [watchdog] after the No, Word showed 'OK'; Word said: "Word experienced an error trying to open the file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00129__docxodus__9a2af58d99.docx)"
+2026-10-14 01:43:22.210 | INFO     | __main__:_loop:1479 - [batch pdf 15] 0/11
+2026-10-14 01:43:24.128 | WARNING  | __main__:run_batch_with_resume:1624 - [batch pdf] 10 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 16, 0 of 3 stalled passes used)
+2026-10-14 01:43:24.130 | WARNING  | __main__:recycle:1068 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 01:43:24.134 | WARNING  | __main__:recycle:1074 - [word] recycling (restart 15)
+2026-10-14 01:43:30.960 | WARNING  | __main__:_loop_merp:888 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-10-14 01:43:32.475 | INFO     | __main__:_note_dialogs:777 - [watchdog] Microsoft Word says: 'Word found unreadable content in 00086__docxodus__61959b1953.docx. Do you want to recover the contents of this document? If you trust the source of this document, click Yes.'
+2026-10-14 01:43:35.862 | INFO     | __main__:_loop:1479 - [batch pdf 16] 0/10
+2026-10-14 01:43:36.573 | WARNING  | __main__:_decline_repair:809 - [watchdog] repair prompt declined via 'No' then 'OK' with Word brought forward; Word said: "Word found unreadable content in 00086__docxodus__61959b1953.docx. Do you want to recover the contents of this document? If you trust the source of this document, click Yes."
+2026-10-14 01:43:36.575 | WARNING  | __main__:_decline_repair:812 - [watchdog] after the No, Word showed 'OK'; Word said: "Word experienced an error trying to open the file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00086__docxodus__61959b1953.docx)"
+2026-10-14 01:43:50.884 | INFO     | __main__:_nudge:1450 - [focus] item 2/10 not finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 01:44:05.931 | INFO     | __main__:_nudge:1450 - [focus] item 2/10 not finished after 25 s; bringing Word forward to look for an alert
+2026-10-14 01:44:31.047 | WARNING  | __main__:_report:1439 - [batch pdf 16] item 2/10 open for more than 30 s:
+-- Word windows {name, subrole}: ,
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-16.log:
+[retry]	86	document loaded empty (Word could not read it)
+-- newest diagnostic reports: soffice-2026-10-14-012000.ips, soffice-2026-10-14-011957.ips, soffice-2026-10-14-011229.ips, ExcUserFault_nsattributedstringagent-2026-10-08-102340.ips, forge-2026-10-14-003217.ips
+2026-10-14 01:44:34.612 | INFO     | __main__:_note_dialogs:777 - [watchdog] Microsoft Word says: 'Word found unreadable content in 00096__docxodus__6b74ac1ae6.docx. Do you want to recover the contents of this document? If you trust the source of this document, click Yes.'
+2026-10-14 01:44:35.192 | WARNING  | __main__:_decline_repair:809 - [watchdog] repair prompt declined via 'No' then 'OK' with Word brought forward; Word said: "Word found unreadable content in 00096__docxodus__6b74ac1ae6.docx. Do you want to recover the contents of this document? If you trust the source of this document, click Yes."
+2026-10-14 01:44:35.193 | WARNING  | __main__:_decline_repair:812 - [watchdog] after the No, Word showed 'OK'; Word said: "Word experienced an error trying to open the file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00096__docxodus__6b74ac1ae6.docx)"
+2026-10-14 01:44:44.103 | WARNING  | __main__:run_batch_with_resume:1624 - [batch pdf] 7 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 17, 0 of 3 stalled passes used)
+2026-10-14 01:44:44.106 | WARNING  | __main__:recycle:1068 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 01:44:44.108 | WARNING  | __main__:recycle:1074 - [word] recycling (restart 16)
+2026-10-14 01:44:53.520 | INFO     | __main__:_loop:1479 - [batch pdf 17] 0/7
+2026-10-14 01:44:55.086 | INFO     | __main__:_note_dialogs:777 - [watchdog] Microsoft Word says: 'Word found unreadable content in 00061__docxodus__4d40d1f136.docx. Do you want to recover the contents of this document? If you trust the source of this document, click Yes.'
+2026-10-14 01:45:13.538 | INFO     | __main__:_nudge:1450 - [focus] item 2/7 not finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 01:45:15.983 | WARNING  | __main__:run_batch_with_resume:1624 - [batch pdf] 5 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 18, 0 of 3 stalled passes used)
+2026-10-14 01:45:15.986 | WARNING  | __main__:recycle:1068 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 01:45:15.988 | WARNING  | __main__:recycle:1074 - [word] recycling (restart 17)
+2026-10-14 01:45:16.105 | WARNING  | __main__:_decline_repair:801 - [watchdog] repair prompt seen but no button could be pressed; Word said: "Word found unreadable content in 00061__docxodus__4d40d1f136.docx. Do you want to recover the contents of this document? If you trust the source of this document, click Yes."
+2026-10-14 01:45:17.100 | WARNING  | __main__:_loop_merp:888 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-10-14 01:45:25.482 | INFO     | __main__:_loop:1479 - [batch pdf 18] 0/5
+2026-10-14 01:45:26.397 | WARNING  | __main__:_decline_repair:809 - [watchdog] repair prompt declined via 'No' then 'OK' with Word brought forward; Word said: "Word found unreadable content in 00057__docxodus__485599b4e9.docx. Do you want to recover the contents of this document? If you trust the source of this document, click Yes."
+2026-10-14 01:45:26.398 | WARNING  | __main__:_decline_repair:812 - [watchdog] after the No, Word showed 'OK'; Word said: "Word experienced an error trying to open the file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00057__docxodus__485599b4e9.docx)"
