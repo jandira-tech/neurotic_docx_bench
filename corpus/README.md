@@ -157,6 +157,299 @@ relative to the folder of their CSV, as in the original tables.
 `type` is the docx-corpus document type, or `synthetic` for the generated test documents; `pages` is the page count
 of Word's PDF.
 
+## Schema
+
+All columns are strings. Paths in `docx`/`pdf`/… are relative to the state folder; the `*_repo_path` columns are full paths inside this repo, usable directly with `hf_hub_download`. Missing values are `null`.
+
+### `documents` (2,925 rows)
+
+| column | type | example |
+|---|---|---|
+| `id` | string | `a67dcf9e05` |
+| `stem` | string | `a67dcf9e05_000014a959f5225c658740fd7915cd50c5728c9cbe06c7d7` |
+| `state` | string | `clean` |
+| `docx` | string | `clean/docx/a67dcf9e05_000014a959f5225c658740fd7915cd50c5728c9cbe06c7d7…` |
+| `pdf` | string | `clean/pdf/a67dcf9e05_000014a959f5225c658740fd7915cd50c5728c9cbe06c7d7.…` |
+| `pdf_prior` | string | `null` |
+| `sets` | string | `sources_500` |
+| `names` | string | `000014a959f5225c658740fd7915cd50c5728c9cbe06c7d72d79a9708244ec1f` |
+| `sha256` | string | `a67dcf9e05226e3cc9750a9f10816b9fd01ca1b7452daa479ed22f46745d9fbb` |
+| `producer` | string | `macOS Version 26.6.2 (Build 25G83) Quartz PDFContext` |
+| `docx_repo_path` | string | `word/clean/docx/a67dcf9e05_000014a959f5225c658740fd7915cd50c5728c9cbe0…` |
+| `pdf_repo_path` | string | `word/clean/pdf/a67dcf9e05_000014a959f5225c658740fd7915cd50c5728c9cbe06…` |
+| `pdf_prior_repo_path` | string | `null` |
+| `lang` | string | `fr` |
+| `type` | string | `legal` |
+| `topic` | string | `legal_judicial` |
+| `pages` | string | `2` |
+
+### `comparisons` (3,503 rows)
+
+| column | type | example |
+|---|---|---|
+| `id` | string | `82630d00f7` |
+| `key` | string | `a67dcf9e05_000014a959f5225c658740fd7915cd50c5728c9cbe06c7d7__vs__2773a…` |
+| `base_id` | string | `a67dcf9e05` |
+| `next_id` | string | `2773adf157` |
+| `state` | string | `tracking_without_comments` |
+| `docx` | string | `tracking_without_comments/docx/a67dcf9e05_000014a959f5225c658740fd7915…` |
+| `pdf` | string | `tracking_without_comments/pdf/a67dcf9e05_000014a959f5225c658740fd7915c…` |
+| `pdf_prior` | string | `null` |
+| `sets` | string | `redlines_a100_b10` |
+| `names` | string | `000014a959f5225c658740fd7915cd50c5728c9cbe06c7d72d79a9708244ec1f__vs__…` |
+| `sha256` | string | `82630d00f7a870b90d09cc150e7bd0357c0938bb17db55c723baabc5c633581f` |
+| `producer` | string | `macOS Version 26.6.2 (Build 25G83) Quartz PDFContext` |
+| `docx_repo_path` | string | `word/tracking_without_comments/docx/a67dcf9e05_000014a959f5225c658740f…` |
+| `pdf_repo_path` | string | `word/tracking_without_comments/pdf/a67dcf9e05_000014a959f5225c658740fd…` |
+| `pdf_prior_repo_path` | string | `null` |
+| `lang` | string | `fr` |
+| `type` | string | `legal` |
+| `pages` | string | `3` |
+
+### `accept_reject` (800 rows)
+
+| column | type | example |
+|---|---|---|
+| `key` | string | `00da16e738_heading_4_style_demo_id_paraid_overflow_2__vs__82928b2e05_h…` |
+| `pool` | string | `word_based` |
+| `state` | string | `tracking_without_comments` |
+| `status` | string | `ok` |
+| `docx` | string | `accept_all/docx/00da16e738_heading_4_style_demo_id_paraid_overflow_2__…` |
+| `pdf` | string | `accept_all/pdf/00da16e738_heading_4_style_demo_id_paraid_overflow_2__v…` |
+| `source_docx` | string | `tracking_without_comments/docx/00da16e738_heading_4_style_demo_id_para…` |
+| `operation` | string | `accept_all` |
+| `docx_repo_path` | string | `word/accept_all/docx/00da16e738_heading_4_style_demo_id_paraid_overflo…` |
+| `pdf_repo_path` | string | `word/accept_all/pdf/00da16e738_heading_4_style_demo_id_paraid_overflow…` |
+| `source_docx_repo_path` | string | `word/tracking_without_comments/docx/00da16e738_heading_4_style_demo_id…` |
+
+### `libreoffice` (1,183 rows)
+
+| column | type | example |
+|---|---|---|
+| `libreoffice_pdf` | string | `tracking_without_comments/pdf/70bed70fac_1_5_line_spacing_id_paraid_ov…` |
+| `key` | string | `70bed70fac_1_5_line_spacing_id_paraid_overflow__vs__6a65e5219d_24_id_p…` |
+| `kind` | string | `comparison` |
+| `word_id` | string | `b3682dd36b` |
+| `word_docx` | string | `tracking_without_comments/docx/70bed70fac_1_5_line_spacing_id_paraid_o…` |
+| `word_pdf` | string | `tracking_without_comments/pdf/70bed70fac_1_5_line_spacing_id_paraid_ov…` |
+| `word_pdf_producer` | string | `macOS Version 26.6.2 (Build 25G83) Quartz PDFContext` |
+| `set` | string | `word_based_redlines` |
+| `used_as` | string | `script_redlines and visual_redlines oracle (bench.yaml source_of_truth…` |
+| `producer` | string | `LibreOffice 26.2.4.2 (AARCH64)` |
+| `sha256` | string | `8551792adab6d54bcfe8685297c65bbfaff3d6dc21f92989b434fccac2339fbb` |
+| `libreoffice_pdf_repo_path` | string | `libreoffice/tracking_without_comments/pdf/70bed70fac_1_5_line_spacing_…` |
+| `word_docx_repo_path` | string | `word/tracking_without_comments/docx/70bed70fac_1_5_line_spacing_id_par…` |
+| `word_pdf_repo_path` | string | `word/tracking_without_comments/pdf/70bed70fac_1_5_line_spacing_id_para…` |
+
+### `word_unindexed` (1,082 rows)
+
+| column | type | example |
+|---|---|---|
+| `path` | string | `comment_balloons_0929/r6/docx/R6_01_empty_range_ref.docx` |
+| `sha256` | string | `58e76c03f925de93a1b5c2b7d71a3a5d36b8436021e5142dc636c9af05af0211` |
+| `bytes` | string | `168826` |
+| `producer` | string | `Microsoft Office Word/16.0000` |
+| `repo_path` | string | `word_unindexed/comment_balloons_0929/r6/docx/R6_01_empty_range_ref.doc…` |
+
+## Examples
+
+Two rows from each config (long values truncated with `…`).
+
+<details><summary><code>documents</code></summary>
+
+```json
+[
+ {
+  "id": "a67dcf9e05",
+  "stem": "a67dcf9e05_000014a959f5225c658740fd7915cd50c5728c9cbe06c7d7",
+  "state": "clean",
+  "docx": "clean/docx/a67dcf9e05_000014a959f5225c658740fd7915cd50c5728c9cbe06c7d7.docx",
+  "pdf": "clean/pdf/a67dcf9e05_000014a959f5225c658740fd7915cd50c5728c9cbe06c7d7.pdf",
+  "pdf_prior": null,
+  "sets": "sources_500",
+  "names": "000014a959f5225c658740fd7915cd50c5728c9cbe06c7d72d79a9708244ec1f",
+  "sha256": "a67dcf9e05226e3cc9750a9f10816b9fd01ca1b7452daa479ed22f46745d9fbb",
+  "producer": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext",
+  "docx_repo_path": "word/clean/docx/a67dcf9e05_000014a959f5225c658740fd7915cd50c5728c9cbe06c7d7.docx",
+  "pdf_repo_path": "word/clean/pdf/a67dcf9e05_000014a959f5225c658740fd7915cd50c5728c9cbe06c7d7.pdf",
+  "pdf_prior_repo_path": null,
+  "lang": "fr",
+  "type": "legal",
+  "topic": "legal_judicial",
+  "pages": "2"
+ },
+ {
+  "id": "3bfcb371e2",
+  "stem": "3bfcb371e2_00003fff80a444ad2f706c74f3c0d9fbef00d7a99ba0c105",
+  "state": "clean",
+  "docx": "clean/docx/3bfcb371e2_00003fff80a444ad2f706c74f3c0d9fbef00d7a99ba0c105.docx",
+  "pdf": "clean/pdf/3bfcb371e2_00003fff80a444ad2f706c74f3c0d9fbef00d7a99ba0c105.pdf",
+  "pdf_prior": null,
+  "sets": "sources_500",
+  "names": "00003fff80a444ad2f706c74f3c0d9fbef00d7a99ba0c105e7baa0574df63393",
+  "sha256": "3bfcb371e2fc81584268c37f0312cccd2f8f20850dbc7e2aa834a72b33254235",
+  "producer": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext",
+  "docx_repo_path": "word/clean/docx/3bfcb371e2_00003fff80a444ad2f706c74f3c0d9fbef00d7a99ba0c105.docx",
+  "pdf_repo_path": "word/clean/pdf/3bfcb371e2_00003fff80a444ad2f706c74f3c0d9fbef00d7a99ba0c105.pdf",
+  "pdf_prior_repo_path": null,
+  "lang": "es",
+  "type": "educational",
+  "topic": "education",
+  "pages": "6"
+ }
+]
+```
+
+</details>
+
+<details><summary><code>comparisons</code></summary>
+
+```json
+[
+ {
+  "id": "82630d00f7",
+  "key": "a67dcf9e05_000014a959f5225c658740fd7915cd50c5728c9cbe06c7d7__vs__2773adf157_0004c94ca2a868…",
+  "base_id": "a67dcf9e05",
+  "next_id": "2773adf157",
+  "state": "tracking_without_comments",
+  "docx": "tracking_without_comments/docx/a67dcf9e05_000014a959f5225c658740fd7915cd50c5728c9cbe06c7d7…",
+  "pdf": "tracking_without_comments/pdf/a67dcf9e05_000014a959f5225c658740fd7915cd50c5728c9cbe06c7d7_…",
+  "pdf_prior": null,
+  "sets": "redlines_a100_b10",
+  "names": "000014a959f5225c658740fd7915cd50c5728c9cbe06c7d72d79a9708244ec1f__vs__0004c94ca2a8684d4744…",
+  "sha256": "82630d00f7a870b90d09cc150e7bd0357c0938bb17db55c723baabc5c633581f",
+  "producer": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext",
+  "docx_repo_path": "word/tracking_without_comments/docx/a67dcf9e05_000014a959f5225c658740fd7915cd50c5728c9cbe0…",
+  "pdf_repo_path": "word/tracking_without_comments/pdf/a67dcf9e05_000014a959f5225c658740fd7915cd50c5728c9cbe06…",
+  "pdf_prior_repo_path": null,
+  "lang": "fr",
+  "type": "legal",
+  "pages": "3"
+ },
+ {
+  "id": "8fff070a61",
+  "key": "3bfcb371e2_00003fff80a444ad2f706c74f3c0d9fbef00d7a99ba0c105__vs__2773adf157_0004c94ca2a868…",
+  "base_id": "3bfcb371e2",
+  "next_id": "2773adf157",
+  "state": "tracking_without_comments",
+  "docx": "tracking_without_comments/docx/3bfcb371e2_00003fff80a444ad2f706c74f3c0d9fbef00d7a99ba0c105…",
+  "pdf": "tracking_without_comments/pdf/3bfcb371e2_00003fff80a444ad2f706c74f3c0d9fbef00d7a99ba0c105_…",
+  "pdf_prior": null,
+  "sets": "redlines_a100_b10",
+  "names": "00003fff80a444ad2f706c74f3c0d9fbef00d7a99ba0c105e7baa0574df63393__vs__0004c94ca2a8684d4744…",
+  "sha256": "8fff070a611b42fe987d0c37d6e798e94296a52fd35fb898c4be0119e959e664",
+  "producer": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext",
+  "docx_repo_path": "word/tracking_without_comments/docx/3bfcb371e2_00003fff80a444ad2f706c74f3c0d9fbef00d7a99ba…",
+  "pdf_repo_path": "word/tracking_without_comments/pdf/3bfcb371e2_00003fff80a444ad2f706c74f3c0d9fbef00d7a99ba0…",
+  "pdf_prior_repo_path": null,
+  "lang": "es",
+  "type": "educational",
+  "pages": "7"
+ }
+]
+```
+
+</details>
+
+<details><summary><code>accept_reject</code></summary>
+
+```json
+[
+ {
+  "key": "00da16e738_heading_4_style_demo_id_paraid_overflow_2__vs__82928b2e05_heading_4_style_demo_…",
+  "pool": "word_based",
+  "state": "tracking_without_comments",
+  "status": "ok",
+  "docx": "accept_all/docx/00da16e738_heading_4_style_demo_id_paraid_overflow_2__vs__82928b2e05_headi…",
+  "pdf": "accept_all/pdf/00da16e738_heading_4_style_demo_id_paraid_overflow_2__vs__82928b2e05_headin…",
+  "source_docx": "tracking_without_comments/docx/00da16e738_heading_4_style_demo_id_paraid_overflow_2__vs__8…",
+  "operation": "accept_all",
+  "docx_repo_path": "word/accept_all/docx/00da16e738_heading_4_style_demo_id_paraid_overflow_2__vs__82928b2e05_…",
+  "pdf_repo_path": "word/accept_all/pdf/00da16e738_heading_4_style_demo_id_paraid_overflow_2__vs__82928b2e05_h…",
+  "source_docx_repo_path": "word/tracking_without_comments/docx/00da16e738_heading_4_style_demo_id_paraid_overflow_2__…"
+ },
+ {
+  "key": "01d1b3da75_table_bookmark_end__vs__45c1c5abec_table_vmerge_colspan_redline_6e159e8a9b",
+  "pool": "word_based",
+  "state": "tracking_without_comments",
+  "status": "ok",
+  "docx": "accept_all/docx/01d1b3da75_table_bookmark_end__vs__45c1c5abec_table_vmerge_colspan_redline…",
+  "pdf": "accept_all/pdf/01d1b3da75_table_bookmark_end__vs__45c1c5abec_table_vmerge_colspan_redline_…",
+  "source_docx": "tracking_without_comments/docx/01d1b3da75_table_bookmark_end__vs__45c1c5abec_table_vmerge_…",
+  "operation": "accept_all",
+  "docx_repo_path": "word/accept_all/docx/01d1b3da75_table_bookmark_end__vs__45c1c5abec_table_vmerge_colspan_re…",
+  "pdf_repo_path": "word/accept_all/pdf/01d1b3da75_table_bookmark_end__vs__45c1c5abec_table_vmerge_colspan_red…",
+  "source_docx_repo_path": "word/tracking_without_comments/docx/01d1b3da75_table_bookmark_end__vs__45c1c5abec_table_vm…"
+ }
+]
+```
+
+</details>
+
+<details><summary><code>libreoffice</code></summary>
+
+```json
+[
+ {
+  "libreoffice_pdf": "tracking_without_comments/pdf/70bed70fac_1_5_line_spacing_id_paraid_overflow__vs__6a65e521…",
+  "key": "70bed70fac_1_5_line_spacing_id_paraid_overflow__vs__6a65e5219d_24_id_paraid_overflow_redli…",
+  "kind": "comparison",
+  "word_id": "b3682dd36b",
+  "word_docx": "tracking_without_comments/docx/70bed70fac_1_5_line_spacing_id_paraid_overflow__vs__6a65e52…",
+  "word_pdf": "tracking_without_comments/pdf/70bed70fac_1_5_line_spacing_id_paraid_overflow__vs__6a65e521…",
+  "word_pdf_producer": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext",
+  "set": "word_based_redlines",
+  "used_as": "script_redlines and visual_redlines oracle (bench.yaml source_of_truth)",
+  "producer": "LibreOffice 26.2.4.2 (AARCH64)",
+  "sha256": "8551792adab6d54bcfe8685297c65bbfaff3d6dc21f92989b434fccac2339fbb",
+  "libreoffice_pdf_repo_path": "libreoffice/tracking_without_comments/pdf/70bed70fac_1_5_line_spacing_id_paraid_overflow__…",
+  "word_docx_repo_path": "word/tracking_without_comments/docx/70bed70fac_1_5_line_spacing_id_paraid_overflow__vs__6a…",
+  "word_pdf_repo_path": "word/tracking_without_comments/pdf/70bed70fac_1_5_line_spacing_id_paraid_overflow__vs__6a6…"
+ },
+ {
+  "libreoffice_pdf": "tracking_without_comments/pdf/6a65e5219d_24_id_paraid_overflow__vs__8df6dfa8d7_alternate_c…",
+  "key": "6a65e5219d_24_id_paraid_overflow__vs__8df6dfa8d7_alternate_content_redline_52a957c23d",
+  "kind": "comparison",
+  "word_id": "52a957c23d",
+  "word_docx": "tracking_without_comments/docx/6a65e5219d_24_id_paraid_overflow__vs__8df6dfa8d7_alternate_…",
+  "word_pdf": "tracking_without_comments/pdf/6a65e5219d_24_id_paraid_overflow__vs__8df6dfa8d7_alternate_c…",
+  "word_pdf_producer": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext",
+  "set": "word_based_redlines",
+  "used_as": "script_redlines and visual_redlines oracle (bench.yaml source_of_truth)",
+  "producer": "LibreOffice 26.2.4.2 (AARCH64)",
+  "sha256": "f53275e06fbbcf0b03aaa0da61128c246b5cd6ff827b917910ecb6141931d9dd",
+  "libreoffice_pdf_repo_path": "libreoffice/tracking_without_comments/pdf/6a65e5219d_24_id_paraid_overflow__vs__8df6dfa8d7…",
+  "word_docx_repo_path": "word/tracking_without_comments/docx/6a65e5219d_24_id_paraid_overflow__vs__8df6dfa8d7_alter…",
+  "word_pdf_repo_path": "word/tracking_without_comments/pdf/6a65e5219d_24_id_paraid_overflow__vs__8df6dfa8d7_altern…"
+ }
+]
+```
+
+</details>
+
+<details><summary><code>word_unindexed</code></summary>
+
+```json
+[
+ {
+  "path": "comment_balloons_0929/r6/docx/R6_01_empty_range_ref.docx",
+  "sha256": "58e76c03f925de93a1b5c2b7d71a3a5d36b8436021e5142dc636c9af05af0211",
+  "bytes": "168826",
+  "producer": "Microsoft Office Word/16.0000",
+  "repo_path": "word_unindexed/comment_balloons_0929/r6/docx/R6_01_empty_range_ref.docx"
+ },
+ {
+  "path": "comment_balloons_0929/r6/docx/R6_02_empty_t_between.docx",
+  "sha256": "bab5f0b879905aa43b2ce0f088ec5b5e1c5585bf076f4cf0b7e651ab06fbe2f9",
+  "bytes": "168828",
+  "producer": "Microsoft Office Word/16.0000",
+  "repo_path": "word_unindexed/comment_balloons_0929/r6/docx/R6_02_empty_t_between.docx"
+ }
+]
+```
+
+</details>
+
 ## Composition
 
 * **Languages** (documents): en 2,148, unknown 161, ru 42, da 41, es 38, pt 38, fr 37, de 37, nl 35, cs 32, pl 31, zh 30.
@@ -180,7 +473,7 @@ of Word's PDF.
 3. `bench corpus build` gathered Word's working folders, read each DOCX's state from its XML, deduplicated by
    sha256, renamed by id and wrote the tables and manifests.
 
-## Intended use and limits
+## Limitations
 
 * **Use**: reference renders for DOCX→PDF converters and redline/compare engines; layout-fidelity and
   tracked-change research; testing OOXML parsers on real and adversarial documents.
@@ -201,7 +494,7 @@ also ODC-By 1.0 (`NOTICE`). ODC-By covers the database; it does not license copy
 which were collected from the public web and may have their own rights (section 2.4 of the license).
 Microsoft Word is a trademark of Microsoft; this dataset is not affiliated with or endorsed by Microsoft.
 
-## Related
+## Related repos
 
 | Repo | Role |
 |---|---|

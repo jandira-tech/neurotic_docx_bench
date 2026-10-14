@@ -1,0 +1,30 @@
+{
+  "convert": {
+    "tracked_insertions": 89,
+    "section_properties": 200,
+    "comments": 100,
+    "headers_footers": 105,
+    "tables": 104,
+    "images": 62,
+    "tracked_deletions": 85,
+    "footnotes": 113,
+    "fields": 57,
+    "lists": 73,
+    "text_boxes": 13,
+    "math": 8
+  },
+  "compare": {
+    "section_properties": 199,
+    "lists": 76,
+    "headers_footers": 105,
+    "comments": 98,
+    "images": 61,
+    "tracked_deletions": 57,
+    "footnotes": 106,
+    "fields": 47,
+    "tracked_insertions": 68,
+    "text_boxes": 8,
+    "tables": 102,
+    "math": 8
+  }
+}

@@ -1,0 +1,73 @@
+[WARN] Unsupported engine: wanted: {"node":">=26"} (current: {"node":"v24.19.0","pnpm":"11.25.0"})
+Scope: all 5 workspace projects
+✓ Lockfile passes supply-chain policies (verified 1d ago)
+Lockfile is up to date, resolution step is skipped
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Packages: +389
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Packages are hard linked from the content-addressable store to the virtual store.
+  Content-addressable store is at: /Users/arthrod/Library/pnpm/store/v11
+  Virtual store is at:             node_modules/.pnpm
+Progress: resolved 389, reused 1, downloaded 112, added 16
+
+   ╭──────────────────────────────────────────────────────────────────────╮
+   │                                                                      │
+   │                 Update available! 11.25.0 → 12.11.2.                 │
+   │                 Changelog: https://pnpm.io/v/12.11.2                 │
+   │   To update, run: curl -fsSL https://get.pnpm.io/install.sh | sh -   │
+   │                                                                      │
+   ╰──────────────────────────────────────────────────────────────────────╯
+
+Progress: resolved 389, reused 1, downloaded 220, added 32
+Progress: resolved 389, reused 1, downloaded 293, added 39
+Progress: resolved 389, reused 1, downloaded 385, added 145
+Progress: resolved 389, reused 1, downloaded 388, added 307
+Progress: resolved 389, reused 1, downloaded 388, added 384
+Progress: resolved 389, reused 1, downloaded 388, added 386
+Progress: resolved 389, reused 1, downloaded 388, added 389, done
+.../esbuild@0.28.2/node_modules/esbuild postinstall$ node install.js
+.../esbuild@0.28.2/node_modules/esbuild postinstall: Done
+
+dependencies:
++ @cantoo/pdf-lib 2.7.3
++ @pdf-lib/fontkit 1.1.1
++ @pdfme/common 6.2.4
++ @pdfme/converter 6.2.4
++ @pdfme/generator 6.2.4
++ @pdfme/schemas 6.2.4
++ @stll/folio-core 0.17.1
++ @superdoc-dev/sdk 1.21.3
++ @types/node 26.6.5
++ @xmldom/xmldom 0.9.12
++ base64-js 1.5.1
++ color-name 2.1.1
++ commander 15.0.0
++ crypto-js 4.2.0
++ csv-parse 7.0.3
++ dingbat-to-unicode 1.0.2
++ docxodus 12.6.5
++ es-toolkit 1.52.0
++ fast-xml-parser 5.11.2
++ fflate 0.8.3
++ html-entities 2.6.0
++ jszip 3.10.2
++ lop 0.4.2
++ nanoid 6.0.2
++ pdfjs-dist 6.4.299
++ prosemirror-model 1.25.12
++ prosemirror-state 1.4.4
++ superdoc 2.18.0
++ tmp 0.2.7
++ underscore 1.13.8
++ unpdf 1.8.1
++ xpath 0.0.34
+
+devDependencies:
++ @vitest/coverage-v8 4.1.10
++ oxlint 1.87.0
++ playwright 1.64.0
++ tsx 4.23.15
++ typescript 7.0.2
++ vitest 4.1.11
+
+Done in 9.6s using pnpm v11.25.0

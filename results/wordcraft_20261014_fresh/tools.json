@@ -1,0 +1,47 @@
+{
+  "wordcraft-cli": {
+    "path": "/Users/arthrod/.local/bin/wordcraft-cli",
+    "sha256": "b71aef4ee85a6ec2a59f6a0d5f8d16895c09c50d05a8c13e9654af5725781de5",
+    "version": "wordcraft-cli 0.6.1"
+  },
+  "jubarte": {
+    "path": "/Users/arthrod/temp/T/neurotic_docx_bench/src/neurotic_docx_bench/utils/jubarte/jubarte-rust/redline",
+    "sha256": "af1d86fe8ade0af95a3b144b1bb29734c94656fe8abf230c6d69bf7ad3b04842",
+    "version": "jubarte 0.11.0"
+  },
+  "wordcraft_source_commit": "7dfa6b0ee2aeeafec004c51fdd2ab9a697da3cc4",
+  "jubarte_source_commit": "2600a59f24441a4beb8eef0c9041bcf5f86bb671",
+  "docxodus": {
+    "package_version": "12.6.5",
+    "generator": "scripts/_site1011_docxodus_one.ts",
+    "installed_from": "pnpm-lock.yaml frozen lockfile"
+  },
+  "word": {
+    "version": "16.115",
+    "pdf_preset": "Best for printing (verified in Save As UI)",
+    "driver": "scripts/word_pdf.py",
+    "compare_driver": "scripts/word_redline.py",
+    "launcher": ".venv/bin/python"
+  },
+  "soffice": {
+    "path": "/opt/homebrew/Caskroom/libreoffice/26.8.1/.homebrew-command-wrappers/soffice",
+    "version": "LibreOffice 26.8.1.1 bf6ef2662401c7d6dce671ab4deb26ee0af3a7c1",
+    "sha256": "8bde0caf3c901ce87e9baa6df5ec6e79ede4b629423195f6e59c8c6a681efddb"
+  },
+  "jubarte-0.11.0": {
+    "version": "jubarte 0.11.0",
+    "path": "/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/bin/0.11.0/jubarte-0.11.0-macos-aarch64/jubarte",
+    "sha256": "838d0e9603c8ac7caecfe8899eeb3ca514bad66034e143a80fe293ee1117e94e",
+    "archive": "jubarte-0.11.0-macos-aarch64.tar.gz",
+    "checksum_source": "https://github.com/jandira-tech/jubarte-redlines/releases/download/v0.11.0/SHA256SUMS.txt",
+    "source": "verified official GitHub release"
+  },
+  "jubarte-0.12.0": {
+    "version": "jubarte 0.12.0",
+    "path": "/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/bin/0.12.0/jubarte-0.12.0-macos-aarch64/jubarte",
+    "sha256": "3c81203f1f66c7bfa81747ec1c718906115166064d69dc4601aaa8d3130194fb",
+    "archive": "jubarte-0.12.0-macos-aarch64.tar.gz",
+    "checksum_source": "https://github.com/jandira-tech/jubarte-redlines/releases/download/v0.12.0/SHA256SUMS.txt",
+    "source": "verified official GitHub release"
+  }
+}

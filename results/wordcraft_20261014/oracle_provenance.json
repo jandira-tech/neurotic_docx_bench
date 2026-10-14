@@ -1,0 +1,1206 @@
+[
+  {
+    "id": "e3d57f2816",
+    "source": "results/wordcraft_20261014/word_audit/pdf/e3d57f2816__vs__e3d57f2816.pdf",
+    "kind": "word_audit_fresh",
+    "sha256": "92b8dbf01bf9cb41b71a06b385b37931ea3ea3d16d5d858ac75d6d1b91233283",
+    "prior_sha256": "fec29f89d3e2d99cf17734ae9f9a3ad4edcd31150585318fb364419d259fecd6"
+  },
+  {
+    "id": "8cb8af8d7f",
+    "source": "results/wordcraft_20261014/word_audit/pdf/8cb8af8d7f__vs__8cb8af8d7f.pdf",
+    "kind": "word_audit_fresh",
+    "sha256": "33419c63f162ee8857d8a9c70eb058a0edab448bd3fd23cb204562096fb53c07",
+    "prior_sha256": "4d0c1b09081475b5d55313017ac9fe3d9152b47dec31dae4d326094adacfffdb"
+  },
+  {
+    "id": "7a1d3fbeba",
+    "source": "results/wordcraft_20261014/word_audit/pdf/7a1d3fbeba__vs__7a1d3fbeba.pdf",
+    "kind": "word_audit_fresh",
+    "sha256": "c6c7d2609697d289a154ee27760b732ebef22c7ff20c2ecc158cdb8d11dc679d",
+    "prior_sha256": "f66308b785d9f48bde0cd1f134fe5dfd98817cb2b9772118bb09678b2ecccf06"
+  },
+  {
+    "id": "1edc0f56f4",
+    "source": "corpus/word/with_comments_tracking/pdf/08147dee09_file_195__vs__c09b14fcd7_file_196_redline_1edc0f56f4.pdf",
+    "kind": "corpus",
+    "sha256": "36024d0008fd715266cb565536b940609d1fa3851e18a46d1562986bfcf0b877"
+  },
+  {
+    "id": "ef3ffabfc9",
+    "source": "corpus/word/tracking_without_comments/pdf/6fffde4ae2_000bf66110e841e1d2c2e862fc7db869b8d410586ad12d0d__vs__2773adf157_0004c94ca2a8684d47449bb0e7abf87de1df71a7e6543252_redline_ef3ffabfc9.pdf",
+    "kind": "corpus",
+    "sha256": "d544ca6a0de575ab9adda4b44edffe0d42cf8afc7dc3f641a638e63d2772c4cf"
+  },
+  {
+    "id": "2d65e392ab",
+    "source": "results/site_1011/word_compare/out/2d65e392ab__vs__2d65e392ab.pdf",
+    "kind": "site_word_fresh",
+    "sha256": "1858d6d39d977e681be9d5a614a6940644aa5ede54b60b7c83ecbce258421fbb"
+  },
+  {
+    "id": "cee8601521",
+    "source": "corpus/word/with_comments_tracking/pdf/cf02e0407e_file_26__vs__b175a00954_file_27_redline_cee8601521.pdf",
+    "kind": "corpus",
+    "sha256": "47d73915c31a1644e9fcd164a1371c267d3dcc8b1057fba7aeb179753ade2079"
+  },
+  {
+    "id": "1842e29a32",
+    "source": "corpus/word/tracking_without_comments/pdf/b3974bcc7b_file_180__vs__edfaa23563_file_181_redline_1842e29a32.pdf",
+    "kind": "corpus",
+    "sha256": "d52d4b2e586b8c0b16e9b4e57c5d5a13b8ccdc1baea68d391f68d70585f9f9d7"
+  },
+  {
+    "id": "3796807136",
+    "source": "corpus/word/with_comments_tracking/pdf/cbb3bab843_word_tolerated_orphan_comment__vs__cefef4e4f5_yellow_highlight_demo_id_paraid_overflow_redline_3796807136.pdf",
+    "kind": "corpus",
+    "sha256": "ab3d3a8c12e3c40be1fc3f954b4b5ee0411d942feed79a548c4467355283e495"
+  },
+  {
+    "id": "b547e31a0d",
+    "source": "results/site_1011/word_compare/out/b547e31a0d__vs__b547e31a0d.pdf",
+    "kind": "site_word_fresh",
+    "sha256": "ffae0373e025dd720524dc5a418a83dc0e1d8794810de0ba91ee53e9f5545833"
+  },
+  {
+    "id": "f7837e0e51",
+    "source": "corpus/word/tracking_without_comments/pdf/762b93bdb0_0107d2107b381c077b42490f7ff21e861a60c27ba32886ca__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_f7837e0e51.pdf",
+    "kind": "corpus",
+    "sha256": "cf3b83e473a56d15a496d064af4b2075a1129e06ef2b22fd3af5c895aedafbab"
+  },
+  {
+    "id": "9129d2ecd2",
+    "source": "results/site_1011/word_compare/out/9129d2ecd2__vs__9129d2ecd2.pdf",
+    "kind": "site_word_fresh",
+    "sha256": "7765608990177ee4a22494c921be5a1a5808d09f7f3ff59f0466d250b98aab43"
+  },
+  {
+    "id": "aec80553e5",
+    "source": "corpus/word/with_comments_tracking/pdf/cefef4e4f5_yellow_highlight_demo_id_paraid_overflow__vs__a391978591_yellow_highlight_italic_demo_style_default_missi_redline_aec80553e5.pdf",
+    "kind": "corpus",
+    "sha256": "cb5ae540ac7a2891bd7d93749e75c8e18eec94487df1fbc903b8532f52ba7ad1"
+  },
+  {
+    "id": "9c8876c6d7",
+    "source": "corpus/word/with_comments_tracking/pdf/ac0bcc10fe_file_146__vs__9c0dd6b3f6_file_147_redline_9c8876c6d7.pdf",
+    "kind": "corpus",
+    "sha256": "e3b2ef4ef4281f87e424564e14f023578b212208103e202cd68ed2b1258b4a14"
+  },
+  {
+    "id": "04b7d19a3a",
+    "source": "corpus/word/tracking_without_comments/pdf/2b4475cba6_0021f639e5dbf6c217c8d81a7ac3374624ff9901a5d4b200__vs__342f364d46_001342333d45627868f4dc5282abbba4598a91b4a7584b08_redline_04b7d19a3a.pdf",
+    "kind": "corpus",
+    "sha256": "86cd2a2625953f97b661db0fb5a49dc8ba4e39911b55593cf665002491dd90f4"
+  },
+  {
+    "id": "03528d6f20",
+    "source": "corpus/word/with_comments_tracking/pdf/5c207ef361_super_editor__font_formatting_runs_8be3565a__vs__e6fdfb6f2f_behavior__math_phantom_tests_263131a8_redline_03528d6f20.pdf",
+    "kind": "corpus",
+    "sha256": "dfe6b4a52de190ec38786963ba8eecbd283055138572062c554f1796ecee2852"
+  },
+  {
+    "id": "2c123533f6",
+    "source": "corpus/word/with_comments_tracking/pdf/81158d928d_sample_document_afterword_repaired_word_repaired__vs__ba3f04f252_sample_document_really_repaired_word_repaired_redline_2c123533f6.pdf",
+    "kind": "corpus",
+    "sha256": "ac95039e9602ebcc66f37afa479289946b6eceb994ff87549e35c9d9876eb185"
+  },
+  {
+    "id": "410b10cd2e",
+    "source": "corpus/word/tracking_without_comments/pdf/b7e861f912_7fa572e344a643f2f76373d2c7c396b71a55672d89ee2010__vs__d8148162b6_f86a383f7306a466de22b2fa5a191810e95d3a81bc42e74a_redline_410b10cd2e.pdf",
+    "kind": "corpus",
+    "sha256": "dec9c147654b9ed44155902015bd341443e597e7a57bc4d1080fae448642020c"
+  },
+  {
+    "id": "34e52d37ea",
+    "source": "corpus/word/with_comments_tracking/pdf/5c207ef361_super_editor__font_formatting_runs_8be3565a__vs__bb9c5a8bd5_doc_api_stories__table_style_options_roundtrip_1_redline_34e52d37ea.pdf",
+    "kind": "corpus",
+    "sha256": "9bb5fc7a1bd3803f030257dde030dee0372a46abdd7790231b8826ff7d4302a8"
+  },
+  {
+    "id": "15f013e680",
+    "source": "corpus/word/tracking_without_comments/pdf/da68abdf72_blue_centered_title_demo_style_default_missing__vs__6a4d8ea70c_blue_italic_text_demo_id_paraid_overflow_redline_15f013e680.pdf",
+    "kind": "corpus",
+    "sha256": "00eab3e299b663c29ca45dc59723a483badb775e07d4b516399c9bc1e36fb54a"
+  },
+  {
+    "id": "85b1c9235c",
+    "source": "corpus/word/tracking_without_comments/pdf/f1ea4a51fd_hr_onboarding_checklist_table__vs__d0e7f278b8_i_am_sharing_microsoft_word_vs_google_docs_compr_redline_85b1c9235c.pdf",
+    "kind": "corpus",
+    "sha256": "2f71e5d3c4c8b961298f4bf2791bc2f33fcf95172947d7e60f38a2ebca61a885"
+  },
+  {
+    "id": "25f1d6ecc3",
+    "source": "corpus/word/with_comments_tracking/pdf/836d7aa3c4_file_14__vs__70a28a8258_file_15_redline_25f1d6ecc3.pdf",
+    "kind": "corpus",
+    "sha256": "2f6ddc41436831a6fb7b4ae143c3846baba2698ee5566863d52e3bf1fe849144"
+  },
+  {
+    "id": "c3412673e4",
+    "source": "corpus/word/tracking_without_comments/pdf/18b0cf8b48_file_24__vs__758ade931c_file_25_redline_c3412673e4.pdf",
+    "kind": "corpus",
+    "sha256": "070b956fc03bc923b96a66dae7212daa0fc487e48a56210c575b75f55338de0b"
+  },
+  {
+    "id": "f0875f6d19",
+    "source": "corpus/word/tracking_without_comments/pdf/8441c4ae21_sd_2517_localized_heading_styles__vs__7e685cbab1_super_editor__ooxml_underline_rstyle_linked_comb_redline_f0875f6d19.pdf",
+    "kind": "corpus",
+    "sha256": "83fc68fa356c9a2918c312ae26f33da174d3fd94c1b27a7f5a4c03ea7cf2c8ba"
+  },
+  {
+    "id": "6354242df2",
+    "source": "corpus/word/tracking_without_comments/pdf/bdf199d4af_file_61__vs__2a9c68ed33_file_62_redline_6354242df2.pdf",
+    "kind": "corpus",
+    "sha256": "be785fe36fc5b9e5620ee9e29ce4fadf1025dd6598d548e401679d4799ca3552"
+  },
+  {
+    "id": "62f0f8ee91",
+    "source": "results/site_1011/word_compare/out/62f0f8ee91__vs__62f0f8ee91.pdf",
+    "kind": "site_word_fresh",
+    "sha256": "485c840e2e6bbdf594ad8cfad3e274b41ef0f7dcd098d01ee133184abfc58b9d"
+  },
+  {
+    "id": "e56d44b193",
+    "source": "corpus/word/tracking_without_comments/pdf/ca4ccabff6_superscript_demo_id_paraid_overflow_2__vs__860b6e457e_superscript_demo_id_paraid_overflow_redline_e56d44b193.pdf",
+    "kind": "corpus",
+    "sha256": "e622249783e48d2098d1371734981ad4d9946d7718f3a054009be6e139c87882"
+  },
+  {
+    "id": "6e89035e56",
+    "source": "corpus/word/tracking_without_comments/pdf/1c5bd81def_super_editor__multiple_nodes_in_list_79d915a2__vs__0e1d01ec7d_super_editor__doc_with_graphs_diagrams_rotated_e_redline_6e89035e56.pdf",
+    "kind": "corpus",
+    "sha256": "2f13d14a41557c94124fd5c24c1e8d783fc276d97b4450a2baf0101d87233009"
+  },
+  {
+    "id": "3d39f0120d",
+    "source": "corpus/word/with_comments_tracking/pdf/bd768e6c17_file_74__vs__8c79860f8d_file_75_redline_3d39f0120d.pdf",
+    "kind": "corpus",
+    "sha256": "cf1f7c04feb8730bc989867b0fff7901fac627ca0a85fe326f88380a497274be"
+  },
+  {
+    "id": "97aff69fd0",
+    "source": "corpus/word/tracking_without_comments/pdf/15b6035cc0_file_171__vs__4492bbb1f8_file_172_redline_97aff69fd0.pdf",
+    "kind": "corpus",
+    "sha256": "7a763896320792b4fb7e7af59d6b1b4f4416bd56a6731acd1f4fbc91c672dfae"
+  },
+  {
+    "id": "062340d04a",
+    "source": "corpus/word/tracking_without_comments/pdf/902a69f0e4_super_editor__line_space_table_9b1ee54b__vs__5e5fa9b5fb_super_editor__list_def_mix_d7cec092_redline_062340d04a.pdf",
+    "kind": "corpus",
+    "sha256": "0d1c2b8657a1469d15f5a327ff8408bf3982b7da5a2815a1cbecdb03ce5636fc"
+  },
+  {
+    "id": "1dbbf3be63",
+    "source": "corpus/word/with_comments_tracking/pdf/3acaee795f_red_strikethrough_demo_style_default_missing__vs__70fd78a4f8_redline_cicerodo_v_plate_30_redline_1dbbf3be63.pdf",
+    "kind": "corpus",
+    "sha256": "fd4c5702f380f3e8bb08f749aa0fe52f00b28e067bf2fdc470d043f5dee2a6f1"
+  },
+  {
+    "id": "9683765ab1",
+    "source": "corpus/word/tracking_without_comments/pdf/4858c9853b_behavior__multi_image_types_b962a2b8__vs__7c31a68295_behavior__pageref_standalone_h_7b3ab72e_redline_9683765ab1.pdf",
+    "kind": "corpus",
+    "sha256": "a7bc78eba56299a1fb28ae2910f13fe66ae0f6a7210c0671d27569737290783e"
+  },
+  {
+    "id": "fec6305982",
+    "source": "corpus/word/tracking_without_comments/pdf/3755bf5762_0000a3a991f56b6660c630eb426231a3b4ec31e40313aab9__vs__2773adf157_0004c94ca2a8684d47449bb0e7abf87de1df71a7e6543252_redline_fec6305982.pdf",
+    "kind": "corpus",
+    "sha256": "7fb3a1d17fc0a93f73b7a187332b13ba86604b83d0052a4407a3ffac090854f3"
+  },
+  {
+    "id": "dde913904e",
+    "source": "results/site_1011/word_compare/out/dde913904e__vs__dde913904e.pdf",
+    "kind": "site_word_fresh",
+    "sha256": "7afeacff45ecd596833dd8a22910304de1daf7d10ed429b4e099c0748fe4d3c8"
+  },
+  {
+    "id": "e981300405",
+    "source": "results/site_1011/word_compare/out/e981300405__vs__e981300405.pdf",
+    "kind": "site_word_fresh",
+    "sha256": "d4f0b93398c3688cdc5d1ee4c2e0acbb95b325d3eadae53260bb363356576625"
+  },
+  {
+    "id": "581907f19c",
+    "source": "corpus/word/with_comments_tracking/pdf/3f91c8f0cd_file_9__vs__e3d833aef0_file_10_redline_581907f19c.pdf",
+    "kind": "corpus",
+    "sha256": "a05edc20d924f173bf055c16a4a9010afb3ecaf459867f32d04b4f532b083ca5"
+  },
+  {
+    "id": "6213202228",
+    "source": "results/site_1011/word_compare/out/6213202228__vs__6213202228.pdf",
+    "kind": "site_word_fresh",
+    "sha256": "67ed235cd9a1e8bd68437ea664f128f789d921707c9121cb6726d86327c11e95"
+  },
+  {
+    "id": "7b637208fb",
+    "source": "corpus/word/tracking_without_comments/pdf/b4ba29d456_left_alignment_demo_id_paraid_overflow__vs__bb46f61c5d_line_spacing_demo_id_paraid_overflow_redline_7b637208fb.pdf",
+    "kind": "corpus",
+    "sha256": "7ee5a4887cfa2ddf9264df8c62de074fefed8ef7a9adfd37a25c3145ca1d62d1"
+  },
+  {
+    "id": "cbf73c2d81",
+    "source": "corpus/word/with_comments_tracking/pdf/be5bf990cb_file_16__vs__d6ba4fabd2_file_17_redline_cbf73c2d81.pdf",
+    "kind": "corpus",
+    "sha256": "401f7d799330d956444523243a1ae9b2049db0fea29125a53c17e6ab1e57e5f4"
+  },
+  {
+    "id": "ce433a28fb",
+    "source": "corpus/word/tracking_without_comments/pdf/61eaede95c_subtitle_style_demo_style_default_missing__vs__ca4ccabff6_superscript_demo_id_paraid_overflow_2_redline_ce433a28fb.pdf",
+    "kind": "corpus",
+    "sha256": "d1820b78bac19bd8748b9b38814e8c89568f714f9885a93aa5874a1e96759522"
+  },
+  {
+    "id": "01ffe97a5e",
+    "source": "corpus/word/with_comments_tracking/pdf/2bd5ae6064_file_13__vs__836d7aa3c4_file_14_redline_01ffe97a5e.pdf",
+    "kind": "corpus",
+    "sha256": "885c5efec15ae4a88f24b7f8ba3ec254d5a09a66e595ab1a461f0a6566cde700"
+  },
+  {
+    "id": "ace788a217",
+    "source": "results/site_1011/word_compare/out/ace788a217__vs__ace788a217.pdf",
+    "kind": "site_word_fresh",
+    "sha256": "8cb332a2e846e26691c1d7dc94f676e0940c5179cae8457d16cf24268b95e464"
+  },
+  {
+    "id": "089f925c77",
+    "source": "corpus/word/tracking_without_comments/pdf/66b0a9112c_file_165__vs__06a48012fc_file_166_redline_089f925c77.pdf",
+    "kind": "corpus",
+    "sha256": "2380b451601fb36450e7bb83d288947c37a581ed1965de4849d38e201147982d"
+  },
+  {
+    "id": "a78b94020d",
+    "source": "results/site_1011/word_compare/out/a78b94020d__vs__a78b94020d.pdf",
+    "kind": "site_word_fresh",
+    "sha256": "ac9e3b671803ffd4b69583e327b3d7bab4f9cae5795ddf6dae86806c64c1048b"
+  },
+  {
+    "id": "d24225adbf",
+    "source": "corpus/word/tracking_without_comments/pdf/671ff91b1d_behavior__sd_2750_borderbox_7cd3768d__vs__7692b33045_super_editor__list_with_break_exported_broken_45_redline_d24225adbf.pdf",
+    "kind": "corpus",
+    "sha256": "120f50f96d895a49523c41dc4db20acd58d3aca445d97e19dd53b20a47b861d1"
+  },
+  {
+    "id": "30d1cde0ac",
+    "source": "corpus/word/with_comments_tracking/pdf/ac4b41aa8e_verdana_font_demo_id_paraid_overflow__vs__4f0a3847e3_verdana_italic_centered_demo_id_paraid_overflow_redline_30d1cde0ac.pdf",
+    "kind": "corpus",
+    "sha256": "381ff45ba9577b610188c49fcce7fc4adca6ee943cb0bc85f74778efd5df2ca4"
+  },
+  {
+    "id": "428f3f3022",
+    "source": "results/site_1011/word_compare/out/428f3f3022__vs__428f3f3022.pdf",
+    "kind": "site_word_fresh",
+    "sha256": "837d7a156aef080bc5aba742a60b2b7226d2b2028cab375e0a4eb54518654b74"
+  },
+  {
+    "id": "5f0fed8e2a",
+    "source": "corpus/word/with_comments_tracking/pdf/8f47b1dc90_file_176__vs__a3586d71f8_file_177_redline_5f0fed8e2a.pdf",
+    "kind": "corpus",
+    "sha256": "076c14125234f6499dd7aa8b3f3d1ea494c5c1c07fd96e591d832f4b94e0e749"
+  },
+  {
+    "id": "c865b7be7f",
+    "source": "corpus/word/tracking_without_comments/pdf/b6f757462e_0006f7905281867ab0d0a45d88f88f72e2c15efbd9a8ed69__vs__a5f2b9318d_002aa60c2ae1187417b4b157c5ec6450324cc056ec551a12_redline_c865b7be7f.pdf",
+    "kind": "corpus",
+    "sha256": "3836030e97ace262c5473d690d919329686d75ae52c282ea041eb9e29fd0dddf"
+  },
+  {
+    "id": "f8286525f6",
+    "source": "corpus/word/tracking_without_comments/pdf/df9ffe9a8c_file_16__vs__ec900bd182_file_17_redline_f8286525f6.pdf",
+    "kind": "corpus",
+    "sha256": "06c7f5333e151293e54c19d1f452f3cebbb93d980ff0ba75190e669b3a050add"
+  },
+  {
+    "id": "dad17d3be0",
+    "source": "corpus/word/tracking_without_comments/pdf/5584d8ea29_file_122__vs__69eb56ef00_file_123_redline_dad17d3be0.pdf",
+    "kind": "corpus",
+    "sha256": "862bebd7f7d12cd7fc392c82f3b1f38d0a534359a07bd5cbfde66addae65bdac"
+  },
+  {
+    "id": "d484b575c0",
+    "source": "results/site_1011/word_compare/out/d484b575c0__vs__d484b575c0.pdf",
+    "kind": "site_word_fresh",
+    "sha256": "03194478905f8bea28c38ed202a2c07afbbc53ad1c2dd0c477ff18ea3bed2fc5"
+  },
+  {
+    "id": "54af2359d0",
+    "source": "corpus/word/tracking_without_comments/pdf/0e08fd6d80_super_editor__diff_before19_97e0f4e6__vs__1e1f1ad583_super_editor__diff_before2_ca0c6859_redline_54af2359d0.pdf",
+    "kind": "corpus",
+    "sha256": "c6b885d4df4e22a969f311fc05441864d19e05edea16e5ead086bf3c97b35f10"
+  },
+  {
+    "id": "1942a590b4",
+    "source": "corpus/word/tracking_without_comments/pdf/10415d5332_behavior__rtl_mixed_bidi_e955f185__vs__96fa27757a_behavior__rtl_page_numpages_54739e26_redline_1942a590b4.pdf",
+    "kind": "corpus",
+    "sha256": "a0beef52b2b572f64e6cf291b7ebd3c0c8975c9bf1d2af83e6df1dcf625884f6"
+  },
+  {
+    "id": "0c5aa7e2b1",
+    "source": "results/site_1011/word_compare/out/0c5aa7e2b1__vs__0c5aa7e2b1.pdf",
+    "kind": "site_word_fresh",
+    "sha256": "3ffe41b38641e3dcc9242f97872e5467fb6c4e0cefe1b6faf1e8737cd79f1dfb"
+  },
+  {
+    "id": "c277edafd3",
+    "source": "corpus/word/tracking_without_comments/pdf/ab859711f4_super_editor__custom_list_numbering1_7eb9fda4__vs__498a050671_super_editor__custom_list1_77f82bd7_redline_c277edafd3.pdf",
+    "kind": "corpus",
+    "sha256": "4db4c9eb76120bb3be5dd9f8f8d750ec25dd579eb5d2c76a25f78787ecd33bd8"
+  },
+  {
+    "id": "a2fa2445c6",
+    "source": "corpus/word/tracking_without_comments/pdf/33822e6e1c_381ca14cd2a65660af8edbab73edc6172c9b9a894e5a6074__vs__62780fc256_2dc03df21f0f42c5592971da4147d367e0dcd3b99e8b3f26_redline_a2fa2445c6.pdf",
+    "kind": "corpus",
+    "sha256": "3b3d4a6d16e94fc0418b8722ee00e6d815af335618a3c0171c274722bd7d7f62"
+  },
+  {
+    "id": "2e5b08815c",
+    "source": "results/site_1011/word_compare/out/2e5b08815c__vs__2e5b08815c.pdf",
+    "kind": "site_word_fresh",
+    "sha256": "5a3743d76d69627233ece53d023a03b65c9333e7cb0086ae7213f6ed068e4796"
+  },
+  {
+    "id": "48ef0a5cd7",
+    "source": "corpus/word/tracking_without_comments/pdf/279abea8ce_super_editor__h_f_normal_odd_even_firstpg_9b210d__vs__199cb211b5_super_editor__basic_footnotes_5be96945_redline_48ef0a5cd7.pdf",
+    "kind": "corpus",
+    "sha256": "dc9dd257a7971865eaabc8498081e8cf5fd8b9a70e2794a4766bde7cd8e12ec8"
+  },
+  {
+    "id": "0aa74e0de4",
+    "source": "corpus/word/with_comments_tracking/pdf/6b0acda259_file_73__vs__bd768e6c17_file_74_redline_0aa74e0de4.pdf",
+    "kind": "corpus",
+    "sha256": "cc579e490e800e75be88e15487a70f13876a3d1bb49bdbc496e59b3267d6f377"
+  },
+  {
+    "id": "4eff11f045",
+    "source": "corpus/word/with_comments_tracking/pdf/df097720f7_file_131__vs__3c60cce945_file_132_redline_4eff11f045.pdf",
+    "kind": "corpus",
+    "sha256": "f5acf1a34313011711f799c284af821647c32575b77005534526d7c6bad0214f"
+  },
+  {
+    "id": "f7bbf6e831",
+    "source": "corpus/word/with_comments_tracking/pdf/0aa6426932_file_114__vs__ab85c77154_file_115_redline_f7bbf6e831.pdf",
+    "kind": "corpus",
+    "sha256": "3ac411f52b194ce6750d87dc8dae9027659003db1047732792ee8e01b40b3423"
+  },
+  {
+    "id": "8de55978f2",
+    "source": "results/site_1011/word_compare/out/8de55978f2__vs__8de55978f2.pdf",
+    "kind": "site_word_fresh",
+    "sha256": "a923155ca265282d854dd144a959aeb17a70d044c15c149681cf209c6feebf11"
+  },
+  {
+    "id": "60ef61f086",
+    "source": "corpus/word/tracking_without_comments/pdf/7b076416b0_sectpr_headerref__vs__0f23eb6c94_super_editor__wmf_emf_44a469b8_redline_60ef61f086.pdf",
+    "kind": "corpus",
+    "sha256": "6c8a617fe31c070e84dc87421f1246ae25447aaacef1e2f2010cd67a1725a95d"
+  },
+  {
+    "id": "c2380a4677",
+    "source": "corpus/word/with_comments_tracking/pdf/ec3dd0df69_file_53__vs__94ed0def64_file_54_redline_c2380a4677.pdf",
+    "kind": "corpus",
+    "sha256": "86c4ff0a1567e5de913e35e035090a3afeee80e268a4ca43538241d5a53432a8"
+  },
+  {
+    "id": "2200a538c5",
+    "source": "results/site_1011/word_compare/out/2200a538c5__vs__2200a538c5.pdf",
+    "kind": "site_word_fresh",
+    "sha256": "171b166dadb0fbeebc0c35bd0dd0f82d91307e5a14264ec056453161daccf367"
+  },
+  {
+    "id": "72341d8ac1",
+    "source": "corpus/word/with_comments_tracking/pdf/22060e7141_40b72d8c37011f35d914c2f44868286d89717c9efd10ac04__vs__71c67c168f_37d74eebe6fd69b7f6041f8ecda8e9857d885b23dab561b0_redline_72341d8ac1.pdf",
+    "kind": "corpus",
+    "sha256": "57d4db41c4dde3ec5a291c84cee01bff316dc5178a4ba7bbe4dfb9a447b28434"
+  },
+  {
+    "id": "a9272f69c1",
+    "source": "corpus/word/with_comments_tracking/pdf/2b6c7be6bd_super_editor__nested_comments_84f214bb__vs__6c0ad6c8ef_behavior__math_matrix_tests_a3b17e15_redline_a9272f69c1.pdf",
+    "kind": "corpus",
+    "sha256": "313e4e629088fdb76759fab71154f3a0740c507f7ee7cafbde6c7109441dc7d7"
+  },
+  {
+    "id": "2288f27be1",
+    "source": "corpus/word/with_comments_tracking/pdf/7166fa4199_document_100_ultimate_demo_id_paraid_overflow__vs__97c3dd2e86_docx_lots_of_comments_addition_redline_addition_redline_2288f27be1.pdf",
+    "kind": "corpus",
+    "sha256": "22d54445e1c5df7145b3117d4fc7c53b123998429404b59fc28ebf63ce46fc0a"
+  },
+  {
+    "id": "b33793b0f8",
+    "source": "corpus/word/tracking_without_comments/pdf/e451997662_super_editor__h_f_normal_5d2a8d96__vs__837d45926d_super_editor__header_alternating_odd_even_11e019_redline_b33793b0f8.pdf",
+    "kind": "corpus",
+    "sha256": "14cf79099d95dbc07d58e8f875002e97737798863370dc5702ad8b744700d577"
+  },
+  {
+    "id": "518c606bf2",
+    "source": "results/site_1011/word_compare/out/518c606bf2__vs__518c606bf2.pdf",
+    "kind": "site_word_fresh",
+    "sha256": "442aea2745f6173aa7162314eba0e6f6795151103ad54bca43417d802dfdc711"
+  },
+  {
+    "id": "0f031c23c3",
+    "source": "corpus/word/with_comments_tracking/pdf/b175a00954_file_27__vs__f32428a03a_file_28_redline_0f031c23c3.pdf",
+    "kind": "corpus",
+    "sha256": "2abd196480ad9e9dfe794a87a5ca77b01ffe273de2afe53321e77c3b0f97420c"
+  },
+  {
+    "id": "766a042194",
+    "source": "results/site_1011/word_compare/out/766a042194__vs__766a042194.pdf",
+    "kind": "site_word_fresh",
+    "sha256": "aafcc9bd707229d79755dab791abfbe3774fa8107ee366dbeedd31e673f5c019"
+  },
+  {
+    "id": "9382e03243",
+    "source": "corpus/word/with_comments_tracking/pdf/6e2576a091_docx_lots_of_comments__vs__2c0a2ac35f_double_spacing_bold_demo_id_paraid_overflow_redline_9382e03243.pdf",
+    "kind": "corpus",
+    "sha256": "ed08d2f9581f04ff5b30da38c9e1366cea062231d30eba3f2ada4ca14356bf64"
+  },
+  {
+    "id": "e1b23f59d9",
+    "source": "corpus/word/tracking_without_comments/pdf/02c9605488_bold_superscript_demo_style_default_missing__vs__f84571f3fc_bold_text_formatting_demo_id_paraid_overflow_2_redline_e1b23f59d9.pdf",
+    "kind": "corpus",
+    "sha256": "454d4c972a04324187ebacad0a331995f5a81bd7061258813ab750a84030f113"
+  },
+  {
+    "id": "53014ff7b1",
+    "source": "corpus/word/tracking_without_comments/pdf/7ac6653045_file_176__vs__421479c1e2_file_177_redline_53014ff7b1.pdf",
+    "kind": "corpus",
+    "sha256": "d8c191e0c47fdef8d0852ffa77ddca6cc58060c7e0ee4483e555353c35d26608"
+  },
+  {
+    "id": "eecdb1c507",
+    "source": "corpus/word/tracking_without_comments/pdf/bc514b554e_00d979c97e42f03faff5f49e2a7dfa9afd30996214602e19__vs__deff0e697a_00b5defcad6e58038eac35472a2d48c89905068e5ece0cc3_redline_eecdb1c507.pdf",
+    "kind": "corpus",
+    "sha256": "f7fe22615e4bb0ad6b16a133436551dd5c5121aabcaee5c3b76bf25d4a2d8b1a"
+  },
+  {
+    "id": "2ebbfc18b4",
+    "source": "corpus/word/with_comments_tracking/pdf/ed6c82cead_word_tolerated_broken_media_rel__vs__8fb278cb36_word_tolerated_duplicate_ppr_redline_2ebbfc18b4.pdf",
+    "kind": "corpus",
+    "sha256": "ebddc43bb5ee410ae57a40c69fede09b97069fc427160c61910d505033796980"
+  },
+  {
+    "id": "0858ee25d5",
+    "source": "corpus/word/with_comments_tracking/pdf/2b6c7be6bd_super_editor__nested_comments_84f214bb__vs__671ff91b1d_behavior__sd_2750_borderbox_7cd3768d_redline_0858ee25d5.pdf",
+    "kind": "corpus",
+    "sha256": "a0186e60752503009de0f56547ed029e87866daf96adf6bd07968d2dc1b9d438"
+  },
+  {
+    "id": "5a72b1ad9e",
+    "source": "corpus/word/with_comments_tracking/pdf/735c372b41_super_editor__diff_after8_58e5c288__vs__75aeff4f58_super_editor__diff_after9_a9d4b4b0_redline_5a72b1ad9e.pdf",
+    "kind": "corpus",
+    "sha256": "718ab0380ed84ea1cde4e0be027abfe3ff04a9d910b36b29b5c9cdacd7a066c7"
+  },
+  {
+    "id": "92075b7449",
+    "source": "corpus/word/with_comments_tracking/pdf/e57ad0eaa4_docx_lots_of_comments_addition__vs__6e2576a091_docx_lots_of_comments_redline_92075b7449.pdf",
+    "kind": "corpus",
+    "sha256": "f31f094ddee89b381034c59756ef504692a19516d24c161e796180885ed4217d"
+  },
+  {
+    "id": "db0f90defc",
+    "source": "results/site_1011/word_compare/out/db0f90defc__vs__db0f90defc.pdf",
+    "kind": "site_word_fresh",
+    "sha256": "9cfe2cb86e5a1a26bc94016a1a557b7e26e059a7660839220e7fe47fb7744f37"
+  },
+  {
+    "id": "515c0aa8ab",
+    "source": "results/site_1011/word_compare/out/515c0aa8ab__vs__515c0aa8ab.pdf",
+    "kind": "site_word_fresh",
+    "sha256": "e2e1ced9b8636dca3acf739043848c9195e3aefdbab41663a5971ace6487f673"
+  },
+  {
+    "id": "3b9982e41f",
+    "source": "corpus/word/tracking_without_comments/pdf/491a257507_blue_bold_centered_demo_id_paraid_overflow__vs__da68abdf72_blue_centered_title_demo_style_default_missing_redline_3b9982e41f.pdf",
+    "kind": "corpus",
+    "sha256": "68c6508f6e9cc75aab9df49f81b9a7735ee258297ac23d320ead46b38bd0a894"
+  },
+  {
+    "id": "4d40d1f136",
+    "source": "corpus/word/with_comments_tracking/pdf/9c6ebd430d_file_185__vs__154fce3ec8_file_186_redline_4d40d1f136.pdf",
+    "kind": "corpus",
+    "sha256": "1bc7d59372bc4c664a85fbf5d33d3b5f23b46f19044927c0656ad3d2c61d03a9"
+  },
+  {
+    "id": "6af7bc5540",
+    "source": "results/site_1011/word_compare/out/6af7bc5540__vs__6af7bc5540.pdf",
+    "kind": "site_word_fresh",
+    "sha256": "b500cae670d4dcea148dea01cc3bad52745540fed0eae39d4f306a0f74e87fb2"
+  },
+  {
+    "id": "0638f4b423",
+    "source": "results/site_1011/word_compare/out/0638f4b423__vs__0638f4b423.pdf",
+    "kind": "site_word_fresh",
+    "sha256": "fa6b9bf08b6f285eaeb497db83bce0a9b41551901d11d253985ab6875451daef"
+  },
+  {
+    "id": "6f18d91819",
+    "source": "results/site_1011/word_compare/out/6f18d91819__vs__6f18d91819.pdf",
+    "kind": "site_word_fresh",
+    "sha256": "83433cd4021de162b608d49311a781bc2a2914daa61b55dd8a9d9e62c61c4a54"
+  },
+  {
+    "id": "6bf1e10a91",
+    "source": "corpus/word/with_comments_tracking/pdf/66e70631fb_file_188__vs__70584b4a0e_file_189_redline_6bf1e10a91.pdf",
+    "kind": "corpus",
+    "sha256": "62a5e6d420652775c55079f41c385b02f4bba7f1763f8411bd12de3f72d61e52"
+  },
+  {
+    "id": "e42a88b8ef",
+    "source": "corpus/word/tracking_without_comments/pdf/9586202517_super_editor__two_column_two_page_0b8a37c5__vs__cdf27ad0d3_behavior__sd_2672_nested_table_dfac08bb_redline_e42a88b8ef.pdf",
+    "kind": "corpus",
+    "sha256": "b7d5280f272a0e8f27d19abaee27345763538f665ea48da4c16d7ae075d3d093"
+  },
+  {
+    "id": "585b8c8d12",
+    "source": "corpus/word/tracking_without_comments/pdf/47400ffd33_file_127__vs__d62736ce40_file_128_redline_585b8c8d12.pdf",
+    "kind": "corpus",
+    "sha256": "b7c76182823332d4eaf2bf515da57b3e46d15e0c429b4da8f4c34771d4474031"
+  },
+  {
+    "id": "b4072979f7",
+    "source": "results/site_1011/word_compare/out/b4072979f7__vs__b4072979f7.pdf",
+    "kind": "site_word_fresh",
+    "sha256": "f86dd04d2066e7d91ca0be0e1cb243cd535f5535dd735994422f5fe4311f1539"
+  },
+  {
+    "id": "60e784f2de",
+    "source": "results/site_1011/word_compare/out/60e784f2de__vs__60e784f2de.pdf",
+    "kind": "site_word_fresh",
+    "sha256": "583ef9ae82fc7dcf569ae142853ca4089b8facdedc3815a389b9c703d61a43f8"
+  },
+  {
+    "id": "485b916ef9",
+    "source": "corpus/word/with_comments_tracking/pdf/4492bbb1f8_file_172__vs__838af02d11_file_173_redline_485b916ef9.pdf",
+    "kind": "corpus",
+    "sha256": "a0f45cccf3261be2b9d073ef3ead4967bd8c9dbf56367cf271b6a496c6667ae1"
+  },
+  {
+    "id": "d3c6552dae",
+    "source": "results/site_1011/word_compare/out/d3c6552dae__vs__d3c6552dae.pdf",
+    "kind": "site_word_fresh",
+    "sha256": "f6607c6540e700692e5436c3b13c45d319a28f7733be350a908b144ce48148c6"
+  },
+  {
+    "id": "9c7d0d77b2",
+    "source": "corpus/word/tracking_without_comments/pdf/62d3dce03b_file_110__vs__d426359dd9_file_111_redline_9c7d0d77b2.pdf",
+    "kind": "corpus",
+    "sha256": "1451aaf010a35d92adeeb0797bed29435d70e55a4f985da1f22433c39fd23d45"
+  },
+  {
+    "id": "ff6f1dab3b",
+    "source": "corpus/word/tracking_without_comments/pdf/1dd45d8b34_23ce39136a9b77376bab4e00c99a86f53529c3f3f9eb8dbf__vs__715d3d2b67_414e913bdcab4ac6cefcf85507ca910beead4a550959a564_redline_ff6f1dab3b.pdf",
+    "kind": "corpus",
+    "sha256": "e8d6fadac686c43d95ab5673834665bf51783aee9ec9475c91ff0ebf779e1c06"
+  },
+  {
+    "id": "98ebd05df6",
+    "source": "corpus/word/tracking_without_comments/pdf/2bf4db734d_file_20__vs__080c4822ff_file_21_redline_98ebd05df6.pdf",
+    "kind": "corpus",
+    "sha256": "d5d9557b844394af03587dd802d34f480a2bccecce1a46469c0867ca312865e0"
+  },
+  {
+    "id": "86aef9a34a",
+    "source": "corpus/word/tracking_without_comments/pdf/4841fd31f0_q1_sales_summary_table__vs__28033140a2_quarterly_performance_report_table_2_redline_86aef9a34a.pdf",
+    "kind": "corpus",
+    "sha256": "3d28bff88c0306fb276df85e6e9e53c3f9328114745e1867bb18c52245d4ddd9"
+  },
+  {
+    "id": "92ec8417eb",
+    "source": "corpus/word/with_comments_tracking/pdf/1fda7fa6e2_file_187__vs__66e70631fb_file_188_redline_92ec8417eb.pdf",
+    "kind": "corpus",
+    "sha256": "ef33608e2c0a99224fa1dc615d6b7761cc957ad86d947e210b5bd5e66ac40d1d"
+  },
+  {
+    "id": "20eccb4f6a",
+    "source": "results/site_1011/word_compare/out/20eccb4f6a__vs__20eccb4f6a.pdf",
+    "kind": "site_word_fresh",
+    "sha256": "957f1517b3a59abd0876f37047a3757f1352bb4c60c707e7d13eae8cc9c220b4"
+  },
+  {
+    "id": "90fd5a464a",
+    "source": "results/site_1011/word_compare/out/90fd5a464a__vs__90fd5a464a.pdf",
+    "kind": "site_word_fresh",
+    "sha256": "59e2fa77094c8dfcaa33b25e90b3b3de3082e9efdbc8683639c004979b2bc314"
+  },
+  {
+    "id": "8358846f3a",
+    "source": "results/site_1011/word_compare/out/8358846f3a__vs__8358846f3a.pdf",
+    "kind": "site_word_fresh",
+    "sha256": "997b9476dab8208fc77a8e05f52b735838ce9d061fe9957d29430be71f2629a1"
+  },
+  {
+    "id": "bc6f8076f9",
+    "source": "results/site_1011/word_compare/out/bc6f8076f9__vs__bc6f8076f9.pdf",
+    "kind": "site_word_fresh",
+    "sha256": "72329123151b9fe294efde2df37e2b643c86dc286ac8f1ed67a5b7f63ec4bfbd"
+  },
+  {
+    "id": "bc0135eaa1",
+    "source": "corpus/word/tracking_without_comments/pdf/acd3595c3a_0032221e68ad2a7986d1fe113eb1d46b5a7d1901b5aa9318__vs__1424386e9b_017447de83753a0e3b7afc659df038ef56972925336c6a5b_redline_bc0135eaa1.pdf",
+    "kind": "corpus",
+    "sha256": "15ea97674aac8e6ac3318eec53d081120ddf0a29085ffc4038884d8852825102"
+  },
+  {
+    "id": "b982beef9b",
+    "source": "corpus/word/tracking_without_comments/pdf/1b8ec2a8cd_file_7__vs__c090b9f082_file_8_redline_b982beef9b.pdf",
+    "kind": "corpus",
+    "sha256": "5cd14d7fc035775a585e694a7b1075858981d69f467a2521adbf644607888eec"
+  },
+  {
+    "id": "e9ef73a8e4",
+    "source": "results/site_1011/word_compare/out/e9ef73a8e4__vs__e9ef73a8e4.pdf",
+    "kind": "site_word_fresh",
+    "sha256": "3a1488e8c5fb7c4dec7a9902d051f5eb4a6c933740edd5fe4f86f7890f137bd6"
+  },
+  {
+    "id": "8d775d42d1",
+    "source": "corpus/word/with_comments_tracking/pdf/e70f1134dd_super_editor__diff_before8_ba5faa9e__vs__a5903a7c15_super_editor__pci_table_dc840852_redline_8d775d42d1.pdf",
+    "kind": "corpus",
+    "sha256": "2ef7ae240a96e7a860aa73de4482e2b24599143b013a156de18fcf06b827ab3e"
+  },
+  {
+    "id": "61959b1953",
+    "source": "results/site_1011/word_compare/out/61959b1953__vs__61959b1953.pdf",
+    "kind": "site_word_fresh",
+    "sha256": "d9934b04c62251a52f2769e4de7c325fc1fb9b802a8cb2722e4243dd8eabc37c"
+  },
+  {
+    "id": "10358095a4",
+    "source": "corpus/word/with_comments_tracking/pdf/830eb0f0a2_file_169__vs__bc85714262_file_170_redline_10358095a4.pdf",
+    "kind": "corpus",
+    "sha256": "20ca213e38f92bdd0d2269f869114d40624e4f82cc34686737b86d00ebbdeb0c"
+  },
+  {
+    "id": "612a3c24fa",
+    "source": "corpus/word/with_comments_tracking/pdf/799980e6af_file_12__vs__2bd5ae6064_file_13_redline_612a3c24fa.pdf",
+    "kind": "corpus",
+    "sha256": "9fad3c459b6808c0f26c36005c3aa4760ea28dc5a42268c9f6cbd6a1ea7e060e"
+  },
+  {
+    "id": "9f2ce6d6bb",
+    "source": "corpus/word/with_comments_tracking/pdf/ee91b9e453_9385adbfd34ee40a4bd2429d7385293b31a127fc9e9208d1__vs__409867707c_61a16c9bdc534801a19fcf808fdddd50a7cd74d1efd6113e_redline_9f2ce6d6bb.pdf",
+    "kind": "corpus",
+    "sha256": "32bf463f83ca65ce07918798b2b136efd1830a11739b2924fb42154c242bae3d"
+  },
+  {
+    "id": "5325dc70b4",
+    "source": "results/site_1011/word_compare/out/5325dc70b4__vs__5325dc70b4.pdf",
+    "kind": "site_word_fresh",
+    "sha256": "b89a661011f2f9a13382c0a61fb8d7bf1fbb79cba2a2459ee3303c8d6e004576"
+  },
+  {
+    "id": "b351836b34",
+    "source": "results/site_1011/word_compare/out/b351836b34__vs__b351836b34.pdf",
+    "kind": "site_word_fresh",
+    "sha256": "15022313357f97908e8b98d32fdd770c9ece231fb094fe13a83e3774273b027b"
+  },
+  {
+    "id": "b626364e3d",
+    "source": "results/site_1011/word_compare/out/b626364e3d__vs__b626364e3d.pdf",
+    "kind": "site_word_fresh",
+    "sha256": "c974736d32afbb75fd5089078896070c58252f29838a483d80edf1784787ee6b"
+  },
+  {
+    "id": "3e7067f872",
+    "source": "corpus/word/tracking_without_comments/pdf/2b4475cba6_0021f639e5dbf6c217c8d81a7ac3374624ff9901a5d4b200__vs__2773adf157_0004c94ca2a8684d47449bb0e7abf87de1df71a7e6543252_redline_3e7067f872.pdf",
+    "kind": "corpus",
+    "sha256": "2ecf7653720dac109792c336fe70e41651cfab95b80f0715141f136f492b8cdc"
+  },
+  {
+    "id": "fc12ef6776",
+    "source": "corpus/word/tracking_without_comments/pdf/aeba435bbd_file_133__vs__6f02029e99_file_134_redline_fc12ef6776.pdf",
+    "kind": "corpus",
+    "sha256": "3c2c3ec3c2d4a5b2a0ba8304f6d9aaedf686ec6f4148b85868339e63edb6246c"
+  },
+  {
+    "id": "ae9547abd2",
+    "source": "results/site_1011/word_compare/out/ae9547abd2__vs__ae9547abd2.pdf",
+    "kind": "site_word_fresh",
+    "sha256": "88b280987c417247fac77c13a960afa7d8c7ddcd0e1b2ea2e2dd208da01a88f3"
+  },
+  {
+    "id": "b4bafdd04d",
+    "source": "corpus/word/tracking_without_comments/pdf/9c1fb4747e_super_editor__sd_1495_auto_page_break_854a2dd9__vs__14211b982b_super_editor__simple_ordered_list_8288421a_redline_b4bafdd04d.pdf",
+    "kind": "corpus",
+    "sha256": "4e2c823685a6214d21318e42ce9d3008deaf6cc46207e8af4c23de2b0323a5c7"
+  },
+  {
+    "id": "9a93480040",
+    "source": "corpus/word/tracking_without_comments/pdf/279abea8ce_super_editor__h_f_normal_odd_even_firstpg_9b210d__vs__76827c9f6c_super_editor__sd_1480_two_col_index_0138dccc_redline_9a93480040.pdf",
+    "kind": "corpus",
+    "sha256": "fb537d447a74acd0b007044109fcbfb54300242287c684fdb8424f256570a30a"
+  },
+  {
+    "id": "0dfc906eb1",
+    "source": "results/site_1011/word_compare/out/0dfc906eb1__vs__0dfc906eb1.pdf",
+    "kind": "site_word_fresh",
+    "sha256": "4e35dea1b6d939452c8d1ff8480358359176c81232b0b8265aded0470d9e8157"
+  },
+  {
+    "id": "14f0524539",
+    "source": "corpus/word/tracking_without_comments/pdf/af73bfcc05_meeting_minutes_suggesting_insertions__vs__bdd82b239b_numbered_list_demo_id_paraid_overflow_redline_14f0524539.pdf",
+    "kind": "corpus",
+    "sha256": "11416b5d511471f5f17851559e5ff8df27eb05a12fcf5ea2672b66dd3380bc44"
+  },
+  {
+    "id": "9a2af58d99",
+    "source": "corpus/word/with_comments_tracking/pdf/8e694101b9_469e571050275b57ed1836b4cc17f4d29e43eec925bdfad9__vs__37c6c62345_3f296ffac9c17a92962156ff41f2b079eb687cd440513fe3_redline_9a2af58d99.pdf",
+    "kind": "corpus",
+    "sha256": "1f816939d610e29eda1fb1bb9360f37f2d6e02116aa1d12029dfcb5c62449874"
+  },
+  {
+    "id": "301efcc9d8",
+    "source": "results/site_1011/word_compare/out/301efcc9d8__vs__301efcc9d8.pdf",
+    "kind": "site_word_fresh",
+    "sha256": "fbddd8273af7e04cf7e3ae9b2873a842be869b7d97cc9e9c15322ce84c5bd5d9"
+  },
+  {
+    "id": "6be28b28eb",
+    "source": "results/site_1011/word_compare/out/6be28b28eb__vs__6be28b28eb.pdf",
+    "kind": "site_word_fresh",
+    "sha256": "943b1a94aea7f010e200c082058d873eff36f15a05586fad7d84a3f4310758e6"
+  },
+  {
+    "id": "6dee5896b8",
+    "source": "results/site_1011/word_compare/out/6dee5896b8__vs__6dee5896b8.pdf",
+    "kind": "site_word_fresh",
+    "sha256": "1d78bc9a948c6d99762775d35a056fb91cb9d2fdb47f0e3a904b8461d34039f4"
+  },
+  {
+    "id": "64c527dde8",
+    "source": "results/site_1011/word_compare/out/64c527dde8__vs__64c527dde8.pdf",
+    "kind": "site_word_fresh",
+    "sha256": "71f582fd20487c59129c7b567b0df98987bb45c8a4d891cebb0c613e09d02bc0"
+  },
+  {
+    "id": "84eec18240",
+    "source": "corpus/word/tracking_without_comments/pdf/e615c89269_inventory_list_suggesting_deletions__vs__8e5efb0d0b_inventory_list_suggesting_mixed_edits_redline_84eec18240.pdf",
+    "kind": "corpus",
+    "sha256": "91d0f139df746db8b74d0cda6c04db1ab1ddf80a21c9dc396355bc199d0219b0"
+  },
+  {
+    "id": "787e8e149a",
+    "source": "corpus/word/tracking_without_comments/pdf/d776ad9be7_super_editor__multi_section_doc_080d2655__vs__e81d1fa10c_behavior__pageref_standalone_uppercase_h_7701e07_redline_787e8e149a.pdf",
+    "kind": "corpus",
+    "sha256": "85aa92b29fa802a96f1d5b2cea70ee850b13f904038808dac0480f26dceb222a"
+  },
+  {
+    "id": "a33b8e810a",
+    "source": "results/site_1011/word_compare/out/a33b8e810a__vs__a33b8e810a.pdf",
+    "kind": "site_word_fresh",
+    "sha256": "3987275202b61e8be253bd57c8b6e2fa923bf3751555fb1642c89907a6a0380c"
+  },
+  {
+    "id": "a169f5fa5f",
+    "source": "corpus/word/tracking_without_comments/pdf/16100cd46d_behavior__sd_2323_image_resize_test_2b8a201a__vs__aa940255be_behavior__sd_2343_table_border_widths_b5148e83_redline_a169f5fa5f.pdf",
+    "kind": "corpus",
+    "sha256": "a7c31e6ba9d3a510031b8444c08d67a7f783d709458c175329208368c356a6e5"
+  },
+  {
+    "id": "2061218d44",
+    "source": "results/site_1011/word_compare/out/2061218d44__vs__2061218d44.pdf",
+    "kind": "site_word_fresh",
+    "sha256": "6bc682cf8c716ea3225fea5a8e03981ae25cff9c1b4bdb97673f6b1bdccfebc4"
+  },
+  {
+    "id": "6b74ac1ae6",
+    "source": "results/site_1011/word_compare/out/6b74ac1ae6__vs__6b74ac1ae6.pdf",
+    "kind": "site_word_fresh",
+    "sha256": "31e0dd350b80973cc45ec356cb43c6a68abe689a7e23be72a4fb9970df07d88b"
+  },
+  {
+    "id": "5af67335fe",
+    "source": "corpus/word/with_comments_tracking/pdf/4f0a3847e3_verdana_italic_centered_demo_id_paraid_overflow__vs__eb2f3c86b5_vfdsdfcacawesd_suggesting_mixed_edits_redline_5af67335fe.pdf",
+    "kind": "corpus",
+    "sha256": "604994c565f6ce6c000926443fed0d909b5f72901434b1f78b2a34e9074b3e0b"
+  },
+  {
+    "id": "5b35efe2bb",
+    "source": "results/site_1011/word_compare/out/5b35efe2bb__vs__5b35efe2bb.pdf",
+    "kind": "site_word_fresh",
+    "sha256": "ab9bd1a81fe92710eaecc23b4e2c9a7e28df52d9714c1803f1dd2951686769a9"
+  },
+  {
+    "id": "4d7ccddfdc",
+    "source": "results/site_1011/word_compare/out/4d7ccddfdc__vs__4d7ccddfdc.pdf",
+    "kind": "site_word_fresh",
+    "sha256": "0aebd03628af5a35839ec1c8fdf2952cb407472bfa7395fa24988a830f9c7ec9"
+  },
+  {
+    "id": "57dfcda882",
+    "source": "results/site_1011/word_compare/out/57dfcda882__vs__57dfcda882.pdf",
+    "kind": "site_word_fresh",
+    "sha256": "c063fc0f10e2672b0e7d0143d4dd2f3741baa2c911e5148dfa1a605d11d7fe40"
+  },
+  {
+    "id": "223dbd99f5",
+    "source": "corpus/word/tracking_without_comments/pdf/bc1dd323f3_italic_text_formatting_demo_id_paraid_overflow_2__vs__d67eb781ac_italic_text_formatting_demo_id_paraid_overflow_redline_223dbd99f5.pdf",
+    "kind": "corpus",
+    "sha256": "35532173fd30fb6fbe00cfbbd4c5dde68d88aa6f1f5880b02a48cdb4130d09dc"
+  },
+  {
+    "id": "47595e5631",
+    "source": "corpus/word/tracking_without_comments/pdf/2ba392cdd2_super_editor__broken_list_missing_items_36b4199e__vs__ca44eef662_super_editor__list_spacer1_06383c66_redline_47595e5631.pdf",
+    "kind": "corpus",
+    "sha256": "25dcfc665dc918387016d0daab1e80fc10c72deaa6ba777b569198d435e70e50"
+  },
+  {
+    "id": "aa31228e52",
+    "source": "results/site_1011/word_compare/out/aa31228e52__vs__aa31228e52.pdf",
+    "kind": "site_word_fresh",
+    "sha256": "0ecf78ad80c685dd1575a5b0c0b25131bbec219812eba6b7b60cb35881a1d706"
+  },
+  {
+    "id": "11e99a0b24",
+    "source": "corpus/word/with_comments_tracking/pdf/8138a2180b_file_145__vs__ac0bcc10fe_file_146_redline_11e99a0b24.pdf",
+    "kind": "corpus",
+    "sha256": "1729680533073d5c88fa39bf50f879fe9883fc5e59e93da71f440f46d74f7a57"
+  },
+  {
+    "id": "8694636a78",
+    "source": "results/site_1011/word_compare/out/8694636a78__vs__8694636a78.pdf",
+    "kind": "site_word_fresh",
+    "sha256": "ea57546680f8768d99b687d805423bdecaa7cb2990345209b7f93e9b94405c88"
+  },
+  {
+    "id": "b83c047cac",
+    "source": "corpus/word/with_comments_tracking/pdf/812c0181d7_file_68__vs__4304570867_file_69_redline_b83c047cac.pdf",
+    "kind": "corpus",
+    "sha256": "93231f08c224f0cd93db83cc6cc1fb58ca3473c3d45edaa1646b78a9c89383de"
+  },
+  {
+    "id": "e0305725c1",
+    "source": "corpus/word/tracking_without_comments/pdf/45c1c5abec_table_vmerge_colspan__vs__a94f4c516b_text_box_redline_e0305725c1.pdf",
+    "kind": "corpus",
+    "sha256": "e73fd142dfd119b6d1830c8ac1c07a09dd3108875e42465fea72b1bf16505745"
+  },
+  {
+    "id": "5f137fe5fa",
+    "source": "corpus/word/tracking_without_comments/pdf/9322444a3f_behavior__sd_2888_hyperlink_with_ampersand_aaaac__vs__c4ee483519_tiff_image_redline_5f137fe5fa.pdf",
+    "kind": "corpus",
+    "sha256": "b741edeabd987bbc13522ea757139843c5529c3f0db54d85495bd2da031e7940"
+  },
+  {
+    "id": "849e0cb7c4",
+    "source": "corpus/word/with_comments_tracking/pdf/57ff9e1b30_file_89__vs__9c8272b1e2_file_90_redline_849e0cb7c4.pdf",
+    "kind": "corpus",
+    "sha256": "a9966f60d55813a892697e9c02def29e7c4ff0af2e7c441b8550bae7a7baa024"
+  },
+  {
+    "id": "3866f441cc",
+    "source": "corpus/word/with_comments_tracking/pdf/2b328caeee_0ddd11a4c4cfd99b77de17348a8ddc30ae5e5c80a101c84e__vs__882e251894_c41a01217b430717fbacf9cd114aed87b99db718803e1801_redline_3866f441cc.pdf",
+    "kind": "corpus",
+    "sha256": "6661712792dd52480870607a2e8bb3254bd9e55d8a4b90a6bd893860d24eb089"
+  },
+  {
+    "id": "713774d8e1",
+    "source": "results/site_1011/word_compare/out/713774d8e1__vs__713774d8e1.pdf",
+    "kind": "site_word_fresh",
+    "sha256": "f644051ca0605ce43efa6b666ba846a7e5fdae08dd999fdeb7786b450aaa53f7"
+  },
+  {
+    "id": "f6531f6275",
+    "source": "corpus/word/tracking_without_comments/pdf/01d1b3da75_table_bookmark_end__vs__906753e55b_super_editor__table_c70ca973_redline_f6531f6275.pdf",
+    "kind": "corpus",
+    "sha256": "2b60884a2daf30b083bfd1fdd926ad1e7fb88fd9a793f532c1676b2bd8ee6333"
+  },
+  {
+    "id": "d5efaa5b6d",
+    "source": "results/wordcraft_20261014/word_audit/pdf/d5efaa5b6d__vs__d5efaa5b6d.pdf",
+    "kind": "word_audit_fresh",
+    "sha256": "72ec2a467d90d5fde35a08400ebc6079a48baf9e2dc2c34d6da140e236dc896a",
+    "prior_sha256": "e117323cd7bbb9cb5d1290f21c35e5a429e729693996d5aff09932e91ab80321"
+  },
+  {
+    "id": "7da45f822a",
+    "source": "corpus/word/with_comments_tracking/pdf/f43929f70c_verdana_bold_large_font_id_paraid_overflow__vs__3413da1703_verdana_font_demo_id_paraid_overflow_2_redline_7da45f822a.pdf",
+    "kind": "corpus",
+    "sha256": "218171ce21953a70041af2b53752357682d64f6a2a9211f4e973332a6d69f92b"
+  },
+  {
+    "id": "0b033b1c23",
+    "source": "corpus/word/with_comments_tracking/pdf/1072677c3a_file_6__vs__1b8ec2a8cd_file_7_redline_0b033b1c23.pdf",
+    "kind": "corpus",
+    "sha256": "036d5a121b7bbc5a53bad00bc97c0412be55aa19f9e2dafd73a02923dcca720d"
+  },
+  {
+    "id": "5d3a04d9a6",
+    "source": "corpus/word/with_comments_tracking/pdf/2c0a2ac35f_double_spacing_bold_demo_id_paraid_overflow__vs__90cef57bac_eigenpal_docx_editor_suggesting_mixed_edits_redline_5d3a04d9a6.pdf",
+    "kind": "corpus",
+    "sha256": "8c0ed51e61518ab8e75aa12288d2eeb00cfbf91288db0dc5c5a434dc68643842"
+  },
+  {
+    "id": "afad9d8d2c",
+    "source": "corpus/word/tracking_without_comments/pdf/1cd4f9ee6c_roboto_font_demo_id_paraid_overflow__vs__6e08e456f6_roboto_underline_demo_id_paraid_overflow_redline_afad9d8d2c.pdf",
+    "kind": "corpus",
+    "sha256": "4f1830dd0db1fe2d2d04024c168e35c600d692954c54ab2863bc5ebe0aa50b83"
+  },
+  {
+    "id": "14fb06f7e5",
+    "source": "results/site_1011/word_compare/out/14fb06f7e5__vs__14fb06f7e5.pdf",
+    "kind": "site_word_fresh",
+    "sha256": "481bc2db293d7ba5d6c4fa2cbd8441c09503904e96bab11898e507f08036aa6f"
+  },
+  {
+    "id": "0cbac1d96f",
+    "source": "results/site_1011/word_compare/out/0cbac1d96f__vs__0cbac1d96f.pdf",
+    "kind": "site_word_fresh",
+    "sha256": "137ecb56a56142c5325fccb64c5806d6a6f70aef3be6f71f8a736376efdd2f7e"
+  },
+  {
+    "id": "6532beda4d",
+    "source": "results/site_1011/word_compare/out/6532beda4d__vs__6532beda4d.pdf",
+    "kind": "site_word_fresh",
+    "sha256": "1ee19b579625e81226fe133d91dd025072d9fd0061611e1a6db38eb05f5ff595"
+  },
+  {
+    "id": "52dcc19c24",
+    "source": "corpus/word/tracking_without_comments/pdf/0d888e38b7_file_157__vs__b3869d974a_file_158_redline_52dcc19c24.pdf",
+    "kind": "corpus",
+    "sha256": "7020da4abd5ec24411a1821466922bef934d6e436f1d13d87c894198fb094125"
+  },
+  {
+    "id": "34ffddfe47",
+    "source": "results/site_1011/word_compare/out/34ffddfe47__vs__34ffddfe47.pdf",
+    "kind": "site_word_fresh",
+    "sha256": "6cab02cb9b5b04cf10942ceab956fe83e86313aed6ba62b356cb947c7752eb71"
+  },
+  {
+    "id": "69d42b2a47",
+    "source": "corpus/word/tracking_without_comments/pdf/43e406f9f5_blue_underline_combo_demo_id_paraid_overflow__vs__6cf4f06ce1_bold_and_italic_combo_style_default_missing_redline_69d42b2a47.pdf",
+    "kind": "corpus",
+    "sha256": "35ac512cbd25686f3f07f777f5fb1d1df764f547134ab8ef641f59058d463a4e"
+  },
+  {
+    "id": "6de20376e8",
+    "source": "corpus/word/tracking_without_comments/pdf/52220b20c3_00a54bff7e15af78fe7cfc20219c28cb208fde807bd28d44__vs__5203829c7a_001cc92b88566d5f930fe57f25813c0bf52a7bdc72c217d0_redline_6de20376e8.pdf",
+    "kind": "corpus",
+    "sha256": "e5f6cf52167562ca7387ceda8a29406a2a4a86ebbb4e002e6f5660d02984b605"
+  },
+  {
+    "id": "ab1fd1e5f3",
+    "source": "corpus/word/with_comments_tracking/pdf/f43929f70c_verdana_bold_large_font_id_paraid_overflow__vs__ac4b41aa8e_verdana_font_demo_id_paraid_overflow_redline_ab1fd1e5f3.pdf",
+    "kind": "corpus",
+    "sha256": "b52b056b35aef3509161b5c3a9c36106f21fe5f7180fb42262f4311290293830"
+  },
+  {
+    "id": "485599b4e9",
+    "source": "corpus/word/with_comments_tracking/pdf/66dcec3e49_file_175__vs__8f47b1dc90_file_176_redline_485599b4e9.pdf",
+    "kind": "corpus",
+    "sha256": "e4dc38b749d84dafdd0919bc5f4170a8d6c87d72269777867a6e6250f8f33b31"
+  },
+  {
+    "id": "d23d9c8cc7",
+    "source": "corpus/word/clean/pdf/32328b55db_docx_lots_of_comments_addition_removal_redline_r__vs__d996bef4c8_docx_lots_of_comments_addition_removal_redline_redline_d23d9c8cc7.pdf",
+    "kind": "corpus",
+    "sha256": "35a568dfdd22672c6a9d78b631cee4c8c9dab275f2d074bdac2b85f8632c2ade"
+  },
+  {
+    "id": "0df218b227",
+    "source": "results/site_1011/word_compare/out/0df218b227__vs__0df218b227.pdf",
+    "kind": "site_word_fresh",
+    "sha256": "826b330854c8c9c1ea35244940e2be954e53ca904a8a3ccc0ad7aaaf6493160e"
+  },
+  {
+    "id": "327ae4e5e4",
+    "source": "results/site_1011/word_compare/out/327ae4e5e4__vs__327ae4e5e4.pdf",
+    "kind": "site_word_fresh",
+    "sha256": "0f149880c23a7df65a2b69934de8cd5a1126a64ecbeb0e8acbcc4008f145c898"
+  },
+  {
+    "id": "4319e3d7c7",
+    "source": "corpus/word/with_comments_tracking/pdf/faa7c6b110_file_88__vs__57ff9e1b30_file_89_redline_4319e3d7c7.pdf",
+    "kind": "corpus",
+    "sha256": "45ee9247b845c074695f7a30f712a5106d3600c89a25e669a97dbedc20dc88d7"
+  },
+  {
+    "id": "bbc3223232",
+    "source": "results/site_1011/word_compare/out/bbc3223232__vs__bbc3223232.pdf",
+    "kind": "site_word_fresh",
+    "sha256": "8d54ac266a0d54aea4609c25adf8329fd6f926e7be63b0470a0c83d3537376cd"
+  },
+  {
+    "id": "d9bb456306",
+    "source": "corpus/word/tracking_without_comments/pdf/b4294a7edd_ddff881efc732399286b36322055752e7287a255646f24a3__vs__c7dd32f288_e24a428cb81de32e27f3080d20695edc90f15423c4955e00_redline_d9bb456306.pdf",
+    "kind": "corpus",
+    "sha256": "4dd76e7752f233a75ecfd62b67d13ffed598c556c88de83b0fc505ab49ccee0a"
+  },
+  {
+    "id": "a954a57308",
+    "source": "results/site_1011/word_compare/out/a954a57308__vs__a954a57308.pdf",
+    "kind": "site_word_fresh",
+    "sha256": "70e7f79d805f684194f15d5bba1af05108eef3ba3c8b94f8668f857f26f53713"
+  },
+  {
+    "id": "1b55e27189",
+    "source": "corpus/word/tracking_without_comments/pdf/970e9bbbcc_behavior__math_all_objects_36ab389c__vs__f795b96ac4_behavior__math_delimiter_tests_c9d034dc_redline_1b55e27189.pdf",
+    "kind": "corpus",
+    "sha256": "b1840f3bcd8670d891671ffe10ad40f45934fb1cff6bde8e81c893747c94da90"
+  },
+  {
+    "id": "1b5dd9fc3f",
+    "source": "results/site_1011/word_compare/out/1b5dd9fc3f__vs__1b5dd9fc3f.pdf",
+    "kind": "site_word_fresh",
+    "sha256": "ba9af7550f9eaa9115b2d2ff0d1dcde8c83d6944f2d9f1160182c55800ae109e"
+  },
+  {
+    "id": "57b579c043",
+    "source": "corpus/word/tracking_without_comments/pdf/671ff91b1d_behavior__sd_2750_borderbox_7cd3768d__vs__92589c3e37_super_editor__pre_separated_list_bd330d28_redline_57b579c043.pdf",
+    "kind": "corpus",
+    "sha256": "f7137f2249369f855f762dd2a33a50652f2528f0a7d83821c98aa0adb28f91ad"
+  },
+  {
+    "id": "ff24600d87",
+    "source": "corpus/word/with_comments_tracking/pdf/b8115d0dab_file_100__vs__c500e0081f_file_101_redline_ff24600d87.pdf",
+    "kind": "corpus",
+    "sha256": "538a42d925eebbd15be11265353d8e6e029628d3ce8689387a51bc938f5d5a3e"
+  },
+  {
+    "id": "f9ec352ab5",
+    "source": "corpus/word/tracking_without_comments/pdf/36c5050fba_super_editor__list_with_indents_efc7d4f5__vs__d0281643d2_super_editor__hello_docx_world_12f11074_redline_f9ec352ab5.pdf",
+    "kind": "corpus",
+    "sha256": "1c195269a8e410824bc1048050d55fc73836faeae1cda0890e810011752cb012"
+  },
+  {
+    "id": "b06fe8236d",
+    "source": "corpus/word/tracking_without_comments/pdf/5fca0ac668_ooxml_style_link__vs__12809de7d6_word_tolerated_misplaced_pgsz_redline_b06fe8236d.pdf",
+    "kind": "corpus",
+    "sha256": "3764a0bcaf698a992a75757969db5d492004020b53f5e38d42d553d75eb3364b"
+  },
+  {
+    "id": "e6e61fc33f",
+    "source": "corpus/word/clean/pdf/c9822f1008_docx_lots_of_comments_addition_redline__vs__32328b55db_docx_lots_of_comments_addition_removal_redline_r_redline_e6e61fc33f.pdf",
+    "kind": "corpus",
+    "sha256": "d5738259a2a7fd180c5c7961dc4ef60d792af8478d3e14173f5b12cfd2e1a4ca"
+  },
+  {
+    "id": "69a4d71d6f",
+    "source": "corpus/word/with_comments_tracking/pdf/8061e5912f_file_159__vs__8f8f5a3e4d_file_160_redline_69a4d71d6f.pdf",
+    "kind": "corpus",
+    "sha256": "17df726915642e1415a248ba61f6d922364b97b7e9e8ac8cdaff833717230084"
+  },
+  {
+    "id": "4ca3f73206",
+    "source": "results/site_1011/word_compare/out/4ca3f73206__vs__4ca3f73206.pdf",
+    "kind": "site_word_fresh",
+    "sha256": "01376a08fc8d25cb95730956136d55f3a85e3aaee8abcfae1a3810c13fee2afd"
+  },
+  {
+    "id": "01f3deda92",
+    "source": "results/site_1011/word_compare/out/01f3deda92__vs__01f3deda92.pdf",
+    "kind": "site_word_fresh",
+    "sha256": "da9dd9af07269d35b888b266b8ed544c5b51f960a432324a7a1f17b977f624af"
+  },
+  {
+    "id": "51d1d87a1f",
+    "source": "corpus/word/tracking_without_comments/pdf/0086695f46_file_124__vs__d8f8e09b6e_file_125_redline_51d1d87a1f.pdf",
+    "kind": "corpus",
+    "sha256": "b4d8a10c974c5d8b918472e58a14edc8f28554a27a5f4cd1f3c67b42e79c99eb"
+  },
+  {
+    "id": "52d9251560",
+    "source": "results/site_1011/word_compare/out/52d9251560__vs__52d9251560.pdf",
+    "kind": "site_word_fresh",
+    "sha256": "52de17ca996165e516776da3896e06dfc7e6c377dbb6ee04ecb02385b9347e14"
+  },
+  {
+    "id": "301e236134",
+    "source": "corpus/word/with_comments_tracking/pdf/13ea153d22_file_174__vs__66dcec3e49_file_175_redline_301e236134.pdf",
+    "kind": "corpus",
+    "sha256": "905f8c315bc8b94015b66e2fae20fb114302fa1c06f74fb759f67e7a08d79c3f"
+  },
+  {
+    "id": "dca87a30ef",
+    "source": "corpus/word/tracking_without_comments/pdf/f795b96ac4_behavior__math_delimiter_tests_c9d034dc__vs__75aeff4f58_super_editor__diff_after9_a9d4b4b0_redline_dca87a30ef.pdf",
+    "kind": "corpus",
+    "sha256": "36afde6027085420782c658809d2c31db6e524bbd5cd2c9c74bab8fbf0e4cf12"
+  },
+  {
+    "id": "bf527b6048",
+    "source": "corpus/word/tracking_without_comments/pdf/776a437291_behavior__two_column_simple_e77be963__vs__9586202517_super_editor__two_column_two_page_0b8a37c5_redline_bf527b6048.pdf",
+    "kind": "corpus",
+    "sha256": "5d161e5c11c86259eb5ac01bb23e8703110cad01f5a1e3c7c487d478d8a76a9e"
+  },
+  {
+    "id": "421d863d4e",
+    "source": "corpus/word/with_comments_tracking/pdf/e137a3db25_file_140__vs__0f5a806b4c_file_141_redline_421d863d4e.pdf",
+    "kind": "corpus",
+    "sha256": "4fd613c4c54a1167b57685c61cc0e1eb61611070fa633005edeb451e23be0c86"
+  },
+  {
+    "id": "f72cd71154",
+    "source": "results/site_1011/word_compare/out/f72cd71154__vs__f72cd71154.pdf",
+    "kind": "site_word_fresh",
+    "sha256": "694e277e5b9984b208a13dab6ede51b60c4f4f0e12ac3c040ecd33aa074bf7e1"
+  },
+  {
+    "id": "a836952933",
+    "source": "results/site_1011/word_compare/out/a836952933__vs__a836952933.pdf",
+    "kind": "site_word_fresh",
+    "sha256": "d1862dadc6d527b91936f45e2ef2b0e71b10e1abeb82a9e294433c7e7dc00a51"
+  },
+  {
+    "id": "2b70cf763e",
+    "source": "corpus/word/tracking_without_comments/pdf/0c81cbfe45_b5755b377d1c36349380137dc51de3f4ac8e5aa43114c3f1__vs__6d3d7b292c_08cd966de5e2befa9e834d3c2b93201b6130e3bf438cb6f0_redline_2b70cf763e.pdf",
+    "kind": "corpus",
+    "sha256": "58be0a38dd49d42d995411991bcbeaa32437ced3097656062e94ca9a94dc9c8b"
+  },
+  {
+    "id": "18380da4e0",
+    "source": "corpus/word/with_comments_tracking/pdf/c2d49e9ede_super_editor__sd_978_remove_table_borders_47f7ed__vs__f782ae23ec_super_editor__wordoriginatedcomments_c146be65_redline_18380da4e0.pdf",
+    "kind": "corpus",
+    "sha256": "e46a1c9a95d3c950bc080e5d4a3735d1e964d4c0fc6d9993788938f7cc0049e4"
+  },
+  {
+    "id": "70a6883d16",
+    "source": "corpus/word/with_comments_tracking/pdf/82ee7342fd_file_5__vs__1072677c3a_file_6_redline_70a6883d16.pdf",
+    "kind": "corpus",
+    "sha256": "def9de1983e575a2c4f30d385836f6f73a3aab8d7270173aa18fc126c6c4b7f1"
+  },
+  {
+    "id": "6bcf56a447",
+    "source": "corpus/word/tracking_without_comments/pdf/f9b9dbd790_0017bce9abd08007241b106f0fcf1d64e45c05cd82a05a1d__vs__2773adf157_0004c94ca2a8684d47449bb0e7abf87de1df71a7e6543252_redline_6bcf56a447.pdf",
+    "kind": "corpus",
+    "sha256": "87efb085fe035da929864a23c58109df92e8394fabbc25f6298dda81355526e8"
+  },
+  {
+    "id": "37b6514e21",
+    "source": "corpus/word/tracking_without_comments/pdf/a75a5d3d73_file_134__vs__723ac0c0c5_file_135_redline_37b6514e21.pdf",
+    "kind": "corpus",
+    "sha256": "9fad5a743558ec1deaa34739513e5da1dac00f3995504749cdb3007cfbe7c286"
+  },
+  {
+    "id": "420292c772",
+    "source": "corpus/word/tracking_without_comments/pdf/aa58aada65_00160046fb2516a560a9681d7ae3e6f4659af57d19555d4e__vs__aa5340125d_00a4b0b91e9b5b072dc3771391c2d608518690eccf44eae8_redline_420292c772.pdf",
+    "kind": "corpus",
+    "sha256": "9aab7326d2416a8bb59cea9f74bc33d39233bef470a8f35934519e41ae30940d"
+  },
+  {
+    "id": "63ef9002ec",
+    "source": "corpus/word/tracking_without_comments/pdf/a2ae20465c_file_14__vs__9338d8c9d9_file_15_redline_63ef9002ec.pdf",
+    "kind": "corpus",
+    "sha256": "51407a1f2fc88170a82deb221c486b96e692ddacd6c1edb7e6c6e40d9aebe38a"
+  },
+  {
+    "id": "3dac82f40a",
+    "source": "results/site_1011/word_compare/out/3dac82f40a__vs__3dac82f40a.pdf",
+    "kind": "site_word_fresh",
+    "sha256": "b60e18fa36760ddd3b96653ce9fbd102d7baf19b9cb94fb6439bd8c860972948"
+  },
+  {
+    "id": "58cd08049b",
+    "source": "results/site_1011/word_compare/out/58cd08049b__vs__58cd08049b.pdf",
+    "kind": "site_word_fresh",
+    "sha256": "1ea08578bd9d7ffc6d5acb133d40427e9c1fa24abe4637963339fac529ec7a73"
+  },
+  {
+    "id": "2a64722aad",
+    "source": "results/site_1011/word_compare/out/2a64722aad__vs__2a64722aad.pdf",
+    "kind": "site_word_fresh",
+    "sha256": "ae58348d5bbaf1ea46bf855768ce186aea5932399f31b04a6c950a59fa6b86cd"
+  },
+  {
+    "id": "ee63b6fa87",
+    "source": "corpus/word/tracking_without_comments/pdf/a30c48b63b_9d38c2b8863775d616563eeb35795e024fb57a99f81ad372__vs__52524565af_815d7d240ddb63bfc8be69c00cf62f4b9d75b494de167de6_redline_ee63b6fa87.pdf",
+    "kind": "corpus",
+    "sha256": "29c31a1c88feda7b021336210d67e6072041025cc724ae24abae3e8f4da2ac65"
+  }
+]
