@@ -1,0 +1,222 @@
+▸ PDF quality is sticky: `save as … file format format PDF` inherits whatever 
+'Optimize for' you last chose in Word's own Save As dialog.
+  Open any document in Word once, File > Save As > PDF, and pick the SECOND 
+option, Best for printing.
+  That choice persists; this script cannot set it. Pass --no-check-preset to 
+stop seeing this.
+▸ A redline PDF shows tracked changes the way Word is currently set to show them
+(Review ▸ Markup display, and Print Markup).
+  Open one redline in Word by hand and confirm it looks right before running the
+batch — this script cannot set that for you.
+2026-10-14 02:22:24.517 | INFO     | word_pdf:preflight:2235 -  preflight: 
+open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-10-14 02:22:24.520 | INFO     | __main__:redline_folders:728 -  
+one_osascript=True pairs=44
+2026-10-14 02:22:24.562 | INFO     | __main__:_redline_batched:1012 -  one 
+osascript for 44 comparison(s)
+2026-10-14 02:22:29.564 | INFO     | word_pdf:_loop:1479 -  3/44
+2026-10-14 02:22:34.568 | INFO     | word_pdf:_loop:1479 -  6/44
+2026-10-14 02:22:39.572 | INFO     | word_pdf:_loop:1479 -  10/44
+2026-10-14 02:22:44.578 | INFO     | word_pdf:_loop:1479 -  14/44
+2026-10-14 02:22:49.581 | INFO     | word_pdf:_loop:1479 -  17/44
+2026-10-14 02:22:49.871 | INFO     | word_pdf:_note_dialogs:774 -  Microsoft 
+Word shows button 'missing value'
+2026-10-14 02:22:54.592 | INFO     | word_pdf:_loop:1479 -  20/44
+2026-10-14 02:22:59.601 | INFO     | word_pdf:_loop:1479 -  24/44
+2026-10-14 02:23:04.610 | INFO     | word_pdf:_loop:1479 -  27/44
+2026-10-14 02:23:09.628 | INFO     | word_pdf:_loop:1479 -  29/44
+2026-10-14 02:23:14.638 | INFO     | word_pdf:_loop:1479 -  32/44
+2026-10-14 02:23:19.648 | INFO     | word_pdf:_loop:1479 -  35/44
+2026-10-14 02:23:24.653 | INFO     | word_pdf:_loop:1479 -  39/44
+2026-10-14 02:23:29.663 | INFO     | word_pdf:_loop:1479 -  42/44
+2026-10-14 02:23:32.834 | INFO     | __main__:_redline_batched:1041 -  one 
+osascript for 35 redline PDF(s)
+2026-10-14 02:23:37.852 | INFO     | word_pdf:_loop:1479 -  3/35
+2026-10-14 02:23:39.943 | WARNING  | word_pdf:run_batch_with_resume:1624 -  32 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 2, 0 of 3 stalled 
+passes used)
+2026-10-14 02:23:39.945 | WARNING  | word_pdf♻1068 -  restarting a Word this run
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-14 02:23:39.945 | WARNING  | word_pdf♻1074 -  recycling (restart 1)
+2026-10-14 02:23:54.930 | INFO     | word_pdf:_loop:1479 -  0/32
+2026-10-14 02:23:59.938 | INFO     | word_pdf:_loop:1479 -  3/32
+2026-10-14 02:24:04.947 | INFO     | word_pdf:_loop:1479 -  4/32
+2026-10-14 02:24:09.956 | INFO     | word_pdf:_loop:1479 -  5/32
+2026-10-14 02:24:14.965 | INFO     | word_pdf:_loop:1479 -  7/32
+2026-10-14 02:24:19.974 | INFO     | word_pdf:_loop:1479 -  9/32
+2026-10-14 02:24:29.991 | INFO     | word_pdf:_nudge:1450 -  item 10/32 not 
+finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 02:24:35.002 | INFO     | word_pdf:_loop:1479 -  10/32
+2026-10-14 02:24:40.008 | INFO     | word_pdf:_loop:1479 -  12/32
+2026-10-14 02:24:45.017 | INFO     | word_pdf:_loop:1479 -  16/32
+2026-10-14 02:24:50.021 | INFO     | word_pdf:_loop:1479 -  17/32
+2026-10-14 02:25:00.081 | INFO     | word_pdf:_nudge:1450 -  item 18/32 not 
+finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 02:25:15.114 | INFO     | word_pdf:_nudge:1450 -  item 18/32 not 
+finished after 25 s; bringing Word forward to look for an alert
+2026-10-14 02:25:25.195 | INFO     | word_pdf:_loop:1479 -  18/32
+2026-10-14 02:25:34.739 | INFO     | word_pdf:_note_dialogs:774 -  Microsoft 
+Error Reporting shows button 'OK'
+2026-10-14 02:25:34.829 | INFO     | word_pdf:_note_dialogs:774 -  Microsoft 
+Error Reporting shows button 'More Information'
+2026-10-14 02:25:34.832 | INFO     | word_pdf:_note_dialogs:774 -  Microsoft 
+Error Reporting shows button 'missing value'
+2026-10-14 02:25:34.833 | INFO     | word_pdf:_note_dialogs:777 -  Microsoft 
+Error Reporting says: 'There was a problem with Microsoft Word and we apologize 
+for the inconvenience. | Microsoft Error Reporting'
+2026-10-14 02:25:35.317 | INFO     | word_pdf:_loop:1479 -  20/32
+2026-10-14 02:25:37.513 | WARNING  | word_pdf:_report:1439 -  item 18/32 open 
+for more than 30 s:
+-- Word windows {name, subrole}: ,
+-- Word window text: 
+-- crash reporters: Microsoft Error Reporting
+-- batch-pdf-2.log:
+        8
+        9
+        10
+        11
+        13
+        14
+        15
+        16
+        17
+        18
+        19
+        20
+        21
+        22
+        23
+        25
+        26
+        27
+        28
+        29
+-- newest diagnostic reports: 
+ExcUserFault_nsattributedstringagent-2026-10-08-102340.ips, 
+soffice-2026-10-14-012000.ips, soffice-2026-10-14-011957.ips, 
+soffice-2026-10-14-011229.ips, forge-2026-10-14-003217.ips
+2026-10-14 02:25:38.246 | ERROR    | word_pdf:_loop_merp:890 -  Microsoft Error 
+Reporting is showing a dialog whose buttons match none of ("Don't Send", 'Don’t 
+Send', 'Cancel', 'Close', 'Quit', 'No', 'OK', 'Ok'). Labels seen are logged 
+above — add the real one to MERP_DECLINE.
+2026-10-14 02:25:45.936 | WARNING  | word_pdf:run_batch_with_resume:1624 -  12 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 3, 0 of 3 stalled 
+passes used)
+2026-10-14 02:25:45.984 | WARNING  | word_pdf♻1068 -  restarting a Word this run
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-14 02:25:45.988 | WARNING  | word_pdf♻1074 -  recycling (restart 2)
+2026-10-14 02:25:48.675 | WARNING  | word_pdf:_loop_merp:888 -  error report 
+declined via 'OK'; Word said: "There was a problem with Microsoft Word and we 
+apologize for the inconvenience. | Microsoft Error Reporting"
+2026-10-14 02:26:03.817 | INFO     | word_pdf:_loop:1479 -  1/12
+2026-10-14 02:26:08.842 | INFO     | word_pdf:_loop:1479 -  3/12
+2026-10-14 02:26:18.856 | INFO     | word_pdf:_nudge:1450 -  item 4/12 not 
+finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 02:26:28.873 | INFO     | word_pdf:_loop:1479 -  5/12
+2026-10-14 02:26:33.881 | INFO     | word_pdf:_loop:1479 -  7/12
+2026-10-14 02:26:38.888 | INFO     | word_pdf:_loop:1479 -  8/12
+2026-10-14 02:26:43.895 | INFO     | word_pdf:_loop:1479 -  10/12
+2026-10-14 02:26:48.374 | WARNING  | word_pdf:run_batch_with_resume:1624 -  1 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 4, 0 of 3 stalled 
+passes used)
+2026-10-14 02:26:48.380 | WARNING  | word_pdf♻1068 -  restarting a Word this run
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-14 02:26:48.384 | WARNING  | word_pdf♻1074 -  recycling (restart 3)
+2026-10-14 02:26:59.198 | INFO     | word_pdf:_loop:1479 -  0/1
+2026-10-14 02:27:01.452 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+01a43df57c.docx → 01a43df57c.docx — Microsoft Word got an error: document 
+"00000__base__01a43df57c__vs__01a43df57c.docx" doesn’t understand the “compare” 
+message.
+2026-10-14 02:27:01.466 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+07ab69d450.docx → 07ab69d450.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-14 02:27:01.468 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+0cd32d67b2.docx → 0cd32d67b2.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-14 02:27:01.469 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+0e4dfd953d.docx → 0e4dfd953d.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-14 02:27:01.508 | ERROR    | __main__:_redline_batched:1095 -  FAIL: 
+20f31d3886.docx → 20f31d3886.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-14 02:27:01.654 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+48b006f032.docx → 48b006f032.docx — Microsoft Word got an error: document 
+"00012__base__48b006f032__vs__48b006f032.docx" doesn’t understand the “compare” 
+message.
+2026-10-14 02:27:01.738 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+65aa483982.docx → 65aa483982.docx — redline is missing base 50% of that file; 
+the two sides are not averaged
+2026-10-14 02:27:01.924 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+7f412aa4b4.docx → 7f412aa4b4.docx — redline is missing base 67% of that file; 
+the two sides are not averaged
+2026-10-14 02:27:01.950 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+8be0329c00.docx → 8be0329c00.docx — Microsoft Word got an error: document 
+"00024__base__8be0329c00__vs__8be0329c00.docx" doesn’t understand the “compare” 
+message.
+2026-10-14 02:27:02.825 | ERROR    | __main__:_redline_batched:1095 -  FAIL: 
+a20d355157.docx → a20d355157.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-14 02:27:02.835 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+b461d6f797.docx → b461d6f797.docx — Microsoft Word got an error: document 
+"00033__base__b461d6f797__vs__b461d6f797.docx" doesn’t understand the “compare” 
+message.
+2026-10-14 02:27:02.910 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+d4ab829066.docx → d4ab829066.docx — Microsoft Word got an error: document 
+"00036__base__d4ab829066__vs__d4ab829066.docx" doesn’t understand the “compare” 
+message.
+2026-10-14 02:27:02.911 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+d525625b0d.docx → d525625b0d.docx — Microsoft Word got an error: document 
+"00037__base__d525625b0d__vs__d525625b0d.docx" doesn’t understand the “compare” 
+message.
+2026-10-14 02:27:05.379 | INFO     | word_pdf:stop:907 -  tally: declined=0 
+dismissed=1 granted=0 forwarded=0 alerts_seen=1
+             redline: A → B             
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━┓
+┃ outcome                      ┃ count ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━┩
+│ redlined                     │    31 │
+│ skipped (exists)             │     0 │
+│ failed                       │    13 │
+│ seconds per pair (batch avg) │   1.6 │
+│ total revisions              │   866 │
+└──────────────────────────────┴───────┘
+  FAIL 01a43df57c.docx → 01a43df57c.docx: Microsoft Word got an error: document 
+"00000__base__01a43df57c__vs__01a43df57c.docx" doesn’t understand the “compare” 
+message.
+  FAIL 07ab69d450.docx → 07ab69d450.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL 0cd32d67b2.docx → 0cd32d67b2.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL 0e4dfd953d.docx → 0e4dfd953d.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL 20f31d3886.docx → 20f31d3886.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL 48b006f032.docx → 48b006f032.docx: Microsoft Word got an error: document 
+"00012__base__48b006f032__vs__48b006f032.docx" doesn’t understand the “compare” 
+message.
+  FAIL 65aa483982.docx → 65aa483982.docx: redline is missing base 50% of that 
+file; the two sides are not averaged
+  FAIL 7f412aa4b4.docx → 7f412aa4b4.docx: redline is missing base 67% of that 
+file; the two sides are not averaged
+  FAIL 8be0329c00.docx → 8be0329c00.docx: Microsoft Word got an error: document 
+"00024__base__8be0329c00__vs__8be0329c00.docx" doesn’t understand the “compare” 
+message.
+  FAIL a20d355157.docx → a20d355157.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL b461d6f797.docx → b461d6f797.docx: Microsoft Word got an error: document 
+"00033__base__b461d6f797__vs__b461d6f797.docx" doesn’t understand the “compare” 
+message.
+  FAIL d4ab829066.docx → d4ab829066.docx: Microsoft Word got an error: document 
+"00036__base__d4ab829066__vs__d4ab829066.docx" doesn’t understand the “compare” 
+message.
+  FAIL d525625b0d.docx → d525625b0d.docx: Microsoft Word got an error: document 
+"00037__base__d525625b0d__vs__d525625b0d.docx" doesn’t understand the “compare” 
+message.

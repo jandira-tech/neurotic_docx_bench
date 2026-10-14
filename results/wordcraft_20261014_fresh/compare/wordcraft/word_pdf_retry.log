@@ -1,0 +1,137 @@
+2026-10-14 05:21:28.204 | INFO     | __main__:preflight:2235 - [word] preflight: open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-10-14 05:21:28.208 | INFO     | __main__:convert_folder:1908 - [word] export: one_osascript=True documents=8 accept_all=False reject_all=False
+2026-10-14 05:21:28.216 | INFO     | __main__:_convert_batched:2108 - [batch] one osascript for 8 document(s)
+2026-10-14 05:21:33.225 | INFO     | __main__:_loop:1479 - [batch pdf 1] 0/8
+2026-10-14 05:21:34.416 | INFO     | __main__:_note_dialogs:774 - [watchdog] Microsoft Word shows button 'OK'
+2026-10-14 05:21:34.418 | INFO     | __main__:_note_dialogs:777 - [watchdog] Microsoft Word says: 'Word experienced an error trying to open the file.\nTry these suggestions.\n* Check the file permissions for the document or drive.\n* Make sure there is sufficient free memory and disk space.\n* Open the file with the Text Recovery converter.\n(00000__wordcraft__0cd32d67b2.docx)'
+2026-10-14 05:21:34.773 | WARNING  | __main__:_loop_word:873 - [watchdog] Word dialog dismissed via 'OK'; Word said: "Word experienced an error trying to open the file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00000__wordcraft__0cd32d67b2.docx)"
+2026-10-14 05:21:38.744 | INFO     | __main__:_note_dialogs:777 - [watchdog] Microsoft Word says: 'Word experienced an error trying to open the file.\nTry these suggestions.\n* Check the file permissions for the document or drive.\n* Make sure there is sufficient free memory and disk space.\n* Open the file with the Text Recovery converter.\n(00001__wordcraft__0dfc906eb1.docx)'
+2026-10-14 05:21:39.066 | WARNING  | __main__:_loop_word:873 - [watchdog] Word dialog dismissed via 'OK'; Word said: "Word experienced an error trying to open the file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00001__wordcraft__0dfc906eb1.docx)"
+2026-10-14 05:21:43.062 | INFO     | __main__:_note_dialogs:777 - [watchdog] Microsoft Word says: 'Word experienced an error trying to open the file.\nTry these suggestions.\n* Check the file permissions for the document or drive.\n* Make sure there is sufficient free memory and disk space.\n* Open the file with the Text Recovery converter.\n(00002__wordcraft__2ea0a59b6a.docx)'
+2026-10-14 05:21:43.521 | WARNING  | __main__:_loop_word:873 - [watchdog] Word dialog dismissed via 'OK'; Word said: "Word experienced an error trying to open the file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00002__wordcraft__2ea0a59b6a.docx)"
+2026-10-14 05:21:43.618 | WARNING  | __main__:run_batch_with_resume:1624 - [batch pdf] 8 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 2, 0 of 3 stalled passes used)
+2026-10-14 05:21:43.619 | WARNING  | __main__:recycle:1068 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 05:21:43.620 | WARNING  | __main__:recycle:1074 - [word] recycling (restart 1)
+2026-10-14 05:21:56.068 | INFO     | __main__:_note_dialogs:777 - [watchdog] Microsoft Word says: 'Word experienced an error trying to open the file.\nTry these suggestions.\n* Check the file permissions for the document or drive.\n* Make sure there is sufficient free memory and disk space.\n* Open the file with the Text Recovery converter.\n(00003__wordcraft__34ffddfe47.docx)'
+2026-10-14 05:21:56.664 | WARNING  | __main__:_loop_word:873 - [watchdog] Word dialog dismissed via 'OK'; Word said: "Word experienced an error trying to open the file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00003__wordcraft__34ffddfe47.docx)"
+2026-10-14 05:21:57.590 | INFO     | __main__:_loop:1479 - [batch pdf 2] 0/8
+2026-10-14 05:22:02.155 | INFO     | __main__:_note_dialogs:777 - [watchdog] Microsoft Word says: 'Word experienced an error trying to open the file.\nTry these suggestions.\n* Check the file permissions for the document or drive.\n* Make sure there is sufficient free memory and disk space.\n* Open the file with the Text Recovery converter.\n(00004__wordcraft__4d40d1f136.docx)'
+2026-10-14 05:22:02.892 | WARNING  | __main__:_loop_word:873 - [watchdog] Word dialog dismissed via 'OK'; Word said: "Word experienced an error trying to open the file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00004__wordcraft__4d40d1f136.docx)"
+2026-10-14 05:22:08.372 | INFO     | __main__:_note_dialogs:777 - [watchdog] Microsoft Word says: 'Word experienced an error trying to open the file.\nTry these suggestions.\n* Check the file permissions for the document or drive.\n* Make sure there is sufficient free memory and disk space.\n* Open the file with the Text Recovery converter.\n(00005__wordcraft__57dfcda882.docx)'
+2026-10-14 05:22:09.023 | WARNING  | __main__:_loop_word:873 - [watchdog] Word dialog dismissed via 'OK'; Word said: "Word experienced an error trying to open the file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00005__wordcraft__57dfcda882.docx)"
+2026-10-14 05:22:09.117 | WARNING  | __main__:run_batch_with_resume:1624 - [batch pdf] 8 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 3, 0 of 3 stalled passes used)
+2026-10-14 05:22:09.119 | WARNING  | __main__:recycle:1068 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 05:22:09.120 | WARNING  | __main__:recycle:1074 - [word] recycling (restart 2)
+2026-10-14 05:22:18.617 | INFO     | __main__:_note_dialogs:777 - [watchdog] Microsoft Word says: 'Word experienced an error trying to open the file.\nTry these suggestions.\n* Check the file permissions for the document or drive.\n* Make sure there is sufficient free memory and disk space.\n* Open the file with the Text Recovery converter.\n(00006__wordcraft__61959b1953.docx)'
+2026-10-14 05:22:19.147 | WARNING  | __main__:_loop_word:873 - [watchdog] Word dialog dismissed via 'OK'; Word said: "Word experienced an error trying to open the file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00006__wordcraft__61959b1953.docx)"
+2026-10-14 05:22:20.571 | INFO     | __main__:_loop:1479 - [batch pdf 3] 0/8
+2026-10-14 05:22:24.924 | INFO     | __main__:_note_dialogs:777 - [watchdog] Microsoft Word says: 'Word experienced an error trying to open the file.\nTry these suggestions.\n* Check the file permissions for the document or drive.\n* Make sure there is sufficient free memory and disk space.\n* Open the file with the Text Recovery converter.\n(00007__wordcraft__6bcf56a447.docx)'
+2026-10-14 05:22:25.480 | WARNING  | __main__:_loop_word:873 - [watchdog] Word dialog dismissed via 'OK'; Word said: "Word experienced an error trying to open the file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00007__wordcraft__6bcf56a447.docx)"
+2026-10-14 05:22:31.668 | WARNING  | __main__:_loop_word:873 - [watchdog] Word dialog dismissed via 'OK'; Word said: "Word experienced an error trying to open the file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00003__wordcraft__34ffddfe47.docx)"
+2026-10-14 05:22:31.749 | WARNING  | __main__:run_batch_with_resume:1624 - [batch pdf] 7 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 4, 0 of 3 stalled passes used)
+2026-10-14 05:22:31.750 | WARNING  | __main__:recycle:1068 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 05:22:31.751 | WARNING  | __main__:recycle:1074 - [word] recycling (restart 3)
+2026-10-14 05:22:43.081 | WARNING  | __main__:_loop_word:873 - [watchdog] Word dialog dismissed via 'OK'; Word said: "Word experienced an error trying to open the file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00006__wordcraft__61959b1953.docx)"
+2026-10-14 05:22:43.441 | INFO     | __main__:_loop:1479 - [batch pdf 4] 0/7
+2026-10-14 05:22:49.299 | WARNING  | __main__:_loop_word:873 - [watchdog] Word dialog dismissed via 'OK'; Word said: "Word experienced an error trying to open the file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00007__wordcraft__6bcf56a447.docx)"
+2026-10-14 05:22:54.049 | WARNING  | __main__:_loop_word:873 - [watchdog] Word dialog dismissed via 'OK'; Word said: "Word experienced an error trying to open the file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00004__wordcraft__4d40d1f136.docx)"
+2026-10-14 05:22:54.133 | WARNING  | __main__:run_batch_with_resume:1624 - [batch pdf] 4 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 5, 0 of 3 stalled passes used)
+2026-10-14 05:22:54.134 | WARNING  | __main__:recycle:1068 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 05:22:54.135 | WARNING  | __main__:recycle:1074 - [word] recycling (restart 4)
+2026-10-14 05:23:02.342 | WARNING  | __main__:_loop_word:873 - [watchdog] Word dialog dismissed via 'OK'; Word said: "Word experienced an error trying to open the file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00005__wordcraft__57dfcda882.docx)"
+2026-10-14 05:23:05.756 | INFO     | __main__:_loop:1479 - [batch pdf 5] 0/4
+2026-10-14 05:23:07.011 | WARNING  | __main__:_loop_word:873 - [watchdog] Word dialog dismissed via 'OK'; Word said: "Word experienced an error trying to open the file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00000__wordcraft__0cd32d67b2.docx)"
+2026-10-14 05:23:11.633 | WARNING  | __main__:_loop_word:873 - [watchdog] Word dialog dismissed via 'OK'; Word said: "Word experienced an error trying to open the file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00001__wordcraft__0dfc906eb1.docx)"
+2026-10-14 05:23:11.813 | WARNING  | __main__:run_batch_with_resume:1624 - [batch pdf] 1 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 6, 0 of 3 stalled passes used)
+2026-10-14 05:23:11.814 | WARNING  | __main__:recycle:1068 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 05:23:11.815 | WARNING  | __main__:recycle:1074 - [word] recycling (restart 5)
+2026-10-14 05:23:20.619 | WARNING  | __main__:_loop_word:873 - [watchdog] Word dialog dismissed via 'OK'; Word said: "Word experienced an error trying to open the file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00002__wordcraft__2ea0a59b6a.docx)"
+2026-10-14 05:23:20.712 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 0cd32d67b2.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-14 05:23:20.714 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 0dfc906eb1.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-14 05:23:20.715 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 2ea0a59b6a.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-14 05:23:20.716 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 34ffddfe47.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-14 05:23:20.717 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 4d40d1f136.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-14 05:23:20.719 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 57dfcda882.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-14 05:23:20.721 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 61959b1953.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-14 05:23:20.722 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 6bcf56a447.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-14 05:23:20.728 | INFO     | __main__:stop:907 - [watchdog] tally: declined=0 dismissed=16 granted=0 forwarded=0 alerts_seen=8

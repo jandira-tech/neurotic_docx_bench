@@ -1,0 +1,1 @@
+compare_01/02 at 03:27-03:34 ran on a Word relaunched after a crash (Error Reporting dialog up): every open after the first produced a phantom document. Discarded; Word now hard-restarted before each chunk.

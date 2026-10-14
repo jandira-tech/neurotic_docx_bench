@@ -1,0 +1,5 @@
+2026-10-14 02:41:40.228 | INFO     | word_pdf:preflight:2235 - [word] preflight: open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-10-14 02:41:40.359 | INFO     | __main__:redline_folders:728 - [redline] one_osascript=False pairs=1
+2026-10-14 02:41:47.156 | ERROR    | __main__:_redline_serial:809 - [1/1] FAIL: ee3c219df7.docx → ee3c219df7.docx — redline saved but PDF export failed: 463:511: execution error: document loaded empty (Word could not read it) (-2700)
+2026-10-14 02:41:55.605 | INFO     | word_pdf:_note_dialogs:774 - [watchdog] Microsoft Word shows button 'missing value'
+2026-10-14 02:41:56.081 | INFO     | word_pdf:stop:907 - [watchdog] tally: declined=0 dismissed=0 granted=0 forwarded=0 alerts_seen=0

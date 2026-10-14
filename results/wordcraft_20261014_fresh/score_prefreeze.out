@@ -1,0 +1,9 @@
+04:21:03 score convert wordcraft after chunk 01
+wordcraft 99 / 99 scored 99 failures 0 897s
+prefreeze scoring pass done: 99 checkpointed
+04:36:01 score convert jubarte-0.11.0 after chunk 01
+jubarte-0.11.0 140 / 457 scored 140 failures 0 894s
+  warnings.warn(
+04:51:56 score convert jubarte-0.12.0 after chunk 01
+jubarte-0.12.0 380 / 457 scored 380 failures 0 1154s
+  warnings.warn(

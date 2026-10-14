@@ -1,0 +1,42 @@
+▸ PDF quality is sticky: `save as … file format format PDF` inherits whatever 
+'Optimize for' you last chose in Word's own Save As dialog.
+  Open any document in Word once, File > Save As > PDF, and pick the SECOND 
+option, Best for printing.
+  That choice persists; this script cannot set it. Pass --no-check-preset to 
+stop seeing this.
+▸ A redline PDF shows tracked changes the way Word is currently set to show them
+(Review ▸ Markup display, and Print Markup).
+  Open one redline in Word by hand and confirm it looks right before running the
+batch — this script cannot set that for you.
+2026-10-14 02:39:19.708 | INFO     | word_pdf:preflight:2235 -  preflight: 
+open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-10-14 02:39:19.711 | INFO     | __main__:redline_folders:728 -  
+one_osascript=False pairs=3
+2026-10-14 02:39:22.956 | ERROR    | __main__:_redline_serial:809 - [1/3] FAIL: 
+1032d784bc.docx → 1032d784bc.docx — redline saved but PDF export failed: 
+463:511: execution error: document loaded empty (Word could not read it) (-2700)
+2026-10-14 02:39:26.261 | INFO     | word_pdf:_note_dialogs:774 -  Microsoft 
+Word shows button 'missing value'
+2026-10-14 02:39:31.311 | ERROR    | __main__:_redline_serial:809 - [2/3] FAIL: 
+77800d60fe.docx → 77800d60fe.docx — 2402:2519: execution error: Microsoft Word 
+got an error: document "base__77800d60fe__vs__77800d60fe.docx" doesn’t 
+understand the “compare” message. (-1708)
+2026-10-14 02:39:41.895 | INFO     | __main__:_redline_serial:804 - [3/3] ok 
+(5.2s, 14 revisions): c85d7fadac.docx → c85d7fadac.docx
+2026-10-14 02:39:43.982 | INFO     | word_pdf:stop:907 -  tally: declined=0 
+dismissed=0 granted=0 forwarded=0 alerts_seen=0
+       redline: A → B       
+┏━━━━━━━━━━━━━━━━━━┳━━━━━━━┓
+┃ outcome          ┃ count ┃
+┡━━━━━━━━━━━━━━━━━━╇━━━━━━━┩
+│ redlined         │     1 │
+│ skipped (exists) │     0 │
+│ failed           │     2 │
+│ median seconds   │   5.2 │
+│ total revisions  │    14 │
+└──────────────────┴───────┘
+  FAIL 1032d784bc.docx → 1032d784bc.docx: redline saved but PDF export failed: 
+463:511: execution error: document loaded empty (Word could not read it) (-2700)
+  FAIL 77800d60fe.docx → 77800d60fe.docx: 2402:2519: execution error: Microsoft 
+Word got an error: document "base__77800d60fe__vs__77800d60fe.docx" doesn’t 
+understand the “compare” message. (-1708)

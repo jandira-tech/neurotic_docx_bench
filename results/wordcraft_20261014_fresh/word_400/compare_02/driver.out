@@ -1,0 +1,143 @@
+▸ PDF quality is sticky: `save as … file format format PDF` inherits whatever 
+'Optimize for' you last chose in Word's own Save As dialog.
+  Open any document in Word once, File > Save As > PDF, and pick the SECOND 
+option, Best for printing.
+  That choice persists; this script cannot set it. Pass --no-check-preset to 
+stop seeing this.
+▸ A redline PDF shows tracked changes the way Word is currently set to show them
+(Review ▸ Markup display, and Print Markup).
+  Open one redline in Word by hand and confirm it looks right before running the
+batch — this script cannot set that for you.
+2026-10-14 04:42:06.557 | INFO     | word_pdf:preflight:2235 -  preflight: 
+open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-10-14 04:42:06.610 | INFO     | __main__:redline_folders:728 -  
+one_osascript=True pairs=76
+2026-10-14 04:42:06.730 | INFO     | __main__:_redline_batched:1012 -  one 
+osascript for 76 comparison(s)
+2026-10-14 04:42:11.738 | INFO     | word_pdf:_loop:1479 -  1/76
+2026-10-14 04:42:16.745 | INFO     | word_pdf:_loop:1479 -  4/76
+2026-10-14 04:42:21.751 | INFO     | word_pdf:_loop:1479 -  6/76
+2026-10-14 04:42:26.759 | INFO     | word_pdf:_loop:1479 -  7/76
+2026-10-14 04:42:31.765 | INFO     | word_pdf:_loop:1479 -  9/76
+2026-10-14 04:42:36.773 | INFO     | word_pdf:_loop:1479 -  11/76
+2026-10-14 04:42:41.776 | INFO     | word_pdf:_loop:1479 -  14/76
+2026-10-14 04:42:46.782 | INFO     | word_pdf:_loop:1479 -  16/76
+2026-10-14 04:42:51.786 | INFO     | word_pdf:_loop:1479 -  18/76
+2026-10-14 04:42:56.791 | INFO     | word_pdf:_loop:1479 -  20/76
+2026-10-14 04:43:01.797 | INFO     | word_pdf:_loop:1479 -  22/76
+2026-10-14 04:43:06.802 | INFO     | word_pdf:_loop:1479 -  24/76
+2026-10-14 04:43:11.806 | INFO     | word_pdf:_loop:1479 -  26/76
+2026-10-14 04:43:16.819 | INFO     | word_pdf:_loop:1479 -  28/76
+2026-10-14 04:43:21.826 | INFO     | word_pdf:_loop:1479 -  31/76
+2026-10-14 04:43:26.833 | INFO     | word_pdf:_loop:1479 -  33/76
+2026-10-14 04:43:31.839 | INFO     | word_pdf:_loop:1479 -  35/76
+2026-10-14 04:43:36.845 | INFO     | word_pdf:_loop:1479 -  37/76
+2026-10-14 04:43:41.851 | INFO     | word_pdf:_loop:1479 -  40/76
+2026-10-14 04:43:46.861 | INFO     | word_pdf:_loop:1479 -  42/76
+2026-10-14 04:43:51.868 | INFO     | word_pdf:_loop:1479 -  45/76
+2026-10-14 04:43:56.874 | INFO     | word_pdf:_loop:1479 -  47/76
+2026-10-14 04:44:01.877 | INFO     | word_pdf:_loop:1479 -  49/76
+2026-10-14 04:44:06.883 | INFO     | word_pdf:_loop:1479 -  51/76
+2026-10-14 04:44:11.886 | INFO     | word_pdf:_loop:1479 -  53/76
+2026-10-14 04:44:16.892 | INFO     | word_pdf:_loop:1479 -  55/76
+2026-10-14 04:44:21.899 | INFO     | word_pdf:_loop:1479 -  57/76
+2026-10-14 04:44:26.906 | INFO     | word_pdf:_loop:1479 -  59/76
+2026-10-14 04:44:31.912 | INFO     | word_pdf:_loop:1479 -  61/76
+2026-10-14 04:44:36.920 | INFO     | word_pdf:_loop:1479 -  63/76
+2026-10-14 04:44:46.931 | INFO     | word_pdf:_loop:1479 -  64/76
+2026-10-14 04:44:51.937 | INFO     | word_pdf:_loop:1479 -  66/76
+2026-10-14 04:44:56.944 | INFO     | word_pdf:_loop:1479 -  68/76
+2026-10-14 04:45:01.951 | INFO     | word_pdf:_loop:1479 -  70/76
+2026-10-14 04:45:06.956 | INFO     | word_pdf:_loop:1479 -  72/76
+2026-10-14 04:45:11.961 | INFO     | word_pdf:_loop:1479 -  74/76
+2026-10-14 04:45:16.180 | INFO     | __main__:_redline_batched:1041 -  one 
+osascript for 76 redline PDF(s)
+2026-10-14 04:45:21.189 | INFO     | word_pdf:_loop:1479 -  3/76
+2026-10-14 04:45:26.197 | INFO     | word_pdf:_loop:1479 -  6/76
+2026-10-14 04:45:31.208 | INFO     | word_pdf:_loop:1479 -  9/76
+2026-10-14 04:45:36.215 | INFO     | word_pdf:_loop:1479 -  13/76
+2026-10-14 04:45:41.223 | INFO     | word_pdf:_loop:1479 -  16/76
+2026-10-14 04:45:46.233 | INFO     | word_pdf:_loop:1479 -  18/76
+2026-10-14 04:45:51.246 | INFO     | word_pdf:_loop:1479 -  21/76
+2026-10-14 04:45:56.261 | INFO     | word_pdf:_loop:1479 -  24/76
+2026-10-14 04:46:01.266 | INFO     | word_pdf:_loop:1479 -  26/76
+2026-10-14 04:46:06.274 | INFO     | word_pdf:_loop:1479 -  29/76
+2026-10-14 04:46:11.283 | INFO     | word_pdf:_loop:1479 -  32/76
+2026-10-14 04:46:19.372 | INFO     | word_pdf:_note_dialogs:774 -  Microsoft 
+Error Reporting shows button 'OK'
+2026-10-14 04:46:19.375 | INFO     | word_pdf:_note_dialogs:774 -  Microsoft 
+Error Reporting shows button 'More Information'
+2026-10-14 04:46:19.376 | INFO     | word_pdf:_note_dialogs:774 -  Microsoft 
+Error Reporting shows button 'missing value'
+2026-10-14 04:46:19.379 | INFO     | word_pdf:_note_dialogs:777 -  Microsoft 
+Error Reporting says: 'There was a problem with Microsoft Word and we apologize 
+for the inconvenience. | Microsoft Error Reporting'
+2026-10-14 04:46:20.742 | WARNING  | word_pdf:_loop_merp:888 -  error report 
+declined via 'OK'; Word said: "There was a problem with Microsoft Word and we 
+apologize for the inconvenience. | Microsoft Error Reporting"
+2026-10-14 04:46:21.342 | WARNING  | word_pdf:run_batch_with_resume:1624 -  44 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 2, 0 of 3 stalled 
+passes used)
+2026-10-14 04:46:21.343 | WARNING  | word_pdf♻1068 -  restarting a Word this run
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-14 04:46:21.345 | WARNING  | word_pdf♻1074 -  recycling (restart 1)
+2026-10-14 04:46:28.393 | INFO     | word_pdf:_note_dialogs:774 -  Microsoft 
+Word shows button 'Cancel'
+2026-10-14 04:46:28.394 | INFO     | word_pdf:_note_dialogs:774 -  Microsoft 
+Word shows button 'missing value'
+2026-10-14 04:46:32.860 | INFO     | word_pdf:_loop:1479 -  0/44
+2026-10-14 04:46:37.873 | INFO     | word_pdf:_loop:1479 -  3/44
+2026-10-14 04:46:42.878 | INFO     | word_pdf:_loop:1479 -  7/44
+2026-10-14 04:46:47.885 | INFO     | word_pdf:_loop:1479 -  12/44
+2026-10-14 04:46:52.889 | INFO     | word_pdf:_loop:1479 -  14/44
+2026-10-14 04:46:57.894 | INFO     | word_pdf:_loop:1479 -  18/44
+2026-10-14 04:47:02.902 | INFO     | word_pdf:_loop:1479 -  19/44
+2026-10-14 04:47:12.923 | INFO     | word_pdf:_nudge:1450 -  item 20/44 not 
+finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 04:47:22.935 | INFO     | word_pdf:_loop:1479 -  20/44
+2026-10-14 04:47:27.942 | INFO     | word_pdf:_loop:1479 -  24/44
+2026-10-14 04:47:32.949 | INFO     | word_pdf:_loop:1479 -  26/44
+2026-10-14 04:47:37.956 | INFO     | word_pdf:_loop:1479 -  30/44
+2026-10-14 04:47:47.968 | INFO     | word_pdf:_nudge:1450 -  item 31/44 not 
+finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 04:47:57.980 | INFO     | word_pdf:_loop:1479 -  31/44
+2026-10-14 04:48:02.988 | INFO     | word_pdf:_loop:1479 -  37/44
+2026-10-14 04:48:07.994 | INFO     | word_pdf:_loop:1479 -  43/44
+2026-10-14 04:48:12.578 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+01e0dea21e.docx → 01e0dea21e.docx — redline is missing base 33% of that file; 
+the two sides are not averaged
+2026-10-14 04:48:12.787 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+5eb341a977.docx → 5eb341a977.docx — redline is missing base 50% of that file; 
+the two sides are not averaged
+2026-10-14 04:48:12.881 | ERROR    | __main__:_redline_batched:1095 -  FAIL: 
+75ee805001.docx → 75ee805001.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-14 04:48:12.892 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+8568a9817b.docx → 8568a9817b.docx — redline is missing revision 50% of that 
+file; the two sides are not averaged
+2026-10-14 04:48:13.479 | WARNING  | word_pdf:_loop_merp:888 -  error report 
+declined via 'OK'; Word said: "There was a problem with Microsoft Word and we 
+apologize for the inconvenience. | Microsoft Error Reporting"
+2026-10-14 04:48:13.978 | INFO     | word_pdf:stop:907 -  tally: declined=0 
+dismissed=2 granted=0 forwarded=0 alerts_seen=1
+             redline: A → B             
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━┓
+┃ outcome                      ┃ count ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━┩
+│ redlined                     │    72 │
+│ skipped (exists)             │     0 │
+│ failed                       │     4 │
+│ seconds per pair (batch avg) │   2.5 │
+│ total revisions              │  1630 │
+└──────────────────────────────┴───────┘
+  FAIL 01e0dea21e.docx → 01e0dea21e.docx: redline is missing base 33% of that 
+file; the two sides are not averaged
+  FAIL 5eb341a977.docx → 5eb341a977.docx: redline is missing base 50% of that 
+file; the two sides are not averaged
+  FAIL 75ee805001.docx → 75ee805001.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL 8568a9817b.docx → 8568a9817b.docx: redline is missing revision 50% of 
+that file; the two sides are not averaged
