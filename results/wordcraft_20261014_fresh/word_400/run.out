@@ -1,0 +1,39 @@
+03:26:47 RUN word_redline.py compare_probe
+03:27:47 END compare_probe rc 1 pdfs 3 60.4s
+03:27:56 RUN word_redline.py compare_01
+03:29:12 END compare_01 rc 1 pdfs 1 75.8s
+[settle] Word will not stay empty; quitting it (attempt 1 )
+[settle] Word will not stay empty; quitting it (attempt 2 )
+03:32:57 RUN word_redline.py compare_02
+03:34:09 END compare_02 rc 1 pdfs 1 71.9s
+03:35:19 RUN word_redline.py compare_01
+03:36:18 [contaminated] foreign Word driver appeared; aborting compare_01 ['24892 97000 osascript -e set r to do shell script "cd /Users/arthrod/temp/T/neurotic_docx_bench && export PATH=/Users/arthrod/.local/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin;', "24893 24892 sh -c cd /Users/arthrod/temp/T/neurotic_docx_bench && export PATH=/Users/arthrod/.local/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin; pgrep -f 'scripts/word_pdf.py' >"]
+03:36:18 [wait] another Word driver is running; waiting: ['24892 97000 osascript -e set r to do shell script "cd /Users/arthrod/temp/T/neurotic_docx_bench && export PATH=/Users/arthrod/.local/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin;', "24893 24892 sh -c cd /Users/arthrod/temp/T/neurotic_docx_bench && export PATH=/Users/arthrod/.local/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin; pgrep -f 'scripts/word_pdf.py' >"]
+03:36:44 [wait] another Word driver is running; waiting: ['24903     1 .venv/bin/python scripts/word_pdf.py --src out/bench_corpus_all/docx --out out/bench_corpus_all/pdf --no-check-preset --log out/bench_corpus_all/driver.log']
+04:08:03 [wait] another Word driver is running; waiting: ['24903     1 .venv/bin/python scripts/word_pdf.py --src out/bench_corpus_all/docx --out out/bench_corpus_all/pdf --no-check-preset --log out/bench_corpus_all/driver.log']
+04:10:03 [wait] Word is free
+[settle] Word will not stay empty; quitting it (attempt 1 )
+[settle] Word will not stay empty; quitting it (attempt 2 )
+[settle] Word will not stay empty; quitting it (attempt 3 )
+04:16:11 [wait] another Word driver is running; waiting: ['86111     1 .venv/bin/python scripts/word_pdf.py --src out/bench_corpus_all/docx --out out/bench_corpus_all/pdf --no-check-preset --log out/bench_corpus_all/driver_pass2.log']
+04:17:11 [wait] Word is free
+04:17:58 RUN word_pdf.py convert_01
+04:21:01 END convert_01 rc 1 pdfs 99 183.0s
+04:21:37 RUN word_pdf.py convert_02
+04:25:50 END convert_02 rc 1 pdfs 91 252.9s
+04:26:26 RUN word_pdf.py convert_03
+04:29:09 END convert_03 rc 1 pdfs 85 162.9s
+04:29:44 RUN word_pdf.py convert_04
+04:31:53 END convert_04 rc 1 pdfs 95 129.3s
+04:32:27 RUN word_pdf.py convert_05
+04:33:51 END convert_05 rc 1 pdfs 87 83.7s
+04:34:27 RUN word_redline.py compare_01
+04:41:30 END compare_01 rc 1 pdfs 73 422.4s
+04:42:05 RUN word_redline.py compare_02
+04:48:16 END compare_02 rc 1 pdfs 72 371.1s
+04:48:53 RUN word_redline.py compare_03
+04:54:20 END compare_03 rc 1 pdfs 70 327.2s
+04:54:53 RUN word_redline.py compare_04
+04:58:11 END compare_04 rc 1 pdfs 70 198.2s
+04:58:47 RUN word_redline.py compare_05
+04:58:56 END compare_05 rc 1 pdfs 0 9.4s

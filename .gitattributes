@@ -6,3 +6,5 @@ corpus/word/**/*.csv -text
 # release samples are CRLF and the engine release_info files name them by sha256
 results/redlines_0929_full/sample*_pairs.csv -text
 results/release_*_evidence/*.csv -text
+# wordcraft 400+400 run: CRLF tables hashed by sample_provenance.json / ORACLES_READY.json
+results/wordcraft_20261014_fresh/**/*.csv -text

@@ -1,0 +1,7 @@
+{
+  "foreign": [
+    "24892 97000 osascript -e set r to do shell script \"cd /Users/arthrod/temp/T/neurotic_docx_bench && export PATH=/Users/arthrod/.local/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin;",
+    "24893 24892 sh -c cd /Users/arthrod/temp/T/neurotic_docx_bench && export PATH=/Users/arthrod/.local/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin; pgrep -f 'scripts/word_pdf.py' >"
+  ],
+  "at": "2026-10-14T03:36:18-0400"
+}

@@ -1,0 +1,42 @@
+{
+  "comparisons": 400,
+  "conversions": 400,
+  "summary": {
+    "compare": {
+      "n": 400,
+      "states": {
+        "tracking_without_comments": 245,
+        "with_comments_tracking": 150,
+        "with_comments_clean": 3,
+        "clean": 2
+      },
+      "by_cohort": {
+        "1": 174,
+        "2": 226
+      },
+      "excluded": 47,
+      "surplus_valid_unused": 60
+    },
+    "convert": {
+      "n": 400,
+      "states": {
+        "tracking_without_comments": 100,
+        "with_comments_clean": 100,
+        "with_comments_tracking": 100,
+        "clean": 100
+      },
+      "by_cohort": {
+        "1": 197,
+        "2": 203
+      },
+      "excluded": 8,
+      "surplus_valid_unused": 129
+    }
+  },
+  "final_manifest_sha256": {
+    "comparisons.csv": "62d32b1f2954df42dcda0dc758339b826ef58e8d7ee617bbfa41d614d5aa72d3",
+    "conversions.csv": "c28442e9bb5a5deba7ff9e495800ebc4441015769a99a5d37440ea85531f101b"
+  },
+  "oracle_provenance_sha256": "cc59a0f25e891a5d2e72949d32758cfd4b49b97752335e3672a8adbc138c37a6",
+  "frozen_at": "2026-10-14T05:11:04-0400"
+}

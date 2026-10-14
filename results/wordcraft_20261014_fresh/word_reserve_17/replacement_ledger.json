@@ -1,0 +1,15 @@
+[
+  {
+    "excluded_id": "4593be0320",
+    "replacement_id": "be10e7059e",
+    "excluded_state": "tracking_without_comments",
+    "replacement_state": "tracking_without_comments",
+    "source_pool_preserved": true,
+    "page_band_preserved": true,
+    "selection_uses_vendor_results": false,
+    "state_change_reason": null,
+    "round": 17,
+    "eligibility_label": "corrupt / rejected by Word",
+    "label_scope": "Word oracle eligibility; not proof of malformed OOXML"
+  }
+]
