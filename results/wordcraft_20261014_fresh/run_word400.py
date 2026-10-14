@@ -12,10 +12,14 @@ OUT=Path(__file__).resolve().parent;ROOT=OUT.parents[1];PY=ROOT/'.venv/bin/pytho
 DRIVERS=OUT/'drivers_ee49054d'
 
 def osa(script):
- p=subprocess.run(['osascript','-e',script],capture_output=True,text=True,timeout=60);return p.returncode,p.stdout.strip(),p.stderr.strip()
+ try:p=subprocess.run(['osascript','-e',script],capture_output=True,text=True,timeout=60)
+ except subprocess.TimeoutExpired:return -1,'','osascript timed out (Word not answering)'
+ return p.returncode,p.stdout.strip(),p.stderr.strip()
 
 def word_count():
- rc,out,err=osa('tell application "Microsoft Word" to count documents')
+ # a hung Word (seen after a crash-relaunch) is "unknown", so settle() goes on to quit/kill it
+ try:rc,out,err=osa('tell application "Microsoft Word" to count documents')
+ except subprocess.TimeoutExpired:return None
  return int(out) if rc==0 and out.isdigit() else None
 
 def hard_restart():
