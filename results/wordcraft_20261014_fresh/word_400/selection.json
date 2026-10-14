@@ -1,0 +1,36 @@
+{
+  "seed_compare": 20261414,
+  "seed_convert": 20261415,
+  "compare_targets": {
+    "with_comments_tracking": 200,
+    "with_comments_clean": 5,
+    "clean": 2,
+    "tracking_without_comments": null
+  },
+  "convert_targets": {
+    "clean": 100,
+    "tracking_without_comments": 100,
+    "with_comments_clean": 100,
+    "with_comments_tracking": 100
+  },
+  "compare_candidates": {
+    "tracking_without_comments|cohort1": 87,
+    "with_comments_tracking|cohort1": 82,
+    "with_comments_clean|cohort1": 3,
+    "clean|cohort1": 2,
+    "tracking_without_comments|cohort2": 230,
+    "with_comments_tracking|cohort2": 77
+  },
+  "convert_candidates": {
+    "tracking_without_comments|cohort1": 50,
+    "with_comments_clean|cohort1": 50,
+    "with_comments_tracking|cohort1": 50,
+    "clean|cohort1": 50,
+    "clean|cohort2": 90,
+    "tracking_without_comments|cohort2": 90,
+    "with_comments_tracking|cohort2": 90,
+    "with_comments_clean|cohort2": 67
+  },
+  "rule": "Cohort-1 rows that already have a valid fresh Word reference are kept. Reserve rows are drawn by a seeded shuffle and, per state, the first rows (in that order) with a valid fresh Word reference fill the target. Selection never reads vendor output.",
+  "selected_at": "2026-10-14T03:00:13-0400"
+}

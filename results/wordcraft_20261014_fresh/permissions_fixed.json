@@ -1,0 +1,2618 @@
+{
+  "timestamp": "2026-10-14T02:47:06-0400",
+  "checked": 3082,
+  "changed": 435,
+  "contents_unchanged": true,
+  "files": [
+    {
+      "path": "results/wordcraft_20261014_fresh/word_reserve_13/A/429328c875.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "a1664c9ad41607fcf8e12b6ae2a93c29eb380f5937a2759a35ee243cdc6fda2e"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_reserve_14/A/079deb8602.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "aacd2c2cf7a788fdb9426f0b96bf4d12e3afd3293c3ddd51ca6c550434457cce"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_ready/B/60ef61f086.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "0f23eb6c941d711305198f7313ba626a8c629a813653e51963a9807938087152"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_ready/B/2d65e392ab.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "9f5481078ec701cea00f1a04b2677344c454fa9ff6898ad8ff434f25b0b3b87d"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_ready/B/e6e61fc33f.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "32328b55db8c13c39237fe133b68a885d771421e30d63922b186d8f235698328"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_ready/B/1edc0f56f4.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "c09b14fcd7b77d7df10cec2daf04a2541a69d32ef269111e1ac276523ddf411a"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_ready/B/f7bbf6e831.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "ab85c771544bc1d7f27f6bbee422fab5199ef7412cc16aab53d1ee3afd73569b"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_ready/B/58cd08049b.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "3fcadf476128e5bb229df71c9a3ca0992c34f7c93216598975b2d32dc347362b"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_ready/B/a836952933.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "e57ad0eaa4217b8feb91c08a59368d265fddb6e3fc57d200ddbd19933d401ba4"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_ready/B/92075b7449.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "6e2576a091e9b18094337d462ad92bf6f98bbb9c4d5c749a76d501323efe5632"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_ready/B/bbc3223232.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "3a5ed45f0d64fac5ec49f81746736e3b28b229827ea3aa85b7b62337750ae61d"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_ready/B/34ffddfe47.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "60697d46b7ec6e23cd50cf63d66d6866c964453cb6962f729cebffca6d0b803f"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_ready/B/60e784f2de.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "ee9bfc2650503dac359a7411fac700c01b07b0684989f81c91cbbf4fde6c4084"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_ready/B/d23d9c8cc7.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "d996bef4c8cf32eece70d13e57c98eb62d583187d203c4456205cf6717d05ad3"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_ready/B/bc6f8076f9.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "3f91c8f0cd1aa05828012f1cff58d339b1bd9333828cb03a253bcd9fc12ca91e"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_ready/A/9382e03243.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "6e2576a091e9b18094337d462ad92bf6f98bbb9c4d5c749a76d501323efe5632"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_ready/A/60ef61f086.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "7b076416b0851459c1f293be0936cd30fd52078877bd34b75cc781fdc3e851f8"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_ready/A/c2380a4677.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "ec3dd0df69be02a9e7045bee166ada93db9ebdb6105d96688bc8d19f7688feab"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_ready/A/2d65e392ab.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "97c3dd2e86042004dc47de484879f3a98b2cd1aa7cce1779f8bd418ea76bf8d3"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_ready/A/0f031c23c3.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "b175a0095453a808cbd74507f04fdb1c71ceb6c88cea8e9d0bd005c2b4847e55"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_ready/A/e6e61fc33f.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "c9822f1008862a95f4e440e9536e4f4091662eebe39ccac80dacba404053b0b8"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_ready/A/6b74ac1ae6.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "60697d46b7ec6e23cd50cf63d66d6866c964453cb6962f729cebffca6d0b803f"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_ready/A/61959b1953.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "ab85c771544bc1d7f27f6bbee422fab5199ef7412cc16aab53d1ee3afd73569b"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_ready/A/58cd08049b.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "ee9bfc2650503dac359a7411fac700c01b07b0684989f81c91cbbf4fde6c4084"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_ready/A/4eff11f045.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "df097720f7d7c8bdda982526a1450a79deb9f3e4198f013ce75de0e5f09c427d"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_ready/A/a836952933.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "24ad1aa6e516d66e4e44fab1cafca2ef80e24a97e71860d75104c126d4510b6b"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_ready/A/92075b7449.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "e57ad0eaa4217b8feb91c08a59368d265fddb6e3fc57d200ddbd19933d401ba4"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_ready/A/bbc3223232.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "468d82c5758186edf26186ec6eda34c26a32aa38f431a4fbc660c2a7614d7fcf"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_ready/A/dde913904e.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "fbe14959b0d3c684e20001cacff2add451c91813619807aff6e12a21b9a11f9c"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_ready/A/062340d04a.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "902a69f0e494604996062bb55b2d8baaf57c0217da48c2fa2f5c3d57ce20b364"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_ready/A/581907f19c.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "3f91c8f0cd1aa05828012f1cff58d339b1bd9333828cb03a253bcd9fc12ca91e"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_ready/A/cbf73c2d81.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "be5bf990cb6b9ab8568ffb7c27af5540d45fbb484d2b67bca8e84a67419e20ca"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_ready/A/4d40d1f136.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "9c6ebd430d60629364475af37e1e76d497f18048c6bb12a671c07f9ee8fe2538"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_ready/A/f0875f6d19.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "8441c4ae21d5c3fce51f5a8aae0d570291af2e0c40191280ad18b0fd371fa78e"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_ready/A/3d39f0120d.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "bd768e6c17cfcdd8db40804602fe51855c111443a8a522e36fd3e307c9effdcd"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_ready/A/34ffddfe47.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "60697d46b7ec6e23cd50cf63d66d6866c964453cb6962f729cebffca6d0b803f"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_ready/A/60e784f2de.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "9f5481078ec701cea00f1a04b2677344c454fa9ff6898ad8ff434f25b0b3b87d"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_ready/A/64c527dde8.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "5320da1b603285591dda5c956d597eba3875ad03184fd74817989aefb54de932"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_ready/A/db0f90defc.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "4c3999a0d947bd6c27aed9b771ba88a2d76de40e3267dd69075c89a9470aca85"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_ready/A/f8286525f6.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "df9ffe9a8c005786fe99883507b10c4894ef36a17c089306f9147e1e106c37ce"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_ready/A/d23d9c8cc7.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "32328b55db8c13c39237fe133b68a885d771421e30d63922b186d8f235698328"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_ready/A/bc6f8076f9.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "c090b9f08219ec08fbbbe65e4502f0d930ad953def4db78a88b6d6026b152666"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_ready/A/ff24600d87.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "b8115d0dab1bc47d6954e5e7115595962631ea16ecf7cf81a1d91c33e0e89eb4"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_ready/A/6de20376e8.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "52220b20c3c1cacf052e9e3b64c59a58faf0ad6e719d104b531408c8d4f97e5d"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_ready/A/0b033b1c23.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "1072677c3ab4a65ee14dc00742e2033d0fcfdbd1a4d469a397c894f966dff7ff"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_compare/B/60ef61f086.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "0f23eb6c941d711305198f7313ba626a8c629a813653e51963a9807938087152"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_compare/B/2061218d44.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "5d17fd43a91266e7ba75f66695597b7cf134a26ee2e7c49775434361e230f1b0"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_compare/B/f72cd71154.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "1aaca1d5af651975bc8e05d107464dae98b4e336f409a865f4f27165c659d400"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_compare/B/cee8601521.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "b175a0095453a808cbd74507f04fdb1c71ceb6c88cea8e9d0bd005c2b4847e55"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_compare/B/2d65e392ab.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "9f5481078ec701cea00f1a04b2677344c454fa9ff6898ad8ff434f25b0b3b87d"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_compare/B/e6e61fc33f.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "32328b55db8c13c39237fe133b68a885d771421e30d63922b186d8f235698328"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_compare/B/9129d2ecd2.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "f620bc5c6d73b5860df2135f8a4ad9cb36cff1993695b6b6224bd972bf6ab8fa"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_compare/B/1edc0f56f4.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "c09b14fcd7b77d7df10cec2daf04a2541a69d32ef269111e1ac276523ddf411a"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_compare/B/f7bbf6e831.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "ab85c771544bc1d7f27f6bbee422fab5199ef7412cc16aab53d1ee3afd73569b"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_compare/B/b982beef9b.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "c090b9f08219ec08fbbbe65e4502f0d930ad953def4db78a88b6d6026b152666"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_compare/B/58cd08049b.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "3fcadf476128e5bb229df71c9a3ca0992c34f7c93216598975b2d32dc347362b"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_compare/B/a836952933.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "e57ad0eaa4217b8feb91c08a59368d265fddb6e3fc57d200ddbd19933d401ba4"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_compare/B/92075b7449.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "6e2576a091e9b18094337d462ad92bf6f98bbb9c4d5c749a76d501323efe5632"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_compare/B/1dbbf3be63.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "70fd78a4f8570cc2c8593f68aa38aac78b3547f75e67468bc78272f1393b2498"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_compare/B/57dfcda882.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "60697d46b7ec6e23cd50cf63d66d6866c964453cb6962f729cebffca6d0b803f"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_compare/B/bbc3223232.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "3a5ed45f0d64fac5ec49f81746736e3b28b229827ea3aa85b7b62337750ae61d"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_compare/B/2288f27be1.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "97c3dd2e86042004dc47de484879f3a98b2cd1aa7cce1779f8bd418ea76bf8d3"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_compare/B/0dfc906eb1.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "60697d46b7ec6e23cd50cf63d66d6866c964453cb6962f729cebffca6d0b803f"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_compare/B/14fb06f7e5.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "1782e25c9263eec65fff298134e41adde96db2348d93ada27b71d90ae2fc6b29"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_compare/B/34ffddfe47.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "60697d46b7ec6e23cd50cf63d66d6866c964453cb6962f729cebffca6d0b803f"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_compare/B/0df218b227.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "bd3824dd1e5554e7b0a8c3ab90f434599e047ff8de6ec85a04be794d32919bdf"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_compare/B/60e784f2de.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "ee9bfc2650503dac359a7411fac700c01b07b0684989f81c91cbbf4fde6c4084"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_compare/B/ff6f1dab3b.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "715d3d2b674e7db18853797be26d2566f890f50b907724774104e3381eecef0d"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_compare/B/6e89035e56.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "0e1d01ec7dbad1d3dd92c26b6f0ee0e257af9ff6231536da17701c91d4144e2f"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_compare/B/518c606bf2.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "7f567ada687ab48744e7463e2c2b52bbbdaa29070f6308652c2a4e7fb152355e"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_compare/B/70a6883d16.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "1072677c3ab4a65ee14dc00742e2033d0fcfdbd1a4d469a397c894f966dff7ff"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_compare/B/d23d9c8cc7.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "d996bef4c8cf32eece70d13e57c98eb62d583187d203c4456205cf6717d05ad3"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_compare/B/bc6f8076f9.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "3f91c8f0cd1aa05828012f1cff58d339b1bd9333828cb03a253bcd9fc12ca91e"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_compare/B/85b1c9235c.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "d0e7f278b86cc901f9eafa4d34161c5c918a460dc79e8a42b4f8af7d58e6be7d"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_compare/B/0aa74e0de4.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "bd768e6c17cfcdd8db40804602fe51855c111443a8a522e36fd3e307c9effdcd"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_compare/B/6af7bc5540.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "e33fe5195e2129bca9e0441b54881b99cb7c57995f8ab5308463dc14acd858d2"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_compare/B/420292c772.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "aa5340125d3bf06891fd59477c734f045cfc5b3d92911d2bbdaf175dae103a1c"
+    },
+    {
+      "path": "corpus/word/clean/docx/b6dd0b6ae8_015a4f5a16a110026418c0a7f5eefa69ce6d5f9bcfc2d955.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "b6dd0b6ae863956b8d55c15dbc4728fbeb3b8e6f9086d940ace70bb4cba47c36"
+    },
+    {
+      "path": "corpus/word/clean/docx/fc5d9fecb7_00028d824d5d2262bc6e30692308cd1b577ac1dff228970d.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "fc5d9fecb7a384b03308483d433b14319714defdf360faff90dc650d7ef465fa"
+    },
+    {
+      "path": "corpus/word/clean/docx/fbe14959b0_000f5278175aa01c2b9517b07e8a087014e4a05ab3e24f41.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "fbe14959b0d3c684e20001cacff2add451c91813619807aff6e12a21b9a11f9c"
+    },
+    {
+      "path": "corpus/word/clean/docx/c9822f1008_docx_lots_of_comments_addition_redline__vs__32328b55db_docx_lots_of_comments_addition_removal_redline_r_redline_e6e61fc33f.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "e6e61fc33f70a18a4514c1cc0bf0f27dd31d102b54c3119fd45a2381da4fccb2"
+    },
+    {
+      "path": "corpus/word/clean/docx/a88f2ae357_0095a6095a0f74201c196f4944b3d93f4cf5cc20e4982903.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "a88f2ae35725b930ed66aedbf15407216adaf840011c6a74cdadebd644971d38"
+    },
+    {
+      "path": "corpus/word/clean/docx/715d3d2b67_414e913bdcab4ac6cefcf85507ca910beead4a550959a564.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "715d3d2b674e7db18853797be26d2566f890f50b907724774104e3381eecef0d"
+    },
+    {
+      "path": "corpus/word/clean/docx/a3e6c2e426_197f067152a83fdf7b2e0aee6e62b8960edda324238a6957.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "a3e6c2e42617d51471a68654fd658a2e7369016b89efce00dae5eb9b12d5f9d3"
+    },
+    {
+      "path": "corpus/word/clean/docx/4c3999a0d9_2f1e47b67f38e08aa66f8c6667e88dac17cc31f5e32ce219.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "4c3999a0d947bd6c27aed9b771ba88a2d76de40e3267dd69075c89a9470aca85"
+    },
+    {
+      "path": "corpus/word/clean/docx/3cf442621c_61e91fa96ceaaca00b0c6b5767616397ab67572233fc6879.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "3cf442621c3b7f298773fc231562dd6cf27b5d03934948c093d45ec7aa45aacb"
+    },
+    {
+      "path": "corpus/word/clean/docx/2e04202552_000e3e7bd2d6215fc7b469cc3e296c1b2a510bc1abc7e0fd.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "2e042025528818822ef7f3ccf73977ae3e3e7cff864682b5c0060083284d8ae7"
+    },
+    {
+      "path": "corpus/word/clean/docx/99de296dd9_d750f6832de5fbe3c2768cf0c77499282cd00aec6f32de44.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "99de296dd9201936bc591f5e26572f39c0a37435a2b019039f399eb086738dbd"
+    },
+    {
+      "path": "corpus/word/clean/docx/bd3824dd1e_000ee64ef7226d353297888f59a251e24ce5d776fea000fa.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "bd3824dd1e5554e7b0a8c3ab90f434599e047ff8de6ec85a04be794d32919bdf"
+    },
+    {
+      "path": "corpus/word/clean/docx/d0e7f278b8_i_am_sharing_microsoft_word_vs_google_docs_compr.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "d0e7f278b86cc901f9eafa4d34161c5c918a460dc79e8a42b4f8af7d58e6be7d"
+    },
+    {
+      "path": "corpus/word/clean/docx/a1d84a226a_71f2b6dba6a9cfb97f914d4e05897cbd388b33df1ab6d3b7.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "a1d84a226aa1ea279dcbb86af32ca491d1e37e076faa12a3145e0259c769df4b"
+    },
+    {
+      "path": "corpus/word/clean/docx/aa5340125d_00a4b0b91e9b5b072dc3771391c2d608518690eccf44eae8.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "aa5340125d3bf06891fd59477c734f045cfc5b3d92911d2bbdaf175dae103a1c"
+    },
+    {
+      "path": "corpus/word/clean/docx/306288b670_3da80363e6a77b56bc4ded7ad9716da9fe9c2533ccad8022.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "306288b67069e42d80cd223d07c9b92119af1b880749166e0a3c034e9be0c5b8"
+    },
+    {
+      "path": "corpus/word/clean/docx/95e967cf7b_4a45c8279800a59fdb128a3e00cc935fe8475769102fcc42.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "95e967cf7b99e996bc8a69992d6d404c45885cab9fddb8298a499a3e779dbc9b"
+    },
+    {
+      "path": "corpus/word/clean/docx/dc0cc27640_00749d7a966661b332df84521285ab93426ed3a255523f39.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "dc0cc27640e665c887a5f0bf5cc96e753bbb2d4cf552730a13ad9b227748b541"
+    },
+    {
+      "path": "corpus/word/clean/docx/3bfcb371e2_00003fff80a444ad2f706c74f3c0d9fbef00d7a99ba0c105.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "3bfcb371e2fc81584268c37f0312cccd2f8f20850dbc7e2aa834a72b33254235"
+    },
+    {
+      "path": "corpus/word/clean/docx/12941c2a77_0023298b011b45232675215822f0f728678a238756d763c8.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "12941c2a772176385ca961a9d136daf6e5f1f70a10caa98f3ebb7405b1fc6243"
+    },
+    {
+      "path": "corpus/word/clean/docx/3a5ed45f0d_3d76420524fd4852ab017e1d57f215e37281e965b3f38b31.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "3a5ed45f0d64fac5ec49f81746736e3b28b229827ea3aa85b7b62337750ae61d"
+    },
+    {
+      "path": "corpus/word/clean/docx/432bf1c280_010684299d3c5523897eb69efb8c1c743c0a7623137d64fe.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "432bf1c28064bd15a67cebf9b35a340cf50557baad37650e34da7ae5d427b783"
+    },
+    {
+      "path": "corpus/word/clean/docx/0f23eb6c94_super_editor__wmf_emf_44a469b8.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "0f23eb6c941d711305198f7313ba626a8c629a813653e51963a9807938087152"
+    },
+    {
+      "path": "corpus/word/clean/docx/97268066a6_b93742a07a47e00b24772b233211dfebeafec708420ee659.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "97268066a6bf0c5755d80731d3c8d4adb0bd076cded8a4d076b1b7b40fcc062e"
+    },
+    {
+      "path": "corpus/word/clean/docx/1944b72130_5d7507b903a1772b7e3be2b9506424aca7430698963897ae.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "1944b721309a35d23116744dda28c9002bca575be92bcb6e940341da13959798"
+    },
+    {
+      "path": "corpus/word/clean/docx/f620bc5c6d_41bae32dd2e76af1f00d37af7b3a353ca826cd6e8c20052c.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "f620bc5c6d73b5860df2135f8a4ad9cb36cff1993695b6b6224bd972bf6ab8fa"
+    },
+    {
+      "path": "corpus/word/clean/docx/b025ee5fdc_7580e445276be4d6b36d23d2f5b0d3ec7e18ab67aa59eb3f.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "b025ee5fdcef2dcf5c9f6c7e5645941fbf97873ddf21e3be0ee988d8ae6a7dbd"
+    },
+    {
+      "path": "corpus/word/clean/docx/c28aafcf60_4e3bc5acd19c432f43ad0adb3fb56f5739bcbe6cd8e9bcb4.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "c28aafcf60178e8d6fcd2190b235f466dcabea02b3853528e107e695e4206ed2"
+    },
+    {
+      "path": "corpus/word/clean/docx/8441c4ae21_sd_2517_localized_heading_styles.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "8441c4ae21d5c3fce51f5a8aae0d570291af2e0c40191280ad18b0fd371fa78e"
+    },
+    {
+      "path": "corpus/word/clean/docx/52220b20c3_00a54bff7e15af78fe7cfc20219c28cb208fde807bd28d44.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "52220b20c3c1cacf052e9e3b64c59a58faf0ad6e719d104b531408c8d4f97e5d"
+    },
+    {
+      "path": "corpus/word/clean/docx/72f06ef2cd_eec6e5b32964c7f438e81e38a3348b32bbc037af503f1104.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "72f06ef2cdc8ae721e4f4fe3b7a46b408c4d0bf3e47cf98a51b4bd559b627760"
+    },
+    {
+      "path": "corpus/word/clean/docx/e11fc429b2_29540ef11ec3fc04ba1bca353f5140559c4b03e76516c7a7.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "e11fc429b29941ab9c941201770b96f6a32a71336b516219a7900200694fd67a"
+    },
+    {
+      "path": "corpus/word/clean/docx/aacd2c2cf7_4f966df084ebc2af83d8646ccefd4fc9c4af40ac480b8bd4.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "aacd2c2cf7a788fdb9426f0b96bf4d12e3afd3293c3ddd51ca6c550434457cce"
+    },
+    {
+      "path": "corpus/word/clean/docx/6c63c78baf_4ed6fefdc4770de14b06879bd864def9d71065293ac8f483.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "6c63c78baff959cf6e9155be8164bea6519fa01659cb222bf6a1a018e5c0b165"
+    },
+    {
+      "path": "corpus/word/clean/docx/5320da1b60_file_30.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "5320da1b603285591dda5c956d597eba3875ad03184fd74817989aefb54de932"
+    },
+    {
+      "path": "corpus/word/clean/docx/950d333339_6a0d50215e5c7f9eb3a50dac6315d8cbb6873aea3d8aa1e4.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "950d333339698594fb9c07f1fc4e716d45e15ed5cf0c3dce06ada6f7ce18214d"
+    },
+    {
+      "path": "corpus/word/clean/docx/a0f5f78de9_a22b2e62cb7a2ff65e40ac609f4093ae950cb6e346e82f45.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "a0f5f78de94c8cab9e27f43341caf7daa2b1e8366a16ecbf4a15f2c477d9e28d"
+    },
+    {
+      "path": "corpus/word/clean/docx/a1664c9ad4_6567ec68ee0f2368109ba42c94ee96db2d9bbd318c55e414.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "a1664c9ad41607fcf8e12b6ae2a93c29eb380f5937a2759a35ee243cdc6fda2e"
+    },
+    {
+      "path": "corpus/word/clean/docx/1aaca1d5af_ef31e540797c67a78c662cc2e5ecb21bf446e3d696ce26ad.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "1aaca1d5af651975bc8e05d107464dae98b4e336f409a865f4f27165c659d400"
+    },
+    {
+      "path": "corpus/word/clean/docx/1aa7a03758_004c43cb816aed2ca4b0d0adf6e2bb8f115182135f2b4b42.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "1aa7a03758dde6100e6d4fe3e2fb494f15b0ebd89233517b8d2581e29c8c770d"
+    },
+    {
+      "path": "corpus/word/clean/docx/f8689f4ea3_017abe40cc7e8a5928ddcd555816737c7b8d581ccdf46afe.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "f8689f4ea37b95d75b8f1831927c8db3bd574239271cec74abe0758a2f66c737"
+    },
+    {
+      "path": "corpus/word/clean/docx/ea7427b18a_super_editor__complex_list_def_issue_326369f9.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "ea7427b18a5e6bda048738840dfaee9ed4dc8c9af7d76383732c729a6bceb663"
+    },
+    {
+      "path": "corpus/word/clean/docx/7b076416b0_sectpr_headerref.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "7b076416b0851459c1f293be0936cd30fd52078877bd34b75cc781fdc3e851f8"
+    },
+    {
+      "path": "corpus/word/clean/docx/32328b55db_docx_lots_of_comments_addition_removal_redline_r__vs__d996bef4c8_docx_lots_of_comments_addition_removal_redline_redline_d23d9c8cc7.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "d23d9c8cc74e7b520d0bfad3e9af9b1266b3d5376bdce4971b83344c3d231dba"
+    },
+    {
+      "path": "corpus/word/clean/docx/e33fe5195e_39e6a7fc140be9556ffd3722005fce7d9d04970dee1dc785.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "e33fe5195e2129bca9e0441b54881b99cb7c57995f8ab5308463dc14acd858d2"
+    },
+    {
+      "path": "corpus/word/clean/docx/1782e25c92_d9e1d2c6898adb00cf03d7667365533d6fb11663f56deafe.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "1782e25c9263eec65fff298134e41adde96db2348d93ada27b71d90ae2fc6b29"
+    },
+    {
+      "path": "corpus/word/clean/docx/c280ce0f40_019d92d986c5ba33a57df54db0056f3731e3254fcbe8ac65.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "c280ce0f40197246dfa8685d18f6048cdabd54398e5ce2bbc25ae010bd5c3827"
+    },
+    {
+      "path": "corpus/word/clean/docx/286955227d_0134fe85fb88da2accd6637e1c44bdd4f8b7fbb533bd47ba.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "286955227d98c90e25b662a7c8d372197fa73a98691cb0988f29143bb4f27389"
+    },
+    {
+      "path": "corpus/word/clean/docx/ee7b597379_e1de10f3f4dde77b257e02a9bc77069e526976ce36a540ca.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "ee7b597379310921ec43560839fef598d350046ee95af826a4f9f7e718ad4cd4"
+    },
+    {
+      "path": "corpus/word/clean/docx/7f567ada68_7c28073a381aa706215f6fd4196b4c66096249720665b8a7.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "7f567ada687ab48744e7463e2c2b52bbbdaa29070f6308652c2a4e7fb152355e"
+    },
+    {
+      "path": "corpus/word/clean/docx/0e1d01ec7d_super_editor__doc_with_graphs_diagrams_rotated_e.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "0e1d01ec7dbad1d3dd92c26b6f0ee0e257af9ff6231536da17701c91d4144e2f"
+    },
+    {
+      "path": "corpus/word/clean/docx/c090b9f082_file_8.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "c090b9f08219ec08fbbbe65e4502f0d930ad953def4db78a88b6d6026b152666"
+    },
+    {
+      "path": "corpus/word/clean/docx/5d17fd43a9_complex_style_attr.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "5d17fd43a91266e7ba75f66695597b7cf134a26ee2e7c49775434361e230f1b0"
+    },
+    {
+      "path": "corpus/word/clean/docx/1748cccad7_ee7944c000c0c92269ef6fdb5c5d84764166c22099f689d2.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "1748cccad74f1587d8fdffb4630effc189ba2f410b8e6eb0d9c9037497d7dd22"
+    },
+    {
+      "path": "corpus/word/clean/docx/8e534b49f0_00a9b37342f07e6b9bd5b8fffbe4dd777d31053171e69da2.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "8e534b49f085d74e5e3d17e2814a3d65425e9ec14e776a0470632c31848cfd80"
+    },
+    {
+      "path": "corpus/word/clean/docx/902a69f0e4_super_editor__line_space_table_9b1ee54b.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "902a69f0e494604996062bb55b2d8baaf57c0217da48c2fa2f5c3d57ce20b364"
+    },
+    {
+      "path": "corpus/word/clean/docx/3cccdeb956_338ed100b8c726655e68862a5b4584feb59583a37fa3b69d.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "3cccdeb956d564b1fbabd7b7abd15ab9a7f06136d941ea41c4a942fd66e5f8d8"
+    },
+    {
+      "path": "corpus/word/clean/docx/082d9aa8f2_78a0884f59673c9880c3e5e1b556be7401a73e25b0af4358.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "082d9aa8f200e155c57a4a19f7552c6b00e47eaaa99df30eec95b44f528f9f5a"
+    },
+    {
+      "path": "corpus/word/clean/docx/d09a2f8509_00b5aa69a6c33b2725953348488d62605dc209411d01f80a.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "d09a2f850978bd2ac62d6c4d6947bc2b679858386a38f8b2dc2650dae17442c3"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_compare/A/9382e03243.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "6e2576a091e9b18094337d462ad92bf6f98bbb9c4d5c749a76d501323efe5632"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_compare/A/60ef61f086.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "7b076416b0851459c1f293be0936cd30fd52078877bd34b75cc781fdc3e851f8"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_compare/A/c2380a4677.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "ec3dd0df69be02a9e7045bee166ada93db9ebdb6105d96688bc8d19f7688feab"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_compare/A/2d65e392ab.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "97c3dd2e86042004dc47de484879f3a98b2cd1aa7cce1779f8bd418ea76bf8d3"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_compare/A/0f031c23c3.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "b175a0095453a808cbd74507f04fdb1c71ceb6c88cea8e9d0bd005c2b4847e55"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_compare/A/e6e61fc33f.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "c9822f1008862a95f4e440e9536e4f4091662eebe39ccac80dacba404053b0b8"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_compare/A/6b74ac1ae6.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "60697d46b7ec6e23cd50cf63d66d6866c964453cb6962f729cebffca6d0b803f"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_compare/A/61959b1953.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "ab85c771544bc1d7f27f6bbee422fab5199ef7412cc16aab53d1ee3afd73569b"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_compare/A/58cd08049b.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "ee9bfc2650503dac359a7411fac700c01b07b0684989f81c91cbbf4fde6c4084"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_compare/A/4eff11f045.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "df097720f7d7c8bdda982526a1450a79deb9f3e4198f013ce75de0e5f09c427d"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_compare/A/a836952933.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "24ad1aa6e516d66e4e44fab1cafca2ef80e24a97e71860d75104c126d4510b6b"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_compare/A/92075b7449.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "e57ad0eaa4217b8feb91c08a59368d265fddb6e3fc57d200ddbd19933d401ba4"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_compare/A/bbc3223232.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "468d82c5758186edf26186ec6eda34c26a32aa38f431a4fbc660c2a7614d7fcf"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_compare/A/dde913904e.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "fbe14959b0d3c684e20001cacff2add451c91813619807aff6e12a21b9a11f9c"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_compare/A/062340d04a.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "902a69f0e494604996062bb55b2d8baaf57c0217da48c2fa2f5c3d57ce20b364"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_compare/A/581907f19c.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "3f91c8f0cd1aa05828012f1cff58d339b1bd9333828cb03a253bcd9fc12ca91e"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_compare/A/cbf73c2d81.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "be5bf990cb6b9ab8568ffb7c27af5540d45fbb484d2b67bca8e84a67419e20ca"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_compare/A/4d40d1f136.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "9c6ebd430d60629364475af37e1e76d497f18048c6bb12a671c07f9ee8fe2538"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_compare/A/f0875f6d19.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "8441c4ae21d5c3fce51f5a8aae0d570291af2e0c40191280ad18b0fd371fa78e"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_compare/A/3d39f0120d.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "bd768e6c17cfcdd8db40804602fe51855c111443a8a522e36fd3e307c9effdcd"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_compare/A/34ffddfe47.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "60697d46b7ec6e23cd50cf63d66d6866c964453cb6962f729cebffca6d0b803f"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_compare/A/60e784f2de.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "9f5481078ec701cea00f1a04b2677344c454fa9ff6898ad8ff434f25b0b3b87d"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_compare/A/64c527dde8.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "5320da1b603285591dda5c956d597eba3875ad03184fd74817989aefb54de932"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_compare/A/db0f90defc.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "4c3999a0d947bd6c27aed9b771ba88a2d76de40e3267dd69075c89a9470aca85"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_compare/A/f8286525f6.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "df9ffe9a8c005786fe99883507b10c4894ef36a17c089306f9147e1e106c37ce"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_compare/A/d23d9c8cc7.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "32328b55db8c13c39237fe133b68a885d771421e30d63922b186d8f235698328"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_compare/A/bc6f8076f9.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "c090b9f08219ec08fbbbe65e4502f0d930ad953def4db78a88b6d6026b152666"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_compare/A/ff24600d87.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "b8115d0dab1bc47d6954e5e7115595962631ea16ecf7cf81a1d91c33e0e89eb4"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_compare/A/6de20376e8.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "52220b20c3c1cacf052e9e3b64c59a58faf0ad6e719d104b531408c8d4f97e5d"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_compare/A/0b033b1c23.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "1072677c3ab4a65ee14dc00742e2033d0fcfdbd1a4d469a397c894f966dff7ff"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_reserve_15/A/0cc9882662.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "99de296dd9201936bc591f5e26572f39c0a37435a2b019039f399eb086738dbd"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_reserve_12/B/ee3c219df7.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "c28aafcf60178e8d6fcd2190b235f466dcabea02b3853528e107e695e4206ed2"
+    },
+    {
+      "path": "corpus/word/tracking_without_comments/docx/7b076416b0_sectpr_headerref__vs__0f23eb6c94_super_editor__wmf_emf_44a469b8_redline_60ef61f086.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "60ef61f086f7e6ac3c060451f577bde4d53f5932468050bd3c8d930daddcba89"
+    },
+    {
+      "path": "corpus/word/tracking_without_comments/docx/6fffde4ae2_000bf66110e841e1d2c2e862fc7db869b8d410586ad12d0d__vs__2773adf157_0004c94ca2a8684d47449bb0e7abf87de1df71a7e6543252_redline_ef3ffabfc9.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "ef3ffabfc94e8a9fe1b3b31286936e4e91109b378f8861115e52d6b68debc4b2"
+    },
+    {
+      "path": "corpus/word/tracking_without_comments/docx/7b8a36fc9d_6b022d77b530d0e93df9ee17f79f06423a54fa1788a95c5d__vs__f620bc5c6d_41bae32dd2e76af1f00d37af7b3a353ca826cd6e8c20052c_redline_9129d2ecd2.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "9129d2ecd23cee9960a91daa89d145ff4c9f67f25e42552a358762f3507f0d42"
+    },
+    {
+      "path": "corpus/word/tracking_without_comments/docx/d1fc42d1b4_72dcf4dc5db35b70823754848e1137a2dca51c616061bea3__vs__acc20ae2d1_6292aea928cd8183d46d2e434349dbe8e5c41aceef91b0be_redline_0f841159c0.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "0f841159c056e57edc0615e053ff44f6ce2b73b25b31a68ed8b238262c6c0554"
+    },
+    {
+      "path": "corpus/word/tracking_without_comments/docx/1c5bd81def_super_editor__multiple_nodes_in_list_79d915a2__vs__0e1d01ec7d_super_editor__doc_with_graphs_diagrams_rotated_e_redline_6e89035e56.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "6e89035e56edd4e8282a404e570d64d2c693767a1930ee941b771153d0384d4f"
+    },
+    {
+      "path": "corpus/word/tracking_without_comments/docx/c9822f1008_docx_lots_of_comments_addition_redline.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "c9822f1008862a95f4e440e9536e4f4091662eebe39ccac80dacba404053b0b8"
+    },
+    {
+      "path": "corpus/word/tracking_without_comments/docx/902a69f0e4_super_editor__line_space_table_9b1ee54b__vs__5e5fa9b5fb_super_editor__list_def_mix_d7cec092_redline_062340d04a.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "062340d04a7a469483ca120472746aa5cc9db571a3ed098614b565fb84f7ccf3"
+    },
+    {
+      "path": "corpus/word/tracking_without_comments/docx/4c3999a0d9_2f1e47b67f38e08aa66f8c6667e88dac17cc31f5e32ce219__vs__6a0425f294_35e46f6ecb40163d6866a0374791aa3680f314adcf860db0_redline_db0f90defc.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "db0f90defc91282bccaa7d869d87e23484f83d96ac58b9cb0e75799d16080323"
+    },
+    {
+      "path": "corpus/word/tracking_without_comments/docx/3823aefaec_3d1b6f42b5c8b56ade1c4448828b9b64c6c046b1e7bda606.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "3823aefaecd8a550be228ef0bb3e665a81a6020e926e76894aa457edd413d953"
+    },
+    {
+      "path": "corpus/word/tracking_without_comments/docx/2a7aebb7ce_1118d92e486cd8c59e3b10ec9f28ef9188ec989b1120da52__vs__196c44dfba_2663487136794495a0c6c3b7f67609c690cfe18469576cbb_redline_766a042194.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "766a042194cc0e931f56c6882fb56fb7841f8fb6d7c2f34b493386a17a96295a"
+    },
+    {
+      "path": "corpus/word/tracking_without_comments/docx/1d137d70ee_005bf179b17b3d109d473d5bb10a968731ba985c4bff3743__vs__bd3824dd1e_000ee64ef7226d353297888f59a251e24ce5d776fea000fa_redline_684271b9c3.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "684271b9c316dde3598aca23061101d8cfcaef54f0fc09228eafdd71658dc260"
+    },
+    {
+      "path": "corpus/word/tracking_without_comments/docx/f1ea4a51fd_hr_onboarding_checklist_table__vs__d0e7f278b8_i_am_sharing_microsoft_word_vs_google_docs_compr_redline_85b1c9235c.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "85b1c9235c5fc35eb8aed3f92bf951e7e1f631983db23198ed053314795f8b97"
+    },
+    {
+      "path": "corpus/word/tracking_without_comments/docx/52220b20c3_00a54bff7e15af78fe7cfc20219c28cb208fde807bd28d44__vs__5203829c7a_001cc92b88566d5f930fe57f25813c0bf52a7bdc72c217d0_redline_6de20376e8.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "6de20376e87408d59ea78a7ca5202c16b1dea6b0ba7d718e94f7219a337c362d"
+    },
+    {
+      "path": "corpus/word/tracking_without_comments/docx/d996bef4c8_docx_lots_of_comments_addition_removal_redline.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "d996bef4c8cf32eece70d13e57c98eb62d583187d203c4456205cf6717d05ad3"
+    },
+    {
+      "path": "corpus/word/tracking_without_comments/docx/937c2d593d_70bf1fc955d47b9c53240cfb85bb6783a5809a7dfbb31928.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "937c2d593dfd63876cbe3e4bf55b42897aeadd3b8737ff49d62014b1b481bbf4"
+    },
+    {
+      "path": "corpus/word/tracking_without_comments/docx/fbe14959b0_000f5278175aa01c2b9517b07e8a087014e4a05ab3e24f41__vs__deff0e697a_00b5defcad6e58038eac35472a2d48c89905068e5ece0cc3_redline_dde913904e.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "dde913904e670a9c4b4eee7e01555c0e98b05610842a562a810469cc8041bf44"
+    },
+    {
+      "path": "corpus/word/tracking_without_comments/docx/e937906728_4ce0fcc29773b57d731ea2cf74f00cea1765facf87c314e3__vs__0a6015fd65_7d861e8e83ae31293d8d8390a3fe14e160d0ff79624c95de_redline_47c39c50c3.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "47c39c50c3f920ef722f31f523def389e7a6cbb011739786b0a8a2061f248e76"
+    },
+    {
+      "path": "corpus/word/tracking_without_comments/docx/24b9811b05_file_22__vs__7226967373_file_23_redline_af4266d0f3.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "af4266d0f3b31c7a09b71b1c2722a8df9e8da09c145f8fb90590cc828035bd47"
+    },
+    {
+      "path": "corpus/word/tracking_without_comments/docx/5320da1b60_file_30__vs__c7190b3adc_file_31_redline_64c527dde8.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "64c527dde892840329cd2df1c10f63ee122aaa8243ed34dfc3996268e431a5a2"
+    },
+    {
+      "path": "corpus/word/tracking_without_comments/docx/8e534b49f0_00a9b37342f07e6b9bd5b8fffbe4dd777d31053171e69da2__vs__2e04202552_000e3e7bd2d6215fc7b469cc3e296c1b2a510bc1abc7e0fd_redline_aeff6a9631.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "aeff6a9631d05a4bf8897092a20177aa28d1861b7fecaf5ee9e835a155b841e0"
+    },
+    {
+      "path": "corpus/word/tracking_without_comments/docx/df9ffe9a8c_file_16__vs__ec900bd182_file_17_redline_f8286525f6.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "f8286525f6500648463552111c2efff5d38fa21b7e8bc7c5d5644718acd6452b"
+    },
+    {
+      "path": "corpus/word/tracking_without_comments/docx/0bf5192ed0_00afb3e6b2bb1a5ab1e1770ba41f6f455f87472d24ab2767__vs__deff0e697a_00b5defcad6e58038eac35472a2d48c89905068e5ece0cc3_redline_72de76d733.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "72de76d733f0fd9fb800898a6c0d203060f4e45415e791d2600f00a69ea60a1a"
+    },
+    {
+      "path": "corpus/word/tracking_without_comments/docx/32328b55db_docx_lots_of_comments_addition_removal_redline_r.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "32328b55db8c13c39237fe133b68a885d771421e30d63922b186d8f235698328"
+    },
+    {
+      "path": "corpus/word/tracking_without_comments/docx/531cf3d312_00ce789bc3226c2a68967cc29792927c80b7f55d9b5267ad__vs__bd3824dd1e_000ee64ef7226d353297888f59a251e24ce5d776fea000fa_redline_0df218b227.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "0df218b227f20b26e867b9145b8fdc04f8a9e782679dd33ef2dc03d86d03b34a"
+    },
+    {
+      "path": "corpus/word/tracking_without_comments/docx/f9b9dbd790_0017bce9abd08007241b106f0fcf1d64e45c05cd82a05a1d__vs__2773adf157_0004c94ca2a8684d47449bb0e7abf87de1df71a7e6543252_redline_6bcf56a447.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "6bcf56a447b45f05a7dfeca8da0169e2d1537661bc82543622b3506badd3656a"
+    },
+    {
+      "path": "corpus/word/tracking_without_comments/docx/2ba76dbb7e_48021810502ba519ff3bc10a88715f6e57e23a4d93a46ada__vs__e33fe5195e_39e6a7fc140be9556ffd3722005fce7d9d04970dee1dc785_redline_6af7bc5540.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "6af7bc55404a2ad6aedcf409c37fc42331f53c6c8a59c2b3e924ff7c33e5dd09"
+    },
+    {
+      "path": "corpus/word/tracking_without_comments/docx/df9ffe9a8c_file_16.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "df9ffe9a8c005786fe99883507b10c4894ef36a17c089306f9147e1e106c37ce"
+    },
+    {
+      "path": "corpus/word/tracking_without_comments/docx/fe11d14f44_behavior__sd_2447_toc_tab_alignment_8319c14c__vs__8441c4ae21_sd_2517_localized_heading_styles_redline_9dfaecf9a9.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "9dfaecf9a9143771c7d4bcfc9740bb990fceb44467b74da57cb20953004050ae"
+    },
+    {
+      "path": "corpus/word/tracking_without_comments/docx/1e0254763b_strict01__vs__1e0254763b_strict01_redline_4822d35f9f.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "4822d35f9f2fe01f96513bfd996cc16303d40c82a40567e83b3ae0180cf8b18e"
+    },
+    {
+      "path": "corpus/word/tracking_without_comments/docx/8441c4ae21_sd_2517_localized_heading_styles__vs__7e685cbab1_super_editor__ooxml_underline_rstyle_linked_comb_redline_f0875f6d19.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "f0875f6d191428c36e351ab7500e95b6d0279018beb90a773d2a0830a561bf7d"
+    },
+    {
+      "path": "corpus/word/tracking_without_comments/docx/fad186fbc9_file_185.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "fad186fbc9a595868591941dadf2d51f40524c04295d1a18315b5c1096684cda"
+    },
+    {
+      "path": "corpus/word/tracking_without_comments/docx/570c8465f0_1b333fe80fef0fc98ba50b06be0ebd5f095833dfdaec7844__vs__7f567ada68_7c28073a381aa706215f6fd4196b4c66096249720665b8a7_redline_518c606bf2.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "518c606bf2284ab4e9ac1ba61fd08cc31c04736249d979e51b818ebf3253aaab"
+    },
+    {
+      "path": "corpus/word/tracking_without_comments/docx/87ee63a6b6_b88ac900a2a7f9d3d475b69fdc41a213da2f249d3f32e218__vs__1782e25c92_d9e1d2c6898adb00cf03d7667365533d6fb11663f56deafe_redline_14fb06f7e5.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "14fb06f7e57ed46560d5cfaca209f0385add8dfad9dec95e5da6b6ba4bcf7d50"
+    },
+    {
+      "path": "corpus/word/tracking_without_comments/docx/c6956051c8_0035880301dd9b39b35318af6a88457fb4f6491a3ca1964a__vs__bd3824dd1e_000ee64ef7226d353297888f59a251e24ce5d776fea000fa_redline_29eef1f277.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "29eef1f27738b7bd398f7b588d9ae77fc1855ef3a0cb921018a0dbe8d29fc212"
+    },
+    {
+      "path": "corpus/word/tracking_without_comments/docx/1b8ec2a8cd_file_7__vs__c090b9f082_file_8_redline_b982beef9b.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "b982beef9b218cb03c62abc9126aa66cd5cf9a2d0a66cab0f9d0a5f2e40663b1"
+    },
+    {
+      "path": "corpus/word/tracking_without_comments/docx/5900cc12ca_file_29__vs__5320da1b60_file_30_redline_c41217de00.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "c41217de00b06a56dcf7fca3843406b055ad28e36fa8acfa2df8160cfa81d660"
+    },
+    {
+      "path": "corpus/word/tracking_without_comments/docx/8c67bcfe65_d41a99929b13b393a913649f7b39e9df2a6aa4878230cf7e__vs__49fe5bd42a_f50f63dd4889ab0b190ef8a18dfa6b8eb308ab352f519bf4_redline_8287241b7c.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "8287241b7c3d215a5882509b4fd6a745619a66fe35cb83d36330fc302cfcb3b0"
+    },
+    {
+      "path": "corpus/word/tracking_without_comments/docx/fbe14959b0_000f5278175aa01c2b9517b07e8a087014e4a05ab3e24f41__vs__5203829c7a_001cc92b88566d5f930fe57f25813c0bf52a7bdc72c217d0_redline_1b40a04f6e.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "1b40a04f6e181ad7d92dacc87c62f66f56d43730530f13258bc4fd99c5c23c7f"
+    },
+    {
+      "path": "corpus/word/tracking_without_comments/docx/aa58aada65_00160046fb2516a560a9681d7ae3e6f4659af57d19555d4e__vs__aa5340125d_00a4b0b91e9b5b072dc3771391c2d608518690eccf44eae8_redline_420292c772.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "420292c7724a1906a3acbf56202b50921a9e819b854064779b91ac5efae6d158"
+    },
+    {
+      "path": "corpus/word/tracking_without_comments/docx/0bbf11cf21_5a6c9a5cc654191fa574f474976ebfbfd60a2299dfb96ebe__vs__d825254fce_048c597c1da833b932c73e97755f2f8e8113d83aecd1f13e_redline_ef51261c54.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "ef51261c545f4d7ec4f916d21ffba45f61c98bc856d336b1f5e381681f536789"
+    },
+    {
+      "path": "corpus/word/tracking_without_comments/docx/07fce8e954_docx_lots_of_comments_addition__vs__68fdec049c_docx_lots_of_comments_redline_9c2f40d561.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "9c2f40d5611aa002f7ce1edebef448f3a554033cf828a2c3a44af54bce4b82b1"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_reserve_11/B/834a4b8d15.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "082d9aa8f200e155c57a4a19f7552c6b00e47eaaa99df30eec95b44f528f9f5a"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_reserve_11/A/834a4b8d15.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "a0f5f78de94c8cab9e27f43341caf7daa2b1e8366a16ecbf4a15f2c477d9e28d"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_reserve_06/B/fd70bcb5de.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "97268066a6bf0c5755d80731d3c8d4adb0bd076cded8a4d076b1b7b40fcc062e"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_reserve_07/B/875b3fba58.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "2e042025528818822ef7f3ccf73977ae3e3e7cff864682b5c0060083284d8ae7"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_reserve_07/B/8018df6bdf.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "bd3824dd1e5554e7b0a8c3ab90f434599e047ff8de6ec85a04be794d32919bdf"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_reserve_07/B/0cbbcaa7f0.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "aa5340125d3bf06891fd59477c734f045cfc5b3d92911d2bbdaf175dae103a1c"
+    },
+    {
+      "path": "results/wordcraft_20261014/word_audit/A/e6e61fc33f.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "c9822f1008862a95f4e440e9536e4f4091662eebe39ccac80dacba404053b0b8"
+    },
+    {
+      "path": "results/wordcraft_20261014/word_audit/A/60e784f2de.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "9f5481078ec701cea00f1a04b2677344c454fa9ff6898ad8ff434f25b0b3b87d"
+    },
+    {
+      "path": "results/wordcraft_20261014/word_audit/A/d23d9c8cc7.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "32328b55db8c13c39237fe133b68a885d771421e30d63922b186d8f235698328"
+    },
+    {
+      "path": "corpus/word/with_comments_tracking/docx/ab85c77154_file_115__vs__b7219494de_file_116_redline_61959b1953.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "61959b1953f9009c692aedf8f5b482c34d911ddff40318f6e4d39f2e7d5c12b7"
+    },
+    {
+      "path": "corpus/word/with_comments_tracking/docx/8e694101b9_469e571050275b57ed1836b4cc17f4d29e43eec925bdfad9__vs__37c6c62345_3f296ffac9c17a92962156ff41f2b079eb687cd440513fe3_redline_9a2af58d99.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "9a2af58d9950178a75325dc319a782a65e841d3017c28fa9e15c1306d1df17d0"
+    },
+    {
+      "path": "corpus/word/with_comments_tracking/docx/54a019bcbc_2288f27be1_accepted_tracking.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "54a019bcbc663eefd56a6ee6bf6b55dd89841a99dae44b2b3fbfb4967c225d9c"
+    },
+    {
+      "path": "corpus/word/with_comments_tracking/docx/bde39e5d31_ab3_03_jub_with_base_word_comments_xml.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "bde39e5d3146124fd6be841de58e4eade06ed74f0ff1c8156b57af7f17e7c136"
+    },
+    {
+      "path": "corpus/word/with_comments_tracking/docx/c09b14fcd7_file_196__vs__4e6a261969_file_197_redline_cfb0498eef.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "cfb0498eefb3087563e445cc522a0ff47dfb907b8521291269aa0fe8e15b8526"
+    },
+    {
+      "path": "corpus/word/with_comments_tracking/docx/24ad1aa6e5_docx_lots_of_comments_addition_removal__vs__e57ad0eaa4_docx_lots_of_comments_addition_redline_a836952933.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "a8369529339fe382f5787ff021276d0b2ee6b62dd141009937098dfd67a76edd"
+    },
+    {
+      "path": "corpus/word/with_comments_tracking/docx/3f91c8f0cd_file_9__vs__e3d833aef0_file_10_redline_581907f19c.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "581907f19cad891acadd36d42dbb22898f7e8c17ec055c7be930253e999b8e2a"
+    },
+    {
+      "path": "corpus/word/with_comments_tracking/docx/be5bf990cb_file_16__vs__d6ba4fabd2_file_17_redline_cbf73c2d81.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "cbf73c2d814f963762808e2c053182ea7fec1464ed7857f4fcae676f51ae85d4"
+    },
+    {
+      "path": "corpus/word/with_comments_tracking/docx/e57ad0eaa4_docx_lots_of_comments_addition__vs__6e2576a091_docx_lots_of_comments_redline_92075b7449.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "92075b74498b292ba3baf6db1c5d65a92041bb030c40b987a68cd2535d5eef1e"
+    },
+    {
+      "path": "corpus/word/with_comments_tracking/docx/ec3dd0df69_file_53__vs__94ed0def64_file_54_redline_c2380a4677.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "c2380a4677be7e18345e2ebbfd3d2241706d3cb95724c5f9535a8553942cf65c"
+    },
+    {
+      "path": "corpus/word/with_comments_tracking/docx/6e2576a091_docx_lots_of_comments__vs__2c0a2ac35f_double_spacing_bold_demo_id_paraid_overflow_redline_9382e03243.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "9382e03243e3d92938144b14a8966067d4bb872a70c4b3b0e9e14a91807045f0"
+    },
+    {
+      "path": "corpus/word/with_comments_tracking/docx/b07ba468f1_r3_keep_4_5.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "b07ba468f1b33b1216cfacfb256bbd61b4475dfae1ae636c05a4f291083055a0"
+    },
+    {
+      "path": "corpus/word/with_comments_tracking/docx/3aedf04d35_r2_04_drop_blocks_43-55.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "3aedf04d358490eba0f0758cc1650b3f58acde661ba99eb0c049d76f53f65199"
+    },
+    {
+      "path": "corpus/word/with_comments_tracking/docx/ee91b9e453_9385adbfd34ee40a4bd2429d7385293b31a127fc9e9208d1__vs__409867707c_61a16c9bdc534801a19fcf808fdddd50a7cd74d1efd6113e_redline_9f2ce6d6bb.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "9f2ce6d6bb1e605857ab54a9f460630c67cf2e60dcdc6234bedc9bd0a367e148"
+    },
+    {
+      "path": "corpus/word/with_comments_tracking/docx/adc9f524d1_comments__vs__5d17fd43a9_complex_style_attr_redline_2061218d44.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "2061218d44101794df0e0b7db55efcb9efe3ffaba4b51fdc4d4e0f190004c4ec"
+    },
+    {
+      "path": "corpus/word/with_comments_tracking/docx/97c3dd2e86_docx_lots_of_comments_addition_redline_addition__vs__9f5481078e_docx_lots_of_comments_addition_redline_redline_2d65e392ab.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "2d65e392ab5a648576f0993d63bd87fef8c9237780c79db5e0b8babf09f23c5b"
+    },
+    {
+      "path": "corpus/word/with_comments_tracking/docx/d16179a60b_c3cb50c9620520f54d70a4f079a12e94bf94f54f507eff8d__vs__1aaca1d5af_ef31e540797c67a78c662cc2e5ecb21bf446e3d696ce26ad_redline_f72cd71154.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "f72cd7115425dd88147ccb526415483a69c400ad56c8a4a686084593645c6a9d"
+    },
+    {
+      "path": "corpus/word/with_comments_tracking/docx/468d82c575_c690df8dcf29bb8af8646ae10768e3ca46e8a9ef5b586428__vs__3a5ed45f0d_3d76420524fd4852ab017e1d57f215e37281e965b3f38b31_redline_bbc3223232.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "bbc32232324a5aa00a7324484ec72706e0c0aa600a9dadc19414cdcc1fb521f0"
+    },
+    {
+      "path": "corpus/word/with_comments_tracking/docx/be5bf990cb_file_16.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "be5bf990cb6b9ab8568ffb7c27af5540d45fbb484d2b67bca8e84a67419e20ca"
+    },
+    {
+      "path": "corpus/word/with_comments_tracking/docx/70fd78a4f8_redline_cicerodo_v_plate_30.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "70fd78a4f8570cc2c8593f68aa38aac78b3547f75e67468bc78272f1393b2498"
+    },
+    {
+      "path": "corpus/word/with_comments_tracking/docx/b175a00954_file_27__vs__f32428a03a_file_28_redline_0f031c23c3.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "0f031c23c394d0c540d1db18fcefa8d955c093dfa1f195f9bce940d00f4999a4"
+    },
+    {
+      "path": "corpus/word/with_comments_tracking/docx/468d82c575_c690df8dcf29bb8af8646ae10768e3ca46e8a9ef5b586428.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "468d82c5758186edf26186ec6eda34c26a32aa38f431a4fbc660c2a7614d7fcf"
+    },
+    {
+      "path": "corpus/word/with_comments_tracking/docx/b8115d0dab_file_100.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "b8115d0dab1bc47d6954e5e7115595962631ea16ecf7cf81a1d91c33e0e89eb4"
+    },
+    {
+      "path": "corpus/word/with_comments_tracking/docx/3fcadf4761_docx_lots_of_comments_addition_removal_redline.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "3fcadf476128e5bb229df71c9a3ca0992c34f7c93216598975b2d32dc347362b"
+    },
+    {
+      "path": "corpus/word/with_comments_tracking/docx/902a69f0e4_super_editor__line_space_table_9b1ee54b__vs__735c372b41_super_editor__diff_after8_58e5c288_redline_4d5de07b0e.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "4d5de07b0ebd888cb8f5cf1c5f619aa90cb6dc26fc78bc6de5761d1d22db6aa2"
+    },
+    {
+      "path": "corpus/word/with_comments_tracking/docx/9c6ebd430d_file_185__vs__154fce3ec8_file_186_redline_4d40d1f136.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "4d40d1f136f55e623ee06a753d582d7576e38f337f234aa965e252c9dc5b4c11"
+    },
+    {
+      "path": "corpus/word/with_comments_tracking/docx/60697d46b7_strict01__vs__60697d46b7_strict01_redline_34ffddfe47.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "34ffddfe47290bf6e5026dddbe80540cf0d9a50ba1b2738cce86b78d9ddebcb5"
+    },
+    {
+      "path": "corpus/word/with_comments_tracking/docx/e57ad0eaa4_docx_lots_of_comments_addition.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "e57ad0eaa4217b8feb91c08a59368d265fddb6e3fc57d200ddbd19933d401ba4"
+    },
+    {
+      "path": "corpus/word/with_comments_tracking/docx/a4c38b1bf5_4c17189eb7a543ae96f42443a9f4001a3be8fec6e47f7481__vs__cd63d2dccf_3f2752287dacf8e3e52d649dc467cbab2214df665039ab15_redline_e9ef73a8e4.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "e9ef73a8e42f71d4e10d789a54b6b74a45156966e9cd04beecfd6065af90a98d"
+    },
+    {
+      "path": "corpus/word/with_comments_tracking/docx/24ad1aa6e5_docx_lots_of_comments_addition_removal.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "24ad1aa6e516d66e4e44fab1cafca2ef80e24a97e71860d75104c126d4510b6b"
+    },
+    {
+      "path": "corpus/word/with_comments_tracking/docx/c090b9f082_file_8__vs__3f91c8f0cd_file_9_redline_bc6f8076f9.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "bc6f8076f966777c6fa09312c8377202a3bc979fef7afbf975038de09a213215"
+    },
+    {
+      "path": "corpus/word/with_comments_tracking/docx/cf02e0407e_file_26__vs__b175a00954_file_27_redline_cee8601521.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "cee860152164151e0ef3e3510e7b7179a0603ecfa136a4b126abc6f00f118b3e"
+    },
+    {
+      "path": "corpus/word/with_comments_tracking/docx/82ee7342fd_file_5__vs__1072677c3a_file_6_redline_70a6883d16.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "70a6883d16c71c046d063fe46b02c752dfafd88d8c4f91261ddd82da6628848c"
+    },
+    {
+      "path": "corpus/word/with_comments_tracking/docx/a545465802_r3_keep_11_12.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "a5454658020a6ac96d2731b9c1a0bfbc795faa7ebc718005a3c77f63b7961f7c"
+    },
+    {
+      "path": "corpus/word/with_comments_tracking/docx/18eb110b3b_numwords_fldsimple__vs__60697d46b7_strict01_redline_57dfcda882.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "57dfcda88251f772dac84f3bbf83dd3b982928357a0b052a959c85f1bbf2fea7"
+    },
+    {
+      "path": "corpus/word/with_comments_tracking/docx/d04e517f1e_r2_02_drop_blocks_16-29.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "d04e517f1e616dd92096be2b16ee905c202e24bfb689b4a26e6f91f4d5f686f8"
+    },
+    {
+      "path": "corpus/word/with_comments_tracking/docx/b8115d0dab_file_100__vs__c500e0081f_file_101_redline_ff24600d87.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "ff24600d87d14c9c41d261147f13e92fc571c7c55559e1e2d348f33325f331b0"
+    },
+    {
+      "path": "corpus/word/with_comments_tracking/docx/1072677c3a_file_6.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "1072677c3ab4a65ee14dc00742e2033d0fcfdbd1a4d469a397c894f966dff7ff"
+    },
+    {
+      "path": "corpus/word/with_comments_tracking/docx/97c3dd2e86_docx_lots_of_comments_addition_redline_addition.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "97c3dd2e86042004dc47de484879f3a98b2cd1aa7cce1779f8bd418ea76bf8d3"
+    },
+    {
+      "path": "corpus/word/with_comments_tracking/docx/60697d46b7_strict01__vs__a04e2d2749_ooxml_style_link_redline_6b74ac1ae6.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "6b74ac1ae65b624629fd8f364979e93ea59d6f0ef7ac2479554d744d7382bc3d"
+    },
+    {
+      "path": "corpus/word/with_comments_tracking/docx/ee9bfc2650_docx_lots_of_comments_addition_removal_redline_r.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "ee9bfc2650503dac359a7411fac700c01b07b0684989f81c91cbbf4fde6c4084"
+    },
+    {
+      "path": "corpus/word/with_comments_tracking/docx/6e2576a091_docx_lots_of_comments__vs__2c0a2ac35f_double_spacing_bold_demo_id_paraid_overflow_redline_a6aab38897.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "a6aab38897b995276c5b1968d77653d0e6b1e12c223935b8411c937fd71ceb55"
+    },
+    {
+      "path": "corpus/word/with_comments_tracking/docx/ab85c77154_file_115.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "ab85c771544bc1d7f27f6bbee422fab5199ef7412cc16aab53d1ee3afd73569b"
+    },
+    {
+      "path": "corpus/word/with_comments_tracking/docx/9f5481078e_docx_lots_of_comments_addition_redline.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "9f5481078ec701cea00f1a04b2677344c454fa9ff6898ad8ff434f25b0b3b87d"
+    },
+    {
+      "path": "corpus/word/with_comments_tracking/docx/ec3dd0df69_file_53.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "ec3dd0df69be02a9e7045bee166ada93db9ebdb6105d96688bc8d19f7688feab"
+    },
+    {
+      "path": "corpus/word/with_comments_tracking/docx/9c6ebd430d_file_185.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "9c6ebd430d60629364475af37e1e76d497f18048c6bb12a671c07f9ee8fe2538"
+    },
+    {
+      "path": "corpus/word/with_comments_tracking/docx/60697d46b7_strict01.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "60697d46b7ec6e23cd50cf63d66d6866c964453cb6962f729cebffca6d0b803f"
+    },
+    {
+      "path": "corpus/word/with_comments_tracking/docx/0aa6426932_file_114__vs__ab85c77154_file_115_redline_f7bbf6e831.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "f7bbf6e8315e7a84e3e0974e4bc0f82a75863db9db48c57c2692238a83dd0134"
+    },
+    {
+      "path": "corpus/word/with_comments_tracking/docx/7166fa4199_document_100_ultimate_demo_id_paraid_overflow__vs__97c3dd2e86_docx_lots_of_comments_addition_redline_addition_redline_2288f27be1.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "2288f27be1f3761d606da16d2676439adfc299b75967efa173eabdf81b0dee9d"
+    },
+    {
+      "path": "corpus/word/with_comments_tracking/docx/08147dee09_file_195__vs__c09b14fcd7_file_196_redline_1edc0f56f4.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "1edc0f56f4fd3f47eb64f168c181e2801b00b6448a6383621755ab6c4485f9bf"
+    },
+    {
+      "path": "corpus/word/with_comments_tracking/docx/df097720f7_file_131__vs__3c60cce945_file_132_redline_4eff11f045.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "4eff11f0456994fbc5d2200146017c0c4ef126ad95281bf49a9ec1bf3fe27254"
+    },
+    {
+      "path": "corpus/word/with_comments_tracking/docx/c09b14fcd7_file_196.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "c09b14fcd7b77d7df10cec2daf04a2541a69d32ef269111e1ac276523ddf411a"
+    },
+    {
+      "path": "corpus/word/with_comments_tracking/docx/6b0acda259_file_73__vs__bd768e6c17_file_74_redline_0aa74e0de4.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "0aa74e0de4fea8e2bd41af07017c1fd3ee56d50aa9b6afb9a17194b015e6c595"
+    },
+    {
+      "path": "corpus/word/with_comments_tracking/docx/22060e7141_40b72d8c37011f35d914c2f44868286d89717c9efd10ac04__vs__71c67c168f_37d74eebe6fd69b7f6041f8ecda8e9857d885b23dab561b0_redline_72341d8ac1.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "72341d8ac12c6c2d9f85cf70258ded8e2cf835ec75b285265bfe9d0ae11105ac"
+    },
+    {
+      "path": "corpus/word/with_comments_tracking/docx/4f0a3847e3_verdana_italic_centered_demo_id_paraid_overflow__vs__60697d46b7_strict01_redline_0dfc906eb1.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "0dfc906eb17d72b1020c026e820249cf239cfe863294a56ce18fc07eb52d53b7"
+    },
+    {
+      "path": "corpus/word/with_comments_tracking/docx/bd768e6c17_file_74.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "bd768e6c17cfcdd8db40804602fe51855c111443a8a522e36fd3e307c9effdcd"
+    },
+    {
+      "path": "corpus/word/with_comments_tracking/docx/3f91c8f0cd_file_9.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "3f91c8f0cd1aa05828012f1cff58d339b1bd9333828cb03a253bcd9fc12ca91e"
+    },
+    {
+      "path": "corpus/word/with_comments_tracking/docx/1072677c3a_file_6__vs__1b8ec2a8cd_file_7_redline_0b033b1c23.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "0b033b1c23efb2cdaba58d43121bb9fd8676f302b564606861e068b79503e2e4"
+    },
+    {
+      "path": "corpus/word/with_comments_tracking/docx/bd768e6c17_file_74__vs__8c79860f8d_file_75_redline_3d39f0120d.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "3d39f0120ded6b4b30f6ed2b77ced55edf35606e3788113a1382a59d021bcb3c"
+    },
+    {
+      "path": "corpus/word/with_comments_tracking/docx/86191281f8_r2_01_drop_blocks_0-15.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "86191281f8f2963e7158dffd9d9b9e3b97fc4e9db2ae9cfc684811c779d5a524"
+    },
+    {
+      "path": "corpus/word/with_comments_tracking/docx/b175a00954_file_27.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "b175a0095453a808cbd74507f04fdb1c71ceb6c88cea8e9d0bd005c2b4847e55"
+    },
+    {
+      "path": "results/wordcraft_20261014/word_audit/B/e6e61fc33f.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "32328b55db8c13c39237fe133b68a885d771421e30d63922b186d8f235698328"
+    },
+    {
+      "path": "results/wordcraft_20261014/word_audit/B/1edc0f56f4.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "c09b14fcd7b77d7df10cec2daf04a2541a69d32ef269111e1ac276523ddf411a"
+    },
+    {
+      "path": "results/wordcraft_20261014/word_audit/B/60e784f2de.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "ee9bfc2650503dac359a7411fac700c01b07b0684989f81c91cbbf4fde6c4084"
+    },
+    {
+      "path": "results/wordcraft_20261014/word_audit/B/d23d9c8cc7.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "d996bef4c8cf32eece70d13e57c98eb62d583187d203c4456205cf6717d05ad3"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_reserve_07/A/875b3fba58.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "3bfcb371e2fc81584268c37f0312cccd2f8f20850dbc7e2aa834a72b33254235"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_reserve_07/A/8018df6bdf.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "52220b20c3c1cacf052e9e3b64c59a58faf0ad6e719d104b531408c8d4f97e5d"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_reserve_07/A/e8aedc3a02.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "95e967cf7b99e996bc8a69992d6d404c45885cab9fddb8298a499a3e779dbc9b"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_reserve_09/B/77800d60fe.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "950d333339698594fb9c07f1fc4e716d45e15ed5cf0c3dce06ada6f7ce18214d"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_reserve_09/B/c85d7fadac.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "bd3824dd1e5554e7b0a8c3ab90f434599e047ff8de6ec85a04be794d32919bdf"
+    },
+    {
+      "path": "corpus/word/with_comments_clean/docx/df097720f7_file_131.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "df097720f7d7c8bdda982526a1450a79deb9f3e4198f013ce75de0e5f09c427d"
+    },
+    {
+      "path": "corpus/word/with_comments_clean/docx/6e2576a091_docx_lots_of_comments.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "6e2576a091e9b18094337d462ad92bf6f98bbb9c4d5c749a76d501323efe5632"
+    },
+    {
+      "path": "corpus/word/with_comments_clean/docx/9f5481078e_docx_lots_of_comments_addition_redline__vs__ee9bfc2650_docx_lots_of_comments_addition_removal_redline_r_redline_60e784f2de.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "60e784f2deb5beb0894b30fd9456582388d8c92d45b161d8612461f6ef7cb449"
+    },
+    {
+      "path": "corpus/word/with_comments_clean/docx/56a27bcf76_92075b7449_accepted_tracking.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "56a27bcf76a6ba3e8b39afad20177b1042e0e6fe48889eac56028cf1bf1fcb4f"
+    },
+    {
+      "path": "corpus/word/with_comments_clean/docx/69b325a8cd_r5_01_end_p1_ref_p2_start.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "69b325a8cd4abb23bbf2b7097940362c9b2e20441dded532ab44449d6e24f9c5"
+    },
+    {
+      "path": "corpus/word/with_comments_clean/docx/2dcc8240a1_2e3f1e261d_accepted_tracking.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "2dcc8240a17498f94c309771f22f39dfa0193bb239e89c59bb7dfa33db5ed94b"
+    },
+    {
+      "path": "corpus/word/with_comments_clean/docx/fcd2a42b64_r4_04_accept_tracked.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "fcd2a42b645b94dcba89c368ceed25617fcd21430db47057c74aedc7db50d174"
+    },
+    {
+      "path": "corpus/word/with_comments_clean/docx/7a40d95e81_db13a691da_rejected_tracking.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "7a40d95e819ec84235f29787249fcca5d7fc722334e1dc48773d0694049e80e6"
+    },
+    {
+      "path": "corpus/word/with_comments_clean/docx/ee9bfc2650_docx_lots_of_comments_addition_removal_redline_r__vs__3fcadf4761_docx_lots_of_comments_addition_removal_redline_redline_58cd08049b.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "58cd08049bee47674f725d9ab97c0617496d5ca35a7b476b32e8dfb678560821"
+    },
+    {
+      "path": "corpus/word/with_comments_clean/docx/93d7373f57_r5_03_end_body_ref_own_para.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "93d7373f57b14565e6d4b789153baa60f5fb312e3a99a252c2b2bca9ffdc60ce"
+    },
+    {
+      "path": "corpus/word/with_comments_clean/docx/da7fb8a123_sample_document_word_repair_of_our_output_word_r.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "da7fb8a123b74ee6901055359ec0e4eafc9c638eefa6a52d847f89935a4c9e9c"
+    },
+    {
+      "path": "corpus/word/with_comments_clean/docx/d4f4f33ca7_ce3c279407c9eb4e94d8e9f4ca9e68b8f882674fc6a1caff.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "d4f4f33ca7d80e1e3779e2b6492a779db518fc78443e0b4dedd767af59b06ef0"
+    },
+    {
+      "path": "corpus/word/with_comments_clean/docx/9594d79364_d6b1d609c1_accepted_tracking.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "9594d7936429db54dccad0ee461a55263b2d0210fd2523a6b242af97fa220d8c"
+    },
+    {
+      "path": "corpus/word/with_comments_clean/docx/65c79f950a_small_font_size_demo_id_paraid_overflow_strict01.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "65c79f950afd18953a4b75580d5683d6d7300da9d3a11cd9c0b4624da45a0d25"
+    },
+    {
+      "path": "corpus/word/with_comments_clean/docx/6a2470aead_0f031c23c3_rejected_tracking.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "6a2470aeade220ae2170d75a03b5b8e7cf888651a40464c4a045e979db28b928"
+    },
+    {
+      "path": "corpus/word/with_comments_clean/docx/ee9bfc2650_docx_lots_of_comments_addition_removal_redline_r__vs__3fcadf4761_docx_lots_of_comments_addition_removal_redline_redline_d2e24e9733.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "d2e24e9733e5ce749bd05a4cd075f882c19766f938787b28776aa456b82c8b13"
+    },
+    {
+      "path": "corpus/word/with_comments_clean/docx/2a91f7d867_r4_09_unwrap_and_accept.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "2a91f7d86734f51e0dffcb14112dc25c246750637e23030f9156339c728fae3c"
+    },
+    {
+      "path": "corpus/word/with_comments_clean/docx/4af19bfcca_cee8601521_accepted_tracking.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "4af19bfcca0018b799a2dddf2688675a1fd7bf9b460a32c4063fd4dc45517080"
+    },
+    {
+      "path": "corpus/word/with_comments_clean/docx/9f5481078e_docx_lots_of_comments_addition_redline__vs__ee9bfc2650_docx_lots_of_comments_addition_removal_redline_r_redline_d4c19477cb.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "d4c19477cb88de2033bb946ceaff4660b77c3ade6c68664757d00793a4bf8944"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_reserve_08/A/23127ea8e1.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "12941c2a772176385ca961a9d136daf6e5f1f70a10caa98f3ebb7405b1fc6243"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_reserve_08/A/17a4d897ce.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "3cccdeb956d564b1fbabd7b7abd15ab9a7f06136d941ea41c4a942fd66e5f8d8"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_reserve_09/A/77800d60fe.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "937c2d593dfd63876cbe3e4bf55b42897aeadd3b8737ff49d62014b1b481bbf4"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_reserve_04/B/7a2946950f.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "3cf442621c3b7f298773fc231562dd6cf27b5d03934948c093d45ec7aa45aacb"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_inline/B/60ef61f086.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "0f23eb6c941d711305198f7313ba626a8c629a813653e51963a9807938087152"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_inline/B/2d65e392ab.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "9f5481078ec701cea00f1a04b2677344c454fa9ff6898ad8ff434f25b0b3b87d"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_inline/B/e6e61fc33f.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "32328b55db8c13c39237fe133b68a885d771421e30d63922b186d8f235698328"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_inline/B/1edc0f56f4.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "c09b14fcd7b77d7df10cec2daf04a2541a69d32ef269111e1ac276523ddf411a"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_inline/B/f7bbf6e831.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "ab85c771544bc1d7f27f6bbee422fab5199ef7412cc16aab53d1ee3afd73569b"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_inline/B/58cd08049b.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "3fcadf476128e5bb229df71c9a3ca0992c34f7c93216598975b2d32dc347362b"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_inline/B/a836952933.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "e57ad0eaa4217b8feb91c08a59368d265fddb6e3fc57d200ddbd19933d401ba4"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_inline/B/92075b7449.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "6e2576a091e9b18094337d462ad92bf6f98bbb9c4d5c749a76d501323efe5632"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_inline/B/bbc3223232.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "3a5ed45f0d64fac5ec49f81746736e3b28b229827ea3aa85b7b62337750ae61d"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_inline/B/34ffddfe47.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "60697d46b7ec6e23cd50cf63d66d6866c964453cb6962f729cebffca6d0b803f"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_inline/B/60e784f2de.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "ee9bfc2650503dac359a7411fac700c01b07b0684989f81c91cbbf4fde6c4084"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_inline/B/d23d9c8cc7.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "d996bef4c8cf32eece70d13e57c98eb62d583187d203c4456205cf6717d05ad3"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_inline/B/bc6f8076f9.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "3f91c8f0cd1aa05828012f1cff58d339b1bd9333828cb03a253bcd9fc12ca91e"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_reserve_03/A/c0af64b076.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "a88f2ae35725b930ed66aedbf15407216adaf840011c6a74cdadebd644971d38"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_reserve_03/A/0c27542f55.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "8e534b49f085d74e5e3d17e2814a3d65425e9ec14e776a0470632c31848cfd80"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_reserve_03/A/b9c294a2e1.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "fc5d9fecb7a384b03308483d433b14319714defdf360faff90dc650d7ef465fa"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_reserve_02/B/2c0433bdbc.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "2e042025528818822ef7f3ccf73977ae3e3e7cff864682b5c0060083284d8ae7"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_reserve_02/A/b799eadbeb.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "52220b20c3c1cacf052e9e3b64c59a58faf0ad6e719d104b531408c8d4f97e5d"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_reserve_02/A/23c28907ad.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "3bfcb371e2fc81584268c37f0312cccd2f8f20850dbc7e2aa834a72b33254235"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_reserve_02/A/fedf795758.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "b6dd0b6ae863956b8d55c15dbc4728fbeb3b8e6f9086d940ace70bb4cba47c36"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_reserve_04/A/766d6d6968.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "1aa7a03758dde6100e6d4fe3e2fb494f15b0ebd89233517b8d2581e29c8c770d"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_inline/A/9382e03243.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "6e2576a091e9b18094337d462ad92bf6f98bbb9c4d5c749a76d501323efe5632"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_inline/A/60ef61f086.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "7b076416b0851459c1f293be0936cd30fd52078877bd34b75cc781fdc3e851f8"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_inline/A/c2380a4677.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "ec3dd0df69be02a9e7045bee166ada93db9ebdb6105d96688bc8d19f7688feab"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_inline/A/2d65e392ab.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "97c3dd2e86042004dc47de484879f3a98b2cd1aa7cce1779f8bd418ea76bf8d3"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_inline/A/0f031c23c3.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "b175a0095453a808cbd74507f04fdb1c71ceb6c88cea8e9d0bd005c2b4847e55"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_inline/A/e6e61fc33f.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "c9822f1008862a95f4e440e9536e4f4091662eebe39ccac80dacba404053b0b8"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_inline/A/6b74ac1ae6.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "60697d46b7ec6e23cd50cf63d66d6866c964453cb6962f729cebffca6d0b803f"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_inline/A/61959b1953.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "ab85c771544bc1d7f27f6bbee422fab5199ef7412cc16aab53d1ee3afd73569b"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_inline/A/58cd08049b.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "ee9bfc2650503dac359a7411fac700c01b07b0684989f81c91cbbf4fde6c4084"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_inline/A/4eff11f045.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "df097720f7d7c8bdda982526a1450a79deb9f3e4198f013ce75de0e5f09c427d"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_inline/A/a836952933.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "24ad1aa6e516d66e4e44fab1cafca2ef80e24a97e71860d75104c126d4510b6b"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_inline/A/92075b7449.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "e57ad0eaa4217b8feb91c08a59368d265fddb6e3fc57d200ddbd19933d401ba4"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_inline/A/bbc3223232.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "468d82c5758186edf26186ec6eda34c26a32aa38f431a4fbc660c2a7614d7fcf"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_inline/A/dde913904e.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "fbe14959b0d3c684e20001cacff2add451c91813619807aff6e12a21b9a11f9c"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_inline/A/062340d04a.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "902a69f0e494604996062bb55b2d8baaf57c0217da48c2fa2f5c3d57ce20b364"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_inline/A/581907f19c.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "3f91c8f0cd1aa05828012f1cff58d339b1bd9333828cb03a253bcd9fc12ca91e"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_inline/A/cbf73c2d81.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "be5bf990cb6b9ab8568ffb7c27af5540d45fbb484d2b67bca8e84a67419e20ca"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_inline/A/4d40d1f136.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "9c6ebd430d60629364475af37e1e76d497f18048c6bb12a671c07f9ee8fe2538"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_inline/A/f0875f6d19.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "8441c4ae21d5c3fce51f5a8aae0d570291af2e0c40191280ad18b0fd371fa78e"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_inline/A/3d39f0120d.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "bd768e6c17cfcdd8db40804602fe51855c111443a8a522e36fd3e307c9effdcd"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_inline/A/34ffddfe47.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "60697d46b7ec6e23cd50cf63d66d6866c964453cb6962f729cebffca6d0b803f"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_inline/A/60e784f2de.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "9f5481078ec701cea00f1a04b2677344c454fa9ff6898ad8ff434f25b0b3b87d"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_inline/A/64c527dde8.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "5320da1b603285591dda5c956d597eba3875ad03184fd74817989aefb54de932"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_inline/A/db0f90defc.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "4c3999a0d947bd6c27aed9b771ba88a2d76de40e3267dd69075c89a9470aca85"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_inline/A/f8286525f6.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "df9ffe9a8c005786fe99883507b10c4894ef36a17c089306f9147e1e106c37ce"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_inline/A/d23d9c8cc7.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "32328b55db8c13c39237fe133b68a885d771421e30d63922b186d8f235698328"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_inline/A/bc6f8076f9.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "c090b9f08219ec08fbbbe65e4502f0d930ad953def4db78a88b6d6026b152666"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_inline/A/ff24600d87.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "b8115d0dab1bc47d6954e5e7115595962631ea16ecf7cf81a1d91c33e0e89eb4"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_inline/A/6de20376e8.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "52220b20c3c1cacf052e9e3b64c59a58faf0ad6e719d104b531408c8d4f97e5d"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_inline/A/0b033b1c23.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "1072677c3ab4a65ee14dc00742e2033d0fcfdbd1a4d469a397c894f966dff7ff"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_reserve_17/B/be10e7059e.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "1944b721309a35d23116744dda28c9002bca575be92bcb6e940341da13959798"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_reserve_session_retry/B/fd70bcb5de.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "97268066a6bf0c5755d80731d3c8d4adb0bd076cded8a4d076b1b7b40fcc062e"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_reserve_19/A/e91ecb9efa.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "ee7b597379310921ec43560839fef598d350046ee95af826a4f9f7e718ad4cd4"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_reserve_10/B/331ab44630.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "a3e6c2e42617d51471a68654fd658a2e7369016b89efce00dae5eb9b12d5f9d3"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_reserve_10/A/331ab44630.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "6c63c78baff959cf6e9155be8164bea6519fa01659cb222bf6a1a018e5c0b165"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_reserve_05/B/f007ed2234.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "aa5340125d3bf06891fd59477c734f045cfc5b3d92911d2bbdaf175dae103a1c"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_reserve_05/B/c1ee3ae6c5.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "2e042025528818822ef7f3ccf73977ae3e3e7cff864682b5c0060083284d8ae7"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_reserve_05/B/108332354e.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "ea7427b18a5e6bda048738840dfaee9ed4dc8c9af7d76383732c729a6bceb663"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_reserve_05/B/e1f1792974.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "bd3824dd1e5554e7b0a8c3ab90f434599e047ff8de6ec85a04be794d32919bdf"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_reserve_05/A/f007ed2234.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "dc0cc27640e665c887a5f0bf5cc96e753bbb2d4cf552730a13ad9b227748b541"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_reserve_05/A/c1ee3ae6c5.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "c280ce0f40197246dfa8685d18f6048cdabd54398e5ce2bbc25ae010bd5c3827"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_reserve_05/A/4d5de07b0e.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "902a69f0e494604996062bb55b2d8baaf57c0217da48c2fa2f5c3d57ce20b364"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_reserve_05/A/d95a06eed1.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "286955227d98c90e25b662a7c8d372197fa73a98691cb0988f29143bb4f27389"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_stock/B/60ef61f086.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "0f23eb6c941d711305198f7313ba626a8c629a813653e51963a9807938087152"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_stock/B/2d65e392ab.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "9f5481078ec701cea00f1a04b2677344c454fa9ff6898ad8ff434f25b0b3b87d"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_stock/B/e6e61fc33f.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "32328b55db8c13c39237fe133b68a885d771421e30d63922b186d8f235698328"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_stock/B/1edc0f56f4.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "c09b14fcd7b77d7df10cec2daf04a2541a69d32ef269111e1ac276523ddf411a"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_stock/B/f7bbf6e831.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "ab85c771544bc1d7f27f6bbee422fab5199ef7412cc16aab53d1ee3afd73569b"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_stock/B/58cd08049b.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "3fcadf476128e5bb229df71c9a3ca0992c34f7c93216598975b2d32dc347362b"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_stock/B/a836952933.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "e57ad0eaa4217b8feb91c08a59368d265fddb6e3fc57d200ddbd19933d401ba4"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_stock/B/92075b7449.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "6e2576a091e9b18094337d462ad92bf6f98bbb9c4d5c749a76d501323efe5632"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_stock/B/bbc3223232.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "3a5ed45f0d64fac5ec49f81746736e3b28b229827ea3aa85b7b62337750ae61d"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_stock/B/34ffddfe47.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "60697d46b7ec6e23cd50cf63d66d6866c964453cb6962f729cebffca6d0b803f"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_stock/B/60e784f2de.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "ee9bfc2650503dac359a7411fac700c01b07b0684989f81c91cbbf4fde6c4084"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_stock/B/d23d9c8cc7.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "d996bef4c8cf32eece70d13e57c98eb62d583187d203c4456205cf6717d05ad3"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_stock/B/bc6f8076f9.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "3f91c8f0cd1aa05828012f1cff58d339b1bd9333828cb03a253bcd9fc12ca91e"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_reserve_01/B/7f412aa4b4.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "9c6ebd430d60629364475af37e1e76d497f18048c6bb12a671c07f9ee8fe2538"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_reserve_01/B/d16e567fd2.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "bd3824dd1e5554e7b0a8c3ab90f434599e047ff8de6ec85a04be794d32919bdf"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_reserve_01/B/20f31d3886.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "2e042025528818822ef7f3ccf73977ae3e3e7cff864682b5c0060083284d8ae7"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_reserve_01/B/699cc8bd70.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "be5bf990cb6b9ab8568ffb7c27af5540d45fbb484d2b67bca8e84a67419e20ca"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_reserve_01/B/0cd32d67b2.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "60697d46b7ec6e23cd50cf63d66d6866c964453cb6962f729cebffca6d0b803f"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_reserve_01/B/e14d8c4c7d.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "ec3dd0df69be02a9e7045bee166ada93db9ebdb6105d96688bc8d19f7688feab"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_reserve_01/B/65aa483982.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "b8115d0dab1bc47d6954e5e7115595962631ea16ecf7cf81a1d91c33e0e89eb4"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_reserve_01/B/51c9eab1af.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "d4f4f33ca7d80e1e3779e2b6492a779db518fc78443e0b4dedd767af59b06ef0"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_reserve_01/B/e4df2c199d.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "df097720f7d7c8bdda982526a1450a79deb9f3e4198f013ce75de0e5f09c427d"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_reserve_01/B/48b006f032.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "24ad1aa6e516d66e4e44fab1cafca2ef80e24a97e71860d75104c126d4510b6b"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_reserve_01/B/9c71031b8a.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "8441c4ae21d5c3fce51f5a8aae0d570291af2e0c40191280ad18b0fd371fa78e"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_stock/A/9382e03243.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "6e2576a091e9b18094337d462ad92bf6f98bbb9c4d5c749a76d501323efe5632"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_stock/A/60ef61f086.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "7b076416b0851459c1f293be0936cd30fd52078877bd34b75cc781fdc3e851f8"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_stock/A/c2380a4677.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "ec3dd0df69be02a9e7045bee166ada93db9ebdb6105d96688bc8d19f7688feab"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_stock/A/2d65e392ab.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "97c3dd2e86042004dc47de484879f3a98b2cd1aa7cce1779f8bd418ea76bf8d3"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_stock/A/0f031c23c3.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "b175a0095453a808cbd74507f04fdb1c71ceb6c88cea8e9d0bd005c2b4847e55"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_stock/A/e6e61fc33f.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "c9822f1008862a95f4e440e9536e4f4091662eebe39ccac80dacba404053b0b8"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_stock/A/6b74ac1ae6.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "60697d46b7ec6e23cd50cf63d66d6866c964453cb6962f729cebffca6d0b803f"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_stock/A/61959b1953.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "ab85c771544bc1d7f27f6bbee422fab5199ef7412cc16aab53d1ee3afd73569b"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_stock/A/58cd08049b.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "ee9bfc2650503dac359a7411fac700c01b07b0684989f81c91cbbf4fde6c4084"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_stock/A/4eff11f045.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "df097720f7d7c8bdda982526a1450a79deb9f3e4198f013ce75de0e5f09c427d"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_stock/A/a836952933.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "24ad1aa6e516d66e4e44fab1cafca2ef80e24a97e71860d75104c126d4510b6b"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_stock/A/92075b7449.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "e57ad0eaa4217b8feb91c08a59368d265fddb6e3fc57d200ddbd19933d401ba4"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_stock/A/bbc3223232.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "468d82c5758186edf26186ec6eda34c26a32aa38f431a4fbc660c2a7614d7fcf"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_stock/A/dde913904e.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "fbe14959b0d3c684e20001cacff2add451c91813619807aff6e12a21b9a11f9c"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_stock/A/062340d04a.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "902a69f0e494604996062bb55b2d8baaf57c0217da48c2fa2f5c3d57ce20b364"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_stock/A/581907f19c.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "3f91c8f0cd1aa05828012f1cff58d339b1bd9333828cb03a253bcd9fc12ca91e"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_stock/A/cbf73c2d81.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "be5bf990cb6b9ab8568ffb7c27af5540d45fbb484d2b67bca8e84a67419e20ca"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_stock/A/4d40d1f136.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "9c6ebd430d60629364475af37e1e76d497f18048c6bb12a671c07f9ee8fe2538"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_stock/A/f0875f6d19.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "8441c4ae21d5c3fce51f5a8aae0d570291af2e0c40191280ad18b0fd371fa78e"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_stock/A/3d39f0120d.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "bd768e6c17cfcdd8db40804602fe51855c111443a8a522e36fd3e307c9effdcd"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_stock/A/34ffddfe47.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "60697d46b7ec6e23cd50cf63d66d6866c964453cb6962f729cebffca6d0b803f"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_stock/A/60e784f2de.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "9f5481078ec701cea00f1a04b2677344c454fa9ff6898ad8ff434f25b0b3b87d"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_stock/A/64c527dde8.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "5320da1b603285591dda5c956d597eba3875ad03184fd74817989aefb54de932"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_stock/A/db0f90defc.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "4c3999a0d947bd6c27aed9b771ba88a2d76de40e3267dd69075c89a9470aca85"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_stock/A/f8286525f6.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "df9ffe9a8c005786fe99883507b10c4894ef36a17c089306f9147e1e106c37ce"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_stock/A/d23d9c8cc7.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "32328b55db8c13c39237fe133b68a885d771421e30d63922b186d8f235698328"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_stock/A/bc6f8076f9.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "c090b9f08219ec08fbbbe65e4502f0d930ad953def4db78a88b6d6026b152666"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_stock/A/ff24600d87.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "b8115d0dab1bc47d6954e5e7115595962631ea16ecf7cf81a1d91c33e0e89eb4"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_stock/A/6de20376e8.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "52220b20c3c1cacf052e9e3b64c59a58faf0ad6e719d104b531408c8d4f97e5d"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_retry_stock/A/0b033b1c23.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "1072677c3ab4a65ee14dc00742e2033d0fcfdbd1a4d469a397c894f966dff7ff"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_reserve_01/A/b461d6f797.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "e11fc429b29941ab9c941201770b96f6a32a71336b516219a7900200694fd67a"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_reserve_01/A/8be0329c00.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "306288b67069e42d80cd223d07c9b92119af1b880749166e0a3c034e9be0c5b8"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_reserve_01/A/d525625b0d.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "52220b20c3c1cacf052e9e3b64c59a58faf0ad6e719d104b531408c8d4f97e5d"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_reserve_01/A/d4ab829066.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "c09b14fcd7b77d7df10cec2daf04a2541a69d32ef269111e1ac276523ddf411a"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_reserve_01/A/01a43df57c.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "b6dd0b6ae863956b8d55c15dbc4728fbeb3b8e6f9086d940ace70bb4cba47c36"
+    },
+    {
+      "path": "results/wordcraft_20261014_fresh/word_reserve_01/A/48b006f032.docx",
+      "before_mode": "0o444",
+      "after_mode": "0o644",
+      "sha256": "3fcadf476128e5bb229df71c9a3ca0992c34f7c93216598975b2d32dc347362b"
+    }
+  ]
+}

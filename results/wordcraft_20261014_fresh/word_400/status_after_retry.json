@@ -1,0 +1,25 @@
+{
+ "compare": {
+  "clean|cohort1|valid": 2,
+  "tracking_without_comments|cohort1|valid": 87,
+  "tracking_without_comments|cohort2|no-ref": 12,
+  "tracking_without_comments|cohort2|valid": 218,
+  "with_comments_clean|cohort1|valid": 3,
+  "with_comments_tracking|cohort1|valid": 82,
+  "with_comments_tracking|cohort2|no-ref": 9,
+  "with_comments_tracking|cohort2|valid": 68
+ },
+ "convert": {
+  "clean|cohort1|valid": 50,
+  "clean|cohort2|valid": 90,
+  "tracking_without_comments|cohort1|no-ref": 1,
+  "tracking_without_comments|cohort1|valid": 49,
+  "tracking_without_comments|cohort2|valid": 90,
+  "with_comments_clean|cohort1|valid": 50,
+  "with_comments_clean|cohort2|valid": 67,
+  "with_comments_tracking|cohort1|no-ref": 2,
+  "with_comments_tracking|cohort1|valid": 48,
+  "with_comments_tracking|cohort2|no-ref": 5,
+  "with_comments_tracking|cohort2|valid": 85
+ }
+}

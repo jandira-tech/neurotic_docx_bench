@@ -344,6 +344,27 @@ on quality (**90.04 / 91.99**) at **14.43 ms** median large-N (about **1.6×**
 rust-inproc) — the right default when you need TypeScript `compareDocx` without
 the Rust binary.
 
+## Wordcraft CLI cohort latency (2026-10-14)
+
+Per-call CLI latency from `results/wordcraft_20261014_fresh/operations.jsonl`, over the frozen
+400 comparisons and 400 conversions (last attempt per document, three warmups per lane excluded;
+regenerate with `speed_table.py` in that folder). Every number includes process startup, file
+loading and saving; the docxodus wrapper includes WASM initialization, and a docxodus timeout is
+the 120 s per-call limit. Each lane ran one document at a time, but **on a shared machine** with
+Word batches, scoring and other sessions active (load average 35–77 on 12 cores), so read these as
+observations, not a throughput ranking. Fidelity for the same rows: `REPORT.md` in that folder.
+
+| Task | Tool | Docs run | OK | Failed | Timeouts | Median ms | p90 ms | p99 ms | Max ms |
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| compare | jubarte-0.11.0 | 400 | 400 | 0 | 0 | 51.6 | 409.5 | 2,089.6 | 7,927.8 |
+| compare | jubarte-0.12.0 | 400 | 400 | 0 | 0 | 37.8 | 169.5 | 860.7 | 4,470.3 |
+| compare | wordcraft | 400 | 400 | 0 | 0 | 14.5 | 22.7 | 84.1 | 159.4 |
+| compare | docxodus-12.6.5 | 400 | 391 | 9 | 9 | 8,206.8 | 27,580.2 | 53,606.3 | 114,902.6 |
+| convert | jubarte-0.11.0 | 400 | 400 | 0 | 0 | 27.5 | 108.7 | 293.9 | 432.8 |
+| convert | jubarte-0.12.0 | 400 | 400 | 0 | 0 | 28.3 | 96.9 | 292.1 | 395.3 |
+| convert | wordcraft | 400 | 400 | 0 | 0 | 41.2 | 84.6 | 193.6 | 493.2 |
+| convert | soffice | 400 | 398 | 2 | 0 | 1,894.5 | 3,818.2 | 6,104.2 | 6,612.1 |
+
 ## Render speed
 
 Distinct from generation: how long a web viewer takes to *render* a DOCX to a

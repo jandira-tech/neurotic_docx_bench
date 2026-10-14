@@ -1,0 +1,9 @@
+Emitted compare|wordcraft scored 392 failed 8 median CLI ms 14.47975
+Emitted compare|jubarte-0.11.0 scored 399 failed 1 median CLI ms 51.630063
+Emitted compare|jubarte-0.12.0 scored 395 failed 5 median CLI ms 37.8042285
+Emitted compare|docxodus-12.6.5 scored 369 failed 31 median CLI ms 8206.78725
+Emitted convert|wordcraft scored 400 failed 0 median CLI ms 41.1845
+Emitted convert|jubarte-0.11.0 scored 400 failed 0 median CLI ms 27.5314375
+Emitted convert|jubarte-0.12.0 scored 400 failed 0 median CLI ms 28.279729500000002
+Emitted convert|soffice scored 398 failed 2 median CLI ms 1894.456584
+Completed cohort result stores emitted; publication appends these fresh lines only

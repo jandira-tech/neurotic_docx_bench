@@ -1,0 +1,19 @@
+2026-10-14 02:31:37.544 | INFO     | word_pdf:preflight:2235 - [word] preflight: open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-10-14 02:31:37.547 | INFO     | __main__:redline_folders:728 - [redline] one_osascript=True pairs=12
+2026-10-14 02:31:37.557 | INFO     | __main__:_redline_batched:1012 - [batch] one osascript for 12 comparison(s)
+2026-10-14 02:31:42.561 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 3/12
+2026-10-14 02:31:47.567 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 9/12
+2026-10-14 02:31:49.339 | INFO     | __main__:_redline_batched:1041 - [batch] one osascript for 1 redline PDF(s)
+2026-10-14 02:31:49.545 | INFO     | word_pdf:_note_dialogs:774 - [watchdog] Microsoft Word shows button 'missing value'
+2026-10-14 02:31:50.408 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: 58a2de4812.docx → 58a2de4812.docx — open produced 2 new documents; refusing to guess
+2026-10-14 02:31:50.409 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: 5f69158474.docx → 5f69158474.docx — open produced 2 new documents; refusing to guess
+2026-10-14 02:31:50.409 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: 621637d747.docx → 621637d747.docx — open produced 2 new documents; refusing to guess
+2026-10-14 02:31:50.410 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: 63ec3a403e.docx → 63ec3a403e.docx — open produced 2 new documents; refusing to guess
+2026-10-14 02:31:50.410 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: 8157e7cb08.docx → 8157e7cb08.docx — open produced 2 new documents; refusing to guess
+2026-10-14 02:31:50.411 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: 8ac7b0a13c.docx → 8ac7b0a13c.docx — open produced 2 new documents; refusing to guess
+2026-10-14 02:31:50.411 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: 99740a096f.docx → 99740a096f.docx — open produced 2 new documents; refusing to guess
+2026-10-14 02:31:50.412 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: c0d5b06bcf.docx → c0d5b06bcf.docx — open produced 2 new documents; refusing to guess
+2026-10-14 02:31:50.412 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: ece42865e7.docx → ece42865e7.docx — open produced 2 new documents; refusing to guess
+2026-10-14 02:31:50.413 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: f70e805c70.docx → f70e805c70.docx — open produced 2 new documents; refusing to guess
+2026-10-14 02:31:50.413 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: fd70bcb5de.docx → fd70bcb5de.docx — open produced 2 new documents; refusing to guess
+2026-10-14 02:31:53.634 | INFO     | word_pdf:stop:907 - [watchdog] tally: declined=0 dismissed=0 granted=0 forwarded=0 alerts_seen=0

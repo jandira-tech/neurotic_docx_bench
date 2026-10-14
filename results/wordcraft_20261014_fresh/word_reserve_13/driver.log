@@ -1,0 +1,4 @@
+2026-10-14 02:42:02.743 | INFO     | word_pdf:preflight:2235 - [word] preflight: open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-10-14 02:42:02.746 | INFO     | __main__:redline_folders:728 - [redline] one_osascript=False pairs=1
+2026-10-14 02:42:04.226 | ERROR    | __main__:_redline_serial:809 - [1/1] FAIL: 429328c875.docx → 429328c875.docx — 2402:2519: execution error: Microsoft Word got an error: document "base__429328c875__vs__429328c875.docx" doesn’t understand the “compare” message. (-1708)
+2026-10-14 02:42:19.541 | INFO     | word_pdf:stop:907 - [watchdog] tally: declined=0 dismissed=0 granted=0 forwarded=0 alerts_seen=0

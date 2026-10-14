@@ -440,6 +440,17 @@ ranked. Thanks to houfu for the investigation.
 
 `visual_*` is not declared: safe-docx is not a layout/browser editor.
 
+### wordcraft (wordcraft-cli)
+
+| field | value |
+|---|---|
+| Upstream | [storytold/wordcraft](https://github.com/storytold/wordcraft), a clean-room Word reimplementation in Rust. Not affiliated with this bench. |
+| Pinned | **wordcraft-cli 0.6.1**, source commit `7dfa6b0ee2aeeafec004c51fdd2ab9a697da3cc4`, binary sha256 `b71aef4ee85a6ec2a59f6a0d5f8d16895c09c50d05a8c13e9654af5725781de5` |
+| Surface | Compare: `wordcraft-cli run --file <base> --cmd 'review.compare={"path":<next>,"author":"Redline","showIn":"original","level":"word","formatting":true,"caseChanges":true,"whiteSpace":true}' --save <out>`. Convert: `wordcraft-cli convert <src> <out.pdf> --markup` (comments and tracked changes shown, as in Word's oracle PDFs). |
+| Harness-assisted | No: one CLI call per document. Adapter I/O only (temp paths, a 120 s compare / 180 s convert timeout, failure recording). Its redline DOCX is exported to PDF by Word 16.115, like every comparison tool's. |
+| Known-unfixed | 8 of the 400 Wordcraft redlines are refused by Word in two fresh sessions ("Word experienced an error trying to open the file"); they are render failures and count as zero. All 400 conversions rendered. |
+| Measured (2026-10-14, `results/wordcraft_20261014_fresh/REPORT.md`) | Frozen 400 + 400 sample, fresh Word 16.115 oracles, 144 DPI, failures as zero. **Comparisons:** pagefair mean 46.01 (392/400 scored), against jubarte 0.11.0 76.75, jubarte 0.12.0 76.18, docxodus 12.6.5 66.99; jubarte 0.11.0 minus Wordcraft +30.74 (paired bootstrap 95% [+28.98, +32.57]). 118 of its 392 scored redlines have a page count different from Word's. **Conversions:** pagefair mean 55.18 (400/400), against jubarte 0.11.0 76.19, jubarte 0.12.0 79.89, LibreOffice 26.8.1.1 54.70 (soffice minus Wordcraft -0.48, 95% [-1.64, +0.70]). Median CLI latency 14.5 ms per comparison and 41.2 ms per conversion, on a loaded shared machine (`docs/SPEED.md`). jubarte is author-affiliated. |
+
 ## Standing rules
 
 1. A failure is attributed to a vendor **only** when their code ran and produced
