@@ -1,0 +1,202 @@
+[
+  {
+    "id": "with_comments_tracking__6e2576a091_docx_lots_of_comments__vs__2c0a2ac35f_double_spacing_bold_demo_id_paraid_overflow_redline_a6aab38897",
+    "state": "with_comments_tracking",
+    "cohort": "1",
+    "attempts": [
+      {
+        "folder": "aliasretry1_convert_01",
+        "staged_as": "ca6aab38897b99527",
+        "error": "Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid."
+      },
+      {
+        "folder": "aliasretry2_convert_01",
+        "staged_as": "ca6aab38897b99527",
+        "error": "Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid."
+      },
+      {
+        "folder": "convert_01",
+        "staged_as": "with_comments_tracking__6e2576a091_docx_lots_of_comments__vs__2c0a2ac35f_double_spacing_bold_demo_id_paraid_overflow_redline_a6aab38897",
+        "error": "Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid."
+      }
+    ],
+    "eligibility_label": "no fresh Word reference",
+    "label_scope": "Word could not compare/export it in this run; not proof of malformed OOXML",
+    "selection_uses_vendor_results": false
+  },
+  {
+    "id": "tracking_without_comments__0bbf11cf21_5a6c9a5cc654191fa574f474976ebfbfd60a2299dfb96ebe__vs__d825254fce_048c597c1da833b932c73e97755f2f8e8113d83aecd1f13e_redline_ef51261c54",
+    "state": "tracking_without_comments",
+    "cohort": "1",
+    "attempts": [
+      {
+        "folder": "aliasretry1_convert_01",
+        "staged_as": "cef51261c545f4d7e",
+        "error": "Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid."
+      },
+      {
+        "folder": "aliasretry2_convert_01",
+        "staged_as": "cef51261c545f4d7e",
+        "error": "Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid."
+      },
+      {
+        "folder": "convert_02",
+        "staged_as": "tracking_without_comments__0bbf11cf21_5a6c9a5cc654191fa574f474976ebfbfd60a2299dfb96ebe__vs__d825254fce_048c597c1da833b932c73e97755f2f8e8113d83aecd1f13e_redline_ef51261c54",
+        "error": "Microsoft Word got an error: document \"00038__tracking_without_comments__0bbf11cf21_5a6c9a5cc654191fa574f474976ebfbfd60a2299dfb96ebe__vs__d825254fce_048c597c1da833b932c73e97755f2f8e8113d83aecd1f13e_re"
+      }
+    ],
+    "eligibility_label": "no fresh Word reference",
+    "label_scope": "Word could not compare/export it in this run; not proof of malformed OOXML",
+    "selection_uses_vendor_results": false
+  },
+  {
+    "id": "with_comments_tracking__bde39e5d31_ab3_03_jub_with_base_word_comments_xml",
+    "state": "with_comments_tracking",
+    "cohort": "1",
+    "attempts": [
+      {
+        "folder": "aliasretry1_convert_01",
+        "staged_as": "cbde39e5d3146124f",
+        "error": "Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid."
+      },
+      {
+        "folder": "aliasretry2_convert_01",
+        "staged_as": "cbde39e5d3146124f",
+        "error": "Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid."
+      },
+      {
+        "folder": "convert_02",
+        "staged_as": "with_comments_tracking__bde39e5d31_ab3_03_jub_with_base_word_comments_xml",
+        "error": "Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid."
+      }
+    ],
+    "eligibility_label": "no fresh Word reference",
+    "label_scope": "Word could not compare/export it in this run; not proof of malformed OOXML",
+    "selection_uses_vendor_results": false
+  },
+  {
+    "id": "with_comments_tracking__ec3dd0df69_file_53__vs__94ed0def64_file_54_redline_c2380a4677",
+    "state": "with_comments_tracking",
+    "cohort": "2",
+    "attempts": [
+      {
+        "folder": "aliasretry1_convert_01",
+        "staged_as": "cc2380a4677be7e18",
+        "error": "Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid."
+      },
+      {
+        "folder": "aliasretry2_convert_01",
+        "staged_as": "cc2380a4677be7e18",
+        "error": "Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid."
+      },
+      {
+        "folder": "convert_03",
+        "staged_as": "with_comments_tracking__ec3dd0df69_file_53__vs__94ed0def64_file_54_redline_c2380a4677",
+        "error": "Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid."
+      }
+    ],
+    "eligibility_label": "no fresh Word reference",
+    "label_scope": "Word could not compare/export it in this run; not proof of malformed OOXML",
+    "selection_uses_vendor_results": false
+  },
+  {
+    "id": "with_comments_tracking__1072677c3a_file_6__vs__1b8ec2a8cd_file_7_redline_0b033b1c23",
+    "state": "with_comments_tracking",
+    "cohort": "2",
+    "attempts": [
+      {
+        "folder": "aliasretry1_convert_01",
+        "staged_as": "c0b033b1c23efb2cd",
+        "error": "Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid."
+      },
+      {
+        "folder": "aliasretry2_convert_01",
+        "staged_as": "c0b033b1c23efb2cd",
+        "error": "Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid."
+      },
+      {
+        "folder": "convert_03",
+        "staged_as": "with_comments_tracking__1072677c3a_file_6__vs__1b8ec2a8cd_file_7_redline_0b033b1c23",
+        "error": "Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid."
+      }
+    ],
+    "eligibility_label": "no fresh Word reference",
+    "label_scope": "Word could not compare/export it in this run; not proof of malformed OOXML",
+    "selection_uses_vendor_results": false
+  },
+  {
+    "id": "with_comments_tracking__4b3cd5613a_ab2_e_jub_with_word_settings",
+    "state": "with_comments_tracking",
+    "cohort": "2",
+    "attempts": [
+      {
+        "folder": "aliasretry1_convert_01",
+        "staged_as": "c4b3cd5613ac72826",
+        "error": "Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid."
+      },
+      {
+        "folder": "aliasretry2_convert_01",
+        "staged_as": "c4b3cd5613ac72826",
+        "error": "Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid."
+      },
+      {
+        "folder": "convert_04",
+        "staged_as": "with_comments_tracking__4b3cd5613a_ab2_e_jub_with_word_settings",
+        "error": "Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid."
+      }
+    ],
+    "eligibility_label": "no fresh Word reference",
+    "label_scope": "Word could not compare/export it in this run; not proof of malformed OOXML",
+    "selection_uses_vendor_results": false
+  },
+  {
+    "id": "with_comments_tracking__6e2576a091_docx_lots_of_comments__vs__2c0a2ac35f_double_spacing_bold_demo_id_paraid_overflow_redline_9382e03243",
+    "state": "with_comments_tracking",
+    "cohort": "2",
+    "attempts": [
+      {
+        "folder": "aliasretry1_convert_01",
+        "staged_as": "c9382e03243e3d929",
+        "error": "Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid."
+      },
+      {
+        "folder": "aliasretry2_convert_01",
+        "staged_as": "c9382e03243e3d929",
+        "error": "Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid."
+      },
+      {
+        "folder": "convert_04",
+        "staged_as": "with_comments_tracking__6e2576a091_docx_lots_of_comments__vs__2c0a2ac35f_double_spacing_bold_demo_id_paraid_overflow_redline_9382e03243",
+        "error": "Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid."
+      }
+    ],
+    "eligibility_label": "no fresh Word reference",
+    "label_scope": "Word could not compare/export it in this run; not proof of malformed OOXML",
+    "selection_uses_vendor_results": false
+  },
+  {
+    "id": "with_comments_tracking__3f91c8f0cd_file_9__vs__e3d833aef0_file_10_redline_db13a691da",
+    "state": "with_comments_tracking",
+    "cohort": "2",
+    "attempts": [
+      {
+        "folder": "aliasretry1_convert_01",
+        "staged_as": "cdb13a691da95dbd3",
+        "error": "Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid."
+      },
+      {
+        "folder": "aliasretry2_convert_01",
+        "staged_as": "cdb13a691da95dbd3",
+        "error": "Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid."
+      },
+      {
+        "folder": "convert_05",
+        "staged_as": "with_comments_tracking__3f91c8f0cd_file_9__vs__e3d833aef0_file_10_redline_db13a691da",
+        "error": "Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid."
+      }
+    ],
+    "eligibility_label": "no fresh Word reference",
+    "label_scope": "Word could not compare/export it in this run; not proof of malformed OOXML",
+    "selection_uses_vendor_results": false
+  }
+]

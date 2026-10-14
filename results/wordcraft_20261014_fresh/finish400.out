@@ -1,0 +1,54 @@
+<frozen site>:101: RuntimeWarning: Unexpected value in sys.prefix, expected /Users/arthrod/temp/T/neurotic_docx_bench/.venv, got /Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/../../.venv
+<frozen site>:101: RuntimeWarning: Unexpected value in sys.exec_prefix, expected /Users/arthrod/temp/T/neurotic_docx_bench/.venv, got /Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/../../.venv
+04:54:09 waiting for the first Word runner
+04:59:11 retry folders ['aliasretry1_convert_01', 'retry1_compare_01']
+04:59:11 RUN /Users/arthrod/temp/T/neurotic_docx_bench/.venv/bin/python /Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/run_word400.py aliasretry1
+05:07:14 RUN /Users/arthrod/temp/T/neurotic_docx_bench/.venv/bin/python /Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/build400.py status
+05:07:16 freeze short after retry 1: /wordcraft_20261014_fresh/build400.py", line 207, in <module>
+    elif cmd=='freeze':freeze()
+                       ~~~~~~^^
+  File "/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/build400.py", line 168, in freeze
+    assert not short,(kind,'short of targets',short)
+           ^^^^^^^^^
+AssertionError: ('compare', 'short of targets', {'tracking_without_comments': 96})
+
+05:07:17 RUN /Users/arthrod/temp/T/neurotic_docx_bench/.venv/bin/python /Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/run_word400.py aliasretry2
+05:11:04 frozen {
+ "compare": {
+  "n": 400,
+  "states": {
+   "tracking_without_comments": 245,
+   "with_comments_tracking": 150,
+   "with_comments_clean": 3,
+   "clean": 2
+  },
+  "by_cohort": {
+   "1": 174,
+   "2": 226
+  },
+  "excluded": 47,
+  "surplus_valid_unused": 60
+ },
+ "convert": {
+  "n": 400,
+  "states": {
+   "tracking_without_comments": 100,
+   "with_comments_clean": 100,
+   "with_comments_tracking": 100,
+   "clean": 100
+  },
+  "by_cohort": {
+   "1": 197,
+   "2": 203
+  },
+  "excluded": 8,
+  "surplus_valid_unused": 129
+ }
+}
+
+05:12:09 RENDER wordcraft word_pdf 400
+05:21:26 RENDER wordcraft word_pdf_retry 8
+05:23:21 rendered wordcraft 392 / 400 gen fail 0 render fail 8
+05:24:01 RENDER jubarte-0.11.0 word_pdf 400
+05:40:06 RENDER jubarte-0.11.0 word_pdf_retry 1
+05:40:51 rendered jubarte-0.11.0 399 / 400 gen fail 0 render fail 1

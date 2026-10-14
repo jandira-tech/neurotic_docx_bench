@@ -1,0 +1,95 @@
+▸ PDF quality is sticky: `save as … file format format PDF` inherits whatever 
+'Optimize for' you last chose in Word's own Save As dialog.
+  Open any document in Word once, File > Save As > PDF, and pick the SECOND 
+option, Best for printing.
+  That choice persists; this script cannot set it. Pass --no-check-preset to 
+stop seeing this.
+▸ A redline PDF shows tracked changes the way Word is currently set to show them
+(Review ▸ Markup display, and Print Markup).
+  Open one redline in Word by hand and confirm it looks right before running the
+batch — this script cannot set that for you.
+2026-10-14 02:27:08.933 | INFO     | word_pdf:preflight:2235 -  preflight: 
+open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-10-14 02:27:08.936 | INFO     | __main__:redline_folders:728 -  
+one_osascript=True pairs=13
+2026-10-14 02:27:08.955 | INFO     | __main__:_redline_batched:1012 -  one 
+osascript for 13 comparison(s)
+2026-10-14 02:27:13.958 | INFO     | word_pdf:_loop:1479 -  2/13
+2026-10-14 02:27:18.965 | INFO     | word_pdf:_loop:1479 -  6/13
+2026-10-14 02:27:23.972 | INFO     | word_pdf:_loop:1479 -  9/13
+2026-10-14 02:27:28.538 | INFO     | __main__:_redline_batched:1041 -  one 
+osascript for 1 redline PDF(s)
+2026-10-14 02:27:29.931 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+23c28907ad.docx → 23c28907ad.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-14 02:27:29.931 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+254bc964f4.docx → 254bc964f4.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-14 02:27:29.932 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+2c0433bdbc.docx → 2c0433bdbc.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-14 02:27:29.932 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+3303e707c8.docx → 3303e707c8.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-14 02:27:29.933 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+4a8b3c676a.docx → 4a8b3c676a.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-14 02:27:29.933 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+5bf3e7acbc.docx → 5bf3e7acbc.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-14 02:27:29.934 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+89c44edb8b.docx → 89c44edb8b.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-14 02:27:29.934 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+b0d09c67a7.docx → b0d09c67a7.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-14 02:27:29.934 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+b3cc5c1abe.docx → b3cc5c1abe.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-14 02:27:29.935 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+b799eadbeb.docx → b799eadbeb.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-14 02:27:29.935 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+f3f426dc89.docx → f3f426dc89.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-14 02:27:29.936 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+fedf795758.docx → fedf795758.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-14 02:27:30.219 | INFO     | word_pdf:_note_dialogs:774 -  Microsoft 
+Word shows button 'missing value'
+2026-10-14 02:27:32.938 | INFO     | word_pdf:stop:907 -  tally: declined=0 
+dismissed=0 granted=0 forwarded=0 alerts_seen=0
+             redline: A → B             
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━┓
+┃ outcome                      ┃ count ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━┩
+│ redlined                     │     1 │
+│ skipped (exists)             │     0 │
+│ failed                       │    12 │
+│ seconds per pair (batch avg) │   1.5 │
+│ total revisions              │    17 │
+└──────────────────────────────┴───────┘
+  FAIL 23c28907ad.docx → 23c28907ad.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL 254bc964f4.docx → 254bc964f4.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL 2c0433bdbc.docx → 2c0433bdbc.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL 3303e707c8.docx → 3303e707c8.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL 4a8b3c676a.docx → 4a8b3c676a.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL 5bf3e7acbc.docx → 5bf3e7acbc.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL 89c44edb8b.docx → 89c44edb8b.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL b0d09c67a7.docx → b0d09c67a7.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL b3cc5c1abe.docx → b3cc5c1abe.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL b799eadbeb.docx → b799eadbeb.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL f3f426dc89.docx → f3f426dc89.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL fedf795758.docx → fedf795758.docx: open produced 2 new documents; 
+refusing to guess

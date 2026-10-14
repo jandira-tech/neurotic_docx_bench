@@ -1,0 +1,12 @@
+convert jubarte-0.12.0 scoring 92 remaining, 308 complete; 0 missing
+jubarte-0.12.0 10 / 92 scored 318 failures 0 198s
+jubarte-0.12.0 20 / 92 scored 328 failures 0 372s
+jubarte-0.12.0 30 / 92 scored 338 failures 0 526s
+jubarte-0.12.0 40 / 92 scored 348 failures 0 605s
+jubarte-0.12.0 50 / 92 scored 358 failures 0 653s
+jubarte-0.12.0 60 / 92 scored 368 failures 0 721s
+jubarte-0.12.0 70 / 92 scored 378 failures 0 749s
+jubarte-0.12.0 80 / 92 scored 388 failures 0 800s
+jubarte-0.12.0 90 / 92 scored 398 failures 0 874s
+jubarte-0.12.0 92 / 92 scored 400 failures 0 897s
+saved /Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/convert/jubarte-0.12.0/scores.json

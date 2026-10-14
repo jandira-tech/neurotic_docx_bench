@@ -1,0 +1,6 @@
+2026-10-14 02:54:21.503 | INFO     | word_pdf:preflight:2235 - [word] preflight: open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-10-14 02:54:21.506 | INFO     | __main__:redline_folders:728 - [redline] one_osascript=True pairs=26
+2026-10-14 02:54:21.525 | INFO     | __main__:_redline_batched:1012 - [batch] one osascript for 26 comparison(s)
+2026-10-14 02:54:26.528 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 4/26
+2026-10-14 02:54:31.535 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 8/26
+2026-10-14 02:54:36.538 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 13/26

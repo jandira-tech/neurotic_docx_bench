@@ -1,0 +1,134 @@
+[
+  {
+    "excluded_id": "61a3912d74",
+    "replacement_id": "12fca96084",
+    "excluded_state": "with_comments_tracking",
+    "replacement_state": "with_comments_tracking",
+    "source_pool_preserved": true,
+    "page_band_preserved": true,
+    "selection_uses_vendor_results": false,
+    "state_change_reason": null,
+    "round": 5
+  },
+  {
+    "excluded_id": "371ef9feed",
+    "replacement_id": "e8fafc3cba",
+    "excluded_state": "with_comments_tracking",
+    "replacement_state": "with_comments_tracking",
+    "source_pool_preserved": true,
+    "page_band_preserved": true,
+    "selection_uses_vendor_results": false,
+    "state_change_reason": null,
+    "round": 5
+  },
+  {
+    "excluded_id": "fd436bda76",
+    "replacement_id": "bbdc7afc3e",
+    "excluded_state": "with_comments_tracking",
+    "replacement_state": "with_comments_tracking",
+    "source_pool_preserved": true,
+    "page_band_preserved": true,
+    "selection_uses_vendor_results": false,
+    "state_change_reason": null,
+    "round": 5
+  },
+  {
+    "excluded_id": "4a9a8d0b4a",
+    "replacement_id": "58b3bd3cbc",
+    "excluded_state": "with_comments_tracking",
+    "replacement_state": "with_comments_tracking",
+    "source_pool_preserved": true,
+    "page_band_preserved": true,
+    "selection_uses_vendor_results": false,
+    "state_change_reason": null,
+    "round": 5
+  },
+  {
+    "excluded_id": "e50d2db84c",
+    "replacement_id": "bc29cd91ef",
+    "excluded_state": "with_comments_tracking",
+    "replacement_state": "with_comments_tracking",
+    "source_pool_preserved": true,
+    "page_band_preserved": true,
+    "selection_uses_vendor_results": false,
+    "state_change_reason": null,
+    "round": 5
+  },
+  {
+    "excluded_id": "f194709881",
+    "replacement_id": "4d5de07b0e",
+    "excluded_state": "with_comments_tracking",
+    "replacement_state": "with_comments_tracking",
+    "source_pool_preserved": true,
+    "page_band_preserved": false,
+    "selection_uses_vendor_results": false,
+    "state_change_reason": null,
+    "round": 5
+  },
+  {
+    "excluded_id": "ce73379cca",
+    "replacement_id": "108332354e",
+    "excluded_state": "with_comments_tracking",
+    "replacement_state": "with_comments_tracking",
+    "source_pool_preserved": true,
+    "page_band_preserved": false,
+    "selection_uses_vendor_results": false,
+    "state_change_reason": null,
+    "round": 5
+  },
+  {
+    "excluded_id": "4d125fae2f",
+    "replacement_id": "c1ee3ae6c5",
+    "excluded_state": "tracking_without_comments",
+    "replacement_state": "tracking_without_comments",
+    "source_pool_preserved": true,
+    "page_band_preserved": true,
+    "selection_uses_vendor_results": false,
+    "state_change_reason": null,
+    "round": 5
+  },
+  {
+    "excluded_id": "b42b3ae070",
+    "replacement_id": "d95a06eed1",
+    "excluded_state": "tracking_without_comments",
+    "replacement_state": "tracking_without_comments",
+    "source_pool_preserved": true,
+    "page_band_preserved": true,
+    "selection_uses_vendor_results": false,
+    "state_change_reason": null,
+    "round": 5
+  },
+  {
+    "excluded_id": "c645866078",
+    "replacement_id": "f007ed2234",
+    "excluded_state": "tracking_without_comments",
+    "replacement_state": "tracking_without_comments",
+    "source_pool_preserved": true,
+    "page_band_preserved": true,
+    "selection_uses_vendor_results": false,
+    "state_change_reason": null,
+    "round": 5
+  },
+  {
+    "excluded_id": "7a2946950f",
+    "replacement_id": "f1ce33adb5",
+    "excluded_state": "tracking_without_comments",
+    "replacement_state": "tracking_without_comments",
+    "source_pool_preserved": true,
+    "page_band_preserved": true,
+    "selection_uses_vendor_results": false,
+    "state_change_reason": null,
+    "round": 5
+  },
+  {
+    "excluded_id": "766d6d6968",
+    "replacement_id": "e1f1792974",
+    "excluded_state": "tracking_without_comments",
+    "replacement_state": "tracking_without_comments",
+    "source_pool_preserved": true,
+    "page_band_preserved": true,
+    "selection_uses_vendor_results": false,
+    "state_change_reason": null,
+    "round": 5
+  }
+]

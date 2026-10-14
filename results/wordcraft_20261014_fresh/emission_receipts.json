@@ -1,0 +1,66 @@
+{
+  "compare|wordcraft": {
+    "id_run": "01a13a4e-d202-779b-ba08-861dfd526aa8",
+    "score_file_sha256": "6969aa4afa6babff1de9d6ee486686722017a897757f296027ded1ee2f1e0e96",
+    "timestamp": "2026-10-14T12:06:46.530024+00:00"
+  },
+  "speed|compare|wordcraft": {
+    "timestamp": "2026-10-14T12:06:46.530024+00:00"
+  },
+  "compare|jubarte-0.11.0": {
+    "id_run": "01a13a4e-d3cb-7630-ac04-e7215808ee56",
+    "score_file_sha256": "ed204998aa4f70551fc7b28a71b3a68dcb21c449e94b1e6694a68d535bc83762",
+    "timestamp": "2026-10-14T12:06:46.987100+00:00"
+  },
+  "speed|compare|jubarte-0.11.0": {
+    "timestamp": "2026-10-14T12:06:46.987100+00:00"
+  },
+  "compare|jubarte-0.12.0": {
+    "id_run": "01a13a4e-d41f-75a5-800d-28768e5243e1",
+    "score_file_sha256": "3f399fb53451e7f06d0a9836b8f91e7fe595bf640a501bec01fe6b83cc54646c",
+    "timestamp": "2026-10-14T12:06:47.071884+00:00"
+  },
+  "speed|compare|jubarte-0.12.0": {
+    "timestamp": "2026-10-14T12:06:47.071884+00:00"
+  },
+  "compare|docxodus-12.6.5": {
+    "id_run": "01a13a4e-d466-742e-8744-614ceb5aa3f5",
+    "score_file_sha256": "2b1e634cad4e1bd1d5bf8bf504e5f99d2ac926a02df39cc71c0237bc0362477b",
+    "timestamp": "2026-10-14T12:06:47.142006+00:00"
+  },
+  "speed|compare|docxodus-12.6.5": {
+    "timestamp": "2026-10-14T12:06:47.142006+00:00"
+  },
+  "convert|wordcraft": {
+    "id_run": "01a13a4e-d4a4-75ca-8a5f-b693c70cbf7a",
+    "score_file_sha256": "a086d8ff013c4fa6be785726598b5ede2daf20376bd8801b216eb23bf565e582",
+    "timestamp": "2026-10-14T12:06:47.204005+00:00"
+  },
+  "speed|convert|wordcraft": {
+    "timestamp": "2026-10-14T12:06:47.204005+00:00"
+  },
+  "convert|jubarte-0.11.0": {
+    "id_run": "01a13a4e-d4c5-7397-9536-b08679ff98e9",
+    "score_file_sha256": "3af107951debb04205ad6df2389ee4e221ce0425e7cbcd8a28fe6010abb70478",
+    "timestamp": "2026-10-14T12:06:47.237459+00:00"
+  },
+  "speed|convert|jubarte-0.11.0": {
+    "timestamp": "2026-10-14T12:06:47.237459+00:00"
+  },
+  "convert|jubarte-0.12.0": {
+    "id_run": "01a13a4e-d4e3-73cd-8f50-9a976b81e6de",
+    "score_file_sha256": "244a25d0ced00c8ce72a340908e5b4fd3635c179fad01ed8dfd28feec7f3c54f",
+    "timestamp": "2026-10-14T12:06:47.267778+00:00"
+  },
+  "speed|convert|jubarte-0.12.0": {
+    "timestamp": "2026-10-14T12:06:47.267778+00:00"
+  },
+  "convert|soffice": {
+    "id_run": "01a13a4e-d503-7486-8769-0f7d1acf4008",
+    "score_file_sha256": "5b24a0863eeb9367e437e84d2e99faf488c4211341a84807249285842abb281d",
+    "timestamp": "2026-10-14T12:06:47.298997+00:00"
+  },
+  "speed|convert|soffice": {
+    "timestamp": "2026-10-14T12:06:47.298997+00:00"
+  }
+}

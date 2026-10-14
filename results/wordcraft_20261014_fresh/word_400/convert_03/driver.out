@@ -1,0 +1,468 @@
+▸ PDF quality is sticky: `save as … file format format PDF` inherits whatever 
+'Optimize for' you last chose in Word's own Save As dialog.
+  Open any document in Word once, File > Save As > PDF, and pick the SECOND 
+option, Best for printing.
+  That choice persists; this script cannot set it. Pass --no-check-preset to 
+stop seeing this.
+2026-10-14 04:26:28.494 | INFO     | __main__:preflight:2235 -  preflight: 
+open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-10-14 04:26:28.542 | INFO     | __main__:convert_folder:1908 -  export: 
+one_osascript=True documents=112 accept_all=False reject_all=False
+2026-10-14 04:26:28.717 | INFO     | __main__:_convert_batched:2108 -  one 
+osascript for 112 document(s)
+2026-10-14 04:26:33.726 | INFO     | __main__:_loop:1479 -  3/112
+2026-10-14 04:26:38.733 | INFO     | __main__:_loop:1479 -  5/112
+2026-10-14 04:26:43.741 | INFO     | __main__:_loop:1479 -  9/112
+2026-10-14 04:26:48.747 | INFO     | __main__:_loop:1479 -  14/112
+2026-10-14 04:26:53.760 | INFO     | __main__:_loop:1479 -  18/112
+2026-10-14 04:26:58.767 | INFO     | __main__:_loop:1479 -  22/112
+2026-10-14 04:27:03.770 | INFO     | __main__:_loop:1479 -  26/112
+2026-10-14 04:27:08.790 | INFO     | __main__:_loop:1479 -  30/112
+2026-10-14 04:27:13.795 | INFO     | __main__:_loop:1479 -  35/112
+2026-10-14 04:27:18.807 | INFO     | __main__:_loop:1479 -  38/112
+2026-10-14 04:27:23.816 | INFO     | __main__:_loop:1479 -  41/112
+2026-10-14 04:27:28.819 | INFO     | __main__:_loop:1479 -  46/112
+2026-10-14 04:27:33.822 | INFO     | __main__:_loop:1479 -  50/112
+2026-10-14 04:27:38.824 | INFO     | __main__:_loop:1479 -  55/112
+2026-10-14 04:27:43.836 | INFO     | __main__:_loop:1479 -  59/112
+2026-10-14 04:27:48.842 | INFO     | __main__:_loop:1479 -  64/112
+2026-10-14 04:27:53.847 | INFO     | __main__:_loop:1479 -  68/112
+2026-10-14 04:27:58.857 | INFO     | __main__:_loop:1479 -  72/112
+2026-10-14 04:28:03.867 | INFO     | __main__:_loop:1479 -  76/112
+2026-10-14 04:28:08.874 | INFO     | __main__:_loop:1479 -  80/112
+2026-10-14 04:28:13.882 | INFO     | __main__:_loop:1479 -  86/112
+2026-10-14 04:28:18.888 | INFO     | __main__:_loop:1479 -  94/112
+2026-10-14 04:28:23.897 | INFO     | __main__:_loop:1479 -  100/112
+2026-10-14 04:28:28.903 | INFO     | __main__:_loop:1479 -  107/112
+2026-10-14 04:28:33.445 | WARNING  | __main__:run_batch_with_resume:1624 -  5 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 2, 0 of 3 stalled 
+passes used)
+2026-10-14 04:28:33.446 | WARNING  | __main__♻1068 -  restarting a Word this run
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-14 04:28:33.446 | WARNING  | __main__♻1074 -  recycling (restart 1)
+2026-10-14 04:28:33.728 | INFO     | __main__:_note_dialogs:774 -  Microsoft 
+Error Reporting shows button 'OK'
+2026-10-14 04:28:33.729 | INFO     | __main__:_note_dialogs:774 -  Microsoft 
+Error Reporting shows button 'More Information'
+2026-10-14 04:28:33.729 | INFO     | __main__:_note_dialogs:774 -  Microsoft 
+Error Reporting shows button 'missing value'
+2026-10-14 04:28:33.730 | INFO     | __main__:_note_dialogs:777 -  Microsoft 
+Error Reporting says: 'There was a problem with Microsoft Word and we apologize 
+for the inconvenience. | Microsoft Error Reporting'
+2026-10-14 04:28:34.466 | WARNING  | __main__:_loop_merp:888 -  error report 
+declined via 'OK'; Word said: "There was a problem with Microsoft Word and we 
+apologize for the inconvenience. | Microsoft Error Reporting"
+2026-10-14 04:28:38.393 | INFO     | __main__:_note_dialogs:774 -  Microsoft 
+Word shows button 'Cancel'
+2026-10-14 04:28:38.395 | INFO     | __main__:_note_dialogs:774 -  Microsoft 
+Word shows button 'missing value'
+2026-10-14 04:28:43.015 | INFO     | __main__:_loop:1479 -  3/5
+2026-10-14 04:28:47.418 | WARNING  | __main__:run_batch_with_resume:1624 -  2 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 3, 0 of 3 stalled 
+passes used)
+2026-10-14 04:28:47.427 | WARNING  | __main__♻1068 -  restarting a Word this run
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-14 04:28:47.428 | WARNING  | __main__♻1074 -  recycling (restart 2)
+2026-10-14 04:28:48.596 | WARNING  | __main__:_loop_merp:888 -  error report 
+declined via 'OK'; Word said: "There was a problem with Microsoft Word and we 
+apologize for the inconvenience. | Microsoft Error Reporting"
+2026-10-14 04:28:57.359 | INFO     | __main__:_loop:1479 -  0/2
+2026-10-14 04:28:57.767 | WARNING  | __main__:run_batch_with_resume:1624 -  1 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 4, 0 of 3 stalled 
+passes used)
+2026-10-14 04:28:57.768 | WARNING  | __main__♻1068 -  restarting a Word this run
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-14 04:28:57.769 | WARNING  | __main__♻1074 -  recycling (restart 3)
+2026-10-14 04:28:58.806 | WARNING  | __main__:_loop_merp:888 -  error report 
+declined via 'OK'; Word said: "There was a problem with Microsoft Word and we 
+apologize for the inconvenience. | Microsoft Error Reporting"
+2026-10-14 04:29:07.631 | INFO     | __main__:_loop:1479 -  0/1
+2026-10-14 04:29:08.408 | ERROR    | __main__:_convert_batched:2153 -  FAIL: 
+tracking_without_comments__00f467c010_0008753aa70a6a7b929aa1958001da41574c2d407e
+5b9863__vs__bd3824dd1e_000ee64ef7226d353297888f59a251e24ce5d776fea000fa_redline_
+2e24b0f4a3.docx — Microsoft Word got an error: document 
+"00054__tracking_without_comments__00f467c010_0008753aa70a6a7b929aa1958001da4157
+4c2d407e5b9863__vs__bd3824dd1e_000ee64ef7226d353297888f59a251e24ce5d776fea000fa_
+re
+2026-10-14 04:29:08.414 | ERROR    | __main__:_convert_batched:2153 -  FAIL: 
+tracking_without_comments__19313bb0d2_013bfd9bed003f93622f5b45095bb7471499aea576
+b0e48e__vs__2773adf157_0004c94ca2a8684d47449bb0e7abf87de1df71a7e6543252_redline_
+855fc409d3.docx — Microsoft Word got an error: document 
+"00058__tracking_without_comments__19313bb0d2_013bfd9bed003f93622f5b45095bb74714
+99aea576b0e48e__vs__2773adf157_0004c94ca2a8684d47449bb0e7abf87de1df71a7e6543252_
+re
+2026-10-14 04:29:08.417 | ERROR    | __main__:_convert_batched:2153 -  FAIL: 
+tracking_without_comments__19891583af_000f23dc2592a0044f1da2e4f2166c6b41e8fde6a6
+6a1988__vs__2773adf157_0004c94ca2a8684d47449bb0e7abf87de1df71a7e6543252_redline_
+e97f1c7c8f.docx — Microsoft Word got an error: document 
+"00059__tracking_without_comments__19891583af_000f23dc2592a0044f1da2e4f2166c6b41
+e8fde6a66a1988__vs__2773adf157_0004c94ca2a8684d47449bb0e7abf87de1df71a7e6543252_
+re
+2026-10-14 04:29:08.419 | ERROR    | __main__:_convert_batched:2153 -  FAIL: 
+tracking_without_comments__1c5bd81def_super_editor__multiple_nodes_in_list_79d91
+5a2__vs__0e1d01ec7d_super_editor__doc_with_graphs_diagrams_rotated_e_redline_6e8
+9035e56.docx — Microsoft Word got an error: document 
+"00060__tracking_without_comments__1c5bd81def_super_editor__multiple_nodes_in_li
+st_79d915a2__vs__0e1d01ec7d_super_editor__doc_with_graphs_diagrams_rotated_e_red
+li
+2026-10-14 04:29:08.422 | ERROR    | __main__:_convert_batched:2153 -  FAIL: 
+tracking_without_comments__2b4475cba6_0021f639e5dbf6c217c8d81a7ac3374624ff9901a5
+d4b200__vs__342f364d46_001342333d45627868f4dc5282abbba4598a91b4a7584b08_redline_
+04b7d19a3a.docx — Microsoft Word got an error: document 
+"00062__tracking_without_comments__2b4475cba6_0021f639e5dbf6c217c8d81a7ac3374624
+ff9901a5d4b200__vs__342f364d46_001342333d45627868f4dc5282abbba4598a91b4a7584b08_
+re
+2026-10-14 04:29:08.426 | ERROR    | __main__:_convert_batched:2153 -  FAIL: 
+tracking_without_comments__2ba392cdd2_super_editor__broken_list_missing_items_36
+b4199e__vs__1c5bd81def_super_editor__multiple_nodes_in_list_79d915a2_redline_b88
+ba7adc8.docx — Microsoft Word got an error: document 
+"00063__tracking_without_comments__2ba392cdd2_super_editor__broken_list_missing_
+items_36b4199e__vs__1c5bd81def_super_editor__multiple_nodes_in_list_79d915a2_red
+li
+2026-10-14 04:29:08.431 | ERROR    | __main__:_convert_batched:2153 -  FAIL: 
+tracking_without_comments__3754ca7e23_track_changes_suggesting_title_id_paraid_o
+verflo__vs__1f0fb35694_training_materials_onboarding_program_suggesting_redline_
+bde3fc3193.docx — Microsoft Word got an error: document 
+"00066__tracking_without_comments__3754ca7e23_track_changes_suggesting_title_id_
+paraid_overflo__vs__1f0fb35694_training_materials_onboarding_program_suggesting_
+re
+2026-10-14 04:29:08.432 | ERROR    | __main__:_convert_batched:2153 -  FAIL: 
+tracking_without_comments__38694026fb_0003b3ae2b115676d918e72f694790ddb64563721b
+b4a48d__vs__bd3824dd1e_000ee64ef7226d353297888f59a251e24ce5d776fea000fa_redline_
+31186537d8.docx — Microsoft Word got an error: document 
+"00067__tracking_without_comments__38694026fb_0003b3ae2b115676d918e72f694790ddb6
+4563721bb4a48d__vs__bd3824dd1e_000ee64ef7226d353297888f59a251e24ce5d776fea000fa_
+re
+2026-10-14 04:29:08.433 | ERROR    | __main__:_convert_batched:2153 -  FAIL: 
+tracking_without_comments__3c47f1b463_8dcbefa6e9bcf0c292392ca7fda1d9f2260ea724f9
+ad5f98__vs__f400cafcba_6565bfe1c9b7b19a2feedc7c358db69a32ed064149f2920f_redline_
+b00e0b4340.docx — Microsoft Word got an error: document 
+"00068__tracking_without_comments__3c47f1b463_8dcbefa6e9bcf0c292392ca7fda1d9f226
+0ea724f9ad5f98__vs__f400cafcba_6565bfe1c9b7b19a2feedc7c358db69a32ed064149f2920f_
+re
+2026-10-14 04:29:08.435 | ERROR    | __main__:_convert_batched:2153 -  FAIL: 
+tracking_without_comments__438e423482_track_changes_suggesting_italic_id_paraid_
+overfl__vs__9f56ca58a1_track_changes_suggesting_title_id_paraid_overflo_redline_
+73e6a51032.docx — Microsoft Word got an error: document 
+"00070__tracking_without_comments__438e423482_track_changes_suggesting_italic_id
+_paraid_overfl__vs__9f56ca58a1_track_changes_suggesting_title_id_paraid_overflo_
+re
+2026-10-14 04:29:08.436 | ERROR    | __main__:_convert_batched:2153 -  FAIL: 
+tracking_without_comments__491a257507_blue_bold_centered_demo_id_paraid_overflow
+__vs__da68abdf72_blue_centered_title_demo_style_default_missing_redline_3b9982e4
+1f.docx — Microsoft Word got an error: document 
+"00071__tracking_without_comments__491a257507_blue_bold_centered_demo_id_paraid_
+overflow__vs__da68abdf72_blue_centered_title_demo_style_default_missing_redline_
+3b
+2026-10-14 04:29:08.437 | ERROR    | __main__:_convert_batched:2153 -  FAIL: 
+tracking_without_comments__4f1b13334b_0002768ad2e3174d9c557d30d4a7a8d70ae4062e52
+383747__vs__bd3824dd1e_000ee64ef7226d353297888f59a251e24ce5d776fea000fa_redline_
+77a403d02f.docx — Microsoft Word got an error: document 
+"00072__tracking_without_comments__4f1b13334b_0002768ad2e3174d9c557d30d4a7a8d70a
+e4062e52383747__vs__bd3824dd1e_000ee64ef7226d353297888f59a251e24ce5d776fea000fa_
+re
+2026-10-14 04:29:08.441 | ERROR    | __main__:_convert_batched:2153 -  FAIL: 
+tracking_without_comments__5d185fb0dd_006ab612b3ae2e0b1915746c660d9ea64842d89c43
+4e0a09__vs__5203829c7a_001cc92b88566d5f930fe57f25813c0bf52a7bdc72c217d0_redline_
+d99bbaa767.docx — Microsoft Word got an error: document 
+"00077__tracking_without_comments__5d185fb0dd_006ab612b3ae2e0b1915746c660d9ea648
+42d89c434e0a09__vs__5203829c7a_001cc92b88566d5f930fe57f25813c0bf52a7bdc72c217d0_
+re
+2026-10-14 04:29:08.442 | ERROR    | __main__:_convert_batched:2153 -  FAIL: 
+tracking_without_comments__628ec1cb76_00a9d81709806bc220522f9b062f226e19ba256e43
+6493b1__vs__5203829c7a_001cc92b88566d5f930fe57f25813c0bf52a7bdc72c217d0_redline_
+35e6aad724.docx — Microsoft Word got an error: document 
+"00078__tracking_without_comments__628ec1cb76_00a9d81709806bc220522f9b062f226e19
+ba256e436493b1__vs__5203829c7a_001cc92b88566d5f930fe57f25813c0bf52a7bdc72c217d0_
+re
+2026-10-14 04:29:08.446 | ERROR    | __main__:_convert_batched:2153 -  FAIL: 
+tracking_without_comments__6fffde4ae2_000bf66110e841e1d2c2e862fc7db869b8d410586a
+d12d0d__vs__2e04202552_000e3e7bd2d6215fc7b469cc3e296c1b2a510bc1abc7e0fd_redline_
+03b751f3db.docx — Microsoft Word got an error: document 
+"00080__tracking_without_comments__6fffde4ae2_000bf66110e841e1d2c2e862fc7db869b8
+d410586ad12d0d__vs__2e04202552_000e3e7bd2d6215fc7b469cc3e296c1b2a510bc1abc7e0fd_
+re
+2026-10-14 04:29:08.447 | ERROR    | __main__:_convert_batched:2153 -  FAIL: 
+tracking_without_comments__762b93bdb0_0107d2107b381c077b42490f7ff21e861a60c27ba3
+2886ca__vs__2773adf157_0004c94ca2a8684d47449bb0e7abf87de1df71a7e6543252_redline_
+1c8343b903.docx — Microsoft Word got an error: document 
+"00081__tracking_without_comments__762b93bdb0_0107d2107b381c077b42490f7ff21e861a
+60c27ba32886ca__vs__2773adf157_0004c94ca2a8684d47449bb0e7abf87de1df71a7e6543252_
+re
+2026-10-14 04:29:08.448 | ERROR    | __main__:_convert_batched:2153 -  FAIL: 
+tracking_without_comments__7e685cbab1_super_editor__ooxml_underline_rstyle_linke
+d_comb__vs__1bdbf15f5a_super_editor__orderedlist_interrupted1_a3cd0dd3_redline_a
+726b099a8.docx — Microsoft Word got an error: document 
+"00082__tracking_without_comments__7e685cbab1_super_editor__ooxml_underline_rsty
+le_linked_comb__vs__1bdbf15f5a_super_editor__orderedlist_interrupted1_a3cd0dd3_r
+ed
+2026-10-14 04:29:08.450 | ERROR    | __main__:_convert_batched:2153 -  FAIL: 
+tracking_without_comments__83a0cec5ca_cc594ee0903acbfa9207a40e3f40a94e75a31b6cde
+dde4a2__vs__e3d87c5d40_57d3e8f2af09e8376ceb1fb6068ba542964c0cdc936c7995_redline_
+15a27d9c50.docx — Microsoft Word got an error: document 
+"00083__tracking_without_comments__83a0cec5ca_cc594ee0903acbfa9207a40e3f40a94e75
+a31b6cdedde4a2__vs__e3d87c5d40_57d3e8f2af09e8376ceb1fb6068ba542964c0cdc936c7995_
+re
+2026-10-14 04:29:08.453 | ERROR    | __main__:_convert_batched:2153 -  FAIL: 
+tracking_without_comments__926de38fde_6902d1d33bfc6ace15261771f39ddaa744cbf06f4e
+c3bf8b__vs__7209f54d75_6c5db378781787f7200117e9f8fcb4ca177e6cb11c01bad7_redline_
+82d548bdea.docx — Microsoft Word got an error: document 
+"00086__tracking_without_comments__926de38fde_6902d1d33bfc6ace15261771f39ddaa744
+cbf06f4ec3bf8b__vs__7209f54d75_6c5db378781787f7200117e9f8fcb4ca177e6cb11c01bad7_
+re
+2026-10-14 04:29:08.457 | ERROR    | __main__:_convert_batched:2153 -  FAIL: 
+tracking_without_comments__9e148c8a5b_087cca64f59816ae7a72cf215df3f3504386e00522
+3fda16__vs__e015887f5e_21349517e3ede36c589762c10778e9389afe8cfeef122b6c_redline_
+450945a41c.docx — Microsoft Word got an error: document 
+"00089__tracking_without_comments__9e148c8a5b_087cca64f59816ae7a72cf215df3f35043
+86e005223fda16__vs__e015887f5e_21349517e3ede36c589762c10778e9389afe8cfeef122b6c_
+re
+2026-10-14 04:29:08.460 | ERROR    | __main__:_convert_batched:2153 -  FAIL: 
+tracking_without_comments__a4d89532a6_07303e5ce18e115211dfb2914becfb8f5c40306f16
+210a9d__vs__272aa04df8_0ad28cd5ea99b3ad2a2953ac0fda5e8a12e57d26d7822ac8_redline_
+357b5237e5.docx — Microsoft Word got an error: document 
+"00090__tracking_without_comments__a4d89532a6_07303e5ce18e115211dfb2914becfb8f5c
+40306f16210a9d__vs__272aa04df8_0ad28cd5ea99b3ad2a2953ac0fda5e8a12e57d26d7822ac8_
+re
+2026-10-14 04:29:08.467 | ERROR    | __main__:_convert_batched:2153 -  FAIL: 
+tracking_without_comments__d09a2f8509_00b5aa69a6c33b2725953348488d62605dc209411d
+01f80a__vs__1424386e9b_017447de83753a0e3b7afc659df038ef56972925336c6a5b_redline_
+84ab4181b4.docx — Microsoft Word got an error: document 
+"00096__tracking_without_comments__d09a2f8509_00b5aa69a6c33b2725953348488d62605d
+c209411d01f80a__vs__1424386e9b_017447de83753a0e3b7afc659df038ef56972925336c6a5b_
+re
+2026-10-14 04:29:08.471 | ERROR    | __main__:_convert_batched:2153 -  FAIL: 
+tracking_without_comments__e51fcdfdbe_employee_review_john_smith_suggesting_inse
+rtions__vs__b1564f6aaf_font_color_blue_demo_style_default_missing_redline_30eb0f
+2233.docx — Microsoft Word got an error: document 
+"00100__tracking_without_comments__e51fcdfdbe_employee_review_john_smith_suggest
+ing_insertions__vs__b1564f6aaf_font_color_blue_demo_style_default_missing_redlin
+e_
+2026-10-14 04:29:08.472 | ERROR    | __main__:_convert_batched:2153 -  FAIL: 
+tracking_without_comments__ef7218d9e8_001893584bf94ff30c98db48cb8a0ea0ea5abc048f
+3e1a4d__vs__1424386e9b_017447de83753a0e3b7afc659df038ef56972925336c6a5b_redline_
+d7ea5ec958.docx — Microsoft Word got an error: document 
+"00102__tracking_without_comments__ef7218d9e8_001893584bf94ff30c98db48cb8a0ea0ea
+5abc048f3e1a4d__vs__1424386e9b_017447de83753a0e3b7afc659df038ef56972925336c6a5b_
+re
+2026-10-14 04:29:08.476 | ERROR    | __main__:_convert_batched:2153 -  FAIL: 
+with_comments_tracking__1072677c3a_file_6__vs__1b8ec2a8cd_file_7_redline_0b033b1
+c23.docx — Word crashed on it in 2 passes: Microsoft Word got an error: 
+Connection is invalid.
+2026-10-14 04:29:08.479 | ERROR    | __main__:_convert_batched:2153 -  FAIL: 
+with_comments_tracking__5c207ef361_super_editor__font_formatting_runs_8be3565a__
+vs__bb9c5a8bd5_doc_api_stories__table_style_options_roundtrip_1_redline_34e52d37
+ea.docx — Microsoft Word got an error: document 
+"00109__with_comments_tracking__5c207ef361_super_editor__font_formatting_runs_8b
+e3565a__vs__bb9c5a8bd5_doc_api_stories__table_style_options_roundtrip_1_redline_
+34
+2026-10-14 04:29:08.482 | ERROR    | __main__:_convert_batched:2153 -  FAIL: 
+with_comments_tracking__ec3dd0df69_file_53__vs__94ed0def64_file_54_redline_c2380
+a4677.docx — Word crashed on it in 2 passes: Microsoft Word got an error: 
+Connection is invalid.
+2026-10-14 04:29:09.218 | WARNING  | __main__:_loop_merp:888 -  error report 
+declined via 'OK'; Word said: "There was a problem with Microsoft Word and we 
+apologize for the inconvenience. | Microsoft Error Reporting"
+2026-10-14 04:29:09.225 | INFO     | __main__:stop:907 -  tally: declined=0 
+dismissed=4 granted=0 forwarded=0 alerts_seen=1
+                DOCX → PDF:                 
+/Users/arthrod/temp/T/neurotic_docx_bench/re
+sults/wordcraft_20261014_fresh/word_400/conv
+                ert_03/docx                 
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━┓
+┃ outcome                          ┃ count ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━┩
+│ converted                        │    85 │
+│ skipped (exists)                 │     0 │
+│ failed                           │    27 │
+│ seconds per document (batch avg) │   1.4 │
+└──────────────────────────────────┴───────┘
+  FAIL 
+tracking_without_comments__00f467c010_0008753aa70a6a7b929aa1958001da41574c2d407e
+5b9863__vs__bd3824dd1e_000ee64ef7226d353297888f59a251e24ce5d776fea000fa_redline_
+2e24b0f4a3.docx: Microsoft Word got an error: document 
+"00054__tracking_without_comments__00f467c010_0008753aa70a6a7b929aa1958001da4157
+4c2d407e5b9863__vs__bd3824dd1e_000ee64ef7226d353297888f59a251e24ce5d776fea000fa_
+re
+  FAIL 
+tracking_without_comments__19313bb0d2_013bfd9bed003f93622f5b45095bb7471499aea576
+b0e48e__vs__2773adf157_0004c94ca2a8684d47449bb0e7abf87de1df71a7e6543252_redline_
+855fc409d3.docx: Microsoft Word got an error: document 
+"00058__tracking_without_comments__19313bb0d2_013bfd9bed003f93622f5b45095bb74714
+99aea576b0e48e__vs__2773adf157_0004c94ca2a8684d47449bb0e7abf87de1df71a7e6543252_
+re
+  FAIL 
+tracking_without_comments__19891583af_000f23dc2592a0044f1da2e4f2166c6b41e8fde6a6
+6a1988__vs__2773adf157_0004c94ca2a8684d47449bb0e7abf87de1df71a7e6543252_redline_
+e97f1c7c8f.docx: Microsoft Word got an error: document 
+"00059__tracking_without_comments__19891583af_000f23dc2592a0044f1da2e4f2166c6b41
+e8fde6a66a1988__vs__2773adf157_0004c94ca2a8684d47449bb0e7abf87de1df71a7e6543252_
+re
+  FAIL 
+tracking_without_comments__1c5bd81def_super_editor__multiple_nodes_in_list_79d91
+5a2__vs__0e1d01ec7d_super_editor__doc_with_graphs_diagrams_rotated_e_redline_6e8
+9035e56.docx: Microsoft Word got an error: document 
+"00060__tracking_without_comments__1c5bd81def_super_editor__multiple_nodes_in_li
+st_79d915a2__vs__0e1d01ec7d_super_editor__doc_with_graphs_diagrams_rotated_e_red
+li
+  FAIL 
+tracking_without_comments__2b4475cba6_0021f639e5dbf6c217c8d81a7ac3374624ff9901a5
+d4b200__vs__342f364d46_001342333d45627868f4dc5282abbba4598a91b4a7584b08_redline_
+04b7d19a3a.docx: Microsoft Word got an error: document 
+"00062__tracking_without_comments__2b4475cba6_0021f639e5dbf6c217c8d81a7ac3374624
+ff9901a5d4b200__vs__342f364d46_001342333d45627868f4dc5282abbba4598a91b4a7584b08_
+re
+  FAIL 
+tracking_without_comments__2ba392cdd2_super_editor__broken_list_missing_items_36
+b4199e__vs__1c5bd81def_super_editor__multiple_nodes_in_list_79d915a2_redline_b88
+ba7adc8.docx: Microsoft Word got an error: document 
+"00063__tracking_without_comments__2ba392cdd2_super_editor__broken_list_missing_
+items_36b4199e__vs__1c5bd81def_super_editor__multiple_nodes_in_list_79d915a2_red
+li
+  FAIL 
+tracking_without_comments__3754ca7e23_track_changes_suggesting_title_id_paraid_o
+verflo__vs__1f0fb35694_training_materials_onboarding_program_suggesting_redline_
+bde3fc3193.docx: Microsoft Word got an error: document 
+"00066__tracking_without_comments__3754ca7e23_track_changes_suggesting_title_id_
+paraid_overflo__vs__1f0fb35694_training_materials_onboarding_program_suggesting_
+re
+  FAIL 
+tracking_without_comments__38694026fb_0003b3ae2b115676d918e72f694790ddb64563721b
+b4a48d__vs__bd3824dd1e_000ee64ef7226d353297888f59a251e24ce5d776fea000fa_redline_
+31186537d8.docx: Microsoft Word got an error: document 
+"00067__tracking_without_comments__38694026fb_0003b3ae2b115676d918e72f694790ddb6
+4563721bb4a48d__vs__bd3824dd1e_000ee64ef7226d353297888f59a251e24ce5d776fea000fa_
+re
+  FAIL 
+tracking_without_comments__3c47f1b463_8dcbefa6e9bcf0c292392ca7fda1d9f2260ea724f9
+ad5f98__vs__f400cafcba_6565bfe1c9b7b19a2feedc7c358db69a32ed064149f2920f_redline_
+b00e0b4340.docx: Microsoft Word got an error: document 
+"00068__tracking_without_comments__3c47f1b463_8dcbefa6e9bcf0c292392ca7fda1d9f226
+0ea724f9ad5f98__vs__f400cafcba_6565bfe1c9b7b19a2feedc7c358db69a32ed064149f2920f_
+re
+  FAIL 
+tracking_without_comments__438e423482_track_changes_suggesting_italic_id_paraid_
+overfl__vs__9f56ca58a1_track_changes_suggesting_title_id_paraid_overflo_redline_
+73e6a51032.docx: Microsoft Word got an error: document 
+"00070__tracking_without_comments__438e423482_track_changes_suggesting_italic_id
+_paraid_overfl__vs__9f56ca58a1_track_changes_suggesting_title_id_paraid_overflo_
+re
+  FAIL 
+tracking_without_comments__491a257507_blue_bold_centered_demo_id_paraid_overflow
+__vs__da68abdf72_blue_centered_title_demo_style_default_missing_redline_3b9982e4
+1f.docx: Microsoft Word got an error: document 
+"00071__tracking_without_comments__491a257507_blue_bold_centered_demo_id_paraid_
+overflow__vs__da68abdf72_blue_centered_title_demo_style_default_missing_redline_
+3b
+  FAIL 
+tracking_without_comments__4f1b13334b_0002768ad2e3174d9c557d30d4a7a8d70ae4062e52
+383747__vs__bd3824dd1e_000ee64ef7226d353297888f59a251e24ce5d776fea000fa_redline_
+77a403d02f.docx: Microsoft Word got an error: document 
+"00072__tracking_without_comments__4f1b13334b_0002768ad2e3174d9c557d30d4a7a8d70a
+e4062e52383747__vs__bd3824dd1e_000ee64ef7226d353297888f59a251e24ce5d776fea000fa_
+re
+  FAIL 
+tracking_without_comments__5d185fb0dd_006ab612b3ae2e0b1915746c660d9ea64842d89c43
+4e0a09__vs__5203829c7a_001cc92b88566d5f930fe57f25813c0bf52a7bdc72c217d0_redline_
+d99bbaa767.docx: Microsoft Word got an error: document 
+"00077__tracking_without_comments__5d185fb0dd_006ab612b3ae2e0b1915746c660d9ea648
+42d89c434e0a09__vs__5203829c7a_001cc92b88566d5f930fe57f25813c0bf52a7bdc72c217d0_
+re
+  FAIL 
+tracking_without_comments__628ec1cb76_00a9d81709806bc220522f9b062f226e19ba256e43
+6493b1__vs__5203829c7a_001cc92b88566d5f930fe57f25813c0bf52a7bdc72c217d0_redline_
+35e6aad724.docx: Microsoft Word got an error: document 
+"00078__tracking_without_comments__628ec1cb76_00a9d81709806bc220522f9b062f226e19
+ba256e436493b1__vs__5203829c7a_001cc92b88566d5f930fe57f25813c0bf52a7bdc72c217d0_
+re
+  FAIL 
+tracking_without_comments__6fffde4ae2_000bf66110e841e1d2c2e862fc7db869b8d410586a
+d12d0d__vs__2e04202552_000e3e7bd2d6215fc7b469cc3e296c1b2a510bc1abc7e0fd_redline_
+03b751f3db.docx: Microsoft Word got an error: document 
+"00080__tracking_without_comments__6fffde4ae2_000bf66110e841e1d2c2e862fc7db869b8
+d410586ad12d0d__vs__2e04202552_000e3e7bd2d6215fc7b469cc3e296c1b2a510bc1abc7e0fd_
+re
+  FAIL 
+tracking_without_comments__762b93bdb0_0107d2107b381c077b42490f7ff21e861a60c27ba3
+2886ca__vs__2773adf157_0004c94ca2a8684d47449bb0e7abf87de1df71a7e6543252_redline_
+1c8343b903.docx: Microsoft Word got an error: document 
+"00081__tracking_without_comments__762b93bdb0_0107d2107b381c077b42490f7ff21e861a
+60c27ba32886ca__vs__2773adf157_0004c94ca2a8684d47449bb0e7abf87de1df71a7e6543252_
+re
+  FAIL 
+tracking_without_comments__7e685cbab1_super_editor__ooxml_underline_rstyle_linke
+d_comb__vs__1bdbf15f5a_super_editor__orderedlist_interrupted1_a3cd0dd3_redline_a
+726b099a8.docx: Microsoft Word got an error: document 
+"00082__tracking_without_comments__7e685cbab1_super_editor__ooxml_underline_rsty
+le_linked_comb__vs__1bdbf15f5a_super_editor__orderedlist_interrupted1_a3cd0dd3_r
+ed
+  FAIL 
+tracking_without_comments__83a0cec5ca_cc594ee0903acbfa9207a40e3f40a94e75a31b6cde
+dde4a2__vs__e3d87c5d40_57d3e8f2af09e8376ceb1fb6068ba542964c0cdc936c7995_redline_
+15a27d9c50.docx: Microsoft Word got an error: document 
+"00083__tracking_without_comments__83a0cec5ca_cc594ee0903acbfa9207a40e3f40a94e75
+a31b6cdedde4a2__vs__e3d87c5d40_57d3e8f2af09e8376ceb1fb6068ba542964c0cdc936c7995_
+re
+  FAIL 
+tracking_without_comments__926de38fde_6902d1d33bfc6ace15261771f39ddaa744cbf06f4e
+c3bf8b__vs__7209f54d75_6c5db378781787f7200117e9f8fcb4ca177e6cb11c01bad7_redline_
+82d548bdea.docx: Microsoft Word got an error: document 
+"00086__tracking_without_comments__926de38fde_6902d1d33bfc6ace15261771f39ddaa744
+cbf06f4ec3bf8b__vs__7209f54d75_6c5db378781787f7200117e9f8fcb4ca177e6cb11c01bad7_
+re
+  FAIL 
+tracking_without_comments__9e148c8a5b_087cca64f59816ae7a72cf215df3f3504386e00522
+3fda16__vs__e015887f5e_21349517e3ede36c589762c10778e9389afe8cfeef122b6c_redline_
+450945a41c.docx: Microsoft Word got an error: document 
+"00089__tracking_without_comments__9e148c8a5b_087cca64f59816ae7a72cf215df3f35043
+86e005223fda16__vs__e015887f5e_21349517e3ede36c589762c10778e9389afe8cfeef122b6c_
+re
+  FAIL 
+tracking_without_comments__a4d89532a6_07303e5ce18e115211dfb2914becfb8f5c40306f16
+210a9d__vs__272aa04df8_0ad28cd5ea99b3ad2a2953ac0fda5e8a12e57d26d7822ac8_redline_
+357b5237e5.docx: Microsoft Word got an error: document 
+"00090__tracking_without_comments__a4d89532a6_07303e5ce18e115211dfb2914becfb8f5c
+40306f16210a9d__vs__272aa04df8_0ad28cd5ea99b3ad2a2953ac0fda5e8a12e57d26d7822ac8_
+re
+  FAIL 
+tracking_without_comments__d09a2f8509_00b5aa69a6c33b2725953348488d62605dc209411d
+01f80a__vs__1424386e9b_017447de83753a0e3b7afc659df038ef56972925336c6a5b_redline_
+84ab4181b4.docx: Microsoft Word got an error: document 
+"00096__tracking_without_comments__d09a2f8509_00b5aa69a6c33b2725953348488d62605d
+c209411d01f80a__vs__1424386e9b_017447de83753a0e3b7afc659df038ef56972925336c6a5b_
+re
+  FAIL 
+tracking_without_comments__e51fcdfdbe_employee_review_john_smith_suggesting_inse
+rtions__vs__b1564f6aaf_font_color_blue_demo_style_default_missing_redline_30eb0f
+2233.docx: Microsoft Word got an error: document 
+"00100__tracking_without_comments__e51fcdfdbe_employee_review_john_smith_suggest
+ing_insertions__vs__b1564f6aaf_font_color_blue_demo_style_default_missing_redlin
+e_
+  FAIL 
+tracking_without_comments__ef7218d9e8_001893584bf94ff30c98db48cb8a0ea0ea5abc048f
+3e1a4d__vs__1424386e9b_017447de83753a0e3b7afc659df038ef56972925336c6a5b_redline_
+d7ea5ec958.docx: Microsoft Word got an error: document 
+"00102__tracking_without_comments__ef7218d9e8_001893584bf94ff30c98db48cb8a0ea0ea
+5abc048f3e1a4d__vs__1424386e9b_017447de83753a0e3b7afc659df038ef56972925336c6a5b_
+re
+  FAIL 
+with_comments_tracking__1072677c3a_file_6__vs__1b8ec2a8cd_file_7_redline_0b033b1
+c23.docx: Word crashed on it in 2 passes: Microsoft Word got an error: 
+Connection is invalid.
+  FAIL 
+with_comments_tracking__5c207ef361_super_editor__font_formatting_runs_8be3565a__
+vs__bb9c5a8bd5_doc_api_stories__table_style_options_roundtrip_1_redline_34e52d37
+ea.docx: Microsoft Word got an error: document 
+"00109__with_comments_tracking__5c207ef361_super_editor__font_formatting_runs_8b
+e3565a__vs__bb9c5a8bd5_doc_api_stories__table_style_options_roundtrip_1_redline_
+34
+  FAIL 
+with_comments_tracking__ec3dd0df69_file_53__vs__94ed0def64_file_54_redline_c2380
+a4677.docx: Word crashed on it in 2 passes: Microsoft Word got an error: 
+Connection is invalid.
