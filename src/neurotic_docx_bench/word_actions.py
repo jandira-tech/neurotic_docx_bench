@@ -19,6 +19,7 @@ from pathlib import Path
 
 from neurotic_docx_bench import hub
 from neurotic_docx_bench.word_corpus import COMPARISONS_NAME, POOLS_DIR, copy_file
+from neurotic_docx_bench.word_outputs import find_output
 
 SPLIT_NAME = "accept_reject_split.csv"
 SUFFIX = {"accept_all": "_accepted_tracking", "reject_all": "_rejected_tracking"}
@@ -66,13 +67,18 @@ def build(root: Path, dest: Path, outputs: Mapping[str, Path]) -> dict[str, dict
     for row in rows:
         action, key = row["action"], row["key"]
         folder = Path(outputs[action])
-        origin_docx = folder / f"{key}{SUFFIX[action]}.docx"
-        origin_pdf = folder / f"{key}{SUFFIX[action]}.pdf"
+        # word_pdf.py names what Word wrote `<key><suffix>_byword.docx|.pdf` and
+        # records it in the folder's manifest.jsonl; the finder reads that back,
+        # and still resolves the pre-suffix spelling for older output folders.
+        def find(ext: str, key: str = key, action: str = action, folder: Path = folder) -> Path | None:
+            return find_output(folder, f"{key}.docx", kind=action, ext=ext, suffix=SUFFIX[action])
+
+        origin_docx, origin_pdf = find(".docx"), find(".pdf")
         docx = pdf = ""
-        if origin_docx.is_file():
+        if origin_docx is not None:
             docx = f"{action}/docx/{key}.docx"
             _file(origin_docx, dest / docx)
-        if origin_docx.is_file() and origin_pdf.is_file():
+        if origin_docx is not None and origin_pdf is not None:
             pdf = f"{action}/pdf/{key}.pdf"
             _file(origin_pdf, dest / pdf)
         status = "ok" if pdf else "no_pdf" if docx else "failed"
@@ -85,8 +91,8 @@ def build(root: Path, dest: Path, outputs: Mapping[str, Path]) -> dict[str, dict
             docx,
             pdf,
             sources.get(key, ""),
-            _rel(origin_docx, root) if docx else "",
-            _rel(origin_pdf, root) if pdf else "",
+            _rel(origin_docx, root) if docx and origin_docx else "",
+            _rel(origin_pdf, root) if pdf and origin_pdf else "",
         ))
     for action, entries in listed.items():
         with (dest / POOLS_DIR / f"{action}.csv").open("w", newline="") as fh:

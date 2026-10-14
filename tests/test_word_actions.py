@@ -100,3 +100,31 @@ def test_stage_clones_what_a_list_names(tmp_path: Path) -> None:
     assert sorted(p.name for p in (out / "docx").iterdir()) == ["a1_x.docx", "b2_y.docx"]
     assert [p.name for p in (out / "pdf").iterdir()] == ["a1_x.pdf"]
     assert word_corpus.stage_list(dest / "pools/l.csv", out) == 2  # idempotent
+
+
+def test_finds_word_s_suffixed_outputs_through_the_manifest(tmp_path: Path) -> None:
+    """word_pdf.py (2026-10-14) writes `<key>_accepted_tracking_byword.*` and manifest.jsonl."""
+    import json
+    import shutil
+
+    root, dest = _tree(tmp_path)
+    acc = root / "work/acc"
+    for old in acc.glob(f"{K1}_accepted_tracking.*"):
+        old.rename(old.with_name(f"{K1}_accepted_tracking_byword{old.suffix}"))
+    (acc / f"{K3}_accepted_tracking.docx").rename(acc / f"{K3}_accepted_tracking_byword.docx")
+    lines = [
+        {"status": "ok", "kind": "accept_all", "original_filename": f"{K1}.docx",
+         "path_out": str(acc / f"{K1}_accepted_tracking_byword.pdf")},
+        {"status": "ok", "kind": "accept_all", "original_filename": f"{K1}.docx",
+         "path_out": str(acc / f"{K1}_accepted_tracking_byword.docx")},
+    ]
+    (acc / "manifest.jsonl").write_text("".join(json.dumps(ln) + "\n" for ln in lines))
+    counts = word_actions.build(
+        root, dest, {"accept_all": acc, "reject_all": root / "work/rej"},
+    )
+    assert counts == {"accept_all": {"ok": 1, "no_pdf": 1}, "reject_all": {"ok": 1}}
+    assert (dest / f"accept_all/pdf/{K1}.pdf").read_bytes() == b"%PDF acc 1"
+    rows = _rows(dest / "pools/accept_all.csv")
+    assert rows[K1]["origin_pdf"] == f"work/acc/{K1}_accepted_tracking_byword.pdf"
+    assert rows[K3]["status"] == "no_pdf"
+    shutil.rmtree(root)
