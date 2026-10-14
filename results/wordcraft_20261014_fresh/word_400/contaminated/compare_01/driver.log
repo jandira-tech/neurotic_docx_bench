@@ -1,0 +1,104 @@
+2026-10-14 03:02:07.164 | INFO     | word_pdf:preflight:2315 - [word] preflight: open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-10-14 03:02:07.218 | INFO     | __main__:redline_folders:755 - [redline] one_osascript=True pairs=76
+2026-10-14 03:02:07.307 | INFO     | __main__:_redline_batched:1042 - [batch] one osascript for 76 comparison(s)
+2026-10-14 03:02:12.313 | INFO     | word_pdf:_loop:1510 - [batch compare 1] 1/76
+2026-10-14 03:02:17.315 | INFO     | word_pdf:_loop:1510 - [batch compare 1] 3/76
+2026-10-14 03:02:27.327 | INFO     | word_pdf:_loop:1510 - [batch compare 1] 6/76
+2026-10-14 03:02:32.335 | INFO     | word_pdf:_loop:1510 - [batch compare 1] 10/76
+2026-10-14 03:02:37.344 | INFO     | word_pdf:_loop:1510 - [batch compare 1] 56/76
+2026-10-14 03:02:39.419 | INFO     | __main__:_redline_batched:1072 - [batch] one osascript for 7 redline PDF(s)
+2026-10-14 03:02:40.048 | WARNING  | word_pdf:run_batch_with_resume:1668 - [batch pdf] 7 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 2, 0 of 3 stalled passes used)
+2026-10-14 03:02:40.049 | WARNING  | word_pdf:recycle:1093 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 03:02:40.050 | WARNING  | word_pdf:recycle:1099 - [word] recycling (restart 1)
+2026-10-14 03:02:48.984 | WARNING  | word_pdf:run_batch_with_resume:1668 - [batch pdf] 7 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 3, 0 of 3 stalled passes used)
+2026-10-14 03:02:48.985 | WARNING  | word_pdf:recycle:1093 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 03:02:48.986 | WARNING  | word_pdf:recycle:1099 - [word] recycling (restart 2)
+2026-10-14 03:02:51.850 | INFO     | word_pdf:_note_dialogs:798 - [watchdog] Microsoft Word shows button 'Yes'
+2026-10-14 03:02:51.852 | INFO     | word_pdf:_note_dialogs:798 - [watchdog] Microsoft Word shows button 'No'
+2026-10-14 03:02:51.852 | INFO     | word_pdf:_note_dialogs:801 - [watchdog] Microsoft Word says: 'Word experienced an error trying to open the file.\nTry these suggestions.\n* Check the file permissions for the document or drive.\n* Make sure there is sufficient free memory and disk space.\n* Open the file with the Text Recovery converter.\n(00001__docxodus__01a11a49_0044.docx)'
+2026-10-14 03:02:57.912 | WARNING  | word_pdf:run_batch_with_resume:1668 - [batch pdf] 5 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 4, 0 of 3 stalled passes used)
+2026-10-14 03:02:57.914 | WARNING  | word_pdf:recycle:1093 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 03:02:57.914 | WARNING  | word_pdf:recycle:1099 - [word] recycling (restart 3)
+2026-10-14 03:03:11.018 | INFO     | word_pdf:_loop:1510 - [batch pdf 4] 0/5
+2026-10-14 03:03:12.862 | WARNING  | word_pdf:_decline_repair:825 - [watchdog] repair prompt seen but no button could be pressed; Word said: "Word experienced an error trying to open the file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00001__docxodus__01a11a49_0044.docx)"
+2026-10-14 03:03:14.367 | ERROR    | __main__:_redline_batched:1127 - [batch] FAIL: 0113adc8d9.docx → 0113adc8d9.docx — redline saved but PDF export failed: Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-14 03:03:14.383 | ERROR    | __main__:_redline_batched:1127 - [batch] FAIL: 03f6215960.docx → 03f6215960.docx — redline saved but PDF export failed: Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-14 03:03:14.386 | ERROR    | __main__:_redline_batched:1127 - [batch] FAIL: 0480d8c02b.docx → 0480d8c02b.docx — redline saved but PDF export failed: Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-14 03:03:14.880 | ERROR    | __main__:_redline_batched:1127 - [batch] FAIL: 049d8405bc.docx → 049d8405bc.docx — redline saved but PDF export failed: Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-14 03:03:14.886 | ERROR    | __main__:_redline_batched:1127 - [batch] FAIL: 09b9bd2f9d.docx → 09b9bd2f9d.docx — redline saved but PDF export failed: Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-14 03:03:15.646 | ERROR    | __main__:_redline_batched:1127 - [batch] FAIL: 0bc720e5fa.docx → 0bc720e5fa.docx — redline saved but PDF export failed: Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-14 03:03:15.647 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: 11e0d1cba7.docx → 11e0d1cba7.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:15.648 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: 120ab3f7db.docx → 120ab3f7db.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:15.649 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: 147dc2c797.docx → 147dc2c797.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:15.649 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: 14b2a2feb0.docx → 14b2a2feb0.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:15.650 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: 188355c39c.docx → 188355c39c.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:15.651 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: 190d8596bf.docx → 190d8596bf.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:15.652 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: 1c131721c0.docx → 1c131721c0.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:15.653 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: 1f7ff80e43.docx → 1f7ff80e43.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:15.654 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: 206e9d2d17.docx → 206e9d2d17.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:15.655 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: 263ae47a8c.docx → 263ae47a8c.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:15.659 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: 2a104af71e.docx → 2a104af71e.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:15.660 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: 2e391c5378.docx → 2e391c5378.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:15.661 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: 309cb522fb.docx → 309cb522fb.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:15.661 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: 31b13fd92e.docx → 31b13fd92e.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:15.662 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: 3243a33101.docx → 3243a33101.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:15.670 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: 331221556e.docx → 331221556e.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:15.674 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: 34fc0e1cec.docx → 34fc0e1cec.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:15.675 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: 3b09d6afde.docx → 3b09d6afde.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:15.675 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: 3f9670141d.docx → 3f9670141d.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:15.676 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: 4886ca0d0a.docx → 4886ca0d0a.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:15.676 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: 4ce2d5cacc.docx → 4ce2d5cacc.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:15.677 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: 4f964d209a.docx → 4f964d209a.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:15.678 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: 55a1e5dbc0.docx → 55a1e5dbc0.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:15.678 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: 59d7431859.docx → 59d7431859.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:15.679 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: 5a100df35e.docx → 5a100df35e.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:15.679 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: 603ef0419b.docx → 603ef0419b.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:15.680 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: 618d22429e.docx → 618d22429e.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:15.680 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: 63b66681b7.docx → 63b66681b7.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:15.681 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: 6f6e4ae3e8.docx → 6f6e4ae3e8.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:15.681 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: 7040578ca5.docx → 7040578ca5.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:15.682 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: 749f24fa0e.docx → 749f24fa0e.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:15.682 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: 76f4a58792.docx → 76f4a58792.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:15.683 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: 7a2946950f.docx → 7a2946950f.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:15.683 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: 7abcebfa2c.docx → 7abcebfa2c.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:15.684 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: 7b1b3baaba.docx → 7b1b3baaba.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:15.684 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: 8084ef19f0.docx → 8084ef19f0.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:15.685 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: 8203bbecec.docx → 8203bbecec.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:15.685 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: 899bf9a97e.docx → 899bf9a97e.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:15.686 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: 8ad8e10ef6.docx → 8ad8e10ef6.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:15.686 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: 94f418b300.docx → 94f418b300.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:15.687 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: 9b4b07d062.docx → 9b4b07d062.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:15.687 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: 9b9c5719f3.docx → 9b9c5719f3.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:15.688 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: 9c27cc7cb6.docx → 9c27cc7cb6.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:15.688 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: 9d0b6ef8ad.docx → 9d0b6ef8ad.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:15.692 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: 9f142ac84a.docx → 9f142ac84a.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:15.693 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: a1ca73e72e.docx → a1ca73e72e.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:15.694 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: a5063c32c8.docx → a5063c32c8.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:15.696 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: a8fd90ecd6.docx → a8fd90ecd6.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:15.696 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: ac2d091203.docx → ac2d091203.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:15.697 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: af750bce28.docx → af750bce28.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:15.698 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: b11e674787.docx → b11e674787.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:15.699 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: b553be7ee0.docx → b553be7ee0.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:15.700 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: b956ebc218.docx → b956ebc218.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:15.701 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: bb20890039.docx → bb20890039.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:15.702 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: cb0a7d2c98.docx → cb0a7d2c98.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:15.702 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: d6dcdfe5e4.docx → d6dcdfe5e4.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:15.703 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: d789ef173d.docx → d789ef173d.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:15.704 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: e5c6ee8155.docx → e5c6ee8155.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:15.705 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: e7880d69e4.docx → e7880d69e4.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:15.705 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: e9f3bae698.docx → e9f3bae698.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:15.706 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: ec822ae7cf.docx → ec822ae7cf.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:15.707 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: ecea12416c.docx → ecea12416c.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:15.707 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: f189e94409.docx → f189e94409.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:15.708 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: f3319e24f8.docx → f3319e24f8.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:15.708 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: f4aff67570.docx → f4aff67570.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:15.709 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: f7b0b075cd.docx → f7b0b075cd.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:15.709 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: f852ffac2f.docx → f852ffac2f.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:15.710 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: fd9169c091.docx → fd9169c091.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:15.710 | ERROR    | __main__:_redline_batched:1105 - [batch] FAIL: fee04c36ab.docx → fee04c36ab.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:03:18.718 | INFO     | word_pdf:stop:932 - [watchdog] tally: declined=0 dismissed=0 granted=0 forwarded=0 alerts_seen=1

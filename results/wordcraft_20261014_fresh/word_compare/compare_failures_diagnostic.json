@@ -1,0 +1,198 @@
+{
+  "stats": {
+    "failed": {
+      "tracked_base": 15,
+      "protected_base": 1,
+      "strict_namespace": 5,
+      "n": 30
+    },
+    "succeeded": {
+      "tracked_base": 32,
+      "protected_base": 3,
+      "strict_namespace": 0,
+      "n": 170
+    }
+  },
+  "rows": [
+    {
+      "id": "2d65e392ab",
+      "base": "with_comments_tracking/docx/97c3dd2e86_docx_lots_of_comments_addition_redline_addition",
+      "tracked_base": true,
+      "protected_base": false
+    },
+    {
+      "id": "f0875f6d19",
+      "base": "clean/docx/8441c4ae21_sd_2517_localized_heading_styles",
+      "tracked_base": false,
+      "protected_base": false
+    },
+    {
+      "id": "3d39f0120d",
+      "base": "with_comments_tracking/docx/bd768e6c17_file_74",
+      "tracked_base": true,
+      "protected_base": false
+    },
+    {
+      "id": "062340d04a",
+      "base": "clean/docx/902a69f0e4_super_editor__line_space_table_9b1ee54b",
+      "tracked_base": false,
+      "protected_base": false
+    },
+    {
+      "id": "dde913904e",
+      "base": "clean/docx/fbe14959b0_000f5278175aa01c2b9517b07e8a087014e4a05ab3e24f41",
+      "tracked_base": false,
+      "protected_base": false
+    },
+    {
+      "id": "581907f19c",
+      "base": "with_comments_tracking/docx/3f91c8f0cd_file_9",
+      "tracked_base": true,
+      "protected_base": false
+    },
+    {
+      "id": "cbf73c2d81",
+      "base": "with_comments_tracking/docx/be5bf990cb_file_16",
+      "tracked_base": true,
+      "protected_base": false
+    },
+    {
+      "id": "f8286525f6",
+      "base": "tracking_without_comments/docx/df9ffe9a8c_file_16",
+      "tracked_base": true,
+      "protected_base": false
+    },
+    {
+      "id": "4eff11f045",
+      "base": "with_comments_clean/docx/df097720f7_file_131",
+      "tracked_base": false,
+      "protected_base": false
+    },
+    {
+      "id": "60ef61f086",
+      "base": "clean/docx/7b076416b0_sectpr_headerref",
+      "tracked_base": false,
+      "protected_base": false
+    },
+    {
+      "id": "c2380a4677",
+      "base": "with_comments_tracking/docx/ec3dd0df69_file_53",
+      "tracked_base": true,
+      "protected_base": false
+    },
+    {
+      "id": "0f031c23c3",
+      "base": "with_comments_tracking/docx/b175a00954_file_27",
+      "tracked_base": true,
+      "protected_base": false
+    },
+    {
+      "id": "9382e03243",
+      "base": "with_comments_clean/docx/6e2576a091_docx_lots_of_comments",
+      "tracked_base": false,
+      "protected_base": false
+    },
+    {
+      "id": "92075b7449",
+      "base": "with_comments_tracking/docx/e57ad0eaa4_docx_lots_of_comments_addition",
+      "tracked_base": true,
+      "protected_base": false
+    },
+    {
+      "id": "db0f90defc",
+      "base": "clean/docx/4c3999a0d9_2f1e47b67f38e08aa66f8c6667e88dac17cc31f5e32ce219",
+      "tracked_base": false,
+      "protected_base": false
+    },
+    {
+      "id": "4d40d1f136",
+      "base": "with_comments_tracking/docx/9c6ebd430d_file_185",
+      "tracked_base": false,
+      "protected_base": false
+    },
+    {
+      "id": "60e784f2de",
+      "base": "with_comments_tracking/docx/9f5481078e_docx_lots_of_comments_addition_redline",
+      "tracked_base": true,
+      "protected_base": false
+    },
+    {
+      "id": "bc6f8076f9",
+      "base": "clean/docx/c090b9f082_file_8",
+      "tracked_base": false,
+      "protected_base": false
+    },
+    {
+      "id": "61959b1953",
+      "base": "with_comments_tracking/docx/ab85c77154_file_115",
+      "tracked_base": false,
+      "protected_base": false
+    },
+    {
+      "id": "64c527dde8",
+      "base": "clean/docx/5320da1b60_file_30",
+      "tracked_base": false,
+      "protected_base": true
+    },
+    {
+      "id": "6b74ac1ae6",
+      "base": "with_comments_tracking/docx/60697d46b7_strict01",
+      "tracked_base": false,
+      "protected_base": false
+    },
+    {
+      "id": "0b033b1c23",
+      "base": "with_comments_tracking/docx/1072677c3a_file_6",
+      "tracked_base": true,
+      "protected_base": false
+    },
+    {
+      "id": "34ffddfe47",
+      "base": "with_comments_tracking/docx/60697d46b7_strict01",
+      "tracked_base": false,
+      "protected_base": false
+    },
+    {
+      "id": "6de20376e8",
+      "base": "clean/docx/52220b20c3_00a54bff7e15af78fe7cfc20219c28cb208fde807bd28d44",
+      "tracked_base": false,
+      "protected_base": false
+    },
+    {
+      "id": "d23d9c8cc7",
+      "base": "tracking_without_comments/docx/32328b55db_docx_lots_of_comments_addition_removal_redline_r",
+      "tracked_base": true,
+      "protected_base": false
+    },
+    {
+      "id": "bbc3223232",
+      "base": "with_comments_tracking/docx/468d82c575_c690df8dcf29bb8af8646ae10768e3ca46e8a9ef5b586428",
+      "tracked_base": true,
+      "protected_base": false
+    },
+    {
+      "id": "ff24600d87",
+      "base": "with_comments_tracking/docx/b8115d0dab_file_100",
+      "tracked_base": false,
+      "protected_base": false
+    },
+    {
+      "id": "e6e61fc33f",
+      "base": "tracking_without_comments/docx/c9822f1008_docx_lots_of_comments_addition_redline",
+      "tracked_base": true,
+      "protected_base": false
+    },
+    {
+      "id": "a836952933",
+      "base": "with_comments_tracking/docx/24ad1aa6e5_docx_lots_of_comments_addition_removal",
+      "tracked_base": true,
+      "protected_base": false
+    },
+    {
+      "id": "58cd08049b",
+      "base": "with_comments_tracking/docx/ee9bfc2650_docx_lots_of_comments_addition_removal_redline_r",
+      "tracked_base": true,
+      "protected_base": false
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+COMPARE Word eligible 195 / 200
+Staged 5 reserve pairs in /Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/word_reserve_08
+RUN word_redline.py word_reserve_08
+2026-10-14 02:38:30.670 | WARNING  | word_pdf:recycle:1068 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 02:38:30.670 | WARNING  | word_pdf:recycle:1074 - [word] recycling (restart 1)
+COMPARE Word eligible 197 / 200; failures 3
+Staged 3 reserve pairs in /Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/word_reserve_09
+RUN word_redline.py word_reserve_09
+2026-10-14 02:39:13.952 | WARNING  | word_pdf:recycle:1068 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 02:39:13.952 | WARNING  | word_pdf:recycle:1074 - [word] recycling (restart 1)
+COMPARE Word eligible 198 / 200; failures 2
+Staged 2 reserve pairs in /Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/word_reserve_10
+RUN word_redline.py word_reserve_10
+2026-10-14 02:39:45.393 | WARNING  | word_pdf:recycle:1068 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 02:39:45.393 | WARNING  | word_pdf:recycle:1074 - [word] recycling (restart 1)
+COMPARE Word eligible 199 / 200; failures 1
+Staged 1 reserve pairs in /Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/word_reserve_11
+RUN word_redline.py word_reserve_11
+2026-10-14 02:40:58.715 | WARNING  | word_pdf:recycle:1068 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 02:40:58.715 | WARNING  | word_pdf:recycle:1074 - [word] recycling (restart 1)
+COMPARE Word eligible 199 / 200; failures 1
+Staged 1 reserve pairs in /Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/word_reserve_12
+RUN word_redline.py word_reserve_12
+2026-10-14 02:41:32.042 | WARNING  | word_pdf:recycle:1068 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 02:41:32.042 | WARNING  | word_pdf:recycle:1074 - [word] recycling (restart 1)
+COMPARE Word eligible 199 / 200; failures 1
+Staged 1 reserve pairs in /Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/word_reserve_13
+RUN word_redline.py word_reserve_13
+2026-10-14 02:41:57.270 | WARNING  | word_pdf:recycle:1068 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 02:41:57.270 | WARNING  | word_pdf:recycle:1074 - [word] recycling (restart 1)
+COMPARE Word eligible 199 / 200; failures 1
+Staged 1 reserve pairs in /Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/word_reserve_14
+RUN word_redline.py word_reserve_14
+2026-10-14 02:42:20.638 | WARNING  | word_pdf:recycle:1068 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 02:42:20.638 | WARNING  | word_pdf:recycle:1074 - [word] recycling (restart 1)
+COMPARE Word eligible 199 / 200; failures 1
+Staged 1 reserve pairs in /Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/word_reserve_15
+RUN word_redline.py word_reserve_15
+2026-10-14 02:42:37.582 | WARNING  | word_pdf:recycle:1068 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 02:42:37.582 | WARNING  | word_pdf:recycle:1074 - [word] recycling (restart 1)
+COMPARE Word eligible 199 / 200; failures 1
+Staged 1 reserve pairs in /Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/word_reserve_16
+RUN word_redline.py word_reserve_16
+2026-10-14 02:42:51.429 | WARNING  | word_pdf:recycle:1068 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 02:42:51.429 | WARNING  | word_pdf:recycle:1074 - [word] recycling (restart 1)
+COMPARE Word eligible 199 / 200; failures 1
+Staged 1 reserve pairs in /Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/word_reserve_17
+RUN word_redline.py word_reserve_17
+2026-10-14 02:43:07.161 | WARNING  | word_pdf:recycle:1068 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 02:43:07.161 | WARNING  | word_pdf:recycle:1074 - [word] recycling (restart 1)
+COMPARE Word eligible 199 / 200; failures 1
+Staged 1 reserve pairs in /Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/word_reserve_18
+RUN word_redline.py word_reserve_18
+2026-10-14 02:43:23.983 | WARNING  | word_pdf:recycle:1068 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 02:43:23.983 | WARNING  | word_pdf:recycle:1074 - [word] recycling (restart 1)
+COMPARE Word eligible 199 / 200; failures 1
+Staged 1 reserve pairs in /Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/word_reserve_19
+RUN word_redline.py word_reserve_19
+2026-10-14 02:43:39.857 | WARNING  | word_pdf:recycle:1068 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 02:43:39.857 | WARNING  | word_pdf:recycle:1074 - [word] recycling (restart 1)

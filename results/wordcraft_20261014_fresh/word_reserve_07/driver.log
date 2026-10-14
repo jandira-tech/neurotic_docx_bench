@@ -1,0 +1,17 @@
+2026-10-14 02:33:25.938 | INFO     | word_pdf:preflight:2235 - [word] preflight: open_documents=0 started_clean=True launched_by_us=False close_documents=False
+2026-10-14 02:33:25.940 | INFO     | __main__:redline_folders:728 - [redline] one_osascript=True pairs=11
+2026-10-14 02:33:25.952 | INFO     | __main__:_redline_batched:1012 - [batch] one osascript for 11 comparison(s)
+2026-10-14 02:33:30.955 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 0/11
+2026-10-14 02:33:40.970 | INFO     | word_pdf:_nudge:1450 - [focus] item 1/11 not finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 02:33:50.982 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 5/11
+2026-10-14 02:33:55.988 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 9/11
+2026-10-14 02:33:57.163 | INFO     | __main__:_redline_batched:1041 - [batch] one osascript for 4 redline PDF(s)
+2026-10-14 02:33:59.664 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: 2f1434be75.docx → 2f1434be75.docx — open produced 2 new documents; refusing to guess
+2026-10-14 02:33:59.665 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: 37c978d405.docx → 37c978d405.docx — open produced 2 new documents; refusing to guess
+2026-10-14 02:33:59.665 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: 4ce07ffaec.docx → 4ce07ffaec.docx — open produced 2 new documents; refusing to guess
+2026-10-14 02:33:59.665 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: 603ef0419b.docx → 603ef0419b.docx — open produced 2 new documents; refusing to guess
+2026-10-14 02:33:59.666 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: 8018df6bdf.docx → 8018df6bdf.docx — open produced 2 new documents; refusing to guess
+2026-10-14 02:33:59.666 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: 875b3fba58.docx → 875b3fba58.docx — open produced 2 new documents; refusing to guess
+2026-10-14 02:33:59.673 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: ba3b77bee3.docx → ba3b77bee3.docx — redline is missing revision 0% of that file; the two sides are not averaged
+2026-10-14 02:33:59.674 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: e8aedc3a02.docx → e8aedc3a02.docx — Microsoft Word got an error: document "00010__base__e8aedc3a02__vs__e8aedc3a02.docx" doesn’t understand the “compare” message.
+2026-10-14 02:34:02.982 | INFO     | word_pdf:stop:907 - [watchdog] tally: declined=0 dismissed=0 granted=0 forwarded=0 alerts_seen=0

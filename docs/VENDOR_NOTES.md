@@ -440,6 +440,17 @@ ranked. Thanks to houfu for the investigation.
 
 `visual_*` is not declared: safe-docx is not a layout/browser editor.
 
+### wordcraft (wordcraft-cli)
+
+| field | value |
+|---|---|
+| Upstream | [storytold/wordcraft](https://github.com/storytold/wordcraft), a clean-room Word reimplementation in Rust. Not affiliated with this bench. |
+| Pinned | **wordcraft-cli 0.6.1**, source commit `7dfa6b0ee2aeeafec004c51fdd2ab9a697da3cc4`, binary sha256 `b71aef4ee85a6ec2a59f6a0d5f8d16895c09c50d05a8c13e9654af5725781de5` |
+| Surface | Compare: `wordcraft-cli run --file <base> --cmd 'review.compare={"path":<next>,"author":"Redline","showIn":"original","level":"word","formatting":true,"caseChanges":true,"whiteSpace":true}' --save <out>`. Convert: `wordcraft-cli convert <src> <out.pdf> --markup` (comments and tracked changes shown, as in Word's oracle PDFs). |
+| Harness-assisted | No: one CLI call per document. Adapter I/O only (temp paths, a 120 s compare / 180 s convert timeout, failure recording). Its redline DOCX is exported to PDF by Word 16.115, like every comparison tool's. |
+| Known-unfixed | Some Wordcraft redlines load empty in Word ("Word could not read it") after two fresh-session attempts; those are render failures and count as zero. |
+| Measured (2026-10-14, `results/wordcraft_20261014_fresh/`) | **Partial, run in progress** (`results/wordcraft_20261014_fresh/PARTIALS.md`). Conversions complete: 400/400 scored, pagefair mean 55.18, median CLI 41.2 ms. Comparisons: 8 of 400 redlines unreadable by Word in two sessions (zeros); pagefair mean 46.91 over the first 175 scored, median CLI 14.5 ms. Final numbers replace this row when the run completes. |
+
 ## Standing rules
 
 1. A failure is attributed to a vendor **only** when their code ran and produced

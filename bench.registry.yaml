@@ -2,6 +2,51 @@
 # Loaded by neurotic_docx_bench.report.registry; validated by tests/test_report_registry.py.
 schema_version: 1
 tools:
+  # ---- fresh balanced Wordcraft cohort (release lanes stay separate) ----
+  - id: wordcraft-cli
+    vendor: wordcraft
+    display: Wordcraft CLI
+    role: generator
+    engine: wordcraft-cli
+    run_names: [wordcraft, wordcraft-cli]
+    bench_vendors: [wordcraft-cli]
+    speed_tools: [wordcraft-cli]
+    converter_tools: [wordcraft-cli]
+    url: https://github.com/storytold/wordcraft
+  - id: jubarte-0.11.0
+    vendor: jubarte
+    display: jubarte 0.11.0
+    role: generator
+    engine: jubarte-redlines
+    affiliated: true
+    configuration: official-release-0.11.0
+    run_names: [jubarte-0.11.0]
+    bench_vendors: [jubarte-0.11.0]
+    speed_tools: [jubarte-0.11.0]
+    converter_tools: [jubarte-0.11.0]
+    url: https://github.com/jandira-tech/jubarte-redlines
+  - id: jubarte-0.12.0
+    vendor: jubarte
+    display: jubarte 0.12.0
+    role: generator
+    engine: jubarte-redlines
+    affiliated: true
+    configuration: official-release-0.12.0
+    run_names: [jubarte-0.12.0]
+    bench_vendors: [jubarte-0.12.0]
+    speed_tools: [jubarte-0.12.0]
+    converter_tools: [jubarte-0.12.0]
+    url: https://github.com/jandira-tech/jubarte-redlines
+  - id: docxodus-12.6.5
+    vendor: docxodus
+    display: docxodus 12.6.5
+    role: generator
+    engine: docxodus
+    configuration: native-cli-wasm-12.6.5
+    run_names: [docxodus-12.6.5]
+    bench_vendors: [docxodus-12.6.5]
+    speed_tools: [docxodus-12.6.5]
+    url: https://github.com/JSv4/docxodus
   # ---- redline generators (author-affiliated) ----
   - id: jubarte-lossless
     vendor: jubarte

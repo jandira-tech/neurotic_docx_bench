@@ -1,0 +1,15 @@
+2026-10-14 03:35:20.214 | INFO     | word_pdf:preflight:2235 - [word] preflight: open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-10-14 03:35:20.218 | INFO     | __main__:redline_folders:728 - [redline] one_osascript=True pairs=76
+2026-10-14 03:35:20.261 | INFO     | __main__:_redline_batched:1012 - [batch] one osascript for 76 comparison(s)
+2026-10-14 03:35:25.265 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 2/76
+2026-10-14 03:35:30.269 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 7/76
+2026-10-14 03:35:31.992 | INFO     | word_pdf:_note_dialogs:774 - [watchdog] Microsoft Word shows button 'missing value'
+2026-10-14 03:35:35.270 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 14/76
+2026-10-14 03:35:40.277 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 20/76
+2026-10-14 03:35:45.282 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 26/76
+2026-10-14 03:35:50.288 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 32/76
+2026-10-14 03:35:55.291 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 38/76
+2026-10-14 03:36:00.296 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 44/76
+2026-10-14 03:36:05.302 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 49/76
+2026-10-14 03:36:10.306 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 55/76
+2026-10-14 03:36:15.311 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 60/76

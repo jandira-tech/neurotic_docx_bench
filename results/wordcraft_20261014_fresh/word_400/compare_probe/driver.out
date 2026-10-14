@@ -1,0 +1,50 @@
+▸ PDF quality is sticky: `save as … file format format PDF` inherits whatever 
+'Optimize for' you last chose in Word's own Save As dialog.
+  Open any document in Word once, File > Save As > PDF, and pick the SECOND 
+option, Best for printing.
+  That choice persists; this script cannot set it. Pass --no-check-preset to 
+stop seeing this.
+▸ A redline PDF shows tracked changes the way Word is currently set to show them
+(Review ▸ Markup display, and Print Markup).
+  Open one redline in Word by hand and confirm it looks right before running the
+batch — this script cannot set that for you.
+2026-10-14 03:26:48.103 | INFO     | word_pdf:preflight:2235 -  preflight: 
+open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-10-14 03:26:48.159 | INFO     | __main__:redline_folders:728 -  
+one_osascript=True pairs=4
+2026-10-14 03:26:48.165 | INFO     | __main__:_redline_batched:1012 -  one 
+osascript for 4 comparison(s)
+2026-10-14 03:26:53.199 | INFO     | word_pdf:_loop:1479 -  3/4
+2026-10-14 03:26:58.768 | INFO     | __main__:_redline_batched:1041 -  one 
+osascript for 4 redline PDF(s)
+2026-10-14 03:27:03.805 | INFO     | word_pdf:_loop:1479 -  1/4
+2026-10-14 03:27:06.490 | WARNING  | word_pdf:run_batch_with_resume:1624 -  3 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 2, 0 of 3 stalled 
+passes used)
+2026-10-14 03:27:06.491 | WARNING  | word_pdf♻1068 -  restarting a Word this run
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-14 03:27:06.491 | WARNING  | word_pdf♻1074 -  recycling (restart 1)
+2026-10-14 03:27:15.704 | INFO     | word_pdf:_loop:1479 -  1/3
+2026-10-14 03:27:25.774 | INFO     | word_pdf:_nudge:1450 -  item 2/3 not 
+finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 03:27:40.847 | INFO     | word_pdf:_loop:1479 -  2/3
+2026-10-14 03:27:44.675 | ERROR    | __main__:_redline_batched:1095 -  FAIL: 
+03f6215960.docx → 03f6215960.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-14 03:27:47.129 | INFO     | word_pdf:stop:907 -  tally: declined=0 
+dismissed=0 granted=0 forwarded=0 alerts_seen=0
+             redline: A → B             
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━┓
+┃ outcome                      ┃ count ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━┩
+│ redlined                     │     3 │
+│ skipped (exists)             │     0 │
+│ failed                       │     1 │
+│ seconds per pair (batch avg) │   2.7 │
+│ total revisions              │   692 │
+└──────────────────────────────┴───────┘
+  FAIL 03f6215960.docx → 03f6215960.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.

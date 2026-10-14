@@ -1,0 +1,18 @@
+2026-10-14 02:28:16.033 | INFO     | word_pdf:preflight:2235 - [word] preflight: open_documents=1 started_clean=False launched_by_us=False close_documents=True
+2026-10-14 02:28:16.035 | INFO     | __main__:redline_folders:728 - [redline] one_osascript=True pairs=12
+2026-10-14 02:28:16.047 | INFO     | __main__:_redline_batched:1012 - [batch] one osascript for 12 comparison(s)
+2026-10-14 02:28:21.052 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 4/12
+2026-10-14 02:28:26.055 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 8/12
+2026-10-14 02:28:29.348 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: 108332354e.docx → 108332354e.docx — open produced 2 new documents; refusing to guess
+2026-10-14 02:28:29.349 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: 12fca96084.docx → 12fca96084.docx — open produced 2 new documents; refusing to guess
+2026-10-14 02:28:29.350 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: 4d5de07b0e.docx → 4d5de07b0e.docx — open produced 2 new documents; refusing to guess
+2026-10-14 02:28:29.351 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: 58b3bd3cbc.docx → 58b3bd3cbc.docx — open produced 2 new documents; refusing to guess
+2026-10-14 02:28:29.351 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: bbdc7afc3e.docx → bbdc7afc3e.docx — open produced 2 new documents; refusing to guess
+2026-10-14 02:28:29.352 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: bc29cd91ef.docx → bc29cd91ef.docx — open produced 2 new documents; refusing to guess
+2026-10-14 02:28:29.352 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: c1ee3ae6c5.docx → c1ee3ae6c5.docx — open produced 2 new documents; refusing to guess
+2026-10-14 02:28:29.353 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: d95a06eed1.docx → d95a06eed1.docx — open produced 2 new documents; refusing to guess
+2026-10-14 02:28:29.354 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: e1f1792974.docx → e1f1792974.docx — open produced 2 new documents; refusing to guess
+2026-10-14 02:28:29.354 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: e8fafc3cba.docx → e8fafc3cba.docx — open produced 2 new documents; refusing to guess
+2026-10-14 02:28:29.356 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: f007ed2234.docx → f007ed2234.docx — open produced 2 new documents; refusing to guess
+2026-10-14 02:28:29.358 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: f1ce33adb5.docx → f1ce33adb5.docx — open produced 2 new documents; refusing to guess
+2026-10-14 02:28:32.712 | INFO     | word_pdf:stop:907 - [watchdog] tally: declined=0 dismissed=0 granted=0 forwarded=0 alerts_seen=0
