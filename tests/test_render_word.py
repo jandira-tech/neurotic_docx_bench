@@ -98,8 +98,9 @@ def test_default_backend_prefers_word(monkeypatch: pytest.MonkeyPatch) -> None:
 
 
 def test_cli_auto_backend_builds_the_resolved_renderer(monkeypatch: pytest.MonkeyPatch) -> None:
-    from neurotic_docx_bench import cli
     from neurotic_docx_bench.render.soffice import SofficeRenderer
+
+    from neurotic_docx_bench import cli
 
     monkeypatch.delenv("BENCH_RENDERER")
     monkeypatch.setattr(word, "word_available", lambda: True)
@@ -115,3 +116,45 @@ def test_bench_renderer_env_pins_auto(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("BENCH_RENDERER", "soffice")
     assert render.resolve_backend("auto") == "soffice"
     assert render.resolve_backend("word") == "word"
+
+
+def test_renderer_reads_the_drivers_manifest_for_suffixed_and_trimmed_names(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """word_pdf.py (2026-10-14) writes `<stem>_byword.pdf`, renames inputs over 80
+    characters, and appends manifest.jsonl; the renderer resolves through it."""
+    import json
+
+    src = tmp_path / "src"
+    src.mkdir()
+    long_name = "deal_" + "x" * 100 + ".docx"
+    for name in ("a.docx", long_name):
+        (src / name).write_bytes(b"PK\x03\x04")
+    (tmp_path / "work" / "pdf").mkdir(parents=True)
+    (tmp_path / "work" / "pdf" / "a_byword.pdf").write_bytes(b"%PDF already there")
+
+    def fake_run(argv: list[str], **kwargs: object) -> subprocess.CompletedProcess[str]:
+        out = Path(argv[argv.index("--out") + 1])
+        short = "deal_xxxx_1234abcd.docx"
+        (src / long_name).rename(src / short)
+        pdf = out / "deal_xxxx_1234abcd_byword.pdf"
+        pdf.write_bytes(b"%PDF")
+        lines = [
+            {"status": "renamed", "original_filename": long_name, "converted_filename": short,
+             "path_origin": str(src / long_name), "path_out": str(src / short)},
+            {"status": "skipped", "kind": "pdf", "original_filename": "a.docx",
+             "path_out": str(out / "a_byword.pdf")},
+            {"status": "ok", "kind": "pdf", "original_filename": short, "path_out": str(pdf)},
+        ]
+        (out / "manifest.jsonl").write_text("".join(json.dumps(ln) + "\n" for ln in lines))
+        return subprocess.CompletedProcess(argv, 0, "", "")
+
+    monkeypatch.setattr(word, "word_available", lambda: True)
+    monkeypatch.setattr(word.subprocess, "run", fake_run)
+    report = WordRenderer().to_pdfs(src, tmp_path / "work")
+    by_name = {r.source.name: r for r in report.results}
+    assert by_name["a.docx"].ok and by_name["a.docx"].skipped
+    assert by_name["a.docx"].pdf == tmp_path / "work" / "pdf" / "a_byword.pdf"
+    long_result = by_name[long_name]
+    assert long_result.ok and not long_result.skipped
+    assert long_result.pdf == tmp_path / "work" / "pdf" / "deal_xxxx_1234abcd_byword.pdf"

@@ -23,6 +23,7 @@ from pathlib import Path
 from typing import Literal, Protocol
 
 from neurotic_docx_bench.render.base import RenderReport, RenderResult
+from neurotic_docx_bench.word_outputs import BY_WORD, find_output
 
 # Open the DOCX in Word and export the active document to PDF, then close without saving.
 _APPLESCRIPT = """
@@ -86,9 +87,10 @@ def convert_one(
 ) -> RenderResult:
     """Export a single DOCX to PDF via Microsoft Word (blocking; run interactively)."""
     out_dir.mkdir(parents=True, exist_ok=True)
-    pdf = out_dir / f"{docx.stem}.pdf"
-    if pdf.exists() and not force:
-        return RenderResult(source=docx, pdf=pdf, ok=True, skipped=True)
+    # Word wrote it, so its name says so (the same convention as scripts/word_pdf.py).
+    pdf = out_dir / f"{docx.stem}{BY_WORD}.pdf"
+    if not force and (have := find_output(out_dir, docx.name, kind="pdf", ext=".pdf")):
+        return RenderResult(source=docx, pdf=have, ok=True, skipped=True)
     try:
         proc = subprocess.run(
             ["osascript", "-e", _APPLESCRIPT, str(docx.resolve()), str(pdf.resolve())],
@@ -351,7 +353,7 @@ class WordRenderer:
         out_dir = work_dir / "pdf"
         out_dir.mkdir(parents=True, exist_ok=True)
         docs = sorted(d for d in source_dir.glob("*.docx") if not d.name.startswith("~$"))
-        existed = {d.name for d in docs if (out_dir / f"{d.stem}.pdf").exists()}
+        existed = {d.name for d in docs if find_output(out_dir, d.name, kind="pdf", ext=".pdf")}
         argv = [
             sys.executable, str(WORD_PDF_SCRIPT), "--src", str(source_dir),
             "--out", str(out_dir), "--no-check-preset",
@@ -364,8 +366,11 @@ class WordRenderer:
         failures = _batch_failures(f"{proc.stdout}\n{proc.stderr}")
         results = []
         for docx in docs:
-            pdf = out_dir / f"{docx.stem}.pdf"
-            if docx.name not in failures and pdf.exists():
+            # The driver names Word's PDF `<stem>_byword.pdf`, trims names over 80
+            # characters on disk, and records both in `manifest.jsonl`; `find_output`
+            # reads that back (and still finds the pre-suffix spelling).
+            pdf = find_output(out_dir, docx.name, kind="pdf", ext=".pdf")
+            if docx.name not in failures and pdf is not None:
                 skipped = not force and docx.name in existed
                 results.append(RenderResult(source=docx, pdf=pdf, ok=True, skipped=skipped))
                 continue
