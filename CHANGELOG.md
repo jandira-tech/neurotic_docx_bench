@@ -7,7 +7,78 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Changed
+- `scripts/word_pdf.py` recovery: a pass that ends on `Connection is invalid`, or a Word that stops
+  answering, is recovered by `close every document saving no` on the running Word, and the run
+  carries on with that Word as soon as it answers (0.2 to 1.2 s measured). Quit, SIGTERM, SIGKILL
+  and a background relaunch happen only when the close-all errors or Word stays silent for
+  `answer_grace` seconds, and the log says which ("because unresponsive for 15 s after the
+  close-all"). The "restart only a Word this run launched" distinction is gone: the default policy
+  closes every document whoever opened it; `--do-not-close` keeps the named close and refuses to
+  restart. `recover_after_failure` follows the same policy. Word open with no document is normal.
+  A pass that ended because Word answered and returned nothing three times in a row is the one
+  case that restarts without a close-all, after one look at Word's front for a hidden modal;
+  `preflight` runs the close-all as a health check and logs Word's pid.
+- The Microsoft Error Reporting dialog is treated as the crash signal (`--crash-signal`, default
+  on): the watchdog ends that pass's osascript at once and marks the item Word was on, instead of
+  waiting 4 to 5 s for the AppleEvent to fail. A/B on 20 Word-crashing corpus documents: 251 s
+  against 382 s, nothing lost; with `--crash-limit 1`, 111 s. The default crash limit stays 2.
+- Every file Word writes is named `<stem>_byword.<ext>` (`by_tool`; `_bysoffice`, `_bydocxide`,
+  `_bywordcraft`, `_byjubarte` for the other engines). `render/word.py`, `word_actions.py` and the
+  new `word_outputs.find_output` resolve outputs through the manifest, then the suffixed name, then
+  the pre-suffix name, so folders rendered earlier still resolve; the drivers skip an output that
+  exists under the old spelling instead of redoing it.
+- Input file names longer than 80 characters (`word_pdf.py`) or 35 (`word_redline.py`) are renamed
+  on disk before Word sees them, to `<cut>_<8 hex of sha1(original)><ext>`, logged and recorded in
+  the manifest as `renamed`.
+- The on-screen log prints lines verbatim and in colour: loguru's level colours plus rich's
+  highlighting, with markup and emoji parsing off (`make_console_sink`). Rich had been eating
+  `[word]`, `[batch]`, `[ok]` and turning `:recycle:` into ♻ on screen.
+- `open produced 0 new documents` and "doesn't understand" errors from Word count toward the
+  three-in-a-row empty-load rule in both batch scripts instead of being final failures: a Word in
+  that state failed a 70-document batch in 5 s on 2026-10-14.
+
+### Fixed
+- `scripts/word_pdf.py` (and `word_redline.py` through it): Word's repair prompt is now
+  recognised from the alert's text in the same osascript that reads its buttons, answered No,
+  and followed to the "Word experienced an error trying to open the file" OK with Word brought
+  forward; focus is handed straight back. The previous text-matched handler never compiled, so
+  the generic fallback pressed No after ~6 s and the OK was never pressed while Word sat in the
+  background, costing a 240 s AppleEvent timeout and a batch pass per broken file. Verified
+  live 2026-10-14 on `really_broken` fixtures: 5 prompts answered, no timeout.
+
+- A declined repair prompt no longer ends the batch pass, restarts Word, or earns the file a
+  second try: the watchdog records `[declined]` in the batch log and the batch scripts fail that
+  file outright when its open comes up empty. Three broken plus two good files: 3 m 41 s and one
+  restart before, 18 s and none after.
+- The export scripts (`_EXPORT_PDF`, `_EXPORT_BATCH`) bind the document `open` produced, found
+  by exclusion as `_COMPARE` already did, never `document 1`: a leftover document was saved under
+  a broken file's name once that file's open produced nothing.
+- A stall report whose probes outlived the item ("item 1/1329 open for more than 30 s" pasted over
+  a log showing 30 items done) is dropped: `_Progress._report` re-reads the batch log after probing
+  and logs one line saying the item finished while it was looking.
+- A nameless alert button is logged as "a button with no name (AppleScript 'missing value')"
+  instead of `button 'missing value'`.
+
 ### Added
+- `manifest.jsonl` in every output folder, appended per run: one JSON line per file produced
+  (`original_filename`, `path_origin`, `converted_filename`, `path_out`, `status`, `kind`, `tool`,
+  `error`, `seconds`, `run_at`; redline lines add `revision_filename`, `path_revision`,
+  `revisions`, `unmatched`).
+- Every recovery command is logged as it would be typed (`running: osascript -e '…'`,
+  `pkill -x 'Microsoft Word'`, `open -g -a …`) with its result on the very next line
+  (`returned rc=0 in 0.2 s, no value came back (AppleScript 'missing value')` / `got: …` /
+  `error: …`).
+- `scripts/word_ab.py`: the A/B harness AGENTS.md now requires when a batch turns up Word-crashing
+  fixtures: stages 20 broken + 50 good, replays them under pinned driver variants, times detect /
+  recover / resume per crash, writes `out/ab/results.jsonl` and `out/ab/AB_REPORT.md`
+  (`report --drop STARTED_AT=reason` keeps an excluded run on the record).
+- `word_redline.py` defers every pair that shares a file with a crashed pair to the back of the
+  next pass (`[defer]`), not only the crashed pair.
+- `tests/test_word_pdf_manifest.py`, `tests/test_word_outputs.py`, `tests/test_word_ab.py`.
+- `--focus/--no-focus` and `--crash-limit` on `word_pdf.py` and `word_redline.py`; every Word
+  alert is logged with its words and kept on `Watchdogs.events`; the batch progress tailer checks
+  on an item not finished after 10 s (`_Progress.nudge_after`); `tests/test_word_pdf_alerts.py`.
 - `results/wordcraft_20261014_fresh/`: Wordcraft CLI 0.6.1 against jubarte 0.11.0 / 0.12.0 and
   docxodus 12.6.5 (comparisons) and LibreOffice 26.8.1.1 (conversions) on a frozen 400 + 400
   sample with fresh Word 16.115 oracles (`REPORT.md`). Pagefair means, failures as zero:
@@ -17,6 +88,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `finish400.py`, `finish_rest.py`, `report.py`, `speed_table.py`) and committed driver copies
   (`drivers_ee49054d/`) are included. Registry entries for the four tools; a latency section
   in `docs/SPEED.md`.
+
+### Deprecated
+- `scripts/word_pdf_focus.py`: superseded by the above; kept as the record of the 2026-09-30 trial.
 
 ## [0.8.0] - 2026-10-02
 
