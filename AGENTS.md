@@ -13,6 +13,19 @@ never implement an engine fix in those copies.
 
 EXCEPT IF REQUESTED BY THE PERSON OR REQUIRED BY A SPECIFIC BENCHMARK OR TO DEVELOP A TOOL, YOU MUST RECORD THE RESULTS WITH RASTERS DELETED AFTER EACH TOOL SO SCORING DOESN'T FILL THE DISK.
 
+## Publishing fixtures and results (wrangler, R2, D1, gh-pages)
+
+`docs/PUBLISHING.md` is the manual for everything that leaves this machine: review
+fixtures to the public R2 bucket `neurotic-docx-bench-pages`
+(`scripts/publish/upload_r2.py`, bulk path through the `ndb-r2-upload` Worker), the
+live bench's D1 `jubarte-live-bench` and its dashboard deploy (`live-bench/frontend`),
+the D1 harvest loop (`live-bench/harvest/`, state in `live-bench/.work/`), the HF-hub
+corpus, and the review website — this repo's `gh-pages` branch, checked out at `site/`
+(a git-ignored linked worktree; `git worktree add site gh-pages` recreates it). After a
+publish verifies, the local uploaded bytes are deleted; the tracked records under
+`results/` are the copy of record. The 2026-10-14 wordcraft 400+400 cohort lives on R2
+under `wordcraft-20261014/` (12,034 objects, `MANIFEST.sha256.txt` included).
+
 ## What this is
 
 A benchmark that measures how faithfully DOCX tools reproduce **Microsoft Word's**

@@ -1,0 +1,13 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "ndb-r2-upload",
+  "account_id": "5651b2fe85f9bbb0fc1b8f4ad2cb4e64",
+  "main": "./src/worker.ts",
+  "compatibility_date": "2026-10-08",
+  "r2_buckets": [
+    {
+      "binding": "MEDIA",
+      "bucket_name": "neurotic-docx-bench-pages"
+    }
+  ]
+}
