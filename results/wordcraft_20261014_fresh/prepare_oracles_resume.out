@@ -1,0 +1,17 @@
+Staged 12 reserve pairs in /Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/word_reserve_session_retry
+RUN word_redline.py word_reserve_session_retry
+2026-10-14 02:31:28.727 | WARNING  | word_pdf:recycle:1068 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 02:31:28.728 | WARNING  | word_pdf:recycle:1074 - [word] recycling (restart 1)
+COMPARE Word eligible 189 / 200
+Staged 11 reserve pairs in /Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/word_reserve_07
+RUN word_redline.py word_reserve_07
+Traceback (most recent call last):
+  File "/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/prepare_oracles.py", line 105, in <module>
+    c=compare();v=convert();provenance=json.loads((OUT/'sample_provenance.json').read_text())
+  File "/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/prepare_oracles.py", line 65, in compare
+    run('word_redline.py',folder,['--a',str(folder/'A'),'--b',str(folder/'B'),'--out',str(folder/'pdf'),'--docx-out',str(folder/'docx'),'--emit','both'])
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/prepare_oracles.py", line 14, in run
+    assert count==0,('Word must be empty before a fresh batch; preserve external documents',count)
+           ^^^^^^^^
+AssertionError: ('Word must be empty before a fresh batch; preserve external documents', 1)

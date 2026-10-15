@@ -1,0 +1,615 @@
+2026-10-14 20:14:30.599 | INFO     | __main__:preflight:2235 - [word] preflight: open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-10-14 20:14:30.621 | INFO     | __main__:convert_folder:1908 - [word] export: one_osascript=True documents=267 accept_all=False reject_all=False
+2026-10-14 20:14:31.281 | INFO     | __main__:_convert_batched:2108 - [batch] one osascript for 267 document(s)
+2026-10-14 20:14:36.288 | INFO     | __main__:_loop:1479 - [batch pdf 1] 2/267
+2026-10-14 20:14:41.295 | INFO     | __main__:_loop:1479 - [batch pdf 1] 4/267
+2026-10-14 20:14:46.301 | INFO     | __main__:_loop:1479 - [batch pdf 1] 6/267
+2026-10-14 20:14:56.319 | INFO     | __main__:_nudge:1450 - [focus] item 7/267 not finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 20:15:21.347 | INFO     | __main__:_loop:1479 - [batch pdf 1] 10/267
+2026-10-14 20:15:26.354 | INFO     | __main__:_loop:1479 - [batch pdf 1] 12/267
+2026-10-14 20:15:36.368 | INFO     | __main__:_nudge:1450 - [focus] item 13/267 not finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 20:15:36.986 | WARNING  | __main__:_report:1439 - [batch pdf 1] item 7/267 open for more than 30 s:
+-- Word windows {name, subrole}: osascript timed out
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-1.log:
+[ok]	0
+[ok]	1
+[ok]	2
+[ok]	3
+[ok]	4
+[ok]	5
+[ok]	6
+[ok]	7
+[ok]	8
+[ok]	9
+[ok]	10
+[ok]	11
+-- newest diagnostic reports: ExcUserFault_nsattributedstringagent-2026-10-08-102340.ips, ExcUserFault_nsattributedstringagent-2026-10-14-132310.ips, jubarte-2026-10-14-055954.ips, soffice-2026-10-14-041750.ips, soffice-2026-10-14-041543.ips
+2026-10-14 20:16:06.452 | INFO     | __main__:_nudge:1450 - [focus] item 13/267 not finished after 40 s; bringing Word forward to look for an alert
+2026-10-14 20:16:25.747 | WARNING  | __main__:_report:1439 - [batch pdf 1] item 13/267 open for more than 30 s:
+-- Word windows {name, subrole}: osascript timed out
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-1.log:
+[ok]	0
+[ok]	1
+[ok]	2
+[ok]	3
+[ok]	4
+[ok]	5
+[ok]	6
+[ok]	7
+[ok]	8
+[ok]	9
+[ok]	10
+[ok]	11
+-- newest diagnostic reports: ExcUserFault_nsattributedstringagent-2026-10-08-102340.ips, ExcUserFault_nsattributedstringagent-2026-10-14-132310.ips, jubarte-2026-10-14-055954.ips, soffice-2026-10-14-041750.ips, soffice-2026-10-14-041543.ips
+2026-10-14 20:16:36.560 | INFO     | __main__:_nudge:1450 - [focus] item 13/267 not finished after 70 s; bringing Word forward to look for an alert
+2026-10-14 20:16:51.589 | INFO     | __main__:_nudge:1450 - [focus] item 13/267 not finished after 85 s; bringing Word forward to look for an alert
+2026-10-14 20:17:06.685 | INFO     | __main__:_loop:1479 - [batch pdf 1] 13/267
+2026-10-14 20:17:11.753 | INFO     | __main__:_loop:1479 - [batch pdf 1] 17/267
+2026-10-14 20:17:16.790 | INFO     | __main__:_loop:1479 - [batch pdf 1] 21/267
+2026-10-14 20:17:21.803 | INFO     | __main__:_loop:1479 - [batch pdf 1] 25/267
+2026-10-14 20:17:26.821 | INFO     | __main__:_loop:1479 - [batch pdf 1] 30/267
+2026-10-14 20:17:31.852 | INFO     | __main__:_loop:1479 - [batch pdf 1] 33/267
+2026-10-14 20:17:36.857 | INFO     | __main__:_loop:1479 - [batch pdf 1] 37/267
+2026-10-14 20:17:41.869 | INFO     | __main__:_loop:1479 - [batch pdf 1] 42/267
+2026-10-14 20:17:46.874 | INFO     | __main__:_loop:1479 - [batch pdf 1] 46/267
+2026-10-14 20:17:51.879 | INFO     | __main__:_loop:1479 - [batch pdf 1] 50/267
+2026-10-14 20:17:56.915 | INFO     | __main__:_loop:1479 - [batch pdf 1] 52/267
+2026-10-14 20:18:01.932 | INFO     | __main__:_loop:1479 - [batch pdf 1] 55/267
+2026-10-14 20:18:06.940 | INFO     | __main__:_loop:1479 - [batch pdf 1] 60/267
+2026-10-14 20:18:11.956 | INFO     | __main__:_loop:1479 - [batch pdf 1] 63/267
+2026-10-14 20:18:16.963 | INFO     | __main__:_loop:1479 - [batch pdf 1] 66/267
+2026-10-14 20:18:21.977 | INFO     | __main__:_loop:1479 - [batch pdf 1] 70/267
+2026-10-14 20:18:26.990 | INFO     | __main__:_loop:1479 - [batch pdf 1] 71/267
+2026-10-14 20:18:37.017 | INFO     | __main__:_nudge:1450 - [focus] item 72/267 not finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 20:18:41.493 | WARNING  | __main__:_nudge:1458 - [focus] item 72/267: pressed 'No' then 'OK' with Word brought forward; Word said: "Word found unreadable content in 00071__folio-0.60.0__3fa2e4b5de.docx. Do you want to recover the contents of this document? If you trust the source of this document, click Yes."
+2026-10-14 20:18:47.048 | INFO     | __main__:_loop:1479 - [batch pdf 1] 74/267
+2026-10-14 20:18:52.061 | INFO     | __main__:_loop:1479 - [batch pdf 1] 77/267
+2026-10-14 20:18:57.069 | INFO     | __main__:_loop:1479 - [batch pdf 1] 81/267
+2026-10-14 20:19:02.081 | INFO     | __main__:_loop:1479 - [batch pdf 1] 84/267
+2026-10-14 20:19:07.095 | INFO     | __main__:_loop:1479 - [batch pdf 1] 85/267
+2026-10-14 20:19:17.118 | INFO     | __main__:_nudge:1450 - [focus] item 87/267 not finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 20:19:19.260 | INFO     | __main__:_note_dialogs:774 - [watchdog] Microsoft Word shows button 'Yes'
+2026-10-14 20:19:19.261 | INFO     | __main__:_note_dialogs:774 - [watchdog] Microsoft Word shows button 'No'
+2026-10-14 20:19:19.262 | INFO     | __main__:_note_dialogs:777 - [watchdog] Microsoft Word says: 'Word found unreadable content in 00086__folio-0.60.0__4d40d1f136.docx. Do you want to recover the contents of this document? If you trust the source of this document, click Yes.'
+2026-10-14 20:19:19.263 | INFO     | __main__:_note_dialogs:774 - [watchdog] Microsoft Word shows button 'Cancel'
+2026-10-14 20:19:19.264 | INFO     | __main__:_note_dialogs:774 - [watchdog] Microsoft Word shows button 'Create'
+2026-10-14 20:19:19.264 | INFO     | __main__:_note_dialogs:774 - [watchdog] Microsoft Word shows button 'missing value'
+2026-10-14 20:19:19.295 | WARNING  | __main__:_nudge:1458 - [focus] item 87/267: pressed 'No' then 'OK' with Word brought forward; Word said: "Word found unreadable content in 00086__folio-0.60.0__4d40d1f136.docx. Do you want to recover the contents of this document? If you trust the source of this document, click Yes."
+2026-10-14 20:19:22.131 | INFO     | __main__:_loop:1479 - [batch pdf 1] 86/267
+2026-10-14 20:19:27.137 | INFO     | __main__:_loop:1479 - [batch pdf 1] 89/267
+2026-10-14 20:19:32.141 | INFO     | __main__:_loop:1479 - [batch pdf 1] 93/267
+2026-10-14 20:19:37.146 | INFO     | __main__:_loop:1479 - [batch pdf 1] 96/267
+2026-10-14 20:19:40.370 | WARNING  | __main__:_decline_repair:801 - [watchdog] repair prompt seen but no button could be pressed; Word said: "Word found unreadable content in 00086__folio-0.60.0__4d40d1f136.docx. Do you want to recover the contents of this document? If you trust the source of this document, click Yes."
+2026-10-14 20:19:42.155 | INFO     | __main__:_loop:1479 - [batch pdf 1] 99/267
+2026-10-14 20:19:47.170 | INFO     | __main__:_loop:1479 - [batch pdf 1] 104/267
+2026-10-14 20:19:52.194 | INFO     | __main__:_loop:1479 - [batch pdf 1] 107/267
+2026-10-14 20:20:02.218 | INFO     | __main__:_nudge:1450 - [focus] item 110/267 not finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 20:20:14.287 | WARNING  | __main__:_nudge:1458 - [focus] item 110/267: pressed 'No' with Word brought forward; Word said: "Word found unreadable content in 00109__folio-0.60.0__61959b1953.docx. Do you want to recover the contents of this document? If you trust the source of this document, click Yes."
+2026-10-14 20:20:17.281 | INFO     | __main__:_nudge:1450 - [focus] item 110/267 not finished after 25 s; bringing Word forward to look for an alert
+2026-10-14 20:20:32.314 | INFO     | __main__:_nudge:1450 - [focus] item 110/267 not finished after 40 s; bringing Word forward to look for an alert
+2026-10-14 20:20:49.892 | WARNING  | __main__:_report:1439 - [batch pdf 1] item 110/267 open for more than 30 s:
+-- Word windows {name, subrole}: osascript timed out
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-1.log:
+[ok]	0
+[ok]	1
+[ok]	2
+[ok]	3
+[ok]	4
+[ok]	5
+[ok]	6
+[ok]	7
+[ok]	8
+[ok]	9
+[ok]	10
+[ok]	11
+[ok]	12
+[ok]	13
+[ok]	14
+[ok]	15
+[ok]	16
+[ok]	17
+[ok]	18
+[ok]	19
+[ok]	20
+[ok]	21
+[ok]	22
+[ok]	23
+[ok]	24
+[ok]	25
+[ok]	26
+[ok]	27
+[ok]	28
+[ok]	29
+[ok]	30
+[ok]	31
+[ok]	32
+[ok]	33
+[ok]	34
+[ok]	35
+[ok]	36
+[ok]	37
+[ok]	38
+[ok]	39
+[ok]	40
+[ok]	41
+[ok]	42
+[ok]	43
+[ok]	44
+[ok]	45
+[ok]	46
+[ok]	47
+[ok]	48
+[ok]	49
+[ok]	50
+[ok]	51
+[ok]	52
+[ok]	53
+[ok]	54
+[ok]	55
+[ok]	56
+[ok]	57
+[ok]	58
+[ok]	59
+[ok]	60
+[ok]	61
+[ok]	62
+[ok]	63
+[ok]	64
+[ok]	65
+[ok]	66
+[ok]	67
+[ok]	68
+[ok]	69
+[ok]	70
+[retry]	71	document loaded empty (Word could not read it)
+[ok]	72
+[ok]	73
+[ok]	74
+[ok]	75
+[ok]	76
+[fail]	77	Microsoft Word got an error: document "00077__folio-0.60.0__428fe8b1c0.docx" doesn’t understand the “save as” message.
+[ok]	78
+[ok]	79
+[ok]	80
+[ok]	81
+[ok]	82
+[ok]	83
+[ok]	84
+[ok]	85
+[retry]	86	document loaded empty (Word could not read it)
+[ok]	87
+[ok]	88
+[ok]	89
+[ok]	90
+[ok]	91
+[ok]	92
+[ok]	93
+[ok]	94
+[ok]	95
+[ok]	96
+[ok]	97
+[ok]	98
+[ok]	99
+[ok]	100
+[ok]	101
+[ok]	102
+[ok]	103
+[ok]	104
+[ok]	105
+[ok]	106
+[ok]	107
+[ok]	108
+-- newest diagnostic reports: ExcUserFault_nsattributedstringagent-2026-10-08-102340.ips, ExcUserFault_nsattributedstringagent-2026-10-14-132310.ips, jubarte-2026-10-14-055954.ips, soffice-2026-10-14-041750.ips, soffice-2026-10-14-041543.ips
+2026-10-14 20:21:02.368 | INFO     | __main__:_loop:1479 - [batch pdf 1] 108/267
+2026-10-14 20:21:07.294 | INFO     | __main__:_note_dialogs:777 - [watchdog] Microsoft Word says: 'Word found unreadable content in 00111__folio-0.60.0__6213202228.docx. Do you want to recover the contents of this document? If you trust the source of this document, click Yes.'
+2026-10-14 20:21:11.729 | WARNING  | __main__:_decline_repair:809 - [watchdog] repair prompt declined via 'No' then 'OK' with Word brought forward; Word said: "Word found unreadable content in 00111__folio-0.60.0__6213202228.docx. Do you want to recover the contents of this document? If you trust the source of this document, click Yes."
+2026-10-14 20:21:11.731 | WARNING  | __main__:_decline_repair:812 - [watchdog] after the No, Word showed 'OK'; Word said: "Word experienced an error trying to open the file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00111__folio-0.60.0__6213202228.docx)"
+2026-10-14 20:21:17.387 | INFO     | __main__:_loop:1479 - [batch pdf 1] 114/267
+2026-10-14 20:21:22.396 | INFO     | __main__:_loop:1479 - [batch pdf 1] 115/267
+2026-10-14 20:21:32.412 | INFO     | __main__:_nudge:1450 - [focus] item 120/267 not finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 20:21:33.840 | WARNING  | __main__:_nudge:1458 - [focus] item 120/267: pressed 'No' then 'OK' with Word brought forward; Word said: "Word found unreadable content in 00119__folio-0.60.0__6b74ac1ae6.docx. Do you want to recover the contents of this document? If you trust the source of this document, click Yes."
+2026-10-14 20:21:37.419 | INFO     | __main__:_loop:1479 - [batch pdf 1] 118/267
+2026-10-14 20:21:42.424 | INFO     | __main__:_loop:1479 - [batch pdf 1] 124/267
+2026-10-14 20:21:47.435 | INFO     | __main__:_loop:1479 - [batch pdf 1] 130/267
+2026-10-14 20:21:52.447 | INFO     | __main__:_loop:1479 - [batch pdf 1] 137/267
+2026-10-14 20:21:57.453 | INFO     | __main__:_loop:1479 - [batch pdf 1] 143/267
+2026-10-14 20:22:02.458 | INFO     | __main__:_loop:1479 - [batch pdf 1] 148/267
+2026-10-14 20:22:07.474 | INFO     | __main__:_loop:1479 - [batch pdf 1] 155/267
+2026-10-14 20:22:12.484 | INFO     | __main__:_loop:1479 - [batch pdf 1] 160/267
+2026-10-14 20:22:17.495 | INFO     | __main__:_loop:1479 - [batch pdf 1] 166/267
+2026-10-14 20:22:22.501 | INFO     | __main__:_loop:1479 - [batch pdf 1] 171/267
+2026-10-14 20:22:27.507 | INFO     | __main__:_loop:1479 - [batch pdf 1] 177/267
+2026-10-14 20:22:32.514 | INFO     | __main__:_loop:1479 - [batch pdf 1] 182/267
+2026-10-14 20:22:42.527 | INFO     | __main__:_nudge:1450 - [focus] item 188/267 not finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 20:22:46.565 | WARNING  | __main__:_nudge:1458 - [focus] item 188/267: pressed 'No' then 'OK' with Word brought forward; Word said: "Word found unreadable content in 00187__folio-0.60.0__b4072979f7.docx. Do you want to recover the contents of this document? If you trust the source of this document, click Yes."
+2026-10-14 20:22:52.547 | INFO     | __main__:_loop:1479 - [batch pdf 1] 186/267
+2026-10-14 20:22:57.584 | INFO     | __main__:_loop:1479 - [batch pdf 1] 187/267
+2026-10-14 20:23:02.592 | INFO     | __main__:_loop:1479 - [batch pdf 1] 189/267
+2026-10-14 20:23:07.601 | INFO     | __main__:_loop:1479 - [batch pdf 1] 192/267
+2026-10-14 20:23:17.614 | INFO     | __main__:_nudge:1450 - [focus] item 199/267 not finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 20:23:22.119 | WARNING  | __main__:_nudge:1458 - [focus] item 199/267: pressed 'No' then 'OK' with Word brought forward; Word said: "Word found unreadable content in 00198__folio-0.60.0__c09f50d3f1.docx. Do you want to recover the contents of this document? If you trust the source of this document, click Yes."
+2026-10-14 20:23:27.627 | INFO     | __main__:_loop:1479 - [batch pdf 1] 198/267
+2026-10-14 20:23:32.638 | INFO     | __main__:_loop:1479 - [batch pdf 1] 202/267
+2026-10-14 20:23:37.646 | INFO     | __main__:_loop:1479 - [batch pdf 1] 206/267
+2026-10-14 20:23:47.663 | INFO     | __main__:_nudge:1450 - [focus] item 214/267 not finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 20:23:56.525 | WARNING  | __main__:_nudge:1458 - [focus] item 214/267: pressed 'No' with Word brought forward; Word said: "Word found unreadable content in 00213__folio-0.60.0__cfb0498eef.docx. Do you want to recover the contents of this document? If you trust the source of this document, click Yes."
+2026-10-14 20:24:02.682 | INFO     | __main__:_nudge:1450 - [focus] item 214/267 not finished after 25 s; bringing Word forward to look for an alert
+2026-10-14 20:24:17.717 | INFO     | __main__:_nudge:1450 - [focus] item 214/267 not finished after 40 s; bringing Word forward to look for an alert
+2026-10-14 20:24:38.776 | WARNING  | __main__:_report:1439 - [batch pdf 1] item 214/267 open for more than 30 s:
+-- Word windows {name, subrole}: osascript timed out
+-- Word window text: osascript timed out
+-- crash reporters: osascript timed out
+-- batch-pdf-1.log:
+[ok]	0
+[ok]	1
+[ok]	2
+[ok]	3
+[ok]	4
+[ok]	5
+[ok]	6
+[ok]	7
+[ok]	8
+[ok]	9
+[ok]	10
+[ok]	11
+[ok]	12
+[ok]	13
+[ok]	14
+[ok]	15
+[ok]	16
+[ok]	17
+[ok]	18
+[ok]	19
+[ok]	20
+[ok]	21
+[ok]	22
+[ok]	23
+[ok]	24
+[ok]	25
+[ok]	26
+[ok]	27
+[ok]	28
+[ok]	29
+[ok]	30
+[ok]	31
+[ok]	32
+[ok]	33
+[ok]	34
+[ok]	35
+[ok]	36
+[ok]	37
+[ok]	38
+[ok]	39
+[ok]	40
+[ok]	41
+[ok]	42
+[ok]	43
+[ok]	44
+[ok]	45
+[ok]	46
+[ok]	47
+[ok]	48
+[ok]	49
+[ok]	50
+[ok]	51
+[ok]	52
+[ok]	53
+[ok]	54
+[ok]	55
+[ok]	56
+[ok]	57
+[ok]	58
+[ok]	59
+[ok]	60
+[ok]	61
+[ok]	62
+[ok]	63
+[ok]	64
+[ok]	65
+[ok]	66
+[ok]	67
+[ok]	68
+[ok]	69
+[ok]	70
+[retry]	71	document loaded empty (Word could not read it)
+[ok]	72
+[ok]	73
+[ok]	74
+[ok]	75
+[ok]	76
+[fail]	77	Microsoft Word got an error: document "00077__folio-0.60.0__428fe8b1c0.docx" doesn’t understand the “save as” message.
+[ok]	78
+[ok]	79
+[ok]	80
+[ok]	81
+[ok]	82
+[ok]	83
+[ok]	84
+[ok]	85
+[retry]	86	document loaded empty (Word could not read it)
+[ok]	87
+[ok]	88
+[ok]	89
+[ok]	90
+[ok]	91
+[ok]	92
+[ok]	93
+[ok]	94
+[ok]	95
+[ok]	96
+[ok]	97
+[ok]	98
+[ok]	99
+[ok]	100
+[ok]	101
+[ok]	102
+[ok]	103
+[ok]	104
+[ok]	105
+[ok]	106
+[ok]	107
+[ok]	108
+[retry]	109	document loaded empty (Word could not read it)
+[ok]	110
+[retry]	111	document loaded empty (Word could not read it)
+[ok]	112
+[ok]	113
+[ok]	114
+[ok]	115
+[ok]	116
+[ok]	117
+[ok]	118
+[retry]	119	document loaded empty (Word could not read it)
+[ok]	120
+[ok]	121
+[ok]	122
+[ok]	123
+[ok]	124
+[ok]	125
+[ok]	126
+[ok]	127
+[ok]	128
+[ok]	129
+[ok]	130
+[ok]	131
+[ok]	132
+[ok]	133
+[ok]	134
+[ok]	135
+[ok]	136
+[ok]	137
+[ok]	138
+[ok]	139
+[ok]	140
+[ok]	141
+[ok]	142
+[ok]	143
+[ok]	144
+[ok]	145
+[ok]	146
+[ok]	147
+[ok]	148
+[ok]	149
+[ok]	150
+[ok]	151
+[ok]	152
+[ok]	153
+[ok]	154
+[ok]	155
+[ok]	156
+[ok]	157
+[ok]	158
+[fail]	159	Microsoft Word got an error: document "00159__folio-0.60.0__9812be01c0.docx" doesn’t understand the “save as” message.
+[ok]	160
+[ok]	161
+[ok]	162
+[ok]	163
+[ok]	164
+[ok]	165
+[ok]	166
+[ok]	167
+[ok]	168
+[ok]	169
+[ok]	170
+[ok]	171
+[ok]	172
+[ok]	173
+[ok]	174
+[ok]	175
+[ok]	176
+[ok]	177
+[ok]	178
+[ok]	179
+[ok]	180
+[ok]	181
+[ok]	182
+[ok]	183
+[ok]	184
+[ok]	185
+[ok]	186
+[retry]	187	document loaded empty (Word could not read it)
+[ok]	188
+[ok]	189
+[ok]	190
+[ok]	191
+[ok]	192
+[ok]	193
+[ok]	194
+[ok]	195
+[ok]	196
+[ok]	197
+[retry]	198	document loaded empty (Word could not read it)
+[ok]	199
+[ok]	200
+[ok]	201
+[ok]	202
+[ok]	203
+[ok]	204
+[ok]	205
+[ok]	206
+[ok]	207
+[ok]	208
+[ok]	209
+[ok]	210
+[ok]	211
+[ok]	212
+-- newest diagnostic reports: ExcUserFault_nsattributedstringagent-2026-10-08-102340.ips, ExcUserFault_nsattributedstringagent-2026-10-14-132310.ips, jubarte-2026-10-14-055954.ips, soffice-2026-10-14-041750.ips, soffice-2026-10-14-041543.ips
+2026-10-14 20:24:47.757 | INFO     | __main__:_nudge:1450 - [focus] item 214/267 not finished after 70 s; bringing Word forward to look for an alert
+2026-10-14 20:25:02.173 | WARNING  | __main__:_nudge:1458 - [focus] item 214/267: pressed 'OK' with Word brought forward; Word said: "Word experienced an error trying to open the file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00213__folio-0.60.0__cfb0498eef.docx)"
+2026-10-14 20:25:07.787 | INFO     | __main__:_loop:1479 - [batch pdf 1] 209/267
+2026-10-14 20:25:12.798 | INFO     | __main__:_loop:1479 - [batch pdf 1] 213/267
+2026-10-14 20:25:17.806 | INFO     | __main__:_loop:1479 - [batch pdf 1] 218/267
+2026-10-14 20:25:22.810 | INFO     | __main__:_loop:1479 - [batch pdf 1] 222/267
+2026-10-14 20:25:27.819 | INFO     | __main__:_loop:1479 - [batch pdf 1] 227/267
+2026-10-14 20:25:32.827 | INFO     | __main__:_loop:1479 - [batch pdf 1] 231/267
+2026-10-14 20:25:37.834 | INFO     | __main__:_loop:1479 - [batch pdf 1] 236/267
+2026-10-14 20:25:42.848 | INFO     | __main__:_loop:1479 - [batch pdf 1] 240/267
+2026-10-14 20:25:47.852 | INFO     | __main__:_loop:1479 - [batch pdf 1] 244/267
+2026-10-14 20:25:52.857 | INFO     | __main__:_loop:1479 - [batch pdf 1] 249/267
+2026-10-14 20:25:57.865 | INFO     | __main__:_loop:1479 - [batch pdf 1] 252/267
+2026-10-14 20:26:07.880 | INFO     | __main__:_nudge:1450 - [focus] item 261/267 not finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 20:26:13.821 | WARNING  | __main__:_nudge:1458 - [focus] item 261/267: pressed 'No' then 'OK' with Word brought forward; Word said: "Word found unreadable content in 00260__folio-0.60.0__f7837e0e51.docx. Do you want to recover the contents of this document? If you trust the source of this document, click Yes."
+2026-10-14 20:26:17.891 | INFO     | __main__:_loop:1479 - [batch pdf 1] 256/267
+2026-10-14 20:26:19.426 | WARNING  | __main__:run_batch_with_resume:1624 - [batch pdf] 9 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 2, 0 of 3 stalled passes used)
+2026-10-14 20:26:19.427 | WARNING  | __main__:recycle:1068 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 20:26:19.432 | WARNING  | __main__:recycle:1074 - [word] recycling (restart 1)
+2026-10-14 20:26:30.854 | INFO     | __main__:_note_dialogs:777 - [watchdog] Microsoft Word says: 'Word found unreadable content in 00071__folio-0.60.0__3fa2e4b5de.docx. Do you want to recover the contents of this document? If you trust the source of this document, click Yes.'
+2026-10-14 20:26:31.929 | WARNING  | __main__:_decline_repair:809 - [watchdog] repair prompt declined via 'No' then 'OK' with Word brought forward; Word said: "Word found unreadable content in 00071__folio-0.60.0__3fa2e4b5de.docx. Do you want to recover the contents of this document? If you trust the source of this document, click Yes."
+2026-10-14 20:26:31.934 | WARNING  | __main__:_decline_repair:812 - [watchdog] after the No, Word showed 'OK'; Word said: "Word experienced an error trying to open the file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00071__folio-0.60.0__3fa2e4b5de.docx)"
+2026-10-14 20:26:34.271 | INFO     | __main__:_loop:1479 - [batch pdf 2] 0/9
+2026-10-14 20:26:44.286 | INFO     | __main__:_nudge:1450 - [focus] item 2/9 not finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 20:26:59.316 | INFO     | __main__:_nudge:1450 - [focus] item 2/9 not finished after 25 s; bringing Word forward to look for an alert
+2026-10-14 20:27:24.653 | WARNING  | __main__:_report:1439 - [batch pdf 2] item 2/9 open for more than 30 s:
+-- Word windows {name, subrole}: osascript timed out
+-- Word window text: Microsoft Word, Word found unreadable content in 00086__folio-0.60.0__4d40d1f136.docx. Do you want to recover the contents of this document? If you trust the source of this document, click Yes.
+-- crash reporters: 
+-- batch-pdf-2.log:
+[retry]	71	document loaded empty (Word could not read it)
+-- newest diagnostic reports: ExcUserFault_nsattributedstringagent-2026-10-08-102340.ips, ExcUserFault_nsattributedstringagent-2026-10-14-132310.ips, jubarte-2026-10-14-055954.ips, soffice-2026-10-14-041750.ips, soffice-2026-10-14-041543.ips
+2026-10-14 20:27:25.657 | WARNING  | __main__:_decline_repair:809 - [watchdog] repair prompt declined via 'No' then 'OK' with Word brought forward; Word said: "Word found unreadable content in 00086__folio-0.60.0__4d40d1f136.docx. Do you want to recover the contents of this document? If you trust the source of this document, click Yes."
+2026-10-14 20:27:25.660 | WARNING  | __main__:_decline_repair:812 - [watchdog] after the No, Word showed 'OK'; Word said: "Word experienced an error trying to open the file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00086__folio-0.60.0__4d40d1f136.docx)"
+2026-10-14 20:27:39.384 | INFO     | __main__:_nudge:1450 - [focus] item 3/9 not finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 20:27:54.395 | INFO     | __main__:_nudge:1450 - [focus] item 3/9 not finished after 25 s; bringing Word forward to look for an alert
+2026-10-14 20:28:18.500 | WARNING  | __main__:_report:1439 - [batch pdf 2] item 3/9 open for more than 30 s:
+-- Word windows {name, subrole}: osascript timed out
+-- Word window text: Microsoft Word, Word found unreadable content in 00109__folio-0.60.0__61959b1953.docx. Do you want to recover the contents of this document? If you trust the source of this document, click Yes.
+-- crash reporters: 
+-- batch-pdf-2.log:
+[retry]	71	document loaded empty (Word could not read it)
+[retry]	86	document loaded empty (Word could not read it)
+-- newest diagnostic reports: ExcUserFault_nsattributedstringagent-2026-10-08-102340.ips, ExcUserFault_nsattributedstringagent-2026-10-14-132310.ips, jubarte-2026-10-14-055954.ips, soffice-2026-10-14-041750.ips, soffice-2026-10-14-041543.ips
+2026-10-14 20:28:18.662 | INFO     | __main__:_note_dialogs:777 - [watchdog] Microsoft Word says: 'Word found unreadable content in 00109__folio-0.60.0__61959b1953.docx. Do you want to recover the contents of this document? If you trust the source of this document, click Yes.'
+2026-10-14 20:28:19.496 | WARNING  | __main__:_decline_repair:809 - [watchdog] repair prompt declined via 'No' then 'OK' with Word brought forward; Word said: "Word found unreadable content in 00109__folio-0.60.0__61959b1953.docx. Do you want to recover the contents of this document? If you trust the source of this document, click Yes."
+2026-10-14 20:28:19.497 | WARNING  | __main__:_decline_repair:812 - [watchdog] after the No, Word showed 'OK'; Word said: "Word experienced an error trying to open the file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00109__folio-0.60.0__61959b1953.docx)"
+2026-10-14 20:28:19.526 | WARNING  | __main__:run_batch_with_resume:1624 - [batch pdf] 6 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 3, 0 of 3 stalled passes used)
+2026-10-14 20:28:19.527 | WARNING  | __main__:recycle:1068 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 20:28:19.527 | WARNING  | __main__:recycle:1074 - [word] recycling (restart 2)
+2026-10-14 20:28:26.846 | WARNING  | __main__:_decline_repair:809 - [watchdog] repair prompt declined via 'No' then 'OK' with Word brought forward; Word said: "Word found unreadable content in 00111__folio-0.60.0__6213202228.docx. Do you want to recover the contents of this document? If you trust the source of this document, click Yes."
+2026-10-14 20:28:26.862 | WARNING  | __main__:_decline_repair:812 - [watchdog] after the No, Word showed 'OK'; Word said: "Word experienced an error trying to open the file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00111__folio-0.60.0__6213202228.docx)"
+2026-10-14 20:28:29.267 | INFO     | __main__:_loop:1479 - [batch pdf 3] 0/6
+2026-10-14 20:28:39.280 | INFO     | __main__:_nudge:1450 - [focus] item 2/6 not finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 20:28:54.300 | INFO     | __main__:_nudge:1450 - [focus] item 2/6 not finished after 25 s; bringing Word forward to look for an alert
+2026-10-14 20:29:19.752 | WARNING  | __main__:_report:1439 - [batch pdf 3] item 2/6 open for more than 30 s:
+-- Word windows {name, subrole}: osascript timed out
+-- Word window text: Microsoft Word, Word found unreadable content in 00119__folio-0.60.0__6b74ac1ae6.docx. Do you want to recover the contents of this document? If you trust the source of this document, click Yes.
+-- crash reporters: 
+-- batch-pdf-3.log:
+[retry]	111	document loaded empty (Word could not read it)
+-- newest diagnostic reports: ExcUserFault_nsattributedstringagent-2026-10-08-102340.ips, ExcUserFault_nsattributedstringagent-2026-10-14-132310.ips, jubarte-2026-10-14-055954.ips, soffice-2026-10-14-041750.ips, soffice-2026-10-14-041543.ips
+2026-10-14 20:29:19.979 | INFO     | __main__:_note_dialogs:777 - [watchdog] Microsoft Word says: 'Word found unreadable content in 00119__folio-0.60.0__6b74ac1ae6.docx. Do you want to recover the contents of this document? If you trust the source of this document, click Yes.'
+2026-10-14 20:29:20.803 | WARNING  | __main__:_decline_repair:809 - [watchdog] repair prompt declined via 'No' then 'OK' with Word brought forward; Word said: "Word found unreadable content in 00119__folio-0.60.0__6b74ac1ae6.docx. Do you want to recover the contents of this document? If you trust the source of this document, click Yes."
+2026-10-14 20:29:20.803 | WARNING  | __main__:_decline_repair:812 - [watchdog] after the No, Word showed 'OK'; Word said: "Word experienced an error trying to open the file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00119__folio-0.60.0__6b74ac1ae6.docx)"
+2026-10-14 20:29:34.347 | INFO     | __main__:_nudge:1450 - [focus] item 3/6 not finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 20:29:49.359 | INFO     | __main__:_nudge:1450 - [focus] item 3/6 not finished after 25 s; bringing Word forward to look for an alert
+2026-10-14 20:30:08.156 | WARNING  | __main__:_report:1439 - [batch pdf 3] item 3/6 open for more than 30 s:
+-- Word windows {name, subrole}: , AXDialog
+-- Word window text: Microsoft Word, Word found unreadable content in 00187__folio-0.60.0__b4072979f7.docx. Do you want to recover the contents of this document? If you trust the source of this document, click Yes.
+-- crash reporters: 
+-- batch-pdf-3.log:
+[retry]	111	document loaded empty (Word could not read it)
+[retry]	119	document loaded empty (Word could not read it)
+-- newest diagnostic reports: ExcUserFault_nsattributedstringagent-2026-10-08-102340.ips, ExcUserFault_nsattributedstringagent-2026-10-14-132310.ips, jubarte-2026-10-14-055954.ips, soffice-2026-10-14-041750.ips, soffice-2026-10-14-041543.ips
+2026-10-14 20:30:19.388 | INFO     | __main__:_nudge:1450 - [focus] item 3/6 not finished after 55 s; bringing Word forward to look for an alert
+2026-10-14 20:30:24.464 | WARNING  | __main__:_nudge:1458 - [focus] item 3/6: pressed 'OK' with Word brought forward; Word said: "Word experienced an error trying to open the file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00187__folio-0.60.0__b4072979f7.docx)"
+2026-10-14 20:30:24.486 | WARNING  | __main__:run_batch_with_resume:1624 - [batch pdf] 3 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 4, 0 of 3 stalled passes used)
+2026-10-14 20:30:24.487 | WARNING  | __main__:recycle:1068 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 20:30:24.488 | WARNING  | __main__:recycle:1074 - [word] recycling (restart 3)
+2026-10-14 20:30:31.346 | INFO     | __main__:_note_dialogs:777 - [watchdog] Microsoft Word says: 'Word found unreadable content in 00198__folio-0.60.0__c09f50d3f1.docx. Do you want to recover the contents of this document? If you trust the source of this document, click Yes.'
+2026-10-14 20:30:32.286 | WARNING  | __main__:_decline_repair:809 - [watchdog] repair prompt declined via 'No' then 'OK' with Word brought forward; Word said: "Word found unreadable content in 00198__folio-0.60.0__c09f50d3f1.docx. Do you want to recover the contents of this document? If you trust the source of this document, click Yes."
+2026-10-14 20:30:32.290 | WARNING  | __main__:_decline_repair:812 - [watchdog] after the No, Word showed 'OK'; Word said: "Word experienced an error trying to open the file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00198__folio-0.60.0__c09f50d3f1.docx)"
+2026-10-14 20:30:34.626 | INFO     | __main__:_loop:1479 - [batch pdf 4] 0/3
+2026-10-14 20:30:44.639 | INFO     | __main__:_nudge:1450 - [focus] item 2/3 not finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 20:31:14.677 | INFO     | __main__:_nudge:1450 - [focus] item 2/3 not finished after 40 s; bringing Word forward to look for an alert
+2026-10-14 20:31:23.403 | WARNING  | __main__:_report:1439 - [batch pdf 4] item 2/3 open for more than 30 s:
+-- Word windows {name, subrole}: osascript timed out
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-4.log:
+[retry]	198	document loaded empty (Word could not read it)
+-- newest diagnostic reports: ExcUserFault_nsattributedstringagent-2026-10-08-102340.ips, ExcUserFault_nsattributedstringagent-2026-10-14-132310.ips, jubarte-2026-10-14-055954.ips, soffice-2026-10-14-041750.ips, soffice-2026-10-14-041543.ips
+2026-10-14 20:31:23.933 | WARNING  | __main__:_nudge:1458 - [focus] item 2/3: pressed 'No' then 'OK' with Word brought forward; Word said: "Word found unreadable content in 00213__folio-0.60.0__cfb0498eef.docx. Do you want to recover the contents of this document? If you trust the source of this document, click Yes."
+2026-10-14 20:31:34.702 | INFO     | __main__:_nudge:1450 - [focus] item 3/3 not finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 20:31:49.709 | INFO     | __main__:_nudge:1450 - [focus] item 3/3 not finished after 25 s; bringing Word forward to look for an alert
+2026-10-14 20:32:10.256 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 3fa2e4b5de.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-14 20:32:10.261 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 428fe8b1c0.docx — Microsoft Word got an error: document "00077__folio-0.60.0__428fe8b1c0.docx" doesn’t understand the “save as” message.
+2026-10-14 20:32:10.267 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 4d40d1f136.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-14 20:32:10.282 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 61959b1953.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-14 20:32:10.284 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 6213202228.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-14 20:32:10.290 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 6b74ac1ae6.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-14 20:32:10.321 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 9812be01c0.docx — Microsoft Word got an error: document "00159__folio-0.60.0__9812be01c0.docx" doesn’t understand the “save as” message.
+2026-10-14 20:32:10.345 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: b4072979f7.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-14 20:32:10.357 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: c09f50d3f1.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-14 20:32:10.387 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: cfb0498eef.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-14 20:32:10.434 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: f7837e0e51.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-14 20:32:11.305 | INFO     | __main__:stop:907 - [watchdog] tally: declined=7 dismissed=0 granted=0 forwarded=7 alerts_seen=6

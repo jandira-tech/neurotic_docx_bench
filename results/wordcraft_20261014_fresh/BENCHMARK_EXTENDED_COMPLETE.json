@@ -1,0 +1,29 @@
+{
+  "completed_at": "2026-10-14T20:59:55-0400",
+  "lanes": {
+    "compare": [
+      "wordcraft",
+      "wordcraft-0.7.0",
+      "jubarte-0.11.0",
+      "jubarte-0.12.0",
+      "docxodus-12.6.5",
+      "docxodus-13.0.0",
+      "folio-0.60.0",
+      "stemma-0.6.0",
+      "superdoc-2.20.0"
+    ],
+    "convert": [
+      "wordcraft",
+      "wordcraft-0.7.0",
+      "jubarte-0.11.0",
+      "jubarte-0.12.0",
+      "soffice",
+      "office2pdf-0.8.1",
+      "pdfitdown-4.2.0",
+      "rdocx-0.16.0",
+      "docxide-pdf-0.18.4",
+      "libreoffice_convert_rust-0.1.0",
+      "pymupdf-pro-1.28.2"
+    ]
+  }
+}

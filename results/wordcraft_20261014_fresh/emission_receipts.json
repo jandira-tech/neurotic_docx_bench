@@ -1,0 +1,162 @@
+{
+  "compare|wordcraft": {
+    "id_run": "01a13a4e-d202-779b-ba08-861dfd526aa8",
+    "score_file_sha256": "6969aa4afa6babff1de9d6ee486686722017a897757f296027ded1ee2f1e0e96",
+    "timestamp": "2026-10-14T12:06:46.530024+00:00"
+  },
+  "speed|compare|wordcraft": {
+    "timestamp": "2026-10-14T12:06:46.530024+00:00"
+  },
+  "compare|jubarte-0.11.0": {
+    "id_run": "01a13a4e-d3cb-7630-ac04-e7215808ee56",
+    "score_file_sha256": "ed204998aa4f70551fc7b28a71b3a68dcb21c449e94b1e6694a68d535bc83762",
+    "timestamp": "2026-10-14T12:06:46.987100+00:00"
+  },
+  "speed|compare|jubarte-0.11.0": {
+    "timestamp": "2026-10-14T12:06:46.987100+00:00"
+  },
+  "compare|jubarte-0.12.0": {
+    "id_run": "01a13a4e-d41f-75a5-800d-28768e5243e1",
+    "score_file_sha256": "3f399fb53451e7f06d0a9836b8f91e7fe595bf640a501bec01fe6b83cc54646c",
+    "timestamp": "2026-10-14T12:06:47.071884+00:00"
+  },
+  "speed|compare|jubarte-0.12.0": {
+    "timestamp": "2026-10-14T12:06:47.071884+00:00"
+  },
+  "compare|docxodus-12.6.5": {
+    "id_run": "01a13a4e-d466-742e-8744-614ceb5aa3f5",
+    "score_file_sha256": "2b1e634cad4e1bd1d5bf8bf504e5f99d2ac926a02df39cc71c0237bc0362477b",
+    "timestamp": "2026-10-14T12:06:47.142006+00:00"
+  },
+  "speed|compare|docxodus-12.6.5": {
+    "timestamp": "2026-10-14T12:06:47.142006+00:00"
+  },
+  "convert|wordcraft": {
+    "id_run": "01a13a4e-d4a4-75ca-8a5f-b693c70cbf7a",
+    "score_file_sha256": "a086d8ff013c4fa6be785726598b5ede2daf20376bd8801b216eb23bf565e582",
+    "timestamp": "2026-10-14T12:06:47.204005+00:00"
+  },
+  "speed|convert|wordcraft": {
+    "timestamp": "2026-10-14T12:06:47.204005+00:00"
+  },
+  "convert|jubarte-0.11.0": {
+    "id_run": "01a13a4e-d4c5-7397-9536-b08679ff98e9",
+    "score_file_sha256": "3af107951debb04205ad6df2389ee4e221ce0425e7cbcd8a28fe6010abb70478",
+    "timestamp": "2026-10-14T12:06:47.237459+00:00"
+  },
+  "speed|convert|jubarte-0.11.0": {
+    "timestamp": "2026-10-14T12:06:47.237459+00:00"
+  },
+  "convert|jubarte-0.12.0": {
+    "id_run": "01a13a4e-d4e3-73cd-8f50-9a976b81e6de",
+    "score_file_sha256": "244a25d0ced00c8ce72a340908e5b4fd3635c179fad01ed8dfd28feec7f3c54f",
+    "timestamp": "2026-10-14T12:06:47.267778+00:00"
+  },
+  "speed|convert|jubarte-0.12.0": {
+    "timestamp": "2026-10-14T12:06:47.267778+00:00"
+  },
+  "convert|soffice": {
+    "id_run": "01a13a4e-d503-7486-8769-0f7d1acf4008",
+    "score_file_sha256": "5b24a0863eeb9367e437e84d2e99faf488c4211341a84807249285842abb281d",
+    "timestamp": "2026-10-14T12:06:47.298997+00:00"
+  },
+  "speed|convert|soffice": {
+    "timestamp": "2026-10-14T12:06:47.298997+00:00"
+  },
+  "compare|wordcraft-0.7.0": {
+    "id_run": "01a13d13-6ded-7120-8376-9a1d6d7d8ad0",
+    "score_file_sha256": "520be313c7f900ffef022e1381b3ee88353b28ab58e1c4cae0a0ae16e49d2014",
+    "timestamp": "2026-10-15T01:00:45.933573+00:00"
+  },
+  "speed|compare|wordcraft-0.7.0": {
+    "timestamp": "2026-10-15T01:00:45.933573+00:00"
+  },
+  "compare|docxodus-13.0.0": {
+    "id_run": "01a13d13-70f7-7667-b7de-218ff4d13321",
+    "score_file_sha256": "3af1d190b91351e25cf15beb13c12709c95b127dab2086107a35bcc74c9d4bd6",
+    "timestamp": "2026-10-15T01:00:46.711001+00:00"
+  },
+  "speed|compare|docxodus-13.0.0": {
+    "timestamp": "2026-10-15T01:00:46.711001+00:00"
+  },
+  "compare|folio-0.60.0": {
+    "id_run": "01a13d13-7147-7179-9b60-e13f4e32e89b",
+    "score_file_sha256": "27529ba55d2ed8f6ea071b29cca798d9708f3192c4b6e02f1aef2b9839ebb82d",
+    "timestamp": "2026-10-15T01:00:46.791004+00:00"
+  },
+  "speed|compare|folio-0.60.0": {
+    "timestamp": "2026-10-15T01:00:46.791004+00:00"
+  },
+  "compare|stemma-0.6.0": {
+    "id_run": "01a13d13-717d-7597-b2c5-366e55cac104",
+    "score_file_sha256": "987c500821f076f96bdeb65ab38221f94eae6dd64714f608a0515c90f6056828",
+    "timestamp": "2026-10-15T01:00:46.845108+00:00"
+  },
+  "speed|compare|stemma-0.6.0": {
+    "timestamp": "2026-10-15T01:00:46.845108+00:00"
+  },
+  "compare|superdoc-2.20.0": {
+    "id_run": "01a13d13-71a0-726d-83bc-c9d66a505eb3",
+    "score_file_sha256": "5aeff62603299357b8c9b2aed31966db435b7a70a5f749fa5e68504d617d6697",
+    "timestamp": "2026-10-15T01:00:46.880459+00:00"
+  },
+  "speed|compare|superdoc-2.20.0": {
+    "timestamp": "2026-10-15T01:00:46.880459+00:00"
+  },
+  "convert|wordcraft-0.7.0": {
+    "id_run": "01a13d13-71d3-730f-bff9-d8f9b71391d1",
+    "score_file_sha256": "324f65378b90b2d30618e4c76b4c6e4d8f77f737f9f37c9dc0ec5657e5f441c2",
+    "timestamp": "2026-10-15T01:00:46.931800+00:00"
+  },
+  "speed|convert|wordcraft-0.7.0": {
+    "timestamp": "2026-10-15T01:00:46.931800+00:00"
+  },
+  "convert|office2pdf-0.8.1": {
+    "id_run": "01a13d13-7222-7380-883d-4d0996e5db8d",
+    "score_file_sha256": "37be4ac182cffe68efb2983bc2dbd0e213055d454a2e700c1bf61e8e3c8b392f",
+    "timestamp": "2026-10-15T01:00:47.009997+00:00"
+  },
+  "speed|convert|office2pdf-0.8.1": {
+    "timestamp": "2026-10-15T01:00:47.009997+00:00"
+  },
+  "convert|pdfitdown-4.2.0": {
+    "id_run": "01a13d13-7249-75f9-a4ef-376e3c727339",
+    "score_file_sha256": "3cf13838e611469975fb618f05240b50821017ee8466862349a008cb40ebf67d",
+    "timestamp": "2026-10-15T01:00:47.049923+00:00"
+  },
+  "speed|convert|pdfitdown-4.2.0": {
+    "timestamp": "2026-10-15T01:00:47.049923+00:00"
+  },
+  "convert|rdocx-0.16.0": {
+    "id_run": "01a13d13-726d-7677-a735-031088020312",
+    "score_file_sha256": "d7cc12e0d8bdc57c4aa6a50ed3f31443fe92a99094f75d30347f87e81f92eca9",
+    "timestamp": "2026-10-15T01:00:47.085723+00:00"
+  },
+  "speed|convert|rdocx-0.16.0": {
+    "timestamp": "2026-10-15T01:00:47.085723+00:00"
+  },
+  "convert|docxide-pdf-0.18.4": {
+    "id_run": "01a13d13-7290-7213-b4a8-5a14e890d738",
+    "score_file_sha256": "313e68693e7f50771925cbe71a690f4d8b491f9cb7fa1ec8ee28efe0903ca554",
+    "timestamp": "2026-10-15T01:00:47.120578+00:00"
+  },
+  "speed|convert|docxide-pdf-0.18.4": {
+    "timestamp": "2026-10-15T01:00:47.120578+00:00"
+  },
+  "convert|libreoffice_convert_rust-0.1.0": {
+    "id_run": "01a13d13-72b4-77e5-8565-4af414d6a3b7",
+    "score_file_sha256": "678b04a902fd9b967c498696627a566ae06a35745304fa0a18585de3fb7c384a",
+    "timestamp": "2026-10-15T01:00:47.156905+00:00"
+  },
+  "speed|convert|libreoffice_convert_rust-0.1.0": {
+    "timestamp": "2026-10-15T01:00:47.156905+00:00"
+  },
+  "convert|pymupdf-pro-1.28.2": {
+    "id_run": "01a13d13-72d4-739b-95cc-c9a0e96282c5",
+    "score_file_sha256": "9a3e839c6d409726d779a973f83e9e424adc463e6fc6377cdf2cdaea58765bc8",
+    "timestamp": "2026-10-15T01:00:47.187991+00:00"
+  },
+  "speed|convert|pymupdf-pro-1.28.2": {
+    "timestamp": "2026-10-15T01:00:47.187991+00:00"
+  }
+}

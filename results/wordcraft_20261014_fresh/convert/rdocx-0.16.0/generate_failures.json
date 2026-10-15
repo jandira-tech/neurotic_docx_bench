@@ -1,0 +1,20 @@
+[
+  {
+    "doc": "tracking_without_comments__fad186fbc9_file_185",
+    "stage": "generate",
+    "error": "Error: OXML parsing error: missing required element: settings root\n",
+    "returncode": 1
+  },
+  {
+    "doc": "tracking_without_comments__fb85d194cb_23203fe6d92dfd722597a5820480664b6fa93fdf63d04cbe__vs__5d88ca2fc6_613418ce0a9bb74e12692fcaaa305ebd1196a5e3a8f56a13_redline_d610d90c10",
+    "stage": "generate",
+    "error": "Error: layout error: layout error: could not align a joined paragraph's run boundaries\n",
+    "returncode": 1
+  },
+  {
+    "doc": "with_comments_tracking__bd962090cd_s10_control",
+    "stage": "generate",
+    "error": "Error: cannot scan identifiers in XML part /word/document.xml: duplicate bookmark id 0 in imported or preserved XML\n",
+    "returncode": 1
+  }
+]

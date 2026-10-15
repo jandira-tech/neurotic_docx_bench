@@ -1,0 +1,6 @@
+Waiting for corrected writable Word retry 47680
+Staged 26 reserve pairs in /Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/word_valid_reserve_01
+RUN unmodified word_redline.py word_valid_reserve_01 writable inputs 52
+Fresh valid comparison references 174 / 200
+Staged 26 reserve pairs in /Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/word_valid_reserve_02
+RUN unmodified word_redline.py word_valid_reserve_02 writable inputs 52

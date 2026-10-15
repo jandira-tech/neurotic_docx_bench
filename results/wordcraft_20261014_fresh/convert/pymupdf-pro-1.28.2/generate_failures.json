@@ -1,0 +1,20 @@
+[
+  {
+    "doc": "with_comments_tracking__a545465802_r3_keep_11_12",
+    "stage": "generate",
+    "error": "RuntimeError: office_export() failed: SmartOffice document load failed for markdown export, doc_error=4.\nPyMuPDFPro: Restricted Mode. Please visit https://pymupdf.io/try-pro to request your trial key.\n",
+    "returncode": 1
+  },
+  {
+    "doc": "with_comments_tracking__b07ba468f1_r3_keep_4_5",
+    "stage": "generate",
+    "error": "RuntimeError: office_export() failed: SmartOffice document load failed for markdown export, doc_error=4.\nPyMuPDFPro: Restricted Mode. Please visit https://pymupdf.io/try-pro to request your trial key.\n",
+    "returncode": 1
+  },
+  {
+    "doc": "with_comments_tracking__20bb5eaab2_r3_keep_4_5_11_12",
+    "stage": "generate",
+    "error": "RuntimeError: office_export() failed: SmartOffice document load failed for markdown export, doc_error=4.\nPyMuPDFPro: Restricted Mode. Please visit https://pymupdf.io/try-pro to request your trial key.\n",
+    "returncode": 1
+  }
+]

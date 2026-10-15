@@ -1,0 +1,378 @@
+2026-10-14 05:55:48.013 | INFO     | __main__:preflight:2235 - [word] preflight: open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-10-14 05:55:48.025 | INFO     | __main__:convert_folder:1908 - [word] export: one_osascript=True documents=400 accept_all=False reject_all=False
+2026-10-14 05:55:48.757 | INFO     | __main__:_convert_batched:2108 - [batch] one osascript for 400 document(s)
+2026-10-14 05:55:53.792 | INFO     | __main__:_loop:1479 - [batch pdf 1] 0/400
+2026-10-14 05:55:59.004 | INFO     | __main__:_loop:1479 - [batch pdf 1] 1/400
+2026-10-14 05:56:04.025 | INFO     | __main__:_loop:1479 - [batch pdf 1] 2/400
+2026-10-14 05:56:14.065 | INFO     | __main__:_nudge:1450 - [focus] item 3/400 not finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 05:56:44.199 | INFO     | __main__:_nudge:1450 - [focus] item 3/400 not finished after 40 s; bringing Word forward to look for an alert
+2026-10-14 05:57:04.516 | WARNING  | __main__:_report:1439 - [batch pdf 1] item 3/400 open for more than 30 s:
+-- Word windows {name, subrole}: osascript timed out
+-- Word window text: osascript timed out
+-- crash reporters: osascript timed out
+-- batch-pdf-1.log:
+[ok]	0
+[ok]	1
+-- newest diagnostic reports: soffice-2026-10-14-041750.ips, soffice-2026-10-14-041543.ips, ExcUserFault_nsattributedstringagent-2026-10-08-102340.ips, math-probe-2026-10-14-023025.ips, soffice-2026-10-14-012000.ips
+2026-10-14 05:57:14.346 | INFO     | __main__:_nudge:1450 - [focus] item 3/400 not finished after 70 s; bringing Word forward to look for an alert
+2026-10-14 05:57:44.453 | INFO     | __main__:_nudge:1450 - [focus] item 3/400 not finished after 100 s; bringing Word forward to look for an alert
+2026-10-14 05:58:14.741 | INFO     | __main__:_nudge:1450 - [focus] item 3/400 not finished after 131 s; bringing Word forward to look for an alert
+2026-10-14 05:58:45.158 | INFO     | __main__:_nudge:1450 - [focus] item 3/400 not finished after 161 s; bringing Word forward to look for an alert
+2026-10-14 05:59:15.603 | INFO     | __main__:_nudge:1450 - [focus] item 3/400 not finished after 192 s; bringing Word forward to look for an alert
+2026-10-14 05:59:46.153 | INFO     | __main__:_nudge:1450 - [focus] item 3/400 not finished after 222 s; bringing Word forward to look for an alert
+2026-10-14 06:00:16.754 | INFO     | __main__:_nudge:1450 - [focus] item 3/400 not finished after 253 s; bringing Word forward to look for an alert
+2026-10-14 06:00:47.119 | INFO     | __main__:_nudge:1450 - [focus] item 3/400 not finished after 283 s; bringing Word forward to look for an alert
+2026-10-14 06:01:12.625 | INFO     | __main__:_loop:1479 - [batch pdf 1] 3/400
+2026-10-14 06:01:12.984 | WARNING  | __main__:run_batch_with_resume:1624 - [batch pdf] 397 item(s) never reached (ended without reaching them); recycling Word and retrying the rest first, retried items last (pass 2, 1 of 3 stalled passes used)
+2026-10-14 06:01:13.013 | WARNING  | __main__:recycle:1068 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 06:01:13.042 | WARNING  | __main__:recycle:1074 - [word] recycling (restart 1)
+2026-10-14 06:01:28.853 | INFO     | __main__:_loop:1479 - [batch pdf 2] 1/397
+2026-10-14 06:01:38.899 | INFO     | __main__:_loop:1479 - [batch pdf 2] 4/397
+2026-10-14 06:01:43.985 | INFO     | __main__:_loop:1479 - [batch pdf 2] 7/397
+2026-10-14 06:01:54.005 | INFO     | __main__:_nudge:1450 - [focus] item 8/397 not finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 06:02:24.329 | INFO     | __main__:_nudge:1450 - [focus] item 8/397 not finished after 40 s; bringing Word forward to look for an alert
+2026-10-14 06:02:37.165 | WARNING  | __main__:_report:1439 - [batch pdf 2] item 8/397 open for more than 30 s:
+-- Word windows {name, subrole}: osascript timed out
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-2.log:
+[ok]	3
+[ok]	4
+[ok]	5
+[ok]	6
+[ok]	7
+[ok]	8
+[ok]	9
+-- newest diagnostic reports: jubarte-2026-10-14-055954.ips, soffice-2026-10-14-041750.ips, soffice-2026-10-14-041543.ips, ExcUserFault_nsattributedstringagent-2026-10-08-102340.ips, math-probe-2026-10-14-023025.ips
+2026-10-14 06:02:54.436 | INFO     | __main__:_loop:1479 - [batch pdf 2] 8/397
+2026-10-14 06:02:59.796 | INFO     | __main__:_note_dialogs:774 - [watchdog] Microsoft Error Reporting shows button 'OK'
+2026-10-14 06:02:59.798 | INFO     | __main__:_note_dialogs:774 - [watchdog] Microsoft Error Reporting shows button 'More Information'
+2026-10-14 06:02:59.799 | INFO     | __main__:_note_dialogs:774 - [watchdog] Microsoft Error Reporting shows button 'missing value'
+2026-10-14 06:02:59.799 | INFO     | __main__:_note_dialogs:777 - [watchdog] Microsoft Error Reporting says: 'There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting'
+2026-10-14 06:03:00.939 | WARNING  | __main__:_loop_merp:888 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-10-14 06:03:04.549 | WARNING  | __main__:run_batch_with_resume:1624 - [batch pdf] 389 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 3, 1 of 3 stalled passes used)
+2026-10-14 06:03:04.557 | WARNING  | __main__:recycle:1068 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 06:03:04.560 | WARNING  | __main__:recycle:1074 - [word] recycling (restart 2)
+2026-10-14 06:03:21.023 | INFO     | __main__:_loop:1479 - [batch pdf 3] 1/389
+2026-10-14 06:03:26.031 | INFO     | __main__:_loop:1479 - [batch pdf 3] 2/389
+2026-10-14 06:03:31.050 | INFO     | __main__:_loop:1479 - [batch pdf 3] 5/389
+2026-10-14 06:03:36.066 | INFO     | __main__:_loop:1479 - [batch pdf 3] 6/389
+2026-10-14 06:03:46.080 | INFO     | __main__:_nudge:1450 - [focus] item 7/389 not finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 06:04:16.128 | INFO     | __main__:_nudge:1450 - [focus] item 7/389 not finished after 40 s; bringing Word forward to look for an alert
+2026-10-14 06:04:32.159 | WARNING  | __main__:_report:1439 - [batch pdf 3] item 7/389 open for more than 30 s:
+-- Word windows {name, subrole}: osascript timed out
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-3.log:
+[ok]	12
+[ok]	13
+[ok]	14
+[ok]	15
+[ok]	16
+[ok]	17
+-- newest diagnostic reports: jubarte-2026-10-14-055954.ips, soffice-2026-10-14-041750.ips, soffice-2026-10-14-041543.ips, ExcUserFault_nsattributedstringagent-2026-10-08-102340.ips, math-probe-2026-10-14-023025.ips
+2026-10-14 06:04:46.176 | INFO     | __main__:_nudge:1450 - [focus] item 7/389 not finished after 70 s; bringing Word forward to look for an alert
+2026-10-14 06:05:16.220 | INFO     | __main__:_nudge:1450 - [focus] item 7/389 not finished after 100 s; bringing Word forward to look for an alert
+2026-10-14 06:05:46.334 | INFO     | __main__:_nudge:1450 - [focus] item 7/389 not finished after 130 s; bringing Word forward to look for an alert
+2026-10-14 06:05:56.366 | INFO     | __main__:_loop:1479 - [batch pdf 3] 7/389
+2026-10-14 06:06:01.384 | INFO     | __main__:_loop:1479 - [batch pdf 3] 10/389
+2026-10-14 06:06:06.396 | INFO     | __main__:_loop:1479 - [batch pdf 3] 12/389
+2026-10-14 06:06:11.410 | INFO     | __main__:_loop:1479 - [batch pdf 3] 16/389
+2026-10-14 06:06:16.426 | INFO     | __main__:_loop:1479 - [batch pdf 3] 19/389
+2026-10-14 06:06:21.456 | INFO     | __main__:_loop:1479 - [batch pdf 3] 23/389
+2026-10-14 06:06:26.466 | INFO     | __main__:_loop:1479 - [batch pdf 3] 27/389
+2026-10-14 06:06:31.491 | INFO     | __main__:_loop:1479 - [batch pdf 3] 30/389
+2026-10-14 06:06:36.504 | INFO     | __main__:_loop:1479 - [batch pdf 3] 34/389
+2026-10-14 06:06:41.514 | INFO     | __main__:_loop:1479 - [batch pdf 3] 37/389
+2026-10-14 06:06:46.524 | INFO     | __main__:_loop:1479 - [batch pdf 3] 40/389
+2026-10-14 06:06:51.534 | INFO     | __main__:_loop:1479 - [batch pdf 3] 43/389
+2026-10-14 06:06:56.546 | INFO     | __main__:_loop:1479 - [batch pdf 3] 47/389
+2026-10-14 06:07:01.565 | INFO     | __main__:_loop:1479 - [batch pdf 3] 50/389
+2026-10-14 06:07:06.793 | INFO     | __main__:_loop:1479 - [batch pdf 3] 54/389
+2026-10-14 06:07:11.800 | INFO     | __main__:_loop:1479 - [batch pdf 3] 58/389
+2026-10-14 06:07:16.810 | INFO     | __main__:_loop:1479 - [batch pdf 3] 61/389
+2026-10-14 06:07:21.822 | INFO     | __main__:_loop:1479 - [batch pdf 3] 64/389
+2026-10-14 06:07:26.834 | INFO     | __main__:_loop:1479 - [batch pdf 3] 67/389
+2026-10-14 06:07:31.839 | INFO     | __main__:_loop:1479 - [batch pdf 3] 70/389
+2026-10-14 06:07:36.846 | INFO     | __main__:_loop:1479 - [batch pdf 3] 73/389
+2026-10-14 06:07:41.858 | INFO     | __main__:_loop:1479 - [batch pdf 3] 77/389
+2026-10-14 06:07:46.879 | INFO     | __main__:_loop:1479 - [batch pdf 3] 80/389
+2026-10-14 06:07:51.897 | INFO     | __main__:_loop:1479 - [batch pdf 3] 84/389
+2026-10-14 06:07:56.910 | INFO     | __main__:_loop:1479 - [batch pdf 3] 87/389
+2026-10-14 06:08:01.925 | INFO     | __main__:_loop:1479 - [batch pdf 3] 90/389
+2026-10-14 06:08:06.935 | INFO     | __main__:_loop:1479 - [batch pdf 3] 94/389
+2026-10-14 06:08:11.985 | INFO     | __main__:_loop:1479 - [batch pdf 3] 99/389
+2026-10-14 06:08:17.031 | INFO     | __main__:_loop:1479 - [batch pdf 3] 102/389
+2026-10-14 06:08:22.160 | INFO     | __main__:_loop:1479 - [batch pdf 3] 107/389
+2026-10-14 06:08:27.268 | INFO     | __main__:_loop:1479 - [batch pdf 3] 111/389
+2026-10-14 06:08:32.377 | INFO     | __main__:_loop:1479 - [batch pdf 3] 116/389
+2026-10-14 06:08:37.391 | INFO     | __main__:_loop:1479 - [batch pdf 3] 119/389
+2026-10-14 06:08:42.403 | INFO     | __main__:_loop:1479 - [batch pdf 3] 122/389
+2026-10-14 06:08:47.431 | INFO     | __main__:_loop:1479 - [batch pdf 3] 125/389
+2026-10-14 06:08:52.440 | INFO     | __main__:_loop:1479 - [batch pdf 3] 130/389
+2026-10-14 06:08:57.469 | INFO     | __main__:_loop:1479 - [batch pdf 3] 133/389
+2026-10-14 06:09:02.517 | INFO     | __main__:_loop:1479 - [batch pdf 3] 137/389
+2026-10-14 06:09:07.526 | INFO     | __main__:_loop:1479 - [batch pdf 3] 142/389
+2026-10-14 06:09:12.538 | INFO     | __main__:_loop:1479 - [batch pdf 3] 146/389
+2026-10-14 06:09:17.550 | INFO     | __main__:_loop:1479 - [batch pdf 3] 150/389
+2026-10-14 06:09:22.570 | INFO     | __main__:_loop:1479 - [batch pdf 3] 153/389
+2026-10-14 06:09:27.641 | INFO     | __main__:_loop:1479 - [batch pdf 3] 156/389
+2026-10-14 06:09:32.660 | INFO     | __main__:_loop:1479 - [batch pdf 3] 160/389
+2026-10-14 06:09:37.673 | INFO     | __main__:_loop:1479 - [batch pdf 3] 162/389
+2026-10-14 06:09:42.765 | INFO     | __main__:_loop:1479 - [batch pdf 3] 166/389
+2026-10-14 06:09:47.829 | INFO     | __main__:_loop:1479 - [batch pdf 3] 170/389
+2026-10-14 06:09:52.897 | INFO     | __main__:_loop:1479 - [batch pdf 3] 173/389
+2026-10-14 06:09:57.970 | INFO     | __main__:_loop:1479 - [batch pdf 3] 178/389
+2026-10-14 06:10:02.989 | INFO     | __main__:_loop:1479 - [batch pdf 3] 182/389
+2026-10-14 06:10:08.010 | INFO     | __main__:_loop:1479 - [batch pdf 3] 186/389
+2026-10-14 06:10:13.017 | INFO     | __main__:_loop:1479 - [batch pdf 3] 189/389
+2026-10-14 06:10:18.030 | INFO     | __main__:_loop:1479 - [batch pdf 3] 192/389
+2026-10-14 06:10:23.040 | INFO     | __main__:_loop:1479 - [batch pdf 3] 193/389
+2026-10-14 06:10:28.054 | INFO     | __main__:_loop:1479 - [batch pdf 3] 196/389
+2026-10-14 06:10:33.092 | INFO     | __main__:_loop:1479 - [batch pdf 3] 199/389
+2026-10-14 06:10:38.165 | INFO     | __main__:_loop:1479 - [batch pdf 3] 204/389
+2026-10-14 06:10:43.175 | INFO     | __main__:_loop:1479 - [batch pdf 3] 208/389
+2026-10-14 06:10:48.233 | INFO     | __main__:_loop:1479 - [batch pdf 3] 209/389
+2026-10-14 06:10:53.079 | WARNING  | __main__:_loop_merp:888 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-10-14 06:10:58.333 | INFO     | __main__:_nudge:1450 - [focus] item 210/389 not finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 06:10:58.477 | WARNING  | __main__:run_batch_with_resume:1624 - [batch pdf] 180 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 4, 1 of 3 stalled passes used)
+2026-10-14 06:10:58.482 | WARNING  | __main__:recycle:1068 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 06:10:58.484 | WARNING  | __main__:recycle:1074 - [word] recycling (restart 3)
+2026-10-14 06:11:13.160 | INFO     | __main__:_loop:1479 - [batch pdf 4] 0/180
+2026-10-14 06:11:18.240 | INFO     | __main__:_loop:1479 - [batch pdf 4] 1/180
+2026-10-14 06:11:23.247 | INFO     | __main__:_loop:1479 - [batch pdf 4] 3/180
+2026-10-14 06:11:28.271 | INFO     | __main__:_loop:1479 - [batch pdf 4] 5/180
+2026-10-14 06:11:33.313 | INFO     | __main__:_loop:1479 - [batch pdf 4] 9/180
+2026-10-14 06:11:38.326 | INFO     | __main__:_loop:1479 - [batch pdf 4] 12/180
+2026-10-14 06:11:43.407 | INFO     | __main__:_loop:1479 - [batch pdf 4] 15/180
+2026-10-14 06:11:44.553 | WARNING  | __main__:run_batch_with_resume:1624 - [batch pdf] 165 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 5, 1 of 3 stalled passes used)
+2026-10-14 06:11:44.561 | WARNING  | __main__:recycle:1068 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 06:11:44.564 | WARNING  | __main__:recycle:1074 - [word] recycling (restart 4)
+2026-10-14 06:11:51.530 | WARNING  | __main__:_loop_merp:888 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-10-14 06:12:03.750 | INFO     | __main__:_loop:1479 - [batch pdf 5] 0/165
+2026-10-14 06:12:08.859 | INFO     | __main__:_loop:1479 - [batch pdf 5] 2/165
+2026-10-14 06:12:13.886 | INFO     | __main__:_loop:1479 - [batch pdf 5] 4/165
+2026-10-14 06:12:18.912 | INFO     | __main__:_loop:1479 - [batch pdf 5] 5/165
+2026-10-14 06:12:23.957 | INFO     | __main__:_loop:1479 - [batch pdf 5] 7/165
+2026-10-14 06:12:29.183 | INFO     | __main__:_loop:1479 - [batch pdf 5] 8/165
+2026-10-14 06:12:39.347 | INFO     | __main__:_nudge:1450 - [focus] item 9/165 not finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 06:13:09.998 | INFO     | __main__:_nudge:1450 - [focus] item 9/165 not finished after 41 s; bringing Word forward to look for an alert
+2026-10-14 06:13:30.464 | WARNING  | __main__:_report:1439 - [batch pdf 5] item 9/165 open for more than 30 s:
+-- Word windows {name, subrole}: osascript timed out
+-- Word window text: osascript timed out
+-- crash reporters: osascript timed out
+-- batch-pdf-5.log:
+[ok]	238
+[ok]	239
+[ok]	240
+[ok]	241
+[ok]	242
+[ok]	243
+[ok]	244
+[ok]	245
+-- newest diagnostic reports: jubarte-2026-10-14-055954.ips, soffice-2026-10-14-041750.ips, soffice-2026-10-14-041543.ips, ExcUserFault_nsattributedstringagent-2026-10-08-102340.ips, math-probe-2026-10-14-023025.ips
+2026-10-14 06:13:40.158 | INFO     | __main__:_nudge:1450 - [focus] item 9/165 not finished after 71 s; bringing Word forward to look for an alert
+2026-10-14 06:14:10.265 | INFO     | __main__:_nudge:1450 - [focus] item 9/165 not finished after 101 s; bringing Word forward to look for an alert
+2026-10-14 06:14:40.913 | INFO     | __main__:_nudge:1450 - [focus] item 9/165 not finished after 132 s; bringing Word forward to look for an alert
+2026-10-14 06:15:11.573 | INFO     | __main__:_nudge:1450 - [focus] item 9/165 not finished after 162 s; bringing Word forward to look for an alert
+2026-10-14 06:15:41.628 | INFO     | __main__:_nudge:1450 - [focus] item 9/165 not finished after 192 s; bringing Word forward to look for an alert
+2026-10-14 06:16:11.747 | INFO     | __main__:_nudge:1450 - [focus] item 9/165 not finished after 222 s; bringing Word forward to look for an alert
+2026-10-14 06:16:41.888 | INFO     | __main__:_nudge:1450 - [focus] item 9/165 not finished after 253 s; bringing Word forward to look for an alert
+2026-10-14 06:17:12.095 | INFO     | __main__:_nudge:1450 - [focus] item 9/165 not finished after 283 s; bringing Word forward to look for an alert
+2026-10-14 06:17:42.215 | INFO     | __main__:_nudge:1450 - [focus] item 9/165 not finished after 313 s; bringing Word forward to look for an alert
+2026-10-14 06:18:12.324 | INFO     | __main__:_nudge:1450 - [focus] item 9/165 not finished after 343 s; bringing Word forward to look for an alert
+2026-10-14 06:18:26.070 | WARNING  | __main__:run_batch_with_resume:1624 - [batch pdf] 156 item(s) never reached (ended without reaching them); recycling Word and retrying the rest first, retried items last (pass 6, 2 of 3 stalled passes used)
+2026-10-14 06:18:26.136 | WARNING  | __main__:recycle:1068 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 06:18:26.142 | WARNING  | __main__:recycle:1074 - [word] recycling (restart 5)
+2026-10-14 06:19:13.670 | INFO     | __main__:_loop:1479 - [batch pdf 6] 0/156
+2026-10-14 06:19:18.780 | INFO     | __main__:_loop:1479 - [batch pdf 6] 3/156
+2026-10-14 06:19:23.834 | INFO     | __main__:_loop:1479 - [batch pdf 6] 5/156
+2026-10-14 06:19:28.977 | INFO     | __main__:_loop:1479 - [batch pdf 6] 8/156
+2026-10-14 06:19:34.017 | INFO     | __main__:_loop:1479 - [batch pdf 6] 9/156
+2026-10-14 06:19:44.119 | INFO     | __main__:_nudge:1450 - [focus] item 10/156 not finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 06:20:14.276 | INFO     | __main__:_nudge:1450 - [focus] item 10/156 not finished after 40 s; bringing Word forward to look for an alert
+2026-10-14 06:20:34.631 | WARNING  | __main__:_report:1439 - [batch pdf 6] item 10/156 open for more than 30 s:
+-- Word windows {name, subrole}: osascript timed out
+-- Word window text: osascript timed out
+-- crash reporters: osascript timed out
+-- batch-pdf-6.log:
+[ok]	247
+[ok]	248
+[ok]	249
+[ok]	250
+[ok]	251
+[ok]	252
+[ok]	253
+[ok]	254
+[ok]	255
+-- newest diagnostic reports: jubarte-2026-10-14-055954.ips, soffice-2026-10-14-041750.ips, soffice-2026-10-14-041543.ips, ExcUserFault_nsattributedstringagent-2026-10-08-102340.ips, math-probe-2026-10-14-023025.ips
+2026-10-14 06:20:44.442 | INFO     | __main__:_nudge:1450 - [focus] item 10/156 not finished after 70 s; bringing Word forward to look for an alert
+2026-10-14 06:21:14.596 | INFO     | __main__:_nudge:1450 - [focus] item 10/156 not finished after 101 s; bringing Word forward to look for an alert
+2026-10-14 06:21:44.700 | INFO     | __main__:_nudge:1450 - [focus] item 10/156 not finished after 131 s; bringing Word forward to look for an alert
+2026-10-14 06:22:14.839 | INFO     | __main__:_nudge:1450 - [focus] item 10/156 not finished after 161 s; bringing Word forward to look for an alert
+2026-10-14 06:22:44.909 | INFO     | __main__:_nudge:1450 - [focus] item 10/156 not finished after 191 s; bringing Word forward to look for an alert
+2026-10-14 06:23:14.984 | INFO     | __main__:_nudge:1450 - [focus] item 10/156 not finished after 221 s; bringing Word forward to look for an alert
+2026-10-14 06:23:45.070 | INFO     | __main__:_nudge:1450 - [focus] item 10/156 not finished after 251 s; bringing Word forward to look for an alert
+2026-10-14 06:24:15.111 | INFO     | __main__:_nudge:1450 - [focus] item 10/156 not finished after 281 s; bringing Word forward to look for an alert
+2026-10-14 06:24:45.187 | INFO     | __main__:_nudge:1450 - [focus] item 10/156 not finished after 311 s; bringing Word forward to look for an alert
+2026-10-14 06:25:15.282 | INFO     | __main__:_nudge:1450 - [focus] item 10/156 not finished after 341 s; bringing Word forward to look for an alert
+2026-10-14 06:25:45.358 | INFO     | __main__:_nudge:1450 - [focus] item 10/156 not finished after 371 s; bringing Word forward to look for an alert
+2026-10-14 06:26:15.414 | INFO     | __main__:_nudge:1450 - [focus] item 10/156 not finished after 401 s; bringing Word forward to look for an alert
+2026-10-14 06:26:45.499 | INFO     | __main__:_nudge:1450 - [focus] item 10/156 not finished after 431 s; bringing Word forward to look for an alert
+2026-10-14 06:27:15.575 | INFO     | __main__:_nudge:1450 - [focus] item 10/156 not finished after 461 s; bringing Word forward to look for an alert
+2026-10-14 06:27:45.696 | INFO     | __main__:_nudge:1450 - [focus] item 10/156 not finished after 492 s; bringing Word forward to look for an alert
+2026-10-14 06:28:15.797 | INFO     | __main__:_nudge:1450 - [focus] item 10/156 not finished after 522 s; bringing Word forward to look for an alert
+2026-10-14 06:28:45.857 | INFO     | __main__:_nudge:1450 - [focus] item 10/156 not finished after 552 s; bringing Word forward to look for an alert
+2026-10-14 06:28:53.839 | WARNING  | __main__:run_batch_with_resume:1624 - [batch pdf] 146 item(s) never reached (ended without reaching them); recycling Word and retrying the rest first, retried items last (pass 7, 3 of 3 stalled passes used)
+2026-10-14 06:28:53.855 | WARNING  | __main__:recycle:1074 - [word] recycling (restart 6)
+2026-10-14 06:29:35.510 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 00baea9614.docx — Microsoft Word got an error: AppleEvent timed out.
+2026-10-14 06:29:35.567 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 04b7d19a3a.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.324 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 85b1c9235c.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.368 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 9129d2ecd2.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.389 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 97b4c2de49.docx — Microsoft Word got an error: AppleEvent timed out.
+2026-10-14 06:29:36.433 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 9c8876c6d7.docx — Microsoft Word got an error: AppleEvent timed out.
+2026-10-14 06:29:36.440 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 9f142ac84a.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.444 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 9f2ce6d6bb.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.445 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: a169f5fa5f.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.446 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: a1ca73e72e.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.447 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: a2fa2445c6.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.452 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: a33b8e810a.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.455 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: a5063c32c8.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.497 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: a78b94020d.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.533 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: a836952933.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.536 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: a8fd90ecd6.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.537 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: a954a57308.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.538 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: aa31228e52.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.539 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: ab1fd1e5f3.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.541 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: ac2d091203.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.542 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: ace788a217.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.543 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: ae9547abd2.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.544 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: aec80553e5.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.545 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: af750bce28.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.546 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: afad9d8d2c.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.547 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: b06fe8236d.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.548 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: b0d09c67a7.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.549 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: b11e674787.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.549 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: b2704631d9.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.552 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: b33793b0f8.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.554 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: b351836b34.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.557 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: b37d04ac06.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.559 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: b4072979f7.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.561 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: b461d6f797.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.563 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: b4bafdd04d.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.565 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: b547e31a0d.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.565 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: b553be7ee0.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.572 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: b626364e3d.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.575 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: b778cdcad3.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.575 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: b83c047cac.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.576 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: b956ebc218.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.576 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: b982beef9b.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.577 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: bb20890039.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.577 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: bbaad01a9e.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.578 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: bbc3223232.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.579 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: bbdc7afc3e.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.580 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: bc29cd91ef.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.580 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: bc6f8076f9.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.581 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: bf527b6048.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.582 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: c09f50d3f1.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.584 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: c31d6dc680.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.585 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: c3412673e4.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.587 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: c56e84eaea.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.592 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: c70f19a792.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.593 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: c85d7fadac.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.594 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: c865b7be7f.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.596 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: c964f553ef.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.596 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: c9fc2e8899.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.598 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: ca17705374.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.599 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: ca516d2f7f.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.601 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: cb0a7d2c98.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.601 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: cb164cf87a.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.602 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: cc590c7e18.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.602 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: cd49552c60.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.603 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: ce245f5959.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.603 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: ce433a28fb.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.604 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: cee8601521.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.604 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: cf8049bd45.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.605 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: cfb0498eef.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.605 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: cfc2954ee9.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.606 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: d23d9c8cc7.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.606 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: d24225adbf.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.615 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: d244fd1091.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.619 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: d35dccc87b.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.619 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: d3c6552dae.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.620 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: d484b575c0.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.620 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: d5ab18a760.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.621 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: d5d3c12881.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.623 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: d5efaa5b6d.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.624 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: d6dcdfe5e4.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.625 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: d6eb2a4115.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.625 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: d789ef173d.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.626 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: d7c2cc04c6.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.627 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: d8669ef4ce.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.627 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: d95a06eed1.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.628 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: daaf1625f5.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.633 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: dad17d3be0.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.634 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: db0f90defc.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.638 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: db73171e99.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.671 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: db84b38989.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.681 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: dca87a30ef.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.684 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: dd200b33ce.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.685 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: dde913904e.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.687 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: ded976e5e2.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.688 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: df497fd549.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.690 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: e0f213a660.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.691 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: e1b23f59d9.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.694 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: e22069e294.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.696 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: e3d57f2816.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.697 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: e42a88b8ef.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.699 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: e50d2db84c.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.700 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: e56d44b193.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.702 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: e5c6ee8155.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.704 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: e5cff4e8d9.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.705 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: e633129040.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.706 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: e6e61fc33f.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.718 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: e7880d69e4.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.722 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: e83dabcd41.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.736 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: e8fafc3cba.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.737 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: e8fd5d8c83.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.744 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: e94db515fd.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.750 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: e981300405.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.755 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: e9b8a82cb6.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.756 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: e9ef73a8e4.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.757 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: e9f3bae698.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.764 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: eb12b8215b.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.768 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: ec822ae7cf.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.769 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: ecea12416c.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.771 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: ee63b6fa87.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.777 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: eecdb1c507.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.779 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: eede96cbf6.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.781 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: ef140da2d1.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.782 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: ef3ffabfc9.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.782 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: ef42391c98.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.782 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: efcf4cdade.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.783 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: f189e94409.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.785 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: f32cc08e58.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.786 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: f3319e24f8.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.787 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: f4aff67570.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.787 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: f64bfdeadc.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.788 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: f6531f6275.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.789 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: f6aa53210c.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.790 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: f72cd71154.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.790 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: f72e40955d.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.793 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: f77bce8423.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.795 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: f7837e0e51.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.796 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: f7b0b075cd.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.797 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: f852ffac2f.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.798 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: f9ec352ab5.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.799 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: fc12ef6776.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.799 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: fd436bda76.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.799 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: fd9169c091.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.801 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: fe2fb2ad13.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.802 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: fec6305982.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.803 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: fee04c36ab.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.803 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: fef7e1df16.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.804 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: ff27140d0a.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.806 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: ff5816ee75.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:36.807 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: ff6f1dab3b.docx — never reached in 3 batch pass(es)
+2026-10-14 06:29:37.814 | WARNING  | __main__:quit_if_ours:1108 - [word] leaving Word running: 1 document(s) still open at exit, and this run cannot prove they are its own
+2026-10-14 06:29:38.773 | INFO     | __main__:stop:907 - [watchdog] tally: declined=0 dismissed=3 granted=0 forwarded=0 alerts_seen=1
