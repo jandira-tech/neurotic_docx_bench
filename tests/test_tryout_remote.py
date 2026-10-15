@@ -463,3 +463,25 @@ def test_a_template_gets_absolute_paths_even_from_a_relative_input(tmp_path, mon
     out = tool.runners['convert']({'input': Path('rel/in.pdf')}, Path('o'), 72)
     assert out.is_file()
     assert tr.load_sot(Path('word')).root.is_absolute()
+
+
+def test_jubarte_runners_pin_the_revision_date_and_name_png_output_by_extension(tmp_path, monkeypatch):
+    calls = []
+
+    def fake_run(cmd, **kw):
+        calls.append(cmd)
+        out = Path(cmd[cmd.index('-o') + 1])
+        if out.suffix == '.png':
+            (out.parent / f'{out.stem}-page-01.png').write_bytes(b'png')
+        else:
+            out.write_bytes(b'docx')
+
+    monkeypatch.setattr(tr, '_run', fake_run)
+    runners = tr._jubarte_runners(Path('/bin/jubarte'))
+    runners['redline']({'base': 'a.docx', 'next': 'b.docx'}, tmp_path / 'r', 144)
+    runners['png']({'input': 'a.docx'}, tmp_path / 'p', 144)
+    redline, png = calls
+    # compare dates revisions now unless -d pins it; reruns must stay byte-identical
+    assert redline[redline.index('-d') + 1] == '1970-01-01T00:00:00Z'
+    # the -o extension picks the format; --png -o x.pdf is a retired spelling
+    assert '--png' not in png and png[png.index('-o') + 1].endswith('j.png')

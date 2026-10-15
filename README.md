@@ -73,6 +73,8 @@ same urgency as one that raises Jubarte's (standing rule 3 in
 
 [`RESULTS.md`](RESULTS.md) is the headline: one table per benchmark, intervals, calibration rows, and the reason for every row that is not ranked. [`RESULTS_DETAILED.md`](RESULTS_DETAILED.md) holds every row in the stores grouped by comparability group with its eligibility verdict, pairwise comparisons, lens-health alarms, and the methodology. Rows that predate provenance stamping, holdout-only runs and retracted runs live in `results/archive/` with a manifest and appear only in the history. The three-way [`renderer corpus`](corpus/no_comments_pdf_was_generated_by_word/renderer_corpus/README.md) contains Word, Jubarte, and docxide-pdf PDFs for the same 398 source DOCX files.
 
+The 2026-10-14 Wordcraft CLI cohort (400 comparisons and 400 conversions against fresh Word 16.115 oracles) is reported on its own in [`results/wordcraft_20261014_fresh/REPORT.md`](results/wordcraft_20261014_fresh/REPORT.md). Besides Wordcraft 0.6.1 and 0.7.0 it covers, on the same fixtures, jubarte 0.11.0 / 0.12.0, docxodus 12.6.5 / 13.0.0, folio-core 0.60.0, stemma 0.6.0 and superdoc-sdk 2.20.0 (comparisons), and LibreOffice, office2pdf, pdfitdown, rdocx, docxide-pdf, libreoffice_convert_rust and PyMuPDF Pro (conversions). Its sample and oracles differ from the stores above, so its numbers are not ranked against them.
+
 ## Benchmarks
 
 Compare vendors only within one table. LibreOffice scores and Playwright scores are separate measurements.
@@ -96,6 +98,10 @@ Pins: [`bench.yaml`](bench.yaml). Tool identities: [`bench.registry.yaml`](bench
 <!-- VENDORS-START -->
 | Tool | Role | Engine | Author-affiliated | Note |
 | --- | --- | --- | --- | --- |
+| [Wordcraft CLI](https://github.com/storytold/wordcraft) | generator | wordcraft-cli |  |  |
+| [jubarte 0.11.0](https://github.com/jandira-tech/jubarte-redlines) | generator | jubarte-redlines | yes |  |
+| [jubarte 0.12.0](https://github.com/jandira-tech/jubarte-redlines) | generator | jubarte-redlines | yes |  |
+| [docxodus 12.6.5](https://github.com/JSv4/docxodus) | generator | docxodus |  |  |
 | [jubarte (lossless)](https://github.com/jandira-tech/jubarte-redlines) | generator | jubarte-final | yes |  |
 | [jubarte (ast)](https://github.com/jandira-tech/jubarte-redlines) | generator | jubarte-final | yes |  |
 | [jubarte-rust](https://github.com/jandira-tech/jubarte-redlines) | generator | jubarte-redlines | yes |  |

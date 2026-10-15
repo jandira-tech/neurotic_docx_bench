@@ -1,0 +1,6 @@
+2026-10-14 05:07:06.176 | INFO     | word_pdf:preflight:2235 - [word] preflight: open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-10-14 05:07:06.179 | INFO     | __main__:redline_folders:728 - [redline] one_osascript=True pairs=2
+2026-10-14 05:07:06.182 | INFO     | __main__:_redline_batched:1012 - [batch] one osascript for 2 comparison(s)
+2026-10-14 05:07:09.856 | INFO     | __main__:_redline_batched:1041 - [batch] one osascript for 2 redline PDF(s)
+2026-10-14 05:07:11.257 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: e4569d0756.docx → e4569d0756.docx — redline is missing base 67% of that file; the two sides are not averaged
+2026-10-14 05:07:12.425 | INFO     | word_pdf:stop:907 - [watchdog] tally: declined=0 dismissed=0 granted=0 forwarded=0 alerts_seen=0

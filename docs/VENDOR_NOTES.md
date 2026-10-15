@@ -51,6 +51,7 @@ reached the deficit belongs in this file, not in the competitor's score.
 |---|---|
 | Package | npm `docxodus` (WASM build of the C# engine) |
 | Pinned | **9.8.0** (npm latest as of 2026-08-12; was 9.0.0) |
+| Measured (2026-10-14 cohort, `results/wordcraft_20261014_fresh/REPORT.md`) | Same frozen 400 comparisons and fresh Word 16.115 oracles as the Wordcraft cohort. **docxodus 13.0.0**: pagefair mean 67.49 (379/400 scored; 19 refused by Word on open, 1 crash, 1 AppleEvent timeout), median 849.9 ms per call. 12.6.5 on the same rows: 66.99 (369/400; 9 hit the 120 s per-call limit). |
 | Actually measured so far | **9.8.0** — full-corpus `script_redlines` 2026-08-12 (760/763; ITT 80.24 / 91.11). Dead heat with 9.0.0 (mean 80.5534 vs 80.5535; same 186 perfects, same 4 failures, same 3 empty-result generate refusals). Also `accepted_changes` 90.19 / 100 (n=195) and `roundtrip` 99.99 / 100 (n=166, 166/166 self-diffs byte-identical). |
 | Harness-assisted | No — single `compareDocuments` call, now with an explicitly named engine |
 | Known-unfixed | Three `Comparison failed - empty result` generate refusals (same pairs as 9.0.0). Published `index.js` re-exports `DocxEditor`, which imports Atlaskit via directory specifiers Node ESM rejects; the bench loads it through `scripts/docxodus-node-compat.mjs`. |
@@ -382,6 +383,8 @@ level, that points at the wrong project.)
 |---|---|
 | Package | PyPI `redlines` (houfu/redlines, MIT) + **required** `nupunkt==0.6.0` |
 | Pinned | `redlines==0.6.1` with `NupunktProcessor` (first-class `nupunkt==0.6.0` in pyproject; import fails if the extra is missing) |
+| Measured (2026-10-14 cohort, `results/wordcraft_20261014_fresh/REPORT.md`) | **superdoc-sdk 2.20.0**: 36 of the frozen 400 comparisons generated, pagefair mean 5.33 with failures as zero. The SDK refuses the rest itself (`diff.apply: tracked header/footer slot or physical topology changes are not supported` ×125, `tracked shared definition replacement is not supported` ×94, comment and numbering replay ×82, among others). |
+| Measured (2026-10-14 cohort, `results/wordcraft_20261014_fresh/REPORT.md`) | **@stll/folio-core 0.60.0** `generateRedlineDocx` (npm latest that day): pagefair mean 32.74 over the frozen 400 comparisons, failures as zero (257 scored; 133 generate refusals, mostly `GenerateRedlineDocxResourceImportError: The revised style/numbering closure cannot be imported`; 10 Word render failures). `@stll/folio-cli 0.5.1` `compare -o` wraps the same call; on three probe pairs its output was part-for-part identical (`folio_cli_probe/`). |
 | Harness-assisted | Partly — see below |
 
 A pure-text differ by design. Our harness extracts paragraph text from the
@@ -420,6 +423,7 @@ ranked. Thanks to houfu for the investigation.
 |---|---|
 | Upstream | [stemma-sh/stemma](https://github.com/stemma-sh/stemma) `stemma-cli` |
 | Pinned | **0.5.0** (crates.io / git tag `v0.5.0`, commit `efaed0c1ecb41142b1465bbb124dd183c385a2b0`) |
+| Measured (2026-10-14 cohort, `results/wordcraft_20261014_fresh/REPORT.md`) | **stemma-cli 0.6.0** (built from git tag `v0.6.0`, commit `ad1e70deac0a828d5162ac3b3f2186c2bb0c075e`; crates.io still has 0.5.0): 108 of the frozen 400 comparisons generated, pagefair mean 18.93 with failures as zero. 0.6.0 refuses with `UnsupportedEdit` (document defaults ×106, default header binding ×94, default footer binding ×33, …), where 0.5.0 generated 296 of the same 400. |
 | Surface | `stemma compare <base> <next> -o <out> --author stemma` |
 | Harness-assisted | No — one CLI compare call. Adapter I/O only: temp paths, a fresh `-o` dest (the CLI is create-new and refuses an existing path), batch failure recording. |
 | Known-unfixed | Fail-loud on packages missing `word/_rels/document.xml.rels`, missing `w:ins/@w:id`, numbering merge, dangling relationship ids, unbalanced deleted `fldChar`. Those pairs are generate failures, not dropped from the corpus. |
@@ -439,6 +443,18 @@ ranked. Thanks to houfu for the investigation.
 | Measured (2026-08-15, 803-pair generate, holdout excluded from scores) | `script_redlines` 53.65 / 51.31 (n=688, 6 perfects, 75 generate fails in JSONL); `accepted_changes` 64.09 / 60.22 (n=177); `roundtrip` 100.00 / 100 (n=166, 166 perfects). Generate universe 724 ok + 79 generate fails = 803. Failures are vendor refusals (ancillary story safety / unsupported `w:txbxContent`), not a corpus shrink. `tool_version` `0.19.1@e3f092da3639+git.7bd35c876493f2725b095f0190c28d2644962c78`. |
 
 `visual_*` is not declared: safe-docx is not a layout/browser editor.
+
+### wordcraft (wordcraft-cli)
+
+| field | value |
+|---|---|
+| Upstream | [storytold/wordcraft](https://github.com/storytold/wordcraft), a clean-room Word reimplementation in Rust. Not affiliated with this bench. |
+| Pinned | **wordcraft-cli 0.6.1**, source commit `7dfa6b0ee2aeeafec004c51fdd2ab9a697da3cc4`, binary sha256 `b71aef4ee85a6ec2a59f6a0d5f8d16895c09c50d05a8c13e9654af5725781de5` |
+| Surface | Compare: `wordcraft-cli run --file <base> --cmd 'review.compare={"path":<next>,"author":"Redline","showIn":"original","level":"word","formatting":true,"caseChanges":true,"whiteSpace":true}' --save <out>`. Convert: `wordcraft-cli convert <src> <out.pdf> --markup` (comments and tracked changes shown, as in Word's oracle PDFs). |
+| Harness-assisted | No: one CLI call per document. Adapter I/O only (temp paths, a 120 s compare / 180 s convert timeout, failure recording). Its redline DOCX is exported to PDF by Word 16.115, like every comparison tool's. |
+| Known-unfixed | 8 of the 400 Wordcraft redlines are refused by Word in two fresh sessions ("Word experienced an error trying to open the file"); they are render failures and count as zero. All 400 conversions rendered. |
+| Measured (2026-10-14, `results/wordcraft_20261014_fresh/REPORT.md`) | Frozen 400 + 400 sample, fresh Word 16.115 oracles, 144 DPI, failures as zero. **Comparisons:** pagefair mean 46.01 (392/400 scored), against jubarte 0.11.0 76.75, jubarte 0.12.0 76.18, docxodus 12.6.5 66.99; jubarte 0.11.0 minus Wordcraft +30.74 (paired bootstrap 95% [+28.98, +32.57]). 118 of its 392 scored redlines have a page count different from Word's. **Conversions:** pagefair mean 55.18 (400/400), against jubarte 0.11.0 76.19, jubarte 0.12.0 79.89, LibreOffice 26.8.1.1 54.70 (soffice minus Wordcraft -0.48, 95% [-1.64, +0.70]). Median CLI latency 14.5 ms per comparison and 41.2 ms per conversion, on a loaded shared machine (`docs/SPEED.md`). jubarte is author-affiliated. |
+| Measured, 0.7.0 (same cohort) | **wordcraft-cli 0.7.0**, released during the run: comparisons 46.05 (same 392 scored, same 8 refused by Word; +0.04 against 0.6.1, 95% [-0.01, +0.12]); conversions 56.42 (+1.24 against 0.6.1, 95% [+0.81, +1.69]; 103 documents improved and 22 regressed by more than 0.5). |
 
 ## Standing rules
 

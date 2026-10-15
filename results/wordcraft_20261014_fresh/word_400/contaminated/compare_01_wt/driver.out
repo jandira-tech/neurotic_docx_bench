@@ -1,0 +1,31 @@
+▸ PDF quality is sticky: `save as … file format format PDF` inherits whatever 
+'Optimize for' you last chose in Word's own Save As dialog.
+  Open any document in Word once, File > Save As > PDF, and pick the SECOND 
+option, Best for printing.
+  That choice persists; this script cannot set it. Pass --no-check-preset to 
+stop seeing this.
+▸ A redline PDF shows tracked changes the way Word is currently set to show them
+(Review ▸ Markup display, and Print Markup).
+  Open one redline in Word by hand and confirm it looks right before running the
+batch — this script cannot set that for you.
+2026-10-14 03:18:02.784 | INFO     | word_pdf:preflight:2361 -  preflight: 
+open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-10-14 03:18:02.841 | INFO     | __main__:redline_folders:755 -  
+one_osascript=True pairs=76
+2026-10-14 03:18:02.998 | INFO     | __main__:_redline_batched:1042 -  one 
+osascript for 76 comparison(s)
+2026-10-14 03:18:08.007 | INFO     | word_pdf:_loop:1531 -  1/76
+2026-10-14 03:18:13.020 | INFO     | word_pdf:_loop:1531 -  3/76
+2026-10-14 03:18:18.015 | INFO     | word_pdf:_note_dialogs:819 -  Microsoft 
+Word shows button 'missing value'
+2026-10-14 03:18:18.027 | INFO     | word_pdf:_loop:1531 -  8/76
+2026-10-14 03:18:23.031 | INFO     | word_pdf:_loop:1531 -  13/76
+2026-10-14 03:18:28.036 | INFO     | word_pdf:_loop:1531 -  20/76
+2026-10-14 03:18:33.044 | INFO     | word_pdf:_loop:1531 -  26/76
+2026-10-14 03:18:38.048 | INFO     | word_pdf:_loop:1531 -  32/76
+2026-10-14 03:18:43.054 | INFO     | word_pdf:_loop:1531 -  38/76
+2026-10-14 03:18:48.061 | INFO     | word_pdf:_loop:1531 -  44/76
+2026-10-14 03:18:53.067 | INFO     | word_pdf:_loop:1531 -  50/76
+2026-10-14 03:18:58.073 | INFO     | word_pdf:_loop:1531 -  56/76
+2026-10-14 03:19:03.080 | INFO     | word_pdf:_loop:1531 -  62/76
+2026-10-14 03:19:08.081 | INFO     | word_pdf:_loop:1531 -  68/76

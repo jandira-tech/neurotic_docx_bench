@@ -344,6 +344,42 @@ on quality (**90.04 / 91.99**) at **14.43 ms** median large-N (about **1.6×**
 rust-inproc) — the right default when you need TypeScript `compareDocx` without
 the Rust binary.
 
+## Wordcraft CLI cohort latency (2026-10-14)
+
+Per-call CLI latency from `results/wordcraft_20261014_fresh/operations.jsonl`, over the frozen
+400 comparisons and 400 conversions (last attempt per document, three warmups per lane excluded;
+regenerate with `speed_table.py` in that folder). Every number includes process startup, file
+loading and saving; the docxodus wrapper includes WASM initialization, and a docxodus timeout is
+the 120 s per-call limit. Each lane ran one document at a time, but **on a shared machine** with
+Word batches, scoring and other sessions active (load average 35–77 on 12 cores), and the lanes added
+later the same day (docxodus 13.0.0, folio, stemma, superdoc, the Rust and Python converters, PyMuPDF
+Pro, Wordcraft 0.7.0) ran concurrently with each other and with cargo builds, so read these as
+observations, not a throughput ranking. PyMuPDF Pro ran only the 253 conversions whose Word PDF has at
+most 3 pages (unlicensed, it converts 3 pages). Fidelity for the same rows: `REPORT.md` in that folder.
+
+| Task | Tool | Docs run | OK | Failed | Timeouts | Median ms | p90 ms | p99 ms | Max ms |
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| compare | folio-0.60.0 | 400 | 267 | 133 | 0 | 863.8 | 2,771.7 | 5,334.0 | 19,684.0 |
+| compare | jubarte-0.11.0 | 400 | 400 | 0 | 0 | 51.6 | 409.5 | 2,089.6 | 7,927.8 |
+| compare | jubarte-0.12.0 | 400 | 400 | 0 | 0 | 37.8 | 169.5 | 860.7 | 4,470.3 |
+| compare | stemma-0.6.0 | 400 | 108 | 292 | 0 | 135.6 | 220.2 | 462.0 | 585.1 |
+| compare | superdoc-2.20.0 | 400 | 36 | 364 | 1 | 2,750.5 | 4,960.4 | 8,762.8 | 8,762.8 |
+| compare | wordcraft | 400 | 400 | 0 | 0 | 14.5 | 22.7 | 84.1 | 159.4 |
+| compare | wordcraft-0.7.0 | 400 | 400 | 0 | 0 | 25.4 | 49.4 | 128.4 | 298.9 |
+| compare | docxodus-12.6.5 | 400 | 391 | 9 | 9 | 8,206.8 | 27,580.2 | 53,606.3 | 114,902.6 |
+| compare | docxodus-13.0.0 | 400 | 400 | 0 | 0 | 849.9 | 2,794.6 | 5,914.2 | 14,090.0 |
+| convert | jubarte-0.11.0 | 400 | 400 | 0 | 0 | 27.5 | 108.7 | 293.9 | 432.8 |
+| convert | jubarte-0.12.0 | 400 | 400 | 0 | 0 | 28.3 | 96.9 | 292.1 | 395.3 |
+| convert | libreoffice_convert_rust-0.1.0 | 400 | 398 | 2 | 0 | 1,927.0 | 2,816.7 | 4,258.0 | 13,121.0 |
+| convert | office2pdf-0.8.1 | 400 | 398 | 2 | 0 | 658.2 | 1,266.2 | 2,948.4 | 5,223.0 |
+| convert | pdfitdown-4.2.0 | 400 | 397 | 3 | 0 | 562.6 | 927.7 | 1,529.9 | 2,119.1 |
+| convert | pymupdf-pro-1.28.2 | 253 | 250 | 3 | 0 | 770.5 | 1,362.4 | 2,354.4 | 4,164.5 |
+| convert | rdocx-0.16.0 | 400 | 397 | 3 | 0 | 292.0 | 600.8 | 1,786.7 | 3,038.6 |
+| convert | wordcraft | 400 | 400 | 0 | 0 | 41.2 | 84.6 | 193.6 | 493.2 |
+| convert | wordcraft-0.7.0 | 400 | 400 | 0 | 0 | 68.8 | 144.4 | 329.6 | 874.5 |
+| convert | docxide-pdf-0.18.4 | 400 | 400 | 0 | 0 | 43.6 | 129.6 | 254.9 | 872.6 |
+| convert | soffice | 400 | 398 | 2 | 0 | 1,894.5 | 3,818.2 | 6,104.2 | 6,612.1 |
+
 ## Render speed
 
 Distinct from generation: how long a web viewer takes to *render* a DOCX to a

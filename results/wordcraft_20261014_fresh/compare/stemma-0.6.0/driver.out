@@ -1,0 +1,47 @@
+▸ PDF quality is sticky: `save as … file format format PDF` inherits whatever 
+'Optimize for' you last chose in Word's own Save As dialog.
+  Open any document in Word once, File > Save As > PDF, and pick the SECOND 
+option, Best for printing.
+  That choice persists; this script cannot set it. Pass --no-check-preset to 
+stop seeing this.
+2026-10-14 20:43:26.839 | INFO     | __main__:preflight:2235 -  preflight: 
+open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-10-14 20:43:26.842 | INFO     | __main__:convert_folder:1908 -  export: 
+one_osascript=True documents=108 accept_all=False reject_all=False
+2026-10-14 20:43:26.885 | INFO     | __main__:_convert_batched:2108 -  one 
+osascript for 108 document(s)
+2026-10-14 20:43:31.893 | INFO     | __main__:_loop:1479 -  1/108
+2026-10-14 20:43:36.900 | INFO     | __main__:_loop:1479 -  11/108
+2026-10-14 20:43:41.907 | INFO     | __main__:_loop:1479 -  20/108
+2026-10-14 20:43:46.914 | INFO     | __main__:_loop:1479 -  30/108
+2026-10-14 20:43:51.917 | INFO     | __main__:_loop:1479 -  36/108
+2026-10-14 20:43:56.921 | INFO     | __main__:_loop:1479 -  41/108
+2026-10-14 20:44:01.924 | INFO     | __main__:_loop:1479 -  46/108
+2026-10-14 20:44:06.931 | INFO     | __main__:_loop:1479 -  51/108
+2026-10-14 20:44:11.936 | INFO     | __main__:_loop:1479 -  55/108
+2026-10-14 20:44:16.940 | INFO     | __main__:_loop:1479 -  60/108
+2026-10-14 20:44:21.944 | INFO     | __main__:_loop:1479 -  63/108
+2026-10-14 20:44:26.952 | INFO     | __main__:_loop:1479 -  68/108
+2026-10-14 20:44:31.962 | INFO     | __main__:_loop:1479 -  73/108
+2026-10-14 20:44:36.969 | INFO     | __main__:_loop:1479 -  77/108
+2026-10-14 20:44:41.972 | INFO     | __main__:_loop:1479 -  81/108
+2026-10-14 20:44:46.977 | INFO     | __main__:_loop:1479 -  86/108
+2026-10-14 20:44:51.980 | INFO     | __main__:_loop:1479 -  90/108
+2026-10-14 20:44:56.983 | INFO     | __main__:_loop:1479 -  94/108
+2026-10-14 20:45:01.990 | INFO     | __main__:_loop:1479 -  99/108
+2026-10-14 20:45:06.995 | INFO     | __main__:_loop:1479 -  103/108
+2026-10-14 20:45:11.998 | INFO     | __main__:_loop:1479 -  107/108
+2026-10-14 20:45:12.301 | INFO     | __main__:stop:907 -  tally: declined=0 
+dismissed=0 granted=0 forwarded=0 alerts_seen=0
+                DOCX → PDF:                 
+/Users/arthrod/temp/T/neurotic_docx_bench/re
+sults/wordcraft_20261014_fresh/compare/stemm
+              a-0.6.0/word_in               
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━┓
+┃ outcome                          ┃ count ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━┩
+│ converted                        │   108 │
+│ skipped (exists)                 │     0 │
+│ failed                           │     0 │
+│ seconds per document (batch avg) │   1.0 │
+└──────────────────────────────────┴───────┘

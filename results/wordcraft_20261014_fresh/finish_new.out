@@ -1,0 +1,37 @@
+18:20:49 SCORE convert wordcraft-0.7.0
+18:21:25 RENDER wordcraft-0.7.0 word_pdf 400
+18:24:26 RENDER wordcraft-0.7.0 word_pdf_retry 310
+18:30:20 rendered wordcraft-0.7.0 392 / 400 gen fail 0 render fail 8
+18:30:20 SCORE compare wordcraft-0.7.0
+18:30:20 RUN /Users/arthrod/temp/T/neurotic_docx_bench/.venv/bin/python /Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/add_tools.py
+18:42:01 SCORE convert pymupdf-pro-1.28.2
+18:42:36 RENDER docxodus-13.0.0 word_pdf 400
+19:07:39 RENDER docxodus-13.0.0 word_pdf_retry 27
+19:17:27 SCORE convert office2pdf-0.8.1
+19:17:32 [wait] another Word driver is running; waiting: ['59636     1 /Users/arthrod/temp/T/neurotic_docx_bench/.venv/bin/python /Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/drivers_ee49054d/word_pdf.py --src /Users/arthrod/temp']
+19:18:24 [wait] another Word driver is running; waiting: ['59636     1 /Users/arthrod/temp/T/neurotic_docx_bench/.venv/bin/python /Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/drivers_ee49054d/word_pdf.py --src /Users/arthrod/temp']
+19:19:05 SCORE convert pdfitdown-4.2.0
+19:19:10 [wait] another Word driver is running; waiting: ['59636     1 /Users/arthrod/temp/T/neurotic_docx_bench/.venv/bin/python /Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/drivers_ee49054d/word_pdf.py --src /Users/arthrod/temp']
+19:19:22 [wait] another Word driver is running; waiting: ['59636     1 /Users/arthrod/temp/T/neurotic_docx_bench/.venv/bin/python /Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/drivers_ee49054d/word_pdf.py --src /Users/arthrod/temp']
+19:30:09 [wait] Word is free
+19:30:56 RENDER docxodus-13.0.0 word_pdf 27
+19:42:58 SCORE convert rdocx-0.16.0
+19:43:33 SCORE convert docxide-pdf-0.18.4
+19:53:04 RENDER docxodus-13.0.0 word_pdf_retry 21
+20:13:50 rendered docxodus-13.0.0 379 / 400 gen fail 0 render fail 21
+20:14:28 RENDER folio-0.60.0 word_pdf 267
+20:15:19 SCORE compare docxodus-13.0.0
+20:15:24 SCORE convert libreoffice_convert_rust-0.1.0
+20:32:46 RENDER folio-0.60.0 word_pdf_retry 11
+20:42:50 rendered folio-0.60.0 257 / 400 gen fail 133 render fail 10
+20:42:53 SCORE compare folio-0.60.0
+20:43:26 RENDER stemma-0.6.0 word_pdf 108
+20:45:12 rendered stemma-0.6.0 108 / 400 gen fail 292 render fail 0
+20:45:28 SCORE compare stemma-0.6.0
+20:45:53 RENDER superdoc-2.20.0 word_pdf 36
+20:46:40 rendered superdoc-2.20.0 36 / 400 gen fail 364 render fail 0
+20:51:35 SCORE compare superdoc-2.20.0
+20:59:42 scores done
+20:59:42 RUN /Users/arthrod/temp/T/neurotic_docx_bench/.venv/bin/python /Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/report.py --final
+20:59:54 RUN /Users/arthrod/temp/T/neurotic_docx_bench/.venv/bin/python /Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/persist_fresh.py
+20:59:55 COMPLETE

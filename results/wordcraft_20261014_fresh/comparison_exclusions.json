@@ -1,0 +1,686 @@
+[
+  {
+    "id": "03f6215960",
+    "state": "tracking_without_comments",
+    "cohort": "2",
+    "attempts": [
+      {
+        "folder": "compare_01",
+        "staged_as": "03f6215960",
+        "error": "redline saved but PDF export failed: Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid."
+      }
+    ],
+    "eligibility_label": "no fresh Word reference",
+    "label_scope": "Word could not compare/export it in this run; not proof of malformed OOXML",
+    "selection_uses_vendor_results": false
+  },
+  {
+    "id": "59d7431859",
+    "state": "tracking_without_comments",
+    "cohort": "2",
+    "attempts": [
+      {
+        "folder": "compare_01",
+        "staged_as": "59d7431859",
+        "error": "redline is missing base 0% of that file; the two sides are not averaged"
+      }
+    ],
+    "eligibility_label": "no fresh Word reference",
+    "label_scope": "Word could not compare/export it in this run; not proof of malformed OOXML",
+    "selection_uses_vendor_results": false
+  },
+  {
+    "id": "9d0b6ef8ad",
+    "state": "tracking_without_comments",
+    "cohort": "2",
+    "attempts": [
+      {
+        "folder": "compare_01",
+        "staged_as": "9d0b6ef8ad",
+        "error": "redline saved but PDF export failed: Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid."
+      }
+    ],
+    "eligibility_label": "no fresh Word reference",
+    "label_scope": "Word could not compare/export it in this run; not proof of malformed OOXML",
+    "selection_uses_vendor_results": false
+  },
+  {
+    "id": "75ee805001",
+    "state": "tracking_without_comments",
+    "cohort": "2",
+    "attempts": [
+      {
+        "folder": "compare_02",
+        "staged_as": "75ee805001",
+        "error": "redline saved but PDF export failed: Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid."
+      }
+    ],
+    "eligibility_label": "no fresh Word reference",
+    "label_scope": "Word could not compare/export it in this run; not proof of malformed OOXML",
+    "selection_uses_vendor_results": false
+  },
+  {
+    "id": "01e0dea21e",
+    "state": "tracking_without_comments",
+    "cohort": "2",
+    "attempts": [
+      {
+        "folder": "compare_02",
+        "staged_as": "01e0dea21e",
+        "error": "redline is missing base 33% of that file; the two sides are not averaged"
+      }
+    ],
+    "eligibility_label": "no fresh Word reference",
+    "label_scope": "Word could not compare/export it in this run; not proof of malformed OOXML",
+    "selection_uses_vendor_results": false
+  },
+  {
+    "id": "8568a9817b",
+    "state": "tracking_without_comments",
+    "cohort": "2",
+    "attempts": [
+      {
+        "folder": "compare_02",
+        "staged_as": "8568a9817b",
+        "error": "redline is missing revision 50% of that file; the two sides are not averaged"
+      }
+    ],
+    "eligibility_label": "no fresh Word reference",
+    "label_scope": "Word could not compare/export it in this run; not proof of malformed OOXML",
+    "selection_uses_vendor_results": false
+  },
+  {
+    "id": "5eb341a977",
+    "state": "tracking_without_comments",
+    "cohort": "2",
+    "attempts": [
+      {
+        "folder": "compare_02",
+        "staged_as": "5eb341a977",
+        "error": "redline is missing base 50% of that file; the two sides are not averaged"
+      }
+    ],
+    "eligibility_label": "no fresh Word reference",
+    "label_scope": "Word could not compare/export it in this run; not proof of malformed OOXML",
+    "selection_uses_vendor_results": false
+  },
+  {
+    "id": "7127dd0325",
+    "state": "tracking_without_comments",
+    "cohort": "2",
+    "attempts": [
+      {
+        "folder": "compare_03",
+        "staged_as": "7127dd0325",
+        "error": "redline saved but PDF export failed: Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid."
+      }
+    ],
+    "eligibility_label": "no fresh Word reference",
+    "label_scope": "Word could not compare/export it in this run; not proof of malformed OOXML",
+    "selection_uses_vendor_results": false
+  },
+  {
+    "id": "65c3d7a7a9",
+    "state": "tracking_without_comments",
+    "cohort": "2",
+    "attempts": [
+      {
+        "folder": "compare_03",
+        "staged_as": "65c3d7a7a9",
+        "error": "redline is missing base 50% of that file; the two sides are not averaged"
+      }
+    ],
+    "eligibility_label": "no fresh Word reference",
+    "label_scope": "Word could not compare/export it in this run; not proof of malformed OOXML",
+    "selection_uses_vendor_results": false
+  },
+  {
+    "id": "1abb37f12a",
+    "state": "tracking_without_comments",
+    "cohort": "2",
+    "attempts": [
+      {
+        "folder": "compare_03",
+        "staged_as": "1abb37f12a",
+        "error": "redline saved but PDF export failed: Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid."
+      }
+    ],
+    "eligibility_label": "no fresh Word reference",
+    "label_scope": "Word could not compare/export it in this run; not proof of malformed OOXML",
+    "selection_uses_vendor_results": false
+  },
+  {
+    "id": "4a8b3c676a",
+    "state": "with_comments_tracking",
+    "cohort": "2",
+    "attempts": [
+      {
+        "folder": "compare_03",
+        "staged_as": "4a8b3c676a",
+        "error": "redline is missing base 0% of that file; the two sides are not averaged"
+      }
+    ],
+    "eligibility_label": "no fresh Word reference",
+    "label_scope": "Word could not compare/export it in this run; not proof of malformed OOXML",
+    "selection_uses_vendor_results": false
+  },
+  {
+    "id": "4a526d096f",
+    "state": "tracking_without_comments",
+    "cohort": "2",
+    "attempts": [
+      {
+        "folder": "compare_03",
+        "staged_as": "4a526d096f",
+        "error": "redline is missing base 0% of that file; the two sides are not averaged"
+      }
+    ],
+    "eligibility_label": "no fresh Word reference",
+    "label_scope": "Word could not compare/export it in this run; not proof of malformed OOXML",
+    "selection_uses_vendor_results": false
+  },
+  {
+    "id": "aed2c1780a",
+    "state": "tracking_without_comments",
+    "cohort": "2",
+    "attempts": [
+      {
+        "folder": "compare_03",
+        "staged_as": "aed2c1780a",
+        "error": "redline saved but PDF export failed: Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid."
+      }
+    ],
+    "eligibility_label": "no fresh Word reference",
+    "label_scope": "Word could not compare/export it in this run; not proof of malformed OOXML",
+    "selection_uses_vendor_results": false
+  },
+  {
+    "id": "99740a096f",
+    "state": "with_comments_tracking",
+    "cohort": "2",
+    "attempts": [
+      {
+        "folder": "compare_04",
+        "staged_as": "99740a096f",
+        "error": "redline is missing revision 0% of that file; the two sides are not averaged"
+      }
+    ],
+    "eligibility_label": "no fresh Word reference",
+    "label_scope": "Word could not compare/export it in this run; not proof of malformed OOXML",
+    "selection_uses_vendor_results": false
+  },
+  {
+    "id": "58b3bd3cbc",
+    "state": "with_comments_tracking",
+    "cohort": "2",
+    "attempts": [
+      {
+        "folder": "compare_04",
+        "staged_as": "58b3bd3cbc",
+        "error": "redline is missing revision 67% of that file; the two sides are not averaged"
+      }
+    ],
+    "eligibility_label": "no fresh Word reference",
+    "label_scope": "Word could not compare/export it in this run; not proof of malformed OOXML",
+    "selection_uses_vendor_results": false
+  },
+  {
+    "id": "37c978d405",
+    "state": "with_comments_tracking",
+    "cohort": "2",
+    "attempts": [
+      {
+        "folder": "compare_04",
+        "staged_as": "37c978d405",
+        "error": "redline is missing base 67% of that file; the two sides are not averaged"
+      }
+    ],
+    "eligibility_label": "no fresh Word reference",
+    "label_scope": "Word could not compare/export it in this run; not proof of malformed OOXML",
+    "selection_uses_vendor_results": false
+  },
+  {
+    "id": "ba3b77bee3",
+    "state": "with_comments_tracking",
+    "cohort": "2",
+    "attempts": [
+      {
+        "folder": "compare_04",
+        "staged_as": "ba3b77bee3",
+        "error": "redline is missing revision 0% of that file; the two sides are not averaged"
+      }
+    ],
+    "eligibility_label": "no fresh Word reference",
+    "label_scope": "Word could not compare/export it in this run; not proof of malformed OOXML",
+    "selection_uses_vendor_results": false
+  },
+  {
+    "id": "f194709881",
+    "state": "with_comments_tracking",
+    "cohort": "2",
+    "attempts": [
+      {
+        "folder": "compare_04",
+        "staged_as": "f194709881",
+        "error": "redline is missing revision 67% of that file; the two sides are not averaged"
+      }
+    ],
+    "eligibility_label": "no fresh Word reference",
+    "label_scope": "Word could not compare/export it in this run; not proof of malformed OOXML",
+    "selection_uses_vendor_results": false
+  },
+  {
+    "id": "7f412aa4b4",
+    "state": "with_comments_tracking",
+    "cohort": "2",
+    "attempts": [
+      {
+        "folder": "compare_04",
+        "staged_as": "7f412aa4b4",
+        "error": "redline is missing base 67% of that file; the two sides are not averaged"
+      }
+    ],
+    "eligibility_label": "no fresh Word reference",
+    "label_scope": "Word could not compare/export it in this run; not proof of malformed OOXML",
+    "selection_uses_vendor_results": false
+  },
+  {
+    "id": "e4569d0756",
+    "state": "with_comments_tracking",
+    "cohort": "2",
+    "attempts": [
+      {
+        "folder": "compare_05",
+        "staged_as": "e4569d0756",
+        "error": "open produced 2 new documents; refusing to guess"
+      },
+      {
+        "folder": "retry1_compare_01",
+        "staged_as": "e4569d0756",
+        "error": "redline is missing base 67% of that file; the two sides are not averaged"
+      }
+    ],
+    "eligibility_label": "no fresh Word reference",
+    "label_scope": "Word could not compare/export it in this run; not proof of malformed OOXML",
+    "selection_uses_vendor_results": false
+  },
+  {
+    "id": "65aa483982",
+    "state": "with_comments_tracking",
+    "cohort": "2",
+    "attempts": [
+      {
+        "folder": "compare_05",
+        "staged_as": "65aa483982",
+        "error": "redline is missing base 50% of that file; the two sides are not averaged"
+      }
+    ],
+    "eligibility_label": "no fresh Word reference",
+    "label_scope": "Word could not compare/export it in this run; not proof of malformed OOXML",
+    "selection_uses_vendor_results": false
+  },
+  {
+    "id": "1edc0f56f4",
+    "state": "with_comments_tracking",
+    "cohort": "1",
+    "attempts": [
+      {
+        "folder": "word_compare / word_corrected_retry",
+        "error": "see word_compare/oracle_failures_first_pass.json and word_corrected_retry/driver.log"
+      }
+    ],
+    "eligibility_label": "no fresh Word reference",
+    "label_scope": "Word could not compare/export it in this run; not proof of malformed OOXML",
+    "selection_uses_vendor_results": false
+  },
+  {
+    "id": "f0875f6d19",
+    "state": "tracking_without_comments",
+    "cohort": "1",
+    "attempts": [
+      {
+        "folder": "word_compare / word_corrected_retry",
+        "error": "see word_compare/oracle_failures_first_pass.json and word_corrected_retry/driver.log"
+      }
+    ],
+    "eligibility_label": "no fresh Word reference",
+    "label_scope": "Word could not compare/export it in this run; not proof of malformed OOXML",
+    "selection_uses_vendor_results": false
+  },
+  {
+    "id": "3d39f0120d",
+    "state": "with_comments_tracking",
+    "cohort": "1",
+    "attempts": [
+      {
+        "folder": "word_compare / word_corrected_retry",
+        "error": "see word_compare/oracle_failures_first_pass.json and word_corrected_retry/driver.log"
+      }
+    ],
+    "eligibility_label": "no fresh Word reference",
+    "label_scope": "Word could not compare/export it in this run; not proof of malformed OOXML",
+    "selection_uses_vendor_results": false
+  },
+  {
+    "id": "581907f19c",
+    "state": "with_comments_tracking",
+    "cohort": "1",
+    "attempts": [
+      {
+        "folder": "word_compare / word_corrected_retry",
+        "error": "see word_compare/oracle_failures_first_pass.json and word_corrected_retry/driver.log"
+      }
+    ],
+    "eligibility_label": "no fresh Word reference",
+    "label_scope": "Word could not compare/export it in this run; not proof of malformed OOXML",
+    "selection_uses_vendor_results": false
+  },
+  {
+    "id": "cbf73c2d81",
+    "state": "with_comments_tracking",
+    "cohort": "1",
+    "attempts": [
+      {
+        "folder": "word_compare / word_corrected_retry",
+        "error": "see word_compare/oracle_failures_first_pass.json and word_corrected_retry/driver.log"
+      }
+    ],
+    "eligibility_label": "no fresh Word reference",
+    "label_scope": "Word could not compare/export it in this run; not proof of malformed OOXML",
+    "selection_uses_vendor_results": false
+  },
+  {
+    "id": "5f0fed8e2a",
+    "state": "with_comments_tracking",
+    "cohort": "1",
+    "attempts": [
+      {
+        "folder": "word_compare / word_corrected_retry",
+        "error": "see word_compare/oracle_failures_first_pass.json and word_corrected_retry/driver.log"
+      }
+    ],
+    "eligibility_label": "no fresh Word reference",
+    "label_scope": "Word could not compare/export it in this run; not proof of malformed OOXML",
+    "selection_uses_vendor_results": false
+  },
+  {
+    "id": "f8286525f6",
+    "state": "tracking_without_comments",
+    "cohort": "1",
+    "attempts": [
+      {
+        "folder": "word_compare / word_corrected_retry",
+        "error": "see word_compare/oracle_failures_first_pass.json and word_corrected_retry/driver.log"
+      }
+    ],
+    "eligibility_label": "no fresh Word reference",
+    "label_scope": "Word could not compare/export it in this run; not proof of malformed OOXML",
+    "selection_uses_vendor_results": false
+  },
+  {
+    "id": "c277edafd3",
+    "state": "tracking_without_comments",
+    "cohort": "1",
+    "attempts": [
+      {
+        "folder": "word_compare / word_corrected_retry",
+        "error": "see word_compare/oracle_failures_first_pass.json and word_corrected_retry/driver.log"
+      }
+    ],
+    "eligibility_label": "no fresh Word reference",
+    "label_scope": "Word could not compare/export it in this run; not proof of malformed OOXML",
+    "selection_uses_vendor_results": false
+  },
+  {
+    "id": "4eff11f045",
+    "state": "with_comments_tracking",
+    "cohort": "1",
+    "attempts": [
+      {
+        "folder": "word_compare / word_corrected_retry",
+        "error": "see word_compare/oracle_failures_first_pass.json and word_corrected_retry/driver.log"
+      }
+    ],
+    "eligibility_label": "no fresh Word reference",
+    "label_scope": "Word could not compare/export it in this run; not proof of malformed OOXML",
+    "selection_uses_vendor_results": false
+  },
+  {
+    "id": "f7bbf6e831",
+    "state": "with_comments_tracking",
+    "cohort": "1",
+    "attempts": [
+      {
+        "folder": "word_compare / word_corrected_retry",
+        "error": "see word_compare/oracle_failures_first_pass.json and word_corrected_retry/driver.log"
+      }
+    ],
+    "eligibility_label": "no fresh Word reference",
+    "label_scope": "Word could not compare/export it in this run; not proof of malformed OOXML",
+    "selection_uses_vendor_results": false
+  },
+  {
+    "id": "c2380a4677",
+    "state": "with_comments_tracking",
+    "cohort": "1",
+    "attempts": [
+      {
+        "folder": "word_compare / word_corrected_retry",
+        "error": "see word_compare/oracle_failures_first_pass.json and word_corrected_retry/driver.log"
+      }
+    ],
+    "eligibility_label": "no fresh Word reference",
+    "label_scope": "Word could not compare/export it in this run; not proof of malformed OOXML",
+    "selection_uses_vendor_results": false
+  },
+  {
+    "id": "a9272f69c1",
+    "state": "with_comments_tracking",
+    "cohort": "1",
+    "attempts": [
+      {
+        "folder": "word_compare / word_corrected_retry",
+        "error": "see word_compare/oracle_failures_first_pass.json and word_corrected_retry/driver.log"
+      }
+    ],
+    "eligibility_label": "no fresh Word reference",
+    "label_scope": "Word could not compare/export it in this run; not proof of malformed OOXML",
+    "selection_uses_vendor_results": false
+  },
+  {
+    "id": "0f031c23c3",
+    "state": "with_comments_tracking",
+    "cohort": "1",
+    "attempts": [
+      {
+        "folder": "word_compare / word_corrected_retry",
+        "error": "see word_compare/oracle_failures_first_pass.json and word_corrected_retry/driver.log"
+      }
+    ],
+    "eligibility_label": "no fresh Word reference",
+    "label_scope": "Word could not compare/export it in this run; not proof of malformed OOXML",
+    "selection_uses_vendor_results": false
+  },
+  {
+    "id": "9382e03243",
+    "state": "with_comments_tracking",
+    "cohort": "1",
+    "attempts": [
+      {
+        "folder": "word_compare / word_corrected_retry",
+        "error": "see word_compare/oracle_failures_first_pass.json and word_corrected_retry/driver.log"
+      }
+    ],
+    "eligibility_label": "no fresh Word reference",
+    "label_scope": "Word could not compare/export it in this run; not proof of malformed OOXML",
+    "selection_uses_vendor_results": false
+  },
+  {
+    "id": "0858ee25d5",
+    "state": "with_comments_tracking",
+    "cohort": "1",
+    "attempts": [
+      {
+        "folder": "word_compare / word_corrected_retry",
+        "error": "see word_compare/oracle_failures_first_pass.json and word_corrected_retry/driver.log"
+      }
+    ],
+    "eligibility_label": "no fresh Word reference",
+    "label_scope": "Word could not compare/export it in this run; not proof of malformed OOXML",
+    "selection_uses_vendor_results": false
+  },
+  {
+    "id": "86aef9a34a",
+    "state": "tracking_without_comments",
+    "cohort": "1",
+    "attempts": [
+      {
+        "folder": "word_compare / word_corrected_retry",
+        "error": "see word_compare/oracle_failures_first_pass.json and word_corrected_retry/driver.log"
+      }
+    ],
+    "eligibility_label": "no fresh Word reference",
+    "label_scope": "Word could not compare/export it in this run; not proof of malformed OOXML",
+    "selection_uses_vendor_results": false
+  },
+  {
+    "id": "bc0135eaa1",
+    "state": "tracking_without_comments",
+    "cohort": "1",
+    "attempts": [
+      {
+        "folder": "word_compare / word_corrected_retry",
+        "error": "see word_compare/oracle_failures_first_pass.json and word_corrected_retry/driver.log"
+      }
+    ],
+    "eligibility_label": "no fresh Word reference",
+    "label_scope": "Word could not compare/export it in this run; not proof of malformed OOXML",
+    "selection_uses_vendor_results": false
+  },
+  {
+    "id": "3e7067f872",
+    "state": "tracking_without_comments",
+    "cohort": "1",
+    "attempts": [
+      {
+        "folder": "word_compare / word_corrected_retry",
+        "error": "see word_compare/oracle_failures_first_pass.json and word_corrected_retry/driver.log"
+      }
+    ],
+    "eligibility_label": "no fresh Word reference",
+    "label_scope": "Word could not compare/export it in this run; not proof of malformed OOXML",
+    "selection_uses_vendor_results": false
+  },
+  {
+    "id": "84eec18240",
+    "state": "tracking_without_comments",
+    "cohort": "1",
+    "attempts": [
+      {
+        "folder": "word_compare / word_corrected_retry",
+        "error": "see word_compare/oracle_failures_first_pass.json and word_corrected_retry/driver.log"
+      }
+    ],
+    "eligibility_label": "no fresh Word reference",
+    "label_scope": "Word could not compare/export it in this run; not proof of malformed OOXML",
+    "selection_uses_vendor_results": false
+  },
+  {
+    "id": "e0305725c1",
+    "state": "tracking_without_comments",
+    "cohort": "1",
+    "attempts": [
+      {
+        "folder": "word_compare / word_corrected_retry",
+        "error": "see word_compare/oracle_failures_first_pass.json and word_corrected_retry/driver.log"
+      }
+    ],
+    "eligibility_label": "no fresh Word reference",
+    "label_scope": "Word could not compare/export it in this run; not proof of malformed OOXML",
+    "selection_uses_vendor_results": false
+  },
+  {
+    "id": "849e0cb7c4",
+    "state": "with_comments_tracking",
+    "cohort": "1",
+    "attempts": [
+      {
+        "folder": "word_compare / word_corrected_retry",
+        "error": "see word_compare/oracle_failures_first_pass.json and word_corrected_retry/driver.log"
+      }
+    ],
+    "eligibility_label": "no fresh Word reference",
+    "label_scope": "Word could not compare/export it in this run; not proof of malformed OOXML",
+    "selection_uses_vendor_results": false
+  },
+  {
+    "id": "0b033b1c23",
+    "state": "with_comments_tracking",
+    "cohort": "1",
+    "attempts": [
+      {
+        "folder": "word_compare / word_corrected_retry",
+        "error": "see word_compare/oracle_failures_first_pass.json and word_corrected_retry/driver.log"
+      }
+    ],
+    "eligibility_label": "no fresh Word reference",
+    "label_scope": "Word could not compare/export it in this run; not proof of malformed OOXML",
+    "selection_uses_vendor_results": false
+  },
+  {
+    "id": "6de20376e8",
+    "state": "tracking_without_comments",
+    "cohort": "1",
+    "attempts": [
+      {
+        "folder": "word_compare / word_corrected_retry",
+        "error": "see word_compare/oracle_failures_first_pass.json and word_corrected_retry/driver.log"
+      }
+    ],
+    "eligibility_label": "no fresh Word reference",
+    "label_scope": "Word could not compare/export it in this run; not proof of malformed OOXML",
+    "selection_uses_vendor_results": false
+  },
+  {
+    "id": "d9bb456306",
+    "state": "tracking_without_comments",
+    "cohort": "1",
+    "attempts": [
+      {
+        "folder": "word_compare / word_corrected_retry",
+        "error": "see word_compare/oracle_failures_first_pass.json and word_corrected_retry/driver.log"
+      }
+    ],
+    "eligibility_label": "no fresh Word reference",
+    "label_scope": "Word could not compare/export it in this run; not proof of malformed OOXML",
+    "selection_uses_vendor_results": false
+  },
+  {
+    "id": "1b55e27189",
+    "state": "tracking_without_comments",
+    "cohort": "1",
+    "attempts": [
+      {
+        "folder": "word_compare / word_corrected_retry",
+        "error": "see word_compare/oracle_failures_first_pass.json and word_corrected_retry/driver.log"
+      }
+    ],
+    "eligibility_label": "no fresh Word reference",
+    "label_scope": "Word could not compare/export it in this run; not proof of malformed OOXML",
+    "selection_uses_vendor_results": false
+  },
+  {
+    "id": "ff24600d87",
+    "state": "with_comments_tracking",
+    "cohort": "1",
+    "attempts": [
+      {
+        "folder": "word_compare / word_corrected_retry",
+        "error": "see word_compare/oracle_failures_first_pass.json and word_corrected_retry/driver.log"
+      }
+    ],
+    "eligibility_label": "no fresh Word reference",
+    "label_scope": "Word could not compare/export it in this run; not proof of malformed OOXML",
+    "selection_uses_vendor_results": false
+  }
+]

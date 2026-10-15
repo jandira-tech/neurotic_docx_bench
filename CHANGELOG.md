@@ -61,6 +61,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   instead of `button 'missing value'`.
 
 ### Added
+- Wordcraft 400+400 cohort extended (`results/wordcraft_20261014_fresh/REPORT.md`): on the same frozen
+  fixtures, fresh Word 16.115 oracles, Word renderer and scorer, the newest release of the top three
+  non-jubarte tools of every past results table plus two releases that landed during the run.
+  Comparisons (pagefair mean over 400, failures as zero): jubarte 0.11.0 76.75, 0.12.0 76.18, docxodus
+  13.0.0 67.49 (12.6.5: 66.99), Wordcraft 0.7.0 46.05 (0.6.1: 46.01), folio-core 0.60.0 32.74 (133
+  generate refusals), stemma 0.6.0 18.93 (292 `UnsupportedEdit` refusals), superdoc-sdk 2.20.0 5.33
+  (364 refusals). Conversions: jubarte 0.12.0 79.89, 0.11.0 76.19, Wordcraft 0.7.0 56.42 (0.6.1:
+  55.18, +1.24, 95% [+0.81, +1.69]), docxide-pdf 0.18.4 54.90, LibreOffice and libreoffice_convert_rust
+  0.1.0 (same LibreOffice.app) 54.70, rdocx 0.16.0 47.80, office2pdf 0.8.1 45.89, pdfitdown 4.2.0 39.41;
+  PyMuPDF Pro 1.28.2 (unlicensed, first 3 pages) 56.24 on the 253 conversions of at most 3 pages,
+  with every converter's score on that subset beside it. Latency table in `docs/SPEED.md`.
+  `lanes.py`, `finish_new.py`, `one_redline.ts`, `superdoc_one.py`, `add_tools.py` drive the added
+  lanes; `folio_cli_probe/` shows folio-cli 0.5.1 `compare -o` is folio-core's call, output identical.
 - `manifest.jsonl` in every output folder, appended per run: one JSON line per file produced
   (`original_filename`, `path_origin`, `converted_filename`, `path_out`, `status`, `kind`, `tool`,
   `error`, `seconds`, `run_at`; redline lines add `revision_filename`, `path_revision`,

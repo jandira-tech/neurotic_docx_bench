@@ -58,8 +58,8 @@ def test_pdftoppm_command_renders_one_page_at_an_exact_size():
 
 
 def test_jubarte_command_converts_the_docx_source_to_png_pages():
-    cmd = pb.jubarte_command(Path("/bin/jubarte"), Path("/x/a.docx"), dpi=144, out=Path("/o/a.pdf"))
-    assert cmd == ["/bin/jubarte", "convert", "/x/a.docx", "--png", "--dpi", "144", "-o", "/o/a.pdf", "--force"]
+    cmd = pb.jubarte_command(Path("/bin/jubarte"), Path("/x/a.docx"), dpi=144, out=Path("/o/a.png"))
+    assert cmd == ["/bin/jubarte", "convert", "/x/a.docx", "--dpi", "144", "-o", "/o/a.png", "--force"]
     assert pb.SOURCE_INPUT["jubarte"] == "docx" and pb.SOURCE_INPUT["pymupdf"] == "pdf"
 
 

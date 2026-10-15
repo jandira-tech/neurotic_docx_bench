@@ -1,0 +1,101 @@
+▸ PDF quality is sticky: `save as … file format format PDF` inherits whatever 
+'Optimize for' you last chose in Word's own Save As dialog.
+  Open any document in Word once, File > Save As > PDF, and pick the SECOND 
+option, Best for printing.
+  That choice persists; this script cannot set it. Pass --no-check-preset to 
+stop seeing this.
+▸ A redline PDF shows tracked changes the way Word is currently set to show them
+(Review ▸ Markup display, and Print Markup).
+  Open one redline in Word by hand and confirm it looks right before running the
+batch — this script cannot set that for you.
+2026-10-14 04:54:54.098 | INFO     | word_pdf:preflight:2235 -  preflight: 
+open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-10-14 04:54:54.142 | INFO     | __main__:redline_folders:728 -  
+one_osascript=True pairs=76
+2026-10-14 04:54:54.205 | INFO     | __main__:_redline_batched:1012 -  one 
+osascript for 76 comparison(s)
+2026-10-14 04:54:59.211 | INFO     | word_pdf:_loop:1479 -  1/76
+2026-10-14 04:55:00.575 | INFO     | word_pdf:_note_dialogs:774 -  Microsoft 
+Word shows button 'missing value'
+2026-10-14 04:55:04.215 | INFO     | word_pdf:_loop:1479 -  5/76
+2026-10-14 04:55:09.222 | INFO     | word_pdf:_loop:1479 -  9/76
+2026-10-14 04:55:14.228 | INFO     | word_pdf:_loop:1479 -  12/76
+2026-10-14 04:55:19.231 | INFO     | word_pdf:_loop:1479 -  16/76
+2026-10-14 04:55:24.233 | INFO     | word_pdf:_loop:1479 -  19/76
+2026-10-14 04:55:29.239 | INFO     | word_pdf:_loop:1479 -  23/76
+2026-10-14 04:55:34.241 | INFO     | word_pdf:_loop:1479 -  26/76
+2026-10-14 04:55:39.248 | INFO     | word_pdf:_loop:1479 -  30/76
+2026-10-14 04:55:44.254 | INFO     | word_pdf:_loop:1479 -  33/76
+2026-10-14 04:55:49.257 | INFO     | word_pdf:_loop:1479 -  36/76
+2026-10-14 04:55:54.260 | INFO     | word_pdf:_loop:1479 -  40/76
+2026-10-14 04:55:59.266 | INFO     | word_pdf:_loop:1479 -  43/76
+2026-10-14 04:56:04.272 | INFO     | word_pdf:_loop:1479 -  46/76
+2026-10-14 04:56:09.279 | INFO     | word_pdf:_loop:1479 -  49/76
+2026-10-14 04:56:14.281 | INFO     | word_pdf:_loop:1479 -  53/76
+2026-10-14 04:56:19.288 | INFO     | word_pdf:_loop:1479 -  55/76
+2026-10-14 04:56:24.295 | INFO     | word_pdf:_loop:1479 -  58/76
+2026-10-14 04:56:29.301 | INFO     | word_pdf:_loop:1479 -  61/76
+2026-10-14 04:56:34.306 | INFO     | word_pdf:_loop:1479 -  63/76
+2026-10-14 04:56:39.311 | INFO     | word_pdf:_loop:1479 -  67/76
+2026-10-14 04:56:44.313 | INFO     | word_pdf:_loop:1479 -  69/76
+2026-10-14 04:56:49.319 | INFO     | word_pdf:_loop:1479 -  73/76
+2026-10-14 04:56:54.326 | INFO     | word_pdf:_loop:1479 -  76/76
+2026-10-14 04:56:54.359 | INFO     | __main__:_redline_batched:1041 -  one 
+osascript for 76 redline PDF(s)
+2026-10-14 04:56:59.404 | INFO     | word_pdf:_loop:1479 -  5/76
+2026-10-14 04:57:04.405 | INFO     | word_pdf:_loop:1479 -  11/76
+2026-10-14 04:57:09.408 | INFO     | word_pdf:_loop:1479 -  16/76
+2026-10-14 04:57:14.414 | INFO     | word_pdf:_loop:1479 -  22/76
+2026-10-14 04:57:19.452 | INFO     | word_pdf:_loop:1479 -  25/76
+2026-10-14 04:57:24.458 | INFO     | word_pdf:_loop:1479 -  30/76
+2026-10-14 04:57:29.494 | INFO     | word_pdf:_loop:1479 -  35/76
+2026-10-14 04:57:34.499 | INFO     | word_pdf:_loop:1479 -  41/76
+2026-10-14 04:57:39.506 | INFO     | word_pdf:_loop:1479 -  47/76
+2026-10-14 04:57:44.513 | INFO     | word_pdf:_loop:1479 -  54/76
+2026-10-14 04:57:49.556 | INFO     | word_pdf:_loop:1479 -  57/76
+2026-10-14 04:57:54.557 | INFO     | word_pdf:_loop:1479 -  61/76
+2026-10-14 04:57:59.560 | INFO     | word_pdf:_loop:1479 -  63/76
+2026-10-14 04:58:04.566 | INFO     | word_pdf:_loop:1479 -  69/76
+2026-10-14 04:58:09.572 | INFO     | word_pdf:_loop:1479 -  75/76
+2026-10-14 04:58:10.267 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+37c978d405.docx → 37c978d405.docx — redline is missing base 67% of that file; 
+the two sides are not averaged
+2026-10-14 04:58:10.373 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+58b3bd3cbc.docx → 58b3bd3cbc.docx — redline is missing revision 67% of that 
+file; the two sides are not averaged
+2026-10-14 04:58:10.443 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+7f412aa4b4.docx → 7f412aa4b4.docx — redline is missing base 67% of that file; 
+the two sides are not averaged
+2026-10-14 04:58:10.484 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+99740a096f.docx → 99740a096f.docx — redline is missing revision 0% of that file;
+the two sides are not averaged
+2026-10-14 04:58:10.617 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+ba3b77bee3.docx → ba3b77bee3.docx — redline is missing revision 0% of that file;
+the two sides are not averaged
+2026-10-14 04:58:10.924 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+f194709881.docx → f194709881.docx — redline is missing revision 67% of that 
+file; the two sides are not averaged
+2026-10-14 04:58:11.687 | INFO     | word_pdf:stop:907 -  tally: declined=0 
+dismissed=0 granted=0 forwarded=0 alerts_seen=0
+             redline: A → B             
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━┓
+┃ outcome                      ┃ count ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━┩
+│ redlined                     │    70 │
+│ skipped (exists)             │     0 │
+│ failed                       │     6 │
+│ seconds per pair (batch avg) │   1.6 │
+│ total revisions              │  1174 │
+└──────────────────────────────┴───────┘
+  FAIL 37c978d405.docx → 37c978d405.docx: redline is missing base 67% of that 
+file; the two sides are not averaged
+  FAIL 58b3bd3cbc.docx → 58b3bd3cbc.docx: redline is missing revision 67% of 
+that file; the two sides are not averaged
+  FAIL 7f412aa4b4.docx → 7f412aa4b4.docx: redline is missing base 67% of that 
+file; the two sides are not averaged
+  FAIL 99740a096f.docx → 99740a096f.docx: redline is missing revision 0% of that
+file; the two sides are not averaged
+  FAIL ba3b77bee3.docx → ba3b77bee3.docx: redline is missing revision 0% of that
+file; the two sides are not averaged
+  FAIL f194709881.docx → f194709881.docx: redline is missing revision 67% of 
+that file; the two sides are not averaged

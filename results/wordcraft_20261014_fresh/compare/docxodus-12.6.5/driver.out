@@ -1,0 +1,1219 @@
+▸ PDF quality is sticky: `save as … file format format PDF` inherits whatever 
+'Optimize for' you last chose in Word's own Save As dialog.
+  Open any document in Word once, File > Save As > PDF, and pick the SECOND 
+option, Best for printing.
+  That choice persists; this script cannot set it. Pass --no-check-preset to 
+stop seeing this.
+2026-10-14 07:27:34.708 | INFO     | __main__:preflight:2235 -  preflight: 
+open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-10-14 07:27:34.710 | INFO     | __main__:convert_folder:1908 -  export: 
+one_osascript=True documents=22 accept_all=False reject_all=False
+2026-10-14 07:27:34.724 | INFO     | __main__:_convert_batched:2108 -  one 
+osascript for 22 document(s)
+2026-10-14 07:27:39.730 | INFO     | __main__:_loop:1479 -  0/22
+2026-10-14 07:27:41.109 | INFO     | __main__:_note_dialogs:774 -  Microsoft 
+Word shows button 'Yes'
+2026-10-14 07:27:41.110 | INFO     | __main__:_note_dialogs:774 -  Microsoft 
+Word shows button 'No'
+2026-10-14 07:27:41.111 | INFO     | __main__:_note_dialogs:777 -  Microsoft 
+Word says: 'Word found unreadable content in 
+00000__docxodus-12.6.5__2e391c5378.docx. Do you want to recover the contents of 
+this document? If you trust the source of this document, click Yes.'
+2026-10-14 07:27:46.855 | WARNING  | __main__:_decline_repair:809 -  repair 
+prompt declined via 'No' then 'OK' with Word brought forward; Word said: "Word 
+found unreadable content in 00000__docxodus-12.6.5__2e391c5378.docx. Do you want
+to recover the contents of this document? If you trust the source of this 
+document, click Yes."
+2026-10-14 07:27:46.856 | WARNING  | __main__:_decline_repair:812 -  after the 
+No, Word showed 'OK'; Word said: "Word experienced an error trying to open the 
+file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00000__docxodus-12.6.5__2e391c5378.docx)"
+2026-10-14 07:27:59.755 | INFO     | __main__:_nudge:1450 -  item 2/22 not 
+finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 07:28:29.934 | INFO     | __main__:_nudge:1450 -  item 2/22 not 
+finished after 40 s; bringing Word forward to look for an alert
+2026-10-14 07:28:45.674 | WARNING  | __main__:_report:1439 -  item 2/22 open for
+more than 30 s:
+-- Word windows {name, subrole}: osascript timed out
+-- Word window text: Microsoft Word, Word found unreadable content in 
+00001__docxodus-12.6.5__3b09d6afde.docx. Do you want to recover the contents of 
+this document? If you trust the source of this document, click Yes.
+-- crash reporters: 
+-- batch-pdf-1.log:
+        0       document loaded empty (Word could not read it)
+-- newest diagnostic reports: jubarte-2026-10-14-055954.ips, 
+soffice-2026-10-14-041750.ips, soffice-2026-10-14-041543.ips, 
+ExcUserFault_nsattributedstringagent-2026-10-08-102340.ips, 
+math-probe-2026-10-14-023025.ips
+2026-10-14 07:28:45.957 | INFO     | __main__:_note_dialogs:777 -  Microsoft 
+Word says: 'Word found unreadable content in 
+00001__docxodus-12.6.5__3b09d6afde.docx. Do you want to recover the contents of 
+this document? If you trust the source of this document, click Yes.'
+2026-10-14 07:28:46.134 | WARNING  | __main__:_nudge:1458 -  item 2/22: pressed 
+'No' then 'OK' with Word brought forward; Word said: "Word found unreadable 
+content in 00001__docxodus-12.6.5__3b09d6afde.docx. Do you want to recover the 
+contents of this document? If you trust the source of this document, click Yes."
+2026-10-14 07:29:00.136 | INFO     | __main__:_nudge:1450 -  item 3/22 not 
+finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 07:29:07.208 | WARNING  | __main__:_decline_repair:801 -  repair 
+prompt seen but no button could be pressed; Word said: "Word found unreadable 
+content in 00001__docxodus-12.6.5__3b09d6afde.docx. Do you want to recover the 
+contents of this document? If you trust the source of this document, click Yes."
+2026-10-14 07:29:15.238 | INFO     | __main__:_nudge:1450 -  item 3/22 not 
+finished after 25 s; bringing Word forward to look for an alert
+2026-10-14 07:29:18.745 | INFO     | __main__:_note_dialogs:777 -  Microsoft 
+Word says: 'Word found unreadable content in 
+00002__docxodus-12.6.5__3c2c9cda82.docx. Do you want to recover the contents of 
+this document? If you trust the source of this document, click Yes.'
+2026-10-14 07:29:19.062 | WARNING  | __main__:_nudge:1458 -  item 3/22: pressed 
+'No' then 'OK' with Word brought forward; Word said: "Word found unreadable 
+content in 00002__docxodus-12.6.5__3c2c9cda82.docx. Do you want to recover the 
+contents of this document? If you trust the source of this document, click Yes."
+2026-10-14 07:29:19.164 | WARNING  | __main__:run_batch_with_resume:1624 -  22 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 2, 0 of 3 stalled 
+passes used)
+2026-10-14 07:29:19.165 | WARNING  | __main__♻1068 -  restarting a Word this run
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-14 07:29:19.165 | WARNING  | __main__♻1074 -  recycling (restart 1)
+2026-10-14 07:29:23.658 | WARNING  | __main__:_decline_repair:801 -  repair 
+prompt seen but no button could be pressed; Word said: "Word found unreadable 
+content in 00002__docxodus-12.6.5__3c2c9cda82.docx. Do you want to recover the 
+contents of this document? If you trust the source of this document, click Yes."
+2026-10-14 07:29:28.606 | INFO     | __main__:_loop:1479 -  0/22
+2026-10-14 07:29:38.630 | INFO     | __main__:_nudge:1450 -  item 1/22 not 
+finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 07:30:08.726 | INFO     | __main__:_nudge:1450 -  item 1/22 not 
+finished after 40 s; bringing Word forward to look for an alert
+2026-10-14 07:30:18.815 | WARNING  | __main__:_report:1439 -  item 1/22 open for
+more than 30 s:
+-- Word windows {name, subrole}: osascript timed out
+-- Word window text: Microsoft Word, Word found unreadable content in 
+00003__docxodus-12.6.5__428fe8b1c0.docx. Do you want to recover the contents of 
+this document? If you trust the source of this document, click Yes.
+-- crash reporters: 
+-- batch-pdf-2.log:
+
+-- newest diagnostic reports: jubarte-2026-10-14-055954.ips, 
+soffice-2026-10-14-041750.ips, soffice-2026-10-14-041543.ips, 
+ExcUserFault_nsattributedstringagent-2026-10-08-102340.ips, 
+math-probe-2026-10-14-023025.ips
+2026-10-14 07:30:19.292 | WARNING  | __main__:_nudge:1458 -  item 1/22: pressed 
+'No' then 'OK' with Word brought forward; Word said: "Word found unreadable 
+content in 00003__docxodus-12.6.5__428fe8b1c0.docx. Do you want to recover the 
+contents of this document? If you trust the source of this document, click Yes."
+2026-10-14 07:30:33.854 | INFO     | __main__:_nudge:1450 -  item 2/22 not 
+finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 07:31:04.019 | INFO     | __main__:_nudge:1450 -  item 2/22 not 
+finished after 40 s; bringing Word forward to look for an alert
+2026-10-14 07:31:16.588 | WARNING  | __main__:_report:1439 -  item 2/22 open for
+more than 30 s:
+-- Word windows {name, subrole}: osascript timed out
+-- Word window text: Microsoft Word, Word found unreadable content in 
+00004__docxodus-12.6.5__4618d6926f.docx. Do you want to recover the contents of 
+this document? If you trust the source of this document, click Yes.
+-- crash reporters: 
+-- batch-pdf-2.log:
+        3       document loaded empty (Word could not read it)
+-- newest diagnostic reports: jubarte-2026-10-14-055954.ips, 
+soffice-2026-10-14-041750.ips, soffice-2026-10-14-041543.ips, 
+ExcUserFault_nsattributedstringagent-2026-10-08-102340.ips, 
+math-probe-2026-10-14-023025.ips
+2026-10-14 07:31:16.849 | WARNING  | __main__:_nudge:1458 -  item 2/22: pressed 
+'No' then 'OK' with Word brought forward; Word said: "Word found unreadable 
+content in 00004__docxodus-12.6.5__4618d6926f.docx. Do you want to recover the 
+contents of this document? If you trust the source of this document, click Yes."
+2026-10-14 07:31:22.398 | INFO     | __main__:_note_dialogs:777 -  Microsoft 
+Word says: 'Word found unreadable content in 
+00005__docxodus-12.6.5__485599b4e9.docx. Do you want to recover the contents of 
+this document? If you trust the source of this document, click Yes.'
+2026-10-14 07:31:22.893 | WARNING  | __main__:_decline_repair:809 -  repair 
+prompt declined via 'No' then 'OK' with Word brought forward; Word said: "Word 
+found unreadable content in 00005__docxodus-12.6.5__485599b4e9.docx. Do you want
+to recover the contents of this document? If you trust the source of this 
+document, click Yes."
+2026-10-14 07:31:22.893 | WARNING  | __main__:_decline_repair:812 -  after the 
+No, Word showed 'OK'; Word said: "Word experienced an error trying to open the 
+file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00005__docxodus-12.6.5__485599b4e9.docx)"
+2026-10-14 07:31:22.959 | WARNING  | __main__:run_batch_with_resume:1624 -  22 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 3, 0 of 3 stalled 
+passes used)
+2026-10-14 07:31:22.959 | WARNING  | __main__♻1068 -  restarting a Word this run
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-14 07:31:22.960 | WARNING  | __main__♻1074 -  recycling (restart 2)
+2026-10-14 07:31:28.593 | INFO     | __main__:_note_dialogs:777 -  Microsoft 
+Word says: 'Word found unreadable content in 
+00006__docxodus-12.6.5__4d40d1f136.docx. Do you want to recover the contents of 
+this document? If you trust the source of this document, click Yes.'
+2026-10-14 07:31:29.177 | WARNING  | __main__:_decline_repair:809 -  repair 
+prompt declined via 'No' then 'OK' with Word brought forward; Word said: "Word 
+found unreadable content in 00006__docxodus-12.6.5__4d40d1f136.docx. Do you want
+to recover the contents of this document? If you trust the source of this 
+document, click Yes."
+2026-10-14 07:31:29.179 | WARNING  | __main__:_decline_repair:812 -  after the 
+No, Word showed 'OK'; Word said: "Word experienced an error trying to open the 
+file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00006__docxodus-12.6.5__4d40d1f136.docx)"
+2026-10-14 07:31:31.913 | INFO     | __main__:_loop:1479 -  0/22
+2026-10-14 07:31:41.923 | INFO     | __main__:_nudge:1450 -  item 2/22 not 
+finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 07:32:11.951 | INFO     | __main__:_nudge:1450 -  item 2/22 not 
+finished after 40 s; bringing Word forward to look for an alert
+2026-10-14 07:32:17.000 | WARNING  | __main__:_report:1439 -  item 2/22 open for
+more than 30 s:
+-- Word windows {name, subrole}: osascript timed out
+-- Word window text: Microsoft Word, Word found unreadable content in 
+00007__docxodus-12.6.5__61959b1953.docx. Do you want to recover the contents of 
+this document? If you trust the source of this document, click Yes.
+-- crash reporters: 
+-- batch-pdf-3.log:
+        6       document loaded empty (Word could not read it)
+-- newest diagnostic reports: jubarte-2026-10-14-055954.ips, 
+soffice-2026-10-14-041750.ips, soffice-2026-10-14-041543.ips, 
+ExcUserFault_nsattributedstringagent-2026-10-08-102340.ips, 
+math-probe-2026-10-14-023025.ips
+2026-10-14 07:32:17.354 | WARNING  | __main__:_nudge:1458 -  item 2/22: pressed 
+'No' then 'OK' with Word brought forward; Word said: "Word found unreadable 
+content in 00007__docxodus-12.6.5__61959b1953.docx. Do you want to recover the 
+contents of this document? If you trust the source of this document, click Yes."
+2026-10-14 07:32:31.969 | INFO     | __main__:_nudge:1450 -  item 3/22 not 
+finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 07:32:46.985 | INFO     | __main__:_nudge:1450 -  item 3/22 not 
+finished after 25 s; bringing Word forward to look for an alert
+2026-10-14 07:33:12.212 | WARNING  | __main__:_report:1439 -  item 3/22 open for
+more than 30 s:
+-- Word windows {name, subrole}: osascript timed out
+-- Word window text: Microsoft Word, Word found unreadable content in 
+00008__docxodus-12.6.5__6b74ac1ae6.docx. Do you want to recover the contents of 
+this document? If you trust the source of this document, click Yes.
+-- crash reporters: 
+-- batch-pdf-3.log:
+        6       document loaded empty (Word could not read it)
+        7       document loaded empty (Word could not read it)
+-- newest diagnostic reports: jubarte-2026-10-14-055954.ips, 
+soffice-2026-10-14-041750.ips, soffice-2026-10-14-041543.ips, 
+ExcUserFault_nsattributedstringagent-2026-10-08-102340.ips, 
+math-probe-2026-10-14-023025.ips
+2026-10-14 07:33:12.377 | INFO     | __main__:_note_dialogs:777 -  Microsoft 
+Word says: 'Word found unreadable content in 
+00008__docxodus-12.6.5__6b74ac1ae6.docx. Do you want to recover the contents of 
+this document? If you trust the source of this document, click Yes.'
+2026-10-14 07:33:12.922 | WARNING  | __main__:_decline_repair:809 -  repair 
+prompt declined via 'No' then 'OK' with Word brought forward; Word said: "Word 
+found unreadable content in 00008__docxodus-12.6.5__6b74ac1ae6.docx. Do you want
+to recover the contents of this document? If you trust the source of this 
+document, click Yes."
+2026-10-14 07:33:12.923 | WARNING  | __main__:_decline_repair:812 -  after the 
+No, Word showed 'OK'; Word said: "Word experienced an error trying to open the 
+file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00008__docxodus-12.6.5__6b74ac1ae6.docx)"
+2026-10-14 07:33:12.943 | WARNING  | __main__:run_batch_with_resume:1624 -  22 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 4, 0 of 3 stalled 
+passes used)
+2026-10-14 07:33:12.944 | WARNING  | __main__♻1068 -  restarting a Word this run
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-14 07:33:12.944 | WARNING  | __main__♻1074 -  recycling (restart 3)
+2026-10-14 07:33:18.492 | INFO     | __main__:_note_dialogs:777 -  Microsoft 
+Word says: 'Word found unreadable content in 
+00009__docxodus-12.6.5__7b1b3baaba.docx. Do you want to recover the contents of 
+this document? If you trust the source of this document, click Yes.'
+2026-10-14 07:33:19.071 | WARNING  | __main__:_decline_repair:809 -  repair 
+prompt declined via 'No' then 'OK' with Word brought forward; Word said: "Word 
+found unreadable content in 00009__docxodus-12.6.5__7b1b3baaba.docx. Do you want
+to recover the contents of this document? If you trust the source of this 
+document, click Yes."
+2026-10-14 07:33:19.072 | WARNING  | __main__:_decline_repair:812 -  after the 
+No, Word showed 'OK'; Word said: "Word experienced an error trying to open the 
+file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00009__docxodus-12.6.5__7b1b3baaba.docx)"
+2026-10-14 07:33:21.815 | INFO     | __main__:_loop:1479 -  0/22
+2026-10-14 07:33:31.827 | INFO     | __main__:_nudge:1450 -  item 2/22 not 
+finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 07:34:01.858 | INFO     | __main__:_nudge:1450 -  item 2/22 not 
+finished after 40 s; bringing Word forward to look for an alert
+2026-10-14 07:34:05.605 | WARNING  | __main__:_report:1439 -  item 2/22 open for
+more than 30 s:
+-- Word windows {name, subrole}: osascript timed out
+-- Word window text: Microsoft Word, Word found unreadable content in 
+00010__docxodus-12.6.5__9812be01c0.docx. Do you want to recover the contents of 
+this document? If you trust the source of this document, click Yes.
+-- crash reporters: 
+-- batch-pdf-4.log:
+        9       document loaded empty (Word could not read it)
+-- newest diagnostic reports: jubarte-2026-10-14-055954.ips, 
+soffice-2026-10-14-041750.ips, soffice-2026-10-14-041543.ips, 
+ExcUserFault_nsattributedstringagent-2026-10-08-102340.ips, 
+math-probe-2026-10-14-023025.ips
+2026-10-14 07:34:05.738 | INFO     | __main__:_note_dialogs:777 -  Microsoft 
+Word says: 'Word found unreadable content in 
+00010__docxodus-12.6.5__9812be01c0.docx. Do you want to recover the contents of 
+this document? If you trust the source of this document, click Yes.'
+2026-10-14 07:34:05.971 | WARNING  | __main__:_nudge:1458 -  item 2/22: pressed 
+'No' then 'OK' with Word brought forward; Word said: "Word found unreadable 
+content in 00010__docxodus-12.6.5__9812be01c0.docx. Do you want to recover the 
+contents of this document? If you trust the source of this document, click Yes."
+2026-10-14 07:34:16.866 | INFO     | __main__:_nudge:1450 -  item 3/22 not 
+finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 07:34:21.411 | WARNING  | __main__:_decline_repair:801 -  repair 
+prompt seen but no button could be pressed; Word said: "Word found unreadable 
+content in 00010__docxodus-12.6.5__9812be01c0.docx. Do you want to recover the 
+contents of this document? If you trust the source of this document, click Yes."
+2026-10-14 07:34:31.879 | INFO     | __main__:_nudge:1450 -  item 3/22 not 
+finished after 25 s; bringing Word forward to look for an alert
+2026-10-14 07:34:36.473 | INFO     | __main__:_note_dialogs:777 -  Microsoft 
+Word says: 'Word found unreadable content in 
+00011__docxodus-12.6.5__9a2af58d99.docx. Do you want to recover the contents of 
+this document? If you trust the source of this document, click Yes.'
+2026-10-14 07:34:36.708 | WARNING  | __main__:_nudge:1458 -  item 3/22: pressed 
+'No' then 'OK' with Word brought forward; Word said: "Word found unreadable 
+content in 00011__docxodus-12.6.5__9a2af58d99.docx. Do you want to recover the 
+contents of this document? If you trust the source of this document, click Yes."
+2026-10-14 07:34:36.727 | WARNING  | __main__:run_batch_with_resume:1624 -  22 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 5, 0 of 3 stalled 
+passes used)
+2026-10-14 07:34:36.727 | WARNING  | __main__♻1068 -  restarting a Word this run
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-14 07:34:36.728 | WARNING  | __main__♻1074 -  recycling (restart 4)
+2026-10-14 07:34:38.495 | WARNING  | __main__:_decline_repair:801 -  repair 
+prompt seen but no button could be pressed; Word said: "Word found unreadable 
+content in 00011__docxodus-12.6.5__9a2af58d99.docx. Do you want to recover the 
+contents of this document? If you trust the source of this document, click Yes."
+2026-10-14 07:34:44.427 | INFO     | __main__:_note_dialogs:777 -  Microsoft 
+Word says: 'Word found unreadable content in 
+00012__docxodus-12.6.5__9f2ce6d6bb.docx. Do you want to recover the contents of 
+this document? If you trust the source of this document, click Yes.'
+2026-10-14 07:34:45.042 | WARNING  | __main__:_decline_repair:809 -  repair 
+prompt declined via 'No' then 'OK' with Word brought forward; Word said: "Word 
+found unreadable content in 00012__docxodus-12.6.5__9f2ce6d6bb.docx. Do you want
+to recover the contents of this document? If you trust the source of this 
+document, click Yes."
+2026-10-14 07:34:45.043 | WARNING  | __main__:_decline_repair:812 -  after the 
+No, Word showed 'OK'; Word said: "Word experienced an error trying to open the 
+file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00012__docxodus-12.6.5__9f2ce6d6bb.docx)"
+2026-10-14 07:34:45.676 | INFO     | __main__:_loop:1479 -  0/22
+2026-10-14 07:34:55.688 | INFO     | __main__:_nudge:1450 -  item 2/22 not 
+finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 07:35:10.712 | INFO     | __main__:_nudge:1450 -  item 2/22 not 
+finished after 25 s; bringing Word forward to look for an alert
+2026-10-14 07:35:38.958 | WARNING  | __main__:_report:1439 -  item 2/22 open for
+more than 30 s:
+-- Word windows {name, subrole}: osascript timed out
+-- Word window text: Microsoft Word, Word found unreadable content in 
+00013__docxodus-12.6.5__bc6f8076f9.docx. Do you want to recover the contents of 
+this document? If you trust the source of this document, click Yes.
+-- crash reporters: 
+-- batch-pdf-5.log:
+        12      document loaded empty (Word could not read it)
+-- newest diagnostic reports: jubarte-2026-10-14-055954.ips, 
+soffice-2026-10-14-041750.ips, soffice-2026-10-14-041543.ips, 
+ExcUserFault_nsattributedstringagent-2026-10-08-102340.ips, 
+math-probe-2026-10-14-023025.ips
+2026-10-14 07:35:39.066 | INFO     | __main__:_note_dialogs:777 -  Microsoft 
+Word says: 'Word found unreadable content in 
+00013__docxodus-12.6.5__bc6f8076f9.docx. Do you want to recover the contents of 
+this document? If you trust the source of this document, click Yes.'
+2026-10-14 07:35:39.913 | WARNING  | __main__:_decline_repair:809 -  repair 
+prompt declined via 'No' then 'OK' with Word brought forward; Word said: "Word 
+found unreadable content in 00013__docxodus-12.6.5__bc6f8076f9.docx. Do you want
+to recover the contents of this document? If you trust the source of this 
+document, click Yes."
+2026-10-14 07:35:39.914 | WARNING  | __main__:_decline_repair:812 -  after the 
+No, Word showed 'OK'; Word said: "Word experienced an error trying to open the 
+file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00013__docxodus-12.6.5__bc6f8076f9.docx)"
+2026-10-14 07:35:50.753 | INFO     | __main__:_nudge:1450 -  item 3/22 not 
+finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 07:36:05.770 | INFO     | __main__:_nudge:1450 -  item 3/22 not 
+finished after 25 s; bringing Word forward to look for an alert
+2026-10-14 07:36:32.837 | WARNING  | __main__:_report:1439 -  item 3/22 open for
+more than 30 s:
+-- Word windows {name, subrole}: osascript timed out
+-- Word window text: Microsoft Word, Word found unreadable content in 
+00014__docxodus-12.6.5__c09f50d3f1.docx. Do you want to recover the contents of 
+this document? If you trust the source of this document, click Yes.
+-- crash reporters: 
+-- batch-pdf-5.log:
+        12      document loaded empty (Word could not read it)
+        13      document loaded empty (Word could not read it)
+-- newest diagnostic reports: jubarte-2026-10-14-055954.ips, 
+soffice-2026-10-14-041750.ips, soffice-2026-10-14-041543.ips, 
+ExcUserFault_nsattributedstringagent-2026-10-08-102340.ips, 
+math-probe-2026-10-14-023025.ips
+2026-10-14 07:36:35.821 | INFO     | __main__:_nudge:1450 -  item 3/22 not 
+finished after 55 s; bringing Word forward to look for an alert
+2026-10-14 07:36:56.378 | INFO     | __main__:_note_dialogs:777 -  Microsoft 
+Word says: 'Word found unreadable content in 
+00014__docxodus-12.6.5__c09f50d3f1.docx. Do you want to recover the contents of 
+this document? If you trust the source of this document, click Yes.'
+2026-10-14 07:37:04.644 | WARNING  | __main__:_decline_repair:809 -  repair 
+prompt declined via 'No' then 'OK' with Word brought forward; Word said: "Word 
+found unreadable content in 00014__docxodus-12.6.5__c09f50d3f1.docx. Do you want
+to recover the contents of this document? If you trust the source of this 
+document, click Yes."
+2026-10-14 07:37:04.646 | WARNING  | __main__:_decline_repair:812 -  after the 
+No, Word showed 'OK'; Word said: "Word experienced an error trying to open the 
+file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00014__docxodus-12.6.5__c09f50d3f1.docx)"
+2026-10-14 07:37:04.750 | WARNING  | __main__:run_batch_with_resume:1624 -  22 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 6, 0 of 3 stalled 
+passes used)
+2026-10-14 07:37:04.751 | WARNING  | __main__♻1068 -  restarting a Word this run
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-14 07:37:04.752 | WARNING  | __main__♻1074 -  recycling (restart 5)
+2026-10-14 07:37:13.048 | INFO     | __main__:_note_dialogs:777 -  Microsoft 
+Word says: 'Word found unreadable content in 
+00015__docxodus-12.6.5__cfb0498eef.docx. Do you want to recover the contents of 
+this document? If you trust the source of this document, click Yes.'
+2026-10-14 07:37:16.634 | INFO     | __main__:_loop:1479 -  0/22
+2026-10-14 07:37:20.026 | WARNING  | __main__:_decline_repair:809 -  repair 
+prompt declined via 'No' then 'OK' with Word brought forward; Word said: "Word 
+found unreadable content in 00015__docxodus-12.6.5__cfb0498eef.docx. Do you want
+to recover the contents of this document? If you trust the source of this 
+document, click Yes."
+2026-10-14 07:37:20.027 | WARNING  | __main__:_decline_repair:812 -  after the 
+No, Word showed 'OK'; Word said: "Word experienced an error trying to open the 
+file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00015__docxodus-12.6.5__cfb0498eef.docx)"
+2026-10-14 07:37:31.664 | INFO     | __main__:_nudge:1450 -  item 2/22 not 
+finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 07:37:46.724 | INFO     | __main__:_nudge:1450 -  item 2/22 not 
+finished after 25 s; bringing Word forward to look for an alert
+2026-10-14 07:38:14.387 | WARNING  | __main__:_report:1439 -  item 2/22 open for
+more than 30 s:
+-- Word windows {name, subrole}: osascript timed out
+-- Word window text: Microsoft Word, Word found unreadable content in 
+00016__docxodus-12.6.5__d5ab18a760.docx. Do you want to recover the contents of 
+this document? If you trust the source of this document, click Yes.
+-- crash reporters: 
+-- batch-pdf-6.log:
+        15      document loaded empty (Word could not read it)
+-- newest diagnostic reports: jubarte-2026-10-14-055954.ips, 
+soffice-2026-10-14-041750.ips, soffice-2026-10-14-041543.ips, 
+ExcUserFault_nsattributedstringagent-2026-10-08-102340.ips, 
+math-probe-2026-10-14-023025.ips
+2026-10-14 07:38:14.532 | INFO     | __main__:_note_dialogs:777 -  Microsoft 
+Word says: 'Word found unreadable content in 
+00016__docxodus-12.6.5__d5ab18a760.docx. Do you want to recover the contents of 
+this document? If you trust the source of this document, click Yes.'
+2026-10-14 07:38:15.164 | WARNING  | __main__:_decline_repair:809 -  repair 
+prompt declined via 'No' then 'OK' with Word brought forward; Word said: "Word 
+found unreadable content in 00016__docxodus-12.6.5__d5ab18a760.docx. Do you want
+to recover the contents of this document? If you trust the source of this 
+document, click Yes."
+2026-10-14 07:38:15.165 | WARNING  | __main__:_decline_repair:812 -  after the 
+No, Word showed 'OK'; Word said: "Word experienced an error trying to open the 
+file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00016__docxodus-12.6.5__d5ab18a760.docx)"
+2026-10-14 07:38:26.792 | INFO     | __main__:_nudge:1450 -  item 3/22 not 
+finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 07:38:56.823 | INFO     | __main__:_nudge:1450 -  item 3/22 not 
+finished after 40 s; bringing Word forward to look for an alert
+2026-10-14 07:39:01.773 | WARNING  | __main__:_report:1439 -  item 3/22 open for
+more than 30 s:
+-- Word windows {name, subrole}: osascript timed out
+-- Word window text: Microsoft Word, Word found unreadable content in 
+00017__docxodus-12.6.5__db84b38989.docx. Do you want to recover the contents of 
+this document? If you trust the source of this document, click Yes.
+-- crash reporters: 
+-- batch-pdf-6.log:
+        15      document loaded empty (Word could not read it)
+        16      document loaded empty (Word could not read it)
+-- newest diagnostic reports: jubarte-2026-10-14-055954.ips, 
+soffice-2026-10-14-041750.ips, soffice-2026-10-14-041543.ips, 
+ExcUserFault_nsattributedstringagent-2026-10-08-102340.ips, 
+math-probe-2026-10-14-023025.ips
+2026-10-14 07:39:01.928 | INFO     | __main__:_note_dialogs:777 -  Microsoft 
+Word says: 'Word found unreadable content in 
+00017__docxodus-12.6.5__db84b38989.docx. Do you want to recover the contents of 
+this document? If you trust the source of this document, click Yes.'
+2026-10-14 07:39:02.230 | WARNING  | __main__:_nudge:1458 -  item 3/22: pressed 
+'No' then 'OK' with Word brought forward; Word said: "Word found unreadable 
+content in 00017__docxodus-12.6.5__db84b38989.docx. Do you want to recover the 
+contents of this document? If you trust the source of this document, click Yes."
+2026-10-14 07:39:02.248 | WARNING  | __main__:run_batch_with_resume:1624 -  22 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 7, 0 of 3 stalled 
+passes used)
+2026-10-14 07:39:02.249 | WARNING  | __main__♻1068 -  restarting a Word this run
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-14 07:39:02.250 | WARNING  | __main__♻1074 -  recycling (restart 6)
+2026-10-14 07:39:10.615 | WARNING  | __main__:_decline_repair:809 -  repair 
+prompt declined via 'No' then 'OK' with Word brought forward; Word said: "Word 
+found unreadable content in 00018__docxodus-12.6.5__dd200b33ce.docx. Do you want
+to recover the contents of this document? If you trust the source of this 
+document, click Yes."
+2026-10-14 07:39:10.616 | WARNING  | __main__:_decline_repair:812 -  after the 
+No, Word showed 'OK'; Word said: "Word experienced an error trying to open the 
+file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00018__docxodus-12.6.5__dd200b33ce.docx)"
+2026-10-14 07:39:11.998 | INFO     | __main__:_loop:1479 -  0/22
+2026-10-14 07:39:22.010 | INFO     | __main__:_nudge:1450 -  item 2/22 not 
+finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 07:39:52.046 | INFO     | __main__:_nudge:1450 -  item 2/22 not 
+finished after 40 s; bringing Word forward to look for an alert
+2026-10-14 07:39:57.654 | WARNING  | __main__:_report:1439 -  item 2/22 open for
+more than 30 s:
+-- Word windows {name, subrole}: osascript timed out
+-- Word window text: Microsoft Word, Word found unreadable content in 
+00019__docxodus-12.6.5__e22069e294.docx. Do you want to recover the contents of 
+this document? If you trust the source of this document, click Yes.
+-- crash reporters: 
+-- batch-pdf-7.log:
+        18      document loaded empty (Word could not read it)
+-- newest diagnostic reports: jubarte-2026-10-14-055954.ips, 
+soffice-2026-10-14-041750.ips, soffice-2026-10-14-041543.ips, 
+ExcUserFault_nsattributedstringagent-2026-10-08-102340.ips, 
+math-probe-2026-10-14-023025.ips
+2026-10-14 07:39:57.757 | INFO     | __main__:_note_dialogs:777 -  Microsoft 
+Word says: 'Word found unreadable content in 
+00019__docxodus-12.6.5__e22069e294.docx. Do you want to recover the contents of 
+this document? If you trust the source of this document, click Yes.'
+2026-10-14 07:39:58.060 | WARNING  | __main__:_nudge:1458 -  item 2/22: pressed 
+'No' then 'OK' with Word brought forward; Word said: "Word found unreadable 
+content in 00019__docxodus-12.6.5__e22069e294.docx. Do you want to recover the 
+contents of this document? If you trust the source of this document, click Yes."
+2026-10-14 07:40:12.073 | INFO     | __main__:_nudge:1450 -  item 3/22 not 
+finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 07:40:13.901 | WARNING  | __main__:_decline_repair:801 -  repair 
+prompt seen but no button could be pressed; Word said: "Word found unreadable 
+content in 00019__docxodus-12.6.5__e22069e294.docx. Do you want to recover the 
+contents of this document? If you trust the source of this document, click Yes."
+2026-10-14 07:40:27.089 | INFO     | __main__:_nudge:1450 -  item 3/22 not 
+finished after 25 s; bringing Word forward to look for an alert
+2026-10-14 07:40:29.058 | INFO     | __main__:_note_dialogs:777 -  Microsoft 
+Word says: 'Word found unreadable content in 
+00020__docxodus-12.6.5__e9ef73a8e4.docx. Do you want to recover the contents of 
+this document? If you trust the source of this document, click Yes.'
+2026-10-14 07:40:29.360 | WARNING  | __main__:_nudge:1458 -  item 3/22: pressed 
+'No' then 'OK' with Word brought forward; Word said: "Word found unreadable 
+content in 00020__docxodus-12.6.5__e9ef73a8e4.docx. Do you want to recover the 
+contents of this document? If you trust the source of this document, click Yes."
+2026-10-14 07:40:29.383 | WARNING  | __main__:run_batch_with_resume:1624 -  22 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 8, 0 of 3 stalled 
+passes used)
+2026-10-14 07:40:29.384 | WARNING  | __main__♻1068 -  restarting a Word this run
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-14 07:40:29.384 | WARNING  | __main__♻1074 -  recycling (restart 7)
+2026-10-14 07:40:31.194 | WARNING  | __main__:_decline_repair:801 -  repair 
+prompt seen but no button could be pressed; Word said: "Word found unreadable 
+content in 00020__docxodus-12.6.5__e9ef73a8e4.docx. Do you want to recover the 
+contents of this document? If you trust the source of this document, click Yes."
+2026-10-14 07:40:37.322 | INFO     | __main__:_note_dialogs:777 -  Microsoft 
+Word says: 'Word found unreadable content in 
+00021__docxodus-12.6.5__ecea12416c.docx. Do you want to recover the contents of 
+this document? If you trust the source of this document, click Yes.'
+2026-10-14 07:40:38.000 | WARNING  | __main__:_decline_repair:809 -  repair 
+prompt declined via 'No' then 'OK' with Word brought forward; Word said: "Word 
+found unreadable content in 00021__docxodus-12.6.5__ecea12416c.docx. Do you want
+to recover the contents of this document? If you trust the source of this 
+document, click Yes."
+2026-10-14 07:40:38.001 | WARNING  | __main__:_decline_repair:812 -  after the 
+No, Word showed 'OK'; Word said: "Word experienced an error trying to open the 
+file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00021__docxodus-12.6.5__ecea12416c.docx)"
+2026-10-14 07:40:39.059 | INFO     | __main__:_loop:1479 -  0/22
+2026-10-14 07:40:49.071 | INFO     | __main__:_nudge:1450 -  item 2/22 not 
+finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 07:41:04.086 | INFO     | __main__:_nudge:1450 -  item 2/22 not 
+finished after 25 s; bringing Word forward to look for an alert
+2026-10-14 07:41:31.905 | WARNING  | __main__:_report:1439 -  item 2/22 open for
+more than 30 s:
+-- Word windows {name, subrole}: osascript timed out
+-- Word window text: Microsoft Word, Word found unreadable content in 
+00018__docxodus-12.6.5__dd200b33ce.docx. Do you want to recover the contents of 
+this document? If you trust the source of this document, click Yes.
+-- crash reporters: 
+-- batch-pdf-8.log:
+        21      document loaded empty (Word could not read it)
+-- newest diagnostic reports: jubarte-2026-10-14-055954.ips, 
+soffice-2026-10-14-041750.ips, soffice-2026-10-14-041543.ips, 
+ExcUserFault_nsattributedstringagent-2026-10-08-102340.ips, 
+math-probe-2026-10-14-023025.ips
+2026-10-14 07:41:32.051 | INFO     | __main__:_note_dialogs:777 -  Microsoft 
+Word says: 'Word found unreadable content in 
+00018__docxodus-12.6.5__dd200b33ce.docx. Do you want to recover the contents of 
+this document? If you trust the source of this document, click Yes.'
+2026-10-14 07:41:32.677 | WARNING  | __main__:_decline_repair:809 -  repair 
+prompt declined via 'No' then 'OK' with Word brought forward; Word said: "Word 
+found unreadable content in 00018__docxodus-12.6.5__dd200b33ce.docx. Do you want
+to recover the contents of this document? If you trust the source of this 
+document, click Yes."
+2026-10-14 07:41:32.678 | WARNING  | __main__:_decline_repair:812 -  after the 
+No, Word showed 'OK'; Word said: "Word experienced an error trying to open the 
+file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00018__docxodus-12.6.5__dd200b33ce.docx)"
+2026-10-14 07:41:44.129 | INFO     | __main__:_nudge:1450 -  item 3/22 not 
+finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 07:41:59.145 | INFO     | __main__:_nudge:1450 -  item 3/22 not 
+finished after 25 s; bringing Word forward to look for an alert
+2026-10-14 07:42:26.573 | WARNING  | __main__:_report:1439 -  item 3/22 open for
+more than 30 s:
+-- Word windows {name, subrole}: osascript timed out
+-- Word window text: Microsoft Word, Word found unreadable content in 
+00019__docxodus-12.6.5__e22069e294.docx. Do you want to recover the contents of 
+this document? If you trust the source of this document, click Yes.
+-- crash reporters: 
+-- batch-pdf-8.log:
+        21      document loaded empty (Word could not read it)
+        18      document loaded empty (Word could not read it)
+-- newest diagnostic reports: jubarte-2026-10-14-055954.ips, 
+soffice-2026-10-14-041750.ips, soffice-2026-10-14-041543.ips, 
+ExcUserFault_nsattributedstringagent-2026-10-08-102340.ips, 
+math-probe-2026-10-14-023025.ips
+2026-10-14 07:42:27.401 | WARNING  | __main__:_decline_repair:809 -  repair 
+prompt declined via 'No' then 'OK' with Word brought forward; Word said: "Word 
+found unreadable content in 00019__docxodus-12.6.5__e22069e294.docx. Do you want
+to recover the contents of this document? If you trust the source of this 
+document, click Yes."
+2026-10-14 07:42:27.401 | WARNING  | __main__:_decline_repair:812 -  after the 
+No, Word showed 'OK'; Word said: "Word experienced an error trying to open the 
+file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00019__docxodus-12.6.5__e22069e294.docx)"
+2026-10-14 07:42:27.435 | WARNING  | __main__:run_batch_with_resume:1624 -  20 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 9, 0 of 3 stalled 
+passes used)
+2026-10-14 07:42:27.435 | WARNING  | __main__♻1068 -  restarting a Word this run
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-14 07:42:27.436 | WARNING  | __main__♻1074 -  recycling (restart 8)
+2026-10-14 07:42:34.681 | WARNING  | __main__:_decline_repair:809 -  repair 
+prompt declined via 'No' then 'OK' with Word brought forward; Word said: "Word 
+found unreadable content in 00021__docxodus-12.6.5__ecea12416c.docx. Do you want
+to recover the contents of this document? If you trust the source of this 
+document, click Yes."
+2026-10-14 07:42:34.682 | WARNING  | __main__:_decline_repair:812 -  after the 
+No, Word showed 'OK'; Word said: "Word experienced an error trying to open the 
+file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00021__docxodus-12.6.5__ecea12416c.docx)"
+2026-10-14 07:42:37.248 | INFO     | __main__:_loop:1479 -  0/20
+2026-10-14 07:42:47.259 | INFO     | __main__:_nudge:1450 -  item 2/20 not 
+finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 07:43:17.292 | INFO     | __main__:_nudge:1450 -  item 2/20 not 
+finished after 40 s; bringing Word forward to look for an alert
+2026-10-14 07:43:21.170 | WARNING  | __main__:_report:1439 -  item 2/20 open for
+more than 30 s:
+-- Word windows {name, subrole}: osascript timed out
+-- Word window text: Microsoft Word, Word found unreadable content in 
+00020__docxodus-12.6.5__e9ef73a8e4.docx. Do you want to recover the contents of 
+this document? If you trust the source of this document, click Yes.
+-- crash reporters: 
+-- batch-pdf-9.log:
+        21      document loaded empty (Word could not read it)
+-- newest diagnostic reports: jubarte-2026-10-14-055954.ips, 
+soffice-2026-10-14-041750.ips, soffice-2026-10-14-041543.ips, 
+ExcUserFault_nsattributedstringagent-2026-10-08-102340.ips, 
+math-probe-2026-10-14-023025.ips
+2026-10-14 07:43:21.637 | WARNING  | __main__:_nudge:1458 -  item 2/20: pressed 
+'No' then 'OK' with Word brought forward; Word said: "Word found unreadable 
+content in 00020__docxodus-12.6.5__e9ef73a8e4.docx. Do you want to recover the 
+contents of this document? If you trust the source of this document, click Yes."
+2026-10-14 07:43:32.309 | INFO     | __main__:_nudge:1450 -  item 3/20 not 
+finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 07:43:37.170 | WARNING  | __main__:_decline_repair:801 -  repair 
+prompt seen but no button could be pressed; Word said: "Word found unreadable 
+content in 00020__docxodus-12.6.5__e9ef73a8e4.docx. Do you want to recover the 
+contents of this document? If you trust the source of this document, click Yes."
+2026-10-14 07:43:47.323 | INFO     | __main__:_nudge:1450 -  item 3/20 not 
+finished after 25 s; bringing Word forward to look for an alert
+2026-10-14 07:43:52.733 | WARNING  | __main__:_nudge:1458 -  item 3/20: pressed 
+'No' then 'OK' with Word brought forward; Word said: "Word found unreadable 
+content in 00015__docxodus-12.6.5__cfb0498eef.docx. Do you want to recover the 
+contents of this document? If you trust the source of this document, click Yes."
+2026-10-14 07:43:52.751 | WARNING  | __main__:run_batch_with_resume:1624 -  17 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 10, 0 of 3 stalled 
+passes used)
+2026-10-14 07:43:52.752 | WARNING  | __main__♻1068 -  restarting a Word this run
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-14 07:43:52.753 | WARNING  | __main__♻1074 -  recycling (restart 9)
+2026-10-14 07:43:56.087 | WARNING  | __main__:_decline_repair:801 -  repair 
+prompt seen but no button could be pressed; Word said: "Word found unreadable 
+content in 00015__docxodus-12.6.5__cfb0498eef.docx. Do you want to recover the 
+contents of this document? If you trust the source of this document, click Yes."
+2026-10-14 07:43:56.130 | WARNING  | __main__:_report:1439 -  item 3/20 open for
+more than 30 s:
+-- Word windows {name, subrole}: , AXDialog
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-9.log:
+        21      document loaded empty (Word could not read it)
+        20      document loaded empty (Word could not read it)
+        15      document loaded empty (Word could not read it)
+        0       0
+-- newest diagnostic reports: jubarte-2026-10-14-055954.ips, 
+soffice-2026-10-14-041750.ips, soffice-2026-10-14-041543.ips, 
+ExcUserFault_nsattributedstringagent-2026-10-08-102340.ips, 
+math-probe-2026-10-14-023025.ips
+2026-10-14 07:43:59.010 | WARNING  | __main__:_decline_repair:809 -  repair 
+prompt declined via 'No' then 'OK' with Word brought forward; Word said: "Word 
+found unreadable content in 00016__docxodus-12.6.5__d5ab18a760.docx. Do you want
+to recover the contents of this document? If you trust the source of this 
+document, click Yes."
+2026-10-14 07:43:59.011 | WARNING  | __main__:_decline_repair:812 -  after the 
+No, Word showed 'OK'; Word said: "Word experienced an error trying to open the 
+file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00016__docxodus-12.6.5__d5ab18a760.docx)"
+2026-10-14 07:44:02.452 | INFO     | __main__:_loop:1479 -  0/17
+2026-10-14 07:44:12.464 | INFO     | __main__:_nudge:1450 -  item 2/17 not 
+finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 07:44:42.492 | INFO     | __main__:_nudge:1450 -  item 2/17 not 
+finished after 40 s; bringing Word forward to look for an alert
+2026-10-14 07:44:51.239 | WARNING  | __main__:_report:1439 -  item 2/17 open for
+more than 30 s:
+-- Word windows {name, subrole}: osascript timed out
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-10.log:
+        16      document loaded empty (Word could not read it)
+-- newest diagnostic reports: jubarte-2026-10-14-055954.ips, 
+soffice-2026-10-14-041750.ips, soffice-2026-10-14-041543.ips, 
+ExcUserFault_nsattributedstringagent-2026-10-08-102340.ips, 
+math-probe-2026-10-14-023025.ips
+2026-10-14 07:44:51.700 | WARNING  | __main__:_nudge:1458 -  item 2/17: pressed 
+'No' then 'OK' with Word brought forward; Word said: "Word found unreadable 
+content in 00017__docxodus-12.6.5__db84b38989.docx. Do you want to recover the 
+contents of this document? If you trust the source of this document, click Yes."
+2026-10-14 07:45:02.512 | INFO     | __main__:_nudge:1450 -  item 3/17 not 
+finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 07:45:17.538 | INFO     | __main__:_nudge:1450 -  item 3/17 not 
+finished after 25 s; bringing Word forward to look for an alert
+2026-10-14 07:45:44.843 | WARNING  | __main__:_report:1439 -  item 3/17 open for
+more than 30 s:
+-- Word windows {name, subrole}: osascript timed out
+-- Word window text: Microsoft Word, Word found unreadable content in 
+00012__docxodus-12.6.5__9f2ce6d6bb.docx. Do you want to recover the contents of 
+this document? If you trust the source of this document, click Yes.
+-- crash reporters: 
+-- batch-pdf-10.log:
+        16      document loaded empty (Word could not read it)
+        17      document loaded empty (Word could not read it)
+-- newest diagnostic reports: jubarte-2026-10-14-055954.ips, 
+soffice-2026-10-14-041750.ips, soffice-2026-10-14-041543.ips, 
+ExcUserFault_nsattributedstringagent-2026-10-08-102340.ips, 
+math-probe-2026-10-14-023025.ips
+2026-10-14 07:45:45.701 | WARNING  | __main__:_decline_repair:809 -  repair 
+prompt declined via 'No' then 'OK' with Word brought forward; Word said: "Word 
+found unreadable content in 00012__docxodus-12.6.5__9f2ce6d6bb.docx. Do you want
+to recover the contents of this document? If you trust the source of this 
+document, click Yes."
+2026-10-14 07:45:45.702 | WARNING  | __main__:_decline_repair:812 -  after the 
+No, Word showed 'OK'; Word said: "Word experienced an error trying to open the 
+file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00012__docxodus-12.6.5__9f2ce6d6bb.docx)"
+2026-10-14 07:45:45.720 | WARNING  | __main__:run_batch_with_resume:1624 -  14 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 11, 0 of 3 stalled 
+passes used)
+2026-10-14 07:45:45.720 | WARNING  | __main__♻1068 -  restarting a Word this run
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-14 07:45:45.721 | WARNING  | __main__♻1074 -  recycling (restart 10)
+2026-10-14 07:45:53.561 | WARNING  | __main__:_decline_repair:809 -  repair 
+prompt declined via 'No' then 'OK' with Word brought forward; Word said: "Word 
+found unreadable content in 00013__docxodus-12.6.5__bc6f8076f9.docx. Do you want
+to recover the contents of this document? If you trust the source of this 
+document, click Yes."
+2026-10-14 07:45:53.563 | WARNING  | __main__:_decline_repair:812 -  after the 
+No, Word showed 'OK'; Word said: "Word experienced an error trying to open the 
+file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00013__docxodus-12.6.5__bc6f8076f9.docx)"
+2026-10-14 07:45:56.109 | INFO     | __main__:_loop:1479 -  0/14
+2026-10-14 07:46:06.121 | INFO     | __main__:_nudge:1450 -  item 2/14 not 
+finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 07:46:21.142 | INFO     | __main__:_nudge:1450 -  item 2/14 not 
+finished after 25 s; bringing Word forward to look for an alert
+2026-10-14 07:46:47.845 | WARNING  | __main__:_report:1439 -  item 2/14 open for
+more than 30 s:
+-- Word windows {name, subrole}: osascript timed out
+-- Word window text: Microsoft Word, Word found unreadable content in 
+00014__docxodus-12.6.5__c09f50d3f1.docx. Do you want to recover the contents of 
+this document? If you trust the source of this document, click Yes.
+-- crash reporters: 
+-- batch-pdf-11.log:
+        13      document loaded empty (Word could not read it)
+-- newest diagnostic reports: jubarte-2026-10-14-055954.ips, 
+soffice-2026-10-14-041750.ips, soffice-2026-10-14-041543.ips, 
+ExcUserFault_nsattributedstringagent-2026-10-08-102340.ips, 
+math-probe-2026-10-14-023025.ips
+2026-10-14 07:46:48.605 | WARNING  | __main__:_decline_repair:809 -  repair 
+prompt declined via 'No' then 'OK' with Word brought forward; Word said: "Word 
+found unreadable content in 00014__docxodus-12.6.5__c09f50d3f1.docx. Do you want
+to recover the contents of this document? If you trust the source of this 
+document, click Yes."
+2026-10-14 07:46:48.606 | WARNING  | __main__:_decline_repair:812 -  after the 
+No, Word showed 'OK'; Word said: "Word experienced an error trying to open the 
+file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00014__docxodus-12.6.5__c09f50d3f1.docx)"
+2026-10-14 07:46:52.830 | WARNING  | __main__:_decline_repair:809 -  repair 
+prompt declined via 'No' then 'OK' with Word brought forward; Word said: "Word 
+found unreadable content in 00009__docxodus-12.6.5__7b1b3baaba.docx. Do you want
+to recover the contents of this document? If you trust the source of this 
+document, click Yes."
+2026-10-14 07:46:52.831 | WARNING  | __main__:_decline_repair:812 -  after the 
+No, Word showed 'OK'; Word said: "Word experienced an error trying to open the 
+file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00009__docxodus-12.6.5__7b1b3baaba.docx)"
+2026-10-14 07:46:52.902 | WARNING  | __main__:run_batch_with_resume:1624 -  11 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 12, 0 of 3 stalled 
+passes used)
+2026-10-14 07:46:52.902 | WARNING  | __main__♻1068 -  restarting a Word this run
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-14 07:46:52.903 | WARNING  | __main__♻1074 -  recycling (restart 11)
+2026-10-14 07:47:05.186 | INFO     | __main__:_loop:1479 -  0/11
+2026-10-14 07:47:07.002 | WARNING  | __main__:_decline_repair:809 -  repair 
+prompt declined via 'No' then 'OK' with Word brought forward; Word said: "Word 
+found unreadable content in 00010__docxodus-12.6.5__9812be01c0.docx. Do you want
+to recover the contents of this document? If you trust the source of this 
+document, click Yes."
+2026-10-14 07:47:07.003 | WARNING  | __main__:_decline_repair:812 -  after the 
+No, Word showed 'OK'; Word said: "Word experienced an error trying to open the 
+file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00010__docxodus-12.6.5__9812be01c0.docx)"
+2026-10-14 07:47:13.744 | WARNING  | __main__:_decline_repair:809 -  repair 
+prompt declined via 'No' then 'OK' with Word brought forward; Word said: "Word 
+found unreadable content in 00011__docxodus-12.6.5__9a2af58d99.docx. Do you want
+to recover the contents of this document? If you trust the source of this 
+document, click Yes."
+2026-10-14 07:47:13.745 | WARNING  | __main__:_decline_repair:812 -  after the 
+No, Word showed 'OK'; Word said: "Word experienced an error trying to open the 
+file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00011__docxodus-12.6.5__9a2af58d99.docx)"
+2026-10-14 07:47:25.208 | INFO     | __main__:_nudge:1450 -  item 3/11 not 
+finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 07:47:55.242 | INFO     | __main__:_nudge:1450 -  item 3/11 not 
+finished after 40 s; bringing Word forward to look for an alert
+2026-10-14 07:48:03.647 | WARNING  | __main__:_report:1439 -  item 3/11 open for
+more than 30 s:
+-- Word windows {name, subrole}: osascript timed out
+-- Word window text: Microsoft Word, Word found unreadable content in 
+00006__docxodus-12.6.5__4d40d1f136.docx. Do you want to recover the contents of 
+this document? If you trust the source of this document, click Yes.
+-- crash reporters: 
+-- batch-pdf-12.log:
+        10      document loaded empty (Word could not read it)
+        11      document loaded empty (Word could not read it)
+-- newest diagnostic reports: jubarte-2026-10-14-055954.ips, 
+soffice-2026-10-14-041750.ips, soffice-2026-10-14-041543.ips, 
+ExcUserFault_nsattributedstringagent-2026-10-08-102340.ips, 
+math-probe-2026-10-14-023025.ips
+2026-10-14 07:48:03.890 | WARNING  | __main__:_nudge:1458 -  item 3/11: pressed 
+'No' then 'OK' with Word brought forward; Word said: "Word found unreadable 
+content in 00006__docxodus-12.6.5__4d40d1f136.docx. Do you want to recover the 
+contents of this document? If you trust the source of this document, click Yes."
+2026-10-14 07:48:03.914 | WARNING  | __main__:run_batch_with_resume:1624 -  8 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 13, 0 of 3 stalled 
+passes used)
+2026-10-14 07:48:03.915 | WARNING  | __main__♻1068 -  restarting a Word this run
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-14 07:48:03.915 | WARNING  | __main__♻1074 -  recycling (restart 12)
+2026-10-14 07:48:09.545 | INFO     | __main__:_note_dialogs:777 -  Microsoft 
+Word says: 'Word found unreadable content in 
+00007__docxodus-12.6.5__61959b1953.docx. Do you want to recover the contents of 
+this document? If you trust the source of this document, click Yes.'
+2026-10-14 07:48:10.323 | WARNING  | __main__:_decline_repair:809 -  repair 
+prompt declined via 'No' then 'OK' with Word brought forward; Word said: "Word 
+found unreadable content in 00007__docxodus-12.6.5__61959b1953.docx. Do you want
+to recover the contents of this document? If you trust the source of this 
+document, click Yes."
+2026-10-14 07:48:10.328 | WARNING  | __main__:_decline_repair:812 -  after the 
+No, Word showed 'OK'; Word said: "Word experienced an error trying to open the 
+file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00007__docxodus-12.6.5__61959b1953.docx)"
+2026-10-14 07:48:12.818 | INFO     | __main__:_loop:1479 -  0/8
+2026-10-14 07:48:22.829 | INFO     | __main__:_nudge:1450 -  item 2/8 not 
+finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 07:48:52.861 | INFO     | __main__:_nudge:1450 -  item 2/8 not 
+finished after 40 s; bringing Word forward to look for an alert
+2026-10-14 07:48:56.611 | WARNING  | __main__:_report:1439 -  item 2/8 open for 
+more than 30 s:
+-- Word windows {name, subrole}: osascript timed out
+-- Word window text: Microsoft Word, Word found unreadable content in 
+00008__docxodus-12.6.5__6b74ac1ae6.docx. Do you want to recover the contents of 
+this document? If you trust the source of this document, click Yes.
+-- crash reporters: 
+-- batch-pdf-13.log:
+        7       document loaded empty (Word could not read it)
+-- newest diagnostic reports: jubarte-2026-10-14-055954.ips, 
+soffice-2026-10-14-041750.ips, soffice-2026-10-14-041543.ips, 
+ExcUserFault_nsattributedstringagent-2026-10-08-102340.ips, 
+math-probe-2026-10-14-023025.ips
+2026-10-14 07:48:56.993 | WARNING  | __main__:_nudge:1458 -  item 2/8: pressed 
+'No' then 'OK' with Word brought forward; Word said: "Word found unreadable 
+content in 00008__docxodus-12.6.5__6b74ac1ae6.docx. Do you want to recover the 
+contents of this document? If you trust the source of this document, click Yes."
+2026-10-14 07:49:07.880 | INFO     | __main__:_nudge:1450 -  item 3/8 not 
+finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 07:49:12.873 | WARNING  | __main__:_decline_repair:801 -  repair 
+prompt seen but no button could be pressed; Word said: "Word found unreadable 
+content in 00008__docxodus-12.6.5__6b74ac1ae6.docx. Do you want to recover the 
+contents of this document? If you trust the source of this document, click Yes."
+2026-10-14 07:49:22.896 | INFO     | __main__:_nudge:1450 -  item 3/8 not 
+finished after 25 s; bringing Word forward to look for an alert
+2026-10-14 07:49:27.951 | INFO     | __main__:_note_dialogs:777 -  Microsoft 
+Word says: 'Word found unreadable content in 
+00003__docxodus-12.6.5__428fe8b1c0.docx. Do you want to recover the contents of 
+this document? If you trust the source of this document, click Yes.'
+2026-10-14 07:49:28.253 | WARNING  | __main__:_nudge:1458 -  item 3/8: pressed 
+'No' then 'OK' with Word brought forward; Word said: "Word found unreadable 
+content in 00003__docxodus-12.6.5__428fe8b1c0.docx. Do you want to recover the 
+contents of this document? If you trust the source of this document, click Yes."
+2026-10-14 07:49:28.294 | WARNING  | __main__:run_batch_with_resume:1624 -  5 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 14, 0 of 3 stalled 
+passes used)
+2026-10-14 07:49:28.294 | WARNING  | __main__♻1068 -  restarting a Word this run
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-14 07:49:28.295 | WARNING  | __main__♻1074 -  recycling (restart 13)
+2026-10-14 07:49:28.680 | WARNING  | __main__:_report:1439 -  item 3/8 open for 
+more than 30 s:
+-- Word windows {name, subrole}: , AXDialog
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-13.log:
+        7       document loaded empty (Word could not read it)
+        8       document loaded empty (Word could not read it)
+        3       document loaded empty (Word could not read it)
+        0       0
+-- newest diagnostic reports: jubarte-2026-10-14-055954.ips, 
+soffice-2026-10-14-041750.ips, soffice-2026-10-14-041543.ips, 
+ExcUserFault_nsattributedstringagent-2026-10-08-102340.ips, 
+math-probe-2026-10-14-023025.ips
+2026-10-14 07:49:30.279 | WARNING  | __main__:_decline_repair:801 -  repair 
+prompt seen but no button could be pressed; Word said: "Word found unreadable 
+content in 00003__docxodus-12.6.5__428fe8b1c0.docx. Do you want to recover the 
+contents of this document? If you trust the source of this document, click Yes."
+2026-10-14 07:49:32.601 | INFO     | __main__:_note_dialogs:774 -  Microsoft 
+Word shows button 'Cancel'
+2026-10-14 07:49:32.606 | INFO     | __main__:_note_dialogs:774 -  Microsoft 
+Word shows button 'missing value'
+2026-10-14 07:49:33.014 | WARNING  | __main__:_loop_word:873 -  Word dialog 
+dismissed via 'No'; Word showed no readable text
+2026-10-14 07:49:36.233 | INFO     | __main__:_note_dialogs:774 -  Microsoft 
+Word shows button 'OK'
+2026-10-14 07:49:36.234 | INFO     | __main__:_note_dialogs:777 -  Microsoft 
+Word says: 'Word experienced an error trying to open the file.\nTry these 
+suggestions.\n* Check the file permissions for the document or drive.\n* Make 
+sure there is sufficient free memory and disk space.\n* Open the file with the 
+Text Recovery converter.\n(00004__docxodus-12.6.5__4618d6926f.docx)'
+2026-10-14 07:49:36.467 | WARNING  | __main__:_loop_word:873 -  Word dialog 
+dismissed via 'OK'; Word said: "Word experienced an error trying to open the 
+file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00004__docxodus-12.6.5__4618d6926f.docx)"
+2026-10-14 07:49:37.388 | INFO     | __main__:_loop:1479 -  0/5
+2026-10-14 07:49:41.041 | WARNING  | __main__:_decline_repair:809 -  repair 
+prompt declined via 'No' then 'OK' with Word brought forward; Word said: "Word 
+found unreadable content in 00005__docxodus-12.6.5__485599b4e9.docx. Do you want
+to recover the contents of this document? If you trust the source of this 
+document, click Yes."
+2026-10-14 07:49:41.044 | WARNING  | __main__:_decline_repair:812 -  after the 
+No, Word showed 'OK'; Word said: "Word experienced an error trying to open the 
+file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00005__docxodus-12.6.5__485599b4e9.docx)"
+2026-10-14 07:49:52.404 | INFO     | __main__:_nudge:1450 -  item 3/5 not 
+finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 07:50:22.445 | INFO     | __main__:_nudge:1450 -  item 3/5 not 
+finished after 40 s; bringing Word forward to look for an alert
+2026-10-14 07:50:27.630 | WARNING  | __main__:_report:1439 -  item 3/5 open for 
+more than 30 s:
+-- Word windows {name, subrole}: osascript timed out
+-- Word window text: Microsoft Word, Word found unreadable content in 
+00000__docxodus-12.6.5__2e391c5378.docx. Do you want to recover the contents of 
+this document? If you trust the source of this document, click Yes.
+-- crash reporters: 
+-- batch-pdf-14.log:
+        4       document loaded empty (Word could not read it)
+        5       document loaded empty (Word could not read it)
+-- newest diagnostic reports: jubarte-2026-10-14-055954.ips, 
+soffice-2026-10-14-041750.ips, soffice-2026-10-14-041543.ips, 
+ExcUserFault_nsattributedstringagent-2026-10-08-102340.ips, 
+math-probe-2026-10-14-023025.ips
+2026-10-14 07:50:27.989 | WARNING  | __main__:_nudge:1458 -  item 3/5: pressed 
+'No' then 'OK' with Word brought forward; Word said: "Word found unreadable 
+content in 00000__docxodus-12.6.5__2e391c5378.docx. Do you want to recover the 
+contents of this document? If you trust the source of this document, click Yes."
+2026-10-14 07:50:28.016 | WARNING  | __main__:run_batch_with_resume:1624 -  2 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 15, 0 of 3 stalled 
+passes used)
+2026-10-14 07:50:28.017 | WARNING  | __main__♻1068 -  restarting a Word this run
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-14 07:50:28.017 | WARNING  | __main__♻1074 -  recycling (restart 14)
+2026-10-14 07:50:29.810 | WARNING  | __main__:_decline_repair:801 -  repair 
+prompt seen but no button could be pressed; Word said: "Word found unreadable 
+content in 00000__docxodus-12.6.5__2e391c5378.docx. Do you want to recover the 
+contents of this document? If you trust the source of this document, click Yes."
+2026-10-14 07:50:32.436 | WARNING  | __main__:_loop_word:873 -  Word dialog 
+dismissed via 'No'; Word showed no readable text
+2026-10-14 07:50:35.799 | INFO     | __main__:_note_dialogs:777 -  Microsoft 
+Word says: 'Word experienced an error trying to open the file.\nTry these 
+suggestions.\n* Check the file permissions for the document or drive.\n* Make 
+sure there is sufficient free memory and disk space.\n* Open the file with the 
+Text Recovery converter.\n(00001__docxodus-12.6.5__3b09d6afde.docx)'
+2026-10-14 07:50:36.016 | WARNING  | __main__:_loop_word:873 -  Word dialog 
+dismissed via 'OK'; Word said: "Word experienced an error trying to open the 
+file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00001__docxodus-12.6.5__3b09d6afde.docx)"
+2026-10-14 07:50:36.947 | INFO     | __main__:_loop:1479 -  0/2
+2026-10-14 07:50:40.630 | WARNING  | __main__:_decline_repair:809 -  repair 
+prompt declined via 'No' then 'OK' with Word brought forward; Word said: "Word 
+found unreadable content in 00002__docxodus-12.6.5__3c2c9cda82.docx. Do you want
+to recover the contents of this document? If you trust the source of this 
+document, click Yes."
+2026-10-14 07:50:40.636 | WARNING  | __main__:_decline_repair:812 -  after the 
+No, Word showed 'OK'; Word said: "Word experienced an error trying to open the 
+file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00002__docxodus-12.6.5__3c2c9cda82.docx)"
+2026-10-14 07:50:40.667 | ERROR    | __main__:_convert_batched:2153 -  FAIL: 
+2e391c5378.docx — Word could not load it in 2 passes: document loaded empty 
+(Word could not read it)
+2026-10-14 07:50:40.668 | ERROR    | __main__:_convert_batched:2153 -  FAIL: 
+3b09d6afde.docx — Word could not load it in 2 passes: document loaded empty 
+(Word could not read it)
+2026-10-14 07:50:40.668 | ERROR    | __main__:_convert_batched:2153 -  FAIL: 
+3c2c9cda82.docx — Word could not load it in 2 passes: document loaded empty 
+(Word could not read it)
+2026-10-14 07:50:40.670 | ERROR    | __main__:_convert_batched:2153 -  FAIL: 
+428fe8b1c0.docx — Word could not load it in 2 passes: document loaded empty 
+(Word could not read it)
+2026-10-14 07:50:40.670 | ERROR    | __main__:_convert_batched:2153 -  FAIL: 
+4618d6926f.docx — Word could not load it in 2 passes: document loaded empty 
+(Word could not read it)
+2026-10-14 07:50:40.671 | ERROR    | __main__:_convert_batched:2153 -  FAIL: 
+485599b4e9.docx — Word could not load it in 2 passes: document loaded empty 
+(Word could not read it)
+2026-10-14 07:50:40.671 | ERROR    | __main__:_convert_batched:2153 -  FAIL: 
+4d40d1f136.docx — Word could not load it in 2 passes: document loaded empty 
+(Word could not read it)
+2026-10-14 07:50:40.672 | ERROR    | __main__:_convert_batched:2153 -  FAIL: 
+61959b1953.docx — Word could not load it in 2 passes: document loaded empty 
+(Word could not read it)
+2026-10-14 07:50:40.672 | ERROR    | __main__:_convert_batched:2153 -  FAIL: 
+6b74ac1ae6.docx — Word could not load it in 2 passes: document loaded empty 
+(Word could not read it)
+2026-10-14 07:50:40.673 | ERROR    | __main__:_convert_batched:2153 -  FAIL: 
+7b1b3baaba.docx — Word could not load it in 2 passes: document loaded empty 
+(Word could not read it)
+2026-10-14 07:50:40.675 | ERROR    | __main__:_convert_batched:2153 -  FAIL: 
+9812be01c0.docx — Word could not load it in 2 passes: document loaded empty 
+(Word could not read it)
+2026-10-14 07:50:40.676 | ERROR    | __main__:_convert_batched:2153 -  FAIL: 
+9a2af58d99.docx — Word could not load it in 2 passes: document loaded empty 
+(Word could not read it)
+2026-10-14 07:50:40.676 | ERROR    | __main__:_convert_batched:2153 -  FAIL: 
+9f2ce6d6bb.docx — Word could not load it in 2 passes: document loaded empty 
+(Word could not read it)
+2026-10-14 07:50:40.677 | ERROR    | __main__:_convert_batched:2153 -  FAIL: 
+bc6f8076f9.docx — Word could not load it in 2 passes: document loaded empty 
+(Word could not read it)
+2026-10-14 07:50:40.677 | ERROR    | __main__:_convert_batched:2153 -  FAIL: 
+c09f50d3f1.docx — Word could not load it in 2 passes: document loaded empty 
+(Word could not read it)
+2026-10-14 07:50:40.678 | ERROR    | __main__:_convert_batched:2153 -  FAIL: 
+cfb0498eef.docx — Word could not load it in 2 passes: document loaded empty 
+(Word could not read it)
+2026-10-14 07:50:40.678 | ERROR    | __main__:_convert_batched:2153 -  FAIL: 
+d5ab18a760.docx — Word could not load it in 2 passes: document loaded empty 
+(Word could not read it)
+2026-10-14 07:50:40.678 | ERROR    | __main__:_convert_batched:2153 -  FAIL: 
+db84b38989.docx — Word could not load it in 2 passes: document loaded empty 
+(Word could not read it)
+2026-10-14 07:50:40.679 | ERROR    | __main__:_convert_batched:2153 -  FAIL: 
+dd200b33ce.docx — Word could not load it in 2 passes: document loaded empty 
+(Word could not read it)
+2026-10-14 07:50:40.680 | ERROR    | __main__:_convert_batched:2153 -  FAIL: 
+e22069e294.docx — Word could not load it in 2 passes: document loaded empty 
+(Word could not read it)
+2026-10-14 07:50:40.681 | ERROR    | __main__:_convert_batched:2153 -  FAIL: 
+e9ef73a8e4.docx — Word could not load it in 2 passes: document loaded empty 
+(Word could not read it)
+2026-10-14 07:50:40.681 | ERROR    | __main__:_convert_batched:2153 -  FAIL: 
+ecea12416c.docx — Word could not load it in 2 passes: document loaded empty 
+(Word could not read it)
+2026-10-14 07:50:40.684 | INFO     | __main__:stop:907 -  tally: declined=25 
+dismissed=4 granted=0 forwarded=25 alerts_seen=23
+        DOCX → PDF:         
+/Users/arthrod/temp/T/neurot
+ic_docx_bench/results/wordcr
+aft_20261014_fresh/compare/d
+    ocxodus-12.6.5/retry    
+┏━━━━━━━━━━━━━━━━━━┳━━━━━━━┓
+┃ outcome          ┃ count ┃
+┡━━━━━━━━━━━━━━━━━━╇━━━━━━━┩
+│ converted        │     0 │
+│ skipped (exists) │     0 │
+│ failed           │    22 │
+└──────────────────┴───────┘
+  FAIL 2e391c5378.docx: Word could not load it in 2 passes: document loaded 
+empty (Word could not read it)
+  FAIL 3b09d6afde.docx: Word could not load it in 2 passes: document loaded 
+empty (Word could not read it)
+  FAIL 3c2c9cda82.docx: Word could not load it in 2 passes: document loaded 
+empty (Word could not read it)
+  FAIL 428fe8b1c0.docx: Word could not load it in 2 passes: document loaded 
+empty (Word could not read it)
+  FAIL 4618d6926f.docx: Word could not load it in 2 passes: document loaded 
+empty (Word could not read it)
+  FAIL 485599b4e9.docx: Word could not load it in 2 passes: document loaded 
+empty (Word could not read it)
+  FAIL 4d40d1f136.docx: Word could not load it in 2 passes: document loaded 
+empty (Word could not read it)
+  FAIL 61959b1953.docx: Word could not load it in 2 passes: document loaded 
+empty (Word could not read it)
+  FAIL 6b74ac1ae6.docx: Word could not load it in 2 passes: document loaded 
+empty (Word could not read it)
+  FAIL 7b1b3baaba.docx: Word could not load it in 2 passes: document loaded 
+empty (Word could not read it)
+  FAIL 9812be01c0.docx: Word could not load it in 2 passes: document loaded 
+empty (Word could not read it)
+  FAIL 9a2af58d99.docx: Word could not load it in 2 passes: document loaded 
+empty (Word could not read it)
+  FAIL 9f2ce6d6bb.docx: Word could not load it in 2 passes: document loaded 
+empty (Word could not read it)
+  FAIL bc6f8076f9.docx: Word could not load it in 2 passes: document loaded 
+empty (Word could not read it)
+  FAIL c09f50d3f1.docx: Word could not load it in 2 passes: document loaded 
+empty (Word could not read it)
+  FAIL cfb0498eef.docx: Word could not load it in 2 passes: document loaded 
+empty (Word could not read it)
+  FAIL d5ab18a760.docx: Word could not load it in 2 passes: document loaded 
+empty (Word could not read it)
+  FAIL db84b38989.docx: Word could not load it in 2 passes: document loaded 
+empty (Word could not read it)
+  FAIL dd200b33ce.docx: Word could not load it in 2 passes: document loaded 
+empty (Word could not read it)
+  FAIL e22069e294.docx: Word could not load it in 2 passes: document loaded 
+empty (Word could not read it)
+  FAIL e9ef73a8e4.docx: Word could not load it in 2 passes: document loaded 
+empty (Word could not read it)
+  FAIL ecea12416c.docx: Word could not load it in 2 passes: document loaded 
+empty (Word could not read it)
