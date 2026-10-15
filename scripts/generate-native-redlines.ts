@@ -612,7 +612,7 @@ export async function loadEngine(
 	}
 	// jubarte-redlines CLI (Rust). Dist dir holds the release `redline` binary
 	// (also copied as `jubarte` for older examples). Invoked as:
-	//   redline <base> <next> -o <out> --force --quiet
+	//   redline <base> <next> -o <out> --force --quiet -d 1970-01-01T00:00:00Z
 	if (method === "jubarte-rust" || method === "jubarte-redlines") {
 		const binCandidates = ["redline", "jubarte"].map((n) =>
 			resolve(distPath, n),
@@ -637,7 +637,8 @@ export async function loadEngine(
 				writeFileSync(np, next);
 				const r = spawnSync(
 					bin,
-					[bp, np, "-o", op, "--force", "--quiet"],
+					// jubarte dates revisions now unless -d pins it; the epoch keeps reruns byte-identical
+					[bp, np, "-o", op, "--force", "--quiet", "-d", "1970-01-01T00:00:00Z"],
 					{ encoding: "utf8" },
 				);
 				if (r.status !== 0) {
