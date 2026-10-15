@@ -211,3 +211,4 @@ results/grok_run_view/
 really_broken/
 results/wordcraft_20261014_fresh/bin/
 results/wordcraft_20261014_fresh/*.csv
+results/wordcraft_20261014_fresh/**/*.csv
