@@ -1,0 +1,626 @@
+[
+  {
+    "doc": "7a1d3fbeba",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot serialize output for /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-wrIDUJ/o0.docx: ValidationFailed: DOCX validation failed with 4 error(s):\n[I-REL-001] word/document.xml: relationship reference \"rId38\" not found in \"word/_rels/document.xml.rels\"\n[I-REL-001] word/document.xml: relationship reference \"rId39\" not found in \"word/_rels/document.xml.rels\"\n[I-REL-001] word/document.xml: relationship reference \"rId38\" not found in \"word/_rels/document.xml.rels\"\n[I-REL-001] word/document.xml: relationship reference \"rId40\" not found in \"word/_rels/document.xml.rels\"\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "2d65e392ab",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot diff /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-XsJEOf/b0.docx against /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-XsJEOf/n0.docx: ValidationFailed: serialization introduced an unbalanced deleted field character sequence in word/document.xml: a fldChar begin/end inside <w:del> has no matching counterpart also deleted \u2014 engine bug (the merge pipeline tore a field across a tracked-change boundary); refusing to emit (Word treats this as document corruption)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "cee8601521",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot serialize output for /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-o3cUOK/o0.docx: ValidationFailed: DOCX validation failed with 5 error(s):\n[I-REL-001] word/document.xml: relationship reference \"rId20\" not found in \"word/_rels/document.xml.rels\"\n[I-REL-001] word/document.xml: relationship reference \"rId21\" not found in \"word/_rels/document.xml.rels\"\n[I-REL-001] word/document.xml: relationship reference \"rId22\" not found in \"word/_rels/document.xml.rels\"\n[I-REL-001] word/document.xml: relationship reference \"rId23\" not found in \"word/_rels/document.xml.rels\"\n[I-REL-001] word/document.xml: relationship reference \"rId24\" not found in \"word/_rels/document.xml.rels\"\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "9129d2ecd2",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot serialize output for /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-3SiOD4/o0.docx: ValidationFailed: DOCX validation failed with 4 error(s):\n[I-REL-003] word/_rels/footer2.xml.rels: relationship \"rId2\" target \"media/image5.png\" resolves to \"word/media/image5.png\" which does not exist in the package\n[I-REL-003] word/_rels/footer2.xml.rels: relationship \"rId1\" target \"media/image3.png\" resolves to \"word/media/image3.png\" which does not exist in the package\n[I-REL-003] word/_rels/footer1.xml.rels: relationship \"rId2\" target \"media/image4.png\" resolves to \"word/media/image4.png\" which does not exist in the package\n[I-REL-003] word/_rels/footer1.xml.rels: relationship \"rId1\" target \"media/image3.png\" resolves to \"word/media/image3.png\" which does not exist in the package\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "9c8876c6d7",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot diff /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-9z5T7r/b0.docx against /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-9z5T7r/n0.docx: InvalidDocx: cannot merge numbering: target archive has no word/numbering.xml, but the merged document references numId(s) [3] that are not already in the base archive \u2014 exporting would leave dangling w:numPr references\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "04b7d19a3a",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot serialize output for /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-Ki9TKU/o0.docx: ValidationFailed: DOCX validation failed with 1 error(s):\n[I-REL-001] word/header1.xml: relationship reference \"rId2\" not found in \"word/_rels/header1.xml.rels\"\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "85b1c9235c",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot serialize output for /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-QQZYMh/o0.docx: ValidationFailed: DOCX validation failed with 4 error(s):\n[I-REL-001] word/document.xml: relationship reference \"rId13\" not found in \"word/_rels/document.xml.rels\"\n[I-REL-001] word/document.xml: relationship reference \"rId14\" not found in \"word/_rels/document.xml.rels\"\n[I-REL-001] word/document.xml: relationship reference \"rId15\" not found in \"word/_rels/document.xml.rels\"\n[I-REL-001] word/document.xml: relationship reference \"rId16\" not found in \"word/_rels/document.xml.rels\"\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "25f1d6ecc3",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot diff /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-z5LwnZ/b0.docx against /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-z5LwnZ/n0.docx: InvalidDocx: cannot merge numbering: target archive has no word/numbering.xml, but the merged document references numId(s) [2] that are not already in the base archive \u2014 exporting would leave dangling w:numPr references\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "6e89035e56",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot diff /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-zzLkEt/b0.docx against /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-zzLkEt/n0.docx: InvalidDocx: cannot merge numbering: target archive has no word/numbering.xml, but the merged document references numId(s) [1] that are not already in the base archive \u2014 exporting would leave dangling w:numPr references\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "428f3f3022",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot diff /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-0uW41y/b0.docx against /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-0uW41y/n0.docx: InvalidDocx: cannot merge numbering: target archive has no word/numbering.xml, but the merged document references numId(s) [2] that are not already in the base archive \u2014 exporting would leave dangling w:numPr references\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "c865b7be7f",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot diff /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-bepx5f/b0.docx against /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-bepx5f/n0.docx: InvalidDocx: cannot merge numbering: target archive has no word/numbering.xml, but the merged document references numId(s) [1, 6, 7, 8] that are not already in the base archive \u2014 exporting would leave dangling w:numPr references\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "48ef0a5cd7",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot diff /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-lFzSp3/b0.docx against /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-lFzSp3/n0.docx: InvalidDocx: cannot merge numbering: target archive has no word/numbering.xml, but the merged document references numId(s) [2] that are not already in the base archive \u2014 exporting would leave dangling w:numPr references\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "60ef61f086",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot diff /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-k4b1aD/b0.docx against /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-k4b1aD/n0.docx: InvalidDocx: cannot merge numbering: target archive has no word/numbering.xml, but the merged document references numId(s) [1] that are not already in the base archive \u2014 exporting would leave dangling w:numPr references\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "2288f27be1",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot serialize output for /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-OKAtUS/o0.docx: ValidationFailed: DOCX validation failed with 5 error(s):\n[I-REL-001] word/document.xml: relationship reference \"rId20\" not found in \"word/_rels/document.xml.rels\"\n[I-REL-001] word/document.xml: relationship reference \"rId21\" not found in \"word/_rels/document.xml.rels\"\n[I-REL-001] word/document.xml: relationship reference \"rId22\" not found in \"word/_rels/document.xml.rels\"\n[I-REL-001] word/document.xml: relationship reference \"rId23\" not found in \"word/_rels/document.xml.rels\"\n[I-REL-001] word/document.xml: relationship reference \"rId24\" not found in \"word/_rels/document.xml.rels\"\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "b33793b0f8",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot diff /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-VVDeP4/b0.docx against /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-VVDeP4/n0.docx: InvalidDocx: cannot merge numbering: target archive has no word/numbering.xml, but the merged document references numId(s) [1] that are not already in the base archive \u2014 exporting would leave dangling w:numPr references\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "518c606bf2",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot diff /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-QQd1JI/b0.docx against /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-QQd1JI/n0.docx: ValidationFailed: serialization introduced an unbalanced deleted field character sequence in word/document.xml: a fldChar begin/end inside <w:del> has no matching counterpart also deleted \u2014 engine bug (the merge pipeline tore a field across a tracked-change boundary); refusing to emit (Word treats this as document corruption)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "53014ff7b1",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot diff /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-YawU2f/b0.docx against /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-YawU2f/n0.docx: InvalidDocx: cannot merge numbering: target archive has no word/numbering.xml, but the merged document references numId(s) [2] that are not already in the base archive \u2014 exporting would leave dangling w:numPr references\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "4d40d1f136",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-DdKqHE/b0.docx: not a valid DOCX (InvalidDocx: package root relationships part _rels/.rels has no officeDocument relationship (type http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument); ECMA-376 Part 2 \u00a79.3 locates the main document part through this relationship)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "6bf1e10a91",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot diff /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-wN4RPD/b0.docx against /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-wN4RPD/n0.docx: InvalidDocx: cannot merge numbering: target archive has no word/numbering.xml, but the merged document references numId(s) [2] that are not already in the base archive \u2014 exporting would leave dangling w:numPr references\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "60e784f2de",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot diff /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-1SAtN4/b0.docx against /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-1SAtN4/n0.docx: ValidationFailed: serialization introduced an unbalanced deleted field character sequence in word/document.xml: a fldChar begin/end inside <w:del> has no matching counterpart also deleted \u2014 engine bug (the merge pipeline tore a field across a tracked-change boundary); refusing to emit (Word treats this as document corruption)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "ff6f1dab3b",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot serialize output for /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-tR9oW9/o0.docx: ValidationFailed: DOCX validation failed with 1 error(s):\n[I-REL-003] word/_rels/header1.xml.rels: relationship \"rId1\" target \"media/image1.png\" resolves to \"word/media/image1.png\" which does not exist in the package\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "20eccb4f6a",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-vXheho/b0.docx: not a valid DOCX (InvalidDocx: word IR error: missing required tracked change attribute: id (in part main document body))\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "8358846f3a",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-szW52H/n0.docx: not a valid DOCX (InvalidDocx: word IR error: missing required tracked change attribute: id (in part main document body))\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "e9ef73a8e4",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot serialize output for /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-7ve0As/o0.docx: ValidationFailed: DOCX validation failed with 4 error(s):\n[I-REL-001] word/footer3.xml: relationship reference \"rId1\" in \"word/footer3.xml\" has no .rels file (\"word/_rels/footer3.xml.rels\")\n[I-REL-001] word/footer3.xml: relationship reference \"rId2\" in \"word/footer3.xml\" has no .rels file (\"word/_rels/footer3.xml.rels\")\n[I-REL-001] word/footer3.xml: relationship reference \"rId3\" in \"word/footer3.xml\" has no .rels file (\"word/_rels/footer3.xml.rels\")\n[I-REL-001] word/footer3.xml: relationship reference \"rId4\" in \"word/footer3.xml\" has no .rels file (\"word/_rels/footer3.xml.rels\")\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "61959b1953",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-HmGKmC/b0.docx: not a valid DOCX (InvalidDocx: package root relationships part _rels/.rels has no officeDocument relationship (type http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument); ECMA-376 Part 2 \u00a79.3 locates the main document part through this relationship)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "9f2ce6d6bb",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot serialize output for /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-epV4dc/o0.docx: ValidationFailed: DOCX validation failed with 9 error(s):\n[I-REL-001] word/comments.xml: relationship reference \"rId1\" in \"word/comments.xml\" has no .rels file (\"word/_rels/comments.xml.rels\")\n[I-REL-001] word/comments.xml: relationship reference \"rId2\" in \"word/comments.xml\" has no .rels file (\"word/_rels/comments.xml.rels\")\n[I-REL-001] word/comments.xml: relationship reference \"rId3\" in \"word/comments.xml\" has no .rels file (\"word/_rels/comments.xml.rels\")\n[I-REL-001] word/comments.xml: relationship reference \"rId4\" in \"word/comments.xml\" has no .rels file (\"word/_rels/comments.xml.rels\")\n[I-REL-001] word/comments.xml: relationship reference \"rId5\" in \"word/comments.xml\" has no .rels file (\"word/_rels/comments.xml.rels\")\n[I-REL-001] word/comments.xml: relationship reference \"rId6\" in \"word/comments.xml\" has no .rels file (\"word/_rels/comments.xml.rels\")\n[I-REL-001] word/comments.xml: relationship reference \"rId7\" in \"word/comments.xml\" has no .rels file (\"word/_rels/comments.xml.rels\")\n[I-REL-001] word/comments.xml: relationship reference \"rId8\" in \"word/comments.xml\" has no .rels file (\"word/_rels/comments.xml.rels\")\n[I-REL-001] word/comments.xml: relationship reference \"rId9\" in \"word/comments.xml\" has no .rels file (\"word/_rels/comments.xml.rels\")\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "5325dc70b4",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot diff /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-eIUQhM/b0.docx against /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-eIUQhM/n0.docx: ValidationFailed: serialization introduced an unbalanced deleted field character sequence in word/document.xml: a fldChar begin/end inside <w:del> has no matching counterpart also deleted \u2014 engine bug (the merge pipeline tore a field across a tracked-change boundary); refusing to emit (Word treats this as document corruption)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "b351836b34",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot diff /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-tf5fB1/b0.docx against /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-tf5fB1/n0.docx: InvalidDocx: cannot merge numbering: target archive has no word/numbering.xml, but the merged document references numId(s) [2] that are not already in the base archive \u2014 exporting would leave dangling w:numPr references\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "9a93480040",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot diff /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-RT5dyw/b0.docx against /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-RT5dyw/n0.docx: InvalidDocx: cannot merge numbering: target archive has no word/numbering.xml, but the merged document references numId(s) [2] that are not already in the base archive \u2014 exporting would leave dangling w:numPr references\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "0dfc906eb1",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-OP7LWt/n0.docx: not a valid DOCX (InvalidDocx: package root relationships part _rels/.rels has no officeDocument relationship (type http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument); ECMA-376 Part 2 \u00a79.3 locates the main document part through this relationship)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "14f0524539",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-PdOCpq/b0.docx: not a valid DOCX (InvalidDocx: word IR error: missing required tracked change attribute: id (in part main document body))\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "9a2af58d99",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot serialize output for /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-Fz8Llg/o0.docx: ValidationFailed: DOCX validation failed with 1 error(s):\n[I-REL-003] word/_rels/header1.xml.rels: relationship \"rId1\" target \"media/image2.jpeg\" resolves to \"word/media/image2.jpeg\" which does not exist in the package\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "64c527dde8",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot diff /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-roAvBW/b0.docx against /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-roAvBW/n0.docx: InvalidDocx: cannot merge numbering: target archive has no word/numbering.xml, but the merged document references numId(s) [5] that are not already in the base archive \u2014 exporting would leave dangling w:numPr references\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "2061218d44",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot serialize output for /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-SO1pyL/o0.docx: ValidationFailed: DOCX validation failed with 2 error(s):\n[I-REL-003] word/_rels/header1.xml.rels: relationship \"rId1\" target \"media/image1.png\" resolves to \"word/media/image1.png\" which does not exist in the package\n[I-REL-003] word/_rels/header2.xml.rels: relationship \"rId1\" target \"media/image1.png\" resolves to \"word/media/image1.png\" which does not exist in the package\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "6b74ac1ae6",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-GT4P1V/b0.docx: not a valid DOCX (InvalidDocx: package root relationships part _rels/.rels has no officeDocument relationship (type http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument); ECMA-376 Part 2 \u00a79.3 locates the main document part through this relationship)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "57dfcda882",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-UKk23K/n0.docx: not a valid DOCX (InvalidDocx: package root relationships part _rels/.rels has no officeDocument relationship (type http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument); ECMA-376 Part 2 \u00a79.3 locates the main document part through this relationship)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "aa31228e52",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot diff /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-mrcDUB/b0.docx against /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-mrcDUB/n0.docx: InvalidDocx: cannot merge numbering: target archive has no word/numbering.xml, but the merged document references numId(s) [2] that are not already in the base archive \u2014 exporting would leave dangling w:numPr references\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "5d3a04d9a6",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot serialize output for /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-SzrXqQ/o0.docx: ValidationFailed: DOCX validation failed with 1 error(s):\n[I-REL-001] word/document.xml: relationship reference \"rId8\" not found in \"word/_rels/document.xml.rels\"\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "6532beda4d",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot diff /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-P4PNPm/b0.docx against /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-P4PNPm/n0.docx: InvalidDocx: cannot merge numbering: target archive has no word/numbering.xml, but the merged document references numId(s) [1, 2] that are not already in the base archive \u2014 exporting would leave dangling w:numPr references\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "34ffddfe47",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-MbTu2U/b0.docx: not a valid DOCX (InvalidDocx: package root relationships part _rels/.rels has no officeDocument relationship (type http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument); ECMA-376 Part 2 \u00a79.3 locates the main document part through this relationship)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "d23d9c8cc7",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): [bookmark guard] word/document.xml: inherited unpaired bookmarks passed through (orphan starts {\"134\"}, orphan ends {})\nerror: cannot diff /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-g4WAOf/b0.docx against /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-g4WAOf/n0.docx: ValidationFailed: serialization introduced an unbalanced deleted field character sequence in word/document.xml: a fldChar begin/end inside <w:del> has no matching counterpart also deleted \u2014 engine bug (the merge pipeline tore a field across a tracked-change boundary); refusing to emit (Word treats this as document corruption)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "327ae4e5e4",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-URcniN/n0.docx: not a valid DOCX (InvalidDocx: word IR error: missing required tracked change attribute: id (in part main document body))\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "bbc3223232",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot diff /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-c9XpDp/b0.docx against /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-c9XpDp/n0.docx: ValidationFailed: serialization introduced an unbalanced deleted field character sequence in word/document.xml: a fldChar begin/end inside <w:del> has no matching counterpart also deleted \u2014 engine bug (the merge pipeline tore a field across a tracked-change boundary); refusing to emit (Word treats this as document corruption)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "f9ec352ab5",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot diff /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-gRZczI/b0.docx against /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-gRZczI/n0.docx: InvalidDocx: cannot merge numbering: target archive has no word/numbering.xml, but the merged document references numId(s) [1] that are not already in the base archive \u2014 exporting would leave dangling w:numPr references\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "e6e61fc33f",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot diff /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-8UmYzW/b0.docx against /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-8UmYzW/n0.docx: ValidationFailed: serialization introduced an unbalanced deleted field character sequence in word/document.xml: a fldChar begin/end inside <w:del> has no matching counterpart also deleted \u2014 engine bug (the merge pipeline tore a field across a tracked-change boundary); refusing to emit (Word treats this as document corruption)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "a836952933",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot diff /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-Tc6VF6/b0.docx against /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-Tc6VF6/n0.docx: ValidationFailed: serialization introduced an unbalanced deleted field character sequence in word/document.xml: a fldChar begin/end inside <w:del> has no matching counterpart also deleted \u2014 engine bug (the merge pipeline tore a field across a tracked-change boundary); refusing to emit (Word treats this as document corruption)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "420292c772",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot diff /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-cdAYo0/b0.docx against /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-cdAYo0/n0.docx: InvalidDocx: cannot merge numbering: target archive has no word/numbering.xml, but the merged document references numId(s) [2] that are not already in the base archive \u2014 exporting would leave dangling w:numPr references\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "63ef9002ec",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot diff /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-yuivId/b0.docx against /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-yuivId/n0.docx: InvalidDocx: cannot merge numbering: target archive has no word/numbering.xml, but the merged document references numId(s) [2] that are not already in the base archive \u2014 exporting would leave dangling w:numPr references\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "3dac82f40a",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot diff /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-Vd81gw/b0.docx against /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-Vd81gw/n0.docx: InvalidDocx: cannot merge numbering: target archive has no word/numbering.xml, but the merged document references numId(s) [2] that are not already in the base archive \u2014 exporting would leave dangling w:numPr references\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "58cd08049b",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot diff /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-bCmFdQ/b0.docx against /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-bCmFdQ/n0.docx: ValidationFailed: serialization introduced an unbalanced deleted field character sequence in word/document.xml: a fldChar begin/end inside <w:del> has no matching counterpart also deleted \u2014 engine bug (the merge pipeline tore a field across a tracked-change boundary); refusing to emit (Word treats this as document corruption)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "63b66681b7",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot serialize output for /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-PJl27P/o0.docx: ValidationFailed: DOCX validation failed with 5 error(s):\n[I-REL-001] word/document.xml: relationship reference \"rId22\" not found in \"word/_rels/document.xml.rels\"\n[I-REL-001] word/document.xml: relationship reference \"rId23\" not found in \"word/_rels/document.xml.rels\"\n[I-REL-001] word/document.xml: relationship reference \"rId24\" not found in \"word/_rels/document.xml.rels\"\n[I-REL-001] word/document.xml: relationship reference \"rId25\" not found in \"word/_rels/document.xml.rels\"\n[I-REL-001] word/document.xml: relationship reference \"rId27\" not found in \"word/_rels/document.xml.rels\"\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "120ab3f7db",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot diff /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-MQKl8H/b0.docx against /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-MQKl8H/n0.docx: InvalidDocx: cannot merge numbering: target archive has no word/numbering.xml, but the merged document references numId(s) [1, 5] that are not already in the base archive \u2014 exporting would leave dangling w:numPr references\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "749f24fa0e",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot serialize output for /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-H1B4Gx/o0.docx: ValidationFailed: DOCX validation failed with 1 error(s):\n[I-REL-003] word/_rels/document.xml.rels: relationship \"rId13\" target \"../customXML/item1.xml\" resolves to \"customXML/item1.xml\" which does not exist in the package\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "9b9c5719f3",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot serialize output for /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-zOa4Gj/o0.docx: ValidationFailed: DOCX validation failed with 2 error(s):\n[I-REL-003] word/_rels/header1.xml.rels: relationship \"rId2\" target \"media/image2.jpeg\" resolves to \"word/media/image2.jpeg\" which does not exist in the package\n[I-REL-003] word/_rels/header1.xml.rels: relationship \"rId1\" target \"media/image1.jpeg\" resolves to \"word/media/image1.jpeg\" which does not exist in the package\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "cb0a7d2c98",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot diff /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-CKNCMM/b0.docx against /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-CKNCMM/n0.docx: InvalidDocx: cannot merge numbering: target archive has no word/numbering.xml, but the merged document references numId(s) [1, 2] that are not already in the base archive \u2014 exporting would leave dangling w:numPr references\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "d6dcdfe5e4",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot serialize output for /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-8UmGe7/o0.docx: ValidationFailed: DOCX validation failed with 2 error(s):\n[I-REL-003] word/_rels/header1.xml.rels: relationship \"rId2\" target \"media/image2.jpeg\" resolves to \"word/media/image2.jpeg\" which does not exist in the package\n[I-REL-003] word/_rels/header1.xml.rels: relationship \"rId1\" target \"media/image1.jpeg\" resolves to \"word/media/image1.jpeg\" which does not exist in the package\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "4ce2d5cacc",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot serialize output for /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-georAo/o0.docx: ValidationFailed: DOCX validation failed with 2 error(s):\n[I-REL-003] word/_rels/footer1.xml.rels: relationship \"rId1\" target \"media/image3.jpeg\" resolves to \"word/media/image3.jpeg\" which does not exist in the package\n[I-REL-003] word/_rels/header1.xml.rels: relationship \"rId1\" target \"media/image2.jpeg\" resolves to \"word/media/image2.jpeg\" which does not exist in the package\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "a5063c32c8",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-WrIK9a/b0.docx: not a valid DOCX (InvalidDocx: word IR error: missing required tracked change attribute: id (in part main document body))\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "4f964d209a",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot diff /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-Jeqjy7/b0.docx against /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-Jeqjy7/n0.docx: InvalidDocx: cannot merge numbering: target archive has no word/numbering.xml, but the merged document references numId(s) [1] that are not already in the base archive \u2014 exporting would leave dangling w:numPr references\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "3b09d6afde",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot serialize output for /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-JAWOZN/o0.docx: ValidationFailed: DOCX validation failed with 2 error(s):\n[I-REL-003] word/_rels/footer1.xml.rels: relationship \"rId1\" target \"media/image3.jpeg\" resolves to \"word/media/image3.jpeg\" which does not exist in the package\n[I-REL-003] word/_rels/header1.xml.rels: relationship \"rId1\" target \"media/image2.jpeg\" resolves to \"word/media/image2.jpeg\" which does not exist in the package\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "3f9670141d",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot serialize output for /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-ARs2lP/o0.docx: ValidationFailed: DOCX validation failed with 2 error(s):\n[I-REL-003] word/_rels/header1.xml.rels: relationship \"rId2\" target \"media/image2.jpeg\" resolves to \"word/media/image2.jpeg\" which does not exist in the package\n[I-REL-003] word/_rels/header1.xml.rels: relationship \"rId1\" target \"media/image1.jpeg\" resolves to \"word/media/image1.jpeg\" which does not exist in the package\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "fd9169c091",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-Xbzm8F/b0.docx: not a valid DOCX (InvalidDocx: word IR error: missing required tracked change attribute: id (in part main document body))\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "f3319e24f8",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-etalmt/b0.docx: not a valid DOCX (InvalidDocx: word IR error: missing required tracked change attribute: id (in part main document body))\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "049d8405bc",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot diff /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-sfeR1m/b0.docx against /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-sfeR1m/n0.docx: InternalError: table structure merge requires target table lookup\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "8ad8e10ef6",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-gOekLM/n0.docx: not a valid DOCX (InvalidDocx: word IR error: unknown run-level element: bookmarkStart (in part main document body))\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "0bc720e5fa",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot diff /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-C8iZcm/b0.docx against /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-C8iZcm/n0.docx: InternalError: table structure merge requires target table lookup\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "7998f329e8",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot serialize output for /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-0FgBmm/o0.docx: ValidationFailed: DOCX validation failed with 2 error(s):\n[I-REL-003] word/_rels/header1.xml.rels: relationship \"rId1\" target \"media/image1.png\" resolves to \"word/media/image1.png\" which does not exist in the package\n[I-REL-003] word/_rels/header2.xml.rels: relationship \"rId1\" target \"media/image1.png\" resolves to \"word/media/image1.png\" which does not exist in the package\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "e22069e294",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot diff /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-ZwEFvE/b0.docx against /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-ZwEFvE/n0.docx: ValidationFailed: serialization introduced an unbalanced deleted field character sequence in word/document.xml: a fldChar begin/end inside <w:del> has no matching counterpart also deleted \u2014 engine bug (the merge pipeline tore a field across a tracked-change boundary); refusing to emit (Word treats this as document corruption)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "3c3090c52a",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot serialize output for /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-wcHI1b/o0.docx: ValidationFailed: DOCX validation failed with 5 error(s):\n[I-REL-001] word/document.xml: relationship reference \"rId20\" not found in \"word/_rels/document.xml.rels\"\n[I-REL-001] word/document.xml: relationship reference \"rId21\" not found in \"word/_rels/document.xml.rels\"\n[I-REL-001] word/document.xml: relationship reference \"rId22\" not found in \"word/_rels/document.xml.rels\"\n[I-REL-001] word/document.xml: relationship reference \"rId23\" not found in \"word/_rels/document.xml.rels\"\n[I-REL-001] word/document.xml: relationship reference \"rId24\" not found in \"word/_rels/document.xml.rels\"\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "2a6ac88d46",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot diff /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-3qX8kc/b0.docx against /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-3qX8kc/n0.docx: ValidationFailed: serialization introduced an unbalanced deleted field character sequence in word/document.xml: a fldChar begin/end inside <w:del> has no matching counterpart also deleted \u2014 engine bug (the merge pipeline tore a field across a tracked-change boundary); refusing to emit (Word treats this as document corruption)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "d5d3c12881",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot diff /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-g70Sgh/b0.docx against /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-g70Sgh/n0.docx: InvalidDocx: cannot merge numbering: target archive has no word/numbering.xml, but the merged document references numId(s) [1] that are not already in the base archive \u2014 exporting would leave dangling w:numPr references\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "bbaad01a9e",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot serialize output for /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-Y0weJY/o0.docx: ValidationFailed: DOCX validation failed with 2 error(s):\n[I-REL-003] word/_rels/header1.xml.rels: relationship \"rId2\" target \"media/image2.jpeg\" resolves to \"word/media/image2.jpeg\" which does not exist in the package\n[I-REL-003] word/_rels/header1.xml.rels: relationship \"rId1\" target \"media/image1.jpeg\" resolves to \"word/media/image1.jpeg\" which does not exist in the package\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "e633129040",
+    "stage": "generate",
+    "error": "Command '['node', '--import', 'tsx', '/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts', 'stemma', '/Users/arthrod/temp/T/neurotic_docx_bench/src/neurotic_docx_bench/utils/stemma', '/Users/arthrod/temp/T/neurotic_docx_bench/corpus/word/clean/docx/9f6f60f1db_d0a7c31f8535690716639fce8eb4081cb831a0b1c893af9f.docx', '/Users/arthrod/temp/T/neurotic_docx_bench/corpus/word/clean/docx/8116a767f0_723ae78054da0840fa9f450784fd17e0564865cb53a6bdd5.docx', '/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/compare/stemma-0.5.0/docx/e633129040.docx']' timed out after 120 seconds",
+    "returncode": 124
+  },
+  {
+    "doc": "cb164cf87a",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot serialize output for /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-tj4Tyn/o0.docx: ValidationFailed: DOCX validation failed with 5 error(s):\n[I-REL-001] word/document.xml: relationship reference \"rId27\" not found in \"word/_rels/document.xml.rels\"\n[I-REL-001] word/document.xml: relationship reference \"rId28\" not found in \"word/_rels/document.xml.rels\"\n[I-REL-001] word/document.xml: relationship reference \"rId29\" not found in \"word/_rels/document.xml.rels\"\n[I-REL-001] word/document.xml: relationship reference \"rId32\" not found in \"word/_rels/document.xml.rels\"\n[I-REL-001] word/document.xml: relationship reference \"rId34\" not found in \"word/_rels/document.xml.rels\"\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "eb12b8215b",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot serialize output for /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-czBXK8/o0.docx: ValidationFailed: DOCX validation failed with 2 error(s):\n[I-REL-003] word/_rels/footer1.xml.rels: relationship \"rId1\" target \"media/image3.jpeg\" resolves to \"word/media/image3.jpeg\" which does not exist in the package\n[I-REL-003] word/_rels/header1.xml.rels: relationship \"rId1\" target \"media/image2.jpeg\" resolves to \"word/media/image2.jpeg\" which does not exist in the package\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "ef42391c98",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot diff /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-ArHsZx/b0.docx against /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-ArHsZx/n0.docx: InvalidDocx: cannot merge numbering: target archive has no word/numbering.xml, but the merged document references numId(s) [1] that are not already in the base archive \u2014 exporting would leave dangling w:numPr references\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "651e1bcc1c",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot serialize output for /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-xmMgVQ/o0.docx: ValidationFailed: DOCX validation failed with 17 error(s):\n[I-REL-001] word/document.xml: relationship reference \"R9a7e950a59c14520\" not found in \"word/_rels/document.xml.rels\"\n[I-REL-001] word/document.xml: relationship reference \"R5a3237440fbb4b24\" not found in \"word/_rels/document.xml.rels\"\n[I-REL-001] word/document.xml: relationship reference \"Rf8dcfc5e00c848bc\" not found in \"word/_rels/document.xml.rels\"\n[I-REL-001] word/document.xml: relationship reference \"Rdf9d2b0a34ce47d4\" not found in \"word/_rels/document.xml.rels\"\n[I-REL-001] word/document.xml: relationship reference \"R23ae57f4192e428e\" not found in \"word/_rels/document.xml.rels\"\n[I-REL-001] word/document.xml: relationship reference \"Ra10207b782fa4da3\" not found in \"word/_rels/document.xml.rels\"\n[I-REL-001] word/document.xml: relationship reference \"R8c96c254891f4e68\" not found in \"word/_rels/document.xml.rels\"\n[I-REL-001] word/document.xml: relationship reference \"R91d61ec087784ee2\" not found in \"word/_rels/document.xml.rels\"\n[I-REL-001] word/document.xml: relationship reference \"R25b95d23fd3d48cb\" not found in \"word/_rels/document.xml.rels\"\n[I-REL-001] word/document.xml: relationship reference \"Rd6bd2b2f441f4b4c\" not found in \"word/_rels/document.xml.rels\"\n[I-REL-001] word/document.xml: relationship reference \"R177beaea87ed4b7d\" not found in \"word/_rels/document.xml.rels\"\n[I-REL-001] word/document.xml: relationship reference \"Rfb19b5b20f874b78\" not found in \"word/_rels/document.xml.rels\"\n[I-REL-001] word/document.xml: relationship reference \"Rfc495e376dc34955\" not found in \"word/_rels/document.xml.rels\"\n[I-REL-001] word/document.xml: relationship reference \"R6a2724ac0f6e49ed\" not found in \"word/_rels/document.xml.rels\"\n[I-REL-001] word/document.xml: relationship reference \"R7f43e5258cc94502\" not found in \"word/_rels/document.xml.rels\"\n[I-REL-001] word/document.xml: relationship reference \"R7ff8cc203e314c7e\" not found in \"word/_rels/document.xml.rels\"\n[I-REL-001] word/document.xml: relationship reference \"R5c9479d43e1348c3\" not found in \"word/_rels/document.xml.rels\"\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "710426a66c",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot serialize output for /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-rIcqEj/o0.docx: ValidationFailed: DOCX validation failed with 2 error(s):\n[I-REL-003] word/_rels/header1.xml.rels: relationship \"rId1\" target \"media/image2.jpeg\" resolves to \"word/media/image2.jpeg\" which does not exist in the package\n[I-REL-003] word/_rels/footer1.xml.rels: relationship \"rId1\" target \"media/image3.jpeg\" resolves to \"word/media/image3.jpeg\" which does not exist in the package\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "c09f50d3f1",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-tflRd2/b0.docx: not a valid DOCX (InvalidDocx: word/settings.xml defaultTabStop has invalid w:val '36pt': invalid digit found in string)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "955c614ac4",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot diff /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-Ub78Be/b0.docx against /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-Ub78Be/n0.docx: InvalidDocx: cannot merge numbering: target archive has no word/numbering.xml, but the merged document references numId(s) [1] that are not already in the base archive \u2014 exporting would leave dangling w:numPr references\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "97b4c2de49",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot diff /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-NOf5d9/b0.docx against /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-NOf5d9/n0.docx: InvalidDocx: cannot merge numbering: target archive has no word/numbering.xml, but the merged document references numId(s) [1] that are not already in the base archive \u2014 exporting would leave dangling w:numPr references\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "9812be01c0",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot serialize output for /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-SgFm0i/o0.docx: ValidationFailed: DOCX validation failed with 1 error(s):\n[I-REL-003] word/_rels/footer1.xml.rels: relationship \"rId1\" target \"media/image3.jpeg\" resolves to \"word/media/image3.jpeg\" which does not exist in the package\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "0d2106d9b2",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot diff /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-0FCXom/b0.docx against /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-0FCXom/n0.docx: InvalidDocx: cannot merge numbering: target archive has no word/numbering.xml, but the merged document references numId(s) [30] that are not already in the base archive \u2014 exporting would leave dangling w:numPr references\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "c56e84eaea",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot serialize output for /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-f8MnOD/o0.docx: ValidationFailed: DOCX validation failed with 2 error(s):\n[I-REL-003] word/_rels/footer1.xml.rels: relationship \"rId1\" target \"media/image3.jpeg\" resolves to \"word/media/image3.jpeg\" which does not exist in the package\n[I-REL-003] word/_rels/header1.xml.rels: relationship \"rId1\" target \"media/image2.jpeg\" resolves to \"word/media/image2.jpeg\" which does not exist in the package\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "10e0bef64b",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-JBiv4x/n0.docx: not a valid DOCX (InvalidDocx: word IR error: missing required tracked change attribute: id (in part main document body))\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "d244fd1091",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot serialize output for /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-Dtu8Cw/o0.docx: ValidationFailed: DOCX validation failed with 2 error(s):\n[I-REL-003] word/_rels/header1.xml.rels: relationship \"rId2\" target \"media/image2.jpeg\" resolves to \"word/media/image2.jpeg\" which does not exist in the package\n[I-REL-003] word/_rels/header1.xml.rels: relationship \"rId1\" target \"media/image1.jpeg\" resolves to \"word/media/image1.jpeg\" which does not exist in the package\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "2ea0a59b6a",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot serialize output for /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-z2GxkX/o0.docx: ValidationFailed: DOCX validation failed with 2 error(s):\n[I-REL-001] word/header1.xml: relationship reference \"rId1\" in \"word/header1.xml\" has no .rels file (\"word/_rels/header1.xml.rels\")\n[I-REL-001] word/header1.xml: relationship reference \"rId2\" in \"word/header1.xml\" has no .rels file (\"word/_rels/header1.xml.rels\")\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "dd200b33ce",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot serialize output for /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-ItMenz/o0.docx: ValidationFailed: DOCX validation failed with 1 error(s):\n[I-REL-003] word/_rels/header1.xml.rels: relationship \"rId2\" target \"media/image2.jpeg\" resolves to \"word/media/image2.jpeg\" which does not exist in the package\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "8c2a86d9f4",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-ohywEi/n0.docx: not a valid DOCX (InvalidDocx: word IR error: missing required tracked change attribute: id (in part main document body))\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "12d29cabe0",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-lEX6aR/n0.docx: not a valid DOCX (InvalidDocx: word IR error: unknown run-level element: bookmarkStart (in part main document body))\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "859b75527f",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot diff /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-fEbuDQ/b0.docx against /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-fEbuDQ/n0.docx: InvalidDocx: cannot merge numbering: target archive has no word/numbering.xml, but the merged document references numId(s) [2, 3] that are not already in the base archive \u2014 exporting would leave dangling w:numPr references\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "108332354e",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot serialize output for /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-pN2xKv/o0.docx: ValidationFailed: DOCX validation failed with 2 error(s):\n[I-REL-003] word/_rels/header1.xml.rels: relationship \"rId1\" target \"media/image1.png\" resolves to \"word/media/image1.png\" which does not exist in the package\n[I-REL-003] word/_rels/header2.xml.rels: relationship \"rId1\" target \"media/image1.png\" resolves to \"word/media/image1.png\" which does not exist in the package\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "3303e707c8",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot serialize output for /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-yYSdoQ/o0.docx: ValidationFailed: DOCX validation failed with 4 error(s):\n[I-REL-001] word/document.xml: relationship reference \"rId38\" not found in \"word/_rels/document.xml.rels\"\n[I-REL-001] word/document.xml: relationship reference \"rId39\" not found in \"word/_rels/document.xml.rels\"\n[I-REL-001] word/document.xml: relationship reference \"rId38\" not found in \"word/_rels/document.xml.rels\"\n[I-REL-001] word/document.xml: relationship reference \"rId40\" not found in \"word/_rels/document.xml.rels\"\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "cfb0498eef",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-vd8uuQ/b0.docx: not a valid DOCX (InvalidDocx: package root relationships part _rels/.rels has no officeDocument relationship (type http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument); ECMA-376 Part 2 \u00a79.3 locates the main document part through this relationship)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "85d3cc0cfe",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot diff /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-iKKfsj/b0.docx against /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-iKKfsj/n0.docx: InternalError: target opaque index 2 out of range (have 2)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "4a9a8d0b4a",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot diff /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-FuDlAC/b0.docx against /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-FuDlAC/n0.docx: InvalidDocx: cannot merge numbering: target archive has no word/numbering.xml, but the merged document references numId(s) [1, 5, 6] that are not already in the base archive \u2014 exporting would leave dangling w:numPr references\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "57cfa10f33",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot serialize output for /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-4b2WD7/o0.docx: ValidationFailed: DOCX validation failed with 4 error(s):\n[I-REL-001] word/document.xml: relationship reference \"rId38\" not found in \"word/_rels/document.xml.rels\"\n[I-REL-001] word/document.xml: relationship reference \"rId39\" not found in \"word/_rels/document.xml.rels\"\n[I-REL-001] word/document.xml: relationship reference \"rId38\" not found in \"word/_rels/document.xml.rels\"\n[I-REL-001] word/document.xml: relationship reference \"rId40\" not found in \"word/_rels/document.xml.rels\"\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "df497fd549",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot serialize output for /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-np1pPw/o0.docx: ValidationFailed: DOCX validation failed with 4 error(s):\n[I-REL-001] word/document.xml: relationship reference \"rId38\" not found in \"word/_rels/document.xml.rels\"\n[I-REL-001] word/document.xml: relationship reference \"rId39\" not found in \"word/_rels/document.xml.rels\"\n[I-REL-001] word/document.xml: relationship reference \"rId38\" not found in \"word/_rels/document.xml.rels\"\n[I-REL-001] word/document.xml: relationship reference \"rId40\" not found in \"word/_rels/document.xml.rels\"\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "7787357743",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot serialize output for /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-N1THY6/o0.docx: ValidationFailed: DOCX validation failed with 5 error(s):\n[I-REL-001] word/document.xml: relationship reference \"rId20\" not found in \"word/_rels/document.xml.rels\"\n[I-REL-001] word/document.xml: relationship reference \"rId21\" not found in \"word/_rels/document.xml.rels\"\n[I-REL-001] word/document.xml: relationship reference \"rId22\" not found in \"word/_rels/document.xml.rels\"\n[I-REL-001] word/document.xml: relationship reference \"rId23\" not found in \"word/_rels/document.xml.rels\"\n[I-REL-001] word/document.xml: relationship reference \"rId24\" not found in \"word/_rels/document.xml.rels\"\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "3a7ca36d5f",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot diff /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-zBLZhH/b0.docx against /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-zBLZhH/n0.docx: InvalidDocx: cannot merge numbering: target archive has no word/numbering.xml, but the merged document references numId(s) [2] that are not already in the base archive \u2014 exporting would leave dangling w:numPr references\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "29d3f492fb",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-D4BYoU/n0.docx: not a valid DOCX (InvalidDocx: word IR error: unknown run-level element: bookmarkStart (in part main document body))\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "b461d6f797",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot serialize output for /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-yR3JiD/o0.docx: ValidationFailed: DOCX validation failed with 2 error(s):\n[I-REL-001] word/comments.xml: relationship reference \"rId1\" in \"word/comments.xml\" has no .rels file (\"word/_rels/comments.xml.rels\")\n[I-REL-001] word/comments.xml: relationship reference \"rId2\" in \"word/comments.xml\" has no .rels file (\"word/_rels/comments.xml.rels\")\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "0cd32d67b2",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-P9Z80b/n0.docx: not a valid DOCX (InvalidDocx: package root relationships part _rels/.rels has no officeDocument relationship (type http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument); ECMA-376 Part 2 \u00a79.3 locates the main document part through this relationship)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  },
+  {
+    "doc": "c9fc2e8899",
+    "stage": "generate",
+    "error": "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754\n\t\t\t\t\tthrow new Error(\n\t\t\t\t\t      ^\n\nError: stemma compare failed (exit 1): error: cannot diff /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-iXSsXt/b0.docx against /var/folders/7w/dvl66_d13wx2v88nv5rcwltc0000gn/T/stemma-iXSsXt/n0.docx: InvalidDocx: cannot merge numbering: target archive has no word/numbering.xml, but the merged document references numId(s) [1, 2] that are not already in the base archive \u2014 exporting would leave dangling w:numPr references\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/scripts/generate-native-redlines.ts:754:12)\n    at <anonymous> (/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/one_redline.ts:9:21)\n\nNode.js v26.11.1\n",
+    "returncode": 1
+  }
+]
