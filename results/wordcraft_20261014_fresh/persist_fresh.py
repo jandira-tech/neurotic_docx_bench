@@ -7,6 +7,7 @@ from neurotic_docx_bench.config import BenchConfig,ScoringConfig,RunConfig,Corpu
 from neurotic_docx_bench.hardware import hardware_info
 from neurotic_docx_bench import version as bench_version
 OUT=Path(__file__).resolve().parent;ROOT=OUT.parents[1]
+import sys;sys.path.insert(0,str(OUT));import lanes
 def digest(path):return hashlib.sha256(path.read_bytes()).hexdigest()
 def stat(xs):
  xs=sorted(xs)
@@ -20,19 +21,22 @@ def main():
  def version(tool):
   if tool=='wordcraft':return '0.6.1@'+tools['wordcraft-cli']['sha256']
   if tool.startswith('jubarte-'):return tool.removeprefix('jubarte-')+'@'+tools[tool]['sha256']
-  if tool.startswith('docxodus-'):return '12.6.5'
-  return tools['soffice']['version']
- required={'compare':['wordcraft','jubarte-0.11.0','jubarte-0.12.0','docxodus-12.6.5'],'convert':['wordcraft','jubarte-0.11.0','jubarte-0.12.0','soffice']}
- for phase,lanes in required.items():
+  if tool=='docxodus-12.6.5':return '12.6.5'
+  if tool=='soffice':return tools['soffice']['version']
+  t=tools[tool];return (t.get('version') or t['package_version'])+('@'+t['sha256'] if t.get('sha256') else '')
+ required=lanes.LANES
+ for phase in required:
   manifest=OUT/('comparisons.csv' if phase=='compare' else 'conversions.csv');assert digest(manifest)==ready['final_manifest_sha256'][manifest.name]
-  manifest_rows=list(csv.DictReader(manifest.open()));n=len(manifest_rows);ids=[r['id'] if phase=='compare' else r['stem'] for r in manifest_rows];docset=digest(manifest)[:16]
-  for lane in lanes:
+  all_rows=list(csv.DictReader(manifest.open()))
+  for lane in lanes.LANES[phase]:
+   keep=set(lanes.keys_for(phase,lane,[r['id'] if phase=='compare' else r['stem'] for r in all_rows]));manifest_rows=[r for r in all_rows if (r['id'] if phase=='compare' else r['stem']) in keep];n=len(manifest_rows);ids=[r['id'] if phase=='compare' else r['stem'] for r in manifest_rows]
+   docset=digest(manifest)[:16] if n==len(all_rows) else hashlib.sha256(('\n'.join(sorted(ids))).encode()).hexdigest()[:16]
    key=phase+'|'+lane;file=OUT/phase/lane/'scores.json';data=json.loads(file.read_text());assert data['requested']==n
    rows=data['rows'];fail=data['failures'];assert set(rows).isdisjoint(fail) and set(rows)|set(fail)==set(ids),(lane,'Incomplete cohort')
    if key in done:assert done[key]['score_file_sha256']==digest(file);continue
    selected=[r for (task,tool,ident),r in ops.items() if task==phase and tool==lane and ident in ids and r['ok'] and not r['reused']];samples=[r['elapsed_ms'] for r in selected]
    stamp=datetime.now(UTC);runid=uuid.uuid7();common={'run_directory':str(OUT),'scorer_fingerprint':data['scorer_fingerprint'],'hub_revision':meta['revision'],'frozen_manifest_sha256':digest(manifest),'fresh_word_oracle_provenance_sha256':digest(OUT/'oracle_provenance.json'),'fresh':True,'fixture_selection':'Word eligibility established before vendor generation; vendor failures retained','candidate_options':'Wordcraft --markup; jubarte --revisions word' if phase=='convert' else 'Wordcraft level=word formatting/case/whitespace=true; native compares for other tools'}
-   config_hash=hashlib.sha256(json.dumps(common,sort_keys=True).encode()).hexdigest();name='wordcraft-cli' if lane=='wordcraft' else lane
+   config_hash=hashlib.sha256(json.dumps(common,sort_keys=True).encode()).hexdigest();name='wordcraft-cli' if lane=='wordcraft' else 'wordcraft-cli-0.7.0' if lane=='wordcraft-0.7.0' else lane
    if phase=='compare':
     byid={r['id']:r['key'] for r in manifest_rows};per={byid[k]:v for k,v in rows.items()};scores={k:v['overall_score_pagefair'] for k,v in per.items()};failures=[{'doc':byid[k],'stage':'render' if v['stage'] in ('tool_output','score') else 'generate','error':v['error']} for k,v in fail.items()]
     cfg=BenchConfig(source_of_truth=OUT/'compare/oracle',scoring=ScoringConfig(144),runs=[RunConfig(name=lane,render='word',docx=OUT/'compare'/lane/'docx',vendor=name,benchmarks=['script_redlines'])],renderer='word',corpora=(CorpusEntry('wordcraft-balanced-'+str(n),str(manifest),str(ROOT/'corpus/word')),),config_dir=ROOT)

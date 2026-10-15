@@ -1,84 +1,140 @@
 # Wordcraft CLI benchmark — complete
 
-Updated: 2026-10-14 11:50:34 EDT.
+Updated: 2026-10-14 21:01:58 EDT.
 
 Seed 20261014. 400 unique base→next comparisons and 400 distinct conversion DOCX, in two cohorts: the original 200+200 sample and a seeded, stratified expansion drawn before any vendor ran. Word eligibility is established first: a fixture for which Word could not produce a fresh oracle in this run is excluded and logged (`comparison_exclusions.json`, `conversion_exclusions.json`); Word-session failures were retried, not excluded. Inputs are frozen before vendor generation; vendor failures are never replaced and count as zero.
 
 Comparison redlines are rendered by Word 16.115. All tools in each task use identical per-fixture Word PDF oracles, 144 DPI and the unchanged scorer. Its two kernels (mean CIEDE2000 and SSIM) ran on NumPy for the rows scored early and on the torch port over Apple MPS for the rest (`BENCH_DEVICE=mps`); `tests/test_kernels.py` holds the torch port within 1e-3 of NumPy per document (15 passed on this machine), and every scored row records its `scorer_backend` (counts below). Full-cohort means include tool failures as zero. Partial means include only completed scores and can be biased toward faster documents.
+
+Lanes. The original run: Wordcraft CLI 0.6.1, jubarte 0.11.0 and 0.12.0, and docxodus 12.6.5 (comparisons) or LibreOffice 26.8.1.1 (conversions). Added the same day, on the same frozen fixtures, oracles, renderer and scorer, at their newest releases: the top three non-jubarte tools of every past results table in RESULTS.md (comparisons: docxodus, stemma, folio, superdoc; conversions: office2pdf, pdfitdown, rdocx, libreoffice_convert_rust, docxide-pdf, PyMuPDF Pro, with LibreOffice already present), plus Wordcraft CLI 0.7.0 and docxodus 13.0.0, released while this run was in progress. Each tool runs through the bench's own adapter for it, one document per process; exact versions and hashes are in `tools.json`. libreoffice_convert_rust drives the installed /Applications/LibreOffice.app, the same LibreOffice build as the soffice lane, so the two score alike. jubarte is author-affiliated.
 
 ## Comparisons
 
 | Tool | Scored / 400 | Failed | Pending | Mean v1 | Mean pagefair | Median v1 | Median CLI latency (ms) | Page mismatches |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
 | wordcraft | 392 | 8 | 0 | 47.32 | 46.01 | 46.01 | 14.48 | 118 |
+| wordcraft-0.7.0 | 392 | 8 | 0 | 47.36 | 46.05 | 46.01 | 25.38 | 118 |
 | jubarte-0.11.0 | 399 | 1 | 0 | 76.90 | 76.75 | 84.41 | 51.63 | 29 |
 | jubarte-0.12.0 | 395 | 5 | 0 | 76.34 | 76.18 | 84.44 | 37.80 | 28 |
 | docxodus-12.6.5 | 369 | 31 | 0 | 67.19 | 66.99 | 80.40 | 8206.79 | 31 |
+| docxodus-13.0.0 | 379 | 21 | 0 | 67.91 | 67.49 | 80.61 | 849.89 | 39 |
+| folio-0.60.0 | 257 | 143 | 0 | 33.70 | 32.74 | 41.77 | 863.82 | 60 |
+| stemma-0.6.0 | 108 | 292 | 0 | 18.95 | 18.93 | 0.00 | 135.55 | 2 |
+| superdoc-2.20.0 | 36 | 364 | 0 | 5.33 | 5.33 | 0.00 | 2750.51 | 0 |
 
-CLI latency includes startup, file loading and saving; Word export is excluded from comparison latency. Docxodus includes WASM initialization. Each tool lane ran serially, one document at a time, but on a shared machine: Word batches, scoring and other sessions were running (load average 35–77 on 12 cores), so latencies are observations, not a throughput ranking.
+CLI latency includes startup, file loading and saving; Word export is excluded from comparison latency. Docxodus includes WASM initialization. Each tool lane ran serially, one document at a time, but on a shared machine: Word batches, scoring and other sessions were running (load average 35–77 on 12 cores), and the lanes added later ran concurrently with each other and with cargo builds of the Rust converters, so latencies are observations, not a throughput ranking.
 
-Scorer backend per tool (scored rows): wordcraft: torch-mps 392; jubarte-0.11.0: torch-mps 399; jubarte-0.12.0: torch-mps 395; docxodus-12.6.5: torch-mps 369.
+Scorer backend per tool (scored rows): wordcraft: torch-mps 392; wordcraft-0.7.0: torch-mps 392; jubarte-0.11.0: torch-mps 399; jubarte-0.12.0: torch-mps 395; docxodus-12.6.5: torch-mps 369; docxodus-13.0.0: torch-mps 379; folio-0.60.0: torch-mps 257; stemma-0.6.0: torch-mps 108; superdoc-2.20.0: torch-mps 36.
 
+wordcraft-0.7.0 minus Wordcraft, pagefair: **+0.04 points**, paired bootstrap 95% interval [-0.01, +0.12], n=400. This interval describes the selected benchmark cohort, not a population-wide guarantee.
 jubarte-0.11.0 minus Wordcraft, pagefair: **+30.74 points**, paired bootstrap 95% interval [+28.98, +32.57], n=400. This interval describes the selected benchmark cohort, not a population-wide guarantee.
 jubarte-0.12.0 minus Wordcraft, pagefair: **+30.17 points**, paired bootstrap 95% interval [+28.26, +32.07], n=400. This interval describes the selected benchmark cohort, not a population-wide guarantee.
 docxodus-12.6.5 minus Wordcraft, pagefair: **+20.98 points**, paired bootstrap 95% interval [+18.62, +23.32], n=400. This interval describes the selected benchmark cohort, not a population-wide guarantee.
+docxodus-13.0.0 minus Wordcraft, pagefair: **+21.48 points**, paired bootstrap 95% interval [+19.15, +23.86], n=400. This interval describes the selected benchmark cohort, not a population-wide guarantee.
+folio-0.60.0 minus Wordcraft, pagefair: **-13.27 points**, paired bootstrap 95% interval [-15.47, -11.07], n=400. This interval describes the selected benchmark cohort, not a population-wide guarantee.
+stemma-0.6.0 minus Wordcraft, pagefair: **-27.08 points**, paired bootstrap 95% interval [-29.51, -24.24], n=400. This interval describes the selected benchmark cohort, not a population-wide guarantee.
+superdoc-2.20.0 minus Wordcraft, pagefair: **-40.68 points**, paired bootstrap 95% interval [-42.36, -39.06], n=400. This interval describes the selected benchmark cohort, not a population-wide guarantee.
 
 ### By cohort (pagefair mean, failures as zero)
 
-| Cohort | N | wordcraft | jubarte-0.11.0 | jubarte-0.12.0 | docxodus-12.6.5 |
-|---|---:|---:|---:|---:|---:|
-| cohort 1 | 174 | 44.92 | 76.62 | 75.89 | 67.04 |
-| cohort 2 | 226 | 46.85 | 76.84 | 76.41 | 66.96 |
+| Cohort | N | wordcraft | wordcraft-0.7.0 | jubarte-0.11.0 | jubarte-0.12.0 | docxodus-12.6.5 | docxodus-13.0.0 | folio-0.60.0 | stemma-0.6.0 | superdoc-2.20.0 |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| cohort 1 | 174 | 44.92 | 45.01 | 76.62 | 75.89 | 67.04 | 68.08 | 31.70 | 18.16 | 5.24 |
+| cohort 2 | 226 | 46.85 | 46.84 | 76.84 | 76.41 | 66.96 | 67.03 | 33.53 | 19.53 | 5.40 |
 
-### jubarte 0.11.0 → 0.12.0
+### wordcraft → wordcraft-0.7.0
 
-Failure transitions: 395 scored by both, 0 failed in 0.11.0 and scored in 0.12.0, 4 scored in 0.11.0 and failed in 0.12.0, 1 failed in both. On the documents both scored, 0.12.0 minus 0.11.0 pagefair averages 0.00 points (35 improved, 42 regressed by more than 0.5).
+Failure transitions: 392 scored by both, 0 failed in the old version and scored in the new, 0 scored in the old and failed in the new, 8 failed in both. On the documents both scored, new minus old pagefair averages 0.04 points (1 improved, 0 regressed by more than 0.5).
+
+### jubarte-0.11.0 → jubarte-0.12.0
+
+Failure transitions: 395 scored by both, 0 failed in the old version and scored in the new, 4 scored in the old and failed in the new, 1 failed in both. On the documents both scored, new minus old pagefair averages 0.00 points (35 improved, 42 regressed by more than 0.5).
+
+### docxodus-12.6.5 → docxodus-13.0.0
+
+Failure transitions: 369 scored by both, 10 failed in the old version and scored in the new, 0 scored in the old and failed in the new, 21 failed in both. On the documents both scored, new minus old pagefair averages -0.64 points (30 improved, 25 regressed by more than 0.5).
 
 ### By state
 
-| State | N | wordcraft | jubarte-0.11.0 | jubarte-0.12.0 | docxodus-12.6.5 |
-|---|---:|---:|---:|---:|---:|
-| tracking_without_comments | 245 | 47.74 | 75.84 | 74.93 | 66.26 |
-| with_comments_tracking | 150 | 43.42 | 77.57 | 77.55 | 68.77 |
-| with_comments_clean | 3 | 40.54 | 95.61 | 94.98 | 39.97 |
-| clean | 2 | 37.06 | 98.35 | 98.34 | 63.79 |
+| State | N | wordcraft | wordcraft-0.7.0 | jubarte-0.11.0 | jubarte-0.12.0 | docxodus-12.6.5 | docxodus-13.0.0 | folio-0.60.0 | stemma-0.6.0 | superdoc-2.20.0 |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| tracking_without_comments | 245 | 47.74 | 47.74 | 75.84 | 74.93 | 66.26 | 66.71 | 33.77 | 23.11 | 7.95 |
+| with_comments_tracking | 150 | 43.42 | 43.51 | 77.57 | 77.55 | 68.77 | 69.00 | 29.64 | 12.26 | 1.23 |
+| with_comments_clean | 3 | 40.54 | 40.58 | 95.61 | 94.98 | 39.97 | 40.73 | 58.10 | 0.00 | 0.00 |
+| clean | 2 | 37.06 | 37.12 | 98.35 | 98.34 | 63.79 | 89.90 | 99.95 | 35.65 | 0.00 |
 
 ## Conversions
 
 | Tool | Scored / 400 | Failed | Pending | Mean v1 | Mean pagefair | Median v1 | Median CLI latency (ms) | Page mismatches |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
 | wordcraft | 400 | 0 | 0 | 55.46 | 55.18 | 52.82 | 41.18 | 72 |
+| wordcraft-0.7.0 | 400 | 0 | 0 | 56.59 | 56.42 | 53.82 | 68.80 | 33 |
 | jubarte-0.11.0 | 400 | 0 | 0 | 76.24 | 76.19 | 79.75 | 27.53 | 12 |
 | jubarte-0.12.0 | 400 | 0 | 0 | 79.93 | 79.89 | 82.45 | 28.28 | 12 |
 | soffice | 398 | 2 | 0 | 54.82 | 54.70 | 47.87 | 1894.46 | 33 |
+| office2pdf-0.8.1 | 398 | 2 | 0 | 48.66 | 45.89 | 44.45 | 658.24 | 134 |
+| pdfitdown-4.2.0 | 397 | 3 | 0 | 43.48 | 39.41 | 41.95 | 562.64 | 173 |
+| rdocx-0.16.0 | 397 | 3 | 0 | 50.69 | 47.80 | 45.90 | 291.96 | 111 |
+| docxide-pdf-0.18.4 | 400 | 0 | 0 | 55.90 | 54.90 | 52.37 | 43.59 | 66 |
+| libreoffice_convert_rust-0.1.0 | 398 | 2 | 0 | 54.82 | 54.70 | 47.87 | 1927.04 | 33 |
+| pymupdf-pro-1.28.2 (≤3-page subset, n=253) | 250 | 3 | 0 | 56.48 | 56.24 | 48.50 | 770.49 | 12 |
 
-CLI latency includes startup, file loading and saving; Word export is excluded from comparison latency. Docxodus includes WASM initialization. Each tool lane ran serially, one document at a time, but on a shared machine: Word batches, scoring and other sessions were running (load average 35–77 on 12 cores), so latencies are observations, not a throughput ranking.
+CLI latency includes startup, file loading and saving; Word export is excluded from comparison latency. Docxodus includes WASM initialization. Each tool lane ran serially, one document at a time, but on a shared machine: Word batches, scoring and other sessions were running (load average 35–77 on 12 cores), and the lanes added later ran concurrently with each other and with cargo builds of the Rust converters, so latencies are observations, not a throughput ranking.
 
-Scorer backend per tool (scored rows): wordcraft: numpy 99, torch-mps 301; jubarte-0.11.0: numpy 144, torch-mps 256; jubarte-0.12.0: torch-mps 400; soffice: torch-mps 398.
+Scorer backend per tool (scored rows): wordcraft: numpy 99, torch-mps 301; wordcraft-0.7.0: torch-mps 400; jubarte-0.11.0: numpy 144, torch-mps 256; jubarte-0.12.0: torch-mps 400; soffice: torch-mps 398; office2pdf-0.8.1: torch-mps 398; pdfitdown-4.2.0: torch-mps 397; rdocx-0.16.0: torch-mps 397; docxide-pdf-0.18.4: torch-mps 400; libreoffice_convert_rust-0.1.0: torch-mps 398; pymupdf-pro-1.28.2: torch-mps 250.
 
+wordcraft-0.7.0 minus Wordcraft, pagefair: **+1.24 points**, paired bootstrap 95% interval [+0.81, +1.69], n=400. This interval describes the selected benchmark cohort, not a population-wide guarantee.
 jubarte-0.11.0 minus Wordcraft, pagefair: **+21.02 points**, paired bootstrap 95% interval [+19.45, +22.58], n=400. This interval describes the selected benchmark cohort, not a population-wide guarantee.
 jubarte-0.12.0 minus Wordcraft, pagefair: **+24.71 points**, paired bootstrap 95% interval [+23.31, +26.15], n=400. This interval describes the selected benchmark cohort, not a population-wide guarantee.
 soffice minus Wordcraft, pagefair: **-0.48 points**, paired bootstrap 95% interval [-1.64, +0.70], n=400. This interval describes the selected benchmark cohort, not a population-wide guarantee.
+office2pdf-0.8.1 minus Wordcraft, pagefair: **-9.29 points**, paired bootstrap 95% interval [-10.79, -7.85], n=400. This interval describes the selected benchmark cohort, not a population-wide guarantee.
+pdfitdown-4.2.0 minus Wordcraft, pagefair: **-15.77 points**, paired bootstrap 95% interval [-17.14, -14.48], n=400. This interval describes the selected benchmark cohort, not a population-wide guarantee.
+rdocx-0.16.0 minus Wordcraft, pagefair: **-7.38 points**, paired bootstrap 95% interval [-8.76, -6.03], n=400. This interval describes the selected benchmark cohort, not a population-wide guarantee.
+docxide-pdf-0.18.4 minus Wordcraft, pagefair: **-0.28 points**, paired bootstrap 95% interval [-1.54, +1.06], n=400. This interval describes the selected benchmark cohort, not a population-wide guarantee.
+libreoffice_convert_rust-0.1.0 minus Wordcraft, pagefair: **-0.48 points**, paired bootstrap 95% interval [-1.64, +0.71], n=400. This interval describes the selected benchmark cohort, not a population-wide guarantee.
+pymupdf-pro-1.28.2 minus Wordcraft, pagefair: **-4.08 points**, paired bootstrap 95% interval [-5.76, -2.34], n=253. This interval describes the selected benchmark cohort, not a population-wide guarantee.
 
 ### By cohort (pagefair mean, failures as zero)
 
-| Cohort | N | wordcraft | jubarte-0.11.0 | jubarte-0.12.0 | soffice |
-|---|---:|---:|---:|---:|---:|
-| cohort 1 | 197 | 54.19 | 77.14 | 79.69 | 54.73 |
-| cohort 2 | 203 | 56.14 | 75.28 | 80.08 | 54.67 |
+| Cohort | N | wordcraft | wordcraft-0.7.0 | jubarte-0.11.0 | jubarte-0.12.0 | soffice | office2pdf-0.8.1 | pdfitdown-4.2.0 | rdocx-0.16.0 | docxide-pdf-0.18.4 | libreoffice_convert_rust-0.1.0 | pymupdf-pro-1.28.2 |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| cohort 1 | 197 | 54.19 | 55.12 | 77.14 | 79.69 | 54.73 | 45.59 | 38.32 | 47.62 | 53.28 | 54.73 | 58.04 |
+| cohort 2 | 203 | 56.14 | 57.69 | 75.28 | 80.08 | 54.67 | 46.18 | 40.48 | 47.98 | 56.47 | 54.67 | 54.83 |
 
-### jubarte 0.11.0 → 0.12.0
+### wordcraft → wordcraft-0.7.0
 
-Failure transitions: 400 scored by both, 0 failed in 0.11.0 and scored in 0.12.0, 0 scored in 0.11.0 and failed in 0.12.0, 0 failed in both. On the documents both scored, 0.12.0 minus 0.11.0 pagefair averages 3.69 points (136 improved, 10 regressed by more than 0.5).
+Failure transitions: 400 scored by both, 0 failed in the old version and scored in the new, 0 scored in the old and failed in the new, 0 failed in both. On the documents both scored, new minus old pagefair averages 1.24 points (103 improved, 22 regressed by more than 0.5).
+
+### jubarte-0.11.0 → jubarte-0.12.0
+
+Failure transitions: 400 scored by both, 0 failed in the old version and scored in the new, 0 scored in the old and failed in the new, 0 failed in both. On the documents both scored, new minus old pagefair averages 3.69 points (136 improved, 10 regressed by more than 0.5).
+
+### Conversions whose Word PDF has at most 3 pages (n=253)
+
+Every conversion tool on the same subset, so PyMuPDF Pro (unlicensed: it converts only the first 3 pages) is compared like for like. Pagefair mean, failures as zero.
+
+| Tool | Scored / 253 | Mean pagefair | Median v1 |
+|---|---:|---:|---:|
+| jubarte-0.12.0 | 253 | 85.08 | 86.04 |
+| jubarte-0.11.0 | 253 | 79.54 | 83.47 |
+| wordcraft-0.7.0 | 253 | 61.33 | 58.51 |
+| docxide-pdf-0.18.4 | 253 | 60.42 | 59.00 |
+| libreoffice_convert_rust-0.1.0 | 253 | 60.33 | 58.96 |
+| soffice | 253 | 60.32 | 58.96 |
+| wordcraft | 253 | 60.32 | 58.00 |
+| pymupdf-pro-1.28.2 | 250 | 56.24 | 48.50 |
+| rdocx-0.16.0 | 252 | 55.06 | 48.50 |
+| office2pdf-0.8.1 | 251 | 52.68 | 47.86 |
+| pdfitdown-4.2.0 | 251 | 45.58 | 46.71 |
 
 ### By state
 
-| State | N | wordcraft | jubarte-0.11.0 | jubarte-0.12.0 | soffice |
-|---|---:|---:|---:|---:|---:|
-| tracking_without_comments | 100 | 57.81 | 76.49 | 76.99 | 61.83 |
-| with_comments_clean | 100 | 50.34 | 69.76 | 79.67 | 47.11 |
-| with_comments_tracking | 100 | 49.79 | 73.58 | 77.67 | 42.91 |
-| clean | 100 | 62.78 | 84.95 | 85.22 | 66.93 |
+| State | N | wordcraft | wordcraft-0.7.0 | jubarte-0.11.0 | jubarte-0.12.0 | soffice | office2pdf-0.8.1 | pdfitdown-4.2.0 | rdocx-0.16.0 | docxide-pdf-0.18.4 | libreoffice_convert_rust-0.1.0 | pymupdf-pro-1.28.2 |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| tracking_without_comments | 100 | 57.81 | 59.84 | 76.49 | 76.99 | 61.83 | 42.51 | 34.16 | 44.94 | 50.42 | 61.85 | 57.96 |
+| with_comments_clean | 100 | 50.34 | 50.83 | 69.76 | 79.67 | 47.11 | 44.19 | 41.33 | 46.56 | 56.03 | 47.11 | 50.49 |
+| with_comments_tracking | 100 | 49.79 | 50.73 | 73.58 | 77.67 | 42.91 | 38.03 | 34.52 | 37.37 | 47.13 | 42.91 | 40.81 |
+| clean | 100 | 62.78 | 64.29 | 84.95 | 85.22 | 66.93 | 58.82 | 47.64 | 62.33 | 66.02 | 66.93 | 70.80 |
 
 ## Timing and limits
 
@@ -88,16 +144,30 @@ Per-lane CLI latency over the frozen rows (last attempt per document; a timeout 
 
 | Task | Tool | Docs run | OK | Failed | Timeouts | Median ms | p90 ms | p99 ms | Max ms |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| compare | folio-0.60.0 | 400 | 267 | 133 | 0 | 863.8 | 2,771.7 | 5,334.0 | 19,684.0 |
 | compare | jubarte-0.11.0 | 400 | 400 | 0 | 0 | 51.6 | 409.5 | 2,089.6 | 7,927.8 |
 | compare | jubarte-0.12.0 | 400 | 400 | 0 | 0 | 37.8 | 169.5 | 860.7 | 4,470.3 |
+| compare | stemma-0.6.0 | 400 | 108 | 292 | 0 | 135.6 | 220.2 | 462.0 | 585.1 |
+| compare | superdoc-2.20.0 | 400 | 36 | 364 | 1 | 2,750.5 | 4,960.4 | 8,762.8 | 8,762.8 |
 | compare | wordcraft | 400 | 400 | 0 | 0 | 14.5 | 22.7 | 84.1 | 159.4 |
+| compare | wordcraft-0.7.0 | 400 | 400 | 0 | 0 | 25.4 | 49.4 | 128.4 | 298.9 |
 | compare | docxodus-12.6.5 | 400 | 391 | 9 | 9 | 8,206.8 | 27,580.2 | 53,606.3 | 114,902.6 |
+| compare | docxodus-13.0.0 | 400 | 400 | 0 | 0 | 849.9 | 2,794.6 | 5,914.2 | 14,090.0 |
 | convert | jubarte-0.11.0 | 400 | 400 | 0 | 0 | 27.5 | 108.7 | 293.9 | 432.8 |
 | convert | jubarte-0.12.0 | 400 | 400 | 0 | 0 | 28.3 | 96.9 | 292.1 | 395.3 |
+| convert | libreoffice_convert_rust-0.1.0 | 400 | 398 | 2 | 0 | 1,927.0 | 2,816.7 | 4,258.0 | 13,121.0 |
+| convert | office2pdf-0.8.1 | 400 | 398 | 2 | 0 | 658.2 | 1,266.2 | 2,948.4 | 5,223.0 |
+| convert | pdfitdown-4.2.0 | 400 | 397 | 3 | 0 | 562.6 | 927.7 | 1,529.9 | 2,119.1 |
+| convert | pymupdf-pro-1.28.2 | 253 | 250 | 3 | 0 | 770.5 | 1,362.4 | 2,354.4 | 4,164.5 |
+| convert | rdocx-0.16.0 | 400 | 397 | 3 | 0 | 292.0 | 600.8 | 1,786.7 | 3,038.6 |
 | convert | wordcraft | 400 | 400 | 0 | 0 | 41.2 | 84.6 | 193.6 | 493.2 |
+| convert | wordcraft-0.7.0 | 400 | 400 | 0 | 0 | 68.8 | 144.4 | 329.6 | 874.5 |
+| convert | docxide-pdf-0.18.4 | 400 | 400 | 0 | 0 | 43.6 | 129.6 | 254.9 | 872.6 |
 | convert | soffice | 400 | 398 | 2 | 0 | 1,894.5 | 3,818.2 | 6,104.2 | 6,612.1 |
 
-Why vendor redlines failed (counted as zero): wordcraft: 8 (8 loaded empty in Word); jubarte-0.11.0: 1 (1 crashed Word); jubarte-0.12.0: 5 (3 crashed Word, 1 Word AppleEvent timeout, 1 Word export failed without an error text); docxodus-12.6.5: 31 (22 loaded empty in Word, 9 generation timed out). "Loaded empty" means Word refused the vendor DOCX in both fresh sessions with "Word experienced an error trying to open the file" (for some docxodus files after an "unreadable content" repair prompt, answered No); the alert text is in compare/<tool>/word_pdf*.log. "Crashed Word" means Word quit on it in both sessions.
+Why vendor redlines failed (counted as zero): wordcraft: 8 (8 loaded empty in Word); wordcraft-0.7.0: 8 (8 loaded empty in Word); jubarte-0.11.0: 1 (1 crashed Word); jubarte-0.12.0: 5 (3 crashed Word, 1 Word AppleEvent timeout, 1 Word export failed without an error text); docxodus-12.6.5: 31 (22 loaded empty in Word, 9 generation timed out); docxodus-13.0.0: 21 (19 loaded empty in Word, 1 Word AppleEvent timeout, 1 crashed Word); folio-0.60.0: 143 (133 generation failed, 8 loaded empty in Word, 2 Word export failed without an error text); stemma-0.6.0: 292 (292 generation failed); superdoc-2.20.0: 364 (360 generation failed, 4 generation timed out). "Loaded empty" means Word refused the vendor DOCX in both fresh sessions with "Word experienced an error trying to open the file" (for some docxodus files after an "unreadable content" repair prompt, answered No); the alert text is in compare/<tool>/word_pdf*.log. "Crashed Word" means Word quit on it in both sessions.
+
+Most generation failures are the vendor refusing the pair, in its own words (top three messages, digits as N): folio-0.60.0 (133): 'The revised style/numbering closure cannot be imported: default paragraph formatting cannot be isolated from the base formatting context' ×45, 'The revised style/numbering closure cannot be imported: referenced style Normal differs after materializing its formatting' ×17, 'The revised style/numbering closure cannot be imported: referenced style HeadingN has formatting that cannot be materialized' ×15; stemma-0.6.0 (292): 'package reconciliation cannot switch differing document defaults between native Word terminals' ×106, 'compare refused: the default header binding topology cannot switch through native Word revisions' ×94, 'compare refused: the default footer binding topology cannot switch through native Word revisions' ×33; superdoc-2.20.0 (364): 'diff.apply: tracked header/footer slot or physical topology changes are not supported' ×125, 'diff.apply: tracked shared definition replacement is not supported' ×94, 'diff.apply: comment replay is unsafe — [comment topology cannot be replayed losslessly]' ×35. stemma 0.6.0 fails more pairs than 0.5.0 did on the same 400 (292 against 104), and its failures are explicit refusals (`UnsupportedEdit`), where the 0.5.0 failures were validation and invalid-package errors; 0.5.0 is not a lane here because 0.6.0 is the newest release; folio-cli 0.5.1 `compare -o` calls the same folio-core `generateRedlineDocx` and produced part-for-part identical output on three probe pairs (`folio_cli_probe/`).
 
 The primary conversion command uses `--markup`, matching Word oracle PDFs that display comments and tracked changes. Wordcraft comparison uses word granularity with formatting/case/whitespace differences enabled. Unsupported Wordcraft compare options are documented in its own CLI command catalog.
 

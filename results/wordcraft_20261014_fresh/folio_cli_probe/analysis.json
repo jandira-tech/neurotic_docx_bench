@@ -1,0 +1,134 @@
+[
+ {
+  "id": "049d8405bc",
+  "tool": "word-16.115",
+  "ins": 1469,
+  "del": 2309,
+  "move": 14,
+  "fmt": 423,
+  "accept_vs_next": 0.9991,
+  "reject_vs_base": 0.9998,
+  "bytes": 2645284
+ },
+ {
+  "id": "049d8405bc",
+  "tool": "folio-cli-0.5.1",
+  "ins": 1329,
+  "del": 2057,
+  "move": 0,
+  "fmt": 21,
+  "accept_vs_next": 0.9908,
+  "reject_vs_base": 0.9955,
+  "bytes": 664445
+ },
+ {
+  "id": "049d8405bc",
+  "tool": "folio-core-0.60.0 (rerun)",
+  "ins": 1329,
+  "del": 2057,
+  "move": 0,
+  "fmt": 21,
+  "accept_vs_next": 0.9908,
+  "reject_vs_base": 0.9955,
+  "bytes": 664421
+ },
+ {
+  "id": "049d8405bc",
+  "tool": "folio-core-0.60.0 (bench lane)",
+  "ins": 1329,
+  "del": 2057,
+  "move": 0,
+  "fmt": 21,
+  "accept_vs_next": 0.9908,
+  "reject_vs_base": 0.9955,
+  "bytes": 664419
+ },
+ {
+  "id": "0bc720e5fa",
+  "tool": "word-16.115",
+  "ins": 2179,
+  "del": 2767,
+  "move": 8,
+  "fmt": 139,
+  "accept_vs_next": 0.9995,
+  "reject_vs_base": 0.9996,
+  "bytes": 217464
+ },
+ {
+  "id": "0bc720e5fa",
+  "tool": "folio-cli-0.5.1",
+  "ins": 2111,
+  "del": 2687,
+  "move": 0,
+  "fmt": 54,
+  "accept_vs_next": 0.9997,
+  "reject_vs_base": 0.9999,
+  "bytes": 190772
+ },
+ {
+  "id": "0bc720e5fa",
+  "tool": "folio-core-0.60.0 (rerun)",
+  "ins": 2111,
+  "del": 2687,
+  "move": 0,
+  "fmt": 54,
+  "accept_vs_next": 0.9997,
+  "reject_vs_base": 0.9999,
+  "bytes": 190759
+ },
+ {
+  "id": "0bc720e5fa",
+  "tool": "folio-core-0.60.0 (bench lane)",
+  "ins": 2111,
+  "del": 2687,
+  "move": 0,
+  "fmt": 54,
+  "accept_vs_next": 0.9997,
+  "reject_vs_base": 0.9999,
+  "bytes": 190822
+ },
+ {
+  "id": "e83dabcd41",
+  "tool": "word-16.115",
+  "ins": 329,
+  "del": 542,
+  "move": 0,
+  "fmt": 337,
+  "accept_vs_next": 0.9981,
+  "reject_vs_base": 1.0,
+  "bytes": 41569
+ },
+ {
+  "id": "e83dabcd41",
+  "tool": "folio-cli-0.5.1",
+  "ins": 375,
+  "del": 322,
+  "move": 0,
+  "fmt": 11,
+  "accept_vs_next": 0.9885,
+  "reject_vs_base": 1.0,
+  "bytes": 25067
+ },
+ {
+  "id": "e83dabcd41",
+  "tool": "folio-core-0.60.0 (rerun)",
+  "ins": 375,
+  "del": 322,
+  "move": 0,
+  "fmt": 11,
+  "accept_vs_next": 0.9885,
+  "reject_vs_base": 1.0,
+  "bytes": 25092
+ },
+ {
+  "id": "e83dabcd41",
+  "tool": "folio-core-0.60.0 (bench lane)",
+  "ins": 375,
+  "del": 322,
+  "move": 0,
+  "fmt": 11,
+  "accept_vs_next": 0.9885,
+  "reject_vs_base": 1.0,
+  "bytes": 25085
+ }
+]
