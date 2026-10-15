@@ -299,7 +299,8 @@ process. `WordRenderer.to_pdfs()` (`src/neurotic_docx_bench/render/word.py`) cal
 **once per file**, so 232 DOCX files = 232 prompts. Never use it for a full batch.
 
 **Which driver (2026-10-14):** `scripts/word_pdf.py` is the one to run, and `scripts/word_redline.py`
-imports its machinery. Its watchdog reads every Word alert's buttons *and text* in one osascript
+imports its machinery (and `scripts/word_ab.py` A/Bs it; see the Gotchas for the recovery policy,
+`_byword` names, `manifest.jsonl`, the 80/35-character trims and the one-driver rule). Its watchdog reads every Word alert's buttons *and text* in one osascript
 per poll, recognises the repair prompt from the text (or its Yes/No pair), and answers it with a
 second script that brings Word forward, presses No, waits for the "Word experienced an error
 trying to open the file" OK, presses it and hands focus back. Every alert Word shows is logged
@@ -402,6 +403,116 @@ the latest line to the baseline.
   broken file ran out the 240 s timeout and spent a pass. Every AppleScript term must sit inside a
   `tell application "System Events"` block, handlers included, and `st` is a reserved word; compile
   a new script with `osacompile` before trusting it.
+- **A declined repair prompt is the file's fault, not Word's** (2026-10-14, later the same day). The
+  watchdog appends `[declined]<tab><staged file>` to the batch log when it answers the prompt; the
+  batch script reads that back when the open comes up empty and logs a final `[fail]` instead of
+  `[retry]`, so a declined file no longer ends the pass, costs a Word restart, or gets a second try.
+  Empty loads *without* a decline still count toward the three-in-a-row poison rule. `--crash-limit`
+  (default 2) is how many passes a file that crashes Word gets; pass 1 for a corpus you already know
+  crashes it. Since the afternoon of 2026-10-14 a pass costs a crash and a close-all, not a restart. Measured: 3 broken + 2 good files went from 3 m 41 s and
+  one restart to 18 s and none.
+- **The export scripts find the opened document by exclusion, like the compare script**, never
+  `document 1`. Seen live 2026-10-14: a document that survived `close every document saving no`
+  (a base left open by an aborted `word_redline.py --do-not-close` run) was saved as a broken file's
+  PDF once that file's own open produced nothing. Now that case is `[fail] open produced 0 new
+  documents; refusing to guess`. The corollary: **start a batch on a Word with zero documents open.**
+  `preflight` logs `open_documents=N started_clean=False` and proceeds (the default closes them),
+  but a document Word will not close, or one restored from AutoRecovery after a crash, poisons every
+  later open by name collision. Since the afternoon of 2026-10-14 the driver closes everything
+  itself and restarts a Word that returns nothing (next bullets); quitting Word by hand is no longer
+  a precondition.
+- **Recovery is close-all first, and nothing is "ours" or "theirs"** (2026-10-14, afternoon). When a
+  pass ends on `Connection is invalid` or Word stops answering, `WordSession.recycle` tells the
+  running Word `close every document saving no` and carries on with the same Word the moment it
+  answers (measured: 0.2 to 1.2 s). Only when that close-all returns an error, or Word stays silent
+  for `answer_grace` seconds after it, does it escalate: `quit saving no`, then `pkill -x`, then
+  `pkill -9`, then a background relaunch; the log says which and why ("because unresponsive for
+  15 s after the close-all"). Whoever launched Word and whatever it held at startup makes no
+  difference under the default policy; `--do-not-close` is the one mode that closes by name, and
+  it refuses to restart a Word holding documents. Word open with no document, or with a blank
+  `Document1`, is normal and never a reason to refuse or restart. A crashed Word relaunches itself
+  within seconds; the driver finds it running and goes straight to the close-all. The one case that
+  restarts without a close-all: a pass that ended because Word **answered and returned nothing**
+  three times in a row (`open produced 0 new documents`, `loaded empty`, "doesn't understand").
+  A close-all on an empty Word succeeds and fixes nothing, so the driver brings Word forward once
+  to look for a modal System Events cannot see from the background, then quits and relaunches it
+  (`recycle(restart=True)`, logged "because Word returned nothing for N document(s) in a row").
+  `preflight` runs the close-all as a health check and recycles a Word that errors on it.
+- **Every command the driver runs is in the log, and its result is the next line**: `running:
+  osascript -e '…'` / `pkill -x 'Microsoft Word'` / `open -g -a …`, then `returned rc=0 in 0.2 s,
+  no value came back (AppleScript 'missing value')` (that is what osascript prints when a `close`
+  has nothing to return; it is not an error), `got: …`, or `error: …`. `preflight` logs
+  `word_pid=`; a pid that changes between runs means something else restarted Word. The on-screen
+  log prints these lines verbatim and in colour (`make_console_sink`): the previous sink let rich
+  read `[word]`, `[batch]`, `[ok]` as markup and `:recycle:` as an emoji, so the screen said
+  `recovery 1:` while the file log said `[word] recovery 1:`.
+- **One driver at a time, and that includes frozen copies.** `WordLock` (an flock on
+  `~/Library/Containers/com.microsoft.Word/Data/word_driver.lock`) serialises `word_pdf.py` and
+  `word_redline.py`; a second driver waits `--lock-wait` seconds and then reports `WordBusy`. The
+  copies under `results/*/drivers_<sha>/` predate the lock and take it from nobody: on 2026-10-14
+  from 22:21 UTC one of them (`drivers_ee49054d/word_pdf.py`, rendering docxodus 13.0.0 for
+  `finish_new.py`) ran beside an A/B batch. Its pending repair prompt, invisible to System Events
+  while Word sat in the background, made every `open` of the other driver return nothing: 70
+  documents "failed" in 5 s, twice, and Word's pid changed under the other run. A pipeline that
+  needs Word must call `scripts/word_pdf.py` (or import it), never a frozen copy, and never while
+  another batch is running.
+- **Everything Word writes is named `<stem>_byword.<ext>`** (`by_tool`; `_bysoffice`,
+  `_bydocxide`, `_bywordcraft`, `_byjubarte` for the others), and **every run appends
+  `manifest.jsonl`** in the output folder: one JSON line per file produced (`original_filename`,
+  `path_origin`, `converted_filename`, `path_out`, `status` ok|failed|skipped|renamed, `kind`
+  pdf|accept_all|reject_all|redline|rename, `tool`, `error`, `seconds`, `run_at`; redline lines add
+  `revision_filename`, `path_revision`, `revisions`, `unmatched`). A failure is a line with empty
+  `converted_filename`/`path_out`. Outputs that exist under the pre-suffix spelling (`<stem>.pdf`)
+  are skipped, not redone, and the manifest records the file that was found
+  (`existing_output`). Consumers read `neurotic_docx_bench.word_outputs.find_output` (manifest
+  first, then `_byword`, then the old name).
+- **Input file names are trimmed on disk before Word sees them**: over 80 characters for
+  `word_pdf.py`, over 35 for `word_redline.py` (a redline is named after both sides, so
+  `<a>__vs__<b>_byword.docx` stays under 80). `trim_name` keeps the extension and appends 8 hex of
+  sha1(original) so two long names never collide; the rename is logged and recorded in the manifest
+  as `status: renamed`. A long-named docx that was already rendered under its long name is rendered
+  again under the trimmed one (the 2026-10-14 corpus run redid 332 of 1329 for this reason, once).
+- **A stall report is dropped when the item finished while the probes ran.** The System Events
+  probes take up to 10 s each while Word is busy exporting; by the time they returned on
+  2026-10-14 the "stuck" item and 29 more were done. `_Progress._report` re-reads the batch log
+  after probing and logs one line (`item 1/1329 finished while I was looking (30 done now …);
+  nothing is stuck, report dropped`) instead of a stale diagnosis. A nameless alert button is logged
+  as exactly that (`shows a button with no name (AppleScript 'missing value')`), never skipped.
+- **Redlining moves every pair that shares a file with a crashed pair to the back** of the next
+  pass (`[defer]`), not only the crashed pair, so one broken document does not re-crash Word once
+  per pair it appears in.
+- **The next batch with a bunch of Word-crashing fixtures is an A/B, not a rerun.** Stop, take 20
+  of them, and run `scripts/word_ab.py` (`stage`, `run --set broken`, `report`): it replays the same
+  20 under the driver variants it defines (every one pinned to the pre-A/B driver except for the
+  knob it tests; `current` is the driver as it ships) and times each on detect / recover / resume
+  per crash plus wall time and lost outputs. Pick the fastest variant that loses no more documents
+  than any other, then run it against `baseline` on the 50 random good fixtures (`--set good`,
+  `mixed` for all 70) before making it the default. `report --drop STARTED_AT=reason` leaves a run
+  out on the record. Results: `out/ab/results.jsonl`, `out/ab/AB_REPORT.md`.
+- **What the 2026-10-14 A/B found** (20 corpus documents that crash Word, 18 variants, two
+  `baseline` controls at 346 s and 382 s): recovery is not the cost. Close-all-first recovers in
+  0.4 to 0.7 s and the next pass starts 0.05 s later; `quit_first` took 2.8 s per crash. The cost
+  is detection: Microsoft Error Reporting shows up a median 4 to 5 s before the batch osascript
+  gets `Connection is invalid`. So the watchdog now treats the reporter as the crash signal
+  (`--crash-signal`, default on): on seeing it, it ends that pass's osascript (found by its
+  manifest path, never a blanket `pkill osascript`) and marks the item Word was on `[retry]`
+  (`merp_kill`: 251 s, detect median 2.4 s). A true crasher crashed Word again on every retry (of
+  21 in the 14:13 corpus run, 20 twice and the last failed anyway), so `--crash-limit 1` is right
+  for a corpus you know crashes Word (`merp_kill_crash1`: **111 s** against 382 s on the 20).
+  The default stays 2, because the retry is what rescues a document the signal attributed wrongly
+  or a Word that was returning nothing: before the signal's two races were fixed (the script's own
+  `[retry]` already written, so the "first item without a line" was the next, good, document; and
+  the reporter of the previous crash surfacing after the next pass began, now detected by its
+  process age), `merp_kill_crash1` on the mixed 70 lost 3 good documents more than the control
+  (45 ok against 48, 241 s against 336 s). On the 50 good fixtures it rendered all 50 in 57 s
+  against 65 s. The mixed-set number for the fixed signal with crash limit 2 is still to be
+  measured when Word is free (`word_ab.py run --set mixed --variant current`). Dead ends, measured:
+  `defaults write com.microsoft.errorreporting SendReportAutomatically/QuitAfterGeneratingReport`
+  (keys from the 16.115 binary) do not suppress the reporter dialog, 35 of 39 crashes still showed
+  it; `open … repair false`, read-only open, 1 s polling, 5 s grace, 0.25 s watchdog poll and
+  60 s AppleEvent timeout changed nothing beyond the noise band (267 to 463 s for 39 crashes);
+  serial mode (one osascript per document) was the slowest at 488 s. The control's own two
+  good-document losses on the mixed set were the intermittent `-1708 save as` error.
 - **soffice render** requires exit 0 **and** the output file, and deletes a stale PDF before
   a forced re-render (parity with the original shell script).
 
