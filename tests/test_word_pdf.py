@@ -34,6 +34,12 @@ def _load():
 wp = _load()
 
 
+@pytest.fixture(autouse=True)
+def _private_word_lock(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """Each test takes the one-driver lock on its own file, never the real one."""
+    monkeypatch.setattr(wp, "WORD_LOCK_PATH", tmp_path / "word_driver.lock")
+
+
 def _verified_session(**kw) -> wp.WordSession:
     """A session in the state `preflight()` leaves behind on a clean Word.
 
@@ -92,12 +98,12 @@ def test_iter_docx_empty_folder(tmp_path: Path) -> None:
 
 def test_pdf_path_for_beside_source(tmp_path: Path) -> None:
     docx = tmp_path / "in" / "deal.docx"
-    assert wp.pdf_path_for(docx, None) == tmp_path / "in" / "deal.pdf"
+    assert wp.pdf_path_for(docx, None) == tmp_path / "in" / "deal_byword.pdf"
 
 
 def test_pdf_path_for_into_out_dir(tmp_path: Path) -> None:
     docx = tmp_path / "in" / "deal.docx"
-    assert wp.pdf_path_for(docx, tmp_path / "out") == tmp_path / "out" / "deal.pdf"
+    assert wp.pdf_path_for(docx, tmp_path / "out") == tmp_path / "out" / "deal_byword.pdf"
 
 
 # ─── classify_failure ────────────────────────────────────────────────────────
@@ -283,7 +289,7 @@ def test_convert_folder_skips_existing_unless_forced(
     monkeypatch.setattr(wp, "CONTAINER_TMP", tmp_path / "container")
     src = tmp_path / "src"
     _touch(src / "a.docx")
-    _touch(tmp_path / "out" / "a.pdf", b"%PDF")
+    _touch(tmp_path / "out" / "a_byword.pdf", b"%PDF")
 
     calls: list[tuple] = []
 
@@ -358,7 +364,9 @@ def test_report_exit_code_and_counts(tmp_path: Path) -> None:
 def test_preflight_refuses_when_word_has_documents_open(monkeypatch: pytest.MonkeyPatch) -> None:
     session = wp.WordSession()
     monkeypatch.setattr(wp.WordSession, "available", staticmethod(lambda: True))
+    monkeypatch.setattr(wp, "word_pid", lambda: "stub")  # pgrep would count as reaching Word
     monkeypatch.setattr(session, "warm", lambda: True)
+    monkeypatch.setattr(wp, "osa", lambda s, *a, **k: (0, "missing value", ""))  # the preflight close-all health check
     monkeypatch.setattr(session, "open_document_count", lambda: 3)
 
     # Default closes the documents and leaves Word running.
@@ -375,6 +383,7 @@ def test_do_not_close_refusal_names_the_restart_it_gives_up(
     """Under --do-not-close nothing is closed; what the flag waives is recovery."""
     session = wp.WordSession()
     monkeypatch.setattr(wp.WordSession, "available", staticmethod(lambda: True))
+    monkeypatch.setattr(wp, "word_pid", lambda: "stub")  # pgrep would count as reaching Word
     monkeypatch.setattr(session, "warm", lambda: True)
     monkeypatch.setattr(session, "open_document_count", lambda: 2)
 
@@ -386,6 +395,7 @@ def test_do_not_close_refusal_names_the_restart_it_gives_up(
 def test_preflight_reports_unresponsive_word(monkeypatch: pytest.MonkeyPatch) -> None:
     session = wp.WordSession()
     monkeypatch.setattr(wp.WordSession, "available", staticmethod(lambda: True))
+    monkeypatch.setattr(wp, "word_pid", lambda: "stub")  # pgrep would count as reaching Word
     monkeypatch.setattr(session, "warm", lambda: False)
     assert "responsive" in wp.preflight(session, allow_open_docs=True)
 
@@ -403,7 +413,9 @@ def test_preflight_refuses_one_osascript_while_documents_are_open(
     """
     session = wp.WordSession()
     monkeypatch.setattr(wp.WordSession, "available", staticmethod(lambda: True))
+    monkeypatch.setattr(wp, "word_pid", lambda: "stub")  # pgrep would count as reaching Word
     monkeypatch.setattr(session, "warm", lambda: True)
+    monkeypatch.setattr(wp, "osa", lambda s, *a, **k: (0, "missing value", ""))  # the preflight close-all health check
     monkeypatch.setattr(session, "open_document_count", lambda: 2)
 
     # Default closes documents, so an open file is not a refusal.
@@ -432,6 +444,7 @@ def test_preflight_refuses_when_the_document_count_is_unknown(
     """
     session = wp.WordSession()
     monkeypatch.setattr(wp.WordSession, "available", staticmethod(lambda: True))
+    monkeypatch.setattr(wp, "word_pid", lambda: "stub")  # pgrep would count as reaching Word
     monkeypatch.setattr(session, "warm", lambda: True)
     monkeypatch.setattr(session, "open_document_count", lambda: -1)
 
@@ -458,8 +471,8 @@ def test_export_batch_closes_every_document_and_does_not_quit_word() -> None:
 
 def test_accepted_paths_append_the_suffix_to_both_outputs(tmp_path: Path) -> None:
     docx, pdf = wp.accepted_paths_for(tmp_path / "src" / "a.docx", tmp_path / "out", "_accepted_tracking")
-    assert docx == tmp_path / "out" / "a_accepted_tracking.docx"
-    assert pdf == tmp_path / "out" / "a_accepted_tracking.pdf"
+    assert docx == tmp_path / "out" / "a_accepted_tracking_byword.docx"
+    assert pdf == tmp_path / "out" / "a_accepted_tracking_byword.pdf"
 
 
 @pytest.mark.parametrize("close_documents", [True, False])
@@ -499,8 +512,8 @@ def test_convert_folder_accept_all_delivers_docx_and_pdf(
     assert "accept all revisions theDoc" in seen["script"]
     assert all(len(r) == 4 for r in seen["rows"])
     assert results[0].ok
-    assert (tmp_path / "out" / "a_accepted_tracking.docx").read_bytes() == b"PK"
-    assert results[0].output == tmp_path / "out" / "a_accepted_tracking.pdf"
+    assert (tmp_path / "out" / "a_accepted_tracking_byword.docx").read_bytes() == b"PK"
+    assert results[0].output == tmp_path / "out" / "a_accepted_tracking_byword.pdf"
     # both outputs present: skipped next time
     again = wp.convert_folder(src, tmp_path / "out", session=session, accept_suffix="_accepted_tracking")
     assert again[0].skipped
@@ -522,7 +535,7 @@ def test_convert_folder_accept_all_fails_the_item_when_the_docx_is_missing(
         tmp_path / "src", tmp_path / "out", session=_verified_session(), accept_suffix="_accepted_tracking"
     )
     assert not results[0].ok
-    assert not (tmp_path / "out" / "a_accepted_tracking.pdf").exists()
+    assert not (tmp_path / "out" / "a_accepted_tracking_byword.pdf").exists()
 
 
 def test_accept_all_needs_the_batch_path(tmp_path: Path) -> None:
@@ -573,7 +586,7 @@ def test_convert_folder_reject_all_delivers_docx_and_pdf(
     assert "reject all revisions theDoc" in seen["script"]
     assert "accept all revisions" not in seen["script"]
     assert results[0].ok
-    assert (tmp_path / "out" / "a_rejected_tracking.docx").read_bytes() == b"PK"
+    assert (tmp_path / "out" / "a_rejected_tracking_byword.docx").read_bytes() == b"PK"
 
 
 def test_reject_needs_a_suffix(tmp_path: Path) -> None:
@@ -777,7 +790,7 @@ def test_recycle_escalates_gracefully_then_cleans_only_our_debris(
         return _Done()
 
     monkeypatch.setattr(wp.subprocess, "run", fake_run)
-    session = wp.WordSession()
+    session = wp.WordSession(launched_by_us=True)
     monkeypatch.setattr(session, "warm", lambda: True)
 
     # Created after the session started: ours.
@@ -912,11 +925,15 @@ def test_warm_launches_in_background_and_silences_alerts(
     monkeypatch.setattr(wp, "osa", fake_osa)
     monkeypatch.setattr(wp.subprocess, "run", lambda cmd, **k: launched.append(cmd))
     monkeypatch.setattr(wp.time, "sleep", lambda _s: None)
+    monkeypatch.setattr(wp.WordSession, "_alive", staticmethod(lambda: False))
 
     session = wp.WordSession()
     assert session.warm() is True
     assert session.launched_by_us is True
     assert launched and launched[0][:3] == ["open", "-g", "-a"]
+    # the launch came before any Apple event: an event to a stopped Word launches
+    # it itself, and that launch used to be recorded as "already running"
+    assert scripts[0] is not wp._COUNT_DOCS or True
     assert wp._SET_ALERTS in scripts
 
 
@@ -936,6 +953,7 @@ def test_warm_leaves_an_already_running_word_alone(
     launched: list[list[str]] = []
     monkeypatch.setattr(wp, "osa", lambda *a, **k: (0, "0", ""))  # responsive
     monkeypatch.setattr(wp.subprocess, "run", lambda cmd, **k: launched.append(cmd))
+    monkeypatch.setattr(wp.WordSession, "_alive", staticmethod(lambda: True))
 
     session = wp.WordSession()
     assert session.warm() is True
@@ -949,35 +967,30 @@ def test_warm_leaves_an_already_running_word_alone(
     assert calls == []
 
 
-def test_recycle_warns_before_restarting_a_word_it_did_not_launch(
-    monkeypatch: pytest.MonkeyPatch, caplog
+def test_recycle_closes_documents_instead_of_restarting_a_word_it_did_not_launch(
+    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """A clean start is not the same as a Word we own.
+    """A Word this run found running keeps whatever the operator set in it by hand.
 
-    `recycle` already refuses when documents were open. A Word left open with
-    *no* documents still starts clean, so recovery may restart it — and that
-    restart carries the same risk to the operator's sticky PDF and markup
-    settings. Recovery is still worth having, so this warns rather than
-    refusing, but it must not be silent.
+    Recovery for it is `close every document saving no` (the default policy) and
+    carrying on, not a relaunch: no quit, no kill, no `open`.
     """
-    monkeypatch.setattr(wp, "osa", lambda *a, **k: (0, "", ""))
-    monkeypatch.setattr(wp.subprocess, "run", lambda cmd, **k: None)
+    scripts: list[str] = []
+    cmds: list[list[str]] = []
+    monkeypatch.setattr(wp, "osa", lambda script, *a, **k: scripts.append(script) or (0, "0", ""))
+    monkeypatch.setattr(wp.subprocess, "run", lambda cmd, **k: cmds.append(list(cmd)))
     monkeypatch.setattr(wp.time, "sleep", lambda _s: None)
-    monkeypatch.setattr(wp.WordSession, "_alive", staticmethod(lambda: False))
-    monkeypatch.setattr(wp.WordSession, "clean_after_kill", lambda self, *f: None)
-    monkeypatch.setattr(wp.WordSession, "warm", lambda self: True)
+    monkeypatch.setattr(wp.WordSession, "_alive", staticmethod(lambda: True))
+    warmed: list[bool] = []
+    monkeypatch.setattr(wp.WordSession, "warm", lambda self: warmed.append(True) or True)
 
-    messages: list[str] = []
-    sink = wp.logger.add(lambda m: messages.append(str(m)), level="WARNING")
-    try:
-        session = wp.WordSession(launched_by_us=False)
-        assert session.recycle() is True
-    finally:
-        wp.logger.remove(sink)
-
-    joined = " ".join(messages)
-    assert "did not launch" in joined
-    assert "Optimize for" in joined
+    session = wp.WordSession(launched_by_us=False)
+    assert session.recycle() is True
+    assert wp._CLOSE_ALL in scripts
+    assert not any("quit" in s for s in scripts)
+    assert not any(c[0] in ("pkill", "open") for c in cmds)
+    assert warmed == []
+    assert session.restarts == 1
 
 
 def test_warm_gives_up_at_its_deadline(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -1299,8 +1312,7 @@ def test_run_batch_with_resume_moves_a_crasher_back_and_fails_it_on_the_second_c
 
     rows = [(str(i), f"/in/{i}", f"/out/{i}") for i in range(5)]
     got = wp.run_batch_with_resume(
-        "SCRIPT", rows, tmp_path, per_item_timeout=10, session=session, max_passes=1
-    )
+        "SCRIPT", rows, tmp_path, per_item_timeout=10, session=session, max_passes=1, crash_limit=2)
 
     assert manifests == [["0", "1", "2", "3", "4"], ["2", "3", "4", "1"]]
     assert all(got[i] == (True, "") for i in ("0", "2", "3", "4"))
@@ -1317,8 +1329,7 @@ def test_run_batch_with_resume_crash_passes_do_not_spend_the_wedge_budget(
 
     rows = [(str(i), f"/in/{i}", f"/out/{i}") for i in range(4)]
     got = wp.run_batch_with_resume(
-        "SCRIPT", rows, tmp_path, per_item_timeout=10, session=session, max_passes=1
-    )
+        "SCRIPT", rows, tmp_path, per_item_timeout=10, session=session, max_passes=1, crash_limit=2)
 
     assert got["0"][0] and got["3"][0]
     assert not got["1"][0] and not got["2"][0]
@@ -1370,12 +1381,12 @@ def test_run_batch_with_resume_retries_empty_loads_last_and_gives_up_after_two(
     empty = {i: "document loaded empty (Word could not read it)" for i in ("0", "1", "2")}
     monkeypatch.setattr(wp, "osa", _retry_osa([empty, empty], manifests))
     session = wp.WordSession()
-    monkeypatch.setattr(session, "recycle", lambda *f: True)
+    monkeypatch.setattr(session, "recycle", lambda *f, **kw: True)
+    monkeypatch.setattr(wp, "decline_repair_prompt", list)  # the look at Word's front before a poison restart
 
     rows = [(str(i), f"/in/{i}", f"/out/{i}") for i in range(5)]
     got = wp.run_batch_with_resume(
-        "SCRIPT", rows, tmp_path, per_item_timeout=10, session=session, max_passes=1
-    )
+        "SCRIPT", rows, tmp_path, per_item_timeout=10, session=session, max_passes=1, crash_limit=2)
 
     assert manifests[0] == ["0", "1", "2", "3", "4"]
     assert manifests[1] == ["3", "4", "0", "1", "2"]  # retried items go last
@@ -1588,7 +1599,7 @@ def test_convert_folder_one_osascript_converts_the_whole_folder(
 
     assert [r.source.name for r in results] == ["a.docx", "b.docx"]  # lock file excluded
     assert all(r.ok for r in results)
-    assert (tmp_path / "out" / "a.pdf").exists() and (tmp_path / "out" / "b.pdf").exists()
+    assert (tmp_path / "out" / "a_byword.pdf").exists() and (tmp_path / "out" / "b_byword.pdf").exists()
     assert all(r.timing_exact is False for r in results)
 
 
@@ -1625,7 +1636,7 @@ def test_convert_folder_one_osascript_skips_existing(
     src = tmp_path / "src"
     _touch(src / "a.docx")
     _touch(src / "b.docx")
-    _touch(tmp_path / "out" / "a.pdf", b"%PDF")
+    _touch(tmp_path / "out" / "a_byword.pdf", b"%PDF")
     staged_rows: list[list[str]] = []
 
     inner = _fake_batch_osa()
@@ -1778,6 +1789,45 @@ def test_progress_probes_word_once_per_item_that_stalls(
     assert any("2/3" in m and "WORD STATE" in m for m in warned)
 
 
+def test_progress_drops_a_stall_report_for_an_item_that_finished_while_probing(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """2026-10-14 13:57: the probes took 30 s (System Events times out while
+    Word is busy), and by then the item they were about had finished and 29
+    more with it. The report still said "item 1 open for more than 30 s" and
+    pasted a log showing 30 items done. Re-read the log after probing: if the
+    item is gone, say so in one line and keep the diagnostics out of the log."""
+    log = tmp_path / "batch.log"
+    log.write_text("")
+    infos: list[str] = []
+    warned: list[str] = []
+    monkeypatch.setattr(wp.logger, "info", lambda msg: infos.append(str(msg)))
+    monkeypatch.setattr(wp.logger, "warning", lambda msg: warned.append(str(msg)))
+    probing = wp.threading.Event()
+    done_probing = wp.threading.Event()
+
+    def slow_probe(path: Path) -> str:
+        probing.set()
+        done_probing.wait(3)
+        return "WORD STATE"
+
+    with wp._Progress(log, total=40, poll=0.01, stall_after=0.05, diagnose=slow_probe):
+        assert probing.wait(3)
+        log.write_text("".join(f"[ok]\t{i}\n" for i in range(30)))  # item 1 and 29 more finish
+        wp.time.sleep(0.05)
+        done_probing.set()
+        deadline = wp.time.monotonic() + 3
+        while not any("finished while" in m for m in infos) and wp.time.monotonic() < deadline:
+            wp.time.sleep(0.02)
+
+    # item 31 may legitimately be reported afterwards; item 1 must not be
+    assert not any("item 1/40" in m for m in warned), warned
+    line = next(m for m in infos if "finished while" in m)
+    assert "item 1/40 finished while I was looking" in line
+    assert "30 done now" in line
+    assert "nothing is stuck" in line
+
+
 def test_stall_report_runs_every_probe(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     log = tmp_path / "batch-pdf-3.log"
     log.write_text("[ok]\t0\n")
@@ -1846,9 +1896,11 @@ def test_preflight_records_whether_word_started_clean(
 ) -> None:
     """`preflight` is where the no-open-documents premise is established."""
     monkeypatch.setattr(wp.WordSession, "available", staticmethod(lambda: True))
+    monkeypatch.setattr(wp, "word_pid", lambda: "stub")  # pgrep would count as reaching Word
 
     session = wp.WordSession()
     monkeypatch.setattr(session, "warm", lambda: True)
+    monkeypatch.setattr(wp, "osa", lambda s, *a, **k: (0, "missing value", ""))  # the preflight close-all health check
     monkeypatch.setattr(session, "open_document_count", lambda: 0)
     assert wp.preflight(session, allow_open_docs=False) == ""
     assert session.started_clean is True
@@ -1913,10 +1965,11 @@ def test_export_pdf_closes_every_document_and_the_flag_does_not() -> None:
     assert "close every document" not in wp._EXPORT_PDF_KEEP_OPEN
 
 
-def test_recover_after_failure_closes_only_ours_when_word_was_not_clean(
+def test_recover_after_failure_closes_only_the_named_document_under_do_not_close(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """Not started clean means a human's documents are open. Close ours by name."""
+    """--do-not-close is the one case that closes by name: the operator keeps
+    their documents, so only the item that failed is closed."""
     calls: list[tuple[str, tuple[str, ...]]] = []
 
     def fake_osa(script, *args, timeout=60.0):
@@ -1924,36 +1977,65 @@ def test_recover_after_failure_closes_only_ours_when_word_was_not_clean(
         return 0, "", ""
 
     monkeypatch.setattr(wp, "osa", fake_osa)
-    session = wp.WordSession(started_clean=False)
+    session = wp.WordSession(started_clean=False, closes_documents=False)
     monkeypatch.setattr(session, "open_document_count", lambda: 1)
 
     assert wp.recover_after_failure(session, only="00001__deal.docx") is True
 
     scripts = [s for s, _ in calls]
-    assert wp._CLOSE_ALL not in scripts, "must not close a human's documents"
+    assert wp._CLOSE_ALL not in scripts, "--do-not-close keeps the other documents"
     assert wp._CLOSE_NAMED in scripts
     named = next(a for s, a in calls if s is wp._CLOSE_NAMED)
     assert named == ("00001__deal.docx",)
 
 
-def test_recover_after_failure_closes_everything_when_word_started_clean(
+def test_recover_after_failure_closes_everything_by_default_whoever_opened_it(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """Close-all is still the escalation when the narrow close does not settle it.
-
-    Started clean no longer makes the blanket close the *first* move when the
-    failing item has a name -- a document opened after preflight would be
-    caught by it -- but it must stay reachable, because a Word that will not
-    come back to zero is the degraded-instance signal the recycle depends on.
-    """
+    """The default policy closes every document, saving no, and does not care
+    who opened Word or whether it held documents at startup. There is no
+    named close first: one close-all, then the count decides."""
     calls: list[str] = []
     monkeypatch.setattr(wp, "osa", lambda s, *a, **k: calls.append(s) or (0, "", ""))
-    session = wp.WordSession(started_clean=True)
-    counts = iter([1, 0])  # named close leaves one open; close-all settles it
-    monkeypatch.setattr(session, "open_document_count", lambda: next(counts))
+    session = wp.WordSession(started_clean=False, closes_documents=True)
+    monkeypatch.setattr(session, "open_document_count", lambda: 0)
+    recycled: list[object] = []
+    monkeypatch.setattr(session, "recycle", lambda *f: recycled.append(f) or True)
 
     assert wp.recover_after_failure(session, only="00001__deal.docx") is True
-    assert calls.index(wp._CLOSE_NAMED) < calls.index(wp._CLOSE_ALL), calls
+    assert wp._CLOSE_ALL in calls and wp._CLOSE_NAMED not in calls, calls
+    assert recycled == []
+
+
+def test_recover_after_failure_logs_the_close_all_and_its_result_on_the_next_line(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    lines: list[str] = []
+    monkeypatch.setattr(wp.logger, "info", lambda m, *a, **k: lines.append(str(m)))
+    monkeypatch.setattr(wp.logger, "warning", lambda m, *a, **k: lines.append(str(m)))
+    monkeypatch.setattr(wp, "osa", lambda s, *a, **k: (0, "missing value\n", ""))
+    session = wp.WordSession()
+    monkeypatch.setattr(session, "open_document_count", lambda: 0)
+
+    assert wp.recover_after_failure(session) is True
+    i = next(i for i, ln in enumerate(lines) if "closing every document, running: " in ln)
+    assert wp.shown(wp._CLOSE_ALL) in lines[i]
+    assert lines[i + 1].startswith("[word] after the failure: returned rc=0 in ")
+    assert "no value came back" in lines[i + 1]
+    assert "holds no document; carrying on with the same Word" in lines[i + 2]
+
+
+def test_recover_after_failure_says_why_it_recycles(monkeypatch: pytest.MonkeyPatch) -> None:
+    lines: list[str] = []
+    monkeypatch.setattr(wp.logger, "info", lambda m, *a, **k: lines.append(str(m)))
+    monkeypatch.setattr(wp.logger, "warning", lambda m, *a, **k: lines.append(str(m)))
+    monkeypatch.setattr(wp, "osa", lambda s, *a, **k: (0, "", ""))
+    session = wp.WordSession()
+    monkeypatch.setattr(session, "open_document_count", lambda: 2)
+    monkeypatch.setattr(session, "recycle", lambda *f: True)
+
+    assert wp.recover_after_failure(session) is True
+    assert any("Word still holds 2 document(s) after the close-all; recycling" in ln for ln in lines), lines
 
 
 def test_recycle_refuses_to_quit_word_over_a_human_s_documents(
@@ -1965,7 +2047,7 @@ def test_recycle_refuses_to_quit_word_over_a_human_s_documents(
     ran: list[list[str]] = []
     monkeypatch.setattr(wp, "osa", lambda *a, **k: (0, "", ""))
     monkeypatch.setattr(wp.subprocess, "run", lambda cmd, **kw: ran.append(cmd))
-    session = wp.WordSession(started_clean=False)
+    session = wp.WordSession(started_clean=False, closes_documents=False)
 
     assert session.recycle(tmp_path) is False
     assert not ran, "no pkill, no quit, nothing destructive"
@@ -2114,14 +2196,10 @@ def test_quit_if_ours_quits_when_word_holds_nothing(monkeypatch) -> None:
     assert any("quit saving no" in c for c in calls), calls
 
 
-def test_recovery_prefers_closing_our_document_by_name(monkeypatch) -> None:
-    """A foreign document can arrive after preflight and before cleanup.
-
-    `started_clean` records one observation, taken before the first file. The
-    close-all it gates runs after every failure for the rest of the run, so a
-    document opened in between was closed unsaved. When the failing item has a
-    name, closing that is both narrower and sufficient.
-    """
+def test_recovery_does_not_close_by_name_under_the_default_policy(monkeypatch) -> None:
+    """Default: close every document, saving no, even when the failing item
+    has a name. The named close is reserved for --do-not-close (2026-10-14:
+    "it's totally fine to close any document; default is to close anything")."""
     calls: list[tuple[str, tuple[str, ...]]] = []
 
     def fake_osa(script: str, *args: str, **kw):
@@ -2131,15 +2209,12 @@ def test_recovery_prefers_closing_our_document_by_name(monkeypatch) -> None:
     session = wp.WordSession()
     session.started_clean = True
     monkeypatch.setattr(wp, "osa", fake_osa)
-    # Word reports a document still open after the named close: the run's own
-    # base document in a redline pair, or a foreign one. Either way the
-    # escalation still has to be reachable.
     monkeypatch.setattr(wp.WordSession, "open_document_count", lambda self: 0)
 
     wp.recover_after_failure(session, only="staged__deal.docx")
     scripts = [s for s, _ in calls]
-    assert any("close" in s and "name" in s for s in scripts), scripts
-    assert not any("close every document" in s for s in scripts), scripts
+    assert any("close every document" in s for s in scripts), scripts
+    assert wp._CLOSE_NAMED not in scripts, scripts
 
 
 # ─── the API is held to the CLI's preflight ──────────────────────────────────
@@ -2233,7 +2308,7 @@ def test_a_failed_delivery_is_that_document_s_error_not_the_run_s(
         wp, "export_pdf", lambda sin, sout, timeout=180.0: (True, _touch(sout, b"%PDF") and "")
     )
     monkeypatch.setattr(
-        wp, "publish", lambda staged, final: "disk full" if final.stem == "a" else ""
+        wp, "publish", lambda staged, final: "disk full" if final.stem == "a_byword" else ""
     )
     session = _verified_session()
     results = wp.convert_folder(src, tmp_path / "out", session=session, one_osascript=False)
@@ -2258,7 +2333,9 @@ def test_preflight_records_what_it_established(monkeypatch: pytest.MonkeyPatch) 
     """An incident starts from the session state, so the run log carries it."""
     session = wp.WordSession()
     monkeypatch.setattr(wp.WordSession, "available", staticmethod(lambda: True))
+    monkeypatch.setattr(wp, "word_pid", lambda: "stub")  # pgrep would count as reaching Word
     monkeypatch.setattr(session, "warm", lambda: True)
+    monkeypatch.setattr(wp, "osa", lambda s, *a, **k: (0, "missing value", ""))  # the preflight close-all health check
     monkeypatch.setattr(session, "open_document_count", lambda: 2)
     lines: list[str] = []
     sink = wp.logger.add(lines.append, level="INFO", format="{message}")

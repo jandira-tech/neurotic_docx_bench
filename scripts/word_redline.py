@@ -43,6 +43,12 @@ Design decisions carried over from `docs/WORD_DRIVER_AUDIT.md`:
   every later open, with no error (§5.20). In one-osascript mode a timeout, a
   dropped connection or three empty loads in a row stop the batch, and the
   resume recycles before retrying the rows that never finished.
+- **A bad file costs its own pair, not every pair it appears in.** When a pair
+  fails or crashes Word, every other pending pair that shares its base or its
+  revision goes to the back of the queue: within the pass the batch script
+  skips them (`[defer]`, no Word restart), across passes the resume sends them
+  last. With thousands of fixtures to draw from, the run spends its time on
+  pairs that can work, and the sample is the pairs Word could actually compare.
 
 Plumbing, noted because it is visible in the staging directory and is not a
 finding: the two sides of a pair go in under `base__` / `rev__` prefixes. A pair
@@ -96,11 +102,19 @@ from word_pdf import (  # must follow the sys.path guard above
     _focus,
     Stage,
     Watchdogs,
+    WordBusy,
+    WordLock,
     WordSession,
+    append_manifest,
+    by_tool,
     classify_failure,
     console,
+    existing_output,
     export_pdf,
     iter_docx,
+    make_console_sink,
+    manifest_line,
+    manifest_path_for,
     osa,
     positive_seconds,
     preflight,
@@ -110,7 +124,12 @@ from word_pdf import (  # must follow the sys.path guard above
     require_positive_seconds,
     run_batch_with_resume,
     safe_stage_name,
+    trim_long_names,
 )
+
+# Input file names (with extension) longer than this are trimmed on disk before
+# a redline run. 35 keeps `<a>__vs__<b>_byword.docx` at 78 characters.
+REDLINE_NAME_LIMIT = 35
 
 MARKUP_REMINDER = (
     "A redline PDF shows tracked changes the way Word is currently set to show "
@@ -211,7 +230,7 @@ def plan_outputs(
     a: Path, b: Path, out_dir: Path, docx_dir: Path | None, emit: Emit
 ) -> Outputs:
     """Resolve one pair's destinations from the emit mode."""
-    stem = redline_stem(a, b)
+    stem = by_tool(redline_stem(a, b))
     return Outputs(
         docx=((docx_dir or out_dir) / f"{stem}.docx")
         if emit in (Emit.DOCX, Emit.BOTH)
@@ -220,12 +239,35 @@ def plan_outputs(
     )
 
 
+def found_outputs(outputs: Outputs, *, force: bool) -> Outputs | None:
+    """The wanted outputs as they exist on disk, or None when any is missing.
+
+    Each one may exist under its own name or under the spelling before
+    `_byword` (2026-10-14); the returned `Outputs` names the files found, so a
+    skip reports and records what is there, not what a run would write.
+    """
+    if force or not outputs.wanted:
+        return None
+    docx = existing_output(outputs.docx) if outputs.docx is not None else None
+    pdf = existing_output(outputs.pdf) if outputs.pdf is not None else None
+    if (outputs.docx is not None and docx is None) or (outputs.pdf is not None and pdf is None):
+        return None
+    return Outputs(docx=docx, pdf=pdf)
+
+
 def should_skip(outputs: Outputs, *, force: bool) -> bool:
     """True when every wanted output is already on disk and non-empty."""
-    if force:
-        return False
-    wanted = outputs.wanted
-    return bool(wanted) and all(p.exists() and p.stat().st_size > 0 for p in wanted)
+    return found_outputs(outputs, force=force) is not None
+
+
+def pair_key(path: Path) -> str:
+    """The identity of one side of a pair, as the batch manifest carries it.
+
+    The resolved path, so the same file reached through two names is one key and
+    `A/deal.docx` is not `B/deal.docx`. TSV-safe: a tab or newline in a path would
+    split the manifest row.
+    """
+    return str(path.resolve()).replace("\t", " ").replace("\r", " ").replace("\n", " ")
 
 
 def parse_revision_count(raw: str) -> int:
@@ -255,6 +297,34 @@ class PairResult:
     @property
     def label(self) -> str:
         return f"{self.base.name} → {self.revision.name}"
+
+
+def pair_manifest_lines(results: list[PairResult]) -> list[dict[str, object]]:
+    """A `manifest.jsonl` record per file each pair produced (one, empty, for a failure).
+
+    `original_filename` / `path_origin` are the base; the revision rides along as
+    `revision_filename` / `path_revision`.
+    """
+    lines: list[dict[str, object]] = []
+    for r in results:
+        status = "skipped" if r.skipped else "ok" if r.ok else "failed"
+        outputs: list[Path | None] = [p for p in (r.docx, r.pdf) if p is not None] or [None]
+        for out in outputs:
+            lines.append(
+                manifest_line(
+                    r.base,
+                    out,
+                    status=status,
+                    kind="redline",
+                    error=r.error,
+                    seconds=r.seconds,
+                    revision_filename=r.revision.name,
+                    path_revision=str(r.revision),
+                    revisions=r.revisions,
+                    unmatched=r.unmatched,
+                )
+            )
+    return lines
 
 
 # ─── Word: compare ───────────────────────────────────────────────────────────
@@ -380,6 +450,25 @@ on restoreAlerts(priorAlerts)
   end try
 end restoreAlerts
 
+on baseName(p)
+  set od to AppleScript's text item delimiters
+  set AppleScript's text item delimiters to "/"
+  set parts to text items of p
+  set AppleScript's text item delimiters to od
+  return item -1 of parts
+end baseName
+
+-- The watchdog appends "[declined]<tab><file>" to the log when it answers the repair
+-- prompt for a file. An empty load of that base is the file's fault, a final [fail];
+-- an empty load with no such line is Word's poison and still counts toward the streak.
+on wasDeclined(logPath, p)
+  try
+    set logText to read POSIX file logPath as «class utf8»
+    return logText contains ("[declined]" & tab & my baseName(p))
+  end try
+  return false
+end wasDeclined
+
 -- `--do-not-close` only: close the documents that appeared after `seen` was
 -- taken, newest first, and leave everything that was already open alone.
 on closeNew(seen)
@@ -405,18 +494,27 @@ on run argv
   set okCount to 0
   set failCount to 0
   set emptyStreak to 0
+  -- The files (keys) of every pair that failed in this pass. A later pair that
+  -- shares one is skipped with "[defer]" so it runs in the next pass, at the
+  -- back: a bad file costs its own pair, not every pair it appears in.
+  set badKeys to {}
   try
     repeat with r in rows
       set rowText to r as string
       if rowText is not "" then
         set f to my splitTabs(rowText)
-        if (count of f) is 4 then
+        if (count of f) is 6 then
           set itemId to item 1 of f
           set baseP to item 2 of f
           set revP to item 3 of f
           set outP to item 4 of f
+          set keyA to item 5 of f
+          set keyB to item 6 of f
           set revisionCount to -1
           set seenBeforeOpen to missing value
+          if (badKeys contains keyA) or (badKeys contains keyB) then
+            my logLine(logPath, "[defer]" & tab & itemId)
+          else
           try
             with timeout of 900 seconds
               tell application "Microsoft Word"
@@ -475,6 +573,8 @@ on run argv
             set okCount to okCount + 1
             my logLine(logPath, "[ok]" & tab & itemId & tab & revisionCount)
           on error errMsg
+            set end of badKeys to keyA
+            set end of badKeys to keyB
             try
               tell application "Microsoft Word" to close every document saving no
             end try
@@ -488,16 +588,26 @@ on run argv
             else if errMsg contains "Connection is invalid" or errMsg contains "isn't running" or errMsg contains ("isn" & (character id 8217) & "t running") then
               my logLine(logPath, "[retry]" & tab & itemId & tab & errMsg)
               exit repeat
-            else if errMsg contains "loaded empty" then
-              set emptyStreak to emptyStreak + 1
-              my logLine(logPath, "[retry]" & tab & itemId & tab & errMsg)
-              if emptyStreak ≥ 3 then exit repeat
+            else if errMsg contains "loaded empty" or errMsg contains "new documents" or errMsg contains "understand" then
+              -- Word answered and gave nothing (see word_pdf.py): the file's fault only
+              -- when its repair prompt was declined, otherwise Word's state, retried,
+              -- and three in a row end the pass for a recycle.
+              if my wasDeclined(logPath, baseP) then
+                set emptyStreak to 0
+                set failCount to failCount + 1
+                my logLine(logPath, "[fail]" & tab & itemId & tab & "repair prompt declined; Word could not read the base")
+              else
+                set emptyStreak to emptyStreak + 1
+                my logLine(logPath, "[retry]" & tab & itemId & tab & errMsg)
+                if emptyStreak ≥ 3 then exit repeat
+              end if
             else
               set emptyStreak to 0
               set failCount to failCount + 1
               my logLine(logPath, "[fail]" & tab & itemId & tab & errMsg)
             end if
           end try
+          end if
         end if
       end if
     end repeat
@@ -643,6 +753,8 @@ def redline_folders(
     max_passes: int = 3,
     poison_streak: int = 3,
     keep_unmatched: bool = False,
+    crash_limit: int = 2,
+    lock_wait: float = 900.0,
 ) -> list[PairResult]:
     """Redline every pair drawn from two folders. Serial, by necessity.
 
@@ -659,7 +771,17 @@ def redline_folders(
     """
     require_positive_seconds(timeout, "timeout")
     require_positive_seconds(pdf_timeout, "pdf_timeout")
+    if crash_limit < 1:
+        raise ValueError("crash_limit must be at least 1")
     a_docs, b_docs = iter_docx(folder_a), iter_docx(folder_b)
+    # First thing, before Word sees a name: file names over REDLINE_NAME_LIMIT
+    # are trimmed on disk in both folders, and every rename goes into the
+    # manifest. The limit is 35, not word_pdf.py's 80, because a redline is
+    # named after both sides: `<a>__vs__<b>_byword.docx` with two 30-character
+    # stems is 78 characters.
+    manifest = manifest_path_for(out_dir, out_dir)
+    a_docs = trim_long_names(a_docs, manifest, limit=REDLINE_NAME_LIMIT)
+    b_docs = trim_long_names(b_docs, manifest, limit=REDLINE_NAME_LIMIT)
     if cross:
         pairs = cross_pairs(a_docs, b_docs)
     else:
@@ -721,12 +843,20 @@ def redline_folders(
             for a, b in pairs
         ]
 
-    with Stage(prefix="wordredline") as stage:
+    # One Word, one driver: wait for any other word_pdf.py / word_redline.py run.
+    lock = WordLock(label=f"word_redline.py {folder_a} vs {folder_b}", wait=lock_wait)
+    try:
+        lock.__enter__()
+    except WordBusy as busy:
+        logger.error(f"[redline] {busy}; nothing attempted")
+        return [PairResult(base=a, revision=b, error=f"{busy}; not attempted") for a, b in pairs]
+
+    with lock, Stage(prefix="wordredline") as stage:
         keep_token = _keep_unmatched.set(keep_unmatched)
         try:
             run = _redline_batched if one_osascript else _redline_serial
             logger.info(f"[redline] one_osascript={one_osascript} pairs={len(pairs)}")
-            return run(
+            results = run(
                 pairs,
                 out_dir,
                 docx_dir,
@@ -741,7 +871,11 @@ def redline_folders(
                 max_passes=max_passes,
                 poison_streak=poison_streak,
                 close_documents=close_documents,
+                crash_limit=crash_limit,
             )
+            n = append_manifest(manifest, pair_manifest_lines(results))
+            logger.info(f"[manifest] appended {n} line(s) to {manifest}")
+            return results
         finally:
             _keep_unmatched.reset(keep_token)
             if owns_session:
@@ -764,6 +898,7 @@ def _redline_serial(
     max_passes: int = 3,
     poison_streak: int = 3,
     close_documents: bool = True,
+    crash_limit: int = 2,  # part of the shared dispatch signature; batch-only
 ) -> list[PairResult]:
     """One `osascript` per comparison, with the malformed-document path in Python."""
     results: list[PairResult] = []
@@ -771,13 +906,13 @@ def _redline_serial(
     for i, (base, revision) in enumerate(pairs, 1):
         outputs = plan_outputs(base, revision, out_dir, docx_dir, emit)
         label = f"{base.name} → {revision.name}"
-        if should_skip(outputs, force=force):
+        if (found := found_outputs(outputs, force=force)) is not None:
             results.append(
                 PairResult(
                     base=base,
                     revision=revision,
-                    docx=outputs.docx,
-                    pdf=outputs.pdf,
+                    docx=found.docx,
+                    pdf=found.pdf,
                     ok=True,
                     skipped=True,
                 )
@@ -966,6 +1101,7 @@ def _redline_batched(
     max_passes: int = 3,
     poison_streak: int = 3,  # part of the shared dispatch signature; serial-only
     close_documents: bool = True,
+    crash_limit: int = 2,
 ) -> list[PairResult]:
     """Two monolithic AppleScripts: every compare, then every PDF.
 
@@ -983,12 +1119,12 @@ def _redline_batched(
     for base, revision in pairs:
         outputs = plan_outputs(base, revision, out_dir, docx_dir, emit)
         plans[base, revision] = outputs
-        if should_skip(outputs, force=force):
+        if (found := found_outputs(outputs, force=force)) is not None:
             outcomes[base, revision] = PairResult(
                 base=base,
                 revision=revision,
-                docx=outputs.docx,
-                pdf=outputs.pdf,
+                docx=found.docx,
+                pdf=found.pdf,
                 ok=True,
                 skipped=True,
             )
@@ -1000,14 +1136,17 @@ def _redline_batched(
     # ── pass 1: every comparison ────────────────────────────────────────────
     rows: list[tuple[str, ...]] = []
     staged: dict[str, tuple[tuple[Path, Path], Path, Path, Path]] = {}
+    groups: dict[str, frozenset[str]] = {}
     for i, (base, revision) in enumerate(todo):
         item = str(i)
         stem = redline_stem(base, revision)
         staged_base = stage.place_as(base, safe_stage_name(i, f"base__{stem}.docx"))
         staged_rev = stage.place_as(revision, safe_stage_name(i, f"rev__{stem}.docx"))
         staged_docx = stage.outbox / safe_stage_name(i, f"{stem}.docx")
-        rows.append((item, str(staged_base), str(staged_rev), str(staged_docx)))
+        key_a, key_b = pair_key(base), pair_key(revision)
+        rows.append((item, str(staged_base), str(staged_rev), str(staged_docx), key_a, key_b))
         staged[item] = ((base, revision), staged_base, staged_rev, staged_docx)
+        groups[item] = frozenset({key_a, key_b})
 
     logger.info(f"[batch] one osascript for {len(rows)} comparison(s)")
     started = time.monotonic()
@@ -1019,7 +1158,9 @@ def _redline_batched(
         session=session,
         recycle_paths=(stage.inbox, stage.outbox),
         max_passes=max_passes,
+        crash_limit=crash_limit,
         label=" compare",
+        groups=groups,
     )
     per_pair = (time.monotonic() - started) / max(1, len(rows))
 
@@ -1047,6 +1188,7 @@ def _redline_batched(
             session=session,
             recycle_paths=(stage.inbox, stage.outbox),
             max_passes=max_passes,
+            crash_limit=crash_limit,
             label=" pdf",
         )
 
@@ -1258,6 +1400,33 @@ def main(
             "background. Same switch as word_pdf.py's.",
         ),
     ] = True,
+    crash_limit: Annotated[
+        int,
+        typer.Option(
+            "--crash-limit",
+            min=1,
+            help="Passes a pair that crashes Word, or loads empty, gets before it is a final "
+            "failure; each costs a crash and a recovery. 2 (default) keeps one retry for what "
+            "is Word's and not the file's; 1 for a corpus you already know crashes Word.",
+        ),
+    ] = 2,
+    crash_signal: Annotated[
+        bool,
+        typer.Option(
+            "--crash-signal/--no-crash-signal",
+            help="Treat the Microsoft Error Reporting dialog as the crash: mark the item and end "
+            "the pass at once instead of waiting 4 to 5 s for the AppleEvent to fail.",
+        ),
+    ] = True,
+    lock_wait: Annotated[
+        float,
+        typer.Option(
+            "--lock-wait",
+            min=0.0,
+            help="Seconds to wait for another word_pdf.py / word_redline.py that holds "
+            "Word (one Word, one driver). 0 refuses at once and names the holder.",
+        ),
+    ] = 900.0,
 ) -> None:
     """Redline folder A against folder B using Microsoft Word's Compare Documents.
 
@@ -1274,6 +1443,7 @@ def main(
             force=force, timeout=timeout, pdf_timeout=pdf_timeout, one_osascript=one_osascript,
             check_preset=check_preset, allow_open_docs=allow_open_docs, do_not_close=do_not_close,
             keep_unmatched=keep_unmatched, quiet=quiet, log_file=log_file,
+            crash_limit=crash_limit, lock_wait=lock_wait, crash_signal=crash_signal,
         )
     finally:
         _focus.reset(focus_token)
@@ -1298,9 +1468,12 @@ def _main(
     keep_unmatched: bool,
     quiet: bool,
     log_file: Path | None,
+    crash_limit: int = 2,
+    lock_wait: float = 900.0,
+    crash_signal: bool = True,
 ) -> None:
     logger.remove()
-    logger.add(lambda m: console.print(m, end=""), level="ERROR" if quiet else "INFO")
+    logger.add(make_console_sink(), colorize=True, level="ERROR" if quiet else "INFO")
     if log_file:
         logger.add(str(log_file), level="DEBUG", rotation="10 MB")
 
@@ -1333,7 +1506,7 @@ def _main(
         console.print(f"[red]{problem}[/]")
         raise typer.Exit(2)
 
-    with Watchdogs():
+    with Watchdogs(kill_pass_on_crash=crash_signal):
         results = redline_folders(
             folder_a,
             folder_b,
@@ -1349,6 +1522,8 @@ def _main(
             one_osascript=one_osascript,
             close_documents=not do_not_close,
             keep_unmatched=keep_unmatched,
+            crash_limit=crash_limit,
+            lock_wait=lock_wait,
         )
         session.quit_if_ours()
     raise typer.Exit(report_pairs(results, f"redline: {folder_a.name} → {folder_b.name}"))

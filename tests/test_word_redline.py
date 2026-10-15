@@ -37,6 +37,17 @@ def _load(name: str):
 
 wp = _load("word_pdf")
 wr = _load("word_redline")
+
+
+@pytest.fixture(autouse=True)
+def _private_word_lock(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """Each test takes the one-driver lock on its own file, never the real one."""
+    monkeypatch.setattr(wp, "WORD_LOCK_PATH", tmp_path / "word_driver.lock")
+
+
+def _out(row: list[str]) -> str:
+    """A manifest row's output path: field 4 of a 6-field compare row, else the last field."""
+    return row[3] if len(row) == 6 else row[-1]
 # Captured before the autouse fixture below stubs it for placeholder tests.
 _REAL_REJECT_WRONG_PAIR = wr._reject_wrong_pair
 
@@ -172,7 +183,7 @@ def test_plan_outputs_pdf_only_is_the_default_shape(tmp_path: Path) -> None:
         None,
         wr.Emit.PDF,
     )
-    assert out.pdf == tmp_path / "out" / "deal__vs__deal.pdf"
+    assert out.pdf == tmp_path / "out" / "deal__vs__deal_byword.pdf"
     assert out.docx is None
 
 
@@ -184,7 +195,7 @@ def test_plan_outputs_docx_only(tmp_path: Path) -> None:
         None,
         wr.Emit.DOCX,
     )
-    assert out.docx == tmp_path / "out" / "deal__vs__deal.docx"
+    assert out.docx == tmp_path / "out" / "deal__vs__deal_byword.docx"
     assert out.pdf is None
 
 
@@ -196,8 +207,8 @@ def test_plan_outputs_both_can_split_the_destinations(tmp_path: Path) -> None:
         tmp_path / "docx",
         wr.Emit.BOTH,
     )
-    assert out.pdf == tmp_path / "pdf" / "deal__vs__deal.pdf"
-    assert out.docx == tmp_path / "docx" / "deal__vs__deal.docx"
+    assert out.pdf == tmp_path / "pdf" / "deal__vs__deal_byword.pdf"
+    assert out.docx == tmp_path / "docx" / "deal__vs__deal_byword.docx"
 
 
 def test_plan_outputs_wants_docx_internally_for_every_mode(tmp_path: Path) -> None:
@@ -210,8 +221,8 @@ def test_plan_outputs_wants_docx_internally_for_every_mode(tmp_path: Path) -> No
 
 
 def test_should_skip_only_when_every_wanted_output_is_present(tmp_path: Path) -> None:
-    pdf = _touch(tmp_path / "out" / "deal__vs__deal.pdf", b"%PDF")
-    docx = tmp_path / "out" / "deal__vs__deal.docx"
+    pdf = _touch(tmp_path / "out" / "deal__vs__deal_byword.pdf", b"%PDF")
+    docx = tmp_path / "out" / "deal__vs__deal_byword.docx"
 
     assert wr.should_skip(wr.Outputs(docx=None, pdf=pdf), force=False) is True
     assert wr.should_skip(wr.Outputs(docx=docx, pdf=pdf), force=False) is False
@@ -219,8 +230,41 @@ def test_should_skip_only_when_every_wanted_output_is_present(tmp_path: Path) ->
 
 
 def test_should_skip_rejects_a_zero_byte_leftover(tmp_path: Path) -> None:
-    pdf = _touch(tmp_path / "out" / "deal__vs__deal.pdf", b"")
+    pdf = _touch(tmp_path / "out" / "deal__vs__deal_byword.pdf", b"")
     assert wr.should_skip(wr.Outputs(docx=None, pdf=pdf), force=False) is False
+
+
+def test_found_outputs_accepts_the_spelling_before_byword(tmp_path: Path) -> None:
+    """Redlines written before 2026-10-14 are `a__vs__b.pdf`; a run skips
+    them and reports the file it found rather than the name it would write."""
+    pdf = tmp_path / "out" / "deal__vs__deal_byword.pdf"
+    docx = tmp_path / "out" / "deal__vs__deal_byword.docx"
+    old_pdf = _touch(tmp_path / "out" / "deal__vs__deal.pdf", b"%PDF")
+    wanted = wr.Outputs(docx=docx, pdf=pdf)
+
+    assert wr.found_outputs(wanted, force=False) is None, "the docx is missing under both spellings"
+    _touch(docx, b"PK")
+    assert wr.found_outputs(wanted, force=False) == wr.Outputs(docx=docx, pdf=old_pdf)
+    assert wr.should_skip(wanted, force=False) is True
+    assert wr.found_outputs(wanted, force=True) is None
+
+
+def test_redline_skip_records_the_old_pdf_it_found(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(wp, "CONTAINER_TMP", tmp_path / "container")
+    a = _folder(tmp_path / "A", "deal.docx")
+    b = _folder(tmp_path / "B", "deal.docx")
+    out = tmp_path / "out"
+    _touch(out / "deal__vs__deal.pdf", b"%PDF old")
+    monkeypatch.setattr(wp, "osa", lambda *a, **k: pytest.fail("Word must not be asked for anything"))
+    session = _verified_session()
+    monkeypatch.setattr(session, "warm", lambda: True)
+    monkeypatch.setattr(session, "quit_if_ours", lambda: None)
+
+    (r,) = wr.redline_folders(a, b, out, session=session, one_osascript=True)
+
+    assert r.skipped and r.pdf == out / "deal__vs__deal.pdf"
+    (row,) = _manifest_rows(out / "manifest.jsonl")
+    assert row["status"] == "skipped" and row["path_out"] == str(out / "deal__vs__deal.pdf")
 
 
 # ─── revision count ──────────────────────────────────────────────────────────
@@ -350,8 +394,8 @@ def test_redline_folders_default_writes_pdf_only(tmp_path: Path, stub_word) -> N
     results = wr.redline_folders(a, b, out, session=session, one_osascript=False)
 
     assert len(results) == 1 and results[0].ok
-    assert (out / "deal__vs__deal.pdf").exists()
-    assert not (out / "deal__vs__deal.docx").exists()
+    assert (out / "deal__vs__deal_byword.pdf").exists()
+    assert not (out / "deal__vs__deal_byword.docx").exists()
     assert len(compared) == 1 and len(exported) == 1
 
 
@@ -365,8 +409,8 @@ def test_redline_folders_both_keeps_the_tracked_changes_docx(
 
     wr.redline_folders(a, b, out, emit=wr.Emit.BOTH, session=session, one_osascript=False)
 
-    assert (out / "deal__vs__deal.pdf").exists()
-    assert (out / "deal__vs__deal.docx").read_bytes() == b"PK-redline"
+    assert (out / "deal__vs__deal_byword.pdf").exists()
+    assert (out / "deal__vs__deal_byword.docx").read_bytes() == b"PK-redline"
 
 
 def test_redline_folders_docx_only_never_calls_the_pdf_exporter(
@@ -380,8 +424,8 @@ def test_redline_folders_docx_only_never_calls_the_pdf_exporter(
     wr.redline_folders(a, b, out, emit=wr.Emit.DOCX, session=session, one_osascript=False)
 
     assert exported == []
-    assert (out / "deal__vs__deal.docx").exists()
-    assert not (out / "deal__vs__deal.pdf").exists()
+    assert (out / "deal__vs__deal_byword.docx").exists()
+    assert not (out / "deal__vs__deal_byword.pdf").exists()
 
 
 def _tracked_changes_docx() -> bytes:
@@ -446,7 +490,7 @@ def test_delivered_redline_docx_carries_tracked_changes(
     results = wr.redline_folders(a, b, out, emit=wr.Emit.DOCX, session=session, one_osascript=False)
 
     assert len(results) == 1 and results[0].ok
-    with zipfile.ZipFile(out / "deal__vs__deal.docx") as z:
+    with zipfile.ZipFile(out / "deal__vs__deal_byword.docx") as z:
         body = z.read("word/document.xml").decode("utf-8")
     assert "<w:ins " in body
     assert "<w:del " in body
@@ -487,7 +531,7 @@ def test_redline_folders_skips_existing_unless_forced(tmp_path: Path, stub_word)
     a = _folder(tmp_path / "a", "deal.docx")
     b = _folder(tmp_path / "b", "deal.docx")
     out = tmp_path / "out"
-    _touch(out / "deal__vs__deal.pdf", b"%PDF")
+    _touch(out / "deal__vs__deal_byword.pdf", b"%PDF")
 
     results = wr.redline_folders(a, b, out, session=session, one_osascript=False)
     assert results[0].skipped and results[0].ok and compared == []
@@ -560,8 +604,8 @@ def test_redline_folders_cross_mode_runs_every_combination(tmp_path: Path, stub_
 
     assert len(results) == 2
     assert len(compared) == 2
-    assert (tmp_path / "out" / "one__vs__x.pdf").exists()
-    assert (tmp_path / "out" / "two__vs__x.pdf").exists()
+    assert (tmp_path / "out" / "one__vs__x_byword.pdf").exists()
+    assert (tmp_path / "out" / "two__vs__x_byword.pdf").exists()
 
 
 def test_redline_folders_with_no_pairs_returns_empty(tmp_path: Path, stub_word) -> None:
@@ -774,7 +818,7 @@ def test_one_redline_osascript_is_the_default(
         rows = [ln.split("\t") for ln in manifest.read_text().splitlines() if ln]
         lines = []
         for row in rows:
-            Path(row[-1]).write_bytes(b"PK")
+            Path(_out(row)).write_bytes(b"PK")
             lines.append(f"[ok]\t{row[0]}\t3" if script is wr._COMPARE_BATCH else f"[ok]\t{row[0]}")
         log.write_text("\n".join(lines) + "\n")
         return 0, "ok", ""
@@ -830,7 +874,7 @@ def test_redline_batched_runs_compare_then_pdf_as_two_scripts(
         rows = [ln.split("\t") for ln in manifest.read_text().splitlines() if ln]
         lines = []
         for row in rows:
-            out = Path(row[-1])
+            out = Path(_out(row))
             out.parent.mkdir(parents=True, exist_ok=True)
             out.write_bytes(b"PK" if out.suffix == ".docx" else b"%PDF")
             lines.append(f"[ok]\t{row[0]}" + ("\t5" if script is wr._COMPARE_BATCH else ""))
@@ -849,9 +893,9 @@ def test_redline_batched_runs_compare_then_pdf_as_two_scripts(
     assert all(r.ok for r in results)
     assert all(r.revisions == 5 for r in results)  # read off the [ok] line
     assert all(r.timing_exact is False for r in results)
-    assert (tmp_path / "out" / "deal__vs__deal.pdf").exists()
-    assert (tmp_path / "out" / "nda__vs__nda.pdf").exists()
-    assert not (tmp_path / "out" / "deal__vs__deal.docx").exists()  # --emit pdf discards it
+    assert (tmp_path / "out" / "deal__vs__deal_byword.pdf").exists()
+    assert (tmp_path / "out" / "nda__vs__nda_byword.pdf").exists()
+    assert not (tmp_path / "out" / "deal__vs__deal_byword.docx").exists()  # --emit pdf discards it
 
 
 def test_redline_batched_docx_only_runs_one_script(
@@ -868,7 +912,7 @@ def test_redline_batched_docx_only_runs_one_script(
         rows = [ln.split("\t") for ln in manifest.read_text().splitlines() if ln]
         lines = []
         for row in rows:
-            Path(row[-1]).write_bytes(b"PK")
+            Path(_out(row)).write_bytes(b"PK")
             lines.append(f"[ok]\t{row[0]}\t3")
         lines.append(f"[done]\t{len(rows)}\t0")
         log.write_text("\n".join(lines) + "\n")
@@ -885,7 +929,7 @@ def test_redline_batched_docx_only_runs_one_script(
 
     assert scripts == [wr._COMPARE_BATCH]  # no PDF pass when none was asked for
     assert results[0].ok and results[0].revisions == 3
-    assert (tmp_path / "out" / "deal__vs__deal.docx").read_bytes() == b"PK"
+    assert (tmp_path / "out" / "deal__vs__deal_byword.docx").read_bytes() == b"PK"
 
 
 def test_redline_batched_records_a_failed_pair_and_finishes_the_rest(
@@ -900,7 +944,7 @@ def test_redline_batched_records_a_failed_pair_and_finishes_the_rest(
         rows = [ln.split("\t") for ln in manifest.read_text().splitlines() if ln]
         lines = []
         for row in rows:
-            out = Path(row[-1])
+            out = Path(_out(row))
             if "bad" in out.name:
                 lines.append(f"[fail]\t{row[0]}\tbase loaded empty (Word could not read it)")
                 continue
@@ -919,8 +963,8 @@ def test_redline_batched_records_a_failed_pair_and_finishes_the_rest(
 
     assert [(r.base.name, r.ok) for r in results] == [("bad.docx", False), ("good.docx", True)]
     assert "could not read" in results[0].error
-    assert (tmp_path / "out" / "good__vs__good.pdf").exists()
-    assert not (tmp_path / "out" / "bad__vs__bad.pdf").exists()
+    assert (tmp_path / "out" / "good__vs__good_byword.pdf").exists()
+    assert not (tmp_path / "out" / "bad__vs__bad_byword.pdf").exists()
 
 
 def test_redline_batched_skips_existing_and_stages_the_rest(
@@ -929,7 +973,7 @@ def test_redline_batched_skips_existing_and_stages_the_rest(
     monkeypatch.setattr(wp, "CONTAINER_TMP", tmp_path / "container")
     a = _folder(tmp_path / "a", "deal.docx", "nda.docx")
     b = _folder(tmp_path / "b", "deal.docx", "nda.docx")
-    _touch(tmp_path / "out" / "deal__vs__deal.pdf", b"%PDF")
+    _touch(tmp_path / "out" / "deal__vs__deal_byword.pdf", b"%PDF")
     manifests: list[int] = []
 
     def fake_osa(script, *args, timeout=60.0):
@@ -938,7 +982,7 @@ def test_redline_batched_skips_existing_and_stages_the_rest(
         manifests.append(len(rows))
         lines = []
         for row in rows:
-            out = Path(row[-1])
+            out = Path(_out(row))
             out.write_bytes(b"PK" if out.suffix == ".docx" else b"%PDF")
             lines.append(f"[ok]\t{row[0]}" + ("\t2" if script is wr._COMPARE_BATCH else ""))
         lines.append(f"[done]\t{len(rows)}\t0")
@@ -972,7 +1016,7 @@ def test_redline_batched_resumes_the_compare_pass_after_a_wedge(
         wedge = calls["n"] == 1
         lines = []
         for row in rows[: 1 if wedge else len(rows)]:
-            out = Path(row[-1])
+            out = Path(_out(row))
             out.write_bytes(b"PK" if out.suffix == ".docx" else b"%PDF")
             lines.append(f"[ok]\t{row[0]}" + ("\t4" if script is wr._COMPARE_BATCH else ""))
         if not wedge:
@@ -1012,7 +1056,7 @@ def test_redline_batched_stages_same_named_sides_apart(
             if script is wr._COMPARE_BATCH:
                 seen["base"] = Path(row[1]).read_bytes()
                 seen["rev"] = Path(row[2]).read_bytes()
-            out = Path(row[-1])
+            out = Path(_out(row))
             out.write_bytes(b"PK" if out.suffix == ".docx" else b"%PDF")
             lines.append(f"[ok]\t{row[0]}" + ("\t1" if script is wr._COMPARE_BATCH else ""))
         lines.append(f"[done]\t{len(rows)}\t0")
@@ -1079,7 +1123,7 @@ def test_batched_redline_never_hands_the_user_s_folders_to_cleanup(
     def fake_resume(script, rows, root, **kw):
         seen.append(tuple(kw["recycle_paths"]))
         for row in rows:
-            out = Path(row[-1])
+            out = Path(_out(row))
             out.parent.mkdir(parents=True, exist_ok=True)
             out.write_bytes(b"PK" if out.suffix == ".docx" else b"%PDF")
         return {row[0]: (True, "5" if script is wr._COMPARE_BATCH else "") for row in rows}
@@ -1110,7 +1154,9 @@ def test_redline_refuses_to_run_with_documents_already_open(
     """
     session = _verified_session()
     monkeypatch.setattr(wp.WordSession, "available", staticmethod(lambda: True))
+    monkeypatch.setattr(wp, "word_pid", lambda: "stub")  # pgrep would count as reaching Word
     monkeypatch.setattr(session, "warm", lambda: True)
+    monkeypatch.setattr(wp, "osa", lambda s, *a, **k: (0, "missing value", ""))  # the preflight close-all health check
     monkeypatch.setattr(session, "open_document_count", lambda: 2)
 
     # Default closes every document and leaves Word running, so this is not a refusal.
@@ -1319,7 +1365,7 @@ def test_a_redline_saved_from_the_wrong_document_is_not_delivered(
         rows = [ln.split("\t") for ln in manifest.read_text().splitlines() if ln]
         lines = []
         for row in rows:
-            save_redline(Path(row[-1]))
+            save_redline(Path(_out(row)))
             lines.append(f"[ok]\t{row[0]}\t2")
         lines.append(f"[done]\t{len(rows)}\t0")
         log.write_text("\n".join(lines) + "\n")
@@ -1342,8 +1388,8 @@ def test_a_redline_saved_from_the_wrong_document_is_not_delivered(
     assert verdicts["right.docx"].ok, verdicts["right.docx"].error
     assert not verdicts["wrong.docx"].ok
     assert "missing" in verdicts["wrong.docx"].error
-    assert (out / "right__vs__right.docx").exists()
-    assert not (out / "wrong__vs__wrong.docx").exists()
+    assert (out / "right__vs__right_byword.docx").exists()
+    assert not (out / "wrong__vs__wrong_byword.docx").exists()
 
 
 @pytest.mark.parametrize("one_osascript", [False, True])
@@ -1383,7 +1429,7 @@ def test_keep_unmatched_delivers_a_redline_the_identity_check_fails_and_flags_it
         rows = [ln.split("\t") for ln in manifest.read_text().splitlines() if ln]
         lines = []
         for row in rows:
-            save(Path(row[-1]))
+            save(Path(_out(row)))
             lines.append(f"[ok]\t{row[0]}" + ("\t2" if script is wr._COMPARE_BATCH else ""))
         lines.append(f"[done]\t{len(rows)}\t0")
         log.write_text("\n".join(lines) + "\n")
@@ -1408,7 +1454,7 @@ def test_keep_unmatched_delivers_a_redline_the_identity_check_fails_and_flags_it
     assert verdicts["wrong.docx"].ok, verdicts["wrong.docx"].error
     assert "missing" in verdicts["wrong.docx"].unmatched
     for stem in ("right__vs__right", "wrong__vs__wrong"):
-        assert (out / f"{stem}.docx").exists() and (out / f"{stem}.pdf").exists()
+        assert (out / f"{stem}_byword.docx").exists() and (out / f"{stem}_byword.pdf").exists()
     assert wr.report_pairs(results) == 0
 
 
@@ -1495,7 +1541,7 @@ def test_an_undeliverable_redline_fails_that_pair_and_the_run_goes_on(
         manifest, log = Path(args[0]), Path(args[1])
         rows = [ln.split("\t") for ln in manifest.read_text().splitlines() if ln]
         for row in rows:
-            Path(row[-1]).write_bytes(b"PK")
+            Path(_out(row)).write_bytes(b"PK")
         lines = [f"[ok]\t{row[0]}\t1" for row in rows] + [f"[done]\t{len(rows)}\t0"]
         log.write_text("\n".join(lines) + "\n")
         return 0, "", ""
@@ -1526,7 +1572,7 @@ def test_redline_api_rejects_a_timeout_the_cli_would(
 def test_redline_docx_may_not_land_where_the_next_run_reads_its_inputs(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch, inside: str
 ) -> None:
-    """`deal__vs__deal.docx` in folder A is a new base document next run."""
+    """`deal__vs__deal_byword.docx` in folder A is a new base document next run."""
     monkeypatch.setattr(wp, "CONTAINER_TMP", tmp_path / "container")
     a = _folder(tmp_path / "a", "deal.docx")
     b = _folder(tmp_path / "b", "deal.docx")
@@ -1582,6 +1628,7 @@ def test_both_foreign_document_refusals_give_the_same_current_reason(
     """The CLI's refusal and the API's said different things, both out of date."""
     session = _verified_session()
     monkeypatch.setattr(wp.WordSession, "available", staticmethod(lambda: True))
+    monkeypatch.setattr(wp, "word_pid", lambda: "stub")  # pgrep would count as reaching Word
     monkeypatch.setattr(session, "warm", lambda: True)
     monkeypatch.setattr(session, "open_document_count", lambda: 2)
     cli_reason = wr.redline_preflight(session, allow_open_docs=True, close_documents=False)
@@ -1603,3 +1650,86 @@ def test_cli_help_says_a_run_closes_open_documents(module) -> None:
     result = CliRunner().invoke(module.app, ["--help"], env={"COLUMNS": "200"})
     assert result.exit_code == 0
     assert "Do not work in Word during a run" in " ".join(result.output.split())
+
+
+# ─── manifest.jsonl and the 80-char trim ─────────────────────────────────────
+
+
+def _manifest_rows(path: Path) -> list[dict]:
+    import json
+
+    return [json.loads(ln) for ln in path.read_text(encoding="utf-8").splitlines() if ln]
+
+
+def test_redline_folders_trims_long_names_in_both_folders_and_appends_the_manifest(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(wp, "CONTAINER_TMP", tmp_path / "container")
+    long_name = "deal_" + "q" * 100 + ".docx"
+    a = _folder(tmp_path / "A", long_name, "nda.docx")
+    b = _folder(tmp_path / "B", long_name, "nda.docx")
+
+    def fake_osa(script, *args, timeout=60.0):
+        manifest, log = Path(args[0]), Path(args[1])
+        rows = [ln.split("\t") for ln in manifest.read_text().splitlines() if ln]
+        lines = []
+        for row in rows:
+            out = Path(_out(row))
+            out.parent.mkdir(parents=True, exist_ok=True)
+            out.write_bytes(b"PK" if out.suffix == ".docx" else b"%PDF")
+            lines.append(f"[ok]\t{row[0]}" + ("\t5" if script is wr._COMPARE_BATCH else ""))
+        lines.append(f"[done]\t{len(rows)}\t0")
+        log.write_text("\n".join(lines) + "\n")
+        return 0, "", ""
+
+    monkeypatch.setattr(wp, "osa", fake_osa)
+    session = _verified_session()
+    monkeypatch.setattr(session, "warm", lambda: True)
+    monkeypatch.setattr(session, "quit_if_ours", lambda: None)
+    out = tmp_path / "out"
+
+    results = wr.redline_folders(a, b, out, session=session, one_osascript=True, emit=wr.Emit.BOTH)
+
+    trimmed = wp.trim_name(long_name, wr.REDLINE_NAME_LIMIT)
+    assert len(trimmed) == 35, "a redline input is cut to 35, so both sides plus _byword fit in ~80"
+    assert (a / trimmed).exists() and (b / trimmed).exists()
+    assert not (a / long_name).exists() and not (b / long_name).exists()
+    assert all(r.ok for r in results) and len(results) == 2
+    stem = Path(trimmed).stem
+    assert len(f"{stem}__vs__{stem}_byword.docx") <= 80
+    assert (out / f"{stem}__vs__{stem}_byword.pdf").exists()
+    assert (out / f"{stem}__vs__{stem}_byword.docx").exists()
+
+    rows = _manifest_rows(out / "manifest.jsonl")
+    assert [r["status"] for r in rows] == ["renamed", "renamed", "ok", "ok", "ok", "ok"]
+    assert rows[0]["original_filename"] == long_name and rows[0]["path_origin"] == str(a / long_name)
+    assert rows[1]["path_origin"] == str(b / long_name)
+    produced = {(r["original_filename"], r["revision_filename"], r["converted_filename"]) for r in rows[2:]}
+    assert produced == {
+        (trimmed, trimmed, f"{stem}__vs__{stem}_byword.docx"),
+        (trimmed, trimmed, f"{stem}__vs__{stem}_byword.pdf"),
+        ("nda.docx", "nda.docx", "nda__vs__nda_byword.docx"),
+        ("nda.docx", "nda.docx", "nda__vs__nda_byword.pdf"),
+    }
+    assert all(r["kind"] == "redline" and r["tool"] == "word" and r["revisions"] == 5 for r in rows[2:])
+
+
+def test_redline_limit_is_35_so_a_pair_name_with_byword_stays_near_80(tmp_path: Path) -> None:
+    """50 characters passes word_pdf.py's 80 limit and still gets cut here: two
+    50-character stems joined by `__vs__` plus `_byword.docx` is 113."""
+    assert wr.REDLINE_NAME_LIMIT == 35
+    name_50 = "contract_" + "w" * 36 + ".docx"
+    assert len(name_50) == 50
+    assert wp.trim_name(name_50) == name_50, "the pdf driver leaves it alone"
+    docs = wr.trim_long_names([_folder(tmp_path / "A", name_50) / name_50], None, limit=wr.REDLINE_NAME_LIMIT)
+    assert len(docs[0].name) == 35 and docs[0].exists()
+    stem = docs[0].stem
+    assert len(f"{wr.by_tool(wr.redline_stem(docs[0], docs[0]))}.docx") == 2 * len(stem) + 6 + 7 + 5 <= 80
+
+
+def test_pair_manifest_lines_record_a_failure_with_no_output() -> None:
+    r = wr.PairResult(base=Path("/A/x.docx"), revision=Path("/B/y.docx"), error="Word could not compare")
+    (line,) = wr.pair_manifest_lines([r])
+    assert line["status"] == "failed" and line["converted_filename"] == "" and line["path_out"] == ""
+    assert line["original_filename"] == "x.docx" and line["revision_filename"] == "y.docx"
+    assert line["path_revision"] == "/B/y.docx" and line["error"] == "Word could not compare"
