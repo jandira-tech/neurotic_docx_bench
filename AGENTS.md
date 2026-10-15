@@ -205,7 +205,7 @@ reaches the pages in four steps, each of which bit someone on 2026-10-14:
 4. `uv run bench report`, then read the headline tables before committing. Commit the stores,
    the registry, the three pages and any `RESULTS_v<old>.md` the run froze (it freezes the page
    on disk when the bench version moved, here 0.7.0 to 0.8.0); leave other sessions' churn
-   (`badges/`, `out/`, corpus files) out of the commit.
+   (`out/`, corpus files) out of the commit.
 
 What the policy does with the rows (full text at the top of `ledger/policy.py`):
 
