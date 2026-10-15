@@ -1,0 +1,7 @@
+error: Failed to download `superdoc-sdk-cli-darwin-arm64==2.20.0`
+  cause: Failed to extract archive: superdoc_sdk_cli_darwin_arm64-2.20.0-py3-none-any.whl
+  cause: I/O operation failed during extraction
+  cause: failed to write to file `/Users/arthrod/.cache/uv/.tmpv9RuhD/superdoc_sdk_cli_darwin_arm64/bin/superdoc`: No space left on device (os error 28)
+
+hint: `superdoc-sdk-cli-darwin-arm64` (v2.20.0) was included because `superdoc-sdk` (v2.20.0) depends on `superdoc-sdk-cli-darwin-arm64`
+exit 1
