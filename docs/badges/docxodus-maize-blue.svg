@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="302" height="28" viewBox="0 0 302 28" role="img" aria-label="docxodus · neurotic_docx_bench | BENCHED! (Michigan maize &amp; blue)">
+  <title>docxodus · neurotic_docx_bench | BENCHED!</title>
+  <!-- Custom partner badge for docxodus: University of Michigan maize #FFCB05 and blue #00274C -->
+  <rect x="0.5" y="0.5" width="301" height="27" rx="4" fill="#fffcf2" stroke="#c9a227" stroke-width="1"/>
+  <!-- Left Word revision change bar (maize) -->
+  <rect x="5.5" y="4.5" width="2.5" height="19" rx="1.25" fill="#FFCB05"/>
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="11">
+    <!-- docxodus (8 chars * 6.8 = 54.4px, x=15..69.4) — Michigan blue with maize insertion double-underline -->
+    <text x="15" y="15.5" fill="#00274C" font-weight="700" textLength="54.4" lengthAdjust="spacing">docxodus</text>
+    <line x1="15" y1="18.0" x2="69.4" y2="18.0" stroke="#FFCB05" stroke-width="1.4"/>
+    <line x1="15" y1="20.0" x2="69.4" y2="20.0" stroke="#FFCB05" stroke-width="1.4"/>
+    <!-- neurotic_docx_bench (19 chars * 6.8 = 129.2px, x=70.9..200.1) -->
+    <text x="70.9" y="15.5" fill="#1e293b" font-weight="600" textLength="129.2" lengthAdjust="spacing">neurotic_docx_bench</text>
+  </g>
+  <!-- Divider (Michigan blue) -->
+  <line x1="206.1" y1="4.5" x2="206.1" y2="23.5" stroke="#00274C" stroke-width="1"/>
+  <!-- Right pill: maize field, blue text — BENCHED! (8 chars * 6.8 = 54.4px, centered in 84px pill) -->
+  <rect x="212.1" y="4" width="84" height="20" rx="3" fill="#FFCB05" stroke="#00274C" stroke-width="1"/>
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="11" font-weight="700">
+      <text x="226.9" y="14" fill="#00274C" textLength="54.4" lengthAdjust="spacing" dominant-baseline="central">BENCHED!</text>
+  </g>
+</svg>
