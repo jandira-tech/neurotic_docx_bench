@@ -1,0 +1,11 @@
+<frozen site>:101: RuntimeWarning: Unexpected value in sys.prefix, expected /Users/arthrod/temp/T/neurotic_docx_bench/.venv, got /Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/../../.venv
+<frozen site>:101: RuntimeWarning: Unexpected value in sys.exec_prefix, expected /Users/arthrod/temp/T/neurotic_docx_bench/.venv, got /Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/../../.venv
+05:55:45 RENDER jubarte-0.12.0 word_pdf 400
+06:30:38 RENDER jubarte-0.12.0 word_pdf_retry 149
+06:52:38 rendered jubarte-0.12.0 395 / 400 gen fail 0 render fail 5
+07:06:09 RENDER docxodus-12.6.5 word_pdf 391
+07:27:33 RENDER docxodus-12.6.5 word_pdf_retry 22
+07:50:41 rendered docxodus-12.6.5 369 / 400 gen fail 9 render fail 22
+08:06:41 RUN /Users/arthrod/temp/T/neurotic_docx_bench/.venv/bin/python /Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/report.py --final
+08:06:46 RUN /Users/arthrod/temp/T/neurotic_docx_bench/.venv/bin/python /Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/persist_fresh.py
+08:06:47 COMPLETE

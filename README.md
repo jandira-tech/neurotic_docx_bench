@@ -96,6 +96,10 @@ Pins: [`bench.yaml`](bench.yaml). Tool identities: [`bench.registry.yaml`](bench
 <!-- VENDORS-START -->
 | Tool | Role | Engine | Author-affiliated | Note |
 | --- | --- | --- | --- | --- |
+| [Wordcraft CLI](https://github.com/storytold/wordcraft) | generator | wordcraft-cli |  |  |
+| [jubarte 0.11.0](https://github.com/jandira-tech/jubarte-redlines) | generator | jubarte-redlines | yes |  |
+| [jubarte 0.12.0](https://github.com/jandira-tech/jubarte-redlines) | generator | jubarte-redlines | yes |  |
+| [docxodus 12.6.5](https://github.com/JSv4/docxodus) | generator | docxodus |  |  |
 | [jubarte (lossless)](https://github.com/jandira-tech/jubarte-redlines) | generator | jubarte-final | yes |  |
 | [jubarte (ast)](https://github.com/jandira-tech/jubarte-redlines) | generator | jubarte-final | yes |  |
 | [jubarte-rust](https://github.com/jandira-tech/jubarte-redlines) | generator | jubarte-redlines | yes |  |

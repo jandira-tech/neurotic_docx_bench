@@ -1,0 +1,4425 @@
+{
+ "tool": "superdoc-2.20.0",
+ "phase": "compare",
+ "dpi": 144,
+ "scorer_fingerprint": "c0507bbb4029b849",
+ "scorer_backend": "torch-mps",
+ "scorer_backend_rows": {
+  "torch-mps": 36
+ },
+ "requested": 400,
+ "scored": 36,
+ "rows": {
+  "1842e29a32": {
+   "overall_score": 55.003902135380955,
+   "overall_score_strict": 55.003902135380955,
+   "overall_score_drift": 55.492231343189694,
+   "page_count": 1,
+   "average_score": 55.003902135380955,
+   "average_score_strict": 55.003902135380955,
+   "average_score_drift": 55.492231343189694,
+   "min_score": 55.003902135380955,
+   "min_score_strict": 55.003902135380955,
+   "min_score_drift": 55.492231343189694,
+   "pages": [
+    {
+     "score": 55.003902135380955,
+     "score_strict": 55.003902135380955,
+     "score_drift": 55.492231343189694,
+     "single_issue_applied": false,
+     "drift_applied": true,
+     "drift_strength_px": 344.6454790836471,
+     "ssim_full": 0.9538874626159668,
+     "ssim_small": 0.9207107424736023,
+     "ink_f1": 0.31190752404203775,
+     "edge_iou": 0.19644984166642457,
+     "color_sim": 0.0,
+     "delta_e": 46.0583381652832,
+     "blob_penalty": 0.18388436729593732,
+     "ink_area": 29611,
+     "drift_ssim_full": 0.9396868348121643,
+     "drift_ssim_small": 0.9271374344825745,
+     "drift_ink_f1": 0.34858484992706934,
+     "drift_edge_iou": 0.24205584978334135,
+     "drift_color_sim": 0.0,
+     "drift_delta_e": 43.06796646118164,
+     "drift_blob_penalty": 0.2509535789644538,
+     "page": 1
+    }
+   ],
+   "config": {
+    "max_shift_px": 5.0,
+    "align_upsample": 10,
+    "downscale_factor": 0.25,
+    "edge_sigma": 1.2,
+    "edge_dilate": 1,
+    "ink_min_size": 24,
+    "ink_tol_px": 2.0,
+    "drift_sigma": 2.0,
+    "min_drift_px": 1.0,
+    "single_issue_cap": 30.0,
+    "single_issue_min_gain": 15.0,
+    "single_issue_min_ssim_small": 0.7,
+    "single_issue_min_ink_f1": 0.65,
+    "single_issue_min_edge_iou": 0.5,
+    "single_issue_max_blob_penalty": 0.03,
+    "color_deltaE_max": 20.0,
+    "blob_min_size": 40,
+    "weights": {
+     "ssim_full": 0.25,
+     "ssim_small": 0.15,
+     "ink_f1": 0.2,
+     "edge_iou": 0.15,
+     "color_sim": 0.15,
+     "blob_sim": 0.1
+    }
+   },
+   "page_count_oracle": 1,
+   "page_count_candidate": 1,
+   "page_count_mismatch": false,
+   "average_score_pagefair": 55.003902135380955,
+   "min_score_pagefair": 55.003902135380955,
+   "overall_score_pagefair": 55.003902135380955,
+   "null_score": null,
+   "skill_score": null,
+   "score_v2": null,
+   "ink_jaccard": 0.09248862360380593,
+   "text_boundary": null,
+   "max_break_drift": 0,
+   "raster_ns": 291300834,
+   "score_ns": 7420054500,
+   "scorer_backend": "torch-mps",
+   "oracle_sha256": "ee8c0d0a676ec446fce7d4e173ae4ff64ba022c7010f4fe3d5a0a000a2581e7d",
+   "candidate_sha256": "fc6db55a99ac7850dbea0d51dd23becd45f89b13eb232b582611b0d1696b35db"
+  },
+  "aec80553e5": {
+   "overall_score": 60.6292175228871,
+   "overall_score_strict": 60.6292175228871,
+   "overall_score_drift": 58.23124737279526,
+   "page_count": 1,
+   "average_score": 60.6292175228871,
+   "average_score_strict": 60.6292175228871,
+   "average_score_drift": 58.23124737279526,
+   "min_score": 60.6292175228871,
+   "min_score_strict": 60.6292175228871,
+   "min_score_drift": 58.23124737279526,
+   "pages": [
+    {
+     "score": 60.6292175228871,
+     "score_strict": 60.6292175228871,
+     "score_drift": 58.23124737279526,
+     "single_issue_applied": false,
+     "drift_applied": true,
+     "drift_strength_px": 372.6274736222409,
+     "ssim_full": 0.9633404016494751,
+     "ssim_small": 0.9453700184822083,
+     "ink_f1": 0.46161352794808647,
+     "edge_iou": 0.2675091183730612,
+     "color_sim": 0.0,
+     "delta_e": 43.09007263183594,
+     "blob_penalty": 0.08797501301405518,
+     "ink_area": 23052,
+     "drift_ssim_full": 0.9618889093399048,
+     "drift_ssim_small": 0.9553647041320801,
+     "drift_ink_f1": 0.39343726127236606,
+     "drift_edge_iou": 0.28406036117753775,
+     "drift_color_sim": 0.0,
+     "drift_delta_e": 43.41081237792969,
+     "drift_blob_penalty": 0.22760965657939478,
+     "page": 1
+    }
+   ],
+   "config": {
+    "max_shift_px": 5.0,
+    "align_upsample": 10,
+    "downscale_factor": 0.25,
+    "edge_sigma": 1.2,
+    "edge_dilate": 1,
+    "ink_min_size": 24,
+    "ink_tol_px": 2.0,
+    "drift_sigma": 2.0,
+    "min_drift_px": 1.0,
+    "single_issue_cap": 30.0,
+    "single_issue_min_gain": 15.0,
+    "single_issue_min_ssim_small": 0.7,
+    "single_issue_min_ink_f1": 0.65,
+    "single_issue_min_edge_iou": 0.5,
+    "single_issue_max_blob_penalty": 0.03,
+    "color_deltaE_max": 20.0,
+    "blob_min_size": 40,
+    "weights": {
+     "ssim_full": 0.25,
+     "ssim_small": 0.15,
+     "ink_f1": 0.2,
+     "edge_iou": 0.15,
+     "color_sim": 0.15,
+     "blob_sim": 0.1
+    }
+   },
+   "page_count_oracle": 1,
+   "page_count_candidate": 1,
+   "page_count_mismatch": false,
+   "average_score_pagefair": 60.6292175228871,
+   "min_score_pagefair": 60.6292175228871,
+   "overall_score_pagefair": 60.6292175228871,
+   "null_score": null,
+   "skill_score": null,
+   "score_v2": null,
+   "ink_jaccard": 0.16989788367618766,
+   "text_boundary": null,
+   "max_break_drift": 0,
+   "raster_ns": 336928792,
+   "score_ns": 7314321042,
+   "scorer_backend": "torch-mps",
+   "oracle_sha256": "30155c2f5bbebfd748b262101578ffb7e8c5dd8c8543ebfb0f7335bd7cb0cca2",
+   "candidate_sha256": "dc3f7f020823228fed13666d35391d49ce3f056fbc812dba5a65f3558d93b218"
+  },
+  "15f013e680": {
+   "overall_score": 51.60833882305569,
+   "overall_score_strict": 51.60833882305569,
+   "overall_score_drift": 55.25357412513526,
+   "page_count": 1,
+   "average_score": 51.60833882305569,
+   "average_score_strict": 51.60833882305569,
+   "average_score_drift": 55.25357412513526,
+   "min_score": 51.60833882305569,
+   "min_score_strict": 51.60833882305569,
+   "min_score_drift": 55.253574125135266,
+   "pages": [
+    {
+     "score": 51.60833882305569,
+     "score_strict": 51.60833882305569,
+     "score_drift": 55.253574125135266,
+     "single_issue_applied": false,
+     "drift_applied": true,
+     "drift_strength_px": 282.9149007069059,
+     "ssim_full": 0.9045108556747437,
+     "ssim_small": 0.851611852645874,
+     "ink_f1": 0.357719578300655,
+     "edge_iou": 0.11949285502268583,
+     "color_sim": 0.0,
+     "delta_e": 49.69417190551758,
+     "blob_penalty": 0.2725394749854407,
+     "ink_area": 91007,
+     "drift_ssim_full": 0.8977441191673279,
+     "drift_ssim_small": 0.8703965544700623,
+     "drift_ink_f1": 0.4419015038190581,
+     "drift_edge_iou": 0.2153801750409589,
+     "drift_color_sim": 0.0,
+     "drift_delta_e": 49.347171783447266,
+     "drift_blob_penalty": 0.2314709873094421,
+     "page": 1
+    }
+   ],
+   "config": {
+    "max_shift_px": 5.0,
+    "align_upsample": 10,
+    "downscale_factor": 0.25,
+    "edge_sigma": 1.2,
+    "edge_dilate": 1,
+    "ink_min_size": 24,
+    "ink_tol_px": 2.0,
+    "drift_sigma": 2.0,
+    "min_drift_px": 1.0,
+    "single_issue_cap": 30.0,
+    "single_issue_min_gain": 15.0,
+    "single_issue_min_ssim_small": 0.7,
+    "single_issue_min_ink_f1": 0.65,
+    "single_issue_min_edge_iou": 0.5,
+    "single_issue_max_blob_penalty": 0.03,
+    "color_deltaE_max": 20.0,
+    "blob_min_size": 40,
+    "weights": {
+     "ssim_full": 0.25,
+     "ssim_small": 0.15,
+     "ink_f1": 0.2,
+     "edge_iou": 0.15,
+     "color_sim": 0.15,
+     "blob_sim": 0.1
+    }
+   },
+   "page_count_oracle": 1,
+   "page_count_candidate": 1,
+   "page_count_mismatch": false,
+   "average_score_pagefair": 51.60833882305569,
+   "min_score_pagefair": 51.60833882305569,
+   "overall_score_pagefair": 51.60833882305569,
+   "null_score": null,
+   "skill_score": null,
+   "score_v2": null,
+   "ink_jaccard": 0.14094111132758427,
+   "text_boundary": null,
+   "max_break_drift": 0,
+   "raster_ns": 331500083,
+   "score_ns": 7562812042,
+   "scorer_backend": "torch-mps",
+   "oracle_sha256": "2630565657e3f10bf48ba0f82a07cfcbd7cce03367db61371297c03d02c6475c",
+   "candidate_sha256": "be0fd348e2a015f0b12d7333f14a03b2338fbc4ffde4a0f0e5ed560771357be5"
+  },
+  "e56d44b193": {
+   "overall_score": 66.74561490065237,
+   "overall_score_strict": 66.74561490065237,
+   "overall_score_drift": 49.86514796884677,
+   "page_count": 1,
+   "average_score": 66.74561490065237,
+   "average_score_strict": 66.74561490065237,
+   "average_score_drift": 49.86514796884678,
+   "min_score": 66.74561490065237,
+   "min_score_strict": 66.74561490065237,
+   "min_score_drift": 49.86514796884678,
+   "pages": [
+    {
+     "score": 66.74561490065237,
+     "score_strict": 66.74561490065237,
+     "score_drift": 49.86514796884678,
+     "single_issue_applied": false,
+     "drift_applied": true,
+     "drift_strength_px": 528.2297197207263,
+     "ssim_full": 0.9909855723381042,
+     "ssim_small": 0.9851573705673218,
+     "ink_f1": 0.6381636586647976,
+     "edge_iou": 0.3458655854527583,
+     "color_sim": 0.0,
+     "delta_e": 32.09073257446289,
+     "blob_penalty": 0.07576419213973799,
+     "ink_area": 4580,
+     "drift_ssim_full": 0.984830915927887,
+     "drift_ssim_small": 0.9792115092277527,
+     "drift_ink_f1": 0.24877170582625346,
+     "drift_edge_iou": 0.2418526281181934,
+     "drift_color_sim": 0.0,
+     "drift_delta_e": 35.49271774291992,
+     "drift_blob_penalty": 0.8047021106064653,
+     "page": 1
+    }
+   ],
+   "config": {
+    "max_shift_px": 5.0,
+    "align_upsample": 10,
+    "downscale_factor": 0.25,
+    "edge_sigma": 1.2,
+    "edge_dilate": 1,
+    "ink_min_size": 24,
+    "ink_tol_px": 2.0,
+    "drift_sigma": 2.0,
+    "min_drift_px": 1.0,
+    "single_issue_cap": 30.0,
+    "single_issue_min_gain": 15.0,
+    "single_issue_min_ssim_small": 0.7,
+    "single_issue_min_ink_f1": 0.65,
+    "single_issue_min_edge_iou": 0.5,
+    "single_issue_max_blob_penalty": 0.03,
+    "color_deltaE_max": 20.0,
+    "blob_min_size": 40,
+    "weights": {
+     "ssim_full": 0.25,
+     "ssim_small": 0.15,
+     "ink_f1": 0.2,
+     "edge_iou": 0.15,
+     "color_sim": 0.15,
+     "blob_sim": 0.1
+    }
+   },
+   "page_count_oracle": 1,
+   "page_count_candidate": 1,
+   "page_count_mismatch": false,
+   "average_score_pagefair": 66.74561490065237,
+   "min_score_pagefair": 66.74561490065237,
+   "overall_score_pagefair": 66.74561490065237,
+   "null_score": null,
+   "skill_score": null,
+   "score_v2": null,
+   "ink_jaccard": 0.2842074844675625,
+   "text_boundary": null,
+   "max_break_drift": 0,
+   "raster_ns": 312290958,
+   "score_ns": 5433845125,
+   "scorer_backend": "torch-mps",
+   "oracle_sha256": "55639603156366f6045c0236e5cfb5134073a5652596fbc35c1fb2ae8b9266a4",
+   "candidate_sha256": "3382a984d2b91c3cb9ee42117b32bc617d33c30cb2b3eb98735f9ed87c0ea7eb"
+  },
+  "7b637208fb": {
+   "overall_score": 57.0601262473207,
+   "overall_score_strict": 57.0601262473207,
+   "overall_score_drift": 56.36333398984418,
+   "page_count": 1,
+   "average_score": 57.06012624732071,
+   "average_score_strict": 57.06012624732071,
+   "average_score_drift": 56.36333398984418,
+   "min_score": 57.06012624732071,
+   "min_score_strict": 57.06012624732071,
+   "min_score_drift": 56.36333398984418,
+   "pages": [
+    {
+     "score": 57.06012624732071,
+     "score_strict": 57.06012624732071,
+     "score_drift": 56.36333398984418,
+     "single_issue_applied": false,
+     "drift_applied": true,
+     "drift_strength_px": 442.786360311504,
+     "ssim_full": 0.9610920548439026,
+     "ssim_small": 0.9331084489822388,
+     "ink_f1": 0.346133353557802,
+     "edge_iou": 0.20732090654763777,
+     "color_sim": 0.0,
+     "delta_e": 38.58683395385742,
+     "blob_penalty": 0.09962825278810408,
+     "ink_area": 24210,
+     "drift_ssim_full": 0.9574835300445557,
+     "drift_ssim_small": 0.9409105181694031,
+     "drift_ink_f1": 0.34710745221490796,
+     "drift_edge_iou": 0.29578390778871977,
+     "drift_color_sim": 0.0,
+     "drift_delta_e": 35.26038360595703,
+     "drift_blob_penalty": 0.3066319694939709,
+     "page": 1
+    }
+   ],
+   "config": {
+    "max_shift_px": 5.0,
+    "align_upsample": 10,
+    "downscale_factor": 0.25,
+    "edge_sigma": 1.2,
+    "edge_dilate": 1,
+    "ink_min_size": 24,
+    "ink_tol_px": 2.0,
+    "drift_sigma": 2.0,
+    "min_drift_px": 1.0,
+    "single_issue_cap": 30.0,
+    "single_issue_min_gain": 15.0,
+    "single_issue_min_ssim_small": 0.7,
+    "single_issue_min_ink_f1": 0.65,
+    "single_issue_min_edge_iou": 0.5,
+    "single_issue_max_blob_penalty": 0.03,
+    "color_deltaE_max": 20.0,
+    "blob_min_size": 40,
+    "weights": {
+     "ssim_full": 0.25,
+     "ssim_small": 0.15,
+     "ink_f1": 0.2,
+     "edge_iou": 0.15,
+     "color_sim": 0.15,
+     "blob_sim": 0.1
+    }
+   },
+   "page_count_oracle": 1,
+   "page_count_candidate": 1,
+   "page_count_mismatch": false,
+   "average_score_pagefair": 57.06012624732071,
+   "min_score_pagefair": 57.06012624732071,
+   "overall_score_pagefair": 57.0601262473207,
+   "null_score": null,
+   "skill_score": null,
+   "score_v2": null,
+   "ink_jaccard": 0.11874016900171928,
+   "text_boundary": null,
+   "max_break_drift": 0,
+   "raster_ns": 329720666,
+   "score_ns": 5447675959,
+   "scorer_backend": "torch-mps",
+   "oracle_sha256": "a7f13ad277e0d30f80a9b3748a20f5af231f584c99e3760819a576a4a7b35374",
+   "candidate_sha256": "a0f5921a47914ccbc3690bf1920b7ba664b4b20ce4679138e9934bd676bb9b99"
+  },
+  "ce433a28fb": {
+   "overall_score": 65.51308860629996,
+   "overall_score_strict": 65.51308860629996,
+   "overall_score_drift": 58.77274727114357,
+   "page_count": 1,
+   "average_score": 65.51308860629997,
+   "average_score_strict": 65.51308860629997,
+   "average_score_drift": 58.77274727114358,
+   "min_score": 65.51308860629997,
+   "min_score_strict": 65.51308860629997,
+   "min_score_drift": 58.77274727114358,
+   "pages": [
+    {
+     "score": 65.51308860629997,
+     "score_strict": 65.51308860629997,
+     "score_drift": 58.77274727114358,
+     "single_issue_applied": false,
+     "drift_applied": true,
+     "drift_strength_px": 476.5709534536612,
+     "ssim_full": 0.9675087928771973,
+     "ssim_small": 0.9545817375183105,
+     "ink_f1": 0.5962638691120721,
+     "edge_iou": 0.37730186877642885,
+     "color_sim": 0.0,
+     "delta_e": 44.377376556396484,
+     "blob_penalty": 0.05781626922924823,
+     "ink_area": 25287,
+     "drift_ssim_full": 0.9502331018447876,
+     "drift_ssim_small": 0.9445705413818359,
+     "drift_ink_f1": 0.4649333972832514,
+     "drift_edge_iou": 0.2886194079739017,
+     "drift_color_sim": 0.0,
+     "drift_delta_e": 43.0715217590332,
+     "drift_blob_penalty": 0.27795974609772073,
+     "page": 1
+    }
+   ],
+   "config": {
+    "max_shift_px": 5.0,
+    "align_upsample": 10,
+    "downscale_factor": 0.25,
+    "edge_sigma": 1.2,
+    "edge_dilate": 1,
+    "ink_min_size": 24,
+    "ink_tol_px": 2.0,
+    "drift_sigma": 2.0,
+    "min_drift_px": 1.0,
+    "single_issue_cap": 30.0,
+    "single_issue_min_gain": 15.0,
+    "single_issue_min_ssim_small": 0.7,
+    "single_issue_min_ink_f1": 0.65,
+    "single_issue_min_edge_iou": 0.5,
+    "single_issue_max_blob_penalty": 0.03,
+    "color_deltaE_max": 20.0,
+    "blob_min_size": 40,
+    "weights": {
+     "ssim_full": 0.25,
+     "ssim_small": 0.15,
+     "ink_f1": 0.2,
+     "edge_iou": 0.15,
+     "color_sim": 0.15,
+     "blob_sim": 0.1
+    }
+   },
+   "page_count_oracle": 1,
+   "page_count_candidate": 1,
+   "page_count_mismatch": false,
+   "average_score_pagefair": 65.51308860629997,
+   "min_score_pagefair": 65.51308860629997,
+   "overall_score_pagefair": 65.51308860629996,
+   "null_score": null,
+   "skill_score": null,
+   "score_v2": null,
+   "ink_jaccard": 0.20342711178912265,
+   "text_boundary": null,
+   "max_break_drift": 0,
+   "raster_ns": 267396208,
+   "score_ns": 5362139125,
+   "scorer_backend": "torch-mps",
+   "oracle_sha256": "759af744eaa890b59197e8f7f69baf2ee217f2762d144639841f58b118f789a0",
+   "candidate_sha256": "d98257ebd9fb616632a743718124218d9f1846bdcd83ec3570ae2e053617ba2c"
+  },
+  "e1b23f59d9": {
+   "overall_score": 56.87198187563111,
+   "overall_score_strict": 56.87198187563111,
+   "overall_score_drift": 64.0961995666445,
+   "page_count": 1,
+   "average_score": 56.87198187563111,
+   "average_score_strict": 56.87198187563111,
+   "average_score_drift": 64.0961995666445,
+   "min_score": 56.87198187563111,
+   "min_score_strict": 56.87198187563111,
+   "min_score_drift": 64.0961995666445,
+   "pages": [
+    {
+     "score": 56.87198187563111,
+     "score_strict": 56.87198187563111,
+     "score_drift": 64.0961995666445,
+     "single_issue_applied": false,
+     "drift_applied": true,
+     "drift_strength_px": 424.7783896248975,
+     "ssim_full": 0.976626992225647,
+     "ssim_small": 0.9563226699829102,
+     "ink_f1": 0.3402915977405037,
+     "edge_iou": 0.12989596952987323,
+     "color_sim": 0.0,
+     "delta_e": 40.651878356933594,
+     "blob_penalty": 0.06428044775118975,
+     "ink_area": 14919,
+     "drift_ssim_full": 0.9793071746826172,
+     "drift_ssim_small": 0.9784095883369446,
+     "drift_ink_f1": 0.5798952923044671,
+     "drift_edge_iou": 0.3272038609566864,
+     "drift_color_sim": 0.0,
+     "drift_delta_e": 36.971275329589844,
+     "drift_blob_penalty": 0.15685873859147256,
+     "page": 1
+    }
+   ],
+   "config": {
+    "max_shift_px": 5.0,
+    "align_upsample": 10,
+    "downscale_factor": 0.25,
+    "edge_sigma": 1.2,
+    "edge_dilate": 1,
+    "ink_min_size": 24,
+    "ink_tol_px": 2.0,
+    "drift_sigma": 2.0,
+    "min_drift_px": 1.0,
+    "single_issue_cap": 30.0,
+    "single_issue_min_gain": 15.0,
+    "single_issue_min_ssim_small": 0.7,
+    "single_issue_min_ink_f1": 0.65,
+    "single_issue_min_edge_iou": 0.5,
+    "single_issue_max_blob_penalty": 0.03,
+    "color_deltaE_max": 20.0,
+    "blob_min_size": 40,
+    "weights": {
+     "ssim_full": 0.25,
+     "ssim_small": 0.15,
+     "ink_f1": 0.2,
+     "edge_iou": 0.15,
+     "color_sim": 0.15,
+     "blob_sim": 0.1
+    }
+   },
+   "page_count_oracle": 1,
+   "page_count_candidate": 1,
+   "page_count_mismatch": false,
+   "average_score_pagefair": 56.87198187563111,
+   "min_score_pagefair": 56.87198187563111,
+   "overall_score_pagefair": 56.87198187563111,
+   "null_score": null,
+   "skill_score": null,
+   "score_v2": null,
+   "ink_jaccard": 0.1135250917992656,
+   "text_boundary": null,
+   "max_break_drift": 0,
+   "raster_ns": 305712000,
+   "score_ns": 3271284083,
+   "scorer_backend": "torch-mps",
+   "oracle_sha256": "8e4408a7d243c93805dcece91cf55c82c3b0c4b5d9b827c621de79fd9a5e3a34",
+   "candidate_sha256": "e47370f5840ba0b88da959ff231f3f9fc40a326a41a3bfd24576b6eee5c93e81"
+  },
+  "0638f4b423": {
+   "overall_score": 63.77020811136448,
+   "overall_score_strict": 63.77020811136448,
+   "overall_score_drift": 59.96059032803964,
+   "page_count": 1,
+   "average_score": 63.77020811136448,
+   "average_score_strict": 63.77020811136448,
+   "average_score_drift": 59.96059032803964,
+   "min_score": 63.77020811136448,
+   "min_score_strict": 63.77020811136448,
+   "min_score_drift": 59.96059032803964,
+   "pages": [
+    {
+     "score": 63.77020811136448,
+     "score_strict": 63.77020811136448,
+     "score_drift": 59.96059032803964,
+     "single_issue_applied": false,
+     "drift_applied": true,
+     "drift_strength_px": 394.75924482701043,
+     "ssim_full": 0.9608003497123718,
+     "ssim_small": 0.9412255883216858,
+     "ink_f1": 0.604935674038347,
+     "edge_iou": 0.3524876631281333,
+     "color_sim": 0.0,
+     "delta_e": 47.706031799316406,
+     "blob_penalty": 0.17542128839590443,
+     "ink_area": 37504,
+     "drift_ssim_full": 0.9275186061859131,
+     "drift_ssim_small": 0.9239830374717712,
+     "drift_ink_f1": 0.49775728299275807,
+     "drift_edge_iou": 0.2590310064554972,
+     "drift_color_sim": 0.0,
+     "drift_delta_e": 43.79155731201172,
+     "drift_blob_penalty": 0.0927731145372368,
+     "page": 1
+    }
+   ],
+   "config": {
+    "max_shift_px": 5.0,
+    "align_upsample": 10,
+    "downscale_factor": 0.25,
+    "edge_sigma": 1.2,
+    "edge_dilate": 1,
+    "ink_min_size": 24,
+    "ink_tol_px": 2.0,
+    "drift_sigma": 2.0,
+    "min_drift_px": 1.0,
+    "single_issue_cap": 30.0,
+    "single_issue_min_gain": 15.0,
+    "single_issue_min_ssim_small": 0.7,
+    "single_issue_min_ink_f1": 0.65,
+    "single_issue_min_edge_iou": 0.5,
+    "single_issue_max_blob_penalty": 0.03,
+    "color_deltaE_max": 20.0,
+    "blob_min_size": 40,
+    "weights": {
+     "ssim_full": 0.25,
+     "ssim_small": 0.15,
+     "ink_f1": 0.2,
+     "edge_iou": 0.15,
+     "color_sim": 0.15,
+     "blob_sim": 0.1
+    }
+   },
+   "page_count_oracle": 1,
+   "page_count_candidate": 1,
+   "page_count_mismatch": false,
+   "average_score_pagefair": 63.77020811136448,
+   "min_score_pagefair": 63.77020811136448,
+   "overall_score_pagefair": 63.77020811136448,
+   "null_score": null,
+   "skill_score": null,
+   "score_v2": null,
+   "ink_jaccard": 0.3076438216684041,
+   "text_boundary": 0.5,
+   "max_break_drift": 0,
+   "raster_ns": 259602959,
+   "score_ns": 3372382958,
+   "scorer_backend": "torch-mps",
+   "oracle_sha256": "87295c45daf09c31e9c11de36b75779c3581027bc20937951bae17bc3fa89429",
+   "candidate_sha256": "52386eebcc79867c9744f354ed35d9b0a9f09ba6fa4425db89180844382f9ed8"
+  },
+  "30d1cde0ac": {
+   "overall_score": 57.88514554400317,
+   "overall_score_strict": 57.88514554400317,
+   "overall_score_drift": 54.59243362552712,
+   "page_count": 1,
+   "average_score": 57.88514554400318,
+   "average_score_strict": 57.88514554400318,
+   "average_score_drift": 54.59243362552712,
+   "min_score": 57.88514554400318,
+   "min_score_strict": 57.88514554400318,
+   "min_score_drift": 54.592433625527114,
+   "pages": [
+    {
+     "score": 57.88514554400318,
+     "score_strict": 57.88514554400318,
+     "score_drift": 54.592433625527114,
+     "single_issue_applied": false,
+     "drift_applied": true,
+     "drift_strength_px": 509.45352583325365,
+     "ssim_full": 0.9572948217391968,
+     "ssim_small": 0.9269143342971802,
+     "ink_f1": 0.3857643069374335,
+     "edge_iou": 0.19958731127483034,
+     "color_sim": 0.0,
+     "delta_e": 45.851959228515625,
+     "blob_penalty": 0.06600358218055714,
+     "ink_area": 26241,
+     "drift_ssim_full": 0.9605320692062378,
+     "drift_ssim_small": 0.9371813535690308,
+     "drift_ink_f1": 0.2801047577388313,
+     "drift_edge_iou": 0.34257527414090294,
+     "drift_color_sim": 0.0,
+     "drift_delta_e": 43.43553924560547,
+     "drift_blob_penalty": 0.42193126750544613,
+     "page": 1
+    }
+   ],
+   "config": {
+    "max_shift_px": 5.0,
+    "align_upsample": 10,
+    "downscale_factor": 0.25,
+    "edge_sigma": 1.2,
+    "edge_dilate": 1,
+    "ink_min_size": 24,
+    "ink_tol_px": 2.0,
+    "drift_sigma": 2.0,
+    "min_drift_px": 1.0,
+    "single_issue_cap": 30.0,
+    "single_issue_min_gain": 15.0,
+    "single_issue_min_ssim_small": 0.7,
+    "single_issue_min_ink_f1": 0.65,
+    "single_issue_min_edge_iou": 0.5,
+    "single_issue_max_blob_penalty": 0.03,
+    "color_deltaE_max": 20.0,
+    "blob_min_size": 40,
+    "weights": {
+     "ssim_full": 0.25,
+     "ssim_small": 0.15,
+     "ink_f1": 0.2,
+     "edge_iou": 0.15,
+     "color_sim": 0.15,
+     "blob_sim": 0.1
+    }
+   },
+   "page_count_oracle": 1,
+   "page_count_candidate": 1,
+   "page_count_mismatch": false,
+   "average_score_pagefair": 57.88514554400318,
+   "min_score_pagefair": 57.88514554400318,
+   "overall_score_pagefair": 57.88514554400317,
+   "null_score": null,
+   "skill_score": null,
+   "score_v2": null,
+   "ink_jaccard": 0.13231347289318304,
+   "text_boundary": null,
+   "max_break_drift": 0,
+   "raster_ns": 307943500,
+   "score_ns": 3630198875,
+   "scorer_backend": "torch-mps",
+   "oracle_sha256": "164b22b7807c148dd4cfe5601654613da8c2b8c161ae550cb102d6dce846f568",
+   "candidate_sha256": "80199a16adf3e5846649e4e20f92a93dda754344f46f3903e6a720a1dc28fcfa"
+  },
+  "223dbd99f5": {
+   "overall_score": 73.29535490300323,
+   "overall_score_strict": 73.29535490300323,
+   "overall_score_drift": 51.67321083777134,
+   "page_count": 1,
+   "average_score": 73.29535490300323,
+   "average_score_strict": 73.29535490300323,
+   "average_score_drift": 51.67321083777134,
+   "min_score": 73.29535490300323,
+   "min_score_strict": 73.29535490300323,
+   "min_score_drift": 51.67321083777134,
+   "pages": [
+    {
+     "score": 73.29535490300323,
+     "score_strict": 73.29535490300323,
+     "score_drift": 51.67321083777134,
+     "single_issue_applied": false,
+     "drift_applied": true,
+     "drift_strength_px": 525.4414808643517,
+     "ssim_full": 0.9924406409263611,
+     "ssim_small": 0.9911127090454102,
+     "ink_f1": 0.7934896663184273,
+     "edge_iou": 0.5873095040177334,
+     "color_sim": 0.0,
+     "delta_e": 34.68659591674805,
+     "blob_penalty": 0.10617876424715057,
+     "ink_area": 6668,
+     "drift_ssim_full": 0.970179557800293,
+     "drift_ssim_small": 0.9606655240058899,
+     "drift_ink_f1": 0.18719209844474127,
+     "drift_edge_iou": 0.20846039374496841,
+     "drift_color_sim": 0.0,
+     "drift_delta_e": 41.00419616699219,
+     "drift_blob_penalty": 0.3862008842393673,
+     "page": 1
+    }
+   ],
+   "config": {
+    "max_shift_px": 5.0,
+    "align_upsample": 10,
+    "downscale_factor": 0.25,
+    "edge_sigma": 1.2,
+    "edge_dilate": 1,
+    "ink_min_size": 24,
+    "ink_tol_px": 2.0,
+    "drift_sigma": 2.0,
+    "min_drift_px": 1.0,
+    "single_issue_cap": 30.0,
+    "single_issue_min_gain": 15.0,
+    "single_issue_min_ssim_small": 0.7,
+    "single_issue_min_ink_f1": 0.65,
+    "single_issue_min_edge_iou": 0.5,
+    "single_issue_max_blob_penalty": 0.03,
+    "color_deltaE_max": 20.0,
+    "blob_min_size": 40,
+    "weights": {
+     "ssim_full": 0.25,
+     "ssim_small": 0.15,
+     "ink_f1": 0.2,
+     "edge_iou": 0.15,
+     "color_sim": 0.15,
+     "blob_sim": 0.1
+    }
+   },
+   "page_count_oracle": 1,
+   "page_count_candidate": 1,
+   "page_count_mismatch": false,
+   "average_score_pagefair": 73.29535490300323,
+   "min_score_pagefair": 73.29535490300323,
+   "overall_score_pagefair": 73.29535490300323,
+   "null_score": null,
+   "skill_score": null,
+   "score_v2": null,
+   "ink_jaccard": 0.4167766710668427,
+   "text_boundary": 0.6666666666666666,
+   "max_break_drift": 0,
+   "raster_ns": 73395583,
+   "score_ns": 2505249750,
+   "scorer_backend": "torch-mps",
+   "oracle_sha256": "89e365d3ee6bade433236ed61c05d1007f6f9c2608400a84e6d8decee81055f3",
+   "candidate_sha256": "52a94543f0779d52fa487372cecce122b5c1699464a25991f4b53c4d63472374"
+  },
+  "69d42b2a47": {
+   "overall_score": 65.51876340589536,
+   "overall_score_strict": 65.51876340589536,
+   "overall_score_drift": 59.95778940564781,
+   "page_count": 1,
+   "average_score": 65.51876340589536,
+   "average_score_strict": 65.51876340589536,
+   "average_score_drift": 59.95778940564781,
+   "min_score": 65.51876340589536,
+   "min_score_strict": 65.51876340589536,
+   "min_score_drift": 59.95778940564781,
+   "pages": [
+    {
+     "score": 65.51876340589536,
+     "score_strict": 65.51876340589536,
+     "score_drift": 59.95778940564781,
+     "single_issue_applied": false,
+     "drift_applied": true,
+     "drift_strength_px": 488.83201454152214,
+     "ssim_full": 0.9713560938835144,
+     "ssim_small": 0.9552220702171326,
+     "ink_f1": 0.6046427539968481,
+     "edge_iou": 0.39073735306370105,
+     "color_sim": 0.0,
+     "delta_e": 32.96478271484375,
+     "blob_penalty": 0.10473853703419721,
+     "ink_area": 26084,
+     "drift_ssim_full": 0.9556108713150024,
+     "drift_ssim_small": 0.9476147294044495,
+     "drift_ink_f1": 0.4860738130361228,
+     "drift_edge_iou": 0.2775133051701913,
+     "drift_color_sim": 0.0,
+     "drift_delta_e": 37.025089263916016,
+     "drift_blob_penalty": 0.20308791565693157,
+     "page": 1
+    }
+   ],
+   "config": {
+    "max_shift_px": 5.0,
+    "align_upsample": 10,
+    "downscale_factor": 0.25,
+    "edge_sigma": 1.2,
+    "edge_dilate": 1,
+    "ink_min_size": 24,
+    "ink_tol_px": 2.0,
+    "drift_sigma": 2.0,
+    "min_drift_px": 1.0,
+    "single_issue_cap": 30.0,
+    "single_issue_min_gain": 15.0,
+    "single_issue_min_ssim_small": 0.7,
+    "single_issue_min_ink_f1": 0.65,
+    "single_issue_min_edge_iou": 0.5,
+    "single_issue_max_blob_penalty": 0.03,
+    "color_deltaE_max": 20.0,
+    "blob_min_size": 40,
+    "weights": {
+     "ssim_full": 0.25,
+     "ssim_small": 0.15,
+     "ink_f1": 0.2,
+     "edge_iou": 0.15,
+     "color_sim": 0.15,
+     "blob_sim": 0.1
+    }
+   },
+   "page_count_oracle": 1,
+   "page_count_candidate": 1,
+   "page_count_mismatch": false,
+   "average_score_pagefair": 65.51876340589536,
+   "min_score_pagefair": 65.51876340589536,
+   "overall_score_pagefair": 65.51876340589536,
+   "null_score": null,
+   "skill_score": null,
+   "score_v2": null,
+   "ink_jaccard": 0.2728447811568705,
+   "text_boundary": null,
+   "max_break_drift": 0,
+   "raster_ns": 108202458,
+   "score_ns": 2420611625,
+   "scorer_backend": "torch-mps",
+   "oracle_sha256": "b75a123805e66c780ded2bb143d74ba44a324e682fe7514686e080fc6bf1b397",
+   "candidate_sha256": "a1c1dbd3d613747ecc2c47e8cb1f892bf3fd95a15ad8d1bad7a1e1d0b66d9319"
+  },
+  "afad9d8d2c": {
+   "overall_score": 59.70876276844065,
+   "overall_score_strict": 59.70876276844065,
+   "overall_score_drift": 61.15723285091089,
+   "page_count": 1,
+   "average_score": 59.70876276844066,
+   "average_score_strict": 59.70876276844066,
+   "average_score_drift": 61.157232850910894,
+   "min_score": 59.70876276844066,
+   "min_score_strict": 59.70876276844066,
+   "min_score_drift": 61.157232850910894,
+   "pages": [
+    {
+     "score": 59.70876276844066,
+     "score_strict": 59.70876276844066,
+     "score_drift": 61.157232850910894,
+     "single_issue_applied": false,
+     "drift_applied": true,
+     "drift_strength_px": 512.8508710112105,
+     "ssim_full": 0.9648963809013367,
+     "ssim_small": 0.9418209791183472,
+     "ink_f1": 0.4293223760335568,
+     "edge_iou": 0.23562473706352546,
+     "color_sim": 0.0,
+     "delta_e": 38.87994384765625,
+     "blob_penalty": 0.06617800174919829,
+     "ink_area": 24011,
+     "drift_ssim_full": 0.9642399549484253,
+     "drift_ssim_small": 0.955478847026825,
+     "drift_ink_f1": 0.4376265219214409,
+     "drift_edge_iou": 0.3281082708779443,
+     "drift_color_sim": 0.0,
+     "drift_delta_e": 38.55772018432617,
+     "drift_blob_penalty": 0.09551032298000947,
+     "page": 1
+    }
+   ],
+   "config": {
+    "max_shift_px": 5.0,
+    "align_upsample": 10,
+    "downscale_factor": 0.25,
+    "edge_sigma": 1.2,
+    "edge_dilate": 1,
+    "ink_min_size": 24,
+    "ink_tol_px": 2.0,
+    "drift_sigma": 2.0,
+    "min_drift_px": 1.0,
+    "single_issue_cap": 30.0,
+    "single_issue_min_gain": 15.0,
+    "single_issue_min_ssim_small": 0.7,
+    "single_issue_min_ink_f1": 0.65,
+    "single_issue_min_edge_iou": 0.5,
+    "single_issue_max_blob_penalty": 0.03,
+    "color_deltaE_max": 20.0,
+    "blob_min_size": 40,
+    "weights": {
+     "ssim_full": 0.25,
+     "ssim_small": 0.15,
+     "ink_f1": 0.2,
+     "edge_iou": 0.15,
+     "color_sim": 0.15,
+     "blob_sim": 0.1
+    }
+   },
+   "page_count_oracle": 1,
+   "page_count_candidate": 1,
+   "page_count_mismatch": false,
+   "average_score_pagefair": 59.70876276844066,
+   "min_score_pagefair": 59.70876276844066,
+   "overall_score_pagefair": 59.70876276844065,
+   "null_score": null,
+   "skill_score": null,
+   "score_v2": null,
+   "ink_jaccard": 0.15747971794677382,
+   "text_boundary": null,
+   "max_break_drift": 0,
+   "raster_ns": 81668958,
+   "score_ns": 2628008709,
+   "scorer_backend": "torch-mps",
+   "oracle_sha256": "1f617b3d2b3be37285dd6ad1a5ceb6218cbf52b550ece718fa0ae39303cd640d",
+   "candidate_sha256": "9c847f79abb933680c470ca8e2a51051c3b985d95ad8301b6d1facd04cd7dfcd"
+  },
+  "52d9251560": {
+   "overall_score": 58.20352398044308,
+   "overall_score_strict": 58.20352398044308,
+   "overall_score_drift": 57.13619930251964,
+   "page_count": 1,
+   "average_score": 58.20352398044309,
+   "average_score_strict": 58.20352398044309,
+   "average_score_drift": 57.13619930251964,
+   "min_score": 58.20352398044308,
+   "min_score_strict": 58.20352398044308,
+   "min_score_drift": 57.13619930251964,
+   "pages": [
+    {
+     "score": 58.20352398044308,
+     "score_strict": 58.20352398044308,
+     "score_drift": 57.13619930251964,
+     "single_issue_applied": false,
+     "drift_applied": true,
+     "drift_strength_px": 431.67667250414024,
+     "ssim_full": 0.9673799276351929,
+     "ssim_small": 0.9447524547576904,
+     "ink_f1": 0.3698297511054317,
+     "edge_iou": 0.20530913978494625,
+     "color_sim": 0.0,
+     "delta_e": 42.47637939453125,
+     "blob_penalty": 0.06284931506849314,
+     "ink_area": 18250,
+     "drift_ssim_full": 0.95389723777771,
+     "drift_ssim_small": 0.9445779323577881,
+     "drift_ink_f1": 0.30373207976521,
+     "drift_edge_iou": 0.22694952336302548,
+     "drift_color_sim": 0.0,
+     "drift_delta_e": 40.74362564086914,
+     "drift_blob_penalty": 0.0358785073039507,
+     "page": 1
+    }
+   ],
+   "config": {
+    "max_shift_px": 5.0,
+    "align_upsample": 10,
+    "downscale_factor": 0.25,
+    "edge_sigma": 1.2,
+    "edge_dilate": 1,
+    "ink_min_size": 24,
+    "ink_tol_px": 2.0,
+    "drift_sigma": 2.0,
+    "min_drift_px": 1.0,
+    "single_issue_cap": 30.0,
+    "single_issue_min_gain": 15.0,
+    "single_issue_min_ssim_small": 0.7,
+    "single_issue_min_ink_f1": 0.65,
+    "single_issue_min_edge_iou": 0.5,
+    "single_issue_max_blob_penalty": 0.03,
+    "color_deltaE_max": 20.0,
+    "blob_min_size": 40,
+    "weights": {
+     "ssim_full": 0.25,
+     "ssim_small": 0.15,
+     "ink_f1": 0.2,
+     "edge_iou": 0.15,
+     "color_sim": 0.15,
+     "blob_sim": 0.1
+    }
+   },
+   "page_count_oracle": 1,
+   "page_count_candidate": 1,
+   "page_count_mismatch": false,
+   "average_score_pagefair": 58.20352398044309,
+   "min_score_pagefair": 58.20352398044308,
+   "overall_score_pagefair": 58.20352398044308,
+   "null_score": null,
+   "skill_score": null,
+   "score_v2": null,
+   "ink_jaccard": 0.12395184335035368,
+   "text_boundary": null,
+   "max_break_drift": 0,
+   "raster_ns": 104167958,
+   "score_ns": 2131282250,
+   "scorer_backend": "torch-mps",
+   "oracle_sha256": "40d97bcccdcc5bd1855b37fe70256547aefc11476ab199a6a54c58bba314d57c",
+   "candidate_sha256": "495623141d07ceb5f7463c719d8df7cb54c14ec6911629c47c16596d6d5f04c6"
+  },
+  "327ae4e5e4": {
+   "overall_score": 53.25066098588307,
+   "overall_score_strict": 53.25066098588307,
+   "overall_score_drift": 57.33743499476013,
+   "page_count": 1,
+   "average_score": 53.25066098588308,
+   "average_score_strict": 53.25066098588308,
+   "average_score_drift": 57.33743499476013,
+   "min_score": 53.25066098588308,
+   "min_score_strict": 53.25066098588308,
+   "min_score_drift": 57.33743499476013,
+   "pages": [
+    {
+     "score": 53.25066098588308,
+     "score_strict": 53.25066098588308,
+     "score_drift": 57.33743499476013,
+     "single_issue_applied": false,
+     "drift_applied": true,
+     "drift_strength_px": 229.72931412840924,
+     "ssim_full": 0.9349665641784668,
+     "ssim_small": 0.8893820643424988,
+     "ink_f1": 0.2542333244217173,
+     "edge_iou": 0.14247174697849632,
+     "color_sim": 0.0,
+     "delta_e": 44.419918060302734,
+     "blob_penalty": 0.06859767768278678,
+     "ink_area": 39185,
+     "drift_ssim_full": 0.9150084853172302,
+     "drift_ssim_small": 0.8969484567642212,
+     "drift_ink_f1": 0.38521192409115146,
+     "drift_edge_iou": 0.30271061833178925,
+     "drift_color_sim": 0.0,
+     "drift_delta_e": 43.48275375366211,
+     "drift_blob_penalty": 0.12369017464338088,
+     "page": 1
+    }
+   ],
+   "config": {
+    "max_shift_px": 5.0,
+    "align_upsample": 10,
+    "downscale_factor": 0.25,
+    "edge_sigma": 1.2,
+    "edge_dilate": 1,
+    "ink_min_size": 24,
+    "ink_tol_px": 2.0,
+    "drift_sigma": 2.0,
+    "min_drift_px": 1.0,
+    "single_issue_cap": 30.0,
+    "single_issue_min_gain": 15.0,
+    "single_issue_min_ssim_small": 0.7,
+    "single_issue_min_ink_f1": 0.65,
+    "single_issue_min_edge_iou": 0.5,
+    "single_issue_max_blob_penalty": 0.03,
+    "color_deltaE_max": 20.0,
+    "blob_min_size": 40,
+    "weights": {
+     "ssim_full": 0.25,
+     "ssim_small": 0.15,
+     "ink_f1": 0.2,
+     "edge_iou": 0.15,
+     "color_sim": 0.15,
+     "blob_sim": 0.1
+    }
+   },
+   "page_count_oracle": 1,
+   "page_count_candidate": 1,
+   "page_count_mismatch": false,
+   "average_score_pagefair": 53.25066098588308,
+   "min_score_pagefair": 53.25066098588308,
+   "overall_score_pagefair": 53.25066098588307,
+   "null_score": null,
+   "skill_score": null,
+   "score_v2": null,
+   "ink_jaccard": 0.07836131149014584,
+   "text_boundary": 0.0,
+   "max_break_drift": 0,
+   "raster_ns": 111750833,
+   "score_ns": 2507808500,
+   "scorer_backend": "torch-mps",
+   "oracle_sha256": "e2e03a27a2f06cfe52a6fce14103036f34792fc088b350537300adc7346325f5",
+   "candidate_sha256": "7b10cd2f084da179f51c59ddaf47358c6255497ac63556226214d2bd8e031f61"
+  },
+  "ab1fd1e5f3": {
+   "overall_score": 66.44771227666052,
+   "overall_score_strict": 66.44771227666052,
+   "overall_score_drift": 57.281966619345965,
+   "page_count": 1,
+   "average_score": 66.44771227666052,
+   "average_score_strict": 66.44771227666052,
+   "average_score_drift": 57.28196661934597,
+   "min_score": 66.44771227666052,
+   "min_score_strict": 66.44771227666052,
+   "min_score_drift": 57.28196661934597,
+   "pages": [
+    {
+     "score": 66.44771227666052,
+     "score_strict": 66.44771227666052,
+     "score_drift": 57.28196661934597,
+     "single_issue_applied": false,
+     "drift_applied": true,
+     "drift_strength_px": 434.0750257835185,
+     "ssim_full": 0.9569645524024963,
+     "ssim_small": 0.9343308210372925,
+     "ink_f1": 0.7084310700198525,
+     "edge_iou": 0.31432371884626154,
+     "color_sim": 0.0,
+     "delta_e": 32.33880615234375,
+     "blob_penalty": 0.037484103205224925,
+     "ink_area": 46393,
+     "drift_ssim_full": 0.9299258589744568,
+     "drift_ssim_small": 0.9151647686958313,
+     "drift_ink_f1": 0.44779391266376695,
+     "drift_edge_iou": 0.21767266063452068,
+     "drift_color_sim": 0.0,
+     "drift_delta_e": 40.24519348144531,
+     "drift_blob_penalty": 0.19146195482460707,
+     "page": 1
+    }
+   ],
+   "config": {
+    "max_shift_px": 5.0,
+    "align_upsample": 10,
+    "downscale_factor": 0.25,
+    "edge_sigma": 1.2,
+    "edge_dilate": 1,
+    "ink_min_size": 24,
+    "ink_tol_px": 2.0,
+    "drift_sigma": 2.0,
+    "min_drift_px": 1.0,
+    "single_issue_cap": 30.0,
+    "single_issue_min_gain": 15.0,
+    "single_issue_min_ssim_small": 0.7,
+    "single_issue_min_ink_f1": 0.65,
+    "single_issue_min_edge_iou": 0.5,
+    "single_issue_max_blob_penalty": 0.03,
+    "color_deltaE_max": 20.0,
+    "blob_min_size": 40,
+    "weights": {
+     "ssim_full": 0.25,
+     "ssim_small": 0.15,
+     "ink_f1": 0.2,
+     "edge_iou": 0.15,
+     "color_sim": 0.15,
+     "blob_sim": 0.1
+    }
+   },
+   "page_count_oracle": 1,
+   "page_count_candidate": 1,
+   "page_count_mismatch": false,
+   "average_score_pagefair": 66.44771227666052,
+   "min_score_pagefair": 66.44771227666052,
+   "overall_score_pagefair": 66.44771227666052,
+   "null_score": null,
+   "skill_score": null,
+   "score_v2": null,
+   "ink_jaccard": 0.3554693652543708,
+   "text_boundary": null,
+   "max_break_drift": 0,
+   "raster_ns": 83003750,
+   "score_ns": 2809768458,
+   "scorer_backend": "torch-mps",
+   "oracle_sha256": "8f932614eef9d0b48aaeb9ab37a8e4f5a5bdff47d5b161f5a1cb39851f1c3b52",
+   "candidate_sha256": "c16db74759ff5929f8826bbeecbf6fcb50be972e1437a665d91992b73669123a"
+  },
+  "34fc0e1cec": {
+   "overall_score": 70.6212347025841,
+   "overall_score_strict": 70.6212347025841,
+   "overall_score_drift": 62.528076803157916,
+   "page_count": 1,
+   "average_score": 70.6212347025841,
+   "average_score_strict": 70.6212347025841,
+   "average_score_drift": 62.52807680315792,
+   "min_score": 70.6212347025841,
+   "min_score_strict": 70.6212347025841,
+   "min_score_drift": 62.528076803157916,
+   "pages": [
+    {
+     "score": 70.6212347025841,
+     "score_strict": 70.6212347025841,
+     "score_drift": 62.528076803157916,
+     "single_issue_applied": false,
+     "drift_applied": true,
+     "drift_strength_px": 491.0289068346133,
+     "ssim_full": 0.9864495396614075,
+     "ssim_small": 0.9798840284347534,
+     "ink_f1": 0.7216402539422083,
+     "edge_iou": 0.5073739678051602,
+     "color_sim": 0.0,
+     "delta_e": 26.138582229614258,
+     "blob_penalty": 0.07816788113939624,
+     "ink_area": 10567,
+     "drift_ssim_full": 0.9752829670906067,
+     "drift_ssim_small": 0.9709429144859314,
+     "drift_ink_f1": 0.5628855757685798,
+     "drift_edge_iou": 0.34581055189494836,
+     "drift_color_sim": 0.0,
+     "drift_delta_e": 36.84501266479492,
+     "drift_blob_penalty": 0.2863010885192031,
+     "page": 1
+    }
+   ],
+   "config": {
+    "max_shift_px": 5.0,
+    "align_upsample": 10,
+    "downscale_factor": 0.25,
+    "edge_sigma": 1.2,
+    "edge_dilate": 1,
+    "ink_min_size": 24,
+    "ink_tol_px": 2.0,
+    "drift_sigma": 2.0,
+    "min_drift_px": 1.0,
+    "single_issue_cap": 30.0,
+    "single_issue_min_gain": 15.0,
+    "single_issue_min_ssim_small": 0.7,
+    "single_issue_min_ink_f1": 0.65,
+    "single_issue_min_edge_iou": 0.5,
+    "single_issue_max_blob_penalty": 0.03,
+    "color_deltaE_max": 20.0,
+    "blob_min_size": 40,
+    "weights": {
+     "ssim_full": 0.25,
+     "ssim_small": 0.15,
+     "ink_f1": 0.2,
+     "edge_iou": 0.15,
+     "color_sim": 0.15,
+     "blob_sim": 0.1
+    }
+   },
+   "page_count_oracle": 1,
+   "page_count_candidate": 1,
+   "page_count_mismatch": false,
+   "average_score_pagefair": 70.6212347025841,
+   "min_score_pagefair": 70.6212347025841,
+   "overall_score_pagefair": 70.6212347025841,
+   "null_score": null,
+   "skill_score": null,
+   "score_v2": null,
+   "ink_jaccard": 0.3836624371199039,
+   "text_boundary": null,
+   "max_break_drift": 0,
+   "raster_ns": 85645917,
+   "score_ns": 1834053333,
+   "scorer_backend": "torch-mps",
+   "oracle_sha256": "ef2c8c5fa67e33d77009250d7c66ce08904c49247baa9bc4afbddb8f556e7658",
+   "candidate_sha256": "0ae666664975560e272279bbad8680a9edfc35da2edbda72c78ecc4010e1c412"
+  },
+  "9b4b07d062": {
+   "overall_score": 54.06316006563678,
+   "overall_score_strict": 54.06316006563678,
+   "overall_score_drift": 72.35509659512948,
+   "page_count": 1,
+   "average_score": 54.06316006563679,
+   "average_score_strict": 54.06316006563679,
+   "average_score_drift": 72.35509659512948,
+   "min_score": 54.06316006563679,
+   "min_score_strict": 54.06316006563679,
+   "min_score_drift": 72.35509659512948,
+   "pages": [
+    {
+     "score": 54.06316006563679,
+     "score_strict": 54.06316006563679,
+     "score_drift": 72.35509659512948,
+     "single_issue_applied": false,
+     "drift_applied": true,
+     "drift_strength_px": 532.1392872100483,
+     "ssim_full": 0.9745756387710571,
+     "ssim_small": 0.9506072402000427,
+     "ink_f1": 0.21594375654912853,
+     "edge_iou": 0.11542321007475792,
+     "color_sim": 0.0,
+     "delta_e": 38.353572845458984,
+     "blob_penalty": 0.06105627887442251,
+     "ink_area": 19048,
+     "drift_ssim_full": 0.9907687306404114,
+     "drift_ssim_small": 0.9875410199165344,
+     "drift_ink_f1": 0.7370810473158723,
+     "drift_edge_iou": 0.7592368505969668,
+     "drift_color_sim": 0.0,
+     "drift_delta_e": 22.055654525756836,
+     "drift_blob_penalty": 0.335741067490075,
+     "page": 1
+    }
+   ],
+   "config": {
+    "max_shift_px": 5.0,
+    "align_upsample": 10,
+    "downscale_factor": 0.25,
+    "edge_sigma": 1.2,
+    "edge_dilate": 1,
+    "ink_min_size": 24,
+    "ink_tol_px": 2.0,
+    "drift_sigma": 2.0,
+    "min_drift_px": 1.0,
+    "single_issue_cap": 30.0,
+    "single_issue_min_gain": 15.0,
+    "single_issue_min_ssim_small": 0.7,
+    "single_issue_min_ink_f1": 0.65,
+    "single_issue_min_edge_iou": 0.5,
+    "single_issue_max_blob_penalty": 0.03,
+    "color_deltaE_max": 20.0,
+    "blob_min_size": 40,
+    "weights": {
+     "ssim_full": 0.25,
+     "ssim_small": 0.15,
+     "ink_f1": 0.2,
+     "edge_iou": 0.15,
+     "color_sim": 0.15,
+     "blob_sim": 0.1
+    }
+   },
+   "page_count_oracle": 1,
+   "page_count_candidate": 1,
+   "page_count_mismatch": false,
+   "average_score_pagefair": 54.06316006563679,
+   "min_score_pagefair": 54.06316006563679,
+   "overall_score_pagefair": 54.06316006563678,
+   "null_score": null,
+   "skill_score": null,
+   "score_v2": null,
+   "ink_jaccard": 0.08933746377535726,
+   "text_boundary": null,
+   "max_break_drift": 0,
+   "raster_ns": 69173125,
+   "score_ns": 2451196125,
+   "scorer_backend": "torch-mps",
+   "oracle_sha256": "46255bfe47ac4665216aa97427cb38a36ed7f4186603145eab60b9ffd44d466a",
+   "candidate_sha256": "211f620a2cfc5a4fe7dfa286d3daae28e810481e984be3956a708f641f92d397"
+  },
+  "190d8596bf": {
+   "overall_score": 57.37145690463565,
+   "overall_score_strict": 57.37145690463565,
+   "overall_score_drift": 62.57883818527029,
+   "page_count": 1,
+   "average_score": 57.37145690463565,
+   "average_score_strict": 57.37145690463565,
+   "average_score_drift": 62.5788381852703,
+   "min_score": 57.37145690463565,
+   "min_score_strict": 57.37145690463565,
+   "min_score_drift": 62.5788381852703,
+   "pages": [
+    {
+     "score": 57.37145690463565,
+     "score_strict": 57.37145690463565,
+     "score_drift": 62.5788381852703,
+     "single_issue_applied": false,
+     "drift_applied": true,
+     "drift_strength_px": 469.45836869090806,
+     "ssim_full": 0.9528711438179016,
+     "ssim_small": 0.9261019229888916,
+     "ink_f1": 0.38436657263756374,
+     "edge_iou": 0.19839380467517567,
+     "color_sim": 0.0,
+     "delta_e": 45.67121887207031,
+     "blob_penalty": 0.1005089058524173,
+     "ink_area": 29868,
+     "drift_ssim_full": 0.953896164894104,
+     "drift_ssim_small": 0.942371129989624,
+     "drift_ink_f1": 0.5140460594449923,
+     "drift_edge_iou": 0.3179360963389443,
+     "drift_color_sim": 0.0,
+     "drift_delta_e": 42.96367645263672,
+     "drift_blob_penalty": 0.04540955209106657,
+     "page": 1
+    }
+   ],
+   "config": {
+    "max_shift_px": 5.0,
+    "align_upsample": 10,
+    "downscale_factor": 0.25,
+    "edge_sigma": 1.2,
+    "edge_dilate": 1,
+    "ink_min_size": 24,
+    "ink_tol_px": 2.0,
+    "drift_sigma": 2.0,
+    "min_drift_px": 1.0,
+    "single_issue_cap": 30.0,
+    "single_issue_min_gain": 15.0,
+    "single_issue_min_ssim_small": 0.7,
+    "single_issue_min_ink_f1": 0.65,
+    "single_issue_min_edge_iou": 0.5,
+    "single_issue_max_blob_penalty": 0.03,
+    "color_deltaE_max": 20.0,
+    "blob_min_size": 40,
+    "weights": {
+     "ssim_full": 0.25,
+     "ssim_small": 0.15,
+     "ink_f1": 0.2,
+     "edge_iou": 0.15,
+     "color_sim": 0.15,
+     "blob_sim": 0.1
+    }
+   },
+   "page_count_oracle": 1,
+   "page_count_candidate": 1,
+   "page_count_mismatch": false,
+   "average_score_pagefair": 57.37145690463565,
+   "min_score_pagefair": 57.37145690463565,
+   "overall_score_pagefair": 57.37145690463565,
+   "null_score": null,
+   "skill_score": null,
+   "score_v2": null,
+   "ink_jaccard": 0.10657531091662828,
+   "text_boundary": null,
+   "max_break_drift": 0,
+   "raster_ns": 102009000,
+   "score_ns": 2149699667,
+   "scorer_backend": "torch-mps",
+   "oracle_sha256": "908bd24173d310b24ac2824a12a9cacf151c08f09994ea50dbe6c8c7f007f46a",
+   "candidate_sha256": "154144a37556f1725aa226975fb6882513a864fcb4c82e58daaa740a33f347ba"
+  },
+  "af750bce28": {
+   "overall_score": 62.01404381254518,
+   "overall_score_strict": 62.01404381254518,
+   "overall_score_drift": 54.99394650785959,
+   "page_count": 1,
+   "average_score": 62.014043812545175,
+   "average_score_strict": 62.014043812545175,
+   "average_score_drift": 54.99394650785959,
+   "min_score": 62.01404381254518,
+   "min_score_strict": 62.01404381254518,
+   "min_score_drift": 54.99394650785959,
+   "pages": [
+    {
+     "score": 62.01404381254518,
+     "score_strict": 62.01404381254518,
+     "score_drift": 54.99394650785959,
+     "single_issue_applied": false,
+     "drift_applied": true,
+     "drift_strength_px": 288.4931003855236,
+     "ssim_full": 0.9806432127952576,
+     "ssim_small": 0.9671837687492371,
+     "ink_f1": 0.47927851678569094,
+     "edge_iou": 0.3023143216810303,
+     "color_sim": 0.0,
+     "delta_e": 41.586673736572266,
+     "blob_penalty": 0.11300781995041007,
+     "ink_area": 10486,
+     "drift_ssim_full": 0.9632991552352905,
+     "drift_ssim_small": 0.9623254537582397,
+     "drift_ink_f1": 0.3113799729181496,
+     "drift_edge_iou": 0.18413012963421682,
+     "drift_color_sim": 0.0,
+     "drift_delta_e": 39.428524017333984,
+     "drift_blob_penalty": 0.2512965582272513,
+     "page": 1
+    }
+   ],
+   "config": {
+    "max_shift_px": 5.0,
+    "align_upsample": 10,
+    "downscale_factor": 0.25,
+    "edge_sigma": 1.2,
+    "edge_dilate": 1,
+    "ink_min_size": 24,
+    "ink_tol_px": 2.0,
+    "drift_sigma": 2.0,
+    "min_drift_px": 1.0,
+    "single_issue_cap": 30.0,
+    "single_issue_min_gain": 15.0,
+    "single_issue_min_ssim_small": 0.7,
+    "single_issue_min_ink_f1": 0.65,
+    "single_issue_min_edge_iou": 0.5,
+    "single_issue_max_blob_penalty": 0.03,
+    "color_deltaE_max": 20.0,
+    "blob_min_size": 40,
+    "weights": {
+     "ssim_full": 0.25,
+     "ssim_small": 0.15,
+     "ink_f1": 0.2,
+     "edge_iou": 0.15,
+     "color_sim": 0.15,
+     "blob_sim": 0.1
+    }
+   },
+   "page_count_oracle": 1,
+   "page_count_candidate": 1,
+   "page_count_mismatch": false,
+   "average_score_pagefair": 62.014043812545175,
+   "min_score_pagefair": 62.01404381254518,
+   "overall_score_pagefair": 62.01404381254518,
+   "null_score": null,
+   "skill_score": null,
+   "score_v2": null,
+   "ink_jaccard": 0.17756811941139197,
+   "text_boundary": null,
+   "max_break_drift": 0,
+   "raster_ns": 109032000,
+   "score_ns": 1795080625,
+   "scorer_backend": "torch-mps",
+   "oracle_sha256": "abc45fd40b81e96a7b9403dfa27be6f1daba778d9d135db920917f068d965a56",
+   "candidate_sha256": "5a048d5011b4a65e78a6e52769bfbe8eab0ff6b599e043183d5367cd6fda4d36"
+  },
+  "ac2d091203": {
+   "overall_score": 68.92735714163473,
+   "overall_score_strict": 68.92735714163473,
+   "overall_score_drift": 69.19499378809333,
+   "page_count": 1,
+   "average_score": 68.92735714163474,
+   "average_score_strict": 68.92735714163474,
+   "average_score_drift": 69.19499378809333,
+   "min_score": 68.92735714163474,
+   "min_score_strict": 68.92735714163474,
+   "min_score_drift": 69.19499378809333,
+   "pages": [
+    {
+     "score": 68.92735714163474,
+     "score_strict": 68.92735714163474,
+     "score_drift": 69.19499378809333,
+     "single_issue_applied": false,
+     "drift_applied": true,
+     "drift_strength_px": 506.430520583843,
+     "ssim_full": 0.9833210706710815,
+     "ssim_small": 0.975841760635376,
+     "ink_f1": 0.6907477731587465,
+     "edge_iou": 0.47440754362193405,
+     "color_sim": 0.0,
+     "delta_e": 34.822265625,
+     "blob_penalty": 0.12243646521768754,
+     "ink_area": 14677,
+     "drift_ssim_full": 0.9815274477005005,
+     "drift_ssim_small": 0.9772002100944519,
+     "drift_ink_f1": 0.6943566513256433,
+     "drift_edge_iou": 0.49253565372105307,
+     "drift_color_sim": 0.0,
+     "drift_delta_e": 35.83085632324219,
+     "drift_blob_penalty": 0.12763633881646305,
+     "page": 1
+    }
+   ],
+   "config": {
+    "max_shift_px": 5.0,
+    "align_upsample": 10,
+    "downscale_factor": 0.25,
+    "edge_sigma": 1.2,
+    "edge_dilate": 1,
+    "ink_min_size": 24,
+    "ink_tol_px": 2.0,
+    "drift_sigma": 2.0,
+    "min_drift_px": 1.0,
+    "single_issue_cap": 30.0,
+    "single_issue_min_gain": 15.0,
+    "single_issue_min_ssim_small": 0.7,
+    "single_issue_min_ink_f1": 0.65,
+    "single_issue_min_edge_iou": 0.5,
+    "single_issue_max_blob_penalty": 0.03,
+    "color_deltaE_max": 20.0,
+    "blob_min_size": 40,
+    "weights": {
+     "ssim_full": 0.25,
+     "ssim_small": 0.15,
+     "ink_f1": 0.2,
+     "edge_iou": 0.15,
+     "color_sim": 0.15,
+     "blob_sim": 0.1
+    }
+   },
+   "page_count_oracle": 1,
+   "page_count_candidate": 1,
+   "page_count_mismatch": false,
+   "average_score_pagefair": 68.92735714163474,
+   "min_score_pagefair": 68.92735714163474,
+   "overall_score_pagefair": 68.92735714163473,
+   "null_score": null,
+   "skill_score": null,
+   "score_v2": null,
+   "ink_jaccard": 0.34970334253656815,
+   "text_boundary": 0.5,
+   "max_break_drift": 0,
+   "raster_ns": 44419291,
+   "score_ns": 2745253917,
+   "scorer_backend": "torch-mps",
+   "oracle_sha256": "f9c79a1b66e6f37d083a839ef5abec32703edacb67ed0a2c4a2e54698b347823",
+   "candidate_sha256": "c18f3913d0139be6c54fc6a686456a750490f2ccf27b5ab85b24cc6527a11d3f"
+  },
+  "fd9169c091": {
+   "overall_score": 53.6166122678499,
+   "overall_score_strict": 53.6166122678499,
+   "overall_score_drift": 55.58272408521756,
+   "page_count": 1,
+   "average_score": 53.6166122678499,
+   "average_score_strict": 53.6166122678499,
+   "average_score_drift": 55.58272408521757,
+   "min_score": 53.6166122678499,
+   "min_score_strict": 53.6166122678499,
+   "min_score_drift": 55.58272408521756,
+   "pages": [
+    {
+     "score": 53.6166122678499,
+     "score_strict": 53.6166122678499,
+     "score_drift": 55.58272408521756,
+     "single_issue_applied": false,
+     "drift_applied": true,
+     "drift_strength_px": 501.6412547748899,
+     "ssim_full": 0.9650874733924866,
+     "ssim_small": 0.9380286335945129,
+     "ink_f1": 0.24434049560681248,
+     "edge_iou": 0.13912564779134,
+     "color_sim": 0.0,
+     "delta_e": 51.89970016479492,
+     "blob_penalty": 0.1554698699886302,
+     "ink_area": 20229,
+     "drift_ssim_full": 0.9483445286750793,
+     "drift_ssim_small": 0.9243281483650208,
+     "drift_ink_f1": 0.3155378932323427,
+     "drift_edge_iou": 0.2252042457381795,
+     "drift_color_sim": 0.0,
+     "drift_delta_e": 55.34772491455078,
+     "drift_blob_penalty": 0.16796329078542813,
+     "page": 1
+    }
+   ],
+   "config": {
+    "max_shift_px": 5.0,
+    "align_upsample": 10,
+    "downscale_factor": 0.25,
+    "edge_sigma": 1.2,
+    "edge_dilate": 1,
+    "ink_min_size": 24,
+    "ink_tol_px": 2.0,
+    "drift_sigma": 2.0,
+    "min_drift_px": 1.0,
+    "single_issue_cap": 30.0,
+    "single_issue_min_gain": 15.0,
+    "single_issue_min_ssim_small": 0.7,
+    "single_issue_min_ink_f1": 0.65,
+    "single_issue_min_edge_iou": 0.5,
+    "single_issue_max_blob_penalty": 0.03,
+    "color_deltaE_max": 20.0,
+    "blob_min_size": 40,
+    "weights": {
+     "ssim_full": 0.25,
+     "ssim_small": 0.15,
+     "ink_f1": 0.2,
+     "edge_iou": 0.15,
+     "color_sim": 0.15,
+     "blob_sim": 0.1
+    }
+   },
+   "page_count_oracle": 1,
+   "page_count_candidate": 1,
+   "page_count_mismatch": false,
+   "average_score_pagefair": 53.6166122678499,
+   "min_score_pagefair": 53.6166122678499,
+   "overall_score_pagefair": 53.6166122678499,
+   "null_score": null,
+   "skill_score": null,
+   "score_v2": null,
+   "ink_jaccard": 0.08322016635545748,
+   "text_boundary": null,
+   "max_break_drift": 0,
+   "raster_ns": 58999125,
+   "score_ns": 2635978333,
+   "scorer_backend": "torch-mps",
+   "oracle_sha256": "aeed804ae992aa6d3e6ae1879ca0fe43dea4f175f900c159c0127bb064e8b544",
+   "candidate_sha256": "bb23b7030eb21d6e2b91a8ccadca975513df77096cce4cd1fe38fcc2f868ee8b"
+  },
+  "f3319e24f8": {
+   "overall_score": 67.89210957962484,
+   "overall_score_strict": 67.89210957962484,
+   "overall_score_drift": 58.51262580632114,
+   "page_count": 1,
+   "average_score": 67.89210957962484,
+   "average_score_strict": 67.89210957962484,
+   "average_score_drift": 58.51262580632114,
+   "min_score": 67.89210957962484,
+   "min_score_strict": 67.89210957962484,
+   "min_score_drift": 58.51262580632114,
+   "pages": [
+    {
+     "score": 67.89210957962484,
+     "score_strict": 67.89210957962484,
+     "score_drift": 58.51262580632114,
+     "single_issue_applied": false,
+     "drift_applied": true,
+     "drift_strength_px": 289.81598967085137,
+     "ssim_full": 0.9644765257835388,
+     "ssim_small": 0.9517813920974731,
+     "ink_f1": 0.6591766863557605,
+     "edge_iou": 0.46113462417601864,
+     "color_sim": 0.0,
+     "delta_e": 42.282291412353516,
+     "blob_penalty": 0.05970775361812207,
+     "ink_area": 28606,
+     "drift_ssim_full": 0.931641697883606,
+     "drift_ssim_small": 0.918990969657898,
+     "drift_ink_f1": 0.44451661677529464,
+     "drift_edge_iou": 0.29197061432594673,
+     "drift_color_sim": 0.0,
+     "drift_delta_e": 40.974937438964844,
+     "drift_blob_penalty": 0.183317273603258,
+     "page": 1
+    }
+   ],
+   "config": {
+    "max_shift_px": 5.0,
+    "align_upsample": 10,
+    "downscale_factor": 0.25,
+    "edge_sigma": 1.2,
+    "edge_dilate": 1,
+    "ink_min_size": 24,
+    "ink_tol_px": 2.0,
+    "drift_sigma": 2.0,
+    "min_drift_px": 1.0,
+    "single_issue_cap": 30.0,
+    "single_issue_min_gain": 15.0,
+    "single_issue_min_ssim_small": 0.7,
+    "single_issue_min_ink_f1": 0.65,
+    "single_issue_min_edge_iou": 0.5,
+    "single_issue_max_blob_penalty": 0.03,
+    "color_deltaE_max": 20.0,
+    "blob_min_size": 40,
+    "weights": {
+     "ssim_full": 0.25,
+     "ssim_small": 0.15,
+     "ink_f1": 0.2,
+     "edge_iou": 0.15,
+     "color_sim": 0.15,
+     "blob_sim": 0.1
+    }
+   },
+   "page_count_oracle": 1,
+   "page_count_candidate": 1,
+   "page_count_mismatch": false,
+   "average_score_pagefair": 67.89210957962484,
+   "min_score_pagefair": 67.89210957962484,
+   "overall_score_pagefair": 67.89210957962484,
+   "null_score": null,
+   "skill_score": null,
+   "score_v2": null,
+   "ink_jaccard": 0.2811667024112258,
+   "text_boundary": 0.1111111111111111,
+   "max_break_drift": 0,
+   "raster_ns": 85002875,
+   "score_ns": 1839460875,
+   "scorer_backend": "torch-mps",
+   "oracle_sha256": "e121dfb67cb67dfc29a90589abe2c555bb85a6896b668d58ecbfbbc545ce1c0b",
+   "candidate_sha256": "b3420f09ac6edca2cb9a7734f7f03b153c263db1dda7fcad8adf2229bbb36c14"
+  },
+  "5a100df35e": {
+   "overall_score": 54.20450158387331,
+   "overall_score_strict": 54.20450158387331,
+   "overall_score_drift": 54.53392871851656,
+   "page_count": 1,
+   "average_score": 54.204501583873316,
+   "average_score_strict": 54.204501583873316,
+   "average_score_drift": 54.53392871851656,
+   "min_score": 54.20450158387331,
+   "min_score_strict": 54.20450158387331,
+   "min_score_drift": 54.53392871851656,
+   "pages": [
+    {
+     "score": 54.20450158387331,
+     "score_strict": 54.20450158387331,
+     "score_drift": 54.53392871851656,
+     "single_issue_applied": false,
+     "drift_applied": true,
+     "drift_strength_px": 429.01871792670437,
+     "ssim_full": 0.9623540043830872,
+     "ssim_small": 0.936207115650177,
+     "ink_f1": 0.27431978652865946,
+     "edge_iou": 0.15847681994855137,
+     "color_sim": 0.0,
+     "delta_e": 41.78419494628906,
+     "blob_penalty": 0.17610032902579753,
+     "ink_area": 20971,
+     "drift_ssim_full": 0.9542754888534546,
+     "drift_ssim_small": 0.9353526830673218,
+     "drift_ink_f1": 0.31809291359278413,
+     "drift_edge_iou": 0.23656197765461423,
+     "drift_color_sim": 0.0,
+     "drift_delta_e": 41.20902633666992,
+     "drift_blob_penalty": 0.3263536685504516,
+     "page": 1
+    }
+   ],
+   "config": {
+    "max_shift_px": 5.0,
+    "align_upsample": 10,
+    "downscale_factor": 0.25,
+    "edge_sigma": 1.2,
+    "edge_dilate": 1,
+    "ink_min_size": 24,
+    "ink_tol_px": 2.0,
+    "drift_sigma": 2.0,
+    "min_drift_px": 1.0,
+    "single_issue_cap": 30.0,
+    "single_issue_min_gain": 15.0,
+    "single_issue_min_ssim_small": 0.7,
+    "single_issue_min_ink_f1": 0.65,
+    "single_issue_min_edge_iou": 0.5,
+    "single_issue_max_blob_penalty": 0.03,
+    "color_deltaE_max": 20.0,
+    "blob_min_size": 40,
+    "weights": {
+     "ssim_full": 0.25,
+     "ssim_small": 0.15,
+     "ink_f1": 0.2,
+     "edge_iou": 0.15,
+     "color_sim": 0.15,
+     "blob_sim": 0.1
+    }
+   },
+   "page_count_oracle": 1,
+   "page_count_candidate": 1,
+   "page_count_mismatch": false,
+   "average_score_pagefair": 54.204501583873316,
+   "min_score_pagefair": 54.20450158387331,
+   "overall_score_pagefair": 54.20450158387331,
+   "null_score": null,
+   "skill_score": null,
+   "score_v2": null,
+   "ink_jaccard": 0.08146260567083283,
+   "text_boundary": null,
+   "max_break_drift": 0,
+   "raster_ns": 93646375,
+   "score_ns": 2643472958,
+   "scorer_backend": "torch-mps",
+   "oracle_sha256": "e221a4bfcd1d6cf7f9e4f0664118e14f6daeaa2b3038d56aaff9112e90a3e5fb",
+   "candidate_sha256": "1eab15278d5bf66c7c40f5e65f3641fd31520367572285ccfe36c228e650f1b3"
+  },
+  "147dc2c797": {
+   "overall_score": 47.199902211681206,
+   "overall_score_strict": 47.199902211681206,
+   "overall_score_drift": 49.89824777579632,
+   "page_count": 1,
+   "average_score": 47.199902211681206,
+   "average_score_strict": 47.199902211681206,
+   "average_score_drift": 49.89824777579632,
+   "min_score": 47.199902211681206,
+   "min_score_strict": 47.199902211681206,
+   "min_score_drift": 49.89824777579632,
+   "pages": [
+    {
+     "score": 47.199902211681206,
+     "score_strict": 47.199902211681206,
+     "score_drift": 49.89824777579632,
+     "single_issue_applied": false,
+     "drift_applied": true,
+     "drift_strength_px": 240.3471648899333,
+     "ssim_full": 0.8742257952690125,
+     "ssim_small": 0.7954637408256531,
+     "ink_f1": 0.1939314551047879,
+     "edge_iou": 0.10508257929967373,
+     "color_sim": 0.0,
+     "delta_e": 43.13212966918945,
+     "blob_penalty": 0.20425665740197704,
+     "ink_area": 117651,
+     "drift_ssim_full": 0.8430914282798767,
+     "drift_ssim_small": 0.7887287139892578,
+     "drift_ink_f1": 0.35308100050266794,
+     "drift_edge_iou": 0.18767993081553463,
+     "drift_color_sim": 0.0,
+     "drift_delta_e": 40.4551887512207,
+     "drift_blob_penalty": 0.2886787613325836,
+     "page": 1
+    }
+   ],
+   "config": {
+    "max_shift_px": 5.0,
+    "align_upsample": 10,
+    "downscale_factor": 0.25,
+    "edge_sigma": 1.2,
+    "edge_dilate": 1,
+    "ink_min_size": 24,
+    "ink_tol_px": 2.0,
+    "drift_sigma": 2.0,
+    "min_drift_px": 1.0,
+    "single_issue_cap": 30.0,
+    "single_issue_min_gain": 15.0,
+    "single_issue_min_ssim_small": 0.7,
+    "single_issue_min_ink_f1": 0.65,
+    "single_issue_min_edge_iou": 0.5,
+    "single_issue_max_blob_penalty": 0.03,
+    "color_deltaE_max": 20.0,
+    "blob_min_size": 40,
+    "weights": {
+     "ssim_full": 0.25,
+     "ssim_small": 0.15,
+     "ink_f1": 0.2,
+     "edge_iou": 0.15,
+     "color_sim": 0.15,
+     "blob_sim": 0.1
+    }
+   },
+   "page_count_oracle": 1,
+   "page_count_candidate": 1,
+   "page_count_mismatch": false,
+   "average_score_pagefair": 47.199902211681206,
+   "min_score_pagefair": 47.199902211681206,
+   "overall_score_pagefair": 47.199902211681206,
+   "null_score": null,
+   "skill_score": null,
+   "score_v2": null,
+   "ink_jaccard": 0.06274832168790245,
+   "text_boundary": 0.0,
+   "max_break_drift": 0,
+   "raster_ns": 78073542,
+   "score_ns": 2689044875,
+   "scorer_backend": "torch-mps",
+   "oracle_sha256": "71c74325847a5f213a615cff20902646f0040c039ab1efc67daf9b8dfcd02d9e",
+   "candidate_sha256": "1a59345abeb00035e8d71f5a32bb535d345c32a45a2cdb82dc96e73c31038ac4"
+  },
+  "0480d8c02b": {
+   "overall_score": 56.87198187563111,
+   "overall_score_strict": 56.87198187563111,
+   "overall_score_drift": 64.0961995666445,
+   "page_count": 1,
+   "average_score": 56.87198187563111,
+   "average_score_strict": 56.87198187563111,
+   "average_score_drift": 64.0961995666445,
+   "min_score": 56.87198187563111,
+   "min_score_strict": 56.87198187563111,
+   "min_score_drift": 64.0961995666445,
+   "pages": [
+    {
+     "score": 56.87198187563111,
+     "score_strict": 56.87198187563111,
+     "score_drift": 64.0961995666445,
+     "single_issue_applied": false,
+     "drift_applied": true,
+     "drift_strength_px": 424.7783896248975,
+     "ssim_full": 0.976626992225647,
+     "ssim_small": 0.9563226699829102,
+     "ink_f1": 0.3402915977405037,
+     "edge_iou": 0.12989596952987323,
+     "color_sim": 0.0,
+     "delta_e": 40.651878356933594,
+     "blob_penalty": 0.06428044775118975,
+     "ink_area": 14919,
+     "drift_ssim_full": 0.9793071746826172,
+     "drift_ssim_small": 0.9784095883369446,
+     "drift_ink_f1": 0.5798952923044671,
+     "drift_edge_iou": 0.3272038609566864,
+     "drift_color_sim": 0.0,
+     "drift_delta_e": 36.971275329589844,
+     "drift_blob_penalty": 0.15685873859147256,
+     "page": 1
+    }
+   ],
+   "config": {
+    "max_shift_px": 5.0,
+    "align_upsample": 10,
+    "downscale_factor": 0.25,
+    "edge_sigma": 1.2,
+    "edge_dilate": 1,
+    "ink_min_size": 24,
+    "ink_tol_px": 2.0,
+    "drift_sigma": 2.0,
+    "min_drift_px": 1.0,
+    "single_issue_cap": 30.0,
+    "single_issue_min_gain": 15.0,
+    "single_issue_min_ssim_small": 0.7,
+    "single_issue_min_ink_f1": 0.65,
+    "single_issue_min_edge_iou": 0.5,
+    "single_issue_max_blob_penalty": 0.03,
+    "color_deltaE_max": 20.0,
+    "blob_min_size": 40,
+    "weights": {
+     "ssim_full": 0.25,
+     "ssim_small": 0.15,
+     "ink_f1": 0.2,
+     "edge_iou": 0.15,
+     "color_sim": 0.15,
+     "blob_sim": 0.1
+    }
+   },
+   "page_count_oracle": 1,
+   "page_count_candidate": 1,
+   "page_count_mismatch": false,
+   "average_score_pagefair": 56.87198187563111,
+   "min_score_pagefair": 56.87198187563111,
+   "overall_score_pagefair": 56.87198187563111,
+   "null_score": null,
+   "skill_score": null,
+   "score_v2": null,
+   "ink_jaccard": 0.1135250917992656,
+   "text_boundary": null,
+   "max_break_drift": 0,
+   "raster_ns": 61368667,
+   "score_ns": 1998528167,
+   "scorer_backend": "torch-mps",
+   "oracle_sha256": "b5de13a4b36e44142880ffc78eb69cf22c9be5d04a1152730679f03786e64e96",
+   "candidate_sha256": "960b6a5a2e8355fe95fe77c50b2844d772fcd08c7211b37e75ed9e9750760f0b"
+  },
+  "e5c6ee8155": {
+   "overall_score": 61.59783449255182,
+   "overall_score_strict": 61.59783449255182,
+   "overall_score_drift": 51.92733236287692,
+   "page_count": 1,
+   "average_score": 61.597834492551826,
+   "average_score_strict": 61.597834492551826,
+   "average_score_drift": 51.92733236287692,
+   "min_score": 61.597834492551826,
+   "min_score_strict": 61.597834492551826,
+   "min_score_drift": 51.92733236287691,
+   "pages": [
+    {
+     "score": 61.597834492551826,
+     "score_strict": 61.597834492551826,
+     "score_drift": 51.92733236287691,
+     "single_issue_applied": false,
+     "drift_applied": true,
+     "drift_strength_px": 420.54310179285284,
+     "ssim_full": 0.9679450988769531,
+     "ssim_small": 0.948847770690918,
+     "ink_f1": 0.5064590574848354,
+     "edge_iou": 0.2696781173924804,
+     "color_sim": 0.0,
+     "delta_e": 46.01663589477539,
+     "blob_penalty": 0.1007862450319682,
+     "ink_area": 23148,
+     "drift_ssim_full": 0.9540504813194275,
+     "drift_ssim_small": 0.9345746636390686,
+     "drift_ink_f1": 0.29271636396748346,
+     "drift_edge_iou": 0.24346219047883721,
+     "drift_color_sim": 0.0,
+     "drift_delta_e": 43.181034088134766,
+     "drift_blob_penalty": 0.5448809761227043,
+     "page": 1
+    }
+   ],
+   "config": {
+    "max_shift_px": 5.0,
+    "align_upsample": 10,
+    "downscale_factor": 0.25,
+    "edge_sigma": 1.2,
+    "edge_dilate": 1,
+    "ink_min_size": 24,
+    "ink_tol_px": 2.0,
+    "drift_sigma": 2.0,
+    "min_drift_px": 1.0,
+    "single_issue_cap": 30.0,
+    "single_issue_min_gain": 15.0,
+    "single_issue_min_ssim_small": 0.7,
+    "single_issue_min_ink_f1": 0.65,
+    "single_issue_min_edge_iou": 0.5,
+    "single_issue_max_blob_penalty": 0.03,
+    "color_deltaE_max": 20.0,
+    "blob_min_size": 40,
+    "weights": {
+     "ssim_full": 0.25,
+     "ssim_small": 0.15,
+     "ink_f1": 0.2,
+     "edge_iou": 0.15,
+     "color_sim": 0.15,
+     "blob_sim": 0.1
+    }
+   },
+   "page_count_oracle": 1,
+   "page_count_candidate": 1,
+   "page_count_mismatch": false,
+   "average_score_pagefair": 61.597834492551826,
+   "min_score_pagefair": 61.597834492551826,
+   "overall_score_pagefair": 61.59783449255182,
+   "null_score": null,
+   "skill_score": null,
+   "score_v2": null,
+   "ink_jaccard": 0.18695801657943997,
+   "text_boundary": null,
+   "max_break_drift": 0,
+   "raster_ns": 65653042,
+   "score_ns": 1773702417,
+   "scorer_backend": "torch-mps",
+   "oracle_sha256": "a748d27a5b50d678575d143135d85ff6c7d103f9a4a1923d7bc33ec7ba112f6a",
+   "candidate_sha256": "ef064dad81363bd5dd7281b39e5f20c1ec1441e67e7a0af9db04afb9f044c2e0"
+  },
+  "97a198f0c8": {
+   "overall_score": 53.834437137759274,
+   "overall_score_strict": 53.834437137759274,
+   "overall_score_drift": 62.41827135509892,
+   "page_count": 1,
+   "average_score": 53.83443713775928,
+   "average_score_strict": 53.83443713775928,
+   "average_score_drift": 62.41827135509893,
+   "min_score": 53.83443713775928,
+   "min_score_strict": 53.83443713775928,
+   "min_score_drift": 62.41827135509892,
+   "pages": [
+    {
+     "score": 53.83443713775928,
+     "score_strict": 53.83443713775928,
+     "score_drift": 62.41827135509892,
+     "single_issue_applied": false,
+     "drift_applied": true,
+     "drift_strength_px": 456.2050608713366,
+     "ssim_full": 0.9742944240570068,
+     "ssim_small": 0.9493999481201172,
+     "ink_f1": 0.21263289639727986,
+     "edge_iou": 0.10796167159985953,
+     "color_sim": 0.0,
+     "delta_e": 46.45056915283203,
+     "blob_penalty": 0.06360056874111342,
+     "ink_area": 18286,
+     "drift_ssim_full": 0.9823457598686218,
+     "drift_ssim_small": 0.9708765149116516,
+     "drift_ink_f1": 0.4408750239417086,
+     "drift_edge_iou": 0.6680420105026257,
+     "drift_color_sim": 0.0,
+     "drift_delta_e": 37.62578201293945,
+     "drift_blob_penalty": 0.5541651001664966,
+     "page": 1
+    }
+   ],
+   "config": {
+    "max_shift_px": 5.0,
+    "align_upsample": 10,
+    "downscale_factor": 0.25,
+    "edge_sigma": 1.2,
+    "edge_dilate": 1,
+    "ink_min_size": 24,
+    "ink_tol_px": 2.0,
+    "drift_sigma": 2.0,
+    "min_drift_px": 1.0,
+    "single_issue_cap": 30.0,
+    "single_issue_min_gain": 15.0,
+    "single_issue_min_ssim_small": 0.7,
+    "single_issue_min_ink_f1": 0.65,
+    "single_issue_min_edge_iou": 0.5,
+    "single_issue_max_blob_penalty": 0.03,
+    "color_deltaE_max": 20.0,
+    "blob_min_size": 40,
+    "weights": {
+     "ssim_full": 0.25,
+     "ssim_small": 0.15,
+     "ink_f1": 0.2,
+     "edge_iou": 0.15,
+     "color_sim": 0.15,
+     "blob_sim": 0.1
+    }
+   },
+   "page_count_oracle": 1,
+   "page_count_candidate": 1,
+   "page_count_mismatch": false,
+   "average_score_pagefair": 53.83443713775928,
+   "min_score_pagefair": 53.83443713775928,
+   "overall_score_pagefair": 53.834437137759274,
+   "null_score": null,
+   "skill_score": null,
+   "score_v2": null,
+   "ink_jaccard": 0.08532155130093275,
+   "text_boundary": null,
+   "max_break_drift": 0,
+   "raster_ns": 81351291,
+   "score_ns": 2400575917,
+   "scorer_backend": "torch-mps",
+   "oracle_sha256": "7fa078cedc6bbfb9b62ccaea05bd7e08f9712badf5e71925102a74e18d0281ee",
+   "candidate_sha256": "ec7346de8d413b0917d79a392805f9f5e30cfa2938435225f3c6ac267e9ca6a7"
+  },
+  "fe2fb2ad13": {
+   "overall_score": 47.142014521384446,
+   "overall_score_strict": 47.142014521384446,
+   "overall_score_drift": 49.99951171804772,
+   "page_count": 1,
+   "average_score": 47.14201452138445,
+   "average_score_strict": 47.14201452138445,
+   "average_score_drift": 49.99951171804772,
+   "min_score": 47.14201452138445,
+   "min_score_strict": 47.14201452138445,
+   "min_score_drift": 49.99951171804772,
+   "pages": [
+    {
+     "score": 47.14201452138445,
+     "score_strict": 47.14201452138445,
+     "score_drift": 49.99951171804772,
+     "single_issue_applied": false,
+     "drift_applied": true,
+     "drift_strength_px": 240.31425464320415,
+     "ssim_full": 0.8738537430763245,
+     "ssim_small": 0.7943874001502991,
+     "ink_f1": 0.19333589473316984,
+     "edge_iou": 0.10506381060662123,
+     "color_sim": 0.0,
+     "delta_e": 50.75002670288086,
+     "blob_penalty": 0.20628151115408522,
+     "ink_area": 115832,
+     "drift_ssim_full": 0.8444609045982361,
+     "drift_ssim_small": 0.7904782295227051,
+     "drift_ink_f1": 0.3502674399351388,
+     "drift_edge_iou": 0.18632871642460608,
+     "drift_color_sim": 0.0,
+     "drift_delta_e": 46.19247055053711,
+     "drift_blob_penalty": 0.27694638848206277,
+     "page": 1
+    }
+   ],
+   "config": {
+    "max_shift_px": 5.0,
+    "align_upsample": 10,
+    "downscale_factor": 0.25,
+    "edge_sigma": 1.2,
+    "edge_dilate": 1,
+    "ink_min_size": 24,
+    "ink_tol_px": 2.0,
+    "drift_sigma": 2.0,
+    "min_drift_px": 1.0,
+    "single_issue_cap": 30.0,
+    "single_issue_min_gain": 15.0,
+    "single_issue_min_ssim_small": 0.7,
+    "single_issue_min_ink_f1": 0.65,
+    "single_issue_min_edge_iou": 0.5,
+    "single_issue_max_blob_penalty": 0.03,
+    "color_deltaE_max": 20.0,
+    "blob_min_size": 40,
+    "weights": {
+     "ssim_full": 0.25,
+     "ssim_small": 0.15,
+     "ink_f1": 0.2,
+     "edge_iou": 0.15,
+     "color_sim": 0.15,
+     "blob_sim": 0.1
+    }
+   },
+   "page_count_oracle": 1,
+   "page_count_candidate": 1,
+   "page_count_mismatch": false,
+   "average_score_pagefair": 47.14201452138445,
+   "min_score_pagefair": 47.14201452138445,
+   "overall_score_pagefair": 47.142014521384446,
+   "null_score": null,
+   "skill_score": null,
+   "score_v2": null,
+   "ink_jaccard": 0.06305499828155348,
+   "text_boundary": 0.0,
+   "max_break_drift": 0,
+   "raster_ns": 72269500,
+   "score_ns": 2582863875,
+   "scorer_backend": "torch-mps",
+   "oracle_sha256": "822037355ade3c7273528c8f96f1a1e49a8d4e15ece946d92c9d3bf91200c79c",
+   "candidate_sha256": "93a62c3446cc0ca70d382c610b98755f5fc3a3ae304b03354687859ade72c9c4"
+  },
+  "29a4c9cce0": {
+   "overall_score": 56.369025624363815,
+   "overall_score_strict": 56.369025624363815,
+   "overall_score_drift": 59.334927707646926,
+   "page_count": 1,
+   "average_score": 56.369025624363815,
+   "average_score_strict": 56.369025624363815,
+   "average_score_drift": 59.334927707646926,
+   "min_score": 56.369025624363815,
+   "min_score_strict": 56.369025624363815,
+   "min_score_drift": 59.334927707646926,
+   "pages": [
+    {
+     "score": 56.369025624363815,
+     "score_strict": 56.369025624363815,
+     "score_drift": 59.334927707646926,
+     "single_issue_applied": false,
+     "drift_applied": true,
+     "drift_strength_px": 481.8114244610578,
+     "ssim_full": 0.9615829586982727,
+     "ssim_small": 0.9345382452011108,
+     "ink_f1": 0.3422879944004497,
+     "edge_iou": 0.20476101282204098,
+     "color_sim": 0.0,
+     "delta_e": 42.09828567504883,
+     "blob_penalty": 0.16057971014492753,
+     "ink_area": 24150,
+     "drift_ssim_full": 0.9508407115936279,
+     "drift_ssim_small": 0.9437214136123657,
+     "drift_ink_f1": 0.39857551391581114,
+     "drift_edge_iou": 0.2816718410219238,
+     "drift_color_sim": 0.0,
+     "drift_delta_e": 40.0672721862793,
+     "drift_blob_penalty": 0.07884991800243348,
+     "page": 1
+    }
+   ],
+   "config": {
+    "max_shift_px": 5.0,
+    "align_upsample": 10,
+    "downscale_factor": 0.25,
+    "edge_sigma": 1.2,
+    "edge_dilate": 1,
+    "ink_min_size": 24,
+    "ink_tol_px": 2.0,
+    "drift_sigma": 2.0,
+    "min_drift_px": 1.0,
+    "single_issue_cap": 30.0,
+    "single_issue_min_gain": 15.0,
+    "single_issue_min_ssim_small": 0.7,
+    "single_issue_min_ink_f1": 0.65,
+    "single_issue_min_edge_iou": 0.5,
+    "single_issue_max_blob_penalty": 0.03,
+    "color_deltaE_max": 20.0,
+    "blob_min_size": 40,
+    "weights": {
+     "ssim_full": 0.25,
+     "ssim_small": 0.15,
+     "ink_f1": 0.2,
+     "edge_iou": 0.15,
+     "color_sim": 0.15,
+     "blob_sim": 0.1
+    }
+   },
+   "page_count_oracle": 1,
+   "page_count_candidate": 1,
+   "page_count_mismatch": false,
+   "average_score_pagefair": 56.369025624363815,
+   "min_score_pagefair": 56.369025624363815,
+   "overall_score_pagefair": 56.369025624363815,
+   "null_score": null,
+   "skill_score": null,
+   "score_v2": null,
+   "ink_jaccard": 0.0882056639677624,
+   "text_boundary": null,
+   "max_break_drift": 0,
+   "raster_ns": 57552000,
+   "score_ns": 2025924167,
+   "scorer_backend": "torch-mps",
+   "oracle_sha256": "e95ba84da8364d10d3d6ac1f96be2e5706f9776c4e066f1019f8b8ce3024cda0",
+   "candidate_sha256": "9b0300678ce148cfe1ba4eac10dd1daa3fb17cce88888a2f9b2134dd4ec94a2d"
+  },
+  "c70f19a792": {
+   "overall_score": 64.61708088406547,
+   "overall_score_strict": 64.61708088406547,
+   "overall_score_drift": 61.39594996155453,
+   "page_count": 1,
+   "average_score": 64.61708088406547,
+   "average_score_strict": 64.61708088406547,
+   "average_score_drift": 61.395949961554535,
+   "min_score": 64.61708088406547,
+   "min_score_strict": 64.61708088406547,
+   "min_score_drift": 61.39594996155453,
+   "pages": [
+    {
+     "score": 64.61708088406547,
+     "score_strict": 64.61708088406547,
+     "score_drift": 61.39594996155453,
+     "single_issue_applied": false,
+     "drift_applied": true,
+     "drift_strength_px": 448.11840720584433,
+     "ssim_full": 0.9734431505203247,
+     "ssim_small": 0.9605088233947754,
+     "ink_f1": 0.5696267897790672,
+     "edge_iou": 0.3359649318990003,
+     "color_sim": 0.0,
+     "delta_e": 44.46306610107422,
+     "blob_penalty": 0.05586400039306245,
+     "ink_area": 20353,
+     "drift_ssim_full": 0.9602754712104797,
+     "drift_ssim_small": 0.9558868408203125,
+     "drift_ink_f1": 0.5048305443400773,
+     "drift_edge_iou": 0.2592632719393283,
+     "drift_color_sim": 0.0,
+     "drift_delta_e": 43.23146438598633,
+     "drift_blob_penalty": 0.09347993969036149,
+     "page": 1
+    }
+   ],
+   "config": {
+    "max_shift_px": 5.0,
+    "align_upsample": 10,
+    "downscale_factor": 0.25,
+    "edge_sigma": 1.2,
+    "edge_dilate": 1,
+    "ink_min_size": 24,
+    "ink_tol_px": 2.0,
+    "drift_sigma": 2.0,
+    "min_drift_px": 1.0,
+    "single_issue_cap": 30.0,
+    "single_issue_min_gain": 15.0,
+    "single_issue_min_ssim_small": 0.7,
+    "single_issue_min_ink_f1": 0.65,
+    "single_issue_min_edge_iou": 0.5,
+    "single_issue_max_blob_penalty": 0.03,
+    "color_deltaE_max": 20.0,
+    "blob_min_size": 40,
+    "weights": {
+     "ssim_full": 0.25,
+     "ssim_small": 0.15,
+     "ink_f1": 0.2,
+     "edge_iou": 0.15,
+     "color_sim": 0.15,
+     "blob_sim": 0.1
+    }
+   },
+   "page_count_oracle": 1,
+   "page_count_candidate": 1,
+   "page_count_mismatch": false,
+   "average_score_pagefair": 64.61708088406547,
+   "min_score_pagefair": 64.61708088406547,
+   "overall_score_pagefair": 64.61708088406547,
+   "null_score": null,
+   "skill_score": null,
+   "score_v2": null,
+   "ink_jaccard": 0.20465458320716357,
+   "text_boundary": null,
+   "max_break_drift": 0,
+   "raster_ns": 73705250,
+   "score_ns": 2930896625,
+   "scorer_backend": "torch-mps",
+   "oracle_sha256": "97bbc57228bc496cf4eb8f24eedd525fce5ac045d77c7e3827176f412282e77c",
+   "candidate_sha256": "c1637e4452bd16aee53959f97928e8317f9f351b6ff39337efe4badb0d8bc41a"
+  },
+  "cc590c7e18": {
+   "overall_score": 64.68541822763956,
+   "overall_score_strict": 64.68541822763956,
+   "overall_score_drift": 61.36027024556368,
+   "page_count": 1,
+   "average_score": 64.68541822763956,
+   "average_score_strict": 64.68541822763956,
+   "average_score_drift": 61.36027024556368,
+   "min_score": 64.68541822763956,
+   "min_score_strict": 64.68541822763956,
+   "min_score_drift": 61.36027024556368,
+   "pages": [
+    {
+     "score": 64.68541822763956,
+     "score_strict": 64.68541822763956,
+     "score_drift": 61.36027024556368,
+     "single_issue_applied": false,
+     "drift_applied": true,
+     "drift_strength_px": 423.8056228202476,
+     "ssim_full": 0.9644038677215576,
+     "ssim_small": 0.948180079460144,
+     "ink_f1": 0.6103067877826928,
+     "edge_iou": 0.34535396794497436,
+     "color_sim": 0.0,
+     "delta_e": 44.07365798950195,
+     "blob_penalty": 0.10338249321300169,
+     "ink_area": 27258,
+     "drift_ssim_full": 0.956947386264801,
+     "drift_ssim_small": 0.9491372108459473,
+     "drift_ink_f1": 0.4720040378534562,
+     "drift_edge_iou": 0.34000428847116004,
+     "drift_color_sim": 0.0,
+     "drift_delta_e": 44.49034118652344,
+     "drift_blob_penalty": 0.13406176578820733,
+     "page": 1
+    }
+   ],
+   "config": {
+    "max_shift_px": 5.0,
+    "align_upsample": 10,
+    "downscale_factor": 0.25,
+    "edge_sigma": 1.2,
+    "edge_dilate": 1,
+    "ink_min_size": 24,
+    "ink_tol_px": 2.0,
+    "drift_sigma": 2.0,
+    "min_drift_px": 1.0,
+    "single_issue_cap": 30.0,
+    "single_issue_min_gain": 15.0,
+    "single_issue_min_ssim_small": 0.7,
+    "single_issue_min_ink_f1": 0.65,
+    "single_issue_min_edge_iou": 0.5,
+    "single_issue_max_blob_penalty": 0.03,
+    "color_deltaE_max": 20.0,
+    "blob_min_size": 40,
+    "weights": {
+     "ssim_full": 0.25,
+     "ssim_small": 0.15,
+     "ink_f1": 0.2,
+     "edge_iou": 0.15,
+     "color_sim": 0.15,
+     "blob_sim": 0.1
+    }
+   },
+   "page_count_oracle": 1,
+   "page_count_candidate": 1,
+   "page_count_mismatch": false,
+   "average_score_pagefair": 64.68541822763956,
+   "min_score_pagefair": 64.68541822763956,
+   "overall_score_pagefair": 64.68541822763956,
+   "null_score": null,
+   "skill_score": null,
+   "score_v2": null,
+   "ink_jaccard": 0.22230138938368366,
+   "text_boundary": null,
+   "max_break_drift": 0,
+   "raster_ns": 79973500,
+   "score_ns": 3052165750,
+   "scorer_backend": "torch-mps",
+   "oracle_sha256": "1aa94563af1dc865036f5664d21fd866a90e543d78ab1f81ebb8a84d23114c8a",
+   "candidate_sha256": "ab24ec4e535614a9645f00fa9af345cf6b4f4e57c6cf470e0397f50342a5890d"
+  },
+  "98243183d1": {
+   "overall_score": 53.17611231823366,
+   "overall_score_strict": 53.17611231823366,
+   "overall_score_drift": 60.17097628397411,
+   "page_count": 1,
+   "average_score": 53.17611231823366,
+   "average_score_strict": 53.17611231823366,
+   "average_score_drift": 60.17097628397412,
+   "min_score": 53.17611231823367,
+   "min_score_strict": 53.17611231823367,
+   "min_score_drift": 60.17097628397412,
+   "pages": [
+    {
+     "score": 53.17611231823367,
+     "score_strict": 53.17611231823367,
+     "score_drift": 60.17097628397412,
+     "single_issue_applied": false,
+     "drift_applied": true,
+     "drift_strength_px": 478.39865591125715,
+     "ssim_full": 0.9596202969551086,
+     "ssim_small": 0.9277816414833069,
+     "ink_f1": 0.2431525366248508,
+     "edge_iou": 0.12132205429985288,
+     "color_sim": 0.0,
+     "delta_e": 47.342533111572266,
+     "blob_penalty": 0.14140012748884473,
+     "ink_area": 26669,
+     "drift_ssim_full": 0.9612724781036377,
+     "drift_ssim_small": 0.9500797390937805,
+     "drift_ink_f1": 0.4155261762801611,
+     "drift_edge_iou": 0.3028164302916778,
+     "drift_color_sim": 0.0,
+     "drift_delta_e": 43.73099899291992,
+     "drift_blob_penalty": 0.0964801735001905,
+     "page": 1
+    }
+   ],
+   "config": {
+    "max_shift_px": 5.0,
+    "align_upsample": 10,
+    "downscale_factor": 0.25,
+    "edge_sigma": 1.2,
+    "edge_dilate": 1,
+    "ink_min_size": 24,
+    "ink_tol_px": 2.0,
+    "drift_sigma": 2.0,
+    "min_drift_px": 1.0,
+    "single_issue_cap": 30.0,
+    "single_issue_min_gain": 15.0,
+    "single_issue_min_ssim_small": 0.7,
+    "single_issue_min_ink_f1": 0.65,
+    "single_issue_min_edge_iou": 0.5,
+    "single_issue_max_blob_penalty": 0.03,
+    "color_deltaE_max": 20.0,
+    "blob_min_size": 40,
+    "weights": {
+     "ssim_full": 0.25,
+     "ssim_small": 0.15,
+     "ink_f1": 0.2,
+     "edge_iou": 0.15,
+     "color_sim": 0.15,
+     "blob_sim": 0.1
+    }
+   },
+   "page_count_oracle": 1,
+   "page_count_candidate": 1,
+   "page_count_mismatch": false,
+   "average_score_pagefair": 53.17611231823366,
+   "min_score_pagefair": 53.17611231823367,
+   "overall_score_pagefair": 53.17611231823366,
+   "null_score": null,
+   "skill_score": null,
+   "score_v2": null,
+   "ink_jaccard": 0.06874778518733288,
+   "text_boundary": null,
+   "max_break_drift": 0,
+   "raster_ns": 115386500,
+   "score_ns": 3168524292,
+   "scorer_backend": "torch-mps",
+   "oracle_sha256": "bb43bdd42f4ce2f1c973df5d148250c31de7d15254b1791498f6da3696a08c53",
+   "candidate_sha256": "d372e022c9503f46f046182c2756a203e28520541c82c2a771ee657a3a04f206"
+  },
+  "daaf1625f5": {
+   "overall_score": 66.06135296454731,
+   "overall_score_strict": 66.06135296454731,
+   "overall_score_drift": 53.052215827246144,
+   "page_count": 1,
+   "average_score": 66.06135296454731,
+   "average_score_strict": 66.06135296454731,
+   "average_score_drift": 53.05221582724615,
+   "min_score": 66.06135296454731,
+   "min_score_strict": 66.06135296454731,
+   "min_score_drift": 53.052215827246144,
+   "pages": [
+    {
+     "score": 66.06135296454731,
+     "score_strict": 66.06135296454731,
+     "score_drift": 53.052215827246144,
+     "single_issue_applied": false,
+     "drift_applied": true,
+     "drift_strength_px": 452.7498877344842,
+     "ssim_full": 0.9909828901290894,
+     "ssim_small": 0.9845017790794373,
+     "ink_f1": 0.6141784537021727,
+     "edge_iou": 0.34764081027667987,
+     "color_sim": 0.0,
+     "delta_e": 35.790096282958984,
+     "blob_penalty": 0.09789272030651341,
+     "ink_area": 5220,
+     "drift_ssim_full": 0.9852608442306519,
+     "drift_ssim_small": 0.9820431470870972,
+     "drift_ink_f1": 0.3252493992877115,
+     "drift_edge_iou": 0.24045801526717558,
+     "drift_color_sim": 0.0,
+     "drift_delta_e": 36.602134704589844,
+     "drift_blob_penalty": 0.6421810699588477,
+     "page": 1
+    }
+   ],
+   "config": {
+    "max_shift_px": 5.0,
+    "align_upsample": 10,
+    "downscale_factor": 0.25,
+    "edge_sigma": 1.2,
+    "edge_dilate": 1,
+    "ink_min_size": 24,
+    "ink_tol_px": 2.0,
+    "drift_sigma": 2.0,
+    "min_drift_px": 1.0,
+    "single_issue_cap": 30.0,
+    "single_issue_min_gain": 15.0,
+    "single_issue_min_ssim_small": 0.7,
+    "single_issue_min_ink_f1": 0.65,
+    "single_issue_min_edge_iou": 0.5,
+    "single_issue_max_blob_penalty": 0.03,
+    "color_deltaE_max": 20.0,
+    "blob_min_size": 40,
+    "weights": {
+     "ssim_full": 0.25,
+     "ssim_small": 0.15,
+     "ink_f1": 0.2,
+     "edge_iou": 0.15,
+     "color_sim": 0.15,
+     "blob_sim": 0.1
+    }
+   },
+   "page_count_oracle": 1,
+   "page_count_candidate": 1,
+   "page_count_mismatch": false,
+   "average_score_pagefair": 66.06135296454731,
+   "min_score_pagefair": 66.06135296454731,
+   "overall_score_pagefair": 66.06135296454731,
+   "null_score": null,
+   "skill_score": null,
+   "score_v2": null,
+   "ink_jaccard": 0.2941013952203343,
+   "text_boundary": null,
+   "max_break_drift": 0,
+   "raster_ns": 150442083,
+   "score_ns": 2853216125,
+   "scorer_backend": "torch-mps",
+   "oracle_sha256": "3965dd66829a60222404c42e6452f0659f621ca6c94c854a1bd4442aab6e057f",
+   "candidate_sha256": "1148eb0a5114a96d7876ab3a4b3d57a6b5ccff0dfdced7e6f2df995747487d8a"
+  },
+  "f6aa53210c": {
+   "overall_score": 56.862064733485425,
+   "overall_score_strict": 56.862064733485425,
+   "overall_score_drift": 58.85455851858971,
+   "page_count": 1,
+   "average_score": 56.862064733485425,
+   "average_score_strict": 56.862064733485425,
+   "average_score_drift": 58.85455851858971,
+   "min_score": 56.862064733485425,
+   "min_score_strict": 56.862064733485425,
+   "min_score_drift": 58.854558518589705,
+   "pages": [
+    {
+     "score": 56.862064733485425,
+     "score_strict": 56.862064733485425,
+     "score_drift": 58.854558518589705,
+     "single_issue_applied": false,
+     "drift_applied": true,
+     "drift_strength_px": 497.3304554939431,
+     "ssim_full": 0.9650952816009521,
+     "ssim_small": 0.9397890567779541,
+     "ink_f1": 0.329575255935526,
+     "edge_iou": 0.18686093112101576,
+     "color_sim": 0.0,
+     "delta_e": 40.95191192626953,
+     "blob_penalty": 0.0756572243733442,
+     "ink_area": 19628,
+     "drift_ssim_full": 0.9631625413894653,
+     "drift_ssim_small": 0.9547566175460815,
+     "drift_ink_f1": 0.3869254718461465,
+     "drift_edge_iou": 0.2644037718256057,
+     "drift_color_sim": 0.0,
+     "drift_delta_e": 40.35052490234375,
+     "drift_blob_penalty": 0.125042029364516,
+     "page": 1
+    }
+   ],
+   "config": {
+    "max_shift_px": 5.0,
+    "align_upsample": 10,
+    "downscale_factor": 0.25,
+    "edge_sigma": 1.2,
+    "edge_dilate": 1,
+    "ink_min_size": 24,
+    "ink_tol_px": 2.0,
+    "drift_sigma": 2.0,
+    "min_drift_px": 1.0,
+    "single_issue_cap": 30.0,
+    "single_issue_min_gain": 15.0,
+    "single_issue_min_ssim_small": 0.7,
+    "single_issue_min_ink_f1": 0.65,
+    "single_issue_min_edge_iou": 0.5,
+    "single_issue_max_blob_penalty": 0.03,
+    "color_deltaE_max": 20.0,
+    "blob_min_size": 40,
+    "weights": {
+     "ssim_full": 0.25,
+     "ssim_small": 0.15,
+     "ink_f1": 0.2,
+     "edge_iou": 0.15,
+     "color_sim": 0.15,
+     "blob_sim": 0.1
+    }
+   },
+   "page_count_oracle": 1,
+   "page_count_candidate": 1,
+   "page_count_mismatch": false,
+   "average_score_pagefair": 56.862064733485425,
+   "min_score_pagefair": 56.862064733485425,
+   "overall_score_pagefair": 56.862064733485425,
+   "null_score": null,
+   "skill_score": null,
+   "score_v2": null,
+   "ink_jaccard": 0.08897154080822434,
+   "text_boundary": null,
+   "max_break_drift": 0,
+   "raster_ns": 183842291,
+   "score_ns": 2840404917,
+   "scorer_backend": "torch-mps",
+   "oracle_sha256": "894b0fd2ecf866cf48fa63044ad87b05c1dd3e1146b05a21183e952e5acd9563",
+   "candidate_sha256": "1ac331e5a0c6956ae8f6fc94d451a96d33a4053f401763dcc86306e9ef512393"
+  },
+  "c964f553ef": {
+   "overall_score": 50.98871269360289,
+   "overall_score_strict": 50.98871269360289,
+   "overall_score_drift": 58.740538167976574,
+   "page_count": 1,
+   "average_score": 50.98871269360289,
+   "average_score_strict": 50.98871269360289,
+   "average_score_drift": 58.740538167976574,
+   "min_score": 50.98871269360289,
+   "min_score_strict": 50.98871269360289,
+   "min_score_drift": 58.740538167976574,
+   "pages": [
+    {
+     "score": 50.98871269360289,
+     "score_strict": 50.98871269360289,
+     "score_drift": 58.740538167976574,
+     "single_issue_applied": false,
+     "drift_applied": true,
+     "drift_strength_px": 240.37223838733826,
+     "ssim_full": 0.9111611247062683,
+     "ssim_small": 0.8544533848762512,
+     "ink_f1": 0.21637229547798764,
+     "edge_iou": 0.10303377218088151,
+     "color_sim": 0.0,
+     "delta_e": 47.263916015625,
+     "blob_penalty": 0.048006868947056074,
+     "ink_area": 79197,
+     "drift_ssim_full": 0.9231266379356384,
+     "drift_ssim_small": 0.9020307660102844,
+     "drift_ink_f1": 0.4985344971695342,
+     "drift_edge_iou": 0.2904055181941153,
+     "drift_color_sim": 0.0,
+     "drift_delta_e": 43.85570526123047,
+     "drift_blob_penalty": 0.21948619868710714,
+     "page": 1
+    }
+   ],
+   "config": {
+    "max_shift_px": 5.0,
+    "align_upsample": 10,
+    "downscale_factor": 0.25,
+    "edge_sigma": 1.2,
+    "edge_dilate": 1,
+    "ink_min_size": 24,
+    "ink_tol_px": 2.0,
+    "drift_sigma": 2.0,
+    "min_drift_px": 1.0,
+    "single_issue_cap": 30.0,
+    "single_issue_min_gain": 15.0,
+    "single_issue_min_ssim_small": 0.7,
+    "single_issue_min_ink_f1": 0.65,
+    "single_issue_min_edge_iou": 0.5,
+    "single_issue_max_blob_penalty": 0.03,
+    "color_deltaE_max": 20.0,
+    "blob_min_size": 40,
+    "weights": {
+     "ssim_full": 0.25,
+     "ssim_small": 0.15,
+     "ink_f1": 0.2,
+     "edge_iou": 0.15,
+     "color_sim": 0.15,
+     "blob_sim": 0.1
+    }
+   },
+   "page_count_oracle": 1,
+   "page_count_candidate": 1,
+   "page_count_mismatch": false,
+   "average_score_pagefair": 50.98871269360289,
+   "min_score_pagefair": 50.98871269360289,
+   "overall_score_pagefair": 50.98871269360289,
+   "null_score": null,
+   "skill_score": null,
+   "score_v2": null,
+   "ink_jaccard": 0.07041026546588969,
+   "text_boundary": null,
+   "max_break_drift": 0,
+   "raster_ns": 125838417,
+   "score_ns": 2752187958,
+   "scorer_backend": "torch-mps",
+   "oracle_sha256": "9d209a9497892a7dba35d473e862c44ba775849e7341366e51a48eed8316f9b6",
+   "candidate_sha256": "dccc2ea3b102448cb1976f396da36a4eb7aa266d2713eb6514935dd9fb29e1db"
+  },
+  "8c2a86d9f4": {
+   "overall_score": 52.83843211256787,
+   "overall_score_strict": 52.83843211256787,
+   "overall_score_drift": 45.45217994249974,
+   "page_count": 1,
+   "average_score": 52.83843211256788,
+   "average_score_strict": 52.83843211256788,
+   "average_score_drift": 45.45217994249974,
+   "min_score": 52.83843211256788,
+   "min_score_strict": 52.83843211256788,
+   "min_score_drift": 45.45217994249974,
+   "pages": [
+    {
+     "score": 52.83843211256788,
+     "score_strict": 52.83843211256788,
+     "score_drift": 45.45217994249974,
+     "single_issue_applied": false,
+     "drift_applied": true,
+     "drift_strength_px": 176.49344737841525,
+     "ssim_full": 0.9371428489685059,
+     "ssim_small": 0.8764991164207458,
+     "ink_f1": 0.23159637899012867,
+     "edge_iou": 0.15500071570251314,
+     "color_sim": 0.0,
+     "delta_e": 39.85736083984375,
+     "blob_penalty": 0.06945641732962242,
+     "ink_area": 40601,
+     "drift_ssim_full": 0.906623125076294,
+     "drift_ssim_small": 0.8446348309516907,
+     "drift_ink_f1": 0.07462350705836987,
+     "drift_edge_iou": 0.07851166532582461,
+     "drift_color_sim": 0.0,
+     "drift_delta_e": 42.64293670654297,
+     "drift_blob_penalty": 0.2553065769737739,
+     "page": 1
+    }
+   ],
+   "config": {
+    "max_shift_px": 5.0,
+    "align_upsample": 10,
+    "downscale_factor": 0.25,
+    "edge_sigma": 1.2,
+    "edge_dilate": 1,
+    "ink_min_size": 24,
+    "ink_tol_px": 2.0,
+    "drift_sigma": 2.0,
+    "min_drift_px": 1.0,
+    "single_issue_cap": 30.0,
+    "single_issue_min_gain": 15.0,
+    "single_issue_min_ssim_small": 0.7,
+    "single_issue_min_ink_f1": 0.65,
+    "single_issue_min_edge_iou": 0.5,
+    "single_issue_max_blob_penalty": 0.03,
+    "color_deltaE_max": 20.0,
+    "blob_min_size": 40,
+    "weights": {
+     "ssim_full": 0.25,
+     "ssim_small": 0.15,
+     "ink_f1": 0.2,
+     "edge_iou": 0.15,
+     "color_sim": 0.15,
+     "blob_sim": 0.1
+    }
+   },
+   "page_count_oracle": 1,
+   "page_count_candidate": 1,
+   "page_count_mismatch": false,
+   "average_score_pagefair": 52.83843211256788,
+   "min_score_pagefair": 52.83843211256788,
+   "overall_score_pagefair": 52.83843211256787,
+   "null_score": null,
+   "skill_score": null,
+   "score_v2": null,
+   "ink_jaccard": 0.0846686007587592,
+   "text_boundary": 0.0,
+   "max_break_drift": 0,
+   "raster_ns": 86587042,
+   "score_ns": 2509828042,
+   "scorer_backend": "torch-mps",
+   "oracle_sha256": "9241b1aeeb0d44d2f7360db3e2def5a312d6def7cce9f6e5ee1267da47faba43",
+   "candidate_sha256": "4539e8baded8e2ad1ade8dda7a51a7bbba2a11344b9af8409f3d3a86d6ec6800"
+  }
+ },
+ "failures": {
+  "e3d57f2816": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "8cb8af8d7f": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "7a1d3fbeba": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "ef3ffabfc9": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "2d65e392ab": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "cee8601521": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "3796807136": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "b547e31a0d": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "f7837e0e51": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "9129d2ecd2": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "9c8876c6d7": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "04b7d19a3a": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "03528d6f20": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "2c123533f6": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "410b10cd2e": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "34e52d37ea": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "85b1c9235c": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "25f1d6ecc3": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "c3412673e4": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "6354242df2": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "62f0f8ee91": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "6e89035e56": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "97aff69fd0": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "062340d04a": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "1dbbf3be63": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "9683765ab1": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "fec6305982": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "dde913904e": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "e981300405": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "6213202228": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "01ffe97a5e": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "ace788a217": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "089f925c77": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "a78b94020d": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "d24225adbf": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "428f3f3022": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "c865b7be7f": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "dad17d3be0": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "d484b575c0": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "54af2359d0": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "1942a590b4": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "0c5aa7e2b1": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "a2fa2445c6": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "2e5b08815c": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "48ef0a5cd7": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "0aa74e0de4": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "8de55978f2": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "60ef61f086": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "2200a538c5": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "72341d8ac1": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "2288f27be1": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "b33793b0f8": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "518c606bf2": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "766a042194": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "53014ff7b1": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "eecdb1c507": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "2ebbfc18b4": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "5a72b1ad9e": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "92075b7449": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "db0f90defc": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "515c0aa8ab": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "3b9982e41f": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "4d40d1f136": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "6af7bc5540": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "6f18d91819": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "6bf1e10a91": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "e42a88b8ef": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "585b8c8d12": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "b4072979f7": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "60e784f2de": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "485b916ef9": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "d3c6552dae": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "9c7d0d77b2": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "ff6f1dab3b": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "98ebd05df6": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "92ec8417eb": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "20eccb4f6a": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "90fd5a464a": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "8358846f3a": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "bc6f8076f9": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "b982beef9b": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "e9ef73a8e4": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "8d775d42d1": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "61959b1953": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "10358095a4": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "612a3c24fa": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "9f2ce6d6bb": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "5325dc70b4": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "b351836b34": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "b626364e3d": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "fc12ef6776": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "ae9547abd2": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "b4bafdd04d": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "9a93480040": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "0dfc906eb1": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "14f0524539": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "9a2af58d99": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "301efcc9d8": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "6be28b28eb": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "6dee5896b8": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "64c527dde8": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "787e8e149a": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "a33b8e810a": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "a169f5fa5f": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "2061218d44": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "6b74ac1ae6": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "5af67335fe": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "5b35efe2bb": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "4d7ccddfdc": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "57dfcda882": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "47595e5631": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "aa31228e52": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "11e99a0b24": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "8694636a78": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "b83c047cac": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "5f137fe5fa": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "3866f441cc": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "713774d8e1": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "f6531f6275": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "d5efaa5b6d": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "7da45f822a": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "5d3a04d9a6": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "14fb06f7e5": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "0cbac1d96f": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "6532beda4d": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "52dcc19c24": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "34ffddfe47": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "485599b4e9": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "d23d9c8cc7": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "0df218b227": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "4319e3d7c7": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "bbc3223232": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "a954a57308": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "1b5dd9fc3f": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "57b579c043": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "f9ec352ab5": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "b06fe8236d": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "e6e61fc33f": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "69a4d71d6f": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "4ca3f73206": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "01f3deda92": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "51d1d87a1f": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "301e236134": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "dca87a30ef": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "bf527b6048": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "421d863d4e": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "f72cd71154": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "a836952933": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "2b70cf763e": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "18380da4e0": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "70a6883d16": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "6bcf56a447": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "37b6514e21": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "420292c772": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "63ef9002ec": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "3dac82f40a": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "58cd08049b": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "2a64722aad": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "ee63b6fa87": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "63b66681b7": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "a1ca73e72e": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "120ab3f7db": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "749f24fa0e": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "e7880d69e4": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "b956ebc218": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "9c27cc7cb6": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "ecea12416c": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "2a104af71e": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "f4aff67570": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "899bf9a97e": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "4886ca0d0a": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "bb20890039": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "0113adc8d9": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "0a1b1dbad8": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "9b9c5719f3": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "cb0a7d2c98": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "e9f3bae698": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "7040578ca5": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "d6dcdfe5e4": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "f7b0b075cd": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "309cb522fb": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "2e391c5378": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "14b2a2feb0": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "206e9d2d17": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "b11e674787": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "11e0d1cba7": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "4ce2d5cacc": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "8203bbecec": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "a5063c32c8": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "1c131721c0": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "4f964d209a": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "3b09d6afde": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "188355c39c": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "3f9670141d": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "ec822ae7cf": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "09b9bd2f9d": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "1f7ff80e43": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "331221556e": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "55a1e5dbc0": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "6f6e4ae3e8": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "8084ef19f0": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "049d8405bc": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "603ef0419b": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "d789ef173d": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "7b1b3baaba": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "f852ffac2f": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "76f4a58792": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "b553be7ee0": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "94f418b300": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "618d22429e": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "7a2946950f": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "9f142ac84a": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "8ad8e10ef6": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "7abcebfa2c": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "263ae47a8c": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "31b13fd92e": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "a8fd90ecd6": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "fee04c36ab": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "0bc720e5fa": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "3243a33101": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "f189e94409": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "f77bce8423": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "3d7a870506": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "6a343424b7": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "7998f329e8": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "4618d6926f": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "e22069e294": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "ca516d2f7f": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "d95a06eed1": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "001b877031": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "0ed05535ce": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "3c3090c52a": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "71595f1fa3": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "2a6ac88d46": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "d5d3c12881": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "20e6b5ef88": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "428fe8b1c0": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "3c2c9cda82": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "ef140da2d1": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "b778cdcad3": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "fef7e1df16": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "18481ea7f2": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "d35dccc87b": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "e8fd5d8c83": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "bbaad01a9e": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "e633129040": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "00539886c9": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "ce245f5959": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "00baea9614": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "e9b8a82cb6": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "6b8b7bf9cb": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "684e190acd": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "c85d7fadac": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "cb164cf87a": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "e83dabcd41": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "288b57d41b": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "3fa2e4b5de": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "eb12b8215b": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "27f897961f": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "ef42391c98": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "0389c885c1": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "651e1bcc1c": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "710426a66c": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "c09f50d3f1": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "8e0ef1a4a3": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "d8669ef4ce": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "cd49552c60": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "72d7218610": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "e94db515fd": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "955c614ac4": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "97b4c2de49": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "8fd9499d71": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "f32cc08e58": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "1d045a4304": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "ca17705374": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "58bfbb8b8d": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "60c2a0122c": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "3e2eab6d92": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "1410d52a72": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "9812be01c0": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "7a2cc168c2": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "8e5b509eeb": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "0d2106d9b2": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "cfc2954ee9": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "ff5816ee75": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "c56e84eaea": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "c31d6dc680": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "10e0bef64b": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "d244fd1091": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "d7c2cc04c6": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "1942fab3ab": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "3b56113728": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "e0f213a660": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "7fec664147": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "7c8558f8ef": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "2ea0a59b6a": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "3cddbcb812": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "dd200b33ce": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "12d29cabe0": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "1445e94e75": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "db84b38989": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "859b75527f": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "61a3912d74": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "12fca96084": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "fd436bda76": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "83ec2122ff": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "108332354e": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "822678fea0": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "3303e707c8": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "67d0b6f3e8": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "04082a11bf": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "cfb0498eef": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "85d3cc0cfe": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "371ef9feed": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "4a9a8d0b4a": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "71159007ab": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "eede96cbf6": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "d6eb2a4115": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "63ec3a403e": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "7643096759": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "bbdc7afc3e": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "57cfa10f33": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "f72e40955d": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "b2704631d9": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "1032d784bc": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "1108cc4aae": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "df497fd549": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "7787357743": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "3d22ad3c37": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "43aedaf43e": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "d5ab18a760": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "23e03057e6": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "cf8049bd45": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "3a7ca36d5f": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "ff27140d0a": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "efcf4cdade": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "b37d04ac06": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "e8fafc3cba": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "f64bfdeadc": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "621637d747": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "51c9eab1af": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "8ac7b0a13c": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "8abeeabff4": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "4d5de07b0e": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "822ad81a4c": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "913d076e79": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "4ce07ffaec": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "bc29cd91ef": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "11675a8de2": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "589b832f86": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "b0d09c67a7": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "29d3f492fb": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "b461d6f797": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "0cd32d67b2": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "c9fc2e8899": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "8d0b00bb0a": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "3fdab4ace6": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "2e3f1e261d": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "e50d2db84c": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "820ab5e086": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "db73171e99": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "30f20e787b": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "e5cff4e8d9": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  },
+  "ded976e5e2": {
+   "stage": "tool_output",
+   "error": "missing candidate PDF"
+  }
+ },
+ "rasters_deleted": true
+}

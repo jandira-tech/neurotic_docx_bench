@@ -1,0 +1,145 @@
+[
+  {
+    "excluded_id": "65aa483982",
+    "replacement_id": "89c44edb8b",
+    "excluded_state": "with_comments_tracking",
+    "replacement_state": "with_comments_tracking",
+    "source_pool_preserved": true,
+    "page_band_preserved": false,
+    "selection_uses_vendor_results": false,
+    "state_change_reason": null,
+    "round": 2
+  },
+  {
+    "excluded_id": "0cd32d67b2",
+    "replacement_id": "b0d09c67a7",
+    "excluded_state": "with_comments_tracking",
+    "replacement_state": "with_comments_tracking",
+    "source_pool_preserved": false,
+    "page_band_preserved": false,
+    "selection_uses_vendor_results": false,
+    "state_change_reason": null,
+    "round": 2
+  },
+  {
+    "excluded_id": "d4ab829066",
+    "replacement_id": "b3cc5c1abe",
+    "excluded_state": "with_comments_tracking",
+    "replacement_state": "with_comments_tracking",
+    "source_pool_preserved": true,
+    "page_band_preserved": true,
+    "selection_uses_vendor_results": false,
+    "state_change_reason": null,
+    "round": 2
+  },
+  {
+    "excluded_id": "07ab69d450",
+    "replacement_id": "254bc964f4",
+    "excluded_state": "with_comments_tracking",
+    "replacement_state": "with_comments_tracking",
+    "source_pool_preserved": true,
+    "page_band_preserved": true,
+    "selection_uses_vendor_results": false,
+    "state_change_reason": null,
+    "round": 2
+  },
+  {
+    "excluded_id": "48b006f032",
+    "replacement_id": "5bf3e7acbc",
+    "excluded_state": "with_comments_tracking",
+    "replacement_state": "with_comments_tracking",
+    "source_pool_preserved": false,
+    "page_band_preserved": true,
+    "selection_uses_vendor_results": false,
+    "state_change_reason": null,
+    "round": 2
+  },
+  {
+    "excluded_id": "b461d6f797",
+    "replacement_id": "4a8b3c676a",
+    "excluded_state": "with_comments_tracking",
+    "replacement_state": "with_comments_tracking",
+    "source_pool_preserved": false,
+    "page_band_preserved": false,
+    "selection_uses_vendor_results": false,
+    "state_change_reason": null,
+    "round": 2
+  },
+  {
+    "excluded_id": "7f412aa4b4",
+    "replacement_id": "3303e707c8",
+    "excluded_state": "with_comments_tracking",
+    "replacement_state": "with_comments_tracking",
+    "source_pool_preserved": false,
+    "page_band_preserved": false,
+    "selection_uses_vendor_results": false,
+    "state_change_reason": null,
+    "round": 2
+  },
+  {
+    "excluded_id": "01a43df57c",
+    "replacement_id": "b799eadbeb",
+    "excluded_state": "tracking_without_comments",
+    "replacement_state": "tracking_without_comments",
+    "source_pool_preserved": true,
+    "page_band_preserved": true,
+    "selection_uses_vendor_results": false,
+    "state_change_reason": null,
+    "round": 2
+  },
+  {
+    "excluded_id": "20f31d3886",
+    "replacement_id": "2c0433bdbc",
+    "excluded_state": "tracking_without_comments",
+    "replacement_state": "tracking_without_comments",
+    "source_pool_preserved": true,
+    "page_band_preserved": true,
+    "selection_uses_vendor_results": false,
+    "state_change_reason": null,
+    "round": 2
+  },
+  {
+    "excluded_id": "0e4dfd953d",
+    "replacement_id": "206e9d2d17",
+    "excluded_state": "tracking_without_comments",
+    "replacement_state": "tracking_without_comments",
+    "source_pool_preserved": true,
+    "page_band_preserved": true,
+    "selection_uses_vendor_results": false,
+    "state_change_reason": null,
+    "round": 2
+  },
+  {
+    "excluded_id": "a20d355157",
+    "replacement_id": "23c28907ad",
+    "excluded_state": "tracking_without_comments",
+    "replacement_state": "tracking_without_comments",
+    "source_pool_preserved": true,
+    "page_band_preserved": true,
+    "selection_uses_vendor_results": false,
+    "state_change_reason": null,
+    "round": 2
+  },
+  {
+    "excluded_id": "8be0329c00",
+    "replacement_id": "f3f426dc89",
+    "excluded_state": "tracking_without_comments",
+    "replacement_state": "tracking_without_comments",
+    "source_pool_preserved": true,
+    "page_band_preserved": true,
+    "selection_uses_vendor_results": false,
+    "state_change_reason": null,
+    "round": 2
+  },
+  {
+    "excluded_id": "d525625b0d",
+    "replacement_id": "fedf795758",
+    "excluded_state": "tracking_without_comments",
+    "replacement_state": "tracking_without_comments",
+    "source_pool_preserved": true,
+    "page_band_preserved": true,
+    "selection_uses_vendor_results": false,
+    "state_change_reason": null,
+    "round": 2
+  }
+]

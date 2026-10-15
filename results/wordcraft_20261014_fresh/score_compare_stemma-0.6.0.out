@@ -1,0 +1,13 @@
+compare stemma-0.6.0 scoring 108 remaining, 0 complete; 292 missing
+stemma-0.6.0 10 / 108 scored 10 failures 292 41s
+stemma-0.6.0 20 / 108 scored 20 failures 292 70s
+stemma-0.6.0 30 / 108 scored 30 failures 292 110s
+stemma-0.6.0 40 / 108 scored 40 failures 292 190s
+stemma-0.6.0 50 / 108 scored 50 failures 292 223s
+stemma-0.6.0 60 / 108 scored 60 failures 292 254s
+stemma-0.6.0 70 / 108 scored 70 failures 292 279s
+stemma-0.6.0 80 / 108 scored 80 failures 292 302s
+stemma-0.6.0 90 / 108 scored 90 failures 292 322s
+stemma-0.6.0 100 / 108 scored 100 failures 292 346s
+stemma-0.6.0 108 / 108 scored 108 failures 292 361s
+saved /Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/compare/stemma-0.6.0/scores.json

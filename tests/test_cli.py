@@ -6,6 +6,7 @@ import json
 import shutil
 from pathlib import Path
 
+import pytest
 from typer.testing import CliRunner
 
 from neurotic_docx_bench.cli import app
@@ -44,6 +45,21 @@ def test_files_list_without_origin_list_is_an_error(tmp_path):
     )
     assert result.exit_code != 0
     assert "list" in result.output
+
+
+@pytest.mark.parametrize("command", ["docx-to-pdf", "docxide-metrics"])
+def test_score_only_without_a_tool_is_an_error(command):
+    result = runner.invoke(app, [command, "--score-only"])
+    assert result.exit_code != 0
+    assert "needs the --tool" in result.output
+
+
+@pytest.mark.parametrize("command", ["docx-to-pdf", "docxide-metrics"])
+def test_score_only_accepts_soffice_as_the_store_label(command):
+    result = runner.invoke(app, [command, "--score-only", "--tool", "soffice"])
+    assert result.exit_code != 0
+    assert "unknown --tool" not in result.output
+    assert "requires --location-to-score" in result.output
 
 
 def test_origin_without_a_word_pdf_warns_and_does_not_convert(tmp_path):

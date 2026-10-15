@@ -1,0 +1,16 @@
+Waiting for existing standard driver PID 74311
+COMPARE Word eligible 187 / 200; replacement failures 13
+Staged 13 reserve pairs in /Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/word_reserve_02
+RUN word_redline.py word_reserve_02
+COMPARE Word eligible 188 / 200; replacement failures 12
+Staged 12 reserve pairs in /Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/word_reserve_03
+RUN word_redline.py word_reserve_03
+COMPARE Word eligible 188 / 200; replacement failures 12
+Staged 12 reserve pairs in /Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/word_reserve_04
+RUN word_redline.py word_reserve_04
+COMPARE Word eligible 188 / 200; replacement failures 12
+Staged 12 reserve pairs in /Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/word_reserve_05
+RUN word_redline.py word_reserve_05
+COMPARE Word eligible 188 / 200; replacement failures 12
+Staged 12 reserve pairs in /Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/word_reserve_06
+RUN word_redline.py word_reserve_06

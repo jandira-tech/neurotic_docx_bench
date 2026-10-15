@@ -1,0 +1,25 @@
+[
+  {
+    "command": [
+      "/Users/arthrod/temp/T/neurotic_docx_bench/.venv/bin/python",
+      "/Users/arthrod/temp/T/neurotic_docx_bench/scripts/word_redline.py",
+      "--a",
+      "/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/word_valid_reserve_01/A",
+      "--b",
+      "/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/word_valid_reserve_01/B",
+      "--out",
+      "/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/word_valid_reserve_01/pdf",
+      "--docx-out",
+      "/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/word_valid_reserve_01/docx",
+      "--emit",
+      "both",
+      "--log",
+      "/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/word_valid_reserve_01/driver.log"
+    ],
+    "returncode": 1,
+    "driver_sha256": "9534d91362acaf7712ab571302fa3b30d5204af1fdcc85b878c922044a69f134",
+    "unmodified_driver": true,
+    "staging_mode": "0644",
+    "input_count": 52
+  }
+]

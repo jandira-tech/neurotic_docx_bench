@@ -71,6 +71,7 @@ dev = [
     "pytest-cov>=6.0",
     "aiohttp>=3.14.3",
     "numpy>=2.5.1",
+    "ruff>=0.17.0",
 ]
 
 [tool.pytest.ini_options]

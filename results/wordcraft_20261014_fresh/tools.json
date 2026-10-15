@@ -4,13 +4,7 @@
     "sha256": "b71aef4ee85a6ec2a59f6a0d5f8d16895c09c50d05a8c13e9654af5725781de5",
     "version": "wordcraft-cli 0.6.1"
   },
-  "jubarte": {
-    "path": "/Users/arthrod/temp/T/neurotic_docx_bench/src/neurotic_docx_bench/utils/jubarte/jubarte-rust/redline",
-    "sha256": "af1d86fe8ade0af95a3b144b1bb29734c94656fe8abf230c6d69bf7ad3b04842",
-    "version": "jubarte 0.11.0"
-  },
   "wordcraft_source_commit": "7dfa6b0ee2aeeafec004c51fdd2ab9a697da3cc4",
-  "jubarte_source_commit": "2600a59f24441a4beb8eef0c9041bcf5f86bb671",
   "docxodus": {
     "package_version": "12.6.5",
     "generator": "scripts/_site1011_docxodus_one.ts",
@@ -32,16 +26,99 @@
     "version": "jubarte 0.11.0",
     "path": "/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/bin/0.11.0/jubarte-0.11.0-macos-aarch64/jubarte",
     "sha256": "838d0e9603c8ac7caecfe8899eeb3ca514bad66034e143a80fe293ee1117e94e",
+    "source": "official GitHub release archive, verified against SHA256SUMS",
     "archive": "jubarte-0.11.0-macos-aarch64.tar.gz",
-    "checksum_source": "https://github.com/jandira-tech/jubarte-redlines/releases/download/v0.11.0/SHA256SUMS.txt",
-    "source": "verified official GitHub release"
+    "checksum_file": "SHA256SUMS-jubarte-0.11.0.txt"
   },
   "jubarte-0.12.0": {
     "version": "jubarte 0.12.0",
     "path": "/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/bin/0.12.0/jubarte-0.12.0-macos-aarch64/jubarte",
     "sha256": "3c81203f1f66c7bfa81747ec1c718906115166064d69dc4601aaa8d3130194fb",
+    "source": "official GitHub release archive, verified against SHA256SUMS",
     "archive": "jubarte-0.12.0-macos-aarch64.tar.gz",
-    "checksum_source": "https://github.com/jandira-tech/jubarte-redlines/releases/download/v0.12.0/SHA256SUMS.txt",
-    "source": "verified official GitHub release"
+    "checksum_file": "SHA256SUMS-jubarte-0.12.0.txt"
+  },
+  "benchmark_source_commit": "ee49054dc27fa7d5699f6cd1f60b5b8b5becd072",
+  "driver_hashes": {
+    "scripts/word_pdf.py": "6ea82e38d4bd5b84e2ada48899fd563ca2ecfc08077e2afc153591a1c58dc8fe",
+    "scripts/word_redline.py": "9534d91362acaf7712ab571302fa3b30d5204af1fdcc85b878c922044a69f134",
+    "scripts/word_screen_log.py": "503b0fa6890998614361daec6b9483ff73076e98f380a7bd1c0275542229eb56"
+  },
+  "wordcraft-0.7.0": {
+    "path": "/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/bin/wordcraft-0.7.0/wordcraft-cli-0.7.0-macos-universal/wordcraft-cli",
+    "sha256": "45fa52a260fb400857c6033c3cbfa90f8e9c67d05aeb9417cccbb3d6c51c0960",
+    "version": "wordcraft-cli 0.7.0",
+    "source": "GitHub release storytold/wordcraft v0.7.0, wordcraft-cli-0.7.0-macos-universal.zip, sha256 checked against SHA256SUMS.txt",
+    "zip_sha256": "56bda3406af0aa1c96cece8ad145ab2602d2f7f8919d758d4292c5c75f2dfb50"
+  },
+  "docxodus-13.0.0": {
+    "package_version": "13.0.0",
+    "node_modules": "/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/bin/npm/docxodus-13.0.0/node_modules",
+    "generator": "one_redline.ts docxodus (bench loadEngine, DOCXODUS_NODE_MODULES)",
+    "source": "npm docxodus@13.0.0"
+  },
+  "folio-0.60.0": {
+    "package_version": "0.60.0",
+    "node_modules": "/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/bin/npm/folio-0.60.0/node_modules",
+    "generator": "one_redline.ts folio (bench loadEngine, FOLIO_MODULE_ROOT)",
+    "source": "npm @stll/folio-core@0.60.0"
+  },
+  "stemma-0.5.0": {
+    "path": "/Users/arthrod/temp/T/neurotic_docx_bench/src/neurotic_docx_bench/utils/stemma/stemma",
+    "sha256": "bd100710c822c6b9e30bb1d3350a350288b807258b76d6fcf94d2afab825fb80",
+    "version": "stemma 0.5.0",
+    "engine_commit": "efaed0c1ecb41142b1465bbb124dd183c385a2b0",
+    "generator": "one_redline.ts stemma (bench loadEngine)",
+    "source": "stemma-cli 0.5.0 (newest on crates.io)"
+  },
+  "superdoc-2.20.0": {
+    "package_version": "2.20.0",
+    "python": "/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/bin/superdoc-venv/bin/python",
+    "generator": "superdoc_one.py (bench superdoc_gen.generate_one)",
+    "source": "PyPI superdoc-sdk==2.20.0, isolated venv"
+  },
+  "pymupdf-pro-1.28.2": {
+    "path": "/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/bin/pymupdf-pro-convert",
+    "version": "pymupdf-pro 1.28.2 (unlicensed, first 3 pages)",
+    "source": "PyPI pymupdfpro==1.28.2 (newest), isolated venv; unlicensed: first 3 pages only, so measured on conversions whose Word oracle has at most 3 pages"
+  },
+  "office2pdf-0.8.1": {
+    "path": "/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/bin/cargo/office2pdf-cli-0.8.1/bin/office2pdf",
+    "sha256": "ec266239b0bdbf71275e79fde2ffaaa1155321050d716eab45ef43f60d6ff9f9",
+    "version": "office2pdf-cli 0.8.1",
+    "source": "cargo install --locked office2pdf-cli --version 0.8.1 (newest on crates.io)"
+  },
+  "pdfitdown-4.2.0": {
+    "path": "/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/bin/cargo/pdfitdown-4.2.0/bin/pdfitdown",
+    "sha256": "6a8275fe29d0c7fd61465f56ca55c21fc22c84fbd228ceef4288bfb28bceac36",
+    "version": "pdfitdown 4.2.0",
+    "source": "cargo install --locked pdfitdown --version 4.2.0 (newest on crates.io)"
+  },
+  "rdocx-0.16.0": {
+    "path": "/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/bin/cargo/rdocx-cli-0.16.0/bin/rdocx",
+    "sha256": "8c4d40caffb12177ac8ab21d568a5dd6c389f9cb4bd742653c2b180102d0abee",
+    "version": "rdocx-cli 0.16.0",
+    "source": "cargo install --locked rdocx-cli --version 0.16.0 (newest on crates.io)"
+  },
+  "docxide-pdf-0.18.4": {
+    "path": "/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/bin/cargo/docxide-pdf-0.18.4/bin/docxide-pdf",
+    "sha256": "503ea7e085ae9acd16a4f263c7802325cad254eedeff4cb2509e88714019e00b",
+    "version": "docxide-pdf 0.18.4",
+    "source": "cargo install --locked docxide-pdf --version 0.18.4 (newest on crates.io)"
+  },
+  "libreoffice_convert_rust-0.1.0": {
+    "path": "/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/bin/cargo/libreoffice_convert_rust-0.1.0/bin/libreoffice_convert",
+    "sha256": "99552eb9ead6dc5dd2bbb3c69cbed958888dbb037553d586f08b5aa80794e172",
+    "version": "libreoffice_convert_rust 0.1.0",
+    "source": "cargo install --locked libreoffice_convert_rust --version 0.1.0 (newest on crates.io)"
+  },
+  "stemma-0.6.0": {
+    "path": "/Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/bin/cargo/stemma-cli-0.6.0/bin/stemma",
+    "sha256": "5f38cd9fd49a4e1339692f01eda1e2ce5d15094f3b8b1ba5aacbe4518f1083fa",
+    "version": "stemma 0.6.0",
+    "git_tag": "v0.6.0",
+    "git_commit": "ad1e70deac0a828d5162ac3b3f2186c2bb0c075e",
+    "generator": "one_redline.ts stemma (bench loadEngine)",
+    "source": "cargo install --locked --git https://github.com/stemma-sh/stemma --tag v0.6.0 stemma-cli (newest release; crates.io stops at 0.5.0, and the GitHub release ships only stemma-mcp binaries)"
   }
 }
