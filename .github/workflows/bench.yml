@@ -25,17 +25,23 @@ jobs:
           sudo apt-get install -y --no-install-recommends \
             libreoffice-writer libreoffice-core fonts-liberation fonts-dejavu fonts-noto
 
-      - name: Install uv + bun
+      - name: Install uv
         run: |
           curl -LsSf https://astral.sh/uv/install.sh | sh
-          curl -fsSL https://bun.sh/install | bash
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
-          echo "$HOME/.bun/bin" >> "$GITHUB_PATH"
+
+      # pnpm/action-setup reads the pin from package.json's packageManager field.
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc   # Node 26
+          cache: pnpm
 
       - name: Install deps
         run: |
           uv sync --frozen
-          bun install --frozen-lockfile
+          pnpm install --frozen-lockfile
 
       - name: Run bench (gate sets exit status)
         env:
@@ -61,14 +67,14 @@ jobs:
       - name: D-2 scoreboard (contract tests + gated sweep)
         if: always()
         run: |
-          npx vitest run scripts/redline_scoreboard.test.ts
-          if [ -x ../jubarte-redlines/target/release/jubarte ] \
-             && [ -d ../jubarte-first/src/lossless ] \
-             && [ -f ../reconciliation_plan/folio/packages/core/src/redline-lossless-verify.ts ]; then
+          pnpm exec vitest run scripts/redline_scoreboard.test.ts
+          if [ -x src/neurotic_docx_bench/utils/jubarte/jubarte-redlines/target/release/jubarte ] \
+             && [ -d src/neurotic_docx_bench/utils/jubarte/jubarte-first/src/lossless ] \
+             && [ -f src/neurotic_docx_bench/utils/folio-checkout/packages/core/src/redline-lossless-verify.ts ]; then
             node --import tsx scripts/redline_scoreboard.ts --update-results
           else
             echo "D-2 sweep SKIPPED: engine/folio checkouts absent on this runner" \
-                 "(needs ../jubarte-redlines CLI, ../jubarte-first, a folio checkout with redline-lossless-verify)."
+                 "(needs the engine links under src/neurotic_docx_bench/utils: scripts/link_engines.sh)."
           fi
 
       - name: Regenerate the published views from the stores

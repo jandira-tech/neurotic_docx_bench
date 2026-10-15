@@ -56,8 +56,6 @@ __pycache__/
 
 # bench generated work folders (kept locally, cleaned in CI; see PLAN §4)
 /runs/
-/grok_run/
-/grok_run_attic/
 # the Word corpus (corpus/word) and its LibreOffice renders (corpus/libreoffice) are tracked in
 # full: documents, PDFs, tables, pools, notices, provenance and the manifest. corpus/ is the one
 # source of truth; nothing reads the old working folders.
@@ -89,10 +87,7 @@ harness/folio-viewer/
 corpus/word_based/superdoc_visual_benchmark/
 corpus/word_based/superdoc_word_benchmark_canary/reports/
 corpus/word_based/FIXTURES_TO_REMOVE.md
-src/neurotic_docx_bench/utils/superdoc/bun.lock
 src/neurotic_docx_bench/utils/folio/harness/folio-viewer/bun.lock
-src/neurotic_docx_bench/utils/folio/bun.lock
-src/neurotic_docx_bench/utils/docx-redline-js/bun.lock
 docs/superpowers/plans/
 src/neurotic_docx_bench/utils/docxodus/node_modules/
 src/neurotic_docx_bench/utils/superdoc/harness-viewer-generation/node_modules/
@@ -202,3 +197,16 @@ score_v2.patch
 .env
 from_jubarte-redlines/
 tmp/
+
+# working data of `bench jubarte-release` measure (Word compare regenerations)
+results/compare_regen/
+
+# engine checkouts linked by scripts/link_engines.sh
+src/neurotic_docx_bench/utils/jubarte/
+src/neurotic_docx_bench/utils/docxodus/ooxmlsdk
+src/neurotic_docx_bench/utils/folio-checkout
+results/comment_balloons/
+results/jubarte-loop
+results/grok_run_view/
+really_broken/
+results/wordcraft_20261014_fresh/bin/

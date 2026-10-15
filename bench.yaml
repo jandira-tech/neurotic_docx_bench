@@ -128,7 +128,7 @@ runs:
   # — this pin, root package.json, and utils/docxodus/package.json — or the run records one
   # version and measures another. generate-native-redlines.test.ts enforces the agreement,
   # which is also why root package.json pins docxodus exactly rather than by ^range: a
-  # caret would let `bun install` drift the recorded version away from this pin.
+  # caret would let `pnpm install` drift the recorded version away from this pin.
   #
   # 9.0.0 moved the UNNAMED default comparison engine from WmlComparer to DocxDiff. The
   # adapter now names the engine explicitly, so this bump changes the measured version
@@ -244,7 +244,7 @@ runs:
   # (3) docx-redline-js — OOXML text-reconciliation redliner (strict-TS migration).
   # Local build from sibling repo docx-redline-migration-kit (NOT npm 0.2.0).
   # Rebuild: cd ../docx-redline-migration-kit && bun run build:package
-  # then: cd src/neurotic_docx_bench/utils/docx-redline-js && bun install
+  # then: pnpm install --filter neurotic-docx-bench-docx-redline-js (re-reads the file: dep)
   - name: docx-redline-js
     dist: ../docx-redline-migration-kit/dist/docx-redline-js
     generate: "node --import tsx scripts/generate-native-redlines.ts --method=docx-redline-js --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=docx-redline-js"
@@ -333,7 +333,7 @@ runs:
 
   # (4f) jubarte-rust — canonical ~/T/jubarte-redlines CLI (Rust Word-mode comparer).
   # Install target/release/jubarte as utils/jubarte/jubarte-rust/redline; see
-  # ../reconciliation_plan/GET_JUBARTE_RUST.md for the source-to-bench map.
+  # docs/GET_JUBARTE_RUST.md for the source-to-bench map.
   - name: jubarte-rust
     dist: src/neurotic_docx_bench/utils/jubarte/jubarte-rust
     generate: "node --import tsx scripts/generate-native-redlines.ts --method=jubarte-rust --dist=src/neurotic_docx_bench/utils/jubarte/jubarte-rust --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=jubarte-rust"

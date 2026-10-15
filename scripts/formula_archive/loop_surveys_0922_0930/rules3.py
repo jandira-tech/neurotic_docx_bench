@@ -3,7 +3,7 @@
 """rules3.py STEM BIN_A BIN_B [page]: horizontal rule y0s (Word | A | B) on a page."""
 import pymupdf as f,glob,sys,subprocess
 stem,a,b=sys.argv[1:4]; pg=int(sys.argv[4]) if len(sys.argv)>4 else 0
-G='/Users/arthrod/temp/T/neurotic_docx_bench/grok_run'
+G='results/grok_run_view/grok_run'
 src=glob.glob(f'{G}/fixtures_500/{stem}*.docx')[0]; W=glob.glob(f'{G}/fixtures_500_pdf/{stem}*.pdf')[0]
 for n in (a,b): subprocess.run([f'./jubarte-{n}','convert',src,'-o',f'sd/r_{n}.pdf','--force'],capture_output=True)
 def rules(p):

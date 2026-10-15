@@ -22,7 +22,7 @@ docxide-pdf = { version = "=0.17.1", default-features = false, optional = true }
 office2pdf = { version = "=0.8.0", optional = true }
 rdocx = { version = "=0.14.0", features = ["system-fonts"], optional = true }
 # Built from the canonical checkout, never a copied binary.
-jubarte-redlines = { path = "../../../jubarte-redlines", optional = true }
+jubarte-redlines = { path = "../../src/neurotic_docx_bench/utils/jubarte/jubarte-redlines", optional = true }
 
 [profile.release]
 debug = false

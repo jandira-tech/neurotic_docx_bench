@@ -4,7 +4,7 @@ import sys, glob, os, fitz
 key=sys.argv[1]; build=sys.argv[2] if len(sys.argv)>2 else 'pdf10'; page_sel=int(sys.argv[3]) if len(sys.argv)>3 else None
 state, rest = key.split('__',1)
 stem = rest
-cands=glob.glob(f'/Users/arthrod/temp/T/neurotic_docx_bench/corpus/word/{state}/pdf/{stem}*.pdf')
+cands=glob.glob(f'corpus/word/{state}/pdf/{stem}*.pdf')
 ours=glob.glob(f'/tmp/pdf-300/work-{build}/jubarte/**/{stem}*.pdf', recursive=True)+glob.glob(f'/tmp/pdf-300/work-{build}/**/{key}*.pdf', recursive=True)
 if not cands or not ours:
     print('missing', cands[:1], ours[:1]); sys.exit(1)

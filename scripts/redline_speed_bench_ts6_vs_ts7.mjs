@@ -31,7 +31,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // This script lives in neurotic_docx_bench/scripts/
 const BENCH_ROOT = path.resolve(__dirname, "..");
 const JUBARTE_ROOT =
-	process.env.JUBARTE_ROOT || path.resolve(BENCH_ROOT, "../jubarte-first");
+	process.env.JUBARTE_ROOT || path.resolve(BENCH_ROOT, "src/neurotic_docx_bench/utils/jubarte/jubarte-first");
 const bun = process.env.BUN_BIN || path.join(homedir(), ".bun/bin/bun");
 const outRoot = path.join(BENCH_ROOT, "results/redline_speed_bench/ts6-vs-ts7");
 

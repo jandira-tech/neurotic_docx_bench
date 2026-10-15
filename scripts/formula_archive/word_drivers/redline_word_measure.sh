@@ -10,7 +10,7 @@
 #   E redline=jubarte  pdf=soffice  -> end to end, the harness's own soffice PDFs (harness pools only)
 # No Word truth PDF (Word failed twice): pair skipped. Truth exists but the row has no PDF: scored 0.
 set -u
-T=cb33ec3; N=/Users/arthrod/temp/T/neurotic_docx_bench; G=$N/grok_run; WR=$G/wr0926; L=/Users/arthrod/temp/T/jubarte-loop
+T=cb33ec3; N=.; G=$N/grok_run; WR=$G/wr0926; L=results/jubarte-loop
 BIN=$L/bin/jubarte-$T; OUT=$N/results/redline_wordpdf; mkdir -p $OUT
 SC=$N/src/neurotic_docx_bench/utils/docxide-metrics/target/release/docxide-metrics
 RUN=runs/jubarte-rust_2026-09-26_14-41

@@ -5,7 +5,7 @@
 import json, re, zipfile
 from pathlib import Path
 from lxml import etree
-C = Path.home() / "temp/T/neurotic_docx_bench/corpus/word"
+C = Path("corpus/word")
 W = "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}"
 def dead_ends(xml: bytes) -> tuple[int, int]:
     root = etree.fromstring(xml)

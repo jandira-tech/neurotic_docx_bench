@@ -15,4 +15,4 @@ V={
 }
 for k,(pre,r) in V.items():
     body = tp('Above Fredericksburg gjpq') + f'<w:p>{pre}<w:r>{r}</w:r><w:r><w:t>Yq</w:t></w:r></w:p>' + tp('Below Experienced gjpq') + tp('Second line after')
-    subprocess.run([sys.executable, '/Users/arthrod/temp/T/jubarte-loop/mkdocx.py', f'src2/{k}.docx', body, 'styles.xml', '--compat', '15'], check=True)
+    subprocess.run([sys.executable, 'results/jubarte-loop/mkdocx.py', f'src2/{k}.docx', body, 'styles.xml', '--compat', '15'], check=True)

@@ -21,7 +21,7 @@ import zipfile
 from pathlib import Path
 from xml.etree import ElementTree as ET
 
-sys.path.insert(0, "/Users/arthrod/temp/T/neurotic_docx_bench/scripts")
+sys.path.insert(0, "scripts")
 from redline_identity import body_text  # noqa: E402
 
 K, MIN = 8, 0.5

@@ -1,6 +1,7 @@
 """corpus_paths: the corpus/word pools (and corpus/libreoffice renders) as the one source of files."""
 
 import csv
+import json
 from pathlib import Path
 
 import pytest
@@ -82,11 +83,26 @@ def test_unknown_set_names_the_pools_there_are(roots):
         corpus_paths.pairs("nope", word=word, libreoffice=lo)
 
 
+def _word_corpus_complete() -> bool:
+    """Every corpus/word file the manifest lists is on disk (a partial download is not enough)."""
+    manifest = corpus_paths.WORD.parent / "MANIFEST.sha256.json"
+    if not manifest.is_file():
+        return False
+    files = json.loads(manifest.read_text())["files"]
+    return all((manifest.parent / rel).is_file() for rel in files if rel.startswith("word/"))
+
+
+needs_word_corpus = pytest.mark.skipif(
+    not _word_corpus_complete(),
+    reason="needs corpus/word with all its docx/PDF files: uv run bench fixtures download",
+)
+
+
 def test_redline_sets_are_the_three_word_compare_sets():
     assert corpus_paths.REDLINE_SETS == ("word_based", "word_based_randomized", "word_redlines_superdoc")
 
 
-@pytest.mark.skipif(not (corpus_paths.WORD / "pools/word_based_pairs.csv").is_file(), reason="needs corpus/word")
+@needs_word_corpus
 def test_real_word_based_pairs_exist_on_disk():
     ps = corpus_paths.pairs("word_based")
     assert len(ps) == 227
@@ -113,6 +129,6 @@ def test_by_stem_keeps_one_pair_per_legacy_stem_preferring_the_word_capture(root
     assert list(by) == ["one_two"] and by["one_two"].redline == word / RED  # the word capture, though listed first
 
 
-@pytest.mark.skipif(not (corpus_paths.WORD / "pools/word_based_pairs.csv").is_file(), reason="needs corpus/word")
+@needs_word_corpus
 def test_real_word_based_by_stem_is_202_stems_all_word_captures_where_both_exist():
     assert len(corpus_paths.by_stem("word_based")) == 202
