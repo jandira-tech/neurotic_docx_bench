@@ -37,6 +37,8 @@ def main():
   manifest=[r for r in manifest if (r['id'] if phase=='compare' else r['stem']) in got]
  else:
   manifest=list(csv.DictReader(open(OUT/('comparisons.csv' if phase=='compare' else 'conversions.csv'))))
+  sys.path.insert(0,str(OUT));import lanes
+  if tool in lanes.LE3_ONLY:keep=set(lanes.le3_ids());manifest=[r for r in manifest if r['stem'] in keep]  # unlicensed 3-page cap: scored on its subset only
   ids={r['id'] if phase=='compare' else r['stem'] for r in manifest}
   # keep only checkpoint rows of the frozen manifest, scored against the very oracle file frozen
   rows={k:v for k,v in rows.items() if k in ids and v.get('oracle_sha256')==hashlib.sha256((OUT/phase/'oracle'/f'{k}.pdf').read_bytes()).hexdigest()}

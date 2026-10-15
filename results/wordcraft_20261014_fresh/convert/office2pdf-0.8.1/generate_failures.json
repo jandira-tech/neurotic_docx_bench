@@ -1,0 +1,14 @@
+[
+  {
+    "doc": "with_comments_clean__4e09d5f8f9_ole_object_ooxml_style_link_word_redline_accepte",
+    "stage": "generate",
+    "error": "Error: converting \"/Users/arthrod/temp/T/neurotic_docx_bench/corpus/word/with_comments_clean/docx/4e09d5f8f9_ole_object_ooxml_style_link_word_redline_accepte.docx\": render error: Typst compilation failed: expected expression\n",
+    "returncode": 1
+  },
+  {
+    "doc": "with_comments_clean__7f609d4854_strict01_strikethrough_and_italic_combo_id_parai",
+    "stage": "generate",
+    "error": "Error: converting \"/Users/arthrod/temp/T/neurotic_docx_bench/corpus/word/with_comments_clean/docx/7f609d4854_strict01_strikethrough_and_italic_combo_id_parai.docx\": render error: Typst compilation failed: expected expression\n",
+    "returncode": 1
+  }
+]
