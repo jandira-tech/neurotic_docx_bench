@@ -101,11 +101,11 @@ export function resolveDistFile(distPath: string, filename: string): string {
 
 /** Directory of the `@superdoc-dev/sdk` copy the bench actually benchmarks.
  *
- *  `tool_updater.update_npm_package` runs `npm install @superdoc-dev/sdk@<pin>` with
+ *  `tool_updater.update_npm_package` runs `pnpm add --exact @superdoc-dev/sdk@<pin>` with
  *  cwd = repo root (cli.py passes `Path.cwd()`) and reads the resolved version back out
  *  of `<repo>/node_modules/@superdoc-dev/sdk/package.json`. So repo-root node_modules is
  *  the ONE copy whose version lands in the JSONL as `tool_version`; importing any other
- *  copy would benchmark a version we do not report. It is also where `bun install`
+ *  copy would benchmark a version we do not report. It is also where `pnpm install`
  *  (the repo's package manager) puts the root `package.json` dependency.
  *
  *  `utils/superdoc/node_modules` stays as a fallback for checkouts that still carry the
@@ -334,11 +334,24 @@ export async function loadEngine(
 			import(
 				"../src/neurotic_docx_bench/utils/docx-redline-js/node_modules/jszip/lib/index.js"
 			),
+			// Directory imports resolve under bun but not plain Node ESM (the pnpm
+			// symlinked tree is imported with `node --import tsx`), so resolve each
+			// package's declared ESM entry the way packageEntryUrl does elsewhere.
 			import(
-				"../src/neurotic_docx_bench/utils/docx-redline-js/node_modules/@xmldom/xmldom"
+				packageEntryUrl(
+					resolve(
+						import.meta.dirname,
+						"../src/neurotic_docx_bench/utils/docx-redline-js/node_modules/@xmldom/xmldom",
+					),
+				)
 			),
 			import(
-				"../src/neurotic_docx_bench/utils/docx-redline-js/node_modules/@ansonlai/docx-redline-js"
+				packageEntryUrl(
+					resolve(
+						import.meta.dirname,
+						"../src/neurotic_docx_bench/utils/docx-redline-js/node_modules/@ansonlai/docx-redline-js",
+					),
+				)
 			),
 		]);
 		const JSZip = JSZipMod.default ?? JSZipMod;

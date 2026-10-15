@@ -1,0 +1,16 @@
+docxodus compare 20 / 200 ok 6821 ms
+docxodus compare 30 / 200 ok 6497 ms
+docxodus compare 40 / 200 ok 5180 ms
+docxodus compare 50 / 200 ok 4974 ms
+docxodus compare 60 / 200 ok 6056 ms
+docxodus compare 70 / 200 ok 5214 ms
+docxodus compare 90 / 200 ok 5582 ms
+docxodus compare 100 / 200 ok 4860 ms
+docxodus compare 120 / 200 ok 10204 ms
+docxodus compare 130 / 200 ok 7464 ms
+docxodus compare 140 / 200 ok 7385 ms
+docxodus compare 148 / 200 FAILED 120060 ms
+docxodus compare 150 / 200 ok 21316 ms
+docxodus compare 169 / 200 FAILED 120042 ms
+docxodus compare 190 / 200 ok 14288 ms
+docxodus compare 200 / 200 ok 90054 ms

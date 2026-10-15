@@ -1,9 +1,9 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 # SPDX-FileCopyrightText: 2026 Jandira Technologies, LLC
 import pymupdf, pathlib, collections, statistics, json, sys
-G=pathlib.Path('/Users/arthrod/temp/T/neurotic_docx_bench/grok_run')
+G=pathlib.Path('results/grok_run_view/grok_run')
 J=pathlib.Path('/Users/arthrod/.claude/jobs/a44a16de/tmp/all_cur')
-stems=[l.strip() for l in open('/Users/arthrod/temp/T/jubarte-loop/all500.txt') if l.strip()]
+stems=[l.strip() for l in open('results/jubarte-loop/all500.txt') if l.strip()]
 def lines(f):
     try: d=pymupdf.open(f)
     except Exception: return []

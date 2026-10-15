@@ -29,8 +29,8 @@
  *     [--engines jubarte-native,jubarte-first-lossless] [--limit N] \
  *     [--manifest corpus/word/pools/word_based_randomized_pairs.csv] \
  *     [--source-dir corpus/word] \
- *     [--jubarte-cli ../jubarte-redlines/target/release/jubarte] \
- *     [--jubarte-first-dir ../jubarte-first] [--folio-dir <folio checkout>] \
+ *     [--jubarte-cli src/neurotic_docx_bench/utils/jubarte/jubarte-redlines/target/release/jubarte] \
+ *     [--jubarte-first-dir src/neurotic_docx_bench/utils/jubarte/jubarte-first] [--folio-dir src/neurotic_docx_bench/utils/folio-checkout] \
  *     [--word-validate] [--update-results] [--out runs/d2-scoreboard]
  */
 import { execFileSync, spawnSync } from "node:child_process";
@@ -634,9 +634,9 @@ if (isMain()) {
 			? Number(arg("--limit", "0")) || undefined
 			: undefined,
 		outDir: resolve(ROOT, arg("--out", "runs/d2-scoreboard")),
-		jubarteCli: arg("--jubarte-cli", "../jubarte-redlines/target/release/jubarte"),
-		jubarteFirstDir: arg("--jubarte-first-dir", "../jubarte-first"),
-		folioDir: arg("--folio-dir", "../reconciliation_plan/folio"),
+		jubarteCli: arg("--jubarte-cli", "src/neurotic_docx_bench/utils/jubarte/jubarte-redlines/target/release/jubarte"),
+		jubarteFirstDir: arg("--jubarte-first-dir", "src/neurotic_docx_bench/utils/jubarte/jubarte-first"),
+		folioDir: arg("--folio-dir", "src/neurotic_docx_bench/utils/folio-checkout"),
 		wordValidate: process.argv.includes("--word-validate"),
 		wordSampleCount: Number(arg("--word-sample-count", "5")),
 		updateResults: process.argv.includes("--update-results"),

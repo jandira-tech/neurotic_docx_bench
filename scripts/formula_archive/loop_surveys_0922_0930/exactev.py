@@ -2,7 +2,7 @@
 # SPDX-FileCopyrightText: 2026 Jandira Technologies, LLC
 import zipfile,re,glob,os
 import pymupdf as fitz
-G='/Users/arthrod/temp/T/neurotic_docx_bench/grok_run'
+G='results/grok_run_view/grok_run'
 out=[]
 for f in sorted(glob.glob(G+'/fixtures_500/*.docx')):
     try:

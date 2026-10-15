@@ -1,0 +1,8 @@
+Copy these fonts into $JUBARTE_FONT_DIR, or into the per-user
+jubarte fonts directory (scripts/install.sh --fonts-only does
+this from a source checkout):
+  macOS   ~/Library/Application Support/jubarte/fonts
+  Linux   $XDG_DATA_HOME/jubarte/fonts (default ~/.local/share/jubarte/fonts)
+
+RobotoCondensed-*.ttf — Apache-2.0 — (c) 2011 Google Inc.
+Selawik-*.ttf         — OFL-1.1   — (c) 2015 Microsoft Corporation

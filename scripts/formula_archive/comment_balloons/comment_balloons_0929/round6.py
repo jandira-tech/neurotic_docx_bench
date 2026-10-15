@@ -5,9 +5,9 @@ between) followed by its reference. Corpus 6ef6726c28 has a balloon for that sha
 the 0929 probe with an empty w:t run between said dead. Which is it, and what matters?"""
 import re, sys
 from pathlib import Path
-sys.path.insert(0, str(Path.home() / "temp/T/comment_balloons"))
+sys.path.insert(0, str(Path(__file__).resolve().parent))  # blocklib.py
 from ab import read, write
-M = Path.home() / "temp/T/comment_balloons/r3b/docx/R3_keep_4.docx"
+M = Path("results/comment_balloons/r3b/docx/R3_keep_4.docx")
 OUT = Path(sys.argv[1] if len(sys.argv) > 1 else "/tmp/r6/docx")
 b = read(M)
 head, body = b.split("<w:body>", 1)

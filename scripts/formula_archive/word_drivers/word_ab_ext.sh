@@ -6,7 +6,7 @@
 # Regenerates every redline, reuses the base build's Word PDF when the redline's parts are identical,
 # Word-converts only the changed ones (batch, then one document per call), then scores.
 set -u
-J=$1; P=${2:-c6307ac}; N=/Users/arthrod/temp/T/neurotic_docx_bench; G=$N/grok_run; WR=$G/wr0926; L=/Users/arthrod/temp/T/jubarte-loop
+J=$1; P=${2:-c6307ac}; N=.; G=$N/grok_run; WR=$G/wr0926; L=results/jubarte-loop
 X=$L/wordab; OUT=$X/results/redline_wordpdf; JB=$L/bin/jubarte-$J
 SC=$N/src/neurotic_docx_bench/utils/docxide-metrics/target/release/docxide-metrics
 mkdir -p $OUT $X/$J

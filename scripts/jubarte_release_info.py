@@ -8,7 +8,7 @@
 """Write a jubarte release's six release_info/ evidence files.
 
     scripts/jubarte_release_info.py 0.11.3 --plan
-    scripts/jubarte_release_info.py 0.11.3 --engine-dir ../jubarte-redlines --binary PATH
+    scripts/jubarte_release_info.py 0.11.3 --engine-dir src/neurotic_docx_bench/utils/jubarte/jubarte-redlines --binary PATH
         [--adopt-redline CSV] [--adopt-conversion FILE] [--only STAGES] [--skip STAGES]
 
 Stages: install, sample, generate, export (Word), measure, convert, score,

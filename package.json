@@ -3,6 +3,10 @@
 	"private": true,
 	"type": "module",
 	"description": "Six benchmarks to neurotically measure DOCX conversion and redlining against Microsoft Word.",
+	"packageManager": "pnpm@12.11.2",
+	"engines": {
+		"node": ">=26"
+	},
 	"scripts": {
 		"typecheck": "tsc --noEmit",
 		"build": "tsc --noEmit",
@@ -36,7 +40,6 @@
 		"fflate": "^0.8.3",
 		"html-entities": "^2.6.0",
 		"jszip": "^3.10.1",
-		"libxmljs2": "^0.37.0",
 		"lop": "^0.4.2",
 		"nanoid": "^6.0.0",
 		"pdfjs-dist": "^6.1.200",

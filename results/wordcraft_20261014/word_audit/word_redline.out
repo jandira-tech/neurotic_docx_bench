@@ -1,0 +1,67 @@
+▸ PDF quality is sticky: `save as … file format format PDF` inherits whatever 
+'Optimize for' you last chose in Word's own Save As dialog.
+  Open any document in Word once, File > Save As > PDF, and pick the SECOND 
+option, Best for printing.
+  That choice persists; this script cannot set it. Pass --no-check-preset to 
+stop seeing this.
+▸ A redline PDF shows tracked changes the way Word is currently set to show them
+(Review ▸ Markup display, and Print Markup).
+  Open one redline in Word by hand and confirm it looks right before running the
+batch — this script cannot set that for you.
+2026-10-14 01:14:13.631 | INFO     | word_pdf:preflight:2235 -  preflight: 
+open_documents=0 started_clean=True launched_by_us=True close_documents=False
+2026-10-14 01:14:13.636 | INFO     | __main__:redline_folders:728 -  
+one_osascript=True pairs=8
+2026-10-14 01:14:13.644 | INFO     | __main__:_redline_batched:1012 -  one 
+osascript for 8 comparison(s)
+2026-10-14 01:14:18.651 | INFO     | word_pdf:_loop:1479 -  0/8
+2026-10-14 01:14:28.667 | INFO     | word_pdf:_nudge:1450 -  item 1/8 not 
+finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 01:14:43.686 | INFO     | word_pdf:_loop:1479 -  2/8
+2026-10-14 01:14:48.697 | INFO     | word_pdf:_loop:1479 -  5/8
+2026-10-14 01:14:53.703 | INFO     | word_pdf:_loop:1479 -  6/8
+2026-10-14 01:14:57.356 | INFO     | __main__:_redline_batched:1041 -  one 
+osascript for 5 redline PDF(s)
+2026-10-14 01:15:02.364 | INFO     | word_pdf:_loop:1479 -  2/5
+2026-10-14 01:15:04.960 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+1edc0f56f4.docx → 1edc0f56f4.docx — redline is missing base 67% of that file; 
+the two sides are not averaged
+2026-10-14 01:15:04.961 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+60e784f2de.docx → 60e784f2de.docx — Microsoft Word got an error: document 
+"00001__base__60e784f2de__vs__60e784f2de.docx" doesn’t understand the “compare” 
+message.
+2026-10-14 01:15:04.992 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+d23d9c8cc7.docx → d23d9c8cc7.docx — Microsoft Word got an error: document 
+"00004__base__d23d9c8cc7__vs__d23d9c8cc7.docx" doesn’t understand the “compare” 
+message.
+2026-10-14 01:15:05.002 | WARNING  | __main__:_redline_batched:1107 -   compared
+clean (no revisions): d5efaa5b6d.docx → d5efaa5b6d.docx
+2026-10-14 01:15:05.014 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+e6e61fc33f.docx → e6e61fc33f.docx — Microsoft Word got an error: document 
+"00007__base__e6e61fc33f__vs__e6e61fc33f.docx" doesn’t understand the “compare” 
+message.
+2026-10-14 01:15:08.738 | INFO     | word_pdf:stop:907 -  tally: declined=0 
+dismissed=0 granted=0 forwarded=0 alerts_seen=0
+             redline: A → B             
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━┓
+┃ outcome                      ┃ count ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━┩
+│ redlined                     │     4 │
+│ skipped (exists)             │     0 │
+│ failed                       │     4 │
+│ compared clean (0 revisions) │     1 │
+│ seconds per pair (batch avg) │   5.5 │
+│ total revisions              │    47 │
+└──────────────────────────────┴───────┘
+  clean d5efaa5b6d.docx → d5efaa5b6d.docx: Word found no differences
+  FAIL 1edc0f56f4.docx → 1edc0f56f4.docx: redline is missing base 67% of that 
+file; the two sides are not averaged
+  FAIL 60e784f2de.docx → 60e784f2de.docx: Microsoft Word got an error: document 
+"00001__base__60e784f2de__vs__60e784f2de.docx" doesn’t understand the “compare” 
+message.
+  FAIL d23d9c8cc7.docx → d23d9c8cc7.docx: Microsoft Word got an error: document 
+"00004__base__d23d9c8cc7__vs__d23d9c8cc7.docx" doesn’t understand the “compare” 
+message.
+  FAIL e6e61fc33f.docx → e6e61fc33f.docx: Microsoft Word got an error: document 
+"00007__base__e6e61fc33f__vs__e6e61fc33f.docx" doesn’t understand the “compare” 
+message.

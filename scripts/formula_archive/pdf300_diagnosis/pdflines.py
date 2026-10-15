@@ -3,7 +3,7 @@
 import sys, glob, fitz
 key=sys.argv[1]; build=sys.argv[2]; pi=int(sys.argv[3]); a=int(sys.argv[4]); b=int(sys.argv[5])
 state, stem = key.split('__',1)
-W=fitz.open(glob.glob(f'/Users/arthrod/temp/T/neurotic_docx_bench/corpus/word/{state}/pdf/{stem}*.pdf')[0])
+W=fitz.open(glob.glob(f'corpus/word/{state}/pdf/{stem}*.pdf')[0])
 O=fitz.open(glob.glob(f'/tmp/pdf-300/work-{build}/jubarte/candidate/{key}*.pdf')[0])
 def lines(pg):
     out=[]

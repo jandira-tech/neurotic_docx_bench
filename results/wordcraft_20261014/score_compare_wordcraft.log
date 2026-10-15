@@ -1,0 +1,21 @@
+compare wordcraft scoring 190 remaining, 0 complete; 10 missing
+wordcraft 10 / 190 scored 10 failures 10 136s
+wordcraft 20 / 190 scored 20 failures 10 253s
+wordcraft 30 / 190 scored 30 failures 10 325s
+wordcraft 40 / 190 scored 40 failures 10 377s
+wordcraft 50 / 190 scored 50 failures 10 419s
+wordcraft 60 / 190 scored 60 failures 10 477s
+wordcraft 70 / 190 scored 70 failures 10 581s
+wordcraft 80 / 190 scored 80 failures 10 610s
+wordcraft 90 / 190 scored 90 failures 10 640s
+wordcraft 100 / 190 scored 100 failures 10 664s
+wordcraft 110 / 190 scored 110 failures 10 700s
+wordcraft 120 / 190 scored 120 failures 10 732s
+wordcraft 130 / 190 scored 130 failures 10 748s
+wordcraft 140 / 190 scored 140 failures 10 776s
+wordcraft 150 / 190 scored 150 failures 10 793s
+wordcraft 160 / 190 scored 160 failures 10 808s
+wordcraft 170 / 190 scored 170 failures 10 848s
+wordcraft 180 / 190 scored 180 failures 10 897s
+wordcraft 190 / 190 scored 190 failures 10 1228s
+saved /Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014/compare/wordcraft/scores.json

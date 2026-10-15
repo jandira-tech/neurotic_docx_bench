@@ -182,9 +182,9 @@ const fixturesDirs = fixturesDirArg
 export function defaultCsharpDist(root: string = ROOT): string {
 	const candidates = [
 		join(root, "src/neurotic_docx_bench/utils/docxodus/docxodus-csharp"),
-		join(root, "../ooxmlsdk/Docxodus/tools/redline/bin/Release/net10.0"),
-		join(root, "../ooxmlsdk/Docxodus/tools/redline/bin/Release/net8.0"),
-		join(root, "../ooxmlsdk/Docxodus/tools/redline/bin/Release/net9.0"),
+		join(root, "src/neurotic_docx_bench/utils/docxodus/ooxmlsdk/Docxodus/tools/redline/bin/Release/net10.0"),
+		join(root, "src/neurotic_docx_bench/utils/docxodus/ooxmlsdk/Docxodus/tools/redline/bin/Release/net8.0"),
+		join(root, "src/neurotic_docx_bench/utils/docxodus/ooxmlsdk/Docxodus/tools/redline/bin/Release/net9.0"),
 	];
 	for (const c of candidates) {
 		if (existsSync(join(c, "redline"))) return c;

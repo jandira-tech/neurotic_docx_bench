@@ -25,8 +25,8 @@ from collections import Counter
 
 import fitz
 
-D = pathlib.Path("/Users/arthrod/temp/T/jubarte-redlines/_to_improve_docx_to_pdf")
-L = pathlib.Path("/Users/arthrod/temp/T/jubarte-loop")
+D = pathlib.Path("from_jubarte-redlines/_to_improve_docx_to_pdf")
+L = pathlib.Path("results/jubarte-loop")
 BAND = 0.12  # top/bottom share of the page read as header/footer bands
 
 
