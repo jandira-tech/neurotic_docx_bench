@@ -1,0 +1,11 @@
+{
+  "comparison_references_valid": 174,
+  "comparison_corrected_writable_retry": 44,
+  "comparison_permission_failures_withdrawn": 30,
+  "previous_reserve_selection_withdrawn": true,
+  "conversion_references_valid": 0,
+  "vendor_generation_started": false,
+  "vendor_scores": 0,
+  "comparison_word_exclusions": 26,
+  "updated_at": "2026-10-14 02:54:19"
+}

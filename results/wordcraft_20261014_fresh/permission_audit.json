@@ -1,0 +1,13 @@
+{
+  "initial_results_by_input_mode": {
+    "succeeded|base_mode_0o644|next_mode_0o644": 137,
+    "failed|base_mode_0o644|next_mode_0o444": 2,
+    "failed|base_mode_0o444|next_mode_0o444": 11,
+    "succeeded|base_mode_0o644|next_mode_0o444": 19,
+    "failed|base_mode_0o444|next_mode_0o644": 19,
+    "failed|base_mode_0o644|next_mode_0o644": 12
+  },
+  "copy_error": "copy2 preserved read-only 0444 from HF cache",
+  "correction": "Benchmark staging copies 0644; input content hashes unchanged",
+  "corrupt_labels_due_to_permissions_withdrawn": true
+}

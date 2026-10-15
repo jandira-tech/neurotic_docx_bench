@@ -1,0 +1,13 @@
+Emitted compare|wordcraft-0.7.0 scored 392 failed 8 median CLI ms 25.3820835
+Emitted compare|docxodus-13.0.0 scored 379 failed 21 median CLI ms 849.8927289999999
+Emitted compare|folio-0.60.0 scored 257 failed 143 median CLI ms 863.818625
+Emitted compare|stemma-0.6.0 scored 108 failed 292 median CLI ms 135.551104
+Emitted compare|superdoc-2.20.0 scored 36 failed 364 median CLI ms 2750.508167
+Emitted convert|wordcraft-0.7.0 scored 400 failed 0 median CLI ms 68.7990835
+Emitted convert|office2pdf-0.8.1 scored 398 failed 2 median CLI ms 658.244854
+Emitted convert|pdfitdown-4.2.0 scored 397 failed 3 median CLI ms 562.644958
+Emitted convert|rdocx-0.16.0 scored 397 failed 3 median CLI ms 291.959125
+Emitted convert|docxide-pdf-0.18.4 scored 400 failed 0 median CLI ms 43.592166500000005
+Emitted convert|libreoffice_convert_rust-0.1.0 scored 398 failed 2 median CLI ms 1927.0362295
+Emitted convert|pymupdf-pro-1.28.2 scored 250 failed 3 median CLI ms 770.4855415
+Completed cohort result stores emitted; publication appends these fresh lines only

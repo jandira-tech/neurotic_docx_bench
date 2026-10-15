@@ -1,0 +1,53 @@
+[
+  {
+    "key": "902a69f0e4_super_editor__line_space_table_9b1ee54b__vs__5e5fa9b5fb_super_editor__list_def_mix_d7cec092_redline_062340d04a",
+    "base": "clean/docx/902a69f0e4_super_editor__line_space_table_9b1ee54b",
+    "next": "clean/docx/5e5fa9b5fb_super_editor__list_def_mix_d7cec092",
+    "docx": "tracking_without_comments/docx/902a69f0e4_super_editor__line_space_table_9b1ee54b__vs__5e5fa9b5fb_super_editor__list_def_mix_d7cec092_redline_062340d04a.docx",
+    "pdf": "tracking_without_comments/pdf/902a69f0e4_super_editor__line_space_table_9b1ee54b__vs__5e5fa9b5fb_super_editor__list_def_mix_d7cec092_redline_062340d04a.pdf",
+    "state": "tracking_without_comments",
+    "id": "062340d04a",
+    "sets": "word_redlines_superdoc_0926",
+    "base_sha256": "902a69f0e494604996062bb55b2d8baaf57c0217da48c2fa2f5c3d57ce20b364",
+    "next_sha256": "5e5fa9b5fb5c33f725179bd3b3d9a3d920678d1ab42b4820dcccf2a371dac69f",
+    "docx_sha256": "062340d04a7a469483ca120472746aa5cc9db571a3ed098614b565fb84f7ccf3",
+    "pdf_sha256": "0d1c2b8657a1469d15f5a327ff8408bf3982b7da5a2815a1cbecdb03ce5636fc",
+    "pages": "1",
+    "page_band": "1",
+    "source_pool": "word_redlines_superdoc_0926"
+  },
+  {
+    "key": "df097720f7_file_131__vs__3c60cce945_file_132_redline_4eff11f045",
+    "base": "with_comments_clean/docx/df097720f7_file_131",
+    "next": "clean/docx/3c60cce945_file_132",
+    "docx": "with_comments_tracking/docx/df097720f7_file_131__vs__3c60cce945_file_132_redline_4eff11f045.docx",
+    "pdf": "with_comments_tracking/pdf/df097720f7_file_131__vs__3c60cce945_file_132_redline_4eff11f045.pdf",
+    "state": "with_comments_tracking",
+    "id": "4eff11f045",
+    "sets": "word_based_randomized_0926",
+    "base_sha256": "df097720f7d7c8bdda982526a1450a79deb9f3e4198f013ce75de0e5f09c427d",
+    "next_sha256": "3c60cce945bccdd4d92a5bc0d279230071241a6bd5ae8d183100b3992dfbfb23",
+    "docx_sha256": "4eff11f0456994fbc5d2200146017c0c4ef126ad95281bf49a9ec1bf3fe27254",
+    "pdf_sha256": "f5acf1a34313011711f799c284af821647c32575b77005534526d7c6bad0214f",
+    "pages": "0",
+    "page_band": "unknown",
+    "source_pool": "word_based_randomized_0926"
+  },
+  {
+    "key": "9c6ebd430d_file_185__vs__154fce3ec8_file_186_redline_4d40d1f136",
+    "base": "with_comments_tracking/docx/9c6ebd430d_file_185",
+    "next": "clean/docx/154fce3ec8_file_186",
+    "docx": "with_comments_tracking/docx/9c6ebd430d_file_185__vs__154fce3ec8_file_186_redline_4d40d1f136.docx",
+    "pdf": "with_comments_tracking/pdf/9c6ebd430d_file_185__vs__154fce3ec8_file_186_redline_4d40d1f136.pdf",
+    "state": "with_comments_tracking",
+    "id": "4d40d1f136",
+    "sets": "word_based_randomized_0926",
+    "base_sha256": "9c6ebd430d60629364475af37e1e76d497f18048c6bb12a671c07f9ee8fe2538",
+    "next_sha256": "154fce3ec8823e76850dede511954a256330c52cd3b18733168143c9e02cbaf7",
+    "docx_sha256": "4d40d1f136f55e623ee06a753d582d7576e38f337f234aa965e252c9dc5b4c11",
+    "pdf_sha256": "1bc7d59372bc4c664a85fbf5d33d3b5f23b46f19044927c0656ad3d2c61d03a9",
+    "pages": "13",
+    "page_band": "11+",
+    "source_pool": "word_based_randomized_0926"
+  }
+]

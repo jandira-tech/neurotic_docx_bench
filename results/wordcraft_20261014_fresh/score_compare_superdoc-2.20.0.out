@@ -1,0 +1,6 @@
+compare superdoc-2.20.0 scoring 36 remaining, 0 complete; 364 missing
+superdoc-2.20.0 10 / 36 scored 10 failures 364 24s
+superdoc-2.20.0 20 / 36 scored 20 failures 364 32s
+superdoc-2.20.0 30 / 36 scored 30 failures 364 40s
+superdoc-2.20.0 36 / 36 scored 36 failures 364 46s
+saved /Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/compare/superdoc-2.20.0/scores.json

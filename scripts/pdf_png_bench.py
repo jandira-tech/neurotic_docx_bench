@@ -14,7 +14,7 @@ lenses compare same-size pages. Candidates:
 - ``pymupdf``: the library ``raster.py`` rasterizes with, in-process.
 - ``pdftoppm`` (poppler) and ``mutool`` (MuPDF CLI), the other rasterizers installed here.
 - ``jubarte``: it cannot read a PDF, so it converts the DOCX the Word PDF was exported
-  from (``jubarte convert --png``). Its row measures jubarte's own layout plus
+  from (``jubarte convert -o page.png``). Its row measures jubarte's own layout plus
   rasterization, not PDF rasterization; the summary says so.
 
 ``--oracles`` (default ``libreoffice,pymupdf``) makes each of them an oracle in
@@ -81,7 +81,7 @@ def pdftoppm_command(pdf: Path, *, page: int, size: tuple[int, int], prefix: Pat
 
 
 def jubarte_command(binary: Path, docx: Path, *, dpi: int, out: Path) -> list[str]:
-    return [str(binary), "convert", str(docx), "--png", "--dpi", str(dpi), "-o", str(out), "--force"]
+    return [str(binary), "convert", str(docx), "--dpi", str(dpi), "-o", str(out), "--force"]
 
 
 def _run(cmd: list[str], timeout: float, cwd: Path | None = None) -> None:
@@ -134,7 +134,7 @@ def render_mutool(doc: dict, sizes: list[tuple[int, int]], out: Path, timeout: f
 
 
 def render_jubarte(doc: dict, sizes: list[tuple[int, int]], out: Path, timeout: float) -> list[Path]:
-    _run(jubarte_command(JUBARTE, Path(doc["docx"]), dpi=doc["dpi"], out=out / "j.pdf"), timeout, cwd=out)
+    _run(jubarte_command(JUBARTE, Path(doc["docx"]), dpi=doc["dpi"], out=out / "j.png"), timeout, cwd=out)
     pages = sorted(out.glob("j-page-*.png"))
     if not pages:
         raise RuntimeError("no PNG pages written")

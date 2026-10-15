@@ -1,0 +1,42 @@
+[
+  {
+    "doc": "4d40d1f136",
+    "stage": "render",
+    "error": "Word could not export this vendor redline in two fresh sessions; see word_pdf.log / word_pdf_retry.log"
+  },
+  {
+    "doc": "61959b1953",
+    "stage": "render",
+    "error": "Word could not export this vendor redline in two fresh sessions; see word_pdf.log / word_pdf_retry.log"
+  },
+  {
+    "doc": "0dfc906eb1",
+    "stage": "render",
+    "error": "Word could not export this vendor redline in two fresh sessions; see word_pdf.log / word_pdf_retry.log"
+  },
+  {
+    "doc": "57dfcda882",
+    "stage": "render",
+    "error": "Word could not export this vendor redline in two fresh sessions; see word_pdf.log / word_pdf_retry.log"
+  },
+  {
+    "doc": "34ffddfe47",
+    "stage": "render",
+    "error": "Word could not export this vendor redline in two fresh sessions; see word_pdf.log / word_pdf_retry.log"
+  },
+  {
+    "doc": "6bcf56a447",
+    "stage": "render",
+    "error": "Word could not export this vendor redline in two fresh sessions; see word_pdf.log / word_pdf_retry.log"
+  },
+  {
+    "doc": "2ea0a59b6a",
+    "stage": "render",
+    "error": "Word could not export this vendor redline in two fresh sessions; see word_pdf.log / word_pdf_retry.log"
+  },
+  {
+    "doc": "0cd32d67b2",
+    "stage": "render",
+    "error": "Word could not export this vendor redline in two fresh sessions; see word_pdf.log / word_pdf_retry.log"
+  }
+]

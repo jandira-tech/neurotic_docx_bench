@@ -1,0 +1,71 @@
+▸ PDF quality is sticky: `save as … file format format PDF` inherits whatever 
+'Optimize for' you last chose in Word's own Save As dialog.
+  Open any document in Word once, File > Save As > PDF, and pick the SECOND 
+option, Best for printing.
+  That choice persists; this script cannot set it. Pass --no-check-preset to 
+stop seeing this.
+▸ A redline PDF shows tracked changes the way Word is currently set to show them
+(Review ▸ Markup display, and Print Markup).
+  Open one redline in Word by hand and confirm it looks right before running the
+batch — this script cannot set that for you.
+2026-10-14 02:36:53.755 | INFO     | word_pdf:preflight:2235 -  preflight: 
+open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-10-14 02:36:53.757 | INFO     | __main__:redline_folders:728 -  
+one_osascript=False pairs=11
+2026-10-14 02:36:56.724 | INFO     | __main__:_redline_serial:804 - [1/11] ok 
+(3.0s, 8 revisions): 0cbbcaa7f0.docx → 0cbbcaa7f0.docx
+2026-10-14 02:36:58.970 | INFO     | __main__:_redline_serial:804 - [2/11] ok 
+(2.2s, 5 revisions): 2f1434be75.docx → 2f1434be75.docx
+2026-10-14 02:37:00.525 | ERROR    | __main__:_redline_serial:809 - [3/11] FAIL:
+37c978d405.docx → 37c978d405.docx — redline is missing base 67% of that file; 
+the two sides are not averaged
+2026-10-14 02:37:08.756 | INFO     | __main__:_redline_serial:804 - [4/11] ok 
+(2.0s, 12 revisions): 4ce07ffaec.docx → 4ce07ffaec.docx
+2026-10-14 02:37:10.701 | INFO     | __main__:_redline_serial:804 - [5/11] ok 
+(1.9s, 2 revisions): 603ef0419b.docx → 603ef0419b.docx
+2026-10-14 02:37:11.481 | ERROR    | __main__:_redline_serial:809 - [6/11] FAIL:
+8018df6bdf.docx → 8018df6bdf.docx — 2402:2519: execution error: Microsoft Word 
+got an error: document "base__8018df6bdf__vs__8018df6bdf.docx" doesn’t 
+understand the “compare” message. (-1708)
+2026-10-14 02:37:13.586 | INFO     | word_pdf:_note_dialogs:774 -  Microsoft 
+Word shows button 'missing value'
+2026-10-14 02:37:18.839 | ERROR    | __main__:_redline_serial:809 - [7/11] FAIL:
+875b3fba58.docx → 875b3fba58.docx — 2402:2519: execution error: Microsoft Word 
+got an error: document "base__875b3fba58__vs__875b3fba58.docx" doesn’t 
+understand the “compare” message. (-1708)
+2026-10-14 02:37:27.090 | INFO     | __main__:_redline_serial:804 - [8/11] ok 
+(2.0s, 2 revisions): 8d0b00bb0a.docx → 8d0b00bb0a.docx
+2026-10-14 02:37:29.171 | INFO     | __main__:_redline_serial:804 - [9/11] ok 
+(2.1s, 17 revisions): a5450b8b72.docx → a5450b8b72.docx
+2026-10-14 02:37:30.624 | ERROR    | __main__:_redline_serial:809 - [10/11] 
+FAIL: ba3b77bee3.docx → ba3b77bee3.docx — redline is missing revision 0% of that
+file; the two sides are not averaged
+2026-10-14 02:37:38.672 | ERROR    | __main__:_redline_serial:809 - [11/11] 
+FAIL: e8aedc3a02.docx → e8aedc3a02.docx — 2402:2519: execution error: Microsoft 
+Word got an error: document "base__e8aedc3a02__vs__e8aedc3a02.docx" doesn’t 
+understand the “compare” message. (-1708)
+2026-10-14 02:37:45.275 | INFO     | word_pdf:stop:907 -  tally: declined=0 
+dismissed=0 granted=0 forwarded=0 alerts_seen=0
+       redline: A → B       
+┏━━━━━━━━━━━━━━━━━━┳━━━━━━━┓
+┃ outcome          ┃ count ┃
+┡━━━━━━━━━━━━━━━━━━╇━━━━━━━┩
+│ redlined         │     6 │
+│ skipped (exists) │     0 │
+│ failed           │     5 │
+│ median seconds   │   2.1 │
+│ total revisions  │    46 │
+└──────────────────┴───────┘
+  FAIL 37c978d405.docx → 37c978d405.docx: redline is missing base 67% of that 
+file; the two sides are not averaged
+  FAIL 8018df6bdf.docx → 8018df6bdf.docx: 2402:2519: execution error: Microsoft 
+Word got an error: document "base__8018df6bdf__vs__8018df6bdf.docx" doesn’t 
+understand the “compare” message. (-1708)
+  FAIL 875b3fba58.docx → 875b3fba58.docx: 2402:2519: execution error: Microsoft 
+Word got an error: document "base__875b3fba58__vs__875b3fba58.docx" doesn’t 
+understand the “compare” message. (-1708)
+  FAIL ba3b77bee3.docx → ba3b77bee3.docx: redline is missing revision 0% of that
+file; the two sides are not averaged
+  FAIL e8aedc3a02.docx → e8aedc3a02.docx: 2402:2519: execution error: Microsoft 
+Word got an error: document "base__e8aedc3a02__vs__e8aedc3a02.docx" doesn’t 
+understand the “compare” message. (-1708)

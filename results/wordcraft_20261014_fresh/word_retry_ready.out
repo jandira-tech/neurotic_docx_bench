@@ -1,0 +1,282 @@
+▸ PDF quality is sticky: `save as … file format format PDF` inherits whatever 
+'Optimize for' you last chose in Word's own Save As dialog.
+  Open any document in Word once, File > Save As > PDF, and pick the SECOND 
+option, Best for printing.
+  That choice persists; this script cannot set it. Pass --no-check-preset to 
+stop seeing this.
+▸ A redline PDF shows tracked changes the way Word is currently set to show them
+(Review ▸ Markup display, and Print Markup).
+  Open one redline in Word by hand and confirm it looks right before running the
+batch — this script cannot set that for you.
+2026-10-14 02:08:52.059 | INFO     | word_pdf:preflight:2235 -  preflight: 
+open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-10-14 02:08:52.064 | INFO     | word_redline:redline_folders:728 -  
+one_osascript=True pairs=44
+2026-10-14 02:08:52.111 | INFO     | word_redline:_redline_batched:1012 -  one 
+osascript for 44 comparison(s)
+2026-10-14 02:08:56.742 | INFO     | word_pdf:_note_dialogs:774 -  Microsoft 
+Word shows button 'missing value'
+2026-10-14 02:08:57.118 | INFO     | word_pdf:_loop:1479 -  1/44
+2026-10-14 02:09:07.121 | INFO     | word_pdf:_loop:1479 -  2/44
+2026-10-14 02:09:12.125 | INFO     | word_pdf:_loop:1479 -  4/44
+2026-10-14 02:09:17.131 | INFO     | word_pdf:_loop:1479 -  5/44
+2026-10-14 02:09:22.137 | INFO     | word_pdf:_loop:1479 -  6/44
+2026-10-14 02:09:27.147 | INFO     | word_pdf:_loop:1479 -  7/44
+2026-10-14 02:09:32.155 | INFO     | word_pdf:_loop:1479 -  8/44
+2026-10-14 02:09:37.162 | INFO     | word_pdf:_loop:1479 -  9/44
+2026-10-14 02:09:42.170 | INFO     | word_pdf:_loop:1479 -  10/44
+2026-10-14 02:09:47.173 | INFO     | word_pdf:_loop:1479 -  11/44
+2026-10-14 02:09:52.177 | INFO     | word_pdf:_loop:1479 -  12/44
+2026-10-14 02:09:57.184 | INFO     | word_pdf:_loop:1479 -  13/44
+2026-10-14 02:10:02.193 | INFO     | word_pdf:_loop:1479 -  14/44
+2026-10-14 02:10:07.201 | INFO     | word_pdf:_loop:1479 -  16/44
+2026-10-14 02:10:12.209 | INFO     | word_pdf:_loop:1479 -  17/44
+2026-10-14 02:10:17.214 | INFO     | word_pdf:_loop:1479 -  19/44
+2026-10-14 02:10:22.220 | INFO     | word_pdf:_loop:1479 -  21/44
+2026-10-14 02:10:27.228 | INFO     | word_pdf:_loop:1479 -  22/44
+2026-10-14 02:10:32.235 | INFO     | word_pdf:_loop:1479 -  24/44
+2026-10-14 02:10:37.242 | INFO     | word_pdf:_loop:1479 -  25/44
+2026-10-14 02:10:42.246 | INFO     | word_pdf:_loop:1479 -  27/44
+2026-10-14 02:10:47.253 | INFO     | word_pdf:_loop:1479 -  28/44
+2026-10-14 02:10:52.259 | INFO     | word_pdf:_loop:1479 -  29/44
+2026-10-14 02:10:57.263 | INFO     | word_pdf:_loop:1479 -  30/44
+2026-10-14 02:11:02.270 | INFO     | word_pdf:_loop:1479 -  32/44
+2026-10-14 02:11:07.277 | INFO     | word_pdf:_loop:1479 -  34/44
+2026-10-14 02:11:12.280 | INFO     | word_pdf:_loop:1479 -  35/44
+2026-10-14 02:11:17.287 | INFO     | word_pdf:_loop:1479 -  36/44
+2026-10-14 02:11:22.293 | INFO     | word_pdf:_loop:1479 -  37/44
+2026-10-14 02:11:27.295 | INFO     | word_pdf:_loop:1479 -  39/44
+2026-10-14 02:11:32.300 | INFO     | word_pdf:_loop:1479 -  40/44
+2026-10-14 02:11:37.309 | INFO     | word_pdf:_loop:1479 -  42/44
+2026-10-14 02:11:42.328 | ERROR    | word_redline:_redline_batched:1073 -  FAIL:
+062340d04a.docx → 062340d04a.docx — Microsoft Word got an error: document 
+"00000__base__062340d04a__vs__062340d04a.docx" doesn’t understand the “compare” 
+message.
+2026-10-14 02:11:42.348 | ERROR    | word_redline:_redline_batched:1073 -  FAIL:
+0858ee25d5.docx → 0858ee25d5.docx — redline is missing base 0% of that file; the
+two sides are not averaged
+2026-10-14 02:11:42.349 | ERROR    | word_redline:_redline_batched:1073 -  FAIL:
+0b033b1c23.docx → 0b033b1c23.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-14 02:11:42.349 | ERROR    | word_redline:_redline_batched:1073 -  FAIL:
+0f031c23c3.docx → 0f031c23c3.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-14 02:11:42.356 | ERROR    | word_redline:_redline_batched:1073 -  FAIL:
+1b55e27189.docx → 1b55e27189.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-14 02:11:42.361 | ERROR    | word_redline:_redline_batched:1073 -  FAIL:
+1edc0f56f4.docx → 1edc0f56f4.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-14 02:11:42.361 | ERROR    | word_redline:_redline_batched:1073 -  FAIL:
+2d65e392ab.docx → 2d65e392ab.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-14 02:11:42.362 | ERROR    | word_redline:_redline_batched:1073 -  FAIL:
+34ffddfe47.docx → 34ffddfe47.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-14 02:11:42.366 | ERROR    | word_redline:_redline_batched:1073 -  FAIL:
+3d39f0120d.docx → 3d39f0120d.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-14 02:11:42.369 | ERROR    | word_redline:_redline_batched:1073 -  FAIL:
+3e7067f872.docx → 3e7067f872.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-14 02:11:42.370 | ERROR    | word_redline:_redline_batched:1073 -  FAIL:
+4d40d1f136.docx → 4d40d1f136.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-14 02:11:42.374 | ERROR    | word_redline:_redline_batched:1073 -  FAIL:
+4eff11f045.docx → 4eff11f045.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-14 02:11:42.378 | ERROR    | word_redline:_redline_batched:1073 -  FAIL:
+581907f19c.docx → 581907f19c.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-14 02:11:42.378 | ERROR    | word_redline:_redline_batched:1073 -  FAIL:
+58cd08049b.docx → 58cd08049b.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-14 02:11:42.379 | ERROR    | word_redline:_redline_batched:1073 -  FAIL:
+5f0fed8e2a.docx → 5f0fed8e2a.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-14 02:11:42.383 | ERROR    | word_redline:_redline_batched:1073 -  FAIL:
+60e784f2de.docx → 60e784f2de.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-14 02:11:42.386 | ERROR    | word_redline:_redline_batched:1073 -  FAIL:
+60ef61f086.docx → 60ef61f086.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-14 02:11:42.387 | ERROR    | word_redline:_redline_batched:1073 -  FAIL:
+61959b1953.docx → 61959b1953.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-14 02:11:42.392 | ERROR    | word_redline:_redline_batched:1073 -  FAIL:
+64c527dde8.docx → 64c527dde8.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-14 02:11:42.396 | ERROR    | word_redline:_redline_batched:1073 -  FAIL:
+6b74ac1ae6.docx → 6b74ac1ae6.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-14 02:11:42.398 | ERROR    | word_redline:_redline_batched:1073 -  FAIL:
+6de20376e8.docx → 6de20376e8.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-14 02:11:42.398 | ERROR    | word_redline:_redline_batched:1073 -  FAIL:
+849e0cb7c4.docx → 849e0cb7c4.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-14 02:11:42.402 | ERROR    | word_redline:_redline_batched:1073 -  FAIL:
+84eec18240.docx → 84eec18240.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-14 02:11:42.405 | ERROR    | word_redline:_redline_batched:1073 -  FAIL:
+86aef9a34a.docx → 86aef9a34a.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-14 02:11:42.406 | ERROR    | word_redline:_redline_batched:1073 -  FAIL:
+92075b7449.docx → 92075b7449.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-14 02:11:42.411 | ERROR    | word_redline:_redline_batched:1073 -  FAIL:
+9382e03243.docx → 9382e03243.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-14 02:11:42.415 | ERROR    | word_redline:_redline_batched:1073 -  FAIL:
+a836952933.docx → a836952933.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-14 02:11:42.416 | ERROR    | word_redline:_redline_batched:1073 -  FAIL:
+a9272f69c1.docx → a9272f69c1.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-14 02:11:42.420 | ERROR    | word_redline:_redline_batched:1073 -  FAIL:
+bbc3223232.docx → bbc3223232.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-14 02:11:42.423 | ERROR    | word_redline:_redline_batched:1073 -  FAIL:
+bc0135eaa1.docx → bc0135eaa1.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-14 02:11:42.424 | ERROR    | word_redline:_redline_batched:1073 -  FAIL:
+bc6f8076f9.docx → bc6f8076f9.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-14 02:11:42.428 | ERROR    | word_redline:_redline_batched:1073 -  FAIL:
+c2380a4677.docx → c2380a4677.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-14 02:11:42.432 | ERROR    | word_redline:_redline_batched:1073 -  FAIL:
+c277edafd3.docx → c277edafd3.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-14 02:11:42.432 | ERROR    | word_redline:_redline_batched:1073 -  FAIL:
+cbf73c2d81.docx → cbf73c2d81.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-14 02:11:42.433 | ERROR    | word_redline:_redline_batched:1073 -  FAIL:
+d23d9c8cc7.docx → d23d9c8cc7.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-14 02:11:42.437 | ERROR    | word_redline:_redline_batched:1073 -  FAIL:
+d9bb456306.docx → d9bb456306.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-14 02:11:42.441 | ERROR    | word_redline:_redline_batched:1073 -  FAIL:
+db0f90defc.docx → db0f90defc.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-14 02:11:42.453 | ERROR    | word_redline:_redline_batched:1073 -  FAIL:
+dde913904e.docx → dde913904e.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-14 02:11:42.454 | ERROR    | word_redline:_redline_batched:1073 -  FAIL:
+e0305725c1.docx → e0305725c1.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-14 02:11:42.455 | ERROR    | word_redline:_redline_batched:1073 -  FAIL:
+e6e61fc33f.docx → e6e61fc33f.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-14 02:11:42.455 | ERROR    | word_redline:_redline_batched:1073 -  FAIL:
+f0875f6d19.docx → f0875f6d19.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-14 02:11:42.459 | ERROR    | word_redline:_redline_batched:1073 -  FAIL:
+f7bbf6e831.docx → f7bbf6e831.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-14 02:11:42.462 | ERROR    | word_redline:_redline_batched:1073 -  FAIL:
+f8286525f6.docx → f8286525f6.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-14 02:11:42.463 | ERROR    | word_redline:_redline_batched:1073 -  FAIL:
+ff24600d87.docx → ff24600d87.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-14 02:11:42.472 | INFO     | word_pdf:stop:907 -  tally: declined=0 
+dismissed=0 granted=0 forwarded=0 alerts_seen=0
+       redline: A → B       
+┏━━━━━━━━━━━━━━━━━━┳━━━━━━━┓
+┃ outcome          ┃ count ┃
+┡━━━━━━━━━━━━━━━━━━╇━━━━━━━┩
+│ redlined         │     0 │
+│ skipped (exists) │     0 │
+│ failed           │    44 │
+└──────────────────┴───────┘
+  FAIL 062340d04a.docx → 062340d04a.docx: Microsoft Word got an error: document 
+"00000__base__062340d04a__vs__062340d04a.docx" doesn’t understand the “compare” 
+message.
+  FAIL 0858ee25d5.docx → 0858ee25d5.docx: redline is missing base 0% of that 
+file; the two sides are not averaged
+  FAIL 0b033b1c23.docx → 0b033b1c23.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL 0f031c23c3.docx → 0f031c23c3.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL 1b55e27189.docx → 1b55e27189.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL 1edc0f56f4.docx → 1edc0f56f4.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL 2d65e392ab.docx → 2d65e392ab.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL 34ffddfe47.docx → 34ffddfe47.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL 3d39f0120d.docx → 3d39f0120d.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL 3e7067f872.docx → 3e7067f872.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL 4d40d1f136.docx → 4d40d1f136.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL 4eff11f045.docx → 4eff11f045.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL 581907f19c.docx → 581907f19c.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL 58cd08049b.docx → 58cd08049b.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL 5f0fed8e2a.docx → 5f0fed8e2a.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL 60e784f2de.docx → 60e784f2de.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL 60ef61f086.docx → 60ef61f086.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL 61959b1953.docx → 61959b1953.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL 64c527dde8.docx → 64c527dde8.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL 6b74ac1ae6.docx → 6b74ac1ae6.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL 6de20376e8.docx → 6de20376e8.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL 849e0cb7c4.docx → 849e0cb7c4.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL 84eec18240.docx → 84eec18240.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL 86aef9a34a.docx → 86aef9a34a.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL 92075b7449.docx → 92075b7449.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL 9382e03243.docx → 9382e03243.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL a836952933.docx → a836952933.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL a9272f69c1.docx → a9272f69c1.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL bbc3223232.docx → bbc3223232.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL bc0135eaa1.docx → bc0135eaa1.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL bc6f8076f9.docx → bc6f8076f9.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL c2380a4677.docx → c2380a4677.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL c277edafd3.docx → c277edafd3.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL cbf73c2d81.docx → cbf73c2d81.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL d23d9c8cc7.docx → d23d9c8cc7.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL d9bb456306.docx → d9bb456306.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL db0f90defc.docx → db0f90defc.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL dde913904e.docx → dde913904e.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL e0305725c1.docx → e0305725c1.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL e6e61fc33f.docx → e6e61fc33f.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL f0875f6d19.docx → f0875f6d19.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL f7bbf6e831.docx → f7bbf6e831.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL f8286525f6.docx → f8286525f6.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL ff24600d87.docx → ff24600d87.docx: open produced 2 new documents; 
+refusing to guess

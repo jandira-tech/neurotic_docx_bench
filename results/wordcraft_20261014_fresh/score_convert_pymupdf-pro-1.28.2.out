@@ -1,0 +1,27 @@
+convert pymupdf-pro-1.28.2 scoring 250 remaining, 0 complete; 3 missing
+pymupdf-pro-1.28.2 10 / 250 scored 10 failures 3 14s
+pymupdf-pro-1.28.2 20 / 250 scored 20 failures 3 22s
+pymupdf-pro-1.28.2 30 / 250 scored 30 failures 3 33s
+pymupdf-pro-1.28.2 40 / 250 scored 40 failures 3 48s
+pymupdf-pro-1.28.2 50 / 250 scored 50 failures 3 59s
+pymupdf-pro-1.28.2 60 / 250 scored 60 failures 3 70s
+pymupdf-pro-1.28.2 70 / 250 scored 70 failures 3 81s
+pymupdf-pro-1.28.2 80 / 250 scored 80 failures 3 89s
+pymupdf-pro-1.28.2 90 / 250 scored 90 failures 3 99s
+pymupdf-pro-1.28.2 100 / 250 scored 100 failures 3 107s
+pymupdf-pro-1.28.2 110 / 250 scored 110 failures 3 115s
+pymupdf-pro-1.28.2 120 / 250 scored 120 failures 3 126s
+pymupdf-pro-1.28.2 130 / 250 scored 130 failures 3 133s
+pymupdf-pro-1.28.2 140 / 250 scored 140 failures 3 141s
+pymupdf-pro-1.28.2 150 / 250 scored 150 failures 3 162s
+pymupdf-pro-1.28.2 160 / 250 scored 160 failures 3 181s
+pymupdf-pro-1.28.2 170 / 250 scored 170 failures 3 202s
+pymupdf-pro-1.28.2 180 / 250 scored 180 failures 3 211s
+pymupdf-pro-1.28.2 190 / 250 scored 190 failures 3 219s
+pymupdf-pro-1.28.2 200 / 250 scored 200 failures 3 227s
+pymupdf-pro-1.28.2 210 / 250 scored 210 failures 3 237s
+pymupdf-pro-1.28.2 220 / 250 scored 220 failures 3 245s
+pymupdf-pro-1.28.2 230 / 250 scored 230 failures 3 251s
+pymupdf-pro-1.28.2 240 / 250 scored 240 failures 3 258s
+pymupdf-pro-1.28.2 250 / 250 scored 250 failures 3 264s
+saved /Users/arthrod/temp/T/neurotic_docx_bench/results/wordcraft_20261014_fresh/convert/pymupdf-pro-1.28.2/scores.json

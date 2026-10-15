@@ -1,0 +1,5 @@
+2026-10-14 02:42:42.797 | INFO     | word_pdf:preflight:2235 - [word] preflight: open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-10-14 02:42:42.799 | INFO     | __main__:redline_folders:728 - [redline] one_osascript=False pairs=1
+2026-10-14 02:42:44.191 | ERROR    | __main__:_redline_serial:809 - [1/1] FAIL: 0cc9882662.docx → 0cc9882662.docx — 2402:2519: execution error: Microsoft Word got an error: document "base__0cc9882662__vs__0cc9882662.docx" doesn’t understand the “compare” message. (-1708)
+2026-10-14 02:42:47.669 | INFO     | word_pdf:_note_dialogs:774 - [watchdog] Microsoft Word shows button 'missing value'
+2026-10-14 02:42:50.728 | INFO     | word_pdf:stop:907 - [watchdog] tally: declined=0 dismissed=0 granted=0 forwarded=0 alerts_seen=0
