@@ -1,0 +1,1356 @@
+2026-10-14 01:06:06.355 logger started (pid 13745, poll 0.25s, snapshot 5.0s)
+2026-10-14 01:06:06.431 DIALOG [universalAccessAuthWarn] on screen 461x181 layer=0 title='Device Control and Data Access'
+    says: Device Control and Data Access | "uv" would like to control this Mac and access | your data. | Grant access to this application in Privacy & Security | settings, located in System Settings. | Open System Settings | Deny
+2026-10-14 01:06:07.203
+[Microsoft Word] on screen 1400x896 layer=0 title=''
+[universalAccessAuthWarn] on screen 461x181 layer=0 title='Device Control and Data Access'
+2026-10-14 01:06:12.395 same
+2026-10-14 01:06:17.551 same
+2026-10-14 01:06:22.737 same
+2026-10-14 01:06:27.898 same
+2026-10-14 01:06:33.065 same
+2026-10-14 01:06:38.256 same
+2026-10-14 01:06:40.318 DIALOG [universalAccessAuthWarn] on screen 463x183 layer=0 title='Device Control and Data Access'
+    says: Device Control and Data Access | "uv" would like to control this Mac and access | your data. | Grant access to this application in Privacy & Security | settings, located in System Settings. | Open System Settings | Deny
+2026-10-14 01:06:41.096 DIALOG closed id=44160
+2026-10-14 01:06:42.685 DIALOG [universalAccessAuthWarn] on screen 457x179 layer=0 title='Device Control and Data Access'
+    says: Device Control and Data Access | "uv" would like to control this Mac and access | your data. | Grant access to this application in Privacy & Security | settings, located in System Settings. | Open System Settings | Deny
+2026-10-14 01:06:43.415 DIALOG closed id=44841
+2026-10-14 01:06:43.415
+[universalAccessAuthWarn] on screen 461x181 layer=0 title='Device Control and Data Access'
+[Microsoft Word] on screen 1400x896 layer=0 title=''
+2026-10-14 01:06:44.494 DIALOG [universalAccessAuthWarn] on screen 461x181 layer=0 title='Device Control and Data Access'
+    says: Device Control and Data Access | "uv" would like to control this Mac and access | your data. | Grant access to this application in Privacy & Security | settings, located in System Settings. | Open System Settings | Deny
+2026-10-14 01:06:45.872 DIALOG [universalAccessAuthWarn] on screen 461x181 layer=0 title='Device Control and Data Access'
+    says: Device Control and Data Access | "uv" would like to control this Mac and access | your data. | Grant access to this application in Privacy & Security | settings, located in System Settings. | Open System Settings | Deny
+2026-10-14 01:06:46.931 DIALOG closed id=44846
+2026-10-14 01:06:46.931 DIALOG closed id=44854
+2026-10-14 01:06:48.477 same
+2026-10-14 01:06:53.665 same
+2026-10-14 01:06:58.839 same
+2026-10-14 01:07:00.925 DIALOG [universalAccessAuthWarn] on screen 461x181 layer=0 title='Device Control and Data Access'
+    says: Device Control and Data Access | "uv" would like to control this Mac and access | your data. | Grant access to this application in Privacy & Security | settings, located in System Settings. | Open System Settings | Deny
+2026-10-14 01:07:01.615 DIALOG closed id=44857
+2026-10-14 01:07:03.959 same
+2026-10-14 01:07:09.199 same
+2026-10-14 01:07:11.862 DIALOG [universalAccessAuthWarn] on screen 463x183 layer=0 title='Device Control and Data Access'
+    says: Device Control and Data Access | "Claude Helper (Plugin).app" would like to control | this Mac and access your data. | Grant access to this application in Privacy & Security | settings, located in System Settings. | Open System Settings | Deny
+2026-10-14 01:07:12.596 DIALOG closed id=44870
+2026-10-14 01:07:14.431
+[universalAccessAuthWarn] on screen 461x181 layer=0 title='Device Control and Data Access'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+[Microsoft Word] on screen 1266x967 layer=0 title='00002__redline'
+2026-10-14 01:07:16.024 DIALOG closed id=44875
+2026-10-14 01:07:19.464
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+[Microsoft Word] hidden 500x500 layer=0 title=''
+2026-10-14 01:07:24.678 same
+2026-10-14 01:07:29.867
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+[Microsoft Word] on screen 1292x985 layer=0 title='base'
+[Microsoft Word] hidden 500x500 layer=0 title=''
+2026-10-14 01:07:35.057 same
+2026-10-14 01:07:40.312 same
+2026-10-14 01:07:45.362
+[Microsoft Word] on screen 1512x709 layer=0 title='Save'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+[Microsoft Word] hidden 1357x45 layer=0 title='Save Panel Accessory View'
+[Microsoft Word] on screen 1292x985 layer=0 title='base'
+[Microsoft Word] hidden 500x500 layer=0 title=''
+2026-10-14 01:07:47.747 DIALOG [Microsoft Word] on screen 375x233 layer=101 title=''
+    says: v Word Document (.docx) | Common Formats | Word 97-2004 Document (.doc) | Word Template (.dotx) | Word 97-2004 Template (.dot) | Rich Text Format (.rtf) | Plain Text (.txt) | Web Page (.htm)
+2026-10-14 01:07:50.445
+[Microsoft Word] on screen 1512x709 layer=0 title='Save'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+[Microsoft Word] hidden 1357x45 layer=0 title='Save Panel Accessory View'
+[Microsoft Word] on screen 375x233 layer=101 title=''
+[Microsoft Word] on screen 1292x985 layer=0 title='base'
+[Microsoft Word] hidden 500x500 layer=0 title=''
+2026-10-14 01:07:51.782 DIALOG closed id=44925
+2026-10-14 01:07:55.502
+[Microsoft Word] on screen 1512x709 layer=0 title='Save'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+[Microsoft Word] hidden 1357x117 layer=0 title='Save Panel Accessory View'
+[Microsoft Word] on screen 1292x985 layer=0 title='base'
+[Microsoft Word] hidden 500x500 layer=0 title=''
+2026-10-14 01:08:00.729
+[Microsoft Word] on screen 1400x896 layer=0 title=''
+[Microsoft Word] hidden 500x500 layer=0 title=''
+2026-10-14 01:08:05.884 same
+2026-10-14 01:08:11.070 same
+2026-10-14 01:08:16.269 same
+2026-10-14 01:08:21.461 same
+2026-10-14 01:08:26.637 same
+2026-10-14 01:08:31.676
+[Microsoft Word] on screen 1266x967 layer=0 title='00004__wordcraft__062340d04a'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+[Microsoft Word] hidden 64x64 layer=0 title=''
+2026-10-14 01:08:36.881
+[Microsoft Word] on screen 1266x967 layer=0 title='00011__wordcraft__0cbac1d96f'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+[Microsoft Word] hidden 64x64 layer=0 title=''
+2026-10-14 01:08:37.660 DIALOG [Microsoft Word] on screen 88x122 layer=0 title=''
+    says: Microsoft Word | Word experienced an error trying to | open the file. | Try these suggestions. | * Check the file permissions for the | document or drive. | * Make sure there is sufficient free | memory and disk space. | * Open the file with the Text | Recovery converter. | (00013_wordcraft_Odfc906eb1.d | ocx) | OK
+2026-10-14 01:08:39.479 DIALOG closed id=45000
+2026-10-14 01:08:42.064
+[Microsoft Word] on screen 1292x987 layer=0 title='00016__wordcraft__11e99a0b24  -  Compatibility Mode'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+[Microsoft Word] hidden 64x64 layer=0 title=''
+2026-10-14 01:08:47.260
+[Microsoft Word] on screen 1292x987 layer=0 title='00024__wordcraft__1b5dd9fc3f'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+[Microsoft Word] hidden 64x64 layer=0 title=''
+2026-10-14 01:08:48.555 DIALOG [Microsoft Word] on screen 246x342 layer=0 title=''
+    says: Microsoft Word | Word experienced an error trying to | open the file. | Try these suggestions. | * Check the file permissions for the | document or drive. | • Make sure there is sufficient free | memory and disk space. | * Open the file with the Text | Recovery converter. | (00026_wordcraft_1edc0f56f4.d | ocx) | OK
+2026-10-14 01:08:50.352 DIALOG closed id=45027
+2026-10-14 01:08:52.423
+[Microsoft Word] on screen 1266x967 layer=0 title='00029__wordcraft__2200a538c5'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+[Microsoft Word] hidden 64x64 layer=0 title=''
+2026-10-14 01:08:57.612
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+[Microsoft Word] on screen 1268x967 layer=0 title='00036__wordcraft__2d65e392ab'
+[Microsoft Word] hidden 64x64 layer=0 title=''
+2026-10-14 01:09:02.279 DIALOG [Microsoft Word] on screen 160x224 layer=0 title=''
+    says: Microsoft Word | Word experienced an error trying to | open the file. | Try these suggestions. | • Check the file permissions for the | document or drive. | * Make sure there is sufficient free | memory and disk space. | * Open the file with the Text | Recovery converter. | (00044_wordcraft_34ffddfe47.d | ocx) | OK
+2026-10-14 01:09:02.865
+[Microsoft Word] on screen 260x362 layer=8 title=''
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+[Microsoft Word] hidden 64x64 layer=0 title=''
+2026-10-14 01:09:04.678 DIALOG closed id=45069
+2026-10-14 01:09:08.045
+[Microsoft Word] hidden 214x53 layer=3 title=''
+[Microsoft Word] on screen 1276x973 layer=0 title='00049__wordcraft__3d39f0120d'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+[Microsoft Word] hidden 64x64 layer=0 title=''
+2026-10-14 01:09:13.261
+[Microsoft Word] on screen 1266x967 layer=0 title='00056__wordcraft__4319e3d7c7  -  Compatibility Mode'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+[Microsoft Word] hidden 64x64 layer=0 title=''
+2026-10-14 01:09:17.659 DIALOG [Microsoft Word] on screen 248x346 layer=8 title=''
+    says: Microsoft Word | Word experienced an error trying to | open the file. | Try these suggestions. | * Check the file permissions for the | document or drive. | * Make sure there is sufficient free | memory and disk space. | • Open the file with the Text | Recovery converter. | (00062__wordcraft_4d40d1f136.d | ocx) | OK
+2026-10-14 01:09:18.429
+[Microsoft Word] on screen 260x362 layer=8 title=''
+[Microsoft Word] hidden 214x40 layer=3 title=''
+[Microsoft Word] hidden 1292x985 layer=0 title='00061__wordcraft__4ca3f73206'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+[Microsoft Word] hidden 64x64 layer=0 title=''
+2026-10-14 01:09:19.976 DIALOG closed id=45120
+2026-10-14 01:09:23.594
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+[Microsoft Word] on screen 1266x967 layer=0 title='00066__wordcraft__518c606bf2'
+[Microsoft Word] hidden 64x64 layer=0 title=''
+2026-10-14 01:09:28.243 DIALOG [Microsoft Word] on screen 276x384 layer=8 title=''
+    says: Microsoft Word | Word experienced an error trying to | open the file. | Try these suggestions. | * Check the file permissions for the | document or drive. | * Make sure there is sufficient free | memory and disk space. | * Open the file with the Text | Recovery converter. | (00074 wordcraft 57dfcda882.d | ocx) | OK
+2026-10-14 01:09:28.748
+[Microsoft Word] on screen 260x362 layer=8 title=''
+[Microsoft Word] hidden 1292x985 layer=0 title='00073__wordcraft__57b579c043'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+[Microsoft Word] hidden 64x64 layer=0 title=''
+2026-10-14 01:09:30.821 DIALOG closed id=45151
+2026-10-14 01:09:33.922
+[Microsoft Word] on screen 1292x985 layer=0 title='00077__wordcraft__58cd08049b'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+[Microsoft Word] hidden 64x64 layer=0 title=''
+2026-10-14 01:09:39.075
+[Microsoft Word] on screen 1292x987 layer=0 title='00084__wordcraft__60e784f2de'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+[Microsoft Word] hidden 64x64 layer=0 title=''
+2026-10-14 01:09:41.166 DIALOG [Microsoft Word] on screen 312x434 layer=8 title=''
+    says: Microsoft Word | Word experienced an error trying to | open the file. | Try these suggestions. | * Check the file permissions for the | document or drive. | • Make sure there is sufficient free | memory and disk space. | * Open the file with the Text | Recovery converter. | (00087_wordcraft_61959b1953.d | ocx) | OK
+2026-10-14 01:09:41.930 DIALOG closed id=45184
+2026-10-14 01:09:44.250
+[Microsoft Word] on screen 1266x967 layer=0 title='00090__wordcraft__6354242df2  -  Compatibility Mode'
+[Microsoft Word] hidden 207x40 layer=3 title=''
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+[Microsoft Word] hidden 64x64 layer=0 title=''
+2026-10-14 01:09:49.152 DIALOG [Microsoft Word] on screen 46x64 layer=8 title=''
+    says: Microsoft Word | Word experienced an error trying to | open the file. | Try these suggestions. | * Check the file permissions for the | document or drive. | * Make sure there is sufficient free | memory and disk space. | * Open the file with the Text | Recovery converter. | (00098__wordcraft__6bcf56a447. | docx) | OK
+2026-10-14 01:09:49.399
+[Microsoft Word] on screen 46x64 layer=8 title=''
+[Microsoft Word] on screen 1266x967 layer=0 title='00097__wordcraft__6b74ac1ae6'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+[Microsoft Word] hidden 232x79 layer=3 title=''
+[Microsoft Word] hidden 64x64 layer=0 title=''
+2026-10-14 01:09:52.754 DIALOG closed id=45210
+2026-10-14 01:09:54.562 DIALOG [Microsoft Word] on screen 82x114 layer=8 title=''
+    says: Microsoft Word | Word experienced an error trying to | open the file. | Try these suggestions. | * Check the file permissions for the | document or drive. | * Make sure there is sufficient free | memory and disk space. | * Open the file with the Text | Recovery converter. | (00101_wordcraft__6de20376e8. | docx) | OK
+2026-10-14 01:09:54.789
+[Microsoft Word] on screen 1266x967 layer=0 title='00100__wordcraft__6bf1e10a91'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+[Microsoft Word] on screen 82x114 layer=8 title=''
+[Microsoft Word] hidden 233x53 layer=3 title=''
+[Microsoft Word] hidden 64x64 layer=0 title=''
+2026-10-14 01:09:57.629 DIALOG closed id=45220
+2026-10-14 01:09:59.942
+[Microsoft Word] on screen 1266x967 layer=0 title='00104__wordcraft__6f18d91819  -  Compatibility Mode'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+[Microsoft Word] hidden 64x64 layer=0 title=''
+2026-10-14 01:10:05.094
+[Microsoft Word] on screen 1292x987 layer=0 title='00111__wordcraft__7b637208fb  -  Compatibility Mode'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+[Microsoft Word] hidden 64x64 layer=0 title=''
+2026-10-14 01:10:10.268
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+[Microsoft Word] on screen 1266x967 layer=0 title='00118__wordcraft__86aef9a34a  -  Compatibility Mode'
+[Microsoft Word] hidden 64x64 layer=0 title=''
+2026-10-14 01:10:15.398
+[Microsoft Word] hidden 224x53 layer=3 title=''
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+[Microsoft Word] on screen 1266x967 layer=0 title='00124__wordcraft__92075b7449'
+[Microsoft Word] hidden 64x64 layer=0 title=''
+2026-10-14 01:10:20.545
+[Microsoft Word] on screen 1292x987 layer=0 title='00131__wordcraft__9a93480040'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+[Microsoft Word] hidden 64x64 layer=0 title=''
+2026-10-14 01:10:25.679
+[Microsoft Word] on screen 1266x967 layer=0 title='00137__wordcraft__a33b8e810a'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+[Microsoft Word] hidden 64x64 layer=0 title=''
+2026-10-14 01:10:30.826
+[Microsoft Word] on screen 1266x967 layer=0 title='00143__wordcraft__ab1fd1e5f3  -  Compatibility Mode'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+[Microsoft Word] hidden 64x64 layer=0 title=''
+2026-10-14 01:10:36.010
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+[Microsoft Word] hidden 214x40 layer=3 title=''
+[Microsoft Word] on screen 1266x967 layer=0 title='00150__wordcraft__b351836b34'
+[Microsoft Word] hidden 64x64 layer=0 title=''
+2026-10-14 01:10:41.173
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+[Microsoft Word] on screen 1266x967 layer=0 title='00156__wordcraft__b982beef9b  -  Compatibility Mode'
+[Microsoft Word] hidden 64x64 layer=0 title=''
+2026-10-14 01:10:46.329
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+[Microsoft Word] on screen 1292x987 layer=0 title='00158__wordcraft__bc0135eaa1'
+[Microsoft Word] hidden 64x64 layer=0 title=''
+2026-10-14 01:10:51.480
+[Microsoft Word] on screen 1266x967 layer=0 title='00163__wordcraft__c3412673e4  -  Compatibility Mode'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+[Microsoft Word] hidden 64x64 layer=0 title=''
+2026-10-14 01:10:56.640
+[Microsoft Word] on screen 1292x985 layer=0 title='00168__wordcraft__d23d9c8cc7'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+[Microsoft Word] hidden 64x64 layer=0 title=''
+2026-10-14 01:11:01.821
+[Microsoft Word] on screen 1266x967 layer=0 title='00174__wordcraft__dad17d3be0  -  Compatibility Mode'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+[Microsoft Word] hidden 64x64 layer=0 title=''
+2026-10-14 01:11:06.994
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+[Microsoft Word] on screen 1266x967 layer=0 title='00180__wordcraft__e3d57f2816  -  Compatibility Mode'
+[Microsoft Word] hidden 64x64 layer=0 title=''
+2026-10-14 01:11:12.191
+[Microsoft Word] on screen 1266x967 layer=0 title='00185__wordcraft__e9ef73a8e4'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+[Microsoft Word] hidden 64x64 layer=0 title=''
+2026-10-14 01:11:17.212
+[Microsoft Word] on screen 1292x985 layer=0 title='00189__wordcraft__f0875f6d19'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+[Microsoft Word] hidden 210x53 layer=3 title=''
+[Microsoft Word] hidden 64x64 layer=0 title=''
+2026-10-14 01:11:21.966 DIALOG [Microsoft Word] on screen 294x408 layer=8 title=''
+    says: Microsoft Word | Word experienced an error trying to | open the file. | Try these suggestions. | * Check the file permissions for the | document or drive. | * Make sure there is sufficient free | memory and disk space. | * Open the file with the Text | Recovery converter. | (00193_wordcraft_f7bbf6e831.d | ocx) | OK
+2026-10-14 01:11:22.386
+[Microsoft Word] on screen 294x408 layer=8 title=''
+[Microsoft Word] hidden 1292x985 layer=0 title='00192__wordcraft__f7837e0e51  -  Compatibility Mode'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+[Microsoft Word] hidden 64x64 layer=0 title=''
+2026-10-14 01:11:24.462 DIALOG closed id=45424
+2026-10-14 01:11:27.593
+[Microsoft Word] on screen 1266x967 layer=0 title='00196__wordcraft__fc12ef6776  -  Compatibility Mode'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+[Microsoft Word] hidden 64x64 layer=0 title=''
+2026-10-14 01:11:28.643 DIALOG [Microsoft Word] on screen 214x298 layer=8 title=''
+    says: Microsoft Word | Word experienced an error trying to | open the file. | Try these suggestions. | * Check the file permissions for the | document or drive. | • Make sure there is sufficient free | memory and disk space. | * Open the file with the Text | Recovery converter. | (00198__wordcraft ff24600d87.d | ocx) | OK
+2026-10-14 01:11:30.290 DIALOG closed id=45439
+2026-10-14 01:11:32.635
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+[Microsoft Word] hidden 64x64 layer=0 title=''
+2026-10-14 01:11:37.812
+<no Word or dialog windows>
+2026-10-14 01:11:42.873
+[Microsoft Word] hidden 260x362 layer=0 title=''
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:11:48.143 same
+2026-10-14 01:11:53.397
+<no Word or dialog windows>
+2026-10-14 01:11:58.512
+[Microsoft Word] hidden 260x362 layer=0 title=''
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:12:03.734 same
+2026-10-14 01:12:08.938 same
+2026-10-14 01:12:13.941
+<no Word or dialog windows>
+2026-10-14 01:12:19.165
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:12:24.234
+[Microsoft Word] hidden 260x362 layer=0 title=''
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:12:29.365 same
+2026-10-14 01:12:30.484 DIALOG [UserNotificationCenter] on screen 304x370 layer=8 title=''
+    says: soffice quit unexpectedly. | Click Reopen to open the | application again. Click Report to | see more detailed information and | send a report to Apple. | Reopen | Ignore | Report...
+2026-10-14 01:12:32.323 DIALOG closed id=45477
+2026-10-14 01:12:34.437 same
+2026-10-14 01:12:39.702 same
+2026-10-14 01:12:40.553 DIALOG [Microsoft Word] on screen 260x362 layer=8 title=''
+    says: Microsoft Word | Word experienced an error trying to | open the file. | Try these suggestions. | * Check the file permissions for the | document or drive. | * Make sure there is sufficient free | memory and disk space. | * Open the file with the Text | Recovery converter. | (00193_wordcraft_f7bbf6e831.d | ocx) | OK
+2026-10-14 01:12:43.600 DIALOG closed id=45481
+2026-10-14 01:12:44.959
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:12:50.196 same
+2026-10-14 01:12:55.429 same
+2026-10-14 01:13:00.432 same
+2026-10-14 01:13:05.624 same
+2026-10-14 01:13:10.750 same
+2026-10-14 01:13:15.882 same
+2026-10-14 01:13:20.919 same
+2026-10-14 01:13:26.072 same
+2026-10-14 01:13:31.204 same
+2026-10-14 01:13:36.333 same
+2026-10-14 01:13:41.514 same
+2026-10-14 01:13:46.639 same
+2026-10-14 01:13:51.755 same
+2026-10-14 01:13:56.812 same
+2026-10-14 01:14:01.830 same
+2026-10-14 01:14:06.904 same
+2026-10-14 01:14:12.121 same
+2026-10-14 01:14:17.148 same
+2026-10-14 01:14:22.278
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+[Microsoft Word] hidden 1292x985 layer=0 title='00000__base__1edc0f56f4__vs__1edc0f56f4  -  Compatibility Mode'
+2026-10-14 01:14:27.322 same
+2026-10-14 01:14:32.435 same
+2026-10-14 01:14:37.609 same
+2026-10-14 01:14:42.633
+[Microsoft Word] on screen 1290x985 layer=0 title='00002__base__7a1d3fbeba__vs__7a1d3fbeba'
+[Microsoft Word] hidden 64x64 layer=0 title=''
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:14:47.889
+[Microsoft Word] hidden 64x64 layer=0 title=''
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+[Microsoft Word] on screen 1292x985 layer=0 title='00004__base__d23d9c8cc7__vs__d23d9c8cc7  -  Read-Only'
+2026-10-14 01:14:53.087
+[Microsoft Word] on screen 1292x985 layer=0 title='00005__d5efaa5b6d__vs__d5efaa5b6d  -  Compatibility Mode'
+[Microsoft Word] hidden 64x64 layer=0 title=''
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+[Microsoft Word] on screen 1292x987 layer=0 title='00005__base__d5efaa5b6d__vs__d5efaa5b6d  -  Compatibility Mode'
+2026-10-14 01:14:58.144
+[Microsoft Word] hidden 64x64 layer=0 title=''
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:15:03.200
+[Microsoft Word] on screen 1266x967 layer=0 title='00003__8cb8af8d7f__vs__8cb8af8d7f'
+[Microsoft Word] hidden 64x64 layer=0 title=''
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:15:08.384
+<no Word or dialog windows>
+2026-10-14 01:15:13.549 same
+2026-10-14 01:15:18.698 same
+2026-10-14 01:15:23.849 same
+2026-10-14 01:15:29.051 same
+2026-10-14 01:15:34.059 same
+2026-10-14 01:15:39.277 same
+2026-10-14 01:15:44.332 same
+2026-10-14 01:15:49.460 same
+2026-10-14 01:15:54.567 same
+2026-10-14 01:15:59.592 same
+2026-10-14 01:16:04.819 same
+2026-10-14 01:16:09.848
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:16:14.944 same
+2026-10-14 01:16:20.007
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+[Microsoft Word] hidden 1292x985 layer=0 title='00002__jubarte__03528d6f20'
+2026-10-14 01:16:25.074
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:16:30.235 same
+2026-10-14 01:16:35.490
+<no Word or dialog windows>
+2026-10-14 01:16:40.531 same
+2026-10-14 01:16:45.602 same
+2026-10-14 01:16:49.301 DIALOG [Microsoft Error Reporting] on screen 450x236 layer=0 title='Microsoft Error Reporting'
+    says: Microsoft Error Reporting | There was a problem with Microsoft Word and we apologize for | the inconvenience. | Restart Microsoft Word | More Information | OK
+2026-10-14 01:16:51.834
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+[Microsoft Error Reporting] on screen 450x236 layer=0 title='Microsoft Error Reporting'
+2026-10-14 01:16:52.121 DIALOG closed id=45558
+2026-10-14 01:16:56.905
+[Microsoft Word] hidden 1292x985 layer=0 title='00010__jubarte__0c5aa7e2b1  -  Compatibility Mode'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:17:01.969
+[Microsoft Word] hidden 1292x985 layer=0 title='00011__jubarte__0cbac1d96f'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:17:07.198
+[Microsoft Word] hidden 1292x985 layer=0 title='00012__jubarte__0df218b227  -  Compatibility Mode'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:17:12.413
+[Microsoft Word] hidden 1292x985 layer=0 title='00013__jubarte__0dfc906eb1'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:17:17.500
+[Microsoft Word] hidden 1292x985 layer=0 title='00014__jubarte__0f031c23c3'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:17:22.686 same
+2026-10-14 01:17:27.952 same
+2026-10-14 01:17:33.179
+<no Word or dialog windows>
+2026-10-14 01:17:38.388 same
+2026-10-14 01:17:43.414
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:17:48.272 DIALOG [Microsoft Error Reporting] on screen 448x236 layer=0 title='Microsoft Error Reporting'
+    says: Microsoft Error Reporting | There was a problem with Microsoft Word and we apologize for | the inconvenience. | Restart Microsoft Word | More Information | OK
+2026-10-14 01:17:49.488
+[Microsoft Error Reporting] on screen 448x236 layer=0 title='Microsoft Error Reporting'
+[Microsoft Word] hidden 1292x985 layer=0 title='00015__jubarte__10358095a4  -  Compatibility Mode'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:17:49.778 DIALOG closed id=45580
+2026-10-14 01:17:54.615
+[Microsoft Word] hidden 1292x985 layer=0 title='00016__jubarte__11e99a0b24  -  Compatibility Mode'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:17:59.731
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:18:04.757
+[Microsoft Word] hidden 1292x985 layer=0 title='00020__jubarte__18380da4e0'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:18:09.906
+[Microsoft Word] hidden 1292x985 layer=0 title='00024__jubarte__1b5dd9fc3f'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:18:15.013
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:18:20.112 same
+2026-10-14 01:18:25.188 same
+2026-10-14 01:18:30.359 same
+2026-10-14 01:18:35.508 same
+2026-10-14 01:18:40.508 same
+2026-10-14 01:18:45.758
+[Microsoft Word] on screen 1292x987 layer=0 title='00030__jubarte__223dbd99f5  -  Compatibility Mode'
+[Microsoft Word] hidden 64x64 layer=0 title=''
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:18:50.794
+[Microsoft Word] hidden 64x64 layer=0 title=''
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+[Microsoft Word] on screen 1292x987 layer=0 title='00033__jubarte__2a64722aad'
+2026-10-14 01:18:55.929
+[Microsoft Word] hidden 64x64 layer=0 title=''
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+[Microsoft Word] on screen 1266x967 layer=0 title='00036__jubarte__2d65e392ab'
+2026-10-14 01:19:01.045
+[Microsoft Word] hidden 64x64 layer=0 title=''
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+[Microsoft Word] on screen 1268x967 layer=0 title='00041__jubarte__30d1cde0ac  -  Compatibility Mode'
+2026-10-14 01:19:06.158
+[Microsoft Word] on screen 1266x967 layer=0 title='00044__jubarte__34ffddfe47'
+[Microsoft Word] hidden 64x64 layer=0 title=''
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:19:11.331
+[Microsoft Word] on screen 1266x967 layer=0 title='00048__jubarte__3b9982e41f  -  Compatibility Mode'
+[Microsoft Word] hidden 64x64 layer=0 title=''
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:19:14.207 DIALOG [Microsoft Error Reporting] on screen 450x236 layer=0 title='Microsoft Error Reporting'
+    says: Microsoft Error Reporting | There was a problem with Microsoft Word and we apologize for | the inconvenience. | Restart Microsoft Word | More Information | OK
+2026-10-14 01:19:16.527 DIALOG closed id=45633
+2026-10-14 01:19:16.527
+<no Word or dialog windows>
+2026-10-14 01:19:21.656 same
+2026-10-14 01:19:26.739 same
+2026-10-14 01:19:31.947
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:19:37.011 same
+2026-10-14 01:19:42.239
+<no Word or dialog windows>
+2026-10-14 01:19:46.920 DIALOG [Microsoft Error Reporting] on screen 450x236 layer=0 title='Microsoft Error Reporting'
+    says: Microsoft Error Reporting | There was a problem with Microsoft Word and we apologize for | the inconvenience. | Restart Microsoft Word | More Information | OK
+2026-10-14 01:19:47.761
+[Microsoft Error Reporting] on screen 450x236 layer=0 title='Microsoft Error Reporting'
+2026-10-14 01:19:48.294 DIALOG closed id=45653
+2026-10-14 01:19:52.852
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:19:57.514 DIALOG [UserNotificationCenter] on screen 98x118 layer=8 title=''
+    says: LibreOffice quit unexpectedly. | Click Reopen to open the | application again. Click Report to | see more detailed information and | send a report to Apple. | Reopen | Ignore | Report...
+2026-10-14 01:19:58.300
+[UserNotificationCenter] on screen 98x118 layer=8 title=''
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:19:58.852 DIALOG closed id=45660
+2026-10-14 01:20:01.275 DIALOG [UserNotificationCenter] on screen 310x380 layer=8 title=''
+    says: LibreOffice quit unexpectedly. | Click Reopen to open the | application again. Click Report to | see more detailed information and | send a report to Apple. | Reopen | Ignore | Report...
+2026-10-14 01:20:02.558 DIALOG closed id=45664
+2026-10-14 01:20:03.407
+[Microsoft Word] hidden 1292x985 layer=0 title='00055__jubarte__428f3f3022'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:20:08.516
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:20:13.660 same
+2026-10-14 01:20:18.747
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+[Microsoft Word] hidden 1292x985 layer=0 title='00060__jubarte__48ef0a5cd7'
+2026-10-14 01:20:23.814
+[Microsoft Word] hidden 1292x985 layer=0 title='00062__jubarte__4d40d1f136'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:20:29.032 same
+2026-10-14 01:20:34.074 same
+2026-10-14 01:20:39.106
+[Microsoft Word] on screen 1290x985 layer=0 title='00064__jubarte__4eff11f045'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+[Microsoft Word] hidden 64x64 layer=0 title=''
+2026-10-14 01:20:44.156
+<no Word or dialog windows>
+2026-10-14 01:20:49.345
+[Microsoft Word] hidden 1292x985 layer=0 title='00064__jubarte__4eff11f045  -  Last saved by user'
+2026-10-14 01:20:54.510
+[Microsoft Word] hidden 1292x985 layer=0 title='00066__jubarte__518c606bf2'
+[Microsoft Word] hidden 1292x985 layer=0 title='00064__jubarte__4eff11f045  -  Last saved by user'
+2026-10-14 01:20:54.776 DIALOG [Microsoft Error Reporting] on screen 450x236 layer=0 title='Microsoft Error Reporting'
+    says: Microsoft Error Reporting | There was a problem with Microsoft Word and we apologize for | the inconvenience. | Restart Microsoft Word | More Information | OK
+2026-10-14 01:20:57.394 DIALOG closed id=45696
+2026-10-14 01:20:59.567
+[Microsoft Word] hidden 1292x985 layer=0 title='00068__jubarte__52d9251560  -  Compatibility Mode'
+[Microsoft Word] hidden 1292x985 layer=0 title='00064__jubarte__4eff11f045  -  Last saved by user'
+2026-10-14 01:21:04.821
+[Microsoft Word] hidden 1292x985 layer=0 title='00069__jubarte__52dcc19c24  -  Compatibility Mode'
+[Microsoft Word] hidden 1292x985 layer=0 title='00064__jubarte__4eff11f045  -  Last saved by user'
+2026-10-14 01:21:09.993
+[Microsoft Word] hidden 1292x985 layer=0 title='00070__jubarte__53014ff7b1'
+[Microsoft Word] hidden 1292x985 layer=0 title='00064__jubarte__4eff11f045  -  Last saved by user'
+2026-10-14 01:21:15.171 same
+2026-10-14 01:21:20.417
+[Microsoft Word] hidden 1292x985 layer=0 title='00064__jubarte__4eff11f045  -  Last saved by user'
+2026-10-14 01:21:25.627 same
+2026-10-14 01:21:30.686
+[Microsoft Word] hidden 1292x985 layer=0 title='00064__jubarte__4eff11f045  -  Last saved by user'
+[Microsoft Word] hidden 1292x985 layer=0 title='00074__jubarte__57dfcda882'
+2026-10-14 01:21:35.732
+[Microsoft Word] hidden 1292x985 layer=0 title='00064__jubarte__4eff11f045  -  Last saved by user'
+[Microsoft Word] hidden 1292x985 layer=0 title='00075__jubarte__581907f19c'
+2026-10-14 01:21:40.988 same
+2026-10-14 01:21:46.186 same
+2026-10-14 01:21:51.320
+<no Word or dialog windows>
+2026-10-14 01:21:52.415 DIALOG [Microsoft Error Reporting] on screen 444x232 layer=0 title='Microsoft Error Reporting'
+    says: Microsoft Error Reporting | There was a problem with Microsoft Word and we apologize for | the inconvenience. | Restart Microsoft Word | More Information | OK
+2026-10-14 01:21:54.179 DIALOG closed id=45718
+2026-10-14 01:21:56.335 same
+2026-10-14 01:22:01.348
+[Microsoft Word] hidden 1292x985 layer=0 title='00079__jubarte__5af67335fe'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:22:06.351
+[Microsoft Word] hidden 1292x985 layer=0 title='00081__jubarte__5d3a04d9a6'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:22:11.426
+<no Word or dialog windows>
+2026-10-14 01:22:11.982 DIALOG [Microsoft Error Reporting] on screen 446x234 layer=0 title='Microsoft Error Reporting'
+    says: Microsoft Error Reporting | There was a problem with Microsoft Word and we apologize for | the inconvenience. | Restart Microsoft Word | More Information | OK
+2026-10-14 01:22:13.884 DIALOG closed id=45735
+2026-10-14 01:22:16.488 same
+2026-10-14 01:22:21.503
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:22:26.532 same
+2026-10-14 01:22:31.716 same
+2026-10-14 01:22:36.905 same
+2026-10-14 01:22:42.083 same
+2026-10-14 01:22:44.234 DIALOG [Microsoft Error Reporting] on screen 450x236 layer=0 title='Microsoft Error Reporting'
+    says: Microsoft Error Reporting | There was a problem with Microsoft Word and we apologize for | the inconvenience. | Restart Microsoft Word | More Information | OK
+2026-10-14 01:22:45.850 DIALOG closed id=45769
+2026-10-14 01:22:47.141
+<no Word or dialog windows>
+2026-10-14 01:22:52.332 same
+2026-10-14 01:22:57.398
+[Microsoft Word] hidden 1292x985 layer=0 title='00105__jubarte__70a6883d16  -  Compatibility Mode'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:23:02.633
+[Microsoft Word] hidden 1292x985 layer=0 title='00107__jubarte__72341d8ac1'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:23:07.857
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:23:13.076 same
+2026-10-14 01:23:18.172
+<no Word or dialog windows>
+2026-10-14 01:23:18.955 DIALOG [Microsoft Error Reporting] on screen 450x236 layer=0 title='Microsoft Error Reporting'
+    says: Microsoft Error Reporting | There was a problem with Microsoft Word and we apologize for | the inconvenience. | Restart Microsoft Word | More Information | OK
+2026-10-14 01:23:20.260 DIALOG closed id=45808
+2026-10-14 01:23:23.435 same
+2026-10-14 01:23:28.702
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:23:33.947
+[Microsoft Word] hidden 1292x985 layer=0 title='00126__jubarte__9382e03243'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:23:35.138 DIALOG [Microsoft Error Reporting] on screen 444x232 layer=0 title='Microsoft Error Reporting'
+    says: Microsoft Error Reporting | There was a problem with Microsoft Word and we apologize for | the inconvenience. | Restart Microsoft Word | More Information | OK
+2026-10-14 01:23:39.201
+[Microsoft Error Reporting] on screen 450x236 layer=0 title='Microsoft Error Reporting'
+2026-10-14 01:23:40.498 DIALOG closed id=45825
+2026-10-14 01:23:44.410
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:23:49.605 same
+2026-10-14 01:23:54.820 same
+2026-10-14 01:24:00.018 same
+2026-10-14 01:24:05.216 same
+2026-10-14 01:24:10.441 same
+2026-10-14 01:24:15.662
+[Microsoft Word] hidden 1292x985 layer=0 title='00157__jubarte__bbc3223232'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:24:20.138 DIALOG [Microsoft Error Reporting] on screen 450x236 layer=0 title='Microsoft Error Reporting'
+    says: Microsoft Error Reporting | There was a problem with Microsoft Word and we apologize for | the inconvenience. | Restart Microsoft Word | More Information | OK
+2026-10-14 01:24:20.783
+[Microsoft Error Reporting] on screen 450x236 layer=0 title='Microsoft Error Reporting'
+2026-10-14 01:24:22.876 DIALOG closed id=45872
+2026-10-14 01:24:25.971
+<no Word or dialog windows>
+2026-10-14 01:24:31.198
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:24:33.352 DIALOG [Microsoft Error Reporting] on screen 450x236 layer=0 title='Microsoft Error Reporting'
+    says: Microsoft Error Reporting | There was a problem with Microsoft Word and we apologize for | the inconvenience. | Restart Microsoft Word | More Information | OK
+2026-10-14 01:24:34.953 DIALOG closed id=45888
+2026-10-14 01:24:36.253
+<no Word or dialog windows>
+2026-10-14 01:24:41.449
+[Microsoft Word] hidden 1292x985 layer=0 title='00161__jubarte__c2380a4677  -  Last saved by user'
+2026-10-14 01:24:45.138 DIALOG [Microsoft Error Reporting] on screen 446x234 layer=0 title='Microsoft Error Reporting'
+    says: Microsoft Error Reporting | There was a problem with Microsoft Word and we apologize for | the inconvenience. | Restart Microsoft Word | More Information | OK
+2026-10-14 01:24:46.458
+[Microsoft Error Reporting] on screen 450x236 layer=0 title='Microsoft Error Reporting'
+2026-10-14 01:24:48.784 DIALOG closed id=45905
+2026-10-14 01:24:51.648
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:24:56.867
+[Microsoft Word] hidden 1292x985 layer=0 title='00169__jubarte__d24225adbf'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:25:02.048
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:25:04.188 DIALOG [Microsoft Error Reporting] on screen 450x236 layer=0 title='Microsoft Error Reporting'
+    says: Microsoft Error Reporting | There was a problem with Microsoft Word and we apologize for | the inconvenience. | Restart Microsoft Word | More Information | OK
+2026-10-14 01:25:07.114 DIALOG closed id=45925
+2026-10-14 01:25:07.114
+<no Word or dialog windows>
+2026-10-14 01:25:12.262
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:25:17.505
+[Microsoft Word] hidden 1292x985 layer=0 title='00175__jubarte__db0f90defc  -  Compatibility Mode'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:25:22.680
+[Microsoft Word] hidden 1292x985 layer=0 title='00177__jubarte__dde913904e'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:25:24.782 DIALOG [Microsoft Error Reporting] on screen 446x234 layer=0 title='Microsoft Error Reporting'
+    says: • • • Microsoft Error Reporting | There was a problem with Microsoft Word and we apologize for | the inconvenience. | Restart Microsoft Word | More Information | OK
+2026-10-14 01:25:27.384 DIALOG closed id=45946
+2026-10-14 01:25:27.931
+<no Word or dialog windows>
+2026-10-14 01:25:33.115
+[Microsoft Word] hidden 1292x985 layer=0 title='00179__jubarte__e1b23f59d9  -  Compatibility Mode'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:25:38.285
+[Microsoft Word] hidden 1292x985 layer=0 title='00183__jubarte__e6e61fc33f'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:25:43.483
+[Microsoft Word] hidden 1292x985 layer=0 title='00187__jubarte__eecdb1c507'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:25:48.701
+[Microsoft Word] hidden 1292x985 layer=0 title='00189__jubarte__f0875f6d19'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:25:53.917 same
+2026-10-14 01:25:59.085 same
+2026-10-14 01:26:04.286 same
+2026-10-14 01:26:09.290
+[Microsoft Word] on screen 1288x983 layer=0 title='00191__jubarte__f72cd71154'
+[Microsoft Word] hidden 64x64 layer=0 title=''
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:26:14.301
+<no Word or dialog windows>
+2026-10-14 01:26:14.560 DIALOG [Microsoft Error Reporting] on screen 442x232 layer=0 title='Microsoft Error Reporting'
+    says: Microsoft Error Reporting | There was a problem with Microsoft Word and we apologize for | the inconvenience. | Restart Microsoft Word | More Information | OK
+2026-10-14 01:26:16.553 DIALOG closed id=45992
+2026-10-14 01:26:19.434 same
+2026-10-14 01:26:24.491
+[Microsoft Word] hidden 1292x985 layer=0 title='00197__jubarte__fec6305982'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:26:29.656
+[Microsoft Word] hidden 1292x985 layer=0 title='00194__jubarte__f8286525f6'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:26:30.960 DIALOG [Microsoft Error Reporting] on screen 450x236 layer=0 title='Microsoft Error Reporting'
+    says: Microsoft Error Reporting | There was a problem with Microsoft Word and we apologize for | the inconvenience. | Restart Microsoft Word | More Information | OK
+2026-10-14 01:26:32.293 DIALOG closed id=46012
+2026-10-14 01:26:34.883
+<no Word or dialog windows>
+2026-10-14 01:26:39.884 DIALOG [Microsoft Error Reporting] on screen 450x236 layer=0 title='Microsoft Error Reporting'
+    says: Microsoft Error Reporting | There was a problem with Microsoft Word and we apologize for | the inconvenience. | Restart Microsoft Word | More Information | OK
+2026-10-14 01:26:40.141
+[Microsoft Error Reporting] on screen 450x236 layer=0 title='Microsoft Error Reporting'
+2026-10-14 01:26:40.926 DIALOG closed id=46027
+2026-10-14 01:26:45.292
+<no Word or dialog windows>
+2026-10-14 01:26:49.195 DIALOG [Microsoft Error Reporting] on screen 450x236 layer=0 title='Microsoft Error Reporting'
+    says: Microsoft Error Reporting | There was a problem with Microsoft Word and we apologize for | the inconvenience. | Restart Microsoft Word | More Information | OK
+2026-10-14 01:26:50.476
+[Microsoft Error Reporting] on screen 450x236 layer=0 title='Microsoft Error Reporting'
+2026-10-14 01:26:50.735 DIALOG closed id=46042
+2026-10-14 01:26:55.667
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:26:58.505 DIALOG [Microsoft Error Reporting] on screen 450x236 layer=0 title='Microsoft Error Reporting'
+    says: Microsoft Error Reporting | There was a problem with Microsoft Word and we apologize for | the inconvenience. | Restart Microsoft Word | More Information | OK
+2026-10-14 01:26:59.547 DIALOG closed id=46053
+2026-10-14 01:27:00.839
+<no Word or dialog windows>
+2026-10-14 01:27:06.017
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:27:07.570 DIALOG [Microsoft Error Reporting] on screen 444x232 layer=0 title='Microsoft Error Reporting'
+    says: Microsoft Error Reporting | There was a problem with Microsoft Word and we apologize for | the inconvenience. | Restart Microsoft Word | More Information | OK
+2026-10-14 01:27:09.154 DIALOG closed id=46068
+2026-10-14 01:27:11.219
+<no Word or dialog windows>
+2026-10-14 01:27:16.389 same
+2026-10-14 01:27:16.648 DIALOG [Microsoft Error Reporting] on screen 450x236 layer=0 title='Microsoft Error Reporting'
+    says: Microsoft Error Reporting | There was a problem with Microsoft Word and we apologize for | the inconvenience. | Restart Microsoft Word | More Information | OK
+2026-10-14 01:27:17.898 DIALOG closed id=46079
+2026-10-14 01:27:21.500 same
+2026-10-14 01:27:25.384 DIALOG [Microsoft Error Reporting] on screen 450x236 layer=0 title='Microsoft Error Reporting'
+    says: Microsoft Error Reporting | There was a problem with Microsoft Word and we apologize for | the inconvenience. | Restart Microsoft Word | More Information | OK
+2026-10-14 01:27:26.638 DIALOG closed id=46094
+2026-10-14 01:27:26.638 same
+2026-10-14 01:27:31.814
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:27:34.400 DIALOG [Microsoft Error Reporting] on screen 450x236 layer=0 title='Microsoft Error Reporting'
+    says: Microsoft Error Reporting | There was a problem with Microsoft Word and we apologize for | the inconvenience. | Restart Microsoft Word | More Information | OK
+2026-10-14 01:27:35.398 DIALOG closed id=46109
+2026-10-14 01:27:36.956
+<no Word or dialog windows>
+2026-10-14 01:27:42.151
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:27:44.731 DIALOG [Microsoft Error Reporting] on screen 444x232 layer=0 title='Microsoft Error Reporting'
+    says: Microsoft Error Reporting | There was a problem with Microsoft Word and we apologize for | the inconvenience. | Restart Microsoft Word | More Information | OK
+2026-10-14 01:27:46.002 DIALOG closed id=46120
+2026-10-14 01:27:47.291
+<no Word or dialog windows>
+2026-10-14 01:27:52.454 same
+2026-10-14 01:27:57.107 DIALOG [Microsoft Error Reporting] on screen 450x236 layer=0 title='Microsoft Error Reporting'
+    says: Microsoft Error Reporting | There was a problem with Microsoft Word and we apologize for | the inconvenience. | Restart Microsoft Word | More Information | OK
+2026-10-14 01:27:57.624
+[Microsoft Error Reporting] on screen 450x236 layer=0 title='Microsoft Error Reporting'
+2026-10-14 01:27:58.657 DIALOG closed id=46135
+2026-10-14 01:28:02.783
+<no Word or dialog windows>
+2026-10-14 01:28:07.971 same
+2026-10-14 01:28:08.228 DIALOG [Microsoft Error Reporting] on screen 450x236 layer=0 title='Microsoft Error Reporting'
+    says: Microsoft Error Reporting | There was a problem with Microsoft Word and we apologize for | the inconvenience. | Restart Microsoft Word | More Information | OK
+2026-10-14 01:28:09.739 DIALOG closed id=46150
+2026-10-14 01:28:13.094 same
+2026-10-14 01:28:17.242 DIALOG [Microsoft Error Reporting] on screen 450x236 layer=0 title='Microsoft Error Reporting'
+    says: Microsoft Error Reporting | There was a problem with Microsoft Word and we apologize for | the inconvenience. | Restart Microsoft Word | More Information | OK
+2026-10-14 01:28:18.217
+[Microsoft Error Reporting] on screen 450x236 layer=0 title='Microsoft Error Reporting'
+2026-10-14 01:28:18.489 DIALOG closed id=46175
+2026-10-14 01:28:23.410
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:28:26.005 DIALOG [Microsoft Error Reporting] on screen 450x236 layer=0 title='Microsoft Error Reporting'
+    says: Microsoft Error Reporting | There was a problem with Microsoft Word and we apologize for | the inconvenience. | Restart Microsoft Word | More Information | OK
+2026-10-14 01:28:27.256 DIALOG closed id=46186
+2026-10-14 01:28:28.551
+<no Word or dialog windows>
+2026-10-14 01:28:33.755
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:28:36.325 DIALOG [Microsoft Error Reporting] on screen 450x236 layer=0 title='Microsoft Error Reporting'
+    says: • • • Microsoft Error Reporting | There was a problem with Microsoft Word and we apologize for | the inconvenience. | Restart Microsoft Word | More Information | OK
+2026-10-14 01:28:38.867
+[Microsoft Error Reporting] on screen 450x236 layer=0 title='Microsoft Error Reporting'
+2026-10-14 01:28:39.642 DIALOG closed id=46201
+2026-10-14 01:28:44.018
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:28:46.865 DIALOG [Microsoft Error Reporting] on screen 450x236 layer=0 title='Microsoft Error Reporting'
+    says: Microsoft Error Reporting | There was a problem with Microsoft Word and we apologize for | the inconvenience. | Restart Microsoft Word | More Information | OK
+2026-10-14 01:28:48.380 DIALOG closed id=46216
+2026-10-14 01:28:49.155
+<no Word or dialog windows>
+2026-10-14 01:28:54.323
+[Microsoft Word] hidden 1292x985 layer=0 title='00009__jubarte__0b033b1c23'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:28:55.617 DIALOG [Microsoft Error Reporting] on screen 450x236 layer=0 title='Microsoft Error Reporting'
+    says: Microsoft Error Reporting | There was a problem with Microsoft Word and we apologize for | the inconvenience. | Restart Microsoft Word | More Information | OK
+2026-10-14 01:28:57.378 DIALOG closed id=46227
+2026-10-14 01:28:59.435
+<no Word or dialog windows>
+2026-10-14 01:29:04.585 same
+2026-10-14 01:29:09.734 same
+2026-10-14 01:29:14.901 same
+2026-10-14 01:29:20.056 same
+2026-10-14 01:29:25.217 same
+2026-10-14 01:29:30.377 same
+2026-10-14 01:29:35.529 same
+2026-10-14 01:29:40.660 same
+2026-10-14 01:29:45.819 same
+2026-10-14 01:29:50.988 same
+2026-10-14 01:29:56.174 same
+2026-10-14 01:30:01.299 same
+2026-10-14 01:30:06.446 same
+2026-10-14 01:30:11.616 same
+2026-10-14 01:30:16.762 same
+2026-10-14 01:30:21.924 same
+2026-10-14 01:30:27.095 same
+2026-10-14 01:30:32.221 same
+2026-10-14 01:30:37.366 same
+2026-10-14 01:30:42.506 same
+2026-10-14 01:30:47.691 same
+2026-10-14 01:30:52.853 same
+2026-10-14 01:30:58.036 same
+2026-10-14 01:31:03.239 same
+2026-10-14 01:31:08.489 same
+2026-10-14 01:31:13.518
+[Microsoft Word] hidden 1292x985 layer=0 title='00000__docxodus__01f3deda92  -  Compatibility Mode'
+2026-10-14 01:31:18.559
+<no Word or dialog windows>
+2026-10-14 01:31:23.757
+[Microsoft Word] hidden 1292x985 layer=0 title='00009__docxodus__0b033b1c23'
+2026-10-14 01:31:25.079 DIALOG [Microsoft Error Reporting] on screen 450x236 layer=0 title='Microsoft Error Reporting'
+    says: Microsoft Error Reporting | There was a problem with Microsoft Word and we apologize for | the inconvenience. | Restart Microsoft Word | More Information | OK
+2026-10-14 01:31:27.086 DIALOG closed id=46253
+2026-10-14 01:31:28.919
+<no Word or dialog windows>
+2026-10-14 01:31:33.975
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:31:39.010 same
+2026-10-14 01:31:44.139
+[Microsoft Word] hidden 1292x985 layer=0 title='00014__docxodus__0f031c23c3'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:31:49.321
+<no Word or dialog windows>
+2026-10-14 01:31:50.114 DIALOG [Microsoft Error Reporting] on screen 450x236 layer=0 title='Microsoft Error Reporting'
+    says: • • • Microsoft Error Reporting | There was a problem with Microsoft Word and we apologize for | the inconvenience. | Restart Microsoft Word | More Information | OK
+2026-10-14 01:31:54.552
+[Microsoft Error Reporting] on screen 450x236 layer=0 title='Microsoft Error Reporting'
+2026-10-14 01:31:55.915 DIALOG closed id=46273
+2026-10-14 01:31:59.706
+[Microsoft Word] hidden 1292x985 layer=0 title='00014__docxodus__0f031c23c3  -  Last saved by user'
+2026-10-14 01:32:04.826 same
+2026-10-14 01:32:09.919
+[Microsoft Word] hidden 1292x985 layer=0 title='00022__docxodus__1942a590b4'
+[Microsoft Word] hidden 1292x985 layer=0 title='00014__docxodus__0f031c23c3  -  Last saved by user'
+2026-10-14 01:32:15.006 same
+2026-10-14 01:32:20.177
+[Microsoft Word] hidden 1292x985 layer=0 title='00025__docxodus__1dbbf3be63  -  Compatibility Mode'
+[Microsoft Word] hidden 1292x985 layer=0 title='00014__docxodus__0f031c23c3  -  Last saved by user'
+2026-10-14 01:32:25.366
+[Microsoft Word] hidden 1292x985 layer=0 title='00014__docxodus__0f031c23c3  -  Last saved by user'
+2026-10-14 01:32:30.564
+[Microsoft Word] hidden 1292x985 layer=0 title='00028__docxodus__20eccb4f6a'
+[Microsoft Word] hidden 1292x985 layer=0 title='00014__docxodus__0f031c23c3  -  Last saved by user'
+2026-10-14 01:32:35.701 same
+2026-10-14 01:32:40.944
+[Microsoft Word] hidden 1292x985 layer=0 title='00014__docxodus__0f031c23c3  -  Last saved by user'
+2026-10-14 01:32:46.147
+[Microsoft Word] hidden 1292x985 layer=0 title='00014__docxodus__0f031c23c3  -  Last saved by user'
+[Microsoft Word] hidden 1292x985 layer=0 title='00035__docxodus__2c123533f6'
+2026-10-14 01:32:51.344
+[Microsoft Word] hidden 1292x985 layer=0 title='00014__docxodus__0f031c23c3  -  Last saved by user'
+[Microsoft Word] hidden 1292x985 layer=0 title='00036__docxodus__2d65e392ab'
+2026-10-14 01:32:56.514 same
+2026-10-14 01:33:01.687 same
+2026-10-14 01:33:06.889 same
+2026-10-14 01:33:12.097
+[Microsoft Word] on screen 1280x977 layer=0 title='00039__docxodus__301e236134  -  Compatibility Mode'
+[Microsoft Word] on screen 1292x985 layer=0 title='00014__docxodus__0f031c23c3  -  Last saved by user'
+[Microsoft Word] hidden 64x64 layer=0 title=''
+2026-10-14 01:33:17.295
+[Microsoft Word] on screen 1266x967 layer=0 title='00045__docxodus__3796807136'
+[Microsoft Word] on screen 1292x985 layer=0 title='00014__docxodus__0f031c23c3  -  Last saved by user'
+[Microsoft Word] hidden 64x64 layer=0 title=''
+2026-10-14 01:33:20.698 DIALOG [Microsoft Error Reporting] on screen 450x236 layer=0 title='Microsoft Error Reporting'
+    says: Microsoft Error Reporting | There was a problem with Microsoft Word and we apologize for | the inconvenience. | Restart Microsoft Word | More Information | OK
+2026-10-14 01:33:22.430 DIALOG closed id=46331
+2026-10-14 01:33:22.430
+<no Word or dialog windows>
+2026-10-14 01:33:27.636 same
+2026-10-14 01:33:32.838
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:33:37.587 DIALOG [Microsoft Error Reporting] on screen 450x236 layer=0 title='Microsoft Error Reporting'
+    says: Microsoft Error Reporting | There was a problem with Microsoft Word and we apologize for | the inconvenience. | Restart Microsoft Word | More Information | OK
+2026-10-14 01:33:38.277
+[Microsoft Error Reporting] on screen 450x236 layer=0 title='Microsoft Error Reporting'
+2026-10-14 01:33:39.558 DIALOG closed id=46346
+2026-10-14 01:33:43.500
+[Microsoft Word] hidden 1292x985 layer=0 title='00050__docxodus__3e7067f872  -  Last saved by user  -  Compatibility Mode'
+2026-10-14 01:33:48.687 same
+2026-10-14 01:33:52.078 DIALOG [Microsoft Word] on screen 490x114 layer=8 title='Opening: 00057__docxodus__485599b4e9.docx '
+    says: Opening: 00057_docxodus__485599b4e9.docx | Processing
+2026-10-14 01:33:52.943 DIALOG [Microsoft Word] on screen 260x362 layer=8 title=''
+    says: Microsoft Word | Word experienced an error trying to | open the file. | Try these suggestions. | * Check the file permissions for the | document or drive. | * Make sure there is sufficient free | memory and disk space. | * Open the file with the Text | Recovery converter. | (00057 docxodus__485599b4e9. | docx) | OK
+2026-10-14 01:33:53.466 DIALOG closed id=46361
+2026-10-14 01:33:53.744
+[Microsoft Word] on screen 260x362 layer=8 title=''
+[Microsoft Word] hidden 500x116 layer=0 title='Opening: 00057__docxodus__485599b4e9.docx '
+[Microsoft Word] hidden 260x282 layer=0 title=''
+[Microsoft Word] on screen 1292x985 layer=0 title='00050__docxodus__3e7067f872  -  Last saved by user  -  Compatibility Mode'
+2026-10-14 01:33:54.774 DIALOG closed id=46362
+2026-10-14 01:33:56.097 DIALOG [Microsoft Error Reporting] on screen 446x234 layer=0 title='Microsoft Error Reporting'
+    says: Microsoft Error Reporting | There was a problem with Microsoft Word and we apologize for | the inconvenience. | Restart Microsoft Word | More Information | OK
+2026-10-14 01:33:57.743 DIALOG closed id=46371
+2026-10-14 01:33:58.853
+<no Word or dialog windows>
+2026-10-14 01:34:03.903
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:34:09.080
+[Microsoft Word] hidden 500x500 layer=0 title=''
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+[Microsoft Word] on screen 1266x967 layer=0 title='00059__docxodus__48ef0a5cd7'
+2026-10-14 01:34:10.391 DIALOG [Microsoft Word] on screen 278x302 layer=8 title=''
+    says: Microsoft Word | Word found unreadable content in | 00061_docxodus__4d40d1f136.d | ocx. Do you want to recover the | contents of this document? If you | trust the source of this document, | click Yes. | Yes | No
+2026-10-14 01:34:12.122 DIALOG [Microsoft Word] on screen 490x114 layer=0 title='Opening: 00061__docxodus__4d40d1f136.docx '
+    says: Opening: 00061_docxodus_4d40d1f136.docx | Processing
+2026-10-14 01:34:12.876 DIALOG [Microsoft Word] on screen 76x104 layer=8 title=''
+    says: Microsoft Word | Word experienced an error trying to | open the file. | Try these suggestions. | * Check the file permissions for the | document or drive. | * Make sure there is sufficient free | memory and disk space. | * Open the file with the Text | Recovery converter. | (00061_docxodus__4d40d1f136.d | ocx) | OK
+2026-10-14 01:34:14.112 DIALOG closed id=46392
+2026-10-14 01:34:14.112
+[Microsoft Word] on screen 490x114 layer=0 title='Opening: 00061__docxodus__4d40d1f136.docx '
+[Microsoft Word] hidden 260x282 layer=0 title=''
+[Microsoft Word] hidden 1292x985 layer=0 title='00060__docxodus__4ca3f73206'
+[Microsoft Word] hidden 500x500 layer=0 title=''
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+[Microsoft Word] on screen 76x104 layer=8 title=''
+2026-10-14 01:34:14.375 DIALOG closed id=46395
+2026-10-14 01:34:14.375 DIALOG closed id=46396
+2026-10-14 01:34:18.355 DIALOG [Microsoft Error Reporting] on screen 450x236 layer=0 title='Microsoft Error Reporting'
+    says: Microsoft Error Reporting | There was a problem with Microsoft Word and we apologize for | the inconvenience. | Restart Microsoft Word | More Information | OK
+2026-10-14 01:34:19.138
+[Microsoft Error Reporting] on screen 450x236 layer=0 title='Microsoft Error Reporting'
+2026-10-14 01:34:23.668 DIALOG closed id=46405
+2026-10-14 01:34:24.207
+<no Word or dialog windows>
+2026-10-14 01:34:29.334
+[Microsoft Word] hidden 1292x985 layer=0 title='00064__docxodus__515c0aa8ab'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:34:34.579
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:34:39.785 same
+2026-10-14 01:34:44.988 same
+2026-10-14 01:34:50.226
+[Microsoft Word] on screen 1266x967 layer=0 title='00082__docxodus__5f137fe5fa'
+[Microsoft Word] hidden 500x500 layer=0 title=''
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:34:55.238
+[Microsoft Word] hidden 500x500 layer=0 title=''
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:35:00.436 same
+2026-10-14 01:35:05.677 same
+2026-10-14 01:35:10.859 same
+2026-10-14 01:35:16.035 same
+2026-10-14 01:35:21.189 same
+2026-10-14 01:35:26.391 same
+2026-10-14 01:35:31.602
+[Microsoft Word] hidden 500x500 layer=0 title=''
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+[Microsoft Word] on screen 1266x967 layer=0 title='00087__docxodus__6213202228  -  Compatibility Mode'
+2026-10-14 01:35:36.811
+[Microsoft Word] on screen 1268x967 layer=0 title='00094__docxodus__69d42b2a47  -  Compatibility Mode'
+[Microsoft Word] hidden 500x500 layer=0 title=''
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:35:38.104 DIALOG [Microsoft Word] on screen 116x126 layer=8 title=''
+    says: Microsoft Word | Word found unreadable content in | 00096__docxodus__6b74ac1ae6.d | ocx. Do you want to recover the | contents of this document? If you | trust the source of this document, | click Yes. | Yes | No
+2026-10-14 01:35:41.021 DIALOG [Microsoft Word] on screen 490x114 layer=0 title='Opening: 00096__docxodus__6b74ac1ae6.docx '
+    says: Opening: 00096__docxodus__6b74ac1ae6.docx | Processing
+2026-10-14 01:35:41.457 DIALOG closed id=46466
+2026-10-14 01:35:41.716 DIALOG [Microsoft Word] on screen 260x362 layer=8 title=''
+    says: <no screenshot: rc=1 could not create image from window>
+2026-10-14 01:35:41.914 DIALOG closed id=46469
+2026-10-14 01:35:41.914
+[Microsoft Word] on screen 260x362 layer=8 title=''
+[Microsoft Word] hidden 500x116 layer=0 title='Opening: 00096__docxodus__6b74ac1ae6.docx '
+[Microsoft Word] hidden 500x500 layer=0 title=''
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+[Microsoft Word] hidden 1292x985 layer=0 title='00095__docxodus__6af7bc5540'
+[Microsoft Word] hidden 260x282 layer=0 title=''
+2026-10-14 01:35:42.174 DIALOG closed id=46470
+2026-10-14 01:35:46.973
+<no Word or dialog windows>
+2026-10-14 01:35:48.552 DIALOG [Microsoft Error Reporting] on screen 448x236 layer=0 title='Microsoft Error Reporting'
+    says: Microsoft Error Reporting | There was a problem with Microsoft Word and we apologize for | the inconvenience. | Restart Microsoft Word | More Information | OK
+2026-10-14 01:35:50.296 DIALOG closed id=46483
+2026-10-14 01:35:52.128 same
+2026-10-14 01:35:57.361
+[Microsoft Word] hidden 1292x985 layer=0 title='00102__docxodus__6e89035e56'
+[Microsoft Word] hidden 1292x985 layer=0 title='00100__docxodus__6de20376e8  -  Last saved by user  -  Compatibility Mode'
+2026-10-14 01:36:02.434
+[Microsoft Word] hidden 1292x985 layer=0 title='00100__docxodus__6de20376e8  -  Last saved by user  -  Compatibility Mode'
+2026-10-14 01:36:07.655 same
+2026-10-14 01:36:12.924 same
+2026-10-14 01:36:17.940
+[Microsoft Word] hidden 1292x985 layer=0 title='00122__docxodus__9129d2ecd2  -  Compatibility Mode'
+[Microsoft Word] hidden 1292x985 layer=0 title='00100__docxodus__6de20376e8  -  Last saved by user  -  Compatibility Mode'
+2026-10-14 01:36:22.948
+[Microsoft Word] hidden 1292x985 layer=0 title='00100__docxodus__6de20376e8  -  Last saved by user  -  Compatibility Mode'
+[Microsoft Word] hidden 1292x985 layer=0 title='00125__docxodus__9382e03243'
+2026-10-14 01:36:28.132 same
+2026-10-14 01:36:33.314
+[Microsoft Word] hidden 1292x985 layer=0 title='00100__docxodus__6de20376e8  -  Last saved by user  -  Compatibility Mode'
+[Microsoft Word] hidden 260x282 layer=0 title=''
+2026-10-14 01:36:38.469 same
+2026-10-14 01:36:39.241 DIALOG [Microsoft Word] on screen 260x282 layer=8 title=''
+    says: Microsoft Word | Word found unreadable content in | 00129_docxodus__9a2af58d99.d | ocx. Do you want to recover the | contents of this document? If you | trust the source of this document, | click Yes. | Yes | No
+2026-10-14 01:36:40.143 DIALOG [Microsoft Word] on screen 490x114 layer=8 title='Opening: 00129__docxodus__9a2af58d99.docx '
+    says: Opening: 00129_docxodus_9a2af58d99.docx | Processing
+2026-10-14 01:36:40.542 DIALOG closed id=46523
+2026-10-14 01:36:40.804 DIALOG closed id=46526
+2026-10-14 01:36:42.160 DIALOG [Microsoft Error Reporting] on screen 450x236 layer=0 title='Microsoft Error Reporting'
+    says: Microsoft Error Reporting | There was a problem with Microsoft Word and we apologize for | the inconvenience. | Restart Microsoft Word | More Information | OK
+2026-10-14 01:36:43.541
+[Microsoft Error Reporting] on screen 450x236 layer=0 title='Microsoft Error Reporting'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:36:43.811 DIALOG closed id=46534
+2026-10-14 01:36:48.710
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:36:53.898
+[Microsoft Word] hidden 260x282 layer=0 title=''
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:36:58.588 DIALOG [Microsoft Word] on screen 260x282 layer=8 title=''
+    says: Microsoft Word | Word found unreadable content in | 00133__docxodus__9f2ce6d6bb.- | docx. Do you want to recover the | contents of this document? If you | trust the source of this document, | click Yes. | Yes | No
+2026-10-14 01:36:59.353
+[Microsoft Word] on screen 260x282 layer=8 title=''
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:36:59.613 DIALOG [Microsoft Word] on screen 260x362 layer=8 title=''
+    says: Microsoft Word | Word experienced an error trying to | open the file. | Try these suggestions. | * Check the file permissions for the | document or drive. | * Make sure there is sufficient free | memory and disk space. | * Open the file with the Text | Recovery converter. | (00133_docxodus__9f2ce6d6bb.- | docx) | OK
+2026-10-14 01:36:59.907 DIALOG closed id=46540
+2026-10-14 01:37:04.062 DIALOG closed id=46546
+2026-10-14 01:37:04.605
+[Microsoft Word] on screen 1292x987 layer=0 title='00134__docxodus__a169f5fa5f'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:37:09.777
+[Microsoft Word] on screen 1292x987 layer=0 title='00140__docxodus__a954a57308'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:37:14.955
+[Microsoft Word] on screen 1292x987 layer=0 title='00147__docxodus__b06fe8236d  -  Compatibility Mode'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:37:20.108
+[Microsoft Word] on screen 1266x967 layer=0 title='00153__docxodus__b626364e3d  -  Compatibility Mode'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:37:24.304 DIALOG [Microsoft Error Reporting] on screen 450x236 layer=0 title='Microsoft Error Reporting'
+    says: Microsoft Error Reporting | There was a problem with Microsoft Word and we apologize for | the inconvenience. | Restart Microsoft Word | More Information | OK
+2026-10-14 01:37:25.847
+[Microsoft Error Reporting] on screen 450x236 layer=0 title='Microsoft Error Reporting'
+2026-10-14 01:37:26.658 DIALOG closed id=46579
+2026-10-14 01:37:30.998
+<no Word or dialog windows>
+2026-10-14 01:37:36.196
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:37:41.311 same
+2026-10-14 01:37:46.361
+[Microsoft Word] hidden 1292x985 layer=0 title='00159__docxodus__c2380a4677'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:37:51.530
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:37:56.642
+[Microsoft Word] hidden 1292x985 layer=0 title='00163__docxodus__cbf73c2d81'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:38:01.849
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+[Microsoft Word] hidden 1292x985 layer=0 title='00166__docxodus__d23d9c8cc7'
+2026-10-14 01:38:06.967
+[Microsoft Word] hidden 1292x985 layer=0 title='00169__docxodus__d484b575c0  -  Compatibility Mode'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:38:12.227
+<no Word or dialog windows>
+2026-10-14 01:38:14.132 DIALOG [Microsoft Error Reporting] on screen 450x236 layer=0 title='Microsoft Error Reporting'
+    says: Microsoft Error Reporting | There was a problem with Microsoft Word and we apologize for | the inconvenience. | Restart Microsoft Word | More Information | OK
+2026-10-14 01:38:17.186 DIALOG closed id=46611
+2026-10-14 01:38:17.444 same
+2026-10-14 01:38:22.655
+[Microsoft Word] hidden 1292x985 layer=0 title='00171__docxodus__d9bb456306  -  Last saved by user'
+2026-10-14 01:38:27.926
+[Microsoft Word] hidden 1292x985 layer=0 title='00173__docxodus__db0f90defc  -  Compatibility Mode'
+[Microsoft Word] hidden 1292x985 layer=0 title='00171__docxodus__d9bb456306  -  Last saved by user'
+2026-10-14 01:38:33.072 same
+2026-10-14 01:38:38.208 same
+2026-10-14 01:38:43.358
+[Microsoft Word] on screen 1266x967 layer=0 title='00173__docxodus__db0f90defc  -  Compatibility Mode'
+[Microsoft Word] on screen 1292x985 layer=0 title='00171__docxodus__d9bb456306  -  Last saved by user'
+2026-10-14 01:38:48.564
+[Microsoft Word] on screen 1292x985 layer=0 title='00175__docxodus__dde913904e'
+[Microsoft Word] on screen 1292x985 layer=0 title='00171__docxodus__d9bb456306  -  Last saved by user'
+2026-10-14 01:38:53.682
+[Microsoft Word] on screen 1292x985 layer=0 title='00171__docxodus__d9bb456306  -  Last saved by user'
+2026-10-14 01:38:58.827 same
+2026-10-14 01:39:02.396 DIALOG [Microsoft Word] on screen 174x188 layer=8 title=''
+    says: Microsoft Word | Word found unreadable content in | 00176__docxodus__e0305725c1.d | ocx. Do you want to recover the | contents of this document? If you | trust the source of this document, | click Yes. | Yes | No
+2026-10-14 01:39:04.033
+[Microsoft Word] on screen 260x282 layer=8 title=''
+[Microsoft Word] hidden 64x64 layer=0 title=''
+[Microsoft Word] on screen 1292x985 layer=0 title='00171__docxodus__d9bb456306  -  Last saved by user'
+2026-10-14 01:39:06.227 DIALOG closed id=46627
+2026-10-14 01:39:06.498 DIALOG [Microsoft Word] on screen 286x400 layer=8 title=''
+    says: <no screenshot: rc=1 could not create image from window>
+2026-10-14 01:39:07.232 DIALOG closed id=46631
+2026-10-14 01:39:09.154
+<no Word or dialog windows>
+2026-10-14 01:39:10.276 DIALOG [Microsoft Error Reporting] on screen 450x236 layer=0 title='Microsoft Error Reporting'
+    says: Microsoft Error Reporting | There was a problem with Microsoft Word and we apologize for | the inconvenience. | Restart Microsoft Word | More Information | OK
+2026-10-14 01:39:14.185 DIALOG closed id=46638
+2026-10-14 01:39:14.185 same
+2026-10-14 01:39:19.212
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:39:24.432 same
+2026-10-14 01:39:29.537
+[Microsoft Word] hidden 1292x985 layer=0 title='00178__docxodus__e3d57f2816  -  Compatibility Mode'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:39:34.627
+[Microsoft Word] hidden 1292x985 layer=0 title='00179__docxodus__e42a88b8ef'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:39:39.889
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:39:45.095 same
+2026-10-14 01:39:50.215
+[Microsoft Word] hidden 260x282 layer=0 title=''
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:39:52.097 DIALOG [Microsoft Word] on screen 260x282 layer=8 title=''
+    says: Microsoft Word | Word found unreadable content in | 00183__docxodus__e9ef73a8e4.d | ocx. Do you want to recover the | contents of this document? If you | trust the source of this document, | click Yes. | Yes | No
+2026-10-14 01:39:53.249 DIALOG [Microsoft Word] on screen 260x362 layer=8 title=''
+    says: Microsoft Word | Word experienced an error trying to | open the file. | Try these suggestions. | * Check the file permissions for the | document or drive. | * Make sure there is sufficient free | memory and disk space. | * Open the file with the Text | Recovery converter. | (00183_docxodus__e9ef73a8e4.d | ocx) | OK
+2026-10-14 01:39:54.151 DIALOG closed id=46657
+2026-10-14 01:39:55.484
+[Microsoft Word] on screen 260x362 layer=0 title=''
+[Microsoft Word] hidden 500x116 layer=0 title='Opening: 00183__docxodus__e9ef73a8e4.docx '
+[Microsoft Word] hidden 260x282 layer=0 title=''
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:39:59.033 DIALOG closed id=46663
+2026-10-14 01:40:00.512
+[Microsoft Word] on screen 1292x987 layer=0 title='00184__docxodus__ee63b6fa87'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:40:05.609
+[Microsoft Word] on screen 1266x967 layer=0 title='00184__docxodus__ee63b6fa87'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:40:10.760
+[Microsoft Word] on screen 1292x985 layer=0 title='00185__docxodus__eecdb1c507'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:40:15.839
+[Microsoft Word] on screen 1292x985 layer=0 title='00186__docxodus__ef3ffabfc9'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:40:20.694 DIALOG [Microsoft Word] on screen 500x116 layer=0 title='Opening: 00187__docxodus__f0875f6d19.docx '
+    says: Opening: 00187_docxodus__f0875f6d19.docx | Processing
+2026-10-14 01:40:21.777
+[Microsoft Word] on screen 500x116 layer=0 title='Opening: 00187__docxodus__f0875f6d19.docx '
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:40:22.345 DIALOG closed id=46675
+2026-10-14 01:40:26.875
+[Microsoft Word] on screen 1292x985 layer=0 title='00187__docxodus__f0875f6d19'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:40:32.037 same
+2026-10-14 01:40:37.258 same
+2026-10-14 01:40:42.413 same
+2026-10-14 01:40:47.546 same
+2026-10-14 01:40:52.733 same
+2026-10-14 01:40:57.760 same
+2026-10-14 01:41:02.784 same
+2026-10-14 01:41:07.859 same
+2026-10-14 01:41:13.042
+[Microsoft Word] on screen 1266x967 layer=0 title='00188__docxodus__f6531f6275  -  Compatibility Mode'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:41:18.316
+[Microsoft Word] on screen 1292x985 layer=0 title='00191__docxodus__f7bbf6e831  -  Compatibility Mode'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:41:23.543
+[Microsoft Word] on screen 1292x985 layer=0 title='00194__docxodus__fc12ef6776  -  Compatibility Mode'
+[Microsoft Word] hidden 64x64 layer=0 title=''
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:41:25.462 DIALOG [Microsoft Word] on screen 88x96 layer=8 title=''
+    says: Microsoft Word | Word found unreadable content in | 00196_docxodus__ff24600d87.d | ocx. Do you want to recover the | contents of this document? If you | trust the source of this document, | click Yes. | Yes | No
+2026-10-14 01:41:28.748
+[Microsoft Word] on screen 260x282 layer=8 title=''
+[Microsoft Word] hidden 1292x985 layer=0 title='00195__docxodus__fec6305982'
+[Microsoft Word] hidden 64x64 layer=0 title=''
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:41:30.374 DIALOG [Microsoft Word] on screen 490x114 layer=8 title='Opening: 00196__docxodus__ff24600d87.docx '
+    says: Opening: 00196_docxodus__ff24600d87.docx | Processing
+2026-10-14 01:41:31.068 DIALOG closed id=46695
+2026-10-14 01:41:31.332 DIALOG [Microsoft Word] on screen 260x362 layer=8 title=''
+    says: <no screenshot: rc=1 could not create image from window>
+2026-10-14 01:41:31.632 DIALOG closed id=46698
+2026-10-14 01:41:31.920 DIALOG closed id=46699
+2026-10-14 01:41:33.006 DIALOG [Microsoft Word] on screen 160x174 layer=8 title=''
+    says: Microsoft Word | Word found unreadable content in | 00176__docxodus__e0305725c1.d | ocx. Do you want to recover the | contents of this document? If you | trust the source of this document, | click Yes. | Yes | No
+2026-10-14 01:41:33.980
+[Microsoft Word] hidden 64x64 layer=0 title=''
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+[Microsoft Word] on screen 260x282 layer=8 title=''
+[Microsoft Word] hidden 1292x985 layer=0 title='00197__docxodus__ff6f1dab3b'
+2026-10-14 01:41:34.249 DIALOG [Microsoft Word] on screen 490x114 layer=8 title='Opening: 00176__docxodus__e0305725c1.docx '
+    says: Opening: 00176__docxodus__e0305725c1.docx | Processing
+2026-10-14 01:41:34.915 DIALOG closed id=46704
+2026-10-14 01:41:35.180 DIALOG [Microsoft Word] on screen 260x362 layer=8 title=''
+    says: <no screenshot: rc=1 could not create image from window>
+2026-10-14 01:41:35.462 DIALOG closed id=46705
+2026-10-14 01:41:35.724 DIALOG [Microsoft Word] on screen 72x78 layer=8 title=''
+    says: <no screenshot: rc=1 could not create image from window>
+2026-10-14 01:41:36.210 DIALOG closed id=46706
+2026-10-14 01:41:36.471 DIALOG closed id=46707
+2026-10-14 01:41:39.021
+[Microsoft Word] on screen 1292x985 layer=0 title='00171__docxodus__d9bb456306'
+[Microsoft Word] hidden 64x64 layer=0 title=''
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:41:40.351 DIALOG [Microsoft Error Reporting] on screen 448x236 layer=0 title='Microsoft Error Reporting'
+    says: Microsoft Error Reporting | There was a problem with Microsoft Word and we apologize for | the inconvenience. | Restart Microsoft Word | More Information | OK
+2026-10-14 01:41:41.631 DIALOG closed id=46716
+2026-10-14 01:41:44.058
+<no Word or dialog windows>
+2026-10-14 01:41:49.276
+[Microsoft Word] hidden 1292x985 layer=0 title='00171__docxodus__d9bb456306  -  Last saved by user'
+[Microsoft Word] hidden 260x282 layer=0 title=''
+2026-10-14 01:41:54.408 same
+2026-10-14 01:41:56.025 DIALOG [Microsoft Word] on screen 260x282 layer=8 title=''
+    says: Microsoft Word | Word found unreadable content in | 00183__docxodus__e9ef73a8e4.d | ocx. Do you want to recover the | contents of this document? If you | trust the source of this document, | click Yes. | Yes | No
+2026-10-14 01:41:57.173 DIALOG closed id=46725
+2026-10-14 01:41:59.578 DIALOG [Microsoft Error Reporting] on screen 450x236 layer=0 title='Microsoft Error Reporting'
+    says: Microsoft Error Reporting | There was a problem with Microsoft Word and we apologize for | the inconvenience. | Restart Microsoft Word | More Information | OK
+2026-10-14 01:42:00.455
+[Microsoft Error Reporting] on screen 450x236 layer=0 title='Microsoft Error Reporting'
+2026-10-14 01:42:05.621 same
+2026-10-14 01:42:09.153 DIALOG closed id=46737
+2026-10-14 01:42:10.786
+[Microsoft Word] hidden 260x282 layer=0 title=''
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:42:15.957 same
+2026-10-14 01:42:17.322 DIALOG [Microsoft Word] on screen 260x282 layer=8 title=''
+    says: Microsoft Word | Word found unreadable content in | 00196_docxodus__ff24600d87.d | ocx. Do you want to recover the | contents of this document? If you | trust the source of this document, | click Yes. | Yes | No
+2026-10-14 01:42:21.012
+[Microsoft Word] on screen 260x282 layer=8 title=''
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:42:26.247 same
+2026-10-14 01:42:30.282 DIALOG closed id=46746
+2026-10-14 01:42:31.372
+[Microsoft Word] hidden 64x64 layer=0 title=''
+[Microsoft Word] on screen 1292x985 layer=0 title='Document1'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:42:36.594
+[Microsoft Word] hidden 64x64 layer=0 title=''
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:42:41.627 same
+2026-10-14 01:42:46.641 same
+2026-10-14 01:42:51.698 same
+2026-10-14 01:42:56.971 same
+2026-10-14 01:43:02.173 same
+2026-10-14 01:43:05.462 DIALOG [Microsoft Word] on screen 90x98 layer=0 title=''
+    says: Microsoft Word | Word found unreadable content in | 00133__docxodus__9f2ce6d6bb.- | docx. Do you want to recover the | contents of this document? If you | trust the source of this document, | click Yes. | Yes | No
+2026-10-14 01:43:06.466 DIALOG [Microsoft Word] on screen 272x378 layer=8 title=''
+    says: Microsoft Word | Word experienced an error trying to | open the file. | Try these suggestions. | * Check the file permissions for the | document or drive. | * Make sure there is sufficient free | memory and disk space. | * Open the file with the Text | Recovery converter. | (00133_docxodus__9f2ce6d6bb.- | docx) | OK
+2026-10-14 01:43:07.198 DIALOG closed id=46762
+2026-10-14 01:43:07.198
+[Microsoft Word] on screen 272x378 layer=8 title=''
+[Microsoft Word] hidden 260x282 layer=0 title=''
+[Microsoft Word] hidden 64x64 layer=0 title=''
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:43:07.488 DIALOG closed id=46765
+2026-10-14 01:43:10.794 DIALOG [Microsoft Error Reporting] on screen 450x236 layer=0 title='Microsoft Error Reporting'
+    says: Microsoft Error Reporting | There was a problem with Microsoft Word and we apologize for | the inconvenience. | Restart Microsoft Word | More Information | OK
+2026-10-14 01:43:12.144 DIALOG closed id=46773
+2026-10-14 01:43:12.406
+<no Word or dialog windows>
+2026-10-14 01:43:17.532
+[Microsoft Word] hidden 1292x985 layer=0 title='00156__docxodus__bc0135eaa1  -  Last saved by user'
+2026-10-14 01:43:18.878 DIALOG [Microsoft Word] on screen 260x282 layer=8 title=''
+    says: Microsoft Word | Word found unreadable content in | 00129_docxodus__9a2af58d99.d | ocx. Do you want to recover the | contents of this document? If you | trust the source of this document, | click Yes. | Yes | No
+2026-10-14 01:43:19.856 DIALOG closed id=46778
+2026-10-14 01:43:21.708 DIALOG [Microsoft Error Reporting] on screen 444x232 layer=0 title='Microsoft Error Reporting'
+    says: Microsoft Error Reporting | There was a problem with Microsoft Word and we apologize for | the inconvenience. | Restart Microsoft Word | More Information | OK
+2026-10-14 01:43:23.002
+[Microsoft Error Reporting] on screen 444x232 layer=0 title='Microsoft Error Reporting'
+2026-10-14 01:43:28.010
+[Microsoft Error Reporting] on screen 450x236 layer=0 title='Microsoft Error Reporting'
+2026-10-14 01:43:31.053 DIALOG closed id=46794
+2026-10-14 01:43:33.215
+[Microsoft Word] hidden 260x282 layer=0 title=''
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:43:35.871 DIALOG [Microsoft Word] on screen 260x282 layer=8 title=''
+    says: Microsoft Word | Word found unreadable content in | 00086__docxodus__61959b1953.d | ocx. Do you want to recover the | contents of this document? If you | trust the source of this document, | click Yes. | Yes | No
+2026-10-14 01:43:36.838 DIALOG closed id=46798
+2026-10-14 01:43:38.434
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:43:43.530 same
+2026-10-14 01:43:48.847 same
+2026-10-14 01:43:53.911 same
+2026-10-14 01:43:59.201 same
+2026-10-14 01:44:04.393 same
+2026-10-14 01:44:09.618 same
+2026-10-14 01:44:14.631 same
+2026-10-14 01:44:19.844 same
+2026-10-14 01:44:25.014 DIALOG [Microsoft Word] on screen 140x152 layer=8 title=''
+    says: Microsoft Word | Word found unreadable content in | 00096__docxodus__6b74ac1ae6.d | ocx. Do you want to recover the | contents of this document? If you | trust the source of this document, | click Yes. | Yes | No
+2026-10-14 01:44:25.322
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+[Microsoft Word] on screen 140x152 layer=8 title=''
+2026-10-14 01:44:30.472
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+[Microsoft Word] on screen 260x282 layer=0 title=''
+2026-10-14 01:44:35.124 DIALOG [Microsoft Word] on screen 50x68 layer=8 title=''
+    says: <no screenshot: rc=1 could not create image from window>
+2026-10-14 01:44:35.193 DIALOG closed id=46808
+2026-10-14 01:44:35.451 DIALOG closed id=46813
+2026-10-14 01:44:35.709
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:44:39.566 DIALOG [Microsoft Error Reporting] on screen 444x232 layer=0 title='Microsoft Error Reporting'
+    says: Microsoft Error Reporting | There was a problem with Microsoft Word and we apologize for | the inconvenience. | Restart Microsoft Word | More Information | OK
+2026-10-14 01:44:40.961
+[Microsoft Error Reporting] on screen 450x236 layer=0 title='Microsoft Error Reporting'
+2026-10-14 01:44:41.223 DIALOG closed id=46820
+2026-10-14 01:44:46.106
+<no Word or dialog windows>
+2026-10-14 01:44:51.259
+[Microsoft Word] hidden 260x282 layer=0 title=''
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:44:55.643 DIALOG [Microsoft Word] on screen 260x282 layer=8 title=''
+    says: Microsoft Word | Word found unreadable content in | 00061_docxodus__4d40d1f136.d | ocx. Do you want to recover the | contents of this document? If you | trust the source of this document, | click Yes. | Yes | No
+2026-10-14 01:44:56.325
+[Microsoft Word] on screen 260x282 layer=8 title=''
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:44:56.578 DIALOG [Microsoft Word] on screen 196x274 layer=8 title=''
+    says: Microsoft Word | Word experienced an error trying to | open the file. | Try these suggestions. | • Check the file permissions for the | document or drive. | • Make sure there is sufficient free | memory and disk space. | • Open the file with the Text | Recovery converter. | (00061_docxodus__4d40d1f136.d | ocx) | OK
+2026-10-14 01:44:56.852 DIALOG closed id=46826
+2026-10-14 01:44:59.183 DIALOG closed id=46833
+2026-10-14 01:45:01.514
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:45:06.659 same
+2026-10-14 01:45:11.794
+[Microsoft Word] hidden 54x54 layer=0 title=''
+[Microsoft Word] on screen 1292x985 layer=0 title='00063__docxodus__4eff11f045'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:45:15.389 DIALOG [Microsoft Error Reporting] on screen 450x236 layer=0 title='Microsoft Error Reporting'
+    says: • • • Microsoft Error Reporting | There was a problem with Microsoft Word and we apologize for | the inconvenience. | Restart Microsoft Word | More Information | OK
+2026-10-14 01:45:17.039
+[Microsoft Error Reporting] on screen 450x236 layer=0 title='Microsoft Error Reporting'
+2026-10-14 01:45:17.296 DIALOG closed id=46846
+2026-10-14 01:45:22.182
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+[Microsoft Word] hidden 260x282 layer=0 title=''
+2026-10-14 01:45:26.056 DIALOG [Microsoft Word] on screen 260x282 layer=8 title=''
+    says: Microsoft Word | Word found unreadable content in | 00057_docxodus__485599b4e9.d | ocx. Do you want to recover the | contents of this document? If you | trust the source of this document, | click Yes. | Yes | No
+2026-10-14 01:45:26.595 DIALOG closed id=46852
+2026-10-14 01:45:27.371
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:45:32.528
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+[Microsoft Word] on screen 1292x985 layer=0 title='00050__docxodus__3e7067f872  -  Compatibility Mode'
+2026-10-14 01:45:37.695 same
+2026-10-14 01:45:42.857 same
+2026-10-14 01:45:48.014 same
+2026-10-14 01:45:53.161 same
+2026-10-14 01:45:58.340 same
+2026-10-14 01:46:03.520 same
+2026-10-14 01:46:08.678 same
+2026-10-14 01:46:13.863 same
+2026-10-14 01:46:19.023 same
+2026-10-14 01:46:24.208 same
+2026-10-14 01:46:29.384 same
+2026-10-14 01:46:34.562 same
+2026-10-14 01:46:39.723
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+[Microsoft Word] on screen 1292x987 layer=0 title='00000__base__01f3deda92__vs__01f3deda92  -  Compatibility Mode'
+2026-10-14 01:46:44.867
+[Microsoft Word] on screen 1266x967 layer=0 title='00003__base__04b7d19a3a__vs__04b7d19a3a  -  Compatibility Mode'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+[Microsoft Word] on screen 1266x967 layer=0 title='00003__04b7d19a3a__vs__04b7d19a3a  -  Compatibility Mode'
+2026-10-14 01:46:50.010
+[Microsoft Word] on screen 1288x983 layer=0 title='Document8  -  Compatibility Mode'
+[Microsoft Word] on screen 1292x985 layer=0 title='00008__base__0aa74e0de4__vs__0aa74e0de4  -  Compatibility Mode'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:46:55.194
+[Microsoft Word] on screen 1276x973 layer=0 title='00012__base__0df218b227__vs__0df218b227  -  Compatibility Mode'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+[Microsoft Word] on screen 1292x987 layer=0 title='00012__0df218b227__vs__0df218b227  -  Compatibility Mode'
+2026-10-14 01:47:00.330
+[Microsoft Word] on screen 1282x977 layer=0 title='00016__11e99a0b24__vs__11e99a0b24  -  Compatibility Mode'
+[Microsoft Word] on screen 1266x967 layer=0 title='00016__base__11e99a0b24__vs__11e99a0b24  -  Compatibility Mode'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+2026-10-14 01:47:05.483
+[Microsoft Word] on screen 1292x987 layer=0 title='00020__18380da4e0__vs__18380da4e0'
+[Microsoft Word] hidden 1400x896 layer=0 title=''
+[Microsoft Word] on screen 1290x985 layer=0 title='00020__base__18380da4e0__vs__18380da4e0'

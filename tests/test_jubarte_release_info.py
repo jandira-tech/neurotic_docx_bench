@@ -34,7 +34,7 @@ LANE = f'jubarte-{V}'
 COMMIT = 'c0ffee' + '0' * 34
 REPO = Path(__file__).resolve().parents[1]
 # the engine's own release gate (scripts/release.sh step 3), from the canonical checkout
-CHECKER = Path.home() / 'temp/T/jubarte-redlines/scripts/check_release_info.py'
+CHECKER = Path(__file__).resolve().parents[1] / 'src/neurotic_docx_bench/utils/jubarte/jubarte-redlines/scripts/check_release_info.py'
 
 
 @dataclass

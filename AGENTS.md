@@ -4,8 +4,9 @@ Guidance for AI agents and contributors working on this repo. Read this before c
 anything; the invariants below are load-bearing.
 
 Before changing, rebuilding, or benchmarking the Rust redline engine, also read
-`../reconciliation_plan/GET_JUBARTE_RUST.md`. The only canonical local Rust source
-checkout is `../jubarte-redlines` (`~/T/jubarte-redlines`). Everything under this
+`docs/GET_JUBARTE_RUST.md`. The only canonical local Rust source
+checkout is `~/T/jubarte-redlines`, reached from this repo through the link
+`src/neurotic_docx_bench/utils/jubarte/jubarte-redlines` (`scripts/link_engines.sh`). Everything under this
 repository's `src/neurotic_docx_bench/utils/jubarte/jubarte-rust` and
 `src/neurotic_docx_bench/utils/jubarte/jubarte-wasm/pkg` is a consumer artifact;
 never implement an engine fix in those copies.
@@ -23,15 +24,11 @@ a committed **Word oracle** redline for that pair.
 
 ```bash
 uv sync                       # Python bench (Python 3.14; needs LibreOffice on PATH)
-bun install --frozen-lockfile # Node redline generators (jubarte, docxodus, docx-redline-js)
-cd src/neurotic_docx_bench/utils/docxodus && bun install --frozen-lockfile
-cd src/neurotic_docx_bench/utils/docx-redline-js && bun install --frozen-lockfile
-cd src/neurotic_docx_bench/utils/folio && bun install --frozen-lockfile
-cd src/neurotic_docx_bench/utils/superdoc && bun install --frozen-lockfile
+pnpm install --frozen-lockfile # Node 26 + pnpm workspace: root pin tree + utils/ engine fallbacks
 uv run bench run              # all tools sequentially → results/bench.jsonl
 uv run bench run --only jubarte-final-lossless --limit 5   # one tool, quick
 uv run pytest -q              # 68 tests
-bunx vitest run               # 7 TS-driver tests (scoped by vitest.config.ts)
+pnpm exec vitest run          # 7 TS-driver tests (scoped by vitest.config.ts)
 ```
 
 ## Architecture (data flow)
@@ -190,7 +187,7 @@ per run) measures **redline-generation time** (`unit: ms_per_redline`). Run it:
 node --import tsx scripts/speed-bench.ts --pairs 30 --reps 3 --warmup 3 --out results/speed.jsonl
 uv run python -m neurotic_docx_bench.superdoc_speed --pairs 30 --reps 3 --warmup 3 --out results/speed.jsonl
 # Large-N native CLI (C# Docxodus + jubarte-rust): 1000 fixtures → 5000 pairs, samply profiles
-bun run redline-speed-bench:native
+pnpm run redline-speed-bench:native
 ```
 
 **Render speed** (`unit: ms_per_render`) — how long a Playwright viewer takes to render a

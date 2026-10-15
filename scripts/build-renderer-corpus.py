@@ -6,17 +6,17 @@ its ``add-jubarte-redlines`` branch.  The upstream comparison tool's useful
 invariant is retained here: every engine is keyed by the same source DOCX
 stem and the Word PDF is the reference, not a generated approximation.
 
-The Word PDFs already committed under ``pdf_source`` and
-``pdf_source_randomized`` are copied into the corpus; Word is not invoked by
-this script.  Jubarte and docxide-pdf are rendered from the same 398 source
-DOCX files.
+The Word PDFs pinned by the docx_to_pdf_no_redline_docs track
+(``src/neurotic_docx_bench/docx_to_pdf_pins/docx_to_pdf_no_redline_docs.tsv``, files under
+``corpus/``) are copied in; Word is not invoked by this script.  Jubarte and docxide-pdf are
+rendered from the same 396 source DOCX files.
 
 Usage:
     python3 scripts/build-renderer-corpus.py
     python3 scripts/build-renderer-corpus.py --force
 
-The output is intentionally a separate corpus from the benchmark work trees:
-``corpus/no_comments_pdf_was_generated_by_word/renderer_corpus``.
+The output is a separate tree from the benchmark work trees: ``results/renderer_corpus``
+(not under ``corpus/``, whose files mirror the Hugging Face fixtures dataset).
 """
 
 from __future__ import annotations
@@ -26,18 +26,16 @@ import json
 import os
 import shutil
 import subprocess
+import sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-WORD_ROOT = ROOT / "corpus" / "no_comments_pdf_was_generated_by_word"
-OUT = WORD_ROOT / "renderer_corpus"
-DOCXIDE_WORK = ROOT / "results" / "docx_to_pdf_work" / "docxide-pdf" / "candidate"
+sys.path.insert(0, str(ROOT / "src"))
+from neurotic_docx_bench import docx_to_pdf as d2p
 
-POOLS = (
-    ("source", WORD_ROOT / "docx_source", WORD_ROOT / "pdf_source"),
-    ("source_randomized", WORD_ROOT / "docx_source_randomized", WORD_ROOT / "pdf_source_randomized"),
-)
+OUT = ROOT / "results" / "renderer_corpus"
+DOCXIDE_WORK = ROOT / "results" / "docx_to_pdf_work" / "docxide-pdf" / "candidate"
 
 
 def _tool(env_name: str, defaults: tuple[Path, ...]) -> Path:
@@ -52,36 +50,36 @@ def _tool(env_name: str, defaults: tuple[Path, ...]) -> Path:
 
 def _copy_word_and_docxide(force: bool) -> list[dict[str, str]]:
     rows: list[dict[str, str]] = []
-    for pool, docx_dir, word_dir in POOLS:
-        for docx in sorted(docx_dir.glob("*.docx")):
-            stem = docx.stem
-            word = word_dir / f"{stem}.pdf"
-            if not word.is_file():
-                raise SystemExit(f"missing committed Word PDF for {docx}")
-            source = docx
-            word_out = OUT / "word" / f"{pool}__{stem}.pdf"
-            docxide_out = OUT / "docxide-pdf" / f"{pool}__{stem}.pdf"
-            word_out.parent.mkdir(parents=True, exist_ok=True)
-            docxide_out.parent.mkdir(parents=True, exist_ok=True)
-            if force or not word_out.exists():
-                shutil.copy2(word, word_out)
-            cached = DOCXIDE_WORK / f"{pool}__{stem}.pdf"
-            if not cached.is_file():
-                # The evaluator prefixes the pool name in its candidate tree.
-                # Keep this explicit rather than falling back to a same-stem glob;
-                # source and source_randomized intentionally share many stems.
-                raise SystemExit(
-                    f"missing docxide-pdf output {cached}; run the no-redline evaluation first"
-                )
-            if force or not docxide_out.exists():
-                shutil.copy2(cached, docxide_out)
-            rows.append({
-                "pool": pool,
-                "stem": stem,
-                "source": str(source.relative_to(ROOT)),
-                "word": str(word_out.relative_to(ROOT)),
-                "docxide-pdf": str(docxide_out.relative_to(ROOT)),
-            })
+    for fx in d2p.load_fixtures(track=d2p.NO_REDLINE_TRACK):
+        pool, stem, source, word = fx.kind, fx.original_stem, fx.docx, fx.oracle
+        if not (source.is_file() and word.is_file()):
+            raise SystemExit(f"missing {source} or {word}; run: uv run bench fixtures download")
+        word_out = OUT / "word" / f"{fx.stem}.pdf"
+        docxide_out = OUT / "docxide-pdf" / f"{fx.stem}.pdf"
+        word_out.parent.mkdir(parents=True, exist_ok=True)
+        docxide_out.parent.mkdir(parents=True, exist_ok=True)
+        if force or not word_out.exists():
+            shutil.copy2(word, word_out)
+        # The evaluator names candidates ``{kind}__{stem}``; runs before the 2026-10-11 rename
+        # used the pool-era stem. Exact names only: source and source_randomized share many
+        # stems, so no same-stem glob.
+        cached = next(
+            (c for c in (DOCXIDE_WORK / f"{fx.stem}.pdf", DOCXIDE_WORK / f"{fx.legacy_stem}.pdf") if c.is_file()),
+            None,
+        )
+        if cached is None:
+            raise SystemExit(
+                f"missing docxide-pdf output {DOCXIDE_WORK / fx.stem}.pdf; run the no-redline evaluation first"
+            )
+        if force or not docxide_out.exists():
+            shutil.copy2(cached, docxide_out)
+        rows.append({
+            "pool": pool,
+            "stem": stem,
+            "source": str(source.relative_to(ROOT)),
+            "word": str(word_out.relative_to(ROOT)),
+            "docxide-pdf": str(docxide_out.relative_to(ROOT)),
+        })
     return rows
 
 
@@ -122,7 +120,7 @@ def main() -> int:
     jubarte = _tool(
         "JUBARTE_BIN",
         (
-            ROOT.parent / "jubarte-redlines" / "target" / "release" / "jubarte",
+            d2p.DEFAULT_CONVERTER,
             Path.home() / ".cargo" / "bin" / "jubarte",
         ),
     )
@@ -150,13 +148,13 @@ def main() -> int:
             "commit": "1c83074a2f35a8a0a8bdd40642247b0e0c9abf08",
             "license": "Apache-2.0",
         },
-        "source": "corpus/no_comments_pdf_was_generated_by_word/docx_source + docx_source_randomized",
-        "reference": "Microsoft Word PDFs already committed in pdf_source + pdf_source_randomized",
+        "source": "the DOCX pinned in src/neurotic_docx_bench/docx_to_pdf_pins/docx_to_pdf_no_redline_docs.tsv",
+        "reference": "the Microsoft Word PDFs pinned (sha256) in the same file",
         "engines": {
             "word": "Microsoft Word reference PDFs",
             "jubarte": {
-                "binary": "../jubarte-redlines/target/release/jubarte",
-                "repository_revision": _git_revision(ROOT.parent / "jubarte-redlines"),
+                "binary": "src/neurotic_docx_bench/utils/jubarte/jubarte-redlines/target/release/jubarte",
+                "repository_revision": _git_revision(ROOT / "src/neurotic_docx_bench/utils/jubarte/jubarte-redlines"),
             },
             "docxide-pdf": {
                 "binary": "~/.cargo/bin/docxide-pdf",
@@ -183,8 +181,8 @@ def main() -> int:
         "# Renderer corpus\n\n"
         "Open [`index.html`](index.html) to compare every case side by side in a browser.\n\n"
         "Each source DOCX has three same-stem PDFs: `word/` (the committed Word reference), "
-        "`jubarte/`, and `docxide-pdf/`. The source DOCX files remain in the canonical "
-        "`docx_source/` and `docx_source_randomized/` directories.\n\n"
+        "`jubarte/`, and `docxide-pdf/`. The source DOCX files stay in `corpus/`, listed in "
+        "`src/neurotic_docx_bench/docx_to_pdf_pins/docx_to_pdf_no_redline_docs.tsv`.\n\n"
         "The comparison layout is adapted from `sverrejb/docxide-pdf`'s Apache-2.0 "
         "`tools/engine_compare.py` on the `add-jubarte-redlines` branch; see "
         "`licenses/docxide-pdf-Apache-2.0.txt`.\n",

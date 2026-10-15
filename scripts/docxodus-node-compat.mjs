@@ -12,7 +12,6 @@ import { existsSync, readFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
-let installed = false;
 
 function pinnedDocxodusVersion(fromDir) {
 	const pkgPath = resolve(fromDir, "../package.json");
@@ -21,18 +20,32 @@ function pinnedDocxodusVersion(fromDir) {
 	return pkg.dependencies?.docxodus ?? pkg.devDependencies?.docxodus ?? null;
 }
 
-/** Remap Atlaskit directory imports. `entry` is the chosen `docxodus/dist/index.js`
- *  so createRequire walks THAT package's node_modules, not this script's. */
+/** Remap Atlaskit directory imports. `entry` is the chosen `docxodus/dist/index.js`,
+ *  used only to locate the pin when no importing module is in context. */
+const INSTALLED = Symbol.for("neurotic.docxodusNodeCompat");
 export function installDocxodusNodeCompat(entry) {
-	if (installed) return;
-	installed = true;
+	// Global flag, not a module-local one: vitest's vi.resetModules() re-executes
+	// this module with a fresh `installed = false`, and every re-registration
+	// stacks another resolve hook on the worker — three stacked hooks deadlock
+	// real docxodus's import graph. globalThis survives module resets.
+	if (globalThis[INSTALLED]) return;
+	globalThis[INSTALLED] = true;
 	if (typeof globalThis.Bun !== "undefined") return;
-	const req = createRequire(entry ? pathToFileURL(entry).href : import.meta.url);
 	registerHooks({
 		resolve(specifier, context, nextResolve) {
 			if (specifier.startsWith("@atlaskit/pragmatic-drag-and-drop")) {
 				try {
-					const pkgPath = req.resolve(`${specifier}/package.json`);
+					// Resolve from the IMPORTING module: pnpm isolates each package's
+					// dependencies in its own .pnpm neighborhood, so a require rooted
+					// at the docxodus entry cannot see Atlaskit packages that live
+					// beside their actual importer (@atlaskit/pragmatic-drag-and-drop
+					// is a dependency of -auto-scroll, not of docxodus). Bun's shared
+					// hoisted tree hid this; the pnpm tree exposes it.
+					const from =
+						context.parentURL ??
+						(entry ? pathToFileURL(entry).href : import.meta.url);
+					const parentReq = createRequire(from);
+					const pkgPath = parentReq.resolve(`${specifier}/package.json`);
 					const pkg = JSON.parse(readFileSync(pkgPath, "utf8"));
 					const rel = pkg.module ?? pkg.main;
 					if (rel) {

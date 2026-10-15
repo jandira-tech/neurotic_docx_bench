@@ -10,4 +10,4 @@ def p(label, runs):
 V=[('V1','Times New Roman',None),('V2',None,'en-US'),('V3','MS Mincho','en-US'),('V4',None,None),('V5','Arial',None),('V6','Times New Roman','en-AU'),('V7','MS Mincho',None),('V8','PrbSix',None),('V9','PrbSix','en-US'),('VA',None,'ja-JP'),('VB','Times New Roman','ja-JP')]
 L=[p(n,[r('a  b  c  d',ea,lang)]) for n,ea,lang in V]
 settings='<w:compat><w:balanceSingleByteDoubleByteWidth/><w:compatSetting w:name="compatibilityMode" w:uri="http://schemas.microsoft.com/office/word" w:val="15"/></w:compat>'
-subprocess.run(['python3','/Users/arthrod/temp/T/jubarte-loop/mkdocx.py','src/lang.docx',''.join(L),'--compat','15','--settings',settings],check=True)
+subprocess.run(['python3','results/jubarte-loop/mkdocx.py','src/lang.docx',''.join(L),'--compat','15','--settings',settings],check=True)

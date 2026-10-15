@@ -43,7 +43,7 @@ cp -f src/neurotic_docx_bench/utils/jubarte/jubarte-rust-inproc/target/release/j
       src/neurotic_docx_bench/utils/jubarte/jubarte-rust/jubarte-inproc
 
 # 1) WARM ONLY — the fair algorithm race (recommended for thesis speed claims)
-bun run redline-speed-bench:warm
+pnpm run redline-speed-bench:warm
 # equivalent:
 node --import tsx scripts/redline_speed_bench.ts \
   --methods jubarte-rust-inproc,docxodus-csharp-inproc \
@@ -52,7 +52,7 @@ node --import tsx scripts/redline_speed_bench.ts \
   --out results/redline_speed_bench/warm_vs_warm
 
 # 2) FULL thesis pack — warm + CLI + WASM (slower; CLI csharp alone is ~1h+)
-bun run redline-speed-bench:thesis
+pnpm run redline-speed-bench:thesis
 # equivalent:
 node --import tsx scripts/redline_speed_bench.ts \
   --methods jubarte-rust-inproc,docxodus-csharp-inproc,jubarte-rust,docxodus-csharp,docxodus \
@@ -82,7 +82,7 @@ Methodology:
 # Requires: samply on PATH, C# redline at ../ooxmlsdk/Docxodus/tools/redline/bin/Release/net8.0,
 #           docxodus-inproc built under utils/docxodus/docxodus-csharp-inproc,
 #           jubarte-rust binary under utils/jubarte/jubarte-rust/
-bun run redline-speed-bench:native
+pnpm run redline-speed-bench:native
 
 samply load results/redline_speed_bench/cpu/docxodus-csharp.profile.json.gz
 samply load results/redline_speed_bench/cpu/jubarte-rust.profile.json.gz

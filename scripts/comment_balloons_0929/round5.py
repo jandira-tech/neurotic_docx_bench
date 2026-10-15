@@ -1,10 +1,10 @@
 """Round 5: plain paragraphs, one comment. Where do the range end and the reference sit?"""
 import re, sys
 from pathlib import Path
-sys.path.insert(0, str(Path.home() / "temp/T/comment_balloons"))
+sys.path.insert(0, str(Path(__file__).resolve().parent))  # blocklib.py
 from ab import read, write
-M = Path.home() / "temp/T/comment_balloons/r3b/docx/R3_keep_4.docx"
-OUT = Path.home() / "temp/T/comment_balloons/r5/docx"
+M = Path("results/comment_balloons/r3b/docx/R3_keep_4.docx")
+OUT = Path("results/comment_balloons/r5/docx")
 b = read(M)
 head, body = b.split("<w:body>", 1)
 tail = "<w:sectPr" + body.rsplit("<w:sectPr", 1)[1]

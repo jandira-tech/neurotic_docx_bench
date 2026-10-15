@@ -20,7 +20,7 @@ from pathlib import Path
 
 import httpx
 
-ENV = Path.home() / "temp/T/jubarte-redlines/.env"
+ENV = Path("src/neurotic_docx_bench/utils/jubarte/jubarte-redlines/.env")
 
 
 def env() -> dict[str, str]:

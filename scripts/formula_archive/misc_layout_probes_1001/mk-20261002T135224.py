@@ -10,4 +10,4 @@ for ascii,ea in [('Times New Roman',None),('Calibri',None),('Arial',None),('Time
         lab=f'{ascii[:3]}{(ea or "-")[:4]}{sz}'.replace(' ','')
         L.append(f'<w:p><w:pPr><w:spacing w:after="0"/></w:pPr>{r(lab+" x", ascii, ea, sz)}{r("  y    z", ascii, ea, sz)}</w:p>')
 settings='<w:compat><w:balanceSingleByteDoubleByteWidth/><w:compatSetting w:name="compatibilityMode" w:uri="http://schemas.microsoft.com/office/word" w:val="15"/></w:compat>'
-subprocess.run(['python3','/Users/arthrod/temp/T/jubarte-loop/mkdocx.py','src/sw.docx',''.join(L),'--compat','15','--settings',settings],check=True)
+subprocess.run(['python3','results/jubarte-loop/mkdocx.py','src/sw.docx',''.join(L),'--compat','15','--settings',settings],check=True)

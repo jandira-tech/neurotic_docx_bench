@@ -142,7 +142,7 @@ def test_resolve_python_package_pin_reads_installed(monkeypatch):
     )
 
 
-def test_missing_node_modules_raises_naming_bun_install(tmp_path):
+def test_missing_node_modules_raises_naming_pnpm_install(tmp_path):
     """A configured npm package that resolves to None poisons the skip identity.
 
     Runs are skipped on (vendor, tool_version, config_hash). With tool_version None a
@@ -153,7 +153,7 @@ def test_missing_node_modules_raises_naming_bun_install(tmp_path):
     with pytest.raises(RuntimeError) as exc:
         tool_updater.resolve_tool_version(package="jubarte@latest", cwd=tmp_path, no_update=True)
     msg = str(exc.value)
-    assert "bun install" in msg
+    assert "pnpm install" in msg
     assert "jubarte" in msg
 
 
@@ -215,7 +215,7 @@ def test_unresolvable_version_fails_only_its_own_run(tmp_path, monkeypatch):
     )
 
     assert "no-such-pkg" in result.output, "the broken run must name its cause"
-    assert "bun install" in result.output
+    assert "pnpm install" in result.output
     # The second run must still have been attempted — that is the whole point.
     assert "good" in result.output
     assert result.exit_code != 0
@@ -225,7 +225,7 @@ def test_npm_install_pins_exactly_so_the_recorded_version_cannot_drift(monkeypat
     """A bench.yaml pin is exact; the install must not widen it to a caret range.
 
     Plan Chapter 6 D5. `npm install pkg@9.0.0` writes `"pkg": "^9.0.0"` into
-    package.json by default, so a later plain `npm install`/`bun install` can
+    package.json by default, so a later plain `npm install`/`pnpm install` can
     resolve 9.1.0 while bench.yaml still says 9.0.0 — the recorded version and
     the measured code drift apart, which is exactly the split-brain D5 names.
     Observed live: a run rewrote `"docxodus": "9.0.0"` to `"^9.0.0"`.
@@ -251,16 +251,16 @@ def test_npm_install_pins_exactly_so_the_recorded_version_cannot_drift(monkeypat
     )
 
 
-def test_npm_install_uses_bun_not_npm(monkeypatch, tmp_path):
-    """Vendor installs go through bun, the package manager this repo standardises on.
+def test_npm_install_uses_pnpm_not_npm(monkeypatch, tmp_path):
+    """Vendor installs go through pnpm, the package manager this repo standardises on.
 
     npm resolves peer dependencies strictly across ONE shared node_modules, so
     installing one vendor can refuse to install another. Observed live: after
     superdoc@2.3.0 landed (peer pdfjs-dist ^5.4.296), `npm install
     @stll/folio-core@0.15.13` exited 1 with ERESOLVE, and BOTH folio and
     superdoc-ts were recorded as failed runs -- our dependency graph, printed as
-    their crash. bun installs the same specs without the conflict and writes an
-    exact pin.
+    their crash. pnpm resolves peers per package in its isolated layout, installs
+    the same specs without the conflict, and writes an exact pin.
     """
     seen: list[list[str]] = []
 
@@ -277,4 +277,4 @@ def test_npm_install_uses_bun_not_npm(monkeypatch, tmp_path):
     tool_updater.update_npm_package("@stll/folio-core@0.15.13", tmp_path, no_update=False)
 
     assert seen, "no install command was issued"
-    assert seen[0][0] == "bun", f"must install with bun, not {seen[0][0]!r}: {seen[0]}"
+    assert seen[0][0] == "pnpm", f"must install with pnpm, not {seen[0][0]!r}: {seen[0]}"

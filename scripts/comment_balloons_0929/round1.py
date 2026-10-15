@@ -1,8 +1,8 @@
 import re, sys
 from pathlib import Path
-sys.path.insert(0, str(Path.home() / "temp/T/comment_balloons"))
+sys.path.insert(0, str(Path(__file__).resolve().parent))  # blocklib.py
 from ab import read, write
-C = Path("corpus/word"); OUT = Path.home() / "temp/T/comment_balloons/r1/docx"
+C = Path("corpus/word"); OUT = Path("results/comment_balloons/r1/docx")
 SECT = re.compile(r"<w:sectPr\b.*?</w:sectPr>", re.S)
 
 def portrait(s):  # landscape pgSz -> portrait

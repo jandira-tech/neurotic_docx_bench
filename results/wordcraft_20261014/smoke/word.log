@@ -1,0 +1,9 @@
+2026-10-14 01:01:05.006 | INFO     | __main__:preflight:2235 - [word] preflight: open_documents=-1 started_clean=False launched_by_us=True close_documents=False
+2026-10-14 01:02:14.441 | INFO     | __main__:preflight:2235 - [word] preflight: open_documents=-1 started_clean=False launched_by_us=False close_documents=False
+2026-10-14 01:03:49.155 | INFO     | __main__:preflight:2235 - [word] preflight: open_documents=-1 started_clean=False launched_by_us=True close_documents=False
+2026-10-14 01:04:57.850 | INFO     | scripts.word_pdf:preflight:2235 - [word] preflight: open_documents=-1 started_clean=False launched_by_us=True close_documents=False
+2026-10-14 01:07:09.292 | INFO     | __main__:preflight:2235 - [word] preflight: open_documents=0 started_clean=True launched_by_us=False close_documents=False
+2026-10-14 01:07:09.337 | INFO     | __main__:convert_folder:1908 - [word] export: one_osascript=True documents=5 accept_all=False reject_all=False
+2026-10-14 01:07:09.340 | INFO     | __main__:_convert_batched:2108 - [batch] one osascript for 5 document(s)
+2026-10-14 01:07:14.344 | INFO     | __main__:_loop:1479 - [batch pdf 1] 3/5
+2026-10-14 01:07:18.336 | INFO     | __main__:stop:907 - [watchdog] tally: declined=0 dismissed=0 granted=0 forwarded=0 alerts_seen=0
