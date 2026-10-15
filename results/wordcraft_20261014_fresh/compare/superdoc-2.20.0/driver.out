@@ -1,0 +1,34 @@
+▸ PDF quality is sticky: `save as … file format format PDF` inherits whatever 
+'Optimize for' you last chose in Word's own Save As dialog.
+  Open any document in Word once, File > Save As > PDF, and pick the SECOND 
+option, Best for printing.
+  That choice persists; this script cannot set it. Pass --no-check-preset to 
+stop seeing this.
+2026-10-14 20:45:54.622 | INFO     | __main__:preflight:2235 -  preflight: 
+open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-10-14 20:45:54.631 | INFO     | __main__:convert_folder:1908 -  export: 
+one_osascript=True documents=36 accept_all=False reject_all=False
+2026-10-14 20:45:54.667 | INFO     | __main__:_convert_batched:2108 -  one 
+osascript for 36 document(s)
+2026-10-14 20:45:59.671 | INFO     | __main__:_loop:1479 -  3/36
+2026-10-14 20:46:04.679 | INFO     | __main__:_loop:1479 -  8/36
+2026-10-14 20:46:09.689 | INFO     | __main__:_loop:1479 -  9/36
+2026-10-14 20:46:14.695 | INFO     | __main__:_loop:1479 -  12/36
+2026-10-14 20:46:19.715 | INFO     | __main__:_loop:1479 -  17/36
+2026-10-14 20:46:24.724 | INFO     | __main__:_loop:1479 -  23/36
+2026-10-14 20:46:29.734 | INFO     | __main__:_loop:1479 -  28/36
+2026-10-14 20:46:34.742 | INFO     | __main__:_loop:1479 -  33/36
+2026-10-14 20:46:38.615 | INFO     | __main__:stop:907 -  tally: declined=0 
+dismissed=0 granted=0 forwarded=0 alerts_seen=0
+                DOCX → PDF:                 
+/Users/arthrod/temp/T/neurotic_docx_bench/re
+sults/wordcraft_20261014_fresh/compare/super
+             doc-2.20.0/word_in             
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━┓
+┃ outcome                          ┃ count ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━┩
+│ converted                        │    36 │
+│ skipped (exists)                 │     0 │
+│ failed                           │     0 │
+│ seconds per document (batch avg) │   1.2 │
+└──────────────────────────────────┴───────┘

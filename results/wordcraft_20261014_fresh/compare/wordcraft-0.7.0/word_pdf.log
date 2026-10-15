@@ -1,0 +1,380 @@
+2026-10-14 18:21:25.996 | INFO     | __main__:preflight:2235 - [word] preflight: open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-10-14 18:21:26.041 | INFO     | __main__:convert_folder:1908 - [word] export: one_osascript=True documents=400 accept_all=False reject_all=False
+2026-10-14 18:21:26.240 | INFO     | __main__:_convert_batched:2108 - [batch] one osascript for 400 document(s)
+2026-10-14 18:21:31.246 | INFO     | __main__:_loop:1479 - [batch pdf 1] 4/400
+2026-10-14 18:21:36.251 | INFO     | __main__:_loop:1479 - [batch pdf 1] 10/400
+2026-10-14 18:21:46.265 | INFO     | __main__:_loop:1479 - [batch pdf 1] 11/400
+2026-10-14 18:21:51.272 | INFO     | __main__:_loop:1479 - [batch pdf 1] 18/400
+2026-10-14 18:22:01.283 | INFO     | __main__:_loop:1479 - [batch pdf 1] 21/400
+2026-10-14 18:22:03.793 | INFO     | __main__:_note_dialogs:774 - [watchdog] Microsoft Word shows button 'OK'
+2026-10-14 18:22:03.794 | INFO     | __main__:_note_dialogs:777 - [watchdog] Microsoft Word says: 'Word experienced an error trying to open the file.\nTry these suggestions.\n* Check the file permissions for the document or drive.\n* Make sure there is sufficient free memory and disk space.\n* Open the file with the Text Recovery converter.\n(00021__wordcraft-0.7.0__0cd32d67b2.docx)'
+2026-10-14 18:22:04.279 | WARNING  | __main__:_loop_word:873 - [watchdog] Word dialog dismissed via 'OK'; Word said: "Word experienced an error trying to open the file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00021__wordcraft-0.7.0__0cd32d67b2.docx)"
+2026-10-14 18:22:06.292 | INFO     | __main__:_loop:1479 - [batch pdf 1] 23/400
+2026-10-14 18:22:09.361 | INFO     | __main__:_note_dialogs:777 - [watchdog] Microsoft Word says: 'Word experienced an error trying to open the file.\nTry these suggestions.\n* Check the file permissions for the document or drive.\n* Make sure there is sufficient free memory and disk space.\n* Open the file with the Text Recovery converter.\n(00024__wordcraft-0.7.0__0dfc906eb1.docx)'
+2026-10-14 18:22:09.805 | WARNING  | __main__:_loop_word:873 - [watchdog] Word dialog dismissed via 'OK'; Word said: "Word experienced an error trying to open the file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00024__wordcraft-0.7.0__0dfc906eb1.docx)"
+2026-10-14 18:22:11.301 | INFO     | __main__:_loop:1479 - [batch pdf 1] 25/400
+2026-10-14 18:22:16.307 | INFO     | __main__:_loop:1479 - [batch pdf 1] 33/400
+2026-10-14 18:22:21.314 | INFO     | __main__:_loop:1479 - [batch pdf 1] 40/400
+2026-10-14 18:22:26.321 | INFO     | __main__:_loop:1479 - [batch pdf 1] 48/400
+2026-10-14 18:22:31.327 | INFO     | __main__:_loop:1479 - [batch pdf 1] 55/400
+2026-10-14 18:22:36.334 | INFO     | __main__:_loop:1479 - [batch pdf 1] 62/400
+2026-10-14 18:22:41.342 | INFO     | __main__:_loop:1479 - [batch pdf 1] 69/400
+2026-10-14 18:22:46.358 | INFO     | __main__:_loop:1479 - [batch pdf 1] 75/400
+2026-10-14 18:22:48.671 | INFO     | __main__:_note_dialogs:777 - [watchdog] Microsoft Word says: 'Word experienced an error trying to open the file.\nTry these suggestions.\n* Check the file permissions for the document or drive.\n* Make sure there is sufficient free memory and disk space.\n* Open the file with the Text Recovery converter.\n(00079__wordcraft-0.7.0__2ea0a59b6a.docx)'
+2026-10-14 18:22:49.591 | WARNING  | __main__:_loop_word:873 - [watchdog] Word dialog dismissed via 'OK'; Word said: "Word experienced an error trying to open the file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00079__wordcraft-0.7.0__2ea0a59b6a.docx)"
+2026-10-14 18:22:51.378 | INFO     | __main__:_loop:1479 - [batch pdf 1] 79/400
+2026-10-14 18:22:56.395 | INFO     | __main__:_loop:1479 - [batch pdf 1] 85/400
+2026-10-14 18:23:01.411 | INFO     | __main__:_loop:1479 - [batch pdf 1] 98/400
+2026-10-14 18:23:06.421 | INFO     | __main__:_loop:1479 - [batch pdf 1] 235/400
+2026-10-14 18:23:11.428 | INFO     | __main__:_loop:1479 - [batch pdf 1] 377/400
+2026-10-14 18:23:12.379 | WARNING  | __main__:run_batch_with_resume:1624 - [batch pdf] 5 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 2, 0 of 3 stalled passes used)
+2026-10-14 18:23:12.380 | WARNING  | __main__:recycle:1068 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 18:23:12.381 | WARNING  | __main__:recycle:1074 - [word] recycling (restart 1)
+2026-10-14 18:23:26.108 | INFO     | __main__:_loop:1479 - [batch pdf 2] 0/5
+2026-10-14 18:23:29.921 | WARNING  | __main__:_loop_word:873 - [watchdog] Word dialog dismissed via 'OK'; Word said: "Word experienced an error trying to open the file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00021__wordcraft-0.7.0__0cd32d67b2.docx)"
+2026-10-14 18:23:34.282 | WARNING  | __main__:_loop_word:873 - [watchdog] Word dialog dismissed via 'OK'; Word said: "Word experienced an error trying to open the file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00024__wordcraft-0.7.0__0dfc906eb1.docx)"
+2026-10-14 18:23:38.497 | WARNING  | __main__:_loop_word:873 - [watchdog] Word dialog dismissed via 'OK'; Word said: "Word experienced an error trying to open the file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00079__wordcraft-0.7.0__2ea0a59b6a.docx)"
+2026-10-14 18:23:38.582 | WARNING  | __main__:run_batch_with_resume:1624 - [batch pdf] 2 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 3, 0 of 3 stalled passes used)
+2026-10-14 18:23:38.583 | WARNING  | __main__:recycle:1068 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 18:23:38.583 | WARNING  | __main__:recycle:1074 - [word] recycling (restart 2)
+2026-10-14 18:23:50.134 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 0cd32d67b2.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-14 18:23:50.138 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 0dfc906eb1.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-14 18:23:50.177 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 2ea0a59b6a.docx — Word could not load it in 2 passes: document loaded empty (Word could not read it)
+2026-10-14 18:23:50.185 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 34ffddfe47.docx — 
+2026-10-14 18:23:50.186 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 371ef9feed.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.186 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 3796807136.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.187 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 37b6514e21.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.189 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 3866f441cc.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.190 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 3a7ca36d5f.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.190 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 3b09d6afde.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.191 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 3b56113728.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.191 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 3b9982e41f.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.191 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 3c2c9cda82.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.192 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 3c3090c52a.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.192 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 3cddbcb812.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.192 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 3d22ad3c37.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.193 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 3d7a870506.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.193 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 3dac82f40a.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.193 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 3e2eab6d92.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.194 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 3f9670141d.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.194 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 3fa2e4b5de.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.194 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 3fdab4ace6.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.194 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 410b10cd2e.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.195 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 420292c772.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.195 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 421d863d4e.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.195 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 428f3f3022.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.196 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 428fe8b1c0.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.196 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 4319e3d7c7.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.197 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 43aedaf43e.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.197 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 4618d6926f.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.198 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 47595e5631.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.198 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 485599b4e9.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.199 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 485b916ef9.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.199 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 4886ca0d0a.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.199 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 48ef0a5cd7.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.200 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 4a9a8d0b4a.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.200 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 4ca3f73206.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.200 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 4ce07ffaec.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.201 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 4ce2d5cacc.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.201 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 4d40d1f136.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.201 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 4d5de07b0e.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.202 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 4d7ccddfdc.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.202 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 4f964d209a.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.203 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 515c0aa8ab.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.203 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 518c606bf2.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.203 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 51c9eab1af.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.203 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 51d1d87a1f.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.204 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 52d9251560.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.204 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 52dcc19c24.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.204 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 53014ff7b1.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.205 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 5325dc70b4.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.205 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 54af2359d0.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.206 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 55a1e5dbc0.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.206 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 57b579c043.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.206 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 57cfa10f33.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.207 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 57dfcda882.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.207 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 585b8c8d12.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.207 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 589b832f86.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.208 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 58bfbb8b8d.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.208 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 58cd08049b.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.208 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 5a100df35e.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.209 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 5a72b1ad9e.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.209 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 5af67335fe.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.209 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 5b35efe2bb.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.210 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 5d3a04d9a6.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.210 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 5f137fe5fa.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.210 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 603ef0419b.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.211 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 60c2a0122c.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.211 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 60e784f2de.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.211 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 60ef61f086.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.212 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 612a3c24fa.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.212 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 618d22429e.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.212 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 61959b1953.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.213 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 61a3912d74.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.213 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 6213202228.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.213 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 621637d747.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.214 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 62f0f8ee91.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.214 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 6354242df2.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.214 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 63b66681b7.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.215 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 63ec3a403e.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.215 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 63ef9002ec.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.215 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 64c527dde8.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.216 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 651e1bcc1c.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.216 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 6532beda4d.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.216 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 67d0b6f3e8.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.217 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 684e190acd.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.217 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 69a4d71d6f.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.217 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 69d42b2a47.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.217 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 6a343424b7.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.218 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 6af7bc5540.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.218 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 6b74ac1ae6.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.218 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 6b8b7bf9cb.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.219 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 6bcf56a447.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.219 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 6be28b28eb.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.219 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 6bf1e10a91.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.220 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 6dee5896b8.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.220 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 6e89035e56.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.220 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 6f18d91819.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.221 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 6f6e4ae3e8.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.221 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 7040578ca5.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.221 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 70a6883d16.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.222 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 710426a66c.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.222 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 71159007ab.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.222 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 713774d8e1.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.223 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 71595f1fa3.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.223 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 72341d8ac1.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.223 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 72d7218610.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.224 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 749f24fa0e.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.224 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 7643096759.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.225 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 766a042194.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.225 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 76f4a58792.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.225 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 7787357743.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.226 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 787e8e149a.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.226 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 7998f329e8.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.227 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 7a1d3fbeba.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.227 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 7a2946950f.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.228 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 7a2cc168c2.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.228 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 7abcebfa2c.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.228 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 7b1b3baaba.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.229 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 7b637208fb.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.229 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 7c8558f8ef.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.230 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 7da45f822a.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.230 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 7fec664147.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.230 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 8084ef19f0.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.231 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 8203bbecec.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.231 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 820ab5e086.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.231 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 822678fea0.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.232 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 822ad81a4c.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.232 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 8358846f3a.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.232 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 83ec2122ff.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.233 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 859b75527f.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.233 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 85b1c9235c.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.234 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 85d3cc0cfe.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.234 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 8694636a78.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.235 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 899bf9a97e.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.235 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 8abeeabff4.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.235 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 8ac7b0a13c.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.236 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 8ad8e10ef6.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.236 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 8c2a86d9f4.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.236 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 8cb8af8d7f.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.237 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 8d0b00bb0a.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.237 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 8d775d42d1.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.237 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 8de55978f2.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.238 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 8e0ef1a4a3.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.238 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 8e5b509eeb.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.238 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 8fd9499d71.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.239 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 90fd5a464a.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.240 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 9129d2ecd2.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.240 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 913d076e79.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.241 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 92075b7449.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.241 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 92ec8417eb.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.241 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 94f418b300.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.242 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 955c614ac4.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.242 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 9683765ab1.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.243 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 97a198f0c8.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.243 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 97aff69fd0.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.243 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 97b4c2de49.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.244 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 9812be01c0.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.244 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 98243183d1.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.244 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 98ebd05df6.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.245 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 9a2af58d99.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.245 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 9a93480040.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.245 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 9b4b07d062.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.246 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 9b9c5719f3.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.246 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 9c27cc7cb6.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.246 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 9c7d0d77b2.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.247 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 9c8876c6d7.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.247 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 9f142ac84a.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.247 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 9f2ce6d6bb.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.248 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: a169f5fa5f.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.248 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: a1ca73e72e.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.249 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: a2fa2445c6.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.249 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: a33b8e810a.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.250 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: a5063c32c8.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.250 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: a78b94020d.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.251 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: a836952933.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.251 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: a8fd90ecd6.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.252 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: a954a57308.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.252 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: aa31228e52.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.253 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: ab1fd1e5f3.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.254 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: ac2d091203.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.254 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: ace788a217.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.254 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: ae9547abd2.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.255 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: aec80553e5.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.255 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: af750bce28.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.257 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: afad9d8d2c.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.257 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: b06fe8236d.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.258 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: b0d09c67a7.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.258 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: b11e674787.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.258 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: b2704631d9.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.259 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: b33793b0f8.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.260 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: b351836b34.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.261 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: b37d04ac06.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.268 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: b4072979f7.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.274 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: b461d6f797.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.276 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: b4bafdd04d.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.277 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: b547e31a0d.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.278 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: b553be7ee0.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.279 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: b626364e3d.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.279 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: b778cdcad3.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.280 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: b83c047cac.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.280 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: b956ebc218.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.280 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: b982beef9b.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.281 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: bb20890039.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.281 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: bbaad01a9e.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.281 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: bbc3223232.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.281 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: bbdc7afc3e.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.282 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: bc29cd91ef.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.282 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: bc6f8076f9.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.283 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: bf527b6048.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.283 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: c09f50d3f1.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.284 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: c31d6dc680.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.284 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: c3412673e4.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.284 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: c56e84eaea.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.284 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: c70f19a792.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.285 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: c85d7fadac.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.286 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: c865b7be7f.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.286 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: c964f553ef.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.286 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: c9fc2e8899.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.287 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: ca17705374.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.287 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: ca516d2f7f.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.287 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: cb0a7d2c98.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.288 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: cb164cf87a.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.288 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: cc590c7e18.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.288 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: cd49552c60.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.288 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: ce245f5959.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.289 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: ce433a28fb.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.289 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: cee8601521.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.289 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: cf8049bd45.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.290 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: cfb0498eef.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.290 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: cfc2954ee9.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.290 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: d23d9c8cc7.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.291 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: d24225adbf.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.291 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: d244fd1091.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.291 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: d35dccc87b.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.292 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: d3c6552dae.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.292 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: d484b575c0.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.292 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: d5ab18a760.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.293 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: d5d3c12881.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.293 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: d5efaa5b6d.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.293 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: d6dcdfe5e4.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.294 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: d6eb2a4115.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.294 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: d789ef173d.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.295 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: d7c2cc04c6.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.295 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: d8669ef4ce.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.296 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: d95a06eed1.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.296 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: daaf1625f5.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.297 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: dad17d3be0.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.297 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: db0f90defc.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.297 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: db73171e99.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.298 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: db84b38989.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.298 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: dca87a30ef.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.298 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: dd200b33ce.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.299 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: dde913904e.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.299 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: ded976e5e2.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.299 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: df497fd549.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.299 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: e0f213a660.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.300 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: e1b23f59d9.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.300 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: e22069e294.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.300 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: e3d57f2816.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.301 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: e42a88b8ef.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.301 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: e50d2db84c.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.301 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: e56d44b193.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.302 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: e5c6ee8155.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.302 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: e5cff4e8d9.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.303 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: e633129040.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.303 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: e6e61fc33f.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.303 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: e7880d69e4.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.304 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: e83dabcd41.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.304 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: e8fafc3cba.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.304 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: e8fd5d8c83.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.305 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: e94db515fd.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.305 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: e981300405.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.305 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: e9b8a82cb6.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.305 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: e9ef73a8e4.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.306 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: e9f3bae698.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.306 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: eb12b8215b.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.306 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: ec822ae7cf.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.307 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: ecea12416c.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.307 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: ee63b6fa87.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.307 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: eecdb1c507.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.308 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: eede96cbf6.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.308 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: ef140da2d1.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.308 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: ef3ffabfc9.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.308 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: ef42391c98.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.309 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: efcf4cdade.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.310 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: f189e94409.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.310 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: f32cc08e58.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.310 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: f3319e24f8.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.311 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: f4aff67570.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.311 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: f64bfdeadc.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.311 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: f6531f6275.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.312 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: f6aa53210c.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.313 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: f72cd71154.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.313 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: f72e40955d.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.313 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: f77bce8423.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.314 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: f7837e0e51.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.314 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: f7b0b075cd.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.315 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: f852ffac2f.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.315 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: f9ec352ab5.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.316 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: fc12ef6776.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.316 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: fd436bda76.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.316 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: fd9169c091.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.317 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: fe2fb2ad13.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.317 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: fec6305982.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.317 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: fee04c36ab.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.318 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: fef7e1df16.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.318 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: ff27140d0a.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.318 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: ff5816ee75.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:50.318 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: ff6f1dab3b.docx — Microsoft Word got an error: every document doesn’t understand the “close” message.
+2026-10-14 18:23:51.735 | INFO     | __main__:stop:907 - [watchdog] tally: declined=0 dismissed=6 granted=0 forwarded=0 alerts_seen=3
