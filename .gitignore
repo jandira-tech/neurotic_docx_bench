@@ -212,3 +212,6 @@ really_broken/
 results/wordcraft_20261014_fresh/bin/
 results/wordcraft_20261014_fresh/*.csv
 results/wordcraft_20261014_fresh/**/*.csv
+results/wordcraft_20261014/conversions.csv
+results/wordcraft_20261014/comparisons.csv
+results/wordcraft_20261014/word_screen_docxodus12.log
