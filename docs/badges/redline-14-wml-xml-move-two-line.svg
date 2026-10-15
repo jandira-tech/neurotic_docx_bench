@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="528" height="46" viewBox="0 0 528 46" role="img" aria-label="OpenXML moveFrom/del/ins/moveTo two-line badge">
+  <title>&lt;w:moveFrom&gt;docx_bench&lt;/w:moveFrom&gt;&lt;w:del&gt;chill&lt;/w:del&gt; → &lt;w:ins&gt;neurotic&lt;/w:ins&gt;_&lt;w:moveTo&gt;docx_bench&lt;/w:moveTo&gt; | &lt;w:ins&gt;BENCHED!&lt;/w:ins&gt;</title>
+  <rect x="0.5" y="0.5" width="527" height="45" rx="5" fill="#090d16" stroke="#334155" stroke-width="1"/>
+  <rect x="5.5" y="5" width="2.5" height="36" rx="1.25" fill="#ef4444"/>
+  <!-- 10px monospace = 6.0px per char -->
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="10">
+    <!-- Row 1 (y=16): <w:moveFrom>docx_bench</w:moveFrom><w:del>chill</w:del> -->
+    <text x="15" y="16" fill="#4ade80" fill-opacity="0.7" textLength="72.0" lengthAdjust="spacing">&lt;w:moveFrom&gt;</text>
+    <text x="87.0" y="16" fill="#4ade80" font-weight="600" textLength="60.0" lengthAdjust="spacing">docx_bench</text>
+    <line x1="86.5" y1="12.5" x2="147.5" y2="12.5" stroke="#4ade80" stroke-width="1.3"/>
+    <line x1="87.0" y1="18.5" x2="147.0" y2="18.5" stroke="#4ade80" stroke-width="1.15"/>
+    <text x="147.0" y="16" fill="#4ade80" fill-opacity="0.7" textLength="78.0" lengthAdjust="spacing">&lt;/w:moveFrom&gt;</text>
+    <text x="228.0" y="16" fill="#f87171" fill-opacity="0.7" textLength="42.0" lengthAdjust="spacing">&lt;w:del&gt;</text>
+    <text x="270.0" y="16" fill="#f87171" font-weight="700" textLength="30.0" lengthAdjust="spacing">chill</text>
+    <line x1="269.5" y1="12.5" x2="300.5" y2="12.5" stroke="#ef4444" stroke-width="1.4"/>
+    <text x="300.0" y="16" fill="#f87171" fill-opacity="0.7" textLength="48.0" lengthAdjust="spacing">&lt;/w:del&gt;</text>
+
+    <!-- Row 2 (y=35): <w:ins>neurotic</w:ins>_<w:moveTo>docx_bench</w:moveTo> -->
+    <text x="15" y="35" fill="#60a5fa" fill-opacity="0.75" textLength="42.0" lengthAdjust="spacing">&lt;w:ins&gt;</text>
+    <text x="57.0" y="35" fill="#60a5fa" font-weight="700" textLength="48.0" lengthAdjust="spacing">neurotic</text>
+    <line x1="57.0" y1="37.5" x2="105.0" y2="37.5" stroke="#60a5fa" stroke-width="1.15"/>
+    <line x1="57.0" y1="39.5" x2="105.0" y2="39.5" stroke="#60a5fa" stroke-width="1.15"/>
+    <text x="105.0" y="35" fill="#60a5fa" fill-opacity="0.75" textLength="48.0" lengthAdjust="spacing">&lt;/w:ins&gt;</text>
+    <text x="154.5" y="35" fill="#f8fafc" font-weight="700" textLength="6.0" lengthAdjust="spacing">_</text>
+    <text x="162.0" y="35" fill="#4ade80" fill-opacity="0.7" textLength="60.0" lengthAdjust="spacing">&lt;w:moveTo&gt;</text>
+    <text x="222.0" y="35" fill="#4ade80" font-weight="600" textLength="60.0" lengthAdjust="spacing">docx_bench</text>
+    <line x1="222.0" y1="37.5" x2="282.0" y2="37.5" stroke="#4ade80" stroke-width="1.25"/>
+    <text x="282.0" y="35" fill="#4ade80" fill-opacity="0.7" textLength="66.0" lengthAdjust="spacing">&lt;/w:moveTo&gt;</text>
+  </g>
+  <line x1="358" y1="6" x2="358" y2="40" stroke="#334155" stroke-width="1"/>
+  <!-- Right pill: <w:ins>BENCHED!</w:ins> -->
+  <rect x="365" y="11" width="156" height="24" rx="4" fill="#0c192e" stroke="#1d4ed8" stroke-width="1"/>
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="10">
+    <text x="374.0" y="26" fill="#60a5fa" fill-opacity="0.75" textLength="42.0" lengthAdjust="spacing">&lt;w:ins&gt;</text>
+    <text x="416.0" y="26" fill="#60a5fa" font-weight="700" textLength="48.0" lengthAdjust="spacing">BENCHED!</text>
+    <line x1="416.0" y1="28.5" x2="464.0" y2="28.5" stroke="#60a5fa" stroke-width="1.25"/>
+    <line x1="416.0" y1="30.5" x2="464.0" y2="30.5" stroke="#60a5fa" stroke-width="1.25"/>
+    <text x="464.0" y="26" fill="#60a5fa" fill-opacity="0.75" textLength="48.0" lengthAdjust="spacing">&lt;/w:ins&gt;</text>
+  </g>
+</svg>
