@@ -178,6 +178,56 @@ read back by the legacy readers; new runs emit v4 only. Delta-log change detecti
 on `scores`. Skip-already-ran keys on `(vendor, benchmark, tool_version, config_hash)`.
 Snapshots live at `results/score-snapshots/{vendor}__{benchmark}.json`.
 
+## Publishing results (`uv run bench report`)
+
+`RESULTS.md`, `RESULTS_DETAILED.md`, the vendor table in `README.md` and the frozen
+`RESULTS_v<old>.md` are generated from `results/bench.jsonl`, `results/converters.jsonl`,
+`results/speed.jsonl`, `results/redlines_*/scores.jsonl` and `bench.registry.yaml` by
+`src/neurotic_docx_bench/ledger/` (`build.py` loads, `policy.py` decides, `tables.py` renders).
+Never edit them by hand; `uv run bench report --check` says whether they are current.
+
+A cohort run that lives under `results/<run>/` (the 2026-10-14 Wordcraft cohort is the model)
+reaches the pages in four steps, each of which bit someone on 2026-10-14:
+
+1. The run's persist script (`results/wordcraft_20261014_fresh/persist_fresh.py`) emits
+   canonical lines into the run directory's **own** `bench.jsonl` / `converters.jsonl` /
+   `speed.jsonl`. It does not touch `results/*.jsonl`.
+2. Append those lines to `results/bench.jsonl`, `results/converters.jsonl` and
+   `results/speed.jsonl`, deduplicated: bench and converter lines by `id_run`, speed lines by
+   `(tool, task, run_ts)`. The stores are append-only; never rewrite or reorder them.
+3. Every tool spelling in the appended lines needs a `bench.registry.yaml` entry that maps it:
+   `run_names` / `bench_vendors` for bench lines, `converter_tools` for converter lines,
+   `speed_tools` for speed lines. A versioned lane (`wordcraft-cli-0.7.0`, `docxodus-13.0.0`,
+   `pymupdf-pro-1.28.2`) is its own tool id, so it ranks beside the older release instead of
+   replacing it. `build()` refuses the whole report on one unmapped name; the one that stopped it
+   on 2026-10-14 was `candidates` in `converters.jsonl` (the LibreOffice rows
+   `scripts/convert_candidates.py` writes), which maps to `soffice`.
+4. `uv run bench report`, then read the headline tables before committing. Commit the stores,
+   the registry, the three pages and any `RESULTS_v<old>.md` the run froze (it freezes the page
+   on disk when the bench version moved, here 0.7.0 to 0.8.0); leave other sessions' churn
+   (`badges/`, `out/`, corpus files) out of the commit.
+
+What the policy does with the rows (full text at the top of `ledger/policy.py`):
+
+- The headline group of a benchmark is the one holding its **newest eligible row**, skipping
+  rows on a **subset set**: a document set whose documents (read from the rows' own per-document
+  scores) are a strict subset of another set measured for that benchmark. Added 2026-10-15 after
+  the PyMuPDF Pro row (unlicensed, first 3 pages, 253 of the cohort's 400 documents, emitted
+  0.8 s after the others) made the whole `docx_to_pdf` headline a one-row table on its subset.
+  Subset rows stay in History, with the set they are part of named in the "Other document sets"
+  pointer. No `docsets.json` entry is needed for this.
+- The six `bench run` benchmarks are gated: a tool enters the main page only when its run on the
+  docset's **gate set** (`results/docsets.json`, `gate_of`) beats the null baseline. A cohort
+  scored outside `bench run` has no gate set and no null-baseline run for its docset, so its
+  `script_redlines` rows are listed in `RESULTS_DETAILED.md` under "Not ranked" with
+  "no gate set recorded for `<docset>`" and in History, not on the main page. That is where the
+  fresh cohort's comparison rows (docset `62d32b1f2954df42`) stand today; the cohort's own
+  `REPORT.md` is their publication of record. Putting them on the main page means recording the
+  gate set (`bench docset --write`) and running the null baseline on it, under the same Word
+  renderer and scorer; it is a benchmark run, not a report fix, and it needs Word.
+- The converter benchmarks (`docx_to_pdf` and kin) are not gated; they appear as soon as a
+  complete Word-oracle run exists in the current group.
+
 ## Speed benchmark
 
 Separate from the fidelity score, `results/speed.jsonl` (append-only, one row per engine

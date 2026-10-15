@@ -294,7 +294,15 @@ def fidelity_table(
         out.append(
             "Other document sets or renderers measured for this benchmark are listed under History "
             "in RESULTS_DETAILED.md: "
-            + ", ".join(f"`{g.docset}`/`{g.renderer}`" for g in table.history_groups)
+            + ", ".join(
+                f"`{g.docset}`/`{g.renderer}`"
+                + (
+                    f" (a subset of `{table.subset_groups[g.docset]}`)"
+                    if g.docset in table.subset_groups
+                    else ""
+                )
+                for g in table.history_groups
+            )
         )
     return "\n".join(out).rstrip() + "\n"
 
@@ -656,7 +664,10 @@ def methodology_section(*, noise_sigma: float | None, lo_version: str | None) ->
             "",
             (
                 "Selection. One row per tool: its latest eligible run in the current comparability "
-                "group. There is no best-of-N over runs and no best pin. A run that is wrong for a reason "
+                "group, the group holding the benchmark's newest eligible row. A run on a strict subset "
+                "of another measured document set (read from the rows' own per-document scores) never "
+                "picks the current group; it is listed under History with the set it is part of. "
+                "There is no best-of-N over runs and no best pin. A run that is wrong for a reason "
                 "unrelated to the tool is retracted with a stated reason in `results/retractions.jsonl` "
                 "and listed as such."
             ),
