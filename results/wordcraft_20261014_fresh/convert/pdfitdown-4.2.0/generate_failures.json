@@ -1,0 +1,20 @@
+[
+  {
+    "doc": "clean__6a0425f294_35e46f6ecb40163d6866a0374791aa3680f314adcf860db0",
+    "stage": "generate",
+    "error": "\u001b[1;31mrender error: Typst compilation failed: expected function, found content\n",
+    "returncode": 1
+  },
+  {
+    "doc": "with_comments_clean__4e09d5f8f9_ole_object_ooxml_style_link_word_redline_accepte",
+    "stage": "generate",
+    "error": "\u001b[1;31mrender error: Typst compilation failed: expected expression\n",
+    "returncode": 1
+  },
+  {
+    "doc": "with_comments_clean__7f609d4854_strict01_strikethrough_and_italic_combo_id_parai",
+    "stage": "generate",
+    "error": "\u001b[1;31mrender error: Typst compilation failed: expected expression\n",
+    "returncode": 1
+  }
+]

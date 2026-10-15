@@ -1,0 +1,538 @@
+▸ PDF quality is sticky: `save as … file format format PDF` inherits whatever 
+'Optimize for' you last chose in Word's own Save As dialog.
+  Open any document in Word once, File > Save As > PDF, and pick the SECOND 
+option, Best for printing.
+  That choice persists; this script cannot set it. Pass --no-check-preset to 
+stop seeing this.
+▸ A redline PDF shows tracked changes the way Word is currently set to show them
+(Review ▸ Markup display, and Print Markup).
+  Open one redline in Word by hand and confirm it looks right before running the
+batch — this script cannot set that for you.
+2026-10-14 02:45:45.463 | INFO     | word_pdf:preflight:2235 -  preflight: 
+open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-10-14 02:45:45.466 | INFO     | __main__:redline_folders:728 -  
+one_osascript=True pairs=44
+2026-10-14 02:45:45.494 | INFO     | __main__:_redline_batched:1012 -  one 
+osascript for 44 comparison(s)
+2026-10-14 02:45:50.498 | INFO     | word_pdf:_loop:1479 -  2/44
+2026-10-14 02:45:55.501 | INFO     | word_pdf:_loop:1479 -  5/44
+2026-10-14 02:46:00.505 | INFO     | word_pdf:_loop:1479 -  7/44
+2026-10-14 02:46:05.511 | INFO     | word_pdf:_loop:1479 -  8/44
+2026-10-14 02:46:10.523 | INFO     | word_pdf:_loop:1479 -  11/44
+2026-10-14 02:46:15.526 | INFO     | word_pdf:_loop:1479 -  14/44
+2026-10-14 02:46:20.528 | INFO     | word_pdf:_loop:1479 -  16/44
+2026-10-14 02:46:25.534 | INFO     | word_pdf:_loop:1479 -  19/44
+2026-10-14 02:46:30.540 | INFO     | word_pdf:_loop:1479 -  21/44
+2026-10-14 02:46:35.547 | INFO     | word_pdf:_loop:1479 -  24/44
+2026-10-14 02:46:40.552 | INFO     | word_pdf:_loop:1479 -  26/44
+2026-10-14 02:46:45.559 | INFO     | word_pdf:_loop:1479 -  28/44
+2026-10-14 02:46:50.565 | INFO     | word_pdf:_loop:1479 -  29/44
+2026-10-14 02:46:55.570 | INFO     | word_pdf:_loop:1479 -  32/44
+2026-10-14 02:47:00.576 | INFO     | word_pdf:_loop:1479 -  34/44
+2026-10-14 02:47:05.585 | INFO     | word_pdf:_loop:1479 -  36/44
+2026-10-14 02:47:10.592 | INFO     | word_pdf:_loop:1479 -  39/44
+2026-10-14 02:47:15.601 | INFO     | word_pdf:_loop:1479 -  41/44
+2026-10-14 02:47:20.611 | INFO     | word_pdf:_loop:1479 -  43/44
+2026-10-14 02:47:20.910 | INFO     | __main__:_redline_batched:1041 -  one 
+osascript for 44 redline PDF(s)
+2026-10-14 02:47:25.359 | WARNING  | word_pdf:run_batch_with_resume:1624 -  42 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 2, 0 of 3 stalled 
+passes used)
+2026-10-14 02:47:25.361 | WARNING  | word_pdf♻1068 -  restarting a Word this run
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-14 02:47:25.362 | WARNING  | word_pdf♻1074 -  recycling (restart 1)
+2026-10-14 02:47:37.571 | INFO     | word_pdf:_loop:1479 -  0/42
+2026-10-14 02:47:39.011 | WARNING  | word_pdf:run_batch_with_resume:1624 -  42 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 3, 0 of 3 stalled 
+passes used)
+2026-10-14 02:47:39.013 | WARNING  | word_pdf♻1068 -  restarting a Word this run
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-14 02:47:39.014 | WARNING  | word_pdf♻1074 -  recycling (restart 2)
+2026-10-14 02:47:49.128 | INFO     | word_pdf:_loop:1479 -  1/42
+2026-10-14 02:47:54.136 | INFO     | word_pdf:_loop:1479 -  3/42
+2026-10-14 02:47:59.152 | INFO     | word_pdf:_loop:1479 -  4/42
+2026-10-14 02:48:07.138 | INFO     | word_pdf:_note_dialogs:774 -  Microsoft 
+Error Reporting shows button 'OK'
+2026-10-14 02:48:07.141 | INFO     | word_pdf:_note_dialogs:774 -  Microsoft 
+Error Reporting shows button 'More Information'
+2026-10-14 02:48:07.141 | INFO     | word_pdf:_note_dialogs:774 -  Microsoft 
+Error Reporting shows button 'missing value'
+2026-10-14 02:48:07.142 | INFO     | word_pdf:_note_dialogs:777 -  Microsoft 
+Error Reporting says: 'There was a problem with Microsoft Word and we apologize 
+for the inconvenience. | Microsoft Error Reporting'
+2026-10-14 02:48:07.769 | WARNING  | word_pdf:run_batch_with_resume:1624 -  38 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 4, 0 of 3 stalled 
+passes used)
+2026-10-14 02:48:07.771 | WARNING  | word_pdf♻1068 -  restarting a Word this run
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-14 02:48:07.771 | WARNING  | word_pdf♻1074 -  recycling (restart 3)
+2026-10-14 02:48:07.857 | WARNING  | word_pdf:_loop_merp:888 -  error report 
+declined via 'OK'; Word said: "There was a problem with Microsoft Word and we 
+apologize for the inconvenience. | Microsoft Error Reporting"
+2026-10-14 02:48:16.785 | WARNING  | word_pdf:run_batch_with_resume:1624 -  38 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 5, 0 of 3 stalled 
+passes used)
+2026-10-14 02:48:16.789 | WARNING  | word_pdf♻1068 -  restarting a Word this run
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-14 02:48:16.792 | WARNING  | word_pdf♻1074 -  recycling (restart 4)
+2026-10-14 02:48:18.172 | WARNING  | word_pdf:_loop_merp:888 -  error report 
+declined via 'OK'; Word said: "There was a problem with Microsoft Word and we 
+apologize for the inconvenience. | Microsoft Error Reporting"
+2026-10-14 02:48:26.512 | INFO     | word_pdf:_loop:1479 -  1/38
+2026-10-14 02:48:30.779 | WARNING  | word_pdf:run_batch_with_resume:1624 -  37 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 6, 0 of 3 stalled 
+passes used)
+2026-10-14 02:48:30.788 | WARNING  | word_pdf♻1068 -  restarting a Word this run
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-14 02:48:30.795 | WARNING  | word_pdf♻1074 -  recycling (restart 5)
+2026-10-14 02:48:41.742 | INFO     | word_pdf:_loop:1479 -  0/37
+2026-10-14 02:48:42.864 | WARNING  | word_pdf:run_batch_with_resume:1624 -  37 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 7, 0 of 3 stalled 
+passes used)
+2026-10-14 02:48:42.865 | WARNING  | word_pdf♻1068 -  restarting a Word this run
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-14 02:48:42.866 | WARNING  | word_pdf♻1074 -  recycling (restart 6)
+2026-10-14 02:48:43.387 | WARNING  | word_pdf:_loop_merp:888 -  error report 
+declined via 'OK'; Word said: "There was a problem with Microsoft Word and we 
+apologize for the inconvenience. | Microsoft Error Reporting"
+2026-10-14 02:48:51.899 | INFO     | word_pdf:_loop:1479 -  1/37
+2026-10-14 02:48:55.991 | WARNING  | word_pdf:run_batch_with_resume:1624 -  36 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 8, 0 of 3 stalled 
+passes used)
+2026-10-14 02:48:55.992 | WARNING  | word_pdf♻1068 -  restarting a Word this run
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-14 02:48:55.992 | WARNING  | word_pdf♻1074 -  recycling (restart 7)
+2026-10-14 02:49:05.104 | INFO     | word_pdf:_loop:1479 -  3/36
+2026-10-14 02:49:10.112 | INFO     | word_pdf:_loop:1479 -  5/36
+2026-10-14 02:49:12.599 | WARNING  | word_pdf:_loop_merp:888 -  error report 
+declined via 'OK'; Word said: "There was a problem with Microsoft Word and we 
+apologize for the inconvenience. | Microsoft Error Reporting"
+2026-10-14 02:49:13.175 | WARNING  | word_pdf:run_batch_with_resume:1624 -  31 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 9, 0 of 3 stalled 
+passes used)
+2026-10-14 02:49:13.177 | WARNING  | word_pdf♻1068 -  restarting a Word this run
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-14 02:49:13.178 | WARNING  | word_pdf♻1074 -  recycling (restart 8)
+2026-10-14 02:49:22.579 | INFO     | word_pdf:_loop:1479 -  4/31
+2026-10-14 02:49:25.374 | WARNING  | word_pdf:run_batch_with_resume:1624 -  27 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 10, 0 of 3 stalled 
+passes used)
+2026-10-14 02:49:25.375 | WARNING  | word_pdf♻1068 -  restarting a Word this run
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-14 02:49:25.375 | WARNING  | word_pdf♻1074 -  recycling (restart 9)
+2026-10-14 02:49:34.412 | INFO     | word_pdf:_loop:1479 -  2/27
+2026-10-14 02:49:39.419 | INFO     | word_pdf:_loop:1479 -  3/27
+2026-10-14 02:49:41.997 | WARNING  | word_pdf:run_batch_with_resume:1624 -  24 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 11, 0 of 3 stalled 
+passes used)
+2026-10-14 02:49:41.998 | WARNING  | word_pdf♻1068 -  restarting a Word this run
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-14 02:49:41.998 | WARNING  | word_pdf♻1074 -  recycling (restart 10)
+2026-10-14 02:49:49.559 | ERROR    | word_pdf:_loop_merp:890 -  Microsoft Error 
+Reporting is showing a dialog whose buttons match none of ("Don't Send", 'Don’t 
+Send', 'Cancel', 'Close', 'Quit', 'No', 'OK', 'Ok'). Labels seen are logged 
+above — add the real one to MERP_DECLINE.
+2026-10-14 02:49:50.905 | INFO     | word_pdf:_loop:1479 -  1/24
+2026-10-14 02:49:51.705 | WARNING  | word_pdf:run_batch_with_resume:1624 -  23 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 12, 0 of 3 stalled 
+passes used)
+2026-10-14 02:49:51.707 | WARNING  | word_pdf♻1068 -  restarting a Word this run
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-14 02:49:51.707 | WARNING  | word_pdf♻1074 -  recycling (restart 11)
+2026-10-14 02:50:00.549 | INFO     | word_pdf:_loop:1479 -  1/23
+2026-10-14 02:50:08.459 | WARNING  | word_pdf:run_batch_with_resume:1624 -  22 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 13, 0 of 3 stalled 
+passes used)
+2026-10-14 02:50:08.460 | WARNING  | word_pdf♻1068 -  restarting a Word this run
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-14 02:50:08.460 | WARNING  | word_pdf♻1074 -  recycling (restart 12)
+2026-10-14 02:50:12.603 | INFO     | word_pdf:_note_dialogs:774 -  Microsoft 
+Word shows button 'Cancel'
+2026-10-14 02:50:12.604 | INFO     | word_pdf:_note_dialogs:774 -  Microsoft 
+Word shows button 'missing value'
+2026-10-14 02:50:17.433 | INFO     | word_pdf:_loop:1479 -  1/22
+2026-10-14 02:50:17.469 | WARNING  | word_pdf:run_batch_with_resume:1624 -  21 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 14, 0 of 3 stalled 
+passes used)
+2026-10-14 02:50:17.469 | WARNING  | word_pdf♻1068 -  restarting a Word this run
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-14 02:50:17.470 | WARNING  | word_pdf♻1074 -  recycling (restart 13)
+2026-10-14 02:50:26.566 | INFO     | word_pdf:_loop:1479 -  0/21
+2026-10-14 02:50:31.573 | INFO     | word_pdf:_loop:1479 -  2/21
+2026-10-14 02:50:33.867 | WARNING  | word_pdf:run_batch_with_resume:1624 -  19 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 15, 0 of 3 stalled 
+passes used)
+2026-10-14 02:50:33.868 | WARNING  | word_pdf♻1068 -  restarting a Word this run
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-14 02:50:33.868 | WARNING  | word_pdf♻1074 -  recycling (restart 14)
+2026-10-14 02:50:35.994 | WARNING  | word_pdf:_loop_merp:888 -  error report 
+declined via 'OK'; Word said: "There was a problem with Microsoft Word and we 
+apologize for the inconvenience. | Microsoft Error Reporting"
+2026-10-14 02:50:42.759 | INFO     | word_pdf:_loop:1479 -  1/19
+2026-10-14 02:50:51.341 | WARNING  | word_pdf:run_batch_with_resume:1624 -  18 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 16, 0 of 3 stalled 
+passes used)
+2026-10-14 02:50:51.342 | WARNING  | word_pdf♻1068 -  restarting a Word this run
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-14 02:50:51.342 | WARNING  | word_pdf♻1074 -  recycling (restart 15)
+2026-10-14 02:51:00.215 | INFO     | word_pdf:_loop:1479 -  1/18
+2026-10-14 02:51:00.542 | WARNING  | word_pdf:run_batch_with_resume:1624 -  17 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 17, 0 of 3 stalled 
+passes used)
+2026-10-14 02:51:00.543 | WARNING  | word_pdf♻1068 -  restarting a Word this run
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-14 02:51:00.543 | WARNING  | word_pdf♻1074 -  recycling (restart 16)
+2026-10-14 02:51:09.463 | INFO     | word_pdf:_loop:1479 -  1/17
+2026-10-14 02:51:10.931 | WARNING  | word_pdf:run_batch_with_resume:1624 -  15 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 18, 0 of 3 stalled 
+passes used)
+2026-10-14 02:51:10.932 | WARNING  | word_pdf♻1068 -  restarting a Word this run
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-14 02:51:10.932 | WARNING  | word_pdf♻1074 -  recycling (restart 17)
+2026-10-14 02:51:19.848 | INFO     | word_pdf:_loop:1479 -  0/15
+2026-10-14 02:51:27.515 | WARNING  | word_pdf:run_batch_with_resume:1624 -  14 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 19, 0 of 3 stalled 
+passes used)
+2026-10-14 02:51:27.515 | WARNING  | word_pdf♻1068 -  restarting a Word this run
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-14 02:51:27.516 | WARNING  | word_pdf♻1074 -  recycling (restart 18)
+2026-10-14 02:51:32.837 | WARNING  | word_pdf:run_batch_with_resume:1624 -  13 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 20, 0 of 3 stalled 
+passes used)
+2026-10-14 02:51:32.838 | WARNING  | word_pdf♻1068 -  restarting a Word this run
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-14 02:51:32.838 | WARNING  | word_pdf♻1074 -  recycling (restart 19)
+2026-10-14 02:51:41.007 | WARNING  | word_pdf:run_batch_with_resume:1624 -  12 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 21, 0 of 3 stalled 
+passes used)
+2026-10-14 02:51:41.008 | WARNING  | word_pdf♻1068 -  restarting a Word this run
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-14 02:51:41.008 | WARNING  | word_pdf♻1074 -  recycling (restart 20)
+2026-10-14 02:51:49.577 | WARNING  | word_pdf:run_batch_with_resume:1624 -  11 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 22, 0 of 3 stalled 
+passes used)
+2026-10-14 02:51:49.578 | WARNING  | word_pdf♻1068 -  restarting a Word this run
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-14 02:51:49.579 | WARNING  | word_pdf♻1074 -  recycling (restart 21)
+2026-10-14 02:51:57.777 | WARNING  | word_pdf:run_batch_with_resume:1624 -  10 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 23, 0 of 3 stalled 
+passes used)
+2026-10-14 02:51:57.777 | WARNING  | word_pdf♻1068 -  restarting a Word this run
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-14 02:51:57.778 | WARNING  | word_pdf♻1074 -  recycling (restart 22)
+2026-10-14 02:51:57.932 | ERROR    | word_pdf:_loop_merp:890 -  Microsoft Error 
+Reporting is showing a dialog whose buttons match none of ("Don't Send", 'Don’t 
+Send', 'Cancel', 'Close', 'Quit', 'No', 'OK', 'Ok'). Labels seen are logged 
+above — add the real one to MERP_DECLINE.
+2026-10-14 02:52:03.132 | WARNING  | word_pdf:run_batch_with_resume:1624 -  9 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 24, 0 of 3 stalled 
+passes used)
+2026-10-14 02:52:03.133 | WARNING  | word_pdf♻1068 -  restarting a Word this run
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-14 02:52:03.133 | WARNING  | word_pdf♻1074 -  recycling (restart 23)
+2026-10-14 02:52:11.302 | WARNING  | word_pdf:run_batch_with_resume:1624 -  8 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 25, 0 of 3 stalled 
+passes used)
+2026-10-14 02:52:11.303 | WARNING  | word_pdf♻1068 -  restarting a Word this run
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-14 02:52:11.303 | WARNING  | word_pdf♻1074 -  recycling (restart 24)
+2026-10-14 02:52:12.231 | WARNING  | word_pdf:_loop_merp:888 -  error report 
+declined via 'OK'; Word said: "There was a problem with Microsoft Word and we 
+apologize for the inconvenience. | Microsoft Error Reporting"
+2026-10-14 02:52:20.179 | INFO     | word_pdf:_loop:1479 -  0/8
+2026-10-14 02:52:21.892 | WARNING  | word_pdf:run_batch_with_resume:1624 -  7 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 26, 0 of 3 stalled 
+passes used)
+2026-10-14 02:52:21.894 | WARNING  | word_pdf♻1068 -  restarting a Word this run
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-14 02:52:21.894 | WARNING  | word_pdf♻1074 -  recycling (restart 25)
+2026-10-14 02:52:30.889 | INFO     | word_pdf:_loop:1479 -  0/7
+2026-10-14 02:52:33.940 | WARNING  | word_pdf:run_batch_with_resume:1624 -  6 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 27, 0 of 3 stalled 
+passes used)
+2026-10-14 02:52:33.941 | WARNING  | word_pdf♻1068 -  restarting a Word this run
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-14 02:52:33.942 | WARNING  | word_pdf♻1074 -  recycling (restart 26)
+2026-10-14 02:52:42.411 | WARNING  | word_pdf:run_batch_with_resume:1624 -  5 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 28, 0 of 3 stalled 
+passes used)
+2026-10-14 02:52:42.412 | WARNING  | word_pdf♻1068 -  restarting a Word this run
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-14 02:52:42.412 | WARNING  | word_pdf♻1074 -  recycling (restart 27)
+2026-10-14 02:52:44.054 | ERROR    | word_pdf:_loop_merp:890 -  Microsoft Error 
+Reporting is showing a dialog whose buttons match none of ("Don't Send", 'Don’t 
+Send', 'Cancel', 'Close', 'Quit', 'No', 'OK', 'Ok'). Labels seen are logged 
+above — add the real one to MERP_DECLINE.
+2026-10-14 02:52:50.866 | WARNING  | word_pdf:run_batch_with_resume:1624 -  4 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 29, 0 of 3 stalled 
+passes used)
+2026-10-14 02:52:50.867 | WARNING  | word_pdf♻1068 -  restarting a Word this run
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-14 02:52:50.867 | WARNING  | word_pdf♻1074 -  recycling (restart 28)
+2026-10-14 02:52:51.261 | WARNING  | word_pdf:_loop_merp:888 -  error report 
+declined via 'OK'; Word said: "There was a problem with Microsoft Word and we 
+apologize for the inconvenience. | Microsoft Error Reporting"
+2026-10-14 02:52:57.826 | WARNING  | word_pdf:_loop_merp:888 -  error report 
+declined via 'OK'; Word said: "There was a problem with Microsoft Word and we 
+apologize for the inconvenience. | Microsoft Error Reporting"
+2026-10-14 02:52:58.652 | WARNING  | word_pdf:run_batch_with_resume:1624 -  3 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 30, 0 of 3 stalled 
+passes used)
+2026-10-14 02:52:58.652 | WARNING  | word_pdf♻1068 -  restarting a Word this run
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-14 02:52:58.653 | WARNING  | word_pdf♻1074 -  recycling (restart 29)
+2026-10-14 02:53:07.564 | INFO     | word_pdf:_loop:1479 -  0/3
+2026-10-14 02:53:09.144 | WARNING  | word_pdf:run_batch_with_resume:1624 -  2 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 31, 0 of 3 stalled 
+passes used)
+2026-10-14 02:53:09.145 | WARNING  | word_pdf♻1068 -  restarting a Word this run
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-14 02:53:09.146 | WARNING  | word_pdf♻1074 -  recycling (restart 30)
+2026-10-14 02:53:09.189 | WARNING  | word_pdf:_loop_merp:888 -  error report 
+declined via 'OK'; Word said: "There was a problem with Microsoft Word and we 
+apologize for the inconvenience. | Microsoft Error Reporting"
+2026-10-14 02:53:17.899 | WARNING  | word_pdf:run_batch_with_resume:1624 -  1 
+item(s) never reached (Word crashed on or could not load an item); recycling 
+Word and retrying the rest first, retried items last (pass 32, 0 of 3 stalled 
+passes used)
+2026-10-14 02:53:17.900 | WARNING  | word_pdf♻1068 -  restarting a Word this run
+did not launch. If you set "Optimize for: Best for printing" by hand, re-check 
+it before trusting the PDFs rendered after this point.
+2026-10-14 02:53:17.900 | WARNING  | word_pdf♻1074 -  recycling (restart 31)
+2026-10-14 02:53:18.987 | WARNING  | word_pdf:_loop_merp:888 -  error report 
+declined via 'OK'; Word said: "There was a problem with Microsoft Word and we 
+apologize for the inconvenience. | Microsoft Error Reporting"
+2026-10-14 02:53:27.408 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+0858ee25d5.docx → 0858ee25d5.docx — redline is missing base 0% of that file; the
+two sides are not averaged
+2026-10-14 02:53:27.425 | ERROR    | __main__:_redline_batched:1095 -  FAIL: 
+0b033b1c23.docx → 0b033b1c23.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-14 02:53:27.457 | ERROR    | __main__:_redline_batched:1095 -  FAIL: 
+0f031c23c3.docx → 0f031c23c3.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-14 02:53:27.465 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+1b55e27189.docx → 1b55e27189.docx — redline is missing base 86% of that file; 
+the two sides are not averaged
+2026-10-14 02:53:27.479 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+1edc0f56f4.docx → 1edc0f56f4.docx — redline is missing base 67% of that file; 
+the two sides are not averaged
+2026-10-14 02:53:27.536 | ERROR    | __main__:_redline_batched:1095 -  FAIL: 
+3d39f0120d.docx → 3d39f0120d.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-14 02:53:27.546 | ERROR    | __main__:_redline_batched:1095 -  FAIL: 
+3e7067f872.docx → 3e7067f872.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-14 02:53:27.573 | ERROR    | __main__:_redline_batched:1095 -  FAIL: 
+4eff11f045.docx → 4eff11f045.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-14 02:53:27.589 | ERROR    | __main__:_redline_batched:1095 -  FAIL: 
+581907f19c.docx → 581907f19c.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-14 02:53:27.610 | WARNING  | __main__:_redline_batched:1107 -   compared
+clean (no revisions): 58cd08049b.docx → 58cd08049b.docx
+2026-10-14 02:53:27.625 | ERROR    | __main__:_redline_batched:1095 -  FAIL: 
+5f0fed8e2a.docx → 5f0fed8e2a.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-14 02:53:27.644 | WARNING  | __main__:_redline_batched:1107 -   compared
+clean (no revisions): 60e784f2de.docx → 60e784f2de.docx
+2026-10-14 02:53:27.703 | ERROR    | __main__:_redline_batched:1095 -  FAIL: 
+6de20376e8.docx → 6de20376e8.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-14 02:53:27.706 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+849e0cb7c4.docx → 849e0cb7c4.docx — redline is missing revision 50% of that 
+file; the two sides are not averaged
+2026-10-14 02:53:27.708 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+84eec18240.docx → 84eec18240.docx — redline is missing base 0% and revision 50% 
+of that file; the two sides are not averaged
+2026-10-14 02:53:27.711 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+86aef9a34a.docx → 86aef9a34a.docx — redline is missing base 50% and revision 50%
+of that file; the two sides are not averaged
+2026-10-14 02:53:27.744 | ERROR    | __main__:_redline_batched:1095 -  FAIL: 
+9382e03243.docx → 9382e03243.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-14 02:53:27.766 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+a9272f69c1.docx → a9272f69c1.docx — redline is missing base 0% of that file; the
+two sides are not averaged
+2026-10-14 02:53:28.283 | ERROR    | __main__:_redline_batched:1095 -  FAIL: 
+bc0135eaa1.docx → bc0135eaa1.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-14 02:53:28.291 | WARNING  | word_pdf:_loop_merp:888 -  error report 
+declined via 'OK'; Word said: "There was a problem with Microsoft Word and we 
+apologize for the inconvenience. | Microsoft Error Reporting"
+2026-10-14 02:53:28.329 | ERROR    | __main__:_redline_batched:1095 -  FAIL: 
+c2380a4677.docx → c2380a4677.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-14 02:53:28.332 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+c277edafd3.docx → c277edafd3.docx — redline is missing revision 0% of that file;
+the two sides are not averaged
+2026-10-14 02:53:28.352 | ERROR    | __main__:_redline_batched:1095 -  FAIL: 
+cbf73c2d81.docx → cbf73c2d81.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-14 02:53:28.375 | WARNING  | __main__:_redline_batched:1107 -   compared
+clean (no revisions): d23d9c8cc7.docx → d23d9c8cc7.docx
+2026-10-14 02:53:28.393 | ERROR    | __main__:_redline_batched:1095 -  FAIL: 
+d9bb456306.docx → d9bb456306.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-14 02:53:28.532 | ERROR    | __main__:_redline_batched:1095 -  FAIL: 
+e0305725c1.docx → e0305725c1.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-14 02:53:28.552 | WARNING  | __main__:_redline_batched:1107 -   compared
+clean (no revisions): e6e61fc33f.docx → e6e61fc33f.docx
+2026-10-14 02:53:28.805 | ERROR    | __main__:_redline_batched:1095 -  FAIL: 
+f0875f6d19.docx → f0875f6d19.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-14 02:53:28.819 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+f7bbf6e831.docx → f7bbf6e831.docx — redline is missing base 67% of that file; 
+the two sides are not averaged
+2026-10-14 02:53:28.833 | ERROR    | __main__:_redline_batched:1095 -  FAIL: 
+f8286525f6.docx → f8286525f6.docx — redline saved but PDF export failed: Word 
+crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-14 02:53:28.852 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+ff24600d87.docx → ff24600d87.docx — redline is missing revision 67% of that 
+file; the two sides are not averaged
+2026-10-14 02:53:28.859 | INFO     | word_pdf:stop:907 -  tally: declined=0 
+dismissed=11 granted=0 forwarded=0 alerts_seen=1
+             redline: A → B             
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━┓
+┃ outcome                      ┃ count ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━┩
+│ redlined                     │    18 │
+│ skipped (exists)             │     0 │
+│ failed                       │    26 │
+│ compared clean (0 revisions) │     4 │
+│ seconds per pair (batch avg) │   2.2 │
+│ total revisions              │   846 │
+└──────────────────────────────┴───────┘
+  clean 58cd08049b.docx → 58cd08049b.docx: Word found no differences
+  clean 60e784f2de.docx → 60e784f2de.docx: Word found no differences
+  clean d23d9c8cc7.docx → d23d9c8cc7.docx: Word found no differences
+  clean e6e61fc33f.docx → e6e61fc33f.docx: Word found no differences
+  FAIL 0858ee25d5.docx → 0858ee25d5.docx: redline is missing base 0% of that 
+file; the two sides are not averaged
+  FAIL 0b033b1c23.docx → 0b033b1c23.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL 0f031c23c3.docx → 0f031c23c3.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL 1b55e27189.docx → 1b55e27189.docx: redline is missing base 86% of that 
+file; the two sides are not averaged
+  FAIL 1edc0f56f4.docx → 1edc0f56f4.docx: redline is missing base 67% of that 
+file; the two sides are not averaged
+  FAIL 3d39f0120d.docx → 3d39f0120d.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL 3e7067f872.docx → 3e7067f872.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL 4eff11f045.docx → 4eff11f045.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL 581907f19c.docx → 581907f19c.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL 5f0fed8e2a.docx → 5f0fed8e2a.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL 6de20376e8.docx → 6de20376e8.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL 849e0cb7c4.docx → 849e0cb7c4.docx: redline is missing revision 50% of 
+that file; the two sides are not averaged
+  FAIL 84eec18240.docx → 84eec18240.docx: redline is missing base 0% and 
+revision 50% of that file; the two sides are not averaged
+  FAIL 86aef9a34a.docx → 86aef9a34a.docx: redline is missing base 50% and 
+revision 50% of that file; the two sides are not averaged
+  FAIL 9382e03243.docx → 9382e03243.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL a9272f69c1.docx → a9272f69c1.docx: redline is missing base 0% of that 
+file; the two sides are not averaged
+  FAIL bc0135eaa1.docx → bc0135eaa1.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL c2380a4677.docx → c2380a4677.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL c277edafd3.docx → c277edafd3.docx: redline is missing revision 0% of that
+file; the two sides are not averaged
+  FAIL cbf73c2d81.docx → cbf73c2d81.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL d9bb456306.docx → d9bb456306.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL e0305725c1.docx → e0305725c1.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL f0875f6d19.docx → f0875f6d19.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL f7bbf6e831.docx → f7bbf6e831.docx: redline is missing base 67% of that 
+file; the two sides are not averaged
+  FAIL f8286525f6.docx → f8286525f6.docx: redline saved but PDF export failed: 
+Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL ff24600d87.docx → ff24600d87.docx: redline is missing revision 67% of 
+that file; the two sides are not averaged

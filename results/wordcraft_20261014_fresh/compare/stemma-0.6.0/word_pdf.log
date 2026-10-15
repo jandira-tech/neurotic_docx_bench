@@ -1,0 +1,25 @@
+2026-10-14 20:43:26.839 | INFO     | __main__:preflight:2235 - [word] preflight: open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-10-14 20:43:26.842 | INFO     | __main__:convert_folder:1908 - [word] export: one_osascript=True documents=108 accept_all=False reject_all=False
+2026-10-14 20:43:26.885 | INFO     | __main__:_convert_batched:2108 - [batch] one osascript for 108 document(s)
+2026-10-14 20:43:31.893 | INFO     | __main__:_loop:1479 - [batch pdf 1] 1/108
+2026-10-14 20:43:36.900 | INFO     | __main__:_loop:1479 - [batch pdf 1] 11/108
+2026-10-14 20:43:41.907 | INFO     | __main__:_loop:1479 - [batch pdf 1] 20/108
+2026-10-14 20:43:46.914 | INFO     | __main__:_loop:1479 - [batch pdf 1] 30/108
+2026-10-14 20:43:51.917 | INFO     | __main__:_loop:1479 - [batch pdf 1] 36/108
+2026-10-14 20:43:56.921 | INFO     | __main__:_loop:1479 - [batch pdf 1] 41/108
+2026-10-14 20:44:01.924 | INFO     | __main__:_loop:1479 - [batch pdf 1] 46/108
+2026-10-14 20:44:06.931 | INFO     | __main__:_loop:1479 - [batch pdf 1] 51/108
+2026-10-14 20:44:11.936 | INFO     | __main__:_loop:1479 - [batch pdf 1] 55/108
+2026-10-14 20:44:16.940 | INFO     | __main__:_loop:1479 - [batch pdf 1] 60/108
+2026-10-14 20:44:21.944 | INFO     | __main__:_loop:1479 - [batch pdf 1] 63/108
+2026-10-14 20:44:26.952 | INFO     | __main__:_loop:1479 - [batch pdf 1] 68/108
+2026-10-14 20:44:31.962 | INFO     | __main__:_loop:1479 - [batch pdf 1] 73/108
+2026-10-14 20:44:36.969 | INFO     | __main__:_loop:1479 - [batch pdf 1] 77/108
+2026-10-14 20:44:41.972 | INFO     | __main__:_loop:1479 - [batch pdf 1] 81/108
+2026-10-14 20:44:46.977 | INFO     | __main__:_loop:1479 - [batch pdf 1] 86/108
+2026-10-14 20:44:51.980 | INFO     | __main__:_loop:1479 - [batch pdf 1] 90/108
+2026-10-14 20:44:56.983 | INFO     | __main__:_loop:1479 - [batch pdf 1] 94/108
+2026-10-14 20:45:01.990 | INFO     | __main__:_loop:1479 - [batch pdf 1] 99/108
+2026-10-14 20:45:06.995 | INFO     | __main__:_loop:1479 - [batch pdf 1] 103/108
+2026-10-14 20:45:11.998 | INFO     | __main__:_loop:1479 - [batch pdf 1] 107/108
+2026-10-14 20:45:12.301 | INFO     | __main__:stop:907 - [watchdog] tally: declined=0 dismissed=0 granted=0 forwarded=0 alerts_seen=0

@@ -1,0 +1,17 @@
+2026-10-14 05:40:07.878 | INFO     | __main__:preflight:2235 - [word] preflight: open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-10-14 05:40:07.890 | INFO     | __main__:convert_folder:1908 - [word] export: one_osascript=True documents=1 accept_all=False reject_all=False
+2026-10-14 05:40:07.894 | INFO     | __main__:_convert_batched:2108 - [batch] one osascript for 1 document(s)
+2026-10-14 05:40:12.904 | INFO     | __main__:_loop:1479 - [batch pdf 1] 0/1
+2026-10-14 05:40:20.607 | INFO     | __main__:_note_dialogs:774 - [watchdog] Microsoft Error Reporting shows button 'OK'
+2026-10-14 05:40:20.633 | INFO     | __main__:_note_dialogs:774 - [watchdog] Microsoft Error Reporting shows button 'More Information'
+2026-10-14 05:40:20.634 | INFO     | __main__:_note_dialogs:774 - [watchdog] Microsoft Error Reporting shows button 'missing value'
+2026-10-14 05:40:20.634 | INFO     | __main__:_note_dialogs:777 - [watchdog] Microsoft Error Reporting says: 'There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting'
+2026-10-14 05:40:21.904 | WARNING  | __main__:_loop_merp:888 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-10-14 05:40:23.002 | INFO     | __main__:_nudge:1450 - [focus] item 1/1 not finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 05:40:26.471 | WARNING  | __main__:run_batch_with_resume:1624 - [batch pdf] 1 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 2, 0 of 3 stalled passes used)
+2026-10-14 05:40:26.479 | WARNING  | __main__:recycle:1068 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 05:40:26.480 | WARNING  | __main__:recycle:1074 - [word] recycling (restart 1)
+2026-10-14 05:40:39.116 | INFO     | __main__:_loop:1479 - [batch pdf 2] 0/1
+2026-10-14 05:40:48.015 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: 9129d2ecd2.docx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-14 05:40:48.622 | WARNING  | __main__:_loop_merp:888 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-10-14 05:40:48.627 | INFO     | __main__:stop:907 - [watchdog] tally: declined=0 dismissed=2 granted=0 forwarded=0 alerts_seen=1

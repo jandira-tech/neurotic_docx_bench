@@ -1,0 +1,14 @@
+{
+  "input_files_unchanged": true,
+  "compare_options_unchanged": true,
+  "readiness_delay_seconds": 2,
+  "pdf_export_from_same_live_comparison": true,
+  "calls": [
+    {
+      "label": " compare",
+      "n": 44,
+      "script_sha256": "e188f3690de0d428b820fc925c294299830a9fccfd54774a6d0dbbf3c49c6ad5"
+    }
+  ],
+  "sha256": "e188f3690de0d428b820fc925c294299830a9fccfd54774a6d0dbbf3c49c6ad5"
+}

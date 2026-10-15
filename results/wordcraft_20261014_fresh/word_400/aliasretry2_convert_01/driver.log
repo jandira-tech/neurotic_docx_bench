@@ -1,0 +1,83 @@
+2026-10-14 05:07:50.696 | INFO     | __main__:preflight:2235 - [word] preflight: open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-10-14 05:07:50.736 | INFO     | __main__:convert_folder:1908 - [word] export: one_osascript=True documents=8 accept_all=False reject_all=False
+2026-10-14 05:07:50.740 | INFO     | __main__:_convert_batched:2108 - [batch] one osascript for 8 document(s)
+2026-10-14 05:07:55.593 | WARNING  | __main__:run_batch_with_resume:1624 - [batch pdf] 8 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 2, 0 of 3 stalled passes used)
+2026-10-14 05:07:55.594 | WARNING  | __main__:recycle:1068 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 05:07:55.596 | WARNING  | __main__:recycle:1074 - [word] recycling (restart 1)
+2026-10-14 05:07:59.218 | INFO     | __main__:_note_dialogs:774 - [watchdog] Microsoft Error Reporting shows button 'OK'
+2026-10-14 05:07:59.218 | INFO     | __main__:_note_dialogs:774 - [watchdog] Microsoft Error Reporting shows button 'More Information'
+2026-10-14 05:07:59.218 | INFO     | __main__:_note_dialogs:774 - [watchdog] Microsoft Error Reporting shows button 'missing value'
+2026-10-14 05:07:59.219 | INFO     | __main__:_note_dialogs:777 - [watchdog] Microsoft Error Reporting says: 'There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting'
+2026-10-14 05:07:59.986 | WARNING  | __main__:_loop_merp:888 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-10-14 05:08:04.894 | INFO     | __main__:_loop:1479 - [batch pdf 2] 0/8
+2026-10-14 05:08:05.031 | WARNING  | __main__:run_batch_with_resume:1624 - [batch pdf] 8 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 3, 0 of 3 stalled passes used)
+2026-10-14 05:08:05.032 | WARNING  | __main__:recycle:1068 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 05:08:05.033 | WARNING  | __main__:recycle:1074 - [word] recycling (restart 2)
+2026-10-14 05:08:05.842 | WARNING  | __main__:_loop_merp:888 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-10-14 05:08:11.394 | INFO     | __main__:_note_dialogs:774 - [watchdog] Microsoft Word shows button 'Cancel'
+2026-10-14 05:08:11.395 | INFO     | __main__:_note_dialogs:774 - [watchdog] Microsoft Word shows button 'missing value'
+2026-10-14 05:08:15.885 | WARNING  | __main__:run_batch_with_resume:1624 - [batch pdf] 8 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 4, 0 of 3 stalled passes used)
+2026-10-14 05:08:15.887 | WARNING  | __main__:recycle:1068 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 05:08:15.888 | WARNING  | __main__:recycle:1074 - [word] recycling (restart 3)
+2026-10-14 05:08:19.686 | WARNING  | __main__:_loop_merp:888 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-10-14 05:08:24.432 | WARNING  | __main__:run_batch_with_resume:1624 - [batch pdf] 8 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 5, 0 of 3 stalled passes used)
+2026-10-14 05:08:24.433 | WARNING  | __main__:recycle:1068 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 05:08:24.433 | WARNING  | __main__:recycle:1074 - [word] recycling (restart 4)
+2026-10-14 05:08:26.848 | WARNING  | __main__:_loop_merp:888 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-10-14 05:08:33.338 | WARNING  | __main__:run_batch_with_resume:1624 - [batch pdf] 8 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 6, 0 of 3 stalled passes used)
+2026-10-14 05:08:33.339 | WARNING  | __main__:recycle:1068 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 05:08:33.340 | WARNING  | __main__:recycle:1074 - [word] recycling (restart 5)
+2026-10-14 05:08:34.272 | WARNING  | __main__:_loop_merp:888 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-10-14 05:08:41.976 | WARNING  | __main__:run_batch_with_resume:1624 - [batch pdf] 8 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 7, 0 of 3 stalled passes used)
+2026-10-14 05:08:41.977 | WARNING  | __main__:recycle:1068 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 05:08:41.977 | WARNING  | __main__:recycle:1074 - [word] recycling (restart 6)
+2026-10-14 05:08:42.931 | WARNING  | __main__:_loop_merp:888 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-10-14 05:08:50.745 | WARNING  | __main__:run_batch_with_resume:1624 - [batch pdf] 8 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 8, 0 of 3 stalled passes used)
+2026-10-14 05:08:50.747 | WARNING  | __main__:recycle:1068 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 05:08:50.748 | WARNING  | __main__:recycle:1074 - [word] recycling (restart 7)
+2026-10-14 05:08:51.667 | WARNING  | __main__:_loop_merp:888 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-10-14 05:08:59.897 | INFO     | __main__:_loop:1479 - [batch pdf 8] 0/8
+2026-10-14 05:09:02.025 | WARNING  | __main__:_loop_merp:888 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-10-14 05:09:02.873 | WARNING  | __main__:run_batch_with_resume:1624 - [batch pdf] 8 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 9, 0 of 3 stalled passes used)
+2026-10-14 05:09:02.874 | WARNING  | __main__:recycle:1068 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 05:09:02.874 | WARNING  | __main__:recycle:1074 - [word] recycling (restart 8)
+2026-10-14 05:09:12.075 | INFO     | __main__:_loop:1479 - [batch pdf 9] 0/8
+2026-10-14 05:09:15.452 | WARNING  | __main__:run_batch_with_resume:1624 - [batch pdf] 7 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 10, 0 of 3 stalled passes used)
+2026-10-14 05:09:15.453 | WARNING  | __main__:recycle:1068 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 05:09:15.454 | WARNING  | __main__:recycle:1074 - [word] recycling (restart 9)
+2026-10-14 05:09:16.454 | WARNING  | __main__:_loop_merp:888 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-10-14 05:09:24.811 | WARNING  | __main__:run_batch_with_resume:1624 - [batch pdf] 6 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 11, 0 of 3 stalled passes used)
+2026-10-14 05:09:24.816 | WARNING  | __main__:recycle:1068 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 05:09:24.816 | WARNING  | __main__:recycle:1074 - [word] recycling (restart 10)
+2026-10-14 05:09:25.758 | WARNING  | __main__:_loop_merp:888 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-10-14 05:09:33.885 | WARNING  | __main__:run_batch_with_resume:1624 - [batch pdf] 5 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 12, 0 of 3 stalled passes used)
+2026-10-14 05:09:33.886 | WARNING  | __main__:recycle:1068 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 05:09:33.886 | WARNING  | __main__:recycle:1074 - [word] recycling (restart 11)
+2026-10-14 05:09:34.876 | WARNING  | __main__:_loop_merp:888 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-10-14 05:09:42.982 | WARNING  | __main__:run_batch_with_resume:1624 - [batch pdf] 4 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 13, 0 of 3 stalled passes used)
+2026-10-14 05:09:42.983 | WARNING  | __main__:recycle:1068 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 05:09:42.984 | WARNING  | __main__:recycle:1074 - [word] recycling (restart 12)
+2026-10-14 05:09:43.987 | WARNING  | __main__:_loop_merp:888 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-10-14 05:09:51.939 | WARNING  | __main__:run_batch_with_resume:1624 - [batch pdf] 3 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 14, 0 of 3 stalled passes used)
+2026-10-14 05:09:51.940 | WARNING  | __main__:recycle:1068 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 05:09:51.940 | WARNING  | __main__:recycle:1074 - [word] recycling (restart 13)
+2026-10-14 05:09:52.926 | WARNING  | __main__:_loop_merp:888 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-10-14 05:10:00.707 | WARNING  | __main__:run_batch_with_resume:1624 - [batch pdf] 2 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 15, 0 of 3 stalled passes used)
+2026-10-14 05:10:00.711 | WARNING  | __main__:recycle:1068 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 05:10:00.712 | WARNING  | __main__:recycle:1074 - [word] recycling (restart 14)
+2026-10-14 05:10:12.029 | INFO     | __main__:_loop:1479 - [batch pdf 15] 0/2
+2026-10-14 05:10:18.014 | WARNING  | __main__:_loop_merp:888 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-10-14 05:10:20.363 | WARNING  | __main__:run_batch_with_resume:1624 - [batch pdf] 1 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 16, 0 of 3 stalled passes used)
+2026-10-14 05:10:20.366 | WARNING  | __main__:recycle:1068 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 05:10:20.366 | WARNING  | __main__:recycle:1074 - [word] recycling (restart 15)
+2026-10-14 05:10:29.845 | INFO     | __main__:_loop:1479 - [batch pdf 16] 0/1
+2026-10-14 05:10:30.341 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: c0b033b1c23efb2cd.docx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-14 05:10:30.342 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: c4b3cd5613ac72826.docx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-14 05:10:30.343 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: c9382e03243e3d929.docx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-14 05:10:30.344 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: ca6aab38897b99527.docx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-14 05:10:30.345 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: cbde39e5d3146124f.docx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-14 05:10:30.345 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: cc2380a4677be7e18.docx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-14 05:10:30.348 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: cdb13a691da95dbd3.docx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-14 05:10:30.350 | ERROR    | __main__:_convert_batched:2153 - [batch] FAIL: cef51261c545f4d7e.docx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-14 05:10:31.291 | WARNING  | __main__:_loop_merp:888 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-10-14 05:10:31.292 | INFO     | __main__:stop:907 - [watchdog] tally: declined=0 dismissed=15 granted=0 forwarded=0 alerts_seen=1

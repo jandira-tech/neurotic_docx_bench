@@ -1,0 +1,8 @@
+{
+  "driver": "scripts/word_redline.py",
+  "driver_unmodified": true,
+  "staging_mode": "0644",
+  "input_bytes_unchanged": true,
+  "n": 44,
+  "original_permission_exclusions_withdrawn": true
+}

@@ -1,0 +1,9 @@
+2026-10-14 04:58:47.721 | INFO     | word_pdf:preflight:2235 - [word] preflight: open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-10-14 04:58:47.758 | INFO     | __main__:redline_folders:728 - [redline] one_osascript=True pairs=3
+2026-10-14 04:58:47.763 | INFO     | __main__:_redline_batched:1012 - [batch] one osascript for 3 comparison(s)
+2026-10-14 04:58:51.607 | INFO     | __main__:_redline_batched:1041 - [batch] one osascript for 1 redline PDF(s)
+2026-10-14 04:58:52.839 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: 65aa483982.docx → 65aa483982.docx — redline is missing base 50% of that file; the two sides are not averaged
+2026-10-14 04:58:52.840 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: ded976e5e2.docx → ded976e5e2.docx — open produced 2 new documents; refusing to guess
+2026-10-14 04:58:52.841 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: e4569d0756.docx → e4569d0756.docx — open produced 2 new documents; refusing to guess
+2026-10-14 04:58:54.357 | INFO     | word_pdf:_note_dialogs:774 - [watchdog] Microsoft Word shows button 'missing value'
+2026-10-14 04:58:54.706 | INFO     | word_pdf:stop:907 - [watchdog] tally: declined=0 dismissed=0 granted=0 forwarded=0 alerts_seen=0

@@ -1,0 +1,4 @@
+04:59:46 RUN word_pdf.py aliasretry1_convert_01
+05:06:32 END aliasretry1_convert_01 rc 1 pdfs 72 405.4s
+05:07:05 RUN word_redline.py retry1_compare_01
+05:07:14 END retry1_compare_01 rc 1 pdfs 1 9.1s

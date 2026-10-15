@@ -1,0 +1,77 @@
+▸ PDF quality is sticky: `save as … file format format PDF` inherits whatever 
+'Optimize for' you last chose in Word's own Save As dialog.
+  Open any document in Word once, File > Save As > PDF, and pick the SECOND 
+option, Best for printing.
+  That choice persists; this script cannot set it. Pass --no-check-preset to 
+stop seeing this.
+▸ A redline PDF shows tracked changes the way Word is currently set to show them
+(Review ▸ Markup display, and Print Markup).
+  Open one redline in Word by hand and confirm it looks right before running the
+batch — this script cannot set that for you.
+2026-10-14 02:33:25.938 | INFO     | word_pdf:preflight:2235 -  preflight: 
+open_documents=0 started_clean=True launched_by_us=False close_documents=False
+2026-10-14 02:33:25.940 | INFO     | __main__:redline_folders:728 -  
+one_osascript=True pairs=11
+2026-10-14 02:33:25.952 | INFO     | __main__:_redline_batched:1012 -  one 
+osascript for 11 comparison(s)
+2026-10-14 02:33:30.955 | INFO     | word_pdf:_loop:1479 -  0/11
+2026-10-14 02:33:40.970 | INFO     | word_pdf:_nudge:1450 -  item 1/11 not 
+finished after 10 s; bringing Word forward to look for an alert
+2026-10-14 02:33:50.982 | INFO     | word_pdf:_loop:1479 -  5/11
+2026-10-14 02:33:55.988 | INFO     | word_pdf:_loop:1479 -  9/11
+2026-10-14 02:33:57.163 | INFO     | __main__:_redline_batched:1041 -  one 
+osascript for 4 redline PDF(s)
+2026-10-14 02:33:59.664 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+2f1434be75.docx → 2f1434be75.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-14 02:33:59.665 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+37c978d405.docx → 37c978d405.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-14 02:33:59.665 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+4ce07ffaec.docx → 4ce07ffaec.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-14 02:33:59.665 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+603ef0419b.docx → 603ef0419b.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-14 02:33:59.666 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+8018df6bdf.docx → 8018df6bdf.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-14 02:33:59.666 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+875b3fba58.docx → 875b3fba58.docx — open produced 2 new documents; refusing to 
+guess
+2026-10-14 02:33:59.673 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+ba3b77bee3.docx → ba3b77bee3.docx — redline is missing revision 0% of that file;
+the two sides are not averaged
+2026-10-14 02:33:59.674 | ERROR    | __main__:_redline_batched:1073 -  FAIL: 
+e8aedc3a02.docx → e8aedc3a02.docx — Microsoft Word got an error: document 
+"00010__base__e8aedc3a02__vs__e8aedc3a02.docx" doesn’t understand the “compare” 
+message.
+2026-10-14 02:34:02.982 | INFO     | word_pdf:stop:907 -  tally: declined=0 
+dismissed=0 granted=0 forwarded=0 alerts_seen=0
+             redline: A → B             
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━┓
+┃ outcome                      ┃ count ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━┩
+│ redlined                     │     3 │
+│ skipped (exists)             │     0 │
+│ failed                       │     8 │
+│ seconds per pair (batch avg) │   2.8 │
+│ total revisions              │    27 │
+└──────────────────────────────┴───────┘
+  FAIL 2f1434be75.docx → 2f1434be75.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL 37c978d405.docx → 37c978d405.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL 4ce07ffaec.docx → 4ce07ffaec.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL 603ef0419b.docx → 603ef0419b.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL 8018df6bdf.docx → 8018df6bdf.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL 875b3fba58.docx → 875b3fba58.docx: open produced 2 new documents; 
+refusing to guess
+  FAIL ba3b77bee3.docx → ba3b77bee3.docx: redline is missing revision 0% of that
+file; the two sides are not averaged
+  FAIL e8aedc3a02.docx → e8aedc3a02.docx: Microsoft Word got an error: document 
+"00010__base__e8aedc3a02__vs__e8aedc3a02.docx" doesn’t understand the “compare” 
+message.

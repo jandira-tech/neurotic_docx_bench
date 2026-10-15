@@ -1,0 +1,49 @@
+2026-10-14 02:53:36.136 | INFO     | word_pdf:preflight:2235 - [word] preflight: open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-10-14 02:53:36.139 | INFO     | __main__:redline_folders:728 - [redline] one_osascript=True pairs=26
+2026-10-14 02:53:36.155 | INFO     | __main__:_redline_batched:1012 - [batch] one osascript for 26 comparison(s)
+2026-10-14 02:53:41.159 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 3/26
+2026-10-14 02:53:46.163 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 9/26
+2026-10-14 02:53:51.168 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 12/26
+2026-10-14 02:53:53.764 | INFO     | word_pdf:_note_dialogs:774 - [watchdog] Microsoft Word shows button 'missing value'
+2026-10-14 02:53:56.171 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 19/26
+2026-10-14 02:54:01.178 | INFO     | word_pdf:_loop:1479 - [batch compare 1] 24/26
+2026-10-14 02:54:02.126 | INFO     | __main__:_redline_batched:1041 - [batch] one osascript for 1 redline PDF(s)
+2026-10-14 02:54:07.133 | INFO     | word_pdf:_loop:1479 - [batch pdf 1] 0/1
+2026-10-14 02:54:08.721 | WARNING  | word_pdf:run_batch_with_resume:1624 - [batch pdf] 1 item(s) never reached (Word crashed on or could not load an item); recycling Word and retrying the rest first, retried items last (pass 2, 0 of 3 stalled passes used)
+2026-10-14 02:54:08.721 | WARNING  | word_pdf:recycle:1068 - [word] restarting a Word this run did not launch. If you set "Optimize for: Best for printing" by hand, re-check it before trusting the PDFs rendered after this point.
+2026-10-14 02:54:08.722 | WARNING  | word_pdf:recycle:1074 - [word] recycling (restart 1)
+2026-10-14 02:54:09.035 | INFO     | word_pdf:_note_dialogs:774 - [watchdog] Microsoft Error Reporting shows button 'OK'
+2026-10-14 02:54:09.036 | INFO     | word_pdf:_note_dialogs:774 - [watchdog] Microsoft Error Reporting shows button 'More Information'
+2026-10-14 02:54:09.036 | INFO     | word_pdf:_note_dialogs:774 - [watchdog] Microsoft Error Reporting shows button 'missing value'
+2026-10-14 02:54:09.037 | INFO     | word_pdf:_note_dialogs:777 - [watchdog] Microsoft Error Reporting says: 'There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting'
+2026-10-14 02:54:09.639 | WARNING  | word_pdf:_loop_merp:888 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-10-14 02:54:15.932 | INFO     | word_pdf:_note_dialogs:774 - [watchdog] Microsoft Word shows button 'Cancel'
+2026-10-14 02:54:18.405 | INFO     | word_pdf:_loop:1479 - [batch pdf 2] 0/1
+2026-10-14 02:54:19.222 | ERROR    | __main__:_redline_batched:1095 - [batch] FAIL: 01a43df57c.docx → 01a43df57c.docx — redline saved but PDF export failed: Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-10-14 02:54:19.224 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: 0cc9882662.docx → 0cc9882662.docx — open produced 2 new documents; refusing to guess
+2026-10-14 02:54:19.224 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: 11675a8de2.docx → 11675a8de2.docx — open produced 2 new documents; refusing to guess
+2026-10-14 02:54:19.225 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: 1987911502.docx → 1987911502.docx — open produced 2 new documents; refusing to guess
+2026-10-14 02:54:19.225 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: 2405610dc2.docx → 2405610dc2.docx — open produced 2 new documents; refusing to guess
+2026-10-14 02:54:19.226 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: 252aac8d9e.docx → 252aac8d9e.docx — open produced 2 new documents; refusing to guess
+2026-10-14 02:54:19.227 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: 2c0433bdbc.docx → 2c0433bdbc.docx — open produced 2 new documents; refusing to guess
+2026-10-14 02:54:19.228 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: 3f877dde6e.docx → 3f877dde6e.docx — open produced 2 new documents; refusing to guess
+2026-10-14 02:54:19.229 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: 3faf6e148e.docx → 3faf6e148e.docx — open produced 2 new documents; refusing to guess
+2026-10-14 02:54:19.229 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: 48b006f032.docx → 48b006f032.docx — open produced 2 new documents; refusing to guess
+2026-10-14 02:54:19.230 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: 4a8b3c676a.docx → 4a8b3c676a.docx — open produced 2 new documents; refusing to guess
+2026-10-14 02:54:19.230 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: 4a9a8d0b4a.docx → 4a9a8d0b4a.docx — open produced 2 new documents; refusing to guess
+2026-10-14 02:54:19.231 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: 5b878b9756.docx → 5b878b9756.docx — open produced 2 new documents; refusing to guess
+2026-10-14 02:54:19.231 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: 61d6a6f326.docx → 61d6a6f326.docx — open produced 2 new documents; refusing to guess
+2026-10-14 02:54:19.232 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: 65aa483982.docx → 65aa483982.docx — open produced 2 new documents; refusing to guess
+2026-10-14 02:54:19.232 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: 699cc8bd70.docx → 699cc8bd70.docx — open produced 2 new documents; refusing to guess
+2026-10-14 02:54:19.233 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: 71159007ab.docx → 71159007ab.docx — open produced 2 new documents; refusing to guess
+2026-10-14 02:54:19.233 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: 7f412aa4b4.docx → 7f412aa4b4.docx — open produced 2 new documents; refusing to guess
+2026-10-14 02:54:19.233 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: 822ad81a4c.docx → 822ad81a4c.docx — open produced 2 new documents; refusing to guess
+2026-10-14 02:54:19.234 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: b799eadbeb.docx → b799eadbeb.docx — open produced 2 new documents; refusing to guess
+2026-10-14 02:54:19.234 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: c053ccd3b8.docx → c053ccd3b8.docx — open produced 2 new documents; refusing to guess
+2026-10-14 02:54:19.234 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: c615c2d56c.docx → c615c2d56c.docx — open produced 2 new documents; refusing to guess
+2026-10-14 02:54:19.235 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: c9fc2e8899.docx → c9fc2e8899.docx — open produced 2 new documents; refusing to guess
+2026-10-14 02:54:19.236 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: d4ab829066.docx → d4ab829066.docx — open produced 2 new documents; refusing to guess
+2026-10-14 02:54:19.237 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: e14d8c4c7d.docx → e14d8c4c7d.docx — open produced 2 new documents; refusing to guess
+2026-10-14 02:54:19.238 | ERROR    | __main__:_redline_batched:1073 - [batch] FAIL: e4df2c199d.docx → e4df2c199d.docx — open produced 2 new documents; refusing to guess
+2026-10-14 02:54:19.427 | ERROR    | word_pdf:_loop_merp:890 - [watchdog] Microsoft Error Reporting is showing a dialog whose buttons match none of ("Don't Send", 'Don’t Send', 'Cancel', 'Close', 'Quit', 'No', 'OK', 'Ok'). Labels seen are logged above — add the real one to MERP_DECLINE.
+2026-10-14 02:54:19.428 | INFO     | word_pdf:stop:907 - [watchdog] tally: declined=0 dismissed=1 granted=0 forwarded=0 alerts_seen=1

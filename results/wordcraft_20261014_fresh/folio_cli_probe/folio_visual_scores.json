@@ -1,0 +1,29 @@
+{
+ "049d8405bc": {
+  "overall_score": 40.7288939401629,
+  "overall_score_pagefair": 40.48910417817475,
+  "page_count_oracle": 132,
+  "page_count_candidate": 129,
+  "ink_jaccard": 0.03491582431672354,
+  "text_boundary": 0.008035714285714285,
+  "scorer_backend": "torch-mps"
+ },
+ "0bc720e5fa": {
+  "overall_score": 48.16469861969753,
+  "overall_score_pagefair": 47.71944592756988,
+  "page_count_oracle": 153,
+  "page_count_candidate": 157,
+  "ink_jaccard": 0.12173706724001235,
+  "text_boundary": 0.023464087408203476,
+  "scorer_backend": "torch-mps"
+ },
+ "e83dabcd41": {
+  "overall_score": 36.5836629793168,
+  "overall_score_pagefair": 30.869863842792952,
+  "page_count_oracle": 4,
+  "page_count_candidate": 10,
+  "ink_jaccard": null,
+  "text_boundary": null,
+  "scorer_backend": "torch-mps"
+ }
+}
