@@ -909,6 +909,13 @@ async function loadLongLivedCompareWorker(opts: {
 	}
 	// Read per load, not at import, so a caller (or a test) can set it first.
 	const replyTimeoutMs = Number(process.env.WORKER_REPLY_TIMEOUT_MS) || 15_000;
+	// Worker startup (spawn + READY banner) is not a compare reply: it must not
+	// inherit the reply timeout, or a slow spawn under a busy runner rejects out
+	// of loadEngine — outside runBatch's per-pair catch — and costs the whole
+	// batch instead of one pair. Generous floor, separately overridable.
+	const readyTimeoutMs =
+		Number(process.env.WORKER_READY_TIMEOUT_MS) ||
+		Math.max(replyTimeoutMs, 10_000);
 	type Worker = { readLine: () => Promise<string>; write: (s: string) => void; kill: () => void };
 	// One worker process. A compare that times out leaves the worker busy on it, and
 	// every later COMPARE would queue behind it and time out too, so the engine kills
@@ -950,7 +957,7 @@ async function loadLongLivedCompareWorker(opts: {
 				w?.(`__EXIT__ ${msg}`);
 			}
 		});
-		const readLine = (): Promise<string> =>
+		const readLine = (timeoutMs: number = replyTimeoutMs): Promise<string> =>
 			new Promise((resolveLine, reject) => {
 				if (buf) {
 					const lines = buf.split("\n");
@@ -972,14 +979,14 @@ async function loadLongLivedCompareWorker(opts: {
 					() =>
 						reject(
 							new Error(
-								`${opts.label}: timeout waiting for worker reply after ${replyTimeoutMs} ms bin=${bin}` +
+								`${opts.label}: timeout waiting for worker reply after ${timeoutMs} ms bin=${bin}` +
 									(spawnExit
 										? ` exit=${spawnExit.code}/${spawnExit.signal}`
 										: "") +
 									(stderrAcc ? ` stderr=${stderrAcc.trim()}` : ""),
 							),
 						),
-					replyTimeoutMs,
+					timeoutMs,
 				);
 				waiters.push((line) => {
 					clearTimeout(timer);
@@ -1017,7 +1024,7 @@ async function loadLongLivedCompareWorker(opts: {
 		const write = (s: string) => {
 			child.stdin!.write(s);
 		};
-		const ready = await readLine().catch((err) => {
+		const ready = await readLine(readyTimeoutMs).catch((err) => {
 			kill();
 			throw err;
 		});
