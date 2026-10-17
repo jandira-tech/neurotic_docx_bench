@@ -33,6 +33,16 @@ from the pre-2026-10-15 analysis tree (`NDB_LIVE_WORK_LEGACY`, default
 `~/temp/T/d1_jubarte_live_bench`, deleted after migration; the migrated `seen.csv`
 already carries its state).
 
+`really_broken/` itself lives on the Hugging Face dataset
+[`arthrod/neurotic-docx-bench-artifacts`](https://huggingface.co/datasets/arthrod/neurotic_docx_bench-artifacts)
+since 2026-10-17 (manifest included) and is fetched back on demand — the harvest
+recreates it locally when a run needs it:
+
+    uv run --with "huggingface_hub<2" python -c "
+    from huggingface_hub import snapshot_download
+    snapshot_download('arthrod/neurotic-docx-bench-artifacts', repo_type='dataset',
+                      local_dir='really_broken-restore')"
+
 ## Helpers
 
 | script | what it does |
