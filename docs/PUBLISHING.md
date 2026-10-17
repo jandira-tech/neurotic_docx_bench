@@ -76,6 +76,29 @@ Every package carries a `MANIFEST.sha256.txt` (and a README); all URLs are relat
 | `word-driver-ab/20261014/` | the Word-driver A/B report and runs (AGENTS.md "What the 2026-10-14 A/B found") |
 | `d1-exports/jubarte-live-bench/2026-10-13/` | D1 export, schema and harvest-analysis records of the 2026-10-13 campaign |
 
+### The sample picker (what reviewers use)
+
+`scripts/pick_fixtures.py` is a colour, Typer-based CLI over the HF fixtures dataset:
+`list` shows the corpus by state and set, `search` filters the two tables without
+downloading any document bytes, `download` fetches exactly the picked samples
+(sha256-verified, optionally with a comparison's base and next inputs):
+
+```bash
+uv run --with typer --with rich --with "huggingface_hub<2" python scripts/pick_fixtures.py list
+uv run --with typer --with rich --with "huggingface_hub<2" python scripts/pick_fixtures.py search comparisons --set redlines_en_500
+uv run --with typer --with rich --with "huggingface_hub<2" python scripts/pick_fixtures.py download documents --set sources_500 --sample 10 --seed 7 --what both
+```
+
+A second HF dataset, `arthrod/neurotic-docx-bench-artifacts`, holds the working
+evidence that is not corpus (currently `really_broken/` — the Word-refusing fixtures
+and tool redlines of the harvest, with `MANIFEST.sha256.txt`). `really_broken/` is
+fetched back from there when a harvest or Word-driver session needs it (command in
+`live-bench/harvest/README.md`).
+
+Corpus DOCX/PDF are **not** tracked in git on purpose (the 2026-10-17 state): the
+hub dataset is their only home; `bench fixtures download` or the picker brings them
+back. Git carries the tables, manifests and READMEs only.
+
 ### The upload Worker (bulk path)
 
 `scripts/publish/r2-upload-worker/` — a PUT-only proxy into the bucket: requires the
