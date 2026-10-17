@@ -42,8 +42,10 @@ TYPES = {
     ".json": "application/json",
     ".docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     ".csv": "text/csv",
+    ".tsv": "text/tab-separated-values",
     ".md": "text/markdown; charset=utf-8",
     ".txt": "text/plain; charset=utf-8",
+    ".log": "text/plain; charset=utf-8",
     ".png": "image/png",
     ".svg": "image/svg+xml",
     ".html": "text/html; charset=utf-8",
@@ -65,14 +67,20 @@ async def listing(client: httpx.AsyncClient, prefix: str) -> dict[str, int]:
     """{key: size_bytes} for every object under prefix."""
     out: dict[str, int] = {}
     cursor = None
-    while True:
+    for attempt in range(4):
         params = {"prefix": prefix, "per_page": 1000, **({"cursor": cursor} if cursor else {})}
         r = (await client.get(API, params=params)).json()
-        for o in r.get("result", []):
+        if r.get("result") is None:  # error payload ("result": null): usually an expired token
+            await asyncio.to_thread(subprocess.run, ["bunx", "wrangler", "whoami"], capture_output=True)
+            client.headers["Authorization"] = f"Bearer {token()}"
+            await asyncio.sleep(2**attempt)
+            continue
+        for o in r["result"]:
             out[o["key"]] = o["size"]
         cursor = (r.get("result_info") or {}).get("cursor")
         if not (r.get("result_info") or {}).get("is_truncated"):
             return out
+    raise RuntimeError(f"R2 listing kept failing for prefix {prefix!r}")
 
 
 async def upload_api(client: httpx.AsyncClient, key: str, path: Path, sem: asyncio.Semaphore,
