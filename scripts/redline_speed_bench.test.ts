@@ -19,6 +19,12 @@ import {
 
 const SOURCE = "corpus/word/clean/docx";
 const haveCorpus = existsSync(SOURCE);
+// The 1000-fixture plan tests need the FULL corpus; fixtures live on the HF hub and the
+// tracked subset is smaller (277 today), so gate those two on the on-disk docx count.
+const haveThousandFixtures =
+	readdirSync(SOURCE, { withFileTypes: true }).filter(
+		(d) => d.isFile() && d.name.endsWith(".docx"),
+	).length >= 1000;
 
 const csharpDist = defaultCsharpDist(process.cwd());
 const haveCsharp = existsSync(join(csharpDist, "redline"));
@@ -116,7 +122,7 @@ describe("redline_speed_bench helpers", () => {
 		},
 	);
 
-	it.runIf(haveCorpus)(
+	it.runIf(haveThousandFixtures)(
 		"collectFixtures can reach 1000 unique when enough corpus exists",
 		() => {
 			const fx = collectFixtures(FIXTURE_DIRS, 1000);
@@ -206,7 +212,7 @@ describe("jubarte-rust engine (speed bench path)", () => {
 });
 
 describe("speed_redlines pair plan", () => {
-	it.runIf(haveCorpus)(
+	it.runIf(haveThousandFixtures)(
 		"1000 fixtures × buildPairs yields exactly 5000 pairs",
 		() => {
 			const fx = collectFixtures(FIXTURE_DIRS, 1000);
