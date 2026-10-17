@@ -184,18 +184,25 @@ def parse(stdout: Path) -> dict[str, str]:
 
 
 def category(err: str) -> str:
-    if "loaded empty" in err:
+    # word_pdf_focus.py said "loaded empty"; scripts/word_pdf.py (2026-10-14) says "repair prompt
+    # declined" for the same thing, and names the error reporter when Word crashed.
+    if "loaded empty" in err or "repair prompt declined" in err:
         return "repair_prompt"
-    if "Connection is invalid" in err:
+    if "Connection is invalid" in err or "Word crashed" in err or "error reporter appeared" in err:
         return "crashes_word"
     return "unconfirmed"
 
 
+def pdf_stems(folder: Path) -> set[str]:
+    """Stems of the PDFs Word wrote; scripts/word_pdf.py names them <stem>_byword.pdf."""
+    return {p.stem.removesuffix("_byword") for p in folder.glob("*.pdf")}
+
+
 def collect(run: Path) -> None:
     seen = load_seen()
-    fails, pdfs = parse(run / "word.stdout"), {p.stem for p in (run / "word_pdf").glob("*.pdf")}
+    fails, pdfs = parse(run / "word.stdout"), pdf_stems(run / "word_pdf")
     for out in sorted(run.glob("word_rerun*.stdout"), key=lambda p: int(re.sub(r"\D", "", p.stem) or 0)):
-        rp = {p.stem for p in (run / out.stem.replace("word_rerun", "word_pdf_rerun")).glob("*.pdf")}
+        rp = pdf_stems(run / out.stem.replace("word_rerun", "word_pdf_rerun"))
         for s in rp:
             fails.pop(s, None)
         fails.update(parse(out))
