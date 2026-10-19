@@ -47,6 +47,114 @@ tools:
     bench_vendors: [docxodus-12.6.5]
     speed_tools: [docxodus-12.6.5]
     url: https://github.com/JSv4/docxodus
+  # ---- fresh cohort, extended 2026-10-14 (results/wordcraft_20261014_fresh/REPORT.md) ----
+  - id: wordcraft-cli-0.7.0
+    vendor: wordcraft
+    display: Wordcraft CLI 0.7.0
+    role: generator
+    engine: wordcraft-cli
+    configuration: official-release-0.7.0
+    run_names: [wordcraft-cli-0.7.0]
+    bench_vendors: [wordcraft-cli-0.7.0]
+    speed_tools: [wordcraft-cli-0.7.0]
+    converter_tools: [wordcraft-cli-0.7.0]
+    url: https://github.com/storytold/wordcraft
+  - id: docxodus-13.0.0
+    vendor: docxodus
+    display: docxodus 13.0.0
+    role: generator
+    engine: docxodus
+    configuration: native-cli-wasm-13.0.0
+    run_names: [docxodus-13.0.0]
+    bench_vendors: [docxodus-13.0.0]
+    speed_tools: [docxodus-13.0.0]
+    url: https://github.com/JSv4/docxodus
+  - id: folio-0.60.0
+    vendor: folio
+    display: folio-core 0.60.0
+    role: generator
+    engine: "@stll/folio-core"
+    configuration: official-release-0.60.0
+    run_names: [folio-0.60.0]
+    bench_vendors: [folio-0.60.0]
+    speed_tools: [folio-0.60.0]
+    url: https://github.com/stella/folio
+  - id: stemma-0.6.0
+    vendor: stemma
+    display: stemma 0.6.0
+    role: generator
+    engine: stemma
+    configuration: official-release-0.6.0
+    run_names: [stemma-0.6.0]
+    bench_vendors: [stemma-0.6.0]
+    speed_tools: [stemma-0.6.0]
+    url: https://github.com/stemma-sh/stemma
+  - id: superdoc-2.20.0
+    vendor: superdoc
+    display: superdoc-sdk 2.20.0
+    role: generator
+    engine: superdoc-sdk
+    configuration: official-release-2.20.0
+    run_names: [superdoc-2.20.0]
+    bench_vendors: [superdoc-2.20.0]
+    speed_tools: [superdoc-2.20.0]
+    url: https://github.com/Harbour-Enterprises/SuperDoc
+  - id: docxide-pdf-0.18.4
+    vendor: docxide-pdf
+    display: docxide-pdf 0.18.4
+    role: converter
+    engine: docxide-pdf
+    configuration: official-release-0.18.4
+    speed_tools: [docxide-pdf-0.18.4]
+    converter_tools: [docxide-pdf-0.18.4]
+    url: https://github.com/sverrejb/docxide-pdf
+  - id: rdocx-0.16.0
+    vendor: rdocx
+    display: rdocx 0.16.0
+    role: converter
+    engine: rdocx
+    configuration: official-release-0.16.0
+    speed_tools: [rdocx-0.16.0]
+    converter_tools: [rdocx-0.16.0]
+    url: https://github.com/tensorbee/rdocx
+  - id: office2pdf-0.8.1
+    vendor: office2pdf
+    display: office2pdf 0.8.1
+    role: converter
+    engine: office2pdf (Typst)
+    configuration: official-release-0.8.1
+    speed_tools: [office2pdf-0.8.1]
+    converter_tools: [office2pdf-0.8.1]
+    url: https://github.com/developer0hye/office2pdf
+  - id: pdfitdown-4.2.0
+    vendor: pdfitdown
+    display: pdfitdown 4.2.0
+    role: converter
+    engine: office2pdf (Typst)
+    configuration: official-release-4.2.0
+    speed_tools: [pdfitdown-4.2.0]
+    converter_tools: [pdfitdown-4.2.0]
+    note: "Delegates Office formats to office2pdf; same engine, listed for completeness."
+    url: https://github.com/AstraBert/PdfItDown
+  - id: libreoffice_convert_rust-0.1.0
+    vendor: libreoffice_convert_rust
+    display: libreoffice_convert_rust 0.1.0
+    role: converter
+    engine: LibreOffice
+    configuration: official-release-0.1.0
+    speed_tools: [libreoffice_convert_rust-0.1.0]
+    converter_tools: [libreoffice_convert_rust-0.1.0]
+    url: https://gitcode.com/dnrops/libreoffice_convert_rust
+  - id: pymupdf-pro-1.28.2
+    vendor: pymupdf-pro
+    display: PyMuPDF Pro 1.28.2
+    role: converter
+    engine: pymupdf-pro
+    configuration: official-release-1.28.2
+    speed_tools: [pymupdf-pro-1.28.2]
+    converter_tools: [pymupdf-pro-1.28.2]
+    url: https://pymupdf.io/pro
+    note: "Unlicensed (Restricted Mode): converts only the first 3 pages, so it is scored on the at-most-3-page set."
   # ---- redline generators (author-affiliated) ----
   - id: jubarte-lossless
     vendor: jubarte
@@ -245,7 +353,11 @@ tools:
     display: soffice
     role: converter
     engine: LibreOffice
-    converter_tools: [soffice]
+    speed_tools: [soffice]
+    # `candidates`: seven results/converters.jsonl lines of 2026-10-03 to 2026-10-11 written by
+    # scripts/convert_candidates.py under its output folder's name; every one is LibreOffice
+    # 26.8.0.3 (their `version` field). The store is append-only, so the spelling maps here.
+    converter_tools: [soffice, candidates]
     url: https://www.libreoffice.org/
   - id: dxpdf
     vendor: dxpdf

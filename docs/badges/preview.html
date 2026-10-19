@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>neurotic_docx_bench — Participant SVG Badges</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      margin: 0;
+      padding: 32px;
+      background: #0f172a;
+      color: #f8fafc;
+    }
+    h1 {
+      font-size: 1.5rem;
+      margin-bottom: 0.25rem;
+    }
+    h2.section {
+      font-size: 1.15rem;
+      margin: 2rem 0 0.75rem 0;
+      color: #38bdf8;
+      border-bottom: 1px solid #334155;
+      padding-bottom: 6px;
+    }
+    p.sub {
+      color: #94a3b8;
+      margin-top: 0;
+      margin-bottom: 1.5rem;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(480px, 1fr));
+      gap: 16px;
+    }
+    .card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 16px;
+    }
+    .card h3 {
+      font-size: 0.95rem;
+      margin: 0 0 6px 0;
+      color: #e2e8f0;
+    }
+    .card p {
+      font-size: 0.82rem;
+      color: #94a3b8;
+      margin: 0 0 12px 0;
+    }
+    .surfaces {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+      overflow-x: auto;
+    }
+    .surface-light, .surface-dark {
+      padding: 12px 14px;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .surface-light {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+    }
+    .surface-dark {
+      background: #0d1117;
+      border: 1px solid #30363d;
+    }
+    code {
+      display: block;
+      margin-top: 10px;
+      padding: 8px;
+      background: #090d16;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      color: #cbd5e1;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+<body>
+  <h1>neurotic_docx_bench — Participant SVG Badges</h1>
+  <p class="sub">The eight badges offered to participating tools (options 1–8 in <code>ISSUE_TEMPLATE.md</code>). Every text span uses locked monospace advance widths (<code>textLength</code>) and generous container padding so strikethroughs, double underlines, moves, and pill borders align across platforms.</p>
+
+  <h2 class="section">Offered Badges (Options 1–7 for every tool + Option 8 for docxodus)</h2>
+  <div class="grid">
+    <div class="card">
+      <h3>Option 1 · Two-Line OpenXML Move &amp; Redline (redline-14)</h3>
+      <p>Compact two-row WordprocessingML: <code>&lt;w:moveFrom&gt;</code>, <code>&lt;w:del&gt;</code>, <code>&lt;w:ins&gt;</code>, <code>&lt;w:moveTo&gt;</code>.</p>
+      <div class="surfaces">
+        <div class="surface-light"><img src="redline-14-wml-xml-move-two-line.svg" alt="Option 1"/></div>
+        <div class="surface-dark"><img src="redline-14-wml-xml-move-two-line.svg" alt="Option 1"/></div>
+      </div>
+      <code>[![neurotic_docx_bench](https://raw.githubusercontent.com/jandira-tech/neurotic_docx_bench/main/docs/badges/redline-14-wml-xml-move-two-line.svg)](https://jandira-tech.github.io/neurotic_docx_bench/)</code>
+    </div>
+    <div class="card">
+      <h3>Option 2 · Track Move + Redline + Blue Double-Underline (redline-12)</h3>
+      <p>Green strikethrough+underline move-from <code>docx_bench</code>, red strike <code>chill</code>, blue double-underline <code>neurotic</code>, green underline move-to <code>docx_bench</code> | bold blue double-underline <code>BENCHED!</code>.</p>
+      <div class="surfaces">
+        <div class="surface-light"><img src="redline-12-move-chill-neurotic-benched.svg" alt="Option 2"/></div>
+        <div class="surface-dark"><img src="redline-12-move-chill-neurotic-benched.svg" alt="Option 2"/></div>
+      </div>
+      <code>[![neurotic_docx_bench](https://raw.githubusercontent.com/jandira-tech/neurotic_docx_bench/main/docs/badges/redline-12-move-chill-neurotic-benched.svg)](https://jandira-tech.github.io/neurotic_docx_bench/)</code>
+    </div>
+    <div class="card">
+      <h3>Option 3 · Classic Inline Redline — Light (redline-11)</h3>
+      <p>Red strikethrough on <code>chill</code>, blue double-underline on <code>neurotic</code>, dark <code>_docx_bench</code>, and bold blue double-underline <code>BENCHED!</code>.</p>
+      <div class="surfaces">
+        <div class="surface-light"><img src="redline-11-chill-neurotic-benched.svg" alt="Option 3"/></div>
+        <div class="surface-dark"><img src="redline-11-chill-neurotic-benched.svg" alt="Option 3"/></div>
+      </div>
+      <code>[![neurotic_docx_bench](https://raw.githubusercontent.com/jandira-tech/neurotic_docx_bench/main/docs/badges/redline-11-chill-neurotic-benched.svg)](https://jandira-tech.github.io/neurotic_docx_bench/)</code>
+    </div>
+    <div class="card">
+      <h3>Option 4 · Court Blackline Double-Strike &amp; Legal (redline-10)</h3>
+      <p>Double margin change bars, <code>§</code>, double red strikethrough on <code>neurotic</code>, and double green underline on <code>benched!</code>.</p>
+      <div class="surfaces">
+        <div class="surface-light"><img src="redline-10-double-strike-legal.svg" alt="Option 4"/></div>
+        <div class="surface-dark"><img src="redline-10-double-strike-legal.svg" alt="Option 4"/></div>
+      </div>
+      <code>[![neurotic_docx_bench](https://raw.githubusercontent.com/jandira-tech/neurotic_docx_bench/main/docs/badges/redline-10-double-strike-legal.svg)](https://jandira-tech.github.io/neurotic_docx_bench/)</code>
+    </div>
+    <div class="card">
+      <h3>Option 5 · Inline Swap — Green Double-Underline (redline-16)</h3>
+      <p>Green double-underline insertion variant of <code>chill → neurotic_docx_bench | BENCHED!</code>.</p>
+      <div class="surfaces">
+        <div class="surface-light"><img src="redline-16-inline-swap-chill-green.svg" alt="Option 5"/></div>
+        <div class="surface-dark"><img src="redline-16-inline-swap-chill-green.svg" alt="Option 5"/></div>
+      </div>
+      <code>[![neurotic_docx_bench](https://raw.githubusercontent.com/jandira-tech/neurotic_docx_bench/main/docs/badges/redline-16-inline-swap-chill-green.svg)](https://jandira-tech.github.io/neurotic_docx_bench/)</code>
+    </div>
+    <div class="card">
+      <h3>Option 6 · Inline Swap — Dark Mode (redline-17)</h3>
+      <p>Dark canvas (<code>#0f172a</code>) with coral strike on <code>chill</code> and sky-blue double-underline insertion on <code>neurotic</code>.</p>
+      <div class="surfaces">
+        <div class="surface-light"><img src="redline-17-inline-swap-chill-dark.svg" alt="Option 6"/></div>
+        <div class="surface-dark"><img src="redline-17-inline-swap-chill-dark.svg" alt="Option 6"/></div>
+      </div>
+      <code>[![neurotic_docx_bench](https://raw.githubusercontent.com/jandira-tech/neurotic_docx_bench/main/docs/badges/redline-17-inline-swap-chill-dark.svg)](https://jandira-tech.github.io/neurotic_docx_bench/)</code>
+    </div>
+    <div class="card">
+      <h3>Option 7 · Forgiving → Neurotic Inline Swap (redline-19)</h3>
+      <p>Strikes out <code>forgiving</code> in red and inserts double-underlined blue <code>neurotic</code>.</p>
+      <div class="surfaces">
+        <div class="surface-light"><img src="redline-19-inline-swap-forgiving-neurotic.svg" alt="Option 7"/></div>
+        <div class="surface-dark"><img src="redline-19-inline-swap-forgiving-neurotic.svg" alt="Option 7"/></div>
+      </div>
+      <code>[![neurotic_docx_bench](https://raw.githubusercontent.com/jandira-tech/neurotic_docx_bench/main/docs/badges/redline-19-inline-swap-forgiving-neurotic.svg)](https://jandira-tech.github.io/neurotic_docx_bench/)</code>
+    </div>
+    <div class="card">
+      <h3>Option 8 · docxodus — Michigan Maize &amp; Blue (docxodus issue only)</h3>
+      <p>Custom for docxodus in University of Michigan maize (<code>#FFCB05</code>) and blue (<code>#00274C</code>): <code>docxodus</code> in blue with maize double-underline insertion, <code>BENCHED!</code> on a maize field.</p>
+      <div class="surfaces">
+        <div class="surface-light"><img src="docxodus-maize-blue.svg" alt="Option 8"/></div>
+        <div class="surface-dark"><img src="docxodus-maize-blue.svg" alt="Option 8"/></div>
+      </div>
+      <code>[![neurotic_docx_bench](https://raw.githubusercontent.com/jandira-tech/neurotic_docx_bench/main/docs/badges/docxodus-maize-blue.svg)](https://jandira-tech.github.io/neurotic_docx_bench/)</code>
+    </div>
+  </div>
+</body>
+</html>

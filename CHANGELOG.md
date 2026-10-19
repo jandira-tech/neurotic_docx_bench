@@ -39,6 +39,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   that state failed a 70-document batch in 5 s on 2026-10-14.
 
 ### Fixed
+- `bench report`: the headline group of a benchmark no longer follows the newest eligible row onto
+  a subset of another measured document set (`ledger/policy.py::subset_docsets`, read from the
+  rows' own per-document scores). The PyMuPDF Pro row (unlicensed, first 3 pages, 253 of the
+  cohort's 400 documents) had turned the `docx_to_pdf` headline into a one-row table; the 400-document
+  group with ten converters is the headline again and the subset is named in the History pointer.
+- `bench report` was refusing to run on `results/converters.jsonl`: the LibreOffice rows that
+  `scripts/convert_candidates.py` writes under the tool name `candidates` had no registry mapping;
+  they map to `soffice` now, and the fresh cohort's lanes (`wordcraft-cli-0.7.0`, `docxodus-13.0.0`,
+  `folio-0.60.0`, `stemma-0.6.0`, `superdoc-2.20.0`, `docxide-pdf-0.18.4`, `rdocx-0.16.0`,
+  `office2pdf-0.8.1`, `pdfitdown-4.2.0`, `libreoffice_convert_rust-0.1.0`, `pymupdf-pro-1.28.2`)
+  have entries in `bench.registry.yaml`.
 - `scripts/word_pdf.py` (and `word_redline.py` through it): Word's repair prompt is now
   recognised from the alert's text in the same osascript that reads its buttons, answered No,
   and followed to the "Word experienced an error trying to open the file" OK with Word brought
@@ -61,6 +72,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   instead of `button 'missing value'`.
 
 ### Added
+- The fresh cohort's canonical lines are in the stores: `results/bench.jsonl` (+9 `script_redlines`
+  rows on docset `62d32b1f2954df42`), `results/converters.jsonl` (+11 `docx_to_pdf` rows, docset
+  `c28442e9bb5a5deb`, PyMuPDF Pro on its 253-document subset `c1d39073ba89a2c3`) and
+  `results/speed.jsonl` (+20). `RESULTS.md` carries the 400-document `docx_to_pdf` table (jubarte
+  0.12.0 82.45 ITT median, 0.11.0 79.75, Wordcraft CLI 0.7.0 53.82, 0.6.1 52.82, docxide-pdf 0.18.4
+  52.37, libreoffice_convert_rust 0.1.0 and LibreOffice 47.87, rdocx 0.16.0 45.90, office2pdf 0.8.1
+  44.45, pdfitdown 4.2.0 41.95) and the fresh speed rows; the comparison rows have no gate set or
+  null-baseline run for their docset, so they stand in `RESULTS_DETAILED.md` (Not ranked, History)
+  until one is recorded (AGENTS.md, "Publishing results"). `RESULTS_v0.7.0.md` freezes the page
+  as it was before the bench moved to 0.8.0.
 - Wordcraft 400+400 cohort extended (`results/wordcraft_20261014_fresh/REPORT.md`): on the same frozen
   fixtures, fresh Word 16.115 oracles, Word renderer and scorer, the newest release of the top three
   non-jubarte tools of every past results table plus two releases that landed during the run.

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="318" height="28" viewBox="0 0 318 28" role="img" aria-label="forgiving → neurotic_docx_bench | BENCHED!">
+  <title>forgiving → neurotic_docx_bench | BENCHED!</title>
+  <rect x="0.5" y="0.5" width="317" height="27" rx="4" fill="#fffdf9" stroke="#d6d3d1" stroke-width="1"/>
+  <rect x="5.5" y="4.5" width="2.5" height="19" rx="1.25" fill="#dc2626"/>
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="11">
+    <!-- <redline>forgiving</redline> (9 * 6.8 = 61.2px, x=15..76.2) -->
+    <text x="15" y="15.5" fill="#dc2626" textLength="61.2" lengthAdjust="spacing">forgiving</text>
+    <line x1="14" y1="11.8" x2="77.2" y2="11.8" stroke="#dc2626" stroke-width="1.4"/>
+    <!-- <insertion_double_underline_blue>neurotic</insertion_double_underline_blue> (8 * 6.8 = 54.4px, x=79.0..133.4) -->
+    <text x="79.0" y="15.5" fill="#0070c0" font-weight="600" textLength="54.4" lengthAdjust="spacing">neurotic</text>
+    <line x1="79.0" y1="18.0" x2="133.4" y2="18.0" stroke="#0070c0" stroke-width="1.15"/>
+    <line x1="79.0" y1="20.0" x2="133.4" y2="20.0" stroke="#0070c0" stroke-width="1.15"/>
+    <!-- _docx_bench (11 * 6.8 = 74.8px, x=135.0..209.8) -->
+    <text x="135.0" y="15.5" fill="#1e293b" font-weight="600" textLength="74.8" lengthAdjust="spacing">_docx_bench</text>
+  </g>
+  <line x1="222" y1="4.5" x2="222" y2="23.5" stroke="#e7e5e4" stroke-width="1"/>
+  <rect x="228" y="4" width="84" height="20" rx="3" fill="#eff6ff" stroke="#93c5fd" stroke-width="1"/>
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="11" font-weight="700">
+    <text x="242.8" y="15.5" fill="#0070c0" textLength="54.4" lengthAdjust="spacing">BENCHED!</text>
+    <line x1="242.8" y1="18.0" x2="297.2" y2="18.0" stroke="#0070c0" stroke-width="1.25"/>
+    <line x1="242.8" y1="20.1" x2="297.2" y2="20.1" stroke="#0070c0" stroke-width="1.25"/>
+  </g>
+</svg>

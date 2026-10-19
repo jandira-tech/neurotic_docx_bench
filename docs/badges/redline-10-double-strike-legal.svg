@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="266" height="24" viewBox="0 0 266 24" role="img" aria-label="§ neurotic_docx_bench: benched! (legal double-redline)">
+  <title>§ neurotic_docx_bench: benched! (legal double-redline)</title>
+  <rect x="0.5" y="0.5" width="265" height="23" rx="3" fill="#faf8f5" stroke="#a8a29e" stroke-width="1"/>
+  <!-- Double left revision bar (court blackline style) -->
+  <line x1="5" y1="4" x2="5" y2="20" stroke="#b91c1c" stroke-width="1.5"/>
+  <line x1="8" y1="4" x2="8" y2="20" stroke="#b91c1c" stroke-width="1"/>
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="11">
+    <!-- "§ " (2 * 6.6 = 13.2px, x=14..27.2) -->
+    <text x="14" y="15.5" fill="#78716c" textLength="13.2" lengthAdjust="spacing">§ </text>
+    <!-- "neurotic" (8 * 6.6 = 52.8px, x=27.2..80.0) with double strikethrough -->
+    <text x="27.2" y="15.5" fill="#b91c1c" textLength="52.8" lengthAdjust="spacing">neurotic</text>
+    <line x1="26.5" y1="10.8" x2="80.5" y2="10.8" stroke="#b91c1c" stroke-width="1.1"/>
+    <line x1="26.5" y1="13.0" x2="80.5" y2="13.0" stroke="#b91c1c" stroke-width="1.1"/>
+    <!-- "_docx_bench" (11 * 6.6 = 72.6px, x=80.0..152.6) -->
+    <text x="80.0" y="15.5" fill="#1c1917" font-weight="600" textLength="72.6" lengthAdjust="spacing">_docx_bench</text>
+  </g>
+  <!-- Double vertical rule divider -->
+  <line x1="163" y1="4" x2="163" y2="20" stroke="#d6d3d1" stroke-width="1"/>
+  <line x1="165.5" y1="4" x2="165.5" y2="20" stroke="#d6d3d1" stroke-width="1"/>
+  <!-- Right insertion box with double underline -->
+  <rect x="172" y="3.5" width="88" height="17" rx="2" fill="#f0fdf4" stroke="#86efac" stroke-width="1"/>
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="11" font-weight="700">
+    <text x="189.6" y="14.5" fill="#15803d" textLength="52.8" lengthAdjust="spacing">benched!</text>
+    <line x1="189.6" y1="16.8" x2="242.4" y2="16.8" stroke="#15803d" stroke-width="1.1"/>
+    <line x1="189.6" y1="18.8" x2="242.4" y2="18.8" stroke="#15803d" stroke-width="1.1"/>
+  </g>
+</svg>
