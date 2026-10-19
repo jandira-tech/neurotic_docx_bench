@@ -1,0 +1,18 @@
+Device Index: 0
+  Selected: false
+  Device Name: Apple M4 Pro
+  Device Vendor: Apple
+  Device Version: OpenCL 1.2 
+  Driver Version: 1.2 1.0
+  Device Type: gpu 
+  Device Extensions: cl_APPLE_SetMemObjectDestructor cl_APPLE_ContextLoggingFunctions cl_APPLE_clut cl_APPLE_query_kernel_names cl_APPLE_gl_sharing cl_khr_gl_event cl_khr_byte_addressable_store cl_khr_global_int32_base_atomics cl_khr_global_int32_extended_atomics cl_khr_local_int32_base_atomics cl_khr_local_int32_extended_atomics cl_khr_3d_image_writes cl_khr_image2d_from_buffer cl_khr_depth_images 
+  Device OpenCL C Version: OpenCL C 1.2 
+  Device Available: true
+  Device Compiler Available: true
+  Device Linker Available: true
+  Platform Name: Apple
+  Platform Vendor: Apple
+  Platform Version: OpenCL 1.2 (Aug  8 2026 15:27:26)
+  Platform Profile: FULL_PROFILE
+  Platform Extensions: cl_APPLE_SetMemObjectDestructor cl_APPLE_ContextLoggingFunctions cl_APPLE_clut cl_APPLE_query_kernel_names cl_APPLE_gl_sharing cl_khr_gl_event
+

@@ -836,7 +836,10 @@ def docx_to_pdf_eval(
     score_only: bool = typer.Option(
         False,
         "--score-only",
-        help="skip conversion and score the PDFs given by --location-to-score.",
+        help=(
+            "skip conversion and score the PDFs given by --location-to-score; needs the "
+            "single --tool that made them (its results/converters.jsonl label, e.g. soffice)."
+        ),
     ),
     location_to_score: list[Path] = typer.Option(
         [],
@@ -870,7 +873,13 @@ def docx_to_pdf_eval(
 
     tools = tool or None
     if tools:
-        unknown = [name for name in tools if name not in WORD_PDF_TOOLS and name != "jubarte"]
+        unknown = [
+            name
+            for name in tools
+            if name not in WORD_PDF_TOOLS
+            and name != "jubarte"
+            and not (score_only and name == "soffice")
+        ]
         if unknown:
             raise typer.BadParameter(f"unknown --tool: {', '.join(unknown)}")
     if track is not None:
@@ -896,8 +905,13 @@ def docx_to_pdf_eval(
     else:
         if score_only and len(tool) > 1:
             raise typer.BadParameter("--score-only scores one PDF set; pass a single --tool")
-        label = tool[0] if score_only and len(tool) == 1 else None
-        run_tools = (label,) if score_only and label else (("candidates",) if score_only else tools)
+        if score_only and not tool:
+            raise typer.BadParameter(
+                "--score-only needs the --tool that made the PDFs (its "
+                "results/converters.jsonl label, e.g. --tool soffice)"
+            )
+        label = tool[0] if score_only else None
+        run_tools = (label,) if score_only else tools
         selected = _corpus_word_selection(
             origin=origin,
             files_list=files_list,
@@ -982,7 +996,10 @@ def docxide_metrics_eval(
     score_only: bool = typer.Option(
         False,
         "--score-only",
-        help="skip conversion and score the PDFs given by --location-to-score.",
+        help=(
+            "skip conversion and score the PDFs given by --location-to-score; needs the "
+            "single --tool that made them (its results/converters.jsonl label, e.g. soffice)."
+        ),
     ),
     location_to_score: list[Path] = typer.Option(
         [],
@@ -1014,13 +1031,24 @@ def docxide_metrics_eval(
 
     if score_only and len(tool) > 1:
         raise typer.BadParameter("--score-only scores one PDF set; pass a single --tool")
+    if score_only and not tool:
+        raise typer.BadParameter(
+            "--score-only needs the --tool that made the PDFs (its "
+            "results/converters.jsonl label, e.g. --tool soffice)"
+        )
     if score_only:
-        tools = (tool[0],) if tool else ("candidates",)
-        label = tool[0] if tool else None
+        tools = (tool[0],)
+        label = tool[0]
     else:
         tools = tuple(tool) or dm.DEFAULT_TOOLS
         label = None
-    unknown = [name for name in tools if name not in WORD_PDF_TOOLS and name != "jubarte" and name != "candidates"]
+    unknown = [
+        name
+        for name in tools
+        if name not in WORD_PDF_TOOLS
+        and name != "jubarte"
+        and not (score_only and name == "soffice")
+    ]
     if unknown:
         raise typer.BadParameter(f"unknown --tool: {', '.join(unknown)}")
     selected = _corpus_word_selection(
