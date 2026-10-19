@@ -110,7 +110,7 @@ DEFAULT_N = 600
 DEFAULT_JOBS = 4
 DEFAULT_CONVERT_WORKERS = 3
 SOFFICE_WORK = Path('results/soffice_26.8.0.3_work')
-SCORE_ONLY_TOOL = 'candidates'  # bench docx-to-pdf --score-only without --tool
+SCORE_ONLY_TOOL = 'candidates'  # reports written before the soffice step passed --tool soffice
 SOFFICE_VERSION = 'LibreOffice ' + SOFFICE_WORK.name.removeprefix('soffice_').removesuffix('_work')
 # generate-native-redlines.ts finds bin/Release/net8.0/docxodus-inproc under it
 DOCXODUS_DIST = Path('src/neurotic_docx_bench/utils/docxodus/docxodus-csharp-inproc')
@@ -850,9 +850,9 @@ def _report_tool(report: dict, tool: str) -> dict:
 
 
 def _score_only_tool(report: dict) -> str:
-    """The key a ``--score-only`` report files its PDFs under: ``candidates``
-    (``--tool`` takes converters the bench can run, and LibreOffice is not one)."""
-    return SCORE_ONLY_TOOL if SCORE_ONLY_TOOL in (report.get('tools') or {}) else 'soffice'
+    """The key a ``--score-only`` report files its PDFs under: ``soffice`` (the step
+    passes ``--tool soffice``) or ``candidates`` (reports written before it did)."""
+    return 'soffice' if 'soffice' in (report.get('tools') or {}) else SCORE_ONLY_TOOL
 
 
 def _agg(scores: dict[str, float]) -> dict:
@@ -1193,7 +1193,7 @@ def collect_results(root: Path, version: str, lane: str, *, jubarte: dict,
                      'microsoft_word': word_version, 'libreoffice': soffice_version, 'docxodus': None},
         'provenance': {
             'measure': 'bench docx-to-pdf --origin list (one --files-list per fixture); '
-                       f'soffice --score-only --location-to-score {ev}/soffice_sample',
+                       f'soffice --score-only --tool soffice --location-to-score {ev}/soffice_sample',
             'scores': {'jubarte': str(conversion_report('jubarte', version)),
                        'soffice': str(conversion_report('soffice', version))},
         },
@@ -1547,7 +1547,7 @@ def plan(rel: Release, *, binary: Path | None = None, seed: int = DEFAULT_SEED,
              log=ev / 'convert_soffice.log', may_fail=True),
         Step('score', 'stage soffice renders', action=soffice_stage),
         Step('score', 'score soffice (score-only)',
-             (*bench, 'docx-to-pdf', '--score-only',
+             (*bench, 'docx-to-pdf', '--score-only', '--tool', 'soffice',
               '--tool-version', SOFFICE_VERSION,
               '--location-to-score', str(ev / 'soffice_sample'),
               '--origin', 'list', *files,

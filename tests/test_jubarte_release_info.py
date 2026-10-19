@@ -802,7 +802,7 @@ def test_soffice_renders_are_staged_under_the_docx_stem_and_scored_from_there(tm
     assert (root / ev / 'soffice_sample' / 'fx10.pdf').read_bytes() == b'%PDF-1.7 fx10'
     score = _cmd(_plan(root, regen, n=8, jobs=5), 'score soffice (score-only)')
     assert '--score-only' in score
-    assert '--tool' not in score  # --tool takes runnable converters; the report key is then 'candidates'
+    assert score[score.index('--tool') + 1] == 'soffice'  # the store label its converters.jsonl line maps by
     assert score[score.index('--tool-version') + 1] == 'LibreOffice 26.8.0.3' == jri.SOFFICE_VERSION
     assert score[score.index('--location-to-score') + 1] == str(ev / 'soffice_sample')
     assert score[score.index('--work-dir') + 1] == str(ev / 'soffice_score_work')
@@ -1052,7 +1052,7 @@ def test_plan_flag_prints_and_runs_nothing(tmp_path: Path) -> None:
     lines = out.output.splitlines()
     assert lines[0] == 'sample    (bench inputs)' and lines[1] == 'sample    (adopt redline sample)'
     assert lines[2] == 'sample    (draw conversion sample)'
-    assert 'score     uv run bench docx-to-pdf --score-only --tool-version' in out.output
+    assert 'score     uv run bench docx-to-pdf --score-only --tool soffice --tool-version' in out.output
     assert '--jobs 7' in lines[-1]
     assert not (tmp_path / 'results').exists()
     bad = CliRunner().invoke(jri.app, [V, '--plan', '--skip', 'word'])
