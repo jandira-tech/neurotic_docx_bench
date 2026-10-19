@@ -319,6 +319,47 @@ def test_headline_current_group_is_the_one_with_the_newest_eligible_row(
     assert [h.docset for h in t.history_groups] == ["d0"]
 
 
+def test_headline_skips_a_set_that_is_a_strict_subset_of_another_measured_set(
+    registry,
+) -> None:
+    """A late run on part of the cohort's documents (a trial-licensed converter that
+    scored 253 of 400) must not pull the headline onto that subset. The subset is read
+    from the rows' own per-document scores; no docsets.json entry is needed."""
+    full = {f"doc{i}": 70.0 for i in range(6)}
+    part = {k: 50.0 for k in list(full)[:4]}
+    rows = [
+        row("a", median=70, days=0, docset="full", scores=full),
+        row("b", median=60, days=0, docset="full", scores=full),
+        row("a", median=50, days=1, docset="part", scores=part),
+    ]
+    docsets = {"full": {"n": 6}, "part": {"n": 4}}
+    t = _select(rows, registry, docsets=docsets)["script_redlines"]
+    assert t.group is not None and t.group.docset == "full"
+    assert [r.row.tool_id for r in t.rows] == ["a", "b"]
+    assert [h.docset for h in t.history_groups] == ["part"]
+    # The gate sets _with_gates adds (two documents each) are subsets too.
+    assert t.subset_groups["part"] == "full"
+    assert pol.subset_docsets(rows) == {"part": "full"}
+
+
+def test_subset_detection_needs_documents_on_both_sides_and_a_strict_inclusion(
+    registry,
+) -> None:
+    same = {f"doc{i}": 70.0 for i in range(3)}
+    rows = [
+        row("a", median=70, days=0, docset="x", scores=same),
+        row("a", median=70, days=1, docset="y", scores=same),  # equal sets: neither
+        row("b", median=70, days=2, docset="z", scores={}),  # no documents: never
+    ]
+    assert pol.subset_docsets(rows) == {}
+    # Only subset sets, nothing larger measured: the plain newest-row rule stands.
+    only = [
+        row("a", median=70, days=0, docset="p", scores={"doc0": 70.0, "doc1": 70.0}),
+    ]
+    t = _select(only, registry, docsets={"p": {"n": 2}})["script_redlines"]
+    assert t.group is not None and t.group.docset == "p"
+
+
 def test_retracted_run_falls_back_to_previous_run(registry) -> None:
     rows = [row("a", median=95, days=0), row("a", median=10, days=5)]
     r = pol.Retraction(

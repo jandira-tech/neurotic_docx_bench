@@ -192,6 +192,18 @@ score_v2.patch
 # separate Cloudflare worker project, kept locally, not part of the bench
 /docx-viewer/
 
+# the review website: a linked worktree of THIS repo's gh-pages branch (the published
+# site at https://jandira-tech.github.io/neurotic_docx_bench/). Lives inside the repo
+# so all bench work is centralized; never commit its contents on main.
+# Manage it with: git worktree list | see docs/PUBLISHING.md
+/site/
+
+# D1 live-bench harvest work state (runs, seen.csv, watermark; see live-bench/harvest/README.md)
+/live-bench/.work/
+
+# wrangler local dev state (D1 local copies, worker builds)
+.wrangler/
+
 # generated comparison output (scripts write it; history keeps the old files)
 /results-compare/
 .env
@@ -218,3 +230,4 @@ results/wordcraft_20261014/word_screen_docxodus12.log
 results/wordcraft_20261014_fresh/lf_backup_2026-10-14/comparisons.csv
 results/wordcraft_20261014_fresh/lf_backup_2026-10-14/conversions.csv
 /Users/arthrod/temp/T/neurotic_docx_bench/superdoc-redlines/
+grok_run/

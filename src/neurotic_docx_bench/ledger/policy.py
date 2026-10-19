@@ -12,7 +12,11 @@
   reason and listed under "Below the gate".
 - Rows compare only inside one *group*: (benchmark, lens, document set, renderer,
   scorer, bench series). The *current* group of a benchmark is the one holding the
-  newest eligible row.
+  newest eligible row, not counting rows on a *subset set*: a document set whose
+  documents (read from the rows' own per-document scores) are a strict subset of
+  another set measured for the same benchmark. Such rows stay in History; a late run
+  on part of a cohort (a trial-licensed converter scoring 253 of 400 documents) never
+  pulls the headline onto that part.
 - The headline shows one row per tool: the latest eligible run in the current group.
   There is no best-of-N over runs and no best pin; that is what history is for.
 - Rank ties come from ``tie_fn`` (stats: the paired bootstrap interval of the median
@@ -161,6 +165,34 @@ def gate_docset_id(
     return None
 
 
+def subset_docsets(rows: Sequence[ResultRow]) -> dict[str, str]:
+    """Document sets of ``rows`` (one benchmark) whose documents are a strict subset of
+    another measured set's: ``{subset docset: the smallest superset docset}``.
+
+    The documents of a set are the union of the ITT pools (scored plus failed documents)
+    of every row stamped with it. A set with no per-document ids is never a subset and
+    never a superset; equal sets are neither. Gate sets are the registered case of this
+    (and are excluded by ``is_gate_docset`` as well); the unregistered case is a run on
+    part of a cohort, which must not become the current group by being the newest.
+    """
+    docs: dict[str, set[str]] = {}
+    for r in rows:
+        key = group_key(r).docset
+        docs.setdefault(key, set()).update(r.itt_scores())
+    out: dict[str, str] = {}
+    for did, ids in docs.items():
+        if not ids:
+            continue
+        supersets = [
+            (len(other), oid)
+            for oid, other in docs.items()
+            if oid != did and other and ids < other
+        ]
+        if supersets:
+            out[did] = min(supersets)[1]
+    return out
+
+
 def eligibility(
     row: ResultRow,
     *,
@@ -239,6 +271,9 @@ class HeadlineTable(BaseModel):
     history_groups: list[GroupKey]
     # Gate verdicts for the latest candidate row per tool, passed or not.
     gates: list[GateResult] = []
+    # Document sets of this benchmark that are strict subsets of another measured set,
+    # mapped to that set; their rows never define the current group.
+    subset_groups: dict[str, str] = {}
 
     @property
     def below_gate(self) -> list[GateResult]:
@@ -428,6 +463,7 @@ def select_headline(
 
         not_applicable = [t for t in registry.tools if not t.applies_to(benchmark)]
         eligible = [r for r in bench_rows if verdict(r).eligible]
+        subsets = subset_docsets(bench_rows)
         if not eligible:
             tables[benchmark] = HeadlineTable(
                 benchmark=benchmark,
@@ -443,9 +479,13 @@ def select_headline(
                 not_applicable=not_applicable,
                 history_groups=sorted(history, key=lambda g: g.docset),
                 gates=gates,
+                subset_groups=subsets,
             )
             continue
-        newest = max(eligible, key=lambda r: r.timestamp)
+        # The newest eligible row picks the current group, unless it sits on a subset
+        # of another measured set; with only subset sets measured, it still picks.
+        whole = [r for r in eligible if group_key(r).docset not in subsets]
+        newest = max(whole or eligible, key=lambda r: r.timestamp)
         current = group_key(newest)
         members = groups[current]
         ranked = rank_rows(
@@ -478,6 +518,7 @@ def select_headline(
                 (g for g in history if g != current), key=lambda g: g.docset
             ),
             gates=gates,
+            subset_groups=subsets,
         )
     return tables
 

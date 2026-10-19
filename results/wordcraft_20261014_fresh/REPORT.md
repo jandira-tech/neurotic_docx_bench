@@ -1,6 +1,6 @@
 # Wordcraft CLI benchmark — complete
 
-Updated: 2026-10-14 21:01:58 EDT.
+Updated: 2026-10-14 22:33:17 EDT.
 
 Seed 20261014. 400 unique base→next comparisons and 400 distinct conversion DOCX, in two cohorts: the original 200+200 sample and a seeded, stratified expansion drawn before any vendor ran. Word eligibility is established first: a fixture for which Word could not produce a fresh oracle in this run is excluded and logged (`comparison_exclusions.json`, `conversion_exclusions.json`); Word-session failures were retried, not excluded. Inputs are frozen before vendor generation; vendor failures are never replaced and count as zero.
 

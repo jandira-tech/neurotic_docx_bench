@@ -102,6 +102,17 @@ Pins: [`bench.yaml`](bench.yaml). Tool identities: [`bench.registry.yaml`](bench
 | [jubarte 0.11.0](https://github.com/jandira-tech/jubarte-redlines) | generator | jubarte-redlines | yes |  |
 | [jubarte 0.12.0](https://github.com/jandira-tech/jubarte-redlines) | generator | jubarte-redlines | yes |  |
 | [docxodus 12.6.5](https://github.com/JSv4/docxodus) | generator | docxodus |  |  |
+| [Wordcraft CLI 0.7.0](https://github.com/storytold/wordcraft) | generator | wordcraft-cli |  |  |
+| [docxodus 13.0.0](https://github.com/JSv4/docxodus) | generator | docxodus |  |  |
+| [folio-core 0.60.0](https://github.com/stella/folio) | generator | @stll/folio-core |  |  |
+| [stemma 0.6.0](https://github.com/stemma-sh/stemma) | generator | stemma |  |  |
+| [superdoc-sdk 2.20.0](https://github.com/Harbour-Enterprises/SuperDoc) | generator | superdoc-sdk |  |  |
+| [docxide-pdf 0.18.4](https://github.com/sverrejb/docxide-pdf) | converter | docxide-pdf |  |  |
+| [rdocx 0.16.0](https://github.com/tensorbee/rdocx) | converter | rdocx |  |  |
+| [office2pdf 0.8.1](https://github.com/developer0hye/office2pdf) | converter | office2pdf (Typst) |  |  |
+| [pdfitdown 4.2.0](https://github.com/AstraBert/PdfItDown) | converter | office2pdf (Typst) |  | Delegates Office formats to office2pdf; same engine, listed for completeness. |
+| [libreoffice_convert_rust 0.1.0](https://gitcode.com/dnrops/libreoffice_convert_rust) | converter | LibreOffice |  |  |
+| [PyMuPDF Pro 1.28.2](https://pymupdf.io/pro) | converter | pymupdf-pro |  | Unlicensed (Restricted Mode): converts only the first 3 pages, so it is scored on the at-most-3-page set. |
 | [jubarte (lossless)](https://github.com/jandira-tech/jubarte-redlines) | generator | jubarte-final | yes |  |
 | [jubarte (ast)](https://github.com/jandira-tech/jubarte-redlines) | generator | jubarte-final | yes |  |
 | [jubarte-rust](https://github.com/jandira-tech/jubarte-redlines) | generator | jubarte-redlines | yes |  |

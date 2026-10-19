@@ -1,7 +1,7 @@
 <!-- frozen by `uv run bench report`; a frozen page is never rewritten -->
 # Benchmark results, frozen at bench 0.7.0
 
-Frozen 2026-10-14 20:19 UTC when the bench moved to 0.8.0. Docsets: 27122f4d945e, 552da2e38184, a89ffc217bba, c947065c59b2. Scorers: docxide-150dpi, v1. Renderers: oracle:microsoft_word.
+Frozen 2026-10-15 02:38 UTC when the bench moved to 0.8.0. Docsets: 27122f4d945e, 552da2e38184, a89ffc217bba, c947065c59b2. Scorers: docxide-150dpi, v1. Renderers: oracle:microsoft_word.
 
 ---
 # Benchmark results
