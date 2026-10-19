@@ -1,3 +1,4 @@
+/// <reference types="@cloudflare/workers-types" />
 // R2 upload Worker: a fast, authenticated PUT proxy into the review bucket.
 // Deployed from scripts/publish/r2-upload-worker (see docs/PUBLISHING.md):
 //   bunx wrangler secret put UPLOAD_SECRET   # a random string, also saved to ~/.ndb/upload-secret
