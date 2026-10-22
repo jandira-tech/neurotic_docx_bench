@@ -71,9 +71,10 @@ def test_a_candidate_is_found_under_the_name_word_pdf_gave_it(measure, tmp_path:
         {'kind': 'rename', 'status': 'renamed', 'original_filename': long_docx,
          'converted_filename': 'kkk_1a7c593e.docx'},
         {'kind': 'pdf', 'status': 'ok', 'original_filename': 'kkk_1a7c593e.docx',
-         'converted_filename': 'kkk_1a7c593e_byword.pdf'},
+         'converted_filename': 'kkk_1a7c593e_byword.pdf', 'path_out': str(tmp_path / 'kkk_1a7c593e_byword.pdf')},
         {'kind': 'pdf', 'status': 'skipped', 'original_filename': 'short_jubarte-0.13.0.docx',
-         'converted_filename': 'short_jubarte-0.13.0_byword.pdf'},
+         'converted_filename': 'short_jubarte-0.13.0_byword.pdf',
+         'path_out': str(tmp_path / 'short_jubarte-0.13.0_byword.pdf')},
         {'kind': 'pdf', 'status': 'failed', 'original_filename': 'gone_jubarte-0.13.0.docx',
          'converted_filename': ''},
     ])
