@@ -1049,3 +1049,17 @@ def test_build_writes_the_holdout_as_word_keys(tree: Path) -> None:
     prov = json.loads((dest / "PROVENANCE.json").read_text())
     assert prov["holdout"]["missing"] == {f"{WB}/holdout.txt": ["not_a_pair"]}
     assert prov["holdout"]["n"] == 3
+
+
+def test_word_manifest_agrees_with_the_corpus_manifest() -> None:
+    """corpus/word/MANIFEST and corpus/MANIFEST name the same bytes for every shared file.
+
+    fetch_corpus.py verifies a download against the word manifest, so a file refreshed
+    without updating it (the four holdout PDFs of 08e0c40) refuses every fetch.
+    """
+    corpus = Path(__file__).resolve().parents[1] / "corpus"
+    word = json.loads((corpus / "word/MANIFEST.sha256.json").read_text())["files"]
+    top = json.loads((corpus / "MANIFEST.sha256.json").read_text())["files"]
+    shared = [k for k in word if f"word/{k}" in top]
+    assert shared
+    assert [k for k in shared if top[f"word/{k}"] != word[k]] == []
