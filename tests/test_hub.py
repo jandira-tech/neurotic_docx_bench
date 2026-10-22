@@ -7,6 +7,7 @@ reports the stored hashes), so the prune-after-verify rule is tested without a t
 
 from __future__ import annotations
 
+import fnmatch
 import hashlib
 import json
 from pathlib import Path
@@ -87,21 +88,24 @@ class FakeHub:
         repo_type: str,
         revision: str | None = None,
         local_dir: str | Path | None = None,
+        allow_patterns: list[str] | None = None,
     ) -> str:
-        self.calls.append(
-            (
-                "snapshot_download",
-                {
-                    "repo_id": repo_id,
-                    "repo_type": repo_type,
-                    "revision": revision,
-                    "local_dir": str(local_dir),
-                },
-            )
-        )
+        call = {
+            "repo_id": repo_id,
+            "repo_type": repo_type,
+            "revision": revision,
+            "local_dir": str(local_dir),
+        }
+        if allow_patterns is not None:
+            call["allow_patterns"] = allow_patterns
+        self.calls.append(("snapshot_download", call))
         assert local_dir is not None
         dest = Path(local_dir)
         for rel, data in self.stored.get(repo_id, {}).items():
+            if allow_patterns is not None and not any(
+                fnmatch.fnmatch(rel, pat) for pat in allow_patterns
+            ):
+                continue
             out = dest / rel
             out.parent.mkdir(parents=True, exist_ok=True)
             out.write_bytes(data)
@@ -324,6 +328,83 @@ def test_download_fixtures_refuses_a_snapshot_without_a_manifest(
     api.stored[hub.FIXTURES_REPO] = {"x.pdf": b"%PDF"}
     with pytest.raises(hub.ManifestError):
         hub.download_fixtures(tmp_path / "fresh", api=api)
+
+
+def _word_tree(root: Path) -> Path:
+    """A miniature corpus/word: one document, its Word PDF, a table, and the manifest."""
+    word = root / "word"
+    (word / "clean/docx").mkdir(parents=True)
+    (word / "clean/pdf").mkdir(parents=True)
+    (word / "clean/docx/aa_doc.docx").write_bytes(b"PK-docx")
+    (word / "clean/pdf/aa_doc.pdf").write_bytes(b"%PDF-word")
+    (word / "documents.csv").write_bytes(b"id,key\r\naa,aa_doc\r\n")
+    hub.write_manifest(word)
+    return word
+
+
+def _publish(api: FakeHub, tree: Path, extra: dict[str, bytes] | None = None) -> None:
+    store = api.stored.setdefault(hub.FIXTURES_REPO, {})
+    for p in sorted(tree.rglob("*")):
+        if p.is_file():
+            store[p.relative_to(tree.parent).as_posix()] = p.read_bytes()
+    store.update(extra or {})
+
+
+def test_fetch_word_corpus_downloads_only_word_and_verifies_it(tmp_path: Path) -> None:
+    api = FakeHub()
+    _publish(
+        api,
+        _word_tree(tmp_path / "hub"),
+        {"libreoffice/clean/x.pdf": b"%PDF-lo", "word_unindexed/rev/y.docx": b"PK"},
+    )
+    root = tmp_path / "bench"
+    report = hub.fetch_word_corpus(root, api=api, revision="abc123")
+    assert report.ok and report.checked == 3
+    assert (root / "corpus/word/clean/pdf/aa_doc.pdf").read_bytes() == b"%PDF-word"
+    assert not (root / "corpus/libreoffice").exists()
+    assert not (root / "corpus/word_unindexed").exists()
+    dl = next(c for c in api.calls if c[0] == "snapshot_download")[1]
+    assert dl == {
+        "repo_id": hub.FIXTURES_REPO,
+        "repo_type": "dataset",
+        "revision": "abc123",
+        "local_dir": str(root / "corpus"),
+        "allow_patterns": ["word/*"],
+    }
+
+
+def test_fetch_word_corpus_refuses_a_tampered_download(tmp_path: Path) -> None:
+    api = FakeHub()
+    _publish(api, _word_tree(tmp_path / "hub"))
+    api.stored[hub.FIXTURES_REPO]["word/clean/pdf/aa_doc.pdf"] = b"evil"
+    with pytest.raises(hub.ManifestError, match="aa_doc"):
+        hub.fetch_word_corpus(tmp_path / "bench", api=api)
+
+
+def test_fetch_compare_regen_files_the_fresh_compares_and_their_ids(tmp_path: Path) -> None:
+    api = FakeHub()
+    folder = hub.FRESH_COMPARES
+    api.stored[hub.RESULTS_REPO] = {
+        f"{folder}/aa__vs__bb.docx": b"PK",
+        f"{folder}/aa__vs__bb.pdf": b"%PDF-a",
+        f"{folder}/cc__vs__dd.pdf": b"%PDF-c",
+        "outputs/redlines_0929_full/docxodus/docx/z.docx": b"PK-z",
+    }
+    out = tmp_path / "results/compare_regen"
+    ids = hub.fetch_compare_regen(out, api=api)
+    assert ids == ("aa__vs__bb", "cc__vs__dd")
+    assert (out / "out/aa__vs__bb.pdf").read_bytes() == b"%PDF-a"
+    assert (out / "out/cc__vs__dd.pdf").exists()
+    assert not (out / "out/z.docx").exists()
+    assert not list(out.rglob("docxodus"))
+    assert (out / "regen_list.csv").read_text() == "id\naa__vs__bb\ncc__vs__dd\n"
+
+
+def test_fetch_compare_regen_refuses_an_empty_folder(tmp_path: Path) -> None:
+    api = FakeHub()
+    api.stored[hub.RESULTS_REPO] = {}
+    with pytest.raises(hub.ManifestError, match="fresh_compares"):
+        hub.fetch_compare_regen(tmp_path / "cr", api=api)
 
 
 # --- results repo ----------------------------------------------------------
