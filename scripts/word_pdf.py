@@ -81,6 +81,7 @@ Usage:
 from __future__ import annotations
 
 import fcntl
+import filecmp
 import hashlib
 import json
 import math
@@ -341,6 +342,14 @@ def trim_long_names(docs: list[Path], manifest: Path | None, limit: int = NAME_L
             renamed.append(doc)
             continue
         target = doc.with_name(short)
+        if target.exists() and filecmp.cmp(doc, target, shallow=False):
+            # a rerun wrote the long name again beside last run's trimmed copy: the same
+            # document, so it takes the trimmed name and its PDF counts as done
+            doc.replace(target)
+            logger.info(f"[names] {doc.name} is the same file as {short}; folded into it")
+            renamed.append(target)
+            lines.append(manifest_line(doc, target, status="renamed", kind="rename", tool="driver"))
+            continue
         if target.exists():
             logger.warning(
                 f"[names] {doc.name} is {len(doc.name)} characters, over {limit}, but "

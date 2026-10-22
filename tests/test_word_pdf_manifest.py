@@ -148,6 +148,29 @@ def test_trim_long_names_does_not_overwrite_an_existing_file(tmp_path: Path) -> 
     assert long_doc.read_bytes() == b"PK long"
 
 
+def test_trim_long_names_folds_a_regenerated_copy_into_the_trimmed_name(tmp_path: Path) -> None:
+    """A generator rerun writes the long name again beside last run's trimmed copy.
+
+    Same bytes: the long file is that copy, so it takes the trimmed name (and its PDF
+    is found as done) instead of going through Word a second time.
+    """
+    src = tmp_path / "src"
+    long_name = "contract_" + "z" * 90 + ".docx"
+    long_doc = _touch(src / long_name, b"PK same")
+    trimmed = _touch(src / wp.trim_name(long_name), b"PK same")
+    manifest = tmp_path / "out" / "manifest.jsonl"
+
+    docs = wp.trim_long_names([long_doc], manifest)
+
+    assert docs == [trimmed]
+    assert not long_doc.exists()
+    assert trimmed.read_bytes() == b"PK same"
+    (row,) = _lines(manifest)
+    assert row["status"] == "renamed"
+    assert row["original_filename"] == long_name
+    assert row["converted_filename"] == trimmed.name
+
+
 # ─── manifest.jsonl ──────────────────────────────────────────────────────────
 
 
