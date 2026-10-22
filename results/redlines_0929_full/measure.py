@@ -170,13 +170,46 @@ def _resume(partial: Path, out: Path, fresh: Path | None) -> dict[str, dict]:
     return {}
 
 
+def word_pdf_names(folder: Path) -> dict[str, str]:
+    """docx name -> the PDF word_pdf.py made of it, from ``folder/manifest.jsonl``.
+
+    word_pdf.py renames a docx whose name is over its limit to ``<stem cut>_<8 hex>.docx``
+    (a ``rename`` line) and writes ``<stem>_byword.pdf`` (a ``pdf`` line, ``ok`` or
+    ``skipped``); the map follows both back to the name the generator wrote.
+    """
+    manifest = folder / 'manifest.jsonl'
+    if not manifest.is_file():
+        return {}
+    renamed: dict[str, str] = {}
+    pdf: dict[str, str] = {}
+    for line in manifest.read_text().splitlines():
+        row = json.loads(line) if line.strip() else {}
+        if row.get('kind') == 'rename' and row.get('status') == 'renamed':
+            renamed[row['converted_filename']] = row['original_filename']
+        elif row.get('kind') == 'pdf' and row.get('status') in ('ok', 'skipped') and row.get('converted_filename'):
+            pdf[row['original_filename']] = row['converted_filename']
+    return {renamed.get(docx, docx): out for docx, out in pdf.items()}
+
+
+def candidate_pdf(folder: Path, key: str, tool: str, names: dict[str, str] | None = None) -> Path:
+    """Where the Word PDF of ``<key>_<tool>.docx`` is: ``<key>_<tool>.pdf`` (the hub's
+    name) when present, else the name word_pdf.py's manifest gives it."""
+    plain = folder / f'{key}_{tool}.pdf'
+    if plain.is_file():
+        return plain
+    names = word_pdf_names(folder) if names is None else names
+    got = names.get(f'{key}_{tool}.docx')
+    return folder / got if got else plain
+
+
 def measure(tool: str, fresh: Path | None, regen: set[str], jobs: int, sample: int = 0, seed: int = 0,
             sample_csv: Path | None = None, chunk: int = 250, cand_dir: Path | None = None) -> None:
     pool = list(csv.DictReader(open(HERE / 'pool_pairs.csv')))
     first = {(r['base'], r['next']): r['key'] for r in reversed(list(csv.DictReader(open(HERE / 'gen_pairs.csv'))))}
     oracle = oracles(pool, fresh)
     src = cand_dir or HERE / tool / 'pdf_by_word'
-    cands = {r['key']: src / f'{first[r["base"], r["next"]]}_{tool}.pdf' for r in pool}
+    names = word_pdf_names(src)
+    cands = {r['key']: candidate_pdf(src, first[r['base'], r['next']], tool, names) for r in pool}
     suffix = ''
     if sample_csv:
         keys = {r['key'] for r in csv.DictReader(open(sample_csv))}
