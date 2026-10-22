@@ -32,6 +32,10 @@ from neurotic_docx_bench.version import bench_version
 
 FIXTURES_REPO = "arthrod/neurotic_docx_bench-fixtures"
 RESULTS_REPO = "arthrod/neurotic_docx_bench"
+WORD_CORPUS = "word"  # corpus/word on disk, word/ in the fixtures repo
+# Word's fresh compares of the 0929 run: results/compare_regen/out on disk
+FRESH_COMPARES = "outputs/redlines_0929_full/fresh_compares"
+DEFAULT_COMPARE_REGEN = Path("results/compare_regen")
 REPO_TYPE = "dataset"
 MANIFEST_NAME = "MANIFEST.sha256.json"
 LICENSE_ID = "odc-by"
@@ -77,6 +81,7 @@ class HubApi(Protocol):
         repo_type: str,
         revision: str | None = None,
         local_dir: str | Path | None = None,
+        allow_patterns: list[str] | None = None,
     ) -> str: ...
 
     def list_repo_tree(
@@ -347,6 +352,72 @@ def download_fixtures(
             f"{repo_id}@{revision or 'main'} does not match its manifest: {report.describe()}"
         )
     return report
+
+
+def fetch_word_corpus(
+    root: Path = Path("."),
+    *,
+    api: HubApi,
+    repo_id: str = FIXTURES_REPO,
+    revision: str | None = None,
+) -> ManifestReport:
+    """Download ``corpus/word`` (docx, Word PDFs, tables) under ``root`` and verify its manifest.
+
+    Git carries only the corpus tables; the documents and PDFs live on the public
+    fixtures dataset. Only ``word/`` is fetched, not the LibreOffice renders or the
+    unindexed folders beside it.
+    """
+    corpus = Path(root) / DEFAULT_CORPUS
+    corpus.mkdir(parents=True, exist_ok=True)
+    api.snapshot_download(
+        repo_id,
+        repo_type=REPO_TYPE,
+        revision=revision,
+        local_dir=corpus,
+        allow_patterns=[f"{WORD_CORPUS}/*"],
+    )
+    report = verify_manifest(corpus / WORD_CORPUS)
+    if report.missing or report.mismatched:
+        raise ManifestError(
+            f"{repo_id}@{revision or 'main'} {WORD_CORPUS}/ does not match its manifest: "
+            f"{report.describe()}"
+        )
+    return report
+
+
+def fetch_compare_regen(
+    dest: Path = DEFAULT_COMPARE_REGEN,
+    *,
+    api: HubApi,
+    repo_id: str = RESULTS_REPO,
+    revision: str | None = None,
+) -> tuple[str, ...]:
+    """Download Word's fresh compares into ``dest/out`` and write ``dest/regen_list.csv``.
+
+    The release flow takes a compare's oracle from ``out/`` when it is there. Every
+    compare in the folder was made again, so the regen list is their ids.
+    """
+    dest = Path(dest)
+    staging = dest / ".hub"
+    api.snapshot_download(
+        repo_id,
+        repo_type=REPO_TYPE,
+        revision=revision,
+        local_dir=staging,
+        allow_patterns=[f"{FRESH_COMPARES}/*"],
+    )
+    got = staging / FRESH_COMPARES
+    files = sorted(p for p in got.iterdir() if p.is_file()) if got.is_dir() else []
+    if not files:
+        raise ManifestError(f"{repo_id}@{revision or 'main'} has nothing under {FRESH_COMPARES}")
+    out = dest / "out"
+    out.mkdir(parents=True, exist_ok=True)
+    for p in files:
+        p.replace(out / p.name)
+    shutil.rmtree(staging)
+    ids = tuple(sorted({p.stem for p in files}))
+    (dest / "regen_list.csv").write_text("id\n" + "".join(f"{i}\n" for i in ids))
+    return ids
 
 
 # --- results repo ----------------------------------------------------------
