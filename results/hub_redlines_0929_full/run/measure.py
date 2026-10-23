@@ -41,6 +41,7 @@ import tempfile
 from pathlib import Path
 
 from neurotic_docx_bench import content_cache, kernels, pipeline
+from neurotic_docx_bench.word_outputs import find_output
 
 HERE = Path(__file__).parent
 
@@ -170,13 +171,20 @@ def _resume(partial: Path, out: Path, fresh: Path | None) -> dict[str, dict]:
     return {}
 
 
+def candidate_pdf(folder: Path, key: str, tool: str) -> Path:
+    """Where Word's PDF of ``<key>_<tool>.docx`` is: what ``find_output`` resolves through
+    word_pdf.py's manifest (a trimmed name, ``_byword``) or ``<key>_<tool>.pdf`` (the
+    hub's name); a missing one is the plain name, which scores as missing."""
+    return find_output(folder, f'{key}_{tool}.docx', kind='pdf', ext='.pdf') or folder / f'{key}_{tool}.pdf'
+
+
 def measure(tool: str, fresh: Path | None, regen: set[str], jobs: int, sample: int = 0, seed: int = 0,
             sample_csv: Path | None = None, chunk: int = 250, cand_dir: Path | None = None) -> None:
     pool = list(csv.DictReader(open(HERE / 'pool_pairs.csv')))
     first = {(r['base'], r['next']): r['key'] for r in reversed(list(csv.DictReader(open(HERE / 'gen_pairs.csv'))))}
     oracle = oracles(pool, fresh)
     src = cand_dir or HERE / tool / 'pdf_by_word'
-    cands = {r['key']: src / f'{first[r["base"], r["next"]]}_{tool}.pdf' for r in pool}
+    cands = {r['key']: candidate_pdf(src, first[r['base'], r['next']], tool) for r in pool}
     suffix = ''
     if sample_csv:
         keys = {r['key'] for r in csv.DictReader(open(sample_csv))}

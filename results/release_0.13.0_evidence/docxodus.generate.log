@@ -1,0 +1,12 @@
+[docxodus-csharp-inproc] wrote 27 redline(s) → results/redlines_0929_full/docxodus/docx
+[docxodus-csharp-inproc] 14 pair(s) skipped:
+  60697d46b7_strict01__vs__a04e2d2749_ooxml_style_link_redline_6b74ac1ae6 [generate]: docxodus-csharp-inproc: Document has no w:body element.
+  66dcec3e49_file_175__vs__8f47b1dc90_file_176_redline_485599b4e9 [generate]: docxodus-csharp-inproc: 'rId13' ID conflicts with the ID of an existing relationship for the specified source.
+  8e694101b9_469e571050275b57ed1836b4cc17f4d29e43eec925bdfad9__vs__37c6c62345_3f296ffac9c17a92962156ff41f2b079eb687cd440513fe3_redline_9a2af58d99 [generate]: docxodus-csharp-inproc: 'rId7' ID conflicts with the ID of an existing relationship for the specified source.
+  9c6ebd430d_file_185__vs__154fce3ec8_file_186_redline_4d40d1f136 [generate]: docxodus-csharp-inproc: Document has no w:body element.
+  ab85c77154_file_115__vs__b7219494de_file_116_redline_61959b1953 [generate]: docxodus-csharp-inproc: Document has no w:body element.
+  b8115d0dab_file_100__vs__c500e0081f_file_101_redline_ff24600d87 [generate]: docxodus-csharp-inproc: Document has no w:body element.
+  c090b9f082_file_8__vs__3f91c8f0cd_file_9_redline_bc6f8076f9 [generate]: docxodus-csharp-inproc: 'rId15' ID conflicts with the ID of an existing relationship for the specified source.
+  c09b14fcd7_file_196__vs__4e6a261969_file_197_redline_cfb0498eef [generate]: docxodus-csharp-inproc: Document has no w:body element.
+  c9822f1008_docx_lots_of_comments_addition_redline__vs__32328b55db_docx_lots_of_comments_addition_removal_redline_r_redline_e6e61fc33f [generate]: docxodus-csharp-inproc: 'rId17' ID conflicts with the ID of an existing relationship for the specified source.
+  e11fc429b2_29540ef11ec3fc04ba1bca353f5140559c4b03e76516c7a7__vs__0f6e71381a_7057d180ffd30c96a71aa95e32993d39bf2e59a1eff850b7_redline_b461d6f797 [generate]: docxodus-csharp-inproc: 'rId13' ID conflicts with the ID of an existing relationship for the specified source.
