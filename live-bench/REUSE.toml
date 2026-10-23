@@ -3,7 +3,7 @@
 version = 1
 
 [[annotations]]
-path = [".env.example", ".gitignore", "Dockerfile.dockerignore", "backend/pyproject.toml", "backend/uv.lock", "frontend/.emdash/migrations.json", "frontend/.gitignore", "frontend/package.json", "frontend/package-lock.json", "frontend/tsconfig.json", "frontend/wrangler.jsonc"]
+path = [".env.example", ".gitignore", "Dockerfile.dockerignore", "backend/pyproject.toml", "backend/uv.lock", "frontend/.emdash/migrations.json", "frontend/.gitignore", "frontend/package.json", "frontend/tsconfig.json", "frontend/wrangler.jsonc"]
 SPDX-FileCopyrightText = "2026 Jandira Technologies, LLC"
 SPDX-License-Identifier = "AGPL-3.0-only"
 

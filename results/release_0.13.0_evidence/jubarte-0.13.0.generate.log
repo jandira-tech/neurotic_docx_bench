@@ -1,0 +1,22 @@
+node:internal/modules/package_json_reader:343
+  throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+        ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'tsx' imported from /Users/arthrod/temp/T/neurotic_docx_bench/
+    at Object.getPackageJSONURL (node:internal/modules/package_json_reader:343:9)
+    at packageResolve (node:internal/modules/esm/resolve:751:25)
+    at moduleResolve (node:internal/modules/esm/resolve:840:18)
+    at defaultResolve (node:internal/modules/esm/resolve:973:11)
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:708:20)
+    at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:728:38)
+    at ModuleLoader.resolveSync (node:internal/modules/esm/loader:766:56)
+    at #resolve (node:internal/modules/esm/loader:690:17)
+    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:610:35)
+    at node:internal/modules/esm/loader:639:32 {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v26.11.1
+[jubarte-rust] wrote 600 redline(s) → results/redlines_0929_full/jubarte-0.13.0/docx
+[jubarte-rust] wrote 600 redline(s) → results/redlines_0929_full/jubarte-0.13.0/docx
+[jubarte-rust] wrote 600 redline(s) → results/redlines_0929_full/jubarte-0.13.0/docx

@@ -72,14 +72,14 @@ Run from `live-bench/` in this checkout. Copy `.env.example` to `.env`, set the 
 Word token and a random ingest token of at least 24 characters. Keep `.env` private.
 
 ```sh
+pnpm install --frozen-lockfile   # any dir inside the repo: the frontend is a pnpm workspace member
 cd frontend
-npm ci
-npx wrangler d1 migrations apply DB --local
+pnpm exec wrangler d1 migrations apply DB --local
 ```
 
 For the local smoke test, put `INGEST_TOKEN=local-smoke-token-at-least-24-characters`
-in `frontend/.dev.vars` and start `npm run dev -- --background`. This includes
-`vite-plugin-console-pipe`; use `npx astro dev logs` to inspect browser errors.
+in `frontend/.dev.vars` and start `pnpm run dev -- --background`. This includes
+`vite-plugin-console-pipe`; use `pnpm exec astro dev logs` to inspect browser errors.
 Return to `live-bench/`, ensure OrbStack is running, then:
 
 ```sh
@@ -107,11 +107,11 @@ Authenticate Wrangler to the owning account. Apply migrations before publishing 
 
 ```sh
 cd frontend
-npx wrangler d1 migrations apply DB --remote
-npm run check
-npm run build
-npx wrangler secret put INGEST_TOKEN
-npx wrangler deploy
+pnpm exec wrangler d1 migrations apply DB --remote
+pnpm run check
+pnpm run build
+pnpm exec wrangler secret put INGEST_TOKEN
+pnpm exec wrangler deploy
 ```
 
 Configure the same ingest token in Coolify and set `WORD_API_TOKEN` there. Never put
