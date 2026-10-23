@@ -239,3 +239,14 @@ def test_settled_dialog_marked_read_after_usable_capture(wsl, monkeypatch, tmp_p
     wsl.handle_frame({w["id"]: w}, fh)
     assert wsl.read_at[w["id"]] == key
     assert "says: TEXT" in fh.getvalue()
+
+
+def test_handoff_rerun_command_feeds_collect_fresh_stdout():
+    """`collect` parses `<run>/word.stdout` (harvest.py): the recovery command must overwrite it.
+
+    Without the redirect, a rerun pairs the fresh `word_pdf/` PDFs with the interrupted
+    run's stale `word.stdout` and misclassifies every failure line in it.
+    """
+    doc = (Path(__file__).resolve().parents[1] / "docs" / "HANDOFF_LIVE_BENCH_HARVEST_20261017.md").read_text()
+    line = next(l for l in doc.splitlines() if "word_pdf.py --src $R/word_in" in l)
+    assert '> "$R/word.stdout" 2>&1' in line
