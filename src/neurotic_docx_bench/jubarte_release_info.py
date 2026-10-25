@@ -1081,8 +1081,10 @@ def drawn_date(redline: dict, conversion: dict) -> str:
     (release_info/README.md: every table names the date its sample was
     drawn), not the day the six are written — a flow that crosses midnight
     UTC wrote the next day's date and the site step refused it (0.14.0, #60).
-    Samples drawn on two days have no one date: redraw them. Results without
-    a drawn date keep today's."""
+    Samples drawn on two days have no one date: redraw them. The site holds
+    the date only to the samples that name one (jubarte-site
+    scripts/check-bench.ts), so one drawn date is the date; today's is used
+    only when neither sample names one."""
     dates = {doc.get('sample', {}).get('drawn', {}).get('date') for doc in (redline, conversion)} - {None}
     if len(dates) > 1:
         raise ValueError(f'the samples were drawn on {" and ".join(sorted(dates))}: the site needs one date; '

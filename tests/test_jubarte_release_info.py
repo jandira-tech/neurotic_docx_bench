@@ -1298,6 +1298,14 @@ def test_samples_drawn_on_two_days_are_refused(tmp_path: Path) -> None:
     assert not (tmp_path / 'release_info').exists() or not list((tmp_path / 'release_info').glob('*_9.9.9_*'))
 
 
+def test_one_drawn_date_is_the_website_date(tmp_path: Path) -> None:
+    # The site holds bench.generated only to the samples that name a drawn
+    # date; today's date would fail it whenever the flow crosses midnight.
+    jri.write_six(tmp_path, '9.9.9', now=datetime(2026, 10, 25, 1, 20), **_six_args('2026-10-24', None))
+    records = _website(tmp_path / 'release_info')
+    assert next(r['value'] for r in records if r['key'] == 'bench.generated') == '2026-10-24'
+
+
 def test_the_engine_commit_names_the_binary_s_build_not_the_checkout_s_head(tmp_path: Path) -> None:
     # 0.12.0: the write stage stamped the checkout's HEAD, which had moved past
     # the commit the scored candidate was built from. --engine-commit names it.
