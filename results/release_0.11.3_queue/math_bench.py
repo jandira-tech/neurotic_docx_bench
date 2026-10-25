@@ -10,8 +10,9 @@ The set is hmath_rows.jsonl: the 29 corpus documents holding a display equation
 against the document's corpus Word PDF (docxide-metrics: jaccard, ssim,
 text_boundary, as jubarte-loop/enbench.py does) and writes math_scores_TAG.json beside this file. A
 document whose conversion fails is recorded with `failed: true`, no hash and jaccard 0, and is
-never scored; a PDF an earlier run left under the same TAG is deleted before converting. `cmp`
-leaves failed documents out and prints the paired deltas
+never scored; a PDF an earlier run left under the same TAG is deleted before converting, and a
+conversion that runs past TIMEOUT counts as failed. `cmp` leaves out failed documents (and, in older
+score files, rows without a PDF hash) and prints the paired deltas
 for the math set and for the control. A math change must leave every control PDF's text
 and page count as they were; `cmp` counts the control documents whose candidate PDF
 hash moved and whose score moved by more than 0.01.
@@ -37,6 +38,7 @@ SCORER = str(ROOT / 'src/neurotic_docx_bench/utils/docxide-metrics/target/releas
 CORPUS = ROOT / 'corpus' / 'word'
 LANES = Path(os.environ.get('JUBARTE_LOOP_DIR', Path.home() / 'temp/T/jubarte-loop')) / 'release_0.11.3' / 'math_lanes'
 TOOL = 'jubarte'
+TIMEOUT = 300  # seconds per conversion; a conversion that runs longer counts as failed
 
 
 def documents() -> list[dict]:
@@ -50,14 +52,22 @@ def documents() -> list[dict]:
 
 
 def convert(binary: str, docx: Path, pdf: Path) -> bool:
-    """True only when this run exited 0 and left a PDF; a failed run leaves no PDF behind."""
+    """True only when this run exited 0 within TIMEOUT and left a PDF; a failed run leaves no PDF behind."""
     pdf.unlink(missing_ok=True)  # a PDF an earlier run left under the same TAG is not this binary's
-    done = subprocess.run([binary, 'convert', str(docx), '-o', str(pdf), '--force', '--revisions', 'word'],
-                          capture_output=True, timeout=300, check=False)
-    if done.returncode != 0:
-        pdf.unlink(missing_ok=True)  # nor is a partial PDF from a run that failed
+    try:
+        done = subprocess.run([binary, 'convert', str(docx), '-o', str(pdf), '--force', '--revisions', 'word'],
+                              capture_output=True, timeout=TIMEOUT, check=False)
+    except subprocess.TimeoutExpired:
+        done = None
+    if done is None or done.returncode != 0:
+        pdf.unlink(missing_ok=True)  # nor is a partial PDF from a run that failed or timed out
         return False
     return pdf.is_file()
+
+
+def measured(row: dict) -> bool:
+    """A row is a measurement only if its conversion produced a PDF (older score files lack `failed`)."""
+    return not row.get('failed') and row.get('candidate_sha256') is not None
 
 
 def run(tag: str, binary: str) -> None:
@@ -100,8 +110,7 @@ def cmp(old: str, new: str) -> None:
     b = json.loads((HERE / f'math_scores_{new}.json').read_text())['rows']
     rng = random.Random(20261004)
     for group in ('display', 'none'):
-        keys = sorted(k for k in a if k in b and a[k]['math'] == group  # a failed conversion is no measurement
-                      and not a[k].get('failed') and not b[k].get('failed'))
+        keys = sorted(k for k in a if k in b and a[k]['math'] == group and measured(a[k]) and measured(b[k]))
         for term in ('jaccard', 'ssim', 'text_boundary'):
             pairs = [(a[k].get(term), b[k].get(term)) for k in keys]
             d = [y - x for x, y in pairs if x is not None and y is not None]

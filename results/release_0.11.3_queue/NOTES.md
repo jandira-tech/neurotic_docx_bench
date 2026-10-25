@@ -75,14 +75,19 @@ scored by `math_bench.py` (docxide-metrics vs Word's PDFs), paired 95% bootstrap
 `math_bench.py` and `predict_scope.py` used to run each conversion with `check=False` and
 then read whatever PDF sat at the output path. On a reused TAG, a failed conversion would
 have been scored or hashed as the new binary's, using the earlier run's PDF, and
-`predict_scope.py` counted a document both binaries failed on as unchanged. Both scripts
-now delete the target before converting, treat a nonzero exit as a failure, and leave
-failed documents out of the scores, of `cmp` and of the matrix (`failed` in the output).
-The three scripts' scratch folders now follow `$JUBARTE_LOOP_DIR` (default
-`~/temp/T/jubarte-loop`, the path they used before).
+`predict_scope.py` counted a document both binaries failed on as unchanged. A conversion
+that ran past 300 s raised out of the thread pool and lost the whole batch. Both scripts
+now delete the target before converting and treat a nonzero exit, a missing PDF or a
+timeout as a failure. Failed documents stay out of the scores, out of `cmp` (as do rows of
+older score files that have no PDF hash) and out of the matrix (`failed` in the output),
+and any failure makes `predict_scope.py`'s `holds` false. The three scripts' scratch
+folders now follow `$JUBARTE_LOOP_DIR` (default `~/temp/T/jubarte-loop`, the path they
+used before).
 
-The results above were recorded with the earlier scripts. Every recorded run holds a PDF
-hash for all of its documents (145 in each math_scores_*.json, 2925 in scope_math3.json,
-whose failed_old and failed_new are 0), and each run used its own TAG. So no recorded
-number rests on a missing conversion. Whether a TAG was ever run twice cannot be checked
-now: the lane folders under jubarte-loop/release_0.11.3 are gone.
+The results above were recorded with the earlier scripts, and what they can show is
+limited. Each math_scores_*.json holds a PDF hash for all 145 documents, and
+scope_math3.json reports failed_old = failed_new = 0 (it keeps aggregates only, no
+per-document hashes). That rules out a document with no PDF at all. It does not rule out
+a PDF left by an earlier run under the same TAG, or a partial PDF from a conversion that
+exited nonzero: the old scripts recorded no exit codes, and the lane folders under
+jubarte-loop/release_0.11.3 are gone, so neither can be checked now.

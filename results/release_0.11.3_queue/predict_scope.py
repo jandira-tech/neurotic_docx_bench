@@ -10,8 +10,10 @@ whose main story or any other story part (headers, footers, notes, comments) hol
 changed document against Word's PDF with docxide-metrics and reports the paired deltas
 with a 95% bootstrap interval. Writes scope_TAG.json beside this file. PDFs go to
 jubarte-loop/release_0.11.3/scope/TAG/{old,new} ($JUBARTE_LOOP_DIR, default ~/temp/T/jubarte-loop)
-and are kept for inspection. A document either binary fails to convert is listed under `failed`
-and left out of the matrix; a PDF an earlier run left under the same TAG is deleted first.
+and are kept for inspection. A document either binary fails to convert (nonzero exit, no PDF, or
+past TIMEOUT) is listed under `failed`, left out of the matrix, and makes `holds` false: the claim
+is corpus-wide, so it is not shown while any document went unmeasured. A PDF an earlier run left
+under the same TAG is deleted first.
 """
 
 from __future__ import annotations
@@ -33,6 +35,7 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 CORPUS = ROOT / 'corpus' / 'word'
 SCORER = str(ROOT / 'src/neurotic_docx_bench/utils/docxide-metrics/target/release/docxide-metrics')
+TIMEOUT = 300  # seconds per conversion; a conversion that runs longer counts as failed
 OUT = Path(os.environ.get('JUBARTE_LOOP_DIR', Path.home() / 'temp/T/jubarte-loop')) / 'release_0.11.3' / 'scope'
 
 
@@ -47,10 +50,13 @@ def holds_marker(docx: Path, marker: bytes) -> bool:
 def convert(binary: str, docx: Path, pdf: Path) -> str | None:
     """sha256 of the PDF this run wrote, or None when it failed; a failed run leaves no PDF behind."""
     pdf.unlink(missing_ok=True)  # a PDF an earlier run left under the same TAG is not this binary's
-    done = subprocess.run([binary, 'convert', str(docx), '-o', str(pdf), '--force', '--revisions', 'word'],
-                          capture_output=True, timeout=300, check=False)
-    if done.returncode != 0 or not pdf.is_file():
-        pdf.unlink(missing_ok=True)  # nor is a partial PDF from a run that failed
+    try:
+        done = subprocess.run([binary, 'convert', str(docx), '-o', str(pdf), '--force', '--revisions', 'word'],
+                              capture_output=True, timeout=TIMEOUT, check=False)
+    except subprocess.TimeoutExpired:
+        done = None
+    if done is None or done.returncode != 0 or not pdf.is_file():
+        pdf.unlink(missing_ok=True)  # nor is a partial PDF from a run that failed or timed out
         return None
     return hashlib.sha256(pdf.read_bytes()).hexdigest()
 
@@ -109,7 +115,7 @@ def main() -> None:
                                   'ci95': [boot[100], boot[3899]],
                                   'up': sum(d > 0.01 for d in deltas), 'down': sum(d < -0.01 for d in deltas),
                                   'worst': sorted(((b[k] - a[k], k) for k in a if k in b))[:5]},
-              'holds': not surprises}
+              'holds': not surprises and not failed}  # an unmeasured document leaves the claim untested
     (HERE / f'scope_{args.tag}.json').write_text(json.dumps(result, indent=1) + '\n')
     print(json.dumps({k: v for k, v in result.items() if k not in ('surprises', 'failed')}
                      | {'surprises': surprises[:20], 'failed': failed[:20]}, indent=1))

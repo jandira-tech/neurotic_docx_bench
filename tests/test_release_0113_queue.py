@@ -167,3 +167,54 @@ def test_scratch_folders_follow_jubarte_loop_dir(tmp_path, monkeypatch):
 def test_scratch_folders_default_under_home(monkeypatch):
     monkeypatch.delenv('JUBARTE_LOOP_DIR', raising=False)
     assert load('hmath_test').SCRATCH == Path.home() / 'temp/T/jubarte-loop/release_0.11.3/hmath_scratch'
+
+
+SLOW = """#!/bin/sh
+printf partial > "$4"
+exec sleep 5
+"""
+
+
+def test_a_timeout_is_a_failed_conversion_and_leaves_no_pdf(tmp_path, monkeypatch):
+    for name in ('math_bench', 'predict_scope'):
+        mod = load(name)
+        monkeypatch.setattr(mod, 'TIMEOUT', 0.5)
+        pdf = tmp_path / f'{name}.pdf'
+
+        assert not mod.convert(tool(tmp_path / 'slow', SLOW), tmp_path / 'slow.docx', pdf)
+        assert not pdf.exists()
+
+
+def test_math_bench_cmp_leaves_legacy_rows_without_a_hash_out(tmp_path, monkeypatch, capsys):
+    """Score files written before `failed` existed mark a failed conversion only by a null hash."""
+    mb = load('math_bench')
+    monkeypatch.setattr(mb, 'HERE', tmp_path)
+    row = {'math': 'display', 'stem': 's', 'ssim': 0.5, 'text_boundary': 0.5}
+    (tmp_path / 'math_scores_old.json').write_text(json.dumps(
+        {'rows': {'a': row | {'candidate_sha256': None, 'jaccard': 0.0}}}))
+    (tmp_path / 'math_scores_new.json').write_text(json.dumps(
+        {'rows': {'a': row | {'candidate_sha256': 'x', 'jaccard': 80.0}}}))
+
+    mb.cmp('old', 'new')
+
+    out = capsys.readouterr().out
+    assert 'display PDFs changed: 0/0' in out
+    assert 'delta' not in out
+
+
+def test_predict_scope_does_not_hold_when_a_document_went_unmeasured(tmp_path, monkeypatch):
+    ps = load('predict_scope')
+    here = tmp_path / 'here'
+    here.mkdir()
+    monkeypatch.setattr(ps, 'HERE', here)
+    monkeypatch.setattr(ps, 'CORPUS', corpus(tmp_path / 'corpus', ['math_fail']))
+    monkeypatch.setattr(ps, 'OUT', tmp_path / 'scope')
+    monkeypatch.setattr(ps, 'SCORER', tool(tmp_path / 'scorer', SCORER))
+    monkeypatch.setattr(sys, 'argv', ['predict_scope.py', tool(tmp_path / 'old_bin', CONVERTER),
+                                      tool(tmp_path / 'new_bin', CONVERTER), 'T'])
+
+    ps.main()
+
+    result = json.loads((here / 'scope_T.json').read_text())
+    assert result['failed'] == ['stem_math_fail']
+    assert result['holds'] is False
