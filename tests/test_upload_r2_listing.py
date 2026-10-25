@@ -531,3 +531,52 @@ def test_upload_api_and_listing_use_same_refresh_helper(upload_r2, patched, monk
     assert client.sent == ["Bearer expired", "Bearer refreshed"]
     assert failed == []
     assert patched["subprocess"] == []
+
+
+# --- review round on PR #68 (CodeRabbit) ---------------------------------------------
+
+@pytest.mark.parametrize("info", [
+    {"cursor": "c1", "is_truncated": None},
+    {"cursor": "c1", "is_truncated": "false"},
+])
+def test_listing_non_boolean_is_truncated_raises(upload_r2, patched, info):
+    """null or a string is neither "more" nor "done": an indeterminate page must not end the listing."""
+    client = FakeClient([{"success": True, "result": batch(0, 1), "result_info": info}])
+
+    with pytest.raises(RuntimeError, match=PREFIX):
+        asyncio.run(upload_r2.listing(client, PREFIX))
+
+
+@pytest.mark.parametrize("body", [
+    {"success": True, "result": {}},  # result must be the documented array
+    [{"key": "p/00000", "size": 0}],  # a JSON body that is not an object
+])
+def test_listing_malformed_200_body_is_retried(upload_r2, patched, body):
+    assert_retry_at_same_cursor(upload_r2, patched, FakeResponse(body))
+
+
+@pytest.mark.parametrize(("value", "fallback", "wait"), [
+    ("7", 1, 7),
+    ("0", 1, 0),
+    ("99999", 1, 300),  # capped: the API's rate window is 300 s
+    ("-5", 2, 2),  # nonsense: the normal backoff
+    ("soon", 4, 4),
+    ("Wed, 21 Oct 2026 07:28:10 GMT", 1, 10),  # HTTP-date, 10 s after `now`
+    ("Wed, 21 Oct 2026 07:27:00 GMT", 1, 0),  # already past
+    ("Wed, 21 Oct 2027 07:28:00 GMT", 1, 300),
+])
+def test_retry_after_seconds_or_http_date_capped(upload_r2, value, fallback, wait):
+    from datetime import UTC, datetime
+
+    now = datetime(2026, 10, 21, 7, 28, 0, tzinfo=UTC)
+    assert upload_r2.retry_after(value, fallback, now=now) == wait
+
+
+def test_listing_429_with_huge_retry_after_sleeps_the_cap(upload_r2, patched):
+    client = FakeClient([
+        FakeResponse({"success": False, "result": None}, status_code=429, headers={"Retry-After": "99999"}),
+        good([], None, False),
+    ])
+
+    assert asyncio.run(upload_r2.listing(client, PREFIX)) == {}
+    assert patched["sleeps"] == [300]

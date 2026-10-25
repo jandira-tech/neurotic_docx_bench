@@ -26,9 +26,12 @@ from __future__ import annotations
 
 import argparse
 import asyncio
+import email.utils
+import math
 import subprocess
 import sys
 import tomllib
+from datetime import UTC, datetime
 from pathlib import Path
 
 import httpx
@@ -37,6 +40,7 @@ ACCOUNT = "5651b2fe85f9bbb0fc1b8f4ad2cb4e64"
 BUCKET = "neurotic-docx-bench-pages"
 API = f"https://api.cloudflare.com/client/v4/accounts/{ACCOUNT}/r2/buckets/{BUCKET}/objects"
 WRANGLER_TIMEOUT = 60
+RETRY_AFTER_CAP = 300  # seconds; the R2 API allows 1200 requests per 300 s, so no wait needs longer
 TYPES = {
     ".webp": "image/webp",
     ".pdf": "application/pdf",
@@ -72,6 +76,25 @@ async def refresh_token(client: httpx.AsyncClient) -> None:
     client.headers["Authorization"] = f"Bearer {token()}"
 
 
+def retry_after(value: str | None, fallback: float, now: datetime | None = None) -> float:
+    """Seconds a 429's Retry-After asks for (delta-seconds or HTTP-date, RFC 9110), capped; fallback if unusable."""
+    if not value:
+        return fallback
+    try:
+        wait = int(value)
+    except ValueError:
+        try:
+            when = email.utils.parsedate_to_datetime(value)
+        except (TypeError, ValueError):
+            return fallback
+        if when.tzinfo is None:  # an HTTP-date is GMT
+            when = when.replace(tzinfo=UTC)
+        wait = max(0, math.ceil((when - (now or datetime.now(UTC))).total_seconds()))  # a past date: go now
+    if wait < 0:
+        return fallback
+    return min(wait, RETRY_AFTER_CAP)
+
+
 def local_files(root: Path) -> list[Path]:
     return sorted(p for p in root.rglob("*") if p.is_file() and p.suffix.lower() in TYPES and p.name != ".DS_Store")
 
@@ -95,20 +118,17 @@ async def listing(client: httpx.AsyncClient, prefix: str) -> dict[str, int]:
                 if response.status_code in (401, 403):
                     await refresh_token(client)
                 elif response.status_code == 429:
-                    try:
-                        delay = int(response.headers.get("Retry-After", ""))
-                    except ValueError:
-                        pass  # absent or invalid header: use the normal backoff
+                    delay = retry_after(response.headers.get("Retry-After"), delay)
                 elif 200 <= response.status_code < 300:
                     try:
                         r = response.json()
                     except ValueError as error:
                         last_error += f": {error}"
                     else:
-                        if r.get("success") and r.get("result") is not None:
+                        if isinstance(r, dict) and r.get("success") and isinstance(r.get("result"), list):
                             page = r
                             break
-                        last_error += f": {r.get("errors", r)}"
+                        last_error += f": {r.get('errors', r) if isinstance(r, dict) else r}"
             if attempt < 3:  # no point sleeping after the last attempt
                 await asyncio.sleep(delay)
         if page is None:  # this page failed 4 times in a row
@@ -118,9 +138,10 @@ async def listing(client: httpx.AsyncClient, prefix: str) -> dict[str, int]:
         info = page.get("result_info")
         if info is None:  # the API leaves result_info out of the last page, even a full one
             return out
-        if "is_truncated" not in info:  # says neither "more" nor "done"
-            raise RuntimeError(f"R2 listing for prefix {prefix!r} gave result_info without is_truncated: {info}")
-        if not info["is_truncated"]:
+        truncated = info.get("is_truncated")
+        if not isinstance(truncated, bool):  # absent, null or a string says neither "more" nor "done"
+            raise RuntimeError(f"R2 listing for prefix {prefix!r} gave result_info without a boolean is_truncated: {info}")
+        if not truncated:
             return out
         cursor = info.get("cursor")
         if not cursor or cursor in seen:  # truncated without a new cursor: the next request would repeat a page
