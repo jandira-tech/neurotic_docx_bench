@@ -290,7 +290,7 @@ def main(argv: list[str] | None = None) -> int:
     repo = Path(args.repo)
     if not (repo / "superdoc-redline.mjs").is_file():
         print(f"[superdoc-redlines] clone not found at {repo} — git clone "
-              "https://github.com/yuch85/superdoc-redlines && pnpm install "
+              "https://github.com/yuch85/superdoc-redlines && cd superdoc-redlines && pnpm install "
               "--ignore-scripts --config.strict-dep-builds=false")
         return 1
 
