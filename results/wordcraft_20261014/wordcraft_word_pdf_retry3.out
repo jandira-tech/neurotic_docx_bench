@@ -1,0 +1,188 @@
+2026-10-14 03:20:57.203 | INFO     | __main__:preflight:2361 -  preflight: 
+open_documents=0 started_clean=True launched_by_us=False close_documents=True
+2026-10-14 03:20:57.208 | INFO     | __main__:convert_folder:2030 -  export: 
+one_osascript=True documents=200 accept_all=False reject_all=False
+2026-10-14 03:20:57.217 | INFO     | __main__:_convert_batched:2233 -  one 
+osascript for 10 document(s)
+2026-10-14 03:21:02.224 | INFO     | __main__:_loop:1531 -  0/10
+2026-10-14 03:21:03.147 | INFO     | __main__:_note_dialogs:819 -  Microsoft 
+Word shows button 'OK'
+2026-10-14 03:21:03.148 | INFO     | __main__:_note_dialogs:822 -  Microsoft 
+Word says: 'Word experienced an error trying to open the file.\nTry these 
+suggestions.\n* Check the file permissions for the document or drive.\n* Make 
+sure there is sufficient free memory and disk space.\n* Open the file with the 
+Text Recovery converter.\n(00000__0dfc906eb1.docx)'
+2026-10-14 03:21:03.363 | WARNING  | __main__:_loop_word:919 -  Word dialog 
+dismissed via 'OK'; Word said: "Word experienced an error trying to open the 
+file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00000__0dfc906eb1.docx)"
+2026-10-14 03:21:07.230 | INFO     | __main__:_loop:1531 -  1/10
+2026-10-14 03:21:07.345 | INFO     | __main__:_note_dialogs:822 -  Microsoft 
+Word says: 'Word experienced an error trying to open the file.\nTry these 
+suggestions.\n* Check the file permissions for the document or drive.\n* Make 
+sure there is sufficient free memory and disk space.\n* Open the file with the 
+Text Recovery converter.\n(00001__1edc0f56f4.docx)'
+2026-10-14 03:21:07.546 | WARNING  | __main__:_loop_word:919 -  Word dialog 
+dismissed via 'OK'; Word said: "Word experienced an error trying to open the 
+file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00001__1edc0f56f4.docx)"
+2026-10-14 03:21:11.531 | INFO     | __main__:_note_dialogs:822 -  Microsoft 
+Word says: 'Word experienced an error trying to open the file.\nTry these 
+suggestions.\n* Check the file permissions for the document or drive.\n* Make 
+sure there is sufficient free memory and disk space.\n* Open the file with the 
+Text Recovery converter.\n(00002__34ffddfe47.docx)'
+2026-10-14 03:21:11.748 | WARNING  | __main__:_loop_word:919 -  Word dialog 
+dismissed via 'OK'; Word said: "Word experienced an error trying to open the 
+file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00002__34ffddfe47.docx)"
+2026-10-14 03:21:12.231 | INFO     | __main__:_loop:1531 -  3/10
+2026-10-14 03:21:15.714 | INFO     | __main__:_note_dialogs:822 -  Microsoft 
+Word says: 'Word experienced an error trying to open the file.\nTry these 
+suggestions.\n* Check the file permissions for the document or drive.\n* Make 
+sure there is sufficient free memory and disk space.\n* Open the file with the 
+Text Recovery converter.\n(00003__4d40d1f136.docx)'
+2026-10-14 03:21:15.934 | WARNING  | __main__:_loop_word:919 -  Word dialog 
+dismissed via 'OK'; Word said: "Word experienced an error trying to open the 
+file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00003__4d40d1f136.docx)"
+2026-10-14 03:21:17.238 | INFO     | __main__:_loop:1531 -  4/10
+2026-10-14 03:21:19.899 | INFO     | __main__:_note_dialogs:822 -  Microsoft 
+Word says: 'Word experienced an error trying to open the file.\nTry these 
+suggestions.\n* Check the file permissions for the document or drive.\n* Make 
+sure there is sufficient free memory and disk space.\n* Open the file with the 
+Text Recovery converter.\n(00004__57dfcda882.docx)'
+2026-10-14 03:21:20.129 | WARNING  | __main__:_loop_word:919 -  Word dialog 
+dismissed via 'OK'; Word said: "Word experienced an error trying to open the 
+file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00004__57dfcda882.docx)"
+2026-10-14 03:21:22.242 | INFO     | __main__:_loop:1531 -  5/10
+2026-10-14 03:21:24.081 | INFO     | __main__:_note_dialogs:822 -  Microsoft 
+Word says: 'Word experienced an error trying to open the file.\nTry these 
+suggestions.\n* Check the file permissions for the document or drive.\n* Make 
+sure there is sufficient free memory and disk space.\n* Open the file with the 
+Text Recovery converter.\n(00005__61959b1953.docx)'
+2026-10-14 03:21:24.295 | WARNING  | __main__:_loop_word:919 -  Word dialog 
+dismissed via 'OK'; Word said: "Word experienced an error trying to open the 
+file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00005__61959b1953.docx)"
+2026-10-14 03:21:27.246 | INFO     | __main__:_loop:1531 -  6/10
+2026-10-14 03:21:28.245 | INFO     | __main__:_note_dialogs:822 -  Microsoft 
+Word says: 'Word experienced an error trying to open the file.\nTry these 
+suggestions.\n* Check the file permissions for the document or drive.\n* Make 
+sure there is sufficient free memory and disk space.\n* Open the file with the 
+Text Recovery converter.\n(00006__6bcf56a447.docx)'
+2026-10-14 03:21:28.446 | WARNING  | __main__:_loop_word:919 -  Word dialog 
+dismissed via 'OK'; Word said: "Word experienced an error trying to open the 
+file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00006__6bcf56a447.docx)"
+2026-10-14 03:21:32.254 | INFO     | __main__:_loop:1531 -  7/10
+2026-10-14 03:21:32.445 | INFO     | __main__:_note_dialogs:822 -  Microsoft 
+Word says: 'Word experienced an error trying to open the file.\nTry these 
+suggestions.\n* Check the file permissions for the document or drive.\n* Make 
+sure there is sufficient free memory and disk space.\n* Open the file with the 
+Text Recovery converter.\n(00007__6de20376e8.docx)'
+2026-10-14 03:21:32.646 | WARNING  | __main__:_loop_word:919 -  Word dialog 
+dismissed via 'OK'; Word said: "Word experienced an error trying to open the 
+file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00007__6de20376e8.docx)"
+2026-10-14 03:21:36.665 | INFO     | __main__:_note_dialogs:822 -  Microsoft 
+Word says: 'Word experienced an error trying to open the file.\nTry these 
+suggestions.\n* Check the file permissions for the document or drive.\n* Make 
+sure there is sufficient free memory and disk space.\n* Open the file with the 
+Text Recovery converter.\n(00008__f7bbf6e831.docx)'
+2026-10-14 03:21:36.906 | WARNING  | __main__:_loop_word:919 -  Word dialog 
+dismissed via 'OK'; Word said: "Word experienced an error trying to open the 
+file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00008__f7bbf6e831.docx)"
+2026-10-14 03:21:37.261 | INFO     | __main__:_loop:1531 -  9/10
+2026-10-14 03:21:40.903 | INFO     | __main__:_note_dialogs:822 -  Microsoft 
+Word says: 'Word experienced an error trying to open the file.\nTry these 
+suggestions.\n* Check the file permissions for the document or drive.\n* Make 
+sure there is sufficient free memory and disk space.\n* Open the file with the 
+Text Recovery converter.\n(00009__ff24600d87.docx)'
+2026-10-14 03:21:41.140 | WARNING  | __main__:_loop_word:919 -  Word dialog 
+dismissed via 'OK'; Word said: "Word experienced an error trying to open the 
+file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(00009__ff24600d87.docx)"
+2026-10-14 03:21:41.219 | ERROR    | __main__:_convert_batched:2279 -  FAIL: 
+0dfc906eb1.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:21:41.221 | ERROR    | __main__:_convert_batched:2279 -  FAIL: 
+1edc0f56f4.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:21:41.221 | ERROR    | __main__:_convert_batched:2279 -  FAIL: 
+34ffddfe47.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:21:41.222 | ERROR    | __main__:_convert_batched:2279 -  FAIL: 
+4d40d1f136.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:21:41.222 | ERROR    | __main__:_convert_batched:2279 -  FAIL: 
+57dfcda882.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:21:41.223 | ERROR    | __main__:_convert_batched:2279 -  FAIL: 
+61959b1953.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:21:41.223 | ERROR    | __main__:_convert_batched:2279 -  FAIL: 
+6bcf56a447.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:21:41.224 | ERROR    | __main__:_convert_batched:2279 -  FAIL: 
+6de20376e8.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:21:41.224 | ERROR    | __main__:_convert_batched:2279 -  FAIL: 
+f7bbf6e831.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:21:41.225 | ERROR    | __main__:_convert_batched:2279 -  FAIL: 
+ff24600d87.docx — open produced 0 new documents; refusing to guess
+2026-10-14 03:21:41.226 | INFO     | __main__:stop:953 -  tally: declined=0 
+dismissed=10 granted=0 forwarded=0 alerts_seen=10
+        DOCX → PDF:         
+results/wordcraft_20261014/c
+   ompare/wordcraft/docx    
+┏━━━━━━━━━━━━━━━━━━┳━━━━━━━┓
+┃ outcome          ┃ count ┃
+┡━━━━━━━━━━━━━━━━━━╇━━━━━━━┩
+│ converted        │     0 │
+│ skipped (exists) │   190 │
+│ failed           │    10 │
+└──────────────────┴───────┘
+  FAIL 0dfc906eb1.docx: open produced 0 new documents; refusing to guess
+  FAIL 1edc0f56f4.docx: open produced 0 new documents; refusing to guess
+  FAIL 34ffddfe47.docx: open produced 0 new documents; refusing to guess
+  FAIL 4d40d1f136.docx: open produced 0 new documents; refusing to guess
+  FAIL 57dfcda882.docx: open produced 0 new documents; refusing to guess
+  FAIL 61959b1953.docx: open produced 0 new documents; refusing to guess
+  FAIL 6bcf56a447.docx: open produced 0 new documents; refusing to guess
+  FAIL 6de20376e8.docx: open produced 0 new documents; refusing to guess
+  FAIL f7bbf6e831.docx: open produced 0 new documents; refusing to guess
+  FAIL ff24600d87.docx: open produced 0 new documents; refusing to guess

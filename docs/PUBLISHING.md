@@ -62,6 +62,43 @@ bunx wrangler r2 object get neurotic-docx-bench-pages/<key> --file <out>
 bunx wrangler r2 bucket list
 ```
 
+### What is on the bucket today
+
+Every package carries a `MANIFEST.sha256.txt` (and a README); all URLs are relative to
+`https://pub-92c80eda1059428394970066c8500eda.r2.dev/`:
+
+| Prefix | What |
+|---|---|
+| `d2p/`, `redlines/` | the review site's page images and per-case PDFs (2026-10-11 renewal; referenced by the gh-pages viewers) |
+| `wordcraft-20261014/` | the wordcraft 400+400 cohort — oracles, every tool lane, scores, REPORT (12,034 objects) |
+| `wordcraft-20261014-initial/` | the original 200+200 morning run (docxodus pre-12.6.5, jubarte-0.12.0-c551 lanes) |
+| `jubarte-release/compare-regen/` | `bench jubarte-release` working evidence (Word compare regenerations vs old baseline) |
+| `word-driver-ab/20261014/` | the Word-driver A/B report and runs (AGENTS.md "What the 2026-10-14 A/B found") |
+| `d1-exports/jubarte-live-bench/2026-10-13/` | D1 export, schema and harvest-analysis records of the 2026-10-13 campaign |
+
+### The sample picker (what reviewers use)
+
+`scripts/pick_fixtures.py` is a colour, Typer-based CLI over the HF fixtures dataset:
+`list` shows the corpus by state and set, `search` filters the two tables without
+downloading any document bytes, `download` fetches exactly the picked samples
+(sha256-verified, optionally with a comparison's base and next inputs):
+
+```bash
+uv run --with typer --with rich --with "huggingface_hub<2" python scripts/pick_fixtures.py list
+uv run --with typer --with rich --with "huggingface_hub<2" python scripts/pick_fixtures.py search comparisons --set redlines_en_500
+uv run --with typer --with rich --with "huggingface_hub<2" python scripts/pick_fixtures.py download documents --set sources_500 --sample 10 --seed 7 --what both
+```
+
+A second HF dataset, `arthrod/neurotic-docx-bench-artifacts`, holds the working
+evidence that is not corpus (currently `really_broken/` — the Word-refusing fixtures
+and tool redlines of the harvest, with `MANIFEST.sha256.txt`). `really_broken/` is
+fetched back from there when a harvest or Word-driver session needs it (command in
+`live-bench/harvest/README.md`).
+
+Corpus DOCX/PDF are **not** tracked in git on purpose (the 2026-10-17 state): the
+hub dataset is their only home; `bench fixtures download` or the picker brings them
+back. Git carries the tables, manifests and READMEs only.
+
 ### The upload Worker (bulk path)
 
 `scripts/publish/r2-upload-worker/` — a PUT-only proxy into the bucket: requires the

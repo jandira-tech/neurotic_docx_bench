@@ -1,0 +1,60 @@
+# Jules PR review: audited fork of thalesraymond/jules-pr-reviewer, pinned by commit SHA.
+# Audit + rollout tracking: https://github.com/arthrod/jules-pr-reviewer/issues/1
+name: Jules PR Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+# No default token permissions; the job below asks only for what it uses.
+permissions: {}
+
+concurrency:
+  group: jules-review-${{ github.event.pull_request.number }}
+  # Queue instead of cancel: a cancelled run still spends the Jules session it started.
+  cancel-in-progress: false
+
+jobs:
+  review:
+    # Fork and Dependabot PRs get no repository secrets, so there is no key to run with.
+    if: >-
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      github.actor != 'dependabot[bot]'
+    # GitHub-hosted by default. To use a self-hosted runner (e.g. Coolify), set a repo
+    # variable: gh variable set JULES_RUNNER -R <owner/repo> -b self-hosted
+    # The runner must be recent enough to run node24 actions.
+    runs-on: ${{ vars.JULES_RUNNER || 'ubuntu-latest' }}
+    timeout-minutes: 60
+    permissions:
+      contents: read
+      pull-requests: write
+      checks: write
+    steps:
+      # No checkout: the action reads the diff and rules through the GitHub API,
+      # so no token is persisted to disk in the workspace.
+      - name: Jules review
+        uses: arthrod/jules-pr-reviewer@de95c2cb6820df8b0e562d77f1f758d71b14b974
+        with:
+          jules_api_key: ${{ secrets.JULES_API_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          # Jules checks out the PR branch itself and reviews the full base...head diff with repo context.
+          diff_mode: agentic
+          strictness: assertive
+          min_severity_to_report: info
+          enable_suggestions: "true"
+          dedupe: "true"
+          skip_drafts: "false"
+          timeout_minutes: "45"
+          fail_on: never
+          # An LLM verdict must never count as a human approval.
+          enable_approve: "false"
+          extra_instructions: |
+            Be exhaustive. Check every changed hunk for: correctness and edge cases; security
+            (secrets in code or logs, injection, authz, unsafe deserialization, SSRF, path traversal);
+            error handling and resource cleanup; concurrency and async misuse; performance regressions;
+            missing or weakened tests for changed behaviour; breaking API or schema changes; docs that
+            no longer match the code. Prefer concrete file:line findings with a fix over general advice.
+          ignored_paths: >-
+            ["**/package-lock.json", "**/pnpm-lock.yaml", "**/yarn.lock", "**/bun.lock",
+            "**/bun.lockb", "**/uv.lock", "**/poetry.lock", "**/Cargo.lock", "**/*.min.js",
+            "**/*.map", "dist/**", "build/**", ".next/**", "node_modules/**"]

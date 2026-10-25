@@ -42,8 +42,10 @@ TYPES = {
     ".json": "application/json",
     ".docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     ".csv": "text/csv",
+    ".tsv": "text/tab-separated-values",
     ".md": "text/markdown; charset=utf-8",
     ".txt": "text/plain; charset=utf-8",
+    ".log": "text/plain; charset=utf-8",
     ".png": "image/png",
     ".svg": "image/svg+xml",
     ".html": "text/html; charset=utf-8",
@@ -65,14 +67,32 @@ async def listing(client: httpx.AsyncClient, prefix: str) -> dict[str, int]:
     """{key: size_bytes} for every object under prefix."""
     out: dict[str, int] = {}
     cursor = None
-    while True:
-        params = {"prefix": prefix, "per_page": 1000, **({"cursor": cursor} if cursor else {})}
-        r = (await client.get(API, params=params)).json()
-        for o in r.get("result", []):
+    seen: set[str] = set()  # cursors already followed; R2 handing one back again would page forever
+    while True:  # one page per turn; how many pages there are is R2's business
+        page = None
+        for attempt in range(4):  # the retry budget is per page, not per listing
+            params = {"prefix": prefix, "per_page": 1000, **({"cursor": cursor} if cursor else {})}
+            r = (await client.get(API, params=params)).json()
+            if r.get("result") is None:  # error payload ("result": null): usually an expired token
+                await asyncio.to_thread(subprocess.run, ["bunx", "wrangler", "whoami"], capture_output=True)
+                client.headers["Authorization"] = f"Bearer {token()}"
+                if attempt < 3:  # no point sleeping after the last attempt
+                    await asyncio.sleep(2**attempt)
+                continue  # same params, same cursor: this page is not done yet
+            page = r
+            break
+        if page is None:  # this page failed 4 times in a row
+            raise RuntimeError(f"R2 listing kept failing for prefix {prefix!r}")
+        for o in page["result"]:
             out[o["key"]] = o["size"]
-        cursor = (r.get("result_info") or {}).get("cursor")
-        if not (r.get("result_info") or {}).get("is_truncated"):
+        info = page.get("result_info") or {}
+        if not info.get("is_truncated"):
             return out
+        cursor = info.get("cursor")
+        if not cursor or cursor in seen:  # truncated without a new cursor: the next request would repeat a page
+            raise RuntimeError(f"R2 listing for prefix {prefix!r} is truncated but gave cursor {cursor!r} "
+                               f"after {len(seen)} pages")
+        seen.add(cursor)
 
 
 async def upload_api(client: httpx.AsyncClient, key: str, path: Path, sem: asyncio.Semaphore,

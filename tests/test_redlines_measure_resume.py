@@ -53,3 +53,37 @@ def test_the_scorer_id_names_the_backend_and_the_scoring_sources(measure) -> Non
     from neurotic_docx_bench import content_cache, kernels
 
     assert measure._scorer_id() == f'{kernels.backend_id()}:{content_cache.scorer_fingerprint()}'
+
+
+def _manifest(folder: Path, lines: list[dict]) -> None:
+    import json
+    with open(folder / 'manifest.jsonl', 'w') as fh:
+        for line in lines:
+            fh.write(json.dumps(line) + '\n')
+
+
+def test_a_candidate_is_found_under_the_name_word_pdf_gave_it(measure, tmp_path: Path) -> None:
+    """word_pdf.py trims a long docx name and writes `<stem>_byword.pdf`; its manifest links them."""
+    long_docx = 'k' * 120 + '_jubarte-0.13.0.docx'
+    (tmp_path / 'kkk_1a7c593e_byword.pdf').write_bytes(b'%PDF trimmed')
+    (tmp_path / 'short_jubarte-0.13.0_byword.pdf').write_bytes(b'%PDF short')
+    _manifest(tmp_path, [
+        {'kind': 'rename', 'status': 'renamed', 'original_filename': long_docx,
+         'converted_filename': 'kkk_1a7c593e.docx'},
+        {'kind': 'pdf', 'status': 'ok', 'original_filename': 'kkk_1a7c593e.docx',
+         'converted_filename': 'kkk_1a7c593e_byword.pdf', 'path_out': str(tmp_path / 'kkk_1a7c593e_byword.pdf')},
+        {'kind': 'pdf', 'status': 'skipped', 'original_filename': 'short_jubarte-0.13.0.docx',
+         'converted_filename': 'short_jubarte-0.13.0_byword.pdf',
+         'path_out': str(tmp_path / 'short_jubarte-0.13.0_byword.pdf')},
+        {'kind': 'pdf', 'status': 'failed', 'original_filename': 'gone_jubarte-0.13.0.docx',
+         'converted_filename': ''},
+    ])
+    assert measure.candidate_pdf(tmp_path, 'k' * 120, 'jubarte-0.13.0') == tmp_path / 'kkk_1a7c593e_byword.pdf'
+    assert measure.candidate_pdf(tmp_path, 'short', 'jubarte-0.13.0') == tmp_path / 'short_jubarte-0.13.0_byword.pdf'
+    assert not measure.candidate_pdf(tmp_path, 'gone', 'jubarte-0.13.0').is_file()
+
+
+def test_a_candidate_under_the_plain_name_still_wins(measure, tmp_path: Path) -> None:
+    """PDFs fetched from the hub keep `<key>_<tool>.pdf` and have no manifest."""
+    (tmp_path / 'abc_docxodus.pdf').write_bytes(b'%PDF hub')
+    assert measure.candidate_pdf(tmp_path, 'abc', 'docxodus') == tmp_path / 'abc_docxodus.pdf'
