@@ -13,7 +13,8 @@ proportions (seed 20261004). Each document is converted once by BINARY with
 `--revisions word --report`; Word's page count is its corpus PDF's.
 
 Writes hmath_rows.jsonl (one row per document) and hmath_result.json beside this file.
-Scratch PDFs go to jubarte-loop/release_0.11.3/hmath_scratch and are deleted.
+Scratch PDFs go to jubarte-loop/release_0.11.3/hmath_scratch ($JUBARTE_LOOP_DIR, default
+~/temp/T/jubarte-loop) and are deleted.
 """
 
 from __future__ import annotations
@@ -21,6 +22,7 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import os
 import random
 import subprocess
 import zipfile
@@ -31,7 +33,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 CORPUS = ROOT / 'corpus' / 'word'
-SCRATCH = Path('/Users/arthrod/temp/T/jubarte-loop/release_0.11.3/hmath_scratch')
+SCRATCH = Path(os.environ.get('JUBARTE_LOOP_DIR', Path.home() / 'temp/T/jubarte-loop')) / 'release_0.11.3' / 'hmath_scratch'
 SEED = 20261004
 
 

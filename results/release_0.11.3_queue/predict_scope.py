@@ -9,7 +9,9 @@ whose main story or any other story part (headers, footers, notes, comments) hol
 (predicted change x observed change) and lists every surprise; scores both sides of each
 changed document against Word's PDF with docxide-metrics and reports the paired deltas
 with a 95% bootstrap interval. Writes scope_TAG.json beside this file. PDFs go to
-jubarte-loop/release_0.11.3/scope/TAG/{old,new} and are kept for inspection.
+jubarte-loop/release_0.11.3/scope/TAG/{old,new} ($JUBARTE_LOOP_DIR, default ~/temp/T/jubarte-loop)
+and are kept for inspection. A document either binary fails to convert is listed under `failed`
+and left out of the matrix; a PDF an earlier run left under the same TAG is deleted first.
 """
 
 from __future__ import annotations
@@ -18,6 +20,7 @@ import argparse
 import csv
 import hashlib
 import json
+import os
 import random
 import statistics
 import subprocess
@@ -30,7 +33,7 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 CORPUS = ROOT / 'corpus' / 'word'
 SCORER = str(ROOT / 'src/neurotic_docx_bench/utils/docxide-metrics/target/release/docxide-metrics')
-OUT = Path('/Users/arthrod/temp/T/jubarte-loop/release_0.11.3/scope')
+OUT = Path(os.environ.get('JUBARTE_LOOP_DIR', Path.home() / 'temp/T/jubarte-loop')) / 'release_0.11.3' / 'scope'
 
 
 def holds_marker(docx: Path, marker: bytes) -> bool:
@@ -42,9 +45,14 @@ def holds_marker(docx: Path, marker: bytes) -> bool:
 
 
 def convert(binary: str, docx: Path, pdf: Path) -> str | None:
-    subprocess.run([binary, 'convert', str(docx), '-o', str(pdf), '--force', '--revisions', 'word'],
-                   capture_output=True, timeout=300, check=False)
-    return hashlib.sha256(pdf.read_bytes()).hexdigest() if pdf.is_file() else None
+    """sha256 of the PDF this run wrote, or None when it failed; a failed run leaves no PDF behind."""
+    pdf.unlink(missing_ok=True)  # a PDF an earlier run left under the same TAG is not this binary's
+    done = subprocess.run([binary, 'convert', str(docx), '-o', str(pdf), '--force', '--revisions', 'word'],
+                          capture_output=True, timeout=300, check=False)
+    if done.returncode != 0 or not pdf.is_file():
+        pdf.unlink(missing_ok=True)  # nor is a partial PDF from a run that failed
+        return None
+    return hashlib.sha256(pdf.read_bytes()).hexdigest()
 
 
 def score(pairs: list[tuple[str, Path, Path]]) -> dict[str, float]:
@@ -76,7 +84,9 @@ def main() -> None:
                 'new': convert(args.new, docx, new_dir / f'{doc["id"]}.pdf')}
 
     with ThreadPoolExecutor(10) as pool:
-        rows = list(pool.map(one, docs))
+        every = list(pool.map(one, docs))
+    failed = [r['stem'] for r in every if r['old'] is None or r['new'] is None]
+    rows = [r for r in every if r['old'] is not None and r['new'] is not None]  # a failure says nothing of scope
     matrix = {f'predicted={p} changed={c}': 0 for p in (True, False) for c in (True, False)}
     surprises = []
     for r in rows:
@@ -84,15 +94,15 @@ def main() -> None:
         matrix[f'predicted={r["predicted"]} changed={r["changed"]}'] += 1
         if r['predicted'] != r['changed']:
             surprises.append(r['stem'])
-    changed = [r for r in rows if r['changed'] and r['old'] and r['new']]
+    changed = [r for r in rows if r['changed']]
     a = score([(r['id'], CORPUS / r['pdf'], old_dir / f'{r["id"]}.pdf') for r in changed]) if changed else {}
     b = score([(r['id'], CORPUS / r['pdf'], new_dir / f'{r["id"]}.pdf') for r in changed]) if changed else {}
     deltas = [b[k] - a[k] for k in a if k in b]
     rng = random.Random(20261004)
     boot = sorted(statistics.fmean(rng.choices(deltas, k=len(deltas))) for _ in range(4000)) if deltas else [0.0] * 4000
-    result = {'old': args.old, 'new': args.new, 'marker': args.marker, 'documents': len(rows),
-              'failed_old': sum(r['old'] is None for r in rows), 'failed_new': sum(r['new'] is None for r in rows),
-              'matrix': matrix, 'surprises': surprises,
+    result = {'old': args.old, 'new': args.new, 'marker': args.marker, 'documents': len(every),
+              'failed_old': sum(r['old'] is None for r in every), 'failed_new': sum(r['new'] is None for r in every),
+              'failed': failed, 'matrix': matrix, 'surprises': surprises,
               'changed_jaccard': {'n': len(deltas), 'old_mean': statistics.fmean(a.values()) if a else None,
                                   'new_mean': statistics.fmean(b.values()) if b else None,
                                   'delta': statistics.fmean(deltas) if deltas else None,
@@ -101,7 +111,8 @@ def main() -> None:
                                   'worst': sorted(((b[k] - a[k], k) for k in a if k in b))[:5]},
               'holds': not surprises}
     (HERE / f'scope_{args.tag}.json').write_text(json.dumps(result, indent=1) + '\n')
-    print(json.dumps({k: v for k, v in result.items() if k != 'surprises'} | {'surprises': surprises[:20]}, indent=1))
+    print(json.dumps({k: v for k, v in result.items() if k not in ('surprises', 'failed')}
+                     | {'surprises': surprises[:20], 'failed': failed[:20]}, indent=1))
 
 
 if __name__ == '__main__':

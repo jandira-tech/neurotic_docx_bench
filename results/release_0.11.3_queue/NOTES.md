@@ -69,3 +69,20 @@ scored by `math_bench.py` (docxide-metrics vs Word's PDFs), paired 95% bootstrap
   conversion failures. Jaccard on the 32: +0.027 [-0.0005,+0.063], 6 up / 2 down: on jaccard
   alone the gain is not shown at 95% once the inline-only documents join. The one large
   loss is sd_2750_borderbox (-0.116): Word frames each m:borderBox, jubarte does not yet.
+
+## Script fixes after these results (2026-10-25, PR #64 review)
+
+`math_bench.py` and `predict_scope.py` used to run each conversion with `check=False` and
+then read whatever PDF sat at the output path. On a reused TAG, a failed conversion would
+have been scored or hashed as the new binary's, using the earlier run's PDF, and
+`predict_scope.py` counted a document both binaries failed on as unchanged. Both scripts
+now delete the target before converting, treat a nonzero exit as a failure, and leave
+failed documents out of the scores, of `cmp` and of the matrix (`failed` in the output).
+The three scripts' scratch folders now follow `$JUBARTE_LOOP_DIR` (default
+`~/temp/T/jubarte-loop`, the path they used before).
+
+The results above were recorded with the earlier scripts. Every recorded run holds a PDF
+hash for all of its documents (145 in each math_scores_*.json, 2925 in scope_math3.json,
+whose failed_old and failed_new are 0), and each run used its own TAG. So no recorded
+number rests on a missing conversion. Whether a TAG was ever run twice cannot be checked
+now: the lane folders under jubarte-loop/release_0.11.3 are gone.

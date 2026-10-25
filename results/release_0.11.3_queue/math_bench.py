@@ -5,9 +5,13 @@
 
 The set is hmath_rows.jsonl: the 29 corpus documents holding a display equation
 (`m:oMathPara`) and the seeded control of 116 without any OMML. `run` converts each with
-`--revisions word` into jubarte-loop/release_0.11.3/math_lanes/TAG, scores every PDF
+`--revisions word` into jubarte-loop/release_0.11.3/math_lanes/TAG ($JUBARTE_LOOP_DIR, default
+~/temp/T/jubarte-loop), scores every PDF
 against the document's corpus Word PDF (docxide-metrics: jaccard, ssim,
-text_boundary, as jubarte-loop/enbench.py does) and writes math_scores_TAG.json beside this file. `cmp` prints the paired deltas
+text_boundary, as jubarte-loop/enbench.py does) and writes math_scores_TAG.json beside this file. A
+document whose conversion fails is recorded with `failed: true`, no hash and jaccard 0, and is
+never scored; a PDF an earlier run left under the same TAG is deleted before converting. `cmp`
+leaves failed documents out and prints the paired deltas
 for the math set and for the control. A math change must leave every control PDF's text
 and page count as they were; `cmp` counts the control documents whose candidate PDF
 hash moved and whose score moved by more than 0.01.
@@ -16,6 +20,7 @@ hash moved and whose score moved by more than 0.01.
 from __future__ import annotations
 
 import json
+import os
 import random
 import statistics
 import subprocess
@@ -30,7 +35,7 @@ ROOT = HERE.parents[1]
 SCORER = str(ROOT / 'src/neurotic_docx_bench/utils/docxide-metrics/target/release/docxide-metrics')
 
 CORPUS = ROOT / 'corpus' / 'word'
-LANES = Path('/Users/arthrod/temp/T/jubarte-loop/release_0.11.3/math_lanes')
+LANES = Path(os.environ.get('JUBARTE_LOOP_DIR', Path.home() / 'temp/T/jubarte-loop')) / 'release_0.11.3' / 'math_lanes'
 TOOL = 'jubarte'
 
 
@@ -44,20 +49,31 @@ def documents() -> list[dict]:
     return list(by_id.values())
 
 
+def convert(binary: str, docx: Path, pdf: Path) -> bool:
+    """True only when this run exited 0 and left a PDF; a failed run leaves no PDF behind."""
+    pdf.unlink(missing_ok=True)  # a PDF an earlier run left under the same TAG is not this binary's
+    done = subprocess.run([binary, 'convert', str(docx), '-o', str(pdf), '--force', '--revisions', 'word'],
+                          capture_output=True, timeout=300, check=False)
+    if done.returncode != 0:
+        pdf.unlink(missing_ok=True)  # nor is a partial PDF from a run that failed
+        return False
+    return pdf.is_file()
+
+
 def run(tag: str, binary: str) -> None:
     lane = LANES / tag
     lane.mkdir(parents=True, exist_ok=True)
     docs = documents()
 
-    def convert(doc: dict) -> None:
-        subprocess.run([binary, 'convert', str(CORPUS / doc['docx']), '-o', str(lane / f'{doc["id"]}_{TOOL}.pdf'),
-                        '--force', '--revisions', 'word'], capture_output=True, timeout=300, check=False)
+    def one(doc: dict) -> bool:
+        return convert(binary, CORPUS / doc['docx'], lane / f'{doc["id"]}_{TOOL}.pdf')
 
     with ThreadPoolExecutor(8) as pool:
-        list(pool.map(convert, docs))
+        converted = list(pool.map(one, docs))
+    failed = {doc['id'] for doc, ok in zip(docs, converted, strict=True) if not ok}
     with tempfile.TemporaryDirectory(prefix='math-bench.') as tmp:
         jobs = [{'stem': doc['id'], 'oracle': str(CORPUS / doc['pdf']),
-                 'candidate': str(lane / f'{doc["id"]}_{TOOL}.pdf')} for doc in docs]
+                 'candidate': str(lane / f'{doc["id"]}_{TOOL}.pdf')} for doc in docs if doc['id'] not in failed]
         (Path(tmp) / 'jobs.json').write_text(json.dumps(jobs))
         subprocess.run([SCORER, '--jobs', str(Path(tmp) / 'jobs.json'), '--scratch', str(Path(tmp) / 'raster'),
                         '--out', str(Path(tmp) / 'out.json'), '--workers', '10'], check=True, capture_output=True)
@@ -68,12 +84,15 @@ def run(tag: str, binary: str) -> None:
         row = got.get(doc['id']) or {}
         out[doc['id']] = {'math': doc['math'], 'stem': doc['stem'],
                           'candidate_sha256': sha256(pdf.read_bytes()).hexdigest() if pdf.is_file() else None,
-                          **{k: row.get(k) for k in ('jaccard', 'ssim', 'text_boundary', 'pages', 'ref_pages')}}
+                          **{k: row.get(k) for k in ('jaccard', 'ssim', 'text_boundary', 'pages', 'ref_pages')},
+                          **({'failed': True} if doc['id'] in failed else {})}
         out[doc['id']]['jaccard'] = out[doc['id']]['jaccard'] or 0.0
     (HERE / f'math_scores_{tag}.json').write_text(json.dumps({'binary': binary, 'rows': out}, indent=1, sort_keys=True))
     for group in ('display', 'none'):
         xs = [r['jaccard'] for r in out.values() if r['math'] == group]
         print(f'{tag} {group}: n={len(xs)} mean {statistics.fmean(xs):.2f} median {statistics.median(xs):.2f}')
+    if failed:
+        print(f'{tag}: {len(failed)} conversions failed, not scored: {", ".join(sorted(failed))}')
 
 
 def cmp(old: str, new: str) -> None:
@@ -81,7 +100,8 @@ def cmp(old: str, new: str) -> None:
     b = json.loads((HERE / f'math_scores_{new}.json').read_text())['rows']
     rng = random.Random(20261004)
     for group in ('display', 'none'):
-        keys = sorted(k for k in a if k in b and a[k]['math'] == group)
+        keys = sorted(k for k in a if k in b and a[k]['math'] == group  # a failed conversion is no measurement
+                      and not a[k].get('failed') and not b[k].get('failed'))
         for term in ('jaccard', 'ssim', 'text_boundary'):
             pairs = [(a[k].get(term), b[k].get(term)) for k in keys]
             d = [y - x for x, y in pairs if x is not None and y is not None]
