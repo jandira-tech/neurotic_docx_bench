@@ -37,7 +37,7 @@ a committed **Word oracle** redline for that pair.
 
 ```bash
 uv sync                       # Python bench (Python 3.14; needs LibreOffice on PATH)
-pnpm install --frozen-lockfile # Node 26 + pnpm workspace: root pin tree + utils/ engine fallbacks
+pnpm install --frozen-lockfile # Node 26 + pnpm workspace: root pin tree + utils/ engine fallbacks + live-bench frontend
 uv run bench run              # all tools sequentially → results/bench.jsonl
 uv run bench run --only jubarte-final-lossless --limit 5   # one tool, quick
 uv run pytest -q              # 68 tests

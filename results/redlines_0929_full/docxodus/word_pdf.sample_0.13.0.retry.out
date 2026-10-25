@@ -1,0 +1,54 @@
+▸ PDF quality is sticky: `save as … file format format PDF` inherits whatever 
+'Optimize for' you last chose in Word's own Save As dialog.
+  Open any document in Word once, File > Save As > PDF, and pick the SECOND 
+option, Best for printing.
+  That choice persists; this script cannot set it. Pass --no-check-preset to 
+stop seeing this.
+2026-10-22 18:27:19.124 | INFO     | __main__:warm:1467 - [word] launching Word in the background, running: open -g -a '/Applications/Microsoft Word.app'
+2026-10-22 18:27:21.750 | INFO     | __main__:warm:1474 - [word] Word answered after 3 s; alerts off
+2026-10-22 18:27:21.989 | INFO     | __main__:preflight:3033 - [word] preflight: word_pid=88249 open_documents=0 started_clean=True launched_by_us=True close_documents=False
+2026-10-22 18:27:21.991 | INFO     | __main__:convert_folder:2687 - [word] export: one_osascript=False documents=27 accept_all=False reject_all=False
+2026-10-22 18:27:21.993 | INFO     | __main__:convert_folder:2706 - [manifest] appended 27 line(s) to results/redlines_0929_full/docxodus/pdf_by_word/manifest.jsonl
+2026-10-22 18:27:22.381 | INFO     | __main__:stop:1265 - [watchdog] tally: declined=0 dismissed=0 granted=0 forwarded=0 alerts_seen=0
+        DOCX → PDF:         
+results/redlines_0929_full/d
+        ocxodus/docx        
+┏━━━━━━━━━━━━━━━━━━┳━━━━━━━┓
+┃ outcome          ┃ count ┃
+┡━━━━━━━━━━━━━━━━━━╇━━━━━━━┩
+│ converted        │     0 │
+│ skipped (exists) │    27 │
+│ failed           │     0 │
+└──────────────────┴───────┘
+▸ PDF quality is sticky: `save as … file format format PDF` inherits whatever 
+'Optimize for' you last chose in Word's own Save As dialog.
+  Open any document in Word once, File > Save As > PDF, and pick the SECOND 
+option, Best for printing.
+  That choice persists; this script cannot set it. Pass --no-check-preset to 
+stop seeing this.
+2026-10-22 19:48:44.528 | INFO     | __main__:warm:1476 - [word] launching Word in the background, running: open -g -a '/Applications/Microsoft Word.app'
+2026-10-22 19:48:46.358 | INFO     | __main__:warm:1483 - [word] Word answered after 2 s; alerts off
+2026-10-22 19:48:46.529 | INFO     | __main__:preflight:3042 - [word] preflight: word_pid=48141 open_documents=0 started_clean=True launched_by_us=True close_documents=False
+2026-10-22 19:48:46.530 | WARNING  | __main__:trim_long_names:354 - [names] d16179a60b_c3cb50c9620520f54d70a4f079a12e94bf94f54f507eff8d__vs__1aaca1d5af_ef31e540797c67a78c662cc2e5ecb21bf446e3d696ce26ad_redline_f72cd71154_docxodus.docx is 157 characters, over 80, but d16179a60b_c3cb50c9620520f54d70a4f079a12e94bf94f54f507eff8d__vs__1_623ed886.docx already exists beside it; leaving the long name alone
+2026-10-22 19:48:46.531 | WARNING  | __main__:trim_long_names:354 - [names] e1771b0063_word_tolerated_misplaced_uipriority__vs__cbb3bab843_word_tolerated_orphan_comment_redline_6532beda4d_docxodus.docx is 125 characters, over 80, but e1771b0063_word_tolerated_misplaced_uipriority__vs__cbb3bab843_wor_6fca7596.docx already exists beside it; leaving the long name alone
+2026-10-22 19:48:46.531 | WARNING  | __main__:trim_long_names:354 - [names] e57ad0eaa4_docx_lots_of_comments_addition__vs__6e2576a091_docx_lots_of_comments_redline_92075b7449_docxodus.docx is 112 characters, over 80, but e57ad0eaa4_docx_lots_of_comments_addition__vs__6e2576a091_docx_lot_575c7425.docx already exists beside it; leaving the long name alone
+2026-10-22 19:48:46.532 | WARNING  | __main__:trim_long_names:354 - [names] e70f1134dd_super_editor__diff_before8_ba5faa9e__vs__420a528aa0_super_editor__instrtext_angled_brackets_bug_ed56_redline_2200a538c5_docxodus.docx is 144 characters, over 80, but e70f1134dd_super_editor__diff_before8_ba5faa9e__vs__420a528aa0_sup_e4f6438f.docx already exists beside it; leaving the long name alone
+2026-10-22 19:48:46.532 | WARNING  | __main__:trim_long_names:354 - [names] eb714d5f76_evals__blank_bc294b57__vs__bb35ae41ba_evals__comments_doc_79800b37_redline_04082a11bf_docxodus.docx is 110 characters, over 80, but eb714d5f76_evals__blank_bc294b57__vs__bb35ae41ba_evals__comments_d_a55a47a8.docx already exists beside it; leaving the long name alone
+2026-10-22 19:48:46.533 | WARNING  | __main__:trim_long_names:354 - [names] ed6c82cead_word_tolerated_broken_media_rel__vs__8fb278cb36_word_tolerated_duplicate_ppr_redline_2ebbfc18b4_docxodus.docx is 120 characters, over 80, but ed6c82cead_word_tolerated_broken_media_rel__vs__8fb278cb36_word_to_9cbba093.docx already exists beside it; leaving the long name alone
+2026-10-22 19:48:46.533 | WARNING  | __main__:trim_long_names:354 - [names] f43929f70c_verdana_bold_large_font_id_paraid_overflow__vs__3413da1703_verdana_font_demo_id_paraid_overflow_2_redline_7da45f822a_docxodus.docx is 141 characters, over 80, but f43929f70c_verdana_bold_large_font_id_paraid_overflow__vs__3413da1_910b2ded.docx already exists beside it; leaving the long name alone
+2026-10-22 19:48:46.533 | WARNING  | __main__:trim_long_names:354 - [names] f49b3b0ec2_super_editor__sd_1919_word_table_74726d6c__vs__a0738533be_gdocs_comments_export_redline_515c0aa8ab_docxodus.docx is 123 characters, over 80, but f49b3b0ec2_super_editor__sd_1919_word_table_74726d6c__vs__a0738533_b0eb961e.docx already exists beside it; leaving the long name alone
+2026-10-22 19:48:46.534 | WARNING  | __main__:trim_long_names:354 - [names] f529133cd5_super_editor__basic_comment_d3ba5f1e__vs__8df6dfa8d7_alternate_content_redline_e8fafc3cba_docxodus.docx is 114 characters, over 80, but f529133cd5_super_editor__basic_comment_d3ba5f1e__vs__8df6dfa8d7_al_e6bb0c1a.docx already exists beside it; leaving the long name alone
+2026-10-22 19:48:46.534 | WARNING  | __main__:trim_long_names:354 - [names] fa4d5010d8_layout_engine__basic_vector_shapes_e5f0ef49__vs__ad43500302_super_editor__list_numbering_reimport_d788d573_redline_9d682fe39d_docxodus.docx is 150 characters, over 80, but fa4d5010d8_layout_engine__basic_vector_shapes_e5f0ef49__vs__ad4350_149a0046.docx already exists beside it; leaving the long name alone
+2026-10-22 19:48:46.535 | INFO     | __main__:convert_folder:2696 - [word] export: one_osascript=False documents=37 accept_all=False reject_all=False
+2026-10-22 19:48:46.538 | INFO     | __main__:convert_folder:2715 - [manifest] appended 37 line(s) to results/redlines_0929_full/docxodus/pdf_by_word/manifest.jsonl
+2026-10-22 19:48:46.828 | INFO     | __main__:stop:1274 - [watchdog] tally: declined=0 dismissed=0 granted=0 forwarded=0 alerts_seen=0
+        DOCX → PDF:         
+results/redlines_0929_full/d
+        ocxodus/docx        
+┏━━━━━━━━━━━━━━━━━━┳━━━━━━━┓
+┃ outcome          ┃ count ┃
+┡━━━━━━━━━━━━━━━━━━╇━━━━━━━┩
+│ converted        │     0 │
+│ skipped (exists) │    37 │
+│ failed           │     0 │
+└──────────────────┴───────┘
