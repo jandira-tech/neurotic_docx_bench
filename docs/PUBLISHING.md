@@ -154,7 +154,7 @@ production. The harvest loop that reads failing fixtures back out is
 Deploy the dashboard after changing `live-bench/frontend`:
 
 ```bash
-cd live-bench/frontend && pnpm install --frozen-lockfile && pnpm run build && pnpm exec wrangler deploy
+cd live-bench/frontend && pnpm install --frozen-lockfile --filter jubarte-live-bench && pnpm run build && pnpm exec wrangler deploy
 ```
 
 `wrangler.jsonc` there holds the routes, the D1/R2/KV bindings and the migrations dir;

@@ -72,13 +72,14 @@ Run from `live-bench/` in this checkout. Copy `.env.example` to `.env`, set the 
 Word token and a random ingest token of at least 24 characters. Keep `.env` private.
 
 ```sh
-pnpm install --frozen-lockfile   # any dir inside the repo: the frontend is a pnpm workspace member
+pnpm install --frozen-lockfile --filter jubarte-live-bench   # any dir inside the repo; the filter skips the utils/ engine fallbacks
 cd frontend
 pnpm exec wrangler d1 migrations apply DB --local
 ```
 
 For the local smoke test, put `INGEST_TOKEN=local-smoke-token-at-least-24-characters`
-in `frontend/.dev.vars` and start `pnpm run dev -- --background`. This includes
+in `frontend/.dev.vars` and start `pnpm run dev --background` (pnpm passes a `--` on to
+the script, where Astro would read `--background` as an argument, not a flag). This includes
 `vite-plugin-console-pipe`; use `pnpm exec astro dev logs` to inspect browser errors.
 Return to `live-bench/`, ensure OrbStack is running, then:
 
