@@ -1077,6 +1077,20 @@ SIX = (('sample_redline', 'csv'), ('sample_conversion', 'csv'),
        ('website_data', 'jsonl'), ('app_data', 'jsonl'))
 
 
+def drawn_date(redline: dict, conversion: dict) -> str:
+    """The website's ``bench.generated``: the day the two samples were drawn
+    (release_info/README.md: every table names the date its sample was
+    drawn), not the day the six are written — a flow that crosses midnight
+    UTC wrote the next day's date and the site step refused it (0.14.0, #60).
+    Samples drawn on two days have no one date: redraw them. Results without
+    a drawn date keep today's."""
+    dates = {doc.get('sample', {}).get('drawn', {}).get('date') for doc in (redline, conversion)} - {None}
+    if len(dates) > 1:
+        raise ValueError(f'the samples were drawn on {" and ".join(sorted(dates))}: the site needs one date; '
+                         'redraw them in one run')
+    return dates.pop() if dates else datetime.now(UTC).date().isoformat()
+
+
 def write_six(engine_dir: Path, version: str, *, redline: dict, conversion: dict,
               redline_data: Sequence[Sequence[str]], conversion_data: Sequence[Sequence[str]],
               now: datetime | None = None) -> str:
@@ -1088,6 +1102,7 @@ def write_six(engine_dir: Path, version: str, *, redline: dict, conversion: dict
     the previous complete set untouched.
     """
     stamp = stamp_now(now)
+    generated = drawn_date(redline, conversion)
     folder = engine_dir / 'release_info'
     folder.mkdir(parents=True, exist_ok=True)
     names = {name: f'{name}_{version}_{stamp}.{ext}' for name, ext in SIX}
@@ -1105,7 +1120,6 @@ def write_six(engine_dir: Path, version: str, *, redline: dict, conversion: dict
             doc['stamp'] = stamp
             doc['sample'] = doc['sample'] | {'csv': csv_name, 'sha256': _sha(staging / csv_name)}
             (staging / names[name]).write_text(json.dumps(doc, indent=1, sort_keys=True) + '\n')
-        generated = datetime.now(UTC).date().isoformat()
         with (staging / names['website_data']).open('w') as fh:
             for record in website_records(version, generated, redline, conversion,
                                           Path(names['sample_redline']).stem, Path(names['sample_conversion']).stem):
