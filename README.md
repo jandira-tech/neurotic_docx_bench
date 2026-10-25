@@ -149,7 +149,7 @@ Python 3.14 (`uv`), Node 26 + pnpm, LibreOffice 26.2.4.2 on `PATH`.
 
 ```bash
 uv sync
-pnpm install --frozen-lockfile   # workspace: root pin tree + the utils/ engine fallbacks
+pnpm install --frozen-lockfile   # workspace: root pin tree + the utils/ engine fallbacks + live-bench frontend
 # (only for the visual_* playwright benchmarks:) cd harness/folio-viewer && bun install
 
 uv run bench run --only jubarte-final-lossless --limit 5

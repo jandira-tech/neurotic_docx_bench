@@ -320,8 +320,10 @@ runs:
   # CLI: https://github.com/yuch85/superdoc-redlines. The CLI applies block-ID edits
   # with track changes (word-level diff per block); it has no base+next compare, so
   # superdoc_redlines_gen.py supplies a deterministic block alignment and drives the
-  # CLI's own extract→apply pipeline. Requires a fresh clone + `npm install` at repo
-  # root `superdoc-redlines/` (gitignored; see AGENTS.md "Adding a tool").
+  # CLI's own extract→apply pipeline. Requires a fresh clone + `pnpm install
+  # --ignore-scripts --config.strict-dep-builds=false` at repo root
+  # `superdoc-redlines/` (gitignored, so not a pnpm workspace member; see
+  # AGENTS.md "Adding a tool").
   # Version = the clone's package.json version.
   - name: superdoc-redlines
     dist: superdoc-redlines

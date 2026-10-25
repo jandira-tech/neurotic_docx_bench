@@ -10,8 +10,15 @@ FROM node:24-bookworm-slim AS superdoc
 ARG SUPERDOC_COMMIT=06d9fcfbb80b28cee0c7cd71cda720297712ace5
 RUN apt-get update && apt-get install -y --no-install-recommends git ca-certificates \
     && rm -rf /var/lib/apt/lists/*
+# pnpm (same version as the repo's packageManager pin) imports the upstream npm
+# lockfile, so the install stays as exact as the previous `npm ci` was. The clone
+# ships build scripts (canvas, vue-demi) the headless CLI never needs: scripts stay
+# ignored, and strict-dep-builds is relaxed so pnpm treats that as a decision, not
+# an error.
+RUN npm install -g pnpm@12.11.2
 RUN git clone https://github.com/yuch85/superdoc-redlines.git /opt/superdoc-redlines \
-    && cd /opt/superdoc-redlines && git checkout "${SUPERDOC_COMMIT}" && npm ci --ignore-scripts \
+    && cd /opt/superdoc-redlines && git checkout "${SUPERDOC_COMMIT}" \
+    && pnpm import && pnpm install --frozen-lockfile --ignore-scripts --config.strict-dep-builds=false \
     && git rev-parse HEAD > /opt/superdoc-redlines/COMMIT && rm -rf .git
 
 FROM mcr.microsoft.com/dotnet/runtime:10.0 AS dotnet

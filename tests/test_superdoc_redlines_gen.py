@@ -83,6 +83,17 @@ def test_build_edits_empty_base_raises_cleanly():
         superdoc_redlines_gen.build_edits([], nxt, author="t")
 
 
+def test_missing_clone_hint_installs_inside_the_clone(tmp_path, capsys):
+    """The setup hint must cd into the clone: `pnpm install` at the bench root installs
+    the bench's own workspace, which does not list the clone, and leaves the clone bare.
+    It must also install the clone's own npm lock, as live-bench/Dockerfile does: pnpm does
+    not read package-lock.json, so a bare `pnpm install` resolves the ranges afresh while
+    the bench records only package.json's version."""
+    assert superdoc_redlines_gen.main(["--repo", str(tmp_path / "superdoc-redlines")]) == 1
+    out = capsys.readouterr().out
+    assert "&& cd superdoc-redlines && pnpm import && pnpm install --frozen-lockfile " in out
+
+
 @requires_tool
 def test_generate_one_emits_tracked_changes(tmp_path):
     """Synthetic base/next → DOCX must carry w:ins and/or w:del."""

@@ -1,13 +1,27 @@
 # One `pnpm install` at the root covers every Node dependency the bench invokes:
-# the repo-root pin tree (bench.yaml `package:` versions resolve here) plus the
-# vendored engine fallbacks under utils/. Not workspace members: utils/folio/folio
-# (gitignored folio monorepo checkout), utils/folio-current and harness/* (staged
-# harness apps installed ad hoc), utils/stemma and utils/safe-docx-compare (no deps).
+# the repo-root pin tree (bench.yaml `package:` versions resolve here), the
+# vendored engine fallbacks under utils/, and the live-bench dashboard frontend.
+# Not workspace members: utils/folio/folio (gitignored folio monorepo checkout),
+# utils/folio-current and harness/* (staged harness apps installed ad hoc),
+# utils/stemma and utils/safe-docx-compare (no deps), and the git-ignored
+# superdoc-redlines clone (a missing member dir would break --frozen-lockfile;
+# install it with pnpm inside the clone instead).
 packages:
   - src/neurotic_docx_bench/utils/docxodus
   - src/neurotic_docx_bench/utils/docx-redline-js
   - src/neurotic_docx_bench/utils/folio
   - src/neurotic_docx_bench/utils/superdoc
+  - live-bench/frontend
+
+# pnpm reads overrides only from the workspace root, so the frontend's npm
+# `overrides: { sharp: 0.35.5 }` (live-bench/frontend/package.json) lives here
+# now. Only the frontend's astro image service pulls sharp; the rest of the
+# workspace does not depend on it.
+overrides:
+  sharp: 0.35.5
 
 allowBuilds:
   esbuild: true
+  # wrangler's miniflare engine (local dev / `d1 ... --local`); Cloudflare's own
+  # postinstall that links the platform binary.
+  workerd: true
