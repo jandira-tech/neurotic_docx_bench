@@ -80,7 +80,10 @@ that ran past 300 s raised out of the thread pool and lost the whole batch. Both
 now delete the target before converting and treat a nonzero exit, a missing PDF or a
 timeout as a failure. Failed documents stay out of the scores, out of `cmp` (as do rows of
 older score files that have no PDF hash) and out of the matrix (`failed` in the output),
-and any failure makes `predict_scope.py`'s `holds` false. The three scripts' scratch
+and any failure makes `predict_scope.py`'s `holds` false. `hmath_test.py` likewise deletes
+the PDF and the `--report` JSON before converting and reads the page count only after a
+zero exit, so neither a report written by a run that then failed nor one left by an
+interrupted earlier run counts as a measurement. The three scripts' scratch
 folders now follow `$JUBARTE_LOOP_DIR` (default `~/temp/T/jubarte-loop`, the path they
 used before).
 

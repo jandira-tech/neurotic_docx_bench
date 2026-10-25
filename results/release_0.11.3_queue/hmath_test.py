@@ -59,12 +59,17 @@ def word_pages(pdf: Path) -> int | None:
 
 
 def jubarte_pages(binary: str, docx: Path, stem: str) -> int | None:
+    """Page count from this run's report, or None when the run exited nonzero or timed out."""
     pdf = SCRATCH / f'{stem}.pdf'
     report = SCRATCH / f'{stem}.json'
+    pdf.unlink(missing_ok=True)  # a report an interrupted earlier run left is not this run's
+    report.unlink(missing_ok=True)
     try:
-        subprocess.run([binary, 'convert', str(docx), '-o', str(pdf), '--force', '--revisions', 'word',
-                        '--report', str(report)], capture_output=True, timeout=300, check=False)
-        return json.loads(report.read_text())['page_count'] if report.exists() else None
+        done = subprocess.run([binary, 'convert', str(docx), '-o', str(pdf), '--force', '--revisions', 'word',
+                               '--report', str(report)], capture_output=True, timeout=300, check=False)
+        if done.returncode != 0 or not report.exists():
+            return None
+        return json.loads(report.read_text())['page_count']
     except subprocess.TimeoutExpired:
         return None
     finally:

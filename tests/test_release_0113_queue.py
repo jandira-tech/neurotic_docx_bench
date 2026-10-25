@@ -218,3 +218,29 @@ def test_predict_scope_does_not_hold_when_a_document_went_unmeasured(tmp_path, m
     result = json.loads((here / 'scope_T.json').read_text())
     assert result['failed'] == ['stem_math_fail']
     assert result['holds'] is False
+
+
+# Fake jubarte for hmath_test: `convert DOCX -o PDF --force --revisions word --report REPORT`.
+# A docx named *fail* writes a report and exits 3, *silent* exits 3 without output; anything
+# else writes a two-page report.
+HMATH_CONVERTER = """#!/bin/sh
+case "$(basename "$2")" in
+  *fail*) printf '{"page_count": 7}' > "$9"; exit 3 ;;
+  *silent*) exit 3 ;;
+esac
+printf pdf > "$4"
+printf '{"page_count": 2}' > "$9"
+"""
+
+
+def test_hmath_never_reads_the_report_of_a_failed_or_earlier_run(tmp_path, monkeypatch):
+    hm = load('hmath_test')
+    monkeypatch.setattr(hm, 'SCRATCH', tmp_path)
+    binary = tool(tmp_path / 'jubarte', HMATH_CONVERTER)
+    (tmp_path / 'silent.json').write_text('{"page_count": 9}')  # left by an interrupted earlier run
+
+    assert hm.jubarte_pages(binary, tmp_path / 'ok.docx', 'ok') == 2
+    assert hm.jubarte_pages(binary, tmp_path / 'fail.docx', 'fail') is None
+    assert hm.jubarte_pages(binary, tmp_path / 'silent.docx', 'silent') is None
+    assert not list(tmp_path.glob('*.json'))
+    assert not list(tmp_path.glob('*.pdf'))
