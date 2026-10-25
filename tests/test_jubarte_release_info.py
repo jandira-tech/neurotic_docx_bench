@@ -1310,6 +1310,14 @@ def test_one_drawn_date_is_the_website_date(tmp_path: Path) -> None:
     assert next(r['value'] for r in records if r['key'] == 'bench.generated') == '2026-10-24'
 
 
+def test_without_drawn_dates_the_website_date_is_the_write_time_s(tmp_path: Path) -> None:
+    # Neither sample names a drawn date: the date is the write time's (UTC),
+    # and a caller's now pins it, as it pins the stamp.
+    jri.write_six(tmp_path, '9.9.9', now=datetime(2026, 1, 2, 12, 0), **_six_args(None, None))
+    records = _website(tmp_path / 'release_info')
+    assert next(r['value'] for r in records if r['key'] == 'bench.generated') == '2026-01-02'
+
+
 def test_the_engine_commit_names_the_binary_s_build_not_the_checkout_s_head(tmp_path: Path) -> None:
     # 0.12.0: the write stage stamped the checkout's HEAD, which had moved past
     # the commit the scored candidate was built from. --engine-commit names it.

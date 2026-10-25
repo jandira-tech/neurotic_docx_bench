@@ -1077,7 +1077,7 @@ SIX = (('sample_redline', 'csv'), ('sample_conversion', 'csv'),
        ('website_data', 'jsonl'), ('app_data', 'jsonl'))
 
 
-def drawn_date(redline: dict, conversion: dict) -> str:
+def drawn_date(redline: dict, conversion: dict, now: datetime | None = None) -> str:
     """The website's ``bench.generated``: the day the two samples were drawn
     (release_info/README.md: every table names the date its sample was
     drawn), not the day the six are written — a flow that crosses midnight
@@ -1085,12 +1085,15 @@ def drawn_date(redline: dict, conversion: dict) -> str:
     Samples drawn on two days have no one date: redraw them. The site holds
     the date only to the samples that name one (jubarte-site
     scripts/check-bench.ts), so one drawn date is the date; today's is used
-    only when neither sample names one."""
+    only when neither sample names one: the write time's UTC date (``now``,
+    as the stamp takes it, else the clock)."""
     dates = {doc.get('sample', {}).get('drawn', {}).get('date') for doc in (redline, conversion)} - {None}
     if len(dates) > 1:
         raise ValueError(f'the samples were drawn on {" and ".join(sorted(dates))}: the site needs one date; '
                          'redraw them in one run')
-    return dates.pop() if dates else datetime.now(UTC).date().isoformat()
+    if dates:
+        return dates.pop()
+    return (now.astimezone(UTC) if now else datetime.now(UTC)).date().isoformat()
 
 
 def write_six(engine_dir: Path, version: str, *, redline: dict, conversion: dict,
@@ -1104,7 +1107,7 @@ def write_six(engine_dir: Path, version: str, *, redline: dict, conversion: dict
     the previous complete set untouched.
     """
     stamp = stamp_now(now)
-    generated = drawn_date(redline, conversion)
+    generated = drawn_date(redline, conversion, now)
     folder = engine_dir / 'release_info'
     folder.mkdir(parents=True, exist_ok=True)
     names = {name: f'{name}_{version}_{stamp}.{ext}' for name, ext in SIX}
