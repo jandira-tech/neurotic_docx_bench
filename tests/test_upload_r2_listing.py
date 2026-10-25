@@ -13,6 +13,7 @@ from __future__ import annotations
 import asyncio
 import importlib.util
 import json
+import re
 import subprocess
 import sys
 import types
@@ -29,7 +30,15 @@ class HTTPError(Exception):
     pass
 
 
-class TransportError(HTTPError):
+class RequestError(HTTPError):
+    pass
+
+
+class TransportError(RequestError):
+    pass
+
+
+class DecodingError(RequestError):  # not a TransportError in httpx 0.28
     pass
 
 
@@ -53,7 +62,8 @@ class ConnectError(NetworkError):
 def upload_r2(monkeypatch: pytest.MonkeyPatch):
     """Load the upload script with a stub `httpx` (not installed in this env)."""
     httpx = types.ModuleType("httpx")
-    for cls in (HTTPError, TransportError, TimeoutException, ReadTimeout, NetworkError, ConnectError):
+    for cls in (HTTPError, RequestError, TransportError, DecodingError, TimeoutException, ReadTimeout, NetworkError,
+                ConnectError):
         setattr(httpx, cls.__name__, cls)
     monkeypatch.setitem(sys.modules, "httpx", httpx)
     spec = importlib.util.spec_from_file_location("upload_r2_under_test", SCRIPT)
@@ -580,3 +590,58 @@ def test_listing_429_with_huge_retry_after_sleeps_the_cap(upload_r2, patched):
 
     assert asyncio.run(upload_r2.listing(client, PREFIX)) == {}
     assert patched["sleeps"] == [300]
+
+
+# --- review round on PR #68 (pi / GLM 5.3) -------------------------------------------
+
+def test_listing_decoding_error_retries_at_same_cursor(upload_r2, patched):
+    """A corrupt gzip/chunked body raises DecodingError, a RequestError that is not a TransportError."""
+    assert_retry_at_same_cursor(upload_r2, patched, DecodingError("bad gzip"))
+
+
+@pytest.mark.parametrize("info", [False, "", 0, [], "x"])
+def test_listing_non_dict_result_info_raises(upload_r2, patched, info):
+    client = FakeClient([{"success": True, "result": batch(0, 1), "result_info": info}])
+
+    with pytest.raises(RuntimeError, match=PREFIX):
+        asyncio.run(upload_r2.listing(client, PREFIX))
+
+
+@pytest.mark.parametrize("items", [[{"key": "p/00000"}], [{"size": 0}], ["p/00000"]])
+def test_listing_page_with_malformed_items_is_retried(upload_r2, patched, items):
+    assert_retry_at_same_cursor(upload_r2, patched, FakeResponse({"success": True, "result": items}))
+
+
+class FakeAsyncClient:
+    def __init__(self, headers=None, timeout=None):
+        self.headers = dict(headers or {})
+
+    async def __aenter__(self):
+        return self
+
+    async def __aexit__(self, *exc):
+        return False
+
+
+def test_upload_run_with_a_dead_login_stops_with_a_report(upload_r2, monkeypatch, tmp_path, capsys):
+    """A failed token refresh ends the run, but it still says what was uploaded; a rerun skips those."""
+    for name in ("a.txt", "b.txt", "c.txt"):
+        (tmp_path / name).write_text(name)
+    monkeypatch.setattr(sys, "argv", ["upload_r2.py", str(tmp_path), "p"])
+    monkeypatch.setattr(upload_r2, "token", lambda: "tok")
+    monkeypatch.setattr(upload_r2.httpx, "AsyncClient", FakeAsyncClient, raising=False)
+
+    async def empty_listing(client, prefix):  # ruff: ignore[unused-async] - stands in for listing()
+        return {}
+
+    async def upload_api(client, key, path, sem, failed, refresh_lock):  # ruff: ignore[unused-async] - same
+        if key == "p/b.txt":
+            raise RuntimeError("Token refresh exited 1; run bunx wrangler login")
+
+    monkeypatch.setattr(upload_r2, "listing", empty_listing)
+    monkeypatch.setattr(upload_r2, "upload_api", upload_api)
+
+    assert asyncio.run(upload_r2.main()) == 1
+    out = capsys.readouterr().out
+    assert "stopped: Token refresh exited 1; run bunx wrangler login" in out
+    assert re.search(r"uploaded \d+, failed \d+, not attempted \d+", out)

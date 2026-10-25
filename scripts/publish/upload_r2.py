@@ -111,7 +111,7 @@ async def listing(client: httpx.AsyncClient, prefix: str) -> dict[str, int]:
             delay = 2**attempt
             try:
                 response = await client.get(API, params=params)
-            except httpx.TransportError as error:
+            except httpx.RequestError as error:  # transport errors, and bodies that fail to decode
                 last_error = str(error)
             else:
                 last_error = f"HTTP {response.status_code}"
@@ -125,7 +125,8 @@ async def listing(client: httpx.AsyncClient, prefix: str) -> dict[str, int]:
                     except ValueError as error:
                         last_error += f": {error}"
                     else:
-                        if isinstance(r, dict) and r.get("success") and isinstance(r.get("result"), list):
+                        if (isinstance(r, dict) and r.get("success") and isinstance(r.get("result"), list)
+                                and all(isinstance(o, dict) and "key" in o and "size" in o for o in r["result"])):
                             page = r
                             break
                         last_error += f": {r.get('errors', r) if isinstance(r, dict) else r}"
@@ -138,9 +139,9 @@ async def listing(client: httpx.AsyncClient, prefix: str) -> dict[str, int]:
         info = page.get("result_info")
         if info is None:  # the API leaves result_info out of the last page, even a full one
             return out
-        truncated = info.get("is_truncated")
+        truncated = info.get("is_truncated") if isinstance(info, dict) else None
         if not isinstance(truncated, bool):  # absent, null or a string says neither "more" nor "done"
-            raise RuntimeError(f"R2 listing for prefix {prefix!r} gave result_info without a boolean is_truncated: {info}")
+            raise RuntimeError(f"R2 listing for prefix {prefix!r} gave no boolean is_truncated in result_info {info!r}")
         if not truncated:
             return out
         cursor = info.get("cursor")
@@ -269,7 +270,12 @@ async def main() -> int:
                 if done % 500 == 0:
                     print(f"{done}/{len(todo)}", flush=True)
 
-            await asyncio.gather(*(one(p) for p in todo))
+            try:
+                await asyncio.gather(*(one(p) for p in todo))
+            except RuntimeError as error:  # the login is dead: stop, but say what got done; a rerun skips it
+                print(f"stopped: {error}")
+                print(f"uploaded {done - len(failed)}, failed {len(failed)}, not attempted {len(todo) - done}")
+                return 1
 
     print(f"uploaded {len(todo) - len(failed)}, failed {len(failed)}")
     for k in failed[:20]:
