@@ -1,0 +1,2 @@
+_build/redlines/*.csv -text
+_build/site_1011/*.csv -text
