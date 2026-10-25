@@ -118,9 +118,10 @@ def _dialog(id=7, w=260, h=282, title="alert") -> dict:
 
 # --- vision(): an empty successful read must look like "no text", not like text ------
 
-def test_vision_empty_result_is_none(wsl, tmp_path):
+def test_vision_empty_result_is_empty_string(wsl, tmp_path):
+    """A request that ran and read nothing is "", so it is not mistaken for a failed request."""
     wsl.vision_stub.returns["accurate"] = []
-    assert wsl.vision(_png(tmp_path / "a.png"), "accurate") is None
+    assert wsl.vision(_png(tmp_path / "a.png"), "accurate") == ""
 
 
 def test_vision_failed_request_is_none(wsl, tmp_path):
@@ -133,6 +134,23 @@ def test_ocr_falls_through_empty_accurate_to_tesseract(wsl, monkeypatch, tmp_pat
     wsl.vision_stub.returns["accurate"] = []  # accurate ran fine and read nothing
     monkeypatch.setattr(wsl, "tesseract", lambda png: "HELLO")
     assert wsl.ocr(_png(tmp_path / "a.png")) == "HELLO   (tesseract)"
+
+
+def test_empty_accurate_read_keeps_accurate_vision_on(wsl, monkeypatch, tmp_path):
+    """A blank or icon-only dialog must not switch accurate Vision off for the rest of the run."""
+    wsl.accurate_ok = True
+    wsl.vision_stub.returns["accurate"] = []
+    monkeypatch.setattr(wsl, "tesseract", lambda png: "HELLO")
+    assert wsl.ocr(_png(tmp_path / "a.png")) == "HELLO   (tesseract)"
+    assert wsl.accurate_ok is True
+
+
+def test_failed_accurate_request_turns_accurate_vision_off(wsl, monkeypatch, tmp_path):
+    wsl.accurate_ok = True
+    wsl.vision_stub.returns["accurate"] = None  # the request itself failed: the model is broken
+    monkeypatch.setattr(wsl, "tesseract", lambda png: "HELLO")
+    assert wsl.ocr(_png(tmp_path / "a.png")) == "HELLO   (tesseract)"
+    assert wsl.accurate_ok is False
 
 
 def test_read_keeps_unread_png_when_nothing_reads(wsl, monkeypatch, tmp_path):

@@ -65,10 +65,11 @@ def stamp() -> str:
 
 
 def vision(png: Path, level) -> str | None:
-    """Read `png` with macOS Vision at `level`; the joined text, or None when it read nothing.
+    """Read `png` with macOS Vision at `level`; the joined text, "" when it read nothing, None when it failed.
 
-    An empty but successful recognition is None too, not a placeholder string: `ocr` treats
-    None as "try the next engine", and `read` keeps the screenshot when nothing can read it.
+    An empty read is "", not a placeholder string, so `ocr` tries the next engine and `read`
+    keeps the screenshot when nothing can read it. Only None (the request failed) tells `ocr`
+    the accurate model is broken.
     """
     req = Vision.VNRecognizeTextRequest.alloc().init()
     req.setRecognitionLevel_(level)
@@ -76,8 +77,7 @@ def vision(png: Path, level) -> str | None:
     ok, _ = handler.performRequests_error_([req], None)
     if not ok:
         return None
-    text = " | ".join(o.topCandidates_(1)[0].string() for o in (req.results() or []))
-    return text or None
+    return " | ".join(o.topCandidates_(1)[0].string() for o in (req.results() or []))
 
 
 TESSERACT = shutil.which("tesseract") or next((t for t in ("/opt/homebrew/bin/tesseract", "/usr/local/bin/tesseract")
@@ -120,14 +120,15 @@ def ocr(png: Path) -> str | None:
     global accurate_ok
     if accurate_ok:
         text = vision(png, Vision.VNRequestTextRecognitionLevelAccurate)
-        if text is not None:
+        if text:
             return text
-        accurate_ok = False
+        if text is None:  # the request failed; a blank dialog ("") says nothing about the model
+            accurate_ok = False
     text = tesseract(png)
     if text is not None:
         return f"{text}   (tesseract)"
     text = vision(png, Vision.VNRequestTextRecognitionLevelFast)
-    return None if text is None else f"{text}   (vision fast)"
+    return f"{text}   (vision fast)" if text else None
 
 
 def windows() -> list[dict]:
