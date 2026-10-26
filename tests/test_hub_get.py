@@ -1483,18 +1483,20 @@ def test_ctrl_c_that_reaches_a_download_thread_stops_the_queued_downloads(tmp_pa
 
     def slow(repo_id, filename, **kw):
         out = real(repo_id, filename, **kw)
-        if filename.endswith("f00.txt"):
-            time.sleep(2)  # the download the main thread waits on first
+        if filename.endswith("f01.txt"):  # Ctrl-C lands in this download thread, not the main one
+            signal.pthread_kill(threading.get_ident(), signal.SIGINT)
+            time.sleep(1)  # the main thread looks every 0.25 s: it stops the queue before this ends
+        elif filename.endswith("f00.txt"):
+            time.sleep(2)
         else:
-            if filename.endswith("f01.txt"):  # Ctrl-C lands in this download thread, not the main one
-                signal.pthread_kill(threading.get_ident(), signal.SIGINT)
             time.sleep(0.05)
         return out
 
     api.hf_hub_download = slow
     with pytest.raises(KeyboardInterrupt) as exc:
         hub_get.get(preset(dest), api=api, workers=2)
-    assert len(api.downloads()) < 15  # the other thread fetches all 19 small files within the 2 s
+    # Only the two running downloads end; unseen, the press would let the other thread fetch the 18 left
+    assert len(api.downloads()) == 2
     assert not dest.exists() or _tree(dest) == {}
     notes = " ".join(getattr(exc.value, "__notes__", ()))
     assert str(hub_get.staging_dir(dest, SHA)) in notes and "rerun" in notes
@@ -1552,36 +1554,6 @@ def test_ctrl_c_while_a_download_thread_starts_leaves_no_thread_running(
     started[0].join()
     assert exc.type is KeyboardInterrupt, exc.value
     assert not alive  # a thread still writing into the staging folder whose lock was let go
-    assert "rerun" in " ".join(getattr(exc.value, "__notes__", ()))
-
-
-def test_a_second_ctrl_c_while_the_running_downloads_end_still_waits_for_them(tmp_path: Path) -> None:
-    import threading
-    import time
-
-    api = _hub_of_slow_files()
-    real_download = api.hf_hub_download
-    main = threading.main_thread().ident
-    threads: list[threading.Thread] = []
-
-    def slow(*args, **kw):
-        if not threads:
-            threads.append(threading.current_thread())
-            time.sleep(0.2)  # every download is submitted: the main thread waits on them
-            signal.pthread_kill(main, signal.SIGINT)
-            time.sleep(0.4)  # the main thread is now waiting for this download to end
-            signal.pthread_kill(main, signal.SIGINT)
-            time.sleep(0.6)
-        return real_download(*args, **kw)
-
-    api.hf_hub_download = slow
-    with pytest.raises(BaseException) as exc:
-        hub_get.get(preset(tmp_path / "dest"), api=api, workers=1)
-    assert threads
-    alive = threads[0].is_alive()
-    threads[0].join()
-    assert exc.type is KeyboardInterrupt, exc.value
-    assert not alive
     assert "rerun" in " ".join(getattr(exc.value, "__notes__", ()))
 
 
@@ -1657,3 +1629,149 @@ def test_a_hub_file_where_the_downloads_records_go_refuses_before_downloading(tm
     with pytest.raises(hub_get.GetError, match="keeps its own records"):
         hub_get.get(whole, api=api)
     assert api.downloads() == []
+
+
+# Review round 9, Codex (#80)
+
+
+def _held_by_another_run(staging: Path) -> bool:
+    try:
+        fd = hub_get._lock(staging)
+    except hub_get.GetError:
+        return True
+    os.close(fd)
+    return False
+
+
+def test_a_second_ctrl_c_stops_waiting_for_a_download_that_never_ends(tmp_path: Path) -> None:
+    """A stalled request (the SDK's Xet token request has no timeout) must not make Ctrl-C wait forever.
+
+    The second press stops waiting. The download left running ends with the process, which keeps the
+    staging folder locked until then: no other run takes a folder a thread still writes into (round 8).
+    """
+    import threading
+    import time
+
+    dest = tmp_path / "dest"
+    staging = hub_get.staging_dir(dest, SHA)
+    api = _hub_of_slow_files()
+    real_download = api.hf_hub_download
+    main = threading.main_thread().ident
+    release = threading.Event()
+    stalled: list[threading.Thread] = []
+
+    def stall(*args, **kw):
+        if not stalled:
+            stalled.append(threading.current_thread())
+            release.wait(6)  # a request that does not come back
+        return real_download(*args, **kw)
+
+    def press_twice() -> None:
+        time.sleep(0.3)
+        signal.pthread_kill(main, signal.SIGINT)
+        time.sleep(0.5)
+        signal.pthread_kill(main, signal.SIGINT)
+
+    api.hf_hub_download = stall
+    presser = threading.Thread(target=press_twice)
+    presser.start()
+    started = time.monotonic()
+    try:
+        with pytest.raises(BaseException) as exc:
+            hub_get.get(preset(dest), api=api, workers=1)
+        waited = time.monotonic() - started
+        fetched = len(api.downloads())
+        locked = _held_by_another_run(staging)
+        running = bool(stalled) and stalled[0].is_alive()
+    finally:
+        release.set()
+        presser.join()
+        for t in stalled:
+            t.join()
+    assert exc.type is KeyboardInterrupt, exc.value
+    assert waited < 3
+    assert fetched == 1  # the queued downloads never started
+    assert running and locked
+    notes = " ".join(getattr(exc.value, "__notes__", ()))
+    assert str(staging) in notes and "still running" in notes and "rerun" in notes
+    while hub_get._KEPT_LOCKS:
+        os.close(hub_get._KEPT_LOCKS.pop())
+
+
+@pytest.mark.parametrize("how", ["include", "exclude"])
+def test_a_hub_file_where_the_records_go_is_no_obstacle_when_the_run_does_not_fetch_it(
+    tmp_path: Path, how: str
+) -> None:
+    api = PinnedHub({"a.txt": b"a\n", ".CACHE": b"x\n"})
+    whole = hub_get.Preset(
+        name="t", repo_id=REPO, path="", dest=tmp_path / "dest", about="test",
+        exclude=(".CACHE",) if how == "exclude" else (),
+    )
+    hub_get.get(whole, api=api, include=("a.txt",) if how == "include" else ())
+    assert _tree(tmp_path / "dest") == {"a.txt": b"a\n"}
+
+
+# Review round 9, mcode (#80)
+
+
+@pytest.mark.parametrize("where", ["staged", "dest"])
+def test_ctrl_c_while_the_download_is_checked_says_nothing_moved(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, where: str
+) -> None:
+    dest = tmp_path / "dest"
+    staging = hub_get.staging_dir(dest, SHA)
+    api = PinnedHub(FILES)
+    if where == "dest":  # a local file appears with the hub's bytes while the files download
+        real_download = api.hf_hub_download
+
+        def appear(repo_id, filename, **kw):
+            if filename.endswith("RUN.md"):
+                _write(dest, {"RUN.md": FILES["outputs/run/RUN.md"]})
+            return real_download(repo_id, filename, **kw)
+
+        api.hf_hub_download = appear
+    real_same = hub_get.same_bytes
+    sent = []
+
+    def same_bytes(path, f):
+        if not sent and Path(path).is_relative_to(dest if where == "dest" else staging):
+            sent.append(1)
+            os.kill(os.getpid(), signal.SIGINT)
+            _spin()
+        return real_same(path, f)
+
+    monkeypatch.setattr(hub_get, "same_bytes", same_bytes)
+    with pytest.raises(BaseException) as exc:
+        hub_get.get(preset(dest), api=api)
+    assert sent
+    assert exc.type is KeyboardInterrupt, exc.value
+    notes = " ".join(getattr(exc.value, "__notes__", ()))
+    assert str(staging) in notes and "rerun" in notes and "nothing moved" in notes
+    assert _tree(dest) == ({"RUN.md": FILES["outputs/run/RUN.md"]} if where == "dest" else {}) or not dest.exists()
+
+
+def test_a_ctrl_c_the_moment_the_handler_is_given_back_says_where_the_run_was(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    dest = tmp_path / "dest"
+    real_signal = signal.signal
+    sent = []
+
+    def give_back(signum, handler):
+        previous = real_signal(signum, handler)
+        if signum == signal.SIGINT and handler is signal.default_int_handler and not sent:
+            sent.append(1)
+            os.kill(os.getpid(), signal.SIGINT)  # the instant Python's own handler is back
+            _spin()
+        return previous
+
+    monkeypatch.setattr(signal, "signal", give_back)
+    with pytest.raises(BaseException) as exc:
+        hub_get.get(preset(dest), api=PinnedHub(FILES))
+    assert sent
+    assert exc.type is KeyboardInterrupt, exc.value
+    notes = " ".join(getattr(exc.value, "__notes__", ()))
+    assert str(dest) in notes
+    # The handler is given back once, after the run's last step: the note says so, and it is true
+    assert "every file is in place" in notes
+    assert _tree(dest) == {k.removeprefix("outputs/run/"): v for k, v in FILES.items() if k.startswith("outputs/run/")}
