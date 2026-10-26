@@ -12,6 +12,7 @@ import hashlib
 import os
 import re
 import shutil
+import signal
 import stat
 import tempfile
 from pathlib import Path
@@ -1017,3 +1018,156 @@ def test_a_copy_whose_identity_cannot_be_read_is_named_as_left_behind(
     assert "every file already moved was put back" not in message
     assert f"{dest / 'a.docx'}" in message and "stays" in message
     assert not (dest / "RUN.md").exists()
+
+
+# Review round 5, Codex (#80)
+
+
+def _write(dest: Path, files: dict[str, bytes]) -> None:
+    for rel, data in files.items():
+        (dest / rel).parent.mkdir(parents=True, exist_ok=True)
+        (dest / rel).write_bytes(data)
+
+
+def _tree(dest: Path) -> dict[str, bytes]:
+    return {p.relative_to(dest).as_posix(): p.read_bytes() for p in dest.rglob("*") if p.is_file()}
+
+
+def test_ctrl_c_the_moment_a_local_file_is_moved_aside_puts_it_back(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    dest = tmp_path / "dest"
+    local = {"RUN.md": b"old run\n", "a.docx": b"old a\n", "sub/b.pdf": b"old b\n"}
+    _write(dest, local)
+    real = os.replace
+    sent = []
+
+    def replace(src, dst, *args, **kw):
+        done = real(src, dst, *args, **kw)
+        if hub_get._BACKUP in Path(dst).parts and not sent:
+            sent.append(dst)
+            os.kill(os.getpid(), signal.SIGINT)  # a real Ctrl-C, delivered as the rename returns
+        return done
+
+    monkeypatch.setattr(os, "replace", replace)
+    with pytest.raises((KeyboardInterrupt, hub_get.GetError)):
+        hub_get.get(preset(dest), api=PinnedHub(FILES), on_conflict="overwrite")
+    assert sent
+    assert _tree(dest) == local
+
+
+def test_ctrl_c_the_moment_a_file_is_placed_takes_it_back(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    dest = tmp_path / "dest"
+    real = hub_get.place
+    sent = []
+
+    def place(staged, target):
+        placed = real(staged, target)
+        if target.name == "a.docx" and not sent:
+            sent.append(target)
+            os.kill(os.getpid(), signal.SIGINT)
+        return placed
+
+    monkeypatch.setattr(hub_get, "place", place)
+    with pytest.raises((KeyboardInterrupt, hub_get.GetError)):
+        hub_get.get(preset(dest), api=PinnedHub(FILES))
+    assert sent
+    assert _tree(dest) == {}
+
+
+def test_a_failed_look_at_the_lock_file_lets_go_of_the_lock(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    dest = tmp_path / "dest"
+    lock = hub_get.staging_dir(dest, SHA) / hub_get.LOCK
+    real = hub_get._identity_at
+    failed = []
+
+    def identity_at(path):
+        if Path(path) == lock and not failed:
+            failed.append(path)
+            raise OSError(errno.EIO, "lstat failed")
+        return real(path)
+
+    monkeypatch.setattr(hub_get, "_identity_at", identity_at)
+    with pytest.raises((OSError, hub_get.GetError), match="lstat failed"):
+        hub_get.get(preset(dest), api=PinnedHub(FILES))
+    assert hub_get.get(preset(dest), api=PinnedHub(FILES)).downloaded == 3
+
+
+def test_a_case_variant_of_the_attributes_file_is_never_downloaded(tmp_path: Path) -> None:
+    api = PinnedHub({**FILES, "outputs/run/.GITATTRIBUTES": b"* -text\n", "outputs/run/sub/.GitAttributes": b"x\n"})
+    report = hub_get.get(preset(tmp_path / "dest"), api=api)
+    assert report.downloaded == 3
+    assert not any(name.casefold().endswith(".gitattributes") for name in api.downloads())
+
+
+@pytest.mark.parametrize("folder", ["RUN.md.metadata", "sub/b.pdf.lock", "RUN.MD.Metadata"])
+def test_hub_folders_named_like_the_downloads_records_refuse_before_downloading(tmp_path: Path, folder: str) -> None:
+    """hf_hub_download keeps a file's records at .cache/huggingface/download/<path>.metadata and <path>.lock."""
+    api = PinnedHub({**FILES, f"outputs/run/{folder}/x.txt": b"x\n"})
+    with pytest.raises(hub_get.GetError, match=re.escape(folder)):
+        hub_get.get(preset(tmp_path / "dest"), api=api)
+    assert api.downloads() == []
+
+
+# Review round 5, mcode (#80)
+
+
+def test_a_file_where_the_staging_folder_goes_is_refused_cleanly(tmp_path: Path) -> None:
+    dest = tmp_path / "dest"
+    hub_get.staging_dir(dest, SHA).write_bytes(b"not a folder\n")
+    with pytest.raises(hub_get.GetError, match="staging folder"):
+        hub_get.get(preset(dest), api=PinnedHub(FILES))
+
+
+def test_a_run_with_nothing_to_download_is_not_refused_by_a_leftover_staging_folder(tmp_path: Path) -> None:
+    dest = tmp_path / "dest"
+    hub_get.get(preset(dest), api=PinnedHub(FILES))
+    staging = hub_get.staging_dir(dest, SHA)
+    (staging / "elsewhere").mkdir(parents=True)
+    (staging / "link").symlink_to(tmp_path / "elsewhere")
+    assert hub_get.get(preset(dest), api=PinnedHub(FILES)).skipped == 3  # a symlink in it
+    (staging / "link").unlink()
+    with open(staging / hub_get.LOCK, "a") as held:
+        hub_get.fcntl.flock(held, hub_get.fcntl.LOCK_EX | hub_get.fcntl.LOCK_NB)
+        assert hub_get.get(preset(dest), api=PinnedHub(FILES)).skipped == 3  # another run holds it
+
+
+def test_a_lock_error_other_than_busy_is_refused_and_lets_go_of_the_descriptor(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    def no_locks(fd, op):
+        raise OSError(errno.ENOLCK, "no locks available")
+
+    monkeypatch.setattr(hub_get.fcntl, "flock", no_locks)
+    before = len(os.listdir("/dev/fd"))
+    with pytest.raises(hub_get.GetError, match="no locks available"):
+        hub_get.get(preset(tmp_path / "dest"), api=PinnedHub(FILES))
+    assert len(os.listdir("/dev/fd")) == before
+
+
+def test_a_local_file_that_becomes_a_folder_before_it_is_replaced_stays(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    dest = tmp_path / "dest"
+    local = {"RUN.md": b"old run\n", "a.docx": b"old a\n", "sub/b.pdf": b"old b\n"}
+    _write(dest, local)
+    real = hub_get.place
+
+    def racing(staged, target):
+        if target.name == "RUN.md" and (dest / "a.docx").is_file():
+            (dest / "a.docx").unlink()
+            (dest / "a.docx").mkdir()
+            (dest / "a.docx" / "important.txt").write_bytes(b"notes\n")
+        return real(staged, target)
+
+    monkeypatch.setattr(hub_get, "place", racing)
+    with pytest.raises(hub_get.GetError, match=re.escape(str(dest / "a.docx"))):
+        hub_get.get(preset(dest), api=PinnedHub(FILES), on_conflict="overwrite")
+    assert _tree(dest) == {"RUN.md": b"old run\n", "a.docx/important.txt": b"notes\n", "sub/b.pdf": b"old b\n"}
+
+
+def test_a_dry_run_says_the_real_run_would_be_refused(tmp_path: Path) -> None:
+    dest = tmp_path / "dest"
+    _write(dest, {"RUN.md": b"mine\n"})
+    report = hub_get.get(preset(dest), api=PinnedHub(FILES), dry_run=True)
+    assert "would refuse" in report.describe()
+    assert "would refuse" not in hub_get.get(preset(dest), api=PinnedHub(FILES), dry_run=True,
+                                             on_conflict="keep-local").describe()
