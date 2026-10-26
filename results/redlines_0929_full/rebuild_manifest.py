@@ -486,10 +486,10 @@ def publish(api, checkout: Path, revision: str, data: bytes, message: str) -> st
         remote = getattr(operation, '_remote_oid', None)
         if remote is not None and remote == operation._local_oid:
             entry = before.get(key)
-            # Whether the tree this run read holds this content at the path itself, in whatever mode (a symlink
-            # whose target bytes are the manifest): only then is the answer about the commit this run read.
+            # Whether the tree this run read holds this content id at the path itself, in whatever git mode (a
+            # symlink whose target bytes are the manifest): only then is the answer about the commit this run read.
             explained = entry is not None and entry[1] == b'blob' and holds(
-                git(checkout, 'cat-file', 'blob', f'{revision}:{path}'), data
+                git(checkout, 'cat-file', 'blob', f'{revision}:{path}'), data, operation._upload_mode
             )
             raise RebuildError(no_op(api, revision, path, entry, remote, explained))
         # create_commit would leave an ignored file out of the commit it still sends (_commit_api.py 939).
@@ -528,19 +528,26 @@ def publish(api, checkout: Path, revision: str, data: bytes, message: str) -> st
         raise
 
 
-def holds(blob: bytes, data: bytes) -> bool:
-    """Whether ``blob`` is ``data``'s content as the hub counts it: the bytes, or an LFS pointer to their sha256."""
-    pointer = LFS_POINTER.fullmatch(blob)
-    return blob == data or (pointer is not None and pointer.group(1).decode() == hashlib.sha256(data).hexdigest())
+def holds(blob: bytes, data: bytes, mode: str) -> bool:
+    """Whether ``blob`` holds ``data``'s content id in the preupload's upload ``mode`` (``_commit_api.py`` 297).
+
+    A regular file's id is the git blob sha1 of its bytes, so ``blob`` must be them; an LFS file's is the sha256 a
+    pointer names, so ``blob`` must be a pointer to theirs.
+    """
+    if mode == 'lfs':
+        pointer = LFS_POINTER.fullmatch(blob)
+        return pointer is not None and pointer.group(1).decode() == hashlib.sha256(data).hexdigest()
+    return blob == data
 
 
 def no_op(api, revision: str, path: str, entry: tuple[bytes, ...] | None, remote: str, explained: bool) -> str:
     """Why a no-op the preupload's answer shows stops the run. ``create_commit`` was not called, so nothing was
     published by this run; the rest says whether a rerun or a fix on the hub comes next.
 
-    A fix only when the tree at ``revision`` holds this content at the path (``explained``) and the head is still
-    ``revision`` when read again: two equal readings alone do not show the branch stayed put, since it may have
-    moved and come back, and the answer may describe the commit it passed through.
+    A fix only when the tree at ``revision`` holds this content id at the path, in the preupload's upload mode
+    (``explained``), and the head is still ``revision`` when read again: two equal readings alone do not show the
+    branch stayed put, since it may have moved and come back, and the answer may describe the commit it passed
+    through.
     """
     said = (
         f'the hub answered the preupload that {path} on {BRANCH} already holds this manifest\'s content id ({remote}), '
