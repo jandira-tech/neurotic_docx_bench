@@ -126,8 +126,10 @@ def test_an_lfs_pointer_whose_oid_is_not_a_sha256_refuses(rebuild):
         + b'\nsize 9\n',
         b'version https://git-lfs.github.com/spec/v1\noid sha256:' + b'a' * 64 + b'\nsize 9\nsomething else',
         b'version https://git-lfs.github.com/spec/v1\r\noid sha256:' + b'a' * 64 + b'\r\nsize 9\r\n',
+        b'version https://git-lfs.github.com/spec/v1\noid sha256:' + b'a' * 64 + b'\nsize 01\n',
+        b'version https://git-lfs.github.com/spec/v1\noid sha256:' + b'a' * 64 + b'\nsize 9223372036854775808\n',
     ],
-    ids=['no-sha256-prefix', 'two-oids', 'trailing-text', 'crlf'],
+    ids=['no-sha256-prefix', 'two-oids', 'trailing-text', 'crlf', 'size-leading-zero', 'size-overflow'],
 )
 def test_a_pointer_that_is_not_canonical_refuses(rebuild, bad):
     with pytest.raises(rebuild.RebuildError, match='LFS pointer'):
@@ -444,4 +446,43 @@ def test_publish_accepts_the_manifest_stored_in_lfs(rebuild, hub_pair):
 def test_a_record_stored_in_lfs_refuses_rather_than_being_read_as_json(rebuild, tmp_path):
     repo, _ = repo_with(tmp_path, {'x.docx': b'A', MANIFEST: pointer(manifest({'x.docx': sha(b'A')}))})
     with pytest.raises(rebuild.RebuildError, match='LFS'):
+        rebuild.records(repo, 'HEAD')
+
+
+def test_an_old_record_not_fetched_yet_is_still_read(rebuild, tmp_path, monkeypatch):
+    """A blob-filtered clone lacks the old manifest blob; an inherited GIT_NO_LAZY_FETCH must not hide it."""
+    origin, _ = repo_with(
+        tmp_path,
+        {'x.docx': b'A', 'gone.docx': b'G', MANIFEST: manifest({'x.docx': sha(b'A'), 'gone.docx': sha(b'G')})},
+        {MANIFEST: manifest({'x.docx': sha(b'A')})},
+    )
+    git(origin, 'rm', '-q', f'{PREFIX}/gone.docx')
+    git(origin, 'commit', '-q', '-m', 'gone')
+    git(origin, 'config', 'uploadpack.allowFilter', 'true')
+    clone = tmp_path / 'partial'
+    git(tmp_path, 'clone', '-q', '--filter=blob:none', '--no-checkout', f'file://{origin}', str(clone))
+    monkeypatch.setenv('GIT_NO_LAZY_FETCH', '1')
+    history = [files for _, files in rebuild.records(clone, 'HEAD')]
+    assert history[:1] == [{'x.docx': sha(b'A'), 'gone.docx': sha(b'G')}]
+
+
+def test_a_record_stored_in_lfs_is_read_through_the_fetcher_and_checked(rebuild, tmp_path):
+    content = manifest({'x.docx': sha(b'A')})
+    repo, shas = repo_with(tmp_path, {'x.docx': b'A', MANIFEST: pointer(content)})
+    asked = []
+
+    def fetch(commit, path):
+        asked.append((commit, path))
+        return content
+
+    assert rebuild.records(repo, 'HEAD', fetch_lfs=fetch) == [(f'{shas[0][:9]} {MANIFEST}', {'x.docx': sha(b'A')})]
+    assert asked == [(shas[0], f'{PREFIX}/{MANIFEST}')]
+    with pytest.raises(rebuild.RebuildError, match='LFS'):
+        rebuild.records(repo, 'HEAD', fetch_lfs=lambda commit, path: manifest({}))
+
+
+def test_an_upload_list_with_another_header_refuses(rebuild, tmp_path):
+    odd = b'key\tsha256\tkey\ngone.docx\t' + sha(b'A').encode() + b'\tx.docx\n'
+    repo, _ = repo_with(tmp_path, {'x.docx': b'A', 'upload_20261025.manifest.tsv': odd})
+    with pytest.raises(rebuild.RebuildError, match='header'):
         rebuild.records(repo, 'HEAD')

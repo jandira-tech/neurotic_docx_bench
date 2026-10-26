@@ -116,7 +116,7 @@ def parse_record(name: str, raw: bytes, label: str) -> dict[str, str]:
     return unique([(row['key'], row['sha256']) for row in rows], label)
 
 
-def records(checkout: Path, revision: str) -> list[tuple[str, dict[str, str]]]:
+def records(checkout: Path, revision: str, fetch_lfs=None) -> list[tuple[str, dict[str, str]]]:
     """Every version of the manifest and of the upload lists up to ``revision``, oldest first.
 
     A record is a version as one commit introduced it: its blob differs from every parent's, merges
