@@ -211,7 +211,8 @@ def test_main_reads_previous_manifest_and_fetches_inline_files(upload, run, tmp_
     assert api.downloads[0] == (manifest_path, api.refs[revision])
     assert {p for p, _ in api.downloads[1:]} == {prefix + p for p in files}
     assert all(rev == HEAD for _, rev in api.downloads[1:])
-    assert api.tree_revisions == [HEAD]
+    # The carry listing is pinned; verify_uploaded then reads the commit the upload made.
+    assert api.tree_revisions == [HEAD, None]
     names = [name for name, _ in api.calls]
     assert names.index('list_repo_tree') < names.index('upload_folder')
 

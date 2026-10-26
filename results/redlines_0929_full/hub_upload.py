@@ -136,11 +136,25 @@ def main() -> None:
         from huggingface_hub.errors import RemoteEntryNotFoundError
 
         api = hub.default_api()
+        api.create_repo(hub.RESULTS_REPO, repo_type=hub.REPO_TYPE, exist_ok=True)
+        # Pin every read to a commit: when its HEAD request fails, huggingface_hub serves the
+        # cached copy of a branch, which can be older than the listing; a commit's copy cannot.
+        head = api.repo_info(hub.RESULTS_REPO, repo_type=hub.REPO_TYPE).sha
+        baseline = (
+            api.repo_info(hub.RESULTS_REPO, repo_type=hub.REPO_TYPE, revision=a.previous_revision).sha
+            if a.previous_revision
+            else head
+        )
         prefix = REPO_PREFIX + '/'
         remote = {}
         try:
             for entry in api.list_repo_tree(
-                hub.RESULTS_REPO, repo_type=hub.REPO_TYPE, path_in_repo=REPO_PREFIX, recursive=True, expand=True
+                hub.RESULTS_REPO,
+                repo_type=hub.REPO_TYPE,
+                path_in_repo=REPO_PREFIX,
+                recursive=True,
+                expand=True,
+                revision=head,
             ):
                 path = getattr(entry, 'path', None)
                 if path and path.startswith(prefix):
@@ -149,10 +163,7 @@ def main() -> None:
             remote = {}
         try:
             local = api.hf_hub_download(
-                hub.RESULTS_REPO,
-                f'{REPO_PREFIX}/run/{hub.MANIFEST_NAME}',
-                repo_type=hub.REPO_TYPE,
-                revision=a.previous_revision,
+                hub.RESULTS_REPO, f'{REPO_PREFIX}/run/{hub.MANIFEST_NAME}', repo_type=hub.REPO_TYPE, revision=baseline
             )
         except RemoteEntryNotFoundError:
             previous = {}
@@ -162,7 +173,7 @@ def main() -> None:
         def fetch(rel):
             try:
                 local = api.hf_hub_download(
-                    hub.RESULTS_REPO, f'{REPO_PREFIX}/{rel}', repo_type=hub.REPO_TYPE, revision=None
+                    hub.RESULTS_REPO, f'{REPO_PREFIX}/{rel}', repo_type=hub.REPO_TYPE, revision=head
                 )
             except RemoteEntryNotFoundError:
                 return None
@@ -174,7 +185,6 @@ def main() -> None:
     print(f'staged {sum(counts.values())} files, {size / 1e9:.2f} GB: {counts}', flush=True)
     if a.dry_run:
         return
-    api.create_repo(hub.RESULTS_REPO, repo_type=hub.REPO_TYPE, exist_ok=True)
     for s in subdirs:
         api.upload_folder(repo_id=hub.RESULTS_REPO, repo_type=hub.REPO_TYPE, folder_path=a.staging / s,
                           path_in_repo=f'{REPO_PREFIX}/{s}',
