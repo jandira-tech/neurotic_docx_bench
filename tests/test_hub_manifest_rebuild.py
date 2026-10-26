@@ -746,3 +746,68 @@ def test_the_module_fetcher_refuses_an_lfs_record_with_wrong_resolved_bytes(rebu
     with pytest.raises(rebuild.RebuildError, match=r'LFS.*fetched bytes do not match'):
         run_main(rebuild, hub_pair, tmp_path, monkeypatch, '--publish')
     assert hub_pair.api.uploads == []
+
+
+def test_main_publishes_the_bytes_it_built_not_what_the_out_folder_holds(rebuild, hub_pair, tmp_path, monkeypatch):
+    out = tmp_path / 'out'
+    out.mkdir()
+    (out / hub.MANIFEST_NAME).symlink_to(out / 'report.json')  # the manifest path aliases the report
+    report = run_main(rebuild, hub_pair, tmp_path, monkeypatch, '--lfs-check', '0', '--publish')
+    published = json.loads(git(hub_pair.clone, 'show', f'{hub_pair.api.head()}:{PREFIX}/{MANIFEST}'))
+    assert published['files'] == {}
+    assert published == json.loads((out / hub.MANIFEST_NAME).read_text())
+    assert not (out / hub.MANIFEST_NAME).is_symlink()
+    assert report['manifest_sha256'] == sha((out / hub.MANIFEST_NAME).read_bytes())
+
+
+def add_gitlink(repo: Path, path: str) -> None:
+    git(repo, 'update-index', '--add', '--cacheinfo', f'160000,{"1" * 40},{path}')
+
+
+def test_publish_sees_a_gitlink_the_diff_config_would_hide(rebuild, hub_pair):
+    """A foreign commit on the same parent adds the same manifest and a gitlink under the run folder."""
+    data = manifest({'a/x.docx': sha(b'inline')})
+    git(hub_pair.clone, 'config', 'diff.ignoreSubmodules', 'all')
+
+    def foreign(api):
+        (api.origin / PREFIX / MANIFEST).write_bytes(data)
+        git(api.origin, 'add', '-A')
+        add_gitlink(api.origin, f'{PREFIX}/sub/module')
+        git(api.origin, 'commit', '-q', '-m', 'rebuild')
+
+    hub_pair.api.before_upload = foreign
+    with pytest.raises(rebuild.RebuildError, match=re.escape('sub/module')):
+        rebuild.publish(hub_pair.api, hub_pair.clone, hub_pair.head, data, 'rebuild')
+
+
+def test_git_ignores_the_users_global_config(rebuild, tmp_path, monkeypatch):
+    config = tmp_path / 'gitconfig'
+    config.write_text('[core]\n\tabbrev = 12\n')
+    monkeypatch.setenv('GIT_CONFIG_GLOBAL', str(config))
+    repo, _ = repo_with(tmp_path, {'a/x.docx': b'x'})
+    assert len(git(repo, 'log', '-1', '--format=%h', env={'GIT_CONFIG_GLOBAL': str(config)})) == 12
+    assert len(rebuild.git(repo, 'log', '-1', '--format=%h').decode().strip()) != 12
+
+
+def test_build_reads_blob_bytes_not_the_eol_converted_checkout(rebuild, tmp_path):
+    text = b'line one\nline two\n'
+    repo, _ = repo_with(tmp_path, {'a/x.txt': text, MANIFEST: manifest({'a/x.txt': sha(text)})})
+    (repo / '.gitattributes').write_text('*.txt text eol=crlf\n')
+    git(repo, 'add', '-A')
+    git(repo, 'commit', '-q', '-m', 'attributes')
+    revision = git(repo, 'rev-parse', 'HEAD')
+    (repo / PREFIX / 'a/x.txt').unlink()
+    git(repo, 'checkout', '-q', '--', '.')
+    assert (repo / PREFIX / 'a/x.txt').read_bytes() == text.replace(b'\n', b'\r\n')  # the checkout converted it
+    built, _ = rebuild.build(repo, revision)
+    assert built['a/x.txt'] == sha(text)
+
+
+@pytest.mark.parametrize('tail', [
+    f'x.docx\t1\t"{"a" * 64}',  # an opening quote with no closing one, at the end of the file
+    f'x.docx\t1\t"{"a" * 64}"\n',  # a quoted digest
+])
+def test_quotes_in_an_upload_list_are_not_csv_syntax(rebuild, tail):
+    raw = f'key\tsize\tsha256\n{tail}'.encode()
+    with pytest.raises(rebuild.RebuildError, match='bad-list'):
+        rebuild.parse_record('upload_20261025.manifest.tsv', raw, 'bad-list')
