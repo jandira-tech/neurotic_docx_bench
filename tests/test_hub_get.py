@@ -7,8 +7,11 @@ fail on a branch name, so a download that did not pin its revision fails loudly.
 
 from __future__ import annotations
 
+import errno
 import hashlib
+import os
 import re
+import tempfile
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -491,3 +494,145 @@ def test_case_insensitive_probe_matches_this_disk(tmp_path: Path) -> None:
     (tmp_path / "probe").write_bytes(b"x")
     assert hub_get.case_insensitive(tmp_path) == (tmp_path / "PROBE").exists()
     assert list(tmp_path.iterdir()) == [tmp_path / "probe"]
+
+
+# Review round 2 (#80)
+
+
+def test_the_no_hard_link_fallback_never_overwrites_a_file_that_appears(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A disk without hard links; another writer creates the target in the instant before the move."""
+    staged, target = tmp_path / "staged", tmp_path / "target"
+    staged.write_bytes(b"REMOTE")
+    real_rename, real_replace, real_open = os.rename, os.replace, os.open
+
+    def writer_first(path) -> None:
+        if Path(path) == target and not target.exists():
+            target.write_bytes(b"USER FILE")
+
+    def no_links(src, dst, **kw):
+        raise OSError(errno.EOPNOTSUPP, "no hard links on this disk")
+
+    def rename(src, dst, **kw):
+        writer_first(dst)
+        return real_rename(src, dst, **kw)
+
+    def replace(src, dst, **kw):
+        writer_first(dst)
+        return real_replace(src, dst, **kw)
+
+    def open_(path, flags, mode=0o777, **kw):
+        writer_first(path)
+        return real_open(path, flags, mode, **kw)
+
+    monkeypatch.setattr(os, "link", no_links)
+    monkeypatch.setattr(os, "rename", rename)
+    monkeypatch.setattr(os, "replace", replace)
+    monkeypatch.setattr(os, "open", open_)
+    with pytest.raises(hub_get.GetError, match="appeared"):
+        hub_get.place(staged, target)
+    assert target.read_bytes() == b"USER FILE"
+    assert staged.read_bytes() == b"REMOTE"
+
+
+def test_rollback_leaves_a_file_another_process_put_there_after_the_move(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    dest = tmp_path / "dest"
+    real = hub_get.place
+
+    def flaky(staged, target):
+        if target.name == "b.pdf":  # moves run in order: RUN.md, a.docx, sub/b.pdf
+            theirs = dest / "a.docx.theirs"
+            theirs.write_bytes(b"USER FILE")
+            os.replace(theirs, dest / "a.docx")  # another process replaces a file this run moved
+            raise OSError("disk went away")
+        return real(staged, target)
+
+    monkeypatch.setattr(hub_get, "place", flaky)
+    with pytest.raises(hub_get.GetError, match=re.escape(str(dest / "a.docx"))):
+        hub_get.get(preset(dest), api=PinnedHub(FILES))
+    assert (dest / "a.docx").read_bytes() == b"USER FILE"
+    assert not (dest / "RUN.md").exists()
+
+
+def test_a_failure_after_the_link_restores_the_replaced_file(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    dest = tmp_path / "dest"
+    dest.mkdir()
+    (dest / "RUN.md").write_bytes(b"ORIGINAL\n")
+    staging = hub_get.staging_dir(dest, SHA)
+    real_unlink = os.unlink
+    failed = []
+
+    def unlink(path, *args, **kw):
+        p = Path(path)
+        if p.name == "RUN.md" and p.is_relative_to(staging) and not failed:
+            failed.append(p)
+            raise PermissionError(errno.EACCES, "the staged copy cannot be removed")
+        return real_unlink(path, *args, **kw)
+
+    monkeypatch.setattr(os, "unlink", unlink)
+    with pytest.raises(hub_get.GetError, match="cannot be removed"):
+        hub_get.get(preset(dest), api=PinnedHub(FILES), on_conflict="overwrite")
+    assert failed
+    assert (dest / "RUN.md").read_bytes() == b"ORIGINAL\n"
+    assert sorted(p.relative_to(dest).as_posix() for p in dest.rglob("*")) == ["RUN.md"]
+
+
+def test_one_rollback_error_does_not_stop_the_others(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    dest = tmp_path / "dest"
+    real_place, real_replace = hub_get.place, os.replace
+
+    def flaky(staged, target):
+        if target.name == "b.pdf":
+            raise OSError("disk went away")
+        return real_place(staged, target)
+
+    def replace(src, dst, *args, **kw):
+        if Path(src) == dest / "a.docx":
+            raise OSError(errno.EIO, "a.docx cannot be moved back")
+        return real_replace(src, dst, *args, **kw)
+
+    monkeypatch.setattr(hub_get, "place", flaky)
+    monkeypatch.setattr(os, "replace", replace)
+    with pytest.raises(hub_get.GetError, match="cannot be moved back"):
+        hub_get.get(preset(dest), api=PinnedHub(FILES))
+    assert not (dest / "RUN.md").exists()  # put back although a.docx could not be
+    assert (dest / "a.docx").read_bytes() == BIG
+
+
+def test_hub_files_named_like_the_lock_or_the_backup_folder_download_fine(tmp_path: Path) -> None:
+    files = {".lock": b"REMOTE LOCK\n", ".replaced/x.txt": b"X\n", "a.txt": b"A\n"}
+    dest = tmp_path / "dest"
+    whole = hub_get.Preset(name="t", repo_id=REPO, path="", dest=dest, about="test")
+    report = hub_get.get(whole, api=PinnedHub(files))
+    assert report.downloaded == 3
+    assert {p.relative_to(dest).as_posix(): p.read_bytes() for p in dest.rglob("*") if p.is_file()} == files
+    assert sorted(p.name for p in tmp_path.iterdir()) == ["dest"]
+
+
+def test_a_hub_path_inside_the_download_bookkeeping_is_refused(tmp_path: Path) -> None:
+    api = PinnedHub({".cache/huggingface/download/a.txt.metadata": b"x\n", "a.txt": b"A\n"})
+    whole = hub_get.Preset(name="t", repo_id=REPO, path="", dest=tmp_path / "dest", about="test")
+    with pytest.raises(hub_get.GetError, match=re.escape(".cache/huggingface")):
+        hub_get.get(whole, api=api)
+    assert api.downloads() == []
+
+
+def test_dry_run_never_writes_a_probe(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    dest = tmp_path / "dest"
+    dest.mkdir()
+
+    def read_only(*args, **kw):
+        raise PermissionError(errno.EROFS, "read-only file system")
+
+    monkeypatch.setattr(tempfile, "NamedTemporaryFile", read_only)
+    monkeypatch.setattr(tempfile, "mkstemp", read_only)
+    api = PinnedHub({**FILES, "outputs/run/Run.md": b"other\n"})
+    try:
+        hub_get.get(preset(dest), api=api, dry_run=True)
+    except hub_get.GetError as exc:  # a case-insensitive disk refuses the pair, which is fine
+        assert "one file" in str(exc)
+    assert list(dest.iterdir()) == []
+    assert api.downloads() == []
