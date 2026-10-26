@@ -2,14 +2,17 @@
 
 from __future__ import annotations
 
+import contextlib
 import hashlib
 import importlib.util
 import json
 import os
 import random
 import re
+import shutil
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -1101,14 +1104,14 @@ def test_a_failure_whose_request_may_follow_a_redirect_says_the_hub_may_hold_the
     assert 'nothing published' not in str(exc.value)
 
 
-def test_a_4xx_answer_to_the_commit_itself_still_says_nothing_was_published(rebuild, hub_pair):
+def test_a_4xx_answer_to_the_commit_itself_says_the_hub_refused_it(rebuild, hub_pair):
     def fails(**kw):
         raise HfHubHTTPError('412 precondition failed', response=httpx2.Response(412, request=commit_request()))
 
     hub_pair.api.upload_file = fails
-    with pytest.raises(rebuild.RebuildError, match='refused the upload') as exc:
+    with pytest.raises(rebuild.RebuildError, match='refused the commit request') as exc:
         rebuild.publish(hub_pair.api, hub_pair.clone, hub_pair.head, manifest({'a/x.docx': sha(b'inline')}), 'rebuild')
-    assert type(exc.value).__name__ != 'UnverifiedPublish'
+    assert type(exc.value).__name__ == 'UnverifiedPublish'  # round 15: a refusal does not prove nothing landed
 
 
 # Review round 13, mcode (#78)
@@ -1205,14 +1208,15 @@ def test_a_412_after_a_foreign_commit_says_the_hub_may_hold_the_manifest(rebuild
     assert type(exc.value).__name__ == 'UnverifiedPublish'
 
 
-def test_a_4xx_to_the_commit_while_the_branch_stays_put_says_nothing_was_published(rebuild, hub_pair):
+def test_a_4xx_to_the_commit_while_the_branch_stays_put_says_what_the_hub_said_and_may_hold(rebuild, hub_pair):
     def fails(**kw):
         raise HfHubHTTPError('403 forbidden', response=httpx2.Response(403, request=commit_request()))
 
     hub_pair.api.upload_file = fails
-    with pytest.raises(rebuild.RebuildError, match=r'refused.*403.*nothing published') as exc:
+    with pytest.raises(rebuild.RebuildError, match=r'refused the commit request.*403.*may hold') as exc:
         rebuild.publish(hub_pair.api, hub_pair.clone, hub_pair.head, manifest({'a/x.docx': sha(b'inline')}), 'rebuild')
-    assert type(exc.value).__name__ != 'UnverifiedPublish'
+    assert type(exc.value).__name__ == 'UnverifiedPublish'  # round 15
+    assert 'nothing published' not in str(exc.value)
     assert hub_pair.api.head() == hub_pair.head
 
 
@@ -1259,14 +1263,26 @@ def test_ctrl_c_after_publish_returned_says_the_hub_holds_the_manifest(rebuild, 
 # Review round 14, mcode (#78)
 
 
+@contextlib.contextmanager
+def sdk_over(handler):
+    """huggingface_hub's shared client answered by ``handler`` (an httpx2.MockTransport) inside the block."""
+    import huggingface_hub
+    from huggingface_hub.utils._http import default_client_factory
+
+    huggingface_hub.set_client_factory(lambda: httpx2.Client(transport=httpx2.MockTransport(handler)))
+    try:
+        yield
+    finally:
+        huggingface_hub.set_client_factory(default_client_factory)
+        huggingface_hub.close_session()
+
+
 def test_the_sdk_sends_the_requests_this_places_in_this_order(rebuild):
     """The real HfApi against a mock hub: the preupload first, the commit last and once, at the URLs placed.
 
     Fails if a huggingface_hub upgrade renames an endpoint, retries the commit or sends anything after it.
     """
-    import huggingface_hub
     from huggingface_hub import HfApi
-    from huggingface_hub.utils._http import default_client_factory
 
     def hub_answering(statuses):
         sent = []
@@ -1291,8 +1307,7 @@ def test_the_sdk_sends_the_requests_this_places_in_this_order(rebuild):
 
     def upload(statuses):
         sent, handler = hub_answering(statuses)
-        huggingface_hub.set_client_factory(lambda: httpx2.Client(transport=httpx2.MockTransport(handler)))
-        try:
+        with sdk_over(handler):
             api = HfApi(endpoint='https://huggingface.co', token='hf_test_not_a_real_token')
             try:
                 api.upload_file(
@@ -1302,9 +1317,6 @@ def test_the_sdk_sends_the_requests_this_places_in_this_order(rebuild):
             except HfHubHTTPError as exc:
                 return sent, exc
             return sent, None
-        finally:
-            huggingface_hub.set_client_factory(default_client_factory)
-            huggingface_hub.close_session()
 
     preupload = ('POST', f'/api/{hub.REPO_TYPE}s/{hub.RESULTS_REPO}/preupload/main')
     commit = ('POST', f'/api/{hub.REPO_TYPE}s/{hub.RESULTS_REPO}/commit/main')
@@ -1314,3 +1326,96 @@ def test_the_sdk_sends_the_requests_this_places_in_this_order(rebuild):
     assert sent == [preupload] and rebuild.failed_before_commit(failed) and not rebuild.refused_commit(failed)
     sent, failed = upload({'commit': 412})
     assert sent == [preupload, commit] and rebuild.refused_commit(failed) and not rebuild.failed_before_commit(failed)
+
+
+# Review round 15, Codex (#78)
+
+
+def test_a_4xx_to_the_commit_while_an_earlier_attempt_is_still_on_its_way_never_says_nothing_was_published(
+    rebuild, hub_pair
+):
+    """A proxy lost the answer to the commit it forwarded and answered its own retry with 429; the first
+    attempt is still pending when the head is read, and lands after the run reported."""
+    data = manifest({'a/x.docx': sha(b'inline')})
+    real = hub_pair.api.upload_file
+    pending = []
+
+    def forwarded_then_refused(**kw):
+        pending.append(kw)
+        raise HfHubHTTPError('429 too many requests', response=httpx2.Response(429, request=commit_request()))
+
+    hub_pair.api.upload_file = forwarded_then_refused
+    with pytest.raises(rebuild.RebuildError) as exc:
+        rebuild.publish(hub_pair.api, hub_pair.clone, hub_pair.head, data, 'rebuild')
+    real(**pending[0])  # the first attempt lands
+    assert hub_pair.api.head() != hub_pair.head
+    assert 'nothing published' not in str(exc.value)
+    assert type(exc.value).__name__ == 'UnverifiedPublish'
+
+
+def test_sdk_over_gives_back_the_http_client_it_found(rebuild):
+    """A caller's own client factory and open session (a proxy, certificates) survive the SDK test's mock."""
+    from huggingface_hub.utils import _http
+
+    def factory():
+        return httpx2.Client()
+
+    with pytest.MonkeyPatch.context() as mp:
+        session = httpx2.Client()
+        mp.setattr(_http, '_GLOBAL_CLIENT_FACTORY', factory)
+        mp.setattr(_http, '_GLOBAL_CLIENT', session)
+        with sdk_over(lambda request: httpx2.Response(200, json={})):
+            assert _http.get_session() is not session
+        assert _http._GLOBAL_CLIENT_FACTORY is factory
+        assert _http._GLOBAL_CLIENT is session and not session.is_closed
+        session.close()
+
+
+@pytest.mark.parametrize(('where', 'after'), [
+    ('removing the clone', 'success'),
+    ('removing the clone', 'UnverifiedPublish'),
+    ('making the clone folder', None),
+])
+def test_ctrl_c_around_the_temporary_clone_says_what_the_hub_holds_and_keeps_the_error(
+    rebuild, hub_pair, tmp_path, monkeypatch, where, after
+):
+    """Without --checkout the clone is temporary: a press as it is made or removed still gets a note."""
+    hub_pair.api.commit({f'{PREFIX}/x.docx': b'A'}, 'a file the manifest does not list yet')
+    git(hub_pair.clone, 'sparse-checkout', 'set', '--no-cone', f'{PREFIX}/')
+    monkeypatch.setattr(hub, 'default_api', lambda: hub_pair.api)
+    real_checkout, real_mkdtemp, real_rmtree = rebuild.checkout_hub, tempfile.mkdtemp, shutil.rmtree
+
+    def checkout(dest, revision):  # a copy of the test's clone stands in for a fresh one; the rest is real
+        shutil.copytree(hub_pair.clone, dest, symlinks=True)
+        real_checkout(dest, revision)
+
+    def mkdtemp(*a, prefix='', **kw):
+        if where == 'making the clone folder' and prefix.startswith('redlines_0929_full_hub_'):
+            raise KeyboardInterrupt
+        return real_mkdtemp(prefix=prefix, dir=tmp_path)
+
+    def rmtree(path, *a, **kw):
+        raise KeyboardInterrupt
+
+    def unverified(*a, **kw):
+        raise rebuild.UnverifiedPublish('upload_file failed; the hub may hold the manifest now; rerun to check it')
+
+    monkeypatch.setattr(rebuild, 'checkout_hub', checkout)
+    monkeypatch.setattr(tempfile, 'mkdtemp', mkdtemp)
+    if where == 'removing the clone':
+        monkeypatch.setattr(shutil, 'rmtree', rmtree)
+    if after == 'UnverifiedPublish':
+        monkeypatch.setattr(rebuild, 'publish', unverified)
+    monkeypatch.setattr(sys, 'argv', ['rebuild_manifest', '--out', str(tmp_path / 'out'), '--publish'])
+    with pytest.raises(BaseException) as exc:
+        rebuild.main()
+    monkeypatch.setattr(shutil, 'rmtree', real_rmtree)
+    assert exc.type is KeyboardInterrupt, exc.value
+    notes = ' '.join(getattr(exc.value, '__notes__', ()))
+    if where == 'making the clone folder':
+        assert 'nothing published' in notes
+    elif after == 'success':
+        assert hub_pair.api.head() != hub_pair.head
+        assert 'holds this manifest' in notes and hub_pair.api.head() in notes
+    else:  # the error the press interrupted is the warning that decides a rerun: it stays in view
+        assert 'may hold' in notes and 'UnverifiedPublish' in notes and 'rerun to check it' in notes
