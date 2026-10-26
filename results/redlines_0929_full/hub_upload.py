@@ -65,7 +65,11 @@ def carried_entries(previous, staged, remote, fetch) -> dict[str, str]:
         if lfs:
             actual = lfs.get('sha256') if isinstance(lfs, dict) else getattr(lfs, 'sha256', None)
         else:
-            actual = hashlib.sha256(fetch(path)).hexdigest()
+            data = fetch(path)
+            if data is None:
+                missing.append(path)
+                continue
+            actual = hashlib.sha256(data).hexdigest()
         if actual != expected:
             mismatched.append(path)
         else:
@@ -127,17 +131,22 @@ def main() -> None:
     if a.dry_run:
         subdirs = stage(a.staging)
     else:
-        from huggingface_hub.errors import EntryNotFoundError, RemoteEntryNotFoundError
+        # Only the hub saying "not there" means empty; LocalEntryNotFoundError (offline,
+        # cache miss) also subclasses EntryNotFoundError and must stop the upload.
+        from huggingface_hub.errors import RemoteEntryNotFoundError
 
         api = hub.default_api()
         prefix = REPO_PREFIX + '/'
         remote = {}
-        for entry in api.list_repo_tree(
-            hub.RESULTS_REPO, repo_type=hub.REPO_TYPE, path_in_repo=REPO_PREFIX, recursive=True, expand=True
-        ):
-            path = getattr(entry, 'path', None)
-            if path and path.startswith(prefix):
-                remote[path[len(prefix) :]] = entry
+        try:
+            for entry in api.list_repo_tree(
+                hub.RESULTS_REPO, repo_type=hub.REPO_TYPE, path_in_repo=REPO_PREFIX, recursive=True, expand=True
+            ):
+                path = getattr(entry, 'path', None)
+                if path and path.startswith(prefix):
+                    remote[path[len(prefix) :]] = entry
+        except RemoteEntryNotFoundError:
+            remote = {}
         try:
             local = api.hf_hub_download(
                 hub.RESULTS_REPO,
@@ -145,15 +154,18 @@ def main() -> None:
                 repo_type=hub.REPO_TYPE,
                 revision=a.previous_revision,
             )
-        except (EntryNotFoundError, RemoteEntryNotFoundError):
+        except RemoteEntryNotFoundError:
             previous = {}
         else:
             previous = hub.read_manifest(Path(local))
 
         def fetch(rel):
-            local = api.hf_hub_download(
-                hub.RESULTS_REPO, f'{REPO_PREFIX}/{rel}', repo_type=hub.REPO_TYPE, revision=None
-            )
+            try:
+                local = api.hf_hub_download(
+                    hub.RESULTS_REPO, f'{REPO_PREFIX}/{rel}', repo_type=hub.REPO_TYPE, revision=None
+                )
+            except RemoteEntryNotFoundError:
+                return None
             return Path(local).read_bytes()
 
         subdirs = stage(a.staging, previous=previous, remote=remote, fetch=fetch)
