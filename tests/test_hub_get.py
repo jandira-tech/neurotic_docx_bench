@@ -1645,3 +1645,15 @@ def test_a_stopped_rollback_names_a_partial_copy_it_left(tmp_path: Path, monkeyp
     notes = " ".join(getattr(exc.value, "__notes__", ()))
     assert str(dest / "RUN.md") in notes
     assert str(dest / "a.docx") in notes and "partial copy" in notes
+
+
+# Review round 8, mcode (#80)
+
+
+@pytest.mark.parametrize("name", [".cache", ".CACHE", ".Cache/HuggingFace/download/x.metadata"])
+def test_a_hub_file_where_the_downloads_records_go_refuses_before_downloading(tmp_path: Path, name: str) -> None:
+    api = PinnedHub({"a.txt": b"a\n", name: b"x\n"})
+    whole = hub_get.Preset(name="t", repo_id=REPO, path="", dest=tmp_path / "dest", about="test")
+    with pytest.raises(hub_get.GetError, match="keeps its own records"):
+        hub_get.get(whole, api=api)
+    assert api.downloads() == []
