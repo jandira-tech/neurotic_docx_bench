@@ -58,6 +58,10 @@ class RebuildError(RuntimeError):
     """The hub does not match its own records; nothing is published."""
 
 
+class UnverifiedPublish(RebuildError):
+    """``upload_file`` returned a commit, but checking it failed: the hub may hold the manifest."""
+
+
 @dataclass(frozen=True)
 class HubFile:
     blob_id: str
@@ -74,6 +78,7 @@ def git_env() -> dict[str, str]:
         'GIT_NO_REPLACE_OBJECTS': '1',
         'GIT_CONFIG_GLOBAL': os.devnull,
         'GIT_CONFIG_NOSYSTEM': '1',
+        'GIT_TERMINAL_PROMPT': '0',  # the dataset is public; an auth failure fails instead of prompting
     }
 
 
@@ -143,8 +148,12 @@ def hub_tree(checkout: Path, revision: str) -> dict[str, HubFile]:
     for line in git(checkout, 'ls-tree', '-r', '-l', '-z', '--full-tree', revision, '--', prefix).split(b'\0'):
         if not line:
             continue
-        meta, path = line.decode().split('\t', 1)
-        mode, kind, oid, size = meta.split()
+        meta, raw = line.split(b'\t', 1)
+        try:
+            path = raw.decode()
+        except UnicodeError as exc:
+            raise RebuildError(f'{raw!r} is not UTF-8; a JSON manifest cannot name it') from exc
+        mode, kind, oid, size = meta.decode().split()
         if path.startswith(prefix):
             if kind != 'blob' or mode not in ('100644', '100755'):
                 raise RebuildError(f'{path} is not a regular blob (mode {mode}, type {kind})')
@@ -441,6 +450,20 @@ def publish(api, checkout: Path, revision: str, data: bytes, message: str) -> st
         revision=BRANCH,
     )
     commit = info.oid
+    try:
+        return verify_upload(checkout, revision, commit, before, data)
+    except Exception as exc:
+        raise UnverifiedPublish(
+            f'upload_file returned {commit}, but checking it failed: {exc}. The hub may hold the manifest now; '
+            f'rerun to check it (a manifest already there is recognised)'
+        ) from exc
+
+
+def verify_upload(checkout: Path, revision: str, commit: str, before: dict, data: bytes) -> str:
+    """``commit`` must sit on ``revision`` and change only the manifest, to ``data`` as a regular file."""
+    path = f'{REPO_PREFIX}/{MANIFEST}'
+    key = path.encode()
+    accepted = (data, lfs_pointer(data))
     git(checkout, 'fetch', '-q', 'origin')
     parents = git(checkout, 'rev-list', '--parents', '-n', '1', commit).decode().split()
     if parents != [commit, revision]:
@@ -503,7 +526,9 @@ def main() -> None:
                 f'redlines_0929_full: {MANIFEST} rebuilt from the hub tree ({report["n_files"]} files, issue #76)'
             )
             commit = publish(api, clone, revision, data, message)
-            print(f'published {commit}' if commit != revision else 'the hub already has this manifest', flush=True)
+            # A foreign commit that made the same change is indistinguishable from this upload: say what is known.
+            where = f'{commit}, a commit on {revision} that changes only it' if commit != revision else revision
+            print(f'the hub holds this manifest at {where}', flush=True)
     finally:
         if a.checkout is None:
             shutil.rmtree(clone.parent)
