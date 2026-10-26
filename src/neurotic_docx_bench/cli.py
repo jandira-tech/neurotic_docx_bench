@@ -3530,8 +3530,8 @@ def hub_list_cmd(
             sha = hub_get.resolve_revision(api, p.repo_id)
             files = hub_get.remote_files(api, p.repo_id, sha, p.path, exclude=p.exclude)
             line.append(f"  ({len(files)} files, {hub_get.human(sum(f.size for f in files))})")
-        console.print(line)
-        console.print(Text(f"    {p.about}", style="dim"))
+        console.print(line, soft_wrap=True)
+        console.print(Text(f"    {p.about}", style="dim"), soft_wrap=True)
     console.print(Text("uv run bench hub get <preset> [--include GLOB] [--dest DIR] [--revision SHA] [--dry-run]"))
 
 

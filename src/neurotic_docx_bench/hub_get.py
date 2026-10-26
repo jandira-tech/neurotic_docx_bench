@@ -82,7 +82,7 @@ PRESETS: dict[str, Preset] = {
             hub.RESULTS_REPO,
             "outputs/redlines_0929_full",
             Path("results/redlines_0929_full"),
-            "the 0929 run: every tool's redlines, Word's PDFs and accept/reject of them, scores (6.7 GB)",
+            "the 0929 run: every tool's redlines, Word's PDFs and accept/reject of them, scores",
             exclude=("fresh_compares/*",),  # compare-regen
         ),
         Preset("compare-regen", hub.RESULTS_REPO, hub.FRESH_COMPARES, hub.DEFAULT_COMPARE_REGEN / "out",
@@ -103,7 +103,7 @@ PRESETS: dict[str, Preset] = {
         Preset("dataset-tables", hub.RESULTS_REPO, "data", DOWNLOADS / "data",
                "the results dataset's parquet tables (runs, scores, files, site cases)"),
         Preset("git-archive", ARCHIVE_REPO, "", DOWNLOADS / "git-archive",
-               "private: bundles of every pre-rewrite git history (8 GB) and the filter-repo maps; needs HF_TOKEN"),
+               "private: bundles of every pre-rewrite git history and the filter-repo maps; needs HF_TOKEN"),
     )
 }
 

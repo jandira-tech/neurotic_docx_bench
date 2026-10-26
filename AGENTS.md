@@ -399,6 +399,39 @@ See the note in the script.
    understand the 'save as' message"). Retry just those individually with a `delay 2`
    after `open`.
 
+## Everything else on the hub: `bench hub list|get` (2026-10-26, #79)
+
+The corpus is one of sixteen download presets. The 0929 run's tool outputs, Word's fresh compares,
+the 0.13.0 release evidence, the R2 cohort mirrors, the website's R2 objects, the results
+dataset's parquet tables and the private git-history archive also live only on the hub. Each has
+a named preset:
+
+```bash
+uv run bench hub list --sizes                            # every preset: hub path → local destination, files, bytes
+uv run bench hub get corpus-word                         # corpus/word (docx, Word PDFs, compares, tables)
+uv run bench hub get redlines-0929 --include 'jubarte-0.14.0/docx/*' --dry-run
+uv run bench hub get wordcraft-20261014                  # → hub-downloads/r2-mirror/wordcraft-20261014
+uv run bench hub get git-archive --include '*.txt'       # private; needs HF_TOKEN or `hf auth login`
+uv run bench hub get --repo arthrod/neurotic_docx_bench --path outputs/release_0.13.0_evidence --dest x
+```
+
+- **Pinned.** `--revision` (default `main`) is resolved to a commit once, and every listing and
+  download reads that commit (a branch read can serve a stale cache, as #76 found with
+  `hf_hub_download`).
+- **Verified.** Every file is hashed against the hub's own record at that commit: LFS `sha256`, or
+  the git blob sha1 for inline files. One mismatch refuses the run, and nothing moves into the
+  destination.
+- **No clobbering.** A local file with the same bytes is skipped. One with different bytes stops
+  the run before anything downloads, unless you pass `--overwrite` or `--keep-local`.
+  `redlines-0929` lands in `results/redlines_0929_full`, whose scripts and CSVs are tracked, so this
+  rule is what protects them.
+- Files stage in `.<dest>.hub-<sha12>/` beside the destination. That folder is removed on success.
+  On failure it is kept, minus the files that failed, so a rerun resumes. Presets with no home in
+  the checkout land in `hub-downloads/`. Both are git-ignored.
+- `bench fixtures download` (whole fixtures repo, checked against `MANIFEST.sha256.json`) and
+  `scripts/fetch_corpus.py` (it also writes `results/compare_regen/regen_list.csv`) still work.
+- Adding a preset is one entry in `hub_get.PRESETS` (`src/neurotic_docx_bench/hub_get.py`).
+
 ## Remote tryout (`bench try remote`, `tryout_remote.py`, `jubarte_release.py`)
 
 Scores one tool on random documents from the Hugging Face dataset `superdoc-dev/docx-corpus`

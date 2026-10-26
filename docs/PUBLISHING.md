@@ -191,6 +191,8 @@ corpus files back"). The bench commands:
 
 ```bash
 uv run bench fixtures download                 # into corpus/; sha256-checked against the manifest
+uv run bench hub list --sizes                  # every download preset over the three datasets (AGENTS.md "bench hub")
+uv run bench hub get corpus-word               # one preset: pinned to a commit, every file hash-checked against the hub
 uv run bench fixtures upload                   # writes the manifest (hub upload itself: scripts/hf_fixtures/)
 uv run --with polars --with huggingface_hub python scripts/hf_fixtures/hf_fixtures.py build|upload|verify
 ```
