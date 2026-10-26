@@ -1983,3 +1983,47 @@ def test_a_press_held_as_the_handler_is_given_back_is_raised_not_dropped(
     assert sent
     assert exc.type is KeyboardInterrupt, exc.value
     assert "every file is in place" in " ".join(getattr(exc.value, "__notes__", ()))
+
+
+# Review round 11, Codex (#80)
+
+
+@pytest.mark.parametrize("left_running", [False, True])
+def test_a_child_forked_while_a_lock_is_held_does_not_keep_it_once_the_run_lets_go(
+    tmp_path: Path, left_running: bool
+) -> None:
+    """A fork copies the lock's descriptor; letting go must unlock it, not only close this process's copy."""
+    import threading
+    import time
+    import warnings
+
+    staging = tmp_path / ".dest.hub-aaaaaaaaaaaa"
+    lock = hub_get._lock(staging)
+    release = threading.Event()
+    running = [threading.Thread(target=release.wait, args=(5,), daemon=True)] if left_running else []
+    for t in running:
+        t.start()
+    r, w = os.pipe()
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", DeprecationWarning)  # a fork with threads alive, as the finding has it
+        pid = os.fork()
+    if pid == 0:  # the child: holds its copies until told to go
+        os.close(w)
+        os.read(r, 1)
+        os._exit(0)
+    os.close(r)
+    try:
+        hub_get._let_go(lock, running)
+        release.set()
+        for t in running:
+            t.join()
+        deadline = time.monotonic() + 3
+        while hub_get._KEPT_LOCKS and time.monotonic() < deadline:
+            time.sleep(0.02)
+        held = _held_by_another_run(staging)
+    finally:
+        os.write(w, b"x")
+        os.close(w)
+        os.waitpid(pid, 0)
+        _drop_kept_locks()
+    assert not held
