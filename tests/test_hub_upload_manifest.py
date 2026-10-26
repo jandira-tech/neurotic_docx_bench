@@ -10,7 +10,7 @@ from types import SimpleNamespace
 
 import pytest
 import httpx2
-from huggingface_hub.errors import LocalEntryNotFoundError, RemoteEntryNotFoundError
+from huggingface_hub.errors import LocalEntryNotFoundError, RemoteEntryNotFoundError, RepositoryNotFoundError
 
 from neurotic_docx_bench import hub
 from test_hub import FakeHub
@@ -31,6 +31,15 @@ def sha(data: bytes) -> str:
 def remote_missing(path: str) -> RemoteEntryNotFoundError:
     request = httpx2.Request('GET', f'https://huggingface.co/{path}')
     return RemoteEntryNotFoundError(f'404 {path}', response=httpx2.Response(404, request=request))
+
+
+def repo_missing(repo_id: str) -> RepositoryNotFoundError:
+    request = httpx2.Request('GET', f'https://huggingface.co/api/datasets/{repo_id}')
+    return RepositoryNotFoundError(f'404 {repo_id}', response=httpx2.Response(404, request=request))
+
+
+HEAD = 'a' * 40
+PREVIOUS = 'b' * 40
 
 
 @pytest.mark.parametrize('lfs', [dict, SimpleNamespace])
@@ -142,8 +151,18 @@ class DownloadHub(FakeHub):
         self.downloads = []
         self.offline = False
         self.vanished = set()
+        self.refs = {None: HEAD, 'previous-good-commit': PREVIOUS}
+        self.tree_revisions = []
 
-    def list_repo_tree(self, repo_id, *, repo_type, path_in_repo=None, recursive=True, expand=True):
+    def repo_info(self, repo_id, *, repo_type, revision=None):
+        if repo_id not in self.stored:
+            raise repo_missing(repo_id)
+        return SimpleNamespace(sha=self.refs[revision])
+
+    def list_repo_tree(self, repo_id, *, repo_type, path_in_repo=None, recursive=True, expand=True, revision=None):
+        self.tree_revisions.append(revision)
+        if repo_id not in self.stored:
+            raise repo_missing(repo_id)
         entries = list(
             super().list_repo_tree(
                 repo_id, repo_type=repo_type, path_in_repo=path_in_repo, recursive=recursive, expand=expand
@@ -187,21 +206,35 @@ def test_main_reads_previous_manifest_and_fetches_inline_files(upload, run, tmp_
     upload.main()
     published = json.loads(api.stored[hub.RESULTS_REPO][manifest_path])['files']
     assert all(published[p] == sha(data) for p, data in files.items())
-    assert api.downloads[0] == (manifest_path, revision)
+    # Every read is pinned to a commit: a failed HEAD request makes huggingface_hub serve
+    # the cached copy of a branch, which can be older than the listing.
+    assert api.downloads[0] == (manifest_path, api.refs[revision])
     assert {p for p, _ in api.downloads[1:]} == {prefix + p for p in files}
-    assert all(rev is None for _, rev in api.downloads[1:])
-    assert api.calls[0][0] == 'list_repo_tree'
+    assert all(rev == HEAD for _, rev in api.downloads[1:])
+    assert api.tree_revisions == [HEAD]
+    names = [name for name, _ in api.calls]
+    assert names.index('list_repo_tree') < names.index('upload_folder')
 
 
 def test_main_first_upload_without_manifest(upload, run, tmp_path, monkeypatch):
     api = DownloadHub(tmp_path / 'cache')
+    api.stored[hub.RESULTS_REPO] = {'README.md': b'other runs live here'}
     monkeypatch.setattr(hub, 'default_api', lambda: api)
     monkeypatch.setattr(sys, 'argv', ['hub_upload', '--staging', str(tmp_path / 'staging')])
     upload.main()
     manifest_path = upload.REPO_PREFIX + '/run/' + hub.MANIFEST_NAME
     files = json.loads(api.stored[hub.RESULTS_REPO][manifest_path])['files']
     assert len(files) == 5
-    assert api.downloads == [(manifest_path, None)]
+    assert api.downloads == [(manifest_path, HEAD)]
+
+
+def test_main_creates_an_absent_dataset(upload, run, tmp_path, monkeypatch):
+    api = DownloadHub(tmp_path / 'cache')
+    monkeypatch.setattr(hub, 'default_api', lambda: api)
+    monkeypatch.setattr(sys, 'argv', ['hub_upload', '--staging', str(tmp_path / 'staging')])
+    upload.main()
+    manifest_path = upload.REPO_PREFIX + '/run/' + hub.MANIFEST_NAME
+    assert len(json.loads(api.stored[hub.RESULTS_REPO][manifest_path])['files']) == 5
 
 
 def test_main_offline_manifest_read_uploads_nothing(upload, run, tmp_path, monkeypatch):
