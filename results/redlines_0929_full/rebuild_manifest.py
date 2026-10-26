@@ -442,7 +442,8 @@ def publish(api, checkout: Path, revision: str, data: bytes, message: str) -> st
 
     The upload is two calls, so that what a failure says of the hub rests on which call failed, never on
     the error's shape: ``preupload`` sends everything before the commit request, ``commit_manifest`` the
-    commit request. Up to the second call nothing this run sent can make a commit (``RebuildError``); from
+    commit request; a path the preupload's answer says the hub ignores stops the run between the two. Up to
+    the second call nothing this run sent can make a commit (``RebuildError``); from
     it on a failure may follow one (``UnverifiedPublish``). A no-op commit skips the ``parent_commit`` check
     and returns whatever the branch head is, so the commit is fetched and must have ``revision`` as its one
     parent and change nothing else; the head itself means no commit was made. A Ctrl-C stops the run with a
@@ -477,11 +478,18 @@ def publish(api, checkout: Path, revision: str, data: bytes, message: str) -> st
                 )
         operation = CommitOperationAdd(path_in_repo=path, path_or_fileobj=data)
         preupload(api, operation)
-        note = 'stopped during the commit request: the hub may hold the manifest now; rerun to check it'
+        # The preupload's answer (_commit_api.py 778): create_commit would leave an ignored file out of the commit
+        # it still sends (_commit_api.py 939).
+        if getattr(operation, '_should_ignore', None):
+            raise RebuildError(
+                f'the hub ignores {path} (the answer to the preupload, from the repo\'s .gitignore), so a commit would '
+                'leave it out. Nothing published by this run; fix the .gitignore on the hub'
+            )
+        note = 'stopped in create_commit, which sends the commit request: the hub may hold the manifest now; rerun to check it'
         commit = commit_manifest(api, operation, message, revision)
         note = (
-            f'stopped while checking {commit}, which the commit request returned: the hub holds {commit}, which may '
-            'be this manifest\'s commit; rerun to check it'
+            f'stopped while checking {commit}, which create_commit returned: the hub holds {commit}, which may be '
+            'this manifest\'s commit; rerun to check it'
         )
         if commit == revision:  # the branch head did not move: create_commit sent no commit request
             entry = before.get(key)
@@ -489,15 +497,14 @@ def publish(api, checkout: Path, revision: str, data: bytes, message: str) -> st
             raise RebuildError(
                 f'create_commit made no commit: {BRANCH} is still at {revision}, where {path} holds {held}. The hub '
                 'compares content ids, not modes, so an entry with this manifest\'s content counts as the manifest '
-                'already there (and a path the hub ignores is dropped). Nothing published by this run; fix the path '
-                'on the hub'
+                'already there. Nothing published by this run; fix the path on the hub'
             )
         try:
             return verify_upload(checkout, revision, commit, before, data)
         except Exception as exc:
             raise UnverifiedPublish(
-                f'the commit request returned {commit}, but checking it failed: {exc}; the hub holds {commit}, so it '
-                'may hold the manifest now; rerun to check it (a manifest already there is recognised)'
+                f'create_commit returned {commit}, but checking it failed: {exc}; the hub holds {commit}, so it may '
+                'hold the manifest now; rerun to check it (a manifest already there is recognised)'
             ) from exc
     except BaseException as exc:
         if not isinstance(exc, Exception):  # Ctrl-C: stop, but say what may have happened
@@ -511,8 +518,9 @@ def preupload(api, operation: CommitOperationAdd) -> None:
     ``preupload_lfs_files`` sends the preupload request (``huggingface_hub/_commit_api.py`` 764) and, for a
     file the hub keeps in LFS, the storage upload (through the Xet client, or the LFS batch request at
     ``lfs.py`` 185 and the uploads it names). It sends no commit, so whatever fails here, a redirect or a
-    response hook included, this run has sent no commit request. ``free_memory=False`` keeps the bytes the
-    commit request carries for an inline file.
+    response hook included, this run has sent no commit request. ``free_memory=False`` keeps the operation as
+    built; the SDK would free only an LFS file's bytes, after their upload (``hf_api.py`` 5385), and the commit
+    carries an LFS file's id and size, an inline file's bytes (``_commit_api.py`` 945-964).
     """
     try:
         api.preupload_lfs_files(
@@ -549,8 +557,8 @@ def commit_manifest(api, operation: CommitOperationAdd, message: str, revision: 
         ).oid
     except Exception as exc:
         raise UnverifiedPublish(
-            f'the commit request failed ({type(exc).__name__}: {exc}); it may have been sent, so the hub may hold '
-            'the manifest now; rerun to check it (a manifest already there is recognised)'
+            f'create_commit failed ({type(exc).__name__}: {exc}); its commit request may have been sent, so the hub '
+            'may hold the manifest now; rerun to check it (a manifest already there is recognised)'
         ) from exc
 
 

@@ -239,7 +239,7 @@ class GitHub:
         return SimpleNamespace(sha=self.head())
 
     def preupload_lfs_files(self, *, repo_id, additions, repo_type, revision=None, free_memory=True):
-        assert revision == 'main' and not free_memory  # an inline file's commit request carries its bytes
+        assert revision == 'main' and not free_memory  # as publish() passes it
         self.preuploads.extend(op.path_in_repo for op in additions)
 
     def create_commit(self, *, repo_id, operations, commit_message, repo_type, revision=None, parent_commit=None):
@@ -247,12 +247,6 @@ class GitHub:
         (operation,) = operations
         path_in_repo, path_or_fileobj = operation.path_in_repo, operation.path_or_fileobj
         assert path_in_repo in self.preuploads  # preuploaded first, as publish() does
-        self.uploads.append({
-            'path_in_repo': path_in_repo,
-            'parent_commit': parent_commit,
-            'commit_message': commit_message,
-            'revision': revision,
-        })
         if self.before_upload:
             self.before_upload(self)
         stored = pointer(path_or_fileobj) if self.lfs else path_or_fileobj
@@ -263,8 +257,14 @@ class GitHub:
         same = (remote.group(1).decode() == sha(path_or_fileobj)) if self.lfs and remote else current.stdout == stored
         if current.returncode == 0 and same:
             # huggingface_hub compares content oids only (an LFS pointer's oid, not its text; not
-            # modes) and returns the branch head without a commit or a parent check
+            # modes) and returns the branch head without a commit request or a parent check
             return SimpleNamespace(oid=self.head())
+        self.uploads.append({  # the commit request, which a no-op never sends (hf_api.py 5167)
+            'path_in_repo': path_in_repo,
+            'parent_commit': parent_commit,
+            'commit_message': commit_message,
+            'revision': revision,
+        })
         if parent_commit is not None and parent_commit != self.head():
             request = httpx2.Request('POST', f'https://huggingface.co/api/datasets/{repo_id}/commit/{revision}')
             raise HfHubHTTPError('412 parent moved', response=httpx2.Response(412, request=request))
@@ -1441,7 +1441,7 @@ def test_ctrl_c_around_the_temporary_clone_says_what_the_hub_holds_and_keeps_the
         raise KeyboardInterrupt
 
     def unverified(*a, **kw):
-        raise rebuild.UnverifiedPublish('the commit request failed; the hub may hold the manifest now; rerun to check it')
+        raise rebuild.UnverifiedPublish('create_commit failed; the hub may hold the manifest now; rerun to check it')
 
     monkeypatch.setattr(rebuild, 'checkout_hub', checkout)
     monkeypatch.setattr(tempfile, 'mkdtemp', mkdtemp)
@@ -1619,7 +1619,7 @@ def test_a_hub_that_moved_since_it_was_read_says_this_run_published_nothing_and_
 def test_a_check_that_stops_after_the_commit_came_back_names_the_commit_the_hub_holds(
     rebuild, hub_pair, monkeypatch, stop
 ):
-    """mcode, round 16: once the commit request returned a commit, the hub holds that commit; "may hold" is
+    """mcode, round 16: once create_commit returned a commit, the hub holds that commit; "may hold" is
     left for what the check had still to show, that it is this manifest's."""
 
     def stopped(*a, **kw):
@@ -1711,3 +1711,69 @@ def test_a_path_the_hub_ignores_is_refused_before_the_commit_request(rebuild, hu
     assert type(exc.value).__name__ != 'UnverifiedPublish', exc.value
     assert 'ignores' in str(exc.value) and 'nothing published by this run' in str(exc.value).lower()
     assert not any('/commit/' in path for _, path in sent)
+
+
+def test_the_commit_request_of_an_inline_manifest_carries_its_bytes(rebuild):
+    """What keeps an inline file's bytes for its commit: the payload line built from the operation (``_commit_api.py``
+    945). ``free_memory`` frees only an LFS file's bytes, after their upload."""
+    import base64
+
+    from huggingface_hub import CommitOperationAdd, HfApi
+
+    bodies = []
+
+    def handler(request):
+        if '/commit/' in request.url.path:
+            bodies.append(request.content)
+        return http_hub('a' * 40, [])(request)
+
+    with sdk_over(handler):
+        api = HfApi(endpoint='https://huggingface.co', token='hf_test_not_a_real_token')
+        operation = CommitOperationAdd(path_in_repo=f'{PREFIX}/{MANIFEST}', path_or_fileobj=b'{}\n')
+        rebuild.preupload(api, operation)
+        rebuild.commit_manifest(api, operation, 'm', 'a' * 40)
+    (body,) = bodies
+    lines = [json.loads(line) for line in body.decode().splitlines()]
+    files = [line['value'] for line in lines if line['key'] == 'file']
+    assert files == [{'content': base64.b64encode(b'{}\n').decode(), 'path': f'{PREFIX}/{MANIFEST}', 'encoding': 'base64'}]
+
+
+def test_the_sdk_sends_no_commit_request_for_a_no_op_and_the_run_says_nothing_was_published(rebuild, hub_pair):
+    """The real no-op sequence the "made no commit" branch rests on: the preupload says the hub holds this content
+    id at the path, and create_commit reads the head instead of sending a commit (``hf_api.py`` 5167)."""
+    from huggingface_hub import HfApi
+
+    data = manifest({'a/x.docx': sha(b'inline')})
+    blob_id = hashlib.sha1(b'blob %d\0' % len(data) + data).hexdigest()
+    sent = []
+    with sdk_over(http_hub(hub_pair.head, sent, remote_oid=blob_id)):
+        api = HfApi(endpoint='https://huggingface.co', token='hf_test_not_a_real_token')
+        with pytest.raises(rebuild.RebuildError) as exc:
+            rebuild.publish(api, hub_pair.clone, hub_pair.head, data, 'rebuild')
+    assert type(exc.value).__name__ != 'UnverifiedPublish', exc.value
+    assert 'made no commit' in str(exc.value) and 'Nothing published by this run' in str(exc.value)
+    assert [method for method, path in sent if '/commit/' in path] == []
+    assert sent[-1] == ('GET', f'/api/{hub.REPO_TYPE}s/{hub.RESULTS_REPO}/revision/main')
+
+
+def test_with_xet_storage_the_preupload_call_uploads_and_the_commit_call_sends_only_the_commit(rebuild, monkeypatch):
+    """The path a real run takes with hf_xet installed: the storage upload goes through the Xet client inside the
+    preupload call (``_commit_api.py`` 396), and create_commit, finding the file uploaded, sends only the commit.
+    The Xet client leaves httpx, so it is recorded here, not driven."""
+    from huggingface_hub import _commit_api
+
+    xet = []
+    monkeypatch.setattr(_commit_api, 'is_xet_available', lambda: True)
+    monkeypatch.setattr(_commit_api, '_upload_xet_files', lambda *, additions, **kw: xet.append([a.path_in_repo for a in additions]))
+
+    def handler(request):
+        if '/preupload/' in request.url.path:
+            files = json.loads(request.content)['files']
+            return httpx2.Response(200, json={'files': [
+                {'path': f['path'], 'uploadMode': 'lfs', 'shouldIgnore': False, 'oid': None} for f in files
+            ]})
+        return committed(request)
+
+    calls = sdk_calls(rebuild, handler)
+    assert calls == [([PREUPLOAD], None), ([COMMIT], None)]
+    assert xet == [[f'{PREFIX}/{MANIFEST}']]  # once, in the preupload call
