@@ -11,6 +11,7 @@ import errno
 import hashlib
 import os
 import re
+import shutil
 import tempfile
 from pathlib import Path
 from types import SimpleNamespace
@@ -589,13 +590,23 @@ def test_one_rollback_error_does_not_stop_the_others(tmp_path: Path, monkeypatch
             raise OSError("disk went away")
         return real_place(staged, target)
 
-    def replace(src, dst, *args, **kw):
+    real_link = os.link
+
+    def refuse_a(src) -> None:
         if Path(src) == dest / "a.docx":
             raise OSError(errno.EIO, "a.docx cannot be moved back")
+
+    def replace(src, dst, *args, **kw):
+        refuse_a(src)
         return real_replace(src, dst, *args, **kw)
+
+    def link(src, dst, *args, **kw):
+        refuse_a(src)
+        return real_link(src, dst, *args, **kw)
 
     monkeypatch.setattr(hub_get, "place", flaky)
     monkeypatch.setattr(os, "replace", replace)
+    monkeypatch.setattr(os, "link", link)
     with pytest.raises(hub_get.GetError, match="cannot be moved back"):
         hub_get.get(preset(dest), api=PinnedHub(FILES))
     assert not (dest / "RUN.md").exists()  # put back although a.docx could not be
@@ -650,3 +661,98 @@ def test_a_replaced_file_a_failed_rollback_kept_is_never_overwritten(tmp_path: P
         hub_get.get(preset(dest), api=PinnedHub(FILES), on_conflict="overwrite")
     assert kept.read_bytes() == b"the only copy of the original\n"
     assert (dest / "RUN.md").read_bytes() == b"newer local\n"
+
+
+
+# Review round 3 (#80)
+
+
+def test_a_failed_copy_never_removes_a_file_that_replaced_it(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    staged, target = tmp_path / "staged", tmp_path / "target"
+    staged.write_bytes(b"REMOTE")
+
+    def no_links(src, dst, **kw):
+        raise OSError(errno.EOPNOTSUPP, "no hard links on this disk")
+
+    def copy_then_fail(src, dst, *args, **kw):
+        theirs = tmp_path / "theirs"
+        theirs.write_bytes(b"USER FILE")
+        os.replace(theirs, target)  # another writer replaces the half-made copy
+        raise OSError(errno.ENOSPC, "disk full")
+
+    monkeypatch.setattr(os, "link", no_links)
+    monkeypatch.setattr(shutil, "copyfileobj", copy_then_fail)
+    with pytest.raises(OSError, match="disk full"):
+        hub_get.place(staged, target)
+    assert target.read_bytes() == b"USER FILE"
+    assert staged.read_bytes() == b"REMOTE"
+
+
+def test_a_staged_file_with_another_name_is_never_written_through(tmp_path: Path) -> None:
+    """``PinnedHub`` writes into an existing file, as hf_hub_download's copy from the hub cache does."""
+    dest = tmp_path / "dest"
+    outside = tmp_path / "outside.md"
+    outside.write_bytes(b"USER ORIGINAL\n")
+    staged = hub_get.staging_dir(dest, SHA) / hub_get.FILES / "outputs/run/RUN.md"
+    staged.parent.mkdir(parents=True)
+    os.link(outside, staged)
+    report = hub_get.get(preset(dest), api=PinnedHub(FILES))
+    assert report.downloaded == 3
+    assert outside.read_bytes() == b"USER ORIGINAL\n"
+    assert (dest / "RUN.md").read_bytes() == b"# run\n"
+
+
+def test_a_failed_identity_lookup_never_leaves_a_file_placed(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    dest = tmp_path / "dest"
+    staged_a = hub_get.staging_dir(dest, SHA) / hub_get.FILES / "outputs/run/a.docx"
+    real_lstat = os.lstat
+
+    def lstat(path, *args, **kw):
+        if Path(path) == staged_a and (dest / "a.docx").exists():  # only once a.docx is linked into place
+            raise OSError(errno.EIO, "lstat failed")
+        return real_lstat(path, *args, **kw)
+
+    monkeypatch.setattr(os, "lstat", lstat)
+    try:
+        report = hub_get.get(preset(dest), api=PinnedHub(FILES))
+    except hub_get.GetError:
+        assert not dest.exists() or not any(p.is_file() for p in dest.rglob("*"))
+    else:
+        assert report.downloaded == 3
+
+
+def test_ctrl_c_while_moving_puts_everything_back(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    dest = tmp_path / "dest"
+    local = {"RUN.md": b"old run\n", "a.docx": b"old a\n", "sub/b.pdf": b"old b\n"}
+    for rel, data in local.items():
+        (dest / rel).parent.mkdir(parents=True, exist_ok=True)
+        (dest / rel).write_bytes(data)
+    real = hub_get.place
+
+    def interrupted(staged, target):
+        if target.name == "b.pdf":  # after its backup was made
+            raise KeyboardInterrupt
+        return real(staged, target)
+
+    monkeypatch.setattr(hub_get, "place", interrupted)
+    with pytest.raises((KeyboardInterrupt, hub_get.GetError)):
+        hub_get.get(preset(dest), api=PinnedHub(FILES), on_conflict="overwrite")
+    assert {p.relative_to(dest).as_posix(): p.read_bytes() for p in dest.rglob("*") if p.is_file()} == local
+
+
+def test_rollback_never_overwrites_a_file_that_appeared_in_staging(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    dest = tmp_path / "dest"
+    staged_a = hub_get.staging_dir(dest, SHA) / hub_get.FILES / "outputs/run/a.docx"
+    real = hub_get.place
+
+    def flaky(staged, target):
+        if target.name == "b.pdf":
+            staged_a.write_bytes(b"NEW FILE IN STAGING")
+            raise OSError("disk went away")
+        return real(staged, target)
+
+    monkeypatch.setattr(hub_get, "place", flaky)
+    with pytest.raises(hub_get.GetError, match=re.escape(str(dest / "a.docx"))):
+        hub_get.get(preset(dest), api=PinnedHub(FILES))
+    assert staged_a.read_bytes() == b"NEW FILE IN STAGING"
+    assert (dest / "a.docx").read_bytes() == BIG
