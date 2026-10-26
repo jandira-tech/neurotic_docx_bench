@@ -121,7 +121,10 @@ def blob_reader(checkout: Path):
                 said = errors.read().decode(errors='replace').strip()[:500]
                 raise RebuildError(f'git cat-file {oid}: {b" ".join(header).decode(errors="replace")} {said}'.strip())
             size = int(header[2])
-            data = proc.stdout.read(size)
+            try:
+                data = proc.stdout.read(size)
+            except (MemoryError, OverflowError) as exc:  # the read makes its size-byte buffer first
+                raise RebuildError(f'git cat-file {oid}: a size of {size} bytes, too large to read') from exc
             if len(data) != size or proc.stdout.read(1) != b'\n':
                 raise RebuildError(f'git cat-file {oid}: short read ({len(data)} of {size} bytes)')
             return data
@@ -466,9 +469,17 @@ def publish(api, checkout: Path, revision: str, data: bytes, message: str) -> st
         # Read before the upload, so a tree this cannot read stops the run before anything is committed.
         before = leaves(checkout, revision)
         key = path.encode()
+        under = sum(1 for leaf in before if leaf.startswith(key + b'/'))  # ls-tree -r lists no folder, only its files
+        if under:
+            raise RebuildError(
+                f'{path} at {revision} is a folder ({under} file(s) under it), so no commit can put the manifest '
+                'there. Nothing published by this run; fix the path on the hub'
+            )
+        entry = before.get(key)
+        # A blob's bytes in any mode, read with the tree, before anything is sent (a symlink's are its target).
+        there = git(checkout, 'cat-file', 'blob', f'{revision}:{path}') if entry and entry[1] == b'blob' else None
         # A symlink (mode 120000) stores its target as blob bytes; the same bytes there are not the manifest.
-        if regular_blob(before.get(key)):
-            there = git(checkout, 'cat-file', 'blob', f'{revision}:{path}')
+        if regular_blob(entry):
             if there in accepted:
                 return revision
             pointer = LFS_POINTER.fullmatch(there)
@@ -485,12 +496,11 @@ def publish(api, checkout: Path, revision: str, data: bytes, message: str) -> st
         # payload builder looks at shouldIgnore (hf_api.py 5143, _commit_api.py 939).
         remote = getattr(operation, '_remote_oid', None)
         if remote is not None and remote == operation._local_oid:
-            entry = before.get(key)
             # Whether the tree this run read holds this content id at the path itself, in whatever git mode (a
             # symlink whose target bytes are the manifest): only then is the answer about the commit this run read.
-            explained = entry is not None and entry[1] == b'blob' and holds(
-                git(checkout, 'cat-file', 'blob', f'{revision}:{path}'), data, operation._upload_mode
-            )
+            # A regular blob that does was settled above, and main()'s build() refuses a symlink there, so this is
+            # true only for a tree build() did not check; publish() stays right on its own.
+            explained = there is not None and holds(there, data, operation._upload_mode)
             raise RebuildError(no_op(api, revision, path, entry, remote, explained))
         # create_commit would leave an ignored file out of the commit it still sends (_commit_api.py 939).
         if getattr(operation, '_should_ignore', None):
@@ -508,7 +518,6 @@ def publish(api, checkout: Path, revision: str, data: bytes, message: str) -> st
             'this manifest\'s commit; rerun to check it'
         )
         if commit == revision:  # the branch head did not move: create_commit sent no commit request
-            entry = before.get(key)
             held = f'a mode {entry[0].decode()} entry' if entry else 'no file'
             raise RebuildError(
                 f'create_commit made no commit: {BRANCH} is still at {revision}, where {path} holds {held}. The hub '
