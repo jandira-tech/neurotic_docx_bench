@@ -2085,3 +2085,96 @@ def test_a_file_whose_download_failed_over_a_bad_staged_copy_is_counted_once(tmp
     assert message.count("RUN.md") == 1, message
     assert "1 failed to download" in message and "do not hash" not in message
     assert not staged.exists()  # a rerun fetches it again
+
+
+# Review round 12 (#80)
+
+
+def test_a_child_forked_from_a_run_does_not_hold_its_lock_once_the_runs_process_exits(tmp_path: Path) -> None:
+    """Codex, round 12: exit closes the owner's descriptor, not a forked child's copy, which shares the lock
+    (flock(2)); the note promises the staging folder is free once the process that ran it exits."""
+    import subprocess
+    import sys
+    import textwrap
+
+    staging = tmp_path / ".dest.hub-aaaaaaaaaaaa"
+    script = textwrap.dedent(
+        """
+        import os, sys, threading, warnings
+        from pathlib import Path
+        from neurotic_docx_bench import hub_get
+
+        go, ready = int(sys.argv[2]), int(sys.argv[3])
+        lock = hub_get._lock(Path(sys.argv[1]))
+        stalled = threading.Thread(target=threading.Event().wait, daemon=True)  # a download that never ends
+        stalled.start()
+        hub_get._let_go(lock, [stalled])
+        warnings.simplefilter("ignore", DeprecationWarning)  # a fork with threads alive
+        if os.fork() == 0:  # the child outlives the run's process
+            os.write(ready, b"r")
+            os.read(go, 1)
+            os._exit(0)
+        os._exit(0)  # the run's process exits, its download still running
+        """
+    )
+    go_r, go_w = os.pipe()
+    ready_r, ready_w = os.pipe()
+    try:
+        owner = subprocess.run(
+            [sys.executable, "-c", script, str(staging), str(go_r), str(ready_w)],
+            pass_fds=(go_r, ready_w),
+            timeout=60,
+        )
+        os.close(ready_w)
+        ready_w = -1
+        assert owner.returncode == 0
+        assert os.read(ready_r, 1) == b"r"  # the child is alive, past the fork
+        held = _held_by_another_run(staging)
+    finally:
+        os.write(go_w, b"x")
+        for fd in (go_r, go_w, ready_r, ready_w):
+            if fd >= 0:
+                os.close(fd)
+    assert not held
+
+
+def test_a_run_meeting_a_kept_lock_as_it_is_let_go_never_blames_another_run(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """mcode, round 12: the helper took the lock off the kept list before unlocking it, so a run in the same
+    process that met the lock in between was told another bench hub get held it."""
+    import threading
+
+    staging = tmp_path / ".dest.hub-aaaaaaaaaaaa"
+    lock = hub_get._lock(staging)
+    real_unlock = hub_get._unlock
+    reached, go = threading.Event(), threading.Event()
+
+    def unlock_when_told(fd: int) -> None:
+        if fd == lock:
+            reached.set()
+            go.wait(5)
+        real_unlock(fd)
+
+    monkeypatch.setattr(hub_get, "_unlock", unlock_when_told)
+    ended = threading.Thread(target=lambda: None)
+    ended.start()
+    ended.join()
+    hub_get._let_go(lock, [ended])  # kept, and let go at once by its helper, which stops before unlocking
+    assert reached.wait(5)
+    outcome: list = []
+
+    def take() -> None:
+        try:
+            outcome.append(hub_get._lock(staging))
+        except hub_get.GetError as exc:
+            outcome.append(exc)
+
+    taker = threading.Thread(target=take)
+    taker.start()
+    taker.join(0.3)
+    go.set()
+    taker.join(5)
+    (got,) = outcome
+    assert isinstance(got, int), got
+    real_unlock(got)
