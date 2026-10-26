@@ -25,6 +25,7 @@ import hashlib
 import io
 import json
 import os
+import re
 import shutil
 import subprocess
 import tempfile
@@ -40,6 +41,7 @@ from neurotic_docx_bench import hub
 MANIFEST = f'run/{hub.MANIFEST_NAME}'
 # The 0.13.0 lane was uploaded on 2026-10-25 outside hub_upload.py, with its own list.
 UPLOAD_LISTS = ('upload_20261025.manifest.tsv',)
+SHA256 = re.compile(r'[0-9a-f]{64}')
 LFS_SPEC = b'version https://git-lfs.github.com/spec/v1\n'
 URL = f'https://huggingface.co/datasets/{hub.RESULTS_REPO}'
 NO_LFS = ('-c', 'filter.lfs.smudge=', '-c', 'filter.lfs.process=', '-c', 'filter.lfs.required=false')
@@ -69,10 +71,10 @@ def lfs_oid(data: bytes) -> str | None:
     if not data.startswith(LFS_SPEC):
         return None
     fields = dict(line.split(' ', 1) for line in data.decode().splitlines()[1:] if ' ' in line)
-    oid = fields.get('oid', '')
-    if not oid.startswith('sha256:') or not fields.get('size', '').isdigit():
+    oid = fields.get('oid', '').removeprefix('sha256:')
+    if not SHA256.fullmatch(oid) or not fields.get('size', '').isdigit():
         raise RebuildError(f'unreadable LFS pointer: {data[:200]!r}')
-    return oid.removeprefix('sha256:')
+    return oid
 
 
 def hub_tree(checkout: Path, revision: str) -> dict[str, HubFile]:
@@ -91,17 +93,22 @@ def hub_tree(checkout: Path, revision: str) -> dict[str, HubFile]:
 
 def records(checkout: Path, revision: str) -> list[tuple[str, dict[str, str]]]:
     """Every version of the manifest and of the upload lists up to ``revision``, oldest first."""
+    # A shallow clone stops before the oldest versions, which would then go unchecked.
+    if git(checkout, 'rev-parse', '--is-shallow-repository').strip() != b'false':
+        raise RebuildError(f'{checkout} is a shallow clone; its history hides older records')
+    # Commit order, not commit time: two versions can share a second.
+    rank = {c: i for i, c in enumerate(reversed(git(checkout, 'rev-list', '--topo-order', revision).split()))}
     found = []
     for order, name in enumerate((MANIFEST, *UPLOAD_LISTS)):
         path = f'{REPO_PREFIX}/{name}'
-        log = git(checkout, 'log', '--diff-filter=AM', '--format=%H %ct', revision, '--', path).decode().split()
-        for commit, stamp in zip(log[::2], log[1::2]):
+        log = git(checkout, 'log', '--full-history', '--diff-filter=AM', '--format=%H', revision, '--', path)
+        for commit in log.decode().split():
             text = git(checkout, 'show', f'{commit}:{path}').decode()
             if name == MANIFEST:
                 files = json.loads(text)['files']
             else:
                 files = {row['key']: row['sha256'] for row in csv.DictReader(io.StringIO(text), delimiter='\t')}
-            found.append((int(stamp), order, f'{commit[:9]} {name}', files))
+            found.append((rank[commit.encode()], order, f'{commit[:9]} {name}', files))
     found.sort(key=lambda r: (r[0], r[1]))
     return [(label, files) for _, _, label, files in found]
 
