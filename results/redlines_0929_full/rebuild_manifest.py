@@ -37,7 +37,7 @@ from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path
 
-from huggingface_hub.errors import HfHubHTTPError
+from huggingface_hub import CommitOperationAdd
 from hub_upload import REPO_PREFIX
 
 from neurotic_docx_bench import hub
@@ -57,14 +57,14 @@ NO_LFS = ('-c', 'filter.lfs.smudge=', '-c', 'filter.lfs.process=', '-c', 'filter
 
 
 class RebuildError(RuntimeError):
-    """The run stopped and nothing is published: the hub does not match its own records, it moved since it
-    was read, or the upload failed before its commit request or made no commit."""
+    """The run stopped having published nothing: the hub does not match its own records, it moved since it was
+    read, the upload failed before its commit request was sent, or that request made no commit. The claim is
+    this run's; a commit another run sent may land at any time."""
 
 
 class UnverifiedPublish(RebuildError):
-    """The upload may have made its commit: ``upload_file`` failed once its commit request may have been sent
-    (a refusal of that request included), or it returned a commit that could not be checked. The hub may
-    hold the manifest; a rerun recognises one already there."""
+    """The commit request may have made its commit: it failed once it may have been sent, or it returned a commit
+    that could not be checked. The hub may hold the manifest; a rerun recognises one already there."""
 
 
 @dataclass(frozen=True)
@@ -437,97 +437,26 @@ def regular_blob(entry: tuple[bytes, ...] | None) -> bool:
     return entry is not None and entry[:2] in ((b'100644', b'blob'), (b'100755', b'blob'))
 
 
-def first_answer(exc: BaseException):
-    """The hub's answer ``exc`` carries, if it answers the very request the SDK sent; else ``None``.
-
-    The client follows redirects (``huggingface_hub/utils/_http.py`` 335, httpx2 ``_client.py`` 1052:
-    the redirect's request replaces the original), so an answer whose ``history`` is not empty answers
-    some request a redirect made, which may follow the commit: a 303 from a commit that went through
-    turns it into a GET of wherever the 303 points. A failure without an answer (a timeout, a dropped
-    connection) carries only the request it was on, which may be a redirect's target too.
-    """
-    try:
-        response = exc.response
-    except (AttributeError, RuntimeError):
-        return None
-    if response is None or response.history:
-        return None
-    return response
-
-
-def answered_request(exc: BaseException):
-    """The request of ``first_answer(exc)``, when there is one; else ``None``."""
-    response = first_answer(exc)
-    if response is None:
-        return None
-    try:
-        return response.request
-    except RuntimeError:  # an answer built without its request says nothing of where it came from
-        return None
-
-
-def _posted_to(request, *paths: str) -> bool:
-    return request is not None and request.method == 'POST' and request.url.path.endswith(paths)
-
-
-def failed_before_commit(exc: BaseException) -> bool:
-    """Whether ``exc`` answers a request upload_file sends before its commit request.
-
-    ``create_commit`` sends the preupload first and the commit last, once (``huggingface_hub/_commit_api.py``:
-    ``/preupload/`` at 764, ``/commit/`` at 1056 through ``get_session().post`` at 1067, never retried;
-    the preupload is retried on a 429 or 5xx, each retry a fresh request still before the commit). A
-    file the preupload sends to LFS storage goes, between the two, either through the Xet client when
-    hf_xet is installed (``_commit_api.py`` 396, ``_upload_xet_files`` at 552: it asks for its own
-    ``/xet-write-token/`` and uploads outside httpx) or, without hf_xet, through the LFS batch request
-    (``lfs.py`` at 185) and the storage uploads it names. Tests pin the order through the real SDK:
-    ``test_the_sdk_sends_the_requests_this_places_in_this_order`` (an inline file) and
-    ``test_with_lfs_storage_the_sdk_sends_the_lfs_batch_between_the_preupload_and_the_commit``; the Xet
-    client is not observable there. Only an answer to the SDK's own request (``first_answer``) that is a
-    POST to the preupload or LFS batch URL of this repo counts. A failure without an answer, or an
-    answer after a redirect, may come from the commit and counts as not known to precede it; so do the
-    Xet client's failures and the storage uploads, which precede the commit but are not told apart
-    from a redirected commit. ``upload`` still confirms a "before" against the hub's head (``unpublished``).
-    """
-    return _posted_to(
-        answered_request(exc),
-        f'/api/{hub.REPO_TYPE}s/{hub.RESULTS_REPO}/preupload/{BRANCH}',
-        f'/{hub.REPO_TYPE}s/{hub.RESULTS_REPO}.git/info/lfs/objects/batch',
-    )
-
-
-def refused_commit(exc: BaseException) -> bool:
-    """Whether ``exc`` is a 4xx (not 408) answer to the commit request itself.
-
-    That request committed nothing, but the refusal does not say nothing landed: an earlier attempt of
-    it, sent by a transport or proxy that retried it after losing the answer, may land later, and a read
-    of the branch cannot see a commit still on its way. Only the commit is placed: a 4xx to any other
-    request may answer one sent after the commit, whatever the SDK sends today.
-    """
-    request = answered_request(exc)
-    status = exc.response.status_code if request is not None else None
-    return (
-        _posted_to(request, f'/api/{hub.REPO_TYPE}s/{hub.RESULTS_REPO}/commit/{BRANCH}')
-        and 400 <= status < 500
-        and status != 408
-    )
-
-
 def publish(api, checkout: Path, revision: str, data: bytes, message: str) -> str:
     """Commit ``data`` as the run manifest on ``revision``; return the commit, checked through git.
 
-    A no-op upload skips the ``parent_commit`` check and returns whatever the branch head is, so
-    the commit is fetched and must have ``revision`` as its one parent and change nothing else; the
-    head itself means no commit was made. A failure ``upload`` places before the commit request is a
-    ``RebuildError``; any other failure of the upload (a refusal of the commit request included) or of
-    the check after it may follow a commit, and raises ``UnverifiedPublish``. A Ctrl-C stops the run with a
-    note: nothing published before the upload, the hub may hold the manifest from the upload on.
+    The upload is two calls, so that what a failure says of the hub rests on which call failed, never on
+    the error's shape: ``preupload`` sends everything before the commit request, ``commit_manifest`` the
+    commit request. Up to the second call nothing this run sent can make a commit (``RebuildError``); from
+    it on a failure may follow one (``UnverifiedPublish``). A no-op commit skips the ``parent_commit`` check
+    and returns whatever the branch head is, so the commit is fetched and must have ``revision`` as its one
+    parent and change nothing else; the head itself means no commit was made. A Ctrl-C stops the run with a
+    note saying the same.
     """
     path = f'{REPO_PREFIX}/{MANIFEST}'
-    stage = None  # before the upload: nothing published
+    note = 'stopped before the commit request: nothing published by this run'
     try:
         current = api.repo_info(hub.RESULTS_REPO, repo_type=hub.REPO_TYPE, revision=BRANCH).sha
         if current != revision:
-            raise RebuildError(f'the hub moved to {current} since {revision} was read; nothing published')
+            raise RebuildError(
+                f'the hub moved to {current} since {revision} was read; nothing published by this run. The new head '
+                'may hold another commit of this manifest: rerun on it to check'
+            )
         # The hub may store the manifest inline or, if its preupload says so, as an LFS pointer.
         accepted = (data, lfs_pointer(data))
         # Read before the upload, so a tree this cannot read stops the run before anything is committed.
@@ -540,100 +469,89 @@ def publish(api, checkout: Path, revision: str, data: bytes, message: str) -> st
                 return revision
             pointer = LFS_POINTER.fullmatch(there)
             if pointer and pointer.group(1).decode() == hashlib.sha256(data).hexdigest():
-                # upload_file compares content ids (an LFS pointer's oid), so it would return the head unchanged
+                # create_commit compares content ids (an LFS pointer's oid), so it would return the head unchanged
                 raise RebuildError(
                     f'{path} at {revision} is an LFS pointer to this manifest\'s content that is not its canonical '
-                    f'pointer (size {pointer.group(2).decode()} for {len(data)} bytes); upload_file would not replace '
-                    'it, since it compares content ids. Nothing published; fix the pointer on the hub'
+                    f'pointer (size {pointer.group(2).decode()} for {len(data)} bytes); create_commit would not replace '
+                    'it, since it compares content ids. Nothing published by this run; fix the pointer on the hub'
                 )
-        # From the upload to the end of its check, a Ctrl-C may follow a commit.
-        stage = 'during upload_file'
-        info = upload(api, path, data, message, revision)
-        stage = 'after upload_file returned'
-        commit = info.oid
-        stage = f'while checking {commit}, which upload_file returned'
-        if commit == revision:  # the branch head did not move: upload_file made no commit
+        operation = CommitOperationAdd(path_in_repo=path, path_or_fileobj=data)
+        preupload(api, operation)
+        note = 'stopped during the commit request: the hub may hold the manifest now; rerun to check it'
+        commit = commit_manifest(api, operation, message, revision)
+        note = (
+            f'stopped while checking {commit}, which the commit request returned: the hub holds {commit}, which may '
+            'be this manifest\'s commit; rerun to check it'
+        )
+        if commit == revision:  # the branch head did not move: create_commit sent no commit request
             entry = before.get(key)
             held = f'a mode {entry[0].decode()} entry' if entry else 'no file'
             raise RebuildError(
-                f'upload_file made no commit: {BRANCH} is still at {revision}, where {path} holds {held}. The hub '
+                f'create_commit made no commit: {BRANCH} is still at {revision}, where {path} holds {held}. The hub '
                 'compares content ids, not modes, so an entry with this manifest\'s content counts as the manifest '
-                'already there (and a path the hub ignores is dropped). Nothing published; fix the path on the hub'
+                'already there (and a path the hub ignores is dropped). Nothing published by this run; fix the path '
+                'on the hub'
             )
         try:
             return verify_upload(checkout, revision, commit, before, data)
         except Exception as exc:
             raise UnverifiedPublish(
-                f'upload_file returned {commit}, but checking it failed: {exc}. The hub may hold the manifest now; '
-                f'rerun to check it (a manifest already there is recognised)'
+                f'the commit request returned {commit}, but checking it failed: {exc}; the hub holds {commit}, so it '
+                'may hold the manifest now; rerun to check it (a manifest already there is recognised)'
             ) from exc
     except BaseException as exc:
         if not isinstance(exc, Exception):  # Ctrl-C: stop, but say what may have happened
-            exc.add_note(
-                'stopped before upload_file: nothing published'
-                if stage is None
-                else f'stopped {stage}: the hub may hold the manifest now; rerun to check it'
-            )
+            exc.add_note(note)
         raise
 
 
-def upload(api, path: str, data: bytes, message: str, revision: str):
-    """``upload_file`` of the manifest onto ``revision``; its failures sorted by what they say of the hub."""
-    try:
-        return api.upload_file(
-            path_or_fileobj=data,
-            path_in_repo=path,
-            repo_id=hub.RESULTS_REPO,
-            repo_type=hub.REPO_TYPE,
-            commit_message=message,
-            parent_commit=revision,
-            revision=BRANCH,
-        )
-    except HfHubHTTPError as exc:
-        if failed_before_commit(exc):
-            unpublished(api, revision, exc, f'the upload failed before its commit request ({exc})')
-        if refused_commit(exc):
-            raise UnverifiedPublish(
-                f'the hub refused the commit request ({exc}). That request committed nothing, but an earlier '
-                'attempt of it may still be on its way (a transport or proxy that retried it), so the hub may hold '
-                'the manifest now; rerun to check it (a manifest already there is recognised)'
-            ) from exc
-        raise UnverifiedPublish(
-            f'upload_file failed with {exc}, after which the hub may hold the manifest; rerun to check it '
-            '(a manifest already there is recognised)'
-        ) from exc
-    except Exception as exc:  # no answer: the commit may have gone through, as with a lost response
-        if failed_before_commit(exc):
-            unpublished(api, revision, exc, f'the upload failed before its commit request ({type(exc).__name__}: {exc})')
-        raise UnverifiedPublish(
-            f'upload_file failed without an answer from the hub ({type(exc).__name__}: {exc}); the hub may hold '
-            'the manifest now; rerun to check it (a manifest already there is recognised)'
-        ) from exc
+def preupload(api, operation: CommitOperationAdd) -> None:
+    """Everything the upload sends before its commit request: the preupload, and the storage upload it asks for.
 
-
-def unpublished(api, revision: str, exc: BaseException, what: str):
-    """Raise ``what``, with "nothing published", for a failure before the commit request: never sent, it commits nothing.
-
-    The branch is read once more against an error that only looks like one before the commit: a
-    response hook that raises before httpx2 attaches the redirect history makes an answer after a landed
-    commit look like the SDK's own request's. A moved branch may hold this upload's commit, and so may
-    one that cannot be read: both raise ``UnverifiedPublish``. A branch read in place is no proof on its
-    own (a commit still on its way does not show), so a failure once the commit request may have been
-    sent, a refusal of it included, never comes here.
+    ``preupload_lfs_files`` sends the preupload request (``huggingface_hub/_commit_api.py`` 764) and, for a
+    file the hub keeps in LFS, the storage upload (through the Xet client, or the LFS batch request at
+    ``lfs.py`` 185 and the uploads it names). It sends no commit, so whatever fails here, a redirect or a
+    response hook included, this run has sent no commit request. ``free_memory=False`` keeps the bytes the
+    commit request carries for an inline file.
     """
     try:
-        head = api.repo_info(hub.RESULTS_REPO, repo_type=hub.REPO_TYPE, revision=BRANCH).sha
-    except Exception as check:
-        raise UnverifiedPublish(
-            f'{what}, but reading the hub\'s head to confirm nothing was published failed ({check}); the hub '
-            'may hold the manifest now; rerun to check it (a manifest already there is recognised)'
+        api.preupload_lfs_files(
+            repo_id=hub.RESULTS_REPO,
+            additions=[operation],
+            repo_type=hub.REPO_TYPE,
+            revision=BRANCH,
+            free_memory=False,
+        )
+    except Exception as exc:
+        raise RebuildError(
+            f'the upload failed before its commit request ({type(exc).__name__}: {exc}); this run sent no commit '
+            'request: nothing published by this run'
         ) from exc
-    if head != revision:
+
+
+def commit_manifest(api, operation: CommitOperationAdd, message: str, revision: str) -> str:
+    """The commit request for the preuploaded ``operation``, on ``revision``; the commit it returns.
+
+    ``create_commit`` finds the preupload done (``hf_api.py`` 5329: no preupload request for an operation
+    whose upload mode is known, none for an LFS file already uploaded), so the one request it sends is the
+    commit, or, for a no-op, a read of the head. Any failure here may follow a commit (an answer lost on its
+    way back, a proxy that forwarded the request and answered with an error or a redirect, a transport that
+    retried it) and raises ``UnverifiedPublish``.
+    """
+    try:
+        return api.create_commit(
+            repo_id=hub.RESULTS_REPO,
+            operations=[operation],
+            commit_message=message,
+            repo_type=hub.REPO_TYPE,
+            revision=BRANCH,
+            parent_commit=revision,
+        ).oid
+    except Exception as exc:
         raise UnverifiedPublish(
-            f'{what}, but {BRANCH} moved to {head} since {revision}, maybe by this upload; the hub may hold the '
-            'manifest now; rerun to check it (a manifest already there is recognised)'
+            f'the commit request failed ({type(exc).__name__}: {exc}); it may have been sent, so the hub may hold '
+            'the manifest now; rerun to check it (a manifest already there is recognised)'
         ) from exc
-    raise RebuildError(f'{what}; {BRANCH} is still at {revision}: nothing published') from exc
 
 
 def verify_upload(checkout: Path, revision: str, commit: str, before: dict, data: bytes) -> str:
@@ -671,7 +589,7 @@ def main() -> None:
             return f'the hub holds this manifest at {published}'
         if publishing:  # as publish() was called or returned: the two instants look the same here
             return 'the hub may hold the manifest now; rerun to check it'
-        return 'nothing published'
+        return 'nothing published by this run'
 
     try:
         ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -736,15 +654,16 @@ def main() -> None:
     finally:
         if temporary is not None:
             try:
-                shutil.rmtree(temporary)
+                try:
+                    shutil.rmtree(temporary)
+                except OSError as exc:  # a warning: the run's own outcome stands
+                    print(f'could not remove the temporary clone {temporary}: {exc}', file=sys.stderr, flush=True)
             except KeyboardInterrupt as stop:  # it takes the place of what was on its way out: name both
                 stop.add_note(f'stopped while removing the temporary clone {temporary}, which may be left behind: {holds()}')
                 if failure is not None:
                     said = [f'{type(failure).__name__}: {failure}' if str(failure) else type(failure).__name__]
                     stop.add_note(f'before that the run stopped on {"; ".join(said + getattr(failure, "__notes__", []))}')
                 raise
-            except OSError as exc:  # a warning: the run's own outcome stands
-                print(f'could not remove the temporary clone {temporary}: {exc}', file=sys.stderr, flush=True)
 
 
 if __name__ == '__main__':

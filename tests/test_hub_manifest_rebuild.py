@@ -207,12 +207,17 @@ def test_build_reads_the_checkout(rebuild, checkout):
 
 
 class GitHub:
-    """The hub's commit API over a real git repository standing in for the dataset."""
+    """The hub's commit API over a real git repository standing in for the dataset.
+
+    ``preuploads`` lists the paths preuploaded; ``uploads`` the commit requests, so an empty one means no
+    commit request was sent.
+    """
 
     def __init__(self, origin: Path, before_upload=None, lfs: bool = False):
         self.origin = origin
         self.before_upload = before_upload
         self.lfs = lfs  # the hub's preupload picked LFS storage for the upload
+        self.preuploads: list[str] = []
         self.uploads: list[dict] = []
         self.info_revisions = []
         self.lfs_contents = {}
@@ -233,8 +238,15 @@ class GitHub:
         self.info_revisions.append(revision)
         return SimpleNamespace(sha=self.head())
 
-    def upload_file(self, *, path_or_fileobj, path_in_repo, repo_id, repo_type, commit_message, parent_commit=None, revision=None):
+    def preupload_lfs_files(self, *, repo_id, additions, repo_type, revision=None, free_memory=True):
+        assert revision == 'main' and not free_memory  # an inline file's commit request carries its bytes
+        self.preuploads.extend(op.path_in_repo for op in additions)
+
+    def create_commit(self, *, repo_id, operations, commit_message, repo_type, revision=None, parent_commit=None):
         assert revision == 'main'
+        (operation,) = operations
+        path_in_repo, path_or_fileobj = operation.path_in_repo, operation.path_or_fileobj
+        assert path_in_repo in self.preuploads  # preuploaded first, as publish() does
         self.uploads.append({
             'path_in_repo': path_in_repo,
             'parent_commit': parent_commit,
@@ -907,13 +919,13 @@ def test_main_does_not_claim_a_commit_it_cannot_tell_it_made(rebuild, hub_pair, 
 
 def test_an_upload_that_fails_after_the_hub_committed_says_the_hub_may_hold_the_manifest(rebuild, hub_pair):
     data = manifest({'a/x.docx': sha(b'inline')})
-    real = hub_pair.api.upload_file
+    real = hub_pair.api.create_commit
 
     def lost(**kw):
         real(**kw)  # the hub commits; its answer never arrives
         raise httpx2.ReadTimeout('the response never came')
 
-    hub_pair.api.upload_file = lost
+    hub_pair.api.create_commit = lost
     with pytest.raises(rebuild.RebuildError) as exc:
         rebuild.publish(hub_pair.api, hub_pair.clone, hub_pair.head, data, 'rebuild')
     assert type(exc.value).__name__ == 'UnverifiedPublish'
@@ -927,13 +939,13 @@ def test_an_upload_that_fails_after_the_hub_committed_says_the_hub_may_hold_the_
 
 def test_ctrl_c_during_the_upload_says_the_hub_may_hold_the_manifest(rebuild, hub_pair):
     data = manifest({'a/x.docx': sha(b'inline')})
-    real = hub_pair.api.upload_file
+    real = hub_pair.api.create_commit
 
     def interrupted(**kw):
         real(**kw)  # the hub commits; Ctrl-C lands while the answer is on its way
         raise KeyboardInterrupt
 
-    hub_pair.api.upload_file = interrupted
+    hub_pair.api.create_commit = interrupted
     with pytest.raises(KeyboardInterrupt) as exc:
         rebuild.publish(hub_pair.api, hub_pair.clone, hub_pair.head, data, 'rebuild')
     assert hub_pair.api.head() != hub_pair.head
@@ -951,7 +963,7 @@ def test_ctrl_c_while_checking_the_upload_says_the_hub_may_hold_the_manifest(reb
         rebuild.publish(hub_pair.api, hub_pair.clone, hub_pair.head, data, 'rebuild')
     assert hub_pair.api.head() != hub_pair.head
     notes = ' '.join(getattr(exc.value, '__notes__', ()))
-    assert 'may hold' in notes and hub_pair.api.head() in notes
+    assert f'the hub holds {hub_pair.api.head()}' in notes and 'rerun to check it' in notes  # round 16
 
 
 # Review round 10, mcode (#78)
@@ -972,17 +984,18 @@ def test_a_failure_before_the_commit_request_says_nothing_was_published(rebuild,
     def fails(**kw):
         raise failure()
 
-    hub_pair.api.upload_file = fails
-    with pytest.raises(rebuild.RebuildError, match='nothing published') as exc:
+    hub_pair.api.preupload_lfs_files = fails
+    with pytest.raises(rebuild.RebuildError, match='nothing published by this run') as exc:
         rebuild.publish(hub_pair.api, hub_pair.clone, hub_pair.head, manifest({'a/x.docx': sha(b'inline')}), 'rebuild')
     assert type(exc.value).__name__ != 'UnverifiedPublish'
+    assert hub_pair.api.uploads == []
 
 
 def test_a_server_error_on_the_commit_request_says_the_hub_may_hold_the_manifest(rebuild, hub_pair):
     def fails(**kw):
         raise HfHubHTTPError('502 bad gateway', response=httpx2.Response(502, request=commit_request()))
 
-    hub_pair.api.upload_file = fails
+    hub_pair.api.create_commit = fails
     with pytest.raises(rebuild.RebuildError, match='may hold') as exc:
         rebuild.publish(hub_pair.api, hub_pair.clone, hub_pair.head, manifest({'a/x.docx': sha(b'inline')}), 'rebuild')
     assert type(exc.value).__name__ == 'UnverifiedPublish'
@@ -1000,7 +1013,7 @@ def test_a_pointer_to_the_same_content_that_is_not_canonical_is_refused_not_loop
     api.commit({f'{PREFIX}/{MANIFEST}': odd}, 'a pointer with the right oid and a wrong size')
     clone = tmp_path / 'clone'
     git(tmp_path, 'clone', '-q', f'file://{origin}', str(clone))
-    with pytest.raises(rebuild.RebuildError, match='upload_file would not replace it') as exc:
+    with pytest.raises(rebuild.RebuildError, match='create_commit would not replace it') as exc:
         rebuild.publish(api, clone, api.head(), data, 'rebuild')
     assert type(exc.value).__name__ != 'UnverifiedPublish'
     assert api.uploads == []
@@ -1022,7 +1035,7 @@ def test_a_reused_sparse_checkout_of_the_run_folder_is_used(rebuild, hub_pair):
 
 def test_ctrl_c_between_the_upload_and_its_check_says_the_hub_may_hold_the_manifest(rebuild, hub_pair):
     data = manifest({'a/x.docx': sha(b'inline')})
-    real = hub_pair.api.upload_file
+    real = hub_pair.api.create_commit
 
     class Interrupted:
         @property
@@ -1033,7 +1046,7 @@ def test_ctrl_c_between_the_upload_and_its_check_says_the_hub_may_hold_the_manif
         real(**kw)
         return Interrupted()
 
-    hub_pair.api.upload_file = upload
+    hub_pair.api.create_commit = upload
     with pytest.raises(KeyboardInterrupt) as exc:
         rebuild.publish(hub_pair.api, hub_pair.clone, hub_pair.head, data, 'rebuild')
     assert hub_pair.api.head() != hub_pair.head
@@ -1055,7 +1068,7 @@ def test_a_failure_on_a_request_not_known_to_precede_the_commit_says_the_hub_may
     def fails(**kw):
         raise httpx2.ReadTimeout('commit accepted; response lost', request=httpx2.Request('POST', url))
 
-    hub_pair.api.upload_file = fails
+    hub_pair.api.create_commit = fails
     with pytest.raises(rebuild.RebuildError, match='may hold') as exc:
         rebuild.publish(hub_pair.api, hub_pair.clone, hub_pair.head, manifest({'a/x.docx': sha(b'inline')}), 'rebuild')
     assert type(exc.value).__name__ == 'UnverifiedPublish'
@@ -1068,8 +1081,8 @@ def test_a_failed_lfs_batch_request_still_says_nothing_was_published(rebuild, hu
     def fails(**kw):
         raise HfHubHTTPError('503 batch', response=httpx2.Response(503, request=batch))
 
-    hub_pair.api.upload_file = fails
-    with pytest.raises(rebuild.RebuildError, match='nothing published') as exc:
+    hub_pair.api.preupload_lfs_files = fails
+    with pytest.raises(rebuild.RebuildError, match='nothing published by this run') as exc:
         rebuild.publish(hub_pair.api, hub_pair.clone, hub_pair.head, manifest({'a/x.docx': sha(b'inline')}), 'rebuild')
     assert type(exc.value).__name__ != 'UnverifiedPublish'
 
@@ -1097,19 +1110,19 @@ def test_a_failure_whose_request_may_follow_a_redirect_says_the_hub_may_hold_the
     def fails(**kw):
         raise failure()
 
-    hub_pair.api.upload_file = fails
+    hub_pair.api.create_commit = fails
     with pytest.raises(rebuild.RebuildError, match='may hold') as exc:
         rebuild.publish(hub_pair.api, hub_pair.clone, hub_pair.head, manifest({'a/x.docx': sha(b'inline')}), 'rebuild')
     assert type(exc.value).__name__ == 'UnverifiedPublish'
     assert 'nothing published' not in str(exc.value)
 
 
-def test_a_4xx_answer_to_the_commit_itself_says_the_hub_refused_it(rebuild, hub_pair):
+def test_a_4xx_answer_to_the_commit_itself_says_what_the_hub_said_and_may_hold(rebuild, hub_pair):
     def fails(**kw):
         raise HfHubHTTPError('412 precondition failed', response=httpx2.Response(412, request=commit_request()))
 
-    hub_pair.api.upload_file = fails
-    with pytest.raises(rebuild.RebuildError, match='refused the commit request') as exc:
+    hub_pair.api.create_commit = fails
+    with pytest.raises(rebuild.RebuildError, match=r'412 precondition failed.*may hold') as exc:
         rebuild.publish(hub_pair.api, hub_pair.clone, hub_pair.head, manifest({'a/x.docx': sha(b'inline')}), 'rebuild')
     assert type(exc.value).__name__ == 'UnverifiedPublish'  # round 15: a refusal does not prove nothing landed
 
@@ -1118,7 +1131,7 @@ def test_a_4xx_answer_to_the_commit_itself_says_the_hub_refused_it(rebuild, hub_
 
 
 def test_an_upload_that_made_no_commit_says_nothing_was_published_and_why(rebuild, hub_pair, tmp_path):
-    """A symlink whose target bytes are the manifest: upload_file sees the content id there and commits nothing."""
+    """A symlink whose target bytes are the manifest: create_commit sees the content id there and commits nothing."""
     data = manifest({'a/x.docx': sha(b'inline')})
     commit_entry(hub_pair.api.origin, tmp_path, '120000', f'{PREFIX}/{MANIFEST}', data)
     git(hub_pair.clone, 'fetch', '-q', 'origin')
@@ -1132,17 +1145,18 @@ def test_an_upload_that_made_no_commit_says_nothing_was_published_and_why(rebuil
     assert 'rerun' not in str(exc.value)
 
 
-def test_a_4xx_at_a_url_not_known_to_precede_the_commit_says_the_hub_may_hold_the_manifest(rebuild, hub_pair):
-    """Only the commit and the two requests known to precede it are placed; a 4xx elsewhere claims nothing."""
+@pytest.mark.parametrize(('call', 'said'), [('preupload_lfs_files', 'nothing published by this run'), ('create_commit', 'may hold')])
+def test_a_storage_failure_says_what_the_call_it_failed_in_sent(rebuild, hub_pair, call, said):
+    """Since round 16 a failure is placed by the call it came from: the preupload call sends no commit request."""
 
     def fails(**kw):
         request = httpx2.Request('PUT', 'https://cas-bridge.example/xet/some-chunk?X-Signature=expired')
         raise HfHubHTTPError('403 storage', response=httpx2.Response(403, request=request))
 
-    hub_pair.api.upload_file = fails
-    with pytest.raises(rebuild.RebuildError, match='may hold') as exc:
+    setattr(hub_pair.api, call, fails)
+    with pytest.raises(rebuild.RebuildError, match=said) as exc:
         rebuild.publish(hub_pair.api, hub_pair.clone, hub_pair.head, manifest({'a/x.docx': sha(b'inline')}), 'rebuild')
-    assert type(exc.value).__name__ == 'UnverifiedPublish'
+    assert (type(exc.value).__name__ == 'UnverifiedPublish') == (call == 'create_commit')
 
 
 @pytest.mark.parametrize('where', ['repo_info', 'leaves'])
@@ -1185,13 +1199,13 @@ def test_ctrl_c_while_the_manifest_is_built_says_nothing_was_published(rebuild, 
 def test_an_error_that_says_nothing_landed_while_the_branch_moved_says_the_hub_may_hold_the_manifest(
     rebuild, hub_pair, failure
 ):
-    real = hub_pair.api.upload_file
+    real = hub_pair.api.create_commit
 
     def lands_then_fails(**kw):
         real(**kw)
         raise failure()
 
-    hub_pair.api.upload_file = lands_then_fails
+    hub_pair.api.create_commit = lands_then_fails
     with pytest.raises(rebuild.RebuildError, match='may hold') as exc:
         rebuild.publish(hub_pair.api, hub_pair.clone, hub_pair.head, manifest({'a/x.docx': sha(b'inline')}), 'rebuild')
     assert hub_pair.api.head() != hub_pair.head
@@ -1212,8 +1226,8 @@ def test_a_4xx_to_the_commit_while_the_branch_stays_put_says_what_the_hub_said_a
     def fails(**kw):
         raise HfHubHTTPError('403 forbidden', response=httpx2.Response(403, request=commit_request()))
 
-    hub_pair.api.upload_file = fails
-    with pytest.raises(rebuild.RebuildError, match=r'refused the commit request.*403.*may hold') as exc:
+    hub_pair.api.create_commit = fails
+    with pytest.raises(rebuild.RebuildError, match=r'403 forbidden.*may hold') as exc:
         rebuild.publish(hub_pair.api, hub_pair.clone, hub_pair.head, manifest({'a/x.docx': sha(b'inline')}), 'rebuild')
     assert type(exc.value).__name__ == 'UnverifiedPublish'  # round 15
     assert 'nothing published' not in str(exc.value)
@@ -1289,18 +1303,55 @@ def sdk_over(handler, hooks=()):
                 _http._GLOBAL_CLIENT.close()
 
 
-def test_the_sdk_sends_the_requests_this_places_in_this_order(rebuild):
-    """The real HfApi against a mock hub: the preupload first, the commit last and once, at the URLs placed.
+def sdk_calls(rebuild, handler):
+    """``preupload`` then ``commit_manifest`` through the real HfApi over ``handler``, stopping at a RebuildError.
 
-    Fails if a huggingface_hub upgrade renames an endpoint, retries the commit or sends anything after it.
+    One ``(requests sent, error type or None)`` per call made.
     """
-    from huggingface_hub import HfApi
+    from huggingface_hub import CommitOperationAdd, HfApi
 
-    def hub_answering(statuses):
-        sent = []
+    sent = []
 
+    def recording(request):
+        sent.append((request.method, request.url.path))
+        return handler(request)
+
+    outcome = []
+    with sdk_over(recording):
+        api = HfApi(endpoint='https://huggingface.co', token='hf_test_not_a_real_token')
+        operation = CommitOperationAdd(path_in_repo=f'{PREFIX}/{MANIFEST}', path_or_fileobj=b'{}\n')
+        for step in (lambda: rebuild.preupload(api, operation), lambda: rebuild.commit_manifest(api, operation, 'm', 'a' * 40)):
+            mark = len(sent)
+            try:
+                step()
+            except rebuild.RebuildError as exc:
+                outcome.append((sent[mark:], type(exc).__name__))
+                break
+            outcome.append((sent[mark:], None))
+    return outcome
+
+
+def committed(request):
+    return httpx2.Response(200, json={
+        'commitUrl': f'https://huggingface.co/{hub.REPO_TYPE}s/{hub.RESULTS_REPO}/commit/{"b" * 40}',
+        'commitOid': 'b' * 40,
+    })
+
+
+PREUPLOAD = ('POST', f'/api/{hub.REPO_TYPE}s/{hub.RESULTS_REPO}/preupload/main')
+COMMIT = ('POST', f'/api/{hub.REPO_TYPE}s/{hub.RESULTS_REPO}/commit/main')
+
+
+def test_the_sdk_sends_the_requests_each_call_is_placed_by(rebuild):
+    """The real HfApi against a mock hub: the preupload call sends the preupload and nothing else; the commit call
+    sends the commit, once, and nothing else. A failure in the first is a RebuildError, in the second "may hold".
+
+    Fails if a huggingface_hub upgrade sends a commit from preupload_lfs_files, a second preupload from
+    create_commit, or retries the commit.
+    """
+
+    def answering(statuses):
         def handler(request):
-            sent.append((request.method, request.url.path))
             kind = 'preupload' if '/preupload/' in request.url.path else 'commit'
             status = statuses.get(kind, 200)
             if status != 200:
@@ -1310,34 +1361,14 @@ def test_the_sdk_sends_the_requests_this_places_in_this_order(rebuild):
                 return httpx2.Response(200, json={'files': [
                     {'path': f['path'], 'uploadMode': 'regular', 'shouldIgnore': False, 'oid': None} for f in files
                 ]})
-            return httpx2.Response(200, json={
-                'commitUrl': f'https://huggingface.co/{hub.REPO_TYPE}s/{hub.RESULTS_REPO}/commit/{"b" * 40}',
-                'commitOid': 'b' * 40,
-            })
+            return committed(request)
 
-        return sent, handler
+        return handler
 
-    def upload(statuses):
-        sent, handler = hub_answering(statuses)
-        with sdk_over(handler):
-            api = HfApi(endpoint='https://huggingface.co', token='hf_test_not_a_real_token')
-            try:
-                api.upload_file(
-                    path_or_fileobj=b'{}\n', path_in_repo=f'{PREFIX}/{MANIFEST}', repo_id=hub.RESULTS_REPO,
-                    repo_type=hub.REPO_TYPE, commit_message='m', parent_commit='a' * 40, revision='main',
-                )
-            except HfHubHTTPError as exc:
-                return sent, exc
-            return sent, None
-
-    preupload = ('POST', f'/api/{hub.REPO_TYPE}s/{hub.RESULTS_REPO}/preupload/main')
-    commit = ('POST', f'/api/{hub.REPO_TYPE}s/{hub.RESULTS_REPO}/commit/main')
-    sent, failed = upload({})
-    assert (sent, failed) == ([preupload, commit], None)
-    sent, failed = upload({'preupload': 400})  # a 5xx is retried with backoff (still before the commit)
-    assert sent == [preupload] and rebuild.failed_before_commit(failed) and not rebuild.refused_commit(failed)
-    sent, failed = upload({'commit': 412})
-    assert sent == [preupload, commit] and rebuild.refused_commit(failed) and not rebuild.failed_before_commit(failed)
+    assert sdk_calls(rebuild, answering({})) == [([PREUPLOAD], None), ([COMMIT], None)]
+    # a 5xx on the preupload is retried with backoff, each retry still inside the preupload call
+    assert sdk_calls(rebuild, answering({'preupload': 400})) == [([PREUPLOAD], 'RebuildError')]
+    assert sdk_calls(rebuild, answering({'commit': 412})) == [([PREUPLOAD], None), ([COMMIT], 'UnverifiedPublish')]
 
 
 # Review round 15, Codex (#78)
@@ -1349,14 +1380,14 @@ def test_a_4xx_to_the_commit_while_an_earlier_attempt_is_still_on_its_way_never_
     """A proxy lost the answer to the commit it forwarded and answered its own retry with 429; the first
     attempt is still pending when the head is read, and lands after the run reported."""
     data = manifest({'a/x.docx': sha(b'inline')})
-    real = hub_pair.api.upload_file
+    real = hub_pair.api.create_commit
     pending = []
 
     def forwarded_then_refused(**kw):
         pending.append(kw)
         raise HfHubHTTPError('429 too many requests', response=httpx2.Response(429, request=commit_request()))
 
-    hub_pair.api.upload_file = forwarded_then_refused
+    hub_pair.api.create_commit = forwarded_then_refused
     with pytest.raises(rebuild.RebuildError) as exc:
         rebuild.publish(hub_pair.api, hub_pair.clone, hub_pair.head, data, 'rebuild')
     real(**pending[0])  # the first attempt lands
@@ -1410,7 +1441,7 @@ def test_ctrl_c_around_the_temporary_clone_says_what_the_hub_holds_and_keeps_the
         raise KeyboardInterrupt
 
     def unverified(*a, **kw):
-        raise rebuild.UnverifiedPublish('upload_file failed; the hub may hold the manifest now; rerun to check it')
+        raise rebuild.UnverifiedPublish('the commit request failed; the hub may hold the manifest now; rerun to check it')
 
     monkeypatch.setattr(rebuild, 'checkout_hub', checkout)
     monkeypatch.setattr(tempfile, 'mkdtemp', mkdtemp)
@@ -1436,22 +1467,21 @@ def test_ctrl_c_around_the_temporary_clone_says_what_the_hub_holds_and_keeps_the
 # Review round 15, mcode (#78)
 
 
-def test_with_lfs_storage_the_sdk_sends_the_lfs_batch_between_the_preupload_and_the_commit(rebuild, monkeypatch):
-    """The legacy LFS path, taken when hf_xet is not installed: preupload, LFS batch, commit.
+def test_with_lfs_storage_the_preupload_call_sends_the_lfs_batch_and_the_commit_call_only_the_commit(
+    rebuild, monkeypatch
+):
+    """The legacy LFS path, taken when hf_xet is not installed: the preupload call sends the preupload and the LFS
+    batch, the commit call only the commit (``create_commit`` skips an LFS file already uploaded).
 
-    With hf_xet installed the storage upload leaves httpx for the Xet client (it asks for its own
-    token), so this mock cannot see it; a failure there carries no request of this repo's preupload or
-    LFS batch, and is "may hold".
+    With hf_xet installed the storage upload leaves httpx for the Xet client, which this mock cannot see; it
+    runs inside the preupload call all the same.
     """
-    from huggingface_hub import HfApi, _commit_api
+    from huggingface_hub import _commit_api
 
     monkeypatch.setattr(_commit_api, 'is_xet_available', lambda: False)
 
-    def upload(batch_status):
-        sent = []
-
+    def answering(batch_status):
         def handler(request):
-            sent.append((request.method, request.url.path))
             if '/preupload/' in request.url.path:
                 files = json.loads(request.content)['files']
                 return httpx2.Response(200, json={'files': [
@@ -1462,38 +1492,23 @@ def test_with_lfs_storage_the_sdk_sends_the_lfs_batch_between_the_preupload_and_
                     return httpx2.Response(batch_status, json={'message': 'batch'}, request=request)
                 objects = json.loads(request.content)['objects']  # already stored: nothing to upload
                 return httpx2.Response(200, json={'objects': [{'oid': o['oid'], 'size': o['size']} for o in objects]})
-            return httpx2.Response(200, json={
-                'commitUrl': f'https://huggingface.co/{hub.REPO_TYPE}s/{hub.RESULTS_REPO}/commit/{"b" * 40}',
-                'commitOid': 'b' * 40,
-            })
+            return committed(request)
 
-        with sdk_over(handler):
-            api = HfApi(endpoint='https://huggingface.co', token='hf_test_not_a_real_token')
-            try:
-                api.upload_file(
-                    path_or_fileobj=b'{}\n', path_in_repo=f'{PREFIX}/{MANIFEST}', repo_id=hub.RESULTS_REPO,
-                    repo_type=hub.REPO_TYPE, commit_message='m', parent_commit='a' * 40, revision='main',
-                )
-            except HfHubHTTPError as exc:
-                return sent, exc
-            return sent, None
+        return handler
 
-    preupload = ('POST', f'/api/{hub.REPO_TYPE}s/{hub.RESULTS_REPO}/preupload/main')
     batch = ('POST', f'/{hub.REPO_TYPE}s/{hub.RESULTS_REPO}.git/info/lfs/objects/batch')
-    commit = ('POST', f'/api/{hub.REPO_TYPE}s/{hub.RESULTS_REPO}/commit/main')
-    sent, failed = upload(200)
-    assert (sent, failed) == ([preupload, batch, commit], None)
-    sent, failed = upload(400)
-    assert sent == [preupload, batch] and rebuild.failed_before_commit(failed) and not rebuild.refused_commit(failed)
+    assert sdk_calls(rebuild, answering(200)) == [([PREUPLOAD, batch], None), ([COMMIT], None)]
+    assert sdk_calls(rebuild, answering(400)) == [([PREUPLOAD, batch], 'RebuildError')]
 
 
 @pytest.mark.parametrize('unreadable', [
     lambda: httpx2.ConnectError('no route to the hub'),
     lambda: HfHubHTTPError('500', response=httpx2.Response(500, request=httpx2.Request('GET', 'https://huggingface.co/api'))),
 ])
-def test_a_head_that_cannot_be_read_after_a_failure_before_the_commit_says_the_hub_may_hold_the_manifest(
+def test_a_failure_before_the_commit_request_says_nothing_published_whatever_the_head_would_say(
     rebuild, hub_pair, unreadable
 ):
+    """Round 15 read the head again to confirm; since round 16 the claim rests on the commit request never sent."""
     tried = []
 
     def fails(**kw):
@@ -1503,17 +1518,17 @@ def test_a_head_that_cannot_be_read_after_a_failure_before_the_commit_says_the_h
     real_info = hub_pair.api.repo_info
 
     def info(*a, **kw):
-        if tried:  # the read that would confirm nothing was published
+        if tried:  # a read after the failure
             raise unreadable()
         return real_info(*a, **kw)
 
-    hub_pair.api.upload_file = fails
+    hub_pair.api.preupload_lfs_files = fails
     hub_pair.api.repo_info = info
-    with pytest.raises(rebuild.RebuildError, match='may hold') as exc:
+    with pytest.raises(rebuild.RebuildError, match='nothing published by this run') as exc:
         rebuild.publish(hub_pair.api, hub_pair.clone, hub_pair.head, manifest({'a/x.docx': sha(b'inline')}), 'rebuild')
     assert tried
-    assert type(exc.value).__name__ == 'UnverifiedPublish'
-    assert 'nothing published' not in str(exc.value)
+    assert type(exc.value).__name__ != 'UnverifiedPublish'
+    assert hub_pair.api.uploads == []
 
 
 # Review round 16 (#78)
