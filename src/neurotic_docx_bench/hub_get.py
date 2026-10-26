@@ -48,8 +48,10 @@ download, and one that becomes a symlink meanwhile stops the run before anything
 Ctrl-C while files move is held until the step in hand is recorded, then rolls everything back; a
 second press waits too, so no step goes unrecorded. A press during the rollback lets it finish and
 then stops; a second one stops it before its next step, and the error names the files not put back
-and the staging folder that holds the files they replaced. A Ctrl-C during the download drops the
-queued downloads, lets the running ones end and keeps the staging folder for a rerun.
+and the staging folder that holds the files they replaced. Ctrl-C is held during the download too:
+it drops the queued downloads, lets the running ones end (no download thread outlives the run) and
+keeps the staging folder for a rerun. A press after the last download or the last move still stops
+the run, with an error that says where it stopped.
 Ctrl-C is held only under Python's own handler in the main thread, so a caller that ignores it or
 handles it itself keeps that. A run with nothing to download only tidies a staging folder an earlier
 run left, and leaves it alone when another run holds it or anything in it is out of place; either
@@ -867,19 +869,25 @@ def _download(
             return f"{f.rel}: {exc}"
         return None
 
-    pool = ThreadPoolExecutor(max_workers=max(1, workers))
-    queued = []
-    try:
-        queued.extend(pool.submit(fetch, f) for f in todo)  # downloads start meanwhile: Ctrl-C can land here too
-        # In slices: a Ctrl-C that reached a download thread runs here only when the main thread wakes.
-        while wait(queued, timeout=0.25).not_done:
-            pass
-    except BaseException as exc:
-        pool.shutdown(wait=True, cancel_futures=True)  # the queued downloads go, the running ones end
-        if isinstance(exc, KeyboardInterrupt):
-            exc.add_note(f"stopped while downloading: nothing moved into {dest}; {staging} is kept so a rerun resumes")
-        raise
-    pool.shutdown(wait=True)
+    stopped = f"stopped while downloading: nothing moved into {dest}; {staging} is kept so a rerun resumes"
+    # Ctrl-C is held, so it never lands inside submit() (between a thread's start and the pool
+    # registering it) or the join below: no download thread outlives the run and its lock.
+    with _ctrl_c_between_steps() as ctrl_c:
+        pool = ThreadPoolExecutor(max_workers=max(1, workers))
+        queued = []
+        try:
+            queued.extend(pool.submit(fetch, f) for f in todo)
+            while wait(queued, timeout=0.25).not_done:  # in slices, so a press is seen during a long download
+                ctrl_c.check()
+            ctrl_c.check()
+        except BaseException as exc:
+            pool.shutdown(wait=True, cancel_futures=True)  # the queued downloads go, the running ones end
+            if isinstance(exc, KeyboardInterrupt):
+                exc.add_note(stopped)
+            raise
+        pool.shutdown(wait=True)
+    if ctrl_c.held:  # pressed after the last check
+        raise _interrupted(stopped)
     failed = [e for e in (q.result() for q in queued) if e]
     links = _symlinks(staging)
     if links:
@@ -931,10 +939,23 @@ def _download(
     return moves, late_same
 
 
+def _interrupted(note: str) -> KeyboardInterrupt:
+    stop = KeyboardInterrupt()
+    stop.add_note(note)
+    return stop
+
+
 def _move(moves: Sequence[tuple[RemoteFile, bool]], dest: Path, staging: Path) -> list[_Move]:
     """Move each staged file into ``dest``, all or nothing; the moves made."""
     with _ctrl_c_between_steps() as ctrl_c:
-        return _move_held(moves, dest, staging, ctrl_c)
+        journal = _move_held(moves, dest, staging, ctrl_c)
+    if ctrl_c.held:  # pressed after the last check: every file is in place, so stop before the cleanup
+        raise _interrupted(
+            f"stopped after every file was moved into {dest} and verified; {staging} still holds the staged "
+            f"copies and any local files --overwrite replaced ({staging / _BACKUP}): a rerun removes the copies "
+            "and names those files"
+        )
+    return journal
 
 
 def _move_held(
@@ -974,8 +995,9 @@ def _move_held(
             problems = _roll_back(journal, staging, ctrl_c.stop_rollback)
         except KeyboardInterrupt as stop:  # pressed twice: the rollback stops before its next step
             left = [str(m.target) for m in journal if m.placed is not None or m.backed_up]
+            failed = f" (the move failed: {exc})" if isinstance(exc, Exception) else ""
             stop.add_note(
-                f"Ctrl-C stopped putting back the files moved into {dest}; not put back: "
+                f"Ctrl-C stopped putting back the files moved into {dest}{failed}; not put back: "
                 f"{_listing(left) if left else 'none'}. {staging / _BACKUP} holds the local files they replaced; "
                 f"{staging} is kept"
             )
