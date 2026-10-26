@@ -2119,3 +2119,67 @@ def test_a_symlink_holding_the_mode_s_own_content_explains_a_no_op(rebuild, hub_
     said = str(exc.value)
     assert hub_pair.api.head() == revision and hub_pair.api.commit_calls == []
     assert 'Nothing published by this run' in said and 'fix the path' in said, said
+
+
+def test_the_sdk_sends_no_commit_for_an_ignored_path_that_already_holds_the_manifest(rebuild):
+    """Codex, round 20: the premise of the run's order, no-op before shouldIgnore. The SDK drops a no-op before its
+    payload builder looks at shouldIgnore (``hf_api.py`` 5143, ``_commit_api.py`` 939): it reads the head and returns
+    it, sending no commit request, not a header-only one."""
+    from huggingface_hub import CommitOperationAdd, HfApi
+
+    data = b'{}\n'
+    blob_id = hashlib.sha1(b'blob %d\0' % len(data) + data).hexdigest()
+    sent = []
+    with sdk_over(http_hub('c' * 40, sent, ignored=True, remote_oid=blob_id)):
+        api = HfApi(endpoint='https://huggingface.co', token='hf_test_not_a_real_token')
+        operation = CommitOperationAdd(path_in_repo=f'{PREFIX}/{MANIFEST}', path_or_fileobj=data)
+        rebuild.preupload(api, operation)
+        assert operation._should_ignore and operation._remote_oid == operation._local_oid
+        mark = len(sent)
+        info = api.create_commit(
+            repo_id=hub.RESULTS_REPO, operations=[operation], commit_message='m', repo_type=hub.REPO_TYPE,
+            revision='main', parent_commit='a' * 40,
+        )
+    assert info.oid == 'c' * 40
+    assert sent[mark:] == [('GET', f'/api/{hub.REPO_TYPE}s/{hub.RESULTS_REPO}/revision/main')]
+
+
+def test_the_sdk_sends_the_lfs_commit_when_the_preupload_names_other_lfs_content(rebuild, monkeypatch):
+    """Codex, round 20: the LFS half of the differing-id guard. An LFS content id that is not this manifest's sha256
+    leaves the operation in, and the commit request carries it as an ``lfsFile`` (``_commit_api.py`` 957)."""
+    from huggingface_hub import CommitOperationAdd, HfApi, _commit_api
+
+    monkeypatch.setattr(_commit_api, 'is_xet_available', lambda: False)
+    data = b'{}\n'
+    bodies = []
+
+    def handler(request):
+        if '/preupload/' in request.url.path:
+            files = json.loads(request.content)['files']
+            return httpx2.Response(200, json={'files': [
+                {'path': f['path'], 'uploadMode': 'lfs', 'shouldIgnore': False, 'oid': sha(b'other content')}
+                for f in files
+            ]})
+        if request.url.path.endswith('/info/lfs/objects/batch'):
+            objects = json.loads(request.content)['objects']  # already stored: nothing to upload
+            return httpx2.Response(200, json={'objects': [{'oid': o['oid'], 'size': o['size']} for o in objects]})
+        assert request.url.path.endswith('/commit/main'), request.url.path
+        bodies.append(request.content)
+        return committed(request)
+
+    with sdk_over(handler):
+        api = HfApi(endpoint='https://huggingface.co', token='hf_test_not_a_real_token')
+        operation = CommitOperationAdd(path_in_repo=f'{PREFIX}/{MANIFEST}', path_or_fileobj=data)
+        rebuild.preupload(api, operation)
+        assert operation._upload_mode == 'lfs'
+        assert operation._remote_oid == sha(b'other content') != operation._local_oid == sha(data)
+        info = api.create_commit(
+            repo_id=hub.RESULTS_REPO, operations=[operation], commit_message='m', repo_type=hub.REPO_TYPE,
+            revision='main', parent_commit='a' * 40,
+        )
+    assert info.oid == 'b' * 40
+    (body,) = bodies
+    lines = [json.loads(line) for line in body.decode().splitlines()]
+    assert [x['value'] for x in lines if x['key'] == 'lfsFile'] == [
+        {'path': f'{PREFIX}/{MANIFEST}', 'algo': 'sha256', 'oid': sha(data), 'size': len(data)}
+    ]
