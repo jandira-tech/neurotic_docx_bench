@@ -1393,3 +1393,108 @@ def test_cli_hub_get_prints_what_a_ctrl_c_left_behind_and_exits_130(
     assert result.exit_code == 130
     assert ".got.hub-x/.replaced/RUN.md" in result.output
     assert "Ctrl-C" in result.output
+
+
+# Review round 7, mcode (#80)
+
+
+def _press_twice() -> None:
+    for _ in range(2):
+        os.kill(os.getpid(), signal.SIGINT)
+        _spin()
+
+
+def test_a_second_ctrl_c_during_the_rollback_never_splits_a_step(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    dest, local = _overwrite_that_fails_on_b(tmp_path, monkeypatch)
+    real_rename = os.rename
+    sent = []
+
+    def rename(src, dst, *args, **kw):  # _withdraw has just taken the hub's a.docx out of the destination
+        real_rename(src, dst, *args, **kw)
+        if not sent and Path(dst).parent.name.startswith(".withdrawn-"):
+            sent.append(dst)
+            _press_twice()
+
+    monkeypatch.setattr(os, "rename", rename)
+    with pytest.raises(BaseException) as exc:
+        hub_get.get(preset(dest), api=PinnedHub(FILES), on_conflict="overwrite")
+    assert sent
+    assert exc.type is KeyboardInterrupt, exc.value
+    staging = hub_get.staging_dir(dest, SHA)
+    assert list(staging.glob(".withdrawn-*")) == []
+    assert (dest / "a.docx").read_bytes() == local["a.docx"]  # its step was finished
+    notes = " ".join(getattr(exc.value, "__notes__", ()))
+    assert str(dest / "RUN.md") in notes  # the step the rollback did not reach
+    assert str(staging) in notes
+
+
+def test_a_run_names_a_file_an_earlier_run_took_back_and_left(tmp_path: Path) -> None:
+    dest = tmp_path / "dest"
+    hub_get.get(preset(dest), api=PinnedHub(FILES))
+    staging = hub_get.staging_dir(dest, SHA)
+    left = staging / ".withdrawn-x1y2z3" / "file"
+    left.parent.mkdir(parents=True)
+    left.write_bytes(b"taken back from the destination\n")
+    report = hub_get.get(preset(dest), api=PinnedHub(FILES))
+    assert str(left) in report.earlier_replaced
+    assert str(left) in report.describe()
+    assert left.read_bytes() == b"taken back from the destination\n"
+
+
+def test_a_second_ctrl_c_after_the_rollback_does_not_say_it_stopped_it(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    dest = tmp_path / "dest"
+    real_place = hub_get.place
+
+    def flaky(staged, target):
+        if target.name == "b.pdf":
+            raise OSError("disk went away")
+        return real_place(staged, target)
+
+    real_rmdir = Path.rmdir
+    sent = []
+
+    def rmdir(self):  # the folders this run made, removed after the rollback
+        if not sent and self == dest / "sub":
+            sent.append(self)
+            _press_twice()
+        return real_rmdir(self)
+
+    monkeypatch.setattr(hub_get, "place", flaky)
+    monkeypatch.setattr(Path, "rmdir", rmdir)
+    with pytest.raises(BaseException) as exc:
+        hub_get.get(preset(dest), api=PinnedHub(FILES))
+    assert sent
+    assert exc.type is KeyboardInterrupt, exc.value
+    notes = " ".join(getattr(exc.value, "__notes__", ()))
+    assert "stopped putting back" not in notes
+    assert "every file already moved was put back" in notes
+    assert not dest.exists() or _tree(dest) == {}
+
+
+def test_ctrl_c_that_reaches_a_download_thread_stops_the_queued_downloads(tmp_path: Path) -> None:
+    import threading
+    import time
+
+    dest = tmp_path / "dest"
+    api = PinnedHub({f"outputs/run/f{i:02}.txt": f"file {i}\n".encode() for i in range(20)})
+    real = api.hf_hub_download
+
+    def slow(repo_id, filename, **kw):
+        out = real(repo_id, filename, **kw)
+        if filename.endswith("f00.txt"):
+            time.sleep(2)  # the download the main thread waits on first
+        else:
+            if filename.endswith("f01.txt"):  # Ctrl-C lands in this download thread, not the main one
+                signal.pthread_kill(threading.get_ident(), signal.SIGINT)
+            time.sleep(0.05)
+        return out
+
+    api.hf_hub_download = slow
+    with pytest.raises(KeyboardInterrupt) as exc:
+        hub_get.get(preset(dest), api=api, workers=2)
+    assert len(api.downloads()) < 15  # the other thread fetches all 19 small files within the 2 s
+    assert not dest.exists() or _tree(dest) == {}
+    notes = " ".join(getattr(exc.value, "__notes__", ()))
+    assert str(hub_get.staging_dir(dest, SHA)) in notes and "rerun" in notes
