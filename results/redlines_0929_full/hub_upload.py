@@ -49,6 +49,10 @@ class ManifestCarryError(RuntimeError):
     """Previous manifest entries are missing or different on the hub."""
 
 
+class StaleParentError(RuntimeError):
+    """Someone else committed to the hub while this run was uploading."""
+
+
 def carried_entries(previous, staged, remote, fetch) -> dict[str, str]:
     """Carry previous entries only when their hub bytes still match."""
     carried = {}

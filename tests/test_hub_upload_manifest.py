@@ -6,6 +6,7 @@ import hashlib
 import importlib.util
 import json
 import sys
+from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
@@ -160,6 +161,12 @@ class DownloadHub(FakeHub):
         self.tree_revisions = []
         self.parents = []
         self.commit_after_listing = False
+        self.foreign_file = None
+        self.log = [SimpleNamespace(commit_id=HEAD, title='initial commit')]
+
+    def list_repo_commits(self, repo_id, *, repo_type, revision=None):
+        ids = [c.commit_id for c in self.log]
+        return self.log[: ids.index(revision) + 1][::-1]
 
     def repo_info(self, repo_id, *, repo_type, revision=None):
         if repo_id not in self.stored:
@@ -181,8 +188,20 @@ class DownloadHub(FakeHub):
         if self.commit_after_listing:
             self.commit_after_listing = False
             self.refs[None] = 'c' * 40  # another writer commits while this run stages
+            self.log.append(SimpleNamespace(commit_id=self.refs[None], title='someone else'))
+            if self.foreign_file is not None:
+                self.stored[repo_id][self.foreign_file[0]] = self.foreign_file[1]
 
     def upload_folder(self, *, parent_commit=None, **kwargs):
+        folder, store = Path(kwargs['folder_path']), self.stored.get(kwargs['repo_id'], {})
+        files = {
+            f'{kwargs["path_in_repo"]}/{p.relative_to(folder)}': p.read_bytes()
+            for p in folder.rglob('*')
+            if p.is_file()
+        }
+        if all(store.get(path) == data for path, data in files.items()):
+            # huggingface_hub makes no commit, skips the parent check, returns the branch head.
+            return SimpleNamespace(oid=self.refs[None])
         if parent_commit is not None and parent_commit != self.refs[None]:
             request = httpx2.Request('POST', 'https://huggingface.co/api/datasets/commit/main')
             raise HfHubHTTPError(
@@ -191,6 +210,7 @@ class DownloadHub(FakeHub):
         super().upload_folder(**kwargs)
         self.parents.append(parent_commit)
         self.refs[None] = f'{len(self.parents):040x}'
+        self.log.append(SimpleNamespace(commit_id=self.refs[None], title=kwargs['commit_message']))
         return SimpleNamespace(oid=self.refs[None])
 
     def hf_hub_download(self, repo_id, filename, *, repo_type, revision=None):
@@ -255,6 +275,24 @@ def test_main_refuses_when_the_hub_moved_after_reading(upload, run, tmp_path, mo
         upload.main()
     assert api.stored[hub.RESULTS_REPO][manifest_path] == manifest
     assert api.parents == []
+
+
+def test_main_refuses_a_no_op_that_reports_someone_elses_commit(upload, run, tmp_path, monkeypatch):
+    api = DownloadHub(tmp_path / 'cache')
+    api.stored[hub.RESULTS_REPO] = {}
+    monkeypatch.setattr(hub, 'default_api', lambda: api)
+    monkeypatch.setattr(sys, 'argv', ['hub_upload', '--staging', str(tmp_path / 'staging')])
+    upload.main()  # the hub now holds this run's files
+    note = upload.REPO_PREFIX + '/run/RUN.md'
+    newer = b'# run, as someone else rewrote it'
+    api.foreign_file = (note, newer)
+    api.commit_after_listing = True
+    commits = len(api.parents)
+    # tool/docx is unchanged, so its upload is a no-op that returns the other writer's head.
+    with pytest.raises(upload.StaleParentError):
+        upload.main()
+    assert api.stored[hub.RESULTS_REPO][note] == newer
+    assert len(api.parents) == commits
 
 
 def test_main_first_upload_without_manifest(upload, run, tmp_path, monkeypatch):
