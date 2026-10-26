@@ -1653,7 +1653,41 @@ def _held_by_another_run(staging: Path) -> bool:
     return False
 
 
-def test_a_second_ctrl_c_stops_waiting_for_a_download_that_never_ends(tmp_path: Path) -> None:
+class _Presses:
+    """Ctrl-C presses sent to the main thread one at a time, each waiting until the run's handler saw it.
+
+    Two presses sent before the handler runs can reach it as one: the kernel delivers a pending
+    signal once, and CPython calls a Python handler once for every delivery it has not handled yet.
+    A test of what a second press does must not depend on the scheduler keeping them apart.
+    """
+
+    def __init__(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        import threading
+
+        self.seen = 0
+        self.cond = threading.Condition()
+        self.main = threading.main_thread().ident
+        real = hub_get._CtrlC.hold
+
+        def hold(ctrl_c, signum, frame):
+            real(ctrl_c, signum, frame)
+            with self.cond:
+                self.seen += 1
+                self.cond.notify_all()
+
+        monkeypatch.setattr(hub_get._CtrlC, "hold", hold)
+
+    def press(self, timeout: float = 5.0) -> None:
+        with self.cond:
+            target = self.seen + 1
+        signal.pthread_kill(self.main, signal.SIGINT)
+        with self.cond:
+            assert self.cond.wait_for(lambda: self.seen >= target, timeout), "the run's handler never saw the press"
+
+
+def test_a_second_ctrl_c_stops_waiting_for_a_download_that_never_ends(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     """A stalled request (the SDK's Xet token request has no timeout) must not make Ctrl-C wait forever.
 
     The second press stops waiting. The download left running ends with the process, which keeps the
@@ -1666,7 +1700,7 @@ def test_a_second_ctrl_c_stops_waiting_for_a_download_that_never_ends(tmp_path: 
     staging = hub_get.staging_dir(dest, SHA)
     api = _hub_of_slow_files()
     real_download = api.hf_hub_download
-    main = threading.main_thread().ident
+    presses = _Presses(monkeypatch)
     release = threading.Event()
     stalled: list[threading.Thread] = []
     calls: list[str] = []
@@ -1680,18 +1714,16 @@ def test_a_second_ctrl_c_stops_waiting_for_a_download_that_never_ends(tmp_path: 
 
     def press_twice() -> None:
         time.sleep(0.3)
-        signal.pthread_kill(main, signal.SIGINT)
+        presses.press()
         time.sleep(0.5)
-        signal.pthread_kill(main, signal.SIGINT)
+        presses.press()
 
     api.hf_hub_download = stall
     presser = threading.Thread(target=press_twice)
     presser.start()
-    started = time.monotonic()
     try:
         with pytest.raises(BaseException) as exc:
             hub_get.get(preset(dest), api=api, workers=1)
-        waited = time.monotonic() - started
         fetched = len(calls)
         locked = _held_by_another_run(staging)
         running = bool(stalled) and stalled[0].is_alive()
@@ -1701,7 +1733,6 @@ def test_a_second_ctrl_c_stops_waiting_for_a_download_that_never_ends(tmp_path: 
         for t in stalled:
             t.join()
     assert exc.type is KeyboardInterrupt, exc.value
-    assert waited < 3
     assert fetched == 1  # only the stalled download started; the queued ones never did
     assert running and locked
     notes = " ".join(getattr(exc.value, "__notes__", ()))
@@ -1791,7 +1822,9 @@ def test_a_ctrl_c_the_moment_the_handler_is_given_back_says_where_the_run_was(
 # Review round 10, Codex (#80)
 
 
-def test_two_presses_before_the_first_check_still_stop_waiting_for_a_stalled_download(tmp_path: Path) -> None:
+def test_two_presses_before_the_first_check_still_stop_waiting_for_a_stalled_download(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     """Both presses land in one 0.25 s wait slice: the first stops the queue, the second the wait."""
     import threading
     import time
@@ -1799,7 +1832,7 @@ def test_two_presses_before_the_first_check_still_stop_waiting_for_a_stalled_dow
     dest = tmp_path / "dest"
     api = _hub_of_slow_files()
     real_download = api.hf_hub_download
-    main = threading.main_thread().ident
+    presses = _Presses(monkeypatch)
     release = threading.Event()
     stalled: list[threading.Thread] = []
 
@@ -1807,24 +1840,22 @@ def test_two_presses_before_the_first_check_still_stop_waiting_for_a_stalled_dow
         if not stalled:
             stalled.append(threading.current_thread())
             time.sleep(0.1)  # the main thread is in its first wait slice
-            signal.pthread_kill(main, signal.SIGINT)
-            time.sleep(0.03)  # the handler runs once per press
-            signal.pthread_kill(main, signal.SIGINT)
+            presses.press()
+            presses.press()  # seen by the handler before the slice ends: both are held at the check
             release.wait(6)  # a request that does not come back
         return real_download(*args, **kw)
 
     api.hf_hub_download = stall
-    started = time.monotonic()
     try:
         with pytest.raises(BaseException) as exc:
             hub_get.get(preset(dest), api=api, workers=1)
-        waited = time.monotonic() - started
+        running = bool(stalled) and stalled[0].is_alive()  # the run did not wait for it
     finally:
         release.set()
         for t in stalled:
             t.join()
     assert exc.type is KeyboardInterrupt, exc.value
-    assert waited < 3
+    assert running
     assert "still running" in " ".join(getattr(exc.value, "__notes__", ()))
     _drop_kept_locks()
 
@@ -1913,7 +1944,9 @@ def test_a_press_as_the_staging_lock_is_let_go_says_every_file_is_in_place(
     assert _tree(dest) == {k.removeprefix("outputs/run/"): v for k, v in FILES.items() if k.startswith("outputs/run/")}
 
 
-def test_the_lock_a_second_press_kept_goes_once_the_downloads_left_running_end(tmp_path: Path) -> None:
+def test_the_lock_a_second_press_kept_goes_once_the_downloads_left_running_end(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     """A caller that catches the KeyboardInterrupt can run again here once those downloads are over."""
     import threading
     import time
@@ -1922,7 +1955,7 @@ def test_the_lock_a_second_press_kept_goes_once_the_downloads_left_running_end(t
     staging = hub_get.staging_dir(dest, SHA)
     api = _hub_of_slow_files()
     real_download = api.hf_hub_download
-    main = threading.main_thread().ident
+    presses = _Presses(monkeypatch)
     release = threading.Event()
     stalled: list[threading.Thread] = []
 
@@ -1934,9 +1967,9 @@ def test_the_lock_a_second_press_kept_goes_once_the_downloads_left_running_end(t
 
     def press_twice() -> None:
         time.sleep(0.3)
-        signal.pthread_kill(main, signal.SIGINT)
+        presses.press()
         time.sleep(0.5)
-        signal.pthread_kill(main, signal.SIGINT)
+        presses.press()
 
     api.hf_hub_download = stall
     presser = threading.Thread(target=press_twice)
@@ -2027,3 +2060,28 @@ def test_a_child_forked_while_a_lock_is_held_does_not_keep_it_once_the_run_lets_
         os.waitpid(pid, 0)
         _drop_kept_locks()
     assert not held
+
+
+# Review round 11, mcode (#80)
+
+
+def test_a_file_whose_download_failed_over_a_bad_staged_copy_is_counted_once(tmp_path: Path) -> None:
+    dest = tmp_path / "dest"
+    staged = hub_get.staging_dir(dest, SHA) / hub_get.FILES / "outputs/run/RUN.md"
+    staged.parent.mkdir(parents=True)
+    staged.write_bytes(b"left by an earlier run, not the hub's bytes\n")
+    api = PinnedHub(FILES)
+    real_download = api.hf_hub_download
+
+    def reset(repo_id, filename, **kw):
+        if filename.endswith("RUN.md"):
+            raise OSError("connection reset")
+        return real_download(repo_id, filename, **kw)
+
+    api.hf_hub_download = reset
+    with pytest.raises(hub_get.GetError) as exc:
+        hub_get.get(preset(dest), api=api)
+    message = str(exc.value)
+    assert message.count("RUN.md") == 1, message
+    assert "1 failed to download" in message and "do not hash" not in message
+    assert not staged.exists()  # a rerun fetches it again
