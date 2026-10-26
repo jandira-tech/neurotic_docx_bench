@@ -93,11 +93,35 @@ def hub_tree(checkout: Path, revision: str) -> dict[str, HubFile]:
     return tree
 
 
+def lfs_pointer(data: bytes) -> bytes:
+    """The canonical LFS pointer of ``data``."""
+    return f'version https://git-lfs.github.com/spec/v1\noid sha256:{hashlib.sha256(data).hexdigest()}\nsize {len(data)}\n'.encode()
+
+
+def unique(pairs, where: str) -> dict:
+    """``dict(pairs)``, refusing a key that appears twice (json and csv keep the last silently)."""
+    twice = sorted(k for k, n in Counter(k for k, _ in pairs).items() if n > 1)
+    if twice:
+        raise RebuildError(f'{where} has duplicate key(s) {twice[:10]}')
+    return dict(pairs)
+
+
+def parse_record(name: str, raw: bytes, label: str) -> dict[str, str]:
+    if lfs_oid(raw) is not None:
+        raise RebuildError(f'{label} is stored in LFS; records are read from git only')
+    text = raw.decode()
+    if name == MANIFEST:
+        return json.loads(text, object_pairs_hook=lambda pairs: unique(pairs, label))['files']
+    rows = csv.DictReader(io.StringIO(text), delimiter='\t')
+    return unique([(row['key'], row['sha256']) for row in rows], label)
+
+
 def records(checkout: Path, revision: str) -> list[tuple[str, dict[str, str]]]:
     """Every version of the manifest and of the upload lists up to ``revision``, oldest first.
 
-    A version is read at every commit, merges included, and ranked by the last commit that still
-    holds it, in commit order rather than commit time (two versions can share a second).
+    A record is a version as one commit introduced it: its blob differs from every parent's, merges
+    included. Records are ranked by that commit in commit order, not commit time (two versions can
+    share a second), so a list left unchanged never outranks a manifest written after it.
     """
     # A shallow clone or a grafts file stops the history before the oldest versions.
     if git(checkout, 'rev-parse', '--is-shallow-repository').strip() != b'false':
@@ -105,25 +129,29 @@ def records(checkout: Path, revision: str) -> list[tuple[str, dict[str, str]]]:
     grafts = checkout / git(checkout, 'rev-parse', '--git-path', 'info/grafts').decode().strip()
     if grafts.exists():
         raise RebuildError(f'{grafts} rewrites the history the records are read from')
-    commits = git(checkout, 'rev-list', '--topo-order', revision).decode().split()[::-1]
-    found = {}
+    lines = [
+        line.split() for line in git(checkout, 'rev-list', '--topo-order', '--parents', revision).decode().splitlines()
+    ]
+    commits = [line[0] for line in reversed(lines)]
+    parents = {line[0]: line[1:] for line in lines}
+    found = []
     for order, name in enumerate((MANIFEST, *UPLOAD_LISTS)):
         path = f'{REPO_PREFIX}/{name}'
         query = ''.join(f'{c}:{path}\n' for c in commits).encode()
-        blobs = git(checkout, 'cat-file', '--batch-check=%(objectname)', input=query).decode().splitlines()
-        for rank, (commit, blob) in enumerate(zip(commits, blobs, strict=True)):
-            if blob.endswith(' missing'):
-                continue
-            entry = found.setdefault((name, blob), {'order': order, 'first': commit})
-            entry['last'] = rank
+        answers = git(checkout, 'cat-file', '--batch-check=%(objectname)', input=query).decode().splitlines()
+        blobs = {c: None if a.endswith(' missing') else a for c, a in zip(commits, answers, strict=True)}
+        for rank, commit in enumerate(commits):
+            blob = blobs[commit]
+            if blob is not None and all(blobs[p] != blob for p in parents[commit]):
+                found.append((rank, order, commit, name, blob))
+    found.sort(key=lambda r: (r[0], r[1]))
+    parsed = {}
     history = []
-    for (name, blob), entry in sorted(found.items(), key=lambda kv: (kv[1]['last'], kv[1]['order'])):
-        text = git(checkout, 'cat-file', 'blob', blob).decode()
-        if name == MANIFEST:
-            files = json.loads(text)['files']
-        else:
-            files = {row['key']: row['sha256'] for row in csv.DictReader(io.StringIO(text), delimiter='\t')}
-        history.append((f'{entry["first"][:9]} {name}', files))
+    for _, _, commit, name, blob in found:
+        label = f'{commit[:9]} {name}'
+        if (name, blob) not in parsed:
+            parsed[name, blob] = parse_record(name, git(checkout, 'cat-file', 'blob', blob), label)
+        history.append((label, parsed[name, blob]))
     return history
 
 
@@ -199,7 +227,9 @@ def publish(api, checkout: Path, revision: str, data: bytes, message: str) -> st
     current = api.repo_info(hub.RESULTS_REPO, repo_type=hub.REPO_TYPE).sha
     if current != revision:
         raise RebuildError(f'the hub moved to {current} since {revision} was read; nothing published')
-    if git(checkout, 'cat-file', 'blob', f'{revision}:{path}') == data:
+    # The hub may store the manifest inline or, if its preupload says so, as an LFS pointer.
+    accepted = (data, lfs_pointer(data))
+    if git(checkout, 'cat-file', 'blob', f'{revision}:{path}') in accepted:
         return revision
     info = api.upload_file(
         path_or_fileobj=data,
@@ -221,7 +251,7 @@ def publish(api, checkout: Path, revision: str, data: bytes, message: str) -> st
     ]
     if changed != [path]:
         raise RebuildError(f'{commit} changes {changed[:10]}, not only {path}; it is not this upload')
-    if git(checkout, 'cat-file', 'blob', f'{commit}:{path}') != data:
+    if git(checkout, 'cat-file', 'blob', f'{commit}:{path}') not in accepted:
         raise RebuildError(f'the manifest at {commit} is not the one uploaded')
     return commit
 
