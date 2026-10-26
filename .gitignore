@@ -61,6 +61,9 @@ __pycache__/
 /corpus/word/*/docx/
 /corpus/word/*/pdf/
 /corpus/.cache/
+# the HF dataset viewer configs: derived from the tables by scripts/hf_fixtures/hf_fixtures.py build,
+# kept on the HF dataset (data/*.parquet), not in git (#70)
+/corpus/data/*.parquet
 # local bench logs (RESULTS live in results/; these are tee captures)
 /logs/
 

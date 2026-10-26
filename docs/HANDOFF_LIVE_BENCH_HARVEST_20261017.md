@@ -52,7 +52,7 @@ and what to do next.
 
      ```bash
      R=live-bench/.work/harvest/20261017_031051
-     uv run python scripts/word_pdf.py --src $R/word_in --out $R/word_pdf --no-check-preset --label harvest --log $R/word.log
+     uv run python scripts/word_pdf.py --src $R/word_in --out $R/word_pdf --no-check-preset --label harvest --log $R/word.log > "$R/word.stdout" 2>&1
      ```
 2. **The cron prompt still names `scripts/word_pdf_focus.py`.** AGENTS.md says that driver "must
    not be used for new runs". This session used `scripts/word_pdf.py` instead and changed

@@ -1,5 +1,6 @@
 # Jules PR review: audited fork of thalesraymond/jules-pr-reviewer, pinned by commit SHA.
 # Audit + rollout tracking: https://github.com/arthrod/jules-pr-reviewer/issues/1
+# Pin with the cap retry (#9): https://github.com/arthrod/jules-pr-reviewer/issues/10
 name: Jules PR Review
 
 on:
@@ -24,7 +25,10 @@ jobs:
     # variable: gh variable set JULES_RUNNER -R <owner/repo> -b self-hosted
     # The runner must be recent enough to run node24 actions.
     runs-on: ${{ vars.JULES_RUNNER || 'ubuntu-latest' }}
-    timeout-minutes: 60
+    # 30 min of concurrency-cap retries + 3 sessions of timeout_minutes each (an
+    # agentic session that times out falls back to prompt mode, which tries
+    # twice) + 15 min for session start-up, checkout and posting.
+    timeout-minutes: 180
     permissions:
       contents: read
       pull-requests: write
@@ -33,7 +37,7 @@ jobs:
       # No checkout: the action reads the diff and rules through the GitHub API,
       # so no token is persisted to disk in the workspace.
       - name: Jules review
-        uses: arthrod/jules-pr-reviewer@de95c2cb6820df8b0e562d77f1f758d71b14b974
+        uses: arthrod/jules-pr-reviewer@3b132bdf377f463c33c13d121060de42d6b95e48
         with:
           jules_api_key: ${{ secrets.JULES_API_KEY }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
