@@ -2176,3 +2176,137 @@ def test_a_run_meeting_a_kept_lock_as_it_is_let_go_never_blames_another_run(
     (got,) = outcome
     assert isinstance(got, int), got
     real_unlock(got)
+
+
+# chatgpt-codex-connector, after round 11 (#80)
+
+
+def test_a_file_and_a_folder_whose_names_fold_together_refuse_before_downloading(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """On a disk that folds case, a file ``Sub`` and a file ``sub/b.pdf`` need ``sub`` to be a file and a folder."""
+    monkeypatch.setattr(hub_get, "case_insensitive", lambda path: True)
+    api = PinnedHub({**FILES, "outputs/run/Sub": b"a file where sub/ is a folder\n"})
+    with pytest.raises(Exception) as exc:
+        hub_get.get(preset(tmp_path / "dest"), api=api)
+    assert type(exc.value) is hub_get.GetError, exc.value
+    assert re.search(r"Sub.*sub/|sub/.*Sub", str(exc.value)), exc.value
+    assert api.downloads() == []
+
+
+def test_two_folders_whose_names_fold_together_are_one_folder_and_download(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A guard: ``Sub/x.md`` and ``sub/b.pdf`` share one folder on such a disk, and no file is lost."""
+    monkeypatch.setattr(hub_get, "case_insensitive", lambda path: True)
+    files = {**FILES, "outputs/run/Sub/x.md": b"x\n"}
+    report = hub_get.get(preset(tmp_path / "dest"), api=PinnedHub(files), dest=tmp_path / "dest")
+    assert report.downloaded == 4
+
+
+def test_a_disk_without_hard_links_needs_room_for_the_copies_too(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """There ``place`` copies, and the staged files stay until the last one is in place: twice the bytes."""
+    total = sum(len(b) for k, b in FILES.items() if k.startswith("outputs/run/"))
+    monkeypatch.setattr(hub_get, "free_bytes", lambda path: total + total // 2)  # one copy fits, two do not
+
+    def no_links(src, dst, *a, **kw):
+        raise OSError(errno.EPERM, "Operation not permitted")
+
+    monkeypatch.setattr(os, "link", no_links)
+    api = PinnedHub(FILES)
+    with pytest.raises(Exception) as exc:
+        hub_get.get(preset(tmp_path / "d"), api=api)
+    assert type(exc.value) is hub_get.GetError and "disk" in str(exc.value), exc.value
+    assert api.downloads() == []
+
+
+def test_a_staged_file_of_the_wrong_size_counts_for_no_room(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """A partial left in staging is fetched again, so the room it seemed to save is needed after all."""
+    dest = tmp_path / "dest"
+    staged = hub_get.staging_dir(dest, SHA) / hub_get.FILES / "outputs/run/a.docx"
+    staged.parent.mkdir(parents=True)
+    staged.write_bytes(b"")
+    total = sum(len(b) for k, b in FILES.items() if k.startswith("outputs/run/"))
+    monkeypatch.setattr(hub_get, "free_bytes", lambda path: total - len(BIG) + 1)  # all but a.docx fits
+    api = PinnedHub(FILES)
+    with pytest.raises(Exception) as exc:
+        hub_get.get(preset(dest), api=api)
+    assert type(exc.value) is hub_get.GetError and "free on the disk" in str(exc.value), exc.value
+    assert api.downloads() == []
+
+
+def test_ctrl_c_during_the_moves_stays_a_ctrl_c_when_the_rollback_leaves_a_file(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The rollback's problems go into the note; the run still ends as a Ctrl-C (exit 130), not as a refusal."""
+    dest = tmp_path / "dest"
+    real_place, real_replace, real_link, real_rename = hub_get.place, os.replace, os.link, os.rename
+    sent: list[Path] = []
+
+    def pressed(staged, target):
+        placed = real_place(staged, target)
+        if not sent:
+            sent.append(Path(target))
+            os.kill(os.getpid(), signal.SIGINT)  # held until this move is recorded
+            _spin()
+        return placed
+
+    def refuse(src) -> None:
+        if sent and Path(src) == sent[0]:
+            raise OSError(errno.EIO, f"{sent[0].name} cannot be moved back")
+
+    def replace(src, dst, *a, **kw):
+        refuse(src)
+        return real_replace(src, dst, *a, **kw)
+
+    def link(src, dst, *a, **kw):
+        refuse(src)
+        return real_link(src, dst, *a, **kw)
+
+    def rename(src, dst, *a, **kw):
+        refuse(src)
+        return real_rename(src, dst, *a, **kw)
+
+    monkeypatch.setattr(hub_get, "place", pressed)
+    monkeypatch.setattr(os, "replace", replace)
+    monkeypatch.setattr(os, "link", link)
+    monkeypatch.setattr(os, "rename", rename)
+    with pytest.raises(BaseException) as exc:
+        hub_get.get(preset(dest), api=PinnedHub(FILES))
+    assert sent
+    assert exc.type is KeyboardInterrupt, exc.value
+    assert "cannot be moved back" in " ".join(getattr(exc.value, "__notes__", ()))
+
+
+def test_no_queued_download_starts_once_ctrl_c_stopped_the_run(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """A worker that saw no stop, then waited for the queue while Ctrl-C stopped the run, must not take a file."""
+    import threading
+    import types
+
+    first = threading.Event()
+
+    class Stale(threading.Event):
+        def is_set(self) -> bool:
+            was = super().is_set()
+            if not was and first.is_set() and threading.current_thread().name.startswith("hub-get-download"):
+                self.wait(5)  # descheduled between its look at the flag and the queue, while the press lands
+            return was
+
+    proxy = types.SimpleNamespace(**{k: getattr(threading, k) for k in dir(threading) if not k.startswith("__")})
+    proxy.Event = Stale
+    monkeypatch.setattr(hub_get, "threading", proxy)
+    api = PinnedHub(FILES)
+    real_download = api.hf_hub_download
+
+    def download(*args, **kw):
+        got = real_download(*args, **kw)
+        if not first.is_set():
+            first.set()
+            os.kill(os.getpid(), signal.SIGINT)
+        return got
+
+    api.hf_hub_download = download
+    with pytest.raises(BaseException) as exc:
+        hub_get.get(preset(tmp_path / "dest"), api=api, workers=1)
+    assert exc.type is KeyboardInterrupt, exc.value
+    assert len(api.downloads()) == 1, api.downloads()
