@@ -27,8 +27,9 @@ jobs:
     runs-on: ${{ vars.JULES_RUNNER || 'ubuntu-latest' }}
     # 30 min of concurrency-cap retries + 3 sessions of timeout_minutes each (an
     # agentic session that times out falls back to prompt mode, which tries
-    # twice) + 15 min for session start-up, checkout and posting.
-    timeout-minutes: 180
+    # twice) + 15 min for session start-up, checkout and posting + up to 35 min
+    # when Jules rate-limits session creation (7 attempts of up to 5 min each).
+    timeout-minutes: 215
     permissions:
       contents: read
       pull-requests: write
@@ -37,7 +38,7 @@ jobs:
       # No checkout: the action reads the diff and rules through the GitHub API,
       # so no token is persisted to disk in the workspace.
       - name: Jules review
-        uses: arthrod/jules-pr-reviewer@3b132bdf377f463c33c13d121060de42d6b95e48
+        uses: arthrod/jules-pr-reviewer@b28ec00dafd4316f6fe06328cfa4f40db9ad075d
         with:
           jules_api_key: ${{ secrets.JULES_API_KEY }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
