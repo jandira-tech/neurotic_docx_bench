@@ -1067,3 +1067,15 @@ def test_a_failure_on_a_request_not_known_to_precede_the_commit_says_the_hub_may
         rebuild.publish(hub_pair.api, hub_pair.clone, hub_pair.head, manifest({'a/x.docx': sha(b'inline')}), 'rebuild')
     assert type(exc.value).__name__ == 'UnverifiedPublish'
     assert 'nothing published' not in str(exc.value)
+
+
+def test_a_failed_lfs_batch_request_still_says_nothing_was_published(rebuild, hub_pair):
+    batch = httpx2.Request('POST', f'https://huggingface.co/datasets/{hub.RESULTS_REPO}.git/info/lfs/objects/batch')
+
+    def fails(**kw):
+        raise HfHubHTTPError('503 batch', response=httpx2.Response(503, request=batch))
+
+    hub_pair.api.upload_file = fails
+    with pytest.raises(rebuild.RebuildError, match='nothing published') as exc:
+        rebuild.publish(hub_pair.api, hub_pair.clone, hub_pair.head, manifest({'a/x.docx': sha(b'inline')}), 'rebuild')
+    assert type(exc.value).__name__ != 'UnverifiedPublish'

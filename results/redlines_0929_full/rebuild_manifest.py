@@ -436,10 +436,13 @@ def regular_blob(entry: tuple[bytes, ...] | None) -> bool:
 def failed_before_commit(exc: BaseException) -> bool:
     """Whether ``exc`` came from a request upload_file sends before its commit request.
 
-    ``create_commit`` sends the preupload and the LFS requests first and the commit last
-    (``huggingface_hub/_commit_api.py``: ``/preupload/`` at 764, ``/commit/`` at 1056); a failed
-    request that is not the commit commits nothing. Without a request (a ``ValueError`` from parsing
-    the commit's answer, among others) nothing can be said.
+    ``create_commit`` sends the preupload and the LFS batch request first and the commit last
+    (``huggingface_hub/_commit_api.py``: ``/preupload/`` at 764, ``/commit/`` at 1056;
+    ``lfs.py`` at 185). Only a POST to one of those two URLs of this repo counts: the client follows
+    redirects (``utils/_http.py`` 335), so a failed request at any other URL may be the commit
+    redirected (to a renamed repo, among others), and an LFS upload to a storage host is not told
+    apart from it either. Without a request (a ``ValueError`` from parsing the commit's answer,
+    among others) nothing can be said.
     """
     request = None
     # HfHubHTTPError keeps its request on .response only: httpx2.HTTPError.__init__, which it calls
@@ -451,9 +454,12 @@ def failed_before_commit(exc: BaseException) -> bool:
             continue
         if request is not None:
             break
-    if request is None:
+    if request is None or request.method != 'POST':
         return False
-    return f'/api/{hub.REPO_TYPE}s/{hub.RESULTS_REPO}/commit/' not in request.url.path
+    return request.url.path.endswith((
+        f'/api/{hub.REPO_TYPE}s/{hub.RESULTS_REPO}/preupload/{BRANCH}',
+        f'/{hub.REPO_TYPE}s/{hub.RESULTS_REPO}.git/info/lfs/objects/batch',
+    ))
 
 
 def publish(api, checkout: Path, revision: str, data: bytes, message: str) -> str:
