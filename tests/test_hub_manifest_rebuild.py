@@ -919,15 +919,6 @@ def test_an_upload_that_fails_after_the_hub_committed_says_the_hub_may_hold_the_
     assert 'the response never came' in str(exc.value)
 
 
-def test_an_upload_the_hub_refused_is_reported_as_refused(rebuild, hub_pair):
-    """A 4xx answer (here 412: the branch moved) means the hub committed nothing."""
-    data = manifest({'a/x.docx': sha(b'inline')})
-    hub_pair.api.before_upload = lambda api: api.commit({'elsewhere/new.txt': b'someone else\n'}, 'other')
-    with pytest.raises(rebuild.RebuildError, match=r'refused.*412.*nothing published') as exc:
-        rebuild.publish(hub_pair.api, hub_pair.clone, hub_pair.head, data, 'rebuild')
-    assert type(exc.value).__name__ != 'UnverifiedPublish'
-
-
 # Review round 10 (#78)
 
 
@@ -1176,3 +1167,90 @@ def test_ctrl_c_while_the_manifest_is_built_says_nothing_was_published(rebuild, 
         run_main(rebuild, hub_pair, tmp_path, monkeypatch, '--publish')
     assert hub_pair.api.uploads == []
     assert 'nothing published' in ' '.join(getattr(exc.value, '__notes__', ()))
+
+
+# Review round 14, Codex (#78)
+
+
+@pytest.mark.parametrize('failure', [
+    # a response hook raised before httpx2 attached the redirect history: the commit landed, a 307 sent
+    # the client to a preupload-shaped URL that answered 503, and the error looks like the preupload's
+    lambda: HfHubHTTPError('503', response=httpx2.Response(503, request=preupload_request())),
+    # a transport retried the commit after losing the answer to a first attempt that landed
+    lambda: HfHubHTTPError('412 parent moved', response=httpx2.Response(412, request=commit_request())),
+])
+def test_an_error_that_says_nothing_landed_while_the_branch_moved_says_the_hub_may_hold_the_manifest(
+    rebuild, hub_pair, failure
+):
+    real = hub_pair.api.upload_file
+
+    def lands_then_fails(**kw):
+        real(**kw)
+        raise failure()
+
+    hub_pair.api.upload_file = lands_then_fails
+    with pytest.raises(rebuild.RebuildError, match='may hold') as exc:
+        rebuild.publish(hub_pair.api, hub_pair.clone, hub_pair.head, manifest({'a/x.docx': sha(b'inline')}), 'rebuild')
+    assert hub_pair.api.head() != hub_pair.head
+    assert type(exc.value).__name__ == 'UnverifiedPublish'
+    assert 'nothing published' not in str(exc.value)
+
+
+def test_a_412_after_a_foreign_commit_says_the_hub_may_hold_the_manifest(rebuild, hub_pair):
+    """A 412 says the branch moved, and the move may be this upload's own first attempt, retried below the SDK."""
+    data = manifest({'a/x.docx': sha(b'inline')})
+    hub_pair.api.before_upload = lambda api: api.commit({'elsewhere/new.txt': b'someone else\n'}, 'other')
+    with pytest.raises(rebuild.RebuildError, match='may hold') as exc:
+        rebuild.publish(hub_pair.api, hub_pair.clone, hub_pair.head, data, 'rebuild')
+    assert type(exc.value).__name__ == 'UnverifiedPublish'
+
+
+def test_a_4xx_to_the_commit_while_the_branch_stays_put_says_nothing_was_published(rebuild, hub_pair):
+    def fails(**kw):
+        raise HfHubHTTPError('403 forbidden', response=httpx2.Response(403, request=commit_request()))
+
+    hub_pair.api.upload_file = fails
+    with pytest.raises(rebuild.RebuildError, match=r'refused.*403.*nothing published') as exc:
+        rebuild.publish(hub_pair.api, hub_pair.clone, hub_pair.head, manifest({'a/x.docx': sha(b'inline')}), 'rebuild')
+    assert type(exc.value).__name__ != 'UnverifiedPublish'
+    assert hub_pair.api.head() == hub_pair.head
+
+
+def test_ctrl_c_while_main_reads_the_head_says_nothing_was_published(rebuild, hub_pair, tmp_path, monkeypatch):
+    def interrupted(*a, **kw):
+        raise KeyboardInterrupt
+
+    hub_pair.api.repo_info = interrupted
+    with pytest.raises(KeyboardInterrupt) as exc:
+        run_main(rebuild, hub_pair, tmp_path, monkeypatch, '--publish')
+    assert hub_pair.api.uploads == []
+    assert 'nothing published' in ' '.join(getattr(exc.value, '__notes__', ()))
+
+
+def test_ctrl_c_as_publish_is_called_says_the_hub_may_hold_the_manifest(rebuild, hub_pair, tmp_path, monkeypatch):
+    """main() cannot tell this instant from the one after publish() returns: the note must hold for both."""
+
+    def interrupted(*a, **kw):
+        raise KeyboardInterrupt
+
+    monkeypatch.setattr(rebuild, 'publish', interrupted)
+    with pytest.raises(KeyboardInterrupt) as exc:
+        run_main(rebuild, hub_pair, tmp_path, monkeypatch, '--publish')
+    notes = ' '.join(getattr(exc.value, '__notes__', ()))
+    assert 'may hold' in notes and 'nothing published' not in notes
+
+
+def test_ctrl_c_after_publish_returned_says_the_hub_holds_the_manifest(rebuild, hub_pair, tmp_path, monkeypatch):
+    def press_on_success(*a, **kw):
+        if a and str(a[0]).startswith('the hub holds this manifest'):
+            raise KeyboardInterrupt
+        return print(*a, **kw)
+
+    hub_pair.api.commit({f'{PREFIX}/x.docx': b'A'}, 'a file the manifest does not list yet')
+    before = hub_pair.api.head()
+    monkeypatch.setattr(rebuild, 'print', press_on_success, raising=False)
+    with pytest.raises(KeyboardInterrupt) as exc:
+        run_main(rebuild, hub_pair, tmp_path, monkeypatch, '--publish')
+    notes = ' '.join(getattr(exc.value, '__notes__', ()))
+    assert hub_pair.api.head() != before  # published
+    assert 'holds this manifest' in notes and hub_pair.api.head() in notes
