@@ -1329,3 +1329,67 @@ def test_a_partial_copy_that_cannot_be_removed_is_named_as_left_behind(
     message = str(info.value)
     assert "every file already moved was put back" not in message
     assert f"{dest / 'a.docx'}" in message and "stays" in message
+
+
+# Review round 7, Codex (#80)
+
+
+@pytest.mark.parametrize("step", ["backup", "place"])
+def test_a_second_ctrl_c_while_files_move_waits_until_the_step_is_recorded(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, step: str
+) -> None:
+    dest = tmp_path / "dest"
+    local = {"RUN.md": b"old run\n", "a.docx": b"old a\n", "sub/b.pdf": b"old b\n"}
+    _write(dest, local)
+    sent = []
+
+    def press_twice() -> None:
+        sent.append(step)
+        for _ in range(2):
+            os.kill(os.getpid(), signal.SIGINT)
+            _spin()
+
+    if step == "backup":  # the local file is moved aside, its journal entry not yet updated
+        real_replace = os.replace
+
+        def replace(src, dst, *args, **kw):
+            real_replace(src, dst, *args, **kw)
+            if not sent and hub_get._BACKUP in Path(dst).parts:
+                press_twice()
+
+        monkeypatch.setattr(os, "replace", replace)
+    else:  # the hub's file is linked into place, its identity not yet recorded
+        real_place = hub_get.place
+
+        def place(staged, target):
+            placed = real_place(staged, target)
+            if not sent:
+                press_twice()
+            return placed
+
+        monkeypatch.setattr(hub_get, "place", place)
+    with pytest.raises(BaseException) as exc:
+        hub_get.get(preset(dest), api=PinnedHub(FILES), on_conflict="overwrite")
+    assert sent
+    assert exc.type is KeyboardInterrupt, exc.value
+    assert _tree(dest) == local
+    assert "every replaced file restored" in " ".join(getattr(exc.value, "__notes__", ()))
+
+
+def test_cli_hub_get_prints_what_a_ctrl_c_left_behind_and_exits_130(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from neurotic_docx_bench.cli import app
+
+    def interrupted(*args, **kw):
+        stop = KeyboardInterrupt()
+        stop.add_note("moving into got failed (KeyboardInterrupt); the file it replaced is kept at .got.hub-x/.replaced/RUN.md")
+        raise stop
+
+    monkeypatch.setattr(hub, "default_api", lambda: PinnedHub(FILES))
+    monkeypatch.setattr(hub_get, "get", interrupted)
+    monkeypatch.chdir(tmp_path)
+    result = runner.invoke(app, ["hub", "get", "--repo", REPO, "--path", "outputs/run", "--dest", "got"])
+    assert result.exit_code == 130
+    assert ".got.hub-x/.replaced/RUN.md" in result.output
+    assert "Ctrl-C" in result.output
