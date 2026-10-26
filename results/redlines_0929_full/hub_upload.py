@@ -185,10 +185,15 @@ def main() -> None:
     print(f'staged {sum(counts.values())} files, {size / 1e9:.2f} GB: {counts}', flush=True)
     if a.dry_run:
         return
+    # Each commit names its parent: if anyone committed since `head` was read, the hub refuses
+    # (412) instead of taking a manifest built from the older commit.
+    parent = head
     for s in subdirs:
-        api.upload_folder(repo_id=hub.RESULTS_REPO, repo_type=hub.REPO_TYPE, folder_path=a.staging / s,
-                          path_in_repo=f'{REPO_PREFIX}/{s}',
-                          commit_message=f'redlines_0929_full: {s} ({counts[s]} files)')
+        info = api.upload_folder(repo_id=hub.RESULTS_REPO, repo_type=hub.REPO_TYPE, folder_path=a.staging / s,
+                                 path_in_repo=f'{REPO_PREFIX}/{s}',
+                                 commit_message=f'redlines_0929_full: {s} ({counts[s]} files)',
+                                 parent_commit=parent)
+        parent = info.oid
         print(f'uploaded {s}', flush=True)
     bad = hub.verify_uploaded(a.staging, api=api, repo_id=hub.RESULTS_REPO, path_in_repo=REPO_PREFIX)
     if bad:

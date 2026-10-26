@@ -72,6 +72,7 @@ class HubApi(Protocol):
         path_in_repo: str | None = None,
         commit_message: str | None = None,
         ignore_patterns: list[str] | None = None,
+        parent_commit: str | None = None,
     ) -> Any: ...
 
     def snapshot_download(
