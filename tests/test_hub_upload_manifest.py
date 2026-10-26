@@ -9,7 +9,8 @@ import sys
 from types import SimpleNamespace
 
 import pytest
-from huggingface_hub.errors import EntryNotFoundError
+import httpx2
+from huggingface_hub.errors import LocalEntryNotFoundError, RemoteEntryNotFoundError
 
 from neurotic_docx_bench import hub
 from test_hub import FakeHub
@@ -25,6 +26,11 @@ def upload():
 
 def sha(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
+
+
+def remote_missing(path: str) -> RemoteEntryNotFoundError:
+    request = httpx2.Request('GET', f'https://huggingface.co/{path}')
+    return RemoteEntryNotFoundError(f'404 {path}', response=httpx2.Response(404, request=request))
 
 
 @pytest.mark.parametrize('lfs', [dict, SimpleNamespace])
@@ -67,6 +73,13 @@ def test_inline_bytes_are_verified(upload):
     files[path] = b'changed'
     with pytest.raises(upload.ManifestCarryError, match=r'1 mismatched.*run/old.md'):
         upload.carried_entries(previous, {}, remote, files.__getitem__)
+
+
+def test_inline_file_gone_before_fetch_is_missing(upload):
+    path = 'run/old.md'
+    remote = {path: SimpleNamespace(lfs=None, blob_id='listed, then deleted')}
+    with pytest.raises(upload.ManifestCarryError, match=r'1 missing.*run/old.md'):
+        upload.carried_entries({path: sha(b'old')}, {}, remote, lambda rel: None)
 
 
 def test_error_counts_all_paths_but_lists_only_first_ten(upload):
@@ -121,19 +134,35 @@ def test_stage_combines_staged_and_carried_files(upload, run, tmp_path, capsys):
 
 
 class DownloadHub(FakeHub):
-    """Serve downloads from the fake hub's stored bytes."""
+    """Serve downloads from the fake hub's stored bytes, failing the way huggingface_hub 2.0 does."""
 
     def __init__(self, cache):
         super().__init__()
         self.cache = cache
         self.downloads = []
+        self.offline = False
+        self.vanished = set()
+
+    def list_repo_tree(self, repo_id, *, repo_type, path_in_repo=None, recursive=True, expand=True):
+        entries = list(
+            super().list_repo_tree(
+                repo_id, repo_type=repo_type, path_in_repo=path_in_repo, recursive=recursive, expand=expand
+            )
+        )
+        if path_in_repo and not entries:
+            raise remote_missing(path_in_repo)
+        yield from entries
 
     def hf_hub_download(self, repo_id, filename, *, repo_type, revision=None):
         self.downloads.append((filename, revision))
+        if self.offline:
+            raise LocalEntryNotFoundError('offline and not in the cache')
+        if filename in self.vanished:
+            raise remote_missing(filename)
         try:
             data = self.stored[repo_id][filename]
         except KeyError:
-            raise EntryNotFoundError('no remote manifest') from None
+            raise remote_missing(filename) from None
         dest = self.cache / filename
         dest.parent.mkdir(parents=True, exist_ok=True)
         dest.write_bytes(data)
@@ -173,6 +202,36 @@ def test_main_first_upload_without_manifest(upload, run, tmp_path, monkeypatch):
     files = json.loads(api.stored[hub.RESULTS_REPO][manifest_path])['files']
     assert len(files) == 5
     assert api.downloads == [(manifest_path, None)]
+
+
+def test_main_offline_manifest_read_uploads_nothing(upload, run, tmp_path, monkeypatch):
+    api = DownloadHub(tmp_path / 'cache')
+    prefix = upload.REPO_PREFIX + '/'
+    api.stored[hub.RESULTS_REPO] = {prefix + 'fresh_compares/a.pdf': b'pruned oracle'}
+    api.offline = True
+    monkeypatch.setattr(hub, 'default_api', lambda: api)
+    monkeypatch.setattr(sys, 'argv', ['hub_upload', '--staging', str(tmp_path / 'staging')])
+    with pytest.raises(LocalEntryNotFoundError):
+        upload.main()
+    assert set(api.stored[hub.RESULTS_REPO]) == {prefix + 'fresh_compares/a.pdf'}
+    assert not any(name == 'upload_folder' for name, _ in api.calls)
+
+
+def test_main_inline_file_gone_before_fetch_refuses(upload, run, tmp_path, monkeypatch):
+    api = DownloadHub(tmp_path / 'cache')
+    prefix = upload.REPO_PREFIX + '/'
+    files = {'run/old.md': b'old note'}
+    api.stored[hub.RESULTS_REPO] = {prefix + p: data for p, data in files.items()}
+    manifest_path = prefix + 'run/' + hub.MANIFEST_NAME
+    api.stored[hub.RESULTS_REPO][manifest_path] = json.dumps(
+        hub.manifest_document({p: sha(data) for p, data in files.items()})
+    ).encode()
+    api.vanished = {prefix + 'run/old.md'}
+    monkeypatch.setattr(hub, 'default_api', lambda: api)
+    monkeypatch.setattr(sys, 'argv', ['hub_upload', '--staging', str(tmp_path / 'staging')])
+    with pytest.raises(upload.ManifestCarryError, match=r'1 missing.*run/old.md'):
+        upload.main()
+    assert not any(name == 'upload_folder' for name, _ in api.calls)
 
 
 def test_main_dry_run_is_offline(upload, run, tmp_path, monkeypatch):
