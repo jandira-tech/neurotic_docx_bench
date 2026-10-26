@@ -1118,3 +1118,61 @@ def test_a_4xx_answer_to_the_commit_itself_still_says_nothing_was_published(rebu
     with pytest.raises(rebuild.RebuildError, match='refused the upload') as exc:
         rebuild.publish(hub_pair.api, hub_pair.clone, hub_pair.head, manifest({'a/x.docx': sha(b'inline')}), 'rebuild')
     assert type(exc.value).__name__ != 'UnverifiedPublish'
+
+
+# Review round 13, mcode (#78)
+
+
+def test_an_upload_that_made_no_commit_says_nothing_was_published_and_why(rebuild, hub_pair, tmp_path):
+    """A symlink whose target bytes are the manifest: upload_file sees the content id there and commits nothing."""
+    data = manifest({'a/x.docx': sha(b'inline')})
+    commit_entry(hub_pair.api.origin, tmp_path, '120000', f'{PREFIX}/{MANIFEST}', data)
+    git(hub_pair.clone, 'fetch', '-q', 'origin')
+    revision = hub_pair.api.head()
+    with pytest.raises(rebuild.RebuildError) as exc:
+        rebuild.publish(hub_pair.api, hub_pair.clone, revision, data, 'rebuild')
+    assert hub_pair.api.head() == revision
+    assert type(exc.value).__name__ != 'UnverifiedPublish'
+    assert 'nothing published' in str(exc.value).lower()
+    assert 'no commit' in str(exc.value) and '120000' in str(exc.value)
+    assert 'rerun' not in str(exc.value)
+
+
+def test_a_4xx_at_a_url_not_known_to_precede_the_commit_says_the_hub_may_hold_the_manifest(rebuild, hub_pair):
+    """Only the commit and the two requests known to precede it are placed; a 4xx elsewhere claims nothing."""
+
+    def fails(**kw):
+        request = httpx2.Request('PUT', 'https://cas-bridge.example/xet/some-chunk?X-Signature=expired')
+        raise HfHubHTTPError('403 storage', response=httpx2.Response(403, request=request))
+
+    hub_pair.api.upload_file = fails
+    with pytest.raises(rebuild.RebuildError, match='may hold') as exc:
+        rebuild.publish(hub_pair.api, hub_pair.clone, hub_pair.head, manifest({'a/x.docx': sha(b'inline')}), 'rebuild')
+    assert type(exc.value).__name__ == 'UnverifiedPublish'
+
+
+@pytest.mark.parametrize('where', ['repo_info', 'leaves'])
+def test_ctrl_c_before_the_upload_says_nothing_was_published(rebuild, hub_pair, monkeypatch, where):
+    def interrupted(*a, **kw):
+        raise KeyboardInterrupt
+
+    if where == 'repo_info':
+        hub_pair.api.repo_info = interrupted
+    else:
+        monkeypatch.setattr(rebuild, 'leaves', interrupted)
+    with pytest.raises(KeyboardInterrupt) as exc:
+        rebuild.publish(hub_pair.api, hub_pair.clone, hub_pair.head, manifest({'a/x.docx': sha(b'inline')}), 'rebuild')
+    assert hub_pair.api.uploads == []
+    notes = ' '.join(getattr(exc.value, '__notes__', ()))
+    assert 'nothing published' in notes and 'may hold' not in notes
+
+
+def test_ctrl_c_while_the_manifest_is_built_says_nothing_was_published(rebuild, hub_pair, tmp_path, monkeypatch):
+    def interrupted(*a, **kw):
+        raise KeyboardInterrupt
+
+    monkeypatch.setattr(rebuild, 'build', interrupted)
+    with pytest.raises(KeyboardInterrupt) as exc:
+        run_main(rebuild, hub_pair, tmp_path, monkeypatch, '--publish')
+    assert hub_pair.api.uploads == []
+    assert 'nothing published' in ' '.join(getattr(exc.value, '__notes__', ()))
