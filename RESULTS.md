@@ -2,7 +2,7 @@
 <!-- provenance: bench_version=0.8.0; docsets=27122f4d945e,a89ffc217bba,c28442e9bb5a5deb,c947065c59b2; scorers=docxide-150dpi,v1; renderers=oracle:microsoft_word -->
 # Benchmark results
 
-Generated 2026-10-15 02:47 UTC from `results/bench.jsonl`, `results/converters.jsonl`, `results/redlines_*/scores.jsonl`, `results/speed.jsonl` and `results/redline_speed_bench/**/summary.json`.
+Generated 2026-10-26 00:17 UTC from `results/bench.jsonl`, `results/converters.jsonl`, `results/redlines_*/scores.jsonl`, `results/speed.jsonl` and `results/redline_speed_bench/**/summary.json`.
 
 Compare rows only within one table. Full history, paired comparisons and methodology: [RESULTS_DETAILED.md](RESULTS_DETAILED.md).
 
@@ -60,41 +60,33 @@ Document set `c947065c59b2` (398 documents), renderer `oracle:microsoft_word`, s
 
 Oracle: Word's PDF export of each DOCX in the four corpus/word states; the candidate is the converter's PDF of the same DOCX.
 
-Document set `a89ffc217bba` (6427 documents), renderer `oracle:microsoft_word`, scorer `v1`, bench `0.7`. One row per tool: its latest eligible run. Sorted by ITT median, then ITT mean. Failed documents score 0 (intent-to-treat); Mean and Median are over scored documents only. 95% CI is a percentile bootstrap of the ITT median (2000 resamples, seed 42). An equal rank (`n=`) means the paired bootstrap interval of the median difference to the row above includes 0. † marks an author-affiliated tool; the same rules apply to it. This document set is not recorded in results/docsets.json, so its size is the largest ITT n in this group.
+Document set `a89ffc217bba` (6427 documents), renderer `oracle:microsoft_word`, scorer `v1`, bench `0.8`. One row per tool: its latest eligible run. Sorted by ITT median, then ITT mean. Failed documents score 0 (intent-to-treat); Mean and Median are over scored documents only. 95% CI is a percentile bootstrap of the ITT median (2000 resamples, seed 42). An equal rank (`n=`) means the paired bootstrap interval of the median difference to the row above includes 0. † marks an author-affiliated tool; the same rules apply to it. This document set is not recorded in results/docsets.json, so its size is the largest ITT n in this group.
 
 | Rank | Tool | Pin | Run | Docs | Failed | ITT Mean | ITT Median | 95% CI | Mean | Median | Perfect (100) |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | jubarte † | jubarte 0.10.1 | 2026-10-01 | 6427 | 0 | 77.03 | 80.90 | [80.58, 81.19] | 77.03 | 80.90 | 38 |
-| 2 | soffice | LibreOffice 26.8.0.3 bce0998afefdbc355585ca324285661a2170ba77 | 2026-10-01 | 6359 | 68 | 61.95 | 63.43 | [62.84, 64.03] | 62.61 | 63.72 | 4 |
-| 3 | docxide-pdf | docxide-pdf v0.17.1 | 2026-10-01 | 6422 | 5 | 54.14 | 51.44 | [51.01, 51.84] | 54.18 | 51.45 | 16 |
+| 1 | jubarte † | jubarte 0.14.0 | 2026-10-25 | 6427 | 0 | 80.05 | 82.33 | [82.13, 82.50] | 80.05 | 82.33 | 38 |
 
 By corpus state (ITT mean / ITT median; the number of documents of each state in brackets):
 
 | Tool | clean (2480) | tracking_without_comments (3410) | with_comments_tracking (420) | with_comments_clean (117) |
 | --- | --- | --- | --- | --- |
-| jubarte † | 82.05 / 87.54 | 74.37 / 79.70 | 70.47 / 72.07 | 71.71 / 70.31 |
-| soffice | 67.15 / 68.72 | 60.72 / 62.99 | 44.97 / 45.26 | 48.29 / 47.56 |
-| docxide-pdf | 60.24 / 59.48 | 50.59 / 49.10 | 47.08 / 46.57 | 53.72 / 50.94 |
+| jubarte † | 84.92 / 89.70 | 77.18 / 81.07 | 74.65 / 78.19 | 79.53 / 81.22 |
 
 ### docxide_metrics: DOCX to PDF under docxide-pdf's own metrics
 
 Word-export PDFs of the document set named below, scored with docxide-pdf's Jaccard and text-boundary metrics at 150 DPI; ranked on Jaccard, docxide-pdf's headline number.
 
-Document set `a89ffc217bba` (6427 documents), renderer `oracle:microsoft_word`, scorer `docxide-150dpi`, bench `0.7`. One row per tool: its latest eligible run. Sorted by ITT median, then ITT mean. Failed documents score 0 (intent-to-treat); Mean and Median are over scored documents only. 95% CI is a percentile bootstrap of the ITT median (2000 resamples, seed 42). An equal rank (`n=`) means the paired bootstrap interval of the median difference to the row above includes 0. † marks an author-affiliated tool; the same rules apply to it. This document set is not recorded in results/docsets.json, so its size is the largest ITT n in this group.
+Document set `a89ffc217bba` (6427 documents), renderer `oracle:microsoft_word`, scorer `docxide-150dpi`, bench `0.8`. One row per tool: its latest eligible run. Sorted by ITT median, then ITT mean. Failed documents score 0 (intent-to-treat); Mean and Median are over scored documents only. 95% CI is a percentile bootstrap of the ITT median (2000 resamples, seed 42). An equal rank (`n=`) means the paired bootstrap interval of the median difference to the row above includes 0. † marks an author-affiliated tool; the same rules apply to it. This document set is not recorded in results/docsets.json, so its size is the largest ITT n in this group.
 
 | Rank | Tool | Pin | Run | Docs | Failed | ITT Mean | ITT Median | 95% CI | Mean | Median | Perfect (100) | text_boundary median |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | jubarte † | jubarte 0.10.1 | 2026-10-01 | 6385 | 42 | 61.42 | 65.91 | [65.12, 66.71] | 61.83 | 66.12 | 0 | 97.62 |
-| 2 | soffice | LibreOffice 26.8.0.3 bce0998afefdbc355585ca324285661a2170ba77 | 2026-10-01 | 6294 | 133 | 26.01 | 22.29 | [22.06, 22.61] | 26.55 | 22.53 | 0 | 80.00 |
-| 3 | docxide-pdf | docxide-pdf v0.17.1 | 2026-10-01 | 6271 | 156 | 18.32 | 10.73 | [10.43, 11.04] | 18.77 | 11.04 | 0 | 23.08 |
+| 1 | jubarte † | jubarte 0.14.0 | 2026-10-25 | 6397 | 30 | 66.72 | 70.66 | [70.17, 71.20] | 67.03 | 70.74 | 0 | 100.00 |
 
 By corpus state (ITT mean / ITT median; the number of documents of each state in brackets):
 
 | Tool | clean (2480) | tracking_without_comments (3410) | with_comments_tracking (420) | with_comments_clean (117) |
 | --- | --- | --- | --- | --- |
-| jubarte † | 69.80 / 78.41 | 58.69 / 63.45 | 39.73 / 41.26 | 41.36 / 43.76 |
-| soffice | 31.66 / 25.22 | 25.22 / 22.16 | 4.41 / 2.79 | 6.57 / 1.80 |
-| docxide-pdf | 26.96 / 15.73 | 14.31 / 9.16 | 3.26 / 1.88 | 5.94 / 5.09 |
+| jubarte † | 74.18 / 81.00 | 62.62 / 66.42 | 56.02 / 60.34 | 66.10 / 68.56 |
 
 ### below 3 pages: corpus/word DOCX to PDF vs Word's own PDF
 
@@ -146,7 +138,8 @@ Each tool redlines the pair; Word opens that redline and exports it to PDF, scor
 
 | Tool | Version | Scored | ITT Mean | ITT Median | = 100 | >= 90 | < 50 | Ink Jaccard mean | Text boundary mean |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| jubarte-0.10.1 | jubarte 0.10.1 (release) | 3496/3502 (2610/2612) | 74.82 (75.48) | 84.34 (84.61) | 241 (174) | 636 (472) | 617 (435) | 0.73 (0.74) | 0.80 (0.81) |
+| jubarte-0.14.0 | jubarte 0.14.0 (release) | 3414/3502 (2562/2612) | 74.33 (75.45) | 84.46 (84.60) | 344 (270) | 704 (538) | 546 (375) | 0.74 (0.75) | 0.81 (0.82) |
+| jubarte-0.10.1 | jubarte 0.10.1 (release) | 3496/3502 (2610/2612) | 74.77 (75.45) | 84.15 (84.34) | 241 (174) | 615 (456) | 619 (435) | 0.73 (0.74) | 0.80 (0.81) |
 | jubarte-rust | jubarte 0.10.0 (86b6b5d3) | 3499/3502 (2611/2612) | 72.23 (73.30) | 81.73 (83.01) | 310 (244) | 658 (517) | 793 (558) | 0.67 (0.69) | 0.77 (0.78) |
 | jubarte-093 | jubarte 0.9.3 (release) | 3338/3502 (2584/2612) | 68.62 (72.44) | 79.07 (82.61) | 309 (254) | 634 (524) | 780 (562) | 0.67 (0.68) | 0.76 (0.78) |
 | docxodus | Docxodus 12.6.5 (C#) | 2612/3502 (2612/2612) | 53.94 (72.33) | 62.87 (81.75) | 204 (204) | 482 (482) | 614 (614) | 0.65 (0.65) | 0.73 (0.73) |

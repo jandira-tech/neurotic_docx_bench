@@ -52,7 +52,9 @@ def stage(root: Path) -> list[str]:
         for d in TOOL_DIRS:
             if (HERE / t / d).is_dir():
                 parts.append((HERE / t / d, f'{t}/{d}'))
-    parts.append((FRESH, 'fresh_compares'))
+    # Gone locally once uploaded (2026-10-25): the hub copy stands.
+    if FRESH.is_dir():
+        parts.append((FRESH, 'fresh_compares'))
     for t in TOOLS:
         meta = root / t / 'meta'
         meta.mkdir(parents=True)
