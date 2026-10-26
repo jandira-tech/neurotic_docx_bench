@@ -244,12 +244,14 @@ class GitHub:
         if self.lfs:
             self.lfs_contents[sha(path_or_fileobj)] = path_or_fileobj
         current = subprocess.run(['git', 'cat-file', 'blob', f'HEAD:{path_in_repo}'], cwd=self.origin, capture_output=True)
-        if current.returncode == 0 and current.stdout == stored:
-            # huggingface_hub compares content oids only (not modes) and returns the branch head
-            # without a commit or a parent check
+        remote = re.fullmatch(rb'version https://git-lfs\.github\.com/spec/v1\noid sha256:([0-9a-f]{64})\nsize \d+\n', current.stdout)
+        same = (remote.group(1).decode() == sha(path_or_fileobj)) if self.lfs and remote else current.stdout == stored
+        if current.returncode == 0 and same:
+            # huggingface_hub compares content oids only (an LFS pointer's oid, not its text; not
+            # modes) and returns the branch head without a commit or a parent check
             return SimpleNamespace(oid=self.head())
         if parent_commit is not None and parent_commit != self.head():
-            request = httpx2.Request('POST', 'https://huggingface.co/api/commit')
+            request = httpx2.Request('POST', f'https://huggingface.co/api/datasets/{repo_id}/commit/{revision}')
             raise HfHubHTTPError('412 parent moved', response=httpx2.Response(412, request=request))
         self.commit({path_in_repo: stored}, commit_message)
         return SimpleNamespace(oid=self.head())
@@ -645,7 +647,7 @@ def test_checkout_disables_line_ending_conversion(rebuild, tmp_path, monkeypatch
 
     def run_git(checkout, *args):
         calls.append(args)
-        return b''
+        return f'{PREFIX}/\n'.encode() if args[:2] == ('sparse-checkout', 'list') else b''
 
     monkeypatch.setattr(rebuild, 'git', run_git)
     rebuild.checkout_hub(tmp_path, HEAD)
@@ -954,3 +956,67 @@ def test_ctrl_c_while_checking_the_upload_says_the_hub_may_hold_the_manifest(reb
     assert hub_pair.api.head() != hub_pair.head
     notes = ' '.join(getattr(exc.value, '__notes__', ()))
     assert 'may hold' in notes and hub_pair.api.head() in notes
+
+
+# Review round 10, mcode (#78)
+
+
+def preupload_request():
+    return httpx2.Request('POST', f'https://huggingface.co/api/datasets/{hub.RESULTS_REPO}/preupload/main')
+
+
+def commit_request():
+    return httpx2.Request('POST', f'https://huggingface.co/api/datasets/{hub.RESULTS_REPO}/commit/main')
+
+
+@pytest.mark.parametrize('failure', [
+    lambda: HfHubHTTPError('503 preupload', response=httpx2.Response(503, request=preupload_request())),
+    lambda: httpx2.ReadTimeout('preupload timed out', request=preupload_request()),
+])
+def test_a_failure_before_the_commit_request_says_nothing_was_published(rebuild, hub_pair, failure):
+    def fails(**kw):
+        raise failure()
+
+    hub_pair.api.upload_file = fails
+    with pytest.raises(rebuild.RebuildError, match='nothing published') as exc:
+        rebuild.publish(hub_pair.api, hub_pair.clone, hub_pair.head, manifest({'a/x.docx': sha(b'inline')}), 'rebuild')
+    assert type(exc.value).__name__ != 'UnverifiedPublish'
+
+
+def test_a_server_error_on_the_commit_request_says_the_hub_may_hold_the_manifest(rebuild, hub_pair):
+    def fails(**kw):
+        raise HfHubHTTPError('502 bad gateway', response=httpx2.Response(502, request=commit_request()))
+
+    hub_pair.api.upload_file = fails
+    with pytest.raises(rebuild.RebuildError, match='may hold') as exc:
+        rebuild.publish(hub_pair.api, hub_pair.clone, hub_pair.head, manifest({'a/x.docx': sha(b'inline')}), 'rebuild')
+    assert type(exc.value).__name__ == 'UnverifiedPublish'
+
+
+def test_a_pointer_to_the_same_content_that_is_not_canonical_is_refused_not_looped(rebuild, tmp_path):
+    origin = tmp_path / 'origin'
+    origin.mkdir()
+    git(origin, 'init', '-q', '-b', 'main')
+    git(origin, 'config', 'user.email', 't@example.com')
+    git(origin, 'config', 'user.name', 't')
+    api = GitHub(origin, lfs=True)
+    data = manifest({'a/x.docx': sha(b'inline')})
+    odd = pointer(data).replace(f'size {len(data)}'.encode(), f'size {len(data) + 1}'.encode())
+    api.commit({f'{PREFIX}/{MANIFEST}': odd}, 'a pointer with the right oid and a wrong size')
+    clone = tmp_path / 'clone'
+    git(tmp_path, 'clone', '-q', f'file://{origin}', str(clone))
+    with pytest.raises(rebuild.RebuildError, match='upload_file would not replace it') as exc:
+        rebuild.publish(api, clone, api.head(), data, 'rebuild')
+    assert type(exc.value).__name__ != 'UnverifiedPublish'
+    assert api.uploads == []
+
+
+def test_a_reused_checkout_that_is_not_sparse_on_the_run_folder_is_refused(rebuild, hub_pair):
+    with pytest.raises(rebuild.RebuildError, match='sparse'):
+        rebuild.checkout_hub(hub_pair.clone, hub_pair.head)
+
+
+def test_a_reused_sparse_checkout_of_the_run_folder_is_used(rebuild, hub_pair):
+    git(hub_pair.clone, 'sparse-checkout', 'set', '--no-cone', f'{PREFIX}/')
+    rebuild.checkout_hub(hub_pair.clone, hub_pair.head)
+    assert git(hub_pair.clone, 'rev-parse', 'HEAD') == hub_pair.head
