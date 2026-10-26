@@ -893,3 +893,32 @@ def test_main_does_not_claim_a_commit_it_cannot_tell_it_made(rebuild, hub_pair, 
     printed = capsys.readouterr().out
     assert f'the hub holds this manifest at {hub_pair.api.head()}' in printed
     assert 'published ' not in printed
+
+
+# Review round 9 (#78)
+
+
+def test_an_upload_that_fails_after_the_hub_committed_says_the_hub_may_hold_the_manifest(rebuild, hub_pair):
+    data = manifest({'a/x.docx': sha(b'inline')})
+    real = hub_pair.api.upload_file
+
+    def lost(**kw):
+        real(**kw)  # the hub commits; its answer never arrives
+        raise httpx2.ReadTimeout('the response never came')
+
+    hub_pair.api.upload_file = lost
+    with pytest.raises(rebuild.RebuildError) as exc:
+        rebuild.publish(hub_pair.api, hub_pair.clone, hub_pair.head, data, 'rebuild')
+    assert type(exc.value).__name__ == 'UnverifiedPublish'
+    assert hub_pair.api.head() != hub_pair.head
+    assert 'may hold' in str(exc.value)
+    assert 'the response never came' in str(exc.value)
+
+
+def test_an_upload_the_hub_refused_is_reported_as_refused(rebuild, hub_pair):
+    """A 4xx answer (here 412: the branch moved) means the hub committed nothing."""
+    data = manifest({'a/x.docx': sha(b'inline')})
+    hub_pair.api.before_upload = lambda api: api.commit({'elsewhere/new.txt': b'someone else\n'}, 'other')
+    with pytest.raises(rebuild.RebuildError, match=r'refused.*412.*nothing published') as exc:
+        rebuild.publish(hub_pair.api, hub_pair.clone, hub_pair.head, data, 'rebuild')
+    assert type(exc.value).__name__ != 'UnverifiedPublish'
