@@ -6,6 +6,7 @@ import hashlib
 import importlib.util
 import json
 import os
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -50,8 +51,9 @@ def tree_of(rebuild, files: dict[str, bytes]):
 
 
 def git(cwd: Path, *args: str, env: dict | None = None) -> str:
-    run = subprocess.run(['git', *args], cwd=cwd, check=True, capture_output=True, text=True,
-                         env={**os.environ, **(env or {})})
+    run = subprocess.run(
+        ['git', *args], cwd=cwd, check=True, capture_output=True, text=True, env={**os.environ, **(env or {})}
+    )
     return run.stdout.strip()
 
 
@@ -73,7 +75,7 @@ def test_every_hub_file_gets_the_hub_hash_and_the_manifest_is_left_out(rebuild):
 def test_the_newest_record_disagreeing_with_the_hub_refuses(rebuild):
     files = {'a/x.docx': b'inline'}
     history = [('m1', {'a/x.docx': sha(b'inline')}), ('m2', {'a/x.docx': sha(b'other')})]
-    with pytest.raises(rebuild.RebuildError, match='a/x.docx'):
+    with pytest.raises(rebuild.RebuildError, match=re.escape('a/x.docx')):
         rebuild.rebuild(tree_of(rebuild, files), history, files.__getitem__)
 
 
@@ -88,7 +90,7 @@ def test_an_older_record_a_newer_one_replaced_is_reported(rebuild):
 def test_a_recorded_path_gone_from_the_hub_refuses(rebuild):
     files = {'a/x.docx': b'inline'}
     history = [('m1', {'a/x.docx': sha(b'inline'), 'a/gone.docx': sha(b'gone')})]
-    with pytest.raises(rebuild.RebuildError, match='a/gone.docx'):
+    with pytest.raises(rebuild.RebuildError, match=re.escape('a/gone.docx')):
         rebuild.rebuild(tree_of(rebuild, files), history, files.__getitem__)
 
 
@@ -103,7 +105,7 @@ def test_a_file_no_record_names_is_first_recorded_here(rebuild):
 @pytest.mark.parametrize('bad', [b'tampered', pointer(b'other large pdf')])
 def test_bytes_that_are_not_the_hub_blob_refuse(rebuild, bad):
     tree = tree_of(rebuild, {'a/x.docx': b'inline'})
-    with pytest.raises(rebuild.RebuildError, match='a/x.docx'):
+    with pytest.raises(rebuild.RebuildError, match=re.escape('a/x.docx')):
         rebuild.rebuild(tree, [], {'a/x.docx': bad}.__getitem__)
 
 
@@ -130,13 +132,16 @@ def checkout(tmp_path):
 
     first = commit({'a/x.docx': b'inline', MANIFEST: manifest({'a/x.docx': sha(b'before regeneration')})}, 1)
     tsv = f'key\tsize\tsha256\nc/z.docx\t3\t{sha(b"zzz")}\n'.encode()
-    second = commit({
-        'b/y.pdf': pointer(b'large pdf'),
-        'c/z.docx': b'zzz',
-        'd/new.docx': b'new',
-        'upload_20261025.manifest.tsv': tsv,
-        MANIFEST: manifest({'a/x.docx': sha(b'inline'), 'b/y.pdf': sha(b'large pdf')}),
-    }, 2)
+    second = commit(
+        {
+            'b/y.pdf': pointer(b'large pdf'),
+            'c/z.docx': b'zzz',
+            'd/new.docx': b'new',
+            'upload_20261025.manifest.tsv': tsv,
+            MANIFEST: manifest({'a/x.docx': sha(b'inline'), 'b/y.pdf': sha(b'large pdf')}),
+        },
+        2,
+    )
     return SimpleNamespace(repo=repo, first=first, second=second, tsv=tsv)
 
 
@@ -185,8 +190,11 @@ class CommitHub:
         return SimpleNamespace(sha=self.log[-1].commit_id)
 
     def upload_file(self, *, path_or_fileobj, path_in_repo, repo_id, repo_type, commit_message, parent_commit=None):
-        self.uploads.append({'path_in_repo': path_in_repo, 'parent_commit': parent_commit,
-                             'commit_message': commit_message})
+        self.uploads.append({
+            'path_in_repo': path_in_repo,
+            'parent_commit': parent_commit,
+            'commit_message': commit_message,
+        })
         head = self.log[-1]
         if head.files.get(path_in_repo) == path_or_fileobj:
             # huggingface_hub returns the branch head without a commit or a parent check
@@ -200,7 +208,10 @@ class CommitHub:
 
     def list_repo_commits(self, repo_id, *, repo_type, revision=None):
         ids = [c.commit_id for c in self.log]
-        return [SimpleNamespace(commit_id=c.commit_id, title=c.title) for c in reversed(self.log[: ids.index(revision) + 1])]
+        return [
+            SimpleNamespace(commit_id=c.commit_id, title=c.title)
+            for c in reversed(self.log[: ids.index(revision) + 1])
+        ]
 
     def hf_hub_download(self, repo_id, filename, *, repo_type, revision=None, local_dir=None):
         files = next(c for c in self.log if c.commit_id == revision).files
@@ -215,7 +226,9 @@ def test_publish_commits_on_the_head_it_read_and_reads_it_back(rebuild, tmp_path
     data = manifest({'a/x.docx': sha(b'inline')})
     commit = rebuild.publish(api, HEAD, data, 'rebuild', scratch=tmp_path)
     assert commit == api.log[-1].commit_id != HEAD
-    assert api.uploads == [{'path_in_repo': f'{PREFIX}/{MANIFEST}', 'parent_commit': HEAD, 'commit_message': 'rebuild'}]
+    assert api.uploads == [
+        {'path_in_repo': f'{PREFIX}/{MANIFEST}', 'parent_commit': HEAD, 'commit_message': 'rebuild'}
+    ]
     assert api.log[-1].files[f'{PREFIX}/{MANIFEST}'] == data
 
 
