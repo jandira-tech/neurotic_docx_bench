@@ -93,7 +93,12 @@ class HubApi(Protocol):
         path_in_repo: str | None = None,
         recursive: bool = True,
         expand: bool = True,
+        revision: str | None = None,
     ) -> Iterable[Any]: ...
+
+    def repo_info(
+        self, repo_id: str, *, repo_type: str, revision: str | None = None
+    ) -> Any: ...
 
     def hf_hub_download(
         self,
