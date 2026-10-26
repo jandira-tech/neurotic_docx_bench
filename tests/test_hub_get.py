@@ -768,3 +768,30 @@ def test_rollback_never_overwrites_a_file_that_appeared_in_staging(tmp_path: Pat
         hub_get.get(preset(dest), api=PinnedHub(FILES))
     assert staged_a.read_bytes() == b"NEW FILE IN STAGING"
     assert not any(p.is_file() for p in dest.rglob("*"))
+
+
+# CodeRabbit, review of 2026-10-26 19:00 (#80)
+
+
+def test_a_listing_failure_is_a_get_error(tmp_path: Path) -> None:
+    class Missing(PinnedHub):
+        def list_repo_tree(self, *args, **kw):
+            yield SimpleNamespace(path="outputs/run/RUN.md", size=6, blob_id=blob_id(b"# run\n"), lfs=None)
+            raise LookupError("404: outputs/run is not in the repo")  # a later page fails
+
+    with pytest.raises(hub_get.GetError, match=r"cannot list outputs/run.*404"):
+        hub_get.get(preset(tmp_path / "dest"), api=Missing(FILES))
+
+
+def test_a_symlinked_folder_below_the_destination_is_refused(tmp_path: Path) -> None:
+    dest = tmp_path / "dest"
+    dest.mkdir()
+    outside = tmp_path / "outside"
+    outside.mkdir()
+    (outside / "b.pdf").write_bytes(b"outside, not ours\n")
+    (dest / "sub").symlink_to(outside)
+    api = PinnedHub(FILES)
+    with pytest.raises(hub_get.GetError, match=re.escape(f"{dest / 'sub'} is a symlink")):
+        hub_get.get(preset(dest), api=api, on_conflict="overwrite")
+    assert (outside / "b.pdf").read_bytes() == b"outside, not ours\n"
+    assert api.downloads() == []
