@@ -28,7 +28,8 @@
    the files that failed to verify), so a rerun resumes.
 
 Names that one file would have to hold on the destination's disk (``A.txt`` and ``a.txt`` on
-case-insensitive APFS) and a local file where the hub has a folder refuse before any download.
+case-insensitive APFS), a local file where the hub has a folder, and a symlinked folder below the
+destination (it would put files, or move replaced ones, outside it) refuse before any download.
 
 The hub's own ``.gitattributes`` is never downloaded: under ``corpus/`` it would change how git
 treats the checkout.
@@ -323,9 +324,14 @@ def remote_files(
     """The files under ``path`` at ``revision``, filtered by globs relative to ``path``."""
     prefix = f"{path}/" if path else ""
     files = []
-    for entry in api.list_repo_tree(
-        repo_id, repo_type=hub.REPO_TYPE, path_in_repo=path or None, recursive=True, expand=False, revision=revision
-    ):
+    try:  # every page, before any is used: a missing folder or a failed page refuses with the hub's reason
+        entries = list(api.list_repo_tree(
+            repo_id, repo_type=hub.REPO_TYPE, path_in_repo=path or None, recursive=True, expand=False,
+            revision=revision,
+        ))
+    except Exception as exc:
+        raise GetError(f"{repo_id}@{revision[:12]}: cannot list {path or '/'}: {exc}") from exc
+    for entry in entries:
         if not hasattr(entry, "blob_id"):  # a folder
             continue
         repo_path = str(entry.path)
@@ -361,13 +367,19 @@ def _listing(rels: Sequence[str]) -> str:
     return ", ".join(rels[:_LISTED]) + more
 
 
-def _blocker(dest: Path, rel: str) -> Path | None:
-    """The first of ``dest`` and the folders above ``rel`` that exists but is not a folder."""
+def _blocker(dest: Path, rel: str) -> str | None:
+    """Why ``rel`` cannot go under ``dest``: ``dest`` or a folder above ``rel`` exists but is not a folder,
+    or a folder below ``dest`` is a symlink (it would put the file, or move a replaced one, outside ``dest``).
+    ``dest`` itself may be a symlink."""
+    if (dest.exists() or dest.is_symlink()) and not dest.is_dir():
+        return f"{dest} is a file where the hub has a folder"
     path = dest
-    for part in ("", *PurePosixPath(rel).parts[:-1]):
-        path = path / part if part else path
-        if (path.exists() or path.is_symlink()) and not path.is_dir():
-            return path
+    for part in PurePosixPath(rel).parts[:-1]:
+        path = path / part
+        if path.is_symlink():
+            return f"{path} is a symlink, and files only go into real folders below {dest}"
+        if path.exists() and not path.is_dir():
+            return f"{path} is a file where the hub has a folder"
     return None
 
 
@@ -463,7 +475,7 @@ def get(
         local = dest / f.rel
         blocker = _blocker(dest, f.rel)
         if blocker is not None:
-            raise GetError(f"{blocker} is a file where {where} has a folder (for {f.rel}); nothing downloaded")
+            raise GetError(f"{blocker} (for {f.rel} of {where}); nothing downloaded")
         if not (local.exists() or local.is_symlink()):
             todo.append(f)
         elif not local.is_file():
@@ -553,7 +565,7 @@ def get(
             target = dest / f.rel
             blocker = _blocker(dest, f.rel)
             if blocker is not None:
-                raise GetError(f"{blocker} became a file while downloading (for {f.rel}); nothing moved, {staging} kept")
+                raise GetError(f"while downloading, {blocker} (for {f.rel}); nothing moved, {staging} kept")
             if not (target.exists() or target.is_symlink()):
                 moves.append((f, False))
             elif not target.is_file():
