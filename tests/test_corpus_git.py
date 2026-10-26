@@ -21,4 +21,6 @@ def test_derived_parquet_configs_are_ignored_and_untracked() -> None:
     if not (ROOT / '.git').exists():
         pytest.skip('not a git checkout')
     assert _git('check-ignore', '-q', '--no-index', 'corpus/data/documents.parquet').returncode == 0
-    assert _git('ls-files', '--', 'corpus/data/*.parquet').stdout == ''
+    tracked = _git('ls-files', '--', 'corpus/data/*.parquet')
+    assert tracked.returncode == 0, tracked.stderr  # a failed git also prints nothing
+    assert tracked.stdout == ''
