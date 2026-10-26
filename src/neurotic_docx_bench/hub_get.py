@@ -37,8 +37,14 @@ file is moved; one swapped for a symlink in the instant between that look and th
 caught. The command runs with your rights in your own folders: it guards against accidents and
 other runs, not against a process of yours racing it.
 
-The hub's own ``.gitattributes`` is never downloaded: under ``corpus/`` it would change how git
-treats the checkout.
+The hub's own ``.gitattributes`` (in any case: APFS treats ``.GITATTRIBUTES`` as the same name) is
+never downloaded: under ``corpus/`` it would change how git treats the checkout. A hub folder named
+like ``hf_hub_download``'s records of another file (``<file>.metadata/``, ``<file>.lock/``) refuses
+before any download, since the two cannot share a staging folder.
+
+Ctrl-C while files move is held until the step in hand is recorded, then rolls everything back. A
+run with nothing to download only tidies a staging folder an earlier run left, and leaves it alone
+when another run holds it or anything in it is out of place.
 """
 
 from __future__ import annotations
@@ -48,11 +54,14 @@ import fnmatch
 import os
 import re
 import shutil
+import signal
 import stat
 import tempfile
+import threading
 import unicodedata
-from collections.abc import Iterable, Sequence
+from collections.abc import Callable, Iterable, Iterator, Sequence
 from concurrent.futures import ThreadPoolExecutor
+from contextlib import contextmanager
 from dataclasses import dataclass, field
 from pathlib import Path, PurePosixPath
 from typing import Any
@@ -70,6 +79,10 @@ _LISTED = 20
 
 class GetError(Exception):
     """A download was refused; nothing was moved into the destination."""
+
+
+class _Busy(GetError):
+    """Another run holds the staging folder's lock."""
 
 
 class _LeftBehind(GetError):
@@ -160,12 +173,16 @@ class GetReport:
     to_download_bytes: int = 0
     conflicts: tuple[str, ...] = field(default=())
     earlier_replaced: tuple[str, ...] = field(default=())  # local files an earlier run replaced and left
+    on_conflict: str = "refuse"
 
     def describe(self) -> str:
         head = f"{self.repo_id}@{self.revision[:12]} → {self.dest}: {self.n_files} files ({human(self.n_bytes)})"
         if self.dry_run:
-            return (f"dry run: {head}; would download {self.to_download} ({human(self.to_download_bytes)}), "
-                    f"{self.skipped} already there, {len(self.conflicts)} differ locally")
+            dry = (f"dry run: {head}; would download {self.to_download} ({human(self.to_download_bytes)}), "
+                   f"{self.skipped} already there, {len(self.conflicts)} differ locally")
+            if self.conflicts and self.on_conflict == "refuse":
+                dry += "; a real run would refuse: rerun with --overwrite or --keep-local"
+            return dry
         done = (f"{head}; downloaded {self.downloaded}, already there {self.skipped}, "
                 f"replaced {self.replaced}, kept local {len(self.kept_local)}; every file verified")
         if self.earlier_replaced:
@@ -337,6 +354,8 @@ def resolve_revision(api: Any, repo_id: str, revision: str | None = None) -> str
 
 
 def _matches(rel: str, globs: Iterable[str]) -> bool:
+    """fnmatch, so ``*`` also matches ``/``: ``*.docx`` takes ``sub/a.docx`` too, and ``fresh_compares/*``
+    the whole folder."""
     return any(fnmatch.fnmatchcase(rel, g) for g in globs)
 
 
@@ -370,7 +389,7 @@ def remote_files(
             raise GetError(f"refusing a hub path that leaves the destination: {repo_path}")
         if PurePosixPath(repo_path).parts[:2] == _HF_BOOKKEEPING:
             raise GetError(f"refusing {repo_path}: hf_hub_download keeps its own records in {'/'.join(_HF_BOOKKEEPING)}")
-        if parts[-1] in _NEVER or (include and not _matches(rel, include)) or _matches(rel, exclude):
+        if parts[-1].casefold() in _NEVER or (include and not _matches(rel, include)) or _matches(rel, exclude):
             continue
         lfs = getattr(entry, "lfs", None)
         sha256 = (lfs.get("sha256") if isinstance(lfs, dict) else getattr(lfs, "sha256", None)) if lfs else None
@@ -468,22 +487,74 @@ def _lock(staging: Path) -> int:
     longer at the lock path is let go and taken again on the file that is there now.
     """
     while True:
-        staging.mkdir(parents=True, exist_ok=True)  # a run that just finished may have removed it
         try:
+            staging.mkdir(parents=True, exist_ok=True)  # a run that just finished may have removed it
             fd = os.open(staging / LOCK, os.O_WRONLY | os.O_CREAT | os.O_APPEND | os.O_NOFOLLOW, 0o666)
         except FileNotFoundError:
             continue
-        except OSError as exc:  # a symlink at the lock path, among others
+        except OSError as exc:  # a symlink at the lock path, a file at the staging path, among others
             raise GetError(f"cannot take the lock {staging / LOCK}: {exc}") from exc
         try:
             fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            mine, now = os.fstat(fd), _identity_at(staging / LOCK)
         except BlockingIOError as exc:
             os.close(fd)
-            raise GetError(f"another bench hub get is using {staging}; wait for it to finish") from exc
-        mine, now = os.fstat(fd), _identity_at(staging / LOCK)
+            raise _Busy(f"another bench hub get is using {staging}; wait for it to finish") from exc
+        except OSError as exc:  # a disk without locks, among others
+            os.close(fd)
+            raise GetError(f"cannot take the lock {staging / LOCK}: {exc}") from exc
+        except BaseException:
+            os.close(fd)
+            raise
         if now is not None and now[:2] == (mine.st_dev, mine.st_ino):
             return fd
         os.close(fd)
+
+
+def _record_clashes(files: Sequence[RemoteFile]) -> list[str]:
+    """Hub folders where hf_hub_download keeps another file's records.
+
+    It keeps the records of ``<path>`` at ``.cache/huggingface/download/<path>.metadata`` and
+    ``<path>.lock`` (``huggingface_hub/_local_folder.py``, ``get_local_download_paths``), so a hub
+    folder ``<path>.metadata/`` or ``<path>.lock/`` cannot be downloaded into the same folder.
+    """
+    folders: dict[tuple[str, ...], str] = {}
+    for f in files:
+        parts = PurePosixPath(f.repo_path).parts
+        for i in range(1, len(parts)):
+            folders.setdefault(_fold(parts[:i]), "/".join(parts[:i]))
+    return [
+        f"{f.repo_path} and {folders[key]}/"
+        for f in files
+        for suffix in (".metadata", ".lock")
+        if (key := _fold(PurePosixPath(f.repo_path + suffix).parts)) in folders
+    ]
+
+
+@contextmanager
+def _ctrl_c_between_steps() -> Iterator[Callable[[], None]]:
+    """Hold Ctrl-C (SIGINT) while the block runs; the check it yields raises a held one.
+
+    A filesystem step and its journal entry then happen together: a Ctrl-C that lands as a rename
+    or a link returns waits for the next check, so the rollback knows about that step. Where Python
+    cannot set a handler (outside the main thread, or under a handler set from C), Ctrl-C is not held.
+    """
+    previous = signal.getsignal(signal.SIGINT)
+    if threading.current_thread() is not threading.main_thread() or previous is None:
+        yield lambda: None
+        return
+    held: list[int] = []
+
+    def check() -> None:
+        if held:
+            held.clear()
+            raise KeyboardInterrupt
+
+    signal.signal(signal.SIGINT, lambda signum, _frame: held.append(signum))
+    try:
+        yield check
+    finally:
+        signal.signal(signal.SIGINT, previous)
 
 
 def _symlinks(staging: Path) -> list[Path]:
@@ -557,6 +628,12 @@ def get(
         raise GetError(f"{where} has nothing under {preset.path or '/'}{what}")
     for names in _collisions(files, dest):
         raise GetError(f"{where} has names that would be one file on the disk of {dest}: {', '.join(names)}")
+    clashes = _record_clashes(files)
+    if clashes:
+        raise GetError(
+            f"{where} has folders where hf_hub_download keeps the records of another file: {_listing(clashes)}; "
+            "they cannot be downloaded into one folder"
+        )
 
     todo: list[RemoteFile] = []
     skipped = 0
@@ -586,22 +663,40 @@ def get(
     todo.sort(key=lambda f: f.rel)
     report = dict(
         repo_id=preset.repo_id, revision=sha, dest=dest, n_files=len(files), n_bytes=sum(f.size for f in files),
-        to_download=len(todo), to_download_bytes=sum(f.size for f in todo), conflicts=differ,
+        to_download=len(todo), to_download_bytes=sum(f.size for f in todo), conflicts=differ, on_conflict=on_conflict,
     )
     staging = staging_dir(dest, sha)
-    if dry_run or not (todo or staging.exists() or staging.is_symlink()):
-        return GetReport(**report, skipped=skipped, kept_local=tuple(kept), downloaded=0, replaced=0, dry_run=dry_run)
+    # With nothing to download the run only tidies what an earlier run left, and is never refused for it.
+    tidy = not todo
+    plain = GetReport(**report, skipped=skipped, kept_local=tuple(kept), downloaded=0, replaced=0, dry_run=dry_run)
+    if dry_run or (tidy and not (staging.is_dir() and not staging.is_symlink())):
+        return plain
 
     if staging.is_symlink():
         raise GetError(f"{staging} is a symlink; remove it and rerun")
+    if staging.exists() and not staging.is_dir():
+        raise GetError(f"{staging} is a file where the staging folder goes; remove it and rerun")
     created = not staging.exists()
-    staging.mkdir(parents=True, exist_ok=True)
+    try:
+        staging.mkdir(parents=True, exist_ok=True)
+    except OSError as exc:
+        raise GetError(f"cannot make the staging folder {staging}: {exc}") from exc
     clash = _overlap(staging, dest, files)
     if clash is not None:
         if created:
-            staging.rmdir()
+            try:
+                staging.rmdir()
+            except OSError:
+                pass
+        if tidy:
+            return plain
         raise GetError(f"{clash}; nothing downloaded")
-    lock = _lock(staging)
+    try:
+        lock = _lock(staging)
+    except GetError:
+        if tidy:  # another run holds it, or its lock cannot be taken: leave it alone
+            return plain
+        raise
     try:
         journal, late_same, earlier = _locked_run(
             api, preset.repo_id, sha, files, todo, conflicts, kept, dest, staging, on_conflict, workers
@@ -639,6 +734,8 @@ def _locked_run(
     """
     staged_files = staging / FILES
     links = _symlinks(staging)
+    if links and not todo:  # nothing to download: leave the folder as it is
+        return [], 0, ()
     if links:
         raise GetError(f"{staging} holds symlinks ({_listing([str(x) for x in links])}); remove it and rerun")
     for f in files:
@@ -756,8 +853,22 @@ def _move(moves: Sequence[tuple[RemoteFile, bool]], dest: Path, staging: Path) -
     staged_files = staging / FILES
     journal: list[_Move] = []
     made: list[Path] = []
+    with _ctrl_c_between_steps() as check:
+        return _move_held(moves, dest, staging, staged_files, journal, made, check)
+
+
+def _move_held(
+    moves: Sequence[tuple[RemoteFile, bool]],
+    dest: Path,
+    staging: Path,
+    staged_files: Path,
+    journal: list[_Move],
+    made: list[Path],
+    check: Callable[[], None],
+) -> list[_Move]:
     try:
         for f, replacing in moves:
+            check()
             blocker = _blocker(dest, f.rel)  # again for each file: a folder may have changed since the look
             if blocker is not None:
                 raise GetError(f"while moving, {blocker} (for {f.rel})")
@@ -766,14 +877,18 @@ def _move(moves: Sequence[tuple[RemoteFile, bool]], dest: Path, staging: Path) -
             if m.backup is not None:
                 if m.backup.exists() or m.backup.is_symlink():
                     raise GetError(f"{m.backup} holds a local file an earlier run replaced; nothing overwrites it")
+                if not (m.target.is_file() and not m.target.is_symlink()):
+                    raise GetError(f"{m.target} is no longer a file; it stays as it is")
                 m.backup.parent.mkdir(parents=True, exist_ok=True)
                 os.replace(m.target, m.backup)
                 m.backed_up = True
+                check()
             missing = [d for d in (m.target.parent, *m.target.parent.parents) if not d.exists()]
             for d in reversed(missing):
                 d.mkdir()
                 made.append(d)
             m.placed = place(m.src, m.target)
+        check()
     except BaseException as exc:  # Ctrl-C included: put everything back before stopping
         problems = _roll_back(journal, staging)
         if isinstance(exc, _LeftBehind):

@@ -3546,7 +3546,7 @@ def hub_get_cmd(
     path: str | None = typer.Option(None, "--path", help="without a preset: the folder in the repo ('' = all)", show_default=False),
     dest: Path | None = typer.Option(None, "--dest", help="where the files land (default: the preset's)", show_default=False),
     revision: str | None = typer.Option(None, "--revision", help="branch, tag or commit (default main), resolved to a commit once"),
-    include: list[str] | None = typer.Option(None, "--include", help="only files matching this glob, relative to the preset's folder (repeatable)"),
+    include: list[str] | None = typer.Option(None, "--include", help="only files matching this glob, relative to the preset's folder; fnmatch, so * also crosses / (repeatable)"),
     overwrite: bool = typer.Option(False, "--overwrite", help="replace local files whose bytes differ from the hub's"),
     keep_local: bool = typer.Option(False, "--keep-local", help="keep local files whose bytes differ; fetch the rest"),
     dry_run: bool = typer.Option(False, "--dry-run", help="list what would be downloaded; download and write nothing"),

@@ -442,6 +442,8 @@ uv run bench hub get --repo arthrod/neurotic_docx_bench --path outputs/release_0
   a resumable rerun. A rerun names the replaced files an earlier run left in `.replaced/`, and takes
   the second name off staged files a killed move left linked into the destination. Presets with no home in the checkout land in `hub-downloads/`. All three are
   git-ignored.
+- `--include` globs are fnmatch patterns relative to the preset's folder: `*` also crosses `/`, so
+  `--include '*.docx'` takes the `.docx` files of every subfolder too.
 - `bench fixtures download` (whole fixtures repo, checked against `MANIFEST.sha256.json`) and
   `scripts/fetch_corpus.py` (it also writes `results/compare_regen/regen_list.csv`) still work.
 - Adding a preset is one entry in `hub_get.PRESETS` (`src/neurotic_docx_bench/hub_get.py`).
