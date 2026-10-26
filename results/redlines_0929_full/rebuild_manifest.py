@@ -12,9 +12,9 @@ bytes must hash to the git blob id the hub lists. An LFS file's sha256 is its po
 inline file's is the sha256 of its bytes.
 
 The records are every version of the manifest and the 0.13.0 upload's own list
-(``upload_20261025.manifest.tsv``), oldest first. The newest record naming a path must agree with
-the hub, and every recorded path must still be there, or nothing is published. An older record
-that disagrees is reported as replaced; a file no record names is reported as first recorded here.
+(``upload_20261025.manifest.tsv``), oldest first. Every newest record naming a path, by git ancestry,
+must agree with the hub, and every recorded path must still be there, or nothing is published.
+An older record that disagrees is reported as replaced; a file no record names is reported as first recorded here.
 """
 
 from __future__ import annotations
@@ -25,12 +25,14 @@ import hashlib
 import io
 import json
 import os
+import random
 import re
 import shutil
 import subprocess
 import tempfile
 from collections import Counter
 from collections.abc import Callable
+from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -39,6 +41,7 @@ from hub_upload import REPO_PREFIX
 from neurotic_docx_bench import hub
 
 MANIFEST = f'run/{hub.MANIFEST_NAME}'
+BRANCH = 'main'
 # The 0.13.0 lane was uploaded on 2026-10-25 outside hub_upload.py, with its own list.
 UPLOAD_LISTS = ('upload_20261025.manifest.tsv',)
 # The only pointer form the run's files have (all 12,509 on 2026-10-26); anything else that
@@ -66,7 +69,11 @@ def git(checkout: Path, *args: str, input: bytes | None = None) -> bytes:
     # blob-filtered clone could not read an old record at all.
     env = {k: v for k, v in os.environ.items() if k != 'GIT_NO_LAZY_FETCH'}
     env |= {'GIT_LFS_SKIP_SMUDGE': '1', 'GIT_NO_REPLACE_OBJECTS': '1'}
-    run = subprocess.run(['git', '-C', str(checkout), *args], check=True, capture_output=True, env=env, input=input)
+    try:
+        run = subprocess.run(['git', '-C', str(checkout), *args], check=True, capture_output=True, env=env, input=input)
+    except subprocess.CalledProcessError as exc:
+        error = exc.stderr.decode(errors='replace').strip()[:500]
+        raise RebuildError(f'git {" ".join(args[:3])} failed ({exc.returncode}): {error}') from exc
     return run.stdout
 
 
@@ -92,8 +99,10 @@ def hub_tree(checkout: Path, revision: str) -> dict[str, HubFile]:
         if not line:
             continue
         meta, path = line.decode().split('\t', 1)
-        _mode, kind, oid, size = meta.split()
-        if kind == 'blob' and path.startswith(prefix):
+        mode, kind, oid, size = meta.split()
+        if path.startswith(prefix):
+            if kind != 'blob' or mode not in ('100644', '100755'):
+                raise RebuildError(f'{path} is not a regular blob (mode {mode}, type {kind})')
             tree[path[len(prefix) :]] = HubFile(oid, int(size))
     return tree
 
@@ -113,28 +122,56 @@ def unique(pairs, where: str) -> dict:
 
 def parse_record(name: str, raw: bytes, label: str, fetch_lfs=None) -> dict[str, str]:
     """A record's ``{path: sha256}``; one stored in LFS is fetched and must match its pointer."""
-    if lfs_oid(raw) is not None:
+    try:
+        oid = lfs_oid(raw)
+    except RebuildError as exc:
+        raise RebuildError(f'{label}: {exc}') from exc
+    if oid is not None:
         if fetch_lfs is None:
             raise RebuildError(f'{label} is stored in LFS and no LFS fetcher was given')
         content = fetch_lfs()
         if lfs_pointer(content) != raw:
             raise RebuildError(f'{label} is stored in LFS and the fetched bytes do not match its pointer')
         raw = content
-    text = raw.decode()
+    try:
+        text = raw.decode()
+    except UnicodeError as exc:
+        raise RebuildError(f'{label} is not UTF-8: {exc}') from exc
     if name == MANIFEST:
-        return json.loads(text, object_pairs_hook=lambda pairs: unique(pairs, label))['files']
+        def reject_constant(value):
+            raise ValueError(f'non-JSON constant {value}')
+
+        try:
+            document = json.loads(
+                text, object_pairs_hook=lambda pairs: unique(pairs, label), parse_constant=reject_constant
+            )
+        except ValueError as exc:
+            raise RebuildError(f'{label} is not valid JSON: {exc}') from exc
+        if not isinstance(document, dict) or not isinstance(document.get('files'), dict):
+            raise RebuildError(f'{label} must be an object with a files object')
+        files = document['files']
+        if any(
+            not isinstance(k, str) or not isinstance(v, str) or re.fullmatch(r'[0-9a-f]{64}', v) is None
+            for k, v in files.items()
+        ):
+            raise RebuildError(f'{label} must map string paths to lowercase sha256 digests')
+        return files
     rows = list(csv.reader(io.StringIO(text), delimiter='\t'))
     if not rows or rows[0] != UPLOAD_LIST_HEADER or any(len(row) != len(UPLOAD_LIST_HEADER) for row in rows):
         raise RebuildError(f'{label} is not a {"/".join(UPLOAD_LIST_HEADER)} list (header {rows[:1]})')
+    if any(
+        re.fullmatch(r'[0-9]+', size) is None or re.fullmatch(r'[0-9a-f]{64}', digest) is None
+        for _, size, digest in rows[1:]
+    ):
+        raise RebuildError(f'{label} has an invalid size or lowercase sha256 digest')
     return unique([(key, digest) for key, _size, digest in rows[1:]], label)
 
 
-def records(checkout: Path, revision: str, fetch_lfs=None) -> list[tuple[str, dict[str, str]]]:
+def records(checkout: Path, revision: str, fetch_lfs=None, commits_by_label=None) -> list[tuple[str, dict[str, str]]]:
     """Every version of the manifest and of the upload lists up to ``revision``, oldest first.
 
-    A record is a version as one commit introduced it: its blob differs from every parent's, merges
-    included. Records are ranked by that commit in commit order, not commit time (two versions can
-    share a second), so a list left unchanged never outranks a manifest written after it. Paths
+    A record is a version whose blob differs from at least one parent's, merges included, or a
+    file present at a root commit. Ancestry determines which records are newest for each path. Paths
     are read from each commit's tree, so a blob not fetched yet is never taken for an absent file.
     ``fetch_lfs(commit, path)`` returns the bytes of a record stored in LFS.
     """
@@ -162,24 +199,31 @@ def records(checkout: Path, revision: str, fetch_lfs=None) -> list[tuple[str, di
     for rank, commit in enumerate(commits):
         for order, path in enumerate(names):
             blob = blobs[commit].get(path)
-            if blob is not None and all(blobs[p].get(path) != blob for p in parents[commit]):
+            if blob is not None and (not parents[commit] or any(blobs[p].get(path) != blob for p in parents[commit])):
                 found.append((rank, order, commit, path, blob))
     found.sort(key=lambda r: (r[0], r[1]))
     parsed = {}
     history = []
     for _, _, commit, path, blob in found:
         label = f'{commit[:9]} {names[path]}'
-        if blob not in parsed:
+        if commits_by_label is not None and commits_by_label.setdefault(label, commit) != commit:
+            raise RebuildError(f'two commits share the label {label}; nothing published')
+        key = (names[path], blob)
+        if key not in parsed:
             fetch = None if fetch_lfs is None else (lambda c=commit, p=path: fetch_lfs(c, p))
-            parsed[blob] = parse_record(names[path], git(checkout, 'cat-file', 'blob', blob), label, fetch)
-        history.append((label, parsed[blob]))
+            parsed[key] = parse_record(names[path], git(checkout, 'cat-file', 'blob', blob), label, fetch)
+        history.append((label, parsed[key]))
     return history
 
 
 def rebuild(
-    tree: dict[str, HubFile], history: list[tuple[str, dict[str, str]]], read: Callable[[str], bytes]
+    tree: dict[str, HubFile], history: list[tuple[str, dict[str, str]]], read: Callable[[str], bytes], newest=None
 ) -> tuple[dict[str, str], dict]:
-    """``{path: sha256}`` for every hub file but the manifest, checked against every record."""
+    """``{path: sha256}`` for every hub file but the manifest, checked against every record.
+
+    ``newest(labels)`` picks, among the records naming one path, those that must agree with the hub
+    (``build`` passes git ancestry). Without it every record must agree.
+    """
     built = {}
     kinds = Counter()
     not_blob = []
@@ -198,14 +242,16 @@ def rebuild(
     named: dict[str, list[tuple[str, str]]] = {}
     for label, files in history:
         for path, sha in files.items():
-            named.setdefault(path, []).append((label, sha))
+            if path != MANIFEST:
+                named.setdefault(path, []).append((label, sha))
     gone, disagree, replaced = [], [], []
     for path, seen in sorted(named.items()):
         if path not in built:
             gone.append(path)
-        elif seen[-1][1] != built[path]:
-            disagree.append(f'{path} ({seen[-1][0]})')
         else:
+            labels = [label for label, _ in seen]
+            latest = set(labels) if newest is None else newest(labels)
+            disagree += [f'{path} ({label})' for label, sha in seen if label in latest and sha != built[path]]
             replaced += [(path, label) for label, sha in seen if sha != built[path]]
     if gone or disagree:
         raise RebuildError(
@@ -230,13 +276,68 @@ def checkout_hub(dest: Path, revision: str) -> None:
         git(dest.parent, 'clone', '-q', '--filter=blob:none', '--no-checkout', URL, dest.name)
         git(dest, 'sparse-checkout', 'set', '--no-cone', f'{REPO_PREFIX}/')
     git(dest, 'fetch', '-q', 'origin')
-    git(dest, *NO_LFS, 'checkout', '-q', '--detach', revision)
+    git(dest, *NO_LFS, '-c', 'core.autocrlf=false', '-c', 'core.eol=lf', 'checkout', '-q', '--detach', revision)
 
 
 def build(checkout: Path, revision: str, fetch_lfs=None) -> tuple[dict[str, str], dict]:
     root = checkout / REPO_PREFIX
-    history = records(checkout, revision, fetch_lfs)
-    return rebuild(hub_tree(checkout, revision), history, lambda rel: (root / rel).read_bytes())
+    commits = {}
+    history = records(checkout, revision, fetch_lfs, commits)
+    independent_by_commits = {}
+
+    def newest(labels):
+        distinct = tuple(sorted({commits[label] for label in labels}))
+        if distinct not in independent_by_commits:
+            independent_by_commits[distinct] = set(
+                git(checkout, 'merge-base', '--independent', *distinct).decode().split()
+            )
+        independent = independent_by_commits[distinct]
+        return {label for label in labels if commits[label] in independent}
+
+    return rebuild(hub_tree(checkout, revision), history, lambda rel: (root / rel).read_bytes(), newest)
+
+
+def hub_fetcher(api, repo_id: str, revision: str):
+    """Pinned downloads, removed as soon as the caller finishes reading each file."""
+
+    @contextmanager
+    def fetch(path: str):
+        with tempfile.TemporaryDirectory() as scratch:
+            try:
+                got = api.hf_hub_download(repo_id, path, repo_type=hub.REPO_TYPE, revision=revision, local_dir=scratch)
+            except Exception as exc:
+                raise RebuildError(f'LFS download {path} at {revision} failed: {exc}') from exc
+            yield Path(got)
+
+    return fetch
+
+
+def check_lfs(checkout: Path, revision: str, fetch, count: int | str, seed: int) -> int:
+    entries = {}
+    for path, entry in sorted(hub_tree(checkout, revision).items()):
+        # Canonical pointers fit in 256 bytes; inline payloads can be much larger.
+        if entry.size <= 256:
+            oid = lfs_oid((checkout / REPO_PREFIX / path).read_bytes())
+            if oid is not None:
+                entries[path] = oid
+    paths = sorted(entries)
+    chosen = paths if count == 'all' else random.Random(seed).sample(paths, min(count, len(paths)))
+    for path in chosen:
+        try:
+            with fetch(f'{REPO_PREFIX}/{path}') as got:
+                if hub.sha256_file(got) != entries[path]:
+                    raise RebuildError(f'LFS {path} fetched bytes do not match the pointer oid')
+        except OSError as exc:
+            raise RebuildError(f'LFS {path} could not be checked: {exc}') from exc
+    return len(chosen)
+
+
+def lfs_limit(value: str) -> int | str:
+    if value == 'all':
+        return value
+    if re.fullmatch(r'[0-9]+', value):
+        return int(value)
+    raise argparse.ArgumentTypeError('expected a non-negative integer or all')
 
 
 def publish(api, checkout: Path, revision: str, data: bytes, message: str) -> str:
@@ -246,12 +347,13 @@ def publish(api, checkout: Path, revision: str, data: bytes, message: str) -> st
     the commit is fetched and must have ``revision`` as its one parent and change nothing else.
     """
     path = f'{REPO_PREFIX}/{MANIFEST}'
-    current = api.repo_info(hub.RESULTS_REPO, repo_type=hub.REPO_TYPE).sha
+    current = api.repo_info(hub.RESULTS_REPO, repo_type=hub.REPO_TYPE, revision=BRANCH).sha
     if current != revision:
         raise RebuildError(f'the hub moved to {current} since {revision} was read; nothing published')
     # The hub may store the manifest inline or, if its preupload says so, as an LFS pointer.
     accepted = (data, lfs_pointer(data))
-    if git(checkout, 'cat-file', 'blob', f'{revision}:{path}') in accepted:
+    present = git(checkout, 'ls-tree', '-z', revision, '--', path)
+    if present and git(checkout, 'cat-file', 'blob', f'{revision}:{path}') in accepted:
         return revision
     info = api.upload_file(
         path_or_fileobj=data,
@@ -260,6 +362,7 @@ def publish(api, checkout: Path, revision: str, data: bytes, message: str) -> st
         repo_type=hub.REPO_TYPE,
         commit_message=message,
         parent_commit=revision,
+        revision=BRANCH,
     )
     commit = info.oid
     git(checkout, 'fetch', '-q', 'origin')
@@ -284,9 +387,11 @@ def main() -> None:
     ap.add_argument('--out', type=Path, help='write the manifest and report here (default: a new temporary folder)')
     ap.add_argument('--revision', help='hub commit to read (default: the head)')
     ap.add_argument('--publish', action='store_true', help='commit the manifest on that revision')
+    ap.add_argument('--lfs-check', type=lfs_limit, default=25, help='LFS downloads to hash (N or all; default: 25)')
+    ap.add_argument('--seed', type=int, default=0, help='LFS sampling seed (default: 0)')
     a = ap.parse_args()
     api = hub.default_api()
-    revision = a.revision or api.repo_info(hub.RESULTS_REPO, repo_type=hub.REPO_TYPE).sha
+    revision = a.revision or api.repo_info(hub.RESULTS_REPO, repo_type=hub.REPO_TYPE, revision=BRANCH).sha
     out = a.out or Path(tempfile.mkdtemp(prefix='redlines_0929_full_manifest_'))
     out.mkdir(parents=True, exist_ok=True)
     clone = a.checkout or Path(tempfile.mkdtemp(prefix='redlines_0929_full_hub_')) / 'hub'
@@ -294,13 +399,12 @@ def main() -> None:
         checkout_hub(clone, revision)
 
         def fetch_lfs(commit: str, path: str) -> bytes:
-            with tempfile.TemporaryDirectory() as scratch:
-                got = api.hf_hub_download(
-                    hub.RESULTS_REPO, path, repo_type=hub.REPO_TYPE, revision=commit, local_dir=scratch
-                )
-                return Path(got).read_bytes()
+            with hub_fetcher(api, hub.RESULTS_REPO, commit)(path) as got:
+                return got.read_bytes()
 
         built, report = build(clone, revision, fetch_lfs)
+        checked = check_lfs(clone, revision, hub_fetcher(api, hub.RESULTS_REPO, revision), a.lfs_check, a.seed)
+        report |= {'lfs_checked': checked, 'seed': a.seed}
         path = hub.write_manifest(out, path=out / hub.MANIFEST_NAME, files=built)
         report |= {'revision': revision, 'manifest_sha256': hub.sha256_file(path)}
         (out / 'report.json').write_text(json.dumps(report, indent=1) + '\n')
