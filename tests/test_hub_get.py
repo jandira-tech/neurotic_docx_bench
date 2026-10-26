@@ -1636,12 +1636,9 @@ def test_a_hub_file_where_the_downloads_records_go_refuses_before_downloading(tm
 
 def _drop_kept_locks() -> None:
     """Let go of the locks kept for downloads left running; the run lets each go itself once they end."""
-    while True:
-        try:
-            fd = hub_get._KEPT_LOCKS.pop()  # whoever takes it off the list closes it
-        except IndexError:
-            return
-        os.close(fd)
+    with hub_get._LOCKS_GUARD:
+        while hub_get._KEPT_LOCKS:
+            hub_get._unlock(hub_get._KEPT_LOCKS.pop())  # whoever takes it off the list lets it go
 
 
 def _held_by_another_run(staging: Path) -> bool:
@@ -1649,7 +1646,7 @@ def _held_by_another_run(staging: Path) -> bool:
         fd = hub_get._lock(staging)
     except hub_get.GetError:
         return True
-    os.close(fd)
+    hub_get._unlock(fd)
     return False
 
 
@@ -1883,7 +1880,7 @@ def test_a_press_the_moment_the_staging_lock_is_taken_lets_it_go_and_says_so(
     assert exc.type is KeyboardInterrupt, exc.value
     leaked = _held_by_another_run(staging)
     if leaked:
-        os.close(sent[0])
+        hub_get._unlock(sent[0])
     assert not leaked
     notes = " ".join(getattr(exc.value, "__notes__", ()))
     assert str(dest) in notes
@@ -2050,10 +2047,11 @@ def test_a_child_forked_while_a_lock_is_held_does_not_keep_it_once_the_run_lets_
         release.set()
         for t in running:
             t.join()
-        deadline = time.monotonic() + 3
-        while hub_get._KEPT_LOCKS and time.monotonic() < deadline:
-            time.sleep(0.02)
+        deadline = time.monotonic() + 3  # round 12: wait on the lock itself, not on the list
         held = _held_by_another_run(staging)
+        while held and time.monotonic() < deadline:
+            time.sleep(0.02)
+            held = _held_by_another_run(staging)
     finally:
         os.write(w, b"x")
         os.close(w)

@@ -226,6 +226,14 @@ _HF_BOOKKEEPING = (".cache", "huggingface")  # what hf_hub_download(local_dir=) 
 # Staging locks of runs whose downloads a second Ctrl-C left running: each is let go once those
 # downloads end, or as the process exits, which ends them too.
 _KEPT_LOCKS: list[int] = []
+# Every staging lock this process holds, a run's or a kept one. A forked child closes its copies
+# (_drop_inherited_locks): a copy shares the lock (flock(2)) and, left open, would hold the staging
+# folder after this process exits, for as long as the child lives.
+_HELD_LOCKS: set[int] = set()
+# Taken to open, list, unlock or look up a lock, so a lock is unlocked and off both lists in one step
+# (a run that meets one being let go waits that step out, never sees it held and not kept), and
+# across a fork, so no descriptor is copied between being opened and being listed.
+_LOCKS_GUARD = threading.RLock()
 _CHUNK = 1 << 20
 
 
@@ -505,61 +513,59 @@ def _overlap(staging: Path, dest: Path, files: Sequence[RemoteFile]) -> str | No
 
 
 def _lock(staging: Path) -> int:
-    """An exclusive lock on ``staging``'s lock file, held until the returned descriptor is closed.
+    """An exclusive lock on ``staging``'s lock file, held until ``_unlock`` lets go of the returned descriptor.
 
     A run that finishes removes the lock file while it holds the lock, so a lock taken on a file no
     longer at the lock path is let go and taken again on the file that is there now.
     """
     while True:
-        try:
-            staging.mkdir(parents=True, exist_ok=True)  # a run that just finished may have removed it
-            fd = os.open(staging / LOCK, os.O_WRONLY | os.O_CREAT | os.O_APPEND | os.O_NOFOLLOW, 0o666)
-        except FileNotFoundError:
-            continue
-        except OSError as exc:  # a symlink at the lock path, a file at the staging path, among others
-            raise GetError(f"cannot take the lock {staging / LOCK}: {exc}") from exc
-        try:
-            fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
-            mine, now = os.fstat(fd), _identity_at(staging / LOCK)
-        except BlockingIOError as exc:
+        with _LOCKS_GUARD:
+            try:
+                staging.mkdir(parents=True, exist_ok=True)  # a run that just finished may have removed it
+                fd = os.open(staging / LOCK, os.O_WRONLY | os.O_CREAT | os.O_APPEND | os.O_NOFOLLOW, 0o666)
+            except FileNotFoundError:
+                continue
+            except OSError as exc:  # a symlink at the lock path, a file at the staging path, among others
+                raise GetError(f"cannot take the lock {staging / LOCK}: {exc}") from exc
+            try:
+                fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                mine, now = os.fstat(fd), _identity_at(staging / LOCK)
+            except BlockingIOError as exc:
+                os.close(fd)
+                if _kept_here(staging):
+                    raise _Busy(
+                        f"downloads that a second Ctrl-C left running in this process still write into {staging}; "
+                        "rerun once they end, or in a new process"
+                    ) from exc
+                raise _Busy(f"another bench hub get is using {staging}; wait for it to finish") from exc
+            except OSError as exc:  # a disk without locks, among others
+                os.close(fd)
+                raise GetError(f"cannot take the lock {staging / LOCK}: {exc}") from exc
+            except BaseException:
+                os.close(fd)
+                raise
+            if now is not None and now[:2] == (mine.st_dev, mine.st_ino):
+                _HELD_LOCKS.add(fd)
+                return fd
             os.close(fd)
-            if _kept_here(staging):
-                raise _Busy(
-                    f"downloads that a second Ctrl-C left running in this process still write into {staging}; "
-                    "rerun once they end, or in a new process"
-                ) from exc
-            raise _Busy(f"another bench hub get is using {staging}; wait for it to finish") from exc
-        except OSError as exc:  # a disk without locks, among others
-            os.close(fd)
-            raise GetError(f"cannot take the lock {staging / LOCK}: {exc}") from exc
-        except BaseException:
-            os.close(fd)
-            raise
-        if now is not None and now[:2] == (mine.st_dev, mine.st_ino):
-            return fd
-        os.close(fd)
 
 
 def _kept_here(staging: Path) -> bool:
     """Whether this process keeps ``staging``'s lock for downloads a second Ctrl-C left running."""
     now = _identity_at(staging / LOCK)
-    for fd in tuple(_KEPT_LOCKS):  # a snapshot: another thread lets a lock go once its downloads end
-        try:
-            mine = os.fstat(fd)
-        except OSError:  # let go meanwhile
-            continue
-        if now is not None and now[:2] == (mine.st_dev, mine.st_ino):
-            return True
-    return False
+    with _LOCKS_GUARD:  # every descriptor listed is open: it is unlocked and taken off in one step
+        return now is not None and any(now[:2] == (os.fstat(fd).st_dev, os.fstat(fd).st_ino) for fd in _KEPT_LOCKS)
 
 
 def _unlock(lock: int) -> None:
-    """Unlock, then close. A forked child's copy of the descriptor shares the lock (flock(2)), so closing
-    this process's copy alone would leave it held until the child exits."""
-    try:
-        fcntl.flock(lock, fcntl.LOCK_UN)
-    finally:
-        os.close(lock)
+    """Unlock, then close. The unlock frees the lock even where a copy of the descriptor outlives this
+    process's (flock(2)), such as a child forked by a path that skips the at-fork hook below."""
+    with _LOCKS_GUARD:
+        _HELD_LOCKS.discard(lock)
+        try:
+            fcntl.flock(lock, fcntl.LOCK_UN)
+        finally:
+            os.close(lock)
 
 
 def _let_go(lock: int, running: Sequence[threading.Thread]) -> None:
@@ -567,18 +573,43 @@ def _let_go(lock: int, running: Sequence[threading.Thread]) -> None:
     if not running:
         _unlock(lock)
         return
-    _KEPT_LOCKS.append(lock)
+    with _LOCKS_GUARD:
+        _KEPT_LOCKS.append(lock)
 
     def once_they_end() -> None:
         for t in running:
             t.join()
-        try:
-            _KEPT_LOCKS.remove(lock)  # whoever takes it off the list lets it go
-        except ValueError:
-            return
-        _unlock(lock)
+        with _LOCKS_GUARD:
+            if lock not in _KEPT_LOCKS:  # whoever takes it off the list lets it go
+                return
+            _unlock(lock)
+            _KEPT_LOCKS.remove(lock)
 
     threading.Thread(target=once_they_end, name="hub-get-let-go", daemon=True).start()
+
+
+def _drop_inherited_locks() -> None:
+    """In a forked child: close the copies of this process's staging locks.
+
+    Closing a copy leaves the parent's lock as it is (only an unlock, or the last descriptor closing,
+    frees it); keeping it would hold the staging folder past the parent's exit, for the child's life.
+    """
+    global _LOCKS_GUARD
+    _LOCKS_GUARD = threading.RLock()  # the parent's stays held by the thread that forked
+    for fd in _HELD_LOCKS:
+        try:
+            os.close(fd)
+        except OSError:
+            pass
+    _HELD_LOCKS.clear()
+    _KEPT_LOCKS.clear()
+
+
+os.register_at_fork(
+    before=lambda: _LOCKS_GUARD.acquire(),
+    after_in_parent=lambda: _LOCKS_GUARD.release(),
+    after_in_child=_drop_inherited_locks,
+)
 
 
 def _record_clashes(files: Sequence[RemoteFile]) -> list[str]:
