@@ -109,6 +109,12 @@ def test_bytes_that_are_not_the_hub_blob_refuse(rebuild, bad):
         rebuild.rebuild(tree, [], {'a/x.docx': bad}.__getitem__)
 
 
+def test_an_lfs_pointer_whose_oid_is_not_a_sha256_refuses(rebuild):
+    bad = b'version https://git-lfs.github.com/spec/v1\noid sha256:not-a-digest\nsize 9\n'
+    with pytest.raises(rebuild.RebuildError, match='LFS pointer'):
+        rebuild.rebuild(tree_of(rebuild, {'b/y.pdf': bad}), [], {'b/y.pdf': bad}.__getitem__)
+
+
 @pytest.fixture
 def checkout(tmp_path):
     """A dataset with two manifest versions and the 0.13.0 upload list, one commit each day."""
@@ -245,3 +251,32 @@ def test_publish_with_nothing_to_change_commits_nothing(rebuild, tmp_path):
     api = CommitHub({f'{PREFIX}/{MANIFEST}': data})
     assert rebuild.publish(api, HEAD, data, 'rebuild', scratch=tmp_path) == HEAD
     assert len(api.log) == 1
+
+
+def test_versions_committed_in_the_same_second_keep_their_commit_order(rebuild, tmp_path):
+    """The newer of two same-second versions disagrees with the hub: that must refuse."""
+    repo = tmp_path / 'same'
+    repo.mkdir()
+    git(repo, 'init', '-q', '-b', 'main')
+    git(repo, 'config', 'user.email', 't@example.com')
+    git(repo, 'config', 'user.name', 't')
+    stamp = {'GIT_AUTHOR_DATE': '2026-09-01T12:00:00+00:00', 'GIT_COMMITTER_DATE': '2026-09-01T12:00:00+00:00'}
+    for files in ({'a/x.docx': sha(b'inline')}, {'a/x.docx': sha(b'what the newer run claimed')}):
+        path = repo / PREFIX / 'a' / 'x.docx'
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(b'inline')
+        (repo / PREFIX / MANIFEST).parent.mkdir(parents=True, exist_ok=True)
+        (repo / PREFIX / MANIFEST).write_bytes(manifest(files))
+        git(repo, 'add', '-A')
+        git(repo, 'commit', '-q', '-m', 'same second', env=stamp)
+    history = rebuild.records(repo, 'HEAD')
+    assert [files for _, files in history][-1] == {'a/x.docx': sha(b'what the newer run claimed')}
+    with pytest.raises(rebuild.RebuildError, match=re.escape('a/x.docx')):
+        rebuild.build(repo, 'HEAD')
+
+
+def test_a_shallow_clone_hides_old_records_and_refuses(rebuild, checkout, tmp_path):
+    shallow = tmp_path / 'shallow'
+    git(tmp_path, 'clone', '-q', '--depth', '1', f'file://{checkout.repo}', str(shallow))
+    with pytest.raises(rebuild.RebuildError, match='shallow'):
+        rebuild.records(shallow, 'HEAD')
