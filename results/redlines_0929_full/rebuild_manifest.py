@@ -487,8 +487,29 @@ def publish(api, checkout: Path, revision: str, data: bytes, message: str) -> st
                 f'pointer (size {pointer.group(2).decode()} for {len(data)} bytes); upload_file would not replace it, '
                 'since it compares content ids. Nothing published; fix the pointer on the hub'
             )
+    stage = 'during upload_file'
+    try:  # from the upload to the end of its check: a Ctrl-C anywhere here may follow a commit
+        info = upload(api, path, data, message, revision)
+        stage = 'after upload_file returned'
+        commit = info.oid
+        stage = f'while checking {commit}, which upload_file returned'
+        try:
+            return verify_upload(checkout, revision, commit, before, data)
+        except Exception as exc:
+            raise UnverifiedPublish(
+                f'upload_file returned {commit}, but checking it failed: {exc}. The hub may hold the manifest now; '
+                f'rerun to check it (a manifest already there is recognised)'
+            ) from exc
+    except BaseException as exc:
+        if not isinstance(exc, Exception):  # Ctrl-C: stop, but say what may have happened
+            exc.add_note(f'stopped {stage}: the hub may hold the manifest now; rerun to check it')
+        raise
+
+
+def upload(api, path: str, data: bytes, message: str, revision: str):
+    """``upload_file`` of the manifest onto ``revision``; its failures sorted by what they say of the hub."""
     try:
-        info = api.upload_file(
+        return api.upload_file(
             path_or_fileobj=data,
             path_in_repo=path,
             repo_id=hub.RESULTS_REPO,
@@ -516,21 +537,6 @@ def publish(api, checkout: Path, revision: str, data: bytes, message: str) -> st
             f'upload_file failed without an answer from the hub ({type(exc).__name__}: {exc}); the hub may hold '
             'the manifest now; rerun to check it (a manifest already there is recognised)'
         ) from exc
-    except BaseException as exc:  # Ctrl-C: stop, but say what may have happened
-        exc.add_note('stopped during upload_file: the hub may hold the manifest now; rerun to check it')
-        raise
-    commit = info.oid
-    try:
-        return verify_upload(checkout, revision, commit, before, data)
-    except Exception as exc:
-        raise UnverifiedPublish(
-            f'upload_file returned {commit}, but checking it failed: {exc}. The hub may hold the manifest now; '
-            f'rerun to check it (a manifest already there is recognised)'
-        ) from exc
-    except BaseException as exc:
-        exc.add_note(f'stopped while checking {commit}, which upload_file returned: the hub may hold the manifest '
-                     'now; rerun to check it')
-        raise
 
 
 def verify_upload(checkout: Path, revision: str, commit: str, before: dict, data: bytes) -> str:
