@@ -384,7 +384,7 @@ class ReusingHub(PinnedHub):
 
 def test_a_reused_staged_file_is_hashed_again_and_a_bad_one_refetched(tmp_path: Path) -> None:
     dest = tmp_path / "dest"
-    staged = hub_get.staging_dir(dest, SHA) / "outputs/run/RUN.md"
+    staged = hub_get.staging_dir(dest, SHA) / hub_get.FILES / "outputs/run/RUN.md"
     staged.parent.mkdir(parents=True)
     staged.write_bytes(b"stale\n")
     api = ReusingHub(FILES)
@@ -399,7 +399,7 @@ def test_a_symlink_in_staging_is_refused_and_its_target_untouched(tmp_path: Path
     dest = tmp_path / "dest"
     outside = tmp_path / "outside.md"
     outside.write_bytes(b"# run\n")  # hashes like the hub's RUN.md
-    staged = hub_get.staging_dir(dest, SHA) / "outputs/run/RUN.md"
+    staged = hub_get.staging_dir(dest, SHA) / hub_get.FILES / "outputs/run/RUN.md"
     staged.parent.mkdir(parents=True)
     staged.symlink_to(outside)
     with pytest.raises(hub_get.GetError, match="symlink"):
@@ -414,8 +414,8 @@ def test_a_symlinked_staging_folder_never_deletes_outside_it(tmp_path: Path) -> 
     elsewhere.mkdir()
     (elsewhere / "RUN.md").write_bytes(b"user file\n")  # does not hash like the hub's
     staging = hub_get.staging_dir(dest, SHA)
-    (staging / "outputs").mkdir(parents=True)
-    (staging / "outputs/run").symlink_to(elsewhere)
+    (staging / hub_get.FILES / "outputs").mkdir(parents=True)
+    (staging / hub_get.FILES / "outputs/run").symlink_to(elsewhere)
     with pytest.raises(hub_get.GetError, match="symlink"):
         hub_get.get(preset(dest), api=ReusingHub(FILES))
     assert (elsewhere / "RUN.md").read_bytes() == b"user file\n"
@@ -450,7 +450,7 @@ def test_a_failed_move_puts_back_everything_already_moved(tmp_path: Path, monkey
         hub_get.get(preset(dest), api=PinnedHub(FILES), on_conflict="overwrite")
     assert sorted(p.relative_to(dest).as_posix() for p in dest.rglob("*")) == ["RUN.md"]
     assert (dest / "RUN.md").read_bytes() == b"old\n"
-    staging = hub_get.staging_dir(dest, SHA)
+    staging = hub_get.staging_dir(dest, SHA) / hub_get.FILES
     assert {p.relative_to(staging).as_posix() for p in staging.rglob("*") if p.is_file()} >= {
         "outputs/run/a.docx", "outputs/run/sub/b.pdf", "outputs/run/RUN.md"}
 
