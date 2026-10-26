@@ -12,6 +12,7 @@ import hashlib
 import os
 import re
 import shutil
+import stat
 import tempfile
 from pathlib import Path
 from types import SimpleNamespace
@@ -795,3 +796,224 @@ def test_a_symlinked_folder_below_the_destination_is_refused(tmp_path: Path) -> 
         hub_get.get(preset(dest), api=api, on_conflict="overwrite")
     assert (outside / "b.pdf").read_bytes() == b"outside, not ours\n"
     assert api.downloads() == []
+
+
+# Review round 4, mcode (#80)
+
+
+def test_a_symlinked_folder_that_appears_while_moving_is_refused(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    dest = tmp_path / "dest"
+    outside = tmp_path / "outside"
+    outside.mkdir()
+    real = hub_get.place
+    calls = []
+
+    def racing(staged, target):
+        calls.append(target)
+        if len(calls) == 2:  # after the checks before the moves, while RUN.md is already in place
+            (dest / "sub").symlink_to(outside)
+        return real(staged, target)
+
+    monkeypatch.setattr(hub_get, "place", racing)
+    with pytest.raises(hub_get.GetError, match=re.escape(f"{dest / 'sub'} is a symlink")):
+        hub_get.get(preset(dest), api=PinnedHub(FILES))
+    assert list(outside.iterdir()) == []
+    assert not (dest / "RUN.md").exists() and not (dest / "a.docx").exists()
+
+
+def test_the_staging_folder_is_pruned_while_the_lock_is_held(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    dest = tmp_path / "dest"
+    staging = hub_get.staging_dir(dest, SHA)
+    real = hub_get._prune
+    seen = []
+
+    def prune(root):
+        seen.append((staging / hub_get.LOCK).exists())
+        return real(root)
+
+    monkeypatch.setattr(hub_get, "_prune", prune)
+    hub_get.get(preset(dest), api=PinnedHub(FILES))
+    assert seen and all(seen)
+    assert not staging.exists()
+
+
+def test_a_lock_taken_on_a_file_no_longer_at_the_lock_path_is_taken_again(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Another run removed the lock file between this run's open and its flock."""
+    dest = tmp_path / "dest"
+    staging = hub_get.staging_dir(dest, SHA)
+    real = hub_get.fcntl.flock
+    calls = []
+
+    def flock(fd, op):
+        calls.append(op)
+        if len(calls) == 1:
+            (staging / hub_get.LOCK).unlink()
+            (staging / hub_get.LOCK).write_bytes(b"")  # a third run's fresh lock file
+        return real(fd, op)
+
+    monkeypatch.setattr(hub_get.fcntl, "flock", flock)
+    assert hub_get.get(preset(dest), api=PinnedHub(FILES)).downloaded == 3
+    assert len([op for op in calls if op & hub_get.fcntl.LOCK_EX]) == 2
+
+
+def test_a_rerun_tells_of_replaced_files_an_earlier_run_left_and_unlinks_its_staged_second_names(tmp_path: Path) -> None:
+    """What a run killed in the middle of its moves leaves: placed files with a staged second name, and backups."""
+    dest = tmp_path / "dest"
+    hub_get.get(preset(dest), api=PinnedHub(FILES))
+    staging = hub_get.staging_dir(dest, SHA)
+    staged = staging / hub_get.FILES / "outputs/run/a.docx"
+    staged.parent.mkdir(parents=True)
+    os.link(dest / "a.docx", staged)
+    backup = staging / ".replaced" / "RUN.md"
+    backup.parent.mkdir(parents=True)
+    backup.write_bytes(b"the user's old RUN.md\n")
+    report = hub_get.get(preset(dest), api=PinnedHub(FILES))
+    assert report.downloaded == 0
+    assert getattr(report, "earlier_replaced", None) == (str(backup),)
+    assert str(backup) in report.describe()
+    assert backup.read_bytes() == b"the user's old RUN.md\n"
+    assert not staged.exists()
+    assert os.stat(dest / "a.docx").st_nlink == 1
+
+
+def test_the_corpus_preset_downloads_the_corpus_readme() -> None:
+    """The fixtures repo's README.md is corpus/README.md (the same bytes); it is not a separate card."""
+    assert not hub_get._matches("README.md", hub_get.PRESETS["corpus"].exclude)
+
+
+def test_cli_dry_run_with_keep_local_does_not_say_it_kept_anything(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    from neurotic_docx_bench.cli import app
+
+    api = PinnedHub({"word/x.docx": BIG, "word/MANIFEST.sha256.json": b"{}"})
+    monkeypatch.setattr(hub, "default_api", lambda: api)
+    monkeypatch.chdir(tmp_path)
+    (tmp_path / "corpus/word").mkdir(parents=True)
+    (tmp_path / "corpus/word/MANIFEST.sha256.json").write_bytes(b"{ }")
+    result = runner.invoke(app, ["hub", "get", "corpus-word", "--dry-run", "--keep-local"])
+    assert result.exit_code == 0, result.output
+    assert "kept local:" not in result.output
+    assert "would keep local: MANIFEST.sha256.json" in result.output
+
+
+# Review round 4, Codex (#80)
+
+
+def test_a_destination_inside_the_staging_folder_is_refused(tmp_path: Path) -> None:
+    """``dest`` a symlink to the staging folder's files/: the cleanup would delete the file it kept."""
+    dest = tmp_path / "dest"
+    staging = hub_get.staging_dir(dest, SHA)
+    (staging / hub_get.FILES).mkdir(parents=True)
+    dest.symlink_to(staging / hub_get.FILES)
+    (dest / "a.txt").write_bytes(b"mine\n")
+    whole = hub_get.Preset(name="t", repo_id=REPO, path="", dest=dest, about="test")
+    api = PinnedHub({"a.txt": b"remote a\n", "b.txt": b"remote b\n"})
+    with pytest.raises(hub_get.GetError, match="staging folder"):
+        hub_get.get(whole, api=api, on_conflict="keep-local")
+    assert (dest / "a.txt").read_bytes() == b"mine\n"
+    assert api.downloads() == []
+
+
+def test_hub_files_that_would_land_in_a_staging_folder_inside_the_destination_are_refused(tmp_path: Path) -> None:
+    """``dest`` a symlink to its own parent puts the staging folder inside it."""
+    dest = tmp_path / "dest"
+    dest.symlink_to(tmp_path)
+    staging = hub_get.staging_dir(dest, SHA)
+    whole = hub_get.Preset(name="t", repo_id=REPO, path="", dest=dest, about="test")
+    api = PinnedHub({"a.txt": b"remote a\n", f"{staging.name}/files/a.txt": b"remote a again\n"})
+    with pytest.raises(hub_get.GetError, match="staging folder"):
+        hub_get.get(whole, api=api)
+    assert api.downloads() == []
+
+
+def test_a_folder_swapped_for_a_symlink_while_moving_never_moves_files_outside(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    dest = tmp_path / "dest"
+    local = {"RUN.md": b"old run\n", "a.docx": b"old a\n", "sub/b.pdf": b"old b\n"}
+    for rel, data in local.items():
+        (dest / rel).parent.mkdir(parents=True, exist_ok=True)
+        (dest / rel).write_bytes(data)
+    outside, aside = tmp_path / "outside", tmp_path / "sub-aside"
+    outside.mkdir()
+    (outside / "b.pdf").write_bytes(b"outside, not ours\n")
+    real = hub_get.place
+
+    def racing(staged, target):
+        if target.name == "a.docx" and not aside.exists():  # after every check before the moves
+            (dest / "sub").rename(aside)
+            (dest / "sub").symlink_to(outside)
+        return real(staged, target)
+
+    monkeypatch.setattr(hub_get, "place", racing)
+    with pytest.raises(hub_get.GetError, match=re.escape(f"{dest / 'sub'} is a symlink")):
+        hub_get.get(preset(dest), api=PinnedHub(FILES), on_conflict="overwrite")
+    assert sorted(p.name for p in outside.iterdir()) == ["b.pdf"]
+    assert (outside / "b.pdf").read_bytes() == b"outside, not ours\n"
+    assert (dest / "RUN.md").read_bytes() == b"old run\n"
+    assert (dest / "a.docx").read_bytes() == b"old a\n"
+    assert (aside / "b.pdf").read_bytes() == b"old b\n"
+
+
+def test_a_file_restored_on_a_disk_without_hard_links_keeps_its_mode_and_time(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    dest = tmp_path / "dest"
+    dest.mkdir()
+    mine = dest / "RUN.md"
+    mine.write_bytes(b"old run\n")
+    os.chmod(mine, 0o600)
+    os.utime(mine, ns=(1_000_000_000, 1_000_000_000))
+    real = hub_get.place
+
+    def no_links(src, dst, *args, **kw):
+        raise OSError(errno.EOPNOTSUPP, "no hard links on this disk")
+
+    def flaky(staged, target):
+        if target.name == "b.pdf":
+            raise OSError("disk went away")
+        return real(staged, target)
+
+    monkeypatch.setattr(os, "link", no_links)
+    monkeypatch.setattr(hub_get, "place", flaky)
+    with pytest.raises(hub_get.GetError, match="disk went away"):
+        hub_get.get(preset(dest), api=PinnedHub(FILES), on_conflict="overwrite")
+    st = os.stat(mine)
+    assert mine.read_bytes() == b"old run\n"
+    assert stat.S_IMODE(st.st_mode) == 0o600
+    assert st.st_mtime_ns == 1_000_000_000
+
+
+def test_a_copy_whose_identity_cannot_be_read_is_named_as_left_behind(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    dest = tmp_path / "dest"
+    real_open, real_fstat = os.open, os.fstat
+    watched, failed = set(), []
+
+    def no_links(src, dst, *args, **kw):
+        raise OSError(errno.EOPNOTSUPP, "no hard links on this disk")
+
+    def open_(path, flags, mode=0o777, **kw):
+        fd = real_open(path, flags, mode, **kw)
+        if Path(path) == dest / "a.docx":
+            watched.add(fd)
+        return fd
+
+    def fstat(fd):
+        if fd in watched and not failed:
+            failed.append(fd)
+            raise OSError(errno.EIO, "fstat failed")
+        return real_fstat(fd)
+
+    monkeypatch.setattr(os, "link", no_links)
+    monkeypatch.setattr(os, "open", open_)
+    monkeypatch.setattr(os, "fstat", fstat)
+    with pytest.raises(hub_get.GetError) as info:
+        hub_get.get(preset(dest), api=PinnedHub(FILES))
+    message = str(info.value)
+    assert failed
+    assert "every file already moved was put back" not in message
+    assert f"{dest / 'a.docx'}" in message and "stays" in message
+    assert not (dest / "RUN.md").exists()
