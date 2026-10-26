@@ -922,3 +922,35 @@ def test_an_upload_the_hub_refused_is_reported_as_refused(rebuild, hub_pair):
     with pytest.raises(rebuild.RebuildError, match=r'refused.*412.*nothing published') as exc:
         rebuild.publish(hub_pair.api, hub_pair.clone, hub_pair.head, data, 'rebuild')
     assert type(exc.value).__name__ != 'UnverifiedPublish'
+
+
+# Review round 10 (#78)
+
+
+def test_ctrl_c_during_the_upload_says_the_hub_may_hold_the_manifest(rebuild, hub_pair):
+    data = manifest({'a/x.docx': sha(b'inline')})
+    real = hub_pair.api.upload_file
+
+    def interrupted(**kw):
+        real(**kw)  # the hub commits; Ctrl-C lands while the answer is on its way
+        raise KeyboardInterrupt
+
+    hub_pair.api.upload_file = interrupted
+    with pytest.raises(KeyboardInterrupt) as exc:
+        rebuild.publish(hub_pair.api, hub_pair.clone, hub_pair.head, data, 'rebuild')
+    assert hub_pair.api.head() != hub_pair.head
+    assert 'may hold' in ' '.join(getattr(exc.value, '__notes__', ()))
+
+
+def test_ctrl_c_while_checking_the_upload_says_the_hub_may_hold_the_manifest(rebuild, hub_pair, monkeypatch):
+    data = manifest({'a/x.docx': sha(b'inline')})
+
+    def interrupted(*args, **kw):
+        raise KeyboardInterrupt
+
+    monkeypatch.setattr(rebuild, 'verify_upload', interrupted)
+    with pytest.raises(KeyboardInterrupt) as exc:
+        rebuild.publish(hub_pair.api, hub_pair.clone, hub_pair.head, data, 'rebuild')
+    assert hub_pair.api.head() != hub_pair.head
+    notes = ' '.join(getattr(exc.value, '__notes__', ()))
+    assert 'may hold' in notes and hub_pair.api.head() in notes
