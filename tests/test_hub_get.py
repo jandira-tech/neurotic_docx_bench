@@ -2310,3 +2310,140 @@ def test_no_queued_download_starts_once_ctrl_c_stopped_the_run(tmp_path: Path, m
         hub_get.get(preset(tmp_path / "dest"), api=api, workers=1)
     assert exc.type is KeyboardInterrupt, exc.value
     assert len(api.downloads()) == 1, api.downloads()
+
+
+# Review round 13 (#80)
+
+
+def _in_a_child(run) -> int:
+    """Run ``run`` in a forked child that never returns to pytest; the child's exit code."""
+    import warnings
+
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", DeprecationWarning)  # a fork with threads alive
+        pid = os.fork()
+    if pid == 0:
+        code = 0
+        try:
+            run()
+        except BaseException:
+            code = 1
+        os._exit(code)
+    return os.waitstatus_to_exitcode(os.waitpid(pid, 0)[1])
+
+
+def _hub_bytes_or_absent(dest: Path) -> list[str]:
+    """The destination's files that hold anything but the hub's bytes."""
+    wrong = []
+    for name, data in FILES.items():
+        local = dest / name.removeprefix("outputs/run/")
+        if name.startswith("outputs/run/") and local.exists() and local.read_bytes() != data:
+            wrong.append(f"{local.name}: {local.read_bytes()!r}")
+    return wrong
+
+
+def test_a_kill_during_a_copy_never_leaves_a_part_written_file_in_the_destination(tmp_path: Path) -> None:
+    """mcode, round 13: on a disk without hard links each file is copied; a kill mid-copy must leave the
+    destination's file absent or whole, never part-written, and a rerun must complete the destination."""
+    dest = tmp_path / "dest"
+
+    def killed_mid_copy() -> None:
+        def no_links(src, dst, *a, **kw):
+            raise OSError(errno.EOPNOTSUPP, "no hard links on this disk")
+
+        def half(src, dst, *a, **kw):
+            dst.write(src.read(3))
+            dst.flush()
+            os._exit(9)  # killed: no handler, no cleanup
+
+        os.link = no_links
+        shutil.copyfileobj = half
+        hub_get.get(preset(dest), api=PinnedHub(FILES))
+
+    assert _in_a_child(killed_mid_copy) == 9
+    assert _hub_bytes_or_absent(dest) == []
+    hub_get.get(preset(dest), api=PinnedHub(FILES))
+    assert _hub_bytes_or_absent(dest) == []
+    assert all((dest / n.removeprefix("outputs/run/")).exists() for n in FILES if n.startswith("outputs/run/"))
+
+
+def test_what_a_kill_during_the_link_probe_leaves_goes_with_the_next_run(tmp_path: Path) -> None:
+    """mcode, round 13: a probe left by a kill must not keep the staging folder after every later run."""
+    dest = tmp_path / "dest"
+
+    def killed_in_the_probe() -> None:
+        os.link = lambda *a, **kw: os._exit(9)  # the run's first link is the probe's
+        hub_get.get(preset(dest), api=PinnedHub(FILES))
+
+    assert _in_a_child(killed_in_the_probe) == 9
+    hub_get.get(preset(dest), api=PinnedHub(FILES))
+    assert not hub_get.staging_dir(dest, SHA).exists()
+
+
+def test_a_disk_too_full_for_the_link_probe_refuses_like_any_full_disk(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """mcode, round 13: the probe's own write failing is a refusal (GetError), not a traceback."""
+    dest = tmp_path / "dest"
+    staging = hub_get.staging_dir(dest, SHA)
+    real_open, real_mkdir = os.open, os.mkdir
+
+    def full(path) -> None:
+        p = Path(path).absolute()
+        if staging.absolute() in p.parents and p.name != hub_get.LOCK:
+            raise OSError(errno.ENOSPC, "No space left on device")
+
+    def opening(path, *a, **kw):
+        full(path)
+        return real_open(path, *a, **kw)
+
+    def making(path, *a, **kw):
+        full(path)
+        return real_mkdir(path, *a, **kw)
+
+    monkeypatch.setattr(os, "open", opening)
+    monkeypatch.setattr(os, "mkdir", making)
+    api = PinnedHub(FILES)
+    with pytest.raises(Exception) as exc:
+        hub_get.get(preset(dest), api=api)
+    assert type(exc.value) is hub_get.GetError, repr(exc.value)
+    assert "No space left" in str(exc.value)
+    assert api.downloads() == []
+
+
+def test_a_child_forked_during_a_run_gets_python_s_ctrl_c_back(tmp_path: Path) -> None:
+    """Codex, round 13: the hold belongs to the parent's run; a child keeping it would hold every press
+    for a run it never has, and a run of its own would leave it in place as a caller's handler."""
+    previous = signal.signal(signal.SIGINT, signal.default_int_handler)
+    r, w = os.pipe()
+    try:
+        with hub_get._ctrl_c_between_steps():
+            assert isinstance(getattr(signal.getsignal(signal.SIGINT), "__self__", None), hub_get._CtrlC)
+
+            def report() -> None:
+                os.write(w, b"1" if signal.getsignal(signal.SIGINT) is signal.default_int_handler else b"0")
+
+            assert _in_a_child(report) == 0
+        assert os.read(r, 1) == b"1"
+    finally:
+        os.close(r)
+        os.close(w)
+        signal.signal(signal.SIGINT, previous)
+
+
+def test_a_folder_below_the_destination_on_another_disk_refuses_before_downloading(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Codex, round 13: files there could only be copied, and a rollback could not take them back into
+    the staging folder (EXDEV), so such a folder refuses the run like a symlinked one."""
+    dest = tmp_path / "dest"
+    (dest / "sub").mkdir(parents=True)
+    real_device = hub_get.device
+    mount = (dest / "sub").absolute()
+    monkeypatch.setattr(hub_get, "device", lambda path: real_device(path) + (Path(path).absolute() == mount))
+    api = PinnedHub(FILES)
+    with pytest.raises(Exception) as exc:
+        hub_get.get(preset(dest), api=api)
+    assert type(exc.value) is hub_get.GetError, repr(exc.value)
+    assert str(dest / "sub") in str(exc.value) and "another disk" in str(exc.value)
+    assert api.downloads() == []
