@@ -64,17 +64,62 @@ class HubFile:
     size: int
 
 
-def git(checkout: Path, *args: str, input: bytes | None = None) -> bytes:
+def git_env() -> dict[str, str]:
     # Replace refs could rewrite the history the records are read from; without lazy fetching a
-    # blob-filtered clone could not read an old record at all.
+    # blob-filtered clone could not read an old record at all. The user's global and system
+    # config (abbreviations, diff settings, filters) never shape what is read here.
     env = {k: v for k, v in os.environ.items() if k != 'GIT_NO_LAZY_FETCH'}
-    env |= {'GIT_LFS_SKIP_SMUDGE': '1', 'GIT_NO_REPLACE_OBJECTS': '1'}
+    return env | {
+        'GIT_LFS_SKIP_SMUDGE': '1',
+        'GIT_NO_REPLACE_OBJECTS': '1',
+        'GIT_CONFIG_GLOBAL': os.devnull,
+        'GIT_CONFIG_NOSYSTEM': '1',
+    }
+
+
+def git(checkout: Path, *args: str, input: bytes | None = None) -> bytes:
     try:
-        run = subprocess.run(['git', '-C', str(checkout), *args], check=True, capture_output=True, env=env, input=input)
+        run = subprocess.run(
+            ['git', '-C', str(checkout), *args], check=True, capture_output=True, env=git_env(), input=input
+        )
     except subprocess.CalledProcessError as exc:
         error = exc.stderr.decode(errors='replace').strip()[:500]
         raise RebuildError(f'git {" ".join(args[:3])} failed ({exc.returncode}): {error}') from exc
     return run.stdout
+
+
+@contextmanager
+def blob_reader(checkout: Path):
+    """``read(oid)``: a blob's bytes as git stores them, before any checkout filter or eol conversion."""
+    with tempfile.TemporaryFile() as errors:
+        proc = subprocess.Popen(
+            ['git', '-C', str(checkout), 'cat-file', '--batch'],
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=errors,
+            env=git_env(),
+        )
+
+        def read(oid: str) -> bytes:
+            proc.stdin.write(oid.encode() + b'\n')
+            proc.stdin.flush()
+            header = proc.stdout.readline().split()
+            if len(header) != 3 or header[0] != oid.encode() or header[1] != b'blob':
+                errors.seek(0)
+                said = errors.read().decode(errors='replace').strip()[:500]
+                raise RebuildError(f'git cat-file {oid}: {b" ".join(header).decode(errors="replace")} {said}'.strip())
+            size = int(header[2])
+            data = proc.stdout.read(size)
+            if len(data) != size or proc.stdout.read(1) != b'\n':
+                raise RebuildError(f'git cat-file {oid}: short read ({len(data)} of {size} bytes)')
+            return data
+
+        try:
+            yield read
+        finally:
+            proc.stdin.close()
+            proc.stdout.close()
+            proc.wait()
 
 
 def git_blob_sha1(data: bytes) -> str:
@@ -138,6 +183,7 @@ def parse_record(name: str, raw: bytes, label: str, fetch_lfs=None) -> dict[str,
     except UnicodeError as exc:
         raise RebuildError(f'{label} is not UTF-8: {exc}') from exc
     if name == MANIFEST:
+
         def reject_constant(value):
             raise ValueError(f'non-JSON constant {value}')
 
@@ -156,7 +202,11 @@ def parse_record(name: str, raw: bytes, label: str, fetch_lfs=None) -> dict[str,
         ):
             raise RebuildError(f'{label} must map string paths to lowercase sha256 digests')
         return files
-    rows = list(csv.reader(io.StringIO(text), delimiter='\t'))
+    try:
+        # Quotes are literal characters: csv's quoting would accept an unterminated quote silently.
+        rows = list(csv.reader(io.StringIO(text), delimiter='\t', quoting=csv.QUOTE_NONE, strict=True))
+    except csv.Error as exc:
+        raise RebuildError(f'{label} is not a tab-separated list: {exc}') from exc
     if not rows or rows[0] != UPLOAD_LIST_HEADER or any(len(row) != len(UPLOAD_LIST_HEADER) for row in rows):
         raise RebuildError(f'{label} is not a {"/".join(UPLOAD_LIST_HEADER)} list (header {rows[:1]})')
     if any(
@@ -270,7 +320,11 @@ def rebuild(
 
 
 def checkout_hub(dest: Path, revision: str) -> None:
-    """A blob-filtered clone of the dataset, sparse on the run folder, LFS files left as pointers."""
+    """A blob-filtered clone of the dataset, sparse on the run folder, LFS files left as pointers.
+
+    The checkout is what fetches the run folder's blobs in one batch; the bytes are read from the
+    objects (``blob_reader``), never from the working-tree files a filter or eol rule may convert.
+    """
     if not (dest / '.git').is_dir():
         dest.parent.mkdir(parents=True, exist_ok=True)
         git(dest.parent, 'clone', '-q', '--filter=blob:none', '--no-checkout', URL, dest.name)
@@ -280,7 +334,6 @@ def checkout_hub(dest: Path, revision: str) -> None:
 
 
 def build(checkout: Path, revision: str, fetch_lfs=None) -> tuple[dict[str, str], dict]:
-    root = checkout / REPO_PREFIX
     commits = {}
     history = records(checkout, revision, fetch_lfs, commits)
     independent_by_commits = {}
@@ -294,7 +347,9 @@ def build(checkout: Path, revision: str, fetch_lfs=None) -> tuple[dict[str, str]
         independent = independent_by_commits[distinct]
         return {label for label in labels if commits[label] in independent}
 
-    return rebuild(hub_tree(checkout, revision), history, lambda rel: (root / rel).read_bytes(), newest)
+    tree = hub_tree(checkout, revision)
+    with blob_reader(checkout) as read:
+        return rebuild(tree, history, lambda rel: read(tree[rel].blob_id), newest)
 
 
 def hub_fetcher(api, repo_id: str, revision: str):
@@ -314,12 +369,13 @@ def hub_fetcher(api, repo_id: str, revision: str):
 
 def check_lfs(checkout: Path, revision: str, fetch, count: int | str, seed: int) -> int:
     entries = {}
-    for path, entry in sorted(hub_tree(checkout, revision).items()):
-        # Canonical pointers fit in 256 bytes; inline payloads can be much larger.
-        if entry.size <= 256:
-            oid = lfs_oid((checkout / REPO_PREFIX / path).read_bytes())
-            if oid is not None:
-                entries[path] = oid
+    with blob_reader(checkout) as read:
+        for path, entry in sorted(hub_tree(checkout, revision).items()):
+            # Canonical pointers fit in 256 bytes; inline payloads can be much larger.
+            if entry.size <= 256:
+                oid = lfs_oid(read(entry.blob_id))
+                if oid is not None:
+                    entries[path] = oid
     paths = sorted(entries)
     chosen = paths if count == 'all' else random.Random(seed).sample(paths, min(count, len(paths)))
     for path in chosen:
@@ -338,6 +394,16 @@ def lfs_limit(value: str) -> int | str:
     if re.fullmatch(r'[0-9]+', value):
         return int(value)
     raise argparse.ArgumentTypeError('expected a non-negative integer or all')
+
+
+def leaves(checkout: Path, commit: str) -> dict[str, tuple[str, ...]]:
+    """Every blob and gitlink in ``commit``: ``{path: (mode, type, oid)}``, no diff config applied."""
+    entries = {}
+    for line in git(checkout, 'ls-tree', '-r', '-z', '--full-tree', commit).split(b'\0'):
+        if line:
+            meta, path = line.decode().split('\t', 1)
+            entries[path] = tuple(meta.split())
+    return entries
 
 
 def publish(api, checkout: Path, revision: str, data: bytes, message: str) -> str:
@@ -369,11 +435,8 @@ def publish(api, checkout: Path, revision: str, data: bytes, message: str) -> st
     parents = git(checkout, 'rev-list', '--parents', '-n', '1', commit).decode().split()
     if parents != [commit, revision]:
         raise RebuildError(f'{commit} is not a commit on {revision} (parents {parents[1:]})')
-    changed = [
-        p
-        for p in git(checkout, 'diff', '--name-only', '--no-renames', '-z', revision, commit).decode().split('\0')
-        if p
-    ]
+    before, after = leaves(checkout, revision), leaves(checkout, commit)
+    changed = sorted(p for p in before.keys() | after.keys() if before.get(p) != after.get(p))
     if changed != [path]:
         raise RebuildError(f'{commit} changes {changed[:10]}, not only {path}; it is not this upload')
     if git(checkout, 'cat-file', 'blob', f'{commit}:{path}') not in accepted:
@@ -405,8 +468,13 @@ def main() -> None:
         built, report = build(clone, revision, fetch_lfs)
         checked = check_lfs(clone, revision, hub_fetcher(api, hub.RESULTS_REPO, revision), a.lfs_check, a.seed)
         report |= {'lfs_checked': checked, 'seed': a.seed}
-        path = hub.write_manifest(out, path=out / hub.MANIFEST_NAME, files=built)
-        report |= {'revision': revision, 'manifest_sha256': hub.sha256_file(path)}
+        # hub.write_manifest's bytes, kept in memory: what is published is what was built, whatever
+        # the out folder holds (a symlink there would otherwise redirect the write or the read).
+        data = (json.dumps(hub.manifest_document(built), indent=2, sort_keys=True) + '\n').encode()
+        path = out / hub.MANIFEST_NAME
+        path.unlink(missing_ok=True)
+        path.write_bytes(data)
+        report |= {'revision': revision, 'manifest_sha256': hashlib.sha256(data).hexdigest()}
         (out / 'report.json').write_text(json.dumps(report, indent=1) + '\n')
         folders = Counter('/'.join(p.split('/')[:2]) for p in report['first_recorded'])
         print(f'{revision}: {report["n_files"]} files ({report["lfs"]} LFS, {report["inline"]} inline)', flush=True)
@@ -420,7 +488,7 @@ def main() -> None:
             message = (
                 f'redlines_0929_full: {MANIFEST} rebuilt from the hub tree ({report["n_files"]} files, issue #76)'
             )
-            commit = publish(api, clone, revision, path.read_bytes(), message)
+            commit = publish(api, clone, revision, data, message)
             print(f'published {commit}' if commit != revision else 'the hub already has this manifest', flush=True)
     finally:
         if a.checkout is None:
