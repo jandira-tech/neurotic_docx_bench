@@ -10,7 +10,12 @@ from types import SimpleNamespace
 
 import pytest
 import httpx2
-from huggingface_hub.errors import LocalEntryNotFoundError, RemoteEntryNotFoundError, RepositoryNotFoundError
+from huggingface_hub.errors import (
+    HfHubHTTPError,
+    LocalEntryNotFoundError,
+    RemoteEntryNotFoundError,
+    RepositoryNotFoundError,
+)
 
 from neurotic_docx_bench import hub
 from test_hub import FakeHub
@@ -153,6 +158,8 @@ class DownloadHub(FakeHub):
         self.vanished = set()
         self.refs = {None: HEAD, 'previous-good-commit': PREVIOUS}
         self.tree_revisions = []
+        self.parents = []
+        self.commit_after_listing = False
 
     def repo_info(self, repo_id, *, repo_type, revision=None):
         if repo_id not in self.stored:
@@ -171,6 +178,20 @@ class DownloadHub(FakeHub):
         if path_in_repo and not entries:
             raise remote_missing(path_in_repo)
         yield from entries
+        if self.commit_after_listing:
+            self.commit_after_listing = False
+            self.refs[None] = 'c' * 40  # another writer commits while this run stages
+
+    def upload_folder(self, *, parent_commit=None, **kwargs):
+        if parent_commit is not None and parent_commit != self.refs[None]:
+            request = httpx2.Request('POST', 'https://huggingface.co/api/datasets/commit/main')
+            raise HfHubHTTPError(
+                '412 parent commit is not the head of main', response=httpx2.Response(412, request=request)
+            )
+        super().upload_folder(**kwargs)
+        self.parents.append(parent_commit)
+        self.refs[None] = f'{len(self.parents):040x}'
+        return SimpleNamespace(oid=self.refs[None])
 
     def hf_hub_download(self, repo_id, filename, *, repo_type, revision=None):
         self.downloads.append((filename, revision))
@@ -208,13 +229,32 @@ def test_main_reads_previous_manifest_and_fetches_inline_files(upload, run, tmp_
     assert all(published[p] == sha(data) for p, data in files.items())
     # Every read is pinned to a commit: a failed HEAD request makes huggingface_hub serve
     # the cached copy of a branch, which can be older than the listing.
-    assert api.downloads[0] == (manifest_path, api.refs[revision])
+    assert api.downloads[0] == (manifest_path, {None: HEAD, 'previous-good-commit': PREVIOUS}[revision])
     assert {p for p, _ in api.downloads[1:]} == {prefix + p for p in files}
     assert all(rev == HEAD for _, rev in api.downloads[1:])
     # The carry listing is pinned; verify_uploaded then reads the commit the upload made.
     assert api.tree_revisions == [HEAD, None]
     names = [name for name, _ in api.calls]
     assert names.index('list_repo_tree') < names.index('upload_folder')
+    # Each commit names its parent, so a writer that commits in between makes the upload fail.
+    assert api.parents == [HEAD] + [f'{i:040x}' for i in range(1, len(api.parents))]
+
+
+def test_main_refuses_when_the_hub_moved_after_reading(upload, run, tmp_path, monkeypatch):
+    api = DownloadHub(tmp_path / 'cache')
+    prefix = upload.REPO_PREFIX + '/'
+    files = {'fresh_compares/a.pdf': b'pruned oracle'}
+    api.stored[hub.RESULTS_REPO] = {prefix + p: data for p, data in files.items()}
+    manifest_path = prefix + 'run/' + hub.MANIFEST_NAME
+    manifest = json.dumps(hub.manifest_document({p: sha(data) for p, data in files.items()})).encode()
+    api.stored[hub.RESULTS_REPO][manifest_path] = manifest
+    api.commit_after_listing = True
+    monkeypatch.setattr(hub, 'default_api', lambda: api)
+    monkeypatch.setattr(sys, 'argv', ['hub_upload', '--staging', str(tmp_path / 'staging')])
+    with pytest.raises(HfHubHTTPError, match='412'):
+        upload.main()
+    assert api.stored[hub.RESULTS_REPO][manifest_path] == manifest
+    assert api.parents == []
 
 
 def test_main_first_upload_without_manifest(upload, run, tmp_path, monkeypatch):
