@@ -3582,7 +3582,8 @@ def hub_get_cmd(
         raise typer.Exit(code=1) from exc
     console.print(Text(report.describe()), soft_wrap=True)
     if report.kept_local:
-        console.print(Text(f"kept local: {', '.join(report.kept_local)}", style="yellow"))
+        keep = "would keep local" if report.dry_run else "kept local"
+        console.print(Text(f"{keep}: {', '.join(report.kept_local)}", style="yellow"))
 
 
 # --- bench try: one fixture, any tool, against jubarte -----------------------

@@ -250,8 +250,8 @@ def test_presets_cover_the_three_datasets_and_resolve_destinations(tmp_path: Pat
     for p in hub_get.PRESETS.values():
         assert not p.dest.is_absolute(), p.name
         assert not p.path.endswith("/"), p.name
-    # a dataset card is not the checkout's README
-    assert "README.md" in hub_get.PRESETS["corpus"].exclude
+    # the fixtures repo's card is corpus/README.md (scripts/hf_fixtures/hf_fixtures.py writes it there)
+    assert hub_get.PRESETS["corpus"].exclude == ()
     # the fresh compares have their own preset and destination
     assert "fresh_compares/*" in hub_get.PRESETS["redlines-0929"].exclude
     assert hub_get.PRESETS["compare-regen"].dest == Path("results/compare_regen/out")
