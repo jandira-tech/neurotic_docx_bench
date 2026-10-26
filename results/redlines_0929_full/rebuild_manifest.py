@@ -56,11 +56,13 @@ NO_LFS = ('-c', 'filter.lfs.smudge=', '-c', 'filter.lfs.process=', '-c', 'filter
 
 
 class RebuildError(RuntimeError):
-    """The hub does not match its own records; nothing is published."""
+    """The run stopped and nothing is published: the hub does not match its own records, it moved since it
+    was read, or the upload failed before its commit, was refused, or made no commit."""
 
 
 class UnverifiedPublish(RebuildError):
-    """``upload_file`` returned a commit, but checking it failed: the hub may hold the manifest."""
+    """The upload may have made its commit: ``upload_file`` failed in a way that does not say, or it returned
+    a commit that could not be checked. The hub may hold the manifest; a rerun recognises one already there."""
 
 
 @dataclass(frozen=True)
@@ -451,6 +453,21 @@ def first_answer(exc: BaseException):
     return response
 
 
+def answered_request(exc: BaseException):
+    """The request of ``first_answer(exc)``, when there is one; else ``None``."""
+    response = first_answer(exc)
+    if response is None:
+        return None
+    try:
+        return response.request
+    except RuntimeError:  # an answer built without its request says nothing of where it came from
+        return None
+
+
+def _posted_to(request, *paths: str) -> bool:
+    return request is not None and request.method == 'POST' and request.url.path.endswith(paths)
+
+
 def failed_before_commit(exc: BaseException) -> bool:
     """Whether ``exc`` answers a request upload_file sends before its commit request.
 
@@ -462,58 +479,76 @@ def failed_before_commit(exc: BaseException) -> bool:
     known to precede it; so does an LFS upload to a storage host, not told apart from a redirected
     commit either.
     """
-    response = first_answer(exc)
-    if response is None:
-        return False
-    try:
-        request = response.request
-    except RuntimeError:  # an answer built without its request says nothing of where it came from
-        return False
-    if request.method != 'POST':
-        return False
-    return request.url.path.endswith((
+    return _posted_to(
+        answered_request(exc),
         f'/api/{hub.REPO_TYPE}s/{hub.RESULTS_REPO}/preupload/{BRANCH}',
         f'/{hub.REPO_TYPE}s/{hub.RESULTS_REPO}.git/info/lfs/objects/batch',
-    ))
+    )
+
+
+def refused_commit(exc: BaseException) -> bool:
+    """Whether ``exc`` is the hub's 4xx (not 408) answer to the commit request itself: it committed nothing.
+
+    Only the commit is placed: a 4xx to any other request may answer one sent after the commit,
+    whatever the SDK sends today.
+    """
+    request = answered_request(exc)
+    status = exc.response.status_code if request is not None else None
+    return (
+        _posted_to(request, f'/api/{hub.REPO_TYPE}s/{hub.RESULTS_REPO}/commit/{BRANCH}')
+        and 400 <= status < 500
+        and status != 408
+    )
 
 
 def publish(api, checkout: Path, revision: str, data: bytes, message: str) -> str:
     """Commit ``data`` as the run manifest on ``revision``; return the commit, checked through git.
 
     A no-op upload skips the ``parent_commit`` check and returns whatever the branch head is, so
-    the commit is fetched and must have ``revision`` as its one parent and change nothing else.
-    A 4xx answer to the upload is a refusal (``RebuildError``); any other failure of the upload or of
-    the check after it may follow a commit, and raises ``UnverifiedPublish``. A Ctrl-C there still
-    stops the run, with a note that the hub may hold the manifest.
+    the commit is fetched and must have ``revision`` as its one parent and change nothing else; the
+    head itself means no commit was made. A failure ``upload`` places before the commit, or the hub's
+    4xx to the commit itself, is a ``RebuildError``; any other failure of the upload or of the check
+    after it may follow a commit, and raises ``UnverifiedPublish``. A Ctrl-C stops the run with a
+    note: nothing published before the upload, the hub may hold the manifest from the upload on.
     """
     path = f'{REPO_PREFIX}/{MANIFEST}'
-    current = api.repo_info(hub.RESULTS_REPO, repo_type=hub.REPO_TYPE, revision=BRANCH).sha
-    if current != revision:
-        raise RebuildError(f'the hub moved to {current} since {revision} was read; nothing published')
-    # The hub may store the manifest inline or, if its preupload says so, as an LFS pointer.
-    accepted = (data, lfs_pointer(data))
-    # Read before the upload, so a tree this cannot read stops the run before anything is committed.
-    before = leaves(checkout, revision)
-    key = path.encode()
-    # A symlink (mode 120000) stores its target as blob bytes; the same bytes there are not the manifest.
-    if regular_blob(before.get(key)):
-        there = git(checkout, 'cat-file', 'blob', f'{revision}:{path}')
-        if there in accepted:
-            return revision
-        pointer = LFS_POINTER.fullmatch(there)
-        if pointer and pointer.group(1).decode() == hashlib.sha256(data).hexdigest():
-            # upload_file compares content ids (an LFS pointer's oid), so it would return the head unchanged
-            raise RebuildError(
-                f'{path} at {revision} is an LFS pointer to this manifest\'s content that is not its canonical '
-                f'pointer (size {pointer.group(2).decode()} for {len(data)} bytes); upload_file would not replace it, '
-                'since it compares content ids. Nothing published; fix the pointer on the hub'
-            )
-    stage = 'during upload_file'
-    try:  # from the upload to the end of its check: a Ctrl-C anywhere here may follow a commit
+    stage = None  # before the upload: nothing published
+    try:
+        current = api.repo_info(hub.RESULTS_REPO, repo_type=hub.REPO_TYPE, revision=BRANCH).sha
+        if current != revision:
+            raise RebuildError(f'the hub moved to {current} since {revision} was read; nothing published')
+        # The hub may store the manifest inline or, if its preupload says so, as an LFS pointer.
+        accepted = (data, lfs_pointer(data))
+        # Read before the upload, so a tree this cannot read stops the run before anything is committed.
+        before = leaves(checkout, revision)
+        key = path.encode()
+        # A symlink (mode 120000) stores its target as blob bytes; the same bytes there are not the manifest.
+        if regular_blob(before.get(key)):
+            there = git(checkout, 'cat-file', 'blob', f'{revision}:{path}')
+            if there in accepted:
+                return revision
+            pointer = LFS_POINTER.fullmatch(there)
+            if pointer and pointer.group(1).decode() == hashlib.sha256(data).hexdigest():
+                # upload_file compares content ids (an LFS pointer's oid), so it would return the head unchanged
+                raise RebuildError(
+                    f'{path} at {revision} is an LFS pointer to this manifest\'s content that is not its canonical '
+                    f'pointer (size {pointer.group(2).decode()} for {len(data)} bytes); upload_file would not replace '
+                    'it, since it compares content ids. Nothing published; fix the pointer on the hub'
+                )
+        # From the upload to the end of its check, a Ctrl-C may follow a commit.
+        stage = 'during upload_file'
         info = upload(api, path, data, message, revision)
         stage = 'after upload_file returned'
         commit = info.oid
         stage = f'while checking {commit}, which upload_file returned'
+        if commit == revision:  # the branch head did not move: upload_file made no commit
+            entry = before.get(key)
+            held = f'a mode {entry[0].decode()} entry' if entry else 'no file'
+            raise RebuildError(
+                f'upload_file made no commit: {BRANCH} is still at {revision}, where {path} holds {held}. The hub '
+                'compares content ids, not modes, so an entry with this manifest\'s content counts as the manifest '
+                'already there (and a path the hub ignores is dropped). Nothing published; fix the path on the hub'
+            )
         try:
             return verify_upload(checkout, revision, commit, before, data)
         except Exception as exc:
@@ -523,7 +558,11 @@ def publish(api, checkout: Path, revision: str, data: bytes, message: str) -> st
             ) from exc
     except BaseException as exc:
         if not isinstance(exc, Exception):  # Ctrl-C: stop, but say what may have happened
-            exc.add_note(f'stopped {stage}: the hub may hold the manifest now; rerun to check it')
+            exc.add_note(
+                'stopped before upload_file: nothing published'
+                if stage is None
+                else f'stopped {stage}: the hub may hold the manifest now; rerun to check it'
+            )
         raise
 
 
@@ -540,12 +579,9 @@ def upload(api, path: str, data: bytes, message: str, revision: str):
             revision=BRANCH,
         )
     except HfHubHTTPError as exc:
-        answer = first_answer(exc)
         if failed_before_commit(exc):
             raise RebuildError(f'the upload failed before its commit request ({exc}); nothing published') from exc
-        # A 4xx to the SDK's own request is a no to it, and the commit is the last one it sends: the
-        # hub committed nothing. After a redirect the 4xx may answer whatever followed the commit.
-        if answer is not None and 400 <= answer.status_code < 500 and answer.status_code != 408:
+        if refused_commit(exc):
             raise RebuildError(f'the hub refused the upload ({exc}); nothing published') from exc
         raise UnverifiedPublish(
             f'upload_file failed with {exc}, after which the hub may hold the manifest; rerun to check it '
@@ -598,6 +634,7 @@ def main() -> None:
     out = a.out or Path(tempfile.mkdtemp(prefix='redlines_0929_full_manifest_'))
     out.mkdir(parents=True, exist_ok=True)
     clone = a.checkout or Path(tempfile.mkdtemp(prefix='redlines_0929_full_hub_')) / 'hub'
+    publishing = False
     try:
         checkout_hub(clone, revision)
 
@@ -628,10 +665,15 @@ def main() -> None:
             message = (
                 f'redlines_0929_full: {MANIFEST} rebuilt from the hub tree ({report["n_files"]} files, issue #76)'
             )
+            publishing = True  # from here on publish() says what a Ctrl-C left
             commit = publish(api, clone, revision, data, message)
             # A foreign commit that made the same change is indistinguishable from this upload: say what is known.
             where = f'{commit}, a commit on {revision} that changes only it' if commit != revision else revision
             print(f'the hub holds this manifest at {where}', flush=True)
+    except KeyboardInterrupt as exc:
+        if not publishing:
+            exc.add_note('stopped before the upload: nothing published')
+        raise
     finally:
         if a.checkout is None:
             shutil.rmtree(clone.parent)
