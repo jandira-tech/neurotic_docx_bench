@@ -436,9 +436,11 @@ uv run bench hub get --repo arthrod/neurotic_docx_bench --path outputs/release_0
   `.replaced/` backups and `.scratch/` sit beside `files/`, where no hub path can land. The folder is
   locked for the run, and a symlink in it refuses the run; a staged file with a second name (a hard link) is
   fetched again, never written into. Files move in all or nothing: each is placed as a hard link to
-  its staged copy (on a disk without hard links, a copy made in the staging folder's `.scratch/` and
-  renamed onto an empty `O_EXCL` file, so a kill never leaves a part-written file), so a file written
-  meanwhile is never overwritten, and the staged copies go only after the last file is in place. A
+  its staged copy (on a disk without hard links, a copy made in the staging folder's `.scratch/` that
+  takes its name with a rename refusing an existing file, `renamex_np(RENAME_EXCL)` on macOS and
+  `renameat2(RENAME_NOREPLACE)` on Linux, so a kill never leaves a part-written or empty file; a disk
+  with neither refuses before any download), so a file written meanwhile is never overwritten, and
+  the staged copies go only after the last file is in place. A
   failed or interrupted (Ctrl-C) move withdraws every file already placed and restores every file
   `--overwrite` replaced, except a file someone else changed after the run placed it, which stays;
   the error names it and where the file it replaced is kept, and a later run refuses to overwrite

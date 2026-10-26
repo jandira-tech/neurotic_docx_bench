@@ -14,9 +14,11 @@
    with different bytes stops the run before anything is downloaded, unless ``on_conflict`` is
    ``overwrite`` (take the hub's) or ``keep-local`` (keep yours, fetch the rest). The destination
    is looked at again after the download, and each file is placed with a hard link that fails on
-   an existing file (on a disk without hard links, a copy made in the staging folder and renamed
-   onto an empty file created with ``O_EXCL``), so one written meanwhile is never overwritten
-   either, and a kill never leaves a part-written file in the destination.
+   an existing file (on a disk without hard links, a copy made in the staging folder that takes its
+   name with a rename refusing an existing file: ``renamex_np(RENAME_EXCL)`` on macOS,
+   ``renameat2(RENAME_NOREPLACE)`` on Linux; a disk with neither refuses before any download), so
+   one written meanwhile is never overwritten either, and a kill never leaves a part-written or
+   empty file in the destination.
 4. **Staged, all or nothing.** Files land in ``files/`` of a staging folder on the destination's
    disk (beside it, or inside it when it is a mount or a link to another disk), locked for the run,
    refused if it holds a symlink; a staged file with a second name (a hard link) is fetched again,
@@ -64,13 +66,17 @@ way it names what an earlier run left there (local files it replaced, files it t
 
 from __future__ import annotations
 
+import ctypes
+import errno
 import fcntl
 import fnmatch
+import functools
 import os
 import re
 import shutil
 import signal
 import stat
+import sys
 import tempfile
 import threading
 import unicodedata
@@ -98,10 +104,6 @@ class GetError(Exception):
 
 class _Busy(GetError):
     """Another run holds the staging folder's lock."""
-
-
-class _LeftBehind(GetError):
-    """``place`` created its target but could not tell it from a file someone else put there, so it stays."""
 
 
 @dataclass(frozen=True)
@@ -288,67 +290,78 @@ def _identity_at(path: Path) -> Identity | None:
         return None
 
 
+@functools.cache
+def _libc() -> ctypes.CDLL:
+    return ctypes.CDLL(None, use_errno=True)
+
+
+_RENAME_EXCL = 0x4  # macOS <stdio.h>: renamex_np fails with EEXIST on an existing name
+_RENAME_NOREPLACE = 0x1  # Linux <fcntl.h>: renameat2 does the same
+_AT_FDCWD = -100
+
+
+def _rename_new(src: Path, dst: Path) -> None:
+    """Rename ``src`` to ``dst`` in one step that fails with ``FileExistsError`` on an existing ``dst``.
+
+    ``os.rename`` replaces ``dst``; this is macOS's ``renamex_np(RENAME_EXCL)`` or Linux's
+    ``renameat2(RENAME_NOREPLACE)``. Elsewhere, or on a disk without it, an OSError.
+    """
+    old, new = os.fsencode(src), os.fsencode(dst)
+    libc = _libc()
+    if sys.platform == "darwin":
+        call = libc.renamex_np
+        call.argtypes, call.restype = [ctypes.c_char_p, ctypes.c_char_p, ctypes.c_uint], ctypes.c_int
+        done = call(old, new, _RENAME_EXCL)
+    elif sys.platform.startswith("linux") and hasattr(libc, "renameat2"):
+        call = libc.renameat2
+        call.argtypes = [ctypes.c_int, ctypes.c_char_p, ctypes.c_int, ctypes.c_char_p, ctypes.c_uint]
+        call.restype = ctypes.c_int
+        done = call(_AT_FDCWD, old, _AT_FDCWD, new, _RENAME_NOREPLACE)
+    else:
+        raise OSError(errno.ENOTSUP, "no rename that refuses to replace a file here", str(src), None, str(dst))
+    if done != 0:
+        err = ctypes.get_errno()
+        raise OSError(err, os.strerror(err), str(src), None, str(dst))  # EEXIST makes a FileExistsError
+
+
 def _copy_new(staged: Path, target: Path, scratch: Path) -> Identity:
     """Copy ``staged`` to ``target``, where no file may be; the new file's identity.
 
-    The bytes go into a file in ``scratch`` first, which is then renamed onto an empty file created
-    at ``target`` with ``O_EXCL``: an existing file is never overwritten, and ``target`` is never
-    part-written (a kill leaves it absent, whole, or empty for the instant between those two steps).
-    The copy gets the mode and times of ``staged``, as a hard link would (a restored file keeps them).
+    The bytes go into a file in ``scratch``, which then takes the name ``target`` with ``_rename_new``:
+    in one step that refuses an existing file, so nothing at ``target`` is ever overwritten and a kill
+    leaves ``target`` absent or whole. The copy gets the mode and times of ``staged``, as a hard link
+    would (a restored file keeps them).
     """
     scratch.mkdir(exist_ok=True)
     fd, name = tempfile.mkstemp(dir=scratch)
     copy = Path(name)
-    mine: list[tuple[int, int]] = []  # the copy, then the empty file made at ``target``
     try:
         with open(fd, "wb") as out:
-            st = os.fstat(out.fileno())
-            mine.append((st.st_dev, st.st_ino))
             with open(staged, "rb") as src:
                 shutil.copyfileobj(src, out, _CHUNK)
                 out.flush()
                 was = os.fstat(src.fileno())
             os.fchmod(out.fileno(), stat.S_IMODE(was.st_mode))
             os.utime(out.fileno(), ns=(was.st_atime_ns, was.st_mtime_ns))
-            try:
-                made = os.open(target, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
-            except FileExistsError as exc:
-                raise GetError(f"{target} appeared while files were being moved into place") from exc
-            try:
-                st = os.fstat(made)
-            except OSError as exc:
-                raise _LeftBehind(
-                    f"{target} was created empty, but the disk would not say which file it is ({exc}), so it "
-                    "stays: remove it before a rerun"
-                ) from exc
-            finally:
-                os.close(made)
-            mine.append((st.st_dev, st.st_ino))
-            os.replace(copy, target)  # onto the empty file just made: nothing else is overwritten
             placed = identity(os.fstat(out.fileno()))
-        return placed
-    except BaseException as exc:
+        try:
+            _rename_new(copy, target)
+        except FileExistsError as exc:
+            raise GetError(f"{target} appeared while files were being moved into place") from exc
+    except BaseException:
         try:
             copy.unlink(missing_ok=True)  # in the staging folder, which a failed run keeps anyway
         except OSError:
             pass
-        try:
-            now = _identity_at(target)
-            if now is not None and now[:2] in mine:  # still this call's file: the empty one, or the copy
-                os.unlink(target)
-        except OSError as stuck:
-            raise _LeftBehind(
-                f"{target} was made by this run's copy, which could not remove it ({stuck}), so it stays: "
-                "remove it before a rerun"
-            ) from exc
         raise
+    return placed
 
 
 def place(staged: Path, target: Path, scratch: Path) -> Identity:
     """Give ``target`` the bytes of ``staged`` without ever overwriting a file there; the new file's identity.
 
-    A hard link, or on a disk without them a copy made in ``scratch`` and renamed onto a file only this
-    call can have created.
+    A hard link, or on a disk without them a copy made in ``scratch`` that takes the name ``target`` in
+    one step refusing an existing file.
     ``staged`` keeps its name: it is removed once every file of the run is in place, so a rollback
     only has to withdraw ``target`` and a rerun still finds the bytes.
     """
@@ -388,25 +401,48 @@ def _withdraw(target: Path, placed: Identity, staging: Path) -> str | None:
 def _links_work(scratch: Path) -> bool:
     """Whether ``scratch``'s disk takes hard links; without them ``place`` copies every file.
 
-    ``scratch`` is emptied under the lock before the run uses it, so nothing an earlier run left there
-    makes the link fail; a probe that cannot be written is a refusal, like any disk too full.
+    A disk without hard links must take ``_rename_new``, which puts each copy in place, or the run
+    refuses here, before any download. ``scratch`` is emptied under the lock before the run uses it,
+    so nothing an earlier run left there fails a probe; a probe that cannot be written is a refusal,
+    like any disk too full.
     """
-    probe = scratch / "link-probe"
+    names = ("link-probe", "link-probe-2", "link-probe-3")
+    probe, second, third = (scratch / n for n in names)
     try:
         scratch.mkdir(exist_ok=True)
         probe.touch(exist_ok=False)
     except OSError as exc:
         raise GetError(f"cannot write in the staging folder ({probe}): {exc}") from exc
     try:
-        os.link(probe, scratch / "link-probe-2")
-    except OSError:
-        return False
-    else:
-        return True
-    finally:
-        for name in ("link-probe", "link-probe-2"):
+        try:
+            os.link(probe, second)
+        except OSError:
+            pass
+        else:
+            return True
+        try:
+            second.touch(exist_ok=False)
+        except OSError as exc:
+            raise GetError(f"cannot write in the staging folder ({second}): {exc}") from exc
+        refusal = (
+            f"the disk of {scratch} takes no hard links, so each file would be copied into place, but it "
+            "has no rename that refuses to replace a file"
+        )
+        try:
             try:
-                (scratch / name).unlink()
+                _rename_new(probe, second)
+            except FileExistsError:
+                pass
+            else:
+                raise GetError(f"{refusal} (one replaced {second}); a file written meanwhile could be lost")
+            _rename_new(probe, third)
+        except OSError as exc:
+            raise GetError(f"{refusal} ({exc})") from exc
+        return False
+    finally:
+        for p in (probe, second, third):
+            try:
+                p.unlink()
             except OSError:
                 pass
 
@@ -1231,8 +1267,6 @@ def _move_held(
                 d.rmdir()
             except OSError:
                 pass
-        if isinstance(exc, _LeftBehind):
-            problems.insert(0, str(exc))
         why = str(exc) or type(exc).__name__
         if problems:
             outcome = (

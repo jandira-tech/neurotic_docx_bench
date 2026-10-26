@@ -506,36 +506,27 @@ def test_case_insensitive_probe_matches_this_disk(tmp_path: Path) -> None:
 def test_the_no_hard_link_fallback_never_overwrites_a_file_that_appears(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """A disk without hard links; another writer creates the target in the instant before the move."""
+    """A disk without hard links; another writer creates the target in the instant before the copy takes
+    its name (round 14: the hook is that step itself, so the test cannot pass without reaching it)."""
     staged, target = tmp_path / "staged", tmp_path / "target"
     staged.write_bytes(b"REMOTE")
-    real_rename, real_replace, real_open = os.rename, os.replace, os.open
-
-    def writer_first(path) -> None:
-        if Path(path) == target and not target.exists():
-            target.write_bytes(b"USER FILE")
+    real_rename_new = hub_get._rename_new
+    wrote = []
 
     def no_links(src, dst, **kw):
         raise OSError(errno.EOPNOTSUPP, "no hard links on this disk")
 
-    def rename(src, dst, **kw):
-        writer_first(dst)
-        return real_rename(src, dst, **kw)
-
-    def replace(src, dst, **kw):
-        writer_first(dst)
-        return real_replace(src, dst, **kw)
-
-    def open_(path, flags, mode=0o777, **kw):
-        writer_first(path)
-        return real_open(path, flags, mode, **kw)
+    def writer_first(src, dst):
+        if Path(dst) == target and not wrote:
+            target.write_bytes(b"USER FILE")
+            wrote.append(1)
+        return real_rename_new(src, dst)
 
     monkeypatch.setattr(os, "link", no_links)
-    monkeypatch.setattr(os, "rename", rename)
-    monkeypatch.setattr(os, "replace", replace)
-    monkeypatch.setattr(os, "open", open_)
+    monkeypatch.setattr(hub_get, "_rename_new", writer_first)
     with pytest.raises(hub_get.GetError, match="appeared"):
         hub_get.place(staged, target, tmp_path / "scratch")
+    assert wrote
     assert target.read_bytes() == b"USER FILE"
     assert staged.read_bytes() == b"REMOTE"
 
@@ -987,21 +978,23 @@ def test_a_file_restored_on_a_disk_without_hard_links_keeps_its_mode_and_time(
     assert st.st_mtime_ns == 1_000_000_000
 
 
-def test_a_copy_whose_identity_cannot_be_read_is_named_as_left_behind(
+def test_a_copy_whose_identity_cannot_be_read_never_reaches_its_target(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
+    """Round 14: the identity is read from the copy in the staging folder, before it takes its name, so a
+    failed read leaves nothing at the target and the run rolls back cleanly."""
     dest = tmp_path / "dest"
-    real_open, real_fstat = os.open, os.fstat
+    real_mkstemp, real_fstat = tempfile.mkstemp, os.fstat
     watched, failed = set(), []
 
     def no_links(src, dst, *args, **kw):
         raise OSError(errno.EOPNOTSUPP, "no hard links on this disk")
 
-    def open_(path, flags, mode=0o777, **kw):
-        fd = real_open(path, flags, mode, **kw)
-        if Path(path) == dest / "a.docx":
+    def mkstemp(*args, **kw):
+        fd, name = real_mkstemp(*args, **kw)
+        if Path(name).parent.name == hub_get._SCRATCH and not watched:
             watched.add(fd)
-        return fd
+        return fd, name
 
     def fstat(fd):
         if fd in watched and not failed:
@@ -1010,15 +1003,14 @@ def test_a_copy_whose_identity_cannot_be_read_is_named_as_left_behind(
         return real_fstat(fd)
 
     monkeypatch.setattr(os, "link", no_links)
-    monkeypatch.setattr(os, "open", open_)
+    monkeypatch.setattr(tempfile, "mkstemp", mkstemp)
     monkeypatch.setattr(os, "fstat", fstat)
     with pytest.raises(hub_get.GetError) as info:
         hub_get.get(preset(dest), api=PinnedHub(FILES))
-    message = str(info.value)
     assert failed
-    assert "every file already moved was put back" not in message
-    assert f"{dest / 'a.docx'}" in message and "stays" in message
-    assert not (dest / "RUN.md").exists()
+    assert "every file already moved was put back" in str(info.value)
+    assert _hub_bytes_or_absent(dest) == []
+    assert not dest.exists() or not any(p.is_file() for p in dest.rglob("*"))
 
 
 # Review round 5, Codex (#80)
@@ -1325,39 +1317,32 @@ def test_a_copy_that_fails_midway_never_reaches_the_destination(tmp_path: Path, 
     assert _hub_bytes_or_absent(dest) == []
 
 
-def _copy_left_empty(dest: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    """No hard links; the copy of a.docx cannot be renamed onto the empty file it made, nor remove it."""
-    real_replace, real_unlink = os.replace, os.unlink
+def _rename_fails_for_a_docx(dest: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """No hard links; the copy of a.docx cannot take its name."""
+    real_rename_new = hub_get._rename_new
 
     def no_links(src, dst, *args, **kw):
         raise OSError(errno.EOPNOTSUPP, "no hard links on this disk")
 
-    def replace(src, dst, *args, **kw):
+    def rename_new(src, dst):
         if Path(dst) == dest / "a.docx":
             raise OSError(errno.EIO, "rename failed")
-        return real_replace(src, dst, *args, **kw)
-
-    def unlink(path, *args, **kw):
-        if Path(path) == dest / "a.docx":
-            raise OSError(errno.EIO, "unlink failed")
-        return real_unlink(path, *args, **kw)
+        return real_rename_new(src, dst)
 
     monkeypatch.setattr(os, "link", no_links)
-    monkeypatch.setattr(os, "replace", replace)
-    monkeypatch.setattr(os, "unlink", unlink)
+    monkeypatch.setattr(hub_get, "_rename_new", rename_new)
 
 
-def test_an_empty_file_the_copy_cannot_remove_is_named_as_left_behind(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
+def test_a_copy_that_cannot_take_its_name_leaves_nothing_behind(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """Round 14: before it, the copy left an empty file at its target that it then had to remove."""
     dest = tmp_path / "dest"
-    _copy_left_empty(dest, monkeypatch)
+    _rename_fails_for_a_docx(dest, monkeypatch)
     with pytest.raises(hub_get.GetError) as info:
         hub_get.get(preset(dest), api=PinnedHub(FILES))
-    message = str(info.value)
-    assert "every file already moved was put back" not in message
-    assert f"{dest / 'a.docx'}" in message and "stays" in message
-    assert (dest / "a.docx").read_bytes() == b""
+    assert "every file already moved was put back" in str(info.value)
+    assert not (dest / "a.docx").exists()
+    scratch = hub_get.staging_dir(dest, SHA) / hub_get._SCRATCH
+    assert not scratch.exists() or list(scratch.iterdir()) == []
 
 
 # Review round 7, Codex (#80)
@@ -1607,9 +1592,11 @@ def test_a_ctrl_c_after_the_last_move_is_not_lost(tmp_path: Path, monkeypatch: p
     assert str(dest) in notes and "every file" in notes
 
 
-def test_a_stopped_rollback_names_an_empty_file_the_copy_left(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_a_stopped_rollback_after_a_failed_copy_names_only_the_files_it_placed(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     dest = tmp_path / "dest"
-    _copy_left_empty(dest, monkeypatch)
+    _rename_fails_for_a_docx(dest, monkeypatch)
     real_stop = hub_get._CtrlC.stop_rollback
     sent = []
 
@@ -1626,7 +1613,7 @@ def test_a_stopped_rollback_names_an_empty_file_the_copy_left(tmp_path: Path, mo
     assert exc.type is KeyboardInterrupt, exc.value
     notes = " ".join(getattr(exc.value, "__notes__", ()))
     assert str(dest / "RUN.md") in notes
-    assert str(dest / "a.docx") in notes and "made by this run's copy" in notes
+    assert str(dest / "a.docx") not in notes and not (dest / "a.docx").exists()
 
 
 # Review round 8, mcode (#80)
