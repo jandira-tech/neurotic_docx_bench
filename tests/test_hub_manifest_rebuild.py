@@ -6,6 +6,7 @@ import hashlib
 import importlib.util
 import json
 import os
+import random
 import re
 import subprocess
 import sys
@@ -82,7 +83,7 @@ def test_the_newest_record_disagreeing_with_the_hub_refuses(rebuild):
 def test_an_older_record_a_newer_one_replaced_is_reported(rebuild):
     files = {'a/x.docx': pointer(b'regenerated')}
     history = [('m1', {'a/x.docx': sha(b'first')}), ('m2', {'a/x.docx': sha(b'regenerated')})]
-    built, report = rebuild.rebuild(tree_of(rebuild, files), history, files.__getitem__)
+    built, report = rebuild.rebuild(tree_of(rebuild, files), history, files.__getitem__, newest=lambda labels: {'m2'})
     assert built == {'a/x.docx': sha(b'regenerated')}
     assert report['replaced'] == [('a/x.docx', 'm1')]
 
@@ -210,6 +211,8 @@ class GitHub:
         self.before_upload = before_upload
         self.lfs = lfs  # the hub's preupload picked LFS storage for the upload
         self.uploads: list[dict] = []
+        self.info_revisions = []
+        self.lfs_contents = {}
 
     def head(self) -> str:
         return git(self.origin, 'rev-parse', 'HEAD')
@@ -223,18 +226,24 @@ class GitHub:
         git(self.origin, 'commit', '-q', '-m', message)
 
     def repo_info(self, repo_id, *, repo_type, revision=None):
+        assert revision == 'main'
+        self.info_revisions.append(revision)
         return SimpleNamespace(sha=self.head())
 
-    def upload_file(self, *, path_or_fileobj, path_in_repo, repo_id, repo_type, commit_message, parent_commit=None):
+    def upload_file(self, *, path_or_fileobj, path_in_repo, repo_id, repo_type, commit_message, parent_commit=None, revision=None):
+        assert revision == 'main'
         self.uploads.append({
             'path_in_repo': path_in_repo,
             'parent_commit': parent_commit,
             'commit_message': commit_message,
+            'revision': revision,
         })
         if self.before_upload:
             self.before_upload(self)
         stored = pointer(path_or_fileobj) if self.lfs else path_or_fileobj
-        if (self.origin / path_in_repo).read_bytes() == stored:
+        if self.lfs:
+            self.lfs_contents[sha(path_or_fileobj)] = path_or_fileobj
+        if (self.origin / path_in_repo).exists() and (self.origin / path_in_repo).read_bytes() == stored:
             # huggingface_hub returns the branch head without a commit or a parent check
             return SimpleNamespace(oid=self.head())
         if parent_commit is not None and parent_commit != self.head():
@@ -243,18 +252,16 @@ class GitHub:
         self.commit({path_in_repo: stored}, commit_message)
         return SimpleNamespace(oid=self.head())
 
-    def list_repo_commits(self, repo_id, *, repo_type, revision=None):
-        log = git(self.origin, 'log', '--format=%H %s', revision).splitlines()
-        return [SimpleNamespace(commit_id=line[:40], title=line[41:]) for line in log]
-
     def hf_hub_download(self, repo_id, filename, *, repo_type, revision=None, local_dir=None):
         out = Path(local_dir) / filename
         out.parent.mkdir(parents=True, exist_ok=True)
-        out.write_bytes(
-            subprocess.run(
-                ['git', 'show', f'{revision}:{filename}'], cwd=self.origin, check=True, capture_output=True
-            ).stdout
-        )
+        data = subprocess.run(
+            ['git', 'show', f'{revision}:{filename}'], cwd=self.origin, check=True, capture_output=True
+        ).stdout
+        if data.startswith(b'version https://git-lfs'):
+            oid = data.splitlines()[1].removeprefix(b'oid sha256:').decode()
+            data = self.lfs_contents[oid]
+        out.write_bytes(data)
         return str(out)
 
 
@@ -278,7 +285,7 @@ def test_publish_commits_on_the_head_it_read_and_checks_it_through_git(rebuild, 
     commit = rebuild.publish(hub_pair.api, hub_pair.clone, hub_pair.head, data, 'rebuild')
     assert commit == hub_pair.api.head() != hub_pair.head
     assert hub_pair.api.uploads == [
-        {'path_in_repo': f'{PREFIX}/{MANIFEST}', 'parent_commit': hub_pair.head, 'commit_message': 'rebuild'}
+        {'path_in_repo': f'{PREFIX}/{MANIFEST}', 'parent_commit': hub_pair.head, 'commit_message': 'rebuild', 'revision': 'main'}
     ]
     assert git(hub_pair.clone, 'show', f'{commit}:{PREFIX}/{MANIFEST}') + '\n' == data.decode()
 
@@ -486,3 +493,256 @@ def test_an_upload_list_with_another_header_refuses(rebuild, tmp_path):
     repo, _ = repo_with(tmp_path, {'x.docx': b'A', 'upload_20261025.manifest.tsv': odd})
     with pytest.raises(rebuild.RebuildError, match='header'):
         rebuild.records(repo, 'HEAD')
+
+
+def merge_records(tmp_path, main_files, side_files, resolved):
+    repo, shas = repo_with(
+        tmp_path,
+        {'x.docx': b'A', MANIFEST: manifest({'x.docx': sha(b'A')})},
+        {MANIFEST: manifest(main_files) + b'\n'},
+    )
+    git(repo, 'checkout', '-q', '-b', 'side', shas[0])
+    (repo / PREFIX / MANIFEST).write_bytes(manifest(side_files) + b'\n\n')
+    git(repo, 'add', '-A')
+    git(repo, 'commit', '-q', '--allow-empty', '-m', 'side')
+    side = git(repo, 'rev-parse', 'HEAD')
+    git(repo, 'checkout', '-q', 'main')
+    # Leave the index at main's version, then write the chosen merge resolution.
+    git(repo, 'merge', '-q', '--no-ff', '--no-commit', '-s', 'ours', 'side')
+    raw = manifest(resolved)
+    raw += b'\n' if resolved == main_files else b'\n\n' if resolved == side_files else b''
+    (repo / PREFIX / MANIFEST).write_bytes(raw)
+    git(repo, 'add', '-A')
+    git(repo, 'commit', '-q', '-m', 'merge')
+    return repo, shas[1], side
+
+
+@pytest.mark.parametrize('chosen', ['side', 'main'])
+def test_a_merge_reasserts_the_chosen_parent_record(rebuild, tmp_path, chosen):
+    good, bad = {'x.docx': sha(b'A')}, {'x.docx': sha(b'B')}
+    main, side = (bad, good) if chosen == 'side' else (good, bad)
+    repo, c2, f = merge_records(tmp_path, main, side, good)
+    labels = [label for label, _ in rebuild.records(repo, 'HEAD')]
+    assert f'{git(repo, "rev-parse", "HEAD")[:9]} {MANIFEST}' in labels
+    built, report = rebuild.build(repo, 'HEAD')
+    assert built == {'x.docx': sha(b'A')}
+    replaced = c2 if chosen == 'side' else f
+    assert report['replaced'] == [('x.docx', f'{replaced[:9]} {MANIFEST}')]
+    api = GitHub(repo)
+    clone = tmp_path / 'clone'
+    git(tmp_path, 'clone', '-q', f'file://{repo}', str(clone))
+    assert rebuild.publish(api, clone, api.head(), manifest(built), 'rebuild') == api.head()
+
+
+def test_a_disagreeing_merge_resolution_refuses(rebuild, tmp_path):
+    good = {'x.docx': sha(b'A')}
+    repo, _, _ = merge_records(tmp_path, good, {'x.docx': sha(b'B')}, {'x.docx': sha(b'C')})
+    with pytest.raises(rebuild.RebuildError, match='newest record disagrees'):
+        rebuild.build(repo, 'HEAD')
+
+
+def test_a_merge_dropping_a_path_keeps_incomparable_records_newest(rebuild, tmp_path):
+    repo, _, _ = merge_records(tmp_path, {'x.docx': sha(b'A')}, {'x.docx': sha(b'B')}, {})
+    with pytest.raises(rebuild.RebuildError, match='newest record disagrees'):
+        rebuild.build(repo, 'HEAD')
+
+
+def test_records_from_the_same_commit_are_both_newest(rebuild, tmp_path):
+    repo, _ = repo_with(tmp_path, {
+        'x.docx': b'A',
+        MANIFEST: manifest({'x.docx': sha(b'B')}),
+        'upload_20261025.manifest.tsv': tsv({'x.docx': b'A'}),
+    })
+    with pytest.raises(rebuild.RebuildError, match='newest record disagrees'):
+        rebuild.build(repo, 'HEAD')
+
+
+def test_git_failure_has_a_bounded_diagnosis_and_cause(rebuild, tmp_path):
+    repo, _ = repo_with(tmp_path, {'x.docx': b'A'})
+    args = ('show', '--bad-' + 'x' * 700, 'HEAD', 'ignored')
+    with pytest.raises(rebuild.RebuildError) as exc:
+        rebuild.git(repo, *args)
+    cause = exc.value.__cause__
+    assert isinstance(cause, subprocess.CalledProcessError)
+    assert str(exc.value) == f'git {" ".join(args[:3])} failed ({cause.returncode}): {cause.stderr.decode().strip()[:500]}'
+
+
+def test_publish_creates_a_manifest_absent_from_the_tree(rebuild, hub_pair):
+    git(hub_pair.api.origin, 'rm', '-q', f'{PREFIX}/{MANIFEST}')
+    hub_pair.api.commit({'README.md': b'no manifest yet'}, 'remove manifest')
+    git(hub_pair.clone, 'fetch', '-q', 'origin')
+    revision = hub_pair.api.head()
+    commit = rebuild.publish(hub_pair.api, hub_pair.clone, revision, manifest({}), 'first manifest')
+    assert commit == hub_pair.api.head() != revision
+    assert len(hub_pair.api.uploads) == 1
+
+
+@pytest.mark.parametrize('raw', [
+    b'not json', b'[]', b'null', b'{}', b'{"files": []}', b'{"files": null}',
+    b'{"files": {"x": 1}}', b'{"files": {"x": "short"}}',
+    b'{"files": {"x": "' + b'A' * 64 + b'"}}',
+    b'{"files": {}, "extra": NaN}', b'{"files": {}, "extra": Infinity}',
+    b'{"files": {}, "extra": -Infinity}', b'\xff',
+])
+def test_invalid_manifest_records_have_a_labeled_diagnosis(rebuild, raw):
+    with pytest.raises(rebuild.RebuildError, match='bad-record'):
+        rebuild.parse_record(MANIFEST, raw, 'bad-record')
+
+
+def test_a_malformed_lfs_record_pointer_names_its_record(rebuild):
+    with pytest.raises(rebuild.RebuildError, match='bad-pointer-record'):
+        rebuild.parse_record(MANIFEST, b'version https://git-lfs-invalid', 'bad-pointer-record')
+
+
+@pytest.mark.parametrize(('size', 'digest'), [
+    ('1', 'short'), ('1', 'A' * 64), ('-1', 'a' * 64), ('1.5', 'a' * 64),
+    ('nan', 'a' * 64), ('', 'a' * 64),
+])
+def test_invalid_tsv_records_have_a_labeled_diagnosis(rebuild, size, digest):
+    raw = f'key\tsize\tsha256\nx.docx\t{size}\t{digest}\n'.encode()
+    with pytest.raises(rebuild.RebuildError, match='bad-list'):
+        rebuild.parse_record('upload_20261025.manifest.tsv', raw, 'bad-list')
+
+
+def test_the_parse_cache_does_not_share_validation_between_formats(rebuild, tmp_path):
+    raw = tsv({'x.docx': b'A'})
+    repo, _ = repo_with(tmp_path, {'upload_20261025.manifest.tsv': raw}, {MANIFEST: raw})
+    with pytest.raises(rebuild.RebuildError, match=f'{re.escape(MANIFEST)}.*not valid JSON'):
+        rebuild.records(repo, 'HEAD')
+
+
+def test_a_record_naming_the_manifest_itself_excludes_it_from_checks(rebuild, tmp_path):
+    repo, _ = repo_with(tmp_path, {
+        'x.docx': b'A', MANIFEST: manifest({'x.docx': sha(b'A'), MANIFEST: sha(b'old manifest')}),
+    })
+    built, report = rebuild.build(repo, 'HEAD')
+    assert built == {'x.docx': sha(b'A')}
+    assert report['replaced'] == [] and report['first_recorded'] == []
+
+
+@pytest.mark.parametrize('mode', ['120000', '160000'])
+def test_the_tree_refuses_symlinks_and_gitlinks(rebuild, tmp_path, mode):
+    repo, shas = repo_with(tmp_path, {'x.docx': b'A'})
+    oid = shas[0] if mode == '160000' else git(repo, 'rev-parse', f'HEAD:{PREFIX}/x.docx')
+    git(repo, 'update-index', '--add', '--cacheinfo', mode, oid, f'{PREFIX}/odd')
+    git(repo, 'commit', '-q', '-m', 'non-regular entry')
+    with pytest.raises(rebuild.RebuildError, match=f'odd.*{mode}'):
+        rebuild.hub_tree(repo, 'HEAD')
+
+
+def test_publish_pins_both_api_calls_to_main(rebuild, hub_pair):
+    rebuild.publish(hub_pair.api, hub_pair.clone, hub_pair.head, manifest({'x': sha(b'A')}), 'rebuild')
+    assert hub_pair.api.info_revisions == ['main']
+    assert hub_pair.api.uploads[0]['revision'] == 'main'
+    assert hub_pair.api.uploads[0]['parent_commit'] == hub_pair.head
+
+
+def test_checkout_disables_line_ending_conversion(rebuild, tmp_path, monkeypatch):
+    (tmp_path / '.git').mkdir()
+    calls = []
+
+    def run_git(checkout, *args):
+        calls.append(args)
+        return b''
+
+    monkeypatch.setattr(rebuild, 'git', run_git)
+    rebuild.checkout_hub(tmp_path, HEAD)
+    checkout = calls[-1]
+    assert ('-c', 'core.autocrlf=false', '-c', 'core.eol=lf') == checkout[-8:-4]
+    assert checkout[-4:] == ('checkout', '-q', '--detach', HEAD)
+
+
+class Downloads:
+    def __init__(self, files, error=None):
+        self.files = files
+        self.error = error
+        self.calls = []
+
+    def __call__(self, repo_id, filename, *, repo_type, revision, local_dir):
+        out = Path(local_dir) / filename
+        self.calls.append((filename, revision, out))
+        if self.error:
+            raise self.error
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_bytes(self.files[filename])
+        return str(out)
+
+
+def run_main(rebuild, hub_pair, tmp_path, monkeypatch, *args):
+    monkeypatch.setattr(hub, 'default_api', lambda: hub_pair.api)
+    out = tmp_path / 'out'
+    monkeypatch.setattr(sys, 'argv', [
+        'rebuild_manifest', '--checkout', str(hub_pair.clone), '--out', str(out), *args,
+    ])
+    rebuild.main()
+    return json.loads((out / 'report.json').read_text())
+
+
+@pytest.mark.parametrize(('limit', 'seed'), [(None, 0), ('3', 7), ('all', 4), ('0', 1), ('50', 0)])
+def test_main_checks_seeded_lfs_downloads_at_the_pinned_commit(rebuild, hub_pair, tmp_path, monkeypatch, limit, seed):
+    files = {f'{PREFIX}/{i:02}.docx': f'docx {i}'.encode() for i in range(30)}
+    hub_pair.api.commit({p: pointer(data) for p, data in files.items()}, 'LFS files')
+    revision = hub_pair.api.head()
+    downloads = Downloads(files)
+    monkeypatch.setattr(hub_pair.api, 'hf_hub_download', downloads)
+    args = [] if limit is None else ['--lfs-check', limit, '--seed', str(seed)]
+    try:
+        report = run_main(rebuild, hub_pair, tmp_path, monkeypatch, *args)
+    except SystemExit:
+        pytest.fail('CLI must accept --lfs-check and --seed')
+    count = 25 if limit is None else 30 if limit == 'all' else min(int(limit), 30)
+    expected = sorted(files) if limit == 'all' else random.Random(seed).sample(sorted(files), count)
+    assert [p for p, _, _ in downloads.calls] == expected
+    assert all(rev == revision for _, rev, _ in downloads.calls)
+    assert all(not path.exists() for _, _, path in downloads.calls)
+    assert report['lfs_checked'] == count and report['seed'] == seed
+
+
+@pytest.mark.parametrize('failure', ['wrong bytes', 'download failure'])
+def test_main_refuses_bad_lfs_bytes_before_publishing(rebuild, hub_pair, tmp_path, monkeypatch, failure):
+    name = f'{PREFIX}/x.docx'
+    hub_pair.api.commit({name: pointer(b'actual content')}, 'LFS file')
+    downloads = Downloads({name: b'wrong bytes'}, OSError('download failed') if failure == 'download failure' else None)
+    monkeypatch.setattr(hub_pair.api, 'hf_hub_download', downloads)
+    with pytest.raises(rebuild.RebuildError, match=r'LFS.*x.docx'):
+        run_main(rebuild, hub_pair, tmp_path, monkeypatch, '--publish')
+    assert hub_pair.api.uploads == []
+    assert all(not path.exists() for _, _, path in downloads.calls)
+
+
+def test_help_advertises_lfs_check_and_seed(rebuild, monkeypatch, capsys):
+    monkeypatch.setattr(sys, 'argv', ['rebuild_manifest', '--help'])
+    with pytest.raises(SystemExit) as exc:
+        rebuild.main()
+    assert exc.value.code == 0
+    help_text = capsys.readouterr().out
+    assert '--lfs-check' in help_text and '--seed' in help_text
+
+
+def lfs_record(rebuild, hub_pair):
+    hub_pair.api.commit({f'{PREFIX}/x.docx': b'A'}, 'inline file')
+    git(hub_pair.clone, 'fetch', '-q', 'origin')
+    hub_pair.api.lfs = True
+    data = manifest({'x.docx': sha(b'A')})
+    revision = rebuild.publish(hub_pair.api, hub_pair.clone, hub_pair.api.head(), data, 'LFS record')
+    hub_pair.api.uploads.clear()
+    return data, revision
+
+
+def test_the_module_fetcher_resolves_an_lfs_record_and_the_run_proceeds(rebuild, hub_pair, tmp_path, monkeypatch):
+    data, revision = lfs_record(rebuild, hub_pair)
+    fetch = rebuild.hub_fetcher(hub_pair.api, hub.RESULTS_REPO, revision)
+    with fetch(f'{PREFIX}/{MANIFEST}') as got:
+        assert got.read_bytes() == data
+    assert not got.exists()
+    report = run_main(rebuild, hub_pair, tmp_path, monkeypatch)
+    assert report['n_files'] == 1 and report['lfs_checked'] == 1
+    assert report['revision'] == revision
+
+
+def test_the_module_fetcher_refuses_an_lfs_record_with_wrong_resolved_bytes(rebuild, hub_pair, tmp_path, monkeypatch):
+    data, _ = lfs_record(rebuild, hub_pair)
+    hub_pair.api.lfs_contents = {sha(data): manifest({})}
+    with pytest.raises(rebuild.RebuildError, match=r'LFS.*fetched bytes do not match'):
+        run_main(rebuild, hub_pair, tmp_path, monkeypatch, '--publish')
+    assert hub_pair.api.uploads == []
