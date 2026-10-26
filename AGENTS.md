@@ -452,7 +452,9 @@ uv run bench hub get --repo arthrod/neurotic_docx_bench --path outputs/release_0
 - `--include` globs are fnmatch patterns relative to the preset's folder: `*` also crosses `/`, so
   `--include '*.docx'` takes the `.docx` files of every subfolder too.
 - `bench fixtures download` (whole fixtures repo, checked against `MANIFEST.sha256.json`) and
-  `scripts/fetch_corpus.py` (it also writes `results/compare_regen/regen_list.csv`) still work.
+  `scripts/fetch_corpus.py` still work. The `compare-regen` preset downloads Word's fresh compares but
+  not `results/compare_regen/regen_list.csv`, which `bench jubarte-release` reads at its measure step,
+  after the Word export: set that lane up with `scripts/fetch_corpus.py`, which writes both.
 - Adding a preset is one entry in `hub_get.PRESETS` (`src/neurotic_docx_bench/hub_get.py`).
 
 ## Remote tryout (`bench try remote`, `tryout_remote.py`, `jubarte_release.py`)

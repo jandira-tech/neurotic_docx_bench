@@ -139,7 +139,8 @@ PRESETS: dict[str, Preset] = {
             exclude=("fresh_compares/*",),  # compare-regen
         ),
         Preset("compare-regen", hub.RESULTS_REPO, hub.FRESH_COMPARES, hub.DEFAULT_COMPARE_REGEN / "out",
-               "Word's fresh compares of the 0929 run (scripts/fetch_corpus.py also writes regen_list.csv)"),
+               "Word's fresh compares of the 0929 run; not regen_list.csv, which bench jubarte-release reads: "
+               "set that lane up with scripts/fetch_corpus.py"),
         Preset("release-0.13.0-evidence", hub.RESULTS_REPO, "outputs/release_0.13.0_evidence",
                DOWNLOADS / "release_0.13.0_evidence",
                "jubarte 0.13.0 release evidence: conversion work and the soffice sample"),
