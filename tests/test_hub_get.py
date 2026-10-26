@@ -1498,3 +1498,16 @@ def test_ctrl_c_that_reaches_a_download_thread_stops_the_queued_downloads(tmp_pa
     assert not dest.exists() or _tree(dest) == {}
     notes = " ".join(getattr(exc.value, "__notes__", ()))
     assert str(hub_get.staging_dir(dest, SHA)) in notes and "rerun" in notes
+
+
+def test_the_records_of_a_file_and_of_a_folder_named_like_them_collide_in_the_sdk(tmp_path: Path) -> None:
+    """The premise of _record_clashes, read from the installed huggingface_hub (mcode round 7 #1, pushed back)."""
+    from huggingface_hub._local_folder import get_local_download_paths
+
+    a = get_local_download_paths(tmp_path, "corpus/a.txt")
+    b = get_local_download_paths(tmp_path, "corpus/a.txt.metadata/b")
+    c = get_local_download_paths(tmp_path, "corpus/a.txt.lock/c")
+    assert b.metadata_path.parent == a.metadata_path  # a folder where a.txt's record file goes
+    assert c.metadata_path.parent == a.lock_path  # and where its lock file goes
+    with pytest.raises(IsADirectoryError):
+        a.metadata_path.write_text("{}")

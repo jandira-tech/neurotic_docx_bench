@@ -440,11 +440,13 @@ uv run bench hub get --repo arthrod/neurotic_docx_bench --path outputs/release_0
   `--overwrite` replaced, except a file someone else changed after the run placed it, which stays;
   the error names it and where the file it replaced is kept, and a later run refuses to overwrite
   that kept file. On success the run removes only what it staged; on failure the folder is kept for
-  a resumable rerun. A rerun names the replaced files an earlier run left in `.replaced/` (a run
-  with nothing to download too), and takes the second name off staged files a killed move left
-  linked into the destination. Ctrl-C during the moves is held until the step in hand is recorded
-  (a second press waits too). One during the rollback lets it finish, a second stops it and names
-  the staging folder; the CLI prints what the rollback left and exits 130. Ctrl-C is held only under Python's own handler, so a caller that ignores or
+  a resumable rerun. A rerun names what an earlier run left in the staging folder (replaced files in
+  `.replaced/`, files it took back in `.withdrawn-*/`; a run with nothing to download too), and
+  takes the second name off staged files a killed move left linked into the destination. Ctrl-C
+  never splits a step: during the moves it is held until the step in hand is recorded (a second
+  press waits too); one during the rollback lets it finish, a second stops it before its next step
+  and names the files not put back. Ctrl-C during the download drops the queued downloads and keeps
+  the staging folder. The CLI prints what was left where and exits 130. Ctrl-C is held only under Python's own handler, so a caller that ignores or
   handles it keeps that. Presets with no home in the checkout land in `hub-downloads/`. All three
   are git-ignored.
 - `--include` globs are fnmatch patterns relative to the preset's folder: `*` also crosses `/`, so

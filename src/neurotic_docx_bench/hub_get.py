@@ -47,12 +47,13 @@ download, and one that becomes a symlink meanwhile stops the run before anything
 
 Ctrl-C while files move is held until the step in hand is recorded, then rolls everything back; a
 second press waits too, so no step goes unrecorded. A press during the rollback lets it finish and
-then stops; a second one stops it where it is, and the error names the staging folder that holds
-what was not put back.
+then stops; a second one stops it before its next step, and the error names the files not put back
+and the staging folder that holds the files they replaced. A Ctrl-C during the download drops the
+queued downloads, lets the running ones end and keeps the staging folder for a rerun.
 Ctrl-C is held only under Python's own handler in the main thread, so a caller that ignores it or
 handles it itself keeps that. A run with nothing to download only tidies a staging folder an earlier
 run left, and leaves it alone when another run holds it or anything in it is out of place; either
-way it names the local files an earlier run replaced and left there.
+way it names what an earlier run left there (local files it replaced, files it took back).
 """
 
 from __future__ import annotations
@@ -67,8 +68,8 @@ import stat
 import tempfile
 import threading
 import unicodedata
-from collections.abc import Iterable, Iterator, Sequence
-from concurrent.futures import ThreadPoolExecutor
+from collections.abc import Callable, Iterable, Iterator, Sequence
+from concurrent.futures import ThreadPoolExecutor, wait
 from contextlib import contextmanager
 from dataclasses import dataclass, field
 from pathlib import Path, PurePosixPath
@@ -180,7 +181,7 @@ class GetReport:
     dry_run: bool
     to_download_bytes: int = 0
     conflicts: tuple[str, ...] = field(default=())
-    earlier_replaced: tuple[str, ...] = field(default=())  # local files an earlier run replaced and left
+    earlier_replaced: tuple[str, ...] = field(default=())  # what an earlier run left in the staging folder
     on_conflict: str = "refuse"
 
     def describe(self) -> str:
@@ -194,8 +195,8 @@ class GetReport:
         done = (f"{head}; downloaded {self.downloaded}, already there {self.skipped}, "
                 f"replaced {self.replaced}, kept local {len(self.kept_local)}; every file verified")
         if self.earlier_replaced:
-            done += (f". {len(self.earlier_replaced)} local file(s) an earlier run replaced and could not put back "
-                     f"are still kept: {_listing(self.earlier_replaced)}")
+            done += (f". {len(self.earlier_replaced)} file(s) an earlier run left in its staging folder (local files "
+                     f"it replaced, or files it took back) are still kept: {_listing(self.earlier_replaced)}")
         return done
 
 
@@ -546,26 +547,28 @@ def _record_clashes(files: Sequence[RemoteFile]) -> list[str]:
 
 
 class _CtrlC:
-    """The Ctrl-C held while files move: ``check`` raises it once the step in hand is recorded.
+    """The Ctrl-C presses held while files move or are put back; a press never splits a step.
 
-    While files move, a second press waits like the first: raising it at once could land between a
-    finished rename or link and its journal entry, and the rollback would not know about that step.
-    During the rollback (``rolling_back``) a second press stops it at once.
+    Raising a press at once could land between a finished rename or link and its journal entry, and
+    the rollback would not know about that step. So while files move, ``check`` raises a held press
+    once the step in hand is recorded; during the rollback one press lets it finish, and a second
+    stops it before its next step (``stop_rollback``).
     """
 
     def __init__(self) -> None:
         self.held: list[int] = []
-        self.rolling_back = False
 
     def hold(self, signum: int, _frame: object) -> None:
-        if self.held and self.rolling_back:  # pressed twice during the rollback: stop it where it is
-            raise KeyboardInterrupt
-        if not self.held:
+        if len(self.held) < 2:
             self.held.append(signum)
 
     def check(self) -> None:
         if self.held:
             self.held.clear()
+            raise KeyboardInterrupt
+
+    def stop_rollback(self) -> None:
+        if len(self.held) > 1:
             raise KeyboardInterrupt
 
 
@@ -591,14 +594,17 @@ def _ctrl_c_between_steps() -> Iterator[_CtrlC]:
 
 
 def _earlier(staging: Path) -> tuple[str, ...]:
-    """The local files an earlier run replaced and left in ``staging``; looked at, never followed or changed."""
-    backups = staging / _BACKUP
-    if staging.is_symlink() or backups.is_symlink() or not backups.is_dir():
+    """What an earlier run left in ``staging``: the local files it replaced (``.replaced/``) and the files
+    it took back from the destination (``.withdrawn-*/``); looked at, never followed or changed."""
+    if staging.is_symlink() or not staging.is_dir():
         return ()
     found = []
-    for root, dirs, names in os.walk(backups):  # lists a symlinked folder among ``dirs`` but does not enter it
-        found += [str(Path(root) / n) for n in names]
-        found += [str(Path(root) / d) for d in dirs if (Path(root) / d).is_symlink()]
+    for top in (staging / _BACKUP, *sorted(staging.glob(".withdrawn-*"))):
+        if top.is_symlink() or not top.is_dir():
+            continue
+        for root, dirs, names in os.walk(top):  # lists a symlinked folder among ``dirs`` but does not enter it
+            found += [str(Path(root) / n) for n in names]
+            found += [str(Path(root) / d) for d in dirs if (Path(root) / d).is_symlink()]
     return tuple(sorted(found))
 
 
@@ -620,10 +626,14 @@ class _Move:
     placed: Identity | None = None
 
 
-def _roll_back(journal: Sequence[_Move], staging: Path) -> list[str]:
-    """Undo ``journal`` newest first, each move on its own; what could not be undone, and where its files are."""
+def _roll_back(journal: Sequence[_Move], staging: Path, between: Callable[[], None] = lambda: None) -> list[str]:
+    """Undo ``journal`` newest first, each move on its own; what could not be undone, and where its files are.
+
+    ``between`` runs before each move is undone; what it raises stops the rollback there.
+    """
     problems = []
     for m in reversed(journal):
+        between()
         kept = f"; the file it replaced is kept at {m.backup}" if m.backed_up else ""
         try:
             if m.placed is not None:
@@ -631,6 +641,7 @@ def _roll_back(journal: Sequence[_Move], staging: Path) -> list[str]:
                 if why is not None:
                     problems.append(why + kept)
                     continue
+                m.placed = None
             if m.backed_up:
                 place(m.backup, m.target)
                 m.backed_up = False
@@ -856,8 +867,20 @@ def _download(
             return f"{f.rel}: {exc}"
         return None
 
-    with ThreadPoolExecutor(max_workers=max(1, workers)) as pool:
-        failed = [e for e in pool.map(fetch, todo) if e]
+    pool = ThreadPoolExecutor(max_workers=max(1, workers))
+    queued = []
+    try:
+        queued.extend(pool.submit(fetch, f) for f in todo)  # downloads start meanwhile: Ctrl-C can land here too
+        # In slices: a Ctrl-C that reached a download thread runs here only when the main thread wakes.
+        while wait(queued, timeout=0.25).not_done:
+            pass
+    except BaseException as exc:
+        pool.shutdown(wait=True, cancel_futures=True)  # the queued downloads go, the running ones end
+        if isinstance(exc, KeyboardInterrupt):
+            exc.add_note(f"stopped while downloading: nothing moved into {dest}; {staging} is kept so a rerun resumes")
+        raise
+    pool.shutdown(wait=True)
+    failed = [e for e in (q.result() for q in queued) if e]
     links = _symlinks(staging)
     if links:
         raise GetError(f"{staging} holds symlinks ({_listing([str(x) for x in links])}); remove it and rerun")
@@ -947,21 +970,21 @@ def _move_held(
         ctrl_c.check()
     except BaseException as exc:  # Ctrl-C included: put everything back before stopping
         ctrl_c.held.clear()  # a press that stopped the moves is not one pressed during the rollback
-        ctrl_c.rolling_back = True
         try:
-            problems = _roll_back(journal, staging)
-            for d in reversed(made):
-                try:
-                    d.rmdir()
-                except OSError:
-                    pass
-        except KeyboardInterrupt as stop:  # pressed twice: the rollback stops where it is
+            problems = _roll_back(journal, staging, ctrl_c.stop_rollback)
+        except KeyboardInterrupt as stop:  # pressed twice: the rollback stops before its next step
+            left = [str(m.target) for m in journal if m.placed is not None or m.backed_up]
             stop.add_note(
-                f"Ctrl-C stopped putting back the files moved into {dest}: some may still be there, and "
-                f"{staging / _BACKUP} holds the local files they replaced. {staging} is kept"
+                f"Ctrl-C stopped putting back the files moved into {dest}; not put back: "
+                f"{_listing(left) if left else 'none'}. {staging / _BACKUP} holds the local files they replaced; "
+                f"{staging} is kept"
             )
             raise
-        ctrl_c.rolling_back = False
+        for d in reversed(made):
+            try:
+                d.rmdir()
+            except OSError:
+                pass
         if isinstance(exc, _LeftBehind):
             problems.insert(0, str(exc))
         why = str(exc) or type(exc).__name__
