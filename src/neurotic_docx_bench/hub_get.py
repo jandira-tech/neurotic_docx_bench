@@ -552,10 +552,19 @@ def _kept_here(staging: Path) -> bool:
     return False
 
 
-def _let_go(lock: int, running: Sequence[threading.Thread]) -> None:
-    """Close the staging lock ``lock`` now, or once the downloads ``running`` end."""
-    if not running:
+def _unlock(lock: int) -> None:
+    """Unlock, then close. A forked child's copy of the descriptor shares the lock (flock(2)), so closing
+    this process's copy alone would leave it held until the child exits."""
+    try:
+        fcntl.flock(lock, fcntl.LOCK_UN)
+    finally:
         os.close(lock)
+
+
+def _let_go(lock: int, running: Sequence[threading.Thread]) -> None:
+    """Let go of the staging lock ``lock`` now, or once the downloads ``running`` end."""
+    if not running:
+        _unlock(lock)
         return
     _KEPT_LOCKS.append(lock)
 
@@ -563,10 +572,10 @@ def _let_go(lock: int, running: Sequence[threading.Thread]) -> None:
         for t in running:
             t.join()
         try:
-            _KEPT_LOCKS.remove(lock)  # whoever takes it off the list closes it
+            _KEPT_LOCKS.remove(lock)  # whoever takes it off the list lets it go
         except ValueError:
             return
-        os.close(lock)
+        _unlock(lock)
 
     threading.Thread(target=once_they_end, name="hub-get-let-go", daemon=True).start()
 
