@@ -49,7 +49,8 @@ Ctrl-C is held from taking the staging lock to letting it go, and every press st
 error that says where it stopped. During the download it drops the queued downloads and lets the
 running ones end, keeping the staging folder for a rerun; a second press stops waiting for them (a
 request may never come back), and the staging folder stays locked until they end or the process
-exits, so no other run takes a folder they still write into. While files move, a press waits until the step in hand is
+exits, so no other run takes a folder they still write into. Two presses that reach the process as
+one (the kernel delivers a pending signal once) count as one: press again. While files move, a press waits until the step in hand is
 recorded, then rolls everything back; a second press waits too, so no step goes unrecorded. A press
 during the rollback lets it finish and then stops; a second one stops it before its next step, and
 the error names the files not put back and the staging folder that holds the files they replaced.
@@ -1006,19 +1007,20 @@ def _download(
         raise GetError(f"{staging} holds symlinks ({_listing([str(x) for x in links])}); remove it and rerun")
     bad = []
     failed += [f"{f.rel}: its download never finished" for f in todo if f.rel not in results]
+    failing = {f.rel for f in todo if results.get(f.rel, "never finished")}  # each file is named once
     for f in todo:
         ctrl_c.check(checking)
         got = staged_files / f.repo_path
         if got.is_file() and not same_bytes(got, f):
             got.unlink()  # so a rerun fetches it again
-            bad.append(f.rel)
-        elif not got.is_file() and not any(e.startswith(f"{f.rel}: ") for e in failed):
+            if f.rel not in failing:
+                bad.append(f.rel)
+        elif not got.is_file() and f.rel not in failing:
             failed.append(f"{f.rel}: not in {staging} after the download")
     if failed or bad:
-        raise GetError(
-            f"{len(bad)} file(s) do not hash like {where}: {_listing(bad)}; {len(failed)} failed to download: "
-            f"{_listing(failed)}. Nothing moved into {dest}; {staging} is kept so a rerun resumes"
-        )
+        found = [f"{len(bad)} file(s) do not hash like {where}: {_listing(bad)}"] if bad else []
+        found += [f"{len(failed)} failed to download: {_listing(failed)}"] if failed else []
+        raise GetError(f"{'; '.join(found)}. Nothing moved into {dest}; {staging} is kept so a rerun resumes")
 
     # The destination may have changed while the files downloaded: look again before moving anything.
     moves, late, late_same = [], [], 0
