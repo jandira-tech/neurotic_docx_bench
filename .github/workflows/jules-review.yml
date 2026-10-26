@@ -25,9 +25,10 @@ jobs:
     # variable: gh variable set JULES_RUNNER -R <owner/repo> -b self-hosted
     # The runner must be recent enough to run node24 actions.
     runs-on: ${{ vars.JULES_RUNNER || 'ubuntu-latest' }}
-    # 30 min of concurrency-cap retries + 2 x timeout_minutes (a fresh session
-    # follows one that ends without a review) + 10 min of margin.
-    timeout-minutes: 130
+    # 30 min of concurrency-cap retries + 3 sessions of timeout_minutes each (an
+    # agentic session that times out falls back to prompt mode, which tries
+    # twice) + 15 min for session start-up, checkout and posting.
+    timeout-minutes: 180
     permissions:
       contents: read
       pull-requests: write
