@@ -45,11 +45,11 @@ before any download, since the two cannot share a staging folder.
 ``overwrite`` replaces only regular files: a local file that is a symlink refuses before any
 download, and one that becomes a symlink meanwhile stops the run before anything moves.
 
-Ctrl-C is held from the run's first step under the staging lock to its last, and every press stops
-the run with an error that says where it stopped. During the download it drops the queued downloads
-and lets the running ones end, keeping the staging folder for a rerun; a second press stops waiting
-for them (a request may never come back), and those downloads end with the process, which keeps the
-staging folder locked until it exits. While files move, a press waits until the step in hand is
+Ctrl-C is held from taking the staging lock to letting it go, and every press stops the run with an
+error that says where it stopped. During the download it drops the queued downloads and lets the
+running ones end, keeping the staging folder for a rerun; a second press stops waiting for them (a
+request may never come back), and the staging folder stays locked until they end or the process
+exits, so no other run takes a folder they still write into. While files move, a press waits until the step in hand is
 recorded, then rolls everything back; a second press waits too, so no step goes unrecorded. A press
 during the rollback lets it finish and then stops; a second one stops it before its next step, and
 the error names the files not put back and the staging folder that holds the files they replaced.
@@ -222,8 +222,8 @@ LOCK = ".lock"  # held while a run uses its staging folder
 FILES = "files"  # inside staging: hf_hub_download's local_dir, so no hub path can land on LOCK or _BACKUP
 _BACKUP = ".replaced"  # inside staging: the local files --overwrite moved aside, until every move succeeded
 _HF_BOOKKEEPING = (".cache", "huggingface")  # what hf_hub_download(local_dir=) writes beside the files
-# Staging locks of runs whose downloads a second Ctrl-C left running: never closed, so the lock
-# holds until the process exits and ends those downloads with it.
+# Staging locks of runs whose downloads a second Ctrl-C left running: each is let go once those
+# downloads end, or as the process exits, which ends them too.
 _KEPT_LOCKS: list[int] = []
 _CHUNK = 1 << 20
 
@@ -522,6 +522,11 @@ def _lock(staging: Path) -> int:
             mine, now = os.fstat(fd), _identity_at(staging / LOCK)
         except BlockingIOError as exc:
             os.close(fd)
+            if _kept_here(staging):
+                raise _Busy(
+                    f"downloads that a second Ctrl-C left running in this process still write into {staging}; "
+                    "rerun once they end, or in a new process"
+                ) from exc
             raise _Busy(f"another bench hub get is using {staging}; wait for it to finish") from exc
         except OSError as exc:  # a disk without locks, among others
             os.close(fd)
@@ -532,6 +537,38 @@ def _lock(staging: Path) -> int:
         if now is not None and now[:2] == (mine.st_dev, mine.st_ino):
             return fd
         os.close(fd)
+
+
+def _kept_here(staging: Path) -> bool:
+    """Whether this process keeps ``staging``'s lock for downloads a second Ctrl-C left running."""
+    now = _identity_at(staging / LOCK)
+    for fd in tuple(_KEPT_LOCKS):  # a snapshot: another thread lets a lock go once its downloads end
+        try:
+            mine = os.fstat(fd)
+        except OSError:  # let go meanwhile
+            continue
+        if now is not None and now[:2] == (mine.st_dev, mine.st_ino):
+            return True
+    return False
+
+
+def _let_go(lock: int, running: Sequence[threading.Thread]) -> None:
+    """Close the staging lock ``lock`` now, or once the downloads ``running`` end."""
+    if not running:
+        os.close(lock)
+        return
+    _KEPT_LOCKS.append(lock)
+
+    def once_they_end() -> None:
+        for t in running:
+            t.join()
+        try:
+            _KEPT_LOCKS.remove(lock)  # whoever takes it off the list closes it
+        except ValueError:
+            return
+        os.close(lock)
+
+    threading.Thread(target=once_they_end, name="hub-get-let-go", daemon=True).start()
 
 
 def _record_clashes(files: Sequence[RemoteFile]) -> list[str]:
@@ -565,16 +602,16 @@ class _CtrlC:
 
     def __init__(self) -> None:
         self.held: list[int] = []
-        self.left_running = 0  # downloads still running when a second press stopped the wait for them
+        self.left_running: list[threading.Thread] = []  # downloads still running when a second press stopped the wait
 
     def hold(self, signum: int, _frame: object) -> None:
         if len(self.held) < 2:
             self.held.append(signum)
 
     def check(self, note: str | None = None) -> None:
-        """Raise a held press, with ``note`` saying where the run stopped."""
+        """Raise one held press, with ``note`` saying where the run stopped; a second one stays held."""
         if self.held:
-            self.held.clear()
+            self.held.pop(0)
             raise _interrupted(note) if note else KeyboardInterrupt
 
     def stop_rollback(self) -> None:
@@ -588,9 +625,10 @@ def _ctrl_c_between_steps() -> Iterator[_CtrlC]:
 
     A filesystem step and its journal entry then happen together: a Ctrl-C that lands as a rename
     or a link returns waits for the next check, so the rollback knows about that step. A run holds
-    it once, from its first step under the staging lock to its last, so Python's handler is given
-    back only after the run ends. Ctrl-C is held only under Python's own handler, in the main thread:
-    a caller that ignores Ctrl-C or handles it itself keeps that, and its ``check`` never raises.
+    it once, from taking the staging lock to letting it go, so Python's handler is given back only
+    after the run ends; a press still held then is raised as the block ends without an error.
+    Ctrl-C is held only under Python's own handler, in the main thread: a caller that ignores Ctrl-C
+    or handles it itself keeps that, and its ``check`` never raises.
     """
     ctrl_c = _CtrlC()
     previous = signal.getsignal(signal.SIGINT)
@@ -602,6 +640,7 @@ def _ctrl_c_between_steps() -> Iterator[_CtrlC]:
         yield ctrl_c
     finally:
         signal.signal(signal.SIGINT, previous)
+    ctrl_c.check()  # pressed after the block's last check
 
 
 def _earlier(staging: Path) -> tuple[str, ...]:
@@ -767,22 +806,35 @@ def get(
         if tidy:
             return plain
         raise GetError(f"{clash}; nothing downloaded")
-    try:
-        lock = _lock(staging)
-    except GetError:
-        if tidy:  # another run holds it, or its lock cannot be taken: leave it alone
-            return plain
-        raise
+    nothing_moved = f"stopped before anything was downloaded: nothing moved into {dest}"
     finished = f"stopped after the run finished: every file is in place in {dest}"
     done = False
-    ctrl_c = None
     try:
-        with _ctrl_c_between_steps() as ctrl_c:  # one hold, from the first step under the lock to the last
-            journal, late_same, earlier = _locked_run(
-                api, preset.repo_id, sha, files, todo, conflicts, kept, dest, staging, on_conflict, workers, ctrl_c
-            )
+        with _ctrl_c_between_steps() as ctrl_c:  # one hold, from taking the staging lock to letting it go
+            try:
+                lock = _lock(staging)
+            except GetError:
+                if not tidy:
+                    raise
+                ctrl_c.check(nothing_moved)
+                return plain  # another run holds it, or its lock cannot be taken: leave it alone
+            try:
+                ctrl_c.check(nothing_moved)
+                journal, late_same, earlier = _locked_run(
+                    api, preset.repo_id, sha, files, todo, conflicts, kept, dest, staging, on_conflict, workers, ctrl_c
+                )
+            finally:
+                _let_go(lock, ctrl_c.left_running)
             done = True
+            try:
+                staging.rmdir()  # only when nothing else is left in it
+            except OSError:
+                pass
             ctrl_c.check(finished)
+        return GetReport(
+            **report, skipped=skipped + late_same, kept_local=tuple(kept), downloaded=len(journal),
+            replaced=sum(1 for m in journal if m.backup is not None), dry_run=False, earlier_replaced=earlier,
+        )
     except KeyboardInterrupt as exc:
         if not getattr(exc, "__notes__", None):  # not raised by a check: before the hold, or as it was given back
             context = exc.__context__
@@ -792,21 +844,8 @@ def get(
                 for note in getattr(context, "__notes__", None) or [str(context) or type(context).__name__]:
                     exc.add_note(note)
             else:
-                exc.add_note(f"stopped before anything was downloaded: nothing moved into {dest}")
+                exc.add_note(nothing_moved)
         raise
-    finally:
-        if ctrl_c is not None and ctrl_c.left_running:
-            _KEPT_LOCKS.append(lock)  # closed as the process exits, which ends those downloads too
-        else:
-            os.close(lock)
-    try:
-        staging.rmdir()  # only when nothing else is left in it
-    except OSError:
-        pass
-    return GetReport(
-        **report, skipped=skipped + late_same, kept_local=tuple(kept), downloaded=len(journal),
-        replaced=sum(1 for m in journal if m.backup is not None), dry_run=False, earlier_replaced=earlier,
-    )
 
 
 def _locked_run(
@@ -902,8 +941,8 @@ def _download(
     def fetch(f: RemoteFile) -> str | None:
         try:
             api.hf_hub_download(repo_id, f.repo_path, repo_type=hub.REPO_TYPE, revision=sha, local_dir=staged_files)
-        except Exception as exc:  # reported with the others below; the staging folder is kept
-            return f"{f.rel}: {exc}"
+        except BaseException as exc:  # reported with the others below; the staging folder is kept
+            return f"{f.rel}: {str(exc) or type(exc).__name__}"
         return None
 
     stopped = f"stopped while downloading: nothing moved into {dest}; {staging} is kept so a rerun resumes"
@@ -938,17 +977,17 @@ def _download(
         while alive := [t for t in threads if t.is_alive()]:
             if ctrl_c.held:  # pressed again: stop waiting (a request may never come back)
                 ctrl_c.held.clear()
-                ctrl_c.left_running = len(alive)
+                ctrl_c.left_running = alive
                 break
             try:
                 alive[0].join(0.25)
             except KeyboardInterrupt:  # a caller's own Ctrl-C handler raised again
-                ctrl_c.left_running = len(alive)
+                ctrl_c.left_running = alive
                 break
         if ctrl_c.left_running:
             exc.add_note(
-                f"{ctrl_c.left_running} download(s) still running were left to end with this process, which "
-                f"keeps {staging} locked until it exits; a rerun after that resumes"
+                f"{len(ctrl_c.left_running)} download(s) still running were left to end; {staging} stays locked "
+                "until they end or this process exits, and a rerun after that resumes"
             )
         raise
     checking = f"stopped while checking the downloaded files: nothing moved into {dest}; {staging} is kept so a rerun resumes"
@@ -957,6 +996,7 @@ def _download(
     if links:
         raise GetError(f"{staging} holds symlinks ({_listing([str(x) for x in links])}); remove it and rerun")
     bad = []
+    failed += [f"{f.rel}: its download never finished" for f in todo if f.rel not in results]
     for f in todo:
         ctrl_c.check(checking)
         got = staged_files / f.repo_path

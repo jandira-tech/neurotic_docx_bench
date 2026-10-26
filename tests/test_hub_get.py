@@ -1634,6 +1634,16 @@ def test_a_hub_file_where_the_downloads_records_go_refuses_before_downloading(tm
 # Review round 9, Codex (#80)
 
 
+def _drop_kept_locks() -> None:
+    """Let go of the locks kept for downloads left running; the run lets each go itself once they end."""
+    while True:
+        try:
+            fd = hub_get._KEPT_LOCKS.pop()  # whoever takes it off the list closes it
+        except IndexError:
+            return
+        os.close(fd)
+
+
 def _held_by_another_run(staging: Path) -> bool:
     try:
         fd = hub_get._lock(staging)
@@ -1696,8 +1706,7 @@ def test_a_second_ctrl_c_stops_waiting_for_a_download_that_never_ends(tmp_path: 
     assert running and locked
     notes = " ".join(getattr(exc.value, "__notes__", ()))
     assert str(staging) in notes and "still running" in notes and "rerun" in notes
-    while hub_get._KEPT_LOCKS:
-        os.close(hub_get._KEPT_LOCKS.pop())
+    _drop_kept_locks()
 
 
 @pytest.mark.parametrize("how", ["include", "exclude"])
@@ -1817,8 +1826,7 @@ def test_two_presses_before_the_first_check_still_stop_waiting_for_a_stalled_dow
     assert exc.type is KeyboardInterrupt, exc.value
     assert waited < 3
     assert "still running" in " ".join(getattr(exc.value, "__notes__", ()))
-    while hub_get._KEPT_LOCKS:
-        os.close(hub_get._KEPT_LOCKS.pop())
+    _drop_kept_locks()
 
 
 def test_a_press_the_moment_the_staging_lock_is_taken_lets_it_go_and_says_so(
@@ -1948,8 +1956,30 @@ def test_the_lock_a_second_press_kept_goes_once_the_downloads_left_running_end(t
     while _held_by_another_run(staging) and time.monotonic() < deadline:
         time.sleep(0.05)
     held = _held_by_another_run(staging)
-    while getattr(hub_get, "_KEPT_LOCKS", None):
-        os.close(hub_get._KEPT_LOCKS.pop())
+    _drop_kept_locks()
     assert not held
     hub_get.get(preset(dest), api=api, workers=1)
     assert sorted(_tree(dest)) == ["f00.txt", "f01.txt", "f02.txt"]
+
+
+def test_a_press_held_as_the_handler_is_given_back_is_raised_not_dropped(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A press after the run's last check but before Python's handler is back is still held: raised then."""
+    dest = tmp_path / "dest"
+    real_signal = signal.signal
+    sent = []
+
+    def give_back(signum, handler):
+        if signum == signal.SIGINT and handler is signal.default_int_handler and not sent:
+            sent.append(1)
+            os.kill(os.getpid(), signal.SIGINT)  # the run's hold still catches it
+            _spin()
+        return real_signal(signum, handler)
+
+    monkeypatch.setattr(signal, "signal", give_back)
+    with pytest.raises(BaseException) as exc:
+        hub_get.get(preset(dest), api=PinnedHub(FILES))
+    assert sent
+    assert exc.type is KeyboardInterrupt, exc.value
+    assert "every file is in place" in " ".join(getattr(exc.value, "__notes__", ()))
