@@ -115,7 +115,8 @@ def blob_reader(checkout: Path):
             proc.stdin.write(oid.encode() + b'\n')
             proc.stdin.flush()
             header = proc.stdout.readline().split()
-            if len(header) != 3 or header[0] != oid.encode() or header[1] != b'blob':
+            # int() would take a sign or underscores; the size git prints is ASCII digits
+            if len(header) != 3 or header[0] != oid.encode() or header[1] != b'blob' or not header[2].isdigit():
                 errors.seek(0)
                 said = errors.read().decode(errors='replace').strip()[:500]
                 raise RebuildError(f'git cat-file {oid}: {b" ".join(header).decode(errors="replace")} {said}'.strip())
@@ -443,10 +444,10 @@ def publish(api, checkout: Path, revision: str, data: bytes, message: str) -> st
 
     The upload is two calls, so that what a failure says of the hub rests on which call failed, never on
     the error's shape: ``preupload`` sends everything before the commit request, ``commit_manifest`` the
-    commit request. The preupload's answer can stop the run between the two: a path the hub ignores, or one
+    commit request. The preupload's answer can stop the run between the two, read in the SDK's order: a path
     that already holds this content id, for which ``create_commit`` would send no commit (the SDK's own test,
-    ``hf_api.py`` 5143), read the head and return it without the ``parent_commit`` check. So it is never
-    called for a no-op, and every failure from it on may follow a commit (``UnverifiedPublish``); before it,
+    ``hf_api.py`` 5143), read the head and return it without the ``parent_commit`` check; then a path the hub
+    ignores. So it is never called for a no-op, and every failure from it on may follow a commit (``UnverifiedPublish``); before it,
     nothing this run sent can make one (``RebuildError``). The commit it returns is fetched and must have
     ``revision`` as its one parent and change nothing else; the head itself means no commit was made. A
     Ctrl-C stops the run with a note saying the same.
@@ -480,16 +481,23 @@ def publish(api, checkout: Path, revision: str, data: bytes, message: str) -> st
                 )
         operation = CommitOperationAdd(path_in_repo=path, path_or_fileobj=data)
         preupload(api, operation)
-        # The preupload's answer (_commit_api.py 778): create_commit would leave an ignored file out of the commit
-        # it still sends (_commit_api.py 939).
+        # The preupload's answer (_commit_api.py 777-779), read in the SDK's order: a no-op is dropped before the
+        # payload builder looks at shouldIgnore (hf_api.py 5143, _commit_api.py 939).
+        remote = getattr(operation, '_remote_oid', None)
+        if remote is not None and remote == operation._local_oid:
+            entry = before.get(key)
+            # Whether the tree this run read holds this content at the path itself, in whatever mode (a symlink
+            # whose target bytes are the manifest): only then is the answer about the commit this run read.
+            explained = entry is not None and entry[1] == b'blob' and holds(
+                git(checkout, 'cat-file', 'blob', f'{revision}:{path}'), data
+            )
+            raise RebuildError(no_op(api, revision, path, entry, remote, explained))
+        # create_commit would leave an ignored file out of the commit it still sends (_commit_api.py 939).
         if getattr(operation, '_should_ignore', None):
             raise RebuildError(
                 f'the hub ignores {path} (the answer to the preupload, from the repo\'s .gitignore), so a commit would '
                 'leave it out. Nothing published by this run; fix the .gitignore on the hub'
             )
-        remote = getattr(operation, '_remote_oid', None)
-        if remote is not None and remote == operation._local_oid:
-            raise RebuildError(no_op(api, revision, path, before.get(key), remote))
         note = (
             'stopped calling create_commit, which sends the commit request: the hub may hold the manifest now; rerun '
             'to check it'
@@ -520,20 +528,36 @@ def publish(api, checkout: Path, revision: str, data: bytes, message: str) -> st
         raise
 
 
-def no_op(api, revision: str, path: str, entry: tuple[bytes, ...] | None, remote: str) -> str:
+def holds(blob: bytes, data: bytes) -> bool:
+    """Whether ``blob`` is ``data``'s content as the hub counts it: the bytes, or an LFS pointer to their sha256."""
+    pointer = LFS_POINTER.fullmatch(blob)
+    return blob == data or (pointer is not None and pointer.group(1).decode() == hashlib.sha256(data).hexdigest())
+
+
+def no_op(api, revision: str, path: str, entry: tuple[bytes, ...] | None, remote: str, explained: bool) -> str:
     """Why a no-op the preupload's answer shows stops the run. ``create_commit`` was not called, so nothing was
-    published by this run; the head is read again only to say whether a rerun or a fix on the hub comes next."""
+    published by this run; the rest says whether a rerun or a fix on the hub comes next.
+
+    A fix only when the tree at ``revision`` holds this content at the path (``explained``) and the head is still
+    ``revision`` when read again: two equal readings alone do not show the branch stayed put, since it may have
+    moved and come back, and the answer may describe the commit it passed through.
+    """
     said = (
         f'the hub answered the preupload that {path} on {BRANCH} already holds this manifest\'s content id ({remote}), '
         'so create_commit would make no commit; create_commit was not called. Nothing published by this run'
     )
+    held = f'a mode {entry[0].decode()} entry' if entry else 'no file'
+    if not explained:
+        return (
+            f'{said}; at {revision}, the commit this run read, {path} holds {held} without this content, so the answer '
+            f'describes another commit of {BRANCH} (it moved, or moved and came back): rerun to check it'
+        )
     try:
         now = api.repo_info(hub.RESULTS_REPO, repo_type=hub.REPO_TYPE, revision=BRANCH).sha
     except Exception as exc:
         return f'{said}; reading the head of {BRANCH} again failed ({type(exc).__name__}: {exc}): rerun to check it'
     if now != revision:
         return f'{said}; {BRANCH} moved to {now} since {revision} was read and may hold this manifest: rerun on it to check it'
-    held = f'a mode {entry[0].decode()} entry' if entry else 'no file'
     return (
         f'{said}; {BRANCH} is still at {revision}, where {path} holds {held}. The hub compares content ids, not '
         'modes, so an entry with this content counts as the manifest already there: fix the path on the hub'
