@@ -2673,3 +2673,47 @@ def test_a_withdrawal_the_disk_made_but_reported_failed_still_rolls_back_cleanly
     assert fired
     assert "every file already moved was put back" in str(info.value), info.value
     assert not dest.exists() or not any(p.is_file() for p in dest.rglob("*"))
+
+
+def test_a_probe_rename_the_disk_made_but_reported_failed_is_believed_by_what_is_there(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """mcode, round 15: the probe was the one step still believing a reported failure; on a disk without hard
+    links whose no-replace rename is made and reported failed, it refused every run for a cause that was not so."""
+    dest = tmp_path / "dest"
+    real_rename_new = hub_get._rename_new
+
+    def made_then_failed(src, dst):
+        real_rename_new(src, dst)  # an existing name still raises FileExistsError here, as it should
+        raise OSError(errno.EIO, os.strerror(errno.EIO), str(src), None, str(dst))
+
+    monkeypatch.setattr(os, "link", _no_links)
+    monkeypatch.setattr(hub_get, "_rename_new", made_then_failed)
+    _completes(dest)
+
+
+def test_a_file_whose_link_fails_is_never_copied_with_a_rename_that_replaces(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """mcode, round 15: links work, so the run never probed the no-replace rename; one file's link then failed,
+    and its copy went in with a rename that replaces whatever is at the target."""
+    dest = tmp_path / "dest"
+    real_link = os.link
+    renamed_onto = []
+
+    def link(src, dst, *args, **kw):
+        if Path(dst) == dest / "a.docx":
+            raise OSError(errno.EMLINK, os.strerror(errno.EMLINK), str(src), None, str(dst))
+        return real_link(src, dst, *args, **kw)
+
+    def replaces(src, dst):  # a disk that ignores the flag
+        renamed_onto.append(Path(dst))
+        os.replace(src, dst)
+
+    monkeypatch.setattr(os, "link", link)
+    monkeypatch.setattr(hub_get, "_rename_new", replaces)
+    with pytest.raises(Exception) as exc:
+        hub_get.get(preset(dest), api=PinnedHub(FILES))
+    assert type(exc.value) is hub_get.GetError, repr(exc.value)
+    assert dest / "a.docx" not in renamed_onto
+    assert "rename" in str(exc.value) and "every file already moved was put back" in str(exc.value), exc.value
