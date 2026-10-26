@@ -1419,3 +1419,86 @@ def test_ctrl_c_around_the_temporary_clone_says_what_the_hub_holds_and_keeps_the
         assert 'holds this manifest' in notes and hub_pair.api.head() in notes
     else:  # the error the press interrupted is the warning that decides a rerun: it stays in view
         assert 'may hold' in notes and 'UnverifiedPublish' in notes and 'rerun to check it' in notes
+
+
+# Review round 15, mcode (#78)
+
+
+def test_with_lfs_storage_the_sdk_sends_the_lfs_batch_between_the_preupload_and_the_commit(rebuild, monkeypatch):
+    """The legacy LFS path, taken when hf_xet is not installed: preupload, LFS batch, commit.
+
+    With hf_xet installed the storage upload leaves httpx for the Xet client (it asks for its own
+    token), so this mock cannot see it; a failure there carries no request of this repo's preupload or
+    LFS batch, and is "may hold".
+    """
+    from huggingface_hub import HfApi, _commit_api
+
+    monkeypatch.setattr(_commit_api, 'is_xet_available', lambda: False)
+
+    def upload(batch_status):
+        sent = []
+
+        def handler(request):
+            sent.append((request.method, request.url.path))
+            if '/preupload/' in request.url.path:
+                files = json.loads(request.content)['files']
+                return httpx2.Response(200, json={'files': [
+                    {'path': f['path'], 'uploadMode': 'lfs', 'shouldIgnore': False, 'oid': None} for f in files
+                ]})
+            if request.url.path.endswith('/info/lfs/objects/batch'):
+                if batch_status != 200:
+                    return httpx2.Response(batch_status, json={'message': 'batch'}, request=request)
+                objects = json.loads(request.content)['objects']  # already stored: nothing to upload
+                return httpx2.Response(200, json={'objects': [{'oid': o['oid'], 'size': o['size']} for o in objects]})
+            return httpx2.Response(200, json={
+                'commitUrl': f'https://huggingface.co/{hub.REPO_TYPE}s/{hub.RESULTS_REPO}/commit/{"b" * 40}',
+                'commitOid': 'b' * 40,
+            })
+
+        with sdk_over(handler):
+            api = HfApi(endpoint='https://huggingface.co', token='hf_test_not_a_real_token')
+            try:
+                api.upload_file(
+                    path_or_fileobj=b'{}\n', path_in_repo=f'{PREFIX}/{MANIFEST}', repo_id=hub.RESULTS_REPO,
+                    repo_type=hub.REPO_TYPE, commit_message='m', parent_commit='a' * 40, revision='main',
+                )
+            except HfHubHTTPError as exc:
+                return sent, exc
+            return sent, None
+
+    preupload = ('POST', f'/api/{hub.REPO_TYPE}s/{hub.RESULTS_REPO}/preupload/main')
+    batch = ('POST', f'/{hub.REPO_TYPE}s/{hub.RESULTS_REPO}.git/info/lfs/objects/batch')
+    commit = ('POST', f'/api/{hub.REPO_TYPE}s/{hub.RESULTS_REPO}/commit/main')
+    sent, failed = upload(200)
+    assert (sent, failed) == ([preupload, batch, commit], None)
+    sent, failed = upload(400)
+    assert sent == [preupload, batch] and rebuild.failed_before_commit(failed) and not rebuild.refused_commit(failed)
+
+
+@pytest.mark.parametrize('unreadable', [
+    lambda: httpx2.ConnectError('no route to the hub'),
+    lambda: HfHubHTTPError('500', response=httpx2.Response(500, request=httpx2.Request('GET', 'https://huggingface.co/api'))),
+])
+def test_a_head_that_cannot_be_read_after_a_failure_before_the_commit_says_the_hub_may_hold_the_manifest(
+    rebuild, hub_pair, unreadable
+):
+    tried = []
+
+    def fails(**kw):
+        tried.append(1)
+        raise HfHubHTTPError('400 preupload', response=httpx2.Response(400, request=preupload_request()))
+
+    real_info = hub_pair.api.repo_info
+
+    def info(*a, **kw):
+        if tried:  # the read that would confirm nothing was published
+            raise unreadable()
+        return real_info(*a, **kw)
+
+    hub_pair.api.upload_file = fails
+    hub_pair.api.repo_info = info
+    with pytest.raises(rebuild.RebuildError, match='may hold') as exc:
+        rebuild.publish(hub_pair.api, hub_pair.clone, hub_pair.head, manifest({'a/x.docx': sha(b'inline')}), 'rebuild')
+    assert tried
+    assert type(exc.value).__name__ == 'UnverifiedPublish'
+    assert 'nothing published' not in str(exc.value)
