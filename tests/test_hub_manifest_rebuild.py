@@ -1045,3 +1045,25 @@ def test_ctrl_c_between_the_upload_and_its_check_says_the_hub_may_hold_the_manif
         rebuild.publish(hub_pair.api, hub_pair.clone, hub_pair.head, data, 'rebuild')
     assert hub_pair.api.head() != hub_pair.head
     assert 'may hold' in ' '.join(getattr(exc.value, '__notes__', ()))
+
+
+# Review round 12, Codex (#78)
+
+
+@pytest.mark.parametrize('url', [
+    # the commit POST, redirected (307 keeps the method) to the commit URL of a renamed repo
+    'https://huggingface.co/api/datasets/arthrod/renamed_neurotic_docx_bench/commit/main',
+    # the same commit behind an HF_ENDPOINT with a path, or a mirror
+    f'https://mirror.example/hf/api/datasets/{hub.RESULTS_REPO}/commit/main?x=1',
+])
+def test_a_failure_on_a_request_not_known_to_precede_the_commit_says_the_hub_may_hold_the_manifest(
+    rebuild, hub_pair, url
+):
+    def fails(**kw):
+        raise httpx2.ReadTimeout('commit accepted; response lost', request=httpx2.Request('POST', url))
+
+    hub_pair.api.upload_file = fails
+    with pytest.raises(rebuild.RebuildError, match='may hold') as exc:
+        rebuild.publish(hub_pair.api, hub_pair.clone, hub_pair.head, manifest({'a/x.docx': sha(b'inline')}), 'rebuild')
+    assert type(exc.value).__name__ == 'UnverifiedPublish'
+    assert 'nothing published' not in str(exc.value)
