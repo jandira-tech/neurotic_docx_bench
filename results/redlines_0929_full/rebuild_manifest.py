@@ -34,15 +34,16 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
 
-from hub_upload import REPO_PREFIX, next_parent
+from hub_upload import REPO_PREFIX
 
 from neurotic_docx_bench import hub
 
 MANIFEST = f'run/{hub.MANIFEST_NAME}'
 # The 0.13.0 lane was uploaded on 2026-10-25 outside hub_upload.py, with its own list.
 UPLOAD_LISTS = ('upload_20261025.manifest.tsv',)
-SHA256 = re.compile(r'[0-9a-f]{64}')
-LFS_SPEC = b'version https://git-lfs.github.com/spec/v1\n'
+# The only pointer form the run's files have (all 12,509 on 2026-10-26); anything else that
+# starts like a pointer refuses rather than being hashed as inline bytes.
+LFS_POINTER = re.compile(rb'version https://git-lfs\.github\.com/spec/v1\noid sha256:([0-9a-f]{64})\nsize ([0-9]+)\n')
 URL = f'https://huggingface.co/datasets/{hub.RESULTS_REPO}'
 NO_LFS = ('-c', 'filter.lfs.smudge=', '-c', 'filter.lfs.process=', '-c', 'filter.lfs.required=false')
 
@@ -57,9 +58,11 @@ class HubFile:
     size: int
 
 
-def git(checkout: Path, *args: str) -> bytes:
-    env = os.environ | {'GIT_LFS_SKIP_SMUDGE': '1'}
-    return subprocess.run(['git', '-C', str(checkout), *args], check=True, capture_output=True, env=env).stdout
+def git(checkout: Path, *args: str, input: bytes | None = None) -> bytes:
+    # Replace refs could rewrite the history the records are read from.
+    env = os.environ | {'GIT_LFS_SKIP_SMUDGE': '1', 'GIT_NO_REPLACE_OBJECTS': '1'}
+    run = subprocess.run(['git', '-C', str(checkout), *args], check=True, capture_output=True, env=env, input=input)
+    return run.stdout
 
 
 def git_blob_sha1(data: bytes) -> str:
@@ -68,13 +71,12 @@ def git_blob_sha1(data: bytes) -> str:
 
 def lfs_oid(data: bytes) -> str | None:
     """The sha256 an LFS pointer names, or None for an inline file."""
-    if not data.startswith(LFS_SPEC):
+    if not data.startswith(b'version https://git-lfs'):
         return None
-    fields = dict(line.split(' ', 1) for line in data.decode().splitlines()[1:] if ' ' in line)
-    oid = fields.get('oid', '').removeprefix('sha256:')
-    if not SHA256.fullmatch(oid) or not fields.get('size', '').isdigit():
-        raise RebuildError(f'unreadable LFS pointer: {data[:200]!r}')
-    return oid
+    pointer = LFS_POINTER.fullmatch(data)
+    if pointer is None:
+        raise RebuildError(f'not a canonical LFS pointer: {data[:200]!r}')
+    return pointer[1].decode()
 
 
 def hub_tree(checkout: Path, revision: str) -> dict[str, HubFile]:
@@ -92,25 +94,37 @@ def hub_tree(checkout: Path, revision: str) -> dict[str, HubFile]:
 
 
 def records(checkout: Path, revision: str) -> list[tuple[str, dict[str, str]]]:
-    """Every version of the manifest and of the upload lists up to ``revision``, oldest first."""
-    # A shallow clone stops before the oldest versions, which would then go unchecked.
+    """Every version of the manifest and of the upload lists up to ``revision``, oldest first.
+
+    A version is read at every commit, merges included, and ranked by the last commit that still
+    holds it, in commit order rather than commit time (two versions can share a second).
+    """
+    # A shallow clone or a grafts file stops the history before the oldest versions.
     if git(checkout, 'rev-parse', '--is-shallow-repository').strip() != b'false':
         raise RebuildError(f'{checkout} is a shallow clone; its history hides older records')
-    # Commit order, not commit time: two versions can share a second.
-    rank = {c: i for i, c in enumerate(reversed(git(checkout, 'rev-list', '--topo-order', revision).split()))}
-    found = []
+    grafts = checkout / git(checkout, 'rev-parse', '--git-path', 'info/grafts').decode().strip()
+    if grafts.exists():
+        raise RebuildError(f'{grafts} rewrites the history the records are read from')
+    commits = git(checkout, 'rev-list', '--topo-order', revision).decode().split()[::-1]
+    found = {}
     for order, name in enumerate((MANIFEST, *UPLOAD_LISTS)):
         path = f'{REPO_PREFIX}/{name}'
-        log = git(checkout, 'log', '--full-history', '--diff-filter=AM', '--format=%H', revision, '--', path)
-        for commit in log.decode().split():
-            text = git(checkout, 'show', f'{commit}:{path}').decode()
-            if name == MANIFEST:
-                files = json.loads(text)['files']
-            else:
-                files = {row['key']: row['sha256'] for row in csv.DictReader(io.StringIO(text), delimiter='\t')}
-            found.append((rank[commit.encode()], order, f'{commit[:9]} {name}', files))
-    found.sort(key=lambda r: (r[0], r[1]))
-    return [(label, files) for _, _, label, files in found]
+        query = ''.join(f'{c}:{path}\n' for c in commits).encode()
+        blobs = git(checkout, 'cat-file', '--batch-check=%(objectname)', input=query).decode().splitlines()
+        for rank, (commit, blob) in enumerate(zip(commits, blobs, strict=True)):
+            if blob.endswith(' missing'):
+                continue
+            entry = found.setdefault((name, blob), {'order': order, 'first': commit})
+            entry['last'] = rank
+    history = []
+    for (name, blob), entry in sorted(found.items(), key=lambda kv: (kv[1]['last'], kv[1]['order'])):
+        text = git(checkout, 'cat-file', 'blob', blob).decode()
+        if name == MANIFEST:
+            files = json.loads(text)['files']
+        else:
+            files = {row['key']: row['sha256'] for row in csv.DictReader(io.StringIO(text), delimiter='\t')}
+        history.append((f'{entry["first"][:9]} {name}', files))
+    return history
 
 
 def rebuild(
@@ -176,33 +190,39 @@ def build(checkout: Path, revision: str) -> tuple[dict[str, str], dict]:
 
 
 def publish(api, checkout: Path, revision: str, data: bytes, message: str) -> str:
-    """Commit ``data`` as the run manifest on ``revision``; return the commit, read back."""
+    """Commit ``data`` as the run manifest on ``revision``; return the commit, checked through git.
+
+    A no-op upload skips the ``parent_commit`` check and returns whatever the branch head is, so
+    the commit is fetched and must have ``revision`` as its one parent and change nothing else.
+    """
+    path = f'{REPO_PREFIX}/{MANIFEST}'
     current = api.repo_info(hub.RESULTS_REPO, repo_type=hub.REPO_TYPE).sha
     if current != revision:
         raise RebuildError(f'the hub moved to {current} since {revision} was read; nothing published')
+    if git(checkout, 'cat-file', 'blob', f'{revision}:{path}') == data:
+        return revision
     info = api.upload_file(
         path_or_fileobj=data,
-        path_in_repo=f'{REPO_PREFIX}/{MANIFEST}',
+        path_in_repo=path,
         repo_id=hub.RESULTS_REPO,
         repo_type=hub.REPO_TYPE,
         commit_message=message,
         parent_commit=revision,
     )
-    commit = next_parent(api, revision, info, message)
-    if commit == revision:
-        return revision
-    with tempfile.TemporaryDirectory() as scratch:
-        back = Path(
-            api.hf_hub_download(
-                hub.RESULTS_REPO,
-                f'{REPO_PREFIX}/{MANIFEST}',
-                repo_type=hub.REPO_TYPE,
-                revision=commit,
-                local_dir=scratch,
-            )
-        ).read_bytes()
-    if back != data:
-        raise RebuildError(f'the manifest read back from {commit} is not the one uploaded')
+    commit = info.oid
+    git(checkout, 'fetch', '-q', 'origin')
+    parents = git(checkout, 'rev-list', '--parents', '-n', '1', commit).decode().split()
+    if parents != [commit, revision]:
+        raise RebuildError(f'{commit} is not a commit on {revision} (parents {parents[1:]})')
+    changed = [
+        p
+        for p in git(checkout, 'diff', '--name-only', '--no-renames', '-z', revision, commit).decode().split('\0')
+        if p
+    ]
+    if changed != [path]:
+        raise RebuildError(f'{commit} changes {changed[:10]}, not only {path}; it is not this upload')
+    if git(checkout, 'cat-file', 'blob', f'{commit}:{path}') != data:
+        raise RebuildError(f'the manifest at {commit} is not the one uploaded')
     return commit
 
 
@@ -221,24 +241,26 @@ def main() -> None:
     try:
         checkout_hub(clone, revision)
         built, report = build(clone, revision)
+        path = hub.write_manifest(out, path=out / hub.MANIFEST_NAME, files=built)
+        report |= {'revision': revision, 'manifest_sha256': hub.sha256_file(path)}
+        (out / 'report.json').write_text(json.dumps(report, indent=1) + '\n')
+        folders = Counter('/'.join(p.split('/')[:2]) for p in report['first_recorded'])
+        print(f'{revision}: {report["n_files"]} files ({report["lfs"]} LFS, {report["inline"]} inline)', flush=True)
+        for label, n in report['records']:
+            print(f'  record {label}: {n} entries')
+        replaced = Counter(label for _, label in report['replaced'])
+        print(f'  replaced by a newer record (paths per older record): {dict(replaced)}')
+        print(f'  first recorded here: {dict(folders)}')
+        print(f'  wrote {path} and {out / "report.json"}', flush=True)
+        if a.publish:
+            message = (
+                f'redlines_0929_full: {MANIFEST} rebuilt from the hub tree ({report["n_files"]} files, issue #76)'
+            )
+            commit = publish(api, clone, revision, path.read_bytes(), message)
+            print(f'published {commit}' if commit != revision else 'the hub already has this manifest', flush=True)
     finally:
         if a.checkout is None:
             shutil.rmtree(clone.parent)
-    path = hub.write_manifest(out, path=out / hub.MANIFEST_NAME, files=built)
-    report |= {'revision': revision, 'manifest_sha256': hub.sha256_file(path)}
-    (out / 'report.json').write_text(json.dumps(report, indent=1) + '\n')
-    folders = Counter('/'.join(p.split('/')[:2]) for p in report['first_recorded'])
-    print(f'{revision}: {report["n_files"]} files ({report["lfs"]} LFS, {report["inline"]} inline)', flush=True)
-    for label, n in report['records']:
-        print(f'  record {label}: {n} entries')
-    replaced = Counter(label for _, label in report['replaced'])
-    print(f'  replaced by a newer record (paths per older record): {dict(replaced)}')
-    print(f'  first recorded here: {dict(folders)}')
-    print(f'  wrote {path} and {out / "report.json"}')
-    if a.publish:
-        message = f'redlines_0929_full: {MANIFEST} rebuilt from the hub tree ({report["n_files"]} files, issue #76)'
-        commit = publish(api, clone, revision, path.read_bytes(), message)
-        print(f'published {commit}' if commit != revision else 'the hub already has this manifest', flush=True)
 
 
 if __name__ == '__main__':
