@@ -1800,7 +1800,8 @@ def test_the_sdk_takes_its_no_op_from_the_preupload_answer_and_sends_no_commit(r
 
 def test_a_no_op_the_preupload_answer_shows_never_reaches_create_commit(rebuild, hub_pair):
     """Codex and mcode, round 18: the run makes the SDK's no-op check itself, after the preupload, and never calls
-    create_commit for one; what it says then rests on no request create_commit might have sent."""
+    create_commit for one; what it says then rests on no request create_commit might have sent. This pins the run's
+    decision; the SDK's own no-op, which that decision copies, is pinned by the premise guards (regular and LFS)."""
     from huggingface_hub import HfApi
 
     data = manifest({'a/x.docx': sha(b'inline')})
@@ -2005,3 +2006,63 @@ def test_a_cat_file_header_whose_size_is_not_digits_refuses(rebuild, monkeypatch
         with pytest.raises(Exception) as exc:
             read(oid)
     assert type(exc.value) is rebuild.RebuildError, repr(exc.value)
+
+
+def test_the_sdk_takes_its_no_op_from_the_preupload_answer_for_an_lfs_file_too(rebuild, monkeypatch):
+    """mcode, round 19: the manifest goes to LFS when the hub's .gitattributes says so, and there the content id the
+    preupload answers is the sha256 (``_commit_api.py`` 299). The run's no-op check copies the SDK's for both modes, so
+    the premise is pinned for both."""
+    from huggingface_hub import CommitOperationAdd, HfApi, _commit_api
+
+    monkeypatch.setattr(_commit_api, 'is_xet_available', lambda: False)
+    data = b'{}\n'
+    revision = f'/api/{hub.REPO_TYPE}s/{hub.RESULTS_REPO}/revision/main'
+    sent = []
+
+    def handler(request):
+        sent.append((request.method, request.url.path))
+        if request.url.path == revision:
+            return httpx2.Response(200, json={'id': hub.RESULTS_REPO, 'sha': 'c' * 40})
+        if '/preupload/' in request.url.path:
+            files = json.loads(request.content)['files']
+            return httpx2.Response(200, json={'files': [
+                {'path': f['path'], 'uploadMode': 'lfs', 'shouldIgnore': False, 'oid': hashlib.sha256(data).hexdigest()}
+                for f in files
+            ]})
+        if request.url.path.endswith('/info/lfs/objects/batch'):
+            objects = json.loads(request.content)['objects']  # already stored: nothing to upload
+            return httpx2.Response(200, json={'objects': [{'oid': o['oid'], 'size': o['size']} for o in objects]})
+        return committed(request)
+
+    with sdk_over(handler):
+        api = HfApi(endpoint='https://huggingface.co', token='hf_test_not_a_real_token')
+        operation = CommitOperationAdd(path_in_repo=f'{PREFIX}/{MANIFEST}', path_or_fileobj=data)
+        rebuild.preupload(api, operation)
+        assert operation._upload_mode == 'lfs'
+        assert operation._remote_oid == operation._local_oid == hashlib.sha256(data).hexdigest()
+        mark = len(sent)
+        info = api.create_commit(
+            repo_id=hub.RESULTS_REPO, operations=[operation], commit_message='m', repo_type=hub.REPO_TYPE,
+            revision='main', parent_commit='a' * 40,
+        )
+    assert info.oid == 'c' * 40
+    assert sent[mark:] == [('GET', revision)]
+
+
+def test_a_path_the_hub_ignores_that_already_holds_the_manifest_is_a_no_op_not_an_ignored_path(rebuild, hub_pair):
+    """mcode, round 19: the SDK drops a no-op before its payload builder looks at shouldIgnore (``hf_api.py`` 5143,
+    ``_commit_api.py`` 939), so a path both ignored and holding this content id gets no commit request at all, and
+    the cause the run names is the no-op, not the .gitignore."""
+    from huggingface_hub import HfApi
+
+    data = manifest({'a/x.docx': sha(b'inline')})
+    blob_id = hashlib.sha1(b'blob %d\0' % len(data) + data).hexdigest()
+    sent = []
+    with sdk_over(http_hub(hub_pair.head, sent, ignored=True, remote_oid=blob_id)):
+        api = HfApi(endpoint='https://huggingface.co', token='hf_test_not_a_real_token')
+        with pytest.raises(rebuild.RebuildError) as exc:
+            rebuild.publish(api, hub_pair.clone, hub_pair.head, data, 'rebuild')
+    said = str(exc.value)
+    assert type(exc.value).__name__ != 'UnverifiedPublish', exc.value
+    assert 'ignores' not in said and 'make no commit' in said and 'Nothing published by this run' in said, said
+    assert not any('/commit/' in path for _, path in sent)
