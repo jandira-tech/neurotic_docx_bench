@@ -1820,7 +1820,8 @@ def test_a_no_op_the_preupload_answer_shows_never_reaches_create_commit(rebuild,
     assert calls == []
     assert type(exc.value).__name__ != 'UnverifiedPublish', exc.value
     said = str(exc.value)
-    assert 'Nothing published by this run' in said and 'fix the path' in said and 'rerun' not in said, said
+    # Codex, round 19: the tree at the revision holds other content there, so it does not explain the answer
+    assert 'Nothing published by this run' in said and 'rerun' in said and 'fix the path' not in said, said
     assert not any('/commit/' in path for _, path in sent)
 
 
@@ -1927,3 +1928,80 @@ def test_with_xet_storage_the_preupload_call_uploads_and_the_commit_call_sends_o
     assert 'authorization' not in {key.lower() for key in session['custom_headers']}
 
 
+
+
+# Review round 19 (#78)
+
+
+def test_a_head_that_moved_and_came_back_is_never_told_to_fix_the_path(rebuild, hub_pair):
+    """Codex, round 19: the preupload sees a head holding this manifest, and the branch is back at the revision
+    when the run reads it again. Equal readings do not show the branch stayed put, and the tree at the revision
+    does not explain the no-op, so a rerun, not a fix on the hub, comes next."""
+    data = manifest({'a/x.docx': sha(b'inline')})
+    real = hub_pair.api.preupload_lfs_files
+
+    def there_and_back(**kw):
+        hub_pair.api.commit({f'{PREFIX}/{MANIFEST}': data}, 'rebuild elsewhere')
+        real(**kw)
+        git(hub_pair.api.origin, 'reset', '-q', '--hard', hub_pair.head)
+
+    hub_pair.api.preupload_lfs_files = there_and_back
+    with pytest.raises(rebuild.RebuildError) as exc:
+        rebuild.publish(hub_pair.api, hub_pair.clone, hub_pair.head, data, 'rebuild')
+    said = str(exc.value)
+    assert hub_pair.api.head() == hub_pair.head and hub_pair.api.commit_calls == []
+    assert 'Nothing published by this run' in said and 'rerun' in said and 'fix the path' not in said, said
+
+
+def test_the_sdk_sends_the_commit_when_the_preupload_names_other_content(rebuild):
+    """Codex, round 19: the no-op premise needs its other half. A content id that is not this manifest's must
+    leave the operation in, and the commit request carry the manifest."""
+    import base64
+
+    from huggingface_hub import CommitOperationAdd, HfApi
+
+    bodies = []
+
+    def handler(request):
+        if '/commit/' in request.url.path:
+            bodies.append(request.content)
+        return http_hub('a' * 40, [], remote_oid='0' * 40)(request)
+
+    with sdk_over(handler):
+        api = HfApi(endpoint='https://huggingface.co', token='hf_test_not_a_real_token')
+        operation = CommitOperationAdd(path_in_repo=f'{PREFIX}/{MANIFEST}', path_or_fileobj=b'{}\n')
+        rebuild.preupload(api, operation)
+        assert operation._remote_oid == '0' * 40 != operation._local_oid
+        info = api.create_commit(
+            repo_id=hub.RESULTS_REPO, operations=[operation], commit_message='m', repo_type=hub.REPO_TYPE,
+            revision='main', parent_commit='a' * 40,
+        )
+    assert info.oid == 'b' * 40
+    (body,) = bodies
+    files = [json.loads(line)['value'] for line in body.decode().splitlines() if json.loads(line)['key'] == 'file']
+    assert files == [{'content': base64.b64encode(b'{}\n').decode(), 'path': f'{PREFIX}/{MANIFEST}', 'encoding': 'base64'}]
+
+
+class CatFile:
+    """``git cat-file --batch`` answering every request with ``answer``."""
+
+    def __init__(self, answer: bytes):
+        import io
+
+        self.stdin = io.BytesIO()
+        self.stdout = io.BytesIO(answer)
+
+    def wait(self):
+        return 0
+
+
+@pytest.mark.parametrize('size', [b'+3', b'3_0', b'x', b'-1'])
+def test_a_cat_file_header_whose_size_is_not_digits_refuses(rebuild, monkeypatch, tmp_path, size):
+    """Jules, round 19: ``int()`` takes a sign and underscores, and raises ValueError on anything else; the size
+    git prints is plain digits, and anything else is refused like any malformed answer."""
+    oid = 'f' * 40
+    monkeypatch.setattr(rebuild.subprocess, 'Popen', lambda *a, **kw: CatFile(f'{oid} blob '.encode() + size + b'\n{}\n\n'))
+    with rebuild.blob_reader(tmp_path) as read:
+        with pytest.raises(Exception) as exc:
+            read(oid)
+    assert type(exc.value) is rebuild.RebuildError, repr(exc.value)
