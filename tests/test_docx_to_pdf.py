@@ -400,6 +400,22 @@ def test_committed_artifact_is_in_the_converter_store():
         assert in_store[name]["itt_n"] == tool["itt_n"]
 
 
+def test_every_release_evidence_report_is_in_the_converter_store():
+    # A release's DOCX→PDF evidence reports each get a store line naming them; the 0.13.0
+    # reports reached main without theirs (#73).
+    store = REPO_ROOT / "results" / "converters.jsonl"
+    reports = sorted(REPO_ROOT.glob("results/release_*_evidence/docx_to_pdf_*.json"))
+    if not store.is_file() or not reports:
+        pytest.skip("no converter store or evidence reports in this checkout")
+    named = {
+        json.loads(raw).get("report_path")
+        for raw in store.read_text(encoding="utf-8").splitlines()
+        if raw.strip()
+    }
+    rel = [p.relative_to(REPO_ROOT).as_posix() for p in reports]
+    assert [r for r in rel if r not in named] == []
+
+
 def test_append_report_writes_one_line_per_tool(tmp_path):
     from neurotic_docx_bench.ledger import converters as conv
 
