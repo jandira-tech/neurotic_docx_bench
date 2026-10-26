@@ -2066,3 +2066,56 @@ def test_a_path_the_hub_ignores_that_already_holds_the_manifest_is_a_no_op_not_a
     assert type(exc.value).__name__ != 'UnverifiedPublish', exc.value
     assert 'ignores' not in said and 'make no commit' in said and 'Nothing published by this run' in said, said
     assert not any('/commit/' in path for _, path in sent)
+
+
+# Review round 20 (#78)
+
+
+def symlink_revision(hub_pair, tmp_path, target: bytes) -> str:
+    """The head after a commit turning the manifest path into a symlink whose target bytes are ``target``, fetched."""
+    commit_entry(hub_pair.api.origin, tmp_path, '120000', f'{PREFIX}/{MANIFEST}', target)
+    git(hub_pair.clone, 'fetch', '-q', 'origin')
+    return hub_pair.api.head()
+
+
+def there_and_back(hub_pair, tmp_path, revision: str, held: bytes) -> None:
+    """The preupload sees a head whose manifest path is a regular file holding ``held``; then the branch is back."""
+    real = hub_pair.api.preupload_lfs_files
+
+    def preupload(**kw):
+        commit_entry(hub_pair.api.origin, tmp_path, '100644', f'{PREFIX}/{MANIFEST}', held)
+        real(**kw)
+        git(hub_pair.api.origin, 'reset', '-q', '--hard', revision)
+
+    hub_pair.api.preupload_lfs_files = preupload
+
+
+@pytest.mark.parametrize('lfs', [False, True], ids=['regular', 'lfs'])
+def test_a_symlink_holding_the_other_mode_s_content_never_explains_a_no_op(rebuild, hub_pair, tmp_path, lfs):
+    """Codex, round 20: the content id the preupload matches depends on its upload mode (``_commit_api.py`` 297): a
+    regular file's is the git blob sha1 of its bytes, an LFS file's the sha256 its pointer names. At the revision the
+    path is a symlink holding the other mode's spelling of the manifest (the pointer for a regular answer, the bytes
+    for an LFS one), so the tree this run read does not explain the answer: a rerun comes next, not a fix on the hub."""
+    data = manifest({'a/x.docx': sha(b'inline')})
+    revision = symlink_revision(hub_pair, tmp_path, data if lfs else pointer(data))
+    hub_pair.api.lfs = lfs
+    there_and_back(hub_pair, tmp_path, revision, pointer(data) if lfs else data)
+    with pytest.raises(rebuild.RebuildError) as exc:
+        rebuild.publish(hub_pair.api, hub_pair.clone, revision, data, 'rebuild')
+    said = str(exc.value)
+    assert hub_pair.api.head() == revision and hub_pair.api.commit_calls == []
+    assert 'Nothing published by this run' in said and 'rerun' in said and 'fix the path' not in said, said
+
+
+@pytest.mark.parametrize('lfs', [False, True], ids=['regular', 'lfs'])
+def test_a_symlink_holding_the_mode_s_own_content_explains_a_no_op(rebuild, hub_pair, tmp_path, lfs):
+    """The control: a symlink holding this mode's spelling of the manifest is what the hub matched, so with the head
+    still at the revision the path on the hub is what needs fixing."""
+    data = manifest({'a/x.docx': sha(b'inline')})
+    revision = symlink_revision(hub_pair, tmp_path, pointer(data) if lfs else data)
+    hub_pair.api.lfs = lfs
+    with pytest.raises(rebuild.RebuildError) as exc:
+        rebuild.publish(hub_pair.api, hub_pair.clone, revision, data, 'rebuild')
+    said = str(exc.value)
+    assert hub_pair.api.head() == revision and hub_pair.api.commit_calls == []
+    assert 'Nothing published by this run' in said and 'fix the path' in said, said
