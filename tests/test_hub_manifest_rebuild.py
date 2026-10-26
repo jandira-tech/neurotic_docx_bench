@@ -1983,14 +1983,40 @@ def test_the_sdk_sends_the_commit_when_the_preupload_names_other_content(rebuild
     assert files == [{'content': base64.b64encode(b'{}\n').decode(), 'path': f'{PREFIX}/{MANIFEST}', 'encoding': 'base64'}]
 
 
+class OpenPipe:
+    """The stdout of a ``git cat-file --batch`` that keeps running: like ``BufferedReader`` over a pipe, ``read(n)``
+    makes its n-byte buffer first (``MemoryError`` at 2**62 bytes, ``OverflowError`` from ``sys.maxsize``, both
+    measured on this CPython), and a read past what git wrote waits for bytes that never come."""
+
+    def __init__(self, answer: bytes):
+        import io
+
+        self.data = io.BytesIO(answer)
+
+    def readline(self):
+        return self.data.readline()
+
+    def read(self, n=-1):
+        if n >= sys.maxsize:
+            raise OverflowError('cannot fit the size into an index-sized integer')
+        if n >= 2**62:
+            raise MemoryError
+        if n < 0 or n > len(self.data.getbuffer()) - self.data.tell():
+            raise AssertionError(f'read({n}) waits on the open pipe for bytes git never writes: the run hangs')
+        return self.data.read(n)
+
+    def close(self):
+        pass
+
+
 class CatFile:
-    """``git cat-file --batch`` answering every request with ``answer``."""
+    """``git cat-file --batch`` answering every request with ``answer``, its pipe left open as git leaves it."""
 
     def __init__(self, answer: bytes):
         import io
 
         self.stdin = io.BytesIO()
-        self.stdout = io.BytesIO(answer)
+        self.stdout = OpenPipe(answer)
 
     def wait(self):
         return 0
@@ -1999,7 +2025,9 @@ class CatFile:
 @pytest.mark.parametrize('size', [b'+3', b'3_0', b'x', b'-1'])
 def test_a_cat_file_header_whose_size_is_not_digits_refuses(rebuild, monkeypatch, tmp_path, size):
     """Jules, round 19: ``int()`` takes a sign and underscores, and raises ValueError on anything else; the size
-    git prints is plain digits, and anything else is refused like any malformed answer."""
+    git prints is plain digits, and anything else is refused like any malformed answer. mcode, round 20: over a
+    pipe git keeps open, the short-read check never sees ``3_0`` or ``-1``: the read waits, so only this check
+    refuses them."""
     oid = 'f' * 40
     monkeypatch.setattr(rebuild.subprocess, 'Popen', lambda *a, **kw: CatFile(f'{oid} blob '.encode() + size + b'\n{}\n\n'))
     with rebuild.blob_reader(tmp_path) as read:
@@ -2183,3 +2211,53 @@ def test_the_sdk_sends_the_lfs_commit_when_the_preupload_names_other_lfs_content
     assert [x['value'] for x in lines if x['key'] == 'lfsFile'] == [
         {'path': f'{PREFIX}/{MANIFEST}', 'algo': 'sha256', 'oid': sha(data), 'size': len(data)}
     ]
+
+
+@pytest.mark.parametrize('size', [2**62, 2**64 - 1], ids=['MemoryError', 'OverflowError'])
+def test_a_cat_file_size_too_large_to_read_refuses(rebuild, monkeypatch, tmp_path, size):
+    """mcode, round 20: a size of ASCII digits passes the header check, and a read of it fails making its buffer
+    (``MemoryError``, ``OverflowError``), which reached the caller uncaught instead of the refusal of a malformed
+    answer."""
+    oid = 'f' * 40
+    monkeypatch.setattr(rebuild.subprocess, 'Popen', lambda *a, **kw: CatFile(f'{oid} blob {size}\n{{}}\n\n'.encode()))
+    with rebuild.blob_reader(tmp_path) as read:
+        with pytest.raises(Exception) as exc:
+            read(oid)
+    assert type(exc.value) is rebuild.RebuildError, repr(exc.value)
+    assert str(size) in str(exc.value), exc.value
+
+
+def test_a_folder_at_the_manifest_path_refuses_before_the_preupload(rebuild, hub_pair):
+    """mcode, round 20: ``ls-tree -r`` lists no folder, so a folder at the manifest path read as "no file": the run
+    sent the preupload and then a commit no hub can make, or blamed a moved head. It is named, before anything is
+    sent."""
+    data = manifest({'a/x.docx': sha(b'inline')})
+    git(hub_pair.api.origin, 'rm', '-q', f'{PREFIX}/{MANIFEST}')
+    hub_pair.api.commit({f'{PREFIX}/{MANIFEST}/inner.txt': b'x'}, 'a folder at the manifest path')
+    git(hub_pair.clone, 'fetch', '-q', 'origin')
+    revision = hub_pair.api.head()
+    with pytest.raises(rebuild.RebuildError) as exc:
+        rebuild.publish(hub_pair.api, hub_pair.clone, revision, data, 'rebuild')
+    said = str(exc.value)
+    assert type(exc.value).__name__ != 'UnverifiedPublish', exc.value
+    assert hub_pair.api.preuploads == [] and hub_pair.api.commit_calls == []
+    assert 'folder' in said and 'Nothing published by this run' in said, said
+
+
+def test_the_symlink_s_bytes_are_read_before_the_preupload(rebuild, hub_pair, tmp_path, monkeypatch):
+    """mcode, round 20: the bytes of a symlink at the manifest path were read only after the preupload, to explain
+    a no-op, so a git failure there came after a request was sent. They are read with the tree, before any."""
+    data = manifest({'a/x.docx': sha(b'inline')})
+    revision = symlink_revision(hub_pair, tmp_path, data)
+    real = rebuild.git
+
+    def failing(checkout, *args):
+        if args[:2] == ('cat-file', 'blob'):
+            raise rebuild.RebuildError('git cat-file blob failed (128): fatal: simulated')
+        return real(checkout, *args)
+
+    monkeypatch.setattr(rebuild, 'git', failing)
+    with pytest.raises(rebuild.RebuildError) as exc:
+        rebuild.publish(hub_pair.api, hub_pair.clone, revision, data, 'rebuild')
+    assert 'simulated' in str(exc.value), exc.value
+    assert hub_pair.api.preuploads == [] and hub_pair.api.commit_calls == []
