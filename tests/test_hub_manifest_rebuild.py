@@ -555,7 +555,7 @@ def test_records_from_the_same_commit_are_both_newest(rebuild, tmp_path):
         MANIFEST: manifest({'x.docx': sha(b'B')}),
         'upload_20261025.manifest.tsv': tsv({'x.docx': b'A'}),
     })
-    with pytest.raises(rebuild.RebuildError, match='newest record disagrees'):
+    with pytest.raises(rebuild.RebuildError, match=rf'1 whose newest record disagrees.*{re.escape(MANIFEST)}'):
         rebuild.build(repo, 'HEAD')
 
 
@@ -849,3 +849,47 @@ def test_publish_checks_a_tree_holding_a_name_that_is_not_utf8(rebuild, hub_pair
     data = manifest({'a/x.docx': sha(b'inline')})
     commit = rebuild.publish(hub_pair.api, hub_pair.clone, revision, data, 'rebuild')
     assert commit == hub_pair.api.head() != revision
+
+
+# Review round 8 (#78)
+
+
+def test_a_check_that_fails_after_the_upload_says_the_hub_may_hold_the_manifest(rebuild, hub_pair):
+    data = manifest({'a/x.docx': sha(b'inline')})
+    # The upload commits; the fetch that would check it then fails.
+    hub_pair.api.before_upload = lambda api: git(hub_pair.clone, 'remote', 'set-url', 'origin', '/nonexistent/hub')
+    with pytest.raises(rebuild.RebuildError) as exc:
+        rebuild.publish(hub_pair.api, hub_pair.clone, hub_pair.head, data, 'rebuild')
+    assert type(exc.value).__name__ == 'UnverifiedPublish'
+    assert hub_pair.api.head() != hub_pair.head
+    assert hub_pair.api.head() in str(exc.value)
+    assert 'may hold' in str(exc.value)
+
+
+def test_a_name_that_is_not_utf8_under_the_run_folder_is_refused_cleanly(rebuild, tmp_path):
+    repo, _ = repo_with(tmp_path, {'a/x.docx': b'x', MANIFEST: manifest({'a/x.docx': sha(b'x')})})
+    commit_entry(repo, tmp_path, '100644', f'{PREFIX}/a/' + os.fsdecode(b'\xff') + '.docx', b'latin-1 era\n')
+    with pytest.raises(rebuild.RebuildError, match='not UTF-8'):
+        rebuild.build(repo, git(repo, 'rev-parse', 'HEAD'))
+
+
+def test_git_never_prompts_for_credentials(rebuild):
+    assert rebuild.git_env()['GIT_TERMINAL_PROMPT'] == '0'
+
+
+def test_records_from_the_same_commit_are_both_newest_the_list_too(rebuild, tmp_path):
+    """The manifest agrees with the hub and the upload list from the same commit does not: still refused."""
+    repo, _ = repo_with(tmp_path, {
+        'x.docx': b'A',
+        MANIFEST: manifest({'x.docx': sha(b'A')}),
+        'upload_20261025.manifest.tsv': tsv({'x.docx': b'B'}),
+    })
+    with pytest.raises(rebuild.RebuildError, match=r'1 whose newest record disagrees.*upload_20261025'):
+        rebuild.build(repo, 'HEAD')
+
+
+def test_main_does_not_claim_a_commit_it_cannot_tell_it_made(rebuild, hub_pair, tmp_path, monkeypatch, capsys):
+    run_main(rebuild, hub_pair, tmp_path, monkeypatch, '--lfs-check', '0', '--publish')
+    printed = capsys.readouterr().out
+    assert f'the hub holds this manifest at {hub_pair.api.head()}' in printed
+    assert 'published ' not in printed
