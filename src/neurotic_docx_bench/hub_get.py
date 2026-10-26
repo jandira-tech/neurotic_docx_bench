@@ -16,7 +16,8 @@
    is looked at again after the download, and each file is placed with a hard link that fails on
    an existing file (on a disk without hard links, a copy made in the staging folder that takes its
    name with a rename refusing an existing file: ``renamex_np(RENAME_EXCL)`` on macOS,
-   ``renameat2(RENAME_NOREPLACE)`` on Linux; a disk with neither refuses before any download), so
+   ``renameat2(RENAME_NOREPLACE)`` on Linux; a disk with neither refuses before any download, and a
+   file whose link fails on a disk that takes them is copied only if that rename works there), so
    one written meanwhile is never overwritten either, and a kill never leaves a part-written or
    empty file in the destination.
 4. **Staged, all or nothing.** Files land in ``files/`` of a staging folder on the destination's
@@ -307,6 +308,7 @@ def _libc() -> ctypes.CDLL:
 _RENAME_EXCL = 0x4  # macOS <stdio.h>: renamex_np fails with EEXIST on an existing name
 _RENAME_NOREPLACE = 0x1  # Linux <fcntl.h>: renameat2 does the same
 _AT_FDCWD = -100
+_RENAME_REFUSES: dict[Path, str | None] = {}  # per scratch folder: None, or why _rename_new cannot place a copy
 
 
 def _rename_new(src: Path, dst: Path) -> None:
@@ -373,8 +375,8 @@ def _copy_new(staged: Path, target: Path, scratch: Path) -> Identity:
 def place(staged: Path, target: Path, scratch: Path) -> Identity:
     """Give ``target`` the bytes of ``staged`` without ever overwriting a file there; the new file's identity.
 
-    A hard link, or on a disk without them a copy made in ``scratch`` that takes the name ``target`` in
-    one step refusing an existing file.
+    A hard link, or where the link fails a copy made in ``scratch`` that takes the name ``target`` in
+    one step refusing an existing file; on a disk whose rename does not refuse one, nothing is copied.
     ``staged`` keeps its name: it is removed once every file of the run is in place, so a rollback
     only has to withdraw ``target`` and a rerun still finds the bytes.
     """
@@ -386,7 +388,15 @@ def place(staged: Path, target: Path, scratch: Path) -> Identity:
             return placed
         if isinstance(exc, FileExistsError):
             raise GetError(f"{target} appeared while files were being moved into place") from exc
-        return _copy_new(staged, target, scratch)  # a disk without hard links
+        if scratch not in _RENAME_REFUSES:  # a call outside a run, which probes before any download
+            _probe(scratch)
+        why = _RENAME_REFUSES[scratch]
+        if why is not None:
+            raise GetError(
+                f"the hard link to {target} failed ({exc}) and the disk of {scratch} has no rename that refuses "
+                f"to replace a file ({why}), so it is not copied either"
+            ) from exc
+        return _copy_new(staged, target, scratch)  # a disk without hard links, or one file a link failed for
     return placed
 
 
@@ -421,9 +431,26 @@ def _links_work(scratch: Path) -> bool:
     """Whether ``scratch``'s disk takes hard links; without them ``place`` copies every file.
 
     A disk without hard links must take ``_rename_new``, which puts each copy in place, or the run
-    refuses here, before any download. ``scratch`` is emptied under the lock before the run uses it,
-    so nothing an earlier run left there fails a probe; a probe that cannot be written is a refusal,
-    like any disk too full.
+    refuses here, before any download; on a disk with them, ``place`` copies a file whose link fails
+    only if it does. ``scratch`` is emptied under the lock before the run uses it, so nothing an
+    earlier run left there fails a probe; a probe that cannot be written is a refusal, like any disk
+    too full.
+    """
+    links = _probe(scratch)
+    why = _RENAME_REFUSES[scratch]
+    if not links and why is not None:
+        raise GetError(
+            f"the disk of {scratch} takes no hard links, so each file would be copied into place, but it has no "
+            f"rename that refuses to replace a file ({why}); a file written meanwhile could be lost"
+        )
+    return links
+
+
+def _probe(scratch: Path) -> bool:
+    """Whether ``scratch``'s disk takes hard links; records in ``_RENAME_REFUSES`` whether it takes ``_rename_new``.
+
+    Both are probed on every disk, and an error is checked against what is there, as each move is
+    (NFS: see _identity_at).
     """
     names = ("link-probe", "link-probe-2", "link-probe-3")
     probe, second, third = (scratch / n for n in names)
@@ -433,37 +460,46 @@ def _links_work(scratch: Path) -> bool:
     except OSError as exc:
         raise GetError(f"cannot write in the staging folder ({probe}): {exc}") from exc
     try:
+        made = identity(os.lstat(probe))
         try:
             os.link(probe, second)
         except OSError:
-            pass
+            links = _identity_at(second) == made  # made after all
         else:
-            return True
+            links = True
         try:
+            second.unlink(missing_ok=True)  # a second name of the probe: a rename onto it would do nothing
             second.touch(exist_ok=False)
         except OSError as exc:
             raise GetError(f"cannot write in the staging folder ({second}): {exc}") from exc
-        refusal = (
-            f"the disk of {scratch} takes no hard links, so each file would be copied into place, but it "
-            "has no rename that refuses to replace a file"
-        )
-        try:
-            try:
-                _rename_new(probe, second)
-            except FileExistsError:
-                pass
-            else:
-                raise GetError(f"{refusal} (one replaced {second}); a file written meanwhile could be lost")
-            _rename_new(probe, third)
-        except OSError as exc:
-            raise GetError(f"{refusal} ({exc})") from exc
-        return False
+        _RENAME_REFUSES[scratch] = _rename_refusal(probe, second, third)
+        return links
     finally:
         for p in (probe, second, third):
             try:
                 p.unlink()
             except OSError:
                 pass
+
+
+def _rename_refusal(probe: Path, existing: Path, free: Path) -> str | None:
+    """None when ``_rename_new`` refuses ``existing`` and takes ``free`` for ``probe``; else what it did instead."""
+    moved = identity(os.lstat(probe))
+    try:
+        _rename_new(probe, existing)
+    except OSError as exc:
+        if _identity_at(existing) == moved:  # replaced it, then reported a failure
+            return f"one replaced {existing}"
+        if not isinstance(exc, FileExistsError):
+            return str(exc)
+    else:
+        return f"one replaced {existing}"
+    try:
+        _rename_new(probe, free)
+    except OSError as exc:
+        if _identity_at(free) != moved:  # not made
+            return str(exc)
+    return None
 
 
 def _staged_size(path: Path) -> int | None:

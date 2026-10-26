@@ -439,7 +439,8 @@ uv run bench hub get --repo arthrod/neurotic_docx_bench --path outputs/release_0
   its staged copy (on a disk without hard links, a copy made in the staging folder's `.scratch/` that
   takes its name with a rename refusing an existing file, `renamex_np(RENAME_EXCL)` on macOS and
   `renameat2(RENAME_NOREPLACE)` on Linux, so a kill never leaves a part-written or empty file; a disk
-  with neither refuses before any download), so a file written meanwhile is never overwritten, and
+  with neither refuses before any download, and both are probed on every disk, so one file whose link
+  fails is copied only where that rename works), so a file written meanwhile is never overwritten, and
   the staged copies go only after the last file is in place. A
   failed or interrupted (Ctrl-C) move withdraws every file already placed and restores every file
   `--overwrite` replaced (a rename or link the disk reports failed is checked by identity first, since NFS
