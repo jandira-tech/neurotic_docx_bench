@@ -29,6 +29,7 @@ import random
 import re
 import shutil
 import subprocess
+import sys
 import tempfile
 from collections import Counter
 from collections.abc import Callable
@@ -57,12 +58,13 @@ NO_LFS = ('-c', 'filter.lfs.smudge=', '-c', 'filter.lfs.process=', '-c', 'filter
 
 class RebuildError(RuntimeError):
     """The run stopped and nothing is published: the hub does not match its own records, it moved since it
-    was read, or the upload failed before its commit, was refused, or made no commit."""
+    was read, or the upload failed before its commit request or made no commit."""
 
 
 class UnverifiedPublish(RebuildError):
-    """The upload may have made its commit: ``upload_file`` failed in a way that does not say, or it returned
-    a commit that could not be checked. The hub may hold the manifest; a rerun recognises one already there."""
+    """The upload may have made its commit: ``upload_file`` failed once its commit request may have been sent
+    (a refusal of that request included), or it returned a commit that could not be checked. The hub may
+    hold the manifest; a rerun recognises one already there."""
 
 
 @dataclass(frozen=True)
@@ -471,16 +473,20 @@ def _posted_to(request, *paths: str) -> bool:
 def failed_before_commit(exc: BaseException) -> bool:
     """Whether ``exc`` answers a request upload_file sends before its commit request.
 
-    ``create_commit`` sends the preupload and the LFS batch request first and the commit last, once
-    (``huggingface_hub/_commit_api.py``: ``/preupload/`` at 764, ``/commit/`` at 1056 through
-    ``get_session().post`` at 1067, never retried; ``lfs.py`` at 185; the preupload is retried on a
-    429 or 5xx, each retry a fresh request still before the commit;
-    ``test_the_sdk_sends_the_requests_this_places_in_this_order`` pins them). Only an answer to the
-    SDK's own request (``first_answer``) that is a POST to one of those two URLs of this repo counts. A
-    failure without an answer, or an answer after a redirect, may come from the commit and counts as
-    not known to precede it; so do the LFS and Xet uploads to a storage host (``_upload_xet_files``,
-    ``_commit_api.py`` 552), which precede the commit but are not told apart from a redirected commit.
-    ``upload`` still confirms a "before" against the hub's head (``unpublished``).
+    ``create_commit`` sends the preupload first and the commit last, once (``huggingface_hub/_commit_api.py``:
+    ``/preupload/`` at 764, ``/commit/`` at 1056 through ``get_session().post`` at 1067, never retried;
+    the preupload is retried on a 429 or 5xx, each retry a fresh request still before the commit). A
+    file the preupload sends to LFS storage goes, between the two, either through the Xet client when
+    hf_xet is installed (``_commit_api.py`` 396, ``_upload_xet_files`` at 552: it asks for its own
+    ``/xet-write-token/`` and uploads outside httpx) or, without hf_xet, through the LFS batch request
+    (``lfs.py`` at 185) and the storage uploads it names. Tests pin the order through the real SDK:
+    ``test_the_sdk_sends_the_requests_this_places_in_this_order`` (an inline file) and
+    ``test_with_lfs_storage_the_sdk_sends_the_lfs_batch_between_the_preupload_and_the_commit``; the Xet
+    client is not observable there. Only an answer to the SDK's own request (``first_answer``) that is a
+    POST to the preupload or LFS batch URL of this repo counts. A failure without an answer, or an
+    answer after a redirect, may come from the commit and counts as not known to precede it; so do the
+    Xet client's failures and the storage uploads, which precede the commit but are not told apart
+    from a redirected commit. ``upload`` still confirms a "before" against the hub's head (``unpublished``).
     """
     return _posted_to(
         answered_request(exc),
@@ -490,10 +496,12 @@ def failed_before_commit(exc: BaseException) -> bool:
 
 
 def refused_commit(exc: BaseException) -> bool:
-    """Whether ``exc`` is the hub's 4xx (not 408) answer to the commit request itself: it committed nothing.
+    """Whether ``exc`` is a 4xx (not 408) answer to the commit request itself.
 
-    Only the commit is placed: a 4xx to any other request may answer one sent after the commit,
-    whatever the SDK sends today.
+    That request committed nothing, but the refusal does not say nothing landed: an earlier attempt of
+    it, sent by a transport or proxy that retried it after losing the answer, may land later, and a read
+    of the branch cannot see a commit still on its way. Only the commit is placed: a 4xx to any other
+    request may answer one sent after the commit, whatever the SDK sends today.
     """
     request = answered_request(exc)
     status = exc.response.status_code if request is not None else None
@@ -509,9 +517,9 @@ def publish(api, checkout: Path, revision: str, data: bytes, message: str) -> st
 
     A no-op upload skips the ``parent_commit`` check and returns whatever the branch head is, so
     the commit is fetched and must have ``revision`` as its one parent and change nothing else; the
-    head itself means no commit was made. A failure ``upload`` places before the commit, or the hub's
-    4xx to the commit itself, is a ``RebuildError``; any other failure of the upload or of the check
-    after it may follow a commit, and raises ``UnverifiedPublish``. A Ctrl-C stops the run with a
+    head itself means no commit was made. A failure ``upload`` places before the commit request is a
+    ``RebuildError``; any other failure of the upload (a refusal of the commit request included) or of
+    the check after it may follow a commit, and raises ``UnverifiedPublish``. A Ctrl-C stops the run with a
     note: nothing published before the upload, the hub may hold the manifest from the upload on.
     """
     path = f'{REPO_PREFIX}/{MANIFEST}'
@@ -585,7 +593,11 @@ def upload(api, path: str, data: bytes, message: str, revision: str):
         if failed_before_commit(exc):
             unpublished(api, revision, exc, f'the upload failed before its commit request ({exc})')
         if refused_commit(exc):
-            unpublished(api, revision, exc, f'the hub refused the upload ({exc})')
+            raise UnverifiedPublish(
+                f'the hub refused the commit request ({exc}). That request committed nothing, but an earlier '
+                'attempt of it may still be on its way (a transport or proxy that retried it), so the hub may hold '
+                'the manifest now; rerun to check it (a manifest already there is recognised)'
+            ) from exc
         raise UnverifiedPublish(
             f'upload_file failed with {exc}, after which the hub may hold the manifest; rerun to check it '
             '(a manifest already there is recognised)'
@@ -600,13 +612,14 @@ def upload(api, path: str, data: bytes, message: str, revision: str):
 
 
 def unpublished(api, revision: str, exc: BaseException, what: str):
-    """Raise ``what``, with "nothing published", once the hub's branch is confirmed still at ``revision``.
+    """Raise ``what``, with "nothing published", for a failure before the commit request: never sent, it commits nothing.
 
-    An error's answer can mislead from below the SDK: a response hook that raises before httpx2 attaches
-    the redirect history makes an answer after a landed commit look like the SDK's own request's; a
-    transport or proxy that retries the commit after losing the answer to a first attempt that landed
-    gets a 412 with an empty history. A branch still at ``revision`` holds no commit, whatever the
-    error says; a moved branch may hold this upload's commit, and raises ``UnverifiedPublish``.
+    The branch is read once more against an error that only looks like one before the commit: a
+    response hook that raises before httpx2 attaches the redirect history makes an answer after a landed
+    commit look like the SDK's own request's. A moved branch may hold this upload's commit, and so may
+    one that cannot be read: both raise ``UnverifiedPublish``. A branch read in place is no proof on its
+    own (a commit still on its way does not show), so a failure once the commit request may have been
+    sent, a refusal of it included, never comes here.
     """
     try:
         head = api.repo_info(hub.RESULTS_REPO, repo_type=hub.REPO_TYPE, revision=BRANCH).sha
@@ -646,19 +659,33 @@ def verify_upload(checkout: Path, revision: str, commit: str, before: dict, data
 
 
 def main() -> None:
-    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument('--checkout', type=Path, help='keep the dataset clone here (default: a temporary one)')
-    ap.add_argument('--out', type=Path, help='write the manifest and report here (default: a new temporary folder)')
-    ap.add_argument('--revision', help='hub commit to read (default: the head)')
-    ap.add_argument('--publish', action='store_true', help='commit the manifest on that revision')
-    ap.add_argument('--lfs-check', type=lfs_limit, default=25, help='LFS downloads to hash (N or all; default: 25)')
-    ap.add_argument('--seed', type=int, default=0, help='LFS sampling seed (default: 0)')
-    a = ap.parse_args()
-    api = hub.default_api()
-    clone = a.checkout or Path(tempfile.mkdtemp(prefix='redlines_0929_full_hub_')) / 'hub'
+    """Build the manifest and, with ``--publish``, publish it. A Ctrl-C anywhere, the removal of the temporary
+    clone included, says what the hub holds; an error that press interrupts is named in its notes."""
     publishing = False
     published = None
+    temporary = None  # the folder of a temporary clone, removed at the end
+    failure = None
+
+    def holds() -> str:
+        if published is not None:
+            return f'the hub holds this manifest at {published}'
+        if publishing:  # as publish() was called or returned: the two instants look the same here
+            return 'the hub may hold the manifest now; rerun to check it'
+        return 'nothing published'
+
     try:
+        ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+        ap.add_argument('--checkout', type=Path, help='keep the dataset clone here (default: a temporary one)')
+        ap.add_argument('--out', type=Path, help='write the manifest and report here (default: a new temporary folder)')
+        ap.add_argument('--revision', help='hub commit to read (default: the head)')
+        ap.add_argument('--publish', action='store_true', help='commit the manifest on that revision')
+        ap.add_argument('--lfs-check', type=lfs_limit, default=25, help='LFS downloads to hash (N or all; default: 25)')
+        ap.add_argument('--seed', type=int, default=0, help='LFS sampling seed (default: 0)')
+        a = ap.parse_args()
+        api = hub.default_api()
+        if a.checkout is None:
+            temporary = Path(tempfile.mkdtemp(prefix='redlines_0929_full_hub_'))
+        clone = a.checkout or temporary / 'hub'
         revision = a.revision or api.repo_info(hub.RESULTS_REPO, repo_type=hub.REPO_TYPE, revision=BRANCH).sha
         out = a.out or Path(tempfile.mkdtemp(prefix='redlines_0929_full_manifest_'))
         out.mkdir(parents=True, exist_ok=True)
@@ -696,18 +723,28 @@ def main() -> None:
             # A foreign commit that made the same change is indistinguishable from this upload: say what is known.
             where = f'{commit}, a commit on {revision} that changes only it' if commit != revision else revision
             print(f'the hub holds this manifest at {where}', flush=True)
-    except KeyboardInterrupt as exc:
-        if not getattr(exc, '__notes__', None):
+    except BaseException as exc:
+        failure = exc
+        if isinstance(exc, KeyboardInterrupt) and not getattr(exc, '__notes__', None):
             if published is not None:
-                exc.add_note(f'stopped after publishing: the hub holds this manifest at {published}')
-            elif publishing:  # as publish() was called or returned: the two instants look the same here
-                exc.add_note('stopped as the upload began or ended: the hub may hold the manifest now; rerun to check it')
+                exc.add_note(f'stopped after publishing: {holds()}')
+            elif publishing:
+                exc.add_note(f'stopped as the upload began or ended: {holds()}')
             else:
-                exc.add_note('stopped before the upload: nothing published')
+                exc.add_note(f'stopped before the upload: {holds()}')
         raise
     finally:
-        if a.checkout is None:
-            shutil.rmtree(clone.parent)
+        if temporary is not None:
+            try:
+                shutil.rmtree(temporary)
+            except KeyboardInterrupt as stop:  # it takes the place of what was on its way out: name both
+                stop.add_note(f'stopped while removing the temporary clone {temporary}, which may be left behind: {holds()}')
+                if failure is not None:
+                    said = [f'{type(failure).__name__}: {failure}' if str(failure) else type(failure).__name__]
+                    stop.add_note(f'before that the run stopped on {"; ".join(said + getattr(failure, "__notes__", []))}')
+                raise
+            except OSError as exc:  # a warning: the run's own outcome stands
+                print(f'could not remove the temporary clone {temporary}: {exc}', file=sys.stderr, flush=True)
 
 
 if __name__ == '__main__':

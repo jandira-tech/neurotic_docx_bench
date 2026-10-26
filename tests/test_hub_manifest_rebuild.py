@@ -1265,16 +1265,22 @@ def test_ctrl_c_after_publish_returned_says_the_hub_holds_the_manifest(rebuild, 
 
 @contextlib.contextmanager
 def sdk_over(handler):
-    """huggingface_hub's shared client answered by ``handler`` (an httpx2.MockTransport) inside the block."""
-    import huggingface_hub
-    from huggingface_hub.utils._http import default_client_factory
+    """huggingface_hub's shared client answered by ``handler`` (an httpx2.MockTransport) inside the block.
 
-    huggingface_hub.set_client_factory(lambda: httpx2.Client(transport=httpx2.MockTransport(handler)))
-    try:
-        yield
-    finally:
-        huggingface_hub.set_client_factory(default_client_factory)
-        huggingface_hub.close_session()
+    The SDK's factory and session are swapped, not set: ``set_client_factory`` would close the caller's
+    session and leave the default factory behind. Both come back as they were; only the mock's client is
+    closed.
+    """
+    from huggingface_hub.utils import _http
+
+    with pytest.MonkeyPatch.context() as mp:
+        mp.setattr(_http, '_GLOBAL_CLIENT_FACTORY', lambda: httpx2.Client(transport=httpx2.MockTransport(handler)))
+        mp.setattr(_http, '_GLOBAL_CLIENT', None)
+        try:
+            yield
+        finally:
+            if _http._GLOBAL_CLIENT is not None:
+                _http._GLOBAL_CLIENT.close()
 
 
 def test_the_sdk_sends_the_requests_this_places_in_this_order(rebuild):
