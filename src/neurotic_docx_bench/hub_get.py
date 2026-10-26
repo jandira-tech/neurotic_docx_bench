@@ -404,7 +404,9 @@ def remote_files(
         parts = PurePosixPath(rel).parts
         if not parts or ".." in parts or PurePosixPath(rel).is_absolute():
             raise GetError(f"refusing a hub path that leaves the destination: {repo_path}")
-        if PurePosixPath(repo_path).parts[:2] == _HF_BOOKKEEPING:
+        # A file at .cache, or anything under .cache/huggingface, in any case (one name on APFS):
+        # hf_hub_download needs that folder for its records.
+        if _fold(PurePosixPath(repo_path).parts[:2]) in (_HF_BOOKKEEPING, _HF_BOOKKEEPING[:1]):
             raise GetError(f"refusing {repo_path}: hf_hub_download keeps its own records in {'/'.join(_HF_BOOKKEEPING)}")
         if parts[-1].casefold() in _NEVER or (include and not _matches(rel, include)) or _matches(rel, exclude):
             continue
