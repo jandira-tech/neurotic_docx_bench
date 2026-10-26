@@ -973,7 +973,6 @@ def commit_request():
 
 @pytest.mark.parametrize('failure', [
     lambda: HfHubHTTPError('503 preupload', response=httpx2.Response(503, request=preupload_request())),
-    lambda: httpx2.ReadTimeout('preupload timed out', request=preupload_request()),
 ])
 def test_a_failure_before_the_commit_request_says_nothing_was_published(rebuild, hub_pair, failure):
     def fails(**kw):
@@ -1077,5 +1076,45 @@ def test_a_failed_lfs_batch_request_still_says_nothing_was_published(rebuild, hu
 
     hub_pair.api.upload_file = fails
     with pytest.raises(rebuild.RebuildError, match='nothing published') as exc:
+        rebuild.publish(hub_pair.api, hub_pair.clone, hub_pair.head, manifest({'a/x.docx': sha(b'inline')}), 'rebuild')
+    assert type(exc.value).__name__ != 'UnverifiedPublish'
+
+
+# Review round 13, Codex (#78)
+
+
+def redirected(status, request, *, from_request):
+    return httpx2.Response(status, request=request, history=[httpx2.Response(307, request=from_request)])
+
+
+@pytest.mark.parametrize('failure', [
+    # the commit, 307-redirected to a URL that ends like the preupload's, then timed out
+    lambda: httpx2.ReadTimeout('commit accepted; response lost', request=httpx2.Request(
+        'POST', f'https://proxy.example/redirect/api/datasets/{hub.RESULTS_REPO}/preupload/main?result=commit')),
+    # a timeout carries no answer, so nothing says whether its request was a redirect's target
+    lambda: httpx2.ReadTimeout('preupload timed out', request=preupload_request()),
+    # an answer after a redirect from the commit: a 4xx there does not mean the commit was refused
+    lambda: HfHubHTTPError('403 receipt', response=redirected(
+        403, httpx2.Request('GET', 'https://huggingface.co/receipt'), from_request=commit_request())),
+    # nor does a 5xx at a URL that ends like the preupload's
+    lambda: HfHubHTTPError('503', response=redirected(503, preupload_request(), from_request=commit_request())),
+])
+def test_a_failure_whose_request_may_follow_a_redirect_says_the_hub_may_hold_the_manifest(rebuild, hub_pair, failure):
+    def fails(**kw):
+        raise failure()
+
+    hub_pair.api.upload_file = fails
+    with pytest.raises(rebuild.RebuildError, match='may hold') as exc:
+        rebuild.publish(hub_pair.api, hub_pair.clone, hub_pair.head, manifest({'a/x.docx': sha(b'inline')}), 'rebuild')
+    assert type(exc.value).__name__ == 'UnverifiedPublish'
+    assert 'nothing published' not in str(exc.value)
+
+
+def test_a_4xx_answer_to_the_commit_itself_still_says_nothing_was_published(rebuild, hub_pair):
+    def fails(**kw):
+        raise HfHubHTTPError('412 precondition failed', response=httpx2.Response(412, request=commit_request()))
+
+    hub_pair.api.upload_file = fails
+    with pytest.raises(rebuild.RebuildError, match='refused the upload') as exc:
         rebuild.publish(hub_pair.api, hub_pair.clone, hub_pair.head, manifest({'a/x.docx': sha(b'inline')}), 'rebuild')
     assert type(exc.value).__name__ != 'UnverifiedPublish'
