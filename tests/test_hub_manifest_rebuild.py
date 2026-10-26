@@ -1022,3 +1022,26 @@ def test_a_reused_sparse_checkout_of_the_run_folder_is_used(rebuild, hub_pair):
     git(hub_pair.clone, 'sparse-checkout', 'set', '--no-cone', f'{PREFIX}/')
     rebuild.checkout_hub(hub_pair.clone, hub_pair.head)
     assert git(hub_pair.clone, 'rev-parse', 'HEAD') == hub_pair.head
+
+
+# Review round 11 (#78)
+
+
+def test_ctrl_c_between_the_upload_and_its_check_says_the_hub_may_hold_the_manifest(rebuild, hub_pair):
+    data = manifest({'a/x.docx': sha(b'inline')})
+    real = hub_pair.api.upload_file
+
+    class Interrupted:
+        @property
+        def oid(self):
+            raise KeyboardInterrupt  # Ctrl-C lands as the commit id is read
+
+    def upload(**kw):
+        real(**kw)
+        return Interrupted()
+
+    hub_pair.api.upload_file = upload
+    with pytest.raises(KeyboardInterrupt) as exc:
+        rebuild.publish(hub_pair.api, hub_pair.clone, hub_pair.head, data, 'rebuild')
+    assert hub_pair.api.head() != hub_pair.head
+    assert 'may hold' in ' '.join(getattr(exc.value, '__notes__', ()))
