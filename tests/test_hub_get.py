@@ -1171,3 +1171,161 @@ def test_a_dry_run_says_the_real_run_would_be_refused(tmp_path: Path) -> None:
     assert "would refuse" in report.describe()
     assert "would refuse" not in hub_get.get(preset(dest), api=PinnedHub(FILES), dry_run=True,
                                              on_conflict="keep-local").describe()
+
+
+# Review round 6, mcode and Codex (#80)
+
+
+def _spin() -> None:
+    for _ in range(1000):  # lets the interpreter run a pending signal handler
+        pass
+
+
+def test_overwrite_refuses_a_symlinked_local_file_before_downloading(tmp_path: Path) -> None:
+    dest = tmp_path / "dest"
+    dest.mkdir()
+    outside = tmp_path / "outside.md"
+    outside.write_bytes(b"theirs\n")
+    (dest / "RUN.md").symlink_to(outside)
+    api = PinnedHub(FILES)
+    with pytest.raises(hub_get.GetError, match=re.escape(f"{dest / 'RUN.md'} is a symlink")):
+        hub_get.get(preset(dest), api=api, on_conflict="overwrite")
+    assert api.downloads() == []
+    assert (dest / "RUN.md").is_symlink() and outside.read_bytes() == b"theirs\n"
+
+
+@pytest.mark.parametrize("obstacle", ["symlink", "busy"])
+def test_a_run_with_nothing_to_download_still_names_an_earlier_runs_replaced_files(tmp_path: Path, obstacle: str) -> None:
+    dest = tmp_path / "dest"
+    hub_get.get(preset(dest), api=PinnedHub(FILES))
+    staging = hub_get.staging_dir(dest, SHA)
+    backup = staging / hub_get._BACKUP / "RUN.md"
+    backup.parent.mkdir(parents=True)
+    backup.write_bytes(b"the user's old RUN.md\n")
+    if obstacle == "symlink":
+        (staging / "link").symlink_to(tmp_path)
+        report = hub_get.get(preset(dest), api=PinnedHub(FILES))
+    else:
+        with open(staging / hub_get.LOCK, "a") as held:
+            hub_get.fcntl.flock(held, hub_get.fcntl.LOCK_EX | hub_get.fcntl.LOCK_NB)
+            report = hub_get.get(preset(dest), api=PinnedHub(FILES))
+    assert report.skipped == 3
+    assert report.earlier_replaced == (str(backup),)
+    assert str(backup) in report.describe()
+    assert backup.read_bytes() == b"the user's old RUN.md\n"
+
+
+def _overwrite_that_fails_on_b(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> tuple[Path, dict[str, bytes]]:
+    dest = tmp_path / "dest"
+    local = {"RUN.md": b"old run\n", "a.docx": b"old a\n", "sub/b.pdf": b"old b\n"}
+    _write(dest, local)
+    real = hub_get.place
+
+    def flaky(staged, target):
+        if target.name == "b.pdf" and hub_get._BACKUP not in staged.parts:  # the move, not the restore
+            raise OSError("disk went away")
+        return real(staged, target)
+
+    monkeypatch.setattr(hub_get, "place", flaky)
+    return dest, local
+
+
+def test_one_ctrl_c_during_the_rollback_lets_it_finish_then_stops(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    dest, local = _overwrite_that_fails_on_b(tmp_path, monkeypatch)
+    real = hub_get._withdraw
+    sent = []
+
+    def withdraw(target, placed, staging):
+        if not sent:
+            sent.append(target)
+            os.kill(os.getpid(), signal.SIGINT)
+            _spin()
+        return real(target, placed, staging)
+
+    monkeypatch.setattr(hub_get, "_withdraw", withdraw)
+    with pytest.raises(KeyboardInterrupt) as exc:
+        hub_get.get(preset(dest), api=PinnedHub(FILES), on_conflict="overwrite")
+    assert sent
+    assert _tree(dest) == local
+    assert "put back" in " ".join(getattr(exc.value, "__notes__", ()))
+
+
+def test_a_second_ctrl_c_during_the_rollback_stops_it_and_names_the_staging_folder(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    dest, _ = _overwrite_that_fails_on_b(tmp_path, monkeypatch)
+    real = hub_get._withdraw
+    sent = []
+
+    def withdraw(target, placed, staging):
+        if not sent:
+            sent.append(target)
+            os.kill(os.getpid(), signal.SIGINT)
+            _spin()
+            os.kill(os.getpid(), signal.SIGINT)
+            _spin()
+        return real(target, placed, staging)
+
+    monkeypatch.setattr(hub_get, "_withdraw", withdraw)
+    with pytest.raises(KeyboardInterrupt) as exc:
+        hub_get.get(preset(dest), api=PinnedHub(FILES), on_conflict="overwrite")
+    assert sent
+    assert str(hub_get.staging_dir(dest, SHA)) in " ".join(getattr(exc.value, "__notes__", ()))
+
+
+@pytest.mark.parametrize("policy", ["ignore", "custom"])
+def test_a_ctrl_c_policy_the_caller_set_is_kept_while_files_move(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, policy: str
+) -> None:
+    dest = tmp_path / "dest"
+    real = hub_get.place
+    seen, sent = [], []
+
+    def place(staged, target):
+        placed = real(staged, target)
+        if not sent:
+            sent.append(target)
+            os.kill(os.getpid(), signal.SIGINT)
+            _spin()
+        return placed
+
+    monkeypatch.setattr(hub_get, "place", place)
+    previous = signal.signal(signal.SIGINT, signal.SIG_IGN if policy == "ignore" else lambda *a: seen.append(a[0]))
+    try:
+        report = hub_get.get(preset(dest), api=PinnedHub(FILES))
+    finally:
+        signal.signal(signal.SIGINT, previous)
+    assert sent and report.downloaded == 3
+    assert seen == ([] if policy == "ignore" else [signal.SIGINT])
+
+
+def test_a_partial_copy_that_cannot_be_removed_is_named_as_left_behind(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    dest = tmp_path / "dest"
+    real_unlink = os.unlink
+
+    def no_links(src, dst, *args, **kw):
+        raise OSError(errno.EOPNOTSUPP, "no hard links on this disk")
+
+    real_copy = shutil.copyfileobj
+
+    def partial(src, dst, *args, **kw):
+        if not src.name.endswith("a.docx"):
+            return real_copy(src, dst, *args, **kw)
+        dst.write(b"REM")
+        raise OSError(errno.ENOSPC, "disk full")
+
+    def unlink(path, *args, **kw):
+        if Path(path) == dest / "a.docx":
+            raise OSError(errno.EIO, "unlink failed")
+        return real_unlink(path, *args, **kw)
+
+    monkeypatch.setattr(os, "link", no_links)
+    monkeypatch.setattr(shutil, "copyfileobj", partial)
+    monkeypatch.setattr(os, "unlink", unlink)
+    with pytest.raises(hub_get.GetError) as info:
+        hub_get.get(preset(dest), api=PinnedHub(FILES))
+    message = str(info.value)
+    assert "every file already moved was put back" not in message
+    assert f"{dest / 'a.docx'}" in message and "stays" in message
