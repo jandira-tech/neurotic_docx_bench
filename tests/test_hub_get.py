@@ -296,3 +296,73 @@ def test_cli_hub_get_a_preset_dry_run(tmp_path: Path, monkeypatch: pytest.Monkey
     assert "2 files" in result.output
     assert api.downloads() == []
     assert not (tmp_path / "corpus").exists()
+
+
+class LateWriter(PinnedHub):
+    """Writes a local file into the destination while the download runs."""
+
+    def __init__(self, files, dest: Path, rel: str, data: bytes) -> None:
+        super().__init__(files)
+        self.late = (dest / rel, data)
+
+    def hf_hub_download(self, repo_id, filename, *, repo_type, revision=None, local_dir=None):
+        path, data = self.late
+        if not path.exists():
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes(data)
+        return super().hf_hub_download(repo_id, filename, repo_type=repo_type, revision=revision, local_dir=local_dir)
+
+
+def test_a_file_written_during_the_download_is_not_clobbered_and_nothing_moves(tmp_path: Path) -> None:
+    dest = tmp_path / "dest"
+    api = LateWriter(FILES, dest, "RUN.md", b"written meanwhile\n")
+    with pytest.raises(hub_get.GetError, match=re.escape("RUN.md")):
+        hub_get.get(preset(dest), api=api)
+    assert (dest / "RUN.md").read_bytes() == b"written meanwhile\n"
+    assert sorted(p.name for p in dest.rglob("*")) == ["RUN.md"]
+    assert hub_get.staging_dir(dest, SHA).is_dir()
+
+
+def test_keep_local_keeps_a_file_written_during_the_download(tmp_path: Path) -> None:
+    dest = tmp_path / "dest"
+    api = LateWriter(FILES, dest, "RUN.md", b"written meanwhile\n")
+    report = hub_get.get(preset(dest), api=api, on_conflict="keep-local")
+    assert (dest / "RUN.md").read_bytes() == b"written meanwhile\n"
+    assert (dest / "a.docx").read_bytes() == BIG
+    assert report.kept_local == ("RUN.md",)
+
+
+def test_a_file_written_during_the_download_with_the_hub_bytes_is_fine(tmp_path: Path) -> None:
+    dest = tmp_path / "dest"
+    report = hub_get.get(preset(dest), api=LateWriter(FILES, dest, "RUN.md", b"# run\n"))
+    assert (dest / "RUN.md").read_bytes() == b"# run\n"
+    assert (dest / "a.docx").read_bytes() == BIG
+    assert not hub_get.staging_dir(dest, SHA).exists()
+    assert report.n_files == 3
+
+
+def test_staging_sits_on_the_destination_device(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    dest = tmp_path / "mount"
+    dest.mkdir()
+    assert hub_get.staging_dir(dest, SHA) == tmp_path / f".mount.hub-{SHA[:12]}"
+    monkeypatch.setattr(hub_get, "device", lambda p: 2 if Path(p).absolute() == dest.absolute() else 1)
+    assert hub_get.staging_dir(dest, SHA) == dest / f".hub-{SHA[:12]}"
+    report = hub_get.get(preset(dest), api=PinnedHub(FILES))
+    assert report.downloaded == 3
+    assert sorted(p.name for p in dest.iterdir()) == ["RUN.md", "a.docx", "sub"]
+
+
+def test_cli_hub_list_sizes_marks_a_preset_it_cannot_read(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    from neurotic_docx_bench.cli import app
+
+    class NoToken(PinnedHub):
+        def repo_info(self, repo_id, *, repo_type, revision=None):
+            if repo_id == hub_get.ARCHIVE_REPO:
+                raise PermissionError("401 Unauthorized")
+            return super().repo_info(repo_id, repo_type=repo_type, revision=revision)
+
+    monkeypatch.setattr(hub, "default_api", lambda: NoToken(FILES))
+    result = runner.invoke(app, ["hub", "list", "--sizes"])
+    assert result.exit_code == 0, result.output
+    line = next(ln for ln in result.output.splitlines() if ln.startswith("git-archive"))
+    assert "unavailable" in line and "401" in line
