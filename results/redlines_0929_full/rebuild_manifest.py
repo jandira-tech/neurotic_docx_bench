@@ -433,28 +433,43 @@ def regular_blob(entry: tuple[bytes, ...] | None) -> bool:
     return entry is not None and entry[:2] in ((b'100644', b'blob'), (b'100755', b'blob'))
 
 
-def failed_before_commit(exc: BaseException) -> bool:
-    """Whether ``exc`` came from a request upload_file sends before its commit request.
+def first_answer(exc: BaseException):
+    """The hub's answer ``exc`` carries, if it answers the very request the SDK sent; else ``None``.
 
-    ``create_commit`` sends the preupload and the LFS batch request first and the commit last
-    (``huggingface_hub/_commit_api.py``: ``/preupload/`` at 764, ``/commit/`` at 1056;
-    ``lfs.py`` at 185). Only a POST to one of those two URLs of this repo counts: the client follows
-    redirects (``utils/_http.py`` 335), so a failed request at any other URL may be the commit
-    redirected (to a renamed repo, among others), and an LFS upload to a storage host is not told
-    apart from it either. Without a request (a ``ValueError`` from parsing the commit's answer,
-    among others) nothing can be said.
+    The client follows redirects (``huggingface_hub/utils/_http.py`` 335, httpx2 ``_client.py`` 1052:
+    the redirect's request replaces the original), so an answer whose ``history`` is not empty answers
+    some request a redirect made, which may follow the commit: a 303 from a commit that went through
+    turns it into a GET of wherever the 303 points. A failure without an answer (a timeout, a dropped
+    connection) carries only the request it was on, which may be a redirect's target too.
     """
-    request = None
-    # HfHubHTTPError keeps its request on .response only: httpx2.HTTPError.__init__, which it calls
-    # last, resets .request, and reading an unset .request raises RuntimeError.
-    for get in (lambda: exc.response.request, lambda: exc.request):
-        try:
-            request = get()
-        except (AttributeError, RuntimeError):
-            continue
-        if request is not None:
-            break
-    if request is None or request.method != 'POST':
+    try:
+        response = exc.response
+    except (AttributeError, RuntimeError):
+        return None
+    if response is None or response.history:
+        return None
+    return response
+
+
+def failed_before_commit(exc: BaseException) -> bool:
+    """Whether ``exc`` answers a request upload_file sends before its commit request.
+
+    ``create_commit`` sends the preupload and the LFS batch request first and the commit last, once
+    (``huggingface_hub/_commit_api.py``: ``/preupload/`` at 764, ``/commit/`` at 1056 through
+    ``get_session().post`` at 1067, never retried; ``lfs.py`` at 185). Only an answer to the SDK's own
+    request (``first_answer``) that is a POST to one of those two URLs of this repo counts. A failure
+    without an answer, or an answer after a redirect, may come from the commit and counts as not
+    known to precede it; so does an LFS upload to a storage host, not told apart from a redirected
+    commit either.
+    """
+    response = first_answer(exc)
+    if response is None:
+        return False
+    try:
+        request = response.request
+    except RuntimeError:  # an answer built without its request says nothing of where it came from
+        return False
+    if request.method != 'POST':
         return False
     return request.url.path.endswith((
         f'/api/{hub.REPO_TYPE}s/{hub.RESULTS_REPO}/preupload/{BRANCH}',
@@ -525,10 +540,12 @@ def upload(api, path: str, data: bytes, message: str, revision: str):
             revision=BRANCH,
         )
     except HfHubHTTPError as exc:
-        status = exc.response.status_code
+        answer = first_answer(exc)
         if failed_before_commit(exc):
             raise RebuildError(f'the upload failed before its commit request ({exc}); nothing published') from exc
-        if 400 <= status < 500 and status != 408:  # the hub answered no: it committed nothing
+        # A 4xx to the SDK's own request is a no to it, and the commit is the last one it sends: the
+        # hub committed nothing. After a redirect the 4xx may answer whatever followed the commit.
+        if answer is not None and 400 <= answer.status_code < 500 and answer.status_code != 408:
             raise RebuildError(f'the hub refused the upload ({exc}); nothing published') from exc
         raise UnverifiedPublish(
             f'upload_file failed with {exc}, after which the hub may hold the manifest; rerun to check it '
