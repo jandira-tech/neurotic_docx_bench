@@ -36,6 +36,7 @@ from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path
 
+from huggingface_hub.errors import HfHubHTTPError
 from hub_upload import REPO_PREFIX
 
 from neurotic_docx_bench import hub
@@ -427,6 +428,8 @@ def publish(api, checkout: Path, revision: str, data: bytes, message: str) -> st
 
     A no-op upload skips the ``parent_commit`` check and returns whatever the branch head is, so
     the commit is fetched and must have ``revision`` as its one parent and change nothing else.
+    A 4xx answer to the upload is a refusal (``RebuildError``); any other failure of the upload or of
+    the check after it may follow a commit, and raises ``UnverifiedPublish``.
     """
     path = f'{REPO_PREFIX}/{MANIFEST}'
     current = api.repo_info(hub.RESULTS_REPO, repo_type=hub.REPO_TYPE, revision=BRANCH).sha
@@ -440,15 +443,29 @@ def publish(api, checkout: Path, revision: str, data: bytes, message: str) -> st
     # A symlink (mode 120000) stores its target as blob bytes; the same bytes there are not the manifest.
     if regular_blob(before.get(key)) and git(checkout, 'cat-file', 'blob', f'{revision}:{path}') in accepted:
         return revision
-    info = api.upload_file(
-        path_or_fileobj=data,
-        path_in_repo=path,
-        repo_id=hub.RESULTS_REPO,
-        repo_type=hub.REPO_TYPE,
-        commit_message=message,
-        parent_commit=revision,
-        revision=BRANCH,
-    )
+    try:
+        info = api.upload_file(
+            path_or_fileobj=data,
+            path_in_repo=path,
+            repo_id=hub.RESULTS_REPO,
+            repo_type=hub.REPO_TYPE,
+            commit_message=message,
+            parent_commit=revision,
+            revision=BRANCH,
+        )
+    except HfHubHTTPError as exc:
+        status = exc.response.status_code
+        if 400 <= status < 500 and status != 408:  # the hub answered no: it committed nothing
+            raise RebuildError(f'the hub refused the upload ({exc}); nothing published') from exc
+        raise UnverifiedPublish(
+            f'upload_file failed with {exc}, after which the hub may hold the manifest; rerun to check it '
+            '(a manifest already there is recognised)'
+        ) from exc
+    except Exception as exc:  # no answer: the commit may have gone through, as with a lost response
+        raise UnverifiedPublish(
+            f'upload_file failed without an answer from the hub ({type(exc).__name__}: {exc}); the hub may hold '
+            'the manifest now; rerun to check it (a manifest already there is recognised)'
+        ) from exc
     commit = info.oid
     try:
         return verify_upload(checkout, revision, commit, before, data)
