@@ -9,7 +9,7 @@ import sys
 from types import SimpleNamespace
 
 import pytest
-from huggingface_hub.errors import RemoteEntryNotFoundError
+from huggingface_hub.errors import EntryNotFoundError
 
 from neurotic_docx_bench import hub
 from test_hub import FakeHub
@@ -133,7 +133,7 @@ class DownloadHub(FakeHub):
         try:
             data = self.stored[repo_id][filename]
         except KeyError:
-            raise RemoteEntryNotFoundError('no remote manifest') from None
+            raise EntryNotFoundError('no remote manifest') from None
         dest = self.cache / filename
         dest.parent.mkdir(parents=True, exist_ok=True)
         dest.write_bytes(data)
