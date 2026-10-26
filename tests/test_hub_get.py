@@ -1511,3 +1511,137 @@ def test_the_records_of_a_file_and_of_a_folder_named_like_them_collide_in_the_sd
     assert c.metadata_path.parent == a.lock_path  # and where its lock file goes
     with pytest.raises(IsADirectoryError):
         a.metadata_path.write_text("{}")
+
+
+# Review round 8, Codex (#80)
+
+
+def _hub_of_slow_files(n: int = 3) -> PinnedHub:
+    return PinnedHub({f"outputs/run/f{i:02}.txt": f"file {i}\n".encode() for i in range(n)})
+
+
+def test_ctrl_c_while_a_download_thread_starts_leaves_no_thread_running(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import threading
+    import time
+
+    api = _hub_of_slow_files()
+    real_download = api.hf_hub_download
+
+    def slow(*args, **kw):
+        time.sleep(0.5)
+        return real_download(*args, **kw)
+
+    api.hf_hub_download = slow
+    started: list[threading.Thread] = []
+    real_start = threading.Thread.start
+
+    def start(self, *args, **kw):  # the executor registers the thread only after start() returns
+        real_start(self, *args, **kw)
+        if self.name.startswith("ThreadPoolExecutor") and not started:
+            started.append(self)
+            os.kill(os.getpid(), signal.SIGINT)
+            _spin()
+
+    monkeypatch.setattr(threading.Thread, "start", start)
+    with pytest.raises(BaseException) as exc:
+        hub_get.get(preset(tmp_path / "dest"), api=api, workers=1)
+    assert started
+    alive = started[0].is_alive()
+    started[0].join()
+    assert exc.type is KeyboardInterrupt, exc.value
+    assert not alive  # a thread still writing into the staging folder whose lock was let go
+    assert "rerun" in " ".join(getattr(exc.value, "__notes__", ()))
+
+
+def test_a_second_ctrl_c_while_the_running_downloads_end_still_waits_for_them(tmp_path: Path) -> None:
+    import threading
+    import time
+
+    api = _hub_of_slow_files()
+    real_download = api.hf_hub_download
+    main = threading.main_thread().ident
+    threads: list[threading.Thread] = []
+
+    def slow(*args, **kw):
+        if not threads:
+            threads.append(threading.current_thread())
+            time.sleep(0.2)  # every download is submitted: the main thread waits on them
+            signal.pthread_kill(main, signal.SIGINT)
+            time.sleep(0.4)  # the main thread is now waiting for this download to end
+            signal.pthread_kill(main, signal.SIGINT)
+            time.sleep(0.6)
+        return real_download(*args, **kw)
+
+    api.hf_hub_download = slow
+    with pytest.raises(BaseException) as exc:
+        hub_get.get(preset(tmp_path / "dest"), api=api, workers=1)
+    assert threads
+    alive = threads[0].is_alive()
+    threads[0].join()
+    assert exc.type is KeyboardInterrupt, exc.value
+    assert not alive
+    assert "rerun" in " ".join(getattr(exc.value, "__notes__", ()))
+
+
+def test_a_ctrl_c_after_the_last_move_is_not_lost(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    dest = tmp_path / "dest"
+    real = hub_get._move_held
+    sent = []
+
+    def move_held(*args, **kw):
+        journal = real(*args, **kw)
+        sent.append(1)
+        os.kill(os.getpid(), signal.SIGINT)  # after the last check, before the handler is given back
+        _spin()
+        return journal
+
+    monkeypatch.setattr(hub_get, "_move_held", move_held)
+    with pytest.raises(BaseException) as exc:
+        hub_get.get(preset(dest), api=PinnedHub(FILES))
+    assert sent
+    assert exc.type is KeyboardInterrupt, exc.value
+    notes = " ".join(getattr(exc.value, "__notes__", ()))
+    assert str(dest) in notes and "every file" in notes
+
+
+def test_a_stopped_rollback_names_a_partial_copy_it_left(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    dest = tmp_path / "dest"
+    real_unlink = os.unlink
+    real_copy = shutil.copyfileobj
+
+    def no_links(src, dst, *args, **kw):
+        raise OSError(errno.EOPNOTSUPP, "no hard links on this disk")
+
+    def partial(src, dst, *args, **kw):
+        if not src.name.endswith("a.docx"):
+            return real_copy(src, dst, *args, **kw)
+        dst.write(b"REM")
+        raise OSError(errno.ENOSPC, "disk full")
+
+    def unlink(path, *args, **kw):
+        if Path(path) == dest / "a.docx":
+            raise OSError(errno.EIO, "unlink failed")
+        return real_unlink(path, *args, **kw)
+
+    real_stop = hub_get._CtrlC.stop_rollback
+    sent = []
+
+    def stop(self):  # two presses before the rollback's first step
+        if not sent:
+            sent.append(1)
+            _press_twice()
+        return real_stop(self)
+
+    monkeypatch.setattr(os, "link", no_links)
+    monkeypatch.setattr(shutil, "copyfileobj", partial)
+    monkeypatch.setattr(os, "unlink", unlink)
+    monkeypatch.setattr(hub_get._CtrlC, "stop_rollback", stop)
+    with pytest.raises(BaseException) as exc:
+        hub_get.get(preset(dest), api=PinnedHub(FILES))
+    assert sent
+    assert exc.type is KeyboardInterrupt, exc.value
+    notes = " ".join(getattr(exc.value, "__notes__", ()))
+    assert str(dest / "RUN.md") in notes
+    assert str(dest / "a.docx") in notes and "partial copy" in notes
