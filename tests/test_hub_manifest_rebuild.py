@@ -1534,7 +1534,7 @@ def test_a_failure_before_the_commit_request_says_nothing_published_whatever_the
 # Review round 16 (#78)
 
 
-def http_hub(head, sent, *, preupload_status=200, commit_redirects_to_preupload=False):
+def http_hub(head, sent, *, preupload_status=200, commit_redirects_to_preupload=False, ignored=False, remote_oid=None):
     """A hub over HTTP for the real HfApi: its head read, the preupload and the commit; ``sent`` lists the requests."""
     commit_path = f'/api/{hub.REPO_TYPE}s/{hub.RESULTS_REPO}/commit/main'
 
@@ -1556,7 +1556,7 @@ def http_hub(head, sent, *, preupload_status=200, commit_redirects_to_preupload=
             return httpx2.Response(preupload_status, json={'error': 'preupload'})
         files = json.loads(request.content)['files']
         return httpx2.Response(200, json={'files': [
-            {'path': f['path'], 'uploadMode': 'regular', 'shouldIgnore': False, 'oid': None} for f in files
+            {'path': f['path'], 'uploadMode': 'regular', 'shouldIgnore': ignored, 'oid': remote_oid} for f in files
         ]})
 
     return handler
@@ -1667,3 +1667,47 @@ def test_ctrl_c_during_the_warning_that_the_temporary_clone_stayed_still_says_wh
     notes = ' '.join(getattr(exc.value, '__notes__', ()))
     assert 'removing the temporary clone' in notes
     assert 'holds this manifest' in notes and hub_pair.api.head() in notes
+
+
+# Review round 17, mcode (#78)
+
+
+def test_a_no_op_on_a_moved_head_is_never_called_a_commit_request(rebuild, hub_pair, tmp_path):
+    """create_commit's no-op path sends no commit request: it reads the head and returns it. Moved by a foreign
+    commit whose symlink holds the manifest's bytes, that head is not a commit this run asked for."""
+    data = manifest({'a/x.docx': sha(b'inline')})
+    hub_pair.api.before_upload = lambda api: commit_entry(api.origin, tmp_path, '120000', f'{PREFIX}/{MANIFEST}', data)
+    with pytest.raises(rebuild.RebuildError) as exc:
+        rebuild.publish(hub_pair.api, hub_pair.clone, hub_pair.head, data, 'rebuild')
+    said = str(exc.value)
+    assert f'create_commit returned {hub_pair.api.head()}' in said, said
+    assert 'commit request returned' not in said
+
+
+def test_ctrl_c_inside_create_commit_never_says_the_commit_request_was_under_way(rebuild, hub_pair):
+    """create_commit works before its request leaves (its checks, the payload); a press there is "in create_commit"."""
+
+    def pressed(**kw):
+        raise KeyboardInterrupt
+
+    hub_pair.api.create_commit = pressed
+    with pytest.raises(KeyboardInterrupt) as exc:
+        rebuild.publish(hub_pair.api, hub_pair.clone, hub_pair.head, manifest({'a/x.docx': sha(b'inline')}), 'rebuild')
+    notes = ' '.join(getattr(exc.value, '__notes__', ()))
+    assert 'in create_commit' in notes and 'may hold' in notes, notes
+    assert 'during the commit request' not in notes
+
+
+def test_a_path_the_hub_ignores_is_refused_before_the_commit_request(rebuild, hub_pair):
+    """The SDK leaves an ignored file out of the commit's payload but still sends the commit (``_commit_api.py``
+    939). The preupload's answer already says the hub ignores the path, so the run stops there."""
+    from huggingface_hub import HfApi
+
+    sent = []
+    with sdk_over(http_hub(hub_pair.head, sent, ignored=True)):
+        api = HfApi(endpoint='https://huggingface.co', token='hf_test_not_a_real_token')
+        with pytest.raises(rebuild.RebuildError) as exc:
+            rebuild.publish(api, hub_pair.clone, hub_pair.head, manifest({'a/x.docx': sha(b'inline')}), 'rebuild')
+    assert type(exc.value).__name__ != 'UnverifiedPublish', exc.value
+    assert 'ignores' in str(exc.value) and 'nothing published by this run' in str(exc.value).lower()
+    assert not any('/commit/' in path for _, path in sent)
