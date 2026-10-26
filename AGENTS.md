@@ -423,7 +423,8 @@ uv run bench hub get --repo arthrod/neurotic_docx_bench --path outputs/release_0
   destination.
 - **No clobbering.** A local file with the same bytes is skipped. One with different bytes stops
   the run before anything downloads, unless you pass `--overwrite` or `--keep-local`.
-  `--overwrite` replaces only regular files: a local file that is a symlink refuses the run.
+  `--overwrite` replaces only regular files: a local symlink whose bytes differ refuses the run (one
+  with the hub's bytes is skipped like any matching file, and nothing is written through it).
   `redlines-0929` lands in `results/redlines_0929_full`, whose scripts and CSVs are tracked, so this
   rule is what protects them. A symlinked folder below the destination refuses the run too, since it
   would put files, or move replaced ones, outside the destination (the destination itself may be a

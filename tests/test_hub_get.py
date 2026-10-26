@@ -654,7 +654,7 @@ def test_dry_run_never_writes_a_probe(tmp_path: Path, monkeypatch: pytest.Monkey
     try:
         hub_get.get(preset(dest), api=api, dry_run=True)
     except hub_get.GetError as exc:  # a case-insensitive disk refuses the pair, which is fine
-        assert "one file" in str(exc)
+        assert "one name" in str(exc)
     assert list(dest.iterdir()) == []
     assert api.downloads() == []
 

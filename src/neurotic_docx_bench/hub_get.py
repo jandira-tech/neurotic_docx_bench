@@ -363,6 +363,28 @@ def _withdraw(target: Path, placed: Identity, staging: Path) -> str | None:
     return None
 
 
+def _links_work(folder: Path) -> bool:
+    """Whether ``folder``'s disk takes hard links; without them ``place`` copies every file."""
+    probe = Path(tempfile.mkdtemp(prefix=".link-probe-", dir=folder))
+    try:
+        (probe / "a").touch()
+        try:
+            os.link(probe / "a", probe / "b")
+        except OSError:
+            return False
+        return True
+    finally:
+        shutil.rmtree(probe, ignore_errors=True)
+
+
+def _staged_size(path: Path) -> int | None:
+    try:
+        st = os.lstat(path)
+    except FileNotFoundError:
+        return None
+    return st.st_size if stat.S_ISREG(st.st_mode) else None
+
+
 def staging_dir(dest: Path, revision: str) -> Path:
     """Beside ``dest``, or inside it when ``dest`` is on another disk than its parent (a mount, a link)."""
     dest = Path(dest)
@@ -463,12 +485,19 @@ def _blocker(dest: Path, rel: str) -> str | None:
 
 
 def _collisions(files: Sequence[RemoteFile], dest: Path) -> list[list[str]]:
-    """Hub names that one file on the destination's disk would have to hold."""
+    """Hub names that one name on the destination's disk would have to hold: two files, or a file and a
+    folder (``A`` and ``a/x``). Folders end in ``/``; two folders that fold together are one folder."""
     def groups(key) -> list[list[str]]:
         seen: dict[str, list[str]] = {}
         for f in files:
+            parts = f.rel.split("/")
+            for depth in range(1, len(parts)):
+                folder = "/".join(parts[:depth])
+                names = seen.setdefault(key(folder), [])
+                if f"{folder}/" not in names:
+                    names.append(f"{folder}/")
             seen.setdefault(key(f.rel), []).append(f.rel)
-        return [names for names in seen.values() if len(names) > 1]
+        return [names for names in seen.values() if len(names) > 1 and any(not n.endswith("/") for n in names)]
 
     normalized = groups(lambda rel: unicodedata.normalize("NFC", rel))
     folded = groups(lambda rel: unicodedata.normalize("NFC", rel).casefold())
@@ -775,7 +804,7 @@ def get(
         what = f" matching {', '.join(include)}" if include else ""
         raise GetError(f"{where} has nothing under {preset.path or '/'}{what}")
     for names in _collisions(files, dest):
-        raise GetError(f"{where} has names that would be one file on the disk of {dest}: {', '.join(names)}")
+        raise GetError(f"{where} has names that would be one name on the disk of {dest}: {', '.join(names)}")
     clashes = _record_clashes(files)
     if clashes:
         raise GetError(
@@ -975,10 +1004,15 @@ def _download(
     the number of files that appeared meanwhile with the hub's bytes."""
     where = f"{repo_id}@{sha[:12]}"
     staged_files = staging / FILES
-    staged = sum(f.size for f in todo if (staged_files / f.repo_path).is_file())
+    # A staged file saves its download only when it is whole; a partial one is fetched again.
+    staged = sum(f.size for f in todo if _staged_size(staged_files / f.repo_path) == f.size)
     need = sum(f.size for f in todo) - staged
+    what = "to download"
+    if not _links_work(staging):  # each file is copied, and the staged copies stay until the last is in place
+        need += sum(f.size for f in todo)
+        what = "to download and copy (this disk takes no hard links)"
     if need > free_bytes(staging):
-        raise GetError(f"{human(need)} to download but only {human(free_bytes(staging))} free on the disk of {dest}")
+        raise GetError(f"{human(need)} {what} but only {human(free_bytes(staging))} free on the disk of {dest}")
 
     def fetch(f: RemoteFile) -> str | None:
         try:
@@ -996,7 +1030,7 @@ def _download(
     def work() -> None:
         while not stop.is_set():
             with taking:
-                if not left:
+                if stop.is_set() or not left:  # a stop set while this thread waited for the queue
                     return
                 f = left.popleft()
             results[f.rel] = fetch(f)
@@ -1015,7 +1049,8 @@ def _download(
             alive[0].join(0.25)  # in slices, so a press is seen during a long download
         ctrl_c.check(stopped)
     except BaseException as exc:
-        stop.set()  # the queued downloads never start; the running ones end
+        with taking:  # so no worker is between its look at ``stop`` and the queue
+            stop.set()  # the queued downloads never start; the running ones end
         while alive := [t for t in threads if t.is_alive()]:
             if ctrl_c.held:  # pressed again: stop waiting (a request may never come back)
                 ctrl_c.held.clear()
@@ -1163,7 +1198,7 @@ def _move_held(
             stop = KeyboardInterrupt()
             stop.add_note(outcome)
             raise stop from exc
-        if not problems and not isinstance(exc, Exception):
+        if not isinstance(exc, Exception):  # a Ctrl-C stays one, whatever the rollback left
             exc.add_note(outcome)
             raise
         raise GetError(outcome) from exc
