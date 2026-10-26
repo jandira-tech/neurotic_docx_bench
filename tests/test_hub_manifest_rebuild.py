@@ -243,8 +243,10 @@ class GitHub:
         stored = pointer(path_or_fileobj) if self.lfs else path_or_fileobj
         if self.lfs:
             self.lfs_contents[sha(path_or_fileobj)] = path_or_fileobj
-        if (self.origin / path_in_repo).exists() and (self.origin / path_in_repo).read_bytes() == stored:
-            # huggingface_hub returns the branch head without a commit or a parent check
+        current = subprocess.run(['git', 'cat-file', 'blob', f'HEAD:{path_in_repo}'], cwd=self.origin, capture_output=True)
+        if current.returncode == 0 and current.stdout == stored:
+            # huggingface_hub compares content oids only (not modes) and returns the branch head
+            # without a commit or a parent check
             return SimpleNamespace(oid=self.head())
         if parent_commit is not None and parent_commit != self.head():
             request = httpx2.Request('POST', 'https://huggingface.co/api/commit')
@@ -811,3 +813,39 @@ def test_quotes_in_an_upload_list_are_not_csv_syntax(rebuild, tail):
     raw = f'key\tsize\tsha256\n{tail}'.encode()
     with pytest.raises(rebuild.RebuildError, match='bad-list'):
         rebuild.parse_record('upload_20261025.manifest.tsv', raw, 'bad-list')
+
+
+def commit_entry(repo: Path, tmp_path: Path, mode: str, path: str, data: bytes) -> None:
+    """Commit ``data`` at ``path`` with ``mode`` straight through the index (a symlink, a name the disk refuses)."""
+    blob = tmp_path / 'blob'
+    blob.write_bytes(data)
+    oid = git(repo, 'hash-object', '-w', str(blob))
+    git(repo, 'update-index', '--add', '--cacheinfo', f'{mode},{oid},{path}')
+    git(repo, 'commit', '-q', '-m', 'entry')
+
+
+def test_publish_refuses_a_symlink_manifest_a_foreign_commit_left(rebuild, hub_pair, tmp_path):
+    """A foreign commit turns the manifest into a symlink whose target bytes are the manifest; the upload is a no-op."""
+    data = manifest({'a/x.docx': sha(b'inline')})
+    hub_pair.api.before_upload = lambda api: commit_entry(api.origin, tmp_path, '120000', f'{PREFIX}/{MANIFEST}', data)
+    with pytest.raises(rebuild.RebuildError, match='120000'):
+        rebuild.publish(hub_pair.api, hub_pair.clone, hub_pair.head, data, 'rebuild')
+
+
+def test_a_symlink_manifest_is_not_the_manifest_already_there(rebuild, hub_pair, tmp_path):
+    data = manifest({'a/x.docx': sha(b'inline')})
+    commit_entry(hub_pair.api.origin, tmp_path, '120000', f'{PREFIX}/{MANIFEST}', data)
+    git(hub_pair.clone, 'fetch', '-q', 'origin')
+    revision = hub_pair.api.head()
+    with pytest.raises(rebuild.RebuildError):
+        rebuild.publish(hub_pair.api, hub_pair.clone, revision, data, 'rebuild')
+
+
+def test_publish_checks_a_tree_holding_a_name_that_is_not_utf8(rebuild, hub_pair, tmp_path):
+    name = 'elsewhere/' + os.fsdecode(b'\xff') + '.txt'  # outside the run folder
+    commit_entry(hub_pair.api.origin, tmp_path, '100644', name, b'latin-1 era\n')
+    git(hub_pair.clone, 'fetch', '-q', 'origin')
+    revision = hub_pair.api.head()
+    data = manifest({'a/x.docx': sha(b'inline')})
+    commit = rebuild.publish(hub_pair.api, hub_pair.clone, revision, data, 'rebuild')
+    assert commit == hub_pair.api.head() != revision
