@@ -1264,17 +1264,23 @@ def test_ctrl_c_after_publish_returned_says_the_hub_holds_the_manifest(rebuild, 
 
 
 @contextlib.contextmanager
-def sdk_over(handler):
+def sdk_over(handler, hooks=()):
     """huggingface_hub's shared client answered by ``handler`` (an httpx2.MockTransport) inside the block.
 
     The SDK's factory and session are swapped, not set: ``set_client_factory`` would close the caller's
     session and leave the default factory behind. Both come back as they were; only the mock's client is
-    closed.
+    closed. ``hooks`` are the client's response hooks, as a caller's own client factory may install. Like
+    the SDK's ``default_client_factory`` (``utils/_http.py`` 331), the client follows redirects.
     """
     from huggingface_hub.utils import _http
 
+    def client():
+        return httpx2.Client(
+            transport=httpx2.MockTransport(handler), follow_redirects=True, event_hooks={'response': list(hooks)}
+        )
+
     with pytest.MonkeyPatch.context() as mp:
-        mp.setattr(_http, '_GLOBAL_CLIENT_FACTORY', lambda: httpx2.Client(transport=httpx2.MockTransport(handler)))
+        mp.setattr(_http, '_GLOBAL_CLIENT_FACTORY', client)
         mp.setattr(_http, '_GLOBAL_CLIENT', None)
         try:
             yield
@@ -1508,3 +1514,141 @@ def test_a_head_that_cannot_be_read_after_a_failure_before_the_commit_says_the_h
     assert tried
     assert type(exc.value).__name__ == 'UnverifiedPublish'
     assert 'nothing published' not in str(exc.value)
+
+
+# Review round 16 (#78)
+
+
+def http_hub(head, sent, *, preupload_status=200, commit_redirects_to_preupload=False):
+    """A hub over HTTP for the real HfApi: its head read, the preupload and the commit; ``sent`` lists the requests."""
+    commit_path = f'/api/{hub.REPO_TYPE}s/{hub.RESULTS_REPO}/commit/main'
+
+    def handler(request):
+        path = request.url.path
+        sent.append((request.method, path))
+        if '/revision/' in path:
+            return httpx2.Response(200, json={'id': hub.RESULTS_REPO, 'sha': head})
+        if path == commit_path and commit_redirects_to_preupload:  # a proxy forwards it, then redirects
+            return httpx2.Response(307, headers={'Location': path.replace('/commit/', '/preupload/')})
+        if path == commit_path:
+            return httpx2.Response(200, json={
+                'commitUrl': f'https://huggingface.co/{hub.REPO_TYPE}s/{hub.RESULTS_REPO}/commit/{"b" * 40}',
+                'commitOid': 'b' * 40,
+            })
+        if ('POST', commit_path) in sent:  # the commit's redirect, at the preupload URL
+            return httpx2.Response(400, json={'error': 'not a preupload request'})
+        if preupload_status != 200:
+            return httpx2.Response(preupload_status, json={'error': 'preupload'})
+        files = json.loads(request.content)['files']
+        return httpx2.Response(200, json={'files': [
+            {'path': f['path'], 'uploadMode': 'regular', 'shouldIgnore': False, 'oid': None} for f in files
+        ]})
+
+    return handler
+
+
+def test_a_commit_redirected_to_a_failing_preupload_url_through_a_raising_hook_says_the_hub_may_hold_the_manifest(
+    rebuild, hub_pair
+):
+    """Codex, round 16: a proxy forwards the commit POST and answers it with a 307 to the preupload URL, which
+    answers 400. A response hook raises there, before httpx2 attaches the redirect history (``_client.py``
+    1045), so the error carries an answer to a preupload-shaped request with no history."""
+    from huggingface_hub import HfApi
+
+    def raising(response):
+        if response.status_code >= 400:
+            response.read()
+            response.raise_for_status()
+
+    sent = []
+    with sdk_over(http_hub(hub_pair.head, sent, commit_redirects_to_preupload=True), hooks=[raising]):
+        api = HfApi(endpoint='https://huggingface.co', token='hf_test_not_a_real_token')
+        with pytest.raises(rebuild.RebuildError) as exc:
+            rebuild.publish(api, hub_pair.clone, hub_pair.head, manifest({'a/x.docx': sha(b'inline')}), 'rebuild')
+    assert ('POST', f'/api/{hub.REPO_TYPE}s/{hub.RESULTS_REPO}/commit/main') in sent  # the commit request went out
+    assert type(exc.value).__name__ == 'UnverifiedPublish'
+    assert 'nothing published' not in str(exc.value)
+
+
+def test_a_failure_before_the_commit_request_says_nothing_was_published_by_this_run_without_a_second_read(
+    rebuild, hub_pair
+):
+    """mcode, round 16: a head read after the failure is no proof (a commit still on its way does not show). The
+    claim rests on the commit request never having been sent, and it is a claim about this run."""
+    from huggingface_hub import HfApi
+
+    sent = []
+    with sdk_over(http_hub(hub_pair.head, sent, preupload_status=400)):
+        api = HfApi(endpoint='https://huggingface.co', token='hf_test_not_a_real_token')
+        with pytest.raises(rebuild.RebuildError) as exc:
+            rebuild.publish(api, hub_pair.clone, hub_pair.head, manifest({'a/x.docx': sha(b'inline')}), 'rebuild')
+    assert type(exc.value).__name__ != 'UnverifiedPublish'
+    assert 'nothing published by this run' in str(exc.value)
+    assert not any('/commit/' in path for _, path in sent)
+    assert [path for _, path in sent if '/revision/' in path] == [  # publish's own read, none after the failure
+        f'/api/{hub.REPO_TYPE}s/{hub.RESULTS_REPO}/revision/main'
+    ]
+
+
+def test_a_hub_that_moved_since_it_was_read_says_this_run_published_nothing_and_to_rerun(rebuild, hub_pair):
+    """mcode, round 16: the new head may be another run's commit of this very manifest, so the claim is this run's."""
+    hub_pair.api.commit({f'{PREFIX}/run/RUN.md': b'someone else'}, 'foreign')
+    with pytest.raises(rebuild.RebuildError) as exc:
+        rebuild.publish(hub_pair.api, hub_pair.clone, hub_pair.head, manifest({'a': sha(b'a')}), 'rebuild')
+    assert type(exc.value).__name__ != 'UnverifiedPublish'  # this run sent nothing
+    assert 'nothing published by this run' in str(exc.value) and 'rerun' in str(exc.value)
+    assert hub_pair.api.uploads == []
+
+
+@pytest.mark.parametrize('stop', [KeyboardInterrupt, lambda: RuntimeError('git fetch failed')])
+def test_a_check_that_stops_after_the_commit_came_back_names_the_commit_the_hub_holds(
+    rebuild, hub_pair, monkeypatch, stop
+):
+    """mcode, round 16: once the commit request returned a commit, the hub holds that commit; "may hold" is
+    left for what the check had still to show, that it is this manifest's."""
+
+    def stopped(*a, **kw):
+        raise stop()
+
+    monkeypatch.setattr(rebuild, 'verify_upload', stopped)
+    with pytest.raises(BaseException) as exc:
+        rebuild.publish(hub_pair.api, hub_pair.clone, hub_pair.head, manifest({'a/x.docx': sha(b'inline')}), 'rebuild')
+    said = ' '.join([str(exc.value), *getattr(exc.value, '__notes__', ())])
+    assert hub_pair.api.head() != hub_pair.head
+    assert f'the hub holds {hub_pair.api.head()}' in said
+    assert exc.type is KeyboardInterrupt or type(exc.value).__name__ == 'UnverifiedPublish'
+
+
+def test_ctrl_c_during_the_warning_that_the_temporary_clone_stayed_still_says_what_the_hub_holds(
+    rebuild, hub_pair, tmp_path, monkeypatch
+):
+    """Codex, round 16: the warning printed when the removal fails is itself a place a press can land."""
+    hub_pair.api.commit({f'{PREFIX}/x.docx': b'A'}, 'a file the manifest does not list yet')
+    git(hub_pair.clone, 'sparse-checkout', 'set', '--no-cone', f'{PREFIX}/')
+    monkeypatch.setattr(hub, 'default_api', lambda: hub_pair.api)
+    real_checkout, real_mkdtemp = rebuild.checkout_hub, tempfile.mkdtemp
+
+    def checkout(dest, revision):
+        shutil.copytree(hub_pair.clone, dest, symlinks=True)
+        real_checkout(dest, revision)
+
+    def rmtree(path, *a, **kw):
+        raise OSError(16, 'Resource busy', str(path))
+
+    def press_on_warning(*a, **kw):
+        if a and str(a[0]).startswith('could not remove'):
+            raise KeyboardInterrupt
+        return print(*a, **kw)
+
+    monkeypatch.setattr(rebuild, 'checkout_hub', checkout)
+    monkeypatch.setattr(tempfile, 'mkdtemp', lambda *a, prefix='', **kw: real_mkdtemp(prefix=prefix, dir=tmp_path))
+    monkeypatch.setattr(rebuild, 'print', press_on_warning, raising=False)
+    monkeypatch.setattr(sys, 'argv', ['rebuild_manifest', '--out', str(tmp_path / 'out'), '--publish'])
+    with monkeypatch.context() as mp:
+        mp.setattr(shutil, 'rmtree', rmtree)
+        with pytest.raises(BaseException) as exc:
+            rebuild.main()
+    assert exc.type is KeyboardInterrupt, exc.value
+    notes = ' '.join(getattr(exc.value, '__notes__', ()))
+    assert 'removing the temporary clone' in notes
+    assert 'holds this manifest' in notes and hub_pair.api.head() in notes
