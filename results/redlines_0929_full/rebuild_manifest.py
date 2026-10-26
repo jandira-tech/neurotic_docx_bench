@@ -429,7 +429,8 @@ def publish(api, checkout: Path, revision: str, data: bytes, message: str) -> st
     A no-op upload skips the ``parent_commit`` check and returns whatever the branch head is, so
     the commit is fetched and must have ``revision`` as its one parent and change nothing else.
     A 4xx answer to the upload is a refusal (``RebuildError``); any other failure of the upload or of
-    the check after it may follow a commit, and raises ``UnverifiedPublish``.
+    the check after it may follow a commit, and raises ``UnverifiedPublish``. A Ctrl-C there still
+    stops the run, with a note that the hub may hold the manifest.
     """
     path = f'{REPO_PREFIX}/{MANIFEST}'
     current = api.repo_info(hub.RESULTS_REPO, repo_type=hub.REPO_TYPE, revision=BRANCH).sha
@@ -466,6 +467,9 @@ def publish(api, checkout: Path, revision: str, data: bytes, message: str) -> st
             f'upload_file failed without an answer from the hub ({type(exc).__name__}: {exc}); the hub may hold '
             'the manifest now; rerun to check it (a manifest already there is recognised)'
         ) from exc
+    except BaseException as exc:  # Ctrl-C: stop, but say what may have happened
+        exc.add_note('stopped during upload_file: the hub may hold the manifest now; rerun to check it')
+        raise
     commit = info.oid
     try:
         return verify_upload(checkout, revision, commit, before, data)
@@ -474,6 +478,10 @@ def publish(api, checkout: Path, revision: str, data: bytes, message: str) -> st
             f'upload_file returned {commit}, but checking it failed: {exc}. The hub may hold the manifest now; '
             f'rerun to check it (a manifest already there is recognised)'
         ) from exc
+    except BaseException as exc:
+        exc.add_note(f'stopped while checking {commit}, which upload_file returned: the hub may hold the manifest '
+                     'now; rerun to check it')
+        raise
 
 
 def verify_upload(checkout: Path, revision: str, commit: str, before: dict, data: bytes) -> str:
