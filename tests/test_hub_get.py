@@ -14,6 +14,7 @@ import re
 import shutil
 import signal
 import stat
+import sys
 import tempfile
 from pathlib import Path
 from types import SimpleNamespace
@@ -2456,3 +2457,119 @@ def test_a_folder_below_the_destination_on_another_disk_refuses_before_downloadi
     assert type(exc.value) is hub_get.GetError, repr(exc.value)
     assert str(dest / "sub") in str(exc.value) and "another disk" in str(exc.value)
     assert api.downloads() == []
+
+
+# Review round 14 (#80)
+
+
+def _no_links(src, dst, *args, **kw):
+    raise OSError(errno.EOPNOTSUPP, "no hard links on this disk")
+
+
+def test_a_file_saved_just_before_the_copy_takes_its_name_survives(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Codex, round 14: without hard links the copy claimed its target with an empty ``O_EXCL`` file and
+    then ``os.replace``d onto it, so a file an app saved there in between was overwritten. The copy must
+    take the name in one step that refuses an existing file."""
+    staged, target, scratch = tmp_path / "staged", tmp_path / "target", tmp_path / "scratch"
+    staged.write_bytes(b"REMOTE")
+    real_replace = os.replace
+    real_rename_new = getattr(hub_get, "_rename_new", None)
+    saved = []
+
+    def app_saves() -> None:  # an editor's atomic save: a temporary file renamed onto the name
+        tmp = tmp_path / "app.tmp"
+        tmp.write_bytes(b"USER FILE")
+        real_replace(tmp, target)
+        saved.append(1)
+
+    def replace(src, dst, *args, **kw):
+        if Path(dst) == target and not saved:
+            app_saves()
+        return real_replace(src, dst, *args, **kw)
+
+    def rename_new(src, dst):
+        if Path(dst) == target and not saved:
+            app_saves()
+        return real_rename_new(src, dst)
+
+    monkeypatch.setattr(os, "link", _no_links)
+    monkeypatch.setattr(os, "replace", replace)
+    monkeypatch.setattr(hub_get, "_rename_new", rename_new, raising=False)
+    with pytest.raises(hub_get.GetError, match="appeared"):
+        hub_get.place(staged, target, scratch)
+    assert saved
+    assert target.read_bytes() == b"USER FILE"
+    assert staged.read_bytes() == b"REMOTE"
+    assert list(scratch.iterdir()) == []  # the copy went with the failure
+
+
+def test_a_kill_as_the_copy_takes_its_name_leaves_nothing_a_rerun_refuses(tmp_path: Path) -> None:
+    """Codex, round 14: a kill after the empty ``O_EXCL`` claim left an empty file at the target, which
+    every rerun then refused as a local file that differs from the hub's."""
+    dest = tmp_path / "dest"
+
+    def killed() -> None:
+        real_replace = os.replace
+        real_rename_new = getattr(hub_get, "_rename_new", None)
+
+        def replace(src, dst, *args, **kw):
+            if Path(dst) == dest / "a.docx":
+                os._exit(9)  # killed: no handler, no cleanup
+            return real_replace(src, dst, *args, **kw)
+
+        def rename_new(src, dst):
+            if Path(dst) == dest / "a.docx":
+                os._exit(9)
+            return real_rename_new(src, dst)
+
+        os.link = _no_links
+        os.replace = replace
+        hub_get._rename_new = rename_new
+        hub_get.get(preset(dest), api=PinnedHub(FILES))
+
+    assert _in_a_child(killed) == 9
+    try:
+        hub_get.get(preset(dest), api=PinnedHub(FILES))
+    except hub_get.GetError as exc:
+        pytest.fail(f"the rerun refused what the killed run left: {exc}")
+    assert _hub_bytes_or_absent(dest) == []
+    assert all((dest / n.removeprefix("outputs/run/")).exists() for n in FILES if n.startswith("outputs/run/"))
+
+
+@pytest.mark.parametrize("rename", ["unsupported", "replaces"])
+def test_a_disk_without_hard_links_or_a_no_replace_rename_refuses_before_downloading(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, rename: str
+) -> None:
+    """Round 14: without hard links every file goes in by that rename; a disk where it fails, or where it
+    replaces a file anyway, could not keep a file written meanwhile, so the run refuses up front."""
+
+    def unsupported(src, dst):
+        raise OSError(errno.ENOTSUP, "Operation not supported", str(src), None, str(dst))
+
+    def replaces(src, dst):  # a disk that ignores the flag
+        os.replace(src, dst)
+
+    monkeypatch.setattr(os, "link", _no_links)
+    monkeypatch.setattr(hub_get, "_rename_new", unsupported if rename == "unsupported" else replaces, raising=False)
+    api = PinnedHub(FILES)
+    with pytest.raises(Exception) as exc:
+        hub_get.get(preset(tmp_path / "dest"), api=api)
+    assert type(exc.value) is hub_get.GetError, repr(exc.value)
+    assert "rename" in str(exc.value)
+    assert api.downloads() == []
+
+
+@pytest.mark.skipif(sys.platform not in ("darwin", "linux"), reason="renamex_np / renameat2 only")
+def test_the_no_replace_rename_refuses_an_existing_name_and_takes_a_free_one(tmp_path: Path) -> None:
+    rename_new = getattr(hub_get, "_rename_new", None)
+    assert rename_new is not None, "hub_get has no rename that refuses to replace a file"
+    a, b, c = tmp_path / "a", tmp_path / "b", tmp_path / "c"
+    a.write_bytes(b"A")
+    b.write_bytes(b"B")
+    with pytest.raises(FileExistsError):
+        rename_new(a, b)
+    assert a.read_bytes() == b"A" and b.read_bytes() == b"B"
+    rename_new(a, c)
+    assert not a.exists() and c.read_bytes() == b"A"
