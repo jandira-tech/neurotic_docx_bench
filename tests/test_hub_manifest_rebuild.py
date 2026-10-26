@@ -210,15 +210,21 @@ class GitHub:
     """The hub's commit API over a real git repository standing in for the dataset.
 
     ``preuploads`` lists the paths preuploaded; ``uploads`` the commit requests, so an empty one means no
-    commit request was sent.
+    commit request was sent; ``commit_calls`` every ``create_commit`` call, a no-op's included. Like the SDK,
+    the preupload's answer sets each operation's upload mode and the content id at its path, and
+    ``create_commit`` decides a no-op from those (``hf_api.py`` 5143), not from the head it then finds: a
+    foreign commit that should make a no-op lands in ``before_preupload``, one in ``before_upload`` meets the
+    parent check.
     """
 
-    def __init__(self, origin: Path, before_upload=None, lfs: bool = False):
+    def __init__(self, origin: Path, before_upload=None, lfs: bool = False, before_preupload=None):
         self.origin = origin
         self.before_upload = before_upload
+        self.before_preupload = before_preupload
         self.lfs = lfs  # the hub's preupload picked LFS storage for the upload
         self.preuploads: list[str] = []
         self.uploads: list[dict] = []
+        self.commit_calls: list[str] = []
         self.info_revisions = []
         self.lfs_contents = {}
 
@@ -240,10 +246,26 @@ class GitHub:
 
     def preupload_lfs_files(self, *, repo_id, additions, repo_type, revision=None, free_memory=True):
         assert revision == 'main' and not free_memory  # as publish() passes it
-        self.preuploads.extend(op.path_in_repo for op in additions)
+        if self.before_preupload:
+            self.before_preupload(self)
+        for operation in additions:
+            # The answer (_commit_api.py 777-779). The hub compares content ids only: an LFS pointer's oid, not its
+            # text; not modes.
+            operation._upload_mode = 'lfs' if self.lfs else 'regular'
+            operation._should_ignore = False
+            data = operation.path_or_fileobj
+            current = subprocess.run(['git', 'cat-file', 'blob', f'HEAD:{operation.path_in_repo}'], cwd=self.origin, capture_output=True)
+            remote = re.fullmatch(rb'version https://git-lfs\.github\.com/spec/v1\noid sha256:([0-9a-f]{64})\nsize \d+\n', current.stdout)
+            same = (remote.group(1).decode() == sha(data)) if self.lfs and remote else current.stdout == (pointer(data) if self.lfs else data)
+            if current.returncode != 0:
+                operation._remote_oid = None
+            else:
+                operation._remote_oid = operation._local_oid if same else '0' * 40
+            self.preuploads.append(operation.path_in_repo)
 
     def create_commit(self, *, repo_id, operations, commit_message, repo_type, revision=None, parent_commit=None):
         assert revision == 'main'
+        self.commit_calls.append(parent_commit)
         (operation,) = operations
         path_in_repo, path_or_fileobj = operation.path_in_repo, operation.path_or_fileobj
         assert path_in_repo in self.preuploads  # preuploaded first, as publish() does
@@ -252,12 +274,8 @@ class GitHub:
         stored = pointer(path_or_fileobj) if self.lfs else path_or_fileobj
         if self.lfs:
             self.lfs_contents[sha(path_or_fileobj)] = path_or_fileobj
-        current = subprocess.run(['git', 'cat-file', 'blob', f'HEAD:{path_in_repo}'], cwd=self.origin, capture_output=True)
-        remote = re.fullmatch(rb'version https://git-lfs\.github\.com/spec/v1\noid sha256:([0-9a-f]{64})\nsize \d+\n', current.stdout)
-        same = (remote.group(1).decode() == sha(path_or_fileobj)) if self.lfs and remote else current.stdout == stored
-        if current.returncode == 0 and same:
-            # huggingface_hub compares content oids only (an LFS pointer's oid, not its text; not
-            # modes) and returns the branch head without a commit request or a parent check
+        if operation._remote_oid is not None and operation._remote_oid == operation._local_oid:
+            # the SDK's no-op: the head, read now, without a commit request or a parent check (hf_api.py 5167)
             return SimpleNamespace(oid=self.head())
         self.uploads.append({  # the commit request, which a no-op never sends (hf_api.py 5167)
             'path_in_repo': path_in_repo,
@@ -321,14 +339,16 @@ def test_publish_with_nothing_to_change_uploads_nothing(rebuild, hub_pair):
     assert hub_pair.api.uploads == []
 
 
-def test_publish_refuses_a_no_op_that_returns_someone_elses_commit(rebuild, hub_pair):
-    """Another writer commits the same manifest plus a file, under the same title, just before the upload."""
+def test_publish_refuses_someone_elses_commit_that_create_commit_returns(rebuild, hub_pair):
+    """create_commit returns the head it finds on its no-op path (hf_api.py 5175); here another writer committed the
+    same manifest plus a file first. The commit returned is checked, not trusted."""
     data = manifest({'a/x.docx': sha(b'inline')})
 
-    def foreign(api):
-        api.commit({f'{PREFIX}/{MANIFEST}': data, f'{PREFIX}/new/unlisted.docx': b'not in the manifest'}, 'rebuild')
+    def returns_theirs(**kw):
+        hub_pair.api.commit({f'{PREFIX}/{MANIFEST}': data, f'{PREFIX}/new/unlisted.docx': b'not in the manifest'}, 'rebuild')
+        return SimpleNamespace(oid=hub_pair.api.head())
 
-    hub_pair.api.before_upload = foreign
+    hub_pair.api.create_commit = returns_theirs
     with pytest.raises(rebuild.RebuildError, match=re.escape('unlisted.docx')):
         rebuild.publish(hub_pair.api, hub_pair.clone, hub_pair.head, data, 'rebuild')
 
@@ -796,7 +816,11 @@ def test_publish_sees_a_gitlink_the_diff_config_would_hide(rebuild, hub_pair):
         add_gitlink(api.origin, f'{PREFIX}/sub/module')
         git(api.origin, 'commit', '-q', '-m', 'rebuild')
 
-    hub_pair.api.before_upload = foreign
+    def returns_theirs(**kw):  # the head create_commit's no-op path returns
+        foreign(hub_pair.api)
+        return SimpleNamespace(oid=hub_pair.api.head())
+
+    hub_pair.api.create_commit = returns_theirs
     with pytest.raises(rebuild.RebuildError, match=re.escape('sub/module')):
         rebuild.publish(hub_pair.api, hub_pair.clone, hub_pair.head, data, 'rebuild')
 
@@ -844,11 +868,21 @@ def commit_entry(repo: Path, tmp_path: Path, mode: str, path: str, data: bytes) 
 
 
 def test_publish_refuses_a_symlink_manifest_a_foreign_commit_left(rebuild, hub_pair, tmp_path):
-    """A foreign commit turns the manifest into a symlink whose target bytes are the manifest; the upload is a no-op."""
+    """A foreign commit turns the manifest into a symlink whose target bytes are the manifest before the preupload,
+    whose answer then makes the upload a no-op. Round 18: the run says so without calling create_commit, and the
+    rerun on the new head names the symlink."""
     data = manifest({'a/x.docx': sha(b'inline')})
-    hub_pair.api.before_upload = lambda api: commit_entry(api.origin, tmp_path, '120000', f'{PREFIX}/{MANIFEST}', data)
-    with pytest.raises(rebuild.RebuildError, match='120000'):
+    hub_pair.api.before_preupload = lambda api: commit_entry(api.origin, tmp_path, '120000', f'{PREFIX}/{MANIFEST}', data)
+    with pytest.raises(rebuild.RebuildError) as exc:
         rebuild.publish(hub_pair.api, hub_pair.clone, hub_pair.head, data, 'rebuild')
+    assert hub_pair.api.commit_calls == []
+    assert type(exc.value).__name__ != 'UnverifiedPublish', exc.value
+    assert 'Nothing published by this run' in str(exc.value) and 'rerun' in str(exc.value)
+    hub_pair.api.before_preupload = None
+    git(hub_pair.clone, 'fetch', '-q', 'origin')
+    with pytest.raises(rebuild.RebuildError, match='120000'):
+        rebuild.publish(hub_pair.api, hub_pair.clone, hub_pair.api.head(), data, 'rebuild')
+    assert hub_pair.api.commit_calls == []
 
 
 def test_a_symlink_manifest_is_not_the_manifest_already_there(rebuild, hub_pair, tmp_path):
@@ -1139,6 +1173,7 @@ def test_an_upload_that_made_no_commit_says_nothing_was_published_and_why(rebuil
     with pytest.raises(rebuild.RebuildError) as exc:
         rebuild.publish(hub_pair.api, hub_pair.clone, revision, data, 'rebuild')
     assert hub_pair.api.head() == revision
+    assert hub_pair.api.commit_calls == []  # round 18: the preupload's answer already says it
     assert type(exc.value).__name__ != 'UnverifiedPublish'
     assert 'nothing published' in str(exc.value).lower()
     assert 'no commit' in str(exc.value) and '120000' in str(exc.value)
@@ -1673,15 +1708,16 @@ def test_ctrl_c_during_the_warning_that_the_temporary_clone_stayed_still_says_wh
 
 
 def test_a_no_op_on_a_moved_head_is_never_called_a_commit_request(rebuild, hub_pair, tmp_path):
-    """create_commit's no-op path sends no commit request: it reads the head and returns it. Moved by a foreign
-    commit whose symlink holds the manifest's bytes, that head is not a commit this run asked for."""
+    """create_commit's no-op path sends no commit request: it reads the head and returns it. Round 18: the run sees
+    the no-op in the preupload's answer and never calls it, so nothing it says rests on a head create_commit read."""
     data = manifest({'a/x.docx': sha(b'inline')})
-    hub_pair.api.before_upload = lambda api: commit_entry(api.origin, tmp_path, '120000', f'{PREFIX}/{MANIFEST}', data)
+    hub_pair.api.before_preupload = lambda api: commit_entry(api.origin, tmp_path, '120000', f'{PREFIX}/{MANIFEST}', data)
     with pytest.raises(rebuild.RebuildError) as exc:
         rebuild.publish(hub_pair.api, hub_pair.clone, hub_pair.head, data, 'rebuild')
     said = str(exc.value)
-    assert f'create_commit returned {hub_pair.api.head()}' in said, said
-    assert 'commit request returned' not in said
+    assert hub_pair.api.commit_calls == []
+    assert 'create_commit was not called' in said, said
+    assert 'commit request returned' not in said and 'create_commit returned' not in said
 
 
 def test_ctrl_c_inside_create_commit_never_says_the_commit_request_was_under_way(rebuild, hub_pair):
@@ -1694,7 +1730,8 @@ def test_ctrl_c_inside_create_commit_never_says_the_commit_request_was_under_way
     with pytest.raises(KeyboardInterrupt) as exc:
         rebuild.publish(hub_pair.api, hub_pair.clone, hub_pair.head, manifest({'a/x.docx': sha(b'inline')}), 'rebuild')
     notes = ' '.join(getattr(exc.value, '__notes__', ()))
-    assert 'in create_commit' in notes and 'may hold' in notes, notes
+    # mcode, round 18: the press may land before the call, so the note says "calling", not "in"
+    assert 'calling create_commit' in notes and 'may hold' in notes, notes
     assert 'during the commit request' not in notes
 
 
@@ -1738,33 +1775,141 @@ def test_the_commit_request_of_an_inline_manifest_carries_its_bytes(rebuild):
     assert files == [{'content': base64.b64encode(b'{}\n').decode(), 'path': f'{PREFIX}/{MANIFEST}', 'encoding': 'base64'}]
 
 
-def test_the_sdk_sends_no_commit_request_for_a_no_op_and_the_run_says_nothing_was_published(rebuild, hub_pair):
-    """The real no-op sequence the "made no commit" branch rests on: the preupload says the hub holds this content
-    id at the path, and create_commit reads the head instead of sending a commit (``hf_api.py`` 5167)."""
+def test_the_sdk_takes_its_no_op_from_the_preupload_answer_and_sends_no_commit(rebuild):
+    """The premise of the run's own no-op check (``hf_api.py`` 5143-5187): after the preupload, an operation whose
+    ``_remote_oid`` is its ``_local_oid`` is dropped, and create_commit reads the head and returns it, with no commit
+    request and no parent check."""
+    from huggingface_hub import CommitOperationAdd, HfApi
+
+    data = b'{}\n'
+    blob_id = hashlib.sha1(b'blob %d\0' % len(data) + data).hexdigest()
+    sent = []
+    with sdk_over(http_hub('c' * 40, sent, remote_oid=blob_id)):
+        api = HfApi(endpoint='https://huggingface.co', token='hf_test_not_a_real_token')
+        operation = CommitOperationAdd(path_in_repo=f'{PREFIX}/{MANIFEST}', path_or_fileobj=data)
+        rebuild.preupload(api, operation)
+        assert operation._remote_oid == operation._local_oid
+        mark = len(sent)
+        info = api.create_commit(
+            repo_id=hub.RESULTS_REPO, operations=[operation], commit_message='m', repo_type=hub.REPO_TYPE,
+            revision='main', parent_commit='a' * 40,
+        )
+    assert info.oid == 'c' * 40
+    assert sent[mark:] == [('GET', f'/api/{hub.REPO_TYPE}s/{hub.RESULTS_REPO}/revision/main')]
+
+
+def test_a_no_op_the_preupload_answer_shows_never_reaches_create_commit(rebuild, hub_pair):
+    """Codex and mcode, round 18: the run makes the SDK's no-op check itself, after the preupload, and never calls
+    create_commit for one; what it says then rests on no request create_commit might have sent."""
     from huggingface_hub import HfApi
 
     data = manifest({'a/x.docx': sha(b'inline')})
     blob_id = hashlib.sha1(b'blob %d\0' % len(data) + data).hexdigest()
-    sent = []
+    sent, calls = [], []
     with sdk_over(http_hub(hub_pair.head, sent, remote_oid=blob_id)):
         api = HfApi(endpoint='https://huggingface.co', token='hf_test_not_a_real_token')
+        real = api.create_commit
+
+        def spy(**kw):
+            calls.append(kw)
+            return real(**kw)
+
+        api.create_commit = spy
         with pytest.raises(rebuild.RebuildError) as exc:
             rebuild.publish(api, hub_pair.clone, hub_pair.head, data, 'rebuild')
+    assert calls == []
     assert type(exc.value).__name__ != 'UnverifiedPublish', exc.value
-    assert 'made no commit' in str(exc.value) and 'Nothing published by this run' in str(exc.value)
-    assert [method for method, path in sent if '/commit/' in path] == []
-    assert sent[-1] == ('GET', f'/api/{hub.REPO_TYPE}s/{hub.RESULTS_REPO}/revision/main')
+    said = str(exc.value)
+    assert 'Nothing published by this run' in said and 'fix the path' in said and 'rerun' not in said, said
+    assert not any('/commit/' in path for _, path in sent)
+
+
+def test_a_no_op_whose_head_check_fails_still_says_nothing_was_published(rebuild, hub_pair, tmp_path):
+    """The head is read again after a no-op the preupload shows, only to choose the advice: whatever that read does,
+    create_commit was not called, so nothing was published by this run."""
+    data = manifest({'a/x.docx': sha(b'inline')})
+    commit_entry(hub_pair.api.origin, tmp_path, '120000', f'{PREFIX}/{MANIFEST}', data)
+    git(hub_pair.clone, 'fetch', '-q', 'origin')
+    revision = hub_pair.api.head()
+    real = hub_pair.api.repo_info
+
+    def second_fails(*args, **kw):
+        if hub_pair.api.info_revisions:
+            raise OSError('network down')
+        return real(*args, **kw)
+
+    hub_pair.api.repo_info = second_fails
+    with pytest.raises(rebuild.RebuildError) as exc:
+        rebuild.publish(hub_pair.api, hub_pair.clone, revision, data, 'rebuild')
+    said = str(exc.value)
+    assert hub_pair.api.commit_calls == []
+    assert type(exc.value).__name__ != 'UnverifiedPublish', exc.value
+    assert 'Nothing published by this run' in said and 'rerun' in said and 'network down' in said, said
+
+
+def test_the_sdk_leaves_an_ignored_file_out_of_the_commit_it_still_sends(rebuild):
+    """mcode, round 18: the premise of the run's refusal of an ignored path. The preupload's ``shouldIgnore`` drops
+    the file from the commit payload (``_commit_api.py`` 939), and the commit is sent all the same."""
+    from huggingface_hub import CommitOperationAdd, HfApi
+
+    bodies = []
+
+    def handler(request):
+        if '/commit/' in request.url.path:
+            bodies.append(request.content)
+        return http_hub('a' * 40, [], ignored=True)(request)
+
+    with sdk_over(handler):
+        api = HfApi(endpoint='https://huggingface.co', token='hf_test_not_a_real_token')
+        operation = CommitOperationAdd(path_in_repo=f'{PREFIX}/{MANIFEST}', path_or_fileobj=b'{}\n')
+        rebuild.preupload(api, operation)
+        assert operation._should_ignore
+        api.create_commit(
+            repo_id=hub.RESULTS_REPO, operations=[operation], commit_message='m', repo_type=hub.REPO_TYPE,
+            revision='main', parent_commit='a' * 40,
+        )
+    (body,) = bodies
+    assert [json.loads(line)['key'] for line in body.decode().splitlines()] == ['header']
 
 
 def test_with_xet_storage_the_preupload_call_uploads_and_the_commit_call_sends_only_the_commit(rebuild, monkeypatch):
     """The path a real run takes with hf_xet installed: the storage upload goes through the Xet client inside the
     preupload call (``_commit_api.py`` 396), and create_commit, finding the file uploaded, sends only the commit.
-    The Xet client leaves httpx, so it is recorded here, not driven."""
+    Codex, round 18: the SDK's own adapter runs (``_commit_api.py`` 552); only the hf_xet session it opens is a fake,
+    so the write token's refresh URL, the headers and the sha256 it hands over are the SDK's."""
     from huggingface_hub import _commit_api
+    from huggingface_hub.utils import _xet
 
-    xet = []
+    uploads, opened = [], []
+
+    class Upload:  # what hf_xet's start_upload_bytes hands back
+        def __init__(self, data):
+            self.data = data
+
+        def result(self):
+            return SimpleNamespace(xet_info=SimpleNamespace(sha256=hashlib.sha256(self.data).hexdigest()))
+
+    class UploadCommit:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *exc):
+            return False
+
+        def start_upload_bytes(self, data, *, sha256):
+            uploads.append((data, sha256))
+            return Upload(data)
+
+        def start_upload_file(self, path, *, sha256):
+            raise AssertionError('the manifest is uploaded from bytes')
+
+    class Session:
+        def new_upload_commit(self, **kw):
+            opened.append(kw)
+            return UploadCommit()
+
     monkeypatch.setattr(_commit_api, 'is_xet_available', lambda: True)
-    monkeypatch.setattr(_commit_api, '_upload_xet_files', lambda *, additions, **kw: xet.append([a.path_in_repo for a in additions]))
+    monkeypatch.setattr(_xet, 'get_xet_session', lambda: Session())
 
     def handler(request):
         if '/preupload/' in request.url.path:
@@ -1776,4 +1921,9 @@ def test_with_xet_storage_the_preupload_call_uploads_and_the_commit_call_sends_o
 
     calls = sdk_calls(rebuild, handler)
     assert calls == [([PREUPLOAD], None), ([COMMIT], None)]
-    assert xet == [[f'{PREFIX}/{MANIFEST}']]  # once, in the preupload call
+    assert uploads == [(b'{}\n', hashlib.sha256(b'{}\n').hexdigest())]  # once, in the preupload call
+    (session,) = opened
+    assert session['token_refresh_url'] == f'https://huggingface.co/api/{hub.REPO_TYPE}s/{hub.RESULTS_REPO}/xet-write-token/main'
+    assert 'authorization' not in {key.lower() for key in session['custom_headers']}
+
+
