@@ -58,8 +58,9 @@ NO_LFS = ('-c', 'filter.lfs.smudge=', '-c', 'filter.lfs.process=', '-c', 'filter
 
 class RebuildError(RuntimeError):
     """The run stopped having published nothing: the hub does not match its own records, it moved since it was
-    read, the upload failed before its commit request was sent, or that request made no commit. The claim is
-    this run's; a commit another run sent may land at any time."""
+    read, it ignores the manifest's path or already holds the manifest's content id there (both from its answer
+    to the preupload), the upload failed before its commit request was sent, or that request made no commit. The
+    claim is this run's; a commit another run sent may land at any time."""
 
 
 class UnverifiedPublish(RebuildError):
@@ -442,12 +443,13 @@ def publish(api, checkout: Path, revision: str, data: bytes, message: str) -> st
 
     The upload is two calls, so that what a failure says of the hub rests on which call failed, never on
     the error's shape: ``preupload`` sends everything before the commit request, ``commit_manifest`` the
-    commit request; a path the preupload's answer says the hub ignores stops the run between the two. Up to
-    the second call nothing this run sent can make a commit (``RebuildError``); from
-    it on a failure may follow one (``UnverifiedPublish``). A no-op commit skips the ``parent_commit`` check
-    and returns whatever the branch head is, so the commit is fetched and must have ``revision`` as its one
-    parent and change nothing else; the head itself means no commit was made. A Ctrl-C stops the run with a
-    note saying the same.
+    commit request. The preupload's answer can stop the run between the two: a path the hub ignores, or one
+    that already holds this content id, for which ``create_commit`` would send no commit (the SDK's own test,
+    ``hf_api.py`` 5143), read the head and return it without the ``parent_commit`` check. So it is never
+    called for a no-op, and every failure from it on may follow a commit (``UnverifiedPublish``); before it,
+    nothing this run sent can make one (``RebuildError``). The commit it returns is fetched and must have
+    ``revision`` as its one parent and change nothing else; the head itself means no commit was made. A
+    Ctrl-C stops the run with a note saying the same.
     """
     path = f'{REPO_PREFIX}/{MANIFEST}'
     note = 'stopped before the commit request: nothing published by this run'
@@ -485,7 +487,13 @@ def publish(api, checkout: Path, revision: str, data: bytes, message: str) -> st
                 f'the hub ignores {path} (the answer to the preupload, from the repo\'s .gitignore), so a commit would '
                 'leave it out. Nothing published by this run; fix the .gitignore on the hub'
             )
-        note = 'stopped in create_commit, which sends the commit request: the hub may hold the manifest now; rerun to check it'
+        remote = getattr(operation, '_remote_oid', None)
+        if remote is not None and remote == operation._local_oid:
+            raise RebuildError(no_op(api, revision, path, before.get(key), remote))
+        note = (
+            'stopped calling create_commit, which sends the commit request: the hub may hold the manifest now; rerun '
+            'to check it'
+        )
         commit = commit_manifest(api, operation, message, revision)
         note = (
             f'stopped while checking {commit}, which create_commit returned: the hub holds {commit}, which may be '
@@ -510,6 +518,26 @@ def publish(api, checkout: Path, revision: str, data: bytes, message: str) -> st
         if not isinstance(exc, Exception):  # Ctrl-C: stop, but say what may have happened
             exc.add_note(note)
         raise
+
+
+def no_op(api, revision: str, path: str, entry: tuple[bytes, ...] | None, remote: str) -> str:
+    """Why a no-op the preupload's answer shows stops the run. ``create_commit`` was not called, so nothing was
+    published by this run; the head is read again only to say whether a rerun or a fix on the hub comes next."""
+    said = (
+        f'the hub answered the preupload that {path} on {BRANCH} already holds this manifest\'s content id ({remote}), '
+        'so create_commit would make no commit; create_commit was not called. Nothing published by this run'
+    )
+    try:
+        now = api.repo_info(hub.RESULTS_REPO, repo_type=hub.REPO_TYPE, revision=BRANCH).sha
+    except Exception as exc:
+        return f'{said}; reading the head of {BRANCH} again failed ({type(exc).__name__}: {exc}): rerun to check it'
+    if now != revision:
+        return f'{said}; {BRANCH} moved to {now} since {revision} was read and may hold this manifest: rerun on it to check it'
+    held = f'a mode {entry[0].decode()} entry' if entry else 'no file'
+    return (
+        f'{said}; {BRANCH} is still at {revision}, where {path} holds {held}. The hub compares content ids, not '
+        'modes, so an entry with this content counts as the manifest already there: fix the path on the hub'
+    )
 
 
 def preupload(api, operation: CommitOperationAdd) -> None:
@@ -542,9 +570,9 @@ def commit_manifest(api, operation: CommitOperationAdd, message: str, revision: 
 
     ``create_commit`` finds the preupload done (``hf_api.py`` 5329: no preupload request for an operation
     whose upload mode is known, none for an LFS file already uploaded), so the one request it sends is the
-    commit, or, for a no-op, a read of the head. Any failure here may follow a commit (an answer lost on its
-    way back, a proxy that forwarded the request and answered with an error or a redirect, a transport that
-    retried it) and raises ``UnverifiedPublish``.
+    commit (``publish`` never calls it for a no-op, which would read the head instead). Any failure here may
+    follow a commit (an answer lost on its way back, a proxy that forwarded the request and answered with an
+    error or a redirect, a transport that retried it) and raises ``UnverifiedPublish``.
     """
     try:
         return api.create_commit(
