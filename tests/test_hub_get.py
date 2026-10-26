@@ -366,3 +366,128 @@ def test_cli_hub_list_sizes_marks_a_preset_it_cannot_read(tmp_path: Path, monkey
     assert result.exit_code == 0, result.output
     line = next(ln for ln in result.output.splitlines() if ln.startswith("git-archive"))
     assert "unavailable" in line and "401" in line
+
+
+class ReusingHub(PinnedHub):
+    """Like hf_hub_download(local_dir=...): a file already in local_dir is returned as it is."""
+
+    def hf_hub_download(self, repo_id, filename, *, repo_type, revision=None, local_dir=None):
+        out = Path(local_dir) / filename
+        if out.exists() or out.is_symlink():
+            self.calls.append(("hf_hub_download", {"filename": filename, "revision": revision}))
+            return str(out)
+        return super().hf_hub_download(repo_id, filename, repo_type=repo_type, revision=revision, local_dir=local_dir)
+
+
+def test_a_reused_staged_file_is_hashed_again_and_a_bad_one_refetched(tmp_path: Path) -> None:
+    dest = tmp_path / "dest"
+    staged = hub_get.staging_dir(dest, SHA) / "outputs/run/RUN.md"
+    staged.parent.mkdir(parents=True)
+    staged.write_bytes(b"stale\n")
+    api = ReusingHub(FILES)
+    with pytest.raises(hub_get.GetError, match=re.escape("RUN.md")):
+        hub_get.get(preset(dest), api=api)
+    assert not staged.exists()
+    assert hub_get.get(preset(dest), api=api).downloaded == 3
+    assert (dest / "RUN.md").read_bytes() == b"# run\n"
+
+
+def test_a_symlink_in_staging_is_refused_and_its_target_untouched(tmp_path: Path) -> None:
+    dest = tmp_path / "dest"
+    outside = tmp_path / "outside.md"
+    outside.write_bytes(b"# run\n")  # hashes like the hub's RUN.md
+    staged = hub_get.staging_dir(dest, SHA) / "outputs/run/RUN.md"
+    staged.parent.mkdir(parents=True)
+    staged.symlink_to(outside)
+    with pytest.raises(hub_get.GetError, match="symlink"):
+        hub_get.get(preset(dest), api=ReusingHub(FILES))
+    assert outside.read_bytes() == b"# run\n"
+    assert not (dest / "RUN.md").exists()
+
+
+def test_a_symlinked_staging_folder_never_deletes_outside_it(tmp_path: Path) -> None:
+    dest = tmp_path / "dest"
+    elsewhere = tmp_path / "elsewhere"
+    elsewhere.mkdir()
+    (elsewhere / "RUN.md").write_bytes(b"user file\n")  # does not hash like the hub's
+    staging = hub_get.staging_dir(dest, SHA)
+    (staging / "outputs").mkdir(parents=True)
+    (staging / "outputs/run").symlink_to(elsewhere)
+    with pytest.raises(hub_get.GetError, match="symlink"):
+        hub_get.get(preset(dest), api=ReusingHub(FILES))
+    assert (elsewhere / "RUN.md").read_bytes() == b"user file\n"
+
+
+def test_a_local_file_where_the_hub_has_a_folder_refuses_before_downloading(tmp_path: Path) -> None:
+    dest = tmp_path / "dest"
+    dest.mkdir()
+    (dest / "sub").write_bytes(b"a file named sub\n")
+    api = PinnedHub(FILES)
+    with pytest.raises(hub_get.GetError, match="sub"):
+        hub_get.get(preset(dest), api=api)
+    assert api.downloads() == []
+    assert sorted(p.name for p in dest.iterdir()) == ["sub"]
+
+
+def test_a_failed_move_puts_back_everything_already_moved(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    dest = tmp_path / "dest"
+    dest.mkdir()
+    (dest / "RUN.md").write_bytes(b"old\n")
+    real = hub_get.place
+    calls = []
+
+    def flaky(staged, target, *, replace):
+        calls.append(target)
+        if len(calls) == 3:
+            raise OSError("disk went away")
+        return real(staged, target, replace=replace)
+
+    monkeypatch.setattr(hub_get, "place", flaky)
+    with pytest.raises(hub_get.GetError, match="disk went away"):
+        hub_get.get(preset(dest), api=PinnedHub(FILES), on_conflict="overwrite")
+    assert sorted(p.relative_to(dest).as_posix() for p in dest.rglob("*")) == ["RUN.md"]
+    assert (dest / "RUN.md").read_bytes() == b"old\n"
+    staging = hub_get.staging_dir(dest, SHA)
+    assert {p.relative_to(staging).as_posix() for p in staging.rglob("*") if p.is_file()} >= {
+        "outputs/run/a.docx", "outputs/run/sub/b.pdf", "outputs/run/RUN.md"}
+
+
+def test_success_leaves_unrelated_files_in_the_staging_folder_alone(tmp_path: Path) -> None:
+    dest = tmp_path / "dest"
+    staging = hub_get.staging_dir(dest, SHA)
+    staging.mkdir(parents=True)
+    (staging / "notes.txt").write_bytes(b"mine\n")
+    report = hub_get.get(preset(dest), api=PinnedHub(FILES))
+    assert report.downloaded == 3
+    assert (staging / "notes.txt").read_bytes() == b"mine\n"
+    assert sorted(p.name for p in staging.iterdir()) == ["notes.txt"]
+
+
+def test_a_second_run_on_the_same_staging_folder_is_refused(tmp_path: Path) -> None:
+    import fcntl
+
+    dest = tmp_path / "dest"
+    staging = hub_get.staging_dir(dest, SHA)
+    staging.mkdir(parents=True)
+    with open(staging / hub_get.LOCK, "w") as held:
+        fcntl.flock(held, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        api = PinnedHub(FILES)
+        with pytest.raises(hub_get.GetError, match="another"):
+            hub_get.get(preset(dest), api=api)
+    assert api.downloads() == []
+
+
+def test_names_that_collide_on_a_case_insensitive_disk_refuse_before_downloading(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(hub_get, "case_insensitive", lambda path: True)
+    api = PinnedHub({**FILES, "outputs/run/Run.md": b"other\n"})
+    with pytest.raises(hub_get.GetError, match=r"RUN\.md.*Run\.md|Run\.md.*RUN\.md"):
+        hub_get.get(preset(tmp_path / "dest"), api=api)
+    assert api.downloads() == []
+
+
+def test_case_insensitive_probe_matches_this_disk(tmp_path: Path) -> None:
+    (tmp_path / "probe").write_bytes(b"x")
+    assert hub_get.case_insensitive(tmp_path) == (tmp_path / "PROBE").exists()
+    assert list(tmp_path.iterdir()) == [tmp_path / "probe"]

@@ -157,6 +157,21 @@ def free_bytes(path: Path) -> int:
     return shutil.disk_usage(path).free
 
 
+LOCK = ".lock"
+
+
+def device(path: Path) -> int:
+    raise NotImplementedError
+
+
+def case_insensitive(path: Path) -> bool:
+    raise NotImplementedError
+
+
+def place(staged: Path, target: Path, *, replace: bool) -> None:
+    raise NotImplementedError
+
+
 def staging_dir(dest: Path, revision: str) -> Path:
     dest = Path(dest)
     return dest.parent / f".{dest.name}.hub-{revision[:12]}"
