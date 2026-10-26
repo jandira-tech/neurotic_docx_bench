@@ -339,6 +339,16 @@ def checkout_hub(dest: Path, revision: str) -> None:
         dest.parent.mkdir(parents=True, exist_ok=True)
         git(dest.parent, 'clone', '-q', '--filter=blob:none', '--no-checkout', URL, dest.name)
         git(dest, 'sparse-checkout', 'set', '--no-cone', f'{REPO_PREFIX}/')
+    else:  # a reused clone must already be sparse on the run folder; making it so would empty its worktree
+        try:
+            patterns = git(dest, 'sparse-checkout', 'list').decode().split()
+        except RebuildError:
+            patterns = []
+        if patterns != [f'{REPO_PREFIX}/']:
+            raise RebuildError(
+                f'{dest} is not a clone sparse on {REPO_PREFIX}/ (patterns {patterns}); checking it out would '
+                'materialise the whole dataset. Point --checkout at a new folder'
+            )
     git(dest, 'fetch', '-q', 'origin')
     git(dest, *NO_LFS, '-c', 'core.autocrlf=false', '-c', 'core.eol=lf', 'checkout', '-q', '--detach', revision)
 
@@ -423,6 +433,29 @@ def regular_blob(entry: tuple[bytes, ...] | None) -> bool:
     return entry is not None and entry[:2] in ((b'100644', b'blob'), (b'100755', b'blob'))
 
 
+def failed_before_commit(exc: BaseException) -> bool:
+    """Whether ``exc`` came from a request upload_file sends before its commit request.
+
+    ``create_commit`` sends the preupload and the LFS requests first and the commit last
+    (``huggingface_hub/_commit_api.py``: ``/preupload/`` at 764, ``/commit/`` at 1056); a failed
+    request that is not the commit commits nothing. Without a request (a ``ValueError`` from parsing
+    the commit's answer, among others) nothing can be said.
+    """
+    request = None
+    # HfHubHTTPError keeps its request on .response only: httpx2.HTTPError.__init__, which it calls
+    # last, resets .request, and reading an unset .request raises RuntimeError.
+    for get in (lambda: exc.response.request, lambda: exc.request):
+        try:
+            request = get()
+        except (AttributeError, RuntimeError):
+            continue
+        if request is not None:
+            break
+    if request is None:
+        return False
+    return f'/api/{hub.REPO_TYPE}s/{hub.RESULTS_REPO}/commit/' not in request.url.path
+
+
 def publish(api, checkout: Path, revision: str, data: bytes, message: str) -> str:
     """Commit ``data`` as the run manifest on ``revision``; return the commit, checked through git.
 
@@ -442,8 +475,18 @@ def publish(api, checkout: Path, revision: str, data: bytes, message: str) -> st
     before = leaves(checkout, revision)
     key = path.encode()
     # A symlink (mode 120000) stores its target as blob bytes; the same bytes there are not the manifest.
-    if regular_blob(before.get(key)) and git(checkout, 'cat-file', 'blob', f'{revision}:{path}') in accepted:
-        return revision
+    if regular_blob(before.get(key)):
+        there = git(checkout, 'cat-file', 'blob', f'{revision}:{path}')
+        if there in accepted:
+            return revision
+        pointer = LFS_POINTER.fullmatch(there)
+        if pointer and pointer.group(1).decode() == hashlib.sha256(data).hexdigest():
+            # upload_file compares content ids (an LFS pointer's oid), so it would return the head unchanged
+            raise RebuildError(
+                f'{path} at {revision} is an LFS pointer to this manifest\'s content that is not its canonical '
+                f'pointer (size {pointer.group(2).decode()} for {len(data)} bytes); upload_file would not replace it, '
+                'since it compares content ids. Nothing published; fix the pointer on the hub'
+            )
     try:
         info = api.upload_file(
             path_or_fileobj=data,
@@ -456,6 +499,8 @@ def publish(api, checkout: Path, revision: str, data: bytes, message: str) -> st
         )
     except HfHubHTTPError as exc:
         status = exc.response.status_code
+        if failed_before_commit(exc):
+            raise RebuildError(f'the upload failed before its commit request ({exc}); nothing published') from exc
         if 400 <= status < 500 and status != 408:  # the hub answered no: it committed nothing
             raise RebuildError(f'the hub refused the upload ({exc}); nothing published') from exc
         raise UnverifiedPublish(
@@ -463,6 +508,10 @@ def publish(api, checkout: Path, revision: str, data: bytes, message: str) -> st
             '(a manifest already there is recognised)'
         ) from exc
     except Exception as exc:  # no answer: the commit may have gone through, as with a lost response
+        if failed_before_commit(exc):
+            raise RebuildError(
+                f'the upload failed before its commit request ({type(exc).__name__}: {exc}); nothing published'
+            ) from exc
         raise UnverifiedPublish(
             f'upload_file failed without an answer from the hub ({type(exc).__name__}: {exc}); the hub may hold '
             'the manifest now; rerun to check it (a manifest already there is recognised)'

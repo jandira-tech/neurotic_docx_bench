@@ -673,6 +673,8 @@ class Downloads:
 
 
 def run_main(rebuild, hub_pair, tmp_path, monkeypatch, *args):
+    # a reused --checkout is sparse on the run folder, as checkout_hub makes its own clones
+    git(hub_pair.clone, 'sparse-checkout', 'set', '--no-cone', f'{PREFIX}/')
     monkeypatch.setattr(hub, 'default_api', lambda: hub_pair.api)
     out = tmp_path / 'out'
     monkeypatch.setattr(sys, 'argv', [
