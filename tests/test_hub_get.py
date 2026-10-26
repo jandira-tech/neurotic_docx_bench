@@ -442,11 +442,11 @@ def test_a_failed_move_puts_back_everything_already_moved(tmp_path: Path, monkey
     real = hub_get.place
     calls = []
 
-    def flaky(staged, target):
+    def flaky(staged, target, scratch):
         calls.append(target)
         if len(calls) == 3:
             raise OSError("disk went away")
-        return real(staged, target)
+        return real(staged, target, scratch)
 
     monkeypatch.setattr(hub_get, "place", flaky)
     with pytest.raises(hub_get.GetError, match="disk went away"):
@@ -534,7 +534,7 @@ def test_the_no_hard_link_fallback_never_overwrites_a_file_that_appears(
     monkeypatch.setattr(os, "replace", replace)
     monkeypatch.setattr(os, "open", open_)
     with pytest.raises(hub_get.GetError, match="appeared"):
-        hub_get.place(staged, target)
+        hub_get.place(staged, target, tmp_path / "scratch")
     assert target.read_bytes() == b"USER FILE"
     assert staged.read_bytes() == b"REMOTE"
 
@@ -545,13 +545,13 @@ def test_rollback_leaves_a_file_another_process_put_there_after_the_move(
     dest = tmp_path / "dest"
     real = hub_get.place
 
-    def flaky(staged, target):
+    def flaky(staged, target, scratch):
         if target.name == "b.pdf":  # moves run in order: RUN.md, a.docx, sub/b.pdf
             theirs = dest / "a.docx.theirs"
             theirs.write_bytes(b"USER FILE")
             os.replace(theirs, dest / "a.docx")  # another process replaces a file this run moved
             raise OSError("disk went away")
-        return real(staged, target)
+        return real(staged, target, scratch)
 
     monkeypatch.setattr(hub_get, "place", flaky)
     with pytest.raises(hub_get.GetError, match=re.escape(str(dest / "a.docx"))):
@@ -590,10 +590,10 @@ def test_one_rollback_error_does_not_stop_the_others(tmp_path: Path, monkeypatch
     dest = tmp_path / "dest"
     real_place, real_replace = hub_get.place, os.replace
 
-    def flaky(staged, target):
+    def flaky(staged, target, scratch):
         if target.name == "b.pdf":
             raise OSError("disk went away")
-        return real_place(staged, target)
+        return real_place(staged, target, scratch)
 
     real_link, real_rename = os.link, os.rename
 
@@ -693,7 +693,7 @@ def test_a_failed_copy_never_removes_a_file_that_replaced_it(tmp_path: Path, mon
     monkeypatch.setattr(os, "link", no_links)
     monkeypatch.setattr(shutil, "copyfileobj", copy_then_fail)
     with pytest.raises(OSError, match="disk full"):
-        hub_get.place(staged, target)
+        hub_get.place(staged, target, tmp_path / "scratch")
     assert target.read_bytes() == b"USER FILE"
     assert staged.read_bytes() == b"REMOTE"
 
@@ -740,11 +740,11 @@ def test_ctrl_c_while_moving_puts_everything_back(tmp_path: Path, monkeypatch: p
     real = hub_get.place
     pressed = []
 
-    def interrupted(staged, target):
+    def interrupted(staged, target, scratch):
         if target.name == "b.pdf" and not pressed:  # once, after its backup was made
             pressed.append(target)
             raise KeyboardInterrupt
-        return real(staged, target)
+        return real(staged, target, scratch)
 
     monkeypatch.setattr(hub_get, "place", interrupted)
     with pytest.raises((KeyboardInterrupt, hub_get.GetError)):
@@ -757,13 +757,13 @@ def test_rollback_never_overwrites_a_file_that_appeared_in_staging(tmp_path: Pat
     staged_a = hub_get.staging_dir(dest, SHA) / hub_get.FILES / "outputs/run/a.docx"
     real = hub_get.place
 
-    def flaky(staged, target):
+    def flaky(staged, target, scratch):
         if target.name == "b.pdf":
             new = staged_a.with_name("new")
             new.write_bytes(b"NEW FILE IN STAGING")
             os.replace(new, staged_a)  # a new file takes the staged name
             raise OSError("disk went away")
-        return real(staged, target)
+        return real(staged, target, scratch)
 
     monkeypatch.setattr(hub_get, "place", flaky)
     with pytest.raises(hub_get.GetError, match="disk went away"):
@@ -809,11 +809,11 @@ def test_a_symlinked_folder_that_appears_while_moving_is_refused(tmp_path: Path,
     real = hub_get.place
     calls = []
 
-    def racing(staged, target):
+    def racing(staged, target, scratch):
         calls.append(target)
         if len(calls) == 2:  # after the checks before the moves, while RUN.md is already in place
             (dest / "sub").symlink_to(outside)
-        return real(staged, target)
+        return real(staged, target, scratch)
 
     monkeypatch.setattr(hub_get, "place", racing)
     with pytest.raises(hub_get.GetError, match=re.escape(f"{dest / 'sub'} is a symlink")):
@@ -941,11 +941,11 @@ def test_a_folder_swapped_for_a_symlink_while_moving_never_moves_files_outside(
     (outside / "b.pdf").write_bytes(b"outside, not ours\n")
     real = hub_get.place
 
-    def racing(staged, target):
+    def racing(staged, target, scratch):
         if target.name == "a.docx" and not aside.exists():  # after every check before the moves
             (dest / "sub").rename(aside)
             (dest / "sub").symlink_to(outside)
-        return real(staged, target)
+        return real(staged, target, scratch)
 
     monkeypatch.setattr(hub_get, "place", racing)
     with pytest.raises(hub_get.GetError, match=re.escape(f"{dest / 'sub'} is a symlink")):
@@ -971,10 +971,10 @@ def test_a_file_restored_on_a_disk_without_hard_links_keeps_its_mode_and_time(
     def no_links(src, dst, *args, **kw):
         raise OSError(errno.EOPNOTSUPP, "no hard links on this disk")
 
-    def flaky(staged, target):
+    def flaky(staged, target, scratch):
         if target.name == "b.pdf":
             raise OSError("disk went away")
-        return real(staged, target)
+        return real(staged, target, scratch)
 
     monkeypatch.setattr(os, "link", no_links)
     monkeypatch.setattr(hub_get, "place", flaky)
@@ -1059,8 +1059,8 @@ def test_ctrl_c_the_moment_a_file_is_placed_takes_it_back(tmp_path: Path, monkey
     real = hub_get.place
     sent = []
 
-    def place(staged, target):
-        placed = real(staged, target)
+    def place(staged, target, scratch):
+        placed = real(staged, target, scratch)
         if target.name == "a.docx" and not sent:
             sent.append(target)
             os.kill(os.getpid(), signal.SIGINT)
@@ -1151,12 +1151,12 @@ def test_a_local_file_that_becomes_a_folder_before_it_is_replaced_stays(
     _write(dest, local)
     real = hub_get.place
 
-    def racing(staged, target):
+    def racing(staged, target, scratch):
         if target.name == "RUN.md" and (dest / "a.docx").is_file():
             (dest / "a.docx").unlink()
             (dest / "a.docx").mkdir()
             (dest / "a.docx" / "important.txt").write_bytes(b"notes\n")
-        return real(staged, target)
+        return real(staged, target, scratch)
 
     monkeypatch.setattr(hub_get, "place", racing)
     with pytest.raises(hub_get.GetError, match=re.escape(str(dest / "a.docx"))):
@@ -1221,10 +1221,10 @@ def _overwrite_that_fails_on_b(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) 
     _write(dest, local)
     real = hub_get.place
 
-    def flaky(staged, target):
+    def flaky(staged, target, scratch):
         if target.name == "b.pdf" and hub_get._BACKUP not in staged.parts:  # the move, not the restore
             raise OSError("disk went away")
-        return real(staged, target)
+        return real(staged, target, scratch)
 
     monkeypatch.setattr(hub_get, "place", flaky)
     return dest, local
@@ -1281,8 +1281,8 @@ def test_a_ctrl_c_policy_the_caller_set_is_kept_while_files_move(
     real = hub_get.place
     seen, sent = [], []
 
-    def place(staged, target):
-        placed = real(staged, target)
+    def place(staged, target, scratch):
+        placed = real(staged, target, scratch)
         if not sent:
             sent.append(target)
             os.kill(os.getpid(), signal.SIGINT)
@@ -1299,11 +1299,10 @@ def test_a_ctrl_c_policy_the_caller_set_is_kept_while_files_move(
     assert seen == ([] if policy == "ignore" else [signal.SIGINT])
 
 
-def test_a_partial_copy_that_cannot_be_removed_is_named_as_left_behind(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
+def test_a_copy_that_fails_midway_never_reaches_the_destination(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """Round 13: the copy is made in the staging folder, so a failed one leaves nothing at its target
+    (until then it was part-written there, and named as left behind when it could not be removed)."""
     dest = tmp_path / "dest"
-    real_unlink = os.unlink
 
     def no_links(src, dst, *args, **kw):
         raise OSError(errno.EOPNOTSUPP, "no hard links on this disk")
@@ -1316,19 +1315,48 @@ def test_a_partial_copy_that_cannot_be_removed_is_named_as_left_behind(
         dst.write(b"REM")
         raise OSError(errno.ENOSPC, "disk full")
 
+    monkeypatch.setattr(os, "link", no_links)
+    monkeypatch.setattr(shutil, "copyfileobj", partial)
+    with pytest.raises(hub_get.GetError) as info:
+        hub_get.get(preset(dest), api=PinnedHub(FILES))
+    assert "every file already moved was put back" in str(info.value)
+    assert not (dest / "a.docx").exists()
+    assert _hub_bytes_or_absent(dest) == []
+
+
+def _copy_left_empty(dest: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """No hard links; the copy of a.docx cannot be renamed onto the empty file it made, nor remove it."""
+    real_replace, real_unlink = os.replace, os.unlink
+
+    def no_links(src, dst, *args, **kw):
+        raise OSError(errno.EOPNOTSUPP, "no hard links on this disk")
+
+    def replace(src, dst, *args, **kw):
+        if Path(dst) == dest / "a.docx":
+            raise OSError(errno.EIO, "rename failed")
+        return real_replace(src, dst, *args, **kw)
+
     def unlink(path, *args, **kw):
         if Path(path) == dest / "a.docx":
             raise OSError(errno.EIO, "unlink failed")
         return real_unlink(path, *args, **kw)
 
     monkeypatch.setattr(os, "link", no_links)
-    monkeypatch.setattr(shutil, "copyfileobj", partial)
+    monkeypatch.setattr(os, "replace", replace)
     monkeypatch.setattr(os, "unlink", unlink)
+
+
+def test_an_empty_file_the_copy_cannot_remove_is_named_as_left_behind(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    dest = tmp_path / "dest"
+    _copy_left_empty(dest, monkeypatch)
     with pytest.raises(hub_get.GetError) as info:
         hub_get.get(preset(dest), api=PinnedHub(FILES))
     message = str(info.value)
     assert "every file already moved was put back" not in message
     assert f"{dest / 'a.docx'}" in message and "stays" in message
+    assert (dest / "a.docx").read_bytes() == b""
 
 
 # Review round 7, Codex (#80)
@@ -1361,8 +1389,8 @@ def test_a_second_ctrl_c_while_files_move_waits_until_the_step_is_recorded(
     else:  # the hub's file is linked into place, its identity not yet recorded
         real_place = hub_get.place
 
-        def place(staged, target):
-            placed = real_place(staged, target)
+        def place(staged, target, scratch):
+            placed = real_place(staged, target, scratch)
             if not sent:
                 press_twice()
             return placed
@@ -1447,10 +1475,10 @@ def test_a_second_ctrl_c_after_the_rollback_does_not_say_it_stopped_it(
     dest = tmp_path / "dest"
     real_place = hub_get.place
 
-    def flaky(staged, target):
+    def flaky(staged, target, scratch):
         if target.name == "b.pdf":
             raise OSError("disk went away")
-        return real_place(staged, target)
+        return real_place(staged, target, scratch)
 
     real_rmdir = Path.rmdir
     sent = []
@@ -1578,25 +1606,9 @@ def test_a_ctrl_c_after_the_last_move_is_not_lost(tmp_path: Path, monkeypatch: p
     assert str(dest) in notes and "every file" in notes
 
 
-def test_a_stopped_rollback_names_a_partial_copy_it_left(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_a_stopped_rollback_names_an_empty_file_the_copy_left(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     dest = tmp_path / "dest"
-    real_unlink = os.unlink
-    real_copy = shutil.copyfileobj
-
-    def no_links(src, dst, *args, **kw):
-        raise OSError(errno.EOPNOTSUPP, "no hard links on this disk")
-
-    def partial(src, dst, *args, **kw):
-        if not src.name.endswith("a.docx"):
-            return real_copy(src, dst, *args, **kw)
-        dst.write(b"REM")
-        raise OSError(errno.ENOSPC, "disk full")
-
-    def unlink(path, *args, **kw):
-        if Path(path) == dest / "a.docx":
-            raise OSError(errno.EIO, "unlink failed")
-        return real_unlink(path, *args, **kw)
-
+    _copy_left_empty(dest, monkeypatch)
     real_stop = hub_get._CtrlC.stop_rollback
     sent = []
 
@@ -1606,9 +1618,6 @@ def test_a_stopped_rollback_names_a_partial_copy_it_left(tmp_path: Path, monkeyp
             _press_twice()
         return real_stop(self)
 
-    monkeypatch.setattr(os, "link", no_links)
-    monkeypatch.setattr(shutil, "copyfileobj", partial)
-    monkeypatch.setattr(os, "unlink", unlink)
     monkeypatch.setattr(hub_get._CtrlC, "stop_rollback", stop)
     with pytest.raises(BaseException) as exc:
         hub_get.get(preset(dest), api=PinnedHub(FILES))
@@ -1616,7 +1625,7 @@ def test_a_stopped_rollback_names_a_partial_copy_it_left(tmp_path: Path, monkeyp
     assert exc.type is KeyboardInterrupt, exc.value
     notes = " ".join(getattr(exc.value, "__notes__", ()))
     assert str(dest / "RUN.md") in notes
-    assert str(dest / "a.docx") in notes and "partial copy" in notes
+    assert str(dest / "a.docx") in notes and "made by this run's copy" in notes
 
 
 # Review round 8, mcode (#80)
@@ -2243,8 +2252,8 @@ def test_ctrl_c_during_the_moves_stays_a_ctrl_c_when_the_rollback_leaves_a_file(
     real_place, real_replace, real_link, real_rename = hub_get.place, os.replace, os.link, os.rename
     sent: list[Path] = []
 
-    def pressed(staged, target):
-        placed = real_place(staged, target)
+    def pressed(staged, target, scratch):
+        placed = real_place(staged, target, scratch)
         if not sent:
             sent.append(Path(target))
             os.kill(os.getpid(), signal.SIGINT)  # held until this move is recorded

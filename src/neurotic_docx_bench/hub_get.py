@@ -14,8 +14,9 @@
    with different bytes stops the run before anything is downloaded, unless ``on_conflict`` is
    ``overwrite`` (take the hub's) or ``keep-local`` (keep yours, fetch the rest). The destination
    is looked at again after the download, and each file is placed with a hard link that fails on
-   an existing file (on a disk without hard links, a copy into a file created with ``O_EXCL``), so
-   one written meanwhile is never overwritten either.
+   an existing file (on a disk without hard links, a copy made in the staging folder and renamed
+   onto an empty file created with ``O_EXCL``), so one written meanwhile is never overwritten
+   either, and a kill never leaves a part-written file in the destination.
 4. **Staged, all or nothing.** Files land in ``files/`` of a staging folder on the destination's
    disk (beside it, or inside it when it is a mount or a link to another disk), locked for the run,
    refused if it holds a symlink; a staged file with a second name (a hard link) is fetched again,
@@ -31,8 +32,9 @@
 
 Names that one file would have to hold on the destination's disk (``A.txt`` and ``a.txt`` on
 case-insensitive APFS), a local file where the hub has a folder, a symlinked folder below the
-destination (it would put files, or move replaced ones, outside it), and a destination that is or
-holds the staging folder refuse before any download. The folders are looked at again before each
+destination (it would put files, or move replaced ones, outside it), a folder below the destination
+on another disk (a mount), and a destination that is or holds the staging folder refuse before any
+download. The folders are looked at again before each
 file is moved; one swapped for a symlink in the instant between that look and the move is not
 caught. The command runs with your rights in your own folders: it guards against accidents and
 other runs, not against a process of yours racing it.
@@ -223,6 +225,10 @@ def free_bytes(path: Path) -> int:
 LOCK = ".lock"  # held while a run uses its staging folder
 FILES = "files"  # inside staging: hf_hub_download's local_dir, so no hub path can land on LOCK or _BACKUP
 _BACKUP = ".replaced"  # inside staging: the local files --overwrite moved aside, until every move succeeded
+# Inside staging: the hard-link probe, and on a disk without hard links each copy as it is made.
+# A run empties it under the lock before using it and removes it on success: a kill leaves nothing
+# there that outlives the next run.
+_SCRATCH = ".scratch"
 _HF_BOOKKEEPING = (".cache", "huggingface")  # what hf_hub_download(local_dir=) writes beside the files
 # Staging locks of runs whose downloads a second Ctrl-C left running: each is let go once those
 # downloads end, or as the process exits, which ends them too.
@@ -282,51 +288,67 @@ def _identity_at(path: Path) -> Identity | None:
         return None
 
 
-def _copy_new(staged: Path, target: Path) -> Identity:
-    """Copy ``staged`` into a new file at ``target`` that only this call can have created; its identity.
+def _copy_new(staged: Path, target: Path, scratch: Path) -> Identity:
+    """Copy ``staged`` to ``target``, where no file may be; the new file's identity.
 
+    The bytes go into a file in ``scratch`` first, which is then renamed onto an empty file created
+    at ``target`` with ``O_EXCL``: an existing file is never overwritten, and ``target`` is never
+    part-written (a kill leaves it absent, whole, or empty for the instant between those two steps).
     The copy gets the mode and times of ``staged``, as a hard link would (a restored file keeps them).
     """
+    scratch.mkdir(exist_ok=True)
+    fd, name = tempfile.mkstemp(dir=scratch)
+    copy = Path(name)
+    mine: list[tuple[int, int]] = []  # the copy, then the empty file made at ``target``
     try:
-        fd = os.open(target, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
-    except FileExistsError as exc:
-        raise GetError(f"{target} appeared while files were being moved into place") from exc
-    try:
-        made = os.fstat(fd)
-    except OSError as exc:
-        os.close(fd)
-        raise _LeftBehind(
-            f"{target} was created empty, but the disk would not say which file it is ({exc}), so it stays: "
-            "remove it before a rerun"
-        ) from exc
-    except BaseException:
-        os.close(fd)
-        raise
-    try:
-        with open(fd, "wb") as out, open(staged, "rb") as src:
-            shutil.copyfileobj(src, out, _CHUNK)
-            out.flush()
-            was = os.fstat(src.fileno())
+        with open(fd, "wb") as out:
+            st = os.fstat(out.fileno())
+            mine.append((st.st_dev, st.st_ino))
+            with open(staged, "rb") as src:
+                shutil.copyfileobj(src, out, _CHUNK)
+                out.flush()
+                was = os.fstat(src.fileno())
             os.fchmod(out.fileno(), stat.S_IMODE(was.st_mode))
             os.utime(out.fileno(), ns=(was.st_atime_ns, was.st_mtime_ns))
-            return identity(os.fstat(out.fileno()))
+            try:
+                made = os.open(target, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+            except FileExistsError as exc:
+                raise GetError(f"{target} appeared while files were being moved into place") from exc
+            try:
+                st = os.fstat(made)
+            except OSError as exc:
+                raise _LeftBehind(
+                    f"{target} was created empty, but the disk would not say which file it is ({exc}), so it "
+                    "stays: remove it before a rerun"
+                ) from exc
+            finally:
+                os.close(made)
+            mine.append((st.st_dev, st.st_ino))
+            os.replace(copy, target)  # onto the empty file just made: nothing else is overwritten
+            placed = identity(os.fstat(out.fileno()))
+        return placed
     except BaseException as exc:
         try:
+            copy.unlink(missing_ok=True)  # in the staging folder, which a failed run keeps anyway
+        except OSError:
+            pass
+        try:
             now = _identity_at(target)
-            if now is not None and now[:2] == (made.st_dev, made.st_ino):  # still this call's half-made copy
+            if now is not None and now[:2] in mine:  # still this call's file: the empty one, or the copy
                 os.unlink(target)
         except OSError as stuck:
             raise _LeftBehind(
-                f"{target} holds a partial copy this run could not remove ({stuck}), so it stays: "
+                f"{target} was made by this run's copy, which could not remove it ({stuck}), so it stays: "
                 "remove it before a rerun"
             ) from exc
         raise
 
 
-def place(staged: Path, target: Path) -> Identity:
+def place(staged: Path, target: Path, scratch: Path) -> Identity:
     """Give ``target`` the bytes of ``staged`` without ever overwriting a file there; the new file's identity.
 
-    A hard link, or on a disk without them a copy into a file only this call can have created.
+    A hard link, or on a disk without them a copy made in ``scratch`` and renamed onto a file only this
+    call can have created.
     ``staged`` keeps its name: it is removed once every file of the run is in place, so a rollback
     only has to withdraw ``target`` and a rerun still finds the bytes.
     """
@@ -336,7 +358,7 @@ def place(staged: Path, target: Path) -> Identity:
     except FileExistsError as exc:
         raise GetError(f"{target} appeared while files were being moved into place") from exc
     except OSError:  # a disk without hard links
-        return _copy_new(staged, target)
+        return _copy_new(staged, target, scratch)
     return placed
 
 
@@ -352,7 +374,7 @@ def _withdraw(target: Path, placed: Identity, staging: Path) -> str | None:
     os.rename(target, hold)  # a fresh name in a fresh folder: nothing there to overwrite
     if _identity_at(hold) != placed:  # replaced in the instant between the look and the rename
         try:
-            place(hold, target)
+            place(hold, target, staging / _SCRATCH)
         except GetError:
             return f"{target} changed while this run took it back; that file is now at {hold}"
         os.unlink(hold)
@@ -363,18 +385,30 @@ def _withdraw(target: Path, placed: Identity, staging: Path) -> str | None:
     return None
 
 
-def _links_work(folder: Path) -> bool:
-    """Whether ``folder``'s disk takes hard links; without them ``place`` copies every file."""
-    probe = Path(tempfile.mkdtemp(prefix=".link-probe-", dir=folder))
+def _links_work(scratch: Path) -> bool:
+    """Whether ``scratch``'s disk takes hard links; without them ``place`` copies every file.
+
+    ``scratch`` is emptied under the lock before the run uses it, so nothing an earlier run left there
+    makes the link fail; a probe that cannot be written is a refusal, like any disk too full.
+    """
+    probe = scratch / "link-probe"
     try:
-        (probe / "a").touch()
-        try:
-            os.link(probe / "a", probe / "b")
-        except OSError:
-            return False
+        scratch.mkdir(exist_ok=True)
+        probe.touch(exist_ok=False)
+    except OSError as exc:
+        raise GetError(f"cannot write in the staging folder ({probe}): {exc}") from exc
+    try:
+        os.link(probe, scratch / "link-probe-2")
+    except OSError:
+        return False
+    else:
         return True
     finally:
-        shutil.rmtree(probe, ignore_errors=True)
+        for name in ("link-probe", "link-probe-2"):
+            try:
+                (scratch / name).unlink()
+            except OSError:
+                pass
 
 
 def _staged_size(path: Path) -> int | None:
@@ -470,10 +504,12 @@ def _listing(rels: Sequence[str]) -> str:
 
 def _blocker(dest: Path, rel: str) -> str | None:
     """Why ``rel`` cannot go under ``dest``: ``dest`` or a folder above ``rel`` exists but is not a folder,
-    or a folder below ``dest`` is a symlink (it would put the file, or move a replaced one, outside ``dest``).
-    ``dest`` itself may be a symlink."""
+    a folder below ``dest`` is a symlink (it would put the file, or move a replaced one, outside ``dest``),
+    or one is on another disk than ``dest`` (a mount: a file there could only be copied, and a rollback
+    could not take it back into the staging folder). ``dest`` itself may be a symlink or a mount."""
     if (dest.exists() or dest.is_symlink()) and not dest.is_dir():
         return f"{dest} is a file where the hub has a folder"
+    home = device(dest)
     path = dest
     for part in PurePosixPath(rel).parts[:-1]:
         path = path / part
@@ -481,6 +517,8 @@ def _blocker(dest: Path, rel: str) -> str | None:
             return f"{path} is a symlink, and files only go into real folders below {dest}"
         if path.exists() and not path.is_dir():
             return f"{path} is a file where the hub has a folder"
+        if path.is_dir() and device(path) != home:
+            return f"{path} is on another disk than {dest} (a mount), and files only go into folders on its disk"
     return None
 
 
@@ -619,10 +657,13 @@ def _let_go(lock: int, running: Sequence[threading.Thread]) -> None:
 
 
 def _drop_inherited_locks() -> None:
-    """In a forked child: close the copies of this process's staging locks.
+    """In a forked child: close the copies of this process's staging locks, and give Ctrl-C back to
+    Python's handler if a run was holding it.
 
     Closing a copy leaves the parent's lock as it is (only an unlock, or the last descriptor closing,
     frees it); keeping it would hold the staging folder past the parent's exit, for the child's life.
+    The hold is the parent's run's: in the child nothing would ever raise the presses it holds, and a
+    run of the child's own would take it for a caller's handler and leave it in place.
     """
     global _LOCKS_GUARD
     _LOCKS_GUARD = threading.RLock()  # the parent's stays held by the thread that forked
@@ -633,6 +674,11 @@ def _drop_inherited_locks() -> None:
             pass
     _HELD_LOCKS.clear()
     _KEPT_LOCKS.clear()
+    if isinstance(getattr(signal.getsignal(signal.SIGINT), "__self__", None), _CtrlC):
+        try:
+            signal.signal(signal.SIGINT, signal.default_int_handler)  # what a hold replaces, and only that
+        except ValueError:  # not the main thread of the main interpreter
+            pass
 
 
 os.register_at_fork(
@@ -764,7 +810,7 @@ def _roll_back(journal: Sequence[_Move], staging: Path, between: Callable[[], No
                     continue
                 m.placed = None
             if m.backed_up:
-                place(m.backup, m.target)
+                place(m.backup, m.target, staging / _SCRATCH)
                 m.backed_up = False
                 m.backup.unlink()
         except (OSError, GetError) as exc:
@@ -945,6 +991,7 @@ def _locked_run(
         return [], 0, _earlier(staging)
     if links:
         raise GetError(f"{staging} holds symlinks ({_listing([str(x) for x in links])}); remove it and rerun")
+    shutil.rmtree(staging / _SCRATCH, ignore_errors=True)  # under the lock: what a killed run left there
     for f in files:
         got = staged_files / f.repo_path
         # A staged file with another name (a hard link) is never reused: hf_hub_download copies a
@@ -980,6 +1027,7 @@ def _locked_run(
             if mine.is_file() and not mine.is_symlink():
                 mine.unlink()
         shutil.rmtree(staged_files.joinpath(*_HF_BOOKKEEPING), ignore_errors=True)
+        shutil.rmtree(staging / _SCRATCH, ignore_errors=True)
         earlier = _earlier(staging)
         _prune(staging)  # under the lock, so no other run's fresh folders go
         (staging / LOCK).unlink()
@@ -1007,12 +1055,15 @@ def _download(
     # A staged file saves its download only when it is whole; a partial one is fetched again.
     staged = sum(f.size for f in todo if _staged_size(staged_files / f.repo_path) == f.size)
     need = sum(f.size for f in todo) - staged
-    what = "to download"
-    if not _links_work(staging):  # each file is copied, and the staged copies stay until the last is in place
-        need += sum(f.size for f in todo)
-        what = "to download and copy (this disk takes no hard links)"
     if need > free_bytes(staging):
-        raise GetError(f"{human(need)} {what} but only {human(free_bytes(staging))} free on the disk of {dest}")
+        raise GetError(f"{human(need)} to download but only {human(free_bytes(staging))} free on the disk of {dest}")
+    if not _links_work(staging / _SCRATCH):  # each file is copied; the staged copies stay until the last is in place
+        need += sum(f.size for f in todo)
+        if need > free_bytes(staging):
+            raise GetError(
+                f"{human(need)} to download and copy (this disk takes no hard links) but only "
+                f"{human(free_bytes(staging))} free on the disk of {dest}"
+            )
 
     def fetch(f: RemoteFile) -> str | None:
         try:
@@ -1160,7 +1211,7 @@ def _move_held(
             for d in reversed(missing):
                 d.mkdir()
                 made.append(d)
-            m.placed = place(m.src, m.target)
+            m.placed = place(m.src, m.target, staging / _SCRATCH)
         ctrl_c.check()
     except BaseException as exc:  # Ctrl-C included: put everything back before stopping
         ctrl_c.held.clear()  # a press that stopped the moves is not one pressed during the rollback

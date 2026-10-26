@@ -428,14 +428,16 @@ uv run bench hub get --repo arthrod/neurotic_docx_bench --path outputs/release_0
   `redlines-0929` lands in `results/redlines_0929_full`, whose scripts and CSVs are tracked, so this
   rule is what protects them. A symlinked folder below the destination refuses the run too, since it
   would put files, or move replaced ones, outside the destination (the destination itself may be a
-  symlink); the folders are looked at again before each file moves. So does a destination that is
+  symlink), and so does a folder below it on another disk (a mount), where a rollback could not take
+  files back; the folders are looked at again before each file moves. So does a destination that is
   or holds the staging folder.
 - Files stage in `files/` of `.<dest>.hub-<sha12>/` beside the destination, or of
-  `<dest>/.hub-<sha12>/` when the destination is a mount or a link to another disk; the lock and the
-  `.replaced/` backups sit beside `files/`, where no hub path can land. The folder is locked for the
-  run, and a symlink in it refuses the run; a staged file with a second name (a hard link) is
+  `<dest>/.hub-<sha12>/` when the destination is a mount or a link to another disk; the lock, the
+  `.replaced/` backups and `.scratch/` sit beside `files/`, where no hub path can land. The folder is
+  locked for the run, and a symlink in it refuses the run; a staged file with a second name (a hard link) is
   fetched again, never written into. Files move in all or nothing: each is placed as a hard link to
-  its staged copy (a copy into an `O_EXCL` file on a disk without hard links), so a file written
+  its staged copy (on a disk without hard links, a copy made in the staging folder's `.scratch/` and
+  renamed onto an empty `O_EXCL` file, so a kill never leaves a part-written file), so a file written
   meanwhile is never overwritten, and the staged copies go only after the last file is in place. A
   failed or interrupted (Ctrl-C) move withdraws every file already placed and restores every file
   `--overwrite` replaced, except a file someone else changed after the run placed it, which stays;
