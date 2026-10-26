@@ -1777,3 +1777,96 @@ def test_a_ctrl_c_the_moment_the_handler_is_given_back_says_where_the_run_was(
     # The handler is given back once, after the run's last step: the note says so, and it is true
     assert "every file is in place" in notes
     assert _tree(dest) == {k.removeprefix("outputs/run/"): v for k, v in FILES.items() if k.startswith("outputs/run/")}
+
+
+# Review round 10, Codex (#80)
+
+
+def test_two_presses_before_the_first_check_still_stop_waiting_for_a_stalled_download(tmp_path: Path) -> None:
+    """Both presses land in one 0.25 s wait slice: the first stops the queue, the second the wait."""
+    import threading
+    import time
+
+    dest = tmp_path / "dest"
+    api = _hub_of_slow_files()
+    real_download = api.hf_hub_download
+    main = threading.main_thread().ident
+    release = threading.Event()
+    stalled: list[threading.Thread] = []
+
+    def stall(*args, **kw):
+        if not stalled:
+            stalled.append(threading.current_thread())
+            time.sleep(0.1)  # the main thread is in its first wait slice
+            signal.pthread_kill(main, signal.SIGINT)
+            time.sleep(0.03)  # the handler runs once per press
+            signal.pthread_kill(main, signal.SIGINT)
+            release.wait(6)  # a request that does not come back
+        return real_download(*args, **kw)
+
+    api.hf_hub_download = stall
+    started = time.monotonic()
+    try:
+        with pytest.raises(BaseException) as exc:
+            hub_get.get(preset(dest), api=api, workers=1)
+        waited = time.monotonic() - started
+    finally:
+        release.set()
+        for t in stalled:
+            t.join()
+    assert exc.type is KeyboardInterrupt, exc.value
+    assert waited < 3
+    assert "still running" in " ".join(getattr(exc.value, "__notes__", ()))
+    while hub_get._KEPT_LOCKS:
+        os.close(hub_get._KEPT_LOCKS.pop())
+
+
+def test_a_press_the_moment_the_staging_lock_is_taken_lets_it_go_and_says_so(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    dest = tmp_path / "dest"
+    staging = hub_get.staging_dir(dest, SHA)
+    real_lock = hub_get._lock
+    sent = []
+
+    def lock(path):
+        fd = real_lock(path)
+        sent.append(fd)
+        os.kill(os.getpid(), signal.SIGINT)  # after the lock is taken, before the run holds it in a try
+        _spin()
+        return fd
+
+    monkeypatch.setattr(hub_get, "_lock", lock)
+    with pytest.raises(BaseException) as exc:
+        hub_get.get(preset(dest), api=PinnedHub(FILES))
+    monkeypatch.setattr(hub_get, "_lock", real_lock)
+    assert sent
+    assert exc.type is KeyboardInterrupt, exc.value
+    leaked = _held_by_another_run(staging)
+    if leaked:
+        os.close(sent[0])
+    assert not leaked
+    notes = " ".join(getattr(exc.value, "__notes__", ()))
+    assert str(dest) in notes
+
+
+def test_a_download_that_raises_outside_exception_fails_the_run_even_with_a_good_staged_copy(
+    tmp_path: Path,
+) -> None:
+    """A staged copy an earlier run left verifies, but this run's download of it never finished."""
+    dest = tmp_path / "dest"
+    staged = hub_get.staging_dir(dest, SHA) / hub_get.FILES / "outputs/run/RUN.md"
+    staged.parent.mkdir(parents=True)
+    staged.write_bytes(FILES["outputs/run/RUN.md"])
+    api = PinnedHub(FILES)
+    real_download = api.hf_hub_download
+
+    def cancelled(repo_id, filename, **kw):
+        if filename.endswith("RUN.md"):
+            raise KeyboardInterrupt("download cancelled")
+        return real_download(repo_id, filename, **kw)
+
+    api.hf_hub_download = cancelled
+    with pytest.raises(hub_get.GetError, match=r"RUN\.md"):
+        hub_get.get(preset(dest), api=api)
+    assert not dest.exists() or _tree(dest) == {}
