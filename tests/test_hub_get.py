@@ -436,11 +436,11 @@ def test_a_failed_move_puts_back_everything_already_moved(tmp_path: Path, monkey
     real = hub_get.place
     calls = []
 
-    def flaky(staged, target, *, replace):
+    def flaky(staged, target):
         calls.append(target)
         if len(calls) == 3:
             raise OSError("disk went away")
-        return real(staged, target, replace=replace)
+        return real(staged, target)
 
     monkeypatch.setattr(hub_get, "place", flaky)
     with pytest.raises(hub_get.GetError, match="disk went away"):

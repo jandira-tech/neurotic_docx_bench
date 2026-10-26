@@ -12,10 +12,18 @@
    refuses the whole download.
 3. **Never clobbers.** A file already at the destination with the same bytes is skipped. One
    with different bytes stops the run before anything is downloaded, unless ``on_conflict`` is
-   ``overwrite`` (take the hub's) or ``keep-local`` (keep yours, fetch the rest).
-4. **Staged.** Files land in a folder beside the destination and move into place only once all
-   of them verified. That folder is removed on success and kept on failure (minus the files that
-   failed), so a rerun resumes.
+   ``overwrite`` (take the hub's) or ``keep-local`` (keep yours, fetch the rest). The destination
+   is looked at again after the download, and each file is placed with a hard link that fails on
+   an existing file, so one written meanwhile is never overwritten either.
+4. **Staged, all or nothing.** Files land in a staging folder on the destination's disk (beside it,
+   or inside it when it is a mount or a link to another disk), locked for the run, refused if it
+   holds a symlink. They move into place only once all of them verified; a failed move puts back
+   every file already moved and restores every file ``overwrite`` replaced. On success the run
+   removes what it put in the staging folder and nothing else; on failure the folder is kept
+   (minus the files that failed to verify), so a rerun resumes.
+
+Names that one file would have to hold on the destination's disk (``A.txt`` and ``a.txt`` on
+case-insensitive APFS) and a local file where the hub has a folder refuse before any download.
 
 The hub's own ``.gitattributes`` is never downloaded: under ``corpus/`` it would change how git
 treats the checkout.
@@ -23,10 +31,13 @@ treats the checkout.
 
 from __future__ import annotations
 
+import fcntl
 import fnmatch
 import os
 import re
 import shutil
+import tempfile
+import unicodedata
 from collections.abc import Iterable, Sequence
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field
@@ -157,24 +168,49 @@ def free_bytes(path: Path) -> int:
     return shutil.disk_usage(path).free
 
 
-LOCK = ".lock"
+LOCK = ".lock"  # held while a run uses its staging folder
+_BACKUP = ".replaced"  # inside staging: the local files --overwrite moved aside, until every move succeeded
+_HF_BOOKKEEPING = Path(".cache") / "huggingface"  # what hf_hub_download(local_dir=) writes beside the files
 
 
 def device(path: Path) -> int:
-    raise NotImplementedError
+    path = Path(path).absolute()
+    while not path.exists():
+        path = path.parent
+    return os.stat(path).st_dev
 
 
 def case_insensitive(path: Path) -> bool:
-    raise NotImplementedError
+    """Whether the disk holding ``path`` treats names that differ only by case as one (APFS's default)."""
+    path = Path(path).absolute()
+    while not path.is_dir():
+        path = path.parent
+    with tempfile.NamedTemporaryFile(prefix=".hubcase-", dir=path) as probe:
+        name = Path(probe.name)
+        return (name.parent / name.name.upper()).exists()
 
 
-def place(staged: Path, target: Path, *, replace: bool) -> None:
-    raise NotImplementedError
+def place(staged: Path, target: Path) -> None:
+    """Move ``staged`` to ``target`` without ever overwriting a file that is there."""
+    try:
+        os.link(staged, target)  # fails on an existing target, even one written a moment ago
+    except FileExistsError as exc:
+        raise GetError(f"{target} appeared while files were being moved into place") from exc
+    except OSError:  # a disk without hard links
+        if target.exists() or target.is_symlink():
+            raise GetError(f"{target} appeared while files were being moved into place") from None
+        os.rename(staged, target)
+        return
+    os.unlink(staged)
 
 
 def staging_dir(dest: Path, revision: str) -> Path:
+    """Beside ``dest``, or inside it when ``dest`` is on another disk than its parent (a mount, a link)."""
     dest = Path(dest)
-    return dest.parent / f".{dest.name}.hub-{revision[:12]}"
+    name = f"hub-{revision[:12]}"
+    if dest.is_dir() and device(dest) != device(dest.absolute().parent):
+        return dest / f".{name}"
+    return dest.parent / f".{dest.name}.{name}"
 
 
 def resolve_revision(api: Any, repo_id: str, revision: str | None = None) -> str:
@@ -240,6 +276,47 @@ def _listing(rels: Sequence[str]) -> str:
     return ", ".join(rels[:_LISTED]) + more
 
 
+def _blocker(dest: Path, rel: str) -> Path | None:
+    """The first of ``dest`` and the folders above ``rel`` that exists but is not a folder."""
+    path = dest
+    for part in ("", *PurePosixPath(rel).parts[:-1]):
+        path = path / part if part else path
+        if (path.exists() or path.is_symlink()) and not path.is_dir():
+            return path
+    return None
+
+
+def _collisions(files: Sequence[RemoteFile], dest: Path) -> list[list[str]]:
+    """Hub names that one file on the destination's disk would have to hold."""
+    def groups(key) -> list[list[str]]:
+        seen: dict[str, list[str]] = {}
+        for f in files:
+            seen.setdefault(key(f.rel), []).append(f.rel)
+        return [names for names in seen.values() if len(names) > 1]
+
+    normalized = groups(lambda rel: unicodedata.normalize("NFC", rel))
+    folded = groups(lambda rel: unicodedata.normalize("NFC", rel).casefold())
+    return folded if folded and case_insensitive(dest) else normalized
+
+
+def _symlinks(staging: Path) -> list[Path]:
+    if staging.is_symlink():
+        return [staging]
+    found = []
+    for root, dirs, names in os.walk(staging):
+        found += [Path(root) / n for n in (*dirs, *names) if (Path(root) / n).is_symlink()]
+    return found
+
+
+def _prune(root: Path) -> None:
+    """Remove the empty folders under ``root``, and ``root`` itself if it ends up empty."""
+    for folder, _dirs, _names in sorted(os.walk(root), key=lambda w: -len(Path(w[0]).parts)):
+        try:
+            Path(folder).rmdir()
+        except OSError:
+            pass
+
+
 def get(
     preset: Preset,
     *,
@@ -261,13 +338,18 @@ def get(
     if not files:
         what = f" matching {', '.join(include)}" if include else ""
         raise GetError(f"{where} has nothing under {preset.path or '/'}{what}")
+    for names in _collisions(files, dest):
+        raise GetError(f"{where} has names that would be one file on the disk of {dest}: {', '.join(names)}")
 
     todo: list[RemoteFile] = []
     skipped = 0
     conflicts: list[RemoteFile] = []
     for f in files:
         local = dest / f.rel
-        if not local.exists():
+        blocker = _blocker(dest, f.rel)
+        if blocker is not None:
+            raise GetError(f"{blocker} is a file where {where} has a folder (for {f.rel}); nothing downloaded")
+        if not (local.exists() or local.is_symlink()):
             todo.append(f)
         elif not local.is_file():
             raise GetError(f"{local} is not a file but the hub has a file there; nothing downloaded")
@@ -281,47 +363,132 @@ def get(
             f"{len(conflicts)} file(s) in {dest} differ from {where}: {_listing(differ)}. Nothing was downloaded; "
             "rerun with --overwrite to take the hub's copies or --keep-local to keep yours and fetch the rest"
         )
-    kept = differ if on_conflict == "keep-local" else ()
+    kept = list(differ) if on_conflict == "keep-local" else []
     if on_conflict == "overwrite":
         todo += conflicts
+    todo.sort(key=lambda f: f.rel)
     report = dict(
         repo_id=preset.repo_id, revision=sha, dest=dest, n_files=len(files), n_bytes=sum(f.size for f in files),
-        to_download=len(todo), to_download_bytes=sum(f.size for f in todo), skipped=skipped, kept_local=kept,
-        conflicts=differ,
+        to_download=len(todo), to_download_bytes=sum(f.size for f in todo), conflicts=differ,
     )
     if dry_run or not todo:
-        return GetReport(**report, downloaded=0, replaced=0, dry_run=dry_run)
+        return GetReport(**report, skipped=skipped, kept_local=tuple(kept), downloaded=0, replaced=0, dry_run=dry_run)
 
     staging = staging_dir(dest, sha)
-    staged = sum(f.size for f in todo if (staging / f.repo_path).is_file())
-    need = report["to_download_bytes"] - staged
-    if need > free_bytes(dest):
-        raise GetError(f"{human(need)} to download but only {human(free_bytes(dest))} free on the disk of {dest}")
-
-    def fetch(f: RemoteFile) -> str | None:
+    if staging.is_symlink():
+        raise GetError(f"{staging} is a symlink; remove it and rerun")
+    staging.mkdir(parents=True, exist_ok=True)
+    with open(staging / LOCK, "a") as lock:
         try:
-            api.hf_hub_download(preset.repo_id, f.repo_path, repo_type=hub.REPO_TYPE, revision=sha, local_dir=staging)
-        except Exception as exc:  # reported with the others below; the staging folder is kept
-            return f"{f.rel}: {exc}"
-        return None
+            fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError as exc:
+            raise GetError(f"another bench hub get is using {staging}; wait for it to finish") from exc
+        links = _symlinks(staging)
+        if links:
+            raise GetError(f"{staging} holds symlinks ({_listing([str(x) for x in links])}); remove it and rerun")
+        staged = sum(f.size for f in todo if (staging / f.repo_path).is_file())
+        need = report["to_download_bytes"] - staged
+        if need > free_bytes(staging):
+            raise GetError(f"{human(need)} to download but only {human(free_bytes(staging))} free on the disk of {dest}")
 
-    with ThreadPoolExecutor(max_workers=max(1, workers)) as pool:
-        failed = [e for e in pool.map(fetch, todo) if e]
-    bad = []
-    for f in todo:
-        got = staging / f.repo_path
-        if got.is_file() and not same_bytes(got, f):
-            got.unlink()  # so a rerun fetches it again
-            bad.append(f.rel)
-    if failed or bad:
-        raise GetError(
-            f"{len(bad)} file(s) do not hash like {where}: {_listing(bad)}; {len(failed)} failed to download: "
-            f"{_listing(failed)}. Nothing moved into {dest}; {staging} is kept so a rerun resumes"
-        )
-    for f in todo:
-        target = dest / f.rel
-        target.parent.mkdir(parents=True, exist_ok=True)
-        os.replace(staging / f.repo_path, target)
-    shutil.rmtree(staging)
-    return GetReport(**report, downloaded=len(todo), replaced=len(conflicts) if on_conflict == "overwrite" else 0,
-                     dry_run=False)
+        def fetch(f: RemoteFile) -> str | None:
+            try:
+                api.hf_hub_download(preset.repo_id, f.repo_path, repo_type=hub.REPO_TYPE, revision=sha, local_dir=staging)
+            except Exception as exc:  # reported with the others below; the staging folder is kept
+                return f"{f.rel}: {exc}"
+            return None
+
+        with ThreadPoolExecutor(max_workers=max(1, workers)) as pool:
+            failed = [e for e in pool.map(fetch, todo) if e]
+        links = _symlinks(staging)
+        if links:
+            raise GetError(f"{staging} holds symlinks ({_listing([str(x) for x in links])}); remove it and rerun")
+        bad = []
+        for f in todo:
+            got = staging / f.repo_path
+            if got.is_file() and not same_bytes(got, f):
+                got.unlink()  # so a rerun fetches it again
+                bad.append(f.rel)
+            elif not got.is_file() and not any(e.startswith(f"{f.rel}: ") for e in failed):
+                failed.append(f"{f.rel}: not in {staging} after the download")
+        if failed or bad:
+            raise GetError(
+                f"{len(bad)} file(s) do not hash like {where}: {_listing(bad)}; {len(failed)} failed to download: "
+                f"{_listing(failed)}. Nothing moved into {dest}; {staging} is kept so a rerun resumes"
+            )
+
+        # The destination may have changed while the files downloaded: look again before moving anything.
+        moves, late, late_same = [], [], 0
+        for f in todo:
+            target = dest / f.rel
+            blocker = _blocker(dest, f.rel)
+            if blocker is not None:
+                raise GetError(f"{blocker} became a file while downloading (for {f.rel}); nothing moved, {staging} kept")
+            if not (target.exists() or target.is_symlink()):
+                moves.append((f, False))
+            elif not target.is_file():
+                raise GetError(f"{target} became a folder while downloading; nothing moved, {staging} kept")
+            elif same_bytes(target, f):
+                late_same += 1
+            elif on_conflict == "overwrite":
+                moves.append((f, True))
+            elif on_conflict == "keep-local":
+                kept.append(f.rel)
+            else:
+                late.append(f.rel)
+        if late:
+            raise GetError(
+                f"{len(late)} file(s) appeared in {dest} while downloading and differ from {where}: {_listing(late)}. "
+                f"Nothing moved; {staging} is kept: rerun with --overwrite or --keep-local"
+            )
+
+        done: list[tuple[Path, Path, Path | None]] = []
+        made: list[Path] = []
+        current = None
+        try:
+            for f, replacing in moves:
+                target, src = dest / f.rel, staging / f.repo_path
+                backup = staging / _BACKUP / f.rel if replacing else None
+                current = (target, backup)
+                if backup is not None:
+                    backup.parent.mkdir(parents=True, exist_ok=True)
+                    os.replace(target, backup)
+                missing = [d for d in (target.parent, *target.parent.parents) if not d.exists()]
+                for d in reversed(missing):
+                    d.mkdir()
+                    made.append(d)
+                place(src, target)
+                done.append((target, src, backup))
+                current = None
+        except (OSError, GetError) as exc:
+            if current is not None and current[1] is not None and not current[0].exists():
+                os.replace(current[1], current[0])
+            for target, src, backup in reversed(done):
+                os.replace(target, src)
+                if backup is not None:
+                    os.replace(backup, target)
+            for d in reversed(made):
+                try:
+                    d.rmdir()
+                except OSError:
+                    pass
+            raise GetError(
+                f"moving into {dest} failed ({exc}); every file already moved was put back and every replaced "
+                f"file restored. {staging} is kept so a rerun resumes"
+            ) from exc
+
+        # Remove what this run put in the staging folder, nothing else.
+        for _target, _src, backup in done:
+            if backup is not None:
+                backup.unlink()
+        for f in files:
+            mine = staging / f.repo_path
+            if mine.is_file() and not mine.is_symlink():
+                mine.unlink()
+        shutil.rmtree(staging / _HF_BOOKKEEPING, ignore_errors=True)
+        (staging / LOCK).unlink()
+    _prune(staging)
+    return GetReport(
+        **report, skipped=skipped + late_same, kept_local=tuple(kept), downloaded=len(done), replaced=sum(1 for *_x, b in done if b is not None),
+        dry_run=False,
+    )

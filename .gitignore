@@ -240,3 +240,4 @@ grok_run/
 # bench hub get: downloads with no home in the checkout, and the staging folders beside a destination
 hub-downloads/
 .*.hub-*/
+.hub-*/

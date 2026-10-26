@@ -3527,9 +3527,13 @@ def hub_list_cmd(
     for p in hub_get.PRESETS.values():
         line = Text.assemble((p.name, "bold"), f"  {p.repo_id}/{p.path} → {p.dest}")
         if api is not None:
-            sha = hub_get.resolve_revision(api, p.repo_id)
-            files = hub_get.remote_files(api, p.repo_id, sha, p.path, exclude=p.exclude)
-            line.append(f"  ({len(files)} files, {hub_get.human(sum(f.size for f in files))})")
+            try:
+                sha = hub_get.resolve_revision(api, p.repo_id)
+                files = hub_get.remote_files(api, p.repo_id, sha, p.path, exclude=p.exclude)
+            except hub_get.GetError as exc:  # a private repo without a token: say so, list the rest
+                line.append(f"  (unavailable: {exc})", style="yellow")
+            else:
+                line.append(f"  ({len(files)} files, {hub_get.human(sum(f.size for f in files))})")
         console.print(line, soft_wrap=True)
         console.print(Text(f"    {p.about}", style="dim"), soft_wrap=True)
     console.print(Text("uv run bench hub get <preset> [--include GLOB] [--dest DIR] [--revision SHA] [--dry-run]"))

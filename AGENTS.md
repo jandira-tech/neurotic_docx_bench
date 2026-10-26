@@ -425,9 +425,13 @@ uv run bench hub get --repo arthrod/neurotic_docx_bench --path outputs/release_0
   the run before anything downloads, unless you pass `--overwrite` or `--keep-local`.
   `redlines-0929` lands in `results/redlines_0929_full`, whose scripts and CSVs are tracked, so this
   rule is what protects them.
-- Files stage in `.<dest>.hub-<sha12>/` beside the destination. That folder is removed on success.
-  On failure it is kept, minus the files that failed, so a rerun resumes. Presets with no home in
-  the checkout land in `hub-downloads/`. Both are git-ignored.
+- Files stage in `.<dest>.hub-<sha12>/` beside the destination, or in `<dest>/.hub-<sha12>/` when the
+  destination is a mount or a link to another disk. The folder is locked for the run, and a symlink
+  in it refuses the run. Files move in all or nothing: a failed move puts back every file already
+  moved and restores every file `--overwrite` replaced. Each file is placed with a hard link, so a
+  file written meanwhile is never overwritten. On success the run removes only what it staged; on
+  failure the folder is kept for a resumable rerun. Presets with no home in the checkout land in
+  `hub-downloads/`. All three are git-ignored.
 - `bench fixtures download` (whole fixtures repo, checked against `MANIFEST.sha256.json`) and
   `scripts/fetch_corpus.py` (it also writes `results/compare_regen/regen_list.csv`) still work.
 - Adding a preset is one entry in `hub_get.PRESETS` (`src/neurotic_docx_bench/hub_get.py`).
