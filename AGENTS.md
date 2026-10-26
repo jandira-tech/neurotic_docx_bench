@@ -428,14 +428,16 @@ uv run bench hub get --repo arthrod/neurotic_docx_bench --path outputs/release_0
 - Files stage in `files/` of `.<dest>.hub-<sha12>/` beside the destination, or of
   `<dest>/.hub-<sha12>/` when the destination is a mount or a link to another disk; the lock and the
   `.replaced/` backups sit beside `files/`, where no hub path can land. The folder is locked for the
-  run, and a symlink in it refuses the run. Files move in all or nothing: a failed move puts back
-  every file already moved and restores every file `--overwrite` replaced, except a file someone
-  else changed after the run moved it, which stays; the error names it and where the file it
-  replaced is kept, and a later run refuses to overwrite that kept file. Each file is placed with a
-  hard link (a copy into an `O_EXCL` file on a disk without hard links), so a file written meanwhile
-  is never overwritten. On success the run removes only what it staged; on failure the folder is
-  kept for a resumable rerun. Presets with no home in the checkout land in `hub-downloads/`. All
-  three are git-ignored.
+  run, and a symlink in it refuses the run; a staged file with a second name (a hard link) is
+  fetched again, never written into. Files move in all or nothing: each is placed as a hard link to
+  its staged copy (a copy into an `O_EXCL` file on a disk without hard links), so a file written
+  meanwhile is never overwritten, and the staged copies go only after the last file is in place. A
+  failed or interrupted (Ctrl-C) move withdraws every file already placed and restores every file
+  `--overwrite` replaced, except a file someone else changed after the run placed it, which stays;
+  the error names it and where the file it replaced is kept, and a later run refuses to overwrite
+  that kept file. On success the run removes only what it staged; on failure the folder is kept for
+  a resumable rerun. Presets with no home in the checkout land in `hub-downloads/`. All three are
+  git-ignored.
 - `bench fixtures download` (whole fixtures repo, checked against `MANIFEST.sha256.json`) and
   `scripts/fetch_corpus.py` (it also writes `results/compare_regen/regen_list.csv`) still work.
 - Adding a preset is one entry in `hub_get.PRESETS` (`src/neurotic_docx_bench/hub_get.py`).

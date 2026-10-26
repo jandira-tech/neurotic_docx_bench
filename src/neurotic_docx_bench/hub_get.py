@@ -18,12 +18,14 @@
    one written meanwhile is never overwritten either.
 4. **Staged, all or nothing.** Files land in ``files/`` of a staging folder on the destination's
    disk (beside it, or inside it when it is a mount or a link to another disk), locked for the run,
-   refused if it holds a symlink. They move into place only once all of them verified; a failed
-   move puts back every file already moved and restores every file ``overwrite`` replaced, except
-   a file someone else changed after this run moved it, which stays, and the error names each such
-   file and where the one it replaced is kept. On success the run removes what it put in the
-   staging folder and nothing else; on failure the folder is kept (minus the files that failed to
-   verify), so a rerun resumes.
+   refused if it holds a symlink; a staged file with a second name (a hard link) is fetched again,
+   never written into. Files go into place only once all of them verified, each as a second name
+   of its staged copy; the staged copies are removed only after the last one is in place. A failed
+   or interrupted (Ctrl-C) move withdraws every file already placed and restores every file
+   ``overwrite`` replaced, except a file someone else changed after this run placed it, which
+   stays; the error names each such file and where the one it replaced is kept. On success the run
+   removes what it put in the staging folder and nothing else; on failure the folder is kept (minus
+   the files that failed to verify), so a rerun resumes.
 
 Names that one file would have to hold on the destination's disk (``A.txt`` and ``a.txt`` on
 case-insensitive APFS) and a local file where the hub has a folder refuse before any download.
@@ -39,6 +41,7 @@ import fnmatch
 import os
 import re
 import shutil
+import tempfile
 import unicodedata
 from collections.abc import Iterable, Sequence
 from concurrent.futures import ThreadPoolExecutor
@@ -221,45 +224,67 @@ def _identity_at(path: Path) -> Identity | None:
         return None
 
 
-def _undo(target: Path, placed: Identity) -> None:
-    """Remove the file ``place`` just made at ``target``, unless something else is there now."""
-    if _identity_at(target) == placed:
-        os.unlink(target)
+def _copy_new(staged: Path, target: Path) -> Identity:
+    """Copy ``staged`` into a new file at ``target`` that only this call can have created; its identity."""
+    try:
+        fd = os.open(target, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o666)
+    except FileExistsError as exc:
+        raise GetError(f"{target} appeared while files were being moved into place") from exc
+    try:
+        made = os.fstat(fd)
+    except BaseException:
+        os.close(fd)  # the disk cannot say which file this is, so the empty file stays
+        raise
+    try:
+        with open(fd, "wb") as out, open(staged, "rb") as src:
+            shutil.copyfileobj(src, out, _CHUNK)
+            out.flush()
+            return identity(os.fstat(out.fileno()))
+    except BaseException:
+        now = _identity_at(target)
+        if now is not None and now[:2] == (made.st_dev, made.st_ino):  # still this call's half-made copy
+            os.unlink(target)
+        raise
 
 
 def place(staged: Path, target: Path) -> Identity:
-    """Move ``staged`` to ``target`` without ever overwriting a file that is there; the placed file's identity.
+    """Give ``target`` the bytes of ``staged`` without ever overwriting a file there; the new file's identity.
 
-    Either the move completes or ``target`` is left as it was and ``staged`` still holds the bytes.
+    A hard link, or on a disk without them a copy into a file only this call can have created.
+    ``staged`` keeps its name: it is removed once every file of the run is in place, so a rollback
+    only has to withdraw ``target`` and a rerun still finds the bytes.
     """
+    placed = identity(os.lstat(staged))  # before the link, which changes neither inode, size nor mtime
     try:
         os.link(staged, target)  # fails on an existing target, even one written a moment ago
     except FileExistsError as exc:
         raise GetError(f"{target} appeared while files were being moved into place") from exc
-    except OSError:  # a disk without hard links: copy into a file only this call can have created
-        try:
-            fd = os.open(target, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o666)
-        except FileExistsError as exc:
-            raise GetError(f"{target} appeared while files were being moved into place") from exc
-        placed = None
-        try:
-            with open(fd, "wb") as out, open(staged, "rb") as src:
-                shutil.copyfileobj(src, out, _CHUNK)
-                out.flush()
-                placed = identity(os.fstat(out.fileno()))
-        except BaseException:
-            placed = placed or _identity_at(target)  # the partial copy is this call's own file
-            if placed is not None:
-                _undo(target, placed)
-            raise
-    else:
-        placed = identity(os.lstat(staged))  # the same inode as target, read where nobody else writes
-    try:
-        os.unlink(staged)
-    except OSError as exc:
-        _undo(target, placed)
-        raise GetError(f"{staged} could not be removed after placing it at {target} ({exc}); undone") from exc
+    except OSError:  # a disk without hard links
+        return _copy_new(staged, target)
     return placed
+
+
+def _withdraw(target: Path, placed: Identity, staging: Path) -> str | None:
+    """Remove the file this run placed at ``target``; None, or why something stays there.
+
+    The file is renamed to a fresh private name before it is looked at, so one that someone else
+    put there in the meantime is never deleted: it is given back with ``place``.
+    """
+    if _identity_at(target) != placed:
+        return f"{target} changed after this run moved it there; left as it is"
+    hold = Path(tempfile.mkdtemp(prefix=".withdrawn-", dir=staging)) / "file"
+    os.rename(target, hold)  # a fresh name in a fresh folder: nothing there to overwrite
+    if _identity_at(hold) != placed:  # replaced in the instant between the look and the rename
+        try:
+            place(hold, target)
+        except GetError:
+            return f"{target} changed while this run took it back; that file is now at {hold}"
+        os.unlink(hold)
+        hold.parent.rmdir()
+        return f"{target} changed after this run moved it there; left as it is"
+    os.unlink(hold)
+    hold.parent.rmdir()
+    return None
 
 
 def staging_dir(dest: Path, revision: str) -> Path:
@@ -377,24 +402,23 @@ class _Move:
     placed: Identity | None = None
 
 
-def _roll_back(journal: Sequence[_Move]) -> list[str]:
+def _roll_back(journal: Sequence[_Move], staging: Path) -> list[str]:
     """Undo ``journal`` newest first, each move on its own; what could not be undone, and where its files are."""
     problems = []
     for m in reversed(journal):
         kept = f"; the file it replaced is kept at {m.backup}" if m.backed_up else ""
         try:
             if m.placed is not None:
-                if _identity_at(m.target) != m.placed:
-                    problems.append(f"{m.target} changed after this run moved it there; left as it is{kept}")
-                    continue
-                os.replace(m.target, m.src)
-                if _identity_at(m.src) != m.placed:  # replaced in the instant between the look and the move
-                    place(m.src, m.target)
-                    problems.append(f"{m.target} changed after this run moved it there; left as it is{kept}")
+                why = _withdraw(m.target, m.placed, staging)
+                if why is not None:
+                    problems.append(why + kept)
                     continue
             if m.backed_up:
                 place(m.backup, m.target)
+                m.backed_up = False
+                m.backup.unlink()
         except (OSError, GetError) as exc:
+            kept = f"; the file it replaced is kept at {m.backup}" if m.backed_up else ""
             problems.append(f"{m.target}: {exc}{kept}")
     return problems
 
@@ -478,6 +502,12 @@ def get(
         links = _symlinks(staging)
         if links:
             raise GetError(f"{staging} holds symlinks ({_listing([str(x) for x in links])}); remove it and rerun")
+        for f in todo:
+            got = staged_files / f.repo_path
+            # A staged file with another name (a hard link) is never reused: hf_hub_download copies a
+            # cached file into an existing one, which would write through to that other name.
+            if got.is_file() and os.lstat(got).st_nlink != 1:
+                got.unlink()
         held = [str(staging / _BACKUP / f.rel) for f in conflicts if (staging / _BACKUP / f.rel).exists()]
         if held and on_conflict == "overwrite":
             raise GetError(
@@ -559,33 +589,39 @@ def get(
                     d.mkdir()
                     made.append(d)
                 m.placed = place(m.src, m.target)
-        except (OSError, GetError) as exc:
-            problems = _roll_back(journal)
+        except BaseException as exc:  # Ctrl-C included: put everything back before stopping
+            problems = _roll_back(journal, staging)
             for d in reversed(made):
                 try:
                     d.rmdir()
                 except OSError:
                     pass
+            if not problems and not isinstance(exc, Exception):
+                raise
+            why = str(exc) or type(exc).__name__
             if problems:
                 raise GetError(
-                    f"moving into {dest} failed ({exc}); everything else was put back, but: {'; '.join(problems)}. "
+                    f"moving into {dest} failed ({why}); everything else was put back, but: {'; '.join(problems)}. "
                     f"{staging} is kept"
                 ) from exc
             raise GetError(
-                f"moving into {dest} failed ({exc}); every file already moved was put back and every replaced "
+                f"moving into {dest} failed ({why}); every file already moved was put back and every replaced "
                 f"file restored. {staging} is kept so a rerun resumes"
             ) from exc
 
-        # Remove what this run put in the staging folder, nothing else.
-        for m in journal:
-            if m.backup is not None:
-                m.backup.unlink()
-        for f in files:
-            mine = staged_files / f.repo_path
-            if mine.is_file() and not mine.is_symlink():
-                mine.unlink()
-        shutil.rmtree(staged_files.joinpath(*_HF_BOOKKEEPING), ignore_errors=True)
-        (staging / LOCK).unlink()
+        # Every file is in place. Remove what this run put in the staging folder, nothing else.
+        try:
+            for m in journal:
+                if m.backup is not None:
+                    m.backup.unlink()
+            for f in files:
+                mine = staged_files / f.repo_path
+                if mine.is_file() and not mine.is_symlink():
+                    mine.unlink()
+            shutil.rmtree(staged_files.joinpath(*_HF_BOOKKEEPING), ignore_errors=True)
+            (staging / LOCK).unlink()
+        except OSError as exc:
+            raise GetError(f"every file is in place in {dest}, but cleaning {staging} failed: {exc}") from exc
     _prune(staging)
     return GetReport(
         **report, skipped=skipped + late_same, kept_local=tuple(kept), downloaded=len(journal),

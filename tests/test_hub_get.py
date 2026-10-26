@@ -558,7 +558,10 @@ def test_rollback_leaves_a_file_another_process_put_there_after_the_move(
     assert not (dest / "RUN.md").exists()
 
 
-def test_a_failure_after_the_link_restores_the_replaced_file(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_a_staged_copy_that_cannot_be_removed_is_reported_once_every_file_is_in_place(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Staged copies are removed only after every move; a failure there leaves nothing half done."""
     dest = tmp_path / "dest"
     dest.mkdir()
     (dest / "RUN.md").write_bytes(b"ORIGINAL\n")
@@ -574,11 +577,11 @@ def test_a_failure_after_the_link_restores_the_replaced_file(tmp_path: Path, mon
         return real_unlink(path, *args, **kw)
 
     monkeypatch.setattr(os, "unlink", unlink)
-    with pytest.raises(hub_get.GetError, match="cannot be removed"):
+    with pytest.raises(hub_get.GetError, match=r"every file is in place.*cannot be removed"):
         hub_get.get(preset(dest), api=PinnedHub(FILES), on_conflict="overwrite")
     assert failed
-    assert (dest / "RUN.md").read_bytes() == b"ORIGINAL\n"
-    assert sorted(p.relative_to(dest).as_posix() for p in dest.rglob("*")) == ["RUN.md"]
+    assert (dest / "RUN.md").read_bytes() == b"# run\n"
+    assert {p.relative_to(dest).as_posix() for p in dest.rglob("*") if p.is_file()} == {"RUN.md", "a.docx", "sub/b.pdf"}
 
 
 def test_one_rollback_error_does_not_stop_the_others(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -590,7 +593,7 @@ def test_one_rollback_error_does_not_stop_the_others(tmp_path: Path, monkeypatch
             raise OSError("disk went away")
         return real_place(staged, target)
 
-    real_link = os.link
+    real_link, real_rename = os.link, os.rename
 
     def refuse_a(src) -> None:
         if Path(src) == dest / "a.docx":
@@ -604,9 +607,14 @@ def test_one_rollback_error_does_not_stop_the_others(tmp_path: Path, monkeypatch
         refuse_a(src)
         return real_link(src, dst, *args, **kw)
 
+    def rename(src, dst, *args, **kw):
+        refuse_a(src)
+        return real_rename(src, dst, *args, **kw)
+
     monkeypatch.setattr(hub_get, "place", flaky)
     monkeypatch.setattr(os, "replace", replace)
     monkeypatch.setattr(os, "link", link)
+    monkeypatch.setattr(os, "rename", rename)
     with pytest.raises(hub_get.GetError, match="cannot be moved back"):
         hub_get.get(preset(dest), api=PinnedHub(FILES))
     assert not (dest / "RUN.md").exists()  # put back although a.docx could not be
@@ -728,9 +736,11 @@ def test_ctrl_c_while_moving_puts_everything_back(tmp_path: Path, monkeypatch: p
         (dest / rel).parent.mkdir(parents=True, exist_ok=True)
         (dest / rel).write_bytes(data)
     real = hub_get.place
+    pressed = []
 
     def interrupted(staged, target):
-        if target.name == "b.pdf":  # after its backup was made
+        if target.name == "b.pdf" and not pressed:  # once, after its backup was made
+            pressed.append(target)
             raise KeyboardInterrupt
         return real(staged, target)
 
@@ -747,12 +757,14 @@ def test_rollback_never_overwrites_a_file_that_appeared_in_staging(tmp_path: Pat
 
     def flaky(staged, target):
         if target.name == "b.pdf":
-            staged_a.write_bytes(b"NEW FILE IN STAGING")
+            new = staged_a.with_name("new")
+            new.write_bytes(b"NEW FILE IN STAGING")
+            os.replace(new, staged_a)  # a new file takes the staged name
             raise OSError("disk went away")
         return real(staged, target)
 
     monkeypatch.setattr(hub_get, "place", flaky)
-    with pytest.raises(hub_get.GetError, match=re.escape(str(dest / "a.docx"))):
+    with pytest.raises(hub_get.GetError, match="disk went away"):
         hub_get.get(preset(dest), api=PinnedHub(FILES))
     assert staged_a.read_bytes() == b"NEW FILE IN STAGING"
-    assert (dest / "a.docx").read_bytes() == BIG
+    assert not any(p.is_file() for p in dest.rglob("*"))
