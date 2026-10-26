@@ -2560,3 +2560,116 @@ def test_the_no_replace_rename_refuses_an_existing_name_and_takes_a_free_one(tmp
     assert a.read_bytes() == b"A" and b.read_bytes() == b"B"
     rename_new(a, c)
     assert not a.exists() and c.read_bytes() == b"A"
+
+
+# Review round 15 (#80)
+# NFS may report a rename or a link it made as failed: the server did it, then answered a retried request
+# with ENOENT or EEXIST (rename(2), link(2): "use stat(2) to find out if the link got created").
+
+
+def _old_run(dest: Path) -> Path:
+    dest.mkdir()
+    mine = dest / "RUN.md"
+    mine.write_bytes(b"old run\n")
+    return mine
+
+
+def _completes(dest: Path, **kw) -> None:
+    try:
+        hub_get.get(preset(dest), api=PinnedHub(FILES), **kw)
+    except hub_get.GetError as exc:
+        pytest.fail(f"a step the disk made but reported failed stopped the run: {exc}")
+    assert _hub_bytes_or_absent(dest) == []
+    assert all((dest / n.removeprefix("outputs/run/")).exists() for n in FILES if n.startswith("outputs/run/"))
+
+
+def test_a_backup_rename_the_disk_made_but_reported_failed_is_recorded(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Codex, round 15: with --overwrite the local file was moved aside, the disk said ENOENT, and the rollback,
+    not knowing, left it in the staging folder while saying every replaced file was restored."""
+    dest = tmp_path / "dest"
+    _old_run(dest)
+    real_replace = os.replace
+    fired = []
+
+    def replace(src, dst, *args, **kw):
+        real_replace(src, dst, *args, **kw)
+        if hub_get._BACKUP in Path(dst).parts and not fired:
+            fired.append(1)
+            raise FileNotFoundError(errno.ENOENT, "No such file or directory", str(src))
+
+    monkeypatch.setattr(os, "replace", replace)
+    _completes(dest, on_conflict="overwrite")
+    assert fired
+
+
+@pytest.mark.parametrize("answer", [errno.EEXIST, errno.EIO])
+def test_a_link_the_disk_made_but_reported_failed_is_recorded(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, answer: int
+) -> None:
+    """Codex, round 15: the link was made and the disk said EEXIST (or another error); the file stayed in the
+    destination outside the journal while the rollback said every file was put back."""
+    dest = tmp_path / "dest"
+    real_link = os.link
+    fired = []
+
+    def link(src, dst, *args, **kw):
+        real_link(src, dst, *args, **kw)
+        if Path(dst) == dest / "a.docx" and not fired:
+            fired.append(1)
+            raise OSError(answer, os.strerror(answer), str(src), None, str(dst))
+
+    monkeypatch.setattr(os, "link", link)
+    _completes(dest)
+    assert fired
+
+
+@pytest.mark.parametrize("answer", [errno.EEXIST, errno.EIO])
+def test_a_copy_rename_the_disk_made_but_reported_failed_is_recorded(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, answer: int
+) -> None:
+    """Round 15: the same for the copy's no-replace rename on a disk without hard links."""
+    dest = tmp_path / "dest"
+    real_rename_new = hub_get._rename_new
+    fired = []
+
+    def rename_new(src, dst):
+        real_rename_new(src, dst)
+        if Path(dst) == dest / "a.docx" and not fired:
+            fired.append(1)
+            raise OSError(answer, os.strerror(answer), str(src), None, str(dst))
+
+    monkeypatch.setattr(os, "link", _no_links)
+    monkeypatch.setattr(hub_get, "_rename_new", rename_new)
+    _completes(dest)
+    assert fired
+
+
+def test_a_withdrawal_the_disk_made_but_reported_failed_still_rolls_back_cleanly(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Round 15: the rollback's own rename of a placed file to a private name, made but reported failed, must not
+    be named as a file the rollback could not take back."""
+    dest = tmp_path / "dest"
+    real_place, real_rename = hub_get.place, os.rename
+    fired = []
+
+    def flaky(staged, target, scratch):
+        if target.name == "b.pdf":
+            raise OSError("disk went away")
+        return real_place(staged, target, scratch)
+
+    def rename(src, dst, *args, **kw):
+        real_rename(src, dst, *args, **kw)
+        if Path(dst).parent.name.startswith(".withdrawn-") and not fired:
+            fired.append(1)
+            raise FileNotFoundError(errno.ENOENT, "No such file or directory", str(src))
+
+    monkeypatch.setattr(hub_get, "place", flaky)
+    monkeypatch.setattr(os, "rename", rename)
+    with pytest.raises(hub_get.GetError) as info:
+        hub_get.get(preset(dest), api=PinnedHub(FILES))
+    assert fired
+    assert "every file already moved was put back" in str(info.value), info.value
+    assert not dest.exists() or not any(p.is_file() for p in dest.rglob("*"))
