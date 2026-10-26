@@ -42,9 +42,16 @@ never downloaded: under ``corpus/`` it would change how git treats the checkout.
 like ``hf_hub_download``'s records of another file (``<file>.metadata/``, ``<file>.lock/``) refuses
 before any download, since the two cannot share a staging folder.
 
-Ctrl-C while files move is held until the step in hand is recorded, then rolls everything back. A
-run with nothing to download only tidies a staging folder an earlier run left, and leaves it alone
-when another run holds it or anything in it is out of place.
+``overwrite`` replaces only regular files: a local file that is a symlink refuses before any
+download, and one that becomes a symlink meanwhile stops the run before anything moves.
+
+Ctrl-C while files move is held until the step in hand is recorded, then rolls everything back; a
+second press stops at once. A press during the rollback lets it finish and then stops; a second one
+stops it where it is, and the error names the staging folder that holds what was not put back.
+Ctrl-C is held only under Python's own handler in the main thread, so a caller that ignores it or
+handles it itself keeps that. A run with nothing to download only tidies a staging folder an earlier
+run left, and leaves it alone when another run holds it or anything in it is out of place; either
+way it names the local files an earlier run replaced and left there.
 """
 
 from __future__ import annotations
@@ -59,7 +66,7 @@ import stat
 import tempfile
 import threading
 import unicodedata
-from collections.abc import Callable, Iterable, Iterator, Sequence
+from collections.abc import Iterable, Iterator, Sequence
 from concurrent.futures import ThreadPoolExecutor
 from contextlib import contextmanager
 from dataclasses import dataclass, field
@@ -285,10 +292,16 @@ def _copy_new(staged: Path, target: Path) -> Identity:
             os.fchmod(out.fileno(), stat.S_IMODE(was.st_mode))
             os.utime(out.fileno(), ns=(was.st_atime_ns, was.st_mtime_ns))
             return identity(os.fstat(out.fileno()))
-    except BaseException:
-        now = _identity_at(target)
-        if now is not None and now[:2] == (made.st_dev, made.st_ino):  # still this call's half-made copy
-            os.unlink(target)
+    except BaseException as exc:
+        try:
+            now = _identity_at(target)
+            if now is not None and now[:2] == (made.st_dev, made.st_ino):  # still this call's half-made copy
+                os.unlink(target)
+        except OSError as stuck:
+            raise _LeftBehind(
+                f"{target} holds a partial copy this run could not remove ({stuck}), so it stays: "
+                "remove it before a rerun"
+            ) from exc
         raise
 
 
@@ -531,30 +544,54 @@ def _record_clashes(files: Sequence[RemoteFile]) -> list[str]:
     ]
 
 
-@contextmanager
-def _ctrl_c_between_steps() -> Iterator[Callable[[], None]]:
-    """Hold Ctrl-C (SIGINT) while the block runs; the check it yields raises a held one.
+class _CtrlC:
+    """The Ctrl-C presses held while files move: ``check`` raises a held one, a second press raises at once."""
 
-    A filesystem step and its journal entry then happen together: a Ctrl-C that lands as a rename
-    or a link returns waits for the next check, so the rollback knows about that step. Where Python
-    cannot set a handler (outside the main thread, or under a handler set from C), Ctrl-C is not held.
-    """
-    previous = signal.getsignal(signal.SIGINT)
-    if threading.current_thread() is not threading.main_thread() or previous is None:
-        yield lambda: None
-        return
-    held: list[int] = []
+    def __init__(self) -> None:
+        self.held: list[int] = []
 
-    def check() -> None:
-        if held:
-            held.clear()
+    def hold(self, signum: int, _frame: object) -> None:
+        if self.held:  # pressed again before the step in hand was recorded: stop now
+            raise KeyboardInterrupt
+        self.held.append(signum)
+
+    def check(self) -> None:
+        if self.held:
+            self.held.clear()
             raise KeyboardInterrupt
 
-    signal.signal(signal.SIGINT, lambda signum, _frame: held.append(signum))
+
+@contextmanager
+def _ctrl_c_between_steps() -> Iterator[_CtrlC]:
+    """Hold Ctrl-C (SIGINT) while the block runs; the ``_CtrlC`` it yields raises a held one.
+
+    A filesystem step and its journal entry then happen together: a Ctrl-C that lands as a rename
+    or a link returns waits for the next check, so the rollback knows about that step. Ctrl-C is
+    held only under Python's own handler, in the main thread: a caller that ignores Ctrl-C or
+    handles it itself keeps that, and its ``check`` never raises.
+    """
+    ctrl_c = _CtrlC()
+    previous = signal.getsignal(signal.SIGINT)
+    if threading.current_thread() is not threading.main_thread() or previous is not signal.default_int_handler:
+        yield ctrl_c
+        return
+    signal.signal(signal.SIGINT, ctrl_c.hold)
     try:
-        yield check
+        yield ctrl_c
     finally:
         signal.signal(signal.SIGINT, previous)
+
+
+def _earlier(staging: Path) -> tuple[str, ...]:
+    """The local files an earlier run replaced and left in ``staging``; looked at, never followed or changed."""
+    backups = staging / _BACKUP
+    if staging.is_symlink() or backups.is_symlink() or not backups.is_dir():
+        return ()
+    found = []
+    for root, dirs, names in os.walk(backups):  # lists a symlinked folder among ``dirs`` but does not enter it
+        found += [str(Path(root) / n) for n in names]
+        found += [str(Path(root) / d) for d in dirs if (Path(root) / d).is_symlink()]
+    return tuple(sorted(found))
 
 
 def _symlinks(staging: Path) -> list[Path]:
@@ -646,9 +683,15 @@ def get(
         if not (local.exists() or local.is_symlink()):
             todo.append(f)
         elif not local.is_file():
-            raise GetError(f"{local} is not a file but the hub has a file there; nothing downloaded")
+            what = "a symlink to no file" if local.is_symlink() else "not a file"
+            raise GetError(f"{local} is {what} but the hub has a file there; nothing downloaded")
         elif same_bytes(local, f):
             skipped += 1
+        elif on_conflict == "overwrite" and local.is_symlink():
+            raise GetError(
+                f"{local} is a symlink; --overwrite replaces only regular files, never a link or what it points "
+                "to. Nothing downloaded"
+            )
         else:
             conflicts.append(f)
     differ = tuple(f.rel for f in conflicts)
@@ -668,7 +711,10 @@ def get(
     staging = staging_dir(dest, sha)
     # With nothing to download the run only tidies what an earlier run left, and is never refused for it.
     tidy = not todo
-    plain = GetReport(**report, skipped=skipped, kept_local=tuple(kept), downloaded=0, replaced=0, dry_run=dry_run)
+    plain = GetReport(
+        **report, skipped=skipped, kept_local=tuple(kept), downloaded=0, replaced=0, dry_run=dry_run,
+        earlier_replaced=_earlier(staging),
+    )
     if dry_run or (tidy and not (staging.is_dir() and not staging.is_symlink())):
         return plain
 
@@ -735,7 +781,7 @@ def _locked_run(
     staged_files = staging / FILES
     links = _symlinks(staging)
     if links and not todo:  # nothing to download: leave the folder as it is
-        return [], 0, ()
+        return [], 0, _earlier(staging)
     if links:
         raise GetError(f"{staging} holds symlinks ({_listing([str(x) for x in links])}); remove it and rerun")
     for f in files:
@@ -767,7 +813,7 @@ def _locked_run(
             if mine.is_file() and not mine.is_symlink():
                 mine.unlink()
         shutil.rmtree(staged_files.joinpath(*_HF_BOOKKEEPING), ignore_errors=True)
-        earlier = tuple(sorted(str(x) for x in (staging / _BACKUP).rglob("*") if not x.is_dir()))
+        earlier = _earlier(staging)
         _prune(staging)  # under the lock, so no other run's fresh folders go
         (staging / LOCK).unlink()
     except OSError as exc:
@@ -831,9 +877,15 @@ def _download(
         if not (target.exists() or target.is_symlink()):
             moves.append((f, False))
         elif not target.is_file():
-            raise GetError(f"{target} became a folder while downloading; nothing moved, {staging} kept")
+            what = "a symlink to no file" if target.is_symlink() else "something other than a file"
+            raise GetError(f"{target} became {what} while downloading; nothing moved, {staging} kept")
         elif same_bytes(target, f):
             late_same += 1
+        elif on_conflict == "overwrite" and target.is_symlink():
+            raise GetError(
+                f"{target} became a symlink while downloading; --overwrite replaces only regular files. "
+                f"Nothing moved, {staging} kept"
+            )
         elif on_conflict == "overwrite":
             moves.append((f, True))
         elif on_conflict == "keep-local":
@@ -850,25 +902,19 @@ def _download(
 
 def _move(moves: Sequence[tuple[RemoteFile, bool]], dest: Path, staging: Path) -> list[_Move]:
     """Move each staged file into ``dest``, all or nothing; the moves made."""
-    staged_files = staging / FILES
-    journal: list[_Move] = []
-    made: list[Path] = []
-    with _ctrl_c_between_steps() as check:
-        return _move_held(moves, dest, staging, staged_files, journal, made, check)
+    with _ctrl_c_between_steps() as ctrl_c:
+        return _move_held(moves, dest, staging, ctrl_c)
 
 
 def _move_held(
-    moves: Sequence[tuple[RemoteFile, bool]],
-    dest: Path,
-    staging: Path,
-    staged_files: Path,
-    journal: list[_Move],
-    made: list[Path],
-    check: Callable[[], None],
+    moves: Sequence[tuple[RemoteFile, bool]], dest: Path, staging: Path, ctrl_c: _CtrlC
 ) -> list[_Move]:
+    staged_files = staging / FILES
+    journal: list[_Move] = []
+    made: list[Path] = []
     try:
         for f, replacing in moves:
-            check()
+            ctrl_c.check()
             blocker = _blocker(dest, f.rel)  # again for each file: a folder may have changed since the look
             if blocker is not None:
                 raise GetError(f"while moving, {blocker} (for {f.rel})")
@@ -877,37 +923,55 @@ def _move_held(
             if m.backup is not None:
                 if m.backup.exists() or m.backup.is_symlink():
                     raise GetError(f"{m.backup} holds a local file an earlier run replaced; nothing overwrites it")
-                if not (m.target.is_file() and not m.target.is_symlink()):
-                    raise GetError(f"{m.target} is no longer a file; it stays as it is")
+                if m.target.is_symlink():
+                    raise GetError(f"{m.target} became a symlink; --overwrite replaces only regular files, so it stays")
+                if not m.target.is_file():
+                    raise GetError(f"{m.target} is no longer a regular file; it stays as it is")
                 m.backup.parent.mkdir(parents=True, exist_ok=True)
                 os.replace(m.target, m.backup)
                 m.backed_up = True
-                check()
+                ctrl_c.check()
             missing = [d for d in (m.target.parent, *m.target.parent.parents) if not d.exists()]
             for d in reversed(missing):
                 d.mkdir()
                 made.append(d)
             m.placed = place(m.src, m.target)
-        check()
+        ctrl_c.check()
     except BaseException as exc:  # Ctrl-C included: put everything back before stopping
-        problems = _roll_back(journal, staging)
+        ctrl_c.held.clear()  # a press that stopped the moves is not one pressed during the rollback
+        try:
+            problems = _roll_back(journal, staging)
+            for d in reversed(made):
+                try:
+                    d.rmdir()
+                except OSError:
+                    pass
+        except KeyboardInterrupt as stop:  # pressed twice: the rollback stops where it is
+            stop.add_note(
+                f"Ctrl-C stopped putting back the files moved into {dest}: some may still be there, and "
+                f"{staging / _BACKUP} holds the local files they replaced. {staging} is kept"
+            )
+            raise
         if isinstance(exc, _LeftBehind):
             problems.insert(0, str(exc))
-        for d in reversed(made):
-            try:
-                d.rmdir()
-            except OSError:
-                pass
-        if not problems and not isinstance(exc, Exception):
-            raise
         why = str(exc) or type(exc).__name__
         if problems:
-            raise GetError(
+            outcome = (
                 f"moving into {dest} failed ({why}); everything else was put back, but: {'; '.join(problems)}. "
                 f"{staging} is kept"
-            ) from exc
-        raise GetError(
-            f"moving into {dest} failed ({why}); every file already moved was put back and every replaced "
-            f"file restored. {staging} is kept so a rerun resumes"
-        ) from exc
+            )
+        else:
+            outcome = (
+                f"moving into {dest} failed ({why}); every file already moved was put back and every replaced "
+                f"file restored. {staging} is kept so a rerun resumes"
+            )
+        if ctrl_c.held:  # pressed once during the rollback: it finished, now stop
+            ctrl_c.held.clear()
+            stop = KeyboardInterrupt()
+            stop.add_note(outcome)
+            raise stop from exc
+        if not problems and not isinstance(exc, Exception):
+            exc.add_note(outcome)
+            raise
+        raise GetError(outcome) from exc
     return journal

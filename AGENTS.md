@@ -423,6 +423,7 @@ uv run bench hub get --repo arthrod/neurotic_docx_bench --path outputs/release_0
   destination.
 - **No clobbering.** A local file with the same bytes is skipped. One with different bytes stops
   the run before anything downloads, unless you pass `--overwrite` or `--keep-local`.
+  `--overwrite` replaces only regular files: a local file that is a symlink refuses the run.
   `redlines-0929` lands in `results/redlines_0929_full`, whose scripts and CSVs are tracked, so this
   rule is what protects them. A symlinked folder below the destination refuses the run too, since it
   would put files, or move replaced ones, outside the destination (the destination itself may be a
@@ -439,9 +440,13 @@ uv run bench hub get --repo arthrod/neurotic_docx_bench --path outputs/release_0
   `--overwrite` replaced, except a file someone else changed after the run placed it, which stays;
   the error names it and where the file it replaced is kept, and a later run refuses to overwrite
   that kept file. On success the run removes only what it staged; on failure the folder is kept for
-  a resumable rerun. A rerun names the replaced files an earlier run left in `.replaced/`, and takes
-  the second name off staged files a killed move left linked into the destination. Presets with no home in the checkout land in `hub-downloads/`. All three are
-  git-ignored.
+  a resumable rerun. A rerun names the replaced files an earlier run left in `.replaced/` (a run
+  with nothing to download too), and takes the second name off staged files a killed move left
+  linked into the destination. Ctrl-C during the moves is held until the step in hand is recorded;
+  a second press stops at once. One during the rollback lets it finish, a second stops it and names
+  the staging folder. Ctrl-C is held only under Python's own handler, so a caller that ignores or
+  handles it keeps that. Presets with no home in the checkout land in `hub-downloads/`. All three
+  are git-ignored.
 - `--include` globs are fnmatch patterns relative to the preset's folder: `*` also crosses `/`, so
   `--include '*.docx'` takes the `.docx` files of every subfolder too.
 - `bench fixtures download` (whole fixtures repo, checked against `MANIFEST.sha256.json`) and
