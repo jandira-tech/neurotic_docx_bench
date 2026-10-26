@@ -26,9 +26,12 @@ from __future__ import annotations
 
 import argparse
 import asyncio
+import email.utils
+import math
 import subprocess
 import sys
 import tomllib
+from datetime import UTC, datetime
 from pathlib import Path
 
 import httpx
@@ -36,6 +39,8 @@ import httpx
 ACCOUNT = "5651b2fe85f9bbb0fc1b8f4ad2cb4e64"
 BUCKET = "neurotic-docx-bench-pages"
 API = f"https://api.cloudflare.com/client/v4/accounts/{ACCOUNT}/r2/buckets/{BUCKET}/objects"
+WRANGLER_TIMEOUT = 60
+RETRY_AFTER_CAP = 300  # seconds; the R2 API allows 1200 requests per 300 s, so no wait needs longer
 TYPES = {
     ".webp": "image/webp",
     ".pdf": "application/pdf",
@@ -59,6 +64,37 @@ def token() -> str:
     return tomllib.loads(cfg.read_text())["oauth_token"]
 
 
+async def refresh_token(client: httpx.AsyncClient) -> None:
+    """Have wrangler refresh its OAuth token (it lives about an hour) and send the new one."""
+    try:
+        r = await asyncio.to_thread(subprocess.run, ["bunx", "wrangler", "whoami"],
+                                    capture_output=True, timeout=WRANGLER_TIMEOUT)
+    except subprocess.TimeoutExpired as error:
+        raise RuntimeError("Token refresh timed out; run bunx wrangler login") from error
+    if r.returncode != 0:
+        raise RuntimeError(f"Token refresh exited {r.returncode}; run bunx wrangler login")
+    client.headers["Authorization"] = f"Bearer {token()}"
+
+
+def retry_after(value: str | None, fallback: float, now: datetime | None = None) -> float:
+    """Seconds a 429's Retry-After asks for (delta-seconds or HTTP-date, RFC 9110), capped; fallback if unusable."""
+    if not value:
+        return fallback
+    try:
+        wait = int(value)
+    except ValueError:
+        try:
+            when = email.utils.parsedate_to_datetime(value)
+        except (TypeError, ValueError):
+            return fallback
+        if when.tzinfo is None:  # an HTTP-date is GMT
+            when = when.replace(tzinfo=UTC)
+        wait = max(0, math.ceil((when - (now or datetime.now(UTC))).total_seconds()))  # a past date: go now
+    if wait < 0:
+        return fallback
+    return min(wait, RETRY_AFTER_CAP)
+
+
 def local_files(root: Path) -> list[Path]:
     return sorted(p for p in root.rglob("*") if p.is_file() and p.suffix.lower() in TYPES and p.name != ".DS_Store")
 
@@ -72,21 +108,41 @@ async def listing(client: httpx.AsyncClient, prefix: str) -> dict[str, int]:
         page = None
         for attempt in range(4):  # the retry budget is per page, not per listing
             params = {"prefix": prefix, "per_page": 1000, **({"cursor": cursor} if cursor else {})}
-            r = (await client.get(API, params=params)).json()
-            if r.get("result") is None:  # error payload ("result": null): usually an expired token
-                await asyncio.to_thread(subprocess.run, ["bunx", "wrangler", "whoami"], capture_output=True)
-                client.headers["Authorization"] = f"Bearer {token()}"
-                if attempt < 3:  # no point sleeping after the last attempt
-                    await asyncio.sleep(2**attempt)
-                continue  # same params, same cursor: this page is not done yet
-            page = r
-            break
+            delay = 2**attempt
+            try:
+                response = await client.get(API, params=params)
+            except httpx.RequestError as error:  # transport errors, and bodies that fail to decode
+                last_error = str(error)
+            else:
+                last_error = f"HTTP {response.status_code}"
+                if response.status_code in (401, 403):
+                    await refresh_token(client)
+                elif response.status_code == 429:
+                    delay = retry_after(response.headers.get("Retry-After"), delay)
+                elif 200 <= response.status_code < 300:
+                    try:
+                        r = response.json()
+                    except ValueError as error:
+                        last_error += f": {error}"
+                    else:
+                        if (isinstance(r, dict) and r.get("success") and isinstance(r.get("result"), list)
+                                and all(isinstance(o, dict) and "key" in o and "size" in o for o in r["result"])):
+                            page = r
+                            break
+                        last_error += f": {r.get('errors', r) if isinstance(r, dict) else r}"
+            if attempt < 3:  # no point sleeping after the last attempt
+                await asyncio.sleep(delay)
         if page is None:  # this page failed 4 times in a row
-            raise RuntimeError(f"R2 listing kept failing for prefix {prefix!r}")
+            raise RuntimeError(f"R2 listing kept failing for prefix {prefix!r}: {last_error}")
         for o in page["result"]:
             out[o["key"]] = o["size"]
-        info = page.get("result_info") or {}
-        if not info.get("is_truncated"):
+        info = page.get("result_info")
+        if info is None:  # the API leaves result_info out of the last page, even a full one
+            return out
+        truncated = info.get("is_truncated") if isinstance(info, dict) else None
+        if not isinstance(truncated, bool):  # absent, null or a string says neither "more" nor "done"
+            raise RuntimeError(f"R2 listing for prefix {prefix!r} gave no boolean is_truncated in result_info {info!r}")
+        if not truncated:
             return out
         cursor = info.get("cursor")
         if not cursor or cursor in seen:  # truncated without a new cursor: the next request would repeat a page
@@ -115,8 +171,7 @@ async def upload_api(client: httpx.AsyncClient, key: str, path: Path, sem: async
                 if r.status_code in (401, 403):  # the OAuth token lives about an hour: refresh it
                     async with refresh_lock:
                         if client.headers["Authorization"] == sent:
-                            await asyncio.to_thread(subprocess.run, ["bunx", "wrangler", "whoami"], capture_output=True)
-                            client.headers["Authorization"] = f"Bearer {token()}"
+                            await refresh_token(client)
                     continue
             except httpx.HTTPError:
                 pass
@@ -215,7 +270,12 @@ async def main() -> int:
                 if done % 500 == 0:
                     print(f"{done}/{len(todo)}", flush=True)
 
-            await asyncio.gather(*(one(p) for p in todo))
+            try:
+                await asyncio.gather(*(one(p) for p in todo))
+            except RuntimeError as error:  # the login is dead: stop, but say what got done; a rerun skips it
+                print(f"stopped: {error}")
+                print(f"uploaded {done - len(failed)}, failed {len(failed)}, not attempted {len(todo) - done}")
+                return 1
 
     print(f"uploaded {len(todo) - len(failed)}, failed {len(failed)}")
     for k in failed[:20]:
