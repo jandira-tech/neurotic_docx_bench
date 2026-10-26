@@ -3580,6 +3580,10 @@ def hub_get_cmd(
     except hub_get.GetError as exc:
         console.print(Text.assemble(("refused ", "red"), str(exc)), soft_wrap=True)
         raise typer.Exit(code=1) from exc
+    except KeyboardInterrupt as exc:  # typer would exit 130 silently; the notes say what the rollback left
+        console.print(Text.assemble(("stopped by Ctrl-C", "red"), *(f"; {n}" for n in getattr(exc, "__notes__", ()))),
+                      soft_wrap=True)
+        raise typer.Exit(code=130) from exc
     console.print(Text(report.describe()), soft_wrap=True)
     if report.kept_local:
         keep = "would keep local" if report.dry_run else "kept local"

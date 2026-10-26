@@ -46,8 +46,9 @@ before any download, since the two cannot share a staging folder.
 download, and one that becomes a symlink meanwhile stops the run before anything moves.
 
 Ctrl-C while files move is held until the step in hand is recorded, then rolls everything back; a
-second press stops at once. A press during the rollback lets it finish and then stops; a second one
-stops it where it is, and the error names the staging folder that holds what was not put back.
+second press waits too, so no step goes unrecorded. A press during the rollback lets it finish and
+then stops; a second one stops it where it is, and the error names the staging folder that holds
+what was not put back.
 Ctrl-C is held only under Python's own handler in the main thread, so a caller that ignores it or
 handles it itself keeps that. A run with nothing to download only tidies a staging folder an earlier
 run left, and leaves it alone when another run holds it or anything in it is out of place; either
@@ -545,15 +546,22 @@ def _record_clashes(files: Sequence[RemoteFile]) -> list[str]:
 
 
 class _CtrlC:
-    """The Ctrl-C presses held while files move: ``check`` raises a held one, a second press raises at once."""
+    """The Ctrl-C held while files move: ``check`` raises it once the step in hand is recorded.
+
+    While files move, a second press waits like the first: raising it at once could land between a
+    finished rename or link and its journal entry, and the rollback would not know about that step.
+    During the rollback (``rolling_back``) a second press stops it at once.
+    """
 
     def __init__(self) -> None:
         self.held: list[int] = []
+        self.rolling_back = False
 
     def hold(self, signum: int, _frame: object) -> None:
-        if self.held:  # pressed again before the step in hand was recorded: stop now
+        if self.held and self.rolling_back:  # pressed twice during the rollback: stop it where it is
             raise KeyboardInterrupt
-        self.held.append(signum)
+        if not self.held:
+            self.held.append(signum)
 
     def check(self) -> None:
         if self.held:
@@ -939,6 +947,7 @@ def _move_held(
         ctrl_c.check()
     except BaseException as exc:  # Ctrl-C included: put everything back before stopping
         ctrl_c.held.clear()  # a press that stopped the moves is not one pressed during the rollback
+        ctrl_c.rolling_back = True
         try:
             problems = _roll_back(journal, staging)
             for d in reversed(made):
@@ -952,6 +961,7 @@ def _move_held(
                 f"{staging / _BACKUP} holds the local files they replaced. {staging} is kept"
             )
             raise
+        ctrl_c.rolling_back = False
         if isinstance(exc, _LeftBehind):
             problems.insert(0, str(exc))
         why = str(exc) or type(exc).__name__

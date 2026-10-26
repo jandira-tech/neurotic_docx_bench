@@ -442,9 +442,9 @@ uv run bench hub get --repo arthrod/neurotic_docx_bench --path outputs/release_0
   that kept file. On success the run removes only what it staged; on failure the folder is kept for
   a resumable rerun. A rerun names the replaced files an earlier run left in `.replaced/` (a run
   with nothing to download too), and takes the second name off staged files a killed move left
-  linked into the destination. Ctrl-C during the moves is held until the step in hand is recorded;
-  a second press stops at once. One during the rollback lets it finish, a second stops it and names
-  the staging folder. Ctrl-C is held only under Python's own handler, so a caller that ignores or
+  linked into the destination. Ctrl-C during the moves is held until the step in hand is recorded
+  (a second press waits too). One during the rollback lets it finish, a second stops it and names
+  the staging folder; the CLI prints what the rollback left and exits 130. Ctrl-C is held only under Python's own handler, so a caller that ignores or
   handles it keeps that. Presets with no home in the checkout land in `hub-downloads/`. All three
   are git-ignored.
 - `--include` globs are fnmatch patterns relative to the preset's folder: `*` also crosses `/`, so
