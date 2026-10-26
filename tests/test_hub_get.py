@@ -1870,3 +1870,86 @@ def test_a_download_that_raises_outside_exception_fails_the_run_even_with_a_good
     with pytest.raises(hub_get.GetError, match=r"RUN\.md"):
         hub_get.get(preset(dest), api=api)
     assert not dest.exists() or _tree(dest) == {}
+
+
+# Review round 10, mcode (#80)
+
+
+def test_a_press_as_the_staging_lock_is_let_go_says_every_file_is_in_place(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    dest = tmp_path / "dest"
+    real_lock, real_close = hub_get._lock, os.close
+    locks: list[int] = []
+    sent = []
+
+    def lock(path):
+        locks.append(real_lock(path))
+        return locks[-1]
+
+    def close(fd):
+        real_close(fd)
+        if fd in locks and not sent:  # the run lets its staging lock go
+            sent.append(fd)
+            os.kill(os.getpid(), signal.SIGINT)
+            _spin()
+
+    monkeypatch.setattr(hub_get, "_lock", lock)
+    monkeypatch.setattr(os, "close", close)
+    with pytest.raises(BaseException) as exc:
+        hub_get.get(preset(dest), api=PinnedHub(FILES))
+    monkeypatch.setattr(os, "close", real_close)
+    assert sent
+    assert exc.type is KeyboardInterrupt, exc.value
+    assert "every file is in place" in " ".join(getattr(exc.value, "__notes__", ()))
+    assert _tree(dest) == {k.removeprefix("outputs/run/"): v for k, v in FILES.items() if k.startswith("outputs/run/")}
+
+
+def test_the_lock_a_second_press_kept_goes_once_the_downloads_left_running_end(tmp_path: Path) -> None:
+    """A caller that catches the KeyboardInterrupt can run again here once those downloads are over."""
+    import threading
+    import time
+
+    dest = tmp_path / "dest"
+    staging = hub_get.staging_dir(dest, SHA)
+    api = _hub_of_slow_files()
+    real_download = api.hf_hub_download
+    main = threading.main_thread().ident
+    release = threading.Event()
+    stalled: list[threading.Thread] = []
+
+    def stall(*args, **kw):
+        if not stalled:
+            stalled.append(threading.current_thread())
+            release.wait(6)
+        return real_download(*args, **kw)
+
+    def press_twice() -> None:
+        time.sleep(0.3)
+        signal.pthread_kill(main, signal.SIGINT)
+        time.sleep(0.5)
+        signal.pthread_kill(main, signal.SIGINT)
+
+    api.hf_hub_download = stall
+    presser = threading.Thread(target=press_twice)
+    presser.start()
+    try:
+        with pytest.raises(KeyboardInterrupt):
+            hub_get.get(preset(dest), api=api, workers=1)
+        with pytest.raises(hub_get.GetError) as busy:  # while the download left running still writes
+            hub_get.get(preset(dest), api=api, workers=1)
+    finally:
+        release.set()
+        presser.join()
+        for t in stalled:
+            t.join()
+    assert "Ctrl-C" in str(busy.value)  # not only "another bench hub get"
+    deadline = time.monotonic() + 3
+    while _held_by_another_run(staging) and time.monotonic() < deadline:
+        time.sleep(0.05)
+    held = _held_by_another_run(staging)
+    while getattr(hub_get, "_KEPT_LOCKS", None):
+        os.close(hub_get._KEPT_LOCKS.pop())
+    assert not held
+    hub_get.get(preset(dest), api=api, workers=1)
+    assert sorted(_tree(dest)) == ["f00.txt", "f01.txt", "f02.txt"]
