@@ -203,9 +203,10 @@ def test_build_reads_the_checkout(rebuild, checkout):
 class GitHub:
     """The hub's commit API over a real git repository standing in for the dataset."""
 
-    def __init__(self, origin: Path, before_upload=None):
+    def __init__(self, origin: Path, before_upload=None, lfs: bool = False):
         self.origin = origin
         self.before_upload = before_upload
+        self.lfs = lfs  # the hub's preupload picked LFS storage for the upload
         self.uploads: list[dict] = []
 
     def head(self) -> str:
@@ -230,13 +231,14 @@ class GitHub:
         })
         if self.before_upload:
             self.before_upload(self)
-        if (self.origin / path_in_repo).read_bytes() == path_or_fileobj:
+        stored = pointer(path_or_fileobj) if self.lfs else path_or_fileobj
+        if (self.origin / path_in_repo).read_bytes() == stored:
             # huggingface_hub returns the branch head without a commit or a parent check
             return SimpleNamespace(oid=self.head())
         if parent_commit is not None and parent_commit != self.head():
             request = httpx2.Request('POST', 'https://huggingface.co/api/commit')
             raise HfHubHTTPError('412 parent moved', response=httpx2.Response(412, request=request))
-        self.commit({path_in_repo: path_or_fileobj}, commit_message)
+        self.commit({path_in_repo: stored}, commit_message)
         return SimpleNamespace(oid=self.head())
 
     def list_repo_commits(self, repo_id, *, repo_type, revision=None):
@@ -359,3 +361,87 @@ def test_a_grafts_file_refuses(rebuild, checkout):
     grafts.write_text(checkout.second + '\n')
     with pytest.raises(rebuild.RebuildError, match='grafts'):
         rebuild.records(checkout.repo, checkout.second)
+
+
+def repo_with(tmp_path: Path, *commits: dict[str, bytes]) -> tuple[Path, list[str]]:
+    """A dataset repository with one commit per mapping of run-folder paths to bytes."""
+    repo = tmp_path / 'repo'
+    repo.mkdir()
+    git(repo, 'init', '-q', '-b', 'main')
+    git(repo, 'config', 'user.email', 't@example.com')
+    git(repo, 'config', 'user.name', 't')
+    shas = []
+    for i, files in enumerate(commits):
+        for rel, data in files.items():
+            path = repo / PREFIX / rel
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes(data)
+        git(repo, 'add', '-A')
+        git(repo, 'commit', '-q', '--allow-empty', '-m', f'commit {i}')
+        shas.append(git(repo, 'rev-parse', 'HEAD'))
+    return repo, shas
+
+
+def tsv(rows: dict[str, bytes]) -> bytes:
+    return ('key\tsize\tsha256\n' + ''.join(f'{k}\t{len(v)}\t{sha(v)}\n' for k, v in rows.items())).encode()
+
+
+def test_a_newer_manifest_outranks_an_upload_list_written_before_it(rebuild, tmp_path):
+    """Both name x.docx; the list is unchanged since commit 0, the manifest disagrees since commit 1."""
+    repo, _ = repo_with(
+        tmp_path,
+        {
+            'x.docx': b'A',
+            MANIFEST: manifest({'x.docx': sha(b'A')}),
+            'upload_20261025.manifest.tsv': tsv({'x.docx': b'A'}),
+        },
+        {MANIFEST: manifest({'x.docx': sha(b'B')})},
+    )
+    with pytest.raises(rebuild.RebuildError, match=re.escape('x.docx')):
+        rebuild.build(repo, 'HEAD')
+
+
+def test_a_version_that_comes_back_is_the_newest_record_again(rebuild, tmp_path):
+    repo, shas = repo_with(
+        tmp_path,
+        {'x.docx': b'A', MANIFEST: manifest({'x.docx': sha(b'A')})},
+        {MANIFEST: manifest({'x.docx': sha(b'B')})},
+        {MANIFEST: manifest({'x.docx': sha(b'A')})},
+    )
+    built, report = rebuild.build(repo, 'HEAD')
+    assert built == {'x.docx': sha(b'A')}
+    assert report['replaced'] == [('x.docx', f'{shas[1][:9]} {MANIFEST}')]
+
+
+@pytest.mark.parametrize(
+    'record',
+    [
+        {MANIFEST: b'{"algorithm": "sha256", "files": {"gone.docx": "' + b'a' * 64 + b'"}, "files": {}}'},
+        {MANIFEST: b'{"files": {"x.docx": "' + b'a' * 64 + b'", "x.docx": "' + b'b' * 64 + b'"}}'},
+        {
+            'upload_20261025.manifest.tsv': b'key\tsize\tsha256\nx.docx\t1\t'
+            + b'a' * 64
+            + b'\nx.docx\t1\t'
+            + b'b' * 64
+            + b'\n'
+        },
+    ],
+    ids=['two-files-objects', 'two-hashes-for-a-path', 'two-rows-for-a-path'],
+)
+def test_a_record_with_a_duplicate_key_refuses(rebuild, tmp_path, record):
+    repo, _ = repo_with(tmp_path, {'x.docx': b'A', **record})
+    with pytest.raises(rebuild.RebuildError, match='duplicate'):
+        rebuild.records(repo, 'HEAD')
+
+
+def test_publish_accepts_the_manifest_stored_in_lfs(rebuild, hub_pair):
+    hub_pair.api.lfs = True
+    data = manifest({'a/x.docx': sha(b'inline')})
+    commit = rebuild.publish(hub_pair.api, hub_pair.clone, hub_pair.head, data, 'rebuild')
+    assert commit == hub_pair.api.head() != hub_pair.head
+
+
+def test_a_record_stored_in_lfs_refuses_rather_than_being_read_as_json(rebuild, tmp_path):
+    repo, _ = repo_with(tmp_path, {'x.docx': b'A', MANIFEST: pointer(manifest({'x.docx': sha(b'A')}))})
+    with pytest.raises(rebuild.RebuildError, match='LFS'):
+        rebuild.records(repo, 'HEAD')
