@@ -53,6 +53,21 @@ class StaleParentError(RuntimeError):
     """Someone else committed to the hub while this run was uploading."""
 
 
+def next_parent(api, parent, info, message):
+    """The commit an upload made, or ``parent`` when it made none.
+
+    An upload that changes nothing makes no commit, skips the ``parent_commit`` check and
+    returns the branch head, which may be someone else's commit; only a commit with our
+    message directly on ``parent`` is ours.
+    """
+    if info.oid == parent:
+        return parent
+    newest = api.list_repo_commits(hub.RESULTS_REPO, repo_type=hub.REPO_TYPE, revision=info.oid)[:2]
+    if [c.commit_id for c in newest] != [info.oid, parent] or newest[0].title != message:
+        raise StaleParentError(f'the hub moved to {info.oid} while uploading on {parent}; nothing more uploaded')
+    return info.oid
+
+
 def carried_entries(previous, staged, remote, fetch) -> dict[str, str]:
     """Carry previous entries only when their hub bytes still match."""
     carried = {}
@@ -193,11 +208,11 @@ def main() -> None:
     # (412) instead of taking a manifest built from the older commit.
     parent = head
     for s in subdirs:
+        message = f'redlines_0929_full: {s} ({counts[s]} files)'
         info = api.upload_folder(repo_id=hub.RESULTS_REPO, repo_type=hub.REPO_TYPE, folder_path=a.staging / s,
-                                 path_in_repo=f'{REPO_PREFIX}/{s}',
-                                 commit_message=f'redlines_0929_full: {s} ({counts[s]} files)',
+                                 path_in_repo=f'{REPO_PREFIX}/{s}', commit_message=message,
                                  parent_commit=parent)
-        parent = info.oid
+        parent = next_parent(api, parent, info, message)
         print(f'uploaded {s}', flush=True)
     bad = hub.verify_uploaded(a.staging, api=api, repo_id=hub.RESULTS_REPO, path_in_repo=REPO_PREFIX)
     if bad:

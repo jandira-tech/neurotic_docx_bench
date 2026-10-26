@@ -354,3 +354,14 @@ def test_main_dry_run_is_offline(upload, run, tmp_path, monkeypatch):
     monkeypatch.setattr(sys, 'argv', ['hub_upload', '--dry-run', '--staging', str(tmp_path / 'staging')])
     upload.main()
     assert len(hub.read_manifest(tmp_path / 'staging' / 'run' / hub.MANIFEST_NAME)) == 5
+
+
+def test_main_rerun_with_nothing_new_commits_nothing(upload, run, tmp_path, monkeypatch):
+    api = DownloadHub(tmp_path / 'cache')
+    api.stored[hub.RESULTS_REPO] = {}
+    monkeypatch.setattr(hub, 'default_api', lambda: api)
+    monkeypatch.setattr(sys, 'argv', ['hub_upload', '--staging', str(tmp_path / 'staging')])
+    upload.main()
+    commits, head = len(api.parents), api.refs[None]
+    upload.main()  # every upload is a no-op that returns this run's own head
+    assert (len(api.parents), api.refs[None]) == (commits, head)
