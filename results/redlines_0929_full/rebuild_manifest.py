@@ -396,14 +396,21 @@ def lfs_limit(value: str) -> int | str:
     raise argparse.ArgumentTypeError('expected a non-negative integer or all')
 
 
-def leaves(checkout: Path, commit: str) -> dict[str, tuple[str, ...]]:
-    """Every blob and gitlink in ``commit``: ``{path: (mode, type, oid)}``, no diff config applied."""
+def leaves(checkout: Path, commit: str) -> dict[bytes, tuple[bytes, ...]]:
+    """Every blob and gitlink in ``commit``: ``{path: (mode, type, oid)}`` as git's bytes, no diff config applied.
+
+    Paths stay bytes: git allows names that are not UTF-8 anywhere in the repository.
+    """
     entries = {}
     for line in git(checkout, 'ls-tree', '-r', '-z', '--full-tree', commit).split(b'\0'):
         if line:
-            meta, path = line.decode().split('\t', 1)
+            meta, path = line.split(b'\t', 1)
             entries[path] = tuple(meta.split())
     return entries
+
+
+def regular_blob(entry: tuple[bytes, ...] | None) -> bool:
+    return entry is not None and entry[:2] in ((b'100644', b'blob'), (b'100755', b'blob'))
 
 
 def publish(api, checkout: Path, revision: str, data: bytes, message: str) -> str:
@@ -418,8 +425,11 @@ def publish(api, checkout: Path, revision: str, data: bytes, message: str) -> st
         raise RebuildError(f'the hub moved to {current} since {revision} was read; nothing published')
     # The hub may store the manifest inline or, if its preupload says so, as an LFS pointer.
     accepted = (data, lfs_pointer(data))
-    present = git(checkout, 'ls-tree', '-z', revision, '--', path)
-    if present and git(checkout, 'cat-file', 'blob', f'{revision}:{path}') in accepted:
+    # Read before the upload, so a tree this cannot read stops the run before anything is committed.
+    before = leaves(checkout, revision)
+    key = path.encode()
+    # A symlink (mode 120000) stores its target as blob bytes; the same bytes there are not the manifest.
+    if regular_blob(before.get(key)) and git(checkout, 'cat-file', 'blob', f'{revision}:{path}') in accepted:
         return revision
     info = api.upload_file(
         path_or_fileobj=data,
@@ -435,10 +445,14 @@ def publish(api, checkout: Path, revision: str, data: bytes, message: str) -> st
     parents = git(checkout, 'rev-list', '--parents', '-n', '1', commit).decode().split()
     if parents != [commit, revision]:
         raise RebuildError(f'{commit} is not a commit on {revision} (parents {parents[1:]})')
-    before, after = leaves(checkout, revision), leaves(checkout, commit)
+    after = leaves(checkout, commit)
     changed = sorted(p for p in before.keys() | after.keys() if before.get(p) != after.get(p))
-    if changed != [path]:
-        raise RebuildError(f'{commit} changes {changed[:10]}, not only {path}; it is not this upload')
+    if changed != [key]:
+        shown = [p.decode(errors='backslashreplace') for p in changed[:10]]
+        raise RebuildError(f'{commit} changes {shown}, not only {path}; it is not this upload')
+    if not regular_blob(after[key]):
+        mode = after[key][0].decode()
+        raise RebuildError(f'the manifest at {commit} is not a regular file (mode {mode}); it is not this upload')
     if git(checkout, 'cat-file', 'blob', f'{commit}:{path}') not in accepted:
         raise RebuildError(f'the manifest at {commit} is not the one uploaded')
     return commit

@@ -222,7 +222,7 @@ class GitHub:
             path = self.origin / rel
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_bytes(data)
-        git(self.origin, 'add', '-A')
+        git(self.origin, 'add', '--', *files)  # like the hub's commit API, only the paths given
         git(self.origin, 'commit', '-q', '-m', message)
 
     def repo_info(self, repo_id, *, repo_type, revision=None):
