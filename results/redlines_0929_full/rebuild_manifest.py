@@ -43,7 +43,10 @@ MANIFEST = f'run/{hub.MANIFEST_NAME}'
 UPLOAD_LISTS = ('upload_20261025.manifest.tsv',)
 # The only pointer form the run's files have (all 12,509 on 2026-10-26); anything else that
 # starts like a pointer refuses rather than being hashed as inline bytes.
-LFS_POINTER = re.compile(rb'version https://git-lfs\.github\.com/spec/v1\noid sha256:([0-9a-f]{64})\nsize ([0-9]+)\n')
+LFS_POINTER = re.compile(
+    rb'version https://git-lfs\.github\.com/spec/v1\noid sha256:([0-9a-f]{64})\nsize (0|[1-9][0-9]*)\n'
+)
+UPLOAD_LIST_HEADER = ['key', 'size', 'sha256']
 URL = f'https://huggingface.co/datasets/{hub.RESULTS_REPO}'
 NO_LFS = ('-c', 'filter.lfs.smudge=', '-c', 'filter.lfs.process=', '-c', 'filter.lfs.required=false')
 
@@ -59,8 +62,10 @@ class HubFile:
 
 
 def git(checkout: Path, *args: str, input: bytes | None = None) -> bytes:
-    # Replace refs could rewrite the history the records are read from.
-    env = os.environ | {'GIT_LFS_SKIP_SMUDGE': '1', 'GIT_NO_REPLACE_OBJECTS': '1'}
+    # Replace refs could rewrite the history the records are read from; without lazy fetching a
+    # blob-filtered clone could not read an old record at all.
+    env = {k: v for k, v in os.environ.items() if k != 'GIT_NO_LAZY_FETCH'}
+    env |= {'GIT_LFS_SKIP_SMUDGE': '1', 'GIT_NO_REPLACE_OBJECTS': '1'}
     run = subprocess.run(['git', '-C', str(checkout), *args], check=True, capture_output=True, env=env, input=input)
     return run.stdout
 
@@ -74,7 +79,7 @@ def lfs_oid(data: bytes) -> str | None:
     if not data.startswith(b'version https://git-lfs'):
         return None
     pointer = LFS_POINTER.fullmatch(data)
-    if pointer is None:
+    if pointer is None or int(pointer[2]) >= 2**63:
         raise RebuildError(f'not a canonical LFS pointer: {data[:200]!r}')
     return pointer[1].decode()
 
@@ -106,14 +111,22 @@ def unique(pairs, where: str) -> dict:
     return dict(pairs)
 
 
-def parse_record(name: str, raw: bytes, label: str) -> dict[str, str]:
+def parse_record(name: str, raw: bytes, label: str, fetch_lfs=None) -> dict[str, str]:
+    """A record's ``{path: sha256}``; one stored in LFS is fetched and must match its pointer."""
     if lfs_oid(raw) is not None:
-        raise RebuildError(f'{label} is stored in LFS; records are read from git only')
+        if fetch_lfs is None:
+            raise RebuildError(f'{label} is stored in LFS and no LFS fetcher was given')
+        content = fetch_lfs()
+        if lfs_pointer(content) != raw:
+            raise RebuildError(f'{label} is stored in LFS and the fetched bytes do not match its pointer')
+        raw = content
     text = raw.decode()
     if name == MANIFEST:
         return json.loads(text, object_pairs_hook=lambda pairs: unique(pairs, label))['files']
-    rows = csv.DictReader(io.StringIO(text), delimiter='\t')
-    return unique([(row['key'], row['sha256']) for row in rows], label)
+    rows = list(csv.reader(io.StringIO(text), delimiter='\t'))
+    if not rows or rows[0] != UPLOAD_LIST_HEADER or any(len(row) != len(UPLOAD_LIST_HEADER) for row in rows):
+        raise RebuildError(f'{label} is not a {"/".join(UPLOAD_LIST_HEADER)} list (header {rows[:1]})')
+    return unique([(key, digest) for key, _size, digest in rows[1:]], label)
 
 
 def records(checkout: Path, revision: str, fetch_lfs=None) -> list[tuple[str, dict[str, str]]]:
@@ -121,7 +134,9 @@ def records(checkout: Path, revision: str, fetch_lfs=None) -> list[tuple[str, di
 
     A record is a version as one commit introduced it: its blob differs from every parent's, merges
     included. Records are ranked by that commit in commit order, not commit time (two versions can
-    share a second), so a list left unchanged never outranks a manifest written after it.
+    share a second), so a list left unchanged never outranks a manifest written after it. Paths
+    are read from each commit's tree, so a blob not fetched yet is never taken for an absent file.
+    ``fetch_lfs(commit, path)`` returns the bytes of a record stored in LFS.
     """
     # A shallow clone or a grafts file stops the history before the oldest versions.
     if git(checkout, 'rev-parse', '--is-shallow-repository').strip() != b'false':
@@ -134,24 +149,30 @@ def records(checkout: Path, revision: str, fetch_lfs=None) -> list[tuple[str, di
     ]
     commits = [line[0] for line in reversed(lines)]
     parents = {line[0]: line[1:] for line in lines}
+    names = {f'{REPO_PREFIX}/{name}': name for name in (MANIFEST, *UPLOAD_LISTS)}
+    blobs: dict[str, dict[str, str]] = {commit: {} for commit in commits}
+    for commit in commits:
+        for entry in git(checkout, 'ls-tree', '-z', '--full-tree', commit, '--', *names).split(b'\0'):
+            if entry:
+                meta, path = entry.decode().split('\t', 1)
+                _mode, kind, oid = meta.split()
+                if kind == 'blob' and path in names:
+                    blobs[commit][path] = oid
     found = []
-    for order, name in enumerate((MANIFEST, *UPLOAD_LISTS)):
-        path = f'{REPO_PREFIX}/{name}'
-        query = ''.join(f'{c}:{path}\n' for c in commits).encode()
-        answers = git(checkout, 'cat-file', '--batch-check=%(objectname)', input=query).decode().splitlines()
-        blobs = {c: None if a.endswith(' missing') else a for c, a in zip(commits, answers, strict=True)}
-        for rank, commit in enumerate(commits):
-            blob = blobs[commit]
-            if blob is not None and all(blobs[p] != blob for p in parents[commit]):
-                found.append((rank, order, commit, name, blob))
+    for rank, commit in enumerate(commits):
+        for order, path in enumerate(names):
+            blob = blobs[commit].get(path)
+            if blob is not None and all(blobs[p].get(path) != blob for p in parents[commit]):
+                found.append((rank, order, commit, path, blob))
     found.sort(key=lambda r: (r[0], r[1]))
     parsed = {}
     history = []
-    for _, _, commit, name, blob in found:
-        label = f'{commit[:9]} {name}'
-        if (name, blob) not in parsed:
-            parsed[name, blob] = parse_record(name, git(checkout, 'cat-file', 'blob', blob), label)
-        history.append((label, parsed[name, blob]))
+    for _, _, commit, path, blob in found:
+        label = f'{commit[:9]} {names[path]}'
+        if blob not in parsed:
+            fetch = None if fetch_lfs is None else (lambda c=commit, p=path: fetch_lfs(c, p))
+            parsed[blob] = parse_record(names[path], git(checkout, 'cat-file', 'blob', blob), label, fetch)
+        history.append((label, parsed[blob]))
     return history
 
 
@@ -212,9 +233,10 @@ def checkout_hub(dest: Path, revision: str) -> None:
     git(dest, *NO_LFS, 'checkout', '-q', '--detach', revision)
 
 
-def build(checkout: Path, revision: str) -> tuple[dict[str, str], dict]:
+def build(checkout: Path, revision: str, fetch_lfs=None) -> tuple[dict[str, str], dict]:
     root = checkout / REPO_PREFIX
-    return rebuild(hub_tree(checkout, revision), records(checkout, revision), lambda rel: (root / rel).read_bytes())
+    history = records(checkout, revision, fetch_lfs)
+    return rebuild(hub_tree(checkout, revision), history, lambda rel: (root / rel).read_bytes())
 
 
 def publish(api, checkout: Path, revision: str, data: bytes, message: str) -> str:
@@ -270,7 +292,15 @@ def main() -> None:
     clone = a.checkout or Path(tempfile.mkdtemp(prefix='redlines_0929_full_hub_')) / 'hub'
     try:
         checkout_hub(clone, revision)
-        built, report = build(clone, revision)
+
+        def fetch_lfs(commit: str, path: str) -> bytes:
+            with tempfile.TemporaryDirectory() as scratch:
+                got = api.hf_hub_download(
+                    hub.RESULTS_REPO, path, repo_type=hub.REPO_TYPE, revision=commit, local_dir=scratch
+                )
+                return Path(got).read_bytes()
+
+        built, report = build(clone, revision, fetch_lfs)
         path = hub.write_manifest(out, path=out / hub.MANIFEST_NAME, files=built)
         report |= {'revision': revision, 'manifest_sha256': hub.sha256_file(path)}
         (out / 'report.json').write_text(json.dumps(report, indent=1) + '\n')
