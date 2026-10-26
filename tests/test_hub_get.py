@@ -636,3 +636,17 @@ def test_dry_run_never_writes_a_probe(tmp_path: Path, monkeypatch: pytest.Monkey
         assert "one file" in str(exc)
     assert list(dest.iterdir()) == []
     assert api.downloads() == []
+
+
+def test_a_replaced_file_a_failed_rollback_kept_is_never_overwritten(tmp_path: Path) -> None:
+    """A rollback that could not restore a file leaves it in the staging folder; the next run must not clobber it."""
+    dest = tmp_path / "dest"
+    dest.mkdir()
+    (dest / "RUN.md").write_bytes(b"newer local\n")
+    kept = hub_get.staging_dir(dest, SHA) / ".replaced" / "RUN.md"
+    kept.parent.mkdir(parents=True)
+    kept.write_bytes(b"the only copy of the original\n")
+    with pytest.raises(hub_get.GetError, match=re.escape(str(kept))):
+        hub_get.get(preset(dest), api=PinnedHub(FILES), on_conflict="overwrite")
+    assert kept.read_bytes() == b"the only copy of the original\n"
+    assert (dest / "RUN.md").read_bytes() == b"newer local\n"
