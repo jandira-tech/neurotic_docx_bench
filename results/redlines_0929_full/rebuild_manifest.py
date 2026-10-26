@@ -175,7 +175,7 @@ def build(checkout: Path, revision: str) -> tuple[dict[str, str], dict]:
     return rebuild(hub_tree(checkout, revision), records(checkout, revision), lambda rel: (root / rel).read_bytes())
 
 
-def publish(api, revision: str, data: bytes, message: str, *, scratch: Path) -> str:
+def publish(api, checkout: Path, revision: str, data: bytes, message: str) -> str:
     """Commit ``data`` as the run manifest on ``revision``; return the commit, read back."""
     current = api.repo_info(hub.RESULTS_REPO, repo_type=hub.REPO_TYPE).sha
     if current != revision:
@@ -191,10 +191,17 @@ def publish(api, revision: str, data: bytes, message: str, *, scratch: Path) -> 
     commit = next_parent(api, revision, info, message)
     if commit == revision:
         return revision
-    back = api.hf_hub_download(
-        hub.RESULTS_REPO, f'{REPO_PREFIX}/{MANIFEST}', repo_type=hub.REPO_TYPE, revision=commit, local_dir=scratch
-    )
-    if Path(back).read_bytes() != data:
+    with tempfile.TemporaryDirectory() as scratch:
+        back = Path(
+            api.hf_hub_download(
+                hub.RESULTS_REPO,
+                f'{REPO_PREFIX}/{MANIFEST}',
+                repo_type=hub.REPO_TYPE,
+                revision=commit,
+                local_dir=scratch,
+            )
+        ).read_bytes()
+    if back != data:
         raise RebuildError(f'the manifest read back from {commit} is not the one uploaded')
     return commit
 
@@ -230,7 +237,7 @@ def main() -> None:
     print(f'  wrote {path} and {out / "report.json"}')
     if a.publish:
         message = f'redlines_0929_full: {MANIFEST} rebuilt from the hub tree ({report["n_files"]} files, issue #76)'
-        commit = publish(api, revision, path.read_bytes(), message, scratch=out / 'readback')
+        commit = publish(api, clone, revision, path.read_bytes(), message)
         print(f'published {commit}' if commit != revision else 'the hub already has this manifest', flush=True)
 
 

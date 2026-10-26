@@ -115,6 +115,25 @@ def test_an_lfs_pointer_whose_oid_is_not_a_sha256_refuses(rebuild):
         rebuild.rebuild(tree_of(rebuild, {'b/y.pdf': bad}), [], {'b/y.pdf': bad}.__getitem__)
 
 
+@pytest.mark.parametrize(
+    'bad',
+    [
+        b'version https://git-lfs.github.com/spec/v1\noid ' + b'a' * 64 + b'\nsize 9\n',
+        b'version https://git-lfs.github.com/spec/v1\noid sha256:'
+        + b'a' * 64
+        + b'\noid sha256:'
+        + b'b' * 64
+        + b'\nsize 9\n',
+        b'version https://git-lfs.github.com/spec/v1\noid sha256:' + b'a' * 64 + b'\nsize 9\nsomething else',
+        b'version https://git-lfs.github.com/spec/v1\r\noid sha256:' + b'a' * 64 + b'\r\nsize 9\r\n',
+    ],
+    ids=['no-sha256-prefix', 'two-oids', 'trailing-text', 'crlf'],
+)
+def test_a_pointer_that_is_not_canonical_refuses(rebuild, bad):
+    with pytest.raises(rebuild.RebuildError, match='LFS pointer'):
+        rebuild.rebuild(tree_of(rebuild, {'b/y.pdf': bad}), [], {'b/y.pdf': bad}.__getitem__)
+
+
 @pytest.fixture
 def checkout(tmp_path):
     """A dataset with two manifest versions and the 0.13.0 upload list, one commit each day."""
@@ -181,19 +200,27 @@ def test_build_reads_the_checkout(rebuild, checkout):
     assert report['first_recorded'] == ['d/new.docx', 'upload_20261025.manifest.tsv']
 
 
-class CommitHub:
-    """One branch as a list of commits, newest last; each commit maps repo paths to bytes."""
+class GitHub:
+    """The hub's commit API over a real git repository standing in for the dataset."""
 
-    def __init__(self, files: dict[str, bytes]):
-        self.log = [SimpleNamespace(commit_id=HEAD, title='before', files=dict(files))]
+    def __init__(self, origin: Path, before_upload=None):
+        self.origin = origin
+        self.before_upload = before_upload
         self.uploads: list[dict] = []
 
-    def foreign_commit(self) -> None:
-        files = dict(self.log[-1].files) | {f'{PREFIX}/run/RUN.md': b'someone else'}
-        self.log.append(SimpleNamespace(commit_id=f'{len(self.log):040x}', title='foreign', files=files))
+    def head(self) -> str:
+        return git(self.origin, 'rev-parse', 'HEAD')
+
+    def commit(self, files: dict[str, bytes], message: str) -> None:
+        for rel, data in files.items():
+            path = self.origin / rel
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes(data)
+        git(self.origin, 'add', '-A')
+        git(self.origin, 'commit', '-q', '-m', message)
 
     def repo_info(self, repo_id, *, repo_type, revision=None):
-        return SimpleNamespace(sha=self.log[-1].commit_id)
+        return SimpleNamespace(sha=self.head())
 
     def upload_file(self, *, path_or_fileobj, path_in_repo, repo_id, repo_type, commit_message, parent_commit=None):
         self.uploads.append({
@@ -201,56 +228,79 @@ class CommitHub:
             'parent_commit': parent_commit,
             'commit_message': commit_message,
         })
-        head = self.log[-1]
-        if head.files.get(path_in_repo) == path_or_fileobj:
+        if self.before_upload:
+            self.before_upload(self)
+        if (self.origin / path_in_repo).read_bytes() == path_or_fileobj:
             # huggingface_hub returns the branch head without a commit or a parent check
-            return SimpleNamespace(oid=head.commit_id)
-        if parent_commit is not None and parent_commit != head.commit_id:
+            return SimpleNamespace(oid=self.head())
+        if parent_commit is not None and parent_commit != self.head():
             request = httpx2.Request('POST', 'https://huggingface.co/api/commit')
             raise HfHubHTTPError('412 parent moved', response=httpx2.Response(412, request=request))
-        files = dict(head.files) | {path_in_repo: path_or_fileobj}
-        self.log.append(SimpleNamespace(commit_id=f'{len(self.log):040x}', title=commit_message, files=files))
-        return SimpleNamespace(oid=self.log[-1].commit_id)
+        self.commit({path_in_repo: path_or_fileobj}, commit_message)
+        return SimpleNamespace(oid=self.head())
 
     def list_repo_commits(self, repo_id, *, repo_type, revision=None):
-        ids = [c.commit_id for c in self.log]
-        return [
-            SimpleNamespace(commit_id=c.commit_id, title=c.title)
-            for c in reversed(self.log[: ids.index(revision) + 1])
-        ]
+        log = git(self.origin, 'log', '--format=%H %s', revision).splitlines()
+        return [SimpleNamespace(commit_id=line[:40], title=line[41:]) for line in log]
 
     def hf_hub_download(self, repo_id, filename, *, repo_type, revision=None, local_dir=None):
-        files = next(c for c in self.log if c.commit_id == revision).files
         out = Path(local_dir) / filename
         out.parent.mkdir(parents=True, exist_ok=True)
-        out.write_bytes(files[filename])
+        out.write_bytes(
+            subprocess.run(
+                ['git', 'show', f'{revision}:{filename}'], cwd=self.origin, check=True, capture_output=True
+            ).stdout
+        )
         return str(out)
 
 
-def test_publish_commits_on_the_head_it_read_and_reads_it_back(rebuild, tmp_path):
-    api = CommitHub({f'{PREFIX}/{MANIFEST}': manifest({})})
+@pytest.fixture
+def hub_pair(tmp_path):
+    """A repository standing in for the dataset, and a clone of it."""
+    origin = tmp_path / 'origin'
+    origin.mkdir()
+    git(origin, 'init', '-q', '-b', 'main')
+    git(origin, 'config', 'user.email', 't@example.com')
+    git(origin, 'config', 'user.name', 't')
+    api = GitHub(origin)
+    api.commit({f'{PREFIX}/{MANIFEST}': manifest({})}, 'before')
+    clone = tmp_path / 'clone'
+    git(tmp_path, 'clone', '-q', f'file://{origin}', str(clone))
+    return SimpleNamespace(api=api, clone=clone, head=api.head())
+
+
+def test_publish_commits_on_the_head_it_read_and_checks_it_through_git(rebuild, hub_pair):
     data = manifest({'a/x.docx': sha(b'inline')})
-    commit = rebuild.publish(api, HEAD, data, 'rebuild', scratch=tmp_path)
-    assert commit == api.log[-1].commit_id != HEAD
-    assert api.uploads == [
-        {'path_in_repo': f'{PREFIX}/{MANIFEST}', 'parent_commit': HEAD, 'commit_message': 'rebuild'}
+    commit = rebuild.publish(hub_pair.api, hub_pair.clone, hub_pair.head, data, 'rebuild')
+    assert commit == hub_pair.api.head() != hub_pair.head
+    assert hub_pair.api.uploads == [
+        {'path_in_repo': f'{PREFIX}/{MANIFEST}', 'parent_commit': hub_pair.head, 'commit_message': 'rebuild'}
     ]
-    assert api.log[-1].files[f'{PREFIX}/{MANIFEST}'] == data
+    assert git(hub_pair.clone, 'show', f'{commit}:{PREFIX}/{MANIFEST}') + '\n' == data.decode()
 
 
-def test_publish_refuses_when_the_hub_moved_since_it_was_read(rebuild, tmp_path):
-    api = CommitHub({f'{PREFIX}/{MANIFEST}': manifest({})})
-    api.foreign_commit()
+def test_publish_refuses_when_the_hub_moved_since_it_was_read(rebuild, hub_pair):
+    hub_pair.api.commit({f'{PREFIX}/run/RUN.md': b'someone else'}, 'foreign')
     with pytest.raises(rebuild.RebuildError, match='moved'):
-        rebuild.publish(api, HEAD, manifest({'a/x.docx': sha(b'inline')}), 'rebuild', scratch=tmp_path)
-    assert api.uploads == []
+        rebuild.publish(hub_pair.api, hub_pair.clone, hub_pair.head, manifest({'a': sha(b'a')}), 'rebuild')
+    assert hub_pair.api.uploads == []
 
 
-def test_publish_with_nothing_to_change_commits_nothing(rebuild, tmp_path):
+def test_publish_with_nothing_to_change_uploads_nothing(rebuild, hub_pair):
+    assert rebuild.publish(hub_pair.api, hub_pair.clone, hub_pair.head, manifest({}), 'rebuild') == hub_pair.head
+    assert hub_pair.api.uploads == []
+
+
+def test_publish_refuses_a_no_op_that_returns_someone_elses_commit(rebuild, hub_pair):
+    """Another writer commits the same manifest plus a file, under the same title, just before the upload."""
     data = manifest({'a/x.docx': sha(b'inline')})
-    api = CommitHub({f'{PREFIX}/{MANIFEST}': data})
-    assert rebuild.publish(api, HEAD, data, 'rebuild', scratch=tmp_path) == HEAD
-    assert len(api.log) == 1
+
+    def foreign(api):
+        api.commit({f'{PREFIX}/{MANIFEST}': data, f'{PREFIX}/new/unlisted.docx': b'not in the manifest'}, 'rebuild')
+
+    hub_pair.api.before_upload = foreign
+    with pytest.raises(rebuild.RebuildError, match=re.escape('unlisted.docx')):
+        rebuild.publish(hub_pair.api, hub_pair.clone, hub_pair.head, data, 'rebuild')
 
 
 def test_versions_committed_in_the_same_second_keep_their_commit_order(rebuild, tmp_path):
@@ -280,3 +330,32 @@ def test_a_shallow_clone_hides_old_records_and_refuses(rebuild, checkout, tmp_pa
     git(tmp_path, 'clone', '-q', '--depth', '1', f'file://{checkout.repo}', str(shallow))
     with pytest.raises(rebuild.RebuildError, match='shallow'):
         rebuild.records(shallow, 'HEAD')
+
+
+def test_a_manifest_version_made_in_a_merge_is_a_record(rebuild, checkout):
+    repo = checkout.repo
+    git(repo, 'checkout', '-q', '-b', 'side', checkout.first)
+    (repo / 'other' / 'side.txt').write_text('side')
+    git(repo, 'add', '-A')
+    git(repo, 'commit', '-q', '-m', 'side')
+    git(repo, 'checkout', '-q', 'main')
+    git(repo, 'merge', '-q', '--no-ff', '--no-commit', 'side')
+    current = json.loads((repo / PREFIX / MANIFEST).read_text())['files']
+    (repo / PREFIX / MANIFEST).write_bytes(manifest(current | {'a/gone.docx': sha(b'gone')}))
+    git(repo, 'add', '-A')
+    git(repo, 'commit', '-q', '-m', 'merge')
+    with pytest.raises(rebuild.RebuildError, match=re.escape('a/gone.docx')):
+        rebuild.build(repo, 'HEAD')
+
+
+def test_replace_refs_do_not_hide_old_records(rebuild, checkout):
+    git(checkout.repo, 'replace', '--graft', checkout.second)
+    assert len(rebuild.records(checkout.repo, checkout.second)) == 3
+
+
+def test_a_grafts_file_refuses(rebuild, checkout):
+    grafts = checkout.repo / '.git' / 'info' / 'grafts'
+    grafts.parent.mkdir(parents=True, exist_ok=True)
+    grafts.write_text(checkout.second + '\n')
+    with pytest.raises(rebuild.RebuildError, match='grafts'):
+        rebuild.records(checkout.repo, checkout.second)
