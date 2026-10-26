@@ -473,11 +473,14 @@ def failed_before_commit(exc: BaseException) -> bool:
 
     ``create_commit`` sends the preupload and the LFS batch request first and the commit last, once
     (``huggingface_hub/_commit_api.py``: ``/preupload/`` at 764, ``/commit/`` at 1056 through
-    ``get_session().post`` at 1067, never retried; ``lfs.py`` at 185). Only an answer to the SDK's own
-    request (``first_answer``) that is a POST to one of those two URLs of this repo counts. A failure
-    without an answer, or an answer after a redirect, may come from the commit and counts as not
-    known to precede it; so does an LFS upload to a storage host, not told apart from a redirected
-    commit either.
+    ``get_session().post`` at 1067, never retried; ``lfs.py`` at 185; the preupload is retried on a
+    429 or 5xx, each retry a fresh request still before the commit;
+    ``test_the_sdk_sends_the_requests_this_places_in_this_order`` pins them). Only an answer to the
+    SDK's own request (``first_answer``) that is a POST to one of those two URLs of this repo counts. A
+    failure without an answer, or an answer after a redirect, may come from the commit and counts as
+    not known to precede it; so do the LFS and Xet uploads to a storage host (``_upload_xet_files``,
+    ``_commit_api.py`` 552), which precede the commit but are not told apart from a redirected commit.
+    ``upload`` still confirms a "before" against the hub's head (``unpublished``).
     """
     return _posted_to(
         answered_request(exc),
@@ -580,22 +583,44 @@ def upload(api, path: str, data: bytes, message: str, revision: str):
         )
     except HfHubHTTPError as exc:
         if failed_before_commit(exc):
-            raise RebuildError(f'the upload failed before its commit request ({exc}); nothing published') from exc
+            unpublished(api, revision, exc, f'the upload failed before its commit request ({exc})')
         if refused_commit(exc):
-            raise RebuildError(f'the hub refused the upload ({exc}); nothing published') from exc
+            unpublished(api, revision, exc, f'the hub refused the upload ({exc})')
         raise UnverifiedPublish(
             f'upload_file failed with {exc}, after which the hub may hold the manifest; rerun to check it '
             '(a manifest already there is recognised)'
         ) from exc
     except Exception as exc:  # no answer: the commit may have gone through, as with a lost response
         if failed_before_commit(exc):
-            raise RebuildError(
-                f'the upload failed before its commit request ({type(exc).__name__}: {exc}); nothing published'
-            ) from exc
+            unpublished(api, revision, exc, f'the upload failed before its commit request ({type(exc).__name__}: {exc})')
         raise UnverifiedPublish(
             f'upload_file failed without an answer from the hub ({type(exc).__name__}: {exc}); the hub may hold '
             'the manifest now; rerun to check it (a manifest already there is recognised)'
         ) from exc
+
+
+def unpublished(api, revision: str, exc: BaseException, what: str):
+    """Raise ``what``, with "nothing published", once the hub's branch is confirmed still at ``revision``.
+
+    An error's answer can mislead from below the SDK: a response hook that raises before httpx2 attaches
+    the redirect history makes an answer after a landed commit look like the SDK's own request's; a
+    transport or proxy that retries the commit after losing the answer to a first attempt that landed
+    gets a 412 with an empty history. A branch still at ``revision`` holds no commit, whatever the
+    error says; a moved branch may hold this upload's commit, and raises ``UnverifiedPublish``.
+    """
+    try:
+        head = api.repo_info(hub.RESULTS_REPO, repo_type=hub.REPO_TYPE, revision=BRANCH).sha
+    except Exception as check:
+        raise UnverifiedPublish(
+            f'{what}, but reading the hub\'s head to confirm nothing was published failed ({check}); the hub '
+            'may hold the manifest now; rerun to check it (a manifest already there is recognised)'
+        ) from exc
+    if head != revision:
+        raise UnverifiedPublish(
+            f'{what}, but {BRANCH} moved to {head} since {revision}, maybe by this upload; the hub may hold the '
+            'manifest now; rerun to check it (a manifest already there is recognised)'
+        ) from exc
+    raise RebuildError(f'{what}; {BRANCH} is still at {revision}: nothing published') from exc
 
 
 def verify_upload(checkout: Path, revision: str, commit: str, before: dict, data: bytes) -> str:
@@ -630,12 +655,13 @@ def main() -> None:
     ap.add_argument('--seed', type=int, default=0, help='LFS sampling seed (default: 0)')
     a = ap.parse_args()
     api = hub.default_api()
-    revision = a.revision or api.repo_info(hub.RESULTS_REPO, repo_type=hub.REPO_TYPE, revision=BRANCH).sha
-    out = a.out or Path(tempfile.mkdtemp(prefix='redlines_0929_full_manifest_'))
-    out.mkdir(parents=True, exist_ok=True)
     clone = a.checkout or Path(tempfile.mkdtemp(prefix='redlines_0929_full_hub_')) / 'hub'
     publishing = False
+    published = None
     try:
+        revision = a.revision or api.repo_info(hub.RESULTS_REPO, repo_type=hub.REPO_TYPE, revision=BRANCH).sha
+        out = a.out or Path(tempfile.mkdtemp(prefix='redlines_0929_full_manifest_'))
+        out.mkdir(parents=True, exist_ok=True)
         checkout_hub(clone, revision)
 
         def fetch_lfs(commit: str, path: str) -> bytes:
@@ -665,14 +691,19 @@ def main() -> None:
             message = (
                 f'redlines_0929_full: {MANIFEST} rebuilt from the hub tree ({report["n_files"]} files, issue #76)'
             )
-            publishing = True  # from here on publish() says what a Ctrl-C left
-            commit = publish(api, clone, revision, data, message)
+            publishing = True  # inside publish() its own notes say what a Ctrl-C left
+            commit = published = publish(api, clone, revision, data, message)
             # A foreign commit that made the same change is indistinguishable from this upload: say what is known.
             where = f'{commit}, a commit on {revision} that changes only it' if commit != revision else revision
             print(f'the hub holds this manifest at {where}', flush=True)
     except KeyboardInterrupt as exc:
-        if not publishing:
-            exc.add_note('stopped before the upload: nothing published')
+        if not getattr(exc, '__notes__', None):
+            if published is not None:
+                exc.add_note(f'stopped after publishing: the hub holds this manifest at {published}')
+            elif publishing:  # as publish() was called or returned: the two instants look the same here
+                exc.add_note('stopped as the upload began or ended: the hub may hold the manifest now; rerun to check it')
+            else:
+                exc.add_note('stopped before the upload: nothing published')
         raise
     finally:
         if a.checkout is None:

@@ -1254,3 +1254,63 @@ def test_ctrl_c_after_publish_returned_says_the_hub_holds_the_manifest(rebuild, 
     notes = ' '.join(getattr(exc.value, '__notes__', ()))
     assert hub_pair.api.head() != before  # published
     assert 'holds this manifest' in notes and hub_pair.api.head() in notes
+
+
+# Review round 14, mcode (#78)
+
+
+def test_the_sdk_sends_the_requests_this_places_in_this_order(rebuild):
+    """The real HfApi against a mock hub: the preupload first, the commit last and once, at the URLs placed.
+
+    Fails if a huggingface_hub upgrade renames an endpoint, retries the commit or sends anything after it.
+    """
+    import huggingface_hub
+    from huggingface_hub import HfApi
+    from huggingface_hub.utils._http import default_client_factory
+
+    def hub_answering(statuses):
+        sent = []
+
+        def handler(request):
+            sent.append((request.method, request.url.path))
+            kind = 'preupload' if '/preupload/' in request.url.path else 'commit'
+            status = statuses.get(kind, 200)
+            if status != 200:
+                return httpx2.Response(status, json={'error': kind}, request=request)
+            if kind == 'preupload':
+                files = json.loads(request.content)['files']
+                return httpx2.Response(200, json={'files': [
+                    {'path': f['path'], 'uploadMode': 'regular', 'shouldIgnore': False, 'oid': None} for f in files
+                ]})
+            return httpx2.Response(200, json={
+                'commitUrl': f'https://huggingface.co/{hub.REPO_TYPE}s/{hub.RESULTS_REPO}/commit/{"b" * 40}',
+                'commitOid': 'b' * 40,
+            })
+
+        return sent, handler
+
+    def upload(statuses):
+        sent, handler = hub_answering(statuses)
+        huggingface_hub.set_client_factory(lambda: httpx2.Client(transport=httpx2.MockTransport(handler)))
+        try:
+            api = HfApi(endpoint='https://huggingface.co', token='hf_test_not_a_real_token')
+            try:
+                api.upload_file(
+                    path_or_fileobj=b'{}\n', path_in_repo=f'{PREFIX}/{MANIFEST}', repo_id=hub.RESULTS_REPO,
+                    repo_type=hub.REPO_TYPE, commit_message='m', parent_commit='a' * 40, revision='main',
+                )
+            except HfHubHTTPError as exc:
+                return sent, exc
+            return sent, None
+        finally:
+            huggingface_hub.set_client_factory(default_client_factory)
+            huggingface_hub.close_session()
+
+    preupload = ('POST', f'/api/{hub.REPO_TYPE}s/{hub.RESULTS_REPO}/preupload/main')
+    commit = ('POST', f'/api/{hub.REPO_TYPE}s/{hub.RESULTS_REPO}/commit/main')
+    sent, failed = upload({})
+    assert (sent, failed) == ([preupload, commit], None)
+    sent, failed = upload({'preupload': 400})  # a 5xx is retried with backoff (still before the commit)
+    assert sent == [preupload] and rebuild.failed_before_commit(failed) and not rebuild.refused_commit(failed)
+    sent, failed = upload({'commit': 412})
+    assert sent == [preupload, commit] and rebuild.refused_commit(failed) and not rebuild.failed_before_commit(failed)
