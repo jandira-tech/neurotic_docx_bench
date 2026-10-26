@@ -442,7 +442,8 @@ uv run bench hub get --repo arthrod/neurotic_docx_bench --path outputs/release_0
   with neither refuses before any download), so a file written meanwhile is never overwritten, and
   the staged copies go only after the last file is in place. A
   failed or interrupted (Ctrl-C) move withdraws every file already placed and restores every file
-  `--overwrite` replaced, except a file someone else changed after the run placed it, which stays;
+  `--overwrite` replaced (a rename or link the disk reports failed is checked by identity first, since NFS
+  may report one it made as failed), except a file someone else changed after the run placed it, which stays;
   the error names it and where the file it replaced is kept, and a later run refuses to overwrite
   that kept file. On success the run removes only what it staged; on failure the folder is kept for
   a resumable rerun. A rerun names what an earlier run left in the staging folder (replaced files in

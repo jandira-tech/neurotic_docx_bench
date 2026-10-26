@@ -26,7 +26,9 @@
    of its staged copy; the staged copies are removed only after the last one is in place. A failed
    or interrupted (Ctrl-C) move withdraws every file already placed and restores every file
    ``overwrite`` replaced, except a file someone else changed after this run placed it, which
-   stays; the error names each such file and where the one it replaced is kept. On success the run
+   stays; the error names each such file and where the one it replaced is kept. A rename or link
+   the disk reports failed is looked at first: NFS may report one it made as failed, and a step
+   made is recorded as made. On success the run
    removes what it put in the staging folder and nothing else; on failure the folder is kept (minus
    the files that failed to verify), so a rerun resumes. A rerun also takes the second name off
    any staged file that is one of the destination's files (what a killed move leaves), and names
@@ -284,6 +286,13 @@ def identity(st: os.stat_result) -> Identity:
 
 
 def _identity_at(path: Path) -> Identity | None:
+    """The identity of the file at ``path``, or None when there is none.
+
+    Each step of the move asks it after an error, before trusting the error: NFS may report a rename or
+    a link it made as failed (the server made it, then answered the request's retransmission with ENOENT
+    or EEXIST; rename(2), link(2): "use stat(2) to find out if the link got created"). A step made is
+    recorded as made, so the journal never misses a file.
+    """
     try:
         return identity(os.lstat(path))
     except FileNotFoundError:
@@ -346,8 +355,12 @@ def _copy_new(staged: Path, target: Path, scratch: Path) -> Identity:
             placed = identity(os.fstat(out.fileno()))
         try:
             _rename_new(copy, target)
-        except FileExistsError as exc:
-            raise GetError(f"{target} appeared while files were being moved into place") from exc
+        except OSError as exc:
+            if _identity_at(target) == placed:  # made after all (NFS: see _identity_at)
+                return placed
+            if isinstance(exc, FileExistsError):
+                raise GetError(f"{target} appeared while files were being moved into place") from exc
+            raise
     except BaseException:
         try:
             copy.unlink(missing_ok=True)  # in the staging folder, which a failed run keeps anyway
@@ -368,10 +381,12 @@ def place(staged: Path, target: Path, scratch: Path) -> Identity:
     placed = identity(os.lstat(staged))  # before the link, which changes neither inode, size nor mtime
     try:
         os.link(staged, target)  # fails on an existing target, even one written a moment ago
-    except FileExistsError as exc:
-        raise GetError(f"{target} appeared while files were being moved into place") from exc
-    except OSError:  # a disk without hard links
-        return _copy_new(staged, target, scratch)
+    except OSError as exc:
+        if _identity_at(target) == placed:  # the staged file's own second name: made after all (NFS: see _identity_at)
+            return placed
+        if isinstance(exc, FileExistsError):
+            raise GetError(f"{target} appeared while files were being moved into place") from exc
+        return _copy_new(staged, target, scratch)  # a disk without hard links
     return placed
 
 
@@ -384,7 +399,11 @@ def _withdraw(target: Path, placed: Identity, staging: Path) -> str | None:
     if _identity_at(target) != placed:
         return f"{target} changed after this run moved it there; left as it is"
     hold = Path(tempfile.mkdtemp(prefix=".withdrawn-", dir=staging)) / "file"
-    os.rename(target, hold)  # a fresh name in a fresh folder: nothing there to overwrite
+    try:
+        os.rename(target, hold)  # a fresh name in a fresh folder: nothing there to overwrite
+    except OSError:
+        if _identity_at(target) is not None or _identity_at(hold) is None:  # not made (NFS: see _identity_at)
+            raise
     if _identity_at(hold) != placed:  # replaced in the instant between the look and the rename
         try:
             place(hold, target, staging / _SCRATCH)
@@ -1240,7 +1259,13 @@ def _move_held(
                 if not m.target.is_file():
                     raise GetError(f"{m.target} is no longer a regular file; it stays as it is")
                 m.backup.parent.mkdir(parents=True, exist_ok=True)
-                os.replace(m.target, m.backup)
+                local = _identity_at(m.target)
+                try:
+                    os.replace(m.target, m.backup)
+                except OSError:
+                    # Not made, or made (NFS: see _identity_at): then the local file is at m.backup.
+                    if _identity_at(m.target) is not None or _identity_at(m.backup) != local:
+                        raise
                 m.backed_up = True
                 ctrl_c.check()
             missing = [d for d in (m.target.parent, *m.target.parent.parents) if not d.exists()]
