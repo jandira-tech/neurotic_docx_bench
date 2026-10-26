@@ -1541,7 +1541,7 @@ def test_ctrl_c_while_a_download_thread_starts_leaves_no_thread_running(
 
     def start(self, *args, **kw):  # the executor registers the thread only after start() returns
         real_start(self, *args, **kw)
-        if self.name.startswith("ThreadPoolExecutor") and not started:
+        if self.name.startswith("hub-get-download") and not started:
             started.append(self)
             os.kill(os.getpid(), signal.SIGINT)
             _spin()
@@ -1659,8 +1659,10 @@ def test_a_second_ctrl_c_stops_waiting_for_a_download_that_never_ends(tmp_path: 
     main = threading.main_thread().ident
     release = threading.Event()
     stalled: list[threading.Thread] = []
+    calls: list[str] = []
 
     def stall(*args, **kw):
+        calls.append(args[1])
         if not stalled:
             stalled.append(threading.current_thread())
             release.wait(6)  # a request that does not come back
@@ -1680,7 +1682,7 @@ def test_a_second_ctrl_c_stops_waiting_for_a_download_that_never_ends(tmp_path: 
         with pytest.raises(BaseException) as exc:
             hub_get.get(preset(dest), api=api, workers=1)
         waited = time.monotonic() - started
-        fetched = len(api.downloads())
+        fetched = len(calls)
         locked = _held_by_another_run(staging)
         running = bool(stalled) and stalled[0].is_alive()
     finally:
@@ -1690,7 +1692,7 @@ def test_a_second_ctrl_c_stops_waiting_for_a_download_that_never_ends(tmp_path: 
             t.join()
     assert exc.type is KeyboardInterrupt, exc.value
     assert waited < 3
-    assert fetched == 1  # the queued downloads never started
+    assert fetched == 1  # only the stalled download started; the queued ones never did
     assert running and locked
     notes = " ".join(getattr(exc.value, "__notes__", ()))
     assert str(staging) in notes and "still running" in notes and "rerun" in notes
