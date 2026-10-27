@@ -664,8 +664,11 @@ def verify_upload(checkout: Path, revision: str, commit: str, before: dict, data
     if changed != [key]:
         shown = [spelled(p) for p in changed[:10]]
         raise RebuildError(f'{commit} changes {shown}, not only {path}; it is not this upload')
-    if not regular_blob(after[key]):
-        mode = after[key][0].decode()
+    entry = after.get(key)
+    if entry is None:  # in the tree before, so the commit removes it
+        raise RebuildError(f'{commit} removes {path}; it is not this upload')
+    if not regular_blob(entry):
+        mode = entry[0].decode()
         raise RebuildError(f'the manifest at {commit} is not a regular file (mode {mode}); it is not this upload')
     if git(checkout, 'cat-file', 'blob', f'{commit}:{path}') not in accepted:
         raise RebuildError(f'the manifest at {commit} is not the one uploaded')
@@ -692,7 +695,7 @@ def main() -> None:
         ap.add_argument('--checkout', type=Path, help='keep the dataset clone here (default: a temporary one)')
         ap.add_argument('--out', type=Path, help='write the manifest and report here (default: a new temporary folder)')
         ap.add_argument('--revision', help='hub commit to read (default: the head)')
-        ap.add_argument('--publish', action='store_true', help='commit the manifest on that revision')
+        ap.add_argument('--publish', action='store_true', help='commit the manifest on that revision, which must be the head')
         ap.add_argument('--lfs-check', type=lfs_limit, default=25, help='LFS downloads to hash (N or all; default: 25)')
         ap.add_argument('--seed', type=int, default=0, help='LFS sampling seed (default: 0)')
         a = ap.parse_args()
@@ -701,6 +704,13 @@ def main() -> None:
             temporary = Path(tempfile.mkdtemp(prefix='redlines_0929_full_hub_'))
         clone = a.checkout or temporary / 'hub'
         revision = a.revision or api.repo_info(hub.RESULTS_REPO, repo_type=hub.REPO_TYPE, revision=BRANCH).sha
+        if a.publish and a.revision is not None:  # publish() commits only on the head: say so before the build
+            head = api.repo_info(hub.RESULTS_REPO, repo_type=hub.REPO_TYPE, revision=BRANCH).sha
+            if head != a.revision:
+                raise RebuildError(
+                    f'--revision {a.revision} is not the head of {BRANCH} ({head}); the manifest is committed only on '
+                    'the head, so nothing published by this run: rerun without --revision, or with the head'
+                )
         out = a.out or Path(tempfile.mkdtemp(prefix='redlines_0929_full_manifest_'))
         out.mkdir(parents=True, exist_ok=True)
         checkout_hub(clone, revision)
