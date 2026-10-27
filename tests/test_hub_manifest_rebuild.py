@@ -2387,6 +2387,32 @@ def test_publish_on_a_given_revision_that_is_not_the_head_refuses_before_the_bui
         run_main(rebuild, hub_pair, tmp_path, monkeypatch, '--publish', '--revision', older)
     said = str(exc.value)
     assert 'moved' not in said, said
-    assert f'--revision {older} is not the head of main ({head})' in said, said
+    assert f'--revision {older} is not {head}, the head of main' in said, said
     assert 'nothing published by this run' in said, said
     assert built == [] and hub_pair.api.uploads == []
+
+
+def test_publish_on_a_short_id_of_the_head_names_the_head_and_asks_for_its_full_id(
+    rebuild, hub_pair, tmp_path, monkeypatch
+):
+    """Round 24, found with mcode's fix: "--revision <the head's first 12 hex> is not the head of main (<head>)" read
+    as false. The refusal compares commit ids as given, so it says what it compared and how to give the head."""
+    head = hub_pair.head
+    with pytest.raises(rebuild.RebuildError) as exc:
+        run_main(rebuild, hub_pair, tmp_path, monkeypatch, '--publish', '--revision', head[:12])
+    said = str(exc.value)
+    assert f'--revision {head[:12]} is not {head}, the head of main' in said, said
+    assert 'its full commit id' in said, said
+    assert hub_pair.api.uploads == []
+
+
+def test_publish_with_revision_main_publishes_on_the_head(rebuild, hub_pair, tmp_path, monkeypatch):
+    """Round 24, found with mcode's fix: --revision main names the head, and was refused as "not the head of main"
+    (before that, read from the clone's own main and refused as "the hub moved"). It is the head, read from the hub."""
+    head = hub_pair.head
+    try:
+        run_main(rebuild, hub_pair, tmp_path, monkeypatch, '--publish', '--revision', 'main')
+    except rebuild.RebuildError as exc:
+        raise AssertionError(f'refused: {exc}') from exc
+    assert [u['parent_commit'] for u in hub_pair.api.uploads] == [head]
+    assert hub_pair.api.head() != head
