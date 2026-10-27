@@ -53,6 +53,7 @@ LFS_POINTER = re.compile(
 )
 UPLOAD_LIST_HEADER = ['key', 'size', 'sha256']
 URL = f'https://huggingface.co/datasets/{hub.RESULTS_REPO}'
+COMMIT_ID = re.compile(r'[0-9a-f]{40}')  # as the hub writes them
 NO_LFS = ('-c', 'filter.lfs.smudge=', '-c', 'filter.lfs.process=', '-c', 'filter.lfs.required=false')
 # The caller's GIT_ variables that git_env() passes on: how the dataset travels over HTTPS, the
 # settings git 2.56.0's http.c reads from the environment (proxy and client certificates, TLS,
@@ -175,7 +176,7 @@ def lfs_oid(data: bytes) -> str | None:
     if not data.startswith(b'version https://git-lfs'):
         return None
     pointer = LFS_POINTER.fullmatch(data)
-    if pointer is None or int(pointer[2]) >= 2**63:
+    if pointer is None or len(pointer[2]) > 19 or int(pointer[2]) >= 2**63:  # 2**63 has 19 digits; int() takes 4300
         raise RebuildError(f'not a canonical LFS pointer: {data[:200]!r}')
     return pointer[1].decode()
 
@@ -376,7 +377,8 @@ def checkout_hub(dest: Path, revision: str) -> None:
     if not (dest / '.git').is_dir():
         dest.parent.mkdir(parents=True, exist_ok=True)
         # --template=: nothing copied from a template folder (hooks, or an objects symlink into another store)
-        git(dest.parent, 'clone', '-q', '--template=', '--filter=blob:none', '--no-checkout', URL, dest.name)
+        # `--`: a folder name that starts with a dash is still the folder
+        git(dest.parent, 'clone', '-q', '--template=', '--filter=blob:none', '--no-checkout', '--', URL, dest.name)
         git(dest, 'sparse-checkout', 'set', '--no-cone', f'{REPO_PREFIX}/')
     else:  # a reused clone must already be sparse on the run folder; making it so would empty its worktree
         try:
@@ -590,6 +592,13 @@ def publish(api, checkout: Path, revision: str, data: bytes, message: str) -> st
                 'compares content ids, not modes, so an entry with this manifest\'s content counts as the manifest '
                 'already there. Nothing published by this run; fix the path on the hub'
             )
+        # not a commit id: git would read `--output=<file>`, say, as an option
+        if not (isinstance(commit, str) and COMMIT_ID.fullmatch(commit)):
+            raise UnverifiedPublish(
+                f'create_commit returned {commit!r}, not a commit id, so this run cannot check it; its commit request '
+                'was sent, so the hub may hold the manifest now; rerun to check it (a manifest already there is '
+                'recognised)'
+            )
         try:
             return verify_upload(checkout, revision, commit, before, data)
         except Exception as exc:
@@ -768,8 +777,11 @@ def main() -> None:
         for flag, given_path in (('--checkout', a.checkout), ('--out', a.out)):
             if given_path is not None and not passable(str(given_path)):
                 ap.error(f'{flag} {str(given_path)!r} names no path a file system can hold')
-        # `--revision "$REV"` with REV unset, say
-        if a.revision is not None and (not a.revision.strip() or not passable(a.revision)):
+        # `--revision "$REV"` with REV unset, say; or `--revision=-x`, which git would read as an option (no commit
+        # id or ref name starts with a dash)
+        if a.revision is not None and (
+            not a.revision.strip() or a.revision.startswith('-') or not passable(a.revision)
+        ):
             ap.error(f'--revision {a.revision!r} names no commit: leave it out to read the head of {BRANCH}')
         api = hub.default_api()
         if a.checkout is None:
@@ -779,6 +791,10 @@ def main() -> None:
         if given is not None and re.fullmatch(r'[0-9a-fA-F]{40}', given):
             given = given.lower()  # a full commit id, in any case, as git takes it
         revision = given or api.repo_info(hub.RESULTS_REPO, repo_type=hub.REPO_TYPE, revision=BRANCH).sha
+        if given is None and not (isinstance(revision, str) and COMMIT_ID.fullmatch(revision)):
+            raise RebuildError(
+                f'the hub names {revision!r} as the head of {BRANCH}, not a commit id; nothing published by this run'
+            )
         if a.publish and given is not None:  # publish() commits only on the head: say so before the build
             head = api.repo_info(hub.RESULTS_REPO, repo_type=hub.REPO_TYPE, revision=BRANCH).sha
             if head != given:  # ids as given: a tag or a short id may name the head, and is still not its id
