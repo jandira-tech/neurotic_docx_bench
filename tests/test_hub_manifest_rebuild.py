@@ -2553,3 +2553,23 @@ def test_publish_on_the_head_s_id_in_capitals_publishes_on_the_head(rebuild, hub
     except rebuild.RebuildError as exc:
         raise AssertionError(f'refused: {exc}') from exc
     assert [u['parent_commit'] for u in hub_pair.api.uploads] == [head]
+
+
+def test_publish_on_a_gitlink_at_the_manifest_path_does_not_call_it_a_folder(rebuild, hub_pair):
+    """Codex, round 26: ls-tree -r -d lists gitlinks beside trees, and folders() kept them, so publish() called a
+    gitlink at the manifest path "an empty folder" and asked for it to be removed. folders() lists trees only; a
+    gitlink there is replaced by the manifest, as a symlink there is (main()'s build refuses either first)."""
+    data = manifest({'a/x.docx': sha(b'inline')})
+    origin = hub_pair.api.origin
+    key = f'{PREFIX}/{MANIFEST}'.encode()
+    tree = tree_with(origin, git(origin, 'rev-parse', f'{hub_pair.head}^{{tree}}'), key,
+                     f'160000 commit {hub_pair.head}'.encode())
+    revision = commit_on(origin, tree, hub_pair.head)
+    git(hub_pair.clone, 'fetch', '-q', 'origin')
+    assert key not in rebuild.folders(hub_pair.clone, revision)
+    try:
+        commit = rebuild.publish(hub_pair.api, hub_pair.clone, revision, data, 'rebuild')
+    except rebuild.RebuildError as exc:
+        raise AssertionError(f'a gitlink is not a folder: {exc}') from None
+    assert rebuild.leaves(hub_pair.clone, commit)[key][:2] == (b'100644', b'blob')
+    assert git(hub_pair.clone, 'cat-file', 'blob', f'{commit}:{PREFIX}/{MANIFEST}') == data
