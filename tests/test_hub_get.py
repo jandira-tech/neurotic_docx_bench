@@ -3162,3 +3162,53 @@ def test_a_give_back_that_fails_with_an_os_error_names_where_the_file_is(
     assert hold.read_bytes() == b"saved again\n"
     assert not (dest / "a.docx").exists()
     assert str(hold) in said, said
+
+
+# Review round 18 (#80)
+
+
+class _CtimeIsMtime:
+    """A stat result whose change time is its mtime: a disk that keeps no change time (FAT has none), or one
+    whose coarse or cached change time does not move within a tick (an NFS attribute cache)."""
+
+    def __init__(self, st: os.stat_result) -> None:
+        self._st = st
+
+    def __getattr__(self, name: str):
+        if name == "st_ctime_ns":
+            return self._st.st_mtime_ns
+        if name == "st_ctime":
+            return self._st.st_mtime
+        return getattr(self._st, name)
+
+
+def test_a_rewrite_on_a_disk_whose_change_time_does_not_move_stays(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Codex, round 18: a placed file is rewritten in place, its size kept and its mtime set back, on a disk
+    whose change time did not move (coarse, cached, or kept as the mtime); a later move fails. The rollback
+    took an unchanged change time for an unchanged file and deleted the rewrite, saying every file was put
+    back. Before a placed file is taken back, its bytes are checked, whatever the change time says."""
+    dest = tmp_path / "dest"
+    real_lstat, real_stat = os.lstat, os.stat
+    rewritten: list[bytes] = []
+
+    def lstat(path, *args, **kw):
+        st = real_lstat(path, *args, **kw)
+        return _CtimeIsMtime(st) if dest in Path(path).parents else st
+
+    def stat_(path, *args, **kw):
+        st = real_stat(path, *args, **kw)
+        return _CtimeIsMtime(st) if isinstance(path, (str, os.PathLike)) and dest in Path(path).parents else st
+
+    monkeypatch.setattr(os, "lstat", lstat)
+    monkeypatch.setattr(os, "stat", stat_)
+    _fails_on_b(monkeypatch, before=lambda: rewritten.append(_rewrite_keeping_size_and_mtime(dest / "a.docx")))
+    with pytest.raises(hub_get.GetError) as info:
+        hub_get.get(preset(dest), api=PinnedHub(FILES))
+    said = str(info.value)
+    assert rewritten
+    assert (dest / "a.docx").exists(), "the rollback deleted a file someone else rewrote"
+    assert (dest / "a.docx").read_bytes() == rewritten[0]
+    assert "every file already moved was put back" not in said, said
+    assert "changed after this run moved it there" in said, said
