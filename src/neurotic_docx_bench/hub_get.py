@@ -18,8 +18,8 @@
    name with a rename refusing an existing file: ``renamex_np(RENAME_EXCL)`` on macOS,
    ``renameat2(RENAME_NOREPLACE)`` on Linux; a disk with neither refuses before any download, and a
    file whose link fails on a disk that takes them is copied only if that rename works there; a disk
-   whose rename gives a file a new identity, as macOS's FAT does an empty one, refuses before any
-   download too, since the rollback knows this run's files by their identity), so
+   where closing or renaming a file gives it a new identity, as macOS's FAT's rename does an empty one,
+   refuses before any download too, since the rollback knows this run's files by their identity), so
    one written meanwhile is never overwritten either, and a kill never leaves a part-written or
    empty file in the destination.
 4. **Staged, all or nothing.** Files land in ``files/`` of a staging folder on the destination's
@@ -564,22 +564,23 @@ def _links_work(scratch: Path) -> bool:
             f"the disk of {scratch} takes no hard links, so each file would be copied into place, but it has no "
             f"rename that refuses to replace a file ({why}); a file written meanwhile could be lost"
         )
-    moved = _renamed_identity(scratch)
-    if moved is not None:
+    changed = _renamed_identity(scratch)
+    if changed is not None:
         raise GetError(
-            f"a rename on the disk of {scratch} gives a file a new identity ({moved}), so after a failure the "
-            "rollback could not tell the files this run moved into place from anyone else's; nothing downloaded"
+            f"on the disk of {scratch}, {changed}, so after a failure the rollback could not tell the files this "
+            "run moved into place from anyone else's; nothing downloaded"
         )
     return links
 
 
 def _renamed_identity(scratch: Path) -> str | None:
-    """None when a rename on ``scratch``'s disk keeps a file's identity; else what it changed.
+    """None when closing a file on ``scratch``'s disk and renaming it keep its identity; else which step changed it.
 
     The rollback tells the files this run moved into place by their identity, and renames each to a private name
-    before it looks again (``_withdraw``); a copy takes its name by a rename too (``_copy_new``). macOS's FAT gives
-    an empty file a new inode number at every rename, so an empty file and a one-byte file are probed, each looked
-    at through its descriptor before it is closed, as ``_copy_new`` does, then renamed into another folder.
+    before it looks again (``_withdraw``); a copy takes its name by a rename too (``_copy_new``), and the identity
+    it records is read through its descriptor before it is closed. macOS's FAT gives an empty file a new inode
+    number at every rename, so an empty file and a one-byte file are probed, each looked at through its descriptor
+    before it is closed, as ``_copy_new`` does, again once closed, and once renamed into another folder.
     """
     folder = scratch / "rename-probe"
     made: list[Path] = []
@@ -593,12 +594,15 @@ def _renamed_identity(scratch: Path) -> str | None:
                 out.write(data)
                 out.flush()
                 was = identity(os.fstat(out.fileno()))
+            closed = identity(os.lstat(name))
+            if closed != was:
+                return f"closing a file there changes its identity ({_went(data, was, closed)})"
             moved = folder / f"probe-{len(data)}"
             os.rename(name, moved)
             made.append(moved)
             now = identity(os.lstat(moved))
-            if now != was:
-                return f"a {len(data)}-byte file went from {was} to {now}, as (device, inode, size, mtime)"
+            if now != closed:
+                return f"a rename there gives a file a new identity ({_went(data, closed, now)})"
         return None
     except OSError as exc:
         raise GetError(f"cannot write in the staging folder ({folder}): {exc}") from exc
@@ -609,6 +613,10 @@ def _renamed_identity(scratch: Path) -> str | None:
             except OSError:
                 pass
         _drop_folder(folder)
+
+
+def _went(data: bytes, was: Identity, now: Identity) -> str:
+    return f"a {len(data)}-byte file went from {was} to {now}, as (device, inode, size, mtime)"
 
 
 def _probe(scratch: Path) -> bool:
@@ -1601,7 +1609,9 @@ def _move_held(
                 raise
         ctrl_c.check()
     except BaseException as exc:  # Ctrl-C included: put everything back before stopping
-        ctrl_c.held.clear()  # a press that stopped the moves is not one pressed during the rollback
+        if isinstance(exc, KeyboardInterrupt):  # a press that stopped the moves is not one pressed during the rollback
+            ctrl_c.held.clear()
+        # one held as a move failed stays: the rollback finishes, then it stops the run, as one pressed during it does
         try:
             problems = _roll_back(journal, staging, ctrl_c.stop_rollback)
         except KeyboardInterrupt as stop:  # pressed twice: the rollback stops before its next step
