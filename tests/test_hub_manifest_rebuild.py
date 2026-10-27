@@ -9,6 +9,7 @@ import json
 import os
 import random
 import re
+import shlex
 import shutil
 import subprocess
 import sys
@@ -1003,9 +1004,14 @@ def files_under(folder: Path) -> dict[str, bytes]:
 
 def name_in_environment(monkeypatch, other: Path, names: tuple[str, ...]) -> None:
     template = other.parent / 'template'  # a new repository made from it keeps its objects in the other's store
-    template.mkdir(exist_ok=True)
+    (template / 'hooks').mkdir(parents=True, exist_ok=True)
     if not (template / 'objects').is_symlink():
         (template / 'objects').symlink_to(other / '.git' / 'objects')
+    # mcode, round 28: a template's hooks run in the new clone, and its config governs the clone's fetches
+    hook = template / 'hooks' / 'post-checkout'
+    hook.write_text(f'#!/bin/sh\ntouch {shlex.quote(str(other.parent / "template-hook-ran"))}\n')
+    hook.chmod(0o755)
+    (template / 'config').write_text('[user]\n\temail = template@example.com\n')
     where = {
         'GIT_DIR': other / '.git',
         'GIT_WORK_TREE': other,
@@ -1053,6 +1059,8 @@ def test_a_new_clone_lands_where_it_is_asked_when_the_environment_names_another_
     assert files_under(other) == before
     # Codex, round 28: nothing is copied from any template folder into the new clone, its hooks included
     assert not (dest / '.git' / 'objects').is_symlink() and not (dest / '.git' / 'hooks').exists()
+    assert not (tmp_path / 'template-hook-ran').exists()  # mcode, round 28: no template hook ran at the checkout
+    assert 'template@example.com' not in (dest / '.git' / 'config').read_text()
 
 
 def test_records_from_the_same_commit_are_both_newest_the_list_too(rebuild, tmp_path):
@@ -2728,13 +2736,14 @@ def test_publish_refusal_quotes_the_revision_it_names(rebuild, hub_pair, tmp_pat
 
 
 @pytest.mark.parametrize('publish', [(), ('--publish',)])
-@pytest.mark.parametrize('typed', ['', ' ', '\t\n'])
+@pytest.mark.parametrize('typed', ['', ' ', '\t\n', '\x00', 'main\x00'])
 def test_a_revision_that_names_nothing_is_refused_before_the_hub_is_asked(
     rebuild, hub_pair, tmp_path, monkeypatch, capsys, publish, typed
 ):
     """mcode, round 27: an empty --revision (``--revision "$REV"`` with REV unset) was read as the head, as no
     --revision is, and --publish then refused it as not the head's id, after the whole build. A blank one went on to
-    git. It names no commit, so it is refused before anything is read."""
+    git. It names no commit, so it is refused before anything is read. mcode, round 28: so is one holding a NUL, which
+    no git argument can carry (it stopped the run on a ValueError traceback)."""
     asked, real = [], hub_pair.api.repo_info
 
     def repo_info(*args, **kwargs):
@@ -2745,7 +2754,7 @@ def test_a_revision_that_names_nothing_is_refused_before_the_hub_is_asked(
     stop = None
     try:
         run_main(rebuild, hub_pair, tmp_path, monkeypatch, *publish, '--revision', typed)
-    except (SystemExit, rebuild.RebuildError) as exc:
+    except (SystemExit, Exception) as exc:
         stop = exc
     err = capsys.readouterr().err
     refused = isinstance(stop, SystemExit) and stop.code == 2
