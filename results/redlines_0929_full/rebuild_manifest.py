@@ -581,9 +581,10 @@ def publish(api, checkout: Path, revision: str, data: bytes, message: str) -> st
             'to check it'
         )
         commit = commit_manifest(api, operation, message, revision)
+        # not yet known to be a commit id, so the note names no commit as held
         note = (
-            f'stopped while checking {commit}, which create_commit returned: the hub holds {commit}, which may be '
-            'this manifest\'s commit; rerun to check it'
+            'stopped after create_commit returned, before its answer was checked: the hub may hold the manifest now; '
+            'rerun to check it'
         )
         if commit == revision:  # the branch head did not move: create_commit sent no commit request
             held = f'a mode {entry[0].decode()} entry' if entry else 'no file'
@@ -599,6 +600,10 @@ def publish(api, checkout: Path, revision: str, data: bytes, message: str) -> st
                 'was sent, so the hub may hold the manifest now; rerun to check it (a manifest already there is '
                 'recognised)'
             )
+        note = (
+            f'stopped while checking {commit}, which create_commit returned: the hub holds {commit}, which may be '
+            'this manifest\'s commit; rerun to check it'
+        )
         try:
             return verify_upload(checkout, revision, commit, before, data)
         except Exception as exc:
