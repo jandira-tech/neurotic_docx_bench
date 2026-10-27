@@ -1042,8 +1042,9 @@ def _ctrl_c_between_steps(left: list[str] | None = None) -> Iterator[_CtrlC]:
     A filesystem step and its journal entry then happen together: a Ctrl-C that lands as a rename
     or a link returns waits for the next check, so the rollback knows about that step. A run holds
     it once, from taking the staging lock to letting it go, so Python's handler is given back only
-    after the run ends; a press still held then is raised as the block ends, without an error or with
-    one, so no press is ever dropped. With one, the press says what that error said (an ``OSError``
+    after the run ends, and before a held press is looked for: a press held then, one that landed as
+    the handler was given back included, is raised as the block ends, without an error or with one,
+    so no press is ever dropped. With one, the press says what that error said (an ``OSError``
     followed by ``left[0]``, as ``get`` says it), and the error is its cause.
     Ctrl-C is held only under Python's own handler, in the main thread: a caller that ignores Ctrl-C
     or handles it itself keeps that, and its ``check`` never raises.
@@ -1057,6 +1058,7 @@ def _ctrl_c_between_steps(left: list[str] | None = None) -> Iterator[_CtrlC]:
     try:
         yield ctrl_c
     except Exception as exc:
+        signal.signal(signal.SIGINT, previous)  # first: a press as it is given back is held by then
         if not ctrl_c.held:
             raise
         ctrl_c.held.clear()
@@ -1065,9 +1067,11 @@ def _ctrl_c_between_steps(left: list[str] | None = None) -> Iterator[_CtrlC]:
         for note in getattr(exc, "__notes__", ()):
             stop.add_note(note)
         raise stop from exc
-    finally:
+    except BaseException:  # a press is on its way out already
         signal.signal(signal.SIGINT, previous)
-    ctrl_c.check()  # pressed after the block's last check
+        raise
+    signal.signal(signal.SIGINT, previous)
+    ctrl_c.check()  # pressed after the block's last check, or as the handler was given back
 
 
 def _earlier(staging: Path) -> tuple[str, ...]:
@@ -1320,8 +1324,9 @@ def _get(
             context = exc.__context__
             if done:
                 exc.add_note(finished)
-            elif context is not None:  # the run was already stopping: say why
-                for note in getattr(context, "__notes__", None) or [str(context) or type(context).__name__]:
+            elif context is not None:  # the run was already stopping: say why, as get() says it, then its notes
+                said = f"{context}; {left[0]}" if isinstance(context, OSError) else str(context)
+                for note in [n for n in (said, *getattr(context, "__notes__", ())) if n] or [type(context).__name__]:
                     exc.add_note(note)
             else:
                 exc.add_note(nothing_moved)
