@@ -2255,7 +2255,9 @@ def test_a_folder_at_the_manifest_path_refuses_before_the_preupload(rebuild, hub
 def test_the_symlink_s_bytes_are_read_before_the_preupload(rebuild, hub_pair, tmp_path, monkeypatch, read):
     """mcode, round 20: the bytes of a symlink at the manifest path were read only after the preupload, to explain
     a no-op, so a git failure there came after a request was sent. They are read with the tree, before any.
-    mcode, round 21: a failure of either read says that nothing was published, as every other refusal does."""
+    mcode, round 21: a failure of either read says that nothing was published, as every other refusal does.
+    mcode, round 22: it said "nothing was sent yet", but the head was read from the hub, and the clone fetches a
+    blob it lacks; what was not sent is a commit request."""
     data = manifest({'a/x.docx': sha(b'inline')})
     revision = symlink_revision(hub_pair, tmp_path, data)
     real = rebuild.git
@@ -2270,4 +2272,31 @@ def test_the_symlink_s_bytes_are_read_before_the_preupload(rebuild, hub_pair, tm
         rebuild.publish(hub_pair.api, hub_pair.clone, revision, data, 'rebuild')
     said = str(exc.value)
     assert 'simulated' in said and 'Nothing published by this run' in said, said
+    assert 'nothing was sent' not in said and 'no commit request was sent' in said, said
     assert hub_pair.api.preuploads == [] and hub_pair.api.commit_calls == []
+
+
+def test_the_folder_refusal_names_what_the_hub_holds_byte_for_byte(rebuild, hub_pair):
+    """mcode, round 22: the folder refusal decoded the names under the path with errors='replace', so two invalid
+    byte strings read the same and neither is the name the hub holds, and it counted a submodule as a file. Names
+    are spelled with backslashreplace, as verify_upload spells them, and files and submodules are counted apart."""
+    data = manifest({'a/x.docx': sha(b'inline')})
+    origin = hub_pair.api.origin
+    git(origin, 'rm', '-q', f'{PREFIX}/{MANIFEST}')
+    hub_pair.api.commit({f'{PREFIX}/{MANIFEST}/inner.txt': b'x'}, 'a folder at the manifest path')
+    blob = subprocess.run(
+        ['git', 'hash-object', '-w', '--stdin'], input=b'y', cwd=origin, capture_output=True, check=True
+    ).stdout.strip()
+    odd = f'{PREFIX}/{MANIFEST}/'.encode() + b'\xff\xfebad.txt'  # no disk name: git takes any bytes
+    subprocess.run([b'git', b'update-index', b'--add', b'--cacheinfo', b'100644,' + blob + b',' + odd], cwd=origin, check=True)
+    sub = f'160000,{hub_pair.api.head()},{PREFIX}/{MANIFEST}/sub'
+    subprocess.run(['git', 'update-index', '--add', '--cacheinfo', sub], cwd=origin, check=True)
+    git(origin, 'commit', '-q', '-m', 'a file without a UTF-8 name and a submodule under the folder')
+    git(hub_pair.clone, 'fetch', '-q', 'origin')
+    revision = hub_pair.api.head()
+    with pytest.raises(rebuild.RebuildError) as exc:
+        rebuild.publish(hub_pair.api, hub_pair.clone, revision, data, 'rebuild')
+    said = str(exc.value)
+    assert hub_pair.api.preuploads == [] and hub_pair.api.commit_calls == []
+    assert '\\xff\\xfebad.txt' in said and '\ufffd' not in said, said
+    assert '2 file(s) and 1 submodule(s)' in said, said
