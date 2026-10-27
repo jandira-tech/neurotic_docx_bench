@@ -734,7 +734,8 @@ def main() -> None:
         ap.add_argument('--lfs-check', type=lfs_limit, default=25, help='LFS downloads to hash (N or all; default: 25)')
         ap.add_argument('--seed', type=int, default=0, help='LFS sampling seed (default: 0)')
         a = ap.parse_args()
-        if a.revision is not None and not a.revision.strip():  # `--revision "$REV"` with REV unset, say
+        # `--revision "$REV"` with REV unset, say; no git argument can carry a NUL
+        if a.revision is not None and (not a.revision.strip() or '\0' in a.revision):
             ap.error(f'--revision {a.revision!r} names no commit: leave it out to read the head of {BRANCH}')
         api = hub.default_api()
         if a.checkout is None:
