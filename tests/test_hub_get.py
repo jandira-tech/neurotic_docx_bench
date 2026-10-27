@@ -3181,3 +3181,89 @@ def test_a_rewrite_on_a_disk_whose_change_time_does_not_move_stays(
     else:
         assert not (dest / "a.docx").exists()
         assert "every file already moved was put back" in said, said
+
+
+def test_a_give_back_whose_private_name_cannot_be_removed_names_the_second_name(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """mcode, round 18: the file saved at the target during the withdrawal was given back, then removing its private
+    name failed (EIO). That error left _withdraw as "{target}: [Errno 5] ...", which reads as if the target were in
+    doubt; the file is back at the target, and a second name of it stays at the private name."""
+    dest = tmp_path / "dest"
+    holds = _saved_again_at_the_withdrawal(monkeypatch, dest)
+    real_unlink = os.unlink
+
+    def unlink(path, *args, **kw):
+        if holds and Path(path) == holds[0]:
+            raise _eio(path)
+        return real_unlink(path, *args, **kw)
+
+    _fails_on_b(monkeypatch)
+    monkeypatch.setattr(os, "unlink", unlink)
+    with pytest.raises(hub_get.GetError) as info:
+        hub_get.get(preset(dest), api=PinnedHub(FILES))
+    said = str(info.value)
+    (hold,) = holds
+    assert (dest / "a.docx").read_bytes() == b"saved again\n"
+    assert hold.read_bytes() == b"saved again\n"
+    assert "left as it is" in said and f"a second name of it stays at {hold}" in said, said
+
+
+def test_a_withdrawal_rename_that_failed_and_was_not_made_says_the_file_stays(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """mcode, round 18: the rename that takes a placed file back failed (EIO) and was not made, so the file is still
+    in the destination; the message said only "{target}: [Errno 5] ...". It says the file stays there, as the
+    made-but-not-looked-at case names where the file is."""
+    dest = tmp_path / "dest"
+    real_rename = os.rename
+
+    def rename(src, dst, *args, **kw):
+        if Path(dst).parent.name.startswith(".withdrawn-") and Path(src) == dest / "a.docx":
+            raise OSError(errno.EIO, os.strerror(errno.EIO), str(src), None, str(dst))
+        return real_rename(src, dst, *args, **kw)
+
+    _fails_on_b(monkeypatch)
+    monkeypatch.setattr(os, "rename", rename)
+    with pytest.raises(hub_get.GetError) as info:
+        hub_get.get(preset(dest), api=PinnedHub(FILES))
+    said = str(info.value)
+    assert (dest / "a.docx").read_bytes() == BIG
+    assert not (dest / "RUN.md").exists()
+    assert f"taking {dest / 'a.docx'} back failed" in said and "the file stays there" in said, said
+
+
+@pytest.mark.parametrize("where", ["scan", "staged", "late"])
+def test_a_file_that_cannot_be_read_for_its_hash_is_a_refusal_not_a_traceback(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, where: str
+) -> None:
+    """mcode, round 18: an OSError while hashing a file to compare it with the hub (a local file removed between the
+    look and the hash, EIO on a network disk) escaped get() raw, and the CLI printed a traceback. At the first scan,
+    at the check of the staged downloads and at the look again before the moves, it is a GetError naming the file
+    and what was left."""
+    dest = tmp_path / "dest"
+    staging = hub_get.staging_dir(dest, SHA)
+    if where == "scan":
+        (dest / "RUN.md").parent.mkdir(parents=True)
+        (dest / "RUN.md").write_bytes(b"mine!\n")  # the hub's size, so same_bytes hashes it
+        unreadable, api = dest / "RUN.md", PinnedHub(FILES)
+    elif where == "staged":
+        unreadable, api = staging / hub_get.FILES / "outputs/run/RUN.md", PinnedHub(FILES)
+    else:
+        unreadable, api = dest / "RUN.md", LateWriter(FILES, dest, "RUN.md", b"late!\n")
+    real_sha1 = hub.git_blob_sha1
+
+    def git_blob_sha1(path):
+        if Path(path) == unreadable:
+            raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), str(path))
+        return real_sha1(path)
+
+    monkeypatch.setattr(hub, "git_blob_sha1", git_blob_sha1)
+    with pytest.raises(hub_get.GetError) as info:
+        hub_get.get(preset(dest), api=api)
+    said = str(info.value)
+    assert str(unreadable) in said and "could not be read" in said, said
+    if where == "scan":
+        assert "nothing downloaded" in said and api.downloads() == [], said
+    else:
+        assert "nothing moved" in said and not (dest / "a.docx").exists(), said
