@@ -2926,3 +2926,27 @@ def test_an_lfs_pointer_whose_size_has_too_many_digits_is_refused(rebuild):
     except Exception as exc:
         stop = exc
     assert isinstance(stop, rebuild.RebuildError) and 'not a canonical LFS pointer' in str(stop), repr(stop)[:200]
+
+
+# Review round 31 (#78), Codex
+
+
+def test_ctrl_c_before_the_returned_commit_is_checked_does_not_say_the_hub_holds_it(
+    rebuild, hub_pair, tmp_path, monkeypatch
+):
+    """Codex, round 31: the Ctrl-C note named create_commit's answer as the commit the hub holds before checking it
+    is a commit id, so a press while `--output=<file>` was being checked said "the hub holds --output=<file>". Until
+    the id passes, the note says only that the hub may hold the manifest."""
+    returned = f'--output={tmp_path / "written"}'
+
+    class Interrupted:
+        def fullmatch(self, text):
+            raise KeyboardInterrupt  # Ctrl-C lands while the returned id is being checked
+
+    monkeypatch.setattr(rebuild, 'commit_manifest', lambda *a, **k: returned)
+    monkeypatch.setattr(rebuild, 'COMMIT_ID', Interrupted())
+    data = manifest({'a/x.docx': sha(b'inline')})
+    with pytest.raises(KeyboardInterrupt) as exc:
+        rebuild.publish(hub_pair.api, hub_pair.clone, hub_pair.head, data, 'rebuild')
+    notes = ' '.join(getattr(exc.value, '__notes__', ()))
+    assert 'the hub holds' not in notes and 'may hold' in notes and 'rerun to check it' in notes, notes
