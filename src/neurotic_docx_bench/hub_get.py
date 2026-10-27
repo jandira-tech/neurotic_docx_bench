@@ -428,7 +428,9 @@ def place(staged: Path, target: Path, scratch: Path) -> Identity:
     return placed
 
 
-def _withdraw(target: Path, placed: Identity, remote: RemoteFile | None, staging: Path) -> str | None:
+def _withdraw(
+    target: Path, placed: Identity, remote: RemoteFile | None, staging: Path, remarks: list[str]
+) -> str | None:
     """Remove the file this run placed at ``target``; None, or why something stays there.
 
     It is this run's file only while it has the identity it was placed with and ``remote``'s bytes: a rewrite
@@ -439,7 +441,9 @@ def _withdraw(target: Path, placed: Identity, remote: RemoteFile | None, staging
     file that is not this run's, or that cannot be read, is given back with ``place``, so one someone else put
     there is never deleted. A target with no file holds nothing of this run's: it counts as withdrawn, so the
     file it replaced can be restored. A write through a handle opened before the rename is the one thing no look
-    can see, if it keeps the size and sets the mtime back.
+    can see, if it keeps the size and sets the mtime back. ``remarks`` gets what the rollback must also say of a
+    file it did withdraw (one it could not remove from the private name); an empty private folder left behind is
+    harmless, and never stops the rollback.
     """
     if remote is None:
         return f"{target}: what the hub has there is not known, so it is not checked; left as it is"
@@ -447,10 +451,10 @@ def _withdraw(target: Path, placed: Identity, remote: RemoteFile | None, staging
     try:
         there = _identity_at(target)
     except BaseException:
-        hold.parent.rmdir()
+        _drop_folder(hold.parent)
         raise
     if there != placed:
-        hold.parent.rmdir()
+        _drop_folder(hold.parent)
         return None if there is None else f"{target} changed after this run moved it there; left as it is"
     try:
         os.rename(target, hold)  # a fresh name in a fresh folder: nothing there to overwrite
@@ -464,10 +468,7 @@ def _withdraw(target: Path, placed: Identity, remote: RemoteFile | None, staging
                 "one of the two"
             ) from exc
         if not made:  # not taken back: what is at the target now says where the file is
-            try:
-                hold.parent.rmdir()
-            except OSError:
-                pass  # an empty folder in the staging folder, which names only files
+            _drop_folder(hold.parent)
             failed = f"taking {target} back failed ({exc})"
             try:
                 now = _identity_at(target)
@@ -478,6 +479,23 @@ def _withdraw(target: Path, placed: Identity, remote: RemoteFile | None, staging
             if now == placed:
                 return f"{failed}; the file stays there"
             return f"{failed}; another file is there now, left as it is"
+    try:
+        return _settle(target, placed, remote, staging, hold, remarks)
+    except BaseException as stop:  # a caller's own Ctrl-C handler (Python's is held), at any point: name the file
+        try:
+            still = _identity_at(hold) is not None
+        except OSError:
+            still = True
+        if still and not any(str(hold) in n for n in getattr(stop, "__notes__", ())):
+            stop.add_note(f"the file taken back from {target} is at {hold}")
+        raise
+
+
+def _settle(
+    target: Path, placed: Identity, remote: RemoteFile, staging: Path, hold: Path, remarks: list[str]
+) -> str | None:
+    """The file just taken back from ``target`` to ``hold`` (see ``_withdraw``): removed if it is this run's, else
+    given back; None, or why something stays at ``target``."""
     why = f"{target} changed after this run moved it there"
     try:
         ours = _identity_at(hold) == placed and same_bytes(hold, remote) and _identity_at(hold) == placed
@@ -491,13 +509,20 @@ def _withdraw(target: Path, placed: Identity, remote: RemoteFile | None, staging
             raise stop from None
         try:
             os.unlink(hold)
-            hold.parent.rmdir()
         except OSError:
-            pass  # a second name of it in the staging folder, which a rerun names
+            pass  # a second name of it, which _withdraw names
+        _drop_folder(hold.parent)
         raise
     if ours:
-        os.unlink(hold)
-        hold.parent.rmdir()
+        try:
+            os.unlink(hold)
+        except OSError as exc:  # out of the destination all the same, so the file it replaced can be restored
+            remarks.append(
+                f"{target}: this run's file is out of the destination, and removing it from {hold} failed ({exc}); "
+                "it stays there"
+            )
+            return None
+        _drop_folder(hold.parent)
         return None
     try:
         place(hold, target, staging / _SCRATCH)
@@ -509,8 +534,16 @@ def _withdraw(target: Path, placed: Identity, remote: RemoteFile | None, staging
         os.unlink(hold)
     except OSError as exc:
         return f"{why}; left as it is, and a second name of it stays at {hold} ({exc})"
-    hold.parent.rmdir()
+    _drop_folder(hold.parent)
     return f"{why}; left as it is"
+
+
+def _drop_folder(folder: Path) -> None:
+    """Remove a withdrawal's private folder once it is empty; one left behind holds nothing a rerun must name."""
+    try:
+        folder.rmdir()
+    except OSError:
+        pass
 
 
 def _links_work(scratch: Path) -> bool:
@@ -995,7 +1028,7 @@ def _roll_back(journal: Sequence[_Move], staging: Path, between: Callable[[], No
             continue
         try:
             if m.placed is not None:
-                why = _withdraw(m.target, m.placed, m.remote, staging)
+                why = _withdraw(m.target, m.placed, m.remote, staging, problems)
                 if why is not None:
                     problems.append(why + kept)
                     continue
@@ -1038,7 +1071,8 @@ def get(
     """Download ``preset`` into ``dest`` (default: the preset's) under the four rules above.
 
     A disk error no step answers itself (a stat, a walk or the unlock failing) is a ``GetError`` too, saying what
-    the run left: nothing downloaded, nothing moved with the staging folder kept, or every file in place.
+    the run left: nothing downloaded, nothing moved with the staging folder kept, or every file in place. When the
+    run was already failing, what it says it left stands, and a staging lock that would not let go is a note on it.
     """
     if on_conflict not in CONFLICT_POLICIES:
         raise ValueError(f"on_conflict must be one of {CONFLICT_POLICIES}, not {on_conflict!r}")
@@ -1049,7 +1083,10 @@ def get(
             dry_run=dry_run, workers=workers, left=left,
         )
     except OSError as exc:
-        raise GetError(f"{exc}; {left[0]}") from exc
+        refusal = GetError(f"{exc}; {left[0]}")
+        for note in getattr(exc, "__notes__", ()):
+            refusal.add_note(note)
+        raise refusal from exc
 
 
 def _get(
@@ -1166,8 +1203,13 @@ def _get(
                     api, preset.repo_id, sha, files, todo, conflicts, kept, dest, staging, on_conflict, workers, ctrl_c
                 )
                 left[0] = f"every file is in place in {dest}"
-            finally:
-                _let_go(lock, ctrl_c.left_running)
+            except BaseException as exc:  # what the run says it left stands; a lock that will not let go is a note
+                try:
+                    _let_go(lock, ctrl_c.left_running)
+                except OSError as unlock:
+                    exc.add_note(f"letting go of the staging lock failed too ({unlock})")
+                raise
+            _let_go(lock, ctrl_c.left_running)
             done = True
             try:
                 staging.rmdir()  # only when nothing else is left in it
