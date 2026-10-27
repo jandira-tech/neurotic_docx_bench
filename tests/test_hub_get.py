@@ -3488,3 +3488,140 @@ def test_a_ctrl_c_while_the_rollback_checks_a_file_gives_it_back_first(
         assert (dest / "a.docx").read_bytes() == b"saved again\n"
         assert hold.read_bytes() == BIG
         assert f"{dest / 'a.docx'} was being checked at {hold}" in said, said
+
+
+# Review round 20 (#80), Codex and mcode
+
+
+def _unlock_fails_after_unlocking(monkeypatch: pytest.MonkeyPatch) -> None:
+    real_unlock = hub_get._unlock
+
+    def unlock(fd):
+        real_unlock(fd)
+        raise OSError(errno.EIO, os.strerror(errno.EIO))
+
+    monkeypatch.setattr(hub_get, "_unlock", unlock)
+
+
+def test_a_lock_that_cannot_be_let_go_after_a_failed_run_keeps_the_rollback_outcome(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Codex and mcode, round 20: a move failed, the rollback put everything back and raised its outcome, and then
+    letting go of the staging lock failed (EIO). That OSError replaced the outcome, and get() said "nothing moved
+    into {dest}" from the stale `left`. The outcome stands; the unlock failure is a note on it."""
+    dest = tmp_path / "dest"
+    _write(dest, {"a.docx": b"mine\n"})
+    _fails_on_b(monkeypatch)
+    _unlock_fails_after_unlocking(monkeypatch)
+    with pytest.raises(hub_get.GetError) as info:
+        hub_get.get(preset(dest), api=PinnedHub(FILES), on_conflict="overwrite")
+    said = str(info.value)
+    notes = " ".join(getattr(info.value, "__notes__", ()))
+    assert f"moving into {dest} failed" in said and "every replaced file restored" in said, said
+    assert "nothing moved into" not in said, said
+    assert "letting go of the staging lock failed too" in notes and "Input/output error" in notes, notes
+    assert (dest / "a.docx").read_bytes() == b"mine\n"
+
+
+def test_the_cli_prints_the_notes_of_a_refusal(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """Codex and mcode, round 20, through the CLI: the refusal line carries the outcome and the unlock note."""
+    from neurotic_docx_bench.cli import app
+
+    monkeypatch.setattr(hub, "default_api", lambda: PinnedHub(FILES))
+    _fails_on_b(monkeypatch)
+    _unlock_fails_after_unlocking(monkeypatch)
+    monkeypatch.chdir(tmp_path)
+    result = runner.invoke(app, ["hub", "get", "--repo", REPO, "--path", "outputs/run", "--dest", "got"])
+    assert result.exit_code == 1, result.output
+    out = " ".join(result.output.split())
+    assert "refused" in out and "moving into" in out, out
+    assert "letting go of the staging lock failed too" in out, out
+
+
+@pytest.mark.parametrize("which", ["withdrawn", "withdrawn_unlink", "given_back", "looked_at_a_replaced_file"])
+def test_tidying_the_private_name_never_stops_the_rollback(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, which: str
+) -> None:
+    """Codex, round 20: removing the empty private folder (EIO) after a placed file was withdrawn escaped _withdraw,
+    so _roll_back said "{target}: [Errno 5] ..." and did not restore the file --overwrite replaced, though its name
+    was free. mcode, round 20: the same for removing the withdrawn file from its private name, and for the folder
+    after a give-back or after a look that found another file. An empty folder in the staging folder is harmless;
+    a withdrawn file still at its private name is named, and the replaced file is restored all the same."""
+    dest = tmp_path / "dest"
+    _write(dest, {"a.docx": b"mine\n"})
+    real_rmdir, real_unlink = os.rmdir, os.unlink
+    rewritten: list[bytes] = []
+
+    def private(path) -> bool:
+        return any(part.startswith(".withdrawn-") for part in Path(path).parts)
+
+    def rmdir(path, *args, **kw):
+        if private(path):
+            raise _eio(path)
+        return real_rmdir(path, *args, **kw)
+
+    def unlink(path, *args, **kw):
+        if which == "withdrawn_unlink" and private(path):
+            raise _eio(path)
+        return real_unlink(path, *args, **kw)
+
+    def meanwhile() -> None:
+        if which == "given_back":
+            rewritten.append(_rewrite_keeping_size_and_mtime(dest / "a.docx"))
+        elif which == "looked_at_a_replaced_file":
+            (dest / "a.docx").unlink()
+            (dest / "a.docx").write_bytes(b"theirs\n")
+            rewritten.append(b"theirs\n")
+
+    _fails_on_b(monkeypatch, before=meanwhile)
+    monkeypatch.setattr(os, "rmdir", rmdir)
+    monkeypatch.setattr(os, "unlink", unlink)
+    with pytest.raises(hub_get.GetError) as info:
+        hub_get.get(preset(dest), api=PinnedHub(FILES), on_conflict="overwrite")
+    said = str(info.value)
+    if which in ("withdrawn", "withdrawn_unlink"):
+        assert (dest / "a.docx").exists(), said
+        assert (dest / "a.docx").read_bytes() == b"mine\n", said
+        if which == "withdrawn":
+            assert "every file already moved was put back and every replaced file restored" in said, said
+        else:
+            assert "out of the destination" in said and ".withdrawn-" in said, said
+    else:
+        assert (dest / "a.docx").read_bytes() == rewritten[0], said
+        assert f"{dest / 'a.docx'} changed after this run moved it there; left as it is" in said, said
+        assert f"{dest / 'a.docx'}: [Errno 5]" not in said, said
+
+
+def test_a_second_ctrl_c_while_the_file_is_given_back_names_where_it_is(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Codex and mcode, round 20: a caller's own Ctrl-C handler raised while the rollback checked a file at its
+    private name, and again while the file was given back; the second one is neither GetError nor OSError, so the
+    note naming the private name was never added, and the error listed the target as "not put back". Whatever
+    stops the step after the rename, the private name is named while a file is there."""
+    dest = tmp_path / "dest"
+    real_same = hub_get.same_bytes
+    holds: list[Path] = []
+
+    def same_bytes(path, f):
+        if Path(path).parent.name.startswith(".withdrawn-"):
+            holds.append(Path(path))
+            raise KeyboardInterrupt
+        return real_same(path, f)
+
+    _fails_on_b(monkeypatch)
+    current = hub_get.place
+
+    def place(staged, target, scratch):
+        if Path(staged).parent.name.startswith(".withdrawn-"):
+            raise KeyboardInterrupt  # the second press, as the file is given back
+        return current(staged, target, scratch)
+
+    monkeypatch.setattr(hub_get, "same_bytes", same_bytes)
+    monkeypatch.setattr(hub_get, "place", place)
+    with pytest.raises(KeyboardInterrupt) as info:
+        hub_get.get(preset(dest), api=PinnedHub(FILES))
+    said = "\n".join(getattr(info.value, "__notes__", []))
+    (hold,) = holds
+    assert hold.read_bytes() == BIG
+    assert str(hold) in said, said
