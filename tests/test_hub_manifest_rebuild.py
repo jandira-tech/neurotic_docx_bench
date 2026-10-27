@@ -2464,7 +2464,7 @@ def test_publish_on_a_given_revision_that_is_not_the_head_refuses_before_the_bui
         run_main(rebuild, hub_pair, tmp_path, monkeypatch, '--publish', '--revision', older)
     said = str(exc.value)
     assert 'moved' not in said, said
-    assert f'--revision {older} is not that id' in said and f'its full commit id ({head})' in said, said
+    assert f'--revision {older!r} is not that id' in said and f'its full commit id ({head})' in said, said
     assert 'nothing published by this run' in said, said
     assert built == [] and hub_pair.api.uploads == []
 
@@ -2478,7 +2478,7 @@ def test_publish_on_a_short_id_of_the_head_names_the_head_and_asks_for_its_full_
     with pytest.raises(rebuild.RebuildError) as exc:
         run_main(rebuild, hub_pair, tmp_path, monkeypatch, '--publish', '--revision', head[:12])
     said = str(exc.value)
-    assert f'--revision {head[:12]} is not that id' in said and f'its full commit id ({head})' in said, said
+    assert f'--revision {head[:12]!r} is not that id' in said and f'its full commit id ({head})' in said, said
     assert hub_pair.api.uploads == []
 
 
@@ -2616,7 +2616,7 @@ def test_publish_on_a_tag_naming_the_head_is_refused_without_saying_it_is_not_th
         run_main(rebuild, hub_pair, tmp_path, monkeypatch, '--publish', '--revision', 'v1.0')
     said = str(exc.value)
     assert f'is not {head}' not in said, said
-    assert '--revision v1.0 is not that id' in said and 'nothing published by this run' in said, said
+    assert "--revision 'v1.0' is not that id" in said and 'nothing published by this run' in said, said
     assert hub_pair.api.uploads == []
 
 
@@ -2663,6 +2663,43 @@ def test_publish_refusal_names_every_spelling_of_the_head_and_the_revision_as_ty
     with pytest.raises(rebuild.RebuildError) as exc:
         run_main(rebuild, hub_pair, tmp_path, monkeypatch, '--publish', '--revision', older.upper())
     said = str(exc.value)
-    assert f'--revision {older.upper()} is not that id' in said, said
+    assert f'--revision {older.upper()!r} is not that id' in said, said
     assert f'--revision {rebuild.BRANCH}' in said and f'its full commit id ({hub_pair.api.head()})' in said, said
     assert hub_pair.api.uploads == []
+
+
+@pytest.mark.parametrize('typed', ['v1.0\n--publish commits only on the head of main, given by no --revision', 'v 1.0'])
+def test_publish_refusal_quotes_the_revision_it_names(rebuild, hub_pair, tmp_path, monkeypatch, typed):
+    """mcode, round 27: the refusal put --revision in its message raw, so a value holding a newline split the message,
+    its second line reading as more of it, and one holding a space ran into the words around it."""
+    with pytest.raises(rebuild.RebuildError) as exc:
+        run_main(rebuild, hub_pair, tmp_path, monkeypatch, '--publish', '--revision', typed)
+    said = str(exc.value)
+    assert f'--revision {typed!r} is not that id' in said and '\n' not in said, said
+    assert hub_pair.api.uploads == []
+
+
+@pytest.mark.parametrize('publish', [(), ('--publish',)])
+@pytest.mark.parametrize('typed', ['', ' ', '\t\n'])
+def test_a_revision_that_names_nothing_is_refused_before_the_hub_is_asked(
+    rebuild, hub_pair, tmp_path, monkeypatch, capsys, publish, typed
+):
+    """mcode, round 27: an empty --revision (``--revision "$REV"`` with REV unset) was read as the head, as no
+    --revision is, and --publish then refused it as not the head's id, after the whole build. A blank one went on to
+    git. It names no commit, so it is refused before anything is read."""
+    asked, real = [], hub_pair.api.repo_info
+
+    def repo_info(*args, **kwargs):
+        asked.append(kwargs)
+        return real(*args, **kwargs)
+
+    monkeypatch.setattr(hub_pair.api, 'repo_info', repo_info)
+    stop = None
+    try:
+        run_main(rebuild, hub_pair, tmp_path, monkeypatch, *publish, '--revision', typed)
+    except (SystemExit, rebuild.RebuildError) as exc:
+        stop = exc
+    err = capsys.readouterr().err
+    refused = isinstance(stop, SystemExit) and stop.code == 2
+    assert refused and f'--revision {typed!r} names no commit' in err, (stop, err)
+    assert asked == [] and hub_pair.api.uploads == [] and not (tmp_path / 'out').exists()
