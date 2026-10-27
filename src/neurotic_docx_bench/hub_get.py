@@ -856,7 +856,11 @@ def _unlock(lock: int) -> None:
 
 
 def _let_go(lock: int, running: Sequence[threading.Thread]) -> None:
-    """Let go of the staging lock ``lock`` now, or once the downloads ``running`` end."""
+    """Let go of the staging lock ``lock`` now, or once the downloads ``running`` end.
+
+    A thread that cannot be started to wait for them is a ``RuntimeError`` saying the lock is held until this
+    process exits; the lock stays on ``_KEPT_LOCKS`` meanwhile, so a rerun here says why the folder is busy.
+    """
     if not running:
         _unlock(lock)
         return
@@ -869,10 +873,19 @@ def _let_go(lock: int, running: Sequence[threading.Thread]) -> None:
         with _LOCKS_GUARD:
             if lock not in _KEPT_LOCKS:  # whoever takes it off the list lets it go
                 return
-            _unlock(lock)
-            _KEPT_LOCKS.remove(lock)
+            _KEPT_LOCKS.remove(lock)  # first: _unlock closes the descriptor even when the unlock fails
+            try:
+                _unlock(lock)
+            except OSError:
+                pass  # closed all the same; nobody is left to tell, and the lock goes with the descriptor
 
-    threading.Thread(target=once_they_end, name="hub-get-let-go", daemon=True).start()
+    try:
+        threading.Thread(target=once_they_end, name="hub-get-let-go", daemon=True).start()
+    except RuntimeError as exc:  # no thread to wait for them: the downloads may still write into the folder
+        raise RuntimeError(
+            f"no thread could be started to let go of it once the downloads left running end ({exc}); it is held "
+            "until this process exits"
+        ) from exc
 
 
 def _drop_inherited_locks() -> None:
@@ -1206,7 +1219,7 @@ def _get(
             except BaseException as exc:  # what the run says it left stands; a lock that will not let go is a note
                 try:
                     _let_go(lock, ctrl_c.left_running)
-                except OSError as unlock:
+                except (OSError, RuntimeError) as unlock:
                     exc.add_note(f"letting go of the staging lock failed too ({unlock})")
                 raise
             _let_go(lock, ctrl_c.left_running)
