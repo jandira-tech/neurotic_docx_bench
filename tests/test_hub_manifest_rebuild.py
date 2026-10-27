@@ -30,13 +30,24 @@ HEAD = 'a' * 40
 LOCAL_GIT_ENV = subprocess.run(
     ['git', 'rev-parse', '--local-env-vars'], capture_output=True, text=True, check=True
 ).stdout.split()
+# Others that point git elsewhere, or change what it reads or how, which that list leaves out (Codex, round 28:
+# GIT_REFERENCE_BACKEND names another reference store, GIT_TEMPLATE_DIR a template that can make a new clone's
+# object store another repository's), and one that git may add later.
+ELSEWHERE_GIT_ENV = [
+    *LOCAL_GIT_ENV, 'GIT_REFERENCE_BACKEND', 'GIT_TEMPLATE_DIR', 'GIT_NAMESPACE', 'GIT_EXEC_PATH', 'GIT_ATTR_SOURCE',
+    'GIT_DEFAULT_REF_FORMAT', 'GIT_DEFAULT_HASH', 'GIT_LITERAL_PATHSPECS', 'GIT_GLOB_PATHSPECS',
+    'GIT_NOGLOB_PATHSPECS', 'GIT_ICASE_PATHSPECS', 'GIT_CEILING_DIRECTORIES', 'GIT_DISCOVERY_ACROSS_FILESYSTEM',
+    'GIT_NO_LAZY_FETCH', 'GIT_SSL_NO_VERIFY', 'GIT_ALLOW_PROTOCOL', 'GIT_PROTOCOL_FROM_USER', 'GIT_REF_PARANOIA',
+    'GIT_A_VARIABLE_GIT_ADDS_LATER',
+]
 
 
 @pytest.fixture(autouse=True)
-def no_caller_repository(monkeypatch):
-    """CodeRabbit: run from a git hook, every git call here would read and write the hook's repository."""
-    for name in LOCAL_GIT_ENV:
-        monkeypatch.delenv(name, raising=False)
+def no_caller_git_env(monkeypatch):
+    """CodeRabbit, round 27, and Codex, round 28: run from a git hook, or from a shell that names another
+    repository, reference store or template, every git call here would read and write there."""
+    for name in [k for k in os.environ if k.startswith('GIT_')]:
+        monkeypatch.delenv(name)
 
 
 @pytest.fixture
@@ -68,7 +79,7 @@ def tree_of(rebuild, files: dict[str, bytes]):
 
 def git(cwd: Path, *args: str, env: dict | None = None) -> str:
     # a test that names another repository in the environment means it for the code under test, not for its setup
-    clean = {k: v for k, v in os.environ.items() if k not in LOCAL_GIT_ENV}
+    clean = {k: v for k, v in os.environ.items() if not k.startswith('GIT_')}
     run = subprocess.run(['git', *args], cwd=cwd, check=True, capture_output=True, text=True, env=clean | (env or {}))
     return run.stdout.strip()
 
@@ -952,6 +963,29 @@ def test_git_env_drops_every_variable_that_names_another_repository(rebuild, mon
     assert {name: env[name] for name in LOCAL_GIT_ENV if name in env} == {'GIT_NO_REPLACE_OBJECTS': '1'}
 
 
+def test_git_env_passes_on_no_git_variable_but_tracing_and_the_https_fetch(rebuild, monkeypatch):
+    """Codex, round 28: git's list of local variables leaves out some that point it elsewhere. GIT_REFERENCE_BACKEND
+    made the checkout resolve and write its references in another repository; GIT_TEMPLATE_DIR, with a template whose
+    objects folder is a symlink, made a new clone write the dataset's objects into another repository's store. So no
+    GIT_ variable of the caller's is passed on but those that trace git or tune the HTTPS fetch (a proxy's CA bundle,
+    a timeout); the ones this run sets are set again."""
+    for name in ELSEWHERE_GIT_ENV:
+        monkeypatch.setenv(name, '/elsewhere')
+    kept = {
+        'GIT_TRACE': '1', 'GIT_TRACE2_EVENT': '/tmp/trace', 'GIT_CURL_VERBOSE': '1', 'GIT_SSL_CAINFO': '/ca.pem',
+        'GIT_SSL_CAPATH': '/certs', 'GIT_HTTP_LOW_SPEED_LIMIT': '1000', 'GIT_HTTP_LOW_SPEED_TIME': '60',
+        'HTTPS_PROXY': 'http://proxy:3128',
+    }
+    for name, value in kept.items():
+        monkeypatch.setenv(name, value)
+    env = rebuild.git_env()
+    assert {k: v for k, v in env.items() if k.startswith('GIT_') and k not in kept} == {
+        'GIT_LFS_SKIP_SMUDGE': '1', 'GIT_NO_REPLACE_OBJECTS': '1', 'GIT_CONFIG_GLOBAL': os.devnull,
+        'GIT_CONFIG_NOSYSTEM': '1', 'GIT_TERMINAL_PROMPT': '0',
+    }
+    assert {k: env.get(k) for k in kept} == kept
+
+
 def other_repository(tmp_path: Path) -> Path:
     other = tmp_path / 'other'
     other.mkdir()
@@ -965,17 +999,25 @@ def files_under(folder: Path) -> dict[str, bytes]:
 
 
 def name_in_environment(monkeypatch, other: Path, names: tuple[str, ...]) -> None:
+    template = other.parent / 'template'  # a new repository made from it keeps its objects in the other's store
+    template.mkdir(exist_ok=True)
+    if not (template / 'objects').is_symlink():
+        (template / 'objects').symlink_to(other / '.git' / 'objects')
     where = {
         'GIT_DIR': other / '.git',
         'GIT_WORK_TREE': other,
         'GIT_OBJECT_DIRECTORY': other / '.git' / 'objects',
         'GIT_COMMON_DIR': other / '.git',
+        'GIT_REFERENCE_BACKEND': f'files://{other / ".git"}',
+        'GIT_TEMPLATE_DIR': template,
     }
     for name in names:
         monkeypatch.setenv(name, str(where[name]))
 
 
-@pytest.mark.parametrize('names', [('GIT_DIR', 'GIT_WORK_TREE'), ('GIT_OBJECT_DIRECTORY',), ('GIT_COMMON_DIR',)])
+@pytest.mark.parametrize(
+    'names', [('GIT_DIR', 'GIT_WORK_TREE'), ('GIT_OBJECT_DIRECTORY',), ('GIT_COMMON_DIR',), ('GIT_REFERENCE_BACKEND',)]
+)
 def test_main_reads_the_checkout_it_is_given_when_the_environment_names_another_repository(
     rebuild, hub_pair, tmp_path, monkeypatch, names
 ):
@@ -991,13 +1033,14 @@ def test_main_reads_the_checkout_it_is_given_when_the_environment_names_another_
     assert files_under(other) == before  # nothing fetched into, or checked out in, the caller's repository
 
 
+@pytest.mark.parametrize('names', [('GIT_DIR', 'GIT_WORK_TREE'), ('GIT_TEMPLATE_DIR',), ('GIT_REFERENCE_BACKEND',)])
 def test_a_new_clone_lands_where_it_is_asked_when_the_environment_names_another_repository(
-    rebuild, hub_pair, tmp_path, monkeypatch
+    rebuild, hub_pair, tmp_path, monkeypatch, names
 ):
     other = other_repository(tmp_path)
     before = files_under(other)
     monkeypatch.setattr(rebuild, 'URL', f'file://{hub_pair.api.origin}')
-    name_in_environment(monkeypatch, other, ('GIT_DIR', 'GIT_WORK_TREE'))
+    name_in_environment(monkeypatch, other, names)
     dest = tmp_path / 'fresh'
     try:
         rebuild.checkout_hub(dest, hub_pair.head)
@@ -1005,6 +1048,8 @@ def test_a_new_clone_lands_where_it_is_asked_when_the_environment_names_another_
         pytest.fail(f'the clone went by the repository the environment names: {exc}')
     assert git(dest, 'rev-parse', 'HEAD') == hub_pair.head
     assert files_under(other) == before
+    # Codex, round 28: nothing is copied from any template folder into the new clone, its hooks included
+    assert not (dest / '.git' / 'objects').is_symlink() and not (dest / '.git' / 'hooks').exists()
 
 
 def test_records_from_the_same_commit_are_both_newest_the_list_too(rebuild, tmp_path):
