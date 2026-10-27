@@ -2573,3 +2573,19 @@ def test_publish_on_a_gitlink_at_the_manifest_path_does_not_call_it_a_folder(reb
         raise AssertionError(f'a gitlink is not a folder: {exc}') from None
     assert rebuild.leaves(hub_pair.clone, commit)[key][:2] == (b'100644', b'blob')
     assert rebuild.git(hub_pair.clone, 'cat-file', 'blob', f'{commit}:{PREFIX}/{MANIFEST}') == data
+
+
+def test_publish_refusal_names_every_spelling_of_the_head_and_the_revision_as_typed(
+    rebuild, hub_pair, tmp_path, monkeypatch
+):
+    """mcode, round 26: the refusal named the head's spellings as "no --revision or by its full commit id", leaving
+    out --revision main, which publishes on the head too, and it printed a full id given in capitals lowercased, a
+    spelling the operator never typed."""
+    older = hub_pair.head
+    hub_pair.api.commit({f'{PREFIX}/x.docx': b'A'}, 'the head moves on')
+    with pytest.raises(rebuild.RebuildError) as exc:
+        run_main(rebuild, hub_pair, tmp_path, monkeypatch, '--publish', '--revision', older.upper())
+    said = str(exc.value)
+    assert f'--revision {older.upper()} is not that id' in said, said
+    assert f'--revision {rebuild.BRANCH}' in said and f'its full commit id ({hub_pair.api.head()})' in said, said
+    assert hub_pair.api.uploads == []
