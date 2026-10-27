@@ -466,21 +466,26 @@ def publish(api, checkout: Path, revision: str, data: bytes, message: str) -> st
             )
         # The hub may store the manifest inline or, if its preupload says so, as an LFS pointer.
         accepted = (data, lfs_pointer(data))
-        unread = 'Nothing published by this run: nothing was sent yet; rerun once git can read the clone'
+        unread = 'Nothing published by this run: no commit request was sent; rerun once git can read the clone'
         # Read before the upload, so a tree this cannot read stops the run before anything is committed.
         try:
             before = leaves(checkout, revision)
         except RebuildError as exc:
             raise RebuildError(f'{exc}. {unread}') from exc
         key = path.encode()
-        under = sorted(leaf for leaf in before if leaf.startswith(key + b'/'))  # ls-tree -r lists a folder's files
+        under = sorted(leaf for leaf in before if leaf.startswith(key + b'/'))  # ls-tree -r lists a folder's leaves
         if under:
-            named = ', '.join(leaf.decode(errors='replace') for leaf in under[:5])
+            # spelled as verify_upload spells a path: a name that is not UTF-8 stays the bytes the hub holds
+            named = ', '.join(leaf.decode(errors='backslashreplace') for leaf in under[:5])
             more = f' and {len(under) - 5} more' if len(under) > 5 else ''
+            kinds = Counter(before[leaf][1] for leaf in under)  # a blob, or a gitlink (b'commit')
+            held = ' and '.join(
+                f'{n} {what}' for n, what in ((kinds[b'blob'], 'file(s)'), (kinds[b'commit'], 'submodule(s)')) if n
+            )
             raise RebuildError(
-                f'{path} at {revision} is a folder holding {len(under)} file(s) ({named}{more}); a commit putting the '
-                'manifest there would drop them, so this run makes none. Nothing published by this run; move or '
-                'remove that folder on the hub, then rerun'
+                f'{path} at {revision} is a folder holding {held} ({named}{more}); a commit putting the manifest '
+                'there would drop them, so this run makes none. Nothing published by this run; move or remove that '
+                'folder on the hub, then rerun'
             )
         entry = before.get(key)
         # A blob's bytes in any mode, read with the tree, before anything is sent (a symlink's are its target).
