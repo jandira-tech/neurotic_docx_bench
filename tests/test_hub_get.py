@@ -3990,3 +3990,63 @@ def test_a_disk_whose_rename_gives_an_empty_file_a_new_identity_is_refused_befor
     said = str(info.value)
     assert "rename" in said and "identity" in said, said
     assert api.downloads() == [] and not (dest / "a.docx").exists(), said
+
+
+# Review round 23 (#80), Codex
+
+
+@pytest.mark.parametrize("run", ["failed_a_move", "put_every_file_in_place"])
+def test_a_ctrl_c_as_python_s_handler_is_given_back_keeps_what_the_stopping_error_said(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, run: str
+) -> None:
+    """Codex, round 23: a run ending in an error that carried a note about the staging lock, and a Ctrl-C pressed
+    as Python's handler was given back. The press took that error's notes and dropped its message, which is what
+    says how the moves ended (every replaced file restored, or which one is left at .replaced/), and an OSError lost
+    what get() adds to it (every file is in place)."""
+    dest = tmp_path / "dest"
+    _write(dest, {"a.docx": b"mine\n"})
+    if run == "failed_a_move":
+        _fails_on_b(monkeypatch)
+    _unlock_fails(monkeypatch)
+    real_signal = signal.signal
+
+    def given_back(signum, handler):
+        previous = real_signal(signum, handler)
+        if signum == signal.SIGINT and handler is signal.default_int_handler:
+            signal.raise_signal(signal.SIGINT)  # pressed as Python's handler is given back
+        return previous
+
+    monkeypatch.setattr(signal, "signal", given_back)
+    with pytest.raises(BaseException) as info:
+        hub_get.get(preset(dest), api=PinnedHub(FILES), on_conflict="overwrite")
+    assert info.type is KeyboardInterrupt, repr(info.value)
+    notes = " ".join(getattr(info.value, "__notes__", ()))
+    assert f"the staging lock {hub_get.staging_dir(dest, SHA) / hub_get.LOCK}" in notes, notes
+    if run == "failed_a_move":
+        assert f"moving into {dest} failed" in notes and "every replaced file restored" in notes, notes
+        assert (dest / "a.docx").read_bytes() == b"mine\n"
+    else:
+        assert f"every file is in place in {dest}" in notes and (dest / "a.docx").read_bytes() == BIG, notes
+
+
+def test_a_ctrl_c_held_as_python_s_handler_is_given_back_after_an_error_is_not_dropped(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Codex, round 23: a run ending in an error, and a Ctrl-C pressed as the hold was giving Python's handler back,
+    while the hold was still the handler. The hold took the press after its last look, and the error went on as if
+    no press had come: GetError, exit 1, not 130."""
+    dest = tmp_path / "dest"
+    _fails_on_b(monkeypatch)
+    real_signal = signal.signal
+
+    def giving_back(signum, handler):
+        if signum == signal.SIGINT and handler is signal.default_int_handler:
+            signal.raise_signal(signal.SIGINT)  # pressed as the handler is given back: the hold takes it
+        return real_signal(signum, handler)
+
+    monkeypatch.setattr(signal, "signal", giving_back)
+    with pytest.raises(BaseException) as info:
+        hub_get.get(preset(dest), api=PinnedHub(FILES))
+    assert info.type is KeyboardInterrupt, repr(info.value)
+    notes = " ".join(getattr(info.value, "__notes__", ()))
+    assert f"moving into {dest} failed" in notes and not (dest / "a.docx").exists(), notes
