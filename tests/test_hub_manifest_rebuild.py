@@ -2839,3 +2839,90 @@ def test_an_argument_no_argv_entry_can_carry_is_refused_before_the_hub_is_asked(
     err = capsys.readouterr().err
     assert isinstance(stop, SystemExit) and stop.code == 2 and f'{flag} {typed!r} {says}' in err, (stop, err)
     assert asked == [] and hub_pair.api.uploads == [] and not (tmp_path / 'out').exists()
+
+
+# Review round 30 (#78), Codex
+
+
+@pytest.mark.parametrize('name', ['--separate-git-dir=spill', '-x'])
+def test_a_new_clone_whose_folder_name_starts_with_a_dash_lands_there(rebuild, hub_pair, tmp_path, monkeypatch, name):
+    """Codex, round 30: the clone's folder went to git as its last argument, so a --checkout whose name starts with a
+    dash was read as an option: --separate-git-dir=spill put the clone's repository in spill/ and its work tree in a
+    folder named after the URL, and the run then failed in a folder that was never made."""
+    monkeypatch.setattr(rebuild, 'URL', f'file://{hub_pair.api.origin}')
+    dest = tmp_path / 'clones' / name
+    dest.parent.mkdir()
+    try:
+        rebuild.checkout_hub(dest, hub_pair.head)
+    except rebuild.RebuildError as exc:
+        pytest.fail(f'the clone went elsewhere: {exc}')
+    assert git(dest, 'rev-parse', 'HEAD') == hub_pair.head
+    assert sorted(p.name for p in dest.parent.iterdir()) == [name]
+
+
+@pytest.mark.parametrize('typed', ['-', '--output=written', '-x'])
+def test_a_revision_git_would_read_as_an_option_is_refused_before_the_hub_is_asked(
+    rebuild, hub_pair, tmp_path, monkeypatch, capsys, typed
+):
+    """Codex, round 30 (the same class as its clone finding): argparse takes `--revision=-x` whole, so a revision
+    starting with a dash reached git as an option (`git checkout --detach -` checks out the previous branch;
+    rev-list's --output=<file> writes a file). No commit id or ref name starts with one, so it names no commit."""
+    asked, real = [], hub_pair.api.repo_info
+
+    def repo_info(*args, **kwargs):
+        asked.append(kwargs)
+        return real(*args, **kwargs)
+
+    monkeypatch.setattr(hub_pair.api, 'repo_info', repo_info)
+    monkeypatch.chdir(tmp_path)
+    stop = None
+    try:
+        run_main(rebuild, hub_pair, tmp_path, monkeypatch, f'--revision={typed}')
+    except (SystemExit, Exception) as exc:
+        stop = exc
+    err = capsys.readouterr().err
+    assert isinstance(stop, SystemExit) and stop.code == 2 and f'--revision {typed!r} names no commit' in err, (
+        stop, err,
+    )
+    assert asked == [] and not (tmp_path / 'out').exists() and not (tmp_path / 'written').exists()
+
+
+def test_a_head_the_hub_names_that_is_no_commit_id_is_refused_before_git_reads_it(
+    rebuild, hub_pair, tmp_path, monkeypatch
+):
+    """Codex, round 30 (the same class): the hub's head went to git as it came. One that is not a commit id, say
+    `--output=<file>`, would be an option to ls-tree and rev-list. It is refused before git is asked anything."""
+    written = tmp_path / 'written'
+    monkeypatch.setattr(hub_pair.api, 'repo_info', lambda *a, **k: SimpleNamespace(sha=f'--output={written}'))
+    with pytest.raises(rebuild.RebuildError, match='not a commit id'):
+        run_main(rebuild, hub_pair, tmp_path, monkeypatch)
+    assert not written.exists() and hub_pair.api.uploads == []
+
+
+def test_a_commit_the_hub_returns_that_is_no_commit_id_is_unverified_and_never_read(
+    rebuild, hub_pair, tmp_path, monkeypatch
+):
+    """Codex, round 30 (the same class): verify_upload gave create_commit's returned id to `git rev-list` as it came.
+    One like `--output=<file>` made rev-list write that file. It is refused unread; the request was sent, so the run
+    says the hub may hold the manifest."""
+    written = tmp_path / 'written'
+    monkeypatch.setattr(rebuild, 'commit_manifest', lambda *a, **k: f'--output={written}')
+    data = manifest({'a/x.docx': sha(b'inline')})
+    with pytest.raises(rebuild.RebuildError) as exc:
+        rebuild.publish(hub_pair.api, hub_pair.clone, hub_pair.head, data, 'rebuild')
+    assert type(exc.value).__name__ == 'UnverifiedPublish', exc.value
+    assert 'not a commit id' in str(exc.value) and not written.exists(), exc.value
+
+
+def test_an_lfs_pointer_whose_size_has_too_many_digits_is_refused(rebuild):
+    """Codex, round 30: a pointer whose size had more digits than Python converts (4300) raised ValueError from
+    int(), a traceback, instead of the refusal a size of 2**63 or more gets. No size with over 19 digits is below
+    2**63, so the digits are counted first."""
+    oid = hashlib.sha256(b'x').hexdigest()
+    pointer = f'version https://git-lfs.github.com/spec/v1\noid sha256:{oid}\nsize 1{"0" * 4300}\n'.encode()
+    try:
+        rebuild.lfs_oid(pointer)
+        stop = None
+    except Exception as exc:
+        stop = exc
+    assert isinstance(stop, rebuild.RebuildError) and 'not a canonical LFS pointer' in str(stop), repr(stop)[:200]
