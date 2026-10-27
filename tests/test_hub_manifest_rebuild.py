@@ -2434,7 +2434,11 @@ def tree_with(origin: Path, tree: str, path: bytes, entry: bytes | None) -> str:
             entries[name] = meta
     if rest:
         below = entries[head].split()[2].decode() if head in entries else EMPTY_TREE
-        entries[head] = b'040000 tree ' + tree_with(origin, below, rest, entry).encode()
+        sub = tree_with(origin, below, rest, entry)
+        if sub == EMPTY_TREE and entry is None:  # what taking an entry out leaves empty goes too, as in git
+            del entries[head]
+        else:
+            entries[head] = b'040000 tree ' + sub.encode()
     elif entry is None:
         del entries[head]
     else:
@@ -2507,3 +2511,19 @@ def test_publish_refuses_a_manifest_path_that_is_an_empty_folder(rebuild, hub_pa
     said = str(exc.value)
     assert hub_pair.api.preuploads == [] and hub_pair.api.commit_calls == [], said
     assert f'{PREFIX}/{MANIFEST} at {revision} is an empty folder' in said and 'Nothing published' in said, said
+
+
+def test_verify_upload_takes_a_commit_that_makes_the_manifest_s_own_folder(rebuild, hub_pair):
+    """Round 25's folder check leaves out the manifest's own parents: an upload onto a hub without the run folder
+    makes it, and is still this upload."""
+    data = manifest({'a/x.docx': sha(b'inline')})
+    origin = hub_pair.api.origin
+    hub_pair.api.commit({f'{PREFIX}/other.txt': b'keeps the prefix folder'}, 'another file')
+    gone = tree_with(origin, git(origin, 'rev-parse', 'HEAD^{tree}'), f'{PREFIX}/{MANIFEST}'.encode(), None)
+    revision = commit_on(origin, gone, hub_pair.api.head())
+    git(hub_pair.clone, 'fetch', '-q', 'origin')
+    assert f'{PREFIX}/run'.encode() not in rebuild.folders(hub_pair.clone, revision)
+    before = rebuild.leaves(hub_pair.clone, revision)
+    made = tree_with(origin, gone, f'{PREFIX}/{MANIFEST}'.encode(), manifest_blob(origin, data))
+    commit = commit_on(origin, made, revision)
+    assert rebuild.verify_upload(hub_pair.clone, revision, commit, before, data) == commit

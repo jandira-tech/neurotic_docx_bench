@@ -438,6 +438,12 @@ def leaves(checkout: Path, commit: str) -> dict[bytes, tuple[bytes, ...]]:
     return entries
 
 
+def folders(checkout: Path, commit: str) -> set[bytes]:
+    """Every tree in ``commit``, an empty one included: ``leaves`` lists none, as ``ls-tree -r`` lists no tree."""
+    listing = git(checkout, 'ls-tree', '-r', '-d', '-z', '--full-tree', commit)
+    return {line.split(b'\t', 1)[1] for line in listing.split(b'\0') if line}
+
+
 def spelled(path: bytes) -> str:
     """A repo path as text, one spelling per byte string: backslashes doubled, then each byte that is not UTF-8 as
     ``\\xNN`` (backslashreplace alone spells the byte 0xff and a backslash followed by ``xff`` the same)."""
@@ -476,6 +482,7 @@ def publish(api, checkout: Path, revision: str, data: bytes, message: str) -> st
         # Read before the upload, so a tree this cannot read stops the run before anything is committed.
         try:
             before = leaves(checkout, revision)
+            trees = folders(checkout, revision)
         except RebuildError as exc:
             raise RebuildError(f'{exc}. {unread}') from exc
         key = path.encode()
@@ -491,6 +498,13 @@ def publish(api, checkout: Path, revision: str, data: bytes, message: str) -> st
                 f'{path} at {revision} is a folder holding {held} ({named}{more}); a commit putting the manifest '
                 'there would drop them, so this run makes none. Nothing published by this run; move or remove that '
                 'folder on the hub, then rerun'
+            )
+        if key in trees:  # a folder with no file in it, which leaves() does not list
+            inside = any(t.startswith(key + b'/') for t in trees)
+            what = 'a folder holding only empty folders' if inside else 'an empty folder'
+            raise RebuildError(
+                f'{path} at {revision} is {what}; a commit putting the manifest there would replace it, so this run '
+                'makes none. Nothing published by this run; remove that folder on the hub, then rerun'
             )
         entry = before.get(key)
         # A blob's bytes in any mode, read with the tree, before anything is sent (a symlink's are its target).
@@ -651,7 +665,11 @@ def commit_manifest(api, operation: CommitOperationAdd, message: str, revision: 
 
 
 def verify_upload(checkout: Path, revision: str, commit: str, before: dict, data: bytes) -> str:
-    """``commit`` must sit on ``revision`` and change only the manifest, to ``data`` as a regular file."""
+    """``commit`` must sit on ``revision`` and change only the manifest, to ``data`` as a regular file.
+
+    Folders count as changes too, an empty one included (``leaves`` lists no tree), except the manifest's own
+    parents, which a commit writing it makes or keeps.
+    """
     path = f'{REPO_PREFIX}/{MANIFEST}'
     key = path.encode()
     accepted = (data, lfs_pointer(data))
@@ -660,13 +678,17 @@ def verify_upload(checkout: Path, revision: str, commit: str, before: dict, data
     if parents != [commit, revision]:
         raise RebuildError(f'{commit} is not a commit on {revision} (parents {parents[1:]})')
     after = leaves(checkout, commit)
-    changed = sorted(p for p in before.keys() | after.keys() if before.get(p) != after.get(p))
+    after_trees = folders(checkout, commit)
+    moved = {t for t in folders(checkout, revision) ^ after_trees if not key.startswith(t + b'/')}
+    changed = sorted({p for p in before.keys() | after.keys() if before.get(p) != after.get(p)} | moved)
     if changed != [key]:
         shown = [spelled(p) for p in changed[:10]]
         raise RebuildError(f'{commit} changes {shown}, not only {path}; it is not this upload')
     entry = after.get(key)
-    if entry is None:  # in the tree before, so the commit removes it
-        raise RebuildError(f'{commit} removes {path}; it is not this upload')
+    if entry is None:
+        if key in after_trees:
+            raise RebuildError(f'the manifest at {commit} is a folder, not a regular file; it is not this upload')
+        raise RebuildError(f'{commit} removes {path}; it is not this upload')  # in the tree before, then
     if not regular_blob(entry):
         mode = entry[0].decode()
         raise RebuildError(f'the manifest at {commit} is not a regular file (mode {mode}); it is not this upload')
