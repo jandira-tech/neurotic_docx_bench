@@ -1478,7 +1478,13 @@ def _download(
     ]
     try:
         for t in threads:  # Ctrl-C is held: it never lands between a thread's start and this list
-            t.start()
+            try:
+                t.start()
+            except RuntimeError as exc:  # the process can make no more threads (RLIMIT_NPROC, memory)
+                raise GetError(
+                    f"a download thread could not be started ({exc}): nothing moved into {dest}; {staging} is kept "
+                    "so a rerun resumes"
+                ) from exc
         while alive := [t for t in threads if t.is_alive()]:
             ctrl_c.check(stopped)
             alive[0].join(0.25)  # in slices, so a press is seen during a long download
