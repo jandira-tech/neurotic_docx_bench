@@ -4113,3 +4113,78 @@ def test_a_disk_whose_close_moves_a_file_s_mtime_is_refused_naming_the_close(
     said = str(info.value)
     assert "closing a file there changes its identity" in said and "a rename there" not in said, said
     assert api.downloads() == [] and not (dest / "a.docx").exists(), said
+
+
+# Review round 24 (#80), Codex
+
+
+def test_a_ctrl_c_held_as_a_download_thread_fails_to_start_is_the_first_press(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Codex, round 24: a Ctrl-C held while the first download ran, then the second download thread could not start
+    (RuntimeError). The cleanup took the held press for a second one: it stopped waiting for the running download,
+    dropped the press and raised the RuntimeError, so the CLI's exit 130 was missed. A press held as an error stops
+    the downloads is the first: the cleanup waits for the running download, and the run ends in that press."""
+    import threading
+    import time
+
+    dest = tmp_path / "dest"
+    api = PinnedHub(FILES)
+    real_download, real_start = api.hf_hub_download, threading.Thread.start
+
+    def slow(*args, **kw):
+        time.sleep(0.3)  # still running as the cleanup begins
+        return real_download(*args, **kw)
+
+    def start(self):
+        if self.name == "hub-get-download-1":
+            signal.raise_signal(signal.SIGINT)  # pressed while the first download runs
+            raise RuntimeError("can't start new thread")
+        return real_start(self)
+
+    monkeypatch.setattr(api, "hf_hub_download", slow)
+    monkeypatch.setattr(threading.Thread, "start", start)
+    with pytest.raises(BaseException) as info:
+        hub_get.get(preset(dest), api=api, workers=2)
+    assert info.type is KeyboardInterrupt, repr(info.value)
+    notes = " ".join(getattr(info.value, "__notes__", ()))
+    assert "can't start new thread" in notes and "left to end" not in notes, notes
+
+
+def test_a_second_ctrl_c_during_the_rollback_still_names_what_it_found(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Codex, round 24: the rollback found a placed file someone had changed and left it, naming it in what it
+    found; a second Ctrl-C then stopped the rollback before its next step. The note listed the files not put back,
+    but not what the rollback had found about them."""
+    dest = tmp_path / "dest"
+    real_place, real_withdraw = hub_get.place, hub_get._withdraw
+    placed: list[Path] = []
+    failed: list[Path] = []
+
+    def place(staged, target, scratch):  # the third move fails; the rollback's own give-back is the real one
+        if len(placed) == 2 and not failed:
+            failed.append(target)
+            _rewrite_keeping_size_and_mtime(placed[1])  # someone edits the second file, keeping its size and mtime
+            raise OSError("the disk went away")
+        result = real_place(staged, target, scratch)
+        if not failed:
+            placed.append(target)
+        return result
+
+    def withdraw(target, *args, **kw):
+        why = real_withdraw(target, *args, **kw)
+        if target == placed[1]:
+            signal.raise_signal(signal.SIGINT)
+            signal.raise_signal(signal.SIGINT)  # pressed twice: the rollback stops before its next step
+        return why
+
+    monkeypatch.setattr(hub_get, "place", place)
+    monkeypatch.setattr(hub_get, "_withdraw", withdraw)
+    with pytest.raises(BaseException) as info:
+        hub_get.get(preset(dest), api=PinnedHub(FILES))
+    assert info.type is KeyboardInterrupt, repr(info.value)
+    notes = " ".join(getattr(info.value, "__notes__", ()))
+    assert "Ctrl-C stopped putting back" in notes, notes
+    assert f"{placed[1]} changed after this run moved it there; left as it is" in notes, notes
+    assert placed[1].read_bytes().startswith(b"M")
