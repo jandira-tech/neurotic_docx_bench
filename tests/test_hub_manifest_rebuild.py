@@ -990,6 +990,9 @@ def other_repository(tmp_path: Path) -> Path:
     other = tmp_path / 'other'
     other.mkdir()
     git(other, 'init', '-q', '-b', 'main')
+    # no background maintenance after the commit: its maintenance.lock came and went under the before/after look
+    git(other, 'config', 'maintenance.auto', 'false')
+    git(other, 'config', 'gc.auto', '0')
     git(other, '-c', 'user.email=t@example.com', '-c', 'user.name=t', 'commit', '-q', '--allow-empty', '-m', 'caller')
     return other
 
