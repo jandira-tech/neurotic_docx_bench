@@ -1985,8 +1985,10 @@ def test_the_sdk_sends_the_commit_when_the_preupload_names_other_content(rebuild
 
 class OpenPipe:
     """The stdout of a ``git cat-file --batch`` that keeps running: like ``BufferedReader`` over a pipe, ``read(n)``
-    makes its n-byte buffer first (``MemoryError`` at 2**62 bytes, ``OverflowError`` from ``sys.maxsize``, both
-    measured on this CPython), and a read past what git wrote waits for bytes that never come."""
+    makes its n-byte buffer first, and a read past what git wrote waits for bytes that never come. Measured on
+    CPython 3.14.8 (macOS) over a pipe kept open (mcode, round 21): ``MemoryError`` from 2**62 to 2**63-34;
+    ``OverflowError('byte string is too large')`` from 2**63-33, ``PyBytes_FromStringAndSize``'s
+    ``size > PY_SSIZE_T_MAX - PyBytesObject_SIZE``; above ``sys.maxsize`` the size is no index at all."""
 
     def __init__(self, answer: bytes):
         import io
@@ -1997,8 +1999,10 @@ class OpenPipe:
         return self.data.readline()
 
     def read(self, n=-1):
-        if n >= sys.maxsize:
-            raise OverflowError('cannot fit the size into an index-sized integer')
+        if n > sys.maxsize:
+            raise OverflowError("cannot fit 'int' into an index-sized integer")
+        if n > sys.maxsize - 33:
+            raise OverflowError('byte string is too large')
         if n >= 2**62:
             raise MemoryError
         if n < 0 or n > len(self.data.getbuffer()) - self.data.tell():
@@ -2213,7 +2217,7 @@ def test_the_sdk_sends_the_lfs_commit_when_the_preupload_names_other_lfs_content
     ]
 
 
-@pytest.mark.parametrize('size', [2**62, 2**64 - 1], ids=['MemoryError', 'OverflowError'])
+@pytest.mark.parametrize('size', [2**62, 2**63 - 33, 2**64 - 1], ids=['MemoryError', 'too-large', 'no-index'])
 def test_a_cat_file_size_too_large_to_read_refuses(rebuild, monkeypatch, tmp_path, size):
     """mcode, round 20: a size of ASCII digits passes the header check, and a read of it fails making its buffer
     (``MemoryError``, ``OverflowError``), which reached the caller uncaught instead of the refusal of a malformed
@@ -2242,22 +2246,28 @@ def test_a_folder_at_the_manifest_path_refuses_before_the_preupload(rebuild, hub
     assert type(exc.value).__name__ != 'UnverifiedPublish', exc.value
     assert hub_pair.api.preuploads == [] and hub_pair.api.commit_calls == []
     assert 'folder' in said and 'Nothing published by this run' in said, said
+    # mcode, round 21: git can replace the folder with the manifest, dropping the files under it; the run declines
+    # to, and names what such a commit would drop
+    assert 'inner.txt' in said and 'would drop' in said and 'no commit can' not in said, said
 
 
-def test_the_symlink_s_bytes_are_read_before_the_preupload(rebuild, hub_pair, tmp_path, monkeypatch):
+@pytest.mark.parametrize('read', [('cat-file', 'blob'), ('ls-tree',)], ids=['blob', 'tree'])
+def test_the_symlink_s_bytes_are_read_before_the_preupload(rebuild, hub_pair, tmp_path, monkeypatch, read):
     """mcode, round 20: the bytes of a symlink at the manifest path were read only after the preupload, to explain
-    a no-op, so a git failure there came after a request was sent. They are read with the tree, before any."""
+    a no-op, so a git failure there came after a request was sent. They are read with the tree, before any.
+    mcode, round 21: a failure of either read says that nothing was published, as every other refusal does."""
     data = manifest({'a/x.docx': sha(b'inline')})
     revision = symlink_revision(hub_pair, tmp_path, data)
     real = rebuild.git
 
     def failing(checkout, *args):
-        if args[:2] == ('cat-file', 'blob'):
-            raise rebuild.RebuildError('git cat-file blob failed (128): fatal: simulated')
+        if args[:len(read)] == read:
+            raise rebuild.RebuildError(f'git {" ".join(read)} failed (128): fatal: simulated')
         return real(checkout, *args)
 
     monkeypatch.setattr(rebuild, 'git', failing)
     with pytest.raises(rebuild.RebuildError) as exc:
         rebuild.publish(hub_pair.api, hub_pair.clone, revision, data, 'rebuild')
-    assert 'simulated' in str(exc.value), exc.value
+    said = str(exc.value)
+    assert 'simulated' in said and 'Nothing published by this run' in said, said
     assert hub_pair.api.preuploads == [] and hub_pair.api.commit_calls == []
