@@ -3508,6 +3508,89 @@ def results_upload_cmd(
         console.print(f"pruned {len(report.pruned)} run folders" + (": " + ", ".join(str(p) for p in report.pruned) if report.pruned else ""))
 
 
+hub_app = typer.Typer(
+    name="hub",
+    help="Ready-made downloads from the Hugging Face hub: pinned to a commit, every file hash-verified.",
+    no_args_is_help=True,
+)
+app.add_typer(hub_app)
+
+
+@hub_app.command(name="list")
+def hub_list_cmd(
+    sizes: bool = typer.Option(False, "--sizes", help="count the files and bytes on the hub (one listing per preset)"),
+) -> None:
+    """Every download preset: what it holds, where on the hub, where it lands."""
+    from neurotic_docx_bench import hub, hub_get
+
+    api = hub.default_api() if sizes else None
+    for p in hub_get.PRESETS.values():
+        line = Text.assemble((p.name, "bold"), f"  {p.repo_id}/{p.path} → {p.dest}")
+        if api is not None:
+            try:
+                sha = hub_get.resolve_revision(api, p.repo_id)
+                files = hub_get.remote_files(api, p.repo_id, sha, p.path, exclude=p.exclude)
+            except hub_get.GetError as exc:  # a private repo without a token: say so, list the rest
+                line.append(f"  (unavailable: {exc})", style="yellow")
+            else:
+                line.append(f"  ({len(files)} files, {hub_get.human(sum(f.size for f in files))})")
+        console.print(line, soft_wrap=True)
+        console.print(Text(f"    {p.about}", style="dim"), soft_wrap=True)
+    console.print(Text("uv run bench hub get <preset> [--include GLOB] [--dest DIR] [--revision SHA] [--dry-run]"))
+
+
+@hub_app.command(name="get")
+def hub_get_cmd(
+    name: str | None = typer.Argument(None, help="a preset from `bench hub list`", show_default=False),
+    repo: str | None = typer.Option(None, "--repo", help="without a preset: the dataset repo id", show_default=False),
+    path: str | None = typer.Option(None, "--path", help="without a preset: the folder in the repo ('' = all)", show_default=False),
+    dest: Path | None = typer.Option(None, "--dest", help="where the files land (default: the preset's)", show_default=False),
+    revision: str | None = typer.Option(None, "--revision", help="branch, tag or commit (default main), resolved to a commit once"),
+    include: list[str] | None = typer.Option(None, "--include", help="only files matching this glob, relative to the preset's folder; fnmatch, so * also crosses / (repeatable)"),
+    overwrite: bool = typer.Option(False, "--overwrite", help="replace local files whose bytes differ from the hub's"),
+    keep_local: bool = typer.Option(False, "--keep-local", help="keep local files whose bytes differ; fetch the rest"),
+    dry_run: bool = typer.Option(False, "--dry-run", help="list what would be downloaded; download and write nothing"),
+    workers: int = typer.Option(8, "--workers", help="parallel downloads"),
+) -> None:
+    """Download a preset (or --repo/--path/--dest), verify every file against the hub, move it into place."""
+    from neurotic_docx_bench import hub, hub_get
+
+    if overwrite and keep_local:
+        console.print(Text("--overwrite and --keep-local exclude each other"))
+        raise typer.Exit(code=2)
+    if name is not None:
+        if repo is not None or path is not None:
+            console.print(Text("give a preset name or --repo/--path, not both"))
+            raise typer.Exit(code=2)
+        preset = hub_get.PRESETS.get(name)
+        if preset is None:
+            console.print(Text(f"unknown preset {name!r}; `bench hub list` shows them"))
+            raise typer.Exit(code=2)
+    elif repo is not None and path is not None and dest is not None:
+        preset = hub_get.Preset("custom", repo, path.strip("/"), dest, "--repo/--path")
+    else:
+        console.print(Text("give a preset name (see `bench hub list`), or --repo, --path and --dest"))
+        raise typer.Exit(code=2)
+    policy = "overwrite" if overwrite else "keep-local" if keep_local else "refuse"
+    try:
+        report = hub_get.get(
+            preset, api=hub.default_api(), revision=revision, dest=dest, include=include or (),
+            on_conflict=policy, dry_run=dry_run, workers=workers,
+        )
+    except hub_get.GetError as exc:
+        console.print(Text.assemble(("refused ", "red"), str(exc), *(f"; {n}" for n in getattr(exc, "__notes__", ()))),
+                      soft_wrap=True)
+        raise typer.Exit(code=1) from exc
+    except KeyboardInterrupt as exc:  # typer would exit 130 silently; the notes say what the rollback left
+        console.print(Text.assemble(("stopped by Ctrl-C", "red"), *(f"; {n}" for n in getattr(exc, "__notes__", ()))),
+                      soft_wrap=True)
+        raise typer.Exit(code=130) from exc
+    console.print(Text(report.describe()), soft_wrap=True)
+    if report.kept_local:
+        keep = "would keep local" if report.dry_run else "kept local"
+        console.print(Text(f"{keep}: {', '.join(report.kept_local)}", style="yellow"))
+
+
 # --- bench try: one fixture, any tool, against jubarte -----------------------
 
 try_app = typer.Typer(

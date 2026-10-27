@@ -236,3 +236,8 @@ results/wordcraft_20261014_fresh/lf_backup_2026-10-14/comparisons.csv
 results/wordcraft_20261014_fresh/lf_backup_2026-10-14/conversions.csv
 /Users/arthrod/temp/T/neurotic_docx_bench/superdoc-redlines/
 grok_run/
+
+# bench hub get: downloads with no home in the checkout, and the staging folders beside a destination
+hub-downloads/
+.*.hub-*/
+.hub-*/

@@ -399,6 +399,79 @@ See the note in the script.
    understand the 'save as' message"). Retry just those individually with a `delay 2`
    after `open`.
 
+## Everything else on the hub: `bench hub list|get` (2026-10-26, #79)
+
+The corpus is one of fifteen download presets. The 0929 run's tool outputs, Word's fresh compares,
+the 0.13.0 release evidence, the R2 cohort mirrors, the website's R2 objects, the results
+dataset's parquet tables and the private git-history archive also live only on the hub. Each has
+a named preset:
+
+```bash
+uv run bench hub list --sizes                            # every preset: hub path → local destination, files, bytes
+uv run bench hub get corpus-word                         # corpus/word (docx, Word PDFs, compares, tables)
+uv run bench hub get redlines-0929 --include 'jubarte-0.14.0/docx/*' --dry-run
+uv run bench hub get wordcraft-20261014                  # → hub-downloads/r2-mirror/wordcraft-20261014
+uv run bench hub get git-archive --include '*.txt'       # private; needs HF_TOKEN or `hf auth login`
+uv run bench hub get --repo arthrod/neurotic_docx_bench --path outputs/release_0.13.0_evidence --dest x
+```
+
+- **Pinned.** `--revision` (default `main`) is resolved to a commit once, and every listing and
+  download reads that commit (a branch read can serve a stale cache, as #76 found with
+  `hf_hub_download`).
+- **Verified.** Every file is hashed against the hub's own record at that commit: LFS `sha256`, or
+  the git blob sha1 for inline files. One mismatch refuses the run, and nothing moves into the
+  destination.
+- **No clobbering.** A local file with the same bytes is skipped. One with different bytes stops
+  the run before anything downloads, unless you pass `--overwrite` or `--keep-local`.
+  `--overwrite` replaces only regular files: a local symlink whose bytes differ refuses the run (one
+  with the hub's bytes is skipped like any matching file, and nothing is written through it).
+  `redlines-0929` lands in `results/redlines_0929_full`, whose scripts and CSVs are tracked, so this
+  rule is what protects them. A symlinked folder below the destination refuses the run too, since it
+  would put files, or move replaced ones, outside the destination (the destination itself may be a
+  symlink), and so does a folder below it on another disk (a mount), where a rollback could not take
+  files back; the folders are looked at again before each file moves. So does a destination that is
+  or holds the staging folder.
+- Files stage in `files/` of `.<dest>.hub-<sha12>/` beside the destination, or of
+  `<dest>/.hub-<sha12>/` when the destination is a mount or a link to another disk; the lock, the
+  `.replaced/` backups and `.scratch/` sit beside `files/`, where no hub path can land. The folder is
+  locked for the run, and a symlink in it refuses the run; a staged file with a second name (a hard link) is
+  fetched again, never written into. Files move in all or nothing: each is placed as a hard link to
+  its staged copy (on a disk without hard links, a copy made in the staging folder's `.scratch/` that
+  takes its name with a rename refusing an existing file, `renamex_np(RENAME_EXCL)` on macOS and
+  `renameat2(RENAME_NOREPLACE)` on Linux, so a kill never leaves a part-written or empty file; a disk
+  with neither refuses before any download, and both are probed on every disk, so one file whose link
+  fails is copied only where that rename works; a disk where closing or renaming a file gives it a new
+  identity, as macOS's FAT's rename does an empty one, refuses before any download too, since the rollback
+  knows this run's files by their identity), so a file written meanwhile is never overwritten, and
+  the staged copies go only after the last file is in place. A
+  failed or interrupted (Ctrl-C) move withdraws every file already placed and restores every file
+  `--overwrite` replaced (a rename or link the disk reports failed is checked by identity first, since NFS
+  may report one it made as failed; a step whose look fails too is named with where the file may be, never
+  claimed undone), except a file someone else changed after the run placed it, which stays (a rewrite that
+  kept the size and set the mtime back included: a placed file is first moved to a private name and its
+  bytes are checked there against the hub's, since no disk's change time can be trusted to show such a
+  rewrite; one that is not the hub's, or cannot be read, is given back; a placed file someone removed counts
+  as withdrawn, so the file it replaced is restored);
+  the error names it and where the file it replaced is kept, and a later run refuses to overwrite
+  that kept file. On success the run removes only what it staged; on failure the folder is kept for
+  a resumable rerun. A rerun names what an earlier run left in the staging folder (replaced files in
+  `.replaced/`, files it took back in `.withdrawn-*/`; a run with nothing to download too), and
+  takes the second name off staged files a killed move left linked into the destination. Ctrl-C
+  never splits a step: during the moves it is held until the step in hand is recorded (a second
+  press waits too, and presses made before a move fails wait for its rollback); one during the
+  rollback lets it finish, a second stops it before its next step
+  and names the files not put back. Ctrl-C during the download drops the queued downloads and keeps
+  the staging folder. The CLI prints what was left where and exits 130. Ctrl-C is held only under Python's own handler, so a caller that ignores or
+  handles it keeps that. Presets with no home in the checkout land in `hub-downloads/`. All three
+  are git-ignored.
+- `--include` globs are fnmatch patterns relative to the preset's folder: `*` also crosses `/`, so
+  `--include '*.docx'` takes the `.docx` files of every subfolder too.
+- `bench fixtures download` (whole fixtures repo, checked against `MANIFEST.sha256.json`) and
+  `scripts/fetch_corpus.py` still work. The `compare-regen` preset downloads Word's fresh compares but
+  not `results/compare_regen/regen_list.csv`, which `bench jubarte-release` reads at its measure step,
+  after the Word export: set that lane up with `scripts/fetch_corpus.py`, which writes both.
+- Adding a preset is one entry in `hub_get.PRESETS` (`src/neurotic_docx_bench/hub_get.py`).
+
 ## Remote tryout (`bench try remote`, `tryout_remote.py`, `jubarte_release.py`)
 
 Scores one tool on random documents from the Hugging Face dataset `superdoc-dev/docx-corpus`
