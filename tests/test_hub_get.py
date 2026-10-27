@@ -2717,3 +2717,212 @@ def test_a_file_whose_link_fails_is_never_copied_with_a_rename_that_replaces(
     assert type(exc.value) is hub_get.GetError, repr(exc.value)
     assert dest / "a.docx" not in renamed_onto
     assert "rename" in str(exc.value) and "every file already moved was put back" in str(exc.value), exc.value
+
+
+# Review round 16 (#80)
+
+
+def _eio(path) -> OSError:
+    return OSError(errno.EIO, os.strerror(errno.EIO), str(path))
+
+
+def test_a_link_whose_outcome_cannot_be_looked_at_is_named_not_claimed_put_back(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Codex, round 16: the link was made and reported failed, and the look that decides whether it was made
+    failed too. The file stayed in the destination outside the journal while the rollback said every file was
+    put back; it is named as a move whose outcome is unknown."""
+    dest = tmp_path / "dest"
+    real_link, real_lstat = os.link, os.lstat
+    blind: list[int] = []
+
+    def link(src, dst, *args, **kw):
+        real_link(src, dst, *args, **kw)
+        if Path(dst) == dest / "a.docx" and not blind:
+            blind.append(1)
+            raise OSError(errno.EIO, os.strerror(errno.EIO), str(src), None, str(dst))
+
+    def lstat(path, *args, **kw):
+        if blind == [1] and Path(path) == dest / "a.docx":
+            blind.append(2)
+            raise _eio(path)
+        return real_lstat(path, *args, **kw)
+
+    monkeypatch.setattr(os, "link", link)
+    monkeypatch.setattr(os, "lstat", lstat)
+    with pytest.raises(hub_get.GetError) as info:
+        hub_get.get(preset(dest), api=PinnedHub(FILES))
+    said = str(info.value)
+    assert blind == [1, 2]
+    assert "every file already moved was put back" not in said, said
+    assert str(dest / "a.docx") in said, said
+
+
+def test_a_backup_whose_outcome_cannot_be_looked_at_is_named_not_claimed_restored(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Codex, round 16: the same for the --overwrite backup: the local file was moved aside and the disk said EIO,
+    then the look failed. The rollback said every replaced file was restored; it names both places."""
+    dest = tmp_path / "dest"
+    mine = _old_run(dest)
+    real_replace, real_lstat = os.replace, os.lstat
+    blind: list[Path] = []
+
+    def replace(src, dst, *args, **kw):
+        real_replace(src, dst, *args, **kw)
+        if hub_get._BACKUP in Path(dst).parts and not blind:
+            blind.append(Path(dst))
+            raise OSError(errno.EIO, os.strerror(errno.EIO), str(src), None, str(dst))
+
+    def lstat(path, *args, **kw):
+        if len(blind) == 1 and Path(path) in (blind[0], mine):
+            blind.append(Path(path))
+            raise _eio(path)
+        return real_lstat(path, *args, **kw)
+
+    monkeypatch.setattr(os, "replace", replace)
+    monkeypatch.setattr(os, "lstat", lstat)
+    with pytest.raises(hub_get.GetError) as info:
+        hub_get.get(preset(dest), api=PinnedHub(FILES), on_conflict="overwrite")
+    said = str(info.value)
+    assert len(blind) == 2
+    assert blind[0].read_bytes() == b"old run\n"
+    assert "every replaced file restored" not in said and str(blind[0]) in said, said
+
+
+def test_a_backup_made_while_the_file_was_saved_again_is_kept_and_named(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Codex, round 16: the backup rename was made, an editor saved the file again at its old name, and the disk
+    then said ENOENT. The new save is not the local file: the backup holds it, so the move was made and is
+    journaled; the new save stays, and the backup is named as kept."""
+    dest = tmp_path / "dest"
+    mine = _old_run(dest)
+    real_replace = os.replace
+    fired: list[Path] = []
+
+    def replace(src, dst, *args, **kw):
+        real_replace(src, dst, *args, **kw)
+        if hub_get._BACKUP in Path(dst).parts and not fired:
+            fired.append(Path(dst))
+            Path(src).write_bytes(b"saved again\n")
+            raise FileNotFoundError(errno.ENOENT, "No such file or directory", str(src))
+
+    monkeypatch.setattr(os, "replace", replace)
+    with pytest.raises(hub_get.GetError) as info:
+        hub_get.get(preset(dest), api=PinnedHub(FILES), on_conflict="overwrite")
+    said = str(info.value)
+    (backup,) = fired
+    assert mine.read_bytes() == b"saved again\n"
+    assert backup.read_bytes() == b"old run\n"
+    assert "every replaced file restored" not in said and str(backup) in said, said
+
+
+def test_a_withdrawal_made_while_the_file_was_saved_again_leaves_the_new_save(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Round 16, the same shape in the rollback: the rename of a placed file to its private name was made, a new
+    file was saved at the name, and the disk said ENOENT. This run's file is at the private name, so it was taken
+    back; the new save stays and is not named as a file the rollback could not take back."""
+    dest = tmp_path / "dest"
+    real_place, real_rename = hub_get.place, os.rename
+    fired: list[Path] = []
+
+    def flaky(staged, target, scratch):
+        if target.name == "b.pdf":
+            raise OSError("disk went away")
+        return real_place(staged, target, scratch)
+
+    def rename(src, dst, *args, **kw):
+        real_rename(src, dst, *args, **kw)
+        if Path(dst).parent.name.startswith(".withdrawn-") and not fired:
+            fired.append(Path(src))
+            Path(src).write_bytes(b"saved again\n")
+            raise FileNotFoundError(errno.ENOENT, "No such file or directory", str(src))
+
+    monkeypatch.setattr(hub_get, "place", flaky)
+    monkeypatch.setattr(os, "rename", rename)
+    with pytest.raises(hub_get.GetError) as info:
+        hub_get.get(preset(dest), api=PinnedHub(FILES))
+    (saved,) = fired
+    assert saved.read_bytes() == b"saved again\n"
+    assert "every file already moved was put back" in str(info.value), info.value
+
+
+def test_a_placed_file_rewritten_in_place_with_its_size_and_mtime_stays(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """mcode, round 16: someone rewrites a file the run placed, in place, same length, its mtime restored (cp -p,
+    tar -x, an editor that keeps the time); a later move fails. (dev, ino, size, mtime) cannot see that, and the
+    rollback deleted their bytes. The inode's ctime, read once the file is in place, moves with any write."""
+    dest = tmp_path / "dest"
+    real_place = hub_get.place
+    rewritten: list[bytes] = []
+
+    def place(staged, target, scratch):
+        if target.name == "b.pdf":
+            a = dest / "a.docx"
+            st = os.stat(a)
+            with open(a, "r+b") as fh:
+                fh.write(b"M" * st.st_size)
+            os.utime(a, ns=(st.st_atime_ns, st.st_mtime_ns))
+            rewritten.append(a.read_bytes())
+            raise OSError("the disk went away")
+        return real_place(staged, target, scratch)
+
+    monkeypatch.setattr(hub_get, "place", place)
+    with pytest.raises(hub_get.GetError) as info:
+        hub_get.get(preset(dest), api=PinnedHub(FILES))
+    assert rewritten
+    assert (dest / "a.docx").exists(), "the rollback deleted a file someone else rewrote"
+    assert (dest / "a.docx").read_bytes() == rewritten[0]
+    assert "changed after this run moved it there" in str(info.value), info.value
+
+
+def test_a_probe_rename_that_replaced_the_existing_name_and_reported_failed_refuses(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """mcode, round 16: the probe's other identity branch, untested: the no-replace rename replaced the existing
+    name and then reported a failure. What is there decides: it replaced, so the disk refuses before downloading."""
+    dest = tmp_path / "dest"
+
+    def replaced_then_failed(src, dst):
+        os.replace(src, dst)
+        raise OSError(errno.EIO, os.strerror(errno.EIO), str(src), None, str(dst))
+
+    monkeypatch.setattr(os, "link", _no_links)
+    monkeypatch.setattr(hub_get, "_rename_new", replaced_then_failed)
+    api = PinnedHub(FILES)
+    with pytest.raises(hub_get.GetError) as info:
+        hub_get.get(preset(dest), api=api)
+    assert "one replaced" in str(info.value), info.value
+    assert api.downloads() == []
+
+
+def test_a_restored_file_whose_backup_cannot_be_removed_names_the_backup(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """mcode, round 16: the replaced file was put back, then removing its backup's name failed, and the message
+    lost the clause that says where it is kept. It says the file is back and names the second name left."""
+    dest = tmp_path / "dest"
+    mine = _old_run(dest)
+    real_place, real_unlink = hub_get.place, os.unlink
+
+    def place(staged, target, scratch):
+        if target.name == "b.pdf":
+            raise OSError("the disk went away")
+        return real_place(staged, target, scratch)
+
+    def unlink(path, *args, **kw):
+        if hub_get._BACKUP in Path(path).parts:
+            raise PermissionError(errno.EACCES, os.strerror(errno.EACCES), str(path))
+        return real_unlink(path, *args, **kw)
+
+    monkeypatch.setattr(hub_get, "place", place)
+    monkeypatch.setattr(os, "unlink", unlink)
+    with pytest.raises(hub_get.GetError) as info:
+        hub_get.get(preset(dest), api=PinnedHub(FILES), on_conflict="overwrite")
+    said = str(info.value)
+    (backup,) = [p for p in tmp_path.rglob("RUN.md") if hub_get._BACKUP in p.parts]
+    assert mine.read_bytes() == b"old run\n"
+    assert "the file it replaced is back" in said and str(backup) in said, said
