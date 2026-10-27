@@ -482,6 +482,18 @@ def _withdraw(target: Path, placed: Identity, remote: RemoteFile | None, staging
         ours = _identity_at(hold) == placed and same_bytes(hold, remote) and _identity_at(hold) == placed
     except OSError as exc:
         ours, why = False, f"{target} could not be read to check it ({exc})"
+    except BaseException as stop:  # a caller's own Ctrl-C handler (Python's is held): the file goes back first
+        try:
+            place(hold, target, staging / _SCRATCH)
+        except (GetError, OSError) as exc:
+            stop.add_note(f"{target} was being checked at {hold}, and stays there: giving it back failed ({exc})")
+            raise stop from None
+        try:
+            os.unlink(hold)
+            hold.parent.rmdir()
+        except OSError:
+            pass  # a second name of it in the staging folder, which a rerun names
+        raise
     if ours:
         os.unlink(hold)
         hold.parent.rmdir()
