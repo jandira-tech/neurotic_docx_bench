@@ -737,9 +737,9 @@ def main() -> None:
             head = api.repo_info(hub.RESULTS_REPO, repo_type=hub.REPO_TYPE, revision=BRANCH).sha
             if head != given:  # ids as given: a tag or a short id may name the head, and is still not its id
                 raise RebuildError(
-                    f'--publish commits only on the head of {BRANCH}, given by no --revision or by its full commit '
-                    f'id ({head}); --revision {given} is not that id, so nothing published by this run: rerun '
-                    'without --revision'
+                    f'--publish commits only on the head of {BRANCH}, given by no --revision, by --revision {BRANCH} '
+                    f'or by its full commit id ({head}); --revision {a.revision} is not that id, so nothing published '
+                    'by this run: rerun without --revision'
                 )
         out = a.out or Path(tempfile.mkdtemp(prefix='redlines_0929_full_manifest_'))
         out.mkdir(parents=True, exist_ok=True)
@@ -760,13 +760,13 @@ def main() -> None:
         path.write_bytes(data)
         report |= {'revision': revision, 'manifest_sha256': hashlib.sha256(data).hexdigest()}
         (out / 'report.json').write_text(json.dumps(report, indent=1) + '\n')
-        folders = Counter('/'.join(p.split('/')[:2]) for p in report['first_recorded'])
+        first_in = Counter('/'.join(p.split('/')[:2]) for p in report['first_recorded'])
         print(f'{revision}: {report["n_files"]} files ({report["lfs"]} LFS, {report["inline"]} inline)', flush=True)
         for label, n in report['records']:
             print(f'  record {label}: {n} entries')
         replaced = Counter(label for _, label in report['replaced'])
         print(f'  replaced by a newer record (paths per older record): {dict(replaced)}')
-        print(f'  first recorded here: {dict(folders)}')
+        print(f'  first recorded here: {dict(first_in)}')
         print(f'  wrote {path} and {out / "report.json"}', flush=True)
         if a.publish:
             message = (
