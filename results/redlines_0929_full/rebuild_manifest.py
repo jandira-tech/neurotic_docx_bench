@@ -54,13 +54,12 @@ LFS_POINTER = re.compile(
 UPLOAD_LIST_HEADER = ['key', 'size', 'sha256']
 URL = f'https://huggingface.co/datasets/{hub.RESULTS_REPO}'
 NO_LFS = ('-c', 'filter.lfs.smudge=', '-c', 'filter.lfs.process=', '-c', 'filter.lfs.required=false')
-# What `git rev-parse --local-env-vars` lists (git 2.56.0), the list git-sh-setup's clear_local_git_env unsets.
-LOCAL_GIT_ENV = frozenset({
-    'GIT_ALTERNATE_OBJECT_DIRECTORIES', 'GIT_CONFIG', 'GIT_CONFIG_PARAMETERS', 'GIT_CONFIG_COUNT',
-    'GIT_OBJECT_DIRECTORY', 'GIT_DIR', 'GIT_WORK_TREE', 'GIT_IMPLICIT_WORK_TREE', 'GIT_GRAFT_FILE',
-    'GIT_INDEX_FILE', 'GIT_NO_REPLACE_OBJECTS', 'GIT_REPLACE_REF_BASE', 'GIT_PREFIX', 'GIT_SHALLOW_FILE',
-    'GIT_COMMON_DIR',
-})
+# The caller's GIT_ variables that git_env() passes on: tracing, and how the dataset is fetched over
+# HTTPS (a proxy's CA bundle, the slow-transfer timeout). Any other can point git at another
+# repository, work tree, index, object or reference store, template, namespace or config, or change
+# what a pathspec or a ref means; `git rev-parse --local-env-vars` lists only some of those
+# (GIT_REFERENCE_BACKEND and GIT_TEMPLATE_DIR are not among them on git 2.56.0).
+PASSED_GIT_ENV = re.compile(r'GIT_(TRACE\w*|CURL_VERBOSE|SSL_CAINFO|SSL_CAPATH|HTTP_LOW_SPEED_(LIMIT|TIME))')
 
 
 class RebuildError(RuntimeError):
@@ -87,9 +86,9 @@ def git_env() -> dict[str, str]:
     # Replace refs could rewrite the history the records are read from; without lazy fetching a
     # blob-filtered clone could not read an old record at all. The user's global and system
     # config (abbreviations, diff settings, filters) never shape what is read here, nor does any
-    # variable that names a repository, work tree, index, object store or config in place of the
-    # checkout (a git hook exports GIT_DIR and GIT_WORK_TREE for its own; ``-C`` does not override them).
-    env = {k: v for k, v in os.environ.items() if k not in LOCAL_GIT_ENV and k != 'GIT_NO_LAZY_FETCH'}
+    # GIT_ variable of the caller's but PASSED_GIT_ENV (a git hook exports GIT_DIR and GIT_WORK_TREE
+    # for its own repository, and ``-C`` does not override them).
+    env = {k: v for k, v in os.environ.items() if not k.startswith('GIT_') or PASSED_GIT_ENV.fullmatch(k)}
     return env | {
         'GIT_LFS_SKIP_SMUDGE': '1',
         'GIT_NO_REPLACE_OBJECTS': '1',
@@ -357,7 +356,8 @@ def checkout_hub(dest: Path, revision: str) -> None:
     """
     if not (dest / '.git').is_dir():
         dest.parent.mkdir(parents=True, exist_ok=True)
-        git(dest.parent, 'clone', '-q', '--filter=blob:none', '--no-checkout', URL, dest.name)
+        # --template=: nothing copied from a template folder (hooks, or an objects symlink into another store)
+        git(dest.parent, 'clone', '-q', '--template=', '--filter=blob:none', '--no-checkout', URL, dest.name)
         git(dest, 'sparse-checkout', 'set', '--no-cone', f'{REPO_PREFIX}/')
     else:  # a reused clone must already be sparse on the run folder; making it so would empty its worktree
         try:
