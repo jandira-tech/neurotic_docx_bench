@@ -54,6 +54,13 @@ LFS_POINTER = re.compile(
 UPLOAD_LIST_HEADER = ['key', 'size', 'sha256']
 URL = f'https://huggingface.co/datasets/{hub.RESULTS_REPO}'
 NO_LFS = ('-c', 'filter.lfs.smudge=', '-c', 'filter.lfs.process=', '-c', 'filter.lfs.required=false')
+# What `git rev-parse --local-env-vars` lists (git 2.56.0), the list git-sh-setup's clear_local_git_env unsets.
+LOCAL_GIT_ENV = frozenset({
+    'GIT_ALTERNATE_OBJECT_DIRECTORIES', 'GIT_CONFIG', 'GIT_CONFIG_PARAMETERS', 'GIT_CONFIG_COUNT',
+    'GIT_OBJECT_DIRECTORY', 'GIT_DIR', 'GIT_WORK_TREE', 'GIT_IMPLICIT_WORK_TREE', 'GIT_GRAFT_FILE',
+    'GIT_INDEX_FILE', 'GIT_NO_REPLACE_OBJECTS', 'GIT_REPLACE_REF_BASE', 'GIT_PREFIX', 'GIT_SHALLOW_FILE',
+    'GIT_COMMON_DIR',
+})
 
 
 class RebuildError(RuntimeError):
@@ -79,8 +86,10 @@ class HubFile:
 def git_env() -> dict[str, str]:
     # Replace refs could rewrite the history the records are read from; without lazy fetching a
     # blob-filtered clone could not read an old record at all. The user's global and system
-    # config (abbreviations, diff settings, filters) never shape what is read here.
-    env = {k: v for k, v in os.environ.items() if k != 'GIT_NO_LAZY_FETCH'}
+    # config (abbreviations, diff settings, filters) never shape what is read here, nor does any
+    # variable that names a repository, work tree, index, object store or config in place of the
+    # checkout (a git hook exports GIT_DIR and GIT_WORK_TREE for its own; ``-C`` does not override them).
+    env = {k: v for k, v in os.environ.items() if k not in LOCAL_GIT_ENV and k != 'GIT_NO_LAZY_FETCH'}
     return env | {
         'GIT_LFS_SKIP_SMUDGE': '1',
         'GIT_NO_REPLACE_OBJECTS': '1',
