@@ -4188,3 +4188,46 @@ def test_a_second_ctrl_c_during_the_rollback_still_names_what_it_found(
     assert "Ctrl-C stopped putting back" in notes, notes
     assert f"{placed[1]} changed after this run moved it there; left as it is" in notes, notes
     assert placed[1].read_bytes().startswith(b"M")
+
+
+# Review round 24 (#80), mcode
+
+
+@pytest.mark.parametrize(
+    ("at_failure", "during_rollback", "finishes"),
+    [(2, 0, True), (1, 1, True), (2, 1, True), (2, 2, False)],
+    ids=["two-as-it-fails", "one-as-it-fails-one-during", "two-as-it-fails-one-during", "two-during-stop-it"],
+)
+def test_presses_held_as_a_move_fails_wait_for_the_rollback(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, at_failure: int, during_rollback: int, finishes: bool
+) -> None:
+    """mcode, round 24: presses held as a move failed with a disk error were counted as presses during the rollback.
+    Two of them stopped it before its first step, and one with one more pressed during it stopped it too, leaving the
+    hub's files in the destination and the local file --overwrite replaced at .replaced/. Like a press during the
+    moves, they wait: the rollback counts only the presses made during it, finishes on one, and stops on two."""
+    dest = tmp_path / "dest"
+    dest.mkdir()
+    (dest / "a.docx").write_bytes(b"mine\n")
+    _fails_on_b(monkeypatch, before=lambda: [signal.raise_signal(signal.SIGINT) for _ in range(at_failure)])
+    real_withdraw = hub_get._withdraw
+    pressed: list[Path] = []
+
+    def withdraw(target, *args, **kw):
+        why = real_withdraw(target, *args, **kw)
+        if not pressed:
+            pressed.append(target)
+            for _ in range(during_rollback):
+                signal.raise_signal(signal.SIGINT)
+        return why
+
+    monkeypatch.setattr(hub_get, "_withdraw", withdraw)
+    with pytest.raises(BaseException) as info:
+        hub_get.get(preset(dest), api=PinnedHub(FILES), on_conflict="overwrite")
+    assert info.type is KeyboardInterrupt, repr(info.value)
+    notes = " ".join(getattr(info.value, "__notes__", ()))
+    if finishes:
+        assert f"moving into {dest} failed (the disk went away)" in notes, notes
+        assert "every file already moved was put back and every replaced file restored" in notes, notes
+        assert (dest / "a.docx").read_bytes() == b"mine\n" and not (dest / "RUN.md").exists()
+    else:
+        assert "Ctrl-C stopped putting back" in notes, notes
