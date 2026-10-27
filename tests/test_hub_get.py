@@ -3034,3 +3034,131 @@ def test_a_backup_made_and_reported_failed_whose_file_changed_is_recorded(
     monkeypatch.setattr(os, "replace", replace)
     _completes(dest, on_conflict="overwrite")
     assert fired and mine.read_bytes() == b"# run\n"
+
+
+# Review round 17 (#80), mcode
+
+
+@pytest.mark.parametrize("meanwhile", ["rewritten", "untouched"])
+def test_a_change_time_that_could_not_be_read_is_unknown_not_unchanged(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, meanwhile: str
+) -> None:
+    """mcode, round 17: reading the placed file's change time failed (EIO), so none was recorded, and the rollback
+    took that for "unchanged": a rewrite that kept the size and the mtime was deleted while the error said every
+    file was put back. A change time not read is unknown: the bytes decide, so an untouched file is still taken
+    back and a rewritten one stays."""
+    dest = tmp_path / "dest"
+    real_link, real_lstat = os.link, os.lstat
+    armed: list[int] = []
+    rewritten: list[bytes] = []
+
+    def link(src, dst, *args, **kw):
+        real_link(src, dst, *args, **kw)
+        if Path(dst) == dest / "a.docx" and not armed:
+            armed.append(1)
+
+    def lstat(path, *args, **kw):
+        if armed == [1] and Path(path) == dest / "a.docx":
+            armed.append(2)
+            if meanwhile == "rewritten":
+                rewritten.append(_rewrite_keeping_size_and_mtime(Path(path)))
+            raise _eio(path)
+        return real_lstat(path, *args, **kw)
+
+    monkeypatch.setattr(os, "link", link)
+    monkeypatch.setattr(os, "lstat", lstat)
+    with pytest.raises(hub_get.GetError) as info:
+        hub_get.get(preset(dest), api=PinnedHub(FILES))
+    said = str(info.value)
+    assert armed == [1, 2]
+    if meanwhile == "rewritten":
+        assert (dest / "a.docx").exists(), "the rollback deleted a file someone else rewrote"
+        assert (dest / "a.docx").read_bytes() == rewritten[0]
+        assert "every file already moved was put back" not in said, said
+        assert "changed after this run moved it there" in said, said
+    else:
+        assert not (dest / "a.docx").exists()
+        assert "every file already moved was put back" in said, said
+
+
+def _saved_again_at_the_withdrawal(monkeypatch: pytest.MonkeyPatch, dest: Path) -> list[Path]:
+    """Someone saves a new file at a.docx in the instant before the rollback renames it to its private name."""
+    real_rename = os.rename
+    holds: list[Path] = []
+
+    def rename(src, dst, *args, **kw):
+        if Path(dst).parent.name.startswith(".withdrawn-") and Path(src) == dest / "a.docx" and not holds:
+            Path(src).write_bytes(b"saved again\n")
+            holds.append(Path(dst))
+        return real_rename(src, dst, *args, **kw)
+
+    monkeypatch.setattr(os, "rename", rename)
+    return holds
+
+
+def test_a_give_back_whose_outcome_cannot_be_looked_at_names_both_places(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """mcode, round 17: the file saved at the target in the instant before the withdrawal is given back with
+    place; its link was made and reported EIO, and the look failed too. The message named the private name as the
+    one place the file is; it is there, and maybe at the target too."""
+    dest = tmp_path / "dest"
+    holds = _saved_again_at_the_withdrawal(monkeypatch, dest)
+    real_link, real_lstat = os.link, os.lstat
+    blind: list[int] = []
+
+    def link(src, dst, *args, **kw):
+        real_link(src, dst, *args, **kw)
+        if holds and Path(dst) == dest / "a.docx" and not blind:
+            blind.append(1)
+            raise OSError(errno.EIO, os.strerror(errno.EIO), str(src), None, str(dst))
+
+    def lstat(path, *args, **kw):
+        if blind == [1] and Path(path) == dest / "a.docx":
+            blind.append(2)
+            raise _eio(path)
+        return real_lstat(path, *args, **kw)
+
+    _fails_on_b(monkeypatch)
+    monkeypatch.setattr(os, "link", link)
+    monkeypatch.setattr(os, "lstat", lstat)
+    with pytest.raises(hub_get.GetError) as info:
+        hub_get.get(preset(dest), api=PinnedHub(FILES))
+    said = str(info.value)
+    (hold,) = holds
+    assert blind == [1, 2]
+    assert hold.read_bytes() == b"saved again\n"
+    assert str(hold) in said, said
+    assert "whether the file is there is unknown" in said, said
+
+
+def test_a_give_back_that_fails_with_an_os_error_names_where_the_file_is(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Round 17, the same give-back failing outright: the link and the copy's rename both fail (EIO, nothing made).
+    That OSError went past the give-back's handler, and the rollback reported only "{target}: [Errno 5] ...": the
+    file saved at the target is at the private name, which the message did not say."""
+    dest = tmp_path / "dest"
+    holds = _saved_again_at_the_withdrawal(monkeypatch, dest)
+    real_link, real_rename_new = os.link, hub_get._rename_new
+
+    def link(src, dst, *args, **kw):
+        if holds and Path(dst) == dest / "a.docx":
+            raise OSError(errno.EIO, os.strerror(errno.EIO), str(src), None, str(dst))
+        return real_link(src, dst, *args, **kw)
+
+    def rename_new(src, dst):
+        if holds and Path(dst) == dest / "a.docx":
+            raise OSError(errno.EIO, os.strerror(errno.EIO), str(src), None, str(dst))
+        return real_rename_new(src, dst)
+
+    _fails_on_b(monkeypatch)
+    monkeypatch.setattr(os, "link", link)
+    monkeypatch.setattr(hub_get, "_rename_new", rename_new)
+    with pytest.raises(hub_get.GetError) as info:
+        hub_get.get(preset(dest), api=PinnedHub(FILES))
+    said = str(info.value)
+    (hold,) = holds
+    assert hold.read_bytes() == b"saved again\n"
+    assert not (dest / "a.docx").exists()
+    assert str(hold) in said, said
