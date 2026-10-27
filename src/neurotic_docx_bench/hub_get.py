@@ -475,8 +475,12 @@ def _withdraw(target: Path, placed: Identity, remote: RemoteFile | None, staging
                 f"taking {target} back reported {exc} and looking at {hold} failed ({look}); this run's file is at "
                 "one of the two"
             ) from exc
-        if not made:
-            raise
+        if not made:  # the file is still at the target
+            try:
+                hold.parent.rmdir()
+            except OSError:
+                pass  # an empty folder in the staging folder, which names only files
+            return f"taking {target} back failed ({exc}); the file stays there"
     if _identity_at(hold) != placed:  # replaced in the instant between the look and the rename
         try:
             place(hold, target, staging / _SCRATCH)
@@ -484,7 +488,13 @@ def _withdraw(target: Path, placed: Identity, remote: RemoteFile | None, staging
             return f"{target} changed while this run took it back; that file is at {hold}, and {exc}"
         except (GetError, OSError) as exc:
             return f"{target} changed while this run took it back; that file is now at {hold} ({exc})"
-        os.unlink(hold)
+        try:
+            os.unlink(hold)
+        except OSError as exc:
+            return (
+                f"{target} changed after this run moved it there; left as it is, and a second name of it stays at "
+                f"{hold} ({exc})"
+            )
         hold.parent.rmdir()
         return f"{target} changed after this run moved it there; left as it is"
     os.unlink(hold)
@@ -651,6 +661,15 @@ def same_bytes(path: Path, f: RemoteFile) -> bool:
     if f.sha256:
         return hub.sha256_file(path) == f.sha256
     return hub.git_blob_sha1(path) == f.blob_id
+
+
+def _same(path: Path, f: RemoteFile, left: str) -> bool:
+    """``same_bytes`` before any move: a file it cannot read (removed meanwhile, EIO) refuses the run, and ``left``
+    says what that leaves."""
+    try:
+        return same_bytes(path, f)
+    except OSError as exc:
+        raise GetError(f"{path} could not be read to compare it with the hub ({exc}); {left}") from exc
 
 
 def _listing(rels: Sequence[str]) -> str:
@@ -1037,7 +1056,7 @@ def get(
         elif not local.is_file():
             what = "a symlink to no file" if local.is_symlink() else "not a file"
             raise GetError(f"{local} is {what} but the hub has a file there; nothing downloaded")
-        elif same_bytes(local, f):
+        elif _same(local, f, "nothing downloaded"):
             skipped += 1
         elif on_conflict == "overwrite" and local.is_symlink():
             raise GetError(
@@ -1295,7 +1314,7 @@ def _download(
     for f in todo:
         ctrl_c.check(checking)
         got = staged_files / f.repo_path
-        if got.is_file() and not same_bytes(got, f):
+        if got.is_file() and not _same(got, f, f"nothing moved into {dest}; {staging} is kept so a rerun resumes"):
             got.unlink()  # so a rerun fetches it again
             if f.rel not in failing:
                 bad.append(f.rel)
@@ -1319,7 +1338,7 @@ def _download(
         elif not target.is_file():
             what = "a symlink to no file" if target.is_symlink() else "something other than a file"
             raise GetError(f"{target} became {what} while downloading; nothing moved, {staging} kept")
-        elif same_bytes(target, f):
+        elif _same(target, f, f"nothing moved, {staging} kept"):
             late_same += 1
         elif on_conflict == "overwrite" and target.is_symlink():
             raise GetError(
