@@ -466,18 +466,28 @@ def publish(api, checkout: Path, revision: str, data: bytes, message: str) -> st
             )
         # The hub may store the manifest inline or, if its preupload says so, as an LFS pointer.
         accepted = (data, lfs_pointer(data))
+        unread = 'Nothing published by this run: nothing was sent yet; rerun once git can read the clone'
         # Read before the upload, so a tree this cannot read stops the run before anything is committed.
-        before = leaves(checkout, revision)
+        try:
+            before = leaves(checkout, revision)
+        except RebuildError as exc:
+            raise RebuildError(f'{exc}. {unread}') from exc
         key = path.encode()
-        under = sum(1 for leaf in before if leaf.startswith(key + b'/'))  # ls-tree -r lists no folder, only its files
+        under = sorted(leaf for leaf in before if leaf.startswith(key + b'/'))  # ls-tree -r lists a folder's files
         if under:
+            named = ', '.join(leaf.decode(errors='replace') for leaf in under[:5])
+            more = f' and {len(under) - 5} more' if len(under) > 5 else ''
             raise RebuildError(
-                f'{path} at {revision} is a folder ({under} file(s) under it), so no commit can put the manifest '
-                'there. Nothing published by this run; fix the path on the hub'
+                f'{path} at {revision} is a folder holding {len(under)} file(s) ({named}{more}); a commit putting the '
+                'manifest there would drop them, so this run makes none. Nothing published by this run; move or '
+                'remove that folder on the hub, then rerun'
             )
         entry = before.get(key)
         # A blob's bytes in any mode, read with the tree, before anything is sent (a symlink's are its target).
-        there = git(checkout, 'cat-file', 'blob', f'{revision}:{path}') if entry and entry[1] == b'blob' else None
+        try:
+            there = git(checkout, 'cat-file', 'blob', f'{revision}:{path}') if entry and entry[1] == b'blob' else None
+        except RebuildError as exc:
+            raise RebuildError(f'{exc}. {unread}') from exc
         # A symlink (mode 120000) stores its target as blob bytes; the same bytes there are not the manifest.
         if regular_blob(entry):
             if there in accepted:
