@@ -2926,3 +2926,111 @@ def test_a_restored_file_whose_backup_cannot_be_removed_names_the_backup(
     (backup,) = [p for p in tmp_path.rglob("RUN.md") if hub_get._BACKUP in p.parts]
     assert mine.read_bytes() == b"old run\n"
     assert "the file it replaced is back" in said and str(backup) in said, said
+
+
+# Review round 17 (#80)
+
+
+def _rewrite_keeping_size_and_mtime(path: Path) -> bytes:
+    st = os.stat(path)
+    with open(path, "r+b") as fh:
+        fh.write(b"M" * st.st_size)
+    os.utime(path, ns=(st.st_atime_ns, st.st_mtime_ns))
+    return path.read_bytes()
+
+
+def _fails_on_b(monkeypatch: pytest.MonkeyPatch, before=None) -> None:
+    real_place = hub_get.place
+
+    def place(staged, target, scratch):
+        if target.name == "b.pdf":
+            if before is not None:
+                before()
+            raise OSError("the disk went away")
+        return real_place(staged, target, scratch)
+
+    monkeypatch.setattr(hub_get, "place", place)
+
+
+def test_a_rewrite_while_the_rollback_makes_its_private_folder_stays(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Codex, round 17: _withdraw looked at the file, then made its private folder, then renamed; a rewrite that
+    kept the size and the mtime in between passed the check after the rename (which cannot use the change time,
+    since the rename moves it) and was deleted. The folder is made first, so the look and the rename are adjacent."""
+    dest = tmp_path / "dest"
+    real_mkdtemp = tempfile.mkdtemp
+    rewritten: list[bytes] = []
+
+    def mkdtemp(*args, **kw):
+        if kw.get("prefix") == ".withdrawn-" and not rewritten:
+            rewritten.append(_rewrite_keeping_size_and_mtime(dest / "a.docx"))
+        return real_mkdtemp(*args, **kw)
+
+    _fails_on_b(monkeypatch)
+    monkeypatch.setattr(tempfile, "mkdtemp", mkdtemp)
+    with pytest.raises(hub_get.GetError) as info:
+        hub_get.get(preset(dest), api=PinnedHub(FILES))
+    assert rewritten
+    assert (dest / "a.docx").exists(), "the rollback deleted a file someone else rewrote"
+    assert (dest / "a.docx").read_bytes() == rewritten[0]
+    assert "changed after this run moved it there" in str(info.value), info.value
+
+
+def test_a_rewrite_while_the_rollback_reads_the_bytes_stays(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """Round 17: when the change time moved (here a chmod), the rollback reads the bytes; a rewrite keeping the size
+    and the mtime while they are read moves the change time again, so the file is looked at once more before it is
+    taken back."""
+    dest = tmp_path / "dest"
+    real_same = hub_get.same_bytes
+    rewritten: list[bytes] = []
+
+    def touch_a() -> None:
+        a = dest / "a.docx"
+        os.chmod(a, stat.S_IMODE(os.stat(a).st_mode))  # moves the change time, not the bytes
+
+    def same_bytes(path, f):
+        same = real_same(path, f)
+        if Path(path) == dest / "a.docx" and not rewritten:
+            rewritten.append(_rewrite_keeping_size_and_mtime(Path(path)))
+        return same
+
+    _fails_on_b(monkeypatch, before=touch_a)
+    monkeypatch.setattr(hub_get, "same_bytes", same_bytes)
+    with pytest.raises(hub_get.GetError) as info:
+        hub_get.get(preset(dest), api=PinnedHub(FILES))
+    assert rewritten
+    assert (dest / "a.docx").exists(), "the rollback deleted a file someone else rewrote"
+    assert (dest / "a.docx").read_bytes() == rewritten[0]
+    assert "changed after this run moved it there" in str(info.value), info.value
+
+
+@pytest.mark.parametrize("meanwhile", ["written_through_a_handle", "saved_just_before_the_rename"])
+def test_a_backup_made_and_reported_failed_whose_file_changed_is_recorded(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, meanwhile: str
+) -> None:
+    """Codex, round 17: the backup rename was made and reported failed, and the file it moved no longer has the
+    identity read before it (written through a handle already open, or saved at the name just before the rename).
+    The backup name, absent a moment before under the run's lock, holds a file: only this rename puts one there,
+    so the move was made and is journaled."""
+    dest = tmp_path / "dest"
+    mine = _old_run(dest)
+    real_replace = os.replace
+    fired: list[Path] = []
+
+    def replace(src, dst, *args, **kw):
+        backing_up = hub_get._BACKUP in Path(dst).parts and not fired
+        if backing_up and meanwhile == "saved_just_before_the_rename":
+            Path(src).unlink()
+            Path(src).write_bytes(b"saved just before\n")
+        real_replace(src, dst, *args, **kw)
+        if backing_up:
+            fired.append(Path(dst))
+            if meanwhile == "written_through_a_handle":
+                with open(dst, "ab") as fh:
+                    fh.write(b"more\n")
+            raise OSError(errno.EIO, os.strerror(errno.EIO), str(src), None, str(dst))
+
+    monkeypatch.setattr(os, "replace", replace)
+    _completes(dest, on_conflict="overwrite")
+    assert fired and mine.read_bytes() == b"# run\n"
