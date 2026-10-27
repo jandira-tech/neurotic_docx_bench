@@ -973,7 +973,7 @@ def test_git_env_passes_on_no_git_variable_but_tracing_and_the_https_fetch(rebui
     for name in ELSEWHERE_GIT_ENV:
         monkeypatch.setenv(name, '/elsewhere')
     kept = {
-        'GIT_TRACE': '1', 'GIT_TRACE2_EVENT': '/tmp/trace', 'GIT_CURL_VERBOSE': '1', 'GIT_SSL_CAINFO': '/ca.pem',
+        'GIT_TRACE': '1', 'GIT_TRACE2_EVENT': '2', 'GIT_CURL_VERBOSE': '1', 'GIT_SSL_CAINFO': '/ca.pem',
         'GIT_SSL_CAPATH': '/certs', 'GIT_HTTP_LOW_SPEED_LIMIT': '1000', 'GIT_HTTP_LOW_SPEED_TIME': '60',
         'HTTPS_PROXY': 'http://proxy:3128',
     }
@@ -2759,4 +2759,83 @@ def test_a_revision_that_names_nothing_is_refused_before_the_hub_is_asked(
     err = capsys.readouterr().err
     refused = isinstance(stop, SystemExit) and stop.code == 2
     assert refused and f'--revision {typed!r} names no commit' in err, (stop, err)
+    assert asked == [] and hub_pair.api.uploads == [] and not (tmp_path / 'out').exists()
+
+
+# git 2.56.0's http.c reads these from the environment (http_init, init_curl_proxy_auth, get_curl_handle): how
+# the dataset's bytes travel over HTTPS, a proxy's own CA and client certificates included
+HTTPS_TRANSPORT_ENV = [
+    'GIT_CURL_VERBOSE', 'GIT_HTTP_LOW_SPEED_LIMIT', 'GIT_HTTP_LOW_SPEED_TIME', 'GIT_HTTP_MAX_REQUESTS',
+    'GIT_HTTP_MAX_RETRIES', 'GIT_HTTP_MAX_RETRY_TIME', 'GIT_HTTP_RETRY_AFTER', 'GIT_HTTP_PROXY_AUTHMETHOD',
+    'GIT_HTTP_USER_AGENT', 'GIT_PROXY_SSL_CAINFO', 'GIT_PROXY_SSL_CERT', 'GIT_PROXY_SSL_CERT_PASSWORD_PROTECTED',
+    'GIT_PROXY_SSL_KEY', 'GIT_SSL_CAINFO', 'GIT_SSL_CAPATH', 'GIT_SSL_CERT', 'GIT_SSL_CERT_PASSWORD_PROTECTED',
+    'GIT_SSL_CERT_TYPE', 'GIT_SSL_CIPHER_LIST', 'GIT_SSL_KEY', 'GIT_SSL_KEY_TYPE', 'GIT_SSL_VERSION',
+    'GIT_TCP_KEEPCNT', 'GIT_TCP_KEEPIDLE', 'GIT_TCP_KEEPINTVL',
+]
+
+
+def test_git_env_passes_on_every_https_transport_setting_but_no_verify(rebuild, monkeypatch):
+    """Codex and mcode, round 29: the allowlist passed on GIT_SSL_CAINFO but not GIT_PROXY_SSL_CAINFO, which git
+    gives curl separately (CURLOPT_PROXY_CAINFO), so a fetch through an HTTPS proxy with a private CA failed; nor
+    client certificates, TLS versions, retries. They shape how the bytes travel, never which git accepts, since it
+    checks every object against its id. GIT_SSL_NO_VERIFY stays out: a proxy's CA goes in one of the CAINFO ones."""
+    for name in [*HTTPS_TRANSPORT_ENV, 'GIT_SSL_NO_VERIFY']:
+        monkeypatch.setenv(name, '1')
+    env = rebuild.git_env()
+    assert [name for name in HTTPS_TRANSPORT_ENV if env.get(name) != '1'] == []
+    assert env.get('GIT_SSL_NO_VERIFY') is None
+
+
+@pytest.mark.parametrize('name', ['GIT_TRACE', 'GIT_TRACE2_EVENT', 'GIT_TRACE_PACKET'])
+def test_a_trace_is_passed_on_only_to_stderr_or_a_descriptor(rebuild, monkeypatch, name):
+    """mcode, round 29: git appends a trace to the file a GIT_TRACE* variable names, wherever that is, the run's
+    own manifest included. A trace that names a file or a socket is not passed on; one to stderr or a descriptor
+    is, as is one that turns tracing off."""
+    for value in ['1', '2', 'true', '5', '0']:
+        monkeypatch.setenv(name, value)
+        assert rebuild.git_env().get(name) == value
+    for value in ['/abs/trace', 'af_unix:/tmp/socket', 'af_unix:stream:/tmp/socket']:
+        monkeypatch.setenv(name, value)
+        assert rebuild.git_env().get(name) is None, value
+
+
+def test_a_trace_that_names_the_manifest_leaves_it_as_published(rebuild, hub_pair, tmp_path, monkeypatch):
+    """mcode, round 29: with GIT_TRACE naming the manifest the run writes, publish()'s git calls appended their
+    trace to it after it was written, and the run still said it wrote the manifest."""
+    out = tmp_path / 'out'
+    monkeypatch.setenv('GIT_TRACE', str(out / hub.MANIFEST_NAME))
+    report = run_main(rebuild, hub_pair, tmp_path, monkeypatch, '--lfs-check', '0', '--publish')
+    written = (out / hub.MANIFEST_NAME).read_bytes()
+    assert report['manifest_sha256'] == sha(written), written[-300:]
+
+
+@pytest.mark.parametrize(('flag', 'typed', 'says'), [
+    ('--revision', '\ud800', 'names no commit'),
+    ('--checkout', 'a\x00b', 'names no path'),
+    ('--checkout', '\ud800', 'names no path'),
+    ('--out', 'o\x00', 'names no path'),
+    ('--out', '\ud800', 'names no path'),
+])
+def test_an_argument_no_argv_entry_can_carry_is_refused_before_the_hub_is_asked(
+    rebuild, hub_pair, tmp_path, monkeypatch, capsys, flag, typed, says
+):
+    """Codex and mcode, round 29: round 28 refused a --revision holding a NUL, but not one with a lone surrogate
+    (UnicodeEncodeError from subprocess), nor a NUL or a lone surrogate in --checkout or --out (ValueError from the
+    file system, after the output folder was made). No argv entry can carry them, so only a caller that sets
+    sys.argv in-process can hand them to main(); they are refused as the NUL is, before anything is read."""
+    asked, real = [], hub_pair.api.repo_info
+
+    def repo_info(*args, **kwargs):
+        asked.append(kwargs)
+        return real(*args, **kwargs)
+
+    monkeypatch.setattr(hub_pair.api, 'repo_info', repo_info)
+    monkeypatch.chdir(tmp_path)
+    stop = None
+    try:
+        run_main(rebuild, hub_pair, tmp_path, monkeypatch, flag, typed)
+    except (SystemExit, Exception) as exc:
+        stop = exc
+    err = capsys.readouterr().err
+    assert isinstance(stop, SystemExit) and stop.code == 2 and f'{flag} {typed!r} {says}' in err, (stop, err)
     assert asked == [] and hub_pair.api.uploads == [] and not (tmp_path / 'out').exists()
