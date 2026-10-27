@@ -64,7 +64,8 @@ request may never come back), and the staging folder stays locked until they end
 exits, so no other run takes a folder they still write into. Two presses that reach the process as
 one (the kernel delivers a pending signal once) count as one: press again. While files move, a press waits until the step in hand is
 recorded, then rolls everything back; a second press waits too, so no step goes unrecorded. A press
-during the rollback lets it finish and then stops; a second one stops it before its next step, and
+during the rollback lets it finish and then stops; a second one stops it before its next step (a step
+that reads a placed file to check it reads it to the end first, which for a large file takes a while), and
 the error names the files not put back and the staging folder that holds the files they replaced.
 Ctrl-C is held only under Python's own handler in the main thread, so a caller that ignores it or
 handles it itself keeps that. A run with nothing to download only tidies a staging folder an earlier
