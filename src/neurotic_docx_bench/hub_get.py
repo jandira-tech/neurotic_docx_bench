@@ -482,12 +482,12 @@ def _withdraw(
     try:
         return _settle(target, placed, remote, staging, hold, remarks)
     except BaseException as stop:  # a caller's own Ctrl-C handler (Python's is held), at any point: name the file
-        try:
-            still = _identity_at(hold) is not None
-        except OSError:
-            still = True
-        if still and not any(str(hold) in n for n in getattr(stop, "__notes__", ())):
-            stop.add_note(f"the file taken back from {target} is at {hold}")
+        if not any(str(hold) in n for n in getattr(stop, "__notes__", ())):
+            try:
+                if _identity_at(hold) is not None:
+                    stop.add_note(f"the file taken back from {target} is at {hold}")
+            except OSError as look:  # it may have been given back already: say what is not known
+                stop.add_note(f"the file taken back from {target} may still be at {hold}: looking there failed ({look})")
         raise
 
 
@@ -846,13 +846,35 @@ def _kept_here(staging: Path) -> bool:
 
 def _unlock(lock: int) -> None:
     """Unlock, then close. The unlock frees the lock even where a copy of the descriptor outlives this
-    process's (flock(2)), such as a child forked by a path that skips the at-fork hook below."""
+    process's (flock(2)), such as a child forked by a path that skips the at-fork hook below.
+
+    An unlock that fails is an ``OSError`` saying what that leaves: the descriptor is closed all the same, and
+    closing it lets go of the lock unless a copy of it is open elsewhere. A close that fails after the unlock is
+    no error: the unlock has let go of the lock already.
+    """
     with _LOCKS_GUARD:
         _HELD_LOCKS.discard(lock)
         try:
             fcntl.flock(lock, fcntl.LOCK_UN)
-        finally:
+        except OSError as exc:
+            try:
+                os.close(lock)
+            except OSError as also:
+                raise OSError(
+                    f"unlocking it failed ({exc}), and closing its descriptor failed too ({also}); it may be held "
+                    "until this process exits"
+                ) from exc
+            raise OSError(
+                f"unlocking it failed ({exc}); its descriptor is closed, which lets go of it unless a copy of that "
+                "descriptor is open in another process"
+            ) from exc
+        except BaseException:
             os.close(lock)
+            raise
+        try:
+            os.close(lock)
+        except OSError:
+            pass  # unlocked: the lock is let go whatever the close did
 
 
 def _let_go(lock: int, running: Sequence[threading.Thread]) -> None:
@@ -1085,7 +1107,8 @@ def get(
 
     A disk error no step answers itself (a stat, a walk or the unlock failing) is a ``GetError`` too, saying what
     the run left: nothing downloaded, nothing moved with the staging folder kept, or every file in place. When the
-    run was already failing, what it says it left stands, and a staging lock that would not let go is a note on it.
+    run was already failing, what it says it left stands, and what letting go of the staging lock reported is a note
+    on it.
     """
     if on_conflict not in CONFLICT_POLICIES:
         raise ValueError(f"on_conflict must be one of {CONFLICT_POLICIES}, not {on_conflict!r}")
@@ -1216,13 +1239,16 @@ def _get(
                     api, preset.repo_id, sha, files, todo, conflicts, kept, dest, staging, on_conflict, workers, ctrl_c
                 )
                 left[0] = f"every file is in place in {dest}"
-            except BaseException as exc:  # what the run says it left stands; a lock that will not let go is a note
+            except BaseException as exc:  # what the run says it left stands; what the lock reports is a note on it
                 try:
                     _let_go(lock, ctrl_c.left_running)
                 except (OSError, RuntimeError) as unlock:
-                    exc.add_note(f"letting go of the staging lock failed too ({unlock})")
+                    exc.add_note(f"the staging lock {staging / LOCK}: {unlock}")
                 raise
-            _let_go(lock, ctrl_c.left_running)
+            try:
+                _let_go(lock, ctrl_c.left_running)
+            except OSError as unlock:  # get() adds that every file is in place
+                raise OSError(f"the staging lock {staging / LOCK}: {unlock}") from unlock
             done = True
             try:
                 staging.rmdir()  # only when nothing else is left in it

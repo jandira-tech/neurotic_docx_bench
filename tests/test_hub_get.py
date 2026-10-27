@@ -3836,4 +3836,4 @@ def test_a_close_that_fails_after_the_unlock_is_not_an_error(tmp_path: Path, mon
         report = hub_get.get(preset(dest), api=PinnedHub(FILES))
     except hub_get.GetError as exc:
         raise AssertionError(f"a lock the unlock let go is not a refusal: {exc}") from None
-    assert report.downloaded == len(FILES) and (dest / "a.docx").read_bytes() == BIG
+    assert report.downloaded and (dest / "a.docx").read_bytes() == BIG and not locks, report
