@@ -27,18 +27,17 @@
    its staged copy; the staged copies are removed only after the last one is in place. A failed or
    interrupted (Ctrl-C) move withdraws every file already placed and restores every file
    ``overwrite`` replaced, except a file someone else changed after this run placed it, which stays
-   (a rewrite that kept the size and set the mtime back included: when the inode's change time, read
-   once the file is in place, moved or could not be read, only the hub's bytes still there make it
-   this run's; a write in the instant between a look and the rename right after it, or through a
-   handle still open, is not seen); the error names each such file and where the one it replaced is
-   kept. A rename or link the disk reports failed is looked at first: NFS may report one it made as
-   failed, and a step made is recorded as made, judged by where the file now is, whatever was saved
-   at its old name since; one whose look fails too is named with where the file may be, never
-   claimed undone. On success the run removes what it put in the staging folder and nothing else; on
-   failure the folder is kept (minus the files that failed to verify), so a rerun resumes. A rerun
-   also takes the second name off any staged file that is one of the destination's files (what a
-   killed move leaves), and names the local files an earlier run replaced and left in the staging
-   folder.
+   (a rewrite that kept the size and set the mtime back included: before a placed file is taken
+   back, its bytes are checked against the hub's; a write in the instant between that check and the
+   rename right after it, or through a handle still open, is not seen); the error names each such
+   file and where the one it replaced is kept. A rename or link the disk reports failed is looked at
+   first: NFS may report one it made as failed, and a step made is recorded as made, judged by where
+   the file now is, whatever was saved at its old name since; one whose look fails too is named with
+   where the file may be, never claimed undone. On success the run removes what it put in the
+   staging folder and nothing else; on failure the folder is kept (minus the files that failed to
+   verify), so a rerun resumes. A rerun also takes the second name off any staged file that is one
+   of the destination's files (what a killed move leaves), and names the local files an earlier run
+   replaced and left in the staging folder.
 
 Names that one file would have to hold on the destination's disk (``A.txt`` and ``a.txt`` on
 case-insensitive APFS), a local file where the hub has a folder, a symlinked folder below the
@@ -293,22 +292,10 @@ Identity = tuple[int, int, int, int]
 def identity(st: os.stat_result) -> Identity:
     """Which file, and which version of it: a file someone replaced or rewrote no longer matches.
 
-    A rewrite in place that keeps the size and restores the mtime does match; ``_changed_since`` adds the
-    inode's change time for that. It is not part of the identity, since the link or rename of each step moves it.
+    A rewrite in place that keeps the size and restores the mtime does match; ``_withdraw`` checks the bytes for
+    that. The change time is not part of it: the link or rename of each step moves it, and not every disk keeps one.
     """
     return (st.st_dev, st.st_ino, st.st_size, st.st_mtime_ns)
-
-
-def _changed_since(path: Path, placed: Identity) -> int | None:
-    """The inode change time of ``path`` if it holds ``placed``, else None.
-
-    Read once the file is in place: any later write, chmod or link moves it, a write whose mtime was set back
-    included. When it moved, ``_withdraw`` checks the bytes, so a disk that serves a stale one (an attribute
-    cache) costs a hash of that file, never another's file. None, or a read that raised and recorded nothing,
-    is a change time unknown: the bytes decide too, never "unchanged".
-    """
-    st = os.lstat(path)
-    return st.st_ctime_ns if identity(st) == placed else None
 
 
 def _identity_at(path: Path) -> Identity | None:
@@ -439,7 +426,7 @@ def place(staged: Path, target: Path, scratch: Path) -> Identity:
     return placed
 
 
-def _changed(target: Path, placed: Identity, changed: int | None, remote: RemoteFile | None) -> str | None:
+def _changed(target: Path, placed: Identity, remote: RemoteFile | None) -> str | None:
     """Why the file at ``target`` is no longer the one this run placed there (see ``_withdraw``), or None."""
     gone = f"{target} changed after this run moved it there; left as it is"
     try:
@@ -448,32 +435,29 @@ def _changed(target: Path, placed: Identity, changed: int | None, remote: Remote
         return gone
     if identity(st) != placed:
         return gone
-    if changed is not None and st.st_ctime_ns == changed:
-        return None
     if remote is None or not same_bytes(target, remote):
         return gone
-    try:  # reading the bytes takes a while: a write meanwhile moves the change time again
+    try:  # reading the bytes takes a while: a write meanwhile moves the change time, where the disk keeps one
         again = os.lstat(target)
     except FileNotFoundError:
         return gone
     return None if identity(again) == placed and again.st_ctime_ns == st.st_ctime_ns else gone
 
 
-def _withdraw(
-    target: Path, placed: Identity, changed: int | None, remote: RemoteFile | None, staging: Path
-) -> str | None:
+def _withdraw(target: Path, placed: Identity, remote: RemoteFile | None, staging: Path) -> str | None:
     """Remove the file this run placed at ``target``; None, or why something stays there.
 
-    ``changed`` is its inode change time once in place (``_changed_since``), None when it could not be read. A
-    write moves it, one that set the size and the mtime back included, and so does a name added or removed: the
-    staged copy is the same inode, so a file replacing the staged name moves it too. When it moved or is unknown,
-    only ``remote``'s bytes still there make the file this run's. The file is renamed to a fresh private name
-    right after the look (the folder is made first, so nothing runs between them), and looked at again there, so
-    one that someone else put there in the meantime is never deleted: it is given back with ``place``.
+    It is this run's file only while it has the identity it was placed with and ``remote``'s bytes: a rewrite
+    that kept the size and set the mtime back keeps the identity, and no change time can be trusted to show it
+    (FAT keeps none, a coarse one does not move within its tick, NFS may serve a cached one). So the bytes are
+    read, the file is looked at once more (identity, and the change time where the disk keeps one), and it is
+    renamed to a fresh private name right after that look (the folder is made first, so nothing runs between
+    them), and looked at again there, so one that someone else put there in the meantime is never deleted: it is
+    given back with ``place``.
     """
     hold = Path(tempfile.mkdtemp(prefix=".withdrawn-", dir=staging)) / "file"
     try:
-        why = _changed(target, placed, changed, remote)
+        why = _changed(target, placed, remote)
     except BaseException:
         hold.parent.rmdir()
         raise
@@ -963,8 +947,7 @@ class _Move:
     backup: Path | None
     backed_up: bool = False
     placed: Identity | None = None
-    changed: int | None = None  # the placed file's inode change time (_changed_since); None: unknown
-    remote: RemoteFile | None = None  # what the hub has there, for _withdraw when that change time moved or is unknown
+    remote: RemoteFile | None = None  # what the hub has there: _withdraw takes back only a file with these bytes
     unsure: str | None = None  # a step whose outcome could not be looked at: what may be where
 
 
@@ -982,7 +965,7 @@ def _roll_back(journal: Sequence[_Move], staging: Path, between: Callable[[], No
             continue
         try:
             if m.placed is not None:
-                why = _withdraw(m.target, m.placed, m.changed, m.remote, staging)
+                why = _withdraw(m.target, m.placed, m.remote, staging)
                 if why is not None:
                     problems.append(why + kept)
                     continue
@@ -1414,7 +1397,6 @@ def _move_held(
             except _Unsure as exc:
                 m.unsure = str(exc)
                 raise
-            m.changed = _changed_since(m.target, m.placed)
         ctrl_c.check()
     except BaseException as exc:  # Ctrl-C included: put everything back before stopping
         ctrl_c.held.clear()  # a press that stopped the moves is not one pressed during the rollback

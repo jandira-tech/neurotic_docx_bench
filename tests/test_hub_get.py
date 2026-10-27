@@ -3039,48 +3039,6 @@ def test_a_backup_made_and_reported_failed_whose_file_changed_is_recorded(
 # Review round 17 (#80), mcode
 
 
-@pytest.mark.parametrize("meanwhile", ["rewritten", "untouched"])
-def test_a_change_time_that_could_not_be_read_is_unknown_not_unchanged(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, meanwhile: str
-) -> None:
-    """mcode, round 17: reading the placed file's change time failed (EIO), so none was recorded, and the rollback
-    took that for "unchanged": a rewrite that kept the size and the mtime was deleted while the error said every
-    file was put back. A change time not read is unknown: the bytes decide, so an untouched file is still taken
-    back and a rewritten one stays."""
-    dest = tmp_path / "dest"
-    real_link, real_lstat = os.link, os.lstat
-    armed: list[int] = []
-    rewritten: list[bytes] = []
-
-    def link(src, dst, *args, **kw):
-        real_link(src, dst, *args, **kw)
-        if Path(dst) == dest / "a.docx" and not armed:
-            armed.append(1)
-
-    def lstat(path, *args, **kw):
-        if armed == [1] and Path(path) == dest / "a.docx":
-            armed.append(2)
-            if meanwhile == "rewritten":
-                rewritten.append(_rewrite_keeping_size_and_mtime(Path(path)))
-            raise _eio(path)
-        return real_lstat(path, *args, **kw)
-
-    monkeypatch.setattr(os, "link", link)
-    monkeypatch.setattr(os, "lstat", lstat)
-    with pytest.raises(hub_get.GetError) as info:
-        hub_get.get(preset(dest), api=PinnedHub(FILES))
-    said = str(info.value)
-    assert armed == [1, 2]
-    if meanwhile == "rewritten":
-        assert (dest / "a.docx").exists(), "the rollback deleted a file someone else rewrote"
-        assert (dest / "a.docx").read_bytes() == rewritten[0]
-        assert "every file already moved was put back" not in said, said
-        assert "changed after this run moved it there" in said, said
-    else:
-        assert not (dest / "a.docx").exists()
-        assert "every file already moved was put back" in said, said
-
-
 def _saved_again_at_the_withdrawal(monkeypatch: pytest.MonkeyPatch, dest: Path) -> list[Path]:
     """Someone saves a new file at a.docx in the instant before the rollback renames it to its private name."""
     real_rename = os.rename
@@ -3182,13 +3140,16 @@ class _CtimeIsMtime:
         return getattr(self._st, name)
 
 
+@pytest.mark.parametrize("meanwhile", ["rewritten", "untouched"])
 def test_a_rewrite_on_a_disk_whose_change_time_does_not_move_stays(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, meanwhile: str
 ) -> None:
     """Codex, round 18: a placed file is rewritten in place, its size kept and its mtime set back, on a disk
     whose change time did not move (coarse, cached, or kept as the mtime); a later move fails. The rollback
     took an unchanged change time for an unchanged file and deleted the rewrite, saying every file was put
-    back. Before a placed file is taken back, its bytes are checked, whatever the change time says."""
+    back. Before a placed file is taken back, its bytes are checked, whatever the change time says; an
+    untouched file is still taken back. (This replaces round 17's test of a change time that could not be
+    read: no change time is recorded any more.)"""
     dest = tmp_path / "dest"
     real_lstat, real_stat = os.lstat, os.stat
     rewritten: list[bytes] = []
@@ -3203,12 +3164,20 @@ def test_a_rewrite_on_a_disk_whose_change_time_does_not_move_stays(
 
     monkeypatch.setattr(os, "lstat", lstat)
     monkeypatch.setattr(os, "stat", stat_)
-    _fails_on_b(monkeypatch, before=lambda: rewritten.append(_rewrite_keeping_size_and_mtime(dest / "a.docx")))
+    def rewrite() -> None:
+        if meanwhile == "rewritten":
+            rewritten.append(_rewrite_keeping_size_and_mtime(dest / "a.docx"))
+
+    _fails_on_b(monkeypatch, before=rewrite)
     with pytest.raises(hub_get.GetError) as info:
         hub_get.get(preset(dest), api=PinnedHub(FILES))
     said = str(info.value)
-    assert rewritten
-    assert (dest / "a.docx").exists(), "the rollback deleted a file someone else rewrote"
-    assert (dest / "a.docx").read_bytes() == rewritten[0]
-    assert "every file already moved was put back" not in said, said
-    assert "changed after this run moved it there" in said, said
+    if meanwhile == "rewritten":
+        assert rewritten
+        assert (dest / "a.docx").exists(), "the rollback deleted a file someone else rewrote"
+        assert (dest / "a.docx").read_bytes() == rewritten[0]
+        assert "every file already moved was put back" not in said, said
+        assert "changed after this run moved it there" in said, said
+    else:
+        assert not (dest / "a.docx").exists()
+        assert "every file already moved was put back" in said, said
