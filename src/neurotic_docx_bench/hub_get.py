@@ -23,21 +23,22 @@
 4. **Staged, all or nothing.** Files land in ``files/`` of a staging folder on the destination's
    disk (beside it, or inside it when it is a mount or a link to another disk), locked for the run,
    refused if it holds a symlink; a staged file with a second name (a hard link) is fetched again,
-   never written into. Files go into place only once all of them verified, each as a second name
-   of its staged copy; the staged copies are removed only after the last one is in place. A failed
-   or interrupted (Ctrl-C) move withdraws every file already placed and restores every file
+   never written into. Files go into place only once all of them verified, each as a second name of
+   its staged copy; the staged copies are removed only after the last one is in place. A failed or
+   interrupted (Ctrl-C) move withdraws every file already placed and restores every file
    ``overwrite`` replaced, except a file someone else changed after this run placed it, which stays
-   (a rewrite that kept the size and set the mtime back included: the inode's change time, read once
-   the file is in place, moved, and then only the hub's bytes still there make it this run's; a
-   write in the instant between a look and the rename right after it, or through a handle still
-   open, is not seen); the error names each such file and where the one it replaced is kept. A
-   rename or link the disk reports failed is looked at first: NFS may report one it made as failed,
-   and a step made is recorded as made, judged by where the file now is, whatever was saved at its
-   old name since; one whose look fails too is named with where the file may be, never claimed
-   undone. On success the run removes what it put in the staging folder and nothing else; on failure
-   the folder is kept (minus the files that failed to verify), so a rerun resumes. A rerun also
-   takes the second name off any staged file that is one of the destination's files (what a killed
-   move leaves), and names the local files an earlier run replaced and left in the staging folder.
+   (a rewrite that kept the size and set the mtime back included: when the inode's change time, read
+   once the file is in place, moved or could not be read, only the hub's bytes still there make it
+   this run's; a write in the instant between a look and the rename right after it, or through a
+   handle still open, is not seen); the error names each such file and where the one it replaced is
+   kept. A rename or link the disk reports failed is looked at first: NFS may report one it made as
+   failed, and a step made is recorded as made, judged by where the file now is, whatever was saved
+   at its old name since; one whose look fails too is named with where the file may be, never
+   claimed undone. On success the run removes what it put in the staging folder and nothing else; on
+   failure the folder is kept (minus the files that failed to verify), so a rerun resumes. A rerun
+   also takes the second name off any staged file that is one of the destination's files (what a
+   killed move leaves), and names the local files an earlier run replaced and left in the staging
+   folder.
 
 Names that one file would have to hold on the destination's disk (``A.txt`` and ``a.txt`` on
 case-insensitive APFS), a local file where the hub has a folder, a symlinked folder below the
@@ -303,7 +304,8 @@ def _changed_since(path: Path, placed: Identity) -> int | None:
 
     Read once the file is in place: any later write, chmod or link moves it, a write whose mtime was set back
     included. When it moved, ``_withdraw`` checks the bytes, so a disk that serves a stale one (an attribute
-    cache) costs a hash of that file, never another's file.
+    cache) costs a hash of that file, never another's file. None, or a read that raised and recorded nothing,
+    is a change time unknown: the bytes decide too, never "unchanged".
     """
     st = os.lstat(path)
     return st.st_ctime_ns if identity(st) == placed else None
@@ -446,7 +448,7 @@ def _changed(target: Path, placed: Identity, changed: int | None, remote: Remote
         return gone
     if identity(st) != placed:
         return gone
-    if changed is None or st.st_ctime_ns == changed:
+    if changed is not None and st.st_ctime_ns == changed:
         return None
     if remote is None or not same_bytes(target, remote):
         return gone
@@ -462,12 +464,12 @@ def _withdraw(
 ) -> str | None:
     """Remove the file this run placed at ``target``; None, or why something stays there.
 
-    ``changed`` is its inode change time once in place (``_changed_since``). A write moves it, one that set the
-    size and the mtime back included, and so does a name added or removed: the staged copy is the same inode, so
-    a file replacing the staged name moves it too. When it moved, only ``remote``'s bytes still there make the
-    file this run's. The file is renamed to a fresh private name right after the look (the folder is made
-    first, so nothing runs between them), and looked at again there, so one that someone else put there in
-    the meantime is never deleted: it is given back with ``place``.
+    ``changed`` is its inode change time once in place (``_changed_since``), None when it could not be read. A
+    write moves it, one that set the size and the mtime back included, and so does a name added or removed: the
+    staged copy is the same inode, so a file replacing the staged name moves it too. When it moved or is unknown,
+    only ``remote``'s bytes still there make the file this run's. The file is renamed to a fresh private name
+    right after the look (the folder is made first, so nothing runs between them), and looked at again there, so
+    one that someone else put there in the meantime is never deleted: it is given back with ``place``.
     """
     hold = Path(tempfile.mkdtemp(prefix=".withdrawn-", dir=staging)) / "file"
     try:
@@ -494,8 +496,10 @@ def _withdraw(
     if _identity_at(hold) != placed:  # replaced in the instant between the look and the rename
         try:
             place(hold, target, staging / _SCRATCH)
-        except GetError:
-            return f"{target} changed while this run took it back; that file is now at {hold}"
+        except _Unsure as exc:  # the link may have been made: the file is at hold, and maybe at target too
+            return f"{target} changed while this run took it back; that file is at {hold}, and {exc}"
+        except (GetError, OSError) as exc:
+            return f"{target} changed while this run took it back; that file is now at {hold} ({exc})"
         os.unlink(hold)
         hold.parent.rmdir()
         return f"{target} changed after this run moved it there; left as it is"
@@ -959,8 +963,8 @@ class _Move:
     backup: Path | None
     backed_up: bool = False
     placed: Identity | None = None
-    changed: int | None = None  # the placed file's inode change time (_changed_since)
-    remote: RemoteFile | None = None  # what the hub has there, for _withdraw when that change time moved
+    changed: int | None = None  # the placed file's inode change time (_changed_since); None: unknown
+    remote: RemoteFile | None = None  # what the hub has there, for _withdraw when that change time moved or is unknown
     unsure: str | None = None  # a step whose outcome could not be looked at: what may be where
 
 

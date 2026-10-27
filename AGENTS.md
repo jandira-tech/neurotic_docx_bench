@@ -446,8 +446,8 @@ uv run bench hub get --repo arthrod/neurotic_docx_bench --path outputs/release_0
   `--overwrite` replaced (a rename or link the disk reports failed is checked by identity first, since NFS
   may report one it made as failed; a step whose look fails too is named with where the file may be, never
   claimed undone), except a file someone else changed after the run placed it, which stays (a rewrite that
-  kept the size and set the mtime back is seen by the inode's change time, read once the file is in place,
-  and then only the hub's bytes still there make it the run's file);
+  kept the size and set the mtime back is seen by the inode's change time, read once the file is in place;
+  when it moved, or could not be read, only the hub's bytes still there make it the run's file);
   the error names it and where the file it replaced is kept, and a later run refuses to overwrite
   that kept file. On success the run removes only what it staged; on failure the folder is kept for
   a resumable rerun. A rerun names what an earlier run left in the staging folder (replaced files in
