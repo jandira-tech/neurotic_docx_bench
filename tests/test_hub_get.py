@@ -2977,34 +2977,6 @@ def test_a_rewrite_while_the_rollback_makes_its_private_folder_stays(
     assert "changed after this run moved it there" in str(info.value), info.value
 
 
-def test_a_rewrite_while_the_rollback_reads_the_bytes_stays(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    """Round 17: when the change time moved (here a chmod), the rollback reads the bytes; a rewrite keeping the size
-    and the mtime while they are read moves the change time again, so the file is looked at once more before it is
-    taken back."""
-    dest = tmp_path / "dest"
-    real_same = hub_get.same_bytes
-    rewritten: list[bytes] = []
-
-    def touch_a() -> None:
-        a = dest / "a.docx"
-        os.chmod(a, stat.S_IMODE(os.stat(a).st_mode))  # moves the change time, not the bytes
-
-    def same_bytes(path, f):
-        same = real_same(path, f)
-        if Path(path) == dest / "a.docx" and not rewritten:
-            rewritten.append(_rewrite_keeping_size_and_mtime(Path(path)))
-        return same
-
-    _fails_on_b(monkeypatch, before=touch_a)
-    monkeypatch.setattr(hub_get, "same_bytes", same_bytes)
-    with pytest.raises(hub_get.GetError) as info:
-        hub_get.get(preset(dest), api=PinnedHub(FILES))
-    assert rewritten
-    assert (dest / "a.docx").exists(), "the rollback deleted a file someone else rewrote"
-    assert (dest / "a.docx").read_bytes() == rewritten[0]
-    assert "changed after this run moved it there" in str(info.value), info.value
-
-
 @pytest.mark.parametrize("meanwhile", ["written_through_a_handle", "saved_just_before_the_rename"])
 def test_a_backup_made_and_reported_failed_whose_file_changed_is_recorded(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch, meanwhile: str
@@ -3329,20 +3301,24 @@ def test_the_cli_refuses_a_disk_error_without_a_traceback(tmp_path: Path, monkey
     assert "refused" in result.output and "nothing downloaded" in result.output, result.output
 
 
-@pytest.mark.parametrize("meanwhile", ["removed", "replaced"])
+@pytest.mark.parametrize("meanwhile", ["removed", "removed_over_a_local_file", "replaced"])
 def test_a_withdrawal_rename_that_failed_says_what_is_at_the_target_now(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch, meanwhile: str
 ) -> None:
     """Codex, round 19: the rename taking a placed file back was not made, and the message said "the file stays
     there" whatever was there: the target may have been removed (ENOENT) or replaced in the instant before. A
-    missing private name proves only that the withdrawal was not made, so the target is looked at."""
+    missing private name proves only that the withdrawal was not made, so the target is looked at.
+    mcode, round 19: a target someone removed holds no file of this run's: it is withdrawn all the same, and the
+    file --overwrite replaced is restored into the free name instead of being left in the staging folder."""
     dest = tmp_path / "dest"
+    if meanwhile == "removed_over_a_local_file":
+        _write(dest, {"a.docx": b"mine\n"})
     real_rename = os.rename
 
     def rename(src, dst, *args, **kw):
         if Path(dst).parent.name.startswith(".withdrawn-") and Path(src) == dest / "a.docx":
             Path(src).unlink()
-            if meanwhile == "removed":
+            if meanwhile.startswith("removed"):
                 raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), str(src))
             Path(src).write_bytes(b"saved again\n")
             raise OSError(errno.EIO, os.strerror(errno.EIO), str(src), None, str(dst))
@@ -3350,12 +3326,128 @@ def test_a_withdrawal_rename_that_failed_says_what_is_at_the_target_now(
 
     _fails_on_b(monkeypatch)
     monkeypatch.setattr(os, "rename", rename)
+    policy = "overwrite" if meanwhile == "removed_over_a_local_file" else "refuse"
+    with pytest.raises(hub_get.GetError) as info:
+        hub_get.get(preset(dest), api=PinnedHub(FILES), on_conflict=policy)
+    said = str(info.value)
+    assert "the file stays there" not in said, said
+    if meanwhile == "removed":
+        assert not (dest / "a.docx").exists()
+        assert "every file already moved was put back" in said, said
+    elif meanwhile == "removed_over_a_local_file":
+        assert (dest / "a.docx").exists(), said
+        assert (dest / "a.docx").read_bytes() == b"mine\n"
+        assert "every replaced file restored" in said, said
+    else:
+        assert (dest / "a.docx").read_bytes() == b"saved again\n"
+        assert f"taking {dest / 'a.docx'} back failed" in said, said
+        assert "another file is there now, left as it is" in said, said
+
+
+# Review round 19 (#80), mcode
+
+
+@pytest.mark.parametrize("coarse", [True, False], ids=["change_time_still", "change_time_moves"])
+def test_a_write_to_the_target_while_the_rollback_hashes_the_file_stays(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, coarse: bool
+) -> None:
+    """mcode, round 19: the rollback hashed the placed file at its name, then looked again and renamed it. A write
+    through that name landing while the hash ran (same size, mtime set back) was not in the hash, and on a disk
+    whose change time does not move the look after it saw nothing: the rewrite was deleted. The bytes are read
+    at the private name, after the rename, where a write to the target's name cannot reach them. (This replaces
+    round 17's test of a rewrite while the rollback read the bytes, whose fake hooked the hash at the target's
+    name: the case with a change time that moves is the second parameter here.)"""
+    dest = tmp_path / "dest"
+    if coarse:
+        real_lstat, real_stat = os.lstat, os.stat
+
+        def lstat(path, *args, **kw):
+            st = real_lstat(path, *args, **kw)
+            return _CtimeIsMtime(st) if dest in Path(path).parents else st
+
+        def stat_(path, *args, **kw):
+            st = real_stat(path, *args, **kw)
+            return _CtimeIsMtime(st) if isinstance(path, (str, os.PathLike)) and dest in Path(path).parents else st
+
+        monkeypatch.setattr(os, "lstat", lstat)
+        monkeypatch.setattr(os, "stat", stat_)
+    real_sha256 = hub.sha256_file
+    armed: list[int] = []
+    written: list[bytes] = []
+
+    def sha256_file(path):
+        digest = real_sha256(path)  # the verdict is over the bytes read so far
+        if armed and not written and Path(path).name in ("a.docx", "file"):
+            target = dest / "a.docx"
+            st = os.stat(path)
+            fd = os.open(target, os.O_WRONLY | os.O_CREAT)  # an editor saving through the name, in place
+            try:
+                os.write(fd, b"M" * st.st_size)
+            finally:
+                os.close(fd)
+            os.utime(target, ns=(st.st_atime_ns, st.st_mtime_ns))
+            written.append(target.read_bytes())
+        return digest
+
+    monkeypatch.setattr(hub, "sha256_file", sha256_file)
+    _fails_on_b(monkeypatch, before=lambda: armed.append(1))
+    with pytest.raises(hub_get.GetError):
+        hub_get.get(preset(dest), api=PinnedHub(FILES))
+    assert written
+    assert (dest / "a.docx").exists(), "the rollback deleted a file written while it hashed"
+    assert (dest / "a.docx").read_bytes() == written[0]
+
+
+@pytest.mark.parametrize("when", ["before_the_look", "after_the_rename"])
+def test_a_placed_file_someone_removed_lets_the_rollback_restore_the_replaced_file(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, when: str
+) -> None:
+    """mcode, round 19: a placed file someone removed was reported "changed after this run moved it there; left as
+    it is", and the local file --overwrite had replaced stayed in the staging folder though its name was free. A
+    name with no file holds nothing of this run's: the file is withdrawn, and the replaced one restored."""
+    dest = tmp_path / "dest"
+    _write(dest, {"a.docx": b"mine\n"})
+    real_rename = os.rename
+
+    def rename(src, dst, *args, **kw):
+        if when == "after_the_rename" and Path(dst).parent.name.startswith(".withdrawn-") and Path(src) == dest / "a.docx":
+            Path(src).unlink()
+            raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), str(src))
+        return real_rename(src, dst, *args, **kw)
+
+    def remove() -> None:
+        if when == "before_the_look":
+            (dest / "a.docx").unlink()
+
+    _fails_on_b(monkeypatch, before=remove)
+    monkeypatch.setattr(os, "rename", rename)
+    with pytest.raises(hub_get.GetError) as info:
+        hub_get.get(preset(dest), api=PinnedHub(FILES), on_conflict="overwrite")
+    said = str(info.value)
+    assert (dest / "a.docx").exists(), said
+    assert (dest / "a.docx").read_bytes() == b"mine\n"
+    assert "every file already moved was put back and every replaced file restored" in said, said
+
+
+def test_a_placed_file_that_cannot_be_read_for_the_check_is_named_with_where_it_is(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """mcode, round 19: reading a placed file to check it failed (EACCES) and the rollback said only
+    "{target}: [Errno 13] ...". A file that cannot be read is not known to be this run's: it stays at the target,
+    and the message says it could not be read and is left as it is."""
+    dest = tmp_path / "dest"
+    real_sha256 = hub.sha256_file
+    armed: list[int] = []
+
+    def sha256_file(path):
+        if armed and Path(path).name in ("a.docx", "file"):
+            raise PermissionError(errno.EACCES, os.strerror(errno.EACCES), str(path))
+        return real_sha256(path)
+
+    monkeypatch.setattr(hub, "sha256_file", sha256_file)
+    _fails_on_b(monkeypatch, before=lambda: armed.append(1))
     with pytest.raises(hub_get.GetError) as info:
         hub_get.get(preset(dest), api=PinnedHub(FILES))
     said = str(info.value)
-    assert f"taking {dest / 'a.docx'} back failed" in said and "the file stays there" not in said, said
-    if meanwhile == "removed":
-        assert not (dest / "a.docx").exists() and "no file is there now" in said, said
-    else:
-        assert (dest / "a.docx").read_bytes() == b"saved again\n"
-        assert "another file is there now, left as it is" in said, said
+    assert (dest / "a.docx").read_bytes() == BIG
+    assert f"{dest / 'a.docx'} could not be read to check it" in said and "left as it is" in said, said
