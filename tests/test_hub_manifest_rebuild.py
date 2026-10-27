@@ -2572,4 +2572,4 @@ def test_publish_on_a_gitlink_at_the_manifest_path_does_not_call_it_a_folder(reb
     except rebuild.RebuildError as exc:
         raise AssertionError(f'a gitlink is not a folder: {exc}') from None
     assert rebuild.leaves(hub_pair.clone, commit)[key][:2] == (b'100644', b'blob')
-    assert git(hub_pair.clone, 'cat-file', 'blob', f'{commit}:{PREFIX}/{MANIFEST}') == data
+    assert rebuild.git(hub_pair.clone, 'cat-file', 'blob', f'{commit}:{PREFIX}/{MANIFEST}') == data

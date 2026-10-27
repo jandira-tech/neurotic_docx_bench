@@ -441,9 +441,11 @@ def leaves(checkout: Path, commit: str) -> dict[bytes, tuple[bytes, ...]]:
 
 
 def folders(checkout: Path, commit: str) -> set[bytes]:
-    """Every tree in ``commit``, an empty one included: ``leaves`` lists none, as ``ls-tree -r`` lists no tree."""
+    """Every tree in ``commit``, an empty one included: ``leaves`` lists none, as ``ls-tree -r`` lists no tree.
+    ``-d`` lists gitlinks too (``leaves`` has them), so only the entries of type tree are kept."""
     listing = git(checkout, 'ls-tree', '-r', '-d', '-z', '--full-tree', commit)
-    return {line.split(b'\t', 1)[1] for line in listing.split(b'\0') if line}
+    entries = (line.split(b'\t', 1) for line in listing.split(b'\0') if line)
+    return {path for meta, path in entries if meta.split()[1] == b'tree'}
 
 
 def spelled(path: bytes) -> str:
