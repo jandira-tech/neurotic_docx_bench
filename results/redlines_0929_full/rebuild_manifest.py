@@ -54,12 +54,31 @@ LFS_POINTER = re.compile(
 UPLOAD_LIST_HEADER = ['key', 'size', 'sha256']
 URL = f'https://huggingface.co/datasets/{hub.RESULTS_REPO}'
 NO_LFS = ('-c', 'filter.lfs.smudge=', '-c', 'filter.lfs.process=', '-c', 'filter.lfs.required=false')
-# The caller's GIT_ variables that git_env() passes on: tracing, and how the dataset is fetched over
-# HTTPS (a proxy's CA bundle, the slow-transfer timeout). Any other can point git at another
+# The caller's GIT_ variables that git_env() passes on: how the dataset travels over HTTPS, the
+# settings git 2.56.0's http.c reads from the environment (proxy and client certificates, TLS,
+# retries), which never change which bytes git accepts, since it checks every object against its
+# id; not GIT_SSL_NO_VERIFY (a proxy's CA goes in GIT_PROXY_SSL_CAINFO or GIT_SSL_CAINFO), nor
+# GIT_CURL_FTP_NO_EPSV, FTP's. And a
+# GIT_TRACE* that sends a trace to stderr or a descriptor, not one that names a file or socket, where
+# git would append it, this run's own manifest included. Any other can point git at another
 # repository, work tree, index, object or reference store, template, namespace or config, or change
 # what a pathspec or a ref means; `git rev-parse --local-env-vars` lists only some of those
 # (GIT_REFERENCE_BACKEND and GIT_TEMPLATE_DIR are not among them on git 2.56.0).
-PASSED_GIT_ENV = re.compile(r'GIT_(TRACE\w*|CURL_VERBOSE|SSL_CAINFO|SSL_CAPATH|HTTP_LOW_SPEED_(LIMIT|TIME))')
+HTTPS_GIT_ENV = frozenset({
+    'GIT_CURL_VERBOSE', 'GIT_HTTP_LOW_SPEED_LIMIT', 'GIT_HTTP_LOW_SPEED_TIME', 'GIT_HTTP_MAX_REQUESTS',
+    'GIT_HTTP_MAX_RETRIES', 'GIT_HTTP_MAX_RETRY_TIME', 'GIT_HTTP_RETRY_AFTER', 'GIT_HTTP_PROXY_AUTHMETHOD',
+    'GIT_HTTP_USER_AGENT', 'GIT_PROXY_SSL_CAINFO', 'GIT_PROXY_SSL_CERT', 'GIT_PROXY_SSL_CERT_PASSWORD_PROTECTED',
+    'GIT_PROXY_SSL_KEY', 'GIT_SSL_CAINFO', 'GIT_SSL_CAPATH', 'GIT_SSL_CERT', 'GIT_SSL_CERT_PASSWORD_PROTECTED',
+    'GIT_SSL_CERT_TYPE', 'GIT_SSL_CIPHER_LIST', 'GIT_SSL_KEY', 'GIT_SSL_KEY_TYPE', 'GIT_SSL_VERSION',
+    'GIT_TCP_KEEPCNT', 'GIT_TCP_KEEPIDLE', 'GIT_TCP_KEEPINTVL',
+})
+
+
+def passed_on(name: str, value: str) -> bool:
+    if not name.startswith('GIT_'):
+        return True
+    # a trace target with a '/' is a file or af_unix:<path>
+    return name in HTTPS_GIT_ENV or (name.startswith('GIT_TRACE') and '/' not in value)
 
 
 class RebuildError(RuntimeError):
@@ -86,9 +105,9 @@ def git_env() -> dict[str, str]:
     # Replace refs could rewrite the history the records are read from; without lazy fetching a
     # blob-filtered clone could not read an old record at all. The user's global and system
     # config (abbreviations, diff settings, filters) never shape what is read here, nor does any
-    # GIT_ variable of the caller's but PASSED_GIT_ENV (a git hook exports GIT_DIR and GIT_WORK_TREE
-    # for its own repository, and ``-C`` does not override them).
-    env = {k: v for k, v in os.environ.items() if not k.startswith('GIT_') or PASSED_GIT_ENV.fullmatch(k)}
+    # GIT_ variable of the caller's but those passed_on() keeps (a git hook exports GIT_DIR and
+    # GIT_WORK_TREE for its own repository, and ``-C`` does not override them).
+    env = {k: v for k, v in os.environ.items() if passed_on(k, v)}
     return env | {
         'GIT_LFS_SKIP_SMUDGE': '1',
         'GIT_NO_REPLACE_OBJECTS': '1',
@@ -710,6 +729,18 @@ def verify_upload(checkout: Path, revision: str, commit: str, before: dict, data
     return commit
 
 
+
+def passable(text: str) -> bool:
+    """Whether an argv entry could carry ``text``: no NUL, and no lone surrogate but those the file
+    system encoding's surrogateescape makes of undecodable bytes. Only a caller that sets sys.argv
+    in-process can pass anything else, and git or the file system would raise on it."""
+    try:
+        os.fsencode(text)
+    except UnicodeEncodeError:
+        return False
+    return '\0' not in text
+
+
 def main() -> None:
     """Build the manifest and, with ``--publish``, publish it. A Ctrl-C anywhere, the removal of the temporary
     clone included, says what the hub holds; an error that press interrupts is named in its notes."""
@@ -734,8 +765,11 @@ def main() -> None:
         ap.add_argument('--lfs-check', type=lfs_limit, default=25, help='LFS downloads to hash (N or all; default: 25)')
         ap.add_argument('--seed', type=int, default=0, help='LFS sampling seed (default: 0)')
         a = ap.parse_args()
-        # `--revision "$REV"` with REV unset, say; no git argument can carry a NUL
-        if a.revision is not None and (not a.revision.strip() or '\0' in a.revision):
+        for flag, given_path in (('--checkout', a.checkout), ('--out', a.out)):
+            if given_path is not None and not passable(str(given_path)):
+                ap.error(f'{flag} {str(given_path)!r} names no path a file system can hold')
+        # `--revision "$REV"` with REV unset, say
+        if a.revision is not None and (not a.revision.strip() or not passable(a.revision)):
             ap.error(f'--revision {a.revision!r} names no commit: leave it out to read the head of {BRANCH}')
         api = hub.default_api()
         if a.checkout is None:
