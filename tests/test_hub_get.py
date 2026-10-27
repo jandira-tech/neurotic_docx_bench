@@ -3493,14 +3493,19 @@ def test_a_ctrl_c_while_the_rollback_checks_a_file_gives_it_back_first(
 # Review round 20 (#80), Codex and mcode
 
 
-def _unlock_fails_after_unlocking(monkeypatch: pytest.MonkeyPatch) -> None:
-    real_unlock = hub_get._unlock
+def _unlock_fails(monkeypatch: pytest.MonkeyPatch) -> list[bool]:
+    """flock(LOCK_UN) fails with EIO while the list holds True; the descriptor is closed all the same."""
+    import fcntl
 
-    def unlock(fd):
-        real_unlock(fd)
-        raise OSError(errno.EIO, os.strerror(errno.EIO))
+    real_flock, armed = fcntl.flock, [True]
 
-    monkeypatch.setattr(hub_get, "_unlock", unlock)
+    def flock(fd, op):
+        if armed[0] and op == fcntl.LOCK_UN:
+            raise OSError(errno.EIO, os.strerror(errno.EIO))
+        return real_flock(fd, op)
+
+    monkeypatch.setattr(fcntl, "flock", flock)
+    return armed
 
 
 def test_a_lock_that_cannot_be_let_go_after_a_failed_run_keeps_the_rollback_outcome(
@@ -3512,14 +3517,14 @@ def test_a_lock_that_cannot_be_let_go_after_a_failed_run_keeps_the_rollback_outc
     dest = tmp_path / "dest"
     _write(dest, {"a.docx": b"mine\n"})
     _fails_on_b(monkeypatch)
-    _unlock_fails_after_unlocking(monkeypatch)
+    _unlock_fails(monkeypatch)
     with pytest.raises(hub_get.GetError) as info:
         hub_get.get(preset(dest), api=PinnedHub(FILES), on_conflict="overwrite")
     said = str(info.value)
     notes = " ".join(getattr(info.value, "__notes__", ()))
     assert f"moving into {dest} failed" in said and "every replaced file restored" in said, said
     assert "nothing moved into" not in said, said
-    assert "letting go of the staging lock failed too" in notes and "Input/output error" in notes, notes
+    assert "the staging lock" in notes and "Input/output error" in notes, notes
     assert (dest / "a.docx").read_bytes() == b"mine\n"
 
 
@@ -3529,13 +3534,13 @@ def test_the_cli_prints_the_notes_of_a_refusal(tmp_path: Path, monkeypatch: pyte
 
     monkeypatch.setattr(hub, "default_api", lambda: PinnedHub(FILES))
     _fails_on_b(monkeypatch)
-    _unlock_fails_after_unlocking(monkeypatch)
+    _unlock_fails(monkeypatch)
     monkeypatch.chdir(tmp_path)
     result = runner.invoke(app, ["hub", "get", "--repo", REPO, "--path", "outputs/run", "--dest", "got"])
     assert result.exit_code == 1, result.output
     out = " ".join(result.output.split())
     assert "refused" in out and "moving into" in out, out
-    assert "letting go of the staging lock failed too" in out, out
+    assert "the staging lock" in out and "Input/output error" in out, out
 
 
 @pytest.mark.parametrize("which", ["withdrawn", "withdrawn_unlink", "given_back", "looked_at_a_replaced_file"])
@@ -3682,7 +3687,7 @@ def test_a_let_go_helper_that_cannot_start_keeps_the_ctrl_c_and_says_the_lock_is
         _drop_kept_locks()
     assert stop.type is KeyboardInterrupt, repr(stop.value)
     notes = " ".join(getattr(stop.value, "__notes__", ()))
-    assert "letting go of the staging lock failed too" in notes and "until this process exits" in notes, notes
+    assert "the staging lock" in notes and "until this process exits" in notes, notes
     assert "Ctrl-C" in str(busy.value), busy.value
 
 
@@ -3718,3 +3723,117 @@ def test_a_let_go_helper_whose_unlock_fails_still_takes_the_lock_off_the_kept_li
         with hub_get._LOCKS_GUARD:
             if lock in hub_get._KEPT_LOCKS:
                 hub_get._KEPT_LOCKS.remove(lock)
+
+
+# Review round 21 (#80), mcode
+
+
+def test_a_failed_look_after_the_give_back_does_not_say_the_file_is_at_the_private_name(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """mcode, round 21: a caller's own Ctrl-C handler raised while the rollback checked a file at its private name;
+    the file was given back to its target and the private name removed, and then the look at the private name that
+    decides the note failed (EIO). The note said "the file taken back from {target} is at {hold}", where nothing
+    is. A look that fails says the file may be there, and why that is not known."""
+    dest = tmp_path / "dest"
+    real_same, real_identity = hub_get.same_bytes, hub_get._identity_at
+    holds: list[Path] = []
+    given_back: list[Path] = []
+
+    def same_bytes(path, f):
+        if Path(path).parent.name.startswith(".withdrawn-"):
+            holds.append(Path(path))
+            raise KeyboardInterrupt  # what a caller's own SIGINT handler does
+        return real_same(path, f)
+
+    def identity_at(path):
+        if given_back and Path(path) in holds:
+            raise _eio(path)
+        return real_identity(path)
+
+    _fails_on_b(monkeypatch)
+    current = hub_get.place
+
+    def place(staged, target, scratch):
+        placed = current(staged, target, scratch)
+        if Path(staged).parent.name.startswith(".withdrawn-"):
+            given_back.append(Path(target))
+        return placed
+
+    monkeypatch.setattr(hub_get, "same_bytes", same_bytes)
+    monkeypatch.setattr(hub_get, "_identity_at", identity_at)
+    monkeypatch.setattr(hub_get, "place", place)
+    with pytest.raises(KeyboardInterrupt) as info:
+        hub_get.get(preset(dest), api=PinnedHub(FILES))
+    said = "\n".join(getattr(info.value, "__notes__", []))
+    (hold,) = holds
+    assert given_back == [dest / "a.docx"], given_back
+    assert (dest / "a.docx").read_bytes() == BIG and not hold.exists()
+    assert f"is at {hold}" not in said, said
+    assert f"may still be at {hold}" in said and "Input/output error" in said, said
+
+
+def test_an_unlock_that_fails_while_its_descriptor_closes_says_the_lock_is_let_go(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """mcode, round 21: flock(LOCK_UN) failed (EIO) after a failed run, and the note said "letting go of the staging
+    lock failed too". _unlock closes the descriptor all the same, and closing the last descriptor of the lock lets
+    go of it (flock(2)): the lock could be taken again at once. The note says the descriptor is closed and what
+    that lets go of."""
+    dest = tmp_path / "dest"
+    _fails_on_b(monkeypatch)
+    armed = _unlock_fails(monkeypatch)
+    with pytest.raises(hub_get.GetError) as info:
+        hub_get.get(preset(dest), api=PinnedHub(FILES))
+    armed[0] = False
+    said = str(info.value)
+    notes = " ".join(getattr(info.value, "__notes__", ()))
+    staging = hub_get.staging_dir(dest, SHA)
+    assert f"moving into {dest} failed" in said, said
+    assert f"the staging lock {staging / hub_get.LOCK}" in notes and "Input/output error" in notes, notes
+    assert "failed too" not in notes and "descriptor is closed, which lets go of it" in notes, notes
+    hub_get._unlock(hub_get._lock(staging))  # free: taken at once, without waiting
+
+
+def test_an_unlock_that_fails_after_a_run_names_the_staging_lock(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """mcode, round 21: flock(LOCK_UN) failed (EIO) after a run that put every file in place. The refusal was a bare
+    "[Errno 5] Input/output error; every file is in place in {dest}", which names neither the lock nor what failed."""
+    dest = tmp_path / "dest"
+    armed = _unlock_fails(monkeypatch)
+    with pytest.raises(hub_get.GetError) as info:
+        hub_get.get(preset(dest), api=PinnedHub(FILES))
+    armed[0] = False
+    said = str(info.value)
+    lock = hub_get.staging_dir(dest, SHA) / hub_get.LOCK
+    assert f"every file is in place in {dest}" in said and (dest / "a.docx").read_bytes() == BIG, said
+    assert f"the staging lock {lock}: unlocking it failed" in said and "Input/output error" in said, said
+    assert "descriptor is closed, which lets go of it" in said, said
+
+
+def test_a_close_that_fails_after_the_unlock_is_not_an_error(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """Found with mcode's round-21 fix: flock(LOCK_UN) succeeded and then closing the descriptor failed (EIO). The
+    lock was let go by the unlock, yet the run that put every file in place ended in a refusal about the lock."""
+    dest = tmp_path / "dest"
+    real_lock, real_close = hub_get._lock, os.close
+    locks: list[int] = []
+
+    def lock(staging):
+        fd = real_lock(staging)
+        locks.append(fd)
+        return fd
+
+    def close(fd):
+        real_close(fd)
+        if fd in locks:
+            locks.remove(fd)
+            raise OSError(errno.EIO, os.strerror(errno.EIO))
+
+    monkeypatch.setattr(hub_get, "_lock", lock)
+    monkeypatch.setattr(os, "close", close)
+    try:
+        report = hub_get.get(preset(dest), api=PinnedHub(FILES))
+    except hub_get.GetError as exc:
+        raise AssertionError(f"a lock the unlock let go is not a refusal: {exc}") from None
+    assert report.downloaded == len(FILES) and (dest / "a.docx").read_bytes() == BIG
