@@ -26,18 +26,18 @@
    never written into. Files go into place only once all of them verified, each as a second name
    of its staged copy; the staged copies are removed only after the last one is in place. A failed
    or interrupted (Ctrl-C) move withdraws every file already placed and restores every file
-   ``overwrite`` replaced, except a file someone else changed after this run placed it, which
-   stays (a rewrite that kept the size and set the mtime back included: the inode's change time,
-   read once the file is in place, moved, and then only the hub's bytes still there make it this
-   run's); the error names each such file and where the one it replaced is kept. A rename or link
-   the disk reports failed is looked at first: NFS may report one it made as failed, and a step
-   made is recorded as made, judged by where the file now is, whatever was saved at its old name
-   since; one whose look fails too is named with where the file may be, never claimed undone.
-   On success the run
-   removes what it put in the staging folder and nothing else; on failure the folder is kept (minus
-   the files that failed to verify), so a rerun resumes. A rerun also takes the second name off
-   any staged file that is one of the destination's files (what a killed move leaves), and names
-   the local files an earlier run replaced and left in the staging folder.
+   ``overwrite`` replaced, except a file someone else changed after this run placed it, which stays
+   (a rewrite that kept the size and set the mtime back included: the inode's change time, read once
+   the file is in place, moved, and then only the hub's bytes still there make it this run's; a
+   write in the instant between a look and the rename right after it, or through a handle still
+   open, is not seen); the error names each such file and where the one it replaced is kept. A
+   rename or link the disk reports failed is looked at first: NFS may report one it made as failed,
+   and a step made is recorded as made, judged by where the file now is, whatever was saved at its
+   old name since; one whose look fails too is named with where the file may be, never claimed
+   undone. On success the run removes what it put in the staging folder and nothing else; on failure
+   the folder is kept (minus the files that failed to verify), so a rerun resumes. A rerun also
+   takes the second name off any staged file that is one of the destination's files (what a killed
+   move leaves), and names the local files an earlier run replaced and left in the staging folder.
 
 Names that one file would have to hold on the destination's disk (``A.txt`` and ``a.txt`` on
 case-insensitive APFS), a local file where the hub has a folder, a symlinked folder below the
@@ -437,6 +437,26 @@ def place(staged: Path, target: Path, scratch: Path) -> Identity:
     return placed
 
 
+def _changed(target: Path, placed: Identity, changed: int | None, remote: RemoteFile | None) -> str | None:
+    """Why the file at ``target`` is no longer the one this run placed there (see ``_withdraw``), or None."""
+    gone = f"{target} changed after this run moved it there; left as it is"
+    try:
+        st = os.lstat(target)
+    except FileNotFoundError:
+        return gone
+    if identity(st) != placed:
+        return gone
+    if changed is None or st.st_ctime_ns == changed:
+        return None
+    if remote is None or not same_bytes(target, remote):
+        return gone
+    try:  # reading the bytes takes a while: a write meanwhile moves the change time again
+        again = os.lstat(target)
+    except FileNotFoundError:
+        return gone
+    return None if identity(again) == placed and again.st_ctime_ns == st.st_ctime_ns else gone
+
+
 def _withdraw(
     target: Path, placed: Identity, changed: int | None, remote: RemoteFile | None, staging: Path
 ) -> str | None:
@@ -445,18 +465,19 @@ def _withdraw(
     ``changed`` is its inode change time once in place (``_changed_since``). A write moves it, one that set the
     size and the mtime back included, and so does a name added or removed: the staged copy is the same inode, so
     a file replacing the staged name moves it too. When it moved, only ``remote``'s bytes still there make the
-    file this run's. The file is renamed to a fresh private name before it is looked at, so one that someone
-    else put there in the meantime is never deleted: it is given back with ``place``.
+    file this run's. The file is renamed to a fresh private name right after the look (the folder is made
+    first, so nothing runs between them), and looked at again there, so one that someone else put there in
+    the meantime is never deleted: it is given back with ``place``.
     """
-    try:
-        st = os.lstat(target)
-    except FileNotFoundError:
-        st = None
-    if st is None or identity(st) != placed:
-        return f"{target} changed after this run moved it there; left as it is"
-    if changed is not None and st.st_ctime_ns != changed and (remote is None or not same_bytes(target, remote)):
-        return f"{target} changed after this run moved it there; left as it is"
     hold = Path(tempfile.mkdtemp(prefix=".withdrawn-", dir=staging)) / "file"
+    try:
+        why = _changed(target, placed, changed, remote)
+    except BaseException:
+        hold.parent.rmdir()
+        raise
+    if why is not None:
+        hold.parent.rmdir()
+        return why
     try:
         os.rename(target, hold)  # a fresh name in a fresh folder: nothing there to overwrite
     except OSError as exc:
@@ -1362,14 +1383,14 @@ def _move_held(
                 if not m.target.is_file():
                     raise GetError(f"{m.target} is no longer a regular file; it stays as it is")
                 m.backup.parent.mkdir(parents=True, exist_ok=True)
-                local = _identity_at(m.target)
                 try:
                     os.replace(m.target, m.backup)
                 except OSError as exc:
-                    # Made iff the local file is at m.backup, absent a moment ago (NFS: see _identity_at), whatever
-                    # was saved at the target since.
+                    # Made iff m.backup holds a file (NFS: see _identity_at): it was absent a moment ago under the
+                    # run's lock, so only this rename put one there, whatever was written to it or saved at the
+                    # target since.
                     try:
-                        moved = local is not None and _identity_at(m.backup) == local
+                        moved = _identity_at(m.backup) is not None
                     except OSError as look:
                         m.unsure = (
                             f"moving the local file aside to {m.backup} reported {exc} and looking there failed "
