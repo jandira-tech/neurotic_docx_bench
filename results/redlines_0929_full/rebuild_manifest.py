@@ -438,6 +438,12 @@ def leaves(checkout: Path, commit: str) -> dict[bytes, tuple[bytes, ...]]:
     return entries
 
 
+def spelled(path: bytes) -> str:
+    """A repo path as text, one spelling per byte string: backslashes doubled, then each byte that is not UTF-8 as
+    ``\\xNN`` (backslashreplace alone spells the byte 0xff and a backslash followed by ``xff`` the same)."""
+    return path.replace(b'\\', b'\\\\').decode(errors='backslashreplace')
+
+
 def regular_blob(entry: tuple[bytes, ...] | None) -> bool:
     return entry is not None and entry[:2] in ((b'100644', b'blob'), (b'100755', b'blob'))
 
@@ -475,8 +481,7 @@ def publish(api, checkout: Path, revision: str, data: bytes, message: str) -> st
         key = path.encode()
         under = sorted(leaf for leaf in before if leaf.startswith(key + b'/'))  # ls-tree -r lists a folder's leaves
         if under:
-            # spelled as verify_upload spells a path: a name that is not UTF-8 stays the bytes the hub holds
-            named = ', '.join(leaf.decode(errors='backslashreplace') for leaf in under[:5])
+            named = ', '.join(spelled(leaf) for leaf in under[:5])  # a name that is not UTF-8 reads as its bytes
             more = f' and {len(under) - 5} more' if len(under) > 5 else ''
             kinds = Counter(before[leaf][1] for leaf in under)  # a blob, or a gitlink (b'commit')
             held = ' and '.join(
@@ -657,7 +662,7 @@ def verify_upload(checkout: Path, revision: str, commit: str, before: dict, data
     after = leaves(checkout, commit)
     changed = sorted(p for p in before.keys() | after.keys() if before.get(p) != after.get(p))
     if changed != [key]:
-        shown = [p.decode(errors='backslashreplace') for p in changed[:10]]
+        shown = [spelled(p) for p in changed[:10]]
         raise RebuildError(f'{commit} changes {shown}, not only {path}; it is not this upload')
     if not regular_blob(after[key]):
         mode = after[key][0].decode()
