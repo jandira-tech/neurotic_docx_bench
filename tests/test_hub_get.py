@@ -4050,3 +4050,66 @@ def test_a_ctrl_c_held_as_python_s_handler_is_given_back_after_an_error_is_not_d
     assert info.type is KeyboardInterrupt, repr(info.value)
     notes = " ".join(getattr(info.value, "__notes__", ()))
     assert f"moving into {dest} failed" in notes and not (dest / "a.docx").exists(), notes
+
+
+# Review round 23 (#80), mcode
+
+
+def test_a_ctrl_c_as_a_move_fails_lets_the_rollback_finish_then_stops_the_run(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """mcode, round 23: a Ctrl-C pressed during the move that then failed. _move_held cleared the held presses as
+    the rollback began, taking that one for the press that had stopped the moves, so the run ended in a refusal
+    (exit 1) and a caller that catches GetError ran on. A press held as a move fails lets the rollback finish and
+    then stops the run, as one pressed during the rollback does."""
+    from neurotic_docx_bench.cli import app
+
+    monkeypatch.setattr(hub, "default_api", lambda: PinnedHub(FILES))
+    _fails_on_b(monkeypatch, before=lambda: signal.raise_signal(signal.SIGINT))
+    monkeypatch.chdir(tmp_path)
+    dest = tmp_path / "got"
+    with pytest.raises(BaseException) as info:
+        hub_get.get(preset(dest), api=PinnedHub(FILES))
+    assert info.type is KeyboardInterrupt, repr(info.value)
+    notes = " ".join(getattr(info.value, "__notes__", ()))
+    assert f"moving into {dest} failed (the disk went away)" in notes, notes
+    assert "every file already moved was put back" in notes and not (dest / "a.docx").exists(), notes
+    result = runner.invoke(app, ["hub", "get", "--repo", REPO, "--path", "outputs/run", "--dest", "got"])
+    assert result.exit_code == 130, result.output
+
+
+class _StampedAtClose:
+    """A stat result whose mtime is the one a disk that stamps a file as it is closed reports afterwards."""
+
+    def __init__(self, st: os.stat_result) -> None:
+        self._st = st
+
+    def __getattr__(self, name: str):
+        return getattr(self._st, name)
+
+    @property
+    def st_mtime_ns(self) -> int:
+        return self._st.st_mtime_ns + 1_000_000_000
+
+
+def test_a_disk_whose_close_moves_a_file_s_mtime_is_refused_naming_the_close(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """mcode, round 23: the probe compared a file's identity read through its descriptor before the close with the
+    one after the rename, and said the rename had changed it when the close had (a disk that stamps a file's mtime
+    as it is closed). Such a disk is refused all the same, since _copy_new reads the identity it records at the
+    same point, but the refusal names the step that changed it."""
+    dest = tmp_path / "dest"
+    real_lstat = os.lstat
+
+    def lstat(path, *args, **kw):
+        st = real_lstat(path, *args, **kw)
+        return _StampedAtClose(st) if "rename-probe" in os.fspath(path) else st
+
+    monkeypatch.setattr(os, "lstat", lstat)
+    api = PinnedHub(FILES)
+    with pytest.raises(hub_get.GetError) as info:
+        hub_get.get(preset(dest), api=api)
+    said = str(info.value)
+    assert "closing a file there changes its identity" in said and "a rename there" not in said, said
+    assert api.downloads() == [] and not (dest / "a.docx").exists(), said
