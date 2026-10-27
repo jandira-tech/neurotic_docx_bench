@@ -2387,7 +2387,7 @@ def test_publish_on_a_given_revision_that_is_not_the_head_refuses_before_the_bui
         run_main(rebuild, hub_pair, tmp_path, monkeypatch, '--publish', '--revision', older)
     said = str(exc.value)
     assert 'moved' not in said, said
-    assert f'--revision {older} is not {head}, the head of main' in said, said
+    assert f'--revision {older} is not that id' in said and f'its full commit id ({head})' in said, said
     assert 'nothing published by this run' in said, said
     assert built == [] and hub_pair.api.uploads == []
 
@@ -2401,8 +2401,7 @@ def test_publish_on_a_short_id_of_the_head_names_the_head_and_asks_for_its_full_
     with pytest.raises(rebuild.RebuildError) as exc:
         run_main(rebuild, hub_pair, tmp_path, monkeypatch, '--publish', '--revision', head[:12])
     said = str(exc.value)
-    assert f'--revision {head[:12]} is not {head}, the head of main' in said, said
-    assert 'its full commit id' in said, said
+    assert f'--revision {head[:12]} is not that id' in said and f'its full commit id ({head})' in said, said
     assert hub_pair.api.uploads == []
 
 
@@ -2527,3 +2526,30 @@ def test_verify_upload_takes_a_commit_that_makes_the_manifest_s_own_folder(rebui
     made = tree_with(origin, gone, f'{PREFIX}/{MANIFEST}'.encode(), manifest_blob(origin, data))
     commit = commit_on(origin, made, revision)
     assert rebuild.verify_upload(hub_pair.clone, revision, commit, before, data) == commit
+
+
+def test_publish_on_a_tag_naming_the_head_is_refused_without_saying_it_is_not_the_head(
+    rebuild, hub_pair, tmp_path, monkeypatch
+):
+    """mcode, round 25: --revision v1.0, a tag on the head, was refused with "--revision v1.0 is not <head>, the
+    head of main", which git contradicts. The refusal compares commit ids as given, and says only that."""
+    head = hub_pair.head
+    git(hub_pair.api.origin, 'tag', 'v1.0', head)
+    with pytest.raises(rebuild.RebuildError) as exc:
+        run_main(rebuild, hub_pair, tmp_path, monkeypatch, '--publish', '--revision', 'v1.0')
+    said = str(exc.value)
+    assert f'is not {head}' not in said, said
+    assert '--revision v1.0 is not that id' in said and 'nothing published by this run' in said, said
+    assert hub_pair.api.uploads == []
+
+
+def test_publish_on_the_head_s_id_in_capitals_publishes_on_the_head(rebuild, hub_pair, tmp_path, monkeypatch):
+    """mcode, round 25: git takes a commit id in capitals as the same id, and the refusal said it was not the head.
+    A full id in any case is that id."""
+    hub_pair.api.commit({f'{PREFIX}/x.docx': b'A'}, 'a file the manifest does not list yet')
+    head = hub_pair.api.head()
+    try:
+        run_main(rebuild, hub_pair, tmp_path, monkeypatch, '--publish', '--revision', head.upper())
+    except rebuild.RebuildError as exc:
+        raise AssertionError(f'refused: {exc}') from exc
+    assert [u['parent_commit'] for u in hub_pair.api.uploads] == [head]
