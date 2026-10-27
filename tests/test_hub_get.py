@@ -3451,3 +3451,40 @@ def test_a_placed_file_that_cannot_be_read_for_the_check_is_named_with_where_it_
     said = str(info.value)
     assert (dest / "a.docx").read_bytes() == BIG
     assert f"{dest / 'a.docx'} could not be read to check it" in said and "left as it is" in said, said
+
+
+@pytest.mark.parametrize("target", ["free", "taken"])
+def test_a_ctrl_c_while_the_rollback_checks_a_file_gives_it_back_first(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, target: str
+) -> None:
+    """Round 19, found with mcode's fix: the rollback now reads a placed file's bytes at its private name. Python's
+    own Ctrl-C handler is held there, but a caller's own handler raises at once, and the file was left at the
+    private name while the error listed its target as "not put back", as if it were still there. The file is given
+    back to its target before the Ctrl-C goes on; when another file took the name meanwhile, the error says where
+    the file is."""
+    dest = tmp_path / "dest"
+    real_same = hub_get.same_bytes
+    holds: list[Path] = []
+
+    def same_bytes(path, f):
+        if Path(path).parent.name.startswith(".withdrawn-"):
+            holds.append(Path(path))
+            if target == "taken":
+                (dest / "a.docx").write_bytes(b"saved again\n")
+            raise KeyboardInterrupt  # what a caller's own SIGINT handler does
+        return real_same(path, f)
+
+    _fails_on_b(monkeypatch)
+    monkeypatch.setattr(hub_get, "same_bytes", same_bytes)
+    with pytest.raises(KeyboardInterrupt) as info:
+        hub_get.get(preset(dest), api=PinnedHub(FILES))
+    said = "\n".join(getattr(info.value, "__notes__", []))
+    (hold,) = holds
+    if target == "free":
+        assert (dest / "a.docx").exists(), said
+        assert (dest / "a.docx").read_bytes() == BIG
+        assert not hold.exists(), said
+    else:
+        assert (dest / "a.docx").read_bytes() == b"saved again\n"
+        assert hold.read_bytes() == BIG
+        assert f"{dest / 'a.docx'} was being checked at {hold}" in said, said
