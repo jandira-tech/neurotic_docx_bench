@@ -57,9 +57,11 @@ NO_LFS = ('-c', 'filter.lfs.smudge=', '-c', 'filter.lfs.process=', '-c', 'filter
 
 
 class RebuildError(RuntimeError):
-    """The run stopped having published nothing: the hub does not match its own records, it moved since it was
-    read, it ignores the manifest's path or already holds the manifest's content id there (both from its answer
-    to the preupload), the upload failed before its commit request was sent, or that request made no commit. The
+    """The run stopped having published nothing: the hub does not match its own records, or the clone cannot be
+    used or read; the --revision given with --publish is not the head's commit id; the hub moved since it was
+    read; the manifest's path is one a commit cannot put it at (a folder, or an LFS pointer to its content that is
+    not canonical) or that the hub ignores, or already holds the manifest's content id (both from its answer to
+    the preupload); the upload failed before its commit request was sent; or that request made no commit. The
     claim is this run's; a commit another run sent may land at any time."""
 
 
@@ -726,13 +728,16 @@ def main() -> None:
             temporary = Path(tempfile.mkdtemp(prefix='redlines_0929_full_hub_'))
         clone = a.checkout or temporary / 'hub'
         given = None if a.revision in (None, BRANCH) else a.revision  # the branch's name is its head, read from the hub
+        if given is not None and re.fullmatch(r'[0-9a-fA-F]{40}', given):
+            given = given.lower()  # a full commit id, in any case, as git takes it
         revision = given or api.repo_info(hub.RESULTS_REPO, repo_type=hub.REPO_TYPE, revision=BRANCH).sha
         if a.publish and given is not None:  # publish() commits only on the head: say so before the build
             head = api.repo_info(hub.RESULTS_REPO, repo_type=hub.REPO_TYPE, revision=BRANCH).sha
-            if head != given:
+            if head != given:  # ids as given: a tag or a short id may name the head, and is still not its id
                 raise RebuildError(
-                    f'--revision {given} is not {head}, the head of {BRANCH}; the manifest is committed only on the '
-                    'head, so nothing published by this run: rerun without --revision, or with its full commit id'
+                    f'--publish commits only on the head of {BRANCH}, given by no --revision or by its full commit '
+                    f'id ({head}); --revision {given} is not that id, so nothing published by this run: rerun '
+                    'without --revision'
                 )
         out = a.out or Path(tempfile.mkdtemp(prefix='redlines_0929_full_manifest_'))
         out.mkdir(parents=True, exist_ok=True)
