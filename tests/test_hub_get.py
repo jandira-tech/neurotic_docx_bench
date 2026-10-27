@@ -1228,12 +1228,12 @@ def test_one_ctrl_c_during_the_rollback_lets_it_finish_then_stops(tmp_path: Path
     real = hub_get._withdraw
     sent = []
 
-    def withdraw(target, placed, staging):
+    def withdraw(target, *rest):
         if not sent:
             sent.append(target)
             os.kill(os.getpid(), signal.SIGINT)
             _spin()
-        return real(target, placed, staging)
+        return real(target, *rest)
 
     monkeypatch.setattr(hub_get, "_withdraw", withdraw)
     with pytest.raises(KeyboardInterrupt) as exc:
@@ -1250,14 +1250,14 @@ def test_a_second_ctrl_c_during_the_rollback_stops_it_and_names_the_staging_fold
     real = hub_get._withdraw
     sent = []
 
-    def withdraw(target, placed, staging):
+    def withdraw(target, *rest):
         if not sent:
             sent.append(target)
             os.kill(os.getpid(), signal.SIGINT)
             _spin()
             os.kill(os.getpid(), signal.SIGINT)
             _spin()
-        return real(target, placed, staging)
+        return real(target, *rest)
 
     monkeypatch.setattr(hub_get, "_withdraw", withdraw)
     with pytest.raises(KeyboardInterrupt) as exc:

@@ -27,9 +27,13 @@
    of its staged copy; the staged copies are removed only after the last one is in place. A failed
    or interrupted (Ctrl-C) move withdraws every file already placed and restores every file
    ``overwrite`` replaced, except a file someone else changed after this run placed it, which
-   stays; the error names each such file and where the one it replaced is kept. A rename or link
+   stays (a rewrite that kept the size and set the mtime back included: the inode's change time,
+   read once the file is in place, moved, and then only the hub's bytes still there make it this
+   run's); the error names each such file and where the one it replaced is kept. A rename or link
    the disk reports failed is looked at first: NFS may report one it made as failed, and a step
-   made is recorded as made. On success the run
+   made is recorded as made, judged by where the file now is, whatever was saved at its old name
+   since; one whose look fails too is named with where the file may be, never claimed undone.
+   On success the run
    removes what it put in the staging folder and nothing else; on failure the folder is kept (minus
    the files that failed to verify), so a rerun resumes. A rerun also takes the second name off
    any staged file that is one of the destination's files (what a killed move leaves), and names
@@ -107,6 +111,10 @@ class GetError(Exception):
 
 class _Busy(GetError):
     """Another run holds the staging folder's lock."""
+
+
+class _Unsure(GetError):
+    """A step of the move was reported failed and the look that decides whether the disk made it failed too."""
 
 
 @dataclass(frozen=True)
@@ -282,8 +290,23 @@ Identity = tuple[int, int, int, int]
 
 
 def identity(st: os.stat_result) -> Identity:
-    """Which file, and which version of it: a file someone replaced or rewrote no longer matches."""
+    """Which file, and which version of it: a file someone replaced or rewrote no longer matches.
+
+    A rewrite in place that keeps the size and restores the mtime does match; ``_changed_since`` adds the
+    inode's change time for that. It is not part of the identity, since the link or rename of each step moves it.
+    """
     return (st.st_dev, st.st_ino, st.st_size, st.st_mtime_ns)
+
+
+def _changed_since(path: Path, placed: Identity) -> int | None:
+    """The inode change time of ``path`` if it holds ``placed``, else None.
+
+    Read once the file is in place: any later write, chmod or link moves it, a write whose mtime was set back
+    included. When it moved, ``_withdraw`` checks the bytes, so a disk that serves a stale one (an attribute
+    cache) costs a hash of that file, never another's file.
+    """
+    st = os.lstat(path)
+    return st.st_ctime_ns if identity(st) == placed else None
 
 
 def _identity_at(path: Path) -> Identity | None:
@@ -358,7 +381,14 @@ def _copy_new(staged: Path, target: Path, scratch: Path) -> Identity:
         try:
             _rename_new(copy, target)
         except OSError as exc:
-            if _identity_at(target) == placed:  # made after all (NFS: see _identity_at)
+            try:
+                there = _identity_at(target)
+            except OSError as look:
+                raise _Unsure(
+                    f"moving the copy to {target} reported {exc} and looking at it failed ({look}), so whether the "
+                    "file is there is unknown"
+                ) from exc
+            if there == placed:  # made after all (NFS: see _identity_at)
                 return placed
             if isinstance(exc, FileExistsError):
                 raise GetError(f"{target} appeared while files were being moved into place") from exc
@@ -384,7 +414,14 @@ def place(staged: Path, target: Path, scratch: Path) -> Identity:
     try:
         os.link(staged, target)  # fails on an existing target, even one written a moment ago
     except OSError as exc:
-        if _identity_at(target) == placed:  # the staged file's own second name: made after all (NFS: see _identity_at)
+        try:
+            there = _identity_at(target)
+        except OSError as look:
+            raise _Unsure(
+                f"the link to {target} reported {exc} and looking at it failed ({look}), so whether the file is "
+                "there is unknown"
+            ) from exc
+        if there == placed:  # the staged file's own second name: made after all (NFS: see _identity_at)
             return placed
         if isinstance(exc, FileExistsError):
             raise GetError(f"{target} appeared while files were being moved into place") from exc
@@ -400,19 +437,38 @@ def place(staged: Path, target: Path, scratch: Path) -> Identity:
     return placed
 
 
-def _withdraw(target: Path, placed: Identity, staging: Path) -> str | None:
+def _withdraw(
+    target: Path, placed: Identity, changed: int | None, remote: RemoteFile | None, staging: Path
+) -> str | None:
     """Remove the file this run placed at ``target``; None, or why something stays there.
 
-    The file is renamed to a fresh private name before it is looked at, so one that someone else
-    put there in the meantime is never deleted: it is given back with ``place``.
+    ``changed`` is its inode change time once in place (``_changed_since``). A write moves it, one that set the
+    size and the mtime back included, and so does a name added or removed: the staged copy is the same inode, so
+    a file replacing the staged name moves it too. When it moved, only ``remote``'s bytes still there make the
+    file this run's. The file is renamed to a fresh private name before it is looked at, so one that someone
+    else put there in the meantime is never deleted: it is given back with ``place``.
     """
-    if _identity_at(target) != placed:
+    try:
+        st = os.lstat(target)
+    except FileNotFoundError:
+        st = None
+    if st is None or identity(st) != placed:
+        return f"{target} changed after this run moved it there; left as it is"
+    if changed is not None and st.st_ctime_ns != changed and (remote is None or not same_bytes(target, remote)):
         return f"{target} changed after this run moved it there; left as it is"
     hold = Path(tempfile.mkdtemp(prefix=".withdrawn-", dir=staging)) / "file"
     try:
         os.rename(target, hold)  # a fresh name in a fresh folder: nothing there to overwrite
-    except OSError:
-        if _identity_at(target) is not None or _identity_at(hold) is None:  # not made (NFS: see _identity_at)
+    except OSError as exc:
+        # Made iff the fresh name holds a file (NFS: see _identity_at), whatever was saved at the target since.
+        try:
+            made = _identity_at(hold) is not None
+        except OSError as look:
+            raise GetError(
+                f"taking {target} back reported {exc} and looking at {hold} failed ({look}); this run's file is at "
+                "one of the two"
+            ) from exc
+        if not made:
             raise
     if _identity_at(hold) != placed:  # replaced in the instant between the look and the rename
         try:
@@ -882,6 +938,9 @@ class _Move:
     backup: Path | None
     backed_up: bool = False
     placed: Identity | None = None
+    changed: int | None = None  # the placed file's inode change time (_changed_since)
+    remote: RemoteFile | None = None  # what the hub has there, for _withdraw when that change time moved
+    unsure: str | None = None  # a step whose outcome could not be looked at: what may be where
 
 
 def _roll_back(journal: Sequence[_Move], staging: Path, between: Callable[[], None] = lambda: None) -> list[str]:
@@ -893,9 +952,12 @@ def _roll_back(journal: Sequence[_Move], staging: Path, between: Callable[[], No
     for m in reversed(journal):
         between()
         kept = f"; the file it replaced is kept at {m.backup}" if m.backed_up else ""
+        if m.unsure is not None:  # nothing to undo that is known to be there
+            problems.append(f"{m.target}: {m.unsure}; left as it is{kept}")
+            continue
         try:
             if m.placed is not None:
-                why = _withdraw(m.target, m.placed, staging)
+                why = _withdraw(m.target, m.placed, m.changed, m.remote, staging)
                 if why is not None:
                     problems.append(why + kept)
                     continue
@@ -903,7 +965,12 @@ def _roll_back(journal: Sequence[_Move], staging: Path, between: Callable[[], No
             if m.backed_up:
                 place(m.backup, m.target, staging / _SCRATCH)
                 m.backed_up = False
-                m.backup.unlink()
+                try:
+                    m.backup.unlink()
+                except OSError as exc:
+                    problems.append(
+                        f"{m.target}: the file it replaced is back, and a second name of it stays at {m.backup} ({exc})"
+                    )
         except (OSError, GetError) as exc:
             kept = f"; the file it replaced is kept at {m.backup}" if m.backed_up else ""
             problems.append(f"{m.target}: {exc}{kept}")
@@ -1285,7 +1352,7 @@ def _move_held(
             blocker = _blocker(dest, f.rel)  # again for each file: a folder may have changed since the look
             if blocker is not None:
                 raise GetError(f"while moving, {blocker} (for {f.rel})")
-            m = _Move(dest / f.rel, staged_files / f.repo_path, staging / _BACKUP / f.rel if replacing else None)
+            m = _Move(dest / f.rel, staged_files / f.repo_path, staging / _BACKUP / f.rel if replacing else None, remote=f)
             journal.append(m)
             if m.backup is not None:
                 if m.backup.exists() or m.backup.is_symlink():
@@ -1298,9 +1365,18 @@ def _move_held(
                 local = _identity_at(m.target)
                 try:
                     os.replace(m.target, m.backup)
-                except OSError:
-                    # Not made, or made (NFS: see _identity_at): then the local file is at m.backup.
-                    if _identity_at(m.target) is not None or _identity_at(m.backup) != local:
+                except OSError as exc:
+                    # Made iff the local file is at m.backup, absent a moment ago (NFS: see _identity_at), whatever
+                    # was saved at the target since.
+                    try:
+                        moved = local is not None and _identity_at(m.backup) == local
+                    except OSError as look:
+                        m.unsure = (
+                            f"moving the local file aside to {m.backup} reported {exc} and looking there failed "
+                            f"({look}); it is at {m.target} or {m.backup}"
+                        )
+                        raise
+                    if not moved:
                         raise
                 m.backed_up = True
                 ctrl_c.check()
@@ -1308,14 +1384,19 @@ def _move_held(
             for d in reversed(missing):
                 d.mkdir()
                 made.append(d)
-            m.placed = place(m.src, m.target, staging / _SCRATCH)
+            try:
+                m.placed = place(m.src, m.target, staging / _SCRATCH)
+            except _Unsure as exc:
+                m.unsure = str(exc)
+                raise
+            m.changed = _changed_since(m.target, m.placed)
         ctrl_c.check()
     except BaseException as exc:  # Ctrl-C included: put everything back before stopping
         ctrl_c.held.clear()  # a press that stopped the moves is not one pressed during the rollback
         try:
             problems = _roll_back(journal, staging, ctrl_c.stop_rollback)
         except KeyboardInterrupt as stop:  # pressed twice: the rollback stops before its next step
-            left = [str(m.target) for m in journal if m.placed is not None or m.backed_up]
+            left = [str(m.target) for m in journal if m.placed is not None or m.backed_up or m.unsure is not None]
             failed = f" (the move failed: {exc})" if isinstance(exc, Exception) else ""
             stop.add_note(
                 f"Ctrl-C stopped putting back the files moved into {dest}{failed}; not put back: "
