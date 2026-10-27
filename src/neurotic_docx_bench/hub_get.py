@@ -475,12 +475,21 @@ def _withdraw(target: Path, placed: Identity, remote: RemoteFile | None, staging
                 f"taking {target} back reported {exc} and looking at {hold} failed ({look}); this run's file is at "
                 "one of the two"
             ) from exc
-        if not made:  # the file is still at the target
+        if not made:  # not taken back: what is at the target now says where the file is
             try:
                 hold.parent.rmdir()
             except OSError:
                 pass  # an empty folder in the staging folder, which names only files
-            return f"taking {target} back failed ({exc}); the file stays there"
+            failed = f"taking {target} back failed ({exc})"
+            try:
+                now = _identity_at(target)
+            except OSError as look:
+                return f"{failed} and looking at it failed ({look}); whether the file is still there is unknown"
+            if now == placed:
+                return f"{failed}; the file stays there"
+            if now is None:
+                return f"{failed}; no file is there now"
+            return f"{failed}; another file is there now, left as it is"
     if _identity_at(hold) != placed:  # replaced in the instant between the look and the rename
         try:
             place(hold, target, staging / _SCRATCH)
@@ -1024,9 +1033,36 @@ def get(
     dry_run: bool = False,
     workers: int = 8,
 ) -> GetReport:
-    """Download ``preset`` into ``dest`` (default: the preset's) under the four rules above."""
+    """Download ``preset`` into ``dest`` (default: the preset's) under the four rules above.
+
+    A disk error no step answers itself (a stat, a walk or the unlock failing) is a ``GetError`` too, saying what
+    the run left: nothing downloaded, nothing moved with the staging folder kept, or every file in place.
+    """
     if on_conflict not in CONFLICT_POLICIES:
         raise ValueError(f"on_conflict must be one of {CONFLICT_POLICIES}, not {on_conflict!r}")
+    left = ["nothing downloaded"]
+    try:
+        return _get(
+            preset, api=api, revision=revision, dest=dest, include=include, on_conflict=on_conflict,
+            dry_run=dry_run, workers=workers, left=left,
+        )
+    except OSError as exc:
+        raise GetError(f"{exc}; {left[0]}") from exc
+
+
+def _get(
+    preset: Preset,
+    *,
+    api: hub.HubApi,
+    revision: str | None,
+    dest: Path | None,
+    include: Sequence[str],
+    on_conflict: str,
+    dry_run: bool,
+    workers: int,
+    left: list[str],
+) -> GetReport:
+    """``get``'s steps; ``left[0]`` says what the run has left at each point, for a disk error none of them answers."""
     dest = Path(dest if dest is not None else preset.dest)
     sha = resolve_revision(api, preset.repo_id, revision)
     files = remote_files(api, preset.repo_id, sha, preset.path, include, preset.exclude)
@@ -1122,9 +1158,12 @@ def get(
                 return plain  # another run holds it, or its lock cannot be taken: leave it alone
             try:
                 ctrl_c.check(nothing_moved)
+                # the moves and the cleanup answer their own disk errors; this covers what comes before them
+                left[0] = f"nothing moved into {dest}; {staging} is kept so a rerun resumes"
                 journal, late_same, earlier = _locked_run(
                     api, preset.repo_id, sha, files, todo, conflicts, kept, dest, staging, on_conflict, workers, ctrl_c
                 )
+                left[0] = f"every file is in place in {dest}"
             finally:
                 _let_go(lock, ctrl_c.left_running)
             done = True
