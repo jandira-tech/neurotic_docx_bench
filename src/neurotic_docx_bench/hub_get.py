@@ -27,10 +27,11 @@
    its staged copy; the staged copies are removed only after the last one is in place. A failed or
    interrupted (Ctrl-C) move withdraws every file already placed and restores every file
    ``overwrite`` replaced, except a file someone else changed after this run placed it, which stays
-   (a rewrite that kept the size and set the mtime back included: before a placed file is taken
-   back, its bytes are checked against the hub's; a write in the instant between that check and the
-   rename right after it, or through a handle still open, is not seen); the error names each such
-   file and where the one it replaced is kept. A rename or link the disk reports failed is looked at
+   (a rewrite that kept the size and set the mtime back included: a placed file is moved to a private
+   name and its bytes are checked there against the hub's, so a write through its name is never lost;
+   only a write through a handle opened before that move is not seen); a placed file someone removed
+   counts as withdrawn, so the file it replaced is restored. The error names each file that stays and
+   where the one it replaced is kept. A rename or link the disk reports failed is looked at
    first: NFS may report one it made as failed, and a step made is recorded as made, judged by where
    the file now is, whatever was saved at its old name since; one whose look fails too is named with
    where the file may be, never claimed undone. On success the run removes what it put in the
@@ -426,44 +427,30 @@ def place(staged: Path, target: Path, scratch: Path) -> Identity:
     return placed
 
 
-def _changed(target: Path, placed: Identity, remote: RemoteFile | None) -> str | None:
-    """Why the file at ``target`` is no longer the one this run placed there (see ``_withdraw``), or None."""
-    gone = f"{target} changed after this run moved it there; left as it is"
-    try:
-        st = os.lstat(target)
-    except FileNotFoundError:
-        return gone
-    if identity(st) != placed:
-        return gone
-    if remote is None or not same_bytes(target, remote):
-        return gone
-    try:  # reading the bytes takes a while: a write meanwhile moves the change time, where the disk keeps one
-        again = os.lstat(target)
-    except FileNotFoundError:
-        return gone
-    return None if identity(again) == placed and again.st_ctime_ns == st.st_ctime_ns else gone
-
-
 def _withdraw(target: Path, placed: Identity, remote: RemoteFile | None, staging: Path) -> str | None:
     """Remove the file this run placed at ``target``; None, or why something stays there.
 
     It is this run's file only while it has the identity it was placed with and ``remote``'s bytes: a rewrite
     that kept the size and set the mtime back keeps the identity, and no change time can be trusted to show it
-    (FAT keeps none, a coarse one does not move within its tick, NFS may serve a cached one). So the bytes are
-    read, the file is looked at once more (identity, and the change time where the disk keeps one), and it is
-    renamed to a fresh private name right after that look (the folder is made first, so nothing runs between
-    them), and looked at again there, so one that someone else put there in the meantime is never deleted: it is
-    given back with ``place``.
+    (FAT keeps none, a coarse one does not move within its tick, NFS may serve a cached one). So the file is
+    renamed to a fresh private name first (the folder is made before the look, so nothing runs between the look
+    and the rename), and its bytes are read there, where a write through the target's name cannot reach them; a
+    file that is not this run's, or that cannot be read, is given back with ``place``, so one someone else put
+    there is never deleted. A target with no file holds nothing of this run's: it counts as withdrawn, so the
+    file it replaced can be restored. A write through a handle opened before the rename is the one thing no look
+    can see, if it keeps the size and sets the mtime back.
     """
+    if remote is None:
+        return f"{target}: what the hub has there is not known, so it is not checked; left as it is"
     hold = Path(tempfile.mkdtemp(prefix=".withdrawn-", dir=staging)) / "file"
     try:
-        why = _changed(target, placed, remote)
+        there = _identity_at(target)
     except BaseException:
         hold.parent.rmdir()
         raise
-    if why is not None:
+    if there != placed:
         hold.parent.rmdir()
-        return why
+        return None if there is None else f"{target} changed after this run moved it there; left as it is"
     try:
         os.rename(target, hold)  # a fresh name in a fresh folder: nothing there to overwrite
     except OSError as exc:
@@ -485,30 +472,32 @@ def _withdraw(target: Path, placed: Identity, remote: RemoteFile | None, staging
                 now = _identity_at(target)
             except OSError as look:
                 return f"{failed} and looking at it failed ({look}); whether the file is still there is unknown"
+            if now is None:  # removed meanwhile: nothing of this run's is left there
+                return None
             if now == placed:
                 return f"{failed}; the file stays there"
-            if now is None:
-                return f"{failed}; no file is there now"
             return f"{failed}; another file is there now, left as it is"
-    if _identity_at(hold) != placed:  # replaced in the instant between the look and the rename
-        try:
-            place(hold, target, staging / _SCRATCH)
-        except _Unsure as exc:  # the link may have been made: the file is at hold, and maybe at target too
-            return f"{target} changed while this run took it back; that file is at {hold}, and {exc}"
-        except (GetError, OSError) as exc:
-            return f"{target} changed while this run took it back; that file is now at {hold} ({exc})"
-        try:
-            os.unlink(hold)
-        except OSError as exc:
-            return (
-                f"{target} changed after this run moved it there; left as it is, and a second name of it stays at "
-                f"{hold} ({exc})"
-            )
+    why = f"{target} changed after this run moved it there"
+    try:
+        ours = _identity_at(hold) == placed and same_bytes(hold, remote) and _identity_at(hold) == placed
+    except OSError as exc:
+        ours, why = False, f"{target} could not be read to check it ({exc})"
+    if ours:
+        os.unlink(hold)
         hold.parent.rmdir()
-        return f"{target} changed after this run moved it there; left as it is"
-    os.unlink(hold)
+        return None
+    try:
+        place(hold, target, staging / _SCRATCH)
+    except _Unsure as exc:  # the link may have been made: the file is at hold, and maybe at target too
+        return f"{why}; that file is at {hold}, and {exc}"
+    except (GetError, OSError) as exc:
+        return f"{why}; that file is now at {hold} ({exc})"
+    try:
+        os.unlink(hold)
+    except OSError as exc:
+        return f"{why}; left as it is, and a second name of it stays at {hold} ({exc})"
     hold.parent.rmdir()
-    return None
+    return f"{why}; left as it is"
 
 
 def _links_work(scratch: Path) -> bool:
