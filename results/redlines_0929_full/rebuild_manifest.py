@@ -718,7 +718,7 @@ def main() -> None:
     temporary = None  # the folder of a temporary clone, removed at the end
     failure = None
 
-    def holds() -> str:
+    def outcome() -> str:  # what the hub holds (the module's holds compares a blob with the built bytes)
         if published is not None:
             return f'the hub holds this manifest at {published}'
         if publishing:  # as publish() was called or returned: the two instants look the same here
@@ -734,6 +734,8 @@ def main() -> None:
         ap.add_argument('--lfs-check', type=lfs_limit, default=25, help='LFS downloads to hash (N or all; default: 25)')
         ap.add_argument('--seed', type=int, default=0, help='LFS sampling seed (default: 0)')
         a = ap.parse_args()
+        if a.revision is not None and not a.revision.strip():  # `--revision "$REV"` with REV unset, say
+            ap.error(f'--revision {a.revision!r} names no commit: leave it out to read the head of {BRANCH}')
         api = hub.default_api()
         if a.checkout is None:
             temporary = Path(tempfile.mkdtemp(prefix='redlines_0929_full_hub_'))
@@ -747,8 +749,8 @@ def main() -> None:
             if head != given:  # ids as given: a tag or a short id may name the head, and is still not its id
                 raise RebuildError(
                     f'--publish commits only on the head of {BRANCH}, given by no --revision, by --revision {BRANCH} '
-                    f'or by its full commit id ({head}); --revision {a.revision} is not that id, so nothing published '
-                    'by this run: rerun without --revision'
+                    f'or by its full commit id ({head}); --revision {a.revision!r} is not that id, so nothing '
+                    'published by this run: rerun without --revision'
                 )
         out = a.out or Path(tempfile.mkdtemp(prefix='redlines_0929_full_manifest_'))
         out.mkdir(parents=True, exist_ok=True)
@@ -790,11 +792,11 @@ def main() -> None:
         failure = exc
         if isinstance(exc, KeyboardInterrupt) and not getattr(exc, '__notes__', None):
             if published is not None:
-                exc.add_note(f'stopped after publishing: {holds()}')
+                exc.add_note(f'stopped after publishing: {outcome()}')
             elif publishing:
-                exc.add_note(f'stopped as the upload began or ended: {holds()}')
+                exc.add_note(f'stopped as the upload began or ended: {outcome()}')
             else:
-                exc.add_note(f'stopped before the upload: {holds()}')
+                exc.add_note(f'stopped before the upload: {outcome()}')
         raise
     finally:
         if temporary is not None:
@@ -804,7 +806,9 @@ def main() -> None:
                 except OSError as exc:  # a warning: the run's own outcome stands
                     print(f'could not remove the temporary clone {temporary}: {exc}', file=sys.stderr, flush=True)
             except KeyboardInterrupt as stop:  # it takes the place of what was on its way out: name both
-                stop.add_note(f'stopped while removing the temporary clone {temporary}, which may be left behind: {holds()}')
+                stop.add_note(
+                    f'stopped while removing the temporary clone {temporary}, which may be left behind: {outcome()}'
+                )
                 if failure is not None:
                     said = [f'{type(failure).__name__}: {failure}' if str(failure) else type(failure).__name__]
                     stop.add_note(f'before that the run stopped on {"; ".join(said + getattr(failure, "__notes__", []))}')
