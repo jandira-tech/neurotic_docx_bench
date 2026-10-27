@@ -3837,3 +3837,156 @@ def test_a_close_that_fails_after_the_unlock_is_not_an_error(tmp_path: Path, mon
     except hub_get.GetError as exc:
         raise AssertionError(f"a lock the unlock let go is not a refusal: {exc}") from None
     assert report.downloaded and (dest / "a.docx").read_bytes() == BIG and not locks, report
+
+
+# Review round 22 (#80), Codex, mcode and CodeRabbit
+
+
+@pytest.mark.parametrize("run", ["put_every_file_in_place", "failed_a_move"])
+def test_a_ctrl_c_held_as_the_run_ends_in_an_error_is_raised_with_that_error(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, run: str
+) -> None:
+    """Codex, round 22: a Ctrl-C held while the staging lock was let go, and an unlock that then failed: the hold
+    raised a held press only when its block ended without an error, so the press was dropped, get() raised a
+    GetError and the CLI exited 1, not 130. A caller that catches GetError would run on after the press. A press
+    held as the run ends in an error is raised, saying what that error said."""
+    import fcntl
+
+    dest = tmp_path / "dest"
+    real_flock = fcntl.flock
+
+    def flock(fd, op):
+        if op == fcntl.LOCK_UN:
+            signal.raise_signal(signal.SIGINT)  # pressed as the lock is let go
+            raise OSError(errno.EIO, os.strerror(errno.EIO))
+        return real_flock(fd, op)
+
+    if run == "failed_a_move":
+        _fails_on_b(monkeypatch)
+    monkeypatch.setattr(fcntl, "flock", flock)
+    with pytest.raises(BaseException) as info:
+        hub_get.get(preset(dest), api=PinnedHub(FILES))
+    assert info.type is KeyboardInterrupt, repr(info.value)
+    notes = " ".join(getattr(info.value, "__notes__", ()))
+    assert f"the staging lock {hub_get.staging_dir(dest, SHA) / hub_get.LOCK}" in notes, notes
+    if run == "put_every_file_in_place":
+        assert f"every file is in place in {dest}" in notes and (dest / "a.docx").read_bytes() == BIG, notes
+    else:
+        assert f"moving into {dest} failed" in notes and not (dest / "a.docx").exists(), notes
+
+
+def test_a_ctrl_c_right_after_the_withdrawal_rename_names_the_private_file(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Codex, round 22: a caller's own Ctrl-C handler raised as the rollback's rename of a placed file to its private
+    name returned, before the step that names the private name began. The file was at the private name and the
+    error named only the destination."""
+    dest = tmp_path / "dest"
+    real_rename = os.rename
+    holds: list[Path] = []
+
+    def rename(src, dst, *args, **kw):
+        real_rename(src, dst, *args, **kw)
+        if Path(dst).parent.name.startswith(".withdrawn-") and not holds:
+            holds.append(Path(dst))
+            raise KeyboardInterrupt  # what a caller's own SIGINT handler does, as the rename returns
+
+    _fails_on_b(monkeypatch)
+    monkeypatch.setattr(os, "rename", rename)
+    with pytest.raises(KeyboardInterrupt) as info:
+        hub_get.get(preset(dest), api=PinnedHub(FILES))
+    said = "\n".join(getattr(info.value, "__notes__", []))
+    (hold,) = holds
+    assert hold.exists(), said
+    assert str(hold) in said, said
+
+
+def test_an_unlock_and_a_close_that_both_fail_still_say_the_lock_is_let_go(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """mcode, round 22: when flock(LOCK_UN) and the close both failed, _unlock said the lock "may be held until this
+    process exits", while the helper that lets a kept lock go took it for closed. Linux and macOS release a
+    descriptor before close(2) reports an error (close(2); XNU fp_close_and_unlock: fdrelse, then fg_drop's
+    error), so it is closed, and the lock is let go unless a copy of it is open elsewhere."""
+    import fcntl
+
+    dest = tmp_path / "dest"
+    real_flock, real_lock, real_close = fcntl.flock, hub_get._lock, os.close
+    locks: list[int] = []
+
+    def flock(fd, op):
+        if op == fcntl.LOCK_UN and fd in locks:
+            raise OSError(errno.EIO, os.strerror(errno.EIO))
+        return real_flock(fd, op)
+
+    def lock(staging):
+        fd = real_lock(staging)
+        locks.append(fd)
+        return fd
+
+    def close(fd):
+        real_close(fd)  # released first, as both kernels do
+        if fd in locks:
+            locks.remove(fd)
+            raise OSError(errno.EIO, os.strerror(errno.EIO))
+
+    _fails_on_b(monkeypatch)
+    monkeypatch.setattr(fcntl, "flock", flock)
+    monkeypatch.setattr(hub_get, "_lock", lock)
+    monkeypatch.setattr(os, "close", close)
+    with pytest.raises(hub_get.GetError) as info:
+        hub_get.get(preset(dest), api=PinnedHub(FILES))
+    notes = " ".join(getattr(info.value, "__notes__", ()))
+    assert "until this process exits" not in notes, notes
+    assert "descriptor is closed, which lets go of it" in notes, notes
+    staging = hub_get.staging_dir(dest, SHA)
+    hub_get._unlock(real_lock(staging))  # free: taken at once
+
+
+def test_the_kept_lock_refusal_does_not_send_the_user_to_a_new_process(tmp_path: Path) -> None:
+    """mcode, round 22: while this process keeps the staging lock for downloads a second Ctrl-C left running, the
+    refusal said "rerun once they end, or in a new process"; a new process is refused too, since the lock is this
+    process's and flock locks are between processes."""
+    staging = tmp_path / ".dest.hub-aaaaaaaaaaaa"
+    kept = hub_get._lock(staging)
+    with hub_get._LOCKS_GUARD:
+        hub_get._KEPT_LOCKS.append(kept)
+    try:
+        with pytest.raises(hub_get.GetError) as busy:
+            hub_get._lock(staging)
+    finally:
+        with hub_get._LOCKS_GUARD:
+            hub_get._KEPT_LOCKS.remove(kept)
+        hub_get._unlock(kept)
+    said = str(busy.value)
+    assert "new process" not in said, said
+    assert "until this process exits" in said, said
+
+
+def test_a_disk_whose_rename_gives_an_empty_file_a_new_identity_is_refused_before_any_download(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """CodeRabbit, round 22: the rollback knows the files it moved into place by their identity, and it renames
+    each one to a private name before it looks again; a copy takes its name by a rename too. On macOS's FAT an
+    empty file gets a new inode number at every rename (measured on a FAT32 image: 2^64-29 became 2^64-33), so
+    the rollback would leave such a file in the destination, saying it changed after this run moved it there. A
+    disk whose rename changes a file's identity is refused before any download."""
+    dest = tmp_path / "dest"
+    real_rename, real_replace = os.rename, os.replace
+
+    def rename(src, dst, *args, **kw):  # the inode an empty file gets on such a disk is a new one
+        real_rename(src, dst, *args, **kw)
+        st = os.lstat(dst)
+        if stat.S_ISREG(st.st_mode) and st.st_size == 0:
+            fresh = f"{os.fsdecode(dst)}.renumbered"
+            open(fresh, "wb").close()
+            os.utime(fresh, ns=(st.st_atime_ns, st.st_mtime_ns))
+            real_replace(fresh, dst)
+
+    api = PinnedHub(FILES)
+    monkeypatch.setattr(os, "rename", rename)
+    with pytest.raises(hub_get.GetError) as info:
+        hub_get.get(preset(dest), api=api)
+    said = str(info.value)
+    assert "rename" in said and "identity" in said, said
+    assert api.downloads() == [] and not (dest / "a.docx").exists(), said
