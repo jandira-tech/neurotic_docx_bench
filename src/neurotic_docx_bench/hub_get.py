@@ -1054,7 +1054,8 @@ def _ctrl_c_between_steps(left: list[str] | None = None) -> Iterator[_CtrlC]:
     after the run ends, and before a held press is looked for: a press held then, one that landed as
     the handler was given back included, is raised as the block ends, without an error or with one,
     so no press is ever dropped. With one, the press says what that error said (an ``OSError``
-    followed by ``left[0]``, as ``get`` says it), and the error is its cause.
+    followed by ``left[0]``, as ``get`` says it; a ``SystemExit`` or ``GeneratorExit`` by its repr),
+    and the error is its cause.
     Ctrl-C is held only under Python's own handler, in the main thread: a caller that ignores Ctrl-C
     or handles it itself keeps that, and its ``check`` never raises.
     """
@@ -1066,19 +1067,19 @@ def _ctrl_c_between_steps(left: list[str] | None = None) -> Iterator[_CtrlC]:
     signal.signal(signal.SIGINT, ctrl_c.hold)
     try:
         yield ctrl_c
-    except Exception as exc:
+    except BaseException as exc:
         signal.signal(signal.SIGINT, previous)  # first: a press as it is given back is held by then
-        if not ctrl_c.held:
+        if isinstance(exc, KeyboardInterrupt) or not ctrl_c.held:  # a press on its way out already, or none
             raise
         ctrl_c.held.clear()
-        said = f"{exc}; {left[0]}" if isinstance(exc, OSError) and left else str(exc) or type(exc).__name__
-        stop = _interrupted(f"the run was ending in an error as Ctrl-C was pressed: {said}")
+        if isinstance(exc, Exception):
+            said = f"{exc}; {left[0]}" if isinstance(exc, OSError) and left else str(exc) or type(exc).__name__
+            stop = _interrupted(f"the run was ending in an error as Ctrl-C was pressed: {said}")
+        else:  # SystemExit, GeneratorExit
+            stop = _interrupted(f"the run was ending in {exc!r} as Ctrl-C was pressed")
         for note in getattr(exc, "__notes__", ()):
             stop.add_note(note)
         raise stop from exc
-    except BaseException:  # a press is on its way out already
-        signal.signal(signal.SIGINT, previous)
-        raise
     signal.signal(signal.SIGINT, previous)
     ctrl_c.check()  # pressed after the block's last check, or as the handler was given back
 
@@ -1620,8 +1621,9 @@ def _move_held(
     except BaseException as exc:  # Ctrl-C included: put everything back before stopping
         # The rollback counts only the presses made during it. One that stopped the moves is spent; any other pressed
         # during them waits for the rollback to finish, then stops the run, as one pressed during the rollback does.
-        pressed = bool(ctrl_c.held) and not isinstance(exc, KeyboardInterrupt)
-        ctrl_c.held.clear()
+        # The held list is swapped, not read and then cleared: a press that lands in between goes to one or the other.
+        before, ctrl_c.held = ctrl_c.held, []
+        pressed = bool(before) and not isinstance(exc, KeyboardInterrupt)
         problems: list[str] = []
         try:
             _roll_back(journal, staging, ctrl_c.stop_rollback, problems)
