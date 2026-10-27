@@ -4299,3 +4299,35 @@ def test_a_ctrl_c_held_as_a_system_exit_leaves_the_hold_is_not_dropped(
     assert info.type is KeyboardInterrupt and isinstance(info.value.__cause__, ending), repr(info.value)
     notes = " ".join(getattr(info.value, "__notes__", ()))
     assert f"moving into {dest} failed (stopped)" in notes and not (dest / "a.docx").exists(), notes
+
+
+# Review round 25 (#80), mcode
+
+
+def test_a_download_thread_that_cannot_start_is_a_refusal(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """mcode, round 25: with no Ctrl-C held, a download thread that could not start (RuntimeError: can't start new
+    thread, as under RLIMIT_NPROC) left get() as that RuntimeError, and the CLI printed a traceback instead of what
+    the run left. It is a refusal that says so, and the CLI exits 1."""
+    import threading
+
+    from neurotic_docx_bench.cli import app
+
+    real_start = threading.Thread.start
+
+    def start(self):
+        if self.name.startswith("hub-get-download-"):
+            raise RuntimeError("can't start new thread")
+        return real_start(self)
+
+    monkeypatch.setattr(threading.Thread, "start", start)
+    dest = tmp_path / "dest"
+    with pytest.raises(BaseException) as info:
+        hub_get.get(preset(dest), api=PinnedHub(FILES))
+    assert info.type is hub_get.GetError, repr(info.value)
+    said = str(info.value)
+    assert "can't start new thread" in said and f"nothing moved into {dest}" in said, said
+    assert "is kept so a rerun resumes" in said and not (dest / "a.docx").exists(), said
+    monkeypatch.setattr(hub, "default_api", lambda: PinnedHub(FILES))
+    monkeypatch.chdir(tmp_path)
+    result = runner.invoke(app, ["hub", "get", "--repo", REPO, "--path", "outputs/run", "--dest", "got"])
+    assert result.exit_code == 1 and "refused" in result.output, (result.output, result.exception)
