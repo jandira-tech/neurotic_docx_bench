@@ -2350,3 +2350,43 @@ def test_verify_upload_spells_an_invalid_byte_and_a_backslash_apart(rebuild, hub
     said = str(exc.value)
     assert 'not only' in said, said
     assert f"'{PREFIX}/\\\\xffbad.txt'" in said and f"'{PREFIX}/\\\\\\\\xffbad.txt'" in said, said
+
+
+def test_verify_upload_refuses_a_commit_that_removed_the_manifest_with_its_own_sentence(rebuild, hub_pair):
+    """mcode, round 24: a commit on the revision that removed the manifest path changes only that path, and
+    verify_upload raised KeyError(b'outputs/.../MANIFEST.sha256.json'), which publish() reported as a raw bytes key.
+    It says the commit removes the manifest and is not this upload."""
+    data = manifest({'a/x.docx': sha(b'inline')})
+    origin = hub_pair.api.origin
+    revision = hub_pair.api.head()
+    before = rebuild.leaves(hub_pair.clone, revision)
+    git(origin, 'rm', '-q', '--', f'{PREFIX}/{MANIFEST}')
+    git(origin, 'commit', '-q', '-m', 'the manifest removed')
+    commit = hub_pair.api.head()
+    with pytest.raises(Exception) as exc:
+        rebuild.verify_upload(hub_pair.clone, revision, commit, before, data)
+    assert isinstance(exc.value, rebuild.RebuildError), repr(exc.value)
+    said = str(exc.value)
+    assert f'{commit} removes {PREFIX}/{MANIFEST}' in said and 'it is not this upload' in said, said
+
+
+def test_publish_on_a_given_revision_that_is_not_the_head_refuses_before_the_build_without_saying_the_hub_moved(
+    rebuild, hub_pair, tmp_path, monkeypatch
+):
+    """mcode, round 24: --publish --revision <a commit that is not main's head> built the manifest, then refused with
+    "the hub moved to <head> since <revision> was read". Nothing moved: the revision was given, not read, and the
+    manifest is committed only on the head. The run says so before it builds anything."""
+    older = hub_pair.head
+    hub_pair.api.commit({f'{PREFIX}/run/RUN.md': b'later'}, 'later')
+    head = hub_pair.api.head()
+    git(hub_pair.clone, 'fetch', '-q', 'origin')
+    built = []
+    real_build = rebuild.build
+    monkeypatch.setattr(rebuild, 'build', lambda *a, **kw: built.append(1) or real_build(*a, **kw))
+    with pytest.raises(rebuild.RebuildError) as exc:
+        run_main(rebuild, hub_pair, tmp_path, monkeypatch, '--publish', '--revision', older)
+    said = str(exc.value)
+    assert 'moved' not in said, said
+    assert f'--revision {older} is not the head of main ({head})' in said, said
+    assert 'nothing published by this run' in said, said
+    assert built == [] and hub_pair.api.uploads == []
