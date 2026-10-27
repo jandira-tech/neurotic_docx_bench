@@ -65,8 +65,9 @@ running ones end, keeping the staging folder for a rerun; a second press stops w
 request may never come back), and the staging folder stays locked until they end or the process
 exits, so no other run takes a folder they still write into. Two presses that reach the process as
 one (the kernel delivers a pending signal once) count as one: press again. While files move, a press waits until the step in hand is
-recorded, then rolls everything back; a second press waits too, so no step goes unrecorded. A press
-during the rollback lets it finish and then stops; a second one stops it before its next step (a step
+recorded, then rolls everything back; a second press waits too, so no step goes unrecorded. Presses
+made during the moves never count toward stopping the rollback, whether a press or a failed move began
+it. A press during the rollback lets it finish and then stops; a second one stops it before its next step (a step
 that reads a placed file to check it reads it to the end first, which for a large file takes a while), and
 the error names the files not put back and the staging folder that holds the files they replaced.
 Ctrl-C is held only under Python's own handler in the main thread, so a caller that ignores it or
@@ -1617,9 +1618,10 @@ def _move_held(
                 raise
         ctrl_c.check()
     except BaseException as exc:  # Ctrl-C included: put everything back before stopping
-        if isinstance(exc, KeyboardInterrupt):  # a press that stopped the moves is not one pressed during the rollback
-            ctrl_c.held.clear()
-        # one held as a move failed stays: the rollback finishes, then it stops the run, as one pressed during it does
+        # The rollback counts only the presses made during it. One that stopped the moves is spent; any other pressed
+        # during them waits for the rollback to finish, then stops the run, as one pressed during the rollback does.
+        pressed = bool(ctrl_c.held) and not isinstance(exc, KeyboardInterrupt)
+        ctrl_c.held.clear()
         problems: list[str] = []
         try:
             _roll_back(journal, staging, ctrl_c.stop_rollback, problems)
@@ -1649,7 +1651,7 @@ def _move_held(
                 f"moving into {dest} failed ({why}); every file already moved was put back and every replaced "
                 f"file restored. {staging} is kept so a rerun resumes"
             )
-        if ctrl_c.held:  # pressed once during the rollback: it finished, now stop
+        if pressed or ctrl_c.held:  # pressed during the moves, or once during the rollback: it finished, now stop
             ctrl_c.held.clear()
             stop = KeyboardInterrupt()
             stop.add_note(outcome)

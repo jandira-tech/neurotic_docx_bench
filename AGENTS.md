@@ -458,7 +458,8 @@ uv run bench hub get --repo arthrod/neurotic_docx_bench --path outputs/release_0
   `.replaced/`, files it took back in `.withdrawn-*/`; a run with nothing to download too), and
   takes the second name off staged files a killed move left linked into the destination. Ctrl-C
   never splits a step: during the moves it is held until the step in hand is recorded (a second
-  press waits too); one during the rollback lets it finish, a second stops it before its next step
+  press waits too, and presses made before a move fails wait for its rollback); one during the
+  rollback lets it finish, a second stops it before its next step
   and names the files not put back. Ctrl-C during the download drops the queued downloads and keeps
   the staging folder. The CLI prints what was left where and exits 130. Ctrl-C is held only under Python's own handler, so a caller that ignores or
   handles it keeps that. Presets with no home in the checkout land in `hub-downloads/`. All three
