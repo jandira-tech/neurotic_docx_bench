@@ -2300,3 +2300,53 @@ def test_the_folder_refusal_names_what_the_hub_holds_byte_for_byte(rebuild, hub_
     assert hub_pair.api.preuploads == [] and hub_pair.api.commit_calls == []
     assert '\\xff\\xfebad.txt' in said and '\ufffd' not in said, said
     assert '2 file(s) and 1 submodule(s)' in said, said
+
+
+def add_raw(origin: Path, path: bytes, data: bytes) -> None:
+    """Stage a blob under a path given as bytes: git takes any bytes, a disk may not (APFS refuses non-UTF-8)."""
+    blob = subprocess.run(
+        ['git', 'hash-object', '-w', '--stdin'], input=data, cwd=origin, capture_output=True, check=True
+    ).stdout.strip()
+    subprocess.run([b'git', b'update-index', b'--add', b'--cacheinfo', b'100644,' + blob + b',' + path], cwd=origin, check=True)
+
+
+# an invalid byte and a literal backslash that backslashreplace spells the same: \xffbad.txt
+TWINS = (b'\xffbad.txt', b'\\xffbad.txt')
+
+
+def test_the_folder_refusal_spells_an_invalid_byte_and_a_backslash_apart(rebuild, hub_pair):
+    """mcode, round 23: backslashreplace spells the byte 0xff and the four characters backslash, x, f, f the same,
+    so the refusal named two different files under the path with one name. Backslashes are doubled first."""
+    data = manifest({'a/x.docx': sha(b'inline')})
+    origin = hub_pair.api.origin
+    git(origin, 'rm', '-q', f'{PREFIX}/{MANIFEST}')
+    for name in TWINS:
+        add_raw(origin, f'{PREFIX}/{MANIFEST}/'.encode() + name, b'y')
+    git(origin, 'commit', '-q', '-m', 'two names under the folder that backslashreplace spells the same')
+    git(hub_pair.clone, 'fetch', '-q', 'origin')
+    revision = hub_pair.api.head()
+    with pytest.raises(rebuild.RebuildError) as exc:
+        rebuild.publish(hub_pair.api, hub_pair.clone, revision, data, 'rebuild')
+    said = str(exc.value)
+    assert f'{MANIFEST}/\\xffbad.txt' in said and f'{MANIFEST}/\\\\xffbad.txt' in said, said
+
+
+def test_verify_upload_spells_an_invalid_byte_and_a_backslash_apart(rebuild, hub_pair):
+    """mcode, round 23: verify_upload's list of the paths a commit changes has the same spelling, so a commit that
+    changed both names listed one name twice."""
+    data = manifest({'a/x.docx': sha(b'inline')})
+    origin = hub_pair.api.origin
+    revision = hub_pair.api.head()
+    before = rebuild.leaves(hub_pair.clone, revision)
+    (origin / PREFIX / MANIFEST).write_bytes(data)
+    git(origin, 'add', '--', f'{PREFIX}/{MANIFEST}')
+    for name in TWINS:
+        add_raw(origin, f'{PREFIX}/'.encode() + name, b'y')
+    git(origin, 'commit', '-q', '-m', 'the manifest and two more names')
+    git(hub_pair.clone, 'fetch', '-q', 'origin')
+    commit = hub_pair.api.head()
+    with pytest.raises(rebuild.RebuildError) as exc:
+        rebuild.verify_upload(hub_pair.clone, revision, commit, before, data)
+    said = str(exc.value)
+    assert 'not only' in said, said
+    assert f"'{PREFIX}/\\\\xffbad.txt'" in said and f"'{PREFIX}/\\\\\\\\xffbad.txt'" in said, said
