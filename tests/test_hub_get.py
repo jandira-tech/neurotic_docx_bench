@@ -3625,3 +3625,96 @@ def test_a_second_ctrl_c_while_the_file_is_given_back_names_where_it_is(
     (hold,) = holds
     assert hold.read_bytes() == BIG
     assert str(hold) in said, said
+
+
+# Review round 21 (#80), Codex
+
+
+def test_a_let_go_helper_that_cannot_start_keeps_the_ctrl_c_and_says_the_lock_is_held(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Codex, round 21: after a second press left a download running, _let_go kept the lock and started a thread to
+    let it go once the download ended. Thread.start() can fail (RuntimeError: can't start new thread); that error
+    replaced the KeyboardInterrupt and its notes. The press stays the error, a note says the lock stays held until
+    this process exits, and the lock stays known as kept here, so a rerun in this process says why it is busy."""
+    import threading
+    import time
+
+    dest = tmp_path / "dest"
+    api = _hub_of_slow_files()
+    real_download = api.hf_hub_download
+    presses = _Presses(monkeypatch)
+    release = threading.Event()
+    stalled: list[threading.Thread] = []
+    real_start = threading.Thread.start
+
+    def start(self, *args, **kw):
+        if self.name == "hub-get-let-go":
+            raise RuntimeError("can't start new thread")
+        return real_start(self, *args, **kw)
+
+    def stall(*args, **kw):
+        if not stalled:
+            stalled.append(threading.current_thread())
+            release.wait(6)
+        return real_download(*args, **kw)
+
+    def press_twice() -> None:
+        time.sleep(0.3)
+        presses.press()
+        time.sleep(0.5)
+        presses.press()
+
+    monkeypatch.setattr(threading.Thread, "start", start)
+    api.hf_hub_download = stall
+    presser = threading.Thread(target=press_twice)
+    real_start(presser)
+    try:
+        with pytest.raises(BaseException) as stop:
+            hub_get.get(preset(dest), api=api, workers=1)
+        with pytest.raises(hub_get.GetError) as busy:
+            hub_get.get(preset(dest), api=api, workers=1)
+    finally:
+        release.set()
+        presser.join()
+        for t in stalled:
+            t.join()
+        _drop_kept_locks()
+    assert stop.type is KeyboardInterrupt, repr(stop.value)
+    notes = " ".join(getattr(stop.value, "__notes__", ()))
+    assert "letting go of the staging lock failed too" in notes and "until this process exits" in notes, notes
+    assert "Ctrl-C" in str(busy.value), busy.value
+
+
+def test_a_let_go_helper_whose_unlock_fails_still_takes_the_lock_off_the_kept_list(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Codex, round 21: the helper's _unlock closes the descriptor even when flock(LOCK_UN) fails, but the error
+    ended the helper before it took the lock off _KEPT_LOCKS; a later busy check then fstat'ed a closed (or reused)
+    descriptor and failed with EBADF. The lock comes off the list first."""
+    import threading
+
+    staging = tmp_path / ".dest.hub-aaaaaaaaaaaa"
+    lock = hub_get._lock(staging)
+    real_unlock = hub_get._unlock
+
+    def unlock(fd):
+        real_unlock(fd)
+        raise OSError(errno.EIO, os.strerror(errno.EIO))
+
+    ended = threading.Thread(target=lambda: None)
+    ended.start()
+    ended.join()
+    monkeypatch.setattr(hub_get, "_unlock", unlock)
+    monkeypatch.setattr(threading, "excepthook", lambda args: None)  # the old helper died on the EIO
+    hub_get._let_go(lock, [ended])
+    for t in threading.enumerate():
+        if t.name == "hub-get-let-go":
+            t.join(5)
+    try:
+        assert lock not in hub_get._KEPT_LOCKS
+        assert hub_get._kept_here(staging) is False
+    finally:
+        with hub_get._LOCKS_GUARD:
+            if lock in hub_get._KEPT_LOCKS:
+                hub_get._KEPT_LOCKS.remove(lock)
