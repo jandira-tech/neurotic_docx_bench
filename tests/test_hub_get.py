@@ -4231,3 +4231,71 @@ def test_presses_held_as_a_move_fails_wait_for_the_rollback(
         assert (dest / "a.docx").read_bytes() == b"mine\n" and not (dest / "RUN.md").exists()
     else:
         assert "Ctrl-C stopped putting back" in notes, notes
+
+
+# Review round 25 (#80), Codex
+
+
+class _PressedAsItIsRead(list):
+    """Held presses that, once armed, take a press while their count is read, after the count is taken."""
+
+    armed = False
+
+    def __len__(self) -> int:
+        n = super().__len__()
+        if self.armed:
+            self.armed = False
+            signal.raise_signal(signal.SIGINT)  # the hold appends it before this returns
+        return n
+
+
+def test_a_ctrl_c_as_the_rollback_begins_is_not_lost(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """Codex, round 25: _move_held read whether a press was held as a move failed, then cleared the held presses. A
+    press that landed between the two was erased without being remembered: the run ended in GetError, exit 1, not
+    130. It is counted, as a press during the moves or during the rollback, and stops the run once it is done."""
+    dest = tmp_path / "dest"
+    made: list[_PressedAsItIsRead] = []
+
+    class Armed(hub_get._CtrlC):
+        def __init__(self) -> None:
+            super().__init__()
+            self.held = _PressedAsItIsRead()
+            made.append(self.held)
+
+    monkeypatch.setattr(hub_get, "_CtrlC", Armed)
+    _fails_on_b(monkeypatch, before=lambda: setattr(made[-1], "armed", True))  # the next look at the count
+    with pytest.raises(BaseException) as info:
+        hub_get.get(preset(dest), api=PinnedHub(FILES))
+    assert info.type is KeyboardInterrupt, repr(info.value)
+    notes = " ".join(getattr(info.value, "__notes__", ()))
+    assert f"moving into {dest} failed (the disk went away)" in notes, notes
+    assert "every file already moved was put back" in notes and not (dest / "a.docx").exists(), notes
+
+
+@pytest.mark.parametrize("ending", [SystemExit, GeneratorExit])
+def test_a_ctrl_c_held_as_a_system_exit_leaves_the_hold_is_not_dropped(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, ending: type[BaseException]
+) -> None:
+    """Codex, round 25: the hold took every BaseException but an Exception for a press on its way out. A run ending in
+    SystemExit or GeneratorExit, with a Ctrl-C pressed as Python's handler was given back, ended in that exception
+    and the press was dropped. The press stops the run, the exception as its cause, as with an error."""
+    dest = tmp_path / "dest"
+    real_place, real_signal = hub_get.place, signal.signal
+
+    def place(staged, target, scratch):
+        if target.name == "b.pdf":
+            raise ending("stopped")
+        return real_place(staged, target, scratch)
+
+    def giving_back(signum, handler):
+        if signum == signal.SIGINT and handler is signal.default_int_handler:
+            signal.raise_signal(signal.SIGINT)  # pressed as the handler is given back: the hold takes it
+        return real_signal(signum, handler)
+
+    monkeypatch.setattr(hub_get, "place", place)
+    monkeypatch.setattr(signal, "signal", giving_back)
+    with pytest.raises(BaseException) as info:
+        hub_get.get(preset(dest), api=PinnedHub(FILES))
+    assert info.type is KeyboardInterrupt and isinstance(info.value.__cause__, ending), repr(info.value)
+    notes = " ".join(getattr(info.value, "__notes__", ()))
+    assert f"moving into {dest} failed (stopped)" in notes and not (dest / "a.docx").exists(), notes
