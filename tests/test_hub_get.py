@@ -3267,3 +3267,95 @@ def test_a_file_that_cannot_be_read_for_its_hash_is_a_refusal_not_a_traceback(
         assert "nothing downloaded" in said and api.downloads() == [], said
     else:
         assert "nothing moved" in said and not (dest / "a.docx").exists(), said
+
+
+# Review round 19 (#80)
+
+
+@pytest.mark.parametrize("phase", ["before_the_lock", "while_locked", "after_the_run"])
+def test_a_disk_error_outside_the_moves_is_a_refusal_saying_what_was_left(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, phase: str
+) -> None:
+    """Codex, round 19: an OSError outside the hash and the moves (device()'s stat of the destination, a walk of
+    the staging folder, letting go of the lock) escaped get() raw, and the CLI printed a traceback. It is a
+    GetError that says what the run left: nothing downloaded, nothing moved with the staging folder kept, or
+    every file in place."""
+    dest = tmp_path / "dest"
+    api = PinnedHub(FILES)
+    if phase == "before_the_lock":
+        def device(path):
+            raise _eio(path)
+
+        monkeypatch.setattr(hub_get, "device", device)
+    elif phase == "while_locked":
+        def symlinks(staging):
+            raise _eio(staging)
+
+        monkeypatch.setattr(hub_get, "_symlinks", symlinks)
+    else:
+        real_unlock = hub_get._unlock
+
+        def unlock(fd):
+            real_unlock(fd)
+            raise OSError(errno.EIO, os.strerror(errno.EIO))
+
+        monkeypatch.setattr(hub_get, "_unlock", unlock)
+    with pytest.raises(hub_get.GetError) as info:
+        hub_get.get(preset(dest), api=api)
+    said = str(info.value)
+    assert "Input/output error" in said, said
+    if phase == "before_the_lock":
+        assert "nothing downloaded" in said and api.downloads() == [], said
+    elif phase == "while_locked":
+        assert f"nothing moved into {dest}" in said and hub_get.staging_dir(dest, SHA).is_dir(), said
+        assert not (dest / "a.docx").exists()
+    else:
+        assert f"every file is in place in {dest}" in said and (dest / "a.docx").read_bytes() == BIG, said
+
+
+def test_the_cli_refuses_a_disk_error_without_a_traceback(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """Codex, round 19, through the CLI: exit 1 and a refusal line, not an OSError and empty output."""
+    from neurotic_docx_bench.cli import app
+
+    def device(path):
+        raise _eio(path)
+
+    monkeypatch.setattr(hub, "default_api", lambda: PinnedHub(FILES))
+    monkeypatch.setattr(hub_get, "device", device)
+    monkeypatch.chdir(tmp_path)
+    result = runner.invoke(app, ["hub", "get", "--repo", REPO, "--path", "outputs/run", "--dest", "got"])
+    assert result.exit_code == 1, result.output
+    assert not isinstance(result.exception, OSError), repr(result.exception)
+    assert "refused" in result.output and "nothing downloaded" in result.output, result.output
+
+
+@pytest.mark.parametrize("meanwhile", ["removed", "replaced"])
+def test_a_withdrawal_rename_that_failed_says_what_is_at_the_target_now(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, meanwhile: str
+) -> None:
+    """Codex, round 19: the rename taking a placed file back was not made, and the message said "the file stays
+    there" whatever was there: the target may have been removed (ENOENT) or replaced in the instant before. A
+    missing private name proves only that the withdrawal was not made, so the target is looked at."""
+    dest = tmp_path / "dest"
+    real_rename = os.rename
+
+    def rename(src, dst, *args, **kw):
+        if Path(dst).parent.name.startswith(".withdrawn-") and Path(src) == dest / "a.docx":
+            Path(src).unlink()
+            if meanwhile == "removed":
+                raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), str(src))
+            Path(src).write_bytes(b"saved again\n")
+            raise OSError(errno.EIO, os.strerror(errno.EIO), str(src), None, str(dst))
+        return real_rename(src, dst, *args, **kw)
+
+    _fails_on_b(monkeypatch)
+    monkeypatch.setattr(os, "rename", rename)
+    with pytest.raises(hub_get.GetError) as info:
+        hub_get.get(preset(dest), api=PinnedHub(FILES))
+    said = str(info.value)
+    assert f"taking {dest / 'a.docx'} back failed" in said and "the file stays there" not in said, said
+    if meanwhile == "removed":
+        assert not (dest / "a.docx").exists() and "no file is there now" in said, said
+    else:
+        assert (dest / "a.docx").read_bytes() == b"saved again\n"
+        assert "another file is there now, left as it is" in said, said
