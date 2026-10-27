@@ -2417,3 +2417,93 @@ def test_publish_with_revision_main_publishes_on_the_head(rebuild, hub_pair, tmp
         raise AssertionError(f'refused: {exc}') from exc
     assert [u['parent_commit'] for u in hub_pair.api.uploads] == [head]
     assert hub_pair.api.head() != head
+
+
+EMPTY_TREE = '4b825dc642cb6eb9a060e54bf8d69288fbee4904'  # git's empty tree, which an index cannot hold
+
+
+def tree_with(origin: Path, tree: str, path: bytes, entry: bytes | None) -> str:
+    """``tree`` with ``path`` set to ``entry`` (b'<mode> <type> <oid>'), or taken out when None; the new tree's id.
+    mktree makes what a commit through the index cannot: an empty folder."""
+    head, _, rest = path.partition(b'/')
+    listing = subprocess.run(['git', 'ls-tree', '-z', tree], cwd=origin, capture_output=True, check=True).stdout
+    entries = {}
+    for line in listing.split(b'\0'):
+        if line:
+            meta, name = line.split(b'\t', 1)
+            entries[name] = meta
+    if rest:
+        below = entries[head].split()[2].decode() if head in entries else EMPTY_TREE
+        entries[head] = b'040000 tree ' + tree_with(origin, below, rest, entry).encode()
+    elif entry is None:
+        del entries[head]
+    else:
+        entries[head] = entry
+    data = b''.join(meta + b'\t' + name + b'\0' for name, meta in entries.items())
+    made = subprocess.run(['git', 'mktree', '-z'], input=data, cwd=origin, capture_output=True, check=True)
+    return made.stdout.strip().decode()
+
+
+def commit_on(origin: Path, tree: str, parent: str) -> str:
+    commit = git(origin, 'commit-tree', tree, '-p', parent, '-m', 'made with mktree')
+    git(origin, 'update-ref', 'refs/heads/main', commit)
+    return commit
+
+
+def manifest_blob(origin: Path, data: bytes) -> bytes:
+    made = subprocess.run(['git', 'hash-object', '-w', '--stdin'], input=data, cwd=origin, capture_output=True, check=True)
+    return b'100644 blob ' + made.stdout.strip()
+
+
+@pytest.mark.parametrize('folder', [f'{PREFIX}/run/empty', 'elsewhere/empty'])
+def test_verify_upload_refuses_a_commit_that_also_adds_an_empty_folder(rebuild, hub_pair, folder):
+    """Codex, round 25: ls-tree -r lists blobs and gitlinks, never a tree, so a commit that wrote the manifest and
+    also added an empty folder changed "only" the manifest, and verify_upload took it for this upload."""
+    data = manifest({'a/x.docx': sha(b'inline')})
+    origin = hub_pair.api.origin
+    revision = hub_pair.api.head()
+    before = rebuild.leaves(hub_pair.clone, revision)
+    tree = tree_with(origin, git(origin, 'rev-parse', f'{revision}^{{tree}}'), f'{PREFIX}/{MANIFEST}'.encode(),
+                     manifest_blob(origin, data))
+    tree = tree_with(origin, tree, folder.encode(), f'040000 tree {EMPTY_TREE}'.encode())
+    commit = commit_on(origin, tree, revision)
+    with pytest.raises(Exception) as exc:
+        rebuild.verify_upload(hub_pair.clone, revision, commit, before, data)
+    assert isinstance(exc.value, rebuild.RebuildError), repr(exc.value)
+    said = str(exc.value)
+    assert 'not only' in said and folder in said, said
+
+
+def test_verify_upload_calls_a_manifest_replaced_by_an_empty_folder_a_folder(rebuild, hub_pair):
+    """Codex, round 25: a commit that replaced the manifest with an empty folder got round 24's sentence for a
+    commit that removes it, since ls-tree -r does not list the folder."""
+    data = manifest({'a/x.docx': sha(b'inline')})
+    origin = hub_pair.api.origin
+    revision = hub_pair.api.head()
+    before = rebuild.leaves(hub_pair.clone, revision)
+    tree = tree_with(origin, git(origin, 'rev-parse', f'{revision}^{{tree}}'), f'{PREFIX}/{MANIFEST}'.encode(),
+                     f'040000 tree {EMPTY_TREE}'.encode())
+    commit = commit_on(origin, tree, revision)
+    with pytest.raises(rebuild.RebuildError) as exc:
+        rebuild.verify_upload(hub_pair.clone, revision, commit, before, data)
+    said = str(exc.value)
+    assert f'the manifest at {commit} is a folder' in said and 'removes' not in said, said
+
+
+def test_publish_refuses_a_manifest_path_that_is_an_empty_folder(rebuild, hub_pair):
+    """Round 25, the same omission before the upload: an empty folder at the manifest path holds no file, so
+    publish() saw no manifest there and sent the preupload and the commit request. It refuses, as for a folder
+    holding files, before anything is sent."""
+    data = manifest({'a/x.docx': sha(b'inline')})
+    origin = hub_pair.api.origin
+    tree = tree_with(origin, git(origin, 'rev-parse', f'{hub_pair.head}^{{tree}}'), f'{PREFIX}/{MANIFEST}'.encode(),
+                     f'040000 tree {EMPTY_TREE}'.encode())
+    revision = commit_on(origin, tree, hub_pair.head)
+    git(hub_pair.clone, 'fetch', '-q', 'origin')
+    with pytest.raises(Exception) as exc:
+        rebuild.publish(hub_pair.api, hub_pair.clone, revision, data, 'rebuild')
+    assert isinstance(exc.value, rebuild.RebuildError), repr(exc.value)
+    assert type(exc.value).__name__ != 'UnverifiedPublish', repr(exc.value)
+    said = str(exc.value)
+    assert hub_pair.api.preuploads == [] and hub_pair.api.commit_calls == [], said
+    assert f'{PREFIX}/{MANIFEST} at {revision} is an empty folder' in said and 'Nothing published' in said, said
