@@ -1117,12 +1117,18 @@ class _Move:
     unsure: str | None = None  # a step whose outcome could not be looked at: what may be where
 
 
-def _roll_back(journal: Sequence[_Move], staging: Path, between: Callable[[], None] = lambda: None) -> list[str]:
+def _roll_back(
+    journal: Sequence[_Move],
+    staging: Path,
+    between: Callable[[], None] = lambda: None,
+    problems: list[str] | None = None,
+) -> list[str]:
     """Undo ``journal`` newest first, each move on its own; what could not be undone, and where its files are.
 
-    ``between`` runs before each move is undone; what it raises stops the rollback there.
+    ``between`` runs before each move is undone; what it raises stops the rollback there, and ``problems``, when
+    given, holds what was found up to then.
     """
-    problems = []
+    problems = [] if problems is None else problems
     for m in reversed(journal):
         between()
         kept = f"; the file it replaced is kept at {m.backup}" if m.backed_up else ""
@@ -1476,11 +1482,13 @@ def _download(
             alive[0].join(0.25)  # in slices, so a press is seen during a long download
         ctrl_c.check(stopped)
     except BaseException as exc:
+        # The press that stopped the downloads is the first; when an error stopped them, a held press is.
+        first = 0 if isinstance(exc, KeyboardInterrupt) else 1
         with taking:  # so no worker is between its look at ``stop`` and the queue
             stop.set()  # the queued downloads never start; the running ones end
         while alive := [t for t in threads if t.is_alive()]:
-            if ctrl_c.held:  # pressed again: stop waiting (a request may never come back)
-                ctrl_c.held.clear()
+            if len(ctrl_c.held) > first:  # pressed again: stop waiting (a request may never come back)
+                del ctrl_c.held[first:]  # a first one stays held, and ends the run as the error leaves the hold
                 ctrl_c.left_running = alive
                 break
             try:
@@ -1612,15 +1620,17 @@ def _move_held(
         if isinstance(exc, KeyboardInterrupt):  # a press that stopped the moves is not one pressed during the rollback
             ctrl_c.held.clear()
         # one held as a move failed stays: the rollback finishes, then it stops the run, as one pressed during it does
+        problems: list[str] = []
         try:
-            problems = _roll_back(journal, staging, ctrl_c.stop_rollback)
+            _roll_back(journal, staging, ctrl_c.stop_rollback, problems)
         except KeyboardInterrupt as stop:  # pressed twice: the rollback stops before its next step
             left = [str(m.target) for m in journal if m.placed is not None or m.backed_up or m.unsure is not None]
             failed = f" (the move failed: {exc})" if isinstance(exc, Exception) else ""
+            found = f" Found while putting back: {'; '.join(problems)}." if problems else ""
             stop.add_note(
                 f"Ctrl-C stopped putting back the files moved into {dest}{failed}; not put back: "
-                f"{_listing(left) if left else 'none'}. {staging / _BACKUP} holds the local files they replaced; "
-                f"{staging} is kept"
+                f"{_listing(left) if left else 'none'}.{found} {staging / _BACKUP} holds the local files they "
+                f"replaced; {staging} is kept"
             )
             raise
         for d in reversed(made):
