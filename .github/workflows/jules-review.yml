@@ -18,9 +18,11 @@ concurrency:
 jobs:
   review:
     # Fork and Dependabot PRs get no repository secrets, so there is no key to run with.
+    # Renovate and Jules-agent PRs are skipped: they would spend Jules's daily task limit.
     if: >-
       github.event.pull_request.head.repo.full_name == github.repository &&
-      github.actor != 'dependabot[bot]'
+      github.actor != 'dependabot[bot]' &&
+      !contains(fromJSON('["renovate[bot]","google-labs-jules[bot]"]'), github.event.pull_request.user.login)
     # GitHub-hosted by default. To use a self-hosted runner (e.g. Coolify), set a repo
     # variable: gh variable set JULES_RUNNER -R <owner/repo> -b self-hosted
     # The runner must be recent enough to run node24 actions.
