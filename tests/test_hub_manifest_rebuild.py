@@ -2409,7 +2409,8 @@ def test_publish_on_a_short_id_of_the_head_names_the_head_and_asks_for_its_full_
 def test_publish_with_revision_main_publishes_on_the_head(rebuild, hub_pair, tmp_path, monkeypatch):
     """Round 24, found with mcode's fix: --revision main names the head, and was refused as "not the head of main"
     (before that, read from the clone's own main and refused as "the hub moved"). It is the head, read from the hub."""
-    head = hub_pair.head
+    hub_pair.api.commit({f'{PREFIX}/x.docx': b'A'}, 'a file the manifest does not list yet')
+    head = hub_pair.api.head()
     try:
         run_main(rebuild, hub_pair, tmp_path, monkeypatch, '--publish', '--revision', 'main')
     except rebuild.RebuildError as exc:

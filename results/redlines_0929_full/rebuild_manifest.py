@@ -694,8 +694,8 @@ def main() -> None:
         ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
         ap.add_argument('--checkout', type=Path, help='keep the dataset clone here (default: a temporary one)')
         ap.add_argument('--out', type=Path, help='write the manifest and report here (default: a new temporary folder)')
-        ap.add_argument('--revision', help='hub commit to read (default: the head)')
-        ap.add_argument('--publish', action='store_true', help='commit the manifest on that revision, which must be the head')
+        ap.add_argument('--revision', help='hub commit to read (default, or main: the head)')
+        ap.add_argument('--publish', action='store_true', help='commit the manifest on that revision, which must be the head (its full commit id, or main)')
         ap.add_argument('--lfs-check', type=lfs_limit, default=25, help='LFS downloads to hash (N or all; default: 25)')
         ap.add_argument('--seed', type=int, default=0, help='LFS sampling seed (default: 0)')
         a = ap.parse_args()
@@ -703,13 +703,14 @@ def main() -> None:
         if a.checkout is None:
             temporary = Path(tempfile.mkdtemp(prefix='redlines_0929_full_hub_'))
         clone = a.checkout or temporary / 'hub'
-        revision = a.revision or api.repo_info(hub.RESULTS_REPO, repo_type=hub.REPO_TYPE, revision=BRANCH).sha
-        if a.publish and a.revision is not None:  # publish() commits only on the head: say so before the build
+        given = None if a.revision in (None, BRANCH) else a.revision  # the branch's name is its head, read from the hub
+        revision = given or api.repo_info(hub.RESULTS_REPO, repo_type=hub.REPO_TYPE, revision=BRANCH).sha
+        if a.publish and given is not None:  # publish() commits only on the head: say so before the build
             head = api.repo_info(hub.RESULTS_REPO, repo_type=hub.REPO_TYPE, revision=BRANCH).sha
-            if head != a.revision:
+            if head != given:
                 raise RebuildError(
-                    f'--revision {a.revision} is not the head of {BRANCH} ({head}); the manifest is committed only on '
-                    'the head, so nothing published by this run: rerun without --revision, or with the head'
+                    f'--revision {given} is not {head}, the head of {BRANCH}; the manifest is committed only on the '
+                    'head, so nothing published by this run: rerun without --revision, or with its full commit id'
                 )
         out = a.out or Path(tempfile.mkdtemp(prefix='redlines_0929_full_manifest_'))
         out.mkdir(parents=True, exist_ok=True)
