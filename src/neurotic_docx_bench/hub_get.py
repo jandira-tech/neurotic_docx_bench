@@ -17,7 +17,9 @@
    an existing file (on a disk without hard links, a copy made in the staging folder that takes its
    name with a rename refusing an existing file: ``renamex_np(RENAME_EXCL)`` on macOS,
    ``renameat2(RENAME_NOREPLACE)`` on Linux; a disk with neither refuses before any download, and a
-   file whose link fails on a disk that takes them is copied only if that rename works there), so
+   file whose link fails on a disk that takes them is copied only if that rename works there; a disk
+   whose rename gives a file a new identity, as macOS's FAT does an empty one, refuses before any
+   download too, since the rollback knows this run's files by their identity), so
    one written meanwhile is never overwritten either, and a kill never leaves a part-written or
    empty file in the destination.
 4. **Staged, all or nothing.** Files land in ``files/`` of a staging folder on the destination's
@@ -457,32 +459,32 @@ def _withdraw(
         _drop_folder(hold.parent)
         return None if there is None else f"{target} changed after this run moved it there; left as it is"
     try:
-        os.rename(target, hold)  # a fresh name in a fresh folder: nothing there to overwrite
-    except OSError as exc:
-        # Made iff the fresh name holds a file (NFS: see _identity_at), whatever was saved at the target since.
         try:
-            made = _identity_at(hold) is not None
-        except OSError as look:
-            raise GetError(
-                f"taking {target} back reported {exc} and looking at {hold} failed ({look}); this run's file is at "
-                "one of the two"
-            ) from exc
-        if not made:  # not taken back: what is at the target now says where the file is
-            _drop_folder(hold.parent)
-            failed = f"taking {target} back failed ({exc})"
+            os.rename(target, hold)  # a fresh name in a fresh folder: nothing there to overwrite
+        except OSError as exc:
+            # Made iff the fresh name holds a file (NFS: see _identity_at), whatever was saved at the target since.
             try:
-                now = _identity_at(target)
+                made = _identity_at(hold) is not None
             except OSError as look:
-                return f"{failed} and looking at it failed ({look}); whether the file is still there is unknown"
-            if now is None:  # removed meanwhile: nothing of this run's is left there
-                return None
-            if now == placed:
-                return f"{failed}; the file stays there"
-            return f"{failed}; another file is there now, left as it is"
-    try:
+                raise GetError(
+                    f"taking {target} back reported {exc} and looking at {hold} failed ({look}); this run's file is "
+                    "at one of the two"
+                ) from exc
+            if not made:  # not taken back: what is at the target now says where the file is
+                _drop_folder(hold.parent)
+                failed = f"taking {target} back failed ({exc})"
+                try:
+                    now = _identity_at(target)
+                except OSError as look:
+                    return f"{failed} and looking at it failed ({look}); whether the file is still there is unknown"
+                if now is None:  # removed meanwhile: nothing of this run's is left there
+                    return None
+                if now == placed:
+                    return f"{failed}; the file stays there"
+                return f"{failed}; another file is there now, left as it is"
         return _settle(target, placed, remote, staging, hold, remarks)
-    except BaseException as stop:  # a caller's own Ctrl-C handler (Python's is held), at any point: name the file
-        if not any(str(hold) in n for n in getattr(stop, "__notes__", ())):
+    except BaseException as stop:  # a caller's own Ctrl-C handler (Python's is held), from the rename on: name the file
+        if not any(str(hold) in n for n in (str(stop), *getattr(stop, "__notes__", ()))):
             try:
                 if _identity_at(hold) is not None:
                     stop.add_note(f"the file taken back from {target} is at {hold}")
@@ -562,7 +564,51 @@ def _links_work(scratch: Path) -> bool:
             f"the disk of {scratch} takes no hard links, so each file would be copied into place, but it has no "
             f"rename that refuses to replace a file ({why}); a file written meanwhile could be lost"
         )
+    moved = _renamed_identity(scratch)
+    if moved is not None:
+        raise GetError(
+            f"a rename on the disk of {scratch} gives a file a new identity ({moved}), so after a failure the "
+            "rollback could not tell the files this run moved into place from anyone else's; nothing downloaded"
+        )
     return links
+
+
+def _renamed_identity(scratch: Path) -> str | None:
+    """None when a rename on ``scratch``'s disk keeps a file's identity; else what it changed.
+
+    The rollback tells the files this run moved into place by their identity, and renames each to a private name
+    before it looks again (``_withdraw``); a copy takes its name by a rename too (``_copy_new``). macOS's FAT gives
+    an empty file a new inode number at every rename, so an empty file and a one-byte file are probed, each looked
+    at through its descriptor before it is closed, as ``_copy_new`` does, then renamed into another folder.
+    """
+    folder = scratch / "rename-probe"
+    made: list[Path] = []
+    try:
+        folder.mkdir(exist_ok=True)
+        for data in (b"", b"x"):
+            name = scratch / f"rename-probe-{len(data)}"  # scratch is emptied under the lock, as for _probe
+            fd = os.open(name, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
+            made.append(name)
+            with open(fd, "wb") as out:
+                out.write(data)
+                out.flush()
+                was = identity(os.fstat(out.fileno()))
+            moved = folder / f"probe-{len(data)}"
+            os.rename(name, moved)
+            made.append(moved)
+            now = identity(os.lstat(moved))
+            if now != was:
+                return f"a {len(data)}-byte file went from {was} to {now}, as (device, inode, size, mtime)"
+        return None
+    except OSError as exc:
+        raise GetError(f"cannot write in the staging folder ({folder}): {exc}") from exc
+    finally:
+        for path in made:
+            try:
+                path.unlink()
+            except OSError:
+                pass
+        _drop_folder(folder)
 
 
 def _probe(scratch: Path) -> bool:
@@ -822,7 +868,7 @@ def _lock(staging: Path) -> int:
                 if _kept_here(staging):
                     raise _Busy(
                         f"downloads that a second Ctrl-C left running in this process still write into {staging}; "
-                        "rerun once they end, or in a new process"
+                        "its lock is held until they end, at most until this process exits: rerun then"
                     ) from exc
                 raise _Busy(f"another bench hub get is using {staging}; wait for it to finish") from exc
             except OSError as exc:  # a disk without locks, among others
@@ -849,8 +895,10 @@ def _unlock(lock: int) -> None:
     process's (flock(2)), such as a child forked by a path that skips the at-fork hook below.
 
     An unlock that fails is an ``OSError`` saying what that leaves: the descriptor is closed all the same, and
-    closing it lets go of the lock unless a copy of it is open elsewhere. A close that fails after the unlock is
-    no error: the unlock has let go of the lock already.
+    closing it lets go of the lock unless a copy of it is open elsewhere. A close that fails is no failure to
+    close: Linux and macOS release a descriptor before ``close(2)`` reports an error (XNU's
+    ``fp_close_and_unlock`` calls ``fdrelse``, then returns what ``fg_drop`` says), so after a failed unlock it
+    says the same, and after the unlock it is no error at all.
     """
     with _LOCKS_GUARD:
         _HELD_LOCKS.discard(lock)
@@ -859,11 +907,8 @@ def _unlock(lock: int) -> None:
         except OSError as exc:
             try:
                 os.close(lock)
-            except OSError as also:
-                raise OSError(
-                    f"unlocking it failed ({exc}), and closing its descriptor failed too ({also}); it may be held "
-                    "until this process exits"
-                ) from exc
+            except OSError:
+                pass  # released all the same (see above)
             raise OSError(
                 f"unlocking it failed ({exc}); its descriptor is closed, which lets go of it unless a copy of that "
                 "descriptor is open in another process"
@@ -991,13 +1036,15 @@ class _CtrlC:
 
 
 @contextmanager
-def _ctrl_c_between_steps() -> Iterator[_CtrlC]:
+def _ctrl_c_between_steps(left: list[str] | None = None) -> Iterator[_CtrlC]:
     """Hold Ctrl-C (SIGINT) while the block runs; the ``_CtrlC`` it yields raises a held one.
 
     A filesystem step and its journal entry then happen together: a Ctrl-C that lands as a rename
     or a link returns waits for the next check, so the rollback knows about that step. A run holds
     it once, from taking the staging lock to letting it go, so Python's handler is given back only
-    after the run ends; a press still held then is raised as the block ends without an error.
+    after the run ends; a press still held then is raised as the block ends, without an error or with
+    one, so no press is ever dropped. With one, the press says what that error said (an ``OSError``
+    followed by ``left[0]``, as ``get`` says it), and the error is its cause.
     Ctrl-C is held only under Python's own handler, in the main thread: a caller that ignores Ctrl-C
     or handles it itself keeps that, and its ``check`` never raises.
     """
@@ -1009,6 +1056,15 @@ def _ctrl_c_between_steps() -> Iterator[_CtrlC]:
     signal.signal(signal.SIGINT, ctrl_c.hold)
     try:
         yield ctrl_c
+    except Exception as exc:
+        if not ctrl_c.held:
+            raise
+        ctrl_c.held.clear()
+        said = f"{exc}; {left[0]}" if isinstance(exc, OSError) and left else str(exc) or type(exc).__name__
+        stop = _interrupted(f"the run was ending in an error as Ctrl-C was pressed: {said}")
+        for note in getattr(exc, "__notes__", ()):
+            stop.add_note(note)
+        raise stop from exc
     finally:
         signal.signal(signal.SIGINT, previous)
     ctrl_c.check()  # pressed after the block's last check
@@ -1223,7 +1279,7 @@ def _get(
     finished = f"stopped after the run finished: every file is in place in {dest}"
     done = False
     try:
-        with _ctrl_c_between_steps() as ctrl_c:  # one hold, from taking the staging lock to letting it go
+        with _ctrl_c_between_steps(left) as ctrl_c:  # one hold, from taking the staging lock to letting it go
             try:
                 lock = _lock(staging)
             except GetError:
