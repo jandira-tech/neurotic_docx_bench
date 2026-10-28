@@ -1,6 +1,6 @@
 # Jules PR review: audited fork of thalesraymond/jules-pr-reviewer, pinned by commit SHA.
 # Audit + rollout tracking: https://github.com/arthrod/jules-pr-reviewer/issues/1
-# Pin with the cap retry (#9): https://github.com/arthrod/jules-pr-reviewer/issues/10
+# Pinned to release v1.8.1: https://github.com/arthrod/jules-pr-reviewer/releases/tag/v1.8.1
 name: Jules PR Review
 
 on:
@@ -41,7 +41,7 @@ jobs:
       # No checkout: the action reads the diff and rules through the GitHub API,
       # so no token is persisted to disk in the workspace.
       - name: Jules review
-        uses: arthrod/jules-pr-reviewer@b28ec00dafd4316f6fe06328cfa4f40db9ad075d
+        uses: arthrod/jules-pr-reviewer@716785e3a91409985502a45af5b1eae543df15ae # v1.8.1
         with:
           jules_api_key: ${{ secrets.JULES_API_KEY }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
