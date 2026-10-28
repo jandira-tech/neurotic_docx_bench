@@ -78,7 +78,7 @@ def convert_one(
 ) -> RenderResult:
     """Convert a single DOCX to PDF inside an isolated LibreOffice user profile.
 
-    A failed attempt is retried up to ``retries`` times: concurrent soffice instances
+    A non-timeout failure is retried up to ``retries`` times: concurrent soffice instances
     occasionally fail transiently even with isolated profiles, and a retry converts a
     flaky parallel run into a deterministic one. Each attempt still requires BOTH a
     clean exit AND the output file (shell parity).
@@ -116,7 +116,8 @@ def convert_one(
             )
         except subprocess.TimeoutExpired:
             err = "soffice timed out"
-            continue
+            pdf.unlink(missing_ok=True)
+            break
         finally:
             shutil.rmtree(profile, ignore_errors=True)
 

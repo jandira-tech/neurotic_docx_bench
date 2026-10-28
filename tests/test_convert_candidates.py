@@ -9,6 +9,7 @@ from __future__ import annotations
 import importlib.util
 import json
 import sys
+import time
 from pathlib import Path
 
 import pymupdf
@@ -39,6 +40,7 @@ def test_soffice_candidates_share_the_timeout_the_pdf_check_and_record_seconds(t
     timeouts = []
 
     def convert_one(soffice, docx, out_dir, *, force=False, timeout=1200.0, retries=1):
+        time.sleep(0.2)
         timeouts.append(timeout)
         pdf = Path(out_dir) / f"{docx.stem}.pdf"
         if docx.stem == "good":
@@ -61,4 +63,5 @@ def test_soffice_candidates_share_the_timeout_the_pdf_check_and_record_seconds(t
     assert not (out / "candidate" / "clean__broken.pdf").exists()
     record = json.loads((out / "convert_seconds.json").read_text())
     assert set(record["seconds"]) == {"clean__good", "clean__broken"}
+    assert all(s >= 0.2 for s in record["seconds"].values())
     assert "unreadable PDF" in record["failures"]["clean__broken"]

@@ -11,6 +11,7 @@ not wrap soffice as a converter-under-test and does not touch ``score.py`` /
 from __future__ import annotations
 
 import csv
+import hashlib
 import json
 import math
 import os
@@ -69,6 +70,8 @@ DOCXODUS_FONT_SOURCES: tuple[Path, ...] = (
     Path("/usr/lib/libreoffice/share/fonts/truetype"),
 )
 DOCXODUS_FONT_STAGE = Path.home() / ".cache" / "neurotic-docx-bench" / "docxodus-fonts"
+_DOCXODUS_FONT_LOCK = threading.Lock()
+_DOCXODUS_FONT_DIR: Path | None = None
 _METRIC_FONT_PREFIXES = ("Carlito-", "Caladea-", "Liberation")
 CONVERT_TIMEOUT_S = 180.0
 
@@ -293,22 +296,33 @@ def score_folder_pair(
     )
 
 
-def docxodus_font_dir() -> Path | None:
-    """Stage the metric faces from the first LibreOffice font folder that has them; ``None`` if none does."""
-    for source in DOCXODUS_FONT_SOURCES:
-        faces = sorted(p for p in source.glob("*.ttf") if p.name.startswith(_METRIC_FONT_PREFIXES)) if source.is_dir() else []
-        if not faces:
-            continue
-        DOCXODUS_FONT_STAGE.mkdir(parents=True, exist_ok=True)
-        for face in faces:
-            dest = DOCXODUS_FONT_STAGE / face.name
-            if dest.is_file() and dest.stat().st_size == face.stat().st_size:
+def docxodus_font_dir() -> Path:
+    """Stage the metric faces once; tests can reset ``_DOCXODUS_FONT_DIR`` to None."""
+    global _DOCXODUS_FONT_DIR
+    with _DOCXODUS_FONT_LOCK:
+        if _DOCXODUS_FONT_DIR is not None:
+            return _DOCXODUS_FONT_DIR
+        for source in DOCXODUS_FONT_SOURCES:
+            faces = sorted(p for p in source.glob("*.ttf") if p.name.startswith(_METRIC_FONT_PREFIXES)) if source.is_dir() else []
+            if not faces:
                 continue
-            tmp = dest.with_name(f".{face.name}.{os.getpid()}.{threading.get_ident()}.tmp")
-            shutil.copyfile(face, tmp)
-            os.replace(tmp, dest)  # parallel workers never see a half-written face
-        return DOCXODUS_FONT_STAGE
-    return None
+            DOCXODUS_FONT_STAGE.mkdir(parents=True, exist_ok=True)
+            selected = {face.name for face in faces}
+            for cached in DOCXODUS_FONT_STAGE.iterdir():
+                if cached.name not in selected and (cached.is_file() or cached.is_symlink()):
+                    cached.unlink()
+            for face in faces:
+                dest = DOCXODUS_FONT_STAGE / face.name
+                if dest.is_file() and hashlib.sha256(dest.read_bytes()).digest() == hashlib.sha256(face.read_bytes()).digest():
+                    continue
+                tmp = dest.with_name(f".{face.name}.{os.getpid()}.{threading.get_ident()}.tmp")
+                shutil.copyfile(face, tmp)
+                os.replace(tmp, dest)
+            _DOCXODUS_FONT_DIR = DOCXODUS_FONT_STAGE
+            return _DOCXODUS_FONT_DIR
+    raise FileNotFoundError(
+        f"docxodus metric fonts not found in {', '.join(map(str, DOCXODUS_FONT_SOURCES))}",
+    )
 
 
 def convert_command(tool: str, src: Path, dest: Path, *, binary: Path) -> list[str]:
@@ -347,19 +361,21 @@ def convert_command(tool: str, src: Path, dest: Path, *, binary: Path) -> list[s
         return [str(binary), "convert", str(src), "--to", "pdf", "--out", str(dest), "--force"]
     if tool == "docxodus":
         # Tracked changes and comments as Word's All Markup print draws them (the
-        # oracle is Word's Save as PDF); it stops itself 10 s before we would kill it.
+        # oracle is Word's Save as PDF); its timeout is the same per-document budget.
         return [
             str(binary), "convert", str(src), "--to", "pdf", "--output", str(dest),
             "--review-profile", "markup", "--markup-presentation", "word",
             "--comments", "margin", "--comment-column-placement", "balloons",
-            "--timeout", str(int((CONVERT_TIMEOUT_S - 10) * 1000)),
-            *(("--font-directory", str(fonts)) if (fonts := docxodus_font_dir()) else ()),
+            "--timeout", str(int(CONVERT_TIMEOUT_S * 1000)),
+            "--font-directory", str(docxodus_font_dir()),
         ]
     raise ValueError(f"unknown DOCX→PDF tool {tool!r}")
 
 
 def resolve_tool_binary(tool: str, override: Path | None = None) -> Path:
     """Resolve a converter binary: ``override``, ``JUBARTE_BIN``, PATH, then ``~/.cargo/bin``."""
+    if tool == "docxodus":
+        docxodus_font_dir()
     if override is not None:
         return override
     env_bin = os.environ.get("JUBARTE_BIN") if tool == "jubarte" else None
@@ -426,11 +442,13 @@ def try_convert_fixture(
     Never raises for converter crashes, empty output, or non-PDF bytes.
     """
     dest_pdf.parent.mkdir(parents=True, exist_ok=True)
-    if resume and _is_pdf(dest_pdf):
+    if resume and _is_pdf(dest_pdf) and _unreadable_pdf(dest_pdf) is None:
         return None
     if dest_pdf.exists() or dest_pdf.is_symlink():
         dest_pdf.unlink()
     cmd = convert_command(tool, fixture.docx, dest_pdf, binary=binary)
+    if tool == "docxodus" and timeout_s == CONVERT_TIMEOUT_S:
+        timeout_s += 15  # let the converter's own timeout stop it cleanly
     try:
         proc = subprocess.run(
             cmd,
@@ -496,18 +514,21 @@ def try_convert_fixtures(
     timeout_s: float | None = CONVERT_TIMEOUT_S,
     seconds: dict[str, float] | None = None,
 ) -> list[dict[str, object]]:
-    """Convert every fixture; never abort on a single failure. ``seconds`` gets each one's wall time."""
+    """Convert every fixture; never abort on a failure. Time only documents converted this run."""
     dest_dir.mkdir(parents=True, exist_ok=True)
     total = len(fixtures)
 
     def one(item: Fixture) -> dict[str, object] | None:
+        dest = dest_dir / f"{item.stem}.pdf"
+        if resume and _is_pdf(dest) and _unreadable_pdf(dest) is None:
+            return None
         start = time.perf_counter()
         fail = try_convert_fixture(
             tool,
             binary,
             item,
-            dest_dir / f"{item.stem}.pdf",
-            resume=resume,
+            dest,
+            resume=False,
             timeout_s=timeout_s,
         )
         if seconds is not None:

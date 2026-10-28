@@ -9,6 +9,10 @@ from __future__ import annotations
 
 import json
 import stat
+import subprocess
+import threading
+from collections import Counter
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 import pymupdf
@@ -19,6 +23,17 @@ from neurotic_docx_bench.ledger import converters as conv
 
 ARGV = ["--review-profile", "markup", "--markup-presentation", "word", "--comments", "margin",
         "--comment-column-placement", "balloons"]
+DEFAULT_FONT_SOURCES = d2p.DOCXODUS_FONT_SOURCES
+
+
+@pytest.fixture(autouse=True)
+def isolated_font_stage(tmp_path: Path, monkeypatch):
+    source = tmp_path / "fonts"
+    source.mkdir()
+    (source / "Carlito-Regular.ttf").write_bytes(b"metric font")
+    monkeypatch.setattr(d2p, "DOCXODUS_FONT_SOURCES", (source,))
+    monkeypatch.setattr(d2p, "DOCXODUS_FONT_STAGE", tmp_path / "stage")
+    monkeypatch.setattr(d2p, "_DOCXODUS_FONT_DIR", None, raising=False)
 
 
 def _pdf_bytes(pages: int = 1) -> bytes:
@@ -67,7 +82,25 @@ def test_the_argv_is_the_documented_cli_with_words_markup(tmp_path: Path) -> Non
     cmd = d2p.convert_command("docxodus", src, dest, binary=Path("/opt/dx/docxodus"))
     assert cmd[:7] == ["/opt/dx/docxodus", "convert", str(src), "--to", "pdf", "--output", str(dest)]
     assert cmd[7:15] == ARGV
-    assert cmd[15] == "--timeout" and int(cmd[16]) < d2p.CONVERT_TIMEOUT_S * 1000  # it gives up before we kill it
+    assert cmd[15:17] == ["--timeout", str(int(d2p.CONVERT_TIMEOUT_S * 1000))]
+
+
+@pytest.mark.parametrize("tool", ["docxodus", "jubarte"])
+@pytest.mark.parametrize("timeout", [d2p.CONVERT_TIMEOUT_S, 1, None])
+def test_subprocess_budget_allows_docxodus_to_stop_cleanly(tmp_path: Path, monkeypatch, tool, timeout) -> None:
+    item = _fixture(tmp_path)
+    dest = tmp_path / "cand" / "a.pdf"
+    budgets = []
+
+    def run(cmd, **kwargs):
+        budgets.append(kwargs["timeout"])
+        dest.write_bytes(_pdf_bytes())
+        return subprocess.CompletedProcess(cmd, 0, stdout="", stderr="")
+
+    monkeypatch.setattr(d2p.subprocess, "run", run)
+    assert d2p.try_convert_fixture(tool, Path("converter"), item, dest, timeout_s=timeout) is None
+    expected = timeout + 15 if tool == "docxodus" and timeout == d2p.CONVERT_TIMEOUT_S else timeout
+    assert budgets == [expected]
 
 
 def test_the_pinned_install_is_resolved_before_path(monkeypatch) -> None:
@@ -129,12 +162,12 @@ def test_a_partial_batch_keeps_going_and_times_every_document(tmp_path: Path) ->
     good = tmp_path / "good.pdf"
     good.write_bytes(_pdf_bytes())
     items = [_fixture(tmp_path, f"doc {i}") for i in range(3)]
-    binary = _converter(tmp_path, f'case "$OUT" in *"doc 1"*) exit 4;; esac; cp "{good}" "$OUT"')
+    binary = _converter(tmp_path, f'sleep 0.2; case "$OUT" in *"doc 1"*) exit 4;; esac; cp "{good}" "$OUT"')
     seconds: dict[str, float] = {}
     failures = d2p.try_convert_fixtures("docxodus", binary, items, tmp_path / "cand", workers=2,
                                         resume=False, seconds=seconds)
     assert [f["doc"] for f in failures] == ["clean__doc 1"]
-    assert set(seconds) == {i.stem for i in items} and all(s >= 0 for s in seconds.values())
+    assert set(seconds) == {i.stem for i in items} and all(s >= 0.2 for s in seconds.values())
 
 
 def test_a_missing_install_is_an_adapter_gap_not_a_score(tmp_path: Path, monkeypatch) -> None:
@@ -156,13 +189,58 @@ def test_the_report_records_conversion_seconds_per_document(tmp_path: Path, monk
     good = tmp_path / "good.pdf"
     good.write_bytes(_pdf_bytes())
     items = [_fixture(tmp_path, f"doc {i}") for i in range(2)]
-    binary = _converter(tmp_path, f'cp "{good}" "$OUT"')
+    binary = _converter(tmp_path, f'sleep 0.2; cp "{good}" "$OUT"')
     monkeypatch.setattr(d2p, "score_folder_pair", lambda *a, **k: {})
     report = d2p.run_eval(tmp_path / "r.json", tools=("docxodus",), converter=binary, work_dir=tmp_path / "w",
                           fixtures=items, check_pins=False, track="corpus/word:all", resume=False)
     tool = report["tools"]["docxodus"]
     assert set(tool["convert_seconds"]) == {i.stem for i in items}
+    assert all(s >= 0.2 for s in tool["convert_seconds"].values())
     assert json.loads((tmp_path / "r.json").read_text())["tools"]["docxodus"]["convert_seconds"]
+
+
+@pytest.mark.parametrize("workers", [1, 8])
+def test_resumed_valid_pdf_is_not_a_timing_sample(tmp_path: Path, workers: int) -> None:
+    items = [_fixture(tmp_path, f"doc {i}") for i in range(2)]
+    cand = tmp_path / "cand"
+    cand.mkdir()
+    for item in items:
+        (cand / f"{item.stem}.pdf").write_bytes(_pdf_bytes())
+    called = tmp_path / "called"
+    binary = _converter(tmp_path, f'touch "{called}"; exit 4')
+    seconds: dict[str, float] = {}
+    assert d2p.try_convert_fixtures("docxodus", binary, items, cand, workers=workers, seconds=seconds) == []
+    assert not called.exists()
+    assert seconds == {}
+
+
+def test_resumed_truncated_pdf_is_reconverted(tmp_path: Path) -> None:
+    item = _fixture(tmp_path)
+    dest = tmp_path / "cand" / f"{item.stem}.pdf"
+    dest.parent.mkdir()
+    dest.write_bytes(b"%PDF-1.7 truncated garbage")
+    good = tmp_path / "good.pdf"
+    good.write_bytes(_pdf_bytes())
+    binary = _converter(tmp_path, f'cp "{good}" "$OUT"')
+    assert d2p.try_convert_fixture("docxodus", binary, item, dest, resume=True) is None
+    assert dest.read_bytes() == good.read_bytes()
+
+
+def test_resumed_batch_times_only_reconverted_pdf(tmp_path: Path) -> None:
+    items = [_fixture(tmp_path, f"doc {i}") for i in range(2)]
+    cand = tmp_path / "cand"
+    cand.mkdir()
+    good = _pdf_bytes()
+    (cand / f"{items[0].stem}.pdf").write_bytes(good)
+    (cand / f"{items[1].stem}.pdf").write_bytes(b"%PDF-1.7 truncated garbage")
+    source = tmp_path / "good.pdf"
+    source.write_bytes(good)
+    binary = _converter(tmp_path, f'sleep 0.2; cp "{source}" "$OUT"')
+    seconds: dict[str, float] = {}
+    assert d2p.try_convert_fixtures("docxodus", binary, items, cand, workers=8, seconds=seconds) == []
+    assert set(seconds) == {items[1].stem}
+    assert seconds[items[1].stem] >= 0.2
+    assert (cand / f"{items[1].stem}.pdf").read_bytes() == good
 
 
 def test_the_cli_can_score_without_touching_the_store(tmp_path: Path, monkeypatch) -> None:
@@ -213,12 +291,71 @@ def test_docxodus_gets_the_metric_fonts_libreoffice_renders_with(tmp_path: Path,
     assert (tmp_path / "stage" / "Carlito-Regular.ttf").read_bytes() == b"Carlito-Regular.ttf"
 
 
-def test_no_metric_fonts_means_no_font_directory(tmp_path: Path, monkeypatch) -> None:
+@pytest.mark.parametrize("override", [False, True])
+def test_no_metric_fonts_refuses_converter_resolution(tmp_path: Path, monkeypatch, override: bool) -> None:
+    sources = (tmp_path / "absent", tmp_path / "also absent")
+    monkeypatch.setattr(d2p, "DOCXODUS_FONT_SOURCES", sources)
+    monkeypatch.setattr(d2p, "DOCXODUS_CONVERTER", Path(__file__))
+    with pytest.raises(FileNotFoundError, match="metric fonts") as exc:
+        d2p.resolve_tool_binary("docxodus", Path(__file__) if override else None)
+    assert all(str(source) in str(exc.value) for source in sources)
+
+
+def test_missing_metric_fonts_leave_nothing_to_rank(tmp_path: Path, monkeypatch) -> None:
+    item = _fixture(tmp_path)
     monkeypatch.setattr(d2p, "DOCXODUS_FONT_SOURCES", (tmp_path / "absent",))
-    monkeypatch.setattr(d2p, "DOCXODUS_FONT_STAGE", tmp_path / "stage")
-    cmd = d2p.convert_command("docxodus", tmp_path / "a.docx", tmp_path / "a.pdf", binary=Path("/opt/dx/docxodus"))
-    assert "--font-directory" not in cmd
+    good = tmp_path / "good.pdf"
+    good.write_bytes(_pdf_bytes())
+    binary = _converter(tmp_path, f'cp "{good}" "$OUT"')
+    scored = []
+    monkeypatch.setattr(d2p, "score_folder_pair", lambda *a, **k: scored.append(a) or {})
+    report = d2p.run_eval(tmp_path / "r.json", tools=("docxodus",), converter=binary,
+                          work_dir=tmp_path / "w", fixtures=[item], check_pins=False,
+                          track="corpus/word:all", resume=False)
+    assert scored == []
+    assert "metric fonts" in report["tools"]["docxodus"]["adapter_gap"]
+    assert conv.lines_from_report(report, hardware=None, report_path="r.json") == []
 
 
 def test_the_default_font_source_is_libreoffices_bundle() -> None:
-    assert any(p.parts[-3:] == ("Resources", "fonts", "truetype") for p in d2p.DOCXODUS_FONT_SOURCES)
+    assert any(p.parts[-3:] == ("Resources", "fonts", "truetype") for p in DEFAULT_FONT_SOURCES)
+
+
+def test_concurrent_font_staging_copies_each_face_once(tmp_path: Path, monkeypatch) -> None:
+    source = d2p.DOCXODUS_FONT_SOURCES[0]
+    (source / "Caladea-Bold.ttf").write_bytes(b"second face")
+    copies: Counter[str] = Counter()
+    copyfile = d2p.shutil.copyfile
+    barrier = threading.Barrier(8)
+
+    def copy(src, dest):
+        copies[Path(src).name] += 1
+        return copyfile(src, dest)
+
+    def stage(_):
+        barrier.wait()
+        path = d2p.docxodus_font_dir()
+        assert sorted(p.name for p in path.iterdir()) == ["Caladea-Bold.ttf", "Carlito-Regular.ttf"]
+        return path
+
+    monkeypatch.setattr(d2p.shutil, "copyfile", copy)
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        paths = list(pool.map(stage, range(8)))
+    assert paths == [d2p.DOCXODUS_FONT_STAGE] * 8
+    assert copies == {"Caladea-Bold.ttf": 1, "Carlito-Regular.ttf": 1}
+    (source / "Carlito-Regular.ttf").write_bytes(b"changed after staging")
+    assert d2p.docxodus_font_dir().joinpath("Carlito-Regular.ttf").read_bytes() == b"metric font"
+
+
+def test_font_staging_replaces_same_size_different_content() -> None:
+    stage = d2p.DOCXODUS_FONT_STAGE
+    stage.mkdir()
+    (stage / "Carlito-Regular.ttf").write_bytes(b"stale! font")
+    assert d2p.docxodus_font_dir().joinpath("Carlito-Regular.ttf").read_bytes() == b"metric font"
+
+
+def test_font_staging_removes_stale_faces() -> None:
+    stage = d2p.DOCXODUS_FONT_STAGE
+    stage.mkdir()
+    (stage / "NotoSans-VariableFont.ttf").write_bytes(b"stale")
+    assert sorted(p.name for p in d2p.docxodus_font_dir().iterdir()) == ["Carlito-Regular.ttf"]

@@ -208,6 +208,7 @@ tools:
     run_names: [docxodus]
     bench_vendors: [docxodus]
     speed_tools: [docxodus]
+    converter_tools: [docxodus]
     url: https://github.com/JSv4/docxodus
   - id: docxodus-csharp
     vendor: docxodus

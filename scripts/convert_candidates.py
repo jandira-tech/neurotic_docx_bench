@@ -51,8 +51,10 @@ def main() -> None:
     soffice = so.find_soffice() if args.engine == "soffice" else None
     binary = d2p.resolve_tool_binary("docxide-pdf") if args.engine == "docxide" else None
 
-    seconds: dict[str, float] = {}
-    failures: dict[str, str] = {}
+    record_path = args.out / "convert_seconds.json"
+    previous = json.loads(record_path.read_text()) if record_path.is_file() else {}
+    seconds: dict[str, float] = previous.get("seconds", {})
+    failures: dict[str, str] = previous.get("failures", {})
 
     def convert(f: d2p.Fixture, dest: Path) -> str | None:
         if args.engine == "docxide":
@@ -83,12 +85,14 @@ def main() -> None:
             if err:
                 failures[stem] = err
                 print(f"FAILED {stem}: {err}", flush=True)
+            else:
+                failures.pop(stem, None)
             if i % 100 == 0 or i == len(todo):
                 el = time.monotonic() - t0
                 print(f"[{i}/{len(todo)}] failed {failed} elapsed {el:.0f}s eta {el / i * (len(todo) - i):.0f}s", flush=True)
     record = {"engine": args.engine, "workers": args.jobs, "seconds": dict(sorted(seconds.items())),
               "failures": dict(sorted(failures.items()))}
-    (args.out / "convert_seconds.json").write_text(json.dumps(record, indent=1) + "\n", encoding="utf-8")
+    record_path.write_text(json.dumps(record, indent=1) + "\n", encoding="utf-8")
     print(f"done: {len(list(cand.glob('*.pdf')))} PDFs in {cand}, {failed} failed", flush=True)
 
 

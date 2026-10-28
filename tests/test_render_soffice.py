@@ -2,11 +2,44 @@
 
 from __future__ import annotations
 
+import sys
+
 import pymupdf as fitz
+import pytest
 from helpers import requires_soffice
 
 from neurotic_docx_bench.render import soffice
 from neurotic_docx_bench.render.base import RenderReport
+
+
+@pytest.mark.parametrize("first", ["timeout", "nonzero", "crash"])
+def test_failed_attempt_never_reuses_partial_pdf(tmp_path, first):
+    attempts = tmp_path / "attempts"
+    binary = tmp_path / "soffice"
+    binary.write_text(
+        f"#!{sys.executable}\n"
+        "import os, signal, sys, time\n"
+        "from pathlib import Path\n"
+        f"attempts = Path({str(attempts)!r})\n"
+        "n = int(attempts.read_text()) + 1 if attempts.exists() else 1\n"
+        "attempts.write_text(str(n))\n"
+        "out = Path(sys.argv[sys.argv.index('--outdir') + 1]) / 'a.pdf'\n"
+        "if n == 1:\n"
+        "    out.write_bytes(b'%PDF-1.7 partial')\n"
+        f"    if {first!r} == 'timeout': time.sleep(30)\n"
+        f"    if {first!r} == 'crash': os.kill(os.getpid(), signal.SIGKILL)\n"
+        "    sys.exit(3)\n"
+        f"if {first!r} == 'crash': out.write_bytes(b'%PDF-1.7 complete')\n"
+    )
+    binary.chmod(0o755)
+    result = soffice.convert_one(binary, tmp_path / "a.docx", tmp_path / "pdf", timeout=0.5)
+    pdf = tmp_path / "pdf" / "a.pdf"
+    assert result.ok is (first == "crash")
+    assert attempts.read_text() == ("1" if first == "timeout" else "2")
+    if first == "crash":
+        assert pdf.read_bytes() == b"%PDF-1.7 complete"
+    else:
+        assert not pdf.exists()
 
 
 @requires_soffice
