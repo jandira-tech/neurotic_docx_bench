@@ -98,7 +98,7 @@ def test_port_matches_frozen_upstream_numbers() -> None:
         want = expected[stem]
         for key in METRIC_KEYS:
             if isinstance(want.get(key), float):
-                assert got.get(key) == pytest.approx(want[key], abs=1e-6 if key == "ssim" else 1e-12, rel=0), f"{stem}.{key}"
+                assert got.get(key) == pytest.approx(want[key], abs=1e-12, rel=0), f"{stem}.{key}"
             else:
                 assert got.get(key) == want.get(key), f"{stem}.{key}: {got.get(key)} != {want.get(key)}"
 

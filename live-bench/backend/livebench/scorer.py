@@ -64,6 +64,7 @@ def score_pair(oracle: str, candidate: str, dpi: int, evidence: str) -> dict:
                     "page_count_candidate",
                     "page_count_mismatch",
                     "ink_jaccard",
+                    "ssim",
                     "text_boundary",
                     "max_break_drift",
                 )
