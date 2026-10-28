@@ -45,7 +45,8 @@ for i, c in enumerate(chunks):
     out = (c / "word.stdout").read_text(errors="replace") if (c / "word.stdout").exists() else ""
     fails = {m.group(1): re.sub(r"\s+", " ", m.group(2)).strip()
              for m in re.finditer(r"FAIL (\S+\.docx):[ \t]*(.*?)(?=\n\s*FAIL |\Z)", out[out.rfind("│ failed"):], re.S)}
-    pdfs = {p.stem for p in (c / "pdf").glob("*.pdf")} if (c / "pdf").exists() else set()
+    # scripts/word_pdf.py names its output <stem>_byword.pdf (older runs: <stem>.pdf)
+    pdfs = {p.stem.removesuffix("_byword") for p in (c / "pdf").glob("*.pdf")} if (c / "pdf").exists() else set()
     named = set()
     for f in sorted((c / "in").glob("*.docx")):
         m = re.match(r"(docxodus|jubarte|superdoc-redlines)__([0-9a-f]{8})_(\d{4})$", f.stem)
