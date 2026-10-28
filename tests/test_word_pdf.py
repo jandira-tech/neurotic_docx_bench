@@ -1743,9 +1743,13 @@ def test_progress_reports_the_batch_log_as_it_grows(
     monkeypatch.setattr(wp.logger, "info", lambda msg: seen.append(str(msg)))
 
     with wp._Progress(log, total=3, label=" pdf", poll=0.01):
+        # A loaded machine delays this thread, so the poller reads the empty log
+        # first and logs 0/3; waiting for any message then wrote the second state
+        # before the poller saw the first (#83). The sleep makes that the norm.
+        wp.time.sleep(0.05)
         log.write_text("[ok]\t0\n")
         deadline = wp.time.monotonic() + 3
-        while not seen and wp.time.monotonic() < deadline:
+        while not any("1/3" in m for m in seen) and wp.time.monotonic() < deadline:
             wp.time.sleep(0.02)
         log.write_text("[ok]\t0\n[fail]\t1\tboom\nnoise\n")
         deadline = wp.time.monotonic() + 3
