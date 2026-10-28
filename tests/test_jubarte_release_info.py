@@ -780,11 +780,22 @@ def test_a_new_candidate_never_resumes_the_previous_binary_s_renders(tmp_path: P
     assert len(list(kept.rglob('*.pdf'))) == 2  # the earlier set-aside copy is still there
 
 
-def test_soffice_renders_are_staged_under_the_docx_stem_and_scored_from_there(tmp_path: Path) -> None:
+def test_soffice_renders_are_staged_under_the_docx_stem_and_scored_from_there(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from neurotic_docx_bench.render import soffice as so
+
     root, regen = _tree(tmp_path)
     lines = [f'corpus/word/{state}/docx/fx{s}{i}.docx' for s, state in enumerate(jri.CONVERSION_QUOTAS) for i in (0, 1)]
     _put(root / 'convert.txt', '\n'.join(lines).encode())
-    steps = _sample(root, regen, 8, jobs=5, adopt_conversion_list=Path('convert.txt'))
+    # the pinned LibreOffice answers, whatever soffice this machine has (or none)
+    monkeypatch.setattr(so, 'find_soffice', lambda *a, **k: Path('soffice'))
+
+    def pinned(cmd, **_):
+        return Proc(0, f'{jri.SOFFICE_VERSION} bce0998afefdbc355585ca324285661a2170ba77\n') if cmd[-1] == '--version' \
+            else Proc(1)
+
+    steps = _sample(root, regen, 8, jobs=5, adopt_conversion_list=Path('convert.txt'), run=pinned)
     ev = jri.evidence_dir(V)
     assert '1 fixtures without a LibreOffice render' in _act(steps, 'soffice missing list')
     assert (root / ev / 'soffice_missing.txt').read_text() == 'corpus/word/clean/docx/fx00.docx\n'

@@ -85,6 +85,8 @@ exclude = ["src/neurotic_docx_bench/utils/**", "**/__pycache__", "**/.DS_Store"]
 
 [dependency-groups]
 dev = [
+    # The generator tests import the competitor SDKs; `uv sync` installs them for development.
+    "neurotic-docx-bench[competitors]",
     "pytest>=8.0",
     "pytest-xdist>=3.5",
     "ty>=0.0.56",

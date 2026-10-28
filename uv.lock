@@ -867,6 +867,7 @@ gpu = [
 dev = [
     { name = "aiohttp" },
     { name = "loguru" },
+    { name = "neurotic-docx-bench", extra = ["competitors"] },
     { name = "numpy" },
     { name = "pytest" },
     { name = "pytest-cov" },
@@ -903,6 +904,7 @@ provides-extras = ["competitors", "gpu"]
 dev = [
     { name = "aiohttp", specifier = ">=3.14.3" },
     { name = "loguru", specifier = ">=0.7" },
+    { name = "neurotic-docx-bench", extras = ["competitors"] },
     { name = "numpy", specifier = ">=2.5.1" },
     { name = "pytest", specifier = ">=8.0" },
     { name = "pytest-cov", specifier = ">=6.0" },

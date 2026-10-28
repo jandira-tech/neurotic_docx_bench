@@ -21,7 +21,6 @@ from helpers import REPO_ROOT
 from neurotic_docx_bench.aggregate import compute_aggregate
 from neurotic_docx_bench.diagnostics import ratchet
 
-BENCH_JSONL = REPO_ROOT / "results" / "bench.jsonl"
 JUBARTE_RUST_RUN = "019fcc5d-34e6-7029-95d9-463d5513fe7c"
 
 
@@ -255,12 +254,15 @@ def test_empty_before_cluster_is_not_a_division_by_zero() -> None:
 
 
 # ── the recorded run the three plans were sized from ─────────────────────────
+#
+# Its store line, frozen: the line left results/bench.jsonl in a later rewrite of the
+# store, and these figures are pinned to that run, not to whatever the store holds now.
+RECORDED_RUN = REPO_ROOT / "tests" / "reference" / "jubarte_rust_run_019fcc5d.jsonl"
 
 
-@pytest.mark.skipif(not BENCH_JSONL.is_file(), reason="results/bench.jsonl absent")
 def test_real_jubarte_rust_census_matches_the_execution_contract() -> None:
-    run = ratchet.load_run(BENCH_JSONL, JUBARTE_RUST_RUN)
-    assert run is not None, f"run {JUBARTE_RUST_RUN} not in {BENCH_JSONL}"
+    run = ratchet.load_run(RECORDED_RUN, JUBARTE_RUST_RUN)
+    assert run is not None, f"run {JUBARTE_RUST_RUN} not in {RECORDED_RUN}"
     assert run.vendor == "jubarte-rust"
     c = ratchet.census(run.itt_scores, n_itt=run.itt_n_docs)
     # Figures quoted in the jubarte execution contract and the three stage
@@ -273,14 +275,13 @@ def test_real_jubarte_rust_census_matches_the_execution_contract() -> None:
     assert c.perfect == 158
 
 
-@pytest.mark.skipif(not BENCH_JSONL.is_file(), reason="results/bench.jsonl absent")
 def test_real_run_agrees_with_its_own_recorded_aggregates() -> None:
-    run = ratchet.load_run(BENCH_JSONL, JUBARTE_RUST_RUN)
+    run = ratchet.load_run(RECORDED_RUN, JUBARTE_RUST_RUN)
     assert run is not None
     c = ratchet.census(run.itt_scores, n_itt=run.itt_n_docs)
     line = next(
         json.loads(raw)
-        for raw in BENCH_JSONL.read_text().splitlines()
+        for raw in RECORDED_RUN.read_text().splitlines()
         if raw.strip() and json.loads(raw).get("id_run") == JUBARTE_RUST_RUN
     )
     assert c.perfect == line["exact_100"]
@@ -288,9 +289,8 @@ def test_real_run_agrees_with_its_own_recorded_aggregates() -> None:
     assert run.itt_n_docs == line["itt_n_docs"]
 
 
-@pytest.mark.skipif(not BENCH_JSONL.is_file(), reason="results/bench.jsonl absent")
 def test_a_run_compared_with_itself_trips_nothing() -> None:
-    run = ratchet.load_run(BENCH_JSONL, JUBARTE_RUST_RUN)
+    run = ratchet.load_run(RECORDED_RUN, JUBARTE_RUST_RUN)
     assert run is not None
     report = ratchet.evaluate_ratchets(
         run.itt_scores,

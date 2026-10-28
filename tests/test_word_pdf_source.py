@@ -170,3 +170,11 @@ def test_score_only_over_a_whole_state_still_skips_documents_without_a_pdf(tmp_p
     selected = select_corpus_word_pdfs(origin="all", root=tmp_path, score_only=True, locations=[cands])
     assert {item.original_stem for item in selected.fixtures} == {PRESENT}
     assert any("paired" in w and "skipped" in w for w in selected.warnings)
+
+
+def test_no_bench_yaml_means_corpus_word_in_the_working_folder(tmp_path: Path, monkeypatch) -> None:
+    """An installed wheel has no bench.yaml: docx-to-pdf reads ./corpus/word, where `bench fixtures get` puts it."""
+    monkeypatch.chdir(tmp_path)
+    root, states = word_pdf_from_config(Path("bench.yaml"))
+    assert root == Path("corpus/word")
+    assert states == STATES

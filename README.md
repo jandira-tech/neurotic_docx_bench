@@ -346,26 +346,45 @@ scripts/
 
 ## Credits
 
-- [balalofernandez/docx-revisions](https://github.com/balalofernandez/docx-revisions) — accept/reject (`bench accept` / `reject`)
-- [superdoc-dev/superdoc-visual-benchmarks](https://github.com/superdoc-dev/superdoc-visual-benchmarks) — scoring core
-- [sverrejb/docxide-pdf](https://github.com/sverrejb/docxide-pdf) (Apache-2.0): DOCX→PDF converter and the `docxide_metrics` scorer. Its Jaccard and text-boundary metrics (`tests/common/`) are ported to Python in `src/neurotic_docx_bench/page_metrics.py`, held to upstream's frozen numbers by `tests/test_page_metrics.py`.
-- [jandira-tech/jubarte-redlines](https://github.com/jandira-tech/jubarte-redlines) (AGPL-3.0-only) — Jubarte DOCX redline and DOCX→PDF converter
-- [JSv4/docxodus](https://github.com/JSv4/docxodus) and [react-docxodus-viewer](https://github.com/JSv4/react-docxodus-viewer) (MIT)
-- [AnsonLai/docx-redline-js](https://github.com/AnsonLai/docx-redline-js) (MIT)
-- [houfu/redlines](https://github.com/houfu/redlines) (MIT) and [nupunkt](https://github.com/JanWille/nupunkt) — text-level redline baseline
-- [yuch85/superdoc-redlines](https://github.com/yuch85/superdoc-redlines) (Apache-2.0)
-- [stella/folio](https://github.com/stella/folio) (Apache-2.0)
-- [Harbour-Enterprises/SuperDoc](https://github.com/Harbour-Enterprises/SuperDoc) (AGPL-3.0)
-- [stemma-sh/stemma](https://github.com/stemma-sh/stemma)
-- [UseJunior/safe-docx](https://github.com/UseJunior/safe-docx)
-- [tensorbee/rdocx](https://github.com/tensorbee/rdocx)
-- [developer0hye/office2pdf](https://github.com/developer0hye/office2pdf)
-- [AstraBert/PdfItDown](https://github.com/AstraBert/PdfItDown)
-- [bgreenwell/doxx](https://github.com/bgreenwell/doxx)
-- [dnrops/libreoffice_convert_rust](https://gitcode.com/dnrops/libreoffice_convert_rust) — LibreOffice-based converter
-- [nerdy-pro/dxpdf](https://github.com/nerdy-pro/dxpdf) — Rust DOCX→PDF converter
-- [LibreOffice](https://www.libreoffice.org/) (MPL-2.0/LGPL-3+) — pinned renderer used for redline comparisons
-- Microsoft Word — proprietary reference renderer; Word is a Microsoft trademark
+This bench exists because these projects publish their work. Every tool is measured as published, at the version pinned in [`bench.yaml`](bench.yaml); a score is a measurement, not an endorsement. Licenses are as each project's repository states them on 2026-10-28.
+
+### Tools measured
+
+| Project | Author | License | What the bench uses it for |
+| --- | --- | --- | --- |
+| [jubarte-redlines](https://github.com/jandira-tech/jubarte-redlines) | Jandira Tech (author-affiliated) | AGPL-3.0 | redline generator (native CLI, WASM, lossless and AST lanes); DOCX→PDF converter |
+| [Wordcraft CLI](https://github.com/storytold/wordcraft) | storytold (ArtCraft) | Apache-2.0 | redline generator |
+| [docxodus](https://github.com/JSv4/docxodus) | JSv4 | MIT | redline generator (WASM `compareDocuments`, and its C# build in the speed lane) |
+| [react-docxodus-viewer](https://github.com/JSv4/react-docxodus-viewer) | JSv4 | MIT | viewer for the `visual_*` benchmarks |
+| [folio](https://github.com/stella/folio) (`@stll/folio-core`, `@stll/folio-react`) | stella | Apache-2.0 | redline generator; viewer for the `visual_*` benchmarks |
+| [SuperDoc](https://github.com/Harbour-Enterprises/SuperDoc) (`superdoc-sdk`, `superdoc`) | Harbour Enterprises | AGPL-3.0 | redline generator (Python SDK); editor for the `visual_*` benchmarks |
+| [superdoc-redlines](https://github.com/yuch85/superdoc-redlines) | yuch85 | Apache-2.0 | redline generator (SuperDoc headless extract→align→apply) |
+| [docx-redline-js](https://github.com/AnsonLai/docx-redline-js) | AnsonLai | MIT | redline generator (OOXML reconciliation) |
+| [redlines](https://github.com/houfu/redlines) | Houfu Ang | MIT | text-diff redline baseline |
+| [stemma](https://github.com/stemma-sh/stemma) | stemma-sh | Apache-2.0 | redline generator (`stemma compare`) |
+| [safe-docx](https://github.com/UseJunior/safe-docx) | UseJunior | Apache-2.0 | redline generator (`compareDocuments`) |
+| [docxide-pdf](https://github.com/sverrejb/docxide-pdf) | Sverre Johann Bjørke (sverrejb) | Apache-2.0 | DOCX→PDF converter; source of the second scorer's metrics (below) |
+| [rdocx](https://github.com/tensorbee/rdocx) | tensorbee | MIT | DOCX→PDF converter |
+| [office2pdf](https://github.com/developer0hye/office2pdf) | Yonghye Kwon (developer0hye) | Apache-2.0 | DOCX→PDF converter (Typst) |
+| [PdfItDown](https://github.com/AstraBert/PdfItDown) | Clelia (Astra) Bertelli | MIT | DOCX→PDF converter (delegates to office2pdf) |
+| [dxpdf](https://github.com/nerdy-pro/dxpdf) | Nerdy Production | MIT | DOCX→PDF converter |
+| [doxx](https://github.com/bgreenwell/doxx) | Brandon Greenwell | MIT | listed converter; it has no PDF export, so it is never ranked |
+| [libreoffice_convert_rust](https://gitcode.com/dnrops/libreoffice_convert_rust) | dnrops | MIT OR Apache-2.0 | DOCX→PDF converter (drives LibreOffice) |
+| [PyMuPDF Pro](https://pymupdf.io/pro) | Artifex | commercial | DOCX→PDF converter, run unlicensed (first 3 pages only) |
+| [LibreOffice](https://www.libreoffice.org/) | The Document Foundation | MPL-2.0 | the pinned renderer of the soffice lane and a converter |
+
+### What the bench is built on
+
+| Project | Author | License | What the bench uses it for |
+| --- | --- | --- | --- |
+| [superdoc-visual-benchmarks](https://github.com/superdoc-dev/superdoc-visual-benchmarks) | SuperDoc | AGPL-3.0 | the scoring core (`score.py`, `diff.py`, `raster.py`, reports), lifted verbatim |
+| [docxide-pdf `tests/common/`](https://github.com/sverrejb/docxide-pdf) | sverrejb | Apache-2.0 | Jaccard and text-boundary page metrics, ported to `page_metrics.py` and held to upstream's frozen numbers by `tests/test_page_metrics.py` |
+| [docx-revisions](https://github.com/balalofernandez/docx-revisions) | Alvaro Fernandez Moreno | MIT | Accept All / Reject All (`bench accept` / `reject`) |
+| [nupunkt](https://github.com/alea-institute/nupunkt) | ALEA Institute | MIT | sentence segmentation for the `redlines` lane |
+| [docx-corpus](https://huggingface.co/datasets/superdoc-dev/docx-corpus) | SuperDoc | see the dataset card | source documents for `bench try remote` and the corpus |
+| [PyMuPDF](https://github.com/pymupdf/PyMuPDF) | Artifex | AGPL-3.0 | PDF rasterisation for both scorers |
+| [scikit-image](https://scikit-image.org/) | the scikit-image team | BSD-3-Clause | CIEDE2000 and SSIM in the scorer |
+| Microsoft Word | Microsoft | proprietary | the oracle: every reference redline, Accept/Reject and PDF. Word is a Microsoft trademark |
 
 ## License
 

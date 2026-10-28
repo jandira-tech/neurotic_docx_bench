@@ -45,9 +45,13 @@ def word_pdf_from_config(path: Path | str) -> tuple[Path, tuple[str, ...]]:
 
     Relative ``root`` is resolved against the yaml file's directory. Missing
     ``word_pdf`` falls back to :data:`word_corpus.DEFAULT_DEST` and
-    :data:`word_corpus.STATES`.
+    :data:`word_corpus.STATES`; so does a missing yaml (an installed wheel run
+    outside a checkout, where ``bench fixtures get`` put the corpus in the
+    working folder).
     """
     path = Path(path)
+    if not path.is_file():
+        return DEFAULT_DEST, STATES
     data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
     block = data.get("word_pdf") or {}
     raw_root = block.get("root") or DEFAULT_DEST.as_posix()
