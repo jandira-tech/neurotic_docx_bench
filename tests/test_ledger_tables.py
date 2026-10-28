@@ -307,6 +307,14 @@ def test_paired_section_lists_pairs_with_intervals(registry) -> None:
     assert tb.paired_section({}).count("No benchmark has two ranked rows") == 1
 
 
+def test_paired_section_legend_says_failures_count_as_zero(registry) -> None:
+    # The deltas are taken over itt_scores(): a failed document is in the pool at 0.
+    rows = [_row("a", "acme", 80.0), _row("b", "jubarte-x", 90.0, affiliated=True)]
+    md = tb.paired_section({"script_redlines": _select(rows, registry)})
+    assert "documents both tools scored" not in md
+    assert "Failed documents count as 0" in md
+
+
 def test_lens_health_section_lists_disagreeing_tools(registry) -> None:
     r = _row("a", "acme", 80.0).model_copy(
         update={"lens_disagree_rate": 0.12, "n_lens_disagree": 9}

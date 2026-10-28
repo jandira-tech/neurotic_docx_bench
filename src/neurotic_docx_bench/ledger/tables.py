@@ -553,7 +553,8 @@ def paired_section(tables: Mapping[str, pol.HeadlineTable]) -> str:
         "## Paired comparisons",
         "",
         (
-            "Per-document deltas on the documents both tools scored, inside the headline group. "
+            "Per-document deltas on the documents in both tools' ITT pools, inside the headline "
+            "group. Failed documents count as 0. "
             "`win/loss/tie` counts documents where the first tool scores higher, lower, or equal. The "
             "interval is a percentile bootstrap of the median delta (2000 resamples, seed 42); it "
             "includes 0 when the two tools are not distinguishable on this corpus."
