@@ -228,7 +228,10 @@ def _score_only(
             if docx is not None:
                 warnings.append(f"no Word PDF for {docx}; skipped")
             continue
-        key = render_key(pdf.stem, None)
+        # convert_candidates.py names a render ``<state>__<stem>.pdf``; that name is unique across states.
+        key = render_key(f"{state}__{pdf.stem}", None)
+        if key not in index:
+            key = render_key(pdf.stem, None)
         cand = index.get(key)
         if cand is None and not listed:
             warnings.append(f"no PDF to score for {pdf}; skipped")

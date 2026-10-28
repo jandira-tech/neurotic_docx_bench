@@ -200,3 +200,14 @@ def test_a_reused_work_dir_never_scores_a_stale_pdf_for_a_missing_candidate(tmp_
     failures = stage_candidates(second.fixtures, second.candidates, staged)
     assert [f["doc"] for f in failures] == ["clean__paired"]
     assert not (staged / "clean__paired.pdf").exists()
+
+
+def test_score_only_reads_the_state_prefixed_names_convert_candidates_writes(tmp_path: Path) -> None:
+    """scripts/convert_candidates.py writes ``<state>__<stem>.pdf``; score-only must find them (#89)."""
+    _corpus(tmp_path)
+    folder = tmp_path / "converted"
+    _touch(folder / "clean__paired.pdf", b"%PDF-1.4 cand")
+    selected = select_corpus_word_pdfs(origin="clean", root=tmp_path, score_only=True, locations=[folder])
+    assert [item.original_stem for item in selected.fixtures] == ["paired"]
+    assert selected.candidates["clean__paired"].name == "clean__paired.pdf"
+    assert not any("clean__paired.pdf" in w for w in selected.warnings)  # not reported as unused
