@@ -8,3 +8,4 @@ scorer-source/
 __pycache__/
 *.jpg
 *.log
+node_modules
