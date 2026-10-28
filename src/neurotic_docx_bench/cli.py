@@ -740,6 +740,42 @@ def ingest_converter_reports(
     console.print(f"appended {total} line(s) to {store}")
 
 
+@app.command(name="itt-complete-reports")
+def itt_complete_reports(
+    reports: list[Path] = typer.Argument(..., help="listed score-only docx-to-pdf report JSON files"),
+    store: Path = typer.Option(Path("results/converters.jsonl"), "--store"),
+) -> None:
+    """Score 0 the listed documents a score-only report dropped (#69).
+
+    Writes ``<report>_itt.json`` beside each report that dropped any and appends
+    its lines to the store (append-only; the earlier lines stay). The hardware is
+    the one the store recorded for the original report.
+    """
+    from neurotic_docx_bench import docx_to_pdf
+    from neurotic_docx_bench.ledger import converters as conv
+
+    known: dict[str, object] = {}
+    if store.is_file():
+        for raw in store.read_text(encoding="utf-8").splitlines():
+            line = json.loads(raw)
+            if line.get("hardware"):
+                known[str(line.get("report_path"))] = line["hardware"]
+    total = 0
+    for p in reports:
+        done, added = docx_to_pdf.itt_complete_listed(json.loads(Path(p).read_text(encoding="utf-8")))
+        if not added:
+            console.print(f"{p}: nothing dropped")
+            continue
+        out = Path(p).with_name(f"{Path(p).stem}_itt.json")
+        out.write_text(json.dumps(done, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        hw = known.get(str(p)) or known.get(_ledger_report_path(Path(p)))
+        n = conv.append_report(store, done, hardware=hw if isinstance(hw, dict) else None,
+                               report_path=_ledger_report_path(out))
+        total += n
+        console.print(f"{p}: {len(added)} dropped document(s) scored 0 -> {out} ({n} line(s))")
+    console.print(f"appended {total} line(s) to {store}")
+
+
 def _corpus_word_selection(
     *,
     origin: str | None,

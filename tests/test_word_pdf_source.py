@@ -138,3 +138,35 @@ def test_score_only_list_of_corpus_pdfs_does_not_need_the_docx(tmp_path: Path) -
     )
     assert [item.original_stem for item in selected.fixtures] == ["orphan_only"]
     assert selected.warnings == []
+
+
+def test_score_only_list_keeps_a_listed_document_with_no_pdf_to_score(tmp_path: Path) -> None:
+    """A listed conversion that crashed is a failure scored 0, not a smaller population (#69)."""
+    from neurotic_docx_bench.docx_to_pdf import _tool_report, stage_candidates
+
+    _corpus(tmp_path)
+    paired = tmp_path / "clean" / "docx" / "paired.docx"
+    present = tmp_path / "with_comments_tracking" / "docx" / f"{PRESENT}.docx"
+    cands = tmp_path / "cands"
+    _touch(cands / f"{PRESENT}.pdf", b"%PDF-1.4 cand")  # paired's conversion crashed: no PDF
+    selected = select_corpus_word_pdfs(
+        origin="list", root=tmp_path, files_list=[paired, present], score_only=True, locations=[cands],
+    )
+    assert {item.original_stem for item in selected.fixtures} == {PRESENT, "paired"}
+    assert "clean__paired" not in selected.candidates
+    assert any("paired" in w and "scored 0" in w for w in selected.warnings)
+    failures = stage_candidates(selected.fixtures, selected.candidates, tmp_path / "staged")
+    assert [(f["doc"], f["stage"], f["error"]) for f in failures] == [("clean__paired", "generate", "no PDF to score")]
+    stems = [item.stem for item in selected.fixtures]
+    report = _tool_report("soffice", None, stems, {f"with_comments_tracking__{PRESENT}": 80.0}, failures)
+    assert (report["itt_n"], report["failures"], report["mean"]) == (2, 1, 40.0)
+
+
+def test_score_only_over_a_whole_state_still_skips_documents_without_a_pdf(tmp_path: Path) -> None:
+    """Not every corpus document is expected to have a candidate when nothing was listed."""
+    _corpus(tmp_path)
+    cands = tmp_path / "cands"
+    _touch(cands / f"{PRESENT}.pdf", b"%PDF-1.4 cand")
+    selected = select_corpus_word_pdfs(origin="all", root=tmp_path, score_only=True, locations=[cands])
+    assert {item.original_stem for item in selected.fixtures} == {PRESENT}
+    assert any("paired" in w and "skipped" in w for w in selected.warnings)
