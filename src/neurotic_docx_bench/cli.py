@@ -892,6 +892,11 @@ def docx_to_pdf_eval(
         "--tool-version",
         help="with --score-only: version of the tool that made the PDFs (e.g. 'jubarte 0.9.3').",
     ),
+    store: bool = typer.Option(
+        True,
+        "--store/--no-store",
+        help="append the report's lines to results/converters.jsonl; --no-store is a scratch evaluation",
+    ),
 ) -> None:
     """Score Word PDFs from corpus/word.
 
@@ -990,7 +995,10 @@ def docx_to_pdf_eval(
         )
     bits.append(f"→ {json_out}")
     console.print("  ".join(bits))
-    _append_converter_lines(report, json_out)
+    if store:
+        _append_converter_lines(report, json_out)
+    else:
+        console.print("--no-store: nothing appended to results/converters.jsonl")
 
 
 @app.command(name="docxide-metrics")

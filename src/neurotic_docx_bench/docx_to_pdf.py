@@ -18,6 +18,8 @@ import re
 import shutil
 import statistics
 import subprocess
+import threading
+import time
 import zipfile
 from collections.abc import Iterable, Sequence
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -41,6 +43,7 @@ WORD_PDF_TOOLS = (
     "docxide-pdf",
     "pymupdf-pro",
     "genoffice",
+    "docxodus",
 )
 
 REQUIRED_FEATURES = frozenset(
@@ -52,6 +55,22 @@ DEFAULT_CONVERTER = (  # linked by scripts/link_engines.sh
 )
 # PyMuPDF Pro pins its own PyMuPDF, so it runs from an isolated venv (see its pyproject).
 PYMUPDF_PRO_CONVERTER = Path(__file__).resolve().parent / "utils" / "pymupdf-pro" / "pymupdf-pro-convert"
+
+# Docxodus converts through @docxodus/export (pinned Chromium printing its paginated HTML);
+# the exact versions live in that folder's package.json and lockfile (#89).
+DOCXODUS_CONVERTER_DIR = Path(__file__).resolve().parent / "utils" / "docxodus-export"
+DOCXODUS_CONVERTER = DOCXODUS_CONVERTER_DIR / "node_modules" / ".bin" / "docxodus"
+# Without --font-directory docxodus prints with whatever the browser falls back to. It gets
+# the metric-compatible faces LibreOffice renders with (Carlito, Caladea, Liberation), the
+# substitute set docxodus documents, staged alone: docxodus refuses a folder that holds a
+# variable font, and LibreOffice's does.
+DOCXODUS_FONT_SOURCES: tuple[Path, ...] = (
+    Path("/Applications/LibreOffice.app/Contents/Resources/fonts/truetype"),
+    Path("/usr/lib/libreoffice/share/fonts/truetype"),
+)
+DOCXODUS_FONT_STAGE = Path.home() / ".cache" / "neurotic-docx-bench" / "docxodus-fonts"
+_METRIC_FONT_PREFIXES = ("Carlito-", "Caladea-", "Liberation")
+CONVERT_TIMEOUT_S = 180.0
 
 _TOOL_BINARIES: dict[str, tuple[str, ...]] = {
     "rdocx": ("rdocx", "rdocx-cli"),
@@ -274,6 +293,24 @@ def score_folder_pair(
     )
 
 
+def docxodus_font_dir() -> Path | None:
+    """Stage the metric faces from the first LibreOffice font folder that has them; ``None`` if none does."""
+    for source in DOCXODUS_FONT_SOURCES:
+        faces = sorted(p for p in source.glob("*.ttf") if p.name.startswith(_METRIC_FONT_PREFIXES)) if source.is_dir() else []
+        if not faces:
+            continue
+        DOCXODUS_FONT_STAGE.mkdir(parents=True, exist_ok=True)
+        for face in faces:
+            dest = DOCXODUS_FONT_STAGE / face.name
+            if dest.is_file() and dest.stat().st_size == face.stat().st_size:
+                continue
+            tmp = dest.with_name(f".{face.name}.{os.getpid()}.{threading.get_ident()}.tmp")
+            shutil.copyfile(face, tmp)
+            os.replace(tmp, dest)  # parallel workers never see a half-written face
+        return DOCXODUS_FONT_STAGE
+    return None
+
+
 def convert_command(tool: str, src: Path, dest: Path, *, binary: Path) -> list[str]:
     """Argv for one vendor's own headless convert entry. No substitute pipelines."""
     if tool == "rdocx":
@@ -308,6 +345,16 @@ def convert_command(tool: str, src: Path, dest: Path, *, binary: Path) -> list[s
         return [str(binary), str(src), str(dest)]
     if tool == "genoffice":
         return [str(binary), "convert", str(src), "--to", "pdf", "--out", str(dest), "--force"]
+    if tool == "docxodus":
+        # Tracked changes and comments as Word's All Markup print draws them (the
+        # oracle is Word's Save as PDF); it stops itself 10 s before we would kill it.
+        return [
+            str(binary), "convert", str(src), "--to", "pdf", "--output", str(dest),
+            "--review-profile", "markup", "--markup-presentation", "word",
+            "--comments", "margin", "--comment-column-placement", "balloons",
+            "--timeout", str(int((CONVERT_TIMEOUT_S - 10) * 1000)),
+            *(("--font-directory", str(fonts)) if (fonts := docxodus_font_dir()) else ()),
+        ]
     raise ValueError(f"unknown DOCX→PDF tool {tool!r}")
 
 
@@ -325,6 +372,13 @@ def resolve_tool_binary(tool: str, override: Path | None = None) -> Path:
         return DEFAULT_CONVERTER
     if tool == "pymupdf-pro" and PYMUPDF_PRO_CONVERTER.is_file():
         return PYMUPDF_PRO_CONVERTER
+    if tool == "docxodus":
+        if DOCXODUS_CONVERTER.is_file():
+            return DOCXODUS_CONVERTER
+        raise FileNotFoundError(
+            f"docxodus converter not installed at {DOCXODUS_CONVERTER} "
+            f"(cd {DOCXODUS_CONVERTER_DIR} && npm ci)",
+        )
     names = _TOOL_BINARIES.get(tool, (tool,))
     for name in names:
         found = shutil.which(name)
@@ -344,6 +398,20 @@ def _is_pdf(path: Path) -> bool:
     return path.is_file() and path.stat().st_size > 0 and path.read_bytes()[:5] == b"%PDF-"
 
 
+def _unreadable_pdf(path: Path) -> str | None:
+    """Why a file with a PDF header is still no PDF to score (#89), or None when it opens with pages."""
+    import pymupdf
+
+    try:
+        with pymupdf.open(path) as doc:
+            if doc.page_count < 1:
+                return "unreadable PDF: no pages"
+            doc.load_page(0)
+    except Exception as exc:  # any parser refusal is the converter's failure
+        return f"unreadable PDF: {exc}"
+    return None
+
+
 def try_convert_fixture(
     tool: str,
     binary: Path,
@@ -351,7 +419,7 @@ def try_convert_fixture(
     dest_pdf: Path,
     *,
     resume: bool = False,
-    timeout_s: float | None = 180.0,
+    timeout_s: float | None = CONVERT_TIMEOUT_S,
 ) -> dict[str, object] | None:
     """Run one convert. Return a generate-failure record, or None on a real PDF.
 
@@ -379,6 +447,7 @@ def try_convert_fixture(
             "cmd": cmd,
         }
     except subprocess.TimeoutExpired as exc:
+        dest_pdf.unlink(missing_ok=True)  # whatever it half-wrote is not this document's PDF
         return {
             "doc": fixture.stem,
             "stage": "generate",
@@ -402,6 +471,10 @@ def try_convert_fixture(
             "error": detail,
             "cmd": cmd,
         }
+    broken = _unreadable_pdf(dest_pdf)
+    if broken is not None:
+        dest_pdf.unlink(missing_ok=True)
+        return {"doc": fixture.stem, "stage": "generate", "error": broken, "cmd": cmd}
     return None
 
 
@@ -420,14 +493,16 @@ def try_convert_fixtures(
     *,
     resume: bool = True,
     workers: int = 1,
-    timeout_s: float | None = 180.0,
+    timeout_s: float | None = CONVERT_TIMEOUT_S,
+    seconds: dict[str, float] | None = None,
 ) -> list[dict[str, object]]:
-    """Convert every fixture; never abort on a single failure."""
+    """Convert every fixture; never abort on a single failure. ``seconds`` gets each one's wall time."""
     dest_dir.mkdir(parents=True, exist_ok=True)
     total = len(fixtures)
 
     def one(item: Fixture) -> dict[str, object] | None:
-        return try_convert_fixture(
+        start = time.perf_counter()
+        fail = try_convert_fixture(
             tool,
             binary,
             item,
@@ -435,6 +510,9 @@ def try_convert_fixtures(
             resume=resume,
             timeout_s=timeout_s,
         )
+        if seconds is not None:
+            seconds[item.stem] = round(time.perf_counter() - start, 3)
+        return fail
 
     failures: list[dict[str, object]] = []
     if workers <= 1 or total <= 1:
@@ -546,6 +624,8 @@ def tool_version(binary: Path | None) -> str | None:
     if binary is None or not Path(binary).is_file():
         return None
     binary_name = Path(binary).name
+    if binary_name == "docxodus" and Path(binary).parent.name == ".bin":
+        return _docxodus_export_version(Path(binary).parent.parent)
     try:
         proc = subprocess.run(
             [str(binary), "--version"],
@@ -561,6 +641,17 @@ def tool_version(binary: Path | None) -> str | None:
         if text:
             return text.splitlines()[0]
     return _version_from_cargo_install_list(binary_name)
+
+
+def _docxodus_export_version(node_modules: Path) -> str | None:
+    """The versions node actually loads next to the CLI, not the pin someone wrote down (#89)."""
+    found = {}
+    for pkg in ("@docxodus/export", "docxodus"):
+        try:
+            found[pkg] = json.loads((node_modules / pkg / "package.json").read_text(encoding="utf-8"))["version"]
+        except (OSError, ValueError, KeyError):
+            return None
+    return f"@docxodus/export {found['@docxodus/export']} (docxodus {found['docxodus']})"
 
 
 def _tool_report(
@@ -682,6 +773,8 @@ def run_eval(
             binary: Path | None = resolve_tool_binary(tool, converter if len(list(tools)) == 1 else None)
         except FileNotFoundError as exc:
             binary = None
+            gap: str | None = str(exc)  # our setup, not the vendor's output: never ranked (#89)
+            seconds: dict[str, float] = {}
             failures: list[dict[str, object]] = [
                 {
                     "doc": item.stem,
@@ -697,9 +790,11 @@ def run_eval(
         else:
             if len(list(tools)) == 1 and converter is not None:
                 binary = converter
+            gap = None
+            seconds = {}
             cand_dir = root / tool / "candidate"
             failures = try_convert_fixtures(
-                tool, binary, items, cand_dir, resume=resume, workers=convert_workers,
+                tool, binary, items, cand_dir, resume=resume, workers=convert_workers, seconds=seconds,
             )
             print(f"scoring {tool} vs Word oracle ({len(items)} docs)", flush=True)
             score_dir = root / tool / "score"
@@ -718,6 +813,9 @@ def run_eval(
             failures,
             version=tool_version(binary),
         )
+        report["tools"][tool]["convert_seconds"] = dict(sorted(seconds.items()))
+        if gap is not None:
+            report["tools"][tool]["adapter_gap"] = gap
 
     json_out.parent.mkdir(parents=True, exist_ok=True)
     json_out.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")

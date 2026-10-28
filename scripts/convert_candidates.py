@@ -9,6 +9,7 @@ An existing real PDF is kept, so a rerun converts only what is missing.
 from __future__ import annotations
 
 import argparse
+import json
 import shutil
 import tempfile
 import time
@@ -50,17 +51,29 @@ def main() -> None:
     soffice = so.find_soffice() if args.engine == "soffice" else None
     binary = d2p.resolve_tool_binary("docxide-pdf") if args.engine == "docxide" else None
 
-    def one(f: d2p.Fixture) -> tuple[str, str | None]:
-        dest = cand / f"{f.stem}.pdf"
+    seconds: dict[str, float] = {}
+    failures: dict[str, str] = {}
+
+    def convert(f: d2p.Fixture, dest: Path) -> str | None:
         if args.engine == "docxide":
             fail = d2p.try_convert_fixture("docxide-pdf", binary, f, dest)
-            return f.stem, None if fail is None else str(fail.get("error"))
+            return None if fail is None else str(fail.get("error"))
+        # The same per-document timeout and PDF check as the converters run_eval drives (#89).
         with tempfile.TemporaryDirectory(prefix="conv_") as tmp:
-            r = so.convert_one(soffice, f.docx, Path(tmp), force=True)
+            r = so.convert_one(soffice, f.docx, Path(tmp), force=True, timeout=d2p.CONVERT_TIMEOUT_S)
             if not r.ok or r.pdf is None:
-                return f.stem, r.error
+                return r.error or "soffice failed"
             shutil.move(str(r.pdf), dest)
-        return f.stem, None
+        broken = d2p._unreadable_pdf(dest)
+        if broken is not None:
+            dest.unlink(missing_ok=True)
+        return broken
+
+    def one(f: d2p.Fixture) -> tuple[str, str | None]:
+        start = time.perf_counter()
+        err = convert(f, cand / f"{f.stem}.pdf")
+        seconds[f.stem] = round(time.perf_counter() - start, 3)
+        return f.stem, err
 
     t0, failed = time.monotonic(), 0
     with ThreadPoolExecutor(max_workers=args.jobs) as pool:
@@ -68,10 +81,14 @@ def main() -> None:
             stem, err = fut.result()
             failed += err is not None
             if err:
+                failures[stem] = err
                 print(f"FAILED {stem}: {err}", flush=True)
             if i % 100 == 0 or i == len(todo):
                 el = time.monotonic() - t0
                 print(f"[{i}/{len(todo)}] failed {failed} elapsed {el:.0f}s eta {el / i * (len(todo) - i):.0f}s", flush=True)
+    record = {"engine": args.engine, "workers": args.jobs, "seconds": dict(sorted(seconds.items())),
+              "failures": dict(sorted(failures.items()))}
+    (args.out / "convert_seconds.json").write_text(json.dumps(record, indent=1) + "\n", encoding="utf-8")
     print(f"done: {len(list(cand.glob('*.pdf')))} PDFs in {cand}, {failed} failed", flush=True)
 
 
