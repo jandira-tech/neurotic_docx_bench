@@ -70,3 +70,16 @@ def test_gallery_limit_caps_sections_not_index(tmp_path):
     assert '<section id="b_doc">' not in text
     # index still lists all three
     assert '#b_doc"' in text and '#c_doc"' in text
+
+
+def test_gallery_shows_page_metrics_next_to_pixel_scores(tmp_path):
+    """Integration: the saved gallery keeps proportions and uncomputable values."""
+    report = {
+        "page_metrics": {"doc": {"jaccard": 0.4, "ssim": 0.8, "text_boundary": None}},
+        "page_metrics_mean": {"jaccard": 0.4, "ssim": 0.8, "text_boundary": None},
+    }
+    out = gallery.write_gallery(tmp_path, {"doc": 90.0}, title="t", page_metrics=report)
+    text = out.read_text()
+    assert "<th>Jaccard</th><th>SSIM</th><th>Text boundary</th>" in text
+    assert "<td>90.00</td><td>0.400000</td><td>0.800000</td><td>n/a</td>" in text
+    assert "page metric means (0-1): Jaccard 0.400000" in text

@@ -2,7 +2,10 @@
   "_engine": {
     "mupdf": "1.29.0",
     "pymupdf": "1.28.0",
-    "provenance": "Recorded by sverrejb/docxide-pdf's page-metrics binary over mutool 1.28.4 (2026-09-05). Re-frozen on MuPDF 1.29.0 (PyMuPDF 1.28.0), the engine page_metrics.py drives: only file_100_file_101_redline.text_boundary moved (0.5 = 95/190 -> 105/191) because 1.29 splits one equation line on the LibreOffice render's page 6 that 1.28.4 keeps whole. The ported algorithm over mutool 1.28.4 stext output reproduces 95/190 exactly. SSIM is not ported (pagefair-v2 carries it)."
+    "provenance": "Recorded by sverrejb/docxide-pdf's page-metrics binary over mutool 1.28.4 (2026-09-05). Re-frozen on MuPDF 1.29.0 (PyMuPDF 1.28.0), the engine page_metrics.py drives: only file_100_file_101_redline.text_boundary moved (0.5 = 95/190 -> 105/191) because 1.29 splits one equation line on the LibreOffice render's page 6 that 1.28.4 keeps whole. The ported algorithm over mutool 1.28.4 stext output reproduces 95/190 exactly. SSIM frozen for the same five pairs using upstream tools/target/release/page-metrics at upstream_commit. PNGs are page_001.png etc., rendered through page_metrics._rasterize at UPSTREAM_DPI=150 (get_pixmap(dpi=150, alpha=False), RGB), the PyMuPDF equivalent of the harness mutool draw -F png -r 150; upstream Jaccard agrees to 1e-12. Temporary PNG directories deleted after each pair. Existing Jaccard/text-boundary values unchanged.",
+    "upstream_commit": "a72d91bca065be5c96b659e5daadc3cf3ffc9fb2",
+    "image": "0.25.9",
+    "ssim_luma": "DynamicImage::to_luma8, Cicp::SRGB BT_709/D65 coefficients [0.21264784, 0.7151792, 0.07217304], float32 FMA (aarch64 neon), rounded to u8; not Pixel::to_luma integer truncation."
   },
   "file_100_file_101_redline": {
     "jaccard": 0.3885796949706527,
@@ -10,7 +13,8 @@
     "pages": 13,
     "ref_pages": 13,
     "scored_pages": 13,
-    "text_boundary": 0.5497382198952879
+    "text_boundary": 0.5497382198952879,
+    "ssim": 0.5822118682691164
   },
   "file_101_file_102_redline": {
     "jaccard": 0.15954073490704856,
@@ -18,7 +22,8 @@
     "pages": 1,
     "ref_pages": 1,
     "scored_pages": 1,
-    "text_boundary": null
+    "text_boundary": null,
+    "ssim": 0.3852205172837888
   },
   "file_102_file_103_redline": {
     "jaccard": 0.3001562263770599,
@@ -26,7 +31,8 @@
     "pages": 1,
     "ref_pages": 1,
     "scored_pages": 1,
-    "text_boundary": 1.0
+    "text_boundary": 1.0,
+    "ssim": 0.7822805948686978
   },
   "file_103_file_104_redline": {
     "jaccard": 0.22768106758116824,
@@ -34,7 +40,8 @@
     "pages": 1,
     "ref_pages": 1,
     "scored_pages": 1,
-    "text_boundary": 1.0
+    "text_boundary": 1.0,
+    "ssim": 0.6462397018869797
   },
   "file_104_file_105_redline": {
     "jaccard": 0.17411475745377636,
@@ -42,6 +49,7 @@
     "pages": 1,
     "ref_pages": 1,
     "scored_pages": 1,
-    "text_boundary": 1.0
+    "text_boundary": 1.0,
+    "ssim": 0.573423213958543
   }
 }

@@ -22,6 +22,7 @@ import hashlib
 import json
 import re
 import shutil
+import statistics
 import time
 from collections.abc import Mapping, Sequence
 from concurrent.futures import ProcessPoolExecutor
@@ -57,7 +58,26 @@ SCORER_PAGEFAIR = "pagefair-v2"
 SCORER_RAW = "v1"
 
 
-class ScoreResult(TypedDict):
+class RasterPageMetrics(TypedDict):
+    """docxide metrics carried on a pipeline row (raw 0-1, or uncomputable)."""
+
+    ink_jaccard: float | None
+    ssim: float | None
+    text_boundary: float | None
+
+
+class PageMetricValues(TypedDict):
+    jaccard: float | None
+    ssim: float | None
+    text_boundary: float | None
+
+
+class PageMetricsSummary(TypedDict):
+    page_metrics: dict[str, PageMetricValues]
+    page_metrics_mean: PageMetricValues
+
+
+class ScoreResult(RasterPageMetrics):
     overall_score: float
     overall_score_strict: float
     overall_score_drift: float
@@ -87,8 +107,6 @@ class ScoreResult(TypedDict):
     # differ by more than 2px or there are no common pages), the share of text lines
     # that start and end on the same words as the oracle (None when no lines were
     # compared), and the signed largest page-break drift in words.
-    ink_jaccard: float | None
-    text_boundary: float | None
     max_break_drift: int
     # Functional accept/reject invariant (merged in AFTER scoring by the CLI, only
     # for script_redlines docs whose base/next sources resolve — hence NotRequired).
@@ -397,9 +415,28 @@ def _add_page_metrics(
 ) -> None:
     """docxide's metrics as columns on the same row, from the rasters this pass made."""
     result["ink_jaccard"] = pm.jaccard_from_rasters(oracle_pages, cand_pages)
+    result["ssim"] = pm.ssim_from_rasters(oracle_pages, cand_pages)
     boundary = pm.text_boundary_for_pdfs(oracle_pdf, candidate_pdf)
     result["text_boundary"] = boundary.line_match_pct()
     result["max_break_drift"] = boundary.max_break_drift
+
+
+def page_metrics_summary(rows: Mapping[str, RasterPageMetrics]) -> PageMetricsSummary:
+    """Report raw 0-1 page metrics beside pixel scores, with per-metric means.
+
+    Callers supply scored documents only. Missing/uncomputable metrics stay None;
+    each mean excludes those values, so conversion failures never count as zero.
+    """
+    per_doc: dict[str, PageMetricValues] = {
+        stem: {"jaccard": row.get("ink_jaccard"), "ssim": row.get("ssim"),
+               "text_boundary": row.get("text_boundary")}
+        for stem, row in rows.items()
+    }
+    means: PageMetricValues = {"jaccard": None, "ssim": None, "text_boundary": None}
+    for key in ("jaccard", "ssim", "text_boundary"):
+        values = [row[key] for row in per_doc.values() if row[key] is not None]
+        means[key] = statistics.mean(values) if values else None
+    return {"page_metrics": per_doc, "page_metrics_mean": means}
 
 
 def _unmatched_page_weight(png: Path) -> int:

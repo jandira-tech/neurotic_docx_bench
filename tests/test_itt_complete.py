@@ -95,3 +95,17 @@ def test_run_records_its_limit_in_the_report(tmp_path: Path, monkeypatch) -> Non
                                      fixtures=items, check_pins=False, score_only=True, candidates={},
                                      track="corpus/word:list")
     assert unlimited.get("limit") is None
+
+
+def test_itt_completion_preserves_scored_page_metrics() -> None:
+    report = json.loads(REPORT.read_text())
+    [tool] = report["tools"].values()
+    stem = next(iter(tool["per_doc"]))
+    metrics = {stem: {"jaccard": 0.4, "ssim": 0.8, "text_boundary": None}}
+    tool["page_metrics"] = metrics
+    tool["page_metrics_mean"] = metrics[stem]
+    done, added = docx_to_pdf.itt_complete_listed(report)
+    [completed] = done["tools"].values()
+    assert added
+    assert completed["page_metrics"] == metrics
+    assert completed["page_metrics_mean"] == metrics[stem]

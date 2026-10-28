@@ -90,6 +90,10 @@ def test_real_pdf_probe_and_scorer_preserve_full_metrics_and_inspection_png(tmp_
     pdf(reference, pages=2)
     identity = score_pair(str(reference), str(candidate), 72, str(tmp_path / "identity"))
     assert identity["overall"] == pytest.approx(100)
+    # The published metrics carry every docxide page metric the pipeline computes.
+    for key in ("ink_jaccard", "ssim", "text_boundary"):
+        assert key in identity, key
+    assert identity["ssim"] == pytest.approx(1.0)
     pdf(tmp_path / "oversized.pdf", width=100_000)
     with pytest.raises(ValueError, match="raster safety"):
         inspect_pdf(str(tmp_path / "oversized.pdf"))

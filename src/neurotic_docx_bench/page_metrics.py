@@ -1,7 +1,7 @@
-"""docxide-pdf's page metrics (ink Jaccard, text boundary), in Python.
+"""docxide-pdf's page metrics (ink Jaccard, SSIM, text boundary), in Python.
 
 A port of the metric code in `sverrejb/docxide-pdf <https://github.com/sverrejb/docxide-pdf>`_
-(``tests/common/mod.rs``, ``tests/common/text_boundary.rs``, Apache-2.0), which used to be
+(``tests/common/metrics.rs``, ``tests/common/text_boundary.rs``, Apache-2.0), which used to be
 vendored here as a Rust crate driving ``mutool``. The port drives the same MuPDF entry
 points through PyMuPDF instead (``get_text("text")`` is ``mutool draw -F text``,
 ``get_text("xml")`` is ``mutool draw -F stext``, ``get_pixmap`` is ``mutool draw -F png``),
@@ -15,8 +15,9 @@ binary produced on five committed corpus pairs.
   15 % are skipped; ``max_break_drift`` is the largest (signed) page-break drift in
   words.
 
-Upstream's SSIM is not ported: the pass this feeds already carries SSIM through the
-pagefair-v2 score.
+* **SSIM** - reference-ink 8x8 windows with a +/-8 pixel vertical search, using
+  image::DynamicImage::to_luma8 luma. Frozen with upstream commit a72d91bc; this is
+  distinct from the pixel scorer's SSIM.
 """
 
 from __future__ import annotations
@@ -77,6 +78,75 @@ def page_jaccard(a: np.ndarray, b: np.ndarray) -> float:
         return 1.0
     inter = int(np.logical_and(ink_a, ink_b).sum())
     return inter / union
+
+
+def page_ssim(a: np.ndarray, b: np.ndarray) -> float:
+    """Port of upstream ``ssim_score``: full 8x8 ink windows, +/-8px y search.
+
+    ``image`` 0.25.9 ``DynamicImage::to_luma8`` uses float32 sRGB
+    luminance and rounds to u8; it differs from the integer Pixel::to_luma path.
+    Population moments are computed in float64.
+    Only reference windows with at least one luma < 200 participate. Extra edge
+    pixels and windows white on the reference are ignored, as upstream requires.
+    """
+    ha, wa = a.shape[:2]
+    hb, wb = b.shape[:2]
+    if abs(wa - wb) > SIZE_TOLERANCE_PX or abs(ha - hb) > SIZE_TOLERANCE_PX:
+        raise PageSizeMismatch(f"page dimensions differ: {wa}x{ha} vs {wb}x{hb}")
+    h, w = min(ha, hb), min(wa, wb)
+    if h < 8 or w < 8:
+        return 1.0
+
+    def luma(rgb: np.ndarray) -> np.ndarray:
+        # image 0.25.9: Cicp::SRGB derived_luminance (moxcms BT_709 / D65),
+        # expand_to_f32, then clamp_from_f32 (round halves away from zero).
+        px = rgb[:h, :w].astype(np.float32) * np.float32(1.0 / 255)
+        # The frozen aarch64 binary uses multiply_accumulate (float32 FMA).
+        # Two float32 operands have an exact product in float64; cast each sum
+        # back once to reproduce FMA rounding without a platform-dependent BLAS.
+        value = np.zeros((h, w), dtype=np.float32)
+        for channel, coefficient in enumerate((0.21264784, 0.7151792, 0.07217304)):
+            value = (px[..., channel].astype(np.float64) * float(np.float32(coefficient))
+                     + value.astype(np.float64)).astype(np.float32)
+        return np.floor(value * np.float32(255) + np.float32(0.5)).astype(np.float64)
+
+    windows_a = np.lib.stride_tricks.sliding_window_view(luma(a), (8, 8))[::8, ::8]
+    by, bx = np.nonzero((windows_a < 200).any(axis=(-2, -1)))
+    if len(by) == 0:
+        return 1.0
+    win_a = windows_a[by, bx]
+    mu_a = win_a.mean(axis=(-2, -1))
+    da = win_a - mu_a[:, None, None]
+    var_a = (da * da).mean(axis=(-2, -1))
+    windows_b = np.lib.stride_tricks.sliding_window_view(luma(b), (8, 8))
+    best = np.full(len(by), -np.inf)
+    c1, c2 = 6.5025, 58.5225
+    for dy in range(-8, 9):
+        sy = by * 8 + dy
+        valid = (sy >= 0) & (sy + 8 <= h)
+        win_b = windows_b[sy[valid], bx[valid] * 8]
+        mu_b = win_b.mean(axis=(-2, -1))
+        db = win_b - mu_b[:, None, None]
+        var_b = (db * db).mean(axis=(-2, -1))
+        cov = (da[valid] * db).mean(axis=(-2, -1))
+        num = (2 * mu_a[valid] * mu_b + c1) * (2 * cov + c2)
+        den = (mu_a[valid] ** 2 + mu_b ** 2 + c1) * (var_a[valid] + var_b + c2)
+        best[valid] = np.maximum(best[valid], num / den)
+    return float(best.mean())
+
+
+def ssim_from_rasters(oracle_pages: Sequence[Path], cand_pages: Sequence[Path]) -> float | None:
+    """Mean SSIM over shared PNG pages; None for no pairs or incompatible sizes."""
+    n = min(len(oracle_pages), len(cand_pages))
+    if n == 0:
+        return None
+    total = 0.0
+    for idx in range(n):
+        try:
+            total += page_ssim(_load_rgb(oracle_pages[idx]), _load_rgb(cand_pages[idx]))
+        except PageSizeMismatch:
+            return None
+    return total / n
 
 
 def _load_rgb(path: Path) -> np.ndarray:
@@ -293,6 +363,7 @@ class PairMetrics:
 
     converted: bool
     jaccard: float | None = None
+    ssim: float | None = None
     text_boundary: float | None = None
     ref_pages: int = 0
     pages: int = 0
@@ -304,6 +375,7 @@ class PairMetrics:
         return {
             "converted": self.converted,
             "jaccard": self.jaccard,
+            "ssim": self.ssim,
             "text_boundary": self.text_boundary,
             "ref_pages": self.ref_pages,
             "pages": self.pages,
@@ -314,8 +386,8 @@ class PairMetrics:
 
 
 def score_pair(oracle_pdf: Path, candidate_pdf: Path, *, dpi: int = UPSTREAM_DPI) -> PairMetrics:
-    """Rasterize both PDFs at ``dpi`` and compute Jaccard (page mean over the shared
-    page count) and the text boundary. A missing file is reported, not raised."""
+    """Rasterize both PDFs at ``dpi`` and compute Jaccard and SSIM (page means over
+    the shared page count) and the text boundary. A missing file is reported, not raised."""
     if not Path(candidate_pdf).is_file():
         return PairMetrics(converted=False, error=ERROR_CANDIDATE_MISSING)
     if not Path(oracle_pdf).is_file():
@@ -329,6 +401,7 @@ def score_pair(oracle_pdf: Path, candidate_pdf: Path, *, dpi: int = UPSTREAM_DPI
         tb = text_boundary(ref_doc, gen_doc)
     try:
         jaccards = [page_jaccard(ref_raster[i], gen_raster[i]) for i in range(scored)]
+        ssims = [page_ssim(ref_raster[i], gen_raster[i]) for i in range(scored)]
     except PageSizeMismatch as exc:
         return PairMetrics(
             converted=True, ref_pages=ref_pages, pages=gen_pages, scored_pages=scored,
@@ -337,6 +410,7 @@ def score_pair(oracle_pdf: Path, candidate_pdf: Path, *, dpi: int = UPSTREAM_DPI
     return PairMetrics(
         converted=True,
         jaccard=(sum(jaccards) / scored) if scored else None,
+        ssim=(sum(ssims) / scored) if scored else None,
         text_boundary=tb.line_match_pct(),
         ref_pages=ref_pages,
         pages=gen_pages,

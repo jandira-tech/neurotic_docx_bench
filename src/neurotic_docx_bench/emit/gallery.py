@@ -15,6 +15,8 @@ import html
 import statistics
 from pathlib import Path
 
+from neurotic_docx_bench.pipeline import PageMetricsSummary
+
 _STYLE = (
     "body{font-family:system-ui,sans-serif;margin:20px;background:#1b1b1f;color:#ddd}"
     "h2{position:sticky;top:0;background:#1b1b1f;padding:8px 0;"
@@ -45,6 +47,7 @@ def render_gallery(
     title: str,
     rel_prefix: str = "score",
     limit: int | None = None,
+    page_metrics: PageMetricsSummary | None = None,
 ) -> str:
     """Render the worst-first candidate-vs-oracle gallery as one HTML page.
 
@@ -62,9 +65,23 @@ def render_gallery(
         if vals
         else f"n {len(scores)} · no scored documents"
     )
+    metric_keys = ("jaccard", "ssim", "text_boundary")
+
+    def metric_fmt(value: float | None) -> str:
+        return "n/a" if value is None else f"{value:.6f}"
+
+    metric_rows = page_metrics["page_metrics"] if page_metrics else {}
+    metric_header = "<th>Jaccard</th><th>SSIM</th><th>Text boundary</th>" if page_metrics else ""
+    if page_metrics:
+        means = page_metrics["page_metrics_mean"]
+        summary += "<br>page metric means (0-1): Jaccard " + metric_fmt(means["jaccard"])
+        summary += ", SSIM " + metric_fmt(means["ssim"]) + ", Text boundary " + metric_fmt(means["text_boundary"])
     index_rows = "".join(
         f'<tr><td><a href="#{html.escape(k)}">{html.escape(k)}</a></td>'
-        f"<td>{_fmt(v)}</td></tr>"
+        f"<td>{_fmt(v)}</td>"
+        + ("".join(f"<td>{metric_fmt(metric_rows.get(k, {}).get(key))}</td>" for key in metric_keys)
+           if page_metrics else "")
+        + "</tr>"
         for k, v in ordered
     )
     shown = ordered if limit is None else ordered[:limit]
@@ -99,7 +116,7 @@ def render_gallery(
         f"<!doctype html><meta charset=utf-8><title>{html.escape(title)}</title>"
         f"<style>{_STYLE}</style><h1>{html.escape(title)}</h1><p>{summary}</p>"
         f"<details open><summary>score index (worst first)</summary>"
-        f"<table><thead><tr><th>document</th><th>score</th></tr></thead>"
+        f"<table><thead><tr><th>document</th><th>score</th>{metric_header}</tr></thead>"
         f"<tbody>{index_rows}</tbody></table></details>"
         f"{''.join(sections)}"
     )
@@ -111,11 +128,12 @@ def write_gallery(
     *,
     title: str,
     limit: int | None = None,
+    page_metrics: PageMetricsSummary | None = None,
 ) -> Path:
     """Write the gallery next to the run's ``score/`` tree and return its path."""
     out = run_dir / "report.html"
     out.write_text(
-        render_gallery(scores, run_dir / "score", title=title, limit=limit),
+        render_gallery(scores, run_dir / "score", title=title, limit=limit, page_metrics=page_metrics),
         encoding="utf-8",
     )
     return out

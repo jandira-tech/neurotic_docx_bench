@@ -91,6 +91,8 @@ class ReportData(TypedDict):
     aggregate_accepted: AggregateStats
     per_doc: dict[str, dict[str, float | None]]
     accept_failures: list[dict[str, str | None]]
+    page_metrics: dict[str, pipeline.PageMetricValues]
+    page_metrics_mean: pipeline.PageMetricValues
 
 
 # Helper to extract overall_score safely
@@ -1161,6 +1163,8 @@ def _accepted_report(
     redline_scores: dict[str, float],
     accepted_scores: dict[str, float],
     accept_failures: list[dict[str, str | None]],
+    *,
+    accepted_per_doc: PerDocScores | None = None,
 ) -> tuple[str, ReportData]:
     """Build the accepted-vs-accepted report (markdown, json-able dict).
 
@@ -1184,6 +1188,7 @@ def _accepted_report(
         "aggregate_accepted": _agg(accepted_scores.values()),
         "per_doc": per_doc,
         "accept_failures": accept_failures,
+        **pipeline.page_metrics_summary(accepted_per_doc or {}),
     }
 
     def fmt(v: float | None) -> str:
@@ -1205,10 +1210,16 @@ def _accepted_report(
         redline_val = aggregate_redline.get(m, "—")  # type: ignore[arg-type]
         accepted_val = aggregate_accepted.get(m, "—")  # type: ignore[arg-type]
         md.append(f"| {m} | {redline_val} | {accepted_val} |")
-    md += ["", "| document | redline | accepted | delta |", "| --- | ---: | ---: | ---: |"]
+    md += ["", "Page metrics are 0-1 (accepted output); means exclude uncomputable values.",
+           "", "| document | redline | accepted | delta | Jaccard | SSIM | Text boundary |",
+           "| --- | ---: | ---: | ---: | ---: | ---: | ---: |"]
     for k in keys:
         d = per_doc[k]
-        md.append(f'| {k} | {fmt(d["redline_score"])} | {fmt(d["accepted_score"])} | {fmt(d["delta"])} |')
+        metrics = data["page_metrics"].get(k, {})
+        cells = ["—" if metrics.get(key) is None else f"{metrics[key]:.6f}"
+                 for key in ("jaccard", "ssim", "text_boundary")]
+        md.append(f'| {k} | {fmt(d["redline_score"])} | {fmt(d["accepted_score"])} | {fmt(d["delta"])} | '
+                  + " | ".join(cells) + " |")
     if accept_failures:
         md += ["", f"## accept failures ({len(accept_failures)})", ""]
         md += [f'- `{f["doc"]}`: {f["error"]}' for f in accept_failures]
@@ -1273,7 +1284,8 @@ def _accept_compare_stage(
     )
     accepted_scores = {k: _get_overall_score(v) for k, v in accepted_per_doc.items()}
     redline_scores = {k: _get_overall_score(v) for k, v in per_doc.items()}
-    md, data = _accepted_report(rc.name, redline_scores, accepted_scores, accept_failures)
+    md, data = _accepted_report(rc.name, redline_scores, accepted_scores, accept_failures,
+                                accepted_per_doc=accepted_per_doc)
     (run_dir / "accepted_report.md").write_text(md)
     (run_dir / "accepted_report.json").write_text(json.dumps(data, indent=2, sort_keys=True))
     _print_accept_compare_table(data)
@@ -1315,6 +1327,12 @@ def _accept_compare_stage(
     )
 
 
+def _roundtrip_report(tool: str, scores: dict[str, float], per_doc: PerDocScores) -> dict:
+    """Standalone roundtrip report, keeping pixel scores and parallel page metrics."""
+    return {"tool": tool, "n_docs": len(scores), "scores": scores,
+            **pipeline.page_metrics_summary(per_doc)}
+
+
 def _roundtrip_stage(
     rc: RunConfig, run_dir: Path, roundtrip_oracle_pdf: Path, use_dpi: int, limit: int | None,
     sample_seed: int | None = None, backend: str = "soffice",
@@ -1352,7 +1370,7 @@ def _roundtrip_stage(
         )
     else:
         console.print("[yellow]roundtrip: no matched documents scored[/yellow]")
-    data = {"tool": rc.name, "n_docs": len(scores), "scores": scores}
+    data = _roundtrip_report(rc.name, scores, per_doc)
     (run_dir / "roundtrip_report.json").write_text(json.dumps(data, indent=2, sort_keys=True))
     console.print(f'roundtrip report → {run_dir / "roundtrip_report.json"}')
 
@@ -1859,6 +1877,7 @@ def _execute_run(
             run_dir,
             {k: _get_overall_score(v) for k, v in per_doc.items()},
             title=f"{rc.name} — script_redlines vs Word oracle",
+            page_metrics=pipeline.page_metrics_summary(per_doc),
         )
         console.print(f"visual report → {gallery_path}")
         functional_failures: list[FailureRecord] = []
