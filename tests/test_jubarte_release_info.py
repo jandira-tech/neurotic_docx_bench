@@ -165,6 +165,7 @@ def _tree(tmp_path: Path, fill: int = 6, fixtures: int = 3) -> tuple[Path, Path]
             _put(word / name)
         _put(run / 'oracle_pdf' / f'{r["key"]}.pdf')
     _put(regen / 'out' / 'idwct1__vs__idwct1.pdf')
+    (regen / 'regen_list.csv').write_text('id\nidwct1\n')
     for r in gen:
         if r['key'] != 'twc0':
             _put(run / 'docxodus' / 'pdf_by_word' / f'{r["key"]}_docxodus.pdf')
@@ -1083,10 +1084,13 @@ def test_the_sample_preflight_bootstraps_without_soffice_renders(tmp_path: Path)
     for pdf in (root / jri.SOFFICE_WORK / 'candidate').iterdir():
         pdf.unlink()
     (root / jri.SOFFICE_WORK / 'candidate').rmdir()  # git-ignored: a clean checkout has none
-    assert _act(_plan(root, regen), 'bench inputs').endswith('present')
+    assert _act(_plan(root, regen), 'bench inputs').endswith('1 ids listed, each with its PDF')
+    (regen / 'regen_list.csv').write_text('id\nidwct1\nidwct2\n')
+    with pytest.raises(RuntimeError, match='idwct2.*scripts/fetch_corpus.py'):
+        _act(_plan(root, regen), 'bench inputs')  # #82: checked here, not after the Word export
     (regen / 'out' / 'idwct1__vs__idwct1.pdf').unlink()
     (regen / 'out').rmdir()
-    with pytest.raises(RuntimeError, match='the fresh-compare oracle rule reads it'):
+    with pytest.raises(RuntimeError, match='does not exist'):
         _act(_plan(root, regen), 'bench inputs')
 
 

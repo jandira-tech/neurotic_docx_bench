@@ -38,6 +38,7 @@ here.
 
 from __future__ import annotations
 
+import csv
 import json
 import os
 import re
@@ -164,6 +165,37 @@ def add_version(path: Path, lane: str, label: str) -> str:
     return f'{path}: {lane} = {label}'
 
 
+FETCH_COMPARE_REGEN = 'uv run python scripts/fetch_corpus.py'
+
+
+def check_compare_regen(folder: Path) -> str:
+    """The measure step's inputs, checked before the Word export instead of after it (#82).
+
+    ``out/`` must hold Word's fresh compares as PDFs and ``regen_list.csv`` an ``id``
+    column whose every id has its ``<id>__vs__<id>.pdf`` in ``out/``.
+    """
+    fix = f'; {FETCH_COMPARE_REGEN} writes both'
+    out = folder / 'out'
+    if not out.is_dir():
+        raise RuntimeError(f'{out} does not exist{fix}')
+    pdfs = {p.name for p in out.glob('*.pdf')}
+    if not pdfs:
+        raise RuntimeError(f'{out} holds no .pdf{fix}')
+    listing = folder / 'regen_list.csv'
+    if not listing.is_file():
+        raise RuntimeError(f'{listing} does not exist{fix}')
+    with listing.open(newline='') as fh:
+        reader = csv.DictReader(fh)
+        if 'id' not in (reader.fieldnames or ()):
+            raise RuntimeError(f'{listing} has no id column (header {reader.fieldnames}){fix}')
+        ids = [row['id'] for row in reader]
+    lost = [i for i in ids if f'{i}__vs__{i}.pdf' not in pdfs]
+    if lost:
+        shown = ', '.join(lost[:5]) + (f' and {len(lost) - 5} more' if len(lost) > 5 else '')
+        raise RuntimeError(f'{len(lost)} id(s) in {listing} have no <id>__vs__<id>.pdf in {out}: {shown}{fix}')
+    return f'{len(pdfs)} fresh compares in {out}; {len(ids)} ids listed, each with its PDF'
+
+
 def plan(rel: Release, *, run: Callable[..., release.ProcLike] | None = None, hub: bool = True) -> list[Step]:
     """Every step of every stage, in order. ``run`` answers the Word check (``release.word_version``)."""
     r, lane, v = RUN_DIR, rel.lane, rel.version
@@ -235,6 +267,8 @@ def plan(rel: Release, *, run: Callable[..., release.ProcLike] | None = None, hu
             log=Path(f'results/docxide_metrics_jubarte_{v}.log'),
         ),
         Step('redlines', 'word answers', action=word, preflight=True),
+        Step('redlines', 'compare_regen inputs', action=lambda: check_compare_regen(rel.root / COMPARE_REGEN),
+             preflight=True),
         Step(
             'redlines',
             'generate',

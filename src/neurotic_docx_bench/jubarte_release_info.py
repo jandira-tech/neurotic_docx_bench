@@ -94,6 +94,7 @@ from neurotic_docx_bench.jubarte_bench_release import (
     RUN_DIR,
     Release,
     Step,
+    check_compare_regen,
     execute,
 )
 
@@ -1318,12 +1319,12 @@ def plan(rel: Release, *, binary: Path | None = None, seed: int = DEFAULT_SEED,
         for need in (RUN_DIR / 'pool_pairs.csv', RUN_DIR / 'gen_pairs.csv', Path('corpus/word')):
             if not (root / need).exists():
                 raise RuntimeError(f'missing {need}')
-        if not fresh.is_dir():
-            raise RuntimeError(f'no {fresh} — the fresh-compare oracle rule reads it')
+        # the measure stage reads out/ and regen_list.csv after the Word export (#82)
+        regen = check_compare_regen(root / compare_regen)
         for adopted in (adopt_r, adopt_c):
             if adopted is not None and not adopted.is_file():
                 raise RuntimeError(f'no such list to adopt: {adopted}')
-        return f'{RUN_DIR} + corpus/word + {rel_path(fresh, root)} present'
+        return f'{RUN_DIR} + corpus/word present; {regen}'
 
     def gen_rows() -> list[dict]:
         return read_csv(root / RUN_DIR / 'gen_pairs.csv')
