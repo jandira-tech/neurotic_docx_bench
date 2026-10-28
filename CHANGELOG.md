@@ -5,7 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## 1.0.0 - 2026-10-28
+
+### Added
+- Published on PyPI as `neurotic-docx-bench` (#84). Fixture set **v1**: every file on the hub
+  dataset whose oracle Microsoft Word made, for every test (2,925 `docx_to_pdf`, 3,502 `redline`,
+  400 `accept_all`, 400 `reject_all` cases, plus the corpus tables), pinned to dataset commit
+  `984e64d8`. The wheel ships the manifest only; `bench fixtures list|get` and
+  `neurotic_docx_bench.fixture_sets` fetch and sha256-check the files. `bench fixtures build-set`
+  rebuilds a manifest from the tables and the hub listing. `hub_get.remote_files`/`get` take
+  `exact=` paths, compared as strings rather than globbed.
+- `bench itt-complete-reports`: a listed score-only report that dropped crashed conversions is
+  completed with them scored 0; the six affected soffice sample rows are appended corrected (#69).
+- `py.typed`, project URLs and classifiers; the sdist holds the package only.
+
+### Fixed
+- A listed score-only `docx-to-pdf` run keeps a listed document with no PDF as a failure scored 0
+  instead of dropping it (#69).
+- History renders a measurement persisted several times as one row with its run count (#75).
+- `fetch_compare_regen` writes compare ids to `regen_list.csv`, not `<id>__vs__<id>` stems (#81).
+- `bench jubarte-release` and `release-info` check the compare_regen inputs before any Word step (#82).
+- `bench.generated` is the day the samples were drawn (#60).
+- The `_Progress` batch-log test waits for the state it asserts (#83).
+
+## 1.0.0 (continued): the changes since 0.8.0
 
 ### Changed
 - `scripts/word_pdf.py` recovery: a pass that ends on `Connection is invalid`, or a Word that stops

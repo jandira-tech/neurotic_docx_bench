@@ -1,0 +1,21 @@
+{
+ "name": "v1",
+ "repo_id": "arthrod/neurotic_docx_bench-fixtures",
+ "revision": "984e64d869803abea841e66364f7b82bb30b3a70",
+ "path": "word",
+ "tests": [
+  "docx_to_pdf",
+  "redline",
+  "accept_all",
+  "reject_all"
+ ],
+ "cases": {
+  "docx_to_pdf": 2925,
+  "redline": 3502,
+  "accept_all": 400,
+  "reject_all": 400
+ },
+ "files": 14513,
+ "bytes": 2532011280,
+ "about": "every file whose oracle Microsoft Word made, for every test"
+}

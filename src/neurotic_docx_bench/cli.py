@@ -3481,6 +3481,78 @@ def fixtures_download_cmd(
     console.print(f"{repo_id}@{revision or 'main'} → {dest}: {report.describe()}")
 
 
+@fixtures_app.command(name="list")
+def fixtures_list_cmd(
+    name: str | None = typer.Argument(None, help="a fixture set (default: every set)", show_default=False),
+) -> None:
+    """The versioned fixture sets this package ships: hub commit, cases per test, files and bytes."""
+    from neurotic_docx_bench import fixture_sets as fs
+    from neurotic_docx_bench.hub_get import human
+
+    try:
+        sets = [fs.load(name)] if name else [fs.load(n) for n in fs.names()]
+    except fs.FixtureSetError as exc:
+        console.print(Text(str(exc)))
+        raise typer.Exit(code=2) from exc
+    for s in sets:
+        console.print(Text(f"{s.name}: {s.repo_id}@{s.revision} {s.path}/ → {s.dest}; "
+                           f"{s.files} files ({human(s.bytes)})"), soft_wrap=True)
+        for test in s.tests:
+            console.print(Text(f"  {test}: {s.cases.get(test, 0)} cases"))
+
+
+@fixtures_app.command(name="get")
+def fixtures_get_cmd(
+    name: str = typer.Argument("v1", help="the fixture set (`bench fixtures list`)"),
+    test: list[str] | None = typer.Option(None, "--test", help="only this test's files (repeatable)"),
+    dest: Path | None = typer.Option(None, "--dest", help="where the files land (default: corpus/word)", show_default=False),
+    overwrite: bool = typer.Option(False, "--overwrite", help="replace local files whose bytes differ from the set's"),
+    keep_local: bool = typer.Option(False, "--keep-local", help="keep local files whose bytes differ; fetch the rest"),
+    dry_run: bool = typer.Option(False, "--dry-run", help="list what would be downloaded; download and write nothing"),
+    workers: int = typer.Option(8, "--workers", help="parallel downloads"),
+) -> None:
+    """Download a fixture set at the hub commit it is pinned to; every file is checked against the set's sha256."""
+    from neurotic_docx_bench import fixture_sets as fs
+    from neurotic_docx_bench import hub_get
+
+    if overwrite and keep_local:
+        console.print(Text("--overwrite and --keep-local exclude each other"))
+        raise typer.Exit(code=2)
+    policy = "overwrite" if overwrite else "keep-local" if keep_local else "refuse"
+    try:
+        report = fs.get(name, dest=dest, tests=tuple(test or ()), on_conflict=policy, dry_run=dry_run,
+                        workers=workers)
+    except (fs.FixtureSetError, hub_get.GetError) as exc:
+        console.print(Text.assemble(("refused ", "red"), str(exc), *(f"; {n}" for n in getattr(exc, "__notes__", ()))),
+                      soft_wrap=True)
+        raise typer.Exit(code=1) from exc
+    console.print(Text(report.describe()), soft_wrap=True)
+
+
+@fixtures_app.command(name="build-set")
+def fixtures_build_set_cmd(
+    name: str = typer.Argument(..., help="the set to write, e.g. v1"),
+    revision: str = typer.Option(..., "--revision", help="the fixtures dataset commit (40 hex) the set is pinned to"),
+    word: Path = typer.Option(Path("corpus/word"), "--word", help="the corpus/word checkout whose tables name the files"),
+    out: Path = typer.Option(Path("src/neurotic_docx_bench/data/fixture_sets"), "--out", help="where the manifest goes"),
+) -> None:
+    """Rebuild a set's manifest from the corpus tables and the hub listing at --revision (maintainers)."""
+    import re as _re
+
+    from neurotic_docx_bench import fixture_sets as fs
+    from neurotic_docx_bench import hub, hub_get
+
+    if not _re.fullmatch(r"[0-9a-f]{40}", revision):
+        raise typer.BadParameter("--revision must be a full commit id: a set is pinned to one commit")
+    remote = hub_get.remote_files(hub.default_api(), hub.FIXTURES_REPO, revision, hub.WORD_CORPUS)
+    listing = {f.rel: (f.size, f.blob_id or "", f.sha256) for f in remote}
+    built = fs.build(word, listing)
+    meta = fs.FixtureSet(name=name, repo_id=hub.FIXTURES_REPO, revision=revision, path=hub.WORD_CORPUS,
+                         about="every file whose oracle Microsoft Word made, for every test")
+    paths = fs.write(name, out, built, meta)
+    console.print(Text(f"{len(built)} rows → {', '.join(map(str, paths))}"), soft_wrap=True)
+
+
 @fixtures_app.command(name="upload")
 def fixtures_upload_cmd(
     root: Path = typer.Option(Path("corpus"), "--root", help="fixture tree to upload"),

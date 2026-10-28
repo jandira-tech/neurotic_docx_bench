@@ -143,7 +143,36 @@ Pins: [`bench.yaml`](bench.yaml). Tool identities: [`bench.registry.yaml`](bench
 
 ---
 
-## Quick start
+## Install from PyPI
+
+```bash
+pip install neurotic-docx-bench            # or: uv tool install neurotic-docx-bench
+bench fixtures list v1                     # the fixture set, its hub commit, cases per test
+bench fixtures get v1                      # 14,513 files (2.5 GB) into corpus/word, each sha256-checked
+bench fixtures get v1 --test redline       # one test's files only (the corpus tables always come along)
+```
+
+Version 1 of the package carries fixture set **v1**: every file on the hub dataset
+[`arthrod/neurotic_docx_bench-fixtures`](https://huggingface.co/datasets/arthrod/neurotic_docx_bench-fixtures)
+whose oracle Microsoft Word made, for every test the bench runs, pinned to dataset commit
+`984e64d869803abea841e66364f7b82bb30b3a70`:
+
+| test | a case is | cases |
+|---|---|---:|
+| `docx_to_pdf` | a document and Word's PDF of it | 2,925 |
+| `redline` | base and next documents, Word's compare of them and Word's PDF of the compare | 3,502 |
+| `accept_all` | a Word compare, Word's Accept All of it and Word's PDF of the result | 400 |
+| `reject_all` | a Word compare, Word's Reject All of it and Word's PDF of the result | 400 |
+
+The wheel ships the set's manifest (`neurotic_docx_bench/data/fixture_sets/v1.csv.gz`: test, case,
+state, role, path, sha256, size, git blob id), never the documents. `bench fixtures get` reads exactly
+those files at the pinned commit, checks the hub's listing against the manifest before downloading,
+and every downloaded file against its sha256 after. From Python: `neurotic_docx_bench.fixture_sets`
+(`load`, `rows`, `files`, `get`). LibreOffice renders, superseded Word renders and the one compare
+Word left without a PDF are not in v1. Generators for the competitor tools are the `competitors`
+extra (`pip install 'neurotic-docx-bench[competitors]'`).
+
+## Quick start (from a checkout)
 
 Python 3.14 (`uv`), Node 26 + pnpm, LibreOffice 26.2.4.2 on `PATH`.
 

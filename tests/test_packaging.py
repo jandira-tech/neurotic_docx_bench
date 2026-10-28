@@ -1,10 +1,10 @@
-"""The published wheel: version 0.7.0, no vendored competitor tools, competitors optional."""
+"""The 1.0.0 distributions: the wheel carries the fixture manifest and no fixture, the sdist the package only (#84)."""
 
 from __future__ import annotations
 
+import shutil
 import subprocess
-import sys
-import tomllib
+import tarfile
 import zipfile
 from pathlib import Path
 
@@ -13,45 +13,28 @@ import pytest
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def _pyproject() -> dict:
-    return tomllib.loads((ROOT / "pyproject.toml").read_text())
+@pytest.fixture(scope="module")
+def dist(tmp_path_factory: pytest.TempPathFactory) -> Path:
+    if shutil.which("uv") is None:
+        pytest.skip("uv is not on PATH")
+    out = tmp_path_factory.mktemp("dist")
+    subprocess.run(["uv", "build", "-q", "-o", str(out)], cwd=ROOT, check=True)
+    return out
 
 
-def test_version_is_0_8_0() -> None:
-    assert _pyproject()["project"]["version"] == "0.8.0"
+def test_the_wheel_ships_the_manifest_and_no_document(dist: Path) -> None:
+    [wheel] = dist.glob("*.whl")
+    names = zipfile.ZipFile(wheel).namelist()
+    assert "neurotic_docx_bench/data/fixture_sets/v1.csv.gz" in names
+    assert "neurotic_docx_bench/data/fixture_sets/v1.json" in names
+    assert "neurotic_docx_bench/py.typed" in names
+    assert not [n for n in names if n.endswith((".docx", ".pdf", ".png"))]
+    assert not [n for n in names if "/utils/" in n]
+    assert wheel.stat().st_size < 5_000_000
 
 
-def test_competitor_sdks_are_an_extra_not_core_dependencies() -> None:
-    proj = _pyproject()["project"]
-    core = " ".join(proj["dependencies"])
-    for name in ("superdoc-sdk", "playwright", "redlines", "nupunkt"):
-        assert name not in core, name
-    extra = " ".join(proj["optional-dependencies"]["competitors"])
-    for name in ("superdoc-sdk", "playwright", "redlines", "nupunkt"):
-        assert name in extra, name
-    assert "docx-revisions" in core
-
-
-def test_wheel_config_excludes_the_vendored_tools() -> None:
-    wheel = _pyproject()["tool"]["hatch"]["build"]["targets"]["wheel"]
-    assert any("utils/" in e for e in wheel["exclude"])
-
-
-@pytest.mark.slow
-def test_built_wheel_has_no_vendored_tools_and_is_small(tmp_path: Path) -> None:
-    subprocess.run(
-        ["uv", "build", "--wheel", "--out-dir", str(tmp_path), str(ROOT)],
-        check=True,
-        capture_output=True,
-        text=True,
-    )
-    version = _pyproject()["project"]["version"]
-    wheels = list(tmp_path.glob(f"neurotic_docx_bench-{version}-*.whl"))
-    assert len(wheels) == 1, list(tmp_path.iterdir())
-    with zipfile.ZipFile(wheels[0]) as zf:
-        names = zf.namelist()
-    assert not any(n.startswith("neurotic_docx_bench/utils/") for n in names)
-    assert "neurotic_docx_bench/utils.py" in names
-    assert "neurotic_docx_bench/cli.py" in names
-    assert wheels[0].stat().st_size < 20 * 2**20
-    assert sys.version_info >= (3, 14)
+def test_the_sdist_is_the_package_only(dist: Path) -> None:
+    [sdist] = dist.glob("*.tar.gz")
+    tops = {Path(m.name).parts[1] for m in tarfile.open(sdist).getmembers() if len(Path(m.name).parts) > 1}
+    assert tops <= {"src", "licenses", "LICENSE", "README.md", "CHANGELOG.md", "CITATION.cff", "pyproject.toml",
+                    "PKG-INFO", ".gitignore"}

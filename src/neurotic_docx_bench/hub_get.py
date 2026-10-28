@@ -718,9 +718,18 @@ def remote_files(
     path: str,
     include: Sequence[str] = (),
     exclude: Sequence[str] = (),
+    exact: Sequence[str] = (),
 ) -> list[RemoteFile]:
-    """The files under ``path`` at ``revision``, filtered by globs relative to ``path``."""
+    """The files under ``path`` at ``revision``, filtered by globs relative to ``path``.
+
+    ``exact`` names files by their path relative to ``path``, compared as strings,
+    not globbed: a fixture set passes thousands of them (``fixture_sets``).
+    A file is taken when it matches ``include`` or is in ``exact`` (either, when both
+    are given; every file when neither is).
+    """
     prefix = f"{path}/" if path else ""
+    wanted = frozenset(exact)
+    chosen = bool(include or wanted)
     files = []
     try:  # every page, before any is used: a missing folder or a failed page refuses with the hub's reason
         entries = list(api.list_repo_tree(
@@ -739,7 +748,8 @@ def remote_files(
         parts = PurePosixPath(rel).parts
         if not parts or ".." in parts or PurePosixPath(rel).is_absolute():
             raise GetError(f"refusing a hub path that leaves the destination: {repo_path}")
-        if parts[-1].casefold() in _NEVER or (include and not _matches(rel, include)) or _matches(rel, exclude):
+        picked = not chosen or rel in wanted or bool(include and _matches(rel, include))
+        if parts[-1].casefold() in _NEVER or not picked or _matches(rel, exclude):
             continue
         # A file at .cache, or anything under .cache/huggingface, in any case (one name on APFS):
         # hf_hub_download needs that folder for its records. Only a file the run fetches is in the way.
@@ -1178,6 +1188,7 @@ def get(
     on_conflict: str = "refuse",
     dry_run: bool = False,
     workers: int = 8,
+    exact: Sequence[str] = (),
 ) -> GetReport:
     """Download ``preset`` into ``dest`` (default: the preset's) under the four rules above.
 
@@ -1191,7 +1202,7 @@ def get(
     left = ["nothing downloaded"]
     try:
         return _get(
-            preset, api=api, revision=revision, dest=dest, include=include, on_conflict=on_conflict,
+            preset, api=api, revision=revision, dest=dest, include=include, exact=exact, on_conflict=on_conflict,
             dry_run=dry_run, workers=workers, left=left,
         )
     except OSError as exc:
@@ -1212,14 +1223,15 @@ def _get(
     dry_run: bool,
     workers: int,
     left: list[str],
+    exact: Sequence[str] = (),
 ) -> GetReport:
     """``get``'s steps; ``left[0]`` says what the run has left at each point, for a disk error none of them answers."""
     dest = Path(dest if dest is not None else preset.dest)
     sha = resolve_revision(api, preset.repo_id, revision)
-    files = remote_files(api, preset.repo_id, sha, preset.path, include, preset.exclude)
+    files = remote_files(api, preset.repo_id, sha, preset.path, include, preset.exclude, exact)
     where = f"{preset.repo_id}@{sha[:12]}"
     if not files:
-        what = f" matching {', '.join(include)}" if include else ""
+        what = f" matching {', '.join(include)}" if include else f" among {len(exact)} named files" if exact else ""
         raise GetError(f"{where} has nothing under {preset.path or '/'}{what}")
     for names in _collisions(files, dest):
         raise GetError(f"{where} has names that would be one name on the disk of {dest}: {', '.join(names)}")

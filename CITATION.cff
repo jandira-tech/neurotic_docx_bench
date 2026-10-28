@@ -9,8 +9,8 @@ authors:
   - family-names: "Souza Rodrigues"
     given-names: "Arthur"
     affiliation: "Jandira Technologies"
-version: "0.8.0"
-date-released: "2026-10-02"
+version: "1.0.0"
+date-released: "2026-10-28"
 license: AGPL-3.0-only
 repository-code: "https://github.com/jandira-tech/neurotic_docx_bench"
 url: "https://github.com/jandira-tech/neurotic_docx_bench"

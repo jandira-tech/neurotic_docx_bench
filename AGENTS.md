@@ -399,6 +399,25 @@ See the note in the script.
    understand the 'save as' message"). Retry just those individually with a `delay 2`
    after `open`.
 
+## Fixture sets and the PyPI package (1.0.0, #84)
+
+The package is on PyPI as `neurotic-docx-bench`. Its wheel carries no docx or PDF: it ships the
+manifest of fixture set **v1** (`src/neurotic_docx_bench/data/fixture_sets/v1.csv.gz` + `v1.json`),
+every file under `word/` of the fixtures dataset whose oracle Word made, for the tests
+`docx_to_pdf`, `redline`, `accept_all`, `reject_all`, plus the corpus tables (`support` rows),
+pinned to dataset commit `984e64d8…`. `bench fixtures get v1 [--test T]` (`fixture_sets.get`)
+checks the hub listing at that commit against the manifest, downloads through `hub_get` with
+`exact=` paths, then hashes every file against the manifest.
+
+- A set is frozen. A corpus change that should ship is a **new** set (`v2`): upload the corpus,
+  then `bench fixtures build-set v2 --revision <the new 40-hex commit>`, which refuses a table the
+  tables name but the manifest or the hub lacks, and a local table that is not the hub's.
+- `tests/test_fixture_sets.py` pins v1's counts and requires `build` from the tracked tables to
+  reproduce the shipped manifest row for row; editing `corpus/word`'s tables without a new set
+  fails it.
+- The sdist is the package only (`only-include` in `pyproject.toml`); scripts, results, the
+  corpus and the harnesses stay in git.
+
 ## Everything else on the hub: `bench hub list|get` (2026-10-26, #79)
 
 The corpus is one of fifteen download presets. The 0929 run's tool outputs, Word's fresh compares,
