@@ -1,0 +1,44 @@
+{
+  "cause": "Supplied tools/target symlink points into mbx target cache; target directory disappeared during the run.",
+  "checkpoint_cases_before_recovery": 493,
+  "recovery_command": "cargo build --release --locked --bin page-metrics --manifest-path tools/Cargo.toml",
+  "source_commit": "a72d91bca065be5c96b659e5daadc3cf3ffc9fb2",
+  "original_and_restored_sha256": "2213ff317059873a15e9605825387a6f41e1514a21a1c9c7e4b7187a7f37925c",
+  "local_pinned_copy": "bin/page-metrics",
+  "metric_source_modified": false,
+  "cargo_cache_log": "restore_page_metrics.log",
+  "note": "No native scorer change: restored executable is byte-identical. Missing-executable build errors are retried, never counted as jubarte ITT failures.",
+  "transient_build_errors": [
+    {
+      "key": "d2p-corpus-with_comments_tracking-8e1fd0a0e7-3a1fa31c6a1d",
+      "reference_pages": 12
+    },
+    {
+      "key": "d2p-corpus-clean-8e44c9bc49-6969f899805e",
+      "reference_pages": 1
+    },
+    {
+      "key": "d2p-corpus-tracking_without_comments-8e5efb0d0b-2c7006e57e2f",
+      "reference_pages": 1
+    },
+    {
+      "key": "d2p-corpus-clean-8e694101b9-cc4f9c6d5b6c",
+      "reference_pages": 6
+    },
+    {
+      "key": "d2p-corpus-clean-8f4b1de8e5-2a19910ab389",
+      "reference_pages": 3
+    },
+    {
+      "key": "d2p-corpus-with_comments_tracking-90cef57bac-f8d6d5f87c15",
+      "reference_pages": 3
+    },
+    {
+      "key": "d2p-corpus-clean-91440900a0-ac0196987582",
+      "reference_pages": 2
+    }
+  ],
+  "recovered_all": true,
+  "final_cases": 1276,
+  "final_build_errors": 0
+}

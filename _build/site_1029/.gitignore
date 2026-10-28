@@ -1,0 +1,10 @@
+# Page images and PDFs live on R2 (renew1028/); local copies are deleted after the verified upload.
+build/renew1028/
+build/records/
+node_modules/
+preview/
+bin/
+scorer-source/
+__pycache__/
+*.jpg
+*.log

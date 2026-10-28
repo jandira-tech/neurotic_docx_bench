@@ -1,0 +1,210 @@
+{
+  "healthStatus": 200,
+  "checked": [
+    {
+      "group": "cases",
+      "case": "case8",
+      "shown": [
+        1
+      ],
+      "header": "JUBARTE PDF jubarte 0.14.0 · 1 p · Pixel 86.1% · J 85.4% · SSIM 93.8% · TB 100.0%",
+      "pdfStatus": 200
+    },
+    {
+      "group": "corpus/clean",
+      "case": "00b4bca293",
+      "shown": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "header": "JUBARTE PDF jubarte 0.14.0 · 4 p · Pixel 95.2% · J 91.7% · SSIM 99.3% · TB 98.7%",
+      "pdfStatus": 200
+    },
+    {
+      "group": "corpus/tracking_without_comments",
+      "case": "003c8c6d7d",
+      "shown": [
+        1,
+        2
+      ],
+      "header": "JUBARTE PDF jubarte 0.14.0 · 2 p · Pixel 72.2% · J 47.0% · SSIM 74.3% · TB 100.0%",
+      "pdfStatus": 200
+    },
+    {
+      "group": "corpus/with_comments_clean",
+      "case": "d4f4f33ca7",
+      "shown": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "header": "JUBARTE PDF jubarte 0.14.0 · 6 p · Pixel 74.5% · J 76.3% · SSIM 91.9% · TB 96.7%",
+      "pdfStatus": 200
+    },
+    {
+      "group": "wordcraft1014/convert",
+      "case": "with_comments_tracking__3aedf04d35_r2_04_drop_blocks_43-55",
+      "shown": [
+        1,
+        2,
+        3
+      ],
+      "header": "JUBARTE PDF jubarte 0.14.0 · 10 p (3 shown) · Pixel 73.8% · J 71.0% · SSIM 84.7% · TB 89.6%",
+      "pdfStatus": 200
+    }
+  ],
+  "retained": {
+    "case": "00163e55a0",
+    "version": "jubarte 0.14.0",
+    "pixel": 71.52493617107378,
+    "versions": {
+      "reference": "Word",
+      "jubarte": "jubarte 0.14.0",
+      "libreoffice": "LibreOffice 26.8.1.1",
+      "docxodus": "docxodus 14.2.0"
+    },
+    "scores": {
+      "docxodus": {
+        "pixel": 37.79113331316735,
+        "jaccard": null,
+        "ssim": null,
+        "text_boundary": null
+      },
+      "jubarte": {
+        "pixel": 71.52493617107378,
+        "jaccard": 37.9,
+        "ssim": 47.8,
+        "text_boundary": 69.5
+      },
+      "libreoffice": {
+        "pixel": 39.35687355503542,
+        "jaccard": 3.9,
+        "ssim": 14.7,
+        "text_boundary": null
+      }
+    },
+    "pageCounts": {
+      "reference": 3,
+      "docxodus": 3,
+      "jubarte": 3,
+      "libreoffice": 3
+    }
+  },
+  "localAssetRequests": [
+    {
+      "url": "http://127.0.0.1:8179/__assets/renew1028/d2p/cases/case8/jubarte/page_001.webp",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8179/__assets/renew1028/d2p/corpus/clean/00b4bca293/jubarte/page_002.webp",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8179/__assets/renew1028/d2p/corpus/clean/00b4bca293/jubarte/page_001.webp",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8179/__assets/renew1028/d2p/corpus/clean/00b4bca293/jubarte/page_003.webp",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8179/__assets/renew1028/d2p/corpus/clean/00b4bca293/jubarte/page_004.webp",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8179/__assets/renew1028/d2p/corpus/tracking_without_comments/003c8c6d7d/jubarte/page_002.webp",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8179/__assets/renew1028/d2p/corpus/tracking_without_comments/003c8c6d7d/jubarte/page_001.webp",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8179/__assets/renew1028/d2p/corpus/with_comments_clean/d4f4f33ca7/jubarte/page_001.webp",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8179/__assets/renew1028/d2p/corpus/with_comments_clean/d4f4f33ca7/jubarte/page_002.webp",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8179/__assets/renew1028/d2p/corpus/with_comments_clean/d4f4f33ca7/jubarte/page_003.webp",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8179/__assets/renew1028/d2p/corpus/with_comments_clean/d4f4f33ca7/jubarte/page_006.webp",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8179/__assets/renew1028/d2p/corpus/with_comments_clean/d4f4f33ca7/jubarte/page_004.webp",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8179/__assets/renew1028/d2p/corpus/with_comments_clean/d4f4f33ca7/jubarte/page_005.webp",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8179/__assets/wordcraft1014/wordcraft1014/convert/with_comments_tracking__3aedf04d35_r2_04_drop_blocks_43-55/reference/page_002.webp",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8179/__assets/renew1028/d2p/wordcraft1014/convert/with_comments_tracking__3aedf04d35_r2_04_drop_blocks_43-55/jubarte/page_001.webp",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8179/__assets/wordcraft1014/wordcraft1014/convert/with_comments_tracking__3aedf04d35_r2_04_drop_blocks_43-55/reference/page_003.webp",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8179/__assets/wordcraft1014/wordcraft1014/convert/with_comments_tracking__3aedf04d35_r2_04_drop_blocks_43-55/reference/page_001.webp",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8179/__assets/renew1028/d2p/wordcraft1014/convert/with_comments_tracking__3aedf04d35_r2_04_drop_blocks_43-55/jubarte/page_002.webp",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8179/__assets/renew1028/d2p/wordcraft1014/convert/with_comments_tracking__3aedf04d35_r2_04_drop_blocks_43-55/jubarte/page_003.webp",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8179/__assets/d2p_v1/v1/clean/1fbed20aeb/reference/page_001.webp",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8179/__assets/d2p_v1/v1/clean/1fbed20aeb/jubarte/page_001.webp",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8179/__assets/d2p_v1/v1/clean/00163e55a0/reference/page_001.webp",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8179/__assets/d2p_v1/v1/clean/00163e55a0/reference/page_002.webp",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8179/__assets/d2p_v1/v1/clean/00163e55a0/jubarte/page_001.webp",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8179/__assets/d2p_v1/v1/clean/00163e55a0/reference/page_003.webp",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8179/__assets/d2p_v1/v1/clean/00163e55a0/jubarte/page_002.webp",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8179/__assets/d2p_v1/v1/clean/00163e55a0/jubarte/page_003.webp",
+      "status": 200
+    }
+  ],
+  "pageErrors": [],
+  "badAssets": []
+}

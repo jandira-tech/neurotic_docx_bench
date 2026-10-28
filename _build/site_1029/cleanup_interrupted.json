@@ -1,0 +1,12 @@
+{
+  "reason": "Temporary rasters from the interrupted initial raw-aggregate run; full results are being recomputed with the bench DOCX-to-PDF aggregate. These directories predate the current run.",
+  "paths": [
+    "build/c_2790t0bn",
+    "build/c_8gq8ofjp",
+    "build/c_fkkdqb2n",
+    "build/c_k7n4exv6",
+    "build/c_nrfg9ohu",
+    "build/c_zkmh_nb3"
+  ],
+  "bytes": 86008474
+}

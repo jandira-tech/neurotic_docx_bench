@@ -1,0 +1,19 @@
+{
+  "case_build": "1276/1276 complete; 0 build errors",
+  "audit": "passed all inputs, checkpoints, assets and preservation constraints",
+  "helper_tests_passed": 14,
+  "coverage_scope": "common.py, renewal data/patch helper",
+  "line_coverage_pct": 100.0,
+  "branch_coverage_pct": 100.0,
+  "browser_cases": 5,
+  "local_asset_requests": 27,
+  "page_errors": [],
+  "bad_assets": [],
+  "health_http": 200,
+  "retained_v1_matches_source": true,
+  "native_infrastructure_retries_recovered": 7,
+  "visual_inspection": [
+    "smoke_corpus_clean.jpg",
+    "smoke_wordcraft1014_convert.jpg"
+  ]
+}
