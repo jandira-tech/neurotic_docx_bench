@@ -484,3 +484,49 @@ def test_jubarte_conversion_passes_compression_and_preserves_path_arguments(tmp_
     else:
         assert failure is None
         assert destination.read_bytes().startswith(b"%PDF-")
+
+
+def test_tool_report_keeps_pixel_map_and_means_only_scored_page_metrics():
+    from neurotic_docx_bench.docx_to_pdf import _tool_report
+
+    rows = {
+        "a": {"ink_jaccard": 0.4, "ssim": 0.8, "text_boundary": 1.0},
+        "b": {"ink_jaccard": 0.0, "ssim": 0.6, "text_boundary": None},
+        "failed": {"ink_jaccard": 1.0, "ssim": 1.0, "text_boundary": 1.0},
+        "outside": {"ink_jaccard": 1.0, "ssim": 1.0, "text_boundary": 1.0},
+    }
+    report = _tool_report("tool", None, ["a", "b", "failed", "missing"],
+                          {"a": 90.0, "b": 50.0, "failed": 100.0},
+                          [{"doc": "failed", "stage": "generate", "error": "crash"}],
+                          score_rows=rows)
+    assert report["per_doc"] == {"a": 90.0, "b": 50.0, "failed": 0.0, "missing": 0.0}
+    assert report["mean"] == 35.0
+    assert set(report["page_metrics"]) == {"a", "b"}
+    assert report["page_metrics"]["b"] == {"jaccard": 0.0, "ssim": 0.6, "text_boundary": None}
+    assert report["page_metrics_mean"] == pytest.approx({"jaccard": 0.2, "ssim": 0.7, "text_boundary": 1.0})
+    empty = _tool_report("tool", None, ["a"], {}, [])
+    assert empty["page_metrics"] == {}
+    assert empty["page_metrics_mean"] == {"jaccard": None, "ssim": None, "text_boundary": None}
+
+
+def test_score_only_report_persists_page_metrics_and_drops_rasters(tmp_path):
+    """Integration: actual PDF scoring through the report writer, including resume."""
+    import pymupdf as fitz
+    from neurotic_docx_bench.docx_to_pdf import Fixture
+
+    oracle = tmp_path / "oracle.pdf"
+    with fitz.open() as doc:
+        doc.new_page().insert_text((72, 72), "Same document, same metrics.")
+        doc.save(oracle)
+    item = Fixture(stem="a", kind="clean", original_stem="a", docx=tmp_path / "a.docx", oracle=oracle)
+    work = tmp_path / "work"
+    for _ in range(2):
+        report = run_eval(tmp_path / "report.json", tools=["candidates"], fixtures=[item],
+                          check_pins=False, score_only=True, candidates={"a": oracle},
+                          work_dir=work, jobs=1)
+        tool = report["tools"]["candidates"]
+        assert tool["per_doc"] == {"a": 100.0}
+        assert tool["page_metrics"] == {"a": {"jaccard": 1.0, "ssim": 1.0, "text_boundary": 1.0}}
+        assert tool["page_metrics_mean"] == tool["page_metrics"]["a"]
+        assert json.loads((tmp_path / "report.json").read_text())["tools"]["candidates"] == tool
+        assert not list(work.rglob("*.png"))

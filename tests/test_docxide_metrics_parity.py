@@ -2,7 +2,7 @@
 
 Metric parity against docxide-pdf's frozen numbers lives in ``tests/test_page_metrics.py``.
 This file covers the track around it: it must score with ``page_metrics`` in-process
-(no cargo, no binary, no mutool), carry exactly the two ported metrics, and keep the
+(no cargo, no binary, no mutool), carry all three ported metrics, and keep the
 intent-to-treat rule (a failed convert scores 0, never NaN or missing).
 """
 
@@ -30,11 +30,11 @@ def _make_pdf(path: Path, page_texts: list[str]) -> Path:
 
 
 def test_track_carries_only_the_ported_metrics() -> None:
-    assert dm.METRICS == ("jaccard", "text_boundary")
+    assert dm.METRICS == ("jaccard", "ssim", "text_boundary")
     assert dm.DPI == pm.UPSTREAM_DPI == 150
     assert not hasattr(dm, "ensure_scorer")
     assert not hasattr(dm, "SCORER_BIN")
-    assert "ssim" not in dm.METRIC_LABELS
+    assert dm.METRIC_LABELS["ssim"] == "SSIM"
 
 
 def test_score_candidates_runs_in_process(tmp_path: Path) -> None:
@@ -58,21 +58,22 @@ def test_score_candidates_runs_in_process(tmp_path: Path) -> None:
 
 
 def test_itt_zeroes_a_failed_convert() -> None:
-    """A document with no candidate PDF scores 0 on both metrics, not NaN or missing."""
+    """A document with no candidate PDF scores 0 on all three metrics, not NaN or missing."""
     report = dm._tool_report(
         "toy",
         None,
         ["a", "b"],
-        {"a": {"stem": "a", "converted": True, "jaccard": 0.5,
+        {"a": {"stem": "a", "converted": True, "jaccard": 0.5, "ssim": 0.8,
                "text_boundary": 0.5, "ref_pages": 1, "pages": 1, "scored_pages": 1,
                "max_break_drift": 0}},
         [{"doc": "b", "stage": "generate", "error": "boom", "cmd": ["toy"]}],
     )
-    assert report["per_doc"]["b"] == {"jaccard": 0.0, "text_boundary": 0.0}
+    assert report["per_doc"]["b"] == {"jaccard": 0.0, "ssim": 0.0, "text_boundary": 0.0}
     assert report["n_scored"] == 1
     assert report["itt_n"] == 2
     assert report["failures"] == 1
     assert report["metrics"]["jaccard"]["mean"] == 25.0
+    assert report["metrics"]["ssim"]["mean"] == 40.0
     assert report["pass_jaccard_20"] == 1
     assert "pass_ssim_75" not in report
     assert report["unscored_docs"] == []
@@ -89,11 +90,11 @@ def test_a_converted_document_with_no_scorable_page_is_named_unscored() -> None:
         [{"doc": "c", "stage": "generate", "error": "boom", "cmd": ["toy"]}],
     )
     assert report["unscored_docs"] == ["b"]
-    assert report["per_doc"]["b"] == {"jaccard": 0.0, "text_boundary": 0.0}
+    assert report["per_doc"]["b"] == {"jaccard": 0.0, "ssim": 0.0, "text_boundary": 0.0}
     assert report["n_scored"] + report["failures"] + len(report["unscored_docs"]) == report["itt_n"]
 
 
-def test_render_table_has_no_ssim_columns() -> None:
+def test_render_table_has_ssim_columns() -> None:
     report = {
         "n": 2,
         "dpi": 150,
@@ -105,6 +106,7 @@ def test_render_table_has_no_ssim_columns() -> None:
                 "failures": 0,
                 "metrics": {
                     "jaccard": {"mean": 40.0, "median": 41.0},
+                    "ssim": {"mean": 70.0, "median": 75.0},
                     "text_boundary": {"mean": 90.0, "median": 95.0},
                 },
                 "pass_jaccard_20": 2,
@@ -113,9 +115,9 @@ def test_render_table_has_no_ssim_columns() -> None:
     }
     md = dm.render_table(report)
     header = next(line for line in md.splitlines() if line.startswith("| Rank |"))
-    assert "SSIM" not in header
-    assert header.count("|") == 12  # 11 columns
-    assert "| 1 | toy | 1.0 | 2 | 2 | 40.00 | 41.00 | 90.00 | 95.00 | 2 | 0 |" in md
+    assert "SSIM Mean" in header and "SSIM Median" in header
+    assert header.count("|") == 14  # 13 columns
+    assert "| 1 | toy | 1.0 | 2 | 2 | 40.00 | 41.00 | 70.00 | 75.00 | 90.00 | 95.00 | 2 | 0 |" in md
     assert "—" not in md
 
 
@@ -142,3 +144,10 @@ def test_score_candidates_checkpoints_each_document_and_resumes(tmp_path: Path, 
     assert "(2 from checkpoint, 0 to score)" in again
     assert rows["doc"]["jaccard"] == 1.0
     assert len((tmp_path / "scores.docxide.checkpoint.jsonl").read_text().splitlines()) == 2  # nothing re-scored
+
+
+def test_checkpoint_signature_includes_the_metric_implementation():
+    from neurotic_docx_bench.content_cache import scorer_fingerprint
+
+    sig = dm._signature(("a", "missing-oracle", "missing-candidate"))
+    assert sig.endswith(":" + scorer_fingerprint())

@@ -9,8 +9,11 @@ Two layers, as the retired Rust parity test had:
    MuPDF build they were re-frozen on, and the parity test refuses to run on any
    other build (MuPDF's line segmentation moves between releases, and a silent
    drift is exactly what a frozen reference exists to catch). To re-freeze after a
-   deliberate PyMuPDF upgrade: run ``pm.score_pair`` over the five pairs, diff every
-   moved value by hand, then update the numbers and ``_engine`` together.
+   deliberate PyMuPDF upgrade: render the five pairs with ``pm._rasterize`` at
+   ``UPSTREAM_DPI`` into temporary RGB ``page_001.png`` etc. directories; run the
+   pinned upstream ``page-metrics <ref.pdf> <other.pdf> <ref_dir> <other_dir>`` on
+   each pair, diff moved values, then update the numbers and ``_engine`` together.
+   Never freeze from the Python port; delete temporary PNGs after each pair.
 2. **Units** - the pure pieces (leader normalisation, break positions, the ink rule,
    page Jaccard, the line-count skip rule) on hand-built inputs, no PDF needed.
 """
@@ -40,7 +43,7 @@ WORD_PDF_DIR = REPO_ROOT / "corpus" / "word" / "tracking_without_comments" / "pd
 # The LibreOffice 26.2.4.2 renders the numbers were frozen on (not Word files, so not in corpus/).
 SOFFICE_PDFS = REPO_ROOT / "tests" / "reference" / "docxide_page_metrics_soffice"
 
-METRIC_KEYS = ("jaccard", "text_boundary", "ref_pages", "pages", "scored_pages", "max_break_drift")
+METRIC_KEYS = ("jaccard", "ssim", "text_boundary", "ref_pages", "pages", "scored_pages", "max_break_drift")
 
 
 def _reference() -> dict:
@@ -76,7 +79,8 @@ def test_reference_names_the_engine_it_was_frozen_on() -> None:
         f"reference frozen on MuPDF {engine['mupdf']}, this PyMuPDF bundles {fitz.version[1]}: "
         "re-freeze deliberately (see module docstring), do not loosen the tolerance"
     )
-    assert "ssim" not in {k for row in _expected().values() for k in row}
+    assert engine["upstream_commit"] == "a72d91bca065be5c96b659e5daadc3cf3ffc9fb2"
+    assert all(isinstance(row["ssim"], float) for row in _expected().values())
 
 
 @pytest.mark.skipif(
@@ -94,7 +98,7 @@ def test_port_matches_frozen_upstream_numbers() -> None:
         want = expected[stem]
         for key in METRIC_KEYS:
             if isinstance(want.get(key), float):
-                assert got.get(key) == pytest.approx(want[key], abs=1e-12), f"{stem}.{key}"
+                assert got.get(key) == pytest.approx(want[key], abs=1e-6 if key == "ssim" else 1e-12, rel=0), f"{stem}.{key}"
             else:
                 assert got.get(key) == want.get(key), f"{stem}.{key}: {got.get(key)} != {want.get(key)}"
 
@@ -209,6 +213,7 @@ def test_score_pair_identity_on_a_generated_pdf(tmp_path: Path) -> None:
     row = pm.score_pair(pdf, pdf).as_row()
     assert row["converted"] is True
     assert row["jaccard"] == 1.0
+    assert row["ssim"] == 1.0
     assert row["text_boundary"] == 1.0
     assert row["max_break_drift"] == 0
     assert row["ref_pages"] == row["pages"] == row["scored_pages"] == 2
@@ -221,6 +226,7 @@ def test_score_pair_scores_min_page_count(tmp_path: Path) -> None:
     row = pm.score_pair(two, one).as_row()
     assert row["ref_pages"] == 2 and row["pages"] == 1 and row["scored_pages"] == 1
     assert row["jaccard"] == 1.0
+    assert row["ssim"] == 1.0
 
 
 def test_jaccard_from_rasters_uses_existing_pngs(tmp_path: Path) -> None:
@@ -236,3 +242,80 @@ def test_jaccard_from_rasters_uses_existing_pngs(tmp_path: Path) -> None:
     Image.fromarray(b).save(pb)
     assert pm.jaccard_from_rasters([pa, pa], [pa, pb]) == pytest.approx((1.0 + 0.5) / 2)
     assert pm.jaccard_from_rasters([], [pa]) is None
+
+
+@pytest.mark.parametrize("shape", [(8, 8), (7, 16), (16, 7)])
+def test_ssim_white_or_no_full_window_scores_one(shape) -> None:
+    a = np.full((*shape, 3), 255, dtype=np.uint8)
+    b = np.zeros_like(a)
+    assert pm.page_ssim(a, b) == 1.0
+
+
+def test_ssim_uses_image_crate_dynamic_luma_and_population_variance() -> None:
+    red = np.full((8, 8, 3), [255, 0, 0], dtype=np.uint8)
+    green = np.full((8, 8, 3), [0, 255, 0], dtype=np.uint8)
+    # image 0.25.9 DynamicImage::to_luma8 rounds sRGB luminance.
+    assert pm.page_ssim(red, green) == pytest.approx(
+        (2 * 54 * 182 + 6.5025) / (54**2 + 182**2 + 6.5025), abs=1e-12,
+    )
+    color = np.full((8, 8, 3), [100, 150, 200], dtype=np.uint8)
+    gray = np.full_like(color, 143)  # integer Pixel::to_luma would give 142
+    assert pm.page_ssim(color, gray) == 1.0
+    a = np.zeros((8, 8, 3), dtype=np.uint8)
+    a[::2] = 100
+    b = np.zeros_like(a)
+    b[::2] = 200
+    expected = ((2 * 50 * 100 + 6.5025) * (2 * 5000 + 58.5225)
+                / ((50**2 + 100**2 + 6.5025) * (2500 + 10000 + 58.5225)))
+    assert pm.page_ssim(a, b) == pytest.approx(expected, abs=1e-12)
+
+
+@pytest.mark.parametrize("shift", [-8, 8])
+def test_ssim_searches_eight_pixels_vertically(shift) -> None:
+    a = np.full((32, 16, 3), 255, dtype=np.uint8)
+    a[12:15, 1:7] = 0
+    b = np.roll(a, shift, axis=0)
+    assert pm.page_ssim(a, b) == 1.0
+    assert pm.page_jaccard(a, b) == 0.0
+    assert pm.page_ssim(a, np.roll(a, 9, axis=1)) < 1.0
+
+
+def test_ssim_skips_only_reference_white_windows_and_partial_edges() -> None:
+    a = np.full((10, 18, 3), 200, dtype=np.uint8)
+    b = np.zeros_like(a)
+    assert pm.page_ssim(a, b) == 1.0  # 200 is not reference ink
+    a[0:8, 0:8] = 199
+    b[:8, :8] = 199
+    a[8:, :] = 0
+    a[:, 16:] = 0
+    assert pm.page_ssim(a, b) == 1.0  # full second window and edges ignored
+    assert pm.page_ssim(b, a) < 1.0  # intentionally asymmetric
+
+
+@pytest.mark.parametrize("shape", [(10, 10), (8, 10), (10, 8)])
+def test_ssim_tolerates_two_pixels(shape) -> None:
+    a = np.zeros((8, 8, 3), dtype=np.uint8)
+    b = np.zeros((*shape, 3), dtype=np.uint8)
+    assert pm.page_ssim(a, b) == 1.0
+
+
+@pytest.mark.parametrize("shape", [(11, 8), (8, 11)])
+def test_ssim_refuses_three_pixels(shape) -> None:
+    with pytest.raises(pm.PageSizeMismatch):
+        pm.page_ssim(np.zeros((8, 8, 3), dtype=np.uint8), np.zeros((*shape, 3), dtype=np.uint8))
+
+
+def test_ssim_from_rasters_is_shared_page_mean(tmp_path: Path) -> None:
+    from PIL import Image
+
+    a = np.zeros((8, 8, 3), dtype=np.uint8)
+    b = np.full_like(a, 100)
+    pa, pb, bad = (tmp_path / name for name in ("a.png", "b.png", "bad.png"))
+    Image.fromarray(a).save(pa)
+    Image.fromarray(b).save(pb)
+    Image.fromarray(np.zeros((11, 8, 3), dtype=np.uint8)).save(bad)
+    assert pm.ssim_from_rasters([pa, pa], [pa, pb, bad]) == pytest.approx(
+        (1 + 6.5025 / (10000 + 6.5025)) / 2, abs=1e-12,
+    )
+    assert pm.ssim_from_rasters([], [pa]) is None
+    assert pm.ssim_from_rasters([pa], [bad]) is None

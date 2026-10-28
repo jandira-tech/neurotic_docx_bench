@@ -119,6 +119,8 @@ class Results:
     # docxide-pdf's page metrics (0.7.0), aggregated over docs where computable:
     # ink Jaccard over common pages and the share of text lines that start and end
     # on the same words as the oracle. Informational columns, never a ranking input.
+    ssim_mean: float | None = None
+    ssim_median: float | None = None
     ink_jaccard_mean: float | None = None
     ink_jaccard_median: float | None = None
     text_boundary_mean: float | None = None
@@ -250,6 +252,7 @@ def build_results(
     aggregate = compute_aggregate(rounded_scores, per_doc=per_doc)
     skill_mean, skill_median = _optional_metric_stats(per_doc, "skill_score")
     v2_mean, v2_median = _optional_metric_stats(per_doc, "score_v2")
+    ssim_mean, ssim_median = _optional_metric_stats(per_doc, "ssim")
     ink_jaccard_mean, ink_jaccard_median = _optional_metric_stats(per_doc, "ink_jaccard")
     text_boundary_mean, text_boundary_median = _optional_metric_stats(per_doc, "text_boundary")
     n_functional_checked, n_accept_ok, n_reject_ok = _functional_counts(per_doc)
@@ -292,6 +295,8 @@ def build_results(
         skill_median=skill_median,
         v2_mean=v2_mean,
         v2_median=v2_median,
+        ssim_mean=ssim_mean,
+        ssim_median=ssim_median,
         ink_jaccard_mean=ink_jaccard_mean,
         ink_jaccard_median=ink_jaccard_median,
         text_boundary_mean=text_boundary_mean,

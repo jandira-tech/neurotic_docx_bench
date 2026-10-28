@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Added
+- docxide-pdf SSIM beside ink Jaccard and text boundary on scored document rows (#97),
+  parity-tested against upstream `a72d91bc` on the existing five PDF pairs at 150 DPI.
+- Per-document `page_metrics` and means in DOCX-to-PDF, accepted-change and roundtrip
+  reports and the per-run HTML gallery, preserving the pixel score maps and ITT headline means. Bench result rows
+  also aggregate SSIM; the standalone docxide-metrics track includes its SSIM column
+  and invalidates checkpoints when the scorer changes.
+
 ## 1.0.0 - 2026-10-28
 
 ### Added

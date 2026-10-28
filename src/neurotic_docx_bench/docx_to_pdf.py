@@ -22,7 +22,7 @@ import subprocess
 import threading
 import time
 import zipfile
-from collections.abc import Iterable, Sequence
+from collections.abc import Iterable, Mapping, Sequence
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
 from datetime import UTC, datetime
@@ -684,6 +684,7 @@ def _tool_report(
     failures: list[dict[str, object]],
     *,
     version: str | None = None,
+    score_rows: Mapping[str, pipeline.RasterPageMetrics] | None = None,
 ) -> dict:
     failed = {str(item["doc"]) for item in failures}
     per_doc: dict[str, float] = {}
@@ -704,6 +705,10 @@ def _tool_report(
         "perfects": sum(1 for value in vals if value >= 100.0 - 1e-9),
         "failures": len(failed),
         "per_doc": per_doc,
+        **pipeline.page_metrics_summary({
+            stem: row for stem, row in (score_rows or {}).items()
+            if stem in scores and stem in per_doc and stem not in failed
+        }),
         "generate_failures": failures,
         "aggregate": aggregate(scores),
     }
@@ -788,10 +793,11 @@ def run_eval(
             cand_scores = _overall_map(cand_full)
             shutil.rmtree(score_dir, ignore_errors=True)
             report["tools"][tool] = _tool_report(
-                tool, None, stems, cand_scores, failures, version=None,
+                tool, None, stems, cand_scores, failures, version=None, score_rows=cand_full,
             )
             continue
         print(f"converting with {tool} ({len(items)} docs)", flush=True)
+        cand_full: dict[str, pipeline.ScoreResult] = {}
         try:
             binary: Path | None = resolve_tool_binary(tool, converter if len(list(tools)) == 1 else None)
         except FileNotFoundError as exc:
@@ -835,6 +841,7 @@ def run_eval(
             cand_scores,
             failures,
             version=tool_version(binary),
+            score_rows=cand_full,
         )
         report["tools"][tool]["convert_seconds"] = dict(sorted(seconds.items()))
         if gap is not None:
@@ -883,7 +890,11 @@ def itt_complete_listed(report: dict) -> tuple[dict, list[str]]:
         scores = {s: v for s, v in (data.get("per_doc") or {}).items() if s not in failed}
         failures += [{"doc": s, "stage": "generate", "error": "no PDF to score", "cmd": []} for s in added]
         rebuilt = _tool_report(str(data.get("tool") or tool), None, stems, scores, failures,
-                               version=data.get("version"))
+                               version=data.get("version"), score_rows={
+                                   s: {"ink_jaccard": row.get("jaccard"), "ssim": row.get("ssim"),
+                                       "text_boundary": row.get("text_boundary")}
+                                   for s, row in (data.get("page_metrics") or {}).items()
+                               })
         rebuilt["converter"] = data.get("converter")
         done["tools"][tool] = data | rebuilt
     done["stems"] = stems

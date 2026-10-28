@@ -44,6 +44,7 @@ import aiofiles
 
 from neurotic_docx_bench import docx_to_pdf as d2p
 from neurotic_docx_bench import page_metrics as pm
+from neurotic_docx_bench.content_cache import scorer_fingerprint
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
@@ -54,9 +55,10 @@ FIXTURE_TRACK = "docx_to_pdf_no_redline_docs"
 DPI = pm.UPSTREAM_DPI
 
 #: Metric keys in report order. `jaccard` is docxide-pdf's headline number and ranks the table.
-METRICS = ("jaccard", "text_boundary")
+METRICS = ("jaccard", "ssim", "text_boundary")
 METRIC_LABELS = {
     "jaccard": "Jaccard",
+    "ssim": "SSIM",
     "text_boundary": "Text boundary",
 }
 
@@ -81,10 +83,10 @@ def _now() -> str:
 
 
 def _signature(job: tuple[str, str, str]) -> str:
-    """Identity of one scoring job: the two PDFs' sizes and the scorer's DPI."""
+    """Identity of one scoring job: the two PDFs' sizes, DPI and scorer implementation."""
     _stem, oracle, candidate = job
     size = lambda p: Path(p).stat().st_size if Path(p).is_file() else -1  # noqa: E731 (a missing PDF scores as failed)
-    return f"{size(oracle)}:{size(candidate)}:{DPI}"
+    return f"{size(oracle)}:{size(candidate)}:{DPI}:{scorer_fingerprint()}"
 
 
 async def _load_checkpoint(path: Path) -> dict[str, dict]:
@@ -183,7 +185,7 @@ def _tool_report(
 ) -> dict:
     """ITT report for one converter.
 
-    A document that failed to convert scores 0 on both metrics. So does a
+    A document that failed to convert scores 0 on all three metrics. So does a
     document that converted but produced no scorable page or no comparable line:
     a PDF that shares nothing with Word's has zero fidelity, and keeping every
     metric's denominator at the full fixture count is what makes the columns
@@ -279,7 +281,7 @@ def run_eval(
     report: dict = {
         "track": "docxide_metrics",
         "fixture_track": spec.name if spec is not None else (fixture_track or "corpus/word"),
-        "scorer": "docxide-pdf metrics (Jaccard / text boundary), page_metrics.py port",
+        "scorer": "docxide-pdf metrics (Jaccard / SSIM / text boundary), page_metrics.py port",
         "scorer_upstream": "https://github.com/sverrejb/docxide-pdf",
         "dpi": DPI,
         "oracle": "microsoft_word",
@@ -368,12 +370,12 @@ def render_table(report: dict) -> str:
         "(a pixel is ink when luma < 200): placement is everything, a one-line shift sends it",
         "toward zero. **Text boundary** is the share of lines that begin and end on the same words",
         "as Word, ignoring where the ink landed. Ranked by Jaccard median, docxide-pdf's",
-        "headline number. Failed converts score 0 on both (ITT), as does a document that",
+        "headline number. Failed converts score 0 on all three (ITT), as does a document that",
         "produced no scorable page. `>=20%` is docxide-pdf's own per-case Jaccard pass",
-        "threshold. docxide's SSIM is not carried; pagefair-v2 scores SSIM on the same rasters.",
+        "threshold. **SSIM** uses reference-ink 8x8 windows with a +/-8px vertical search.",
         "",
-        "| Rank | Tool | Version | n scored | ITT n | Jaccard Mean | Jaccard Median | Text-bnd Mean | Text-bnd Median | Jaccard >=20% | Failures |",
-        "| --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
+        "| Rank | Tool | Version | n scored | ITT n | Jaccard Mean | Jaccard Median | SSIM Mean | SSIM Median | Text-bnd Mean | Text-bnd Median | Jaccard >=20% | Failures |",
+        "| --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
     ]
     for rank, (name, data) in enumerate(rows, 1):
         m = data.get("metrics") or {}
@@ -384,6 +386,7 @@ def render_table(report: dict) -> str:
         lines.append(
             f"| {rank} | {name} | {data.get('version') or 'n/a'} | {data.get('n_scored', 0)} | "
             f"{data.get('itt_n', 0)} | {cell('jaccard', 'mean')} | {cell('jaccard', 'median')} | "
+            f"{cell('ssim', 'mean')} | {cell('ssim', 'median')} | "
             f"{cell('text_boundary', 'mean')} | {cell('text_boundary', 'median')} | "
             f"{data.get('pass_jaccard_20', 0)} | "
             f"{data.get('failures', 0)} |",

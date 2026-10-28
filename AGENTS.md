@@ -61,14 +61,23 @@ Key modules (`src/neurotic_docx_bench/`):
   threshold comes from the reference page for both sides, capped at 0.9 below Word's
   0.949 markup pane, and the alignment never lowers a score. The parity test applies
   those two to the frozen reference and fails on any other drift.
-- `page_metrics.py` + `docxide_metrics.py`: the **second scorer**, Jaccard and text-boundary
+- `page_metrics.py` + `docxide_metrics.py`: the **second scorer**, Jaccard, SSIM and text-boundary
   at 150 DPI, a Python port of sverrejb/docxide-pdf `tests/common/` (Apache-2.0) driven
   through PyMuPDF. Same rule: **do not edit the metric logic**; upstream is the authority
   and `tests/test_page_metrics.py` holds the port to the values frozen in
   `tests/reference/docxide_page_metrics.json` (recorded by upstream's own `page-metrics`
-  binary, re-frozen on the MuPDF build named in that file's `_engine` block; the test
-  refuses to run on another build). Since 0.7.0 `pipeline.score_pdf_pair` carries the
-  same columns (`ink_jaccard`, `text_boundary`, `max_break_drift`) on every scored row.
+  binary; SSIM is frozen at upstream commit `a72d91bc` using 150-DPI RGB PNGs from
+  `_rasterize`, matching the harness's `mutool draw -F png -r 150`, on the MuPDF build
+  named in `_engine`; the test refuses to run on another build). SSIM ports 8x8
+  reference-ink windows and +/-8px vertical search, including `image` 0.25.9's
+  `DynamicImage::to_luma8` float32 conversion and rounding (not `Pixel::to_luma`'s
+  integer conversion). Re-freeze with the upstream binary, never the Python port;
+  delete temporary PNGs after each pair. `pipeline.score_pdf_pair` carries
+  `ink_jaccard`, `ssim`, `text_boundary`, `max_break_drift` on every scored row,
+  using that pass's rasters and DPI. DOCX-to-PDF, accepted and roundtrip reports keep
+  pixel scores and add raw 0-1 `page_metrics` per scored document plus
+  `page_metrics_mean` (each mean excludes uncomputable values and failed documents).
+  The per-run HTML gallery displays the three metrics beside each pixel score.
 - `pipeline.py` — match candidate↔oracle redlines by `<base>_<next>` key, rasterise, score.
 - `render/` — `soffice` (LibreOffice, default), `passthrough` (score existing PDFs),
   `playwright` (selector-driven web-editor render), `word` (local-only AppleScript).
