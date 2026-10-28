@@ -4,14 +4,25 @@ results/bench.jsonl are skipped by default; ``--rerun`` (or ``BENCH_RERUN=1``) o
 
 from __future__ import annotations
 
+import json
 import shutil
 
+import pytest
 from typer.testing import CliRunner
 
 from neurotic_docx_bench.cli import app
 from neurotic_docx_bench.pipeline import redline_key
 
 runner = CliRunner()
+
+
+@pytest.fixture(autouse=True)
+def _installed_docxodus(tmp_path, monkeypatch):
+    """The skip logic, not an npm install, is under test: give the run its own node_modules pin tree."""
+    pkg = tmp_path / "node_modules" / "docxodus"
+    pkg.mkdir(parents=True)
+    (pkg / "package.json").write_text(json.dumps({"name": "docxodus", "version": "6.4.0"}))
+    monkeypatch.chdir(tmp_path)
 
 
 def _setup(tmp_path, pdf):

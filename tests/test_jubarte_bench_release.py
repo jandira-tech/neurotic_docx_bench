@@ -71,6 +71,54 @@ def _cmd(steps: list[jbr.Step], name: str) -> list[str]:
     return list(next(s for s in steps if s.name == name).argv)
 
 
+def _regen(root: Path, ids: list[str], *, pdfs: list[str] | None = None, header: str = 'id') -> Path:
+    """A compare_regen folder: ``out/<id>__vs__<id>.pdf`` per id in ``pdfs`` and the list of ``ids``."""
+    folder = root / jbr.COMPARE_REGEN
+    (folder / 'out').mkdir(parents=True, exist_ok=True)
+    for i in ids if pdfs is None else pdfs:
+        (folder / 'out' / f'{i}__vs__{i}.pdf').write_bytes(b'%PDF')
+    (folder / 'regen_list.csv').write_text(f'{header}\n' + ''.join(f'{i}\n' for i in ids))
+    return folder
+
+
+def _word_ok(cmd, **_):
+    return Proc(0, '16.101.1\n') if ' '.join(cmd) == release.WORD_VERSION_CMD else Proc()
+
+
+@pytest.mark.parametrize(
+    ('setup', 'said'),
+    [
+        (lambda root: None, 'out'),
+        (lambda root: (root / jbr.COMPARE_REGEN / 'out').mkdir(parents=True), 'no .pdf'),
+        (lambda root: (_regen(root, ['0000ae5089']) / 'regen_list.csv').unlink(), 'regen_list.csv'),
+        (lambda root: _regen(root, ['0000ae5089'], header='key'), 'id'),
+        (lambda root: _regen(root, ['0000ae5089', '001b877031'], pdfs=['0000ae5089']), '001b877031'),
+    ],
+    ids=['no folder', 'no pdf', 'no csv', 'no id header', 'listed id without its pdf'],
+)
+def test_missing_compare_regen_inputs_stop_the_lane_before_any_word_step(tmp_path: Path, setup, said: str) -> None:
+    """The measure step reads them after hours of Word work; they are checked first (#82)."""
+    setup(tmp_path)
+    steps = jbr.select(jbr.plan(_rel(tmp_path), run=_word_ok, hub=False), only=['redlines'])
+    rec = Recorder()
+    done = jbr.execute(steps, tmp_path, run=rec.run, spawn=rec.spawn, echo=lambda _: None)
+    assert [o.step.name for o in done] == ['word answers', 'compare_regen inputs']
+    assert not done[-1].ok
+    assert said in done[-1].detail
+    assert 'uv run python scripts/fetch_corpus.py' in done[-1].detail
+    assert rec.ran == [] and rec.dogs == []
+
+
+def test_complete_compare_regen_inputs_pass_the_preflight(tmp_path: Path) -> None:
+    _regen(tmp_path, ['0000ae5089', '001b877031'])
+    steps = jbr.select(jbr.plan(_rel(tmp_path), run=_word_ok, hub=False), only=['redlines'])
+    rec = Recorder()
+    done = jbr.execute(steps, tmp_path, run=rec.run, spawn=rec.spawn, echo=lambda _: None)
+    check = next(o for o in done if o.step.name == 'compare_regen inputs')
+    assert check.ok and '2 fresh compares' in check.detail
+    assert rec.ran[0] == 'generate'
+
+
 def test_rejects_a_version_that_is_not_a_release(tmp_path: Path) -> None:
     for bad in ('0.10', 'v0.10.2', 'latest', '0.10.2-rc1'):
         with pytest.raises(ValueError, match='not a release version'):
@@ -115,8 +163,8 @@ def test_word_exports_run_under_the_watchdog_and_may_fail(tmp_path: Path) -> Non
 def test_only_and_skip_keep_the_order_and_run_the_word_check_first(tmp_path: Path) -> None:
     steps = jbr.plan(_rel(tmp_path))
     names = [s.name for s in jbr.select(steps, only=['convert', 'redlines'])]
-    assert names[0] == 'word answers'
-    assert names[1] == 'docx-to-pdf'
+    assert names[:2] == ['word answers', 'compare_regen inputs']
+    assert names[2] == 'docx-to-pdf'
     assert 'release binary' not in names and 'report' not in names
     skipped = jbr.select(steps, skip=['redlines'])
     assert all(s.stage != 'redlines' for s in skipped)
@@ -152,6 +200,7 @@ def test_a_failed_export_pass_does_not_stop_the_run_but_a_failed_measure_does(tm
     def run(cmd, **_):
         return word.get(' '.join(cmd), Proc())
 
+    _regen(tmp_path, ['0000ae5089'])
     steps = jbr.select(jbr.plan(_rel(tmp_path), run=run, hub=False), only=['redlines'])
     rec = Recorder(codes={'word export (batch)': 1, 'measure': 2})
     done = jbr.execute(steps, tmp_path, run=rec.run, spawn=rec.spawn, echo=lambda _: None)

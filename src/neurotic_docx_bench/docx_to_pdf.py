@@ -14,6 +14,7 @@ import csv
 import json
 import math
 import os
+import re
 import shutil
 import statistics
 import subprocess
@@ -487,6 +488,7 @@ def stage_candidates(fixtures: list[Fixture], sources: dict[str, Path], dest_dir
     for item in fixtures:
         src = sources.get(item.stem)
         if src is None or not src.is_file():
+            (dest_dir / f"{item.stem}.pdf").unlink(missing_ok=True)  # a reused work dir's stale copy (#86)
             failures.append(
                 {
                     "doc": item.stem,
@@ -573,7 +575,7 @@ def _tool_report(
     failed = {str(item["doc"]) for item in failures}
     per_doc: dict[str, float] = {}
     for stem in stems:
-        if stem in scores:
+        if stem in scores and stem not in failed:
             per_doc[stem] = scores[stem]
         else:
             per_doc[stem] = 0.0
@@ -657,6 +659,8 @@ def run_eval(
         "warnings": list(warnings or []),
         "tools": {},
     }
+    if limit is not None:
+        report["limit"] = limit  # the warnings predate the cut; itt_complete_listed refuses it (#86)
 
     for tool in tools:
         if score_only:
@@ -718,3 +722,54 @@ def run_eval(
     json_out.parent.mkdir(parents=True, exist_ok=True)
     json_out.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     return report
+
+
+_DROPPED = re.compile(r"^no PDF to score for (?P<pdf>.+?); skipped$")
+
+
+def itt_complete_listed(report: dict) -> tuple[dict, list[str]]:
+    """``report`` with every listed document it dropped scored 0 under ITT (#69).
+
+    Before the fix a listed score-only run left out a document whose conversion
+    crashed and only warned ``no PDF to score for <word pdf>; skipped``. Those
+    warnings name the dropped documents exactly; each comes back as a
+    ``generate`` failure with 0 in ``per_doc``, and the summary is recomputed
+    from the stored scores (nothing is scored again). Returns the completed
+    copy and the stems added; a report with nothing to add comes back equal.
+    """
+    if not str(report.get("track") or "").endswith(":list"):
+        raise ValueError(f"only a listed track drops documents it should keep; this one is {report.get('track')!r}")
+    if report.get("limit") is not None:
+        raise ValueError(f"the run kept only its first {report['limit']} documents (--limit); its warnings may "
+                         "name documents it never took, so it cannot be completed")
+    done = json.loads(json.dumps(report))
+    stems = list(done.get("stems") or [])
+    added = []
+    for warning in done.get("warnings") or []:
+        m = _DROPPED.match(str(warning))
+        if m is None:
+            continue
+        pdf = Path(m["pdf"])
+        stem = f"{pdf.parent.parent.name}__{pdf.stem}"
+        if stem not in stems and stem not in added:
+            added.append(stem)
+    if not added:
+        return done, []
+    stems = sorted(stems + added) if stems == sorted(stems) else stems + added
+    for tool, data in done["tools"].items():
+        failures = list(data.get("generate_failures") or [])
+        failed = {str(f["doc"]) for f in failures}
+        scores = {s: v for s, v in (data.get("per_doc") or {}).items() if s not in failed}
+        failures += [{"doc": s, "stage": "generate", "error": "no PDF to score", "cmd": []} for s in added]
+        rebuilt = _tool_report(str(data.get("tool") or tool), None, stems, scores, failures,
+                               version=data.get("version"))
+        rebuilt["converter"] = data.get("converter")
+        done["tools"][tool] = data | rebuilt
+    done["stems"] = stems
+    done["n"] = len(stems)
+    done["itt_completed"] = {
+        "added": sorted(added),
+        "rule": "listed documents the run dropped as 'no PDF to score … skipped' are failures scored 0 (#69)",
+        "at": datetime.now(UTC).isoformat(timespec="seconds"),
+    }
+    return done, added

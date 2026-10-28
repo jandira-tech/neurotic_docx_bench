@@ -86,6 +86,11 @@ def _still_current(row: dict, orc_pdf: Path, cand_pdf: Path, scorer: str) -> boo
             and want == (_sha(orc_pdf), _sha(cand_pdf)))
 
 
+def fresh_missing(pool: list[dict], regen: set[str], oracle: dict[str, tuple[Path, str]]) -> list[str]:
+    """Ids the regen list says Word made again whose fresh PDF is not there."""
+    return sorted(r['id'] for r in pool if r['id'] in regen and oracle[r['key']][1] != 'fresh')
+
+
 def oracles(pool: list[dict], fresh: Path | None) -> dict[str, tuple[Path, str]]:
     """Each compare key's oracle PDF and where it came from (``fresh`` or ``corpus``)."""
     out = {}
@@ -244,8 +249,8 @@ def measure(tool: str, fresh: Path | None, regen: set[str], jobs: int, sample: i
     summary['sample'] = ({'csv': sample_csv.name} if sample_csv else {'n': sample, 'seed': seed} if sample else None)
     summary['scorer_backend'] = kernels.backend_id()
     missing = sorted(set(state) - set(rows))
-    fresh_missing = sorted(r['id'] for r in pool if r['id'] in regen and oracle[r['key']][1] != 'fresh')
-    out.write_text(json.dumps({'summary': summary, 'missing': missing, 'fresh_missing': fresh_missing, 'rows': rows},
+    fm = fresh_missing(pool, regen, oracle)
+    out.write_text(json.dumps({'summary': summary, 'missing': missing, 'fresh_missing': fm, 'rows': rows},
                               indent=1, sort_keys=True))
     partial.unlink(missing_ok=True)
     o, itt = summary['overall'], summary.get('overall_itt', {})
@@ -253,7 +258,7 @@ def measure(tool: str, fresh: Path | None, regen: set[str], jobs: int, sample: i
              f'median {itt.get("median", 0):.2f})' if summary['missing'] else '')
     print(f'{tool}: {summary["scored"]}/{summary["pairs"]} scored, mean {o.get("mean", 0):.2f}, '
           f'median {o.get("median", 0):.2f}, >=90: {o.get("at_least_90", 0)}{zeros}; '
-          f'fresh oracles {summary["by_oracle"]["fresh"]["pairs"]}, meant fresh but old {len(fresh_missing)}; '
+          f'fresh oracles {summary["by_oracle"]["fresh"]["pairs"]}, meant fresh but old {len(fm)}; '
           f'{summary["scorer_backend"]} -> {out}')
 
 

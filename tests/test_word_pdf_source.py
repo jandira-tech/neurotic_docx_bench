@@ -138,3 +138,65 @@ def test_score_only_list_of_corpus_pdfs_does_not_need_the_docx(tmp_path: Path) -
     )
     assert [item.original_stem for item in selected.fixtures] == ["orphan_only"]
     assert selected.warnings == []
+
+
+def test_score_only_list_keeps_a_listed_document_with_no_pdf_to_score(tmp_path: Path) -> None:
+    """A listed conversion that crashed is a failure scored 0, not a smaller population (#69)."""
+    from neurotic_docx_bench.docx_to_pdf import _tool_report, stage_candidates
+
+    _corpus(tmp_path)
+    paired = tmp_path / "clean" / "docx" / "paired.docx"
+    present = tmp_path / "with_comments_tracking" / "docx" / f"{PRESENT}.docx"
+    cands = tmp_path / "cands"
+    _touch(cands / f"{PRESENT}.pdf", b"%PDF-1.4 cand")  # paired's conversion crashed: no PDF
+    selected = select_corpus_word_pdfs(
+        origin="list", root=tmp_path, files_list=[paired, present], score_only=True, locations=[cands],
+    )
+    assert {item.original_stem for item in selected.fixtures} == {PRESENT, "paired"}
+    assert "clean__paired" not in selected.candidates
+    assert any("paired" in w and "scored 0" in w for w in selected.warnings)
+    failures = stage_candidates(selected.fixtures, selected.candidates, tmp_path / "staged")
+    assert [(f["doc"], f["stage"], f["error"]) for f in failures] == [("clean__paired", "generate", "no PDF to score")]
+    stems = [item.stem for item in selected.fixtures]
+    report = _tool_report("soffice", None, stems, {f"with_comments_tracking__{PRESENT}": 80.0}, failures)
+    assert (report["itt_n"], report["failures"], report["mean"]) == (2, 1, 40.0)
+
+
+def test_score_only_over_a_whole_state_still_skips_documents_without_a_pdf(tmp_path: Path) -> None:
+    """Not every corpus document is expected to have a candidate when nothing was listed."""
+    _corpus(tmp_path)
+    cands = tmp_path / "cands"
+    _touch(cands / f"{PRESENT}.pdf", b"%PDF-1.4 cand")
+    selected = select_corpus_word_pdfs(origin="all", root=tmp_path, score_only=True, locations=[cands])
+    assert {item.original_stem for item in selected.fixtures} == {PRESENT}
+    assert any("paired" in w and "skipped" in w for w in selected.warnings)
+
+
+def test_no_bench_yaml_means_corpus_word_in_the_working_folder(tmp_path: Path, monkeypatch) -> None:
+    """An installed wheel has no bench.yaml: docx-to-pdf reads ./corpus/word, where `bench fixtures get` puts it."""
+    monkeypatch.chdir(tmp_path)
+    root, states = word_pdf_from_config(Path("bench.yaml"))
+    assert root == Path("corpus/word")
+    assert states == STATES
+
+
+def test_a_reused_work_dir_never_scores_a_stale_pdf_for_a_missing_candidate(tmp_path: Path) -> None:
+    """#86 item 1: a previous run's staged PDF must not stand in for a conversion that is now missing."""
+    from neurotic_docx_bench.docx_to_pdf import stage_candidates
+
+    _corpus(tmp_path)
+    paired = tmp_path / "clean" / "docx" / "paired.docx"
+    cands = tmp_path / "cands"
+    _touch(cands / "paired.pdf", b"%PDF-1.4 old run")
+    first = select_corpus_word_pdfs(origin="list", root=tmp_path, files_list=[paired], score_only=True,
+                                    locations=[cands])
+    staged = tmp_path / "staged"
+    assert stage_candidates(first.fixtures, first.candidates, staged) == []
+    assert (staged / "clean__paired.pdf").is_file()
+    (cands / "paired.pdf").unlink()  # this run's conversion crashed
+    _touch(cands / f"{PRESENT}.pdf", b"%PDF-1.4 cand")  # the folder still holds other PDFs
+    second = select_corpus_word_pdfs(origin="list", root=tmp_path, files_list=[paired], score_only=True,
+                                     locations=[cands])
+    failures = stage_candidates(second.fixtures, second.candidates, staged)
+    assert [f["doc"] for f in failures] == ["clean__paired"]
+    assert not (staged / "clean__paired.pdf").exists()

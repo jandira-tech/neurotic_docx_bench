@@ -45,9 +45,13 @@ def word_pdf_from_config(path: Path | str) -> tuple[Path, tuple[str, ...]]:
 
     Relative ``root`` is resolved against the yaml file's directory. Missing
     ``word_pdf`` falls back to :data:`word_corpus.DEFAULT_DEST` and
-    :data:`word_corpus.STATES`.
+    :data:`word_corpus.STATES`; so does a missing yaml (an installed wheel run
+    outside a checkout, where ``bench fixtures get`` put the corpus in the
+    working folder).
     """
     path = Path(path)
+    if not path.is_file():
+        return DEFAULT_DEST, STATES
     data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
     block = data.get("word_pdf") or {}
     raw_root = block.get("root") or DEFAULT_DEST.as_posix()
@@ -105,7 +109,7 @@ def select_corpus_word_pdfs(
             rows.extend(_scan_state(root, state, warnings))
 
     if score_only:
-        return _score_only(rows, warnings, locs, tool)
+        return _score_only(rows, warnings, locs, tool, listed=origin == "list")
     return _for_conversion(rows, warnings)
 
 
@@ -204,8 +208,16 @@ def _score_only(
     warnings: list[str],
     locations: Sequence[Path],
     tool: str | None,
+    *,
+    listed: bool = False,
 ) -> CorpusWordSelection:
-    """Every Word PDF that has a PDF to score. A missing DOCX is allowed."""
+    """Every Word PDF that has a PDF to score. A missing DOCX is allowed.
+
+    On a listed track every listed document belongs to the population: one with
+    no PDF to score (its conversion crashed) stays, with no candidate, so
+    ``stage_candidates`` records it as a failure and it scores 0 under ITT (#69).
+    Over a whole state a missing candidate is expected and the document is skipped.
+    """
     index = _candidate_index(locations, tool)
     used: set[str] = set()
     fixtures: list[Fixture] = []
@@ -218,15 +230,18 @@ def _score_only(
             continue
         key = render_key(pdf.stem, None)
         cand = index.get(key)
-        if cand is None:
+        if cand is None and not listed:
             warnings.append(f"no PDF to score for {pdf}; skipped")
             continue
         item = _fixture(state, docx, pdf)
         if item.stem in seen:
             continue
         seen.add(item.stem)
-        used.add(key)
         fixtures.append(item)
+        if cand is None:
+            warnings.append(f"no PDF to score for {pdf}; listed, so it is a failure scored 0")
+            continue
+        used.add(key)
         candidates[item.stem] = cand
     for key, path in sorted(index.items()):
         if key not in used:

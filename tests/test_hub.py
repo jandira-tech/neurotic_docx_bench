@@ -382,22 +382,48 @@ def test_fetch_word_corpus_refuses_a_tampered_download(tmp_path: Path) -> None:
 
 
 def test_fetch_compare_regen_files_the_fresh_compares_and_their_ids(tmp_path: Path) -> None:
+    """The hub names a fresh compare ``<id>__vs__<id>``; measure.py reads ids (#81)."""
     api = FakeHub()
     folder = hub.FRESH_COMPARES
     api.stored[hub.RESULTS_REPO] = {
-        f"{folder}/aa__vs__bb.docx": b"PK",
-        f"{folder}/aa__vs__bb.pdf": b"%PDF-a",
-        f"{folder}/cc__vs__dd.pdf": b"%PDF-c",
+        f"{folder}/01e0dea21e__vs__01e0dea21e.docx": b"PK",
+        f"{folder}/01e0dea21e__vs__01e0dea21e.pdf": b"%PDF-a",
+        f"{folder}/0000ae5089__vs__0000ae5089.pdf": b"%PDF-c",
         "outputs/redlines_0929_full/docxodus/docx/z.docx": b"PK-z",
     }
     out = tmp_path / "results/compare_regen"
     ids = hub.fetch_compare_regen(out, api=api)
-    assert ids == ("aa__vs__bb", "cc__vs__dd")
-    assert (out / "out/aa__vs__bb.pdf").read_bytes() == b"%PDF-a"
-    assert (out / "out/cc__vs__dd.pdf").exists()
+    assert ids == ("0000ae5089", "01e0dea21e")
+    assert (out / "out/01e0dea21e__vs__01e0dea21e.pdf").read_bytes() == b"%PDF-a"
+    assert (out / "out/0000ae5089__vs__0000ae5089.pdf").exists()
     assert not (out / "out/z.docx").exists()
     assert not list(out.rglob("docxodus"))
-    assert (out / "regen_list.csv").read_text() == "id\naa__vs__bb\ncc__vs__dd\n"
+    assert (out / "regen_list.csv").read_text() == "id\n0000ae5089\n01e0dea21e\n"
+
+
+@pytest.mark.parametrize("name", ["aa__vs__bb.pdf", "aa.pdf", "aa__vs__aa__vs__aa.pdf", "__vs__.pdf"])
+def test_fetch_compare_regen_refuses_a_name_that_is_not_id_vs_the_same_id(tmp_path: Path, name: str) -> None:
+    api = FakeHub()
+    api.stored[hub.RESULTS_REPO] = {
+        f"{hub.FRESH_COMPARES}/0000ae5089__vs__0000ae5089.pdf": b"%PDF",
+        f"{hub.FRESH_COMPARES}/{name}": b"%PDF",
+    }
+    out = tmp_path / "cr"
+    with pytest.raises(hub.ManifestError, match="<id>__vs__<id>"):
+        hub.fetch_compare_regen(out, api=api)
+    assert not (out / "regen_list.csv").exists()
+    assert not (out / ".hub").exists()  # PR #87 review: a refusal leaves no staging behind
+
+
+def test_fetch_compare_regen_never_reads_a_stale_staged_file(tmp_path: Path) -> None:
+    """PR #87 review: a bad name the hub has since removed must not refuse the next run."""
+    api = FakeHub()
+    api.stored[hub.RESULTS_REPO] = {f"{hub.FRESH_COMPARES}/0000ae5089__vs__0000ae5089.pdf": b"%PDF"}
+    out = tmp_path / "cr"
+    stale = out / ".hub" / hub.FRESH_COMPARES / "aa__vs__bb.pdf"
+    stale.parent.mkdir(parents=True)
+    stale.write_bytes(b"%PDF left by an earlier run")
+    assert hub.fetch_compare_regen(out, api=api) == ("0000ae5089",)
 
 
 def test_fetch_compare_regen_refuses_an_empty_folder(tmp_path: Path) -> None:

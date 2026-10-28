@@ -165,6 +165,7 @@ def _tree(tmp_path: Path, fill: int = 6, fixtures: int = 3) -> tuple[Path, Path]
             _put(word / name)
         _put(run / 'oracle_pdf' / f'{r["key"]}.pdf')
     _put(regen / 'out' / 'idwct1__vs__idwct1.pdf')
+    (regen / 'regen_list.csv').write_text('id\nidwct1\n')
     for r in gen:
         if r['key'] != 'twc0':
             _put(run / 'docxodus' / 'pdf_by_word' / f'{r["key"]}_docxodus.pdf')
@@ -779,11 +780,22 @@ def test_a_new_candidate_never_resumes_the_previous_binary_s_renders(tmp_path: P
     assert len(list(kept.rglob('*.pdf'))) == 2  # the earlier set-aside copy is still there
 
 
-def test_soffice_renders_are_staged_under_the_docx_stem_and_scored_from_there(tmp_path: Path) -> None:
+def test_soffice_renders_are_staged_under_the_docx_stem_and_scored_from_there(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from neurotic_docx_bench.render import soffice as so
+
     root, regen = _tree(tmp_path)
     lines = [f'corpus/word/{state}/docx/fx{s}{i}.docx' for s, state in enumerate(jri.CONVERSION_QUOTAS) for i in (0, 1)]
     _put(root / 'convert.txt', '\n'.join(lines).encode())
-    steps = _sample(root, regen, 8, jobs=5, adopt_conversion_list=Path('convert.txt'))
+    # the pinned LibreOffice answers, whatever soffice this machine has (or none)
+    monkeypatch.setattr(so, 'find_soffice', lambda *a, **k: Path('soffice'))
+
+    def pinned(cmd, **_):
+        return Proc(0, f'{jri.SOFFICE_VERSION} bce0998afefdbc355585ca324285661a2170ba77\n') if cmd[-1] == '--version' \
+            else Proc(1)
+
+    steps = _sample(root, regen, 8, jobs=5, adopt_conversion_list=Path('convert.txt'), run=pinned)
     ev = jri.evidence_dir(V)
     assert '1 fixtures without a LibreOffice render' in _act(steps, 'soffice missing list')
     assert (root / ev / 'soffice_missing.txt').read_text() == 'corpus/word/clean/docx/fx00.docx\n'
@@ -1083,10 +1095,13 @@ def test_the_sample_preflight_bootstraps_without_soffice_renders(tmp_path: Path)
     for pdf in (root / jri.SOFFICE_WORK / 'candidate').iterdir():
         pdf.unlink()
     (root / jri.SOFFICE_WORK / 'candidate').rmdir()  # git-ignored: a clean checkout has none
-    assert _act(_plan(root, regen), 'bench inputs').endswith('present')
+    assert _act(_plan(root, regen), 'bench inputs').endswith('1 ids listed, each with its PDF')
+    (regen / 'regen_list.csv').write_text('id\nidwct1\nidwct2\n')
+    with pytest.raises(RuntimeError, match='idwct2.*scripts/fetch_corpus.py'):
+        _act(_plan(root, regen), 'bench inputs')  # #82: checked here, not after the Word export
     (regen / 'out' / 'idwct1__vs__idwct1.pdf').unlink()
     (regen / 'out').rmdir()
-    with pytest.raises(RuntimeError, match='the fresh-compare oracle rule reads it'):
+    with pytest.raises(RuntimeError, match='does not exist'):
         _act(_plan(root, regen), 'bench inputs')
 
 
@@ -1253,6 +1268,65 @@ def test_a_write_that_fails_halfway_keeps_the_previous_complete_set(tmp_path: Pa
         with pytest.raises(OSError, match='No space left'):
             jri.write_six(tmp_path, '9.9.9', now=now, **args)
         assert {p.name: p.read_bytes() for p in folder.iterdir()} == before
+
+
+def _six_args(redline_drawn: str | None, conversion_drawn: str | None) -> dict:
+    def tool(version: str, median: float) -> dict:
+        return {'version': version, 'median': median, 'mean': 50.0, 'n': 2, 'failures': 0,
+                'exact_100': 0, 'at_least_90': 0, 'median_ci95': [1.0, 2.0],
+                'by_state': {'clean': {'n': 2, 'median': median}}}
+
+    def sample(date: str | None) -> dict:
+        return {'pairs': 2, 'drawn': {'seed': 1, 'date': date}} if date else {'pairs': 2}
+
+    redline = {'tools': {'jubarte': tool('jubarte 9.9.9', 71.0), 'docxodus': tool('Docxodus', 65.0)},
+               'sample': sample(redline_drawn), 'comparison': {'ci95': [1.0, 9.0]}}
+    conversion = {'tools': {'jubarte': tool('jubarte 9.9.9', 79.0), 'soffice': tool('LibreOffice', 55.0)},
+                  'sample': sample(conversion_drawn), 'versions': {'scorer': 's'},
+                  'comparison': {'ci95': [1.0, 9.0]}}
+    return dict(redline=redline, conversion=conversion, redline_data=[['a']], conversion_data=[['b']])
+
+
+def _website(folder: Path) -> list[dict]:
+    (path,) = folder.glob('website_data_*.jsonl')
+    return [json.loads(line) for line in path.read_text().splitlines()]
+
+
+def test_the_website_date_is_the_day_the_samples_were_drawn(tmp_path: Path) -> None:
+    # 0.14.0 (#60): the samples were drawn on 10-24 and the six written after
+    # midnight UTC; bench.generated said 10-25 and the site step refused it.
+    jri.write_six(tmp_path, '9.9.9', now=datetime(2026, 10, 25, 1, 20), **_six_args('2026-10-24', '2026-10-24'))
+    records = _website(tmp_path / 'release_info')
+    generated = next(r['value'] for r in records if r['key'] == 'bench.generated')
+    assert generated == '2026-10-24'
+    # every date the page shows (meta, desc, source); ts is the write time, as facts.py stamps it
+    text = json.dumps([{k: v for k, v in r.items() if k != 'ts'} for r in records], ensure_ascii=False)
+    assert '2026-10-24' in text
+    assert '2026-10-25' not in text
+
+
+def test_samples_drawn_on_two_days_are_refused(tmp_path: Path) -> None:
+    # The site holds bench.generated to both drawn dates: no single date fits.
+    with pytest.raises(ValueError, match='redraw'):
+        jri.write_six(tmp_path, '9.9.9', now=datetime(2026, 10, 25, 1, 20),
+                      **_six_args('2026-10-24', '2026-10-25'))
+    assert not (tmp_path / 'release_info').exists() or not list((tmp_path / 'release_info').glob('*_9.9.9_*'))
+
+
+def test_one_drawn_date_is_the_website_date(tmp_path: Path) -> None:
+    # The site holds bench.generated only to the samples that name a drawn
+    # date; today's date would fail it whenever the flow crosses midnight.
+    jri.write_six(tmp_path, '9.9.9', now=datetime(2026, 10, 25, 1, 20), **_six_args('2026-10-24', None))
+    records = _website(tmp_path / 'release_info')
+    assert next(r['value'] for r in records if r['key'] == 'bench.generated') == '2026-10-24'
+
+
+def test_without_drawn_dates_the_website_date_is_the_write_time_s(tmp_path: Path) -> None:
+    # Neither sample names a drawn date: the date is the write time's (UTC),
+    # and a caller's now pins it, as it pins the stamp.
+    jri.write_six(tmp_path, '9.9.9', now=datetime(2026, 1, 2, 12, 0), **_six_args(None, None))
+    records = _website(tmp_path / 'release_info')
+    assert next(r['value'] for r in records if r['key'] == 'bench.generated') == '2026-01-02'
 
 
 def test_the_engine_commit_names_the_binary_s_build_not_the_checkout_s_head(tmp_path: Path) -> None:

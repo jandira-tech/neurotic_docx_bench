@@ -1,10 +1,27 @@
 [project]
 name = "neurotic-docx-bench"
-version = "0.8.0"
+version = "1.0.0"
 license = "AGPL-3.0-only"
 description = "A benchmark for manipulating docx files and assessing their fidelity to Microsoft Word(R), the oracle."
 readme = "README.md"
 requires-python = ">=3.14"
+authors = [{ name = "Arthur Souza Rodrigues", email = "arthursrodrigues@gmail.com" }]
+keywords = ["docx", "ooxml", "benchmark", "redline", "tracked-changes", "microsoft-word", "pdf"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: GNU Affero General Public License v3",
+    "Operating System :: MacOS",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Office/Business :: Office Suites",
+    "Topic :: Software Development :: Testing",
+    "Topic :: Text Processing :: Markup :: XML",
+    "Typing :: Typed",
+]
 dependencies = [
     "pymupdf>=1.24",
     "numpy>=2.0",
@@ -42,6 +59,13 @@ competitors = [
 # Torch backend for the scorer kernels (`--device mps|cuda`); the skimage path is the default.
 gpu = ["torch>=2.5"]
 
+[project.urls]
+Homepage = "https://github.com/jandira-tech/neurotic_docx_bench"
+Repository = "https://github.com/jandira-tech/neurotic_docx_bench"
+Issues = "https://github.com/jandira-tech/neurotic_docx_bench/issues"
+Changelog = "https://github.com/jandira-tech/neurotic_docx_bench/blob/main/CHANGELOG.md"
+Fixtures = "https://huggingface.co/datasets/arthrod/neurotic_docx_bench-fixtures"
+
 [project.scripts]
 bench = "neurotic_docx_bench.cli:app"
 
@@ -55,10 +79,14 @@ packages = ["src/neurotic_docx_bench"]
 exclude = ["src/neurotic_docx_bench/utils/**", "**/__pycache__", "**/.DS_Store"]
 
 [tool.hatch.build.targets.sdist]
-exclude = ["src/neurotic_docx_bench/utils/**", "corpus/**", "results/**", "runs/**", ".old/**", "docx-viewer/**", "node_modules/**", "scripts/formula_archive/**"]
+# The package and what it needs to build; the corpus, results, scripts and harnesses stay in git.
+only-include = ["src/neurotic_docx_bench", "licenses", "LICENSE", "README.md", "CHANGELOG.md", "CITATION.cff", "pyproject.toml"]
+exclude = ["src/neurotic_docx_bench/utils/**", "**/__pycache__", "**/.DS_Store"]
 
 [dependency-groups]
 dev = [
+    # The generator tests import the competitor SDKs; `uv sync` installs them for development.
+    "neurotic-docx-bench[competitors]",
     "pytest>=8.0",
     "pytest-xdist>=3.5",
     "ty>=0.0.56",

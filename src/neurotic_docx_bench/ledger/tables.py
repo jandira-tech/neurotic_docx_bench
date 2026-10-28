@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 import statistics
-from collections.abc import Mapping, Sequence
+from collections.abc import Callable, Mapping, Sequence
 from datetime import datetime
 from pathlib import Path
 
@@ -389,6 +389,35 @@ def speed_tables(h: pol.SpeedHeadline, *, compact: bool = False) -> str:
     return "\n".join(out).rstrip() + "\n"
 
 
+def _measurements(
+    members: Sequence[ResultRow], verdict: Callable[[ResultRow], pol.Verdict],
+) -> list[tuple[ResultRow, list[ResultRow], pol.Verdict]]:
+    """One entry per measurement: its newest row, the earlier rows identical to it, and their verdict.
+
+    The release flow persists a report once per run, so the store holds the same
+    measurement under several ``id_run``s that differ in nothing else but the
+    timestamp (#75). The store keeps them all; History shows the measurement once.
+    Rows whose verdicts differ (one retracted, say) stay apart, so no reason is lost (#86).
+    """
+    same: dict[str, list[tuple[ResultRow, pol.Verdict]]] = {}
+    for r in members:
+        v = verdict(r)
+        key = json.dumps([r.model_dump(mode="json", exclude={"id_run", "timestamp"}, warnings=False),
+                          v.eligible, list(v.reasons)], sort_keys=True)
+        same.setdefault(key, []).append((r, v))
+    out = []
+    for rows in same.values():
+        rows.sort(key=lambda m: (m[0].timestamp, m[0].id_run))
+        out.append((rows[-1][0], [m for m, _ in rows[:-1]], rows[-1][1]))
+    return sorted(out, key=lambda e: (e[0].display, e[0].timestamp))
+
+
+def _runs_cell(r: ResultRow, earlier: Sequence[ResultRow]) -> str:
+    if not earlier:
+        return r.id_run
+    return f"{r.id_run} ({len(earlier) + 1} runs; also {', '.join(m.id_run for m in earlier)})"
+
+
 def history_section(
     rows: Sequence[ResultRow],
     *,
@@ -425,14 +454,10 @@ def history_section(
             )
             out.append("")
             body = []
-            for r in sorted(members, key=lambda m: (m.display, m.timestamp)):
-                v = pol.eligibility(
-                    r,
-                    expected=exp,
-                    retractions=retractions,
-                    registry=registry,
-                    docsets=docsets,
-                )
+            def verdict(r: ResultRow, exp: int = exp) -> pol.Verdict:
+                return pol.eligibility(r, expected=exp, retractions=retractions, registry=registry, docsets=docsets)
+
+            for r, earlier, v in _measurements(members, verdict):
                 approx = "~" if r.itt_approx else ""
                 body.append(
                     [
@@ -445,7 +470,7 @@ def history_section(
                         fmt(r.itt_median) + approx,
                         fmt(r.itt_mean) + approx,
                         "eligible" if v.eligible else "; ".join(v.reasons),
-                        r.id_run,
+                        _runs_cell(r, earlier),
                     ]
                 )
             out.append(
