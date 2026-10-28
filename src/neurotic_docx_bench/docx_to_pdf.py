@@ -782,6 +782,7 @@ def run_eval(
             score_dir = root / tool / "score"
             cand_full = score_folder_pair(
                 oracle_dir, cand_dir, score_dir, dpi=dpi, jobs=jobs,
+                checkpoint=root / tool / "scores.checkpoint.jsonl",
             )
             cand_scores = _overall_map(cand_full)
             shutil.rmtree(score_dir, ignore_errors=True)

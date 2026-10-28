@@ -359,3 +359,14 @@ def test_font_staging_removes_stale_faces() -> None:
     stage.mkdir()
     (stage / "NotoSans-VariableFont.ttf").write_bytes(b"stale")
     assert sorted(p.name for p in d2p.docxodus_font_dir().iterdir()) == ["Carlito-Regular.ttf"]
+
+
+def test_score_only_resumes_from_the_tools_checkpoint(tmp_path: Path, monkeypatch) -> None:
+    """#89: a share scored on another machine is merged into the checkpoint and not scored again."""
+    items = [_fixture(tmp_path, f"doc {i}") for i in range(2)]
+    seen: list[object] = []
+    monkeypatch.setattr(d2p, "score_folder_pair", lambda *a, **k: seen.append(k.get("checkpoint")) or {})
+    cand = {i.stem: i.oracle for i in items}
+    d2p.run_eval(tmp_path / "r.json", tools=("soffice",), work_dir=tmp_path / "w", fixtures=items,
+                 check_pins=False, track="corpus/word:all", resume=False, score_only=True, candidates=cand)
+    assert seen == [tmp_path / "w" / "soffice" / "scores.checkpoint.jsonl"]
