@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+import shlex
 import sys
+import time
 
 import pymupdf as fitz
 import pytest
@@ -12,12 +14,20 @@ from neurotic_docx_bench.render import soffice
 from neurotic_docx_bench.render.base import RenderReport
 
 
+def _converter(tmp_path, body):
+    script = tmp_path / "soffice.py"
+    script.write_text(body)
+    binary = tmp_path / "soffice"
+    binary.write_text(f'#!/bin/sh\nexec {shlex.quote(sys.executable)} {shlex.quote(str(script))} "$@"\n')
+    binary.chmod(0o755)
+    return binary
+
+
 @pytest.mark.parametrize("first", ["timeout", "nonzero", "crash"])
 def test_failed_attempt_never_reuses_partial_pdf(tmp_path, first):
     attempts = tmp_path / "attempts"
-    binary = tmp_path / "soffice"
-    binary.write_text(
-        f"#!{sys.executable}\n"
+    binary = _converter(
+        tmp_path,
         "import os, signal, sys, time\n"
         "from pathlib import Path\n"
         f"attempts = Path({str(attempts)!r})\n"
@@ -31,7 +41,6 @@ def test_failed_attempt_never_reuses_partial_pdf(tmp_path, first):
         "    sys.exit(3)\n"
         f"if {first!r} == 'crash': out.write_bytes(b'%PDF-1.7 complete')\n"
     )
-    binary.chmod(0o755)
     result = soffice.convert_one(binary, tmp_path / "a.docx", tmp_path / "pdf", timeout=0.5)
     pdf = tmp_path / "pdf" / "a.pdf"
     assert result.ok is (first == "crash")
@@ -40,6 +49,48 @@ def test_failed_attempt_never_reuses_partial_pdf(tmp_path, first):
         assert pdf.read_bytes() == b"%PDF-1.7 complete"
     else:
         assert not pdf.exists()
+
+
+def test_fake_converter_handles_spaces_in_its_interpreter_and_script_paths(tmp_path, monkeypatch):
+    folder = tmp_path / "fake converter with spaces"
+    folder.mkdir()
+    interpreter = folder / "python"
+    interpreter.symlink_to(sys.executable)
+    monkeypatch.setattr(sys, "executable", str(interpreter))
+    binary = _converter(
+        folder,
+        "import sys\n"
+        "from pathlib import Path\n"
+        "out = Path(sys.argv[sys.argv.index('--outdir') + 1]) / 'a.pdf'\n"
+        "out.write_bytes(b'%PDF-1.7 complete')\n",
+    )
+    error = None
+    try:
+        result = soffice.convert_one(binary, tmp_path / "a.docx", tmp_path / "pdf")
+    except OSError as exc:
+        error = exc
+    assert error is None, f"fake converter must support interpreter paths with spaces: {error}"
+    assert result.ok, result.error
+    assert result.pdf.read_bytes() == b"%PDF-1.7 complete"
+
+
+def test_timeout_kills_descendants_before_they_can_write_a_late_pdf(tmp_path):
+    pdf = tmp_path / "pdf" / "a.pdf"
+    attempts = tmp_path / "attempts"
+    binary = tmp_path / "soffice"
+    binary.write_text(
+        "#!/bin/sh\n"
+        f"(sleep 1; printf '%%PDF-1.7 late' > {shlex.quote(str(pdf))}) >/dev/null 2>&1 &\n"
+        f"printf 'started\\n' >> {shlex.quote(str(attempts))}\n"
+        "sleep 30\n"
+    )
+    binary.chmod(0o755)
+    result = soffice.convert_one(binary, tmp_path / "a.docx", pdf.parent, timeout=0.3, retries=3)
+    assert not result.ok and result.error == "soffice timed out"
+    assert result.pdf is None
+    assert attempts.read_text() == "started\n"
+    time.sleep(1.2)
+    assert not pdf.exists(), "timed-out descendants must not write a late PDF"
 
 
 @requires_soffice

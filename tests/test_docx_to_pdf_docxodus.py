@@ -120,6 +120,31 @@ def test_a_real_pdf_with_a_space_in_every_path_converts(tmp_path: Path) -> None:
     assert pymupdf.open(dest).page_count == 2
 
 
+def test_a_pdf_with_an_unloadable_second_page_is_a_conversion_failure(tmp_path: Path) -> None:
+    with pymupdf.open(stream=_pdf_bytes(2), filetype="pdf") as doc:
+        xref = doc.page_xref(1)
+        data = doc.tobytes()
+    marker = f"{xref} 0 obj\n".encode()
+    start = data.index(marker) + len(marker)
+    end = data.index(b"\nendobj", start)
+    # Keep the xref offsets intact but replace page 2 with an empty page-tree node.
+    broken_page = b"<</Type/Pages/Count 0/Kids[]>>"
+    assert len(broken_page) <= end - start
+    broken = tmp_path / "broken.pdf"
+    broken.write_bytes(data[:start] + broken_page.ljust(end - start) + data[end:])
+    with pymupdf.open(broken) as doc:
+        assert doc.page_count == 2
+        assert doc.load_page(0).get_text().strip() == "converted"
+        with pytest.raises(ValueError, match="page not in document"):
+            doc.load_page(1)
+    binary = _converter(tmp_path, f'cp "{broken}" "$OUT"')
+    dest = tmp_path / "candidate" / "a.pdf"
+    error = d2p.try_convert_fixture("docxodus", binary, _fixture(tmp_path), dest)
+    assert error is not None, "an unloadable later page must fail conversion"
+    assert "unreadable PDF" in error["error"]
+    assert not dest.exists()
+
+
 @pytest.mark.parametrize(
     ("body", "error"),
     [
@@ -359,6 +384,21 @@ def test_font_staging_removes_stale_faces() -> None:
     stage.mkdir()
     (stage / "NotoSans-VariableFont.ttf").write_bytes(b"stale")
     assert sorted(p.name for p in d2p.docxodus_font_dir().iterdir()) == ["Carlito-Regular.ttf"]
+
+
+def test_font_staging_prunes_only_unselected_ttf_files() -> None:
+    stage = d2p.DOCXODUS_FONT_STAGE
+    stage.mkdir()
+    kept = {".Carlito-Regular.ttf.123.456.tmp": b"copy in progress", "README.txt": b"notes",
+            ".hidden.ttf": b"hidden face"}
+    for name, data in kept.items():
+        (stage / name).write_bytes(data)
+    (stage / "NotoSans-VariableFont.ttf").write_bytes(b"stale")
+    d2p.docxodus_font_dir()
+    assert all((stage / name).is_file() for name in kept), "staging must preserve dotfiles and non-font files"
+    assert {name: (stage / name).read_bytes() for name in kept} == kept
+    assert not (stage / "NotoSans-VariableFont.ttf").exists()
+    assert (stage / "Carlito-Regular.ttf").read_bytes() == b"metric font"
 
 
 def test_score_only_resumes_from_the_tools_checkpoint(tmp_path: Path, monkeypatch) -> None:

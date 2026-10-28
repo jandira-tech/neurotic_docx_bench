@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 import sys
 from itertools import count
 from pathlib import Path
@@ -40,6 +41,66 @@ def _real_pdf() -> bytes:
 
 
 _REAL_PDF = _real_pdf()  # resume keeps only a candidate MuPDF opens (#90)
+
+
+def test_resume_refuses_a_different_engine_before_selecting_fixtures(conversion_run, monkeypatch):
+    selection, out = conversion_run
+    selection.fixtures = []
+    out.mkdir()
+    path = out / "convert_seconds.json"
+    previous = {"engine": "soffice", "seconds": {"earlier": 2.0}, "failures": {}}
+    path.write_text(json.dumps(previous))
+    selected = []
+    monkeypatch.setattr(candidates.cli, "_corpus_word_selection",
+                        lambda **kw: selected.append(kw) or selection)
+    error = None
+    try:
+        candidates.main()
+    except SystemExit as exc:
+        error = exc
+    assert isinstance(error, SystemExit), "must refuse the engine mismatch"
+    assert "soffice" in str(error) and "docxide" in str(error)
+    assert selected == []
+    assert json.loads(path.read_text()) == previous
+
+
+@pytest.mark.parametrize("exception", [RuntimeError, KeyboardInterrupt])
+@pytest.mark.parametrize("first_error", [None, "conversion failed"])
+def test_worker_exception_saves_completed_records_atomically(conversion_run, monkeypatch, exception, first_error):
+    selection, out = conversion_run
+    monkeypatch.setattr(sys, "argv", ["convert_candidates.py", "--engine", "soffice",
+                                     "--out", str(out), "--jobs", "1"])
+    monkeypatch.setattr(candidates.so, "find_soffice", lambda: Path("soffice"))
+    calls = []
+
+    def convert_one(binary, docx, dest, **kw):
+        calls.append(docx.stem)
+        if len(calls) == 2:
+            raise exception("second document stopped")
+        pdf = dest / f"{docx.stem}.pdf"
+        pdf.write_bytes(_REAL_PDF)
+        return SimpleNamespace(ok=first_error is None, pdf=pdf, error=first_error)
+
+    monkeypatch.setattr(candidates.so, "convert_one", convert_one)
+    path = out / "convert_seconds.json"
+    replaced = []
+    replace = os.replace
+
+    def atomic_replace(src, dest):
+        replaced.append(json.loads(Path(src).read_text()))
+        assert Path(dest) == path
+        assert not path.exists()
+        return replace(src, dest)
+
+    monkeypatch.setattr(os, "replace", atomic_replace)
+    with pytest.raises(exception, match="second document stopped"):
+        candidates.main()
+    assert calls == [item.stem for item in selection.fixtures]
+    assert path.is_file(), "completed records must survive a worker exception"
+    record = json.loads(path.read_text())
+    assert record["seconds"] == {"good": 0.25}
+    assert record["failures"] == ({"good": first_error} if first_error else {})
+    assert replaced == [record]
 
 
 def test_resume_preserves_seconds_and_failures_with_nothing_to_convert(conversion_run, monkeypatch):

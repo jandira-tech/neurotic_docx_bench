@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import shutil
 import tempfile
 import time
@@ -30,6 +31,10 @@ def main() -> None:
                     help="a text file of corpus docx paths (one per line): convert only the "
                          "listed fixtures that lack a render, not every fixture")
     args = ap.parse_args()
+    record_path = args.out / "convert_seconds.json"
+    previous = json.loads(record_path.read_text()) if record_path.is_file() else {}
+    if previous.get("engine") is not None and previous["engine"] != args.engine:
+        raise SystemExit(f"conversion record uses engine {previous['engine']}, requested {args.engine}")
     fixtures = cli._corpus_word_selection(
         origin="all", files_list=[], score_only=False, locations=[], config=Path("bench.yaml"), tool=None
     ).fixtures
@@ -52,8 +57,6 @@ def main() -> None:
     soffice = so.find_soffice() if args.engine == "soffice" else None
     binary = d2p.resolve_tool_binary("docxide-pdf") if args.engine == "docxide" else None
 
-    record_path = args.out / "convert_seconds.json"
-    previous = json.loads(record_path.read_text()) if record_path.is_file() else {}
     seconds: dict[str, float] = previous.get("seconds", {})
     failures: dict[str, str] = previous.get("failures", {})
 
@@ -76,24 +79,30 @@ def main() -> None:
         start = time.perf_counter()
         err = convert(f, cand / f"{f.stem}.pdf")
         seconds[f.stem] = round(time.perf_counter() - start, 3)
+        if err:
+            failures[f.stem] = err
+        else:
+            failures.pop(f.stem, None)
         return f.stem, err
 
     t0, failed = time.monotonic(), 0
-    with ThreadPoolExecutor(max_workers=args.jobs) as pool:
-        for i, fut in enumerate(as_completed([pool.submit(one, f) for f in todo]), 1):
-            stem, err = fut.result()
-            failed += err is not None
-            if err:
-                failures[stem] = err
-                print(f"FAILED {stem}: {err}", flush=True)
-            else:
-                failures.pop(stem, None)
-            if i % 100 == 0 or i == len(todo):
-                el = time.monotonic() - t0
-                print(f"[{i}/{len(todo)}] failed {failed} elapsed {el:.0f}s eta {el / i * (len(todo) - i):.0f}s", flush=True)
-    record = {"engine": args.engine, "workers": args.jobs, "seconds": dict(sorted(seconds.items())),
-              "failures": dict(sorted(failures.items()))}
-    record_path.write_text(json.dumps(record, indent=1) + "\n", encoding="utf-8")
+    try:
+        with ThreadPoolExecutor(max_workers=args.jobs) as pool:
+            for i, fut in enumerate(as_completed([pool.submit(one, f) for f in todo]), 1):
+                stem, err = fut.result()
+                failed += err is not None
+                if err:
+                    print(f"FAILED {stem}: {err}", flush=True)
+                if i % 100 == 0 or i == len(todo):
+                    el = time.monotonic() - t0
+                    print(f"[{i}/{len(todo)}] failed {failed} elapsed {el:.0f}s eta {el / i * (len(todo) - i):.0f}s", flush=True)
+    finally:
+        record = {"engine": args.engine, "workers": args.jobs, "seconds": dict(sorted(seconds.items())),
+                  "failures": dict(sorted(failures.items()))}
+        with tempfile.TemporaryDirectory(prefix=".convert_seconds.", dir=args.out) as tmp:
+            record_tmp = Path(tmp) / record_path.name
+            record_tmp.write_text(json.dumps(record, indent=1) + "\n", encoding="utf-8")
+            os.replace(record_tmp, record_path)
     print(f"done: {len(list(cand.glob('*.pdf')))} PDFs in {cand}, {failed} failed", flush=True)
 
 

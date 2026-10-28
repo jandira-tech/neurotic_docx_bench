@@ -308,8 +308,8 @@ def docxodus_font_dir() -> Path:
                 continue
             DOCXODUS_FONT_STAGE.mkdir(parents=True, exist_ok=True)
             selected = {face.name for face in faces}
-            for cached in DOCXODUS_FONT_STAGE.iterdir():
-                if cached.name not in selected and (cached.is_file() or cached.is_symlink()):
+            for cached in DOCXODUS_FONT_STAGE.glob("*.ttf"):
+                if not cached.name.startswith(".") and cached.name not in selected and (cached.is_file() or cached.is_symlink()):
                     cached.unlink()
             for face in faces:
                 dest = DOCXODUS_FONT_STAGE / face.name
@@ -422,7 +422,8 @@ def _unreadable_pdf(path: Path) -> str | None:
         with pymupdf.open(path) as doc:
             if doc.page_count < 1:
                 return "unreadable PDF: no pages"
-            doc.load_page(0)
+            for page in range(doc.page_count):
+                doc.load_page(page)
     except Exception as exc:  # any parser refusal is the converter's failure
         return f"unreadable PDF: {exc}"
     return None
