@@ -415,6 +415,7 @@ def fetch_compare_regen(
     """
     dest = Path(dest)
     staging = dest / ".hub"
+    shutil.rmtree(staging, ignore_errors=True)  # a killed run's files are not the hub's now
     api.snapshot_download(
         repo_id,
         repo_type=REPO_TYPE,
@@ -424,9 +425,13 @@ def fetch_compare_regen(
     )
     got = staging / FRESH_COMPARES
     files = sorted(p for p in got.iterdir() if p.is_file()) if got.is_dir() else []
-    if not files:
-        raise ManifestError(f"{repo_id}@{revision or 'main'} has nothing under {FRESH_COMPARES}")
-    ids = tuple(sorted({_compare_id(p.stem) for p in files}))
+    try:
+        if not files:
+            raise ManifestError(f"{repo_id}@{revision or 'main'} has nothing under {FRESH_COMPARES}")
+        ids = tuple(sorted({_compare_id(p.stem) for p in files}))
+    except ManifestError:
+        shutil.rmtree(staging, ignore_errors=True)
+        raise
     out = dest / "out"
     out.mkdir(parents=True, exist_ok=True)
     for p in files:

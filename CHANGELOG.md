@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## 1.0.0 - 2026-10-28
 
 ### Added
-- Published on PyPI as `neurotic-docx-bench` (#84). Fixture set **v1**: every file on the hub
+- Packaged for PyPI as `neurotic-docx-bench` (#84; the upload is still to come). Fixture set **v1**: every file on the hub
   dataset whose oracle Microsoft Word made, for every test (2,925 `docx_to_pdf`, 3,502 `redline`,
   400 `accept_all`, 400 `reject_all` cases, plus the corpus tables), pinned to dataset commit
   `984e64d8`. The wheel ships the manifest only; `bench fixtures list|get` and

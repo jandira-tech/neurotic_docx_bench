@@ -412,6 +412,18 @@ def test_fetch_compare_regen_refuses_a_name_that_is_not_id_vs_the_same_id(tmp_pa
     with pytest.raises(hub.ManifestError, match="<id>__vs__<id>"):
         hub.fetch_compare_regen(out, api=api)
     assert not (out / "regen_list.csv").exists()
+    assert not (out / ".hub").exists()  # PR #87 review: a refusal leaves no staging behind
+
+
+def test_fetch_compare_regen_never_reads_a_stale_staged_file(tmp_path: Path) -> None:
+    """PR #87 review: a bad name the hub has since removed must not refuse the next run."""
+    api = FakeHub()
+    api.stored[hub.RESULTS_REPO] = {f"{hub.FRESH_COMPARES}/0000ae5089__vs__0000ae5089.pdf": b"%PDF"}
+    out = tmp_path / "cr"
+    stale = out / ".hub" / hub.FRESH_COMPARES / "aa__vs__bb.pdf"
+    stale.parent.mkdir(parents=True)
+    stale.write_bytes(b"%PDF left by an earlier run")
+    assert hub.fetch_compare_regen(out, api=api) == ("0000ae5089",)
 
 
 def test_fetch_compare_regen_refuses_an_empty_folder(tmp_path: Path) -> None:

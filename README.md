@@ -143,10 +143,14 @@ Pins: [`bench.yaml`](bench.yaml). Tool identities: [`bench.registry.yaml`](bench
 
 ---
 
-## Install from PyPI
+## Install
+
+Version 1.0.0 is built for PyPI as `neurotic-docx-bench` but not uploaded yet; until it is, install
+from a checkout (`uv tool install .`, or `pip install .`). macOS and Linux only (the hub download locks
+files with `fcntl`).
 
 ```bash
-pip install neurotic-docx-bench            # or: uv tool install neurotic-docx-bench
+pip install neurotic-docx-bench            # once 1.0.0 is on PyPI; or: uv tool install neurotic-docx-bench
 bench fixtures list v1                     # the fixture set, its hub commit, cases per test
 bench fixtures get v1                      # 14,513 files (2.5 GB) into corpus/word, each sha256-checked
 bench fixtures get v1 --test redline       # one test's files only (the corpus tables always come along)

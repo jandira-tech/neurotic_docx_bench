@@ -401,7 +401,7 @@ See the note in the script.
 
 ## Fixture sets and the PyPI package (1.0.0, #84)
 
-The package is on PyPI as `neurotic-docx-bench`. Its wheel carries no docx or PDF: it ships the
+The package is built for PyPI as `neurotic-docx-bench` (not uploaded yet: the owner gives the go-ahead). Its wheel carries no docx or PDF: it ships the
 manifest of fixture set **v1** (`src/neurotic_docx_bench/data/fixture_sets/v1.csv.gz` + `v1.json`),
 every file under `word/` of the fixtures dataset whose oracle Word made, for the tests
 `docx_to_pdf`, `redline`, `accept_all`, `reject_all`, plus the corpus tables (`support` rows),
