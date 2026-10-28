@@ -87,3 +87,13 @@ def test_a_candidate_under_the_plain_name_still_wins(measure, tmp_path: Path) ->
     """PDFs fetched from the hub keep `<key>_<tool>.pdf` and have no manifest."""
     (tmp_path / 'abc_docxodus.pdf').write_bytes(b'%PDF hub')
     assert measure.candidate_pdf(tmp_path, 'abc', 'docxodus') == tmp_path / 'abc_docxodus.pdf'
+
+
+def test_a_listed_id_without_a_fresh_pdf_is_fresh_missing(measure, tmp_path: Path) -> None:
+    """regen_list.csv holds ids; one whose fresh PDF is absent is reported (#81)."""
+    fresh = tmp_path / 'out'
+    fresh.mkdir()
+    (fresh / '0000ae5089__vs__0000ae5089.pdf').write_bytes(b'%PDF')
+    pool = [{'id': '0000ae5089', 'key': 'k1'}, {'id': '001b877031', 'key': 'k2'}, {'id': '00288995f0', 'key': 'k3'}]
+    oracle = measure.oracles(pool, fresh)
+    assert measure.fresh_missing(pool, {'0000ae5089', '001b877031'}, oracle) == ['001b877031']

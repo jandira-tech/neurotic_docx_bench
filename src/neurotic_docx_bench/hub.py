@@ -391,6 +391,14 @@ def fetch_word_corpus(
     return report
 
 
+def _compare_id(stem: str) -> str:
+    """``<id>`` of a fresh compare named ``<id>__vs__<id>``; any other name is refused."""
+    sides = stem.split("__vs__")
+    if len(sides) != 2 or not sides[0] or sides[0] != sides[1]:
+        raise ManifestError(f"fresh compare {stem!r} is not named <id>__vs__<id>")
+    return sides[0]
+
+
 def fetch_compare_regen(
     dest: Path = DEFAULT_COMPARE_REGEN,
     *,
@@ -401,7 +409,9 @@ def fetch_compare_regen(
     """Download Word's fresh compares into ``dest/out`` and write ``dest/regen_list.csv``.
 
     The release flow takes a compare's oracle from ``out/`` when it is there. Every
-    compare in the folder was made again, so the regen list is their ids.
+    compare in the folder was made again, so the regen list is their ids: a fresh
+    compare is named ``<id>__vs__<id>`` and measure.py reads the bare id (#81). A
+    name of any other shape is refused before anything is moved.
     """
     dest = Path(dest)
     staging = dest / ".hub"
@@ -416,12 +426,12 @@ def fetch_compare_regen(
     files = sorted(p for p in got.iterdir() if p.is_file()) if got.is_dir() else []
     if not files:
         raise ManifestError(f"{repo_id}@{revision or 'main'} has nothing under {FRESH_COMPARES}")
+    ids = tuple(sorted({_compare_id(p.stem) for p in files}))
     out = dest / "out"
     out.mkdir(parents=True, exist_ok=True)
     for p in files:
         p.replace(out / p.name)
     shutil.rmtree(staging)
-    ids = tuple(sorted({p.stem for p in files}))
     (dest / "regen_list.csv").write_text("id\n" + "".join(f"{i}\n" for i in ids))
     return ids
 
