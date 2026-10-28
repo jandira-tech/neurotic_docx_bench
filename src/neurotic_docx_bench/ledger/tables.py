@@ -389,6 +389,30 @@ def speed_tables(h: pol.SpeedHeadline, *, compact: bool = False) -> str:
     return "\n".join(out).rstrip() + "\n"
 
 
+def _measurements(members: Sequence[ResultRow]) -> list[tuple[ResultRow, list[ResultRow]]]:
+    """One entry per measurement: its newest row and the earlier rows identical to it.
+
+    The release flow persists a report once per run, so the store holds the same
+    measurement under several ``id_run``s that differ in nothing else but the
+    timestamp (#75). The store keeps them all; History shows the measurement once.
+    """
+    same: dict[str, list[ResultRow]] = {}
+    for r in members:
+        key = json.dumps(r.model_dump(mode="json", exclude={"id_run", "timestamp"}, warnings=False), sort_keys=True)
+        same.setdefault(key, []).append(r)
+    out = []
+    for rows in same.values():
+        rows.sort(key=lambda m: (m.timestamp, m.id_run))
+        out.append((rows[-1], rows[:-1]))
+    return sorted(out, key=lambda e: (e[0].display, e[0].timestamp))
+
+
+def _runs_cell(r: ResultRow, earlier: Sequence[ResultRow]) -> str:
+    if not earlier:
+        return r.id_run
+    return f"{r.id_run} ({len(earlier) + 1} runs; also {', '.join(m.id_run for m in earlier)})"
+
+
 def history_section(
     rows: Sequence[ResultRow],
     *,
@@ -425,7 +449,7 @@ def history_section(
             )
             out.append("")
             body = []
-            for r in sorted(members, key=lambda m: (m.display, m.timestamp)):
+            for r, earlier in _measurements(members):
                 v = pol.eligibility(
                     r,
                     expected=exp,
@@ -445,7 +469,7 @@ def history_section(
                         fmt(r.itt_median) + approx,
                         fmt(r.itt_mean) + approx,
                         "eligible" if v.eligible else "; ".join(v.reasons),
-                        r.id_run,
+                        _runs_cell(r, earlier),
                     ]
                 )
             out.append(

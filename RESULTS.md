@@ -2,7 +2,7 @@
 <!-- provenance: bench_version=0.8.0; docsets=27122f4d945e,a89ffc217bba,c28442e9bb5a5deb,c947065c59b2; scorers=docxide-150dpi,v1; renderers=oracle:microsoft_word -->
 # Benchmark results
 
-Generated 2026-10-26 03:30 UTC from `results/bench.jsonl`, `results/converters.jsonl`, `results/redlines_*/scores.jsonl`, `results/speed.jsonl` and `results/redline_speed_bench/**/summary.json`.
+Generated 2026-10-28 03:49 UTC from `results/bench.jsonl`, `results/converters.jsonl`, `results/redlines_*/scores.jsonl`, `results/speed.jsonl` and `results/redline_speed_bench/**/summary.json`.
 
 Compare rows only within one table. Full history, paired comparisons and methodology: [RESULTS_DETAILED.md](RESULTS_DETAILED.md).
 

@@ -418,3 +418,27 @@ def test_redline_action_section_renders_redlines_with_a_subset_in_parentheses(tm
 
 def test_redline_action_section_is_empty_without_scores(tmp_path) -> None:
     assert tb.redline_action_section(tmp_path / "missing") == ""
+
+
+def test_history_shows_one_measurement_persisted_four_times_as_one_row(registry) -> None:
+    """A report persisted once per release-flow run is one measurement, not four (#75).
+
+    The store keeps every line; History shows the newest with the count and the other ids.
+    """
+    base = _row("a", "acme", 80.0)
+    runs = [
+        base.model_copy(update={"id_run": f"01a12{i}", "timestamp": T0 + timedelta(hours=i)})
+        for i in range(4)
+    ]
+    other = base.model_copy(update={"id_run": "01a99", "itt_mean": 50.0})
+    md = tb.history_section(_gated([*runs, other]), registry=registry, retractions=[], docsets=GATED)
+    acme = [ln for ln in md.splitlines() if ln.startswith("| acme ")]
+    assert len(acme) == 2  # the four identical runs collapse; the different one stays
+    collapsed = next(ln for ln in acme if "01a123" in ln)
+    assert "4 runs" in collapsed and all(f"01a12{i}" in collapsed for i in range(3))
+    assert fmt_date_of(T0 + timedelta(hours=3)) in collapsed  # the newest run's date
+    assert "01a99" in next(ln for ln in acme if ln is not collapsed)
+
+
+def fmt_date_of(ts: datetime) -> str:
+    return tb.fmt_date(ts)
