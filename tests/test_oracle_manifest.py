@@ -169,8 +169,8 @@ def test_no_oracle_check_flag_skips_gate(tmp_path):
 def test_no_generate_script_force_rewrites_a_declared_oracle():
     """A `generate:` step must not regenerate a directory that is itself an oracle.
 
-    corpus/word_based/pdf_source is the `visual_rendering` oracle AND is pinned in
-    oracle_manifest.json. The source-pdfs generate step used to re-render it with
+    corpus/word_based/pdf_source was the `visual_rendering` oracle (corpus/word/clean/pdf
+    since the corpus moved) AND was pinned in oracle_manifest.json. The source-pdfs generate step used to re-render it with
     `--force`; the PDFs came back pixel-identical but with a fresh /CreationDate, so
     all 199 hashes changed and the NEXT run exited 2 on ORACLE DRIFT. Any `bench run
     --generate` poisoned the following run, and the failure surfaced far from its
@@ -203,7 +203,7 @@ def test_no_generate_script_force_rewrites_a_declared_oracle():
             oracle_paths.add(str(path.resolve().relative_to(repo_root.resolve())))
         except ValueError:
             pass
-    assert "corpus/word_based/pdf_source" in oracle_paths, (
+    assert "corpus/word/clean/pdf" in oracle_paths, (
         "repo-relative oracle paths are not being derived — the check below would be vacuous"
     )
 

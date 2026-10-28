@@ -218,7 +218,12 @@ class GetReport:
                 dry += "; a real run would refuse: rerun with --overwrite or --keep-local"
             return dry
         done = (f"{head}; downloaded {self.downloaded}, already there {self.skipped}, "
-                f"replaced {self.replaced}, kept local {len(self.kept_local)}; every file verified")
+                f"replaced {self.replaced}, kept local {len(self.kept_local)}; ")
+        if self.kept_local:  # kept because they differ: never checked, never the hub's (#86)
+            done += (f"every file it placed verified; {len(self.kept_local)} kept local file(s) are not the hub's: "
+                     f"{_listing(self.kept_local)}")
+        else:
+            done += "every file verified"
         if self.earlier_replaced:
             done += (f". {len(self.earlier_replaced)} file(s) an earlier run left in its staging folder (local files "
                      f"it replaced, or files it took back) are still kept: {_listing(self.earlier_replaced)}")

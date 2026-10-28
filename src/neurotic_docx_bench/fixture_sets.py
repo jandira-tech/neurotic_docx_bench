@@ -243,8 +243,10 @@ def get(
 ) -> hub_get.GetReport:
     """Download set ``name`` (of ``tests`` only, when given) at its pinned commit into ``dest``.
 
-    The hub's listing at that commit is checked against the manifest first; after the
-    download every file is hashed and compared with the manifest's sha256.
+    The hub's listing at that commit is checked against the manifest first, and
+    ``hub_get`` checks every staged file against that listing before it moves one, so
+    no byte that is not the manifest's is placed. The hash after the download is a
+    second look. Files ``keep-local`` kept are not the set's and the report says so.
     """
     meta = load(name)
     wanted = files(name, tests)

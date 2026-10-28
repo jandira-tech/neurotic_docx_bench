@@ -173,3 +173,32 @@ def test_cli_lists_the_set_with_its_pin_and_counts() -> None:
     assert v1.revision in out.output
     for test, n in v1.cases.items():
         assert test in out.output and str(n) in out.output
+
+
+def test_bytes_that_differ_from_the_manifest_never_reach_the_destination(tmp_path: Path,
+                                                                          monkeypatch: pytest.MonkeyPatch) -> None:
+    """#86 item 5: the listing matches the manifest, the download does not; nothing is placed.
+
+    ``_check_remote`` ties the hub's recorded hash to the manifest's and ``hub_get`` checks the
+    staged bytes against that record before any move, so the manifest is enforced pre-placement.
+    """
+    _small_set(tmp_path, monkeypatch, FILES)
+    api = PinnedHub({f"word/{k}": v for k, v in FILES.items()})
+    api.served["word/clean/pdf/a.pdf"] = b"%PDF" + b"z" * 100
+    with pytest.raises(hub_get.GetError):
+        fs.get("t1", api=api, dest=tmp_path / "word")
+    assert not [p for p in (tmp_path / "word").rglob("*") if p.is_file()] if (tmp_path / "word").exists() else True
+
+
+def test_a_kept_local_file_is_reported_as_not_the_sets(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """#86 item 6: --keep-local leaves bytes that are not the set's; the report must not call them verified."""
+    _small_set(tmp_path, monkeypatch, FILES)
+    api = PinnedHub({f"word/{k}": v for k, v in FILES.items()})
+    local = tmp_path / "word" / "clean" / "pdf" / "a.pdf"
+    local.parent.mkdir(parents=True)
+    local.write_bytes(b"%PDF local edit")
+    report = fs.get("t1", api=api, dest=tmp_path / "word", on_conflict="keep-local")
+    assert report.kept_local == ("clean/pdf/a.pdf",)
+    text = report.describe()
+    assert "every file verified" not in text
+    assert "1 kept local file(s) are not the hub's" in text and "clean/pdf/a.pdf" in text

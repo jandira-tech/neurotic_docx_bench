@@ -178,3 +178,25 @@ def test_no_bench_yaml_means_corpus_word_in_the_working_folder(tmp_path: Path, m
     root, states = word_pdf_from_config(Path("bench.yaml"))
     assert root == Path("corpus/word")
     assert states == STATES
+
+
+def test_a_reused_work_dir_never_scores_a_stale_pdf_for_a_missing_candidate(tmp_path: Path) -> None:
+    """#86 item 1: a previous run's staged PDF must not stand in for a conversion that is now missing."""
+    from neurotic_docx_bench.docx_to_pdf import stage_candidates
+
+    _corpus(tmp_path)
+    paired = tmp_path / "clean" / "docx" / "paired.docx"
+    cands = tmp_path / "cands"
+    _touch(cands / "paired.pdf", b"%PDF-1.4 old run")
+    first = select_corpus_word_pdfs(origin="list", root=tmp_path, files_list=[paired], score_only=True,
+                                    locations=[cands])
+    staged = tmp_path / "staged"
+    assert stage_candidates(first.fixtures, first.candidates, staged) == []
+    assert (staged / "clean__paired.pdf").is_file()
+    (cands / "paired.pdf").unlink()  # this run's conversion crashed
+    _touch(cands / f"{PRESENT}.pdf", b"%PDF-1.4 cand")  # the folder still holds other PDFs
+    second = select_corpus_word_pdfs(origin="list", root=tmp_path, files_list=[paired], score_only=True,
+                                     locations=[cands])
+    failures = stage_candidates(second.fixtures, second.candidates, staged)
+    assert [f["doc"] for f in failures] == ["clean__paired"]
+    assert not (staged / "clean__paired.pdf").exists()

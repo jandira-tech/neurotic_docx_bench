@@ -488,6 +488,7 @@ def stage_candidates(fixtures: list[Fixture], sources: dict[str, Path], dest_dir
     for item in fixtures:
         src = sources.get(item.stem)
         if src is None or not src.is_file():
+            (dest_dir / f"{item.stem}.pdf").unlink(missing_ok=True)  # a reused work dir's stale copy (#86)
             failures.append(
                 {
                     "doc": item.stem,
@@ -574,7 +575,7 @@ def _tool_report(
     failed = {str(item["doc"]) for item in failures}
     per_doc: dict[str, float] = {}
     for stem in stems:
-        if stem in scores:
+        if stem in scores and stem not in failed:
             per_doc[stem] = scores[stem]
         else:
             per_doc[stem] = 0.0
@@ -658,6 +659,8 @@ def run_eval(
         "warnings": list(warnings or []),
         "tools": {},
     }
+    if limit is not None:
+        report["limit"] = limit  # the warnings predate the cut; itt_complete_listed refuses it (#86)
 
     for tool in tools:
         if score_only:
@@ -721,7 +724,7 @@ def run_eval(
     return report
 
 
-_DROPPED = re.compile(r"^no PDF to score for (?P<pdf>\S+); skipped$")
+_DROPPED = re.compile(r"^no PDF to score for (?P<pdf>.+?); skipped$")
 
 
 def itt_complete_listed(report: dict) -> tuple[dict, list[str]]:
@@ -736,6 +739,9 @@ def itt_complete_listed(report: dict) -> tuple[dict, list[str]]:
     """
     if not str(report.get("track") or "").endswith(":list"):
         raise ValueError(f"only a listed track drops documents it should keep; this one is {report.get('track')!r}")
+    if report.get("limit") is not None:
+        raise ValueError(f"the run kept only its first {report['limit']} documents (--limit); its warnings may "
+                         "name documents it never took, so it cannot be completed")
     done = json.loads(json.dumps(report))
     stems = list(done.get("stems") or [])
     added = []

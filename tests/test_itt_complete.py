@@ -62,3 +62,36 @@ def test_the_cli_writes_the_completed_report_and_appends_its_line(tmp_path: Path
     lines = [json.loads(x) for x in store.read_text().splitlines()]
     assert len(lines) == 2 and lines[0] == {"report_path": str(rep), "hardware": {"cpu": "M3"}}
     assert (lines[1]["itt_n"], lines[1]["hardware"], lines[1]["report_path"]) == (600, {"cpu": "M3"}, out.name)
+
+
+def test_a_dropped_document_whose_path_has_spaces_is_completed() -> None:
+    """#86 item 3: the warning names a path; a space in it must not hide the document."""
+    report = json.loads(REPORT.read_text())
+    report["warnings"] = [w.replace("corpus/word/", "my corpus/word/") for w in report["warnings"]]
+    _, added = docx_to_pdf.itt_complete_listed(report)
+    assert len(added) == 2
+
+
+def test_a_limited_run_is_not_completed() -> None:
+    """#86 item 4: warnings predate --limit, so they can name documents the run never took."""
+    report = json.loads(REPORT.read_text()) | {"limit": 10}
+    with pytest.raises(ValueError, match="limit"):
+        docx_to_pdf.itt_complete_listed(report)
+
+
+def test_run_records_its_limit_in_the_report(tmp_path: Path, monkeypatch) -> None:
+    """#86 item 4: the report says when --limit cut the population, so completion can refuse it."""
+    items = []
+    for name in ("a", "b"):
+        (tmp_path / f"{name}.pdf").write_bytes(b"%PDF-1.4 " + name.encode())
+        items.append(docx_to_pdf.Fixture(stem=name, kind="clean", original_stem=name,
+                                         docx=tmp_path / f"{name}.docx", oracle=tmp_path / f"{name}.pdf"))
+    monkeypatch.setattr(docx_to_pdf, "score_folder_pair", lambda *a, **k: {})
+    report = docx_to_pdf.run_eval(tmp_path / "out.json", tools=("soffice",), work_dir=tmp_path / "w", limit=1,
+                                  fixtures=items, check_pins=False, score_only=True, candidates={},
+                                  track="corpus/word:list")
+    assert report["limit"] == 1 and report["n"] == 1
+    unlimited = docx_to_pdf.run_eval(tmp_path / "out2.json", tools=("soffice",), work_dir=tmp_path / "w2",
+                                     fixtures=items, check_pins=False, score_only=True, candidates={},
+                                     track="corpus/word:list")
+    assert unlimited.get("limit") is None

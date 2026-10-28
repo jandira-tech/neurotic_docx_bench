@@ -442,3 +442,20 @@ def test_history_shows_one_measurement_persisted_four_times_as_one_row(registry)
 
 def fmt_date_of(ts: datetime) -> str:
     return tb.fmt_date(ts)
+
+
+def test_history_never_merges_a_retracted_run_into_an_identical_eligible_one(registry) -> None:
+    """#86 item 2: identical bytes, different verdicts; the retraction's reason must stay visible."""
+    base = _row("a", "acme", 80.0)
+    runs = [
+        base.model_copy(update={"id_run": f"01a12{i}", "timestamp": T0 + timedelta(hours=i)})
+        for i in range(3)
+    ]
+    retracted = pol.Retraction(id_run="01a121", reason="persisted from a broken scorer build",
+                               retracted_at=T0, by="arthur")
+    md = tb.history_section(_gated(runs), registry=registry, retractions=[retracted], docsets=GATED)
+    acme = [ln for ln in md.splitlines() if ln.startswith("| acme ")]
+    assert len(acme) == 2
+    assert "persisted from a broken scorer build" in next(ln for ln in acme if "01a121" in ln)
+    kept = next(ln for ln in acme if "01a122" in ln)
+    assert "2 runs" in kept and "01a120" in kept and "01a121" not in kept
