@@ -8,7 +8,6 @@
 # install it with pnpm inside the clone instead).
 packages:
   - src/neurotic_docx_bench/utils/docxodus
-  - src/neurotic_docx_bench/utils/docx-redline-js
   - src/neurotic_docx_bench/utils/folio
   - src/neurotic_docx_bench/utils/superdoc
   - live-bench/frontend

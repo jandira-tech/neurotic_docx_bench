@@ -1,21 +1,21 @@
 """Corpus symmetry: every generating run is scored on the SAME document set.
 
 The bug this file guards against (plan Chapter 6, D1): corpus coverage was
-per-run copy-paste, and copy-paste does not propagate. Of the 12 runs declaring
+per-run copy-paste, and copy-paste does not propagate. Of the 11 retained runs declaring
 ``script_redlines``, four (``jubarte-rust``, ``jubarte-final-native``,
 ``jubarte-final-lossless``, ``docxodus``) hand-chained three ``generate:``
 invocations with explicit ``--manifest``/``--source-dir`` — 803 pairs. The other
-eight (``docx-redline-js``, ``folio``, ``superdoc``, ``redlines``,
+seven (``folio``, ``superdoc``, ``redlines``,
 ``superdoc-redlines``, ``jubarte-wasm``, ``superdoc-ts``, ``superdoc-native``)
 omitted the flags and silently inherited the generators' argparse default — one
-pool, 207 pairs. All 12 were published in the same comparison table, so rows with
+pool, 207 pairs. All 11 were published in the same comparison table, so rows with
 different ``n`` were not the same measurement.
 
 The split is not "us vs them" and the footgun has been tripped in both
 directions: ``docxodus``, a competitor, already had full coverage, while
 ``jubarte-wasm``, ours, did not.
 
-The fix is structural, not a copy-paste into the remaining eight: the pools are
+The fix is structural, not a copy-paste into the remaining seven: the pools are
 declared ONCE at the top level of bench.yaml and the driver expands each run's
 single ``generate:`` command across them, so full coverage is the default and a
 future fourth pool cannot be added to one vendor and forgotten on the rest.

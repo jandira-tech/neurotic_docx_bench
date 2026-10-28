@@ -2,12 +2,7 @@ import { describe, it, expect, vi } from "vitest";
 import { existsSync, mkdirSync, readFileSync, readdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-// Root jszip, not the docx-redline-js vendored copy: that tree's `@ansonlai/docx-redline-js`
-// is a `file:` dep pointing outside the repo, so on a fresh checkout it never installs and a
-// top-level import from it makes this WHOLE file fail to collect. jszip is a root dependency
-// and is always present after `bun install`. (The docx-redline-js *adapter* still loads its
-// own vendored jszip — only this test helper moved.)
-import JSZip from "../node_modules/jszip/lib/index.js";
+import JSZip from "jszip";
 import { parseManifest, loadEngine, outputName, runBatch } from "./generate-native-redlines.ts";
 import { resolveDocxodusEntry } from "./docxodus-node-compat.mjs";
 
@@ -345,26 +340,6 @@ describe("generate-native-redlines", () => {
       60_000,
     );
   });
-
-  it.runIf(haveCorpus)(
-    "docx-redline-js adapter produces a redline docx with tracked changes",
-    async () => {
-      const pairs = parseManifest(MANIFEST, ["ok"]);
-      const p = pairs.find(
-        (x) =>
-          existsSync(join(SOURCE, `${x.base}.docx`)) && existsSync(join(SOURCE, `${x.next}.docx`)),
-      )!;
-      const engine = await loadEngine("docx-redline-js", "");
-      const out = await engine(
-        new Uint8Array(readFileSync(join(SOURCE, `${p.base}.docx`))),
-        new Uint8Array(readFileSync(join(SOURCE, `${p.next}.docx`))),
-      );
-      expect(out).toBeInstanceOf(Uint8Array);
-      const xml = await documentXml(out);
-      expect(xml.includes("<w:ins") || xml.includes("<w:del")).toBe(true);
-    },
-    60_000,
-  );
 
   it.runIf(haveCorpus && haveFolio)(
     "folio engine produces a redline docx with tracked changes",

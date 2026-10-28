@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-import { execSync } from "node:child_process";
 import { createHash } from "node:crypto";
 /**
  * Generate genuinely re-serialized DOCX round-trips for every Node-based tool in
@@ -18,8 +17,6 @@ import { createHash } from "node:crypto";
  *   │ jubarte-*-lossless       │ DocumentComparer.CompareDocuments(base,  │
  *   │                          │ base) self-diff                          │
  *   │ docxodus                 │ compareDocuments(base, base) self-diff   │
- *   │ docx-redline-js          │ soffice docx→html→docx                   │
- *   │                          │ (no HTML export of its own)              │
  *   │ superdoc-ts              │ client.open() → save()                   │
  *   │ folio                    │ generateRedlineDocx(base, base, {author})│
  *   │                          │ self-diff (FolioDocxReviewer.fromBuffer→ │
@@ -45,7 +42,7 @@ import { createHash } from "node:crypto";
  *   BENCH_TOOLS=docxodus,superdoc node scripts/generate-roundtrips.mjs --all   # scoped --all
  *   node scripts/generate-roundtrips.mjs --tool=jubarte-final-native
  *   node scripts/generate-roundtrips.mjs --tool=jubarte-final-lossless --limit 5
- *   node scripts/generate-roundtrips.mjs --tool=docxodus,docx-redline-js --force
+ *   node scripts/generate-roundtrips.mjs --tool=docxodus,folio --force
  */
 import {
 	existsSync,
@@ -81,7 +78,6 @@ const TOOLS = [
 	},
 	// npm tools
 	{ tool: "docxodus", dist: null, route: "docxodus" },
-	{ tool: "docx-redline-js", dist: null, route: "docx-redline-js" },
 	{ tool: "superdoc-ts", dist: null, route: "superdoc-ts" },
 	// folio: FolioDocxReviewer.fromBuffer → toBuffer (genuine re-serialization)
 	{ tool: "folio", dist: null, route: "folio" },
@@ -151,11 +147,7 @@ function resolveDistFile(distPath, filename) {
 
 /** MD5 of the word/document.xml entry inside a DOCX (Uint8Array). */
 async function docXmlMd5(bytes) {
-	const JSZip = (
-		await import(
-			"../src/neurotic_docx_bench/utils/docx-redline-js/node_modules/jszip/lib/index.js"
-		)
-	).default;
+	const JSZip = (await import("jszip")).default;
 	const zip = await JSZip.loadAsync(bytes);
 	const xml = await zip.file("word/document.xml").async("uint8array");
 	return createHash("md5").update(xml).digest("hex");
@@ -164,11 +156,7 @@ async function docXmlMd5(bytes) {
 /** Quick validity check: is this a plausible DOCX? (zip with word/document.xml) */
 async function isValidDocx(bytes) {
 	try {
-		const JSZip = (
-			await import(
-				"../src/neurotic_docx_bench/utils/docx-redline-js/node_modules/jszip/lib/index.js"
-			)
-		).default;
+		const JSZip = (await import("jszip")).default;
 		const zip = await JSZip.loadAsync(bytes);
 		const doc = zip.file("word/document.xml");
 		if (!doc) return { ok: false, reason: "missing word/document.xml" };
@@ -179,22 +167,6 @@ async function isValidDocx(bytes) {
 	} catch (e) {
 		return { ok: false, reason: e.message?.slice(0, 120) };
 	}
-}
-
-/** soffice headless convert; returns output path or null. */
-function sofficeConvert(srcPath, fmt, outDir, infilter) {
-	outDir = resolve(outDir);
-	const expected = join(
-		outDir,
-		basename(srcPath).replace(/\.[^.]+$/, `.${fmt}`),
-	);
-	rmSync(expected, { force: true });
-	const filterFlag = infilter ? `--infilter='${infilter}' ` : "";
-	execSync(
-		`soffice --headless ${filterFlag}--convert-to ${fmt} --outdir "${outDir}" "${resolve(srcPath)}"`,
-		{ stdio: "pipe", timeout: 60_000 },
-	);
-	return existsSync(expected) ? expected : null;
 }
 
 /** Find all .docx files (excluding ~$ Word lock files) in a directory. */
@@ -311,39 +283,6 @@ async function loadEngine(route, dist) {
 		return async (input) => {
 			const out = await dox.compareDocuments(input, input, { engine });
 			return out instanceof Uint8Array ? out : new Uint8Array(out);
-		};
-	}
-
-	// docx-redline-js: no HTML export of its own → soffice docx→html→docx.
-	// The self-diff (applyRedlineToOxml with identical text) is also a no-op,
-	// so we use LibreOffice for both legs to force a genuine re-serialization.
-	if (route === "docx-redline-js") {
-		const tmp = join(tmpdir(), `rt-drx-${process.pid}`);
-		mkdirSync(tmp, { recursive: true });
-		let ctr = 0;
-		return async (input) => {
-			const i = ctr++;
-			const stem = `drx${i}`;
-			const srcDocx = join(tmp, `${stem}.docx`);
-			writeFileSync(srcDocx, input);
-			try {
-				// DOCX → HTML (soffice)
-				const htmlPath = sofficeConvert(srcDocx, "html", tmp);
-				if (!htmlPath) throw new Error("soffice docx→html failed");
-				// HTML → DOCX (soffice, StarWriter infilter required for HTML import)
-				// This overwrites srcDocx (same stem), but input is already in memory.
-				const docxPath = sofficeConvert(
-					htmlPath,
-					"docx",
-					tmp,
-					"HTML (StarWriter)",
-				);
-				if (!docxPath) throw new Error("soffice html→docx failed");
-				return readBytes(docxPath);
-			} finally {
-				rmSync(join(tmp, `${stem}.docx`), { force: true });
-				rmSync(join(tmp, `${stem}.html`), { force: true });
-			}
 		};
 	}
 

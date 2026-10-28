@@ -334,18 +334,6 @@ importers:
         specifier: 4.151.3
         version: 4.151.3(@cloudflare/workers-types@5.20261022.1)(@types/node@26.6.5)
 
-  src/neurotic_docx_bench/utils/docx-redline-js:
-    dependencies:
-      '@ansonlai/docx-redline-js':
-        specifier: file:../../../../../docx-redline-migration-kit/dist/docx-redline-js
-        version: '@arthrod/docx-redline-js@file:../docx-redline-migration-kit/dist/docx-redline-js(@xmldom/xmldom@0.9.10)'
-      '@xmldom/xmldom':
-        specifier: 0.9.10
-        version: 0.9.10
-      jszip:
-        specifier: 3.10.1
-        version: 3.10.1
-
   src/neurotic_docx_bench/utils/docxodus:
     dependencies:
       docxodus:
@@ -371,15 +359,6 @@ packages:
 
   '@acemir/cssom@0.9.32':
     resolution: {integrity: sha512-OijrAUu7rrJhSIoHNg6LMPS5e344nwUHA+1EFYYjrh64D+GmytUsfBQjci45TjT+rd5Spsp8B5xsZDT+TgyXXQ==}
-
-  '@arthrod/docx-redline-js@file:../docx-redline-migration-kit/dist/docx-redline-js':
-    resolution: {directory: ../docx-redline-migration-kit/dist/docx-redline-js, type: directory}
-    engines: {node: '>=20.0.0'}
-    peerDependencies:
-      '@xmldom/xmldom': '>=0.8.0'
-    peerDependenciesMeta:
-      '@xmldom/xmldom':
-        optional: true
 
   '@asamuzakjp/css-color@4.1.2':
     resolution: {integrity: sha512-NfBUvBaYgKIuq6E/RBLY1m0IohzNHAYyaJGuTK79Z23uNwmz2jl1mPsC5ZxCCxylinKhT1Amn5oNTlx1wN8cQg==}
@@ -3314,9 +3293,6 @@ packages:
   dfa@1.2.0:
     resolution: {integrity: sha512-ED3jP8saaweFTjeGX8HQPjeC1YYyZs98jGNZx6IiBvxW7JG5v492kamAQB3m2wop07CvU/RQmzcKr6bgcC5D/Q==}
 
-  diff-match-patch@1.0.5:
-    resolution: {integrity: sha512-IayShXAgj/QMXgB0IWmKx+rOPuGMhqm5w6jvFxmVenXKIzRqTAAsbBPT3kWQeGANj3jGgvcvv4yK6SxqYmikgw==}
-
   diff@9.0.0:
     resolution: {integrity: sha512-svtcdpS8CgJyqAjEQIXdb3OjhFVVYjzGAPO8WGCmRbrml64SPw/jJD4GoE98aR7r25A0XcgrK3F02yw9R/vhQw==}
     engines: {node: '>=0.3.1'}
@@ -5585,12 +5561,6 @@ packages:
 snapshots:
 
   '@acemir/cssom@0.9.32': {}
-
-  '@arthrod/docx-redline-js@file:../docx-redline-migration-kit/dist/docx-redline-js(@xmldom/xmldom@0.9.10)':
-    dependencies:
-      diff-match-patch: 1.0.5
-    optionalDependencies:
-      '@xmldom/xmldom': 0.9.10
 
   '@asamuzakjp/css-color@4.1.2':
     dependencies:
@@ -8553,8 +8523,6 @@ snapshots:
       dequal: 2.0.3
 
   dfa@1.2.0: {}
-
-  diff-match-patch@1.0.5: {}
 
   diff@9.0.0: {}
 

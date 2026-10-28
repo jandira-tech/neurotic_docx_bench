@@ -1,10 +1,7 @@
 /**
  * superdoc-ts adapter — SDK resolution + the Document Engine diff flow.
  *
- * Separate from generate-native-redlines.test.ts on purpose: that file imports jszip
- * through utils/docx-redline-js/node_modules, a sub-install that is not present in every
- * checkout, so the whole suite fails to load when it is missing. These tests only need
- * the root-level deps.
+ * Uses the root-level SDK and jszip dependencies.
  */
 import { describe, it, expect } from "vitest";
 import {

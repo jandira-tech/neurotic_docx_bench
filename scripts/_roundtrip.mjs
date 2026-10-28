@@ -42,45 +42,6 @@ async function loadEngine(method, dist) {
 			return out instanceof Uint8Array ? out : new Uint8Array(out);
 		};
 	}
-	if (method === "docx-redline-js") {
-		const [JSZipMod, xmldom, rl] = await Promise.all([
-			import(
-				"../src/neurotic_docx_bench/utils/docx-redline-js/node_modules/jszip/lib/index.js"
-			),
-			import(
-				"../src/neurotic_docx_bench/utils/docx-redline-js/node_modules/@xmldom/xmldom"
-			),
-			import(
-				"../src/neurotic_docx_bench/utils/docx-redline-js/node_modules/@ansonlai/docx-redline-js"
-			),
-		]);
-		const JSZip = JSZipMod.default ?? JSZipMod;
-		rl.configureXmlProvider({
-			DOMParser: xmldom.DOMParser,
-			XMLSerializer: xmldom.XMLSerializer,
-		});
-		const toText = (xml) => {
-			const t = rl.ingestWordOoxmlToPlainText(xml);
-			return typeof t === "string" ? t : (t?.text ?? "");
-		};
-		return async (b, n) => {
-			const baseZip = await JSZip.loadAsync(b);
-			const baseXml = await baseZip.file("word/document.xml").async("string");
-			const nextZip = await JSZip.loadAsync(n);
-			const nextXml = await nextZip.file("word/document.xml").async("string");
-			const res = await rl.applyRedlineToOxml(
-				baseXml,
-				toText(baseXml),
-				toText(nextXml),
-				{
-					generateRedlines: true,
-					author: "bench",
-				},
-			);
-			baseZip.file("word/document.xml", res.oxml ?? res.ooxml);
-			return baseZip.generateAsync({ type: "uint8array" });
-		};
-	}
 	if (method === "superdoc-ts") {
 		const [{ SuperDocClient }, os, fs, path] = await Promise.all([
 			import(

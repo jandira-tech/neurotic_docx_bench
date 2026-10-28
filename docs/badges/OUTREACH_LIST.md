@@ -17,7 +17,6 @@ and resolve as soon as `main` carries this folder.
 | 4 | folio | [stella/folio](https://github.com/stella/folio) | folio-core 0.60.0, folio, folio (viewer) | folio is benched twice over — as a generator (folio-core 0.60.0) and as a live editor rendering Word's own DOCX in the visual benchmarks. | 1–7 |
 | 5 | stemma | [stemma-sh/stemma](https://github.com/stemma-sh/stemma) | stemma 0.6.0 | stemma 0.6.0 is part of the fresh 2026-10-14 cohort of 400 comparisons against newly generated Word 16.115 oracles. | 1–7 |
 | 6 | Wordcraft | [storytold/wordcraft](https://github.com/storytold/wordcraft) | Wordcraft CLI 0.6.1, 0.7.0 | The 2026-10-14 fresh cohort (400 comparisons and 400 conversions) was built around Wordcraft, with both release lanes — 0.6.1 and 0.7.0 — followed side by side. | 1–7 |
-| 7 | docx-redline-js | [AnsonLai/docx-redline-js](https://github.com/AnsonLai/docx-redline-js) | docx-redline-js | docx-redline-js is a long-standing member of the ranked redline cohort. | 1–7 |
 | 8 | redlines | [houfu/redlines](https://github.com/houfu/redlines) | redlines | redlines (with nupunkt) serves as the suite's text-level redline baseline — the lane every XML-level engine sits next to. | 1–7 |
 | 9 | superdoc-redlines | [yuch85/superdoc-redlines](https://github.com/yuch85/superdoc-redlines) | superdoc-redlines | superdoc-redlines is an Apache-2.0 generator in the ranked cohort. | 1–7 |
 | 10 | safe-docx | [UseJunior/safe-docx](https://github.com/UseJunior/safe-docx) | safe-docx | safe-docx is one of the comparison generators in the ranked cohort. | 1–7 |
@@ -32,6 +31,9 @@ and resolve as soon as `main` carries this folder.
 | 14 | pdfitdown | [AstraBert/PdfItDown](https://github.com/AstraBert/PdfItDown) | pdfitdown 4.2.0 | pdfitdown 4.2.0 is in the fresh conversion cohort (it delegates Office formats to office2pdf, and the registry says so for completeness). | 1–7 |
 | 15 | dxpdf | [nerdy-pro/dxpdf](https://github.com/nerdy-pro/dxpdf) | dxpdf | dxpdf represents the Rust DOCX→PDF lane of the converter benchmark. | 1–7 |
 | 16 | libreoffice_convert_rust | [dnrops/libreoffice_convert_rust](https://gitcode.com/dnrops/libreoffice_convert_rust) | libreoffice_convert_rust 0.1.0 | libreoffice_convert_rust 0.1.0 is in the fresh conversion cohort as the LibreOffice-backed Rust lane. ⚠ hosted on GitCode, not GitHub — check the repo has an issues tab before pasting the GitHub-style template. | 1–7 |
+
+The `docx-redline-js` outreach row was removed: dropped in #88 on 2026-10-28;
+its migration-kit sibling dependency is unavailable. Historical results remain.
 
 ## On hold (decide before sending)
 

@@ -87,6 +87,7 @@ src/neurotic_docx_bench/utils/superdoc/node/node_modules/
 src/neurotic_docx_bench/utils/superdoc/node_modules/
 src/neurotic_docx_bench/utils/folio/node_modules/
 src/neurotic_docx_bench/utils/docxodus/node_modules/docxodus/
+# docx-redline-js was dropped in #88; older checkouts still hold its installed tree.
 src/neurotic_docx_bench/utils/docx-redline-js/node_modules/
 harness/folio-viewer/
 corpus/word_based/superdoc_visual_benchmark/

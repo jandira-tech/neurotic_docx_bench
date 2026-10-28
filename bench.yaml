@@ -85,7 +85,7 @@ generate_scripts:
 roundtrip_list: corpus/word/pools/word_based_accepted_word_renders.csv
 
 # Tool versions are PINNED to the ones we reviewed:
-#   docxodus 9.8.0 · docx-redline-js = local TS migration (dist: sibling package)
+#   docxodus 9.8.0
 #   @stll/folio-core 0.17.1 (generator) · @stll/folio-react 0.13.4 (viewer)
 #   superdoc is THREE packages, pinned independently — never conflate them:
 #     superdoc-sdk (PyPI) 2.16.0       → run `superdoc`            (python_package:)
@@ -241,19 +241,7 @@ runs:
     benchmarks: [visual_accepted_changes]
     harness: *folio-harness
 
-  # (3) docx-redline-js — OOXML text-reconciliation redliner (strict-TS migration).
-  # Local build from sibling repo docx-redline-migration-kit (NOT npm 0.2.0).
-  # Rebuild: cd ../docx-redline-migration-kit && bun run build:package
-  # then: pnpm install --filter neurotic-docx-bench-docx-redline-js (re-reads the file: dep)
-  - name: docx-redline-js
-    dist: ../docx-redline-migration-kit/dist/docx-redline-js
-    generate: "node --import tsx scripts/generate-native-redlines.ts --method=docx-redline-js --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=docx-redline-js"
-    render: auto
-    jobs: 12
-    vendor: docx-redline-js
-    benchmarks: [script_redlines]
-
-  # (3b) folio — @stll/folio-core generateRedlineDocx(base, next, {author}).
+  # (3) folio — @stll/folio-core generateRedlineDocx(base, next, {author}).
   # Since 0.13.0 folio ships a single base+next→redline call, so the loadEngine
   # 'folio' adapter is now a straight one-call passthrough (see
   # scripts/generate-native-redlines.ts) with no harness-side diff translation.
