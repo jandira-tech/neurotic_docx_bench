@@ -1,0 +1,35 @@
+{
+  "checked": [
+    {
+      "set": "v1",
+      "case": "v1/clean/00163e55a0",
+      "reference_pages": 3,
+      "shown": 3
+    },
+    {
+      "set": "wordcraft_convert",
+      "case": "wordcraft1014/convert/with_comments_tracking__3aedf04d35_r2_04_drop_blocks_43-55",
+      "reference_pages": 10,
+      "shown": 3
+    },
+    {
+      "set": "wordcraft_compare",
+      "case": "wordcraft1014/compare/7a1d3fbeba",
+      "reference_pages": 4,
+      "shown": 3
+    },
+    {
+      "legacy": "case8",
+      "viewer": "index.html",
+      "pixel_column": false
+    },
+    {
+      "legacy": "aec80553e5",
+      "viewer": "redlines/index.html",
+      "pixel_column": false
+    }
+  ],
+  "localAssets": 77,
+  "healthStatus": 200,
+  "pageErrors": []
+}

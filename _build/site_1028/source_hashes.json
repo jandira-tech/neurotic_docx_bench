@@ -1,0 +1,8 @@
+{
+  "index.html": "b2e1b203ddbf1479aad60b0ad2bd00668a848335912762975153789305188da9",
+  "redlines/index.html": "8bd7a89e8dcdc34f2004a5a5cb60f2dbc9401fdbe4ccf0739434a1ffb1c2e9a4",
+  "../results/docx_to_pdf_v1_89/full.json": "5c98a57e9f960e226ae4ad222f64f40ac5e6dc64019046162812ba978cdb0909",
+  "../results/docx_to_pdf_v1_89/soffice_full.json": "46ea81270ec69000dc86ea6cd3bcc7cfba92888d8c0d857d2be0b6ce6c142ab5",
+  "../results/redlines_0929_split/scores.jsonl": "9bcb39ed22a3df3a174e159c78706786cad84ae77a27181b99fad4ddc2631a0d",
+  "/Users/arthrod/temp/T/docxide-pdf/tools/target/release/page-metrics": "2213ff317059873a15e9605825387a6f41e1514a21a1c9c7e4b7187a7f37925c"
+}

@@ -1,0 +1,613 @@
+{
+  "missing_sets": [
+    "redlines"
+  ],
+  "build_bytes": 3310038335,
+  "asset_bytes": 3278057575,
+  "asset_files": 55385,
+  "sets": {
+    "v1": {
+      "cases": 2925,
+      "groups": {
+        "v1/clean": 2478,
+        "v1/tracking_without_comments": 237,
+        "v1/with_comments_clean": 112,
+        "v1/with_comments_tracking": 98
+      },
+      "tools": {
+        "docxodus": {
+          "failures": 175,
+          "unavailable": 0,
+          "pdfs": 2750,
+          "not_applicable": 0,
+          "metrics": {
+            "pixel": {
+              "n": 2925,
+              "mean": 57.504646028964004
+            },
+            "jaccard": {
+              "n": 2714,
+              "mean": 31.27210759027266
+            },
+            "ssim": {
+              "n": 2714,
+              "mean": 47.12844509948416
+            },
+            "text_boundary": {
+              "n": 2576,
+              "mean": 69.43788819875776
+            }
+          }
+        },
+        "jubarte": {
+          "failures": 0,
+          "unavailable": 0,
+          "pdfs": 2925,
+          "not_applicable": 0,
+          "metrics": {
+            "pixel": {
+              "n": 2925,
+              "mean": 84.46416454822858
+            },
+            "jaccard": {
+              "n": 2925,
+              "mean": 73.79507692307692
+            },
+            "ssim": {
+              "n": 2925,
+              "mean": 87.55647863247863
+            },
+            "text_boundary": {
+              "n": 2893,
+              "mean": 91.35928102315935
+            }
+          }
+        },
+        "libreoffice": {
+          "failures": 1,
+          "unavailable": 0,
+          "pdfs": 2924,
+          "not_applicable": 0,
+          "metrics": {
+            "pixel": {
+              "n": 2925,
+              "mean": 65.51131214724198
+            },
+            "jaccard": {
+              "n": 2924,
+              "mean": 29.67062243502052
+            },
+            "ssim": {
+              "n": 2924,
+              "mean": 60.02393980848153
+            },
+            "text_boundary": {
+              "n": 2820,
+              "mean": 75.46737588652482
+            }
+          }
+        }
+      }
+    },
+    "wordcraft_compare": {
+      "cases": 400,
+      "groups": {
+        "wordcraft1014/compare": 400
+      },
+      "tools": {
+        "docxodus-12.6.5": {
+          "failures": 31,
+          "unavailable": 0,
+          "pdfs": 369,
+          "not_applicable": 0,
+          "metrics": {
+            "pixel": {
+              "n": 400,
+              "mean": 67.19461898688823
+            },
+            "jaccard": {
+              "n": 368,
+              "mean": 65.83125
+            },
+            "ssim": {
+              "n": 368,
+              "mean": 74.01766304347827
+            },
+            "text_boundary": {
+              "n": 355,
+              "mean": 76.08676056338028
+            }
+          }
+        },
+        "docxodus-13.0.0": {
+          "failures": 21,
+          "unavailable": 0,
+          "pdfs": 379,
+          "not_applicable": 0,
+          "metrics": {
+            "pixel": {
+              "n": 400,
+              "mean": 67.90658180451038
+            },
+            "jaccard": {
+              "n": 377,
+              "mean": 63.674005305039785
+            },
+            "ssim": {
+              "n": 377,
+              "mean": 71.9766578249337
+            },
+            "text_boundary": {
+              "n": 359,
+              "mean": 74.77437325905292
+            }
+          }
+        },
+        "folio-0.60.0": {
+          "failures": 143,
+          "unavailable": 0,
+          "pdfs": 257,
+          "not_applicable": 0,
+          "metrics": {
+            "pixel": {
+              "n": 400,
+              "mean": 33.69507518761981
+            },
+            "jaccard": {
+              "n": 227,
+              "mean": 16.494273127753303
+            },
+            "ssim": {
+              "n": 227,
+              "mean": 30.133480176211453
+            },
+            "text_boundary": {
+              "n": 172,
+              "mean": 24.513953488372092
+            }
+          }
+        },
+        "jubarte-0.11.0": {
+          "failures": 1,
+          "unavailable": 0,
+          "pdfs": 399,
+          "not_applicable": 0,
+          "metrics": {
+            "pixel": {
+              "n": 400,
+              "mean": 76.90075030644579
+            },
+            "jaccard": {
+              "n": 399,
+              "mean": 76.40676691729323
+            },
+            "ssim": {
+              "n": 399,
+              "mean": 83.42155388471177
+            },
+            "text_boundary": {
+              "n": 391,
+              "mean": 83.66700767263427
+            }
+          }
+        },
+        "jubarte-0.12.0": {
+          "failures": 5,
+          "unavailable": 0,
+          "pdfs": 395,
+          "not_applicable": 0,
+          "metrics": {
+            "pixel": {
+              "n": 400,
+              "mean": 76.3373452091877
+            },
+            "jaccard": {
+              "n": 395,
+              "mean": 76.6506329113924
+            },
+            "ssim": {
+              "n": 395,
+              "mean": 83.86708860759494
+            },
+            "text_boundary": {
+              "n": 386,
+              "mean": 83.75414507772021
+            }
+          }
+        },
+        "stemma-0.5.0": {
+          "failures": 0,
+          "unavailable": 400,
+          "pdfs": 0,
+          "not_applicable": 0,
+          "metrics": {
+            "pixel": {
+              "n": 0,
+              "mean": null
+            },
+            "jaccard": {
+              "n": 0,
+              "mean": null
+            },
+            "ssim": {
+              "n": 0,
+              "mean": null
+            },
+            "text_boundary": {
+              "n": 0,
+              "mean": null
+            }
+          }
+        },
+        "stemma-0.6.0": {
+          "failures": 292,
+          "unavailable": 0,
+          "pdfs": 108,
+          "not_applicable": 0,
+          "metrics": {
+            "pixel": {
+              "n": 400,
+              "mean": 18.949605239685944
+            },
+            "jaccard": {
+              "n": 108,
+              "mean": 43.275925925925925
+            },
+            "ssim": {
+              "n": 108,
+              "mean": 59.25
+            },
+            "text_boundary": {
+              "n": 87,
+              "mean": 49.720689655172414
+            }
+          }
+        },
+        "superdoc-2.20.0": {
+          "failures": 364,
+          "unavailable": 0,
+          "pdfs": 36,
+          "not_applicable": 0,
+          "metrics": {
+            "pixel": {
+              "n": 400,
+              "mean": 5.33116811985705
+            },
+            "jaccard": {
+              "n": 36,
+              "mean": 17.016666666666666
+            },
+            "ssim": {
+              "n": 36,
+              "mean": 30.994444444444444
+            },
+            "text_boundary": {
+              "n": 8,
+              "mean": 22.225
+            }
+          }
+        },
+        "wordcraft": {
+          "failures": 8,
+          "unavailable": 0,
+          "pdfs": 392,
+          "not_applicable": 0,
+          "metrics": {
+            "pixel": {
+              "n": 400,
+              "mean": 47.32205040629696
+            },
+            "jaccard": {
+              "n": 329,
+              "mean": 12.343161094224925
+            },
+            "ssim": {
+              "n": 329,
+              "mean": 25.898176291793312
+            },
+            "text_boundary": {
+              "n": 276,
+              "mean": 18.880797101449275
+            }
+          }
+        },
+        "wordcraft-0.7.0": {
+          "failures": 8,
+          "unavailable": 0,
+          "pdfs": 392,
+          "not_applicable": 0,
+          "metrics": {
+            "pixel": {
+              "n": 400,
+              "mean": 47.35902439380265
+            },
+            "jaccard": {
+              "n": 329,
+              "mean": 12.346200607902736
+            },
+            "ssim": {
+              "n": 329,
+              "mean": 25.893617021276597
+            },
+            "text_boundary": {
+              "n": 276,
+              "mean": 18.880797101449275
+            }
+          }
+        }
+      }
+    },
+    "wordcraft_convert": {
+      "cases": 400,
+      "groups": {
+        "wordcraft1014/convert": 400
+      },
+      "tools": {
+        "docxide-pdf-0.18.4": {
+          "failures": 0,
+          "unavailable": 0,
+          "pdfs": 400,
+          "not_applicable": 0,
+          "metrics": {
+            "pixel": {
+              "n": 400,
+              "mean": 55.897451509754944
+            },
+            "jaccard": {
+              "n": 400,
+              "mean": 20.13475
+            },
+            "ssim": {
+              "n": 400,
+              "mean": 36.086
+            },
+            "text_boundary": {
+              "n": 310,
+              "mean": 57.42903225806452
+            }
+          }
+        },
+        "jubarte-0.11.0": {
+          "failures": 0,
+          "unavailable": 0,
+          "pdfs": 400,
+          "not_applicable": 0,
+          "metrics": {
+            "pixel": {
+              "n": 400,
+              "mean": 76.23864595451627
+            },
+            "jaccard": {
+              "n": 400,
+              "mean": 57.385
+            },
+            "ssim": {
+              "n": 400,
+              "mean": 74.94125
+            },
+            "text_boundary": {
+              "n": 366,
+              "mean": 81.94426229508197
+            }
+          }
+        },
+        "jubarte-0.12.0": {
+          "failures": 0,
+          "unavailable": 0,
+          "pdfs": 400,
+          "not_applicable": 0,
+          "metrics": {
+            "pixel": {
+              "n": 400,
+              "mean": 79.930148540457
+            },
+            "jaccard": {
+              "n": 400,
+              "mean": 66.209
+            },
+            "ssim": {
+              "n": 400,
+              "mean": 84.03325000000001
+            },
+            "text_boundary": {
+              "n": 397,
+              "mean": 89.03249370277078
+            }
+          }
+        },
+        "libreoffice_convert_rust-0.1.0": {
+          "failures": 2,
+          "unavailable": 0,
+          "pdfs": 398,
+          "not_applicable": 0,
+          "metrics": {
+            "pixel": {
+              "n": 400,
+              "mean": 54.82161826989057
+            },
+            "jaccard": {
+              "n": 398,
+              "mean": 17.718844221105527
+            },
+            "ssim": {
+              "n": 398,
+              "mean": 38.78391959798995
+            },
+            "text_boundary": {
+              "n": 366,
+              "mean": 62.76256830601093
+            }
+          }
+        },
+        "office2pdf-0.8.1": {
+          "failures": 2,
+          "unavailable": 0,
+          "pdfs": 398,
+          "not_applicable": 0,
+          "metrics": {
+            "pixel": {
+              "n": 400,
+              "mean": 48.65999075510279
+            },
+            "jaccard": {
+              "n": 367,
+              "mean": 13.477111716621254
+            },
+            "ssim": {
+              "n": 367,
+              "mean": 24.684196185286105
+            },
+            "text_boundary": {
+              "n": 295,
+              "mean": 43.06745762711864
+            }
+          }
+        },
+        "pdfitdown-4.2.0": {
+          "failures": 3,
+          "unavailable": 0,
+          "pdfs": 397,
+          "not_applicable": 0,
+          "metrics": {
+            "pixel": {
+              "n": 400,
+              "mean": 43.483278114356644
+            },
+            "jaccard": {
+              "n": 366,
+              "mean": 3.191803278688525
+            },
+            "ssim": {
+              "n": 366,
+              "mean": 13.390437158469945
+            },
+            "text_boundary": {
+              "n": 195,
+              "mean": 37.28051282051282
+            }
+          }
+        },
+        "pymupdf-pro-1.28.2": {
+          "failures": 3,
+          "unavailable": 0,
+          "pdfs": 250,
+          "not_applicable": 147,
+          "metrics": {
+            "pixel": {
+              "n": 253,
+              "mean": 56.478565813665
+            },
+            "jaccard": {
+              "n": 250,
+              "mean": 18.9696
+            },
+            "ssim": {
+              "n": 250,
+              "mean": 29.5452
+            },
+            "text_boundary": {
+              "n": 170,
+              "mean": 66.90470588235294
+            }
+          }
+        },
+        "rdocx-0.16.0": {
+          "failures": 3,
+          "unavailable": 0,
+          "pdfs": 397,
+          "not_applicable": 0,
+          "metrics": {
+            "pixel": {
+              "n": 400,
+              "mean": 50.687924688509945
+            },
+            "jaccard": {
+              "n": 397,
+              "mean": 15.1272040302267
+            },
+            "ssim": {
+              "n": 397,
+              "mean": 25.687909319899244
+            },
+            "text_boundary": {
+              "n": 300,
+              "mean": 49.92966666666666
+            }
+          }
+        },
+        "soffice": {
+          "failures": 2,
+          "unavailable": 0,
+          "pdfs": 398,
+          "not_applicable": 0,
+          "metrics": {
+            "pixel": {
+              "n": 400,
+              "mean": 54.81731209391884
+            },
+            "jaccard": {
+              "n": 398,
+              "mean": 17.70854271356784
+            },
+            "ssim": {
+              "n": 398,
+              "mean": 38.78417085427136
+            },
+            "text_boundary": {
+              "n": 366,
+              "mean": 62.76256830601093
+            }
+          }
+        },
+        "wordcraft": {
+          "failures": 0,
+          "unavailable": 0,
+          "pdfs": 400,
+          "not_applicable": 0,
+          "metrics": {
+            "pixel": {
+              "n": 400,
+              "mean": 55.46048522875745
+            },
+            "jaccard": {
+              "n": 400,
+              "mean": 17.713250000000002
+            },
+            "ssim": {
+              "n": 400,
+              "mean": 35.3855
+            },
+            "text_boundary": {
+              "n": 341,
+              "mean": 49.379472140762466
+            }
+          }
+        },
+        "wordcraft-0.7.0": {
+          "failures": 0,
+          "unavailable": 0,
+          "pdfs": 400,
+          "not_applicable": 0,
+          "metrics": {
+            "pixel": {
+              "n": 400,
+              "mean": 56.59047025410398
+            },
+            "jaccard": {
+              "n": 400,
+              "mean": 19.81375
+            },
+            "ssim": {
+              "n": 400,
+              "mean": 37.975500000000004
+            },
+            "text_boundary": {
+              "n": 341,
+              "mean": 51.06950146627566
+            }
+          }
+        }
+      }
+    }
+  }
+}

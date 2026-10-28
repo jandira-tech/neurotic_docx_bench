@@ -1,0 +1,96 @@
+{
+  "v1": {
+    "groups": {
+      "v1/clean": 2478,
+      "v1/tracking_without_comments": 237,
+      "v1/with_comments_clean": 112,
+      "v1/with_comments_tracking": 98
+    },
+    "pixel_means": {
+      "docxodus": 57.504646028964004,
+      "jubarte": 84.46416454822858,
+      "libreoffice": 65.51131214724198
+    },
+    "failures": {
+      "docxodus": 175,
+      "jubarte": 0,
+      "libreoffice": 1
+    }
+  },
+  "redlines": {
+    "groups": {
+      "accepted/tracking_without_comments": 318,
+      "accepted/with_comments_tracking": 82,
+      "rejected/tracking_without_comments": 319,
+      "rejected/with_comments_tracking": 81
+    },
+    "pixel_means": {
+      "docxodus": 87.72336218975825,
+      "jubarte-rust": 86.88861952919076,
+      "superdoc": 12.514639972698172
+    },
+    "failures": {
+      "docxodus": 21,
+      "jubarte-rust": 0,
+      "superdoc": 693
+    }
+  },
+  "wordcraft_compare": {
+    "groups": {
+      "wordcraft1014/compare": 400
+    },
+    "pixel_means": {
+      "docxodus-12.6.5": 67.19461898688823,
+      "docxodus-13.0.0": 67.90658180451038,
+      "folio-0.60.0": 33.69507518761981,
+      "jubarte-0.11.0": 76.90075030644579,
+      "jubarte-0.12.0": 76.3373452091877,
+      "stemma-0.6.0": 18.949605239685944,
+      "superdoc-2.20.0": 5.33116811985705,
+      "wordcraft": 47.32205040629696,
+      "wordcraft-0.7.0": 47.35902439380265
+    },
+    "failures": {
+      "docxodus-12.6.5": 31,
+      "docxodus-13.0.0": 21,
+      "folio-0.60.0": 143,
+      "jubarte-0.11.0": 1,
+      "jubarte-0.12.0": 5,
+      "stemma-0.6.0": 292,
+      "superdoc-2.20.0": 364,
+      "wordcraft": 8,
+      "wordcraft-0.7.0": 8
+    }
+  },
+  "wordcraft_convert": {
+    "groups": {
+      "wordcraft1014/convert": 400
+    },
+    "pixel_means": {
+      "docxide-pdf-0.18.4": 55.897451509754944,
+      "jubarte-0.11.0": 76.23864595451627,
+      "jubarte-0.12.0": 79.930148540457,
+      "libreoffice_convert_rust-0.1.0": 54.82161826989057,
+      "office2pdf-0.8.1": 48.65999075510279,
+      "pdfitdown-4.2.0": 43.483278114356644,
+      "pymupdf-pro-1.28.2": 56.478565813665,
+      "rdocx-0.16.0": 50.687924688509945,
+      "soffice": 54.81731209391884,
+      "wordcraft": 55.46048522875745,
+      "wordcraft-0.7.0": 56.59047025410398
+    },
+    "failures": {
+      "docxide-pdf-0.18.4": 0,
+      "jubarte-0.11.0": 0,
+      "jubarte-0.12.0": 0,
+      "libreoffice_convert_rust-0.1.0": 2,
+      "office2pdf-0.8.1": 2,
+      "pdfitdown-4.2.0": 3,
+      "pymupdf-pro-1.28.2": 3,
+      "rdocx-0.16.0": 3,
+      "soffice": 2,
+      "wordcraft": 0,
+      "wordcraft-0.7.0": 0
+    }
+  }
+}
