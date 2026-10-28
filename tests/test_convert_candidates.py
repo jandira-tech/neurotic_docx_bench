@@ -91,3 +91,20 @@ def test_resume_reconverts_a_leftover_pdf_that_does_not_open(tmp_path, monkeypat
     mod.main()
     assert called == ["leftover"]
     assert d2p._unreadable_pdf(out / "candidate" / f"{item.stem}.pdf") is None
+
+
+def test_a_failed_reconversion_removes_the_unreadable_leftover(tmp_path, monkeypatch) -> None:
+    """#90: when the retry of an unreadable kept PDF fails, the broken file must not stay to be scored."""
+    mod = _load()
+    item = _fixture(tmp_path, "leftover")
+    out = tmp_path / "out"
+    (out / "candidate").mkdir(parents=True)
+    (out / "candidate" / f"{item.stem}.pdf").write_bytes(b"%PDF-1.7 truncated garbage")
+    monkeypatch.setattr(mod.so, "convert_one", lambda soffice, docx, out_dir, **k: RenderResult(
+        source=docx, pdf=None, ok=False, error="soffice timed out"))
+    monkeypatch.setattr(mod.so, "find_soffice", lambda: Path("/opt/soffice"))
+    monkeypatch.setattr(mod.cli, "_corpus_word_selection", lambda **k: type("S", (), {"fixtures": [item]})())
+    monkeypatch.setattr(sys, "argv", ["convert_candidates.py", "--engine", "soffice", "--out", str(out)])
+    mod.main()
+    assert not (out / "candidate" / f"{item.stem}.pdf").exists()
+    assert json.loads((out / "convert_seconds.json").read_text())["failures"] == {item.stem: "soffice timed out"}

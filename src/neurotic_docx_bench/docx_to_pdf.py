@@ -310,7 +310,7 @@ def docxodus_font_dir() -> Path:
             selected = {face.name for face in faces}
             for cached in DOCXODUS_FONT_STAGE.glob("*.ttf"):
                 if not cached.name.startswith(".") and cached.name not in selected and (cached.is_file() or cached.is_symlink()):
-                    cached.unlink()
+                    cached.unlink(missing_ok=True)  # another process may have pruned it
             for face in faces:
                 dest = DOCXODUS_FONT_STAGE / face.name
                 if dest.is_file() and hashlib.sha256(dest.read_bytes()).digest() == hashlib.sha256(face.read_bytes()).digest():

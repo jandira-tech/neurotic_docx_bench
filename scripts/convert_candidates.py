@@ -65,6 +65,7 @@ def main() -> None:
             fail = d2p.try_convert_fixture("docxide-pdf", binary, f, dest)
             return None if fail is None else str(fail.get("error"))
         # The same per-document timeout and PDF check as the converters run_eval drives (#89).
+        dest.unlink(missing_ok=True)  # a kept render that failed the check never outlives a failed retry (#90)
         with tempfile.TemporaryDirectory(prefix="conv_") as tmp:
             r = so.convert_one(soffice, f.docx, Path(tmp), force=True, timeout=d2p.CONVERT_TIMEOUT_S)
             if not r.ok or r.pdf is None:
