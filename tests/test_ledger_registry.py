@@ -263,3 +263,9 @@ def test_committed_registry_marks_author_tools() -> None:
         "jubarte-pdf",
     } <= set(affiliated)
     assert r.by_id("docxodus").affiliated is False
+
+
+def test_committed_registry_resolves_docxodus_converter_line() -> None:
+    r = reg.load_registry(REGISTRY_PATH)
+    line = {"tool": "docxodus"}
+    assert r.resolve_converter(line["tool"]) == r.by_id("docxodus")

@@ -84,6 +84,8 @@ def lines_from_report(
         if not isinstance(raw_data, dict):
             continue
         data: dict[str, Any] = raw_data
+        if data.get("adapter_gap"):  # the converter never ran here (#89): no measurement to rank
+            continue
         per_doc_raw: Any = data.get("per_doc")
         per_doc: dict[str, Any] = per_doc_raw if isinstance(per_doc_raw, dict) else {}
         failed = _failed_docs(data)

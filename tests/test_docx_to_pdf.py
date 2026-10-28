@@ -257,6 +257,7 @@ def test_known_tools_are_the_named_converters():
         "docxide-pdf",
         "pymupdf-pro",
         "genoffice",
+        "docxodus",
     )
 
 
@@ -460,8 +461,14 @@ def test_jubarte_conversion_passes_compression_and_preserves_path_arguments(tmp_
         "--force", "--revisions", "word", "--compress",
     ]
 
+    import pymupdf
+
+    real = pymupdf.open()
+    real.new_page()
+    pdf = real.tobytes()  # a readable PDF: a bare header is refused since #89
+
     def convert(cmd, **kwargs):
-        destination.write_bytes(b"%PDF-1.7\ncompressed candidate")
+        destination.write_bytes(pdf)
         return SimpleNamespace(returncode=returncode, stderr="conversion failed" if returncode else "", stdout="")
 
     run = Mock(side_effect=convert)

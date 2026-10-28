@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import os
 import shutil
+import signal
 import subprocess
 import tempfile
 import time
@@ -78,7 +79,7 @@ def convert_one(
 ) -> RenderResult:
     """Convert a single DOCX to PDF inside an isolated LibreOffice user profile.
 
-    A failed attempt is retried up to ``retries`` times: concurrent soffice instances
+    A non-timeout failure is retried up to ``retries`` times: concurrent soffice instances
     occasionally fail transiently even with isolated profiles, and a retry converts a
     flaky parallel run into a deterministic one. Each attempt still requires BOTH a
     clean exit AND the output file (shell parity).
@@ -97,7 +98,7 @@ def convert_one(
     for _attempt in range(max(1, retries + 1)):
         profile = Path(tempfile.mkdtemp(prefix="lo-profile."))
         try:
-            proc = subprocess.run(
+            with subprocess.Popen(
                 [
                     str(soffice),
                     f"-env:UserInstallation=file://{profile}",
@@ -110,13 +111,22 @@ def convert_one(
                     str(out_dir),
                     str(docx),
                 ],
-                capture_output=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
                 text=True,
-                timeout=timeout,
-            )
-        except subprocess.TimeoutExpired:
-            err = "soffice timed out"
-            continue
+                start_new_session=True,
+            ) as proc:
+                try:
+                    stdout, stderr = proc.communicate(timeout=timeout)
+                except subprocess.TimeoutExpired:
+                    try:
+                        os.killpg(proc.pid, signal.SIGKILL)
+                    except ProcessLookupError:
+                        pass
+                    proc.wait()
+                    err = "soffice timed out"
+                    pdf.unlink(missing_ok=True)
+                    break
         finally:
             shutil.rmtree(profile, ignore_errors=True)
 
@@ -124,7 +134,7 @@ def convert_one(
         # writing, or exit non-zero after leaving a partial/old file).
         if proc.returncode == 0 and pdf.exists():
             return RenderResult(source=docx, pdf=pdf, ok=True, duration_ns=time.perf_counter_ns() - t0)
-        err = failure_detail(proc.returncode, proc.stderr, proc.stdout)
+        err = failure_detail(proc.returncode, stderr, stdout)
         pdf.unlink(missing_ok=True)  # never leave a partial file for the next attempt
     return RenderResult(source=docx, pdf=None, ok=False, error=err, duration_ns=time.perf_counter_ns() - t0)
 

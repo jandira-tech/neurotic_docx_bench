@@ -1,0 +1,10 @@
+{
+  "name": "neurotic-docx-bench-docxodus-export",
+  "private": true,
+  "type": "module",
+  "description": "Docxodus DOCX→PDF converter for neurotic-docx-bench docx-to-pdf (#89): @docxodus/export prints Docxodus's paginated HTML with its pinned Chromium. Not a pnpm workspace member; install with npm ci here.",
+  "dependencies": {
+    "@docxodus/export": "14.2.0",
+    "docxodus": "14.2.0"
+  }
+}

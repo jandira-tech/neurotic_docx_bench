@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import asyncio
 import contextlib
+import hashlib
 import json
 import re
 import shutil
@@ -519,9 +520,14 @@ def _progress(done: int, total: int, key: str, result: ScoreResult, started: flo
 
 
 def _task_signature(task: tuple) -> str:
-    """Identity of one scoring task: the two PDFs' sizes, the dpi and the scorer."""
+    """Identity of one scoring task: the two PDFs' bytes, the dpi and the scorer (a size
+    alone let a rewritten PDF of the same length restore the old score, #90)."""
     _key, oracle_pdf, cand_pdf, _work, dpi = task[:5]
-    return f"{Path(oracle_pdf).stat().st_size}:{Path(cand_pdf).stat().st_size}:{dpi}:{cc.scorer_fingerprint()}"
+    digests = []
+    for pdf in (oracle_pdf, cand_pdf):
+        with Path(pdf).open("rb") as fh:
+            digests.append(hashlib.file_digest(fh, "sha256").hexdigest()[:16])
+    return f"{digests[0]}:{digests[1]}:{dpi}:{cc.scorer_fingerprint()}"
 
 
 async def _load_checkpoint(path: Path | None) -> dict[str, dict]:
