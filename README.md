@@ -121,7 +121,6 @@ Pins: [`bench.yaml`](bench.yaml). Tool identities: [`bench.registry.yaml`](bench
 | [docxodus (C#)](https://github.com/JSv4/docxodus) | generator | docxodus |  | C# build of docxodus; speed benchmark only. |
 | [folio](https://github.com/stella/folio) | generator | @stll/folio-core |  |  |
 | [superdoc](https://github.com/Harbour-Enterprises/SuperDoc) | generator | superdoc-sdk |  |  |
-| [docx-redline-js](https://github.com/AnsonLai/docx-redline-js) | generator | docx-redline-js |  |  |
 | [redlines](https://github.com/houfu/redlines) | generator | redlines |  |  |
 | [superdoc-redlines](https://github.com/yuch85/superdoc-redlines) | generator | superdoc-redlines |  |  |
 | [stemma](https://github.com/stemma-sh/stemma) | generator | stemma |  |  |
@@ -363,7 +362,7 @@ This bench exists because these projects publish their work. Every tool is measu
 | [folio](https://github.com/stella/folio) (`@stll/folio-core`, `@stll/folio-react`) | stella | Apache-2.0 | redline generator; viewer for the `visual_*` benchmarks |
 | [SuperDoc](https://github.com/Harbour-Enterprises/SuperDoc) (`superdoc-sdk`, `superdoc`) | Harbour Enterprises | AGPL-3.0 | redline generator (Python SDK); editor for the `visual_*` benchmarks |
 | [superdoc-redlines](https://github.com/yuch85/superdoc-redlines) | yuch85 | Apache-2.0 | redline generator (SuperDoc headless extract→align→apply) |
-| [docx-redline-js](https://github.com/AnsonLai/docx-redline-js) | AnsonLai | MIT | redline generator (OOXML reconciliation) |
+| [docx-redline-js](https://github.com/AnsonLai/docx-redline-js) | AnsonLai | MIT | dropped in #88 (2026-10-28): migration-kit sibling dependency unavailable; historical results retained |
 | [redlines](https://github.com/houfu/redlines) | Houfu Ang | MIT | text-diff redline baseline |
 | [stemma](https://github.com/stemma-sh/stemma) | stemma-sh | Apache-2.0 | redline generator (`stemma compare`) |
 | [safe-docx](https://github.com/UseJunior/safe-docx) | UseJunior | Apache-2.0 | redline generator (`compareDocuments`) |

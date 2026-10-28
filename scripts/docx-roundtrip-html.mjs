@@ -1,10 +1,8 @@
 #!/usr/bin/env node
 /**
- * DOCX → HTML → DOCX round-trip for the two tools whose direct docx→docx
- * round-trip produced a byte-identical word/document.xml (a no-op re-zip):
- *
- *   • jubarte-final-native  → uses jubarte's own docxToHtml + htmlToDocx
- *   • docx-redline-js       → has no HTML export; uses soffice for both legs
+ * DOCX → HTML → DOCX round-trip for jubarte-final-native, whose direct
+ * docx→docx round-trip produced a byte-identical word/document.xml
+ * (a no-op re-zip). Uses jubarte's own docxToHtml + htmlToDocx.
  *
  * Outputs land in out/roundtrip-test/*_via_html.docx and we verify that
  * word/document.xml is now genuinely re-serialised (different MD5).
@@ -20,7 +18,6 @@ import {
 	docxIn,
 	docXmlMd5,
 	isValidDocx,
-	sofficeConvertTo,
 } from "./docx-utils.mjs";
 
 const SAMPLE =
@@ -88,60 +85,10 @@ const results = [];
 	}
 }
 
-// ── 2. docx-redline-js: soffice docx→html, soffice html→docx ─────────────────
-{
-	const tool = "docx-redline-js";
-	// docx-redline-js has no HTML export of its own, so we use soffice for
-	// both legs — this still exercises a genuine re-serialisation.
-	try {
-		const t0 = Date.now();
-		const srcDocx = join(OUT_DIR, `${tool}_src.docx`);
-		writeFileSync(srcDocx, sample);
-
-		// DOCX → HTML (soffice)
-		const wantHtml = join(OUT_DIR, `${tool}.html`);
-		if (!sofficeConvertTo(srcDocx, "html", wantHtml))
-			throw new Error("soffice docx→html failed");
-
-		// HTML → DOCX (soffice)
-		// HTML import requires the explicit StarWriter infilter or soffice silently produces no output
-		const wantDocx = join(OUT_DIR, `${tool}_via_html.docx`);
-		if (!sofficeConvertTo(wantHtml, "docx", wantDocx, "HTML (StarWriter)"))
-			throw new Error("soffice html→docx failed");
-
-		const out = readBytes(wantDocx);
-		const ms = Date.now() - t0;
-		const v = await isValidDocx(out);
-		const newMd5 = await docXmlMd5(out);
-		const changed = newMd5 !== origMd5;
-		results.push({
-			tool,
-			route: "docx→html→docx (soffice)",
-			ok: v.ok && changed,
-			outPath: wantDocx,
-		});
-		console.log(
-			`${v.ok && changed ? "✅" : "❌"} ${tool.padEnd(28)} docx→html→docx (soffice)  ` +
-				`${v.ok ? `valid ${v.size}B` : `invalid: ${v.reason}`}  ` +
-				`doc.xml changed: ${changed ? "YES ✅" : "NO ⚠️"}  ${ms}ms`,
-		);
-	} catch (e) {
-		results.push({
-			tool,
-			route: "docx→html→docx (soffice)",
-			ok: false,
-			outPath: null,
-		});
-		console.log(
-			`❌ ${tool.padEnd(28)} docx→html→docx (soffice)  ${e.message?.slice(0, 150)}`,
-		);
-	}
-}
-
 // ── summary ──────────────────────────────────────────────────────────────────
 console.log("\n" + "─".repeat(80));
 console.log(
-	"SUMMARY — docx→html→docx re-serialisation for the two no-op tools",
+	"SUMMARY — docx→html→docx re-serialisation for jubarte-final-native",
 );
 console.log("─".repeat(80));
 for (const r of results) {

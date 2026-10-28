@@ -87,7 +87,6 @@ src/neurotic_docx_bench/utils/superdoc/node/node_modules/
 src/neurotic_docx_bench/utils/superdoc/node_modules/
 src/neurotic_docx_bench/utils/folio/node_modules/
 src/neurotic_docx_bench/utils/docxodus/node_modules/docxodus/
-src/neurotic_docx_bench/utils/docx-redline-js/node_modules/
 harness/folio-viewer/
 corpus/word_based/superdoc_visual_benchmark/
 corpus/word_based/superdoc_word_benchmark_canary/reports/

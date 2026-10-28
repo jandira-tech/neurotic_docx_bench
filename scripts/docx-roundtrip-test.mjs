@@ -2,9 +2,8 @@
 /**
  * DOCX → DOCX round-trip capability test for each tool in bench.yaml.
  *
- * For each tool (jubarte-final's two facets, docxodus, docx-redline-js,
- * superdoc-ts), we attempt a direct DOCX→DOCX conversion with one sample
- * document. If that fails, we fall back to DOCX→HTML→DOCX (using the tool's
+ * For each tool (jubarte-final's two facets, docxodus, superdoc-ts), we
+ * attempt a direct DOCX→DOCX conversion with one sample document. If that fails, we fall back to DOCX→HTML→DOCX (using the tool's
  * own html export when available, plus soffice for the html→docx leg).
  *
  * The Python `superdoc` tool is covered by the bench's `roundtrip` benchmark.
@@ -12,15 +11,8 @@
  * Usage:
  *   node scripts/docx-roundtrip-test.mjs [path/to/sample.docx]
  */
-import {
-	readFileSync,
-	writeFileSync,
-	mkdirSync,
-	rmSync,
-	existsSync,
-} from "node:fs";
+import { writeFileSync, mkdirSync, rmSync } from "node:fs";
 import { resolve, join } from "node:path";
-import { tmpdir } from "node:os";
 import {
 	readBytes,
 	toBytes,
@@ -221,86 +213,7 @@ console.log(`\nSample: ${SAMPLE}  (${sample.byteLength} bytes)\n`);
 	}
 }
 
-// ── 4. docx-redline-js (npm) ─────────────────────────────────────────────────
-{
-	const tool = "docx-redline-js";
-	const [JSZipMod, xmldom, rl] = await Promise.all([
-		import(
-			"../src/neurotic_docx_bench/utils/docx-redline-js/node_modules/jszip/lib/index.js"
-		),
-		import(
-			"../src/neurotic_docx_bench/utils/docx-redline-js/node_modules/@xmldom/xmldom"
-		),
-		import(
-			"../src/neurotic_docx_bench/utils/docx-redline-js/node_modules/@ansonlai/docx-redline-js"
-		),
-	]);
-	const JSZip = JSZipMod.default ?? JSZipMod;
-	rl.configureXmlProvider({
-		DOMParser: xmldom.DOMParser,
-		XMLSerializer: xmldom.XMLSerializer,
-	});
-	const toText = (xml) => {
-		const t = rl.ingestWordOoxmlToPlainText(xml);
-		return typeof t === "string" ? t : (t?.text ?? "");
-	};
-
-	// Primary: applyRedlineToOxml(baseXml, baseText, baseText) — self-diff → patched zip
-	try {
-		const t0 = Date.now();
-		const zip = await JSZip.loadAsync(sample);
-		const docXml = await zip.file("word/document.xml").async("string");
-		const text = toText(docXml);
-		const res = await rl.applyRedlineToOxml(docXml, text, text, {
-			generateRedlines: true,
-			author: "bench",
-		});
-		zip.file("word/document.xml", res.oxml ?? res.ooxml);
-		const bytes = await zip.generateAsync({ type: "uint8array" });
-		const ms = Date.now() - t0;
-		const v = await isValidDocx(bytes);
-		const outPath = join(OUT_DIR, `${tool}.docx`);
-		writeFileSync(outPath, bytes);
-		record(
-			tool,
-			"docx→docx",
-			v.ok,
-			v.ok ? `valid ${v.size}B` : `invalid: ${v.reason}`,
-			ms,
-			outPath,
-		);
-	} catch (e) {
-		record(tool, "docx→docx", false, e.message?.slice(0, 150), 0, null);
-
-		// Fallback: docx-redline-js has no html export; use soffice for docx→html→docx
-		try {
-			const t0 = Date.now();
-			const docxPath = join(OUT_DIR, `${tool}_src.docx`);
-			writeFileSync(docxPath, sample);
-			// soffice docx→html (argv-based via sofficeConvertTo, no shell=True)
-			const htmlPath = join(OUT_DIR, `${tool}_src.html`);
-			rmSync(htmlPath, { force: true });
-			sofficeConvertTo(resolve(docxPath), "html", htmlPath);
-			const docxOut = join(OUT_DIR, `${tool}_via_html.docx`);
-			sofficeHtmlToDocx(htmlPath, docxOut);
-			const bytes = readBytes(docxOut);
-			const ms = Date.now() - t0;
-			const v = await isValidDocx(bytes);
-			record(
-				tool,
-				"docx→html→docx",
-				v.ok,
-				v.ok ? `valid ${v.size}B (via soffice)` : `invalid: ${v.reason}`,
-				ms,
-				docxOut,
-			);
-		} catch (e2) {
-			record(tool, "docx→html→docx", false, e2.message?.slice(0, 150), 0, null);
-		}
-	}
-}
-
-// ── 5. superdoc-ts (npm) ─────────────────────────────────────────────────────
+// ── 4. superdoc-ts (npm) ─────────────────────────────────────────────────────
 {
 	const tool = "superdoc-ts";
 	const [{ SuperDocClient }, os, fs, path] = await Promise.all([

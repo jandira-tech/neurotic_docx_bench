@@ -19,6 +19,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   completed with them scored 0; the six affected soffice sample rows are appended corrected (#69).
 - `py.typed`, project URLs and classifiers; the sdist holds the package only.
 
+### Removed
+- `docx-redline-js` is dropped from the workspace and every active run (#88): its local `file:`
+  dependency on the `docx-redline-migration-kit` sibling repository cannot install, so
+  `pnpm install --frozen-lockfile` failed on every fresh checkout. Its results stay in History;
+  its registry entry is kept, marked `retired`.
+
 ### Fixed
 - A listed score-only `docx-to-pdf` run keeps a listed document with no PDF as a failure scored 0
   instead of dropping it (#69).

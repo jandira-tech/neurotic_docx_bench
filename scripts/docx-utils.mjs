@@ -34,11 +34,7 @@ export const docxIn = (bytes) => ({ buffer: bytes });
 export async function docXmlMd5(bytesOrPath) {
 	const bytes =
 		typeof bytesOrPath === "string" ? readBytes(bytesOrPath) : bytesOrPath;
-	const JSZip = (
-		await import(
-			"../src/neurotic_docx_bench/utils/docx-redline-js/node_modules/jszip/lib/index.js"
-		)
-	).default;
+	const JSZip = (await import("jszip")).default;
 	const zip = await JSZip.loadAsync(bytes);
 	const xml = await zip.file("word/document.xml").async("uint8array");
 	return createHash("md5").update(xml).digest("hex");
@@ -47,11 +43,7 @@ export async function docXmlMd5(bytesOrPath) {
 /** Quick validity check: is this a plausible DOCX? (zip with word/document.xml) */
 export async function isValidDocx(bytes) {
 	try {
-		const JSZip = (
-			await import(
-				"../src/neurotic_docx_bench/utils/docx-redline-js/node_modules/jszip/lib/index.js"
-			)
-		).default;
+		const JSZip = (await import("jszip")).default;
 		const zip = await JSZip.loadAsync(bytes);
 		const doc = zip.file("word/document.xml");
 		if (!doc) return { ok: false, reason: "missing word/document.xml" };

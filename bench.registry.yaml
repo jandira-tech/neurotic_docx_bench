@@ -237,6 +237,8 @@ tools:
     speed_tools: [superdoc]
     url: https://github.com/Harbour-Enterprises/SuperDoc
   - id: docx-redline-js
+    status: retired
+    note: "Dropped in #88; unavailable migration-kit sibling dependency. Kept so History resolves."
     vendor: docx-redline-js
     display: docx-redline-js
     role: generator

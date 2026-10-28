@@ -6,6 +6,10 @@ in `results/speed.jsonl`. Render speed (Playwright viewer → PDF) is measured s
 `python -m neurotic_docx_bench.playwright_speed` (see [Render speed](#render-speed)) and is
 also captured per-run in `results/bench.jsonl` under each `visual_*` line's speed stats.
 
+`docx-redline-js` figures are historical: the vendor was dropped on 2026-10-28
+(#88) because its migration-kit sibling dependency is unavailable. It is no
+longer included in speed runs.
+
 ## Canonical Jubarte source
 
 Read `../../reconciliation_plan/GET_JUBARTE_RUST.md` before rebuilding either
@@ -310,7 +314,7 @@ node --import tsx scripts/redline_speed_bench.ts \
   large-N **14.43 ms** median (17.5/s, 0 fails on 5k) and microbench **6.76 ms** median —
   slower than the older shallow native pin (~4.5 ms) because the via-AST compare does
   real structure-aware redline work, but now **fidelity mean 90.04 / median 91.99**.
-- **docx-redline-js is fastest overall (~1.45 ms, 358/s)** — but it's the *least accurate*
+- **docx-redline-js was fastest in the historical microbench (~1.45 ms, 358/s)** — but it was the *least accurate*
   (score ~50–55). Speed bought by doing a shallow text reconciliation, not a real doc diff.
 - **the real docxodus (JSv4 WASM/.NET) is by far the slowest and most erratic** — median
   75 ms but **p99 2.3 s** and **std 492 ms**: occasional multi-second stalls from the .NET

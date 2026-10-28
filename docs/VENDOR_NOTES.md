@@ -341,6 +341,11 @@ scoring a vendor on that is scoring the runtime (plan Chapter 6 D6).
 
 ### docx-redline-js
 
+**2026-10-28 — dropped from the bench in #88.** The `docx-redline-migration-kit`
+sibling repo is not available, so its local `file:` dependency cannot install.
+Active runs and the workspace package were removed; the retired registry entry
+and historical measurements remain. The notes below describe the historical setup.
+
 | field | value |
 |---|---|
 | Upstream | `@ansonlai/docx-redline-js` — published **0.2.1** |

@@ -1,6 +1,6 @@
 /**
  * Generate tracked-change redlines for every base→next pair in the corpus manifest,
- * using a native engine (jubarte for now; docxodus / docx-redline-js added in later PRs),
+ * using a native engine (jubarte, docxodus, folio, or SuperDoc),
  * writing one `<base>_<next>_<tool>_redline.docx` per pair so the Python bench can render
  * and score it against the Word oracle `<base>_<next>_redline.pdf`.
  *
@@ -324,109 +324,6 @@ export async function loadEngine(
 				throw new Error("jubarte-wasm compareDocuments returned empty output");
 			}
 			return bytes;
-		};
-	}
-	if (method === "docx-redline-js") {
-		// @ansonlai/docx-redline-js (MIT) reconciles TEXT edits into w:ins/w:del on OOXML.
-		// Best practices: use extractReplacementNodesFromOoxml for result.oxml,
-		// ensureNumberingArtifactsInZip for numbering, and validateDocxPackage before output.
-		const [JSZipMod, xmldom, rl]: [any, any, any] = await Promise.all([
-			import(
-				"../src/neurotic_docx_bench/utils/docx-redline-js/node_modules/jszip/lib/index.js"
-			),
-			// Directory imports resolve under bun but not plain Node ESM (the pnpm
-			// symlinked tree is imported with `node --import tsx`), so resolve each
-			// package's declared ESM entry the way packageEntryUrl does elsewhere.
-			import(
-				packageEntryUrl(
-					resolve(
-						import.meta.dirname,
-						"../src/neurotic_docx_bench/utils/docx-redline-js/node_modules/@xmldom/xmldom",
-					),
-				)
-			),
-			import(
-				packageEntryUrl(
-					resolve(
-						import.meta.dirname,
-						"../src/neurotic_docx_bench/utils/docx-redline-js/node_modules/@ansonlai/docx-redline-js",
-					),
-				)
-			),
-		]);
-		const JSZip = JSZipMod.default ?? JSZipMod;
-		rl.configureXmlProvider({
-			DOMParser: xmldom.DOMParser,
-			XMLSerializer: xmldom.XMLSerializer,
-		});
-		const toText = (xml: string): string => {
-			const t = rl.ingestWordOoxmlToPlainText(xml);
-			return typeof t === "string" ? t : (t?.text ?? "");
-		};
-		// extractReplacementNodesFromOoxml returns { replacementNodes: Element[] } — DOM
-		// nodes meant to REPLACE the base body's content, never a document.xml string.
-		// Splice them into the base document (keeping its sectPr) and serialize.
-		const spliceIntoBase = (baseXml: string, nodes: any[]): string => {
-			const doc = new xmldom.DOMParser().parseFromString(
-				baseXml,
-				"application/xml",
-			);
-			const body = doc.getElementsByTagNameNS("*", "body")[0];
-			if (!body) throw new Error("base document.xml has no <w:body>");
-			const sectPrs = Array.from(body.childNodes as any).filter(
-				(n: any) => n.nodeType === 1 && /(^|:)sectPr$/.test(n.nodeName),
-			);
-			while (body.firstChild) body.removeChild(body.firstChild);
-			for (const n of nodes) body.appendChild(doc.importNode(n, true));
-			for (const s of sectPrs) body.appendChild(s);
-			return new xmldom.XMLSerializer().serializeToString(doc);
-		};
-		return async (base, next) => {
-			const baseZip = await JSZip.loadAsync(base);
-			const baseXml: string = await baseZip
-				.file("word/document.xml")
-				.async("string");
-			const nextZip = await JSZip.loadAsync(next);
-			const nextXml: string = await nextZip
-				.file("word/document.xml")
-				.async("string");
-			const res: any = await rl.applyRedlineToOxml(
-				baseXml,
-				toText(baseXml),
-				toText(nextXml),
-				{
-					generateRedlines: true,
-					author: "docx-redline-js",
-				},
-			);
-			const oxml: string = res.oxml ?? res.ooxml;
-			// Use extractReplacementNodesFromOoxml to normalize the output shape.
-			// Guard: a missing/empty replacementNodes (no-op redline, or an unexpected
-			// full-document payload) must NOT be spliced into the base — spliceIntoBase
-			// wipes the body first, so an empty array would silently erase the document
-			// and an undefined value throws a confusing TypeError. Fail this pair loudly.
-			const normalized: any = rl.extractReplacementNodesFromOoxml(oxml);
-			if (
-				!normalized?.replacementNodes ||
-				normalized.replacementNodes.length === 0
-			) {
-				throw new Error(
-					`docx-redline-js: extractReplacementNodesFromOoxml returned no replacementNodes ` +
-						`(sourceType=${normalized?.sourceType ?? "unknown"})`,
-				);
-			}
-			const docXml = spliceIntoBase(baseXml, normalized.replacementNodes);
-			baseZip.file("word/document.xml", docXml);
-			// Merge numbering artifacts using the proper helper
-			if (normalized.numberingXml) {
-				await rl.ensureNumberingArtifactsInZip(
-					baseZip,
-					normalized.numberingXml,
-				);
-			}
-			// Validate package structure before generating output
-			await rl.validateDocxPackage(baseZip);
-			return baseZip.generateAsync({ type: "uint8array" });
 		};
 	}
 	if (method === "folio") {

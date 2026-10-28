@@ -77,7 +77,7 @@ Key modules (`src/neurotic_docx_bench/`):
   persisted `score/` rasters; emitted automatically by `bench run`).
 - `aggregate.py` `gate.py` `tool_updater.py` `provenance.py` `config.py` `cli.py`.
 - `superdoc_gen.py` — the SuperDoc (Python SDK) redline generator.
-- `scripts/generate-native-redlines.ts` — jubarte / docxodus / docx-redline-js generators.
+- `scripts/generate-native-redlines.ts` — jubarte / docxodus / folio / SuperDoc generators.
 
 ## The oracle — READ THIS
 
@@ -138,7 +138,6 @@ uv run bench corpus check                          # re-checks corpus/word again
 | `jubarte-final-native` | jubarte `redlineDocx` (CriticMarkup) | `dist/jubarte-final` content-hash |
 | `jubarte-final-lossless` | jubarte `compareDocx` (its in-tree docxodus port) | `dist/jubarte-final` content-hash |
 | `docxodus` | real JSv4/docxodus WASM `compareDocuments` | npm `docxodus@9.8.0` |
-| `docx-redline-js` | `@ansonlai/docx-redline-js` OOXML reconciliation | npm `@0.2.0` |
 | `folio` | `@stll/folio-core` `compareDocxVersions`+`FolioDocxReviewer.applyOperations` | npm `@stll/folio-core@0.3.1` |
 | `superdoc` | SuperDoc SDK (Python) Document-Engine diff | pip `superdoc-sdk` |
 | `redlines` | houfu/redlines text diff → `w:ins`/`w:del` DOCX rewrite (`redlines_gen.py`, required `nupunkt==0.6.0`) | pip `redlines==0.6.1` + `nupunkt==0.6.0` |

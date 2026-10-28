@@ -35,13 +35,13 @@ scoring:
 
 # The corpus pools EVERY generating run is scored on — 207 + 196 + 400 = 803
 # pairs. Declared once, here, because coverage used to be per-run copy-paste, and
-# copy-paste does not propagate. Of the 12 runs declaring script_redlines, FOUR
+# copy-paste does not propagate. Of the 11 retained runs declaring script_redlines, FOUR
 # (jubarte-rust, jubarte-final-native, jubarte-final-lossless, docxodus)
 # hand-chained three invocations with explicit --manifest/--source-dir = 803
-# pairs; the other EIGHT (docx-redline-js, folio, superdoc, redlines,
+# pairs; the other SEVEN (folio, superdoc, redlines,
 # superdoc-redlines, jubarte-wasm, superdoc-ts, superdoc-native) omitted the
 # flags and silently inherited the generators' argparse default = pool #1 only,
-# 207 pairs. All 12 were published in the same comparison table, so rows with
+# 207 pairs. All 11 were published in the same comparison table, so rows with
 # different n were not the same measurement (plan Chapter 6, D1).
 #
 # Note the split is NOT "us vs them" — it is a footgun that has been tripped in
@@ -99,7 +99,7 @@ generate_scripts:
     command: "mkdir -p /tmp/pdf_source_render/pdf && cp -c corpus/word_based/pdf_source/*.pdf /tmp/pdf_source_render/pdf/ 2>/dev/null || cp corpus/word_based/pdf_source/*.pdf /tmp/pdf_source_render/pdf/ 2>/dev/null; uv run bench render corpus/word_based/docx_source /tmp/pdf_source_render --backend soffice --jobs 12 && mv -n /tmp/pdf_source_render/pdf/*.pdf corpus/word_based/pdf_source/ 2>/dev/null; true"
 
 # Tool versions are PINNED to the ones we reviewed:
-#   docxodus 9.8.0 · docx-redline-js = local TS migration (dist: sibling package)
+#   docxodus 9.8.0
 #   @stll/folio-core 0.15.13 (generator) · @stll/folio-react 0.13.2 (viewer)
 #   superdoc is THREE packages, pinned independently — never conflate them:
 #     superdoc-sdk (PyPI) 2.16.0       → run `superdoc`            (python_package:)
@@ -251,19 +251,7 @@ runs:
     benchmarks: [visual_accepted_changes]
     harness: *folio-harness
 
-  # (3) docx-redline-js — OOXML text-reconciliation redliner (strict-TS migration).
-  # Local build from sibling repo docx-redline-migration-kit (NOT npm 0.2.0).
-  # Rebuild: cd ../docx-redline-migration-kit && bun run build:package
-  # then: cd src/neurotic_docx_bench/utils/docx-redline-js && bun install
-  - name: docx-redline-js
-    dist: ../docx-redline-migration-kit/dist/docx-redline-js
-    generate: "node --import tsx scripts/generate-native-redlines.ts --method=docx-redline-js --out=$RUN_DIR/docx --run-dir=$RUN_DIR --tool=docx-redline-js"
-    render: soffice
-    jobs: 1
-    vendor: docx-redline-js
-    benchmarks: [script_redlines]
-
-  # (3b) folio — @stll/folio-core generateRedlineDocx(base, next, {author}).
+  # (3) folio — @stll/folio-core generateRedlineDocx(base, next, {author}).
   # Since 0.13.0 folio ships a single base+next→redline call, so the loadEngine
   # 'folio' adapter is now a straight one-call passthrough (see
   # scripts/generate-native-redlines.ts) with no harness-side diff translation.

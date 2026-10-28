@@ -74,7 +74,6 @@ const METHODS: MethodConfig[] = [
 	{ method: "jubarte-final-native", dist: "dist/jubarte-final" },
 	{ method: "jubarte-final-lossless", dist: "dist/jubarte-final" },
 	{ method: "docxodus", dist: "" },
-	{ method: "docx-redline-js", dist: "" },
 	{ method: "superdoc-ts", dist: "" },
 	// Canonical Rust engine: the native CLI (spawn per pair) and the WASM build in V8.
 	{
