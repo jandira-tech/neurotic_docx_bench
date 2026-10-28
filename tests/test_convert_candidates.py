@@ -65,3 +65,29 @@ def test_soffice_candidates_share_the_timeout_the_pdf_check_and_record_seconds(t
     assert set(record["seconds"]) == {"clean__good", "clean__broken"}
     assert all(s >= 0.2 for s in record["seconds"].values())
     assert "unreadable PDF" in record["failures"]["clean__broken"]
+
+
+def test_resume_reconverts_a_leftover_pdf_that_does_not_open(tmp_path, monkeypatch) -> None:
+    """A ``%PDF-`` header is not enough to skip a document on rerun; it must open in MuPDF (#90)."""
+    mod = _load()
+    item = _fixture(tmp_path, "leftover")
+    out = tmp_path / "out"
+    (out / "candidate").mkdir(parents=True)
+    (out / "candidate" / f"{item.stem}.pdf").write_bytes(b"%PDF-1.7 truncated garbage")
+    called = []
+
+    def convert_one(soffice, docx, out_dir, *, force=False, timeout=1200.0, retries=1):
+        called.append(docx.stem)
+        doc = pymupdf.open()
+        doc.new_page()
+        pdf = Path(out_dir) / f"{docx.stem}.pdf"
+        pdf.write_bytes(doc.tobytes())
+        return RenderResult(source=docx, pdf=pdf, ok=True)
+
+    monkeypatch.setattr(mod.so, "convert_one", convert_one)
+    monkeypatch.setattr(mod.so, "find_soffice", lambda: Path("/opt/soffice"))
+    monkeypatch.setattr(mod.cli, "_corpus_word_selection", lambda **k: type("S", (), {"fixtures": [item]})())
+    monkeypatch.setattr(sys, "argv", ["convert_candidates.py", "--engine", "soffice", "--out", str(out)])
+    mod.main()
+    assert called == ["leftover"]
+    assert d2p._unreadable_pdf(out / "candidate" / f"{item.stem}.pdf") is None

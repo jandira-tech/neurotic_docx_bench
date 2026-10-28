@@ -46,7 +46,8 @@ def main() -> None:
             print(f"WARNING: {len(unknown)} listed fixtures are not in the corpus selection", flush=True)
     cand = args.out / "candidate"
     cand.mkdir(parents=True, exist_ok=True)
-    todo = [f for f in fixtures if not d2p._is_pdf(cand / f"{f.stem}.pdf")]
+    # A kept render must open in MuPDF too, the check every fresh conversion passes (#90).
+    todo = [f for f in fixtures if not d2p._is_pdf(p := cand / f"{f.stem}.pdf") or d2p._unreadable_pdf(p) is not None]
     print(f"{len(fixtures)} fixtures, {len(todo)} to convert with {args.engine}", flush=True)
     soffice = so.find_soffice() if args.engine == "soffice" else None
     binary = d2p.resolve_tool_binary("docxide-pdf") if args.engine == "docxide" else None

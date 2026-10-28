@@ -6,6 +6,8 @@ import json
 import sys
 from itertools import count
 from pathlib import Path
+
+import pymupdf
 from types import SimpleNamespace
 
 import pytest
@@ -29,6 +31,17 @@ def conversion_run(tmp_path: Path, monkeypatch):
     return selection, tmp_path / "work"
 
 
+def _real_pdf() -> bytes:
+    doc = pymupdf.open()
+    doc.new_page()
+    data = doc.tobytes()
+    doc.close()
+    return data
+
+
+_REAL_PDF = _real_pdf()  # resume keeps only a candidate MuPDF opens (#90)
+
+
 def test_resume_preserves_seconds_and_failures_with_nothing_to_convert(conversion_run, monkeypatch):
     selection, out = conversion_run
     calls = []
@@ -37,7 +50,7 @@ def test_resume_preserves_seconds_and_failures_with_nothing_to_convert(conversio
         calls.append(item.stem)
         if item.stem == "bad":
             return {"error": "crashed"}
-        dest.write_bytes(b"%PDF-1.7 test output")
+        dest.write_bytes(_REAL_PDF)
         return None
 
     monkeypatch.setattr(d2p, "try_convert_fixture", convert)
@@ -64,7 +77,7 @@ def test_reconversion_replaces_its_records_and_keeps_other_documents(conversion_
     def convert(tool, binary, item, dest):
         if error:
             return {"error": error}
-        dest.write_bytes(b"%PDF-1.7 test output")
+        dest.write_bytes(_REAL_PDF)
         return None
 
     monkeypatch.setattr(d2p, "try_convert_fixture", convert)

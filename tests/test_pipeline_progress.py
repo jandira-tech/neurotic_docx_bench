@@ -182,3 +182,16 @@ def test_checkpoint_ignores_a_line_cut_short_by_a_kill(monkeypatch, tmp_path):
     checkpoint.write_text(checkpoint.read_text() + '{"key": "b", "sig": "x", "res')
     result = pipeline._run_tasks([task], 1, checkpoint)
     assert list(result) == ["a"]
+
+
+def test_checkpoint_row_is_stale_when_the_pdf_changes_but_keeps_its_size(monkeypatch, tmp_path):
+    """#90: a rewritten PDF of the same length must not restore the old score."""
+    checkpoint = tmp_path / "scores.checkpoint.jsonl"
+    task = _pair(tmp_path, "a")
+    monkeypatch.setattr(pipeline, "_score_one", lambda t: (t[0], {"overall_score": 1.0}))
+    pipeline._run_tasks([task], 1, checkpoint)
+    task[2].write_bytes(b"%PDF-cand-z")  # same length as b"%PDF-cand-a"
+    rescored: list[str] = []
+    monkeypatch.setattr(pipeline, "_score_one", lambda t: (rescored.append(t[0]), (t[0], {"overall_score": 2.0}))[1])
+    result = pipeline._run_tasks([task], 1, checkpoint)
+    assert rescored == ["a"] and result["a"]["overall_score"] == 2.0
