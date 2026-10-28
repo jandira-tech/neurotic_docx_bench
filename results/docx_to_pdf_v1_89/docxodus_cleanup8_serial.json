@@ -1,0 +1,59 @@
+{
+  "generated_at": "2026-10-28T08:26:32.931428+00:00",
+  "n": 8,
+  "oracle": "microsoft_word",
+  "scorer_backend": "torch-mps",
+  "stems": [
+    "clean__02db946bce_italic_text_formatting_demo_id_paraid_overflow_2",
+    "clean__02d3862b8b_file_116",
+    "clean__0332219534_red_bold_text_demo_id_paraid_overflow",
+    "clean__030c864b67_2c913d23ee4b63d2320f1a131e2b9e2148951743abc5bc09",
+    "clean__02865fc175_008f896473aec097e4bd8ff58f95b0930242cd2cae9c5146",
+    "clean__0278e9298d_f3a3a94e08be4e5cce05139444d92dfbfc60bfe1ad839671",
+    "clean__0308cb497f_file_21",
+    "clean__02c9605488_bold_superscript_demo_style_default_missing"
+  ],
+  "tools": {
+    "docxodus": {
+      "aggregate": {
+        "max": 94.1821,
+        "mean": 73.1899,
+        "median": 83.6157,
+        "min": 40.6637,
+        "n": 8
+      },
+      "convert_seconds": {
+        "clean__0278e9298d_f3a3a94e08be4e5cce05139444d92dfbfc60bfe1ad839671": 2.407,
+        "clean__02865fc175_008f896473aec097e4bd8ff58f95b0930242cd2cae9c5146": 2.778,
+        "clean__02c9605488_bold_superscript_demo_style_default_missing": 1.999,
+        "clean__02d3862b8b_file_116": 1.961,
+        "clean__02db946bce_italic_text_formatting_demo_id_paraid_overflow_2": 3.193,
+        "clean__0308cb497f_file_21": 1.969,
+        "clean__030c864b67_2c913d23ee4b63d2320f1a131e2b9e2148951743abc5bc09": 2.616,
+        "clean__0332219534_red_bold_text_demo_id_paraid_overflow": 1.917
+      },
+      "converter": "/Users/arthrod/temp/T/ndb-v1/src/neurotic_docx_bench/utils/docxodus-export/node_modules/.bin/docxodus",
+      "failures": 0,
+      "generate_failures": [],
+      "itt_n": 8,
+      "mean": 73.1899,
+      "median": 83.6157,
+      "n_scored": 8,
+      "per_doc": {
+        "clean__0278e9298d_f3a3a94e08be4e5cce05139444d92dfbfc60bfe1ad839671": 40.663748749534435,
+        "clean__02865fc175_008f896473aec097e4bd8ff58f95b0930242cd2cae9c5146": 48.31068999077111,
+        "clean__02c9605488_bold_superscript_demo_style_default_missing": 77.67047167362536,
+        "clean__02d3862b8b_file_116": 92.66716583479403,
+        "clean__02db946bce_italic_text_formatting_demo_id_paraid_overflow_2": 89.56090780673085,
+        "clean__0308cb497f_file_21": 91.04275412734947,
+        "clean__030c864b67_2c913d23ee4b63d2320f1a131e2b9e2148951743abc5bc09": 51.42156267999124,
+        "clean__0332219534_red_bold_text_demo_id_paraid_overflow": 94.18213054447452
+      },
+      "perfects": 0,
+      "tool": "docxodus",
+      "version": "@docxodus/export 14.2.0 (docxodus 14.2.0)"
+    }
+  },
+  "track": "corpus/word:list",
+  "warnings": []
+}
