@@ -122,3 +122,11 @@ def test_saved_filters_that_hide_every_case_are_dropped_on_load(pages):
     body = js[js.index("function setupFx()"):]
     body = body[: body.index("\n}\n")]
     assert "if (!visibleCases().length)" in body
+
+
+@pytest.mark.parametrize(("rel", "mode"), [("index.html", "convert"), ("redlines/index.html", "redline")])
+def test_each_published_page_carries_its_own_mode_dropdown(pages, rel, mode):
+    # 2026-10-29: redlines/index.html shipped the convert page's drop-down, so it read
+    # "Convert" and its redline option went to redlines/redlines/ (a 404).
+    assert pages[rel].count('<select id="mode"') == 1
+    assert vf.mode_select(mode) in pages[rel]
