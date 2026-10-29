@@ -1,0 +1,313 @@
+{
+  "healthStatus": 200,
+  "checked": [
+    {
+      "group": "redlines/tracking_without_comments",
+      "case": "0000ae5089",
+      "shown": [
+        1
+      ],
+      "headings": {
+        "jubarte-rust": "JUBARTE PDF jubarte 0.14.0 · 1 p · Pixel 84.9% · J 99.5% · SSIM 99.6% · TB 100.0%",
+        "docxodus": "DOCXODUS PDF docxodus 14.2.0 · 1 p · Pixel 84.9% · J 99.5% · SSIM 99.6% · TB 100.0%"
+      },
+      "pdfs": [
+        "https://pub-92c80eda1059428394970066c8500eda.r2.dev/redlines/redlines/tracking_without_comments/0000ae5089/reference/all.pdf",
+        "http://127.0.0.1:8180/__assets/renew1030/redlines/redlines/tracking_without_comments/0000ae5089/jubarte-rust/pages.pdf",
+        "http://127.0.0.1:8180/__assets/renew1030/redlines/redlines/tracking_without_comments/0000ae5089/docxodus/pages.pdf"
+      ],
+      "pixelSort": [
+        "descending",
+        "ascending"
+      ]
+    },
+    {
+      "group": "redlines/with_comments_tracking",
+      "case": "01f3deda92",
+      "shown": [
+        1,
+        2
+      ],
+      "headings": {
+        "jubarte-rust": "JUBARTE PDF jubarte 0.14.0 · 2 p · Pixel 97.5% · J 99.7% · SSIM 100.0% · TB 100.0%",
+        "docxodus": "DOCXODUS PDF docxodus 14.2.0 · 2 p · Pixel 96.6% · J 98.3% · SSIM 99.7% · TB 97.4%"
+      },
+      "pdfs": [
+        "https://pub-92c80eda1059428394970066c8500eda.r2.dev/redlines/redlines/with_comments_tracking/01f3deda92/reference/all.pdf",
+        "http://127.0.0.1:8180/__assets/renew1030/redlines/redlines/with_comments_tracking/01f3deda92/jubarte-rust/pages.pdf",
+        "http://127.0.0.1:8180/__assets/renew1030/redlines/redlines/with_comments_tracking/01f3deda92/docxodus/pages.pdf"
+      ],
+      "pixelSort": [
+        "descending",
+        "ascending"
+      ]
+    },
+    {
+      "group": "wordcraft1014/compare",
+      "case": "e3d57f2816",
+      "shown": [
+        1
+      ],
+      "headings": {
+        "jubarte-rust": "JUBARTE PDF jubarte 0.14.0 · 1 p · Pixel 85.0% · J 99.8% · SSIM 99.6% · TB 100.0%",
+        "docxodus": "DOCXODUS PDF docxodus 14.2.0 · 1 p · Pixel 66.4% · J 42.8% · SSIM 60.9% · TB 42.9%"
+      },
+      "pdfs": [
+        "http://127.0.0.1:8180/__assets/wordcraft1014/wordcraft1014/compare/e3d57f2816/reference/pages.pdf",
+        "http://127.0.0.1:8180/__assets/renew1030/redlines/wordcraft1014/compare/e3d57f2816/jubarte-rust/pages.pdf",
+        "http://127.0.0.1:8180/__assets/renew1030/redlines/wordcraft1014/compare/e3d57f2816/docxodus/pages.pdf"
+      ],
+      "pixelSort": [
+        "descending",
+        "ascending"
+      ]
+    },
+    {
+      "group": "ar/accept_all",
+      "case": "00da16e738_heading_4_style_demo_id_paraid_overflow_2__vs__82928b2e05_heading_4_style_demo_id_paraid_overflow_redline_9ec4fe3616",
+      "shown": [
+        1
+      ],
+      "headings": {
+        "jubarte-rust": "JUBARTE PDF jubarte 0.14.0 · 1 p · Pixel 100.0% · J 100.0% · SSIM 100.0% · TB 100.0%",
+        "docxodus": "DOCXODUS PDF docxodus 14.2.0 · 1 p · Pixel 100.0% · J 100.0% · SSIM 100.0% · TB 100.0%"
+      },
+      "pdfs": [
+        "http://127.0.0.1:8180/__assets/renew1030/ar/accept_all/00da16e738_heading_4_style_demo_id_paraid_overflow_2__vs__82928b2e05_heading_4_style_demo_id_paraid_overflow_redline_9ec4fe3616/reference/pages.pdf",
+        "http://127.0.0.1:8180/__assets/renew1030/ar/accept_all/00da16e738_heading_4_style_demo_id_paraid_overflow_2__vs__82928b2e05_heading_4_style_demo_id_paraid_overflow_redline_9ec4fe3616/jubarte-rust/pages.pdf",
+        "http://127.0.0.1:8180/__assets/renew1030/ar/accept_all/00da16e738_heading_4_style_demo_id_paraid_overflow_2__vs__82928b2e05_heading_4_style_demo_id_paraid_overflow_redline_9ec4fe3616/docxodus/pages.pdf"
+      ],
+      "pixelSort": [
+        "descending",
+        "ascending"
+      ]
+    },
+    {
+      "group": "ar/reject_all",
+      "case": "008908795c_increase_indent_demo_id_paraid_overflow__vs__5adc853144_insert_link_demo_id_paraid_overflow_redline_2564d80f8c",
+      "shown": [
+        1
+      ],
+      "headings": {
+        "jubarte-rust": "JUBARTE PDF jubarte 0.14.0 · 1 p · Pixel 100.0% · J 100.0% · SSIM 100.0% · TB 100.0%",
+        "docxodus": "DOCXODUS PDF docxodus 14.2.0 · 1 p · Pixel 100.0% · J 100.0% · SSIM 100.0% · TB 100.0%"
+      },
+      "pdfs": [
+        "http://127.0.0.1:8180/__assets/renew1030/ar/reject_all/008908795c_increase_indent_demo_id_paraid_overflow__vs__5adc853144_insert_link_demo_id_paraid_overflow_redline_2564d80f8c/reference/pages.pdf",
+        "http://127.0.0.1:8180/__assets/renew1030/ar/reject_all/008908795c_increase_indent_demo_id_paraid_overflow__vs__5adc853144_insert_link_demo_id_paraid_overflow_redline_2564d80f8c/jubarte-rust/pages.pdf",
+        "http://127.0.0.1:8180/__assets/renew1030/ar/reject_all/008908795c_increase_indent_demo_id_paraid_overflow__vs__5adc853144_insert_link_demo_id_paraid_overflow_redline_2564d80f8c/docxodus/pages.pdf"
+      ],
+      "pixelSort": [
+        "descending",
+        "ascending"
+      ]
+    },
+    {
+      "group": "ar/accept_all",
+      "case": "00da16e738_heading_4_style_demo_id_paraid_overflow_2__vs__82928b2e05_heading_4_style_demo_id_paraid_overflow_redline_9ec4fe3616",
+      "column": "superdoc",
+      "failureType": "generation",
+      "pixel": 0,
+      "candidateAssets": 0
+    },
+    {
+      "group": "ar/reject_all",
+      "case": "008908795c_increase_indent_demo_id_paraid_overflow__vs__5adc853144_insert_link_demo_id_paraid_overflow_redline_2564d80f8c",
+      "column": "superdoc",
+      "failureType": "generation",
+      "pixel": 0,
+      "candidateAssets": 0
+    },
+    {
+      "group": "redlines/tracking_without_comments",
+      "case": "00288995f0",
+      "column": "docxodus",
+      "failureType": "word",
+      "pixel": 0,
+      "candidateAssets": 0
+    }
+  ],
+  "localAssetRequests": [
+    {
+      "url": "http://127.0.0.1:8180/__assets/renew1030/redlines/redlines/tracking_without_comments/0000ae5089/jubarte-rust/page_001.webp",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8180/__assets/renew1030/redlines/redlines/tracking_without_comments/0000ae5089/docxodus/page_001.webp",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8180/__assets/renew1030/redlines/redlines/with_comments_tracking/01f3deda92/jubarte-rust/page_001.webp",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8180/__assets/renew1030/redlines/redlines/with_comments_tracking/01f3deda92/jubarte-rust/page_002.webp",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8180/__assets/renew1030/redlines/redlines/with_comments_tracking/01f3deda92/docxodus/page_001.webp",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8180/__assets/renew1030/redlines/redlines/with_comments_tracking/01f3deda92/docxodus/page_002.webp",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8180/__assets/wordcraft1014/wordcraft1014/compare/e3d57f2816/reference/page_001.webp",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8180/__assets/renew1030/redlines/wordcraft1014/compare/e3d57f2816/jubarte-rust/page_001.webp",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8180/__assets/renew1030/redlines/wordcraft1014/compare/e3d57f2816/docxodus/page_001.webp",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8180/__assets/renew1030/ar/accept_all/00da16e738_heading_4_style_demo_id_paraid_overflow_2__vs__82928b2e05_heading_4_style_demo_id_paraid_overflow_redline_9ec4fe3616/reference/page_001.webp",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8180/__assets/renew1030/ar/accept_all/00da16e738_heading_4_style_demo_id_paraid_overflow_2__vs__82928b2e05_heading_4_style_demo_id_paraid_overflow_redline_9ec4fe3616/jubarte-rust/page_001.webp",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8180/__assets/renew1030/ar/accept_all/00da16e738_heading_4_style_demo_id_paraid_overflow_2__vs__82928b2e05_heading_4_style_demo_id_paraid_overflow_redline_9ec4fe3616/docxodus/page_001.webp",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8180/__assets/renew1030/ar/reject_all/008908795c_increase_indent_demo_id_paraid_overflow__vs__5adc853144_insert_link_demo_id_paraid_overflow_redline_2564d80f8c/reference/page_001.webp",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8180/__assets/renew1030/ar/reject_all/008908795c_increase_indent_demo_id_paraid_overflow__vs__5adc853144_insert_link_demo_id_paraid_overflow_redline_2564d80f8c/jubarte-rust/page_001.webp",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8180/__assets/renew1030/ar/reject_all/008908795c_increase_indent_demo_id_paraid_overflow__vs__5adc853144_insert_link_demo_id_paraid_overflow_redline_2564d80f8c/docxodus/page_001.webp",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8180/__assets/renew1030/ar/accept_all/00da16e738_heading_4_style_demo_id_paraid_overflow_2__vs__82928b2e05_heading_4_style_demo_id_paraid_overflow_redline_9ec4fe3616/reference/page_001.webp",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8180/__assets/renew1030/ar/accept_all/00da16e738_heading_4_style_demo_id_paraid_overflow_2__vs__82928b2e05_heading_4_style_demo_id_paraid_overflow_redline_9ec4fe3616/jubarte-rust/page_001.webp",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8180/__assets/renew1030/ar/accept_all/00da16e738_heading_4_style_demo_id_paraid_overflow_2__vs__82928b2e05_heading_4_style_demo_id_paraid_overflow_redline_9ec4fe3616/docxodus/page_001.webp",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8180/__assets/renew1030/ar/reject_all/008908795c_increase_indent_demo_id_paraid_overflow__vs__5adc853144_insert_link_demo_id_paraid_overflow_redline_2564d80f8c/reference/page_001.webp",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8180/__assets/renew1030/ar/reject_all/008908795c_increase_indent_demo_id_paraid_overflow__vs__5adc853144_insert_link_demo_id_paraid_overflow_redline_2564d80f8c/jubarte-rust/page_001.webp",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8180/__assets/renew1030/ar/reject_all/008908795c_increase_indent_demo_id_paraid_overflow__vs__5adc853144_insert_link_demo_id_paraid_overflow_redline_2564d80f8c/docxodus/page_001.webp",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8180/__assets/renew1030/redlines/redlines/tracking_without_comments/00288995f0/jubarte-rust/page_001.webp",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8180/__assets/renew1030/redlines/redlines/tracking_without_comments/00288995f0/jubarte-rust/page_002.webp",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8180/__assets/renew1030/redlines/redlines/tracking_without_comments/00288995f0/jubarte-rust/page_003.webp",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8180/__assets/renew1030/redlines/redlines/tracking_without_comments/00288995f0/jubarte-rust/page_004.webp",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8180/__assets/renew1030/redlines/redlines/tracking_without_comments/00288995f0/jubarte-rust/page_005.webp",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8180/__assets/renew1030/redlines/redlines/tracking_without_comments/00288995f0/jubarte-rust/page_006.webp",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8180/__assets/renew1030/redlines/redlines/tracking_without_comments/00288995f0/jubarte-rust/page_007.webp",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8180/__assets/renew1030/redlines/redlines/tracking_without_comments/00288995f0/jubarte-rust/page_008.webp",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8180/__assets/renew1030/redlines/redlines/tracking_without_comments/00288995f0/jubarte-rust/page_009.webp",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8180/__assets/renew1030/redlines/redlines/tracking_without_comments/00288995f0/jubarte-rust/page_010.webp",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8180/__assets/renew1030/ar/accept_all/4b0729d267_super_editor__h_f_normal_odd_even_unchecked_firs__vs__b992bfc6eb_super_editor__h_f_normal_odd_even_b572e46d_redline_be248670ce/reference/page_001.webp",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8180/__assets/renew1030/ar/accept_all/4b0729d267_super_editor__h_f_normal_odd_even_unchecked_firs__vs__b992bfc6eb_super_editor__h_f_normal_odd_even_b572e46d_redline_be248670ce/reference/page_003.webp",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8180/__assets/renew1030/ar/accept_all/4b0729d267_super_editor__h_f_normal_odd_even_unchecked_firs__vs__b992bfc6eb_super_editor__h_f_normal_odd_even_b572e46d_redline_be248670ce/reference/page_002.webp",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8180/__assets/renew1030/ar/accept_all/4b0729d267_super_editor__h_f_normal_odd_even_unchecked_firs__vs__b992bfc6eb_super_editor__h_f_normal_odd_even_b572e46d_redline_be248670ce/jubarte-rust/page_001.webp",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8180/__assets/renew1030/ar/accept_all/4b0729d267_super_editor__h_f_normal_odd_even_unchecked_firs__vs__b992bfc6eb_super_editor__h_f_normal_odd_even_b572e46d_redline_be248670ce/jubarte-rust/page_002.webp",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8180/__assets/renew1030/ar/accept_all/4b0729d267_super_editor__h_f_normal_odd_even_unchecked_firs__vs__b992bfc6eb_super_editor__h_f_normal_odd_even_b572e46d_redline_be248670ce/jubarte-rust/page_003.webp",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8180/__assets/renew1030/ar/accept_all/4b0729d267_super_editor__h_f_normal_odd_even_unchecked_firs__vs__b992bfc6eb_super_editor__h_f_normal_odd_even_b572e46d_redline_be248670ce/docxodus/page_001.webp",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8180/__assets/renew1030/ar/accept_all/4b0729d267_super_editor__h_f_normal_odd_even_unchecked_firs__vs__b992bfc6eb_super_editor__h_f_normal_odd_even_b572e46d_redline_be248670ce/docxodus/page_002.webp",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8180/__assets/renew1030/ar/accept_all/4b0729d267_super_editor__h_f_normal_odd_even_unchecked_firs__vs__b992bfc6eb_super_editor__h_f_normal_odd_even_b572e46d_redline_be248670ce/docxodus/page_003.webp",
+      "status": 200
+    }
+  ],
+  "pageErrors": [],
+  "badAssets": [],
+  "retainedRemoteRequests": [
+    "https://pub-92c80eda1059428394970066c8500eda.r2.dev/redlines/redlines/tracking_without_comments/0000ae5089/reference/page_001.webp",
+    "https://pub-92c80eda1059428394970066c8500eda.r2.dev/redlines/redlines/with_comments_tracking/01f3deda92/reference/page_001.webp",
+    "https://pub-92c80eda1059428394970066c8500eda.r2.dev/redlines/redlines/with_comments_tracking/01f3deda92/reference/page_002.webp",
+    "https://pub-92c80eda1059428394970066c8500eda.r2.dev/redlines/redlines/tracking_without_comments/00288995f0/reference/page_001.webp",
+    "https://pub-92c80eda1059428394970066c8500eda.r2.dev/redlines/redlines/tracking_without_comments/00288995f0/reference/page_002.webp",
+    "https://pub-92c80eda1059428394970066c8500eda.r2.dev/redlines/redlines/tracking_without_comments/00288995f0/reference/page_003.webp",
+    "https://pub-92c80eda1059428394970066c8500eda.r2.dev/redlines/redlines/tracking_without_comments/00288995f0/reference/page_004.webp",
+    "https://pub-92c80eda1059428394970066c8500eda.r2.dev/redlines/redlines/tracking_without_comments/00288995f0/reference/page_005.webp",
+    "https://pub-92c80eda1059428394970066c8500eda.r2.dev/redlines/redlines/tracking_without_comments/00288995f0/reference/page_006.webp",
+    "https://pub-92c80eda1059428394970066c8500eda.r2.dev/redlines/redlines/tracking_without_comments/00288995f0/reference/page_007.webp",
+    "https://pub-92c80eda1059428394970066c8500eda.r2.dev/redlines/redlines/tracking_without_comments/00288995f0/reference/page_008.webp",
+    "https://pub-92c80eda1059428394970066c8500eda.r2.dev/redlines/redlines/tracking_without_comments/00288995f0/reference/page_009.webp",
+    "https://pub-92c80eda1059428394970066c8500eda.r2.dev/redlines/redlines/tracking_without_comments/00288995f0/reference/page_010.webp",
+    "https://pub-92c80eda1059428394970066c8500eda.r2.dev/gh-pages-tree/docxide/cases/case1/reference/page_001.webp",
+    "https://pub-92c80eda1059428394970066c8500eda.r2.dev/renew1028/d2p/cases/case1/jubarte/page_001.webp"
+  ],
+  "unexpectedRemote": [],
+  "coverageFile": "browser_coverage.json"
+}

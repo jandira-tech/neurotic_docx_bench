@@ -1,0 +1,18 @@
+# Page images and PDFs live on R2 (renew1030/); local copies are deleted after the verified upload.
+build/renew1030/
+build/records/
+build/c_*/
+node_modules/
+node_modules
+preview/
+bin/
+scorer-source/
+browser-tmp/
+__pycache__/
+*.jpg
+*.log
+# Bulky intermediates (the DATA they produce is in redlines/index.html; REPORT and MANIFEST stay tracked).
+jobs_*.json
+build/cases.json
+browser_coverage.json
+failures_prepared.json

@@ -1,0 +1,48 @@
+{
+  "complete": true,
+  "process_exit_code": 0,
+  "scoring_rows": 6000,
+  "known_failure_rows": {
+    "word": 139,
+    "generation": 693
+  },
+  "audit": {
+    "all_inputs_verified": 14099,
+    "all_checkpoints_verified": 6000,
+    "outside_DATA_unchanged": true,
+    "other_tools_and_Word_unchanged": true,
+    "case_order_unchanged": true,
+    "source_viewers_unchanged": true
+  },
+  "tests": {
+    "passed": 27,
+    "helper_line_coverage": 100,
+    "helper_branch_coverage": 100,
+    "modules": [
+      "common.py",
+      "prepare_helpers.py"
+    ]
+  },
+  "browser": {
+    "passed_cases": 8,
+    "health": 200,
+    "local_asset_requests": 40,
+    "retained_remote_requests": 15,
+    "page_errors": [],
+    "bad_assets": [],
+    "unexpected_remote": [],
+    "raw_v8_coverage": "browser_coverage.json",
+    "screenshots": 16
+  },
+  "assets": 22706,
+  "asset_types": {
+    ".webp": 17538,
+    ".pdf": 5168
+  },
+  "asset_bytes": 1538121096,
+  "build_bytes": 1611938831,
+  "manifest_entries": 22707,
+  "temporary_pngs": 0,
+  "preview": "http://127.0.0.1:8180/redlines/",
+  "source_viewers_unchanged": true
+}

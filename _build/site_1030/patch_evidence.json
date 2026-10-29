@@ -1,0 +1,9 @@
+{
+  "source_sha256": "6a197a9c92527d999be695a95e43e47f8e1ea4002f511e2b3007a0cbbd3c1adf",
+  "preview_sha256": "fdd44c6bd5b96baade342045af6c097582b464a0678ae03be43c9861008964da",
+  "replaced_cases": 1400,
+  "replaced_columns": 2800,
+  "added_ar_cases": 800,
+  "total_cases": 2229,
+  "outside_DATA_unchanged": true
+}

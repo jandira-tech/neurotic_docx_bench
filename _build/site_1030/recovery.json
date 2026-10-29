@@ -1,0 +1,11 @@
+{
+  "event": "subagent-owned process session ended before full completion",
+  "last_logged_count": 890,
+  "valid_checkpoints_retained": 895,
+  "build_errors_logged": 0,
+  "abandoned_temporary_raster_directories_removed": 6,
+  "temporary_bytes_removed": 82276266,
+  "resume": "root-owned process.py --workers 6",
+  "generation_or_Word_retries": false,
+  "scorer_or_input_changes": false
+}

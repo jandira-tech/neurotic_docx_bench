@@ -1,0 +1,252 @@
+[
+ {
+  "group": "redlines/tracking_without_comments",
+  "case": "0000ae5089",
+  "tool": "jubarte",
+  "column": "jubarte-rust",
+  "key": "redlines-redlines-tracking_without_comments-0000ae5089-08c3670de8ee__jubarte",
+  "phase1_key": "redlines-redlines-tracking_without_comments-0000ae5089-08c3670de8ee",
+  "viewer": "redlines",
+  "shown": [
+   1
+  ],
+  "pages": {
+   "jubarte-rust": [
+    "renew1030/redlines/redlines/tracking_without_comments/0000ae5089/jubarte-rust/page_001.webp"
+   ]
+  },
+  "pdfs": {
+   "jubarte-rust": "renew1030/redlines/redlines/tracking_without_comments/0000ae5089/jubarte-rust/pages.pdf"
+  },
+  "page_counts": {
+   "jubarte-rust": 1
+  },
+  "times": {},
+  "scores": {
+   "jubarte-rust": {
+    "pixel": 84.934277109632,
+    "jaccard": 99.5,
+    "ssim": 99.6,
+    "text_boundary": 100.0
+   }
+  },
+  "errors": {},
+  "versions": {
+   "jubarte-rust": "jubarte 0.14.0"
+  },
+  "metric_diagnostics": {
+   "jubarte-rust": {
+    "ref_pages": 1,
+    "pages": 1,
+    "scored_pages": 1,
+    "max_break_drift": 0
+   }
+  },
+  "failure_type": null,
+  "pixel_result": {
+   "overall_score": 84.934277109632,
+   "overall_score_strict": 84.934277109632,
+   "overall_score_drift": 76.52644735535392,
+   "page_count": 1,
+   "average_score": 84.934277109632,
+   "average_score_strict": 84.934277109632,
+   "average_score_drift": 76.52644735535392,
+   "min_score": 84.934277109632,
+   "min_score_strict": 84.934277109632,
+   "min_score_drift": 76.52644735535392,
+   "pages": [
+    {
+     "score": 84.934277109632,
+     "score_strict": 84.934277109632,
+     "score_drift": 76.52644735535392,
+     "single_issue_applied": false,
+     "drift_applied": true,
+     "drift_strength_px": 249.96453719276582,
+     "ssim_full": 0.9998246937002961,
+     "ssim_small": 0.9996543020468491,
+     "ink_f1": 0.9975343430785487,
+     "edge_iou": 0.9995438916567259,
+     "color_sim": 0.0,
+     "delta_e": 42.36831283569336,
+     "blob_penalty": 0.0,
+     "ink_area": 22768,
+     "drift_ssim_full": 0.9822271693111037,
+     "drift_ssim_small": 0.975512207715332,
+     "drift_ink_f1": 0.8162432920025744,
+     "drift_edge_iou": 0.8278746189322286,
+     "drift_color_sim": 0.0,
+     "drift_delta_e": 39.70621871948242,
+     "drift_blob_penalty": 0.14049001171885644,
+     "page": 1
+    }
+   ],
+   "config": {
+    "max_shift_px": 5.0,
+    "align_upsample": 10,
+    "downscale_factor": 0.25,
+    "edge_sigma": 1.2,
+    "edge_dilate": 1,
+    "ink_min_size": 24,
+    "ink_tol_px": 2.0,
+    "drift_sigma": 2.0,
+    "min_drift_px": 1.0,
+    "single_issue_cap": 30.0,
+    "single_issue_min_gain": 15.0,
+    "single_issue_min_ssim_small": 0.7,
+    "single_issue_min_ink_f1": 0.65,
+    "single_issue_min_edge_iou": 0.5,
+    "single_issue_max_blob_penalty": 0.03,
+    "color_deltaE_max": 20.0,
+    "blob_min_size": 40,
+    "weights": {
+     "ssim_full": 0.25,
+     "ssim_small": 0.15,
+     "ink_f1": 0.2,
+     "edge_iou": 0.15,
+     "color_sim": 0.15,
+     "blob_sim": 0.1
+    }
+   },
+   "page_count_oracle": 1,
+   "page_count_candidate": 1,
+   "page_count_mismatch": false,
+   "average_score_pagefair": 84.934277109632,
+   "min_score_pagefair": 84.934277109632,
+   "overall_score_pagefair": 84.934277109632,
+   "null_score": null,
+   "skill_score": null,
+   "score_v2": null,
+   "ink_jaccard": 0.9836724845170112,
+   "ssim": 0.9960179374745578,
+   "text_boundary": 1.0,
+   "max_break_drift": 0,
+   "raster_ns": 93352583,
+   "score_ns": 2920435750
+  }
+ },
+ {
+  "group": "redlines/tracking_without_comments",
+  "case": "0000ae5089",
+  "tool": "docxodus",
+  "column": "docxodus",
+  "key": "redlines-redlines-tracking_without_comments-0000ae5089-08c3670de8ee__docxodus",
+  "phase1_key": "redlines-redlines-tracking_without_comments-0000ae5089-08c3670de8ee",
+  "viewer": "redlines",
+  "shown": [
+   1
+  ],
+  "pages": {
+   "docxodus": [
+    "renew1030/redlines/redlines/tracking_without_comments/0000ae5089/docxodus/page_001.webp"
+   ]
+  },
+  "pdfs": {
+   "docxodus": "renew1030/redlines/redlines/tracking_without_comments/0000ae5089/docxodus/pages.pdf"
+  },
+  "page_counts": {
+   "docxodus": 1
+  },
+  "times": {},
+  "scores": {
+   "docxodus": {
+    "pixel": 84.934277109632,
+    "jaccard": 99.5,
+    "ssim": 99.6,
+    "text_boundary": 100.0
+   }
+  },
+  "errors": {},
+  "versions": {
+   "docxodus": "docxodus 14.2.0"
+  },
+  "metric_diagnostics": {
+   "docxodus": {
+    "ref_pages": 1,
+    "pages": 1,
+    "scored_pages": 1,
+    "max_break_drift": 0
+   }
+  },
+  "failure_type": null,
+  "pixel_result": {
+   "overall_score": 84.934277109632,
+   "overall_score_strict": 84.934277109632,
+   "overall_score_drift": 76.52644735535392,
+   "page_count": 1,
+   "average_score": 84.934277109632,
+   "average_score_strict": 84.934277109632,
+   "average_score_drift": 76.52644735535392,
+   "min_score": 84.934277109632,
+   "min_score_strict": 84.934277109632,
+   "min_score_drift": 76.52644735535392,
+   "pages": [
+    {
+     "score": 84.934277109632,
+     "score_strict": 84.934277109632,
+     "score_drift": 76.52644735535392,
+     "single_issue_applied": false,
+     "drift_applied": true,
+     "drift_strength_px": 249.96453719276582,
+     "ssim_full": 0.9998246937002961,
+     "ssim_small": 0.9996543020468491,
+     "ink_f1": 0.9975343430785487,
+     "edge_iou": 0.9995438916567259,
+     "color_sim": 0.0,
+     "delta_e": 42.36831283569336,
+     "blob_penalty": 0.0,
+     "ink_area": 22768,
+     "drift_ssim_full": 0.9822271693111037,
+     "drift_ssim_small": 0.975512207715332,
+     "drift_ink_f1": 0.8162432920025744,
+     "drift_edge_iou": 0.8278746189322286,
+     "drift_color_sim": 0.0,
+     "drift_delta_e": 39.70621871948242,
+     "drift_blob_penalty": 0.14049001171885644,
+     "page": 1
+    }
+   ],
+   "config": {
+    "max_shift_px": 5.0,
+    "align_upsample": 10,
+    "downscale_factor": 0.25,
+    "edge_sigma": 1.2,
+    "edge_dilate": 1,
+    "ink_min_size": 24,
+    "ink_tol_px": 2.0,
+    "drift_sigma": 2.0,
+    "min_drift_px": 1.0,
+    "single_issue_cap": 30.0,
+    "single_issue_min_gain": 15.0,
+    "single_issue_min_ssim_small": 0.7,
+    "single_issue_min_ink_f1": 0.65,
+    "single_issue_min_edge_iou": 0.5,
+    "single_issue_max_blob_penalty": 0.03,
+    "color_deltaE_max": 20.0,
+    "blob_min_size": 40,
+    "weights": {
+     "ssim_full": 0.25,
+     "ssim_small": 0.15,
+     "ink_f1": 0.2,
+     "edge_iou": 0.15,
+     "color_sim": 0.15,
+     "blob_sim": 0.1
+    }
+   },
+   "page_count_oracle": 1,
+   "page_count_candidate": 1,
+   "page_count_mismatch": false,
+   "average_score_pagefair": 84.934277109632,
+   "min_score_pagefair": 84.934277109632,
+   "overall_score_pagefair": 84.934277109632,
+   "null_score": null,
+   "skill_score": null,
+   "score_v2": null,
+   "ink_jaccard": 0.9836724845170112,
+   "ssim": 0.9960179374745578,
+   "text_boundary": 1.0,
+   "max_break_drift": 0,
+   "raster_ns": 92901833,
+   "score_ns": 2912380500
+  }
+ }
+]

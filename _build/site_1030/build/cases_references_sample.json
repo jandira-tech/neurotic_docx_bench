@@ -1,0 +1,33 @@
+[
+ {
+  "group": "ar/accept_all",
+  "case": "00da16e738_heading_4_style_demo_id_paraid_overflow_2__vs__82928b2e05_heading_4_style_demo_id_paraid_overflow_redline_9ec4fe3616",
+  "tool": "reference",
+  "column": "reference",
+  "key": "ar-accept_all-00da16e738_heading_4_style_demo_id_paraid-160ca2ba8fa8__reference",
+  "phase1_key": "ar-accept_all-00da16e738_heading_4_style_demo_id_paraid-160ca2ba8fa8",
+  "viewer": "ar",
+  "shown": [
+   1
+  ],
+  "pages": {
+   "reference": [
+    "renew1030/ar/accept_all/00da16e738_heading_4_style_demo_id_paraid_overflow_2__vs__82928b2e05_heading_4_style_demo_id_paraid_overflow_redline_9ec4fe3616/reference/page_001.webp"
+   ]
+  },
+  "pdfs": {
+   "reference": "renew1030/ar/accept_all/00da16e738_heading_4_style_demo_id_paraid_overflow_2__vs__82928b2e05_heading_4_style_demo_id_paraid_overflow_redline_9ec4fe3616/reference/pages.pdf"
+  },
+  "page_counts": {
+   "reference": 1
+  },
+  "times": {},
+  "scores": {},
+  "errors": {},
+  "versions": {
+   "reference": "Microsoft Word for Mac accept/reject"
+  },
+  "metric_diagnostics": {},
+  "failure_type": null
+ }
+]

@@ -1,0 +1,293 @@
+[
+ {
+  "group": "ar/accept_all",
+  "case": "00da16e738_heading_4_style_demo_id_paraid_overflow_2__vs__82928b2e05_heading_4_style_demo_id_paraid_overflow_redline_9ec4fe3616",
+  "tool": "jubarte",
+  "column": "jubarte-rust",
+  "key": "ar-accept_all-00da16e738_heading_4_style_demo_id_paraid-160ca2ba8fa8__jubarte",
+  "phase1_key": "ar-accept_all-00da16e738_heading_4_style_demo_id_paraid-160ca2ba8fa8",
+  "viewer": "ar",
+  "shown": [
+   1
+  ],
+  "pages": {
+   "jubarte-rust": [
+    "renew1030/ar/accept_all/00da16e738_heading_4_style_demo_id_paraid_overflow_2__vs__82928b2e05_heading_4_style_demo_id_paraid_overflow_redline_9ec4fe3616/jubarte-rust/page_001.webp"
+   ]
+  },
+  "pdfs": {
+   "jubarte-rust": "renew1030/ar/accept_all/00da16e738_heading_4_style_demo_id_paraid_overflow_2__vs__82928b2e05_heading_4_style_demo_id_paraid_overflow_redline_9ec4fe3616/jubarte-rust/pages.pdf"
+  },
+  "page_counts": {
+   "jubarte-rust": 1
+  },
+  "times": {},
+  "scores": {
+   "jubarte-rust": {
+    "pixel": 100.00000000000003,
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   }
+  },
+  "errors": {},
+  "versions": {
+   "jubarte-rust": "jubarte 0.14.0"
+  },
+  "metric_diagnostics": {
+   "jubarte-rust": {
+    "ref_pages": 1,
+    "pages": 1,
+    "scored_pages": 1,
+    "max_break_drift": 0
+   }
+  },
+  "failure_type": null,
+  "pixel_result": {
+   "overall_score": 100.00000000000003,
+   "overall_score_strict": 100.00000000000003,
+   "overall_score_drift": 100.00000000000003,
+   "page_count": 1,
+   "average_score": 100.00000000000003,
+   "average_score_strict": 100.00000000000003,
+   "average_score_drift": 100.00000000000003,
+   "min_score": 100.00000000000003,
+   "min_score_strict": 100.00000000000003,
+   "min_score_drift": 100.00000000000003,
+   "pages": [
+    {
+     "score": 100.00000000000003,
+     "score_strict": 100.00000000000003,
+     "score_drift": 100.00000000000003,
+     "single_issue_applied": false,
+     "drift_applied": true,
+     "drift_strength_px": 535.5315656565657,
+     "ssim_full": 1.0,
+     "ssim_small": 1.0,
+     "ink_f1": 1.0,
+     "edge_iou": 1.0,
+     "color_sim": 1.0,
+     "delta_e": 0.0,
+     "blob_penalty": 0.0,
+     "ink_area": 7022,
+     "drift_ssim_full": 1.0,
+     "drift_ssim_small": 1.0,
+     "drift_ink_f1": 1.0,
+     "drift_edge_iou": 1.0,
+     "drift_color_sim": 1.0,
+     "drift_delta_e": 0.0,
+     "drift_blob_penalty": 0.0,
+     "page": 1
+    }
+   ],
+   "config": {
+    "max_shift_px": 5.0,
+    "align_upsample": 10,
+    "downscale_factor": 0.25,
+    "edge_sigma": 1.2,
+    "edge_dilate": 1,
+    "ink_min_size": 24,
+    "ink_tol_px": 2.0,
+    "drift_sigma": 2.0,
+    "min_drift_px": 1.0,
+    "single_issue_cap": 30.0,
+    "single_issue_min_gain": 15.0,
+    "single_issue_min_ssim_small": 0.7,
+    "single_issue_min_ink_f1": 0.65,
+    "single_issue_min_edge_iou": 0.5,
+    "single_issue_max_blob_penalty": 0.03,
+    "color_deltaE_max": 20.0,
+    "blob_min_size": 40,
+    "weights": {
+     "ssim_full": 0.25,
+     "ssim_small": 0.15,
+     "ink_f1": 0.2,
+     "edge_iou": 0.15,
+     "color_sim": 0.15,
+     "blob_sim": 0.1
+    }
+   },
+   "page_count_oracle": 1,
+   "page_count_candidate": 1,
+   "page_count_mismatch": false,
+   "average_score_pagefair": 100.00000000000003,
+   "min_score_pagefair": 100.00000000000003,
+   "overall_score_pagefair": 100.00000000000003,
+   "null_score": null,
+   "skill_score": null,
+   "score_v2": null,
+   "ink_jaccard": 1.0,
+   "ssim": 1.0,
+   "text_boundary": 1.0,
+   "max_break_drift": 0,
+   "raster_ns": 68142833,
+   "score_ns": 2674309417
+  }
+ },
+ {
+  "group": "ar/accept_all",
+  "case": "00da16e738_heading_4_style_demo_id_paraid_overflow_2__vs__82928b2e05_heading_4_style_demo_id_paraid_overflow_redline_9ec4fe3616",
+  "tool": "docxodus",
+  "column": "docxodus",
+  "key": "ar-accept_all-00da16e738_heading_4_style_demo_id_paraid-160ca2ba8fa8__docxodus",
+  "phase1_key": "ar-accept_all-00da16e738_heading_4_style_demo_id_paraid-160ca2ba8fa8",
+  "viewer": "ar",
+  "shown": [
+   1
+  ],
+  "pages": {
+   "docxodus": [
+    "renew1030/ar/accept_all/00da16e738_heading_4_style_demo_id_paraid_overflow_2__vs__82928b2e05_heading_4_style_demo_id_paraid_overflow_redline_9ec4fe3616/docxodus/page_001.webp"
+   ]
+  },
+  "pdfs": {
+   "docxodus": "renew1030/ar/accept_all/00da16e738_heading_4_style_demo_id_paraid_overflow_2__vs__82928b2e05_heading_4_style_demo_id_paraid_overflow_redline_9ec4fe3616/docxodus/pages.pdf"
+  },
+  "page_counts": {
+   "docxodus": 1
+  },
+  "times": {},
+  "scores": {
+   "docxodus": {
+    "pixel": 100.00000000000003,
+    "jaccard": 100.0,
+    "ssim": 100.0,
+    "text_boundary": 100.0
+   }
+  },
+  "errors": {},
+  "versions": {
+   "docxodus": "docxodus 14.2.0"
+  },
+  "metric_diagnostics": {
+   "docxodus": {
+    "ref_pages": 1,
+    "pages": 1,
+    "scored_pages": 1,
+    "max_break_drift": 0
+   }
+  },
+  "failure_type": null,
+  "pixel_result": {
+   "overall_score": 100.00000000000003,
+   "overall_score_strict": 100.00000000000003,
+   "overall_score_drift": 100.00000000000003,
+   "page_count": 1,
+   "average_score": 100.00000000000003,
+   "average_score_strict": 100.00000000000003,
+   "average_score_drift": 100.00000000000003,
+   "min_score": 100.00000000000003,
+   "min_score_strict": 100.00000000000003,
+   "min_score_drift": 100.00000000000003,
+   "pages": [
+    {
+     "score": 100.00000000000003,
+     "score_strict": 100.00000000000003,
+     "score_drift": 100.00000000000003,
+     "single_issue_applied": false,
+     "drift_applied": true,
+     "drift_strength_px": 535.5315656565657,
+     "ssim_full": 1.0,
+     "ssim_small": 1.0,
+     "ink_f1": 1.0,
+     "edge_iou": 1.0,
+     "color_sim": 1.0,
+     "delta_e": 0.0,
+     "blob_penalty": 0.0,
+     "ink_area": 7022,
+     "drift_ssim_full": 1.0,
+     "drift_ssim_small": 1.0,
+     "drift_ink_f1": 1.0,
+     "drift_edge_iou": 1.0,
+     "drift_color_sim": 1.0,
+     "drift_delta_e": 0.0,
+     "drift_blob_penalty": 0.0,
+     "page": 1
+    }
+   ],
+   "config": {
+    "max_shift_px": 5.0,
+    "align_upsample": 10,
+    "downscale_factor": 0.25,
+    "edge_sigma": 1.2,
+    "edge_dilate": 1,
+    "ink_min_size": 24,
+    "ink_tol_px": 2.0,
+    "drift_sigma": 2.0,
+    "min_drift_px": 1.0,
+    "single_issue_cap": 30.0,
+    "single_issue_min_gain": 15.0,
+    "single_issue_min_ssim_small": 0.7,
+    "single_issue_min_ink_f1": 0.65,
+    "single_issue_min_edge_iou": 0.5,
+    "single_issue_max_blob_penalty": 0.03,
+    "color_deltaE_max": 20.0,
+    "blob_min_size": 40,
+    "weights": {
+     "ssim_full": 0.25,
+     "ssim_small": 0.15,
+     "ink_f1": 0.2,
+     "edge_iou": 0.15,
+     "color_sim": 0.15,
+     "blob_sim": 0.1
+    }
+   },
+   "page_count_oracle": 1,
+   "page_count_candidate": 1,
+   "page_count_mismatch": false,
+   "average_score_pagefair": 100.00000000000003,
+   "min_score_pagefair": 100.00000000000003,
+   "overall_score_pagefair": 100.00000000000003,
+   "null_score": null,
+   "skill_score": null,
+   "score_v2": null,
+   "ink_jaccard": 1.0,
+   "ssim": 1.0,
+   "text_boundary": 1.0,
+   "max_break_drift": 0,
+   "raster_ns": 67680583,
+   "score_ns": 2679989292
+  }
+ },
+ {
+  "group": "ar/accept_all",
+  "case": "00da16e738_heading_4_style_demo_id_paraid_overflow_2__vs__82928b2e05_heading_4_style_demo_id_paraid_overflow_redline_9ec4fe3616",
+  "tool": "superdoc",
+  "column": "superdoc",
+  "key": "ar-accept_all-00da16e738_heading_4_style_demo_id_paraid-160ca2ba8fa8__superdoc",
+  "phase1_key": "ar-accept_all-00da16e738_heading_4_style_demo_id_paraid-160ca2ba8fa8",
+  "viewer": "ar",
+  "shown": [
+   1
+  ],
+  "pages": {
+   "superdoc": [
+    null
+   ]
+  },
+  "pdfs": {},
+  "page_counts": {
+   "superdoc": 0
+  },
+  "times": {},
+  "scores": {
+   "superdoc": {
+    "pixel": 0
+   }
+  },
+  "errors": {
+   "superdoc": "exit 1: Traceback (most recent call last):\n  File \"/Users/arthrod/temp/T/renew_1028/superdoc_one.py\", line 9, in <module>\n    if __name__=='__main__':asyncio.run(main())\n                            ~~~~~~~~~~~^^^^^^^^\n  File \"/Users/arthrod/.local/share/uv/python/cpython-3.14.8-macos-aarch64-none/lib/python3.14/asyncio/runners.py\", line 205, in run\n    return runner.run(main)\n           ~~~~~~~~~~^^^^^^\n  File \"/Users/arthrod/.local/share/uv/python/cpython-3.14.8-macos-aarch64-none/lib/python3.14/asyncio/runners.py\", line 128, in run\n    return self._loop.run_until_complete(task)\n           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^\n  File \"/Users/arthrod/.local/share/uv/python/cpython-3.14.8-macos-aarch64-none/lib/python3.14/asyncio/base_events.py\", line 720, in run_until_complete\n    return future.result()\n           ~~~~~~~~~~~~~^^\n  File \"/Users/arthrod/temp/T/renew_1028/superdoc_one.py\", line 8, in main\n    await asyncio.wait_for(generate_one(client,Path(sys.argv[1]),Path(sys.argv[2]),Path(sys.argv[3]),0),120)\n  File \"/Users/arthrod/.local/share/uv/python/cpython-3.14.8-macos-aarch64-none/lib/python3.14/asyncio/tasks.py\", line 486, in wait_for\n    return await fut\n           ^^^^^^^^^\n  File \"/Users/arthrod/temp/T/neurotic_docx_bench/src/neurotic_docx_bench/superdoc_gen.py\", line 125, in generate_one\n    await base.diff.apply({\"diff\": diff, \"changeMode\": \"tracked\"})\n  File \"/Users/arthrod/temp/T/neurotic_docx_bench/.venv/lib/python3.14/site-packages/superdoc/generated/client.py\", line 423325, in apply\n    raw = await self._runtime.invoke(\"doc.diff.apply\", params or {}, timeout_ms=timeout_ms, stdin_bytes=stdin_bytes)\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/arthrod/temp/T/neurotic_docx_bench/.venv/lib/python3.14/site-packages/superdoc/client.py\", line 93, in invoke\n    return await self._runtime.invoke(operation_id, merged, timeout_ms=timeout_ms, stdin_bytes=stdin_bytes)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/arthrod/temp/T/neurotic_docx_bench/.venv/lib/python3.14/site-packages/superdoc/runtime.py\", line 163, in invoke\n    return await self._transport.invoke(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    ...<4 lines>...\n    )\n    ^\n  File \"/Users/arthrod/temp/T/neurotic_docx_bench/.venv/lib/python3.14/site-packages/superdoc/transport.py\", line 822, in invoke\n    result = await self._send_request('cli.invoke', payload, watchdog)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/arthrod/temp/T/neurotic_docx_bench/.venv/lib/python3.14/site-packages/superdoc/transport.py\", line 1053, in _send_request\n    result = await asyncio.wait_for(future, timeout=watchdog_ms / 1000)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/arthrod/.local/share/uv/python/cpython-3.14.8-macos-aarch64-none/lib/python3.14/asyncio/tasks.py\", line 486, in wait_for\n    return await fut\n           ^^^^^^^^^\nsuperdoc.errors.SuperDocError: diff.apply: cannot apply the complete diff because changed families [body (blocked: body target structure cannot be replayed safely: target structure contains unproven style or numbering references)] in this build. No mutation was performed (full payloads are never partially applied). For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  "versions": {
+   "superdoc": "superdoc-sdk 2.16.0"
+  },
+  "metric_diagnostics": {},
+  "failure_type": "generation",
+  "failure_evidence": [
+   {
+    "path": "/Users/arthrod/temp/T/renew_1028/out/ar/superdoc/accept_all/generate_failures.json",
+    "case": "ar-accept_all-00da16e738_heading_4_style_demo_id_paraid-160ca2ba8fa8"
+   }
+  ]
+ }
+]
