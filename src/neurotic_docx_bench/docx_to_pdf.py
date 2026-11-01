@@ -45,6 +45,7 @@ WORD_PDF_TOOLS = (
     "pymupdf-pro",
     "genoffice",
     "docxodus",
+    "apryse",
 )
 
 REQUIRED_FEATURES = frozenset(
@@ -56,6 +57,9 @@ DEFAULT_CONVERTER = (  # linked by scripts/link_engines.sh
 )
 # PyMuPDF Pro pins its own PyMuPDF, so it runs from an isolated venv (see its pyproject).
 PYMUPDF_PRO_CONVERTER = Path(__file__).resolve().parent / "utils" / "pymupdf-pro" / "pymupdf-pro-convert"
+
+# Apryse converts through apryse-sdk's OfficeToPDF in the repo venv (#100); see apryse_gen.
+APRYSE_CONVERTER = Path(__file__).resolve().parent / "utils" / "apryse" / "apryse-convert"
 
 # Docxodus converts through @docxodus/export (pinned Chromium printing its paginated HTML);
 # the exact versions live in that folder's package.json and lockfile (#89).
@@ -86,6 +90,7 @@ _TOOL_BINARIES: dict[str, tuple[str, ...]] = {
     "docxide-pdf": ("docxide-pdf",),
     "pymupdf-pro": ("pymupdf-pro-convert",),
     "genoffice": ("genoffice",),
+    "apryse": ("apryse-convert",),
 }
 
 RANKING_END = "<!-- RANKING-END -->"
@@ -355,7 +360,7 @@ def convert_command(tool: str, src: Path, dest: Path, *, binary: Path) -> list[s
         return [str(binary), str(src), str(dest), "pdf"]
     if tool == "dxpdf":
         return [str(binary), str(src), "-o", str(dest)]
-    if tool in ("docxide-pdf", "pymupdf-pro"):
+    if tool in ("docxide-pdf", "pymupdf-pro", "apryse"):
         return [str(binary), str(src), str(dest)]
     if tool == "genoffice":
         return [str(binary), "convert", str(src), "--to", "pdf", "--out", str(dest), "--force"]
@@ -388,6 +393,8 @@ def resolve_tool_binary(tool: str, override: Path | None = None) -> Path:
         return DEFAULT_CONVERTER
     if tool == "pymupdf-pro" and PYMUPDF_PRO_CONVERTER.is_file():
         return PYMUPDF_PRO_CONVERTER
+    if tool == "apryse" and APRYSE_CONVERTER.is_file():
+        return APRYSE_CONVERTER
     if tool == "docxodus":
         if DOCXODUS_CONVERTER.is_file():
             return DOCXODUS_CONVERTER
@@ -648,6 +655,12 @@ def tool_version(binary: Path | None) -> str | None:
     binary_name = Path(binary).name
     if binary_name == "docxodus" and Path(binary).parent.name == ".bin":
         return _docxodus_export_version(Path(binary).parent.parent)
+    if Path(binary).resolve() == APRYSE_CONVERTER.resolve():
+        # In-process: the shim's --version starts Python and loads PDFNet, which can run
+        # past the 10 s probe on a loaded machine and leave the row without a version.
+        from neurotic_docx_bench import apryse_gen
+
+        return apryse_gen.version()
     try:
         proc = subprocess.run(
             [str(binary), "--version"],

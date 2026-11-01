@@ -258,6 +258,7 @@ def test_known_tools_are_the_named_converters():
         "pymupdf-pro",
         "genoffice",
         "docxodus",
+        "apryse",
     )
 
 
