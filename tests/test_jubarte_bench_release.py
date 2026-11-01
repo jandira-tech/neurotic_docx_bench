@@ -223,12 +223,17 @@ def test_a_word_export_that_refuses_to_start_stops_the_run(tmp_path: Path) -> No
     documents failed. A refusal converted nothing, so measure would score stale PDFs (#101)."""
     _regen(tmp_path, ['0000ae5089'])
     steps = jbr.select(jbr.plan(_rel(tmp_path), run=_word_ok, hub=False, which=_node), only=['redlines'])
-    for name in ('word export (batch)', 'word export (one osascript per document)'):
-        rec = Recorder(codes={name: 2})
-        done = jbr.execute(steps, tmp_path, run=rec.run, spawn=rec.spawn, echo=lambda _: None)
-        assert rec.ran[-1] == name and 'measure' not in rec.ran
-        assert done[-1].step.name == name and not done[-1].ok
-        assert 'refused to start' in done[-1].detail
+    rec = Recorder(codes={'word export (batch)': 2})
+    done = jbr.execute(steps, tmp_path, run=rec.run, spawn=rec.spawn, echo=lambda _: None)
+    assert rec.ran[-1] == 'word export (batch)' and 'measure' not in rec.ran
+    assert done[-1].step.name == 'word export (batch)' and done[-1].stops
+    assert 'refused to start' in done[-1].detail
+    # The retry pass refusing (Word still holds a document after a batch crash) can follow
+    # a batch that converted most of the lane: it stays a pass that may fail.
+    rec = Recorder(codes={'word export (one osascript per document)': 2})
+    done = jbr.execute(steps, tmp_path, run=rec.run, spawn=rec.spawn, echo=lambda _: None)
+    retry = next(o for o in done if o.step.name == 'word export (one osascript per document)')
+    assert not retry.ok and not retry.stops and 'measure' in rec.ran
 
 
 def test_a_missing_node_stops_the_lane_before_any_word_step(tmp_path: Path) -> None:

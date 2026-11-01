@@ -75,7 +75,8 @@ class Step:
     # A failed step stops the release unless it may fail (a Word export pass may).
     may_fail: bool = False
     # Exit codes that stop the release even when the step may fail: word_pdf.py exits 2
-    # when it refuses to start, which is no failed pass but no pass at all (#101).
+    # when it refuses to start. On the batch pass that means no pass at all (#101); the
+    # retry pass does not set it, since its refusal can follow a batch that converted.
     refusal_codes: tuple[int, ...] = ()
     # Runs before every other selected step: a check that would otherwise fail hours in.
     preflight: bool = False
@@ -338,7 +339,6 @@ def plan(
             log=r / f'{lane}.word_pdf.retry.out',
             watch=(retry_log, r / lane / 'pdf_by_word'),
             may_fail=True,
-            refusal_codes=(2,),
         ),
         Step(
             'redlines',
@@ -501,7 +501,7 @@ def execute(
             refused = code in step.refusal_codes
             detail = step.shown() if code == 0 else f'{step.shown()}: exit {code}'
             if refused:
-                detail = f'refused to start, converted nothing: {detail}'
+                detail = f'refused to start: {detail}'
             out = Outcome(step, code == 0, detail, refused=refused)
         done.append(out)
         echo(f'   {"ok" if out.ok else "FAIL" if out.stops else "may fail"}: {out.detail}')
