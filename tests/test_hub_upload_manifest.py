@@ -365,3 +365,51 @@ def test_main_rerun_with_nothing_new_commits_nothing(upload, run, tmp_path, monk
     commits, head = len(api.parents), api.refs[None]
     upload.main()  # every upload is a no-op that returns this run's own head
     assert (len(api.parents), api.refs[None]) == (commits, head)
+
+
+class _Commits:
+    """list_repo_commits over a fixed history, newest first (#103)."""
+
+    def __init__(self, *history: tuple[str, str]) -> None:
+        self.history = [SimpleNamespace(commit_id=c, title=t) for c, t in history]
+
+    def list_repo_commits(self, repo_id, repo_type=None, revision=None):
+        ids = [c.commit_id for c in self.history]
+        return self.history[ids.index(revision):]
+
+
+MESSAGE = 'redlines_0929_full: jubarte-0.17.0/docx (2611 files)'
+
+
+def test_a_folder_split_into_part_commits_is_ours(upload) -> None:
+    api = _Commits(*[(f'p{n}', f'{MESSAGE} (part {n})') for n in range(8, 0, -1)], ('base', 'before'))
+    assert upload.next_parent(api, 'base', SimpleNamespace(oid='p8'), MESSAGE) == 'p8'
+
+
+def test_one_commit_with_our_message_is_ours(upload) -> None:
+    api = _Commits(('c1', MESSAGE), ('base', 'before'))
+    assert upload.next_parent(api, 'base', SimpleNamespace(oid='c1'), MESSAGE) == 'c1'
+
+
+def test_a_no_op_upload_keeps_the_parent(upload) -> None:
+    assert upload.next_parent(_Commits(('base', 'before')), 'base', SimpleNamespace(oid='base'), MESSAGE) == 'base'
+
+
+@pytest.mark.parametrize(
+    'history',
+    [
+        # someone else's commit between our parts
+        [('p2', f'{MESSAGE} (part 2)'), ('x', 'someone else'), ('p1', f'{MESSAGE} (part 1)'), ('base', 'before')],
+        # the head is someone else's (a no-op upload returned the branch head)
+        [('x', 'someone else'), ('base', 'before')],
+        # our message on another folder's commit does not count
+        [('p1', f'{MESSAGE}x (part 1)'), ('base', 'before')],
+        # the parent is not in the history at all
+        [('p1', f'{MESSAGE} (part 1)'), ('other', 'before')],
+    ],
+    ids=['interleaved', 'foreign head', 'other message', 'parent missing'],
+)
+def test_anything_else_is_a_stale_parent(upload, history) -> None:
+    api = _Commits(*history)
+    with pytest.raises(upload.StaleParentError):
+        upload.next_parent(api, 'base', SimpleNamespace(oid=history[0][0]), MESSAGE)

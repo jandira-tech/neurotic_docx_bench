@@ -27,6 +27,7 @@ import argparse
 import hashlib
 import json
 import os
+import re
 import shutil
 from pathlib import Path
 
@@ -57,15 +58,20 @@ def next_parent(api, parent, info, message):
     """The commit an upload made, or ``parent`` when it made none.
 
     An upload that changes nothing makes no commit, skips the ``parent_commit`` check and
-    returns the branch head, which may be someone else's commit; only a commit with our
-    message directly on ``parent`` is ours.
+    returns the branch head, which may be someone else's commit. A large folder lands as
+    several commits, ``message (part N)`` (huggingface_hub 2.0), so every commit between
+    ``parent`` and the head must carry our message, alone or with its part number (#103).
     """
     if info.oid == parent:
         return parent
-    newest = api.list_repo_commits(hub.RESULTS_REPO, repo_type=hub.REPO_TYPE, revision=info.oid)[:2]
-    if [c.commit_id for c in newest] != [info.oid, parent] or newest[0].title != message:
-        raise StaleParentError(f'the hub moved to {info.oid} while uploading on {parent}; nothing more uploaded')
-    return info.oid
+    history = api.list_repo_commits(hub.RESULTS_REPO, repo_type=hub.REPO_TYPE, revision=info.oid)
+    part = re.compile(rf'{re.escape(message)}( \(part \d+\))?')
+    for commit in history:
+        if commit.commit_id == parent:
+            return info.oid
+        if not part.fullmatch(commit.title):
+            break
+    raise StaleParentError(f'the hub moved to {info.oid} while uploading on {parent}; nothing more uploaded')
 
 
 def carried_entries(previous, staged, remote, fetch) -> dict[str, str]:
