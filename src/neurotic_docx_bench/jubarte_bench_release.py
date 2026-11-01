@@ -42,6 +42,7 @@ import csv
 import json
 import os
 import re
+import shutil
 import signal
 import subprocess
 from collections.abc import Callable, Sequence
@@ -73,6 +74,9 @@ class Step:
     watch: tuple[Path, ...] = ()
     # A failed step stops the release unless it may fail (a Word export pass may).
     may_fail: bool = False
+    # Exit codes that stop the release even when the step may fail: word_pdf.py exits 2
+    # when it refuses to start, which is no failed pass but no pass at all (#101).
+    refusal_codes: tuple[int, ...] = ()
     # Runs before every other selected step: a check that would otherwise fail hours in.
     preflight: bool = False
 
@@ -88,6 +92,12 @@ class Outcome:
     step: Step
     ok: bool
     detail: str
+    # The step refused to start: fatal even for a step that may fail.
+    refused: bool = False
+
+    @property
+    def stops(self) -> bool:
+        return not self.ok and (self.refused or not self.step.may_fail)
 
 
 class Proc(Protocol):
@@ -196,8 +206,15 @@ def check_compare_regen(folder: Path) -> str:
     return f'{len(pdfs)} fresh compares in {out}; {len(ids)} ids listed, each with its PDF'
 
 
-def plan(rel: Release, *, run: Callable[..., release.ProcLike] | None = None, hub: bool = True) -> list[Step]:
-    """Every step of every stage, in order. ``run`` answers the Word check (``release.word_version``)."""
+def plan(
+    rel: Release,
+    *,
+    run: Callable[..., release.ProcLike] | None = None,
+    hub: bool = True,
+    which: Callable[[str], str | None] = shutil.which,
+) -> list[Step]:
+    """Every step of every stage, in order. ``run`` answers the Word check (``release.word_version``);
+    ``which`` finds node for the generate step."""
     r, lane, v = RUN_DIR, rel.lane, rel.version
     bench = ('uv', 'run', 'bench')
     word_pdf = (
@@ -227,6 +244,12 @@ def plan(rel: Release, *, run: Callable[..., release.ProcLike] | None = None, hu
         if not found:
             raise RuntimeError('Microsoft Word does not answer osascript; the redline stage needs it')
         return f'Microsoft Word {found}'
+
+    def node() -> str:
+        found = which('node')
+        if not found:
+            raise RuntimeError('node is not on PATH; the generate step runs node --import tsx')
+        return found
 
     steps = [
         Step('install', 'release binary', action=install),
@@ -267,8 +290,13 @@ def plan(rel: Release, *, run: Callable[..., release.ProcLike] | None = None, hu
             log=Path(f'results/docxide_metrics_jubarte_{v}.log'),
         ),
         Step('redlines', 'word answers', action=word, preflight=True),
-        Step('redlines', 'compare_regen inputs', action=lambda: check_compare_regen(rel.root / COMPARE_REGEN),
-             preflight=True),
+        Step(
+            'redlines',
+            'compare_regen inputs',
+            action=lambda: check_compare_regen(rel.root / COMPARE_REGEN),
+            preflight=True,
+        ),
+        Step('redlines', 'node on PATH', action=node, preflight=True),
         Step(
             'redlines',
             'generate',
@@ -301,6 +329,7 @@ def plan(rel: Release, *, run: Callable[..., release.ProcLike] | None = None, hu
             log=r / f'{lane}.word_pdf.out',
             watch=(batch_log,),
             may_fail=True,
+            refusal_codes=(2,),
         ),
         Step(
             'redlines',
@@ -309,6 +338,7 @@ def plan(rel: Release, *, run: Callable[..., release.ProcLike] | None = None, hu
             log=r / f'{lane}.word_pdf.retry.out',
             watch=(retry_log, r / lane / 'pdf_by_word'),
             may_fail=True,
+            refusal_codes=(2,),
         ),
         Step(
             'redlines',
@@ -468,10 +498,14 @@ def execute(
             finally:
                 if dog is not None:
                     stop(dog)
-            out = Outcome(step, code == 0, step.shown() if code == 0 else f'{step.shown()}: exit {code}')
+            refused = code in step.refusal_codes
+            detail = step.shown() if code == 0 else f'{step.shown()}: exit {code}'
+            if refused:
+                detail = f'refused to start, converted nothing: {detail}'
+            out = Outcome(step, code == 0, detail, refused=refused)
         done.append(out)
-        echo(f'   {"ok" if out.ok else "may fail" if step.may_fail else "FAIL"}: {out.detail}')
-        if not out.ok and not step.may_fail:
+        echo(f'   {"ok" if out.ok else "FAIL" if out.stops else "may fail"}: {out.detail}')
+        if out.stops:
             break
     return done
 
@@ -502,7 +536,7 @@ def main(
             typer.echo(f'{s.stage:9} {s.shown()}' + ('   [watchdog]' if s.watch else ''))
         return
     done = execute(steps, rel.root, echo=typer.echo)
-    if len(done) < len(steps) or not all(o.ok or o.step.may_fail for o in done):
+    if len(done) < len(steps) or any(o.stops for o in done):
         typer.echo(f'stopped at {done[-1].step.stage}: {done[-1].step.name}')
         raise typer.Exit(code=1)
     typer.echo(f'jubarte {version}: {", ".join(dict.fromkeys(s.stage for s in steps))} done')
