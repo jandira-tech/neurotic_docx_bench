@@ -7,6 +7,7 @@ import { describe, expect, test } from "vitest";
 interface PackageManifest {
   exports: Record<string, unknown>;
   scripts: Record<string, string>;
+  types: string;
 }
 
 const packageRoot = fileURLToPath(new URL("../", import.meta.url));

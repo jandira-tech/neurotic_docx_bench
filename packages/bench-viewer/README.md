@@ -12,6 +12,14 @@ invariant against the raw `bench.*` facts.
 Two skins ship with it: `themes/jubarte.css` (jubarte.pro's light and dark
 rules) and `themes/arthur-law.css` (the arthur.law look).
 
+Two pages come out of the same scores file. The **jubarte page** is the
+product's own framing: headline cells ("jubarte vs X"), the author's rows
+marked with a dagger and a highlighted background. The **leaderboard page**
+(`buildLeaderboardPage`) is the arthur.law page benchmarks.law wears: the
+scores and nothing else — no headlines, no "ours" rows, no dagger — every
+tool ranked in every table, the leader of each table named above it, the
+full-corpus tables first and the release's own samples after them.
+
 ## Install
 
 The compiled `dist/` is committed, so a git dependency has a ready-to-import
@@ -41,22 +49,31 @@ naming the bad path (`scores: tables[0].rows[0].median must be a finite number`)
 Scores must be finite values from 0 through 100, document counts must be
 non-negative integers, and `repo` and `viewer` must be absolute HTTP(S) URLs.
 
-| Function                         | Markup                               |
-| -------------------------------- | ------------------------------------ |
-| `parseScores(json)`              | the validated `Scores`               |
-| `esc(value)`                     | one text value, escaped              |
-| `renderRow(row)`                 | one table row                        |
-| `renderTable(table)`             | one table section                    |
-| `renderHeadlines(headlines)`     | the headline cells                   |
-| `renderStates(states, options?)` | the states section                   |
-| `renderBars(groups)`             | the home-page bar groups             |
-| `renderMethod(points)`           | the method cards                     |
-| `renderBadge(scores, tag?)`      | `bench <version> · generated <date>` |
-| `renderLegend()`                 | what the marks mean                  |
+| Function                                 | Markup                               |
+| ---------------------------------------- | ------------------------------------ |
+| `parseScores(json)`                      | the validated `Scores`               |
+| `esc(value)`                             | one text value, escaped              |
+| `buildLeaderboardPage(scores, options?)` | the whole leaderboard page           |
+| `renderRow(row)`                         | one table row                        |
+| `renderTable(table)`                     | one table section                    |
+| `renderTableHead()`                      | the head row of a table              |
+| `renderHeadlines(headlines)`             | the headline cells                   |
+| `renderStates(states, options?)`         | the states section                   |
+| `renderBars(groups)`                     | the home-page bar groups             |
+| `renderMethod(points)`                   | the method cards                     |
+| `renderProvenance(provenance)`           | the provenance section               |
+| `renderBadge(scores, tag?)`              | `bench <version> · generated <date>` |
+| `renderLegend()`                         | what the marks mean                  |
 
 `renderStates` accepts `{ heading?, label?, table? }`. The caller supplies the
 heading, `label` changes a corpus state's display name, and `table` keeps only
 the state cells linked to that table id.
+
+`buildLeaderboardPage` accepts `{ tag?, samplesHeading?, title?, description? }`.
+It drops the affiliation dagger from the tool names, drops the "ours" marking
+from the rows and the states, drops the method card that explains the dagger
+(it would be false on a page that marks nothing), and leaves out the headline
+cells entirely.
 
 Every text value goes through `esc()`.
 
@@ -64,11 +81,23 @@ Every text value goes through `esc()`.
 
 ```bash
 node packages/bench-viewer/scripts/build-pages.ts scores.json /tmp/bv-pages
+node packages/bench-viewer/scripts/build-pages.ts scores.json /tmp/bv-jubarte --theme jubarte
 ```
 
-writes `index.html` (badge, legend, headlines, every table, the states and the
-method) and copies `themes/tokens.css` and `themes/arthur-law.css` beside it.
-No git operations, no network.
+writes `index.html` and copies `themes/tokens.css`, `themes/arthur-law.css`
+and `themes/jubarte.css` beside it, so the directory opens as a page on its
+own. No git operations, no network.
+
+`--theme` picks the page:
+
+| Theme        | Page                                                                      |
+| ------------ | ------------------------------------------------------------------------- |
+| `arthur-law` | the leaderboard page (the default): the scores, ranked                    |
+| `jubarte`    | the jubarte page: the headlines, the "ours" rows, the dagger, jubarte.css |
+
+`test/fixtures/jubarte-page.html` is the jubarte page as it was before the
+leaderboard page existed; the build-pages test compares the `jubarte` theme
+against it byte for byte.
 
 ## Build the package
 
