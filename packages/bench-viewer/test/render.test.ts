@@ -37,7 +37,8 @@ describe("jubarte golden markup", () => {
   });
 
   test("renderStates matches the states section", () => {
-    expect(renderStates(fixture.states)).toBe(goldenStates(fixture.states));
+    const heading = "By corpus state, the 600-document conversion sample";
+    expect(renderStates(fixture.states, { heading })).toBe(goldenStates(fixture.states, heading));
   });
 
   test("renderBars matches the home-page bar groups", () => {
@@ -49,9 +50,61 @@ describe("jubarte golden markup", () => {
   });
 });
 
+describe("states options", () => {
+  test("uses the caller's heading and does not hardcode a document count", () => {
+    const html = renderStates(fixture.states, { heading: "States for the selected sample" });
+
+    expect(html).toContain("<h2>States for the selected sample</h2>");
+    expect(html).not.toContain("600-document");
+  });
+
+  test("uses a custom state label", () => {
+    const html = renderStates(fixture.states, {
+      heading: "States",
+      label: (name) => `state: ${name}`,
+    });
+
+    expect(html).toContain("state: clean");
+  });
+
+  test("filters cells by their table id", () => {
+    const states: StateCell[] = [
+      { ...fixture.states[0], name: "first-cell", table: "table-a" },
+      { ...fixture.states[1], name: "second-cell", table: "table-b" },
+    ];
+
+    const html = renderStates(states, { heading: "Selected states", table: "table-a" });
+
+    expect(html).toContain("first-cell");
+    expect(html).not.toContain("second-cell");
+  });
+});
+
+describe("score widths", () => {
+  test("clamps direct renderer values to the 0 through 100 range", () => {
+    const row: Row = { ...fixture.tables[0].rows[0], median: -5 };
+    const state: StateCell = {
+      ...fixture.states[0],
+      rows: [{ ...fixture.states[0].rows[0], median: 120 }],
+    };
+    const group: HomeGroup = {
+      ...fixture.home_groups[0],
+      rows: [{ ...fixture.home_groups[0].rows[0], v: -1 }],
+    };
+
+    expect(renderRow(row)).toContain("width:0%");
+    expect(renderStates([state], { heading: "States" })).toContain("width:100%");
+    expect(renderBars([group])).toContain("width:0%");
+  });
+});
+
 describe("HTML escaping", () => {
   test("esc escapes all five HTML metacharacters", () => {
     expect(esc("& < > \" '")).toBe("&amp; &lt; &gt; &quot; &#39;");
+  });
+
+  test.each([undefined, null, true, {}, []])("esc rejects the non-text value %j", (value) => {
+    expect(() => esc(value as unknown as string)).toThrowError(TypeError);
   });
 
   test("every text field in every rendered value is escaped", () => {

@@ -31,6 +31,11 @@ export function esc(value: string | number): string {
   return String(value).replace(/[&<>"']/g, (c) => ENTITIES[c]);
 }
 
+/** Escape text that jubarte's source template interpolates without esc(). */
+export function escapeGoldenText(value: string): string {
+  return value.replace(/[&<>"']/g, (c) => ENTITIES[c]);
+}
+
 const STATE_LABELS: Record<string, string> = {
   tracking_without_comments: "tracking, no comments",
   with_comments_clean: "comments, clean",
@@ -63,24 +68,29 @@ ${HEADLINES.map(
 </div>`;
 }
 
-export function goldenTable(t: Table): string {
-  return `<section class="mt-72" id="${t.id}">
-<div class="section-head"><h2 id="${t.id}-title">${esc(t.title)}</h2><span>${esc(t.meta)}</span></div>
+export function goldenTable(t: Table, escapeRawText = false): string {
+  const id = escapeRawText ? escapeGoldenText(t.id) : t.id;
+  return `<section class="mt-72" id="${id}">
+<div class="section-head"><h2 id="${id}-title">${esc(t.title)}</h2><span>${esc(t.meta)}</span></div>
 <p class="note mt-12">${esc(t.desc)}</p>
-<div class="scroll-x"><div class="bench-table" role="table" aria-labelledby="${t.id}-title">
+<div class="scroll-x"><div class="bench-table" role="table" aria-labelledby="${id}-title">
 <div class="t-row head bench-cols" role="row"><span role="columnheader">#</span><span role="columnheader">Tool · pin</span><span role="columnheader">Median · 95% CI</span><span class="r" role="columnheader">Median (fail = 0)</span><span class="r" role="columnheader">Mean (fail = 0)</span><span class="r" role="columnheader">Scored</span><span class="r" role="columnheader">Failed</span></div>
 ${t.rows.map(row).join("\n")}
 </div></div>
 </section>`;
 }
 
-export function goldenStates(STATES: StateCell[]): string {
+export function goldenStates(
+  STATES: StateCell[],
+  heading = "By corpus state, the 600-document conversion sample",
+  escapeRawText = false,
+): string {
   return `<section class="mt-72">
-<div class="section-head"><h2>By corpus state, the 600-document conversion sample</h2><span>median · documents per state in brackets</span></div>
+<div class="section-head"><h2>${heading}</h2><span>median · documents per state in brackets</span></div>
 <div class="cells no-top cols-auto-220">
 ${STATES.map(
   (s) => `<div class="cell-pad">
-<p class="state-name">${esc(stateLabel(s.name))} <span class="mono muted">(${s.n})</span></p>
+<p class="state-name">${esc(stateLabel(s.name))} <span class="mono muted">(${escapeRawText ? escapeGoldenText(s.n) : s.n})</span></p>
 <div class="state-rows">
 ${s.rows
   .map(
@@ -101,19 +111,20 @@ ${METHOD.map((m) => `<div class="cell-pad"><p class="note-title">${esc(m.t)}</p>
 </section>`;
 }
 
-export function goldenBars(GROUPS: HomeGroup[]): string {
+export function goldenBars(GROUPS: HomeGroup[], escapeRawText = false): string {
+  const text = escapeRawText ? escapeGoldenText : (value: string) => value;
   return `<div class="bench-groups">
 ${GROUPS.map(
   (g) => `<div>
-<div class="group-head"><span>${g.title}</span><span class="kicker">${g.meta}</span></div>
+<div class="group-head"><span>${text(g.title)}</span><span class="kicker">${text(g.meta)}</span></div>
 <div class="bars">
 ${g.rows
   .map(
     (r) =>
-      `<div class="bar-row${"ours" in r && r.ours ? " ours" : ""}"><span>${r.name}</span><div class="bar${"ours" in r && r.ours ? " hi" : ""}"><div style="width:${r.v}%"></div></div><span class="num">${r.v.toFixed(2)}</span></div>`,
+      `<div class="bar-row${"ours" in r && r.ours ? " ours" : ""}"><span>${text(r.name)}</span><div class="bar${"ours" in r && r.ours ? " hi" : ""}"><div style="width:${r.v}%"></div></div><span class="num">${r.v.toFixed(2)}</span></div>`,
   )
   .join("\n")}
-</div>${g.note ? `\n<p class="small mt-12">${g.note}</p>` : ""}
+</div>${g.note ? `\n<p class="small mt-12">${text(g.note)}</p>` : ""}
 </div>`,
 ).join("\n")}
 </div>`;

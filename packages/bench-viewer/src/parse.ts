@@ -23,11 +23,17 @@ function fail(path: string, expected: string): never {
   throw new TypeError(`scores: ${path} must be ${expected}`);
 }
 
-function obj(value: unknown, path: string): Record<string, unknown> {
+function obj(value: unknown, path: string, allowed?: readonly string[]): Record<string, unknown> {
   if (typeof value !== "object" || value === null || Array.isArray(value)) {
     fail(path, "an object");
   }
-  return value as Record<string, unknown>;
+  const record = value as Record<string, unknown>;
+  if (allowed) {
+    for (const key of Object.keys(record)) {
+      if (!allowed.includes(key)) fail(`${path}.${key}`, "a known field");
+    }
+  }
+  return record;
 }
 
 function str(value: unknown, path: string): string {
@@ -35,8 +41,21 @@ function str(value: unknown, path: string): string {
   return value;
 }
 
-function num(value: unknown, path: string): number {
-  if (typeof value !== "number" || !Number.isFinite(value)) fail(path, "a number");
+function score(value: unknown, path: string): number {
+  if (typeof value !== "number" || !Number.isFinite(value)) fail(path, "a finite number");
+  if (value < 0 || value > 100) fail(path, "a number between 0 and 100");
+  return value;
+}
+
+function count(value: unknown, path: string): number {
+  if (
+    typeof value !== "number" ||
+    !Number.isFinite(value) ||
+    !Number.isInteger(value) ||
+    value < 0
+  ) {
+    fail(path, "a non-negative integer");
+  }
   return value;
 }
 
@@ -50,22 +69,48 @@ function list(value: unknown, path: string): unknown[] {
   return value;
 }
 
-/** An optional boolean: absent, `null` and `false` all mean "not ours". */
+/** An optional boolean: absent means "not ours". */
 function optionalBool(value: unknown, path: string): boolean | undefined {
-  if (value === undefined || value === null) return undefined;
+  if (value === undefined) return undefined;
   return bool(value, path);
 }
 
+/** Validate an absolute HTTP(S) URL before it can reach an href attribute. */
+export function requireHttpUrl(value: unknown, path: string): string {
+  const text = str(value, path);
+  if (!/^https?:\/\//i.test(text)) fail(path, "an absolute http(s) URL");
+  let url: URL;
+  try {
+    url = new URL(text);
+  } catch {
+    fail(path, "an absolute http(s) URL");
+  }
+  if (url.protocol !== "http:" && url.protocol !== "https:") {
+    fail(path, "an absolute http(s) URL");
+  }
+  return text;
+}
+
 function parseRow(value: unknown, path: string): Row {
-  const o = obj(value, path);
+  const o = obj(value, path, [
+    "rank",
+    "tool",
+    "pin",
+    "median",
+    "mean",
+    "docs",
+    "failed",
+    "note",
+    "ours",
+  ]);
   const row: Row = {
     rank: str(o.rank, `${path}.rank`),
     tool: str(o.tool, `${path}.tool`),
     pin: str(o.pin, `${path}.pin`),
-    median: num(o.median, `${path}.median`),
-    mean: num(o.mean, `${path}.mean`),
-    docs: num(o.docs, `${path}.docs`),
-    failed: num(o.failed, `${path}.failed`),
+    median: score(o.median, `${path}.median`),
+    mean: score(o.mean, `${path}.mean`),
+    docs: count(o.docs, `${path}.docs`),
+    failed: count(o.failed, `${path}.failed`),
     note: str(o.note, `${path}.note`),
   };
   const ours = optionalBool(o.ours, `${path}.ours`);
@@ -74,7 +119,7 @@ function parseRow(value: unknown, path: string): Row {
 }
 
 function parseTable(value: unknown, path: string): Table {
-  const o = obj(value, path);
+  const o = obj(value, path, ["id", "title", "meta", "desc", "rows"]);
   return {
     id: str(o.id, `${path}.id`),
     title: str(o.title, `${path}.title`),
@@ -85,7 +130,7 @@ function parseTable(value: unknown, path: string): Table {
 }
 
 function parseHeadline(value: unknown, path: string): Headline {
-  const o = obj(value, path);
+  const o = obj(value, path, ["label", "value", "vs", "sub"]);
   return {
     label: str(o.label, `${path}.label`),
     value: str(o.value, `${path}.value`),
@@ -95,10 +140,10 @@ function parseHeadline(value: unknown, path: string): Headline {
 }
 
 function parseStateRow(value: unknown, path: string): StateRow {
-  const o = obj(value, path);
+  const o = obj(value, path, ["tool", "median", "ours"]);
   const row: StateRow = {
     tool: str(o.tool, `${path}.tool`),
-    median: num(o.median, `${path}.median`),
+    median: score(o.median, `${path}.median`),
   };
   const ours = optionalBool(o.ours, `${path}.ours`);
   if (ours !== undefined) row.ours = ours;
@@ -106,19 +151,23 @@ function parseStateRow(value: unknown, path: string): StateRow {
 }
 
 function parseStateCell(value: unknown, path: string): StateCell {
-  const o = obj(value, path);
-  return {
+  const o = obj(value, path, ["name", "n", "rows", "table"]);
+  const cell: StateCell = {
     name: str(o.name, `${path}.name`),
     n: str(o.n, `${path}.n`),
     rows: list(o.rows, `${path}.rows`).map((r, i) => parseStateRow(r, `${path}.rows[${i}]`)),
   };
+  if (o.table !== undefined) {
+    cell.table = o.table === null ? null : str(o.table, `${path}.table`);
+  }
+  return cell;
 }
 
 function parseHomeBar(value: unknown, path: string): HomeBar {
-  const o = obj(value, path);
+  const o = obj(value, path, ["name", "v", "ours"]);
   const bar: HomeBar = {
     name: str(o.name, `${path}.name`),
-    v: num(o.v, `${path}.v`),
+    v: score(o.v, `${path}.v`),
   };
   const ours = optionalBool(o.ours, `${path}.ours`);
   if (ours !== undefined) bar.ours = ours;
@@ -126,7 +175,7 @@ function parseHomeBar(value: unknown, path: string): HomeBar {
 }
 
 function parseHomeGroup(value: unknown, path: string): HomeGroup {
-  const o = obj(value, path);
+  const o = obj(value, path, ["title", "meta", "rows", "note"]);
   const group: HomeGroup = {
     title: str(o.title, `${path}.title`),
     meta: str(o.meta, `${path}.meta`),
@@ -141,7 +190,7 @@ function parseHomeGroup(value: unknown, path: string): HomeGroup {
 }
 
 function parseMethodPoint(value: unknown, path: string): MethodPoint {
-  const o = obj(value, path);
+  const o = obj(value, path, ["t", "d"]);
   return {
     t: str(o.t, `${path}.t`),
     d: str(o.d, `${path}.d`),
@@ -159,12 +208,23 @@ function parseProvenance(value: unknown, path: string): Record<string, string[]>
 
 /** Validate a parsed `scores.json` document and return it as `Scores`. */
 export function parseScores(json: unknown): Scores {
-  const o = obj(json, "scores");
+  const o = obj(json, "scores", [
+    "version",
+    "generated",
+    "repo",
+    "viewer",
+    "provenance",
+    "tables",
+    "headlines",
+    "states",
+    "home_groups",
+    "method",
+  ]);
   return {
     version: str(o.version, "version"),
     generated: str(o.generated, "generated"),
-    repo: str(o.repo, "repo"),
-    viewer: str(o.viewer, "viewer"),
+    repo: requireHttpUrl(o.repo, "repo"),
+    viewer: requireHttpUrl(o.viewer, "viewer"),
     tables: list(o.tables, "tables").map((t, i) => parseTable(t, `tables[${i}]`)),
     headlines: list(o.headlines, "headlines").map((h, i) => parseHeadline(h, `headlines[${i}]`)),
     states: list(o.states, "states").map((s, i) => parseStateCell(s, `states[${i}]`)),

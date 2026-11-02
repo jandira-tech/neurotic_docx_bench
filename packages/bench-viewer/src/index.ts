@@ -16,6 +16,7 @@ export type {
   HomeBar,
   HomeGroup,
   MethodPoint,
+  RenderStatesOptions,
   Row,
   Scores,
   StateCell,

@@ -35,6 +35,13 @@ export interface StateCell {
   name: string;
   n: string;
   rows: StateRow[];
+  table?: string | null;
+}
+
+export interface RenderStatesOptions {
+  heading?: string;
+  label?: (name: string) => string;
+  table?: string;
 }
 
 export interface HomeBar {

@@ -36,6 +36,7 @@
   --ff: var(--sans);
   --mono: "Roboto Mono", "Departure Mono", "Space Mono", ui-monospace, monospace;
   --mono-weight: 600;
+  --display-weight: 700;
   --max: 1180px;
   --radius: 0;
 }

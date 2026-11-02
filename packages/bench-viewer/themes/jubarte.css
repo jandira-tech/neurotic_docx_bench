@@ -5,29 +5,27 @@
  * at commit ad9b73e: only the rules the bench-viewer components need, and the
  * variables those rules use. The declarations are jubarte's, unchanged.
  *
- * Two deliberate differences:
- * - the fonts are the stacks, not the @font-face rules: the woff2 files live
- *   on jubarte.pro, not here;
- * - the palette is pinned to Graphite (light) instead of light-dark(), so the
- *   page renders the same wherever it is opened.
+ * One deliberate difference: the fonts are the stacks, not the @font-face
+ * rules, because the woff2 files live on jubarte.pro, not here. The palette
+ * keeps jubarte's Graphite and Night values through light-dark().
  */
 
 :root {
-  color-scheme: light;
+  color-scheme: light dark;
 
-  /* Graphite (light), from jubarte's :root. */
-  --bg: oklch(97% 0.003 106.4);
-  --ink: oklch(18.2% 0 0);
+  /* Graphite (light) and Night (dark), from jubarte's :root. */
+  --bg: light-dark(oklch(97% 0.003 106.4), oklch(20% 0.023 249));
+  --ink: light-dark(oklch(18.2% 0 0), oklch(96.2% 0.008 241.7));
   --muted: var(--ink);
-  --primary: oklch(21.8% 0 0);
-  --primary-dark: oklch(0% 0 0);
-  --line: oklch(87.5% 0.005 106.5);
-  --line-strong: oklch(73.3% 0.007 106.6);
-  --surface: oklch(94.2% 0.004 106.5);
-  --hover: oklch(92.4% 0.005 106.5);
-  --hl: oklch(91.6% 0.128 94.1);
-  --hl-soft: oklch(96.2% 0.062 95.4);
-  --mark: oklch(91.6% 0.128 94.1);
+  --primary: light-dark(oklch(21.8% 0 0), oklch(79.1% 0.094 237.6));
+  --primary-dark: light-dark(oklch(0% 0 0), oklch(86.2% 0.065 236));
+  --line: light-dark(oklch(87.5% 0.005 106.5), oklch(33.4% 0.039 250.5));
+  --line-strong: light-dark(oklch(73.3% 0.007 106.6), oklch(43.6% 0.043 246.4));
+  --surface: light-dark(oklch(94.2% 0.004 106.5), oklch(23.9% 0.026 249));
+  --hover: light-dark(oklch(92.4% 0.005 106.5), oklch(27.1% 0.029 246.9));
+  --hl: light-dark(oklch(91.6% 0.128 94.1), oklch(40.5% 0.075 243));
+  --hl-soft: light-dark(oklch(96.2% 0.062 95.4), oklch(28.4% 0.046 245.3));
+  --mark: light-dark(oklch(91.6% 0.128 94.1), oklch(40.5% 0.075 243));
   --mark-text: var(--ink);
   --mark-soft: var(--hl-soft);
 
@@ -35,6 +33,14 @@
   --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
   --max: 1180px;
   --radius: 6px;
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
 }
 
 *,

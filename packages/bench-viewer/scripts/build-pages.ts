@@ -24,6 +24,7 @@ import {
   renderStates,
   renderTable,
 } from "../src/index.ts";
+import { requireHttpUrl } from "../src/parse.ts";
 import type { Scores } from "../src/types.ts";
 
 /** The stylesheets the page links, copied into the output directory. */
@@ -48,6 +49,8 @@ ${rows}
 
 /** The whole page. Every text value goes through esc(). */
 export function renderPage(scores: Scores): string {
+  const repo = requireHttpUrl(scores.repo, "repo");
+  const viewer = requireHttpUrl(scores.viewer, "viewer");
   const tables = scores.tables.map((t) => renderTable(t)).join("\n");
   return `<!doctype html>
 <html lang="en">
@@ -70,11 +73,11 @@ ${renderBadge(scores)}
 ${renderLegend()}
 ${renderHeadlines(scores.headlines)}
 ${tables}
-${renderStates(scores.states)}
+${renderStates(scores.states, { heading: "By corpus state" })}
 ${renderMethod(scores.method)}
 ${provenanceBlock(scores)}
 <footer class="mt-72">
-<p class="note">Harness and raw records: <a href="${esc(scores.repo)}">neurotic_docx_bench</a>. Per-case viewer: <a href="${esc(scores.viewer)}">${esc(scores.viewer)}</a>. Figures are project-maintained and reproducible, not a neutral third-party benchmark.</p>
+<p class="note">Harness and raw records: <a href="${esc(repo)}">neurotic_docx_bench</a>. Per-case viewer: <a href="${esc(viewer)}">${esc(viewer)}</a>. Figures are project-maintained and reproducible, not a neutral third-party benchmark.</p>
 </footer>
 </main>
 </body>

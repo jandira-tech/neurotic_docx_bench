@@ -1,17 +1,30 @@
 import { esc } from "./esc.ts";
-import type { Headline, HomeGroup, MethodPoint, Row, Scores, StateCell, Table } from "./types.ts";
+import type {
+  Headline,
+  HomeGroup,
+  MethodPoint,
+  RenderStatesOptions,
+  Row,
+  Scores,
+  StateCell,
+  Table,
+} from "./types.ts";
 
-// The markup below is jubarte.pro's, copied byte for byte from
-// jubarte-app (commit ad9b73e): site/pages/benchmark.ts lines 17-28 (row),
-// 58-66 (headlines), 68-77 (table), 79-96 (states) and 107-109 (method),
-// and site/pages/home.ts lines 177-191 (bar groups). Every text value goes
-// through esc(); jubarte left a few of them bare, which only matters for a
-// value that is not already safe.
+// The markup below follows jubarte.pro's templates from jubarte-app (commit
+// ad9b73e): site/pages/benchmark.ts lines 17-28 (row), 58-66 (headlines),
+// 68-77 (table), 79-96 (states) and 107-109 (method), and site/pages/home.ts
+// lines 177-191 (bar groups). The output is byte for byte identical for
+// metacharacter-free values.
 //
-// The one liberty: jubarte prints a table's id into `id`/`aria-labelledby`
-// attributes and a state's document count into text without escaping them.
-// Here they are escaped like every other text value. For the ids and counts
-// the bench publishes the output is identical.
+// Every text value goes through esc(). Jubarte already escapes most fields;
+// its table ids, state counts and home-page prose are interpolated raw, so
+// bench-viewer deliberately differs there when a value contains HTML
+// metacharacters. The raw-facts fixture pins that documented difference.
+
+/** Keep a score inside the range that CSS can render as a percentage. */
+function scoreWidth(value: number): number {
+  return Math.max(0, Math.min(100, value));
+}
 
 /** The corpus folder names, said in words (jubarte's site/data/bench.ts). */
 const STATE_LABELS: Record<string, string> = {
@@ -29,7 +42,7 @@ export function renderRow(r: Row): string {
   return `<div class="t-row bench-cols${cls}" role="row">
 <span class="mono muted" role="cell">${esc(r.rank)}</span>
 <div class="tool" role="rowheader"><div class="tool-name">${esc(r.tool)}</div><div class="tool-pin">${esc(r.pin)}</div></div>
-<div class="bar-cell" role="cell"><div class="bar${r.ours ? " hi" : ""}" aria-hidden="true"><div style="width:${r.median}%"></div></div><span class="bar-note">${esc(r.note)}</span></div>
+<div class="bar-cell" role="cell"><div class="bar${r.ours ? " hi" : ""}" aria-hidden="true"><div style="width:${scoreWidth(r.median)}%"></div></div><span class="bar-note">${esc(r.note)}</span></div>
 <span class="num strong" role="cell">${r.median.toFixed(2)}</span>
 <span class="num" role="cell">${r.mean.toFixed(2)}</span>
 <span class="num" role="cell">${r.docs.toLocaleString("en-US")}</span>
@@ -66,11 +79,14 @@ ${h
 }
 
 /** The conversion sample, split by corpus state. */
-export function renderStates(s: StateCell[], label: (name: string) => string = stateLabel): string {
+export function renderStates(s: StateCell[], opts: RenderStatesOptions = {}): string {
+  const label = opts.label ?? stateLabel;
+  const heading = opts.heading ?? "By corpus state";
+  const cells = opts.table === undefined ? s : s.filter((cell) => cell.table === opts.table);
   return `<section class="mt-72">
-<div class="section-head"><h2>By corpus state, the 600-document conversion sample</h2><span>median · documents per state in brackets</span></div>
+<div class="section-head"><h2>${esc(heading)}</h2><span>median · documents per state in brackets</span></div>
 <div class="cells no-top cols-auto-220">
-${s
+${cells
   .map(
     (c) => `<div class="cell-pad">
 <p class="state-name">${esc(label(c.name))} <span class="mono muted">(${esc(c.n)})</span></p>
@@ -78,7 +94,7 @@ ${s
 ${c.rows
   .map(
     (r) =>
-      `<div class="state-row${r.ours ? " ours" : ""}"><div><span>${esc(r.tool)}</span><span class="mono">${r.median.toFixed(2)}</span></div><div class="bar thin${r.ours ? " hi" : ""}"><div style="width:${r.median}%"></div></div></div>`,
+      `<div class="state-row${r.ours ? " ours" : ""}"><div><span>${esc(r.tool)}</span><span class="mono">${r.median.toFixed(2)}</span></div><div class="bar thin${r.ours ? " hi" : ""}"><div style="width:${scoreWidth(r.median)}%"></div></div></div>`,
   )
   .join("\n")}
 </div>
@@ -100,7 +116,7 @@ ${groups
 ${g.rows
   .map(
     (r) =>
-      `<div class="bar-row${r.ours ? " ours" : ""}"><span>${esc(r.name)}</span><div class="bar${r.ours ? " hi" : ""}"><div style="width:${r.v}%"></div></div><span class="num">${r.v.toFixed(2)}</span></div>`,
+      `<div class="bar-row${r.ours ? " ours" : ""}"><span>${esc(r.name)}</span><div class="bar${r.ours ? " hi" : ""}"><div style="width:${scoreWidth(r.v)}%"></div></div><span class="num">${r.v.toFixed(2)}</span></div>`,
   )
   .join("\n")}
 </div>${g.note ? `\n<p class="small mt-12">${esc(g.note)}</p>` : ""}

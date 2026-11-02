@@ -13,5 +13,8 @@ const ENTITIES: Record<string, string> = {
 
 /** Escape every HTML metacharacter in a text value. */
 export function esc(value: string | number): string {
+  if (typeof value !== "string" && typeof value !== "number") {
+    throw new TypeError("esc: value must be a string or number");
+  }
   return String(value).replace(/[&<>"']/g, (c) => ENTITIES[c]);
 }
