@@ -11,6 +11,25 @@
  * the mobile rules are the ones the hardened benchmarks.law copy carries.
  */
 
+/* The fonts the gh-pages site ships, declared the way it declares them. A
+ * build without `build-pages --release --fonts <dir>` does not carry the
+ * files: font-display falls back to the system stacks in --sans/--mono and
+ * the package itself ships no binaries. */
+@font-face {
+  font-family: "Manrope";
+  font-style: normal;
+  font-weight: 200 800;
+  font-display: swap;
+  src: url("_static/fonts/manrope-latin-wght-normal.woff2") format("woff2-variations");
+}
+@font-face {
+  font-family: "JetBrains Mono";
+  font-style: normal;
+  font-weight: 100 800;
+  font-display: swap;
+  src: url("_static/fonts/jetbrains-mono-latin-wght-normal.woff2") format("woff2-variations");
+}
+
 :root {
   color-scheme: light;
 

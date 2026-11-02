@@ -7,8 +7,12 @@ import { describe, expect, test } from "vitest";
 import type { Case, CasesIndex, Engine } from "../src/cases.ts";
 import {
   caseHash,
+  defaultComparisonLane,
+  defaultOverlayLane,
   laneState,
   lanesForCase,
+  lanesWithData,
+  orderLanes,
   parseCaseHash,
   parseCaseShard,
   parseCasesIndex,
@@ -181,6 +185,63 @@ describe("the lanes", () => {
   });
 });
 
+describe("the lane order", () => {
+  test("a group's lanes are Word first, then the scored-case count, ties by label", () => {
+    // v1/with_comments_clean: libreoffice, docxodus and jubarte each scored both
+    // cases (tie), so the label breaks it: LibreOffice < docxodus < jubarte.
+    const order = orderLanes(conversion.cases, engines);
+    expect(order.slice(0, 4).map((engine) => engine.key)).toEqual([
+      "reference",
+      "libreoffice",
+      "docxodus",
+      "jubarte",
+    ]);
+  });
+
+  test("lanes the group's cases never mention are not the page's lanes", () => {
+    // The redline-only lanes (jubarte-rust, superdoc, stemma, docxodus-12.6.5,
+    // jubarte-093, …) are mentioned by no conversion case: dropped, pages,
+    // scores, errors, nothing.
+    const order = orderLanes(conversion.cases, engines);
+    for (const key of [
+      "jubarte-rust",
+      "superdoc",
+      "superdoc-2.20.0",
+      "stemma-0.5.0",
+      "docxodus-12.6.5",
+      "jubarte-093",
+    ]) {
+      expect(order.find((engine) => engine.key === key)).toBeUndefined();
+    }
+  });
+
+  test("a redline group keeps the redline lanes and drops the conversion-only ones", () => {
+    const order = orderLanes(redlines.cases, engines);
+    expect(order[0].key).toBe("reference");
+    expect(order.map((engine) => engine.key)).toContain("jubarte-rust");
+    expect(order.find((engine) => engine.key === "jubarte")).toBeUndefined();
+    expect(order.find((engine) => engine.key === "libreoffice")).toBeUndefined();
+  });
+
+  test("the lanes with data are everything but the dropped-everywhere ones", () => {
+    // wordcraft1014/compare: stemma-0.5.0 is `unavailable` in both cases (the
+    // cohort lane with no published measurement — data, shown as "not
+    // measured"), while superdoc is dropped in both (folded behind +N more).
+    const data = lanesWithData(redlines.cases);
+    expect(data.has("reference")).toBe(true);
+    expect(data.has("stemma-0.5.0")).toBe(true);
+    expect(data.has("superdoc")).toBe(false);
+  });
+
+  test("the default comparison lane is the first non-reference lane, the overlay's the second", () => {
+    const order = orderLanes(conversion.cases, engines);
+    expect(defaultComparisonLane(order)?.key).toBe("libreoffice");
+    expect(defaultOverlayLane(order)?.key).toBe("docxodus");
+    expect(defaultComparisonLane(order.slice(0, 1))?.key).toBeUndefined();
+    expect(defaultOverlayLane(order.slice(0, 2))?.key).toBeUndefined();
+  });
+});
+
 describe("the case strip", () => {
   test("draws the pages as images resolved against the asset base", () => {
     const c = conversion.cases[0];
@@ -317,6 +378,26 @@ describe("the list and the score table", () => {
     expect(html).toContain("more");
   });
 
+  test("the engine bar shows the group's lanes in display order and never the other kind's", () => {
+    const order = orderLanes(conversion.cases, engines);
+    const html = renderEngineToggles({
+      engines,
+      lanes: order,
+      on: Object.fromEntries(order.map((engine) => [engine.key, true])),
+      active: lanesWithData(conversion.cases),
+    });
+    // One toggle per lane of the page's kind, in the display order.
+    expect([...html.matchAll(/data-e="([^"]+)"/g)].map((m) => m[1])).toEqual(
+      order.map((engine) => engine.key),
+    );
+    // The redline-only lanes are not even folded away: they are not this
+    // page's lanes.
+    expect(html).not.toContain('data-e="jubarte-rust"');
+    expect(html).not.toContain('data-e="superdoc"');
+    // 20 lanes of the kind, 4 with data in the group: 16 folded.
+    expect(html).toContain('data-count="16"');
+  });
+
   test("the legend explains the scores", () => {
     const html = renderCasesLegend({ kind: "redline" });
     expect(html).toContain("About these scores");
@@ -385,6 +466,93 @@ describe("the build-pages release mode", () => {
       const speed = await readFile(join(outDir, "speed", "index.html"), "utf8");
       expect(speed).toContain('"../release/speed.json"');
       expect(speed).toContain('"../js/speed.js"');
+
+      // Without --fonts nothing is copied and the package ships no binaries.
+      await expect(access(join(outDir, "_static"))).rejects.toThrow();
+      const css = await readFile(join(outDir, "cases.css"), "utf8");
+      expect(css).toContain("@font-face");
+      expect(css).toContain("manrope-latin-wght-normal.woff2");
+    } finally {
+      await rm(outDir, { recursive: true, force: true });
+    }
+  });
+
+  test("--fonts copies the fonts next to the pages", async () => {
+    const outDir = await mkdtemp(join(tmpdir(), "bench-viewer-fonts-"));
+    try {
+      const result = await new Promise<{ code: number | null; stderr: string; stdout: string }>(
+        (resolvePromise, reject) => {
+          const child = spawn(
+            process.execPath,
+            [
+              script,
+              "--release",
+              fixtureRoot,
+              outDir,
+              "--scores",
+              join(packageRoot, "test", "fixtures", "scores.json"),
+              "--fonts",
+              join(packageRoot, "test", "fixtures", "fonts"),
+            ],
+            { cwd: packageRoot },
+          );
+          let stdout = "";
+          let stderr = "";
+          child.stdout.on("data", (chunk: Buffer) => {
+            stdout += chunk.toString();
+          });
+          child.stderr.on("data", (chunk: Buffer) => {
+            stderr += chunk.toString();
+          });
+          child.on("error", reject);
+          child.on("close", (code) => resolvePromise({ code, stderr, stdout }));
+        },
+      );
+      expect(result.stderr).toBe("");
+      expect(result.code).toBe(0);
+
+      for (const path of [
+        "_static/fonts/manrope-latin-wght-normal.woff2",
+        "_static/fonts/jetbrains-mono-latin-wght-normal.woff2",
+        "_static/fonts/LICENSE-manrope.txt",
+        "_static/fonts/LICENSE-jetbrains-mono.txt",
+      ]) {
+        await expect(access(join(outDir, path))).resolves.toBeUndefined();
+      }
+    } finally {
+      await rm(outDir, { recursive: true, force: true });
+    }
+  });
+
+  test("--fonts refuses a directory that does not exist", async () => {
+    const outDir = await mkdtemp(join(tmpdir(), "bench-viewer-nofonts-"));
+    try {
+      const result = await new Promise<{ code: number | null; stderr: string }>(
+        (resolvePromise, reject) => {
+          const child = spawn(
+            process.execPath,
+            [
+              script,
+              "--release",
+              fixtureRoot,
+              outDir,
+              "--scores",
+              join(packageRoot, "test", "fixtures", "scores.json"),
+              "--fonts",
+              join(outDir, "not-there"),
+            ],
+            { cwd: packageRoot },
+          );
+          let stderr = "";
+          child.stderr.on("data", (chunk: Buffer) => {
+            stderr += chunk.toString();
+          });
+          child.on("error", reject);
+          child.on("close", (code) => resolvePromise({ code, stderr }));
+        },
+      );
+      expect(result.code).not.toBe(0);
+      expect(result.stderr).toContain("not-there");
     } finally {
       await rm(outDir, { recursive: true, force: true });
     }

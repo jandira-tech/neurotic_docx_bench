@@ -1,9 +1,10 @@
 #!/usr/bin/env node
+
 /**
  * Build the bench pages.
  *
  *   node packages/bench-viewer/scripts/build-pages.ts <scores.json> <outdir> [--theme <name>]
- *   node packages/bench-viewer/scripts/build-pages.ts --release <dir> <outdir> [--scores <file>]
+ *   node packages/bench-viewer/scripts/build-pages.ts --release <dir> <outdir> [--scores <file>] [--fonts <dir>]
  *
  * Two modes, one scores file:
  *
@@ -21,9 +22,16 @@
  * page. The pages fetch the release's own files (the cases index, one shard
  * per group, speed.json) instead of carrying the data inside them, so the
  * bundle is the single copy of the numbers.
+ *
+ * `--fonts <dir>` (release mode only) copies a font directory — the
+ * gh-pages site's `_static/fonts` (Manrope, JetBrains Mono as woff2, plus
+ * their licences) — into `<outdir>/_static/fonts/`, where `cases.css`'s
+ * @font-face rules expect them. Without the flag nothing is copied: the
+ * pages fall back to the system stacks and the package ships no binaries.
  */
 
-import { copyFile, mkdir, readFile, writeFile } from "node:fs/promises";
+import type { Dirent } from "node:fs";
+import { copyFile, mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { renderCasesPage } from "../src/cases.ts";
@@ -108,6 +116,8 @@ interface Args {
   releaseDir?: string;
   /** The scores file. */
   scoresPath?: string;
+  /** A font directory to copy into <outdir>/_static/fonts (release mode). */
+  fontsDir?: string;
   /** The output directory. */
   outDir: string;
   theme: Theme;
@@ -116,7 +126,7 @@ interface Args {
 function usage(): never {
   console.error(
     "usage: build-pages.ts <scores.json> <outdir> [--theme arthur-law|jubarte]\n" +
-      "       build-pages.ts --release <dir> <outdir> [--scores <file>]",
+      "       build-pages.ts --release <dir> <outdir> [--scores <file>] [--fonts <dir>]",
   );
   process.exit(2);
 }
@@ -125,11 +135,12 @@ function usage(): never {
 export function readArgs(argv: string[]): Args {
   let releaseDir: string | undefined;
   let scoresPath: string | undefined;
+  let fontsDir: string | undefined;
   let theme: Theme = "arthur-law";
   const positional: string[] = [];
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i];
-    if (arg === "--theme" || arg === "--release" || arg === "--scores") {
+    if (arg === "--theme" || arg === "--release" || arg === "--scores" || arg === "--fonts") {
       const value = argv[i + 1];
       if (value === undefined) {
         console.error(`build-pages.ts: ${arg} needs a value`);
@@ -143,6 +154,8 @@ export function readArgs(argv: string[]): Args {
         theme = value as Theme;
       } else if (arg === "--release") {
         releaseDir = value;
+      } else if (arg === "--fonts") {
+        fontsDir = value;
       } else {
         scoresPath = value;
       }
@@ -166,6 +179,10 @@ export function readArgs(argv: string[]): Args {
       scoresPath = arg.slice("--scores=".length);
       continue;
     }
+    if (arg.startsWith("--fonts=")) {
+      fontsDir = arg.slice("--fonts=".length);
+      continue;
+    }
     if (arg.startsWith("-")) {
       console.error(`build-pages.ts: unknown argument ${arg}`);
       process.exit(2);
@@ -175,7 +192,20 @@ export function readArgs(argv: string[]): Args {
   if (releaseDir !== undefined) {
     const outDir = positional[0];
     if (!outDir) usage();
-    return { mode: "release", releaseDir, outDir, theme, ...(scoresPath ? { scoresPath } : {}) };
+    return {
+      mode: "release",
+      releaseDir,
+      outDir,
+      theme,
+      ...(scoresPath ? { scoresPath } : {}),
+      ...(fontsDir ? { fontsDir } : {}),
+    };
+  }
+  if (fontsDir !== undefined) {
+    console.error(
+      "build-pages.ts: --fonts needs --release (the stylesheet of the plain mode has no fonts)",
+    );
+    process.exit(2);
   }
   const scores = positional[0];
   const outDir = positional[1];
@@ -251,6 +281,37 @@ async function copyRelease(releaseDir: string, outDir: string): Promise<void> {
   await copyFile(join(releaseDir, "speed.json"), join(outDir, "release", "speed.json"));
 }
 
+/**
+ * Copy a font directory into <outdir>/_static/fonts — the gh-pages site's
+ * `_static/fonts` (Manrope, JetBrains Mono as woff2, and their licences),
+ * which `cases.css`'s @font-face rules point at. The package itself ships
+ * no binaries: without --fonts the pages simply fall back to the system
+ * stacks.
+ */
+async function copyFonts(fontsDir: string, outDir: string): Promise<void> {
+  let entries: Dirent[];
+  try {
+    entries = await readdir(fontsDir, { withFileTypes: true });
+  } catch (err) {
+    console.error(`${fontsDir}: ${(err as Error).message}`);
+    process.exit(1);
+  }
+  const files = entries
+    .filter((entry) => entry.isFile())
+    .map((entry) => entry.name)
+    .sort();
+  if (!files.length) {
+    console.error(`${fontsDir}: no font files to copy`);
+    process.exit(1);
+  }
+  const to = join(outDir, "_static", "fonts");
+  await mkdir(to, { recursive: true });
+  for (const name of files) {
+    await copyFile(join(fontsDir, name), join(to, name));
+  }
+  console.log(`${to}: ${files.length} files (${files.join(", ")})`);
+}
+
 /** The whole site, from one release bundle. */
 async function buildRelease(args: Args): Promise<void> {
   const releaseDir = resolve(args.releaseDir as string);
@@ -289,6 +350,7 @@ async function buildRelease(args: Args): Promise<void> {
   await copyThemes(outDir);
   await copyModules(outDir);
   await copyRelease(releaseDir, outDir);
+  if (args.fontsDir) await copyFonts(resolve(args.fontsDir), outDir);
 
   await writeFile(join(outDir, "index.html"), buildLeaderboardPage(scores), "utf8");
   await mkdir(join(outDir, "cases"), { recursive: true });

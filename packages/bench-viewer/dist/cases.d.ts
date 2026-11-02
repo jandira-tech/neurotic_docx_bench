@@ -98,6 +98,48 @@ export declare function lanesForCase(c: Case, engines: Engine[]): {
     state: LaneState;
 }[];
 /**
+ * The lanes a group's cases mention: the page's kind's lanes, as far as this
+ * group shows them. The release writes every lane of the page's kind into
+ * each of its cases — a lane it did not run for a case is `dropped`, a cohort
+ * lane without a published measurement is `unavailable` — while a lane of the
+ * *other* kind is mentioned by no case of this one (no pages, no score, not
+ * even dropped). So the union of what the cases mention is exactly the set a
+ * page of that kind may show, and a conversion page never shows a
+ * redline-only lane (jubarte-rust, superdoc, stemma, docxodus-12.6.5,
+ * jubarte-093, …) unless it has data in a conversion case.
+ *
+ * The index's engine list is sorted by key: that is **storage order, not
+ * display order** — `orderLanes` decides which lanes a page shows and in
+ * which order.
+ */
+export declare function mentionedLanes(cases: Case[], engines: Engine[]): Engine[];
+/**
+ * The display order of a group's lanes: Word first, then by the number of
+ * cases in the group where the lane has a score (descending), ties by label —
+ * compared by code points, so the order never depends on the runtime's
+ * collation. Lanes with no data in the group sort last (they have no score);
+ * the bar folds them behind "+N more".
+ */
+export declare function orderLanes(cases: Case[], engines: Engine[]): Engine[];
+/**
+ * The lanes with data in the group: everything the cases give a lane besides
+ * dropping it — pages, a score, a time, an error, `unavailable`,
+ * `not applicable` — in at least one case. These stay out of the "+N more"
+ * fold; the kind's lanes without data (dropped in every case) are folded.
+ */
+export declare function lanesWithData(cases: Case[]): Set<string>;
+/**
+ * The lane the page puts beside Word by default: the first non-reference
+ * lane in the display order — the group's own numbers decide, no product
+ * preference.
+ */
+export declare function defaultComparisonLane(lanes: Engine[]): Engine | undefined;
+/**
+ * The lane the overlay puts over Word by default: the second non-reference
+ * lane in the display order, for the same reason.
+ */
+export declare function defaultOverlayLane(lanes: Engine[]): Engine | undefined;
+/**
  * The public URL of one asset. The release stores the path relative to the
  * asset base with a `~/` sentinel; anything that is not an http(s) URL is
  * refused rather than put in an `src`.
@@ -223,7 +265,13 @@ export declare function renderCaseList(opts: CaseListOptions): string;
 export declare function renderGroupOptions(groups: ShardRef[], selected?: string): string;
 /** The engine toggles: one per lane, the ones without data folded away. */
 export interface EngineToggleOptions {
+    /** Every lane of the release — the lane colours come from its order. */
     engines: Engine[];
+    /**
+     * The lanes to draw, in display order (`orderLanes` of the group on
+     * screen). Defaults to `engines`, storage order and all.
+     */
+    lanes?: Engine[];
     /** Which lanes are on. */
     on: Record<string, boolean>;
     /** The lanes that have data in the group on screen. */
@@ -238,8 +286,13 @@ export declare function renderEngineToggles(opts: EngineToggleOptions): string;
 /** The score table: one row per case, one column per lane and metric. */
 export interface ScoresTableOptions {
     cases: Case[];
-    /** The lanes to show. */
+    /** Every lane of the release — the lane colours come from its order. */
     engines: Engine[];
+    /**
+     * The lanes that get columns, in display order (`orderLanes` of the group
+     * on screen). Defaults to `engines`.
+     */
+    lanes?: Engine[];
     /** The selected case's id. */
     selected?: string;
     /** The column the table is sorted by, and the way. */

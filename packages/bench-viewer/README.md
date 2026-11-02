@@ -135,6 +135,7 @@ under its pages.
 node packages/bench-viewer/scripts/build-pages.ts scores.json /tmp/bv-pages
 node packages/bench-viewer/scripts/build-pages.ts scores.json /tmp/bv-jubarte --theme jubarte
 node packages/bench-viewer/scripts/build-pages.ts --release results/release /tmp/bv-site --scores results/scores.json
+node packages/bench-viewer/scripts/build-pages.ts --release results/release /tmp/bv-site --scores results/scores.json --fonts site/_static/fonts
 ```
 
 writes `index.html` and copies `themes/tokens.css`, `themes/arthur-law.css`,
@@ -158,6 +159,7 @@ as a page on its own. No git operations, no network.
 <outdir>/release/cases/…       the index and one shard per group
 <outdir>/release/speed.json    the speed release
 <outdir>/js/…                  the compiled modules the pages import
+<outdir>/_static/fonts/…       the fonts, when --fonts is given
 ```
 
 The pages fetch the release's own files; no data is inlined in them. The
@@ -166,6 +168,12 @@ The pages fetch the release's own files; no data is inlined in them. The
 ```bash
 pnpm --filter @jandira-tech/bench-viewer build:pages
 ```
+
+`--fonts <dir>` (release mode only) copies a font directory — the gh-pages
+site's `_static/fonts` (Manrope and JetBrains Mono as woff2, plus their
+licences) — into `<outdir>/_static/fonts/`, where `cases.css`'s `@font-face`
+rules expect them. Without the flag nothing is copied and the pages fall
+back to the system font stacks; the package itself ships no binaries.
 
 `test/fixtures/jubarte-page.html` is the jubarte page as it was before the
 leaderboard page existed; the build-pages test compares the `jubarte` theme

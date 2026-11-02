@@ -347,6 +347,97 @@ export function lanesForCase(c: Case, engines: Engine[]): { engine: Engine; stat
   return ordered.map((engine) => ({ engine, state: laneState(c, engine.key) }));
 }
 
+// ---- the lane order of a group ----------------------------------------------------------
+
+/**
+ * The lanes a group's cases mention: the page's kind's lanes, as far as this
+ * group shows them. The release writes every lane of the page's kind into
+ * each of its cases — a lane it did not run for a case is `dropped`, a cohort
+ * lane without a published measurement is `unavailable` — while a lane of the
+ * *other* kind is mentioned by no case of this one (no pages, no score, not
+ * even dropped). So the union of what the cases mention is exactly the set a
+ * page of that kind may show, and a conversion page never shows a
+ * redline-only lane (jubarte-rust, superdoc, stemma, docxodus-12.6.5,
+ * jubarte-093, …) unless it has data in a conversion case.
+ *
+ * The index's engine list is sorted by key: that is **storage order, not
+ * display order** — `orderLanes` decides which lanes a page shows and in
+ * which order.
+ */
+export function mentionedLanes(cases: Case[], engines: Engine[]): Engine[] {
+  const mentioned = new Set<string>();
+  for (const c of cases) {
+    for (const key of Object.keys(c.pages ?? {})) mentioned.add(key);
+    for (const key of Object.keys(c.scores ?? {})) mentioned.add(key);
+    for (const key of Object.keys(c.times ?? {})) mentioned.add(key);
+    for (const key of Object.keys(c.errors ?? {})) mentioned.add(key);
+    for (const key of c.unavailable ?? []) mentioned.add(key);
+    for (const key of c.not_applicable ?? []) mentioned.add(key);
+    for (const key of c.dropped ?? []) mentioned.add(key);
+  }
+  return engines.filter((engine) => mentioned.has(engine.key));
+}
+
+/**
+ * The display order of a group's lanes: Word first, then by the number of
+ * cases in the group where the lane has a score (descending), ties by label —
+ * compared by code points, so the order never depends on the runtime's
+ * collation. Lanes with no data in the group sort last (they have no score);
+ * the bar folds them behind "+N more".
+ */
+export function orderLanes(cases: Case[], engines: Engine[]): Engine[] {
+  const scored = new Map<string, number>();
+  for (const c of cases) {
+    for (const key of Object.keys(c.scores ?? {})) {
+      scored.set(key, (scored.get(key) ?? 0) + 1);
+    }
+  }
+  const byLabel = (a: Engine, b: Engine): number =>
+    a.label < b.label ? -1 : a.label > b.label ? 1 : 0;
+  return mentionedLanes(cases, engines).sort((a, b) => {
+    if (a.key === "reference") return -1;
+    if (b.key === "reference") return 1;
+    const diff = (scored.get(b.key) ?? 0) - (scored.get(a.key) ?? 0);
+    return diff !== 0 ? diff : byLabel(a, b);
+  });
+}
+
+/**
+ * The lanes with data in the group: everything the cases give a lane besides
+ * dropping it — pages, a score, a time, an error, `unavailable`,
+ * `not applicable` — in at least one case. These stay out of the "+N more"
+ * fold; the kind's lanes without data (dropped in every case) are folded.
+ */
+export function lanesWithData(cases: Case[]): Set<string> {
+  const withData = new Set<string>();
+  for (const c of cases) {
+    for (const key of Object.keys(c.pages ?? {})) withData.add(key);
+    for (const key of Object.keys(c.scores ?? {})) withData.add(key);
+    for (const key of Object.keys(c.times ?? {})) withData.add(key);
+    for (const key of Object.keys(c.errors ?? {})) withData.add(key);
+    for (const key of c.unavailable ?? []) withData.add(key);
+    for (const key of c.not_applicable ?? []) withData.add(key);
+  }
+  return withData;
+}
+
+/**
+ * The lane the page puts beside Word by default: the first non-reference
+ * lane in the display order — the group's own numbers decide, no product
+ * preference.
+ */
+export function defaultComparisonLane(lanes: Engine[]): Engine | undefined {
+  return lanes.find((engine) => engine.key !== "reference");
+}
+
+/**
+ * The lane the overlay puts over Word by default: the second non-reference
+ * lane in the display order, for the same reason.
+ */
+export function defaultOverlayLane(lanes: Engine[]): Engine | undefined {
+  return lanes.filter((engine) => engine.key !== "reference")[1];
+}
+
 // ---- the assets ------------------------------------------------------------------------
 
 /**
@@ -736,7 +827,13 @@ export function renderGroupOptions(groups: ShardRef[], selected?: string): strin
 
 /** The engine toggles: one per lane, the ones without data folded away. */
 export interface EngineToggleOptions {
+  /** Every lane of the release — the lane colours come from its order. */
   engines: Engine[];
+  /**
+   * The lanes to draw, in display order (`orderLanes` of the group on
+   * screen). Defaults to `engines`, storage order and all.
+   */
+  lanes?: Engine[];
   /** Which lanes are on. */
   on: Record<string, boolean>;
   /** The lanes that have data in the group on screen. */
@@ -749,8 +846,9 @@ export interface EngineToggleOptions {
 
 /** The engine toggles. */
 export function renderEngineToggles(opts: EngineToggleOptions): string {
+  const lanes = opts.lanes ?? opts.engines;
   const active = opts.active;
-  const items = opts.engines.map((engine, i) => {
+  const items = lanes.map((engine, i) => {
     const legacy = active ? !active.has(engine.key) : false;
     const version = opts.versions?.[engine.key] ?? "";
     const state = opts.states?.[engine.key];
@@ -764,7 +862,7 @@ export function renderEngineToggles(opts: EngineToggleOptions): string {
       note,
     )}${i < 9 ? ` <kbd>${esc(i + 1)}</kbd>` : ""}</label>`;
   });
-  const legacyCount = active ? opts.engines.filter((engine) => !active.has(engine.key)).length : 0;
+  const legacyCount = active ? lanes.filter((engine) => !active.has(engine.key)).length : 0;
   const more = legacyCount
     ? `<button id="moreEng" type="button" aria-expanded="false" data-count="${esc(legacyCount)}">+${esc(
         legacyCount,
@@ -776,8 +874,13 @@ export function renderEngineToggles(opts: EngineToggleOptions): string {
 /** The score table: one row per case, one column per lane and metric. */
 export interface ScoresTableOptions {
   cases: Case[];
-  /** The lanes to show. */
+  /** Every lane of the release — the lane colours come from its order. */
   engines: Engine[];
+  /**
+   * The lanes that get columns, in display order (`orderLanes` of the group
+   * on screen). Defaults to `engines`.
+   */
+  lanes?: Engine[];
   /** The selected case's id. */
   selected?: string;
   /** The column the table is sorted by, and the way. */
@@ -787,7 +890,8 @@ export interface ScoresTableOptions {
 /** The score table. */
 export function renderScoresTable(opts: ScoresTableOptions): string {
   const cases = opts.cases;
-  const engines = opts.engines.filter((engine) =>
+  const laneList = opts.lanes ?? opts.engines;
+  const engines = laneList.filter((engine) =>
     cases.some((c) => laneState(c, engine.key) !== "dropped" && c.scores?.[engine.key]),
   );
   const columns: ScoreColumn[] = [...METRICS, "time"];
@@ -1164,6 +1268,12 @@ export async function mountCasesPage(opts: MountCasesOptions): Promise<void> {
   let sel = 0;
   let mobile = false;
   let loaded = false;
+  /** The display order of the open group's lanes (`orderLanes`). */
+  let laneOrder: Engine[] = [];
+  /** The open group's lanes that have data (`lanesWithData`). */
+  let laneData = new Set<string>();
+  /** The last selection render() saw, to scroll the list only when it moves. */
+  let lastSelKey = "";
 
   const engineByKey = (key: string): Engine =>
     index.engines.find((engine) => engine.key === key) ?? { key, label: key };
@@ -1194,8 +1304,6 @@ export async function mountCasesPage(opts: MountCasesOptions): Promise<void> {
     if (state.on[engine.key] === undefined) state.on[engine.key] = true;
   }
   if (!state.ovlA) state.ovlA = "reference";
-  if (!state.ovlB)
-    state.ovlB = index.engines.find((engine) => engine.key !== "reference")?.key ?? "";
 
   const groupSelect = $<HTMLSelectElement>("#fxGroup");
   if (groupSelect) groupSelect.innerHTML = renderGroupOptions(groups, group);
@@ -1208,18 +1316,9 @@ export async function mountCasesPage(opts: MountCasesOptions): Promise<void> {
     ).join("");
     metricSelect.value = state.fx.metric;
   }
-  const filterSelect = $<HTMLSelectElement>("#fxEng");
-  if (filterSelect) {
-    filterSelect.innerHTML = index.engines
-      .filter((engine) => engine.key !== "reference")
-      .map((engine) => `<option value="${esc(engine.key)}">${esc(engine.label)}</option>`)
-      .join("");
-    filterSelect.value = state.fx.eng;
-    if (!filterSelect.value) {
-      filterSelect.value = index.engines.find((engine) => engine.key !== "reference")?.key ?? "";
-      state.fx.eng = filterSelect.value;
-    }
-  }
+  // The lane pickers (#fxEng, #ovlA, #ovlB) are filled per group
+  // (refreshPickers, from openGroup): a page shows only the lanes of its
+  // kind, in the group's display order.
   const legend = $("#legend");
   if (legend) legend.innerHTML = renderCasesLegend({ kind: opts.kind });
 
@@ -1251,16 +1350,6 @@ export async function mountCasesPage(opts: MountCasesOptions): Promise<void> {
     });
   };
 
-  const activeLanes = (): Set<string> => {
-    const active = new Set<string>();
-    for (const c of cases()) {
-      for (const engine of index.engines) {
-        if (laneState(c, engine.key) !== "dropped") active.add(engine.key);
-      }
-    }
-    return active;
-  };
-
   const versionOf = (key: string): string => {
     const versions = new Set<string>();
     for (const c of cases()) {
@@ -1273,7 +1362,7 @@ export async function mountCasesPage(opts: MountCasesOptions): Promise<void> {
   };
 
   const mEngines = (c: Case): Engine[] =>
-    index.engines.filter(
+    laneOrder.filter(
       (engine) =>
         engine.key !== "reference" &&
         laneState(c, engine.key) !== "dropped" &&
@@ -1291,7 +1380,7 @@ export async function mountCasesPage(opts: MountCasesOptions): Promise<void> {
     const has = (key: string) =>
       key !== "reference" && laneState(c, key) !== "dropped" && (c.pages?.[key] ?? []).length > 0;
     if (has(want)) return want;
-    return Object.keys(c.pages ?? {}).find(has) ?? "";
+    return laneOrder.find((engine) => has(engine.key))?.key ?? "";
   };
 
   const mobileOverlay = (): boolean => state.mobile.ovl ?? state.mobile.layout === "overlay";
@@ -1304,7 +1393,7 @@ export async function mountCasesPage(opts: MountCasesOptions): Promise<void> {
     doc.body?.classList.toggle("mobile", mobile);
   };
 
-  const render = (): void => {
+  const renderNow = (): void => {
     saveState(opts.kind, state);
     const list = $("#list");
     const shown = visibleCases();
@@ -1320,15 +1409,16 @@ export async function mountCasesPage(opts: MountCasesOptions): Promise<void> {
       const c = current();
       enginesBar.innerHTML = renderEngineToggles({
         engines: index.engines,
+        lanes: laneOrder,
         on: state.on,
-        active: activeLanes(),
+        active: laneData,
         versions: Object.fromEntries(
-          index.engines.map((engine) => [engine.key, versionOf(engine.key)]),
+          laneOrder.map((engine) => [engine.key, versionOf(engine.key)]),
         ),
         ...(c
           ? {
               states: Object.fromEntries(
-                index.engines.map((engine) => [engine.key, laneState(c, engine.key)]),
+                laneOrder.map((engine) => [engine.key, laneState(c, engine.key)]),
               ),
             }
           : {}),
@@ -1360,6 +1450,7 @@ export async function mountCasesPage(opts: MountCasesOptions): Promise<void> {
         scores.innerHTML = renderScoresTable({
           cases: shown,
           engines: index.engines,
+          lanes: laneOrder,
           selected: c.case,
           sort: state.sort,
         });
@@ -1369,7 +1460,7 @@ export async function mountCasesPage(opts: MountCasesOptions): Promise<void> {
     grid?.classList.remove("hidden");
     scores?.classList.add("hidden");
 
-    const lanes = lanesForCase(c, index.engines).filter((lane) => lane.state !== "dropped");
+    const lanes = lanesForCase(c, laneOrder).filter((lane) => lane.state !== "dropped");
     const on = mobile
       ? lanes.filter(
           (lane) => lane.engine.key === "reference" || lane.engine.key === secondEngine(c),
@@ -1389,7 +1480,14 @@ export async function mountCasesPage(opts: MountCasesOptions): Promise<void> {
 
     const overlayOn = mobile ? mobileOverlay() : state.ovl;
     const under = mobile ? "reference" : state.ovlA;
-    const over = mobile ? secondEngine(c) : overlayTop(c, state.ovlB);
+    // The lane over Word defaults to the display order's second non-reference
+    // lane until the visitor picks one (no product preference: the group's own
+    // scored-case counts decide).
+    const overKey =
+      state.ovlB && laneOrder.some((engine) => engine.key === state.ovlB)
+        ? state.ovlB
+        : (defaultOverlayLane(laneOrder)?.key ?? "");
+    const over = mobile ? secondEngine(c) : overlayTop(c, overKey);
     const blend = mobile ? state.mobile.blend : state.blend;
     const alpha = mobile ? state.mobile.alpha : state.alpha;
     const overSelect = $<HTMLSelectElement>("#ovlB");
@@ -1428,6 +1526,70 @@ export async function mountCasesPage(opts: MountCasesOptions): Promise<void> {
       });
     }
     if (mobile) renderMobile(c, shown, at);
+  };
+
+  /**
+   * Scroll the selected case to the middle of the list area, below the sticky
+   * filters — the hardened copy's behaviour, so the case the hash, prev/next
+   * or random picked is always in view.
+   */
+  const showSel = (): void => {
+    const side = $("#side");
+    const selected = side?.querySelector<HTMLElement>(".sel");
+    const head = $("#sidehead");
+    if (!side || !head) return;
+    $("#list")?.style.setProperty("--headh", `${head.offsetHeight}px`);
+    if (!selected) return;
+    const room = side.clientHeight - head.offsetHeight;
+    side.scrollTop +=
+      selected.getBoundingClientRect().top -
+      side.getBoundingClientRect().top -
+      head.offsetHeight -
+      Math.max(0, (room - selected.offsetHeight) / 2);
+  };
+
+  /**
+   * Fill the lane pickers for the group on screen: only the lanes of the
+   * page's kind, in the group's display order, Word first. A saved pick that
+   * is not one of them falls back to the display order's default.
+   */
+  const refreshPickers = (): void => {
+    const options = laneOrder
+      .map((engine) => `<option value="${esc(engine.key)}">${esc(engine.label)}</option>`)
+      .join("");
+    const under = $<HTMLSelectElement>("#ovlA");
+    if (under) {
+      under.innerHTML = options;
+      const value = laneOrder.some((engine) => engine.key === state.ovlA)
+        ? state.ovlA
+        : "reference";
+      under.value = value;
+      state.ovlA = value;
+    }
+    const over = $<HTMLSelectElement>("#ovlB");
+    if (over) over.innerHTML = options;
+    const fx = $<HTMLSelectElement>("#fxEng");
+    if (fx) {
+      fx.innerHTML = laneOrder
+        .filter((engine) => engine.key !== "reference")
+        .map((engine) => `<option value="${esc(engine.key)}">${esc(engine.label)}</option>`)
+        .join("");
+      if (!state.fx.eng || !laneOrder.some((engine) => engine.key === state.fx.eng)) {
+        state.fx.eng = defaultComparisonLane(laneOrder)?.key ?? "";
+      }
+      fx.value = state.fx.eng;
+    }
+  };
+
+  const render = (): void => {
+    const before = lastSelKey;
+    renderNow();
+    const c = current();
+    const key = c ? `${group}/${c.case}` : "";
+    if (key !== before) {
+      lastSelKey = key;
+      showSel();
+    }
   };
 
   const renderMobile = (c: Case, shown: Case[], at: number): void => {
@@ -1490,6 +1652,9 @@ export async function mountCasesPage(opts: MountCasesOptions): Promise<void> {
       shards.set(name, parseCaseShard(await response.json()));
     }
     const list = cases();
+    laneOrder = orderLanes(list, index.engines);
+    laneData = lanesWithData(list);
+    refreshPickers();
     const at = caseId ? list.findIndex((c) => c.case === caseId) : 0;
     sel = Math.max(at, 0);
     state.shown = PAGE_STEP;
@@ -1681,11 +1846,13 @@ export async function mountCasesPage(opts: MountCasesOptions): Promise<void> {
   sideToggle?.addEventListener("click", () => {
     doc.body?.classList.toggle("noside");
     render();
+    showSel();
   });
   const menu = $("#mMenu");
   menu?.addEventListener("click", () => {
     const open = doc.body?.classList.toggle("drawer") ?? false;
     menu.setAttribute("aria-expanded", String(open));
+    if (open) showSel();
   });
   $("#scrim")?.addEventListener("click", () => closeDrawer());
   $("#mPrev")?.addEventListener("click", () => step(-1));
@@ -1759,6 +1926,7 @@ export async function mountCasesPage(opts: MountCasesOptions): Promise<void> {
       pickRandom();
     } else if (keyboard.key === "s") {
       doc.body?.classList.toggle("noside");
+      showSel();
     } else if (keyboard.key === "o") {
       state.ovl = !state.ovl;
     } else if (keyboard.key === "m") {
@@ -1766,7 +1934,9 @@ export async function mountCasesPage(opts: MountCasesOptions): Promise<void> {
     } else if (keyboard.key === "t") {
       state.view = state.view === "scores" ? "viewer" : "scores";
     } else if (/^[1-9]$/.test(keyboard.key)) {
-      const engine = index.engines[Number(keyboard.key) - 1];
+      // The kbd hints sit on the displayed lanes, so the key follows the
+      // display order too.
+      const engine = laneOrder[Number(keyboard.key) - 1];
       if (engine) state.on[engine.key] = !state.on[engine.key];
     } else {
       return;
@@ -1797,12 +1967,6 @@ export async function mountCasesPage(opts: MountCasesOptions): Promise<void> {
   if (fxPages) fxPages.value = state.fx.pages;
   if (fxMax) fxMax.value = state.fx.max;
   if (fxDiffer) fxDiffer.checked = state.fx.differ;
-
-  const underOptions = index.engines
-    .map((engine) => `<option value="${esc(engine.key)}">${esc(engine.label)}</option>`)
-    .join("");
-  if (underSelect) underSelect.innerHTML = underOptions;
-  if (overSelect) overSelect.innerHTML = underOptions;
 
   const linked = await applyHash();
   if (!linked) {

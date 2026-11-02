@@ -257,6 +257,105 @@ export function lanesForCase(c, engines) {
     });
     return ordered.map((engine) => ({ engine, state: laneState(c, engine.key) }));
 }
+// ---- the lane order of a group ----------------------------------------------------------
+/**
+ * The lanes a group's cases mention: the page's kind's lanes, as far as this
+ * group shows them. The release writes every lane of the page's kind into
+ * each of its cases — a lane it did not run for a case is `dropped`, a cohort
+ * lane without a published measurement is `unavailable` — while a lane of the
+ * *other* kind is mentioned by no case of this one (no pages, no score, not
+ * even dropped). So the union of what the cases mention is exactly the set a
+ * page of that kind may show, and a conversion page never shows a
+ * redline-only lane (jubarte-rust, superdoc, stemma, docxodus-12.6.5,
+ * jubarte-093, …) unless it has data in a conversion case.
+ *
+ * The index's engine list is sorted by key: that is **storage order, not
+ * display order** — `orderLanes` decides which lanes a page shows and in
+ * which order.
+ */
+export function mentionedLanes(cases, engines) {
+    const mentioned = new Set();
+    for (const c of cases) {
+        for (const key of Object.keys(c.pages ?? {}))
+            mentioned.add(key);
+        for (const key of Object.keys(c.scores ?? {}))
+            mentioned.add(key);
+        for (const key of Object.keys(c.times ?? {}))
+            mentioned.add(key);
+        for (const key of Object.keys(c.errors ?? {}))
+            mentioned.add(key);
+        for (const key of c.unavailable ?? [])
+            mentioned.add(key);
+        for (const key of c.not_applicable ?? [])
+            mentioned.add(key);
+        for (const key of c.dropped ?? [])
+            mentioned.add(key);
+    }
+    return engines.filter((engine) => mentioned.has(engine.key));
+}
+/**
+ * The display order of a group's lanes: Word first, then by the number of
+ * cases in the group where the lane has a score (descending), ties by label —
+ * compared by code points, so the order never depends on the runtime's
+ * collation. Lanes with no data in the group sort last (they have no score);
+ * the bar folds them behind "+N more".
+ */
+export function orderLanes(cases, engines) {
+    const scored = new Map();
+    for (const c of cases) {
+        for (const key of Object.keys(c.scores ?? {})) {
+            scored.set(key, (scored.get(key) ?? 0) + 1);
+        }
+    }
+    const byLabel = (a, b) => a.label < b.label ? -1 : a.label > b.label ? 1 : 0;
+    return mentionedLanes(cases, engines).sort((a, b) => {
+        if (a.key === "reference")
+            return -1;
+        if (b.key === "reference")
+            return 1;
+        const diff = (scored.get(b.key) ?? 0) - (scored.get(a.key) ?? 0);
+        return diff !== 0 ? diff : byLabel(a, b);
+    });
+}
+/**
+ * The lanes with data in the group: everything the cases give a lane besides
+ * dropping it — pages, a score, a time, an error, `unavailable`,
+ * `not applicable` — in at least one case. These stay out of the "+N more"
+ * fold; the kind's lanes without data (dropped in every case) are folded.
+ */
+export function lanesWithData(cases) {
+    const withData = new Set();
+    for (const c of cases) {
+        for (const key of Object.keys(c.pages ?? {}))
+            withData.add(key);
+        for (const key of Object.keys(c.scores ?? {}))
+            withData.add(key);
+        for (const key of Object.keys(c.times ?? {}))
+            withData.add(key);
+        for (const key of Object.keys(c.errors ?? {}))
+            withData.add(key);
+        for (const key of c.unavailable ?? [])
+            withData.add(key);
+        for (const key of c.not_applicable ?? [])
+            withData.add(key);
+    }
+    return withData;
+}
+/**
+ * The lane the page puts beside Word by default: the first non-reference
+ * lane in the display order — the group's own numbers decide, no product
+ * preference.
+ */
+export function defaultComparisonLane(lanes) {
+    return lanes.find((engine) => engine.key !== "reference");
+}
+/**
+ * The lane the overlay puts over Word by default: the second non-reference
+ * lane in the display order, for the same reason.
+ */
+export function defaultOverlayLane(lanes) {
+    return lanes.filter((engine) => engine.key !== "reference")[1];
+}
 // ---- the assets ------------------------------------------------------------------------
 /**
  * The public URL of one asset. The release stores the path relative to the
@@ -520,15 +619,16 @@ export function renderGroupOptions(groups, selected) {
 }
 /** The engine toggles. */
 export function renderEngineToggles(opts) {
+    const lanes = opts.lanes ?? opts.engines;
     const active = opts.active;
-    const items = opts.engines.map((engine, i) => {
+    const items = lanes.map((engine, i) => {
         const legacy = active ? !active.has(engine.key) : false;
         const version = opts.versions?.[engine.key] ?? "";
         const state = opts.states?.[engine.key];
         const note = state && state !== "measured" && state !== "no-pages" ? ` · ${LANE_LABEL[state]}` : "";
         return `<label${legacy ? ' class="legacy"' : ""} title="${esc(version)}"><input type="checkbox" data-e="${esc(engine.key)}"${opts.on[engine.key] ? " checked" : ""}> <span class="sw" style="background:${esc(laneColor(opts.engines, engine.key))}"></span> ${esc(engine.label)}${version ? ` <small class="ver">${esc(version)}</small>` : ""}${esc(note)}${i < 9 ? ` <kbd>${esc(i + 1)}</kbd>` : ""}</label>`;
     });
-    const legacyCount = active ? opts.engines.filter((engine) => !active.has(engine.key)).length : 0;
+    const legacyCount = active ? lanes.filter((engine) => !active.has(engine.key)).length : 0;
     const more = legacyCount
         ? `<button id="moreEng" type="button" aria-expanded="false" data-count="${esc(legacyCount)}">+${esc(legacyCount)} more</button>`
         : "";
@@ -537,7 +637,8 @@ export function renderEngineToggles(opts) {
 /** The score table. */
 export function renderScoresTable(opts) {
     const cases = opts.cases;
-    const engines = opts.engines.filter((engine) => cases.some((c) => laneState(c, engine.key) !== "dropped" && c.scores?.[engine.key]));
+    const laneList = opts.lanes ?? opts.engines;
+    const engines = laneList.filter((engine) => cases.some((c) => laneState(c, engine.key) !== "dropped" && c.scores?.[engine.key]));
     const columns = [...METRICS, "time"];
     const shown = columns.filter((column) => column === "time" ||
         cases.some((c) => engines.some((engine) => c.scores?.[engine.key]?.[column] != null)));
@@ -800,6 +901,12 @@ export async function mountCasesPage(opts) {
     let sel = 0;
     let mobile = false;
     let loaded = false;
+    /** The display order of the open group's lanes (`orderLanes`). */
+    let laneOrder = [];
+    /** The open group's lanes that have data (`lanesWithData`). */
+    let laneData = new Set();
+    /** The last selection render() saw, to scroll the list only when it moves. */
+    let lastSelKey = "";
     const engineByKey = (key) => index.engines.find((engine) => engine.key === key) ?? { key, label: key };
     try {
         const response = await fetch(opts.indexUrl);
@@ -828,8 +935,6 @@ export async function mountCasesPage(opts) {
     }
     if (!state.ovlA)
         state.ovlA = "reference";
-    if (!state.ovlB)
-        state.ovlB = index.engines.find((engine) => engine.key !== "reference")?.key ?? "";
     const groupSelect = $("#fxGroup");
     if (groupSelect)
         groupSelect.innerHTML = renderGroupOptions(groups, group);
@@ -838,18 +943,9 @@ export async function mountCasesPage(opts) {
         metricSelect.innerHTML = METRICS.map((metric) => `<option value="${esc(metric)}" title="${esc(METRIC_INFO[metric])}">${esc(METRIC_LABEL[metric])}</option>`).join("");
         metricSelect.value = state.fx.metric;
     }
-    const filterSelect = $("#fxEng");
-    if (filterSelect) {
-        filterSelect.innerHTML = index.engines
-            .filter((engine) => engine.key !== "reference")
-            .map((engine) => `<option value="${esc(engine.key)}">${esc(engine.label)}</option>`)
-            .join("");
-        filterSelect.value = state.fx.eng;
-        if (!filterSelect.value) {
-            filterSelect.value = index.engines.find((engine) => engine.key !== "reference")?.key ?? "";
-            state.fx.eng = filterSelect.value;
-        }
-    }
+    // The lane pickers (#fxEng, #ovlA, #ovlB) are filled per group
+    // (refreshPickers, from openGroup): a page shows only the lanes of its
+    // kind, in the group's display order.
     const legend = $("#legend");
     if (legend)
         legend.innerHTML = renderCasesLegend({ kind: opts.kind });
@@ -883,16 +979,6 @@ export async function mountCasesPage(opts) {
             return true;
         });
     };
-    const activeLanes = () => {
-        const active = new Set();
-        for (const c of cases()) {
-            for (const engine of index.engines) {
-                if (laneState(c, engine.key) !== "dropped")
-                    active.add(engine.key);
-            }
-        }
-        return active;
-    };
     const versionOf = (key) => {
         const versions = new Set();
         for (const c of cases()) {
@@ -906,7 +992,7 @@ export async function mountCasesPage(opts) {
             return "varies by case";
         return [...versions][0] ?? "";
     };
-    const mEngines = (c) => index.engines.filter((engine) => engine.key !== "reference" &&
+    const mEngines = (c) => laneOrder.filter((engine) => engine.key !== "reference" &&
         laneState(c, engine.key) !== "dropped" &&
         (c.pages?.[engine.key] ?? []).some((slot) => slot !== null));
     const secondEngine = (c) => {
@@ -919,7 +1005,7 @@ export async function mountCasesPage(opts) {
         const has = (key) => key !== "reference" && laneState(c, key) !== "dropped" && (c.pages?.[key] ?? []).length > 0;
         if (has(want))
             return want;
-        return Object.keys(c.pages ?? {}).find(has) ?? "";
+        return laneOrder.find((engine) => has(engine.key))?.key ?? "";
     };
     const mobileOverlay = () => state.mobile.ovl ?? state.mobile.layout === "overlay";
     const setMobile = () => {
@@ -929,7 +1015,7 @@ export async function mountCasesPage(opts) {
         mobile = forced === "1" || (forced !== "0" && narrow);
         doc.body?.classList.toggle("mobile", mobile);
     };
-    const render = () => {
+    const renderNow = () => {
         saveState(opts.kind, state);
         const list = $("#list");
         const shown = visibleCases();
@@ -947,12 +1033,13 @@ export async function mountCasesPage(opts) {
             const c = current();
             enginesBar.innerHTML = renderEngineToggles({
                 engines: index.engines,
+                lanes: laneOrder,
                 on: state.on,
-                active: activeLanes(),
-                versions: Object.fromEntries(index.engines.map((engine) => [engine.key, versionOf(engine.key)])),
+                active: laneData,
+                versions: Object.fromEntries(laneOrder.map((engine) => [engine.key, versionOf(engine.key)])),
                 ...(c
                     ? {
-                        states: Object.fromEntries(index.engines.map((engine) => [engine.key, laneState(c, engine.key)])),
+                        states: Object.fromEntries(laneOrder.map((engine) => [engine.key, laneState(c, engine.key)])),
                     }
                     : {}),
             });
@@ -985,6 +1072,7 @@ export async function mountCasesPage(opts) {
                 scores.innerHTML = renderScoresTable({
                     cases: shown,
                     engines: index.engines,
+                    lanes: laneOrder,
                     selected: c.case,
                     sort: state.sort,
                 });
@@ -993,7 +1081,7 @@ export async function mountCasesPage(opts) {
         }
         grid?.classList.remove("hidden");
         scores?.classList.add("hidden");
-        const lanes = lanesForCase(c, index.engines).filter((lane) => lane.state !== "dropped");
+        const lanes = lanesForCase(c, laneOrder).filter((lane) => lane.state !== "dropped");
         const on = mobile
             ? lanes.filter((lane) => lane.engine.key === "reference" || lane.engine.key === secondEngine(c))
             : lanes.filter((lane) => state.on[lane.engine.key]);
@@ -1010,7 +1098,13 @@ export async function mountCasesPage(opts) {
         }
         const overlayOn = mobile ? mobileOverlay() : state.ovl;
         const under = mobile ? "reference" : state.ovlA;
-        const over = mobile ? secondEngine(c) : overlayTop(c, state.ovlB);
+        // The lane over Word defaults to the display order's second non-reference
+        // lane until the visitor picks one (no product preference: the group's own
+        // scored-case counts decide).
+        const overKey = state.ovlB && laneOrder.some((engine) => engine.key === state.ovlB)
+            ? state.ovlB
+            : (defaultOverlayLane(laneOrder)?.key ?? "");
+        const over = mobile ? secondEngine(c) : overlayTop(c, overKey);
         const blend = mobile ? state.mobile.blend : state.blend;
         const alpha = mobile ? state.mobile.alpha : state.alpha;
         const overSelect = $("#ovlB");
@@ -1049,6 +1143,70 @@ export async function mountCasesPage(opts) {
         }
         if (mobile)
             renderMobile(c, shown, at);
+    };
+    /**
+     * Scroll the selected case to the middle of the list area, below the sticky
+     * filters — the hardened copy's behaviour, so the case the hash, prev/next
+     * or random picked is always in view.
+     */
+    const showSel = () => {
+        const side = $("#side");
+        const selected = side?.querySelector(".sel");
+        const head = $("#sidehead");
+        if (!side || !head)
+            return;
+        $("#list")?.style.setProperty("--headh", `${head.offsetHeight}px`);
+        if (!selected)
+            return;
+        const room = side.clientHeight - head.offsetHeight;
+        side.scrollTop +=
+            selected.getBoundingClientRect().top -
+                side.getBoundingClientRect().top -
+                head.offsetHeight -
+                Math.max(0, (room - selected.offsetHeight) / 2);
+    };
+    /**
+     * Fill the lane pickers for the group on screen: only the lanes of the
+     * page's kind, in the group's display order, Word first. A saved pick that
+     * is not one of them falls back to the display order's default.
+     */
+    const refreshPickers = () => {
+        const options = laneOrder
+            .map((engine) => `<option value="${esc(engine.key)}">${esc(engine.label)}</option>`)
+            .join("");
+        const under = $("#ovlA");
+        if (under) {
+            under.innerHTML = options;
+            const value = laneOrder.some((engine) => engine.key === state.ovlA)
+                ? state.ovlA
+                : "reference";
+            under.value = value;
+            state.ovlA = value;
+        }
+        const over = $("#ovlB");
+        if (over)
+            over.innerHTML = options;
+        const fx = $("#fxEng");
+        if (fx) {
+            fx.innerHTML = laneOrder
+                .filter((engine) => engine.key !== "reference")
+                .map((engine) => `<option value="${esc(engine.key)}">${esc(engine.label)}</option>`)
+                .join("");
+            if (!state.fx.eng || !laneOrder.some((engine) => engine.key === state.fx.eng)) {
+                state.fx.eng = defaultComparisonLane(laneOrder)?.key ?? "";
+            }
+            fx.value = state.fx.eng;
+        }
+    };
+    const render = () => {
+        const before = lastSelKey;
+        renderNow();
+        const c = current();
+        const key = c ? `${group}/${c.case}` : "";
+        if (key !== before) {
+            lastSelKey = key;
+            showSel();
+        }
     };
     const renderMobile = (c, shown, at) => {
         const name = $("#mCase");
@@ -1115,6 +1273,9 @@ export async function mountCasesPage(opts) {
             shards.set(name, parseCaseShard(await response.json()));
         }
         const list = cases();
+        laneOrder = orderLanes(list, index.engines);
+        laneData = lanesWithData(list);
+        refreshPickers();
         const at = caseId ? list.findIndex((c) => c.case === caseId) : 0;
         sel = Math.max(at, 0);
         state.shown = PAGE_STEP;
@@ -1307,11 +1468,14 @@ export async function mountCasesPage(opts) {
     sideToggle?.addEventListener("click", () => {
         doc.body?.classList.toggle("noside");
         render();
+        showSel();
     });
     const menu = $("#mMenu");
     menu?.addEventListener("click", () => {
         const open = doc.body?.classList.toggle("drawer") ?? false;
         menu.setAttribute("aria-expanded", String(open));
+        if (open)
+            showSel();
     });
     $("#scrim")?.addEventListener("click", () => closeDrawer());
     $("#mPrev")?.addEventListener("click", () => step(-1));
@@ -1388,6 +1552,7 @@ export async function mountCasesPage(opts) {
         }
         else if (keyboard.key === "s") {
             doc.body?.classList.toggle("noside");
+            showSel();
         }
         else if (keyboard.key === "o") {
             state.ovl = !state.ovl;
@@ -1399,7 +1564,9 @@ export async function mountCasesPage(opts) {
             state.view = state.view === "scores" ? "viewer" : "scores";
         }
         else if (/^[1-9]$/.test(keyboard.key)) {
-            const engine = index.engines[Number(keyboard.key) - 1];
+            // The kbd hints sit on the displayed lanes, so the key follows the
+            // display order too.
+            const engine = laneOrder[Number(keyboard.key) - 1];
             if (engine)
                 state.on[engine.key] = !state.on[engine.key];
         }
@@ -1439,13 +1606,6 @@ export async function mountCasesPage(opts) {
         fxMax.value = state.fx.max;
     if (fxDiffer)
         fxDiffer.checked = state.fx.differ;
-    const underOptions = index.engines
-        .map((engine) => `<option value="${esc(engine.key)}">${esc(engine.label)}</option>`)
-        .join("");
-    if (underSelect)
-        underSelect.innerHTML = underOptions;
-    if (overSelect)
-        overSelect.innerHTML = underOptions;
     const linked = await applyHash();
     if (!linked) {
         await openGroup(groups[0].group);
