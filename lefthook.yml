@@ -1,42 +1,9 @@
-# EXAMPLE USAGE:
-#
-#   Refer for explanation to following link:
-#   https://lefthook.dev/configuration/
-#
-# pre-push:
-#   jobs:
-#     - name: packages audit
-#       tags:
-#         - frontend
-#         - security
-#       run: yarn audit
-#
-#     - name: gems audit
-#       tags:
-#         - backend
-#         - security
-#       run: bundle audit
-#
-# pre-commit:
-#   parallel: true
-#   jobs:
-#     - run: yarn eslint {staged_files}
-#       glob: "*.{js,ts,jsx,tsx}"
-#
-#     - name: rubocop
-#       glob: "*.rb"
-#       exclude:
-#         - config/application.rb
-#         - config/routes.rb
-#       run: bundle exec rubocop --force-exclusion {all_files}
-#
-#     - name: govet
-#       files: git ls-files -m
-#       glob: "*.go"
-#       run: go vet {files}
-#
-#     - script: "hello.js"
-#       runner: node
-#
-#     - script: "hello.go"
-#       runner: go run
+# Hooks for this repo live in github.com/arthrod/bench-ops/lefthook. Do not add jobs here;
+# add them there so the four bench repos cannot drift. Needs `bench`:
+#   uv tool install git+https://github.com/arthrod/bench-ops   (or --editable <bench-ops checkout>)
+remotes:
+  - git_url: https://github.com/arthrod/bench-ops
+    ref: main
+    refetch_frequency: 24h
+    configs:
+      - lefthook/common.yml
