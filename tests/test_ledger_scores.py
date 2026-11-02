@@ -893,7 +893,9 @@ def test_read_site_facts_strips_the_dagger_and_sets_ours(tmp_path: Path) -> None
     assert facts.home_groups[0]["rows"][0]["name"] == "jubarte 0.17.0"
     assert facts.home_groups[0]["rows"][1]["ours"] is False
     assert facts.headlines and facts.method  # carried verbatim (no ours flag to move)
-    assert "†" not in json.dumps(facts, ensure_ascii=False)
+    assert "†" not in json.dumps(
+        [facts.tables, facts.states, facts.home_groups], ensure_ascii=False
+    )
 
 
 def test_site_facts_refuse_a_file_without_the_bench_records(tmp_path: Path) -> None:
@@ -1145,24 +1147,29 @@ def test_scores_json_matches_results_md_on_the_real_store() -> None:
         }, row["tool"]
 
     # The redlines_vs_word table matches its section the same way: rank
-    # within the block, pin the version, ours from the registry.
+    # within the block, pin the version, ours from the registry. A line that
+    # carries `subset` shows the same statistic in parentheses in the md; the
+    # JSON carries the main value.
+    def _main(cell: str) -> str:
+        return cell.split(" (")[0]
+
     vs = next(t for t in obj["tables"] if t["id"] == "redlines_vs_word")
     header, body = _pipe_table(sections[vs["title"]])
     assert "Action" not in header and "Version" in header
     assert len(vs["rows"]) == len(body)
     for i, (row, md) in enumerate(zip(vs["rows"], body, strict=True)):
-        scored, pairs = (int(x) for x in md["Scored"].split("/"))
+        scored, pairs = (int(x) for x in _main(md["Scored"]).split("/"))
         assert row == {
             "rank": str(i + 1),
             "tool": md["Tool"],
             "pin": md["Version"],
-            "median": float(md["ITT Median"]),
-            "mean": float(md["ITT Mean"]),
+            "median": float(_main(md["ITT Median"])),
+            "mean": float(_main(md["ITT Mean"])),
             "docs": scored,
             "failed": pairs - scored,
             "note": (
-                f"= 100: {md['= 100']} · ≥ 90: {md['>= 90']} · < 50: {md['< 50']}"
-                f" · ink {md['Ink Jaccard mean']} · text {md['Text boundary mean']}"
+                f"= 100: {_main(md['= 100'])} · ≥ 90: {_main(md['>= 90'])} · < 50: {_main(md['< 50'])}"
+                f" · ink {_main(md['Ink Jaccard mean'])} · text {_main(md['Text boundary mean'])}"
             ),
             "ours": md["Tool"] in affiliated,
         }, row["tool"]

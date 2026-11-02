@@ -196,10 +196,12 @@ def build(
         d.parent for d in (root / "results").glob("redlines_*/scores.jsonl")
     )
     # scores.json states the newest row's date, never the build's clock, so the
-    # file is byte-stable across days and --check stays meaningful.
+    # file is byte-stable across days and --check stays meaningful. An empty
+    # store raises (render_scores): there is no newest row to date the file.
     generated = (
         tb.fmt_date(max(rows, key=lambda r: r.timestamp).timestamp) if rows else ""
     )
+    evidence = sc.newest_evidence(root / "results")
     scores_json = sc.render_scores(
         tables,
         row_ci=row_ci,
@@ -207,6 +209,8 @@ def build(
         provenance=prov,
         generated=generated,
         bench_version=version,
+        site=sc.read_site_facts(evidence) if evidence is not None else None,
+        affiliated_tools=frozenset(t.id for t in registry.tools if t.affiliated),
     )
     results_parts = [
         GENERATED_NOTE,

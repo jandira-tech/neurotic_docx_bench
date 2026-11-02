@@ -1,8 +1,76 @@
 {
   "generated": "2026-11-01",
-  "headlines": [],
-  "home_groups": [],
-  "method": [],
+  "headlines": [
+    {
+      "label": "DOCX → PDF · median, 600-doc sample",
+      "sub": "600 documents, state-balanced; 0 jubarte failures. Sample list and shas: release_info/sample_conversion_0.17.0_11-01-26_01-06.csv.",
+      "value": "81.09",
+      "vs": "LibreOffice 26.8.0.3 47.88"
+    },
+    {
+      "label": "Redline vs Word compare · median, 600-pair sample",
+      "sub": "600 document pairs, one Word compare each; paired 95% CI of the difference [0.7108, 1.8946]. Sample list and shas: release_info/sample_redline_0.17.0_11-01-26_01-06.csv.",
+      "value": "83.76",
+      "vs": "Docxodus 70.27"
+    }
+  ],
+  "home_groups": [
+    {
+      "meta": "600-doc sample · median · 2026-11-01",
+      "rows": [
+        {
+          "name": "jubarte 0.17.0",
+          "ours": true,
+          "v": 81.0931
+        },
+        {
+          "name": "LibreOffice 26.8.0.3",
+          "ours": false,
+          "v": 47.8822
+        }
+      ],
+      "title": "DOCX → PDF vs Word's own export"
+    },
+    {
+      "meta": "600-pair sample · median · 2026-11-01",
+      "note": "Both groups are the release's samples, state-balanced; the full-corpus tables live in the bench's RESULTS.md.",
+      "rows": [
+        {
+          "name": "jubarte 0.17.0",
+          "ours": true,
+          "v": 83.7553
+        },
+        {
+          "name": "Docxodus 12.6.5 (C#)",
+          "ours": false,
+          "v": 70.2748
+        }
+      ],
+      "title": "Redlines vs Word's compare, opened in Word"
+    }
+  ],
+  "method": [
+    {
+      "d": "Every reference PDF is exported by Microsoft Word and SHA-pinned. Redlines are opened in Word too: if Word refuses the file, the tool scores 0 for that pair.",
+      "t": "Oracle: real Word"
+    },
+    {
+      "d": "Failures are not dropped. A crash, a timeout or an unopenable file counts as 0 in ITT mean and median, so a tool cannot improve its rank by skipping hard documents.",
+      "t": "Intent-to-treat"
+    },
+    {
+      "d": "Ranks tie (n=) when the paired bootstrap interval of the median difference to the row above includes 0. 2,000 resamples, seed 42.",
+      "t": "Paired bootstrap"
+    },
+    {
+      "d": "From 0.17.0 the tables on this page are the release's two samples — state-balanced, every file sha256-listed in the engine's release_info/. Full-corpus runs remain in the bench's RESULTS.md.",
+      "t": "Release samples"
+    },
+    {
+      "d": "jubarte is marked † everywhere. Pins, run dates and sample lists are published so any row can be re-run; the harness is public.",
+      "t": "Author-affiliated, same rules"
+    }
+  ],
   "provenance": {
     "docsets": [
       "27122f4d945e",
@@ -20,6 +88,74 @@
   },
   "repo": "https://github.com/jandira-tech/neurotic_docx_bench",
   "states": [
+    {
+      "n": "150",
+      "name": "clean",
+      "rows": [
+        {
+          "median": 90.7695,
+          "ours": true,
+          "tool": "jubarte"
+        },
+        {
+          "median": 68.8332,
+          "ours": false,
+          "tool": "soffice"
+        }
+      ],
+      "table": "conversion-sample"
+    },
+    {
+      "n": "150",
+      "name": "tracking_without_comments",
+      "rows": [
+        {
+          "median": 81.5365,
+          "ours": true,
+          "tool": "jubarte"
+        },
+        {
+          "median": 64.3983,
+          "ours": false,
+          "tool": "soffice"
+        }
+      ],
+      "table": "conversion-sample"
+    },
+    {
+      "n": "117",
+      "name": "with_comments_clean",
+      "rows": [
+        {
+          "median": 81.2207,
+          "ours": true,
+          "tool": "jubarte"
+        },
+        {
+          "median": 46.3338,
+          "ours": false,
+          "tool": "soffice"
+        }
+      ],
+      "table": "conversion-sample"
+    },
+    {
+      "n": "183",
+      "name": "with_comments_tracking",
+      "rows": [
+        {
+          "median": 78.6001,
+          "ours": true,
+          "tool": "jubarte"
+        },
+        {
+          "median": 42.8504,
+          "ours": false,
+          "tool": "soffice"
+        }
+      ],
+      "table": "conversion-sample"
+    },
     {
       "n": "100",
       "name": "clean",
@@ -74,7 +210,8 @@
           "ours": false,
           "tool": "pdfitdown 4.2.0"
         }
-      ]
+      ],
+      "table": "docx_to_pdf"
     },
     {
       "n": "100",
@@ -130,7 +267,8 @@
           "ours": false,
           "tool": "pdfitdown 4.2.0"
         }
-      ]
+      ],
+      "table": "docx_to_pdf"
     },
     {
       "n": "100",
@@ -186,7 +324,8 @@
           "ours": false,
           "tool": "pdfitdown 4.2.0"
         }
-      ]
+      ],
+      "table": "docx_to_pdf"
     },
     {
       "n": "100",
@@ -242,10 +381,11 @@
           "ours": false,
           "tool": "pdfitdown 4.2.0"
         }
-      ]
+      ],
+      "table": "docx_to_pdf"
     },
     {
-      "n": "2480",
+      "n": "2,480",
       "name": "clean",
       "rows": [
         {
@@ -253,10 +393,11 @@
           "ours": true,
           "tool": "jubarte"
         }
-      ]
+      ],
+      "table": "corpus/word:all"
     },
     {
-      "n": "3410",
+      "n": "3,410",
       "name": "tracking_without_comments",
       "rows": [
         {
@@ -264,7 +405,8 @@
           "ours": true,
           "tool": "jubarte"
         }
-      ]
+      ],
+      "table": "corpus/word:all"
     },
     {
       "n": "420",
@@ -275,7 +417,8 @@
           "ours": true,
           "tool": "jubarte"
         }
-      ]
+      ],
+      "table": "corpus/word:all"
     },
     {
       "n": "117",
@@ -286,10 +429,11 @@
           "ours": true,
           "tool": "jubarte"
         }
-      ]
+      ],
+      "table": "corpus/word:all"
     },
     {
-      "n": "2480",
+      "n": "2,480",
       "name": "clean",
       "rows": [
         {
@@ -297,10 +441,11 @@
           "ours": true,
           "tool": "jubarte"
         }
-      ]
+      ],
+      "table": "docxide_metrics"
     },
     {
-      "n": "3410",
+      "n": "3,410",
       "name": "tracking_without_comments",
       "rows": [
         {
@@ -308,7 +453,8 @@
           "ours": true,
           "tool": "jubarte"
         }
-      ]
+      ],
+      "table": "docxide_metrics"
     },
     {
       "n": "420",
@@ -319,7 +465,8 @@
           "ours": true,
           "tool": "jubarte"
         }
-      ]
+      ],
+      "table": "docxide_metrics"
     },
     {
       "n": "117",
@@ -330,10 +477,11 @@
           "ours": true,
           "tool": "jubarte"
         }
-      ]
+      ],
+      "table": "docxide_metrics"
     },
     {
-      "n": "1188",
+      "n": "1,188",
       "name": "clean",
       "rows": [
         {
@@ -356,10 +504,11 @@
           "ours": false,
           "tool": "docxide-pdf"
         }
-      ]
+      ],
+      "table": "corpus/word:le3pages"
     },
     {
-      "n": "1366",
+      "n": "1,366",
       "name": "tracking_without_comments",
       "rows": [
         {
@@ -382,7 +531,8 @@
           "ours": false,
           "tool": "docxide-pdf"
         }
-      ]
+      ],
+      "table": "corpus/word:le3pages"
     },
     {
       "n": "69",
@@ -408,7 +558,8 @@
           "ours": false,
           "tool": "docxide-pdf"
         }
-      ]
+      ],
+      "table": "corpus/word:le3pages"
     },
     {
       "n": "3",
@@ -434,10 +585,11 @@
           "ours": false,
           "tool": "docxide-pdf"
         }
-      ]
+      ],
+      "table": "corpus/word:le3pages"
     },
     {
-      "n": "1188",
+      "n": "1,188",
       "name": "clean",
       "rows": [
         {
@@ -460,10 +612,11 @@
           "ours": false,
           "tool": "docxide-pdf"
         }
-      ]
+      ],
+      "table": "docxide_metrics:le3pages"
     },
     {
-      "n": "1366",
+      "n": "1,366",
       "name": "tracking_without_comments",
       "rows": [
         {
@@ -486,7 +639,8 @@
           "ours": false,
           "tool": "docxide-pdf"
         }
-      ]
+      ],
+      "table": "docxide_metrics:le3pages"
     },
     {
       "n": "69",
@@ -512,7 +666,8 @@
           "ours": false,
           "tool": "docxide-pdf"
         }
-      ]
+      ],
+      "table": "docxide_metrics:le3pages"
     },
     {
       "n": "3",
@@ -538,10 +693,71 @@
           "ours": false,
           "tool": "docxide-pdf"
         }
-      ]
+      ],
+      "table": "docxide_metrics:le3pages"
     }
   ],
   "tables": [
+    {
+      "desc": "A state-balanced 600-document sample of corpus/word (every path and sha256 in release_info/sample_conversion_0.17.0_11-01-26_01-06.csv), each converter's PDF scored against Word's own export of the same file. Sorted by ITT median; a failed document scores 0. 95% CI is a percentile bootstrap of the ITT median (2,000 resamples, seed 42).",
+      "id": "conversion-sample",
+      "meta": "600 docs · 150/150/117/183 by state · scorer numpy · 2026-11-01",
+      "rows": [
+        {
+          "docs": 600,
+          "failed": 0,
+          "mean": 79.2446,
+          "median": 81.0931,
+          "note": "[80.42, 81.7]",
+          "ours": true,
+          "pin": "jubarte 0.17.0",
+          "rank": "1",
+          "tool": "jubarte"
+        },
+        {
+          "docs": 600,
+          "failed": 2,
+          "mean": 54.6071,
+          "median": 47.8822,
+          "note": "[47.53, 48.47]",
+          "ours": false,
+          "pin": "LibreOffice 26.8.0.3",
+          "rank": "2",
+          "tool": "soffice"
+        }
+      ],
+      "title": "DOCX → PDF vs Word's own PDF — 600-document sample"
+    },
+    {
+      "desc": "A sample of 600 document pairs of redlines_0929_full, one Word compare each: every pair of the scarce states, the rest spread over the document families (every path and sha256 in release_info/sample_redline_0.17.0_11-01-26_01-06.csv). Each tool redlines the pair; Word opens that redline and exports it to PDF, scored against Word's own compare. A pair with no scored PDF counts 0.",
+      "id": "redlines-sample",
+      "meta": "600 pairs · one Word compare each · pixel scorer · opened in Word · 2026-11-01",
+      "rows": [
+        {
+          "docs": 600,
+          "failed": 7,
+          "mean": 74.3589,
+          "median": 83.7553,
+          "note": "= 100: 47 · ≥ 90: 109",
+          "ours": true,
+          "pin": "jubarte 0.17.0",
+          "rank": "1",
+          "tool": "jubarte-0.17.0"
+        },
+        {
+          "docs": 600,
+          "failed": 25,
+          "mean": 64.917,
+          "median": 70.2748,
+          "note": "= 100: 38 · ≥ 90: 76",
+          "ours": false,
+          "pin": "Docxodus 12.6.5 (C#)",
+          "rank": "2",
+          "tool": "docxodus"
+        }
+      ],
+      "title": "Redlines vs Word's compare — 600-pair sample"
+    },
     {
       "desc": "",
       "id": "docx_to_pdf",
@@ -889,6 +1105,91 @@
     },
     {
       "desc": "",
+      "id": "redlines_vs_word",
+      "meta": "",
+      "rows": [
+        {
+          "docs": 3454,
+          "failed": 48,
+          "mean": 75.81,
+          "median": 84.56,
+          "note": "= 100: 342 · ≥ 90: 729 · < 50: 500 · ink 0.75 · text 0.82",
+          "ours": false,
+          "pin": "jubarte 0.17.0 (release)",
+          "rank": "1",
+          "tool": "jubarte-0.17.0"
+        },
+        {
+          "docs": 3414,
+          "failed": 88,
+          "mean": 74.33,
+          "median": 84.46,
+          "note": "= 100: 344 · ≥ 90: 704 · < 50: 546 · ink 0.74 · text 0.81",
+          "ours": false,
+          "pin": "jubarte 0.14.0 (release)",
+          "rank": "2",
+          "tool": "jubarte-0.14.0"
+        },
+        {
+          "docs": 3496,
+          "failed": 6,
+          "mean": 74.77,
+          "median": 84.15,
+          "note": "= 100: 241 · ≥ 90: 615 · < 50: 619 · ink 0.73 · text 0.80",
+          "ours": false,
+          "pin": "jubarte 0.10.1 (release)",
+          "rank": "3",
+          "tool": "jubarte-0.10.1"
+        },
+        {
+          "docs": 3499,
+          "failed": 3,
+          "mean": 72.23,
+          "median": 81.73,
+          "note": "= 100: 310 · ≥ 90: 658 · < 50: 793 · ink 0.67 · text 0.77",
+          "ours": true,
+          "pin": "jubarte 0.10.0 (86b6b5d3)",
+          "rank": "4",
+          "tool": "jubarte-rust"
+        },
+        {
+          "docs": 3338,
+          "failed": 164,
+          "mean": 68.62,
+          "median": 79.07,
+          "note": "= 100: 309 · ≥ 90: 634 · < 50: 780 · ink 0.67 · text 0.76",
+          "ours": false,
+          "pin": "jubarte 0.9.3 (release)",
+          "rank": "5",
+          "tool": "jubarte-093"
+        },
+        {
+          "docs": 2612,
+          "failed": 890,
+          "mean": 53.94,
+          "median": 62.87,
+          "note": "= 100: 204 · ≥ 90: 482 · < 50: 614 · ink 0.65 · text 0.73",
+          "ours": false,
+          "pin": "Docxodus 12.6.5 (C#)",
+          "rank": "6",
+          "tool": "docxodus"
+        },
+        {
+          "docs": 380,
+          "failed": 3122,
+          "mean": 6.66,
+          "median": 0.0,
+          "note": "= 100: 4 · ≥ 90: 7 · < 50: 20 · ink 0.21 · text 0.29",
+          "ours": false,
+          "pin": "superdoc-sdk 2.16.0",
+          "rank": "7",
+          "tool": "superdoc"
+        }
+      ],
+      "title": "redlines vs Word's compare"
+    },
+    {
+      "desc": "",
       "id": "redlines_accept_reject",
       "meta": "",
       "rows": [
@@ -897,7 +1198,7 @@
           "failed": 0,
           "mean": 100.0,
           "median": 100.0,
-          "note": "= 100: 400 · ≥ 90: 400",
+          "note": "= 100: 400 · ≥ 90: 400 · < 50: 0 · ink 1.00 · text 1.00",
           "ours": false,
           "pin": "Word's own compare (calibration) · accept all",
           "rank": "1",
@@ -908,7 +1209,7 @@
           "failed": 6,
           "mean": 90.07,
           "median": 99.87,
-          "note": "= 100: 166 · ≥ 90: 299",
+          "note": "= 100: 166 · ≥ 90: 299 · < 50: 16 · ink 0.85 · text 0.96",
           "ours": false,
           "pin": "docxodus 12.6.4 (npm) · accept all",
           "rank": "2",
@@ -919,8 +1220,8 @@
           "failed": 0,
           "mean": 87.56,
           "median": 99.7,
-          "note": "= 100: 181 · ≥ 90: 261",
-          "ours": false,
+          "note": "= 100: 181 · ≥ 90: 261 · < 50: 33 · ink 0.80 · text 0.94",
+          "ours": true,
           "pin": "jubarte 0.9.3 (673aff74) · accept all",
           "rank": "3",
           "tool": "jubarte-rust"
@@ -930,7 +1231,7 @@
           "failed": 342,
           "mean": 13.95,
           "median": 0.0,
-          "note": "= 100: 4 · ≥ 90: 52",
+          "note": "= 100: 4 · ≥ 90: 52 · < 50: 1 · ink 0.95 · text 0.98",
           "ours": false,
           "pin": "superdoc-sdk 2.15.0 · accept all",
           "rank": "4",
@@ -941,10 +1242,10 @@
           "failed": 0,
           "mean": 100.0,
           "median": 100.0,
-          "note": "= 100: 400 · ≥ 90: 400",
+          "note": "= 100: 400 · ≥ 90: 400 · < 50: 0 · ink 1.00 · text 1.00",
           "ours": false,
           "pin": "Word's own compare (calibration) · reject all",
-          "rank": "5",
+          "rank": "1",
           "tool": "word-identity"
         },
         {
@@ -952,10 +1253,10 @@
           "failed": 0,
           "mean": 86.22,
           "median": 99.85,
-          "note": "= 100: 186 · ≥ 90: 260",
-          "ours": false,
+          "note": "= 100: 186 · ≥ 90: 260 · < 50: 35 · ink 0.77 · text 0.91",
+          "ours": true,
           "pin": "jubarte 0.9.3 (673aff74) · reject all",
-          "rank": "6",
+          "rank": "2",
           "tool": "jubarte-rust"
         },
         {
@@ -963,10 +1264,10 @@
           "failed": 15,
           "mean": 85.38,
           "median": 99.8,
-          "note": "= 100: 155 · ≥ 90: 275",
+          "note": "= 100: 155 · ≥ 90: 275 · < 50: 26 · ink 0.80 · text 0.94",
           "ours": false,
           "pin": "docxodus 12.6.4 (npm) · reject all",
-          "rank": "7",
+          "rank": "3",
           "tool": "docxodus"
         },
         {
@@ -974,10 +1275,10 @@
           "failed": 351,
           "mean": 11.07,
           "median": 0.0,
-          "note": "= 100: 1 · ≥ 90: 36",
+          "note": "= 100: 1 · ≥ 90: 36 · < 50: 1 · ink 0.83 · text 0.95",
           "ours": false,
           "pin": "superdoc-sdk 2.15.0 · reject all",
-          "rank": "8",
+          "rank": "4",
           "tool": "superdoc"
         }
       ],

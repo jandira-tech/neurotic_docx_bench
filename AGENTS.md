@@ -201,11 +201,22 @@ Snapshots live at `results/score-snapshots/{vendor}__{benchmark}.json`.
 
 ## Publishing results (`uv run bench report`)
 
-`RESULTS.md`, `RESULTS_DETAILED.md`, the vendor table in `README.md` and the frozen
-`RESULTS_v<old>.md` are generated from `results/bench.jsonl`, `results/converters.jsonl`,
-`results/speed.jsonl`, `results/redlines_*/scores.jsonl` and `bench.registry.yaml` by
-`src/neurotic_docx_bench/ledger/` (`build.py` loads, `policy.py` decides, `tables.py` renders).
-Never edit them by hand; `uv run bench report --check` says whether they are current.
+`RESULTS.md`, `RESULTS_DETAILED.md`, the vendor table in `README.md`, the frozen
+`RESULTS_v<old>.md` and `results/scores.json` are generated from `results/bench.jsonl`,
+`results/converters.jsonl`, `results/speed.jsonl`, `results/redlines_*/scores.jsonl`,
+`results/release_*_evidence/release_info/website_data_*.jsonl` (the newest one) and
+`bench.registry.yaml` by `src/neurotic_docx_bench/ledger/` (`build.py` loads, `policy.py`
+decides, `tables.py` renders, `scores.py` writes the JSON release contract
+`bench_ops.models.Scores`). Never edit them by hand; `uv run bench report --check`
+says whether they are current.
+
+`scores.json` is a published artefact like the pages: the same rows RESULTS.md
+renders, plus the newest jubarte release's sample tables/headlines/home groups/
+method/states, read from the release-evidence copy the `jubarte_release_info`
+write stage files under `results/release_<v>_evidence/release_info/` (ndb and
+jubarte.pro read the same six files — single source). Speed is deliberately not
+in it (its own `speed.json` ships later); `generated` is the newest row's date,
+not the build's; `version` is the bench version string as the bench writes it.
 
 A cohort run that lives under `results/<run>/` (the 2026-10-14 Wordcraft cohort is the model)
 reaches the pages in four steps, each of which bit someone on 2026-10-14:
