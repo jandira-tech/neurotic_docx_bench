@@ -1,6 +1,10 @@
+export type { Case, CaseGridOptions, CaseHeadOptions, CaseListOptions, CaseShard, CaseStripOptions, CasesIndex, CasesLegendOptions, CasesPageOptions, Engine, EngineToggleOptions, Kind, LaneState, MetricDiagnostics, MetricName, MountCasesOptions, OverlayOptions, ScoreColumn, ScoresTableOptions, ShardRef, } from "./cases.ts";
+export { caseHash, defaultComparisonLane, defaultOverlayLane, LANE_COLORS, LANE_LABEL, laneColor, laneState, lanesForCase, lanesWithData, METRIC_INFO, METRIC_LABEL, METRICS, mentionedLanes, mountCasesPage, orderLanes, PAGE_STEP, parseCase, parseCaseHash, parseCaseShard, parseCasesIndex, renderCaseGrid, renderCaseHead, renderCaseList, renderCaseStrip, renderCasesLegend, renderCasesPage, renderEngineToggles, renderGroupOptions, renderOverlay, renderScoresTable, resolveAssetUrl, safeAssetUrl, shardUrl, } from "./cases.ts";
 export { esc } from "./esc.ts";
 export type { LeaderboardPageOptions } from "./leaderboard.ts";
 export { buildLeaderboardPage, SAMPLES_HEADING, SAMPLES_HEADING_ID, stripAffiliation, } from "./leaderboard.ts";
 export { parseScores } from "./parse.ts";
 export { renderBadge, renderBars, renderHeadlines, renderLegend, renderMethod, renderProvenance, renderRow, renderStates, renderTable, renderTableHead, stateLabel, } from "./render.ts";
+export type { MountSpeedOptions, Speed, SpeedCoverage, SpeedNote, SpeedPageOptions, SpeedRow, SpeedTable, SpeedTask, } from "./speed.ts";
+export { formatMs, inlineCode, mountSpeedPage, parseSpeed, renderCoverage, renderSampleNote, renderSpeed, renderSpeedNote, renderSpeedPage, renderSpeedTable, renderSpeedTask, } from "./speed.ts";
 export type { Headline, HomeBar, HomeGroup, MethodPoint, RenderStatesOptions, Row, Scores, StateCell, StateRow, Table, } from "./types.ts";

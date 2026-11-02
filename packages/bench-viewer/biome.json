@@ -1,7 +1,13 @@
 {
   "$schema": "https://biomejs.dev/schemas/2.6.4/schema.json",
   "files": {
-    "includes": ["**", "!dist", "!test/fixtures/jubarte-page.html"]
+    "includes": [
+      "**",
+      "!dist",
+      "!test/fixtures/jubarte-page.html",
+      "!test/fixtures/release",
+      "!test/fixtures/fonts"
+    ]
   },
   "formatter": {
     "enabled": true,
@@ -24,5 +30,20 @@
       "semicolons": "always",
       "trailingCommas": "all"
     }
-  }
+  },
+  "overrides": [
+    {
+      "includes": ["themes/cases.css"],
+      "linter": {
+        "rules": {
+          "complexity": {
+            "noImportantStyles": "off"
+          },
+          "style": {
+            "noDescendingSpecificity": "off"
+          }
+        }
+      }
+    }
+  ]
 }

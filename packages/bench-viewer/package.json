@@ -18,6 +18,7 @@
   ],
   "scripts": {
     "build": "tsc",
+    "build:pages": "node scripts/build-pages.ts --release ../../results/release ../../site --scores ../../results/scores.json",
     "check:dist": "tsc && git diff --exit-code -- dist && test -z \"$(git ls-files --others --exclude-standard -- dist)\"",
     "prepare": "tsc",
     "typecheck": "tsc -p tsconfig.test.json",

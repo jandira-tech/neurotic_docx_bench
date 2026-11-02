@@ -77,16 +77,70 @@ cells entirely.
 
 Every text value goes through `esc()`.
 
+## The case browsers and the speed page
+
+`src/cases.ts` and `src/speed.ts` are the other half of the package: the pages
+that show the _cases_ (the per-document pages of every engine, beside Word's
+own) and the _speed_ benchmark. They read the release, not a copy of it:
+
+- `cases/index.json` (the `CasesIndex`) holds the shard directory, the engine
+  list and the public asset base. One shard per group (`cases/<kind>/<group>.json`)
+  is fetched when the group is opened, so a page opens on one group.
+- `speed.json` (the `Speed`) holds the tasks, their coverage, their tables and
+  their notes.
+
+Both modules are two layers: a **render layer** that is pure (data in, HTML
+string out) and a **wiring** that fetches, keeps the state and puts the strings
+where they belong (`mountCasesPage`, `mountSpeedPage`). The render layer is
+what the tests drive.
+
+| Function                                                 | Markup                                                                    |
+| -------------------------------------------------------- | ------------------------------------------------------------------------- |
+| `parseCasesIndex(json)`                                  | the validated `CasesIndex`                                                |
+| `parseCaseShard(json)`                                   | the validated `CaseShard`                                                 |
+| `parseCase(json, path, kind?, group?)`                   | one validated `Case`                                                      |
+| `parseSpeed(json)`                                       | the validated `Speed`                                                     |
+| `renderCaseStrip(options)`                               | one lane's column of pages                                                |
+| `renderCaseHead(options)`                                | one lane's header                                                         |
+| `renderCaseGrid(options)`                                | the whole grid                                                            |
+| `renderCaseList(options)`                                | the case list in the side panel                                           |
+| `renderScoresTable(options)`                             | the score table                                                           |
+| `renderEngineToggles(options)`                           | the engine toggles                                                        |
+| `renderOverlay(options)`                                 | the overlay (one lane over another)                                       |
+| `renderCasesPage(options)`                               | the whole browser page                                                    |
+| `renderCasesLegend(options)`                             | the legend                                                                |
+| `renderSpeed(speed)`                                     | the whole speed page body                                                 |
+| `renderSpeedTable(table)`                                | one timing table                                                          |
+| `renderSpeedNote(note)`                                  | one note                                                                  |
+| `renderSpeedPage(options)`                               | the whole speed page                                                      |
+| `inlineCode(text)`                                       | escaped text, `backtick` spans as `<code>`                                |
+| `resolveAssetUrl(base, path)`                            | a `~/` path against the asset base                                        |
+| `safeAssetUrl(base, path)`                               | the same, or `""` when it is not http(s)                                  |
+| `shardUrl(indexUrl, path, base?)`                        | a shard's URL in the release                                              |
+| `caseHash(group, case)` / `parseCaseHash(hash, groups?)` | the `#<group>/<case>` link                                                |
+| `laneState(case, engine)`                                | what a lane holds: measured, failed, dropped, unavailable, not applicable |
+
+Every data string — the case id, the group name, the version label, the error
+message, the asset path — goes through `esc()`. The asset URL is refused when
+it is not an http(s) URL, so it cannot become a `javascript:` source.
+
+A lane's state comes from the case's own lists: `not_applicable` and
+`unavailable` are said so in the column and in the engine bar, `dropped` lanes
+are folded away behind the "+N more" button, and a failed lane keeps its error
+under its pages.
+
 ## Build the page
 
 ```bash
 node packages/bench-viewer/scripts/build-pages.ts scores.json /tmp/bv-pages
 node packages/bench-viewer/scripts/build-pages.ts scores.json /tmp/bv-jubarte --theme jubarte
+node packages/bench-viewer/scripts/build-pages.ts --release results/release /tmp/bv-site --scores results/scores.json
+node packages/bench-viewer/scripts/build-pages.ts --release results/release /tmp/bv-site --scores results/scores.json --fonts site/_static/fonts
 ```
 
-writes `index.html` and copies `themes/tokens.css`, `themes/arthur-law.css`
-and `themes/jubarte.css` beside it, so the directory opens as a page on its
-own. No git operations, no network.
+writes `index.html` and copies `themes/tokens.css`, `themes/arthur-law.css`,
+`themes/jubarte.css` and `themes/cases.css` beside it, so the directory opens
+as a page on its own. No git operations, no network.
 
 `--theme` picks the page:
 
@@ -94,6 +148,32 @@ own. No git operations, no network.
 | ------------ | ------------------------------------------------------------------------- |
 | `arthur-law` | the leaderboard page (the default): the scores, ranked                    |
 | `jubarte`    | the jubarte page: the headlines, the "ours" rows, the dagger, jubarte.css |
+
+`--release` builds the **whole site** from a release bundle:
+
+```
+<outdir>/index.html            the leaderboard, from scores.json
+<outdir>/cases/index.html      the conversion browser
+<outdir>/redlines/index.html   the redline browser
+<outdir>/speed/index.html      the speed page
+<outdir>/release/cases/…       the index and one shard per group
+<outdir>/release/speed.json    the speed release
+<outdir>/js/…                  the compiled modules the pages import
+<outdir>/_static/fonts/…       the fonts, when --fonts is given
+```
+
+The pages fetch the release's own files; no data is inlined in them. The
+`build:pages` script does this for the gh-pages worktree:
+
+```bash
+pnpm --filter @jandira-tech/bench-viewer build:pages
+```
+
+`--fonts <dir>` (release mode only) copies a font directory — the gh-pages
+site's `_static/fonts` (Manrope and JetBrains Mono as woff2, plus their
+licences) — into `<outdir>/_static/fonts/`, where `cases.css`'s `@font-face`
+rules expect them. Without the flag nothing is copied and the pages fall
+back to the system font stacks; the package itself ships no binaries.
 
 `test/fixtures/jubarte-page.html` is the jubarte page as it was before the
 leaderboard page existed; the build-pages test compares the `jubarte` theme
