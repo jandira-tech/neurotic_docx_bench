@@ -571,7 +571,7 @@ def verify_uploaded(
         repo_type=REPO_TYPE,
         path_in_repo=path_in_repo or None,
         recursive=True,
-        expand=True,
+        expand=False,  # blob ids and LFS sha256s come without it; expand pages 50 files at a time
     ):
         path = getattr(entry, "path", None)
         if path is None:
