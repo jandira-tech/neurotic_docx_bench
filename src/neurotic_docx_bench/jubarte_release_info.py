@@ -48,7 +48,11 @@ that carry the version. Stage by owner step:
    (``sample_redline_<v>_<mm-dd-yy_hh-mm>.csv``, ``sample_conversion_…csv``,
    ``results_redline_…json``, ``results_conversion_…json``,
    ``website_data_…jsonl``, ``app_data_…jsonl``), one stamp for all six,
-   that version's older stamps deleted. The two CSVs are built here, from
+   that version's older stamps deleted; the same six files, same names, same
+   bytes, are also filed into the bench's evidence folder
+   ``results/release_<v>_evidence/release_info/`` — the copy ``bench report``
+   reads for scores.json's sample tables, so ndb and the sites hold one source.
+   The two CSVs are built here, from
    the sample lists and the files then on disk: every path relative to the
    bench root with its sha256 beside it, a file that does not exist an
    empty path with an empty sha. The engine's
@@ -1098,17 +1102,24 @@ def drawn_date(redline: dict, conversion: dict, now: datetime | None = None) -> 
 
 def write_six(engine_dir: Path, version: str, *, redline: dict, conversion: dict,
               redline_data: Sequence[Sequence[str]], conversion_data: Sequence[Sequence[str]],
-              now: datetime | None = None) -> str:
+              now: datetime | None = None, bench_root: Path | None = None) -> str:
     """Write the six files for ``version`` into engine_dir/release_info/ under one
-    stamp, then delete that version's older stamps. Returns the detail line.
+    stamp, then delete that version's older stamps. With ``bench_root``, the
+    same six files (same names, same bytes) are also filed into
+    ``<bench_root>/results/release_<version>_evidence/release_info/`` — the
+    bench's own copy of the record, which ``bench report`` reads. Returns the
+    detail line.
 
-    The six are written to a staging folder first and moved in only when all
+    The six are written to a staging folder first and copied out only when all
     six exist: a write that fails halfway (a full disk, an interrupt) leaves
     the previous complete set untouched.
     """
     stamp = stamp_now(now)
     generated = drawn_date(redline, conversion, now)
     folder = engine_dir / 'release_info'
+    targets = [folder]
+    if bench_root is not None:
+        targets.append(bench_root / evidence_dir(version) / 'release_info')
     folder.mkdir(parents=True, exist_ok=True)
     names = {name: f'{name}_{version}_{stamp}.{ext}' for name, ext in SIX}
     staging = Path(tempfile.mkdtemp(prefix=f'.six_{version}_', dir=folder))
@@ -1132,16 +1143,20 @@ def write_six(engine_dir: Path, version: str, *, redline: dict, conversion: dict
         with (staging / names['app_data']).open('w') as fh:
             for record in app_records(version):
                 fh.write(json.dumps(record, ensure_ascii=False) + '\n')
-        for name in names.values():
-            (staging / name).replace(folder / name)
+        for target in targets:
+            target.mkdir(parents=True, exist_ok=True)
+            for name in names.values():
+                shutil.copyfile(staging / name, target / name)
     finally:
         shutil.rmtree(staging, ignore_errors=True)
     ours = '|'.join(name for name, _ in SIX)
     pattern = re.compile(rf'({ours})_{re.escape(version)}_\d{{2}}-\d{{2}}-\d{{2}}_\d{{2}}-\d{{2}}\.(csv|json|jsonl)')
-    for old in folder.iterdir():
-        if pattern.fullmatch(old.name) and old.name not in names.values():
-            old.unlink()
-    return f'{folder}: six files of {version} ({stamp})'
+    for target in targets:
+        for old in target.iterdir():
+            if pattern.fullmatch(old.name) and old.name not in names.values():
+                old.unlink()
+    filed = ' + '.join(str(t) for t in targets)
+    return f'{filed}: six files of {version} ({stamp})'
 
 
 def collect_results(root: Path, version: str, lane: str, *, jubarte: dict,
@@ -1503,7 +1518,7 @@ def plan(rel: Release, *, binary: Path | None = None, seed: int = DEFAULT_SEED,
             root, v, lane, jubarte=identity, fresh=fresh,
             word_version=release.word_version(run or release.default_runner()))
         detail = write_six(
-            engine_dir, v, redline=redline, conversion=conversion_doc,
+            engine_dir, v, bench_root=root, redline=redline, conversion=conversion_doc,
             redline_data=redline_rows(read_csv(root / redline_csv), root, lane, gen_rows(), fresh),
             conversion_data=conversion_rows(read_csv(root / conversion_csv), root,
                                             root / ev / 'convert_work' / 'jubarte' / 'candidate'))

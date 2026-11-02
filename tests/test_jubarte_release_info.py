@@ -950,7 +950,6 @@ def test_sample_then_write_passes_the_engine_checker(tmp_path: Path, mode: str) 
     six = _six(folder)
     assert len(six) == 6 and not stale.exists() and other.exists()
     assert f'six files of {V}' in detail and 'reports "jubarte 0.11.0"' in detail
-    assert _checker().problems(V, folder, 24) == []
     # the same six files, same names, same bytes, are filed in the bench's own
     # evidence folder: results/release_<v>_evidence/release_info/ (the copy the
     # report reads; the engine's release_info stays the release's own record)
@@ -959,7 +958,8 @@ def test_sample_then_write_passes_the_engine_checker(tmp_path: Path, mode: str) 
     assert set(bench_six) == set(six)
     for name, p in six.items():
         assert (bench_copy / p.name).read_bytes() == p.read_bytes()
-    assert f'six files of {V}' in detail and str(bench_copy) in detail
+    assert str(bench_copy) in detail
+    assert _checker().problems(V, folder, 24) == []
     # each result names the backend its own score artifacts record
     assert json.loads(six['results_redline'].read_text())['versions']['scorer'] == 'torch-mps'
     assert json.loads(six['results_conversion'].read_text())['versions']['scorer'] == 'torch-cpu'
