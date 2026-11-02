@@ -1,0 +1,22 @@
+{
+  "name": "@jandira-tech/bench-viewer",
+  "version": "0.1.0",
+  "description": "Framework-free HTML renderers for neurotic_docx_bench scores.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./themes/*.css": "./themes/*.css"
+  },
+  "files": [
+    "src",
+    "themes"
+  ],
+  "scripts": {
+    "test": "vitest run",
+    "check": "biome check ."
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.6.4",
+    "vitest": "4.1.12"
+  }
+}
