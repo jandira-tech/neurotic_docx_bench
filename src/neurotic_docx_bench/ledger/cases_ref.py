@@ -248,10 +248,24 @@ def default_source(root: Path) -> str | None:
     return f"{_SOURCE_PREFIX} at gh-pages {out}" if _COMMIT.fullmatch(out) else None
 
 
-def _list(api, repo: str, revision: str) -> list[hub_get.RemoteFile]:
+def _folder_missing(exc: BaseException) -> bool:
+    """The hub 404s a tree listing of a folder that does not exist (EntryNotFoundError)."""
+    seen: BaseException | None = exc
+    while seen is not None:
+        if any(c.__name__ == "EntryNotFoundError" for c in type(seen).__mro__):  # Remote* subclasses it
+            return True
+        seen = seen.__cause__
+    return False
+
+
+def _list(api, repo: str, revision: str, *, missing_ok: bool = False) -> list[hub_get.RemoteFile]:
+    """The snapshots under HUB_DIR at ``revision``. With ``missing_ok`` (the pre-upload
+    check only) a folder that does not exist yet is empty; verification never passes it."""
     try:
         return hub_get.remote_files(api, repo, revision, HUB_DIR)
     except hub_get.GetError as exc:
+        if missing_ok and _folder_missing(exc):
+            return []
         raise CasesRefError(f"{repo}@{revision[:12]}: {exc}") from exc
 
 
@@ -293,7 +307,7 @@ def snapshot_upload(
         head = hub_get.resolve_revision(api, repo)
     except hub_get.GetError as exc:
         raise CasesRefError(str(exc)) from exc
-    remote = next((f for f in _list(api, repo, head) if f.rel == name), None)
+    remote = next((f for f in _list(api, repo, head, missing_ok=True) if f.rel == name), None)
     if remote is not None:
         if not _same_remote(remote, digest, size, legacy):
             raise CasesRefError(

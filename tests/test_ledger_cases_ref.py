@@ -560,3 +560,38 @@ def test_pointer_is_committed_and_the_snapshot_is_not() -> None:
             timeout=30,
         )
         assert r.returncode == (0 if ignored else 1), f"{rel} ignored={ignored}"
+
+
+class EntryNotFoundError(Exception):
+    """Named like huggingface_hub's: the real hub 404s a tree listing of a missing folder."""
+
+
+class RemoteEntryNotFoundError(EntryNotFoundError):
+    """What huggingface_hub 1.x actually raises (a subclass), seen on the real hub 2026-11-02."""
+
+
+def test_first_snapshot_upload_when_the_hub_folder_does_not_exist_yet(tmp_path: Path) -> None:
+    """The real hub answers 404 (EntryNotFoundError) for a listing of a folder that does
+    not exist; the pre-upload check must read that as "nothing there yet" (measured
+    2026-11-02: the first real upload failed on it). The post-upload verification still
+    refuses a missing folder."""
+    _write_local_snapshot(tmp_path)
+
+    class Hub404(SnapshotHub):
+        def list_repo_tree(self, repo_id, *, repo_type, path_in_repo=None, recursive=True, expand=True, revision=None):
+            prefix = (path_in_repo or "").strip("/")
+            if prefix and not any(r.startswith(prefix + "/") for r in self.trees[revision]):
+                raise RemoteEntryNotFoundError(f"{prefix} does not exist on {revision}")
+            yield from super().list_repo_tree(
+                repo_id, repo_type=repo_type, path_in_repo=path_in_repo,
+                recursive=recursive, expand=expand, revision=revision,
+            )
+
+    api = Hub404()
+    ref, uploaded = cases_ref.snapshot_upload(tmp_path, api=api, source=SRC)
+    assert uploaded is True and ref.revision == SHA_B
+
+    lost = Hub404()
+    lost.drop_upload = True
+    with pytest.raises(cases_ref.CasesRefError):
+        cases_ref.snapshot_upload(tmp_path, api=lost, source=SRC)
