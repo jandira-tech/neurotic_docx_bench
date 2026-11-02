@@ -1,0 +1,34 @@
+/* bench-viewer tokens.
+ *
+ * The custom properties the bench components read. A theme file
+ * (jubarte.css, arthur-law.css) sets the values it wants; this file holds the
+ * names and a neutral default, so a page that links only the tokens still
+ * reads as a table.
+ *
+ * The names are the ones jubarte.pro already uses, so its own stylesheet and
+ * this one describe the same table.
+ */
+
+:root {
+  color-scheme: light;
+
+  /* colour */
+  --bg: #ffffff;
+  --ink: #0a0a0a;
+  --muted: #555555;
+  --line: #e6e6e6;
+  --line-strong: #c9c9c9;
+  --surface: #f3f3f3;
+  --hover: #f7f7f7;
+  --primary: #0a0a0a;
+  --mark: #ffd400;
+  --mark-text: #0a0a0a;
+  --mark-soft: #fbf1ba;
+  --hl-soft: #f6f6f6;
+
+  /* type */
+  --sans: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --max: 1180px;
+  --radius: 0;
+}

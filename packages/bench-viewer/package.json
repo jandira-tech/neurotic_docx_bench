@@ -4,19 +4,26 @@
   "description": "Framework-free HTML renderers for neurotic_docx_bench scores.",
   "type": "module",
   "exports": {
-    ".": "./src/index.ts",
-    "./themes/*.css": "./themes/*.css"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./themes/*": "./themes/*"
   },
   "files": [
-    "src",
+    "dist",
     "themes"
   ],
   "scripts": {
+    "build": "tsc",
+    "prepare": "tsc",
+    "typecheck": "tsc -p tsconfig.test.json",
     "test": "vitest run",
     "check": "biome check ."
   },
   "devDependencies": {
     "@biomejs/biome": "2.6.4",
+    "typescript": "^7.0.2",
     "vitest": "4.1.12"
   }
 }
