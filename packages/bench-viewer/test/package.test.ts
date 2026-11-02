@@ -27,7 +27,13 @@ describe("package contract", () => {
 
   test("keeps prepare and checks the committed dist build", () => {
     expect(manifest.scripts.prepare).toBe("tsc");
-    expect(manifest.scripts["check:dist"]).toBe("tsc && git diff --exit-code -- dist");
+    expect(manifest.scripts["check:dist"]).toBe(
+      'tsc && git diff --exit-code -- dist && test -z "$(git ls-files --others --exclude-standard -- dist)"',
+    );
+  });
+
+  test("names its declarations at the top level for node10 resolution", () => {
+    expect(manifest.types).toBe("./dist/index.d.ts");
   });
 
   test("does not ignore the package dist directory", () => {

@@ -37,7 +37,7 @@ const html = `${renderBadge(scores)}${scores.tables.map(renderTable).join("\n")}
 ```
 
 `parseScores` validates the document field by field and throws a `TypeError`
-naming the bad path (`scores: tables[0].rows[0].median must be a number`).
+naming the bad path (`scores: tables[0].rows[0].median must be a finite number`).
 Scores must be finite values from 0 through 100, document counts must be
 non-negative integers, and `repo` and `viewer` must be absolute HTTP(S) URLs.
 

@@ -35,4 +35,8 @@ describe("themes", () => {
   test("arthur.law defines the display weight it uses", () => {
     expect(arthurLawCss).toContain("--display-weight: 700;");
   });
+
+  test("arthur.law links stay visible without hover", () => {
+    expect(arthurLawCss).toMatch(/\.note a\s*\{[^}]*text-decoration:\s*underline/);
+  });
 });

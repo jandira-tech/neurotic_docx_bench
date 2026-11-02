@@ -68,6 +68,11 @@ a {
   color: inherit;
   text-decoration: none;
 }
+.note a {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
 a:hover {
   background: var(--mark);
   color: var(--mark-text);

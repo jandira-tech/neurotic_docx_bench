@@ -103,7 +103,13 @@ try {
 }
 
 // A scores file that does not hold scores says which field is wrong.
-const scores = parseScores(parsed);
+let scores: ReturnType<typeof parseScores>;
+try {
+  scores = parseScores(parsed);
+} catch (err) {
+  console.error(`${scoresPath}: ${(err as Error).message}`);
+  process.exit(1);
+}
 
 await mkdir(outDir, { recursive: true });
 await writeFile(join(outDir, "index.html"), renderPage(scores), "utf8");

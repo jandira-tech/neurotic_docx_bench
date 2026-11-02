@@ -72,4 +72,24 @@ describe("build-pages", () => {
       await rm(outDir, { recursive: true, force: true });
     }
   });
+
+  test("reports invalid scores as one line, without a stack trace", async () => {
+    const outDir = await mkdtemp(join(tmpdir(), "bench-viewer-page-"));
+    const scoresPath = join(outDir, "scores.json");
+    const bad = structuredClone(fixture) as unknown as {
+      tables: { rows: { median: unknown }[] }[];
+    };
+    bad.tables[0].rows[0].median = "x";
+    await writeFile(scoresPath, JSON.stringify(bad), "utf8");
+
+    try {
+      const result = await runNode([script, scoresPath, join(outDir, "page")]);
+
+      expect(result.code).toBe(1);
+      expect(result.stderr).toContain("scores: tables[0].rows[0].median must be a finite number");
+      expect(result.stderr).not.toMatch(/^\s+at /m);
+    } finally {
+      await rm(outDir, { recursive: true, force: true });
+    }
+  });
 });
