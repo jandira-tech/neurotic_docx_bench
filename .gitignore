@@ -246,3 +246,6 @@ src/neurotic_docx_bench/utils/docxodus-export/node_modules/
 # corpus docx/PDF bytes live on the HF fixtures dataset; `bench fixtures get` brings them back
 corpus/**/*.docx
 corpus/**/*.pdf
+
+# LibreOffice scratch user profiles written by -env:UserInstallation (bench-ops #114)
+results/**/lo_profiles/
