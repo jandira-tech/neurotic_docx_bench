@@ -1,5 +1,6 @@
 # Hooks for this repo live in github.com/arthrod/bench-ops/lefthook. Do not add jobs here;
-# add them there so the four bench repos cannot drift. Needs `bench` (uv tool install bench-ops).
+# add them there so the four bench repos cannot drift. Needs `bench`:
+#   uv tool install git+https://github.com/arthrod/bench-ops   (or --editable <bench-ops checkout>)
 remotes:
   - git_url: https://github.com/arthrod/bench-ops
     ref: main
