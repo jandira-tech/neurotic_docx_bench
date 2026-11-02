@@ -3,6 +3,8 @@ import type { Headline, HomeGroup, MethodPoint, RenderStatesOptions, Row, Scores
 export declare const stateLabel: (name: string) => string;
 /** One row of a leaderboard table. */
 export declare function renderRow(r: Row): string;
+/** The head row of a table: its column names. */
+export declare function renderTableHead(): string;
 /** One leaderboard table, with its heading and its note. */
 export declare function renderTable(t: Table): string;
 /** The headline cells above the tables. */
@@ -17,3 +19,5 @@ export declare function renderMethod(m: MethodPoint[]): string;
 export declare function renderBadge(s: Scores, tag?: string): string;
 /** What the two marks in the tables mean. */
 export declare function renderLegend(): string;
+/** Where every number came from: the docsets, the renderers, the scorers. */
+export declare function renderProvenance(provenance: Record<string, string[]>): string;

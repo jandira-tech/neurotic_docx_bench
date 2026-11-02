@@ -34,6 +34,10 @@ export function renderRow(r) {
 <span class="num${r.failed > 0 ? " failed" : " muted"}" role="cell">${r.failed.toLocaleString("en-US")}</span>
 </div>`;
 }
+/** The head row of a table: its column names. */
+export function renderTableHead() {
+    return `<div class="t-row head bench-cols" role="row"><span role="columnheader">#</span><span role="columnheader">Tool · pin</span><span role="columnheader">Median · 95% CI</span><span class="r" role="columnheader">Median (fail = 0)</span><span class="r" role="columnheader">Mean (fail = 0)</span><span class="r" role="columnheader">Scored</span><span class="r" role="columnheader">Failed</span></div>`;
+}
 /** One leaderboard table, with its heading and its note. */
 export function renderTable(t) {
     const id = esc(t.id);
@@ -41,7 +45,7 @@ export function renderTable(t) {
 <div class="section-head"><h2 id="${id}-title">${esc(t.title)}</h2><span>${esc(t.meta)}</span></div>
 <p class="note mt-12">${esc(t.desc)}</p>
 <div class="scroll-x"><div class="bench-table" role="table" aria-labelledby="${id}-title">
-<div class="t-row head bench-cols" role="row"><span role="columnheader">#</span><span role="columnheader">Tool · pin</span><span role="columnheader">Median · 95% CI</span><span class="r" role="columnheader">Median (fail = 0)</span><span class="r" role="columnheader">Mean (fail = 0)</span><span class="r" role="columnheader">Scored</span><span class="r" role="columnheader">Failed</span></div>
+${renderTableHead()}
 ${t.rows.map((r) => renderRow(r)).join("\n")}
 </div></div>
 </section>`;
@@ -107,4 +111,19 @@ export function renderBadge(s, tag) {
 /** What the two marks in the tables mean. */
 export function renderLegend() {
     return `<p class="bench-legend">† author-affiliated · failures count as 0</p>`;
+}
+/** Where every number came from: the docsets, the renderers, the scorers. */
+export function renderProvenance(provenance) {
+    const entries = Object.entries(provenance);
+    if (entries.length === 0)
+        return "";
+    const rows = entries
+        .map(([key, values]) => `<li><span class="mono">${esc(key)}</span> <span class="muted">${values.map((v) => esc(v)).join(" · ")}</span></li>`)
+        .join("\n");
+    return `<section class="mt-72">
+<div class="section-head"><h2>Provenance</h2><span>where every number came from</span></div>
+<ul class="bench-list mt-12">
+${rows}
+</ul>
+</section>`;
 }
