@@ -1,29 +1,21 @@
-"""RED tests (Plan 3b, #119): the speed release — ledger.speed.emit and the
-results/release/speed.json half of `bench report`.
+"""The speed release — ledger.speed.emit and the results/release/speed.json half of
+`bench report` (Plan 3b, #119).
 
 Spec: docs/plans/2026-11-02-plan3b-cases-speed.md; survey:
 docs/plans/reviews/plan3b-survey.md §1.2. The contract is the 10,000-input page
 (per-pair raw rows aggregated), NOT the results/speed.jsonl leaderboard view.
-
-The release contract lives in bench-ops; until it ships as a real dependency,
-the models are imported from the plan's working copy:
-
-    sys.path.insert(0, "/tmp/bo-3b/src")   # bench_ops.models: Speed, dumps_compact
-
-When bench-ops releases the contract, drop the shim and import normally.
+The release contract is `bench_ops.models` (the bench-ops dependency):
+Speed, dumps_compact.
 """
 
 from __future__ import annotations
 
 import json
-import sys
 from datetime import UTC, datetime
 from pathlib import Path
 
 import pytest
 from test_ledger_build import repo as _ledger_repo  # noqa: F401  the fake-repo fixture, shared with test_ledger_build
-
-sys.path.insert(0, "/tmp/bo-3b/src")  # the bench-ops contract working copy (RED only)
 
 from neurotic_docx_bench.ledger import speed as speed_emit
 

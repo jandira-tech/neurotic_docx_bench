@@ -41,6 +41,9 @@ dependencies = [
     "huggingface-hub>=2.0",
     "polars>=1.44.2",
     "aiofiles>=25.1.0",
+    # The release contract (Cases/Speed/Scores models, dumps_compact): pinned to the
+    # reviewed merge of the plan-3b models until bench-ops cuts a tagged release.
+    "bench-ops @ git+https://github.com/arthrod/bench-ops@35ab2cbeb8bc44d5059878d14176dc90c5b46f5d",
 ]
 
 [project.optional-dependencies]
@@ -72,6 +75,10 @@ bench = "neurotic_docx_bench.cli:app"
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[tool.hatch.metadata]
+# bench-ops is pinned by commit until it cuts a tagged release.
+allow-direct-references = true
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/neurotic_docx_bench"]

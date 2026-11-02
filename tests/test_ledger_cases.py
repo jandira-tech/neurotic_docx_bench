@@ -1,16 +1,9 @@
-"""RED tests (Plan 3b, #119): the cases release — adapter, emitter, `bench report` wiring.
+"""The cases release — adapter, emitter, `bench report` wiring (Plan 3b, #119).
 
 Spec: docs/plans/2026-11-02-plan3b-cases-speed.md; survey:
-docs/plans/reviews/plan3b-survey.md. These tests are written first (TDD RED):
-they must fail on the missing modules / missing published files, never on syntax.
-
-The release contract lives in bench-ops. Until bench-ops ships it as a real
-dependency of this package, the Pydantic models are imported from the plan's
-working copy through a path shim:
-
-    sys.path.insert(0, "/tmp/bo-3b/src")   # bench_ops.models: Case, CaseShard, ...
-
-When bench-ops releases the contract, drop the shim and import normally.
+docs/plans/reviews/plan3b-survey.md. The release contract is `bench_ops.models`
+(the bench-ops dependency): Case, CaseShard, CasesIndex, engines_from_cases,
+validate_bundle, shard_path, dumps_compact.
 """
 
 from __future__ import annotations
@@ -18,14 +11,11 @@ from __future__ import annotations
 import json
 import os
 import subprocess
-import sys
 from datetime import UTC, datetime
 from pathlib import Path
 
 import pytest
 from test_ledger_build import repo as _ledger_repo  # noqa: F401  the fake-repo fixture, shared with test_ledger_build
-
-sys.path.insert(0, "/tmp/bo-3b/src")  # the bench-ops contract working copy (RED only)
 
 from neurotic_docx_bench.ledger import cases as cases_emit
 from neurotic_docx_bench.ledger import cases_adapter
