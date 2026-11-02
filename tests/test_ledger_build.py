@@ -244,13 +244,15 @@ def test_readme_without_markers_is_an_error(repo: Path) -> None:
 
 def test_cli_report_and_check(repo: Path, monkeypatch) -> None:
     monkeypatch.chdir(repo)
-    r = CliRunner().invoke(app, ["report"])
+    # no case sources on this repo: --allow-no-cases (a report without cases
+    # needs the flag since the legacy_cases pointer became a recorded input)
+    r = CliRunner().invoke(app, ["report", "--allow-no-cases"])
     assert r.exit_code == 0, r.output
     assert "RESULTS.md" in r.output
-    r = CliRunner().invoke(app, ["report", "--check"])
+    r = CliRunner().invoke(app, ["report", "--check", "--allow-no-cases"])
     assert r.exit_code == 0, r.output
     (repo / "RESULTS.md").write_text("drift\n")
-    r = CliRunner().invoke(app, ["report", "--check"])
+    r = CliRunner().invoke(app, ["report", "--check", "--allow-no-cases"])
     assert r.exit_code == 1
     assert "RESULTS.md" in r.output
 
@@ -332,18 +334,19 @@ def test_cli_report_freezes_when_the_version_moves(repo: Path, monkeypatch) -> N
 
     monkeypatch.chdir(repo)
     monkeypatch.setattr(ver, "bench_version", lambda: "0.6.0")
-    r = CliRunner().invoke(app, ["report"])
+    # no case sources on this repo: --allow-no-cases throughout
+    r = CliRunner().invoke(app, ["report", "--allow-no-cases"])
     assert r.exit_code == 0, r.output
     assert "froze" not in r.output
     monkeypatch.setattr(ver, "bench_version", lambda: "0.7.0")
-    r = CliRunner().invoke(app, ["report", "--check"])
+    r = CliRunner().invoke(app, ["report", "--check", "--allow-no-cases"])
     assert r.exit_code == 1, r.output  # the page still says 0.6.0
     assert not (repo / "RESULTS_v0.6.0.md").exists()  # --check never writes
-    r = CliRunner().invoke(app, ["report"])
+    r = CliRunner().invoke(app, ["report", "--allow-no-cases"])
     assert r.exit_code == 0, r.output
     assert "froze RESULTS_v0.6.0.md" in r.output
     assert (repo / "RESULTS_v0.6.0.md").is_file()
-    r = CliRunner().invoke(app, ["report", "--check"])
+    r = CliRunner().invoke(app, ["report", "--check", "--allow-no-cases"])
     assert r.exit_code == 0, r.output
 
 

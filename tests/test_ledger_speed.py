@@ -238,7 +238,8 @@ def test_report_writes_speed_json(repo_with_release_sources: Path, monkeypatch) 
     from typer.testing import CliRunner
 
     monkeypatch.chdir(repo_with_release_sources)
-    result = CliRunner().invoke(app, ["report"])
+    # no case sources on this repo (speed only): --allow-no-cases
+    result = CliRunner().invoke(app, ["report", "--allow-no-cases"])
     assert result.exit_code == 0, result.output
     speed_path = repo_with_release_sources / "results" / "release" / "speed.json"
     assert speed_path.is_file(), "bench report must write results/release/speed.json"
@@ -251,8 +252,8 @@ def test_report_writes_speed_json(repo_with_release_sources: Path, monkeypatch) 
         == text.strip()
     ), "speed.json must be compact JSON with sorted keys"
     # --check passes right after a report, and flags a tampered speed.json
-    assert CliRunner().invoke(app, ["report", "--check"]).exit_code == 0
+    assert CliRunner().invoke(app, ["report", "--check", "--allow-no-cases"]).exit_code == 0
     speed_path.write_text('{"tampered":true}\n', encoding="utf-8")
-    stale = CliRunner().invoke(app, ["report", "--check"])
+    stale = CliRunner().invoke(app, ["report", "--check", "--allow-no-cases"])
     assert stale.exit_code == 1
     assert "results/release/speed.json" in stale.output

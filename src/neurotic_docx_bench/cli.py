@@ -3024,14 +3024,42 @@ def docset_cmd(
 def report_cmd(
     root: Path = typer.Option(Path("."), "--root", help="repository root"),
     check: bool = typer.Option(False, "--check", help="exit 1 when the published views are stale"),
+    allow_no_cases: bool = typer.Option(
+        False,
+        "--allow-no-cases",
+        help="emit the release even when no case source exists (no legacy_cases snapshot, no pointer)",
+    ),
 ) -> None:
     """Regenerate RESULTS.md, RESULTS_DETAILED.md, the README vendor table and
     results/scores.json (the release contract's numbers, with the release-evidence
     sample tables) from the stores, plus the results/release/ bundle: the case
-    shards and speed.json of the plan-3b release contract."""
-    from neurotic_docx_bench.ledger import build as ledger_build
+    shards and speed.json of the plan-3b release contract.
 
+    The case shards come from the stores and the legacy_cases snapshot: when the
+    snapshot is absent locally, the committed pointer results/legacy_cases.ref.json
+    is downloaded through the pinned hub machinery first. A pointer that cannot be
+    satisfied fails the report; a repo with no case source at all needs
+    --allow-no-cases."""
+    from neurotic_docx_bench.ledger import build as ledger_build
+    from neurotic_docx_bench.ledger import cases_ref
+
+    try:
+        cases_ref.ensure_legacy(root)
+    except cases_ref.CasesRefError as exc:
+        console.print(Text.assemble(("error: ", "red"), str(exc)), soft_wrap=True)
+        raise typer.Exit(code=1) from exc
     bundle = ledger_build.build(root)
+    if not bundle.release_cases and not allow_no_cases:
+        console.print(
+            Text.assemble(
+                ("error: ", "red"),
+                "cases release: no sources — no legacy_cases snapshot and no "
+                "results/legacy_cases.ref.json pointer; never a release without cases "
+                "(rerun with --allow-no-cases to emit one without them)",
+            ),
+            soft_wrap=True,
+        )
+        raise typer.Exit(code=1)
     if check:
         stale = ledger_build.changed_files(root, bundle)
         for p in stale:
@@ -3733,6 +3761,48 @@ def hub_get_cmd(
     if report.kept_local:
         keep = "would keep local" if report.dry_run else "kept local"
         console.print(Text(f"{keep}: {', '.join(report.kept_local)}", style="yellow"))
+
+
+cases_app = typer.Typer(
+    name="cases",
+    help="The legacy_cases snapshot: upload it once and record the pointer `bench report` downloads.",
+    no_args_is_help=True,
+)
+app.add_typer(cases_app)
+
+
+@cases_app.command(name="snapshot-upload")
+def cases_snapshot_upload_cmd(
+    root: Path = typer.Option(Path("."), "--root", help="repository root"),
+    repo: str | None = typer.Option(
+        None, "--repo", help="the results dataset repo (default: arthrod/neurotic_docx_bench)", show_default=False
+    ),
+    source: str | None = typer.Option(
+        None,
+        "--source",
+        help="the pointer's source line (default: cases_adapter.from_published of the gh-pages site at its current commit)",
+        show_default=False,
+    ),
+) -> None:
+    """Upload the local legacy_cases input to inputs/legacy_cases/<sha256>.jsonl
+    (content-addressed, never overwritten), verify it through the plain tree
+    listing, and write/update results/legacy_cases.ref.json — the committed
+    pointer a fresh clone's `bench report` downloads the snapshot through."""
+    from neurotic_docx_bench import hub
+    from neurotic_docx_bench.ledger import cases_ref
+
+    try:
+        ref, uploaded = cases_ref.snapshot_upload(
+            root, repo=repo or hub.RESULTS_REPO, source=source
+        )
+    except cases_ref.CasesRefError as exc:
+        console.print(Text.assemble(("error: ", "red"), str(exc)), soft_wrap=True)
+        raise typer.Exit(code=1) from exc
+    verb = "uploaded" if uploaded else "already on the hub"
+    console.print(
+        f"{verb}: {ref.repo}/{ref.path} ({ref.bytes} bytes), verified at {ref.revision[:12]}"
+    )
+    console.print(f"pointer: results/legacy_cases.ref.json (source: {ref.source})")
 
 
 # --- bench try: one fixture, any tool, against jubarte -----------------------

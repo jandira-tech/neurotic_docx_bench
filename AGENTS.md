@@ -230,7 +230,14 @@ trees**; the families the stores cannot derive (all of them today: their
 WebP/PDF trees, shown-page vectors, per-case SSIM and `dropped` curation live
 only in the published pages) come from the adapter-produced
 `results/release/legacy_cases.jsonl` input (`ledger/cases_adapter.write_legacy`,
-run once; >2 MB so it is not committed). `tests/test_ledger_cases.py` pins that
+run once; >2 MB so it is not committed). The snapshot is a **recorded input**
+(#119): the committed pointer `results/legacy_cases.ref.json` (`ledger/cases_ref.py`)
+pins its content-addressed hub copy `inputs/legacy_cases/<sha256>.jsonl` at a
+40-hex revision, `bench cases snapshot-upload` uploads it and writes the pointer,
+and `bench report` downloads it through `hub_get`'s pinned machinery when the
+local file is absent — a pointer it cannot satisfy fails the report (never a
+release without cases), and a repo with no case source at all needs
+`--allow-no-cases`. `tests/test_ledger_cases.py` pins that
 split family by family: when a family's assets return to the stores, shrink
 `ADAPTER_ONLY_FAMILIES` with them. One packaging note: bench-ops also ships a
 `bench` console script; after adding it as a dependency, existing venvs need
