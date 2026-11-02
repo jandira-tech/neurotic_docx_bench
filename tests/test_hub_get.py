@@ -259,6 +259,14 @@ def test_presets_cover_the_three_datasets_and_resolve_destinations(tmp_path: Pat
     assert hub_get.PRESETS["compare-regen"].dest == Path("results/compare_regen/out")
 
 
+def test_apryse_docx_to_pdf_outputs_have_a_preset() -> None:
+    """#100: Apryse's DOCX→PDF outputs on fixture set v1 live only on the results dataset."""
+    p = hub_get.PRESETS["docx-to-pdf-v1-apryse"]
+    assert p.repo_id == hub.RESULTS_REPO
+    assert p.path == "outputs/docx_to_pdf_v1_apryse"
+    assert p.dest == hub_get.DOWNLOADS / "docx_to_pdf_v1_apryse"
+
+
 def test_remote_files_skip_folders(tmp_path: Path) -> None:
     api = PinnedHub(FILES)
     files = hub_get.remote_files(api, REPO, SHA, "outputs")
