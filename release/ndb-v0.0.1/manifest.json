@@ -1,0 +1,19 @@
+{
+  "created": "2026-11-02T22:29:58.778252Z",
+  "files": [
+    {
+      "bytes": 32891,
+      "path": "release/ndb-v0.0.1/results/scores.json",
+      "served": false,
+      "sha256": "4a7a4bb56c1665d4221f268c39c84484c5391175a24d1c25287f1b1694e87ed4"
+    }
+  ],
+  "hf": {
+    "repo": "arthrod/neurotic_docx_bench",
+    "revision": "293d7accbf21680343ebcaa660630ca691dacc8f"
+  },
+  "producer": "ndb",
+  "r2_prefix": "ndb-v0.0.1/",
+  "tag": "ndb-v0.0.1",
+  "viewer_version": null
+}
