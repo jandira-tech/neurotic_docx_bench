@@ -212,6 +212,7 @@ def test_write_replaces_readme_block_and_is_idempotent(repo: Path) -> None:
         "RESULTS.md",
         "RESULTS_DETAILED.md",
         "README.md",
+        "scores.json",
     }
     readme = (repo / "README.md").read_text()
     assert (
