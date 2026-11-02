@@ -15,9 +15,8 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 import pytest
-from test_ledger_build import repo as _ledger_repo  # noqa: F401  the fake-repo fixture, shared with test_ledger_build
-
 from neurotic_docx_bench.ledger import speed as speed_emit
+from test_ledger_build import repo as _ledger_repo  # noqa: F401  the fake-repo fixture, shared with test_ledger_build
 
 from bench_ops.models import Speed, dumps_compact
 
@@ -83,8 +82,9 @@ def test_emit_synthetic_store_validates_and_carries_the_tables(tmp_path: Path) -
     speed = speed_emit.emit(tmp_path)
     assert isinstance(speed, Speed)
     assert speed.version and speed.repo and speed.title and speed.intro
-    assert [t.id for t in speed.tasks] == ["redlines", "pdf"]  # render order
-    red, _pdf = speed.tasks
+    assert speed.generated.tzinfo is not None  # naive timestamps are rejected
+    assert [t.id for t in speed.tasks] == ["pdf", "redlines"]  # sorted by id
+    red = next(t for t in speed.tasks if t.id == "redlines")
     # the redline task: one lane per per_pair file, complete coverage
     assert red.available is True
     assert red.planned == 4
@@ -93,6 +93,7 @@ def test_emit_synthetic_store_validates_and_carries_the_tables(tmp_path: Path) -
         ("beta", 4, 4),
     ]
     tables = {t.id: t for t in red.tables}
+    assert [t.id for t in red.tables] == ["category", "common", "quartile"]  # sorted by id
     assert set(tables) == {"common", "category", "quartile"}
     # common pairs: failures are excluded from the timing statistics
     common = {r.tool: r for r in tables["common"].rows}
@@ -123,11 +124,12 @@ def test_emit_synthetic_store_validates_and_carries_the_tables(tmp_path: Path) -
 def test_emit_synthetic_notes_are_plain_text_sections(tmp_path: Path) -> None:
     _write_speed_sources(tmp_path)
     speed = speed_emit.emit(tmp_path)
-    (red, _) = speed.tasks
+    red = next(t for t in speed.tasks if t.id == "redlines")
     assert [(n.heading, n.paragraphs, n.bullets) for n in red.notes] == [
         ("Heading", ["A paragraph."], ["bullet one", "bullet two"])
     ]
-    # no markup anywhere in the notes (the model forbids '<'; emit must not feed it any)
+    # no markup anywhere in the notes; the model relies on the escaping viewer,
+    # so emit must never feed it markup in the first place
     for note in red.notes:
         for text in [note.heading, *note.paragraphs, *note.bullets]:
             assert "<" not in text
@@ -136,7 +138,7 @@ def test_emit_synthetic_notes_are_plain_text_sections(tmp_path: Path) -> None:
 def test_emit_synthetic_pdf_task_is_not_measured(tmp_path: Path) -> None:
     _write_speed_sources(tmp_path)
     speed = speed_emit.emit(tmp_path)
-    (_, pdf) = speed.tasks
+    pdf = next(t for t in speed.tasks if t.id == "pdf")
     assert pdf.id == "pdf"
     assert pdf.available is False
     assert pdf.tables == []  # nothing to render for an unmeasured task
@@ -199,7 +201,12 @@ def test_emit_real_notes_are_the_notesc_sections_in_plain_text() -> None:
     assert "Load" in headings
     for note in red.notes:
         for text in [note.heading, *note.paragraphs, *note.bullets]:
-            assert "<" not in text  # plain text only; the model forbids markup
+            assert "<" not in text  # plain text only; the viewer escapes, emit never feeds markup
+    # `backtick` code spans stay plain text in the contract (the viewer renders
+    # them as <code> after escaping)
+    assert any(
+        "`" in text for note in red.notes for text in (*note.paragraphs, *note.bullets)
+    )
     # the pdf task stays "Not measured yet." while results/speed_10k/pdf/ is absent
     pdf = next(t for t in speed.tasks if t.id == "pdf")
     assert pdf.available is False
@@ -231,7 +238,8 @@ def test_report_writes_speed_json(repo_with_release_sources: Path, monkeypatch) 
     speed_path = repo_with_release_sources / "results" / "release" / "speed.json"
     assert speed_path.is_file(), "bench report must write results/release/speed.json"
     speed = Speed.model_validate_json(speed_path.read_text(encoding="utf-8"))
-    assert [t.id for t in speed.tasks] == ["redlines", "pdf"]
+    assert speed.generated.tzinfo is not None  # naive timestamps are rejected
+    assert [t.id for t in speed.tasks] == ["pdf", "redlines"]  # sorted by id
     text = speed_path.read_text(encoding="utf-8")
     assert (
         json.dumps(json.loads(text), sort_keys=True, separators=(",", ":"), ensure_ascii=False)
