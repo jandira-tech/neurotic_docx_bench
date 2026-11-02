@@ -291,20 +291,26 @@ def fidelity_table(
         )
     if table.history_groups and not compact:
         out.append("")
-        out.append(
-            "Other document sets or renderers measured for this benchmark are listed under History "
-            "in RESULTS_DETAILED.md: "
-            + ", ".join(
-                f"`{g.docset}`/`{g.renderer}`"
-                + (
-                    f" (a subset of `{table.subset_groups[g.docset]}`)"
-                    if g.docset in table.subset_groups
-                    else ""
-                )
-                for g in table.history_groups
-            )
-        )
+        out.append(history_pointer(table.history_groups, table.subset_groups))
     return "\n".join(out).rstrip() + "\n"
+
+
+def history_pointer(groups: Sequence[pol.GroupKey], subset_groups: dict[str, str]) -> str:
+    """One line naming every History group by docset, renderer and bench series.
+
+    The bench series is what tells two runs of one docset under one renderer apart
+    (a ``0.8`` and a ``0.7`` measurement of ``a89ffc217bba`` would otherwise read the same).
+    """
+    return (
+        "Other document sets or renderers measured for this benchmark are listed under History "
+        "in RESULTS_DETAILED.md: "
+        + ", ".join(
+            f"`{g.docset}`/`{g.renderer}` (bench `{g.bench}`"
+            + (f", a subset of `{subset_groups[g.docset]}`" if g.docset in subset_groups else "")
+            + ")"
+            for g in groups
+        )
+    )
 
 
 def _speed_rows(ranked: Sequence[pol.RankedSpeed]) -> list[list[str]]:
