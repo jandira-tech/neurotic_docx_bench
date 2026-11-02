@@ -1,26 +1,33 @@
 #!/usr/bin/env node
 /**
- * Build the leaderboard page from a scores.json.
+ * Build a bench page from a scores.json.
  *
- *   node packages/bench-viewer/scripts/build-pages.ts <scores.json> <outdir>
+ *   node packages/bench-viewer/scripts/build-pages.ts <scores.json> <outdir> [--theme <name>]
  *
- * Writes <outdir>/index.html — badge, legend, headlines, every table, the
- * states and the method — and copies themes/tokens.css and
- * themes/arthur-law.css next to it, so the directory opens as a page on its
- * own. No git operations, no network: the file it reads is the file it
- * prints.
+ * Two themes, one scores file:
+ *
+ * - `arthur-law` (the default) writes the leaderboard page: the scores,
+ *   ranked, with the leader of every table named above it.
+ * - `jubarte` writes the jubarte page: the product's own framing, with the
+ *   headline cells, the "ours" rows and the affiliation mark.
+ *
+ * Both write <outdir>/index.html and copy the stylesheets next to it, so the
+ * directory opens as a page on its own. No git operations, no network: the
+ * file it reads is the file it prints.
  */
 
 import { copyFile, mkdir, readFile, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
+  buildLeaderboardPage,
   esc,
   parseScores,
   renderBadge,
   renderHeadlines,
   renderLegend,
   renderMethod,
+  renderProvenance,
   renderStates,
   renderTable,
 } from "../src/index.ts";
@@ -28,27 +35,21 @@ import { requireHttpUrl } from "../src/parse.ts";
 import type { Scores } from "../src/types.ts";
 
 /** The stylesheets the page links, copied into the output directory. */
-const THEMES = ["tokens.css", "arthur-law.css"];
+const THEMES = ["tokens.css", "arthur-law.css", "jubarte.css"];
 
-function provenanceBlock(scores: Scores): string {
-  const entries = Object.entries(scores.provenance);
-  if (entries.length === 0) return "";
-  const rows = entries
-    .map(
-      ([key, values]) =>
-        `<li><span class="mono">${esc(key)}</span> <span class="muted">${values.map((v) => esc(v)).join(" · ")}</span></li>`,
-    )
-    .join("\n");
-  return `<section class="mt-72">
-<div class="section-head"><h2>Provenance</h2><span>where every number came from</span></div>
-<ul class="bench-list mt-12">
-${rows}
-</ul>
-</section>`;
-}
+/** The skins the page can wear. */
+const THEME_NAMES = ["arthur-law", "jubarte"] as const;
+
+type Theme = (typeof THEME_NAMES)[number];
+
+/** The stylesheet each theme links. */
+const THEME_STYLESHEET: Record<Theme, string> = {
+  "arthur-law": "arthur-law.css",
+  jubarte: "jubarte.css",
+};
 
 /** The whole page. Every text value goes through esc(). */
-export function renderPage(scores: Scores): string {
+export function renderPage(scores: Scores, stylesheet = "arthur-law.css"): string {
   const repo = requireHttpUrl(scores.repo, "repo");
   const viewer = requireHttpUrl(scores.viewer, "viewer");
   const tables = scores.tables.map((t) => renderTable(t)).join("\n");
@@ -61,7 +62,7 @@ export function renderPage(scores: Scores): string {
 <meta name="description" content="DOCX conversion and redlines scored against Microsoft Word, failures included.">
 <meta name="generator" content="@jandira-tech/bench-viewer">
 <link rel="stylesheet" href="./tokens.css">
-<link rel="stylesheet" href="./arthur-law.css">
+<link rel="stylesheet" href="./${esc(stylesheet)}">
 </head>
 <body>
 <main class="wrap">
@@ -75,7 +76,7 @@ ${renderHeadlines(scores.headlines)}
 ${tables}
 ${renderStates(scores.states, { heading: "By corpus state" })}
 ${renderMethod(scores.method)}
-${provenanceBlock(scores)}
+${renderProvenance(scores.provenance)}
 <footer class="mt-72">
 <p class="note">Harness and raw records: <a href="${esc(repo)}">neurotic_docx_bench</a>. Per-case viewer: <a href="${esc(viewer)}">${esc(viewer)}</a>. Figures are project-maintained and reproducible, not a neutral third-party benchmark.</p>
 </footer>
@@ -85,12 +86,46 @@ ${provenanceBlock(scores)}
 `;
 }
 
-const [scoresArg, outArg] = process.argv.slice(2);
+/** The page a theme wears. */
+function renderThemePage(scores: Scores, theme: Theme): string {
+  if (theme === "jubarte") return renderPage(scores, THEME_STYLESHEET.jubarte);
+  return buildLeaderboardPage(scores);
+}
+
+/** Read the flags: the theme is the only one there is. */
+function readTheme(args: string[]): Theme {
+  let theme: string = "arthur-law";
+  for (let i = 0; i < args.length; i++) {
+    const arg = args[i];
+    if (arg === "--theme") {
+      const value = args[i + 1];
+      if (value === undefined) {
+        console.error("build-pages.ts: --theme needs a theme name");
+        process.exit(2);
+      }
+      theme = value;
+      i++;
+    } else if (arg.startsWith("--theme=")) {
+      theme = arg.slice("--theme=".length);
+    } else {
+      console.error(`build-pages.ts: unknown argument ${arg}`);
+      process.exit(2);
+    }
+  }
+  if (!THEME_NAMES.includes(theme as Theme)) {
+    console.error(`build-pages.ts: unknown theme ${theme}; use ${THEME_NAMES.join(" or ")}`);
+    process.exit(2);
+  }
+  return theme as Theme;
+}
+
+const [scoresArg, outArg, ...flagArgs] = process.argv.slice(2);
 if (!scoresArg || !outArg) {
-  console.error("usage: build-pages.ts <scores.json> <outdir>");
+  console.error("usage: build-pages.ts <scores.json> <outdir> [--theme arthur-law|jubarte]");
   process.exit(2);
 }
 
+const theme = readTheme(flagArgs);
 const scoresPath = resolve(scoresArg);
 const outDir = resolve(outArg);
 
@@ -112,14 +147,16 @@ try {
 }
 
 await mkdir(outDir, { recursive: true });
-await writeFile(join(outDir, "index.html"), renderPage(scores), "utf8");
-for (const theme of THEMES) {
+await writeFile(join(outDir, "index.html"), renderThemePage(scores, theme), "utf8");
+for (const stylesheet of THEMES) {
   await copyFile(
-    fileURLToPath(new URL(`../themes/${theme}`, import.meta.url)),
-    join(outDir, theme),
+    fileURLToPath(new URL(`../themes/${stylesheet}`, import.meta.url)),
+    join(outDir, stylesheet),
   );
 }
 
-console.log(
-  `${join(outDir, "index.html")}: ${scores.tables.length} tables, ${scores.headlines.length} headlines, ${scores.states.length} states`,
-);
+const summary =
+  theme === "jubarte"
+    ? `${scores.tables.length} tables, ${scores.headlines.length} headlines, ${scores.states.length} states`
+    : `${scores.tables.length} tables, ${scores.tables.filter((t) => t.id.endsWith("-sample")).length} sample tables, ${scores.states.length} states`;
+console.log(`${join(outDir, "index.html")}: ${summary}`);
