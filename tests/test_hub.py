@@ -654,3 +654,22 @@ def test_default_api_is_a_real_hfapi() -> None:
     assert not hasattr(
         HfApi, "upload_large_folder"
     )  # removed in huggingface_hub 2.0; upload_folder replaces it
+
+
+def test_verify_uploaded_lists_the_tree_without_expand(tmp_path: Path) -> None:
+    """The post-upload check needs only blob ids and LFS sha256s, which the plain tree
+    listing carries. ``expand=True`` adds a last-commit lookup per file and pages 50 at a
+    time: on the 69k-file results dataset that never finished in 10 minutes, while the
+    plain listing took 38 s (measured 2026-11-02)."""
+    seen: list[bool] = []
+
+    class Api(FakeHub):
+        def list_repo_tree(self, repo_id, *, repo_type, path_in_repo=None, recursive=True, expand=True):
+            seen.append(expand)
+            return super().list_repo_tree(
+                repo_id, repo_type=repo_type, path_in_repo=path_in_repo, recursive=recursive, expand=expand
+            )
+
+    (tmp_path / "a.txt").write_text("a\n")
+    hub.verify_uploaded(tmp_path, api=Api(), repo_id="r")
+    assert seen == [False]
