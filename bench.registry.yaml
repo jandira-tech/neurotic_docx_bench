@@ -362,6 +362,16 @@ tools:
     # 26.8.0.3 (their `version` field). The store is append-only, so the spelling maps here.
     converter_tools: [soffice, candidates]
     url: https://www.libreoffice.org/
+  - id: apryse
+    vendor: apryse
+    display: Apryse SDK
+    role: converter
+    engine: apryse-sdk
+    # apryse-sdk 12.2.1 on a demo key: every page carries Apryse's watermark, which the
+    # converter line's score includes (#100). Its redlines are the `apryse` lane of
+    # results/redlines_0929_full (versions.json there), which needs no entry here.
+    converter_tools: [apryse]
+    url: https://apryse.com/products/core-sdk
   - id: dxpdf
     vendor: dxpdf
     display: dxpdf
