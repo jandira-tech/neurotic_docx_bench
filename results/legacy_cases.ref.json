@@ -1,0 +1,8 @@
+{
+  "bytes": 22894944,
+  "path": "inputs/legacy_cases/8b862e4519757a01fbfe3f1157d60614be2522da24758fbe6e521bc3c5001455.jsonl",
+  "repo": "arthrod/neurotic_docx_bench",
+  "revision": "cf13fbd75494fa3e9142afa3f3de1f7a3ec1c70b",
+  "sha256": "8b862e4519757a01fbfe3f1157d60614be2522da24758fbe6e521bc3c5001455",
+  "source": "cases_adapter.from_published of site/index.html + site/redlines/index.html at gh-pages 610bc447b886dd64505d5afde95d37d8ae9edd35"
+}

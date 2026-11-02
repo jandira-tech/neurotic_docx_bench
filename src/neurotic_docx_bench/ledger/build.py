@@ -16,12 +16,15 @@ import re
 from datetime import UTC, datetime
 from pathlib import Path
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
+from bench_ops.models import dumps_compact
 from neurotic_docx_bench import version as ver
+from neurotic_docx_bench.ledger import cases as cases_mod
 from neurotic_docx_bench.ledger import policy as pol
 from neurotic_docx_bench.ledger import rows as rws
 from neurotic_docx_bench.ledger import scores as sc
+from neurotic_docx_bench.ledger import speed as speed_mod
 from neurotic_docx_bench.ledger import stats as st
 from neurotic_docx_bench.ledger import tables as tb
 from neurotic_docx_bench.ledger.registry import DEFAULT_REGISTRY_PATH, load_registry
@@ -115,6 +118,12 @@ class Bundle(BaseModel):
     readme_vendor_table: str
     # results/scores.json: the same rows as the pages, as JSON (#113).
     scores_json: str
+    # results/release/: the cases shards (path relative to results/release/)
+    # and speed.json — compact contract JSON, git-ignored (HF is the record).
+    # Empty when this repo's stores emit no case families and no legacy input
+    # exists (ledger/cases.py documents that split).
+    release_cases: dict[str, str] = Field(default_factory=dict)
+    release_speed: str | None = None
     # Headline groups the pages were built from, one per benchmark table.
     headline_groups: tuple[pol.GroupKey, ...] = ()
     provenance: Provenance | None = None
@@ -212,6 +221,12 @@ def build(
         site=sc.read_site_facts(evidence) if evidence is not None else None,
         affiliated_tools=frozenset(t.id for t in registry.tools if t.affiliated),
     )
+    release_cases: dict[str, str] = {}
+    cases_index, cases_shards = cases_mod.emit(root)
+    if cases_index.groups:
+        release_cases = cases_mod.release_texts(cases_index, cases_shards)
+    speed_doc = speed_mod.emit(root)
+    release_speed = None if speed_doc is None else dumps_compact(speed_doc)
     results_parts = [
         GENERATED_NOTE,
         prov.line(),
@@ -265,6 +280,8 @@ def build(
         scores_json=scores_json,
         headline_groups=tuple(groups),
         provenance=prov,
+        release_cases=release_cases,
+        release_speed=release_speed,
     )
 
 
@@ -321,7 +338,7 @@ def _replace_block(text: str, start: str, end: str, body: str) -> str:
     return text[: i + len(start)] + "\n" + body.rstrip() + "\n" + text[j:]
 
 
-def render_files(root: Path, bundle: Bundle) -> dict[Path, str]:
+def _page_files(root: Path, bundle: Bundle) -> dict[Path, str]:
     root = Path(root)
     readme = (root / "README.md").read_text(encoding="utf-8")
     return {
@@ -334,9 +351,24 @@ def render_files(root: Path, bundle: Bundle) -> dict[Path, str]:
     }
 
 
+def release_root(root: Path) -> Path:
+    return Path(root) / "results" / "release"
+
+
+def render_files(root: Path, bundle: Bundle) -> dict[Path, str]:
+    files = _page_files(root, bundle)
+    release = release_root(root)
+    for rel, text in bundle.release_cases.items():
+        files[release / rel] = text
+    if bundle.release_speed is not None:
+        files[release / "speed.json"] = bundle.release_speed
+    return files
+
+
 def write(root: Path, bundle: Bundle) -> list[Path]:
     written: list[Path] = []
     for path, text in render_files(root, bundle).items():
+        path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(text, encoding="utf-8")
         written.append(path)
     return written
@@ -348,12 +380,37 @@ def _without_stamp(text: str) -> str:
     )
 
 
+def _without_generated(text: str) -> str:
+    """Release JSON with the emission clock taken out: ``generated`` is the only
+    byte that differs between two emissions of the same stores (scores.json dates
+    itself from the rows instead; these files carry the emission timestamp), so
+    --check compares everything else byte for byte. A file that is not JSON at
+    all compares verbatim and can never pass."""
+    try:
+        obj = json.loads(text)
+    except json.JSONDecodeError:
+        return text
+    if isinstance(obj, dict):
+        obj.pop("generated", None)
+    return json.dumps(obj, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+
+
 def changed_files(root: Path, bundle: Bundle) -> list[Path]:
     """Published files whose content (ignoring the generation stamp) is not what the
     stores produce now."""
     out: list[Path] = []
-    for path, text in render_files(root, bundle).items():
+    for path, text in _page_files(root, bundle).items():
         current = path.read_text(encoding="utf-8") if path.is_file() else ""
         if _without_stamp(current) != _without_stamp(text):
+            out.append(path)
+    release = release_root(root)
+    for rel, text in bundle.release_cases.items():
+        current = (release / rel).read_text(encoding="utf-8") if (release / rel).is_file() else ""
+        if _without_generated(current) != _without_generated(text):
+            out.append(release / rel)
+    if bundle.release_speed is not None:
+        path = release / "speed.json"
+        current = path.read_text(encoding="utf-8") if path.is_file() else ""
+        if _without_generated(current) != _without_generated(bundle.release_speed):
             out.append(path)
     return out

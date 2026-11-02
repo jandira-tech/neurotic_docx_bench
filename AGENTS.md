@@ -218,6 +218,32 @@ jubarte.pro read the same six files — single source). Speed is deliberately no
 in it (its own `speed.json` ships later); `generated` is the newest row's date,
 not the build's; `version` is the bench version string as the bench writes it.
 
+`results/release/` (git-ignored, #119 / bench-ops plan 3b) holds the other two
+release artefacts, also written by `uv run bench report` and covered by
+`--check` (which compares them modulo their `generated` emission clock):
+`cases/index.json` plus one `cases/<kind>/<group>.json` shard per group
+(`bench_ops.models.shard_path`, `/` → `--`), and `speed.json` — the 10k-input
+speed page's view (per-pair rows of `results/speed_10k` aggregated, lanes with
+complete coverage in the tables, partial rerun lanes in coverage only). The
+case shards are emitted by `ledger/cases.py` from the stores **and their asset
+trees**; the families the stores cannot derive (all of them today: their
+WebP/PDF trees, shown-page vectors, per-case SSIM and `dropped` curation live
+only in the published pages) come from the adapter-produced
+`results/release/legacy_cases.jsonl` input (`ledger/cases_adapter.write_legacy`,
+run once; >2 MB so it is not committed). The snapshot is a **recorded input**
+(#119): the committed pointer `results/legacy_cases.ref.json` (`ledger/cases_ref.py`)
+pins its content-addressed hub copy `inputs/legacy_cases/<sha256>.jsonl` at a
+40-hex revision, `bench cases snapshot-upload` uploads it and writes the pointer,
+and `bench report` downloads it through `hub_get`'s pinned machinery when the
+local file is absent — a pointer it cannot satisfy fails the report (never a
+release without cases), and a repo with no case source at all needs
+`--allow-no-cases`. `tests/test_ledger_cases.py` pins that
+split family by family: when a family's assets return to the stores, shrink
+`ADAPTER_ONLY_FAMILIES` with them. One packaging note: bench-ops also ships a
+`bench` console script; after adding it as a dependency, existing venvs need
+`uv sync --reinstall-package neurotic-docx-bench` once so this repo's `bench`
+entry point wins again (fresh clones are fine — the root package installs last).
+
 A cohort run that lives under `results/<run>/` (the 2026-10-14 Wordcraft cohort is the model)
 reaches the pages in four steps, each of which bit someone on 2026-10-14:
 
