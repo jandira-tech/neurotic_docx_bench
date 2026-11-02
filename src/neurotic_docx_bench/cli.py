@@ -3027,7 +3027,8 @@ def report_cmd(
 ) -> None:
     """Regenerate RESULTS.md, RESULTS_DETAILED.md, the README vendor table and
     results/scores.json (the release contract's numbers, with the release-evidence
-    sample tables) from the stores."""
+    sample tables) from the stores, plus the results/release/ bundle: the case
+    shards and speed.json of the plan-3b release contract."""
     from neurotic_docx_bench.ledger import build as ledger_build
 
     bundle = ledger_build.build(root)
@@ -3042,6 +3043,12 @@ def report_cmd(
     frozen = ledger_build.freeze(root, bundle)
     if frozen is not None:
         console.print(f"froze {frozen.name}")
+    if not bundle.release_cases:
+        console.print(
+            "cases release: no sources — the stores hold no complete asset trees "
+            "and no legacy_cases input exists (the adapter is the source; see "
+            "neurotic_docx_bench/ledger/cases.py)"
+        )
     for p in ledger_build.write(root, bundle):
         console.print(f"wrote {p}")
 

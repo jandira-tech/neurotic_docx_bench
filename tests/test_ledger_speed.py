@@ -169,9 +169,14 @@ def test_emit_reproduces_the_published_10k_page() -> None:
     assert red.available is True
     assert red.timeout_ms == 120000
     assert red.quartile_cuts_bytes == [10601, 19102, 56197]
-    assert sorted(c.tool for c in red.coverage) == sorted(TEN_K_TOOLS)
+    # the five published lanes are all present and complete; a rerun lane still in
+    # progress (docxodus-csharp-inproc today) may show its real partial coverage
+    lanes = {c.tool: c for c in red.coverage}
+    assert set(TEN_K_TOOLS) <= set(lanes)
+    for tool in TEN_K_TOOLS:
+        assert (lanes[tool].completed, lanes[tool].planned) == (10000, 10000)
     for c in red.coverage:
-        assert (c.completed, c.planned) == (10000, 10000)
+        assert c.completed <= c.planned
     tables = {t.id: t for t in red.tables}
     assert set(tables) == {"common", "category", "quartile"}
     assert len(tables["common"].rows) == 5

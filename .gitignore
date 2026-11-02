@@ -252,3 +252,8 @@ results/**/lo_profiles/
 
 # The bench-viewer package ships its compiled JavaScript to git dependencies.
 !packages/bench-viewer/dist/
+
+# results/release/: the plan-3b release bundle (case shards ~22 MB, speed.json).
+# Not committed — the release manifest lists them and HF is their record. The
+# adapter-produced legacy_cases.jsonl input lives here too when it exceeds 2 MB.
+results/release/
