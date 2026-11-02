@@ -1,0 +1,32 @@
+{
+  "name": "@jandira-tech/bench-viewer",
+  "version": "0.1.0",
+  "description": "Framework-free HTML renderers for neurotic_docx_bench scores.",
+  "type": "module",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./package.json": "./package.json",
+    "./themes/*": "./themes/*"
+  },
+  "files": [
+    "dist",
+    "themes"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "check:dist": "tsc && git diff --exit-code -- dist && test -z \"$(git ls-files --others --exclude-standard -- dist)\"",
+    "prepare": "tsc",
+    "typecheck": "tsc -p tsconfig.test.json",
+    "test": "vitest run",
+    "check": "biome check ."
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.6.4",
+    "typescript": "^7.0.2",
+    "vitest": "4.1.12"
+  }
+}

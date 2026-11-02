@@ -1,0 +1,408 @@
+/* jubarte.pro's bench rules.
+ *
+ * Lifted from
+ * /Users/arthrod/temp/T/1_jubarte-redlines/jubarte-app/jubarte-site/site/static/css/site.css
+ * at commit ad9b73e: only the rules the bench-viewer components need, and the
+ * variables those rules use. The declarations are jubarte's, unchanged.
+ *
+ * One deliberate difference: the fonts are the stacks, not the @font-face
+ * rules, because the woff2 files live on jubarte.pro, not here. The palette
+ * keeps jubarte's Graphite and Night values through light-dark().
+ */
+
+:root {
+  color-scheme: light dark;
+
+  /* Graphite (light) and Night (dark), from jubarte's :root. */
+  --bg: light-dark(oklch(97% 0.003 106.4), oklch(20% 0.023 249));
+  --ink: light-dark(oklch(18.2% 0 0), oklch(96.2% 0.008 241.7));
+  --muted: var(--ink);
+  --primary: light-dark(oklch(21.8% 0 0), oklch(79.1% 0.094 237.6));
+  --primary-dark: light-dark(oklch(0% 0 0), oklch(86.2% 0.065 236));
+  --line: light-dark(oklch(87.5% 0.005 106.5), oklch(33.4% 0.039 250.5));
+  --line-strong: light-dark(oklch(73.3% 0.007 106.6), oklch(43.6% 0.043 246.4));
+  --surface: light-dark(oklch(94.2% 0.004 106.5), oklch(23.9% 0.026 249));
+  --hover: light-dark(oklch(92.4% 0.005 106.5), oklch(27.1% 0.029 246.9));
+  --hl: light-dark(oklch(91.6% 0.128 94.1), oklch(40.5% 0.075 243));
+  --hl-soft: light-dark(oklch(96.2% 0.062 95.4), oklch(28.4% 0.046 245.3));
+  --mark: light-dark(oklch(91.6% 0.128 94.1), oklch(40.5% 0.075 243));
+  --mark-text: var(--ink);
+  --mark-soft: var(--hl-soft);
+
+  --sans: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --max: 1180px;
+  --radius: 6px;
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+html,
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+a {
+  color: var(--primary);
+  text-decoration: none;
+}
+a:hover {
+  color: var(--primary-dark);
+}
+
+/* ── type ─────────────────────────────────────────────────────────────── */
+.mono {
+  font-family: var(--mono);
+}
+.kicker {
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.muted {
+  color: var(--muted);
+}
+.h1 {
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  font-size: clamp(1.875rem, 4.4vw, 3rem);
+  line-height: 1.05;
+  margin-top: 18px;
+  text-wrap: balance;
+}
+.lead {
+  font-size: 1.0625rem;
+  line-height: 1.55;
+  color: var(--muted);
+  margin-top: 16px;
+  max-width: 62ch;
+  text-wrap: pretty;
+}
+.small {
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  color: var(--muted);
+  text-wrap: pretty;
+}
+.note {
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  color: var(--muted);
+  margin-top: 36px;
+  max-width: 75ch;
+  text-wrap: pretty;
+}
+
+/* ── layout ───────────────────────────────────────────────────────────── */
+.wrap {
+  max-width: var(--max);
+  width: 100%;
+  margin: 0 auto;
+  padding-left: 32px;
+  padding-right: 32px;
+}
+main.wrap {
+  flex: 1;
+  padding-top: 56px;
+  padding-bottom: 80px;
+  position: relative;
+  z-index: 1;
+}
+.section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 14px;
+}
+.section-head > :first-child {
+  font-family: var(--sans);
+  font-size: 1.1875rem;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+.section-head > :last-child:not(:first-child) {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+.cells {
+  display: grid;
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+}
+.cells.no-top {
+  border-top: 0;
+}
+.cells > * {
+  background: var(--bg);
+  min-width: 0;
+}
+.cols-auto-200 {
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+.cols-auto-220 {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+.cols-auto-240 {
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+.cell-pad {
+  padding: 26px 24px 28px;
+}
+.mt-12 {
+  margin-top: 12px;
+}
+.mt-56 {
+  margin-top: 56px;
+}
+.mt-72 {
+  margin-top: 72px;
+}
+.scroll-x {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ── tables ───────────────────────────────────────────────────────────── */
+.t-row {
+  display: grid;
+  gap: 0 14px;
+  padding: 13px 0;
+  border-bottom: 1px solid var(--line);
+  align-items: center;
+}
+.t-row.head {
+  padding: 12px 0 10px;
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.t-row:not(.head):hover {
+  background: var(--hover);
+}
+.num {
+  font-family: var(--mono);
+  font-size: 0.8125rem;
+  text-align: right;
+}
+.bar {
+  height: 10px;
+  background: var(--surface);
+}
+.bar > div {
+  height: 100%;
+  background: var(--line-strong);
+}
+.bar.hi > div {
+  background: var(--primary);
+}
+.bar.thin {
+  height: 6px;
+  margin-top: 4px;
+}
+
+/* ── shared bits ──────────────────────────────────────────────────────── */
+.strong {
+  font-weight: 600;
+}
+.r {
+  text-align: right;
+}
+.note-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-top: 20px;
+}
+.cell-pad > .note-title:first-child {
+  margin-top: 0;
+}
+
+/* ── benchmark ────────────────────────────────────────────────────────── */
+.headline-v {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+.headline-v > span:first-child {
+  font-variant-numeric: tabular-nums;
+  font-size: 2.25rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  color: var(--primary);
+}
+.headline-v .mono {
+  font-size: 0.75rem;
+}
+.bench-table {
+  min-width: 720px;
+}
+.bench-cols {
+  grid-template-columns: 34px minmax(170px, 1.1fr) minmax(200px, 1.6fr) 70px 70px 70px 60px;
+}
+.bench-cols .r,
+.bench-cols .num {
+  text-align: right;
+}
+.t-row.ours {
+  background: linear-gradient(90deg, var(--hl-soft), transparent 70%);
+}
+.tool-name {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+.t-row.ours .tool-name {
+  color: var(--primary);
+}
+.tool-pin {
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  color: var(--muted);
+  margin-top: 2px;
+}
+.bar-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.bar-note {
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  color: var(--muted);
+  max-width: 75ch;
+}
+.num.failed {
+  font-weight: 700;
+}
+.state-name {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+.state-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 14px;
+}
+.state-row > div:first-child {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8125rem;
+  color: var(--muted);
+}
+.state-row.ours > div:first-child {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+/* ── home page bar groups ─────────────────────────────────────────────── */
+.bench-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+.group-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+.bars {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 14px;
+}
+.bar-row {
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr) 64px;
+  gap: 14px;
+  align-items: center;
+  font-size: 0.8125rem;
+  color: var(--muted);
+}
+.bar-row > span:first-child {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.bar-row.ours {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+/* ── bench-viewer's own marks ─────────────────────────────────────────── */
+.bench-badge {
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.bench-legend {
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  color: var(--muted);
+  margin-top: 10px;
+}
+.bench-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.bench-list li {
+  padding: 7px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+@media (max-width: 760px) {
+  .wrap {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+  main.wrap {
+    padding-top: 36px;
+    padding-bottom: 48px;
+  }
+  .bar-row {
+    grid-template-columns: 110px minmax(0, 1fr) 56px;
+  }
+}

@@ -249,3 +249,6 @@ corpus/**/*.pdf
 
 # LibreOffice scratch user profiles written by -env:UserInstallation (bench-ops #114)
 results/**/lo_profiles/
+
+# The bench-viewer package ships its compiled JavaScript to git dependencies.
+!packages/bench-viewer/dist/

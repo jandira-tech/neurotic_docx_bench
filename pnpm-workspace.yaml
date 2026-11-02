@@ -7,6 +7,7 @@
 # superdoc-redlines clone (a missing member dir would break --frozen-lockfile;
 # install it with pnpm inside the clone instead).
 packages:
+  - packages/bench-viewer
   - src/neurotic_docx_bench/utils/docxodus
   - src/neurotic_docx_bench/utils/folio
   - src/neurotic_docx_bench/utils/superdoc
