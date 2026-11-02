@@ -21,6 +21,7 @@ from pydantic import BaseModel, ConfigDict
 from neurotic_docx_bench import version as ver
 from neurotic_docx_bench.ledger import policy as pol
 from neurotic_docx_bench.ledger import rows as rws
+from neurotic_docx_bench.ledger import scores as sc
 from neurotic_docx_bench.ledger import stats as st
 from neurotic_docx_bench.ledger import tables as tb
 from neurotic_docx_bench.ledger.registry import DEFAULT_REGISTRY_PATH, load_registry
@@ -112,6 +113,8 @@ class Bundle(BaseModel):
     results_md: str
     detailed_md: str
     readme_vendor_table: str
+    # results/scores.json: the same rows as the pages, as JSON (#113).
+    scores_json: str
     # Headline groups the pages were built from, one per benchmark table.
     headline_groups: tuple[pol.GroupKey, ...] = ()
     provenance: Provenance | None = None
@@ -189,6 +192,26 @@ def build(
     ordered = [b for b in tb.TITLES if b in tables]
     groups = [g for b in ordered if (g := tables[b].group) is not None]
     prov = _provenance_of(groups, version)
+    redline_dirs = sorted(
+        d.parent for d in (root / "results").glob("redlines_*/scores.jsonl")
+    )
+    # scores.json states the newest row's date, never the build's clock, so the
+    # file is byte-stable across days and --check stays meaningful. An empty
+    # store raises (render_scores): there is no newest row to date the file.
+    generated = (
+        tb.fmt_date(max(rows, key=lambda r: r.timestamp).timestamp) if rows else ""
+    )
+    evidence = sc.newest_evidence(root / "results")
+    scores_json = sc.render_scores(
+        tables,
+        row_ci=row_ci,
+        redline_runs=redline_dirs,
+        provenance=prov,
+        generated=generated,
+        bench_version=version,
+        site=sc.read_site_facts(evidence) if evidence is not None else None,
+        affiliated_tools=frozenset(t.id for t in registry.tools if t.affiliated),
+    )
     results_parts = [
         GENERATED_NOTE,
         prov.line(),
@@ -206,11 +229,7 @@ def build(
         part = tb.fidelity_table(tables[b], row_ci=row_ci, compact=True)
         if part:
             results_parts.append(part)
-    redline_runs = [
-        sec
-        for d in sorted((root / "results").glob("redlines_*/scores.jsonl"))
-        if (sec := tb.redline_action_section(d.parent))
-    ]
+    redline_runs = [sec for d in redline_dirs if (sec := tb.redline_action_section(d))]
     results_parts.extend(redline_runs)
     results_parts.append(tb.speed_tables(speed, compact=True))
 
@@ -243,6 +262,7 @@ def build(
         results_md="\n".join(results_parts).rstrip() + "\n",
         detailed_md="\n".join(detailed_parts).rstrip() + "\n",
         readme_vendor_table=tb.vendor_table(registry),
+        scores_json=scores_json,
         headline_groups=tuple(groups),
         provenance=prov,
     )
@@ -310,6 +330,7 @@ def render_files(root: Path, bundle: Bundle) -> dict[Path, str]:
         root / "README.md": _replace_block(
             readme, VENDORS_START, VENDORS_END, bundle.readme_vendor_table
         ),
+        root / "results" / "scores.json": bundle.scores_json,
     }
 
 

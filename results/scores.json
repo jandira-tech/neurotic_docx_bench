@@ -1,0 +1,1290 @@
+{
+  "generated": "2026-11-01",
+  "headlines": [
+    {
+      "label": "DOCX → PDF · median, 600-doc sample",
+      "sub": "600 documents, state-balanced; 0 jubarte failures. Sample list and shas: release_info/sample_conversion_0.17.0_11-01-26_01-06.csv.",
+      "value": "81.09",
+      "vs": "LibreOffice 26.8.0.3 47.88"
+    },
+    {
+      "label": "Redline vs Word compare · median, 600-pair sample",
+      "sub": "600 document pairs, one Word compare each; paired 95% CI of the difference [0.7108, 1.8946]. Sample list and shas: release_info/sample_redline_0.17.0_11-01-26_01-06.csv.",
+      "value": "83.76",
+      "vs": "Docxodus 70.27"
+    }
+  ],
+  "home_groups": [
+    {
+      "meta": "600-doc sample · median · 2026-11-01",
+      "rows": [
+        {
+          "name": "jubarte 0.17.0",
+          "ours": true,
+          "v": 81.0931
+        },
+        {
+          "name": "LibreOffice 26.8.0.3",
+          "ours": false,
+          "v": 47.8822
+        }
+      ],
+      "title": "DOCX → PDF vs Word's own export"
+    },
+    {
+      "meta": "600-pair sample · median · 2026-11-01",
+      "note": "Both groups are the release's samples, state-balanced; the full-corpus tables live in the bench's RESULTS.md.",
+      "rows": [
+        {
+          "name": "jubarte 0.17.0",
+          "ours": true,
+          "v": 83.7553
+        },
+        {
+          "name": "Docxodus 12.6.5 (C#)",
+          "ours": false,
+          "v": 70.2748
+        }
+      ],
+      "title": "Redlines vs Word's compare, opened in Word"
+    }
+  ],
+  "method": [
+    {
+      "d": "Every reference PDF is exported by Microsoft Word and SHA-pinned. Redlines are opened in Word too: if Word refuses the file, the tool scores 0 for that pair.",
+      "t": "Oracle: real Word"
+    },
+    {
+      "d": "Failures are not dropped. A crash, a timeout or an unopenable file counts as 0 in ITT mean and median, so a tool cannot improve its rank by skipping hard documents.",
+      "t": "Intent-to-treat"
+    },
+    {
+      "d": "Ranks tie (n=) when the paired bootstrap interval of the median difference to the row above includes 0. 2,000 resamples, seed 42.",
+      "t": "Paired bootstrap"
+    },
+    {
+      "d": "From 0.17.0 the tables on this page are the release's two samples — state-balanced, every file sha256-listed in the engine's release_info/. Full-corpus runs remain in the bench's RESULTS.md.",
+      "t": "Release samples"
+    },
+    {
+      "d": "jubarte is marked † everywhere. Pins, run dates and sample lists are published so any row can be re-run; the harness is public.",
+      "t": "Author-affiliated, same rules"
+    }
+  ],
+  "provenance": {
+    "docsets": [
+      "27122f4d945e",
+      "a89ffc217bba",
+      "c28442e9bb5a5deb",
+      "c947065c59b2"
+    ],
+    "renderers": [
+      "oracle:microsoft_word"
+    ],
+    "scorers": [
+      "docxide-150dpi",
+      "v1"
+    ]
+  },
+  "repo": "https://github.com/jandira-tech/neurotic_docx_bench",
+  "states": [
+    {
+      "n": "150",
+      "name": "clean",
+      "rows": [
+        {
+          "median": 90.7695,
+          "ours": true,
+          "tool": "jubarte"
+        },
+        {
+          "median": 68.8332,
+          "ours": false,
+          "tool": "soffice"
+        }
+      ],
+      "table": "conversion-sample"
+    },
+    {
+      "n": "150",
+      "name": "tracking_without_comments",
+      "rows": [
+        {
+          "median": 81.5365,
+          "ours": true,
+          "tool": "jubarte"
+        },
+        {
+          "median": 64.3983,
+          "ours": false,
+          "tool": "soffice"
+        }
+      ],
+      "table": "conversion-sample"
+    },
+    {
+      "n": "117",
+      "name": "with_comments_clean",
+      "rows": [
+        {
+          "median": 81.2207,
+          "ours": true,
+          "tool": "jubarte"
+        },
+        {
+          "median": 46.3338,
+          "ours": false,
+          "tool": "soffice"
+        }
+      ],
+      "table": "conversion-sample"
+    },
+    {
+      "n": "183",
+      "name": "with_comments_tracking",
+      "rows": [
+        {
+          "median": 78.6001,
+          "ours": true,
+          "tool": "jubarte"
+        },
+        {
+          "median": 42.8504,
+          "ours": false,
+          "tool": "soffice"
+        }
+      ],
+      "table": "conversion-sample"
+    },
+    {
+      "n": "100",
+      "name": "clean",
+      "rows": [
+        {
+          "median": 90.78,
+          "ours": true,
+          "tool": "jubarte 0.12.0"
+        },
+        {
+          "median": 90.72,
+          "ours": true,
+          "tool": "jubarte 0.11.0"
+        },
+        {
+          "median": 68.29,
+          "ours": false,
+          "tool": "Wordcraft CLI 0.7.0"
+        },
+        {
+          "median": 63.87,
+          "ours": false,
+          "tool": "Wordcraft CLI"
+        },
+        {
+          "median": 66.93,
+          "ours": false,
+          "tool": "docxide-pdf 0.18.4"
+        },
+        {
+          "median": 69.33,
+          "ours": false,
+          "tool": "libreoffice_convert_rust 0.1.0"
+        },
+        {
+          "median": 69.33,
+          "ours": false,
+          "tool": "soffice"
+        },
+        {
+          "median": 62.29,
+          "ours": false,
+          "tool": "rdocx 0.16.0"
+        },
+        {
+          "median": 54.42,
+          "ours": false,
+          "tool": "office2pdf 0.8.1"
+        },
+        {
+          "median": 44.02,
+          "ours": false,
+          "tool": "pdfitdown 4.2.0"
+        }
+      ],
+      "table": "docx_to_pdf"
+    },
+    {
+      "n": "100",
+      "name": "tracking_without_comments",
+      "rows": [
+        {
+          "median": 82.16,
+          "ours": true,
+          "tool": "jubarte 0.12.0"
+        },
+        {
+          "median": 81.85,
+          "ours": true,
+          "tool": "jubarte 0.11.0"
+        },
+        {
+          "median": 59.18,
+          "ours": false,
+          "tool": "Wordcraft CLI 0.7.0"
+        },
+        {
+          "median": 55.56,
+          "ours": false,
+          "tool": "Wordcraft CLI"
+        },
+        {
+          "median": 50.25,
+          "ours": false,
+          "tool": "docxide-pdf 0.18.4"
+        },
+        {
+          "median": 65.47,
+          "ours": false,
+          "tool": "libreoffice_convert_rust 0.1.0"
+        },
+        {
+          "median": 65.47,
+          "ours": false,
+          "tool": "soffice"
+        },
+        {
+          "median": 49.35,
+          "ours": false,
+          "tool": "rdocx 0.16.0"
+        },
+        {
+          "median": 45.48,
+          "ours": false,
+          "tool": "office2pdf 0.8.1"
+        },
+        {
+          "median": 41.13,
+          "ours": false,
+          "tool": "pdfitdown 4.2.0"
+        }
+      ],
+      "table": "docx_to_pdf"
+    },
+    {
+      "n": "100",
+      "name": "with_comments_tracking",
+      "rows": [
+        {
+          "median": 80.11,
+          "ours": true,
+          "tool": "jubarte 0.12.0"
+        },
+        {
+          "median": 71.2,
+          "ours": true,
+          "tool": "jubarte 0.11.0"
+        },
+        {
+          "median": 50.58,
+          "ours": false,
+          "tool": "Wordcraft CLI 0.7.0"
+        },
+        {
+          "median": 48.46,
+          "ours": false,
+          "tool": "Wordcraft CLI"
+        },
+        {
+          "median": 46.71,
+          "ours": false,
+          "tool": "docxide-pdf 0.18.4"
+        },
+        {
+          "median": 42.12,
+          "ours": false,
+          "tool": "libreoffice_convert_rust 0.1.0"
+        },
+        {
+          "median": 42.12,
+          "ours": false,
+          "tool": "soffice"
+        },
+        {
+          "median": 41.75,
+          "ours": false,
+          "tool": "rdocx 0.16.0"
+        },
+        {
+          "median": 40.73,
+          "ours": false,
+          "tool": "office2pdf 0.8.1"
+        },
+        {
+          "median": 40.84,
+          "ours": false,
+          "tool": "pdfitdown 4.2.0"
+        }
+      ],
+      "table": "docx_to_pdf"
+    },
+    {
+      "n": "100",
+      "name": "with_comments_clean",
+      "rows": [
+        {
+          "median": 80.63,
+          "ours": true,
+          "tool": "jubarte 0.12.0"
+        },
+        {
+          "median": 68.97,
+          "ours": true,
+          "tool": "jubarte 0.11.0"
+        },
+        {
+          "median": 51.94,
+          "ours": false,
+          "tool": "Wordcraft CLI 0.7.0"
+        },
+        {
+          "median": 51.82,
+          "ours": false,
+          "tool": "Wordcraft CLI"
+        },
+        {
+          "median": 56.18,
+          "ours": false,
+          "tool": "docxide-pdf 0.18.4"
+        },
+        {
+          "median": 45.33,
+          "ours": false,
+          "tool": "libreoffice_convert_rust 0.1.0"
+        },
+        {
+          "median": 45.33,
+          "ours": false,
+          "tool": "soffice"
+        },
+        {
+          "median": 45.21,
+          "ours": false,
+          "tool": "rdocx 0.16.0"
+        },
+        {
+          "median": 44.45,
+          "ours": false,
+          "tool": "office2pdf 0.8.1"
+        },
+        {
+          "median": 44.23,
+          "ours": false,
+          "tool": "pdfitdown 4.2.0"
+        }
+      ],
+      "table": "docx_to_pdf"
+    },
+    {
+      "n": "2,480",
+      "name": "clean",
+      "rows": [
+        {
+          "median": 89.84,
+          "ours": true,
+          "tool": "jubarte"
+        }
+      ],
+      "table": "corpus/word:all"
+    },
+    {
+      "n": "3,410",
+      "name": "tracking_without_comments",
+      "rows": [
+        {
+          "median": 81.11,
+          "ours": true,
+          "tool": "jubarte"
+        }
+      ],
+      "table": "corpus/word:all"
+    },
+    {
+      "n": "420",
+      "name": "with_comments_tracking",
+      "rows": [
+        {
+          "median": 78.19,
+          "ours": true,
+          "tool": "jubarte"
+        }
+      ],
+      "table": "corpus/word:all"
+    },
+    {
+      "n": "117",
+      "name": "with_comments_clean",
+      "rows": [
+        {
+          "median": 81.22,
+          "ours": true,
+          "tool": "jubarte"
+        }
+      ],
+      "table": "corpus/word:all"
+    },
+    {
+      "n": "2,480",
+      "name": "clean",
+      "rows": [
+        {
+          "median": 81.13,
+          "ours": true,
+          "tool": "jubarte"
+        }
+      ],
+      "table": "docxide_metrics"
+    },
+    {
+      "n": "3,410",
+      "name": "tracking_without_comments",
+      "rows": [
+        {
+          "median": 66.44,
+          "ours": true,
+          "tool": "jubarte"
+        }
+      ],
+      "table": "docxide_metrics"
+    },
+    {
+      "n": "420",
+      "name": "with_comments_tracking",
+      "rows": [
+        {
+          "median": 60.24,
+          "ours": true,
+          "tool": "jubarte"
+        }
+      ],
+      "table": "docxide_metrics"
+    },
+    {
+      "n": "117",
+      "name": "with_comments_clean",
+      "rows": [
+        {
+          "median": 68.56,
+          "ours": true,
+          "tool": "jubarte"
+        }
+      ],
+      "table": "docxide_metrics"
+    },
+    {
+      "n": "1,188",
+      "name": "clean",
+      "rows": [
+        {
+          "median": 88.11,
+          "ours": true,
+          "tool": "jubarte"
+        },
+        {
+          "median": 69.81,
+          "ours": false,
+          "tool": "soffice"
+        },
+        {
+          "median": 67.45,
+          "ours": false,
+          "tool": "PyMuPDF Pro"
+        },
+        {
+          "median": 57.57,
+          "ours": false,
+          "tool": "docxide-pdf"
+        }
+      ],
+      "table": "corpus/word:le3pages"
+    },
+    {
+      "n": "1,366",
+      "name": "tracking_without_comments",
+      "rows": [
+        {
+          "median": 82.44,
+          "ours": true,
+          "tool": "jubarte"
+        },
+        {
+          "median": 68.39,
+          "ours": false,
+          "tool": "soffice"
+        },
+        {
+          "median": 57.81,
+          "ours": false,
+          "tool": "PyMuPDF Pro"
+        },
+        {
+          "median": 53.88,
+          "ours": false,
+          "tool": "docxide-pdf"
+        }
+      ],
+      "table": "corpus/word:le3pages"
+    },
+    {
+      "n": "69",
+      "name": "with_comments_tracking",
+      "rows": [
+        {
+          "median": 72.84,
+          "ours": true,
+          "tool": "jubarte"
+        },
+        {
+          "median": 46.56,
+          "ours": false,
+          "tool": "soffice"
+        },
+        {
+          "median": 46.51,
+          "ours": false,
+          "tool": "PyMuPDF Pro"
+        },
+        {
+          "median": 47.24,
+          "ours": false,
+          "tool": "docxide-pdf"
+        }
+      ],
+      "table": "corpus/word:le3pages"
+    },
+    {
+      "n": "3",
+      "name": "with_comments_clean",
+      "rows": [
+        {
+          "median": 69.88,
+          "ours": true,
+          "tool": "jubarte"
+        },
+        {
+          "median": 40.69,
+          "ours": false,
+          "tool": "soffice"
+        },
+        {
+          "median": 41.46,
+          "ours": false,
+          "tool": "PyMuPDF Pro"
+        },
+        {
+          "median": 40.71,
+          "ours": false,
+          "tool": "docxide-pdf"
+        }
+      ],
+      "table": "corpus/word:le3pages"
+    },
+    {
+      "n": "1,188",
+      "name": "clean",
+      "rows": [
+        {
+          "median": 79.24,
+          "ours": true,
+          "tool": "jubarte"
+        },
+        {
+          "median": 26.33,
+          "ours": false,
+          "tool": "soffice"
+        },
+        {
+          "median": 31.69,
+          "ours": false,
+          "tool": "PyMuPDF Pro"
+        },
+        {
+          "median": 15.6,
+          "ours": false,
+          "tool": "docxide-pdf"
+        }
+      ],
+      "table": "docxide_metrics:le3pages"
+    },
+    {
+      "n": "1,366",
+      "name": "tracking_without_comments",
+      "rows": [
+        {
+          "median": 70.5,
+          "ours": true,
+          "tool": "jubarte"
+        },
+        {
+          "median": 22.9,
+          "ours": false,
+          "tool": "soffice"
+        },
+        {
+          "median": 18.55,
+          "ours": false,
+          "tool": "PyMuPDF Pro"
+        },
+        {
+          "median": 9.95,
+          "ours": false,
+          "tool": "docxide-pdf"
+        }
+      ],
+      "table": "docxide_metrics:le3pages"
+    },
+    {
+      "n": "69",
+      "name": "with_comments_tracking",
+      "rows": [
+        {
+          "median": 41.71,
+          "ours": true,
+          "tool": "jubarte"
+        },
+        {
+          "median": 1.17,
+          "ours": false,
+          "tool": "soffice"
+        },
+        {
+          "median": 0.26,
+          "ours": false,
+          "tool": "PyMuPDF Pro"
+        },
+        {
+          "median": 0.89,
+          "ours": false,
+          "tool": "docxide-pdf"
+        }
+      ],
+      "table": "docxide_metrics:le3pages"
+    },
+    {
+      "n": "3",
+      "name": "with_comments_clean",
+      "rows": [
+        {
+          "median": 33.91,
+          "ours": true,
+          "tool": "jubarte"
+        },
+        {
+          "median": 4.02,
+          "ours": false,
+          "tool": "soffice"
+        },
+        {
+          "median": 3.75,
+          "ours": false,
+          "tool": "PyMuPDF Pro"
+        },
+        {
+          "median": 4.51,
+          "ours": false,
+          "tool": "docxide-pdf"
+        }
+      ],
+      "table": "docxide_metrics:le3pages"
+    }
+  ],
+  "tables": [
+    {
+      "desc": "A state-balanced 600-document sample of corpus/word (every path and sha256 in release_info/sample_conversion_0.17.0_11-01-26_01-06.csv), each converter's PDF scored against Word's own export of the same file. Sorted by ITT median; a failed document scores 0. 95% CI is a percentile bootstrap of the ITT median (2,000 resamples, seed 42).",
+      "id": "conversion-sample",
+      "meta": "600 docs · 150/150/117/183 by state · scorer numpy · 2026-11-01",
+      "rows": [
+        {
+          "docs": 600,
+          "failed": 0,
+          "mean": 79.2446,
+          "median": 81.0931,
+          "note": "[80.42, 81.7]",
+          "ours": true,
+          "pin": "jubarte 0.17.0",
+          "rank": "1",
+          "tool": "jubarte"
+        },
+        {
+          "docs": 600,
+          "failed": 2,
+          "mean": 54.6071,
+          "median": 47.8822,
+          "note": "[47.53, 48.47]",
+          "ours": false,
+          "pin": "LibreOffice 26.8.0.3",
+          "rank": "2",
+          "tool": "soffice"
+        }
+      ],
+      "title": "DOCX → PDF vs Word's own PDF — 600-document sample"
+    },
+    {
+      "desc": "A sample of 600 document pairs of redlines_0929_full, one Word compare each: every pair of the scarce states, the rest spread over the document families (every path and sha256 in release_info/sample_redline_0.17.0_11-01-26_01-06.csv). Each tool redlines the pair; Word opens that redline and exports it to PDF, scored against Word's own compare. A pair with no scored PDF counts 0.",
+      "id": "redlines-sample",
+      "meta": "600 pairs · one Word compare each · pixel scorer · opened in Word · 2026-11-01",
+      "rows": [
+        {
+          "docs": 600,
+          "failed": 7,
+          "mean": 74.3589,
+          "median": 83.7553,
+          "note": "= 100: 47 · ≥ 90: 109",
+          "ours": true,
+          "pin": "jubarte 0.17.0",
+          "rank": "1",
+          "tool": "jubarte-0.17.0"
+        },
+        {
+          "docs": 600,
+          "failed": 25,
+          "mean": 64.917,
+          "median": 70.2748,
+          "note": "= 100: 38 · ≥ 90: 76",
+          "ours": false,
+          "pin": "Docxodus 12.6.5 (C#)",
+          "rank": "2",
+          "tool": "docxodus"
+        }
+      ],
+      "title": "Redlines vs Word's compare — 600-pair sample"
+    },
+    {
+      "desc": "",
+      "id": "docx_to_pdf",
+      "meta": "Document set `c28442e9bb5a5deb` (400 documents), renderer `oracle:microsoft_word`, scorer `v1`, bench `0.8`.",
+      "rows": [
+        {
+          "docs": 400,
+          "failed": 0,
+          "mean": 79.93,
+          "median": 82.45,
+          "note": "[81.13, 83.23]",
+          "ours": true,
+          "pin": "0.12.0@3c81203f1f66",
+          "rank": "1",
+          "tool": "jubarte 0.12.0"
+        },
+        {
+          "docs": 400,
+          "failed": 0,
+          "mean": 76.24,
+          "median": 79.75,
+          "note": "[77.54, 81.89]",
+          "ours": true,
+          "pin": "0.11.0@838d0e9603c8",
+          "rank": "1=",
+          "tool": "jubarte 0.11.0"
+        },
+        {
+          "docs": 400,
+          "failed": 0,
+          "mean": 56.59,
+          "median": 53.82,
+          "note": "[52.41, 55.60]",
+          "ours": false,
+          "pin": "wordcraft-cli 0.7.0@45fa52a260fb400857c6033c3cbfa90f8e9c67d05aeb9417cccbb3d6c51c0960",
+          "rank": "3",
+          "tool": "Wordcraft CLI 0.7.0"
+        },
+        {
+          "docs": 400,
+          "failed": 0,
+          "mean": 55.46,
+          "median": 52.82,
+          "note": "[51.41, 54.53]",
+          "ours": false,
+          "pin": "0.6.1@b71aef4ee85a",
+          "rank": "3=",
+          "tool": "Wordcraft CLI"
+        },
+        {
+          "docs": 400,
+          "failed": 0,
+          "mean": 55.9,
+          "median": 52.37,
+          "note": "[50.63, 54.45]",
+          "ours": false,
+          "pin": "docxide-pdf 0.18.4@503ea7e085ae9acd16a4f263c7802325cad254eedeff4cb2509e88714019e00b",
+          "rank": "3=",
+          "tool": "docxide-pdf 0.18.4"
+        },
+        {
+          "docs": 398,
+          "failed": 2,
+          "mean": 54.82,
+          "median": 47.87,
+          "note": "[47.43, 48.97]",
+          "ours": false,
+          "pin": "libreoffice_convert_rust 0.1.0@99552eb9ead6dc5dd2bbb3c69cbed958888dbb037553d586f08b5aa80794e172",
+          "rank": "3=",
+          "tool": "libreoffice_convert_rust 0.1.0"
+        },
+        {
+          "docs": 398,
+          "failed": 2,
+          "mean": 54.82,
+          "median": 47.87,
+          "note": "[47.43, 48.97]",
+          "ours": false,
+          "pin": "LibreOffice 26.8.1.1 bf6ef2662401c7d6dce671ab4deb26ee0af3a7c1",
+          "rank": "3=",
+          "tool": "soffice"
+        },
+        {
+          "docs": 397,
+          "failed": 3,
+          "mean": 50.69,
+          "median": 45.9,
+          "note": "[45.14, 47.11]",
+          "ours": false,
+          "pin": "rdocx-cli 0.16.0@8c4d40caffb12177ac8ab21d568a5dd6c389f9cb4bd742653c2b180102d0abee",
+          "rank": "8",
+          "tool": "rdocx 0.16.0"
+        },
+        {
+          "docs": 398,
+          "failed": 2,
+          "mean": 48.66,
+          "median": 44.45,
+          "note": "[42.81, 45.81]",
+          "ours": false,
+          "pin": "office2pdf-cli 0.8.1@ec266239b0bdbf71275e79fde2ffaaa1155321050d716eab45ef43f60d6ff9f9",
+          "rank": "9",
+          "tool": "office2pdf 0.8.1"
+        },
+        {
+          "docs": 397,
+          "failed": 3,
+          "mean": 43.48,
+          "median": 41.95,
+          "note": "[40.89, 43.34]",
+          "ours": false,
+          "pin": "pdfitdown 4.2.0@6a8275fe29d0c7fd61465f56ca55c21fc22c84fbd228ceef4288bfb28bceac36",
+          "rank": "10",
+          "tool": "pdfitdown 4.2.0"
+        }
+      ],
+      "title": "docx_to_pdf: accepted and randomized redline DOCX to PDF vs Word export"
+    },
+    {
+      "desc": "",
+      "id": "docx_to_pdf_no_redline_docs",
+      "meta": "Document set `c947065c59b2` (398 documents), renderer `oracle:microsoft_word`, scorer `v1`, bench `0.6`.",
+      "rows": [
+        {
+          "docs": 390,
+          "failed": 8,
+          "mean": 73.82,
+          "median": 84.34,
+          "note": "[79.83, 86.03]",
+          "ours": false,
+          "pin": "office2pdf 0.6.7",
+          "rank": "1",
+          "tool": "office2pdf"
+        },
+        {
+          "docs": 390,
+          "failed": 8,
+          "mean": 73.82,
+          "median": 84.34,
+          "note": "[79.83, 86.03]",
+          "ours": false,
+          "pin": "pdfitdown 4.0.0",
+          "rank": "1=",
+          "tool": "pdfitdown"
+        },
+        {
+          "docs": 398,
+          "failed": 0,
+          "mean": 73.98,
+          "median": 75.26,
+          "note": "[72.14, 79.47]",
+          "ours": false,
+          "pin": "LibreOffice Convert Rust v0.1.0",
+          "rank": "3",
+          "tool": "libreoffice_convert_rust"
+        },
+        {
+          "docs": 398,
+          "failed": 0,
+          "mean": 66.25,
+          "median": 67.39,
+          "note": "[66.94, 68.10]",
+          "ours": true,
+          "pin": "jubarte 0.7.0",
+          "rank": "4",
+          "tool": "jubarte"
+        },
+        {
+          "docs": 398,
+          "failed": 0,
+          "mean": 65.65,
+          "median": 63.97,
+          "note": "[63.27, 64.73]",
+          "ours": false,
+          "pin": "docxide-pdf v0.17.0",
+          "rank": "4=",
+          "tool": "docxide-pdf"
+        },
+        {
+          "docs": 398,
+          "failed": 0,
+          "mean": 59.11,
+          "median": 54.49,
+          "note": "[53.38, 55.31]",
+          "ours": false,
+          "pin": "rdocx 0.7.0",
+          "rank": "6",
+          "tool": "rdocx"
+        },
+        {
+          "docs": 381,
+          "failed": 17,
+          "mean": 56.73,
+          "median": 52.52,
+          "note": "[52.15, 52.94]",
+          "ours": false,
+          "pin": "dxpdf 0.5.1",
+          "rank": "7",
+          "tool": "dxpdf"
+        }
+      ],
+      "title": "docx_to_pdf_no_redline_docs: source DOCX to PDF vs Word export"
+    },
+    {
+      "desc": "",
+      "id": "corpus/word:all",
+      "meta": "Document set `a89ffc217bba` (6427 documents), renderer `oracle:microsoft_word`, scorer `v1`, bench `1.0`.",
+      "rows": [
+        {
+          "docs": 6427,
+          "failed": 0,
+          "mean": 80.12,
+          "median": 82.36,
+          "note": "[82.19, 82.54]",
+          "ours": true,
+          "pin": "jubarte 0.17.0+c607894",
+          "rank": "1",
+          "tool": "jubarte"
+        }
+      ],
+      "title": "corpus/word:all: every corpus/word DOCX to PDF vs Word's own PDF"
+    },
+    {
+      "desc": "",
+      "id": "docxide_metrics",
+      "meta": "Document set `a89ffc217bba` (6427 documents), renderer `oracle:microsoft_word`, scorer `docxide-150dpi`, bench `1.0`.",
+      "rows": [
+        {
+          "docs": 6397,
+          "failed": 30,
+          "mean": 66.84,
+          "median": 70.68,
+          "note": "[70.20, 71.23] · text 100.00",
+          "ours": true,
+          "pin": "jubarte 0.17.0+c607894",
+          "rank": "1",
+          "tool": "jubarte"
+        }
+      ],
+      "title": "docxide_metrics: DOCX to PDF under docxide-pdf's own metrics"
+    },
+    {
+      "desc": "",
+      "id": "corpus/word:le3pages",
+      "meta": "Document set `27122f4d945e` (2626 documents), renderer `oracle:microsoft_word`, scorer `v1`, bench `0.7`.",
+      "rows": [
+        {
+          "docs": 2626,
+          "failed": 0,
+          "mean": 81.35,
+          "median": 83.15,
+          "note": "[83.01, 83.28]",
+          "ours": true,
+          "pin": "jubarte 0.9.3",
+          "rank": "1",
+          "tool": "jubarte"
+        },
+        {
+          "docs": 2611,
+          "failed": 15,
+          "mean": 66.26,
+          "median": 68.4,
+          "note": "[67.84, 68.83]",
+          "ours": false,
+          "pin": "LibreOffice 26.8.0.3 bce0998afefdbc355585ca324285661a2170ba77",
+          "rank": "2",
+          "tool": "soffice"
+        },
+        {
+          "docs": 2601,
+          "failed": 25,
+          "mean": 60.02,
+          "median": 60.06,
+          "note": "[59.09, 60.77]",
+          "ours": false,
+          "pin": "pymupdf-pro 1.28.2 (unlicensed, first 3 pages)",
+          "rank": "3",
+          "tool": "PyMuPDF Pro"
+        },
+        {
+          "docs": 2626,
+          "failed": 0,
+          "mean": 56.0,
+          "median": 54.24,
+          "note": "[53.81, 54.89]",
+          "ours": false,
+          "pin": "docxide-pdf v0.17.1",
+          "rank": "4",
+          "tool": "docxide-pdf"
+        }
+      ],
+      "title": "below 3 pages: corpus/word DOCX to PDF vs Word's own PDF"
+    },
+    {
+      "desc": "",
+      "id": "docxide_metrics:le3pages",
+      "meta": "Document set `27122f4d945e` (2626 documents), renderer `oracle:microsoft_word`, scorer `docxide-150dpi`, bench `0.7`.",
+      "rows": [
+        {
+          "docs": 2626,
+          "failed": 0,
+          "mean": 68.08,
+          "median": 74.34,
+          "note": "[73.30, 75.08] · text 100.00",
+          "ours": true,
+          "pin": "jubarte 0.9.3",
+          "rank": "1",
+          "tool": "jubarte"
+        },
+        {
+          "docs": 2611,
+          "failed": 15,
+          "mean": 28.66,
+          "median": 24.03,
+          "note": "[23.36, 24.50] · text 99.58",
+          "ours": false,
+          "pin": "LibreOffice 26.8.0.3 bce0998afefdbc355585ca324285661a2170ba77",
+          "rank": "2",
+          "tool": "soffice"
+        },
+        {
+          "docs": 2595,
+          "failed": 31,
+          "mean": 26.77,
+          "median": 21.86,
+          "note": "[20.96, 22.71] · text 36.36",
+          "ours": false,
+          "pin": "pymupdf-pro 1.28.2 (unlicensed, first 3 pages)",
+          "rank": "3",
+          "tool": "PyMuPDF Pro"
+        },
+        {
+          "docs": 2619,
+          "failed": 7,
+          "mean": 19.93,
+          "median": 11.42,
+          "note": "[11.17, 11.96] · text 24.32",
+          "ours": false,
+          "pin": "docxide-pdf v0.17.1",
+          "rank": "4",
+          "tool": "docxide-pdf"
+        }
+      ],
+      "title": "below 3 pages: docxide_metrics on the same documents"
+    },
+    {
+      "desc": "",
+      "id": "redlines_vs_word",
+      "meta": "",
+      "rows": [
+        {
+          "docs": 3454,
+          "failed": 48,
+          "mean": 75.81,
+          "median": 84.56,
+          "note": "= 100: 342 · ≥ 90: 729 · < 50: 500 · ink 0.75 · text 0.82",
+          "ours": false,
+          "pin": "jubarte 0.17.0 (release)",
+          "rank": "1",
+          "tool": "jubarte-0.17.0"
+        },
+        {
+          "docs": 3414,
+          "failed": 88,
+          "mean": 74.33,
+          "median": 84.46,
+          "note": "= 100: 344 · ≥ 90: 704 · < 50: 546 · ink 0.74 · text 0.81",
+          "ours": false,
+          "pin": "jubarte 0.14.0 (release)",
+          "rank": "2",
+          "tool": "jubarte-0.14.0"
+        },
+        {
+          "docs": 3496,
+          "failed": 6,
+          "mean": 74.77,
+          "median": 84.15,
+          "note": "= 100: 241 · ≥ 90: 615 · < 50: 619 · ink 0.73 · text 0.80",
+          "ours": false,
+          "pin": "jubarte 0.10.1 (release)",
+          "rank": "3",
+          "tool": "jubarte-0.10.1"
+        },
+        {
+          "docs": 3499,
+          "failed": 3,
+          "mean": 72.23,
+          "median": 81.73,
+          "note": "= 100: 310 · ≥ 90: 658 · < 50: 793 · ink 0.67 · text 0.77",
+          "ours": true,
+          "pin": "jubarte 0.10.0 (86b6b5d3)",
+          "rank": "4",
+          "tool": "jubarte-rust"
+        },
+        {
+          "docs": 3338,
+          "failed": 164,
+          "mean": 68.62,
+          "median": 79.07,
+          "note": "= 100: 309 · ≥ 90: 634 · < 50: 780 · ink 0.67 · text 0.76",
+          "ours": false,
+          "pin": "jubarte 0.9.3 (release)",
+          "rank": "5",
+          "tool": "jubarte-093"
+        },
+        {
+          "docs": 2612,
+          "failed": 890,
+          "mean": 53.94,
+          "median": 62.87,
+          "note": "= 100: 204 · ≥ 90: 482 · < 50: 614 · ink 0.65 · text 0.73",
+          "ours": false,
+          "pin": "Docxodus 12.6.5 (C#)",
+          "rank": "6",
+          "tool": "docxodus"
+        },
+        {
+          "docs": 380,
+          "failed": 3122,
+          "mean": 6.66,
+          "median": 0.0,
+          "note": "= 100: 4 · ≥ 90: 7 · < 50: 20 · ink 0.21 · text 0.29",
+          "ours": false,
+          "pin": "superdoc-sdk 2.16.0",
+          "rank": "7",
+          "tool": "superdoc"
+        }
+      ],
+      "title": "redlines vs Word's compare"
+    },
+    {
+      "desc": "",
+      "id": "redlines_accept_reject",
+      "meta": "",
+      "rows": [
+        {
+          "docs": 400,
+          "failed": 0,
+          "mean": 100.0,
+          "median": 100.0,
+          "note": "= 100: 400 · ≥ 90: 400 · < 50: 0 · ink 1.00 · text 1.00",
+          "ours": false,
+          "pin": "Word's own compare (calibration) · accept all",
+          "rank": "1",
+          "tool": "word-identity"
+        },
+        {
+          "docs": 394,
+          "failed": 6,
+          "mean": 90.07,
+          "median": 99.87,
+          "note": "= 100: 166 · ≥ 90: 299 · < 50: 16 · ink 0.85 · text 0.96",
+          "ours": false,
+          "pin": "docxodus 12.6.4 (npm) · accept all",
+          "rank": "2",
+          "tool": "docxodus"
+        },
+        {
+          "docs": 400,
+          "failed": 0,
+          "mean": 87.56,
+          "median": 99.7,
+          "note": "= 100: 181 · ≥ 90: 261 · < 50: 33 · ink 0.80 · text 0.94",
+          "ours": true,
+          "pin": "jubarte 0.9.3 (673aff74) · accept all",
+          "rank": "3",
+          "tool": "jubarte-rust"
+        },
+        {
+          "docs": 58,
+          "failed": 342,
+          "mean": 13.95,
+          "median": 0.0,
+          "note": "= 100: 4 · ≥ 90: 52 · < 50: 1 · ink 0.95 · text 0.98",
+          "ours": false,
+          "pin": "superdoc-sdk 2.15.0 · accept all",
+          "rank": "4",
+          "tool": "superdoc"
+        },
+        {
+          "docs": 400,
+          "failed": 0,
+          "mean": 100.0,
+          "median": 100.0,
+          "note": "= 100: 400 · ≥ 90: 400 · < 50: 0 · ink 1.00 · text 1.00",
+          "ours": false,
+          "pin": "Word's own compare (calibration) · reject all",
+          "rank": "1",
+          "tool": "word-identity"
+        },
+        {
+          "docs": 400,
+          "failed": 0,
+          "mean": 86.22,
+          "median": 99.85,
+          "note": "= 100: 186 · ≥ 90: 260 · < 50: 35 · ink 0.77 · text 0.91",
+          "ours": true,
+          "pin": "jubarte 0.9.3 (673aff74) · reject all",
+          "rank": "2",
+          "tool": "jubarte-rust"
+        },
+        {
+          "docs": 385,
+          "failed": 15,
+          "mean": 85.38,
+          "median": 99.8,
+          "note": "= 100: 155 · ≥ 90: 275 · < 50: 26 · ink 0.80 · text 0.94",
+          "ours": false,
+          "pin": "docxodus 12.6.4 (npm) · reject all",
+          "rank": "3",
+          "tool": "docxodus"
+        },
+        {
+          "docs": 49,
+          "failed": 351,
+          "mean": 11.07,
+          "median": 0.0,
+          "note": "= 100: 1 · ≥ 90: 36 · < 50: 1 · ink 0.83 · text 0.95",
+          "ours": false,
+          "pin": "superdoc-sdk 2.15.0 · reject all",
+          "rank": "4",
+          "tool": "superdoc"
+        }
+      ],
+      "title": "redlines accepted or rejected by Word"
+    }
+  ],
+  "version": "1.0.0",
+  "viewer": "https://jandira-tech.github.io/neurotic_docx_bench/"
+}

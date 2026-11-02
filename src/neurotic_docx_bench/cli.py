@@ -3025,7 +3025,9 @@ def report_cmd(
     root: Path = typer.Option(Path("."), "--root", help="repository root"),
     check: bool = typer.Option(False, "--check", help="exit 1 when the published views are stale"),
 ) -> None:
-    """Regenerate RESULTS.md, RESULTS_DETAILED.md and the README vendor table from the stores."""
+    """Regenerate RESULTS.md, RESULTS_DETAILED.md, the README vendor table and
+    results/scores.json (the release contract's numbers, with the release-evidence
+    sample tables) from the stores."""
     from neurotic_docx_bench.ledger import build as ledger_build
 
     bundle = ledger_build.build(root)

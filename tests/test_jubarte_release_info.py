@@ -950,6 +950,15 @@ def test_sample_then_write_passes_the_engine_checker(tmp_path: Path, mode: str) 
     six = _six(folder)
     assert len(six) == 6 and not stale.exists() and other.exists()
     assert f'six files of {V}' in detail and 'reports "jubarte 0.11.0"' in detail
+    # the same six files, same names, same bytes, are filed in the bench's own
+    # evidence folder: results/release_<v>_evidence/release_info/ (the copy the
+    # report reads; the engine's release_info stays the release's own record)
+    bench_copy = root / jri.evidence_dir(V) / 'release_info'
+    bench_six = _six(bench_copy)
+    assert set(bench_six) == set(six)
+    for name, p in six.items():
+        assert (bench_copy / p.name).read_bytes() == p.read_bytes()
+    assert str(bench_copy) in detail
     assert _checker().problems(V, folder, 24) == []
     # each result names the backend its own score artifacts record
     assert json.loads(six['results_redline'].read_text())['versions']['scorer'] == 'torch-mps'
@@ -1031,6 +1040,9 @@ def test_sample_then_write_passes_the_engine_checker(tmp_path: Path, mode: str) 
     # a second write re-stamps the whole set, still six files of this version
     _act(steps, 'release_info')
     assert len(_six(folder)) == 6
+    assert len(_six(bench_copy)) == 6
+    for name, p in _six(folder).items():
+        assert (bench_copy / p.name).read_bytes() == p.read_bytes()
 
 
 def test_the_write_stage_needs_the_engine_checkout_and_the_sample_meta(tmp_path: Path) -> None:
@@ -1243,6 +1255,43 @@ def test_table_ranks_follow_the_medians_and_tie_when_the_paired_interval_holds_z
     tables = {t['id']: t['rows'] for t in next(r['value'] for r in recs if r['key'] == 'bench.tables')}
     assert [(r['rank'], r['tool']) for r in tables['conversion-sample']] == [('1', 'soffice'), ('2', 'jubarte †')]
     assert [(r['rank'], r['tool']) for r in tables['redlines-sample']] == [('1=', 'docxodus'), ('1=', 'jubarte-9.9.9 †')]
+
+
+def test_write_six_files_the_bench_evidence_copy(tmp_path: Path, monkeypatch) -> None:
+    # The write stage files the same six files, same names, same bytes, in the
+    # bench's own evidence folder: results/release_<v>_evidence/release_info/
+    # (the copy `bench report` reads for scores.json's sample tables).
+    engine, bench = tmp_path / 'engine', tmp_path / 'bench'
+    args = _six_args('2026-10-24', '2026-10-24')
+    names = lambda folder: {p.name: p.read_bytes() for p in folder.iterdir() if '_9.9.9_' in p.name}  # noqa: E731
+
+    detail = jri.write_six(engine, '9.9.9', bench_root=bench,
+                           now=datetime(2026, 10, 25, 1, 20), **args)
+    folder = engine / 'release_info'
+    copy = bench / jri.evidence_dir('9.9.9') / 'release_info'
+    six, six_copy = names(folder), names(copy)
+    assert len(six) == len(six_copy) == 6
+    assert set(six) == set(six_copy)
+    for name, blob in six.items():
+        assert six_copy[name] == blob
+    assert str(copy) in detail
+    # a re-write re-stamps both folders; each keeps one stamp of this version
+    jri.write_six(engine, '9.9.9', bench_root=bench,
+                  now=datetime(2026, 10, 26, 2, 0), **args)
+    assert len(names(folder)) == 6 and len(names(copy)) == 6
+    for name, blob in names(folder).items():
+        assert names(copy)[name] == blob
+    # a write that fails halfway (before any file moves) leaves both untouched
+    before = dict(names(copy))
+
+    def broken(version: str):
+        raise OSError('No space left on device')
+
+    monkeypatch.setattr(jri, 'app_records', broken)
+    with pytest.raises(OSError, match='No space left'):
+        jri.write_six(engine, '9.9.9', bench_root=bench,
+                      now=datetime(2026, 10, 27, 3, 0), **args)
+    assert names(copy) == before
 
 
 def test_a_write_that_fails_halfway_keeps_the_previous_complete_set(tmp_path: Path, monkeypatch) -> None:

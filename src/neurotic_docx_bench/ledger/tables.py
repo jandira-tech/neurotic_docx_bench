@@ -131,29 +131,71 @@ CORPUS_STATES = (
 )
 
 
-def state_breakdown(table: pol.HeadlineTable) -> str:
-    """The ranked rows' ITT pools split by corpus/word state (the ``<state>__`` prefix of
-    each document key); empty when the documents are not corpus/word keys."""
+def group_line(table: pol.HeadlineTable) -> str:
+    """The "Document set …" sentence that opens a ranked group's paragraph."""
+    if table.group is None:
+        raise ValueError("group_line needs a table with a group")
+    g = table.group
+    return (
+        f"Document set `{g.docset}` ({table.expected_n} documents), renderer `{g.renderer}`, "
+        f"scorer `{g.scorer}`, bench `{g.bench}`."
+    )
+
+
+def state_data(
+    table: pol.HeadlineTable,
+) -> (
+    tuple[
+        list[str],
+        dict[str, int],
+        list[tuple[ResultRow, list[tuple[float, float] | None]]],
+    ]
+    | None
+):
+    """The ranked rows' ITT pools split by corpus/word state (the ``<state>__`` prefix
+    of each document key): the state names in ``CORPUS_STATES`` order, the document
+    counts per state, and one ``(ITT mean, ITT median)`` per ranked row and state —
+    ``None`` where that row scored no document of the state. ``None`` overall when
+    the documents are not corpus/word keys: the condition under which
+    ``state_breakdown`` renders nothing."""
     if not table.rows:
-        return ""
+        return None
     pools = [(r.row, r.row.itt_scores()) for r in table.rows]
     counts: dict[str, int] = {}
     for _, pool in pools:
         for key in pool:
             state, sep, _ = key.partition("__")
             if not sep or state not in CORPUS_STATES:
-                return ""
+                return None
     for key in pools[0][1]:
         state = key.partition("__")[0]
         counts[state] = counts.get(state, 0) + 1
     states = [s for s in CORPUS_STATES if s in counts]
-    body = []
+    rows = []
     for row, pool in pools:
-        cells = [_tool_cell(row)]
+        cells: list[tuple[float, float] | None] = []
         for s in states:
             vals = [v for k, v in pool.items() if k.startswith(f"{s}__")]
-            cells.append(f"{fmt(statistics.fmean(vals))} / {fmt(statistics.median(vals))}" if vals else "n/a")
-        body.append(cells)
+            cells.append(
+                (statistics.fmean(vals), statistics.median(vals)) if vals else None
+            )
+        rows.append((row, cells))
+    return states, counts, rows
+
+
+def state_breakdown(table: pol.HeadlineTable) -> str:
+    """The ranked rows' ITT pools split by corpus/word state; empty when the
+    documents are not corpus/word keys."""
+    data = state_data(table)
+    if data is None:
+        return ""
+    states, counts, rows = data
+    body = []
+    for row, cells in rows:
+        render = [_tool_cell(row)]
+        for c in cells:
+            render.append(f"{fmt(c[0])} / {fmt(c[1])}" if c is not None else "n/a")
+        body.append(render)
     return "\n".join(
         [
             "By corpus state (ITT mean / ITT median; the number of documents of each state in brackets):",
@@ -180,7 +222,6 @@ def fidelity_table(
         out.append("")
         out.append("No eligible rows for this benchmark yet.")
     else:
-        g = table.group
         out.append("")
         inferred = (
             " This document set is not recorded in results/docsets.json, so its size is the "
@@ -189,8 +230,8 @@ def fidelity_table(
             else ""
         )
         out.append(
-            f"Document set `{g.docset}` ({table.expected_n} documents), renderer `{g.renderer}`, "
-            f"scorer `{g.scorer}`, bench `{g.bench}`. One row per tool: its latest eligible run. "
+            group_line(table)
+            + " One row per tool: its latest eligible run. "
             "Sorted by ITT median, "
             "then ITT mean. Failed documents score 0 (intent-to-treat); Mean and Median are over "
             "scored documents only. 95% CI is a percentile bootstrap of the ITT median (2000 "
@@ -924,6 +965,33 @@ _ACTION_STATS = ["Scored", "ITT Mean", "ITT Median", "= 100", ">= 90", "< 50", "
 _SORTED = "Sorted by ITT median, then ITT mean."
 
 
+def action_lines(run_dir: Path) -> tuple[dict[tuple[str, str], dict], dict[str, str]]:
+    """A redlines run dir's ``scores.jsonl`` as the latest line per (tool, action),
+    with the run's ``versions.json`` pins. ``redline_action_section`` renders these
+    rows; scores.json reads the same ones."""
+    path = Path(run_dir) / "scores.jsonl"
+    if not path.is_file():
+        return {}, {}
+    latest: dict[tuple[str, str], dict] = {}
+    for ln in path.read_text().splitlines():
+        if ln.strip():
+            line = json.loads(ln)
+            latest[str(line["tool"]), str(line["action"])] = line
+    vpath = Path(run_dir) / "versions.json"
+    versions = json.loads(vpath.read_text()) if vpath.is_file() else {}
+    return latest, versions
+
+
+def ranked_actions(
+    latest: Mapping[tuple[str, str], dict], action: str
+) -> list[tuple[str, dict]]:
+    """One action's rows in the order both renderers rank them: ITT median, then mean."""
+    return sorted(
+        ((t, ln) for (t, a), ln in latest.items() if a == action),
+        key=lambda x: _itt_rank(x[1]),
+    )
+
+
 def redline_action_section(run_dir: Path) -> str:
     """Tool redlines scored against Word (``results/redlines_*/scores.jsonl``, written by the
     run's scripts). ``action`` ``redline`` is the tool's redline against Word's compare;
@@ -932,20 +1000,13 @@ def redline_action_section(run_dir: Path) -> str:
     wins and each action's rows are ranked by ITT median, then ITT mean; versions come from
     the run's ``versions.json``. A redline line may carry ``subset``, the same statistics
     over the compares one tool (``subset.of``) scored, shown in parentheses."""
-    path = Path(run_dir) / "scores.jsonl"
-    if not path.is_file():
+    latest, versions = action_lines(run_dir)
+    if not latest:
         return ""
-    latest: dict[tuple[str, str], dict] = {}
-    for ln in path.read_text().splitlines():
-        if ln.strip():
-            line = json.loads(ln)
-            latest[str(line["tool"]), str(line["action"])] = line
-    vpath = Path(run_dir) / "versions.json"
-    versions = json.loads(vpath.read_text()) if vpath.is_file() else {}
     name = Path(run_dir).name
 
     def ranked(action: str) -> list[tuple[str, dict]]:
-        return sorted(((t, ln) for (t, a), ln in latest.items() if a == action), key=lambda x: _itt_rank(x[1]))
+        return ranked_actions(latest, action)
 
     parts: list[str] = []
     redlines = ranked("redline")
