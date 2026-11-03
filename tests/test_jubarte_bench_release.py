@@ -85,6 +85,10 @@ def _word_ok(cmd, **_):
     return Proc(0, '16.101.1\n') if ' '.join(cmd) == release.WORD_VERSION_CMD else Proc()
 
 
+def _node(_: str) -> str:
+    return '/usr/local/bin/node'
+
+
 @pytest.mark.parametrize(
     ('setup', 'said'),
     [
@@ -102,7 +106,7 @@ def test_missing_compare_regen_inputs_stop_the_lane_before_any_word_step(tmp_pat
     steps = jbr.select(jbr.plan(_rel(tmp_path), run=_word_ok, hub=False), only=['redlines'])
     rec = Recorder()
     done = jbr.execute(steps, tmp_path, run=rec.run, spawn=rec.spawn, echo=lambda _: None)
-    assert [o.step.name for o in done] == ['word answers', 'compare_regen inputs']
+    assert [o.step.name for o in done] == ['node on PATH', 'compare_regen inputs']
     assert not done[-1].ok
     assert said in done[-1].detail
     assert 'uv run python scripts/fetch_corpus.py' in done[-1].detail
@@ -111,7 +115,7 @@ def test_missing_compare_regen_inputs_stop_the_lane_before_any_word_step(tmp_pat
 
 def test_complete_compare_regen_inputs_pass_the_preflight(tmp_path: Path) -> None:
     _regen(tmp_path, ['0000ae5089', '001b877031'])
-    steps = jbr.select(jbr.plan(_rel(tmp_path), run=_word_ok, hub=False), only=['redlines'])
+    steps = jbr.select(jbr.plan(_rel(tmp_path), run=_word_ok, hub=False, which=_node), only=['redlines'])
     rec = Recorder()
     done = jbr.execute(steps, tmp_path, run=rec.run, spawn=rec.spawn, echo=lambda _: None)
     check = next(o for o in done if o.step.name == 'compare_regen inputs')
@@ -160,11 +164,11 @@ def test_word_exports_run_under_the_watchdog_and_may_fail(tmp_path: Path) -> Non
     assert '--fresh' in measure and '--regen-list' in measure
 
 
-def test_only_and_skip_keep_the_order_and_run_the_word_check_first(tmp_path: Path) -> None:
+def test_only_and_skip_keep_the_order_and_run_the_local_checks_before_word(tmp_path: Path) -> None:
     steps = jbr.plan(_rel(tmp_path))
     names = [s.name for s in jbr.select(steps, only=['convert', 'redlines'])]
-    assert names[:2] == ['word answers', 'compare_regen inputs']
-    assert names[2] == 'docx-to-pdf'
+    assert names[:3] == ['node on PATH', 'compare_regen inputs', 'word answers']
+    assert names[3] == 'docx-to-pdf'
     assert 'release binary' not in names and 'report' not in names
     skipped = jbr.select(steps, skip=['redlines'])
     assert all(s.stage != 'redlines' for s in skipped)
@@ -185,11 +189,13 @@ def test_word_check_fails_without_word(tmp_path: Path) -> None:
         calls.append(cmd)
         return Proc(1, '', 'execution error')
 
-    steps = jbr.select(jbr.plan(_rel(tmp_path), run=no_word), only=['redlines'])
+    _regen(tmp_path, ['0000ae5089'])
+    steps = jbr.select(jbr.plan(_rel(tmp_path), run=no_word, which=_node), only=['redlines'])
     rec = Recorder()
     done = jbr.execute(steps, tmp_path, run=rec.run, spawn=rec.spawn, echo=lambda _: None)
-    assert len(done) == 1 and not done[0].ok
-    assert 'Microsoft Word does not answer' in done[0].detail
+    assert [o.step.name for o in done] == ['node on PATH', 'compare_regen inputs', 'word answers']
+    assert not done[-1].ok
+    assert 'Microsoft Word does not answer' in done[-1].detail
     assert rec.ran == []
     assert calls and calls[0][0] == 'osascript'
 
@@ -201,7 +207,7 @@ def test_a_failed_export_pass_does_not_stop_the_run_but_a_failed_measure_does(tm
         return word.get(' '.join(cmd), Proc())
 
     _regen(tmp_path, ['0000ae5089'])
-    steps = jbr.select(jbr.plan(_rel(tmp_path), run=run, hub=False), only=['redlines'])
+    steps = jbr.select(jbr.plan(_rel(tmp_path), run=run, hub=False, which=_node), only=['redlines'])
     rec = Recorder(codes={'word export (batch)': 1, 'measure': 2})
     done = jbr.execute(steps, tmp_path, run=rec.run, spawn=rec.spawn, echo=lambda _: None)
     assert rec.ran == ['generate', 'word export (batch)', 'word export (one osascript per document)', 'measure']
@@ -212,6 +218,36 @@ def test_a_failed_export_pass_does_not_stop_the_run_but_a_failed_measure_does(tm
     assert rec.dogs[0].argv[2].endswith('jubarte-0.10.2.word_pdf.log')
     # versions.json is not touched when measure failed.
     assert not (tmp_path / jbr.RUN_DIR / 'versions.json').exists()
+
+
+def test_a_word_export_that_refuses_to_start_stops_the_run(tmp_path: Path) -> None:
+    """word_pdf.py exits 2 when its preflight refuses (or on a usage error) and 1 when
+    documents failed. A refusal converted nothing, so measure would score stale PDFs (#101)."""
+    _regen(tmp_path, ['0000ae5089'])
+    steps = jbr.select(jbr.plan(_rel(tmp_path), run=_word_ok, hub=False, which=_node), only=['redlines'])
+    rec = Recorder(codes={'word export (batch)': 2})
+    done = jbr.execute(steps, tmp_path, run=rec.run, spawn=rec.spawn, echo=lambda _: None)
+    assert rec.ran[-1] == 'word export (batch)' and 'measure' not in rec.ran
+    assert done[-1].step.name == 'word export (batch)' and done[-1].stops
+    assert 'refused to start' in done[-1].detail
+    # The retry pass refusing (Word still holds a document after a batch crash) can follow
+    # a batch that converted most of the lane: it stays a pass that may fail.
+    rec = Recorder(codes={'word export (one osascript per document)': 2})
+    done = jbr.execute(steps, tmp_path, run=rec.run, spawn=rec.spawn, echo=lambda _: None)
+    retry = next(o for o in done if o.step.name == 'word export (one osascript per document)')
+    assert not retry.ok and not retry.stops and 'measure' in rec.ran
+
+
+def test_a_missing_node_stops_the_lane_before_any_word_step(tmp_path: Path) -> None:
+    """generate runs node; without it the run used to die after the Word check (#101)."""
+    _regen(tmp_path, ['0000ae5089'])
+    steps = jbr.select(jbr.plan(_rel(tmp_path), run=_word_ok, hub=False, which=lambda _: None), only=['redlines'])
+    rec = Recorder()
+    done = jbr.execute(steps, tmp_path, run=rec.run, spawn=rec.spawn, echo=lambda _: None)
+    assert rec.ran == []
+    assert [o.step.name for o in done] == ['node on PATH']  # Word is never asked (CodeRabbit, #102)
+    assert done[-1].step.name == 'node on PATH' and not done[-1].ok
+    assert 'node' in done[-1].detail and 'PATH' in done[-1].detail
 
 
 def test_versions_json_gains_the_lane_and_keeps_the_others(tmp_path: Path) -> None:

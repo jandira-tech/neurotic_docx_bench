@@ -698,6 +698,8 @@ def test_word_exports_run_under_the_watchdog_with_timeout_300_and_may_fail(tmp_p
         assert log in s.watch  # the watchdog follows the log the export grows
     retries = [s for s in exports if '--no-one-osascript' in s.argv]
     assert len(retries) == 2
+    # a batch pass that refuses to start (exit 2) stops the run; a retry's refusal may follow work (#101)
+    assert all(s.refusal_codes == (() if s in retries else (2,)) for s in exports)
     assert {s.watch[1] for s in retries} == {  # the retry pass also watches the folder it delivers to
         jri.RUN_DIR / LANE / 'pdf_by_word', jri.RUN_DIR / 'docxodus' / 'pdf_by_word'}
 
@@ -1109,7 +1111,7 @@ def test_the_sample_preflight_bootstraps_without_soffice_renders(tmp_path: Path)
     (root / jri.SOFFICE_WORK / 'candidate').rmdir()  # git-ignored: a clean checkout has none
     assert _act(_plan(root, regen), 'bench inputs').endswith('1 ids listed, each with its PDF')
     (regen / 'regen_list.csv').write_text('id\nidwct1\nidwct2\n')
-    with pytest.raises(RuntimeError, match='idwct2.*scripts/fetch_corpus.py'):
+    with pytest.raises(RuntimeError, match=r'idwct2.*scripts/fetch_corpus\.py'):
         _act(_plan(root, regen), 'bench inputs')  # #82: checked here, not after the Word export
     (regen / 'out' / 'idwct1__vs__idwct1.pdf').unlink()
     (regen / 'out').rmdir()

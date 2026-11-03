@@ -1544,7 +1544,8 @@ def plan(rel: Release, *, binary: Path | None = None, seed: int = DEFAULT_SEED,
         Step('export', 'word answers', action=word, preflight=True),
         Step('export', 'word export jubarte (batch)',
              (*word_pdf(jub / 'docx', jub / 'pdf_by_word', 'jubarte'), '--log', str(jub / 'word_pdf.sample.log')),
-             log=jub / 'word_pdf.sample.out', watch=(jub / 'word_pdf.sample.log',), may_fail=True),
+             log=jub / 'word_pdf.sample.out', watch=(jub / 'word_pdf.sample.log',), may_fail=True,
+             refusal_codes=(2,)),
         Step('export', 'word export jubarte (one osascript per document)',
              (*word_pdf(jub / 'docx', jub / 'pdf_by_word', 'jubarte'), '--no-one-osascript',
               '--log', str(jub / 'word_pdf.sample.retry.log')),
@@ -1553,7 +1554,8 @@ def plan(rel: Release, *, binary: Path | None = None, seed: int = DEFAULT_SEED,
         # the docxodus lane is shared by every release: its logs carry this one's version
         Step('export', 'word export docxodus (batch)',
              (*word_pdf(dx / 'docx', dx / 'pdf_by_word', 'docxodus'), '--log', str(dx / f'word_pdf.sample_{v}.log')),
-             log=dx / f'word_pdf.sample_{v}.out', watch=(dx / f'word_pdf.sample_{v}.log',), may_fail=True),
+             log=dx / f'word_pdf.sample_{v}.out', watch=(dx / f'word_pdf.sample_{v}.log',), may_fail=True,
+             refusal_codes=(2,)),
         Step('export', 'word export docxodus (one osascript per document)',
              (*word_pdf(dx / 'docx', dx / 'pdf_by_word', 'docxodus'), '--no-one-osascript',
               '--log', str(dx / f'word_pdf.sample_{v}.retry.log')),
@@ -1698,7 +1700,7 @@ def main(
                 raise typer.Exit(code=1)
             rest = [s for s in steps_of(conversion_files(on_disk)) if s.stage not in light]
         done = execute(rest, rel.root, echo=typer.echo)
-        if len(done) < len(rest) or not all(o.ok or o.step.may_fail for o in done):
+        if len(done) < len(rest) or any(o.stops for o in done):
             typer.echo(f'stopped at {done[-1].step.stage}: {done[-1].step.name}')
             raise typer.Exit(code=1)
     typer.echo(f'jubarte {version}: {", ".join(dict.fromkeys(s.stage for s in steps))} done')
