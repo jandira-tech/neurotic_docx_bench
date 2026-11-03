@@ -36,6 +36,13 @@ never disagree. Recorded, deliberate exceptions (the 2026-11-02 review):
   redlines tables) in RESULTS.md section order, so a consumer's fixed id
   mapping can fail loudly on an unknown id. The evidence sample table ids
   (``conversion-sample``, ``redlines-sample``) are data, not schema.
+* **Every table carries a human title and description (#133).** Producer-owned
+  titles and descriptions live in ``TABLE_TITLES`` / ``TABLE_DESCS`` — neutral,
+  factual wording (what is measured, against which oracle, on which documents,
+  which scorer) because jubarte.pro and benchmarks.law render the same text;
+  a title never starts with (or leaks) the machine id, and the md keeps its own
+  section headings. A producer-owned id missing from either mapping fails the
+  report by name; the sample tables bring their own title and description.
 """
 
 from __future__ import annotations
@@ -60,15 +67,123 @@ VIEWER_URL = "https://jandira-tech.github.io/neurotic_docx_bench/"
 # sections have in RESULTS.md (tables.py:redline_action_section): the redline
 # action first, then accept/reject.
 REDLINES_VS_WORD_ID = "redlines_vs_word"
-REDLINES_VS_WORD_TITLE = "redlines vs Word's compare"
 REDLINES_TABLE_ID = "redlines_accept_reject"
-REDLINES_TABLE_TITLE = "redlines accepted or rejected by Word"
 
 #: Every producer-owned table id scores.json can emit, in RESULTS.md order:
 #: the fidelity benchmarks (``tables.TITLES``) then the two redlines tables.
 #: The release-evidence sample tables are not producer-owned; their ids are
 #: whatever the newest evidence names (``conversion-sample`` today).
 TABLE_IDS: tuple[str, ...] = (*tb.TITLES, REDLINES_VS_WORD_ID, REDLINES_TABLE_ID)
+
+#: The human title of every producer-owned table (#133): plain words for what
+#: the table shows — never the machine id, which rides in ``id`` and stays out
+#: of the title. Neutral and factual on purpose: jubarte.pro and benchmarks.law
+#: render the same text, so no product claims and no "ours". The wording
+#: adapts jubarte.pro's hand-written headings.
+TABLE_TITLES: dict[str, str] = {
+    "script_redlines": "Redline markup vs Word's compare",
+    "accepted_changes": "Accepted changes match the final document",
+    "roundtrip": "Roundtrip: a document diffed against itself",
+    "visual_rendering": "Editor rendering of the plain DOCX",
+    "visual_redlines": "Editor rendering of the redline DOCX",
+    "visual_accepted_changes": "Editor rendering of the accepted DOCX",
+    "docx_to_pdf": "Accepted and randomized redline DOCX to PDF vs Word export",
+    "docx_to_pdf_no_redline_docs": "Source DOCX → PDF, no redlines",
+    "corpus/word:all": "Every corpus/word DOCX → PDF vs Word's own PDF",
+    "docxide_metrics": "The same documents under docxide-pdf's own metrics",
+    "corpus/word:le3pages": "Below 3 pages: every converter on the same short documents",
+    "docxide_metrics:le3pages": "Below 3 pages: docxide-pdf's metrics on the same short documents",
+    REDLINES_VS_WORD_ID: "Redlines vs Word's compare",
+    REDLINES_TABLE_ID: "Redlines accepted or rejected by Word",
+}
+
+#: One paragraph per producer-owned table (#133): what is measured, against
+#: which oracle, on which documents, and with which scorer — the same neutral
+#: contract as the titles. Failed documents always score 0 (intent-to-treat);
+#: the wording mirrors the oracle notes and section intros RESULTS.md already
+#: carries, so the two publications tell the same story.
+TABLE_DESCS: dict[str, str] = {
+    "script_redlines": (
+        "Each tool redlines every base-to-next document pair; its redline DOCX is rendered "
+        "by the same Word build that renders the oracle and scored pixel-wise against "
+        "Word's own tracked-change redline for the pair, so 100 means pixel-identical to "
+        "Word's redline as Word draws it. A failed document scores 0 (intent-to-treat)."
+    ),
+    "accepted_changes": (
+        "The candidate is each tool's own redline with every change accepted; the oracle is "
+        "Word's render of Word's accepted document for the same pair, and the two are "
+        "compared pixel-wise. A failed accept or render scores 0 (intent-to-treat)."
+    ),
+    "roundtrip": (
+        "Each tool redlines a document against itself; its roundtrip output is scored "
+        "pixel-wise against Word's render of the unchanged source, so any change the tool "
+        "marks is invented noise. A failed document scores 0 (intent-to-treat)."
+    ),
+    "visual_rendering": (
+        "Each dependency editor loads the plain source DOCX and is captured to PDF by "
+        "Playwright; the capture is scored pixel-wise against Word's own PDF export of the "
+        "same document. A document the editor fails to load or render scores 0 "
+        "(intent-to-treat)."
+    ),
+    "visual_redlines": (
+        "Each dependency editor loads Word's tracked-change DOCX for the pair and is "
+        "captured to PDF by Playwright; the capture is scored pixel-wise against Word's own "
+        "PDF export of that redline. A failed load or render scores 0 (intent-to-treat)."
+    ),
+    "visual_accepted_changes": (
+        "Each dependency editor loads Word's accepted DOCX for the pair and is captured to "
+        "PDF by Playwright; the capture is scored pixel-wise against Word's own PDF export "
+        "of the accepted document. A failed load or render scores 0 (intent-to-treat)."
+    ),
+    "docx_to_pdf": (
+        "Each converter turns accepted and randomized-redline DOCX documents into PDF; its "
+        "PDF is scored pixel-wise against the SHA-pinned PDF Word itself exported from the "
+        "same file. A failed conversion scores 0 for that document (intent-to-treat)."
+    ),
+    "docx_to_pdf_no_redline_docs": (
+        "Each converter turns the clean source DOCX documents, with no tracked changes in "
+        "them, into PDF; its PDF is scored pixel-wise against the SHA-pinned PDF Word itself "
+        "exported from the same source. A failed conversion scores 0 (intent-to-treat)."
+    ),
+    "corpus/word:all": (
+        "Word's PDF export of each DOCX in all four corpus/word states (clean; tracking "
+        "without comments; comments with tracking; comments clean) is the oracle; the "
+        "candidate is each converter's PDF of the same file, scored pixel-wise. A failed "
+        "conversion scores 0 (intent-to-treat)."
+    ),
+    "docxide_metrics": (
+        "The same documents as the corpus-wide table, scored instead with docxide-pdf's own "
+        "ink Jaccard (the ranked number) and text-boundary metrics at 150 DPI against the "
+        "same Word PDF exports, so no converter is measured only by this bench's pixel "
+        "scorer."
+    ),
+    "corpus/word:le3pages": (
+        "The corpus-wide conversion benchmark restricted to the documents Word lays out in "
+        "1 to 3 pages, so a converter that renders only the first 3 pages (unlicensed "
+        "PyMuPDF Pro) is compared with every other converter on the same documents. The "
+        "oracle stays Word's own PDF export of each document, scored pixel-wise; a failed "
+        "conversion scores 0 (intent-to-treat)."
+    ),
+    "docxide_metrics:le3pages": (
+        "The docxide-pdf metrics on the same 1-to-3-page documents: each converter's PDF "
+        "scored with ink Jaccard (the ranked number) and text-boundary metrics at 150 DPI "
+        "against Word's own PDF exports of the same files."
+    ),
+    REDLINES_VS_WORD_ID: (
+        "Each tool redlines a document pair; Word opens that redline and exports it to PDF, "
+        "and the PDF is scored with the pixel scorer against Word's own compare of the same "
+        "pair. A pair with no scored PDF — no redline, or one Word could not open — counts "
+        "0 in the ITT columns; the = 100, ≥ 90 and < 50 counts and the docxide-pdf Ink "
+        "Jaccard and Text boundary means are over the scored PDFs only."
+    ),
+    REDLINES_TABLE_ID: (
+        "Each tool redlines a pair; Word accepts — or rejects — every change in that "
+        "redline and exports the result to PDF, scored with the pixel scorer against "
+        "Word's own compare of the pair resolved the same way. A pair with no scored PDF "
+        "counts 0 (intent-to-treat); the calibration row is Word's own compare against "
+        "itself."
+    ),
+}
 
 # results/release_<v>_evidence/release_info/website_data_<v>_<mm-dd-yy_hh-mm>.jsonl
 _EVIDENCE_NAME = re.compile(
@@ -302,6 +417,19 @@ def read_site_facts(path: Path) -> SiteFacts:
     )
 
 
+def _producer_text(mapping: Mapping[str, str], table_id: str, field: str) -> str:
+    """A producer-owned table's title or description (#133). A table id
+    without one is a bug in this ledger, so it fails the report by name —
+    never an empty string the sites would render."""
+    try:
+        return mapping[table_id]
+    except KeyError:
+        raise ValueError(
+            f"scores.json table {table_id!r} has no human {field} "
+            f"(ledger/scores.py TABLE_{field.upper()}S, #133)"
+        ) from None
+
+
 def _site(site: SiteFacts) -> dict:
     """The evidence's records as the Scores fields: the sample tables first, the
     sample states carrying the conversion sample table's id (the tables' first
@@ -370,20 +498,28 @@ def render_scores(
         *(
             {
                 "id": t.benchmark,
-                "title": tb.TITLES.get(t.benchmark, t.benchmark),
+                "title": _producer_text(TABLE_TITLES, t.benchmark, "title"),
                 "meta": tb.group_line(t),
-                "desc": "",
+                "desc": _producer_text(TABLE_DESCS, t.benchmark, "description"),
                 "rows": _fidelity_rows(t, row_ci),
             }
             for t in fidelity
         ),
     ]
-    for table_id, title, rows in (
-        (REDLINES_VS_WORD_ID, REDLINES_VS_WORD_TITLE, vs_word),
-        (REDLINES_TABLE_ID, REDLINES_TABLE_TITLE, accept_reject),
+    for table_id, rows in (
+        (REDLINES_VS_WORD_ID, vs_word),
+        (REDLINES_TABLE_ID, accept_reject),
     ):
         if rows:
-            out_tables.append({"id": table_id, "title": title, "meta": "", "desc": "", "rows": rows})
+            out_tables.append(
+                {
+                    "id": table_id,
+                    "title": _producer_text(TABLE_TITLES, table_id, "title"),
+                    "meta": "",
+                    "desc": _producer_text(TABLE_DESCS, table_id, "description"),
+                    "rows": rows,
+                }
+            )
     obj = {
         "version": bench_version,
         "generated": generated,

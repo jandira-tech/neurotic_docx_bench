@@ -208,14 +208,14 @@ def test_render_scores_shape_rows_and_tie_rank() -> None:
     assert [t["id"] for t in obj["tables"]] == ["docx_to_pdf"]
     table = obj["tables"][0]
     assert set(table) == {"id", "title", "meta", "desc", "rows"}
-    assert table["title"] == (
-        "docx_to_pdf: accepted and randomized redline DOCX to PDF vs Word export"
+    assert table["title"] == sc.TABLE_TITLES["docx_to_pdf"] == (
+        "Accepted and randomized redline DOCX to PDF vs Word export"
     )
     assert table["meta"] == (
         "Document set `dset1` (25 documents), renderer `oracle:microsoft_word`, "
         "scorer `v1`, bench `0.8`."
     )
-    assert table["desc"] == ""
+    assert table["desc"] == sc.TABLE_DESCS["docx_to_pdf"]
     assert table["rows"] == [
         {
             "rank": "1",
@@ -467,8 +467,8 @@ def test_render_scores_redlines_vs_word_table(tmp_path: Path) -> None:
     assert [t["id"] for t in obj["tables"]] == ["docx_to_pdf", "redlines_vs_word"]
     table = obj["tables"][-1]
     assert set(table) == {"id", "title", "meta", "desc", "rows"}
-    assert table["title"] == "redlines vs Word's compare"
-    assert table["meta"] == "" and table["desc"] == ""
+    assert table["title"] == "Redlines vs Word's compare"
+    assert table["meta"] == "" and table["desc"] == sc.TABLE_DESCS["redlines_vs_word"]
     # Rows in the order redline_action_section ranks them (ITT median, then
     # mean), one rank per block; the pin is the run's version (no action suffix:
     # the md's redline table has no Action column); `ours` from the registry.
@@ -584,8 +584,8 @@ def test_render_scores_redlines_accept_reject_table(tmp_path: Path) -> None:
     ]
     table = obj["tables"][-1]
     assert set(table) == {"id", "title", "meta", "desc", "rows"}
-    assert table["title"] == "redlines accepted or rejected by Word"
-    assert table["meta"] == "" and table["desc"] == ""
+    assert table["title"] == "Redlines accepted or rejected by Word"
+    assert table["meta"] == "" and table["desc"] == sc.TABLE_DESCS["redlines_accept_reject"]
     # Ranked in the exact order redline_action_section renders: the accept_all
     # block then the reject_all block, each by ITT median/mean; the rank is the
     # position WITHIN its action block (the md ranks each block on its own and
@@ -998,6 +998,15 @@ def test_render_scores_carries_the_site_facts_first(tmp_path: Path) -> None:
 # ---- 3. integration: the real stores of this worktree ---------------------------
 
 
+# The md section heading each producer-owned table renders under (#133 kept
+# them: scores.json titles are the human ones, the md keeps its own spelling).
+MD_SECTION: dict[str, str] = {
+    **tb.TITLES,
+    sc.REDLINES_VS_WORD_ID: "redlines vs Word's compare",
+    sc.REDLINES_TABLE_ID: "redlines accepted or rejected by Word",
+}
+
+
 def _sections(md: str) -> dict[str, list[str]]:
     out: dict[str, list[str]] = {}
     current: str | None = None
@@ -1063,11 +1072,11 @@ def test_scores_json_matches_results_md_on_the_real_store() -> None:
 
     expected_states: list[dict] = []
     for table in fidelity:
-        lines = sections[table["title"]]
+        lines = sections[MD_SECTION[table["id"]]]
         # The group line under the section heading is the table's meta.
         first = next(ln for ln in lines if ln.startswith("Document set `"))
         assert table["meta"] == first.split(". ", 1)[0] + "."
-        assert table["desc"] == ""
+        assert table["desc"] == sc.TABLE_DESCS[table["id"]]
         header, body = _pipe_table(lines)
         assert len(body) == len(table["rows"]), table["id"]
         # every extra-metric column of the md is folded into the note
@@ -1124,7 +1133,7 @@ def test_scores_json_matches_results_md_on_the_real_store() -> None:
     registry = reg.load_registry(REPO_ROOT / reg.DEFAULT_REGISTRY_PATH)
     affiliated = {t.id for t in registry.tools if t.affiliated}
     ar = next(t for t in obj["tables"] if t["id"] == "redlines_accept_reject")
-    header, body = _pipe_table(sections[ar["title"]])
+    header, body = _pipe_table(sections[MD_SECTION[ar["id"]]])
     assert "Action" in header and "Scored" in header
     assert len(ar["rows"]) == len(body)
     block_rank: dict[str, int] = {}
@@ -1154,7 +1163,7 @@ def test_scores_json_matches_results_md_on_the_real_store() -> None:
         return cell.split(" (")[0]
 
     vs = next(t for t in obj["tables"] if t["id"] == "redlines_vs_word")
-    header, body = _pipe_table(sections[vs["title"]])
+    header, body = _pipe_table(sections[MD_SECTION[vs["id"]]])
     assert "Action" not in header and "Version" in header
     assert len(vs["rows"]) == len(body)
     for i, (row, md) in enumerate(zip(vs["rows"], body, strict=True)):
@@ -1185,9 +1194,12 @@ def test_every_results_md_section_with_a_score_table_has_a_json_table() -> None:
     # silently dropped from the JSON. The speed section is the one documented
     # exception (speed ships as its own speed.json in a later plan, not in
     # Scores), so the test also asserts the exception is the speed section.
+    # The md keeps its own section headings; scores.json titles are the human
+    # ones (#133), so the match runs over table ids, not titles.
     bundle = bd.build(REPO_ROOT)
     obj = json.loads(bundle.scores_json)
-    titles = {t["title"] for t in obj["tables"]}
+    md_to_id = {heading: bid for bid, heading in MD_SECTION.items()}
+    ids = {t["id"] for t in obj["tables"]}
     with_table = {
         title
         for title, lines in _sections(bundle.results_md).items()
@@ -1195,7 +1207,56 @@ def test_every_results_md_section_with_a_score_table_has_a_json_table() -> None:
     }
     speed = {t for t in with_table if t.startswith("speed_")}
     assert speed, "the store's speed section must exist for the exclusion to mean anything"
-    assert with_table - speed <= titles
+    assert {md_to_id[s] for s in with_table - speed} <= ids
+
+
+# ---- 3b. every table carries a human title and description (#133) ---------------
+
+
+def test_producer_titles_and_descs_cover_every_table_id() -> None:
+    # #133: every producer-owned table id has a human title and a one-paragraph
+    # description, so a new benchmark id cannot ship untitled: the mapping is
+    # keyed on TABLE_IDS and render_scores refuses a table without an entry.
+    assert set(sc.TABLE_TITLES) == set(sc.TABLE_IDS)
+    assert set(sc.TABLE_DESCS) == set(sc.TABLE_IDS)
+    for tid, title in sc.TABLE_TITLES.items():
+        assert title.strip(), tid
+        assert not title.startswith(tid), f"{tid}: title starts with its own id"
+        for machine_id in sc.TABLE_IDS:
+            if "_" in machine_id:
+                assert machine_id not in title, f"{tid}: title contains {machine_id!r}"
+    for tid, desc in sc.TABLE_DESCS.items():
+        assert desc.strip(), f"{tid}: empty desc"
+        assert "\n" not in desc, f"{tid}: desc must be one paragraph"
+
+
+def test_scores_json_tables_carry_human_titles_and_descriptions() -> None:
+    # #133 on the real store: no table ships an empty desc, no title is the
+    # machine id with a colon after it, and the four tables the issue names
+    # carry exactly the agreed titles (jubarte.pro's wording, neutralised —
+    # benchmarks.law shows the same text).
+    obj = json.loads(bd.build(REPO_ROOT).scores_json)
+    assert obj["tables"]
+    for table in obj["tables"]:
+        tid = table["id"]
+        assert table["title"].strip(), f"{tid}: empty title"
+        assert table["desc"].strip(), f"{tid}: empty desc"
+        assert "\n" not in table["desc"], tid
+        assert not table["title"].startswith(tid), f"{tid}: title starts with its own id"
+        for machine_id in sc.TABLE_IDS:
+            if "_" in machine_id:
+                assert machine_id not in table["title"], (
+                    f"{tid}: title contains {machine_id!r}"
+                )
+    by_id = {t["id"]: t for t in obj["tables"]}
+    assert by_id["docx_to_pdf_no_redline_docs"]["title"] == "Source DOCX → PDF, no redlines"
+    assert by_id["docxide_metrics"]["title"] == (
+        "The same documents under docxide-pdf's own metrics"
+    )
+    assert by_id["corpus/word:le3pages"]["title"] == (
+        "Below 3 pages: every converter on the same short documents"
+    )
+    assert by_id["redlines_accept_reject"]["title"] == "Redlines accepted or rejected by Word"
 
 
 def _undagger(value: dict) -> dict:
