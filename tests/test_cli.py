@@ -175,6 +175,101 @@ def test_score_only_help_lists_tool_version():
         assert "--tool-version" in result.output
 
 
+def _one_page_pdf(path: Path, text: str) -> Path:
+    import pymupdf
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    doc = pymupdf.open()
+    doc.new_page().insert_text((72, 72), text)
+    doc.save(path)
+    doc.close()
+    return path
+
+
+def test_score_only_carries_the_conversion_record_of_the_run_it_replaces(tmp_path):
+    """#144: a score-only re-score knows the scores, not the conversion.
+
+    The report it replaces holds the converter and the per-document conversion
+    seconds; the release case shards read the seconds from it, so the
+    re-score carries them over and says where they came from.
+    """
+    root = tmp_path / "corpus" / "word" / "clean"
+    _one_page_pdf(root / "pdf" / "a.pdf", "Word's page.")
+    (root / "docx").mkdir(parents=True, exist_ok=True)
+    (root / "docx" / "a.docx").write_bytes(b"docx")
+    cfg = tmp_path / "bench.yaml"
+    cfg.write_text("word_pdf:\n  root: corpus/word\n  states: [clean]\n", encoding="utf-8")
+    candidate = _one_page_pdf(tmp_path / "candidates" / "a.pdf", "Word's page.")
+    source = {
+        "tools": {
+            "jubarte": {
+                "tool": "jubarte",
+                "version": "jubarte 0.9.3",
+                "converter": "/opt/jubarte",
+                "convert_seconds": {"a": 1.25},
+                "per_doc": {"a": 100.0},
+            }
+        }
+    }
+    source_path = tmp_path / "source.json"
+    source_path.write_text(json.dumps(source), encoding="utf-8")
+
+    out = tmp_path / "out.json"
+    result = runner.invoke(
+        app,
+        [
+            "docx-to-pdf",
+            "--config", str(cfg),
+            "--tool", "jubarte",
+            "--score-only",
+            "--location-to-score", str(candidate),
+            "--carry-conversions-from", str(source_path),
+            "--json", str(out),
+            "--no-store",
+            "--jobs", "1",
+        ],
+    )
+    assert result.exit_code == 0, result.output
+    saved = json.loads(out.read_text(encoding="utf-8"))
+    tool = saved["tools"]["jubarte"]
+    assert tool["convert_seconds"] == {"a": 1.25}
+    assert tool["converter"] == "/opt/jubarte"
+    # the corpus stem carries its state: clean__a
+    assert set(tool["per_doc"]) == {"clean__a"}
+    assert tool["per_doc"]["clean__a"] == pytest.approx(100.0, abs=1e-6)
+    assert saved["carried_conversions"]["from"] == str(source_path)
+
+
+def test_carry_conversions_from_a_report_without_the_lane_is_an_error(tmp_path):
+    root = tmp_path / "corpus" / "word" / "clean"
+    _one_page_pdf(root / "pdf" / "a.pdf", "Word's page.")
+    (root / "docx").mkdir(parents=True, exist_ok=True)
+    (root / "docx" / "a.docx").write_bytes(b"docx")
+    cfg = tmp_path / "bench.yaml"
+    cfg.write_text("word_pdf:\n  root: corpus/word\n  states: [clean]\n", encoding="utf-8")
+    candidate = _one_page_pdf(tmp_path / "candidates" / "a.pdf", "Word's page.")
+    source_path = tmp_path / "source.json"
+    source_path.write_text(json.dumps({"tools": {"other": {"per_doc": {}}}}), encoding="utf-8")
+
+    result = runner.invoke(
+        app,
+        [
+            "docx-to-pdf",
+            "--config", str(cfg),
+            "--tool", "jubarte",
+            "--score-only",
+            "--location-to-score", str(candidate),
+            "--carry-conversions-from", str(source_path),
+            "--json", str(tmp_path / "out.json"),
+            "--no-store",
+        ],
+    )
+    assert result.exit_code != 0
+    # rich draws the error in a box and wraps it; the words are what matters.
+    text = " ".join(result.output.replace("│", " ").split())
+    assert "no 'jubarte' lane" in text
+
+
 def test_ledger_report_path_is_repo_relative(tmp_path, monkeypatch):
     from neurotic_docx_bench.cli import _ledger_report_path
 

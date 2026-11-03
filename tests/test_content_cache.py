@@ -108,6 +108,23 @@ def test_score_entry_round_trips_and_misses_cleanly(tmp_path: Path) -> None:
     assert len(files) == 1 and json.loads(files[0].read_text()) == row
 
 
+def test_a_cached_score_row_keeps_its_per_page_scores(tmp_path: Path) -> None:
+    """#144: the cached row carries the pages, so a hit keeps the per-page scores.
+
+    The cache stores the whole scored row, ``pages`` included, so a hit is
+    still a row with one score per matched page.  No fingerprint bump is
+    needed: the scores themselves did not change, only what the reports
+    derive from them.
+    """
+    cache = cc.ContentCache(tmp_path / "cache")
+    key = cc.score_key(candidate_sha="c" * 64, oracle_sha="o" * 64, base_sha=None, dpi=144, renderer_id="x")
+    cache.put_score(key, {"overall_score": 91.5,
+                          "pages": [{"page": 1, "score": 91.5}, {"page": 2, "score": 80.25}]})
+    hit = cache.get_score(key)
+    assert hit is not None
+    assert [page["score"] for page in hit["pages"]] == [91.5, 80.25]
+
+
 def test_corrupt_score_entry_is_a_miss(tmp_path: Path) -> None:
     cache = cc.ContentCache(tmp_path / "cache")
     key = cc.score_key(candidate_sha="c" * 64, oracle_sha="o" * 64, base_sha=None, dpi=144, renderer_id="x")

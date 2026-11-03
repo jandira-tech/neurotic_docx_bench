@@ -29,6 +29,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 from neurotic_docx_bench import kernels, pipeline
+from neurotic_docx_bench.page_scores import per_page_scores
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 CORPUS = REPO_ROOT / "corpus"
@@ -697,13 +698,18 @@ def _tool_report(
     failures: list[dict[str, object]],
     *,
     version: str | None = None,
-    score_rows: Mapping[str, pipeline.RasterPageMetrics] | None = None,
+    score_rows: Mapping[str, Mapping[str, object]] | None = None,
 ) -> dict:
     failed = {str(item["doc"]) for item in failures}
     per_doc: dict[str, float] = {}
+    per_page: dict[str, list[float]] = {}
+    rows = score_rows or {}
     for stem in stems:
         if stem in scores and stem not in failed:
             per_doc[stem] = scores[stem]
+            pages = per_page_scores(rows.get(stem, {}))
+            if pages:
+                per_page[stem] = pages
         else:
             per_doc[stem] = 0.0
     vals = list(per_doc.values())
@@ -718,13 +724,65 @@ def _tool_report(
         "perfects": sum(1 for value in vals if value >= 100.0 - 1e-9),
         "failures": len(failed),
         "per_doc": per_doc,
+        # One score per matched page, in document order (#144): a document the
+        # tool never produced has no entry, and a page that was never scored
+        # has no value.
+        "per_page": per_page,
         **pipeline.page_metrics_summary({
-            stem: row for stem, row in (score_rows or {}).items()
+            stem: row for stem, row in rows.items()
             if stem in scores and stem in per_doc and stem not in failed
         }),
         "generate_failures": failures,
         "aggregate": aggregate(scores),
     }
+
+
+def _carry_conversion_record(tool_block: dict, source: Mapping[str, object]) -> None:
+    """The conversion record of the run a score-only re-score replaces.
+
+    A score-only run converts nothing: it has no converter, no conversion
+    time and no vendor's reason for refusing a document.  The report it
+    replaces has all three, and the release case shards read the per-document
+    seconds from it, so they are carried over — the re-score adds the scores,
+    it does not drop the conversion.
+
+    The refusals are carried over only when they name the same documents the
+    re-score found missing: otherwise the two runs are not about the same
+    lane, and a refusal that no longer holds would be a lie.
+    """
+    if "converter" in source and tool_block.get("converter") is None:
+        tool_block["converter"] = source["converter"]
+    if "convert_seconds" in source and "convert_seconds" not in tool_block:
+        tool_block["convert_seconds"] = source["convert_seconds"]
+    failures = source.get("generate_failures")
+    if isinstance(failures, list) and failures:
+        missing = {str(item.get("doc")) for item in tool_block.get("generate_failures") or []}
+        refused = {str(item.get("doc")) for item in failures if isinstance(item, Mapping)}
+        if refused != missing:
+            raise ValueError(
+                "the conversion record names "
+                f"{len(refused - missing)} document(s) the re-score did not find missing "
+                f"and misses {len(missing - refused)}: it is not this lane's record",
+            )
+        tool_block["generate_failures"] = failures
+
+
+def carry_conversion_record(report: dict, source: Mapping[str, object], tool: str) -> None:
+    """Carry the conversion record of ``source`` into ``report`` for ``tool``.
+
+    The lane must be the one the re-score measured: a record carried into
+    another lane would be a lie.
+    """
+    source_tools = source.get("tools") or {}
+    if tool not in source_tools:
+        raise ValueError(f"no {tool!r} lane to carry the conversion record from")
+    report_tools = report.get("tools") or {}
+    if tool not in report_tools:
+        raise ValueError(f"the report has no {tool!r} lane to carry the conversion record into")
+    _carry_conversion_record(report_tools[tool], source_tools[tool])
+    # The selection is the same one the conversion run made: its warnings stay.
+    if "warnings" in source:
+        report["warnings"] = source["warnings"]
 
 
 def run_eval(
@@ -753,6 +811,10 @@ def run_eval(
     ``check_pins`` is for the SHA-pinned Word sets. Corpus selections pass
     ``fixtures`` and ``check_pins=False``. ``score_only`` skips every converter
     and scores ``candidates`` (fixture stem to PDF) instead.
+
+    A score-only re-score knows the scores, not the conversion:
+    :func:`carry_conversion_record` puts the conversion record of the report it
+    replaces back into it.
     """
     if fixtures is None:
         spec = resolve_track(track)
@@ -908,6 +970,9 @@ def itt_complete_listed(report: dict) -> tuple[dict, list[str]]:
                                        "text_boundary": row.get("text_boundary")}
                                    for s, row in (data.get("page_metrics") or {}).items()
                                })
+        # The per-page scores of the documents already scored survive (#144): the
+        # completion adds the dropped documents, it does not restate the others.
+        rebuilt["per_page"] = {**(data.get("per_page") or {}), **(rebuilt.get("per_page") or {})}
         rebuilt["converter"] = data.get("converter")
         done["tools"][tool] = data | rebuilt
     done["stems"] = stems
