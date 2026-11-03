@@ -24,7 +24,7 @@ pytest.importorskip(
     ),
 )
 
-from neurotic_docx_bench import cli
+from neurotic_docx_bench import cli, hub_outputs
 from neurotic_docx_bench.ledger import build as ledger_build
 from neurotic_docx_bench.ledger import cases as cases_emit
 
@@ -341,6 +341,10 @@ def release_root(tmp_path: Path) -> Path:
         / f"{REDLINE_A}_docxodus_byword.pdf",
         pages=3,
     )
+    # the redlines themselves: the lane's docx/ folder, which the publisher stages too
+    docx_dir = root / "results" / "redlines_0929_full" / "jubarte-1.2.3" / "docx"
+    docx_dir.mkdir(parents=True, exist_ok=True)
+    (docx_dir / f"{REDLINE_A}_jubarte-1.2.3.docx").write_bytes(b"redline")
     return root
 
 
@@ -437,6 +441,102 @@ def test_files_use_the_real_hub_layout_and_the_pinned_files_base(release_root: P
     assert conversion.page_counts["docxodus"] == 4
     assert len(conversion.pages["docxodus"]) == len(conversion.shown or []) == 3
     assert index.files_base == FILES_BASE
+
+
+def test_the_jubarte_lane_links_the_files_the_publisher_uploads(
+    release_root: Path, tmp_path: Path
+) -> None:
+    """The shard's file links are the paths the publish stage uploads (#143).
+
+    A link the publisher never uploads is a link that 404s; a file the
+    publisher uploads that no case links is a file nobody can reach.
+    """
+    _index, shards = cases_emit.emit_release(release_root, "1.2.3", files_base=FILES_BASE)
+    ev = release_root / "results" / "release_1.2.3_evidence"
+    staging = tmp_path / "staging"
+
+    convert_root = staging / "convert_860"
+    hub_outputs.stage_convert_lane(
+        convert_root,
+        pdf_dir=ev / "convert_work" / "jubarte" / "candidate",
+        report=ev / "docx_to_pdf_jubarte_1.2.3_sample.json",
+    )
+    redline_root = staging / "redlines"
+    hub_outputs.stage_redline_lane(
+        redline_root,
+        lane="jubarte-1.2.3",
+        lane_dir=release_root / "results" / "redlines_0929_full" / "jubarte-1.2.3",
+    )
+
+    planned_convert = {
+        f"{hub_outputs.CONVERT_PREFIX}/jubarte_1.2.3/{path}"
+        for path in hub_outputs.convert_case_files(convert_root)
+    }
+    planned_redline = {
+        f"{hub_outputs.REDLINE_PREFIX}/{path}"
+        for path in hub_outputs.redline_case_files(redline_root)
+    }
+    linked_convert = {
+        case.files["jubarte-1.2.3"]
+        for shard in shards
+        if shard.kind == "conversion"
+        for case in shard.cases
+        if "jubarte-1.2.3" in case.files
+    }
+    linked_redline = {
+        case.files["jubarte-1.2.3"]
+        for shard in shards
+        if shard.kind == "redline"
+        for case in shard.cases
+        if "jubarte-1.2.3" in case.files
+    }
+
+    assert {path.removeprefix("~/") for path in linked_convert} == planned_convert
+    assert {path.removeprefix("~/") for path in linked_redline} == planned_redline
+    assert planned_convert and planned_redline
+
+
+def test_the_release_views_pin_the_files_base_to_the_recorded_revision(
+    release_root: Path,
+) -> None:
+    """The links resolve against the revision the release's outputs landed on."""
+    revision = "c0ffee" * 5
+    hub_outputs.write_evidence(
+        release_root, "1.2.3", {"revision": revision, "paths": [], "verified": True}
+    )
+    empty = ledger_build.Bundle(
+        results_md="",
+        detailed_md="",
+        readme_vendor_table="",
+        scores_json="",
+    )
+    bundle = ledger_build.add_release_views(release_root, empty, release_version="1.2.3")
+    index = CasesIndex.model_validate_json(bundle.release_cases["cases/index.json"])
+    assert index.files_base == (
+        "https://huggingface.co/datasets/arthrod/neurotic_docx_bench/resolve/"
+        f"{revision}/"
+    )
+    assert "/main/" not in index.files_base
+
+
+def test_without_a_pinned_revision_the_release_views_refuse(release_root: Path) -> None:
+    empty = ledger_build.Bundle(
+        results_md="",
+        detailed_md="",
+        readme_vendor_table="",
+        scores_json="",
+    )
+    with pytest.raises(hub_outputs.PinnedRevisionMissing):
+        ledger_build.add_release_views(release_root, empty, release_version="1.2.3")
+
+
+def test_the_release_views_say_which_revision_is_missing(
+    release_root: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    said: list[str] = []
+    assert ledger_build.run_release_views(release_root, release_version="1.2.3", echo=said.append) == 1
+    assert any("pinned" in line for line in said), said
+    assert not any("main" in line for line in said), said
 
 
 def test_release_texts_leave_empty_plan7_fields_out(

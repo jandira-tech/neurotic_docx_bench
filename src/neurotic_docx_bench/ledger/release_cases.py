@@ -216,12 +216,28 @@ def _word_pdf(folder: Path, key: str, tool: str) -> Path | None:
     return matches[0] if matches else None
 
 
+def _redline_lane_dir(lane: _Lane) -> str:
+    """The lane's folder under the run directory — the folder the uploader published.
+
+    The release's own lane is ``jubarte-<v>``; a vendor refresh lane is
+    ``<tool>-<version>``. The hub copy lives under the same name.
+    """
+    return lane.key if lane.key.startswith("jubarte-") else f"{lane.tool}-{lane.version}"
+
+
+def _redline_tool(lane: _Lane) -> str:
+    """The name the lane's redlines carry (``<key>_<tool>.docx``)."""
+    return lane.key if lane.key.startswith("jubarte-") else lane.tool
+
+
 def _redline_candidate(root: Path, vendor_root: Path, lane: _Lane, key: str) -> Path | None:
-    if lane.key.startswith("jubarte-"):
-        folder = vendor_root / RUN_DIR / lane.key / "pdf_by_word"
-        return _word_pdf(folder, key, lane.key)
-    folder = vendor_root / RUN_DIR / f"{lane.tool}-{lane.version}" / "pdf_by_word"
-    return _word_pdf(folder, key, lane.tool)
+    folder = vendor_root / RUN_DIR / _redline_lane_dir(lane) / "pdf_by_word"
+    return _word_pdf(folder, key, _redline_tool(lane))
+
+
+def _redline_file(lane: _Lane, pdf: Path) -> str:
+    """The record path of a redline lane's Word PDF, in the #140 HF layout."""
+    return f"~/outputs/redlines_0929_full/{_redline_lane_dir(lane)}/pdf_by_word/{pdf.name}"
 
 
 def _asset_path(version: str, kind: ReleaseKind, case: str, lane: str, page: int) -> str:
@@ -608,6 +624,7 @@ def _redline_cases(
         versions: dict[str, str] = {"reference": "Microsoft Word"}
         diagnostics: dict[str, MetricDiagnostics] = {}
         page_scores: dict[str, list[float | None]] = {}
+        files: dict[str, str] = {}
 
         for lane in lanes:
             pixel, metrics = _redline_score(lane, key)
@@ -641,6 +658,9 @@ def _redline_cases(
             if raw_page_scores is not None:
                 page_scores[lane.key] = raw_page_scores
                 page_score_entries += 1
+            if candidate is not None and candidate.is_file():
+                # the lane's Word export of the redline, on the hub (#143)
+                files[lane.key] = _redline_file(lane, candidate)
             sources.append(
                 ReleaseSource(
                     kind="redline",
@@ -674,6 +694,7 @@ def _redline_cases(
                 reference_app="Microsoft Word",
                 metric_diagnostics=diagnostics,
                 page_scores=page_scores,
+                files=files,
                 shown=shown,
                 state=row.get("state") or None,
                 set="redline_600",

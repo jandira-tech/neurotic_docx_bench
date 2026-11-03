@@ -53,6 +53,16 @@ that carry the version. Stage by owner step:
    a tool the refresh never ran shows as not run, never 0. The two results
    documents record ``set_version``; the sample tables title themselves after
    the fixed sets ("the 860-document set", "the 600-pair set").
+7. ``publish`` — the fixed-set flow's own outputs to the results dataset, under
+   the layout the vendor lanes use: ``outputs/convert_860/jubarte_<v>/pdf/…``
+   (the candidate PDFs), the conversion report and a ``MANIFEST.sha256.json``,
+   plus ``outputs/redlines_0929_full/jubarte-<v>/{docx,pdf_by_word,meta}``. The
+   upload is verified with ``hub.verify_uploaded`` and the commit it landed on
+   is recorded in the release evidence
+   (``results/release_<v>_evidence/release_info/hub_outputs.json``), so the
+   release shards' file links resolve against that revision and never against a
+   moving branch. The stage runs the shared upload path
+   (``neurotic_docx_bench.hub_outputs``) — the one the two vendor uploaders use.
 
 The ``install`` stage resolves the binary first: ``--binary PATH`` must run
 (whatever version it reports is recorded as ``candidate_reports``); without
@@ -94,10 +104,11 @@ from collections.abc import Callable, Collection, Sequence
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
+from typing import Any
 
 import typer
 
-from neurotic_docx_bench import jubarte_release, pipeline, release
+from neurotic_docx_bench import hub_outputs, jubarte_release, pipeline, release
 from neurotic_docx_bench.jubarte_bench_release import (
     COMPARE_REGEN,
     RUN_DIR,
@@ -107,7 +118,7 @@ from neurotic_docx_bench.jubarte_bench_release import (
     execute,
 )
 
-STAGES = ('install', 'sample', 'sets', 'generate', 'export', 'measure', 'convert', 'score', 'write')
+STAGES = ('install', 'sample', 'sets', 'generate', 'export', 'measure', 'convert', 'score', 'write', 'publish')
 # the fixed sets a release runs on (#130, plan 7.3); --draw-sample runs the old draw instead
 DEFAULT_CONVERT_SET = Path('results/sets/convert_860.csv')
 DEFAULT_REDLINE_SET = Path('results/sets/redline_600.csv')
@@ -1733,7 +1744,8 @@ def plan(rel: Release, *, binary: Path | None = None, seed: int = DEFAULT_SEED,
          jobs: int = DEFAULT_JOBS, convert_workers: int = DEFAULT_CONVERT_WORKERS,
          hub: Hub | None = None, compare_regen: Path = COMPARE_REGEN,
          run: Callable[..., release.ProcLike] | None = None, draw_sample: bool = False,
-         convert_set: Path | None = None, redline_set: Path | None = None) -> list[Step]:
+         convert_set: Path | None = None, redline_set: Path | None = None,
+         api: Any | None = None) -> list[Step]:
     """Every step of every stage, in order.
 
     The fixed-set flow (#130): a ``sets`` stage validates and adopts the two
@@ -1751,7 +1763,9 @@ def plan(rel: Release, *, binary: Path | None = None, seed: int = DEFAULT_SEED,
     folder's ``sample_conversion_<v>.csv``, else the list being adopted, and
     falls back to a placeholder so ``--plan`` still prints before the sets
     (or sample) stage ran. ``hub`` is the results dataset (None: local files
-    only; the draw flow's docxodus fetch is its only user).
+    only; the draw flow's docxodus fetch is its only user). ``api`` is the
+    results dataset client the publish stage uploads through (None: the real
+    one, created when the stage runs).
     """
     if draw_sample and (convert_set is not None or redline_set is not None):
         raise ValueError('--draw-sample runs the old 600/600 draw; --convert-set/--redline-set name the '
@@ -2029,6 +2043,13 @@ def plan(rel: Release, *, binary: Path | None = None, seed: int = DEFAULT_SEED,
                                             with_soffice=False))
         return f'{detail}; binary {identity["binary_sha256"][:12]} reports "{identity["candidate_reports"]}"'
 
+    def publish_action() -> str:
+        """Upload the release's own outputs; record the revision they landed on."""
+        evidence = hub_outputs.publish_release(root, v, api=api)
+        where = ', '.join(evidence['paths'])
+        return (f'{evidence["n_files"]} file(s) uploaded and verified at '
+                f'{evidence["revision"]} ({where})')
+
     adopting = 'adopt' if adopt_r is not None else 'draw', 'adopt' if adopt_c is not None else 'draw'
     draw_steps = [
         Step('install', 'candidate binary' if binary is not None else 'release binary', action=install),
@@ -2140,6 +2161,10 @@ def plan(rel: Release, *, binary: Path | None = None, seed: int = DEFAULT_SEED,
               '--jobs', str(jobs), '--convert-workers', str(convert_workers)),
              log=ev / f'convert_jubarte_{v}.log'),
         Step('write', 'release_info', action=write_action_sets),
+        # the release's own outputs to the results dataset, under the layout the
+        # vendor lanes use; the revision they landed on is recorded, so the
+        # release shards' file links never point at a moving branch (#143)
+        Step('publish', 'upload the jubarte lane to the results dataset', action=publish_action),
     ]
 
 

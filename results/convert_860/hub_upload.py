@@ -16,21 +16,23 @@ uploaded here.
 head read before staging, so a concurrent upload is not silently overwritten. Every
 file is then checked with ``hub.verify_uploaded``, which reads the hub's own tree
 listing and compares hashes. Nothing local is deleted.
+
+The staging, the upload and the verification live in
+``neurotic_docx_bench.hub_outputs`` — the same path the redline lane uploader and
+the release's own jubarte lane use, so there is one upload path, not three.
 """
 
 from __future__ import annotations
 
 import argparse
-import json
-import os
 import shutil
 import tempfile
 from pathlib import Path
 
-from neurotic_docx_bench import hub
+from neurotic_docx_bench import hub, hub_outputs
 
 HERE = Path(__file__).resolve().parent
-REPO_PREFIX = "outputs/convert_860"
+REPO_PREFIX = hub_outputs.CONVERT_PREFIX
 
 # lane -> (the report JSON under results/, a one-line note for the commit message)
 LANES: dict[str, str] = {
@@ -49,19 +51,9 @@ def stage(root: Path, lane: str, pdf_dir: Path, report: Path) -> int:
     860) wrote fewer PDFs than the set has, and those documents are scored 0
     under intent-to-treat. The manifest and the report together say so.
     """
-    data = json.loads(report.read_text(encoding="utf-8"))
-    tools = data.get("tools") or {}
-    row = next(iter(tools.values()), {})
-    expected = int(row.get("n_scored") or 0)
-    pdfs = sorted(p for p in pdf_dir.iterdir() if p.suffix == ".pdf" and not p.name.startswith("."))
-    if len(pdfs) != expected:
-        raise SystemExit(f"{pdf_dir}: {len(pdfs)} PDFs, the report scored {expected}")
-    (root / "pdf").mkdir(parents=True)
-    for p in pdfs:
-        os.link(p, root / "pdf" / p.name)
-    os.link(report, root / report.name)
-    os.link(HERE / "hub_upload.py", root / "hub_upload.py")
-    hub.write_manifest(root, path=root / hub.MANIFEST_NAME, files=hub.build_manifest(root))
+    hub_outputs.stage_convert_lane(
+        root, pdf_dir=pdf_dir, report=report, script=HERE / "hub_upload.py"
+    )
     return sum(1 for _ in hub.iter_files(root))
 
 
@@ -77,22 +69,26 @@ def main() -> None:
     lane = a.lane
     root = Path(tempfile.mkdtemp(prefix=f"hub-convert860-{lane}.", dir=HERE.parent))
     try:
-        n = stage(root, lane, a.pdf_dir, a.report)
+        try:
+            n = stage(root, lane, a.pdf_dir, a.report)
+        except hub_outputs.LaneError as exc:
+            raise SystemExit(str(exc)) from exc
         size = sum(p.stat().st_size for p in hub.iter_files(root))
         print(f"staged {n} files, {size / 1e6:.0f} MB", flush=True)
         if a.dry_run:
             return
         api = hub.default_api()
         head = api.repo_info(hub.RESULTS_REPO, repo_type=hub.REPO_TYPE).sha
-        api.upload_folder(
-            repo_id=hub.RESULTS_REPO,
-            repo_type=hub.REPO_TYPE,
-            folder_path=root,
+        hub_outputs.upload_folder(
+            api=api,
+            folder=root,
             path_in_repo=f"{REPO_PREFIX}/{lane}",
+            message=f"convert_860: {LANES[lane]} on the 860-document set ({n} files)",
             parent_commit=head,
-            commit_message=f"convert_860: {LANES[lane]} on the 860-document set ({n} files)",
         )
-        bad = hub.verify_uploaded(root, api=api, repo_id=hub.RESULTS_REPO, path_in_repo=f"{REPO_PREFIX}/{lane}")
+        bad = hub_outputs.verify_lane(
+            api=api, folder=root, path_in_repo=f"{REPO_PREFIX}/{lane}"
+        )
         if bad:
             raise SystemExit(f"{len(bad)} file(s) missing or different on the hub: {bad[:10]}")
         print(f"verified {n} files on {hub.RESULTS_REPO}/{REPO_PREFIX}/{lane}", flush=True)

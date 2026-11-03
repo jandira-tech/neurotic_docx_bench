@@ -202,10 +202,49 @@ def test_stages_are_the_owner_steps_in_order() -> None:
     # the fixed-set flow (#130) replaces the draw's sample stage with a sets stage;
     # --draw-sample keeps the old one for regenerating archived evidence
     assert jri.STAGES == ('install', 'sample', 'sets', 'generate', 'export', 'measure', 'convert',
-                          'score', 'write')
+                          'score', 'write', 'publish')
     for kw in ({}, {'draw_sample': True}):
         steps = jri.plan(_rel(Path('/tmp/x')), conversion=['clean/docx/a.docx'], **kw)
         assert [s.stage for s in steps] == sorted((s.stage for s in steps), key=jri.STAGES.index)
+
+
+def test_the_publish_stage_uploads_the_release_own_outputs_and_records_the_revision(
+    tmp_path: Path,
+) -> None:
+    """The fixed-set flow's last step publishes the release's own lane (#143)."""
+    from test_hub_outputs import FakeOutputsHub
+
+    root, regen = _tree(tmp_path)
+    _write_sets(root)
+    ev = root / jri.evidence_dir(V)
+    candidate = ev / 'convert_work' / 'jubarte' / 'candidate'
+    candidate.mkdir(parents=True, exist_ok=True)
+    (candidate / 'clean__fx0.pdf').write_bytes(b'%PDF-1.7 fx0')
+    (ev / f'docx_to_pdf_jubarte_{V}_sample.json').write_text(json.dumps({
+        'n': 1,
+        'stems': ['clean__fx0'],
+        'tools': {'jubarte': {'tool': 'jubarte', 'version': f'jubarte {V}', 'n_scored': 1,
+                              'per_doc': {'clean__fx0': 90.0}, 'generate_failures': [], 'failures': 0}},
+    }))
+    lane = root / jri.RUN_DIR / LANE
+    (lane / 'docx').mkdir(parents=True, exist_ok=True)
+    (lane / 'pdf_by_word').mkdir(parents=True, exist_ok=True)
+    (lane / 'docx' / f'cle0_{LANE}.docx').write_bytes(b'redline')
+    (lane / 'pdf_by_word' / f'cle0_{LANE}_byword.pdf').write_bytes(b'%PDF-1.7 cle0')
+
+    api = FakeOutputsHub()
+    steps = _plan(root, regen, api=api)
+    assert [s.name for s in steps if s.stage == 'publish'] == [
+        'upload the jubarte lane to the results dataset'
+    ]
+    detail = _act(steps, 'upload the jubarte lane to the results dataset')
+    assert 'uploaded and verified' in detail
+    assert f'outputs/convert_860/jubarte_{V}/pdf/clean__fx0.pdf' in api.stored
+    assert f'outputs/redlines_0929_full/{LANE}/pdf_by_word/cle0_{LANE}_byword.pdf' in api.stored
+    evidence = json.loads((ev / 'release_info' / 'hub_outputs.json').read_text())
+    assert evidence['revision'] == api.head
+    assert evidence['verified'] is True
+    assert evidence['paths'][0] == f'outputs/convert_860/jubarte_{V}'
 
 
 def test_rejects_a_version_that_is_not_a_release(tmp_path: Path) -> None:
